@@ -198,8 +198,8 @@ static  NSButtonCell* knobCell;
   if (theCell)
   {
 	  [theCell highlight: YES withFrame: rect inView: self];
-  	  //[self drawKnobSlotOn: [self bounds] knobPresent: YES buttonPressed: button];
-  	  [self drawKnobSlotOn: _frame knobPresent: YES buttonPressed: button];
+  	  [self drawKnobSlotOn: [self bounds] knobPresent: YES buttonPressed: button];
+  	  //[self drawKnobSlotOn: _frame knobPresent: YES buttonPressed: button];
 	  [self drawKnob];
 	  [_window flushWindow];
 
@@ -209,8 +209,8 @@ static  NSButtonCell* knobCell;
 		  untilMouseUp: YES];
 
 	  [theCell highlight: NO withFrame: rect inView: self];
-  	  //[self drawKnobSlotOn: [self bounds] knobPresent: YES buttonPressed: 0];
-  	  [self drawKnobSlotOn: _frame knobPresent: YES buttonPressed: 0];
+  	  [self drawKnobSlotOn: [self bounds] knobPresent: YES buttonPressed: 0];
+  	  //[self drawKnobSlotOn: _frame knobPresent: YES buttonPressed: 0];
 	  [self drawKnob];
 	  [_window flushWindow];
   }
