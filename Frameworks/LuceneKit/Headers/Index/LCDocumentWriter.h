@@ -46,9 +46,7 @@
 	// Keys are Terms, values are Postings.
 	// Used to buffer a document before it is written to the index.
 	NSMutableDictionary *postingTable;
-	NSMutableArray *fieldLengths; //int
-	NSMutableArray *fieldPositions;  //int
-	NSMutableArray *fieldOffsets; // int
+	NSMutableArray *fieldsCache;
 	NSMutableArray *fieldBoosts; // flost
 
 	LCTerm *termBuffer;
