@@ -103,7 +103,7 @@ ifeq ($(etoileextensionskit), yes)
 endif
 
 ifeq ($(lucenekit), yes)
-   #SUBPROJECTS += LuceneKit
+   SUBPROJECTS += LuceneKit
 endif
 
 ifeq ($(servicesbarkit), yes)
