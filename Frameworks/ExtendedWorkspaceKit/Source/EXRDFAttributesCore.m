@@ -1,13 +1,13 @@
 /*
-	EXTGNOMEVFS.h
+	EXRDFAttributesCore.m
 
-	Concrete class (partially a cluster) which relies on the gnome-vfs library 
-	for the files interaction
+	Attributes related class which implements their support/storage with a RDF 
+	semantic
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Quentin Mathe <qmathe@club-internet.fr>
-	Date:  July 2004
+	Created:  8 June 2004
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -24,11 +24,10 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import "EXTVFSBack.h"
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+#import "EXRDFAttributesCore.h"
 
-@interface EXTGNOMEVFS : EXTVFSBack
-{
-
-}
+@implementation EXRDFAttributesCore
 
 @end

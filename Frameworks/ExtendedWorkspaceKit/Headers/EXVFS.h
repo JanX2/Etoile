@@ -1,12 +1,13 @@
 /*
-	EXTExtensionProtocol.h
+	EXVFS.h
 
-	Basic protocols to support ExtendedWorkspaceKit plugins
+	Front end VFS class which permits to do files manipulation in a FS agnostic
+	way
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Quentin Mathe <qmathe@club-internet.fr>
-	Created:  8 June 2004
+	Date:  July 2004
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -23,21 +24,27 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Metadatas extracters and text indexers are implemented as loadable bundle
+#import "EXVFSProtocol.h"
 
-@protocol EXTPlugin
+@class NSArray;
+@class EXVFSBack;
+@class NSURL;
+@class NSArray;
+
+@interface EXVFS : NSObject <EXVFSProtocol>
 {
-
+  NSArray *_protocols;
+  EXVFSBack *_vfs;
+  // EXVFSBack *_virtualVFS;
 }
 
-- (EXTTypeAttribute *) processableType;
-- (EXTAttribute *) processContext: (EXTContext *)context;
++ (EXVFS *) sharedInstance;
 
-@end
-
-@protocol EXTExtracter <EXTPlugin>
-{
-
-}
-
+/*
+ * Extra methods
+ */
+ 
+- (BOOL) isEntityContextAtURL: (NSURL *)url;
+- (BOOL) isVirtualContextAtURL: (NSURL *)url;
+ 
 @end

@@ -1,5 +1,5 @@
 /*
-	EXTAttribute.m
+	EXAttribute.m
 
 	Attributes class which implements basic attributes representation and interaction
 
@@ -25,9 +25,9 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import "EXTAttribute.h"
+#import "EXAttribute.h"
 
-@implementation EXTAttribute
+@implementation EXAttribute
 
 
 @end

@@ -1,41 +1,89 @@
+2004-11-11  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Headers/ExtendedWorkspaceKit.h: Updated.
+	* Headers/EX*.h: Removed the files which match the pattern.
+	* Headers/NSURL+ExtendedWorkspace.h: Updated.
+	* Source/EX*.m: Removed the files which match the pattern.
+	* Source/NSURL+ExtendedWorkspace.m: Updated.
+        * Source/GNUmakefile: Updated.
+
+	* Headers/ExtendedWorkspaceConfig.h:
+	* Headers/EXAttribute.h:
+	* Headers/EXAttributesCore.h:
+	* Headers/EXBasicFSAttributesExtracter.h:
+	* Headers/EXContentIndexCore.h:
+	* Headers/EXContext.h:
+	* Headers/EXEXIFAttributesExtracter.h:
+	* Headers/EXExtendedFSAttributesExtracter.h:
+	* Headers/EXExtensionProtocols.h:
+	* Headers/EXFileManager.h:
+	* Headers/EXGNUstepVFS.h:
+	* Headers/EXPresentationAttribute.h:
+	* Headers/EXPreviewAttribute.h:
+	* Headers/EXQuery.h:
+	* Headers/EXSearchCore.h:
+	* Headers/EXRDFAttributesCore.h:
+	* Headers/EXTypeAttribute.h:
+	* Headers/EXVFS.h:
+	* Headers/EXVFSBack.h:
+	* Headers/EXVFSHandle.h:
+	* Headers/EXVFSProtocol.h:
+	* Headers/EXWorkspace.h:
+	* Headers/EXXMLAttributesExtracter.h:
+	* Source/EXAttribute.m:
+	* Source/EXAttributesCore.m:
+	* Source/EXBasicFSAttributesExtracter.m:
+	* Source/ContentIndexCore.m:
+	* Source/EXContext.m:
+	* Source/EXFileManager.m:
+	* Source/EXGNUstepVFS.m:
+	* Source/EXRDFAttributesCore.m:
+	* Source/EXSearchCore.m:
+	* Source/EXVFS.m:
+	* Source/EXVFSBack.m:
+	* Source/EXVFSHandle.m:
+	* Source/EXWorkspace.m:s
+	Added (Reworked conception over the initial code and introduced a
+	shorter EX prefix).
+
 2004-08-14  Quentin Mathe <qmathe@club-internet.fr>
 
-	    * ChangeLog:
-        * README:
-        * INSTALL:
-        * GNUmakefile:
-        * Headers/ExtendedWorkspaceKit.h
-	    * Headers/EXTAttribute.h
-	    * Headers/EXTBasicFSAttributesExtracter.h
-	    * Headers/EXTContext.h
-	    * Headers/EXTDataCruxWorkspace.h
-	    * Headers/EXTEXIFAttributesExtracter.h
-	    * Headers/EXTExtendedFSAttributesExtracter.h
-	    * Headers/EXTFileManager.h
-	    * Headers/EXTGNOMEVFS.h
-	    * Headers/EXTGNUstepVFS.h
-	    * Headers/EXTLibFerrisVFS.h
-	    * Headers/EXTLibFerrisWorkspace.h
-	    * Headers/EXTLibFerrisWorkspace.h
-	    * Headers/EXTPresentationAttribute.h
-	    * Headers/EXTPreviewAttribute.h
-	    * Headers/EXTQuery.h
-	    * Headers/EXTTypeAttribute.h
-	    * Headers/EXTVFS.h
-	    * Headers/EXTVFSBack.h
-	    * Headers/EXTWorkspace.h
-	    * Headers/EXTXMLAttributesExtracter.h
-	    * Headers/NSURL+ExtendedWorkspace.h
-	    * Source/EXTAttribute.m
-	    * SourceEXTBasicFSAttributesExtracter.m
-	    * SourceEXTContext.m
-	    * SourceEXTFileManager.m
-	    * SourceEXTGNOMEVFS.m
-	    * SourceEXTGNUstepVFS.m
-	    * SourceEXTLibFerrisVFS.m
-	    * SourceEXTVFS.m
-	    * SourceEXTVFSBack.m
-	    * SourceEXTWorkspace.m
-	    * SourceNSURL+ExtendedWorkspace.m
+	* ChangeLog:
+	* README:
+	* INSTALL:
+	* GNUmakefile:
+	* Headers/ExtendedWorkspaceKit.h:
+	* Headers/EXAttribute.h:
+	* Headers/EXBasicFSAttributesExtracter.h:
+	* Headers/EXContext.h:
+	* Headers/EXDataCruxWorkspace.h:
+	* Headers/EXEXIFAttributesExtracter.h:
+	* Headers/EXExtendedFSAttributesExtracter.h:
+	* Headers/EXFileManager.h:
+	* Headers/EXGNOMEVFS.h:
+	* Headers/EXGNUstepVFS.h:
+	* Headers/EXLibFerrisVFS.h:
+	* Headers/EXLibFerrisWorkspace.h:
+	* Headers/EXLibFerrisWorkspace.h:
+	* Headers/EXPresentationAttribute.h:
+	* Headers/EXPreviewAttribute.h:
+	* Headers/EXQuery.h:
+	* Headers/EXTypeAttribute.h:
+	* Headers/EXVFS.h:
+	* Headers/EXVFSBack.h:
+	* Headers/EXWorkspace.h:
+	* Headers/EXXMLAttributesExtracter.h:
+	* Headers/NSURL+ExtendedWorkspace.h:
+	* Source/EXAttribute.m:
+	* SourceEXBasicFSAttributesExtracter.m:
+	* SourceEXContext.m:
+	* SourceEXFileManager.m:
+	* SourceEXGNOMEVFS.m:
+	* SourceEXGNUstepVFS.m:
+	* SourceEXLibFerrisVFS.m:
+	* SourceEXVFS.m:
+	* SourceEXVFSBack.m:
+	* SourceEXWorkspace.m:
+	* SourceNSURL+ExtendedWorkspace.m:
         * Source/GNUmakefile:
         Initial import.

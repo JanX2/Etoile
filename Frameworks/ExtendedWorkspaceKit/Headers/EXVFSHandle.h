@@ -1,12 +1,12 @@
 /*
-	EXTFileManager.m
+	EXVFSHandle.h
 
-	NSFileManager subclass which implements support for an extended workspace
+	Particular VFS class which permits to store a pointer to the context content
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Quentin Mathe <qmathe@club-internet.fr>
-	Created:  8 June 2004
+	Date:  November 2004
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -23,13 +23,14 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
-#import "EXTFileManager.h"
+@class NSFileHandle;
 
-@implementation EXTFileManager
+@interface EXVFSHandle : NSObject
+{
+    NSFileHandle *_fileHandle;
+}
 
-// Here, inserts the NSWorkspace related methods which are overrided to use
-// the gnome-vfs which replaces NSFileManager implementation
+- (id) initWithFileHandle: (NSFileHandle *)fileHandle;
+- (NSFileHandle *) fileHandle;
 
 @end

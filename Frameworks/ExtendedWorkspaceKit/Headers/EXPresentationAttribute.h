@@ -1,7 +1,7 @@
 /*
-	EXTTypeAttribute.h
+	EXPresentationAttribute.h
 
-	Attributes class which implements types attributes representation and 
+	Attributes class which implements presentation attributes representation and 
 	interaction
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
@@ -24,7 +24,9 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-@interface EXTTypeAttribute
+#import "EXAttribute.h"
+
+@interface EXPresentationAttribute : EXAttribute
 {
 
 }

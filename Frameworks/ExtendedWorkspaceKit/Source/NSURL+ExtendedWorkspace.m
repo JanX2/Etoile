@@ -29,6 +29,11 @@
 
 @implementation NSURL (ExtendedWorkspace)
 
+- (NSURL *) standardizedURL
+{
+    return self;
+}
+
 - (BOOL) hasContextQuery
 {
   NSString *query = [self query];

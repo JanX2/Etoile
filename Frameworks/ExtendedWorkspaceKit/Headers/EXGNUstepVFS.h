@@ -1,13 +1,13 @@
 /*
-	EXTLibFerrisWorkspace.h
+	EXGNUstepVFS.h
 
-	EXTWorkspace subclass which implements support for an extended workspace 
-	relying on libferris framework
+	Concrete class (partially a cluster) which relies on the GNUstep NSFileManager 
+	class for the files interaction
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Quentin Mathe <qmathe@club-internet.fr>
-	Created:  8 June 2004
+	Date:  July 2004
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -24,10 +24,9 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import "EXTWorkspace.h"
+#import "EXVFSBack.h"
 
-@interface EXTLibFerrisWorkspace : EXTWorkspace 
-// libferris powered part of the EXTWorkspace class cluster
+@interface EXGNUstepVFS : EXVFSBack
 {
 
 }

@@ -23,32 +23,18 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import <libgnomevfs/gnome-vfs.h>
-
 enum _VFSBackend 
 {
   GNUstep,
-  GNOMEVFS
+  Comet
 };
 
 enum _AttributesBackend
 {
-  DataCruxSQLlite,
-  LibferrisSQLlite
+  RDFBerkeleyDB
 };
 
-#define VFSBackend GNOMEVFS
-#define AttributesBackend DataCruxSQLlite
-
-/*
-const enum _VFSBackend VFSBackend GNOMEVFS;
-const enum _AttributesBackend AttributesBackend = DataCruxSQLlite;
-*/
+const enum _VFSBackend VFSBackend = GNUstep;
+const enum _AttributesBackend AttributesBackend = RDFBerkeleyDB;
 
 // Private stuff
-
-#if VFSBackend == GNOMEVFS
-  typedef GnomeVFSHandle EXTVFSHandle;
-#else
-  typedef void EXTVFSHandle;
-#endif

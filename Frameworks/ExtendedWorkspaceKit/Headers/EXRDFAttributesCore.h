@@ -1,12 +1,13 @@
 /*
-	EXTQuery.h
+	EXRDFAttributesCore.h
 
-	TKQuery class extension
+	AttributesCore subclass which implements their support/storage with 
+	a RDF semantic
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Quentin Mathe <qmathe@club-internet.fr>
-	Created:  8 June 2004
+	Created:  August 2004
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -23,13 +24,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import <TrackerKit/TKQuery.h>
+#import "EXAttributesCore.h"
 
-@interface EXTQuery : TKQuery // TKQuery should support XPath queries
+@interface EXRDFAttributesCore : EXAttributesCore
 {
 
 }
-
-- setObjectsSoupAsResult // If a structural key is used
 
 @end

@@ -28,10 +28,9 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS = -Wno-import
 
-ADDITIONAL_INCLUDE_DIRS = -I../Headers -I/sw/include/glib-2.0 \
--I/sw/lib/glib-2.0/include -I/sw/include/gnome-vfs-2.0 
-ADDITIONAL_LIB_DIRS = -L/sw/lib
-ADDITIONAL_DEPENDS = -lglib -lgnomevfs
+ADDITIONAL_INCLUDE_DIRS = -I../Headers
+ADDITIONAL_LIB_DIRS = 
+ADDITIONAL_DEPENDS = 
 
 GNUSTEP_MAKEFILES = $(GNUSTEP_SYSTEM_ROOT)/Makefiles
 
@@ -64,30 +63,30 @@ libExtendedWorkspace_LANGUAGES= \
 # Class files
 #
 libExtendedWorkspace_OBJC_FILES= \
-	EXTAttribute.m \
-	EXTBasicFSAttributesExtracter.m \
-	EXTContext.m \
-	EXTFileManager.m \
-	EXTGNOMEVFS.m \
-	EXTGNUstepVFS.m \
-	EXTLibFerrisVFS.m \
-	EXTVFS.m \
-	EXTVFSBack.m \
-	EXTWorkspace.m \
+	EXAttribute.m \
+	EXAttributesCore.m \
+	EXBasicFSAttributesExtracter.m \
+	EXContext.m \
+	EXFileManager.m \
+	EXGNUstepVFS.m \
+	EXRDFAttributesCore.m \
+	EXSearchCore.m \
+	EXVFS.m \
+	EXVFSBack.m \
+	EXVFSHandle.m \
+	EXWorkspace.m \
 	NSURL+ExtendedWorkspace.m
 	
-	# EXTDataCruxWorkspace.m \
-	# EXTEXIFAttributesExtracter.m \
-	# EXTExtendedFSAttributesExtracter.m \
-	# EXTExtensionsProtocols.m
+	# EXEXIFAttributesExtracter.m \
+	# EXExtendedFSAttributesExtracter.m \
+	# EXExtensionsProtocols.m
 
-	# EXTLibFerrisWorkspace.m \
-	# EXTPresentationAttribute.m \
-	# EXTPreviewAttribute.m \
-	# EXTQuery.m \
-	# EXTTypeAttribute.m
+	# EXPresentationAttribute.m \
+	# EXPreviewAttribute.m \
+	# EXQuery.m \
+	# EXTypeAttribute.m
 
-	# EXTXMLAttributesExtracter.m
+	# EXXMLAttributesExtracter.m
 
 #
 # C files
@@ -102,30 +101,28 @@ libExtendedWorkspace_HEADER_FILES_DIR = ../Headers
 libExtendedWorkspace_HEADER_FILES_INSTALL_DIR = /ExtendedWorkspaceKit
 
 libExtendedWorkspace_HEADER_FILES = \
-    ExtendedWorkspaceKit.h \
-	EXTAttribute.h \
-	EXTBasicFSAttributesExtracter.h \
-	EXTContext.h \
-	EXTDataCruxWorkspace.h \
-	EXTEXIFAttributesExtracter.h \
-	EXTExtendedFSAttributesExtracter.h \
-	EXTFileManager.h \
-	EXTGNOMEVFS.h \
-	EXTGNUstepVFS.h \
-	EXTLibFerrisVFS.h \
-	EXTLibFerrisWorkspace.h \
-	EXTLibFerrisWorkspace.h \
-	EXTPresentationAttribute.h \
-	EXTPreviewAttribute.h \
-	EXTQuery.h \
-	EXTTypeAttribute.h \
-	EXTVFS.h \
-	EXTVFSBack.h \
-	EXTWorkspace.h \
-	EXTXMLAttributesExtracter.h \
-	NSURL+ExtendedWorkspace.h
-	
-    # EXTExtensionsProtocols.h
+    	ExtendedWorkspaceKit.h \
+	EXAttribute.h \
+	EXAttributesCore.h \
+	EXBasicFSAttributesExtracter.h \
+	EXContext.h \
+	EXEXIFAttributesExtracter.h \
+	EXExtendedFSAttributesExtracter.h \
+	EXFileManager.h \
+	EXGNUstepVFS.h \
+	EXPresentationAttribute.h \
+	EXPreviewAttribute.h \
+	EXQuery.h \
+	EXRDFAttributesCore.m \
+	EXSearchCore.m \
+	EXTypeAttribute.h \
+	EXVFS.h \
+	EXVFSBack.h \
+	EXVFSHandle.h \
+	EXWorkspace.h \
+	EXXMLAttributesExtracter.h \
+	NSURL+ExtendedWorkspace.h \
+	EXExtensionsProtocols.h 
 	
 -include GNUmakefile.preamble
 

@@ -1,7 +1,7 @@
 /*
-	EXTXMLAttributesExtracter.h
+	EXExtendedFSAttributesExtracter.h
 
-	Special XML class to extract XML attributes out of contexts
+	EA (related to FS) attributes class to extract them out of contexts
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
@@ -23,10 +23,14 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#import "EXExtensionProtocols.h"
 
-@interface EXTXMLExtracter <EXTExtracter>
+@interface EXExtendedFSAttributesExtracter : NSObject <EXExtracter>
+// Does not implement EXExtracter protocol, use a custom interface
 {
 
 }
+
+// Used on FS which uses EA.
 
 @end

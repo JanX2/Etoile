@@ -1,12 +1,12 @@
 /*
-	EXTAttribute.h
+	EXQuery.h
 
-	Attributes class which implements basic attributes representation and interaction
+	TKQuery class extension
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Quentin Mathe <qmathe@club-internet.fr>
-	Date:  June 2004
+	Created:  8 June 2004
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -23,9 +23,15 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-@interface EXTAttribute
+//#import <TrackerKit/TKQuery.h>
+
+@class TKQuery
+
+@interface EXQuery : TKQuery // TKQuery should support XPath queries
 {
 
 }
+
+// - setObjectsSoupAsResult // If a structural key is used
 
 @end

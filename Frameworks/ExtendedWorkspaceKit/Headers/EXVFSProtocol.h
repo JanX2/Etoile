@@ -1,5 +1,5 @@
 /*
-	EXTVFSProtocol.h
+	EXVFSProtocol.h
 
 	Protocol which is implemented by the classes which permits to interact with 
 	a VFS.
@@ -24,24 +24,32 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-typedef enum _EXTLinkStyle
+typedef enum _EXLinkStyle
 {
-  EXTLinkStyleSoft,
-  EXTLinkStyleHard,
-  EXTLinkStyleUniversal // Should be used most of the time
-} EXTLinkStyle;
+    EXLinkStyleSoft,
+    EXLinkStyleHard,
+    EXLinkStyleUniversal // Should be used most of the time
+} EXLinkStyle;
 
-typedef enum _EXTReadWritePosition
+typedef enum _EXReadWritePosition
 {
-  EXTReadWritePositionStart,
-  EXTReadWritePositionCurrent,
-  EXTReadWritePositionEnd
-} EXTReadWritePosition;
+    EXReadWritePositionStart,
+    EXReadWritePositionCurrent,
+    EXReadWritePositionEnd
+} EXReadWritePosition;
+
+typedef enum _EXVFSContentMode
+{
+    EXVFSContentModeRead,
+    EXVFSContentModeWrite,
+    EXVFSContentModeReadWrite
+} EXVFSContentMode
 
 @class NSError;
-@class EXTContext;
+@class EXContext;
+@class EXVFSHandle;
 
-@protocol EXTVFSProtocol
+@protocol EXVFSProtocol
 
 /*
  * Protocols related methods
@@ -53,7 +61,8 @@ typedef enum _EXTReadWritePosition
  * Destroy and create contexts
  */
 
-- (BOOL) createContextWithURL: (NSURL *)url error: (NSError **)error;
+- (BOOL) createEntityContextWithURL: (NSURL *)url error: (NSError **)error;
+- (BOOL) createElementContextWithURL: (NSURL *)url error: (NSError **)error;
 - (BOOL) removeContextWithURL: (NSURL *)url handler: (id)handler;
 - (BOOL) removeContextsWithURLs: (NSArray *)urls handler: (id)handler;
 
@@ -70,7 +79,7 @@ typedef enum _EXTReadWritePosition
 - (BOOL) linkContextWithURL: (NSURL *)source 
                       toURL: (NSURL *)destination 
                     handler: (id)handler
-                  linkStyle: (EXTLinkStyle) style;
+                  linkStyle: (EXLinkStyle) style;
 - (BOOL) moveContextWithURL: (NSURL *)source 
                       toURL: (NSURL *)destination 
                     handler: (id)handler;
@@ -82,24 +91,31 @@ typedef enum _EXTReadWritePosition
  * Visit contexts
  */
  
-- (NSArray *) subcontextsAtURL: (NSURL *)url deep: (BOOL)flag;
+- (NSArray *) subcontextsURLsAtURL: (NSURL *)url deep: (BOOL)flag;
  
+/*
+ * Open, close contexts
+ */
+ 
+- (EXVFSHandle *) openContextWithURL: (NSURL *)url mode: (EXVFSContentMode *)mode;
+- (void) closeContextWithVFSHandle: (EXVFSHandle *)handle;
+
 /*
  * Read, write contexts
  */
   
-- (NSData *) readContext: (EXTContext *)context 
-                  lenght: (unsigned long long)lenght 
-                   error: (NSError **)error;
-- (void) writeContext: (EXTContext *)context 
-                 data: (NSData *)data 
-               lenght: (unsigned long long)lenght 
-                error: (NSError **)error;
-- (void) setPositionIntoContext: (EXTContext *)context 
-                          start: (EXTReadWritePosition)start 
-                         offset: (long long)offset 
-                          error: (NSError **)error;
-- (long long) positionIntoContext: (EXTContext *)context 
-                            error: (NSError **)error;
-
+- (NSData *) readContextWithVFSHandle: (EXVFSHandle *)handle 
+                               lenght: (unsigned long long)lenght 
+                                error: (NSError **)error;
+- (void) writeContextWithVFSHandle: (EXVFSHandle *)handle  
+                              data: (NSData *)data 
+                            lenght: (unsigned long long)lenght 
+                             error: (NSError **)error;
+- (void) setPositionIntoContextVFSHandle: (EXVFSHandle *)handle 
+                                   start: (EXReadWritePosition)start 
+                                  offset: (long long)offset 
+                                   error: (NSError **)error;
+- (long long) positionIntoContextVFSHandle: (EXVFSHandle *)handle 
+                                     error: (NSError **)error;
+                                     
 @end

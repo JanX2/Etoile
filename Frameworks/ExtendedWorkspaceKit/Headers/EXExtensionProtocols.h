@@ -1,13 +1,12 @@
 /*
-	EXTGNUstepVFS.m
+	EXExtensionProtocol.h
 
-	Concrete class (partially a cluster) which relies on the GNUstep NSFileManager 
-	class for the files interaction
+	Basic protocols to support ExtendedWorkspaceKit plugins
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Quentin Mathe <qmathe@club-internet.fr>
-	Date:  July 2004
+	Created:  8 June 2004
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -24,10 +23,32 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
-#import "EXTGNUstepVFS.h"
+// Metadatas extracters and text indexers are implemented as loadable bundle
 
-@implementation EXTGNUstepVFS
+@class EXAttribute;
+@class EXTypeAttribute;
+@class EXContext;
+@class NSDictionary;
+@class NSString;
+
+
+@protocol EXPlugin
+/*
+- (EXTypeAttribute *) processableType;
+- (EXAttribute *) processContext: (EXContext *)context;
+ */
+@end
+
+
+@protocol EXExtracter <EXPlugin>
+
+- (NSDictionary *) attributesForContext: (EXContext *)context;
+- (id) attributeWithName: (NSString *)name forContext: (EXContext *)context;
+
+@end
+
+
+@protocol EXIndexer <EXPlugin>
+
 
 @end

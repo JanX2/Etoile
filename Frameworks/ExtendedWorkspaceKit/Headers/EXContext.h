@@ -1,5 +1,5 @@
 /*
-	EXTContext.h
+	EXContext.h
 
 	Context which implements support to interact with files and entities
 
@@ -30,23 +30,23 @@
 @class NSString;
 @class NSArray;
 // Needed until we have created the equivalent classes
-@class EXTAttribute;
-@class EXTKeywordsAttribute;
-@class EXTPresentationAttribute;
-@class EXTPreviewAttribute;
-@class EXTTypeAttribute;
-@class EXTContentHandle;
+@class EXAttribute;
+@class EXKeywordsAttribute;
+@class EXPresentationAttribute;
+@class EXPreviewAttribute;
+@class EXTypeAttribute;
+@class EXContentHandle;
 
-extern NSString *EXTCreationDateAttributeKey;
-extern NSString *EXTModificationDateAttributeKey;
-extern NSString *EXTNameAttributeKey;
-extern NSString *EXTSizeAttributeKey;
+extern NSString *EXCreationDateAttributeKey;
+extern NSString *EXModificationDateAttributeKey;
+extern NSString *EXNameAttributeKey;
+extern NSString *EXSizeAttributeKey;
 
-@interface EXTContext : NSObject
+@interface EXContext : NSObject
 {
   NSMutableDictionary *_attributes;
   NSURL *_url;
-  EXTVFSHandle *_handle;
+  EXVFSHandle *_handle;
 }
 
 - (id) initWithURL: (NSURL *)url;
@@ -76,16 +76,16 @@ extern NSString *EXTSizeAttributeKey;
  * isMountable equals to isVirtual && isEntityContext
  */
 
-- (EXTKeywordsAttribute *) keywords;
+- (EXKeywordsAttribute *) keywords;
 - (NSDate *) modificationDate;
 - (NSString *) name;
-- (EXTPresentationAttribute *) presentation;
-- (EXTPreviewAttribute *) preview;
+- (EXPresentationAttribute *) presentation;
+- (EXPreviewAttribute *) preview;
 - (int) size;
-- (EXTTypeAttribute *) type;
+- (EXTypeAttribute *) type;
 - (NSString *) universalUniqueIdentifier;
 - (NSURL *) URL;
-- (EXTVFSHandle *) handleForContent;
+- (EXVFSHandle *) handleForContent;
 
 /*
  * Canonic methods
@@ -103,8 +103,8 @@ extern NSString *EXTSizeAttributeKey;
  * application, the search context are incarned by the stack object metaphor.
  */
  
-- (void) addSearchContextObserver: (EXTContext *)context;
-- (void) removeSearchContextObserver: (EXTContext *)context;
+- (void) addSearchContextObserver: (EXContext *)context;
+- (void) removeSearchContextObserver: (EXContext *)context;
 
 /*
  * Other facility methods

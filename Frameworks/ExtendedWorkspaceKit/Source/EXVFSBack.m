@@ -1,5 +1,5 @@
 /*
-	EXTVFSBack.m
+	EXVFSBack.m
 
 	Semi-abstract class (partially a cluster) which specifies the files access 
 	in a FS agnostic way
@@ -26,10 +26,10 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import "EXTVFSProtocol.h"
-#import "EXTVFSBack.h"
+#import "EXVFSProtocol.h"
+#import "EXVFSBack.h"
 
-@implementation EXTVFSBack
+@implementation EXVFSBack
 
 /*
  * VFS protocol (objective-c related)  method
@@ -48,19 +48,24 @@
  * Destroy and create contexts
  */
 
-- (BOOL) createContextWithURL: (NSURL *)url error: (NSError **)error
+- (BOOL) createEntityContextWithURL: (NSURL *)url error: (NSError **)error
 {
-  return NO;
+    return NO
+}
+
+- (BOOL) createElementContextWithURL: (NSURL *)url error: (NSError **)error
+{
+    return NO;
 }
 
 - (BOOL) removeContextWithURL: (NSURL *)url handler: (id)handler
 {
-  return NO;
+    return NO;
 }
 
 - (BOOL) removeContextsWithURLs: (NSArray *)urls handler: (id)handler
 {
-  return NO;
+    return NO;
 }
 
 /*
@@ -84,7 +89,7 @@
 - (BOOL) linkContextWithURL: (NSURL *)source 
                       toURL: (NSURL *)destination 
                     handler: (id)handler
-                  linkStyle: (EXTLinkStyle) style
+                  linkStyle: (EXLinkStyle) style
 {
   return NO;
 }
@@ -107,42 +112,59 @@
  * Visit contexts
  */
  
-- (NSArray *) subcontextsAtURL: (NSURL *)url deep: (BOOL)flag
+- (NSArray *) subcontextsURLsAtURL: (NSURL *)url deep: (BOOL)flag
 {
   return nil;
 }
+ /*
+ * Open, close contexts
+ */
  
+- (EXVFSHandle *) openContextWithURL: (NSURL *)url mode: (EXVFSContentMode *)mode
+{
+    return nil;
+}
+
+- (void) closeContextWithVFSHandle: (EXVFSHandle *)handle
+{
+
+}
+ 
+
 /*
  * Read, write contexts
  */
   
-- (NSData *) readContext: (EXTContext *)context 
-                  lenght: (unsigned long long)lenght 
-                   error: (NSError **)error
-{
-  return nil;
-}
+// We need to pass a context and not an URL, because the context can maintain a handle for a file which is open
+// with an URL, we would need to reopen the file each time we want the handle.
 
-- (void) writeContext: (EXTContext *)context 
-                 data: (NSData *)data 
-               lenght: (unsigned long long)lenght 
-                error: (NSError **)error
+- (NSData *) readContextWithVFSHandle: (EXVFSHandle *)handle 
+                               lenght: (unsigned long long)lenght 
+                                error: (NSError **)error
 {
 
 }
 
-- (void) setPositionIntoContext: (EXTContext *)context 
-                          start: (EXTReadWritePosition)start 
-                         offset: (long long)offset 
-                          error: (NSError **)error
+- (void) writeContextWithVFSHandle: (EXVFSHandle *)handle  
+                              data: (NSData *)data 
+                            lenght: (unsigned long long)lenght 
+                             error: (NSError **)error
+{  
+
+}
+
+- (void) setPositionIntoContextVFSHandle: (EXVFSHandle *)handle 
+                                   start: (EXReadWritePosition)start 
+                                  offset: (long long)offset 
+                                   error: (NSError **)error
 {
 
 }
 
-- (long long) positionIntoContext: (EXTContext *)context 
-                            error: (NSError **)error
+- (long long) positionIntoContextVFSHandle: (EXVFSHandle *)handle 
+                                     error: (NSError **)error
 {
-  return 0;
+
 }
  
 @end

@@ -1,13 +1,12 @@
 /*
-	EXTGNUstepVFS.h
+	EXVFSHandle.m
 
-	Concrete class (partially a cluster) which relies on the GNUstep NSFileManager 
-	class for the files interaction
+	Particular VFS class which permits to store a pointer to the context content
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Quentin Mathe <qmathe@club-internet.fr>
-	Date:  July 2004
+	Date:  November 2004
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -24,11 +23,26 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import "EXTVFSBack.h"
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+#import "EXVFS.h"
 
-@interface EXTGNUstepVFS : EXTVFSBack
+@implementation EXVFSHandle
+
+- (id) initWithFileHandle: (NSFileHandle *)fileHandle
 {
+    if ((self = [super init]) != nil)
+    {
+        ASSIGN(_fileHandle, fileHandle);
+        return self;
+    }
+    
+    return nil;
+}
 
+- (NSFileHandle *) fileHandle
+{
+    return _fileHandle;
 }
 
 @end

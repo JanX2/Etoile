@@ -1,12 +1,12 @@
 /*
-	EXTFileManager.h
+	EXBasicFSAttributesExtracter.h
 
-	NSFileManager subclass which implements support for an extended workspace
+	FS related attributes class to extract them out of contexts
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Quentin Mathe <qmathe@club-internet.fr>
-	Created:  8 June 2004
+	Date:  June 2004
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -23,14 +23,26 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import <Foundation/NSFileManager.h>
+#import "EXExtensionProtocols.h"
 
-@interface EXTFileManager : NSFileManager
+@interface EXBasicFSAttributesExtracter : NSObject <EXExtracter>
 {
 
 }
 
-// Here, inserts the NSWorkspace related methods which are overrided to use
-// the gnome-vfs which replaces NSFileManager implementation
+/* Extract the basic FS attributes below from the file :
+ * - name
+ * - creation date
+ * - modification date
+ * - size
+ * - inode
+ * - extension
+ * To support later :
+ * - permissions
+ * - owner
+ * - group
+ */
+ 
++ (id) sharedInstance;
 
 @end

@@ -1,12 +1,13 @@
 /*
-	EXTEXIFAttributesExtracter.h
+	EXAttributesCore.h
 
-	Special EXIF class to extract images attributes called EXIF out of contexts
+	Attributes related semi abstract class which specifies the class cluster
+	interface for their support/storage
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Quentin Mathe <qmathe@club-internet.fr>
-	Created:  8 June 2004
+	Created:  August 2004
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -23,9 +24,12 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-@interface EXTEXIFExtracter <EXTExtracter>
+@interface EXAttributesCore: NSObject
 {
 
 }
+// Basic methods
+
++ (EXAttributesCore *) sharedInstance;
 
 @end

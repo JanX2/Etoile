@@ -1,7 +1,7 @@
 /*
-	EXTBasicFSAttributesExtracter.h
+	EXAttribute.h
 
-	FS related attributes class to extract them out of contexts
+	Attributes class which implements basic attributes representation and interaction
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
@@ -23,41 +23,9 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-@class EXTContext;
-@class NSString;
-@class NSDate;
-
-@interface EXTBasicFSAttributesExtracter : NSObject 
-// Does not implement EXTExtracter protocol, use a custom interface
+@interface EXAttribute : NSObject
 {
-  EXTContext *_context;
+
 }
-
-/* Extract the basic FS attributes below from the file :
- * - name
- * - creation date
- * - modification date
- * - size
- * - inode
- * - extension
- * To support later :
- * - permissions
- * - owner
- * - group
- */
- 
-+ (id) sharedInstance;
-
-- (void) setActiveContext: (EXTContext *) context;
-
-// The methods below can return null value or -1 especially when the context is 
-// not an entity context
-- (EXTContext *) activeContext;
-- (NSDate *) creationDate;
-- (NSString *) extension;
-- (int) inode;
-- (NSDate *) modificationDate;
-- (NSString *) name;
-- (int) size;
 
 @end

@@ -1,5 +1,5 @@
 /*
-	EXTVFSBack.h
+	EXVFSBack.h
 
 	Semi-abstract class (partially a cluster) which specifies the files access 
 	in a FS agnostic way
@@ -24,45 +24,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import "EXTVFSProtocol.h"
+#import "EXVFSProtocol.h"
 
-@interface EXTVFSBack : NSObject <EXTVFSProtocol>
+@interface EXVFSBack : NSObject <EXVFSProtocol>
 {
 
 }
-
-/*
- * VFS protocol (objective-c related)  method
- */
-
-/*
- * Protocols related methods
- */
-
-//- (NSArray *) supportedProtocols;
-
-/*
- * Destroy and create contexts
- */
-
-//- (BOOL) createContextWithURL: (NSURL *)url; // error: (NSError **)error
-//- (BOOL) removeContextWithURL: (NSURL *)url; // error: (NSError **)error
-
-/*
- * Manipulate contexts
- */
-
-//- (BOOL) copyContextWithURL: (NSURL *)source toURL: (NSURL *)destination 
-//  handler: (id)handler;
-//- (BOOL) linkContextWithURL: (NSURL *)source toURL: (NSURL *)destination 
-//  handler: (id)handler linkStyle: (EXTLinkStyle) style;
-//- (BOOL) moveContextWithURL: (NSURL *)source toURL: (NSURL *)destination 
-//  handler: (id)handler;
-
-/*
- * Visit contexts
- */
- 
-//- (NSArray *) subcontextsAtURL: (NSURL *)url deep: (BOOL)flag;
  
 @end
