@@ -16,6 +16,7 @@
 //  Headers:
 // -----------------------------------------------------------------------------
 
+#import <EtoileExtensions/EtoileCompatibility.h>
 #import "UKMainThreadActionQueue.h"
 #include <unistd.h>
 
@@ -80,10 +81,28 @@
 
 -(void) addObject: (id)obj
 {
+    #ifdef __ETOILE__
+    NSRecursiveLock *mutex = [locks objectForKey: @"lockAddObject"];
+    
+    if ( !mutex )
+    {
+        mutex = [[[NSRecursiveLock alloc] init] autorelease];
+        [locks setObject: mutex forKey: @"lockAddObject"];  
+    }
+    
+    [mutex lock];
+    
+    [objectsToMessage addObject: obj];
+    
+    [mutex unlock];
+    
+    #else
     @synchronized( self )
     {
         [objectsToMessage addObject: obj];
     }
+    
+    #endif
 }
 
 
@@ -137,12 +156,31 @@
         
         NSAutoreleasePool*  pool = [[NSAutoreleasePool alloc] init];
         NSArray*    msgs = nil;
+	
+    	#ifdef __ETOILE__
+    	NSRecursiveLock *mutex = [locks objectForKey: @"lockObjectsToMessage"];
+    
+    	if ( !mutex )
+    	{
+            mutex = [[[NSRecursiveLock alloc] init] autorelease];
+            [locks setObject: mutex forKey: @"lockObjectsToMessage"];  
+    	}
+    
+    	[mutex lock];
+    
+         msgs = [objectsToMessage autorelease];
+         objectsToMessage = [[NSMutableArray alloc] init];
+    
+    	[mutex unlock];
         
+	#else
         @synchronized( self )
         {
             msgs = [objectsToMessage autorelease];
             objectsToMessage = [[NSMutableArray alloc] init];
         }
+	
+	#endif
         
         NSEnumerator*   enny;
         if( newestFirst )

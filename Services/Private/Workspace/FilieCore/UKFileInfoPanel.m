@@ -16,6 +16,7 @@
 //  Headers:
 // -----------------------------------------------------------------------------
 
+#import <UnitKit/UnitKit.h>
 #import "UKFileInfoPanel.h"
 #import "UKFileInfoMixedValueIndicator.h"
 
@@ -63,6 +64,17 @@
 //  REVISIONS:
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
+
+-(void) testSetDelegates
+{
+	NSArray *testDelegates = [NSArray arrayWithObjects: @"blabla", @"bip", nil];
+	UKFileInfoPanel *infoPanel = [[UKFileInfoPanel alloc] initWithDelegates: testDelegates];
+	NSArray *previousDelegates;
+	
+	previousDelegates = [self delegates];
+	[infoPanel setDelegates: testDelegates];
+	UKTrue([delegates isEqual: previousDelegates]);
+}
 
 -(void) setDelegates: (NSArray*)theDelegates
 {
@@ -339,11 +351,15 @@
 //  Table view data source methods: (for debugging, mainly)
 // -----------------------------------------------------------------------------
 
+- (void)testWithTableView
+{
+	
+}
+
 - (int)numberOfRowsInTableView:(NSTableView *)tableView
 {
     return [fileAttributes count];
 }
-
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row
 {

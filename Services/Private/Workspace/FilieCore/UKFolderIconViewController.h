@@ -30,12 +30,16 @@
 
 #endif
 
+@protocol UKTest;
+
 // -----------------------------------------------------------------------------
 //  Forwards:
 // -----------------------------------------------------------------------------
 
 @class UKDistributedView;
+#ifndef __ETOILE__
 @class UKKQueue;
+#endif
 @class UKMainThreadActionQueue;
 @class UKPushbackMessenger;
 @class UKFolderMetaStorage;
@@ -45,11 +49,14 @@
 //  Classes:
 // -----------------------------------------------------------------------------
 
-@interface UKFolderIconViewController : UKNibOwner <UKFSItemView,UKFSItemOwner,UKFSDataSourceDelegate>
+@interface UKFolderIconViewController : NSObject
+<UKFSItemView,UKFSItemOwner,UKFSDataSourceDelegate,UKTest>
 {
 	NSString*						folderPath;         // Path of the folder we're listing.
 	NSMutableArray*					fileList;           // List of FSItems for our contents.
+	#ifndef __ETOILE__
 	UKKQueue*						kqueue;             // Watches whether any of our files have changed (can we share this between viewers so we have only one watcher thread?).
+	#endif
 	IBOutlet UKDistributedView*		fileListView;       // View that shows our files (icon view).
 	NSArray*                        hiddenList;         // Names of files to explicitly hide from view.
     UKMainThreadActionQueue*        reloadIconQueue;    // Queue for reload icon messages in a second thread (FIX ME! uhh.. *main* thread???).
@@ -67,6 +74,9 @@
     NSMutableArray*                 newItems;           // Here we keep all new items that were added to our folder during loadFolderContents:. Doubles as a "busy loading" flag.
     NSMutableArray*                 finalItems;         // During loadFolderContents:, we move all old items in here that still exist. At the end we swap the lists out.
     int                             lastCheckedIndex;   // Cached index for itemForFile: that allows faster sequential access.
+    #ifdef __ETOILE__
+    NSMutableDictionary*                locks;
+    #endif
 }
 
 -(id)			initWithPath: (NSString*)path;
@@ -90,6 +100,7 @@
 
 -(NSString*)	fileStorePath;
 
+-(UKFSItem*)    itemForFile: (NSString*)file;
 -(UKFSItem*)    itemForPath: (NSString*)path;
 -(void)         loadItemIcon: (UKFSItem*)item;
 
@@ -98,6 +109,9 @@
 -(void)         stopProgress;
 
 -(void)         finishCreation;
+
+-(IBAction)	delete: (id)sender;
+-(IBAction) loadFolderContents: (id)sender;
 
 // For subclassers:
 -(id<UKFSDataSource,NSObject>)  newDataSourceForURL: (NSURL*)url;

@@ -16,6 +16,7 @@
 //  Headers:
 // -----------------------------------------------------------------------------
 
+#import <UnitKit/UnitKit.h>
 #import "UKFolderMetaStorage.h"
 
 
@@ -69,7 +70,6 @@
     
     return self;
 }
-
 
 // -----------------------------------------------------------------------------
 //  dealloc:
@@ -250,6 +250,20 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testFolderURL
+{
+	NSFileManager* fm = [NSFileManager defaultManager];
+	BOOL dir;
+	
+	self = [UKFolderMetaStorage storageForURL: [NSURL fileURLWithPath: @"~/"]];
+	
+	UKTrue( [fm fileExistsAtPath: [[self folderURL] path] isDirectory: &dir] );
+	
+	self = [UKFolderMetaStorage storageForURL: [NSURL fileURLWithPath: @"/TestMustFail"]];
+	
+	UKFalse( [fm fileExistsAtPath: [[self folderURL] path] isDirectory: &dir] );
+}
+
 -(NSURL*)               folderURL
 {
     return folderURL;
@@ -265,20 +279,69 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testStorageFileURL
+{
+	NSFileManager*	fm = [NSFileManager defaultManager];
+	NSURL*			url;
+	NSString*		folder;
+	NSString*		systemStore = [@"~/GNUstep/Library/Etoile/Workspace" stringByExpandingTildeInPath];
+	NSString*		localStore;
+	NSString* 		theName;
+	BOOL dir;
+	
+	self = [UKFolderMetaStorage storageForURL: [NSURL fileURLWithPath: @"~/"]];
+	url = [self storageFileURL];
+	NSLog(@"Folder %@", [[self folderURL] path]);
+	UKTrue( [fm isReadableFileAtPath: [[[self folderURL] path] stringByStandardizingPath]] );
+	UKTrue( [fm isReadableFileAtPath: [[self folderURL] path]] );
+	UKNotNil( url );
+    UKTrue( [fm fileExistsAtPath: systemStore isDirectory: &dir] );
+	
+	systemStore = [systemStore stringByAppendingPathComponent: @"Meta Data"];
+
+	UKTrue( [fm fileExistsAtPath: systemStore isDirectory: &dir] );
+	
+	localStore = [[[self folderURL] path] stringByAppendingPathComponent: @".Filie_Store"];
+		NSLog(@"%@ %@", [[[self storageFileURL] path] stringByStandardizingPath], [localStore stringByStandardizingPath]); 
+
+	UKStringsEqual( [[[self storageFileURL] path] stringByStandardizingPath], [localStore stringByStandardizingPath]);
+	
+	self = [UKFolderMetaStorage storageForURL: [NSURL fileURLWithPath: @"/bin"]];	
+	theName = [[folderURL absoluteString] stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+	
+	UKFalse( [fm isReadableFileAtPath: [[self folderURL] path]] );
+	UKFalse( [fm isReadableFileAtPath: [[self folderURL] path]] );
+	UKStringsEqual( [[[self storageFileURL] path] stringByStandardizingPath], 
+			[[systemStore stringByAppendingPathComponent: theName] stringByStandardizingPath] );
+}
+
 -(NSURL*)               storageFileURL
 {
     NSString*   storageFolder = nil;
     NSString*   theName = nil;
+	BOOL dir;
     
     // Pre-generate some path stuff we may need:
+	#ifndef __ETOILE__
     storageFolder = [@"~/Library/Application Support/Filie/" stringByExpandingTildeInPath];
-    if( ![[NSFileManager defaultManager] fileExistsAtPath: storageFolder] )
+    if( ![[NSFileManager defaultManager] fileExistsAtPath: storageFolder isDirectory: &dir] )
         [[NSFileManager defaultManager] createDirectoryAtPath:storageFolder attributes:[NSDictionary dictionary]];
     
-    storageFolder = [storageFolder stringByAppendingPathComponent: @"Meta Data"];
-    if( ![[NSFileManager defaultManager] fileExistsAtPath: storageFolder] )
+	#else
+	storageFolder = [@"~/GNUstep/Library/Etoile" stringByExpandingTildeInPath];
+    if( ![[NSFileManager defaultManager] fileExistsAtPath: storageFolder isDirectory: &dir] )
+        [[NSFileManager defaultManager] createDirectoryAtPath:storageFolder attributes:[NSDictionary dictionary]];
+	storageFolder = [@"~/GNUstep/Library/Etoile/Workspace" stringByExpandingTildeInPath];
+    if( ![[NSFileManager defaultManager] fileExistsAtPath: storageFolder isDirectory: &dir] )
         [[NSFileManager defaultManager] createDirectoryAtPath:storageFolder attributes:[NSDictionary dictionary]];
 
+	#endif
+	
+    storageFolder = [storageFolder stringByAppendingPathComponent: @"Meta Data"];
+    if( ![[NSFileManager defaultManager] fileExistsAtPath: storageFolder isDirectory: &dir] )
+        [[NSFileManager defaultManager] createDirectoryAtPath:storageFolder attributes:[NSDictionary dictionary]];
+	
+	// FIXME: write a test for remote URL.
     // Remote URL or so? Generate local storage file:
     if( ![folderURL isFileURL] )
     {
@@ -289,7 +352,11 @@
     // Generate path for .Filie_Store file, if that isn't writable, generate local storage file:
     NSString*   storePath = [[folderURL path] stringByAppendingPathComponent: @".Filie_Store"];
     
-    if( [[[NSFileManager defaultManager] fileSystemAttributesAtPath: storePath] fileIsImmutable] )
+	// FIXME: is this commented line really needed ?
+    //if( ![[[NSFileManager defaultManager] fileSystemAttributesAtPath: storePath] fileIsImmutable] 
+	//	&& 
+	if ( ![[NSFileManager defaultManager] isWritableFileAtPath: [folderURL path]]
+		|| ![[NSFileManager defaultManager] isReadableFileAtPath: [folderURL path]] )
     {
         theName = [[folderURL absoluteString] stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
         return [NSURL fileURLWithPath: [storageFolder stringByAppendingPathComponent: theName]];

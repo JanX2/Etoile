@@ -20,12 +20,14 @@
 #import <EtoileExtensions/UKNibOwner.h>
 #import "UKFileInfoProtocol.h"
 
+@protocol UKTest;
+
 
 // -----------------------------------------------------------------------------
 //  Classes:
 // -----------------------------------------------------------------------------
 
-@interface UKFileInfoPanel : UKNibOwner <UKFileInfoProtocol>
+@interface UKFileInfoPanel : UKNibOwner <UKFileInfoProtocol,UKTest>
 {
     NSMutableArray*         delegates;
     NSMutableDictionary*    fileAttributes;

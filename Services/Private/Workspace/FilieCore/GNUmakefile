@@ -35,6 +35,12 @@ ADDITIONAL_INCLUDE_DIRS = \
 # Main application
 #
 SUBPROJECT_NAME = FilieCore
+ifeq ($(test), yes)
+BUNDLE_NAME = FilieCore
+ADDITIONAL_LDFLAGS = -lUnitKit -lgnustep-gui -lgnustep-base -lEtoileExtensions
+else
+FilieCore_GUI_LIBS = -lEtoileExtensions
+endif
 VERSION=		0.1
 
 #
@@ -54,17 +60,16 @@ FilieCore_LANGUAGES= \
 # Header files
 #
 FilieCore_HEADERS= \
-        Cocoa.h \
         UKFileInfoMixedValueIndicator.h \
 	UKFileInfoPanel.h \
 	UKFileInfoProtocol.h \
 	UKFolderDataSource.h \
-	UKFolderIconViewController.m \
 	UKFolderMetaStorage.h \
 	UKFSDataSourceProtocol.h \
 	UKFSItemViewProtocol.h \
 	UKFSItem.h \
 	UKMainThreadActionQueue.h \
+	UKFolderIconViewController.h
 
 #
 # Class files
@@ -73,10 +78,10 @@ FilieCore_OBJC_FILES= \
 	UKFileInfoMixedValueIndicator.m \
 	UKFileInfoPanel.m \
 	UKFolderDataSource.m \
-        UKFolderIconViewController.m \
 	UKFolderMetaStorage.m \
         UKFSItem.m \
-	UKMainThreadActionQueue.m
+	UKMainThreadActionQueue.m \
+	UKFolderIconViewController.m
 
 #
 # C files
@@ -85,6 +90,10 @@ FilieCore_C_FILES=
 
 -include GNUmakefile.preamble
 
+ifeq ($(test), yes)
+include $(GNUSTEP_MAKEFILES)/bundle.make
+else
 include $(GNUSTEP_MAKEFILES)/subproject.make
+endif
 
 -include GNUmakefile.postamble

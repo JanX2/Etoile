@@ -18,6 +18,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+@protocol UKTest;
 
 // -----------------------------------------------------------------------------
 //  Classes:
@@ -37,7 +38,7 @@
     Similarly, you could provide a string such as @"<multiple items selected>"
     to be displayed in a file name text field. */
 
-@interface UKFileInfoMixedValueIndicator : NSObject
+@interface UKFileInfoMixedValueIndicator : NSObject <UKTest>
 {
     NSString*       stringValue;
     int             intValue;

@@ -17,13 +17,33 @@
 // -----------------------------------------------------------------------------
 
 #import "UKFSItem.h"
+#import <UnitKit/UnitKit.h>
+
+/* For tests */ 
+#import "UKFolderIconViewController.h"
+
+#ifndef __ETOILE__
 #import "UKFSItemViewer.h"
+#endif
+
+#ifndef __ETOILE__
 #import "NSImage+NiceScaling.h"
+#else
+#import <EtoileExtensions/NSImage+NiceScaling.h>
+#endif
+
+#ifndef __ETOILE__
 #import "UKDirectoryEnumerator.h"
 #import "UKFileIcon.h"
-#import "UKFSDataSource.h"
+#endif
+
+#import "UKFSDataSourceProtocol.h"
+
+#ifndef __ETOILE__
 #import "NSImage+Epeg.h"
 #import "NSWorkspace+PreviewFile.h"
+#endif
+
 #import "UKFileInfoPanel.h"
 #import <limits.h>
 
@@ -37,6 +57,15 @@ static NSImage*                 sUKFSItemGenericFolderIcon = nil;   // Is this s
 
 
 @implementation UKFSItem
+
+-(id) initForTest
+{
+	UKFolderIconViewController *viewer = [[UKFolderIconViewController alloc] initWithPath: NSHomeDirectory()];
+	
+	self = [[UKFSItem alloc] initWithURL: [NSURL fileURLWithPath: NSHomeDirectory()] isDirectory: YES withAttributes: nil owner: viewer];
+	
+	return self;
+}
 
 // -----------------------------------------------------------------------------
 //  initWithURL:isDirectory:withAttributes:owner:
@@ -66,6 +95,29 @@ static NSImage*                 sUKFSItemGenericFolderIcon = nil;   // Is this s
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(id)	testInitWithPathIsDirectoryWithAttributesOwner
+{
+	NSFileManager *fm = [NSFileManager defaultManager];
+	BOOL dummy;
+	NSSize testIconSize;
+	
+	UKNotNil([owningViewer fsDataSource]);
+	UKNotNil([self path]);
+	UKTrue([[self path] characterAtIndex: 0] == '/');
+	UKTrue([fm fileExistsAtPath: [self path] isDirectory: &dummy]);
+	
+	UKNotNil([self name]);
+	UKNotNil([self displayName]);
+	UKStringsNotEqual([self name], @"");
+	UKStringsNotEqual([self displayName], @"");
+	
+	UKTrue([[self icon] isKindOfClass: [NSImage class]]);
+	
+	testIconSize = [owningViewer iconSizeForItem: self];
+	(testIconSize.width >= 16 && testIconSize.height >= 16) ? UKPass() : UKFail();
+
+}
+
 -(id)	initWithPath: (NSString*)fpath isDirectory: (BOOL)n withAttributes: (NSDictionary*)attrs owner: (id)viewer
 {
 	self = [super init];
@@ -76,15 +128,28 @@ static NSImage*                 sUKFSItemGenericFolderIcon = nil;   // Is this s
         position = NSMakePoint(-1,-1);
 		
 		if( sUKFSItemGenericFileIcon == nil )
-            sUKFSItemGenericFileIcon = [[[UKFileIcon genericDocumentIcon] image] retain];
+            #ifndef __ETOILE__
+	    sUKFSItemGenericFileIcon = [[[UKFileIcon genericDocumentIcon] image] retain];
+	    #else
+	    sUKFSItemGenericFileIcon = [[NSImage imageNamed:@"common_Unknown"] retain];
+	    #endif
 
 		if( sUKFSItemGenericFolderIcon == nil )
+	    #ifndef __ETOILE__
             sUKFSItemGenericFolderIcon = [[[UKFileIcon genericFolderIcon] image] retain];
+	    #else
+	    sUKFSItemGenericFileIcon = [[NSImage imageNamed:@"folder"] retain];
+	    #endif
+
         
         attributes = [attrs retain];
         
 		isDirectory = n;
         owningViewer = viewer;
+        
+        #ifdef __ETOILE__
+        locks = [[NSMutableArray alloc] init];
+        #endif
 	}
 	
 	return self;
@@ -100,6 +165,10 @@ static NSImage*                 sUKFSItemGenericFolderIcon = nil;   // Is this s
 	[icon release];
 	[attributes release];
 	[displayName release];
+	
+    #ifdef __ETOILE__
+    [locks release];
+    #endif
 	
 	[super dealloc];
 }
@@ -188,9 +257,49 @@ static NSImage*                 sUKFSItemGenericFolderIcon = nil;   // Is this s
 //      2004-12-23  UK  Documented.
 // -----------------------------------------------------------------------------
 
+- (void) testIcon
+{
+	UKNotNil([[owningViewer fsDataSource] placeholderIconForItem: [NSURL fileURLWithPath: path] attributes: attributes]);         
+}
+
 -(NSImage*)		icon
 {
-    @synchronized( self )
+   #ifdef __ETOILE__
+    NSRecursiveLock *mutex = [locks objectForKey: @"lockIcon"];
+    
+    if ( !mutex )
+    {
+        mutex = [[[NSRecursiveLock alloc] init] autorelease];
+        [locks setObject: mutex forKey: @"lockIcon"];  
+    }
+    
+    [mutex lock];
+    if( !icon )
+    {
+    #ifndef __ETOILE__
+	BOOL            hasCustomIcon = !attributes || [[attributes objectForKey: UKItemHasCustomIcon] boolValue];
+	#else
+	BOOL		hasCustomIcon = NO;
+	#endif
+        NSString*       suf = [[path pathExtension] lowercaseString];
+        
+        [self loadItemIcon: self];
+        
+        //if( !icon )
+        //    icon = [[[owningViewer fsDataSource] placeholderIconForItem: [NSURL fileURLWithPath: path] attributes: attributes] retain];
+            
+        if( !icon )
+        {
+            if( isDirectory )
+                icon = [sUKFSItemGenericFolderIcon retain];
+            else
+                icon = [sUKFSItemGenericFileIcon retain];
+        }
+    }
+    [mutex unlock];
+    
+    #else
+    @synchronized(self)
     {
         if( !icon )
         {
@@ -199,9 +308,11 @@ static NSImage*                 sUKFSItemGenericFolderIcon = nil;   // Is this s
             
             [owningViewer loadItemIcon: self];
             
+			#ifndef __ETOILE__
             if( !icon )
                 icon = [[[owningViewer fsDataSource] placeholderIconForItem: [NSURL fileURLWithPath: path] attributes: attributes] retain];
-                
+            #endif
+			    
             if( !icon )
             {
                 if( isDirectory )
@@ -210,7 +321,9 @@ static NSImage*                 sUKFSItemGenericFolderIcon = nil;   // Is this s
                     icon = [sUKFSItemGenericFileIcon retain];
             }
         }
+
     }
+    #endif
 
     return icon;
 }
@@ -303,8 +416,10 @@ static NSImage*                 sUKFSItemGenericFolderIcon = nil;   // Is this s
 {
     if( [[NSWorkspace sharedWorkspace] isFilePackageAtPath: path] )
         [[NSWorkspace sharedWorkspace] openFile: path];
+    #ifndef __ETOILE__
     else
         [[[UKFSItemViewerRegistry sharedRegistry] viewerForItemAtPath: path] selectViewer];
+    #endif
 }
 
 
@@ -479,8 +594,11 @@ static NSImage*                 sUKFSItemGenericFolderIcon = nil;   // Is this s
                                             [NSColor redColor],
                                             [NSColor orangeColor],
                                             nil] retain];
-    
+    #ifndef __ETOILE__
     int labelNum = attributes ? [[attributes objectForKey: UKLabelNumber] intValue] : 0;
+    #else
+    int labelNum = 0;
+    #endif
     
     if( labelNum >= 8 )
         return [NSColor whiteColor];
@@ -498,14 +616,44 @@ static NSImage*                 sUKFSItemGenericFolderIcon = nil;   // Is this s
 //      2004-12-23  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testLoadItemIcon
+{
+	UKNotNil([[owningViewer fsDataSource] iconForItem: [NSURL fileURLWithPath: path] attributes: attributes]);
+	UKNotNil([[NSWorkspace sharedWorkspace] iconForFile: [NSURL fileURLWithPath: path]]);
+}
+
 -(void) loadItemIcon: (id)sender
 {
 	NSAutoreleasePool*  pool = [[NSAutoreleasePool alloc] init];
 	NSImage*        fileIcon = nil;
 	
+	#ifndef __ETOILE__
     fileIcon = [[owningViewer fsDataSource] iconForItem: [NSURL fileURLWithPath: path] attributes: attributes];
+	#else
+	fileIcon = [[NSWorkspace sharedWorkspace] iconForFile: [NSURL fileURLWithPath: path]];
+	#endif
     
-    @synchronized( self )
+    #ifdef __ETOILE__
+    NSRecursiveLock *mutex = [locks objectForKey: @"lockLoadItemIcon:"];
+    
+    if ( !mutex )
+    {
+        mutex = [[[NSRecursiveLock alloc] init] autorelease];
+        [locks setObject: mutex forKey: @"lockLoadItemIcon:"];  
+    }
+    
+    [mutex lock];
+    if( icon && fileIcon )
+    {
+        [icon autorelease];
+        icon = nil;
+    }
+    if( fileIcon )
+        icon = [fileIcon retain];
+    [mutex unlock];
+    
+    #else
+    @synchronized(self)
     {
         if( icon && fileIcon )
         {
@@ -515,6 +663,7 @@ static NSImage*                 sUKFSItemGenericFolderIcon = nil;   // Is this s
         if( fileIcon )
             icon = [fileIcon retain];
     }
+    #endif
     
 	[(NSObject*)owningViewer performSelectorOnMainThread: @selector(itemNeedsDisplay:) withObject: self waitUntilDone: NO];
     

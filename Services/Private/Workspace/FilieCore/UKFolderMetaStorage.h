@@ -16,14 +16,16 @@
 //  Headers:
 // -----------------------------------------------------------------------------
 
+#import <EtoileExtensions/EtoileCompatibility.h>
 #import <Cocoa/Cocoa.h>
 
+@protocol UKTest;
 
 // -----------------------------------------------------------------------------
 //  Classes:
 // -----------------------------------------------------------------------------
 
-@interface UKFolderMetaStorage : NSObject
+@interface UKFolderMetaStorage : NSObject <UKTest>
 {
     NSMutableDictionary*    storage;        // Cached storage loaded from disk.
     NSURL*                  folderURL;      // Folder URL which we use to decide where to save our info.

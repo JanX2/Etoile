@@ -17,6 +17,7 @@
 // -----------------------------------------------------------------------------
 
 #import "UKFolderIconViewController.h"
+#import <UnitKit/UnitKit.h>
 
 #ifndef __ETOILE__
 #import "UKDirectoryEnumerator.h"
@@ -43,8 +44,8 @@
 #ifndef __ETOILE__
 #import "UKKQueue.h"
 
-#else
-#import <EtoileExtensions/UKKQueue.h>
+//#else
+//#import <EtoileExtensions/UKKQueue.h>
 
 #endif
 
@@ -72,6 +73,17 @@
 
 
 @implementation UKFolderIconViewController
+
+-(id) initForTest
+{
+	self = [UKFolderIconViewController alloc];
+	
+	fileListView = [[UKDistributedView alloc] initWithFrame: NSMakeRect(0, 0, 100, 100)];
+	
+	self = [self initWithPath: @"/"];
+	
+	return self;
+}
 
 // -----------------------------------------------------------------------------
 //  Factory methods according to UKFSItemViewer protocol:
@@ -112,39 +124,61 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void)			testInitWithURL
+{
+	//UKRaisesException([self initWithURL: [NSURL fileURLWithPath: @"/__blabla"]]);	
+}
+
 -(id)			initWithURL: (NSURL*)url
 {
 	self = [super init];
 	if( self )
 	{
-        reloadIconQueue = [[UKMainThreadActionQueue alloc] initWithMessage: @selector(loadItemIcon:)];
-        iconSize = NSMakeSize(48,48);
-        forceShowList = [[NSMutableArray alloc] initWithObjects: @".htaccess", nil];
-        hideDotFiles = YES;
-        showIconPreviews = YES;
-        keepArrangedMode = -1;
+       	[self awakeFromNib];
 		
 		[self setURL: url];
-        
+		
         [self finishCreation];
 	}
 	
 	return self;
 }
 
+-(void)			testSetURL
+{
+		NSURL *url;
+		BOOL dummy;
+	
+		//UKRaisesException([self setURL: [NSURL fileURLWithPath: @"/__blabla"]]);
+	
+		[self setURL: [NSURL fileURLWithPath: @"~/"]];
+		UKTrue([[NSFileManager defaultManager] fileExistsAtPath: folderPath isDirectory: &dummy]);
+		UKNotNil(dataSource);
+		UKNotNit([dataSource delegate]);
+}
+
 - (void) setURL: (NSURL *)url
 {
+		//NSLog(@"%@ setURL:%@", self, url);
+		
 		[folderPath release];
 		[fileList release];
+		
+		#ifndef __ETOILE__
 		[kqueue release];
+		#endif
 		
 		folderPath = [[url path] copy];
 		fileList = [[NSMutableArray alloc] init];
+		
+		#ifndef __ETOILE__
 		kqueue = [[UKKQueue alloc] init];
 		[kqueue setDelegate: self];
 		[kqueue addPathToQueue: folderPath];
+		#endif
+		
         dataSource = [self newDataSourceForURL: url];
-        [dataSource setDelegate: self];
+        //[dataSource setDelegate: self];
         filieStore = [self newMetaStorageForURL: url];
 }
 
@@ -165,12 +199,20 @@
 	[folderPath release];
 	[fileList release];
 	[coalescer release];
+	
+	#ifndef __ETOILE__
 	[kqueue release];
+	#endif
+	
     [hiddenList release];
     [forceShowList release];
     [reloadIconQueue release];
     [filieStore release];
     [newItems release];
+    
+    #ifdef __ETOILE__
+    [locks release];
+    #endif
 	
 	[super dealloc];
 }
@@ -186,9 +228,18 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testNewDataSourceForURL
+{
+	UKNotNil([self newDataSourceForURL: [NSURL fileURLWithPath: @"~/"]]);
+}
+
 -(id<UKFSDataSource,NSObject>)  newDataSourceForURL: (NSURL*)url
 {
-    return [[UKFolderDataSource alloc] initWithURL: url];
+    id newDataSource = [[UKFolderDataSource alloc] initWithURL: url];
+	
+	[newDataSource setDelegate: self];
+	
+	return newDataSource;
 }
 
 
@@ -201,6 +252,11 @@
 //  REVISIONS:
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
+
+-(void) testNewMetaStorageForURL
+{
+	UKNotNil([self newMetaStorageForURL: [NSURL fileURLWithPath: @"~/"]]);
+}
 
 -(UKFolderMetaStorage*)  newMetaStorageForURL: (NSURL*)url
 {
@@ -217,6 +273,14 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testRecalcCellSize
+{
+	NSSize size;
+	
+	size = [self recalcCellSize];
+	UKTrue(size.width >= 16 && size.height >= 16);
+}
+
 -(NSSize)   recalcCellSize
 {
     NSSize cellSize = iconSize;
@@ -230,6 +294,23 @@
     return cellSize;
 }
 
+- (void) awakeFromNib
+{
+	   //NSLog(@"%@ awakeFromNib with view", self, fileListView);
+	   
+	   reloadIconQueue = [[UKMainThreadActionQueue alloc] initWithMessage: @selector(loadItemIcon:)];
+       iconSize = NSMakeSize(48,48);
+       forceShowList = [[NSMutableArray alloc] initWithObjects: @".htaccess", nil];
+       hideDotFiles = YES;
+       showIconPreviews = YES;
+       keepArrangedMode = -1;
+
+       #ifdef __ETOILE__
+       locks = [[NSMutableDictionary alloc] initWithCapacity: 5];
+       #endif
+	   
+	   [self finishCreation];
+}
 
 // -----------------------------------------------------------------------------
 //  finishCreation:
@@ -239,6 +320,11 @@
 //  REVISIONS:
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
+
+-(void) testFinishCreation
+{
+
+}
 
 -(void)			finishCreation
 {
@@ -301,6 +387,15 @@
 //  REVISIONS:
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
+
+-(void) testLoadItemIcon
+{
+	UKFSItem *item = [[UKFSItem alloc] 
+		initWithURL: [NSURL fileURLWithPath: @"~/"] isDirectory: YES withAttributes: nil owner: self];
+	
+	UKTrue([self itemIsVisible: item]);
+	UKNotNil(reloadIconQueue);
+}
 
 -(void)   loadItemIcon: (UKFSItem*)item
 {
@@ -407,6 +502,21 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testItemForFile
+{
+	UKFSItem *item;
+	
+	[self loadFolderContents: nil];
+	
+	UKIntsNotEqual([fileList count], 0);
+	NSLog(@"valueFor %@", [fileList valueForKey: @"name"]);
+	UKTrue([[fileList valueForKey: @"name"]  containsObject: @"usr"]);
+	
+	item = [self itemForFile: @"usr"];
+	
+	UKNotNil(item);
+}
+
 -(UKFSItem*)    itemForFile: (NSString*)name
 {
     int     flc = [fileList count];
@@ -443,9 +553,16 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testLoadFolderContents
+{
+	UKNotNil(dataSource);
+}
+
 -(void) loadFolderContents: (id)sender
 {
-    if( !newItems )     // newItems functions as flag to avoid re-entrancy.
+    //NSLog(@"%@ loadFolderContents:", self);
+	
+	if( !newItems )     // newItems functions as flag to avoid re-entrancy.
     {
         NSAutoreleasePool*  pool = [[NSAutoreleasePool alloc] init];
         [dataSource reload: sender];    // Tell FSItem data source to list files:
@@ -471,19 +588,56 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testDataSourceWillReload
+{
+	[self performSelector: @selector(dateSourceWillReload:) withObject: nil];
+	
+	UKNotNil(fileList);	
+	UKNotNil(newItems);	
+	UKIntsEqual([finalItems count], 0);
+	if ([fileList count] == 0)
+	{
+		UKObjectsEqual(fileList, finalItems);
+	}
+	else
+	{
+		UKObjectsNotEqual(fileList, finalItems);
+	}
+}
+
 -(void) dataSourceWillReload: (id<UKFSDataSource>)dSource
 {
-    [self startProgress: @"Loading files..." recordTiming: YES];
+    //NSLog(@"%@ dataSourceWillReload:%@", self, dSource);
+	
+	[self startProgress: @"Loading files..." recordTiming: YES];
     
-	// FIXME: @synchronised
-    //@synchronized(self)
-    //{
-        NSLog(@"reload - newItems FLAGGED");
+    #ifdef __ETOILE__
+    NSRecursiveLock *mutex = [locks objectForKey: @"lockDataSourceWillReload"];
+    
+    if ( !mutex )
+    {
+        mutex = [[[NSRecursiveLock alloc] init] autorelease];
+        [locks setObject: mutex forKey: @"lockDataSourceWillReload"];  
+    }
+    
+    [mutex lock];
+    //NSLog(@"reload - newItems FLAGGED");
+    newItems = [[NSMutableArray alloc] init];
+    finalItems = [[NSMutableArray alloc] init];
+    if( [fileList count] == 0 ) // Was empty till now? First load!
+        fileList = [finalItems retain]; // Let user watch while it's loading.
+    [mutex unlock];
+    
+    #else
+    @synchronized(self)
+    {
+        //NSLog(@"reload - newItems FLAGGED");
         newItems = [[NSMutableArray alloc] init];
         finalItems = [[NSMutableArray alloc] init];
         if( [fileList count] == 0 ) // Was empty till now? First load!
             fileList = [finalItems retain]; // Let user watch while it's loading.
-    //}
+    }
+    #endif
 }
 
 
@@ -499,9 +653,35 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testListItemWithAttributesSource
+{
+	NSString *testPath = [[[NSFileManager defaultManager] subpathsAtPath: folderPath] objectAtIndex: 0];
+	NSDictionary *storeDict = [filieStore dictionaryForFile: testPath];
+	UKFSItem *item;
+	NSPoint storePos, itemPos;
+	
+	UKObjectsNotEqual(fileList, finalItems);
+	UKIntsNotEqual([storeDict count], 0);
+	
+	item = [self itemForFile: testPath];
+	UKStringsEqual([item path], testPath);
+	
+	[self loadFolderContents: nil];
+	
+	UKTrue([[finalItems valueForKey: @"path"] containsObject: [item path]]);
+	UKObjectsEqual(fileList, finalItems);
+	
+	storePos = [[storeDict objectForKey: @"position"] pointValue];
+	itemPos = [item position];
+	UKTrue(storePos.x == itemPos.x && storePos.y == itemPos.y);
+
+}
+
 -(void) listItem: (NSURL*)url withAttributes: (NSDictionary*)attrs source: (id<UKFSDataSource>)dSource
 {
-    // We're at file system root? Hide all items named in the .hidden file:
+    //NSLog(@"%@ listItem:%@withAttributes:source:", self, url);
+	
+	// We're at file system root? Hide all items named in the .hidden file:
     if( !hiddenList && [folderPath isEqualToString: @"/"] )
     {
         hiddenList = [[NSString stringWithContentsOfFile: @"/.hidden"] componentsSeparatedByString: @"\n"];
@@ -518,10 +698,15 @@
     if( showFile )  // Showing, but user (or .hidden file) added it to "always hide" list?
         showFile = ![hiddenList containsObject: fname];
     
+    #ifndef __ETOILE__
     if( showFile )
         showFile = ![[attrs objectForKey: UKItemIsInvisible] boolValue];
+        // UKItemIsInvisible is defined in UKDirectoryEnumerator.h
+	#else
+		showFile = YES;
+    #endif
     
-    if( showFile )  // All these checks still mean we should show 'em?
+    if( showFile )  // All these checks still mean we should show them
     {
         UKFSItem*       theItem = nil;
         NSDictionary*   moreInfo = [filieStore dictionaryForFile: fname];
@@ -582,9 +767,22 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testDataSourceDidReload
+{
+	NSPoint pos;
+	
+	[self loadFolderContents: nil];
+	pos = [fileListView suggestedPosition];
+
+	//UKIntsNotEqual([newItems count], 0);
+	UKTrue(pos.x > 3 && pos.y > 3);
+}
+
 -(void) dataSourceDidReload: (id<UKFSDataSource>)dSource
 {
-    // Add all new items in one fell swoop:
+    //NSLog(@"%@ dataSourceDidReload:%@", self, dSource);
+	
+	// Add all new items in one fell swoop:
     [fileListView setMultiPositioningMode: YES];    // Caches the last free position so we don't have to skip all those occupied slots again.
     NSEnumerator*   enny = [newItems objectEnumerator];
     UKFSItem*       theItem = nil;
@@ -601,9 +799,34 @@
     if( keepArrangedMode >= 0 )
         [self rearrangeItemsByTag: keepArrangedMode];
     
-	// FIXME: @synchronized
-    //@synchronized(self)
-    //{
+    #ifdef __ETOILE__
+    NSRecursiveLock *mutex = [locks objectForKey: @"lockDataSourceWillReload"];
+    
+    if ( !mutex )
+    {
+        mutex = [[[NSRecursiveLock alloc] init] autorelease];
+        [locks setObject: mutex forKey: @"lockDataSourceWillReload"];  
+    }
+    
+    [mutex lock];
+    // Let user see new stuff:
+    [fileList release];
+    fileList = finalItems;  // Swap in updated list.
+    finalItems = nil;
+        
+    [fileListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone: NO];
+        
+    // Clean up:
+    [self stopProgress];
+    
+    //NSLog(@"reload - newItems UN-FLAGGED");
+    [newItems release];
+    newItems = nil;     // newItems doubles as a flag for finding out whether we're busy reloading. Clear flag!
+    [mutex unlock];
+    
+    #else
+    @synchronized(self)
+    {
         // Let user see new stuff:
         [fileList release];
         fileList = finalItems;  // Swap in updated list.
@@ -614,10 +837,11 @@
         // Clean up:
         [self stopProgress];
     
-        NSLog(@"reload - newItems UN-FLAGGED");
+        //NSLog(@"reload - newItems UN-FLAGGED");
         [newItems release];
         newItems = nil;     // newItems doubles as a flag for finding out whether we're busy reloading. Clear flag!
-    //}
+    }
+    #endif
 }
 
 
@@ -690,7 +914,7 @@
     {
         [searchString release];
         searchString = [theSearchString retain];
-        NSLog(@"searching for: %@", searchString);
+        //NSLog(@"searching for: %@", searchString);
         [fileListView selectItemContainingString: searchString];
         [fileListView setNeedsDisplay: YES];
     }
@@ -709,15 +933,37 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+
+-(void) testItemNeedsDisplay
+{
+	UKFSItem *item = [[UKFSItem alloc] 
+		initWithURL: [NSURL fileURLWithPath: @"/usr"] isDirectory: YES withAttributes: nil owner: self];
+	
+	[self loadFolderContents: nil];
+	
+	UKTrue([fileList containsObject: item]);
+	UKIntsNotEqual([fileList count], 0);
+	
+	UKNotNil(fileListView);
+}
+
 -(void) itemNeedsDisplay: (UKFSItem*)item
 {
     int ind = [fileList indexOfObject: item];
     [fileListView itemNeedsDisplay: ind];
 }
 
+-(void) testNumberOfItemsInDistributedView
+{
+	[self setURL: [NSURL fileURLWithPath: @"/"]];
+	
+	UKIntsNotEqual([fileList count], 0);
+}
 
 -(int)			numberOfItemsInDistributedView: (UKDistributedView*)distributedView
 {
+	//NSLog(@"%@ numberOfItemsInDistributedView: with return value %d", self, [fileList count]);
+	
 	return [fileList count];
 }
 
@@ -732,11 +978,13 @@
 // -----------------------------------------------------------------------------
 
 -(NSPoint)		distributedView: (UKDistributedView*)distributedView
-						positionForCell:(UKFinderIconCell*)cell /* may be nil if the view only wants the item position. */
+						positionForCell:(NSCell*)cell /* may be nil if the view only wants the item position. */
 						atItemIndex: (int)row
 {
-    UKFSItem*	fsItem = [fileList objectAtIndex: row];
+	UKFSItem*	fsItem = [fileList objectAtIndex: row];
 	NSPoint     pos = [fsItem position];
+	
+	//NSLog(@"%@ distributedView:positionForCell:atItemIndex:", self);
     
     if( cell )
 	{
@@ -746,15 +994,15 @@
 		
 		[cell setTitle: dNam];
 		[cell setImage: icn];
-        [cell resetColors];
-        [cell setNameColor: [labelCol colorWithAlphaComponent: 0.5]];
+        [(UKFinderIconCell *)cell resetColors];
+        [(UKFinderIconCell *)cell setNameColor: [labelCol colorWithAlphaComponent: 0.5]];
         if( labelCol != [NSColor whiteColor] )
-            [cell setSelectionColor: labelCol];
+            [(UKFinderIconCell *)cell setSelectionColor: labelCol];
         if( searchString && [searchString length] > 0
             && [[fsItem displayName] rangeOfString: searchString options: NSCaseInsensitiveSearch].location == NSNotFound )
-            [cell setAlpha: 0.3];
+            [(UKFinderIconCell *)cell setAlpha: 0.3];
         else
-            [cell setAlpha: 1.0];
+            [(UKFinderIconCell *)cell setAlpha: 1.0];
 	}
 	
     if( pos.x == -1 && pos.y == -1 )
@@ -798,26 +1046,62 @@
 						setObjectValue: (id)val
 						forItemIndex: (int)row
 {
+	//NSLog(@"%@ distributedView:setObjectValue:forItemIndex:", self);
+  
     if( !newItems )
     {
         UKFSItem*	fsItem = nil;
         
+        #ifdef __ETOILE__
+        NSRecursiveLock *mutex1 = [locks objectForKey: @"lockDistributedView:setObjectValue:forItemIndex:1"];
+        
+        if ( !mutex1 )
+        {
+            mutex1 = [[[NSRecursiveLock alloc] init] autorelease];
+            [locks setObject: mutex1 forKey: @"lockDistributedView:setObjectValue:forItemIndex:1"];  
+        }
+        
+        [mutex1 lock];
+        //NSLog(@"setObjectValue - newItems FLAGGED");
+        newItems = [[NSMutableArray alloc] init];
+        fsItem = [[[fileList objectAtIndex: row] retain] autorelease];
+        [mutex1 unlock];
+        
+        #else
         @synchronized(self)
         {
-            NSLog(@"setObjectValue - newItems FLAGGED");
+            //NSLog(@"setObjectValue - newItems FLAGGED");
             newItems = [[NSMutableArray alloc] init];
             fsItem = [[[fileList objectAtIndex: row] retain] autorelease];
         }
+        #endif
         
         [fsItem setName: val];
         usleep(1000);   // Give kqueue thread a chance to ignore update notification.
         
+        #ifdef __ETOILE__
+        NSRecursiveLock *mutex2 = [locks objectForKey: @"lockDistributedView:setObjectValue:forItemIndex:2"];
+        
+        if ( !mutex2 )
+        {
+            mutex2 = [[[NSRecursiveLock alloc] init] autorelease];
+            [locks setObject: mutex2 forKey: @"lockDistributedView:setObjectValue:forItemIndex:2"];  
+        }
+        
+        [mutex2 lock];
+        //NSLog(@"setObjectValue - newItems UN-FLAGGED");
+        [newItems release];
+        newItems = nil;
+        [mutex2 unlock];
+        
+        #else
         @synchronized(self)
         {
-            NSLog(@"setObjectValue - newItems UN-FLAGGED");
+            //NSLog(@"setObjectValue - newItems UN-FLAGGED");
             [newItems release];
             newItems = nil;
         }
+        #endif
     }
     else
         NSBeep();
@@ -837,6 +1121,8 @@
 {
     NSEnumerator*   enny = [fileListView selectedItemEnumerator];
     NSNumber*       index;
+	
+	//NSLog(@"%@ distributedView:cellDoubleClickedAtItemIndex:", self);
 	
     /*
     while( (index = [enny nextObject]) )
@@ -997,6 +1283,21 @@
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testItemForPath
+{
+	UKFSItem *item;
+	
+	UKNotNil(fileList);
+	
+	[self setURL: [NSURL fileURLWithPath: @"/usr"]];
+	
+	[self loadFolderContents: nil];
+	
+	item = [self itemForPath: @"/usr/bin"];
+	UKNotNil(item);
+	UKTrue([[item path] isEqualToString: @"/usr/bin"]);
+}
+
 -(UKFSItem*)    itemForPath: (NSString*)path
 {
     NSEnumerator*   enny = [fileList objectEnumerator];
@@ -1095,7 +1396,7 @@
 -(void)		distributedView: (UKDistributedView*)dv dragEndedWithOperation: (NSDragOperation)operation
 {
     if( operation == NSDragOperationDelete )
-        [dv delete: nil];   // Just pretend somebody had chosen the "clear" menu item.
+        [self delete: nil];   // Just pretend somebody had chosen the "clear" menu item.
 }
 
 
@@ -1238,8 +1539,8 @@ int UKRearrangeStringCompareFunc( id a, id b, void* context )
     int comp = [ap localizedCaseInsensitiveCompare: bp];
     if( comp == NSOrderedSame )
     {
-        ap = [a name];
-        bp = [b name];
+        ap = (NSString *)[a name];
+        bp = (NSString *)[b name];
         comp = [ap localizedCaseInsensitiveCompare: bp];
     }
     
@@ -1433,6 +1734,30 @@ int UKRearrangeCompareFunc( id a, id b, void* context )
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testSaveFileStore
+{
+	NSEnumerator*           enny = [fileList objectEnumerator];
+    UKFSItem*               item;
+	int i = 0;
+	NSPoint prevPos = NSZeroPoint;
+	
+	UKNotNil(filieStore);
+	UKNotNil([fileListView window]);
+	
+    while( (item = [enny nextObject]) )
+    {
+        NSPoint pos = [item position];
+        NSMutableDictionary*    info = [filieStore newDictionaryForFile: [item name]];
+        
+		if (i > 3)
+		{
+			UKTrue(pos.x == prevPos.x  && pos.y == prevPos.y);
+			break;
+		}
+		i++;
+    }
+}
+
 -(void) saveFileStore
 {
     [self startProgress: @"Saving item positions..." recordTiming: YES];
@@ -1444,7 +1769,9 @@ int UKRearrangeCompareFunc( id a, id b, void* context )
     [filieStore setObject: [NSNumber numberWithBool: [fileListView snapToGrid]] forKey: @"snapToGrid"];
     [filieStore setObject: [NSValue valueWithSize: iconSize] forKey: @"iconSize"];
     [filieStore setObject: [NSNumber numberWithBool: showIconPreviews] forKey: @"showIconPreviews"];
+    #ifndef __ETOILE__
     [filieStore setObject: [filterField stringValue] forKey: @"filterString"];
+    #endif
     [filieStore setObject: [NSNumber numberWithInt: keepArrangedMode] forKey: @"keepArrangedMode"];
     [filieStore setDisplayRect: [[fileListView window] frame]];
 
@@ -1457,6 +1784,27 @@ int UKRearrangeCompareFunc( id a, id b, void* context )
     }
         
     BOOL    ours = NO;
+    
+    #ifdef __ETOILE__
+    NSRecursiveLock *mutex = [locks objectForKey: @"lockSaveFileStore1"];
+    
+    if ( !mutex )
+    {
+        mutex = [[[NSRecursiveLock alloc] init] autorelease];
+        [locks setObject: mutex forKey: @"lockSaveFileStore1"];  
+    }
+    
+    [mutex lock];
+    // Save changed file store:
+    if( !newItems )
+    {
+        newItems = [[NSMutableArray alloc] init];    // Make sure this save doesn't cause an unnecessary reload of the view.
+        ours = YES;
+        //NSLog(@"saveFileStore - newItems FLAGGED");
+    }
+    [mutex unlock];
+    
+    #else
     @synchronized(self)
     {
         // Save changed file store:
@@ -1464,21 +1812,38 @@ int UKRearrangeCompareFunc( id a, id b, void* context )
         {
             newItems = [[NSMutableArray alloc] init];    // Make sure this save doesn't cause an unnecessary reload of the view.
             ours = YES;
-            NSLog(@"saveFileStore - newItems FLAGGED");
+            //NSLog(@"saveFileStore - newItems FLAGGED");
         }
     }
+    #endif
         
     [filieStore synchronize];
         
     if( ours )
     {
-        // FIXME: @synchronized
-		//@synchronized(self)
-        //{
+        #ifdef __ETOILE__
+        NSRecursiveLock *mutex = [locks objectForKey: @"lockSaveFileStore2"];
+        
+        if ( !mutex )
+        {
+            mutex = [[[NSRecursiveLock alloc] init] autorelease];
+            [locks setObject: mutex forKey: @"lockSaveFileStore2"];  
+        }
+        
+        [mutex lock];
+        [newItems release];
+        newItems = nil;
+        //NSLog(@"saveFileStore - newItems UN-FLAGGED");
+        [mutex unlock];
+        
+        #else
+        @synchronized(self)
+        {
             [newItems release];
             newItems = nil;
-            NSLog(@"saveFileStore - newItems UN-FLAGGED");
-        //}
+            //NSLog(@"saveFileStore - newItems UN-FLAGGED");
+        }
+        #endif
     }
     
     [self stopProgress];
@@ -1510,7 +1875,10 @@ int UKRearrangeCompareFunc( id a, id b, void* context )
 -(void) windowWillClose: (NSNotification*)notification
 {
 	[fileListView setDelegate: nil];
+	
+	#ifndef __ETOILE__
 	[kqueue setDelegate: nil];
+	#endif
     
     [self saveFileStore];
 }
@@ -1610,13 +1978,13 @@ int UKRearrangeCompareFunc( id a, id b, void* context )
 //  REVISIONS:
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
-
+#ifndef __ETOILE__
 -(void) kqueue: (UKKQueue*)kq receivedNotification: (NSString*)nm forFile: (NSString*)fpath
 {
 	if( !newItems )
 		[NSThread detachNewThreadSelector:@selector(loadFolderContents:) toTarget:self withObject: nil];
 }
-
+#endif
 
 // -----------------------------------------------------------------------------
 //  windowWillUseStandardFrame:defaultFrame:
@@ -1675,6 +2043,11 @@ int UKRearrangeCompareFunc( id a, id b, void* context )
 //  REVISIONS:
 //      2004-12-22  UK  Documented.
 // -----------------------------------------------------------------------------
+
+-(void) testIconSizeForItem
+{
+	//UKFSItem *item = [[UKFSItem alloc] initWithURL: [NSURL fileURLWIth@"~/"];
+}
 
 -(NSSize)               iconSizeForItem: (UKFSItem*)item
 {

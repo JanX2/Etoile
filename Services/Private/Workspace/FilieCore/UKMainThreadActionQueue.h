@@ -18,17 +18,22 @@
 
 #import <Cocoa/Cocoa.h>
 
+@protocol UKTest;
 
 // -----------------------------------------------------------------------------
 //  Classes:
 // -----------------------------------------------------------------------------
 
-@interface UKMainThreadActionQueue : NSObject
+@interface UKMainThreadActionQueue : NSObject <UKTest>
 {
     NSMutableArray*     objectsToMessage;
     SEL                 message;
     BOOL                threadRunning;
     BOOL                newestFirst;        // Execute newest messages first, instead of executing them in order?
+    
+    #ifdef __ETOILE__
+    NSMutableDictionary*                locks;
+    #endif
 }
 
 -(id)   initWithMessage: (SEL)msg;

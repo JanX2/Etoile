@@ -1,3 +1,41 @@
+2005-03-19  Quentin Mathe <qmathe@club-internet.fr>
+	
+	FilieCore can now be compiled (Few tests fails however).
+    * FilieCore/UKMainThreadActionQueue.h:
+	* FilieCore/UKMainThreadActionQueue.m:
+	* FilieCore/UKFileMixedValueIndicator.h: 
+	* FilieCore/UKFileMixedValueIndicator.m:
+	* FilieCore/UKFileInfoPanel.h: 
+	* FilieCore/UKFileInfoPanel.m:
+	Adopted UKTest protocol and added UnitKit import directive in implementation.
+	* FilieCore/UKFolderDataSource.h:
+	* FilieCore/UKFolderDataSource.m:
+	Added unit tests with UnitKit.
+	* FilieCore/UKFolderIconViewController.h:
+	* FilieCore/UKFolderIconViewController.m:
+	Added unit tests with UnitKit and disabled kqueue support.
+	(-awakeFromNib): Added in order to use this controller archived in Gorm file.
+	(-dataSourceWillReload:):
+	(-dataSourceDidReload:): 
+	(-saveFileStore): 
+	Added GNUstep support with conditional compilation (to workaround @synchronized
+	directive especially not implemented in FSF GCC).
+	* FilieCore/UKFolderMetaStorage.h:
+	* FilieCore/UKFolderMetaStorage.m:
+	Added unit tests with UnitKit.
+	(-storageFileURL): Fixed to work with GNUstep (conditional compilation used).
+	* FilieCore/UKFSItem.h:
+	* FilieCore/UKFSItem.m:
+	Reworked import directives with conditional compilation and added unit tests 
+	with UnitKit.
+	(-initWithPath:isDirectory:):
+	(-icon):
+	(-loadItemIcon:):
+	Added GNUstep support with conditional compilation (to workaround @synchronized
+	directive especially not implemented in FSF GCC) and other minor tweaks to be
+	able to compile.
+	* FilieCore/GNUmakefile: Added tests support with UnitKit.
+
 2005-01-04  Quentin Mathe <qmathe@club-internet.fr>
 	
 	Warning! doesn't compile (Work needed on FilieCore)

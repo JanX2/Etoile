@@ -19,6 +19,7 @@
 #import <Cocoa/Cocoa.h>
 #import "UKFSDataSourceProtocol.h"
 
+@protocol UKTest;
 
 // -----------------------------------------------------------------------------
 //  Classes:
@@ -27,7 +28,7 @@
 /* This object lists a folder's contents and tells its delegate about each
     item and its attributes. */
 
-@interface UKFolderDataSource : NSObject <UKFSDataSource>
+@interface UKFolderDataSource : NSObject <UKFSDataSource,UKTest>
 {
     NSString*                   folderPath;
     id<UKFSDataSourceDelegate>  delegate;

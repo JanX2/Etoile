@@ -17,6 +17,11 @@
 // -----------------------------------------------------------------------------
 
 #import <EtoileExtensions/EtoileCompatibility.h>
+#import <UnitKit/UnitKit.h>
+
+/* For tests */
+#import "UKFolderIconViewController.h"
+
 #import "UKFolderDataSource.h"
 
 #ifndef __ETOILE__
@@ -32,6 +37,20 @@
 
 
 @implementation UKFolderDataSource
+
+-(id) initForTest
+{
+	BOOL dummy;
+	UKFolderIconViewController *viewController = 
+		[[UKFolderIconViewController alloc] initWithPath: @"/"];
+	
+	self = (UKFolderDataSource *)[viewController newDataSourceForURL: 
+		[NSURL fileURLWithPath: [viewController valueForKey: @"folderPath"]]];
+	UKTrue([[NSFileManager defaultManager] fileExistsAtPath: folderPath isDirectory: &dummy]);
+	UKNotNil([self delegate]);
+	
+	return self;
+}
 
 // -----------------------------------------------------------------------------
 //  initWithURL:
@@ -70,8 +89,20 @@
 //      2004-12-23  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testReload
+{
+	UKNotNil(delegate);
+	/*
+	UKTrue([delegate repondsToSelector: @selector(dataSourceWillReload:)]);
+	UKTrue([delegate repondsToSelector: @selector(listItem:withAttributes:source:)]);
+	UKTrue([delegate repondsToSelector: @selector(dataSourceDidReload:)]);
+	 */
+}
+
 -(void) reload: (id)sender
 {
+	NSLog(@"Data source reload with path %@ delegate", folderPath, delegate);
+	
 	#ifdef __ETOILE__
 	NSFileManager *fm = [NSFileManager defaultManager];
 	NSDirectoryEnumerator*  di = [fm enumeratorAtPath: folderPath];
@@ -87,6 +118,7 @@
 		while( (filePath = [di nextObject]) )
 		{
             [delegate listItem: [NSURL fileURLWithPath: filePath] withAttributes: [di fileAttributes] source: self];
+			NSLog(@"listItem with path %@", filePath);
 		}
         
        [delegate dataSourceDidReload: self];
@@ -156,10 +188,16 @@
 //      2004-12-23  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testPlaceHolderIconForItemAttributes
+{
+	UKNotNil([NSImage imageNamed: @"common_Unknown"]);
+}
+
 -(NSImage*)         placeholderIconForItem: (NSURL*)url attributes: (NSDictionary*)attrs
 {
     #ifdef __ETOILE__
-	return [[NSWorkspace sharedWorkspace] iconForFileType: @""];
+	//return [[NSWorkspace sharedWorkspace] iconForFileType: @""];
+	return [NSImage imageNamed: @"common_Unknown"];
 	
 	#else
 	if( [[attrs objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory] )
@@ -180,18 +218,28 @@
 //      2004-12-23  UK  Documented.
 // -----------------------------------------------------------------------------
 
+-(void) testIconForItemAttributes
+{
+	NSImage *testIcon = [[NSWorkspace sharedWorkspace] iconForFile: folderPath];
+	NSSize testSize;
+	
+	UKNotNil(testIcon);
+
+	testSize = [testIcon size];
+	UKTrue(testSize.width >= 16 && testSize.height >= 16);
+}
+
 -(NSImage*)         iconForItem: (NSURL*)url attributes: (NSDictionary*)attributes
 {
-    #ifdef __ETOILE__
-	NSString*       path = [url path];
-	NSImage *icon = nil;
+    NSString*       path = [url path];
+	NSImage *fileIcon = nil;
 	
-	icon = [[NSWorkspace sharedWorkspace] iconForFile: path];
-	return icon;
+	#ifdef __ETOILE__
+	
+	fileIcon = [[NSWorkspace sharedWorkspace] iconForFile: path];
 	
 	#else
-	NSString*       path = [url path];
-	NSImage*        fileIcon = nil;
+	
     NSString*       suf = [[path pathExtension] lowercaseString];
     NSArray*        types = nil;
     NSSize          iconSize = NSMakeSize(128,128);
@@ -213,9 +261,10 @@
     
     if( !fileIcon )    // Still no icon?
         fileIcon = [[UKFileIcon iconForFile: path] image];  // Ask Icon Services for an icon.
-    
-    return fileIcon;
+		
 	#endif
+	
+	return fileIcon;
 }
 
 @end

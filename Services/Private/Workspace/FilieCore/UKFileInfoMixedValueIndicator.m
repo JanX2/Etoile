@@ -17,7 +17,7 @@
 // -----------------------------------------------------------------------------
 
 #import "UKFileInfoMixedValueIndicator.h"
-
+#import <UnitKit/UnitKit.h>
 
 @implementation UKFileInfoMixedValueIndicator
 
