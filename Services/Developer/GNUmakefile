@@ -1,7 +1,7 @@
 #
 #	GNUmakefile
 #
-#	Makefile for Frameworks
+#	Makefile for Developer Services
 #
 #	Copyright (C) 2005 Quentin Mathe <qmathe@club-internet.fr>
 #

@@ -1,7 +1,7 @@
 #
 #	GNUmakefile
 #
-#	Makefile for Frameworks
+#	Makefile for Services
 #
 #	Copyright (C) 2005 Quentin Mathe <qmathe@club-internet.fr>
 #
@@ -29,7 +29,7 @@ PACKAGE_NAME = Services
 include $(GNUSTEP_MAKEFILES)/common.make
 
 #
-# Variables cehck
+# Variables check
 #
 
 export etoile ?= yes
@@ -47,11 +47,12 @@ ifeq ($(etoile), yes)
 endif
 
 export developer-base ?= yes
+export user-base ?= yes
 
 #
 # Subprojects choice
 #
 
-SUBPROJECTS = Developer Private
+SUBPROJECTS = Developer Private User
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

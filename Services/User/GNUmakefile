@@ -1,7 +1,7 @@
 #
 #	GNUmakefile
 #
-#	Makefile for Bundles
+#	Makefile for User Services
 #
 #	Copyright (C) 2005 Quentin Mathe <qmathe@club-internet.fr>
 #
@@ -24,7 +24,7 @@
 #		Boston, MA  02111-1307, USA
 #
 
-PACKAGE_NAME = Bundles
+PACKAGE_NAME = UserServices
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
@@ -33,20 +33,26 @@ include $(GNUSTEP_MAKEFILES)/common.make
 #
 
 export etoile ?= yes
-export desktop-base ?= yes
+export user-base ?= yes
 
-ifeq ($(desktop-base), yes)
+ifeq ($(user-base), yes)
 
-    export camaelon ?= yes
+    export installer ?= yes
+
+endif
+
+ifeq ($(user-base), no)
+
+    export installer ?= no
 
 endif
 
 #
 # Subprojects choice
-#
+# 
 
-ifeq ($(camaelon), yes)
-    SUBPROJECTS = Camaelon
+ifeq ($(installer), yes)
+	SUBPROJECTS = Installer
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
