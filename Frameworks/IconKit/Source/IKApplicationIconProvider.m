@@ -126,7 +126,7 @@ static NSFileManager *fileManager = nil;
 }
 
 /*
- * GNUstep compatible implementation, but should be overrided in favor of an 
+ * GNUstep compatible implementation, but should be overriden in favor of an 
  * improved implementation in Etoile with the ExtendedWorkspaceKit
  */
 - (NSImage *) documentIconForExtension: (NSString *)extension
@@ -308,6 +308,7 @@ static NSFileManager *fileManager = nil;
   NSString *path;
   NSString *pathComponent;
   BOOL isDir;
+  NSBundle *appBundle;
 
   path = [self _compositedIconsPath];
 
@@ -328,16 +329,23 @@ static NSFileManager *fileManager = nil;
   
   if (_identifier == nil)
     {
-      if (_path != nil)
-        _identifier = [[NSBundle bundleWithPath: _path] bundleIdentifier];
+      appBundle = [NSBundle bundleWithPath: _path]; 
+      _identifier = [appBundle bundleIdentifier];
     }
   
   if (_identifier == nil)
     {
-      NSLog(@"Immpossible to look for the application composited icons cache \
-        because the application has no bundle identifier");
-      return nil;
+      _identifier = [[appBundle infoDictionary] objectForKey: @"ApplicationName"];
     }
+  
+  /*
+  if (_identifier == nil)
+    {
+      NSLog(@"Impossible to look for the application composited icons cache \
+        because the application has no bundle identifier");
+      return;
+    }
+  */
     
   pathComponent = [[_identifier md5Hash] stringByAppendingPathExtension: @"tiff"];
   path = [path stringByAppendingPathComponent: pathComponent];
@@ -355,6 +363,7 @@ static NSFileManager *fileManager = nil;
   NSBitmapImageRep *rep;
   NSData *data;
   BOOL isDir;
+  NSBundle *appBundle;
   
   path = [self _compositedIconsPath];
 
@@ -387,16 +396,23 @@ static NSFileManager *fileManager = nil;
   
   if (_identifier == nil)
     {
-      if (_path != nil)
-        _identifier = [[NSBundle bundleWithPath: _path] bundleIdentifier];
+      appBundle = [NSBundle bundleWithPath: _path];
+      _identifier = [appBundle bundleIdentifier];
     }
   
+  if (_identifier == nil)
+    {
+      _identifier = [[appBundle infoDictionary] objectForKey: @"ApplicationName"];
+    }
+  
+  /*
   if (_identifier == nil)
     {
       NSLog(@"Impossible to look for the application composited icons cache \
         because the application has no bundle identifier");
       return;
     }
+  */
   
   pathComponent = [[_identifier md5Hash] stringByAppendingPathExtension: @"tiff"]; 
   path = [path stringByAppendingPathComponent: [_identifier md5Hash]];
@@ -447,7 +463,7 @@ static NSFileManager *fileManager = nil;
 
 - (NSImage *) _blankDocumentIcon
 {
-  return nil;
+  return [NSImage imageNamed: @"common_Unknown"];
 }
 
 - (NSImage *) _blankPluginIcon

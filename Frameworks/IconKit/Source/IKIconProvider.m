@@ -46,7 +46,6 @@ static NSWorkspace *workspace = nil;
 @interface IKIconProvider (Private)
 - (NSImage *) _cachedIconForURL: (NSURL *)url;
 - (void) _cacheThumbnailIcon: (NSImage *)icon forURL: (NSURL *)url;
-- (NSImage *) _iconFromWorkspaceWithURL: (NSURL *)url;
 - (NSString *) _iconsPath;
 @end
 
@@ -71,9 +70,11 @@ static NSWorkspace *workspace = nil;
   if (iconProvider == nil)
     {
       iconProvider = [IKIconProvider alloc];
-	}     
+    }     
   
   iconProvider = [iconProvider init];
+  
+  return iconProvider;
 }   
 
 /*
@@ -83,7 +84,7 @@ static NSWorkspace *workspace = nil;
 {
   if (iconProvider != self)
     {
-      RELEASE(self);
+      AUTORELEASE(self);
       return RETAIN(iconProvider);
     }
   
@@ -114,6 +115,8 @@ static NSWorkspace *workspace = nil;
   if (icon != nil)
     return icon;
   
+  isFilePackageAtPath: 
+  
   if (_usesThumbnails)
     {
       NSImage *thumbnail;
@@ -128,7 +131,7 @@ static NSWorkspace *workspace = nil;
   if (icon != nil)
     return icon;
   
-  icon = [self _iconFromWorkspaceWithURL: url];
+  icon = [self defaultIconForURL: url];
   
   return icon;
 }
@@ -138,6 +141,49 @@ static NSWorkspace *workspace = nil;
   NSURL *url = [NSURL fileURLWithPath: path];
   
   return [self iconForURL: url];
+}
+
+- (NSImage *) defaultIconForURL: (NSURL *)url
+{
+  // The method can be overriden by the desktop environment to improve the implementation
+  // or to better fit with its icons management/storage model.
+
+  NSString *extension = [[url path] pathExtension];
+  NSDictionary *extensionInfo = [workspace infoForExtension: extension];
+  NSString *appPath = [workspace getBestAppInRole: nil forExtension: extension]; 
+  NSImage *icon = [workspace _extIconForApp: appPath info: extensionInfo];
+  
+  if (icon != nil)
+    return icon;
+    
+  
+  
+  return icon;
+}
+
+- (NSImage *) defaultIconForPath: (NSString *)path
+{
+  NSURL *url = [NSURL fileURLWithPath: path];
+  
+  return [self defaultIconForURL: url];
+}
+
+- (NSImage *) systemIconForURL: (NSURL *)url
+{
+  NSString *pathExt = [[url absoluteString] pathExtension];
+  NSBundle *bundle = [NSBundle mainBundle];
+  NSString *path = [bundle pathForResource: @"MimeMapping" ofType: @"plist"];
+  NSString *plistString = [NSString stringWithContentsOfFile: path];
+  id plist = [plistString propertyList];
+  
+  return [NSImage imageNamed: [plist objectForKey: pathExt]];  
+}
+
+- (NSImage *) systemIconForPath: (NSString *)path
+{
+  NSURL *url = [NSURL fileURLWithPath: path];
+  
+  return [self systemIconForURL: url];
 }
 
 - (BOOL) usesThumbnails
@@ -239,21 +285,5 @@ static NSWorkspace *workspace = nil;
   [data writeToFile: path atomically: YES];
 }
 
-- (NSImage *) _iconFromWorkspaceWithURL: (NSURL *)url
-{
-  // Must be overriden by Etoile to improve the implementation
-
-  NSString *extension = [[url path] pathExtension];
-  NSDictionary *extensionInfo = [workspace infoForExtension: extension];
-  NSString *appPath = [workspace getBestAppInRole: nil forExtension: extension]; 
-  NSImage *icon = [workspace _extIconForApp: appPath info: extensionInfo];
-  
-  if (icon != nil)
-    return icon;
-    
-  
-  
-  return icon;
-}
 
 @end

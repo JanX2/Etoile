@@ -45,6 +45,8 @@
 
 - (NSImage *) iconForURL: (NSURL *)url;
 - (NSImage *) iconForPath: (NSString *)path;
+- (NSImage *) defaultIconForURL: (NSURL *)url;
+- (NSImage *) defaultIconForPath: (NSString *)path;
 
 - (BOOL) usesThumbnails;
 - (void) setUsesThumbnails: (BOOL)flag;
