@@ -1,3 +1,8 @@
+2005-03-10  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * INSTALL: Updated to talk about ExtendedWorkspaceKit and not Gorm.
+    * Source/GNUmakefile: Improved formatting.
+    
 2004-11-14  Quentin Mathe <qmathe@club-internet.fr>
 	
 	* Headers/EXTypeAttribute.h:
@@ -38,7 +43,7 @@
 	* Headers/NSURL+ExtendedWorkspace.h: Updated.
 	* Source/EX*.m: Removed the files which match the pattern.
 	* Source/NSURL+ExtendedWorkspace.m: Updated.
-        * Source/GNUmakefile: Updated.
+    * Source/GNUmakefile: Updated.
 
 	* Headers/ExtendedWorkspaceConfig.h:
 	* Headers/EXAttribute.h:
@@ -116,5 +121,5 @@
 	* SourceEXVFSBack.m:
 	* SourceEXWorkspace.m:
 	* SourceNSURL+ExtendedWorkspace.m:
-        * Source/GNUmakefile:
-        Initial import.
+    * Source/GNUmakefile:
+    Initial import.

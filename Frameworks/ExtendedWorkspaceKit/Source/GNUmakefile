@@ -39,30 +39,30 @@ GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 #
 # Main application
 #
-LIBRARY_NAME=		libExtendedWorkspace	
-VERSION=		0.1
+LIBRARY_NAME = libExtendedWorkspace	
+VERSION = 0.1
 
-FRAMEWORKS= # TrackerKit
+FRAMEWORKS= #TrackerKit
 
 #
 # Resource files
 #
-libExtendedWorkspace_MAIN_MODEL_FILE=
+libExtendedWorkspace_MAIN_MODEL_FILE =
 
-libExtendedWorkspace_RESOURCE_FILES=
+libExtendedWorkspace_RESOURCE_FILES =
 
-libExtendedWorkspace_LOCALIZED_RESOURCE_FILES=
+libExtendedWorkspace_LOCALIZED_RESOURCE_FILES =
 
 #
 # Languages we're localized for
 #
-libExtendedWorkspace_LANGUAGES= \
+libExtendedWorkspace_LANGUAGES = \
 	English
 	
 #
 # Class files
 #
-libExtendedWorkspace_OBJC_FILES= \
+libExtendedWorkspace_OBJC_FILES = \
 	EXAttribute.m \
 	EXAttributesCore.m \
 	EXBasicFSAttributesExtracter.m \
@@ -91,7 +91,7 @@ libExtendedWorkspace_OBJC_FILES= \
 #
 # C files
 #
-libExtendedWorkspace_C_FILES=
+libExtendedWorkspace_C_FILES =
 
 #
 # Header files
@@ -139,7 +139,6 @@ HEADERS_INSTALL = \
 	EXWorkspace.h \
 	NSURL+ExtendedWorkspace.h 
 	
-
 	
 -include GNUmakefile.preamble
 
