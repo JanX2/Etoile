@@ -168,6 +168,7 @@ static CLCompositor* myBrowserHeader;
 		[compositor addImage: [NSImage imageNamed: @"ListHeader/ListHeader-caps-selected.tiff"] named: @"caps"];
 		[compositor addImage: [NSImage imageNamed: @"ListHeader/ListHeader-fill-selected.tiff"] named: @"fill"];
 		[compositor drawInRect: frame];
+		[compositor release];
 /*
 		fill = [NSImage imageNamed: @"ListHeader/ListHeader-fill-selected.tiff"];
 		separation = [NSImage imageNamed: @"ListHeader/ListHeader-separator-selected.tiff"];
@@ -592,14 +593,14 @@ static CLCompositor* cl_progressIndicatorBackground;
 
 + (void) drawPopupButton: (NSRect) border inView: (NSView*) view 
 {
-	NSGraphicsContext* ctxt = GSCurrentContext ();
-	DPSgsave (ctxt);
-	//This is quite annoying :-/
-	DPSinitclip (ctxt);
-	//DPSrectclip (ctxt, border.origin.x, border.origin.y, border.size.width, border.size.height +2);
-	[GraphicToolbox drawButton: border 
-		withCaps: [NSImage imageNamed: @"PopupButton/PopupButton-endcap.tiff"]
-		filledWith: [NSImage imageNamed: @"PopupButton/PopupButton-fill.tiff"]];
+	CLHBoxCompositor* compositor = [CLHBoxCompositor new];
+	[compositor addImage: [NSImage imageNamed: @"PopupButton/PopupButton-endcap.tiff"]
+		named: @"caps"];
+	[compositor addImage: [NSImage imageNamed: @"PopupButton/PopupButton-fill.tiff"]
+		named: @"fill"];
+	[compositor drawInRect: border];
+	[compositor release];
+	
 	NSImage* arrows = [NSImage imageNamed: @"PopupButton/PopupButton-ArrowEnds.tiff"];	
 	float w = ([arrows size].width)/2;
 	float h = [arrows size].height;
@@ -612,7 +613,6 @@ static CLCompositor* cl_progressIndicatorBackground;
 	[arrow unlockFocus];
 	
 	[arrow compositeToPoint: NSMakePoint (border.origin.x+border.size.width-w,border.origin.y+deltaY) operation: NSCompositeSourceOver];
-	DPSgrestore (ctxt);
 }
 
 + (void) drawHorizontalScrollerKnob: (NSRect) knob on: (NSView*) view

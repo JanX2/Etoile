@@ -22,6 +22,7 @@
 			[compositor addImage: [NSImage imageNamed: @"Slider/Slider-vertical-track-fill.tiff"]
 				named: @"fill"];
 			[compositor drawInRect: rect];
+			[compositor release];
 	}
 	else
 	{
@@ -37,6 +38,7 @@
 			[compositor addImage: [NSImage imageNamed: @"Slider/Slider-horizontal-track-fill.tiff"]
 				named: @"fill"];
 			[compositor drawInRect: rect];
+			[compositor release];
 	}
 }
 

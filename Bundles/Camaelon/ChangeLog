@@ -1,5 +1,11 @@
 2005-03-16 Nicolas Roard <nicolas@roard.com>
 
+	* correction of the text displacement in NSButtonCell.m
+	* cleaning of popup drawing in GSDrawFunctions
+	* some fixes (added some missing releases)
+
+2005-03-16 Nicolas Roard <nicolas@roard.com>
+
 	* addition of CLVBoxCompositor for creating vertical compositions
 	* rewrite of NSSliderCell.m, now the sliders use the compositor system and works correctly :-)
 
