@@ -1,0 +1,23 @@
+2005-01-02  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile.
+	* Headers/BackboneCompatibility/PrefsModule.h:
+	* Headers/PreferencePane.h:
+	* Headers/PKApplicationController.h:
+	* Headers/PKBundleController.h:
+	* Headers/PKPreferencePane.h:
+	* Headers/PKPreferencesController.h:
+	* Headers/PKTableViewController.h:
+	* Headers/PKToolbarPreferencesController.h:
+	* Source/PKApplicationController.m:
+	* Source/PKBundleController.m:
+	* Source/PKPreferencePane.m:
+	* Source/PKPreferencesController.m:
+	* Source/PKTableViewController.m:
+	* Source/PKToolbarPreferencesController.m:
+        * Source/GNUmakefile:
+	* README:
+	* INSTALL:
+	* GNUmakefile:
+        Initial import.
+        

@@ -1,0 +1,142 @@
+GSSystemPreferences
+
+SETUP INFO:
+
+The GSSystemPreferences.xCode project builds a framework called PreferencePanes.framework containing GSPreferencePane as a public header and GSSysPrefsAppDelegate as a private header. It also builds an application that simply links to that framework and instantiates a GSSysPrefsAppDelegate from its MainMenu.nib.
+
+The SamplePrefPane.xCode project is simply the default template given by xCode for a new PrefPane that has been changed to test whether shouldUnselect:/NSUnselectLater works. It does that by returning NSUnselectLater and then registering a timer that waits 5 secs before it calls respondToShouldUnselect: YES. If anyone wants to create a GNUMakefile for that, they'll want to make it build a bundle with a .prefPane extension.
+
+The SamplePrefPane *should* be using NSPreferencePane, but since I'm testing it on MacOS X, and it'd be useless to test whether Apple's implementation works, I changed it to use GSPreferencePane instead. This does not constitute an endorsement of using the GSPreferencePane name. The whole point of this is compatibility with code that uses NSPreferencePane.
+
+When compiling GSSysPrefsAppDelegate, you'll want to define GS_SYS_PREFS_PATH to point to the directory where PrefPanes go on your system. On MacOS X it'd be "/System/Library/PreferencePanes/". The app doesn't yet look in /Library/PreferencePanes/ or ~/Library/PreferencePanes/, but if there is a need for this app, I'll add support for more paths, picking paths from the environment or whatever's appropriate.
+
+
+TESTING THIS:
+
+To test this, you could make copies of SamplePrefPane and dump them in a folder. Then change GS_SYS_PREFS_PATH to point to that folder, build everything, and it should work. To see an actual effect, you'll want to give the different copies different CFBundleNames in their Info.plist.
+
+
+LICENSE:
+
+This code is donated to the GNUstep project. It's under the same license (LGPL, probably).
+
+
+AUTHOR:
+M. Uli Kusterer - gssysprefs@zathras.de
+http://www.zathras.de
+
+---
+
+	Preferences.app
+
+	A modular GNUstep preferences editor
+
+	Copyright (C) 2002 Dusk To Dawn Computing, Inc.
+
+	Author: Jeff Teunissen <deek@d2dc.net>
+
+	Font module:
+	Copyright (C) 2002 Alexey I. Froloff <raorn@binec.ru>
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License as
+	published by the Free Software Foundation; either version 2 of
+	the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		59 Temple Place, Suite 330
+		Boston, MA 02111-1307
+		USA
+
+1. Installation
+~~~~~~~~~~~~~~~
+
+To build Preferences.app, you need the GNUstep development packages. If you have
+them, it should be as simple as:
+
+	make && make install
+
+2. Creating new .prefs modules
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Preferences modules are bundles. There is a PrefsModule framework included in
+the package for people to build new preferences modules -- for their apps, for
+parts of GNUstep, for different daemons on their system, whatever.
+
+The basic thing you need to know is how to hook into the application once your
+bundle has been loaded. This is done using the various protocols used by the
+application.
+
+The primary class of a Preferences module must adopt the PrefsModule protocol,
+which specifies eight methods:
+
+- (id) initWithOwner: (id <PrefsApplication>) anOwner;
+
+-initWithOwner: is called by the application when your bundle is loaded. It will
+never be called more than once. In order to hook your module into the prefs
+view, you will need to call
+	[[anOwner prefsController] registerPrefsModule: self];
+from this method, generally after you've set your view up.
+
+on view sizes: The content view of the NSBox you are given is exactly 384 pixels
+wide, and 192 pixels in height. The macro PrefsRect is defined for your
+convenience.
+
+- (NSString *) buttonCaption;
+- (NSImage *) buttonImage;
+- (SEL) buttonAction;
+- (NSView *) view;
+
+The above methods are how you tell the user the name of your module, and how you
+get your view to show up when the user clicks on the button representing your
+module.
+
+-buttonCaption should return a short (the amount of space is very small)
+descriptive bit of information, typically the same as the bundle's name.
+
+-buttonImage should return an image, preferably in TIFF format (not everyone
+compiles GNUstep with libwraster), of no larger than 62x62 pixels in size. It
+shouldn't crash anything, but it'll look silly. :)
+
+-buttonAction should return the selector of the method you want to use to set up
+your view each time the view switches to your module's.
+
+-view is a reference to your content view.
+
+The PrefsApplication protocol defines two methods.
+
+- (void) moduleLoaded: (NSBundle *) aModule;
+
+From the point of view of the module developer, this method is useless to you.
+If you call it, the app will ignore it, and you can't set yourself up to receive
+these notifications. It's really only useful for people who want to create a new
+application that uses prefs modules, or a replacement for this application.
+
+- (id <PrefsController>) prefsController;
+
+If you send this to the app, it will return a reference to the controller of the
+prefs window (duh).
+
+The PrefsController protocol is adopted by the controller of the prefs window.
+It consists of three methods:
+
+- (BOOL) registerPrefsModule: (id) aPrefsModule;
+
+Call this to get the prefs controller to add you to its window.
+
+- (id) currentModule;
+
+Of limited usefulness. However, you can use it to check whether or not you're
+the current module.
+
+- (BOOL) setCurrentModule: (id) aPrefsModule;
+
+Use this to set yourself to be the current prefs module.
