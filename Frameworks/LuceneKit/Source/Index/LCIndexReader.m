@@ -280,7 +280,7 @@
 - (LCTermEnum *) termsWithTerm: (LCTerm *) t {}
 
   /** Returns the number of documents containing the term <code>t</code>. */
-- (int) docFreq: (LCTerm *) t {}
+- (long) docFreq: (LCTerm *) t {}
 
   /** Returns an enumeration of all the documents which contain
    <code>term</code>. For each document, the document number, the frequency of

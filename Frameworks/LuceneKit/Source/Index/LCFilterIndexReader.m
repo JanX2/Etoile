@@ -90,7 +90,7 @@
   return [input term];
 }
 
-- (int) docFreq
+- (long) docFreq
 {
   return [input docFreq];
 }
@@ -186,7 +186,7 @@
   return [input termsWithTerm: t];
 }
 
-- (int) docFreq: (LCTerm *) t
+- (long) docFreq: (LCTerm *) t
 {
   return [input docFreq: t];
 }

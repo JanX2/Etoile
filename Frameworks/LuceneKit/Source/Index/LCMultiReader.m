@@ -209,7 +209,7 @@
 					      term: term]);
 }
 
-- (int) docFreq: (LCTerm *) t
+- (long) docFreq: (LCTerm *) t
 {
   int total = 0;          // sum freqs in segments
   int i;
@@ -302,7 +302,7 @@
   term = [top term];
   docFreq = 0;
 
-  while (top != nil && [term compareTo: [top term]] == NSOrderedSame) {
+  while (top != nil && [term compare: [top term]] == NSOrderedSame) {
     [queue pop];
     docFreq += [[top termEnum] docFreq];    // increment freq
       if ([top next])
@@ -319,7 +319,7 @@
     return term;
   }
 
-- (int) docFreq
+- (long) docFreq
 {
     return docFreq;
   }
