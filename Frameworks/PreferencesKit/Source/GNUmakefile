@@ -54,7 +54,7 @@ libPreferencesKit_LANGUAGES = \
 #
 # Class files
 #
-libPreferencesKit_OBJC_FILES= \
+libPreferencesKit_OBJC_FILES = \
 	PKApplicationController.m \
 	PKBundleController.m \
 	PKPreferencesController.m \
@@ -90,7 +90,7 @@ libPreferencesKit_HEADER_INSTALL = \
 #
 # C files
 #
-libPreferencesKit_C_FILES=
+libPreferencesKit_C_FILES =
 
 -include GNUmakefile.preamble
 

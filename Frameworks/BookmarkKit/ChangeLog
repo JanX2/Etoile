@@ -1,31 +1,31 @@
 2005-03-10  Quentin Mathe <qmathe@club-internet.fr>
 
-        * INSTALL: Updated to talk about BookmarkKit and not Gorm
-        * Headers/BKBookmark.h:
-        * Headers/BKBookmarkQuery.h:
-        * Headers/BKBookmarkSearchResult.h:
-        * Headers/BKBookmarkStore.h:
-        * Source/BKBookmark.m:
-        * Source/BKBookmarkQuery.m:
-        * Source/BKBookmarkSearchResult.m:
-        * Source/BKBookmarkStore.m:
-        Updated in order BookmarkKit compiles (TrackerKit will be now optional)
-        but still no implementation.
-        * Source/GNUmakefile: Minor modifications.
+    * INSTALL: Updated to talk about BookmarkKit and not Gorm
+    * Headers/BKBookmark.h:
+    * Headers/BKBookmarkQuery.h:
+    * Headers/BKBookmarkSearchResult.h:
+    * Headers/BKBookmarkStore.h:
+    * Source/BKBookmark.m:
+    * Source/BKBookmarkQuery.m:
+    * Source/BKBookmarkSearchResult.m:
+    * Source/BKBookmarkStore.m:
+    Updated in order BookmarkKit compiles (TrackerKit will be now optional) but
+    still no implementation.
+    * Source/GNUmakefile: Minor modifications.
 
 2004-08-14  Quentin Mathe <qmathe@club-internet.fr>
 
-        * ChangeLog:
-        * README:
-        * INSTALL:
-        * GNUmakefile:
-        * Headers/BKBookmark.h:
-        * Headers/BKBookmarkQuery.h:
-        * Headers/BKBookmarkSearchResult.h:
-        * Headers/BKBookmarkStore.h:
-        * Source/BKBookmark.m:
-        * Source/BKBookmarkQuery.m:
-        * Source/BKBookmarkSearchResult.m:
-        * Source/BKBookmarkStore.m:
-        * Source/GNUmakefile:
-        Initial import.
+    * ChangeLog:
+    * README:
+    * INSTALL:
+    * GNUmakefile:
+    * Headers/BKBookmark.h:
+    * Headers/BKBookmarkQuery.h:
+    * Headers/BKBookmarkSearchResult.h:
+    * Headers/BKBookmarkStore.h:
+    * Source/BKBookmark.m:
+    * Source/BKBookmarkQuery.m:
+    * Source/BKBookmarkSearchResult.m:
+    * Source/BKBookmarkStore.m:
+    * Source/GNUmakefile:
+    Initial import.
