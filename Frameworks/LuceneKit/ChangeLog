@@ -1,0 +1,58 @@
+2005-03-31 Quentin Mathe <qmathe@club-internet.fr>
+
+    LuceneKit initial import.
+    Warning! compilation broken.   
+	* Source/GNUstep.h: Moved in Headers/GNUstep.
+	* Headers/LuceneKit/Util/NSString_Additions.h: Renamed "NSString+Additions.h".
+	* Source/Util/NSString_Additions.m: Renamed "NSString+Additions.m".
+	* Source/Store/MMapDirectory.java: Removed.
+	* Source/Store/Lock.java: Removed.
+    * Source/run_test: Removed.
+    * Source/Analysis/Standard: Removed (various Java stuff).
+    * Headers/LuceneKit/Analysis:
+    * Headers/LuceneKit/Document:
+    * Headers/LuceneKit/Index:    
+    * Headers/LuceneKit/Java:
+    * Headers/LuceneKit/Search:
+    * Headers/LuceneKit/Store:
+    * Headers/LuceneKit/Util:
+    Moved in Headers on level down and ripped out Headers/LuceneKit.
+    
+2005-03-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Move test into classes.
+	* Rewrite classes into category:
+		NSString_Additions (previous StringHealper),
+		LCNumberTools,
+		LCDateTools.
+	* Support 'test=yes' to build test bundle. 
+	* Remove Test/
+	* Current test result: 
+	  Result: 11 classes, 22 methods, 377383 tests, 0 failed
+
+2005-03-13 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Update Analysis/ to 1.9-RC1
+	* Implement Util/LCPriorityQueue
+
+2005-03-12 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Update Document/LCField and Document/LCDocument to 1.9-RC1
+	* Port someo of classes in Index/
+
+2005-03-10 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Add Document/LSNumberTools and its test from 1.9-RC1
+
+2005-03-09 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Add Document/LSDateTools and its test from 1.9-RC1
+
+2005-03-05 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Change name to "LuceneKit"
+
+2005-03-05 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Add Prefix "LC"
+	* Reorganize directories to Etoile-style

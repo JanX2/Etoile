@@ -1,0 +1,19 @@
+LuceneKit (b4)
+==============
+
+This is a GNUstep port of Lucene (http://lucene.apache.org/).
+
+Original licence of Lucene is Apache License 2.0.
+This port use BSD license whenever it is applicable.
+
+Yen-Ju Chen <yjchenx _At_ gmail dot_ com>
+
+TODO
+----
+
+* Support compression in LCDocument
+* Move private methods into category in class implementation 
+  to reduce the headers.
+* Lock and Multithread.
+* Index files compatible with other implementation
+

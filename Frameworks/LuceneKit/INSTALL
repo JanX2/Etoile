@@ -1,0 +1,2 @@
+Use 'gmake' to make libLucene.
+Use 'gmake test=yes' to make test bundle and use './run_test' to run test (UnitKit required).
