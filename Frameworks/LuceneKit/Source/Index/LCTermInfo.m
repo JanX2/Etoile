@@ -9,15 +9,19 @@
   docFreq = 0;
   freqPointer = 0;
   proxPointer = 0;
+  skipOffset = 0;
   return self;
 }
 
-- (id) initWithDocFreq: (int) df freqPointer: (long) fp proxPointer: (long) pp
+- (id) initWithDocFreq: (long) df 
+           freqPointer: (long long) fp 
+	   proxPointer: (long long) pp
 {
   self = [self init];
   docFreq = df;
   freqPointer = fp;
   proxPointer = pp;
+  skipOffset = 0;
   return self;
 }
 
@@ -30,34 +34,38 @@
   return self;
 }
 
-- (int) docFreq
+- (long) docFreq
 {
   return docFreq;
 }
 
-- (long) freqPointer
+- (long long) freqPointer
 {
   return freqPointer;
 }
 
-- (long) proxPointer
+- (long long) proxPointer
 {
   return proxPointer;
 }
 
-- (int) skipOffset
+- (long) skipOffset
 {
   return skipOffset;
 }
 
-- (void) setDocFreq: (int) df freqPointer: (long) fp
-            proxPointer: (long) pp skipOffset: (int) so
+#if 0
+- (void) setDocFreq: (long) df 
+        freqPointer: (long long) fp
+        proxPointer: (long long) pp 
+	 skipOffset: (long) so
 {
   docFreq = df;
   freqPointer = fp;
   proxPointer = pp;
   skipOffset = so;
 }
+#endif
 
 - (void) setTermInfo: (LCTermInfo *) ti
 {
@@ -67,24 +75,39 @@
   skipOffset = [ti skipOffset];
 }
 
-- (void) setDocFreq: (int) doc
+- (void) setDocFreq: (long) doc
 {
   docFreq = doc;
 }
 
-- (void) setFreqPointer: (long) freq
+- (void) setFreqPointer: (long long) freq
 {
   freqPointer = freq;
 }
 
-- (void) setProxPointer: (long) prox
+- (void) setProxPointer: (long long) prox
 {
   proxPointer = prox;
 }
 
-- (void) setSkipOffset: (int) skip
+- (void) setSkipOffset: (long) skip
 {
   skipOffset = skip;
+}
+
+- (NSString *) description
+{
+  return [NSString stringWithFormat: @"LCTermInfo: docFreq %ld freqPointer %lld proxPointer %lld skipOffset %ld", docFreq, freqPointer, proxPointer, skipOffset];
+}
+
+- (id) copyWithZone: (NSZone *) zone
+{
+  LCTermInfo *other = [[LCTermInfo allocWithZone: zone] init];
+  [other setDocFreq: docFreq];
+  [other setFreqPointer: freqPointer];
+  [other setProxPointer: proxPointer];
+  [other setSkipOffset: skipOffset];
+  return other;
 }
 
 @end

@@ -15,8 +15,8 @@
 - (id) initWithField: (NSString *) fld text: (NSString *) txt
 {
   self = [super init];
-  ASSIGN(field, fld);
-  ASSIGN(text, txt);
+  [self setField: fld];
+  [self setText: txt];
   return self;
   //  this(fld, txt, true);
 }
@@ -47,11 +47,13 @@
       field and text. */
 - (BOOL) isEqual: (NSObject *) o
 {
-  if (o == nil)
-    return NO;
+  if (o == nil) return NO;
+  return ([self compare: (LCTerm *)o] == NSOrderedSame) ? YES : NO;
+#if 0
   LCTerm *other = (LCTerm *) o;
   return ([field isEqualToString: [other field]] && 
 	  [text isEqualToString: [other text]]);
+#endif
 }
 
   /** Combines the hashCode() of the field and the text. */
@@ -65,7 +67,7 @@
     argument, and a positive integer if this term belongs after the argument.
 
     The ordering of terms is first by field, then by text.*/
-- (NSComparisonResult) compareTo: (LCTerm *) other 
+- (NSComparisonResult) compare: (LCTerm *) other 
 {
   if ([field isEqualToString: [other field]])	  // fields are interned
     return [text compare: [other text]];
@@ -74,10 +76,20 @@
 }
 
   /** Resets the field and text of a Term. */
-- (void) setField: (NSString *) fld text: (NSString *) txt
+- (void) setField: (NSString *) fld
 {
-  ASSIGN(field, fld);
-  ASSIGN(text, txt);
+  ASSIGN(field, AUTORELEASE([fld copy]));
+}
+
+- (void) setText: (NSString *) txt
+{
+  ASSIGN(text, AUTORELEASE([txt copy]));
+}
+
+- (void) setTerm: (LCTerm *) other
+{
+  [self setField: [other field]];
+  [self setText: [other text]];
 }
 
 - (NSString *) description
@@ -85,13 +97,10 @@
   return [NSString stringWithFormat: @"%@:%@", field, text];
 }
 
-#if 0
-  private void readObject(java.io.ObjectInputStream in)
-    throws java.io.IOException, ClassNotFoundException
-  {
-      in.defaultReadObject();
-      field = field.intern();
-  }
-#endif
+- (id) copyWithZone: (NSZone *) zone
+{
+  LCTerm *clone = [[LCTerm allocWithZone: zone] initWithField: [self field] text: [self text]];
+  return clone;
+}
 
 @end

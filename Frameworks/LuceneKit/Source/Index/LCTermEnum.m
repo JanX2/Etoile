@@ -21,7 +21,7 @@
 }
 
   /** Returns the docFreq of the current Term in the enumeration.*/
-- (int) docFreq
+- (long) docFreq
 {
   return -1;
 }
@@ -51,7 +51,7 @@
   do {
     if (![self next])
       return NO;
-  } while ([target compareTo: [self term]] == NSOrderedDescending);
+  } while ([target compare: [self term]] == NSOrderedDescending);
   // } while (target.compareTo(term()) > 0);
 
   return YES;

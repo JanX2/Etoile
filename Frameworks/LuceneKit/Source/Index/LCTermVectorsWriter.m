@@ -44,17 +44,18 @@
     NSString *file;
     file = [segment stringByAppendingPathExtension: TVX_EXTENSION];
     tvx = [directory createOutput: file];
-    [tvx writeInt: TERM_VECTORS_WRITER_FORMAT_VERSION];
+    [tvx writeInt: (long)TERM_VECTORS_WRITER_FORMAT_VERSION];
     file = [segment stringByAppendingPathExtension: TVD_EXTENSION];
     tvd = [directory createOutput: file];
-    [tvd writeInt: TERM_VECTORS_WRITER_FORMAT_VERSION];
+    [tvd writeInt: (long)TERM_VECTORS_WRITER_FORMAT_VERSION];
     file = [segment stringByAppendingPathExtension: TVF_EXTENSION];
     tvf = [directory createOutput: file];
-    [tvf writeInt: TERM_VECTORS_WRITER_FORMAT_VERSION];
+    [tvf writeInt: (long)TERM_VECTORS_WRITER_FORMAT_VERSION];
 
     ASSIGN(fieldInfos, fis);
     fields = [[NSMutableArray alloc] init];
     terms = [[NSMutableArray alloc] init];
+    currentDocPointer = -1;
     return self;
 }
 
@@ -256,7 +257,7 @@
     [currentField setTVFPointer: [tvf filePointer]];
     //System.out.println("Field Pointer: " + currentField.tvfPointer);
     
-    int size = [terms count];
+    long size = (long)[terms count];
     [tvf writeVInt: size];
     
     BOOL storePositions = [currentField storePositions];
@@ -272,8 +273,8 @@
     int i;
     for (i = 0; i < size; i++) {
       LCTVTerm *term = (LCTVTerm *)[terms objectAtIndex: i];
-      int start = [lastTermText positionOfDifference: [term termText]];
-      int length = [[term termText] length] - start;
+      long start = (long)[lastTermText positionOfDifference: [term termText]];
+      long length = (long)([[term termText] length] - start);
       [tvf writeVInt: start];       // write shared prefix length
       [tvf writeVInt: length];        // write delta length
       [tvf writeChars: [term termText] start: start length: length];  // write delta chars
@@ -287,10 +288,11 @@
 	}
         
         // use delta encoding for positions
-        int j, position = 0;
+        int j;
+        long position = 0;
         for (j = 0; j < [term freq]; j++){
-          [tvf writeVInt: ([[[term positions] objectAtIndex: j] intValue]- position)];
-          position = [[[term positions] objectAtIndex: j] intValue];
+          [tvf writeVInt: (long)([[[term positions] objectAtIndex: j] longValue]- position)];
+          position = [[[term positions] objectAtIndex: j] longValue];
         }
       }
       
@@ -301,10 +303,11 @@
 	}
         
         // use delta encoding for offsets
-        int j, position = 0;
+        int j;
+        long position = 0;
         for (j = 0; j < [term freq]; j++) {
-          [tvf writeVInt:([[[term offsets] objectAtIndex: j] startOffset] - position)];
-          [tvf writeVInt: ([[[term offsets] objectAtIndex: j] endOffset] - [[[term offsets] objectAtIndex: j] startOffset])]; //Save the diff between the two.
+          [tvf writeVInt: (long)([[[term offsets] objectAtIndex: j] startOffset] - position)];
+          [tvf writeVInt: (long)([[[term offsets] objectAtIndex: j] endOffset] - [[[term offsets] objectAtIndex: j] startOffset])]; //Save the diff between the two.
           position = [[[term offsets] objectAtIndex: j] endOffset];
         }
       }
@@ -322,7 +325,7 @@
     [tvx writeLong: currentDocPointer];
 
     // write document data record
-    int size = [fields count];
+    long size = (long)[fields count];
 
     // write the number of fields
     [tvd writeVInt: size];
@@ -331,7 +334,7 @@
     int i;
     for (i = 0; i < size; i++) {
       LCTVField *field = (LCTVField *) [fields objectAtIndex: i];
-      [tvd writeVInt: [field number]];
+      [tvd writeVInt: (long)[field number]];
     }
 
     // write field pointers
@@ -355,7 +358,7 @@
   return self;
 }
 
-- (id) initWithNumber: (int) n storePosition: (BOOL) storePos
+- (id) initWithNumber: (long) n storePosition: (BOOL) storePos
             storeOffset: (BOOL) storeOff
 {
   self = [self init];
@@ -365,12 +368,12 @@
   return self;
 }
 
-- (void) setTVFPointer: (long) p
+- (void) setTVFPointer: (long long) p
 {
   tvfPointer = p;
 }
   
-- (long) tvfPointer
+- (long long) tvfPointer
 {
   return tvfPointer;
 }
@@ -385,9 +388,14 @@
   return storeOffsets;
 }
 
-- (int) number
+- (long) number
 {
   return number;
+}
+
+- (NSString *) description
+{
+    return [NSString stringWithFormat: @"LCTVField: %ld", number];
 }
 
 @end
@@ -399,6 +407,7 @@
   freq = 0;
   positions = nil;
   offsets = nil;
+  return self;
 }
 
 - (void) setTermText: (NSString *) text
@@ -406,7 +415,7 @@
   ASSIGN(termText, text);
 }
 
-- (void) setFreq: (int) f
+- (void) setFreq: (long) f
 {
   freq = f;
 }
@@ -426,7 +435,7 @@
   return termText;
 }
 
-- (int) freq
+- (long) freq
 {
   return freq;
 }
@@ -439,6 +448,11 @@
 - (NSArray *) offsets
 {
   return offsets;
+}
+
+- (NSString *) description
+{
+  return [NSString stringWithFormat: @"LCTVTerm %@: %ld", termText, freq];
 }
 
 @end

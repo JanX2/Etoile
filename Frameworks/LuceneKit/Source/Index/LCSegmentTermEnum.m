@@ -8,19 +8,25 @@
 
 @implementation LCSegmentTermEnum
 
+- (id) init
+{
+  self = [super init];
+  position = -1;
+  [self setTermBuffer: AUTORELEASE([[LCTermBuffer alloc] init])];
+  [self setPrevBuffer: AUTORELEASE([[LCTermBuffer alloc] init])];
+  termInfo = [[LCTermInfo alloc] init];
+  indexPointer = 0;
+  return self;
+}
+
 - (id) initWithIndexInput: (LCIndexInput *) i
               fieldInfos: (LCFieldInfos *) fis
 	      isIndex: (BOOL) isi;
 {
-  self = [super init];
-  position = -1;
-  ASSIGN(termBuffer, [[LCTermBuffer alloc] init]);
-  ASSIGN(prevBuffer, [[LCTermBuffer alloc] init]);
-  ASSIGN(termInfo, [[LCTermInfo alloc] init]);
+  self = [self init];
+  [self setIndexInput: i];
+  [self setFieldInfos: fis];
   isIndex = isi;
-  indexPointer = 0;
-  ASSIGN(input, i);
-  ASSIGN(fieldInfos, fis);
   int firstInt = [input readInt];
   if (firstInt >= 0) {
       // original-format file, without explicit format version number
@@ -62,42 +68,30 @@
 
   }
 
-- (id) copyWithZone: (NSZone *) zone
-{
-  LCSegmentTermEnum *clone = [[LCSegmentTermEnum allocWithZone: zone] init];
-
-  [clone setIndexInput: [input copy]];
-  [clone setTermInfo: [[LCTermInfo alloc] initWithTermInfo: termInfo]];
-  [clone setTermBuffer: [termBuffer copy]];
-  [clone setPrevBuffer: [termBuffer copy]];
-  [clone setScratch: nil];
-
-  return AUTORELEASE(clone);
-}
-
 - (void) seek: (long) pointer position: (int) p
          term: (LCTerm *) t termInfo: (LCTermInfo *) ti
 {
   [input seek: pointer];
   position = p;
   [termBuffer setTerm: t];
-  [prevBuffer reset];
   [termInfo setTermInfo: ti];
 }
 
   /** Increments the enumeration to the next element.  True if one exists.*/
 - (BOOL) next
 {
-    if (position++ >= size - 1) {
-      [termBuffer reset];
+    if (position++ >= size-1)
+    {
       return NO;
     }
 
-    [prevBuffer setTermBuffer: termBuffer];
+    [prevBuffer setTerm: termBuffer];
     [termBuffer read: input fieldInfos: fieldInfos];
 
-    [termInfo setDocFreq: [input readVInt]];	  // read doc freq
-    [termInfo setFreqPointer: [input readVLong] + [termInfo freqPointer]];	  // read freq pointer
+    long intValue = [input readVInt];
+    [termInfo setDocFreq: intValue];	  // read doc freq
+    long long longValue = [input readVLong];
+    [termInfo setFreqPointer: longValue + [termInfo freqPointer]];	  // read freq pointer
     [termInfo setProxPointer: [input readVLong] + [termInfo proxPointer]];	  // read prox pointer
     
     if(format == -1){
@@ -115,7 +109,11 @@
     }
     
     if (isIndex)
-      indexPointer += [input readVLong];	  // read index pointer
+    {
+      long long longValue = [input readVLong];
+      indexPointer += longValue;
+//      indexPointer += [input readVLong];	  // read index pointer
+    }
 
     return YES;
   }
@@ -123,23 +121,23 @@
   /** Optimized scan, without allocating new terms. */
 - (void) scanTo: (LCTerm *) term
 {
-    if (scratch == nil)
-      ASSIGN(scratch, AUTORELEASE([[LCTermBuffer alloc] init]));
-    [scratch setTerm: term];
-    while (([scratch compareTo: termBuffer] == NSOrderedDescending) && [self next]) {}
-  }
+  if (scratch == nil)
+    scratch = [[LCTermBuffer alloc] init];
+  [scratch setTerm: term];
+  while (([scratch compare: termBuffer] == NSOrderedDescending) && [self next]) {}
+}
 
   /** Returns the current Term in the enumeration.
    Initially invalid, valid after next() called for the first time.*/
 - (LCTerm *) term
 {
-    return [termBuffer toTerm];
+    return termBuffer;
   }
 
   /** Returns the previous Term enumerated. Initially null.*/
 - (LCTerm *) prev
 {
-    return [prevBuffer toTerm];
+    return prevBuffer;
   }
 
   /** Returns the current TermInfo in the enumeration.
@@ -153,26 +151,26 @@
    Initially invalid, valid after next() called for the first time.*/
 - (void) setTermInfo: (LCTermInfo *) ti
 {
-  [ti setTermInfo: termInfo];
-  }
+  [termInfo setTermInfo: ti];
+}
 
   /** Returns the docFreq from the current TermInfo in the enumeration.
    Initially invalid, valid after next() called for the first time.*/
-- (int) docFreq
+- (long) docFreq
 {
     return [termInfo docFreq];
   }
 
   /* Returns the freqPointer from the current TermInfo in the enumeration.
     Initially invalid, valid after next() called for the first time.*/
-- (long) freqPointer
+- (long long) freqPointer
 {
     return [termInfo freqPointer];
   }
 
   /* Returns the proxPointer from the current TermInfo in the enumeration.
     Initially invalid, valid after next() called for the first time.*/
-- (long) proxPointer
+- (long long) proxPointer
 {
     return [termInfo proxPointer];
   }
@@ -203,12 +201,57 @@
   ASSIGN(scratch, s);
 }
 
+- (void) setSize: (long long) s
+{
+  size = s;
+}
+
+- (void) setPosition: (long long ) p
+{
+  position = p;
+}
+
+- (void) setFormat: (int) f
+{
+  format = f;
+}
+
+- (void) setIndexed: (BOOL) index
+{
+  isIndex = index;
+}
+
+- (void) setIndexPointer: (long) p
+{
+  indexPointer = p;
+}
+
+- (void) setIndexInterval: (int) i
+{
+  indexInterval = i;
+}
+
+- (void) setSkipInterval: (unsigned int) skip
+{
+  skipInterval = skip;
+}
+
+- (void) setFormatM1SkipInterval: (int) formatM1
+{
+  formatM1SkipInterval: formatM1;
+}
+
+- (void) setFieldInfos: (LCFieldInfos *) fi
+{
+  ASSIGN(fieldInfos, fi);
+}
+
 - (LCFieldInfos *) fieldInfos
 {
   return fieldInfos;
 }
 
-- (long) size
+- (long long) size
 {
   return size;
 }
@@ -228,9 +271,116 @@
   return skipInterval;
 }
 
-- (long) position
+- (long long) position
 {
   return position;
 }
+
+- (id) copyWithZone: (NSZone *) zone
+{
+  LCSegmentTermEnum *clone = [[LCSegmentTermEnum allocWithZone: zone] init];
+
+  [clone setIndexInput: input];
+  [clone setFieldInfos: fieldInfos];
+  [clone setSize: size];
+  [clone setPosition: position];
+  [clone setTermInfo: [termInfo copy]];
+  [clone setTermBuffer: [termBuffer copy]];
+  [clone setPrevBuffer: [prevBuffer copy]];
+  [clone setScratch: nil];
+  [clone setFormat: format];
+  [clone setIndexed: isIndex];
+  [clone setIndexPointer: indexPointer];
+  [clone setIndexInterval: indexInterval];
+  [clone setSkipInterval: skipInterval];
+  [clone setFormatM1SkipInterval: formatM1SkipInterval];
+
+  return AUTORELEASE(clone);
+}
+
+#ifdef HAVE_UKTEST
+- (void) addDoc: (LCIndexWriter *) writer : (NSString *) value
+{
+  NSLog(@"add %@", value);
+  LCDocument *doc = [[LCDocument alloc] init];
+  LCField *field = [[LCField alloc] initWithName: @"content" string: value
+                         store: LCStore_NO index: LCIndex_Tokenized];
+  [doc addField: field];
+  NSLog(@"after addField");
+  [writer addDocument: doc];
+  NSLog(@"After addDocument");
+}
+
+- (void) verifyDocFreq: (id <LCDirectory>) dir
+{
+  LCIndexReader *reader = [LCIndexReader openDirectory: dir];
+  LCTermEnum *termEnum = nil;
+  
+  // create enumeration of all terms
+  termEnum = [reader terms];
+  // go to the first term (aaa)
+  [termEnum next];
+  
+    // assert that term is 'aaa'
+  UKStringsEqual(@"aaa", [[termEnum term] text]);
+  UKIntsEqual(200, [termEnum docFreq]);
+    // go to the second term (bbb)
+    [termEnum next];
+    // assert that term is 'bbb'
+      UKStringsEqual(@"bbb", [[termEnum term] text]);
+  UKIntsEqual(100, [termEnum docFreq]);
+  
+  [termEnum close];
+
+    // create enumeration of terms after term 'aaa', including 'aaa'
+    termEnum = [reader termsWithTerm: [[LCTerm alloc] initWithField: @"content" text: @"aaa"]];
+    // assert that term is 'aaa'
+  UKStringsEqual(@"aaa", [[termEnum term] text]);
+  UKIntsEqual(200, [termEnum docFreq]);
+      // go to term 'bbb'
+    [termEnum next];
+    // assert that term is 'bbb'
+    UKStringsEqual(@"bbb", [[termEnum term] text]);
+  UKIntsEqual(100, [termEnum docFreq]);
+  
+  [termEnum close];
+  }
+
+- (void) testSegmentTermEnum
+{
+#if 0
+  id <LCDirectory> dir = [[LCRAMDirectory alloc] init];
+  LCIndexWriter *writer = nil;
+  writer = [[LCIndexWriter alloc] initWithDirectory: dir
+  									analyzer: [[LCWhitespaceAnalyzer alloc] init]
+  									create: YES];
+
+      // add 100 documents with term : aaa
+      // add 100 documents with terms: aaa bbb
+      // Therefore, term 'aaa' has document frequency of 200 and term 'bbb' 100
+      int i;
+      for (i = 0; i < 100; i++)
+      {
+      [self addDoc: writer : @"aaa"];
+      [self addDoc: writer : @"aaa bbb"];
+      }
+      [writer close];
+      
+      // verify document frequency of terms in an unoptimized index
+     [self verifyDocFreq: dir];
+     #endif
+#if 0
+      // merge segments by optimizing the index
+      write = [[LCIndexWriter alloc] initWithDirectory: dir
+      								analyzer: [[LCWhitespaceAnalyzer alloc] init]
+      								create: NO];
+      [writer optimize];
+      [writer close];
+      // verify document frequency of terms in an optimized index
+      [self verifyDocFreq: dir];
+      #endif
+}
+
+#endif
 
 @end

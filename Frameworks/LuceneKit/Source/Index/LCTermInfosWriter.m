@@ -93,6 +93,7 @@
     [output writeLong: 0];                          // leave space for size
     [output writeInt: indexInterval];             // write indexInterval
     [output writeInt: skipInterval];              // write skipInterval
+    return self;
   }
 
   /** Adds a new <Term, TermInfo> pair to the set.
@@ -100,7 +101,7 @@
     TermInfo pointers must be positive and greater than all previous.*/
 - (void) addTerm: (LCTerm *) term termInfo: (LCTermInfo *) ti
 {
-  if (!isIndex && [term compareTo: lastTerm] != NSOrderedDescending)
+  if (!isIndex && [term compare: lastTerm] != NSOrderedDescending)
     {
 	    NSLog(@"term out of order");
 	    return;
@@ -117,12 +118,23 @@
     }
 
     if (!isIndex && size % indexInterval == 0)
-      [other addTerm: lastTerm termInfo:  lastTi];     // add an index term
+    {
+      /* Take care the first term while lastTerm == nil */
+      /* FIXME: lucene doesn't care this */
+      if (size == 0)
+      {
+        [other addTerm: term termInfo: ti];
+      }
+      else
+        [other addTerm: lastTerm termInfo:  lastTi];     // add an index term
+    }
 
     [self writeTerm: term];                                    // write term
     [output writeVInt: [ti docFreq]];                       // write doc freq
-    [output writeVLong: [ti freqPointer] - [lastTi freqPointer]]; // write pointers
-    [output writeVLong: [ti proxPointer] - [lastTi proxPointer]];
+    long delta = [ti freqPointer] - [lastTi freqPointer];
+    [output writeVLong: delta]; // write pointers
+    delta = [ti proxPointer] - [lastTi proxPointer];
+    [output writeVLong: delta];
 
     if ([ti docFreq] >= skipInterval) {
       [output writeVInt: [ti skipOffset]];

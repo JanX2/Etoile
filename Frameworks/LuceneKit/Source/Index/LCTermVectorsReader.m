@@ -26,16 +26,16 @@
     file = [segment stringByAppendingPathExtension: TVF_EXTENSION];
     ASSIGN(tvf, [d openInput: file]);
     tvfFormat = [self checkValidFormat: tvf];
-    size = (int) [tvx length] / 8;
+    size = (long) [tvx length] / 8;
   }
 
   ASSIGN(fieldInfos, fis);
   return self;
 }
   
-- (int) checkValidFormat: (LCIndexInput *) input
+- (long) checkValidFormat: (LCIndexInput *) input
 {
-    int format = [input readInt];
+    long format = [input readInt];
     if (format > TERM_VECTORS_WRITER_FORMAT_VERSION)
     {
       NSLog(@"Incompatible format version: %d expected or less", format);
@@ -82,27 +82,30 @@
       //that was written in another file
       [tvx seek: ((docNum * 8L) + TERM_VECTORS_WRITER_FORMAT_SIZE)];
       //System.out.println("TVX Pointer: " + tvx.getFilePointer());
-      long position = [tvx readLong];
+      long long position = [tvx readLong];
 
       [tvd seek: position];
-      int fieldCount = [tvd readVInt];
+      long fieldCount = [tvd readVInt];
       //System.out.println("Num Fields: " + fieldCount);
       // There are only a few fields per document. We opt for a full scan
       // rather then requiring that they be ordered. We need to read through
       // all of the fields anyway to get to the tvf pointers.
-      int number = 0;
+      long number = 0;
       int found = -1;
       int i;
       for (i = 0; i < fieldCount; i++) {
         if(tvdFormat == TERM_VECTORS_WRITER_FORMAT_VERSION)
+        {
           number = [tvd readVInt];
+          }
         else
+        {
           number += [tvd readVInt];
+          }
         
         if (number == fieldNumber)
           found = i;
       }
-
       // This field, although valid in the segment, was not found in this
       // document
       if (found != -1) {
@@ -313,6 +316,27 @@
   ASSIGN(tvf, vf);
 }
 
+/* For clone */
+- (void) setSize: (long) s
+{
+  size = s;
+}
+
+- (void) setTVDFormat: (long) f
+{
+  tvdFormat = f;
+}
+
+- (void) setTVFFormat: (long) f
+{
+  tvfFormat = f;
+}
+
+- (void) setFieldInfos: (LCFieldInfos *) fi
+{
+  ASSIGN(fieldInfos, fi);
+}
+
 - (id) copyWithZone: (NSZone *) zone;
 {
     
@@ -323,6 +347,10 @@
     [clone setTVX: [tvx copy]];
     [clone setTVD: [tvd copy]];
     [clone setTVF: [tvf copy]];
+    [clone setSize: size];
+    [clone setTVDFormat: tvdFormat];
+    [clone setTVFFormat: tvfFormat];
+    [clone setFieldInfos: fieldInfos];
     
     return clone;
 }

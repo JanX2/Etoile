@@ -71,13 +71,13 @@
 {
     if (indexTerms != nil)                       // index already read
       return;                                     // do nothing
-      int indexSize = (int)[indexEnum size];        // otherwise read index
+    int indexSize = (int)[indexEnum size];        // otherwise read index
 
-      ASSIGN(indexTerms, [[NSMutableArray alloc] init]);
-      ASSIGN(indexInfos, [[NSMutableArray alloc] init]);
-      ASSIGN(indexPointers, [[NSMutableArray alloc] init]);
+    ASSIGN(indexTerms, [[NSMutableArray alloc] init]);
+    ASSIGN(indexInfos, [[NSMutableArray alloc] init]);
+    ASSIGN(indexPointers, [[NSMutableArray alloc] init]);
 
-      while([indexEnum next])
+    while([indexEnum next])
       {
 	[indexTerms addObject: [indexEnum term]];
 	[indexInfos addObject: [indexEnum termInfo]];
@@ -97,10 +97,10 @@
     while (hi >= lo) {
       int mid = (lo + hi) >> 1;
       NSComparisonResult delta = 
-	      [term compareTo: [indexTerms objectAtIndex: mid]];
-      if (delta = NSOrderedAscending)
+	      [term compare: [indexTerms objectAtIndex: mid]];
+      if (delta == NSOrderedAscending)
 	hi = mid - 1;
-      else if (delta = NSOrderedDescending)
+      else if (delta == NSOrderedDescending)
 	lo = mid + 1;
       else
 	return mid;
@@ -110,8 +110,12 @@
 
 - (void) seekEnum: (int) indexOffset
 {
-  [[self termEnum] seek: [[indexPointers objectAtIndex: indexOffset] longValue]
-	       position: (indexOffset * [[self termEnum] indexInterval]) - 1
+  long index = [[indexPointers objectAtIndex: indexOffset] longValue];
+  int pos = indexOffset * [[self termEnum] indexInterval] - 1;
+  LCTerm *t = [indexTerms objectAtIndex: indexOffset];
+  LCTermInfo *ti = [indexInfos objectAtIndex: indexOffset];
+  [[self termEnum] seek: index
+	       position: pos
                term: [indexTerms objectAtIndex: indexOffset]
 	       termInfo: [indexInfos objectAtIndex: indexOffset]];
   }
@@ -124,7 +128,7 @@
     [self ensureIndexIsRead];
 
     // optimize sequential access: first try scanning cached enum w/o seeking
-    
+#if 0 // FIXME   
     LCSegmentTermEnum *enumerator = [self termEnum];
     if (([enumerator term] != nil)// term is at or past current
 	&& (([enumerator prev] != nil && [term compareTo: [enumerator prev]] == NSOrderedDescending)
@@ -134,6 +138,7 @@
 	  || [term compareTo: [indexTerms objectAtIndex: enumOffset]] == NSOrderedAscending)
 	return [self scanEnum: term];			  // no need to seek
     }
+#endif
 
     // random-access: must seek
     [self seekEnum: [self indexOffset: term]];
@@ -145,7 +150,8 @@
 {
     LCSegmentTermEnum *enumerator = [self termEnum];
     [enumerator scanTo: term];
-    if ([enumerator term] != nil && [term compareTo: [enumerator term]] == NSOrderedSame)
+    
+    if ([enumerator term] != nil && [term compare: [enumerator term]] == NSOrderedSame)
       return [enumerator termInfo];
     else
       return nil;
@@ -186,9 +192,9 @@
     [self seekEnum: indexOffset];
 
     LCSegmentTermEnum *enumerator = [self termEnum];
-    while([term compareTo: [enumerator term]] == NSOrderedDescending && [enumerator next]) {}
+    while([term compare: [enumerator term]] == NSOrderedDescending && [enumerator next]) {}
 
-    if ([term compareTo: [enumerator term]] == NSOrderedSame)
+    if ([term compare: [enumerator term]] == NSOrderedSame)
       return [enumerator position];
     else
       return -1;
@@ -197,14 +203,25 @@
   /** Returns an enumeration of all the Terms and TermInfos in the set. */
 - (LCSegmentTermEnum *) terms
 {
-    return (LCSegmentTermEnum *)[origEnum copy];
+        return (LCSegmentTermEnum *)[origEnum copy];
+
   }
 
   /** Returns an enumeration of terms starting at or after the named term. */
 - (LCSegmentTermEnum *) termsWithTerm: (LCTerm *) term
 {
+#if 0
   [self termInfo: term];
-  return (LCSegmentTermEnum *)[[self termEnum] copy];
+    return (LCSegmentTermEnum *)[[self termEnum] copy];
+    #else
+      [self ensureIndexIsRead];
+    LCSegmentTermEnum *enumerator = [self termEnum];
+    [self seekEnum: [self indexOffset: term]];
+    [enumerator scanTo: term];
+    return enumerator;
+
+      #endif
+
 }
 
 @end
