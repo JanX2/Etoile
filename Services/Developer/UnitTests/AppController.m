@@ -13,25 +13,51 @@ static NSNotificationCenter *nc = nil;
  */
  
 @interface NSScanner (UnitTestsExtensions)
-- (BOOL) checkString: (NSString *)string;
+- (BOOL) checkStrings: (NSArray *)strings stopForNewLine: (BOOL)stop;
+- (BOOL) checkString: (NSString *)string stopForNewLine: (BOOL)stop;
 @end
 
 @implementation NSScanner (UnitTestsExtensions)
 
-- (BOOL) checkString: (NSString *)string
+- (BOOL) checkStrings: (NSArray *)strings stopForNewLine: (BOOL)stop
+{
+	NSEnumerator *e = [strings objectEnumerator];
+	NSString *str;
+	
+	while ((str = [e nextObject]) != nil)
+	{
+		if ([self checkString: str stopForNewLine: stop])
+			return YES;
+	}
+	
+	return NO;
+}
+
+- (BOOL) checkString: (NSString *)string stopForNewLine: (BOOL)stop
 {
 	int location = [self scanLocation];
 	BOOL isFound = NO;
+	NSCharacterSet *cset;
 	
-	if ([self scanString: string intoString: NULL])
+	if (stop)
+	{
+		cset = [[self charactersToBeSkipped] retain];
+		[self setCharactersToBeSkipped: [NSCharacterSet whitespaceCharacterSet]];
+	}
+	
+	NSString *checked = nil;
+	if ([self isAtEnd] == NO && [self scanUpToString: string intoString: &checked])
 		isFound = YES;
 	
-	// FIXME: there is may be a bug in GNUstep here because we get
-	// an out of range exception when location has the scanning 
-	// process end value.
-	// We avoid it with [theScanner isAtEnd] workaround test case
-	if ([self isAtEnd] == NO)
-		[self setScanLocation: location];
+	//NSDebugLog(@"checkString:ForNewLine: %d checked %@", stop, checked);
+
+	[self setScanLocation: location];
+		
+	if (stop)
+	{
+		[self setCharactersToBeSkipped: cset];
+		[cset release];
+	}
 	
 	return isFound;
 }
@@ -82,7 +108,7 @@ static NSNotificationCenter *nc = nil;
 		key = [[sender selectedItem] title];
 	}
 	
-	NSLog(@"popupTestsSet key %@", key);
+	NSDebugLog(@"popupTestsSet with key %@", key);
 	
 	if ([key isEqualToString: [ud stringForKey: ActiveTestsSetDefault]] == NO)
 	{
@@ -101,7 +127,7 @@ static NSNotificationCenter *nc = nil;
 	NSString *testsSetName;
 	NSString *defaultSetName = [ud stringForKey: ActiveTestsSetDefault];
 	
-	NSLog(@"testsSetsChanged: %@", testsSetsNames);
+	NSDebugLog(@"testsSetsChanged: %@", testsSetsNames);
 	
 	while ([popupTestsSets numberOfItems] != 1)
 		[popupTestsSets removeItemAtIndex: [popupTestsSets numberOfItems] - 1]; 
@@ -125,15 +151,16 @@ static NSNotificationCenter *nc = nil;
 #define UNKNOWN 0
 #define PASSED  2
 #define FAILED  4
-#define WARNING 8
+#define WARNING 6
 
 - (NSArray*) scanOutput: (NSString*) str
 {	
 	NSLog (@"SCAN : <%@>", str);
 	
-	NSString* Failed   = @"msgUKFail";
-	NSString* Passed   = @"msgUKPass";
+	NSString* Failed   = @".fail";
+	NSString* Passed   = @".pass";
 	NSString* warning  = @": warning:";
+	NSString* postWarning  = @":: warning:";
 	NSString* Result   = @"Result";
 	NSString* ukrun    = @"ukrun";
 	NSString* looking  = @"looking";
@@ -151,7 +178,12 @@ static NSNotificationCenter *nc = nil;
 	int nbTests    = 0;
 	int nbFailures = 0;
 	int location   = 0;
-
+	
+	BOOL ukrunFound = NO;
+	BOOL lookingFound = NO;
+	
+	NSArray *manyFailed = [NSArray arrayWithObjects: Failed, @"msgUKFail", nil];
+	NSArray *manyPassed = [NSArray arrayWithObjects: Passed, @"msgUKPass", nil];
 	unsigned int result = UNKNOWN;
 
 	NSScanner* theScanner = [NSScanner scannerWithString: str];
@@ -160,11 +192,21 @@ static NSNotificationCenter *nc = nil;
 	{
 		result = UNKNOWN;
 		fileName = nil;
-
+		int stamp;
+		
+		// And any NSLog ...
+		location = [theScanner scanLocation];
+		if([theScanner scanInt: &stamp])
+		{
+			[theScanner scanUpToString: @"\n" intoString: NULL];
+		}
+		else [theScanner setScanLocation: location];
+		
 		// We skip the ukrun first line... 
 		location = [theScanner scanLocation];
 		if ([theScanner scanString: ukrun intoString: NULL])
 		{
+			ukrunFound = YES;
 			[theScanner scanUpToString: @"\n" intoString: NULL];
 		}
 		else [theScanner setScanLocation: location];
@@ -173,31 +215,27 @@ static NSNotificationCenter *nc = nil;
 		location = [theScanner scanLocation];
 		if ([theScanner scanString: looking intoString: NULL])
 		{
+			lookingFound = YES;
 			[theScanner scanUpToString: @"\n" intoString: NULL];
 		}
 		else [theScanner setScanLocation: location];
 	
 		// And any NSLog ...
 		location = [theScanner scanLocation];
-		while ([theScanner scanInt: NULL])
+		while ([theScanner scanInt: &stamp])
 		{
 			[theScanner scanUpToString: @"\n" intoString: NULL];
 			location = [theScanner scanLocation];
 		}
 		
-		if ([theScanner isAtEnd] == NO)
+		if (ukrunFound && lookingFound)
 		{
-			// FIXME: there is may be a bug in GNUstep here because we get
-			// an out of range exception when location has the scanning 
-			// process end value.
-			// We avoid it with [theScanner isAtEnd] workaround test case
-			[theScanner setScanLocation: location];
-
-			// Now we get the first element
 			[theScanner scanUpToString: @":" intoString: &fileName];
 			[theScanner setScanLocation: [theScanner scanLocation] + 1];
 		}
-
+		
+		NSDebugLog(@"fileName %@", fileName);
+		
 		if ([fileName isEqualToString: Result])
 		{
 			// It could be the result line:
@@ -236,7 +274,8 @@ static NSNotificationCenter *nc = nil;
 
 			[theScanner scanInt: &testLine];
 			location = [theScanner scanLocation];
-			
+
+			// We check eventual pre warning now...
 			if ([theScanner scanString: warning intoString: NULL]) 
 			{
 				result |= WARNING;	
@@ -251,25 +290,51 @@ static NSNotificationCenter *nc = nil;
 					[theScanner setScanLocation: location];
 			}
 
-			if ([theScanner checkString: Passed]) 
+			if ([theScanner checkStrings: manyPassed stopForNewLine: YES]) 
 			{
-				NSLog(@"Passed for scanner");
 				result |= PASSED;
 			}
-			else if ([theScanner checkString: Failed]) 
+			else if ([theScanner checkStrings: manyFailed stopForNewLine: YES]) 
 			{	
 				result |= FAILED;
 			}
-			
-			// FIXME: we should remove this test statement in a way or another
+
+			// FIXME: there is may be a bug in GNUstep here because we get
+			// an out of range exception when location has the scanning 
+			// process end value.
+			// We avoid it with [theScanner isAtEnd] workaround test case
 			if ([theScanner isAtEnd] == NO)
+			{
+				[theScanner setScanLocation: location];
 				[theScanner scanUpToString: @"\n" intoString: &resultString];
-
-			NSLog (@"\nfile : %@", fileName);
-			NSLog (@"line : %d", testLine);
-			NSLog (@"res  : %@", resultString);
-			NSLog (@"result : %x\n", result);
-
+				
+				location = [theScanner scanLocation];
+			}
+			else
+			{
+				resultString = @"";
+			}
+			
+			// We check eventual post warning now (located on next line)...
+			if ([theScanner scanString: postWarning intoString: NULL]) 
+			{
+				NSString *postErr = @"";
+				
+				result |= WARNING;	
+				[theScanner scanUpToString: @"\n" intoString: &postErr];
+				postErr = [@" " stringByAppendingString: postErr];
+				resultString = [resultString stringByAppendingString: postErr];
+			}
+			else if ([theScanner isAtEnd] == NO) // FIXME: Not really pretty.
+			{
+				[theScanner setScanLocation: location];	
+			}	
+			
+			NSDebugLog (@"\nfile : %@", fileName);
+			NSDebugLog (@"line : %d", testLine);
+			NSDebugLog (@"res  : %@", resultString);
+			NSDebugLog (@"result : %x\n", result);
+			
 			NSMutableDictionary* test = [[NSMutableDictionary alloc] init];
 
 			[test setObject: [NSString stringWithString: fileName] 
@@ -278,16 +343,14 @@ static NSNotificationCenter *nc = nil;
 				 forKey: @"line"];
 			[test setObject: [NSString stringWithString: resultString]
 				 forKey: @"result"];
-NSLog(@"result %d failed %d", result, FAILED);
+
 			if (result & FAILED)
 			{
 				[test setObject: @"Failed" forKey: @"status"];
-				NSLog(@"Failed for test %d", result);
 			}	
 			else if (result & PASSED) 
 			{
 				[test setObject: @"Passed" forKey: @"status"];
-				NSLog(@"Passed for test %d", result);
 			}
 
 			[results addObject: test];
@@ -328,6 +391,7 @@ NSLog(@"result %d failed %d", result, FAILED);
 	
 	NSString *path = [ud stringForKey: ToolPathDefault];
 	NSLog (@"ukrun default path : %@", path);
+	
 	BOOL isDir;
 	if (path == nil 
 		|| [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDir] == NO)
@@ -409,6 +473,8 @@ NSLog(@"result %d failed %d", result, FAILED);
 		if ([[tc identifier] isEqualToString: @"reason"])
 			return [test objectForKey: @"result"];
 	}
+	
+	return nil;
 }
 
 - (int) numberOfRowsInTableView: (NSTableView*) tv
@@ -427,12 +493,10 @@ NSLog(@"result %d failed %d", result, FAILED);
 
 		if ([[test objectForKey: @"status"] isEqualToString: @"Passed"])
 		{
-			NSLog (@"green cell");
 			[cell setBackgroundColor: [NSColor greenColor]];
 		}
 		else if ([[test objectForKey: @"status"] isEqualToString: @"Failed"])
 		{
-			NSLog (@"red cell");
 			[cell setBackgroundColor: [NSColor redColor]];
 		}
 	}
