@@ -1,0 +1,14 @@
+2004-08-14  Quentin Mathe <qmathe@club-internet.fr>
+
+        * ChangeLog:
+        * README:
+        * INSTALL:
+        * GNUmakefile:
+        * Headers/TKQuery.h:
+        * Headers/TKStructuralKey.h:
+        * Headers/TKTracker.h:
+        * Source/TKQuery.m:
+        * Source/TKStructuralKey.m:
+        * Source/TKTracker.m:
+        * Source/GNUmakefile:
+        Initial import.
