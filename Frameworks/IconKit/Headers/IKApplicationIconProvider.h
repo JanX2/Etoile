@@ -27,8 +27,8 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-@class NSString;
-@class NSImage;
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 
 @interface IKApplicationIconProvider : NSObject
 {
@@ -40,11 +40,11 @@
 - (id) initWithBundleIdentifier: (NSString *)identifier;
 
 - (NSImage *) applicationIcon;
-- (NSImage *) documentIcon;
+- (NSImage *) documentIconForExtension: (NSString *)extension;
 - (NSImage *) pluginIcon;
 
 - (void) invalidCache;
-+ (void) invalidCacheAll;
+- (void) invalidCacheAll;
 - (void) recache;
 
 @end
