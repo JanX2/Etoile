@@ -28,7 +28,6 @@ lsgbom.subproj
 Installer_RESOURCE_FILES = \
 Resources/Installer.gorm \
 Resources/Package.gorm\
-Resources/Package2.gorm\
 Resources/Installer.app.tiff \
 Resources/Deb.tiff \
 Resources/Pkg.tiff\

@@ -37,7 +37,8 @@
   if ([[pkgPath pathExtension] isEqualToString: @"pkg"])
     {
       NSLog (@"Returning YES");
-      packagePath = [NSString stringWithString: [pkgPath stringByAppendingPathComponent:@"Contents"]];
+      // packagePath = [NSString stringWithString: [pkgPath stringByAppendingPathComponent:@"Contents"]];
+      packagePath = [NSString stringWithString: pkgPath];
       [packagePath retain];
       [self _getAllInfo];
       return YES;
@@ -60,6 +61,17 @@
 }
 - (BOOL) isInstalled
 {
+  NSArray *paths;
+  NSString *receiptsFolder = [NSString new];
+  NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath: packagePath];
+  NSFileManager *manager = [NSFileManager defaultManager];
+  id key;
+
+  paths = NSSearchPathForDirectoriesInDomains (NSLibraryDirectory, NSUserDomainMask, YES);
+  receiptsFolder = [[paths objectAtIndex: 0] stringByAppendingPathComponent:@"Receipts"];
+
+  NSLog (@"Receipts are in %@", receiptsFolder);
+
   return NO;
 }
 - (NSString *) packageDescription
@@ -119,8 +131,9 @@
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   NSLog (@"InstallPackage received");
-  NSMutableDictionary *receipt = [NSMutableDictionary new];
+  NSMutableDictionary *receiptBom = [NSMutableDictionary new];
   NSMutableDictionary *installedFiles = [NSMutableDictionary new];
+  NSMutableArray *newFileOrder = [NSMutableArray new];
   NSArray *fileOrder = [NSArray new];
   NSData *receiptData;
   NSString *destination = [[[NSHomeDirectory() stringByAppendingPathComponent:@"GNUstep"]
@@ -152,115 +165,166 @@
   id key;
   while (key = [enumerator nextObject]) 
     {
-      //      NSLog (@"Verifying %@", [[bom objectForKey: @"Files"] objectForKey: key]);
-      
-      //      NSLog (@"Copying %@ to %@", [packageTempDir stringByAppendingPathComponent: key],
-      //	     [installLocation stringByAppendingPathComponent: key]);
-      
-      
-      //[manager copyPath:[appDir stringByAppendingPathComponent:file] toPath:destination handler:nil];	  
-      
-
-      
-      
-      /*      if ([[NSWorkspace sharedWorkspace] performFileOperation: NSWorkspaceCopyOperation
-	      source: packageTempDir
-	      destination: [installLocation stringByAppendingPathComponent: key]
-	      files: key
-	      tag: 0] == NO)
-	      <key>NSFileType</key>
-	      <string>NSFileTypeDirectory</string>
-	      
-      */
-      if ([[[[bom objectForKey: @"Files"] objectForKey: key] valueForKey:@"NSFileType"] 
-	    isEqualToString: NSFileTypeDirectory] == NO)
+      if ([self atomicallyCopyPath: [packageTempDir stringByAppendingPathComponent: key] 
+		toPath: [installLocation stringByAppendingPathComponent: key]
+		ofType: [[[bom objectForKey: @"Files"] objectForKey: key] valueForKey:@"NSFileType"]
+		withAttributes: [bom objectForKey: key]] != NO)
 	{
-	  // Processing regulat files
-	  //	  NSLog (@"Processing file %@", key);
-	  NSLog (@"Processing file %@", [[[bom objectForKey: @"Files"] objectForKey: key] valueForKey:@"NSFileType"]);
-	  
-	  if ([manager copyPath:[packageTempDir stringByAppendingPathComponent: key] toPath: [installLocation stringByAppendingPathComponent: key] handler: nil] != NO)
-	    {
-	      //	  [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] forKey: key];
-	      [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] 
-			      forKey: [installLocation stringByAppendingPathComponent: key]];
-
-	      [sender performSelectorOnMainThread: @selector(updateProgressWithFile:)
-		      withObject: nil waitUntilDone: YES];
-	      //exit (0);
-	    }
-	  else
-	    {
-	      //	  [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] forKey: [installLocation stringByAppendingPathComponent: key]];
-
-	      NSLog (@"Failed installing a file %@", [installLocation stringByAppendingPathComponent: key]);	      
-	    }
-	} //end File processing
+	  // Add copied file to the receipt bom
+	  [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] 
+			  forKey: [installLocation stringByAppendingPathComponent: key]];	  
+	  // Update progress indicator
+	  [newFileOrder addObject: key];
+	  [sender performSelectorOnMainThread: @selector(updateProgressWithFile:)
+		  withObject: nil waitUntilDone: YES];
+	}
       else
 	{
-	  //Processing Directories
-	  //	  NSLog (@"Processing dir %@", key);
-	  NSLog (@"Processing dir %@", [[[bom objectForKey: @"Files"] objectForKey: key] valueForKey:@"NSFileType"]);
+	  NSLog (@"Failed installing a file %@", [installLocation stringByAppendingPathComponent: key]);	      
+	}
+    }
+  
+  [receiptBom setObject: installedFiles forKey:@"Files"];
+  [receiptBom setObject: newFileOrder forKey:@"Order"];
 
-	  if ([manager createDirectoryAtPath: [installLocation stringByAppendingPathComponent: key]
-		       attributes:[bom objectForKey: key]] != NO)
-	    {
-	      [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] 
-			      forKey: [installLocation stringByAppendingPathComponent: key]];
-	      
-	      [sender performSelectorOnMainThread: @selector(updateProgressWithFile:)
-		      withObject: nil waitUntilDone: YES];
-	    }
-	  else
-	    {
-	      NSLog (@"Failed creating a directory %@", [installLocation stringByAppendingPathComponent: key]);
-	    } 
-	  
-	} //end Dir processing
-    } // end while 
-
-  [receipt setObject: installedFiles forKey:@"Files"];
-  receiptData = [NSData dataWithData: [NSPropertyListSerialization dataFromPropertyList: receipt  
+  receiptData = [NSData dataWithData: [NSPropertyListSerialization dataFromPropertyList: receiptBom  
 								   //format: NSPropertyListGNUstepBinaryFormat 
 								   format: NSPropertyListXMLFormat_v1_0  
 								   errorDescription: 0]];
-
-
+  
   if ([receiptData writeToFile: @"/tmp/TI.bom" atomically: YES])
-      NSLog (@"Success");
-
-  [self installReceipt: bom];
+    NSLog (@"Success");
+  
+  [self installReceipt: receiptData];
   [self postInstall];
   exit (0);
-
+  
   [pool release];
 }
-- (id) sortFiles: (NSString*) file
-{
-  return  NSOrderedAscending;
-}
-- (BOOL) installReceipt: (NSDictionary*) receipt;
+
+- (BOOL) installReceipt: (NSData *) receiptData;
 {
   NSArray *paths;
-  NSString *receiptsFolder = [[NSString alloc] init];
-  NSString *tempArchive = [NSString new];
-  NSString *tempBom = [NSString new];
+  NSString *receiptsFolder = [NSString new];
+  NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath: packagePath];
+  NSFileManager *manager = [NSFileManager defaultManager];
+  id key;
 
-  paths = NSSearchPathForDirectoriesInDomains (NSLibraryDirectory, NSSystemDomainMask, YES);
-  receiptsFolder = [paths objectAtIndex: 0];
+  paths = NSSearchPathForDirectoriesInDomains (NSLibraryDirectory, NSUserDomainMask, YES);
+  receiptsFolder = [[paths objectAtIndex: 0] stringByAppendingPathComponent:@"Receipts"];
+
   NSLog (@"Receipts are in %@", receiptsFolder);
+    
+  // Create the package top directory for the receipt
 
-  tempArchive = [NSBundle pathForResource:@"Archive" 
-			     ofType:@"pax.gz"
-			     inDirectory: packageTempDir];
-  tempBom = [NSBundle pathForResource:@"Archive" 
-		      ofType:@"bom"
-		      inDirectory: packageTempDir];
+  if ([manager createDirectoryAtPath: [receiptsFolder stringByAppendingPathComponent: [packagePath lastPathComponent]]
+	       attributes: nil] != NO)
+    {
+      NSLog (@"Created top receipt dir");
+    }
+  else
+    {
+      NSLog (@"Failed to create top receipt dir");
+    }
   
-  NSLog (@"Archive to remove: %@", tempArchive);
-  NSLog (@"BOM to remove: %@", tempBom);
+  while (key = [dirEnum nextObject]) 
+    {
+      if (([[key lastPathComponent]isEqualToString: @"Archive.pax.gz"] 
+	   ||[[key lastPathComponent]isEqualToString: @"Archive.bom"]) == NO)
+	{ 
+	  if ([self atomicallyCopyPath: [packagePath stringByAppendingPathComponent: key]
+		    toPath: [[receiptsFolder stringByAppendingPathComponent: [packagePath lastPathComponent]] 
+			      stringByAppendingPathComponent: key]
+		    ofType: [[manager fileAttributesAtPath: [packagePath stringByAppendingPathComponent: key] traverseLink: NO] valueForKey: NSFileType]
+		    withAttributes: [bom objectForKey: key]] != NO)
+	    {
+	      NSLog (@"Copied to receipt %@", key);
+	    }
+	  else
+	    {
+	      NSLog (@"Error in copying file to receipt: %@", key);
+	    }
+	}
+      else
+	{
+	  if ([[key lastPathComponent]isEqualToString: @"Archive.bom"] != NO)
+	    {
+	      NSLog (@"Copying the new BOM");
+	      if ([receiptData writeToFile:  [[receiptsFolder stringByAppendingPathComponent: [packagePath lastPathComponent]]stringByAppendingPathComponent: key]
+			       atomically: YES])
+		{
+		  NSLog (@"Created new BOM!");
+		}
+	      else
+		{
+		  NSLog (@"Failed to create new BOM");
+		}
+	    }
+	  else
+	    {
+	      NSLog (@"Skipping archive or BOM in the receipt");
+	      
+	    }
+	}
+    }	  
+  
+      /*
+      if ([manager copyPath:[packagePath stringByAppendingPathComponent: key] toPath: [[receiptsFolder stringByAppendingPathComponent: [packagePath lastPathComponent]] stringByAppendingPathComponent: key] handler: nil] != NO)
+	{
+	  NSLog (@"Copying receipt %@", key);
+	}
+      else
+	{
+	  NSLog (@"Copying receipt ERRORfrom %@ to %@", [packagePath stringByAppendingPathComponent: key], [receiptsFolder stringByAppendingPathComponent: [packagePath lastPathComponent]]);
+	}
+      */
+
   return YES;
 }
+
+-(BOOL) atomicallyCopyPath: (NSString *) sourcePath 
+		    toPath: (NSString *) destinationPath 
+		    ofType: (NSString *)fileType 
+	     withAttributes: (NSDictionary *) attributes
+{
+  
+  NSFileManager *manager = [NSFileManager defaultManager];
+  
+  if ([fileType isEqualToString: NSFileTypeDirectory] == NO)
+    {
+      // Processing regular file
+      NSLog (@"Processing file %@", sourcePath );
+      
+      if ([manager copyPath: sourcePath toPath: destinationPath handler: nil] != NO)
+	{
+	  return YES;
+	}
+      else
+	{
+	  NSLog (@"Failed installing a file %@", sourcePath);
+	  return NO;
+	}
+    } //end File processing
+  else
+    {
+      //Processing Directories
+      //	  NSLog (@"Processing dir %@", key);
+      NSLog (@"Processing dir %@", sourcePath);
+      
+      if ([manager createDirectoryAtPath: destinationPath
+		   attributes: attributes] != NO)
+	{
+	  return YES;
+	}
+      else
+	{
+	  NSLog (@"Failed creating a directory %@", destinationPath);
+	  return NO;
+	} 
+      
+    } //end Dir processing
+} // end while 
+  
 
 - (BOOL) preInstall
 {
@@ -282,37 +346,44 @@
   NSString *inputString = [NSString new];
   NSString *sizesFileContents = [NSString new];
   NSMutableDictionary *sizesValues = [NSMutableDictionary new];
+  //  NSString *contentsPath = [[NSString alloc]initWithString: packagePath];
+  NSString *contentsPath = [NSString stringWithString: [packagePath stringByAppendingPathComponent:@"Contents"]];
   //  NSString *bomContents;
   int j;
   
+  //  [contentsPath setStringValue: [packagePa
+  NSLog (@"Contents at: %@",contentsPath);
+
 
   aFileManager = [NSFileManager defaultManager];
 
   //  bundlesPath =  [NSString stringWithString: @"./Gpkg.subproj"];
   //[bundlesPath initWithString: filename];
   //  appDir = [NSString new];
+
+  
   allFiles = [aFileManager directoryContentsAtPath: packagePath];
   NSString *descriptionPlistPath = [NSBundle pathForResource:@"Description" 
 					     ofType:@"plist"
-					     inDirectory: packagePath];
+					     inDirectory: contentsPath];
   NSString *infoPlistPath = [NSBundle pathForResource:@"Info" 
 				      ofType:@"plist"
-				      inDirectory: packagePath];
+				      inDirectory: contentsPath];
   paxArchivePath = [NSBundle pathForResource:@"Archive" 
 				       ofType:@"pax.gz"
-				       inDirectory: packagePath];
+				       inDirectory: contentsPath];
   NSString *bomPath = [NSBundle pathForResource:@"Archive" 
 				ofType:@"bom"
-				inDirectory: packagePath];
+				inDirectory: contentsPath];
   NSString *licensePath = [NSBundle pathForResource:@"License" 
 				    ofType: nil
-				    inDirectory: packagePath];
+				    inDirectory: contentsPath];
   NSString *readmePath = [NSBundle pathForResource:@"ReadMe" 
 				   ofType: nil
-				   inDirectory: packagePath];
+				   inDirectory: contentsPath];
   NSString *welcomePath = [NSBundle pathForResource:@"Welcome" 
 				    ofType: nil
-				    inDirectory: packagePath];
+				    inDirectory: contentsPath];
   
   license = [NSString stringWithContentsOfFile: licensePath];
   welcome = [NSString stringWithContentsOfFile: welcomePath];
