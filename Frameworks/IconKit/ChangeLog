@@ -1,0 +1,16 @@
+2004-08-14  Quentin Mathe <qmathe@club-internet.fr>
+
+	    * ChangeLog:
+        * README:
+        * INSTALL:
+        * GNUmakefile:
+        * Headers/IKCompositor.h:
+        * Headers/IKCompositorOperation.h:
+        * Headers/IKIconProvider.h:
+        * Headers/IKApplicationIconProvider.h:
+        * Source/IKCompositor.m:
+        * Source/IKCompositorOperation.m:
+        * Source/IKIconProvider.m:
+        * Source/IKApplicationIconProvider.m:
+        * Source/GNUmakefile:
+        Initial import.
