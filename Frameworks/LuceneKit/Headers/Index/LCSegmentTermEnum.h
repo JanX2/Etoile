@@ -8,12 +8,23 @@
 @class LCTermBuffer;
 @class LCTermInfo;
 
+#ifdef HAVE_UKTEST
+#include <UnitKit/UnitKit.h>
+#include "LuceneKit/Store/LCRAMDirectory.h"
+#include "LuceneKit/Document/LCDocument.h"
+#include "LuceneKit/Document/LCField.h"
+#include "LuceneKit/Analysis/LCWhitespaceAnalyzer.h"
+#include "LuceneKit/Index/LCIndexWriter.h"
+#include "LuceneKit/Index/LCIndexReader.h"
+@interface LCSegmentTermEnum: LCTermEnum <NSCopying, UKTest>
+#else
 @interface LCSegmentTermEnum: LCTermEnum <NSCopying>
+#endif
 {
   LCIndexInput *input;
   LCFieldInfos *fieldInfos;
-  long size;
-  long position;
+  long long size;
+  long long position;
   LCTermBuffer *termBuffer, *prevBuffer;
   LCTermBuffer *scratch; // used for scanning
   LCTermInfo *termInfo;
@@ -33,20 +44,31 @@
          term: (LCTerm *) t termInfo: (LCTermInfo *) ti;
 - (void) scanTo: (LCTerm *) term;
 - (LCTerm *) prev;
-- (LCTermInfo *) termInfo;
-- (void) setTermInfo: (LCTermInfo *) ti;
-- (long) freqPointer;
-- (long) proxPointer;
-- (LCFieldInfos *) fieldInfos;
 - (void) setIndexInput: (LCIndexInput *) i;
+- (void) setFieldInfos: (LCFieldInfos *) fi;
+- (void) setSize: (long long) size;
+- (void) setPosition: (long long) position;
+- (void) setTermInfo: (LCTermInfo *) ti;
 - (void) setTermBuffer: (LCTermBuffer *) tb;
 - (void) setPrevBuffer: (LCTermBuffer *) pb;
 - (void) setScratch: (LCTermBuffer *) s;
-- (long) size;
+#if 0
+- (void) setFormat: (int) f;
+- (void) setIndexed: (BOOL) index;
+- (void) setIndexPointer: (long) indexPointer;
+- (void) setIndexInterval: (int) indexInterval;
+- (void) setSkipInterval: (unsigned int) skipInterval;
+- (void) setFormatM1SkipInterval: (int) formatM1SkipInterval;
+#endif
+- (LCTermInfo *) termInfo;
+- (LCFieldInfos *) fieldInfos;
+- (long long) size;
 - (long) indexPointer;
-- (long) position;
+- (long long) position;
 - (unsigned int) skipInterval;
 - (int) indexInterval;
+- (long long) freqPointer;
+- (long long) proxPointer;
 
 @end
 
