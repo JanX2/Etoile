@@ -1,7 +1,7 @@
 #
 #	GNUmakefile
 #
-#	Makefile for IconKit
+#	Makefile for Camaelon
 #
 #	Copyright (C) 2004 Nicolas Roard <nicolas@roard.com>
 #
@@ -76,7 +76,7 @@ Camaelon_OBJC_FILES += \
 		NSTabView.m \
 		NSTableView.m \
 		NSTableHeaderView.m \
-		GSTableCornerView.m
+		GSTableCornerView.m \
 		#NSView.m 
 
 #
@@ -107,10 +107,8 @@ Camaelon_OBJC_FILES += \
 		NSTableHeaderCell.m \
 		NSTextFieldCell.m
 
-
 -include GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/bundle.make
 
 -include GNUmakefile.postamble
-
