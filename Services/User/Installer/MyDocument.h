@@ -50,7 +50,14 @@
   //  NSString *test;
   NSString *filename;
   //  MyWindowController *windowController;
+  IBOutlet id holderView;
+  IBOutlet id infoView;
+  IBOutlet id licenceView;
+  IBOutlet id filesView;
+  IBOutlet id progressView;
+  IBOutlet id viewSelector;
 }
 - (BOOL) installPackage: (id) sender;
 - (NSString *) chooseInstallationPath: (id) sender;
+- (void) switchView:(id)sender;
 @end

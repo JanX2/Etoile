@@ -42,4 +42,6 @@
 - (int) totalSteps;
 - (BOOL) setPackageLocation: (NSString *) packageLocation;
 - (BOOL) installReceipt: (NSDictionary*) receipt;
+- (BOOL) preInstall;
+- (BOOL) postInstall;
 @end

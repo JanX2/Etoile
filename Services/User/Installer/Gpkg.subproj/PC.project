@@ -20,7 +20,7 @@
     INTERFACES = (
     );
     LANGUAGE = English;
-    LAST_EDITING = "2005-03-18 03:04:00 +0000";
+    LAST_EDITING = "2005-03-23 23:46:00 +0000";
     LIBRARIES = (
 	"gnustep-base",
 	"gnustep-gui"

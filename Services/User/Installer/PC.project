@@ -33,7 +33,7 @@
 	Package.gorm
     );
     LANGUAGE = English;
-    LAST_EDITING = "2005-03-18 03:04:00 +0000";
+    LAST_EDITING = "2005-03-23 23:46:00 +0000";
     LIBRARIES = (
 	"gnustep-base",
 	"gnustep-gui"
@@ -51,7 +51,7 @@
 	main.m
     );
     PC_WINDOWS = {
-	ProjectWindow = "493 49 560 480 0 0  960 768 ";
+	ProjectWindow = "147 261 560 480 0 0  960 768 ";
 	ShowToolbar = YES;
     };
     PRINCIPAL_CLASS = NSApplication;
@@ -98,7 +98,6 @@
     SEARCH_LIB_DIRS = (
     );
     SUBPROJECTS = (
-	Deb,
 	Gpkg,
 	mkgbom,
 	lsgbom

@@ -12,8 +12,9 @@ PACKAGE_NAME = Gpkg
 BUNDLE_NAME = Gpkg
 Gpkg_PRINCIPAL_CLASS = Gpkg
 BUNDLE_EXTENSION = .installer
-Gpkg_STANDARD_INSTALL = no
-Gpkg_COPY_INTO_DIR = ../Installer.app/Resources
+Gpkg_STANDARD_INSTALL = yes
+BUNDLE_INSTALL_DIR= ../Installer.app/Resources
+
 #
 # Libraries
 #

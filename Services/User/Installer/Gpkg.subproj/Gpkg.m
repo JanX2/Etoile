@@ -25,6 +25,12 @@
 #include "Gpkg.h"
 
 @implementation Gpkg
+- int 
+{
+  [super init];
+  //  totalSteps = [NSString new];
+  return self;
+}
 - (BOOL) handlesPackage: (NSString *)pkgPath;
 {
   NSLog (@"Entered Gpkg handlesPackage");
@@ -32,6 +38,7 @@
     {
       NSLog (@"Returning YES");
       packagePath = [NSString stringWithString: [pkgPath stringByAppendingPathComponent:@"Contents"]];
+      [packagePath retain];
       [self _getAllInfo];
       return YES;
 
@@ -92,7 +99,7 @@
 - (NSString *) packageSizes
 {
 
-  packageSizes = [NSString stringWithFormat: @"%d installed, %i compressed", 
+  packageSizes = [NSString stringWithFormat: @"%d installed, %i packaged", 
 			   [[[bom objectForKey:@"Sizes"] objectForKey:@"GSTotalSize"] intValue], 14];
   return packageSizes;
 }
@@ -114,12 +121,15 @@
   NSLog (@"InstallPackage received");
   NSMutableDictionary *receipt = [NSMutableDictionary new];
   NSMutableDictionary *installedFiles = [NSMutableDictionary new];
+  NSArray *fileOrder = [NSArray new];
   NSData *receiptData;
   NSString *destination = [[[NSHomeDirectory() stringByAppendingPathComponent:@"GNUstep"]
 			     stringByAppendingPathComponent:@"Applications"]
 			    //			    stringByAppendingPathComponent: appDirectoryName];
 			    stringByAppendingPathComponent: @"123"];
 
+  //  NSLog (@"Install Location: %i",[installLocation retainCount]);
+  [self preInstall];
   NSFileManager *manager = [NSFileManager defaultManager];
   /*    
   //NSString *appDir = [packageTempDir stringByAppendingPathComponent: appDirectoryName];
@@ -135,43 +145,99 @@
   else
     NSLog (@"Chdir FAILED");
 
-  NSEnumerator *enumerator = [[bom objectForKey: @"Files"] keyEnumerator];
+  //NSEnumerator *enumerator = [[bom objectForKey: @"Files"] keyEnumerator];
+  //  fileOrder = [bom objectForKey: @"Order"];
+  //NSLog (@"Order: %@",[fileOrder description]);
+  NSEnumerator *enumerator = [[bom objectForKey: @"Order"] objectEnumerator];
   id key;
-  while ((key = [enumerator nextObject])) 
+  while (key = [enumerator nextObject]) 
     {
       //      NSLog (@"Verifying %@", [[bom objectForKey: @"Files"] objectForKey: key]);
-
-      NSLog (@"Copying %@ to %@", [packageTempDir stringByAppendingPathComponent: key],
-	     [installLocation stringByAppendingPathComponent: key]);
+      
+      //      NSLog (@"Copying %@ to %@", [packageTempDir stringByAppendingPathComponent: key],
+      //	     [installLocation stringByAppendingPathComponent: key]);
       
       
       //[manager copyPath:[appDir stringByAppendingPathComponent:file] toPath:destination handler:nil];	  
-      if ([manager copyPath:[packageTempDir stringByAppendingPathComponent: key] toPath: [installLocation stringByAppendingPathComponent: key] handler: nil])
+      
+
+      
+      
+      /*      if ([[NSWorkspace sharedWorkspace] performFileOperation: NSWorkspaceCopyOperation
+	      source: packageTempDir
+	      destination: [installLocation stringByAppendingPathComponent: key]
+	      files: key
+	      tag: 0] == NO)
+	      <key>NSFileType</key>
+	      <string>NSFileTypeDirectory</string>
+	      
+      */
+      if ([[[[bom objectForKey: @"Files"] objectForKey: key] valueForKey:@"NSFileType"] 
+	    isEqualToString: NSFileTypeDirectory] == NO)
 	{
-	  //	  [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] forKey: key];
-	  [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] forKey: [installLocation stringByAppendingPathComponent: key]];
-	}
+	  // Processing regulat files
+	  //	  NSLog (@"Processing file %@", key);
+	  NSLog (@"Processing file %@", [[[bom objectForKey: @"Files"] objectForKey: key] valueForKey:@"NSFileType"]);
+	  
+	  if ([manager copyPath:[packageTempDir stringByAppendingPathComponent: key] toPath: [installLocation stringByAppendingPathComponent: key] handler: nil] != NO)
+	    {
+	      //	  [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] forKey: key];
+	      [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] 
+			      forKey: [installLocation stringByAppendingPathComponent: key]];
+
+	      [sender performSelectorOnMainThread: @selector(updateProgressWithFile:)
+		      withObject: nil waitUntilDone: YES];
+	      //exit (0);
+	    }
+	  else
+	    {
+	      //	  [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] forKey: [installLocation stringByAppendingPathComponent: key]];
+
+	      NSLog (@"Failed installing a file %@", [installLocation stringByAppendingPathComponent: key]);	      
+	    }
+	} //end File processing
       else
 	{
-	  [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] forKey: [installLocation stringByAppendingPathComponent: key]];
-	  NSLog (@"Failed installing a file");
-	}
-    }
-  
+	  //Processing Directories
+	  //	  NSLog (@"Processing dir %@", key);
+	  NSLog (@"Processing dir %@", [[[bom objectForKey: @"Files"] objectForKey: key] valueForKey:@"NSFileType"]);
+
+	  if ([manager createDirectoryAtPath: [installLocation stringByAppendingPathComponent: key]
+		       attributes:[bom objectForKey: key]] != NO)
+	    {
+	      [installedFiles setObject: [[bom objectForKey: @"Files"] objectForKey: key] 
+			      forKey: [installLocation stringByAppendingPathComponent: key]];
+	      
+	      [sender performSelectorOnMainThread: @selector(updateProgressWithFile:)
+		      withObject: nil waitUntilDone: YES];
+	    }
+	  else
+	    {
+	      NSLog (@"Failed creating a directory %@", [installLocation stringByAppendingPathComponent: key]);
+	    } 
+	  
+	} //end Dir processing
+    } // end while 
+
   [receipt setObject: installedFiles forKey:@"Files"];
-  receiptData = [NSData dataWithData: [NSPropertyListSerialization dataFromPropertyList: bom  
+  receiptData = [NSData dataWithData: [NSPropertyListSerialization dataFromPropertyList: receipt  
 								   //format: NSPropertyListGNUstepBinaryFormat 
 								   format: NSPropertyListXMLFormat_v1_0  
 								   errorDescription: 0]];
 
-  /*
-  if ([receipt writeToFile: @"/tmp/TI.bom" atomically: YES])
+
+  if ([receiptData writeToFile: @"/tmp/TI.bom" atomically: YES])
       NSLog (@"Success");
-  */
+
   [self installReceipt: bom];
+  [self postInstall];
   exit (0);
 
   [pool release];
+}
+- (id) sortFiles: (NSString*) file
+{
+  return  NSOrderedAscending;
 }
 - (BOOL) installReceipt: (NSDictionary*) receipt;
 {
@@ -193,6 +259,19 @@
   
   NSLog (@"Archive to remove: %@", tempArchive);
   NSLog (@"BOM to remove: %@", tempBom);
+  return YES;
+}
+
+- (BOOL) preInstall
+{
+
+    NSLog (@"preInstall: %@ , %@", packagePath, installLocation);
+
+  return YES;
+}
+- (BOOL) postInstall
+{
+  //  NSLog (@"*** postInstall: %@, %@", packagePath, [self packageLocation]);
   return YES;
 }
 - _getAllInfo
@@ -284,7 +363,9 @@
 }
 - (int) totalSteps
 {
+  totalSteps = [[bom objectForKey: @"Files"] count];
   return totalSteps;
+  //  return 10;
 }
 - _uncompressPackage
 {

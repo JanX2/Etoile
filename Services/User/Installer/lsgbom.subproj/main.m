@@ -35,6 +35,9 @@ main(int argc, const char *argv[])
   NSEnumerator *enumerator;
   id key;
   NSArray *args = [[NSProcessInfo processInfo]arguments];
+
+  // NEW FOR TESTING ONLY
+  //  NSFileManager *manager = [NSFileManager defaultManager];
   //  NSString *appDir = @"/home/fsmunoz/Code/mkgbom/test.gbom";
   NSString *appDir = [NSString stringWithString : [args objectAtIndex: 1]];
   NSLog (@"Appdir: %@", appDir);
@@ -54,9 +57,19 @@ main(int argc, const char *argv[])
   while ((key = [enumerator nextObject])) 
     {
       NSLog (@"Analysing %@ : Owner: %@   Checksum: %@", key, 
-	     	     [[[bom objectForKey:@"Files"]objectForKey: key] fileOwnerAccountName],
+	     [[[bom objectForKey:@"Files"]objectForKey: key] fileOwnerAccountName],
 	     [[[bom objectForKey:@"Files"]objectForKey: key] objectForKey:@"GSFileChecksum"]);
       //NSLog (@"Key %@  Value %@", key ,[bom objectForKey: key]); 
+      /*
+      if ([manager copyPath:[packageTempDir stringByAppendingPathComponent: key] toPath: [installLocation stringByAppendingPathComponent: key] handler: nil] == NO)
+	{
+	  NSLog (@"Failed installing a file %@", [installLocation stringByAppendingPathComponent: key]);
+	}
+      else
+	{
+	  NSLog (@"Success in installing a file %@", [installLocation stringByAppendingPathComponent: key]);
+	}
+      */
     }
   
   [pool release];

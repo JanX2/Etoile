@@ -11,14 +11,13 @@ VERSION = 0.1
 PACKAGE_NAME = Installer
 APP_NAME = Installer
 Installer_APPLICATION_ICON = Installer.app.tiff
-GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_USER_ROOT)
+GNUSTEP_INSTALLATION_DIR = $(HOME)/GNUstep
 
 
 #
 # Subprojects
 #
 SUBPROJECTS = \
-#Deb.subproj \
 Gpkg.subproj \
 mkgbom.subproj \
 lsgbom.subproj 
@@ -29,6 +28,7 @@ lsgbom.subproj
 Installer_RESOURCE_FILES = \
 Resources/Installer.gorm \
 Resources/Package.gorm\
+Resources/Package2.gorm\
 Resources/Installer.app.tiff \
 Resources/Deb.tiff \
 Resources/Pkg.tiff\

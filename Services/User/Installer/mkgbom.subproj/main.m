@@ -38,6 +38,7 @@ main(int argc, const char *argv[])
   NSMutableDictionary *fileAttrs = [NSMutableDictionary new];
   NSMutableDictionary *files = [NSMutableDictionary new];
   NSMutableDictionary *sizes = [NSMutableDictionary new];
+  NSMutableArray *fileOrder = [NSMutableArray new];
   NSData *bomData;
   NSEnumerator *enumerator;
   NSLog (@"Appdir: %@", appDir);  
@@ -76,6 +77,7 @@ main(int argc, const char *argv[])
 	  
 	  // Not used, possibily will contain a checksum
 	  [fileAttrs setObject: @"0" forKey: @"GSFileChecksum"];
+	  [fileOrder addObject: file];
 	}
     }
   else
@@ -87,6 +89,7 @@ main(int argc, const char *argv[])
   [sizes setObject: [NSNumber numberWithInt: fileNumber] forKey: @"GSFileNumber"];
   [sizes setObject: [NSNumber numberWithLongLong: totalSize] forKey: @"GSTotalSize"];  
   [bom setObject: sizes forKey:@"Sizes"];
+  [bom setObject: fileOrder forKey:@"Order"];
   //  enumerator = [bom keyEnumerator];
   //  NSLog (@"BOM Format: %@", bomFormat);
   

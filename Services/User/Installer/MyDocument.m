@@ -42,7 +42,7 @@
 					object: nil];  
 
   //NSLog (@"windowControllerDidLoadNib: %@",[self hash]);
-  
+  [holderView setContentView: [[infoView contentView] retain]];  
   [packageName setStringValue: [packageManager packageName]];
   [packageVersion setStringValue: [packageManager packageVersion]];
   [packageDescription setString: [packageManager packageDescription]];
@@ -57,7 +57,8 @@
     [packageStatus setStringValue: @"Installed"];
   else
     [packageStatus setStringValue: @"Not installed"];
-  
+   [progressIndicator setDoubleValue: 0.0];
+
   NSLog(@"End of WCDLN");
 
 
@@ -101,17 +102,22 @@
 
    //[installLocation setStringValue: @"123"];
    //   NSLog (@"Install Location: %@", [installLocation stringValue]);
-   [progressIndicator setMinValue: 0.0];
-   [progressIndicator setMaxValue: 100.0];
+
+   //   [progressIndicator setMaxValue: 100.0];
+   [progressIndicator setMinValue: 0.0];  
+   [progressIndicator setMaxValue: [packageManager totalSteps]];
    NSLog(@"%@",progressIndicator);
    NSLog (@"Max: %g",[progressIndicator maxValue]);
-   [progressIndicator setDoubleValue: 0.0];
+   //   [progressIndicator setDoubleValue: 0.0];
    if (progressIndicator != nil)
      {
        NSLog(@"********min: %g max: %g present: %g",[progressIndicator minValue],[progressIndicator maxValue],[progressIndicator doubleValue]);
      }
 
-   [progressPanel makeKeyAndOrderFront: sender];
+
+   [viewSelector selectItemWithTitle:@"Progress"];
+   [self switchView: viewSelector];
+   //   [progressPanel makeKeyAndOrderFront: sender];
 
    
    [NSThread detachNewThreadSelector:@selector (installPackage:)
@@ -119,9 +125,9 @@
 	     withObject:self];
    
    //    [packageManager installPackage:self];
-   /*   
+
 	NSLog (@"totalSteps: %i", [packageManager totalSteps]);
-   
+   /*      
    NSLog(@"min: %g max: %g present: %g",[progressIndicator minValue],[progressIndicator maxValue],[progressIndicator doubleValue]);
    */
 }
@@ -132,16 +138,16 @@
   //  sleep (1);
   //  NSString *name = [NSString stringWithString: [not object]];
 
-  [progressIndicator incrementBy: 10.0];
+  [progressIndicator incrementBy: 1.0];
   //[progressIndicator setNeedsDisplay: YES];
   //  [progressPanel flushWindow];
   //  [progressPanel display];
 
   //  [progressIndicator display];
-  [installStep setStringValue: [name lastPathComponent]];
+  //  [installStep setStringValue: [name lastPathComponent]];
 
   NSLog (@"Beep...");
-    NSLog(@"File: %@; min: %g max: %g present: %g", name , [progressIndicator minValue],[progressIndicator maxValue],[progressIndicator doubleValue]);
+  NSLog(@"File: %@; min: %g max: %g present: %g", name , [progressIndicator minValue],[progressIndicator maxValue],[progressIndicator doubleValue]);
   
 }
  - (NSString *) chooseInstallationPath: (id) sender
@@ -170,5 +176,49 @@
    [myOP release];
    [progressPanel makeKeyAndOrderFront: sender];
    return @"123";
+}
+- (void) switchView:(id)sender
+{
+  NSLog (@"Switching");
+  if ( [[[sender selectedItem]title] isEqualToString: @"Info"] )
+    {
+      [holderView setContentView: [[infoView contentView] retain]];
+      NSLog (@"Retain count: %i",[[infoView contentView] retainCount]);
+    }
+  if ( [[[sender selectedItem]title] isEqualToString: @"Licence"] )
+    {
+      [holderView setContentView: [[licenceView contentView]retain]];      
+    }
+  if ( [[[sender selectedItem]title] isEqualToString: @"Files"] )
+    {
+      [holderView setContentView: [[filesView contentView]retain]];      
+    }
+  if ( [[[sender selectedItem]title] isEqualToString: @"Progress"] )
+    {
+      [holderView setContentView: [[progressView contentView]retain]];      
+    }
+  /*
+  else if ( [[[sender selectedItem]title] isEqualToString: @"List"] )
+    {
+      [holderView setContentView: listBox];
+    }
+  else if ( [[[sender selectedItem]title] isEqualToString: @"Prefs"] )
+    {
+      NSLog(@"Prefs: %@",[prefsBox contentView]);
+
+      if (!prefsView) {
+	NSLog (@"beep");
+	prefsView = [NSView new];
+	prefsView = [[prefsBox contentView] retain];
+	[prefsView removeFromSuperview];
+	[prefsBox setContentView: NULL];
+	[prefsBox release];
+	prefsBox = nil;
+	[packageName setStringValue: @"w00t!"];
+      }
+      
+      [holderView setContentView: prefsView];
+    }
+  */
 }
 @end

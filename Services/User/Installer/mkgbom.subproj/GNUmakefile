@@ -11,7 +11,7 @@ VERSION = 0.1
 PACKAGE_NAME = mkgbom
 TOOL_NAME = mkgbom
 mkgbom_TOOL_ICON = 
-GNUSTEP_INSTALLATION_DIR = $(HOME)/GNUstep/Tools
+#GNUSTEP_INSTALLATION_DIR = $(HOME)/GNUstep/Tools
 
 #
 # Libraries

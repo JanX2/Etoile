@@ -14,7 +14,7 @@
     );
     INSTALLDIR = "$(HOME)/GNUstep/Tools";
     LANGUAGE = English;
-    LAST_EDITING = "2005-03-15 12:22:52 +0000";
+    LAST_EDITING = "2005-03-23 23:46:00 +0000";
     LIBRARIES = (
 	"gnustep-base"
     );

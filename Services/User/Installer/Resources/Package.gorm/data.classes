@@ -2,7 +2,10 @@
     "## Comment" = "Do NOT change this file, Gorm maintains it";
     FirstResponder = {
 	Actions = (
-	    "chooseInstallationPath:"
+	    "chooseInstallationPath:",
+	    "showLicence:",
+	    "showFiles:",
+	    "switchView:"
 	);
 	Super = NSObject;
     };
@@ -10,7 +13,10 @@
 	Actions = (
 	    "installPackage:",
 	    "removePackage:",
-	    "chooseInstallationPath:"
+	    "chooseInstallationPath:",
+	    "switchView:",
+	    "showLicence:",
+	    "showFiles:"
 	);
 	Outlets = (
 	    packageName,
@@ -28,7 +34,13 @@
 	    progressIndicator,
 	    installStep,
 	    installLocation,
-	    locationSelectButton
+	    locationSelectButton,
+	    filesView,
+	    holderView,
+	    infoView,
+	    licenceView,
+	    progressView,
+	    viewSelector
 	);
 	Super = NSDocument;
     };

@@ -11,7 +11,7 @@ VERSION = 0.1
 PACKAGE_NAME = lsgbom
 TOOL_NAME = lsgbom
 lsgbom_TOOL_ICON = 
-GNUSTEP_INSTALLATION_DIR = $(HOME)/GNUstep/Tools
+#GNUSTEP_INSTALLATION_DIR = $(HOME)/GNUstep/Tools
 
 #
 # Libraries
