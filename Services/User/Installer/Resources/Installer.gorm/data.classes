@@ -1,0 +1,23 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "installPackage:"
+	);
+	Super = NSObject;
+    };
+    MyController = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+    MyDocument = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+}

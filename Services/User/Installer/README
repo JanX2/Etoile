@@ -1,0 +1,11 @@
+This is Installer.app, a package installer for GNUstep.
+
+It aims to provide easy instalation of packages, be they the native
+packages of the underlying system (debs, rpms, etc) or, in the future,
+GNUstep packages (that follow the NeXTSTEP/MacOSX package format).
+
+Any questions/sugestions are appreaciated :)
+
+Frederico Munoz
+fsmunoz@gesal.org
+

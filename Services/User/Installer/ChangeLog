@@ -1,0 +1,404 @@
+2005-03-19  Frederico Muñoz  <fsmunoz@gesal.org>
+
+	* TODO: Added TODO file.
+
+	* GNUmakefile (GNUSTEP_INSTALLATION_DIR): Changed to USER_ROOT.
+
+	* Gpkg.subproj/GNUmakefile (Gpkg_COPY_INTO_DIR): This bundle goes
+	into the main app bundle.
+
+	* PackageManager.m (init): Load bundles in appbundle.
+
+2005-03-18  Frederico Muñoz  <fsmunoz@gesal.org>
+
+	* Installer is now part of Étoilé.
+
+	* Changed from GNU arch to CVS due to merging with Étoilé.
+
+2005-03-15 12:46:36 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-17
+
+    Summary:
+      Added tools lsgbom and mkgbom subprojects
+    Revision:
+      installer--mainline--0.1--patch-17
+
+    Added an initial implementation of the lsgbom and mkgbom tools.
+
+    new files:
+     lsgbom.subproj/.arch-ids/=id
+     lsgbom.subproj/.arch-ids/GNUmakefile.id
+     lsgbom.subproj/.arch-ids/GNUmakefile.postamble.id
+     lsgbom.subproj/.arch-ids/GNUmakefile.preamble.id
+     lsgbom.subproj/.arch-ids/Info-gnustep.plist.id
+     lsgbom.subproj/.arch-ids/PC.project.backup.id
+     lsgbom.subproj/.arch-ids/PC.project.id
+     lsgbom.subproj/.arch-ids/main.m.id lsgbom.subproj/GNUmakefile
+     lsgbom.subproj/GNUmakefile.postamble
+     lsgbom.subproj/GNUmakefile.preamble
+     lsgbom.subproj/Info-gnustep.plist lsgbom.subproj/PC.project
+     lsgbom.subproj/PC.project.backup
+     lsgbom.subproj/Resources/.arch-ids/=id
+     lsgbom.subproj/Resources/.arch-ids/Info-gnustep.plist.id
+     lsgbom.subproj/Resources/Info-gnustep.plist
+     lsgbom.subproj/main.m mkgbom.subproj/.arch-ids/=id
+     mkgbom.subproj/.arch-ids/GNUmakefile.id
+     mkgbom.subproj/.arch-ids/GNUmakefile.postamble.id
+     mkgbom.subproj/.arch-ids/GNUmakefile.preamble.id
+     mkgbom.subproj/.arch-ids/Info-gnustep.plist.id
+     mkgbom.subproj/.arch-ids/PC.project.backup.id
+     mkgbom.subproj/.arch-ids/PC.project.id
+     mkgbom.subproj/.arch-ids/main.m.id mkgbom.subproj/GNUmakefile
+     mkgbom.subproj/GNUmakefile.postamble
+     mkgbom.subproj/GNUmakefile.preamble
+     mkgbom.subproj/Info-gnustep.plist mkgbom.subproj/PC.project
+     mkgbom.subproj/PC.project.backup
+     mkgbom.subproj/Resources/.arch-ids/=id
+     mkgbom.subproj/Resources/.arch-ids/Info-gnustep.plist.id
+     mkgbom.subproj/Resources/Info-gnustep.plist
+     mkgbom.subproj/main.m
+
+    modified files:
+     ChangeLog Deb.subproj/GNUmakefile Deb.subproj/PC.project
+     Deb.subproj/PC.project.backup GNUmakefile
+     Gpkg.subproj/GNUmakefile Gpkg.subproj/Gpkg.m
+     Gpkg.subproj/PC.project Gpkg.subproj/PC.project.backup
+     PC.project PC.project.backup
+
+    new directories:
+     lsgbom.subproj lsgbom.subproj/.arch-ids
+     lsgbom.subproj/Resources lsgbom.subproj/Resources/.arch-ids
+     mkgbom.subproj mkgbom.subproj/.arch-ids
+     mkgbom.subproj/Resources mkgbom.subproj/Resources/.arch-ids
+
+
+2005-03-13 02:50:41 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-16
+
+    Summary:
+      Many great changes
+    Revision:
+      installer--mainline--0.1--patch-16
+
+    Several major rewrites of many parts of the code. The pkg bundle uses
+    the "new" format as seen on OS X and the whole file finding routines
+    have been rewiten in a much better way (using NSBundle instead of
+    NSScanner). Support code for choosing the location directory, reading
+    and copying based on the BOM (the custom bom which I make with a
+    tool), etc. Many smaller things were changed.
+
+    modified files:
+     ChangeLog Deb.subproj/Deb.m Gpkg.subproj/Gpkg.h
+     Gpkg.subproj/Gpkg.m MyDocument.h MyDocument.m Package.h
+     Resources/Package.gorm/data.classes
+     Resources/Package.gorm/objects.gorm
+
+
+2005-02-24 18:51:37 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-15
+
+    Summary:
+      Added threading to the progress bar
+    Revision:
+      installer--mainline--0.1--patch-15
+
+    Use NSThread to allow the installation method to update the progress bar.
+
+    modified files:
+     ChangeLog Gpkg.subproj/Gpkg.m MyDocument.h MyDocument.m
+     Resources/Package.gorm/data.classes
+     Resources/Package.gorm/objects.gorm
+
+
+2005-02-22 19:14:58 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-14
+
+    Summary:
+      File by file copying in GPkg with progress indicator
+    Revision:
+      installer--mainline--0.1--patch-14
+
+    Added file by file copy of file in the Gpkg bundle, added support for
+    the progressIndicator, moved packageManager instanciation to readFile
+    
+    
+
+    modified files:
+     ChangeLog Deb.subproj/Deb.m Gpkg.subproj/Gpkg.h
+     Gpkg.subproj/Gpkg.m MyDocument.h MyDocument.m Package.h
+     Resources/Package.gorm/objects.gorm
+
+
+2005-02-20 01:19:40 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-13
+
+    Summary:
+      Fixed icon in Gpkg.bundle
+    Revision:
+      installer--mainline--0.1--patch-13
+
+    Icon path was hardcoded in the Gpkg bundle, fixed.
+
+    modified files:
+     ChangeLog Gpkg.subproj/Gpkg.h Gpkg.subproj/Gpkg.m
+     Resources/Package.gorm/objects.gorm
+
+
+2005-02-19 23:07:17 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-12
+
+    Summary:
+      Fixed opening of file types
+    Revision:
+      installer--mainline--0.1--patch-12
+
+    Fixed Installer not opening file types on double click/gopen, had a
+    dangling connection to unused MyWindowController. Moved the code that
+    initiates the PackaManager from windowControllerDidLoadNib directly to
+    readFile.
+    
+
+    removed files:
+     .arch-ids/MyWindowController.h.id
+     .arch-ids/MyWindowController.m.id MyWindowController.h
+     MyWindowController.m
+
+    modified files:
+     ChangeLog GNUmakefile Gpkg.subproj/Gpkg.m MyDocument.h
+     MyDocument.m PC.project PC.project.backup
+     Resources/Installer.gorm/data.classes
+     Resources/Installer.gorm/objects.gorm
+
+
+2005-02-17 22:36:06 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-11
+
+    Summary:
+      New bundle loading, many other improvements
+    Revision:
+      installer--mainline--0.1--patch-11
+
+    Changed the bundle loading mechanism (using code from Jeff's
+    Preferences.app), made the .pkg bundle work minimally, made the .deb
+    bundle work minimally, changed the bundle extension, added what will
+    be a progress NSPanel (still doesn't do anything), many other fixes.
+    
+
+    new files:
+     .arch-ids/ProgressController.h.id
+     .arch-ids/ProgressController.m.id ProgressController.h
+     ProgressController.m Resources/.arch-ids/Pkg.tiff.id
+     Resources/Installer.gorm/.arch-ids/data.info.id
+     Resources/Installer.gorm/data.info
+     Resources/Package.gorm/.arch-ids/data.info.id
+     Resources/Package.gorm/data.info Resources/Pkg.tiff
+
+    removed files:
+     .arch-ids/Installer.h.id .arch-ids/Installer.m.id Installer.h
+     Installer.m
+
+    modified files:
+     AppController.h AppController.m ChangeLog Deb.subproj/Deb.m
+     Deb.subproj/GNUmakefile Deb.subproj/PC.project
+     Deb.subproj/PC.project.backup GNUmakefile
+     Gpkg.subproj/GNUmakefile Gpkg.subproj/Gpkg.h
+     Gpkg.subproj/Gpkg.m Gpkg.subproj/PC.project
+     Gpkg.subproj/PC.project.backup MyDocument.h MyDocument.m
+     PC.project PC.project.backup Package.h PackageManager.h
+     PackageManager.m Resources/Info-gnustep.plist
+     Resources/Installer.gorm/data.classes
+     Resources/Installer.gorm/objects.gorm
+     Resources/Package.gorm/data.classes
+     Resources/Package.gorm/objects.gorm
+
+
+2005-02-11 11:32:39 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-10
+
+    Summary:
+      Added installation status information
+    Revision:
+      installer--mainline--0.1--patch-10
+
+    
+    Used apt-cache policy to see if the package is installed on this
+    system and present the info to the user.
+
+    new files:
+     .arch-ids/copyright.id copyright
+
+    modified files:
+     ChangeLog Deb.subproj/Deb.h Deb.subproj/Deb.m MyDocument.m
+
+
+2005-02-11 10:20:36 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-9
+
+    Summary:
+      Added installed/packaged sizes in Deb.bundle
+    Revision:
+      installer--mainline--0.1--patch-9
+
+    Installed/packaged file sizes implemented.
+
+    modified files:
+     ChangeLog Deb.subproj/Deb.m
+
+
+2005-02-08 16:46:05 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-8
+
+    Summary:
+      More "get licence for deb" changes
+    Revision:
+      installer--mainline--0.1--patch-8
+
+    Removed the harcoded copyright file string with a rather confused
+    way to compose the path (must clean latter),
+
+    modified files:
+     ChangeLog Deb.subproj/Deb.m
+
+
+2005-02-08 02:32:35 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-7
+
+    Summary:
+      Added Licence capability
+    Revision:
+      installer--mainline--0.1--patch-7
+
+    Added the capability in the Deb bundle to show the licence of the
+    package (via dpkg + tar).
+    
+
+    modified files:
+     ChangeLog Deb.subproj/Deb.h Deb.subproj/Deb.m MyDocument.m
+     Package.h
+
+
+2005-02-07 22:56:34 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-6
+
+    Summary:
+      Fixed NSString related problems
+    Revision:
+      installer--mainline--0.1--patch-6
+
+    Several NSString fixes due to bad initialization, plus some changes in
+    Deb.m and PackageManager.m related to the bundle path (still hardcoded for now)
+
+    modified files:
+     ChangeLog Deb.subproj/Deb.m Installer.m MyDocument.m
+     PackageManager.m
+
+
+2005-02-07 15:28:04 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-5
+
+    Summary:
+      
+    Revision:
+      installer--mainline--0.1--patch-5
+
+    
+    
+
+    new files:
+     .arch-ids/ChangeLog.id ChangeLog
+
+    removed files:
+     .arch-ids/ChangeLog.id ChangeLog
+
+
+2005-02-07 15:20:10 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-4
+
+    Summary:
+      Added Changelog
+    Revision:
+      installer--mainline--0.1--patch-4
+
+    Added Changelog file
+
+    new files:
+     .arch-ids/ChangeLog.id ChangeLog
+
+
+2005-02-07 14:48:59 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-3
+
+    Summary:
+      Added README
+    Revision:
+      installer--mainline--0.1--patch-3
+
+    Added a barebones README file
+
+    new files:
+     .arch-ids/README.id README
+
+
+2005-02-07 14:21:15 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-2
+
+    Summary:
+      Merging with a newer version
+    Revision:
+      installer--mainline--0.1--patch-2
+
+    Bring source closer to the latest revision by merging many of the advances 
+    found in a newer tree that was lingering around.
+
+    new files:
+     .arch-ids/MyDocument.h.id .arch-ids/MyDocument.m.id
+     .arch-ids/MyWindowController.h.id
+     .arch-ids/MyWindowController.m.id
+     .arch-ids/PackageManager.h.id .arch-ids/PackageManager.m.id
+     Deb.subproj/Resources/.arch-ids/=id MyDocument.h MyDocument.m
+     MyWindowController.h MyWindowController.m PackageManager.h
+     PackageManager.m Resources/.arch-ids/Deb.tiff.id
+     Resources/Deb.tiff Resources/Package.gorm/.arch-ids/=id
+     Resources/Package.gorm/.arch-ids/data.classes.id
+     Resources/Package.gorm/.arch-ids/objects.gorm.id
+     Resources/Package.gorm/data.classes
+     Resources/Package.gorm/objects.gorm
+
+    modified files:
+     AppController.h AppController.m Deb.subproj/Deb.h
+     Deb.subproj/Deb.m Deb.subproj/PC.project
+     Deb.subproj/PC.project.backup GNUmakefile PC.project
+     PC.project.backup Package.h Resources/Info-gnustep.plist
+     Resources/Installer.gorm/data.classes
+     Resources/Installer.gorm/objects.gorm main.m
+
+    new directories:
+     Deb.subproj/Resources Deb.subproj/Resources/.arch-ids
+     Resources/Package.gorm Resources/Package.gorm/.arch-ids
+
+
+2005-02-06 20:19:40 GMT	Frederico Munoz <fsmunoz@gesal.org>	patch-1
+
+    Summary:
+      GPL notices in source files
+    Revision:
+      installer--mainline--0.1--patch-1
+
+    Put GPL notices in every source file and changed the copyright to myself
+
+    modified files:
+     AppController.h AppController.m Deb.subproj/Deb.h
+     Deb.subproj/Deb.m Gpkg.subproj/Gpkg.h Gpkg.subproj/Gpkg.m
+     Installer.h Installer.m Package.h main.m
+
+
+2005-02-06 19:45:05 GMT	Frederico Munoz <fsmunoz@gesal.org>	base-0
+
+    Summary:
+      initial import
+    Revision:
+      installer--mainline--0.1--base-0
+
+    Initial import of the last salvaed version of Installer.app
+
+    new files:
+     AppController.h AppController.m Deb.subproj/Deb.h
+     Deb.subproj/Deb.m Deb.subproj/GNUmakefile
+     Deb.subproj/GNUmakefile.postamble
+     Deb.subproj/GNUmakefile.preamble Deb.subproj/PC.project
+     Deb.subproj/PC.project.backup GNUmakefile
+     GNUmakefile.postamble GNUmakefile.preamble
+     Gpkg.subproj/GNUmakefile Gpkg.subproj/GNUmakefile.postamble
+     Gpkg.subproj/GNUmakefile.preamble Gpkg.subproj/Gpkg.h
+     Gpkg.subproj/Gpkg.m Gpkg.subproj/PC.project
+     Gpkg.subproj/PC.project.backup Installer.h Installer.m
+     PC.project PC.project.backup Package.h
+     Resources/Info-gnustep.plist Resources/Installer.app.tiff
+     Resources/Installer.gorm/data.classes
+     Resources/Installer.gorm/objects.gorm main.m
+
+

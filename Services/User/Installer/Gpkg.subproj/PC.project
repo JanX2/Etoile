@@ -1,0 +1,67 @@
+{
+    BUILDTOOL = "/usr/bin/make";
+    BUNDLE_EXTENSION = .installer;
+    CLASS_FILES = (
+	Gpkg.m
+    );
+    COMPILEROPTIONS = "";
+    CPPOPTIONS = "";
+    CREATION_DATE = "2004-06-22 15:45:21 +0100";
+    DOCU_FILES = (
+    );
+    FRAMEWORKS = (
+    );
+    HEADER_FILES = (
+	Gpkg.h
+    );
+    IMAGES = (
+    );
+    INSTALLDIR = "";
+    INTERFACES = (
+    );
+    LANGUAGE = English;
+    LAST_EDITING = "2005-03-18 03:04:00 +0000";
+    LIBRARIES = (
+	"gnustep-base",
+	"gnustep-gui"
+    );
+    LINKEROPTIONS = "";
+    LOCALIZED_RESOURCES = (
+    );
+    MAKEFILEDIR = "$(GNUSTEP_MAKEFILES)";
+    OBJC_COMPILEROPTIONS = "";
+    OTHER_RESOURCES = (
+    );
+    OTHER_SOURCES = (
+    );
+    PRINCIPAL_CLASS = Gpkg;
+    PROJECT_AUTHORS = (
+	"Frederico Munoz"
+    );
+    PROJECT_COPYRIGHT = "Copyright (C) 2005 Frederico Mu\U00F1oz";
+    PROJECT_COPYRIGHT_DESC = "Released under the GNU GPL v2";
+    PROJECT_CREATOR = "Frederico S. Munoz,,,";
+    PROJECT_DESCRIPTION = "Pkg format bundle for Installer";
+    PROJECT_GROUP = "No group avaliable!";
+    PROJECT_MAINTAINER = "Frederico S. Munoz,,,";
+    PROJECT_NAME = Gpkg;
+    PROJECT_RELEASE = 0.1;
+    PROJECT_SUMMARY = "No summary avaliable!";
+    PROJECT_TYPE = Bundle;
+    PROJECT_URL = "";
+    SEARCH_HEADER_DIRS = (
+    );
+    SEARCH_LIB_DIRS = (
+    );
+    SUBPROJECTS = (
+    );
+    SUPPORTING_FILES = (
+	GNUmakefile.preamble,
+	GNUmakefile,
+	GNUmakefile.postamble
+    );
+    USER_LANGUAGES = (
+	Portuguese,
+	English
+    );
+}

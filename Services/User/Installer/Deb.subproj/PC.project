@@ -1,0 +1,66 @@
+{
+    BUILDTOOL = "/usr/bin/make";
+    BUNDLE_EXTENSION = .installer;
+    CLASS_FILES = (
+	Deb.m
+    );
+    COMPILEROPTIONS = "";
+    CPPOPTIONS = "";
+    CREATION_DATE = "2004-07-01 17:21:02 +0100";
+    DOCU_FILES = (
+    );
+    FRAMEWORKS = (
+    );
+    HEADER_FILES = (
+	Deb.h
+    );
+    IMAGES = (
+    );
+    INSTALLDIR = "$(HOME)/GNUstep/Library/Bundles";
+    INTERFACES = (
+    );
+    LANGUAGE = English;
+    LAST_EDITING = "2005-03-18 02:47:30 +0000";
+    LIBRARIES = (
+	"gnustep-base",
+	"gnustep-gui"
+    );
+    LINKEROPTIONS = "";
+    LOCALIZED_RESOURCES = (
+    );
+    MAKEFILEDIR = "$(GNUSTEP_MAKEFILES)";
+    OBJC_COMPILEROPTIONS = "";
+    OTHER_RESOURCES = (
+    );
+    OTHER_SOURCES = (
+    );
+    PRINCIPAL_CLASS = Deb;
+    PROJECT_AUTHORS = (
+    );
+    PROJECT_COPYRIGHT = "Copyright (C) 200x";
+    PROJECT_COPYRIGHT_DESC = "Released under ...";
+    PROJECT_CREATOR = "Frederico S. Munoz,,,";
+    PROJECT_DESCRIPTION = "No description avaliable!";
+    PROJECT_GROUP = "No group avaliable!";
+    PROJECT_MAINTAINER = "Frederico S. Munoz,,,";
+    PROJECT_NAME = Deb;
+    PROJECT_RELEASE = 0.1;
+    PROJECT_SUMMARY = "No summary avaliable!";
+    PROJECT_TYPE = Bundle;
+    PROJECT_URL = "";
+    SEARCH_HEADER_DIRS = (
+    );
+    SEARCH_LIB_DIRS = (
+    );
+    SUBPROJECTS = (
+    );
+    SUPPORTING_FILES = (
+	GNUmakefile.preamble,
+	GNUmakefile,
+	GNUmakefile.postamble
+    );
+    USER_LANGUAGES = (
+	Portuguese,
+	English
+    );
+}
