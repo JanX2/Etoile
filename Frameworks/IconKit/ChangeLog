@@ -1,8 +1,19 @@
 2005-03-14  Quentin Mathe  <qmathe@club-internet.fr>
     
     * Headers/IconKit.h:
-    * Headers/IKIconPositions.h:
+    * Headers/IKIcon.h:
     * Headers/IKIconIdentifier.h
+    * Headers/IKIconPositions.h:
+    * Headers/IKWorkspaceAdditions.h:
+    Updated indentation to be more in line with Etoile and GNUstep coding
+    guidelines.
+
+2005-03-14  Quentin Mathe  <qmathe@club-internet.fr>
+    
+    * Headers/IconKit.h:
+    * Headers/IKIcon.h:
+    * Headers/IKIconIdentifier.h
+    * Headers/IKIconPositions.h:
     * Headers/IKWorkspaceAdditions.h:
     * Source/IKIcon.m:
     * Source/IKWorkspaceAdditions.m:
