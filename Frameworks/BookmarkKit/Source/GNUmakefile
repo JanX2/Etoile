@@ -28,6 +28,10 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS = -Wno-import
 
+ADDITIONAL_INCLUDE_DIRS = -I../Headers
+ADDITIONAL_LIB_DIRS = 
+ADDITIONAL_DEPENDS = 
+
 GNUSTEP_MAKEFILES = $(GNUSTEP_SYSTEM_ROOT)/Makefiles
 
 GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
@@ -35,32 +39,33 @@ GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 #
 # Main application
 #
-LIBRARY_NAME=		libBookmarkKit	
-VERSION=		0.1
+LIBRARY_NAME = libBookmarkKit	
+VERSION = 0.1
 
 #
 # Resource files
 #
-libBookmarkKit_MAIN_MODEL_FILE=
+libBookmarkKit_MAIN_MODEL_FILE =
 
-libBookmarkKit_RESOURCE_FILES=
+libBookmarkKit_RESOURCE_FILES =
 
-libBookmarkKit_LOCALIZED_RESOURCE_FILES=
+libBookmarkKit_LOCALIZED_RESOURCE_FILES =
 
 #
 # Languages we're localized for
 #
-libBookmarkKit_LANGUAGES= \
+libBookmarkKit_LANGUAGES = \
 	English
 	
 #
 # Class files
 #
-libBookmarkKit_OBJC_FILES= \
+libBookmarkKit_OBJC_FILES = \
     BKBookmark.m \
     BKBookmarkQuery.m \
-    BKBookmarkSearchResult \
+    BKBookmarkSearchResult.m \
 	BKBookmarkStore.m
+	
 #
 # C files
 #
@@ -77,7 +82,7 @@ libBookmarkKit_HEADER_FILES = \
     BKBookmark.h \
     BKBookmarkQuery.h \
     BKBookmarkSearchResult.h \
-	BKBookmarkStore.h
+    BKBookmarkStore.h
 	
 -include GNUmakefile.preamble
 

@@ -25,18 +25,20 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <TrackerKit/TKSearchResult.h>
+#import <AppKit/AppKit.h>
+//#import <TrackerKit/TKSearchResult.h>
+#import "BKBookmarkSearchResult.h"
 
 @implementation BKBookmarkSearchResult
 
 - (NSString *) transformToXBEL // aspect
 {
-
+    return nil;
 }
 
 - (NSString *) transformToXMLNativeFormat // aspect
 {
-
+    return nil;
 }
 
 @end

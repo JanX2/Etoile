@@ -1,7 +1,7 @@
 /*
 	BKBookmarkQuery.h
 
-	BKBookmarkQuery is the TKQuery subclass to create bookmarks search request
+	BKBookmarkQuery is the Query class to create bookmarks search request
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>	                   
 
@@ -23,9 +23,12 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import <TrackerKit/TKQuery.h>
+/*
+ * BKBookmarkQuery is TKQuery subclass (or wrapper ?) when TrackerKit is 
+ * installed
+ */
 
-@interface BKBookmarkQuery : TKQuery
+@interface BKBookmarkQuery : NSObject
 
 - (BOOL) matchesBookmark: (BKBookmark *)bookmark;
 

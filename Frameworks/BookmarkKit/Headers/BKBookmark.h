@@ -23,13 +23,14 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-typed enum _BKBookmarkProtocol
+// FIXME: Rewrite bookmark protocols model with roles idea
+typedef enum _BKBookmarkProtocol
 {
   BKBookmarkNoProtocol,
   BKBookmarkFTPProtocol,
   BKBookmarkHTTPProtocol,
   BKBookmarkLocalProtocol
-} BKBookmarkProtocol
+} BKBookmarkProtocol;
 
 @interface BKBookmark : NSObject
 {
@@ -42,12 +43,12 @@ typed enum _BKBookmarkProtocol
 - (id) initWithURL: (NSURL *)url;
 - (id) initWithXBEL: (NSString *)xbel;
 
-- (NSURL *) URL
+- (NSURL *) URL;
 
-- (NSDate *) creationDate
-- (void) setCreationDate: (NSDate *)date
-- (NSDate *) lastVisitDate
-- (void) setLastVisitDate: (NSDate *)date
+- (NSDate *) creationDate;
+- (void) setCreationDate: (NSDate *)date;
+- (NSDate *) lastVisitDate;
+- (void) setLastVisitDate: (NSDate *)date;
 - (NSImage *) favIcon;
 - (void) setFavIcon: (NSImage *)icon;
 

@@ -24,34 +24,43 @@
 */
 
 #import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+#import "BKBookmark.h"
+#import "BKBookmarkQuery.h"
+#import "BKBookmarkSearchResult.h"
+#import "BKBookmarkStore.h"
 
 @implementation BKBookmarkStore
 
 + (BKBookmarkStore *) sharedInstanceForDefaultPath
 {
-
+	return nil;
 }
 
 + (BKBookmarkStore *) sharedInstanceForPath: (NSString *)path 
 // support native format or XBEL format
 {
-
+    return nil;
 }
 
 + (BKBookmarkStore *) sharedInstanceForURL: (NSURL *)url
 // support native format or XBEL format
 {
-
+    return nil;
 }
 
 - (NSString *) path
 {
-
+    return nil;
 }
 
+// FIXME: roles idea must be used here to have a better method interface and
+// implementation. "relatedToProtocols" is here to support protocol variants
+// like "protocols combo" to be short, I mean http/web, http/webdav, ssh/svn 
+// etc.
 - (void) addProtocol: (BKBookmarkProtocol)bookmarkProtocol 
   relativeToResourceSpecifier: (NSString *)resourceSpecifier 
-  relatedToProcotols: (BKBookmarkProtocol)bookmarkProtocol;
+  relatedToProcotols: (NSArray *)bookmarkProtocols;
 {
 
 }
@@ -73,7 +82,7 @@
 
 - (BKBookmarkSearchResult *) searchWithQuery: (BKBookmarkQuery *)query
 {
-
+    return nil;
 }
 
 - (void) save
@@ -88,12 +97,12 @@
 
 - (NSString *) transformToXBEL // aspect
 {
-
+    return nil;
 }
 
 - (NSString *) transformToXMLNativeFormat // aspect
 {
-
+    return nil;
 }
 
 @end

@@ -24,13 +24,16 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <TrackerKit/TKQuery.h>
+#import <AppKit/AppKit.h>
+//#import <TrackerKit/TKQuery.h>
+#import "BKBookmark.h"
+#import "BKBookmarkQuery.h"
 
 @implementation BKBookmarkQuery
 
 - (BOOL) matchesBookmark: (BKBookmark *)bookmark
 {
-
+    return NO;
 }
 
 @end

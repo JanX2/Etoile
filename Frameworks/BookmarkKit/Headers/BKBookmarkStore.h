@@ -29,21 +29,27 @@
 }
 
 + (BKBookmarkStore *) sharedInstanceForDefaultPath;
-+ (BKBookmarkStore *) sharedInstanceForPath: (NSString *)path; // support native format or XBEL format
-+ (BKBookmarkStore *) sharedInstanceForURL: (NSURL *)url; // support native format or XBEL format
++ (BKBookmarkStore *) sharedInstanceForPath: (NSString *)path; 
+// support native format or XBEL format
++ (BKBookmarkStore *) sharedInstanceForURL: (NSURL *)url; 
+// support native format or XBEL format
 
 - (NSString *) path;
-- (void) addProtocol: (BKBookmarkProtocol)bookmarkProtocol 
-  relativeToResourceSpecifier: (NSString *)resourceSpecifier 
-  relatedToProcotols: (BKBookmarkProtocol)bookmarkProtocol;
+- (void) addProtocol: (BKBookmarkProtocol)bookmarkProtocol
+  relativeToResourceSpecifier: (NSString *)resourceSpecifier
+  relatedToProcotols: (NSArray *)bookmarkProtocols;
+  // FIXME: roles idea must be used here to have a better method interface and
+  // implementation. "relatedToProtocols" is here to support protocol variants
+  // like "protocols combo" to be short, I mean http/web, http/webdav, ssh/svn 
+  // etc.
 - (void) removeProtocol: (BKBookmarkProtocol)bookmarkProtocol;
 
 - (void) addBookmark: (BKBookmark *)bookmark;
 - (void) removeBookmark: (BKBookmark *)bookmark;
 
-- (BKBookmarkSearchResult *) searchWithQuery: (BKBookmarkQuery *)query
+- (BKBookmarkSearchResult *) searchWithQuery: (BKBookmarkQuery *)query;
 
-- (void) save
+- (void) save;
 - (void) hasUnsavedChanges;
 
 - (NSString *) transformToXBEL; // aspect

@@ -24,38 +24,39 @@
 */
 
 #import <Foundation/Foundation.h>
+#import <AppKit/Appkit.h>
 #import "BKBookmark.h"
 
 @implementation BKBookmark
 
 + bookmarkWithURL: (NSURL *)url
 {
-
+    return nil;
 }
 
 + bookmarkWithXBEL: (NSString *)xbel
 {
-
+    return nil;
 }
 
 - (id) initWithURL: (NSURL *)url
 {
-
+    return nil;
 }
 
 - (id) initWithXBEL: (NSString *)xbel
 {
-
+    return nil;
 }
 
 - (NSURL *) URL
 {
-
+    return nil;
 }
 
 - (NSDate *) creationDate
 {
-
+    return nil;
 }
 
 - (void) setCreationDate: (NSDate *)date
@@ -65,7 +66,7 @@
 
 - (NSDate *) lastVisitDate
 {
-
+    return nil;
 }
 
 - (void) setLastVisitDate: (NSDate *)date
@@ -75,7 +76,7 @@
 
 - (NSImage *) favIcon
 {
-
+    return nil;
 }
 
 - (void) setFavIcon: (NSImage *)icon
@@ -85,7 +86,7 @@
 
 - (id) propertyForKey: (NSString *)key
 {
-
+    return nil;
 }
 
 - (void) setTextProperty: (NSString *)text forKey: (NSString *)key

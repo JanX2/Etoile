@@ -24,9 +24,12 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import <TrackerKit/TKSearchResult.h>
-
-@interface BKBookmarkSearchResult : TKSearchResult
+/*
+ * BKBookmarkSearchResult is TKSearchResult subclass (or wrapper ?) when 
+ * TrackerKit is installed
+ */
+ 
+@interface BKBookmarkSearchResult : NSObject
 
 - (NSString *) transformToXBEL; // aspect
 - (NSString *) transformToXMLNativeFormat; // aspect
