@@ -1,0 +1,10 @@
+2005-03-13  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * SBServicesBarItem.h:
+    * SBServicesBarItem.m:
+    * SBServicesBar.h:
+    * SBServicesBar.m:
+    * INSTALL:
+    * README:
+    * GNUmakefile:
+    Initial import.
