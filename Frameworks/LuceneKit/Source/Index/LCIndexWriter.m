@@ -38,18 +38,19 @@
   id <LCDirectory> ramDirectory = [[LCRAMDirectory alloc] init];
   termIndexInterval = DEFAULT_TERM_INDEX_INTERVAL;
 
+  useCompoundFile = YES;
 
-  /** Use compound file setting. Defaults to true, minimizing the number of
-   * files used.  Setting this to false may improve indexing performance, but
-   * may also cause file handle problems.
-   */
-  BOOL useCompoundFile = YES;
+  maxMergeDocs = DEFAULT_MAX_MERGE_DOCS;
+
+  mergeFactor = DEFAULT_MERGE_FACTOR;
+
+  maxFieldLength = DEFAULT_MAX_FIELD_LENGTH;
+
+  minMergeDocs = DEFAULT_MIN_MERGE_DOCS;
+
   
-  /** Get the current setting of whether to use the compound file format.
-   *  Note that this just returns the value you set with setUseCompoundFile(boolean)
-   *  or the default. You cannot use this to query the status of an existing index.
-   *  @see #setUseCompoundFile(boolean)
-   */
+
+   
   return self;
 }
 
@@ -386,9 +387,12 @@
     //[dw setInfoStream: infoStream];
     NSString *segmentName = [self newSegmentName];
     [dw addDocument: segmentName document: doc];
+    NSLog(@"IndexWriter: after addDocument");
 //    synchronized (this) {
       [segmentInfos addSegmentInfo: [[LCSegmentInfo alloc] initWithName: segmentName numberOfDocuments: 1 directory: ramDirectory]];
+    NSLog(@"IndexWriter: after add segment info");
       [self maybeMergeSegments];
+    NSLog(@"IndexWriter: maybeMergeSegments");
 //    }
   }
 
@@ -522,6 +526,7 @@
            ([[segmentInfos segmentInfoAtIndex: minSegment] directory] == ramDirectory)) {
       docCount += [[segmentInfos segmentInfoAtIndex: minSegment] numberOfDocuments];
       minSegment--;
+      NSLog(@"minSegment %d", minSegment);
     }
     if (minSegment < 0 ||			  // add one FS segment?
         (docCount + [[segmentInfos segmentInfoAtIndex: minSegment] numberOfDocuments]) > mergeFactor ||
@@ -537,21 +542,31 @@
 {
     long targetMergeDocs = minMergeDocs;
     while (targetMergeDocs <= maxMergeDocs) {
+    NSLog(@"targetMergeDocs %ld, maxMergeDocs %d", targetMergeDocs, minMergeDocs);
       // find segments smaller than current target size
       int minSegment = [segmentInfos numberOfSegments];
       int mergeDocs = 0;
       while (--minSegment >= 0) {
+        NSLog(@"while (--minSegment) >= 0");
         LCSegmentInfo *si = [segmentInfos segmentInfoAtIndex: minSegment];
+        NSLog(@"segmentInfo %@", si);
         if ([si numberOfDocuments] >= targetMergeDocs)
           break;
         mergeDocs += [si numberOfDocuments];
+        NSLog(@"mergeDocs %d", mergeDocs);
       }
 
       if (mergeDocs >= targetMergeDocs)		  // found a merge to do
-	[self mergeSegments: minSegment+1];
+      {
+        NSLog(@"before mergeSegment");
+  	    [self mergeSegments: minSegment+1];
+  	    NSLog(@"mergeSegment");
+  	    }
       else
+      {
+        NSLog(@"break");
         break;
-
+		}
       targetMergeDocs *= mergeFactor;		  // increase target size
     }
   }
@@ -560,6 +575,7 @@
     and pushes the merged index onto the top of the segmentInfos stack. */
 - (void) mergeSegments: (int) minSegment
 {
+  NSLog(@"mergeSegments %d", minSegment);
     NSString *mergedName = [self newSegmentName];
 //    if (infoStream != nil) infoStream.print("merging segments");
     LCSegmentMerger *merger = [[LCSegmentMerger alloc] initWithIndexWriter: self
