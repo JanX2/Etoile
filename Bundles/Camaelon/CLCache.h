@@ -10,6 +10,7 @@
 }
 + (CLCache*) cache;
 - (NSImage*) imageNamed: (NSString*) name;
+- (NSImage*) imageNamed: (NSString*) name withSize: (NSSize) size;
 - (void) setImage: (NSImage*) image named: (NSString*) name;
 @end
 

@@ -3,7 +3,8 @@
 #include "GraphicToolbox.h"
 #include "GSDrawFunctions.h"
 
-@interface NSMatrix (theme)
+@interface NSMatrix (theme) // declare some methods used by gnustep...
+- (void) _drawCellAtRow: (int) row column: (int) column;
 @end
 
 @implementation NSMatrix (theme)

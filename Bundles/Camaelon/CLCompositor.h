@@ -23,6 +23,7 @@ typedef enum {
 - (void) addImage: (NSImage*) image named: (NSString*) name;
 - (void) drawOn: (NSView*) view;
 - (void) drawInRect: (NSRect) rect;
+- (void) drawInRect: (NSRect) rect on: (NSView*) view;
 @end
 
 #endif // __CLCompositor_H__

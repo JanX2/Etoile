@@ -1,5 +1,9 @@
 2005-03-22 Nicolas Roard <nicolas@roard.com>
 
+	* cleaning to remove warnings.. (some warnings are inevitable though)
+
+2005-03-22 Nicolas Roard <nicolas@roard.com>
+
 	* correction of a drawing bug in NSScroller
 
 2005-03-22 Quentin Mathe <qmathe@club-internet.fr>

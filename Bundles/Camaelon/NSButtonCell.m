@@ -3,6 +3,10 @@
 #include "GraphicToolbox.h"
 #include "GSDrawFunctions.h"
 
+@interface NSButtonCell (theme) // declare some methods used by gnustep..
+- (void) drawGradientWithFrame: (NSRect) frame inView: (NSView*) view;
+@end
+
 @implementation NSButtonCell (theme)
 - (BOOL) isOpaque {
     return NO;
@@ -303,7 +307,7 @@
   if (!_cell.is_highlighted && _gradient_type != NSGradientNone)
     {
     	//NRO: this thing SHOULD NOT BE THERE --> a call to GSDrawFunctions would be better. 
-        //BUG: Fix this in GNUstep cvs
+        //FIXME: Fix this in GNUstep cvs
       [self drawGradientWithFrame: cellFrame inView: controlView];
     }
     

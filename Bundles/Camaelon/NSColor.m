@@ -1,7 +1,6 @@
-#import <AppKit/AppKit.h>
-#include "GraphicToolbox.h"
+#include "NSColor.h"
 
-@implementation NSColor (rows)
+@implementation NSColor (theme)
 
 static NSColor* titlebarTextColor;
 

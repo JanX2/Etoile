@@ -2,6 +2,7 @@
 #include <AppKit/AppKit.h>
 #include "GraphicToolbox.h"
 #include "NSBezierPath+round.h"
+#include "NSColor.h"
 
 @implementation NSBrowserCell (theme)
 

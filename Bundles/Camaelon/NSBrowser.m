@@ -30,6 +30,10 @@
 - (NSString *) columnTitle;
 @end
 
+@interface NSBrowser (theme) // declare some private methods used by gnustep..
+- (NSBrowserColumn*) _createColumn;
+- (void) _remapColumnSubviews: (BOOL) flag;
+@end
 
 @implementation NSBrowserColumn (theme)
 - (id) initWithCoder: (NSCoder *)aDecoder

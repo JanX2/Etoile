@@ -8,6 +8,7 @@
 #include "CLHBoxCompositor.h"
 #include "CLVBoxCompositor.h"
 #include "CLBoxCompositor.h"
+#include "NSColor.h"
 
 #ifndef __GSDRAWFUNCTIONS_H__
 #define __GSDRAWFUNCTIONS_H__
@@ -30,15 +31,18 @@
 + (void) drawMenu: (NSRect) border inView: (NSView*) view;
 + (void) drawTextField: (NSRect) border focus: (BOOL) focus flipped: (BOOL) flipped;
 + (void) drawButton: (NSRect) border inView: (NSView*) view highlighted: (BOOL) highlighted;
-+ (void) drawProgressIndicator: (NSRect) rect;
-+ (void) drawProgressIndicatorInRect: (NSRect) rect;
++ (void) drawProgressIndicatorBackgroundOn: (NSView*) view;
++ (void) drawProgressIndicatorForegroundInRect: (NSRect) rect;
++ (void) drawTitleBox: (NSRect) rect on: (id) box;
 + (void) drawBox: (NSRect) rect on: (id) box;
 + (void) drawWindowBackground: (NSRect) rect on: (id) window;
 + (void) drawPopupButton: (NSRect) border inView: (NSView*) view;
 + (void) drawHorizontalScrollerKnob: (NSRect) knob on: (NSView*) view;
 + (void) drawVerticalScrollerKnob: (NSRect) knob on: (NSView*) view;
-+ (void) drawHorizontalScrollerSlot: (NSRect) slot knobPresent: (BOOL) knob on: (NSView*) view;
-+ (void) drawVerticalScrollerSlot: (NSRect) slot knobPresent: (BOOL) knob on: (NSView*) view;
++ (void) drawHorizontalScrollerSlot: (NSRect) slot knobPresent: (BOOL) knob 
+	   buttonPressed: (int) buttonPressed on: (NSView*) view;
++ (void) drawVerticalScrollerSlot: (NSRect) slot knobPresent: (BOOL) knob 
+	   buttonPressed: (int) buttonPressed on: (NSView*) view;
 + (void) drawTopTabFill: (NSRect) rect selected: (BOOL) selected on: (NSView*) view;
 + (void) drawTabFrame: (NSRect) rect on: (NSView*) view;
 + (void) drawScrollViewFrame: (NSRect) rect on: (NSView*) view;

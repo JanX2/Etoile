@@ -11,7 +11,7 @@ static  NSButtonCell* knobCell;
 
 @interface NSScroller (theme)
 - (BOOL) isHorizontal;
-- (void) drawKnobSlotOn: (NSRect) rect knobPresent: (BOOL) knob;
+- (void) drawKnobSlotOn: (NSRect) rect knobPresent: (BOOL) knob buttonPressed: (int) buttonPressed;
 @end
 
 @implementation NSScroller (theme)

@@ -419,12 +419,12 @@ static CLCompositor* myBrowserHeader;
 	}
 }
 
-static CLCompositor* standardButton;
-static CLCompositor* standardButtonH;
-static CLCompositor* button;
-static CLCompositor* buttonH;
+static CLHBoxCompositor* standardButton;
+static CLHBoxCompositor* standardButtonH;
+static CLBoxCompositor* button;
+static CLBoxCompositor* buttonH;
 
-static CLCompositor* mygroupBox;
+static CLBoxCompositor* mygroupBox;
 
 + (void) drawButton: (NSRect) border inView: (NSView*) view highlighted: (BOOL) highlighted 
 {

@@ -1,9 +1,12 @@
 #include <Foundation/Foundation.h>
 #include <AppKit/AppKit.h>
 #include "GNUstepGUI/GSDrawFunctions.h"
+#include "GSDrawFunctions.h"
 
-@interface GSDrawFunctions (theme)
-+ (float) ListHeaderHeight;
+@interface NSTableView (theme) // declare some private methods used by gnustep..
+- (void) _willDisplayCell: (NSCell*) cell
+	   forTableColumn: (NSTableColumn *) tb
+		      row: (int) index;
 @end
 
 @implementation NSTableView (theme)

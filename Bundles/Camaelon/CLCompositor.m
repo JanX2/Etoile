@@ -14,8 +14,8 @@
 	[images release];
 }
 
-- (void) addImage: (NSImage*) image named: (NSString*) name {
-	[images setObject: image forKey: name];
+- (void) addImage: (NSImage*) anImage named: (NSString*) aName {
+	[images setObject: anImage forKey: aName];
 }
 
 - (void) error: (NSString*) msg {
@@ -26,6 +26,10 @@
 
 - (void) drawOn: (NSView*) view {
 	[self drawInRect: [view bounds] on: view];
+}
+
+- (void) drawInRect: (NSRect) rect {
+	// Subclass responsability
 }
 
 - (void) drawInRect: (NSRect) rect on: (NSView*) view {

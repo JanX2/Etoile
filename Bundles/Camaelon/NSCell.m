@@ -1,5 +1,6 @@
 #include <Foundation/Foundation.h>
 #include <AppKit/AppKit.h>
+#include "NSColor.h"
 
 @implementation NSCell (theme)
 
