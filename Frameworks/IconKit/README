@@ -1,1 +1,81 @@
 IconKit README
+==============
+
+About
+=====
+
+This framework is used to create icons using different elements. It helps keeping consistency accross a set of icons
+(for example, using the same background..) and permit to easily create icons "families".
+
+Example
+=======
+
+1) Create a NSImage composed of two images programmatically:
+
+	// load 2 images
+        NSImage* document = [[NSImage alloc] initWithContentsOfFile: @"document-background.tiff"];
+        NSImage* applicationLogo = [NSImage imageNamed: @"logo.tiff"];
+
+	// create a compositor with the background image
+        IKCompositor* compositor = [[IKCompositor alloc] 
+                initWithImage: document];
+
+	// compose the logo on the background image in a defined rectangle (logo will be rescaled)
+        [compositor compositeImage: applicationLogo 
+                inRect: NSMakeRect (10,10,30,30)];
+
+	// get the result
+	NSImage* result = [compositor render];
+
+2) Create a NSImage composed of two images using a plist describing the operations
+
+	// load the plist
+	NSDictionary* plist = [NSDictionary dictionaryWithContentsOfFile: @"test.plist"];
+
+	// create a compositor with the plist
+	IKCompositor* compositor = [[IKCompositor alloc] initWithPropertyList: plist];
+
+	// get the result
+	NSImage* result = [compositor render];
+
+note:
+----
+
+Here is the plist used in the example:
+
+{
+    compositingSize = {
+	height = <*R48>;
+	width = <*R48>;
+    };
+    originalSize = {
+	height = <*R48>;
+	width = <*R48>;
+    };
+    operations = (
+	{
+	    alpha = <*R1>;
+	    operation = <*I2>;
+	    path = "document-background.tiff";
+	    position = <*I0>;
+	    rectangle = {
+		height = <*R0>;
+		width = <*R0>;
+		x = <*R0>;
+		y = <*R0>;
+	    };
+	},
+	{
+	    alpha = <*R1>;
+	    operation = <*I2>;
+	    path = "logo.tiff";
+	    position = <*I0>;
+	    rectangle = {
+		height = <*R30>;
+		width = <*R30>;
+		x = <*R10>;
+		y = <*R10>;
+	    };
+	}
+    );
+}
