@@ -43,6 +43,7 @@
 - (id) initWithDirectory: (id <LCDirectory>) dir
                    close: (BOOL) closeDirectory;
 {
+  self = [self init];
   NSArray *f = [dir list];
   int i, count = [f count];
   unsigned long long len;
@@ -68,6 +69,7 @@
     [dir close];
 
   RELEASE(buf);
+  return self;
 }
 
   /**
@@ -77,7 +79,8 @@
    */
 - (id) initWithPath: (NSString *) absolutePath
 {
-  LCFSDirectory *d = [[LCFSDirectory alloc] initWithPath: absolutePath];
+  LCFSDirectory *d = [[LCFSDirectory alloc] initWithPath: absolutePath
+	               create: NO];
   return [self initWithDirectory: d close: YES];
 }
 
