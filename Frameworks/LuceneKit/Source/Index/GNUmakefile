@@ -43,6 +43,7 @@ LuceneKit_Index_OBJC_FILES += \
 	TestMockIndexOutput.m \
 	TestTermInfos.m \
 	TestSegmentReader.m \
+	TestSegmentMerger.m \
 	TestTermVectorsReader.m \
 	TestTermVectorsWriter.m
 endif

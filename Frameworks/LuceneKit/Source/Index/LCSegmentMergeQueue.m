@@ -8,11 +8,11 @@
 {
   LCSegmentMergeInfo *stiA = (LCSegmentMergeInfo *)a;
   LCSegmentMergeInfo *stiB = (LCSegmentMergeInfo *)b;
-  int comparison = [[stiA term] compare: [stiB term]];
-    if (comparison == 0)
-      return [stiA base] < [stiB base]; 
+  NSComparisonResult comparison = [[stiA term] compare: [stiB term]];
+    if (comparison == NSOrderedSame)
+      return ([stiA base] < [stiB base]); 
     else
-      return comparison < 0;
+      return (comparison == NSOrderedAscending) ? YES : NO;
   }
 
 - (void) close

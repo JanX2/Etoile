@@ -36,6 +36,7 @@
 + (NSString *) UNSTORED_2_FIELD_TEXT;
 + (NSString *) UNSTORED_FIELD_1_KEY;
 + (NSString *) UNSTORED_FIELD_2_KEY;
++ (NSArray *) FIELD_2_FREQS;
 
 @end
 #endif /* __LUCENE_INDEX_TEST_DOC_HELPER__ */

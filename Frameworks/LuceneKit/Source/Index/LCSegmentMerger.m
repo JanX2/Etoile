@@ -42,6 +42,7 @@
     @"tvx", @"tvd", @"tvf", nil];
 
   skipBuffer = [[LCRAMOutputStream alloc] init];
+  termInfo = [[LCTermInfo alloc] init];
   return self;
 }
 
@@ -98,7 +99,9 @@
   [self mergeNorms];
 
   if ([fieldInfos hasVectors])
+  {
     [self mergeVectors];
+    }
 
     return value;
   }
@@ -244,9 +247,9 @@
 - (void) mergeTerms;
 {
   NSString *file = [segment stringByAppendingPathExtension: @"frq"];
-  freqOutput = [directory createOutput: segment];
+  freqOutput = [directory createOutput: file];
   file = [segment stringByAppendingPathExtension: @"prx"];
-  proxOutput = [directory createOutput: segment];
+  proxOutput = [directory createOutput: file];
   termInfosWriter = [[LCTermInfosWriter alloc] initWithDirectory: directory
 	  segment: segment
 	  fieldInfos: fieldInfos
@@ -255,7 +258,7 @@
   queue = [[LCSegmentMergeQueue alloc] initWithSize: [readers count]];
 
   [self mergeTermInfos];
-
+   
   if (freqOutput != nil) [freqOutput close];
   if (proxOutput != nil) [proxOutput close];
   if (termInfosWriter != nil) [termInfosWriter close];
@@ -273,7 +276,9 @@
 		      termEnum: termEnum reader: reader];
       base += [reader numDocs];
       if ([smi next])
+      {
         [queue put: smi];				  // initialize queue
+      }
       else
         [smi close];
     }
@@ -282,14 +287,21 @@
 
     while ([queue size] > 0) {
       int matchSize = 0;			  // pop matching terms
-      [match addObject: [queue pop]];
+      if (matchSize < [match count])
+              [match replaceObjectAtIndex: matchSize withObject: [queue pop]];
+      else
+              [match addObject: [queue pop]];
+
       matchSize++;
       LCTerm *term = [[match objectAtIndex: 0] term];
       LCSegmentMergeInfo *top = (LCSegmentMergeInfo *) [queue top];
 
-      while (top != nil && [term compare: [top term]] == 0) {
-	[match addObject: [queue pop]];
-	matchSize++;
+      while (top != nil && [term compare: [top term]] == NSOrderedSame) {
+        if (matchSize < [match count])
+          [match replaceObjectAtIndex: matchSize withObject: [queue pop]];
+        else
+	      [match addObject: [queue pop]];
+	    matchSize++;
         top = (LCSegmentMergeInfo *) [queue top];
       }
 
@@ -317,11 +329,13 @@
   long freqPointer = [freqOutput filePointer];
   long proxPointer = [proxOutput filePointer];
 
+//  NSLog(@"appendPosting %@, size %d", smis, n);
   int df = [self appendPosting: smis size: n];		  // append posting data
 
   long skipPointer = [self writeSkip];
 
   if (df > 0) {
+      //NSLog(@"Add term %@", [[smis objectAtIndex: 0] term]);
       // add an entry to the dictionary with pointers to prox and freq files
       [termInfo setDocFreq: df];
       [termInfo setFreqPointer: freqPointer];

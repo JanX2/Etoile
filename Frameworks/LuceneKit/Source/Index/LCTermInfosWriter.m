@@ -101,8 +101,10 @@
     TermInfo pointers must be positive and greater than all previous.*/
 - (void) addTerm: (LCTerm *) term termInfo: (LCTermInfo *) ti
 {
+  //NSLog(@"LCTermInfosWriter addTerm %@", term);
   if (!isIndex && [term compare: lastTerm] != NSOrderedDescending)
     {
+        NSLog(@"lastTerm %@, term %@", lastTerm, term);
 	    NSLog(@"term out of order");
 	    return;
     }
@@ -165,7 +167,10 @@
 
     [output writeVInt: [fieldInfos fieldNumber: [term field]]]; // write field num
 
-    ASSIGN(lastTerm, term);
+    /* Cache lastTerm. DO NOT use ASSIGN() because term might change */
+    //ASSIGN(lastTerm, term);
+    [lastTerm setField: [term field]];
+    [lastTerm setText: [term text]];
   }
 
 

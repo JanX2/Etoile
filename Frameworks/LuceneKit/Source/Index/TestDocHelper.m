@@ -18,6 +18,7 @@ static NSString *UNSTORED_1_FIELD_TEXT;
 static NSString *UNSTORED_2_FIELD_TEXT;
 static NSString *UNSTORED_FIELD_1_KEY;
 static NSString *UNSTORED_FIELD_2_KEY;
+static NSArray *FIELD_2_FREQS;
 
 @implementation TestDocHelper
 + (NSString *) FIELD_1_TEXT
@@ -80,6 +81,11 @@ static NSString *UNSTORED_FIELD_2_KEY;
   return UNSTORED_FIELD_2_KEY;
 }
 
++ (NSArray *) FIELD_2_FREQS
+{
+  return FIELD_2_FREQS;
+}
+
 + (void) setupDoc: (LCDocument *) doc
 {
   FIELD_1_TEXT = @"field one text";
@@ -92,7 +98,7 @@ static NSString *UNSTORED_FIELD_2_KEY;
   
   FIELD_2_TEXT = @"field field field two text";
   //Fields will be lexicographically sorted.  So, the order is: field, text, two
-  NSArray *FIELD_2_FREQS = [[NSArray alloc] initWithObjects: [NSNumber numberWithInt: 3],
+  FIELD_2_FREQS = [[NSArray alloc] initWithObjects: [NSNumber numberWithInt: 3],
 	  [NSNumber numberWithInt: 1], 
 	  [NSNumber numberWithInt: 1], nil]; 
   TEXT_FIELD_2_KEY = @"textField2";

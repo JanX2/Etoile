@@ -12,8 +12,8 @@
   base = b;
   ASSIGN(reader, r);
   ASSIGN(termEnum, te);
-  term = [te term];
-  postings = [reader termPositions];
+  ASSIGN(term, [te term]);
+  ASSIGN(postings, [reader termPositions]);
 
     // build array which maps document numbers around deletions 
   if ([reader hasDeletions]) {
@@ -53,5 +53,9 @@
 - (int) base { return base; }
 - (NSArray *) docMap { return docMap; }
 - (id <LCTermPositions>) postings { return postings; }
+- (NSString *) description
+{ 
+  return [NSString stringWithFormat: @"LCSegmentMergeInfo %@, base %d", term, base];
+}
 
 @end
