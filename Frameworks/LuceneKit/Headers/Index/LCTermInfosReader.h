@@ -15,7 +15,7 @@
   NSString *segment;
   LCFieldInfos *fieldInfos;
   LCSegmentTermEnum *origEnum;
-  long size;
+  unsigned long long size;
 
   NSMutableArray *indexTerms; // LCTerm
   NSMutableArray *indexInfos;  // LCTermInfo

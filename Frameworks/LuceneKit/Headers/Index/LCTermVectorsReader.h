@@ -13,13 +13,13 @@
 {
   LCFieldInfos *fieldInfos;
   LCIndexInput *tvx, *tvd, *tvf;
-  int size, tvdFormat, tvfFormat;;
+  long size, tvdFormat, tvfFormat;;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) d
                  segment: (NSString *) segment
 	      fieldInfos: (LCFieldInfos *) fieldInfos;
-- (int) checkValidFormat: (LCIndexInput *) input;
+- (long) checkValidFormat: (LCIndexInput *) input;
 - (void) close;
 - (int) size;
 - (id <LCTermFreqVector>) termFreqVectorWithDoc: (int) docNum

@@ -11,7 +11,7 @@
 
 - (BOOL) next;
 - (LCTerm *) term;
-- (int) docFreq;
+- (long) docFreq;
 - (void) close;
 - (BOOL) skipTo: (LCTerm *) target;
 

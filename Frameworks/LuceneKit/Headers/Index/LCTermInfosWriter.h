@@ -18,7 +18,7 @@
   LCIndexOutput *output;
   LCTerm *lastTerm;
   LCTermInfo *lastTi;
-  long size;
+  long long size;
   int indexInterval;
   int skipInterval;
   long lastIndexPointer;

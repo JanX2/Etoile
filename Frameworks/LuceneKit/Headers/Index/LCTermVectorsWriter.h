@@ -5,8 +5,8 @@
 
 #define STORE_POSITIONS_WITH_TERMVECTOR 0x1
 #define STORE_OFFSET_WITH_TERMVECTOR 0x2
-#define TERM_VECTORS_WRITER_FORMAT_VERSION 2
-#define TERM_VECTORS_WRITER_FORMAT_SIZE 4
+#define TERM_VECTORS_WRITER_FORMAT_VERSION 2L
+#define TERM_VECTORS_WRITER_FORMAT_SIZE 4L
 
 static NSString *TVX_EXTENSION = @"tvx";
 static NSString *TVD_EXTENSION = @"tvd";
@@ -14,35 +14,35 @@ static NSString *TVF_EXTENSION = @"tvf";
 
 @interface LCTVField: NSObject
 {
-  int number;
-  long tvfPointer;
+  long number;
+  long long tvfPointer;
   BOOL storePositions;
   BOOL storeOffsets;
 }
 
-- (id) initWithNumber: (int) number storePosition: (BOOL) storePos
+- (id) initWithNumber: (long) number storePosition: (BOOL) storePos
             storeOffset: (BOOL) storeOff;
-- (void) setTVFPointer: (long) p;
-- (long) tvfPointer;
+- (void) setTVFPointer: (long long) p;
+- (long long) tvfPointer;
 - (BOOL) storePositions;
 - (BOOL) storeOffsets;
-- (int) number;
+- (long) number;
 
 @end
 
 @interface LCTVTerm: NSObject
 {
   NSString *termText;
-  int freq;
+  long freq;
   NSArray *positions;
   NSArray *offsets;
 }
 - (void) setTermText: (NSString *) text;
-- (void) setFreq: (int) f;
+- (void) setFreq: (long) f;
 - (void) setPositions: (NSArray *) p;
 - (void) setOffsets: (NSArray *) o;
 - (NSString *) termText;
-- (int) freq;
+- (long) freq;
 - (NSArray *) positions;
 - (NSArray *) offsets;
 @end
@@ -59,7 +59,7 @@ static NSString *TVF_EXTENSION = @"tvf";
   NSMutableArray *terms;
   LCFieldInfos *fieldInfos;
   LCTVField *currentField;
-  long currentDocPointer;
+  long long currentDocPointer;
 }
 - (id) initWithDirectory: (id <LCDirectory>) directory
                 segment: (NSString *) segment

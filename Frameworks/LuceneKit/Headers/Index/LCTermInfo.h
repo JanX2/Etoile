@@ -3,27 +3,29 @@
 
 #include <Foundation/Foundation.h>
 
-@interface LCTermInfo: NSObject
+@interface LCTermInfo: NSObject <NSCopying>
 {
-  int docFreq;
-  long freqPointer;
-  long proxPointer;
-  int skipOffset;
+  long docFreq; // VInt
+  long long freqPointer; //VLong
+  long long proxPointer; //VLong
+  long skipOffset; //VLong
 }
 
-- (id) initWithDocFreq: (int) df freqPointer: (long) fq proxPointer: (long) pp;
+- (id) initWithDocFreq: (long) df 
+           freqPointer: (long long) fq 
+	   proxPointer: (long long) pp;
 - (id) initWithTermInfo: (LCTermInfo *) ti;
-- (int) docFreq;
-- (long) freqPointer;
-- (long) proxPointer;
-- (int) skipOffset;
-- (void) setDocFreq: (int) df freqPointer: (long) fp
-            proxPointer: (long) pp skipOffset: (int) so;
 - (void) setTermInfo: (LCTermInfo *) ti;
-- (void) setDocFreq: (int) doc;
-- (void) setFreqPointer: (long) freq;
-- (void) setProxPointer: (long) prox;
-- (void) setSkipOffset: (int) skip;
+
+/* Accessory */
+- (long) docFreq;
+- (long long) freqPointer;
+- (long long) proxPointer;
+- (long ) skipOffset;
+- (void) setDocFreq: (long) doc;
+- (void) setFreqPointer: (long long) freq;
+- (void) setProxPointer: (long long) prox;
+- (void) setSkipOffset: (long) skip;
 
 @end
 
