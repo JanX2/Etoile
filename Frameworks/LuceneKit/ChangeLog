@@ -22,6 +22,7 @@
 2005-04-05 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Index/LCIndexInput.m: Deal with string length properly.
+	* Source/Index/TestTermVectorsReader.m: New test units.
 
 2005-04-05 Quentin Mathe <qmathe@club-internet.fr>
 
