@@ -1,5 +1,5 @@
 #include "TestMockIndexInput.h"
-#include "GNUstep.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation TestMockIndexInput
 - (id) initWithData: (NSData *) d

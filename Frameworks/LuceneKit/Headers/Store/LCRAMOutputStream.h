@@ -1,7 +1,7 @@
 #ifndef __LUCENE_STORE_RAM_OUTPUT_STREAM__
 #define __LUCENE_STORE_RAM_OUTPUT_STREAM__
 
-#include "LuceneKit/Store/LCIndexOutput.h"
+#include "Store/LCIndexOutput.h"
 
 @class LCRAMFile;
 

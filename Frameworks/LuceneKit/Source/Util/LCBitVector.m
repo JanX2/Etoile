@@ -1,7 +1,7 @@
-#include "LuceneKit/Util/LCBitVector.h"
-#include "LuceneKit/Store/LCIndexInput.h"
-#include "LuceneKit/Store/LCIndexOutput.h"
-#include "GNUstep.h"
+#include "Util/LCBitVector.h"
+#include "Store/LCIndexInput.h"
+#include "Store/LCIndexOutput.h"
+#include "GNUstep/GNUstep.h"
 
 /** Optimized implementation of a vector of bits.  This is more-or-less like
   java.util.BitSet, but also includes the following:
@@ -196,7 +196,7 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 
 #ifdef HAVE_UKTEST
 
-#include "LuceneKit/Store/LCRAMDirectory.h"
+#include "Store/LCRAMDirectory.h"
 
 @implementation LCBitVector (UKTest_Additions)
 

@@ -1,6 +1,6 @@
-#include "LuceneKit/Index/LCMultipleTermPositions.h"
-#include "LuceneKit/Index/LCIndexReader.h"
-#include "LuceneKit/Util/LCPriorityQueue.h"
+#include "Index/LCMultipleTermPositions.h"
+#include "Index/LCIndexReader.h"
+#include "Util/LCPriorityQueue.h"
 
 /**
  * Describe class <code>MultipleTermPositions</code> here.

@@ -1,11 +1,11 @@
-#include "LuceneKit/Index/LCTermVectorsReader.h"
-#include "LuceneKit/Index/LCTermVectorsWriter.h"
-#include "LuceneKit/Index/LCFieldInfos.h"
-#include "LuceneKit/Store/LCIndexInput.h"
-#include "LuceneKit/Index/LCSegmentTermVector.h"
-#include "LuceneKit/Index/LCSegmentTermPositionVector.h"
-#include "LuceneKit/Index/LCTermVectorOffsetInfo.h"
-#include "GNUstep.h"
+#include "Index/LCTermVectorsReader.h"
+#include "Index/LCTermVectorsWriter.h"
+#include "Index/LCFieldInfos.h"
+#include "Store/LCIndexInput.h"
+#include "Index/LCSegmentTermVector.h"
+#include "Index/LCSegmentTermPositionVector.h"
+#include "Index/LCTermVectorOffsetInfo.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation LCTermVectorsReader
 

@@ -1,9 +1,9 @@
 #ifndef __LUCENE_INDEX_SEGMENT_READER__
 #define __LUCENE_INDEX_SEGMENT_READER__
 
-#include "LuceneKit/Index/LCIndexReader.h"
-#include "LuceneKit/Store/LCDirectory.h"
-#include "LuceneKit/Index/LCTermFreqVector.h"
+#include "Index/LCIndexReader.h"
+#include "Store/LCDirectory.h"
+#include "Index/LCTermFreqVector.h"
 
 @class LCSegmentReader;
 

@@ -1,10 +1,10 @@
 #include "TestSegmentReader.h"
-#include "LuceneKit/Index/LCSegmentInfo.h"
-#include "LuceneKit/Document/LCField.h"
-#include "LuceneKit/Index/LCTerm.h"
-#include "LuceneKit/Index/LCTermEnum.h"
-#include "LuceneKit/Index/LCSegmentTermEnum.h"
-#include "GNUstep.h"
+#include "Index/LCSegmentInfo.h"
+#include "Document/LCField.h"
+#include "Index/LCTerm.h"
+#include "Index/LCTermEnum.h"
+#include "Index/LCSegmentTermEnum.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation TestSegmentReader
 

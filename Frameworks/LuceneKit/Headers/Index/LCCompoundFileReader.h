@@ -1,7 +1,7 @@
 #ifndef __LUCENE_INDEX_COMPOUND_FILE_READER__
 #define __LUCENE_INDEX_COMPOUND_FILE_READER__
 
-#include "LuceneKit/Store/LCDirectory.h"
+#include "Store/LCDirectory.h"
 #include <Foundation/Foundation.h>
 
 #if 0

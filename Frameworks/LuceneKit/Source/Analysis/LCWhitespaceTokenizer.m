@@ -1,4 +1,4 @@
-#include "LuceneKit/Analysis/LCWhitespaceTokenizer.h"
+#include "Analysis/LCWhitespaceTokenizer.h"
 
 /** A WhitespaceTokenizer is a tokenizer that divides text at whitespace.
  * Adjacent sequences of non-Whitespace characters form tokens. */

@@ -1,8 +1,8 @@
-#include "LuceneKit/Store/LCFSDirectory.h"
-#include "LuceneKit/Store/LCIndexInput.h"
-#include "LuceneKit/Store/LCIndexOutput.h"
-#include "LuceneKit/Store/LCRAMDirectory.h"
-#include "LuceneKit/Store/LCRAMFile.h"
+#include "Store/LCFSDirectory.h"
+#include "Store/LCIndexInput.h"
+#include "Store/LCIndexOutput.h"
+#include "Store/LCRAMDirectory.h"
+#include "Store/LCRAMFile.h"
 #include <UnitKit/UnitKit.h>
 
 @interface TestStore: NSObject <UKTest>

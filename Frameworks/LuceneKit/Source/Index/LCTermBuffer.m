@@ -1,7 +1,7 @@
-#include "LuceneKit/Index/LCTermBuffer.h"
-#include "LuceneKit/Index/LCFieldInfos.h"
-#include "LuceneKit/Store/LCIndexInput.h"
-#include "GNUstep.h"
+#include "Index/LCTermBuffer.h"
+#include "Index/LCFieldInfos.h"
+#include "Store/LCIndexInput.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation LCTermBuffer
 

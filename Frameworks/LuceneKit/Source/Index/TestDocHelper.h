@@ -2,7 +2,7 @@
 #define __LUCENE_INDEX_TEST_DOC_HELPER__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Store/LCDirectory.h"
+#include "Store/LCDirectory.h"
 
 @class LCField;
 @class LCDocument;

@@ -47,7 +47,7 @@ static NSString *TVF_EXTENSION = @"tvf";
 - (NSArray *) offsets;
 @end
 
-#include "LuceneKit/Store/LCDirectory.h"
+#include "Store/LCDirectory.h"
 
 @class LCIndexOutput;
 @class LCFieldInfos;

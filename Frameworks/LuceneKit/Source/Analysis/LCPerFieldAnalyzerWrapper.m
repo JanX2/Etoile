@@ -1,5 +1,5 @@
-#include "LuceneKit/Analysis/LCPerFieldAnalyzerWrapper.h"
-#include "GNUstep.h"
+#include "Analysis/LCPerFieldAnalyzerWrapper.h"
+#include "GNUstep/GNUstep.h"
 
 /**
  * This analyzer is used to facilitate scenarios where different

@@ -1,5 +1,5 @@
-#include "LuceneKit/Analysis/LCToken.h"
-#include "GNUstep.h"
+#include "Analysis/LCToken.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation LCToken
 

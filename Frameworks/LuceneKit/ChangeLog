@@ -1,35 +1,52 @@
-2005-03-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+2005-04-05 Quentin Mathe <qmathe@club-internet.fr>
+
+	* Headers/Analysis:
+	* Headers/Document:
+	* Headers/Index:
+	* Headers/Store:
+	* Headers/Util:
+	* Source/Analysis:
+	* Source/Document:
+	* Source/Java:
+	* Source/Search:
+	* Source/Store:
+	* Source/Util:
+	Modified #include directives to match new Headers structure like 
+	"LuceneKit/Util/LCBitVector.h" to "Util/LCBitVector.h" or
+	"GNUstep.h" to "GNUstep/GNUstep.h".
+
+2005-04-05 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Add new test units.
 	* Various bug fixed.
 
 2005-03-31 Quentin Mathe <qmathe@club-internet.fr>
-    
-    * INSTALL:
-    * README: 
-    Updated to be compliant with Etoile. 
-    * TODO: Added.
+	
+	* INSTALL:
+	* README: 
+	Updated to be compliant with Etoile. 
+	* TODO: Added.
 
 2005-03-31 Quentin Mathe <qmathe@club-internet.fr>
 
-    LuceneKit initial import.
-    Warning! compilation broken.   
+	LuceneKit initial import.
+	Warning! compilation broken.	
 	* Source/GNUstep.h: Moved in Headers/GNUstep.
 	* Headers/LuceneKit/Util/NSString_Additions.h: Renamed "NSString+Additions.h".
 	* Source/Util/NSString_Additions.m: Renamed "NSString+Additions.m".
 	* Source/Store/MMapDirectory.java: Removed.
 	* Source/Store/Lock.java: Removed.
-    * Source/run_test: Removed.
-    * Source/Analysis/Standard: Removed (various Java stuff).
-    * Headers/LuceneKit/Analysis:
-    * Headers/LuceneKit/Document:
-    * Headers/LuceneKit/Index:    
-    * Headers/LuceneKit/Java:
-    * Headers/LuceneKit/Search:
-    * Headers/LuceneKit/Store:
-    * Headers/LuceneKit/Util:
-    Moved in Headers on level down and ripped out Headers/LuceneKit.
-    
+	* Source/run_test: Removed.
+	* Source/Analysis/Standard: Removed (various Java stuff).
+	* Headers/LuceneKit/Analysis:
+	* Headers/LuceneKit/Document:
+	* Headers/LuceneKit/Index:	  
+	* Headers/LuceneKit/Java:
+	* Headers/LuceneKit/Search:
+	* Headers/LuceneKit/Store:
+	* Headers/LuceneKit/Util:
+	Moved in Headers on level down and ripped out Headers/LuceneKit.
+	
 2005-03-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Move test into classes.

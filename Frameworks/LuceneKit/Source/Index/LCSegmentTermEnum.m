@@ -1,10 +1,10 @@
-#include "LuceneKit/Index/LCSegmentTermEnum.h"
-#include "LuceneKit/Index/LCFieldInfos.h"
-#include "LuceneKit/Index/LCTermInfo.h"
-#include "LuceneKit/Index/LCTermInfosWriter.h"
-#include "LuceneKit/Index/LCTermBuffer.h"
-#include "LuceneKit/Store/LCIndexInput.h"
-#include "GNUstep.h"
+#include "Index/LCSegmentTermEnum.h"
+#include "Index/LCFieldInfos.h"
+#include "Index/LCTermInfo.h"
+#include "Index/LCTermInfosWriter.h"
+#include "Index/LCTermBuffer.h"
+#include "Store/LCIndexInput.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation LCSegmentTermEnum
 

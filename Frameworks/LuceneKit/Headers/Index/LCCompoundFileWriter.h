@@ -2,7 +2,7 @@
 #define __LUCENE_COMPOUND_FILE_WRITER__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Store/LCDirectory.h"
+#include "Store/LCDirectory.h"
 
 @class LCIndexOutput;
 @class LCWriterFileEntry;

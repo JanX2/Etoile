@@ -2,7 +2,7 @@
 #define __LUCENE_INDEX_DOCUMENT_WRITER__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Store/LCDirectory.h"
+#include "Store/LCDirectory.h"
 
 @class LCTermVectorOffsetInfo;
 @class LCTerm;

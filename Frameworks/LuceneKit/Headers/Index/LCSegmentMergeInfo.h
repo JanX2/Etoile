@@ -2,7 +2,7 @@
 #define __LUCENE_INDEX_SEGMENT_MERGE_INFO__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Index/LCTermPositions.h"
+#include "Index/LCTermPositions.h"
 
 @class LCTerm;
 @class LCTermEnum;

@@ -1,4 +1,4 @@
-#include "LuceneKit/Analysis/LCLowerCaseFilter.h"
+#include "Analysis/LCLowerCaseFilter.h"
 
 /**
  * Normalizes token text to lower case.

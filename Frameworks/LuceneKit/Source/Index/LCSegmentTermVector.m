@@ -1,5 +1,5 @@
-#include "LuceneKit/Index/LCSegmentTermVector.h"
-#include "GNUstep.h"
+#include "Index/LCSegmentTermVector.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation LCSegmentTermVector
 

@@ -2,7 +2,7 @@
 #define __LUCENE_INDEX_TERM_INFOS_WRITER__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Store/LCDirectory.h"
+#include "Store/LCDirectory.h"
 
 /** The file format version, a negative number. */
 #define LCTermInfos_FORMAT -2

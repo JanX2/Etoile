@@ -1,8 +1,8 @@
-#include "LuceneKit/Index/LCSegmentMergeInfo.h"
-#include "LuceneKit/Index/LCTerm.h"
-#include "LuceneKit/Index/LCTermEnum.h"
-#include "LuceneKit/Index/LCIndexReader.h"
-#include "GNUstep.h"
+#include "Index/LCSegmentMergeInfo.h"
+#include "Index/LCTerm.h"
+#include "Index/LCTermEnum.h"
+#include "Index/LCIndexReader.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation LCSegmentMergeInfo
 - (id) initWithBase: (int) b termEnum: (LCTermEnum *) te

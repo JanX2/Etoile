@@ -1,5 +1,5 @@
-#include "LuceneKit/Index/LCTermEnum.h"
-#include "LuceneKit/Index/LCTerm.h"
+#include "Index/LCTermEnum.h"
+#include "Index/LCTerm.h"
 
 /** Abstract class for enumerating terms.
 

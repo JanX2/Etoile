@@ -1,4 +1,4 @@
-#include "LuceneKit/Search/LCSimilarity.h"
+#include "Search/LCSimilarity.h"
 
 static float *NORM_TABLE;
 

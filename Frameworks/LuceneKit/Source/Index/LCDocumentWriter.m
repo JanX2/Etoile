@@ -1,20 +1,20 @@
-#include "LuceneKit/Index/LCDocumentWriter.h"
-#include "LuceneKit/Index/LCTermVectorOffsetInfo.h"
-#include "LuceneKit/Index/LCTerm.h"
-#include "LuceneKit/Index/LCTermbuffer.h"
-#include "LuceneKit/Index/LCTermInfo.h"
-#include "LuceneKit/Index/LCTermInfosWriter.h"
-#include "LuceneKit/Index/LCTermVectorsWriter.h"
-#include "LuceneKit/Index/LCFieldInfos.h"
-#include "LuceneKit/Index/LCFieldInfo.h"
-#include "LuceneKit/Index/LCFieldsWriter.h"
-#include "LuceneKit/Document/LCDocument.h"
-#include "LuceneKit/Document/LCField.h"
-#include "LuceneKit/Analysis/LCAnalyzer.h"
-#include "LuceneKit/Index/LCIndexWriter.h"
-#include "LuceneKit/Search/LCSimilarity.h"
-#include "LuceneKit/Java/LCStringReader.h"
-#include "GNUstep.h"
+#include "Index/LCDocumentWriter.h"
+#include "Index/LCTermVectorOffsetInfo.h"
+#include "Index/LCTerm.h"
+#include "Index/LCTermbuffer.h"
+#include "Index/LCTermInfo.h"
+#include "Index/LCTermInfosWriter.h"
+#include "Index/LCTermVectorsWriter.h"
+#include "Index/LCFieldInfos.h"
+#include "Index/LCFieldInfo.h"
+#include "Index/LCFieldsWriter.h"
+#include "Document/LCDocument.h"
+#include "Document/LCField.h"
+#include "Analysis/LCAnalyzer.h"
+#include "Index/LCIndexWriter.h"
+#include "Search/LCSimilarity.h"
+#include "Java/LCStringReader.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation LCPosting
 
@@ -461,10 +461,10 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
 #ifdef HAVE_UKTEST
 
 #include <UnitKit/UnitKit.h>
-#include "LuceneKit/Store/LCRAMDirectory.h"
-#include "LuceneKit/Analysis/LCWhitespaceAnalyzer.h"
-#include "LuceneKit/Index/LCSegmentReader.h"
-#include "LuceneKit/Index/LCSegmentinfo.h"
+#include "Store/LCRAMDirectory.h"
+#include "Analysis/LCWhitespaceAnalyzer.h"
+#include "Index/LCSegmentReader.h"
+#include "Index/LCSegmentinfo.h"
 #include "TestDocHelper.h"
 
 @interface TestDocumentWriter: NSObject <UKTest>

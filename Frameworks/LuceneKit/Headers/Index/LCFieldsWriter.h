@@ -2,7 +2,7 @@
 #define __LUCENE_INDEX_FIELDS_WRITER__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Store/LCDirectory.h"
+#include "Store/LCDirectory.h"
 
 #define LCFieldsWriter_FIELD_IS_TOKENIZED 0x1
 #define LCFieldsWriter_FIELD_IS_BINARY 0x2

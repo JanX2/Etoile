@@ -1,4 +1,4 @@
-#include "LuceneKit/Analysis/LCLetterTokenizer.h"
+#include "Analysis/LCLetterTokenizer.h"
 
 /** A LetterTokenizer is a tokenizer that divides text at non-letters.  That's
   to say, it defines tokens as maximal strings of adjacent letters, as defined

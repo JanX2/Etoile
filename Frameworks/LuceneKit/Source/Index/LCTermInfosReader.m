@@ -1,9 +1,9 @@
-#include "LuceneKit/Index/LCTermInfosReader.h"
-#include "LuceneKit/Index/LCFieldInfos.h"
-#include "LuceneKit/Index/LCSegmentTermEnum.h"
-#include "LuceneKit/Index/LCTerm.h"
-#include "LuceneKit/Index/LCTermInfo.h"
-#include "GNUstep.h"
+#include "Index/LCTermInfosReader.h"
+#include "Index/LCFieldInfos.h"
+#include "Index/LCSegmentTermEnum.h"
+#include "Index/LCTerm.h"
+#include "Index/LCTermInfo.h"
+#include "GNUstep/GNUstep.h"
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
  * Directory.  Pairs are accessed either by Term or by ordinal position the

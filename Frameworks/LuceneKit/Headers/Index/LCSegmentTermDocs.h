@@ -2,7 +2,7 @@
 #define __LUCENE_INDEX_SEGMENT_TERM_DOCS__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Index/LCTermDocs.h"
+#include "Index/LCTermDocs.h"
 
 @class LCSegmentReader;
 @class LCIndexInput;

@@ -1,5 +1,5 @@
-#include "LuceneKit/Util/LCPriorityQueue.h"
-#include "GNUstep.h"
+#include "Util/LCPriorityQueue.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation LCPriorityQueue
 

@@ -1,4 +1,4 @@
-#include "LuceneKit/Analysis/LCTokenStream.h"
+#include "Analysis/LCTokenStream.h"
 
 /** A TokenStream enumerates the sequence of tokens, either from
   fields of a document or from query text.

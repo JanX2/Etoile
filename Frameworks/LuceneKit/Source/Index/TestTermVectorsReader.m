@@ -1,5 +1,5 @@
 #include "TestTermVectorsReader.h"
-#include "LuceneKit/Store/LCRAMDirectory.h"
+#include "Store/LCRAMDirectory.h"
 
 @implementation TestTermVectorsReader
 

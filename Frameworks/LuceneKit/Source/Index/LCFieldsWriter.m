@@ -1,10 +1,10 @@
-#include "LuceneKit/Index/LCFieldsWriter.h"
-#include "LuceneKit/Index/LCFieldInfos.h"
-#include "LuceneKit/Document/LCDocument.h"
-#include "LuceneKit/Document/LCField.h"
-#include "LuceneKit/Store/LCDirectory.h"
-#include "LuceneKit/Store/LCIndexOutput.h"
-#include "GNUstep.h"
+#include "Index/LCFieldsWriter.h"
+#include "Index/LCFieldInfos.h"
+#include "Document/LCDocument.h"
+#include "Document/LCField.h"
+#include "Store/LCDirectory.h"
+#include "Store/LCIndexOutput.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation LCFieldsWriter
 

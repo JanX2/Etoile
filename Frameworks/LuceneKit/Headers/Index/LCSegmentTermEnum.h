@@ -1,7 +1,7 @@
 #ifndef __LUCENE_INDEX_SEGMENT_TERM_ENUM__
 #define __LUCENE_INDEX_SEGMENT_TERM_ENUM__
 
-#include "LuceneKit/Index/LCTermEnum.h"
+#include "Index/LCTermEnum.h"
 
 @class LCIndexInput;
 @class LCFieldInfos;
@@ -10,12 +10,12 @@
 
 #ifdef HAVE_UKTEST
 #include <UnitKit/UnitKit.h>
-#include "LuceneKit/Store/LCRAMDirectory.h"
-#include "LuceneKit/Document/LCDocument.h"
-#include "LuceneKit/Document/LCField.h"
-#include "LuceneKit/Analysis/LCWhitespaceAnalyzer.h"
-#include "LuceneKit/Index/LCIndexWriter.h"
-#include "LuceneKit/Index/LCIndexReader.h"
+#include "Store/LCRAMDirectory.h"
+#include "Document/LCDocument.h"
+#include "Document/LCField.h"
+#include "Analysis/LCWhitespaceAnalyzer.h"
+#include "Index/LCIndexWriter.h"
+#include "Index/LCIndexReader.h"
 @interface LCSegmentTermEnum: LCTermEnum <NSCopying, UKTest>
 #else
 @interface LCSegmentTermEnum: LCTermEnum <NSCopying>

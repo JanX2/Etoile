@@ -1,7 +1,7 @@
 #ifndef __LUCENE_INDEX_TEST_MOCK_INDEX_INPUT__
 #define __LUCENE_INDEX_TEST_MOCK_INDEX_INPUT__
 
-#include "LuceneKit/Store/LCIndexInput.h"
+#include "Store/LCIndexInput.h"
 #include <UnitKit/UnitKit.h>
 
 @interface TestMockIndexInput: LCIndexInput <UKTest>

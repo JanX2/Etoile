@@ -3,9 +3,9 @@
 
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
-#include "LuceneKit/Index/LCSegmentReader.h"
-#include "LuceneKit/Document/LCDocument.h"
-#include "LuceneKit/Store/LCRAMDirectory.h"
+#include "Index/LCSegmentReader.h"
+#include "Document/LCDocument.h"
+#include "Store/LCRAMDirectory.h"
 #include "TestDocHelper.h"
 
 @interface TestSegmentReader: NSObject <UKTest>

@@ -1,5 +1,5 @@
 #include "TestMockIndexOutput.h"
-#include "GNUstep.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation TestMockIndexOutput
 - (id) init

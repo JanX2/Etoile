@@ -2,10 +2,10 @@
 #define __LUCENE_INDEX_INDEX_READER__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Store/LCDirectory.h"
-#include "LuceneKit/Index/LCTermDocs.h"
-#include "LuceneKit/Index/LCTermFreqVector.h"
-#include "LuceneKit/Index/LCTermPositions.h"
+#include "Store/LCDirectory.h"
+#include "Index/LCTermDocs.h"
+#include "Index/LCTermFreqVector.h"
+#include "Index/LCTermPositions.h"
 
 typedef enum _LCFieldOption
 {

@@ -2,8 +2,8 @@
 #define __LUCENE_INDEX_TERM_VECTOR_READER__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Index/LCTermFreqVector.h"
-#include "LuceneKit/Store/LCDirectory.h"
+#include "Index/LCTermFreqVector.h"
+#include "Store/LCDirectory.h"
 
 @class LCFieldInfos;
 @class LCIndexInput;

@@ -1,7 +1,7 @@
 #ifndef __LUCENE_INDEX_TERM_BUFFER__
 #define __LUCENE_INDEX_TERM_BUFFER__
 
-#include "LuceneKit/Index/LCTerm.h"
+#include "Index/LCTerm.h"
 
 @class LCIndexInput;
 @class LCFieldInfos;

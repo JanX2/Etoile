@@ -2,7 +2,7 @@
 #define __LUCENE_INDEX_TERM_INFOS_READER__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Store/LCDirectory.h"
+#include "Store/LCDirectory.h"
 
 @class LCFieldInfos;
 @class LCSegmentTermEnum;

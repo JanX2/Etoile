@@ -1,4 +1,4 @@
-#include "LuceneKit/Index/LCTermInfo.h"
+#include "Index/LCTermInfo.h"
 
 /** A TermInfo is the record of information stored for a term.*/
 @implementation LCTermInfo

@@ -1,5 +1,5 @@
-#include "LuceneKit/Store/LCRAMInputStream.h"
-#include "GNUstep.h"
+#include "Store/LCRAMInputStream.h"
+#include "GNUstep/GNUstep.h"
 
 /**
  * A memory-resident {@link IndexInput} implementation.

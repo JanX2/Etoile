@@ -2,8 +2,8 @@
 #define __LUCENE_INDEX_MULTIPLE_TERM_POSITION__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Index/LCTermPositions.h"
-#include "LuceneKit/Util/LCPriorityQueue.h"
+#include "Index/LCTermPositions.h"
+#include "Util/LCPriorityQueue.h"
 
 @interface LCTermPositionsQueue: LCPriorityQueue
 - (id) initWithTermPositions: (NSArray *) termPositions;

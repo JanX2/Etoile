@@ -1,6 +1,6 @@
-#include "LuceneKit/Store/LCRAMOutputStream.h"
-#include "LuceneKit/Store/LCRAMFile.h"
-#include "GNUstep.h"
+#include "Store/LCRAMOutputStream.h"
+#include "Store/LCRAMFile.h"
+#include "GNUstep/GNUstep.h"
 
 /**
  * A memory-resident {@link IndexOutput} implementation.

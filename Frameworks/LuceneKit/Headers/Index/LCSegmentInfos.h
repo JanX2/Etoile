@@ -2,7 +2,7 @@
 #define __LUCENE_INDEX_SEGMENT_INFOS__
 
 #include <Foundation/Foundation.h>
-#include "LuceneKit/Store/LCDirectory.h"
+#include "Store/LCDirectory.h"
 
 @class LCSegmentInfo;
 
