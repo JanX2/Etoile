@@ -1,11 +1,11 @@
-#include "Image.h"
+#include "CLImage.h"
 
-@interface NSImage (flags)
+@interface NSImage (theme)
 - (void) setArchiveByName: (BOOL) flag;
 - (void) setNameForced: (NSString*) aName;
 @end
 
-@implementation NSImage (flags)
+@implementation NSImage (theme)
 - (void) setArchiveByName: (BOOL) flag
 {
 	_flags.archiveByName = flag;
@@ -16,18 +16,15 @@
 }
 @end
 
-@implementation Image
+@implementation CLImage
 
 Class theNSImageClass;
 
-+ (id) imageNamed: (NSString *)aName
++ (id) imageNamed: (NSString*) aName
 {
+	NSBundle* bundle = [NSBundle bundleForClass: NSClassFromString (@"Camaelon")];
 	BOOL providedInTheme = YES;
-    	NSBundle* bundle = [NSBundle bundleForClass: NSClassFromString(@"Camaelon")];
 	NSImage* ret = nil;
-
-
-	// Get the image in the cache
 
 	ret = [GraphicToolbox imageNamed: aName];
 
@@ -116,94 +113,6 @@ Class theNSImageClass;
 		{
 			ret = [ImageProvider TabsUnselectedJunction];
 		}
-		
-		/*
-		else if (
-			   [aName isEqualToString: @"common_TabSelectedLeft.tiff"]
-			|| [aName isEqualToString: @"common_TabSelectedRight.tiff"]
-			|| [aName isEqualToString: @"common_TabSelectedToUnSelectedJunction.tiff"]
-			|| [aName isEqualToString: @"common_TabUnSelectToSelectedJunction.tiff"]
-			|| [aName isEqualToString: @"common_TabUnSelectedJunction.tiff"]
-			|| [aName isEqualToString: @"common_TabUnSelectedLeft.tiff"]
-			|| [aName isEqualToString: @"common_TabUnSelectedRight.tiff"]
-			)
-		{
-			NSImage* image = [[NSImage alloc] initWithSize: NSMakeSize (14,17)];
-			[image lockFocus];
-			if (
-			   [aName isEqualToString: @"common_TabSelectedLeft.tiff"]
-			|| [aName isEqualToString: @"common_TabUnSelectedLeft.tiff"]
-			|| [aName isEqualToString: @"common_TabSelectedToUnSelectedJunction.tiff"]
-			|| [aName isEqualToString: @"common_TabUnSelectedJunction.tiff"]
-			)
-			{
-				NSBezierPath* path = [NSBezierPath bezierPath];
-				[path moveToPoint: NSMakePoint (0,0)];
-				[path curveToPoint: NSMakePoint (14,17) 
-				     controlPoint1: NSMakePoint (8, 2) 
-				     controlPoint2: NSMakePoint (8, 14)];
-				NSBezierPath* background = [NSBezierPath bezierPath];
-				[background appendBezierPath: path];
-				[background lineToPoint: NSMakePoint (14, 0)];
-				[background closePath];
-				[[NSColor windowBackgroundColor] set];
-				[background fill];
-				//[[NSColor blackColor] set];
-				[[NSColor colorWithCalibratedRed: 0.3 green: 0.3 blue: 0.4 alpha: 0.8] set];
-				[path setLineWidth: 1.5];
-				[[NSColor controlLightHighlightColor] set];
-				[path stroke];
-			}
-			if (
-			   [aName isEqualToString: @"common_TabSelectedRight.tiff"]
-			|| [aName isEqualToString: @"common_TabUnSelectedRight.tiff"]
-			|| [aName isEqualToString: @"common_TabSelectedToUnSelectedJunction.tiff"]
-			|| [aName isEqualToString: @"common_TabUnSelectedJunction.tiff"]
-			|| [aName isEqualToString: @"common_TabUnSelectToSelectedJunction.tiff"]
-			)
-			{	
-				NSBezierPath* path = [[NSBezierPath alloc] init];
-				[path moveToPoint: NSMakePoint (0,17)];
-				[path curveToPoint: NSMakePoint (14,0) 
-				     controlPoint1: NSMakePoint (8, 14) 
-				     controlPoint2: NSMakePoint (8, 2)];
-				NSBezierPath* background = [NSBezierPath bezierPath];
-				[background appendBezierPath: path];
-				[background lineToPoint: NSMakePoint (0, 0)];
-				[background closePath];
-				[[NSColor windowBackgroundColor] set];
-				[background fill];
-				//[[NSColor blackColor] set];
-				[[NSColor colorWithCalibratedRed: 0.3 green: 0.3 blue: 0.4 alpha: 0.8] set];
-				[[NSColor controlShadowColor] set];
-				[path setLineWidth: 1.5];
-				[path stroke];
-			}
-			if ( [aName isEqualToString: @"common_TabUnSelectToSelectedJunction.tiff"] )
-			{
-				NSBezierPath* path = [NSBezierPath bezierPath];
-				[path moveToPoint: NSMakePoint (0,0)];
-				[path curveToPoint: NSMakePoint (14,17) 
-				     controlPoint1: NSMakePoint (8, 2) 
-				     controlPoint2: NSMakePoint (8, 14)];
-				NSBezierPath* background = [NSBezierPath bezierPath];
-				[background appendBezierPath: path];
-				[background lineToPoint: NSMakePoint (14, 0)];
-				[background closePath];
-				[[NSColor windowBackgroundColor] set];
-				[background fill];
-				[[NSColor whiteColor] set];
-				//[[NSColor blackColor] set];
-				[[NSColor colorWithCalibratedRed: 0.3 green: 0.3 blue: 0.4 alpha: 0.8] set];
-				[path setLineWidth: 1.5];
-				[[NSColor whiteColor] set];
-				[[NSColor controlLightHighlightColor] set];
-				[path stroke];
-			}
-			[image unlockFocus];
-			ret = [image autorelease];
-		}
-		*/
 		else
 		{
 			providedInTheme = NO;
