@@ -1,0 +1,11 @@
+{
+  ApplicationDescription = "Etoile core services to interact with your data";
+  ApplicationName = "Workspace";
+  ApplicationRelease = "0.1";
+  ApplicationURL = "";
+  Authors = ("Quentin Mathe <qmathe@club-internet.fr>");
+  Copyright = "Copyright (C) 2004 Quentin Mathe and contributors";
+  CopyrightDescription = "Released under the GNU Lesser General Public License 2.0";
+  FullVersionID = "0.1";
+  NSIcon = "Workspace.tiff";
+}

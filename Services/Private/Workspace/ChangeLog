@@ -1,0 +1,44 @@
+2005-01-04  Quentin Mathe <qmathe@club-internet.fr>
+	
+	Warning! doesn't compile (Work needed on FilieCore)
+	* Cocoa/Cocoa.h:
+	* Cocoa/.cvsignore:
+	* FilieCore/UKFileMixedValueIndicator.h:
+	* FilieCore/UKFileMixedValueIndicator.m:
+	* FilieCore/UKFileInfoPanel.h:
+	* FilieCore/UKFileInfoPanel.m:
+	* FilieCore/UKFileInfoProtocol.h:
+	* FilieCore/UKFolderDataSource.h:
+	* FilieCore/UKFolderDataSource.m:
+	* FilieCore/UKFolderIconViewController.h:
+	* FilieCore/UKFolderIconViewController.m:
+	* FilieCore/UKFolderMetaStorage.h:
+	* FilieCore/UKFolderMetaStorage.m:
+	* FilieCore/UKFSDataSourceProtocol.h:
+	* FilieCore/UKFSItem.h:
+	* FilieCore/UKFSItem.m:
+	* FilieCore/UKFSItemViewProtocol.h:
+	* FilieCore/UKMainThreadActionQueue.h:
+	* FilieCore/UKMainThreadActionQueue.m:
+	* FilieCore/GNUmakefile:
+	* FilieCore/.cvsignore
+	* WkContextIconViewController.h:
+	* WkContextIconViewController.m:
+	* WkContextTableViewController.h:
+	* WkContextTableViewController.m:
+	* WkContextViewController.h:
+	* WkContextViewController.m:
+	* WkContextWindowController.h:
+	* WkContextWindowController.m:
+	* WorkspaceController.h:
+	* WorkspaceController.m:
+	* main.m:
+	* Workspace.gorm:
+	* WorkspaceWindow.gorm:
+	* ConnectWindow.gorm:
+	* WorkspaceInfo.plist:
+	* GNUmakefile:
+	* .cvsignore:
+	Initial import for Workspace.
+
+
