@@ -28,6 +28,25 @@ PACKAGE_NAME = Bundles
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
-SUBPROJECTS = Camaelon
+#
+# Variables check
+#
+
+export etoile ?= yes
+export desktop-base ?= yes
+
+ifeq ($(desktop-base), yes)
+
+    export camaelon ?= yes
+
+endif
+
+#
+# Subprojects choice
+#
+
+ifeq ($(camaelon), yes)
+    SUBPROJECTS = Camaelon
+endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

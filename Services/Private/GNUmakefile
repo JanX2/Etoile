@@ -28,8 +28,31 @@ PACKAGE_NAME = PrivateServices
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
+#
+# Variables check
+#
+
+export etoile ?= yes
+export etoile-extensions ?= yes
+
 ifeq ($(etoile), yes)
-SUBPROJECTS = Workspace
+    
+    export workspace ?= yes
+
+endif
+
+ifeq ($(etoile-extensions), yes)
+
+    export servicesbar ?=yes
+
+endif
+
+#
+# Subprojects choice
+#
+
+ifeq ($(workspace), yes)
+    #SUBPROJECTS = Workspace
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

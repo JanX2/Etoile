@@ -28,6 +28,31 @@ PACKAGE_NAME = DeveloperServices
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
-SUBPROJECTS = UnitTests
+#
+# Variables check
+#
+
+export etoile ?= yes
+export developer-base ?= yes
+
+ifeq ($(developer-base), yes)
+
+    export unittests ?= yes
+
+endif
+
+ifeq ($(developer-base), no)
+
+    export unittests ?= no
+
+endif
+
+#
+# Subprojects choice
+# 
+
+ifeq ($(unittests), yes)
+	SUBPROJECTS = UnitTests
+endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

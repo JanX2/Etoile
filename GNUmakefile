@@ -24,9 +24,13 @@
 #		Boston, MA  02111-1307, USA
 #
 
+# When pmk will work :
+# Template file !
+# Use pmkfile first !
+
 include $(GNUSTEP_MAKEFILES)/common.make
 
-PACKAGE_NAME = Frameworks
+PACKAGE_NAME = Etoile
 
 #
 # Variables check
@@ -38,87 +42,54 @@ ifeq ($(etoile), no)
 
     export desktop-base ?= yes
     export developer-base ?= yes
+    export etoile-extensions ?= no
+    export workspace ?= no
 
 endif
 
-ifeq ($(etoile), no)
+ifeq ($(etoile), yes)
+
+    #
+    # "make etoile=yes" is the verbose equivalent for "make"
+    #
 
     export desktop-base ?= yes
     export etoile-extensions ?= yes
-
-endif
+    export workspace ?= yes
+    
+endif 
 
 ifeq ($(desktop-base), yes)
-    
+
     export bookmarkkit ?= yes
     export iconkit ?= yes
     export preferenceskit ?= yes
-
+    export camaelon ?= yes
+    
 endif
 
 ifeq ($(etoile-extensions), yes)
-    
-    export etoileextensionskit ?= yes
+
+    export extendedworkspacekit ?= yes
     export lucenekit ?= yes
-    export extendedworkspacekit ?= yes 
+    export servicesbarkit ?= yes
     export trackerkit ?= yes
-
+    
+    export servicesbar ?= yes
+    
 endif
-
-export developer-base ?= yes
 
 ifeq ($(developer-base), yes)
-    
-    export unitkit ?= yes
 
+    export unitkit ?= yes
+    export unittests ?= yes
+    
 endif
-  
+
 #
 # Subprojects choice
 #
 
-#
-# desktop-base
-#
-
-ifeq ($(bookmarkkit), yes)
-   SUBPROJECTS += BookmarkKit
-endif
-
-ifeq ($(iconkit), yes)
-   SUBPROJECTS += IconKit
-endif
-
-ifeq ($(preferenceskit), yes)
-   #SUBPROJECTS += PreferencesKit
-endif
-
-#
-# etoile-extensions
-#
-    
-ifeq ($(etoileextensionskit), yes)
-    SUBPROJECTS += EtoileExtensionsKit
-endif
-
-ifeq ($(lucenekit), yes)
-   #SUBPROJECTS += LuceneKit
-endif
-
-ifeq ($(extendedworkspacekit), yes)
-   SUBPROJECTS += ExtendedWorkspaceKit
-endif
-
-ifeq ($(trackerkit), yes)
-   #SUBPROJECTS += TrackerKit
-endif
-
-#
-# developer-base
-#
-
-ifeq ($(unitkit), yes)
-   SUBPROJECTS += UnitKit
-endif
+SUBPROJECTS = Frameworks Bundles Services #Documentation
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

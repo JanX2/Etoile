@@ -28,12 +28,30 @@ PACKAGE_NAME = Services
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
-ifeq ($(etoile), yes)
-	SUBPROJECTS = Private
+#
+# Variables cehck
+#
+
+export etoile ?= yes
+
+ifeq ($(etoile), no)
+	
+	export etoile-extensions ?= no
+
 endif
 
-ifeq ($(developer-base), yes)
-	SUBPROJECTS += Developer
+ifeq ($(etoile), yes)
+
+	export etoile-extensions ?= yes
+
 endif
+
+export developer-base ?= yes
+
+#
+# Subprojects choice
+#
+
+SUBPROJECTS = Developer Private
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
