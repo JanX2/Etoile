@@ -1,5 +1,11 @@
 2005-03-22 Nicolas Roard <nicolas@roard.com>
 
+	* correction of a bug encounteered by GNUMail with NSTableHeaderCell;
+	  basically the problem is that NSTableHeaderCell was updated and the version
+	  used by Camaelon was too old..
+
+2005-03-22 Nicolas Roard <nicolas@roard.com>
+
 	* cleaning to remove warnings.. (some warnings are inevitable though)
 
 2005-03-22 Nicolas Roard <nicolas@roard.com>
@@ -48,7 +54,7 @@
 	* addition of test cases in NSBox for the different bezels..
 	* small hack in NSButtonCell to have a correct text placement (-1)
 	* addition of several methods in NSColor to deal with alternate colors..
-	
+
 2005-03-10 Nicolas Roard <nicolas@roard.com>
 
 	* addition of this ChangeLog :-)
