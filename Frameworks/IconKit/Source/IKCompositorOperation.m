@@ -129,7 +129,7 @@
 {
 	NSMutableDictionary* dictionary = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary* dictRect = [[NSMutableDictionary alloc] init];
-	[dictionary setObject: path forKey: @"path"];
+	if (path != nil) [dictionary setObject: path forKey: @"path"];
 	[dictionary setObject: [NSNumber numberWithInt: position] forKey: @"position"];
 	[dictionary setObject: [NSNumber numberWithInt: operation] forKey: @"operation"];
 	[dictRect setObject: [NSNumber numberWithFloat: rect.origin.x] forKey: @"x"];

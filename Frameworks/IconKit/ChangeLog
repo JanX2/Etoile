@@ -1,3 +1,10 @@
+2004-08-14  Nicolas Roard <nicolas@roard.com>
+	* Initial implementation of the IconKit
+	* some minor modifications of IKCompositor.h and IKCompositorOperation.h
+	* implementation of IKCompositor.m and IKCompositorOperation.m
+	* lacks IKCompositedIconPosition possibilites and automatic rescaling using
+	  originalSize/compositingSize (the exercive is left to the reader ;-)
+
 2004-08-14  Quentin Mathe <qmathe@club-internet.fr>
 
 	    * ChangeLog:
