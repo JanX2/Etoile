@@ -1,3 +1,8 @@
+2005-03-10  Quentin Mathe  <qmathe@club-internet.fr>
+    
+    * INSTALL: Updated to talk about IconKit and not Gorm.
+    * Source/GNUmakefile: Improved formatting.
+    
 2004-11-10  Quentin Mathe  <qmathe@club-internet.fr>
         
 	* Source/IKCompositor.m: Makes the code compliant with the GNUstep

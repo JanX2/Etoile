@@ -36,17 +36,17 @@ GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 #
 # Main application
 #
-LIBRARY_NAME=		libIconKit	
-VERSION=		0.1
+LIBRARY_NAME = libIconKit	
+VERSION = 0.1
 
 #
 # Resource files
 #
-libIconKit_MAIN_MODEL_FILE=
+libIconKit_MAIN_MODEL_FILE =
 
-libIconKit_RESOURCE_FILES=
+libIconKit_RESOURCE_FILES =
 
-libIconKit_LOCALIZED_RESOURCE_FILES=
+libIconKit_LOCALIZED_RESOURCE_FILES =
 
 #
 # Languages we're localized for
@@ -64,6 +64,7 @@ libIconKit_OBJC_FILES= \
 	IKApplicationIconProvider.m \
 	NSFileManager+IconKit.m \
 	NSString+MD5Hash.m
+	
 #
 # C files
 #
