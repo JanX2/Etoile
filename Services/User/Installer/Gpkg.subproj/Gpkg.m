@@ -22,7 +22,233 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 */
 
-#include "Gpkg.h"
+#import "Gpkg.h"
+
+@interface Gpkg (Private)
+
+- (BOOL) atomicallyCopyPath: (NSString *) sourcePath toPath: (NSString *) destinationPath ofType: (NSString *)fileType  withAttributes: (NSDictionary *) attributes;
+- getAllInfo;
+- uncompressPackage;
+
+@end
+
+@implementation Gpkg (Private)
+- uncompressPackage
+{
+
+  NSLog(@"Hello uncompressPackage");
+  NSArray *args;
+  NSTask *task;
+  NSData *data;
+  NSString *lstr;
+  NSString *gstr;
+  NSString *lic;
+  NSPipe *pipe = [NSPipe pipe];
+  NSFileHandle *fileHandle;
+  NSFileManager *manager = [NSFileManager defaultManager];
+  
+  NSString *tempDir = [NSTemporaryDirectory() stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]];
+  
+  NSLog (@"1");
+  //packageTempDir is: TMP/Installer.app/
+  //  packageTempDir = [NSString stringWithString: [[NSTemporaryDirectory() stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]] stringByAppendingPathComponent: appDirectoryName]];
+
+  //  NSString *installerTempDir = [NSString stringWithString: [packageTempDir stringByDeletingLastPathComponent]];
+  NSString *command;
+  installerTempDir = [NSString stringWithString: [NSTemporaryDirectory() stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]]];
+  packageTempDir = [installerTempDir stringByAppendingPathComponent:  [descriptionPlist objectForKey:@"IFPkgDescriptionTitle"]];
+
+  NSLog (@"2");
+  // Create the $TMP/Installer
+  if (![manager fileExistsAtPath: installerTempDir])
+    {
+      NSLog (@"Created %@", installerTempDir);
+      [manager createDirectoryAtPath: installerTempDir
+	       attributes: [manager fileAttributesAtPath: NSTemporaryDirectory() traverseLink: NO]];
+      //      [manager enforceMode: 0700  atPath: aString];
+    }
+  // Create the $TMP/Installer/SomePackage.app
+  if (![manager fileExistsAtPath: packageTempDir])
+    {
+      NSLog (@"Created %@", packageTempDir);
+      [manager createDirectoryAtPath: packageTempDir
+	       attributes: [manager fileAttributesAtPath: installerTempDir traverseLink: NO]];
+      //      [manager enforceMode: 0700  atPath: compressedPath];
+    }
+    
+  //  NSLog (@"Copying %@ to %@", packageArchivePath, packageTempDir);
+  NSLog (@"3");
+  packageTempArchivePath = [packageTempDir stringByAppendingPathComponent: [paxArchivePath lastPathComponent]];
+  if ([manager copyPath: paxArchivePath toPath: packageTempArchivePath  handler:nil])
+    NSLog (@"Success!!!");
+  else
+    NSLog (@"Some weird error...");
+  /*
+  packageArchivePath = [packageTempDir stringByAppendingPathComponent: [packageArchivePath lastPathComponent]]; 
+  if ([archiveFormat isEqualToString: @"TAR"])
+    {
+      command = [NSString stringWithString: @"tar"];
+      args = [NSArray arrayWithObjects: @"-zxvf", packageArchivePath, nil];
+    }
+  if ([archiveFormat isEqualToString: @"PAX"])
+    {
+      command = [NSString stringWithString: @"pax"];
+      args = [NSArray arrayWithObjects: @"-zrvf", packageArchivePath, nil];
+    }
+  //  appDir =  [compressedPath stringByAppendingPathComponent: [appDirPath lastPathComponent]];
+  */
+  command = [NSString stringWithString: @"pax"];
+  args = [NSArray arrayWithObjects: @"-zrvf", paxArchivePath, nil];
+  task = [NSTask new];
+  [task setLaunchPath: command];
+  [task setArguments: args];
+  [task setStandardOutput: pipe];
+  [task setCurrentDirectoryPath: packageTempDir];
+  fileHandle = [pipe fileHandleForReading];
+  [task launch];
+  data = [fileHandle readDataToEndOfFile];
+  [fileHandle closeFile];
+  lstr = [[NSString alloc] initWithData: data
+			   encoding: [NSString defaultCStringEncoding]];
+  NSLog(@"This is lstr: %@", lstr);
+  
+
+}
+
+- getAllInfo
+{
+  
+  NSFileManager *aFileManager;
+  NSArray *allFiles;
+  NSString *inputString = [NSString new];
+  NSString *sizesFileContents = [NSString new];
+  NSMutableDictionary *sizesValues = [NSMutableDictionary new];
+  //  NSString *contentsPath = [[NSString alloc]initWithString: packagePath];
+  NSString *contentsPath = [NSString stringWithString: [packagePath stringByAppendingPathComponent:@"Contents"]];
+  //  NSString *bomContents;
+  int j;
+  
+  //  [contentsPath setStringValue: [packagePa
+  NSLog (@"Contents at: %@",contentsPath);
+
+
+  aFileManager = [NSFileManager defaultManager];
+
+  //  bundlesPath =  [NSString stringWithString: @"./Gpkg.subproj"];
+  //[bundlesPath initWithString: filename];
+  //  appDir = [NSString new];
+
+  
+  allFiles = [aFileManager directoryContentsAtPath: packagePath];
+  NSString *descriptionPlistPath = [NSBundle pathForResource:@"Description" 
+					     ofType:@"plist"
+					     inDirectory: contentsPath];
+  NSString *infoPlistPath = [NSBundle pathForResource:@"Info" 
+				      ofType:@"plist"
+				      inDirectory: contentsPath];
+  paxArchivePath = [NSBundle pathForResource:@"Archive" 
+				       ofType:@"pax.gz"
+				       inDirectory: contentsPath];
+  NSString *bomPath = [NSBundle pathForResource:@"Archive" 
+				ofType:@"bom"
+				inDirectory: contentsPath];
+  NSString *licensePath = [NSBundle pathForResource:@"License" 
+				    ofType: nil
+				    inDirectory: contentsPath];
+  NSString *readmePath = [NSBundle pathForResource:@"ReadMe" 
+				   ofType: nil
+				   inDirectory: contentsPath];
+  NSString *welcomePath = [NSBundle pathForResource:@"Welcome" 
+				    ofType: nil
+				    inDirectory: contentsPath];
+  
+  license = [NSString stringWithContentsOfFile: licensePath];
+  welcome = [NSString stringWithContentsOfFile: welcomePath];
+
+  NSLog (@"Description: %@", descriptionPlistPath);  
+  NSLog (@"Info: %@", infoPlistPath);
+  NSLog (@"Archive: %@", paxArchivePath);  
+  NSLog (@"BOM: %@", bomPath);  
+  NSLog (@"License: %@", licensePath);  
+  NSLog (@"Readme: %@", readmePath);  
+  NSLog (@"Welcome: %@", welcomePath);  
+  
+  //  NSMutableDictionary *infoPlist = [NSMutableDictionary new];
+  infoPlist = [NSPropertyListSerialization propertyListFromData: [[NSData dataWithContentsOfFile: infoPlistPath]retain]
+					   mutabilityOption: NSPropertyListImmutable 
+					   format:  0
+					   errorDescription: 0];
+  
+  [infoPlist retain];
+
+  descriptionPlist = [NSPropertyListSerialization propertyListFromData: [[NSData dataWithContentsOfFile: descriptionPlistPath]retain]
+					   mutabilityOption: NSPropertyListImmutable 
+					   format:  0
+					   errorDescription: 0];
+  
+  [descriptionPlist retain];
+
+  bom = [NSPropertyListSerialization propertyListFromData: [[NSData dataWithContentsOfFile: bomPath]retain]
+					   mutabilityOption: NSPropertyListImmutable 
+					   format:  0
+					   errorDescription: 0];
+  [bom retain];
+
+  //  packageVersion = [infoPlist objectForKey:@"CFBundleShortVersionString"];
+  //  exit(0);
+  installLocation=[infoPlist objectForKey:@"IFPkgFlagDefaultLocation"];  
+  [installLocation retain];
+  [paxArchivePath retain];
+  [packageTempDir retain];
+  //  installerTempDir = [NSString stringWithString: [NSTemporaryDirectory() stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]]];
+  //  packageTempDir = [installerTempDir stringByAppendingPathComponent:  [descriptionPlist objectForKey:@"IFPkgDescriptionTitle"]];
+  NSLog (@"Temp dir for package: %@", packageTempDir);
+}
+
+-(BOOL) atomicallyCopyPath: (NSString *) sourcePath 
+		    toPath: (NSString *) destinationPath 
+		    ofType: (NSString *)fileType 
+	    withAttributes: (NSDictionary *) attributes 
+{
+  
+  NSFileManager *manager = [NSFileManager defaultManager];
+  
+  if ([fileType isEqualToString: NSFileTypeDirectory] == NO)
+    {
+      // Processing regular file
+      NSLog (@"Processing file %@", sourcePath );
+      
+      if ([manager copyPath: sourcePath toPath: destinationPath handler: nil] != NO)
+	{
+	  return YES;
+	}
+      else
+	{
+	  NSLog (@"Failed installing a file %@", sourcePath);
+	  return NO;
+	}
+    } //end File processing
+  else
+    {
+      //Processing Directories
+      //	  NSLog (@"Processing dir %@", key);
+      NSLog (@"Processing dir %@", sourcePath);
+      
+      if ([manager createDirectoryAtPath: destinationPath
+		   attributes: attributes] != NO)
+	{
+	  return YES;
+	}
+      else
+	{
+	  NSLog (@"Failed creating a directory %@", destinationPath);
+	  return NO;
+	} 
+      
+    } //end Dir processing
+} // end while 
+
+@end
 
 @implementation Gpkg
 - int 
@@ -31,6 +257,10 @@
   //  totalSteps = [NSString new];
   return self;
 }
+
+
+
+
 - (BOOL) handlesPackage: (NSString *)pkgPath;
 {
   NSLog (@"Entered Gpkg handlesPackage");
@@ -40,7 +270,7 @@
       // packagePath = [NSString stringWithString: [pkgPath stringByAppendingPathComponent:@"Contents"]];
       packagePath = [NSString stringWithString: pkgPath];
       [packagePath retain];
-      [self _getAllInfo];
+      [self getAllInfo];
       return YES;
 
     }  
@@ -62,16 +292,27 @@
 - (BOOL) isInstalled
 {
   NSArray *paths;
-  NSString *receiptsFolder = [NSString new];
+  BOOL isDir;
+  //  NSString *receiptsFolder;
   NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath: packagePath];
   NSFileManager *manager = [NSFileManager defaultManager];
+
   id key;
-
+  
   paths = NSSearchPathForDirectoriesInDomains (NSLibraryDirectory, NSUserDomainMask, YES);
-  receiptsFolder = [[paths objectAtIndex: 0] stringByAppendingPathComponent:@"Receipts"];
+  
+  //    NSString  *receiptsFolder = [[NSString alloc] initWithString: [[[paths objectAtIndex: 0] stringByAppendingPathComponent:@"Receipts"] stringByAppendingPathComponent: [packagePath lastPathComponent]]];  
 
-  NSLog (@"Receipts are in %@", receiptsFolder);
-
+  if (([manager fileExistsAtPath: [[[paths objectAtIndex: 0] stringByAppendingPathComponent:@"Receipts"] stringByAppendingPathComponent: [packagePath lastPathComponent]] isDirectory: &isDir] && isDir )!= NO)
+    {
+      NSLog (@"File exists");
+    }
+  else
+    {
+      NSLog (@"File doesn't exist");
+    }
+  //  NSString *receiptsFolder = [NSString stringWithString: @"ADB"];  
+  
   return NO;
 }
 - (NSString *) packageDescription
@@ -151,7 +392,7 @@
 //  NSLog(@"Testing appdir: %@", appDir);
   NSLog (@"moo");
   
-  [self _uncompressPackage];
+  [self uncompressPackage];
 
   if ([manager changeCurrentDirectoryPath: packageTempDir] != NO)
     NSLog (@"Chdir OK");
@@ -282,51 +523,7 @@
   return YES;
 }
 
--(BOOL) atomicallyCopyPath: (NSString *) sourcePath 
-		    toPath: (NSString *) destinationPath 
-		    ofType: (NSString *)fileType 
-	     withAttributes: (NSDictionary *) attributes
-{
-  
-  NSFileManager *manager = [NSFileManager defaultManager];
-  
-  if ([fileType isEqualToString: NSFileTypeDirectory] == NO)
-    {
-      // Processing regular file
-      NSLog (@"Processing file %@", sourcePath );
-      
-      if ([manager copyPath: sourcePath toPath: destinationPath handler: nil] != NO)
-	{
-	  return YES;
-	}
-      else
-	{
-	  NSLog (@"Failed installing a file %@", sourcePath);
-	  return NO;
-	}
-    } //end File processing
-  else
-    {
-      //Processing Directories
-      //	  NSLog (@"Processing dir %@", key);
-      NSLog (@"Processing dir %@", sourcePath);
-      
-      if ([manager createDirectoryAtPath: destinationPath
-		   attributes: attributes] != NO)
-	{
-	  return YES;
-	}
-      else
-	{
-	  NSLog (@"Failed creating a directory %@", destinationPath);
-	  return NO;
-	} 
-      
-    } //end Dir processing
-} // end while 
-  
-
-- (BOOL) preInstall
+  - (BOOL) preInstall
 {
 
     NSLog (@"preInstall: %@ , %@", packagePath, installLocation);
@@ -338,187 +535,21 @@
   //  NSLog (@"*** postInstall: %@, %@", packagePath, [self packageLocation]);
   return YES;
 }
-- _getAllInfo
-{
-  
-  NSFileManager *aFileManager;
-  NSArray *allFiles;
-  NSString *inputString = [NSString new];
-  NSString *sizesFileContents = [NSString new];
-  NSMutableDictionary *sizesValues = [NSMutableDictionary new];
-  //  NSString *contentsPath = [[NSString alloc]initWithString: packagePath];
-  NSString *contentsPath = [NSString stringWithString: [packagePath stringByAppendingPathComponent:@"Contents"]];
-  //  NSString *bomContents;
-  int j;
-  
-  //  [contentsPath setStringValue: [packagePa
-  NSLog (@"Contents at: %@",contentsPath);
 
 
-  aFileManager = [NSFileManager defaultManager];
-
-  //  bundlesPath =  [NSString stringWithString: @"./Gpkg.subproj"];
-  //[bundlesPath initWithString: filename];
-  //  appDir = [NSString new];
-
-  
-  allFiles = [aFileManager directoryContentsAtPath: packagePath];
-  NSString *descriptionPlistPath = [NSBundle pathForResource:@"Description" 
-					     ofType:@"plist"
-					     inDirectory: contentsPath];
-  NSString *infoPlistPath = [NSBundle pathForResource:@"Info" 
-				      ofType:@"plist"
-				      inDirectory: contentsPath];
-  paxArchivePath = [NSBundle pathForResource:@"Archive" 
-				       ofType:@"pax.gz"
-				       inDirectory: contentsPath];
-  NSString *bomPath = [NSBundle pathForResource:@"Archive" 
-				ofType:@"bom"
-				inDirectory: contentsPath];
-  NSString *licensePath = [NSBundle pathForResource:@"License" 
-				    ofType: nil
-				    inDirectory: contentsPath];
-  NSString *readmePath = [NSBundle pathForResource:@"ReadMe" 
-				   ofType: nil
-				   inDirectory: contentsPath];
-  NSString *welcomePath = [NSBundle pathForResource:@"Welcome" 
-				    ofType: nil
-				    inDirectory: contentsPath];
-  
-  license = [NSString stringWithContentsOfFile: licensePath];
-  welcome = [NSString stringWithContentsOfFile: welcomePath];
-
-  NSLog (@"Description: %@", descriptionPlistPath);  
-  NSLog (@"Info: %@", infoPlistPath);
-  NSLog (@"Archive: %@", paxArchivePath);  
-  NSLog (@"BOM: %@", bomPath);  
-  NSLog (@"License: %@", licensePath);  
-  NSLog (@"Readme: %@", readmePath);  
-  NSLog (@"Welcome: %@", welcomePath);  
-  
-  //  NSMutableDictionary *infoPlist = [NSMutableDictionary new];
-  infoPlist = [NSPropertyListSerialization propertyListFromData: [[NSData dataWithContentsOfFile: infoPlistPath]retain]
-					   mutabilityOption: NSPropertyListImmutable 
-					   format:  0
-					   errorDescription: 0];
-  
-  [infoPlist retain];
-
-  descriptionPlist = [NSPropertyListSerialization propertyListFromData: [[NSData dataWithContentsOfFile: descriptionPlistPath]retain]
-					   mutabilityOption: NSPropertyListImmutable 
-					   format:  0
-					   errorDescription: 0];
-  
-  [descriptionPlist retain];
-
-  bom = [NSPropertyListSerialization propertyListFromData: [[NSData dataWithContentsOfFile: bomPath]retain]
-					   mutabilityOption: NSPropertyListImmutable 
-					   format:  0
-					   errorDescription: 0];
-  [bom retain];
-
-  //  packageVersion = [infoPlist objectForKey:@"CFBundleShortVersionString"];
-  //  exit(0);
-  installLocation=[infoPlist objectForKey:@"IFPkgFlagDefaultLocation"];  
-  [installLocation retain];
-  [paxArchivePath retain];
-  [packageTempDir retain];
-  //  installerTempDir = [NSString stringWithString: [NSTemporaryDirectory() stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]]];
-  //  packageTempDir = [installerTempDir stringByAppendingPathComponent:  [descriptionPlist objectForKey:@"IFPkgDescriptionTitle"]];
-  NSLog (@"Temp dir for package: %@", packageTempDir);
-}
 - (int) currentStep
 {
   NSLog (@"Doing step");
   return 1;
 }
+
 - (int) totalSteps
 {
   totalSteps = [[bom objectForKey: @"Files"] count];
   return totalSteps;
   //  return 10;
 }
-- _uncompressPackage
-{
 
-  NSLog(@"Hello uncompressPackage");
-  NSArray *args;
-  NSTask *task;
-  NSData *data;
-  NSString *lstr;
-  NSString *gstr;
-  NSString *lic;
-  NSPipe *pipe = [NSPipe pipe];
-  NSFileHandle *fileHandle;
-  NSFileManager *manager = [NSFileManager defaultManager];
-  
-  NSString *tempDir = [NSTemporaryDirectory() stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]];
-  
-  NSLog (@"1");
-  //packageTempDir is: TMP/Installer.app/
-  //  packageTempDir = [NSString stringWithString: [[NSTemporaryDirectory() stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]] stringByAppendingPathComponent: appDirectoryName]];
-
-  //  NSString *installerTempDir = [NSString stringWithString: [packageTempDir stringByDeletingLastPathComponent]];
-  NSString *command;
-  installerTempDir = [NSString stringWithString: [NSTemporaryDirectory() stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]]];
-  packageTempDir = [installerTempDir stringByAppendingPathComponent:  [descriptionPlist objectForKey:@"IFPkgDescriptionTitle"]];
-
-  NSLog (@"2");
-  // Create the $TMP/Installer
-  if (![manager fileExistsAtPath: installerTempDir])
-    {
-      NSLog (@"Created %@", installerTempDir);
-      [manager createDirectoryAtPath: installerTempDir
-	       attributes: [manager fileAttributesAtPath: NSTemporaryDirectory() traverseLink: NO]];
-      //      [manager enforceMode: 0700  atPath: aString];
-    }
-  // Create the $TMP/Installer/SomePackage.app
-  if (![manager fileExistsAtPath: packageTempDir])
-    {
-      NSLog (@"Created %@", packageTempDir);
-      [manager createDirectoryAtPath: packageTempDir
-	       attributes: [manager fileAttributesAtPath: installerTempDir traverseLink: NO]];
-      //      [manager enforceMode: 0700  atPath: compressedPath];
-    }
-    
-  //  NSLog (@"Copying %@ to %@", packageArchivePath, packageTempDir);
-  NSLog (@"3");
-  packageTempArchivePath = [packageTempDir stringByAppendingPathComponent: [paxArchivePath lastPathComponent]];
-  if ([manager copyPath: paxArchivePath toPath: packageTempArchivePath  handler:nil])
-    NSLog (@"Success!!!");
-  else
-    NSLog (@"Some weird error...");
-  /*
-  packageArchivePath = [packageTempDir stringByAppendingPathComponent: [packageArchivePath lastPathComponent]]; 
-  if ([archiveFormat isEqualToString: @"TAR"])
-    {
-      command = [NSString stringWithString: @"tar"];
-      args = [NSArray arrayWithObjects: @"-zxvf", packageArchivePath, nil];
-    }
-  if ([archiveFormat isEqualToString: @"PAX"])
-    {
-      command = [NSString stringWithString: @"pax"];
-      args = [NSArray arrayWithObjects: @"-zrvf", packageArchivePath, nil];
-    }
-  //  appDir =  [compressedPath stringByAppendingPathComponent: [appDirPath lastPathComponent]];
-  */
-  command = [NSString stringWithString: @"pax"];
-  args = [NSArray arrayWithObjects: @"-zrvf", paxArchivePath, nil];
-  task = [NSTask new];
-  [task setLaunchPath: command];
-  [task setArguments: args];
-  [task setStandardOutput: pipe];
-  [task setCurrentDirectoryPath: packageTempDir];
-  fileHandle = [pipe fileHandleForReading];
-  [task launch];
-  data = [fileHandle readDataToEndOfFile];
-  [fileHandle closeFile];
-  lstr = [[NSString alloc] initWithData: data
-			   encoding: [NSString defaultCStringEncoding]];
-  NSLog(@"This is lstr: %@", lstr);
-  
-
-}
 - (BOOL) isRelocatable
 {
  
@@ -528,6 +559,7 @@
   else
     return YES;
 }
+
 - (BOOL) setPackageLocation: (NSString *) packageLocation
 {
   /*

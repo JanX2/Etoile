@@ -1,3 +1,11 @@
+2005-04-05  Frederico Muñoz  <fsmunoz@gesal.org>
+
+	* Gpkg.subproj/Gpkg.m ([Gpkg
+	-atomicallyCopyPath:sourcePathtoPath:destinationPathofType:withAttributes:attributes]): Added method to handle the non-recursive copies necessary.
+	([Gpkg -installReceipt:receiptData]): installs receipt.
+	([Gpkg -uncompressPackage], [Gpkg -getAllInfo]): removed
+	underscore and changed to (Private).
+
 2005-03-22  Frederico Muñoz  <fsmunoz@gesal.org>
 
 	* GNUmakefile: commented out Deb.subproj to remove warnings until

@@ -52,9 +52,6 @@
  int currentStep;
  int totalSteps;
 }
-- _getAllInfo;
-- _uncompressPackage;
-- (BOOL) atomicallyCopyPath: (NSString *) sourcePath toPath: (NSString *) destinationPath ofType: (NSString *)fileType  withAttributes: (NSDictionary *) attributes;
 @end
 
 #endif // _GPKG_H_
