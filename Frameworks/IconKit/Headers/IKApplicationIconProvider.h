@@ -27,21 +27,24 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import "IKIconProvider.h"
+@class NSString;
+@class NSImage;
 
-@interface IKApplicationIconProvider : IKIconProvider
+@interface IKApplicationIconProvider : NSObject
 {
-
+  NSString *_path;
+  NSString *_identifier;
 }
 
-+ (IKApplicationIconProvider) sharedInstanceForBundlePath: (NSString *)path;
-+ (IKApplicationIconProvider) sharedInstanceForBundleIdentifier: (NSString *)identifier;
+- (id) initWithBundlePath: (NSString *)path;
+- (id) initWithBundleIdentifier: (NSString *)identifier;
 
 - (NSImage *) applicationIcon;
 - (NSImage *) documentIcon;
 - (NSImage *) pluginIcon;
 
 - (void) invalidCache;
++ (void) invalidCacheAll;
 - (void) recache;
 
 @end

@@ -27,15 +27,54 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
 #import "IKIconProvider.h"
+
+static IKIconProvider *iconProvider = nil;
+static NSFileManager *fileManager = nil;
 
 @implementation IKIconProvider
 
-+ (IKIconProvider) sharedInstance
-{
+/*
+ * Class methods
+ */
 
+/* Not needed
++ (void) initialize
+{
+  if (self = [IKIconProvider class])
+    {
+      fileManager = [NSFileManager defaultManager];
+    }
+}
+*/
+
++ (IKIconProvider *) sharedInstance
+{
+  if (iconProvider == nil)
+    {
+      iconProvider = [IKIconProvider alloc];
+	}     
+  
+  iconlProvider = [iconProvider init];
+}   
+
+/*
+ * Init methods
+ */
+- (id) init
+{
+  if (iconProvider != self)
+    {
+      RELEASE(self);
+      return RETAIN(iconProvider);
+    }
+  
+  if ((self = [super init])  != nil)
+    {
+      fileManager = [NSFileManager defaultManager];
+    }
+  
+  return self;
 }
 
 /*
@@ -45,32 +84,61 @@
 
 - (NSImage *) iconForURL: (NSURL *)url
 {
-
+  NSImage *icon;
+  IKThumbnailProvider *thumbnailProvider = [IKThumbnailProvider sharedInstance];
+  NSString *appPath;
+  
+  icon = [self_cachedIconForURL: url];
+  // If the file has a custom icon, the icon is cached because custom icons are
+  // stored in the cache
+  
+  if (icon != nil)
+    return icon;
+  
+  if (_usesThumbnails)
+    {
+      NSImage *thumbnail;
+      
+      thumbnail = [thumbnailProvider thumbnailForURL: url size: IKThumbnailSizeNormal];
+      [thumbnail setScalesWhenResized: YES];
+      [thumbnail setSize: NSMakeSize(64, 64);
+      icon = thumbnail;
+      [self _cacheThumbnailIcon: (NSImage *)icon forURL: url];
+    }
+  
+  if (icon != nil)
+    return icon;
+  
+  icon = [self _iconFromWorkspaceWithURL: url];
+  
+  return icon;
 }
 
 - (NSImage *) iconForPath: (NSString *)path
 {
-
+  NSURL *url = [NSURL fileURLWithPath: path];
+  
+  return [self iconForURL: url];
 }
 
 - (BOOL) usesThumbnails
 {
-
+  return _usesThumbnails;
 }
 
 - (void) setUsesThumbnails: (BOOL)flag
 {
-
+  _usesThumbnails = flag;
 }
 
 - (BOOL) ignoresCustomIcons
 {
-
+  return _ignoresCustomIcons;
 }
 
 - (void) setIgnoresCustomIcons: (BOOL)flag
 {
-
+  _ignoresCustomIcons = flag;
 }
 
 - (void) invalidCacheForURL: (NSURL *)url
@@ -91,6 +159,82 @@
 - (void) recacheForPath: (NSString *)path
 {
 
+}
+
+- (NSString *) _iconsPath
+{
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  NSArray *locations = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSLocalDomainMask, YES);
+  NSString *path;
+  
+  if ([locations count] == 0)
+    {
+      // Raise exception
+    }
+  
+  path = [locations objectAtIndex: 0];    
+  path = [path stringByAppendingPathComponent: @"Caches"];
+  path = [path stringByAppendingPathComponent: @"IconKit"];
+  return [path stringByAppendingPathComponent: @"Icons"];
+}
+
+- (NSImage *) _cachedIconFromURL: (NSURL *)url
+{
+  NSString *path;
+  NSString *subpath;
+  NSString *pathComponent;
+  BOOL isDir;
+
+  path = [self _iconsPath];
+
+  // Check for a custom icon
+  subpath = [path stringByAppendingPathComponent: @"Custom"];
+  pathComponent = [[[url absoluteString] MD5Hash] stringByAppendingPathExtension: @"tiff"];
+  subpath = [subpath stringByAppendingPathComponent: pathComponent];
+  if ([fileManager fileExistsAtPath: path isDir: &isDir] && !isDir)
+    return [[NSImage alloc] initWithContentsOfFile: subpath]];
+  
+  // Check for a thumbnail icon
+  subpath = [path stringByAppendingPathComponent: @"Thumbnails"];
+  pathComponent = [[[url absoluteString] MD5Hash] stringByAppendingPathExtension: @"tiff"];
+  subpath = [subpath stringByAppendingPathComponent: pathComponent];
+  if ([fileManager fileExistsAtPath: path isDir: &isDir] && !isDir)
+    return [[NSImage alloc] initWithContentsOfFile: subpath]];
+    
+  return nil;
+}
+
+- (void) _cacheThumbnailIcon: (NSImage *)icon forURL: (NSURL *)url
+{
+  NSString *path;
+  NSString *pathComponent;
+  NSData *data;
+  BOOL isDir;
+
+  path = [self _iconsPath];
+  
+  path = [path stringByAppendingPathComponent: @"Thumbnails"];
+  pathComponent = [[[url absoluteString] MD5Hash] stringByAppendingPathExtension: @"tiff"];
+  path = [path stringByAppendingPathComponent: pathComponent];
+  data = [icon TIFFRepresentation]
+  [data writeToFile: path atomically: YES];
+}
+
+- (NSImage *) _iconFromWorkspaceWithURL: (NSURL *)url
+{
+  // Must be overriden by Etoile to improve the implementation
+
+  NSString *extension = [[url path] pathExtension]
+  NSDictionary *extensionInfo = [workspace infoForExtension: extension];
+  NSString *appPath = [workspace getBestAppInRole: nil forExtension: extension]; 
+  NSImage icon = [workspace _extIconForApp: appPath info: extensionInfo];
+  
+  if (icon != nil)
+    return icon;
+    
+  
+  
+  return icon;
 }
 
 @end

@@ -80,7 +80,7 @@
 }
 
 - (id) initWithImage: (NSImage *)anImage
-            position: (IKCompositedIconPosition)aPosition
+            position: (IKCompositedImagePosition)aPosition
            operation: (NSCompositingOperation)anOperation 
                alpha: (float) anAlpha
 {
@@ -107,7 +107,7 @@
 
 - (NSImage *) image { return image; }
 
-- (IKCompositedIconPosition) position { return position; }
+- (IKCompositedImagePosition) position { return position; }
 
 - (NSCompositingOperation) operation { return operation; }
 
@@ -117,7 +117,7 @@
 
 - (void) setImage: (NSImage *)anImage { ASSIGN (image, anImage); }
 
-- (void) setPosition: (IKCompositedIconPosition)aPosition { position = aPosition; }
+- (void) setPosition: (IKCompositedImagePosition)aPosition { position = aPosition; }
 
 - (void) setOperation: (NSCompositingOperation)anOperation { operation = anOperation; }
 

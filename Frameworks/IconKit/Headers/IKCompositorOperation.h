@@ -29,24 +29,24 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 
-typedef enum _IKCompositedIconPosition
+typedef enum _IKCompositedImagePosition
 {
-  IKCompositedIconPositionCenter,
-  IKCompositedIconPositionLeft,
-  IKCompositedIconPositionTopLeft,
-  IKCompositedIconPositionTop,
-  IKCompositedIconPositionTopRight,
-  IKCompositedIconPositionRight,
-  IKCompositedIconPositionBottomRight,
-  IKCompositedIconPositionBottom,
-  IKCompositedIconPositionBottomLeft,
-} IKCompositedIconPosition;
+  IKCompositedImagePositionCenter,
+  IKCompositedImagePositionLeft,
+  IKCompositedImagePositionTopLeft,
+  IKCompositedImagePositionTop,
+  IKCompositedImagePositionTopRight,
+  IKCompositedImagePositionRight,
+  IKCompositedImagePositionBottomRight,
+  IKCompositedImagePositionBottom,
+  IKCompositedImagePositionBottomLeft,
+} IKCompositedImagePosition;
   
 @interface IKCompositorOperation : NSObject
 {
     NSImage *image;
     NSString *path;
-    IKCompositedIconPosition position;
+    IKCompositedImagePosition position;
     NSCompositingOperation operation;
     NSRect rect;
     float alpha;
@@ -54,7 +54,7 @@ typedef enum _IKCompositedIconPosition
 
 - (id) initWithPropertyList: (NSDictionary *)propertyList;
 - (id) initWithImage: (NSImage *)image
-            position: (IKCompositedIconPosition)position
+            position: (IKCompositedImagePosition)position
            operation: (NSCompositingOperation)operation 
                alpha: (float) alpha;
 - (id) initWithImage: (NSImage *)image
@@ -62,12 +62,12 @@ typedef enum _IKCompositedIconPosition
            operation: (NSCompositingOperation)operation  
                alpha: (float) alpha;
 - (NSImage*) image;
-- (IKCompositedIconPosition) position;
+- (IKCompositedImagePosition) position;
 - (NSCompositingOperation) operation;
 - (float) alpha;
 - (NSRect) rect;
 - (void) setImage: (NSImage *)image;
-- (void) setPosition: (IKCompositedIconPosition)position;
+- (void) setPosition: (IKCompositedImagePosition)position;
 - (void) setOperation: (NSCompositingOperation)operation;
 - (void) setAlpha: (float)alpha;
 - (void) setRect: (NSRect)rect;

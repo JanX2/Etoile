@@ -60,7 +60,9 @@ libIconKit_OBJC_FILES= \
 	IKCompositorOperation.m \
 	IKCompositor.m \
 	IKIconProvider.m \
-	IKApplicationIconProvider.m
+	IKApplicationIconProvider.m \
+	NSFileManager+IconKit.m \
+	NSString+MD5Hash.m
 #
 # C files
 #
@@ -77,7 +79,9 @@ libIconKit_HEADER_FILES = \
 	IKCompositorOperation.h \
 	IKCompositor.h \
 	IKIconProvider.h \
-	IKApplicationIconProvider.h
+	IKApplicationIconProvider.h \
+	NSFileManager+IconKit.h \
+	NSString+MD5Hash.h
 	
 -include GNUmakefile.preamble
 

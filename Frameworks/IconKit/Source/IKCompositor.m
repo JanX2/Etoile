@@ -56,7 +56,7 @@
 
 		IKCompositorOperation* initialOperation = [[IKCompositorOperation alloc] 
 			initWithImage: image
-			position: IKCompositedIconPositionCenter
+			position: IKCompositedImagePositionCenter
 			operation: NSCompositeSourceOver
 			alpha: 1.0];
 
@@ -128,7 +128,7 @@
 - (void) setCompositingSize: (NSSize)size { compositingSize = size; }
 
 - (void) compositeImage: (NSImage *)source 
-           withPosition: (IKCompositedIconPosition) position
+           withPosition: (IKCompositedImagePosition) position
 {
 	[self compositeImage: source withPosition: position 
 		operation: NSCompositeSourceOver alpha: 1.0];
@@ -142,7 +142,7 @@
 }
 
 - (void) compositeImage: (NSImage *)source 
-           withPosition: (IKCompositedIconPosition)position
+           withPosition: (IKCompositedImagePosition)position
               operation: (NSCompositingOperation)operation
                   alpha: (float)a
 {
@@ -169,7 +169,7 @@
 	[op release];
 }
 
-- (NSImage *) composite
+- (NSImage *) render
 {
 	int i;
 	NSImage* image = [[NSImage alloc] initWithSize: originalSize];

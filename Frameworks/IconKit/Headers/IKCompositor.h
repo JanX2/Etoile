@@ -59,7 +59,7 @@
               operation: (NSCompositingOperation)op 
                   alpha: (float)a;
 
-- (NSImage *) composite;
+- (NSImage *) render;
 - (NSDictionary *) propertyList;
 
 @end
