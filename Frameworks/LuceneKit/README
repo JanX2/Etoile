@@ -1,19 +1,53 @@
 LuceneKit (b4)
 ==============
 
-This is a GNUstep port of Lucene (http://lucene.apache.org/).
+Lucene is a high-performance, full-featured text search engine library. It is a 
+technology suitable for nearly any application that requires full-text search.
+
+This is a GNUstep port of Lucene <http://lucene.apache.org/>.
 
 Original licence of Lucene is Apache License 2.0.
 This port use BSD license whenever it is applicable.
 
-Yen-Ju Chen <yjchenx _At_ gmail dot_ com>
+Maintainer: Yen-Ju Chen <yjchenx at gmail dot com>
+Author: Yen-Ju Chen
 
-TODO
-----
+To know more about LuceneKit: 
+<http://www.dromasoftware.com/etoile/mediawiki/index.php?title=LuceneKit>
 
-* Support compression in LCDocument
-* Move private methods into category in class implementation 
-  to reduce the headers.
-* Lock and Multithread.
-* Index files compatible with other implementation
+
+Build and Install
+-----------------
+
+Read INSTALL document.
+
+
+Mac OS X support
+----------------
+
+LuceneKit is compatible with Cocoa (Xcode project file will be added).
+It is possible to use it as a convenient SearchKit replacement, LuceneKit is
+cross-platform and written in Objective-C, unlike SearchKit which is a Carbon 
+framework.
+
+
+Developers notes
+================
+
+Tests suite
+-----------
+
+UnitKit (bundled with Etoile) is required.
+
+   Steps to produce a test bundle and run tests suite:
+
+    * make test=yes 
+
+    * ukrun LuceneKit.bundle
+
+
+Contribute 
+----------
+
+Read TODO document.
 

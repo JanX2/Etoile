@@ -1,0 +1,9 @@
+LuceneKit TODO
+==============
+
+    * Support compression in LCDocument.
+    * Move private methods into category in class implementation 
+    to reduce the headers.
+    * Lock and Multithread.
+    * Index files compatible with other implementation.
+

@@ -1,4 +1,11 @@
 2005-03-31 Quentin Mathe <qmathe@club-internet.fr>
+    
+    * INSTALL:
+    * README: 
+    Updated to be compliant with Etoile. 
+    * TODO: Added.
+
+2005-03-31 Quentin Mathe <qmathe@club-internet.fr>
 
     LuceneKit initial import.
     Warning! compilation broken.   
