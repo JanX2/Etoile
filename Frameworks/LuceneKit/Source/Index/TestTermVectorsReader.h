@@ -15,7 +15,7 @@
   NSArray *testFields;
   NSArray *testFieldsStorePos;
   NSArray *testFieldsStoreOff;
-  NSArray *testTerms;
+  NSMutableArray *testTerms;
   NSMutableArray *positions;
   NSMutableArray *offsets;
   LCRAMDirectory *dir;

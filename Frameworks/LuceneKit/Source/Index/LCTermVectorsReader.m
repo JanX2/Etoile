@@ -287,6 +287,7 @@
     
     LCSegmentTermVector *tv;
     if (storePositions || storeOffsets){
+      // NSLog(@"segmentTermPositionVector");
       tv = [[LCSegmentTermPositionVector alloc] initWithField: field
 	      					terms: terms
 						termFreqs: termFreqs
@@ -294,6 +295,7 @@
 						offsets: offsets];
     }
     else {
+      // NSLog(@"segmentTermVector");
       tv = [[LCSegmentTermVector alloc] initWithField: field
 	      				terms: terms
 					termFreqs: termFreqs];

@@ -263,10 +263,12 @@
     BOOL storePositions = [currentField storePositions];
     BOOL storeOffsets = [currentField storeOffsets];
     char bits = 0x0;
-    if (storePositions) 
+    if (storePositions) {
       bits |= STORE_POSITIONS_WITH_TERMVECTOR;
-    if (storeOffsets) 
+    }
+    if (storeOffsets) {
       bits |= STORE_OFFSET_WITH_TERMVECTOR;
+    }
     [tvf writeByte: bits];
     
     NSString *lastTermText = @"";
