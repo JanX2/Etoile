@@ -715,6 +715,10 @@ static NSMutableDictionary* cache;
 	
 }
 
+/*
+	This is the one used at the moment in GSDrawFunctions' drawButton 
+*/
+
 + (void) drawButton: (NSRect) rect withCorners: (NSImage*) corners withLeft: (NSImage*) left withRight: (NSImage*) right 
 	 withTopBottom: (NSImage*) topbottom filledWith: (NSImage*) fill flipped: (BOOL) flipped
 {
@@ -819,7 +823,10 @@ static NSMutableDictionary* cache;
 		[imageBottomRight compositeToPoint: NSMakePoint (rect.origin.x+rect.size.width-cSize.width/2,rect.origin.y)
 			operation: NSCompositeSourceOver];
 
-		NSRect rFill = NSMakeRect (rect.origin.x+2,rect.origin.y+2,rect.size.width-4,rect.size.height-4);
+		//NSRect rFill = NSMakeRect (rect.origin.x+2,rect.origin.y+2,rect.size.width-4,rect.size.height-4);
+		float border = [imageTopLeft size].width;
+		NSRect rFill = NSMakeRect (rect.origin.x+border,rect.origin.y+border,
+			rect.size.width-border*2,rect.size.height-border*2);
 		[fill setScalesWhenResized: YES];
 		[fill setSize: rFill.size];
 		[fill compositeToPoint: rFill.origin operation: NSCompositeSourceOver];

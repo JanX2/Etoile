@@ -115,11 +115,11 @@ static  NSButtonCell* knobCell;
 	NSRect knob = [self rectForPart: NSScrollerKnob];
 	if (_isHorizontal)
 	{
-		knob.origin.y -= 1;
+		knob.origin.y -= 2;
 	}
 	else
 	{
-		knob.origin.x -= 1;
+		knob.origin.x -= 2;
 	}
 //[[_window backgroundColor] set];
 //	NSRectFill (knob);
@@ -237,7 +237,7 @@ static  NSButtonCell* knobCell;
 
       int buttonPressed = 0;
       [self drawKnobSlotOn: [self bounds] knobPresent: knob buttonPressed: buttonPressed];
-      [self drawKnob];
+     if (knob) [self drawKnob];
     }
 
 /*

@@ -377,84 +377,131 @@
 	}
 }
 
+static CLCompositor* standardButton;
+static CLCompositor* standardButtonH;
+static CLCompositor* button;
+static CLCompositor* buttonH;
+
+static CLCompositor* mygroupBox;
+
 + (void) drawButton: (NSRect) border inView: (NSView*) view highlighted: (BOOL) highlighted 
 {
-	NSSize windowSize = [view frame].size;
-	NSString* key;
-	if (highlighted)
-		key = [NSString stringWithFormat: @"buttonHighlightedBackground-%.0fx%.0f", windowSize.width, windowSize.height];
-	else
-		key = [NSString stringWithFormat: @"buttonBackground-%.0fx%.0f", windowSize.width, windowSize.height];
 
-	NSImage* img = [[CLCache cache] imageNamed: key];
-	BOOL isFlipped = [view isFlipped];
+	CLCompositor* compositor = nil;
+
+	if (standardButtonH == nil)
+	{
+		standardButtonH = [CLHBoxCompositor new];
+		[standardButtonH setName: @"standardButtonH"];
+		[standardButtonH addImage: [NSImage imageNamed: @"Button/Button-selected.tiff"] 
+			named: @"caps"];
+		[standardButtonH addImage: [NSImage imageNamed: @"Button/Button-fill-selected.tiff"] 
+			named: @"fill"];
+	}
+
+	if (standardButton == nil)
+	{
+		standardButton = [CLHBoxCompositor new];
+		[standardButton setName: @"standardButton"];
+		[standardButton addImage: [NSImage imageNamed: @"Button/Button-unselected.tiff"] 
+			named: @"caps"];
+		[standardButton addImage: [NSImage imageNamed: @"Button/Button-fill-unselected.tiff"] 
+			named: @"fill"];
+	}
 	
-	if (img == nil)
+	if (buttonH == nil)
 	{
-		img = [[NSImage alloc] initWithSize: border.size];
-		[img lockFocus];
-	if (highlighted)
-	{
-		if ((border.size.height >= 22) && (border.size.height <= 28))
-		{
-			[GraphicToolbox drawButton: border 
-				withCaps: [NSImage imageNamed: @"Button/Button-selected.tiff"]
-				filledWith: [NSImage imageNamed: @"Button/Button-fill-selected.tiff"]];
-		}
-		else
-		{
-			[GraphicToolbox drawButton: border
-				withCorners: [NSImage imageNamed: @"BevelButton/BevelButton-corners-selected.tiff"]
-				withLeft: [NSImage imageNamed: @"BevelButton/BevelButton-left-selected.tiff"]
-				withRight: [NSImage imageNamed: @"BevelButton/BevelButton-right-selected.tiff"]
-				withTopBottom: [NSImage imageNamed: @"BevelButton/BevelButton-topbottom-selected.tiff"]
-				filledWith: [NSImage imageNamed: @"BevelButton/BevelButton-fill-selected.tiff"]
-				flipped: isFlipped
-			];
-		}
-	}
-	else
-	{
-		if ((border.size.height >= 22) && (border.size.height <= 28))
-		{
-			[GraphicToolbox drawButton: border 
-				withCaps: [NSImage imageNamed: @"Button/Button-unselected.tiff"]
-				filledWith: [NSImage imageNamed: @"Button/Button-fill-unselected.tiff"]];
-		}
-		else
-		{
-			[GraphicToolbox drawButton: border
-				withCorners: [NSImage imageNamed: @"BevelButton/BevelButton-corners-unselected.tiff"]
-				withLeft: [NSImage imageNamed: @"BevelButton/BevelButton-left-unselected.tiff"]
-				withRight: [NSImage imageNamed: @"BevelButton/BevelButton-right-unselected.tiff"]
-				withTopBottom: [NSImage imageNamed: @"BevelButton/BevelButton-topbottom-unselected.tiff"]
-				filledWith: [NSImage imageNamed: @"BevelButton/BevelButton-fill-unselected.tiff"]
-				flipped: isFlipped
-			];
-		}
-	}
-		[img unlockFocus];
-		[[CLCache cache] setImage: img named: key];
-		[img autorelease];
+		buttonH = [CLBoxCompositor new];
+		[buttonH setName: @"buttonH"];
+		[buttonH addImage: 
+			[NSImage imageNamed: @"BevelButton/BevelButton-corners-selected.tiff"]
+			named: @"corners"];
+		[buttonH addImage:
+			[NSImage imageNamed: @"BevelButton/BevelButton-left-selected.tiff"]
+			named: @"left"];
+		[buttonH addImage:
+			[NSImage imageNamed: @"BevelButton/BevelButton-right-selected.tiff"]
+			named: @"right"];
+		[buttonH addImage:
+			[NSImage imageNamed: @"BevelButton/BevelButton-topbottom-selected.tiff"]
+			named: @"topbottom"];
+		[buttonH addImage:
+			[NSImage imageNamed: @"BevelButton/BevelButton-fill-selected.tiff"]
+			named: @"fill"];
 	}
 
-	if (isFlipped)
+	if (button == nil)
 	{
-		[img compositeToPoint: NSMakePoint (border.origin.x, border.origin.y + border.size.height) operation: NSCompositeSourceOver];
+		button = [CLBoxCompositor new];
+		[button setName: @"button"];
+		[button addImage: 
+			[NSImage imageNamed: @"BevelButton/BevelButton-corners-unselected.tiff"]
+			named: @"corners"];
+		[button addImage:
+			[NSImage imageNamed: @"BevelButton/BevelButton-left-unselected.tiff"]
+			named: @"left"];
+		[button addImage:
+			[NSImage imageNamed: @"BevelButton/BevelButton-right-unselected.tiff"]
+			named: @"right"];
+		[button addImage:
+			[NSImage imageNamed: @"BevelButton/BevelButton-topbottom-unselected.tiff"]
+			named: @"topbottom"];
+		[button addImage:
+			[NSImage imageNamed: @"BevelButton/BevelButton-fill-unselected.tiff"]
+			named: @"fill"];
+		[button setFill: CLFillScaledImage];
+		[button setFillColor: [NSColor blueColor]];
+	}
+	if ((border.size.height >= 22) && (border.size.height <= 28))
+	{
+
+		if (highlighted) [standardButtonH drawOn: view];
+		else [standardButton drawOn: view];
 	}
 	else
 	{
-		[img compositeToPoint: NSMakePoint (border.origin.x, border.origin.y) operation: NSCompositeSourceOver];
+		if (highlighted) [buttonH drawOn: view];
+		else [button drawOn: view];
 	}
 }
 
-+ (void) drawProgressIndicator: (NSRect) rect
+static CLCompositor* cl_progressIndicator;
+static CLCompositor* cl_progressIndicatorBackground;
+
++ (void) drawProgressIndicatorBackgroundOn: (NSView*) view
 {
-	[GraphicToolbox drawButton: rect
-		withCaps: [NSImage 
-			imageNamed: @"ProgressBar/ProgressBar-horizontal-background-caps.tiff"]
-		filledWith: [NSImage
-			imageNamed: @"ProgressBar/ProgressBar-horizontal-background-fill.tiff"]];
+	if (cl_progressIndicatorBackground == nil)
+	{
+		cl_progressIndicatorBackground = [CLHBoxCompositor new];
+		[cl_progressIndicatorBackground setName: @"progressIndicatorBackground"];
+
+		[cl_progressIndicatorBackground 
+			addImage: [NSImage imageNamed: @"ProgressBar/ProgressBar-horizontal-background-caps.tiff"]
+			named: @"caps"];
+		[cl_progressIndicatorBackground
+			addImage: [NSImage imageNamed: @"ProgressBar/ProgressBar-horizontal-background-fill.tiff"]
+			named: @"fill"];
+	}
+	[cl_progressIndicatorBackground drawOn: view];
+}
+
++ (void) drawProgressIndicatorInRect: (NSRect) rect
+{
+	if (cl_progressIndicator == nil)
+	{
+		cl_progressIndicator = [CLBoxCompositor new];
+		[cl_progressIndicator setName: @"progressIndicator"];
+
+		[cl_progressIndicator 
+			addImage: [NSImage imageNamed: @"ProgressBar/ProgressBar-horizontal-caps.tiff"]
+			named: @"caps"];
+		[cl_progressIndicator
+			addImage: [NSImage imageNamed: @"ProgressBar/ProgressBar-horizontal-fill.tiff"]
+			named: @"fill"];
+	}
+	NSLog (@"pirilou !!");
+	[cl_progressIndicator drawInRect: rect];
+	NSLog (@"pidiou!");
 }
 
 + (void) drawTitleBox: (NSRect) rect on: (id) box
@@ -462,33 +509,36 @@
 	[GraphicToolbox fillRect: rect withImage: [NSImage imageNamed: @"Window/Window-background.tiff"]];
 }
 
-+ (void) drawBox: (NSRect) rect on: (id) box
+
++ (void) drawBox: (NSRect) rect on: (NSView*) box
 {
-	NSRect frame = [box frame];
-	NSSize windowSize = frame.size;
-	NSString* key = [NSString stringWithFormat: @"boxBackground-%.0fx%.0f", windowSize.width, windowSize.height];
-	NSImage* img = [[CLCache cache] imageNamed: key];
-	
-	if (img == nil)
+	if (mygroupBox == nil)
 	{
-		img = [[NSImage alloc] initWithSize: rect.size];
-		[img lockFocus];
-		  NSRect rect2 = [GraphicToolbox drawFrame: rect withTopLeft: [NSImage imageNamed: @"GroupBox/GroupBox-top-left.tiff"]
-					withTopRight: [NSImage imageNamed: @"GroupBox/GroupBox-top-right.tiff"]
-					withBottomLeft: [NSImage imageNamed: @"GroupBox/GroupBox-bottom-left.tiff"]
-					withBottomRight: [NSImage imageNamed: @"GroupBox/GroupBox-bottom-right.tiff"]
-					withTop: [NSImage imageNamed: @"GroupBox/GroupBox-top.tiff"]
-					withBottom: [NSImage imageNamed: @"GroupBox/GroupBox-bottom.tiff"]
-					withLeft: [NSImage imageNamed: @"GroupBox/GroupBox-left.tiff"]
-					withRight: [NSImage imageNamed: @"GroupBox/GroupBox-right.tiff"]]; 
-		  // fill inside
-		  [GraphicToolbox fillRect: rect2 withImage: [NSImage imageNamed: @"GroupBox/GroupBox-fill.tiff"]];
-		[img unlockFocus];
-		[[CLCache cache] setImage: img named: key];
-		[img autorelease];
+		mygroupBox = [CLBoxCompositor new];
+		[mygroupBox setName: @"mygroupBox"];
+		[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-top-left.tiff"]
+			named: @"topLeft"];
+		[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-top-right.tiff"]
+			named: @"topRight"];
+		[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-bottom-left.tiff"]
+			named: @"bottomLeft"];
+		[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-bottom-right.tiff"]
+			named: @"bottomRight"];
+		[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-top.tiff"]
+			named: @"top"];
+		[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-bottom.tiff"]
+			named: @"bottom"];
+		[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-left.tiff"]
+			named: @"left"];
+		[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-right.tiff"]
+			named: @"right"];
+		[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-fill.tiff"]
+			named: @"fill"];
+		[mygroupBox setFill: CLFillScaledImage];
+		//[mygroupBox setFillColor: [NSColor lightGrayColor]];
 	}
 
-	[img compositeToPoint: rect.origin fromRect: rect operation: NSCompositeSourceOver];
+	[mygroupBox drawInRect: [box frame]];
 }
 
 + (void) drawWindowBackground: (NSRect) rect on: (id) window
@@ -520,20 +570,20 @@
 
 	[img compositeToPoint: NSMakePoint (rect.origin.x, rect.origin.y) operation: NSCompositeSourceOver];
 	*/
-	/*
 	NSColor* bgd   = [NSColor colorWithCalibratedRed: 0.7 green: 0.7 blue: 0.7 alpha: 1.0];
 	[bgd set];
 	NSRectFill (rect);
-	*/
+	/*
 	[GraphicToolbox fillRect: rect withImage: [NSImage imageNamed: @"Window/Window-background.tiff"]];
+	*/
 }
 
 + (void) drawPopupButton: (NSRect) border inView: (NSView*) view 
 {
 	NSGraphicsContext* ctxt = GSCurrentContext ();
-	DPSgsave (ctxt);
+	//DPSgsave (ctxt);
 	//This is quite annoying :-/
-	DPSinitclip (ctxt);
+	//DPSinitclip (ctxt);
 	//DPSrectclip (ctxt, border.origin.x, border.origin.y, border.size.width, border.size.height +2);
 	[GraphicToolbox drawButton: border 
 		withCaps: [NSImage imageNamed: @"PopupButton/PopupButton-endcap.tiff"]
@@ -550,7 +600,7 @@
 	[arrow unlockFocus];
 	
 	[arrow compositeToPoint: NSMakePoint (border.origin.x+border.size.width-w,border.origin.y+deltaY) operation: NSCompositeSourceOver];
-	DPSgrestore (ctxt);
+	//DPSgrestore (ctxt);
 }
 
 + (void) drawHorizontalScrollerKnob: (NSRect) knob on: (NSView*) view
@@ -559,6 +609,12 @@
 		withCaps: [NSImage imageNamed: @"Scrollbar/Scrollbar-horizontal-thumb-caps.tiff"]
 		filledWith: [NSImage imageNamed: @"Scrollbar/Scrollbar-horizontal-thumb-fill.tiff"]
 		withLeftMargin: 0 rightMargin: 0 topMargin: 0 bottomMargin: 0 flipped: [view isFlipped]];
+	NSImage* knobButton = [NSImage imageNamed: @"Elements/Knob.tiff"];
+	float posX = (knob.size.width - [knobButton size].width)/2;
+	float posY = (knob.size.height - [knobButton size].height)/2;
+	if ([view isFlipped]) posY += [knobButton size].height;
+	[knobButton compositeToPoint: NSMakePoint (knob.origin.x + posX, knob.origin.y + posY) 
+		operation: NSCompositeSourceOver];
 }
 
 + (void) drawVerticalScrollerKnob: (NSRect) knob on: (NSView*) view
@@ -567,6 +623,12 @@
 		withCaps: [NSImage imageNamed: @"Scrollbar/Scrollbar-vertical-thumb-caps.tiff"]
 		filledWith: [NSImage imageNamed: @"Scrollbar/Scrollbar-vertical-thumb-fill.tiff"]
 		withLeftMargin: 0 rightMargin: 0 topMargin: 0 bottomMargin: 0 flipped: [view isFlipped]];
+	NSImage* knobButton = [NSImage imageNamed: @"Elements/Knob.tiff"];
+	float posX = (knob.size.width - [knobButton size].width)/2;
+	float posY = (knob.size.height - [knobButton size].height)/2;
+	if ([view isFlipped]) posY += [knobButton size].height;
+	[knobButton compositeToPoint: NSMakePoint (knob.origin.x + posX, knob.origin.y + posY) 
+		operation: NSCompositeSourceOver];
 }
 
 + (void) drawHorizontalScrollerSlot: (NSRect) slot knobPresent: (BOOL) knob 

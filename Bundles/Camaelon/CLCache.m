@@ -17,8 +17,15 @@ CLCache* CLCacheSingleton;
 - (NSImage*) imageNamed: (NSString*) name {
 	return [cache objectForKey: name];
 }
+
+- (NSImage*) imageNamed: (NSString*) name withSize: (NSSize) size {
+	NSString* key = [NSString stringWithFormat: @"%@-%.0fx%.0f", name, size.width, size.height];
+	return [cache objectForKey: key];
+}
+
 - (void) setImage: (NSImage*) image named: (NSString*) name {
-	[cache setObject: image forKey: name];	
+	NSString* key = [NSString stringWithFormat: @"%@-%.0fx%.0f", name, [image size].width, [image size].height];
+	[cache setObject: image forKey: key];	
 }
 @end
 

@@ -4,6 +4,9 @@
 #include "NSBezierPath+round.h"
 #include "GraphicToolbox.h"
 #include "CLCache.h"
+#include "CLCompositor.h"
+#include "CLHBoxCompositor.h"
+#include "CLBoxCompositor.h"
 
 #ifndef __GSDRAWFUNCTIONS_H__
 #define __GSDRAWFUNCTIONS_H__
@@ -25,6 +28,7 @@
 + (void) drawTextField: (NSRect) border focus: (BOOL) focus flipped: (BOOL) flipped;
 + (void) drawButton: (NSRect) border inView: (NSView*) view highlighted: (BOOL) highlighted;
 + (void) drawProgressIndicator: (NSRect) rect;
++ (void) drawProgressIndicatorInRect: (NSRect) rect;
 + (void) drawBox: (NSRect) rect on: (id) box;
 + (void) drawWindowBackground: (NSRect) rect on: (id) window;
 + (void) drawPopupButton: (NSRect) border inView: (NSView*) view;

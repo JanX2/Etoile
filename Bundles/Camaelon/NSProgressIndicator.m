@@ -14,7 +14,7 @@
      {
        // Calc the inside rect to be drawn
         //r = [GSDrawFunctions drawGrayBezelRound: _bounds :rect];
-	[GSDrawFunctions drawProgressIndicator: rect];
+	[GSDrawFunctions drawProgressIndicatorBackgroundOn:self];
 	r = _bounds;
      }
    else
@@ -45,9 +45,12 @@
 		//r.size.height-=1;
 		//r.origin.y -=2;
 		NSImage* img = [NSImage imageNamed: @"ProgressBar/ProgressBar-horizontal-indicator.tiff"];
-		float deltaY = (r.size.height - [img size].height)/2.0;
-		r.origin.y += deltaY;
+//		float deltaY = (r.size.height - [img size].height)/2.0;
+//		r.origin.y += deltaY;
 		[GraphicToolbox fillHorizontalRect: r withImage: img];
+
+		//[GSDrawFunctions drawProgressIndicatorInRect: r];
+		
              }
          }
      }

@@ -6,6 +6,7 @@ BUNDLE_EXTENSION=.themeEngine
 #ADDITIONAL_OBJCFLAGS = -g -Wall -O2 
 
 Camaelon_OBJC_FILES = Camaelon.m Image.m GSDrawFunctions.m GraphicToolbox.m \
+CLCompositor.m CLHBoxCompositor.m CLBoxCompositor.m \
 NSBezierPath+round.m CLCache.m ImageProvider.m \
 NSBox.m \
 NSButtonCell.m \
