@@ -1,0 +1,6 @@
+{
+	ThemeDescription="A Theme in the spirit of NeXT's UI for GNUstep";
+	ThemeName="Camaelon";
+	ThemeRelease="0.1";
+	Authors="Nicolas Roard <nicolas@roard.com>";
+}
