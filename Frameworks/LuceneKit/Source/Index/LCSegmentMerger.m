@@ -287,7 +287,7 @@
       LCTerm *term = [[match objectAtIndex: 0] term];
       LCSegmentMergeInfo *top = (LCSegmentMergeInfo *) [queue top];
 
-      while (top != nil && [term compareTo: [top term]] == 0) {
+      while (top != nil && [term compare: [top term]] == 0) {
 	[match addObject: [queue pop]];
 	matchSize++;
         top = (LCSegmentMergeInfo *) [queue top];
@@ -323,10 +323,10 @@
 
   if (df > 0) {
       // add an entry to the dictionary with pointers to prox and freq files
-      [termInfo setDocFreq: df
-	      freqPointer: freqPointer
-	      proxPointer: proxPointer
-	      skipOffset: (int)(skipPointer - freqPointer)];
+      [termInfo setDocFreq: df];
+      [termInfo setFreqPointer: freqPointer];
+      [termInfo setProxPointer: proxPointer];
+      [termInfo setSkipOffset: (long)(skipPointer - freqPointer)];
       [termInfosWriter addTerm: [[smis objectAtIndex: 0] term]
 	      termInfo: termInfo];
     }
