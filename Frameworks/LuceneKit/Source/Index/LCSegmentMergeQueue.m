@@ -8,7 +8,7 @@
 {
   LCSegmentMergeInfo *stiA = (LCSegmentMergeInfo *)a;
   LCSegmentMergeInfo *stiB = (LCSegmentMergeInfo *)b;
-  int comparison = [[stiA term] compareTo: [stiB term]];
+  int comparison = [[stiA term] compare: [stiB term]];
     if (comparison == 0)
       return [stiA base] < [stiB base]; 
     else
