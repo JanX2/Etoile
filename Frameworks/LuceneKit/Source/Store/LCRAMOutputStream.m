@@ -40,9 +40,34 @@
 
 - (void) writeBytes: (NSData *) b length: (int) len
 {
-  NSRange r = NSMakeRange(0, len);
+  NSRange r;
   if (file)
-    [file addData: [b subdataWithRange: r]];
+  {
+    if (pointer == [file length]) /* The end of file */
+    {
+      r = NSMakeRange(0, len);
+      [file addData: [b subdataWithRange: r]];
+    }
+    else if (pointer < [file length]) /* within file */
+    {
+      r = NSMakeRange(0, pointer);
+      NSData *new1 = [[file buffers] subdataWithRange: r];
+      NSData *new2 = nil;
+      if (pointer+len < [file length])
+      {
+        r = NSMakeRange(pointer+len, [file length]-pointer-len);
+        new2 = [[file buffers] subdataWithRange: r];
+      }
+
+      [file setLength: 0];
+      [file addData: new1];
+      r = NSMakeRange(0, len);
+      [file addData: [b subdataWithRange: r]];
+      if (new2) [file addData: new2];
+    }
+
+    pointer += len;
+  }
 }
 
 - (void) flush
