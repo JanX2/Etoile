@@ -7,7 +7,7 @@ ADDITIONAL_OBJCFLAGS += -DHAVE_UKTEST
 endif
 
 LuceneKit_Util_OBJC_FILES = \
-	NSString_Additions.m \
+	NSString+Additions.m \
 	LCBitVector.m \
 	LCPriorityQueue.m 
 

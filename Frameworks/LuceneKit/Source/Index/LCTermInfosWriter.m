@@ -2,7 +2,7 @@
 #include "Index/LCTerm.h"
 #include "Index/LCTermInfo.h"
 #include "Index/LCFieldInfos.h"
-#include "Util/NSString_Additions.h"
+#include "Util/NSString+Additions.h"
 #include "GNUstep/GNUstep.h"
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
@@ -39,7 +39,7 @@
   skipInterval = 16;
 
   lastIndexPointer = 0;
-  isIndex = false;
+  isIndex = NO;
 
   other = nil;
   return self;

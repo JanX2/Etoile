@@ -1,5 +1,19 @@
 2005-04-05 Quentin Mathe <qmathe@club-internet.fr>
 
+	Note: LuceneKit compilation fixed now.
+	* Source/Index/LCTermInfosWriter.m: Fixed #include directive in order to 
+	reference "NSString+Additions.h" and not "NSString_Additions.h".
+	(-init): Replaced incorrect C boolean 'false' by Objective-C version 'NO'.
+	* Source/Index/LCTermVectorWriter.m: Fixed #include directive in order to 
+	reference "NSString+Additions.h" and not "NSString_Additions.h".
+	* Source/Store/LCRAMDirectory.m (-touchFile):: Replaced [NSData data] by
+	[NSDate date] to accept -timeIntervalSince1970 method call.
+	* Source/Util/GNUmakefile: Replaced reference to "NSString_Additions.m"
+	by the correct one "NSString+Additions.m".
+
+2005-04-05 Quentin Mathe <qmathe@club-internet.fr>
+
+	Warning! compilation broken.
 	* Headers/Analysis:
 	* Headers/Document:
 	* Headers/Index:
@@ -16,7 +30,8 @@
 	"GNUstep.h" to "GNUstep/GNUstep.h".
 
 2005-04-05 Yen-Ju Chen <yjchenx at gmail _dot_ com>
-
+	
+	Warning! compilation broken.
 	* Add new test units.
 	* Various bug fixed.
 

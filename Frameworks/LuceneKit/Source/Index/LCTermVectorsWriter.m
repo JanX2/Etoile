@@ -5,7 +5,7 @@
 #include "Index/LCTermFreqVector.h"
 #include "Index/LCTermPositionVector.h"
 #include "Index/LCTermVectorOffsetInfo.h"
-#include "Util/NSString_Additions.h"
+#include "Util/NSString+Additions.h"
 #include "GNUstep/GNUstep.h"
 
 /**

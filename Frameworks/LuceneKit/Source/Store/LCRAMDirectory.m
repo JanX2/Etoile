@@ -108,7 +108,7 @@
 - (void) touchFile: (NSString *) name
 {
   LCRAMFile *f = [files objectForKey: name];
-  [f setLastModified: [[NSData data] timeIntervalSince1970]];
+  [f setLastModified: [[NSDate date] timeIntervalSince1970]];
 }
 
   /** Returns the length in bytes of a file in the directory. */
