@@ -6,6 +6,7 @@
 #include "CLCache.h"
 #include "CLCompositor.h"
 #include "CLHBoxCompositor.h"
+#include "CLVBoxCompositor.h"
 #include "CLBoxCompositor.h"
 
 #ifndef __GSDRAWFUNCTIONS_H__
