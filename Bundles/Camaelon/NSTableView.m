@@ -96,8 +96,10 @@
       column = [_selectedColumns indexGreaterThanOrEqualToIndex: startingColumn];
       while ((column != NSNotFound) && (column <= endingColumn))
 	{
-	  NSHighlightRect(NSIntersectionRect([self rectOfColumn: column],
-					     clipRect));
+	  //NSHighlightRect(NSIntersectionRect([self rectOfColumn: column],
+	  //				     clipRect));
+	  [[NSColor selectedRowBackgroundColor] set];
+	  NSRectFill(NSIntersectionRect([self rectOfColumn: column], clipRect));
 	  column = [_selectedColumns indexGreaterThanIndex: column];
 	}	  
     }

@@ -19,15 +19,14 @@
   if (_cell.is_highlighted || _cell.state)
     {
       backColor = [self highlightColorInView: controlView];
-      backColor = [NSColor colorWithCalibratedRed: 0.7 green: 0.7 blue: 0.8 alpha: 1.0];
+	  backColor = [NSColor selectedRowBackgroundColor];
       [backColor set];
       if (!_browsercell_is_leaf)
         image = [isa highlightedBranchImage];
     } 
   else
     { 
-      backColor = [cvWin backgroundColor];
-      backColor = [NSColor whiteColor];
+	  backColor = [NSColor rowBackgroundColor];
       [backColor set];
       if (!_browsercell_is_leaf)
         image = [isa branchImage];

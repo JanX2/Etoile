@@ -103,6 +103,7 @@ static NSColor* browserHeaderTextColor;
 	{
 		browserHeaderTextColor = [GraphicToolbox readColorFromImage: 
 			[NSImage imageNamed: @"BrowserHeader/BrowserHeader-textcolor.tiff"]];
+		[browserHeaderTextColor retain];
 	}
 	return browserHeaderTextColor;
 }
@@ -468,6 +469,7 @@ static CLCompositor* mygroupBox;
 		[buttonH addImage:
 			[NSImage imageNamed: @"BevelButton/BevelButton-fill-selected.tiff"]
 			named: @"fill"];
+		[buttonH setFill: CLFillScaledImage];
 	}
 
 	if (button == nil)
@@ -490,7 +492,6 @@ static CLCompositor* mygroupBox;
 			[NSImage imageNamed: @"BevelButton/BevelButton-fill-unselected.tiff"]
 			named: @"fill"];
 		[button setFill: CLFillScaledImage];
-		[button setFillColor: [NSColor blueColor]];
 	}
 	if ((border.size.height >= 22) && (border.size.height <= 28))
 	{
@@ -582,8 +583,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 
 + (void) drawWindowBackground: (NSRect) rect on: (id) window
 {
-	NSColor* bgd = [GraphicToolbox readColorFromImage: [NSImage imageNamed: @"Window/Window-background.tiff"]];
-	[bgd set];
+	[[NSColor windowBackgroundColor] set];
 	NSRectFill (rect);
 }
 

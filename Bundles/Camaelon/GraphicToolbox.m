@@ -42,6 +42,7 @@ static NSMutableDictionary* cache;
 
 		color = [NSColor colorWithCalibratedRed: fR green: fG blue: fB alpha: 1.0];
 	}
+	if (color == nil) color = [NSColor colorWithCalibratedRed: 1.0 green: 1.0 blue: 1.0 alpha: 1.0];
 	return color;
 }
 

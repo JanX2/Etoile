@@ -16,12 +16,12 @@
 NSRect vS = [_vertScroller frame];
 [_vertScroller setFrame: NSMakeRect (vS.origin.x-1, vS.origin.y-1, vS.size.width+2,vS.size.height+2)];
 */
-[self setBackgroundColor: [NSColor whiteColor]];
+ [self setBackgroundColor: [NSColor rowBackgroundColor]];
  id documentView = [self documentView];
 
  if ([documentView respondsToSelector: @selector(setBackgroundColor:)])
  {
- 	[[self documentView] setBackgroundColor: [NSColor whiteColor]];
+ 	[[self documentView] setBackgroundColor: [NSColor rowBackgroundColor]];
  }
   //NSGraphicsContext *ctxt = GSCurrentContext();
 

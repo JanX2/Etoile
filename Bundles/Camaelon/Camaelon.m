@@ -17,16 +17,12 @@ static Camaelon* theme;
 
 - init
 {
-    NSLog(@"Camaelon Theme Engine v2.0 04/02/05 - nicolas@roard.com\n");
+    NSLog(@"Camaelon Theme Engine v2.0 10/03/05 - nicolas@roard.com\n");
 
     self = [super init];
 
     [Image setNSImageClass : [NSImage class]];
     [Image poseAsClass: [NSImage class]];
-
-    NSColorList* systemColors = [NSColorList colorListNamed: @"System"];
-    [systemColors setColor: [NSColor whiteColor] forKey: @"selectedControlColor"];
-    [systemColors setColor: [NSColor whiteColor] forKey: @"selectedTextColor"];
 
     NSLog (@"Camaelon dictionary: %@",[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"Camaelon"]);
 
