@@ -1,3 +1,8 @@
+2005-03-22  Frederico Muñoz  <fsmunoz@gesal.org>
+
+	* GNUmakefile: commented out Deb.subproj to remove warnings until
+	the Package protocol is fixed and the correct methods implemented.
+
 2005-03-19  Frederico Muñoz  <fsmunoz@gesal.org>
 
 	* TODO: Added TODO file.

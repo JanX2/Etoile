@@ -18,7 +18,7 @@ GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_USER_ROOT)
 # Subprojects
 #
 SUBPROJECTS = \
-Deb.subproj \
+#Deb.subproj \
 Gpkg.subproj \
 mkgbom.subproj \
 lsgbom.subproj 
