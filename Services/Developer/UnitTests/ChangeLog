@@ -1,15 +1,22 @@
+2005-03-18  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * AppController.m (-scanOutput:): Fixed code to parses correctly ukrun
+    output (minor tweaks still needed).
+    (-[NSScanner checkString:]): Added a NSScanner category to eliminate real 
+    scanner limitations.
+
 2005-03-07  Quentin Mathe <qmathe@club-internet.fr>
 
-        * ChangeLog: Added.
-        * TODO: Added.
-        * UnitTestsInfo.plist: Added.
-        * PreferencesController.h: 
-        * PreferencesController.m:
-        Added tests sets support (exposed in Preferences window).
-        * AppController.h: Updated
-        * AppController.m: Modified to take in account new "Tests sets" related 
-        popup menu in Tests window and new user defaults support.
-        * GNUmakefile: Updated.
-        * UnitTests.gorm: Updated with new features and better UI.
+    * ChangeLog: Added.
+    * TODO: Added.
+    * UnitTestsInfo.plist: Added.
+    * PreferencesController.h: 
+    * PreferencesController.m:
+    Added tests sets support (exposed in Preferences window).
+    * AppController.h: Updated
+    * AppController.m: Modified to take in account new "Tests sets" related 
+    popup menu in Tests window and new user defaults support.
+    * GNUmakefile: Updated.
+    * UnitTests.gorm: Updated with new features and better UI.
         
         
