@@ -101,7 +101,7 @@ libExtendedWorkspace_HEADER_FILES_DIR = ../Headers
 libExtendedWorkspace_HEADER_FILES_INSTALL_DIR = /ExtendedWorkspaceKit
 
 libExtendedWorkspace_HEADER_FILES = \
-    	ExtendedWorkspaceKit.h \
+    ExtendedWorkspaceKit.h \
 	EXAttribute.h \
 	EXAttributesCore.h \
 	EXBasicFSAttributesExtracter.h \
@@ -125,7 +125,7 @@ libExtendedWorkspace_HEADER_FILES = \
 	EXExtensionProtocols.h 
 	
 HEADERS_INSTALL = \
-    	ExtendedWorkspaceKit.h \
+    ExtendedWorkspaceKit.h \
 	EXAttribute.h \
 	EXContext.h \
 	EXFileManager.h \
