@@ -33,22 +33,22 @@ ADDITIONAL_INCLUDE_DIRS = -I../Headers
 #
 # Main application
 #
-LIBRARY_NAME=		libPreferencesKit
-VERSION=		0.1
+LIBRARY_NAME = libPreferencesKit
+VERSION = 0.1
 
 #
 # Resource files
 #
-libPreferencesKit_MAIN_MODEL_FILE=
+libPreferencesKit_MAIN_MODEL_FILE =
 
-libPreferencesKit_RESOURCE_FILES=
+libPreferencesKit_RESOURCE_FILES =
 
-libPreferencesKit_LOCALIZED_RESOURCE_FILES=
+libPreferencesKit_LOCALIZED_RESOURCE_FILES =
 
 #
 # Languages we're localized for
 #
-libPreferencesKit_LANGUAGES= \
+libPreferencesKit_LANGUAGES = \
 	English
 	
 #

@@ -1,3 +1,9 @@
+2005-03-10  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile.
+	* INSTALL: Updated to talk about PreferencesKit and not Gorm.
+	* Source/GNUmakefile: Improved formatting.
+
 2005-01-02  Quentin Mathe <qmathe@club-internet.fr>
 	
 	WARNING: doesn't compile.
@@ -15,9 +21,9 @@
 	* Source/PKPreferencesController.m:
 	* Source/PKTableViewController.m:
 	* Source/PKToolbarPreferencesController.m:
-        * Source/GNUmakefile:
+    * Source/GNUmakefile:
 	* README:
 	* INSTALL:
 	* GNUmakefile:
-        Initial import.
+    Initial import.
         
