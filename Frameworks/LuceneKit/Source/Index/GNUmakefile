@@ -36,6 +36,18 @@ LuceneKit_Index_OBJC_FILES = \
 	LCCompoundFileWriter.m \
 	LCMultipleTermPositions.m
 
+ifeq ($(test), yes)
+LuceneKit_Index_OBJC_FILES += \
+	TestDocHelper.m \
+	TestMockIndexInput.m \
+	TestMockIndexOutput.m \
+	TestTermInfos.m \
+	TestSegmentReader.m \
+	TestTermVectorsReader.m \
+	TestTermVectorsWriter.m
+ADDITIONAL_OBJCFLAGS += -DHAVE_UKTEST
+endif
+
 LuceneKit_Index_INCLUDE_DIRS += -I../../Headers -I../
 
 include $(GNUSTEP_MAKEFILES)/subproject.make
