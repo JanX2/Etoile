@@ -26,6 +26,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import "EXVFS.h"
+#import "EXVFSHandle.h"
 
 @implementation EXVFSHandle
 

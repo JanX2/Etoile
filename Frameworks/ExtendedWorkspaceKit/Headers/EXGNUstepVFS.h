@@ -26,9 +26,21 @@
 
 #import "EXVFSBack.h"
 
+@class NSURL;
+@class EXVFSBack;
+@class NSDictionary;
+@class NSString;
+
 @interface EXGNUstepVFS : EXVFSBack
 {
 
 }
+
+/*
+ * Posix attributes suppport
+ */
+
+- (NSDictionary *) posixAttributesAtURL: (NSURL *)url;
+- (NSDictionary *) posixAttributeWithName: (NSString *)name atURL: (NSURL *)url;
 
 @end

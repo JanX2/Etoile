@@ -1,3 +1,36 @@
+2004-11-14  Quentin Mathe <qmathe@club-internet.fr>
+	
+	* Headers/EXTypeAttribute.h:
+	* Headers/EXWorkspace.h:
+	Added (forgot to add them with the previous commit).
+	* Headers/ExtendedWorkspaceConfig.h:
+	* Headers/EXAttribute.h:
+	* Headers/EXAttributesCore.h:
+	* Headers/EXBasicFSAttributesExtracter.h:
+	* Headers/EXContentIndexCore.h:
+	* Headers/EXContext.h:
+	* Headers/EXExtensionProtocols.h:
+	* Headers/EXFileManager.h:
+	* Headers/EXGNUstepVFS.h:
+	* Headers/EXSearchCore.h:
+	* Headers/EXTypeAttribute.h:
+	* Headers/EXVFS.h:
+	* Headers/EXVFSProtocol.h:
+	* Source/EXAttribute.m:
+	* Source/EXAttributesCore.m:
+	* Source/EXBasicFSAttributesExtracter.m:
+	* Source/EXContentIndexCore.m:
+	* Source/EXContext.m:
+	* Source/EXFileManager.m:
+	* Source/EXGNUstepVFS.m:
+	* Source/EXSearchCore.m:
+	* Source/EXVFS.m:
+	* Source/EXVFSBack.m:
+	* Source/EXVFSHandle.m:
+	* Source/EXWorkspace.m:
+	* Source/GNUmakefile:
+	Fixed in order to have the framework compiles.
+
 2004-11-11  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Headers/ExtendedWorkspaceKit.h: Updated.
@@ -23,12 +56,10 @@
 	* Headers/EXQuery.h:
 	* Headers/EXSearchCore.h:
 	* Headers/EXRDFAttributesCore.h:
-	* Headers/EXTypeAttribute.h:
 	* Headers/EXVFS.h:
 	* Headers/EXVFSBack.h:
 	* Headers/EXVFSHandle.h:
 	* Headers/EXVFSProtocol.h:
-	* Headers/EXWorkspace.h:
 	* Headers/EXXMLAttributesExtracter.h:
 	* Source/EXAttribute.m:
 	* Source/EXAttributesCore.m:
@@ -42,7 +73,7 @@
 	* Source/EXVFS.m:
 	* Source/EXVFSBack.m:
 	* Source/EXVFSHandle.m:
-	* Source/EXWorkspace.m:s
+	* Source/EXWorkspace.m:
 	Added (Reworked conception over the initial code and introduced a
 	shorter EX prefix).
 

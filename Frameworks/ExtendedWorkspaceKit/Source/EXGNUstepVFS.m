@@ -26,10 +26,12 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import "EXGNUstepVFS.h"
+#import "EXAttribute.h"
 #import "EXFileManager.h"
+#import "EXVFSHandle.h"
+#import "EXGNUstepVFS.h"
 
-static EXFileManager *fileManager = nil;
+static NSFileManager *fileManager = nil;
 
 @interface EXGNUstepVFS (Private)
 - (void) _isNotFileURL: (NSURL *)url;
@@ -39,15 +41,15 @@ static EXFileManager *fileManager = nil;
 
 + (void) initialize
 {
-    if (self == [EXGNUstepVFS class])
-    {
-        fileManager = [EXFileManager defaultManager];
-    }
+    	if (self == [EXGNUstepVFS class])
+    	{
+        	fileManager = [NSFileManager defaultManager];
+    	}
 }
 
 - (id) init
 {
-  // Nothing to initialize
+  	// Nothing to initialize
 }
 
 /*
@@ -60,106 +62,106 @@ static EXFileManager *fileManager = nil;
 
 - (NSArray *) supportedProtocols
 {
-    return [NSArray arrayWithObjects: @"file://", nil];
+    	return [NSArray arrayWithObjects: @"file://", nil];
 }
 
 /*
  * Destroy and create contexts
  */
 
-- (BOOL) createEntityContextWithURL: (NSURL *)url error: (NSError **)error 
+- (BOOL) createEntityContextAtURL: (NSURL *)url error: (NSError **)error 
 {
-    BOOL result;
+    	BOOL result;
   
-    if ([url isFileURL])
-    {
-        result = [fileManager p_createDirectoryAtPath: [url path] attributes: nil];
-    }
-    else
-    {
-        [self _isNotFileURL: url];
-    result = NO;
-    }
+    	if ([url isFileURL])
+    	{
+        	result = [fileManager p_createDirectoryAtPath: [url path] attributes: nil];
+    	}
+    	else
+    	{
+        	[self _isNotFileURL: url];
+    		result = NO;
+    	}
     
-    return result;
+    	return result;
 }
 
 /*
-- (BOOL) createEntityContextWithURL: (NSURL *)url 
+- (BOOL) createEntityContextAtURL: (NSURL *)url 
                               error: (NSError **)error 
                       VFSAttributes: (NSDictionary *) attributes
 {
-    // TODO: convert EXVFS attributes to NSFileManager attributes
+    	// TODO: convert EXVFS attributes to NSFileManager attributes
     
-    return NO;
+    	return NO;
 }
  */
  
-- (BOOL) createElementContextWithURL: (NSURL *)url error: (NSError **)error
+- (BOOL) createElementContextAtURL: (NSURL *)url error: (NSError **)error
 {
-    BOOL result;
+    	BOOL result;
   
-    if ([url isFileURL])
-    {
-        result = [fileManager p_createFileAtPath: [url path] contents: nil attributes: nil];
-    }
-    else
-    {
-        [self _isNotFileURL: url];
-        result = NO;
-    }
+    	if ([url isFileURL])
+    	{
+        	result = [fileManager p_createFileAtPath: [url path] contents: nil attributes: nil];
+    	}
+    	else
+    	{
+        	[self _isNotFileURL: url];
+        	result = NO;
+    	}
     
-    return result;
+    	return result;
 }
 
 /*
-- (BOOL) createElementContextWithURL: (NSURL *)url 
+- (BOOL) createElementContextAtURL: (NSURL *)url 
                                error: (NSError **)error 
                        VFSAttributes: (NSDictionary *) attributes
 {
-    // TODO: convert EXVFS attributes to NSFileManager attributes
+    	// TODO: convert EXVFS attributes to NSFileManager attributes
     
-    return NO;
+    	return NO;
 }
  */
  
-- (BOOL) removeContextWithURL: (NSURL *)url handler: (id)handler
+- (BOOL) removeContextAtURL: (NSURL *)url handler: (id)handler
 {
-    BOOL result;
+    	BOOL result;
   
-    if ([url isFileURL])
-    {
-        result = [fileManager p_removeFileAtPath: url handler: self];     
-    }
-    else
-    {
-      [self _isNotFileURL: url];
-      result = NO;
-    }
+    	if ([url isFileURL])
+    	{
+        	result = [fileManager p_removeFileAtPath: [url path] handler: self];     
+    	}
+    	else
+    	{
+      		[self _isNotFileURL: url];
+      		result = NO;
+    	}
   
-  return result;
+  	return result;
 }
 
-- (BOOL) removeContextsWithURLs: (NSArray *)urls handler: (id)handler
+- (BOOL) removeContextsAtURLs: (NSArray *)urls handler: (id)handler
 {
-    NSEnumerator *e = [urls objectEnumerator];
-    NSURL *url;
-    BOOL result;
+    	NSEnumerator *e = [urls objectEnumerator];
+    	NSURL *url;
+    	BOOL result;
   
-    while ((url = [e nextObject]) != nil)
-    {
-        if ([url isFileURL])
-        {
-            result = [fileManager p_removeFileAtPath: url handler: self];
-        }
-        else
-        {
-            [self _isNotFileURL: url];
-            result = NO;
-        }
-    }
+    	while ((url = [e nextObject]) != nil)
+    	{
+        	if ([url isFileURL])
+        	{
+            		result = [fileManager p_removeFileAtPath: [url path] handler: self];
+        	}
+        	else
+        	{
+            		[self _isNotFileURL: url];
+            		result = NO;
+        	}
+    	}
   
-    return result;
+    	return result;
 }
 
 /*
@@ -170,17 +172,25 @@ static EXFileManager *fileManager = nil;
                       toURL: (NSURL *)destination
                     handler: (id)handler
 {
-    BOOL result = NO;
+    	BOOL result = NO;
   
-    if ([source isFileURL] && [destination isFileURL])
-    {
-        result = [fileManager p_copyPath: [source path] toPath: [destination path] handler: self];     
-    }
-    else
-    {
-        [self _isNotFileURL: url];
-        result = NO;
-    }
+    	if ([destination isFileURL])
+    	{
+    		if ([source isFileURL])
+    		{
+        		result = [fileManager p_copyPath: [source path] toPath: [destination path] handler: self];     
+    		}
+    		else
+		{
+		        [self _isNotFileURL: source];
+        		result = NO;
+		}
+	}
+    	else
+	{
+        	[self _isNotFileURL: destination];
+        	result = NO;
+    	}
   
     return result;
 }
@@ -189,29 +199,30 @@ static EXFileManager *fileManager = nil;
                         toURL: (NSURL *)destination 
                       handler: (id)handler
 {
-    NSEnumerator *e = [source objectEnumerator];
-    NSURL *url;
+    	NSEnumerator *e = [sources objectEnumerator];
+    	NSURL *url;
+	BOOL result = NO;
   
-    if ([destination isFileURL] == NO)
-    {
-        [self _isNotFileURL: url];
-        return NO;
-        }
+    	if ([destination isFileURL] == NO)
+    	{
+        	[self _isNotFileURL: url];
+        	return NO;
+     	}
   
-    while ((url = [e nextObject]) != nil)
-    {
-        if ([url isFileURL])
-        {
-            result = [fileManager p_copyPath: url toPath: destination handler: self];
-        }
-        else
-        {
-            [self _isNotFileURL: url];
-            result = NO;
-        }
-    }
+    	while ((url = [e nextObject]) != nil)
+    	{
+        	if ([url isFileURL])
+        	{
+            		result = [fileManager p_copyPath: [url path] toPath: [destination path] handler: self];
+        	}
+        	else
+        	{
+            		[self _isNotFileURL: url];
+            		result = NO;
+        	}
+    	}
   
-  return result;
+  	return result;
 }
 
 - (BOOL) linkContextWithURL: (NSURL *)source 
@@ -219,67 +230,84 @@ static EXFileManager *fileManager = nil;
                     handler: (id)handler
                   linkStyle: (EXLinkStyle) style
 {
-    BOOL result = NO;
+    	BOOL result = NO;
   
-    if ([source isFileURL] && [destination isFileURL])
-    {
-        result = [fileManager p_linkPath: [source path] toPath: [destination path] handler: self];     
-    }
-    else
-    {
-        [self _isNotFileURL: url];
-        result = NO;
-    }
+    	if ([destination isFileURL])
+    	{
+        	if ([source isFileURL]) 
+		{
+			result = [fileManager p_linkPath: [source path] toPath: [destination path] handler: self];     
+    		}
+		else
+    		{
+        		[self _isNotFileURL: destination];
+        		result = NO;
+    		}
+	}
+    	else
+    	{
+        	[self _isNotFileURL: destination];
+        	result = NO;
+    	}
   
-  return result;
+  	return result;
 }
 
 - (BOOL) moveContextWithURL: (NSURL *)source 
                       toURL: (NSURL *)destination 
                     handler: (id)handler
 {
-    BOOL result = NO;
+    	BOOL result = NO;
   
-    if ([source isFileURL] && [destination isFileURL])
-    {
-        result = [fileManager p_movePath: [source path] toPath: [destination path] handler: self];     
-    }
-    else
-    {
-        [self _isNotFileURL: url];
-        result = NO;
-    }
+    	if ([destination isFileURL])
+    	{
+        	if ([source isFileURL]) 
+		{
+			result = [fileManager p_movePath: [source path] toPath: [destination path] handler: self];     
+    		}
+		else
+    		{
+        		[self _isNotFileURL: destination];
+        		result = NO;
+    		}
+	}
+    	else
+    	{
+        	[self _isNotFileURL: destination];
+        	result = NO;
+    	}
   
-    return result;
+  	return result;
 }
 
 - (BOOL) moveContextsWithURLs: (NSArray *)sources
                         toURL: (NSURL *)destination 
                       handler: (id)handler
 {
-    NSEnumerator *e = [source objectEnumerator];
-    NSURL *url;
+    	NSEnumerator *e = [sources objectEnumerator];
+    	NSURL *url;
+	BOOL result = NO;
   
-    if ([destination isFileURL] == NO)
-    {
-        [self _isNotFileURL: url];
-        return NO;
-    }
+    	if ([destination isFileURL] == NO)
+    	{
+        	[self _isNotFileURL: url];
+        	return NO;
+    	}
   
-    while ((url = [e nextObject]) != nil)
-    {
-        if ([url isFileURL])
-        {
-            result = [fileManager p_movePath: url toPath: destination handler: self];
-        }
-        else
-        {
-            [self _isNotFileURL: url];
-            result = NO;
-        }
-    }
+    	while ((url = [e nextObject]) != nil)
+    	{
+        	if ([url isFileURL])
+        	{
+            		result = [fileManager p_movePath: [url path] toPath: [destination path] handler: self];
+        	}
+        	else
+        	{
+            		[self _isNotFileURL: url];
+            		result = NO;
+        	}
+    	}
   
-    return result;
+    	return result;
 }
 
 /*
@@ -288,62 +316,62 @@ static EXFileManager *fileManager = nil;
  
 - (NSArray *) subcontextsURLsAtURL: (NSURL *)url deep: (BOOL)flag
 {
-    NSArray *paths;
+    	NSArray *paths;
   
-    if ([url isFileURL] == NO)
-    {
-        [self _isNotFileURL: url];
-        return nil;
-    }
+    	if ([url isFileURL] == NO)
+    	{
+        	[self _isNotFileURL: url];
+        	return nil;
+    	}
   
-    if (deep)
-    {
-        paths = [fileManager p_subpathsAtPath: [url path]];
-    }
-    else
-    {
-        paths = [fileManager p_directoryContentsAtPath: [url path]];
-    }
+    	if (flag)
+    	{
+        	paths = [fileManager p_subpathsAtPath: [url path]];
+    	}
+    	else
+    	{
+        	paths = [fileManager p_directoryContentsAtPath: [url path]];
+    	}
       
-  return paths;
+  	return paths;
 }
 
 /*
  * Open, close contexts
  */
  
-- (EXVFSHandle) openContextAtURL: (NSURL *)url mode: (EXVFSMode)mode
+- (EXVFSHandle *) openContextAtURL: (NSURL *)url mode: (EXVFSContentMode)mode
 {
-  EXVFSHandle *handle;
-  NSFileHandle *fh;
+  	EXVFSHandle *handle;
+  	NSFileHandle *fh;
     
-  if ([url isFileURL] == NO)
-    {
-      [self _isNotFileURL: url];
-      return nil;
-    }
+  	if ([url isFileURL] == NO)
+    	{
+      		[self _isNotFileURL: url];
+      		return nil;
+    	}
     
-  switch (mode)
-    {
-      case EXVFSModeRead:
-        fh = [NSFileHandle fileHandleForReadingAtPath: [url path]];
-        break;
-      case EXVFSModeWrite:
-        fh = [NSFileHandle fileHandleForWritingAtPath: [url path]];
-        break;
-      case EXVFSModeReadWrite:
-        fh = [NSFileHandle fileHandleForUpdatingAtPath: [url path]];
-        break;
-    }
+  	switch (mode)
+    	{
+      		case EXVFSContentModeRead:
+        		fh = [NSFileHandle fileHandleForReadingAtPath: [url path]];
+        		break;
+      		case EXVFSContentModeWrite:
+        		fh = [NSFileHandle fileHandleForWritingAtPath: [url path]];
+        		break;
+      		case EXVFSContentModeReadWrite:
+       			fh = [NSFileHandle fileHandleForUpdatingAtPath: [url path]];
+        		break;
+    	}
     
-  return [[EXVFSHandle alloc] initWithFileHandle: fh];
+  	return [[EXVFSHandle alloc] initWithFileHandle: fh];
 }
 
 - (void) closeContextWithVFSHandle: (EXVFSHandle *)handle
 {
-  NSFileHandle *fh = [handle fileHandle];
+  	NSFileHandle *fh = [handle fileHandle];
   
-  [fh closeFile];
+  	[fh closeFile];
 }
 
 /*
@@ -357,19 +385,19 @@ static EXFileManager *fileManager = nil;
                                length: (unsigned long long)length 
                                 error: (NSError **)error
 {
-  NSFileHandle *fh;
-  NSData *data;
+  	NSFileHandle *fh;
+  	NSData *data;
   
-  if ([handle hasFileHandle] == NO)
-    {
-      [self _isNotFileURL: url];
-      return NO;
-    }
+  	if ([handle fileHandle] != nil)
+    	{
+      		//[self _isNotFileURL: url];
+      		return NO;
+    	}
   
-  fd = [handle fileHandle];
-  data = [fd readDataOfLength: length];
+  	fh = [handle fileHandle];
+  	data = [fh readDataOfLength: length];
   
-  return data; 
+  	return data; 
 }
 
 - (void) writeContextWithVFSHandle: (EXVFSHandle *)handle 
@@ -377,73 +405,71 @@ static EXFileManager *fileManager = nil;
                             length: (unsigned long long)length 
                              error: (NSError **)error
 {
-  NSFileHandle *fh;
-  NSData *subdata;
+  	NSFileHandle *fh;
+  	NSData *subdata;
   
-  if ([handle hasFileHandle] == NO)
-    {
-      [self _isNotFileURL: url];
-      return NO;
-    }
+  	if ([handle fileHandle] != nil)
+    	{	
+      		//[self _isNotFileURL: url];
+    	}
   
-  fd = [handle fileHandle];
-  if ([data length] != length)
-    {
-      subdata = [NSData dataWithBytes: [data bytes] length: length];
-    }
-  else
-    {
-      subdata = data;
-    }
+  	fh = [handle fileHandle];
+  	if ([data length] != length)
+    	{
+      		subdata = [NSData dataWithBytes: [data bytes] length: length];
+    	}
+  	else
+    	{
+      		subdata = data;
+    	}
     
-  [fd writeData: subdata];
+  	[fh writeData: subdata];
 }
 
-- (void) setPositionIntoContextWithVFSHandle: (EXVFSHandke *)handle
+- (void) setPositionIntoContextWithVFSHandle: (EXVFSHandle *)handle
                                        start: (EXReadWritePosition)start 
                                       offset: (long long)offset 
                                        error: (NSError **)error
 {
-  NSFileHandle *fh;
-  NSData *data;
-  unsigned long long size;
+  	NSFileHandle *fh;
+  	NSData *data;
+  	unsigned long long size;
   
-  if ([handle hasFileHandle] == NO)
-    {
-      [self _isNotFileURL: url];
-      return NO;
-    }
+  	if ([handle fileHandle] != nil)
+    	{
+      		//[self _isNotFileURL: url];
+    	}	
   
-  fd = [handle fileHandle];
+  	fh = [handle fileHandle];
   
-  switch (start)
-    {
-      case EXReadWritePositionStart:
-        [fd seekToFileOffset: offset];
-        break;
-      case EXReadWritePositionEnd:
-        size = [fd seekToEndOfFile];
-        [fd seekToFileOffset: size - offset];
-        break;
-    }    
+  	switch (start)
+    	{
+      		case EXReadWritePositionStart:
+        		[fh seekToFileOffset: offset];
+        		break;
+      		case EXReadWritePositionEnd:
+        		size = [fh seekToEndOfFile];
+        		[fh seekToFileOffset: size - offset];
+        		break;
+    	}    
 }
 
-- (unsigned long long) positionIntoContextWithVFSHandle: (EXVFSHandle *)handle
+- (long long) positionIntoContextWithVFSHandle: (EXVFSHandle *)handle
                                                   error: (NSError **)error
 {
-    NSFileHandle *fh;
-    unsigned long long offset;
+    	NSFileHandle *fh;
+    	unsigned long long offset;
   
-    if ([handle hasFileHandle] == NO)
-    {
-        [self _isNotFileURL: url];
-        return NO;
-    }
+    	if ([handle fileHandle] != nil)
+    	{
+        	//[self _isNotFileURL: url];
+        	return NO;
+    	}
   
-    fd = [handle fileHandle];
-    offset = [fd offsetInFile];
+    	fh = [handle fileHandle];
+    	offset = [fh offsetInFile];
   
-    return offset;
+    	return offset;
 }
 
 /*
@@ -452,52 +478,52 @@ static EXFileManager *fileManager = nil;
  
  - (NSDictionary *) posixAttributesAtURL: (NSURL *)url
  {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: 10];
-    NSDictionary *fmDict;
-    NSString *value;
+    	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: 10];
+    	NSDictionary *fmDict;
+    	NSString *value;
     
-    if ([url isFileURL] == NO)
-    {
-        [self _isNotFileURL: url];
-        return nil;
-    }
+    	if ([url isFileURL] == NO)
+    	{
+        	[self _isNotFileURL: url];
+        	return nil;
+    	}
     
-    fmDict = [fileManager p_fileAttributesAtPath: [url path] traverseLink: NO];
+    	fmDict = [fileManager p_fileAttributesAtPath: [url path] traverseLink: NO];
     
-    [dict setObject: [fmDict objectForKey: NSFileCreationDate] forKey: EXAttributeCreationDate];
-    [dict setObject: [fmDict objectForKey: NSFileSize] forKey: EXAttributeSize];
-    [dict setObject: [fmDict objectForKey: NSFileModificationDate] forKey: EXAttributeModificationDate];
-    [dict setObject: [fmDict objectForKey: NSFileType] forKey: EXAttributeFSType];
-    [dict setObject: [fmDict objectForKey: NSFilePosixPermissions] forKey: EXAttributePosixPermissions];
-    [dict setObject: [fmDict objectForKey: NSFileOwnerAccountID] forKey: EXAttributeOwnerNumber];
-    [dict setObject: [fmDict objectForKey: NSFileOwnerAccountName] forKey: EXAttributeOwnerName];
-    [dict setObject: [fmDict objectForKey: NSFileGroupOwnerAccountID] forKey: EXAttributeGroupOwnerNumber];
-    [dict setObject: [fmDict objectForKey: NSFileGroupOwnerAccountName] forKey: EXAttributeGroupOwnerName];
-    [dict setObject: [fmDict objectForKey: NSFileDeviceIdentifier] forKey: EXAttributeDeviceNumber];
-    [dict setObject: [fmDict objectForKey: NSFileSystemFileNumber] forKey: EXAttributeFSNumber];
+    	[dict setObject: [fmDict objectForKey: NSFileCreationDate] forKey: EXAttributeCreationDate];
+    	[dict setObject: [fmDict objectForKey: NSFileSize] forKey: EXAttributeSize];
+	[dict setObject: [fmDict objectForKey: NSFileModificationDate] forKey: EXAttributeModificationDate];
+    	[dict setObject: [fmDict objectForKey: NSFileType] forKey: EXAttributeFSType];
+    	[dict setObject: [fmDict objectForKey: NSFilePosixPermissions] forKey: EXAttributePosixPermissions];
+    	[dict setObject: [fmDict objectForKey: NSFileOwnerAccountID] forKey: EXAttributeOwnerNumber];
+    	[dict setObject: [fmDict objectForKey: NSFileOwnerAccountName] forKey: EXAttributeOwnerName];
+    	[dict setObject: [fmDict objectForKey: NSFileGroupOwnerAccountID] forKey: EXAttributeGroupOwnerNumber];
+    	[dict setObject: [fmDict objectForKey: NSFileGroupOwnerAccountName] forKey: EXAttributeGroupOwnerName];
+    	[dict setObject: [fmDict objectForKey: NSFileDeviceIdentifier] forKey: EXAttributeDeviceNumber];
+    	[dict setObject: [fmDict objectForKey: NSFileSystemFileNumber] forKey: EXAttributeFSNumber];
 
-    value = [dict objectForKey: EXAttributeFSType];
-    if ([value isEqualToString: NSFileTypeDirectory])
-        [dict setObject: EXFSTypeDirectory forKey: EXAttributeFSType];
-    else if ([value isEqualToString: NSFileTypeRegular])
-        [dict setObject: EXFSTypeRegular forKey: EXAttributeFSType];
-    else if ([value isEqualToString: NSFileTypeSymbolicLink])
-        [dict setObject: EXFSTypeSymbolicLink forKey: EXAttributeFSType];
-    else if ([value isEqualToString: NSFileTypeSocket])
-        [dict setObject: EXFSTypeSocket forKey: EXAttributeFSType];
-    else if ([value isEqualToString: NSFileTypeCharacterSpecial])
-        [dict setObject: EXFSTypeCharacterSpecial forKey: EXAttributeFSType];
-    else if ([value isEqualToString: NSFileTypeBlockSpecial])
-        [dict setObject: EXFSTypeBlockSpecial forKey: EXAttributeFSType];
-    else ([value isEqualToString: NSFileTypeUnknown)
-        [dict setObject: EXFSTypeUnknown forKey: EXAttributeFSType];
+    	value = [dict objectForKey: EXAttributeFSType];
+    	if ([value isEqualToString: NSFileTypeDirectory])
+        	[dict setObject: EXFSTypeDirectory forKey: EXAttributeFSType];
+   	else if ([value isEqualToString: NSFileTypeRegular])
+        	[dict setObject: EXFSTypeRegular forKey: EXAttributeFSType];
+    	else if ([value isEqualToString: NSFileTypeSymbolicLink])
+        	[dict setObject: EXFSTypeSymbolicLink forKey: EXAttributeFSType];
+    	else if ([value isEqualToString: NSFileTypeSocket])
+        	[dict setObject: EXFSTypeSocket forKey: EXAttributeFSType];
+    	else if ([value isEqualToString: NSFileTypeCharacterSpecial])
+        	[dict setObject: EXFSTypeCharacterSpecial forKey: EXAttributeFSType];
+    	else if ([value isEqualToString: NSFileTypeBlockSpecial])
+        	[dict setObject: EXFSTypeBlockSpecial forKey: EXAttributeFSType];
+    	else if ([value isEqualToString: NSFileTypeUnknown])
+        	[dict setObject: EXFSTypeUnknown forKey: EXAttributeFSType];
         
-    return dict;
+    	return dict;
  }
  
  - (id) posixAttributeWithName: (NSString *)name atURL: (NSURL *)url
  {
-    return [[self posixAttributesAtURL: url] objectForKey: name];
+    	return [[self posixAttributesAtURL: url] objectForKey: name];
  }
 
 /*
@@ -506,50 +532,51 @@ static EXFileManager *fileManager = nil;
  
 - (BOOL) isEntityContextAtURL: (NSURL *)url
 {
-    BOOL isDir;
+    	BOOL isDir;
+    	BOOL result;
   
-    if ([url isFileURL] == NO)
-    {
-        [self _isNotFileURL: url];
-        return NO;
-    }
+    	if ([url isFileURL] == NO)
+    	{
+        	[self _isNotFileURL: url];
+        	return NO;
+    	}
 
-    result = [fileManager p_fileExistsAtPath: [url path] isDirectory: &isDir];
-    if (result && isDir)
-    {
-        return YES;
-    }
-    else
-    {
-        return NO;
-    }
+    	result = [fileManager p_fileExistsAtPath: [url path] isDirectory: &isDir];
+    	if (result && isDir)
+    	{
+        	return YES;
+    	}
+    	else
+    	{
+        	return NO;
+    	}
 }
 
 - (BOOL) isElementContextAtURL: (NSURL *)url
 {
-    BOOL isDir;
-    BOOL result;
+    	BOOL isDir;
+    	BOOL result;
   
-    if ([url isFileURL] == NO)
-    {
-        [self _isNotFileURL: url];
-        return NO;
-    }
+    	if ([url isFileURL] == NO)
+    	{
+        	[self _isNotFileURL: url];
+        	return NO;
+    	}
   
-    result = [fileManager p_fileExistsAtPath: [url path] isDirectory: &isDir];
-    if (result && !isDir)
-    {
-        return YES;
-    }
-    else
-    {
-        return NO;
-    }
+    	result = [fileManager p_fileExistsAtPath: [url path] isDirectory: &isDir];
+    	if (result && !isDir)
+    	{
+        	return YES;
+    	}
+    	else
+    	{
+        	return NO;
+    	}
 }
 
 - (void) _isNotFileURL: (NSURL *)url
 {
-  NSLog(@"GNUstep VFS backend doesn't support the URL %@ because it is not a local file.", url);
+  	NSLog(@"GNUstep VFS backend doesn't support the URL %@ because it is not a local file.", url);
 }
 
 @end

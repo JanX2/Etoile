@@ -33,9 +33,9 @@
 
 @interface EXVFS : NSObject <EXVFSProtocol>
 {
-  NSArray *_protocols;
-  EXVFSBack *_vfs;
-  // EXVFSBack *_virtualVFS;
+  	NSArray *_protocols;
+  	EXVFSBack *_vfs;
+  	// EXVFSBack *_virtualVFS;
 }
 
 + (EXVFS *) sharedInstance;

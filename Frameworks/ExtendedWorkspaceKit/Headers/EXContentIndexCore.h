@@ -39,10 +39,10 @@
 
 - (void) indexContext: (EXContext *)context deep: (BOOL)flag; // Includes subcontexts indexing when flag is YES
 
-- (void) indexAtPath: (NSString *) path update:  (BOOL)flag; // Includes subpaths
+- (void) indexAtPath: (NSString *)path update:  (BOOL)flag; // Includes subpaths
 // Updates flag when NO triggers a new full reindexing, otherwise just updates the indexes
 
-- (void) indexAtURL: (NSString *) path update:  (BOOL)flag; // Includes subURLs
+- (void) indexAtURL: (NSURL *)url update:  (BOOL)flag; // Includes subURLs
 // Updates flag when NO triggers a new full reindexing, otherwise just updates the indexes
 
 @end

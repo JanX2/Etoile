@@ -24,12 +24,21 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+@class NSMutableDictionary;
+@class EXVFS;
+@class EXContext;
+
 @interface EXAttributesCore: NSObject
 {
-
+	EXVFS *_vfs;
 }
 // Basic methods
 
 + (EXAttributesCore *) sharedInstance;
+
+- (void) loadAttributesForContext: (EXContext *)context;
+- (NSMutableDictionary *) storedAttributesForContext: (EXContext *)context;
+- (NSMutableDictionary *) extractAttributesForContext: (EXContext *) context;
+- (void) storeAttributesForContext: (EXContext *)context;
 
 @end

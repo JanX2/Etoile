@@ -23,18 +23,19 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-enum _VFSBackend 
-{
-  GNUstep,
-  Comet
-};
+#define GNUstepVFS 1
+#define CometVFS 2
 
-enum _AttributesBackend
-{
-  RDFBerkeleyDB
-};
+// Specify the VFS backend
 
-const enum _VFSBackend VFSBackend = GNUstep;
-const enum _AttributesBackend AttributesBackend = RDFBerkeleyDB;
+#define VFSBackend GNUstepVFS
+
+
+#define RDFBerkeleyDB 1
+
+// Specify the attributes backend
+
+#define AttributesBackend RDFBerkeleyDB
+
 
 // Private stuff

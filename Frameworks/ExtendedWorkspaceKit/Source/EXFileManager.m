@@ -36,42 +36,42 @@
 
 - (BOOL) p_changeCurrentDirectoryPath: (NSString *)path
 {
-    return [super changeCurrentDirectoryPath: path];
+    	return [super changeCurrentDirectoryPath: path];
 }
 
 - (BOOL) p_changeFileAttributes: (NSDictionary *)attributes
 		        atPath: (NSString *)path
 {
-    return [super changeFileAttributes: attributes atPath: path];                                               
+    	return [super changeFileAttributes: attributes atPath: path];                                               
 }
 
 - (NSArray *) p_componentsToDisplayForPath: (NSString *)path
 {
-    return [super componentsToDisplayForPath: path];
+   	return [super componentsToDisplayForPath: path];
 }
 
 - (NSData *) p_contentsAtPath: (NSString *)path
 {
-    return [super p_contentsAtPath: path];
+    	return [super contentsAtPath: path];
 }
 
 - (BOOL) p_contentsEqualAtPath: (NSString *)path1
 		      andPath: (NSString *)path2
 {
-    return [super contentsAtPath: path1 andPath: path2];
+    	return [super contentsEqualAtPath: path1 andPath: path2];
 }
                       
 - (BOOL) p_copyPath: (NSString *)source
 	    toPath: (NSString *)destination
 	   handler: (id)handler
 {
-    return [super copyPath: source toPath: destination handler: handler];
+    	return [super copyPath: source toPath: destination handler: handler];
 }
 
 - (BOOL) p_createDirectoryAtPath: (NSString *)path
 		     attributes: (NSDictionary *)attributes
 {
-    return [super createDirectoryAtPath: path attributes: attributes];
+    	return [super createDirectoryAtPath: path attributes: attributes];
 }
                      
 - (BOOL) p_createFileAtPath: (NSString *)path
@@ -84,121 +84,121 @@
 - (BOOL) p_createSymbolicLinkAtPath: (NSString *)path
 		       pathContent: (NSString *)otherPath
 {
-    return [super createSymbolicLinkAtPath: path pathContent: otherPath];
+    	return [super createSymbolicLinkAtPath: path pathContent: otherPath];
 }
 
 - (NSString *) p_currentDirectoryPath
 {
-    return [super currentDirectoryPath];
+    	return [super currentDirectoryPath];
 }
 
 - (NSArray *) p_directoryContentsAtPath: (NSString *)path
 {
-    return [super directoryContentsAtPath: path];
+    	return [super directoryContentsAtPath: path];
 }
 
 - (NSString *) p_displayNameAtPath: (NSString *)path
 {
-    return [super displayNameAtPath: path];
+    	return [super displayNameAtPath: path];
 }
 
 - (NSDirectoryEnumerator *) enumeratorAtPath: (NSString *)path
 {
-    return [super enumeratorAtPath: path];
+    	return [super enumeratorAtPath: path];
 }
 
 - (NSDictionary *) p_fileAttributesAtPath: (NSString *)path
 			   traverseLink: (BOOL)flag
 {
-    return [super fileAttributesAtPath: path traverseLink: flag];
+    	return [super fileAttributesAtPath: path traverseLink: flag];
 }
 
 - (BOOL) p_fileExistsAtPath: (NSString *)path
 {
-    return [super fileExistsAtPath: path];
+    	return [super fileExistsAtPath: path];
 }
 
 - (BOOL) p_fileExistsAtPath: (NSString *)path isDirectory: (BOOL *)isDirectory
 {
-    return [super fileExistsAtPath: path isDirectory: isDirectory];
+    	return [super fileExistsAtPath: path isDirectory: isDirectory];
 }
 
 - (NSDictionary *) p_fileSystemAttributesAtPath: (NSString *)path
 {
-    return [super fileSystemAttributesAtPath: path];
+    	return [super fileSystemAttributesAtPath: path];
 }
 
 - (const char *) p_fileSystemRepresentationWithPath: (NSString *)path
 {
-    return [super fileSystemRepresentationWithPath: path];
+    	return [super fileSystemRepresentationWithPath: path];
 }
 
 - (BOOL) p_isExecutableFileAtPath: (NSString *)path
 {
-    return [super isExecutableFileAtPath: path];
+    	return [super isExecutableFileAtPath: path];
 }
 
 - (BOOL) p_isDeletableFileAtPath: (NSString *)path
 {
-    return [super isDeletableFileAtPath: path]; 
+    	return [super isDeletableFileAtPath: path]; 
 }
 
 - (BOOL) p_isReadableFileAtPath: (NSString *)path
 {
-    return [super isReadableFileAtPath: path];
+ 	return [super isReadableFileAtPath: path];
 }
 
 - (BOOL) p_isWritableFileAtPath: (NSString *)path
 {
-    return {super isWritableFileAtPath: path];
+   	return [super isWritableFileAtPath: path];
 }
 
 - (BOOL) p_linkPath: (NSString *)source
 	    toPath: (NSString *)destination
 	   handler: (id)handler
 {
-    return [super linkPath: source toPath: destination handler: handler];
+   	return [super linkPath: source toPath: destination handler: handler];
 }
 
 - (BOOL) p_movePath: (NSString *)source
 	    toPath: (NSString *)destination 
 	   handler: (id)handler
 {
-    return [super movePath: source toPath: destination handler: handler];
+    	return [super movePath: source toPath: destination handler: handler];
 }
 
 - (NSString *) p_pathContentOfSymbolicLinkAtPath: (NSString *)path
 {
-    return [super pathContentOfSymbolicLinkAtPath: path];
+    	return [super pathContentOfSymbolicLinkAtPath: path];
 }
 
 - (BOOL) p_removeFileAtPath: (NSString *)path
 		   handler: (id)handler
 {
-    return [super removeFileAtPath: path handler: handler];
+    	return [super removeFileAtPath: path handler: handler];
 }
                    
 - (NSString *) p_stringWithFileSystemRepresentation: (const char *)string
 					    length: (unsigned int)len
 {
-    return [super stringWithFileSystemRepresentation: string length: len];
+    	return [super stringWithFileSystemRepresentation: string length: len];
 }
 
 - (NSArray *) p_subpathsAtPath: (NSString *)path
 {
-    return [super subpathsAtPath: path];
+    	return [super subpathsAtPath: path];
 }
 
 - (BOOL) p_fileManager: (NSFileManager *)fileManager
-    shouldProceedAfterError: (NSDictionary *)errorDictionary
+	shouldProceedAfterError: (NSDictionary *)errorDictionary
 {
-    return [super fileManager: fileManager shouldProceedAfterError: errorDictionary];
+  	return [super fileManager: fileManager shouldProceedAfterError: errorDictionary];
 }
 
 - (void) p_fileManager: (NSFileManager *)fileManager
-    willProcessPath: (NSString *)path
+    	willProcessPath: (NSString *)path
 {
-    [super fileManager: fileManager willProcessPath: path];
+   	[super fileManager: fileManager willProcessPath: path];
 }
 
 @end

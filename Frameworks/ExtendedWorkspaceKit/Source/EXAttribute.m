@@ -31,3 +31,30 @@
 
 
 @end
+
+/*
+ * Primary attributes identifiers
+ */
+
+NSString * const EXAttributeCreationDate = @"EXAttributeCreationDate";
+NSString * const EXAttributeModificationDate = @"EXAttributeModificationDate";
+NSString * const EXAttributeName = @"EXAttributeName";
+NSString * const EXAttributeSize = @"EXAttributeSize";
+NSString * const EXAttributeFSNumber = @"EXAttributeFSNumber";
+NSString * const EXAttributeFSType = @"EXAttributeFSType";
+NSString * const EXAttributePosixPermissions = @"EXAttributePosixPermissions";
+NSString * const EXAttributeOwnerName = @"EXAttributeOwnerName";
+NSString * const EXAttributeOwnerNumber = @"EXAttributeOwnerNumber";
+NSString * const EXAttributeGroupOwnerName = @"EXAttributeGroupOwnerName";
+NSString * const EXAttributeGroupOwnerNumber = @"EXAttributeGroupOwnerNumber";
+NSString * const EXAttributeDeviceNumber = @"EXAttributeDeviceNumber";
+NSString * const EXAttributeExtension = @"EXAttributeExtension";
+
+NSString * const EXFSTypeDirectory = @"EXFSTypeDirectory";
+NSString * const EXFSTypeRegular = @"EXFSTypeRegular";
+NSString * const EXFSTypeLink = @"EXFSTypeLink"; // ExtendedWorkspaceKit custom link
+NSString * const EXFSTypeSymbolicLink = @"EXFSTypeSymbolicLink";
+NSString * const EXFSTypeSocket = @"EXFSTypeSocket";
+NSString * const EXFSTypeCharacterSpecial = @"EXFSTypeCharacterSpecial";
+NSString * const EXFSTypeBlockSpecial = @"EXFSTypeBlockSpecial";
+NSString * const EXFSTypeUnknown = @"EXFSTypeUnknown";

@@ -41,21 +41,21 @@ static EXWorkspace *workspace = nil;
 
 + (void) initialize
 {
-    if (self = [EXVFS class])
-    {
-        workspace = [EXWorkspace sharedInstance];
-    }
+    	if (self = [EXVFS class])
+    	{
+		workspace = [EXWorkspace sharedInstance];
+    	}
 }
 
 + (EXVFS *) sharedInstance
 {
-    if (sharedVFS == nil)
-    {
-        sharedVFS = [EXVFS alloc];
-        [sharedVFS init];
-    }
+    	if (sharedVFS == nil)
+    	{
+        	sharedVFS = [EXVFS alloc];
+        	[sharedVFS init];
+    	}
     
-  return sharedVFS;      
+  	return sharedVFS;      
 }
 
 - (id) init
@@ -68,7 +68,7 @@ static EXWorkspace *workspace = nil;
   
     if ((self = [super init])  != nil)
     {
-        if (VFSBackend == GNUstep)
+        if (VFSBackend == GNUstepVFS)
         {
             _vfs = [[EXGNUstepVFS alloc] init];
         }
@@ -79,7 +79,7 @@ static EXWorkspace *workspace = nil;
         }
         */
       
-        _protocols = RETAIN([_vfs protocols]);
+        _protocols = RETAIN([_vfs supportedProtocols]);
     }
   
   return self;
@@ -87,10 +87,26 @@ static EXWorkspace *workspace = nil;
 
 - (void) dealloc
 {
-    RELEASE(_VFS);
+    RELEASE(_vfs);
     RELEASE(_protocols);
   
     [super dealloc];
+}
+
+- (BOOL) respondsToSelector: (SEL)selector
+{
+	if ([[self class] respondsToSelector: selector] 
+		|| [_vfs respondsToSelector: selector])
+	{
+		return YES;
+	}
+	
+	return NO;
+}
+
+- (void) forwardInvocation: (NSInvocation *)inv
+{
+	[inv invokeWithTarget: _vfs]; 
 }
 
 /*
@@ -99,31 +115,31 @@ static EXWorkspace *workspace = nil;
 
 - (NSArray *) supportedProtocols
 {
-    return _protocols;
+    	return _protocols;
 }
 
 /*
  * Destroy and create contexts
  */
 
-- (BOOL) createEntityContextWithURL: (NSURL *)url error: (NSError **)error
+- (BOOL) createEntityContextAtURL: (NSURL *)url error: (NSError **)error
 {
-    return [_vfs createEntityContextWithURL: url error: error];
+    	return [_vfs createEntityContextAtURL: url error: error];
 }
 
-- (BOOL) createElementContextWithURL: (NSURL *)url error: (NSError **)error
+- (BOOL) createElementContextAtURL: (NSURL *)url error: (NSError **)error
 {
-    return [_vfs createElementContextWithURL: url error: error];
+    	return [_vfs createElementContextAtURL: url error: error];
 }
 
-- (BOOL) removeContextWithURL: (NSURL *)url handler: (id)handler
+- (BOOL) removeContextAtURL: (NSURL *)url handler: (id)handler
 {
-    return [_vfs removeContextWithURL: url handler: handler];
+    	return [_vfs removeContextAtURL: url handler: handler];
 }
 
-- (BOOL) removeContextsWithURLs: (NSArray *)urls handler: (id)handler
+- (BOOL) removeContextsAtURLs: (NSArray *)urls handler: (id)handler
 {
-    return [_vfs removeContexstWithURLs: urls handler: handler];
+    	return [_vfs removeContextsAtURLs: urls handler: handler];
 }
 
 /*
@@ -134,14 +150,14 @@ static EXWorkspace *workspace = nil;
                       toURL: (NSURL *)destination 
                     handler: (id)handler
 {
-    return [_vfs copyContextWithURL: source toURL: destination handler: handler];
+    	return [_vfs copyContextWithURL: source toURL: destination handler: handler];
 }
 
 - (BOOL) copyContextsWithURLs: (NSArray *)sources 
                         toURL: (NSURL *)destination 
                       handler: (id)handler
 {
-    return [_vfs copyContextsWithURLs: sources toURL: destination handler: handler];
+    	return [_vfs copyContextsWithURLs: sources toURL: destination handler: handler];
 }
 
 - (BOOL) linkContextWithURL: (NSURL *)source 
@@ -149,21 +165,21 @@ static EXWorkspace *workspace = nil;
                     handler: (id)handler
                   linkStyle: (EXLinkStyle) style;
 {
-    return [_vfs linkContextWithURL: source toURL: destination handler: handler linkStyle: style];
+    	return [_vfs linkContextWithURL: source toURL: destination handler: handler linkStyle: style];
 }
 
 - (BOOL) moveContextWithURL: (NSURL *)source 
                       toURL: (NSURL *)destination 
                     handler: (id)handler
 {
-    return [_vfs moveContextWithURL: source toURL: destination handler: handler];
+    	return [_vfs moveContextWithURL: source toURL: destination handler: handler];
 }
 
 - (BOOL) moveContextsWithURLs: (NSArray *)sources 
                         toURL: (NSURL *)destination 
                       handler: (id)handler
 {
-    return [_vfs moveContextsWithURLs: sources toURL: destination handler: handler];}
+    	return [_vfs moveContextsWithURLs: sources toURL: destination handler: handler];
 }
 
 /*
@@ -172,23 +188,22 @@ static EXWorkspace *workspace = nil;
 
 - (NSArray *) subcontextsURLsAtURL: (NSURL *)url deep: (BOOL)flag
 {
-    return [_vfs subcontextsURLsAtURL: url deep: flag];
+    	return [_vfs subcontextsURLsAtURL: url deep: flag];
 }
 
 /*
  * Open, close contexts
  */
  
-- (EXVFSHandle *) openContextWithURL: (NSURL *)url mode: (EXVFSContentMode *)mode
+- (EXVFSHandle *) openContextWithURL: (NSURL *)url mode: (EXVFSContentMode)mode
 {
-    return [_vfs openContextWithURL: url mode: mode];
+    	return [_vfs openContextWithURL: url mode: mode];
 }
 
 - (void) closeContextWithVFSHandle: (EXVFSHandle *)handle
 {
-    [_vfs closeContextWithVFSHandle: handle];
+    	[_vfs closeContextWithVFSHandle: handle];
 }
- 
 
 /*
  * Read, write contexts
@@ -201,7 +216,7 @@ static EXWorkspace *workspace = nil;
                                lenght: (unsigned long long)lenght 
                                 error: (NSError **)error
 {
-  return [_vfs readContextWithVFSHandle: handle lenght: lenght error: error];
+  	return [_vfs readContextWithVFSHandle: handle lenght: lenght error: error];
 }
 
 - (void) writeContextWithVFSHandle: (EXVFSHandle *)handle  
@@ -209,21 +224,21 @@ static EXWorkspace *workspace = nil;
                             lenght: (unsigned long long)lenght 
                              error: (NSError **)error
 {  
-    [_vfs writeContextWithVFSHandle: handle data: data lenght: lenght error: error];
+    	[_vfs writeContextWithVFSHandle: handle data: data lenght: lenght error: error];
 }
 
-- (void) setPositionIntoContextVFSHandle: (EXVFSHandle *)handle 
+- (void) setPositionIntoContextWithVFSHandle: (EXVFSHandle *)handle 
                                    start: (EXReadWritePosition)start 
                                   offset: (long long)offset 
                                    error: (NSError **)error
 {
-    [_vfs setPositionIntoContextWithVFSHandle: handle start: start offset: offset error: error];
+    	[_vfs setPositionIntoContextWithVFSHandle: handle start: start offset: offset error: error];
 }
 
-- (long long) positionIntoContextVFSHandle: (EXVFSHandle *)handle 
+- (long long) positionIntoContextWithVFSHandle: (EXVFSHandle *)handle 
                                      error: (NSError **)error
 {
-    [_vfs positionIntoContextWithVFSHandle: handle error: error];
+    	[_vfs positionIntoContextWithVFSHandle: handle error: error];
 }
 
 /*
@@ -232,20 +247,20 @@ static EXWorkspace *workspace = nil;
  
 - (BOOL) isEntityContextAtURL: (NSURL *)url
 {
-    return [_vfs isEntityContextAtURL: url];
+    	//return [_vfs isEntityContextAtURL: url];
+	return NO;
 }
 
 - (BOOL) isElementContextAtURL: (NSURL *)url
 {
-    return [_vfs isElementContextAtURL: url];
+    	//return [_vfs isElementContextAtURL: url];
+	return NO;
 }
 
-/*
 - (BOOL) isVirtualContextAtURL: (NSURL *)url
 {
-  return NO;
+	return NO;
 }
- */
  
  /*
   * Private methods
@@ -253,12 +268,12 @@ static EXWorkspace *workspace = nil;
 
 - (int) _FSNumberForPath: (NSString *)path
 {
-    return -1;
+    	return -1;
 }
 
 - (NSString *) _pathForFSNumber: (int)number
 {
-    return nil;
+    	return nil;
 }
 
 @end

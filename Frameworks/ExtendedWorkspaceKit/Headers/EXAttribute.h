@@ -23,9 +23,38 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+@class NSString;
+
 @interface EXAttribute : NSObject
 {
 
 }
 
 @end
+
+/*
+ * Primary attributes identifiers
+ */
+
+GS_EXPORT NSString * const EXAttributeCreationDate;
+GS_EXPORT NSString * const EXAttributeModificationDate;
+GS_EXPORT NSString * const EXAttributeName;
+GS_EXPORT NSString * const EXAttributeSize;
+GS_EXPORT NSString * const EXAttributeFSNumber;
+GS_EXPORT NSString * const EXAttributeFSType;
+GS_EXPORT NSString * const EXAttributePosixPermissions;
+GS_EXPORT NSString * const EXAttributeOwnerName;
+GS_EXPORT NSString * const EXAttributeOwnerNumber;
+GS_EXPORT NSString * const EXAttributeGroupOwnerName;
+GS_EXPORT NSString * const EXAttributeGroupOwnerNumber;
+GS_EXPORT NSString * const EXAttributeDeviceNumber;
+GS_EXPORT NSString * const EXAttributeExtension;
+
+GS_EXPORT NSString * const EXFSTypeDirectory;
+GS_EXPORT NSString * const EXFSTypeRegular;
+GS_EXPORT NSString * const EXFSTypeLink; // ExtendedWorkspaceKit custom link
+GS_EXPORT NSString * const EXFSTypeSymbolicLink;
+GS_EXPORT NSString * const EXFSTypeSocket;
+GS_EXPORT NSString * const EXFSTypeCharacterSpecial;
+GS_EXPORT NSString * const EXFSTypeBlockSpecial;
+GS_EXPORT NSString * const EXFSTypeUnknown;

@@ -25,6 +25,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+#import "EXAttribute.h"
 #import "EXAttributesCore.h"
 #import "EXVFS.h"
 #import "EXContext.h"
@@ -36,29 +37,7 @@
 @class EXTypeAttribute;
 
 static EXVFS *vfs = nil;
-
-NSString *EXAttributeCreationDate = @"EXAttributeCreationDate";
-NSString *EXAttributeModificationDate = @"EXAttributeModificationDate";
-NSString *EXAttributeName = @"EXAttributeName";
-NSString *EXAttributeSize = @"EXAttributeSize";
-NSString *EXAttributeFSNumber = @"EXAttributeFSNumber";
-NSString *EXAttributeFSType = @"EXAttributeFSType";
-NSString *EXAttributePosixPermissions = @"EXAttributePosixPermissions";
-NSString *EXAttributeOwnerName = @"EXAttributeOwnerName";
-NSString *EXAttributeOwnerNumber = @"EXAttributeOwnerNumber";
-NSString *EXAttributeGroupOwnerName = @"EXAttributeGroupOwnerName";
-NSString *EXAttributeGroupOwnerNumber = @"EXAttributeGroupOwnerNumber";
-NSString *EXAttributeDeviceNumber = @"EXAttributeDeviceNumber";
-NSString *EXAttributeExtension = @"EXAttributeExtension";
-
-NSString *EXFSTypeDirectory = @"EXFSTypeDirectory";
-NSString *EXFSTypeRegular = @"EXFSTypeRegular";
-NSString *EXFSTypeLink = @"EXFSTypeLink"; // ExtendedWorkspaceKit custom link
-NSString *EXFSTypeSymbolicLink = @"EXFSTypeSymbolicLink";
-NSString *EXFSTypeSocket = @"EXFSTypeSocket";
-NSString *EXFSTypeCharacterSpecial = @"EXFSTypeCharacterSpecial";
-NSString *EXFSTypeBlockSpecial = @"EXFSTypeBlockSpecial";
-NSString *EXFSTypeUnknown = @"EXFSTypeUnknown";
+static EXAttributesCore *infoCore = nil;
 
 @interface EXContext (Private)
 - (void) _setAttributes: (NSMutableDictionary *)dict;
@@ -69,23 +48,23 @@ NSString *EXFSTypeUnknown = @"EXFSTypeUnknown";
 
 - (id) initWithURL: (NSURL *)url
 {
-    if ((self = [super init]) != nil)
-    {
-        EXAttributesCore *infoCore = [EXAttributesCore sharedInstance];
+    	if ((self = [super init]) != nil)
+    	{
+        	infoCore = [EXAttributesCore sharedInstance];
         
-        vfs = [EXVFS sharedInstance];
-        ASSIGN(_url, url);
-        [infoCore loadAttributesForContext: self];
-    }
+        	vfs = [EXVFS sharedInstance];
+        	ASSIGN(_url, url);
+        	[infoCore loadAttributesForContext: self];
+    	}
     
-    return self;
+    	return self;
 }
 
 - (void) dealloc
 {
-    RELEASE(_attributes);
-    RELEASE(_url);
-    [super dealloc];
+    	RELEASE(_attributes);
+    	RELEASE(_url);
+    	[super dealloc];
 }
 
 /*
@@ -94,22 +73,22 @@ NSString *EXFSTypeUnknown = @"EXFSTypeUnknown";
  
 - (NSDate *) creationDate
 {
-  return [_attributes objectForKey: EXAttributeCreationDate];
+  	return [_attributes objectForKey: EXAttributeCreationDate];
 }
 
 - (NSString *) extension
 {
-  return [_attributes objectForKey: EXAttributeExtension];
+  	return [_attributes objectForKey: EXAttributeExtension];
 }
 
 - (NSArray *) dependencies
 {
-  return nil; // Must be implemented later
+  	return nil; // Must be implemented later
 }
 
 - (BOOL) isVirtual
 {
-  return NO; // return [_url isVirtual];
+  	return NO; // return [_url isVirtual];
 }
 
 /*
@@ -130,59 +109,59 @@ NSString *EXFSTypeUnknown = @"EXFSTypeUnknown";
 
 - (EXKeywordsAttribute *) keywords
 {
-  return nil;
+  	return nil;
 }
 
 - (NSDate *) modificationDate
 {
-  return [_attributes objectForKey: EXAttributeModificationDate];
+  	return [_attributes objectForKey: EXAttributeModificationDate];
 }
 
 - (NSString *) name
 {
-  return [_attributes objectForKey: EXAttributeName];
+  	return [_attributes objectForKey: EXAttributeName];
 }
 
 - (EXPresentationAttribute *) presentation
 {
-  return nil;
+  	return nil;
 }
 
 - (EXPreviewAttribute *) preview
 {
-  return nil;
+  	return nil;
 }
 
 - (int) size
 {
-  return [[_attributes objectForKey: EXAttributeSize] intValue];
+  	return [[_attributes objectForKey: EXAttributeSize] intValue];
 }
 
 - (EXTypeAttribute *) type
 {
-  return nil;
+  	return nil;
 }
 
 - (NSString *) universalUniqueIdentifier
 {
-  return nil;
+  	return nil;
 }
 
 - (NSURL *) URL
 {
-  return _url;
+  	return _url;
 }
 
 - (EXVFSHandle *) handleForContent
 {
-  return _handle;
+  	return _handle;
 }
 
 // Private setter
 
 - (void) _setHandleForContent: (EXVFSHandle *)handle
 {
-  _handle = handle;
+  	_handle = handle;
 }
 
 /*
@@ -191,20 +170,20 @@ NSString *EXFSTypeUnknown = @"EXFSTypeUnknown";
  
 - (id) attributeForKey: (NSString *)key
 {
-  return [_attributes objectForKey: key];
+  	return [_attributes objectForKey: key];
 }
 
 - (NSDictionary *) attributes
 {
-  return _attributes;
+  	return _attributes;
 }
 
 - (void) setAttribute: (id)attribute forKey: (NSString *)key
 {
-  [_attributes setObject: attribute forKey: key];
+  	[_attributes setObject: attribute forKey: key];
   
-  // Will do nothing more here until we add database and FS synchronization
-  // Later we will put the attribute in the database on each call
+  	// Will do nothing more here until we add database and FS synchronization
+  	// Later we will put the attribute in the database on each call
 }
 
 /*
@@ -236,7 +215,7 @@ NSString *EXFSTypeUnknown = @"EXFSTypeUnknown";
 
 - (BOOL) isEntity
 {
-  return YES;
+  	return YES;
 }
 
 // Put the context in a folder with a file which includes the metatadas related
@@ -254,52 +233,53 @@ NSString *EXFSTypeUnknown = @"EXFSTypeUnknown";
 
 - (NSArray *) subcontexts
 {
-  return [vfs subcontextsAtURL: _url deep: NO];
+  	return [vfs subcontextsURLsAtURL: _url deep: NO];
 }
 
 - (BOOL) stored
 {
-  return _stored;
+  	return _stored;
 }
 
 // Open the context in the mode read/write
-- (EXTVFSHandle *) open
+- (EXVFSHandle *) open
 {
-    return [vfs openContextWithURL: [self URL] mode: EXVFSReadWriteContentMode];
+    	return [vfs openContextWithURL: [self URL] mode: EXVFSContentModeReadWrite];
 }
 
-— (void) close
+- (void) close
 {
-    return [vfs closeContextWithVFSHandle : [self handleForContent]];
+    	[vfs closeContextWithVFSHandle : [self handleForContent]];
 }
 
 - (BOOL) storeAtURL: (NSURL *)url
 {
   BOOL result;
+  NSError *err = nil;
   
-  if (isEntity)
-    {
-      result = [vfs createEntityContextAtURL: url];
-    }
-  else
-    {
-      result = [vfs createElementContextAtURL: url];
-    }
+ 	if ([self isEntity])
+	{
+     		result = [vfs createEntityContextAtURL: url error: &err];
+    	}
+ 	else
+    	{
+      		result = [vfs createElementContextAtURL: url error: &err];
+    	}
     
-  if (result)  
-    {
-      // result = [self synchronize]; 
-      // Not needed, it is done automatically when EXK receives the notification
-      // from the VFS for -createXXXContextAtURL:
-      _stored = YES;
-    }
+  	if (result)  
+    	{
+      		// result = [self synchronize]; 
+      		// Not needed, it is done automatically when EXK receives the notification
+      		// from the VFS for -createXXXContextAtURL:
+      		_stored = YES;
+    	}
   
-  return result;
+	return result;
 }
 
 - (BOOL) storeAtPath: (NSString *)path
 {
-  return [self storeAtURL: [NSURL fileURLWithPath: path]];
+  	return [self storeAtURL: [NSURL fileURLWithPath: path]];
 }
 
 /*
@@ -308,7 +288,7 @@ NSString *EXFSTypeUnknown = @"EXFSTypeUnknown";
  
 - (void) _setAttributes: (NSMutableDictionary *)dict
 {
-    ASSIGN(_attributes, dict);
+    	ASSIGN(_attributes, dict);
 }
 
 @end

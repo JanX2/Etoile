@@ -45,32 +45,32 @@ static EXSearchCore *searchCore = nil;
 
 + (EXWorkspace *) sharedInstance
 {
-  if (sharedWorkspace == nil)
-    {
-      sharedWorkspace = [EXWorkspace alloc];   
-      sharedWorkspace = [sharedWorkspace init];
-    }
+  	if (sharedWorkspace == nil)
+    	{
+      		sharedWorkspace = [EXWorkspace alloc];   
+      		sharedWorkspace = [sharedWorkspace init];
+    	}
     
-  return sharedWorkspace;      
+  	return sharedWorkspace;      
 }
 
 - (id) init
 {
-  if (sharedWorkspace != self)
-    {
-      RELEASE(self);
-      return RETAIN(sharedWorkspace);
-    }
+  	if (sharedWorkspace != self)
+    	{
+      		RELEASE(self);
+      		return RETAIN(sharedWorkspace);
+    	}
   
-  if ((self = [super init])  != nil)
-    {
-      vfs = [EXVFS sharedInstance];
-      infoCore = [EXAttributesCore sharedInstance];
-      indexCore = [EXContentIndexCore sharedInstance];
-      searchCore = [EXSearchCore sharedInstance];
-    }
+  	if ((self = [super init])  != nil)
+    	{
+      		vfs = [EXVFS sharedInstance];
+      		infoCore = [EXAttributesCore sharedInstance];
+      		indexCore = [EXContentIndexCore sharedInstance];
+      		searchCore = [EXSearchCore sharedInstance];
+    	}
   
-  return self;
+  	return self;
 }
 
 // In the future...
@@ -83,71 +83,71 @@ static EXSearchCore *searchCore = nil;
 
 - (EXContext *) contextForUniversalUniqueIdentifier: (NSString *)identifier
 {
-    NSURL *url;
+    	NSURL *url;
   
-    // Ask the infoCore
+    	// Ask the infoCore
   
-    return [self contextForUR: url];
+    	return [self contextForURL: url];
 }
 
 - (EXContext *) contextForPath: (NSString *)path // Can be an XPath
 {
-    NSURL *url = [NSURL fileURLWithPath: path];
+    	NSURL *url = [NSURL fileURLWithPath: path];
   
-    return [self contextForURL: url];
+    	return [self contextForURL: url];
 }
 
 - (EXContext *) contextForURL: (NSURL *)url
 {
-    return [[EXContext alloc] initWithURL: url];
+    	return [[EXContext alloc] initWithURL: url];
   
-    // Ask the infoCore is done in -[EXContext initWithURL:]
-    // With methods like
-    // [infoCore loadAttributesForContext: context]
-    // [infoCore updateAttributesForContext: context]
+    	// Ask the infoCore is done in -[EXContext initWithURL:]
+    	// With methods like
+    	// [infoCore loadAttributesForContext: context]
+    	// [infoCore updateAttributesForContext: context]
 }
 
 // Entity context aka Folder context related methods
 
 - (EXContext *) entityContextForUniversalUniqueIdentifier: (NSString *)identifier
 {
-    NSURL *url;
+    	NSURL *url;
   
-    // Ask the infoCore
+    	// Ask the infoCore
   
-    return [self entityContextForURL: url];
+    	return [self entityContextForURL: url];
 }
 
 - (EXContext *) entityContextForPath: (NSString *)path
 {
-    NSURL *url = [NSURL fileURLWithPath: path];
+    	NSURL *url = [NSURL fileURLWithPath: path];
   
-    return [self entityContextForURL: url];
+    	return [self entityContextForURL: url];
 }
 
 - (EXContext *) entityContextForURL: (NSURL *)url
 {
-    EXContext *context;
-    NSURL *standardizedURL;
+    	EXContext *context;
+    	NSURL *standardizedURL;
   
-    standardizedURL = [url standardizedURL]; // Makes the url standard
+    	standardizedURL = [url standardizedURL]; // Makes the url standard
   
-    /* 
-    while (![vfs isEntityAtURL: standardizedURL])
-    {
-        NSString *path = [standardizedURL path];
+    	/* 
+    	while (![vfs isEntityAtURL: standardizedURL])
+    	{
+        	NSString *path = [standardizedURL path];
       
-        if ([path isEqualToString: @"/"])
-            return;
-	
-        path = [path stringByDeletingLastPathComponent];
-        [standardizedURL setPath: path];
-    }
-     */ 
+        	if ([path isEqualToString: @"/"])
+            		return;
+		
+        	path = [path stringByDeletingLastPathComponent];
+        	[standardizedURL setPath: path];
+    	}
+    	 */ 
   
-    context = [[EXContext alloc] initWithURL: standardizedURL];
+    	context = [[EXContext alloc] initWithURL: standardizedURL];
   
-    return context;
+    	return context;
 }
 
 // In the case we have a mountable object, each component which can be mounted
@@ -157,57 +157,57 @@ static EXSearchCore *searchCore = nil;
 
 - (EXContext *) elementContextForUniversalUniqueIdentifier: (NSString *)identifier
 {
-    NSURL *url;
+    	NSURL *url;
   
-    // Ask the infoCore
+    	// Ask the infoCore
   
-    return [self elementContextForURL: url];
+    	return [self elementContextForURL: url];
 }
 
 - (EXContext *) elementContextForPath: (NSString *)path // Can be an XPath
 {
-    NSURL *url = [NSURL fileURLWithPath: path];
+    	NSURL *url = [NSURL fileURLWithPath: path];
   
-    return [self elementContextForURL: url];
+    	return [self elementContextForURL: url];
 }
 
 - (EXContext *) elementContextForURL: (NSURL *)url
 {
-    NSURL *standardizedURL = [url standardizedURL]; 
-    // Makes the url standard in order to have not to do at the VFS level
-    // The return related method call induces to redo it otherwise
+    	NSURL *standardizedURL = [url standardizedURL]; 
+    	// Makes the url standard in order to have not to do at the VFS level
+    	// The return related method call induces to redo it otherwise
   
-    if ([vfs isEntityContextAtURL: standardizedURL])
-        return nil;
+    	if ([vfs isEntityContextAtURL: standardizedURL])
+        	return nil;
     
-    return [[EXContext alloc] initWithURL: standardizedURL];
+    	return [[EXContext alloc] initWithURL: standardizedURL];
 }
 
 // Indexation related methods
 
 - (void) indexContext: (EXContext *)context deep: (BOOL)flag // Includes subcontexts indexing when flag is YES
 {
-    [indexCore indexContext: context deep: flag];
+    	[indexCore indexContext: context deep: flag];
 }
 
-- (void) indexAtPath: (NSString *) path update:  (BOOL)flag // Includes subpaths
+- (void) indexAtPath: (NSString *)path update:  (BOOL)flag // Includes subpaths
 // Updates flag when NO triggers a new full reindexing, otherwise just updates the indexes
 {
-    NSURL *url = [NSURL fileURLwithPath: path];
+    	NSURL *url = [NSURL fileURLWithPath: path];
   
-    [indexCore indexAtURL: url update: flag];
+    	[indexCore indexAtURL: url update: flag];
 }
 
-- (void) indexAtURL: (NSString *) path update:  (BOOL)flag // Includes subURLs
+- (void) indexAtURL: (NSURL *)url update:  (BOOL)flag // Includes subURLs
 // Updates flag when NO triggers a new full reindexing, otherwise just updates the indexes
 {
-    [indexCore indexAtURL: url update: flag];
+    	[indexCore indexAtURL: url update: flag];
 }
 
 - (void) indexVolumes: (NSArray *)volumes update: (BOOL)flag // Should be able to specify the volume
 // Updates flag when NO triggers a new full reindexing, otherwise just updates the indexes
 {
-    // [indexCore indexAllWithUpdate: flag];
+    	// [indexCore indexAllWithUpdate: flag];
 }
 
 // Search related methods
@@ -218,26 +218,26 @@ static EXSearchCore *searchCore = nil;
 // Rely on the TrackerKit to return a tree structure in the case the query has 
 // been inited with a structural key
 {
-    return [searchCore searchWithQuery update: flag handler: handler];
+    	return [searchCore searchWithQuery: query update: flag handler: handler];
 }
 
 - (EXSearchResult *) searchWithQuery: (EXQuery *)query 
                                update: (BOOL)flag 
                              handlers: (id <EXQueryHandler>)firstHandler, ...
 {
-    return [searchCore searchWithQuery update: flag handlers: handler];
+    	return [searchCore searchWithQuery: query update: flag handlers: firstHandler, nil];
 }
 
 - (EXSearchResult *) searchForName: (NSString *)name 
                  insideContextsPath: (NSArray *)paths // Can be an XPath
 {
-    return [searchCore searchForName: name insideContextsPath: paths];
+    	return [searchCore searchForName: name insideContextsPath: paths];
 }
 
 - (EXSearchResult *) searchForKeywords: (EXKeywordsAttribute *)keywords 
                      insideContextsPath: (NSArray *)paths // Can be an XPath
 {
-    return [searchCore searchForKeywords: keywords insideContextsPath: paths];
+    	return [searchCore searchForKeywords: keywords insideContextsPath: paths];
 }
 
 @end

@@ -25,13 +25,15 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+#import "EXAttribute.h"
 #import "EXVFS.h"
 #import "EXContext.h"
 #import "EXBasicFSAttributesExtracter.h"
 
 static EXBasicFSAttributesExtracter *sharedExtracter;
+static EXVFS *vfs = nil;
 
-@implementation EXBasicFSAttributesExtracter <EXExtracter>
+@implementation EXBasicFSAttributesExtracter
 
 /* Extract the basic FS attributes below from the file :
  * - name
@@ -69,7 +71,10 @@ static EXBasicFSAttributesExtracter *sharedExtracter;
   
     if ((self = [super init])  != nil)
     {
-        _vfs = [EXVFS sharedInstance];
+        vfs = [EXVFS sharedInstance];
+	
+	_isPosixVFS = ([vfs respondsToSelector: @selector(posixAttributesAtURL:)]
+		&& [vfs respondsToSelector: @selector(posixAttributeWithName:atURL:)]);
     }
   
   return self;
@@ -79,7 +84,7 @@ static EXBasicFSAttributesExtracter *sharedExtracter;
 {
     NSURL *url = [context URL];
     NSString *lastPathComponent = [[url path] lastPathComponent];
-    NSMutableDictionary *dict = [_vfs posixAttributesAtURL: url];
+    NSMutableDictionary *dict = [vfs performSelector: @selector(posixAttributesAtURL:) withObject: url];
     
     [dict setObject: [lastPathComponent stringByDeletingPathExtension]
         forKey: EXAttributeName];
@@ -102,7 +107,10 @@ static EXBasicFSAttributesExtracter *sharedExtracter;
     }
     else
     {
-        return [_vfs posixAttributeWithName: name atURL: url];
+        if (_isPosixVFS)
+		return [vfs performSelector:@selector(posixAttributeWithName) withObject: name withObject: url];
+	else
+		return nil;
     }
 }
 

@@ -113,8 +113,8 @@ libExtendedWorkspace_HEADER_FILES = \
 	EXPresentationAttribute.h \
 	EXPreviewAttribute.h \
 	EXQuery.h \
-	EXRDFAttributesCore.m \
-	EXSearchCore.m \
+	EXRDFAttributesCore.h \
+	EXSearchCore.h \
 	EXTypeAttribute.h \
 	EXVFS.h \
 	EXVFSBack.h \
@@ -122,7 +122,24 @@ libExtendedWorkspace_HEADER_FILES = \
 	EXWorkspace.h \
 	EXXMLAttributesExtracter.h \
 	NSURL+ExtendedWorkspace.h \
-	EXExtensionsProtocols.h 
+	EXExtensionProtocols.h 
+	
+HEADERS_INSTALL = \
+    	ExtendedWorkspaceKit.h \
+	EXAttribute.h \
+	EXContext.h \
+	EXFileManager.h \
+	EXPresentationAttribute.h \
+	EXPreviewAttribute.h \
+	EXQuery.h \
+	EXSearchCore.h \
+	EXTypeAttribute.h \
+	EXVFS.h \
+	EXVFSHandle.h \
+	EXWorkspace.h \
+	NSURL+ExtendedWorkspace.h 
+	
+
 	
 -include GNUmakefile.preamble
 

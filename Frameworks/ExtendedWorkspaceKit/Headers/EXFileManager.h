@@ -30,6 +30,10 @@
 
 }
 
+@end
+
+@interface NSFileManager (EXPrivate)
+
 // Private methods that allows to call NSFileManager methods which EXFileManager methods
 // hide when we call [NSFileManager poseAs: [EXFileManager class]] on the Foundation 
 // framework load

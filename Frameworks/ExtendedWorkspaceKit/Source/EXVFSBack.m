@@ -41,31 +41,31 @@
 
 - (NSArray *) supportedProtocols
 {
-  return nil;
+  	return nil;
 }
 
 /*
  * Destroy and create contexts
  */
 
-- (BOOL) createEntityContextWithURL: (NSURL *)url error: (NSError **)error
+- (BOOL) createEntityContextAtURL: (NSURL *)url error: (NSError **)error
 {
-    return NO
+    	return NO;
 }
 
-- (BOOL) createElementContextWithURL: (NSURL *)url error: (NSError **)error
+- (BOOL) createElementContextAtURL: (NSURL *)url error: (NSError **)error
 {
-    return NO;
+    	return NO;
 }
 
-- (BOOL) removeContextWithURL: (NSURL *)url handler: (id)handler
+- (BOOL) removeContextAtURL: (NSURL *)url handler: (id)handler
 {
-    return NO;
+    	return NO;
 }
 
-- (BOOL) removeContextsWithURLs: (NSArray *)urls handler: (id)handler
+- (BOOL) removeContextsAtURLs: (NSArray *)urls handler: (id)handler
 {
-    return NO;
+    	return NO;
 }
 
 /*
@@ -76,14 +76,14 @@
                       toURL: (NSURL *)destination 
                     handler: (id)handler
 {
-  return NO;
+  	return NO;
 }
 
 - (BOOL) copyContextsWithURLs: (NSArray *)sources 
                         toURL: (NSURL *)destination 
                       handler: (id)handler
 {
-  return NO;
+  	return NO;
 }
 
 - (BOOL) linkContextWithURL: (NSURL *)source 
@@ -91,21 +91,21 @@
                     handler: (id)handler
                   linkStyle: (EXLinkStyle) style
 {
-  return NO;
+  	return NO;
 }
 
 - (BOOL) moveContextWithURL: (NSURL *)source 
                       toURL: (NSURL *)destination 
                     handler: (id)handler
 {
-  return NO;
+  	return NO;
 }
 
 - (BOOL) moveContextsWithURLs: (NSArray *)sources 
                         toURL: (NSURL *)destination 
                       handler: (id)handler
 {
-  return NO;
+  	return NO;
 }
 
 /*
@@ -114,13 +114,13 @@
  
 - (NSArray *) subcontextsURLsAtURL: (NSURL *)url deep: (BOOL)flag
 {
-  return nil;
+  	return nil;
 }
  /*
  * Open, close contexts
  */
  
-- (EXVFSHandle *) openContextWithURL: (NSURL *)url mode: (EXVFSContentMode *)mode
+- (EXVFSHandle *) openContextWithURL: (NSURL *)url mode: (EXVFSContentMode)mode
 {
     return nil;
 }
@@ -129,7 +129,6 @@
 {
 
 }
- 
 
 /*
  * Read, write contexts
@@ -142,7 +141,7 @@
                                lenght: (unsigned long long)lenght 
                                 error: (NSError **)error
 {
-
+	return nil;
 }
 
 - (void) writeContextWithVFSHandle: (EXVFSHandle *)handle  
@@ -153,18 +152,18 @@
 
 }
 
-- (void) setPositionIntoContextVFSHandle: (EXVFSHandle *)handle 
-                                   start: (EXReadWritePosition)start 
-                                  offset: (long long)offset 
-                                   error: (NSError **)error
+- (void) setPositionIntoContextWithVFSHandle: (EXVFSHandle *)handle 
+                                       start: (EXReadWritePosition)start 
+                                      offset: (long long)offset 
+                                       error: (NSError **)error
 {
 
 }
 
-- (long long) positionIntoContextVFSHandle: (EXVFSHandle *)handle 
-                                     error: (NSError **)error
+- (long long) positionIntoContextWithVFSHandle: (EXVFSHandle *)handle 
+                                         error: (NSError **)error
 {
-
+	return -1;
 }
- 
+
 @end

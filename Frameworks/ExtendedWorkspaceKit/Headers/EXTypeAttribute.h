@@ -1,12 +1,13 @@
 /*
-	EXBasicFSAttributesExtracter.h
+	EXTypeAttribute.h
 
-	FS related attributes class to extract them out of contexts
+	Attributes class which implements types attributes representation and 
+	interaction
 
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Quentin Mathe <qmathe@club-internet.fr>
-	Date:  June 2004
+	Created:  8 June 2004
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -23,26 +24,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import "EXExtensionProtocols.h"
+#import "EXAttribute.h"
 
-@interface EXBasicFSAttributesExtracter : NSObject <EXExtracter>
+@interface EXTypeAttribute : EXAttribute
 {
-	BOOL _isPosixVFS;
-}
 
-/* Extract the basic FS attributes below from the file :
- * - name
- * - creation date
- * - modification date
- * - size
- * - inode
- * - extension
- * To support later :
- * - permissions
- * - owner
- * - group
- */
- 
-+ (id) sharedInstance;
+}
 
 @end

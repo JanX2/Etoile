@@ -33,6 +33,17 @@
 
 static EXSearchCore *sharedInstance = nil;
 
+@interface EXSearchResult : NSObject
+{
+
+}
+
+@end
+
+@implementation EXSearchResult
+
+@end
+
 @implementation EXSearchCore
 
 // Basic methods

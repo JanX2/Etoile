@@ -43,7 +43,7 @@ typedef enum _EXVFSContentMode
     EXVFSContentModeRead,
     EXVFSContentModeWrite,
     EXVFSContentModeReadWrite
-} EXVFSContentMode
+} EXVFSContentMode;
 
 @class NSError;
 @class EXContext;
@@ -61,10 +61,10 @@ typedef enum _EXVFSContentMode
  * Destroy and create contexts
  */
 
-- (BOOL) createEntityContextWithURL: (NSURL *)url error: (NSError **)error;
-- (BOOL) createElementContextWithURL: (NSURL *)url error: (NSError **)error;
-- (BOOL) removeContextWithURL: (NSURL *)url handler: (id)handler;
-- (BOOL) removeContextsWithURLs: (NSArray *)urls handler: (id)handler;
+- (BOOL) createEntityContextAtURL: (NSURL *)url error: (NSError **)error;
+- (BOOL) createElementContextAtURL: (NSURL *)url error: (NSError **)error;
+- (BOOL) removeContextAtURL: (NSURL *)url handler: (id)handler;
+- (BOOL) removeContextsAtURLs: (NSArray *)urls handler: (id)handler;
 
 /*
  * Manipulate contexts
@@ -97,7 +97,7 @@ typedef enum _EXVFSContentMode
  * Open, close contexts
  */
  
-- (EXVFSHandle *) openContextWithURL: (NSURL *)url mode: (EXVFSContentMode *)mode;
+- (EXVFSHandle *) openContextWithURL: (NSURL *)url mode: (EXVFSContentMode)mode;
 - (void) closeContextWithVFSHandle: (EXVFSHandle *)handle;
 
 /*
@@ -111,11 +111,11 @@ typedef enum _EXVFSContentMode
                               data: (NSData *)data 
                             lenght: (unsigned long long)lenght 
                              error: (NSError **)error;
-- (void) setPositionIntoContextVFSHandle: (EXVFSHandle *)handle 
-                                   start: (EXReadWritePosition)start 
-                                  offset: (long long)offset 
-                                   error: (NSError **)error;
-- (long long) positionIntoContextVFSHandle: (EXVFSHandle *)handle 
-                                     error: (NSError **)error;
+- (void) setPositionIntoContextWithVFSHandle: (EXVFSHandle *)handle 
+                                       start: (EXReadWritePosition)start 
+                                      offset: (long long)offset 
+                                       error: (NSError **)error;
+- (long long) positionIntoContextWithVFSHandle: (EXVFSHandle *)handle 
+                                         error: (NSError **)error;
                                      
 @end

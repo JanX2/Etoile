@@ -26,9 +26,13 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+#import "EXBasicFSAttributesExtracter.h"
 #import "EXContext.h"
+#import "ExtendedWorkspaceConfig.h"
+#import "EXRDFAttributesCore.h"
 #import "EXVFS.h"
 #import "EXWorkspace.h"
+#import "EXAttributesCore.h"
 
 static EXAttributesCore *sharedInstance;
 
@@ -38,24 +42,34 @@ static EXAttributesCore *sharedInstance;
 
 @implementation EXAttributesCore
 
+/*
++ (void) initialize
+{
+	if (self == [EXAttributesCore class])
+	{
+	
+	}
+}
+ */
+ 
 // Basic methods
 
 + (EXAttributesCore *) sharedInstance
 {
-  if (sharedInstance == nil)
-    {
-      if (AttributesBackend == RDF)
-        {
-          sharedInstance = [EXRDFAttributesCore alloc];
-        }
-      else
-        {
-          sharedInstance = [EXAttributesCore alloc];
-	    }     
-      sharedInstance = [sharedInstance init];
-    }
+  	if (sharedInstance == nil)
+    	{
+      		if (AttributesBackend == RDFBerkeleyDB)
+        	{
+          		sharedInstance = [EXRDFAttributesCore alloc];
+        	}
+      		else
+        	{
+          		sharedInstance = [EXAttributesCore alloc];
+	    	}     
+      		sharedInstance = [sharedInstance init];
+    	}
     
-  return sharedInstance;      
+  	return sharedInstance;      
 }
 
 - (id) init
@@ -76,8 +90,7 @@ static EXAttributesCore *sharedInstance;
 
 - (void) loadAttributesForContext: (EXContext *)context
 {
-    NSURL *context = [context URL];
-    NSDictionary *dict = [self storedAttributesForContext: context];
+    NSMutableDictionary *dict = [self storedAttributesForContext: context];
     
     if (dict == nil)
     {
@@ -87,20 +100,21 @@ static EXAttributesCore *sharedInstance;
     }
 }
 
-- (NSDictionary *) storedAttributesForContext: (EXContext *)context
+- (NSMutableDictionary *) storedAttributesForContext: (EXContext *)context
 {
     return nil; // Must be overriden in a subclass, example RDFAttributesCore
 }
 
-- (NSDictionary *) extractAttributesForContext: (NSURL *) url
+- (NSMutableDictionary *) extractAttributesForContext: (EXContext *)context
 {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithCapacity: 30];
     EXBasicFSAttributesExtracter *basicExtracter = 
         [EXBasicFSAttributesExtracter sharedInstance];
     
-    [_attributes addEntriesFromDictionary: [basicExtracter attributesForContext:  context]];
+    [dict addEntriesFromDictionary: [basicExtracter attributesForContext:  context]];
     // More to come here EXIF, XML etc.
     
-    return _attributes;
+    return dict;
 }
 
 - (void) storeAttributesForContext: (EXContext *)context

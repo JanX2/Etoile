@@ -38,55 +38,55 @@ static EXVFS *vfs = nil;
 
 + (EXContentIndexCore *) sharedInstance
 {
-  if (sharedInstance == nil)
-    {
-      if (AttributesBackend == RDF)
-        {
-          sharedInstance = [EXContentIndexCore alloc]; // Will be something like EXNamazuContentIndexCore
-        }
-      else
-        {
-          sharedInstance = [EXContentIndexCore alloc];
-	    }     
-      sharedInstance = [sharedInstance init];
-    }
+  	if (sharedInstance == nil)
+    	{
+      		if (AttributesBackend == RDF)
+        	{
+          		sharedInstance = [EXContentIndexCore alloc]; // Will be something like EXNamazuContentIndexCore
+        	}
+      		else
+        	{
+          		sharedInstance = [EXContentIndexCore alloc];
+	    	}     
+      		sharedInstance = [sharedInstance init];
+    	}
     
-  return sharedInstance;      
+  	return sharedInstance;      
 }
 
 - (id) init
 {
-  if (sharedInstance != self)
-    {
-      RELEASE(self);
-      return RETAIN(sharedInstance);
-    }
+  	if (sharedInstance != self)
+    	{
+      	RELEASE(self);
+      	return RETAIN(sharedInstance);
+    	}
   
-  if ((self = [super init])  != nil)
-    {
-      vfs = [EXVFS sharedInstance];
-    }
+  	if ((self = [super init])  != nil)
+    	{
+      	vfs = [EXVFS sharedInstance];
+    	}
   
-  return self;
+  	return self;
 }
 
 // Indexation related methods
 
 - (void) indexContext: (EXContext *)context deep: (BOOL)flag // Includes subcontexts indexing when flag is YES
 {
-    [self subclassResponsability: _cmd];
+    	[self subclassResponsability: _cmd];
 }
 
-- (void) indexAtPath: (NSString *) path update:  (BOOL)flag // Includes subpaths
+- (void) indexAtPath: (NSString *)path update:  (BOOL)flag // Includes subpaths
 // Updates flag when NO triggers a new full reindexing, otherwise just updates the indexes
 {
-    [self subclassResponsability: _cmd];
+    	[self subclassResponsability: _cmd];
 }
 
-- (void) indexAtURL: (NSString *) path update:  (BOOL)flag // Includes subURLs
+- (void) indexAtURL: (NSURL *)url update:  (BOOL)flag // Includes subURLs
 // Updates flag when NO triggers a new full reindexing, otherwise just updates the indexes
 {
-    [self subclassResponsability: _cmd];
+    	[self subclassResponsability: _cmd];
 }
 
 @end

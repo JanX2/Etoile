@@ -30,6 +30,7 @@
 @class EXContentIndexCore;
 @class EXQuery;
 @class EXKeywordsAttribute;
+@class EXSearchResult;
 @protocol EXQueryHandler;
 
 @interface EXSearchCore : NSObject

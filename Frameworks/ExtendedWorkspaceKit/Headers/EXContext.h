@@ -36,17 +36,14 @@
 @class EXPreviewAttribute;
 @class EXTypeAttribute;
 @class EXContentHandle;
-
-extern NSString *EXCreationDateAttributeKey;
-extern NSString *EXModificationDateAttributeKey;
-extern NSString *EXNameAttributeKey;
-extern NSString *EXSizeAttributeKey;
+@class EXVFSHandle;
 
 @interface EXContext : NSObject
 {
   NSMutableDictionary *_attributes;
   NSURL *_url;
   EXVFSHandle *_handle;
+  BOOL _stored;
 }
 
 - (id) initWithURL: (NSURL *)url;
