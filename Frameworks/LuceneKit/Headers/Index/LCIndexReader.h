@@ -77,7 +77,7 @@ typedef enum _LCFieldOption
 - (void) setNorm: (int) doc field: (NSString *) field floatValue: (float) value;
 - (LCTermEnum *) terms;
 - (LCTermEnum *) termsWithTerm: (LCTerm *) t;
-- (int) docFreq: (LCTerm *) t;
+- (long) docFreq: (LCTerm *) t;
 - (id <LCTermDocs>) termDocsWithTerm: (LCTerm *) term;
 - (id <LCTermDocs>) termDocs;
 - (id <LCTermPositions>) termPositionsWithTerm: (LCTerm *) term;

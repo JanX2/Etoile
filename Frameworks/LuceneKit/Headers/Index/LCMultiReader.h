@@ -13,7 +13,7 @@
 {
   LCSegmentMergeQueue *queue;
   LCTerm *term;
-  int docFreq;
+  long docFreq;
 }
 - (id) initWithReaders: (NSArray *) reader
                  starts: (NSArray *) starts
