@@ -1,7 +1,7 @@
 #ifndef __LUCENE_UTIL_STRING_HELPER__
 #define __LUCENE_UTIL_STRING_HELPER__
 
-#import <Foundation/NSString.h>
+#include <Foundation/NSString.h>
 
 @interface NSString (LuceneKit_Util)
 - (int) positionOfDifference: (NSString *) other;

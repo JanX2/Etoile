@@ -2,7 +2,6 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 ifeq ($(test), yes)
 BUNDLE_NAME = LuceneKit
-ADDITIONAL_LDFLAGS += -DHAVE_UKTEST
 else
 LIBRARY_NAME = LuceneKit
 endif
@@ -17,9 +16,10 @@ LuceneKit_SUBPROJECTS = \
 	Java
 
 ifeq ($(FOUNDATION_LIB), apple)
-  LuceneKit_OBJC_LIBS += -framework UnitKit
+	LuceneKit_OBJC_LIBS = -framework UnitKit
 else
-  LuceneKit_OBJC_LIBS += -lUnitKit
+	#LuceneKit_OBJC_LIBS = -lUnitKit -lgnustep-base
+LuceneKit_LDFLAGS = -lUnitKit -lgnustep-base
 endif
 
 ifeq ($(test), yes)
@@ -28,5 +28,6 @@ else
 include $(GNUSTEP_MAKEFILES)/library.make
 endif
 
+-include ../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/aggregate.make
--include GNUmakefile.postamble
+-include ../GNUmakefile.postamble

@@ -1,3 +1,24 @@
+2005-04-05 Quentin Mathe <qmathe@club-internet.fr>
+
+	Note: tests suite fixed now (but with GNUstep, currently interrupted by 
+	"___moddi3 undefined symbol" error).
+	* Headers/LuceneKit.h: Added (LuceneKit umbrella header).
+	* Source/GNUmakefile: Put -DHAVE_UKTEST in ADDITIONAL_OBJCFLAGS and not 
+	ADDITIONAL_LDFLAGS (moved in GNUmakefile.preamble now).
+	* GNUmakefile.preamble: Added.
+	* GNUmakefile:
+	* Source/GNUmakefile:
+	* Source/Analysis/GNUmakefile:
+	* Source/Document/GNUmakefile:
+	* Source/Index/GNUmakefile:
+	* Source/Java/GNUmakefile:
+	* Source/Search/GNUmakefile:
+	* Source/Store/GNUmakefile:
+	* Source/Util/GNUmakefile:
+	Moved shared variables like ADDITIONAL_OBJCFLAGS in GNUmakefile.preamble at 
+	LuceneKit top level. Disabled #import related warnings.
+	* Headers/Util/NSString+Additions.h: Replaced #import directive by #include.
+
 2005-04-05 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Index/LCIndexInput.m: Deal with string length properly.

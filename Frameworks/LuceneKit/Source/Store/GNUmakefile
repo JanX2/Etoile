@@ -15,10 +15,10 @@ LuceneKit_Store_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Store_OBJC_FILES += TestStore.m
-ADDITIONAL_OBJCFLAGS += -DHAVE_UKTEST
 endif
-
 
 LuceneKit_Store_INCLUDE_DIRS += -I../../Headers -I../
 
+-include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make
+-include ../../GNUmakefile.postamble

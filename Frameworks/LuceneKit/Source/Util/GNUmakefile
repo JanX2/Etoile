@@ -2,10 +2,6 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 SUBPROJECT_NAME = LuceneKit_Util
 
-ifeq ($(test), yes)
-ADDITIONAL_OBJCFLAGS += -DHAVE_UKTEST
-endif
-
 LuceneKit_Util_OBJC_FILES = \
 	NSString+Additions.m \
 	LCBitVector.m \
@@ -13,4 +9,6 @@ LuceneKit_Util_OBJC_FILES = \
 
 LuceneKit_Util_INCLUDE_DIRS += -I../../Headers -I../
 
+-include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make
+-include ../../GNUmakefile.postamble

@@ -2,10 +2,6 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 SUBPROJECT_NAME = LuceneKit_Analysis
 
-ifeq ($(test), yes)
-ADDITIONAL_OBJCFLAGS += -DHAVE_UKTEST
-endif
-
 LuceneKit_Analysis_OBJC_FILES = \
 	LCToken.m \
 	LCTokenStream.m \
@@ -30,4 +26,6 @@ LuceneKit_Analysis_C_FILES = \
 
 LuceneKit_Analysis_INCLUDE_DIRS += -I../ -I../../Headers/
 
+-include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make
+-include ../../GNUmakefile.postamble

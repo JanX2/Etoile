@@ -45,9 +45,10 @@ LuceneKit_Index_OBJC_FILES += \
 	TestSegmentReader.m \
 	TestTermVectorsReader.m \
 	TestTermVectorsWriter.m
-ADDITIONAL_OBJCFLAGS += -DHAVE_UKTEST
 endif
 
 LuceneKit_Index_INCLUDE_DIRS += -I../../Headers -I../
 
+-include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make
+-include ../../GNUmakefile.postamble

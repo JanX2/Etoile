@@ -7,4 +7,6 @@ LuceneKit_Search_OBJC_FILES = \
 
 LuceneKit_Search_INCLUDE_DIRS += -I../../Headers -I../
 
+-include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make
+-include ../../GNUmakefile.postamble
