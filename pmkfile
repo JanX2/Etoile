@@ -1,112 +1,148 @@
 # Etoile pmkfile
 
 SETTINGS {
-	TARGET = ("GNUmakefile")
+	AC_COMPAT = ""
+	TARGET = ("GNUmakefile.template")
 	DETECT = ("CC")
 }
 
+CHECK_VARIABLE(pmk_gnustep_system_root) {
+	REQUIRED = TRUE
+	NAME = "GNUSTEP_SYSTEM_ROOT"
+	VALUE = "/GNUstep/System"
+}
+
+CHECK_VARIABLE(pmk_gnustep_local_root) {
+	REQUIRED = TRUE
+	NAME = "GNUSTEP_LOCAL_ROOT"
+	VALUE = "/GNUstep/Local"
+}
+
+CHECK_VARIABLE(pmk_gnustep_makefiles) {
+	REQUIRED = TRUE
+	NAME = "GNUSTEP_MAKEFILES"
+}
+
+DEFINE {
+	PACKAGE = "Etoile desktop"
+	VERSION = "0.1"	
+}
+
+#AC_ECHO_N("Tested include paths: $PATH_INC")
+#AC_ECHO_N("Tested library paths: $PATH_LIB")
+
 SWITCHES {
 	
+	# Usual switches
+
+	etoile = TRUE
+	desktop_base = FALSE
+	developer_base = FALSE
+
 	# Frameworks related switches
 
-	fogvision = YES        # Part of the ExtendedWorkspaceKit framework
-	components = YES       # ComponentKit framework
-	system-bookmarks = YES # BookmarkKit framework
-	camaelon = YES         # Camaelon framework
-	comet-vfs = NO         # CometVFS framework
-	gestures-input = NO    # GestureKit framework
+	fogvision = TRUE        # ExtendedWorkspaceKit framework 
+							# search part
+	components = TRUE      	# ComponentKit framework
+	bookmarks = TRUE		# BookmarkKit framework
+	camaelon = TRUE        	# Camaelon framework
+	persistency = FALSE     # PersistentObjectKit framework
+	gestures = FALSE    	# GestureKit framework
 
 	# Core services related switches
 
-	workspace = YES
+	workspace = TRUE
 
 	# Utility services related switches
 
-	attributes-utility = YES
-	look-and-behavior-utility = YES
-	hardware-utility = YES
-	network-and-internet-utility = YES
+	attributes_utility = TRUE
+	look_and_behavior_utility = TRUE
+	hardware_utility = TRUE
+	network_and_internet_utility = TRUE
 
 	# Passive services related switches
 	
-	services-bar-service = YES
-	shelf-service = YES
-	notes-service = YES
-	background-service = YES
+	services_bar_service = TRUE
+	shelf_service = TRUE
+	notes_service = TRUE
+	background_service = TRUE
 
 	# Components related switches
 
 	# Other services related switches
 }
 
-DEFINE {
-	PACKAGE = "Etoile desktop"
-	VERSION = "0.1"
-}
-
-IF(fogvision)
-{
+#IF(fogvision) {
 	# Check the Java environment installation
-	CHECK_BINARY(pmk-binjava) { 
-		NAME = "java" 
-		VARIABLE = "JAVA" 
-	}
+	#CHECK_BINARY(pmk-binjava) { 
+	#	NAME = "java" 
+	#	VARIABLE = "JAVA" 
+	#}
+#}
+
+CHECK_LIB(pmk_libpkgconfig) {
+	REQUIRED = FALSE
+	NAME = "pkgconfig"
 }
 
-CHECK_LIB(pmk-libpkgconfig) { 
-	NAME = "PKGCONFIG"
-}
-
-IF(pmk-libpkgconfig)
-{
-	CHECK_PKG_CONFIG(pmk-libgnustep-base) { 
-		NAME = "GNUSTEP_BASE"
-		VERSION = "1.10.1"
-		CFLAGS = "GNUSTEP_BASE_CFLAGS"
-		LIBS = "GNUSTEP_BASE_LIBS"
+IF(pmk_libpkgconfig) {
+	CHECK_PKG_CONFIG(pmk_libgnustep_base) {
+		REQUIRED = TRUE
+		NAME = "gnuste-base"
+		#VERSION = "1.10.1"
+		#CFLAGS = "GNUSTEP_BASE_CFLAGS"
+		#LIBS = "GNUSTEP_BASE_LIBS"
 	}
 
-	CHECK_PKG_CONFIG(pmk-libgnustep-gui) { 
-		NAME = "GNUSTEP_GUI"
-		VERSION = "0.9.4
-		CFLAGS = "GNUSTEP_GUI_CFLAGS"
-		LIBS = "GNUSTEP_GUI_LIBS"
+	CHECK_PKG_CONFIG(pmk_libgnustep_gui) {
+		REQUIRED = TRUE
+		NAME = "gnustep-gui"
+		#VERSION = "0.9.4"
+		#CFLAGS = "GNUSTEP_GUI_CFLAGS"
+		#LIBS = "GNUSTEP_GUI_LIBS"
 	}
 
-	CHECK_PKG_CONFIG(pmk-libgnustep-back) { 
-		NAME = "GNUSTEP_BACK"
-		VERSION = "0.9.4
-		CFLAGS = "GNUSTEP_BACK_CFLAGS"
-		LIBS = "GNUSTEP_BACK_LIBS"
-	}
+	#CHECK_PKG_CONFIG(pmk_libgnustep_back) {
+	#	REQUIRED = TRUE
+	#	NAME = "gnustep-back"
+	#	VERSION = "0.9.4"
+	#	CFLAGS = "GNUSTEP_BACK_CFLAGS"
+	#	LIBS = "GNUSTEP_BACK_LIBS"
+	#}
 
-	CHECK_PKG_CONFIG(pmk-liblucene) { 
-		NAME = "LUCENE"
-		VERSION = "1.4"
-		LIBS = "LUCENE_LIBS"
-	}
+	#CHECK_PKG_CONFIG(pmk_liblucene) {
+	#	NAME = "LUCENE"
+	#	VERSION = "1.4"
+	#	LIBS = "LUCENE_LIBS"
+	#}
 
 }
-
-ELSE
-{
-	CHECK_LIB(pmk-libgnustep-base) { 
-		NAME = "GNUSTEP_BASE"
+ELSE {
+	CHECK_LIB(pmk_libgnustep_base) {
+		REQUIRED = TRUE
+		NAME = "gnustep-base"
 	}
 
-	CHECK_LIB(pmk-libgnustep-gui) { 
-		NAME = "GNUSTEP_GUI"
+	CHECK_LIB(pmk_libgnustep_gui) {
+		REQUIRED = TRUE
+		NAME = "gnustep-gui"
 	}
 
-	CHECK_LIB(pmk-libgnustep-back) { 
-		NAME = "GNUSTEP_BACK"
-	}
+	#CHECK_LIB(pmk_libgnustep_back) {
+	#	REQUIRED = YES
+	#	NAME = "gnustep-back"
+	#}
 
-	CHECK_LIB(pmk-liblucene) { 
-		NAME = "LUCENE"
-	}
+	#CHECK_LIB(pmk_liblucene) {
+	#	NAME = "LUCENE"
+	#}
 }
 
-# CHECK_VARIABLE() { NAME = "" VARIABLE = "" }
-
-BUILD_SH_LIB() { NAME = "" MAJOR = "" MINOR = "" VERSION_NONE = "" VERSION_MAJ = "" VERSION_FULL = "" }
+#BUILD_SH_LIB() {
+#	NAME = "" 
+#	MAJOR = "" 
+#	MIFALSER = "" 
+#	VERSION_FALSENE = "" 
+#	VERSION_MAJ = "" 
+#	VERSION_FULL = "" 
+#}

@@ -1,7 +1,13 @@
+2005-03-10  Quentin Mathe <qmathe@club-internet.fr>
+	
+	Warning! pmkfile and GNUmakefile not usable.
+	* pmkfile: Improved and updated to match new pmk versions.
+	* GNUmakefile: Added.
+
 2005-01-04  Quentin Mathe <qmathe@club-internet.fr>
 	
 	Warning! pmkfile not usable.
-	* pmkfile: Added a pmkfile (pmk 0.8.2 needed) in order to check installation environment and 
-	control Etoile build options. To know more about pmk and install it :
-	http://pmk.sourceforge.net/
+	* pmkfile: Added a pmkfile (pmk 0.8.2 needed) in order to check installation 
+	environment and control Etoile build options. To know more about pmk and 
+	install it : http://pmk.sourceforge.net/
         
