@@ -42,9 +42,11 @@
    */
 - (id) initWithDirectory: (id <LCDirectory>) d name: (NSString *) name
 {
+  self = [self init];
   LCIndexInput *input = [d openInput: name];
   [self read: input];
   [input close];
+  return self;
 }
 
   /** Adds field info for a Document. */
@@ -199,7 +201,7 @@
 - (int) fieldNumber: (NSString *) fieldName
 {
   LCFieldInfo *fi = [self fieldInfo: fieldName];
-  if (fi != nil)
+  if (fi)
      return [fi number];
   else
     return -1;
@@ -294,10 +296,10 @@
   for (i = 0; i < size; i++) {
       name = [input readString];//.intern();
       char bits = [input readByte];
-      BOOL isIndexed = (bits & IS_INDEXED) != 0;
-      BOOL storeTermVector = (bits & STORE_TERMVECTOR) != 0;
-      BOOL storePositionsWithTermVector = (bits & STORE_POSITIONS_WITH_TERMVECTOR) != 0;
-      BOOL storeOffsetWithTermVector = (bits & STORE_OFFSET_WITH_TERMVECTOR) != 0;
+      BOOL isIndexed = ((bits & IS_INDEXED) != 0);
+      BOOL storeTermVector = ((bits & STORE_TERMVECTOR) != 0);
+      BOOL storePositionsWithTermVector = ((bits & STORE_POSITIONS_WITH_TERMVECTOR) != 0);
+      BOOL storeOffsetWithTermVector = ((bits & STORE_OFFSET_WITH_TERMVECTOR) != 0);
       [self addInternal: name
             isIndexed: isIndexed
 	    isTermVectorStored: storeTermVector
@@ -305,5 +307,52 @@
             isStoreOffsetWithTermVector: storeOffsetWithTermVector];
     }    
 }
+
+@end
+
+#ifdef HAVE_UKTEST
+#include <UnitKit/UnitKit.h>
+#include "TestDocHelper.h"
+#include "LuceneKit/Store/LCRAMDirectory.h"
+
+@interface TestFieldInfos: NSObject <UKTest>
+@end
+
+@implementation TestFieldInfos;
+- (void) testFieldInfos
+{
+  LCDocument *testDoc = [[LCDocument alloc] init];
+  [TestDocHelper setupDoc: testDoc];
+
+  //Positive test of FieldInfos
+  UKNotNil(testDoc);
+  LCFieldInfos *fieldInfos = [[LCFieldInfos alloc] init];
+  [fieldInfos addDocument: testDoc];
+
+  //Since the complement is stored as well in the fields map
+  UKIntsEqual(6, [fieldInfos size]); //this is 6 b/c we are using the no-arg constructor
+  LCRAMDirectory *dir = [[LCRAMDirectory alloc] init];
+  NSString *name = @"testFile";
+  LCIndexOutput *output = [dir createOutput: name];
+  UKNotNil(output);
+  //Use a RAMOutputStream
+
+  [fieldInfos write: output];
+  UKTrue([output length] > 0);
+  [output close];
+  LCFieldInfos *readIn = [[LCFieldInfos alloc] initWithDirectory: dir name: name];
+  UKIntsEqual([fieldInfos size], [readIn size]);
+  LCFieldInfo *info = [readIn fieldInfo: @"textField1"];
+  UKNotNil(info);
+  UKFalse([info isTermVectorStored]);
+
+  info = [readIn fieldInfo: @"textField2"];
+  UKNotNil(info);
+  UKTrue([info isTermVectorStored]);
+
+  [dir close];
+}
+
+#endif /* HAVE_UKTEST */
 
 @end
