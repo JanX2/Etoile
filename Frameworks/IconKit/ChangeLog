@@ -1,3 +1,13 @@
+2005-03-14  Quentin Mathe  <qmathe@club-internet.fr>
+    
+    * Headers/IconKit.h:
+    * Headers/IKIconPositions.h:
+    * Headers/IKIconIdentifier.h
+    * Headers/IKWorkspaceAdditions.h:
+    * Source/IKIcon.m:
+    * Source/IKWorkspaceAdditions.m:
+    Added IconKit new GNUstep version related files written by Uli Kusterer.
+    
 2005-03-10  Quentin Mathe  <qmathe@club-internet.fr>
     
     * INSTALL: Updated to talk about IconKit and not Gorm.
