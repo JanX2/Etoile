@@ -3,7 +3,7 @@
 
 #include <Foundation/Foundation.h>
 
-@interface LCTerm: NSObject
+@interface LCTerm: NSObject <NSCopying>
 {
   NSString *field;
   NSString *text;
@@ -12,8 +12,10 @@
 - (id) initWithField: (NSString *) fld text: (NSString *) txt;
 - (NSString *) field;
 - (NSString *) text;
-- (NSComparisonResult) compareTo: (LCTerm *) other;
-- (void) setField: (NSString *) fld text: (NSString *) txt;
+- (void) setField: (NSString *) field;
+- (void) setText: (NSString *) text;
+- (void) setTerm: (LCTerm *) other;
+- (NSComparisonResult) compare: (LCTerm *) other;
 
 @end
 
