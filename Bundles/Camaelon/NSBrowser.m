@@ -6,7 +6,7 @@
 //static float scrollerWidth; // == [NSScroller scrollerWidth]
 #define NSBR_COLUMN_SEP 4
 #define NSBR_VOFFSET 2
-#define NSBR_COLUMN_IS_VISIBLE(i) YES // JUST FOR TEST
+//#define NSBR_COLUMN_IS_VISIBLE(i) YES // JUST FOR TEST
 
 @interface NSBrowserColumn : NSObject <NSCoding>
 {
@@ -68,7 +68,7 @@
       [self loadColumnZero];
     }
 
-  _isTitled = YES; // JUST FOR TEST :-)
+  //_isTitled = YES; // JUST FOR TEST :-)
 
   // Draws titles
   if (_isTitled)
@@ -286,8 +286,8 @@
             inRect: (NSRect)aRect
           ofColumn: (int)column
 {
-//  if (!_isTitled || !NSBR_COLUMN_IS_VISIBLE(column))
-//    return;
+  if (!_isTitled)// || !NSBR_COLUMN_IS_VISIBLE(column))
+    return;
 
   NSTextFieldCell* titleCell = [GSBrowserTitleCell new];
   [titleCell setStringValue: title];

@@ -25,8 +25,12 @@
 - (void) setName: (NSString*) n { ASSIGN (name, n); }
 
 - (void) drawOn: (NSView*) view {
+	[self drawInRect: [view bounds] on: view];
+}
 
-	NSRect rect = [view bounds];
+- (void) drawInRect: (NSRect) rect on: (NSView*) view {
+
+	//NSRect rect = [view bounds];
 
 	NSImage* image = [cache imageNamed: name withSize: rect.size];
 	

@@ -145,8 +145,8 @@ static  NSButtonCell* knobCell;
   	[kCell drawWithFrame: knob inView: self];
 */
 	
-	[[NSColor greenColor] set];
-	NSRectFill (knob);
+	//[[NSColor greenColor] set];
+	//NSRectFill (knob);
 	if (_isHorizontal)
 	{
 		[GSDrawFunctions drawHorizontalScrollerKnob: knob on: self];
@@ -320,8 +320,10 @@ static  NSButtonCell* knobCell;
           /* calc the slot Height */
           slotHeight = height - (_arrowsPosition == NSScrollerArrowsNone
                                  ?  0 : buttonsSize);
+		  NSLog (@"_knobProportion: %f", _knobProportion);
+		  NSLog (@"slotHeight: %f", slotHeight);
           knobHeight = _knobProportion * slotHeight;
-          knobHeight = (float)floor(knobHeight);
+     //     knobHeight = (float)floor(knobHeight);
           if (knobHeight < buttonsWidth)
             knobHeight = buttonsWidth;
 

@@ -495,13 +495,13 @@ static CLCompositor* mygroupBox;
 	if ((border.size.height >= 22) && (border.size.height <= 28))
 	{
 
-		if (highlighted) [standardButtonH drawOn: view];
-		else [standardButton drawOn: view];
+		if (highlighted) [standardButtonH drawInRect: border on: view];
+		else [standardButton drawInRect: border on: view];
 	}
 	else
 	{
-		if (highlighted) [buttonH drawOn: view];
-		else [button drawOn: view];
+		if (highlighted) [buttonH drawInRect: border on: view];
+		else [button drawInRect: border on: view];
 	}
 }
 
@@ -577,7 +577,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 			[NSImage imageNamed: @"GroupBox/GroupBox-fill.tiff"]]];
 	}
 
-	[mygroupBox drawInRect: [box frame]];
+	[mygroupBox drawInRect: rect on: box];
 }
 
 + (void) drawWindowBackground: (NSRect) rect on: (id) window

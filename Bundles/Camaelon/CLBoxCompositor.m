@@ -130,37 +130,42 @@
 	
 	// Ok, drawing ...
 
-	[GraphicToolbox fillHorizontalRect: NSMakeRect ([bottomLeft size].width,0,
-		rect.size.width-[bottomLeft size].width-[bottomRight size].width,[bottom size].height)
+	[GraphicToolbox fillHorizontalRect: NSMakeRect (rect.origin.x+[bottomLeft size].width,
+		rect.origin.y,
+		rect.size.width-[bottomLeft size].width-[bottomRight size].width,
+		[bottom size].height)
 		withImage: bottom];
 
-	[GraphicToolbox fillHorizontalRect: NSMakeRect ([topLeft size].width,
-		rect.size.height-[top size].height,
+	[GraphicToolbox fillHorizontalRect: NSMakeRect (rect.origin.x+[topLeft size].width,
+		rect.origin.y+rect.size.height-[top size].height,
 		rect.size.width-[topLeft size].width-[topRight size].width,
 		[top size].height)
 		withImage: top];
 
-	[GraphicToolbox fillVerticalRect: NSMakeRect (0,[bottomLeft size].height,
+	[GraphicToolbox fillVerticalRect: NSMakeRect (rect.origin.x,
+		rect.origin.y+[bottomLeft size].height,
 		[left size].width,rect.size.height-[topLeft size].height-[bottomLeft size].height)
 		withImage: left];
 
-	[GraphicToolbox fillVerticalRect: NSMakeRect (rect.size.width-[right size].width,
-		[bottomRight size].height,
+	[GraphicToolbox fillVerticalRect: NSMakeRect (rect.origin.x+rect.size.width-[right size].width,
+		rect.origin.y+[bottomRight size].height,
 		[right size].width,rect.size.height-[topRight size].height-[bottomRight size].height)
 		withImage: right];
 
-	[topLeft compositeToPoint: NSMakePoint (0,rect.size.height-[topLeft size].height)
+	[topLeft compositeToPoint: NSMakePoint (rect.origin.x,
+		rect.origin.y+rect.size.height-[topLeft size].height)
 		operation: NSCompositeSourceOver];
 
-	[topRight compositeToPoint: NSMakePoint (rect.size.width-[topRight size].width,
-		rect.size.height-[topRight size].height)
+	[topRight compositeToPoint: NSMakePoint (rect.origin.x+rect.size.width-[topRight size].width,
+		rect.origin.y+rect.size.height-[topRight size].height)
 		operation: NSCompositeSourceOver];
-	[bottomLeft compositeToPoint: NSMakePoint (0,0)
+	[bottomLeft compositeToPoint: NSMakePoint (rect.origin.x,rect.origin.y)
 		operation: NSCompositeSourceOver];
-	[bottomRight compositeToPoint: NSMakePoint (rect.size.width-[bottomRight size].width,0)
+	[bottomRight compositeToPoint: NSMakePoint (rect.origin.x+rect.size.width-[bottomRight size].width,rect.origin.y)
 		operation: NSCompositeSourceOver];
 
-	NSRect rFill = NSMakeRect ([left size].width,[bottom size].height,
+	NSRect rFill = NSMakeRect (rect.origin.x+[left size].width,
+		rect.origin.y+[bottom size].height,
 		rect.size.width-[right size].width-[left size].width,
 		rect.size.height-[top size].height-[bottom size].height);
 	if (fillType == CLFillColor) 

@@ -826,7 +826,7 @@ static NSMutableDictionary* cache;
 		NSRect rFill = NSMakeRect (rect.origin.x+2,rect.origin.y+2,rect.size.width-4,rect.size.height-4);
 		[fill setScalesWhenResized: YES];
 		[fill setSize: rFill.size];
-		[fill compositeToPoint: rFill.origin operation: NSCompositeSourceOver];
+		//[fill compositeToPoint: rFill.origin operation: NSCompositeSourceOver];
 	}
 	else
 	{
@@ -862,7 +862,7 @@ static NSMutableDictionary* cache;
 			rect.size.width-border*2,rect.size.height-border*2);
 		[fill setScalesWhenResized: YES];
 		[fill setSize: rFill.size];
-		[fill compositeToPoint: rFill.origin operation: NSCompositeSourceOver];
+		//[fill compositeToPoint: rFill.origin operation: NSCompositeSourceOver];
 	}
 
 
