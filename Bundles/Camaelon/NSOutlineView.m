@@ -9,18 +9,6 @@ static NSImage *expanded  = nil;
 
 @implementation NSOutlineView (theme)
 
-+ (void) initialize
-{
-  if (self == [NSOutlineView class])
-    {
-      [self setVersion: current_version];
-      nc = [NSNotificationCenter defaultCenter];
-      collapsed    = [NSImage imageNamed: @"common_outlineCollapsed.tiff"];
-      expanded     = [NSImage imageNamed: @"common_outlineExpanded.tiff"];
-      unexpandable = [NSImage imageNamed: @"common_outlineUnexpandable.tiff"];
-    }
-}
-
 - (void)drawRow: (int)rowIndex clipRect: (NSRect)aRect
 {
   int startingColumn; 
@@ -33,20 +21,25 @@ static NSImage *expanded  = nil;
   int i; 
   float x_pos;
 
+  if (collapsed == nil) collapsed = [NSImage imageNamed: @"common_outlineCollapsed.tiff"];
+  if (expanded == nil) expanded = [NSImage imageNamed: @"common_outlineExpanded.tiff"];
+  if (unexpandable == nil) unexpandable = [NSImage imageNamed: @"common_outlineUnexpandable.tiff"];
+
   if (_dataSource == nil)
     {
       return;
     }
 
-  /* Using columnAtPoint: here would make it called twice per row per drawn
-     rect - so we avoid it and do it natively */
+  // Using columnAtPoint: here would make it called twice per row per drawn
+  //   rect - so we avoid it and do it natively 
 
   if(rowIndex >= _numberOfRows)
     {
       return;
     }
 
-  /* Determine starting column as fast as possible */
+  // Determine starting column as fast as possible 
+  
   x_pos = NSMinX (aRect);
   i = 0;
   while ((x_pos > _columnOrigins[i]) && (i < _numberOfColumns))
@@ -58,7 +51,8 @@ static NSImage *expanded  = nil;
   if (startingColumn == -1)
     startingColumn = 0;
 
-  /* Determine ending column as fast as possible */
+  // Determine ending column as fast as possible 
+
   x_pos = NSMaxX (aRect);
   // Nota Bene: we do *not* reset i
   while ((x_pos > _columnOrigins[i]) && (i < _numberOfColumns))
@@ -70,7 +64,8 @@ static NSImage *expanded  = nil;
   if (endingColumn == -1)
     endingColumn = _numberOfColumns - 1;
 
-  /* Draw the row between startingColumn and endingColumn */
+  // Draw the row between startingColumn and endingColumn 
+
   for (i = startingColumn; i <= endingColumn; i++)
     {
       if (i != _editedColumn || rowIndex != _editedRow)
@@ -132,7 +127,8 @@ static NSImage *expanded  = nil;
                  item: item];
         }
 
-          /* Do not indent if the delegate set the image to nil. */
+          // Do not indent if the delegate set the image to nil. 
+
           if ( [imageCell image] )
         {
           imageRect.size.width = [image size].width;
@@ -154,13 +150,13 @@ static NSImage *expanded  = nil;
 	  {
 		if ([cell respondsToSelector: @selector(setTextColor:)])
 		{
-			[cell setHighlighted: YES];
+		//	[cell setHighlighted: YES];
 			[cell setTextColor: [NSColor selectedRowTextColor]];
 		}
 	  }
 	  else 
 	  {
-		[cell setHighlighted: NO]; 
+		//[cell setHighlighted: NO]; 
 		if ([cell respondsToSelector: @selector(setTextColor:)])
 		[cell setTextColor: [NSColor rowTextColor]];
  	  }

@@ -1,5 +1,9 @@
 2005-03-14 Nicolas Roard <nicolas@roard.com>
 
+	* correction of a bug in NSOutlineView introduced by the new code..
+
+2005-03-14 Nicolas Roard <nicolas@roard.com>
+
 	* first modifications in NSBrowser, NSTableView and NSOutlineView to have alternate colors.. 
 	* correction in GSDrawFunctions of a display problem with NSBox
 	* addition of test cases in NSBox for the different bezels..
