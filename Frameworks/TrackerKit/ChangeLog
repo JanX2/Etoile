@@ -1,14 +1,21 @@
-2004-08-14  Quentin Mathe <qmathe@club-internet.fr>
+2005-10-03  Quentin Mathe <qmathe@club-internet.fr>
+        
+    Warning! doesn't compile.
+    * INSTALL: Updated to talk about TrackerKit and not Gorm.
+    * Source/GNUmakefile: Improved formatting.
 
-        * ChangeLog:
-        * README:
-        * INSTALL:
-        * GNUmakefile:
-        * Headers/TKQuery.h:
-        * Headers/TKStructuralKey.h:
-        * Headers/TKTracker.h:
-        * Source/TKQuery.m:
-        * Source/TKStructuralKey.m:
-        * Source/TKTracker.m:
-        * Source/GNUmakefile:
-        Initial import.
+2004-08-14  Quentin Mathe <qmathe@club-internet.fr>
+        
+    Warning! doesn't compile.
+    * ChangeLog:
+    * README:
+    * INSTALL:
+    * GNUmakefile:
+    * Headers/TKQuery.h:
+    * Headers/TKStructuralKey.h:
+    * Headers/TKTracker.h:
+    * Source/TKQuery.m:
+    * Source/TKStructuralKey.m:
+    * Source/TKTracker.m:
+    * Source/GNUmakefile:
+    Initial import.

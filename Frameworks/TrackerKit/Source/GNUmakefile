@@ -35,35 +35,36 @@ GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 #
 # Main application
 #
-LIBRARY_NAME=		libTrackerKit	
-VERSION=		0.1
+LIBRARY_NAME = libTrackerKit	
+VERSION = 0.1
 
 #
 # Resource files
 #
-libTrackerKit_MAIN_MODEL_FILE=
+libTrackerKit_MAIN_MODEL_FILE =
 
-libTrackerKit_RESOURCE_FILES=
+libTrackerKit_RESOURCE_FILES =
 
-libTrackerKit_LOCALIZED_RESOURCE_FILES=
+libTrackerKit_LOCALIZED_RESOURCE_FILES =
 
 #
 # Languages we're localized for
 #
-libTrackerKit_LANGUAGES= \
+libTrackerKit_LANGUAGES = \
 	English
 	
 #
 # Class files
 #
-libTrackerKit_OBJC_FILES= \
+libTrackerKit_OBJC_FILES = \
 	TKQuery.m \
 	TKStructuralKey.m \
-	TKTracker.m 
+	TKTracker.m
+
 #
 # C files
 #
-libTrackerKit_C_FILES=
+libTrackerKit_C_FILES =
 
 #
 # Header files
