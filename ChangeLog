@@ -1,0 +1,7 @@
+2005-01-04  Quentin Mathe <qmathe@club-internet.fr>
+	
+	Warning! pmkfile not usable.
+	* pmkfile: Added a pmkfile (pmk 0.8.2 needed) in order to check installation environment and 
+	control Etoile build options. To know more about pmk and install it :
+	http://pmk.sourceforge.net/
+        
