@@ -1,3 +1,11 @@
+2004-11-10  Quentin Mathe  <qmathe@club-internet.fr>
+        
+	* Source/IKCompositor.m: Makes the code compliant with the GNUstep
+	coding rules (memory management macros, designated initializer) and
+	improved the -render method to return an image with a bitmap
+	representation which can be written to the disk in whatever image
+	formats supported. 
+
 2004-11-09  Quentin Mathe  <qmathe@club-internet.fr>
         
 	WARNING: many things don't work
@@ -27,7 +35,8 @@
 	* Headers/IKApplicationIconProvider.h: Reworded methods choice and
 	methods names, doesn't use anymore a singleton pattern.
 	* Source/IKApplicationIconProvider.m: Reworded methods choice and
-	methods names, doesn't use anymore a singleton pattern. Added initial implementation.
+	methods names, doesn't use anymore a singleton pattern. Added initial
+	implementation. 
 	* Headers/IKIconProvider.h: Minor modifications.
 	* Source/IKIconProvider.m: Initial implementation.
 	* Headers/IKThumbnailProvider.h: Added.

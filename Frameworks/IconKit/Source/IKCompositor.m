@@ -32,93 +32,117 @@
 
 - (void) dealloc
 {
-	[operations release];
+	RELEASE(operations);
 	[super dealloc];
 }
 
 - (id) initWithSize: (NSSize)size
 {
-	operations = [NSMutableArray new];
-	originalSize = size;
-	compositingSize = originalSize;
+	if ((self = [super init]) != nil)
+	{
+		operations = [[NSMutableArray alloc] init];
+		originalSize = size;
+		compositingSize = originalSize;
+		
+		return self;
+	}
 
-	return self;
+	return nil;
 }
 
 - (id) initWithImage: (NSImage *)image
 {
-	operations = [NSMutableArray new];
-	
-	if (image != nil)
+	if (image == nil)
 	{
-		originalSize = [image size];
-		compositingSize = originalSize;
+		RELEASE(self); // May be we should raise an exception
+	}
+	else
+	{
+		if ((self = [super initWithSize: [image size]]) != nil)
+		{
+			IKCompositorOperation* initialOperation = [[IKCompositorOperation alloc] 
+				initWithImage: image
+				position: IKCompositedImagePositionCenter
+				operation: NSCompositeSourceOver
+				alpha: 1.0];
 
-		IKCompositorOperation* initialOperation = [[IKCompositorOperation alloc] 
-			initWithImage: image
-			position: IKCompositedImagePositionCenter
-			operation: NSCompositeSourceOver
-			alpha: 1.0];
+			[operations addObject: initialOperation];
 
-		[operations addObject: initialOperation];
-
-		[initialOperation release];
+			RELEASE(initialOperation);
+			return self;
+		}
 	}
 
-	return self;
+	return nil;
 }
 
 - (id) initWithPropertyList: (NSDictionary *)propertyList
 {
-	operations = [NSMutableArray new];
-
-	if (propertyList != nil)
+	NSNumber* number = nil;
+	NSDictionary* dict = nil;
+	NSArray *array = nil;
+	NSSize size;
+	
+	if (propertyList == nil)
 	{
-		NSNumber* number = nil;
-		NSDictionary* dict = nil;
-		NSArray* array = nil;
-		dict = [propertyList objectForKey: @"originalSize"];
-		if (dict != nil)
-		{
-			float x, y, width, height;
+		RELEASE(self);
+		return nil; // May be we should raise an exception
+	}
+	
+	dict = [propertyList objectForKey: @"originalSize"];
+		
+	if (dict != nil)
+	{
+		float x, y, width, height;
 
-			number = [dict objectForKey: @"width"];
-			if (number != nil) width = [number floatValue];		
+		number = [dict objectForKey: @"width"];
+		if (number != nil) width = [number floatValue];		
 
-			number = [dict objectForKey: @"height"];
-			if (number != nil) height = [number floatValue];		
+		number = [dict objectForKey: @"height"];
+		if (number != nil) height = [number floatValue];		
 
-			originalSize = NSMakeSize (width, height);
-		}
+		size = NSMakeSize (width, height);
+	}
+	
+	if ((self = [super initWithSize: size]) != nil)
+	{
+
 		dict = [propertyList objectForKey: @"compositingSize"];
+
 		if (dict != nil)
 		{
 			float x, y, width, height;
 
 			number = [dict objectForKey: @"width"];
-			if (number != nil) width = [number floatValue];		
+		 	if (number != nil) width = [number floatValue];		
 
 			number = [dict objectForKey: @"height"];
 			if (number != nil) height = [number floatValue];		
 
 			compositingSize = NSMakeSize (width, height);
 		}
+
 		array = [propertyList objectForKey: @"operations"];
+
 		if (array != nil)
 		{
 			int i;
-			for (i=0; i<[array count]; i++)
+
+			for (i = 0; i<  [array count]; i++)
 			{
 				NSDictionary* item = [array objectAtIndex: i];
 				IKCompositorOperation* op = [[IKCompositorOperation alloc] 
-					initWithPropertyList: item];
+					    initWithPropertyList: item];
+
 				[operations addObject: op];
-				[op release];
+				RELEASE(op);
 			}
 		}
+		
+		return self;
 	}
 		
-	return self;
+	return nil;
 }
 
 - (NSSize) size { return originalSize; }
@@ -151,8 +175,9 @@
 			position: position
 			operation: operation
 			alpha: a];
+			
 	[operations addObject: op];
-	[op release];
+	RELEASE(op);
 }
 
 - (void) compositeImage: (NSImage *)source 
@@ -165,28 +190,38 @@
 			rect: rect
 			operation: operation
 			alpha: a];
+			
 	[operations addObject: op];
-	[op release];
+	RELEASE(op);
 }
 
 - (NSImage *) render
 {
 	int i;
 	NSImage* image = [[NSImage alloc] initWithSize: originalSize];
+	NSBitmapImageRep* rep;
+	
 	[image lockFocus];
-	for (i=0; i<[operations count]; i++)
+	
+	for (i = 0; i < [operations count]; i++)
 	{
 		IKCompositorOperation* op = [operations objectAtIndex: i];
 		NSImage* compositedImage = [op image];
+		
 		[compositedImage setScalesWhenResized: YES];
 		[compositedImage setSize: [op rect].size];
 		[compositedImage compositeToPoint: [op rect].origin 
 			operation: [op operation]];	
 	}
-	NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] 
+	
+	rep = [[NSBitmapImageRep alloc] 
 		initWithFocusedViewRect: NSMakeRect (0,0,compositingSize.width, compositingSize.height)];
 	[image unlockFocus];
-	return [rep autorelease];
+	
+	[image addRepresentation: rep];
+	RELEASE(rep);
+	
+	return AUTORELEASE(image);
 }
 
 - (NSDictionary *) propertyList
@@ -195,25 +230,27 @@
 	NSMutableDictionary* dictOriginalSize = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary* dictCompositingSize = [[NSMutableDictionary alloc] init];
 	NSMutableArray* arrayOperations = [[NSMutableArray alloc] init];
+	int i;
 
 	[dictOriginalSize setObject: [NSNumber numberWithFloat: originalSize.width] forKey: @"width"];
 	[dictOriginalSize setObject: [NSNumber numberWithFloat: originalSize.height] forKey: @"height"];
 	[dictionary setObject: dictOriginalSize forKey: @"originalSize"];
-	[dictOriginalSize release];
+	RELEASE(dictOriginalSize);
 	[dictCompositingSize setObject: [NSNumber numberWithFloat: compositingSize.width] forKey: @"width"];
 	[dictCompositingSize setObject: [NSNumber numberWithFloat: compositingSize.height] forKey: @"height"];
 	[dictionary setObject: dictCompositingSize forKey: @"compositingSize"];
-	[dictCompositingSize release];
+	RELEASE(dictCompositingSize);
 
-	int i;
-	for (i=0; i<[operations count]; i++)
+	for (i = 0; i < [operations count]; i++)
 	{
 		IKCompositorOperation* item = [operations objectAtIndex: i];
 		[arrayOperations addObject: [item propertyList]];		
 	}
+	
 	[dictionary setObject: arrayOperations forKey: @"operations"];
-	[arrayOperations release];
-	return [dictionary autorelease];
+	RELEASE(arrayOperations);
+	
+	return AUTORELEASE(dictionary);
 }
 
 @end
