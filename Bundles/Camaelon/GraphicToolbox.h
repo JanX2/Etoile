@@ -5,6 +5,7 @@
 #define __GRAPHIC_TOOLBOX_H__
 
 @interface GraphicToolbox: NSObject
++ (NSColor*) readColorFromImage: (NSImage*) image;
 + (NSImage*) imageNamed: (NSString*) name;
 + (void) setImage: (NSImage*) image named: (NSString*) name;
 + (void) fillRect: (NSRect) rect withImage: (NSImage*) image;
@@ -14,10 +15,10 @@
 + (void) fillVerticalRect: (NSRect) rect withImage: (NSImage*) image flipped: (BOOL) flipped;
 
 + (NSRect) drawFrame: (NSRect) rect 
-			withTopLeft: (NSImage*) topLeft
-			withTopRight: (NSImage*) topRight
-			withBottomLeft: (NSImage*) bottomLeft
-			withBottomRight: (NSImage*) bottomRight
+withTopLeft: (NSImage*) topLeft
+withTopRight: (NSImage*) topRight
+withBottomLeft: (NSImage*) bottomLeft
+withBottomRight: (NSImage*) bottomRight
 			withTop: (NSImage*) top
 			withBottom: (NSImage*) bottom
 			withLeft: (NSImage*) left

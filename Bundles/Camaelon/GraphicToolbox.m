@@ -12,6 +12,39 @@
 
 static NSMutableDictionary* cache;
 
++ (NSColor*) readColorFromImage: (NSImage*) image 
+{
+	NSColor* color = nil;
+	/*
+	[image lockFocus];
+	color = NSReadPixel (NSMakePoint (0,0));
+	[image unlockFocus];
+	*/
+
+	NSBitmapImageRep* bmp = [NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]];
+	unsigned char* data = [bmp bitmapData];
+	if ([bmp isPlanar])
+	{
+		NSLog (@"Image isPlanar, not yet supported");
+	}
+	else
+	{
+		unsigned char R, G, B;
+		float fR, fG, fB;
+
+		R = *data;
+		G = *(data+1);
+		B = *(data+2);
+		
+		fR = R / 255.0;
+		fG = G / 255.0;
+		fB = B / 255.0;
+
+		color = [NSColor colorWithCalibratedRed: fR green: fG blue: fB alpha: 1.0];
+	}
+	return color;
+}
+
 + (NSImage*) imageNamed: (NSString*) name
 {
 	if (cache == nil)

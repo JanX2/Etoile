@@ -465,7 +465,7 @@ static CLCompositor* mygroupBox;
 	}
 }
 
-static CLCompositor* cl_progressIndicator;
+static CLCompositor* cl_progressIndicatorForeground;
 static CLCompositor* cl_progressIndicatorBackground;
 
 + (void) drawProgressIndicatorBackgroundOn: (NSView*) view
@@ -485,23 +485,21 @@ static CLCompositor* cl_progressIndicatorBackground;
 	[cl_progressIndicatorBackground drawOn: view];
 }
 
-+ (void) drawProgressIndicatorInRect: (NSRect) rect
++ (void) drawProgressIndicatorForegroundInRect: (NSRect) rect
 {
-	if (cl_progressIndicator == nil)
+	if (cl_progressIndicatorForeground == nil)
 	{
-		cl_progressIndicator = [CLBoxCompositor new];
-		[cl_progressIndicator setName: @"progressIndicator"];
+		cl_progressIndicatorForeground = [CLHBoxCompositor new];
+		[cl_progressIndicatorForeground setName: @"progressIndicator"];
 
-		[cl_progressIndicator 
+		[cl_progressIndicatorForeground 
 			addImage: [NSImage imageNamed: @"ProgressBar/ProgressBar-horizontal-caps.tiff"]
 			named: @"caps"];
-		[cl_progressIndicator
+		[cl_progressIndicatorForeground
 			addImage: [NSImage imageNamed: @"ProgressBar/ProgressBar-horizontal-fill.tiff"]
 			named: @"fill"];
 	}
-	NSLog (@"pirilou !!");
-	[cl_progressIndicator drawInRect: rect];
-	NSLog (@"pidiou!");
+	[cl_progressIndicatorForeground drawInRect: rect];
 }
 
 + (void) drawTitleBox: (NSRect) rect on: (id) box
@@ -532,10 +530,11 @@ static CLCompositor* cl_progressIndicatorBackground;
 			named: @"left"];
 		[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-right.tiff"]
 			named: @"right"];
-		[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-fill.tiff"]
-			named: @"fill"];
-		[mygroupBox setFill: CLFillScaledImage];
-		//[mygroupBox setFillColor: [NSColor lightGrayColor]];
+		//[mygroupBox addImage: [NSImage imageNamed: @"GroupBox/GroupBox-fill.tiff"]
+		//	named: @"fill"];
+		[mygroupBox setFill: CLFillColor];
+		[mygroupBox setFillColor: [GraphicToolbox readColorFromImage: 
+			[NSImage imageNamed: @"GroupBox/GroupBox-fill.tiff"]]];
 	}
 
 	[mygroupBox drawInRect: [box frame]];
@@ -543,47 +542,17 @@ static CLCompositor* cl_progressIndicatorBackground;
 
 + (void) drawWindowBackground: (NSRect) rect on: (id) window
 {
-	/*
-	NSSize windowSize = [window frame].size;
-	NSString* key = [NSString stringWithFormat: @"windowBackground-%.0fx%.0f", windowSize.width, windowSize.height];
-	NSLog (@"drawWindowBackground, key cache: <%@> rect: %.0f,%.0f - %.0fx%.0f", key, rect.origin.x, rect.origin.y, rect.size.width,rect.size.height);
-	NSImage* img = [[CLCache cache] imageNamed: key];
-	
-	if (img == nil)
-	{
-		img = [[NSImage alloc] initWithSize: rect.size];
-		[img lockFocus];
-		NSColor* start = [NSColor colorWithCalibratedRed: 0.7 green: 0.7 blue: 0.7 alpha: 1.0];
-		NSColor* end   = [NSColor colorWithCalibratedRed: 0.9 green: 0.9 blue: 0.9 alpha: 1.0];
-
-		NSRect rg1 = NSMakeRect (rect.origin.x, rect.origin.y, rect.size.width/2, rect.size.height);
-		NSRect rg2 = NSMakeRect (rect.origin.x+(rect.size.width/2), rect.origin.y, rect.size.width/2, rect.size.height);
-
-		[GSDrawFunctions drawHorizontalGradient: start to: end frame: rg1];
-		[GSDrawFunctions drawHorizontalGradient: end to: start frame: rg2];
-
-		[GraphicToolbox fillRect: rect withImage: [NSImage imageNamed: @"Window-background.tiff"]];
-		[img unlockFocus];
-		[[CLCache cache] setImage: img named: key];
-		[img autorelease];
-	}
-
-	[img compositeToPoint: NSMakePoint (rect.origin.x, rect.origin.y) operation: NSCompositeSourceOver];
-	*/
-	NSColor* bgd   = [NSColor colorWithCalibratedRed: 0.7 green: 0.7 blue: 0.7 alpha: 1.0];
+	NSColor* bgd = [GraphicToolbox readColorFromImage: [NSImage imageNamed: @"Window/Window-background.tiff"]];
 	[bgd set];
 	NSRectFill (rect);
-	/*
-	[GraphicToolbox fillRect: rect withImage: [NSImage imageNamed: @"Window/Window-background.tiff"]];
-	*/
 }
 
 + (void) drawPopupButton: (NSRect) border inView: (NSView*) view 
 {
 	NSGraphicsContext* ctxt = GSCurrentContext ();
-	//DPSgsave (ctxt);
+	DPSgsave (ctxt);
 	//This is quite annoying :-/
-	//DPSinitclip (ctxt);
+	DPSinitclip (ctxt);
 	//DPSrectclip (ctxt, border.origin.x, border.origin.y, border.size.width, border.size.height +2);
 	[GraphicToolbox drawButton: border 
 		withCaps: [NSImage imageNamed: @"PopupButton/PopupButton-endcap.tiff"]
@@ -600,7 +569,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 	[arrow unlockFocus];
 	
 	[arrow compositeToPoint: NSMakePoint (border.origin.x+border.size.width-w,border.origin.y+deltaY) operation: NSCompositeSourceOver];
-	//DPSgrestore (ctxt);
+	DPSgrestore (ctxt);
 }
 
 + (void) drawHorizontalScrollerKnob: (NSRect) knob on: (NSView*) view
