@@ -1,3 +1,10 @@
+2005-03-17 Nicolas Roard <nicolas@roard.com>
+
+	* renamed the Image class (which poseAs NSImage) in CLImage, to 
+	  help reducing conflicts in program. "Image" was obviously too
+	  general ;-) -- and Burn.app indeed used an Image class.. 
+	  thanks to Rob Burns for the report.
+
 2005-03-16 Nicolas Roard <nicolas@roard.com>
 
 	* addition of NSColor +titlebarTextColor and +selectedTitlebarTextColor

@@ -4,7 +4,7 @@
 #include <Foundation/Foundation.h>
 #include <AppKit/AppKit.h>
 
-#include "Image.h"
+#include "CLImage.h"
 
 @interface Camaelon : NSObject
 {

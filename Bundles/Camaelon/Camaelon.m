@@ -21,8 +21,8 @@ static Camaelon* theme;
 
     self = [super init];
 
-    [Image setNSImageClass : [NSImage class]];
-    [Image poseAsClass: [NSImage class]];
+    [CLImage setNSImageClass : [NSImage class]];
+    [CLImage poseAsClass: [NSImage class]];
 
     NSLog (@"Camaelon dictionary: %@",[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"Camaelon"]);
 
