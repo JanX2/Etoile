@@ -1,0 +1,30 @@
+2005-03-10 Nicolas Roard <nicolas@roard.com>
+
+	* addition of this ChangeLog :-)
+
+2005-03-10 Nicolas Roard <nicolas@roard.com>
+
+	* All hard coded colors are removed. Colors are now determined by looking into the "color images" contained in the theme.
+
+2005-03-10 Nicolas Roard <nicolas@roard.com>
+
+	* corrected a problem apparent in Preferences.app: previously the drawing was done based on the controlView.. but in Preferences.app (and possibly other applications), NSButtonCell was used directly, not just by NSButton. Using the controlView frame was thus causing rather strange results :-) ...  I refactored the code and added a method drawInRect:on: in CLCompositor to properly handles that
+	* corrected a small problem with NSBrowser (the header browser was always present, because I forced it earlier to test it, and forget to remove that..)
+
+2005-03-09 Nicolas Roard <nicolas@roard.com>
+
+	* improvements on NSBrowser, Tableview, scrollers, tabview in order to use the new composition architecture
+
+2005-03-09 Nicolas Roard <nicolas@roard.com>
+
+	* Addition of +readPixelFromImage: in GraphicToolbox, as NSReadPixel isn't implemented (and probably depends of the backend)
+	* update of NSProgressIndicator to use the new Compositor code correctly
+
+2005-03-09 Nicolas Roard <nicolas@roard.com>
+
+	* Redesign of the composition and cache systems, and some cleanup
+	* addition of CLCompositor, CLHBoxCompositor, CLBoxCompositor
+
+2005-03-04 Nicolas Roard <nicolas@roard.com>
+
+	* initial Camaelon 2 commit
