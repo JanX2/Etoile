@@ -60,6 +60,7 @@ ifeq ($(etoile-extensions), yes)
     
     export etoileextensionskit ?= yes
     export lucenekit ?= yes
+    export servicesbarkit ?= yes
     export extendedworkspacekit ?= yes 
     export trackerkit ?= yes
 
@@ -103,6 +104,10 @@ endif
 
 ifeq ($(lucenekit), yes)
    #SUBPROJECTS += LuceneKit
+endif
+
+ifeq ($(servicesbarkit), yes)
+   SUBPROJECTS += ServicesBarKit
 endif
 
 ifeq ($(extendedworkspacekit), yes)
