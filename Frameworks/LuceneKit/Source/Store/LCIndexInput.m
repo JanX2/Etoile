@@ -115,8 +115,19 @@
 		| (([self readByte] & 0x3F) << 6)
 	        |  ([self readByte] & 0x3F));
     }
+    NSString *s1, *s2;
+    int end = [s length];
+    if (start > end)
+      {
+        s1 = [s substringToIndex: end];
+      }
+    else
+      {
+        s1 = [s substringToIndex: start];
+      }
     NSRange r = NSMakeRange(start, length);
-    [s replaceCharactersInRange: r withString: [NSString stringWithCharacters: buffer length: length]];
+    s2 = [NSString stringWithCharacters: buffer length: length];
+    [s setString: [NSString stringWithFormat: @"%@%@", s1, s2]];
     free(buffer);
 }
 
