@@ -15,8 +15,10 @@
 + (NSRect) drawGrayBezelRound: (NSRect)border : (NSRect)clip;
 + (NSRect) drawGrayBezel: (NSRect)border : (NSRect)clip;
 + (NSRect) drawGroove: (NSRect)border : (NSRect)clip;
++ (NSColor*) browserHeaderTextColor;
 + (void) drawBrowserHeaderInRect: (NSRect) frame;
 + (float) ListHeaderHeight;
++ (void) drawTableHeaderCornerInRect: (NSRect) frame;
 + (void) drawTableHeaderInRect: (NSRect) frame;
 + (void) drawTableHeaderCellInRect: (NSRect) frame highlighted: (BOOL) highlighted;
 + (void) drawGradient: (NSData*) gradient withSize: (NSArray*) size border: (NSRect) border;

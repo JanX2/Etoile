@@ -95,8 +95,32 @@
 
 ////
 
+static NSColor* browserHeaderTextColor;
+
++ (NSColor*) browserHeaderTextColor 
+{
+	if (browserHeaderTextColor == nil)
+	{
+		browserHeaderTextColor = [GraphicToolbox readColorFromImage: 
+			[NSImage imageNamed: @"BrowserHeader/BrowserHeader-textcolor.tiff"]];
+	}
+	return browserHeaderTextColor;
+}
+
+static CLCompositor* myBrowserHeader;
+
 + (void) drawBrowserHeaderInRect: (NSRect) frame
 {
+
+	if (myBrowserHeader == nil)
+	{
+		myBrowserHeader = [CLHBoxCompositor new];
+		[myBrowserHeader setName: @"browserHeader"];
+		[myBrowserHeader addImage: [NSImage imageNamed: @"BrowserHeader/BrowserHeader-caps.tiff"] named: @"caps"];
+		[myBrowserHeader addImage: [NSImage imageNamed: @"BrowserHeader/BrowserHeader-fill.tiff"] named: @"fill"];
+	}
+	[myBrowserHeader drawInRect: frame];
+/*
 	NSImage* fill = [NSImage imageNamed: @"ListHeader/ListHeader-fill-unselected.tiff"];
 	NSSize fillSize = NSMakeSize ([fill size].width, frame.size.height);
 	[fill setScalesWhenResized: YES];
@@ -106,11 +130,21 @@
 	DPSsetlinewidth (ctxt, 1);
 	[[NSColor colorWithCalibratedRed: 0.6 green: 0.6 blue: 0.6 alpha: 1.0] set];
 	DPSrectstroke (ctxt, frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
+*/
 }
 
 + (float) ListHeaderHeight
 {
 	return [[NSImage imageNamed: @"ListHeader/ListHeader-fill-unselected.tiff"] size].height;
+}
+
++ (void) drawTableHeaderCornerInRect: (NSRect) frame
+{
+	NSImage* fill = [NSImage imageNamed: @"ListHeader/ListHeader-corner.tiff"];
+	NSSize fillSize = NSMakeSize ([fill size].width, frame.size.height);
+	[fill setScalesWhenResized: YES];
+	[fill setSize: fillSize];
+	[GraphicToolbox fillHorizontalRect: frame withImage: fill];
 }
 
 + (void) drawTableHeaderInRect: (NSRect) frame
@@ -129,9 +163,15 @@
 	NSImage* fill = nil;
 	if (highlighted)
 	{
+		CLHBoxCompositor* compositor = [CLHBoxCompositor new];
+		[compositor addImage: [NSImage imageNamed: @"ListHeader/ListHeader-caps-selected.tiff"] named: @"caps"];
+		[compositor addImage: [NSImage imageNamed: @"ListHeader/ListHeader-fill-selected.tiff"] named: @"fill"];
+		[compositor drawInRect: frame];
+/*
 		fill = [NSImage imageNamed: @"ListHeader/ListHeader-fill-selected.tiff"];
 		separation = [NSImage imageNamed: @"ListHeader/ListHeader-separator-selected.tiff"];
 		[GraphicToolbox fillHorizontalRect: frame withImage: fill];
+*/
 	}
 	else
 	{

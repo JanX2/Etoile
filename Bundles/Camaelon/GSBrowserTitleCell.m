@@ -2,7 +2,7 @@
 #include <AppKit/AppKit.h>
 #include "GSDrawFunctions.h"
 
-@interface GSBrowserTitleCell : NSTableHeaderCell 
+@interface GSBrowserTitleCell : NSTextFieldCell //NSTableHeaderCell 
 {}
 @end
 
@@ -28,16 +28,20 @@
     {
       return;
     }
-   [GSDrawFunctions drawBrowserHeaderInRect: cellFrame];
+   //[GSDrawFunctions drawBrowserHeaderInRect: cellFrame];
 
 //  NSDrawGrayBezel (cellFrame, NSZeroRect);
   _textfieldcell_draws_background = NO;
-  [self drawInteriorWithFrame: cellFrame  inView: controlView];
+  [super drawInteriorWithFrame: cellFrame  inView: controlView];
   NSBezierPath* path = [NSBezierPath bezierPath];
-  [path appendBezierPathWithRect: cellFrame];
-  [path setLineWidth: 1.5];
+ // [path appendBezierPathWithRect: cellFrame];
+//  [path setLineWidth: 1.5];
 //  [path stroke];
 }
+- (NSColor *)textColor
+{
+	return [GSDrawFunctions browserHeaderTextColor];
+} 
 
 @end
 

@@ -13,13 +13,9 @@
 {
 	// A HBox is composed of 3 images:
 
-	NSLog (@"nom de nom !!");
-
 	NSImage* left = [images objectForKey: @"left"];
 	NSImage* right = [images objectForKey: @"right"];
 	NSImage* fill = [images objectForKey: @"fill"];
-
-	NSLog (@"drawInRect: de HBox");
 
 	// The composition is simply as follows:     [left][fill][fill][..][right]
 
@@ -56,13 +52,9 @@
 	if (right == nil) [self error: @"right"];
 	if (fill == nil) [self error: @"fill"];
 
-	NSLog (@"on dessinne HBox..");
-	
 	// Ok, drawing ...
 
 	float deltaY = (rect.size.height - [fill size].height)/2.0;
-
-	NSLog (@"plop");
 
 	[left compositeToPoint: NSMakePoint (rect.origin.x,rect.origin.y+deltaY)
 		operation: NSCompositeSourceOver];

@@ -33,7 +33,11 @@
 	ret = [[CLCache cache] imageNamed: key];
 	if (ret == nil)
 	{
-		ret = [ImageProvider leftPartOfImage: [NSImage imageNamed: @"Tabs/Tabs-selected-caps.tiff"]];
+		ret = [NSImage imageNamed: @"Tabs/Tabs-junction-selected-left.tiff"];
+		if (ret == nil)
+		{
+			ret = [ImageProvider leftPartOfImage: [NSImage imageNamed: @"Tabs/Tabs-selected-caps.tiff"]];
+		}
 		[[CLCache cache] setImage: ret named: key];
 	}
 	return ret;
@@ -46,7 +50,11 @@
 	ret = [[CLCache cache] imageNamed: key];
 	if (ret == nil)
 	{
-		ret = [ImageProvider rightPartOfImage: [NSImage imageNamed: @"Tabs/Tabs-selected-caps.tiff"]];
+		ret = [NSImage imageNamed: @"Tabs/Tabs-junction-selected-right.tiff"];
+		if (ret == nil)
+		{
+			ret = [ImageProvider rightPartOfImage: [NSImage imageNamed: @"Tabs/Tabs-selected-caps.tiff"]];
+		}
 		[[CLCache cache] setImage: ret named: key];
 	}
 	return ret;
@@ -59,7 +67,11 @@
 	ret = [[CLCache cache] imageNamed: key];
 	if (ret == nil)
 	{
-		ret = [ImageProvider leftPartOfImage: [NSImage imageNamed: @"Tabs/Tabs-unselected-caps.tiff"]];
+		ret = [NSImage imageNamed: @"Tabs/Tabs-junction-unselected-left.tiff"];
+		if (ret == nil)
+		{
+			ret = [ImageProvider leftPartOfImage: [NSImage imageNamed: @"Tabs/Tabs-unselected-caps.tiff"]];
+		}
 		[[CLCache cache] setImage: ret named: key];
 	}
 	return ret;
@@ -72,7 +84,11 @@
 	ret = [[CLCache cache] imageNamed: key];
 	if (ret == nil)
 	{
-		ret = [ImageProvider rightPartOfImage: [NSImage imageNamed: @"Tabs/Tabs-unselected-caps.tiff"]];
+		ret = [NSImage imageNamed: @"Tabs/Tabs-junction-unselected-right.tiff"];
+		if (ret == nil)
+		{
+			ret = [ImageProvider rightPartOfImage: [NSImage imageNamed: @"Tabs/Tabs-unselected-caps.tiff"]];
+		}
 		[[CLCache cache] setImage: ret named: key];
 	}
 	return ret;
@@ -106,17 +122,21 @@
 	NSImage* ret = [[CLCache cache] imageNamed: key];
 	if (ret == nil)
 	{
-		NSImage* left = [ImageProvider TabsUnselectedRight];
-		NSImage* right = [ImageProvider TabsSelectedLeft];
-		NSSize size = NSMakeSize ([left size].width+[right size].width,[left size].height);
-		ret = [[[NSImage alloc] initWithSize: size] autorelease];
+		ret = [NSImage imageNamed: @"Tabs/Tabs-junction-unselected-selected.tiff"];
+		if (ret == nil)
+		{
+			NSImage* left = [ImageProvider TabsUnselectedRight];
+			NSImage* right = [ImageProvider TabsSelectedLeft];
+			NSSize size = NSMakeSize ([left size].width+[right size].width,[left size].height);
+			ret = [[[NSImage alloc] initWithSize: size] autorelease];
 
-		[ret lockFocus];
-			[left compositeToPoint: NSMakePoint (0,0) 
-				operation: NSCompositeSourceOver];
-			[right compositeToPoint: NSMakePoint ([left size].width,0) 
-				operation: NSCompositeSourceOver];
-		[ret unlockFocus];
+			[ret lockFocus];
+				[left compositeToPoint: NSMakePoint (0,0) 
+					operation: NSCompositeSourceOver];
+				[right compositeToPoint: NSMakePoint ([left size].width,0) 
+					operation: NSCompositeSourceOver];
+			[ret unlockFocus];
+		}
 		[[CLCache cache] setImage: ret named: key];
 	}
 	return ret;
@@ -128,17 +148,21 @@
 	NSImage* ret = [[CLCache cache] imageNamed: key];
 	if (ret == nil)
 	{
-		NSImage* left = [ImageProvider TabsSelectedRight];
-		NSImage* right = [ImageProvider TabsUnselectedLeft];
-		NSSize size = NSMakeSize ([left size].width+[right size].width,[left size].height);
-		ret = [[[NSImage alloc] initWithSize: size] autorelease];
+		ret = [NSImage imageNamed: @"Tabs/Tabs-junction-selected-unselected.tiff"];
+		if (ret == nil)
+		{
+			NSImage* left = [ImageProvider TabsSelectedRight];
+			NSImage* right = [ImageProvider TabsUnselectedLeft];
+			NSSize size = NSMakeSize ([left size].width+[right size].width,[left size].height);
+			ret = [[[NSImage alloc] initWithSize: size] autorelease];
 
-		[ret lockFocus];
-			[left compositeToPoint: NSMakePoint (0,0) 
-				operation: NSCompositeSourceOver];
-			[right compositeToPoint: NSMakePoint ([left size].width,0) 
-				operation: NSCompositeSourceOver];
-		[ret unlockFocus];
+			[ret lockFocus];
+				[left compositeToPoint: NSMakePoint (0,0) 
+					operation: NSCompositeSourceOver];
+				[right compositeToPoint: NSMakePoint ([left size].width,0) 
+					operation: NSCompositeSourceOver];
+			[ret unlockFocus];
+		}
 		[[CLCache cache] setImage: ret named: key];
 	}
 	return ret;

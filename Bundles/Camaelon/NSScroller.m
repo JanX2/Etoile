@@ -113,6 +113,7 @@ static  NSButtonCell* knobCell;
 - (void) drawKnob
 {
 	NSRect knob = [self rectForPart: NSScrollerKnob];
+/*
 	if (_isHorizontal)
 	{
 		knob.origin.y -= 2;
@@ -121,6 +122,7 @@ static  NSButtonCell* knobCell;
 	{
 		knob.origin.x -= 2;
 	}
+*/
 //[[_window backgroundColor] set];
 //	NSRectFill (knob);
 	//if (_isHorizontal)
@@ -142,6 +144,9 @@ static  NSButtonCell* knobCell;
 	[kCell setImagePosition: NSImageOnly];
   	[kCell drawWithFrame: knob inView: self];
 */
+	
+	[[NSColor greenColor] set];
+	NSRectFill (knob);
 	if (_isHorizontal)
 	{
 		[GSDrawFunctions drawHorizontalScrollerKnob: knob on: self];
@@ -193,7 +198,8 @@ static  NSButtonCell* knobCell;
   if (theCell)
   {
 	  [theCell highlight: YES withFrame: rect inView: self];
-  	  [self drawKnobSlotOn: [self bounds] knobPresent: YES buttonPressed: button];
+  	  //[self drawKnobSlotOn: [self bounds] knobPresent: YES buttonPressed: button];
+  	  [self drawKnobSlotOn: _frame knobPresent: YES buttonPressed: button];
 	  [self drawKnob];
 	  [_window flushWindow];
 
@@ -203,7 +209,8 @@ static  NSButtonCell* knobCell;
 		  untilMouseUp: YES];
 
 	  [theCell highlight: NO withFrame: rect inView: self];
-  	  [self drawKnobSlotOn: [self bounds] knobPresent: YES buttonPressed: 0];
+  	  //[self drawKnobSlotOn: [self bounds] knobPresent: YES buttonPressed: 0];
+  	  [self drawKnobSlotOn: _frame knobPresent: YES buttonPressed: 0];
 	  [self drawKnob];
 	  [_window flushWindow];
   }
@@ -212,8 +219,6 @@ static  NSButtonCell* knobCell;
 
 - (void) drawRect: (NSRect)rect
 {
-	//[[NSColor redColor] set];
-	//NSRectFill (rect);
   static NSRect rectForPartIncrementLine;
   static NSRect rectForPartDecrementLine;
   static NSRect rectForPartKnobSlot;
@@ -251,5 +256,161 @@ static  NSButtonCell* knobCell;
     }
 */
 }
+
+- (NSRect) rectForPart: (NSScrollerPart)partCode
+{
+  NSRect scrollerFrame = _frame;
+  //float x = 1, y = 1;
+  float x = 0, y = 0;
+  float width, height;
+  float buttonsWidth = [NSScroller scrollerWidth];
+  float buttonsSize = 2 * buttonsWidth + 2;
+  NSUsableScrollerParts usableParts;
+  /*
+   * If the scroller is disabled then the scroller buttons and the
+   * knob are not displayed at all.
+   */
+  if (!_isEnabled)
+    {
+      usableParts = NSNoScrollerParts;
+    }
+  else
+    {
+      usableParts = _usableParts;
+    }
+
+  /*
+   * Assign to `width' and `height' values describing
+   * the width and height of the scroller regardless
+   * of its orientation.
+   * but keeps track of the scroller's orientation.
+   */
+  if (_isHorizontal)
+    {
+      width = scrollerFrame.size.height - 2;
+      height = scrollerFrame.size.width - 2;
+      width = scrollerFrame.size.height;
+      height = scrollerFrame.size.width;
+    }
+  else
+    {
+      width = scrollerFrame.size.width - 2;
+      height = scrollerFrame.size.height - 2;
+      width = scrollerFrame.size.width;
+      height = scrollerFrame.size.height;
+    }
+
+  /*
+   * The x, y, width and height values are computed below for the vertical
+   * scroller.  The height of the scroll buttons is assumed to be equal to
+   * the width.
+   */
+  switch (partCode)
+    {
+      case NSScrollerKnob:
+        {
+          float knobHeight, knobPosition, slotHeight;
+
+          if (usableParts == NSNoScrollerParts
+            || usableParts == NSOnlyScrollerArrows)
+            {
+              return NSZeroRect;
+            }
+
+          /* calc the slot Height */
+          slotHeight = height - (_arrowsPosition == NSScrollerArrowsNone
+                                 ?  0 : buttonsSize);
+          knobHeight = _knobProportion * slotHeight;
+          knobHeight = (float)floor(knobHeight);
+          if (knobHeight < buttonsWidth)
+            knobHeight = buttonsWidth;
+
+	  NSLog (@"_floatValue: %f", _floatValue);
+	  NSLog (@"slotHeight : %f", slotHeight);
+ 	  NSLog (@"knobHeight : %f", knobHeight);
+
+          /* calc knob's position */
+          knobPosition = _floatValue * (slotHeight - knobHeight);
+	  NSLog (@"knobPosition: %f", knobPosition);
+    //      knobPosition = floor(knobPosition);
+
+	  NSLog (@"y : %f knobPosition: %f", y, knobPosition);
+
+          /* calc actual position */
+          y += knobPosition + ((_arrowsPosition == NSScrollerArrowsMaxEnd
+                               || _arrowsPosition == NSScrollerArrowsNone)
+                               ?  0 : buttonsSize);
+
+          height = knobHeight;
+	  width = buttonsWidth;
+		NSLog (@"NSScrollerKnob rect (%f,%f,%f,%f)", x, y, width, height);
+          break;
+        }
+
+      case NSScrollerKnobSlot:
+        /*
+         * if the scroller does not have buttons the slot completely
+         * fills the scroller.
+         */
+        if (usableParts == NSNoScrollerParts
+          || _arrowsPosition == NSScrollerArrowsNone)
+          {
+            break;
+          }
+        height -= buttonsSize;
+        if (_arrowsPosition == NSScrollerArrowsMinEnd)
+          {
+            y += buttonsSize;
+          }
+        break;
+
+      case NSScrollerDecrementLine:
+      case NSScrollerDecrementPage:
+        if (usableParts == NSNoScrollerParts
+          || _arrowsPosition == NSScrollerArrowsNone)
+          {
+            return NSZeroRect;
+          }
+        else if (_arrowsPosition == NSScrollerArrowsMaxEnd)
+          {
+            y += (height - buttonsSize + 1);
+          }
+        width = buttonsWidth;
+        height = buttonsWidth;
+        break;
+
+      case NSScrollerIncrementLine:
+      case NSScrollerIncrementPage:
+        if (usableParts == NSNoScrollerParts
+          || _arrowsPosition == NSScrollerArrowsNone)
+          {
+            return NSZeroRect;
+          }
+        else if (_arrowsPosition == NSScrollerArrowsMaxEnd)
+          {
+            y += (height - buttonsWidth);
+          }
+        else if (_arrowsPosition == NSScrollerArrowsMinEnd)
+          {
+            y += (buttonsWidth + 1);
+          }
+        height = buttonsWidth;
+        width = buttonsWidth;
+        break;
+
+      case NSScrollerNoPart:
+        return NSZeroRect;
+    }
+
+  if (_isHorizontal)
+    {
+      return NSMakeRect (y, x, height, width);
+    }
+  else
+    {
+      return NSMakeRect (x, y, width, height);
+    }
+}
+
 
 @end

@@ -6,6 +6,7 @@
 //static float scrollerWidth; // == [NSScroller scrollerWidth]
 #define NSBR_COLUMN_SEP 4
 #define NSBR_VOFFSET 2
+#define NSBR_COLUMN_IS_VISIBLE(i) YES // JUST FOR TEST
 
 @interface NSBrowserColumn : NSObject <NSCoding>
 {
@@ -67,6 +68,8 @@
       [self loadColumnZero];
     }
 
+  _isTitled = YES; // JUST FOR TEST :-)
+
   // Draws titles
   if (_isTitled)
     {
@@ -77,6 +80,7 @@
           NSRect titleRect = [self titleFrameOfColumn: i];
           if (NSIntersectsRect (titleRect, rect) == YES)
             {
+   	      [GSDrawFunctions drawBrowserHeaderInRect: titleRect];
               [self drawTitleOfColumn: i
                     inRect: titleRect];
             }
@@ -98,6 +102,7 @@
   [[NSColor colorWithCalibratedRed: 0.6 green: 0.6 blue: 0.6 alpha: 1.0] set];
   //[[NSColor redColor] set];
   NSRectFill(scrollerBorderRect);
+
 
       if ((NSIntersectsRect (scrollerBorderRect, rect) == YES) && _window)
         {
@@ -273,6 +278,22 @@
       [self setNeedsDisplay: YES];
     }
 }
+
+@class GSBrowserTitleCell;
+/** Draws the title for the column at index column within the rectangle
+    defined by aRect. */
+- (void) drawTitle: (NSString *)title
+            inRect: (NSRect)aRect
+          ofColumn: (int)column
+{
+//  if (!_isTitled || !NSBR_COLUMN_IS_VISIBLE(column))
+//    return;
+
+  NSTextFieldCell* titleCell = [GSBrowserTitleCell new];
+  [titleCell setStringValue: title];
+  [titleCell drawWithFrame: aRect inView: self];
+}
+
 
 
 @end

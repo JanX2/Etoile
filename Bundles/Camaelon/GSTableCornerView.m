@@ -10,7 +10,7 @@
   
 - (void) drawRect: (NSRect) cellFrame
 { 
-  [GSDrawFunctions drawTableHeaderInRect: cellFrame];
+  [GSDrawFunctions drawTableHeaderCornerInRect: cellFrame];
 }
 
 @end
