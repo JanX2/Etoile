@@ -26,73 +26,194 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
 #import "IKCompositor.h"
 
 @implementation IKCompositor
 
+- (void) dealloc
+{
+	[operations release];
+	[super dealloc];
+}
+
 - (id) initWithSize: (NSSize)size
 {
+	operations = [NSMutableArray new];
+	originalSize = size;
+	compositingSize = originalSize;
 
+	return self;
 }
 
 - (id) initWithImage: (NSImage *)image
 {
+	operations = [NSMutableArray new];
+	
+	if (image != nil)
+	{
+		originalSize = [image size];
+		compositingSize = originalSize;
 
+		IKCompositorOperation* initialOperation = [[IKCompositorOperation alloc] 
+			initWithImage: image
+			position: IKCompositedIconPositionCenter
+			operation: NSCompositeSourceOver
+			alpha: 1.0];
+
+		[operations addObject: initialOperation];
+
+		[initialOperation release];
+	}
+
+	return self;
 }
 
-- (id) initWithPropertyList: (NSString *)plist
+- (id) initWithPropertyList: (NSDictionary *)propertyList
 {
+	operations = [NSMutableArray new];
 
+	if (propertyList != nil)
+	{
+		NSNumber* number = nil;
+		NSDictionary* dict = nil;
+		NSArray* array = nil;
+		dict = [propertyList objectForKey: @"originalSize"];
+		if (dict != nil)
+		{
+			float x, y, width, height;
+
+			number = [dict objectForKey: @"width"];
+			if (number != nil) width = [number floatValue];		
+
+			number = [dict objectForKey: @"height"];
+			if (number != nil) height = [number floatValue];		
+
+			originalSize = NSMakeSize (width, height);
+		}
+		dict = [propertyList objectForKey: @"compositingSize"];
+		if (dict != nil)
+		{
+			float x, y, width, height;
+
+			number = [dict objectForKey: @"width"];
+			if (number != nil) width = [number floatValue];		
+
+			number = [dict objectForKey: @"height"];
+			if (number != nil) height = [number floatValue];		
+
+			compositingSize = NSMakeSize (width, height);
+		}
+		array = [propertyList objectForKey: @"operations"];
+		if (array != nil)
+		{
+			int i;
+			for (i=0; i<[array count]; i++)
+			{
+				NSDictionary* item = [array objectAtIndex: i];
+				IKCompositorOperation* op = [[IKCompositorOperation alloc] 
+					initWithPropertyList: item];
+				[operations addObject: op];
+				[op release];
+			}
+		}
+	}
+		
+	return self;
 }
 
-- (NSSize) size
-{
+- (NSSize) size { return originalSize; }
 
-}
+- (NSSize) compositingSize { return compositingSize; }
 
-- (NSSize) compositingSize
-{
-
-}
-
-- (void) setCompositingSize: (NSSize)size
-{
-
-}
+- (void) setCompositingSize: (NSSize)size { compositingSize = size; }
 
 - (void) compositeImage: (NSImage *)source 
            withPosition: (IKCompositedIconPosition) position
 {
-           
+	[self compositeImage: source withPosition: position 
+		operation: NSCompositeSourceOver alpha: 1.0];
 }
 
 - (void) compositeImage: (NSImage *)source 
                  inRect:(NSRect)rect
 {
-
+	[self compositeImage: source inRect: rect 
+		operation: NSCompositeSourceOver alpha: 1.0];
 }
 
 - (void) compositeImage: (NSImage *)source 
            withPosition: (IKCompositedIconPosition)position
-              operation: (NSCompositingOperation)op 
+              operation: (NSCompositingOperation)operation
                   alpha: (float)a
 {
-
+        IKCompositorOperation* op = [[IKCompositorOperation alloc] 
+			initWithImage: source
+			position: position
+			operation: operation
+			alpha: a];
+	[operations addObject: op];
+	[op release];
 }
 
 - (void) compositeImage: (NSImage *)source 
                  inRect: (NSRect)rect
-              operation: (NSCompositingOperation)op 
+              operation: (NSCompositingOperation)operation 
                   alpha: (float)a
 {
-
+        IKCompositorOperation* op = [[IKCompositorOperation alloc] 
+			initWithImage: source
+			rect: rect
+			operation: operation
+			alpha: a];
+	[operations addObject: op];
+	[op release];
 }
 
 - (NSImage *) composite
 {
+	int i;
+	NSImage* image = [[NSImage alloc] initWithSize: originalSize];
+	[image lockFocus];
+	for (i=0; i<[operations count]; i++)
+	{
+		IKCompositorOperation* op = [operations objectAtIndex: i];
+		NSImage* compositedImage = [op image];
+		[compositedImage setScalesWhenResized: YES];
+		[compositedImage setSize: [op rect].size];
+		[compositedImage compositeToPoint: [op rect].origin 
+			operation: [op operation]];	
+	}
+	NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] 
+		initWithFocusedViewRect: NSMakeRect (0,0,compositingSize.width, compositingSize.height)];
+	[image unlockFocus];
+	return [rep autorelease];
+}
 
+- (NSDictionary *) propertyList
+{
+	NSMutableDictionary* dictionary = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary* dictOriginalSize = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary* dictCompositingSize = [[NSMutableDictionary alloc] init];
+	NSMutableArray* arrayOperations = [[NSMutableArray alloc] init];
+
+	[dictOriginalSize setObject: [NSNumber numberWithFloat: originalSize.width] forKey: @"width"];
+	[dictOriginalSize setObject: [NSNumber numberWithFloat: originalSize.height] forKey: @"height"];
+	[dictionary setObject: dictOriginalSize forKey: @"originalSize"];
+	[dictOriginalSize release];
+	[dictCompositingSize setObject: [NSNumber numberWithFloat: compositingSize.width] forKey: @"width"];
+	[dictCompositingSize setObject: [NSNumber numberWithFloat: compositingSize.height] forKey: @"height"];
+	[dictionary setObject: dictCompositingSize forKey: @"compositingSize"];
+	[dictCompositingSize release];
+
+	int i;
+	for (i=0; i<[operations count]; i++)
+	{
+		IKCompositorOperation* item = [operations objectAtIndex: i];
+		[arrayOperations addObject: [item propertyList]];		
+	}
+	[dictionary setObject: arrayOperations forKey: @"operations"];
+	[arrayOperations release];
+	return [dictionary autorelease];
 }
 
 @end

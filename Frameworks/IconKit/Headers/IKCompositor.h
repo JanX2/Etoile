@@ -26,6 +26,10 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+#import "IKCompositorOperation.h"
+
 @interface IKCompositor : NSObject
 {
     NSSize originalSize;
@@ -35,7 +39,7 @@
 
 - (id) initWithSize: (NSSize)size;
 - (id) initWithImage: (NSImage *)image;
-- (id) initWithPropertyList: (NSString *)plist;
+- (id) initWithPropertyList: (NSDictionary *)plist;
 
 - (NSSize) size;
 - (NSSize) compositingSize;
@@ -56,5 +60,6 @@
                   alpha: (float)a;
 
 - (NSImage *) composite;
+- (NSDictionary *) propertyList;
 
 @end

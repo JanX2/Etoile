@@ -26,86 +26,120 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
 #import "IKCompositorOperation.h"
 
 @implementation IKCompositorOperation
 
+- (void) dealloc
+{
+	[image release];
+	[path release];
+	[super dealloc];
+}
+
 - (id) initWithPropertyList: (NSDictionary *)propertyList
 {
+	NSNumber* number = nil;
+	NSDictionary* rectangle = nil;
 
+	path = [propertyList objectForKey: @"path"];
+	[path retain];
+
+	if (path != nil) image = [[NSImage alloc] initWithContentsOfFile: path];
+
+	number = [propertyList objectForKey: @"position"];
+	if (number != nil) position = [number intValue];
+
+	number = [propertyList objectForKey: @"operation"];
+	if (number != nil) operation = [number intValue];
+
+	rectangle = [propertyList objectForKey: @"rectangle"];
+	if (rectangle != nil)
+	{
+		float x, y, width, height;
+
+		number = [rectangle objectForKey: @"x"];
+		if (number != nil) x = [number floatValue];		
+
+		number = [rectangle objectForKey: @"y"];
+		if (number != nil) y = [number floatValue];		
+
+		number = [rectangle objectForKey: @"width"];
+		if (number != nil) width = [number floatValue];		
+
+		number = [rectangle objectForKey: @"height"];
+		if (number != nil) height = [number floatValue];		
+
+		rect = NSMakeRect (x, y, width, height);
+	}
+
+	number = [propertyList objectForKey: @"alpha"];
+	if (number != nil) alpha = [number floatValue];
+
+	return self;
 }
 
-- (id) initWithImage: (NSImage *)image
-            position: (IKCompositedIconPosition)position
-           operation: (NSCompositingOperation)operation 
-               alpha: (float alpha
+- (id) initWithImage: (NSImage *)anImage
+            position: (IKCompositedIconPosition)aPosition
+           operation: (NSCompositingOperation)anOperation 
+               alpha: (float) anAlpha
 {
+	ASSIGN (image, anImage);
+	position = aPosition;
+	operation = anOperation;
+	alpha = anAlpha;
 
+	return self;
 }
 
-- (id) initWithImage: (NSImage *)image
-                rect: (NSRect)rect 
-           operation: (NSCompositingOperation)operation  
-               alpha: (float)alpha
+- (id) initWithImage: (NSImage *)anImage
+                rect: (NSRect)aRect 
+           operation: (NSCompositingOperation)anOperation  
+               alpha: (float)anAlpha
 {
+	ASSIGN (image, anImage);
+	rect = aRect;
+	operation = anOperation;
+	alpha = anAlpha;
 
+	return self;
 }
 
-- (NSImage *) image
-{
+- (NSImage *) image { return image; }
 
-}
+- (IKCompositedIconPosition) position { return position; }
 
-- (IKCompositedIconPosition) position
-{
+- (NSCompositingOperation) operation { return operation; }
 
-}
+- (float) alpha { return alpha; }
 
-- (NSCompositingOperation) operation
-{
+- (NSRect) rect { return rect; }
 
-}
+- (void) setImage: (NSImage *)anImage { ASSIGN (image, anImage); }
 
-- (float) alpha
-{
+- (void) setPosition: (IKCompositedIconPosition)aPosition { position = aPosition; }
 
-}
+- (void) setOperation: (NSCompositingOperation)anOperation { operation = anOperation; }
 
-- (NSRect) rect
-{
+- (void) setAlpha: (float)anAlpha { alpha = anAlpha; }
 
-}
-
-- (void) setImage: (NSImage *)image
-{
-
-}
-
-- (void) setPosition: (IKCompositedIconPosition)position
-{
-
-}
-
-- (void) setOperation: (NSCompositingOperation)operation
-{
-
-}
-
-- (void) setAlpha: (float)alpha
-{
-
-}
-
-- (void) setRect: (NSRect)rect
-{
-
-}
+- (void) setRect: (NSRect)aRect { rect = aRect; }
 
 - (NSDictionary *) propertyList
 {
-
+	NSMutableDictionary* dictionary = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary* dictRect = [[NSMutableDictionary alloc] init];
+	[dictionary setObject: path forKey: @"path"];
+	[dictionary setObject: [NSNumber numberWithInt: position] forKey: @"position"];
+	[dictionary setObject: [NSNumber numberWithInt: operation] forKey: @"operation"];
+	[dictRect setObject: [NSNumber numberWithFloat: rect.origin.x] forKey: @"x"];
+	[dictRect setObject: [NSNumber numberWithFloat: rect.origin.y] forKey: @"y"];
+	[dictRect setObject: [NSNumber numberWithFloat: rect.size.width] forKey: @"width"];
+	[dictRect setObject: [NSNumber numberWithFloat: rect.size.height] forKey: @"height"];
+	[dictionary setObject: dictRect forKey: @"rectangle"];
+	[dictionary setObject: [NSNumber numberWithFloat: alpha] forKey: @"alpha"];
+	[dictRect release];
+	return [dictionary autorelease];
 }
 
 @end
