@@ -32,10 +32,11 @@
 
 @interface IKIconProvider : NSObject
 {
-
+  BOOL _usesThumbnails;
+  BOOL _ignoresCustomIcons;
 }
 
-+ (IKIconProvider) sharedInstance;
++ (IKIconProvider *) sharedInstance;
 
 /*
  * The two methods below implement an automated cache mechanism and a thumbnails

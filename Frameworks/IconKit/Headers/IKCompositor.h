@@ -46,12 +46,12 @@
 - (void) setCompositingSize: (NSSize)size;
 
 - (void) compositeImage: (NSImage *)source 
-           withPosition: (IKCompositedIconPosition)position;
+           withPosition: (IKCompositedImagePosition)position;
 - (void) compositeImage: (NSImage *)source 
                  inRect: (NSRect)rect;
 
 - (void) compositeImage: (NSImage *)source 
-           withPosition: (IKCompositedIconPosition)position
+           withPosition: (IKCompositedImagePosition)position
               operation: (NSCompositingOperation)op 
                   alpha: (float)a;
 - (void) compositeImage: (NSImage *)source 

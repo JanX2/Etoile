@@ -27,10 +27,28 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#import "IKThumbnailProvider.h"
+#import "NSString+MD5Hash.h"
 #import "IKIconProvider.h"
 
 static IKIconProvider *iconProvider = nil;
 static NSFileManager *fileManager = nil;
+static NSWorkspace *workspace = nil;
+
+// Private access
+
+@interface NSWorkspace (Private)
+- (NSImage*) _extIconForApp: (NSString*)appName info: (NSDictionary*)extInfo;
+@end
+
+// Private methods
+
+@interface IKIconProvider (Private)
+- (NSImage *) _cachedIconForURL: (NSURL *)url;
+- (void) _cacheThumbnailIcon: (NSImage *)icon forURL: (NSURL *)url;
+- (NSImage *) _iconFromWorkspaceWithURL: (NSURL *)url;
+- (NSString *) _iconsPath;
+@end
 
 @implementation IKIconProvider
 
@@ -55,7 +73,7 @@ static NSFileManager *fileManager = nil;
       iconProvider = [IKIconProvider alloc];
 	}     
   
-  iconlProvider = [iconProvider init];
+  iconProvider = [iconProvider init];
 }   
 
 /*
@@ -72,6 +90,7 @@ static NSFileManager *fileManager = nil;
   if ((self = [super init])  != nil)
     {
       fileManager = [NSFileManager defaultManager];
+      workspace = [NSWorkspace sharedWorkspace];
     }
   
   return self;
@@ -88,7 +107,7 @@ static NSFileManager *fileManager = nil;
   IKThumbnailProvider *thumbnailProvider = [IKThumbnailProvider sharedInstance];
   NSString *appPath;
   
-  icon = [self_cachedIconForURL: url];
+  icon = [self _cachedIconForURL: url];
   // If the file has a custom icon, the icon is cached because custom icons are
   // stored in the cache
   
@@ -101,7 +120,7 @@ static NSFileManager *fileManager = nil;
       
       thumbnail = [thumbnailProvider thumbnailForURL: url size: IKThumbnailSizeNormal];
       [thumbnail setScalesWhenResized: YES];
-      [thumbnail setSize: NSMakeSize(64, 64);
+      [thumbnail setSize: NSMakeSize(64, 64)];
       icon = thumbnail;
       [self _cacheThumbnailIcon: (NSImage *)icon forURL: url];
     }
@@ -178,7 +197,7 @@ static NSFileManager *fileManager = nil;
   return [path stringByAppendingPathComponent: @"Icons"];
 }
 
-- (NSImage *) _cachedIconFromURL: (NSURL *)url
+- (NSImage *) _cachedIconForURL: (NSURL *)url
 {
   NSString *path;
   NSString *subpath;
@@ -189,17 +208,17 @@ static NSFileManager *fileManager = nil;
 
   // Check for a custom icon
   subpath = [path stringByAppendingPathComponent: @"Custom"];
-  pathComponent = [[[url absoluteString] MD5Hash] stringByAppendingPathExtension: @"tiff"];
+  pathComponent = [[[url absoluteString] md5Hash] stringByAppendingPathExtension: @"tiff"];
   subpath = [subpath stringByAppendingPathComponent: pathComponent];
-  if ([fileManager fileExistsAtPath: path isDir: &isDir] && !isDir)
-    return [[NSImage alloc] initWithContentsOfFile: subpath]];
+  if ([fileManager fileExistsAtPath: path isDirectory: &isDir] && !isDir)
+    return [[NSImage alloc] initWithContentsOfFile: subpath];
   
   // Check for a thumbnail icon
   subpath = [path stringByAppendingPathComponent: @"Thumbnails"];
-  pathComponent = [[[url absoluteString] MD5Hash] stringByAppendingPathExtension: @"tiff"];
+  pathComponent = [[[url absoluteString] md5Hash] stringByAppendingPathExtension: @"tiff"];
   subpath = [subpath stringByAppendingPathComponent: pathComponent];
-  if ([fileManager fileExistsAtPath: path isDir: &isDir] && !isDir)
-    return [[NSImage alloc] initWithContentsOfFile: subpath]];
+  if ([fileManager fileExistsAtPath: path isDirectory: &isDir] && !isDir)
+    return [[NSImage alloc] initWithContentsOfFile: subpath];
     
   return nil;
 }
@@ -214,9 +233,9 @@ static NSFileManager *fileManager = nil;
   path = [self _iconsPath];
   
   path = [path stringByAppendingPathComponent: @"Thumbnails"];
-  pathComponent = [[[url absoluteString] MD5Hash] stringByAppendingPathExtension: @"tiff"];
+  pathComponent = [[[url absoluteString] md5Hash] stringByAppendingPathExtension: @"tiff"];
   path = [path stringByAppendingPathComponent: pathComponent];
-  data = [icon TIFFRepresentation]
+  data = [icon TIFFRepresentation];
   [data writeToFile: path atomically: YES];
 }
 
@@ -224,10 +243,10 @@ static NSFileManager *fileManager = nil;
 {
   // Must be overriden by Etoile to improve the implementation
 
-  NSString *extension = [[url path] pathExtension]
+  NSString *extension = [[url path] pathExtension];
   NSDictionary *extensionInfo = [workspace infoForExtension: extension];
   NSString *appPath = [workspace getBestAppInRole: nil forExtension: extension]; 
-  NSImage icon = [workspace _extIconForApp: appPath info: extensionInfo];
+  NSImage *icon = [workspace _extIconForApp: appPath info: extensionInfo];
   
   if (icon != nil)
     return icon;

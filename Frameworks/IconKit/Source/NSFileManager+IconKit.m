@@ -23,11 +23,13 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#import "NSFileManager+IconKit.h"
+
 @implementation NSFileManager (IconKit)
 
 - (BOOL) buildDirectoryStructureForPath: (NSString *)path
 {
-  NSArray *components = [path components];
+  NSArray *components = [path pathComponents];
   NSString *pathToCheck = [NSString string];
   int i;
   int cCount = [components count];
@@ -37,7 +39,7 @@
     {
       pathToCheck = [pathToCheck stringByAppendingPathComponent: [components objectAtIndex: i]];     
       
-      result = [self _checkWithEventuallyCreatingDirectoryAtPath: pathToCheck];
+      result = [self checkWithEventuallyCreatingDirectoryAtPath: pathToCheck];
       if (result == NO)
         {
           NSLog(@"Impossible to create directory structure for the path %@", path);
@@ -53,16 +55,16 @@
   BOOL isDir;
   BOOL result; 
   
-  if ([fileManager fileExistsAtPath: path isDirectory: &isDir] == NO)
+  if ([self fileExistsAtPath: path isDirectory: &isDir] == NO)
     {
-      result = [fileManager createDirectoryAtPath: path attributes: nil] 
+      result = [self createDirectoryAtPath: path attributes: nil] ;
       // May be shouldn't be nil
     }
   else if (isDir == NO) // A file exists for this path
     {
       NSLog(@"Impossible to create a directory named %@ at the path %@ \
         because there is already a file with this name", 
-        [path lastPathComponent], [path stringByDeletingLastpathComponent]); 
+        [path lastPathComponent], [path stringByDeletingLastPathComponent]); 
       result = NO;
     }
   else if (isDir = YES) 

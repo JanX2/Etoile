@@ -31,7 +31,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 
-typed enum _IKThumbnailSize
+typedef enum _IKThumbnailSize
 {
   IKThumbnailSizeNormal,
   IKThumbnailSizeLarge

@@ -27,6 +27,7 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS = -Wno-import
+ADDITIONAL_INCLUDE_DIRS = -I../Headers
 
 GNUSTEP_MAKEFILES = $(GNUSTEP_SYSTEM_ROOT)/Makefiles
 
@@ -52,7 +53,7 @@ libIconKit_LOCALIZED_RESOURCE_FILES=
 #
 libIconKit_LANGUAGES= \
 	English
-	
+		
 #
 # Class files
 #
@@ -71,17 +72,23 @@ libIconKit_C_FILES=
 #
 # Header files
 #
-libExtendedWorkspace_HEADER_FILES_DIR = ../Headers
+libIconKit_HEADER_FILES_DIR = ../Headers
 
-libExtendedWorkspace_HEADER_FILES_INSTALL_DIR = /IconKit
-
-libIconKit_HEADER_FILES = \
+libIconKit_HEADERS = \
 	IKCompositorOperation.h \
 	IKCompositor.h \
 	IKIconProvider.h \
 	IKApplicationIconProvider.h \
 	NSFileManager+IconKit.h \
 	NSString+MD5Hash.h
+
+libIconKit_HEADER_FILES_INSTALL_DIR = /IconKit
+
+libIconKit_HEADER_FILES = \
+	IKCompositorOperation.h \
+	IKCompositor.h \
+	IKIconProvider.h \
+	IKApplicationIconProvider.h	
 	
 -include GNUmakefile.preamble
 

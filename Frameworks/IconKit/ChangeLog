@@ -1,23 +1,77 @@
+2004-08-24  Quentin Mathe <qmathe@club-internet.fr>
+
+    WARNING: not tested.
+    * Headers/IKApplicationIconProvider.h:
+    * Headers/IKCompositor.h:
+    * Headers/IKIconProvider.h:
+    * Headers/IKThumbnailProvider.h:
+    * Headers/NSFileManager+IconKit.h:
+    * Source/IKApplicationIconProvider.m:
+    * Source/IKIconProvider.m:
+    * Source/NSFileManager+IconKit.m:
+    * Source/GNUmakefile:
+    Lot of corrections to make the framework compiles.
+
+2004-08-17  Quentin Mathe <qmathe@club-internet.fr>
+        
+	WARNING: doesn't compile.
+	* Headers/IKApplicationIconProvider.h:
+	Reworded methods choice and methods names, doesn't use anymore a
+	singleton pattern.
+	* Source/IKApplicationIconProvider.m:
+	Reworded methods choice and methods names, doesn't use anymore a
+	singleton pattern. Added initial implementation.
+	* Headers/IKIconProvider.h:
+	Minor modifications.
+	* Source/IKIconProvider.m:
+	Initial implementation.
+	* Headers/IKThumbnailProvider.h: Added.
+	* Source/IKThumbnailProvider.m:
+	Added with initial implementation, still work to do on the libpng based write
+	method.
+	* Headers/IKCompositor.h:
+	* Source/IKCompositor.m:
+	Changed the method name -composite to the method name -render and other
+	minor modifications.
+	* Headers/IKCompositorOperation.h:
+    Renamed the enumeration IKCompositedIconPosition to
+	IKCompositedImagePosition.
+	* Headers/NSString+MD5Hash:h:
+	* Source/NSString+MD5Hash.m: 
+	Added (not written by us).
+	* Headers/NSFilerManager+IconKit.h:
+	* Source/NSFileManager+IconKit.m: Added.
+	* Source/GNUmakefile:
+	Edited to include the newly added files.
+
+2004-08-16  Nicolas Roard <nicolas@roard.com>
+
+    * README: Added introduction and text about the compositor
+
 2004-08-14  Nicolas Roard <nicolas@roard.com>
-	* Initial implementation of the IconKit
-	* some minor modifications of IKCompositor.h and IKCompositorOperation.h
-	* implementation of IKCompositor.m and IKCompositorOperation.m
-	* lacks IKCompositedIconPosition possibilites and automatic rescaling using
-	  originalSize/compositingSize (the exercive is left to the reader ;-)
+	
+	* Source/IKCompositor.m:
+	* Source/IKCompositorOperation.m:
+	Initial implementation of the IconKit compositor, but still lacks 
+	IKCompositedIconPosition possibilites and automatic rescaling using
+	originalSize/compositingSize (the exercise is left to the reader ;-)
+	* IKCompositor.h:
+	* IKCompositorOperation.h:
+	Minor modifications.
 
 2004-08-14  Quentin Mathe <qmathe@club-internet.fr>
 
-	    * ChangeLog:
-        * README:
-        * INSTALL:
-        * GNUmakefile:
-        * Headers/IKCompositor.h:
-        * Headers/IKCompositorOperation.h:
-        * Headers/IKIconProvider.h:
-        * Headers/IKApplicationIconProvider.h:
-        * Source/IKCompositor.m:
-        * Source/IKCompositorOperation.m:
-        * Source/IKIconProvider.m:
-        * Source/IKApplicationIconProvider.m:
-        * Source/GNUmakefile:
-        Initial import.
+	* ChangeLog:
+    * README:
+    * INSTALL:
+    * GNUmakefile:
+    * Headers/IKCompositor.h:
+    * Headers/IKCompositorOperation.h:
+    * Headers/IKIconProvider.h:
+    * Headers/IKApplicationIconProvider.h:
+    * Source/IKCompositor.m:
+    * Source/IKCompositorOperation.m:
+    * Source/IKIconProvider.m:
+    * Source/IKApplicationIconProvider.m:
+    * Source/GNUmakefile:
+    Initial import.

@@ -27,9 +27,13 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#import "IKCompositor.h"
+#import "IKCompositorOperation.h"
+#import "NSString+MD5Hash.h"
+#import "NSFileManager+IconKit.h"
 #import "IKApplicationIconProvider.h"
 
-typdef enum _IKIconVariant
+typedef enum _IKIconVariant
 {
   IKIconVariantDocument,
   IKIconVariantPlugin
@@ -37,6 +41,25 @@ typdef enum _IKIconVariant
 
 static NSWorkspace *workspace = nil;
 static NSFileManager *fileManager = nil;
+
+// Private access
+
+@interface NSWorkspace (Private)
+- (NSImage*) _extIconForApp: (NSString*)appName info: (NSDictionary*)extInfo;
+@end
+
+// Private methods
+
+@interface IKApplicationIconProvider (Private)
+- (NSImage *) _blankDocumentIcon;
+- (NSImage *) _blankPluginIcon;
+- (BOOL) _buildDirectoryStructureForCompositedIconsCache;
+- (NSImage *) _cachedIconForVariant: (IKIconVariant)variant;
+- (void) _cacheIcon: (NSImage *)icon forVariant: (IKIconVariant)variant;
+- (NSString *) _compositedIconsPath;
+- (NSImage *) _compositeIconForVariant: (IKIconVariant)variant;
+- (void) _obtainBundlePathIfNeeded;
+@end
 
 @implementation IKApplicationIconProvider
 
@@ -112,7 +135,7 @@ static NSFileManager *fileManager = nil;
   // the workspace behavior, we want a custom behavior
   
   NSDictionary *extensionInfo;
-  NSImage icon = nil;
+  NSImage *icon = nil;
   
   [self _obtainBundlePathIfNeeded];
   
@@ -127,7 +150,7 @@ static NSFileManager *fileManager = nil;
   extensionInfo = [workspace infoForExtension: extension];
   if (extensionInfo != nil)
     {
-      icon = [self _extIconForApp: _path info: extInfo];
+      icon = [workspace _extIconForApp: _path info: extensionInfo];
     }
   
   // We are ignoring voluntarly the custom icon which can be set by the user for
@@ -146,7 +169,7 @@ static NSFileManager *fileManager = nil;
     
   icon = [self _compositeIconForVariant: IKIconVariantDocument];
   if (icon != nil)
-    [self _cacheIcon: icon forVariant IKIconVariantDocument];
+    [self _cacheIcon: icon forVariant: IKIconVariantDocument];
   
   return icon;
 }
@@ -178,13 +201,13 @@ static NSFileManager *fileManager = nil;
 {
   NSString *path;
   NSString *subpath;
-  NSString *pathComponent = [_path MD5Hash];
+  NSString *pathComponent = [_path md5Hash];
   BOOL result;
   BOOL isDir;
   
-  pathComponent = [pathComponent stringByAppendingPathExtension: @"tiff"]
+  pathComponent = [pathComponent stringByAppendingPathExtension: @"tiff"];
   
-  path = [self _comositedIconsPath];  
+  path = [self _compositedIconsPath];  
   
   // We remove the composited icon in the Document directory of the cache
   subpath = [path stringByAppendingPathComponent: @"Document"];
@@ -193,7 +216,7 @@ static NSFileManager *fileManager = nil;
   [fileManager removeFileAtPath: subpath handler: nil];
   if (result == NO)
     {
-      NSLog(@"Impossible to invalid document composited icon cache for the 
+      NSLog(@"Impossible to invalid document composited icon cache for the \
         application %@", _path);
     }
   
@@ -204,12 +227,12 @@ static NSFileManager *fileManager = nil;
   [fileManager removeFileAtPath: subpath handler: nil];
   if (result == NO)
     {
-      NSLog(@"Impossible to invalid plugin composited icon cache for the 
+      NSLog(@"Impossible to invalid plugin composited icon cache for the \
         application %@", _path);
     }
 }
 
-+ (void) invalidCacheAll
+- (void) invalidCacheAll
 {
   NSString *path = [self _compositedIconsPath];
   BOOL isDir;
@@ -231,11 +254,11 @@ static NSFileManager *fileManager = nil;
   
   icon = [self _compositeIconForVariant: IKIconVariantDocument];
   if (icon != nil)
-    [self _cacheIcon: thumbnail forVariant: IKIconVariantDocument];
+    [self _cacheIcon: icon forVariant: IKIconVariantDocument];
   
   icon = [self _compositeIconForVariant: IKIconVariantPlugin];
   if (icon != nil)
-    [self _cacheIcon: thumbnail forVariant: IKIconVariantPlugin];
+    [self _cacheIcon: icon forVariant: IKIconVariantPlugin];
 }
 
 - (NSImage *) _compositeIconForVariant: (IKIconVariant)variant
@@ -258,9 +281,10 @@ static NSFileManager *fileManager = nil;
         // Pathological case
         return nil;
     }
-    
-  return [compositor compositeImage: [self applicationIcon] 
-                           position: IKCompositedImagePositionBottomRight]; 
+  
+  [compositor compositeImage: [self applicationIcon] 
+                withPosition: IKCompositedImagePositionBottomRight];   
+  return [compositor render]; 
 }
 
 - (NSString *) _compositedIconsPath
@@ -315,10 +339,10 @@ static NSFileManager *fileManager = nil;
       return nil;
     }
     
-  pathComponent = [[_identifier MD5Hash] stringByAppendingPathExtension: @"tiff"];
+  pathComponent = [[_identifier md5Hash] stringByAppendingPathExtension: @"tiff"];
   path = [path stringByAppendingPathComponent: pathComponent];
   
-  if ([fileManager fileExistsAtPath: path isDir: &isDir] && !isDir)
+  if ([fileManager fileExistsAtPath: path isDirectory: &isDir] && !isDir)
     return AUTORELEASE([[NSImage alloc] initWithContentsOfFile: path]);
     
   return nil;
@@ -327,7 +351,9 @@ static NSFileManager *fileManager = nil;
 - (void) _cacheIcon: (NSImage *)icon forVariant: (IKIconVariant)variant
 {
   NSString *path;
+  NSString *pathComponent;
   NSBitmapImageRep *rep;
+  NSData *data;
   BOOL isDir;
   
   path = [self _compositedIconsPath];
@@ -347,7 +373,7 @@ static NSFileManager *fileManager = nil;
         return;
     }
     
-  if ([fileManager fileExistsAtPath: path isDir: &isDir] == NO)
+  if ([fileManager fileExistsAtPath: path isDirectory: &isDir] == NO)
     {
       [self _buildDirectoryStructureForCompositedIconsCache];
     }
@@ -355,7 +381,7 @@ static NSFileManager *fileManager = nil;
     {
       NSLog(@"Impossible to create a directory named %@ at the path %@ \
         because there is already a file with this name", 
-        [path lastPathComponent], [path stringByDeletingLastpathComponent]);
+        [path lastPathComponent], [path stringByDeletingLastPathComponent]);
       return; 
     }
   
@@ -367,15 +393,15 @@ static NSFileManager *fileManager = nil;
   
   if (_identifier == nil)
     {
-      NSLog(@"Immpossible to look for the application composited icons cache \
+      NSLog(@"Impossible to look for the application composited icons cache \
         because the application has no bundle identifier");
-      return nil;
+      return;
     }
   
-  pathComponent = [[_identifier MD5Hash] stringByAppendingPathExtension: @"tiff"]; 
-  path = [path stringByAppendingPathComponent: [_identifier MD5Hash]];
+  pathComponent = [[_identifier md5Hash] stringByAppendingPathExtension: @"tiff"]; 
+  path = [path stringByAppendingPathComponent: [_identifier md5Hash]];
   data = [icon TIFFRepresentation];
-  [data writetoFile: path atomically: YES];
+  [data writeToFile: path atomically: YES];
 }
 
 - (BOOL) _buildDirectoryStructureForCompositedIconsCache
@@ -385,14 +411,14 @@ static NSFileManager *fileManager = nil;
   
   path = [self _compositedIconsPath];
   
-  if ([self _buildDirectoryStructureForPath: path] == NO)
+  if ([fileManager buildDirectoryStructureForPath: path] == NO)
     return NO;
     
   subpath = [path stringByAppendingPathComponent: @"Document"];
-  if ([self _checkWithEventuallyCreatingDirectoryAtPath: subpath] == NO)
+  if ([fileManager checkWithEventuallyCreatingDirectoryAtPath: subpath] == NO)
     return NO;
   subpath = [path stringByAppendingPathComponent: @"Plugin"];
-  if ([self _checkWithEventuallyCreatingDirectoryAtPath: subpath] == NO)
+  if ([fileManager checkWithEventuallyCreatingDirectoryAtPath: subpath] == NO)
     return NO;
     
   return YES;
@@ -417,6 +443,16 @@ static NSFileManager *fileManager = nil;
         }
     }
    */
+}
+
+- (NSImage *) _blankDocumentIcon
+{
+  return nil;
+}
+
+- (NSImage *) _blankPluginIcon
+{
+  return nil;
 }
 
 @end
