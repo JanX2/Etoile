@@ -16,6 +16,19 @@ static NSColor* rowBackgroundColor;
 	return rowBackgroundColor;
 }
 
+static NSColor* alternateRowBackgroundColor;
+
++ (NSColor*) alternateRowBackgroundColor
+{
+	if (alternateRowBackgroundColor == nil)
+	{
+		alternateRowBackgroundColor = [GraphicToolbox readColorFromImage:
+			[NSImage imageNamed: @"Colors/Colors-alternate-row-background.tiff"]];
+		[alternateRowBackgroundColor retain];
+	}
+	return alternateRowBackgroundColor;
+}
+
 static NSColor* rowTextColor;
 
 + (NSColor*) rowTextColor

@@ -1,3 +1,11 @@
+2005-03-14 Nicolas Roard <nicolas@roard.com>
+
+	* first modifications in NSBrowser, NSTableView and NSOutlineView to have alternate colors.. 
+	* correction in GSDrawFunctions of a display problem with NSBox
+	* addition of test cases in NSBox for the different bezels..
+	* small hack in NSButtonCell to have a correct text placement (-1)
+	* addition of several methods in NSColor to deal with alternate colors..
+	
 2005-03-10 Nicolas Roard <nicolas@roard.com>
 
 	* addition of this ChangeLog :-)

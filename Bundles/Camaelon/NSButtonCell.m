@@ -86,6 +86,8 @@
     mask = NSNoCellMask;
 
   /* Pushed in buttons contents are displaced to the bottom right 1px.  */
+  if (ipos != NSImageAbove)
+      cellFrame = NSOffsetRect(cellFrame, 1., flippedView ? 1. : -1.);
   if (_cell.is_bordered && (mask & NSPushInCellMask))
     {
       cellFrame = NSOffsetRect(cellFrame, 1., flippedView ? 1. : -1.);

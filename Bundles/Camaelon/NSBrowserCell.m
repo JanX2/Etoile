@@ -23,16 +23,17 @@
       [backColor set];
       if (!_browsercell_is_leaf)
         image = [isa highlightedBranchImage];
+  	  NSRectFill(cellFrame);
     } 
   else
     { 
-	  backColor = [NSColor rowBackgroundColor];
-      [backColor set];
+//	  backColor = [NSColor rowBackgroundColor];
+//      [backColor set];
       if (!_browsercell_is_leaf)
         image = [isa branchImage];
     }
   // Clear the background
-  NSRectFill(cellFrame);
+ // NSRectFill(cellFrame);
 
   showsFirstResponder = _cell.shows_first_responder;
 

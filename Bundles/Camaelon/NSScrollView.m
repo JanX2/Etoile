@@ -10,6 +10,7 @@
   NSRectClip(rect);
   [[_window backgroundColor] set];
   [[NSColor blueColor] set];
+  [[NSColor blueColor] set];
   [[NSColor colorWithCalibratedRed: 0.6 green: 0.6 blue: 0.6 alpha: 1.0] set];
   NSRectFill(rect);
 /*
@@ -19,10 +20,12 @@ NSRect vS = [_vertScroller frame];
  [self setBackgroundColor: [NSColor rowBackgroundColor]];
  id documentView = [self documentView];
 
+ /*
  if ([documentView respondsToSelector: @selector(setBackgroundColor:)])
  {
  	[[self documentView] setBackgroundColor: [NSColor rowBackgroundColor]];
  }
+ */
   //NSGraphicsContext *ctxt = GSCurrentContext();
 
   switch (_borderType)

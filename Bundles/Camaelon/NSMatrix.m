@@ -7,6 +7,10 @@
 @end
 
 @implementation NSMatrix (theme)
+
+//- (BOOL) drawAlternateRows { return YES; }
+//- (float) alternateRowHeight { return _cellSize.height; }
+
 - (BOOL) isOpaque
 {
   return NO;

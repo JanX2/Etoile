@@ -2,11 +2,14 @@
 #include <AppKit/AppKit.h>
 #include "GSDrawFunctions.h"
 #include "GraphicToolbox.h"
+#import "GSBrowserMatrix.h"
 
 //static float scrollerWidth; // == [NSScroller scrollerWidth]
 #define NSBR_COLUMN_SEP 4
 #define NSBR_VOFFSET 2
 //#define NSBR_COLUMN_IS_VISIBLE(i) YES // JUST FOR TEST
+
+@class GSBrowserTitleCell;
 
 @interface NSBrowserColumn : NSObject <NSCoding>
 {
@@ -29,6 +32,25 @@
 
 
 @implementation NSBrowserColumn (theme)
+- (id) initWithCoder: (NSCoder *)aDecoder
+{
+  int dummy = 0;
+
+  [aDecoder decodeValueOfObjCType: @encode(BOOL) at: &_isLoaded];
+  _columnScrollView = [aDecoder decodeObject];
+  if (_columnScrollView)
+    RETAIN(_columnScrollView);
+  _columnMatrix = [aDecoder decodeObject];
+  _columnMatrix = (GSBrowserMatrix*) _columnMatrix;
+  if (_columnMatrix)
+    RETAIN(_columnMatrix);
+  [aDecoder decodeValueOfObjCType: @encode(int) at: &dummy];
+  _columnTitle = [aDecoder decodeObject];
+  if (_columnTitle)
+    RETAIN(_columnTitle);
+  return self;
+}
+
 /*
 - (void) setColumnMatrix: (id)aMatrix
 {
@@ -45,8 +67,75 @@
 */
 @end
 
+static NSTextFieldCell *titleCell;
 
 @implementation NSBrowser (theme)
+- (id) initWithFrame: (NSRect)rect
+{
+  NSSize bs;
+  //NSScroller *hs;
+  float scrollerWidth = [NSScroller scrollerWidth];
+
+  /* Created the shared titleCell if it hasn't been created already. */
+  if (!titleCell)
+    {
+      titleCell = [GSBrowserTitleCell new];
+    }
+
+  self = [super initWithFrame: rect];
+
+  // Class setting
+  _browserCellPrototype = [[[NSBrowser cellClass] alloc] init];
+  _browserMatrixClass = [GSBrowserMatrix class];
+
+  // Default values
+  _pathSeparator = @"/";
+  _allowsBranchSelection = YES;
+  _allowsEmptySelection = YES;
+  _allowsMultipleSelection = YES;
+  _reusesColumns = NO;
+  _separatesColumns = YES;
+  _isTitled = YES;
+  _takesTitleFromPreviousColumn = YES;
+  _hasHorizontalScroller = YES;
+  _isLoaded = NO;
+  _acceptsArrowKeys = YES;
+  _acceptsAlphaNumericalKeys = YES;
+  _lastKeyPressed = 0.;
+  _charBuffer = nil;
+  _sendsActionOnArrowKeys = YES;
+  _sendsActionOnAlphaNumericalKeys = YES;
+  _browserDelegate = nil;
+  _passiveDelegate = YES;
+  _doubleAction = NULL;
+  bs = _sizeForBorderType (NSBezelBorder);
+  _minColumnWidth = scrollerWidth + (2 * bs.width);
+  if (_minColumnWidth < 100.0)
+    _minColumnWidth = 100.0;
+
+  // Horizontal scroller
+  _scrollerRect.origin.x = bs.width;
+  _scrollerRect.origin.y = bs.height;
+  _scrollerRect.size.width = _frame.size.width - (2 * bs.width);
+  _scrollerRect.size.height = scrollerWidth;
+  _horizontalScroller = [[NSScroller alloc] initWithFrame: _scrollerRect];
+  [_horizontalScroller setTarget: self];
+  [_horizontalScroller setAction: @selector(scrollViaScroller:)];
+  [self addSubview: _horizontalScroller];
+  _skipUpdateScroller = NO;
+
+  // Columns
+  _browserColumns = [[NSMutableArray alloc] init];
+
+  // Create a single column
+  _lastColumnLoaded = -1;
+  _firstVisibleColumn = 0;
+  _lastVisibleColumn = 0;
+  _maxVisibleColumns = 3;
+  [self _createColumn];
+
+  return self;
+}
 
 - (BOOL) isOpaque { return NO; }
 
@@ -279,7 +368,6 @@
     }
 }
 
-@class GSBrowserTitleCell;
 /** Draws the title for the column at index column within the rectangle
     defined by aRect. */
 - (void) drawTitle: (NSString *)title
@@ -293,7 +381,5 @@
   [titleCell setStringValue: title];
   [titleCell drawWithFrame: aRect inView: self];
 }
-
-
 
 @end

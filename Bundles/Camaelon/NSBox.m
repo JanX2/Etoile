@@ -14,7 +14,21 @@
   rect.size.height -= 4;
 
   // Draw border
-  [GSDrawFunctions drawBox: rect on: self];
+
+  switch (_border_type)
+  {
+  	case NSNoBorder:
+	break;
+	case NSLineBorder:
+  		[GSDrawFunctions drawBox: rect on: self];
+		break;
+	case NSBezelBorder:
+  		[GSDrawFunctions drawBox: rect on: self];
+		break;
+	case NSGrooveBorder:
+  		[GSDrawFunctions drawBox: rect on: self];
+		break;
+  }
 
   // Draw title
   if (_title_position != NSNoTitle)
