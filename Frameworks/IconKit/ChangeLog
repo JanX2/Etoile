@@ -1,3 +1,13 @@
+2005-03-15  Quentin Mathe  <qmathe@club-internet.fr>
+    
+    * Headers/IKIcon.h:
+    * Headers/IKIconPositions.h:
+    * Source/IKIcon.m:
+    Fixed various development errors in order to have IconKit compiles new code 
+    like IKIcon.
+    * Source/GNUmakefile:
+    Modified to take in account the recently added files.
+
 2005-03-14  Quentin Mathe  <qmathe@club-internet.fr>
     
     * Headers/IconKit.h:

@@ -1,22 +1,31 @@
 /*
- *  IKIcon.m
- *  
- *
- *  Created by Uli Kusterer on 31.12.04.
- *  Copyright 2004 M. Uli Kusterer. All rights reserved.
- *
- */
+	IKIcon.m
 
-// -----------------------------------------------------------------------------
-//  Headers:
-// -----------------------------------------------------------------------------
+	IKIcon is IconKit main class to represent icons.
+
+	Copyright (C) 2004 Uli Kusterer <contact@zathras.de>
+	                   Quentin Mathe <qmathe@club-internet.fr>	                   
+
+	Author:   Uli Kusterer <contact@zathras.de>
+	          Quentin Mathe <qmathe@club-internet.fr>
+	Date:  December 2004
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	Lesser General Public License for more details.
+
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 #include "IKIcon.h"
-
-
-// -----------------------------------------------------------------------------
-//  Constants:
-// -----------------------------------------------------------------------------
 
 // The values of the following should probably be the file names of the icon files:
 //  However, the names I've chosen so far are the ones that
@@ -34,7 +43,7 @@ IKIconIdentifier    IKIconWriteOnlyFolder =     @"WriteOnlyFolder";
 IKIconIdentifier    IKIconRecyclerFolder =      @"RecyclerFolder";
 IKIconIdentifier    IKIconRecyclerFolderFull =  @"RecyclerFolderFull";
 // ...
-IKIconIdentifier    IKIconLinkBadge =       @"LinkBadge"
+IKIconIdentifier    IKIconLinkBadge =       @"LinkBadge";
 IKIconIdentifier    IKIconLockedBadge =     @"LockedBadge";
 IKIconIdentifier    IKIconScriptBadge =     @"ScriptBadge";
 IKIconIdentifier    IKIconReadOnlyBadge =   @"ReadOnlyBadge";
@@ -46,18 +55,14 @@ IKIconIdentifier    IKIconAlertWarning =    @"AlertWarning";
 IKIconIdentifier    IKIconAlertFailure =    @"AlertFailure";
 
 // Notifications:
-NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  // Sent with the IKIcon as the object whenever update is called.
+NSString *          IKIconChangedNotification = @"IKIconChangedNotification";  // Sent with the IKIcon as the object whenever update is called.
 
-
-// -----------------------------------------------------------------------------
-//  Implementation:
-// -----------------------------------------------------------------------------
 
 @implementation IKIcon
 
-// -----------------------------------------------------------------------------
-//  Convenience Factory Methods:
-// -----------------------------------------------------------------------------
+/*
+ *  Factory methods
+ */
 
 +(id)       iconForFile: (NSString*)fpath
 {
@@ -94,11 +99,10 @@ NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  
     return [[[self alloc] initWithImage: image] autorelease];
 }
 
-
-// -----------------------------------------------------------------------------
-//  Constructors:
-// -----------------------------------------------------------------------------
-
+/*
+ * Constructors
+ */
+ 
 // -----------------------------------------------------------------------------
 //  initForFile:
 //      Return an icon for a particular file. This may give you a cached
@@ -122,8 +126,8 @@ NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  
     if( !self )
         return nil;
     
-    image = [[[NSWorkspace sharedWorkspace] iconForFile: fpath] retain];   // FIX ME! Causes endless recursion with NSWorkspace overrides. Change this to use Quentin's code so we can activate NSWorkspaceAdditions.
-    lock = [[NSRecursiveLock alloc] init];
+    _image = [[[NSWorkspace sharedWorkspace] iconForFile: fpath] retain];   // FIX ME! Causes endless recursion with NSWorkspace overrides. Change this to use Quentin's code so we can activate NSWorkspaceAdditions.
+    _lock = [[NSRecursiveLock alloc] init];
     
     return self;
 }
@@ -161,9 +165,9 @@ NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  
     if( !self )
         return nil;
     
-    image = [[NSImage imageNamed: ident] retain];
-    identifier = [ident retain];
-    lock = [[NSRecursiveLock alloc] init];
+    _image = [[NSImage imageNamed: ident] retain];
+    _identifier = [ident retain];
+    _lock = [[NSRecursiveLock alloc] init];
     
     return self;
 }
@@ -186,8 +190,8 @@ NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  
     if( !self )
         return nil;
     
-    image = [[[NSWorkspace sharedWorkspace] iconForFileType: suffix] retain];   // FIX ME! Causes endless recursion with NSWorkspace overrides. Change this to use Quentin's code so we can activate NSWorkspaceAdditions.
-    lock = [[NSRecursiveLock alloc] init];
+    _image = [[[NSWorkspace sharedWorkspace] iconForFileType: suffix] retain];   // FIX ME! Causes endless recursion with NSWorkspace overrides. Change this to use Quentin's code so we can activate NSWorkspaceAdditions.
+    _lock = [[NSRecursiveLock alloc] init];
     
     return self;
 }
@@ -221,8 +225,8 @@ NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  
     if( !self )
         return nil;
     
-    image = [img retain];
-    lock = [[NSRecursiveLock alloc] init];
+    _image = [img retain];
+    _lock = [[NSRecursiveLock alloc] init];
     
     return self;
 }
@@ -252,13 +256,13 @@ NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  
 
 -(void) dealloc
 {
-    [lock lock];
-        [image release];
-        image = nil;
-        [identifier release];
-        identifier = nil;
-        [lock release];
-        lock = nil;
+    [_lock lock];
+        [_image release];
+        _image = nil;
+        [_identifier release];
+        _identifier = nil;
+        [_lock release];
+        _lock = nil;
     [super dealloc];
 }
 
@@ -270,9 +274,9 @@ NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  
 
 -(NSSize)   size
 {
-    [lock lock];
-        NSSize sz = [image size];
-    [lock unlock];
+    [_lock lock];
+        NSSize sz = [_image size];
+    [_lock unlock];
     
     return sz;
 }
@@ -296,9 +300,9 @@ NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  
 
 -(NSImage*) image
 {
-    [lock lock];
-        NSImage* img = [[image retain] autorelease];
-    [lock unlock];
+    [_lock lock];
+        NSImage* img = [[_image retain] autorelease];
+    [_lock unlock];
     
     return img;
 }
@@ -348,7 +352,7 @@ NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  
 -(IKIcon*)  iconByAddingIcon: (IKIcon*)src toRect: (NSRect)pos
                     operation:(NSCompositingOperation)op fraction:(float)delta
 {
-    [lock lock];
+    [_lock lock];
         NSSize      mySize = [self size];
         
         NSImage*    img = [[[NSImage alloc] initWithSize: mySize] autorelease];
@@ -356,15 +360,15 @@ NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  
 
         [img lockFocus];
             srcBox.size = [src size];
-            [image dissolveToPoint: NSZeroPoint fraction: 1.0];
+            [_image dissolveToPoint: NSZeroPoint fraction: 1.0];
             [[src image] drawInRect: pos fromRect: srcBox operation: op fraction:delta];    // -image already locks and retain/autoreleases the image it returns.
         [img unlockFocus];
-    [lock unlock];
+    [_lock unlock];
     
-    if( err == noErr )
+    //if( err == noErr )
         return [[[IKIcon alloc] initWithImage: img] autorelease];
-    else
-        return nil;
+    //else
+    //    return nil;
 }
 
 
@@ -452,19 +456,22 @@ NSString*            IKIconChangedNotification = @"IKIconChangedNotification";  
 
 -(void)         update
 {
-    [lock lock];
-        if( identifier )
+    [_lock lock];
+        if( _identifier )
           {
-            [image autorelease];            // In case image stays the same, we don't want it to be unloaded/reloaded unnecessarily.
-            image = [[NSImage imageNamed: identifier] retain];
+            [_image autorelease];            // In case image stays the same, we don't want it to be unloaded/reloaded unnecessarily.
+            _image = [[NSImage imageNamed: _identifier] retain];
             
             [[NSNotificationCenter defaultCenter] postNotificationName: IKIconChangedNotification object: self];
           }
-    [lock unlock];
+    [_lock unlock];
 }
 
 @end
 
+/*
+ * Functions
+ */
 
 // -----------------------------------------------------------------------------
 //  NSStringFromIconIdentifier:

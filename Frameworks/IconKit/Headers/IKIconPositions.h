@@ -32,7 +32,7 @@
 #include <Foundation/Foundation.h>
 
 // Flags from which IKBadgePositions are made up. Don't use these, use IKBadgePosition:
-typedef enum _IKBadgePositionFlags
+enum _IKBadgePositionFlags
 {
     IKBadgePositionFlagBottom       = (1 << 0),
     IKBadgePositionFlagLeft         = (1 << 1),

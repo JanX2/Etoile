@@ -37,9 +37,9 @@ extern NSString *IKIconChangedNotification;  // Sent with the IKIcon as the obje
 
 @interface IKIcon : NSObject
 {
-    NSImage *			image;      // The actual icon image to display.
-    IKIconIdentifier *	identifier; // If this is a standard icon, this is its identifier so we can re-load it on theme changes.
-    NSRecursiveLock *	lock;       // Thread lock to make sure IKIcons can be used from several threads.
+    NSImage *			_image;      // The actual icon image to display.
+    IKIconIdentifier	_identifier; // If this is a standard icon, this is its identifier so we can re-load it on theme changes.
+    NSRecursiveLock *	_lock;       // Thread lock to make sure IKIcons can be used from several threads.
 }
 
 // Convenience methods for alloc/init/autorelease:

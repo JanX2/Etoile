@@ -60,15 +60,17 @@ libIconKit_LANGUAGES= \
 libIconKit_OBJC_FILES= \
 	IKCompositorOperation.m \
 	IKCompositor.m \
+	IKIcon.m \
 	IKIconProvider.m \
 	IKApplicationIconProvider.m \
+	IKWorkspaceAdditions.m \
 	NSFileManager+IconKit.m \
 	NSString+MD5Hash.m
 	
 #
 # C files
 #
-libIconKit_C_FILES=
+libIconKit_C_FILES =
 
 #
 # Header files
@@ -76,20 +78,29 @@ libIconKit_C_FILES=
 libIconKit_HEADER_FILES_DIR = ../Headers
 
 libIconKit_HEADERS = \
+	IKIcon.h \
 	IKCompositorOperation.h \
 	IKCompositor.h \
+	IKIconIdentifier.h \
+	IKIconPositions.h \
 	IKIconProvider.h \
 	IKApplicationIconProvider.h \
+	IKWorkspaceAdditions.h \
 	NSFileManager+IconKit.h \
 	NSString+MD5Hash.h
 
 libIconKit_HEADER_FILES_INSTALL_DIR = /IconKit
 
 libIconKit_HEADER_FILES = \
+	IconKit.h \
 	IKCompositorOperation.h \
 	IKCompositor.h \
+	IKIcon.h \
+	IKIconIdentifier.h \
+	IKIconPositions.h \
 	IKIconProvider.h \
-	IKApplicationIconProvider.h	
+	IKApplicationIconProvider.h \
+	IKWorkspaceAdditions.h	
 	
 -include GNUmakefile.preamble
 
