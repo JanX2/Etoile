@@ -3,6 +3,32 @@
 
 @implementation NSColor (rows)
 
+static NSColor* titlebarTextColor;
+
++ (NSColor*) titlebarTextColor
+{
+	if (titlebarTextColor == nil)
+	{
+		titlebarTextColor = [GraphicToolbox readColorFromImage:
+			[NSImage imageNamed: @"Colors/Colors-titlebar-text.tiff"]];
+		[titlebarTextColor retain];
+	}
+	return titlebarTextColor;
+}
+
+static NSColor* selectedTitlebarTextColor;
+
++ (NSColor*) selectedTitlebarTextColor
+{
+	if (selectedTitlebarTextColor == nil)
+	{
+		selectedTitlebarTextColor = [GraphicToolbox readColorFromImage:
+			[NSImage imageNamed: @"Colors/Colors-selected-titlebar-text.tiff"]];
+		[selectedTitlebarTextColor retain];
+	}
+	return selectedTitlebarTextColor;
+}
+
 static NSColor* rowBackgroundColor;
 
 + (NSColor*) rowBackgroundColor

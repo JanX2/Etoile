@@ -75,11 +75,12 @@ static NSColor *titleColor[3];
 	NSRectFillUsingOperation (titleBarRect, NSCompositeClear);
   titleBarRect.size.height -= 1;
 //  titleBarRect.size.height = [caps size].height;
+		NSLog (@"(1) inputState: %d", inputState);
       [self drawTitleBar];
     }
 
   //if (hasResizeBar && NSIntersectsRect(rect, resizeBarRect))
-  if (NSIntersectsRect(rect, resizeBarRect))
+  //if (NSIntersectsRect(rect, resizeBarRect))
     {
       NSRectFillUsingOperation (resizeBarRect, NSCompositeClear);
       [self drawResizeBar];
@@ -224,6 +225,30 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
 	[outlinePath stroke];
 	//[path fill];
   */
+
+	NSMutableParagraphStyle* p;
+	p = [NSMutableParagraphStyle defaultParagraphStyle];
+	[p setLineBreakMode: NSLineBreakByClipping];
+
+	titleTextAttributes[0] = [[NSMutableDictionary alloc]
+		initWithObjectsAndKeys:
+			[NSFont titleBarFontOfSize: 0], NSFontAttributeName,
+			[NSColor selectedTitlebarTextColor], NSForegroundColorAttributeName,
+			p, NSParagraphStyleAttributeName,
+			nil];
+	titleTextAttributes[1] = [[NSMutableDictionary alloc]
+		initWithObjectsAndKeys:
+			[NSFont titleBarFontOfSize: 0], NSFontAttributeName,
+			[NSColor titlebarTextColor], NSForegroundColorAttributeName,
+			p, NSParagraphStyleAttributeName,
+			nil];
+	titleTextAttributes[2] = [[NSMutableDictionary alloc]
+		initWithObjectsAndKeys:
+			[NSFont titleBarFontOfSize: 0], NSFontAttributeName,
+			[NSColor titlebarTextColor], NSForegroundColorAttributeName,
+			p, NSParagraphStyleAttributeName,
+			nil];
+
       titleSize = [title sizeWithAttributes: titleTextAttributes[inputState]];
       if (titleSize.width <= workRect.size.width)
 	workRect.origin.x += NSMidX(workRect) - titleSize.width / 2;
@@ -238,11 +263,23 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
 {
 	if (hasResizeBar)
 	{
-		[GraphicToolbox drawButton: resizeBarRect
-			withCaps: [NSImage imageNamed: @"Window/Window-resizebar-caps.tiff"]
-			filledWith: [NSImage imageNamed: @"Window/Window-resizebar-fill.tiff"]];
+		NSLog (@"(2) inputState: %d", inputState);
+		if (inputState == 0)
+		{
+				NSLog (@"(2) unselected resizebar");
+				[GraphicToolbox drawButton: resizeBarRect
+					withCaps: [NSImage imageNamed: @"Window/Window-resizebar-caps-unselected.tiff"]
+					filledWith: [NSImage imageNamed: @"Window/Window-resizebar-fill-unselected.tiff"]];
+		}
+		else
+		{
+				NSLog (@"(2) selected resizebar");
+				[GraphicToolbox drawButton: resizeBarRect
+					withCaps: [NSImage imageNamed: @"Window/Window-resizebar-caps.tiff"]
+					filledWith: [NSImage imageNamed: @"Window/Window-resizebar-fill.tiff"]];
+		}
 	}
-	else if (!hasResizeBar || inputState)
+	else
 	{
 		[GraphicToolbox drawButton: resizeBarRect
 			withCaps: [NSImage imageNamed: @"Window/Window-resizebar-caps-unselected.tiff"]

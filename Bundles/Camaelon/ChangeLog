@@ -1,5 +1,11 @@
 2005-03-16 Nicolas Roard <nicolas@roard.com>
 
+	* addition of NSColor +titlebarTextColor and +selectedTitlebarTextColor
+	* modification of NSWindow drawing code
+	* tidy up the ChangeLog
+
+2005-03-16 Nicolas Roard <nicolas@roard.com>
+
 	* correction of the text displacement in NSButtonCell.m
 	* cleaning of popup drawing in GSDrawFunctions
 	* some fixes (added some missing releases)
@@ -7,7 +13,8 @@
 2005-03-16 Nicolas Roard <nicolas@roard.com>
 
 	* addition of CLVBoxCompositor for creating vertical compositions
-	* rewrite of NSSliderCell.m, now the sliders use the compositor system and works correctly :-)
+	* rewrite of NSSliderCell.m, now the sliders use the compositor 
+	  system and works correctly :-)
 
 2005-03-14 Nicolas Roard <nicolas@roard.com>
 
@@ -15,7 +22,8 @@
 
 2005-03-14 Nicolas Roard <nicolas@roard.com>
 
-	* first modifications in NSBrowser, NSTableView and NSOutlineView to have alternate colors.. 
+	* first modifications in NSBrowser, NSTableView and NSOutlineView 
+	  to have alternate colors.. 
 	* correction in GSDrawFunctions of a display problem with NSBox
 	* addition of test cases in NSBox for the different bezels..
 	* small hack in NSButtonCell to have a correct text placement (-1)
@@ -27,20 +35,30 @@
 
 2005-03-10 Nicolas Roard <nicolas@roard.com>
 
-	* All hard coded colors are removed. Colors are now determined by looking into the "color images" contained in the theme.
+	* All hard coded colors are removed. Colors are now determined by 
+	  looking into the "color images" contained in the theme.
 
 2005-03-10 Nicolas Roard <nicolas@roard.com>
 
-	* corrected a problem apparent in Preferences.app: previously the drawing was done based on the controlView.. but in Preferences.app (and possibly other applications), NSButtonCell was used directly, not just by NSButton. Using the controlView frame was thus causing rather strange results :-) ...  I refactored the code and added a method drawInRect:on: in CLCompositor to properly handles that
-	* corrected a small problem with NSBrowser (the header browser was always present, because I forced it earlier to test it, and forget to remove that..)
+	* corrected a problem apparent in Preferences.app. Previously the 
+	  drawing was done based on the controlView.. but in Preferences.app 
+	  (and possibly other applications), NSButtonCell was used directly, 
+	  not just by NSButton. Using the controlView frame was thus causing 
+	  rather strange results...  I refactored the code and added a method 
+	  drawInRect:on: in CLCompositor to properly handles that
+	* corrected a small problem with NSBrowser (the header browser was 
+	  always present, because I forced it earlier to test it, and forget 
+	  to remove that..)
 
 2005-03-09 Nicolas Roard <nicolas@roard.com>
 
-	* improvements on NSBrowser, Tableview, scrollers, tabview in order to use the new composition architecture
+	* improvements on NSBrowser, Tableview, scrollers, tabview in order 
+	  to use the new composition architecture
 
 2005-03-09 Nicolas Roard <nicolas@roard.com>
 
-	* Addition of +readPixelFromImage: in GraphicToolbox, as NSReadPixel isn't implemented (and probably depends of the backend)
+	* Addition of +readPixelFromImage in GraphicToolbox, as NSReadPixel 
+	  isn't implemented (and probably depends of the backend)
 	* update of NSProgressIndicator to use the new Compositor code correctly
 
 2005-03-09 Nicolas Roard <nicolas@roard.com>
