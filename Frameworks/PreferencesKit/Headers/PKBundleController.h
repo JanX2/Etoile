@@ -28,29 +28,24 @@
 		Boston, MA  02111-1307, USA
 */
 
-@class NSArray, NSBundle;
+#import <PrefsModule/PrefsModule.h>
 
-/*
-	Bundle Delegate protocol
- 
-	App controllers need to adopt this protocol to receive notifications
- */
+@class NSArray, NSBundle;
 @class BundleController;
 
-#import <PrefsModule/PrefsModule.h>
 
 @interface PKBundleController: NSObject
 {
-	id					delegate;
+	id delegate;
 	NSMutableDictionary	*loadedBundles;
 }
 
 + (PKBundleController *) sharedBundleController;
 
 - (id) delegate;
-- (void) setDelegate: (id) aDelegate;
+- (void) setDelegate: (id)aDelegate;
 
-- (BOOL) loadBundleWithPath: (NSString *) path;
+- (BOOL) loadBundleWithPath: (NSString *)path;
 - (void) loadBundles;
 
 - (NSDictionary *) loadedBundles;

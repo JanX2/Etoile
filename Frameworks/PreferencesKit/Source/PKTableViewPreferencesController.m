@@ -1,12 +1,12 @@
 /*
-	PreferencesController.m
+	PKTableViewPreferencesController.m
 
-	Preferences window controller class
+	Preferences window with table view controller class
 
-	Copyright (C) 2001 Dusk to Dawn Computing, Inc.
-
-	Author: Jeff Teunissen <deek@d2dc.net>
-	Date:	11 Nov 2001
+	Copyright (C) 2005 Quentin Mathe
+ 
+	Author: Quentin Mathe <qmathe@club-internet.fr>
+	Date:	January 2005
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License as
@@ -26,46 +26,53 @@
 		59 Temple Place - Suite 330
 		Boston, MA  02111-1307, USA
 */
-#ifdef HAVE_CONFIG_H
-# include "Config.h"
-#endif
-
-RCSID("$Id$");
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import <PrefsModule/PrefsModule.h>
-#import "PreferencesController.h"
+#import "PKTableViewPreferencesController.h"
 
-@implementation PreferencesController
+static PreferencesController *sharedInstance = nil;
+static NSMutableDictionary *modules = nil;
+static id currentModule = nil;
+static BOOL inited = NO;
 
-static PreferencesController	*sharedInstance = nil;
-static NSMutableDictionary	*modules = nil;
-static id		currentModule = nil;
-static BOOL 		inited = NO;
 
-+ (PreferencesController *) sharedPreferencesController
+@implementation PKTableViewPreferencesController
+
++ (PKPreferencesController *) sharedPreferencesController
 {
-	return (sharedInstance ? sharedInstance : [[self alloc] init]);
+	if (sharedInstance != nil)
+	{
+		return sharedInstance;
+	}
+	else
+	{
+		return [[self alloc] init];
+	}
 }
 
 - (id) init
 {
-	if (sharedInstance) {
+	if (sharedInstance != nil) 
+	{
 		[self dealloc];
-	} else {
+	} 
+	else 
+	{
 		self = [super init];
 		modules = [[[NSMutableDictionary alloc] initWithCapacity: 5] retain];
 	}
+	
 	return sharedInstance = self;	
 }
 
-// Initialize stuff that can't be set in the nib/gorm file.
+/* Initialize stuff that can't be set in the nib/gorm file. */
 - (void) awakeFromNib
 {
 	PKBundleController *bundleController = [PKBundleController sharedBundleController];
 	
-	// Let the system keep track of where it belongs
+	/* Let the system keep track of where it belongs. */
 	[window setFrameAutosaveName: @"PreferencesMainWindow"];
 	[window setFrameUsingName: @"PreferencesMainWindow"];
 	
@@ -94,41 +101,43 @@ static BOOL 		inited = NO;
  */
 - (void) dealloc
 {
-	if (sharedInstance && self != sharedInstance) {
+	if (sharedInstance != nil && self != sharedInstance)
+	{
 		[super dealloc];
 	}
+	
 	return;
 }
 
 /*
  * Modules related methods
  */
- 
-- (BOOL) registerPrefsModule: (id) aPrefsModule;
+
+- (BOOL) registerPrefsModule: (id)aPrefsModule;
 {
 	NSString *identifier;
 	
 	if (!aPrefsModule
-	|| ![aPrefsModule conformsToProtocol: @protocol(PrefsModule)])
+		|| ![aPrefsModule conformsToProtocol: @protocol(PrefsModule)])
 		return NO;
-		
+	
 	identifier = [aPrefsModule buttonCaption];
-
+	
 	if ([[modules allKeys] containsObject: identifier])
 	{
 		NSLog(@"The module named %@ cannot be loaded because there is \
-		already a loaded module with this name", aPrefsModule);
+	already a loaded module with this name", aPrefsModule);
 	}
 	else
 	{
 		[modules setObject: aPrefsModule forKey: identifier];
 		[self updateUIForPrefsModule: aPrefsModule];
 	}
-
+	
 	return YES;
 }
 
-- (BOOL) setCurrentModule: (id <PrefsModule>) aPrefsModule;
+- (BOOL) setCurrentModule: (id <PrefsModule>)aPrefsModule;
 {
 	NSView *mainView = [self prefsMainView];
 	NSView *moduleView = [aPrefsModule view];
@@ -139,20 +148,22 @@ static BOOL 		inited = NO;
 	NSRect wFrame = [window frame];
 	float height;
 	
-	if (!aPrefsModule || ![modules objectForKey: [aPrefsModule buttonCaption]]
-		|| !moduleView)
+	if (aPrefsModule == nil || [modules objectForKey: [aPrefsModule buttonCaption]] == NO
+		|| moduleView == nil)
+	{
 		return NO;
+	}
 	
 	[[mainView subviews] makeObjectsPerformSelector: @selector(removeFromSuperview)];
 	
 	height = cvFrame.size.height - cvWithoutToolbarFrame.size.height +
-	movFrame.size.height;
+		movFrame.size.height;
 	
 	[window setFrame: NSMakeRect(wFrame.origin.x, wFrame.origin.y + (wFrame.size.height - height),
-		wFrame.size.width, height) display: YES animate: YES];	
+								 wFrame.size.width, height) display: YES animate: YES];	
 	[moduleView setFrame: NSMakeRect(mavFrame.origin.x + (cvFrame.size.width - movFrame.size.width) / 2,
-		movFrame.origin.y, movFrame.size.width, movFrame.size.height)];
-		
+									 movFrame.origin.y, movFrame.size.width, movFrame.size.height)];
+	
 	[mainView addSubview: moduleView];
 	[mainView setNeedsDisplay: YES];
 	
@@ -165,38 +176,41 @@ static BOOL 		inited = NO;
  * PrefsApplication delegate method
  */
 
-- (void) moduleLoaded: (NSBundle *) aBundle
+- (void) moduleLoaded: (NSBundle *)aBundle
 {
-	NSDictionary		*info = nil;
-
-	/*
-		Let's get paranoid about stuff we load... :)
-	*/
-	if (!aBundle) {
+	NSDictionary *info = nil;
+	
+	/* Let's get paranoid about stuff we load... :) */
+	if (aBundle == nil) 
+	{
 		NSLog (@"Controller -moduleLoaded: sent nil bundle");
 		return;
 	}
-
-	if (!(info = [aBundle infoDictionary])) {
+	
+	if ((info = [aBundle infoDictionary]) == nil) 
+	{
 		NSLog (@"Bundle `%@ has no info dictionary!", aBundle);
 		return;
 	}
-
-	if (![info objectForKey: @"NSExecutable"]) {
+	
+	if ([info objectForKey: @"NSExecutable"] == nil) 
+	{
 		NSLog (@"Bundle `%@ has no executable!", aBundle);
 		return;
 	}
-
-	if (![aBundle principalClass]) {
+	
+	if ([aBundle principalClass] == nil) 
+	{
 		NSLog (@"Bundle `%@ has no principal class!", [[info objectForKey: @"NSExecutable"] lastPathComponent]);
 		return;
 	}
-
-	if (![[aBundle principalClass] conformsToProtocol: @protocol(PrefsModule)]) {
+	
+	if ([[aBundle principalClass] conformsToProtocol: @protocol(PrefsModule)] == NO) 
+	{
 		NSLog (@"Bundle %@ principal class does not conform to the PrefsModule protocol.", [[info objectForKey: @"NSExecutable"] lastPathComponent]);
 		return;
 	}
-
+	
 	[[[aBundle principalClass] alloc] initWithOwner: self];
 }
 
@@ -204,7 +218,7 @@ static BOOL 		inited = NO;
  * Accessors
  */
 
-// For compatibility with Backbone module
+/* For compatibility with Backbone module */
 - (id <PrefsController>) preferencesController 
 {
 	return self;
@@ -224,28 +238,27 @@ static BOOL 		inited = NO;
  * Runtime stuff
  */
 
-- (BOOL) respondsToSelector: (SEL) aSelector
+- (BOOL) respondsToSelector: (SEL)aSelector
 {
-	if (!aSelector)
+	if (aSelector != NULL)
 		return NO;
-
+	
 	if ([super respondsToSelector: aSelector])
 		return YES;
-
-	if (currentModule)
+	
+	if (currentModule != nil)
 		return [currentModule respondsToSelector: aSelector];
-
+	
 	return NO;
 }
 
-- (NSMethodSignature *) methodSignatureForSelector: (SEL) aSelector
+- (NSMethodSignature *) methodSignatureForSelector: (SEL)aSelector
 {
-	NSMethodSignature	*sign = [super methodSignatureForSelector: aSelector];
-
-	if (!sign && currentModule) {
+	NSMethodSignature *sign = [super methodSignatureForSelector: aSelector];
+	
+	if (sign != nil && currentModule != nil)
 		sign = [(NSObject *)currentModule methodSignatureForSelector: aSelector];
-	}
-
+	
 	return sign;
 }
 
@@ -260,17 +273,10 @@ static BOOL 		inited = NO;
 
 - (void) initUI
 {
-	NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier: @"PrefsWindowToolbar"];
 	
-	[toolbar setDelegate: self];
-	[toolbar setAllowsUserCustomization: NO];
-	[window setToolbar: toolbar];
-	inited = YES;
-	
-	NSDebugLog(@"UI inited");
 }
 
-- (void) updateUIForPrefsModule: (id <PrefsModule>) module
+- (void) updateUIForPrefsModule: (id <PrefsModule>)module
 {
 	if (inited)
 	{
@@ -279,20 +285,24 @@ static BOOL 		inited = NO;
 	}
 }
 
-- (NSView *) prefsMainView
+- (NSView *) preferencesMainView
 {
-	return [window contentViewWithoutToolbar];
+	return nil;
 }
 
-// Window delegate methods
+/*
+ * Window delegate methods
+ */
 
 - (void) windowWillClose: (NSNotification *) aNotification
 {
-  // TODO: Tell the loaded modules about this so that they can clean up after
-  // themselves
+	// TODO: Tell the loaded modules about this so that they can clean up after
+	// themselves
 }
 
-// Toolbar delegate methods
+/*
+ * Toolbar delegate methods
+ */
 
 - (NSToolbarItem *) toolbar:(NSToolbar *)toolbar
       itemForItemIdentifier:(NSString*)identifier
@@ -303,34 +313,41 @@ static BOOL 		inited = NO;
 	id module = [modules objectForKey: identifier];
 	
 	AUTORELEASE(toolbarItem);
-
+	
 	[toolbarItem setLabel: [module buttonCaption]];
 	[toolbarItem setImage: [module buttonImage]];
-	if (![module buttonAction])
+	if ([module buttonAction != NULL])
 	{
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(switchView:)];
 	}
-	else {
+	else 
+	{
 		[toolbarItem setTarget: module];
 		[toolbarItem setAction: [module buttonAction]];
 	}
+	
 	return toolbarItem;
 }
 
-- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar {
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar 
+{
 	return [modules allKeys];
 }
 
-- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar {    
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar 
+{    
 	return [modules allKeys];
 }
 
-- (NSArray *) toolbarSelectableItemIdentifiers: (NSToolbar *)toolbar {    
+- (NSArray *) toolbarSelectableItemIdentifiers: (NSToolbar *)toolbar 
+{    
 	return [modules allKeys];
 }
 
-// Action methods
+/*
+ * Action methods
+ */
 
 - (void) switchView: (id)sender
 {

@@ -28,7 +28,9 @@
 		Boston, MA  02111-1307, USA
 */
 
-@class NSNotification, PrefsController;
+@class NSNotification, NSView, NSWindow;
+@protocol PrefsController, PrefsModule;
+
 
 @interface PKPreferencesController: NSObject <PrefsController>
 {
@@ -36,17 +38,26 @@
 	IBOutlet id	owner;
 }
 
-+ (PKPreferencesController *) sharedPreferencesController;
++ (PKPreferencesController *) sharedPrefencesController;
 
-// Accessors
+/*
+ * Accessors
+ */
+
 - (NSWindow *) window;
 
-// Notifications
-- (void) windowWillClose: (NSNotification *) aNotification;
+/*
+ * Notifications
+ */
 
-// Preferences UI related stuff
+- (void) windowWillClose: (NSNotification *)aNotification;
+
+/*
+ * Preferences UI related stuff
+ */
+
 - (void) initUI;
-- (void) updateUIForPrefsModule: (id <PrefsModule>)module;
-- (NSView *) prefsMainView;
+- (void) updateUIForPreferencesModule: (id <PrefsModule>)module;
+- (NSView *) preferencesMainView;
 
 @end

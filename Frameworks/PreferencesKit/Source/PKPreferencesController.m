@@ -33,35 +33,47 @@
 #import <PrefsModule/PrefsModule.h>
 #import "PKPreferencesController.h"
 
-@implementation PKPreferencesController
+static PKPreferencesController *sharedInstance = nil;
+static NSMutableDictionary *modules = nil;
+static id currentModule = nil;
+static BOOL inited = NO;
 
-static PKPreferencesController	*sharedInstance = nil;
-static NSMutableDictionary	*modules = nil;
-static id		currentModule = nil;
-static BOOL 		inited = NO;
+
+@implementation PKPreferencesController
 
 + (PKPreferencesController *) sharedPreferencesController
 {
-	return (sharedInstance ? sharedInstance : [[self alloc] init]);
+	if (sharedInstance != nil)
+	{
+		return sharedInstance;
+	}
+	else
+	{
+		return [[self alloc] init];
+	}
 }
 
 - (id) init
 {
-	if (sharedInstance) {
+	if (sharedInstance != nil) 
+	{
 		[self dealloc];
-	} else {
+	} 
+	else 
+	{
 		self = [super init];
 		modules = [[[NSMutableDictionary alloc] initWithCapacity: 5] retain];
 	}
+	
 	return sharedInstance = self;	
 }
 
-// Initialize stuff that can't be set in the nib/gorm file.
+/* Initialize stuff that can't be set in the nib/gorm file. */
 - (void) awakeFromNib
 {
 	PKBundleController *bundleController = [PKBundleController sharedBundleController];
 	
-	// Let the system keep track of where it belongs
+	/* Let the system keep track of where it belongs. */
 	[window setFrameAutosaveName: @"PreferencesMainWindow"];
 	[window setFrameUsingName: @"PreferencesMainWindow"];
 	
@@ -74,6 +86,7 @@ static BOOL 		inited = NO;
  * Since we manage a single instance of the class, we override the -retain
  * and -release methods to do nothing.
  */
+
 - (id) retain
 {
 	return self;
@@ -90,9 +103,11 @@ static BOOL 		inited = NO;
  */
 - (void) dealloc
 {
-	if (sharedInstance && self != sharedInstance) {
+	if (sharedInstance != nil && self != sharedInstance)
+	{
 		[super dealloc];
 	}
+	
 	return;
 }
 
@@ -100,7 +115,7 @@ static BOOL 		inited = NO;
  * Modules related methods
  */
  
-- (BOOL) registerPrefsModule: (id) aPrefsModule;
+- (BOOL) registerPrefsModule: (id)aPrefsModule;
 {
 	NSString *identifier;
 	
@@ -124,7 +139,7 @@ static BOOL 		inited = NO;
 	return YES;
 }
 
-- (BOOL) setCurrentModule: (id <PrefsModule>) aPrefsModule;
+- (BOOL) setCurrentModule: (id <PrefsModule>)aPrefsModule;
 {
 	NSView *mainView = [self prefsMainView];
 	NSView *moduleView = [aPrefsModule view];
@@ -135,9 +150,11 @@ static BOOL 		inited = NO;
 	NSRect wFrame = [window frame];
 	float height;
 	
-	if (!aPrefsModule || ![modules objectForKey: [aPrefsModule buttonCaption]]
-		|| !moduleView)
+	if (aPrefsModule == nil || [modules objectForKey: [aPrefsModule buttonCaption]] == NO
+		|| moduleView == nil)
+	{
 		return NO;
+	}
 	
 	[[mainView subviews] makeObjectsPerformSelector: @selector(removeFromSuperview)];
 	
@@ -161,34 +178,37 @@ static BOOL 		inited = NO;
  * PrefsApplication delegate method
  */
 
-- (void) moduleLoaded: (NSBundle *) aBundle
+- (void) moduleLoaded: (NSBundle *)aBundle
 {
-	NSDictionary		*info = nil;
+	NSDictionary *info = nil;
 
-	/*
-		Let's get paranoid about stuff we load... :)
-	*/
-	if (!aBundle) {
+	/* Let's get paranoid about stuff we load... :) */
+	if (aBundle == nil) 
+	{
 		NSLog (@"Controller -moduleLoaded: sent nil bundle");
 		return;
 	}
 
-	if (!(info = [aBundle infoDictionary])) {
+	if ((info = [aBundle infoDictionary]) == nil) 
+	{
 		NSLog (@"Bundle `%@ has no info dictionary!", aBundle);
 		return;
 	}
 
-	if (![info objectForKey: @"NSExecutable"]) {
+	if ([info objectForKey: @"NSExecutable"] == nil) 
+	{
 		NSLog (@"Bundle `%@ has no executable!", aBundle);
 		return;
 	}
 
-	if (![aBundle principalClass]) {
+	if ([aBundle principalClass] == nil) 
+	{
 		NSLog (@"Bundle `%@ has no principal class!", [[info objectForKey: @"NSExecutable"] lastPathComponent]);
 		return;
 	}
 
-	if (![[aBundle principalClass] conformsToProtocol: @protocol(PrefsModule)]) {
+	if ([[aBundle principalClass] conformsToProtocol: @protocol(PrefsModule)] == NO) 
+	{
 		NSLog (@"Bundle %@ principal class does not conform to the PrefsModule protocol.", [[info objectForKey: @"NSExecutable"] lastPathComponent]);
 		return;
 	}
@@ -200,7 +220,7 @@ static BOOL 		inited = NO;
  * Accessors
  */
 
-// For compatibility with Backbone module
+/* For compatibility with Backbone module */
 - (id <PrefsController>) preferencesController 
 {
 	return self;
@@ -220,27 +240,26 @@ static BOOL 		inited = NO;
  * Runtime stuff
  */
 
-- (BOOL) respondsToSelector: (SEL) aSelector
+- (BOOL) respondsToSelector: (SEL)aSelector
 {
-	if (!aSelector)
+	if (aSelector != NULL)
 		return NO;
 
 	if ([super respondsToSelector: aSelector])
 		return YES;
 
-	if (currentModule)
+	if (currentModule != nil)
 		return [currentModule respondsToSelector: aSelector];
 
 	return NO;
 }
 
-- (NSMethodSignature *) methodSignatureForSelector: (SEL) aSelector
+- (NSMethodSignature *) methodSignatureForSelector: (SEL)aSelector
 {
-	NSMethodSignature	*sign = [super methodSignatureForSelector: aSelector];
+	NSMethodSignature *sign = [super methodSignatureForSelector: aSelector];
 
-	if (!sign && currentModule) {
+	if (sign != nil && currentModule != nil)
 		sign = [(NSObject *)currentModule methodSignatureForSelector: aSelector];
-	}
 
 	return sign;
 }
@@ -259,7 +278,7 @@ static BOOL 		inited = NO;
 
 }
 
-- (void) updateUIForPrefsModule: (id <PrefsModule>) module
+- (void) updateUIForPrefsModule: (id <PrefsModule>)module
 {
 	if (inited)
 	{
@@ -273,7 +292,9 @@ static BOOL 		inited = NO;
 	return nil;
 }
 
-// Window delegate methods
+/*
+ * Window delegate methods
+ */
 
 - (void) windowWillClose: (NSNotification *) aNotification
 {
@@ -281,7 +302,9 @@ static BOOL 		inited = NO;
   // themselves
 }
 
-// Action methods
+/*
+ * Action methods
+ */
 
 - (void) switchView: (id)sender
 {

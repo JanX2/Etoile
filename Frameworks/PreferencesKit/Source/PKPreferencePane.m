@@ -1,15 +1,17 @@
-//
-//  GSPreferencePane.m
-//  GSSystemPreferences
-//
-//  Created by Uli Kusterer on 22.10.04.
-//  Copyright 2004 M. Uli Kusterer. All rights reserved.
-//
+/*
+	GSPreferencePanes.m
+	
+	PreferencePanes framework main class for GNUstep
+ 
+	Copyright (C) 2004 Uli Kusterer
+	
+	Author: Uli Kusterer
+	Date:	2004
+ */
 
 #import "GSPreferencePane.h"
 #import "GSSysPrefsAppDelegate.h"
 #import <AppKit/AppKit.h>
-
 
 NSString *NSPreferencePaneDoUnselectNotification = @"NSPreferencePaneDoUnselect";
 NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelUnselect";
@@ -17,7 +19,7 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 
 @implementation GSPreferencePane
 
--(id)	initWithBundle: (NSBundle*) bundle
+- (id)	initWithBundle: (NSBundle *) bundle
 {
 	self = [super init];
 	
@@ -26,29 +28,27 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 	return self;
 }
 
--(void)	dealloc
+- (void) dealloc
 {
 	[_bundle release];
-	[_topLevelObjects makeObjectsPerformSelector: @selector(release)];
+	[_topLevelObjects makeObjectsPerformSelector: @selector(release) ];
 	[_topLevelObjects release];
 	
 	[super dealloc];
 }
 
--(NSBundle*) bundle
+- (NSBundle *) bundle
 {
 	return _bundle;
 }
 
--(NSView*) loadMainView
+- (NSView *) loadMainView
 {
 	_topLevelObjects = [[NSMutableArray alloc] init];
-	NSDictionary*	ent = [NSDictionary dictionaryWithObjectsAndKeys:
-							self, @"NSOwner",
-							_topLevelObjects, @"NSTopLevelObjects",
-							nil];
+	NSDictionary *ent = [NSDictionary dictionaryWithObjectsAndKeys: 
+		self, @"NSOwner", _topLevelObjects, @"NSTopLevelObjects", nil];
 
-	if( ![_bundle loadNibFile: [self mainNibName] externalNameTable: ent withZone: [self zone]] )
+	if([_bundle loadNibFile: [self mainNibName] externalNameTable: ent withZone: [self zone]] == NO) 
 		return nil;
 	
 	[self assignMainView];
@@ -58,111 +58,128 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 }
 
 
--(void)	assignMainView
+- (void) assignMainView
 {
 	[self setMainView: [_window contentView]];
 }
 
 
--(NSString*)	mainNibName
+- (NSString *) mainNibName
 {
 	return [[_bundle infoDictionary] objectForKey: @"NSMainNibFile"];
 }
 
--(void)	willSelect		{}
--(void)	didSelect		{}
--(void)	willUnselect	{}
--(void)	didUnselect		{}
--(void)	mainViewDidLoad	{}
+- (void) willSelect
+{
 
+}
 
--(NSPreferencePaneUnselectReply) shouldUnselect
+- (void) didSelect
+{
+
+}
+
+- (void) willUnselect
+{
+
+}
+
+- (void) didUnselect
+{
+
+}
+
+- (void) mainViewDidLoad
+{
+
+}
+
+- (NSPreferencePaneUnselectReply) shouldUnselect
 {
 	return NSUnselectNow;
 }
 
 
--(void)	replyToShouldUnselect: (BOOL)shouldUnselect
+- (void)	replyToShouldUnselect: (BOOL) shouldUnselect
 {
-	if( shouldUnselect )
+	if (shouldUnselect) 
 		[_owner loadPrefPane: nil];
 }
 
 
--(void) setMainView: (NSView*)view
+- (void) setMainView: (NSView *) view
 {
 	[_mainView autorelease];
 	_mainView = [view retain];
 }
 
 
--(NSView*) mainView
+- (NSView *) mainView
 {
 	return _mainView;
 }
 
 
--(NSView*) initialKeyView
+- (NSView *) initialKeyView
 {
 	return _initialKeyView;
 }
 
 
--(void) setInitialKeyView: (NSView*)view
+- (void) setInitialKeyView: (NSView *) view
 {
 	[_initialKeyView autorelease];
 	_initialKeyView = [view retain];
 }
 
 
--(NSView*) firstKeyView
+- (NSView *) firstKeyView
 {
 	return _firstKeyView;
 }
 
 
--(void) setFirstKeyView: (NSView*)view
+- (void) setFirstKeyView: (NSView *) view
 {
 	[_firstKeyView autorelease];
 	_firstKeyView = [view retain];
 }
 
 
--(NSView*) lastKeyView
+- (NSView *) lastKeyView
 {
 	return _lastKeyView;
 }
 
 
--(void) setLastKeyView: (NSView*)view
+- (void) setLastKeyView: (NSView *) view
 {
 	[_lastKeyView autorelease];
 	_lastKeyView = [view retain];
 }
 
 
--(BOOL) autoSaveTextFields
+- (BOOL) autoSaveTextFields
 {
 	return YES;
 }
 
 
--(BOOL) isSelected
+- (BOOL) isSelected
 {
-	return( [[_owner currPane] objectForKey: @"prefPane"] == self );
+	return [[_owner currPane] objectForKey: @"prefPane"] == self;
 }
 
 
--(void) updateHelpMenuWithArray:(NSArray *)inArrayOfMenuItems
+- (void) updateHelpMenuWithArray: (NSArray *)  inArrayOfMenuItems
 {
 	NSLog(@"GSPreferencePane: updateHelpMenuWithArray: not yet implemented.");
 }
 
 
--(void)	setOwner: (GSSysPrefsAppDelegate*)owner
+- (void) setOwner: (GSSysPrefsAppDelegate *) owner
 {
 	_owner = owner;
 }
-
 
 @end

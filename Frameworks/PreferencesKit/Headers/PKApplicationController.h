@@ -28,31 +28,44 @@
 		Boston, MA  02111-1307, USA
 */
 
+#import <PrefsModule/PrefsModule.h>
+
 @class NSNotification, NSString, NSApplication;
 @class PKPreferencesController;
 
-#import <PrefsModule/PrefsModule.h>
 
 @interface Controller: NSObject <PKPreferencesApplication>
 {
 	PKPreferencesController  *prefsController;
 }
 
-// App delegate methods
-- (BOOL) application: (NSApplication *) app openFile: (NSString *) filename;
-- (BOOL) applicationShouldTerminate: (NSApplication *) app;
-- (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *) app;
+/*
+ * Application delegate methods
+ */
 
-// Notifications
-- (void) applicationDidFinishLaunching: (NSNotification *) notification;
-- (void) applicationWillFinishLaunching: (NSNotification *) notification;
-- (void) applicationWillTerminate: (NSNotification *) notification;
+- (BOOL) application: (NSApplication *)app openFile: (NSString *)filename;
+- (BOOL) applicationShouldTerminate: (NSApplication *)app;
+- (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *)app;
 
-// Action methods
-- (IBAction) open: (id) sender;
+/*
+ * Notifications
+ */
 
-// Accessors
-- (void) setPrefsController: (PKPreferencesController *)controller;
-- (PKPreferencesController *) prefsController;
+- (void) applicationDidFinishLaunching: (NSNotification *)notification;
+- (void) applicationWillFinishLaunching: (NSNotification *)notification;
+- (void) applicationWillTerminate: (NSNotification *)notification;
+
+/*
+ * Action methods
+ */
+
+- (IBAction) open: (id)sender;
+
+/*
+ * Accessors
+ */
+
+- (void) setPreferencesController: (PKPreferencesController *)aPrefsController;
+- (PKPreferencesController *) preferencesController;
 
 @end

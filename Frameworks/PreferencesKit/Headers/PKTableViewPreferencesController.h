@@ -1,12 +1,12 @@
 /*
-	PrefsController.h
-
-	Preferences window controller class
-
-	Copyright (C) 2001 Dusk to Dawn Computing, Inc.
-
-	Author: Jeff Teunissen <deek@d2dc.net>
-	Date:	11 Nov 2001
+	PKTableViewPreferencesController.h
+ 
+	Preferences window with table view controller class
+ 
+	Copyright (C) 2005 Quentin Mathe
+ 
+	Author: Quentin Mathe <qmathe@club-internet.fr>
+	Date:	2005
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License as
@@ -26,34 +26,37 @@
 		59 Temple Place - Suite 330
 		Boston, MA  02111-1307, USA
 */
-#ifndef PA_PrefsController_h
-#define PA_PrefsController_h
 
-#ifdef HAVE_CONFIG_H
-# include "Config.h"
-#endif
+@class NSNotification, NSWindow, NSView;
+@protocol PrefsController;
 
-@class NSNotification, PrefsController;
 
-@interface PrefsController: NSObject <PrefsController>
+@interface PKTableViewPreferencesController: NSObject <PrefsController>
 {
 	IBOutlet id	window;
 	IBOutlet id	owner;
 }
 
-+ (PrefsController *) sharedPrefsController;
++ (PrefsController *) sharedPreferencesController;
 
-// Accessors
+/*
+ * Accessors
+ */
+
 - (NSWindow *) window;
 
-// Notifications
+/* 
+ * Notifications
+ */
+
 - (void) windowWillClose: (NSNotification *) aNotification;
 
-// Preferences UI related stuff
+/*
+ * Preferences UI related stuff
+ */
+
 - (void) initUI;
-- (void) updateUIForPrefsModule: (id <PrefsModule>)module;
-- (NSView *) prefsMainView;
+- (void) updateUIForPreferencesModule: (id <PrefsModule>)module;
+- (NSView *) preferencesMainView;
 
 @end
-
-#endif	// PA_PrefsController_h

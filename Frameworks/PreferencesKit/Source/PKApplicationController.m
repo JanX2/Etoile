@@ -34,31 +34,36 @@
 #import "PKBundleController.h"
 #import "PKPreferencesController.h"
 
-@implementation PKApplicationController
-
 static NSUserDefaults *defaults = nil;
 static BOOL doneLaunching = NO;
 
+
+@implementation PKApplicationController
+
++ (void) initialize
+{
+	defaults = [NSUserDefaults standardUserDefaults];
+}
+
 - (id) init
 {
-	if (!(self = [super init]))
-		return nil;
-
-	if (!defaults)
-		defaults = [NSUserDefaults standardUserDefaults];
-
-	return self;
+	if ((self = [super init]) != nil)
+	{
+		return self;
+	}
+	
+	return nil;
 }
 
 /*
  * Action methods
  */
  
-- (void) open: (id) sender;
+- (void) open: (id)sender;
 {
 	PKBundleController	*bundler = [PKBundleController sharedBundleController];
 	int					result;
-	NSArray				*fileTypes = [NSArray arrayWithObject: @"prefs"];
+	NSArray				*fileTypes = [NSArray arrayWithObjects: @"prefPane", @"prefs", nil];
 	NSOpenPanel			*oPanel = [NSOpenPanel openPanel];
 
 	[oPanel setAllowsMultipleSelection: NO];
@@ -66,8 +71,9 @@ static BOOL doneLaunching = NO;
 	[oPanel setCanChooseDirectories: NO];
 
 	result = [oPanel runModalForDirectory: NSHomeDirectory() file: nil types: fileTypes];
-	if (result == NSOKButton) {		// got a new dir
-		NSArray		*pathArray = [oPanel filenames];
+	if (result == NSOKButton) /* Got a new dir */
+	{
+		NSArray	*pathArray = [oPanel filenames];
 
 		[bundler loadBundleWithPath: [pathArray objectAtIndex: 0]];
 	}
@@ -77,19 +83,19 @@ static BOOL doneLaunching = NO;
  * Delegate methods
  */
 
-- (BOOL) application: (NSApplication *) app openFile: (NSString *) filename
+- (BOOL) application: (NSApplication *)app openFile: (NSString *)filename
 {
 	PKBundleController *bundleManager = [PKBundleController sharedBundleController];
 
 	return [bundleManager loadBundleWithPath: filename];
 }
 
-- (BOOL) applicationShouldTerminate: (NSApplication *) app;
+- (BOOL) applicationShouldTerminate: (NSApplication *)app;
 {
 	return YES;
 }
 
-- (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *) app;
+- (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *)app;
 {
 	return YES;
 }
@@ -98,18 +104,21 @@ static BOOL doneLaunching = NO;
  * Notifications methods
  */
 
-// Sent when the app has finished starting up
-- (void) applicationDidFinishLaunching: (NSNotification *) not;
+/* Sent when the app has finished starting up */
+- (void) applicationDidFinishLaunching: (NSNotification *)notif;
 {
-	if ([defaults boolForKey: @"autolaunch"]) {
+	if ([defaults boolForKey: @"autolaunch"]) 
+	{
 		[NSApp hide: self];
-	} else {
+	} 
+	else 
+	{
 		[[prefsController window] makeKeyAndOrderFront: self];
 	}
 }
 
 // Sent when the app is just about to complete its startup
-- (void) applicationWillFinishLaunching: (NSNotification *) not;
+- (void) applicationWillFinishLaunching: (NSNotification *)notif;
 {
 	NSMenu *menu = [NSApp mainMenu];
 
@@ -126,9 +135,8 @@ static BOOL doneLaunching = NO;
 	 * unhides them between -applicationWillFinishLaunching: and
 	 * -applicationDidFinishLaunching:
 	 */
-	if ([defaults boolForKey: @"autolaunch"]) {
+	if ([defaults boolForKey: @"autolaunch"])
 		[NSApp hide: self];
-	}
 }
 
 /* 
@@ -137,7 +145,7 @@ static BOOL doneLaunching = NO;
  */
 - (void) applicationDidUnhide: (NSNotification *) not;
 {
-	if (doneLaunching && ![[prefsController window] isVisible])
+	if (doneLaunching && [[prefsController window] isVisible] == NO)
 		[[prefsController window] makeKeyAndOrderFront: self];
 }
 
@@ -146,13 +154,16 @@ static BOOL doneLaunching = NO;
 
 }
 
-// Accessors
-- (void) setPrefsController: (PKPreferencesController *)controller
+/*
+ * Accessors
+ */
+
+- (void) setPreferencesController: (PKPreferencesController *)controller
 {
 	ASSIGN(prefsController, controller);
 }
 
-- (PKPreferencesController *) prefsController
+- (PKPreferencesController *) preferencesController
 {
 	return prefsController;
 }

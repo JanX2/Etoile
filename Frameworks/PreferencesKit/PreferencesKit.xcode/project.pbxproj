@@ -1,0 +1,580 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 39;
+	objects = {
+		014CEA440018CDF011CA2923 = {
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				ZERO_LINK = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		014CEA450018CDF011CA2923 = {
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+//010
+//011
+//012
+//013
+//014
+//030
+//031
+//032
+//033
+//034
+		034768DFFF38A50411DB9C8B = {
+			children = (
+				8DC2EF5B0486A6940098B216,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//030
+//031
+//032
+//033
+//034
+//080
+//081
+//082
+//083
+//084
+		0867D690FE84028FC02AAC07 = {
+			buildSettings = {
+			};
+			buildStyles = (
+				014CEA440018CDF011CA2923,
+				014CEA450018CDF011CA2923,
+			);
+			hasScannedForEncodings = 1;
+			isa = PBXProject;
+			mainGroup = 0867D691FE84028FC02AAC07;
+			productRefGroup = 034768DFFF38A50411DB9C8B;
+			projectDirPath = "";
+			targets = (
+				8DC2EF4F0486A6940098B216,
+			);
+		};
+		0867D691FE84028FC02AAC07 = {
+			children = (
+				60D5E29608035421001E90CA,
+				60D5E2AB0803542B001E90CA,
+				08FB77AEFE84172EC02AAC07,
+				32C88DFF0371C24200C91783,
+				089C1665FE841158C02AAC07,
+				0867D69AFE84028FC02AAC07,
+				034768DFFF38A50411DB9C8B,
+			);
+			isa = PBXGroup;
+			name = PreferencesKit;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 = {
+			children = (
+				1058C7B0FEA5585E11CA2CBB,
+				1058C7B2FEA5585E11CA2CBB,
+			);
+			isa = PBXGroup;
+			name = "External Frameworks and Libraries";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0867D69BFE84028FC02AAC07 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = Foundation.framework;
+			path = /System/Library/Frameworks/Foundation.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		0867D6A5FE840307C02AAC07 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = AppKit.framework;
+			path = /System/Library/Frameworks/AppKit.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		089C1665FE841158C02AAC07 = {
+			children = (
+				8DC2EF5A0486A6940098B216,
+				089C1666FE841158C02AAC07,
+			);
+			isa = PBXGroup;
+			name = Resources;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		089C1666FE841158C02AAC07 = {
+			children = (
+				089C1667FE841158C02AAC07,
+			);
+			isa = PBXVariantGroup;
+			name = InfoPlist.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		089C1667FE841158C02AAC07 = {
+			fileEncoding = 10;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
+			name = English;
+			path = English.lproj/InfoPlist.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		08FB77AEFE84172EC02AAC07 = {
+			children = (
+				60D5E2B00803545F001E90CA,
+				60D5E2B10803545F001E90CA,
+				60D5E2B20803545F001E90CA,
+				60D5E2B30803545F001E90CA,
+				60D5E2B40803545F001E90CA,
+				60D5E2B50803545F001E90CA,
+			);
+			isa = PBXGroup;
+			name = Source;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//080
+//081
+//082
+//083
+//084
+//100
+//101
+//102
+//103
+//104
+		1058C7B0FEA5585E11CA2CBB = {
+			children = (
+				1058C7B1FEA5585E11CA2CBB,
+			);
+			isa = PBXGroup;
+			name = "Linked Frameworks";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		1058C7B1FEA5585E11CA2CBB = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = Cocoa.framework;
+			path = /System/Library/Frameworks/Cocoa.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1058C7B2FEA5585E11CA2CBB = {
+			children = (
+				0867D69BFE84028FC02AAC07,
+				0867D6A5FE840307C02AAC07,
+			);
+			isa = PBXGroup;
+			name = "Other Frameworks";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//100
+//101
+//102
+//103
+//104
+//320
+//321
+//322
+//323
+//324
+		32C88DFF0371C24200C91783 = {
+			children = (
+				32DBCF5E0370ADEE00C91783,
+			);
+			isa = PBXGroup;
+			name = "Other Sources";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		32DBCF5E0370ADEE00C91783 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = PreferencesKit_Prefix.pch;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//320
+//321
+//322
+//323
+//324
+//600
+//601
+//602
+//603
+//604
+		60D5E29608035421001E90CA = {
+			children = (
+				60D5E29808035421001E90CA,
+			);
+			isa = PBXGroup;
+			name = BackboneCompatibility;
+			path = Headers/BackboneCompatibility;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E29808035421001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = PrefsModule.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E29908035421001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = PKApplicationController.h;
+			path = Headers/PKApplicationController.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E29A08035421001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = PKBundleController.h;
+			path = Headers/PKBundleController.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E29B08035421001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = PKPreferencePane.h;
+			path = Headers/PKPreferencePane.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E29C08035421001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = PKPreferencesController.h;
+			path = Headers/PKPreferencesController.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E29D08035421001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = PKTableViewPreferencesController.h;
+			path = Headers/PKTableViewPreferencesController.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E29E08035421001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = PKToolbarPreferencesController.h;
+			path = Headers/PKToolbarPreferencesController.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E29F08035421001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = PreferencePane.h;
+			path = Headers/PreferencePane.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E2A108035421001E90CA = {
+			fileRef = 60D5E29808035421001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2A208035421001E90CA = {
+			fileRef = 60D5E29908035421001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2A308035421001E90CA = {
+			fileRef = 60D5E29A08035421001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2A408035421001E90CA = {
+			fileRef = 60D5E29B08035421001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2A508035421001E90CA = {
+			fileRef = 60D5E29C08035421001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2A608035421001E90CA = {
+			fileRef = 60D5E29D08035421001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2A708035421001E90CA = {
+			fileRef = 60D5E29E08035421001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2A808035421001E90CA = {
+			fileRef = 60D5E29F08035421001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2AB0803542B001E90CA = {
+			children = (
+				60D5E29908035421001E90CA,
+				60D5E29A08035421001E90CA,
+				60D5E29B08035421001E90CA,
+				60D5E29C08035421001E90CA,
+				60D5E29D08035421001E90CA,
+				60D5E29E08035421001E90CA,
+				60D5E29F08035421001E90CA,
+			);
+			isa = PBXGroup;
+			name = Headers;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E2B00803545F001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = PKApplicationController.m;
+			path = Source/PKApplicationController.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E2B10803545F001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = PKBundleController.m;
+			path = Source/PKBundleController.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E2B20803545F001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = PKPreferencePane.m;
+			path = Source/PKPreferencePane.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E2B30803545F001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = PKPreferencesController.m;
+			path = Source/PKPreferencesController.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E2B40803545F001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = PKTableViewPreferencesController.m;
+			path = Source/PKTableViewPreferencesController.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E2B50803545F001E90CA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = PKToolbarPreferencesController.m;
+			path = Source/PKToolbarPreferencesController.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		60D5E2B60803545F001E90CA = {
+			fileRef = 60D5E2B00803545F001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2B70803545F001E90CA = {
+			fileRef = 60D5E2B10803545F001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2B80803545F001E90CA = {
+			fileRef = 60D5E2B20803545F001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2B90803545F001E90CA = {
+			fileRef = 60D5E2B30803545F001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2BA0803545F001E90CA = {
+			fileRef = 60D5E2B40803545F001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		60D5E2BB0803545F001E90CA = {
+			fileRef = 60D5E2B50803545F001E90CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//600
+//601
+//602
+//603
+//604
+//8D0
+//8D1
+//8D2
+//8D3
+//8D4
+		8DC2EF4F0486A6940098B216 = {
+			buildPhases = (
+				8DC2EF500486A6940098B216,
+				8DC2EF520486A6940098B216,
+				8DC2EF540486A6940098B216,
+				8DC2EF560486A6940098B216,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = PreferencesKit_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				LIBRARY_STYLE = DYNAMIC;
+				PRODUCT_NAME = PreferencesKit;
+				WRAPPER_EXTENSION = framework;
+			};
+			dependencies = (
+			);
+			isa = PBXNativeTarget;
+			name = PreferencesKit;
+			productInstallPath = "$(HOME)/Library/Frameworks";
+			productName = PreferencesKit;
+			productReference = 8DC2EF5B0486A6940098B216;
+			productType = "com.apple.product-type.framework";
+		};
+		8DC2EF500486A6940098B216 = {
+			buildActionMask = 2147483647;
+			files = (
+				60D5E2A108035421001E90CA,
+				60D5E2A208035421001E90CA,
+				60D5E2A308035421001E90CA,
+				60D5E2A408035421001E90CA,
+				60D5E2A508035421001E90CA,
+				60D5E2A608035421001E90CA,
+				60D5E2A708035421001E90CA,
+				60D5E2A808035421001E90CA,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DC2EF520486A6940098B216 = {
+			buildActionMask = 2147483647;
+			files = (
+				8DC2EF530486A6940098B216,
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DC2EF530486A6940098B216 = {
+			fileRef = 089C1666FE841158C02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8DC2EF540486A6940098B216 = {
+			buildActionMask = 2147483647;
+			files = (
+				60D5E2B60803545F001E90CA,
+				60D5E2B70803545F001E90CA,
+				60D5E2B80803545F001E90CA,
+				60D5E2B90803545F001E90CA,
+				60D5E2BA0803545F001E90CA,
+				60D5E2BB0803545F001E90CA,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DC2EF560486A6940098B216 = {
+			buildActionMask = 2147483647;
+			files = (
+				8DC2EF570486A6940098B216,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DC2EF570486A6940098B216 = {
+			fileRef = 1058C7B1FEA5585E11CA2CBB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8DC2EF5A0486A6940098B216 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist;
+			path = Info.plist;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		8DC2EF5B0486A6940098B216 = {
+			explicitFileType = wrapper.framework;
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = PreferencesKit.framework;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+	};
+	rootObject = 0867D690FE84028FC02AAC07;
+}

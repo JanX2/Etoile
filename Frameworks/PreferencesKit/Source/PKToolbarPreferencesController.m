@@ -1,12 +1,12 @@
 /*
-	PreferencesController.m
+	PKToolbarPreferencesController.m
 
-	Preferences window controller class
+	Preferences window with toolbar controller class
 
-	Copyright (C) 2001 Dusk to Dawn Computing, Inc.
+	Copyright (C) 2005 Quentin Mathe
 
-	Author: Jeff Teunissen <deek@d2dc.net>
-	Date:	11 Nov 2001
+	Author: Quentin Mathe <qmathe@club-internet.fr>
+	Date:	January 2005
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License as
@@ -29,13 +29,14 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+#import "PKToolbarPreferencesController.h"
+
+static PreferencesController *sharedInstance = nil;
+static NSMutableDictionary *modules = nil;
+static id currentModule = nil;
+static BOOL inited = NO;
 
 @implementation PKToolbarPreferencesController
-
-static PreferencesController	*sharedInstance = nil;
-static NSMutableDictionary	*modules = nil;
-static id		currentModule = nil;
-static BOOL 		inited = NO;
 
 /*
  * Preferences window UI stuff
@@ -58,7 +59,9 @@ static BOOL 		inited = NO;
 	return [window contentViewWithoutToolbar];
 }
 
-// Toolbar delegate methods
+/*
+ * Toolbar delegate methods
+ */
 
 - (NSToolbarItem *) toolbar:(NSToolbar *)toolbar
       itemForItemIdentifier:(NSString*)identifier
@@ -72,27 +75,32 @@ static BOOL 		inited = NO;
 
 	[toolbarItem setLabel: [module buttonCaption]];
 	[toolbarItem setImage: [module buttonImage]];
-	if (![module buttonAction])
+	if ([module buttonAction != NULL])
 	{
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(switchView:)];
 	}
-	else {
+	else 
+	{
 		[toolbarItem setTarget: module];
 		[toolbarItem setAction: [module buttonAction]];
 	}
+	
 	return toolbarItem;
 }
 
-- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar {
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar 
+{
 	return [modules allKeys];
 }
 
-- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar {    
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar 
+{    
 	return [modules allKeys];
 }
 
-- (NSArray *) toolbarSelectableItemIdentifiers: (NSToolbar *)toolbar {    
+- (NSArray *) toolbarSelectableItemIdentifiers: (NSToolbar *)toolbar 
+{    
 	return [modules allKeys];
 }
 

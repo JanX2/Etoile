@@ -1,19 +1,21 @@
-//
-//  GSPreferencePane.h
-//  GSSystemPreferences
-//
-//  Created by Uli Kusterer on 22.10.04.
-//  Copyright 2004 M. Uli Kusterer. All rights reserved.
-//
+/*
+	GSPreferencePanes.h
+	
+	PreferencePanes framework main class for GNUstep
+ 
+	Copyright (C) 2004 Uli Kusterer
+	
+	Author: Uli Kusterer
+	Date:	2004
+ */
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 
-
 @class GSSysPrefsAppDelegate;
 
 
-// Possible return values for shouldUnselect:
+/* Possible return values for shouldUnselect: */
 typedef enum NSPreferencePaneUnselectReply
 {
     NSUnselectCancel = 0,
@@ -21,104 +23,110 @@ typedef enum NSPreferencePaneUnselectReply
     NSUnselectLater = 2
 } NSPreferencePaneUnselectReply;
 
-// Notifications: (NYI)
+/* Notifications (not implemented) */
 extern NSString *NSPreferencePaneDoUnselectNotification;
 extern NSString *NSPreferencePaneCancelUnselectNotification;
 
-
-// Help Menu support (NYI)
+/* Help Menu support (not implemented) */
 #define	kNSPrefPaneHelpMenuInfoPListKey			@"NSPrefPaneHelpAnchors"
 #define	kNSPrefPaneHelpMenuTitleKey				@"title"		
 #define	kNSPrefPaneHelpMenuAnchorKey			@"anchor"				
 
 
-// Implementation of PrefPane superclass. Use NSPreferencePane instead, which is a subclass of this.
+/* Implementation of PrefPane superclass. Use NSPreferencePane instead, which is a subclass of this. */
 @interface GSPreferencePane : NSObject
 {
 	@private
-		IBOutlet NSWindow*		_window;			// Window from which to tear out the main view.
+		IBOutlet NSWindow *		_window;			// Window from which to tear out the main view.
 	
-		IBOutlet NSView*		_initialKeyView;	// Subview of main content view to be initially selected.
-		IBOutlet NSView*		_firstKeyView;		// Subview of main content view to start keyboard loop at.
-		IBOutlet NSView*		_lastKeyView;		// Subview of main content view to end keyboard loop at.
+		IBOutlet NSView *		_initialKeyView;	// Subview of main content view to be initially selected.
+		IBOutlet NSView *		_firstKeyView;		// Subview of main content view to start keyboard loop at.
+		IBOutlet NSView *		_lastKeyView;		// Subview of main content view to end keyboard loop at.
 	
-		NSView*					_mainView;			// Main view containing the prefs GUI.
-		NSBundle*				_bundle;			// Bundle containing your subclass.
+		NSView *				_mainView;			// Main view containing the prefs GUI.
+		NSBundle *				_bundle;			// Bundle containing your subclass.
 	
-		NSMutableArray*			_topLevelObjects;	// In place of Apple's _reserved1.
-		GSSysPrefsAppDelegate*	_owner;				// In place of Apple's _reserved2.
+		NSMutableArray *		_topLevelObjects;	// In place of Apple's _reserved1.
+		GSSysPrefsAppDelegate *	_owner;				// In place of Apple's _reserved2.
 
 		id						_reserved3;
 }
 
--(id)			initWithBundle: (NSBundle*)bundle;
+- (id) initWithBundle: (NSBundle *)bundle;
+- (NSBundle *) bundle;
 
--(NSBundle*)	bundle;
+/*
+ * Load the main view from wherever we want to get it and return it:
+ * This should also set up mainView, initialKeyView, firstKeyView and
+ * lastKeyView.
+ */
+- (NSView *) loadMainView;
 
-// Load the main view from wherever we want to get it and return it:
-//	This should also set up mainView, initialKeyView, firstKeyView and
-//	lastKeyView.
--(NSView*) loadMainView;
+/* Main view was loaded, we're ready to go: */
+- (void) mainViewDidLoad;
 
-// Main view was loaded, we're ready to go:
--(void) mainViewDidLoad;
+/* Name of the NIB file to load for main view and rest of GUI: */
+- (NSString *) mainNibName;
 
-// Name of the NIB file to load for main view and rest of GUI:
--(NSString*) mainNibName;
+/* Take the content view of _window and make it our main view: */
+- (void) assignMainView;
 
-// Take the content view of _window and make it our main view:
--(void) assignMainView;
-
-// This pane is gonna be/has finished being shown in the window:
+/* This pane is gonna be/has finished being shown in the window: */
 -(void) willSelect;
 -(void) didSelect;
 
-// Return whether it's okay to unselect this pane now:
-//	You can return NSUnselectLater and then later call
-//	replyToShouldUnselect: to e.g. ask the user to save changes.
--(NSPreferencePaneUnselectReply) shouldUnselect;
+/* 
+ * Return whether it's okay to unselect this pane now:
+ * You can return NSUnselectLater and then later call
+ * replyToShouldUnselect: to e.g. ask the user to save changes.
+ */
+- (NSPreferencePaneUnselectReply) shouldUnselect;
 
 // If shouldUnselect returned NSUnselectLater, call this when "later" has arrived.
--(void)		replyToShouldUnselect: (BOOL)shouldUnselect;
+- (void) replyToShouldUnselect: (BOOL)shouldUnselect;
 
-// This pane is gonna be/has finished being removed from the window:
--(void)		willUnselect;
--(void)		didUnselect;
+/* This pane is gonna be/has finished being removed from the window: */
+- (void) willUnselect;
+- (void) didUnselect;
 
-// Accessors for _mainView:
--(void)		setMainView: (NSView*)view;
--(NSView*)	mainView;
+/* Accessors for _mainView: */
+- (void) setMainView: (NSView *)view;
+- (NSView *) mainView;
 
-// Accessors for view to have keyboard focus when the pane comes up:
--(NSView*)	initialKeyView;
--(void)		setInitialKeyView: (NSView*)view;
+/* Accessors for view to have keyboard focus when the pane comes up: */
+- (NSView *) initialKeyView;
+- (void) setInitialKeyView: (NSView *)view;
 
-// Keyboard tabbing chain:
--(NSView*)	firstKeyView;
--(void)		setFirstKeyView: (NSView*)view;
+/* Keyboard tabbing chain: */
+- (NSView *) firstKeyView;
+- (void) setFirstKeyView: (NSView *)view;
 
--(NSView*)	lastKeyView;
--(void)		setLastKeyView: (NSView*)view;
+- (NSView *) lastKeyView;
+- (void) setLastKeyView: (NSView *)view;
 
-// Should the current text field be asked to give up focus before un-selecting this pane?
--(BOOL)		autoSaveTextFields;
+/* Should the current text field be asked to give up focus before un-selecting this pane? */
+- (BOOL) autoSaveTextFields;
 
-// Is this pane the one currently showing in the window?
--(BOOL)		isSelected;
+/* Is this pane the one currently showing in the window? */
+- (BOOL) isSelected;
 
-// Help menu support (NYI):
--(void)		updateHelpMenuWithArray: (NSArray*)inArrayOfMenuItems;
+/* Help menu support (not implemented) */
+- (void) updateHelpMenuWithArray: (NSArray *)inArrayOfMenuItems;
 
 
-// Private: (GNUstep-specific and subject to change)
--(void)		setOwner: (GSSysPrefsAppDelegate*)owner;
+/* Private: (GNUstep-specific and subject to change) */
+- (void) setOwner: (GSSysPrefsAppDelegate *)owner;
 
 @end
 
+/*
+ * The class name you should actually use: 
+ */
 
+@interface NSPreferencePane : GSPreferencePane 
+{
 
-// The class name you should actually use:
-@interface NSPreferencePane : GSPreferencePane {}
+}
 
 @end
 

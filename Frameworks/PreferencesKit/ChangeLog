@@ -1,3 +1,29 @@
+2005-04-06  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile.
+	* Headers/PKApplicationController.h:
+	* Headers/PKBundleController.h:
+	* Headers/PKPreferencesController.h:
+	* Headers/PKPreferencePane.h:
+	* Headers/PKTableViewPreferencesController.h:
+	* Headers/PKToolbarPreferencesController.h:
+	* Headers/PreferencePane.h:
+	* Source/PKApplicationController.m:
+	* Source/PKBundleController.m:
+	* Source/PKPreferencesController.m:
+	* Source/PKPreferencePane.m:
+	* Source/PKTableViewPreferencesController.m:
+	* Source/PKToolbarPreferencesController.m:
+	Improved code to be cleaner and tweaked formatting.
+	* PreferencesKit.xcode:
+	* PreferencesKit_Prefix.pch:
+	* English.lproj/InfoPlist.strings:
+	* English.lproj/locversion.plist:
+	* Info.plist:
+	* version.plist:
+	Added Xcode project.
+	* .cvsignore: Updated to ignore Xcode build folder.
+
 2005-03-10  Quentin Mathe <qmathe@club-internet.fr>
 	
 	WARNING: doesn't compile.
@@ -21,9 +47,9 @@
 	* Source/PKPreferencesController.m:
 	* Source/PKTableViewController.m:
 	* Source/PKToolbarPreferencesController.m:
-    * Source/GNUmakefile:
+	* Source/GNUmakefile:
 	* README:
 	* INSTALL:
 	* GNUmakefile:
-    Initial import.
-        
+	Initial import.
+		
