@@ -1,20 +1,26 @@
 /* All Rights reserved */
 
-#include <AppKit/AppKit.h>
-
 @interface AppController : NSObject
 {
-  id list;
-  id status;
-  id resultsTests;
-  id summary;
-  id testedBundlePathTextfield;
-  id ukrunPathTextfield;
-  id preferencesPanel;
-
-  NSString* testedBundlePath;
-  NSString* ukrunPath;
+  	id list;
+  	id status;
+  	id resultsTests;
+  	id summary;
+	id popupTestsSets;
+  	id preferencesPanel;
+	id preferencesController;
 }
-- (void) showPrefPanel: (id)sender;
+
+- (void) showPreferencesPanel: (id)sender;
 - (void) runTests: (id)sender;
+- (void) popupTestsSets: (id)sender;
+
+- (NSArray *) scanOutput: (NSString *)output;
+
+- (void) noLight;
+- (void) greenLight;
+- (void) redLight;
+
+- (void) testsSetsChanged: (NSNotification *)not;
+
 @end

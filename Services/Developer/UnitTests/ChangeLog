@@ -1,0 +1,15 @@
+2005-03-07  Quentin Mathe <qmathe@club-internet.fr>
+
+        * ChangeLog: Added.
+        * TODO: Added.
+        * UnitTestsInfo.plist: Added.
+        * PreferencesController.h: 
+        * PreferencesController.m:
+        Added tests sets support (exposed in Preferences window).
+        * AppController.h: Updated
+        * AppController.m: Modified to take in account new "Tests sets" related 
+        popup menu in Tests window and new user defaults support.
+        * GNUmakefile: Updated.
+        * UnitTests.gorm: Updated with new features and better UI.
+        
+        

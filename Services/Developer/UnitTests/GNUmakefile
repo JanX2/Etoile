@@ -3,6 +3,9 @@
 #
 
 include $(GNUSTEP_MAKEFILES)/common.make
+
+ADDITIONAL_OBJCFLAGS = -Wno-import
+
 GNUSTEP_INSTALLATION_DIR = $(HOME)/GNUstep
 
 #
@@ -18,19 +21,21 @@ UnitTests_APPLICATION_ICON =
 #
 UnitTests_RESOURCE_FILES = \
 UnitTests.gorm \
-Info-gnustep.plist 
+UnitTestsInfo.plist 
 
 #
 # Header files
 #
 UnitTests_HEADER_FILES = \
-AppController.h 
+	AppController.h \
+	PreferencesController.h
 
 #
 # Class files
 #
 UnitTests_OBJC_FILES = \
-AppController.m 
+	AppController.m \
+	PreferencesController.m
 
 #
 # C files
