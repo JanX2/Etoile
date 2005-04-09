@@ -20,16 +20,17 @@
 
 @class LCCompoundFileReader;
 
-@interface LCCSIndexInput: LCIndexInput
+@interface LCCSIndexInput: LCIndexInput <NSCopying>
 {
 	LCCompoundFileReader *reader;
 	LCIndexInput *base;
-	long fileOffset;
-	long length;
+	long long fileOffset;
+	long long length;
+	long long filePointer;
 }
 - (id) initWithCompoundFileReader: (LCCompoundFileReader *) r
-       indexInput: (LCIndexInput *) base offset: (long) fileOffset
-       length: (long) length;
+       indexInput: (LCIndexInput *) base offset: (long long) fileOffset
+       length: (long long) length;
 @end
 
 @interface LCCompoundFileReader: NSObject <LCDirectory>

@@ -62,7 +62,7 @@
 - (id) copyWithZone: (NSZone *) zone
 {
   // Access the same file
-  LCRAMInputStream *clone = [[LCRAMInputStream allocWithZone: zone] initWithFile: file];;
+  LCRAMInputStream *clone = [[LCRAMInputStream allocWithZone: zone] initWithFile: file];
   [clone seek: pointer];
   return clone;
 }

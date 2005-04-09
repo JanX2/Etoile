@@ -45,7 +45,8 @@ LuceneKit_Index_OBJC_FILES += \
 	TestSegmentReader.m \
 	TestSegmentMerger.m \
 	TestTermVectorsReader.m \
-	TestTermVectorsWriter.m
+	TestTermVectorsWriter.m \
+	TestIndexWriter.m
 endif
 
 LuceneKit_Index_INCLUDE_DIRS += -I../../Headers -I../

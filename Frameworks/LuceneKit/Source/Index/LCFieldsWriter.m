@@ -14,8 +14,10 @@
 {
   self = [self init];
   ASSIGN(fieldInfos, fn);
-  ASSIGN(fieldsStream, [d createOutput: [segment stringByAppendingPathExtension: @"fdt"]]);
-  ASSIGN(indexStream, [d createOutput: [segment stringByAppendingPathExtension: @"fdx"]]);
+  NSString *f = [segment stringByAppendingPathExtension: @"fdt"];
+  ASSIGN(fieldsStream, [d createOutput: f]);
+  f = [segment stringByAppendingPathExtension: @"fdx"];
+  ASSIGN(indexStream, [d createOutput: f]);
   return self;
 }
 

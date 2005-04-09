@@ -30,26 +30,26 @@
         /** source file */
   NSString *file;
         /** temporary holder for the start of directory entry for this file */
-  long directoryOffset;
+  long long directoryOffset;
         /** temporary holder for the start of this file's data section */
-  long dataOffset;
+  long long dataOffset;
 }
 - (NSString *) file;
-- (long) directoryOffset;
-- (long) dataOffset;
+- (long long) directoryOffset;
+- (long long) dataOffset;
 - (void) setFile: (NSString *) f;
-- (void) setDirectoryOffset: (long) f;
-- (void) setDataOffset: (long) f;
+- (void) setDirectoryOffset: (long long) f;
+- (void) setDataOffset: (long long) f;
 @end
 
 @implementation LCWriterFileEntry
 
 - (NSString *) file { return file; }
-- (long) directoryOffset { return directoryOffset; }
-- (long) dataOffset { return dataOffset; }
+- (long long) directoryOffset { return directoryOffset; }
+- (long long) dataOffset { return dataOffset; }
 - (void) setFile: (NSString *) f { ASSIGN(file, f); }
-- (void) setDirectoryOffset: (long) f { directoryOffset = f; }
-- (void) setDataOffset: (long) f { dataOffset = f; }
+- (void) setDirectoryOffset: (long long) f { directoryOffset = f; }
+- (void) setDataOffset: (long long) f { dataOffset = f; }
 
 @end
 
@@ -120,7 +120,7 @@
     return;
   }
 
-  if (! [ids containsObject: file])
+  if ([ids containsObject: file])
   {
     NSLog(@"File %@ already added", file);
     return;
@@ -218,8 +218,8 @@
 
   is = [directory openInput: [source file]];
   long length = [is length];
-  long remainder = length;
-  int chunk = [buffer length];
+//  long remainder = length;
+//  int chunk = [buffer length];
 
   [is readBytes: buffer offset: 0 length: length];
   [os writeBytes: buffer length: length];

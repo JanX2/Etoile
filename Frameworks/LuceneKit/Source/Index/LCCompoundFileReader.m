@@ -11,21 +11,29 @@
  */
 @interface LCFileEntry: NSObject
 {
-  long offset;
-  long length;
+  long long offset;
+  long long length;
 }
-- (long) offset;
-- (long) length;
-- (void) setOffset: (long) o;
-- (void) setLength: (long) l;
+- (long long) offset;
+- (long long) length;
+- (void) setOffset: (long long) o;
+- (void) setLength: (long long) l;
 
 @end
 
 @implementation LCFileEntry
-- (long) offset { return offset; }
-- (long) length { return length; }
-- (void) setOffset: (long) o { offset = o; }
-- (void) setLength: (long) l { length = l; }
+- (id) init
+{
+  self = [super init];
+  offset = 0;
+  length = 0;
+  return self;
+}
+
+- (long long) offset { return offset; }
+- (long long) length { return length; }
+- (void) setOffset: (long long) o { offset = o; }
+- (void) setLength: (long long) l { length = l; }
 @end
 
     /** Implementation of an IndexInput that reads from a portion of the
@@ -36,23 +44,18 @@
 @implementation LCCSIndexInput
 
 - (id) initWithCompoundFileReader: (LCCompoundFileReader *) cr
-       indexInput: (LCIndexInput *) b offset: (long) f
-       length: (long) len
+       indexInput: (LCIndexInput *) b offset: (long long) f
+       length: (long long) len
 {
   self = [super init];
   ASSIGN(reader, cr);
   ASSIGN(base, b);
   fileOffset = f;
   length = len;
+  filePointer = 0;
   return self;
 }
 
-        /** Expert: implements buffer refill.  Reads bytes from the current
-         *  position in the input.
-         * @param b the array to read bytes into
-         * @param offset the offset in the array to start storing bytes
-         * @param len the number of bytes to read
-         */
 - (char) readByte
 {
   NSMutableData *data = [[NSMutableData alloc] init];
@@ -64,7 +67,7 @@
          offset: (int) offset
 	 length: (int) len
 {
-  long start = [self filePointer];
+  long long start = [self filePointer];
   if (start + len > length)
     {
 	    NSLog(@"read past EOF");
@@ -72,6 +75,7 @@
     }
   [base seek: fileOffset + start];
   [base readBytes: b offset: offset length: len];
+  filePointer += len;
 }
 
         /** Expert: implements seek.  Sets current position in this file, where
@@ -84,6 +88,18 @@
 - (void) close {}
 
 - (unsigned long long) length { return length; }
+
+- (unsigned long long) filePointer { return filePointer; }
+
+- (id) copyWithZone: (NSZone *) zone
+{
+  // Access the same file
+  LCCSIndexInput *clone = [[LCCSIndexInput allocWithZone: zone] initWithCompoundFileReader: reader
+       indexInput: base offset: fileOffset
+       length: length];
+  [clone seek: filePointer];
+  return clone;
+}
 
 @end
 
@@ -120,9 +136,9 @@
       [entry setLength: offset - [entry offset]];
     }
 
-  entry = [[LCFileEntry alloc] init];
-  [entry setOffset: offset];
-  [entries setObject: entry forKey: iden];
+    entry = [[LCFileEntry alloc] init];
+    [entry setOffset: offset];
+    [entries setObject: entry forKey: iden];
   }
 
   // set the length of the final entry
@@ -135,6 +151,8 @@
   if (! success && (stream != nil)) {
     [stream close];
   }
+  
+  return self;
 }
 
 - (id <LCDirectory>) directory { return directory; }
@@ -168,7 +186,7 @@
 	  NSLog(@"No sub-file with iden %@ found", iden);
 	  return nil;
   }
-    return [[LCCompoundFileReader alloc] 
+    return [[LCCSIndexInput alloc] 
         initWithCompoundFileReader: self
        indexInput: stream offset: [entry offset]
        length: [entry length]];

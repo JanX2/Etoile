@@ -35,7 +35,7 @@
   self = [super init];
   similarity = [LCSimilarity defaultSimilarity];
   segmentInfos = [[LCSegmentInfos alloc] init];
-  id <LCDirectory> ramDirectory = [[LCRAMDirectory alloc] init];
+  ramDirectory = [[LCRAMDirectory alloc] init];
   termIndexInterval = DEFAULT_TERM_INDEX_INTERVAL;
 
   useCompoundFile = YES;
@@ -47,9 +47,6 @@
   maxFieldLength = DEFAULT_MAX_FIELD_LENGTH;
 
   minMergeDocs = DEFAULT_MIN_MERGE_DOCS;
-
-  
-
    
   return self;
 }
@@ -387,12 +384,9 @@
     //[dw setInfoStream: infoStream];
     NSString *segmentName = [self newSegmentName];
     [dw addDocument: segmentName document: doc];
-    NSLog(@"IndexWriter: after addDocument");
 //    synchronized (this) {
       [segmentInfos addSegmentInfo: [[LCSegmentInfo alloc] initWithName: segmentName numberOfDocuments: 1 directory: ramDirectory]];
-    NSLog(@"IndexWriter: after add segment info");
       [self maybeMergeSegments];
-    NSLog(@"IndexWriter: maybeMergeSegments");
 //    }
   }
 
@@ -526,7 +520,6 @@
            ([[segmentInfos segmentInfoAtIndex: minSegment] directory] == ramDirectory)) {
       docCount += [[segmentInfos segmentInfoAtIndex: minSegment] numberOfDocuments];
       minSegment--;
-      NSLog(@"minSegment %d", minSegment);
     }
     if (minSegment < 0 ||			  // add one FS segment?
         (docCount + [[segmentInfos segmentInfoAtIndex: minSegment] numberOfDocuments]) > mergeFactor ||
@@ -542,48 +535,40 @@
 {
     long targetMergeDocs = minMergeDocs;
     while (targetMergeDocs <= maxMergeDocs) {
-    NSLog(@"targetMergeDocs %ld, maxMergeDocs %d", targetMergeDocs, minMergeDocs);
       // find segments smaller than current target size
-      int minSegment = [segmentInfos numberOfSegments];
-      int mergeDocs = 0;
-      while (--minSegment >= 0) {
-        NSLog(@"while (--minSegment) >= 0");
-        LCSegmentInfo *si = [segmentInfos segmentInfoAtIndex: minSegment];
-        NSLog(@"segmentInfo %@", si);
-        if ([si numberOfDocuments] >= targetMergeDocs)
-          break;
-        mergeDocs += [si numberOfDocuments];
-        NSLog(@"mergeDocs %d", mergeDocs);
-      }
-
-      if (mergeDocs >= targetMergeDocs)		  // found a merge to do
-      {
-        NSLog(@"before mergeSegment");
-  	    [self mergeSegments: minSegment+1];
-  	    NSLog(@"mergeSegment");
-  	    }
-      else
-      {
-        NSLog(@"break");
+    int minSegment = [segmentInfos numberOfSegments];
+    int mergeDocs = 0;
+    while (--minSegment >= 0) {
+      LCSegmentInfo *si = [segmentInfos segmentInfoAtIndex: minSegment];
+      if ([si numberOfDocuments] >= targetMergeDocs)
         break;
-		}
-      targetMergeDocs *= mergeFactor;		  // increase target size
+      mergeDocs += [si numberOfDocuments];
     }
+
+    if (mergeDocs >= targetMergeDocs)		  // found a merge to do
+    {
+      [self mergeSegments: minSegment+1];
+    }
+    else
+    {
+      break;
+    }
+    targetMergeDocs *= mergeFactor;		  // increase target size
   }
+}
 
   /** Pops segments off of segmentInfos stack down to minSegment, merges them,
     and pushes the merged index onto the top of the segmentInfos stack. */
 - (void) mergeSegments: (int) minSegment
 {
-  NSLog(@"mergeSegments %d", minSegment);
-    NSString *mergedName = [self newSegmentName];
+  NSString *mergedName = [self newSegmentName];
 //    if (infoStream != nil) infoStream.print("merging segments");
-    LCSegmentMerger *merger = [[LCSegmentMerger alloc] initWithIndexWriter: self
+  LCSegmentMerger *merger = [[LCSegmentMerger alloc] initWithIndexWriter: self
 	                             name: mergedName];
 
-    NSMutableArray *segmentsToDelete = [[NSMutableArray alloc] init];
-    int i;
-    for (i = minSegment; i < [segmentInfos numberOfSegments]; i++) {
+  NSMutableArray *segmentsToDelete = [[NSMutableArray alloc] init];
+  int i;
+  for (i = minSegment; i < [segmentInfos numberOfSegments]; i++) {
       LCSegmentInfo *si = [segmentInfos segmentInfoAtIndex: i];
 #if 0
       if (infoStream != nil)
@@ -595,7 +580,6 @@
           ([reader directory] == ramDirectory))
         [segmentsToDelete addObject: reader];   // queue segment for deletion
     }
-
     int mergedDocCount = [merger merge];
 
 #if 0
@@ -607,10 +591,8 @@
     [segmentInfos removeSegmentsInRange: r]; // pop old infos & add new
     [segmentInfos addSegmentInfo: [[LCSegmentInfo alloc] initWithName: mergedName
 	    numberOfDocuments: mergedDocCount directory: directory]];
-
     // close readers before we attempt to delete now-obsolete segments
     [merger closeReaders];
-
 #if 0
     synchronized (directory) {                 // in- & inter-process sync
       new Lock.With(directory.makeLock(COMMIT_LOCK_NAME), COMMIT_LOCK_TIMEOUT) {
@@ -663,12 +645,16 @@
   int i;
     for (i = 0; i < [segments count]; i++) {
       LCSegmentReader *reader = (LCSegmentReader *)[segments objectAtIndex: i];
-      if ([reader directory] == directory)
+      #if 0
+      if ([reader directory] == directory) {
 	[self deleteFiles: [reader files]
 		 deletable: deletable];	  // try to delete our files
-      else
+		 }
+      else {
 	[self deleteFiles: [reader files]
 		directory: [reader directory]];  // delete other files
+		}
+		#endif
     }
 
     [self writeDeleteableFiles: deletable]; // note files we can't delete
@@ -691,7 +677,7 @@
       [directory deleteFile: [files objectAtIndex: i]];
   }
 
-- (void) deleteFiles: (NSArray *) files deletable: (NSArray *) deletable
+- (void) deleteFiles: (NSArray *) files deletable: (NSMutableArray *) deletable
 {
 	int i;
     for (i = 0; i < [files count]; i++) {

@@ -1,3 +1,12 @@
+2005-04-08 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	Note: test units broken (probably memory leaks).
+	"ukrun -q LuceneKit.bundle" won't finish.
+	"ukrun LuceneKit.bundle" works fine.
+	* Source/Index/TestIndexWriter.h:
+	* Source/Index/TestIndexWriter.m: 
+	Test unit for LCIndexWriter.
+
 2005-04-05 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Index/TestSegmentMerger.h:

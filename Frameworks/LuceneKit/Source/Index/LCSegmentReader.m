@@ -130,7 +130,6 @@
 - (void) initWithSegmentInfo: (LCSegmentInfo *) si
 {
   ASSIGN(segment, [si name]);
-
   // Use compound file directory for some files, if it exists
   id <LCDirectory> cfsDir = [self directory];
   NSString *file = [segment stringByAppendingPathExtension: @"cfs"];
@@ -145,6 +144,7 @@
     fieldsReader = [[LCFieldsReader alloc] initWithDirectory: cfsDir
 	                                    segment: segment
 					    fieldInfos: fieldInfos];
+					 
     tis = [[LCTermInfosReader alloc] initWithDirectory: cfsDir
 	                             segment: segment
 				     fieldInfos: fieldInfos];
@@ -275,7 +275,7 @@
   NSMutableArray *files = [[NSMutableArray alloc] init];
   NSArray *ext = [NSArray arrayWithObjects: @"cfs", @"fnm",
       @"fdx", @"fdt", @"tii", @"tis", @"frq", @"prx", @"del",
-      @"tvx", @"tvd", @"tvf", @"tvp"];
+      @"tvx", @"tvd", @"tvf", @"tvp", nil];
 
   int i;
   for (i = 0; i < [ext count]; i++) {
@@ -353,7 +353,13 @@
 
 - (int) maxDoc
 {
+  if (fieldsReader)
     return [fieldsReader size];
+  else
+  {
+    NSLog(@"No FieldsReader");
+    return 0;
+    }
   }
 
   /**

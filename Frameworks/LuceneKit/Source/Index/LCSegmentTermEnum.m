@@ -301,14 +301,11 @@
 #ifdef HAVE_UKTEST
 - (void) addDoc: (LCIndexWriter *) writer : (NSString *) value
 {
-  NSLog(@"add %@", value);
   LCDocument *doc = [[LCDocument alloc] init];
   LCField *field = [[LCField alloc] initWithName: @"content" string: value
                          store: LCStore_NO index: LCIndex_Tokenized];
   [doc addField: field];
-  NSLog(@"after addField");
   [writer addDocument: doc];
-  NSLog(@"After addDocument");
 }
 
 - (void) verifyDocFreq: (id <LCDirectory>) dir

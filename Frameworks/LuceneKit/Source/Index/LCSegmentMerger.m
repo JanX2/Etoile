@@ -93,7 +93,7 @@
 - (int) merge
 {
   int value;
-    
+ 
   value = [self mergeFields];
   [self mergeTerms];
   [self mergeNorms];
@@ -102,7 +102,6 @@
   {
     [self mergeVectors];
     }
-
     return value;
   }
   
@@ -207,6 +206,7 @@
 			      fieldInfos: fieldInfos];
 
     for (i = 0; i < [readers count]; i++) {
+      
       LCIndexReader *reader = (LCIndexReader *) [readers objectAtIndex: i];
       int maxDoc = [reader maxDoc];
       int j;
@@ -329,13 +329,11 @@
   long freqPointer = [freqOutput filePointer];
   long proxPointer = [proxOutput filePointer];
 
-//  NSLog(@"appendPosting %@, size %d", smis, n);
   int df = [self appendPosting: smis size: n];		  // append posting data
 
   long skipPointer = [self writeSkip];
 
   if (df > 0) {
-      //NSLog(@"Add term %@", [[smis objectAtIndex: 0] term]);
       // add an entry to the dictionary with pointers to prox and freq files
       [termInfo setDocFreq: df];
       [termInfo setFreqPointer: freqPointer];

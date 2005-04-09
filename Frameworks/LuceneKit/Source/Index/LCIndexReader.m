@@ -203,30 +203,30 @@
 }
 
   /** Returns the number of documents in this index. */
-  - (int) numDocs {}
+  - (int) numDocs { return 0; }
 
   /** Returns one greater than the largest possible document number.
    This may be used to, e.g., determine how big to allocate an array which
    will have an element for every document number in an index.
    */
-   - (int) maxDoc {}
+   - (int) maxDoc { return 0; }
 
   /** Returns the stored fields of the <code>n</code><sup>th</sup>
    <code>Document</code> in this index. */
-   - (LCDocument *) document: (int) n {}
+   - (LCDocument *) document: (int) n { return nil; }
 
   /** Returns true if document <i>n</i> has been deleted */
-  - (BOOL) isDeleted: (int) n {}
+  - (BOOL) isDeleted: (int) n { return NO; }
 
   /** Returns true if any documents have been deleted */
-  - (BOOL) hasDeletions {}
+  - (BOOL) hasDeletions { return NO; }
   
   /** Returns the byte-encoded normalization factor for the named field of
    * every document.  This is used by the search code to score documents.
    *
    * @see Field#setBoost(float)
    */
-- (NSData *) norms: (NSString *) field {}
+- (NSData *) norms: (NSString *) field { return nil; }
 
   /** Reads the byte-encoded normalization factor for the named field of every
    *  document.  This is used by the search code to score documents.
@@ -271,16 +271,16 @@
    The enumeration is ordered by Term.compareTo().  Each term
    is greater than all that precede it in the enumeration.
    */
-- (LCTermEnum *) terms {};
+- (LCTermEnum *) terms { return nil; };
 
   /** Returns an enumeration of all terms after a given term.
    The enumeration is ordered by Term.compareTo().  Each term
    is greater than all that precede it in the enumeration.
    */
-- (LCTermEnum *) termsWithTerm: (LCTerm *) t {}
+- (LCTermEnum *) termsWithTerm: (LCTerm *) t { return nil; }
 
   /** Returns the number of documents containing the term <code>t</code>. */
-- (long) docFreq: (LCTerm *) t {}
+- (long) docFreq: (LCTerm *) t { return 0; }
 
   /** Returns an enumeration of all the documents which contain
    <code>term</code>. For each document, the document number, the frequency of
@@ -300,7 +300,7 @@
   }
   
   /** Returns an unpositioned {@link TermDocs} enumerator. */
-- (id <LCTermDocs>) termDocs {}
+- (id <LCTermDocs>) termDocs { return nil; }
 
   /** Returns an enumeration of all the documents which contain
    <code>term</code>.  For each document, in addition to the document number
@@ -326,7 +326,7 @@
   }
 
   /** Returns an unpositioned {@link TermPositions} enumerator. */
-  - (id <LCTermPositions>) termPositions {}
+  - (id <LCTermPositions>) termPositions { return nil; }
   
   /**
    * Tries to acquire the WriteLock on this directory.
@@ -471,7 +471,7 @@
    * @return Collection of Strings indicating the names of the fields.
    * @see IndexReader.FieldOption
    */
-   - (NSArray *) fieldNames: (LCFieldOption) fieldOption {}
+   - (NSArray *) fieldNames: (LCFieldOption) fieldOption { return nil; }
 
   /**
    * Returns <code>true</code> iff the index in the named directory is

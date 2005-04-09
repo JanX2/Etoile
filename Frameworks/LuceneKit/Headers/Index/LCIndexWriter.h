@@ -134,7 +134,7 @@
 - (void) deleteSegments: (NSArray *) segments;
 - (void) deleteFiles: (NSArray *) files;
 - (void) deleteFiles: (NSArray *) files directory: (id <LCDirectory>) dir;
-- (void) deleteFiles: (NSArray *) files deletable: (NSArray *) deletable;
+- (void) deleteFiles: (NSArray *) files deletable: (NSMutableArray *) deletable;
 - (NSArray *) readDeleteableFiles;
 - (void) writeDeleteableFiles: (NSArray *) files;
 
