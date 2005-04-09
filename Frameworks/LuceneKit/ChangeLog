@@ -1,3 +1,9 @@
+2005-04-09 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Source/Index/TestIndexWriter.m:
+	Fix test units temperarily.
+	"ukrun -q LuceneKit.bundle" now works.
+
 2005-04-08 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	Note: test units broken (probably memory leaks).

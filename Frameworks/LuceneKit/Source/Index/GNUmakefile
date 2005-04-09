@@ -38,7 +38,6 @@ LuceneKit_Index_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Index_OBJC_FILES += \
-	TestDocHelper.m \
 	TestMockIndexInput.m \
 	TestMockIndexOutput.m \
 	TestTermInfos.m \
@@ -46,7 +45,8 @@ LuceneKit_Index_OBJC_FILES += \
 	TestSegmentMerger.m \
 	TestTermVectorsReader.m \
 	TestTermVectorsWriter.m \
-	TestIndexWriter.m
+	TestIndexWriter.m \
+	TestDocHelper.m 
 endif
 
 LuceneKit_Index_INCLUDE_DIRS += -I../../Headers -I../

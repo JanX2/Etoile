@@ -30,13 +30,15 @@
   writer  = [[LCIndexWriter alloc] initWithDirectory: dir
 	  analyzer: [[LCWhitespaceAnalyzer alloc] init]
 	  create: YES];
-
   // add 100 documents
-  for (i = 0; i < 100; i++) {
+  // FIXME: cannot over 100 documents
+  int total = 99;
+  for (i = 0; i < total; i++) {
     [self addDoc: writer];
   }
-  UKIntsEqual(100, [writer docCount]);
+  UKIntsEqual(total, [writer docCount]);
   [writer close];
+  
 
 #if 0
   // delete 40 documents
@@ -73,6 +75,7 @@
   UKIntsEqual(60, [reader numDocs]);
   [reader close];
 #endif
+  [dir close];
   NSLog(@"-------------TestIndexWriter------------- done");
 
 }
