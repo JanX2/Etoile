@@ -82,7 +82,11 @@
          *  the next {@link #readInternal(byte[],int,int)} will occur.
          * @see #readInternal(byte[],int,int)
          */
-- (void) seek: (unsigned long long) pos {}
+- (void) seek: (unsigned long long) pos 
+{
+  long long p = (pos < length) ? pos : length;
+  filePointer = p;
+}
 
         /** Closes the stream to further operations. */
 - (void) close {}
@@ -95,7 +99,7 @@
 {
   // Access the same file
   LCCSIndexInput *clone = [[LCCSIndexInput allocWithZone: zone] initWithCompoundFileReader: reader
-       indexInput: base offset: fileOffset
+       indexInput: [base copy] offset: fileOffset
        length: length];
   [clone seek: filePointer];
   return clone;
