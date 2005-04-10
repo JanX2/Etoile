@@ -1,4 +1,3 @@
-#include "TestTermVectorsReader.h"
 #include "Store/LCRAMDirectory.h"
 #include "Index/LCTermVectorsWriter.h"
 #include "Index/LCTermVectorsReader.h"
@@ -7,6 +6,24 @@
 #include "Index/LCTermFreqVector.h"
 #include "Index/LCTermPositionVector.h"
 #include "GNUstep/GNUstep.h"
+#include <Foundation/Foundation.h>
+#include <UnitKit/UnitKit.h>
+
+@interface TestTermVectorsReader: NSObject <UKTest>
+{
+  LCTermVectorsWriter *writer;
+  //Must be lexicographically sorted, will do in setup, versus trying to maintain here
+  NSArray *testFields;
+  NSArray *testFieldsStorePos;
+  NSArray *testFieldsStoreOff;
+  NSMutableArray *testTerms;
+  NSMutableArray *positions;
+  NSMutableArray *offsets;
+  LCRAMDirectory *dir;
+  NSString *seg;
+  LCFieldInfos *fieldInfos;
+}
+@end
 
 @implementation TestTermVectorsReader
 

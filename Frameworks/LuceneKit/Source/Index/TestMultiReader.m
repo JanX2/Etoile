@@ -1,4 +1,3 @@
-#include "TestMultiReader.h"
 #include "TestDocHelper.h"
 #include "Document/LCDocument.h"
 #include "Store/LCRAMDirectory.h"
@@ -7,6 +6,22 @@
 #include "Index/LCSegmentReader.h"
 #include "Index/LCMultiReader.h"
 #include "Index/LCTermFreqVector.h"
+#include <Foundation/Foundation.h>
+#include <UnitKit/UnitKit.h>
+#include "Store/LCDirectory.h"
+
+@interface TestMultiReader: NSObject <UKTest>
+{
+  id <LCDirectory> dir;
+  LCDocument *doc1;
+  LCDocument *doc2;
+  LCSegmentReader *reader1;
+  LCSegmentReader *reader2;
+  NSMutableArray *readers;
+  LCSegmentInfos *sis;
+}
+
+@end
 
 @implementation TestMultiReader
 

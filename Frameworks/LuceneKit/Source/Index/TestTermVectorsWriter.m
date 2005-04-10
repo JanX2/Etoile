@@ -1,4 +1,3 @@
-#include "TestTermVectorsWriter.h"
 #include "Store/LCRAMDirectory.h"
 #include "Index/LCFieldInfos.h"
 #include "Index/LCTermVectorsWriter.h"
@@ -8,6 +7,20 @@
 #include "Document/LCField.h"
 #include "Document/LCDocument.h"
 #include "GNUstep/GNUstep.h"
+#include <Foundation/Foundation.h>
+#include <Unitkit/UnitKit.h>
+
+@interface TestTermVectorsWriter: NSObject <UKTest>
+{
+  NSArray *testTerms;
+  NSArray *testFields;
+  NSMutableArray *positions;
+  LCRAMDirectory *dir;
+  NSString *seg;
+  LCFieldInfos *fieldInfos;
+}
+
+@end
 
 @implementation TestTermVectorsWriter
 
@@ -197,4 +210,3 @@
 }
 
 @end
-

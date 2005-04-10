@@ -1,5 +1,14 @@
-#include "TestMockIndexInput.h"
 #include "GNUstep/GNUstep.h"
+#include "Store/LCIndexInput.h"
+#include <UnitKit/UnitKit.h>
+
+@interface TestMockIndexInput: LCIndexInput <UKTest>
+{
+  NSData *data;
+  unsigned long long pointer;
+}
+- (id) initWithData: (NSData *) data;
+@end
 
 @implementation TestMockIndexInput
 - (id) initWithData: (NSData *) d

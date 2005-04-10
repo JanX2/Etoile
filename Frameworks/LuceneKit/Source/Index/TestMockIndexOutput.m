@@ -1,5 +1,13 @@
-#include "TestMockIndexOutput.h"
 #include "GNUstep/GNUstep.h"
+#include "Store/LCIndexOutput.h"
+#include <UnitKit/UnitKit.h>
+
+@interface TestMockIndexOutput: LCIndexOutput <UKTest>
+{
+  NSMutableData *data;
+  unsigned long long pointer;
+}
+@end
 
 @implementation TestMockIndexOutput
 - (id) init

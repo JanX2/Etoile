@@ -1,10 +1,23 @@
-#include "TestSegmentReader.h"
 #include "Index/LCSegmentInfo.h"
 #include "Document/LCField.h"
 #include "Index/LCTerm.h"
 #include "Index/LCTermEnum.h"
 #include "Index/LCSegmentTermEnum.h"
 #include "GNUstep/GNUstep.h"
+#include <Foundation/Foundation.h>
+#include <UnitKit/UnitKit.h>
+#include "Index/LCSegmentReader.h"
+#include "Document/LCDocument.h"
+#include "Store/LCRAMDirectory.h"
+#include "TestDocHelper.h"
+
+@interface TestSegmentReader: NSObject <UKTest>
+{
+  LCRAMDirectory *dir;
+  LCDocument *testDoc;
+  LCSegmentReader *reader;
+}
+@end
 
 @implementation TestSegmentReader
 

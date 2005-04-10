@@ -1,10 +1,14 @@
-#include "TestIndexWriter.h"
 #include "Document/LCDocument.h"
 #include "Document/LCField.h"
 #include "Store/LCRAMDirectory.h"
 #include "Index/LCIndexWriter.h"
 #include "Index/LCIndexReader.h"
 #include "Analysis/LCWhitespaceAnalyzer.h"
+#include <Foundation/Foundation.h>
+#include <UnitKit/UnitKit.h>
+
+@interface TestIndexWriter: NSObject <UKTest>
+@end
 
 @implementation TestIndexWriter
 

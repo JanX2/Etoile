@@ -1,4 +1,3 @@
-#include "TestFilterIndexReader.h"
 #include "Index/LCFilterIndexReader.h"
 #include "Index/LCTerm.h"
 
@@ -59,6 +58,11 @@
 #include "Analysis/LCWhitespaceAnalyzer.h"
 #include "Document/LCDocument.h"
 #include "Document/LCField.h"
+#include <Foundation/Foundation.h>
+#include <UnitKit/UnitKit.h>
+
+@interface TestFilterIndexReader: NSObject <UKTest>
+@end
 
 @implementation TestFilterIndexReader 
 

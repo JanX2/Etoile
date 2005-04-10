@@ -1,4 +1,3 @@
-#include "TestSegmentTermDocs.h"
 #include "TestDocHelper.h"
 #include "Document/LCDocument.h"
 #include "Document/LCField.h"
@@ -11,6 +10,16 @@
 #include "Index/LCIndexReader.h"
 #include "Index/LCTermDocs.h"
 #include "Analysis/LCWhitespaceAnalyzer.h"
+#include <Foundation/Foundation.h>
+#include <UnitKit/UnitKit.h>
+#include "Store/LCDirectory.h"
+
+@interface TestSegmentTermDocs: NSObject <UKTest>
+{
+  LCDocument *testDoc;
+  id <LCDirectory> dir;
+}
+@end
 
 @implementation TestSegmentTermDocs
 

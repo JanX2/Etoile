@@ -1,4 +1,3 @@
-#include "TestTermInfos.h"
 #include "Index/LCTerm.h"
 #include "Index/LCTermInfo.h"
 #include "Index/LCFieldInfos.h"
@@ -7,6 +6,11 @@
 #include "Index/LCSegmentTermEnum.h"
 #include "Index/LCIndexWriter.h"
 #include "Store/LCRAMDirectory.h"
+#include <UnitKit/UnitKit.h>
+#include <Foundation/Foundation.h>
+
+@interface TestTermInfos: NSObject <UKTest>
+@end
 
 @implementation TestTermInfos
 
