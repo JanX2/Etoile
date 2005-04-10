@@ -42,10 +42,10 @@
 }
 
 - (LCTerm *) term { return term; }
-- (int) freq { return freq; }
+- (long) freq { return freq; }
 - (NSMutableArray *) positions { return positions; }
 - (NSMutableArray *) offsets { return offsets; }
-- (void) setFreq: (int) f { freq = f; }
+- (void) setFreq: (long) f { freq = f; }
 - (void) setPositions: (NSArray *) p { [positions setArray: p]; }
 - (void) setOffsets: (NSArray *) o { [offsets setArray: o]; }
 
@@ -380,9 +380,11 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
     [tis addTerm: [posting term] termInfo: ti];
 
     // add an entry to the freq file
-    int postingFreq = [posting freq];
+    long postingFreq = [posting freq];
     if (postingFreq == 1)				  // optimize freq=1
+    {
       [freq writeVInt: 1];			  // set low bit of doc num.
+      }
     else {
       [freq writeVInt: 0];			  // the document number
       [freq writeVInt: postingFreq];			  // frequency in doc

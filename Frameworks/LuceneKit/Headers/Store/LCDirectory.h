@@ -34,7 +34,7 @@
 - (void) touchFile: (NSString *) absolutePath;
 
   /** Removes an existing file in the directory. */
-- (void) deleteFile: (NSString *) absolutePath;
+- (BOOL) deleteFile: (NSString *) absolutePath;
 
   /** Renames an existing file in the directory.
     If a file already exists with the new name, then it is replaced.

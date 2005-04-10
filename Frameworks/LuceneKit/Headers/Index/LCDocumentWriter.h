@@ -10,7 +10,7 @@
 @interface LCPosting: NSObject // info about a Term in a doc
 {
 	LCTerm *term; // the Term
-	int freq; // its frequency in doc
+	long freq; // its frequency in doc
 	NSMutableArray *positions; //int // positions it occurs at
 	NSMutableArray *offsets; // LCTermVectorOffsetInfo
 }
@@ -19,10 +19,10 @@
        position: (int) position
        offset: (LCTermVectorOffsetInfo *) offset;
 - (LCTerm *) term;
-- (int) freq;
+- (long) freq;
 - (NSMutableArray *) positions;
 - (NSMutableArray *) offsets;
-- (void) setFreq: (int) f;
+- (void) setFreq: (long) f;
 - (void) setPositions: (NSArray *) p;
 - (void) setOffsets: (NSArray *) o;
 @end

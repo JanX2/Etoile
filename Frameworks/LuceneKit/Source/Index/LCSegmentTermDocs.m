@@ -75,12 +75,12 @@
       [skipStream close];
   }
 
-- (int) doc
+- (long) doc
 {
   return doc;
 }
 
-- (int) freq
+- (long) freq
 {
   return freq;
 }
@@ -95,8 +95,8 @@
       if (count == df)
         return NO;
 
-      int docCode = [freqStream readVInt];
-      doc += docCode >> 1; //doc += docCode >>> 1;  // shift off low bit
+      long docCode = [freqStream readVInt];
+      doc += (docCode >> 1) & 0x7fffffff; //doc += docCode >>> 1;  // shift off low bit
       if ((docCode & 1) != 0)			  // if low bit is set
         freq = 1;				  // freq is one
       else
@@ -119,8 +119,8 @@
     while (i < length && count < df) {
 
       // manually inlined call to next() for speed
-      int docCode = [freqStream readVInt];
-      doc += docCode >> 1; //doc += docCode >>> 1;	  // shift off low bit
+      long docCode = [freqStream readVInt];
+      doc += (docCode >> 1) & 0x7fffffff; //doc += docCode >>> 1;	  // shift off low bit
       if ((docCode & 1) != 0)			  // if low bit is set
         freq = 1;				  // freq is one
       else
@@ -128,8 +128,8 @@
       count++;
 
       if (deletedDocs == nil|| ![deletedDocs getBit: doc]) {
-	[docs replaceObjectAtIndex: i withObject: [NSNumber numberWithInt: doc]];
-	[freqs replaceObjectAtIndex: i withObject: [NSNumber numberWithInt: freq]];
+	[docs replaceObjectAtIndex: i withObject: [NSNumber numberWithLong: doc]];
+	[freqs replaceObjectAtIndex: i withObject: [NSNumber numberWithLong: freq]];
         ++i;
       }
     }

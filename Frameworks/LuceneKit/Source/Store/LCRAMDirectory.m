@@ -119,9 +119,10 @@
 }
 
   /** Removes an existing file in the directory. */
-- (void) deleteFile: (NSString *) name
+- (BOOL) deleteFile: (NSString *) name
 {
   [files removeObjectForKey: name];
+  return YES;
 }
 
   /** Removes an existing file in the directory. */

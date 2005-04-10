@@ -10,6 +10,10 @@
 	* Source/Index/TestFilterIndexReader.m:
 	Test unit for LCFilterIndexReader.
 	This test also has memory leaking problem (see FIXME).
+	* Source/Index/TestSegmentTermDocs.h:
+	* Source/Index/TestSegmentTermDocs.m:
+	Test unit for LCSegmentTermDocs.
+	* Fix problems of "ukrun -q".
 
 2005-04-08 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

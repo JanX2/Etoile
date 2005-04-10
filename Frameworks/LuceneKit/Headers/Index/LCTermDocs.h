@@ -28,11 +28,11 @@
 
   /** Returns the current document number.  <p> This is invalid until {@link
    #next()} is called for the first time.*/
-- (int) doc;
+- (long) doc;  // VInt
 
   /** Returns the frequency of the term within the current document.  <p> This
    is invalid until {@link #next()} is called for the first time.*/
-- (int) freq;
+- (long) freq;  // VInt
 
   /** Moves to the next pair in the enumeration.  <p> Returns true iff there is
    such a next pair in the enumeration. */

@@ -87,7 +87,7 @@
 	  field: field];
   }
 
-- (int) numberDocs
+- (int) numDocs
 {
     if (numDocs == -1) {        // check cache
       int n = 0;                // cache miss--recompute
@@ -351,12 +351,12 @@
   return self;
 }
 
-- (int) doc
+- (long) doc
 {
     return base + [current doc];
 }
 
-- (int) freq
+- (long) freq
 {
     return [current freq];
   }

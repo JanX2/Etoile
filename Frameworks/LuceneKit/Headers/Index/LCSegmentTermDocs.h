@@ -16,17 +16,17 @@
   int count;
   int df;
   LCBitVector *deletedDocs;
-  int doc;
-  int freq;
+  long doc;
+  long freq;
 
   int skipInterval;
   int numSkips;
   int skipCount;
   LCIndexInput *skipStream;
-  int skipDoc;
-  long freqPointer;
-  long proxPointer;
-  long skipPointer;
+  long skipDoc;
+  long long freqPointer;
+  long long proxPointer;
+  long long skipPointer;
   BOOL haveSkipped;
 }
 

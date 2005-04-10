@@ -29,12 +29,12 @@
   [input seekTermEnum: termEnum];
 }
 
-- (int) doc
+- (long) doc
 {
   return [input doc];
 }
 
-- (int) freq
+- (long) freq
 {
   return [input freq];
 }

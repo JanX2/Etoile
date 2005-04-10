@@ -21,7 +21,6 @@
 
 - (void) testDocCount
 {
-  NSLog(@"-------------TestIndexWriter-------------");
   id <LCDirectory> dir = [[LCRAMDirectory alloc] init];
   LCIndexWriter *writer = nil;
   LCIndexReader *reader = nil;
@@ -32,15 +31,13 @@
 	  create: YES];
   // add 100 documents
   // FIXME: cannot over 100 documents
-  int total = 99;
+  int total = 100;
   for (i = 0; i < total; i++) {
     [self addDoc: writer];
   }
   UKIntsEqual(total, [writer docCount]);
   [writer close];
   
-
-#if 0
   // delete 40 documents
   reader = [LCIndexReader openDirectory: dir];
  
@@ -53,12 +50,12 @@
   writer = [[LCIndexWriter alloc] initWithDirectory: dir
 	  analyzer: [[LCWhitespaceAnalyzer alloc] init]
 	  create: NO];
-  UKIntsEqual(100, [writer docCount]);
+  UKIntsEqual(total, [writer docCount]);
   [writer close];
 
   reader = [LCIndexReader openDirectory: dir];
-  UKIntsEqual(100, [reader maxDoc]);
-  UKIntsEqual(60, [reader numDocs]);
+  UKIntsEqual(total, [reader maxDoc]);
+  UKIntsEqual(total-40, [reader numDocs]);
   [reader close];
 
   // optimize the index and check that the new doc count is correct
@@ -66,18 +63,16 @@
 	  analyzer: [[LCWhitespaceAnalyzer alloc] init]
 	 create: NO]; 
   [writer optimize];
-  UKIntsEqual(60, [writer docCount]);
+  UKIntsEqual(total-40, [writer docCount]);
   [writer close];
 
   // check that the index reader gives the same numbers.
   reader = [LCIndexReader openDirectory: dir];
-  UKIntsEqual(60, [reader maxDoc]);
-  UKIntsEqual(60, [reader numDocs]);
+  UKIntsEqual(total-40, [reader maxDoc]);
+  UKIntsEqual(total-40, [reader numDocs]);
   [reader close];
-#endif
-  [dir close];
-  NSLog(@"-------------TestIndexWriter------------- done");
 
+  [dir close];
 }
 
 @end

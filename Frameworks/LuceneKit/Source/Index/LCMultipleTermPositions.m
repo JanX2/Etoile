@@ -157,13 +157,13 @@
 	return [self next];
     }
 
-- (int) doc
+- (long) doc
 {
 
 	return _doc;
     }
 
-- (int) freq
+- (long) freq
 {
 	return _freq;
     }

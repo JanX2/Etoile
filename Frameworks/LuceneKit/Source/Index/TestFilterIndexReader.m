@@ -108,15 +108,10 @@
     
   LCTerm *term = [[LCTerm alloc] initWithField: @"default" text: @"one"];
   id <LCTermPositions> positions = [reader termPositionsWithTerm: term];
-#if 1
-  [positions next];
-  UKTrue(([positions doc] % 2) == 1);
-  [positions next];
-  [positions next];
-#else // FIXME: Cannot run this with "ukrun -q"
   while ([positions next] == YES) 
+  {
     UKIntsEqual(([positions doc] % 2), 1);
-#endif
+  }
 
   [reader close];
 }

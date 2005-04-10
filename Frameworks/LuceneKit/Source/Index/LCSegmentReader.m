@@ -347,7 +347,9 @@
 {
     int n = [self maxDoc];
     if (deletedDocs != nil)
+    {
       n -= [deletedDocs count];
+    }
     return n;
   }
 

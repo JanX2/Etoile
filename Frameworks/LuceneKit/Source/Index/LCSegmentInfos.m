@@ -31,7 +31,7 @@
 - (void) readFromDirectory: (id <LCDirectory>) directory
 {
   LCIndexInput *input = [directory openInput: @"segments"];
-  int format = [input readInt];
+  long format = [input readInt];
   if (format < 0) 
    {    // file contains explicit format info
         // check that it is a format we can understand
@@ -47,7 +47,7 @@
         counter = format;
       }
       
-  int i;
+  long i;
   for (i = [input readInt]; i > 0; i--) { // read segmentInfos
         LCSegmentInfo *si = [[LCSegmentInfo alloc] initWithName: [input readString]
 		    numberOfDocuments: [input readInt]

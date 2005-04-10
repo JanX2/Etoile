@@ -405,14 +405,14 @@
       for search. */
 - (void) optimize
 {
-    [self flushRamSegments];
-    while ([segmentInfos numberOfSegments] > 1 ||
-           ([segmentInfos numberOfSegments] == 1 &&
-            ([LCSegmentReader hasDeletions: [segmentInfos segmentInfoAtIndex: 0]] ||
-             [[segmentInfos segmentInfoAtIndex: 0] directory] != directory ||
-             (useCompoundFile &&
-              (![LCSegmentReader usesCompoundFile: [segmentInfos segmentInfoAtIndex: 0]] ||
-                [LCSegmentReader hasSeparateNorms: [segmentInfos segmentInfoAtIndex: 0]]))))) {
+  [self flushRamSegments];
+  while ([segmentInfos numberOfSegments] > 1 ||
+    ([segmentInfos numberOfSegments] == 1 &&
+    ([LCSegmentReader hasDeletions: [segmentInfos segmentInfoAtIndex: 0]] ||
+    [[segmentInfos segmentInfoAtIndex: 0] directory] != directory ||
+    (useCompoundFile &&
+    (![LCSegmentReader usesCompoundFile: [segmentInfos segmentInfoAtIndex: 0]] ||
+    [LCSegmentReader hasSeparateNorms: [segmentInfos segmentInfoAtIndex: 0]]))))) {
       int minSegment = [segmentInfos numberOfSegments] - mergeFactor;
       [self mergeSegments: ((minSegment < 0) ? 0 : minSegment)];
 }
@@ -645,7 +645,7 @@
   int i;
     for (i = 0; i < [segments count]; i++) {
       LCSegmentReader *reader = (LCSegmentReader *)[segments objectAtIndex: i];
-      #if 0
+
       if ([reader directory] == directory) {
 	[self deleteFiles: [reader files]
 		 deletable: deletable];	  // try to delete our files
@@ -654,7 +654,6 @@
 	[self deleteFiles: [reader files]
 		directory: [reader directory]];  // delete other files
 		}
-		#endif
     }
 
     [self writeDeleteableFiles: deletable]; // note files we can't delete
@@ -680,12 +679,17 @@
 - (void) deleteFiles: (NSArray *) files deletable: (NSMutableArray *) deletable
 {
 	int i;
+	BOOL result;
     for (i = 0; i < [files count]; i++) {
       NSString *file = [files objectAtIndex: i];
 #if 0
       try {
 #endif 
-        [directory deleteFile: file];		  // try to delete each file
+        result = [directory deleteFile: file];	  // try to delete each file
+	if ([directory fileExists: file] && result)
+	{
+	  [deletable addObject: file];
+	}
 #if 0
       } catch (IOException e) {			  // if delete fails
         if (directory.fileExists(file)) {
@@ -716,7 +720,7 @@
 {
     LCIndexOutput *output = [directory createOutput: @"deleteable.new"];
 
-      [output writeInt: [files count]];
+      [output writeInt: (long)[files count]];
       int i;
       for (i = 0; i < [files count]; i++)
         [output writeString: [files objectAtIndex: i]];

@@ -223,9 +223,10 @@
 
     /** Not implemented
      * @throws UnsupportedOperationException */
-- (void) deleteFile: (NSString *) name
+- (BOOL) deleteFile: (NSString *) name
     {
 	NSLog(@"Not support");
+	return NO;
     }
 
     /** Not implemented

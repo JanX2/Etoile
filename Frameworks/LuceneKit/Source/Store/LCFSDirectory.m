@@ -130,13 +130,15 @@
 }
 
   /** Removes an existing file in the directory. */
-- (void) deleteFile: (NSString *) name
+- (BOOL) deleteFile: (NSString *) name
 {
   NSString *p = [path stringByAppendingPathComponent: name];
   if ([manager removeFileAtPath: p handler: nil] == NO)
     {
       NSLog(@"Cannot remove file %@", p);
+      return NO;
     }
+  return YES;
 }
 
   /** Renames an existing file in the directory. */

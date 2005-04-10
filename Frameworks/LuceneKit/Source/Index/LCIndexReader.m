@@ -96,10 +96,10 @@
    {
      [readers addObject: [LCSegmentReader segmentReaderWithInfo: [infos segmentInfoAtIndex: i]]];
    }
-     return AUTORELEASE([[LCMultiReader alloc] initWithDirectory: dir
+     return [[LCMultiReader alloc] initWithDirectory: dir
 	                                      segmentInfos: infos
 	                                      close: close
-	                                      readers: readers]);
+	                                      readers: readers];
 
 }
 

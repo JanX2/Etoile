@@ -36,4 +36,9 @@
   return dir;
 }
 
+- (NSString *) description
+{
+  return [NSString stringWithFormat: @"LCSegmentInfo: name %@, docCount %d", name, docCount];
+}
+
 @end
