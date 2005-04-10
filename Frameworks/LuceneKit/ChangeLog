@@ -14,6 +14,9 @@
 	* Source/Index/TestSegmentTermDocs.m:
 	Test unit for LCSegmentTermDocs.
 	* Fix problems of "ukrun -q".
+	* Source/Index/TestMultiReader.h:
+	* Source/Index/TestMultiReader.m:
+	Test unit for LCMultiReader.
 
 2005-04-08 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
