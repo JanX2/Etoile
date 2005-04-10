@@ -13,6 +13,12 @@
   return self;
 }
 
+- (void) dealloc
+{
+  RELEASE(input);
+  [super dealloc];
+}
+
 - (void) seekTerm: (LCTerm *) term
 {
   [input seekTerm: term];

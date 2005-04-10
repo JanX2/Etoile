@@ -20,6 +20,14 @@
   return self;
 }
 
+- (void) dealloc
+{
+  RELEASE(parent);
+  RELEASE(freqStream);
+  RELEASE(deletedDocs);
+  [super dealloc];
+}
+
 - (void) seekTerm: (LCTerm *) term
 {
   LCTermInfo *ti = [[parent termInfosReader] termInfo: term];

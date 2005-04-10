@@ -6,6 +6,10 @@
 	* Source/Index/TestCompoundFile.m:
 	* Source/Index/TestCompoundFile.h:
 	Test unit for LCCompoundFileReader and LCCompoundFileWriter.
+	* Source/Index/TestFilterIndexReaderh:
+	* Source/Index/TestFilterIndexReader.m:
+	Test unit for LCFilterIndexReader.
+	This test also has memory leaking problem (see FIXME).
 
 2005-04-08 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

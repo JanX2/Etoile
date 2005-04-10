@@ -47,6 +47,7 @@ LuceneKit_Index_OBJC_FILES += \
 	TestTermVectorsWriter.m \
 	TestIndexWriter.m \
 	TestCompoundFile.m \
+	TestFilterIndexReader.m \
 	TestDocHelper.m 
 endif
 

@@ -13,6 +13,12 @@
   ASSIGN(proxStream, [[p proxStream] copy]);
   return self;
 }
+
+- (void) dealloc
+{
+  RELEASE(proxStream);
+  [super dealloc];
+}
   
 - (void) seekTermInfo: (LCTermInfo *) ti
 {
