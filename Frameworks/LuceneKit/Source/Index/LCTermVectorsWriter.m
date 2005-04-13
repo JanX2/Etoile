@@ -59,6 +59,14 @@
     return self;
 }
 
+- (void) dealloc
+{
+  RELEASE(fieldInfos);
+  RELEASE(fields);
+  RELEASE(terms);
+  [super dealloc];
+}
+
 - (void) openDocument
 {
   [self closeDocument];
@@ -138,13 +146,13 @@
    *  times this term appears in this field, in this document.
    * @throws IllegalStateException if document or field is not open
    */
-- (void) addTerm: (NSString *) termText freq: (int) freq
+- (void) addTerm: (NSString *) termText freq: (long) freq
 {
   [self addTerm: termText freq: freq
 	positions: nil offsets: nil];
 }
   
-- (void) addTerm: (NSString *) termText freq: (int) freq
+- (void) addTerm: (NSString *) termText freq: (long) freq
          positions: (NSArray *) positions offsets: (NSArray *) offsets
 {
     if (![self isDocumentOpen]) 
@@ -162,7 +170,7 @@
 	     positions: positions offsets: offsets];
   }
 
-- (void) addTermInternal: (NSString *) text freq: (int) freq
+- (void) addTermInternal: (NSString *) text freq: (long) freq
          positions: (NSArray *) positions offsets: (NSArray *) offsets
 {
     LCTVTerm *term = [[LCTVTerm alloc] init];
@@ -171,6 +179,7 @@
     [term setPositions: positions];
     [term setOffsets: offsets];
     [terms addObject: term];
+    RELEASE(term);
 }
 
   /**
@@ -192,32 +201,41 @@
 
 	if ([[vectors objectAtIndex: i] conformsToProtocol: @protocol(LCTermPositionVector)])
          {
-
           id <LCTermPositionVector> tpVector = [vectors objectAtIndex: i];
 
+#if 1
+          if ([tpVector size] > 0 && ([tpVector termPositions: 0] != nil) && ([[tpVector termPositions: 0] count] > 0))
+            storePositionWithTermVector = YES;
+          if ([tpVector size] > 0 && ([tpVector offsets: 0] != nil) && ([[tpVector offsets: 0] count] > 0))
+            storeOffsetWithTermVector = YES;
+#else
           if ([tpVector size] > 0 && [tpVector termPositions: 0] != nil)
             storePositionWithTermVector = YES;
           if ([tpVector size] > 0 && [tpVector offsets: 0] != nil)
             storeOffsetWithTermVector = YES;
+#endif
 
           LCFieldInfo *fieldInfo = [fieldInfos fieldInfo: [tpVector field]];
+	  //NSLog(@"tpVector %@, TermVectorStore %d, pos %d, off %d", [tpVector field], [fieldInfo isTermVectorStored], [fieldInfo isPositionWithTermVectorStored], [fieldInfo isOffsetWithTermVectorStored]);
+	  //NSLog(@"storePos %d, storeOff %d", storePositionWithTermVector, storeOffsetWithTermVector);
           [self openField: [fieldInfo number] 
 		isPositionWithTermVectorStored: storePositionWithTermVector
 		isOffsetWithTermVectorStored: storeOffsetWithTermVector];
 
 	  int j;
           for (j = 0; j < [tpVector size]; j++)
+	  {
 	    [self addTermInternal: [[tpVector terms] objectAtIndex: j]
-		  freq: [[[tpVector termFrequencies] objectAtIndex: j] intValue]
+		  freq: [[[tpVector termFrequencies] objectAtIndex: j] longValue]
 		  positions: [tpVector termPositions: j]
 		  offsets: [tpVector offsets: j]];
+	  }
 
           [self closeField];
 
         }
 	else
         {
-
           id <LCTermFreqVector> tfVector = [vectors objectAtIndex: i];
 
           LCFieldInfo *fieldInfo = [fieldInfos fieldInfo: [tfVector field]];
@@ -412,6 +430,14 @@
   return self;
 }
 
+- (void) dealloc
+{
+  RELEASE(positions);
+  RELEASE(offsets);
+  RELEASE(termText);
+  [super dealloc];
+}
+
 - (void) setTermText: (NSString *) text
 {
   ASSIGN(termText, text);
@@ -424,12 +450,14 @@
 
 - (void) setPositions: (NSArray *) p
 {
-  ASSIGN(positions, p);
+  // Keep a copy
+  ASSIGN(positions, [p copy]);
 }
 
 - (void) setOffsets: (NSArray *) o
 {
-  ASSIGN(offsets, o);
+  // Keep a copy
+  ASSIGN(offsets, [o copy]);
 }
 
 - (NSString *) termText

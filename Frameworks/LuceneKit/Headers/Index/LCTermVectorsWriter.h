@@ -73,10 +73,10 @@ static NSString *TVF_EXTENSION = @"tvf";
 	 isOffsetWithTermVectorStored: (BOOL) storeOffsetWithTermVector;
 - (void) closeField;
 - (BOOL) isFieldOpen;
-- (void) addTerm: (NSString *) termText freq: (int) freq;
-- (void) addTerm: (NSString *) termText freq: (int) freq
+- (void) addTerm: (NSString *) termText freq: (long) freq;
+- (void) addTerm: (NSString *) termText freq: (long) freq
          positions: (NSArray *) positions offsets: (NSArray *) offsets;
-- (void) addTermInternal: (NSString *) termText freq: (int) freq
+- (void) addTermInternal: (NSString *) termText freq: (long) freq
          positions: (NSArray *) positions offsets: (NSArray *) offsets;
 - (void) addAllDocVectors: (NSArray *) vectors;
 - (void) close;

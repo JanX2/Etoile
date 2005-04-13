@@ -30,8 +30,17 @@
   self = [super init];
   ASSIGN(reader, r);
   ASSIGN(input, inp);
+  bytes = [[NSMutableData alloc] init];
   number = num;
   return self;
+}
+
+- (void) dealloc
+{
+  RELEASE(reader);
+  RELEASE(input);
+  RELEASE(bytes);
+  [super dealloc];
 }
 	
 - (void) rewrite
@@ -89,9 +98,24 @@
   normsDirty = NO;
   undeleteAll = NO;
   norms = [[NSMutableDictionary alloc] init];
+  termVectorsReaderOrig = nil;
   return self;
 }
 
+- (void) dealloc
+{
+  RELEASE(norms);
+  RELEASE(segment);
+  RELEASE(fieldInfos);
+  RELEASE(fieldsReader);
+  RELEASE(tis);
+  RELEASE(termVectorsReaderOrig);
+  RELEASE(deletedDocs);
+  RELEASE(freqStream);
+  RELEASE(proxStream);
+  RELEASE(cfsReader);
+  [super dealloc];
+}
 
 + (id) segmentReaderWithInfo: (LCSegmentInfo *) si
 {
@@ -131,7 +155,8 @@
 {
   ASSIGN(segment, [si name]);
   // Use compound file directory for some files, if it exists
-  id <LCDirectory> cfsDir = [self directory];
+  id <LCDirectory> cfsDir;
+  ASSIGN(cfsDir, [self directory]);
   NSString *file = [segment stringByAppendingPathExtension: @"cfs"];
     if ([directory fileExists: file]) {
       cfsReader = [[LCCompoundFileReader alloc] initWithDirectory: [self directory] name: file];
@@ -170,11 +195,6 @@
     }
   }
    
-- (void) dealloc
-{
-  [super dealloc];
-}
-
 - (void) doCommit
 {
   NSString *file;
@@ -458,18 +478,20 @@
 
 - (void) openNorms: (id <LCDirectory>) cfsDir
 {
-	int i;
-    for (i = 0; i < [fieldInfos size]; i++) {
-      LCFieldInfo *fi = [fieldInfos fieldInfoWithNumber: i];
-      if ([fi isIndexed]) {
-        // look first if there are separate norms in compound f%ormat
-        NSString *fileName = [NSString stringWithFormat: @"%@.s%d", segment, [fi number]];
-        id <LCDirectory> d = [self directory];
-        if(![d fileExists: fileName]){
-            fileName = [NSString stringWithFormat: @"%@.f%d", segment, [fi number]];
-            ASSIGN(d, cfsDir);
-        }
-	[norms setObject: [[LCNorm alloc] initWithSegmentReader: self
+  int i;
+  id <LCDirectory> d;
+  NSString *fileName;
+  for (i = 0; i < [fieldInfos size]; i++) {
+    LCFieldInfo *fi = [fieldInfos fieldInfoWithNumber: i];
+    if ([fi isIndexed]) {
+      // look first if there are separate norms in compound f%ormat
+      fileName = [NSString stringWithFormat: @"%@.s%d", segment, [fi number]];
+      d = [self directory];
+      if([d fileExists: fileName] == NO){
+        fileName = [NSString stringWithFormat: @"%@.f%d", segment, [fi number]];
+	d = cfsDir;
+      }
+      [norms setObject: [[LCNorm alloc] initWithSegmentReader: self
 		  indexInput: [d openInput: fileName] number: [fi number]]
 		forKey: [fi name]];
       }
@@ -491,10 +513,22 @@
    */
 - (LCTermVectorsReader *) termVectorsReader
 {
+#if 0
+  TermVectorsReader tvReader = (TermVectorsReader)termVectorsLocal.get();
+  if (tvReader == null) {
+    tvReader = (TermVectorsReader)termVectorsReaderOrig.clone();
+    termVectorsLocal.set(tvReader);
+  }
+#else
+  // FIXME: Not thread safe
+  return termVectorsReaderOrig;
+#endif
+#if 0
     if (tvReader == nil) {
       tvReader = (LCTermVectorsReader *)[termVectorsReaderOrig copy];
     }
     return tvReader;
+#endif
 }
   
   /** Return a term frequency vector for the specified document and field. The

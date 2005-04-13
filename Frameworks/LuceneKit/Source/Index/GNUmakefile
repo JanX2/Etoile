@@ -46,6 +46,7 @@ LuceneKit_Index_OBJC_FILES += \
 	TestTermVectorsReader.m \
 	TestTermVectorsWriter.m \
 	TestIndexWriter.m \
+	TestIndexReader.m \
 	TestCompoundFile.m \
 	TestFilterIndexReader.m \
 	TestSegmentTermDocs.m \

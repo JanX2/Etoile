@@ -19,13 +19,13 @@
 @implementation LCPosting
 
 - (id) initWithTerm: (LCTerm *) t
-       position: (int) position
+       position: (long) position
        offset: (LCTermVectorOffsetInfo *) offset
 {
   self = [super init];
   ASSIGN(term, t);
   freq = 1;
-  positions = [[NSMutableArray alloc] initWithObjects: [NSNumber numberWithInt: position], nil];
+  positions = [[NSMutableArray alloc] initWithObjects: [NSNumber numberWithLong: position], nil];
   if(offset != nil){
     offsets = [[NSMutableArray alloc] initWithObjects: offset, nil];
   }
@@ -141,12 +141,12 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
   {
     fieldName = [field name];
     int fieldNumber = [fieldInfos fieldNumber: fieldName];
-    int length = 0, position = 0, offset = 0;
+    long length = 0, position = 0, offset = 0;
     if (fieldNumber < [fieldsCache count])
     {
-      length = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldLength] intValue];
-      position = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldPosition] intValue];
-      offset = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldOffset] intValue];
+      length = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldLength] longValue];
+      position = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldPosition] longValue];
+      offset = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldOffset] longValue];
     }
 
       if ([field isIndexed]) {
@@ -216,9 +216,9 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
           }
 
 	NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: 
-		[NSNumber numberWithInt: length], LCFieldLength,
-		[NSNumber numberWithInt: position], LCFieldPosition,
-		[NSNumber numberWithInt: offset], LCFieldOffset,
+		[NSNumber numberWithLong: length], LCFieldLength,
+		[NSNumber numberWithLong: position], LCFieldPosition,
+		[NSNumber numberWithLong: offset], LCFieldOffset,
 		nil];
 	if (fieldNumber < [fieldsCache count])
 	{
@@ -241,7 +241,7 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
 
 - (void) addField: (NSString *) field
              text: (NSString *) text
-	              position: (int) position
+	              position: (long) position
 		offset: (LCTermVectorOffsetInfo *) offset
 {
   [termBuffer setField: field];
@@ -252,10 +252,10 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
       int freq = [ti freq];
       if ([[ti positions] count] == freq) {	  // positions array is full
 
-        [[ti positions] addObject: [NSNumber numberWithInt: position]];
+        [[ti positions] addObject: [NSNumber numberWithLong: position]];
       }
       else 
-        [[ti positions] replaceObjectAtIndex: freq withObject: [NSNumber numberWithInt: position]];		  // add new position
+        [[ti positions] replaceObjectAtIndex: freq withObject: [NSNumber numberWithLong: position]];		  // add new position
 
       if (offset != nil) {
         if ([[ti offsets] count]== freq){
@@ -390,14 +390,15 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
       [freq writeVInt: postingFreq];			  // frequency in doc
           }
 
-    int lastPosition = 0;			  // write positions
+    long lastPosition = 0;			  // write positions
     NSArray *positions = [posting positions];
     int j;
     for (j = 0; j < postingFreq; j++) {		  // use delta-encoding
-      int position = [[positions objectAtIndex: j] intValue];
+      long position = [[positions objectAtIndex: j] longValue];
       [prox writeVInt: position - lastPosition];
       lastPosition = position;
     }
+
     // check to see if we switched to a new field
     NSString *termField = [[posting term] field];
     if (currentField != termField) {
@@ -439,7 +440,7 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
   for(n = 0; n < [fieldInfos size]; n++){
     LCFieldInfo *fi = [fieldInfos fieldInfoWithNumber: n];
     if([fi isIndexed]){
-      float norm = [[fieldBoosts objectAtIndex: n] floatValue] * [similarity lengthNorm: [fi name] numberOfTokens: [[[fieldsCache objectAtIndex: n] objectForKey: LCFieldLength] intValue]];
+      float norm = [[fieldBoosts objectAtIndex: n] floatValue] * [similarity lengthNorm: [fi name] numberOfTokens: [[[fieldsCache objectAtIndex: n] objectForKey: LCFieldLength] longValue]];
       NSString *name = [NSString stringWithFormat: @"%@.f%d", segment, n];
       LCIndexOutput *norms = [directory createOutput: name];
       [norms writeByte: [LCSimilarity encodeNorm: norm]];

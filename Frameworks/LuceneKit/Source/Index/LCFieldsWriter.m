@@ -21,6 +21,14 @@
   return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(fieldInfos);
+  DESTROY(fieldsStream);
+  DESTROY(indexStream);
+  [super dealloc];
+}
+
 - (void) close
 {
   [fieldsStream close];

@@ -332,6 +332,11 @@
       writeLock = null;
     }
 #endif
+    DESTROY(analyzer);
+    DESTROY(segmentInfos);
+    DESTROY(ramDirectory);
+    DESTROY(directory);
+
     [super dealloc];
   }
 
@@ -509,6 +514,8 @@
       }
 #endif
     }
+    DESTROY(segmentsToDelete);
+    DESTROY(merger);
   }
 
   /** Merges all RAM-resident segments. */
@@ -568,13 +575,16 @@
 
   NSMutableArray *segmentsToDelete = [[NSMutableArray alloc] init];
   int i;
+  LCSegmentInfo *si;
+  LCIndexReader *reader;
   for (i = minSegment; i < [segmentInfos numberOfSegments]; i++) {
-      LCSegmentInfo *si = [segmentInfos segmentInfoAtIndex: i];
+      
+      si = [segmentInfos segmentInfoAtIndex: i];
 #if 0
       if (infoStream != nil)
         infoStream.print(" " + si.name + " (" + si.docCount + " docs)");
 #endif
-      LCIndexReader *reader = [LCSegmentReader segmentReaderWithInfo: si];
+      reader = [LCSegmentReader segmentReaderWithInfo: si];
       [merger addIndexReader: reader];
       if (([reader directory] == directory) || // if we own the directory
           ([reader directory] == ramDirectory))
@@ -627,6 +637,8 @@
       }
 #endif
     }
+    DESTROY(segmentsToDelete);
+    DESTROY(merger);
   }
 
   /*
@@ -686,7 +698,7 @@
       try {
 #endif 
         result = [directory deleteFile: file];	  // try to delete each file
-	if ([directory fileExists: file] && result)
+	if ([directory fileExists: file] && (result == NO))
 	{
 	  [deletable addObject: file];
 	}

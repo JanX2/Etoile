@@ -36,6 +36,12 @@
   return self;
 }
 
+- (void) dealloc
+{
+  RELEASE(name);
+  [super dealloc];
+}
+
 - (NSString *) name
 {
   return name;
@@ -84,6 +90,11 @@
 - (void) setOffsetWithTermVectorStored: (BOOL) b
 {
   storeOffsetWithTermVector = b;
+}
+
+- (NSString *) description
+{
+  return [NSString stringWithFormat: @"LCFieldInfo: <%@> %d %d %d %d", name, number, storeTermVector, storePositionWithTermVector, storeOffsetWithTermVector];
 }
 
 @end

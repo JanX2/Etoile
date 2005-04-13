@@ -32,6 +32,15 @@
   ASSIGN(fieldInfos, fis);
   return self;
 }
+
+- (void) dealloc
+{
+  RELEASE(tvx);
+  RELEASE(tvd);
+  RELEASE(tvf);
+  DESTROY(fieldInfos);
+  [super dealloc];
+}
   
 - (long) checkValidFormat: (LCIndexInput *) input
 {
@@ -118,9 +127,11 @@
         result = [self readTermVector: field
 		             pointer: position];
       } else {
+	NSLog(@"Field not found");
         //System.out.println("Field not found");
       }
     } else {
+      NSLog(@"No tvx file");
       //System.out.println("No tvx file");
     }
     return result;
@@ -140,14 +151,14 @@
     if (tvx != nil) {
       //We need to offset by
       [tvx seek: ((docNum * 8L) + TERM_VECTORS_WRITER_FORMAT_SIZE)];
-      long position = [tvx readLong];
+      long long position = [tvx readLong];
 
       [tvd seek: position];
-      int fieldCount = [tvd readVInt];
+      long fieldCount = [tvd readVInt];
 
       // No fields are vectorized for this document
       if (fieldCount != 0) {
-        int number = 0;
+        long number = 0;
 	NSMutableArray *fields = [[NSMutableArray alloc] init];
         
 	int i;
@@ -166,11 +177,13 @@
 	int ii;
         for (ii = 0; ii < fieldCount; ii++) {
           position += [tvd readVLong];
-	  [tvfPointers addObject: [NSNumber numberWithLong: position]];
+	  [tvfPointers addObject: [NSNumber numberWithLongLong: position]];
         }
 
         result = [self readTermVectors: fields
 		              pointers: tvfPointers];
+	RELEASE(fields);
+	RELEASE(tvfPointers);
       }
     } else {
       //System.out.println("No tvx file");
@@ -185,7 +198,7 @@
   int i;
   for (i = 0; i < [fields count]; i++) {
     [res addObject: [self readTermVector: [fields objectAtIndex: i]
-                      pointer: [[tvfPointers objectAtIndex: i] longValue]]];
+                      pointer: [[tvfPointers objectAtIndex: i] longLongValue]]];
     }
     return AUTORELEASE(res);
   }
@@ -197,20 +210,26 @@
    * @return The TermVector located at that position
    * @throws IOException
    */ 
+/** LuceneKit implementation:
+ * If positions and/or offset are not stored,
+ * a empty array will be inserted instead nil as in Java.
+ */
 - (LCSegmentTermVector *) readTermVector: (NSString *) field
-                                 pointer: (long) tvfPointer
+                                 pointer: (long long) tvfPointer
 {
     // Now read the data from specified position
     //We don't need to offset by the FORMAT here since the pointer already includes the offset
     [tvf seek: tvfPointer];
 
-    int numTerms = [tvf readVInt];
+    long numTerms = [tvf readVInt];
     //System.out.println("Num Terms: " + numTerms);
     // If no terms - return a constant empty termvector. However, this should never occur!
     if (numTerms == 0) 
+    {
       return AUTORELEASE([[LCSegmentTermVector alloc] initWithField: field
 	                                  terms: nil
 					  termFreqs: nil]);
+    }
     
     BOOL storePositions;
     BOOL storeOffsets;
@@ -236,10 +255,11 @@
       positions = [[NSMutableArray alloc] init];
     if(storeOffsets)
       offsets = [[NSMutableArray alloc] init];
+    //NSLog(@"LCTermVectosReader <%@>, pos %d, off %d", field, storePositions, storeOffsets);
     
-    int start = 0;
-    int deltaLength = 0;
-    int totalLength = 0;
+    long start = 0;
+    long deltaLength = 0;
+    long totalLength = 0;
     NSMutableString *buffer = [[NSMutableString alloc] init];
     NSString *previousString = @"";
     
@@ -256,13 +276,13 @@
       [tvf readChars: buffer start: start length: deltaLength];
       [terms addObject: [buffer substringToIndex: totalLength]];
       previousString = [terms lastObject];
-      int freq = [tvf readVInt];
+      long freq = [tvf readVInt];
       [termFreqs addObject: [NSNumber numberWithLong: freq]];
       
+      NSMutableArray *pos = [[NSMutableArray alloc] init];
       if (storePositions) { //read in the positions
-	NSMutableArray *pos = [[NSMutableArray alloc] init];
-	[positions addObject: pos];
-        int prevPosition = 0;
+	//[positions addObject: pos];
+        long prevPosition = 0;
 	int j;
         for (j = 0; j < freq; j++)
         {
@@ -270,24 +290,27 @@
 	  prevPosition = [[pos lastObject] longValue];
         }
       }
+      [positions addObject: pos];
+      RELEASE(pos);
       
+      NSMutableArray *offs = [[NSMutableArray alloc] init];
       if (storeOffsets) {
-	NSMutableArray *offs = [[NSMutableArray alloc] init];
-	[offsets addObject: offs];
-        int prevOffset = 0;
+	//[offsets addObject: offs];
+        long prevOffset = 0;
 	int j;
         for (j = 0; j < freq; j++) {
-          int startOffset = prevOffset + [tvf readVInt];
-          int endOffset = startOffset + [tvf readVInt];
+          long startOffset = prevOffset + [tvf readVInt];
+          long endOffset = startOffset + [tvf readVInt];
 	  [offs addObject: [[LCTermVectorOffsetInfo alloc] initWithStartOffset: startOffset endOffset: endOffset]];
           prevOffset = endOffset;
         }
       }
+      [offsets addObject: offs];
+      RELEASE(offs);
     }
     
     LCSegmentTermVector *tv;
     if (storePositions || storeOffsets){
-      // NSLog(@"segmentTermPositionVector");
       tv = [[LCSegmentTermPositionVector alloc] initWithField: field
 	      					terms: terms
 						termFreqs: termFreqs
@@ -295,11 +318,13 @@
 						offsets: offsets];
     }
     else {
-      // NSLog(@"segmentTermVector");
       tv = [[LCSegmentTermVector alloc] initWithField: field
 	      				terms: terms
 					termFreqs: termFreqs];
     }
+    AUTORELEASE(buffer);
+    AUTORELEASE(terms);
+    AUTORELEASE(termFreqs);
     return AUTORELEASE(tv);
   }
 

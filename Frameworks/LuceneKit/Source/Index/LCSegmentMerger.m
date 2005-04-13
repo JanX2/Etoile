@@ -46,6 +46,16 @@
   return self;
 }
 
+- (void) dealloc
+{
+  RELEASE(directory);
+  RELEASE(readers);
+  RELEASE(fieldInfos);
+  RELEASE(termInfo);
+  RELEASE(segment);
+  [super dealloc];
+}
+
   /** This ctor used only by test code.
    * 
    * @param dir The Directory to merge the other segments into
@@ -159,7 +169,7 @@
     // Perform the merge
     [cfsWriter close];
    
-    return files;
+    return AUTORELEASE(files);
   }
 
   /**
@@ -169,11 +179,13 @@
    */
 - (int) mergeFields
 {
-  fieldInfos = [[LCFieldInfos alloc] init];	  // merge field names
+  //ASSIGN(fieldInfos, AUTORELEASE([[LCFieldInfos alloc] init]));  // merge field names
+  fieldInfos = [[LCFieldInfos alloc] init];  // merge field names
   int docCount = 0;
   int i;
+  LCIndexReader *reader;
   for (i = 0; i < [readers count]; i++) {
-    LCIndexReader *reader = (LCIndexReader *) [readers objectAtIndex: i];
+      reader = (LCIndexReader *) [readers objectAtIndex: i];
       [fieldInfos addIndexedCollection: [reader fieldNames: LCFieldOption_TERMVECTOR_WITH_POSITION_OFFSET]
 	      storeTermVector: YES
 	      storePositionWithTermVector: YES 
@@ -216,7 +228,7 @@
             docCount++;
           }
       }
-      [fieldsWriter close];
+    [fieldsWriter close];
     return docCount;
   }
 
@@ -242,6 +254,7 @@
     }
   }
   [termVectorsWriter close];
+  DESTROY(termVectorsWriter);
 }
 
 - (void) mergeTerms;

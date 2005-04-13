@@ -28,7 +28,7 @@
 - (NSArray *) readTermVectors: (NSArray *) fields 
 	            pointers: (NSArray *) tvfPOinters;
 - (LCSegmentTermVector *) readTermVector: (NSString *) field
-	                         pointer: (long) tvfPointer;
+	                         pointer: (long long) tvfPointer;
 
 @end
 #endif /* __LUCENE_INDEX_TERM_VECTOR_READER__ */

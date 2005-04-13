@@ -62,8 +62,7 @@
 	closeDirectory: (BOOL) close        
 	directoryOwner: (BOOL) owner
 {
-  self = [self init];
-  ASSIGN(directory, dir);
+  self = [self initWithDirectory: dir];
   ASSIGN(segmentInfos, seg);
   directoryOwner = owner;
   closeDirectory = close;
@@ -460,6 +459,7 @@
       writeLock = null;
     }
     #endif
+    RELEASE(directory);
     [super dealloc];
   }
   

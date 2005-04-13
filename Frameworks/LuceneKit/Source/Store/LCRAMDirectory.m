@@ -94,7 +94,7 @@
 - (BOOL) fileExists: (NSString *) name
 {
   LCRAMFile *f = [files objectForKey: name];
-  return (f != nil);
+  return (f != nil) ? YES : NO;
 }
 
   /** Returns the time the named file was last modified. */

@@ -28,8 +28,8 @@
 
 - (void) dealloc
 {
-  RELEASE(byNumber);
-  RELEASE(byName);
+  DESTROY(byNumber);
+  DESTROY(byName);
   [super dealloc];
 }
 
@@ -195,7 +195,7 @@
 	 storeOffsetWithTermVector: isStoreOffsetWithTermVector];
   [byNumber addObject: fi];
   [byName setObject: fi forKey: name];
-  RELEASE(fi);
+  DESTROY(fi);
 }
  
 - (int) fieldNumber: (NSString *) fieldName
@@ -274,7 +274,7 @@
 
 - (void) write: (LCIndexOutput *) output
 {
-  [output writeVInt: [self size]];
+  [output writeVInt: (long)[self size]];
   int i, count = [self size];
   for (i = 0; i < count; i++) {
       LCFieldInfo *fi = [self fieldInfoWithNumber: i];
@@ -290,7 +290,7 @@
  
 - (void) read: (LCIndexInput *) input
 {
-  int size = [input readVInt]; // read in the size
+  long size = [input readVInt]; // read in the size
   int i;
   NSString *name;
   for (i = 0; i < size; i++) {
@@ -306,6 +306,11 @@
             isStorePositionWithTermVector: storePositionsWithTermVector
             isStoreOffsetWithTermVector: storeOffsetWithTermVector];
     }    
+}
+
+- (NSString *) description
+{
+  return [NSString stringWithFormat: @"LCFieldInfos: %@", byNumber];
 }
 
 @end

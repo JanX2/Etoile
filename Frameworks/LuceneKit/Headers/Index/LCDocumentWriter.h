@@ -16,7 +16,7 @@
 }
 
 - (id) initWithTerm: (LCTerm *) t
-       position: (int) position
+       position: (long) position
        offset: (LCTermVectorOffsetInfo *) offset;
 - (LCTerm *) term;
 - (long) freq;
@@ -64,7 +64,7 @@
 - (void) invertDocument: (LCDocument *) doc;
 - (void) addField: (NSString *) field
              text: (NSString *) text
-         position: (int) position
+         position: (long) position
 	 offset: (LCTermVectorOffsetInfo *) offset;
 - (NSArray *) sortPostingTable;
 #if 0
