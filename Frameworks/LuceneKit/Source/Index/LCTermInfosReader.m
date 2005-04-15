@@ -141,7 +141,10 @@
 #endif
 
     // random-access: must seek
-    [self seekEnum: [self indexOffset: term]];
+    int index = [self indexOffset: term];
+    /* LuceneKit: if term doesn't exist, return nil */
+    if (index < 0) return nil;
+    [self seekEnum: index];
     return [self scanEnum: term];
   }
 

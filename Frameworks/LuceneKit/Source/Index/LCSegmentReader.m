@@ -358,7 +358,9 @@
 {
     LCTermInfo *ti = [tis termInfo: t];
     if (ti != nil)
+    {
       return [ti docFreq];
+    }
     else
       return 0;
   }

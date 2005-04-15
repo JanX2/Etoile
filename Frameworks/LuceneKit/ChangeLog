@@ -1,3 +1,10 @@
+2005-04-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Source/Index/TestIndexReaderlm:
+	Complete test unit for LCIndexReader (for now).
+	* Current test result: 
+	Result: 28 classes, 68 methods, 351423 tests, 0 failed
+
 2005-04-12 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Index/TestIndexReaderlm:

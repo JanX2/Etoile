@@ -214,7 +214,9 @@
   int total = 0;          // sum freqs in segments
   int i;
   for (i = 0; i < [subReaders count]; i++)
+  {
     total += [[subReaders objectAtIndex: i] docFreq: t];
+  }
   return total;
 }
 
@@ -351,15 +353,23 @@
   return self;
 }
 
+- (void) dealloc
+{
+  RELEASE(readers);
+  RELEASE(starts);
+  RELEASE(readerTermDocs);
+  [super dealloc];
+}
+
 - (long) doc
 {
-    return base + [current doc];
+  return base + [current doc];
 }
 
 - (long) freq
 {
-    return [current freq];
-  }
+  return [current freq];
+}
 
 - (void) seekTerm: (LCTerm *) t
 {
@@ -371,7 +381,7 @@
 
 - (void) seekTermEnum: (LCTermEnum *) termEnum
 {
-    [self seekTerm: [termEnum term]];
+  [self seekTerm: [termEnum term]];
 }
 
 - (BOOL) next
@@ -382,8 +392,9 @@
       base = [[starts objectAtIndex: pointer] intValue];
       current = [self termDocs: pointer++];
       return [self next];
-    } else
+    } else {
       return NO;
+    }
   }
 
   /** Optimized implementation. */
@@ -427,12 +438,21 @@
 - (id <LCTermDocs>) termDocs: (int) i
 {
     if (term == nil) return nil;
+#if 1 /* LuceneKit implementation */
+    id <LCTermDocs> result;
+    if (i >= [readerTermDocs count]) // Not Exist
+    {
+      result = [self termDocsWithReader: [readers objectAtIndex: i]];
+      [readerTermDocs addObject: result];
+    }
+#else
     id <LCTermDocs> result = [readerTermDocs objectAtIndex: i];
     if (result == nil)
     {
       result = [self termDocsWithReader: [readers objectAtIndex: i]];
       [readerTermDocs addObject: result];
     }
+#endif
     [result seekTerm: term];
     return result;
   }

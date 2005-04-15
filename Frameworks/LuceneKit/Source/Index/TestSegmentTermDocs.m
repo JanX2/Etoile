@@ -89,7 +89,6 @@
 
 - (void) testSkipTo
 {
-  NSLog(@"=== TestSkipTo ===");
   id <LCDirectory> d = [[LCRAMDirectory alloc] init];
   LCIndexWriter *writer = [[LCIndexWriter alloc] initWithDirectory: d
 	  analyzer: [[LCWhitespaceAnalyzer alloc] init]
@@ -229,7 +228,6 @@
       doc.add(new Field("content", value, Field.Store.NO, Field.Index.TOKENIZED));
       writer.addDocument(doc);
 #endif
-  NSLog(@"=== TestSkipTo ===");
   }
 
 @end

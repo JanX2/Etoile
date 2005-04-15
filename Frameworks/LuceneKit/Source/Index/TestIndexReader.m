@@ -3,6 +3,7 @@
 #include "Store/LCRAMDirectory.h"
 #include "Index/LCIndexWriter.h"
 #include "Index/LCIndexReader.h"
+#include "Index/LCTerm.h"
 #include "Document/LCDocument.h"
 #include "Document/LCField.h"
 #include "Analysis/LCWhitespaceAnalyzer.h"
@@ -177,227 +178,247 @@
 
   DESTROY(writer);
         // verify fields again
-#if 0
   reader = [LCIndexReader openDirectory: d];
   fieldNames = [reader fieldNames: LCFieldOption_ALL];
-        assertEquals(13, fieldNames.size());    // the following fields
-        assertTrue(fieldNames.contains("keyword"));
-        assertTrue(fieldNames.contains("text"));
-        assertTrue(fieldNames.contains("unindexed"));
-        assertTrue(fieldNames.contains("unstored"));
-        assertTrue(fieldNames.contains("keyword2"));
-        assertTrue(fieldNames.contains("text2"));
-        assertTrue(fieldNames.contains("unindexed2"));
-        assertTrue(fieldNames.contains("unstored2"));
-        assertTrue(fieldNames.contains("tvnot"));
-        assertTrue(fieldNames.contains("termvector"));
-        assertTrue(fieldNames.contains("tvposition"));
-        assertTrue(fieldNames.contains("tvoffset"));
-        assertTrue(fieldNames.contains("tvpositionoffset"));
+  UKIntsEqual(13, [fieldNames count]); // the following fields
+  UKTrue([fieldNames containsObject: @"keyword"]);
+  UKTrue([fieldNames containsObject: @"text"]);
+  UKTrue([fieldNames containsObject: @"unindexed"]);
+  UKTrue([fieldNames containsObject: @"unstored"]);
+  UKTrue([fieldNames containsObject: @"keyword2"]);
+  UKTrue([fieldNames containsObject: @"text2"]);
+  UKTrue([fieldNames containsObject: @"unindexed2"]);
+  UKTrue([fieldNames containsObject: @"unstored2"]);
+  UKTrue([fieldNames containsObject: @"tvnot"]);
+  UKTrue([fieldNames containsObject: @"termvector"]);
+  UKTrue([fieldNames containsObject: @"tvposition"]);
+  UKTrue([fieldNames containsObject: @"tvoffset"]);
+  UKTrue([fieldNames containsObject: @"tvpositionoffset"]);
         
         // verify that only indexed fields were returned
-        fieldNames = reader.getFieldNames(IndexReader.FieldOption.INDEXED);
-        assertEquals(11, fieldNames.size());    // 6 original + the 5 termvector fields 
-        assertTrue(fieldNames.contains("keyword"));
-        assertTrue(fieldNames.contains("text"));
-        assertTrue(fieldNames.contains("unstored"));
-        assertTrue(fieldNames.contains("keyword2"));
-        assertTrue(fieldNames.contains("text2"));
-        assertTrue(fieldNames.contains("unstored2"));
-        assertTrue(fieldNames.contains("tvnot"));
-        assertTrue(fieldNames.contains("termvector"));
-        assertTrue(fieldNames.contains("tvposition"));
-        assertTrue(fieldNames.contains("tvoffset"));
-        assertTrue(fieldNames.contains("tvpositionoffset"));
+  fieldNames = [reader fieldNames: LCFieldOption_INDEXED];
+  UKIntsEqual(11, [fieldNames count]); // 6 original + the 5 termvector fields 
+  UKTrue([fieldNames containsObject: @"keyword"]);
+  UKTrue([fieldNames containsObject: @"text"]);
+  UKTrue([fieldNames containsObject: @"unstored"]);
+  UKTrue([fieldNames containsObject: @"keyword2"]);
+  UKTrue([fieldNames containsObject: @"text2"]);
+  UKTrue([fieldNames containsObject: @"unstored2"]);
+  UKTrue([fieldNames containsObject: @"tvnot"]);
+  UKTrue([fieldNames containsObject: @"termvector"]);
+  UKTrue([fieldNames containsObject: @"tvposition"]);
+  UKTrue([fieldNames containsObject: @"tvoffset"]);
+  UKTrue([fieldNames containsObject: @"tvpositionoffset"]);
         
         // verify that only unindexed fields were returned
-        fieldNames = reader.getFieldNames(IndexReader.FieldOption.UNINDEXED);
-        assertEquals(2, fieldNames.size());    // the following fields
-        assertTrue(fieldNames.contains("unindexed"));
-        assertTrue(fieldNames.contains("unindexed2"));
+  fieldNames = [reader fieldNames: LCFieldOption_UNINDEXED];
+  UKIntsEqual(2, [fieldNames count]); 
+  UKTrue([fieldNames containsObject: @"unindexed"]);
+  UKTrue([fieldNames containsObject: @"unindexed2"]);
                 
         // verify index term vector fields  
-        fieldNames = reader.getFieldNames(IndexReader.FieldOption.TERMVECTOR);
-        assertEquals(1, fieldNames.size());    // 1 field has term vector only
-        assertTrue(fieldNames.contains("termvector"));
+  fieldNames = [reader fieldNames: LCFieldOption_TERMVECTOR];
+  UKIntsEqual(1, [fieldNames count]); 
+  UKTrue([fieldNames containsObject: @"termvector"]);
         
-        fieldNames = reader.getFieldNames(IndexReader.FieldOption.TERMVECTOR_WITH_POSITION);
-        assertEquals(1, fieldNames.size());    // 4 fields are indexed with term vectors
-        assertTrue(fieldNames.contains("tvposition"));
+  fieldNames = [reader fieldNames: LCFieldOption_TERMVECTOR_WITH_POSITION];
+  UKIntsEqual(1, [fieldNames count]); 
+  UKTrue([fieldNames containsObject: @"tvposition"]);
         
-        fieldNames = reader.getFieldNames(IndexReader.FieldOption.TERMVECTOR_WITH_OFFSET);
-        assertEquals(1, fieldNames.size());    // 4 fields are indexed with term vectors
-        assertTrue(fieldNames.contains("tvoffset"));
+  fieldNames = [reader fieldNames: LCFieldOption_TERMVECTOR_WITH_OFFSET];
+  UKIntsEqual(1, [fieldNames count]); 
+  UKTrue([fieldNames containsObject: @"tvoffset"]);
                 
-        fieldNames = reader.getFieldNames(IndexReader.FieldOption.TERMVECTOR_WITH_POSITION_OFFSET);
-        assertEquals(1, fieldNames.size());    // 4 fields are indexed with term vectors
-        assertTrue(fieldNames.contains("tvpositionoffset"));
-#endif
+  fieldNames = [reader fieldNames: LCFieldOption_TERMVECTOR_WITH_POSITION_OFFSET];
+  UKIntsEqual(1, [fieldNames count]); 
+  UKTrue([fieldNames containsObject: @"tvpositionoffset"]);
         
   DESTROY(d);
     }
 
+- (void) assertTermDocsCount: (NSString *) msg
+                    reader: (LCIndexReader *) reader
+		    term: (LCTerm *) term
+		    expected: (int) expected
+{
+  id <LCTermDocs> tdocs = nil;
+  tdocs = [reader termDocsWithTerm: term];
+  UKNotNil(tdocs);
+  int count = 0;
+  while ([tdocs next])
+  {
+    count++;
+  }
+  UKIntsEqual(expected, count);
+  [tdocs close];
+}
+
+- (void) testBasicDelete
+{
+  id <LCDirectory> dir = [[LCRAMDirectory alloc] init];
+
+  LCIndexWriter *writer = nil;
+  LCIndexReader *reader = nil;
+  LCTerm *searchTerm = [[LCTerm alloc] initWithField: @"content" text: @"aaa"];
+
+  //  add 100 documents with term : aaa
+  writer = [[LCIndexWriter alloc] initWithDirectory: dir
+	  analyzer: [[LCWhitespaceAnalyzer alloc] init]
+	  create: YES];
+  int i;
+  for (i = 0; i < 100; i++)
+  {
+    [self addDoc: writer value: [searchTerm text]];
+  }
+  [writer close];
+
+        // OPEN READER AT THIS POINT - this should fix the view of the
+        // index at the point of having 100 "aaa" documents and 0 "bbb"
+  reader = [LCIndexReader openDirectory: dir];
+  UKIntsEqual(100, [reader docFreq: searchTerm]);
+  [self assertTermDocsCount: @"first reader"
+	  reader: reader
+	  term: searchTerm
+	  expected: 100];
+
+  // DELETE DOCUMENTS CONTAINING TERM: aaa
+  int deleted = 0;
+  reader = [LCIndexReader openDirectory: dir];
+  deleted = [reader deleteTerm: searchTerm];
+  UKIntsEqual(100, deleted);
+  UKIntsEqual(100, [reader docFreq: searchTerm]);
+  [self assertTermDocsCount: @"first reader"
+	  reader: reader
+	  term: searchTerm
+	  expected: 0];
+  [reader close];
+
+  // CREATE A NEW READER and re-test
+  reader = [LCIndexReader openDirectory: dir];
+  UKIntsEqual(100, [reader docFreq: searchTerm]);
+  [self assertTermDocsCount: @"first reader"
+	  reader: reader
+	  term: searchTerm
+	  expected: 0];
+  [reader close];
+    }
+
+- (void) deleteReaderWriterConflict: (BOOL) optimize
+{
+  id <LCDirectory> dir = [[LCRAMDirectory alloc] init];
+  // Directory dir = getDirectory(true);
+
+  LCTerm *searchTerm = [[LCTerm alloc] initWithField: @"content" text: @"aaa"];
+  LCTerm *searchTerm2 = [[LCTerm alloc] initWithField: @"content" text: @"bbb"];
+
+  //  add 100 documents with term : aaa
+  LCIndexWriter *writer  = [[LCIndexWriter alloc] initWithDirectory: dir
+	  analyzer: [[LCWhitespaceAnalyzer alloc] init]
+	  create: YES];
+  int i;
+  for (i = 0; i < 100; i++)
+    {
+      [self addDoc: writer value: [searchTerm text]];
+    }
+  [writer close];
+
+  // OPEN READER AT THIS POINT - this should fix the view of the
+  // index at the point of having 100 "aaa" documents and 0 "bbb"
+  LCIndexReader *reader = [LCIndexReader openDirectory: dir];
+  UKIntsEqual(100, [reader docFreq: searchTerm]);
+  UKIntsEqual(0, [reader docFreq: searchTerm2]);
+  [self assertTermDocsCount: @"first reader" reader: reader
+	  term: searchTerm expected: 100];
+  [self assertTermDocsCount: @"first reader" reader: reader
+	  term: searchTerm2 expected: 0];
+
+  // add 100 documents with term : bbb
+  writer  = [[LCIndexWriter alloc] initWithDirectory: dir
+	  analyzer: [[LCWhitespaceAnalyzer alloc] init]
+	  create: NO];
+  for (i = 0; i < 100; i++)
+    {
+      [self addDoc: writer value: [searchTerm2 text]];
+    }
+
+  // REQUEST OPTIMIZATION
+  // This causes a new segment to become current for all subsequent
+  // searchers. Because of this, deletions made via a previously open
+  // reader, which would be applied to that reader's segment, are lost
+  // for subsequent searchers/readers
+  if(optimize)
+    [writer optimize];
+  [writer close];
+
+   // The reader should not see the new data
+   UKIntsEqual(100, [reader docFreq: searchTerm]);
+   UKIntsEqual(0, [reader docFreq: searchTerm2]);
+   [self assertTermDocsCount: @"first reader" reader: reader
+	   term: searchTerm expected: 100];
+   [self assertTermDocsCount: @"first reader" reader: reader
+	   term: searchTerm2 expected: 0];
+
+
+   // DELETE DOCUMENTS CONTAINING TERM: aaa
+   // NOTE: the reader was created when only "aaa" documents were in
 #if 0
-    private void assertTermDocsCount(String msg,
-                                     IndexReader reader,
-                                     Term term,
-                                     int expected)
-    throws IOException
-    {
-        TermDocs tdocs = null;
-
-        try {
-            tdocs = reader.termDocs(term);
-            assertNotNull(msg + ", null TermDocs", tdocs);
-            int count = 0;
-            while(tdocs.next()) {
-                count++;
-            }
-            assertEquals(msg + ", count mismatch", expected, count);
-
-        } finally {
-            if (tdocs != null)
-                try { tdocs.close(); } catch (Exception e) { }
-        }
-
-    }
-
-
-
-    public void testBasicDelete() throws IOException
-    {
-        Directory dir = new RAMDirectory();
-
-        IndexWriter writer = null;
-        IndexReader reader = null;
-        Term searchTerm = new Term("content", "aaa");
-
-        //  add 100 documents with term : aaa
-        writer  = new IndexWriter(dir, new WhitespaceAnalyzer(), true);
-        for (int i = 0; i < 100; i++)
-        {
-            addDoc(writer, searchTerm.text());
-        }
-        writer.close();
-
-        // OPEN READER AT THIS POINT - this should fix the view of the
-        // index at the point of having 100 "aaa" documents and 0 "bbb"
-        reader = IndexReader.open(dir);
-        assertEquals("first docFreq", 100, reader.docFreq(searchTerm));
-        assertTermDocsCount("first reader", reader, searchTerm, 100);
-
-        // DELETE DOCUMENTS CONTAINING TERM: aaa
-        int deleted = 0;
-        reader = IndexReader.open(dir);
-        deleted = reader.delete(searchTerm);
-        assertEquals("deleted count", 100, deleted);
-        assertEquals("deleted docFreq", 100, reader.docFreq(searchTerm));
-        assertTermDocsCount("deleted termDocs", reader, searchTerm, 0);
-        reader.close();
-
-        // CREATE A NEW READER and re-test
-        reader = IndexReader.open(dir);
-        assertEquals("deleted docFreq", 100, reader.docFreq(searchTerm));
-        assertTermDocsCount("deleted termDocs", reader, searchTerm, 0);
-        reader.close();
-    }
-
-
-    public void testDeleteReaderWriterConflictUnoptimized() throws IOException{
-      deleteReaderWriterConflict(false);
-    }
-    
-    public void testDeleteReaderWriterConflictOptimized() throws IOException{
-        deleteReaderWriterConflict(true);
-    }
-
-    private void deleteReaderWriterConflict(boolean optimize) throws IOException
-    {
-        //Directory dir = new RAMDirectory();
-        Directory dir = getDirectory(true);
-
-        Term searchTerm = new Term("content", "aaa");
-        Term searchTerm2 = new Term("content", "bbb");
-
-        //  add 100 documents with term : aaa
-        IndexWriter writer  = new IndexWriter(dir, new WhitespaceAnalyzer(), true);
-        for (int i = 0; i < 100; i++)
-        {
-            addDoc(writer, searchTerm.text());
-        }
-        writer.close();
-
-        // OPEN READER AT THIS POINT - this should fix the view of the
-        // index at the point of having 100 "aaa" documents and 0 "bbb"
-        IndexReader reader = IndexReader.open(dir);
-        assertEquals("first docFreq", 100, reader.docFreq(searchTerm));
-        assertEquals("first docFreq", 0, reader.docFreq(searchTerm2));
-        assertTermDocsCount("first reader", reader, searchTerm, 100);
-        assertTermDocsCount("first reader", reader, searchTerm2, 0);
-
-        // add 100 documents with term : bbb
-        writer  = new IndexWriter(dir, new WhitespaceAnalyzer(), false);
-        for (int i = 0; i < 100; i++)
-        {
-            addDoc(writer, searchTerm2.text());
-        }
-
-        // REQUEST OPTIMIZATION
-        // This causes a new segment to become current for all subsequent
-        // searchers. Because of this, deletions made via a previously open
-        // reader, which would be applied to that reader's segment, are lost
-        // for subsequent searchers/readers
-        if(optimize)
-          writer.optimize();
-        writer.close();
-
-        // The reader should not see the new data
-        assertEquals("first docFreq", 100, reader.docFreq(searchTerm));
-        assertEquals("first docFreq", 0, reader.docFreq(searchTerm2));
-        assertTermDocsCount("first reader", reader, searchTerm, 100);
-        assertTermDocsCount("first reader", reader, searchTerm2, 0);
-
-
-        // DELETE DOCUMENTS CONTAINING TERM: aaa
-        // NOTE: the reader was created when only "aaa" documents were in
-        int deleted = 0;
-        try {
+   try {
             deleted = reader.delete(searchTerm);
             fail("Delete allowed on an index reader with stale segment information");
         } catch (IOException e) {
             /* success */
         }
+#endif
 
-        // Re-open index reader and try again. This time it should see
-        // the new data.
-        reader.close();
-        reader = IndexReader.open(dir);
-        assertEquals("first docFreq", 100, reader.docFreq(searchTerm));
-        assertEquals("first docFreq", 100, reader.docFreq(searchTerm2));
-        assertTermDocsCount("first reader", reader, searchTerm, 100);
-        assertTermDocsCount("first reader", reader, searchTerm2, 100);
+   // Re-open index reader and try again. This time it should see
+   // the new data.
+   [reader close];
+   reader = [LCIndexReader openDirectory: dir];
+   UKIntsEqual(100, [reader docFreq: searchTerm]);
+   UKIntsEqual(100, [reader docFreq: searchTerm2]);
+   [self assertTermDocsCount: @"first reader" reader: reader
+	   term: searchTerm expected: 100];
+   [self assertTermDocsCount: @"first reader" reader: reader
+	   term: searchTerm2 expected: 100];
 
-        deleted = reader.delete(searchTerm);
-        assertEquals("deleted count", 100, deleted);
-        assertEquals("deleted docFreq", 100, reader.docFreq(searchTerm));
-        assertEquals("deleted docFreq", 100, reader.docFreq(searchTerm2));
-        assertTermDocsCount("deleted termDocs", reader, searchTerm, 0);
-        assertTermDocsCount("deleted termDocs", reader, searchTerm2, 100);
-        reader.close();
+   int deleted = [reader deleteTerm: searchTerm];
+   UKIntsEqual(100, deleted);
+   UKIntsEqual(100, [reader docFreq: searchTerm]);
+   UKIntsEqual(100, [reader docFreq: searchTerm2]);
+   [self assertTermDocsCount: @"deleted termDocs" reader: reader
+	   term: searchTerm expected: 0];
+   [self assertTermDocsCount: @"deleted termDocs" reader: reader
+	   term: searchTerm2 expected: 100];
+   [reader close];
 
-        // CREATE A NEW READER and re-test
-        reader = IndexReader.open(dir);
-        assertEquals("deleted docFreq", 100, reader.docFreq(searchTerm));
-        assertEquals("deleted docFreq", 100, reader.docFreq(searchTerm2));
-        assertTermDocsCount("deleted termDocs", reader, searchTerm, 0);
-        assertTermDocsCount("deleted termDocs", reader, searchTerm2, 100);
-        reader.close();
-    }
+   // CREATE A NEW READER and re-test
+   reader = [LCIndexReader openDirectory: dir];
+   UKIntsEqual(100, [reader docFreq: searchTerm]);
+   UKIntsEqual(100, [reader docFreq: searchTerm2]);
+   [self assertTermDocsCount: @"deleted termDocs" reader: reader
+	   term: searchTerm expected: 0];
+   [self assertTermDocsCount: @"deleted termDocs" reader: reader
+	   term: searchTerm2 expected: 100];
+   [reader close];
+}
+	
+- (void) testDeleteReaderWriterConflictUnoptimized
+{
+  [self deleteReaderWriterConflict: NO];
+}
+    
+- (void) testDeleteReaderWriterConflictOptimized
+{
+  [self deleteReaderWriterConflict: YES];
+}
 
+#if 0
   private Directory getDirectory(boolean create) throws IOException {
     return FSDirectory.getDirectory(new File(System.getProperty("tempDir"), "testIndex"), create);
   }
+#endif
 
+#if 0
   public void testFilesOpenClose() throws IOException
     {
         // Create initial data set
@@ -425,117 +446,146 @@
         // The following will fail if reader did not close all files
         dir = getDirectory(true);
     }
+#endif
 
-    public void testDeleteReaderReaderConflictUnoptimized() throws IOException{
-      deleteReaderReaderConflict(false);
-    }
-    
-    public void testDeleteReaderReaderConflictOptimized() throws IOException{
-      deleteReaderReaderConflict(true);
-    }
-    
-    private void deleteReaderReaderConflict(boolean optimize) throws IOException
+- (void) deleteReaderReaderConflict: (BOOL) optimize
+{
+  id <LCDirectory> dir = [[LCRAMDirectory alloc] init];
+  // Should test on real file system
+  // Directory dir = getDirectory(true);
+
+  LCTerm *searchTerm1 = [[LCTerm alloc] initWithField: @"content" text: @"aaa"];
+  LCTerm *searchTerm2 = [[LCTerm alloc] initWithField: @"content" text: @"bbb"];
+  LCTerm *searchTerm3 = [[LCTerm alloc] initWithField: @"content" text: @"ccc"];
+
+  //  add 100 documents with term : aaa
+  //  add 100 documents with term : bbb
+  //  add 100 documents with term : ccc
+  LCIndexWriter *writer  = [[LCIndexWriter alloc] initWithDirectory: dir
+	  analyzer: [[LCWhitespaceAnalyzer alloc] init]
+	 create: YES];
+  int i;
+  for (i = 0; i < 100; i++)
     {
-        Directory dir = getDirectory(true);
+      [self addDoc: writer value: [searchTerm1 text]];
+      [self addDoc: writer value: [searchTerm2 text]];
+      [self addDoc: writer value: [searchTerm3 text]];
+    }
+  if(optimize)
+    [writer optimize];
+  [writer close];
 
-        Term searchTerm1 = new Term("content", "aaa");
-        Term searchTerm2 = new Term("content", "bbb");
-        Term searchTerm3 = new Term("content", "ccc");
+  // OPEN TWO READERS
+  // Both readers get segment info as exists at this time
+  LCIndexReader *reader1 = [LCIndexReader openDirectory: dir];
+  UKIntsEqual(100, [reader1 docFreq: searchTerm1]);
+  UKIntsEqual(100, [reader1 docFreq: searchTerm2]);
+  UKIntsEqual(100, [reader1 docFreq: searchTerm3]);
+  [self assertTermDocsCount: @"first opened"
+	  reader: reader1 term: searchTerm1 expected: 100];
+  [self assertTermDocsCount: @"first opened"
+	  reader: reader1 term: searchTerm2 expected: 100];
+  [self assertTermDocsCount: @"first opened"
+	  reader: reader1 term: searchTerm3 expected: 100];
 
-        //  add 100 documents with term : aaa
-        //  add 100 documents with term : bbb
-        //  add 100 documents with term : ccc
-        IndexWriter writer  = new IndexWriter(dir, new WhitespaceAnalyzer(), true);
-        for (int i = 0; i < 100; i++)
-        {
-            addDoc(writer, searchTerm1.text());
-            addDoc(writer, searchTerm2.text());
-            addDoc(writer, searchTerm3.text());
-        }
-        if(optimize)
-          writer.optimize();
-        writer.close();
-
-        // OPEN TWO READERS
-        // Both readers get segment info as exists at this time
-        IndexReader reader1 = IndexReader.open(dir);
-        assertEquals("first opened", 100, reader1.docFreq(searchTerm1));
-        assertEquals("first opened", 100, reader1.docFreq(searchTerm2));
-        assertEquals("first opened", 100, reader1.docFreq(searchTerm3));
-        assertTermDocsCount("first opened", reader1, searchTerm1, 100);
-        assertTermDocsCount("first opened", reader1, searchTerm2, 100);
-        assertTermDocsCount("first opened", reader1, searchTerm3, 100);
-
-        IndexReader reader2 = IndexReader.open(dir);
-        assertEquals("first opened", 100, reader2.docFreq(searchTerm1));
-        assertEquals("first opened", 100, reader2.docFreq(searchTerm2));
-        assertEquals("first opened", 100, reader2.docFreq(searchTerm3));
-        assertTermDocsCount("first opened", reader2, searchTerm1, 100);
-        assertTermDocsCount("first opened", reader2, searchTerm2, 100);
-        assertTermDocsCount("first opened", reader2, searchTerm3, 100);
+  LCIndexReader *reader2 = [LCIndexReader openDirectory: dir];
+  UKIntsEqual(100, [reader2 docFreq: searchTerm1]);
+  UKIntsEqual(100, [reader2 docFreq: searchTerm2]);
+  UKIntsEqual(100, [reader2 docFreq: searchTerm3]);
+  [self assertTermDocsCount: @"first opened"
+	  reader: reader2 term: searchTerm1 expected: 100];
+  [self assertTermDocsCount: @"first opened"
+	  reader: reader2 term: searchTerm2 expected: 100];
+  [self assertTermDocsCount: @"first opened"
+	  reader: reader2 term: searchTerm3 expected: 100];
 
         // DELETE DOCS FROM READER 2 and CLOSE IT
         // delete documents containing term: aaa
         // when the reader is closed, the segment info is updated and
         // the first reader is now stale
-        reader2.delete(searchTerm1);
-        assertEquals("after delete 1", 100, reader2.docFreq(searchTerm1));
-        assertEquals("after delete 1", 100, reader2.docFreq(searchTerm2));
-        assertEquals("after delete 1", 100, reader2.docFreq(searchTerm3));
-        assertTermDocsCount("after delete 1", reader2, searchTerm1, 0);
-        assertTermDocsCount("after delete 1", reader2, searchTerm2, 100);
-        assertTermDocsCount("after delete 1", reader2, searchTerm3, 100);
-        reader2.close();
+  [reader2 deleteTerm: searchTerm1];
+  UKIntsEqual(100, [reader2 docFreq: searchTerm1]);
+  UKIntsEqual(100, [reader2 docFreq: searchTerm2]);
+  UKIntsEqual(100, [reader2 docFreq: searchTerm3]);
+  [self assertTermDocsCount: @"after delete 1"
+	  reader: reader2 term: searchTerm1 expected: 0];
+  [self assertTermDocsCount: @"after delete 1"
+	  reader: reader2 term: searchTerm2 expected: 100];
+  [self assertTermDocsCount: @"after delete 1"
+	  reader: reader2 term: searchTerm3 expected: 100];
+  [reader2 close];
 
         // Make sure reader 1 is unchanged since it was open earlier
-        assertEquals("after delete 1", 100, reader1.docFreq(searchTerm1));
-        assertEquals("after delete 1", 100, reader1.docFreq(searchTerm2));
-        assertEquals("after delete 1", 100, reader1.docFreq(searchTerm3));
-        assertTermDocsCount("after delete 1", reader1, searchTerm1, 100);
-        assertTermDocsCount("after delete 1", reader1, searchTerm2, 100);
-        assertTermDocsCount("after delete 1", reader1, searchTerm3, 100);
+  UKIntsEqual(100, [reader1 docFreq: searchTerm1]);
+  UKIntsEqual(100, [reader1 docFreq: searchTerm2]);
+  UKIntsEqual(100, [reader1 docFreq: searchTerm3]);
+  [self assertTermDocsCount: @"after delete 1"
+	  reader: reader1 term: searchTerm1 expected: 100];
+  [self assertTermDocsCount: @"after delete 1"
+	  reader: reader1 term: searchTerm2 expected: 100];
+  [self assertTermDocsCount: @"after delete 1"
+	  reader: reader1 term: searchTerm3 expected: 100];
 
 
         // ATTEMPT TO DELETE FROM STALE READER
         // delete documents containing term: bbb
+#if 0
         try {
             reader1.delete(searchTerm2);
             fail("Delete allowed from a stale index reader");
         } catch (IOException e) {
             /* success */
         }
-
-        // RECREATE READER AND TRY AGAIN
-        reader1.close();
-        reader1 = IndexReader.open(dir);
-        assertEquals("reopened", 100, reader1.docFreq(searchTerm1));
-        assertEquals("reopened", 100, reader1.docFreq(searchTerm2));
-        assertEquals("reopened", 100, reader1.docFreq(searchTerm3));
-        assertTermDocsCount("reopened", reader1, searchTerm1, 0);
-        assertTermDocsCount("reopened", reader1, searchTerm2, 100);
-        assertTermDocsCount("reopened", reader1, searchTerm3, 100);
-
-        reader1.delete(searchTerm2);
-        assertEquals("deleted 2", 100, reader1.docFreq(searchTerm1));
-        assertEquals("deleted 2", 100, reader1.docFreq(searchTerm2));
-        assertEquals("deleted 2", 100, reader1.docFreq(searchTerm3));
-        assertTermDocsCount("deleted 2", reader1, searchTerm1, 0);
-        assertTermDocsCount("deleted 2", reader1, searchTerm2, 0);
-        assertTermDocsCount("deleted 2", reader1, searchTerm3, 100);
-        reader1.close();
-
-        // Open another reader to confirm that everything is deleted
-        reader2 = IndexReader.open(dir);
-        assertEquals("reopened 2", 100, reader2.docFreq(searchTerm1));
-        assertEquals("reopened 2", 100, reader2.docFreq(searchTerm2));
-        assertEquals("reopened 2", 100, reader2.docFreq(searchTerm3));
-        assertTermDocsCount("reopened 2", reader2, searchTerm1, 0);
-        assertTermDocsCount("reopened 2", reader2, searchTerm2, 0);
-        assertTermDocsCount("reopened 2", reader2, searchTerm3, 100);
-        reader2.close();
-
-        dir.close();
-    }
 #endif
+
+  // RECREATE READER AND TRY AGAIN
+  [reader1 close];
+  reader1 = [LCIndexReader openDirectory: dir];
+  UKIntsEqual(100, [reader1 docFreq: searchTerm1]);
+  UKIntsEqual(100, [reader1 docFreq: searchTerm2]);
+  UKIntsEqual(100, [reader1 docFreq: searchTerm3]);
+  [self assertTermDocsCount: @"reopened"
+	  reader: reader1 term: searchTerm1 expected: 0];
+  [self assertTermDocsCount: @"reopened"
+	  reader: reader1 term: searchTerm2 expected: 100];
+  [self assertTermDocsCount: @"reopened"
+	  reader: reader1 term: searchTerm3 expected: 100];
+
+  [reader1 deleteTerm: searchTerm2];
+  UKIntsEqual(100, [reader1 docFreq: searchTerm1]);
+  UKIntsEqual(100, [reader1 docFreq: searchTerm2]);
+  UKIntsEqual(100, [reader1 docFreq: searchTerm3]);
+  [self assertTermDocsCount: @"deleted 2"
+	  reader: reader1 term: searchTerm1 expected: 0];
+  [self assertTermDocsCount: @"deleted 2"
+	  reader: reader1 term: searchTerm2 expected: 0];
+  [self assertTermDocsCount: @"deleted 2"
+	  reader: reader1 term: searchTerm3 expected: 100];
+  [reader1 close];
+
+  // Open another reader to confirm that everything is deleted
+  reader2 = [LCIndexReader openDirectory: dir];
+  UKIntsEqual(100, [reader2 docFreq: searchTerm1]);
+  UKIntsEqual(100, [reader2 docFreq: searchTerm2]);
+  UKIntsEqual(100, [reader2 docFreq: searchTerm3]);
+  [self assertTermDocsCount: @"reopened 2"
+	  reader: reader2 term: searchTerm1 expected: 0];
+  [self assertTermDocsCount: @"reopened 2"
+	  reader: reader2 term: searchTerm2 expected: 0];
+  [self assertTermDocsCount: @"reopened 2"
+	  reader: reader2 term: searchTerm3 expected: 100];
+  [reader2 close];
+  [dir close];
+}
+
+- (void) testDeleteReaderReaderConflictUnoptimized
+{
+  [self deleteReaderReaderConflict: NO];
+}
+    
+- (void) testDeleteReaderReaderConflictOptimized
+{
+  [self deleteReaderReaderConflict: YES];
+}
 
 @end
