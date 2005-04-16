@@ -22,15 +22,16 @@
 
 - (void) dealloc
 {
-  RELEASE(parent);
   RELEASE(freqStream);
   RELEASE(deletedDocs);
+  RELEASE(parent);
   [super dealloc];
 }
 
 - (void) seekTerm: (LCTerm *) term
 {
   LCTermInfo *ti = [[parent termInfosReader] termInfo: term];
+//  NSLog(@"seekTerm %@: %@", term, ti);
   [self seekTermInfo: ti];
 }
 

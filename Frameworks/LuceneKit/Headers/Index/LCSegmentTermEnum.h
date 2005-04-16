@@ -8,18 +8,7 @@
 @class LCTermBuffer;
 @class LCTermInfo;
 
-#ifdef HAVE_UKTEST
-#include <UnitKit/UnitKit.h>
-#include "Store/LCRAMDirectory.h"
-#include "Document/LCDocument.h"
-#include "Document/LCField.h"
-#include "Analysis/LCWhitespaceAnalyzer.h"
-#include "Index/LCIndexWriter.h"
-#include "Index/LCIndexReader.h"
-@interface LCSegmentTermEnum: LCTermEnum <NSCopying, UKTest>
-#else
 @interface LCSegmentTermEnum: LCTermEnum <NSCopying>
-#endif
 {
   LCIndexInput *input;
   LCFieldInfos *fieldInfos;

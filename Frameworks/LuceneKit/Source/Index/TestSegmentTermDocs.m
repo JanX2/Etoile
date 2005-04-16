@@ -13,6 +13,7 @@
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
 #include "Store/LCDirectory.h"
+#include "GNUstep/GNUstep.h"
 
 @interface TestSegmentTermDocs: NSObject <UKTest>
 {
@@ -84,7 +85,10 @@
 	           string: value
 		   store: LCStore_NO
 		   index: LCIndex_Tokenized];
+  [doc addField: field];
+  RELEASE(field);
   [writer addDocument: doc];
+  RELEASE(doc);
 }
 
 - (void) testSkipTo
@@ -111,10 +115,9 @@
   [writer optimize];
   [writer close];
       
-#if 0
+  //NSLog(@"===== TestSkipTo ======");
   LCIndexReader *reader = [LCIndexReader openDirectory: d];
   id <LCTermDocs> tdocs = [reader termDocs];
-  NSLog(@"tdocs %@", tdocs);
       
   // without optimization (assumption skipInterval == 16)
       
@@ -126,108 +129,95 @@
   UKTrue([tdocs next]);
   UKIntsEqual(1, [tdocs doc]);
   UKIntsEqual(4, [tdocs freq]);
-#endif
-#if 0
-      assertTrue(tdocs.skipTo(0));
-      assertEquals(2, tdocs.doc());
-      assertTrue(tdocs.skipTo(4));
-      assertEquals(4, tdocs.doc());
-      assertTrue(tdocs.skipTo(9));
-      assertEquals(9, tdocs.doc());
-      assertFalse(tdocs.skipTo(10));
+  UKTrue([tdocs skipTo: 0]);
+  UKIntsEqual(2, [tdocs doc]);
+  UKTrue([tdocs skipTo: 4]);
+  UKIntsEqual(4, [tdocs doc]);
+  UKTrue([tdocs skipTo: 9]);
+  UKIntsEqual(9, [tdocs doc]);
+  UKFalse([tdocs skipTo: 10]);
       
-      // without next
-      tdocs.seek(ta);
-      assertTrue(tdocs.skipTo(0));
-      assertEquals(0, tdocs.doc());
-      assertTrue(tdocs.skipTo(4));
-      assertEquals(4, tdocs.doc());
-      assertTrue(tdocs.skipTo(9));
-      assertEquals(9, tdocs.doc());
-      assertFalse(tdocs.skipTo(10));
+  // without next
+  [tdocs seekTerm: ta];
+  UKTrue([tdocs skipTo: 0]);
+  UKIntsEqual(0, [tdocs doc]);
+  UKTrue([tdocs skipTo: 4]);
+  UKIntsEqual(4, [tdocs doc]);
+  UKTrue([tdocs skipTo: 9]);
+  UKIntsEqual(9, [tdocs doc]);
+  UKFalse([tdocs skipTo: 10]);
       
       // exactly skipInterval documents and therefore with optimization
       
       // with next
-      tdocs.seek(tb);
-      assertTrue(tdocs.next());
-      assertEquals(10, tdocs.doc());
-      assertEquals(4, tdocs.freq());
-      assertTrue(tdocs.next());
-      assertEquals(11, tdocs.doc());
-      assertEquals(4, tdocs.freq());
-      assertTrue(tdocs.skipTo(5));
-      assertEquals(12, tdocs.doc());
-      assertTrue(tdocs.skipTo(15));
-      assertEquals(15, tdocs.doc());
-      assertTrue(tdocs.skipTo(24));
-      assertEquals(24, tdocs.doc());
-      assertTrue(tdocs.skipTo(25));
-      assertEquals(25, tdocs.doc());
-      assertFalse(tdocs.skipTo(26));
+  [tdocs seekTerm: tb];
+  UKTrue([tdocs next]);
+  UKIntsEqual(10, [tdocs doc]);
+  UKIntsEqual(4, [tdocs freq]);
+  UKTrue([tdocs next]);
+  UKIntsEqual(11, [tdocs doc]);
+  UKIntsEqual(4, [tdocs freq]);
+  UKTrue([tdocs skipTo: 5]);
+  UKIntsEqual(12, [tdocs doc]);
+  UKTrue([tdocs skipTo: 15]);
+  UKIntsEqual(15, [tdocs doc]);
+  UKTrue([tdocs skipTo: 24]);
+  UKIntsEqual(24, [tdocs doc]);
+  UKTrue([tdocs skipTo: 25]);
+  UKIntsEqual(25, [tdocs doc]);
+  UKFalse([tdocs skipTo: 26]);
       
-      // without next
-      tdocs.seek(tb);
-      assertTrue(tdocs.skipTo(5));
-      assertEquals(10, tdocs.doc());
-      assertTrue(tdocs.skipTo(15));
-      assertEquals(15, tdocs.doc());
-      assertTrue(tdocs.skipTo(24));
-      assertEquals(24, tdocs.doc());
-      assertTrue(tdocs.skipTo(25));
-      assertEquals(25, tdocs.doc());
-      assertFalse(tdocs.skipTo(26));
+  // without next
+  [tdocs seekTerm: tb];
+  UKTrue([tdocs skipTo: 5]);
+  UKIntsEqual(10, [tdocs doc]);
+  UKTrue([tdocs skipTo: 15]);
+  UKIntsEqual(15, [tdocs doc]);
+  UKTrue([tdocs skipTo: 24]);
+  UKIntsEqual(24, [tdocs doc]);
+  UKTrue([tdocs skipTo: 25]);
+  UKIntsEqual(25, [tdocs doc]);
+  UKFalse([tdocs skipTo: 26]);
       
       // much more than skipInterval documents and therefore with optimization
       
       // with next
-      tdocs.seek(tc);
-      assertTrue(tdocs.next());
-      assertEquals(26, tdocs.doc());
-      assertEquals(4, tdocs.freq());
-      assertTrue(tdocs.next());
-      assertEquals(27, tdocs.doc());
-      assertEquals(4, tdocs.freq());
-      assertTrue(tdocs.skipTo(5));
-      assertEquals(28, tdocs.doc());
-      assertTrue(tdocs.skipTo(40));
-      assertEquals(40, tdocs.doc());
-      assertTrue(tdocs.skipTo(57));
-      assertEquals(57, tdocs.doc());
-      assertTrue(tdocs.skipTo(74));
-      assertEquals(74, tdocs.doc());
-      assertTrue(tdocs.skipTo(75));
-      assertEquals(75, tdocs.doc());
-      assertFalse(tdocs.skipTo(76));
+  [tdocs seekTerm: tc];
+  UKTrue([tdocs next]);
+  UKIntsEqual(26, [tdocs doc]);
+  UKIntsEqual(4, [tdocs freq]);
+  UKTrue([tdocs next]);
+  UKIntsEqual(27, [tdocs doc]);
+  UKIntsEqual(4, [tdocs freq]);
+  UKTrue([tdocs skipTo: 5]);
+  UKIntsEqual(28, [tdocs doc]);
+  UKTrue([tdocs skipTo: 40]);
+  UKIntsEqual(40, [tdocs doc]);
+  UKTrue([tdocs skipTo: 57]);
+  UKIntsEqual(57, [tdocs doc]);
+  UKTrue([tdocs skipTo: 74]);
+  UKIntsEqual(74, [tdocs doc]);
+  UKTrue([tdocs skipTo: 75]);
+  UKIntsEqual(75, [tdocs doc]);
+  UKFalse([tdocs skipTo: 76]);
       
       //without next
-      tdocs.seek(tc);
-      assertTrue(tdocs.skipTo(5));
-      assertEquals(26, tdocs.doc());
-      assertTrue(tdocs.skipTo(40));
-      assertEquals(40, tdocs.doc());
-      assertTrue(tdocs.skipTo(57));
-      assertEquals(57, tdocs.doc());
-      assertTrue(tdocs.skipTo(74));
-      assertEquals(74, tdocs.doc());
-      assertTrue(tdocs.skipTo(75));
-      assertEquals(75, tdocs.doc());
-      assertFalse(tdocs.skipTo(76));
+  [tdocs seekTerm: tc];
+  UKTrue([tdocs skipTo: 5]);
+  UKIntsEqual(26, [tdocs doc]);
+  UKTrue([tdocs skipTo: 40]);
+  UKIntsEqual(40, [tdocs doc]);
+  UKTrue([tdocs skipTo: 57]);
+  UKIntsEqual(57, [tdocs doc]);
+  UKTrue([tdocs skipTo: 74]);
+  UKIntsEqual(74, [tdocs doc]);
+  UKTrue([tdocs skipTo: 75]);
+  UKIntsEqual(75, [tdocs doc]);
+  UKFalse([tdocs skipTo: 76]);
       
-      tdocs.close();
-      reader.close();
-      dir.close();
-    } catch (IOException e) {
-        assertTrue(false);
-    }
+  [tdocs close];
+  [reader close];
+  [dir close];
+//  NSLog(@"===== TestSkipTo ====== done");
   }
-  
-  private void addDoc(IndexWriter writer, String value) throws IOException
-  {
-      Document doc = new Document();
-      doc.add(new Field("content", value, Field.Store.NO, Field.Index.TOKENIZED));
-      writer.addDocument(doc);
-#endif
-  }
-
 @end

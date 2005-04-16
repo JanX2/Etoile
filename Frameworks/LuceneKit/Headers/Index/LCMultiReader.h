@@ -49,7 +49,7 @@
   BOOL hasDeletions;
 }
 
-- (id) initWithReaders: (NSArray *) subReaders starts: (NSArray *) starts;
+- (id) initWithReaders: (NSArray *) subReaders;
 - (id) initWithDirectory: (id <LCDirectory>) directory
        segmentInfos: (LCSegmentInfos *) sis
        close: (BOOL) closeDirectory

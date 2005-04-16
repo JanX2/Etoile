@@ -1,9 +1,15 @@
 2005-04-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
-	* Source/Index/TestIndexReaderlm:
-	Complete test unit for LCIndexReader (for now).
+	* Source/Index/TestIndexReader.m:
+	Complete test unit for LCIndexReader.
+	Some tests are disabled for now due to memory leak.
+	* Source/Index/TestSegmentTermDocs.m:
+	Complete test unit for LCSegmentTermDocs.
+	* Source/Index/LCSegmentTermEnum.m:
+	* Source/Index/TestSegmentTermEnum.m:
+	Separate test unit from class and complete the tests.
 	* Current test result: 
-	Result: 28 classes, 68 methods, 351423 tests, 0 failed
+	Result: 28 classes, 68 methods, 351385 tests, 0 failed
 
 2005-04-12 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

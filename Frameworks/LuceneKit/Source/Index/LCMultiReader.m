@@ -30,11 +30,10 @@
   * @throws IOException
   */
 - (id) initWithReaders: (NSArray *) r
-                starts: (NSArray *) s
 {
   self = [self init];
-  [super initWithDirectory: ([subReaders count] == 0) ? nil : [[subReaders objectAtIndex: 0] directory]];
-  [self initialize: subReaders];
+  [super initWithDirectory: ([r count] == 0) ? nil : [[r objectAtIndex: 0] directory]];
+  [self initialize: r];
   return self;
 }
 
@@ -286,12 +285,14 @@
         [queue put: smi];          // initialize queue
       else
         [smi close];
+      RELEASE(smi);
     }
 
     if (t != nil && [queue size] > 0) {
       [self next];
     }
-  }
+  return self;
+}
 
 - (BOOL) next
 {
@@ -301,7 +302,8 @@
       return NO;
     }
 
-  term = [top term];
+  /* LuceneKit: Keep a copy so that it won't change along with queue */
+  term = [[top term] copy];
   docFreq = 0;
 
   while (top != nil && [term compare: [top term]] == NSOrderedSame) {
@@ -358,6 +360,7 @@
   RELEASE(readers);
   RELEASE(starts);
   RELEASE(readerTermDocs);
+  RELEASE(current);
   [super dealloc];
 }
 
@@ -376,7 +379,7 @@
   ASSIGN(term, t);
   base = 0;
   pointer = 0;
-  current = nil;
+  DESTROY(current);
 }
 
 - (void) seekTermEnum: (LCTermEnum *) termEnum
@@ -390,7 +393,7 @@
       return YES;
     } else if (pointer < [readers count]) {
       base = [[starts objectAtIndex: pointer] intValue];
-      current = [self termDocs: pointer++];
+      ASSIGN(current, [self termDocs: pointer++]);
       return [self next];
     } else {
       return NO;
@@ -404,14 +407,14 @@
       while (current == nil) {
         if (pointer < [readers count]) {      // try next segment
           base = [[starts objectAtIndex: pointer] intValue];
-          current = [self termDocs: pointer++];
+          ASSIGN(current, [self termDocs: pointer++]);
         } else {
           return 0;
         }
       }
       int end = [current readDocs: docs frequency: freqs];
       if (end == 0) {          // none left in segment
-        current = nil;
+        DESTROY(current);
       } else {            // got some
         int b = base;        // adjust doc numbers
 	int i;
@@ -438,21 +441,13 @@
 - (id <LCTermDocs>) termDocs: (int) i
 {
     if (term == nil) return nil;
-#if 1 /* LuceneKit implementation */
+    /* LuceneKit implementation */
     id <LCTermDocs> result;
     if (i >= [readerTermDocs count]) // Not Exist
     {
       result = [self termDocsWithReader: [readers objectAtIndex: i]];
       [readerTermDocs addObject: result];
     }
-#else
-    id <LCTermDocs> result = [readerTermDocs objectAtIndex: i];
-    if (result == nil)
-    {
-      result = [self termDocsWithReader: [readers objectAtIndex: i]];
-      [readerTermDocs addObject: result];
-    }
-#endif
     [result seekTerm: term];
     return result;
   }
@@ -474,13 +469,6 @@
 @end
 
 @implementation LCMultiTermPositions
-
-- (id) initWithReaders: (NSArray *) r
-                starts: (NSArray *) s
-{
-  self = [super initWithReaders: r starts: s];
-  return self;
-  }
 
 - (id <LCTermDocs>) termDocsWithReader: (LCIndexReader *) reader
 {

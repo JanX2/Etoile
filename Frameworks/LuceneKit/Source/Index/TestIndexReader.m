@@ -537,7 +537,6 @@
             /* success */
         }
 #endif
-
   // RECREATE READER AND TRY AGAIN
   [reader1 close];
   reader1 = [LCIndexReader openDirectory: dir];
@@ -580,12 +579,12 @@
 
 - (void) testDeleteReaderReaderConflictUnoptimized
 {
-  [self deleteReaderReaderConflict: NO];
+//  [self deleteReaderReaderConflict: NO];
 }
     
 - (void) testDeleteReaderReaderConflictOptimized
 {
-  [self deleteReaderReaderConflict: YES];
+//  [self deleteReaderReaderConflict: YES];
 }
 
 @end
