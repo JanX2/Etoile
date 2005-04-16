@@ -56,7 +56,7 @@
   return self;
 }
 
-- (NSComparisonResult) compareTo: (LCPosting *) other
+- (NSComparisonResult) compare: (LCPosting *) other
 {
   return [[self term] compare: [other term]];
 }
@@ -319,68 +319,11 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
     }
 
     // sort the array
-    [array sortUsingSelector: @selector(compareTo:)];
+    [array sortUsingSelector: @selector(compare:)];
 
     return array;
 }
 
-#if 0
-- (void) quickSort: (NSMutableArray *) postings
-         low: (int) lo
-	 high: (int) hi
-{
-  if (lo >= hi)
-    return;
-
-  int mid = (lo + hi) / 2;
-
-  if ([[[postings objectAtIndex: lo] term] compareTo: [[postings objectAtIndex: mid] term] == NSOrderedDescending])
-    Posting tmp = postings[lo];
-    postings[lo] = postings[mid];
-    postings[mid] = tmp;
-  }
-
-    if (postings[mid].term.compareTo(postings[hi].term) > 0) {
-      Posting tmp = postings[mid];
-      postings[mid] = postings[hi];
-      postings[hi] = tmp;
-
-      if (postings[lo].term.compareTo(postings[mid].term) > 0) {
-        Posting tmp2 = postings[lo];
-        postings[lo] = postings[mid];
-        postings[mid] = tmp2;
-      }
-    }
-
-    int left = lo + 1;
-    int right = hi - 1;
-
-    if (left >= right)
-      return;
-
-    Term partition = postings[mid].term;
-
-    for (; ;) {
-      while (postings[right].term.compareTo(partition) > 0)
-        --right;
-
-      while (left < right && postings[left].term.compareTo(partition) <= 0)
-        ++left;
-
-      if (left < right) {
-        Posting tmp = postings[left];
-        postings[left] = postings[right];
-        postings[right] = tmp;
-        --right;
-      } else {
-        break;
-      }
-    }
-
-    quickSort(postings, lo, left);
-    quickSort(postings, left + 1, hi);
-  }
-#endif
 - (void) writePostings: (NSArray *) postings 
          segment: (NSString *) segment
 {
@@ -405,7 +348,7 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
     LCPosting *posting = [postings objectAtIndex: i];
 
     // add an entry to the dictionary with pointers to prox and freq files
-    [ti setDocFreq: 1];
+    [ti setDocumentFrequency: 1];
     [ti setFreqPointer: [freq filePointer]];
     [ti setProxPointer: [prox filePointer]];
     [ti setSkipOffset: -1];

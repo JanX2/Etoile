@@ -382,12 +382,12 @@
   return [[LCSegmentTermPositions alloc] initWithSegmentReader: self];
 }
 
-- (long) docFreq: (LCTerm *) t
+- (long) documentFrequency: (LCTerm *) t
 {
     LCTermInfo *ti = [tis termInfo: t];
     if (ti != nil)
     {
-      return [ti docFreq];
+      return [ti documentFrequency];
     }
     else
       return 0;

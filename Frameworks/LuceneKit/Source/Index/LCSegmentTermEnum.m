@@ -89,7 +89,7 @@
     [termBuffer read: input fieldInfos: fieldInfos];
 
     long intValue = [input readVInt];
-    [termInfo setDocFreq: intValue];	  // read doc freq
+    [termInfo setDocumentFrequency: intValue];	  // read doc freq
     long long longValue = [input readVLong];
     [termInfo setFreqPointer: longValue + [termInfo freqPointer]];	  // read freq pointer
     [termInfo setProxPointer: [input readVLong] + [termInfo proxPointer]];	  // read prox pointer
@@ -98,13 +98,13 @@
     //  just read skipOffset in order to increment  file pointer; 
     // value is never used since skipTo is switched off
       if (!isIndex) {
-        if ([termInfo docFreq] > formatM1SkipInterval) {
+        if ([termInfo documentFrequency] > formatM1SkipInterval) {
           [termInfo setSkipOffset: [input readVInt]]; 
         }
       }
     }
     else{
-      if ([termInfo docFreq] >= skipInterval) 
+      if ([termInfo documentFrequency] >= skipInterval) 
         [termInfo setSkipOffset: [input readVInt]];
     }
     
@@ -156,9 +156,9 @@
 
   /** Returns the docFreq from the current TermInfo in the enumeration.
    Initially invalid, valid after next() called for the first time.*/
-- (long) docFreq
+- (long) documentFrequency
 {
-    return [termInfo docFreq];
+    return [termInfo documentFrequency];
   }
 
   /* Returns the freqPointer from the current TermInfo in the enumeration.

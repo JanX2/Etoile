@@ -21,7 +21,7 @@
 }
 
   /** Returns the docFreq of the current Term in the enumeration.*/
-- (long) docFreq
+- (long) documentFrequency 
 {
   return -1;
 }

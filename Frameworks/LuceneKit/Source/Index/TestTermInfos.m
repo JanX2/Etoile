@@ -109,7 +109,7 @@
       UKObjectsEqual(key, [enumerator term]);
     
       LCTermInfo *ti = [enumerator termInfo];
-      UKIntsEqual([ti docFreq], [[docFreqs objectAtIndex: i] intValue]);
+      UKIntsEqual([ti documentFrequency], [[docFreqs objectAtIndex: i] intValue]);
       UKIntsEqual([ti freqPointer], [[freqPointers objectAtIndex: i] longValue]);
       UKIntsEqual([ti proxPointer], [[proxPointers objectAtIndex: i] longValue]);
     }
@@ -122,7 +122,7 @@
     for (i = 0; i < [keys count]; i++) {
       LCTerm *key = (LCTerm *)[keys objectAtIndex: i];
       LCTermInfo *ti = [reader termInfo: key];
-      UKIntsEqual([ti docFreq], [[docFreqs objectAtIndex: i] longValue]);
+      UKIntsEqual([ti documentFrequency], [[docFreqs objectAtIndex: i] longValue]);
       UKIntsEqual([ti freqPointer], [[freqPointers objectAtIndex: i] longLongValue]);
       UKIntsEqual([ti proxPointer], [[proxPointers objectAtIndex: i] longLongValue]);
     }

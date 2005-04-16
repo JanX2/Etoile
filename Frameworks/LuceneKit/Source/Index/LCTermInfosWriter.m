@@ -139,13 +139,13 @@
     }
 
     [self writeTerm: term];                                    // write term
-    [output writeVInt: [ti docFreq]];                       // write doc freq
+    [output writeVInt: [ti documentFrequency]];             // write doc freq
     long delta = [ti freqPointer] - [lastTi freqPointer];
     [output writeVLong: delta]; // write pointers
     delta = [ti proxPointer] - [lastTi proxPointer];
     [output writeVLong: delta];
 
-    if ([ti docFreq] >= skipInterval) {
+    if ([ti documentFrequency] >= skipInterval) {
       [output writeVInt: [ti skipOffset]];
     }
 

@@ -106,9 +106,9 @@
   return [input term];
 }
 
-- (long) docFreq
+- (long) documentFrequency
 {
-  return [input docFreq];
+  return [input documentFrequency];
 }
 
 - (void) close
@@ -202,9 +202,9 @@
   return [input termsWithTerm: t];
 }
 
-- (long) docFreq: (LCTerm *) t
+- (long) documentFrequency: (LCTerm *) t
 {
-  return [input docFreq: t];
+  return [input documentFrequency: t];
 }
 
 - (id <LCTermDocs>) termDocs

@@ -275,7 +275,7 @@
         // OPEN READER AT THIS POINT - this should fix the view of the
         // index at the point of having 100 "aaa" documents and 0 "bbb"
   reader = [LCIndexReader openDirectory: dir];
-  UKIntsEqual(100, [reader docFreq: searchTerm]);
+  UKIntsEqual(100, [reader documentFrequency: searchTerm]);
   [self assertTermDocsCount: @"first reader"
 	  reader: reader
 	  term: searchTerm
@@ -286,7 +286,7 @@
   reader = [LCIndexReader openDirectory: dir];
   deleted = [reader deleteTerm: searchTerm];
   UKIntsEqual(100, deleted);
-  UKIntsEqual(100, [reader docFreq: searchTerm]);
+  UKIntsEqual(100, [reader documentFrequency: searchTerm]);
   [self assertTermDocsCount: @"first reader"
 	  reader: reader
 	  term: searchTerm
@@ -295,7 +295,7 @@
 
   // CREATE A NEW READER and re-test
   reader = [LCIndexReader openDirectory: dir];
-  UKIntsEqual(100, [reader docFreq: searchTerm]);
+  UKIntsEqual(100, [reader documentFrequency: searchTerm]);
   [self assertTermDocsCount: @"first reader"
 	  reader: reader
 	  term: searchTerm
@@ -325,8 +325,8 @@
   // OPEN READER AT THIS POINT - this should fix the view of the
   // index at the point of having 100 "aaa" documents and 0 "bbb"
   LCIndexReader *reader = [LCIndexReader openDirectory: dir];
-  UKIntsEqual(100, [reader docFreq: searchTerm]);
-  UKIntsEqual(0, [reader docFreq: searchTerm2]);
+  UKIntsEqual(100, [reader documentFrequency: searchTerm]);
+  UKIntsEqual(0, [reader documentFrequency: searchTerm2]);
   [self assertTermDocsCount: @"first reader" reader: reader
 	  term: searchTerm expected: 100];
   [self assertTermDocsCount: @"first reader" reader: reader
@@ -351,8 +351,8 @@
   [writer close];
 
    // The reader should not see the new data
-   UKIntsEqual(100, [reader docFreq: searchTerm]);
-   UKIntsEqual(0, [reader docFreq: searchTerm2]);
+   UKIntsEqual(100, [reader documentFrequency: searchTerm]);
+   UKIntsEqual(0, [reader documentFrequency: searchTerm2]);
    [self assertTermDocsCount: @"first reader" reader: reader
 	   term: searchTerm expected: 100];
    [self assertTermDocsCount: @"first reader" reader: reader
@@ -374,8 +374,8 @@
    // the new data.
    [reader close];
    reader = [LCIndexReader openDirectory: dir];
-   UKIntsEqual(100, [reader docFreq: searchTerm]);
-   UKIntsEqual(100, [reader docFreq: searchTerm2]);
+   UKIntsEqual(100, [reader documentFrequency: searchTerm]);
+   UKIntsEqual(100, [reader documentFrequency: searchTerm2]);
    [self assertTermDocsCount: @"first reader" reader: reader
 	   term: searchTerm expected: 100];
    [self assertTermDocsCount: @"first reader" reader: reader
@@ -383,8 +383,8 @@
 
    int deleted = [reader deleteTerm: searchTerm];
    UKIntsEqual(100, deleted);
-   UKIntsEqual(100, [reader docFreq: searchTerm]);
-   UKIntsEqual(100, [reader docFreq: searchTerm2]);
+   UKIntsEqual(100, [reader documentFrequency: searchTerm]);
+   UKIntsEqual(100, [reader documentFrequency: searchTerm2]);
    [self assertTermDocsCount: @"deleted termDocs" reader: reader
 	   term: searchTerm expected: 0];
    [self assertTermDocsCount: @"deleted termDocs" reader: reader
@@ -393,8 +393,8 @@
 
    // CREATE A NEW READER and re-test
    reader = [LCIndexReader openDirectory: dir];
-   UKIntsEqual(100, [reader docFreq: searchTerm]);
-   UKIntsEqual(100, [reader docFreq: searchTerm2]);
+   UKIntsEqual(100, [reader documentFrequency: searchTerm]);
+   UKIntsEqual(100, [reader documentFrequency: searchTerm2]);
    [self assertTermDocsCount: @"deleted termDocs" reader: reader
 	   term: searchTerm expected: 0];
    [self assertTermDocsCount: @"deleted termDocs" reader: reader
@@ -478,9 +478,9 @@
   // OPEN TWO READERS
   // Both readers get segment info as exists at this time
   LCIndexReader *reader1 = [LCIndexReader openDirectory: dir];
-  UKIntsEqual(100, [reader1 docFreq: searchTerm1]);
-  UKIntsEqual(100, [reader1 docFreq: searchTerm2]);
-  UKIntsEqual(100, [reader1 docFreq: searchTerm3]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm1]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm2]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm3]);
   [self assertTermDocsCount: @"first opened"
 	  reader: reader1 term: searchTerm1 expected: 100];
   [self assertTermDocsCount: @"first opened"
@@ -489,9 +489,9 @@
 	  reader: reader1 term: searchTerm3 expected: 100];
 
   LCIndexReader *reader2 = [LCIndexReader openDirectory: dir];
-  UKIntsEqual(100, [reader2 docFreq: searchTerm1]);
-  UKIntsEqual(100, [reader2 docFreq: searchTerm2]);
-  UKIntsEqual(100, [reader2 docFreq: searchTerm3]);
+  UKIntsEqual(100, [reader2 documentFrequency: searchTerm1]);
+  UKIntsEqual(100, [reader2 documentFrequency: searchTerm2]);
+  UKIntsEqual(100, [reader2 documentFrequency: searchTerm3]);
   [self assertTermDocsCount: @"first opened"
 	  reader: reader2 term: searchTerm1 expected: 100];
   [self assertTermDocsCount: @"first opened"
@@ -504,9 +504,9 @@
         // when the reader is closed, the segment info is updated and
         // the first reader is now stale
   [reader2 deleteTerm: searchTerm1];
-  UKIntsEqual(100, [reader2 docFreq: searchTerm1]);
-  UKIntsEqual(100, [reader2 docFreq: searchTerm2]);
-  UKIntsEqual(100, [reader2 docFreq: searchTerm3]);
+  UKIntsEqual(100, [reader2 documentFrequency: searchTerm1]);
+  UKIntsEqual(100, [reader2 documentFrequency: searchTerm2]);
+  UKIntsEqual(100, [reader2 documentFrequency: searchTerm3]);
   [self assertTermDocsCount: @"after delete 1"
 	  reader: reader2 term: searchTerm1 expected: 0];
   [self assertTermDocsCount: @"after delete 1"
@@ -516,9 +516,9 @@
   [reader2 close];
 
         // Make sure reader 1 is unchanged since it was open earlier
-  UKIntsEqual(100, [reader1 docFreq: searchTerm1]);
-  UKIntsEqual(100, [reader1 docFreq: searchTerm2]);
-  UKIntsEqual(100, [reader1 docFreq: searchTerm3]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm1]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm2]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm3]);
   [self assertTermDocsCount: @"after delete 1"
 	  reader: reader1 term: searchTerm1 expected: 100];
   [self assertTermDocsCount: @"after delete 1"
@@ -540,9 +540,9 @@
   // RECREATE READER AND TRY AGAIN
   [reader1 close];
   reader1 = [LCIndexReader openDirectory: dir];
-  UKIntsEqual(100, [reader1 docFreq: searchTerm1]);
-  UKIntsEqual(100, [reader1 docFreq: searchTerm2]);
-  UKIntsEqual(100, [reader1 docFreq: searchTerm3]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm1]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm2]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm3]);
   [self assertTermDocsCount: @"reopened"
 	  reader: reader1 term: searchTerm1 expected: 0];
   [self assertTermDocsCount: @"reopened"
@@ -551,9 +551,9 @@
 	  reader: reader1 term: searchTerm3 expected: 100];
 
   [reader1 deleteTerm: searchTerm2];
-  UKIntsEqual(100, [reader1 docFreq: searchTerm1]);
-  UKIntsEqual(100, [reader1 docFreq: searchTerm2]);
-  UKIntsEqual(100, [reader1 docFreq: searchTerm3]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm1]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm2]);
+  UKIntsEqual(100, [reader1 documentFrequency: searchTerm3]);
   [self assertTermDocsCount: @"deleted 2"
 	  reader: reader1 term: searchTerm1 expected: 0];
   [self assertTermDocsCount: @"deleted 2"
@@ -564,9 +564,9 @@
 
   // Open another reader to confirm that everything is deleted
   reader2 = [LCIndexReader openDirectory: dir];
-  UKIntsEqual(100, [reader2 docFreq: searchTerm1]);
-  UKIntsEqual(100, [reader2 docFreq: searchTerm2]);
-  UKIntsEqual(100, [reader2 docFreq: searchTerm3]);
+  UKIntsEqual(100, [reader2 documentFrequency: searchTerm1]);
+  UKIntsEqual(100, [reader2 documentFrequency: searchTerm2]);
+  UKIntsEqual(100, [reader2 documentFrequency: searchTerm3]);
   [self assertTermDocsCount: @"reopened 2"
 	  reader: reader2 term: searchTerm1 expected: 0];
   [self assertTermDocsCount: @"reopened 2"

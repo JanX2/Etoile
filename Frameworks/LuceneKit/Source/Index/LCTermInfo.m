@@ -27,14 +27,14 @@
 
 - (id) initWithTermInfo: (LCTermInfo *) ti
 {
-  self = [self initWithDocFreq: [ti docFreq]
+  self = [self initWithDocFreq: [ti documentFrequency]
                    freqPointer: [ti freqPointer]
 		   proxPointer: [ti proxPointer]];
   skipOffset = [ti skipOffset];
   return self;
 }
 
-- (long) docFreq
+- (long) documentFrequency 
 {
   return docFreq;
 }
@@ -54,28 +54,15 @@
   return skipOffset;
 }
 
-#if 0
-- (void) setDocFreq: (long) df 
-        freqPointer: (long long) fp
-        proxPointer: (long long) pp 
-	 skipOffset: (long) so
-{
-  docFreq = df;
-  freqPointer = fp;
-  proxPointer = pp;
-  skipOffset = so;
-}
-#endif
-
 - (void) setTermInfo: (LCTermInfo *) ti
 {
-  docFreq = [ti docFreq];
+  docFreq = [ti documentFrequency];
   freqPointer = [ti freqPointer];
   proxPointer = [ti proxPointer];
   skipOffset = [ti skipOffset];
 }
 
-- (void) setDocFreq: (long) doc
+- (void) setDocumentFrequency: (long) doc
 {
   docFreq = doc;
 }
@@ -103,7 +90,7 @@
 - (id) copyWithZone: (NSZone *) zone
 {
   LCTermInfo *other = [[LCTermInfo allocWithZone: zone] init];
-  [other setDocFreq: docFreq];
+  [other setDocumentFrequency: docFreq];
   [other setFreqPointer: freqPointer];
   [other setProxPointer: proxPointer];
   [other setSkipOffset: skipOffset];

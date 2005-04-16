@@ -213,13 +213,13 @@
 					      term: term]);
 }
 
-- (long) docFreq: (LCTerm *) t
+- (long) documentFrequency: (LCTerm *) t
 {
   int total = 0;          // sum freqs in segments
   int i;
   for (i = 0; i < [subReaders count]; i++)
   {
-    total += [[subReaders objectAtIndex: i] docFreq: t];
+    total += [[subReaders objectAtIndex: i] documentFrequency: t];
   }
   return total;
 }
@@ -313,7 +313,7 @@
 
   while (top != nil && [term compare: [top term]] == NSOrderedSame) {
     [queue pop];
-    docFreq += [[top termEnum] docFreq];    // increment freq
+    docFreq += [[top termEnum] documentFrequency];    // increment freq
       if ([top next])
         [queue put: top];          // restore queue
       else
@@ -328,7 +328,7 @@
     return term;
   }
 
-- (long) docFreq
+- (long) documentFrequency
 {
     return docFreq;
   }

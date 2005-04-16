@@ -36,8 +36,8 @@
    * @param fieldName field name requiring a non-default analyzer.
    * @param analyzer non-default analyzer to use for field
    */
-- (void) addAnalyzerWithField: (NSString *) name
-                     analyzer: (LCAnalyzer *) analyzer
+- (void) setAnalyzer: (LCAnalyzer *) analyzer
+            forField: (NSString *) name
 {
   [analyzerMap setObject: analyzer forKey: name];
 }

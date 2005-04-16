@@ -56,7 +56,7 @@
     if (ti == nil) {
       df = 0;
     } else {
-      df = [ti docFreq];
+      df = [ti documentFrequency];
       doc = 0;
       skipDoc = 0;
       skipCount = 0;

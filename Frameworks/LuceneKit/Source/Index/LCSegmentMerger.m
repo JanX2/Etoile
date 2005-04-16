@@ -363,7 +363,7 @@
 
   if (df > 0) {
       // add an entry to the dictionary with pointers to prox and freq files
-      [termInfo setDocFreq: df];
+      [termInfo setDocumentFrequency: df];
       [termInfo setFreqPointer: freqPointer];
       [termInfo setProxPointer: proxPointer];
       [termInfo setSkipOffset: (long)(skipPointer - freqPointer)];
