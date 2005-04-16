@@ -27,6 +27,21 @@
  * @see #merge
  * @see #add
  */
+@interface LCSegmentMerger (LCPrivate)
+- (int) mergeFields;
+- (void) mergeVectors;
+  
+- (void) mergeTerms;
+- (void) mergeTermInfos;
+- (void) mergeTermInfo: (NSArray *) smis size: (int) n;
+- (int) appendPosting: (NSArray *) smis size: (int) n;
+  
+- (void) resetSkip;
+- (void) bufferSkip: (int) doc;
+- (long) writeSkip;
+- (void) mergeNorms;
+@end
+
 @implementation LCSegmentMerger
 
 - (id) init

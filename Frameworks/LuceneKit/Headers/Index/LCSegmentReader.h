@@ -5,27 +5,6 @@
 #include "Store/LCDirectory.h"
 #include "Index/LCTermFreqVector.h"
 
-@class LCSegmentReader;
-
-@interface LCNorm: NSObject
-{
-  LCSegmentReader *reader;
-  LCIndexInput *input;
-  NSMutableData *bytes;
-  BOOL dirty;
-  int number;
-}
-
-- (id) initWithSegmentReader: (LCSegmentReader *) r
-        indexInput: (LCIndexInput *) input number: (int) number;
-- (void) rewrite;
-- (LCIndexInput *) input;
-- (BOOL) dirty;
-- (void) setDirty: (BOOL) d;
-- (NSData *) bytes;
-- (void) setBytes: (NSData *) bytes;
-@end
-
 @class LCFieldInfos;
 @class LCCompoundFileReader;
 @class LCSegmentInfo;
@@ -65,14 +44,10 @@ static LCTermVectorsReader *tvReader;
 			    infos: (LCSegmentInfos *) sis
 			    close: (BOOL) closeDir
 			    owner: (BOOL) ownDir;
-- (void) initWithSegmentInfo: (LCSegmentInfo *) si;
 + (BOOL) hasDeletions: (LCSegmentInfo *) si;
 + (BOOL) usesCompoundFile: (LCSegmentInfo *) si;
 + (BOOL) hasSeparateNorms: (LCSegmentInfo *) si;
 - (NSArray *) files;
-- (void) openNorms: (id <LCDirectory>) cfsDir;
-- (void) closeNorms;
-- (LCTermVectorsReader *) termVectorsReader;
 - (id <LCTermFreqVector>) termFreqVector: (int) docNumber
                                 field: (NSString *) field;
 - (NSArray *) termFreqVectors: (int) docNumber;

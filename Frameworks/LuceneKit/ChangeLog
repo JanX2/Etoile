@@ -1,3 +1,39 @@
+2005-04-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Source/Util/LCBitVector.m:
+	Clean up.
+	* Source/Util/LCPriorityQueue.m:
+	Move private methods into source code.
+	Add LCComparable protocol.
+	Remove -lessThan:: in favor of -compare: for GNUstep-style.
+	* Headers/Index/LCCompoundFileWriter.h:
+	* Source/Index/LCCompoundFileWriter.m:
+	* Headers/Index/LCDocumentWriter.h:
+	* Source/Index/LCDocumentWriter.m:
+	* Headers/Index/LCFieldInfos.h:
+	* Source/Index/LCFieldInfos.m:
+	* Headers/Index/LCIndexReader.h:
+	* Source/Index/LCIndexReader.m:
+	* Headers/Index/LCIndexWriter.h:
+	* Source/Index/LCIndexWriter.m:
+	* Headers/Index/LCMultiReader.h:
+	* Source/Index/LCMultiReader.m:
+	* Headers/Index/LCMultipleTermPositions.h:
+	* Source/Index/LCMultipleTermPositions.m:
+	* Headers/Index/LCSegmentMerger.h:
+	* Source/Index/LCSegmentMerger.m:
+	* Headers/Index/LCSegmentReader.h:
+	* Source/Index/LCSegmentReader.m:
+	* Headers/Index/LCTermInfosReader.h:
+	* Source/Index/LCTermInfosReader.m:
+	* Headers/Index/LCTermInfosWriter.h:
+	* Source/Index/LCTermInfosWriter.m:
+	* Headers/Index/LCTermVectorsReader.h:
+	* Source/Index/LCTermVectorsReader.m:
+	* Headers/Index/LCTermVectorsWriter.h:
+	* Source/Index/LCTermVectorsWriter.m:
+	Move private methods into source code.
+
 2005-04-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Index/TestIndexReader.m:

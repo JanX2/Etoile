@@ -7,6 +7,13 @@
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
   Directory.  A TermInfos can be written once, in order.  */
+@interface LCTermInfosWriter (LCPrivate)
+- (id) initWithDirectory: (id <LCDirectory>) directory
+       segment: (NSString *) segment
+       fieldInfos: (LCFieldInfos *) fis
+       interval: (int) interval
+       isIndex: (BOOL) isIndex;
+@end
 
 @implementation LCTermInfosWriter
 

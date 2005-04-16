@@ -7,6 +7,10 @@
  * @author Gerhard Schwarz
  * @version $Id$
  */
+@interface LCWordlistLoader (LCPrivate)
++ (NSDictionary *) makeWordTable: (NSSet *) wordSet;
+@end
+
 @implementation LCWordlistLoader
 
   /**

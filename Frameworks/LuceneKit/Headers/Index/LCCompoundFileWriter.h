@@ -4,16 +4,13 @@
 #include <Foundation/Foundation.h>
 #include "Store/LCDirectory.h"
 
-@class LCIndexOutput;
-@class LCWriterFileEntry;
-
 @interface LCCompoundFileWriter: NSObject
 {
-	id <LCDirectory> directory;
-	NSString *fileName;
-	NSMutableSet *ids;
-	NSMutableArray *entries;
-	BOOL merged;
+  id <LCDirectory> directory;
+  NSString *fileName;
+  NSMutableSet *ids;
+  NSMutableArray *entries;
+  BOOL merged;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) dir name: (NSString *) name;
@@ -21,9 +18,6 @@
 - (NSString *) name;
 - (void) addFile: (NSString *) file;
 - (void) close;
-- (void) copyFile: (LCWriterFileEntry *) source 
-      indexOutput: (LCIndexOutput *) os
-             data: (NSMutableData *) buffer;
 
 @end
 

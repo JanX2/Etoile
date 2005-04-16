@@ -4,20 +4,6 @@
 #include "Store/LCDirectory.h"
 #include <Foundation/Foundation.h>
 
-#if 0
-@interface LCFileEntry: NSObject
-{
-	long offset;
-	long length;
-}
-- (long) offset;
-- (long) length;
-- (void) setOffset: (long) o;
-- (void) setLength: (long) l;
-
-@end
-#endif
-
 @class LCCompoundFileReader;
 
 @interface LCCSIndexInput: LCIndexInput <NSCopying>

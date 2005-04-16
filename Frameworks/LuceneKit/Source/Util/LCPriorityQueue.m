@@ -1,6 +1,11 @@
 #include "Util/LCPriorityQueue.h"
 #include "GNUstep/GNUstep.h"
 
+@interface LCPriorityQueue (LCPrivate)
+- (void) upHeap;
+- (void) downHeap;
+@end
+
 @implementation LCPriorityQueue
 
 /** Subclass constructors must call this. */
@@ -41,7 +46,8 @@
       [self put: element];
       return YES;
     }
-  else if([heap count] > 0 && ![self lessThan: element : [self top]])
+  //else if([heap count] > 0 && ![self lessThan: element : [self top]])
+  else if([heap count] > 0 && ([(id <LCComparable>)element compare: [self top]] != NSOrderedAscending))
     {
       [heap replaceObjectAtIndex: 0 withObject: element];
       [self adjustTop];
@@ -109,10 +115,11 @@
 {
   if ([heap count] == 0) return;
   int i = [heap count]-1;
-  NSObject *node = [heap objectAtIndex: i];	  // save bottom node
+  id <LCComparable> node = [heap objectAtIndex: i];	  // save bottom node
   RETAIN(node);
   int j = i >> 1;
-  while (j >= 0 && [self lessThan: node : [heap objectAtIndex: j]]) 
+//  while (j >= 0 && [self lessThan: node : [heap objectAtIndex: j]]) 
+  while (j >= 0 && ([node compare: [heap objectAtIndex: j]] == NSOrderedAscending)) 
     {
       // shift parents down
       [heap replaceObjectAtIndex: i withObject: [heap objectAtIndex: j]];
@@ -133,26 +140,24 @@
   RETAIN(node);
   int j = i << 1;				  // find smaller child
   int k = j + 1;
-  if (k < [heap count] && [self lessThan: [heap objectAtIndex: k]: [heap objectAtIndex: j]]) {
+//  if (k < [heap count] && [self lessThan: [heap objectAtIndex: k]: [heap objectAtIndex: j]]) {
+  if (k < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: k] compare: [heap objectAtIndex: j]] == NSOrderedAscending)) {
       j = k;
     }
-  while (j < [heap count] && [self lessThan: [heap objectAtIndex: j] : node]) {
+//  while (j < [heap count] && [self lessThan: [heap objectAtIndex: j] : node]) {
+  while (j < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: j] compare: node] == NSOrderedAscending)) {
       // shift up child
       [heap replaceObjectAtIndex: i withObject: [heap objectAtIndex: j]];
       i = j;
       j = i << 1;
       k = j + 1;
-      if (k < [heap count] && [self lessThan: [heap objectAtIndex: k] : [heap objectAtIndex: j]]) {
+      //if (k < [heap count] && [self lessThan: [heap objectAtIndex: k] : [heap objectAtIndex: j]]) {
+      if (k < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: k] compare: [heap objectAtIndex: j]] == NSOrderedAscending)) {
 	j = k;
       }
     }
   [heap replaceObjectAtIndex: i withObject: node]; // install saved node
   RELEASE(node);
-}
-
-- (BOOL) lessThan: (id) a : (id) b
-{
-  return NO;
 }
 
 @end
@@ -164,11 +169,6 @@
 @end
 
 @implementation LCIntegerQueue
-- (BOOL) lessThan: (id) a : (id) b
-{
-  return [a intValue] < [b intValue];
-}
-
 - (void) doTestPriorityQueue: (int) count
 {
   self = [self initWithSize: count];

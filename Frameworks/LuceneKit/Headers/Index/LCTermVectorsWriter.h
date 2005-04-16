@@ -12,45 +12,11 @@ static NSString *TVX_EXTENSION = @"tvx";
 static NSString *TVD_EXTENSION = @"tvd";
 static NSString *TVF_EXTENSION = @"tvf";
 
-@interface LCTVField: NSObject
-{
-  long number;
-  long long tvfPointer;
-  BOOL storePositions;
-  BOOL storeOffsets;
-}
-
-- (id) initWithNumber: (long) number storePosition: (BOOL) storePos
-            storeOffset: (BOOL) storeOff;
-- (void) setTVFPointer: (long long) p;
-- (long long) tvfPointer;
-- (BOOL) storePositions;
-- (BOOL) storeOffsets;
-- (long) number;
-
-@end
-
-@interface LCTVTerm: NSObject
-{
-  NSString *termText;
-  long freq;
-  NSArray *positions;
-  NSArray *offsets;
-}
-- (void) setTermText: (NSString *) text;
-- (void) setFreq: (long) f;
-- (void) setPositions: (NSArray *) p;
-- (void) setOffsets: (NSArray *) o;
-- (NSString *) termText;
-- (long) freq;
-- (NSArray *) positions;
-- (NSArray *) offsets;
-@end
-
 #include "Store/LCDirectory.h"
 
 @class LCIndexOutput;
 @class LCFieldInfos;
+@class LCTVField; // private
 
 @interface LCTermVectorsWriter: NSObject
 {
@@ -68,20 +34,13 @@ static NSString *TVF_EXTENSION = @"tvf";
 - (void) closeDocument;
 - (BOOL) isDocumentOpen;
 - (void) openField: (NSString *) field;
-- (void) openField: (int) fieldNumber
-         isPositionWithTermVectorStored: (BOOL) storePositionWithTermVector
-	 isOffsetWithTermVectorStored: (BOOL) storeOffsetWithTermVector;
 - (void) closeField;
 - (BOOL) isFieldOpen;
 - (void) addTerm: (NSString *) termText freq: (long) freq;
 - (void) addTerm: (NSString *) termText freq: (long) freq
          positions: (NSArray *) positions offsets: (NSArray *) offsets;
-- (void) addTermInternal: (NSString *) termText freq: (long) freq
-         positions: (NSArray *) positions offsets: (NSArray *) offsets;
 - (void) addAllDocVectors: (NSArray *) vectors;
 - (void) close;
-- (void) writeField;
-- (void) writeDoc;
 
 @end
   

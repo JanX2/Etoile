@@ -36,6 +36,11 @@ LuceneKit_Index_OBJC_FILES = \
 	LCCompoundFileWriter.m \
 	LCMultipleTermPositions.m
 
+ifeq ($(atest), yes)
+LuceneKit_Index_OBJC_FILES += \
+	TestDocHelper.m
+endif
+
 ifeq ($(test), yes)
 LuceneKit_Index_OBJC_FILES += \
 	TestMockIndexInput.m \

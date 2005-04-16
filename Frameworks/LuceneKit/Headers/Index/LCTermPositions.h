@@ -2,6 +2,7 @@
 #define __LUCENE_INDEX_TERM_POSITIONS__
 
 #include "LCTermDocs.h"
+#include "Util/LCPriorityQueue.h"
 
 /**
  * TermPositions provides an interface for enumerating the &lt;document,
@@ -12,7 +13,7 @@
  * @see IndexReader#termPositions()
  */
 
-@protocol LCTermPositions <LCTermDocs>
+@protocol LCTermPositions <LCTermDocs, LCComparable>
     /** Returns next position in the current document.  It is an error to call
 	this more than {@link #freq()} times
 	without calling {@link #next()}<p> This is

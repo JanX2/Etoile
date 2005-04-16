@@ -102,7 +102,7 @@
 
     start = [NSDate date];
 
-    LCSegmentTermEnum *enumerator = [reader termEnum];
+    LCSegmentTermEnum *enumerator = [reader terms];
     for (i = 0; i < [keys count]; i++) {
       [enumerator next];
       LCTerm *key = (LCTerm *)[keys objectAtIndex: i];

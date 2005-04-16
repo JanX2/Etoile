@@ -22,6 +22,14 @@
  @author Doug Cutting
  @version $Id$
 */
+
+@interface LCIndexReader (LCPrivate)
++ (LCIndexReader *) openDirectory: (id <LCDirectory>) directory 
+                    close: (BOOL) close;
+- (void) aquireWriteLock;
+
+@end
+
 @implementation LCIndexReader
   
   /**

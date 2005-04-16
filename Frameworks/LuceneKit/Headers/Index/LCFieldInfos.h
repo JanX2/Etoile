@@ -31,11 +31,6 @@
        isTermVectorStored: (BOOL)isTermVectorStored
        isStorePositionWithTermVector: (BOOL) isStorePositionWithTermVector
        isStoreOffsetWithTermVector: (BOOL) isStoreOffsetWithTermVector;
-- (void) addInternal: (NSString *) name
-         isIndexed: (BOOL) isIndexed
-         isTermVectorStored: (BOOL)isTermVectorStored
-         isStorePositionWithTermVector: (BOOL) isStorePositionWithTermVector
-	 isStoreOffsetWithTermVector: (BOOL) isStoreOffsetWithTermVector;
 - (int) fieldNumber: (NSString *) fieldName;
 - (LCFieldInfo *) fieldInfo: (NSString *) name;
 - (NSString *) fieldName: (int) fieldNumber;
@@ -44,7 +39,6 @@
 - (BOOL) hasVectors;
 - (void) write: (id <LCDirectory>) d name: (NSString *) name;
 - (void) write: (LCIndexOutput *) output;
-- (void) read: (LCIndexInput *) input;
 
 @end
 

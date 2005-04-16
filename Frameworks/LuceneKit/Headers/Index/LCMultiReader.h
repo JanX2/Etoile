@@ -32,7 +32,6 @@
 }
 - (id) initWithReaders: (NSArray *) r 
                 starts: (NSArray *) s;
-- (id <LCTermDocs>) termDocs: (int) i;
 - (id <LCTermDocs>) termDocsWithReader: (LCIndexReader *) reader;
 @end
 
@@ -54,8 +53,6 @@
        segmentInfos: (LCSegmentInfos *) sis
        close: (BOOL) closeDirectory
        readers: (NSArray *) subReaders;
-- (void) initialize: (NSArray *) subReaders;
-- (int) readerIndex: (int) n;
 @end
 
 #endif /* __LUCENE_INDEX_MULTI_READER__ */

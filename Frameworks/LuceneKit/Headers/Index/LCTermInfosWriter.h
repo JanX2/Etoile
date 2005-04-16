@@ -30,11 +30,13 @@
                 segment: (NSString *) segment
                 fieldInfos: (LCFieldInfos *) fis
                 interval: (int) interval;
+#if 0
 - (id) initWithDirectory: (id <LCDirectory>) directory
                 segment: (NSString *) segment
                 fieldInfos: (LCFieldInfos *) fis
                 interval: (int) interval
 		isIndex: (BOOL) isIndex;
+#endif
 
 - (void) setOther: (LCTermInfosWriter *) other;
 - (void) addTerm: (LCTerm *) term termInfo: (LCTermInfo *) ti;

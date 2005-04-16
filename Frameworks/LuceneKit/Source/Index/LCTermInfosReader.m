@@ -8,6 +8,15 @@
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
  * Directory.  Pairs are accessed either by Term or by ordinal position the
  * set.  */
+@interface LCTermInfosReader (LCPrivate)
+- (LCSegmentTermEnum *) termEnum;
+- (void) ensureIndexIsRead;
+- (int) indexOffset: (LCTerm *) term;
+- (void) seekEnum: (int) indexOffset;
+- (LCTermInfo *) scanEnum: (LCTerm *) term;
+- (LCTerm *) scanEnumAtPosition: (int) position;
+@end
+
 @implementation LCTermInfosReader
 
 - (id) initWithDirectory: (id <LCDirectory>) dir

@@ -102,10 +102,12 @@
 - (id) initWithDirectory: (id <LCDirectory>) dir 
        analyzer: (LCAnalyzer *) a
        create: (BOOL) create;
+#if 0
 - (id) initWithDirectory: (id <LCDirectory>) dir 
        analyzer: (LCAnalyzer *) a
        create: (BOOL) create
        close: (BOOL) closeDir;
+#endif
 - (void) setMaxMergeDocs: (int) maxMergeDocs;
 - (int) maxMergeDocs;
 - (void) setMaxFieldLength: (int) maxFieldLength;
@@ -114,8 +116,6 @@
 - (int) maxBufferedDocs;
 - (void) setMergeFactor: (int) mergeFactor;
 - (int) mergeFactor;
-// - (void) setInfoStream: (LCPrintStream *) infoStream;
-// - (LCPrintStream *) infoStream;
 - (void) close;
 - (id <LCDirectory>) directory;
 - (LCAnalyzer *) analyzer;
@@ -124,19 +124,9 @@
 - (void) addDocument: (LCDocument *) doc
          analyzer: (LCAnalyzer *) analyzer;
 - (int) segmentsCounter;
-- (NSString *) newSegmentName;
 - (void) optimize;
 - (void) addIndexesWithDirectories: (NSArray *) dirs;
 - (void) addIndexedWithReaders: (NSArray *) readers;
-- (void) flushRamSegments;
-- (void) maybeMergeSegments;
-- (void) mergeSegments: (int) minSegment;
-- (void) deleteSegments: (NSArray *) segments;
-- (void) deleteFiles: (NSArray *) files;
-- (void) deleteFiles: (NSArray *) files directory: (id <LCDirectory>) dir;
-- (void) deleteFiles: (NSArray *) files deletable: (NSMutableArray *) deletable;
-- (NSArray *) readDeleteableFiles;
-- (void) writeDeleteableFiles: (NSArray *) files;
 
 @end
 

@@ -579,12 +579,12 @@
 
 - (void) testDeleteReaderReaderConflictUnoptimized
 {
-//  [self deleteReaderReaderConflict: NO];
+  [self deleteReaderReaderConflict: NO];
 }
     
 - (void) testDeleteReaderReaderConflictOptimized
 {
-//  [self deleteReaderReaderConflict: YES];
+  [self deleteReaderReaderConflict: YES];
 }
 
 @end

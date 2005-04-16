@@ -6,7 +6,6 @@
 @interface LCWordlistLoader: NSObject
 
 + (NSSet *) getWordSet: (NSString *) absolutePath;
-+ (NSDictionary *) makeWordTable: (NSSet *) wordSet;
 
 @end
 #endif /* __LUCENE_ANALYSIS_WORDLIST_LOADER__ */

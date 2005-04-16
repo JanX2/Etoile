@@ -7,6 +7,15 @@
 #include "Index/LCTermVectorOffsetInfo.h"
 #include "GNUstep/GNUstep.h"
 
+@interface LCTermVectorsReader (LCPrivate)
+- (long) checkValidFormat: (LCIndexInput *) input;
+- (NSArray *) readTermVectors: (NSArray *) fields
+                    pointers: (NSArray *) tvfPOinters;
+- (LCSegmentTermVector *) readTermVector: (NSString *) field
+                                 pointer: (long long) tvfPointer;
+
+@end
+
 @implementation LCTermVectorsReader
 
 - (id) initWithDirectory: (id <LCDirectory>) d

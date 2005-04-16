@@ -58,4 +58,20 @@
   return [NSString stringWithFormat: @"LCSegmentMergeInfo %@, base %d", term, base];
 }
 
+- (NSComparisonResult) compare: (LCSegmentMergeInfo *) other
+{
+  NSComparisonResult comparison = [[self term] compare: [other term]];
+  if (comparison == NSOrderedSame)
+    {
+      if ([self base] < [other base])
+	return NSOrderedAscending;
+      else if ([self base] > [other base])
+	return NSOrderedDescending;
+      else
+	return NSOrderedSame;
+    }
+  else
+    return comparison;
+}
+
 @end

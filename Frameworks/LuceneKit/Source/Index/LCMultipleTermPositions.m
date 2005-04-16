@@ -8,6 +8,11 @@
  * @author Anders Nielsen
  * @version 1.0
  */
+@interface LCTermPositionsQueue: LCPriorityQueue
+- (id) initWithTermPositions: (NSArray *) termPositions;
+- (id <LCTermPositions>) peek;
+@end
+
 @implementation LCTermPositionsQueue
 - (id) initWithTermPositions: (NSArray *) termPositions
 {
@@ -27,11 +32,25 @@
   return (id <LCTermPositions>)[self top];
 }
 
-- (BOOL) lessThan: (id) a : (id) b
-{ 
-  return [(id <LCTermPositions>)a doc] < [(id <LCTermPositions>)b doc];
-}
 @end
+
+@interface LCIntQueue: NSObject
+{
+	  int _arraySize;
+	    int _index;
+	      int _lastIndex;
+	        NSMutableArray *_array;
+}
+
+- (void) add: (int) i;
+- (int) next;
+- (void) sort;
+- (void) clear;
+- (int) size;
+- (void) growArray;
+
+@end
+
 
 @implementation LCIntQueue
 - (id) init
@@ -197,4 +216,15 @@
      {
     NSLog(@"UnsupportedOperation");
     }
-    @end
+
+- (NSComparisonResult) compare: (LCMultipleTermPositions *) other
+{
+  if ([self doc] < [other doc])
+    return NSOrderedAscending;
+  else if ([self doc] == [other doc])
+    return NSOrderedSame;
+  else
+    return NSOrderedDescending;
+}
+
+@end

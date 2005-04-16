@@ -74,6 +74,16 @@
   return [(id <LCTermPositions>)input nextPosition];
 }
 
+- (NSComparisonResult) compare: (LCFilterTermPositions *) other
+{
+  if ([self doc] < [other doc])
+    return NSOrderedAscending;
+  else if ([self doc] == [other doc])
+    return NSOrderedSame;
+  else
+    return NSOrderedDescending;
+}
+
 @end
 
 @implementation LCFilterTermEnum

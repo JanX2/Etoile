@@ -3,17 +3,6 @@
 #include "Store/LCIndexOutput.h"
 #include "GNUstep/GNUstep.h"
 
-/** Optimized implementation of a vector of bits.  This is more-or-less like
-  java.util.BitSet, but also includes the following:
-  <ul>
-  <li>a count() method, which efficiently computes the number of one bits;</li>
-  <li>optimized read from and write to disk;</li>
-  <li>inlinable get() method;</li>
-  </ul>
-
-  @author Doug Cutting
-  @version $Id$
-  */
 @implementation LCBitVector
 
 - (id) init
@@ -32,51 +21,46 @@
   NSRange r = NSMakeRange(0, [bits length]);
   [bits resetBytesInRange: r];
   [bits setLength: (n >> 3) + 1];
-  //ASSIGN(bits, [[NSMutableData alloc] initWithLength: (n >> 3) + 1]);
-  //bits = malloc(sizeof(char)*(size >> 3) + 1); 
   return self;
+}
+
+- (void) dealloc
+{
+  RELEASE(bits);
+  [super dealloc];
 }
 
 - (void) setBit: (int) bit
 {
-  /** Sets the value of <code>bit</code> to one. */
   unsigned char b;
   NSRange r = NSMakeRange((bit >> 3), 1);
   [bits getBytes: &b range: r];
   b |= 1 << (bit & 7);
   [bits replaceBytesInRange: r withBytes: &b];
-  //bits[bit >> 3] |= 1 << (bit & 7);
-  count = -1;
+  count = -1; // Recalculate count
 }
 
 - (void) clearBit: (int) bit
 {
-  /** Sets the value of <code>bit</code> to zero. */
   unsigned char b;
   NSRange r = NSMakeRange((bit >> 3), 1);
   [bits getBytes: &b range: r];
   b &= ~(1 << (bit & 7));
   [bits replaceBytesInRange: r withBytes: &b];
-  //bits[bit >> 3] &= ~(1 << (bit & 7));
-  count = -1;
+  count = -1; //Recalculate count
 }
 
 - (BOOL) getBit: (int) bit
 {
-  /** Returns <code>true</code> if <code>bit</code> is one and
-    <code>false</code> if it is zero. */
   NSRange r = NSMakeRange((bit >> 3), 1);
   unsigned char b;
   [bits getBytes: &b range: r];
   int result = b & (1 << (bit & 7));
-  //int result = bits[bit >> 3] & (1 << (bit & 7));
   return ((result != 0) ? YES : NO);
 }
 
 - (int) size
 {
-  /** Returns the number of bits in this vector.  This is also one greater than
-    the number of the largest valid bit number. */
   return size;
 }
 
@@ -101,17 +85,11 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 
 - (int) count
 {
-  /** Returns the total number of one bits in this vector.  This is efficiently
-    computed and cached, so that, if the vector is not changed, no
-    recomputation is done for repeated calls. */
-  // if the vector has been modified
   if (count == -1) 
     {
       int i, c = 0;
       unsigned char b;
       NSRange r;
-      //int end = malloc_size(bits)/sizeof(char); // maybe malloc_good_size()
-      //int end = sizeof(bits[]);;
       int end = [bits length];
       for (i = 0; i < end; i++)
         {
@@ -127,10 +105,6 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 - (void) writeToDirectory: (id <LCDirectory>) d
                withName: (NSString *) name
 {
-  /** Writes this vector to the file <code>name</code> in Directory
-    <code>d</code>, in a format that can be read by the constructor {@link
-    #BitVector(Directory, String)}.  */
-
   LCIndexOutput *output = [d createOutput: name];
   if (output)
   {
@@ -139,24 +113,11 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
     [output writeBytes: bits length: [bits length]];
     [output close];
   }
-#if 0
-    OutputStream output = d.createFile(name);
-    try {
-      output.writeInt(size());			  // write size
-      output.writeInt(count());			  // write count
-      output.writeBytes(bits, bits.length);	  // write bits
-    } finally {
-      output.close();
-    }
-#endif
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) d
                 andName: (NSString *) name
 {
-  /** Constructs a bit vector from the file <code>name</code> in Directory
-    <code>d</code>, as written by the {@link #write} method.
-    */
   self = [self init];
   LCIndexInput *input = [d openInput: name];
   if (input)
@@ -173,23 +134,6 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
     NSLog(@"Cannot get saved bit-vector");
     return nil;
   }
-    
-#if 0
-    try {
-      size = input.readInt();			  // read size
-      count = input.readInt();			  // read count
-      bits = new byte[(size >> 3) + 1];		  // allocate bits
-      input.readBytes(bits, 0, bits.length);	  // read bits
-    } finally {
-      input.close();
-    }
-#endif
-}
-
-- (void) dealloc
-{
-  RELEASE(bits);
-  [super dealloc];
 }
 
 @end

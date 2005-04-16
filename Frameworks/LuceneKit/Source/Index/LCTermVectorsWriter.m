@@ -34,6 +34,54 @@
  * @version $Id$
  * 
  */
+@interface LCTVField: NSObject
+{ 
+	  long number;
+	    long long tvfPointer;
+	      BOOL storePositions;
+	        BOOL storeOffsets;
+} 
+
+- (id) initWithNumber: (long) number storePosition: (BOOL) storePos
+            storeOffset: (BOOL) storeOff;
+	    - (void) setTVFPointer: (long long) p;
+	    - (long long) tvfPointer;
+	    - (BOOL) storePositions;
+	    - (BOOL) storeOffsets;
+	    - (long) number;
+
+	    @end
+
+@interface LCTVTerm: NSObject
+{
+	  NSString *termText;
+	    long freq;
+	      NSArray *positions;
+	        NSArray *offsets;
+}
+- (void) setTermText: (NSString *) text;
+- (void) setFreq: (long) f;
+- (void) setPositions: (NSArray *) p;
+- (void) setOffsets: (NSArray *) o;
+- (NSString *) termText;
+- (long) freq;
+- (NSArray *) positions;
+- (NSArray *) offsets;
+@end
+
+
+@interface LCTermVectorsWriter (LCPrivate)
+- (void) openField: (int) fieldNumber
+         isPositionWithTermVectorStored: (BOOL) storePositionWithTermVector
+         isOffsetWithTermVectorStored: (BOOL) storeOffsetWithTermVector;
+- (void) addTermInternal: (NSString *) termText freq: (long) freq
+         positions: (NSArray *) positions offsets: (NSArray *) offsets;
+- (void) writeField;
+- (void) writeDoc;
+
+
+@end
+
 @implementation LCTermVectorsWriter
 - (id) initWithDirectory: (id <LCDirectory>) directory
                segment: (NSString *) segment

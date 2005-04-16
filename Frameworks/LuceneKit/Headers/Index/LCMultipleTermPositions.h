@@ -5,6 +5,8 @@
 #include "Index/LCTermPositions.h"
 #include "Util/LCPriorityQueue.h"
 
+#if 0
+
 @interface LCTermPositionsQueue: LCPriorityQueue
 - (id) initWithTermPositions: (NSArray *) termPositions;
 - (id <LCTermPositions>) peek;
@@ -27,7 +29,11 @@
 
 @end
 
+#endif
+
 @class LCIndexReader;
+@class LCTermPositionsQueue; // Private
+@class LCIntQueue; //Private
 
 @interface LCMultipleTermPositions: NSObject <LCTermPositions>
 {

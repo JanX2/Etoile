@@ -16,6 +16,26 @@
 #include "Java/LCStringReader.h"
 #include "GNUstep/GNUstep.h"
 
+@interface LCPosting: NSObject // info about a Term in a doc
+{       
+  LCTerm *term; // the Term
+  long freq; // its frequency in doc
+  NSMutableArray *positions; //int // positions it occurs at
+  NSMutableArray *offsets; // LCTermVectorOffsetInfo
+}       
+
+- (id) initWithTerm: (LCTerm *) t
+       position: (long) position
+         offset: (LCTermVectorOffsetInfo *) offset;
+- (LCTerm *) term;
+- (long) freq;
+- (NSMutableArray *) positions;
+- (NSMutableArray *) offsets;
+- (void) setFreq: (long) f;
+- (void) setPositions: (NSArray *) p;
+- (void) setOffsets: (NSArray *) o;
+@end
+
 @implementation LCPosting
 
 - (id) initWithTerm: (LCTerm *) t
@@ -49,6 +69,18 @@
 - (void) setPositions: (NSArray *) p { [positions setArray: p]; }
 - (void) setOffsets: (NSArray *) o { [offsets setArray: o]; }
 
+@end
+
+@interface LCDocumentWriter (LCPrivate)
+- (void) invertDocument: (LCDocument *) doc;
+- (void) addField: (NSString *) field
+             text: (NSString *) text
+         position: (long) position
+           offset: (LCTermVectorOffsetInfo *) offset;
+- (NSArray *) sortPostingTable;
+- (void) writePostings: (NSArray *) postings 
+         segment: (NSString *) segment;
+ - (void) writeNorms: (NSString *) segment;
 @end
 
 static NSString *LCFieldLength = @"LCFieldLength";

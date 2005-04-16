@@ -22,6 +22,26 @@
  *
  * @version $Id$
  */
+@interface LCNorm: NSObject
+{
+	  LCSegmentReader *reader;
+	    LCIndexInput *input;
+	      NSMutableData *bytes;
+	        BOOL dirty;
+		  int number;
+}
+
+- (id) initWithSegmentReader: (LCSegmentReader *) r
+        indexInput: (LCIndexInput *) input number: (int) number;
+	- (void) rewrite;
+	- (LCIndexInput *) input;
+	- (BOOL) dirty;
+	- (void) setDirty: (BOOL) d;
+	- (NSData *) bytes;
+	- (void) setBytes: (NSData *) bytes;
+	@end
+
+
 @implementation LCNorm
 
 - (id) initWithSegmentReader: (LCSegmentReader *) r
@@ -86,6 +106,14 @@
 {
   return input;
 }
+
+@end
+
+@interface LCSegmentReader (LCPrivate)
+- (void) initWithSegmentInfo: (LCSegmentInfo *) si;
+- (void) openNorms: (id <LCDirectory>) cfsDir;
+- (void) closeNorms;
+- (LCTermVectorsReader *) termVectorsReader;
 
 @end
 

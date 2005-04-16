@@ -9,6 +9,11 @@
  *
  * @version $Id$
  */
+@interface LCMultiReader (LCPrivate)
+- (void) initialize: (NSArray *) subReaders;
+- (int) readerIndex: (int) n;
+@end
+
 @implementation LCMultiReader
 
 - (id) init
@@ -335,6 +340,10 @@
 
 @end
 
+@interface LCMultiTermDocs (LCPrivate)
+- (id <LCTermDocs>) termDocs: (int) i;
+@end
+
 @implementation LCMultiTermDocs
 
 - (id) init
@@ -472,12 +481,22 @@
 
 - (id <LCTermDocs>) termDocsWithReader: (LCIndexReader *) reader
 {
-    return (id <LCTermDocs>)[reader termPositions];
-  }
+  return (id <LCTermDocs>)[reader termPositions];
+}
 
 - (int) nextPosition
 {
-    return [(id <LCTermPositions>)current nextPosition];
-  }
+  return [(id <LCTermPositions>)current nextPosition];
+}
+
+- (NSComparisonResult) compare: (LCMultiTermPositions *) other
+{
+  if ([self doc] < [other doc])
+    return NSOrderedAscending;
+  else if ([self doc] == [other doc])
+    return NSOrderedSame;
+  else
+    return NSOrderedDescending;
+}
 
 @end

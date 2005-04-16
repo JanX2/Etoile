@@ -54,8 +54,6 @@ typedef enum _LCFieldOption
 	directoryOwner: (BOOL) owner;
 + (LCIndexReader *) openPath: (NSString *) path;
 + (LCIndexReader *) openDirectory: (id <LCDirectory>) directory;
-+ (LCIndexReader *) openDirectory: (id <LCDirectory>) directory 
-			close: (BOOL) close;
 - (id <LCDirectory>) directory;
 + (long) currentVersionAtPath: (NSString *) path;
 + (long) currentVersionWithDirectory: (id <LCDirectory>) dir;
@@ -82,7 +80,6 @@ typedef enum _LCFieldOption
 - (id <LCTermDocs>) termDocs;
 - (id <LCTermPositions>) termPositionsWithTerm: (LCTerm *) term;
 - (id <LCTermPositions>) termPositions;
-- (void) aquireWriteLock;
 - (void) delete: (int) docNum;
 - (void) doDelete: (int) docNum;
 - (int) deleteTerm: (LCTerm *) term;

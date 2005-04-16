@@ -11,6 +11,15 @@
  *  accessing this object.
  */
 
+@interface LCFieldInfos (LCPrivate)
+- (void) addInternal: (NSString *) name
+         isIndexed: (BOOL) isIndexed
+         isTermVectorStored: (BOOL)isTermVectorStored
+         isStorePositionWithTermVector: (BOOL) isStorePositionWithTermVector
+         isStoreOffsetWithTermVector: (BOOL) isStoreOffsetWithTermVector;
+- (void) read: (LCIndexInput *) input;
+@end
+
 #define IS_INDEXED 0x1
 #define STORE_TERMVECTOR 0x2
 #define STORE_POSITIONS_WITH_TERMVECTOR 0x4

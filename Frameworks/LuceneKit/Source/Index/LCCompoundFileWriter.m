@@ -53,6 +53,13 @@
 
 @end
 
+@interface LCCompoundFileWriter (LCPrivate)
+- (void) copyFile: (LCWriterFileEntry *) source
+      indexOutput: (LCIndexOutput *) os
+             data: (NSMutableData *) buffer;
+
+@end
+
 @implementation LCCompoundFileWriter
 - (id) init
 {

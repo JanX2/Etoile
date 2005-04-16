@@ -28,6 +28,24 @@
   method should be called before the index is closed.
   */
 
+@interface LCIndexWriter (LCPrivate)
+- (id) initWithDirectory: (id <LCDirectory>) dir 
+       analyzer: (LCAnalyzer *) a
+       create: (BOOL) create
+       close: (BOOL) closeDir;
+- (NSString *) newSegmentName;
+- (void) flushRamSegments;
+- (void) maybeMergeSegments;
+- (void) mergeSegments: (int) minSegment;
+- (void) deleteSegments: (NSArray *) segments;
+- (void) deleteFiles: (NSArray *) files;
+- (void) deleteFiles: (NSArray *) files directory: (id <LCDirectory>) dir;
+- (void) deleteFiles: (NSArray *) files deletable: (NSMutableArray *) deletable;
+- (NSArray *) readDeleteableFiles;
+- (void) writeDeleteableFiles: (NSArray *) files;
+
+@end
+
 @implementation LCIndexWriter
 
 - (id) init

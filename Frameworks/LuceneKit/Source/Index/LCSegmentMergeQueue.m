@@ -4,6 +4,7 @@
 
 @implementation LCSegmentMergeQueue
 
+#if 0
 - (BOOL) lessThan: (id) a : (id) b
 {
   LCSegmentMergeInfo *stiA = (LCSegmentMergeInfo *)a;
@@ -14,6 +15,7 @@
     else
       return (comparison == NSOrderedAscending) ? YES : NO;
   }
+#endif
 
 - (void) close
 {

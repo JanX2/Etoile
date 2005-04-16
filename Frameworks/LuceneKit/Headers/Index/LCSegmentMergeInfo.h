@@ -3,12 +3,13 @@
 
 #include <Foundation/Foundation.h>
 #include "Index/LCTermPositions.h"
+#include "Util/LCPriorityQueue.h"
 
 @class LCTerm;
 @class LCTermEnum;
 @class LCIndexReader;
 
-@interface LCSegmentMergeInfo: NSObject
+@interface LCSegmentMergeInfo: NSObject <LCComparable>
 {
   LCTerm *term;
   int base;
