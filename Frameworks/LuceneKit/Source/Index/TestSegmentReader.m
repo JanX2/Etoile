@@ -44,8 +44,8 @@
 
 - (void) testDocument
 {
-  UKIntsEqual([reader numDocs], 1);
-  UKTrue([reader maxDoc] >= 1);
+  UKIntsEqual([reader numberOfDocuments], 1);
+  UKTrue([reader maximalDocument] >= 1);
   LCDocument *result = [reader document: 0];
   UKNotNil(result);
       //There are 2 unstored fields on the document that are not preserved across writing
@@ -69,11 +69,11 @@
 
   LCSegmentReader *deleteReader = [LCSegmentReader segmentReaderWithInfo: info];
   UKNotNil(deleteReader);
-  UKIntsEqual([deleteReader numDocs], 1);
+  UKIntsEqual([deleteReader numberOfDocuments], 1);
   [deleteReader delete: 0];
   UKTrue([deleteReader isDeleted: 0]);
   UKTrue([deleteReader hasDeletions]);
-  UKIntsEqual([deleteReader numDocs], 0);
+  UKIntsEqual([deleteReader numberOfDocuments], 0);
 #if 0
       try {
         Document test = deleteReader.document(0);

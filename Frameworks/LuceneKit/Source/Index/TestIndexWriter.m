@@ -58,8 +58,8 @@
   [writer close];
 
   reader = [LCIndexReader openDirectory: dir];
-  UKIntsEqual(total, [reader maxDoc]);
-  UKIntsEqual(total-40, [reader numDocs]);
+  UKIntsEqual(total, [reader maximalDocument]);
+  UKIntsEqual(total-40, [reader numberOfDocuments]);
   [reader close];
 
   // optimize the index and check that the new doc count is correct
@@ -72,8 +72,8 @@
 
   // check that the index reader gives the same numbers.
   reader = [LCIndexReader openDirectory: dir];
-  UKIntsEqual(total-40, [reader maxDoc]);
-  UKIntsEqual(total-40, [reader numDocs]);
+  UKIntsEqual(total-40, [reader maximalDocument]);
+  UKIntsEqual(total-40, [reader numberOfDocuments]);
   [reader close];
 
   [dir close];

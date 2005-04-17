@@ -143,14 +143,14 @@
   return [input termFreqVector: docNumber field: field];
 }
 
-- (int) numDocs
+- (int) numberOfDocuments
 {
-  return [input numDocs];
+  return [input numberOfDocuments];
 }
 
-- (int) maxDoc
+- (int) maximalDocument
 {
-  return [input maxDoc];
+  return [input maximalDocument];
 }
 
 - (LCDocument *) document: (int) n

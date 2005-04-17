@@ -209,13 +209,13 @@
 }
 
   /** Returns the number of documents in this index. */
-  - (int) numDocs { return 0; }
+  - (int) numberOfDocuments{ return 0; }
 
   /** Returns one greater than the largest possible document number.
    This may be used to, e.g., determine how big to allocate an array which
    will have an element for every document number in an index.
    */
-   - (int) maxDoc { return 0; }
+   - (int) maximalDocument { return 0; }
 
   /** Returns the stored fields of the <code>n</code><sup>th</sup>
    <code>Document</code> in this index. */

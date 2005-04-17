@@ -14,7 +14,7 @@
 
     // build array which maps document numbers around deletions 
   if ([reader hasDeletions]) {
-      int maxDoc = [reader maxDoc];
+      int maxDoc = [reader maximalDocument];
       ASSIGN(docMap, [[NSMutableArray alloc] init]);
       int j = 0;
       int i;

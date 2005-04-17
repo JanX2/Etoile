@@ -61,7 +61,7 @@
   int i;
   for (i = 0; i < [subReaders count]; i++) {
     [starts addObject: [NSNumber numberWithInt: maxDoc]];
-    maxDoc += [[subReaders objectAtIndex: i] maxDoc];      // compute maxDocs
+    maxDoc += [[subReaders objectAtIndex: i] maximalDocument];      // compute maxDocs
 
     if ([[subReaders objectAtIndex: i] hasDeletions])
         hasDeletions = YES;
@@ -89,19 +89,19 @@
 	  field: field];
   }
 
-- (int) numDocs
+- (int) numberOfDocuments
 {
     if (numDocs == -1) {        // check cache
       int n = 0;                // cache miss--recompute
       int i;
       for (i = 0; i < [subReaders count]; i++)
-        n += [[subReaders objectAtIndex: i] numDocs];      // sum from readers
+        n += [[subReaders objectAtIndex: i] numberOfDocuments]; // sum from readers
       numDocs = n;
     }
     return numDocs;
   }
 
-- (int) maxDoc
+- (int) maximalDocument
 {
     return maxDoc;
   }
@@ -181,7 +181,7 @@
   NSData *bytes = [normsCache objectForKey: field];
   if (bytes != nil)                            // cache hit
   {
-    NSRange r = NSMakeRange(offset, [self maxDoc]);
+    NSRange r = NSMakeRange(offset, [self maximalDocument]);
     [result replaceBytesInRange: r withBytes: [bytes bytes]];
   }
 

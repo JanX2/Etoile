@@ -59,7 +59,7 @@
 {
   // NOTE: norms are re-written in regular directory, not cfs
   LCIndexOutput *out = [[reader directory] createOutput: [[reader segment] stringByAppendingPathExtension: @"tmp"]];
-  [out writeBytes: bytes length: [reader maxDoc]];
+  [out writeBytes: bytes length: [reader maximalDocument]];
   [out close];
       
   NSString *fileName;
@@ -297,7 +297,7 @@
 - (void) doDelete: (int) docNum
 {
     if (deletedDocs == nil)
-      deletedDocs = [[LCBitVector alloc] initWithSize: [self maxDoc]];
+      deletedDocs = [[LCBitVector alloc] initWithSize: [self maximalDocument]];
     deletedDocsDirty = YES;
     undeleteAll = NO;
     [deletedDocs setBit: docNum];
@@ -385,9 +385,9 @@
       return 0;
   }
 
-- (int) numDocs
+- (int) numberOfDocuments
 {
-    int n = [self maxDoc];
+    int n = [self maximalDocument];
     if (deletedDocs != nil)
     {
       n -= [deletedDocs count];
@@ -395,7 +395,7 @@
     return n;
   }
 
-- (int) maxDoc
+- (int) maximalDocument
 {
   if (fieldsReader)
     return [fieldsReader size];
@@ -486,7 +486,7 @@
       return;					  // use zeros in array
 
     if ([norm bytes] != nil) {                     // can copy from cache
-      NSRange r = NSMakeRange(offset, [self maxDoc]);
+      NSRange r = NSMakeRange(offset, [self maximalDocument]);
       [bytes replaceBytesInRange: r withBytes: [norm bytes]];
       return;
     }
@@ -494,7 +494,7 @@
     LCIndexInput *normStream = (LCIndexInput *) [[norm input] copy];
                                        // read from disk
     [normStream seek: 0];
-    [normStream readBytes: bytes offset: offset length: [self maxDoc]];
+    [normStream readBytes: bytes offset: offset length: [self maximalDocument]];
     [normStream close];
   }
 

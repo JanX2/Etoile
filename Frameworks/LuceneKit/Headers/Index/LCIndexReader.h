@@ -60,8 +60,8 @@ typedef enum _LCFieldOption
                        field: (NSString *) field;
 + (BOOL) indexExistsAtPath: (NSString *) dir;
 + (BOOL) indexExistsWithDirectory: (id <LCDirectory>) dir;
-- (int) numDocs;
-- (int) maxDoc;
+- (int) numberOfDocuments;
+- (int) maximalDocument;
 - (LCDocument *) document: (int) n;
 - (BOOL) isDeleted: (int) n;
 - (BOOL) hasDeletions;

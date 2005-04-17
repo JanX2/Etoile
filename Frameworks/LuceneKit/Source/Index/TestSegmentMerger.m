@@ -86,7 +86,7 @@
   LCSegmentInfo *si = [[LCSegmentInfo alloc] initWithName: mergedSegment numberOfDocuments: docsMerged directory: mergedDir];
   LCSegmentReader *mergedReader = [LCSegmentReader segmentReaderWithInfo: si];
   UKNotNil(mergedReader);
-  UKIntsEqual([mergedReader numDocs], 2);
+  UKIntsEqual([mergedReader numberOfDocuments], 2);
   LCDocument *newDoc1 = [mergedReader document: 0];
   UKNotNil(newDoc1);
   //There are 2 unstored fields on the document

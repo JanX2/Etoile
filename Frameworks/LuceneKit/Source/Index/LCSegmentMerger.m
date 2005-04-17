@@ -235,7 +235,7 @@
     for (i = 0; i < [readers count]; i++) {
       
       LCIndexReader *reader = (LCIndexReader *) [readers objectAtIndex: i];
-      int maxDoc = [reader maxDoc];
+      int maxDoc = [reader maximalDocument];
       int j;
       for (j = 0; j < maxDoc; j++)
           if (![reader isDeleted: j]) {               // skip deleted docs
@@ -259,7 +259,7 @@
   int r;
   for (r = 0; r < [readers count]; r++) {
     LCIndexReader *reader = (LCIndexReader *) [readers objectAtIndex: r];
-    int maxDoc = [reader maxDoc];
+    int maxDoc = [reader maximalDocument];
     int docNum;
     for (docNum = 0; docNum < maxDoc; docNum++) {
       // skip deleted docs
@@ -302,7 +302,7 @@
       LCTermEnum *termEnum = [reader terms];
       LCSegmentMergeInfo *smi = [[LCSegmentMergeInfo alloc] initWithBase: base
 		      termEnum: termEnum reader: reader];
-      base += [reader numDocs];
+      base += [reader numberOfDocuments];
       if ([smi next])
       {
         [queue put: smi];				  // initialize queue
@@ -472,7 +472,7 @@
 	int j;
           for (j = 0; j < [readers count]; j++) {
             LCIndexReader *reader = (LCIndexReader *) [readers objectAtIndex: j];
-            int maxDoc = [reader maxDoc];
+            int maxDoc = [reader maximalDocument];
 	    NSMutableData *input = [[NSMutableData alloc] init];
 	    [reader setNorms: [fi name] bytes: input offset: 0];
 	    int k;
