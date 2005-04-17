@@ -2,16 +2,15 @@
 #define __LUCENE_INDEX_SEGMENT_READER__
 
 #include "Index/LCIndexReader.h"
-#include "Store/LCDirectory.h"
 #include "Index/LCTermFreqVector.h"
+#include "Index/LCFieldInfos.h"
+#include "Index/LCCompoundFileReader.h"
+#include "Index/LCSegmentInfo.h"
+#include "Index/LCTermInfosReader.h"
+#include "Util/LCBitVector.h"
 
-@class LCFieldInfos;
-@class LCCompoundFileReader;
-@class LCSegmentInfo;
 @class LCFieldsReader;
 @class LCTermVectorsReader;
-@class LCTermInfosReader;
-@class LCBitVector;
 
 static LCTermVectorsReader *tvReader;
 

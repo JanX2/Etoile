@@ -85,7 +85,7 @@
    * @return The TermFreqVector for the document and field or null if there is no termVector for this field.
    * @throws IOException if there is an error reading the term vector files
    */ 
-- (id <LCTermFreqVector>) termFreqVectorWithDoc: (int) docNum
+- (id <LCTermFreqVector>) termFreqVectorWithDocument: (int) docNum
                                    field: (NSString *) field
 {
     // Check if no term vectors are available for this segment at all
@@ -151,7 +151,7 @@
    * @return All term frequency vectors
    * @throws IOException if there is an error reading the term vector files 
    */
-- (NSArray *) termFreqVectorsWithDoc: (int) docNum
+- (NSArray *) termFreqVectorsWithDocument: (int) docNum
 {
   NSArray *result;
     // Check if no term vectors are available for this segment at all

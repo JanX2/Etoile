@@ -2,8 +2,7 @@
 #define __LUCENE_INDEX_TERM_ENUM__
 
 #include <Foundation/Foundation.h>
-
-@class LCTerm;
+#include "Index/LCTerm.h"
 
 @interface LCTermEnum: NSObject
 {
@@ -11,7 +10,7 @@
 
 - (BOOL) next;
 - (LCTerm *) term;
-- (long) docFreq;
+- (long) documentFrequency;
 - (void) close;
 - (BOOL) skipTo: (LCTerm *) target;
 

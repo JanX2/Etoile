@@ -115,7 +115,7 @@
 
 - (void) checkTermVector: (LCTermVectorsReader *) reader : (int) docNum : (NSString *) field
 {
-  id <LCTermFreqVector> vector = [reader termFreqVectorWithDoc: docNum field: field];
+  id <LCTermFreqVector> vector = [reader termFreqVectorWithDocument: docNum field: field];
   UKNotNil(vector);
   NSArray *terms = [vector terms];
   UKNotNil(terms);

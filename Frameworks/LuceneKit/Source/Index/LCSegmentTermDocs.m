@@ -74,7 +74,7 @@
       [skipStream close];
   }
 
-- (long) doc
+- (long) document
 {
   return doc;
 }
@@ -111,7 +111,7 @@
   }
 
   /** Optimized implementation. */
-- (int) readDocs: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs
+- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs
 {
     int length = [docs count];
     int i = 0;

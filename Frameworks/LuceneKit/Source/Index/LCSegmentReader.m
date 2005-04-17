@@ -356,7 +356,7 @@
       NSLog(@"attempt to access a deleted document");
       return nil;
     }
-    return [fieldsReader doc: n];
+    return [fieldsReader document: n];
   }
 
 - (BOOL) isDeleted: (int) n
@@ -571,7 +571,7 @@
     if (termVectorsReader == nil)
       return nil;
     
-    return [termVectorsReader termFreqVectorWithDoc: docNumber
+    return [termVectorsReader termFreqVectorWithDocument: docNumber
 	                       field: field];
   }
 
@@ -592,7 +592,7 @@
     if (termVectorsReader == nil)
       return nil;
     
-    return [termVectorsReader termFreqVectorsWithDoc: docNumber];
+    return [termVectorsReader termFreqVectorsWithDocument: docNumber];
 }
 
 - (NSString *) segment

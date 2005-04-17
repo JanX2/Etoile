@@ -44,7 +44,7 @@
   return size;
 }
 
-- (LCDocument *) doc: (int) n
+- (LCDocument *) document: (int) n
 {
   [indexStream seek: (n * 8L)];
   long position = [indexStream readLong];

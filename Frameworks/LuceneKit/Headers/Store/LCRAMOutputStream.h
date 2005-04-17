@@ -2,8 +2,7 @@
 #define __LUCENE_STORE_RAM_OUTPUT_STREAM__
 
 #include "Store/LCIndexOutput.h"
-
-@class LCRAMFile;
+#include "Store/LCRAMFile.h"
 
 @interface LCRAMOutputStream: LCIndexOutput
 {

@@ -399,7 +399,7 @@
     int n = 0;
     while ([docs next])
     {
-        [self delete: [docs doc]];
+        [self delete: [docs document]];
         n++;
     }
     [docs close];

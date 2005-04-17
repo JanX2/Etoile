@@ -4,10 +4,7 @@
 #include <Foundation/Foundation.h>
 #include "Index/LCTermPositions.h"
 #include "Util/LCPriorityQueue.h"
-
-@class LCTerm;
-@class LCTermEnum;
-@class LCIndexReader;
+#include "Index/LCIndexReader.h"
 
 @interface LCSegmentMergeInfo: NSObject <LCComparable>
 {

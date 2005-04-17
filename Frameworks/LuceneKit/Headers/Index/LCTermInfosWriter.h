@@ -2,15 +2,13 @@
 #define __LUCENE_INDEX_TERM_INFOS_WRITER__
 
 #include <Foundation/Foundation.h>
-#include "Store/LCDirectory.h"
+#include "Index/LCFieldInfos.h"
+#include "Store/LCIndexOutput.h"
+#include "Index/LCTerm.h"
+#include "Index/LCTermInfo.h"
 
 /** The file format version, a negative number. */
 #define LCTermInfos_FORMAT -2
-
-@class LCFieldInfos;
-@class LCIndexOutput;
-@class LCTerm;
-@class LCTermInfo;
 
 @interface LCTermInfosWriter: NSObject
 {

@@ -3,11 +3,11 @@
 
 #include <Foundation/Foundation.h>
 #include "Index/LCTermDocs.h"
+#include "Index/LCSegmentReader.h"
+#include "Index/LCTermInfo.h"
 
-@class LCSegmentReader;
 @class LCIndexInput;
 @class LCBitVector;
-@class LCTermInfo;
 
 @interface LCSegmentTermDocs: NSObject <LCTermDocs>
 {

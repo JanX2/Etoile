@@ -4,21 +4,6 @@
 #include "Store/LCDirectory.h"
 #include <Foundation/Foundation.h>
 
-@class LCCompoundFileReader;
-
-@interface LCCSIndexInput: LCIndexInput <NSCopying>
-{
-	LCCompoundFileReader *reader;
-	LCIndexInput *base;
-	long long fileOffset;
-	long long length;
-	long long filePointer;
-}
-- (id) initWithCompoundFileReader: (LCCompoundFileReader *) r
-       indexInput: (LCIndexInput *) base offset: (long long) fileOffset
-       length: (long long) length;
-@end
-
 @interface LCCompoundFileReader: NSObject <LCDirectory>
 {
 	id <LCDirectory> directory;
@@ -32,6 +17,19 @@
 - (NSString *) name;
 //- makeLock: (NSString *) name;
 
+@end
+
+@interface LCCSIndexInput: LCIndexInput <NSCopying>
+{
+	LCCompoundFileReader *reader;
+	LCIndexInput *base;
+	long long fileOffset;
+	long long length;
+	long long filePointer;
+}
+- (id) initWithCompoundFileReader: (LCCompoundFileReader *) r
+       indexInput: (LCIndexInput *) base offset: (long long) fileOffset
+       length: (long long) length;
 @end
 
 #endif /* __LUCENE_INDEX_COMPOUND_FILE_READER__ */

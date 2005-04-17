@@ -28,9 +28,9 @@
   [input seekTermEnum: termEnum];
 }
 
-- (long) doc
+- (long) document
 {
-  return [input doc];
+  return [input document];
 }
 
 - (long) freq
@@ -43,9 +43,9 @@
   return [input next];
 }
 
-- (int) readDocs: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs
+- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs
 {
-  return [input readDocs: docs frequency: freqs];
+  return [input readDocuments: docs frequency: freqs];
 }
 
 - (BOOL) skipTo: (int) i
@@ -75,9 +75,9 @@
 
 - (NSComparisonResult) compare: (LCFilterTermPositions *) other
 {
-  if ([self doc] < [other doc])
+  if ([self document] < [other document])
     return NSOrderedAscending;
-  else if ([self doc] == [other doc])
+  else if ([self document] == [other document])
     return NSOrderedSame;
   else
     return NSOrderedDescending;

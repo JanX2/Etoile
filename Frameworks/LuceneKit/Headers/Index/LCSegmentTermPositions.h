@@ -4,8 +4,6 @@
 #include "Index/LCSegmentTermDocs.h"
 #include "Index/LCTermPositions.h"
 
-@class LSIndexInput;
-
 @interface LCSegmentTermPositions: LCSegmentTermDocs <LCTermPositions>
 {
   LCIndexInput *proxStream;

@@ -12,10 +12,9 @@ static NSString *TVX_EXTENSION = @"tvx";
 static NSString *TVD_EXTENSION = @"tvd";
 static NSString *TVF_EXTENSION = @"tvf";
 
-#include "Store/LCDirectory.h"
+#include "Index/LCFieldInfos.h"
 
 @class LCIndexOutput;
-@class LCFieldInfos;
 @class LCTVField; // private
 
 @interface LCTermVectorsWriter: NSObject
@@ -39,7 +38,7 @@ static NSString *TVF_EXTENSION = @"tvf";
 - (void) addTerm: (NSString *) termText freq: (long) freq;
 - (void) addTerm: (NSString *) termText freq: (long) freq
          positions: (NSArray *) positions offsets: (NSArray *) offsets;
-- (void) addAllDocVectors: (NSArray *) vectors;
+- (void) addAllDocumentVectors: (NSArray *) vectors;
 - (void) close;
 
 @end

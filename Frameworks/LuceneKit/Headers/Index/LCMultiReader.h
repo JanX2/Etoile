@@ -2,12 +2,11 @@
 #define __LUCENE_INDEX_MULTI_READER__
 
 #include "Index/LCIndexReader.h"
-#include "Index/LCTermEnum.h"
 #include "Index/LCTermDocs.h"
 #include "Index/LCTermPositions.h"
+#include "Store/LCDirectory.h"
 
 @class LCSegmentMergeQueue;
-@class LCTerm;
 
 @interface LCMultiTermEnum: LCTermEnum
 {

@@ -127,7 +127,7 @@
     return NO;
 
   [_posList clear];
-  _doc = [[_termPositionsQueue peek] doc];
+  _doc = [[_termPositionsQueue peek] document];
 
   id <LCTermPositions> tp;
   do
@@ -146,7 +146,7 @@
 	     [tp close];
 	    }
 	}
-	while ([_termPositionsQueue size] > 0 && [[_termPositionsQueue peek] doc] == _doc);
+	while ([_termPositionsQueue size] > 0 && [[_termPositionsQueue peek] document] == _doc);
 
 	[_posList sort];
 	_freq = [_posList size];
@@ -162,7 +162,7 @@
 
      - (BOOL)  skipTo: (int) target
     {
-	while (target > [[_termPositionsQueue peek] doc])
+	while (target > [[_termPositionsQueue peek] document])
 	{
 	    id <LCTermPositions> tp = (id <LCTermPositions>)[_termPositionsQueue pop];
 
@@ -175,7 +175,7 @@
 	return [self next];
     }
 
-- (long) doc
+- (long) document
 {
 
 	return _doc;
@@ -211,16 +211,16 @@
     /** Not implemented.
      * @throws UnsupportedOperationException
      */
-     - (int) readDocs: (NSArray *) docs  frequency: (NSArray *) freq
+     - (int) readDocuments: (NSArray *) docs  frequency: (NSArray *) freq
      {
     NSLog(@"UnsupportedOperation");
     }
 
 - (NSComparisonResult) compare: (LCMultipleTermPositions *) other
 {
-  if ([self doc] < [other doc])
+  if ([self document] < [other document])
     return NSOrderedAscending;
-  else if ([self doc] == [other doc])
+  else if ([self document] == [other document])
     return NSOrderedSame;
   else
     return NSOrderedDescending;

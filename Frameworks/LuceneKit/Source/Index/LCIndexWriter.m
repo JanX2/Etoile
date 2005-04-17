@@ -368,7 +368,7 @@
 
 
   /** Returns the number of documents currently in this index. */
-- (int) docCount
+- (int) documentCount
 {
     int i, count = 0;
     LCSegmentInfo *si;

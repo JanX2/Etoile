@@ -106,7 +106,7 @@
 {
   LCTermVectorsReader *reader = [[LCTermVectorsReader alloc] initWithDirectory: dir segment: seg fieldInfos: fieldInfos];
   UKNotNil(reader);
-  id <LCTermFreqVector> vector = [reader termFreqVectorWithDoc: 0 field: [testFields objectAtIndex: 0]];
+  id <LCTermFreqVector> vector = [reader termFreqVectorWithDocument: 0 field: [testFields objectAtIndex: 0]];
   UKNotNil(vector);
   NSArray *terms = [vector terms];
   UKNotNil(terms);
@@ -125,7 +125,7 @@
   UKNotNil(reader);
   id <LCTermPositionVector> vector;
   NSArray *terms;
-  vector = (id <LCTermPositionVector>)[reader termFreqVectorWithDoc: 0 field: [testFields objectAtIndex: 0]];
+  vector = (id <LCTermPositionVector>)[reader termFreqVectorWithDocument: 0 field: [testFields objectAtIndex: 0]];
   UKNotNil(vector);
   terms = [vector terms];
   UKNotNil(terms);
@@ -155,7 +155,7 @@
     }
   }
   
-  id <LCTermFreqVector> freqVector = [reader termFreqVectorWithDoc: 0 field: [testFields objectAtIndex: 1]]; // no pos, no offset
+  id <LCTermFreqVector> freqVector = [reader termFreqVectorWithDocument: 0 field: [testFields objectAtIndex: 1]]; // no pos, no offset
   UKNotNil(freqVector);
   UKFalse([freqVector conformsToProtocol: @protocol(LCTermPositionVector)]);
   terms = [freqVector terms];

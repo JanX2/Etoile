@@ -45,7 +45,7 @@
   LCFieldsReader *reader = [[LCFieldsReader alloc] initWithDirectory: dir segment: @"test" fieldInfos: fieldInfos];
   UKNotNil(reader);
   UKIntsEqual([reader size], 1);
-  LCDocument *doc = [reader doc: 0];
+  LCDocument *doc = [reader document: 0];
   UKNotNil(doc);
   UKNotNil([doc fieldWithName: @"textField1"]);
   LCField *field = [doc fieldWithName: @"textField2"];

@@ -148,7 +148,7 @@
   id <LCTermPositions> positions = [reader termPositions];
   [positions seekTerm: t];
   UKNotNil(positions);
-  UKIntsEqual([positions doc], 0);
+  UKIntsEqual([positions document], 0);
   UKTrue([positions nextPosition] >= 0);
 }
   

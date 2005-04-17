@@ -2,6 +2,8 @@
 #define __LUCENE_INDEX_TERM_DOCS__
 
 #include <Foundation/Foundation.h>
+#include "Index/LCTerm.h"
+#include "Index/LCTermEnum.h"
 
 /** TermDocs provides an interface for enumerating &lt;document, frequency&gt;
  pairs for a term.  <p> The document portion names each document containing
@@ -11,9 +13,6 @@
 
  @see IndexReader#termDocs()
  */
-
-@class LCTerm;
-@class LCTermEnum;
 
 @protocol LCTermDocs <NSObject>
   /** Sets this to the data for a term.
@@ -28,7 +27,7 @@
 
   /** Returns the current document number.  <p> This is invalid until {@link
    #next()} is called for the first time.*/
-- (long) doc;  // VInt
+- (long) document;  // VInt
 
   /** Returns the frequency of the term within the current document.  <p> This
    is invalid until {@link #next()} is called for the first time.*/
@@ -45,7 +44,7 @@
    *
    * <p>Returns the number of entries read.  Zero is only returned when the
    * stream has been exhausted.  */
-- (int) readDocs: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs;
+- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs;
 
   /** Skips entries to the first beyond the current whose document number is
    * greater than or equal to <i>target</i>. <p>Returns true iff there is such

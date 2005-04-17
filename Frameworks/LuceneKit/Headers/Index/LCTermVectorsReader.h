@@ -3,11 +3,7 @@
 
 #include <Foundation/Foundation.h>
 #include "Index/LCTermFreqVector.h"
-#include "Store/LCDirectory.h"
-
-@class LCFieldInfos;
-@class LCIndexInput;
-@class LCSegmentTermVector;
+#include "Index/LCFieldInfos.h"
 
 @interface LCTermVectorsReader: NSObject <NSCopying>
 {
@@ -21,9 +17,9 @@
 	      fieldInfos: (LCFieldInfos *) fieldInfos;
 - (void) close;
 - (int) size;
-- (id <LCTermFreqVector>) termFreqVectorWithDoc: (int) docNum
+- (id <LCTermFreqVector>) termFreqVectorWithDocument: (int) docNum
 	                           field: (NSString *) field;
-- (NSArray *) termFreqVectorsWithDoc: (int) docNum;
+- (NSArray *) termFreqVectorsWithDocument: (int) docNum;
 
 @end
 #endif /* __LUCENE_INDEX_TERM_VECTOR_READER__ */

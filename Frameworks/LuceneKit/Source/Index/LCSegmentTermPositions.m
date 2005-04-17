@@ -77,9 +77,9 @@
 
 - (NSComparisonResult) compare: (LCSegmentTermPositions *) other
 {
-  if ([self doc] < [other doc])
+  if ([self document] < [other document])
     return NSOrderedAscending;
-  else if ([self doc] == [other doc])
+  else if ([self document] == [other document])
     return NSOrderedSame;
   else
     return NSOrderedDescending;

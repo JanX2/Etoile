@@ -2,11 +2,9 @@
 #define __LUCENE_INDEX_FIELDS_READER__
 
 #include <Foundation/Foundation.h>
-#include "Store/LCDirectory.h"
+#include "Index/LCFieldInfos.h"
 
-@class LCFieldInfos;
 @class LCIndexInput;
-@class LCDocument;
 
 @interface LCFieldsReader: NSObject
 {
@@ -21,7 +19,7 @@
               fieldInfos: (LCFieldInfos *) fn;
 - (void) close;
 - (int) size;
-- (LCDocument *) doc: (int) n;
+- (LCDocument *) document: (int) n;
 
 @end
 

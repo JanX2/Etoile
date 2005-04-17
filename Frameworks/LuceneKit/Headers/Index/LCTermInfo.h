@@ -18,11 +18,11 @@
 - (void) setTermInfo: (LCTermInfo *) ti;
 
 /* Accessory */
-- (long) docFreq;
+- (long) documentFrequency;
 - (long long) freqPointer;
 - (long long) proxPointer;
 - (long ) skipOffset;
-- (void) setDocFreq: (long) doc;
+- (void) setDocumentFrequency: (long) doc;
 - (void) setFreqPointer: (long long) freq;
 - (void) setProxPointer: (long long) prox;
 - (void) setSkipOffset: (long) skip;

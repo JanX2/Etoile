@@ -3,14 +3,14 @@
 
 #include <Foundation/Foundation.h>
 #include "Store/LCDirectory.h"
+#include "Analysis/LCAnalyzer.h"
+#include "Search/LCSimilarity.h"
+#include "Document/LCDocument.h"
+#include "Index/LCIndexWriter.h"
 
 @class LCTermVectorOffsetInfo;
 @class LCTerm;
-@class LCSimilarity;
 @class LCFieldInfos;
-@class LCDocument;
-@class LCAnalyzer;
-@class LCIndexWriter;
 
 @interface LCDocumentWriter: NSObject
 {

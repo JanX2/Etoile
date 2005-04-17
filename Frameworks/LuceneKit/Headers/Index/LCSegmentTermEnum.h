@@ -2,11 +2,10 @@
 #define __LUCENE_INDEX_SEGMENT_TERM_ENUM__
 
 #include "Index/LCTermEnum.h"
-
-@class LCIndexInput;
-@class LCFieldInfos;
-@class LCTermBuffer;
-@class LCTermInfo;
+#include "Store/LCIndexInput.h"
+#include "Index/LCFieldInfos.h"
+#include "Index/LCTermBuffer.h"
+#include "Index/LCTermInfo.h"
 
 @interface LCSegmentTermEnum: LCTermEnum <NSCopying>
 {

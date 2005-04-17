@@ -49,7 +49,7 @@
   [segTermDocs seekTerm: t];
   if ([segTermDocs next] == YES)
       {
-        long docId = [segTermDocs doc];
+        long docId = [segTermDocs document];
 	UKIntsEqual(docId, 0);
         long freq = [segTermDocs freq];
 	UKIntsEqual(freq, 3);
@@ -124,27 +124,27 @@
   // with next
   [tdocs seekTerm: ta];
   UKTrue([tdocs next]);
-  UKIntsEqual(0, [tdocs doc]);
+  UKIntsEqual(0, [tdocs document]);
   UKIntsEqual(4, [tdocs freq]);
   UKTrue([tdocs next]);
-  UKIntsEqual(1, [tdocs doc]);
+  UKIntsEqual(1, [tdocs document]);
   UKIntsEqual(4, [tdocs freq]);
   UKTrue([tdocs skipTo: 0]);
-  UKIntsEqual(2, [tdocs doc]);
+  UKIntsEqual(2, [tdocs document]);
   UKTrue([tdocs skipTo: 4]);
-  UKIntsEqual(4, [tdocs doc]);
+  UKIntsEqual(4, [tdocs document]);
   UKTrue([tdocs skipTo: 9]);
-  UKIntsEqual(9, [tdocs doc]);
+  UKIntsEqual(9, [tdocs document]);
   UKFalse([tdocs skipTo: 10]);
       
   // without next
   [tdocs seekTerm: ta];
   UKTrue([tdocs skipTo: 0]);
-  UKIntsEqual(0, [tdocs doc]);
+  UKIntsEqual(0, [tdocs document]);
   UKTrue([tdocs skipTo: 4]);
-  UKIntsEqual(4, [tdocs doc]);
+  UKIntsEqual(4, [tdocs document]);
   UKTrue([tdocs skipTo: 9]);
-  UKIntsEqual(9, [tdocs doc]);
+  UKIntsEqual(9, [tdocs document]);
   UKFalse([tdocs skipTo: 10]);
       
       // exactly skipInterval documents and therefore with optimization
@@ -152,31 +152,31 @@
       // with next
   [tdocs seekTerm: tb];
   UKTrue([tdocs next]);
-  UKIntsEqual(10, [tdocs doc]);
+  UKIntsEqual(10, [tdocs document]);
   UKIntsEqual(4, [tdocs freq]);
   UKTrue([tdocs next]);
-  UKIntsEqual(11, [tdocs doc]);
+  UKIntsEqual(11, [tdocs document]);
   UKIntsEqual(4, [tdocs freq]);
   UKTrue([tdocs skipTo: 5]);
-  UKIntsEqual(12, [tdocs doc]);
+  UKIntsEqual(12, [tdocs document]);
   UKTrue([tdocs skipTo: 15]);
-  UKIntsEqual(15, [tdocs doc]);
+  UKIntsEqual(15, [tdocs document]);
   UKTrue([tdocs skipTo: 24]);
-  UKIntsEqual(24, [tdocs doc]);
+  UKIntsEqual(24, [tdocs document]);
   UKTrue([tdocs skipTo: 25]);
-  UKIntsEqual(25, [tdocs doc]);
+  UKIntsEqual(25, [tdocs document]);
   UKFalse([tdocs skipTo: 26]);
       
   // without next
   [tdocs seekTerm: tb];
   UKTrue([tdocs skipTo: 5]);
-  UKIntsEqual(10, [tdocs doc]);
+  UKIntsEqual(10, [tdocs document]);
   UKTrue([tdocs skipTo: 15]);
-  UKIntsEqual(15, [tdocs doc]);
+  UKIntsEqual(15, [tdocs document]);
   UKTrue([tdocs skipTo: 24]);
-  UKIntsEqual(24, [tdocs doc]);
+  UKIntsEqual(24, [tdocs document]);
   UKTrue([tdocs skipTo: 25]);
-  UKIntsEqual(25, [tdocs doc]);
+  UKIntsEqual(25, [tdocs document]);
   UKFalse([tdocs skipTo: 26]);
       
       // much more than skipInterval documents and therefore with optimization
@@ -184,35 +184,35 @@
       // with next
   [tdocs seekTerm: tc];
   UKTrue([tdocs next]);
-  UKIntsEqual(26, [tdocs doc]);
+  UKIntsEqual(26, [tdocs document]);
   UKIntsEqual(4, [tdocs freq]);
   UKTrue([tdocs next]);
-  UKIntsEqual(27, [tdocs doc]);
+  UKIntsEqual(27, [tdocs document]);
   UKIntsEqual(4, [tdocs freq]);
   UKTrue([tdocs skipTo: 5]);
-  UKIntsEqual(28, [tdocs doc]);
+  UKIntsEqual(28, [tdocs document]);
   UKTrue([tdocs skipTo: 40]);
-  UKIntsEqual(40, [tdocs doc]);
+  UKIntsEqual(40, [tdocs document]);
   UKTrue([tdocs skipTo: 57]);
-  UKIntsEqual(57, [tdocs doc]);
+  UKIntsEqual(57, [tdocs document]);
   UKTrue([tdocs skipTo: 74]);
-  UKIntsEqual(74, [tdocs doc]);
+  UKIntsEqual(74, [tdocs document]);
   UKTrue([tdocs skipTo: 75]);
-  UKIntsEqual(75, [tdocs doc]);
+  UKIntsEqual(75, [tdocs document]);
   UKFalse([tdocs skipTo: 76]);
       
       //without next
   [tdocs seekTerm: tc];
   UKTrue([tdocs skipTo: 5]);
-  UKIntsEqual(26, [tdocs doc]);
+  UKIntsEqual(26, [tdocs document]);
   UKTrue([tdocs skipTo: 40]);
-  UKIntsEqual(40, [tdocs doc]);
+  UKIntsEqual(40, [tdocs document]);
   UKTrue([tdocs skipTo: 57]);
-  UKIntsEqual(57, [tdocs doc]);
+  UKIntsEqual(57, [tdocs document]);
   UKTrue([tdocs skipTo: 74]);
-  UKIntsEqual(74, [tdocs doc]);
+  UKIntsEqual(74, [tdocs document]);
   UKTrue([tdocs skipTo: 75]);
-  UKIntsEqual(75, [tdocs doc]);
+  UKIntsEqual(75, [tdocs document]);
   UKFalse([tdocs skipTo: 76]);
       
   [tdocs close];

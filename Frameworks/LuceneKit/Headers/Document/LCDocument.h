@@ -2,6 +2,7 @@
 #define __LUCENE_DOCUMENT_DOCUMENT__
 
 #include <Foundation/Foundation.h>
+#include "Document/LCField.h"
 
 /** Documents are the unit of indexing and search.
  *
@@ -16,8 +17,6 @@
  * Hits#doc(int)}, {@link Searcher#doc(int)} or {@link
  * IndexReader#document(int)}.
  */
-
-@class LCField;
 
 #ifdef HAVE_UKTEST
 #include <UnitKit/UnitKit.h>

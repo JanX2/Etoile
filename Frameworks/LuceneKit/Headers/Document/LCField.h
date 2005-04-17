@@ -24,8 +24,6 @@ typedef enum _LCTermVector_Type {
   LCTermVector_WithPositionsAndOffsets
 } LCTermVector_Type;
 
-@class LCTermVector;
-
 @interface LCField: NSObject
 {
   NSString *name;

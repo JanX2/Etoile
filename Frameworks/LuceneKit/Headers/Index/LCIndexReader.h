@@ -2,10 +2,11 @@
 #define __LUCENE_INDEX_INDEX_READER__
 
 #include <Foundation/Foundation.h>
-#include "Store/LCDirectory.h"
 #include "Index/LCTermDocs.h"
 #include "Index/LCTermFreqVector.h"
 #include "Index/LCTermPositions.h"
+#include "Index/LCSegmentInfos.h"
+#include "Document/LCDocument.h"
 
 typedef enum _LCFieldOption
 {
@@ -28,9 +29,6 @@ typedef enum _LCFieldOption
   // all fields where termvectors with offset and position values set
   LCFieldOption_TERMVECTOR_WITH_POSITION_OFFSET
 } LCFieldOption;
-
-@class LCSegmentInfos;
-@class LCDocument;
 
 @interface LCIndexReader: NSObject
 {
@@ -75,7 +73,7 @@ typedef enum _LCFieldOption
 - (void) setNorm: (int) doc field: (NSString *) field floatValue: (float) value;
 - (LCTermEnum *) terms;
 - (LCTermEnum *) termsWithTerm: (LCTerm *) t;
-- (long) docFreq: (LCTerm *) t;
+- (long) documentFrequency: (LCTerm *) t;
 - (id <LCTermDocs>) termDocsWithTerm: (LCTerm *) term;
 - (id <LCTermDocs>) termDocs;
 - (id <LCTermPositions>) termPositionsWithTerm: (LCTerm *) term;

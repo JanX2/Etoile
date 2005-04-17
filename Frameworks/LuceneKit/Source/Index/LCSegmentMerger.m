@@ -265,7 +265,7 @@
       // skip deleted docs
       if ([reader isDeleted: docNum]) 
         continue;
-      [termVectorsWriter addAllDocVectors: [reader termFreqVectors: docNum]];
+      [termVectorsWriter addAllDocumentVectors: [reader termFreqVectors: docNum]];
     }
   }
   [termVectorsWriter close];
@@ -393,7 +393,7 @@
       NSArray *docMap = [smi docMap];
       [postings seekTermEnum: [smi termEnum]];
       while ([postings next]) {
-        int doc = [postings doc];
+        int doc = [postings document];
         if (docMap != nil)
           doc = [[docMap objectAtIndex: doc] intValue]; // map around deletions
         doc += base;                              // convert to merged space

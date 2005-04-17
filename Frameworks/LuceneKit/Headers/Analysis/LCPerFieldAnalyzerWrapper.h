@@ -10,8 +10,8 @@
 }
 
 - (id) initWithAnalyzer: (LCAnalyzer *) analyzer;
-- (void) addAnalyzerWithField: (NSString *) name
-                     analyzer: (LCAnalyzer *) analyzer;
+- (void) setAnalyzer: (LCAnalyzer *) analyzer
+            forField: (NSString *) name;
 
 @end
 #endif /* __LUCENE_ANALYSIS_PERFIELD_ANALYZER_WRAPPER__ */

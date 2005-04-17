@@ -29,7 +29,7 @@
 {
   while ([input next])
   {
-    if (([input doc] % 2) == 1)
+    if (([input document] % 2) == 1)
 	    return YES;
   }
   return NO;
@@ -114,7 +114,7 @@
   id <LCTermPositions> positions = [reader termPositionsWithTerm: term];
   while ([positions next] == YES) 
   {
-    UKIntsEqual(([positions doc] % 2), 1);
+    UKIntsEqual(([positions document] % 2), 1);
   }
 
   [reader close];

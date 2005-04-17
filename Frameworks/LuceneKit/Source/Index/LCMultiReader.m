@@ -371,9 +371,9 @@
   [super dealloc];
 }
 
-- (long) doc
+- (long) document
 {
-  return base + [current doc];
+  return base + [current document];
 }
 
 - (long) freq
@@ -408,7 +408,7 @@
   }
 
   /** Optimized implementation. */
-- (int) readDocs: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs
+- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs
 {
     while (YES) {
       while (current == nil) {
@@ -419,7 +419,7 @@
           return 0;
         }
       }
-      int end = [current readDocs: docs frequency: freqs];
+      int end = [current readDocuments: docs frequency: freqs];
       if (end == 0) {          // none left in segment
         DESTROY(current);
       } else {            // got some
@@ -441,7 +441,7 @@
     do {
       if (![self next])
         return NO;
-    } while (target > [self doc]);
+    } while (target > [self document]);
       return YES;
   }
 
@@ -489,9 +489,9 @@
 
 - (NSComparisonResult) compare: (LCMultiTermPositions *) other
 {
-  if ([self doc] < [other doc])
+  if ([self document] < [other document])
     return NSOrderedAscending;
-  else if ([self doc] == [other doc])
+  else if ([self document] == [other document])
     return NSOrderedSame;
   else
     return NSOrderedDescending;

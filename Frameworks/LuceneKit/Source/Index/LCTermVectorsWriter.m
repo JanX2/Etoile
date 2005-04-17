@@ -234,7 +234,7 @@
    * @param vectors
    * @throws IOException
    */
-- (void) addAllDocVectors: (NSArray *) vectors
+- (void) addAllDocumentVectors: (NSArray *) vectors
 {
   [self openDocument];
 

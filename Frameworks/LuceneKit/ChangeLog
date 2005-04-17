@@ -1,3 +1,11 @@
+2005-04-16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Change method names to be more GNUstep-style.
+	* Try to reduce the number of inclusion in header.
+	* Source/Index/TestSegmentTermEnum.m:
+	Test unit for LCSegmentTermEnum
+	* chage "doc" in header to "document"
+
 2005-04-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Util/LCBitVector.m:

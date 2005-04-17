@@ -3,10 +3,9 @@
 
 #include <Foundation/Foundation.h>
 #include "Store/LCDirectory.h"
-
-@class LCIndexInput;
-@class LCDocument;
-@class LCFieldInfo;
+#include "Document/LCDocument.h"
+#include "Index/LCFieldInfo.h"
+#include "Store/LCIndexInput.h"
 
 @interface LCFieldInfos: NSObject
 {
