@@ -1,8 +1,4 @@
 #include "Index/LCTermInfosReader.h"
-#include "Index/LCFieldInfos.h"
-#include "Index/LCSegmentTermEnum.h"
-#include "Index/LCTerm.h"
-#include "Index/LCTermInfo.h"
 #include "GNUstep/GNUstep.h"
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a

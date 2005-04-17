@@ -1,5 +1,4 @@
 #include "Index/LCIndexReader.h"
-#include "Index/LCSegmentInfos.h"
 #include "Index/LCSegmentReader.h"
 #include "Index/LCMultiReader.h"
 #include "Store/LCFSDirectory.h"

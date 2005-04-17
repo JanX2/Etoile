@@ -1,5 +1,4 @@
 #include "Document/LCDocument.h"
-#include "Document/LCField.h"
 #include "GNUstep/GNUstep.h"
 
 /** Documents are the unit of indexing and search.

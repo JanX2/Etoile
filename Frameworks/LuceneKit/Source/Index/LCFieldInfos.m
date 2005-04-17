@@ -1,7 +1,4 @@
 #include "Index/LCFieldInfos.h"
-#include "Index/LCFieldInfo.h"
-#include "Store/LCIndexInput.h"
-#include "Document/LCDocument.h"
 #include "GNUstep/GNUstep.h"
 
 /** Access to the Field Info file that describes document fields and whether or

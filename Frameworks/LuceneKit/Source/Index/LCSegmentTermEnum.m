@@ -1,9 +1,5 @@
 #include "Index/LCSegmentTermEnum.h"
-#include "Index/LCFieldInfos.h"
-#include "Index/LCTermInfo.h"
 #include "Index/LCTermInfosWriter.h"
-#include "Index/LCTermBuffer.h"
-#include "Store/LCIndexInput.h"
 #include "GNUstep/GNUstep.h"
 
 @implementation LCSegmentTermEnum

@@ -1,8 +1,5 @@
 #include "Index/LCTermVectorsWriter.h"
 #include "Store/LCIndexOutput.h"
-#include "Index/LCFieldInfos.h"
-#include "Index/LCFieldInfo.h"
-#include "Index/LCTermFreqVector.h"
 #include "Index/LCTermPositionVector.h"
 #include "Index/LCTermVectorOffsetInfo.h"
 #include "Util/NSString+Additions.h"

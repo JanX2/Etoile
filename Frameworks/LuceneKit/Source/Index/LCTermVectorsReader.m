@@ -1,7 +1,5 @@
 #include "Index/LCTermVectorsReader.h"
 #include "Index/LCTermVectorsWriter.h"
-#include "Index/LCFieldInfos.h"
-#include "Store/LCIndexInput.h"
 #include "Index/LCSegmentTermVector.h"
 #include "Index/LCSegmentTermPositionVector.h"
 #include "Index/LCTermVectorOffsetInfo.h"

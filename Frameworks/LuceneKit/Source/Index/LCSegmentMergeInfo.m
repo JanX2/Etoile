@@ -1,7 +1,4 @@
 #include "Index/LCSegmentMergeInfo.h"
-#include "Index/LCTerm.h"
-#include "Index/LCTermEnum.h"
-#include "Index/LCIndexReader.h"
 #include "GNUstep/GNUstep.h"
 
 @implementation LCSegmentMergeInfo

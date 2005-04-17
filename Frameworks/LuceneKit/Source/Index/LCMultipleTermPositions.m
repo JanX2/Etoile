@@ -1,5 +1,4 @@
 #include "Index/LCMultipleTermPositions.h"
-#include "Index/LCIndexReader.h"
 #include "Util/LCPriorityQueue.h"
 
 /**

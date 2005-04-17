@@ -1,8 +1,4 @@
 #include "Index/LCFieldsWriter.h"
-#include "Index/LCFieldInfos.h"
-#include "Document/LCDocument.h"
-#include "Document/LCField.h"
-#include "Store/LCDirectory.h"
 #include "Store/LCIndexOutput.h"
 #include "GNUstep/GNUstep.h"
 

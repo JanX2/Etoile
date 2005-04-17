@@ -1,7 +1,4 @@
 #include "Index/LCTermInfosWriter.h"
-#include "Index/LCTerm.h"
-#include "Index/LCTermInfo.h"
-#include "Index/LCFieldInfos.h"
 #include "Util/NSString+Additions.h"
 #include "GNUstep/GNUstep.h"
 

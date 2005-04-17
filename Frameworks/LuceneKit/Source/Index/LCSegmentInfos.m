@@ -1,5 +1,4 @@
 #include "Index/LCSegmentInfos.h"
-#include "Index/LCSegmentInfo.h"
 #include "GNUstep/GNUstep.h"
 
   /** The file format version, a negative number. */

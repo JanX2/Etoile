@@ -1,6 +1,5 @@
 #include "Index/LCFilterIndexReader.h"
 #include "Document/LCDocument.h"
-#include "Document/LCField.h"
 #include "GNUstep/GNUstep.h"
 
 @implementation LCFilterTermDocs

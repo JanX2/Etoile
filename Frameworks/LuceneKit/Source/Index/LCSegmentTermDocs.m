@@ -1,8 +1,6 @@
 #include "Index/LCSegmentTermDocs.h"
 #include "Index/LCSegmentTermEnum.h"
-#include "Index/LCSegmentReader.h"
 #include "Index/LCTermInfosReader.h"
-#include "Index/LCTermInfo.h"
 #include "Store/LCIndexInput.h"
 #include "Util/LCBitVector.h"
 #include "GNUstep/GNUstep.h"

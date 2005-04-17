@@ -1,5 +1,4 @@
 #include "Store/LCRAMOutputStream.h"
-#include "Store/LCRAMFile.h"
 #include "GNUstep/GNUstep.h"
 
 /**

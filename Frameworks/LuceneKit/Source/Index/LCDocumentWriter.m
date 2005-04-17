@@ -6,13 +6,7 @@
 #include "Index/LCTermInfosWriter.h"
 #include "Index/LCTermVectorsWriter.h"
 #include "Index/LCFieldInfos.h"
-#include "Index/LCFieldInfo.h"
 #include "Index/LCFieldsWriter.h"
-#include "Document/LCDocument.h"
-#include "Document/LCField.h"
-#include "Analysis/LCAnalyzer.h"
-#include "Index/LCIndexWriter.h"
-#include "Search/LCSimilarity.h"
 #include "Java/LCStringReader.h"
 #include "GNUstep/GNUstep.h"
 

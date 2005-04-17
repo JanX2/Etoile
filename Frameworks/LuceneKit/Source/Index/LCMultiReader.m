@@ -1,8 +1,6 @@
 #include "Index/LCMultiReader.h"
 #include "Index/LCSegmentMergeQueue.h"
 #include "Index/LCSegmentMergeInfo.h"
-#include "Index/LCTerm.h"
-#include "Index/LCTermEnum.h"
 #include "GNUstep/GNUstep.h"
 
 /** An IndexReader which reads multiple indexes, appending their content.
