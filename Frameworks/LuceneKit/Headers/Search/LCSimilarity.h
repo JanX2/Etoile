@@ -7,6 +7,7 @@ static float *NORM_TABLE;
 
 //@class LCSearcher;
 @class LCTerm;
+@class LCSearcher;
 
 @interface LCSimilarity: NSObject
 {
@@ -16,22 +17,25 @@ static float *NORM_TABLE;
 + (LCSimilarity *) defaultSimilarity;
 + (float) decodeNorm: (char) b;
 + (float *) normDecoder;
-- (float) lengthNorm: (NSString *) fieldName numberOfTokens: (int) numTokens;
+/* override by subclass */
+- (float) lengthNorm: (NSString *) fieldName numberOfTerms: (int) numTerms;
+/* override by subclass */
 - (float) queryNorm: (float) sumOfSquredWeights;
 + (char) encodeNorm: (float) f;
 + (float) byteToFloat: (char) b;
 + (char) floatToByte: (float) f;
-- (float) tfWithInt: (int) freq;
-- (float) sloppyFreq: (int) distance;
-- (float) tfWithFloat: (float) freq;
-#if 0
-- (float) idf: (LCTerm *) term
+- (float) termFrequencyWithInt: (int) freq;
+- (float) sloppyFrequency: (int) distance;
+- (float) termFrequencyWithFloat: (float) freq;
+- (float) inverseDocumentFrequencyWithTerm: (LCTerm *) term
           searcher: (LCSearcher *) searcher;
-- (float) idfTerms: (NSArray *) terms
+- (float) inverseDocumentFrequencyWithTerms: (NSArray *) terms
           searcher: (LCSearcher *) searcher;
-#endif
-- (float) idfDocFreq: (int) docFreq numDocs: (int) numDocs;
-- (float) coord: (int) overlap max: (int) maxOverlap;
+/* override by subclass */
+- (float) inverseDocumentFrequency: (int) docFreq 
+          numberOfDocuments: (int) numDocs;
+/* override by subclass */
+- (float) coordination: (int) overlap max: (int) maxOverlap;
 
 @end
 #endif /* __LUCENE_SEARCH_SIMILARITY__ */

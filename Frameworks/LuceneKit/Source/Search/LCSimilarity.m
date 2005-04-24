@@ -1,16 +1,24 @@
 #include "Search/LCSimilarity.h"
+#include "Search/LCDefaultSimilarity.h"
+#include "Search/LCSearcher.h"
 
 static float *NORM_TABLE;
+static LCSimilarity *defaultImpl = nil;
 
 @implementation LCSimilarity
 
 + (void) setDefaultSimilarity: (LCSimilarity *) d
 {
+  ASSIGN(defaultImpl, d);
 }
 
 + (LCSimilarity *) defaultSimilarity
 {
-  return nil;
+  if (defaultImpl == nil)
+  {
+    ASSIGN(defaultImpl, AUTORELEASE([[LCDefaultSimilarity alloc] init]));
+  }
+  return defaultImpl;
 }
 
 /** Cache of decoded bytes. */
@@ -69,8 +77,9 @@ static float *NORM_TABLE;
    *
    * @see Field#setBoost(float)
    */
-- (float) lengthNorm: (NSString *) fieldName numberOfTokens: (int) numTokens
+- (float) lengthNorm: (NSString *) fieldName numberOfTerms: (int) numTokens
 {
+  return -1;
 }
 
   /** Computes the normalization value for a query given the sum of the squared
@@ -85,6 +94,7 @@ static float *NORM_TABLE;
    */
 - (float) queryNorm: (float) sumOfSquredWeights
 {
+  return -1;
 }
 
   /** Encodes a normalization factor for storage in an index.
@@ -186,9 +196,9 @@ static float *NORM_TABLE;
    * @param freq the frequency of a term within a document
    * @return a score factor based on a term's within-document frequency
    */
-- (float) tfWithInt: (int) freq
+- (float) termFrequencyWithInt: (int) freq
 {
-  return [self tfWithFloat: (float)freq];
+  return [self termFrequencyWithFloat: (float)freq];
 }
 
   /** Computes the amount of a sloppy phrase match, based on an edit distance.
@@ -204,7 +214,7 @@ static float *NORM_TABLE;
    * @param distance the edit distance of this sloppy phrase match
    * @return the frequency increment for this match
    *                                     */
-- (float) sloppyFreq: (int) distance
+- (float) sloppyFrequency: (int) distance
 {
 }
 
@@ -221,7 +231,7 @@ static float *NORM_TABLE;
    * @param freq the frequency of a term within a document
    * @return a score factor based on a term's within-document frequency
    */
-- (float) tfWithFloat: (float) freq
+- (float) termFrequencyWithFloat: (float) freq
 {
 }
 
@@ -240,15 +250,12 @@ static float *NORM_TABLE;
    * @param searcher the document collection being searched
    * @return a score factor for the term
    */
-#if 0
-- (float) idf: (LCTerm *) term
+- (float) inverseDocumentFrequencyWithTerm: (LCTerm *) term
           searcher: (LCSearcher *) searcher
 {
-  public float idf(Term term, Searcher searcher) throws IOException {
-	      return idf(searcher.docFreq(term), searcher.maxDoc());
-  return 0;
+  return [self inverseDocumentFrequency: [searcher documentFrequencyWithTerm: term]
+	       numberOfDocuments: [searcher maximalDocument]];
 }
-#endif
 
   /** Computes a score factor for a phrase.
    *
@@ -259,20 +266,18 @@ static float *NORM_TABLE;
    * @param searcher the document collection being searched
    * @return a score factor for the phrase
    */
-#if 0
-- (float) idfTerms: (NSArray *) terms
+- (float) inverseDocumentFrequencyWithTerms: (NSArray *) terms
           searcher: (LCSearcher *) searcher
 {
-  public float idf(Collection terms, Searcher searcher) throws IOException {
-	      float idf = 0.0f;
-	          Iterator i = terms.iterator();
-		      while (i.hasNext()) {
-			            idf += idf((Term)i.next(), searcher);
-				        }
-		          return idf;
-  return 0;
+  float idf = 0.0f;
+  NSEnumerator *e = [terms objectEnumerator];
+  LCTerm *t;
+  while ((t = [e nextObject]))
+  {
+    idf += [self inverseDocumentFrequencyWithTerm: t searcher: searcher];
+  }
+  return idf;
 }
-#endif
 
   /** Computes a score factor based on a term's document frequency (the number
    * of documents which contain the term).  This value is multiplied by the
@@ -287,7 +292,8 @@ static float *NORM_TABLE;
    * @param numDocs the total number of documents in the collection
    * @return a score factor based on the term's document frequency
    */
-- (float) idfDocFreq: (int) docFreq numDocs: (int) numDocs
+- (float) inverseDocumentFrequency: (int) docFreq 
+          numberOfDocuments: (int) numDocs
 {
   return 0;
 }
@@ -304,7 +310,7 @@ static float *NORM_TABLE;
    * @param maxOverlap the total number of terms in the query
    * @return a score factor based on term overlap with the query
    */
-- (float) coord: (int) overlap max: (int) maxOverlap
+- (float) coordination: (int) overlap max: (int) maxOverlap
 {
   return 0;
 }

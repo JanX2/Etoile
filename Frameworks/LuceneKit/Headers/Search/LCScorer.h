@@ -2,6 +2,9 @@
 #define __LUCENE_SEARCH_SCORER__
 
 #include <Foundation/Foundation.h>
+#include "Search/LCSimilarity.h"
+#include "Search/LCHitCollector.h"
+#include "Search/LCExplanation.h"
 
 @interface LCScorer: NSObject
 {
@@ -10,11 +13,12 @@
 - (id) initWithSimilarity: (LCSimilarity *) si;
 - (LCSimilarity *) similarity;
 - (void) score: (LCHitCollector *) hc;
-- (BOOL) score: (LCHitCollector *) hc
-           max: (int) max;
+- (BOOL) score: (LCHitCollector *) hc maximalDocument: (int) max;
+/* Override by subclass */
 - (BOOL) next;
-- (int) doc;
+- (int) document;
 - (float) score;
+- (BOOL) skipTo: (int) target;
 - (LCExplanation *) explain: (int) doc;
 @end
 #endif /* __LUCENE_SEARCH_SCORER__ */

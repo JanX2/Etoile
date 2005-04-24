@@ -2,23 +2,24 @@
 #define __LUCENE_SEARCH_SORT__
 
 #include <Foundation/Foundation.h>
+#include "Search/LCSortField.h"
 
 @interface LCSort: NSObject // Serializable
 {
-  LCSort *RELEVANCE;
-  LCSort *INDEXORDER;
   NSArray *fields;
 }
++ (LCSort *) sort_RELEVANCE;
++ (LCSort *) sort_INDEXORDER;
 - (id) initWithField: (NSString *) field;
 - (id) initWithField: (NSString *) field reverse: (BOOL) reverse;
-- (id) initWithFields: (NSString *) fields;
+- (id) initWithFields: (NSArray *) fields;
 - (id) initWithSortField: (LCSortField *) field;
-- (id) initWithSortFields: (LCSortFields *) fields;
+- (id) initWithSortFields: (NSArray *) fields;
 - (void) setField: (NSString *) field;
 - (void) setField: (NSString *) field reverse: (BOOL) reverse;
 - (void) setFields: (NSArray *) fields;
 - (void) setSortField: (LCSortField *) field;
 - (void) setSortFields: (NSArray *) fields;
-- (NSArray *) sort;
+- (NSArray *) sortFields;
 @end
 #endif /* __LUCENE_SEARCH_SORT__ */

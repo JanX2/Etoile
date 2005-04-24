@@ -1,5 +1,9 @@
 2005-04-16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
+	* Initial Search Implementation.
+
+2005-04-16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
 	* Change method names to be more GNUstep-style.
 	* Try to reduce the number of inclusion in header.
 	* Source/Index/TestSegmentTermEnum.m:

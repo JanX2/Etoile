@@ -4,14 +4,17 @@
 #include <Foundation/Foundation.h> // Serializable
 @interface LCExplanation: NSObject
 {
-  float value;
-  NSString *description;
-  NSArray *details
+  float value; // the value of this node
+  NSString *representation; // what it represents
+  NSMutableArray *details; // sub-explanations
 }
 
 - (id) initWithValue: (float) v description: (NSString *) d;
 - (float) value;
-- (void) setDescription: (NSString *) d;
+- (void) setValue: (float) value;
+/* LuceneKit: replace description */
+- (NSString *) representation; 
+- (void) setRepresentation: (NSString *) d;
 - (NSArray *) details;
 - (void) addDetails: (LCExplanation *) details;
 - (NSString *) descriptionWithDepth: (int) depth;

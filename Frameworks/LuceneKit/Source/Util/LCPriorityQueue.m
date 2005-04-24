@@ -33,6 +33,15 @@
   [self upHeap];
 }
 
+/* LuceneKit: override by classes in /Search */
+- (BOOL) lessThan: (id) a : (id) b
+{
+  if([(id <LCComparable>)a compare: b] == NSOrderedAscending)
+    return YES;
+  else
+    return NO;
+}
+
 /**
  * Adds element to the PriorityQueue in log(size) time if either
  * the PriorityQueue is not full, or not lessThan(element, top()).
@@ -46,8 +55,8 @@
       [self put: element];
       return YES;
     }
-  //else if([heap count] > 0 && ![self lessThan: element : [self top]])
-  else if([heap count] > 0 && ([(id <LCComparable>)element compare: [self top]] != NSOrderedAscending))
+  else if([heap count] > 0 && ![self lessThan: element : [self top]])
+  //else if([heap count] > 0 && ([(id <LCComparable>)element compare: [self top]] != NSOrderedAscending))
     {
       [heap replaceObjectAtIndex: 0 withObject: element];
       [self adjustTop];
@@ -118,8 +127,8 @@
   id <LCComparable> node = [heap objectAtIndex: i];	  // save bottom node
   RETAIN(node);
   int j = i >> 1;
-//  while (j >= 0 && [self lessThan: node : [heap objectAtIndex: j]]) 
-  while (j >= 0 && ([node compare: [heap objectAtIndex: j]] == NSOrderedAscending)) 
+  while (j >= 0 && [self lessThan: node : [heap objectAtIndex: j]]) 
+//  while (j >= 0 && ([node compare: [heap objectAtIndex: j]] == NSOrderedAscending)) 
     {
       // shift parents down
       [heap replaceObjectAtIndex: i withObject: [heap objectAtIndex: j]];
@@ -140,19 +149,19 @@
   RETAIN(node);
   int j = i << 1;				  // find smaller child
   int k = j + 1;
-//  if (k < [heap count] && [self lessThan: [heap objectAtIndex: k]: [heap objectAtIndex: j]]) {
-  if (k < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: k] compare: [heap objectAtIndex: j]] == NSOrderedAscending)) {
+  if (k < [heap count] && [self lessThan: [heap objectAtIndex: k]: [heap objectAtIndex: j]]) {
+//  if (k < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: k] compare: [heap objectAtIndex: j]] == NSOrderedAscending)) {
       j = k;
     }
-//  while (j < [heap count] && [self lessThan: [heap objectAtIndex: j] : node]) {
-  while (j < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: j] compare: node] == NSOrderedAscending)) {
+  while (j < [heap count] && [self lessThan: [heap objectAtIndex: j] : node]) {
+//  while (j < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: j] compare: node] == NSOrderedAscending)) {
       // shift up child
       [heap replaceObjectAtIndex: i withObject: [heap objectAtIndex: j]];
       i = j;
       j = i << 1;
       k = j + 1;
-      //if (k < [heap count] && [self lessThan: [heap objectAtIndex: k] : [heap objectAtIndex: j]]) {
-      if (k < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: k] compare: [heap objectAtIndex: j]] == NSOrderedAscending)) {
+      if (k < [heap count] && [self lessThan: [heap objectAtIndex: k] : [heap objectAtIndex: j]]) {
+      //if (k < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: k] compare: [heap objectAtIndex: j]] == NSOrderedAscending)) {
 	j = k;
       }
     }
