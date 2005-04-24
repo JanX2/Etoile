@@ -15,6 +15,8 @@
 /** Expert: Constructs a TopDocs.*/
 - (id) initWithTotalHits: (int) totalHits 
        scoreDocuments: (NSArray *) scoreDocs;
+- (int) totalHits;
+- (NSArray *) scoreDocuments;
 @end
 
 #endif /* __LUCENE_SEARCH_TOP_DOCS__ */

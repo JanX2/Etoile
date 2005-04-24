@@ -20,4 +20,7 @@
   [super dealloc];
 }
 
+- (int) totalHits { return totalHits; }
+- (NSArray *) scoreDocuments { return scoreDocs; }
+
 @end

@@ -1,4 +1,5 @@
 #include "Search/LCSimilarityDelegator.h"
+#include "GNUstep/GNUstep.h"
 
 @implementation LCSimilarityDelegator
 

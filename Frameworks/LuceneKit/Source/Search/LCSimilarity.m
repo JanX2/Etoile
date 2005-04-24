@@ -1,6 +1,7 @@
 #include "Search/LCSimilarity.h"
 #include "Search/LCDefaultSimilarity.h"
 #include "Search/LCSearcher.h"
+#include "GNUstep/GNUstep.h"
 
 static float *NORM_TABLE;
 static LCSimilarity *defaultImpl = nil;

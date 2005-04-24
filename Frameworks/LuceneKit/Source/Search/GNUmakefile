@@ -11,6 +11,7 @@ LuceneKit_Search_OBJC_FILES = \
 	LCFieldCache.m \
 	LCFieldCacheImpl.m \
 	LCFieldSortedHitQueue.m \
+	LCHits.m \
 	LCHitCollector.m \
 	LCHitQueue.m \
 	LCExplanation.m \

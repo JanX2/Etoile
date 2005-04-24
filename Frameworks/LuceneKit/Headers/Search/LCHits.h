@@ -2,32 +2,46 @@
 #define __LUCENE_SEARCH_HITS__
 
 #include <Foundation/Foundation.h>
+#include "Search/LCWeight.h"
 
-@interface LCHitDoc: NSObject
+@class LCDocument;
+@class LCSearcher;
+@class LCFilter;
+@class LCSort;
+
+@interface LCHitDocument: NSObject
 {
   float score;
   int identifier;
   LCDocument *doc;
 
-  LCHitDoc *next;
-  LCHitDoc *prev;
+  LCHitDocument *next;
+  LCHitDocument *prev;
 }
 
 - (id) initWithScore: (float) s identifier: (int) iden;
+- (LCHitDocument *) prev;
+- (void) setPrev: (LCHitDocument *) hitDocument;
+- (LCHitDocument *) next;
+- (void) setNext: (LCHitDocument *) hitDocument;
+- (float) score;
+- (int) identifier;
+- (LCDocument *) document;
+- (void) setDocument: (LCDocument *) document;
 @end
 
 @interface LCHits: NSObject
 {
-  LCQuery *query;
+  id <LCWeight> weight;
   LCSearcher *searcher;
   LCFilter *filter;
-  LCSort *soft;
-  int length;
-  NSArray *hitDocs;
-  LCHitDoc *first;
-  LCHitDoc *last;
-  int numDocs;
-  int maxDocs;
+  LCSort *sort;
+  int length; // the total number of hits
+  NSMutableArray *hitDocs; // cache of hits retrieved
+  LCHitDocument *first; // head of LRU cache
+  LCHitDocument *last; // tail of LRU cache
+  int numDocs; // number cached
+  int maxDocs; // max to cache
 }
 
 - (id) initWithSearcher: (LCSearcher *) s
@@ -37,14 +51,14 @@
                  query: (LCQuery *) q
 		 filter: (LCFilter *) f
 		 sort: (LCSort *) s;
-- (void) moreDocs: (int) min;
-- (int) length;
-- (LCDocument *) doc: (int) n;
+- (void) moreDocuments: (int) min;
+- (unsigned int) length;
+- (LCDocument *) document: (int) n;
 - (float) score: (int) n;
 - (int) identifier: (int) n;
-- (LCHitDoc *) hitDoc: (int) n;
-- (void) addToFront: (LCHitDoc *) hitDoc;
-- (void) remove: (LCHitDoc *) hitDoc;
+- (LCHitDocument *) hitDocument: (int) n;
+- (void) addToFront: (LCHitDocument *) hitDoc;
+- (void) remove: (LCHitDocument *) hitDoc;
 
 @end
 
