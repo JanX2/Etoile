@@ -4,6 +4,8 @@
 	* Make it compile again.
 	* Header/Search/LCQueryFilter.h:
 	* Source/Search/LCQueryFilter.m:
+	* Header/Search/LCQueryTermVector.h:
+	* Source/Search/LCQueryTermVector.m:
 	* Header/Search/LCBooleanClause.h:
 	* Source/Search/LCBooleanClause.m: ported
 	* TODO: add classes for help.
