@@ -6,4 +6,9 @@ LuceneKit TODO
     to reduce the headers.
     * Lock and Multithread.
     * Index files compatible with other implementation.
+    * Implement following classes:
+        org.apache.lucene.analysis.standard
+        org.apache.lucene.queryParser
+	org.apache.lucene.search.spans
+	org.apache.lucene.search.ParallelMultiSearcher
 

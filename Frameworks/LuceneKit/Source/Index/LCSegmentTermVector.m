@@ -63,14 +63,14 @@
   return termFreqs;
 }
 
-- (int) indexOf: (NSString *) text
+- (int) indexOfTerm: (NSString *) text
 {
   if (terms == nil)
     return -1;
   return [terms indexOfObject: text];
 }
 
-- (NSArray *) indexesOfTerms: (NSArray *) termNumbers
+- (NSIndexSet *) indexesOfTerms: (NSArray *) termNumbers
           start: (int) start length: (int) len
     // TODO: there must be a more efficient way of doing this.
     //       At least, we could advance the lower bound of the terms array
@@ -79,15 +79,15 @@
     //       and thus dividing the terms array maybe in half with each found index.
 {
   int i;
-  NSMutableArray *a = [NSMutableArray arrayWithCapacity: len];
+  NSMutableIndexSet *a = [[NSMutableIndexSet alloc] init];
   id object;
 
   for (i = 0; i < len; i++) 
     {
       object = [termNumbers objectAtIndex: (start + i)];
-      [a addObject: [NSNumber numberWithInt: [self indexOf: object]]];
+      [a addIndex: [self indexOfTerm: object]];
     }
-  return a;
+  return AUTORELEASE(a);
 }
 
 @end

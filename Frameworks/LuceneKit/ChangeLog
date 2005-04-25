@@ -2,6 +2,11 @@
 
 	* Initial Search Implementation.
 	* Make it compile again.
+	* Header/Search/LCQueryFilter.h:
+	* Source/Search/LCQueryFilter.m:
+	* Header/Search/LCBooleanClause.h:
+	* Source/Search/LCBooleanClause.m: ported
+	* TODO: add classes for help.
 
 2005-04-16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

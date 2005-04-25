@@ -3,27 +3,42 @@
 
 #include <Foundation/Foundation.h>
 
+typedef enum _OCCUR_TYPE
+{
+  LCOccur_MUST = 1,
+  LCOccur_SHOULD,
+  LCOccur_MUST_NOT
+} LCOccurType;
+/*
 static NSString *OCCUR_MUST = @"MUST";
 static NSString *OCCUR_SHOULD = @"SHOULD";
 static NSString *OCCUR_MUST_NOT = @"MUST_NOT";
+*/
 
-@interface LCBooleanQuery: NSObject // Serializable
+@class LCQuery;
+
+@interface LCBooleanClause: NSObject // Serializable
 {
-  NSString *occur;
+//  NSString *occur;
+  LCOccurType occur;
+  LCQuery *query; // remove for lucene 2.0
+  BOOL required;
+  BOOL prohibited;
 }
 
 - (id) initWithQuery: (LCQuery *) q
               require: (BOOL) r
 	      prohibited: (BOOL) p;
 - (id) initWithQuery: (LCQuery *) q
-             occur: (NSString *) o;
-- (NSString *) occur;
-- (void) setOccur: (NSString *) o;
+             occur: (LCOccurType) o;
+- (LCOccurType) occur;
+- (void) setOccur: (LCOccurType) o;
+- (NSString *) occurString;
 - (LCQuery *) query;
-- (void) setOuery: (LCQuery *) q;
+- (void) setQuery: (LCQuery *) q;
 - (BOOL) isProhibited;
 - (BOOL) isRequired;
-- (void) setFields: (NSString *) o;
+- (void) setFields: (LCOccurType) o;
 
 @end
 #endif /* __LUCENE_SEARCH_BOOLEAN_CLAUSE__ */

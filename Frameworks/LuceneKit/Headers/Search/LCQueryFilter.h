@@ -3,14 +3,17 @@
 
 #include "Search/LCFilter.h"
 
+@class LCQuery;
+
 @interface LCQueryFilter: LCFilter
 {
   LCQuery *query;
-  NSDictionary *cache;
+  NSMutableDictionary *cache;
 }
-
+/** Constructs a filter which only matches documents matching
+ * <code>query</code>.
+ */
 - (id) initWithQuery: (LCQuery *) query;
-- (LCBitSet *) bits: (LCIndexReader *) reader;
 
 @end
 

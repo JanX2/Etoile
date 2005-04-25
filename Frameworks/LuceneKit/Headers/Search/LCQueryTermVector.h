@@ -3,22 +3,18 @@
 
 #include "Index/LCTermFreqVector.h"
 
+@class LCAnalyzer;
+
 @interface LCQueryTermVector: NSObject <LCTermFreqVector>
 {
-  NSArray *terms;
-  NSArray *termFreqs;
+  NSMutableArray *terms;
+  NSMutableArray *termFreqs;
 }
 
-- (id) initWithQueryTerms: (NSArray *) queryTerm;
-- (id) initWithQueryTerms: (NSArray *) queryTerm 
+- (id) initWithQueryTerms: (NSArray *) queryTerms;
+- (id) initWithString: (NSString *) queryString
        analyzer: (LCAnalyzer *) analyzer;
-- (NSString *) field;
 - (void) processTerms: (NSArray *) queryTerms;
-- (int) size;
-- (NSArray *) terms;
-- (NSArray *) termFrequencies;
-- (int) indexOfTerm: (LCTerm *) term;
-- (NSArray *) IndexOfTerms: (NSArray *) terms start: (int) start length: (int) len;
 
 @end
 

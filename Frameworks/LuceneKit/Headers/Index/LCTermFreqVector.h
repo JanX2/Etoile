@@ -41,7 +41,7 @@
    *  <code>term</code> appears. If this term does not appear in the array,
    *  return -1.
    */
-- (int) indexOf: (NSString *) term;
+- (int) indexOfTerm: (NSString *) term;
 
 
   /** Just like <code>indexOf(int)</code> but searches for a number of terms
@@ -54,7 +54,7 @@
    *  @param len the number of terms in the list
    */
 // NSArray of NSNumber
-- (NSArray *) indexesOfTerms: (NSArray *) terms
+- (NSIndexSet *) indexesOfTerms: (NSArray *) terms
           start: (int) start length: (int) len;
 //  public int[] indexesOf(String[] terms, int start, int len);
 

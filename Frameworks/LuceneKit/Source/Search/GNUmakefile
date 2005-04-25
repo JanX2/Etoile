@@ -3,6 +3,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME = LuceneKit_Search
 
 LuceneKit_Search_OBJC_FILES = \
+	LCBooleanClause.m \
 	LCTopDocs.m \
 	LCTopFieldDocs.m \
 	LCScoreDoc.m \
@@ -16,6 +17,8 @@ LuceneKit_Search_OBJC_FILES = \
 	LCHitQueue.m \
 	LCExplanation.m \
 	LCQuery.m \
+	LCQueryFilter.m \
+	LCQueryTermVector.m \
 	LCIndexSearcher.m \
 	LCSearcher.m \
 	LCScorer.m \
