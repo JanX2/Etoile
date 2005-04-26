@@ -42,7 +42,7 @@
 }
 
   /** Adds a sub-node to this explanation node. */
-- (void) addDetails: (LCExplanation *) detail
+- (void) addDetail: (LCExplanation *) detail
 {
   if (details == nil)
     ASSIGN(details, AUTORELEASE([[NSMutableArray alloc] init]));

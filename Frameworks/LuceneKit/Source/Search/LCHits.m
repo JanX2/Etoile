@@ -124,6 +124,13 @@
   return [[self hitDocument: n] identifier];
 }
 
+/*
+= (id) iterator
+{
+  return [[LCHitIterator alloc] initWithHits: self];
+}
+*/
+
 - (LCHitDocument *) hitDocument: (int) n
 {
   if (n >= length) {

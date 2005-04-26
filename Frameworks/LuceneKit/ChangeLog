@@ -1,3 +1,12 @@
+2005-04-25 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Header/Search/LCConjunctionScorer.h:
+	* Source/Search/LCConjunctionScorer.m:
+	* Header/Search/LCReqOptSumScorer.h:
+	* Source/Search/LCReqOptSumScorer.m:
+	* Header/Search/LCReqExclScorer.h:
+	* Source/Search/LCReqExclScorer.m: ported.
+
 2005-04-24 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Initial Search Implementation.

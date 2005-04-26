@@ -56,6 +56,7 @@
 - (LCDocument *) document: (int) n;
 - (float) score: (int) n;
 - (int) identifier: (int) n;
+//- (id) iterator;
 - (LCHitDocument *) hitDocument: (int) n;
 - (void) addToFront: (LCHitDocument *) hitDoc;
 - (void) remove: (LCHitDocument *) hitDoc;

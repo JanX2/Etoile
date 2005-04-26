@@ -16,7 +16,7 @@
 - (NSString *) representation; 
 - (void) setRepresentation: (NSString *) d;
 - (NSArray *) details;
-- (void) addDetails: (LCExplanation *) details;
+- (void) addDetail: (LCExplanation *) details;
 - (NSString *) descriptionWithDepth: (int) depth;
 - (NSString *) descriptionWithHTML;
 @end

@@ -16,6 +16,9 @@ LuceneKit_Search_OBJC_FILES = \
 	LCHitCollector.m \
 	LCHitQueue.m \
 	LCExplanation.m \
+	LCReqExclScorer.m \
+	LCReqOptSumScorer.m \
+	LCConjunctionScorer.m \
 	LCQuery.m \
 	LCQueryFilter.m \
 	LCQueryTermVector.m \
