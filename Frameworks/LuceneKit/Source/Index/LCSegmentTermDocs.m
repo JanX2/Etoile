@@ -79,7 +79,7 @@
   return doc;
 }
 
-- (long) freq
+- (long) frequency
 {
   return freq;
 }

@@ -376,9 +376,9 @@
   return base + [current document];
 }
 
-- (long) freq
+- (long) frequency
 {
-  return [current freq];
+  return [current frequency];
 }
 
 - (void) seekTerm: (LCTerm *) t

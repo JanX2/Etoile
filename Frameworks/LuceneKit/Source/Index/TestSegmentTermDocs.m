@@ -51,7 +51,7 @@
       {
         long docId = [segTermDocs document];
 	UKIntsEqual(docId, 0);
-        long freq = [segTermDocs freq];
+        long freq = [segTermDocs frequency];
 	UKIntsEqual(freq, 3);
       }
   [reader close];
@@ -125,10 +125,10 @@
   [tdocs seekTerm: ta];
   UKTrue([tdocs next]);
   UKIntsEqual(0, [tdocs document]);
-  UKIntsEqual(4, [tdocs freq]);
+  UKIntsEqual(4, [tdocs frequency]);
   UKTrue([tdocs next]);
   UKIntsEqual(1, [tdocs document]);
-  UKIntsEqual(4, [tdocs freq]);
+  UKIntsEqual(4, [tdocs frequency]);
   UKTrue([tdocs skipTo: 0]);
   UKIntsEqual(2, [tdocs document]);
   UKTrue([tdocs skipTo: 4]);
@@ -153,10 +153,10 @@
   [tdocs seekTerm: tb];
   UKTrue([tdocs next]);
   UKIntsEqual(10, [tdocs document]);
-  UKIntsEqual(4, [tdocs freq]);
+  UKIntsEqual(4, [tdocs frequency]);
   UKTrue([tdocs next]);
   UKIntsEqual(11, [tdocs document]);
-  UKIntsEqual(4, [tdocs freq]);
+  UKIntsEqual(4, [tdocs frequency]);
   UKTrue([tdocs skipTo: 5]);
   UKIntsEqual(12, [tdocs document]);
   UKTrue([tdocs skipTo: 15]);
@@ -185,10 +185,10 @@
   [tdocs seekTerm: tc];
   UKTrue([tdocs next]);
   UKIntsEqual(26, [tdocs document]);
-  UKIntsEqual(4, [tdocs freq]);
+  UKIntsEqual(4, [tdocs frequency]);
   UKTrue([tdocs next]);
   UKIntsEqual(27, [tdocs document]);
-  UKIntsEqual(4, [tdocs freq]);
+  UKIntsEqual(4, [tdocs frequency]);
   UKTrue([tdocs skipTo: 5]);
   UKIntsEqual(28, [tdocs document]);
   UKTrue([tdocs skipTo: 40]);

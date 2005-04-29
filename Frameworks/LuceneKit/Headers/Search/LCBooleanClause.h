@@ -27,7 +27,7 @@ static NSString *OCCUR_MUST_NOT = @"MUST_NOT";
 }
 
 - (id) initWithQuery: (LCQuery *) q
-              require: (BOOL) r
+              required: (BOOL) r
 	      prohibited: (BOOL) p;
 - (id) initWithQuery: (LCQuery *) q
              occur: (LCOccurType) o;

@@ -2,10 +2,8 @@
 #define __LUCENE_DISJUNCTION_SUM_SCORER__
 
 #include "Search/LCScorer.h"
-#include "Util/LCPriorityQueue.h"
 
-@interface LCScorerQueue: LCPriorityQueue
-@end
+@class LCScorerQueue;
 
 @interface LCDisjunctionSumScorer: LCScorer
 {
@@ -22,13 +20,8 @@
        minimumNrMatchers: (int) minimumNrMatchers;
 - (id) initWithSubScorers: (NSArray *) subScorers;
 - (void) initScorerQueue;
-- (BOOL) next;
 - (BOOL) advanceAfterCurrent;
-- (float) score;
-- (int) doc;
 - (int) nrMatchers;
-- (BOOL) skipTo: (int) target;
-- (LCExplanation *) explain: (int) doc;
 
 @end
 

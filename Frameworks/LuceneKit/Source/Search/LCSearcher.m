@@ -105,7 +105,16 @@
 	 hitCollector: (LCHitCollector *) results {}
 - (void) close {}
 - (int) documentFrequencyWithTerm: (LCTerm *) term { return -1; }
-- (NSArray *) documentFrequencyWithTerms: (NSArray *) terms { return nil; }
+- (NSArray *) documentFrequencyWithTerms: (NSArray *) terms 
+{ 
+  NSMutableArray *result = [[NSMutableArray alloc] init];
+  int i;
+  for (i = 0; i < [terms count]; i++)
+  {
+    [result addObject: [NSNumber numberWithInt: [self documentFrequencyWithTerm: [terms objectAtIndex: i]]]];
+  }
+  return AUTORELEASE(result); 
+}
 - (int) maximalDocument { return -1; }
 - (LCTopDocs *) search: (id <LCWeight>) weight 
                 filter: (LCFilter *) filter
@@ -113,10 +122,7 @@
 { return nil; }
 - (LCDocument *) document: (int) i { return nil; }
 - (LCQuery *) rewrite: (LCQuery *) query { return nil; }
-- (LCExplanation *) explainWithQuery: (LCQuery *) query
-                      document: (int) doc
-{ return nil; }
-- (LCExplanation *) explainWithWeight: (id <LCWeight>) weight 
+- (LCExplanation *) explain: (id <LCWeight>) weight 
                       document: (int) doc
 { return nil; }
 - (LCTopFieldDocs *) search: (id <LCWeight>) weight 

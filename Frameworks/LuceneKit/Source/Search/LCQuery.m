@@ -1,4 +1,6 @@
 #include "Search/LCQuery.h"
+#include "Search/LCBooleanClause.h"
+#include "Search/LCBooleanQuery.h"
 
 /** The abstract base class for queries.
     <p>Instantiable subclasses are:
@@ -107,7 +109,7 @@
   return self;
 }
 
-- (void) extractTerms: (NSSet *) terms
+- (void) extractTerms: (NSMutableArray *) terms
 {
   NSLog(@"Unsupported");
 }
@@ -118,26 +120,27 @@
    */
 + (LCQuery *) mergeBooleanQueries: (NSArray *) queries
 {
-#if 0
-    HashSet allClauses = new HashSet();
-    for (int i = 0; i < queries.length; i++) {
-      BooleanClause[] clauses = ((BooleanQuery)queries[i]).getClauses();
-      for (int j = 0; j < clauses.length; j++) {
-        allClauses.add(clauses[j]);
-      }
+  NSMutableArray *allClauses = [[NSMutableArray alloc] init];
+  int i;
+  for (i = 0; i < [queries count]; i++) 
+  {
+    NSArray *clauses = [[queries objectAtIndex: i] clauses];
+    int j;
+    for (j = 0; j < [clauses count]; j++) {
+      [allClauses addObject: [clauses objectAtIndex: j]];
     }
-
-    boolean coordDisabled =
-      queries.length==0? false : ((BooleanQuery)queries[0]).isCoordDisabled();
-    BooleanQuery result = new BooleanQuery(coordDisabled);
-    Iterator i = allClauses.iterator();
-    while (i.hasNext()) {
-      result.add((BooleanClause)i.next());
-    }
-    return result;
-#endif
-    return nil;
   }
+
+  BOOL coordDisabled = ([queries count] == 0) ? NO : [[queries objectAtIndex: 0] isCoordinationDisabled];
+  LCBooleanQuery *result = [[LCBooleanQuery alloc] initWithCoordination: coordDisabled];
+  NSEnumerator *e = [allClauses objectEnumerator];
+  LCBooleanClause *clause;
+  while ((clause = [e nextObject]))
+  {
+    [result addClause: clause];
+  }
+  return result;
+}
 
   /** Expert: Returns the Similarity implementation to be used for this query.
    * Subclasses may override this method to specify their own Similarity

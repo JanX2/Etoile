@@ -135,7 +135,7 @@
   	    tp = [_termPositionsQueue peek];
 
   int i;
-	    for (i=0; i< [tp freq]; i++)
+	    for (i=0; i< [tp frequency]; i++)
 	     [_posList add: [tp nextPosition]];
 
 	    if ([tp next])
@@ -181,7 +181,7 @@
 	return _doc;
     }
 
-- (long) freq
+- (long) frequency
 {
 	return _freq;
     }

@@ -31,7 +31,7 @@
 
   /** Returns the frequency of the term within the current document.  <p> This
    is invalid until {@link #next()} is called for the first time.*/
-- (long) freq;  // VInt
+- (long) frequency;  // VInt
 
   /** Moves to the next pair in the enumeration.  <p> Returns true iff there is
    such a next pair in the enumeration. */

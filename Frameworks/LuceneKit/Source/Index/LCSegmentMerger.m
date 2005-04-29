@@ -412,7 +412,7 @@
         int docCode = (doc - lastDoc) << 1;	  // use low bit to flag freq=1
         lastDoc = doc;
 
-        int freq = [postings freq];
+        int freq = [postings frequency];
         if (freq == 1) {
           [freqOutput writeVInt: (docCode | 1)];  // write doc & freq=1
         } else {

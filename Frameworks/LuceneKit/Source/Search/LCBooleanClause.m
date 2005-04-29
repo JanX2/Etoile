@@ -13,7 +13,7 @@
 }
 
 - (id) initWithQuery: (LCQuery *) q
-       require: (BOOL) r
+       required: (BOOL) r
        prohibited: (BOOL) p
 {
   self = [self init];

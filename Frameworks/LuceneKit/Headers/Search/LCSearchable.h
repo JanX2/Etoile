@@ -27,9 +27,7 @@
 		maximum: (int) n;
 - (LCDocument *) document: (int) i;
 - (LCQuery *) rewrite: (LCQuery *) query;
-- (LCExplanation *) explainWithQuery: (LCQuery *) query
-                      document: (int) doc;
-- (LCExplanation *) explainWithWeight: (id <LCWeight>) weight 
+- (LCExplanation *) explain: (id <LCWeight>) weight 
                       document: (int) doc;
 - (LCTopFieldDocs *) search: (id <LCWeight>) weight 
                      filter: (LCFilter *) filter

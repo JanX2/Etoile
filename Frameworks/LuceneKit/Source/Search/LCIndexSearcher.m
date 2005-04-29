@@ -303,14 +303,7 @@
   return query;
 }
 
-- (LCExplanation *) explainWithQuery: (LCQuery *) query
-                      document: (int) doc
-{
-  return [self explainWithWeight: [query weight: self]
-	       document: doc];
-}
-
-- (LCExplanation *) explainWithWeight: (id <LCWeight>) weight 
+- (LCExplanation *) explain: (id <LCWeight>) weight 
                       document: (int) doc
 {
   return [weight explain: reader document: doc];

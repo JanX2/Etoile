@@ -3,55 +3,50 @@
 
 #include "Search/LCQuery.h"
 #include "Search/LCWeight.h"
+#include "Search/LCBooleanClause.h"
+
+@class LCSimilarity;
+@class LCSearcher;
+@class LCBooleanQuery;
 
 // private
-@interface LCBooleanWeight: LCWeight
+/* LuceneKit: this is actually BooleanWeight2 in lucene */
+@interface LCBooleanWeight: NSObject <LCWeight>
 {
-  LCSearcher *searcher;
-  NSArray *weights;
+  LCSimilarity *similarity;
+  LCBooleanQuery *query;
+  NSMutableArray *weights;
 }
 
-- (id) initWithSearcher: (LCSearcher *) searcher;
-- (LCQuery *) query;
-- (float) value;
-- (float) sumOfSquaredWeights;
-- (void) normalize: (float) norm;
-- (LCScorer *) scorer: (LCIndexReader *) reader;
-- (LCExplanation *) explain: (LCIndexReader *) reader doc: (int) doc;
+- (id) initWithSearcher: (LCSearcher *) searcher
+                  query: (LCBooleanQuery *) query;
 @end
 
-@interface LCBooleanWeight2: LCBooleanWeight
-@end
-
-static int maxClauseCount = 1024
-static BOOL useScore14 = NO;
+static int maxClauseCount = 1024;
 
 @interface LCBooleanQuery: LCQuery
 {
-  NSArray *clauses;
+  NSMutableArray *clauses;
   BOOL disableCoord;
 }
 
 + (int) maxClauseCount;
 + (void) setMaxClauseCount: (int) maxClauseCount;
 
-- (id) initWithCoord: (BOOL) disableCoord;
+- (id) initWithCoordination: (BOOL) disableCoord;
 
-- (BOOL) isCoordDisabled;
+- (BOOL) isCoordinationDisabled;
 - (LCSimilarity *) similarity: (LCSearcher *) searcher;
 - (void) addQuery: (LCQuery *) query
          required: (BOOL) required
 	 prohibited: (BOOL) prohibited;
 - (void) addQuery: (LCQuery *) query
-	  occur: (NSString *) occur;
+	    occur: (LCOccurType) occur;
 - (void) addClause: (LCBooleanClause *) clause;
 - (NSArray *) clauses;
-
-+ (void) setUseScorer14: (BOOL) use14;
-+ (BOOL) useScorer14;
-- (LCWeight *) createWeight: (LCSearcher *) searcher;
-- (LCQuery *) rewrite: (LCIndexReader *) reader;
-
+- (void) setClauses: (NSArray *) clauses;
+- (void) replaceClauseAtIndex: (int) index 
+         withClause: (LCBooleanClause *) clause;
 @end
 
 #endif /* __LUCENE_SEARCH_BOOLEAN_QUERY__ */

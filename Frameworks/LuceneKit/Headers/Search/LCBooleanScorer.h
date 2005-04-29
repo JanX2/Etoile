@@ -1,90 +1,65 @@
-#ifndef __LUCENE_SEARCHER_BOOLEAN_SCORER__
-#define __LUCENE_SEARCHER_BOOLEAN_SCORER__
+#ifndef __LUCENE_SEARCH_BOOLEAN_SCORER2__
+#define __LUCENE_SEARCH_BOOLEAN_SCORER2__
 
-#include "Searcher/LCScorer.h"
+#include "Search/LCScorer.h"
 
-@interface SubScorer: NSObject
+/* LuceneKit: This is actuall the BooleanScorer2 in lucene */
+
+@class LCBooleanScorer;
+@class LCCoordinator;
+
+@interface LCCoordinator: NSObject
+{
+  int maxCoord;
+  NSMutableArray *coordFactors;
+  
+  int nrMatchers;
+  LCBooleanScorer *scorer;
+}
+- (id) initWithScorer: (LCBooleanScorer *) scorer;
+- (void) initiation; /* LuceneKit: init in lucene */
+- (void) initiateDocument;
+- (float) coordFactor;
+- (int) maxCoord;
+- (void) setMaxCoord: (int) maxCoord;
+- (int) nrMatchers;
+- (void) setNrMatchers: (int) matchers;
+@end
+
+@interface LCSingleMatchScorer: LCScorer
 {
   LCScorer *scorer;
-  BOOL isDone;
-  BOOL required;
-  BOOL prohibited;
-  LCHitCollector *collector;
-  LCSubScorer *next;
+  LCCoordinator *coordinator;
 }
 
 - (id) initWithScorer: (LCScorer *) scorer
-       required: (BOOL) required
-       prohibited: (BOOL) prohibited
-       hitCollector: (LCHitCollector *) collector
-       next: (LCSubScorer *) next;
+       coordinator: (LCCoordinator *) coordinator;
 @end
 
-@interface LCBucket: NSObject
+@interface LCBooleanScorer: LCScorer
 {
-   int doc = -1; // tells if bucket is valid
-   float score;  // incremental score
-   int bits;     // used for bool constraints
-   int coord;    // count of terms in score
-   LCBucket *next;  // next valid bucket
-}
+  NSMutableArray *requiredScorers;
+  NSMutableArray *optionalScorers;
+  NSMutableArray *prohibitedScorers;
+  
+  LCCoordinator *coordinator;
+  LCScorer *countingSumScorer;
 
-/** A simple hash table of document scores within a range. */
-@interface LCBucketTable: NSObject
-{
-  int SIZE;
-  int MASK;
-
-  NSArray *buckets;
-  LCBucket *first;
-
-  LCBooleanScorer *scorer;
-}
-
-- (id) initWithBooleanScorer: (LCBooleanScorer *) scorer;
-- (int) size;
-- (LCHitCollector *) newCollector: (int) mask;
-@end
-
-@interface LCCollector: LCHitCollector
-{
-  LCBucketTable *bucketTable;
-  int mask;
-}
-
-- (id) initWithMask: (int) mask bucketTable: (LCBucketTable *) bucketTable;
-- (void) collect: (int) doc score: (float) score;
-@end
-
-@interface BooleanScorer: LCScorer
-{
-  LCSubScorer *scorers;
-  LCBucketTable *bucketTable;
-  int maxCoord;
-  NSArray *coordFactors;
-  int requiredMask;
-  int prohibitedMask;
-  int nextMask;
-
-  int end;
-  LCBucket *current;
+  LCSimilarity *defaultSimilarity;
 }
 
 - (id) initWithSimilarity: (LCSimilarity *) similarity;
 - (void) addScorer: (LCScorer *) scorer
          required: (BOOL) required
 	 prohibited: (BOOL) prohibited;
-- (void) computeCorrdFactors;
-- (void) score: (LCHitCollector *) hc;
-- (BOOL) score: (LCHitCollector *) hc
-         max: (int) max;
-- (int) doc;
-- (BOOL) next;
-- (float) score;
-
-- (BOOL) skipTo: (int) target;
-- (LCExplanation *) explain: (int) doc;
-
+- (void) initCountingSumScorer;
+- (LCScorer *) countingDisjunctionSumScorer: (NSArray *) scorers;
+- (LCScorer *) countingConjunctionSumScorer: (NSArray *) requiredScorers;
+- (LCScorer *) makeCountingSumScorer;
+- (LCScorer *) makeCountingSumScorer2: (LCScorer *) requiredCountingSumScorer
+               optional: (NSArray *) optionalScorers;
+- (LCScorer *) makeCountingSumScorer3: (LCScorer *) requiredCountingSumScorer
+               optional: (LCScorer *) optionalCountingSumScorer;
 @end
 
-#endif /* __LUCENE_SEARCHER_BOOLEAN_SCORER__ */
+#endif /* __LUCENE_SEARCH_BOOLEAN_SCORER2__ */

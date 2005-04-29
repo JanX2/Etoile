@@ -4,6 +4,8 @@ SUBPROJECT_NAME = LuceneKit_Search
 
 LuceneKit_Search_OBJC_FILES = \
 	LCBooleanClause.m \
+	LCBooleanQuery.m \
+	LCBooleanScorer.m \
 	LCTopDocs.m \
 	LCTopFieldDocs.m \
 	LCScoreDoc.m \
@@ -19,6 +21,8 @@ LuceneKit_Search_OBJC_FILES = \
 	LCReqExclScorer.m \
 	LCReqOptSumScorer.m \
 	LCConjunctionScorer.m \
+	LCDisjunctionSumScorer.m \
+	LCNonMatchingScorer.m \
 	LCQuery.m \
 	LCQueryFilter.m \
 	LCQueryTermVector.m \
@@ -31,7 +35,9 @@ LuceneKit_Search_OBJC_FILES = \
 	LCSortComparator.m \
 	LCSimilarity.m  \
 	LCDefaultSimilarity.m \
-	LCSimilarityDelegator.m 
+	LCSimilarityDelegator.m \
+	LCTermQuery.m \
+	LCTermScorer.m
 
 LuceneKit_Search_INCLUDE_DIRS += -I../../Headers -I../
 

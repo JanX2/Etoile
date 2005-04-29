@@ -1,3 +1,25 @@
+2005-04-27 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Header/Search/LCTermQuery.h:
+	* Source/Search/LCTermQuery.m: 
+	* Header/Search/LCTermScorer.h:
+	* Source/Search/LCTermScorer.m: 
+	* Header/Search/LCNonMatchingScorer.h:
+	* Source/Search/LCNonMatchingScorer.m: 
+	* Header/Search/LCBooleanScorer.h:
+	* Source/Search/LCBooleanScorer.m: 
+	* Header/Search/LCDisjunctionSumScorer.h:
+	* Source/Search/LCDisjunctionSumScorer.m: ported.
+	NOTE: LCBooleanScorer is ported from BooleanScorer2 in lucene
+	since it is the scorer for lucene 1.9/2.0.
+	Original BooleanScorer in lucene is for 1.4.
+
+2005-04-26 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Catch up lucene svn version.
+	* Header/Search/LCBooleanQuery.h:
+	* Source/Search/LCBooleanQuery.m: ported.
+
 2005-04-25 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Header/Search/LCConjunctionScorer.h:

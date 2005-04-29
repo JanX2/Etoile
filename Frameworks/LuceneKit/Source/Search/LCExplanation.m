@@ -4,7 +4,7 @@
 /** Expert: Describes the score computation for document and query. */
 @implementation LCExplanation
 
-- (id) initWithValue: (float) v description: (NSString *) d
+- (id) initWithValue: (float) v representation: (NSString *) d
 {
   self = [super init];
   [self setValue: v];

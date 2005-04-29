@@ -33,9 +33,9 @@
   return [input document];
 }
 
-- (long) freq
+- (long) frequency
 {
-  return [input freq];
+  return [input frequency];
 }
 
 - (BOOL) next

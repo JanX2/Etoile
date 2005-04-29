@@ -9,7 +9,7 @@
   NSMutableArray *details; // sub-explanations
 }
 
-- (id) initWithValue: (float) v description: (NSString *) d;
+- (id) initWithValue: (float) v representation: (NSString *) d;
 - (float) value;
 - (void) setValue: (float) value;
 /* LuceneKit: replace description */

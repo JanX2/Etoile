@@ -18,7 +18,7 @@
 - (id <LCWeight>) weight: (LCSearcher *) searcher;
 - (LCQuery *) rewrite: (LCIndexReader *) reader;
 - (LCQuery *) combine: (NSArray *) queries;
-- (void) extractTerms: (NSSet *) terms;
+- (void) extractTerms: (NSMutableArray *) terms;
 + (LCQuery *) mergeBooleanQueries: (NSArray *) queries;
 - (LCSimilarity *) similarity: (LCSearcher *) searcher;
 @end
