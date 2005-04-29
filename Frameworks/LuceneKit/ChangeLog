@@ -1,5 +1,6 @@
 2005-04-27 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
+	* Header/Search/LCBooleanScorers.h: removed.
 	* Header/Search/LCTermQuery.h:
 	* Source/Search/LCTermQuery.m: 
 	* Header/Search/LCTermScorer.h:
