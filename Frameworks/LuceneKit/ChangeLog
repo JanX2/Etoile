@@ -1,3 +1,10 @@
+2005-04-29 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Header/Search/LCHit.h:
+	* Source/Search/LCHit.m: 
+	* Header/Search/LCHitIterator.h:
+	* Source/Search/LCHitIterator.m: ported.
+
 2005-04-27 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Header/Search/LCBooleanScorers.h: removed.

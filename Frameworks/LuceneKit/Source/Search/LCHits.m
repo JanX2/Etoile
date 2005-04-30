@@ -5,6 +5,7 @@
 #include "Search/LCQuery.h"
 #include "Search/LCTopDocs.h"
 #include "Search/LCScoreDoc.h"
+#include "Search/LCHitIterator.h"
 #include "Document/LCDocument.h"
 #include "GNUstep/GNUstep.h"
 
@@ -87,7 +88,7 @@
   }
 }
 
-- (unsigned int) length
+- (unsigned int) count 
 {
   return length;
 }
@@ -124,12 +125,10 @@
   return [[self hitDocument: n] identifier];
 }
 
-/*
-= (id) iterator
+- (LCHitIterator *) iterator
 {
-  return [[LCHitIterator alloc] initWithHits: self];
+  return AUTORELEASE([[LCHitIterator alloc] initWithHits: self]);
 }
-*/
 
 - (LCHitDocument *) hitDocument: (int) n
 {
