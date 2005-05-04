@@ -5,7 +5,7 @@
 #include "Index/LCTerm.h"
 #include "Index/LCTermPositionVector.h"
 #include "Document/LCDocument.h"
-#include "Store/LCRAMdirectory.h"
+#include "Store/LCRAMDirectory.h"
 #include <UnitKit/UnitKit.h>
 #include <Foundation/Foundation.h>
 #include "Store/LCDirectory.h"

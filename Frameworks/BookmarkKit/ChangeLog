@@ -1,3 +1,8 @@
+2005-05-04  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/BKBookmark.m: Fixed case mismatch which prevented compilation on 
+    case sensitive system (patch provided by Rob Burns).
+
 2005-03-10  Quentin Mathe <qmathe@club-internet.fr>
 
     * INSTALL: Updated to talk about BookmarkKit and not Gorm

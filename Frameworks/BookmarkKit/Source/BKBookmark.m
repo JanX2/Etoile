@@ -24,7 +24,7 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <AppKit/Appkit.h>
+#import <AppKit/AppKit.h>
 #import "BKBookmark.h"
 
 @implementation BKBookmark

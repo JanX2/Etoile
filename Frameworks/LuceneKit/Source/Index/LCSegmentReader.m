@@ -1,5 +1,5 @@
-#include "index/LCSegmentReader.h"
-#include "index/LCSegmentTermPositions.h"
+#include "Index/LCSegmentReader.h"
+#include "Index/LCSegmentTermPositions.h"
 #include "Document/LCDocument.h"
 #include "Store/LCIndexInput.h"
 #include "Store/LCIndexOutput.h"

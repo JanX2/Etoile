@@ -8,7 +8,7 @@
 #include "Document/LCDocument.h"
 #include "GNUstep/GNUstep.h"
 #include <Foundation/Foundation.h>
-#include <Unitkit/UnitKit.h>
+#include <UnitKit/UnitKit.h>
 
 @interface TestTermVectorsWriter: NSObject <UKTest>
 {

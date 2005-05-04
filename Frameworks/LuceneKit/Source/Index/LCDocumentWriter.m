@@ -1,7 +1,7 @@
 #include "Index/LCDocumentWriter.h"
 #include "Index/LCTermVectorOffsetInfo.h"
 #include "Index/LCTerm.h"
-#include "Index/LCTermbuffer.h"
+#include "Index/LCTermBuffer.h"
 #include "Index/LCTermInfo.h"
 #include "Index/LCTermInfosWriter.h"
 #include "Index/LCTermVectorsWriter.h"
@@ -436,7 +436,7 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
 #include "Store/LCRAMDirectory.h"
 #include "Analysis/LCWhitespaceAnalyzer.h"
 #include "Index/LCSegmentReader.h"
-#include "Index/LCSegmentinfo.h"
+#include "Index/LCSegmentInfo.h"
 #include "TestDocHelper.h"
 
 @interface TestDocumentWriter: NSObject <UKTest>

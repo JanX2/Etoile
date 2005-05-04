@@ -1,3 +1,13 @@
+2005-05-04 Quentin Mathe <qmathe@club-internet.fr>
+
+	* Source/Analysis/LCSimpleAnalyser.m:
+	* Source/Index/LCDocumentWriter.m:
+	* Source/Index/LCSegmentReader.m:
+	* Source/Index/TestSegmentMerger.m:
+	* Source/Index/TestTermVectorsWriter.m:
+	Fixed case mismatches which prevented compilation on case sensitive system 
+	(patch provided by Rob Burns).
+
 2005-04-29 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Header/Search/LCHit.h:

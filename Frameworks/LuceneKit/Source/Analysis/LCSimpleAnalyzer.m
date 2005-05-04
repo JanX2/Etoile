@@ -1,5 +1,5 @@
 #include "Analysis/LCSimpleAnalyzer.h"
-#include "Analysis/LCLowerCasetokenizer.h"
+#include "Analysis/LCLowerCaseTokenizer.h"
 #include "GNUstep/GNUstep.h"
 
 @implementation LCSimpleAnalyzer
