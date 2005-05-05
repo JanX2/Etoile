@@ -1,3 +1,9 @@
+2005-05-05  Quentin Mathe <qmathe@club-internet.fr>
+    
+    Warning! doesn't compile.
+    * Source/GNUmakefile: Removed unneeded GNUSTEP_MAKEFILES definition which
+    seems to break compilation with recent GNUstep version.
+    
 2005-10-03  Quentin Mathe <qmathe@club-internet.fr>
         
     Warning! doesn't compile.

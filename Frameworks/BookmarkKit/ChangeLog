@@ -1,3 +1,8 @@
+2005-05-05  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Source/GNUmakefile: Removed unneeded GNUSTEP_MAKEFILES definition which
+    seems to break compilation with recent GNUstep version.
+    
 2005-05-04  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/BKBookmark.m: Fixed case mismatch which prevented compilation on 
