@@ -11,7 +11,7 @@
 
 /* only used by LCSegmentTermEnum */
 - (void) read: (LCIndexInput *) input
-         fieldInfos: (LCFieldInfos *) fieldInfos;
+   fieldInfos: (LCFieldInfos *) fieldInfos;
 
 @end
 

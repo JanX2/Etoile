@@ -5,11 +5,11 @@
 
 @interface LCPhraseWeight: LCWeight
 {
-  LCSearcher *searcher;
-  float value;
-  float idf;
-  float queryNorm;
-  float queryWeight;
+	LCSearcher *searcher;
+	float value;
+	float idf;
+	float queryNorm;
+	float queryWeight;
 }
 
 - (id) initWithSearcher: (LCSearcher *) searcher;
@@ -20,14 +20,14 @@
 - (LCScorer *) scorer: (LCIndexReader *) reader;
 - (LCExplanation *) explain: (LCindexReader *) doc: (int) doc;
 - (LCWeight *) createWeight: (LCSearcher *) searcher;
-@ehd
+@end
 
 @interface LCPhraseQuery: LCQuery
 {
-  NSString *field;
-  NSArray *terms;
-  NSArray *positions;
-  int slop;
+	NSString *field;
+	NSArray *terms;
+	NSArray *positions;
+	int slop;
 }
 
 - (void) setSlop: (int) s;

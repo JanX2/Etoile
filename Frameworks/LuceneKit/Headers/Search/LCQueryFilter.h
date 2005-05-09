@@ -7,12 +7,12 @@
 
 @interface LCQueryFilter: LCFilter
 {
-  LCQuery *query;
-  NSMutableDictionary *cache;
+	LCQuery *query;
+	NSMutableDictionary *cache;
 }
 /** Constructs a filter which only matches documents matching
- * <code>query</code>.
- */
+* <code>query</code>.
+*/
 - (id) initWithQuery: (LCQuery *) query;
 
 @end

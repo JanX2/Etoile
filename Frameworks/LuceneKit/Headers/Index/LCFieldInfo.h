@@ -5,19 +5,19 @@
 
 @interface LCFieldInfo: NSObject
 {
-  NSString *name;
-  BOOL isIndexed;
-  int number;
-
-  // true if term vector for this field should be stored
-  BOOL storeTermVector;
-  BOOL storeOffsetWithTermVector;
-  BOOL storePositionWithTermVector;
+	NSString *name;
+	BOOL isIndexed;
+	int number;
+	
+	// true if term vector for this field should be stored
+	BOOL storeTermVector;
+	BOOL storeOffsetWithTermVector;
+	BOOL storePositionWithTermVector;
 }
 
 - (id) initWithName: (NSString *) na
-           isIndexed: (BOOL) tk
-	   number: (int) nu
+		  isIndexed: (BOOL) tk
+			 number: (int) nu
 	   storeTermVector: (BOOL) tv
 	   storePositionWithTermVector: (BOOL) pos
 	   storeOffsetWithTermVector: (BOOL) off;

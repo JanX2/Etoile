@@ -8,8 +8,8 @@
 
 @interface LCHitIterator: NSObject
 {
-  LCHits *hits;
-  int hitNumber;
+	LCHits *hits;
+	int hitNumber;
 }
 - (id) initWithHits: (LCHits *) hits;
 - (BOOL) hasNext;

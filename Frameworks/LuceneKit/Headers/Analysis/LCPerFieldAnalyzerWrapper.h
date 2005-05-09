@@ -5,8 +5,8 @@
 
 @interface LCPerFieldAnalyzerWrapper: LCAnalyzer
 {
-  LCAnalyzer *defaultAnalyzer;
-  NSMutableDictionary *analyzerMap;
+	LCAnalyzer *defaultAnalyzer;
+	NSMutableDictionary *analyzerMap;
 }
 
 - (id) initWithAnalyzer: (LCAnalyzer *) analyzer;

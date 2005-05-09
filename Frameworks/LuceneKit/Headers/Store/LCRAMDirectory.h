@@ -5,7 +5,7 @@
 
 @interface LCRAMDirectory: NSObject <LCDirectory>
 {
-  NSMutableDictionary *files;
+	NSMutableDictionary *files;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) dir;

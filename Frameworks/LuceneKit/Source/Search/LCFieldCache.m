@@ -3,7 +3,7 @@
 #include "GNUstep/GNUstep.h"
 
 /**
- * Expert: Maintains caches of term values.
+* Expert: Maintains caches of term values.
  *
  * <p>Created: May 19, 2004 11:13:14 AM
  *
@@ -15,27 +15,27 @@
 
 - (id) initWithOrder: (NSDictionary *) values lookup: (NSArray *) l
 {
-  self = [super init];
-  ASSIGN(order, values);
-  ASSIGN(lookup, l);
-  return self;
+	self = [super init];
+	ASSIGN(order, values);
+	ASSIGN(lookup, l);
+	return self;
 }
 
 - (NSDictionary *) order
 {
-  return order;
+	return order;
 }
 
 - (NSArray *) lookup
 {
-  return lookup;
+	return lookup;
 }
 
 - (void) dealloc
 {
-  DESTROY(order);
-  DESTROY(lookup);
-  [super dealloc];
+	DESTROY(order);
+	DESTROY(lookup);
+	[super dealloc];
 }
 
 @end
@@ -45,42 +45,42 @@ static LCFieldCache *defaultImpl = nil;
 @implementation LCFieldCache
 + (LCFieldCache *) defaultCache
 {
-  if (defaultImpl == nil)
-  {
-    ASSIGN(defaultImpl, AUTORELEASE([[LCFieldCacheImpl alloc] init]));
-  }
-  return defaultImpl;
+	if (defaultImpl == nil)
+	{
+		ASSIGN(defaultImpl, AUTORELEASE([[LCFieldCacheImpl alloc] init]));
+	}
+	return defaultImpl;
 }
 
 - (NSDictionary *) ints: (LCIndexReader *) reader field: (NSString *) field
 {
-  return nil;
+	return nil;
 }
 
 - (NSDictionary *) floats: (LCIndexReader *) reader field: (NSString *) field
 {
-  return nil;
+	return nil;
 }
 
 - (NSDictionary *) strings: (LCIndexReader *) reader field: (NSString *) field
 {
-  return nil;
+	return nil;
 }
 
 - (LCStringIndex *) stringIndex: (LCIndexReader *) reader field: (NSString *) field
 {
-  return nil;
+	return nil;
 }
 
 - (id) objects: (LCIndexReader *) reader field: (NSString *) field
 {
-  return nil;
+	return nil;
 }
 
 - (NSDictionary *) custom: (LCIndexReader *) reader field: (NSString *) field
-       sortComparator: (LCSortComparator *) comparator
+		   sortComparator: (LCSortComparator *) comparator
 {
-  return nil;
+	return nil;
 }
 
 @end

@@ -8,22 +8,22 @@
 
 @interface LCTermInfosReader: NSObject
 {
-  id <LCDirectory> directory;
-  NSString *segment;
-  LCFieldInfos *fieldInfos;
-  LCSegmentTermEnum *origEnum;
-  unsigned long long size;
-
-  NSMutableArray *indexTerms; // LCTerm
-  NSMutableArray *indexInfos;  // LCTermInfo
-  NSMutableArray *indexPointers; // NSNumber int
-
-  LCSegmentTermEnum *indexEnum;
+	id <LCDirectory> directory;
+	NSString *segment;
+	LCFieldInfos *fieldInfos;
+	LCSegmentTermEnum *origEnum;
+	unsigned long long size;
+	
+	NSMutableArray *indexTerms; // LCTerm
+	NSMutableArray *indexInfos;  // LCTermInfo
+	NSMutableArray *indexPointers; // NSNumber int
+	
+	LCSegmentTermEnum *indexEnum;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) dir
-                segment: (NSString *) seg
-		   fieldInfos: (LCFieldInfos *) fis;
+				 segment: (NSString *) seg
+			  fieldInfos: (LCFieldInfos *) fis;
 - (int) skipInterval;
 - (void) close;
 - (long) size;

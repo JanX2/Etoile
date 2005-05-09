@@ -12,28 +12,28 @@
 
 @interface LCTermInfosWriter: NSObject
 {
-  LCFieldInfos *fieldInfos;
-  LCIndexOutput *output;
-  LCTerm *lastTerm;
-  LCTermInfo *lastTi;
-  long long size;
-  int indexInterval;
-  int skipInterval;
-  long lastIndexPointer;
-  BOOL isIndex;
-  LCTermInfosWriter *other;
+	LCFieldInfos *fieldInfos;
+	LCIndexOutput *output;
+	LCTerm *lastTerm;
+	LCTermInfo *lastTi;
+	long long size;
+	int indexInterval;
+	int skipInterval;
+	long lastIndexPointer;
+	BOOL isIndex;
+	LCTermInfosWriter *other;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) directory
-                segment: (NSString *) segment
-                fieldInfos: (LCFieldInfos *) fis
+				 segment: (NSString *) segment
+			  fieldInfos: (LCFieldInfos *) fis
                 interval: (int) interval;
 #if 0
 - (id) initWithDirectory: (id <LCDirectory>) directory
-                segment: (NSString *) segment
-                fieldInfos: (LCFieldInfos *) fis
+				 segment: (NSString *) segment
+			  fieldInfos: (LCFieldInfos *) fis
                 interval: (int) interval
-		isIndex: (BOOL) isIndex;
+				 isIndex: (BOOL) isIndex;
 #endif
 
 - (void) setOther: (LCTermInfosWriter *) other;

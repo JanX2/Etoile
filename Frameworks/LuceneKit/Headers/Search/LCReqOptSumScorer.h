@@ -5,9 +5,9 @@
 
 @interface LCReqOptSumScorer: LCScorer
 {
-  LCScorer *reqScorer;
-  LCScorer *optScorer;
-  BOOL firstTimeOptScorer;
+	LCScorer *reqScorer;
+	LCScorer *optScorer;
+	BOOL firstTimeOptScorer;
 }
 
 - (id) initWithRequired: (LCScorer *) required optional: (LCScorer *) optional;

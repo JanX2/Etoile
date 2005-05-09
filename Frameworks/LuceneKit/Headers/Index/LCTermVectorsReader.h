@@ -7,18 +7,18 @@
 
 @interface LCTermVectorsReader: NSObject <NSCopying>
 {
-  LCFieldInfos *fieldInfos;
-  LCIndexInput *tvx, *tvd, *tvf;
-  long size, tvdFormat, tvfFormat;;
+	LCFieldInfos *fieldInfos;
+	LCIndexInput *tvx, *tvd, *tvf;
+	long size, tvdFormat, tvfFormat;;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) d
                  segment: (NSString *) segment
-	      fieldInfos: (LCFieldInfos *) fieldInfos;
+			  fieldInfos: (LCFieldInfos *) fieldInfos;
 - (void) close;
 - (int) size;
 - (id <LCTermFreqVector>) termFreqVectorWithDocument: (int) docNum
-	                           field: (NSString *) field;
+											   field: (NSString *) field;
 - (NSArray *) termFreqVectorsWithDocument: (int) docNum;
 
 @end

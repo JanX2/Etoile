@@ -8,16 +8,16 @@
 
 @interface LCSegmentMergeInfo: NSObject <LCComparable>
 {
-  LCTerm *term;
-  int base;
-  LCTermEnum *termEnum;
-  LCIndexReader *reader;
-  id <LCTermPositions> postings;
-  NSMutableArray *docMap; // maps around deleted docs
+	LCTerm *term;
+	int base;
+	LCTermEnum *termEnum;
+	LCIndexReader *reader;
+	id <LCTermPositions> postings;
+	NSMutableArray *docMap; // maps around deleted docs
 }
 
 - (id) initWithBase: (int) b termEnum: (LCTermEnum *) te 
-              reader: (LCIndexReader *) r;
+			 reader: (LCIndexReader *) r;
 - (LCTerm *) term;
 - (LCTermEnum *) termEnum;
 - (int) base;

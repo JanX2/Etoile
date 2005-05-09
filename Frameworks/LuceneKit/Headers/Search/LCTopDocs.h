@@ -5,16 +5,16 @@
 
 @interface LCTopDocs: NSObject
 {
-  /** Expert: The total number of hits for the query.
-   * @see Hits#length()
-   */
-  int totalHits;
-  /** Expert: The top hits for the query. */
-  NSArray *scoreDocs;
+	/** Expert: The total number of hits for the query.
+	* @see Hits#length()
+	*/
+	int totalHits;
+	/** Expert: The top hits for the query. */
+	NSArray *scoreDocs;
 }
 /** Expert: Constructs a TopDocs.*/
 - (id) initWithTotalHits: (int) totalHits 
-       scoreDocuments: (NSArray *) scoreDocs;
+		  scoreDocuments: (NSArray *) scoreDocs;
 - (int) totalHits;
 - (NSArray *) scoreDocuments;
 @end

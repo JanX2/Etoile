@@ -10,46 +10,46 @@
 
 typedef enum _LCFieldOption
 {
-  // all fields
-  LCFieldOption_ALL = 0,
-  // all indexed fields
-  LCFieldOption_INDEXED,
-  // all fields which are not indexed
-  LCFieldOption_UNINDEXED,
-  // all fields which are indexed with termvectors enables
-  LCFieldOption_INDEXED_WITH_TERMVECTOR,
-  // all fields which are indexed but don't have termvectors enabled
-  LCFieldOption_INDEXED_NO_TERMVECTOR,
-  // all fields where termvectors are enabled. Please note that only standard termvector fields are returned
-  LCFieldOption_TERMVECTOR,
-  // all field with termvectors wiht positions enabled
-  LCFieldOption_TERMVECTOR_WITH_POSITION,
-  // all fields where termvectors with offset position are set
-  LCFieldOption_TERMVECTOR_WITH_OFFSET,
-  // all fields where termvectors with offset and position values set
-  LCFieldOption_TERMVECTOR_WITH_POSITION_OFFSET
+	// all fields
+	LCFieldOption_ALL = 0,
+	// all indexed fields
+	LCFieldOption_INDEXED,
+	// all fields which are not indexed
+	LCFieldOption_UNINDEXED,
+	// all fields which are indexed with termvectors enables
+	LCFieldOption_INDEXED_WITH_TERMVECTOR,
+	// all fields which are indexed but don't have termvectors enabled
+	LCFieldOption_INDEXED_NO_TERMVECTOR,
+	// all fields where termvectors are enabled. Please note that only standard termvector fields are returned
+	LCFieldOption_TERMVECTOR,
+	// all field with termvectors wiht positions enabled
+	LCFieldOption_TERMVECTOR_WITH_POSITION,
+	// all fields where termvectors with offset position are set
+	LCFieldOption_TERMVECTOR_WITH_OFFSET,
+	// all fields where termvectors with offset and position values set
+	LCFieldOption_TERMVECTOR_WITH_POSITION_OFFSET
 } LCFieldOption;
 
 @interface LCIndexReader: NSObject
 {
-  id <LCDirectory> directory;
-  BOOL directoryOwner;
-  BOOL closeDirectory;
-
-  LCSegmentInfos *segmentInfos;
-  // Lock writeLock
-  BOOL stale;
-  BOOL hasChanges;
+	id <LCDirectory> directory;
+	BOOL directoryOwner;
+	BOOL closeDirectory;
+	
+	LCSegmentInfos *segmentInfos;
+	// Lock writeLock
+	BOOL stale;
+	BOOL hasChanges;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) directory;
 - (id) initWithDirectory: (id <LCDirectory>) dir       
-	segmentInfos: (LCSegmentInfos *) seg       
-	closeDirectory: (BOOL) close;
+			segmentInfos: (LCSegmentInfos *) seg       
+		  closeDirectory: (BOOL) close;
 - (id) initWithDirectory: (id <LCDirectory>) dir       
-	segmentInfos: (LCSegmentInfos *) seg       
-	closeDirectory: (BOOL) close
-	directoryOwner: (BOOL) owner;
+			segmentInfos: (LCSegmentInfos *) seg       
+		  closeDirectory: (BOOL) close
+		  directoryOwner: (BOOL) owner;
 + (LCIndexReader *) openPath: (NSString *) path;
 + (LCIndexReader *) openDirectory: (id <LCDirectory>) directory;
 - (id <LCDirectory>) directory;
@@ -57,7 +57,7 @@ typedef enum _LCFieldOption
 + (long) currentVersionWithDirectory: (id <LCDirectory>) dir;
 - (NSArray *) termFreqVectors: (int) number;
 - (id <LCTermFreqVector>) termFreqVector: (int) docNumber
-                       field: (NSString *) field;
+								   field: (NSString *) field;
 + (BOOL) indexExistsAtPath: (NSString *) dir;
 + (BOOL) indexExistsWithDirectory: (id <LCDirectory>) dir;
 - (int) numberOfDocuments;

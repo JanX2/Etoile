@@ -11,21 +11,21 @@
 
 @interface LCTermWeight: NSObject <LCWeight>
 {
-  LCSimilarity *similarity;
-  LCSearcher *searcher;
-  LCTermQuery *query;
-  float value;
-  float idf;
-  float queryNorm;
-  float queryWeight;
+	LCSimilarity *similarity;
+	LCSearcher *searcher;
+	LCTermQuery *query;
+	float value;
+	float idf;
+	float queryNorm;
+	float queryWeight;
 }
 - (id) initWithTermQuery: (LCTermQuery *) query
-       searcher: (LCSearcher *) searcher;
+				searcher: (LCSearcher *) searcher;
 @end
 
 @interface LCTermQuery: LCQuery
 {
-  LCTerm *term;
+	LCTerm *term;
 }
 - (id) initWithTerm: (LCTerm *) term;
 - (LCTerm *) term;

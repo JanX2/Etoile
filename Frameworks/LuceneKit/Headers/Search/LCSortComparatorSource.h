@@ -8,7 +8,7 @@
 @protocol LCSortComparatorSource <NSObject>
 /* should return (id <LCScoreDoccomparator>) */
 - (id) newComparator: (LCIndexReader *) reader
-                           field: (NSString *) fieldname;
+			   field: (NSString *) fieldname;
 @end
 
 #endif /* __LUCENE_SEARCH_SORT_COMPARATOR_SOURCE__ */

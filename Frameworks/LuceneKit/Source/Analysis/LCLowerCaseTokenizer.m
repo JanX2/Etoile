@@ -1,7 +1,7 @@
 #include "Analysis/LCLowerCaseTokenizer.h"
 
 /**
- * LowerCaseTokenizer performs the function of LetterTokenizer
+* LowerCaseTokenizer performs the function of LetterTokenizer
  * and LowerCaseFilter together.  It divides text at non-letters and converts
  * them to lower case.  While it is functionally equivalent to the combination
  * of LetterTokenizer and LowerCaseFilter, there is a performance advantage
@@ -14,10 +14,10 @@
 
 - (char) normalize: (char) c
 {
-  if ((c <= 'Z') && (c >= 'A'))
-    return (c-'A'+'a');
-  else
-    return c;
+	if ((c <= 'Z') && (c >= 'A'))
+		return (c-'A'+'a');
+	else
+		return c;
 }
 
 @end

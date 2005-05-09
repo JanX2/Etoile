@@ -5,11 +5,11 @@
 
 @interface LCPhrasePrefixWeight: LCWeight
 {
-  LCSearcher *searcher;
-  float value;
-  float idf;
-  float queryNorm;
-  float queryWeight;
+	LCSearcher *searcher;
+	float value;
+	float idf;
+	float queryNorm;
+	float queryWeight;
 }
 
 - (id) initWithSearcher: (LCSearcher *) searcher;
@@ -24,10 +24,10 @@
 
 @interface LCPhrasePrefixQuery: LCQuery
 {
-  NSString *field;
-  NSArray *termArrays;
-  NSArray *positions;
-  int slop;
+	NSString *field;
+	NSArray *termArrays;
+	NSArray *positions;
+	int slop;
 }
 
 - (void) setSlop: (int) s;

@@ -5,7 +5,7 @@
 
 @interface LCSortComparator: NSObject <LCSortComparatorSource>
 {
-  NSDictionary *cachedValue;
+	NSDictionary *cachedValue;
 }
 - (id) comparable: (NSString *) termtext;
 @end

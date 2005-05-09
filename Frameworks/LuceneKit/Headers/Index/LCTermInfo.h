@@ -5,19 +5,19 @@
 
 @interface LCTermInfo: NSObject <NSCopying>
 {
-  long docFreq; // VInt
-  long long freqPointer; //VLong
-  long long proxPointer; //VLong
-  long skipOffset; //VLong
+	long docFreq; // VInt
+	long long freqPointer; //VLong
+	long long proxPointer; //VLong
+	long skipOffset; //VLong
 }
 
 - (id) initWithDocFreq: (long) df 
            freqPointer: (long long) fq 
-	   proxPointer: (long long) pp;
+		   proxPointer: (long long) pp;
 - (id) initWithTermInfo: (LCTermInfo *) ti;
 - (void) setTermInfo: (LCTermInfo *) ti;
 
-/* Accessory */
+	/* Accessory */
 - (long) documentFrequency;
 - (long long) freqPointer;
 - (long long) proxPointer;

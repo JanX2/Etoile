@@ -17,9 +17,9 @@
 + (LCSimilarity *) defaultSimilarity;
 + (float) decodeNorm: (char) b;
 + (float *) normDecoder;
-/* override by subclass */
+	/* override by subclass */
 - (float) lengthNorm: (NSString *) fieldName numberOfTerms: (int) numTerms;
-/* override by subclass */
+	/* override by subclass */
 - (float) queryNorm: (float) sumOfSquredWeights;
 + (char) encodeNorm: (float) f;
 + (float) byteToFloat: (char) b;
@@ -28,13 +28,13 @@
 - (float) sloppyFrequency: (int) distance;
 - (float) termFrequencyWithFloat: (float) freq;
 - (float) inverseDocumentFrequencyWithTerm: (LCTerm *) term
-          searcher: (LCSearcher *) searcher;
+								  searcher: (LCSearcher *) searcher;
 - (float) inverseDocumentFrequencyWithTerms: (NSArray *) terms
-          searcher: (LCSearcher *) searcher;
-/* override by subclass */
+								   searcher: (LCSearcher *) searcher;
+	/* override by subclass */
 - (float) inverseDocumentFrequency: (int) docFreq 
-          numberOfDocuments: (int) numDocs;
-/* override by subclass */
+				 numberOfDocuments: (int) numDocs;
+	/* override by subclass */
 - (float) coordination: (int) overlap max: (int) maxOverlap;
 
 @end

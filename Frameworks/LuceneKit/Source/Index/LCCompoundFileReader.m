@@ -2,7 +2,7 @@
 #include "GNUstep/GNUstep.h"
 
 /**
- * Class for accessing a compound stream.
+* Class for accessing a compound stream.
  * This class implements a directory, but is limited to only read operations.
  * Directory methods that would normally modify data throw an exception.
  *
@@ -11,8 +11,8 @@
  */
 @interface LCFileEntry: NSObject
 {
-  long long offset;
-  long long length;
+	long long offset;
+	long long length;
 }
 - (long long) offset;
 - (long long) length;
@@ -24,10 +24,10 @@
 @implementation LCFileEntry
 - (id) init
 {
-  self = [super init];
-  offset = 0;
-  length = 0;
-  return self;
+	self = [super init];
+	offset = 0;
+	length = 0;
+	return self;
 }
 
 - (long long) offset { return offset; }
@@ -36,67 +36,67 @@
 - (void) setLength: (long long) l { length = l; }
 @end
 
-    /** Implementation of an IndexInput that reads from a portion of the
-     *  compound file. The visibility is left as "package" *only* because
-     *  this helps with testing since JUnit test cases in a different class
-     *  can then access package fields of this class.
-     */
+/** Implementation of an IndexInput that reads from a portion of the
+*  compound file. The visibility is left as "package" *only* because
+*  this helps with testing since JUnit test cases in a different class
+*  can then access package fields of this class.
+*/
 @implementation LCCSIndexInput
 
 - (id) initWithCompoundFileReader: (LCCompoundFileReader *) cr
-       indexInput: (LCIndexInput *) b offset: (long long) f
-       length: (long long) len
+					   indexInput: (LCIndexInput *) b offset: (long long) f
+						   length: (long long) len
 {
-  self = [self init];
-  ASSIGN(reader, cr);
-  ASSIGN(base, b);
-  fileOffset = f;
-  length = len;
-  filePointer = 0;
-  return self;
+	self = [self init];
+	ASSIGN(reader, cr);
+	ASSIGN(base, b);
+	fileOffset = f;
+	length = len;
+	filePointer = 0;
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(reader);
-  DESTROY(base);
-  [super dealloc];
+	DESTROY(reader);
+	DESTROY(base);
+	[super dealloc];
 }
 
 - (char) readByte
 {
-  NSMutableData *data = [[NSMutableData alloc] init];
-  [self readBytes: data offset: 0 length: 1];
-  AUTORELEASE(data);
-  return *(char *)[data bytes];
+	NSMutableData *data = [[NSMutableData alloc] init];
+	[self readBytes: data offset: 0 length: 1];
+	AUTORELEASE(data);
+	return *(char *)[data bytes];
 }
 
 - (void) readBytes: (NSMutableData *) b
-         offset: (int) offset
-	 length: (int) len
+			offset: (int) offset
+			length: (int) len
 {
-  long long start = [self filePointer];
-  if (start + len > length)
+	long long start = [self filePointer];
+	if (start + len > length)
     {
 	    NSLog(@"read past EOF");
 	    return;
     }
-  [base seek: fileOffset + start];
-  [base readBytes: b offset: offset length: len];
-  filePointer += len;
+	[base seek: fileOffset + start];
+	[base readBytes: b offset: offset length: len];
+	filePointer += len;
 }
 
-        /** Expert: implements seek.  Sets current position in this file, where
-         *  the next {@link #readInternal(byte[],int,int)} will occur.
-         * @see #readInternal(byte[],int,int)
-         */
+/** Expert: implements seek.  Sets current position in this file, where
+*  the next {@link #readInternal(byte[],int,int)} will occur.
+* @see #readInternal(byte[],int,int)
+*/
 - (void) seek: (unsigned long long) pos 
 {
-  long long p = (pos < length) ? pos : length;
-  filePointer = p;
+	long long p = (pos < length) ? pos : length;
+	filePointer = p;
 }
 
-        /** Closes the stream to further operations. */
+/** Closes the stream to further operations. */
 - (void) close {}
 
 - (unsigned long long) length { return length; }
@@ -105,12 +105,12 @@
 
 - (id) copyWithZone: (NSZone *) zone
 {
-  // Access the same file
-  LCCSIndexInput *clone = [[LCCSIndexInput allocWithZone: zone] initWithCompoundFileReader: reader
-       indexInput: [base copy] offset: fileOffset
-       length: length];
-  [clone seek: filePointer];
-  return clone;
+	// Access the same file
+	LCCSIndexInput *clone = [[LCCSIndexInput allocWithZone: zone] initWithCompoundFileReader: reader
+																				  indexInput: [base copy] offset: fileOffset
+																					  length: length];
+	[clone seek: filePointer];
+	return clone;
 }
 
 @end
@@ -119,79 +119,79 @@
 
 - (id) init
 {
-  self = [super init];
-  entries = [[NSMutableDictionary alloc] init];
-  directory = nil;
-  fileName = nil;
-  stream = nil;
-  return self;
+	self = [super init];
+	entries = [[NSMutableDictionary alloc] init];
+	directory = nil;
+	fileName = nil;
+	stream = nil;
+	return self;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) dir
-       name: (NSString *) name
+					name: (NSString *) name
 {
-  self = [self init];
-  ASSIGN(directory, dir);
-  ASSIGN(fileName, name);
-
-  BOOL success = NO;
-  ASSIGN(stream, [dir openInput: name]);
-
-  // read the directory and init files
-  int count = [stream readVInt];
-  LCFileEntry *entry = nil;
-  int i;
-  long prevOffset = 0;
-  NSString *iden, *prevIden = nil;
-  for (i=0; i<count; i++) {
-    long offset = [stream readLong];
-    iden = [stream readString];
-
+	self = [self init];
+	ASSIGN(directory, dir);
+	ASSIGN(fileName, name);
+	
+	BOOL success = NO;
+	ASSIGN(stream, [dir openInput: name]);
+	
+	// read the directory and init files
+	int count = [stream readVInt];
+	LCFileEntry *entry = nil;
+	int i;
+	long prevOffset = 0;
+	NSString *iden, *prevIden = nil;
+	for (i=0; i<count; i++) {
+		long offset = [stream readLong];
+		iden = [stream readString];
+		
 #if 1
-    if (i > 0)
-      [(LCFileEntry *)[entries objectForKey: prevIden] setLength: offset - prevOffset];
+		if (i > 0)
+			[(LCFileEntry *)[entries objectForKey: prevIden] setLength: offset - prevOffset];
 #else
-    if (entry != nil) {
-      // set length of the previous entry
-      [entry setLength: offset - [entry offset]];
-    }
+		if (entry != nil) {
+			// set length of the previous entry
+			[entry setLength: offset - [entry offset]];
+		}
 #endif
-
-    entry = [[LCFileEntry alloc] init];
-    [entry setOffset: offset];
-    [entries setObject: entry forKey: iden];
-    ASSIGN(prevIden, AUTORELEASE([iden copy]));
-    prevOffset = offset;
-    DESTROY(entry);
-  }
-
+		
+		entry = [[LCFileEntry alloc] init];
+		[entry setOffset: offset];
+		[entries setObject: entry forKey: iden];
+		ASSIGN(prevIden, AUTORELEASE([iden copy]));
+		prevOffset = offset;
+		DESTROY(entry);
+	}
+	
 #if 1
-  if ((count > 0) && (prevIden != nil))
-    [(LCFileEntry *)[entries objectForKey: prevIden] setLength: [stream length] - prevOffset];
+	if ((count > 0) && (prevIden != nil))
+		[(LCFileEntry *)[entries objectForKey: prevIden] setLength: [stream length] - prevOffset];
 #else
-  // set the length of the final entry
-  if (entry != nil) {
-    [entry setLength: [stream length] - [entry offset]];
-  }
+	// set the length of the final entry
+	if (entry != nil) {
+		[entry setLength: [stream length] - [entry offset]];
+	}
 #endif
-
-  success = YES;
-
-  if (! success && (stream != nil)) {
-    [stream close];
-    DESTROY(stream);
-  }
-  
-  return self;
+	
+	success = YES;
+	
+	if (! success && (stream != nil)) {
+		[stream close];
+		DESTROY(stream);
+	}
+	
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(entries);
-  DESTROY(directory);
-  DESTROY(fileName);
-  DESTROY(stream);
-  [super dealloc];
+	DESTROY(entries);
+	DESTROY(directory);
+	DESTROY(fileName);
+	DESTROY(stream);
+	[super dealloc];
 }
 
 - (id <LCDirectory>) directory { return directory; }
@@ -200,105 +200,105 @@
 
 - (void) close
 {
-  if (stream == nil)
-  {
-    NSLog(@"Already closed");
-    return;
-  }
-
-  [entries removeAllObjects];
-  [stream close];
-  DESTROY(stream);
+	if (stream == nil)
+	{
+		NSLog(@"Already closed");
+		return;
+	}
+	
+	[entries removeAllObjects];
+	[stream close];
+	DESTROY(stream);
 }
 
 - (LCIndexInput *) openInput: (NSString *) iden
 {
-  if (stream == nil)
-  {
-    NSLog(@"Stream closed");
-    return nil;
-  }
-
-  LCFileEntry *entry = (LCFileEntry *)[entries objectForKey: iden];
-  if (entry == nil)
-  {
-	  NSLog(@"No sub-file with iden %@ found", iden);
-	  return nil;
-  }
+	if (stream == nil)
+	{
+		NSLog(@"Stream closed");
+		return nil;
+	}
+	
+	LCFileEntry *entry = (LCFileEntry *)[entries objectForKey: iden];
+	if (entry == nil)
+	{
+		NSLog(@"No sub-file with iden %@ found", iden);
+		return nil;
+	}
     return AUTORELEASE([[LCCSIndexInput alloc] 
         initWithCompoundFileReader: self
-       indexInput: stream offset: [entry offset]
-       length: [entry length]]);
+						indexInput: stream offset: [entry offset]
+							length: [entry length]]);
 }
 
-    /** Returns an array of strings, one for each file in the directory. */
-  - (NSArray *) list
-  {
+/** Returns an array of strings, one for each file in the directory. */
+- (NSArray *) list
+{
     return [entries allKeys];
-  }
+}
 
-    /** Returns true iff a file with the given name exists. */
+/** Returns true iff a file with the given name exists. */
 - (BOOL) fileExists: (NSString *) name
 {
-  return ([entries objectForKey: name]) ? YES : NO;
+	return ([entries objectForKey: name]) ? YES : NO;
 }
 
-    /** Returns the time the named file was last modified. */
+/** Returns the time the named file was last modified. */
 - (NSTimeInterval) fileModified: (NSString *) name
 {
-  // Ignore name
-  return [directory fileModified: fileName];
+	// Ignore name
+	return [directory fileModified: fileName];
 }
 
-    /** Set the modified time of an existing file to now. */
+/** Set the modified time of an existing file to now. */
 - (void) touchFile: (NSString *) name
 {
-  [directory touchFile: fileName];
-    }
+	[directory touchFile: fileName];
+}
 
-    /** Not implemented
-     * @throws UnsupportedOperationException */
+/** Not implemented
+* @throws UnsupportedOperationException */
 - (BOOL) deleteFile: (NSString *) name
-    {
+{
 	NSLog(@"Not support");
 	return NO;
-    }
+}
 
-    /** Not implemented
-     * @throws UnsupportedOperationException */
+/** Not implemented
+* @throws UnsupportedOperationException */
 - (void) renameFile: (NSString *) from
                  to: (NSString *) to
-    {
+{
 	NSLog(@"Not support");
-    }
+}
 
-    /** Returns the length of a file in the directory.
-     * @throws IOException if the file does not exist */
+/** Returns the length of a file in the directory.
+* @throws IOException if the file does not exist */
 - (unsigned long long) fileLength: (NSString *) name
 {
-        LCFileEntry *e = (LCFileEntry *) [entries objectForKey: name];
-        if (e == nil)
+	LCFileEntry *e = (LCFileEntry *) [entries objectForKey: name];
+	if (e == nil)
 	{
-	  NSLog(@"File %@ does not exist", name);
-	  return 0;
+		NSLog(@"File %@ does not exist", name);
+		return 0;
 	}
-        return [e length];
-    }
+	return [e length];
+}
 
-    /** Not implemented
-     * @throws UnsupportedOperationException */
+/** Not implemented
+* @throws UnsupportedOperationException */
 - (LCIndexOutput *) createOutput: (NSString *) name
 {
 	NSLog(@"Not support");
 	return nil;
-    }
+}
 
-    /** Not implemented
-     * @throws UnsupportedOperationException */
+/** Not implemented
+* @throws UnsupportedOperationException */
 #if 0
-    public Lock makeLock(String name)
-    {
-        throw new UnsupportedOperationException();
-    }
+public Lock makeLock(String name)
+{
+	throw new UnsupportedOperationException();
+}
 #endif
 @end

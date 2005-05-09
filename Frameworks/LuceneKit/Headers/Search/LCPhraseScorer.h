@@ -5,20 +5,20 @@
 
 @interface LCPhraseScorer: LCScorer
 {
-  LCWeight *weight;
-  NSData *norms;
-  float value;
-
-  BOOL firstTime;
-  BOOL more;
-  LCPhraseQueue *pq;
-  LCPhrasePositions *first, *last;
-
-  float freq;
+	LCWeight *weight;
+	NSData *norms;
+	float value;
+	
+	BOOL firstTime;
+	BOOL more;
+	LCPhraseQueue *pq;
+	LCPhrasePositions *first, *last;
+	
+	float freq;
 }
 
 - (id) initWithWeight: (LCWeight *) weight termPositions: (NSArray *) tps
-       positions: (NSArray *) similarity: (LCSimilarity *) similarity;
+			positions: (NSArray *) similarity: (LCSimilarity *) similarity;
 - (int) document;
 - (BOOL) next;
 - (BOOL) doNext;

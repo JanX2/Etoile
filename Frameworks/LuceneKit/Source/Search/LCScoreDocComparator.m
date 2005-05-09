@@ -7,19 +7,19 @@
 
 - (NSComparisonResult) compare: (LCScoreDoc *) i to: (LCScoreDoc *) j
 {
-  if ([i score] > [j score]) return NSOrderedAscending;
-  else if ([i score] < [j score]) return NSOrderedDescending;
-  else return NSOrderedSame;
+	if ([i score] > [j score]) return NSOrderedAscending;
+	else if ([i score] < [j score]) return NSOrderedDescending;
+	else return NSOrderedSame;
 }
 
 - (id) sortValue: (LCScoreDoc *) doc
 {
-  return [NSNumber numberWithFloat: (float)[doc score]];
+	return [NSNumber numberWithFloat: (float)[doc score]];
 }
 
 - (int) sortType
 {
-  return LCSortField_SCORE;
+	return LCSortField_SCORE;
 }
 
 @end
@@ -28,19 +28,19 @@
 @implementation LCIndexOrderScoreDocComparator
 - (NSComparisonResult) compare: (LCScoreDoc *) i to: (LCScoreDoc *) j
 {
-  if ([i document] > [j document]) return NSOrderedAscending;
-  else if ([i document] < [j document]) return NSOrderedDescending;
-  else return NSOrderedSame;
+	if ([i document] > [j document]) return NSOrderedAscending;
+	else if ([i document] < [j document]) return NSOrderedDescending;
+	else return NSOrderedSame;
 }
 
 - (id) sortValue: (LCScoreDoc *) doc
 {
-  return [NSNumber numberWithInt: (int)[doc document]];
+	return [NSNumber numberWithInt: (int)[doc document]];
 }
 
 - (int) sortType
 {
-  return LCSortField_DOC;
+	return LCSortField_DOC;
 }
 
 @end

@@ -15,6 +15,6 @@
 - (void) normalize: (float) norm;
 - (LCScorer *) scorer: (LCIndexReader *) reader;
 - (LCExplanation *) explain: (LCIndexReader *) reader
-                    document: (int) doc;
+				   document: (int) doc;
 @end
 #endif /* __LUCENE_SEARCH_WEIGHT__ */

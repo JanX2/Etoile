@@ -4,7 +4,7 @@
 #include <Foundation/Foundation.h>
 
 /**
- * Provides support for converting longs to Strings, and back again. The strings
+* Provides support for converting longs to Strings, and back again. The strings
  * are structured so that lexicographic sorting order is preserved.
  * 
  * <p>
@@ -14,7 +14,7 @@
  * 
  * <p>
  * This class handles <b>all</b> long values (unlike
- * {@link org.apache.lucene.document.DateField}).
+											  * {@link org.apache.lucene.document.DateField}).
  * 
  * @author Matt Quail (spud at madbean dot com)
  */

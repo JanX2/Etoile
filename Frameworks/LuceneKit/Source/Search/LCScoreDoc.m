@@ -4,10 +4,10 @@
 
 - (id) initWithDocument: (int) d score: (float) s
 {
-  self = [super init];
-  score = s;
-  doc = d;
-  return self;
+	self = [super init];
+	score = s;
+	doc = d;
+	return self;
 }
 
 - (float) score { return score; }
@@ -16,24 +16,24 @@
 
 - (NSComparisonResult) compare: (id) o
 {
-  LCScoreDoc *other = (LCScoreDoc *) o;
-  if ([self score] == [other score])
-  {
-    if ([self document] < [other document])
-      return NSOrderedAscending;
-    else if ([self document] == [other document])
-      return NSOrderedSame;
-    else
-      return NSOrderedDescending;
-  }
-  else if ([self score] < [other score])
-  {
-    return NSOrderedAscending;
-  }
-  else
-  {
-    return NSOrderedDescending;
-  }
+	LCScoreDoc *other = (LCScoreDoc *) o;
+	if ([self score] == [other score])
+	{
+		if ([self document] < [other document])
+			return NSOrderedAscending;
+		else if ([self document] == [other document])
+			return NSOrderedSame;
+		else
+			return NSOrderedDescending;
+	}
+	else if ([self score] < [other score])
+	{
+		return NSOrderedAscending;
+	}
+	else
+	{
+		return NSOrderedDescending;
+	}
 }
 
 @end

@@ -5,7 +5,7 @@
 
 @interface LCTermVectorOffsetInfo: NSObject
 {
-  int startOffset, endOffset;
+	int startOffset, endOffset;
 }
 
 - (id) initWithStartOffset: (int) so endOffset: (int) eo;

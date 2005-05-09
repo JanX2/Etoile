@@ -5,8 +5,8 @@
 
 @interface LCTerm: NSObject <NSCopying>
 {
-  NSString *field;
-  NSString *text;
+	NSString *field;
+	NSString *text;
 }
 
 - (id) initWithField: (NSString *) fld text: (NSString *) txt;

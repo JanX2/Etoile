@@ -3,9 +3,9 @@
 
 @interface LCMultiSearcher: LCSearcher
 {
-  NSArray *searchables;
-  NSArray *starts;
-  int maxDoc;
+	NSArray *searchables;
+	NSArray *starts;
+	int maxDoc;
 }
 
 - (id) initWithSearchables: (NSArray *) searchables;
@@ -19,11 +19,11 @@
 - (int) subDocument: (int) n;
 - (int) maxDocument;
 - (LCTopDocs *) search: (LCQuery *) query filter: (LCFilter *) filter
-                nDocs: (int) nDocs;
+				 nDocs: (int) nDocs;
 - (LCTopFieldDocs *) search: (LCQuery *) query filter: (LCFilter *) filter
-                nDocs: (int) nDocs sort: (LCSort *) sort;
+					  nDocs: (int) nDocs sort: (LCSort *) sort;
 - (void) search: (LCQuery *) query filter: (LCFilter *) filter
-                results: (LCHitCollector *) results;
+		results: (LCHitCollector *) results;
 - (LCQuery *) rewrite: (LCQuery *) original;
 - (LCExplanantion *) explain: (LCQuery *) query doc: (int) doc;
 

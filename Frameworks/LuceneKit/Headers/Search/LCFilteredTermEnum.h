@@ -5,8 +5,8 @@
 
 @interface LCFilteredTermEnum: LCTermEnum
 {
-  LCTerm *currentTerm;
-  LCTermEnum *actualEnum;
+	LCTerm *currentTerm;
+	LCTermEnum *actualEnum;
 }
 
 - (BOOL) termCompare: (LCTerm *) term;

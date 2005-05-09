@@ -5,7 +5,7 @@
 
 @interface LCMultiTermQuery: LCQuery
 {
-  LCTerm *term;
+	LCTerm *term;
 }
 
 - (id) initWithTerm: (LCTerm *) term;

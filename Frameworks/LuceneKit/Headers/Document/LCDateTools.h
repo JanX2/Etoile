@@ -4,13 +4,13 @@
 #include <Foundation/Foundation.h>
 
 typedef enum _LCResolution {
-  LCResolution_YEAR = 1,
-  LCResolution_MONTH,
-  LCResolution_DAY,
-  LCResolution_HOUR,
-  LCResolution_MINUTE,
-  LCResolution_SECOND,
-  LCResolution_MILLISECOND
+	LCResolution_YEAR = 1,
+	LCResolution_MONTH,
+	LCResolution_DAY,
+	LCResolution_HOUR,
+	LCResolution_MINUTE,
+	LCResolution_SECOND,
+	LCResolution_MILLISECOND
 } LCResolution;
 
 @interface NSString (LuceneKit_Document_Date)

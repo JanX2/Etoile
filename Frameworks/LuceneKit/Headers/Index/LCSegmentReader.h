@@ -16,39 +16,39 @@
 
 @interface LCSegmentReader: LCIndexReader
 {
-  NSString *segment;
-  LCFieldInfos *fieldInfos;
-  LCFieldsReader *fieldsReader;
-  LCTermInfosReader *tis;
-  LCTermVectorsReader *termVectorsReaderOrig;
-  //ThreadLocal termVectorsLocal = new ThreadLocal;
-  LCBitVector *deletedDocs;
-  BOOL deletedDocsDirty;
-  BOOL normsDirty;
-  BOOL undeleteAll;
-
-  NSMutableDictionary *norms;
-
-  LCIndexInput *freqStream;
-  LCIndexInput *proxStream;
-  LCCompoundFileReader *cfsReader;
+	NSString *segment;
+	LCFieldInfos *fieldInfos;
+	LCFieldsReader *fieldsReader;
+	LCTermInfosReader *tis;
+	LCTermVectorsReader *termVectorsReaderOrig;
+	//ThreadLocal termVectorsLocal = new ThreadLocal;
+	LCBitVector *deletedDocs;
+	BOOL deletedDocsDirty;
+	BOOL normsDirty;
+	BOOL undeleteAll;
+	
+	NSMutableDictionary *norms;
+	
+	LCIndexInput *freqStream;
+	LCIndexInput *proxStream;
+	LCCompoundFileReader *cfsReader;
 }
 
 + (id) segmentReaderWithInfo: (LCSegmentInfo *) si;
 + (id) segmentReaderWithInfos: (LCSegmentInfos *) sis 
                          info: (LCSegmentInfo *) si
-			close: (BOOL) closeDir;
+						close: (BOOL) closeDir;
 + (id) segmentReaderWithDirectory: (id <LCDirectory>) dir
-                            info: (LCSegmentInfo *) si
-			    infos: (LCSegmentInfos *) sis
-			    close: (BOOL) closeDir
-			    owner: (BOOL) ownDir;
+							 info: (LCSegmentInfo *) si
+							infos: (LCSegmentInfos *) sis
+							close: (BOOL) closeDir
+							owner: (BOOL) ownDir;
 + (BOOL) hasDeletions: (LCSegmentInfo *) si;
 + (BOOL) usesCompoundFile: (LCSegmentInfo *) si;
 + (BOOL) hasSeparateNorms: (LCSegmentInfo *) si;
 - (NSArray *) files;
 - (id <LCTermFreqVector>) termFreqVector: (int) docNumber
-                                field: (NSString *) field;
+								   field: (NSString *) field;
 - (NSArray *) termFreqVectors: (int) docNumber;
 - (LCBitVector*) deletedDocs;
 - (LCTermInfosReader *) termInfosReader;

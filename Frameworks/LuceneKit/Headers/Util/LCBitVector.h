@@ -11,24 +11,24 @@
 @interface LCBitVector: NSObject
 #endif
 {
-  NSMutableData *bits;
-  int size;
-  int count;
+	NSMutableData *bits;
+	int size;
+	int count;
 }
 
 /* Initialized to be able to contain n bits */
 - (id) initWithSize: (int) n;
-/* Set YES at <bit> */
+	/* Set YES at <bit> */
 - (void) setBit: (int) bit;
-/* Set NO at ,bit> */
+	/* Set NO at ,bit> */
 - (void) clearBit: (int) bit;
-/* Get <bit> value */
+	/* Get <bit> value */
 - (BOOL) getBit: (int) bit;
-/* Get size */
+	/* Get size */
 - (int) size;
-/* Count the number of bits which are YES */
+	/* Count the number of bits which are YES */
 - (int) count;
-/* Read / Write */
+	/* Read / Write */
 - (void) writeToDirectory: (id <LCDirectory>) d
                  withName: (NSString *) name;
 - (id) initWithDirectory: (id <LCDirectory>) d

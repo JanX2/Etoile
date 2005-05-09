@@ -11,14 +11,14 @@
 
 @interface LCMultipleTermPositions: NSObject <LCTermPositions>
 {
-  int _doc;
-  int _freq;
-  LCTermPositionsQueue *_termPositionsQueue;
-  LCIntQueue *_posList;
+	int _doc;
+	int _freq;
+	LCTermPositionsQueue *_termPositionsQueue;
+	LCIntQueue *_posList;
 }
 
 - (id) initWithIndexReader: (LCIndexReader *) indexReader
-                terms: (NSArray *) terms;
+					 terms: (NSArray *) terms;
 @end
 
 #endif /* __LUCENE_INDEX_MULTIPLE_TERM_POSITION__ */

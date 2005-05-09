@@ -10,8 +10,8 @@
 
 @interface LCIndexSearcher: LCSearcher
 {
-  LCIndexReader *reader;
-  BOOL closeReader;
+	LCIndexReader *reader;
+	BOOL closeReader;
 }
 
 - (id) initWithPath: (NSString *) path;

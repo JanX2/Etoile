@@ -11,7 +11,7 @@
 - (void) writeVLong: (long long) i;
 - (void) writeString: (NSString *) s;
 - (void) writeChars: (NSString *) s start: (int) start length: (int) length;
-/* Override by subclass */
+	/* Override by subclass */
 - (void) writeByte: (char) b;
 - (void) writeBytes: (NSData *)b length: (int) len;
 - (void) flush;

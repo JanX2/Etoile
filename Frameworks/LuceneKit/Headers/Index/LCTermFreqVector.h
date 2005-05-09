@@ -4,59 +4,59 @@
 #include <Foundation/Foundation.h>
 
 /** Provides access to stored term vector of 
- *  a document field.
- */
+*  a document field.
+*/
 @protocol LCTermFreqVector <NSObject>
-  /**
-   * 
-   * @return The field this vector is associated with.
-   * 
-   */ 
+/**
+* 
+ * @return The field this vector is associated with.
+ * 
+ */ 
 - (NSString *) field;
-  
-  /** 
-   * @return The number of terms in the term vector.
-   */
+
+	/** 
+	* @return The number of terms in the term vector.
+	*/
 - (int) size;
 
-  /** 
-   * @return An Array of term texts in ascending order.
-   */
+	/** 
+	* @return An Array of term texts in ascending order.
+	*/
 - (NSArray *) terms;
-//  public String[] getTerms();
+	//  public String[] getTerms();
 
 
-  /** Array of term frequencies. Locations of the array correspond one to one
-   *  to the terms in the array obtained from <code>getTerms</code>
-   *  method. Each location in the array contains the number of times this
-   *  term occurs in the document or the document field.
-   */
-// NSArray of NSNumber
+	/** Array of term frequencies. Locations of the array correspond one to one
+	*  to the terms in the array obtained from <code>getTerms</code>
+	*  method. Each location in the array contains the number of times this
+	*  term occurs in the document or the document field.
+	*/
+	// NSArray of NSNumber
 - (NSArray *) termFrequencies;
-//  public int[] getTermFrequencies();
-  
+	//  public int[] getTermFrequencies();
 
-  /** Return an index in the term numbers array returned from
-   *  <code>getTerms</code> at which the term with the specified
-   *  <code>term</code> appears. If this term does not appear in the array,
-   *  return -1.
-   */
+
+	/** Return an index in the term numbers array returned from
+	*  <code>getTerms</code> at which the term with the specified
+	*  <code>term</code> appears. If this term does not appear in the array,
+	*  return -1.
+	*/
 - (int) indexOfTerm: (NSString *) term;
 
 
-  /** Just like <code>indexOf(int)</code> but searches for a number of terms
-   *  at the same time. Returns an array that has the same size as the number
-   *  of terms searched for, each slot containing the result of searching for
-   *  that term number.
-   *
-   *  @param terms array containing terms to look for
-   *  @param start index in the array where the list of terms starts
-   *  @param len the number of terms in the list
-   */
-// NSArray of NSNumber
+	/** Just like <code>indexOf(int)</code> but searches for a number of terms
+	*  at the same time. Returns an array that has the same size as the number
+	*  of terms searched for, each slot containing the result of searching for
+	*  that term number.
+	*
+	*  @param terms array containing terms to look for
+	*  @param start index in the array where the list of terms starts
+	*  @param len the number of terms in the list
+	*/
+	// NSArray of NSNumber
 - (NSIndexSet *) indexesOfTerms: (NSArray *) terms
-          start: (int) start length: (int) len;
-//  public int[] indexesOf(String[] terms, int start, int len);
+						  start: (int) start length: (int) len;
+	//  public int[] indexesOf(String[] terms, int start, int len);
 
 @end
 

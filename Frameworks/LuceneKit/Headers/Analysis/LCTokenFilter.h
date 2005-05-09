@@ -6,7 +6,7 @@
 
 @interface LCTokenFilter: LCTokenStream
 {
-  LCTokenStream *input;
+	LCTokenStream *input;
 }
 
 - (id) initWithTokenStream: (LCTokenStream *) input;

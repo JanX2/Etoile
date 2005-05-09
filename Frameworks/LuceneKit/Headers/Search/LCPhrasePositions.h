@@ -5,12 +5,12 @@
 
 @interface LCPhrasePositions: NSObject
 {
-  int doc;
-  int position;
-  int count;
-  int offset;
-  id <LCTermPositions> *tp;
-  LCPhrasePositions *next;
+	int doc;
+	int position;
+	int count;
+	int offset;
+	id <LCTermPositions> *tp;
+	LCPhrasePositions *next;
 }
 
 - (id) initWithTermPositions: (id <LCTermPositions>) t offset: (int) o;

@@ -8,14 +8,14 @@
 
 @interface LCFieldsReader: NSObject
 {
-  LCFieldInfos *fieldInfos;
-  LCIndexInput *fieldsStream;
-  LCIndexInput *indexStream;
-  int size;
+	LCFieldInfos *fieldInfos;
+	LCIndexInput *fieldsStream;
+	LCIndexInput *indexStream;
+	int size;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) d
-                  segment: (NSString *) segment
+				 segment: (NSString *) segment
               fieldInfos: (LCFieldInfos *) fn;
 - (void) close;
 - (int) size;

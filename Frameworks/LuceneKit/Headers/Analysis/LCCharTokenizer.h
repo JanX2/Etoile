@@ -8,8 +8,8 @@
 
 @interface LCCharTokenizer: LCTokenizer
 {
-  int offset, bufferIndex, dataLen;
-  unichar buffer[MAX_WORD_LEN], ioBuffer[IO_BUFFER_SIZE];
+	int offset, bufferIndex, dataLen;
+	unichar buffer[MAX_WORD_LEN], ioBuffer[IO_BUFFER_SIZE];
 }
 
 - (BOOL) isTokenChar: (char) c;

@@ -2,7 +2,7 @@
 #include "GNUstep/GNUstep.h"
 
 /**
- * Copyright 2004 The Apache Software Foundation
+* Copyright 2004 The Apache Software Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,75 +26,75 @@
     storePositionWithTermVector: (BOOL) pos
     storeOffsetWithTermVector: (BOOL) off
 {
-  self = [self init];
-  ASSIGN(name, na);
-  isIndexed = tk;
-  number = nu;
-  storeTermVector = tv;
-  storePositionWithTermVector = pos;
-  storeOffsetWithTermVector = off;
-  return self;
+	self = [self init];
+	ASSIGN(name, na);
+	isIndexed = tk;
+	number = nu;
+	storeTermVector = tv;
+	storePositionWithTermVector = pos;
+	storeOffsetWithTermVector = off;
+	return self;
 }
 
 - (void) dealloc
 {
-  RELEASE(name);
-  [super dealloc];
+	RELEASE(name);
+	[super dealloc];
 }
 
 - (NSString *) name
 {
-  return name;
+	return name;
 }
 
 - (BOOL) isIndexed
 {
-  return isIndexed;
+	return isIndexed;
 }
 
 - (BOOL) isTermVectorStored
 {
-  return storeTermVector;
+	return storeTermVector;
 }
 
 - (BOOL) isOffsetWithTermVectorStored
 {
-  return storeOffsetWithTermVector;
+	return storeOffsetWithTermVector;
 }
 
 - (BOOL) isPositionWithTermVectorStored
 {
-  return storePositionWithTermVector;
+	return storePositionWithTermVector;
 }
 
 - (int) number
 {
-  return number;
+	return number;
 }
 
 - (void) setIndexed: (BOOL) b
 {
-  isIndexed = b;
+	isIndexed = b;
 }
 
 - (void) setTermVectorStored: (BOOL) b
 {
-  storeTermVector = b;
+	storeTermVector = b;
 }
 
 - (void) setPositionWithTermVectorStored: (BOOL) b
 {
-  storePositionWithTermVector = b;
+	storePositionWithTermVector = b;
 }
 
 - (void) setOffsetWithTermVectorStored: (BOOL) b
 {
-  storeOffsetWithTermVector = b;
+	storeOffsetWithTermVector = b;
 }
 
 - (NSString *) description
 {
-  return [NSString stringWithFormat: @"LCFieldInfo: <%@> %d %d %d %d", name, number, storeTermVector, storePositionWithTermVector, storeOffsetWithTermVector];
+	return [NSString stringWithFormat: @"LCFieldInfo: <%@> %d %d %d %d", name, number, storeTermVector, storePositionWithTermVector, storeOffsetWithTermVector];
 }
 
 @end

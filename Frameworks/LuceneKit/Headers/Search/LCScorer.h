@@ -8,13 +8,13 @@
 
 @interface LCScorer: NSObject
 {
-  LCSimilarity *similarity;
+	LCSimilarity *similarity;
 }
 - (id) initWithSimilarity: (LCSimilarity *) si;
 - (LCSimilarity *) similarity;
 - (void) score: (LCHitCollector *) hc;
 - (BOOL) score: (LCHitCollector *) hc maximalDocument: (int) max;
-/* Override by subclass */
+	/* Override by subclass */
 - (BOOL) next;
 - (int) document;
 - (float) score;

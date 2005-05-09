@@ -12,19 +12,19 @@
 
 @interface LCSearcher: NSObject <LCSearchable>
 {
-  LCSimilarity *similarity;
+	LCSimilarity *similarity;
 }
 - (LCHits *) search: (LCQuery *) query;
 - (LCHits *) search: (LCQuery *) query
-         filter: (LCFilter *) filter;
+			 filter: (LCFilter *) filter;
 - (LCHits *) search: (LCQuery *) query sort: (LCSort *) sort;
 - (LCHits *) search: (LCQuery *) query 
              filter: (LCFilter *) filter sort: (LCSort *) sort;
 - (void) search: (LCQuery *) query
-         hitCollector: (LCHitCollector *) results;
+   hitCollector: (LCHitCollector *) results;
 - (void) setSimilarity: (LCSimilarity *) similarity;
 - (LCSimilarity *) similarity;
-	
+
 @end
 
 #endif /* __LUCENE_SEARCH_SEARCHER__ */

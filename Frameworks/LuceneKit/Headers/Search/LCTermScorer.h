@@ -10,22 +10,22 @@
 
 @interface LCTermScorer: LCScorer
 {
-  id <LCWeight> weight;
-  id <LCTermDocs> termDocs;
-  NSData *norms;
-  float weightValue;
-  int doc;
-
-  NSMutableArray *docs; // buffered doc numbers;
-  NSMutableArray *freqs; // buffered term freqs;
-  int pointer;
-  int pointerMax;
-
-  NSMutableArray *scoreCache;
+	id <LCWeight> weight;
+	id <LCTermDocs> termDocs;
+	NSData *norms;
+	float weightValue;
+	int doc;
+	
+	NSMutableArray *docs; // buffered doc numbers;
+	NSMutableArray *freqs; // buffered term freqs;
+	int pointer;
+	int pointerMax;
+	
+	NSMutableArray *scoreCache;
 }
 
 - (id) initWithWeight: (id <LCWeight>) weight termDocs: (id <LCTermDocs>) td
-       similarity: (LCSimilarity *) similarity norms: (NSData *) norms;
+		   similarity: (LCSimilarity *) similarity norms: (NSData *) norms;
 
 @end
 

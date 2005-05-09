@@ -6,15 +6,15 @@
 
 @interface LCEntry: NSObject
 {
-  NSString *field;
-  LCSortFieldType type;
-  id custom; // which custom comparator
+	NSString *field;
+	LCSortFieldType type;
+	id custom; // which custom comparator
 }
 
 - (id) initWithField: (NSString *) field
-       type: (LCSortFieldType) type;
+				type: (LCSortFieldType) type;
 - (id) initWithField: (NSString *) field
-       custom: (id) custom;
+			  custom: (id) custom;
 - (NSString *) field;
 - (LCSortFieldType) type;
 - (id) custom;
@@ -22,17 +22,17 @@
 
 @interface LCFieldCacheImpl: LCFieldCache
 {
-  /** The internal cache. Maps Entry to array of interpreted term values. **/
-  NSMutableDictionary *cache;
+	/** The internal cache. Maps Entry to array of interpreted term values. **/
+	NSMutableDictionary *cache;
 }
 - (id) lookup: (LCIndexReader *) reader field: (NSString *) field
-       type: (LCSortFieldType) type;
+		 type: (LCSortFieldType) type;
 - (id) lookup: (LCIndexReader *) reader field: (NSString *) field
-       comparer: (id) comparer;
+	 comparer: (id) comparer;
 - (id) store: (LCIndexReader *) reader field: (NSString *) field
-       type: (LCSortFieldType) type custom: (id) value;
+		type: (LCSortFieldType) type custom: (id) value;
 - (id) store: (LCIndexReader *) reader field: (NSString *) field
-       comparer: (id) comparer custom: (id) value;
+	comparer: (id) comparer custom: (id) value;
 @end
 
 #endif /* __LUCENE_SEARCH_FIELD_CACHE_IMPL__ */

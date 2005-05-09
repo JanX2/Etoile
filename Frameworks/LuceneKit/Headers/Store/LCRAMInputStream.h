@@ -6,8 +6,8 @@
 
 @interface LCRAMInputStream: LCIndexInput
 {
-  LCRAMFile *file;
-  unsigned long long pointer;
+	LCRAMFile *file;
+	unsigned long long pointer;
 }
 
 - (id) initWithFile: (LCRAMFile *) file;

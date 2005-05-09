@@ -8,8 +8,8 @@
 - (BOOL) skipTo: (int) target { return NO; }
 - (LCExplanation *) explain: (int) document
 {
-  LCExplanation *e = [[LCExplanation alloc] init];
-  [e setRepresentation: @"No document matches."];
-  return AUTORELEASE(e);
+	LCExplanation *e = [[LCExplanation alloc] init];
+	[e setRepresentation: @"No document matches."];
+	return AUTORELEASE(e);
 }
 @end

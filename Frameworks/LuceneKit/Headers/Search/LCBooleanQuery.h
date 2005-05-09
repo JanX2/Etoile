@@ -13,9 +13,9 @@
 /* LuceneKit: this is actually BooleanWeight2 in lucene */
 @interface LCBooleanWeight: NSObject <LCWeight>
 {
-  LCSimilarity *similarity;
-  LCBooleanQuery *query;
-  NSMutableArray *weights;
+	LCSimilarity *similarity;
+	LCBooleanQuery *query;
+	NSMutableArray *weights;
 }
 
 - (id) initWithSearcher: (LCSearcher *) searcher
@@ -26,8 +26,8 @@
 
 @interface LCBooleanQuery: LCQuery
 {
-  NSMutableArray *clauses;
-  BOOL disableCoord;
+	NSMutableArray *clauses;
+	BOOL disableCoord;
 }
 
 + (int) maxClauseCount;
@@ -39,14 +39,14 @@
 - (LCSimilarity *) similarity: (LCSearcher *) searcher;
 - (void) addQuery: (LCQuery *) query
          required: (BOOL) required
-	 prohibited: (BOOL) prohibited;
+	   prohibited: (BOOL) prohibited;
 - (void) addQuery: (LCQuery *) query
-	    occur: (LCOccurType) occur;
+			occur: (LCOccurType) occur;
 - (void) addClause: (LCBooleanClause *) clause;
 - (NSArray *) clauses;
 - (void) setClauses: (NSArray *) clauses;
 - (void) replaceClauseAtIndex: (int) index 
-         withClause: (LCBooleanClause *) clause;
+				   withClause: (LCBooleanClause *) clause;
 @end
 
 #endif /* __LUCENE_SEARCH_BOOLEAN_QUERY__ */

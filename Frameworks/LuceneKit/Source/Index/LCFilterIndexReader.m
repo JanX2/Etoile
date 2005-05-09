@@ -4,249 +4,249 @@
 
 @implementation LCFilterTermDocs
 
-  /** Base class for filtering {@link TermDocs} implementations. */
+/** Base class for filtering {@link TermDocs} implementations. */
 - (id) initWithTermDocs: (id <LCTermDocs>) docs
 {
-  self = [self init];
-  ASSIGN(input, docs);
-  return self;
+	self = [self init];
+	ASSIGN(input, docs);
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(input);
-  [super dealloc];
+	DESTROY(input);
+	[super dealloc];
 }
 
 - (void) seekTerm: (LCTerm *) term
 {
-  [input seekTerm: term];
+	[input seekTerm: term];
 }
 
 - (void) seekTermEnum: (LCTermEnum *) termEnum
 {
-  [input seekTermEnum: termEnum];
+	[input seekTermEnum: termEnum];
 }
 
 - (long) document
 {
-  return [input document];
+	return [input document];
 }
 
 - (long) frequency
 {
-  return [input frequency];
+	return [input frequency];
 }
 
 - (BOOL) next
 {
-  return [input next];
+	return [input next];
 }
 
 - (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs
 {
-  return [input readDocuments: docs frequency: freqs];
+	return [input readDocuments: docs frequency: freqs];
 }
 
 - (BOOL) skipTo: (int) i
 {
-  return [input skipTo: i];
+	return [input skipTo: i];
 }
 
 - (void) close
 {
-  [input close];
+	[input close];
 }
 
 @end
 
-  /** Base class for filtering {@link TermPositions} implementations. */
+/** Base class for filtering {@link TermPositions} implementations. */
 @implementation LCFilterTermPositions
 
 - (id) initWithTermPositions: (id <LCTermPositions>) po
 {
-  return [self initWithTermDocs: po];
+	return [self initWithTermDocs: po];
 }
 
 - (int) nextPosition
 {
-  return [(id <LCTermPositions>)input nextPosition];
+	return [(id <LCTermPositions>)input nextPosition];
 }
 
 - (NSComparisonResult) compare: (id) o
 {
-  LCFilterTermPositions *other = (LCFilterTermPositions *) o;
-  if ([self document] < [other document])
-    return NSOrderedAscending;
-  else if ([self document] == [other document])
-    return NSOrderedSame;
-  else
-    return NSOrderedDescending;
+	LCFilterTermPositions *other = (LCFilterTermPositions *) o;
+	if ([self document] < [other document])
+		return NSOrderedAscending;
+	else if ([self document] == [other document])
+		return NSOrderedSame;
+	else
+		return NSOrderedDescending;
 }
 
 @end
 
 @implementation LCFilterTermEnum
 
-  /** Base class for filtering {@link TermEnum} implementations. */
+/** Base class for filtering {@link TermEnum} implementations. */
 - (id) initWithTermEnum: (LCTermEnum *) termEnum
 {
-  self = [self init];
-  ASSIGN(input, termEnum);
-  return self;
+	self = [self init];
+	ASSIGN(input, termEnum);
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(input);
-  [super dealloc];
+	DESTROY(input);
+	[super dealloc];
 }
 
 - (BOOL) next
 {
-  return [input next];
+	return [input next];
 }
 
 - (LCTerm *) term
 {
-  return [input term];
+	return [input term];
 }
 
 - (long) documentFrequency
 {
-  return [input documentFrequency];
+	return [input documentFrequency];
 }
 
 - (void) close
 {
-  [input close];
+	[input close];
 }
 
 @end
 
 @implementation LCFilterIndexReader
 
-  /**
-   * <p>Construct a FilterIndexReader based on the specified base reader.
-   * Directory locking for delete, undeleteAll, and setNorm operations is
-   * left to the base reader.</p>
-   * <p>Note that base reader is closed if this FilterIndexReader is closed.</p>
-   * @param in specified base reader.
-   */
+/**
+* <p>Construct a FilterIndexReader based on the specified base reader.
+ * Directory locking for delete, undeleteAll, and setNorm operations is
+ * left to the base reader.</p>
+ * <p>Note that base reader is closed if this FilterIndexReader is closed.</p>
+ * @param in specified base reader.
+ */
 - (id) initWithIndexReader: (LCIndexReader *) reader
 {
-  self = [self initWithDirectory: [reader directory]];
-  ASSIGN(input, reader);
-  return self;
+	self = [self initWithDirectory: [reader directory]];
+	ASSIGN(input, reader);
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(input);
-  [super dealloc];
+	DESTROY(input);
+	[super dealloc];
 }
 
 - (NSArray *) termFreqVectors: (int) docNumber
 {
-  return [input termFreqVectors: docNumber];
+	return [input termFreqVectors: docNumber];
 }
 
 - (id <LCTermFreqVector>) termFreqVector: (int) docNumber field: (NSString *) field
 {
-  return [input termFreqVector: docNumber field: field];
+	return [input termFreqVector: docNumber field: field];
 }
 
 - (int) numberOfDocuments
 {
-  return [input numberOfDocuments];
+	return [input numberOfDocuments];
 }
 
 - (int) maximalDocument
 {
-  return [input maximalDocument];
+	return [input maximalDocument];
 }
 
 - (LCDocument *) document: (int) n
 {
-  return [input document: n];
+	return [input document: n];
 }
 
 - (BOOL) isDeleted: (int) n
 {
-  return [input isDeleted: n];
+	return [input isDeleted: n];
 }
 
 - (BOOL) hasDeletions
 {
-  return [input hasDeletions];
+	return [input hasDeletions];
 }
 
 - (void) doUndeleteAll
 {
-  [input undeleteAll];
+	[input undeleteAll];
 }
 
 - (NSData *) norms: (NSString *) f
 {
-  return [input norms: f];
+	return [input norms: f];
 }
 
 - (void) setNorms: (NSString *) f bytes: (NSMutableData *) bytes
-         offset: (int) offset
+		   offset: (int) offset
 {
-  [input setNorms: f bytes: bytes offset: offset];
-
+	[input setNorms: f bytes: bytes offset: offset];
+	
 }
 
 - (void) doSetNorm: (int) d field: (NSString *) f
-             charValue: (char) b
+		 charValue: (char) b
 {
-  [input setNorm: d field: f charValue: b];
+	[input setNorm: d field: f charValue: b];
 }
 
 - (LCTermEnum *) terms
 {
-  return [input terms];
+	return [input terms];
 }
 
 - (LCTermEnum *) termsWithTerm: (LCTerm *) t
 {
-  return [input termsWithTerm: t];
+	return [input termsWithTerm: t];
 }
 
 - (long) documentFrequency: (LCTerm *) t
 {
-  return [input documentFrequency: t];
+	return [input documentFrequency: t];
 }
 
 - (id <LCTermDocs>) termDocs
 {
-  return [input termDocs];
+	return [input termDocs];
 }
 
 - (id <LCTermPositions>) termPositions
 {
-  return [input termPositions];
+	return [input termPositions];
 }
 
 - (void) doDelete: (int) n
 {
-  [input delete: n];
+	[input delete: n];
 }
 
 - (void) doCommit
 {
-  [input commit];
+	[input commit];
 }
 
 - (void) doClose
 {
-  [input close];
+	[input close];
 }
 
 - (NSArray *) fieldNames: (LCFieldOption) option
 {
-  return [input fieldNames: option];
+	return [input fieldNames: option];
 }
 
 @end

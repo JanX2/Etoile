@@ -8,12 +8,12 @@
 
 @interface LCHit: NSObject
 {
-  float score;
-  int identifier;
-  LCDocument *doc;
-  BOOL resolved;
-  LCHits *hits;
-  int hitNumber;
+	float score;
+	int identifier;
+	LCDocument *doc;
+	BOOL resolved;
+	LCHits *hits;
+	int hitNumber;
 }
 
 - (id) initWithHits: (LCHits *) hits index: (int) hitNumber;

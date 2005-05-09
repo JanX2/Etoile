@@ -7,7 +7,7 @@
 
 @interface LCCacheScoreDocComparator: NSObject <LCScoreDocComparator>
 {
-  NSDictionary *cache;
+	NSDictionary *cache;
 }
 - (void) setCache: (NSDictionary *) cache;
 @end
@@ -16,42 +16,42 @@
 
 - (void) setCache: (NSDictionary *) c
 {
-  ASSIGN(cache, c);
+	ASSIGN(cache, c);
 }
 
 - (NSComparisonResult) compare: (LCScoreDoc *) i to: (LCScoreDoc *) j
 {
-  id iValue = [cache objectForKey: [NSNumber numberWithInt: [i document]]];
-  id jValue = [cache objectForKey: [NSNumber numberWithInt: [j document]]];
-  return [(NSNumber *)iValue compare: jValue];
+	id iValue = [cache objectForKey: [NSNumber numberWithInt: [i document]]];
+	id jValue = [cache objectForKey: [NSNumber numberWithInt: [j document]]];
+	return [(NSNumber *)iValue compare: jValue];
 }
 
 - (id) sortValue: (LCScoreDoc *) doc
 {
-  return [cache objectForKey: [NSNumber numberWithInt: [doc document]]];
+	return [cache objectForKey: [NSNumber numberWithInt: [doc document]]];
 }
 
 - (int) sortType
 {
-  return LCSortField_CUSTOM;
+	return LCSortField_CUSTOM;
 }
 
 @end
 
 @implementation LCSortComparator
 - (id <LCScoreDocComparator>) newComparator: (LCIndexReader *) reader
-                           field: (NSString *) fieldname
+									  field: (NSString *) fieldname
 {
-  NSDictionary *cachedValues = [[LCFieldCache defaultCache] custom: reader field: fieldname sortComparator: self]; 
-  LCCacheScoreDocComparator *comparator;
-  comparator = [[LCCacheScoreDocComparator alloc] init];
-  [comparator setCache: cachedValues];
-  return AUTORELEASE(comparator);
+	NSDictionary *cachedValues = [[LCFieldCache defaultCache] custom: reader field: fieldname sortComparator: self]; 
+	LCCacheScoreDocComparator *comparator;
+	comparator = [[LCCacheScoreDocComparator alloc] init];
+	[comparator setCache: cachedValues];
+	return AUTORELEASE(comparator);
 }
 
 - (id) comparable: (NSString *) termtext
 {
-  return nil;
+	return nil;
 }
 
 @end

@@ -8,7 +8,7 @@
 
 @interface LCFilterTermDocs: NSObject <LCTermDocs>
 {
-  id <LCTermDocs> input;
+	id <LCTermDocs> input;
 }
 
 - (id) initWithTermDocs: (id <LCTermDocs>) docs;
@@ -21,7 +21,7 @@
 
 @interface LCFilterTermEnum: LCTermEnum
 {
-  LCTermEnum* input;
+	LCTermEnum* input;
 }
 
 - (id) initWithTermEnum: (LCTermEnum *) termEnum;
@@ -29,7 +29,7 @@
 
 @interface LCFilterIndexReader: LCIndexReader
 {
-  LCIndexReader *input;
+	LCIndexReader *input;
 }
 
 - (id) initWithIndexReader: (LCIndexReader *) reader;

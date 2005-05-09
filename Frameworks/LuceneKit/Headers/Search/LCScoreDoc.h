@@ -6,8 +6,8 @@
 
 @interface LCScoreDoc: NSObject <LCComparable>
 {
-  float score;
-  int doc;
+	float score;
+	int doc;
 }
 
 - (id) initWithDocument: (int) doc score: (float) score;

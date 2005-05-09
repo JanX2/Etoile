@@ -5,10 +5,10 @@
 
 @interface LCExactPhraseScorer: LCPhraseScorer
 - (id) initWithWeight: (LCWeight *) weight
-       termPositions: (NSArray *) tps
-       positions: (NSArray *) positions
-       similarity: (LCSimilarity *) similarity
-       norms: (NSData *) norms;
+		termPositions: (NSArray *) tps
+			positions: (NSArray *) positions
+		   similarity: (LCSimilarity *) similarity
+				norms: (NSData *) norms;
 - (float) phraseFreq;
 @end
 

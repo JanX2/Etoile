@@ -10,8 +10,8 @@
 @interface LCStringReader: NSObject <LCReader>
 #endif
 {
-  unsigned int pos;
-  NSString * source; 
+	unsigned int pos;
+	NSString * source; 
 }
 
 - (id) initWithString: (NSString *) s;

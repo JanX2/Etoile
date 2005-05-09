@@ -6,14 +6,14 @@
 
 @interface LCSegmentTermPositions: LCSegmentTermDocs <LCTermPositions>
 {
-  LCIndexInput *proxStream;
-  int proxCount;
-  int position;
+	LCIndexInput *proxStream;
+	int proxCount;
+	int position;
 }
 
 - (id) initWithSegmentReader: (LCSegmentReader *) p;
 
-  
+
 @end
 
 

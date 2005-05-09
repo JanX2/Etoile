@@ -9,20 +9,20 @@
 
 @interface LCSegmentTermEnum: LCTermEnum <NSCopying>
 {
-  LCIndexInput *input;
-  LCFieldInfos *fieldInfos;
-  long long size;
-  long long position;
-  LCTermBuffer *termBuffer, *prevBuffer;
-  LCTermBuffer *scratch; // used for scanning
-  LCTermInfo *termInfo;
-
-  int format;
-  BOOL isIndex;
-  long indexPointer;
-  int indexInterval;
-  unsigned int skipInterval;
-  int formatM1SkipInterval;
+	LCIndexInput *input;
+	LCFieldInfos *fieldInfos;
+	long long size;
+	long long position;
+	LCTermBuffer *termBuffer, *prevBuffer;
+	LCTermBuffer *scratch; // used for scanning
+	LCTermInfo *termInfo;
+	
+	int format;
+	BOOL isIndex;
+	long indexPointer;
+	int indexInterval;
+	unsigned int skipInterval;
+	int formatM1SkipInterval;
 }
 
 - (id) initWithIndexInput: (LCIndexInput *) i

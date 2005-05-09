@@ -26,20 +26,20 @@
 	NSMutableDictionary *postingTable;
 	NSMutableArray *fieldsCache;
 	NSMutableArray *fieldBoosts; // flost
-
+	
 	LCTerm *termBuffer;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) directory
-       analyzer: (LCAnalyzer *) analyzer
-       similarity: (LCSimilarity *) similarity
-       maxFieldLength: (int) maxFieldLength;
+				analyzer: (LCAnalyzer *) analyzer
+			  similarity: (LCSimilarity *) similarity
+		  maxFieldLength: (int) maxFieldLength;
 - (id) initWithDirectory: (id <LCDirectory>) directory
-       analyzer: (LCAnalyzer *) analyzer
-       indexWriter: (LCIndexWriter *) indexWriter;
+				analyzer: (LCAnalyzer *) analyzer
+			 indexWriter: (LCIndexWriter *) indexWriter;
 - (void) addDocument: (NSString *) segment
-         document: (LCDocument *) doc;
-	
+			document: (LCDocument *) doc;
+
 @end
 
 #endif /* __LUCENE_INDEX_DOCUMENT_WRITER__ */

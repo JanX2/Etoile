@@ -5,7 +5,7 @@
 
 @interface LCSimilarityDelegator: LCSimilarity
 {
-  LCSimilarity *delegee;
+	LCSimilarity *delegee;
 }
 
 - (id) initWithSimilarity: (LCSimilarity *) similarity;

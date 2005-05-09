@@ -5,7 +5,7 @@
 
 @interface LCStopFilter: LCTokenFilter
 {
-  NSMutableSet *stopWords;
+	NSMutableSet *stopWords;
 }
 
 + (NSSet *) makeStopSet: (NSArray *) sw;

@@ -12,14 +12,14 @@
 
 @interface LCFieldsWriter: NSObject
 {
-  LCFieldInfos *fieldInfos;
-  LCIndexOutput *fieldsStream;
-  LCIndexOutput *indexStream;
+	LCFieldInfos *fieldInfos;
+	LCIndexOutput *fieldsStream;
+	LCIndexOutput *indexStream;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) d
-                  segment: (NSString *) segment
-                   fieldInfos: (LCFieldInfos *) fn;
+				 segment: (NSString *) segment
+			  fieldInfos: (LCFieldInfos *) fn;
 - (void) close;
 - (void) addDocument: (LCDocument *) doc;
 @end

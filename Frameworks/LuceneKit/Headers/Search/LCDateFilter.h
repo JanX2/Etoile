@@ -5,17 +5,17 @@
 
 @interface LCDateFilter: LCFilter
 {
-  NSString *field;
-  NSString *start;
-  NSString *end;
+	NSString *field;
+	NSString *start;
+	NSString *end;
 }
 
 - (id) initWithString: (NSString *) filter;
 - (id) initWithString: (NSString *) filter
-       from: (NSCalendarDate *) from
-       to: (NSCalendarDate *) to;
+				 from: (NSCalendarDate *) from
+				   to: (NSCalendarDate *) to;
 - (id) initWithString: (NSString *) filter
-       fromTimeInterval: (NSTimeInterval) from
+	 fromTimeInterval: (NSTimeInterval) from
        toTimeInterval: (NSTimeinterval) to;
 + (LCDateFilter *) before: (NSString *) field date: (NSCalendarDate *) date;
 + (LCDateFilter *) before: (NSString *) field timeInterval: (NSTimeInterval) time;

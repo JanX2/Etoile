@@ -5,8 +5,8 @@
 
 @interface LCRAMFile: NSObject
 {
-  NSMutableData *buffers;
-  NSTimeInterval lastModified; // since 1970
+	NSMutableData *buffers;
+	NSTimeInterval lastModified; // since 1970
 }
 
 - (NSData *) buffers;

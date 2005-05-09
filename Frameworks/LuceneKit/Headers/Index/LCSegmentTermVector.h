@@ -5,9 +5,9 @@
 
 @interface LCSegmentTermVector: NSObject <LCTermFreqVector>
 {
-  NSString *field;
-  NSArray *terms; // NSArray of NSString
-  NSArray *termFreqs; // NSArray of NSNumber
+	NSString *field;
+	NSArray *terms; // NSArray of NSString
+	NSArray *termFreqs; // NSArray of NSNumber
 }
 
 - (id) initWithField: (NSString *) field

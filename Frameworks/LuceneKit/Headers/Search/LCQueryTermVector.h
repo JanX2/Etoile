@@ -7,13 +7,13 @@
 
 @interface LCQueryTermVector: NSObject <LCTermFreqVector>
 {
-  NSMutableArray *terms;
-  NSMutableArray *termFreqs;
+	NSMutableArray *terms;
+	NSMutableArray *termFreqs;
 }
 
 - (id) initWithQueryTerms: (NSArray *) queryTerms;
 - (id) initWithString: (NSString *) queryString
-       analyzer: (LCAnalyzer *) analyzer;
+			 analyzer: (LCAnalyzer *) analyzer;
 - (void) processTerms: (NSArray *) queryTerms;
 
 @end

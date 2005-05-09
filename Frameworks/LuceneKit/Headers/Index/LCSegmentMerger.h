@@ -15,26 +15,26 @@
 
 @interface LCSegmentMerger: NSObject
 {
-  id <LCDirectory> directory;
-  NSString *segment;
-  int termIndexInterval;
-  NSMutableArray *readers;
-  LCFieldInfos *fieldInfos;
-  NSArray *COMPOUND_EXTENSIONS;
-  NSArray *VECTOR_EXTENSIONS;
-
-  LCIndexOutput *freqOutput;
-  LCIndexOutput *proxOutput;
-  LCTermInfosWriter *termInfosWriter;
-  int skipInterval;
-  LCSegmentMergeQueue *queue;
-
-  LCTermInfo *termInfo; // minimize consing
-
-  LCRAMOutputStream *skipBuffer;
-  int lastSkipDoc;
-  unsigned long long lastSkipFreqPointer;
-  unsigned long long lastSkipProxPointer;
+	id <LCDirectory> directory;
+	NSString *segment;
+	int termIndexInterval;
+	NSMutableArray *readers;
+	LCFieldInfos *fieldInfos;
+	NSArray *COMPOUND_EXTENSIONS;
+	NSArray *VECTOR_EXTENSIONS;
+	
+	LCIndexOutput *freqOutput;
+	LCIndexOutput *proxOutput;
+	LCTermInfosWriter *termInfosWriter;
+	int skipInterval;
+	LCSegmentMergeQueue *queue;
+	
+	LCTermInfo *termInfo; // minimize consing
+	
+	LCRAMOutputStream *skipBuffer;
+	int lastSkipDoc;
+	unsigned long long lastSkipFreqPointer;
+	unsigned long long lastSkipProxPointer;
 }
 // This ctor used only by test code
 - (id) initWithDirectory: (id <LCDirectory>) dir name: (NSString *) name;

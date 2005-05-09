@@ -5,8 +5,8 @@
 
 @interface LCScoreTerm: NSObject
 {
-  LCTerm *term;
-  float score;
+	LCTerm *term;
+	float score;
 }
 
 - (id) initWithTerm: (LCTerm *) term score: (float) score;
@@ -20,15 +20,15 @@ static int defaultPrefixLength = 0;
 
 @interface LCFuzzyQuery: LCMultiTermQuery
 {
-  float minimumSimilarity;
-  int prefixLength;
+	float minimumSimilarity;
+	int prefixLength;
 }
 
 - (id) initWithTerm: (LCTerm *) term
-       minimumSimilarity: (float) minimumSimilarity
+  minimumSimilarity: (float) minimumSimilarity
        prefixLength: (int) prefixLength;
 - (id) initWithTerm: (LCTerm *) term
-       minimumSimilarity: (float) minimumSimilarity;
+  minimumSimilarity: (float) minimumSimilarity;
 - (id) initWithTerm: (LCTerm *) term;
 - (float) minSimilarity;
 - (int) prefixLength;

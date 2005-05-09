@@ -5,19 +5,19 @@
 #include "Search/LCSortComparator.h"
 #include "Index/LCIndexReader.h"
 
-  /** Indicator for StringIndex values in the cache. */
-  // NOTE: the value assigned to this constant must not be
-  // the same as any of those in SortField!!
-  //
+/** Indicator for StringIndex values in the cache. */
+// NOTE: the value assigned to this constant must not be
+// the same as any of those in SortField!!
+//
 //static int LCFieldCache_STRING_INDEX = -1;
 /** Expert: Stores term text values and document ordering data. */
 @interface LCStringIndex: NSObject
 {
-/** All the term values, in natural order. */
-  NSArray *lookup;
-/** For each document, an index into the lookup array. */
-/* LuceneKit: key is document number, value is the index in lookup above */
-  NSDictionary *order;
+	/** All the term values, in natural order. */
+	NSArray *lookup;
+	/** For each document, an index into the lookup array. */
+	/* LuceneKit: key is document number, value is the index in lookup above */
+	NSDictionary *order;
 }
 
 /** Creates one of these objects */
@@ -30,25 +30,25 @@
 {
 }
 
-  /** Checks the internal cache for an appropriate entry, and if none is
-   * found, reads the terms in <code>field</code> as integers and returns an array
-   * of size <code>reader.maxDoc()</code> of the value each document
-   * has in the given field.
-   */
+/** Checks the internal cache for an appropriate entry, and if none is
+* found, reads the terms in <code>field</code> as integers and returns an array
+* of size <code>reader.maxDoc()</code> of the value each document
+* has in the given field.
+*/
 + (LCFieldCache *) defaultCache;
-/* LuceneKit: 
- * original lucene return array, in which document number is the index.
- * Because there may be gap in array and NSArray cannot have nil,
- * use NSDictionary, in which document number is key (NSNumber)
- */
+	/* LuceneKit: 
+	* original lucene return array, in which document number is the index.
+	* Because there may be gap in array and NSArray cannot have nil,
+	* use NSDictionary, in which document number is key (NSNumber)
+	*/
 - (NSDictionary *) ints: (LCIndexReader *) reader field: (NSString *) field;
 - (NSDictionary *) floats: (LCIndexReader *) reader field: (NSString *) field;
 - (NSDictionary *) strings: (LCIndexReader *) reader field: (NSString *) field;
 - (LCStringIndex *) stringIndex: (LCIndexReader *) reader 
-                    field: (NSString *) field;
+						  field: (NSString *) field;
 - (id) objects: (LCIndexReader *) reader field: (NSString *) field;
 - (NSDictionary *) custom: (LCIndexReader *) reader field: (NSString *) field 
-       sortComparator: (LCSortComparator *) comparator;
+		   sortComparator: (LCSortComparator *) comparator;
 
 @end
 

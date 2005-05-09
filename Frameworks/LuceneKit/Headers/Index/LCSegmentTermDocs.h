@@ -11,23 +11,23 @@
 
 @interface LCSegmentTermDocs: NSObject <LCTermDocs>
 {
-  LCSegmentReader *parent;
-  LCIndexInput *freqStream;
-  int count;
-  int df;
-  LCBitVector *deletedDocs;
-  long doc;
-  long freq;
-
-  int skipInterval;
-  int numSkips;
-  int skipCount;
-  LCIndexInput *skipStream;
-  long skipDoc;
-  long long freqPointer;
-  long long proxPointer;
-  long long skipPointer;
-  BOOL haveSkipped;
+	LCSegmentReader *parent;
+	LCIndexInput *freqStream;
+	int count;
+	int df;
+	LCBitVector *deletedDocs;
+	long doc;
+	long freq;
+	
+	int skipInterval;
+	int numSkips;
+	int skipCount;
+	LCIndexInput *skipStream;
+	long skipDoc;
+	long long freqPointer;
+	long long proxPointer;
+	long long skipPointer;
+	BOOL haveSkipped;
 }
 
 - (id) initWithSegmentReader: (LCSegmentReader *) p;

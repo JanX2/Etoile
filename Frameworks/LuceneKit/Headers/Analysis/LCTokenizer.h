@@ -8,8 +8,8 @@
 
 @interface LCTokenizer: LCTokenStream
 {
-  /** The text source for this Tokenizer. */
-  id <LCReader> input;
+	/** The text source for this Tokenizer. */
+	id <LCReader> input;
 }
 
 - (id) initWithReader: (id <LCReader>) input;

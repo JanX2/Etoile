@@ -5,9 +5,9 @@
 
 @interface LCFSIndexInput: LCIndexInput
 {
-  NSFileHandle *handle;
-  NSString *path;
-  unsigned long long length;
+	NSFileHandle *handle;
+	NSString *path;
+	unsigned long long length;
 }
 
 - (id) initWithFile: (NSString *) absolutePath;

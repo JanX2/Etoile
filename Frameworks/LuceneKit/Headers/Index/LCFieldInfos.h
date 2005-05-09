@@ -9,21 +9,21 @@
 
 @interface LCFieldInfos: NSObject
 {
-  NSMutableArray *byNumber;
-  NSMutableDictionary *byName;
+	NSMutableArray *byNumber;
+	NSMutableDictionary *byName;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) d name: (NSString *) name;
 - (void) addDocument: (LCDocument *) doc;
 - (void) addIndexedCollection: (NSArray *) names
-         storeTermVector: (BOOL) storeTermVectors
-         storePositionWithTermVector: (BOOL) storePositionWithTermVector
-	 storeOffsetWithTermVector: (BOOL) storeOffsetWithTermVector;
+			  storeTermVector: (BOOL) storeTermVectors
+  storePositionWithTermVector: (BOOL) storePositionWithTermVector
+	storeOffsetWithTermVector: (BOOL) storeOffsetWithTermVector;
 - (void) addCollection: (NSArray *) names isIndexed: (BOOL) isIndexed;
 
 - (void) addName: (NSString *) name isIndexed: (BOOL) isIndexed;
 - (void) addName: (NSString *) name
-         isIndexed: (BOOL) isIndexed
+	   isIndexed: (BOOL) isIndexed
          isTermVectorStored: (BOOL)isTermVectorStored;
 - (void) addName: (NSString *) name
        isIndexed: (BOOL) isIndexed

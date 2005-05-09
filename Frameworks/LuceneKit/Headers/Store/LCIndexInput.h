@@ -14,13 +14,13 @@
 - (NSString *) readString;
 - (void) readChars: (NSMutableString *) buffer 
              start: (int) start 
-	    length: (int) length;
+			length: (int) length;
 
-/* override by subclass */
+	/* override by subclass */
 - (char) readByte;
 - (void) readBytes: (NSMutableData *) b 
             offset: (int) offset 
-	    length: (int) len;
+			length: (int) len;
 - (void) close;
 - (unsigned long long) filePointer;
 - (void) seek: (unsigned long long) pos;

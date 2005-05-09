@@ -10,8 +10,8 @@
 @interface LCStopAnalyzer: LCAnalyzer
 #endif
 {
-  NSMutableSet *stopWords;
-  NSArray *ENGLISH_STOP_WORDS;
+	NSMutableSet *stopWords;
+	NSArray *ENGLISH_STOP_WORDS;
 }
 
 - (id) initWithStopWords: (NSArray *) sw;

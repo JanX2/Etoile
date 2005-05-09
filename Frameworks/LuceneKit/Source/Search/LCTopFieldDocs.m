@@ -3,17 +3,17 @@
 
 @implementation LCTopFieldDocs
 - (id) initWithTotalHits: (int) th
-       scoreDocuments: (NSArray *) sd
-           sortFields: (NSArray *) f
+		  scoreDocuments: (NSArray *) sd
+			  sortFields: (NSArray *) f
 {
-  self = [self initWithTotalHits: th scoreDocuments: sd];
-  ASSIGN(fields, f);
-  return self;
+	self = [self initWithTotalHits: th scoreDocuments: sd];
+	ASSIGN(fields, f);
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(fields);
-  [super dealloc];
+	DESTROY(fields);
+	[super dealloc];
 }
 @end

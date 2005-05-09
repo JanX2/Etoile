@@ -5,8 +5,8 @@
 
 @interface LCFilteredQuery: LCQuery
 {
-  LCQuery *query;
-  LCFilter *filter;
+	LCQuery *query;
+	LCFilter *filter;
 }
 
 - (id) initWithQuery: (LCQuery *) query filter: (LCFilter *) filter;
@@ -24,7 +24,7 @@
 - (LCExplanation *) explain: (int) i;
 - (LCQuery *) rewrite: (LCIndexReader *) reader;
 - (LCQuery *) query;
- 
+
 @end
 
 #endif /* __LUCENE_SEARCH_FILTERED_QUERY__ */

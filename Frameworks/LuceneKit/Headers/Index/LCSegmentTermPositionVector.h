@@ -6,15 +6,15 @@
 
 @interface LCSegmentTermPositionVector: LCSegmentTermVector <LCTermPositionVector>
 {
-  NSArray *positions; // array of NSArray of NSNumber (2D array)
-  NSArray *offsets; // array of NSArray of LCTermVectorOffsetInfo (2D array)
+	NSArray *positions; // array of NSArray of NSNumber (2D array)
+	NSArray *offsets; // array of NSArray of LCTermVectorOffsetInfo (2D array)
 }
 
 - (id) initWithField: (NSString *) field
                terms: (NSArray *) terms
-	   termFreqs: (NSArray *) termFreqs
+		   termFreqs: (NSArray *) termFreqs
            positions: (NSArray *) positions
-	     offsets: (NSArray *) offsets;
+			 offsets: (NSArray *) offsets;
 
 @end
 

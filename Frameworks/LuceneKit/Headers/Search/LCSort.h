@@ -6,7 +6,7 @@
 
 @interface LCSort: NSObject // Serializable
 {
-  NSArray *fields;
+	NSArray *fields;
 }
 + (LCSort *) sort_RELEVANCE;
 + (LCSort *) sort_INDEXORDER;

@@ -5,11 +5,11 @@
 
 @interface LCTopFieldDocs: LCTopDocs
 {
-  NSArray *fields;
+	NSArray *fields;
 }
 - (id) initWithTotalHits: (int) totalHits 
-       scoreDocuments: (NSArray *) scoreDocs
-       sortFields: (NSArray *) fields;
+		  scoreDocuments: (NSArray *) scoreDocs
+			  sortFields: (NSArray *) fields;
 @end
 
 #endif /* __LUCENE_SEARCH_TOP_FIELD_DOCS__ */

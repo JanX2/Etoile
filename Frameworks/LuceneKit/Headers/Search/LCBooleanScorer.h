@@ -10,11 +10,11 @@
 
 @interface LCCoordinator: NSObject
 {
-  int maxCoord;
-  NSMutableArray *coordFactors;
-  
-  int nrMatchers;
-  LCBooleanScorer *scorer;
+	int maxCoord;
+	NSMutableArray *coordFactors;
+	
+	int nrMatchers;
+	LCBooleanScorer *scorer;
 }
 - (id) initWithScorer: (LCBooleanScorer *) scorer;
 - (void) initiation; /* LuceneKit: init in lucene */
@@ -28,38 +28,38 @@
 
 @interface LCSingleMatchScorer: LCScorer
 {
-  LCScorer *scorer;
-  LCCoordinator *coordinator;
+	LCScorer *scorer;
+	LCCoordinator *coordinator;
 }
 
 - (id) initWithScorer: (LCScorer *) scorer
-       coordinator: (LCCoordinator *) coordinator;
+		  coordinator: (LCCoordinator *) coordinator;
 @end
 
 @interface LCBooleanScorer: LCScorer
 {
-  NSMutableArray *requiredScorers;
-  NSMutableArray *optionalScorers;
-  NSMutableArray *prohibitedScorers;
-  
-  LCCoordinator *coordinator;
-  LCScorer *countingSumScorer;
-
-  LCSimilarity *defaultSimilarity;
+	NSMutableArray *requiredScorers;
+	NSMutableArray *optionalScorers;
+	NSMutableArray *prohibitedScorers;
+	
+	LCCoordinator *coordinator;
+	LCScorer *countingSumScorer;
+	
+	LCSimilarity *defaultSimilarity;
 }
 
 - (id) initWithSimilarity: (LCSimilarity *) similarity;
 - (void) addScorer: (LCScorer *) scorer
-         required: (BOOL) required
-	 prohibited: (BOOL) prohibited;
+		  required: (BOOL) required
+		prohibited: (BOOL) prohibited;
 - (void) initCountingSumScorer;
 - (LCScorer *) countingDisjunctionSumScorer: (NSArray *) scorers;
 - (LCScorer *) countingConjunctionSumScorer: (NSArray *) requiredScorers;
 - (LCScorer *) makeCountingSumScorer;
 - (LCScorer *) makeCountingSumScorer2: (LCScorer *) requiredCountingSumScorer
-               optional: (NSArray *) optionalScorers;
+							 optional: (NSArray *) optionalScorers;
 - (LCScorer *) makeCountingSumScorer3: (LCScorer *) requiredCountingSumScorer
-               optional: (LCScorer *) optionalCountingSumScorer;
+							 optional: (LCScorer *) optionalCountingSumScorer;
 @end
 
 #endif /* __LUCENE_SEARCH_BOOLEAN_SCORER2__ */

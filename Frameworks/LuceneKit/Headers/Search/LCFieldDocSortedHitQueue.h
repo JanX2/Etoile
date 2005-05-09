@@ -5,8 +5,8 @@
 
 @interface LCFieldDocSortedHitQueue: LCPriorityQueue
 {
-  NSArray *fields;
-  NSArray *collator;
+	NSArray *fields;
+	NSArray *collator;
 }
 
 - (id) initWithField: (NSArray *) fields size: (int) size;

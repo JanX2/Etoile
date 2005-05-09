@@ -5,10 +5,10 @@
 
 @interface LCConjunctionScorer: LCScorer
 {
-  NSMutableArray *scorers;
-  BOOL firstTime;
-  BOOL more;
-  float coord;
+	NSMutableArray *scorers;
+	BOOL firstTime;
+	BOOL more;
+	float coord;
 }
 
 - (void) addScorer: (LCScorer *) scorer;

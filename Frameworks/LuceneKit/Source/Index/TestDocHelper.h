@@ -13,14 +13,14 @@
 + (void) setupDoc: (LCDocument *) doc;
 + (void) writeDirectory: (id <LCDirectory>) dir doc: (LCDocument *) doc;
 + (void) writeDirectory: (id <LCDirectory>) dir segment: (NSString *) segment
-              doc: (LCDocument *) doc;
+					doc: (LCDocument *) doc;
 + (void) writeDirectory: (id <LCDirectory>) dir 
-         analyzer: (LCAnalyzer *) analyzer
-         similarity: (LCSimilarity *) similarity doc: (LCDocument *) doc;
+			   analyzer: (LCAnalyzer *) analyzer
+			 similarity: (LCSimilarity *) similarity doc: (LCDocument *) doc;
 + (void) writeDirectory: (id <LCDirectory>) dir 
-         analyzer: (LCAnalyzer *) analyzer
-         similarity: (LCSimilarity *) similarity
-	segment: (NSString *) segment doc: (LCDocument *) doc;
+			   analyzer: (LCAnalyzer *) analyzer
+			 similarity: (LCSimilarity *) similarity
+				segment: (NSString *) segment doc: (LCDocument *) doc;
 + (int) numFields: (LCDocument *) doc;
 + (NSDictionary *) nameValues;
 

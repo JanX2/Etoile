@@ -6,9 +6,9 @@
 
 @interface LCSegmentInfos: NSObject
 {
-  int counter; // used to name new segments
-  long version; //counts how often the index has been changed by adding or deleting docs
-  NSMutableArray *segments;
+	int counter; // used to name new segments
+	long version; //counts how often the index has been changed by adding or deleting docs
+	NSMutableArray *segments;
 }
 
 - (LCSegmentInfo *) segmentInfoAtIndex: (int) i;

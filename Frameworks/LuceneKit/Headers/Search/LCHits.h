@@ -12,12 +12,12 @@
 
 @interface LCHitDocument: NSObject
 {
-  float score;
-  int identifier;
-  LCDocument *doc;
-
-  LCHitDocument *next;
-  LCHitDocument *prev;
+	float score;
+	int identifier;
+	LCDocument *doc;
+	
+	LCHitDocument *next;
+	LCHitDocument *prev;
 }
 
 - (id) initWithScore: (float) s identifier: (int) iden;
@@ -33,25 +33,25 @@
 
 @interface LCHits: NSObject
 {
-  id <LCWeight> weight;
-  LCSearcher *searcher;
-  LCFilter *filter;
-  LCSort *sort;
-  int length; // the total number of hits
-  NSMutableArray *hitDocs; // cache of hits retrieved
-  LCHitDocument *first; // head of LRU cache
-  LCHitDocument *last; // tail of LRU cache
-  int numDocs; // number cached
-  int maxDocs; // max to cache
+	id <LCWeight> weight;
+	LCSearcher *searcher;
+	LCFilter *filter;
+	LCSort *sort;
+	int length; // the total number of hits
+	NSMutableArray *hitDocs; // cache of hits retrieved
+	LCHitDocument *first; // head of LRU cache
+	LCHitDocument *last; // tail of LRU cache
+	int numDocs; // number cached
+	int maxDocs; // max to cache
 }
 
 - (id) initWithSearcher: (LCSearcher *) s
-                 query: (LCQuery *) q
-		 filter: (LCFilter *) f;
+				  query: (LCQuery *) q
+				 filter: (LCFilter *) f;
 - (id) initWithSearcher: (LCSearcher *) s
-                 query: (LCQuery *) q
-		 filter: (LCFilter *) f
-		 sort: (LCSort *) s;
+				  query: (LCQuery *) q
+				 filter: (LCFilter *) f
+				   sort: (LCSort *) s;
 - (void) moreDocuments: (int) min;
 - (unsigned int) count; /* LuceneKit: length() in lucene */
 - (LCDocument *) document: (int) n;

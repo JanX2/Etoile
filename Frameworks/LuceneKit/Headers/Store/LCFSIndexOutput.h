@@ -5,8 +5,8 @@
 
 @interface LCFSIndexOutput: LCIndexOutput
 {
-  NSFileHandle *handle;
-  NSString *path;
+	NSFileHandle *handle;
+	NSString *path;
 }
 
 - (id) initWithFile: (NSString *) absolutePath;

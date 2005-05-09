@@ -2,105 +2,105 @@
 #include "GNUstep/GNUstep.h"
 
 /**
-  A Term represents a word from text.  This is the unit of search.  It is
-  composed of two elements, the text of the word, as a string, and the name of
-  the field that the text occured in, an interned string.
-
-  Note that terms may represent more than words from text fields, but also
-  things like dates, email addresses, urls, etc.  */
+A Term represents a word from text.  This is the unit of search.  It is
+ composed of two elements, the text of the word, as a string, and the name of
+ the field that the text occured in, an interned string.
+ 
+ Note that terms may represent more than words from text fields, but also
+ things like dates, email addresses, urls, etc.  */
 
 @implementation LCTerm
 
-  /** Constructs a Term with the given field and text. */
+/** Constructs a Term with the given field and text. */
 - (id) initWithField: (NSString *) fld text: (NSString *) txt
 {
-  self = [super init];
-  [self setField: fld];
-  [self setText: txt];
-  return self;
-  //  this(fld, txt, true);
+	self = [super init];
+	[self setField: fld];
+	[self setText: txt];
+	return self;
+	//  this(fld, txt, true);
 }
 
 #if 0
-  Term(String fld, String txt, boolean intern) {
+Term(String fld, String txt, boolean intern) {
     field = intern ? fld.intern() : fld;	  // field names are interned
     text = txt;					  // unless already known to be
-  }
+}
 #endif
 
-  /** Returns the field of this term, an interned string.   The field indicates
-    the part of a document which this term came from. */
+/** Returns the field of this term, an interned string.   The field indicates
+the part of a document which this term came from. */
 - (NSString *) field
 {
-  return field;
+	return field;
 }
 
-  /** Returns the text of this term.  In the case of words, this is simply the
-    text of the word.  In the case of dates and other types, this is an
-    encoding of the object as a string.  */
+/** Returns the text of this term.  In the case of words, this is simply the
+text of the word.  In the case of dates and other types, this is an
+encoding of the object as a string.  */
 - (NSString *) text
 {
-  return text;
+	return text;
 }
 
-  /** Compares two terms, returning true iff they have the same
-      field and text. */
+/** Compares two terms, returning true iff they have the same
+field and text. */
 - (BOOL) isEqual: (NSObject *) o
 {
-  if (o == nil) return NO;
-  return ([self compare: (LCTerm *)o] == NSOrderedSame) ? YES : NO;
+	if (o == nil) return NO;
+	return ([self compare: (LCTerm *)o] == NSOrderedSame) ? YES : NO;
 #if 0
-  LCTerm *other = (LCTerm *) o;
-  return ([field isEqualToString: [other field]] && 
-	  [text isEqualToString: [other text]]);
+	LCTerm *other = (LCTerm *) o;
+	return ([field isEqualToString: [other field]] && 
+			[text isEqualToString: [other text]]);
 #endif
 }
 
-  /** Combines the hashCode() of the field and the text. */
+/** Combines the hashCode() of the field and the text. */
 - (unsigned) hash
 {
-  return [field hash] + [text hash];
+	return [field hash] + [text hash];
 }
 
-  /** Compares two terms, returning a negative integer iff this
-    term belongs before the argument, zero if this term is equal to the
-    argument, and a positive integer if this term belongs after the argument.
+/** Compares two terms, returning a negative integer iff this
+term belongs before the argument, zero if this term is equal to the
+argument, and a positive integer if this term belongs after the argument.
 
-    The ordering of terms is first by field, then by text.*/
+The ordering of terms is first by field, then by text.*/
 - (NSComparisonResult) compare: (LCTerm *) other 
 {
-  if ([field isEqualToString: [other field]])	  // fields are interned
-    return [text compare: [other text]];
-  else
-    return [field compare: [other field]];
+	if ([field isEqualToString: [other field]])	  // fields are interned
+		return [text compare: [other text]];
+	else
+		return [field compare: [other field]];
 }
 
-  /** Resets the field and text of a Term. */
+/** Resets the field and text of a Term. */
 - (void) setField: (NSString *) fld
 {
-  ASSIGN(field, AUTORELEASE([fld copy]));
+	ASSIGN(field, AUTORELEASE([fld copy]));
 }
 
 - (void) setText: (NSString *) txt
 {
-  ASSIGN(text, AUTORELEASE([txt copy]));
+	ASSIGN(text, AUTORELEASE([txt copy]));
 }
 
 - (void) setTerm: (LCTerm *) other
 {
-  [self setField: [other field]];
-  [self setText: [other text]];
+	[self setField: [other field]];
+	[self setText: [other text]];
 }
 
 - (NSString *) description
 {
-  return [NSString stringWithFormat: @"%@:%@", field, text];
+	return [NSString stringWithFormat: @"%@:%@", field, text];
 }
 
 - (id) copyWithZone: (NSZone *) zone
 {
-  LCTerm *clone = [[LCTerm allocWithZone: zone] initWithField: [self field] text: [self text]];
-  return clone;
+	LCTerm *clone = [[LCTerm allocWithZone: zone] initWithField: [self field] text: [self text]];
+	return clone;
 }
 
 @end

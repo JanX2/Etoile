@@ -9,7 +9,7 @@
 
 @interface LCQuery: NSObject <NSCopying> // Seriable
 {
-  float boost;
+	float boost;
 }
 - (void) setBoost: (float) b;
 - (float) boost;

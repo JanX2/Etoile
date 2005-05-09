@@ -6,11 +6,11 @@
 
 @interface LCCompoundFileWriter: NSObject
 {
-  id <LCDirectory> directory;
-  NSString *fileName;
-  NSMutableSet *ids;
-  NSMutableArray *entries;
-  BOOL merged;
+	id <LCDirectory> directory;
+	NSString *fileName;
+	NSMutableSet *ids;
+	NSMutableArray *entries;
+	BOOL merged;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) dir name: (NSString *) name;

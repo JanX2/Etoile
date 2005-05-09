@@ -1,7 +1,7 @@
 #include "Analysis/LCLowerCaseFilter.h"
 
 /**
- * Normalizes token text to lower case.
+* Normalizes token text to lower case.
  *
  * @version $Id$
  */
@@ -9,15 +9,15 @@
 
 - (LCToken *) next
 {
-  LCToken *t = [input next];
-
-  if (t == nil)
-    return nil;
-
-  NSString *s = [[t termText] lowercaseString];
-  [t setTermText: s];
-
-  return t;
+	LCToken *t = [input next];
+	
+	if (t == nil)
+		return nil;
+	
+	NSString *s = [[t termText] lowercaseString];
+	[t setTermText: s];
+	
+	return t;
 }
 
 @end

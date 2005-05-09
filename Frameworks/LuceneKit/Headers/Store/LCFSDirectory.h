@@ -6,8 +6,8 @@
 
 @interface LCFSDirectory: NSObject <LCDirectory>
 {
-  NSFileManager *manager;
-  NSString *path;
+	NSFileManager *manager;
+	NSString *path;
 }
 + (LCFSDirectory *) getDirectory: (NSString *) absolutePath
                           create: (BOOL) create;

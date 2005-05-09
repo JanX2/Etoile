@@ -7,17 +7,17 @@
 
 @interface LCDisjunctionSumScorer: LCScorer
 {
-  int nrScorers;
-  NSArray *subScorers;
-  int minimumNrMatchers;
-  LCScorerQueue *scorerQueue;
-  int currentDoc;
-  int nrMatchers;
-  float currentScore;
+	int nrScorers;
+	NSArray *subScorers;
+	int minimumNrMatchers;
+	LCScorerQueue *scorerQueue;
+	int currentDoc;
+	int nrMatchers;
+	float currentScore;
 }
 
 - (id) initWithSubScorers: (NSArray *) subScorers
-       minimumNrMatchers: (int) minimumNrMatchers;
+		minimumNrMatchers: (int) minimumNrMatchers;
 - (id) initWithSubScorers: (NSArray *) subScorers;
 - (void) initScorerQueue;
 - (BOOL) advanceAfterCurrent;

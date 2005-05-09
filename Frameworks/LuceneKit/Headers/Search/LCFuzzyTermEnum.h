@@ -8,24 +8,24 @@ int min(int a, int b, int c);
 
 @interface LCFuzzyTermEnum: LCFilteredTermEnum
 {
-  NSArray *d;
-  float similarity;
-  BOOL endEnum;
-  LCTerm *searchTerm;
-  NSString *field;
-  NSString *text;
-  NSString *prefix;
-
-  float minimumSimilarity;
-  float scale_factor;
-  NSArray *maxDistances;
+	NSArray *d;
+	float similarity;
+	BOOL endEnum;
+	LCTerm *searchTerm;
+	NSString *field;
+	NSString *text;
+	NSString *prefix;
+	
+	float minimumSimilarity;
+	float scale_factor;
+	NSArray *maxDistances;
 }
 
 - (id) initWithReader: (LCIndexReader *) reader term: (LCTerm *) term;
 - (id) initWithReader: (LCIndexReader *) reader term: (LCTerm *) term 
-       similarity: (LCSimilarity *) similarity;
+		   similarity: (LCSimilarity *) similarity;
 - (id) initWithReader: (LCIndexReader *) reader term: (LCTerm *) term 
-       similarity: (LCSimilarity *) similarity prefixLength: (int) prefixLength;
+		   similarity: (LCSimilarity *) similarity prefixLength: (int) prefixLength;
 - (BOOL) termCompare: (LCTerm *) term;
 - (float) difference;
 - (BOOL) endEnum;

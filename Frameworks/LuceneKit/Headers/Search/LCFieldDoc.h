@@ -5,11 +5,11 @@
 
 @interface LCFieldDoc: LCScoreDoc
 {
-  NSArray *fields;
+	NSArray *fields;
 }
 
 - (id) initWithDocument: (int) doc 
-       score: (float) score fields: (NSArray *) fields;
+				  score: (float) score fields: (NSArray *) fields;
 - (NSArray *) fields;
 - (void) setFields: (NSArray *) fields;
 @end

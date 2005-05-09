@@ -6,7 +6,7 @@
 
 @interface LCPorterStemFilter: LCTokenFilter
 {
-  struct stemmer *st;
+	struct stemmer *st;
 }
 
 @end

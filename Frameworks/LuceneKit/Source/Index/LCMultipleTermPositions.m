@@ -2,7 +2,7 @@
 #include "Util/LCPriorityQueue.h"
 
 /**
- * Describe class <code>MultipleTermPositions</code> here.
+* Describe class <code>MultipleTermPositions</code> here.
  *
  * @author Anders Nielsen
  * @version 1.0
@@ -15,30 +15,30 @@
 @implementation LCTermPositionsQueue
 - (id) initWithTermPositions: (NSArray *) termPositions
 {
-  self = [super initWithSize: [termPositions count]];
-  NSEnumerator *e = [termPositions objectEnumerator];
-  id <LCTermPositions> tp;
-  while((tp = [e nextObject]))
-  {
-    if ([tp next])
-      [self put:tp];
-  }
-  return self;
+	self = [super initWithSize: [termPositions count]];
+	NSEnumerator *e = [termPositions objectEnumerator];
+	id <LCTermPositions> tp;
+	while((tp = [e nextObject]))
+	{
+		if ([tp next])
+			[self put:tp];
+	}
+	return self;
 }
 
 - (id <LCTermPositions>) peek
 {
-  return (id <LCTermPositions>)[self top];
+	return (id <LCTermPositions>)[self top];
 }
 
 @end
 
 @interface LCIntQueue: NSObject
 {
-	  int _arraySize;
-	    int _index;
-	      int _lastIndex;
-	        NSMutableArray *_array;
+	int _arraySize;
+	int _index;
+	int _lastIndex;
+	NSMutableArray *_array;
 }
 
 - (void) add: (int) i;
@@ -54,178 +54,178 @@
 @implementation LCIntQueue
 - (id) init
 {
-  self = [super init];
-  _arraySize = 16;
-  _index = 0;
-  _lastIndex = 0;
-  _array = [[NSMutableArray alloc] init];
-  return self;
+	self = [super init];
+	_arraySize = 16;
+	_index = 0;
+	_lastIndex = 0;
+	_array = [[NSMutableArray alloc] init];
+	return self;
 }
 
 - (void) add: (int) i
 {
-  if (_lastIndex == _arraySize)
-    [self growArray];
-  [_array addObject: [NSNumber numberWithInt: i]];
-  _lastIndex++;
+	if (_lastIndex == _arraySize)
+		[self growArray];
+	[_array addObject: [NSNumber numberWithInt: i]];
+	_lastIndex++;
 }
 
 - (int) next
 {
-  return [[_array objectAtIndex: _index++] intValue];
+	return [[_array objectAtIndex: _index++] intValue];
 }
 
 - (void) sort
 {
-  [_array sortUsingSelector: @selector(compare:)];
+	[_array sortUsingSelector: @selector(compare:)];
 }
 
 - (void) clear
 {
-  _index = 0;
-  _lastIndex = 0;
-  [_array removeAllObjects];
+	_index = 0;
+	_lastIndex = 0;
+	[_array removeAllObjects];
 }
 
 - (int) size
 {
-  return (_lastIndex - _index);
+	return (_lastIndex - _index);
 }
 
 - (void) growArray
 {
-  _arraySize *= 2;
+	_arraySize *= 2;
 }
 
 @end
- 
-@implementation LCMultipleTermPositions
-    /**
-     * Creates a new <code>MultipleTermPositions</code> instance.
-     *
-     * @param indexReader an <code>IndexReader</code> value
-     * @param terms a <code>Term[]</code> value
-     * @exception IOException if an error occurs
-     */
-- (id) initWithIndexReader: (LCIndexReader *) indexReader
-                terms: (NSArray *) terms
-{
-  self = [super init];
-  NSMutableArray *termPositions = [[NSMutableArray alloc] init];
-  int i;
-  for (i = 0; i < [terms count]; i++)
-    [termPositions addObject: [indexReader termPositionsWithTerm: [terms objectAtIndex: i] ]];
 
-  _termPositionsQueue = [[LCTermPositionsQueue alloc] initWithTermPositions: termPositions];
-  _posList = [[LCIntQueue alloc] init];
-  return self;
+@implementation LCMultipleTermPositions
+/**
+* Creates a new <code>MultipleTermPositions</code> instance.
+ *
+ * @param indexReader an <code>IndexReader</code> value
+ * @param terms a <code>Term[]</code> value
+ * @exception IOException if an error occurs
+ */
+- (id) initWithIndexReader: (LCIndexReader *) indexReader
+					 terms: (NSArray *) terms
+{
+	self = [super init];
+	NSMutableArray *termPositions = [[NSMutableArray alloc] init];
+	int i;
+	for (i = 0; i < [terms count]; i++)
+		[termPositions addObject: [indexReader termPositionsWithTerm: [terms objectAtIndex: i] ]];
+	
+	_termPositionsQueue = [[LCTermPositionsQueue alloc] initWithTermPositions: termPositions];
+	_posList = [[LCIntQueue alloc] init];
+	return self;
 }
 
 - (BOOL) next
 {
-  if ([_termPositionsQueue size] == 0)
-    return NO;
-
-  [_posList clear];
-  _doc = [[_termPositionsQueue peek] document];
-
-  id <LCTermPositions> tp;
-  do
-  {
+	if ([_termPositionsQueue size] == 0)
+		return NO;
+	
+	[_posList clear];
+	_doc = [[_termPositionsQueue peek] document];
+	
+	id <LCTermPositions> tp;
+	do
+	{
   	    tp = [_termPositionsQueue peek];
-
-  int i;
+		
+		int i;
 	    for (i=0; i< [tp frequency]; i++)
-	     [_posList add: [tp nextPosition]];
-
+			[_posList add: [tp nextPosition]];
+		
 	    if ([tp next])
-	     [_termPositionsQueue adjustTop];
+			[_termPositionsQueue adjustTop];
 	    else
 	    {
-	     [_termPositionsQueue pop];
-	     [tp close];
+			[_termPositionsQueue pop];
+			[tp close];
 	    }
 	}
 	while ([_termPositionsQueue size] > 0 && [[_termPositionsQueue peek] document] == _doc);
-
+	
 	[_posList sort];
 	_freq = [_posList size];
-
+	
 	return YES;
-    }
+}
 
 - (int) nextPosition
 {
-
+	
 	return [_posList next];
-    }
+}
 
-     - (BOOL)  skipTo: (int) target
-    {
+- (BOOL)  skipTo: (int) target
+{
 	while (target > [[_termPositionsQueue peek] document])
 	{
 	    id <LCTermPositions> tp = (id <LCTermPositions>)[_termPositionsQueue pop];
-
+		
 	    if ([tp skipTo: target])
-		[_termPositionsQueue put: tp];
+			[_termPositionsQueue put: tp];
 	    else
-		[tp close];
+			[tp close];
 	}
-
+	
 	return [self next];
-    }
+}
 
 - (long) document
 {
-
+	
 	return _doc;
-    }
+}
 
 - (long) frequency
 {
 	return _freq;
-    }
+}
 
 - (void) close
 {
 	while ([_termPositionsQueue size] > 0)
 	    [(id <LCTermPositions>)[_termPositionsQueue pop] close];
-    }
+}
 
-    /** Not implemented.
-     * @throws UnsupportedOperationException
-     */
-     - (void) seekTerm: (LCTerm *) arg0
-    {
+/** Not implemented.
+* @throws UnsupportedOperationException
+*/
+- (void) seekTerm: (LCTerm *) arg0
+{
     NSLog(@"UnsupportedOperation");
-    }
+}
 
-    /** Not implemented.
-     * @throws UnsupportedOperationException
-     */
-     - (void) seekTermEnum: (LCTermEnum *) termEnum
-     {
+/** Not implemented.
+* @throws UnsupportedOperationException
+*/
+- (void) seekTermEnum: (LCTermEnum *) termEnum
+{
     NSLog(@"UnsupportedOperation");
-    }
+}
 
-    /** Not implemented.
-     * @throws UnsupportedOperationException
-     */
+/** Not implemented.
+* @throws UnsupportedOperationException
+*/
 - (int) readDocuments: (NSMutableArray *) docs  frequency: (NSMutableArray *) freq
 {
-  NSLog(@"UnsupportedOperation");
-  return 0;
+	NSLog(@"UnsupportedOperation");
+	return 0;
 }
 
 - (NSComparisonResult) compare: (id) o
 {
-  LCMultipleTermPositions *other = (LCMultipleTermPositions *) o;
-  if ([self document] < [other document])
-    return NSOrderedAscending;
-  else if ([self document] == [other document])
-    return NSOrderedSame;
-  else
-    return NSOrderedDescending;
+	LCMultipleTermPositions *other = (LCMultipleTermPositions *) o;
+	if ([self document] < [other document])
+		return NSOrderedAscending;
+	else if ([self document] == [other document])
+		return NSOrderedSame;
+	else
+		return NSOrderedDescending;
 }
 
 @end

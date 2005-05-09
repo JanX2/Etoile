@@ -19,16 +19,16 @@ static NSString *TVF_EXTENSION = @"tvf";
 
 @interface LCTermVectorsWriter: NSObject
 {
-  LCIndexOutput *tvx, *tvd, *tvf;
-  NSMutableArray *fields;
-  NSMutableArray *terms;
-  LCFieldInfos *fieldInfos;
-  LCTVField *currentField;
-  long long currentDocPointer;
+	LCIndexOutput *tvx, *tvd, *tvf;
+	NSMutableArray *fields;
+	NSMutableArray *terms;
+	LCFieldInfos *fieldInfos;
+	LCTVField *currentField;
+	long long currentDocPointer;
 }
 - (id) initWithDirectory: (id <LCDirectory>) directory
-                segment: (NSString *) segment
-	       fieldInfos: (LCFieldInfos *) fieldInfos;
+				 segment: (NSString *) segment
+			  fieldInfos: (LCFieldInfos *) fieldInfos;
 - (void) openDocument;
 - (void) closeDocument;
 - (BOOL) isDocumentOpen;
@@ -37,10 +37,10 @@ static NSString *TVF_EXTENSION = @"tvf";
 - (BOOL) isFieldOpen;
 - (void) addTerm: (NSString *) termText freq: (long) freq;
 - (void) addTerm: (NSString *) termText freq: (long) freq
-         positions: (NSArray *) positions offsets: (NSArray *) offsets;
+	   positions: (NSArray *) positions offsets: (NSArray *) offsets;
 - (void) addAllDocumentVectors: (NSArray *) vectors;
 - (void) close;
 
 @end
-  
+
 #endif /* __LUCENE_INDEX_TERM_VECTORS_WRITER__ */

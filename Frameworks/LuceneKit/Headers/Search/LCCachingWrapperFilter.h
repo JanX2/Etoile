@@ -5,8 +5,8 @@
 
 @interface LCCachingWrapperFilter
 {
-  LCFilter *filter;
-  LCDictionary *cache;
+	LCFilter *filter;
+	LCDictionary *cache;
 }
 
 - (id) initWithFilter: (LCFilter *) filter;

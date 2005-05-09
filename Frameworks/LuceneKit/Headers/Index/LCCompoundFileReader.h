@@ -12,10 +12,10 @@
 	NSMutableDictionary *entries;
 }
 - (id) initWithDirectory: (id <LCDirectory>) dir
-       name: (NSString *) name;
+					name: (NSString *) name;
 - (id <LCDirectory>) directory;
 - (NSString *) name;
-//- makeLock: (NSString *) name;
+	//- makeLock: (NSString *) name;
 
 @end
 
@@ -28,8 +28,8 @@
 	long long filePointer;
 }
 - (id) initWithCompoundFileReader: (LCCompoundFileReader *) r
-       indexInput: (LCIndexInput *) base offset: (long long) fileOffset
-       length: (long long) length;
+					   indexInput: (LCIndexInput *) base offset: (long long) fileOffset
+						   length: (long long) length;
 @end
 
 #endif /* __LUCENE_INDEX_COMPOUND_FILE_READER__ */

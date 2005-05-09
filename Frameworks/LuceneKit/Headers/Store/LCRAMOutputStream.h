@@ -6,8 +6,8 @@
 
 @interface LCRAMOutputStream: LCIndexOutput
 {
-  LCRAMFile *file;
-  int pointer;
+	LCRAMFile *file;
+	int pointer;
 }
 
 - (id) initWithFile: (LCRAMFile *) f;
