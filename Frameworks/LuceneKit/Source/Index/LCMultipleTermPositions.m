@@ -23,7 +23,7 @@
     if ([tp next])
       [self put:tp];
   }
-    
+  return self;
 }
 
 - (id <LCTermPositions>) peek
@@ -211,13 +211,15 @@
     /** Not implemented.
      * @throws UnsupportedOperationException
      */
-     - (int) readDocuments: (NSArray *) docs  frequency: (NSArray *) freq
-     {
-    NSLog(@"UnsupportedOperation");
-    }
-
-- (NSComparisonResult) compare: (LCMultipleTermPositions *) other
+- (int) readDocuments: (NSMutableArray *) docs  frequency: (NSMutableArray *) freq
 {
+  NSLog(@"UnsupportedOperation");
+  return 0;
+}
+
+- (NSComparisonResult) compare: (id) o
+{
+  LCMultipleTermPositions *other = (LCMultipleTermPositions *) o;
   if ([self document] < [other document])
     return NSOrderedAscending;
   else if ([self document] == [other document])

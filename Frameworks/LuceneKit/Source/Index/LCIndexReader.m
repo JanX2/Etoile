@@ -76,6 +76,21 @@
   return self;
 }
 
+/** Release the write lock, if needed. */
+- (void) dealloc
+{
+#if 0
+  protected void finalize() {
+    if (writeLock != null) {
+      writeLock.release();                        // release write lock
+      writeLock = null;
+  }
+#endif
+  DESTROY(directory);
+  DESTROY(segmentInfos);
+  [super dealloc];
+}
+
 + (LCIndexReader *) openPath: (NSString *) path
 {
   return [LCIndexReader openDirectory: [LCFSDirectory getDirectory: path create: NO] close: YES];
@@ -90,6 +105,7 @@
                     close: (BOOL) close
 {
   LCSegmentInfos *infos = [[LCSegmentInfos alloc] init];
+  AUTORELEASE(infos);
   [infos readFromDirectory: dir];
   if ([infos numberOfSegments] == 1)
     {
@@ -97,15 +113,16 @@
 	               info: [infos segmentInfoAtIndex: 0]   close: close];
      }
   NSMutableArray *readers = [[NSMutableArray alloc] init];
+  AUTORELEASE(readers);
   int i;
   for(i = 0; i < [infos numberOfSegments]; i++)
    {
      [readers addObject: [LCSegmentReader segmentReaderWithInfo: [infos segmentInfoAtIndex: i]]];
    }
-     return [[LCMultiReader alloc] initWithDirectory: dir
+     return AUTORELEASE([[LCMultiReader alloc] initWithDirectory: dir
 	                                      segmentInfos: infos
 	                                      close: close
-	                                      readers: readers];
+	                                      readers: readers]);
 
 }
 
@@ -158,7 +175,7 @@
    * @throws IOException if index cannot be accessed
    * @see org.apache.lucene.document.Field.TermVector
    */
-   - (NSArray *) termFreqVectors: (int) number {};
+- (NSArray *) termFreqVectors: (int) number { return nil; }
 
   
   /**
@@ -177,7 +194,7 @@
    */
 - (id <LCTermFreqVector>) termFreqVector: (int) docNumber
                        field: (NSString *) field
-                       {} 
+{ return nil; } 
   /**
    * Returns <code>true</code> if an index exists at the specified directory.
    * If the directory does not exist or if there is no index in it.
@@ -205,7 +222,7 @@
    */
 + (BOOL) indexExistsWithDirectory: (id <LCDirectory>) dir
 {
-  [dir fileExists: @"segments"];
+  return [dir fileExists: @"segments"];
 }
 
   /** Returns the number of documents in this index. */
@@ -256,7 +273,7 @@
     [self aquireWriteLock];
   [self doSetNorm: doc field: field charValue: value];
   hasChanges = YES;
-  }
+}
             
   /** Implements setNorm in subclass.*/
 - (void) doSetNorm: (int) doc field: (NSString *) field charValue: (char) value {}
@@ -303,7 +320,7 @@
   id <LCTermDocs> termDocs = [self termDocs];
   [termDocs seekTerm: term];
   return termDocs;
-  }
+}
   
   /** Returns an unpositioned {@link TermDocs} enumerator. */
 - (id <LCTermDocs>) termDocs { return nil; }
@@ -329,7 +346,7 @@
   id <LCTermPositions> termPositions = [self termPositions];
   [termPositions seekTerm: term];
   return termPositions;
-  }
+}
 
   /** Returns an unpositioned {@link TermPositions} enumerator. */
   - (id <LCTermPositions>) termPositions { return nil; }
@@ -456,21 +473,6 @@
   /** Implements close. */
   - (void) doClose {}
 
-  /** Release the write lock, if needed. */
-  - (void) dealloc
-  {
-  #if 0
-  protected void finalize() {
-    if (writeLock != null) {
-      writeLock.release();                        // release write lock
-      writeLock = null;
-    }
-    #endif
-    RELEASE(directory);
-    [super dealloc];
-  }
-  
-  
   /**
    * Get a list of unique field names that exist in this index and have the specified
    * field option information.

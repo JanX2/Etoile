@@ -14,6 +14,8 @@
 }
 @end
 
+static int maxClauseCount = 1024;
+
 @implementation LCBooleanQuery
 + (int) maxClauseCount { return maxClauseCount; }
 + (void) setMaxClauseCount: (int) max { maxClauseCount = max; }
@@ -122,7 +124,7 @@
 
 - (LCQuery *) combine: (NSArray *) queries
 {
-  [LCQuery mergeBooleanQueries: queries];
+  return [LCQuery mergeBooleanQueries: queries];
 }
 
 - (LCQuery *) copyWithZone: (NSZone *) zone

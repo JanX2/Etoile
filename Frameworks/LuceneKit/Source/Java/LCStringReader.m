@@ -4,9 +4,15 @@
 @implementation LCStringReader
 - (id) initWithString: (NSString *) s
 {
-  self = [super init];
+  self = [self init];
   ASSIGN(source, AUTORELEASE([s copy]));
   return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(source);
+  [super dealloc];
 }
 
 - (void) close

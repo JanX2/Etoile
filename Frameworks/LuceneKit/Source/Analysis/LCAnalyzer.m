@@ -22,6 +22,7 @@
 - (LCTokenStream *) tokenStreamWithField: (NSString *) name
                                 reader: (id <LCReader>) reader
 {
+  return nil;
 }
 
 @end

@@ -80,7 +80,7 @@
 
 - (LCScorer *) countingConjunctionSumScorer: (NSArray *) scorers
 {
-  int requiredNrMatchers = [requiredScorers count];
+//  int requiredNrMatchers = [requiredScorers count];
   LCBooleanConjunctionScorer *cs = [[LCBooleanConjunctionScorer alloc] initWithSimilarity: defaultSimilarity];
   NSEnumerator *e = [requiredScorers objectEnumerator];
   LCScorer *scorer;

@@ -1,5 +1,6 @@
 #include "Index/LCFilterIndexReader.h"
 #include "Index/LCTerm.h"
+#include "GNUstep/GNUstep.h"
 
 /** Filter that only permits terms containing 'e'.*/
 @interface TestTermEnum: LCFilterTermEnum
@@ -82,7 +83,9 @@
 	  store: LCStore_YES
 	  index: LCIndex_Tokenized];
   [d1 addField: field];
+  DESTROY(field);
   [writer addDocument: d1];
+  DESTROY(d1);
 
   LCDocument *d2 = [[LCDocument alloc] init];
   field = [[LCField alloc] initWithName: @"default"
@@ -90,7 +93,9 @@
 	  store: LCStore_YES
 	  index: LCIndex_Tokenized];
   [d2 addField: field];
+  DESTROY(field);
   [writer addDocument: d2];
+  DESTROY(d2);
 
   LCDocument *d3 = [[LCDocument alloc] init];
   field = [[LCField alloc] initWithName: @"default"
@@ -98,8 +103,11 @@
 	  store: LCStore_YES
 	  index: LCIndex_Tokenized];
   [d3 addField: field];
+  DESTROY(field);
   [writer addDocument: d3];
+  DESTROY(d3);
   [writer close];
+  DESTROY(writer);
 
   LCIndexReader *r = [LCIndexReader openDirectory: directory];
   LCIndexReader *reader = [[TestReader alloc] initWithIndexReader: r];
@@ -117,7 +125,9 @@
     UKIntsEqual(([positions document] % 2), 1);
   }
 
+  DESTROY(term);
   [reader close];
+  DESTROY(reader);
 }
 
 @end

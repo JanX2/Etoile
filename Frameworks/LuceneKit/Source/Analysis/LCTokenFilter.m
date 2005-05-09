@@ -11,14 +11,14 @@
 /** Construct a token stream filtering the given input. */
 - (id) initWithTokenStream: (LCTokenStream *) i
 {
-  self = [super init];
+  self = [self init];
   ASSIGN(input, i);
   return self;
 }
 
 - (void) dealloc
 {
-  RELEASE(input);
+  DESTROY(input);
   [super dealloc];
 }
 

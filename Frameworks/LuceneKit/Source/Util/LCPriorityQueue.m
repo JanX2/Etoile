@@ -17,6 +17,12 @@
   return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(heap);
+  [super dealloc];
+}
+
 /**
  * Adds an Object to a PriorityQueue in log(size) time.
  * If one tries to add more objects than maxSize from initialize
@@ -138,7 +144,7 @@
 	break;
     }
   [heap replaceObjectAtIndex: i withObject: node]; // install saved node
-  RELEASE(node);
+  DESTROY(node);
 }
 
 - (void) downHeap
@@ -166,7 +172,7 @@
       }
     }
   [heap replaceObjectAtIndex: i withObject: node]; // install saved node
-  RELEASE(node);
+  DESTROY(node);
 }
 
 @end

@@ -93,6 +93,15 @@
   return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(directory);
+  DESTROY(fileName);
+  DESTROY(ids);
+  DESTROY(entries);
+  [super dealloc];
+}
+
     /** Returns the directory of the compound file. */
 - (id <LCDirectory>) directory
 {
@@ -137,6 +146,7 @@
   [entry setFile: file];
   [entries addObject: entry];
   [ids addObject: file];
+  DESTROY(entry);
 }
 
     /** Merge files with the extensions added up to now.
@@ -190,7 +200,7 @@
     buffer = [[NSMutableData alloc] init];
     [fe setDataOffset: [os filePointer]];
     [self copyFile: fe indexOutput: os data: buffer];
-    RELEASE(buffer);
+    DESTROY(buffer);
   }
 
   // Write the data offsets into the directory of the compound stream

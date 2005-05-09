@@ -13,7 +13,7 @@
 
 - (void) dealloc
 {
-  RELEASE(files);
+  DESTROY(files);
   [super dealloc];
 }
 
@@ -21,7 +21,7 @@
 - (id) init
 {
   self = [super init];
-  ASSIGN(files, AUTORELEASE([[NSMutableDictionary alloc] init]));
+  files = [[NSMutableDictionary alloc] init];
   return self; 
 }
 
@@ -68,7 +68,7 @@
   if (closeDirectory)
     [dir close];
 
-  RELEASE(buf);
+  DESTROY(buf);
   return self;
 }
 
@@ -81,7 +81,7 @@
 {
   LCFSDirectory *d = [[LCFSDirectory alloc] initWithPath: absolutePath
 	               create: NO];
-  return [self initWithDirectory: d close: YES];
+  return [self initWithDirectory: AUTORELEASE(d) close: YES];
 }
 
   /** Returns an array of strings, one for each file in the directory. */
@@ -139,8 +139,8 @@
 {
   LCRAMFile *f = [[LCRAMFile alloc] init];
   [files setObject: f forKey: name];
-  RELEASE(f);
   LCRAMOutputStream *s = [[LCRAMOutputStream alloc] initWithFile: f];
+  DESTROY(f);
   return AUTORELEASE(s);
 }
 

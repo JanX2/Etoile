@@ -5,7 +5,7 @@
 #include "Search/LCWeight.h"
 #include "Index/LCTermDocs.h"
 
-static int SCORE_CACHE_SIZE = 32;
+// static int SCORE_CACHE_SIZE = 32;
 
 
 @interface LCTermScorer: LCScorer

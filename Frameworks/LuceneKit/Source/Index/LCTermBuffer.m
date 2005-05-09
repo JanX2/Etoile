@@ -8,7 +8,7 @@
 {
   int start = [input readVInt];
   int length = [input readVInt];
-  int totalLength = start + length;
+//  int totalLength = start + length;
   NSMutableString *txt = [[NSMutableString alloc] init];
   if ([self text])
     [txt setString: text];

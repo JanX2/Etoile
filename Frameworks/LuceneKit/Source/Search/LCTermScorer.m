@@ -2,6 +2,8 @@
 #include "Search/LCTermQuery.h"
 #include "GNUstep/GNUstep.h"
 
+static int SCORE_CACHE_SIZE = 32;
+
 @implementation LCTermScorer
 
 - (id) init

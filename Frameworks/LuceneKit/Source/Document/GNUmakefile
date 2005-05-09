@@ -8,6 +8,12 @@ LuceneKit_Document_OBJC_FILES = \
 	LCField.m \
 	LCDocument.m
 
+ifeq ($(test), yes)
+LuceneKit_Document_OBJC_FILES += \
+        TestNumberTools.m 
+endif
+
+
 LuceneKit_Document_INCLUDE_DIRS += -I../ -I../../Headers
 
 -include ../../GNUmakefile.preamble

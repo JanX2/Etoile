@@ -193,7 +193,7 @@
          isStorePositionWithTermVector: (BOOL) isStorePositionWithTermVector
          isStoreOffsetWithTermVector: (BOOL) isStoreOffsetWithTermVector;
 {
-  LCFieldInfo *fi = [[LCFieldInfo alloc] initWithName: name
+  LCFieldInfo *fi = [[LCFieldInfo alloc] initWithName: AUTORELEASE([name copy])
 	                                 isIndexed: isIndexed
 					 number: [byNumber count]
 					 storeTermVector: isTermVectorStored
@@ -364,6 +364,6 @@
   [dir close];
 }
 
-#endif /* HAVE_UKTEST */
-
 @end
+
+#endif /* HAVE_UKTEST */

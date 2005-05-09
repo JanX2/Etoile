@@ -6,7 +6,7 @@
 - (id) init
 {
   self = [super init];
-  type = @"word";
+  ASSIGN(type, [NSString stringWithCString: "word"]);
   positionIncrement = 1;
   return self;
 }
@@ -34,6 +34,13 @@
   endOffset = end;
   ASSIGN(type, t);
   return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(termText);
+  DESTROY(type);
+  [super dealloc];
 }
 
   /** Set the position increment.  This determines the position of this token

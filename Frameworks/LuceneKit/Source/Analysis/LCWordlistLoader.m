@@ -25,9 +25,11 @@
 + (NSSet*) getWordSet: (NSString *) path 
 {
   NSMutableSet *result = [[NSMutableSet alloc] init];
+  AUTORELEASE(result);
+
   NSString *s = [NSString stringWithContentsOfFile: path];
-  NSString *word;
-  if (s == nil) return nil;
+//  NSString *word;
+  if (s == nil) return nil; 
   NSArray *a = [s componentsSeparatedByString: @"\n"];
   int i, count = [a count];
   for(i = 0; i < count; i++)
@@ -52,7 +54,7 @@
     {
       [table setObject: word forKey: word];
     }
-    return AUTORELEASE(table);
+  return AUTORELEASE(table);
 }
 
 @end

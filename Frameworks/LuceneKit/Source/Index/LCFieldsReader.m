@@ -79,8 +79,9 @@
                     value: [NSData dataWithBytes: b length: len]
 		    store: LCStore_YES];
             [doc addField: field];
-	    RELEASE(field);
+	    DESTROY(field);
 	  }
+        DESTROY(b);
       }
       else {
 	LCIndex_Type index;
@@ -114,6 +115,7 @@
 					    index: index
 			    termVector: ([fi isTermVectorStored] ? LCTermVector_YES : LCTermVector_NO)];
 	  [doc addField: field];
+          DESTROY(field);
 	}
       }
     }

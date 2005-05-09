@@ -22,6 +22,7 @@
 - (void) dealloc
 {
   DESTROY(hits);
+  [super dealloc];
 }
 
 - (BOOL) hasNext

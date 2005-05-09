@@ -9,7 +9,7 @@
   // NOTE: the value assigned to this constant must not be
   // the same as any of those in SortField!!
   //
-static int LCFieldCache_STRING_INDEX = -1;
+//static int LCFieldCache_STRING_INDEX = -1;
 /** Expert: Stores term text values and document ordering data. */
 @interface LCStringIndex: NSObject
 {

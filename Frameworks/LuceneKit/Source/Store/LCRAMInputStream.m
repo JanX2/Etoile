@@ -11,10 +11,16 @@
 
 - (id) initWithFile: (LCRAMFile *) f
 {
-  self = [super init];
+  self = [self init];
   ASSIGN(file, f);
   pointer = 0;
   return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(file);
+  [super dealloc];
 }
 
 - (char) readByte
@@ -37,6 +43,7 @@
   [b replaceBytesInRange: r withBytes: d];
   pointer += len;
   free(d);
+  d = NULL;
 }
 
 - (void) close

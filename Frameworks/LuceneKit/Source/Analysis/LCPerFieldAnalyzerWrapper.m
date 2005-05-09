@@ -18,7 +18,7 @@
    */
 - (id) initWithAnalyzer: (LCAnalyzer *) analyzer
 {
-  self = [super init];
+  self = [self init];
   ASSIGN(defaultAnalyzer, analyzer);
   analyzerMap = [[NSDictionary alloc] init];
   return self;
@@ -26,7 +26,8 @@
 
 - (void) dealloc
 {
-  RELEASE(analyzerMap);
+  DESTROY(defaultAnalyzer);
+  DESTROY(analyzerMap);
   [super dealloc];
 }
 
@@ -45,7 +46,8 @@
 - (LCTokenStream *) tokenStreamWithField: (NSString *) name
                                 reader: (id <LCReader>) reader
 {
-   LCAnalyzer *analyzer = [analyzerMap objectForKey: name];
+   LCAnalyzer *analyzer = nil;
+   ASSIGN(analyzer, [analyzerMap objectForKey: name]);
    if (analyzer == nil) 
      {
        ASSIGN(analyzer, defaultAnalyzer);

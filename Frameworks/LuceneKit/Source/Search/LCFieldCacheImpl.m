@@ -61,6 +61,12 @@
 
 @end
 
+/** Indicator for StringIndex values in the cache. */
+// NOTE: the value assigned to this constant must not be
+// the same as any of those in SortField!!
+//
+static int LCFieldCache_STRING_INDEX = -1;
+
 @implementation LCFieldCacheImpl
 
 - (id) init

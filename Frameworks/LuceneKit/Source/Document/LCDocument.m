@@ -27,7 +27,7 @@
 
 - (void) dealloc
 {
-  RELEASE(fields);
+  DESTROY(fields);
   [super dealloc];
 }
 
@@ -190,7 +190,7 @@
     return AUTORELEASE(a);
   else
     {
-      RELEASE(a);
+      DESTROY(a);
       return nil;
     }
 }
@@ -217,7 +217,7 @@
     return AUTORELEASE(result);
   else
   {
-	  RELEASE(result);
+	  DESTROY(result);
 	  return nil;
   }
 }
@@ -245,7 +245,7 @@
     return AUTORELEASE(result);
   else
   {
-	  RELEASE(result);
+	  DESTROY(result);
 	  return nil;
   }
 }

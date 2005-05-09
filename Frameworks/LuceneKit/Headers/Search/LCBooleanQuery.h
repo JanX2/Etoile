@@ -22,7 +22,7 @@
                   query: (LCBooleanQuery *) query;
 @end
 
-static int maxClauseCount = 1024;
+//static int maxClauseCount = 1024;
 
 @interface LCBooleanQuery: LCQuery
 {

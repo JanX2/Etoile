@@ -65,9 +65,9 @@
   [s appendFormat: @"%f = %@\n", [self value], [self representation]];
 
   NSArray *array = [self details];
-  if (details != nil) {
-    for (i = 0 ; i < [details count]; i++) {
-      [s appendString: [[details objectAtIndex: i] descriptionWithDepth: depth+1]];
+  if (array != nil) {
+    for (i = 0 ; i < [array count]; i++) {
+      [s appendString: [[array objectAtIndex: i] descriptionWithDepth: depth+1]];
       }
     }
 
@@ -83,9 +83,9 @@
 
   NSArray *array = [self details];
   int i;
-  if (details != nil) {
-    for (i = 0 ; i < [details count]; i++) {
-      [s appendString: [[details objectAtIndex: i] descriptionWithHTML]];
+  if (array != nil) {
+    for (i = 0 ; i < [array count]; i++) {
+      [s appendString: [[array objectAtIndex: i] descriptionWithHTML]];
     }
   }
 

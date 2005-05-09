@@ -28,6 +28,21 @@
   return self;
 }
 
+/* LuceneKit: TODO */
+#if 0
+/** Builds an analyzer with the stop words from the given file. */
+ 	   public StopAnalyzer(File stopwordsFile) throws IOException {
+ 	     stopWords = WordlistLoader.getWordSet(stopwordsFile);
+}
+#endif
+
+- (void) dealloc
+{
+  DESTROY(ENGLISH_STOP_WORDS);
+  DESTROY(stopWords);
+  [super dealloc];
+}
+
   /** Filters LowerCaseTokenizer with StopFilter. */
 - (LCTokenStream *) tokenStreamWithField: (NSString *) name
                                 reader: (id <LCReader>) reader
@@ -35,15 +50,8 @@
   LCLowerCaseTokenizer *tokenizer = [[LCLowerCaseTokenizer alloc] initWithReader: reader];
   LCStopFilter *filter = [[LCStopFilter alloc] initWithTokenStream: tokenizer
    	                                        stopWordsInSet: stopWords];
-  AUTORELEASE(tokenizer);
+  DESTROY(tokenizer);
   return AUTORELEASE(filter);
-}
-
-- (void) dealloc
-{
-  RELEASE(ENGLISH_STOP_WORDS);
-  RELEASE(stopWords);
-  [super dealloc];
 }
 
 #ifdef HAVE_UKTEST

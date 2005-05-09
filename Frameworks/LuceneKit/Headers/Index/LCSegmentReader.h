@@ -12,7 +12,7 @@
 @class LCFieldsReader;
 @class LCTermVectorsReader;
 
-static LCTermVectorsReader *tvReader;
+//static LCTermVectorsReader *tvReader;
 
 @interface LCSegmentReader: LCIndexReader
 {

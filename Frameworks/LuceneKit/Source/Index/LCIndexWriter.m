@@ -47,9 +47,9 @@
 - (id) init
 {
   self = [super init];
-  similarity = [LCSimilarity defaultSimilarity];
-  segmentInfos = [[LCSegmentInfos alloc] init];
-  ramDirectory = [[LCRAMDirectory alloc] init];
+  ASSIGN(similarity, [LCSimilarity defaultSimilarity]);
+  ASSIGN(segmentInfos, AUTORELEASE([[LCSegmentInfos alloc] init]));
+  ASSIGN(ramDirectory, AUTORELEASE([[LCRAMDirectory alloc] init]));
   termIndexInterval = DEFAULT_TERM_INDEX_INTERVAL;
 
   useCompoundFile = YES;
@@ -172,8 +172,8 @@
   
 - (id) initWithDirectory: (id <LCDirectory>) dir
        analyzer: (LCAnalyzer *) a
-              create: (BOOL) create
-	             close: (BOOL) close
+       create: (BOOL) create
+       close: (BOOL) close
 {
   self = [self init];
   closeDir = close;
@@ -205,6 +205,22 @@
       return self;
   }
 
+  /** Release the write lock, if needed. */
+- (void) dealloc
+{
+#if 0
+    if (writeLock != null) {
+      writeLock.release();                        // release write lock
+      writeLock = null;
+    }
+#endif
+  DESTROY(analyzer);
+  DESTROY(segmentInfos);
+  DESTROY(ramDirectory);
+  DESTROY(directory);
+  DESTROY(segmentInfos);
+  [super dealloc];
+}
   /** Determines the largest number of documents ever merged by addDocument().
    * Small values (e.g., less than 10,000) are best for interactive indexing,
    * as this limits the length of pauses while indexing to a few seconds.
@@ -301,83 +317,48 @@
    */
 - (int) mergeFactor
 {
-    return mergeFactor;
-  }
-
-  /** If non-null, information about merges and a message when
-   * maxFieldLength is reached will be printed to this.
-   */
-#if 0
-  public void setInfoStream(PrintStream infoStream) {
-    this.infoStream = infoStream;
-  }
-#endif
-
-  /**
-   * @see #setInfoStream
-   */
-#if 0
-  public PrintStream getInfoStream() {
-    return infoStream;
-  }
-#endif
+  return mergeFactor;
+}
 
   /** Flushes all changes to an index and closes all associated files. */
 - (void) close
 {
-    [self flushRamSegments];
-    [ramDirectory close];
+  [self flushRamSegments];
+  [ramDirectory close];
 #if 0
     if (writeLock != null) {
       writeLock.release();                          // release write lock
       writeLock = null;
     }
 #endif
-    if(closeDir)
-      [directory close];
-  }
-
-  /** Release the write lock, if needed. */
-- (void) dealloc
-{
-#if 0
-    if (writeLock != null) {
-      writeLock.release();                        // release write lock
-      writeLock = null;
-    }
-#endif
-    DESTROY(analyzer);
-    DESTROY(segmentInfos);
-    DESTROY(ramDirectory);
-    DESTROY(directory);
-
-    [super dealloc];
-  }
+  if(closeDir)
+    [directory close];
+}
 
   /** Returns the Directory used by this index. */
 - (id <LCDirectory>) directory;
 {
-      return directory;
-  }
+  return directory;
+}
 
   /** Returns the analyzer used by this index. */
 - (LCAnalyzer *) analyzer
 {
-      return analyzer;
-  }
+  return analyzer;
+}
 
 
   /** Returns the number of documents currently in this index. */
 - (int) documentCount
 {
-    int i, count = 0;
-    LCSegmentInfo *si;
-    for (i = 0; i < [segmentInfos numberOfSegments]; i++) {
-      si = [segmentInfos segmentInfoAtIndex: i];
-      count += [si numberOfDocuments];
-    }
-    return count;
+  int i, count = 0;
+  LCSegmentInfo *si;
+  for (i = 0; i < [segmentInfos numberOfSegments]; i++) {
+    si = [segmentInfos segmentInfoAtIndex: i];
+    count += [si numberOfDocuments];
   }
+  return count;
+}
 
   /**
    * Adds a document to this index.  If the document contains more than
@@ -386,8 +367,8 @@
    */
 - (void) addDocument: (LCDocument *) doc
 {
-    [self addDocument: doc analyzer: analyzer];
-  }
+  [self addDocument: doc analyzer: analyzer];
+}
 
   /**
    * Adds a document to this index, using the provided analyzer instead of the
@@ -398,21 +379,22 @@
 - (void) addDocument: (LCDocument *) doc
          analyzer: (LCAnalyzer *) a
 {
-    LCDocumentWriter *dw = [[LCDocumentWriter alloc] initWithDirectory: ramDirectory
+  LCDocumentWriter *dw = [[LCDocumentWriter alloc] initWithDirectory: ramDirectory
 	    analyzer: a indexWriter: self];
     //[dw setInfoStream: infoStream];
-    NSString *segmentName = [self newSegmentName];
-    [dw addDocument: segmentName document: doc];
+  NSString *segmentName = [self newSegmentName];
+  [dw addDocument: segmentName document: doc];
+  DESTROY(dw);
 //    synchronized (this) {
-      [segmentInfos addSegmentInfo: [[LCSegmentInfo alloc] initWithName: segmentName numberOfDocuments: 1 directory: ramDirectory]];
-      [self maybeMergeSegments];
+  [segmentInfos addSegmentInfo: AUTORELEASE([[LCSegmentInfo alloc] initWithName: segmentName numberOfDocuments: 1 directory: ramDirectory])];
+  [self maybeMergeSegments];
 //    }
-  }
+}
 
 - (int) segmentsCounter
 {
-    return [segmentInfos counter];
-  }
+  return [segmentInfos counter];
+}
   
 - (NSString *) newSegmentName
 {
@@ -450,16 +432,17 @@
 {
   [self optimize];	  // start with zero or 1 seg
   int i;
-    for (i = 0; i < [dirs count]; i++) {
-      LCSegmentInfos *sis = [[LCSegmentInfos alloc] init];  // read infos from dir
-      [sis readFromDirectory: [dirs objectAtIndex: i]];
-      int j;
-      for (j = 0; j < [sis numberOfSegments]; j++) {
-	[segmentInfos addSegmentInfo: [sis segmentInfoAtIndex: j]]; // add each info
-      }
+  for (i = 0; i < [dirs count]; i++) {
+    LCSegmentInfos *sis = [[LCSegmentInfos alloc] init];  // read infos from dir
+    [sis readFromDirectory: [dirs objectAtIndex: i]];
+    int j;
+    for (j = 0; j < [sis numberOfSegments]; j++) {
+      [segmentInfos addSegmentInfo: [sis segmentInfoAtIndex: j]]; // add each info
     }
-    [self optimize];					  // final cleanup
+    DESTROY(sis);
   }
+  [self optimize];					  // final cleanup
+}
 
   /** Merges the provided indexes into this index.
    * <p>After this completes, the index is optimized. </p>
@@ -467,41 +450,40 @@
    */
 - (void) addIndexedWithReaders: (NSArray *) readers
 {
-    [self optimize];					  // start with zero or 1 seg
+  [self optimize]; // start with zero or 1 seg
 
-    NSString *mergedName = [self newSegmentName];
-    LCSegmentMerger *merger = [[LCSegmentMerger alloc] initWithIndexWriter:self
+  NSString *mergedName = [self newSegmentName];
+  LCSegmentMerger *merger = [[LCSegmentMerger alloc] initWithIndexWriter:self
 	                          name: mergedName];
-
-    NSMutableArray *segmentsToDelete = [[NSMutableArray alloc] init];
-    LCIndexReader *sReader = nil;
-    if ([segmentInfos numberOfSegments] == 1){ // add existing index, if any
-	sReader = [LCSegmentReader segmentReaderWithInfo: [segmentInfos segmentInfoAtIndex: 0]];
-        [merger addIndexReader: sReader];
-	[segmentsToDelete addObject: sReader];  // queue segment for deletion
-    }
+  NSMutableArray *segmentsToDelete = [[NSMutableArray alloc] init];
+  LCIndexReader *sReader = nil;
+  if ([segmentInfos numberOfSegments] == 1){ // add existing index, if any
+    sReader = [LCSegmentReader segmentReaderWithInfo: [segmentInfos segmentInfoAtIndex: 0]];
+    [merger addIndexReader: sReader];
+    [segmentsToDelete addObject: sReader];  // queue segment for deletion
+  }
       
-    int i;
-    for (i = 0; i < [readers count]; i++)      // add new indexes
-      [merger addIndexReader: [readers objectAtIndex: i]];
+  int i;
+  for (i = 0; i < [readers count]; i++)      // add new indexes
+    [merger addIndexReader: [readers objectAtIndex: i]];
 
-    int docCount = [merger merge];                // merge 'em
+  int docCount = [merger merge];                // merge 'em
 
-    NSRange r = NSMakeRange(0, [segmentInfos numberOfSegments]);
-    [segmentInfos removeSegmentsInRange: r];  // pop old infos & add new
-    [segmentInfos addSegmentInfo: [[LCSegmentInfo alloc] initWithName: mergedName
-                            numberOfDocuments: docCount directory: directory]];
+  NSRange r = NSMakeRange(0, [segmentInfos numberOfSegments]);
+  [segmentInfos removeSegmentsInRange: r];  // pop old infos & add new
+  [segmentInfos addSegmentInfo: AUTORELEASE([[LCSegmentInfo alloc] initWithName: mergedName
+                            numberOfDocuments: docCount directory: directory])];
     
-    if(sReader != nil)
-        [sReader close];
+  if(sReader != nil)
+    [sReader close];
 
 #if 0
     synchronized (directory) {			  // in- & inter-process sync
       new Lock.With(directory.makeLock(COMMIT_LOCK_NAME), COMMIT_LOCK_TIMEOUT) {
 	  public Object doBody() throws IOException {
 #endif
-      [segmentInfos writeToDirectory: directory]; // commit changes
-      [self deleteSegments: segmentsToDelete]; // delete now-unused segments
+  [segmentInfos writeToDirectory: directory]; // commit changes
+  [self deleteSegments: segmentsToDelete]; // delete now-unused segments
 #if 0
 	    return null;
 	  }
@@ -509,15 +491,15 @@
     }
 #endif
     
-    if (useCompoundFile) {
-      NSArray *filesToDelete = [merger createCompoundFile: [mergedName stringByAppendingPathExtension: @"tmp"]];
+  if (useCompoundFile) {
+    NSArray *filesToDelete = [merger createCompoundFile: [mergedName stringByAppendingPathExtension: @"tmp"]];
 #if 0
       synchronized (directory) { // in- & inter-process sync
         new Lock.With(directory.makeLock(COMMIT_LOCK_NAME), COMMIT_LOCK_TIMEOUT) {
           public Object doBody() throws IOException {
 #endif
-            // make compound file visible for SegmentReaders
-	    [directory renameFile: [mergedName stringByAppendingPathExtension: @"tmp"]
+    // make compound file visible for SegmentReaders
+    [directory renameFile: [mergedName stringByAppendingPathExtension: @"tmp"]
 		       to: [mergedName stringByAppendingPathExtension: @"cfs"]];
             // delete now unused files of segment 
 	    [self deleteFiles: filesToDelete];
@@ -527,10 +509,10 @@
         }.run();
       }
 #endif
-    }
-    DESTROY(segmentsToDelete);
-    DESTROY(merger);
   }
+  DESTROY(segmentsToDelete);
+  DESTROY(merger);
+}
 
   /** Merges all RAM-resident segments. */
 - (void) flushRamSegments
@@ -538,24 +520,24 @@
   int minSegment = [segmentInfos numberOfSegments]-1;
   int docCount = 0;
   while (minSegment >= 0 &&
-           ([[segmentInfos segmentInfoAtIndex: minSegment] directory] == ramDirectory)) {
-      docCount += [[segmentInfos segmentInfoAtIndex: minSegment] numberOfDocuments];
-      minSegment--;
-    }
-    if (minSegment < 0 ||			  // add one FS segment?
-        (docCount + [[segmentInfos segmentInfoAtIndex: minSegment] numberOfDocuments]) > mergeFactor ||
-        !([[segmentInfos segmentInfoAtIndex: [segmentInfos numberOfSegments]-1] directory] == ramDirectory))
-      minSegment++;
-    if (minSegment >= [segmentInfos numberOfSegments])
-      return;					  // none to merge
-    [self mergeSegments: minSegment];
+         ([[segmentInfos segmentInfoAtIndex: minSegment] directory] == ramDirectory)) {
+    docCount += [[segmentInfos segmentInfoAtIndex: minSegment] numberOfDocuments];
+    minSegment--;
   }
+  if (minSegment < 0 ||			  // add one FS segment?
+      (docCount + [[segmentInfos segmentInfoAtIndex: minSegment] numberOfDocuments]) > mergeFactor ||
+      !([[segmentInfos segmentInfoAtIndex: [segmentInfos numberOfSegments]-1] directory] == ramDirectory))
+      minSegment++;
+  if (minSegment >= [segmentInfos numberOfSegments])
+    return;					  // none to merge
+  [self mergeSegments: minSegment];
+}
 
   /** Incremental segment merger.  */
 - (void) maybeMergeSegments
 {
-    long targetMergeDocs = minMergeDocs;
-    while (targetMergeDocs <= maxMergeDocs) {
+  long targetMergeDocs = minMergeDocs;
+  while (targetMergeDocs <= maxMergeDocs) {
       // find segments smaller than current target size
     int minSegment = [segmentInfos numberOfSegments];
     int mergeDocs = 0;
@@ -589,41 +571,32 @@
 
   NSMutableArray *segmentsToDelete = [[NSMutableArray alloc] init];
   int i;
-  LCSegmentInfo *si;
-  LCIndexReader *reader;
+  LCSegmentInfo *si = nil;
+  LCIndexReader *reader = nil;
   for (i = minSegment; i < [segmentInfos numberOfSegments]; i++) {
       
       si = [segmentInfos segmentInfoAtIndex: i];
-#if 0
-      if (infoStream != nil)
-        infoStream.print(" " + si.name + " (" + si.docCount + " docs)");
-#endif
       reader = [LCSegmentReader segmentReaderWithInfo: si];
       [merger addIndexReader: reader];
       if (([reader directory] == directory) || // if we own the directory
           ([reader directory] == ramDirectory))
         [segmentsToDelete addObject: reader];   // queue segment for deletion
-    }
-    int mergedDocCount = [merger merge];
+  }
+  int mergedDocCount = [merger merge];
 
-#if 0
-    if (infoStream != nil) {
-      infoStream.println(" into "+mergedName+" ("+mergedDocCount+" docs)");
-    }
-#endif
-    NSRange r = NSMakeRange(minSegment, [segmentInfos numberOfSegments]-minSegment);
-    [segmentInfos removeSegmentsInRange: r]; // pop old infos & add new
-    [segmentInfos addSegmentInfo: [[LCSegmentInfo alloc] initWithName: mergedName
-	    numberOfDocuments: mergedDocCount directory: directory]];
+  NSRange r = NSMakeRange(minSegment, [segmentInfos numberOfSegments]-minSegment);
+  [segmentInfos removeSegmentsInRange: r]; // pop old infos & add new
+  [segmentInfos addSegmentInfo: AUTORELEASE([[LCSegmentInfo alloc] initWithName: mergedName
+	    numberOfDocuments: mergedDocCount directory: directory])];
     // close readers before we attempt to delete now-obsolete segments
-    [merger closeReaders];
+  [merger closeReaders];
 #if 0
     synchronized (directory) {                 // in- & inter-process sync
       new Lock.With(directory.makeLock(COMMIT_LOCK_NAME), COMMIT_LOCK_TIMEOUT) {
           public Object doBody() throws IOException {
 #endif
-	  [segmentInfos writeToDirectory: directory];     // commit before deleting
-          [self  deleteSegments: segmentsToDelete];  // delete now-unused segments
+  [segmentInfos writeToDirectory: directory];     // commit before deleting
+  [self  deleteSegments: segmentsToDelete];  // delete now-unused segments
 #if 0
             return null;
           }
@@ -631,29 +604,30 @@
     }
 #endif
     
-    if (useCompoundFile) {
-      NSMutableArray *filesToDelete = [[NSMutableArray alloc] initWithArray: [merger createCompoundFile: [mergedName stringByAppendingPathExtension: @"tmp"]]];
+  if (useCompoundFile) {
+    NSMutableArray *filesToDelete = [[NSMutableArray alloc] initWithArray: [merger createCompoundFile: [mergedName stringByAppendingPathExtension: @"tmp"]]];
 
 #if 0
       synchronized (directory) { // in- & inter-process sync
         new Lock.With(directory.makeLock(COMMIT_LOCK_NAME), COMMIT_LOCK_TIMEOUT) {
           public Object doBody() throws IOException {
 #endif
-            // make compound file visible for SegmentReaders
-	    [directory renameFile: [mergedName stringByAppendingPathExtension: @"tmp"]
+    // make compound file visible for SegmentReaders
+    [directory renameFile: [mergedName stringByAppendingPathExtension: @"tmp"]
 		       to: [mergedName stringByAppendingPathExtension: @"cfs"]];
             // delete now unused files of segment 
-	    [self deleteFiles: filesToDelete];
+    [self deleteFiles: filesToDelete];
 #if 0
             return null;
           }
         }.run();
       }
 #endif
-    }
-    DESTROY(segmentsToDelete);
-    DESTROY(merger);
+    DESTROY(filesToDelete);
   }
+  DESTROY(segmentsToDelete);
+  DESTROY(merger);
+}
 
   /*
    * Some operating systems (e.g. Windows) don't permit a file to be deleted
@@ -669,21 +643,21 @@
 	   deletable: deletable]; // try to delete deleteable
 
   int i;
-    for (i = 0; i < [segments count]; i++) {
-      LCSegmentReader *reader = (LCSegmentReader *)[segments objectAtIndex: i];
+  for (i = 0; i < [segments count]; i++) {
+    LCSegmentReader *reader = (LCSegmentReader *)[segments objectAtIndex: i];
 
-      if ([reader directory] == directory) {
-	[self deleteFiles: [reader files]
-		 deletable: deletable];	  // try to delete our files
-		 }
-      else {
-	[self deleteFiles: [reader files]
-		directory: [reader directory]];  // delete other files
-		}
+    if ([reader directory] == directory) {
+      [self deleteFiles: [reader files]
+    	    deletable: deletable];	  // try to delete our files
+    } else {
+      [self deleteFiles: [reader files]
+	    directory: [reader directory]];  // delete other files
     }
-
-    [self writeDeleteableFiles: deletable]; // note files we can't delete
   }
+
+  [self writeDeleteableFiles: deletable]; // note files we can't delete
+  DESTROY(deletable);
+}
   
 - (void) deleteFiles: (NSArray *) files
 {
@@ -693,29 +667,30 @@
   [self deleteFiles: files
 	  deletable: deletable];    // try to delete our files
   [self writeDeleteableFiles: deletable];        // note files we can't delete
-  }
+  DESTROY(deletable);
+}
 
 - (void) deleteFiles: (NSArray *) files directory: (id <LCDirectory>) dir
 {
-	int i;
-    for (i = 0; i < [files count]; i++)
-      [directory deleteFile: [files objectAtIndex: i]];
-  }
+  int i;
+  for (i = 0; i < [files count]; i++)
+    [directory deleteFile: [files objectAtIndex: i]];
+}
 
 - (void) deleteFiles: (NSArray *) files deletable: (NSMutableArray *) deletable
 {
-	int i;
-	BOOL result;
-    for (i = 0; i < [files count]; i++) {
-      NSString *file = [files objectAtIndex: i];
+  int i;
+  BOOL result;
+  for (i = 0; i < [files count]; i++) {
+    NSString *file = [files objectAtIndex: i];
 #if 0
       try {
 #endif 
-        result = [directory deleteFile: file];	  // try to delete each file
-	if ([directory fileExists: file] && (result == NO))
-	{
-	  [deletable addObject: file];
-	}
+    result = [directory deleteFile: file];	  // try to delete each file
+    if ([directory fileExists: file] && (result == NO))
+      {
+	[deletable addObject: file];
+      }
 #if 0
       } catch (IOException e) {			  // if delete fails
         if (directory.fileExists(file)) {
@@ -731,28 +706,28 @@
 - (NSArray *) readDeleteableFiles
 {
   NSMutableArray *result = [[NSMutableArray alloc] init];
-    if (![directory fileExists: @"deletable"])
-      return result;
-
-    LCIndexInput *input = [directory openInput: @"deletable"];
-    int ii;
-      for (ii = [input readInt]; ii > 0; ii--)	  // read file names
-        [result addObject: [input readString]];
-      [input close];
+  if (![directory fileExists: @"deletable"])
     return result;
-  }
+
+  LCIndexInput *input = [directory openInput: @"deletable"];
+  int ii;
+  for (ii = [input readInt]; ii > 0; ii--)	  // read file names
+    [result addObject: [input readString]];
+  [input close];
+  return AUTORELEASE(result);
+}
 
 - (void) writeDeleteableFiles: (NSArray *) files
 {
-    LCIndexOutput *output = [directory createOutput: @"deleteable.new"];
+  LCIndexOutput *output = [directory createOutput: @"deleteable.new"];
 
-      [output writeInt: (long)[files count]];
-      int i;
-      for (i = 0; i < [files count]; i++)
-        [output writeString: [files objectAtIndex: i]];
-      [output close];
-    [directory renameFile: @"deleteable.new"
-               to: @"deletable"];
+  [output writeInt: (long)[files count]];
+  int i;
+  for (i = 0; i < [files count]; i++)
+    [output writeString: [files objectAtIndex: i]];
+  [output close];
+  [directory renameFile: @"deleteable.new"
+             to: @"deletable"];
 }
 
 @end

@@ -7,14 +7,14 @@
   /** Base class for filtering {@link TermDocs} implementations. */
 - (id) initWithTermDocs: (id <LCTermDocs>) docs
 {
-  self = [super init];
+  self = [self init];
   ASSIGN(input, docs);
   return self;
 }
 
 - (void) dealloc
 {
-  RELEASE(input);
+  DESTROY(input);
   [super dealloc];
 }
 
@@ -65,7 +65,7 @@
 
 - (id) initWithTermPositions: (id <LCTermPositions>) po
 {
-  return [super initWithTermDocs: po];
+  return [self initWithTermDocs: po];
 }
 
 - (int) nextPosition
@@ -73,8 +73,9 @@
   return [(id <LCTermPositions>)input nextPosition];
 }
 
-- (NSComparisonResult) compare: (LCFilterTermPositions *) other
+- (NSComparisonResult) compare: (id) o
 {
+  LCFilterTermPositions *other = (LCFilterTermPositions *) o;
   if ([self document] < [other document])
     return NSOrderedAscending;
   else if ([self document] == [other document])
@@ -90,9 +91,15 @@
   /** Base class for filtering {@link TermEnum} implementations. */
 - (id) initWithTermEnum: (LCTermEnum *) termEnum
 {
-  self = [super init];
+  self = [self init];
   ASSIGN(input, termEnum);
   return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(input);
+  [super dealloc];
 }
 
 - (BOOL) next
@@ -128,9 +135,15 @@
    */
 - (id) initWithIndexReader: (LCIndexReader *) reader
 {
-  self = [super initWithDirectory: [reader directory]];
+  self = [self initWithDirectory: [reader directory]];
   ASSIGN(input, reader);
   return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(input);
+  [super dealloc];
 }
 
 - (NSArray *) termFreqVectors: (int) docNumber

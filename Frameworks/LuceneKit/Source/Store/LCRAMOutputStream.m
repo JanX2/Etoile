@@ -13,14 +13,14 @@
 - (id) init
 {
   self = [super init];
-  file = [[LCRAMFile alloc] init];
+  ASSIGN(file, AUTORELEASE([[LCRAMFile alloc] init]));
   pointer = 0;
   return self;
 }
 
 - (void) dealloc
 {
-  RELEASE(file);
+  DESTROY(file);
   [super dealloc];
 }
 

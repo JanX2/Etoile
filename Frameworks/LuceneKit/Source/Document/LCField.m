@@ -13,7 +13,7 @@
 - (id) init
 {
   self = [super init];
-  name = @"body";
+  ASSIGN(name, [NSString stringWithCString: "body"]);
   fieldsData = nil;
   storeTermVector = NO;
   storeOffsetWithTermVector = NO;
@@ -25,6 +25,13 @@
   isCompressed = NO;
   boost = 1.0f;
   return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(name);
+  DESTROY(fieldsData);
+  [super dealloc];
 }
 
   /** Sets the boost factor hits on this field.  This value will be
@@ -258,6 +265,7 @@
   isBinary = NO;
 
   [self setStoreTermVector: termVector];
+  return self;
 }
 	 
   /**

@@ -37,7 +37,7 @@
   int length = 0;
   int start = offset;
   unichar c;
-  NSData *data;
+//  NSData *data;
   while (YES) 
     {
       offset++;

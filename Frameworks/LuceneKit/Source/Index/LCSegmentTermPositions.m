@@ -75,8 +75,9 @@
     proxCount = 0;
 }
 
-- (NSComparisonResult) compare: (LCSegmentTermPositions *) other
+- (NSComparisonResult) compare: (id) o
 {
+  LCSegmentTermPositions *other = (LCSegmentTermPositions *) o;
   if ([self document] < [other document])
     return NSOrderedAscending;
   else if ([self document] == [other document])

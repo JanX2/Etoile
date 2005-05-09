@@ -33,9 +33,8 @@
   writer  = [[LCIndexWriter alloc] initWithDirectory: dir
 	  analyzer: [[LCWhitespaceAnalyzer alloc] init]
 	  create: YES];
-  // add 100 documents
-  // FIXME: cannot over 100 documents
-  int total = 100;
+  // add 300 documents
+  int total = 300;
   for (i = 0; i < total; i++) {
     [self addDoc: writer];
   }

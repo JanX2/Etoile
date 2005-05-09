@@ -36,7 +36,7 @@
        position: (long) position
        offset: (LCTermVectorOffsetInfo *) offset
 {
-  self = [super init];
+  self = [self init];
   ASSIGN(term, t);
   freq = 1;
   positions = [[NSMutableArray alloc] initWithObjects: [NSNumber numberWithLong: position], nil];
@@ -48,6 +48,14 @@
       offsets = nil;
   }
   return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(term);
+  DESTROY(positions);
+  DESTROY(offsets);
+  [super dealloc];
 }
 
 - (NSComparisonResult) compare: (LCPosting *) other
@@ -80,7 +88,7 @@
 static NSString *LCFieldLength = @"LCFieldLength";
 static NSString *LCFieldPosition = @"LCFieldPosition";
 static NSString *LCFieldOffset = @"LCFieldOffsets";
-static NSString *LCFieldBoost = @"LCFieldBoost";
+// static NSString *LCFieldBoost = @"LCFieldBoost";
 
 @implementation LCDocumentWriter
 - (id) init
@@ -125,11 +133,25 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
   return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(analyzer);
+  DESTROY(directory);
+  DESTROY(similarity);
+  DESTROY(fieldInfos);
+
+  DESTROY(postingTable);
+  DESTROY(fieldsCache);
+  DESTROY(fieldBoosts);
+  DESTROY(termBuffer);
+  [super dealloc];
+}
+
 - (void) addDocument: (NSString *) segment
          document: (LCDocument *) doc
 {
   // write field names
-  fieldInfos = [[LCFieldInfos alloc] init];
+  ASSIGN(fieldInfos, AUTORELEASE([[LCFieldInfos alloc] init]));
   [fieldInfos addDocument: doc];
   [fieldInfos write: directory name: [segment stringByAppendingPathExtension: @"fnm"]];
 
@@ -137,11 +159,12 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
   LCFieldsWriter *fieldsWriter = [[LCFieldsWriter alloc] initWithDirectory: directory segment: segment fieldInfos: fieldInfos];
   [fieldsWriter addDocument: doc];
   [fieldsWriter close];
+  DESTROY(fieldsWriter);
 
     // invert doc into postingTable
   [postingTable removeAllObjects]; // clear postingTable
-  fieldsCache = [[NSMutableArray alloc] init];
-  fieldBoosts = [[NSMutableArray alloc] init];  // init fieldBoosts
+  ASSIGN(fieldsCache, AUTORELEASE([[NSMutableArray alloc] init]));
+  ASSIGN(fieldBoosts, AUTORELEASE([[NSMutableArray alloc] init])); // init fieldBoosts
   int i, count = [fieldInfos size];
   for(i = 0; i < count; i++)
     [fieldBoosts addObject: [NSNumber numberWithFloat: [doc boost]]];
@@ -161,11 +184,10 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
 - (void) invertDocument: (LCDocument *) doc
 {
   NSEnumerator *fields = [doc fieldEnumerator];
-  LCField *field;
-  NSString *fieldName;
+  LCField *field = nil;
   while ((field = [fields nextObject]))
   {
-    fieldName = [field name];
+    NSString *fieldName = [field name];
     int fieldNumber = [fieldInfos fieldNumber: fieldName];
     long length = 0, position = 0, offset = 0;
     if (fieldNumber < [fieldsCache count])
@@ -175,93 +197,102 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
       offset = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldOffset] longValue];
     }
 
-      if ([field isIndexed]) {
-        if (![field isTokenized]) {		  // un-tokenized field
-          NSString *stringValue = [field stringValue];
-          if([field isOffsetWithTermVectorStored])
-	    {
-	      LCTermVectorOffsetInfo *tvoi = [[LCTermVectorOffsetInfo alloc] initWithStartOffset: offset endOffset: offset + [stringValue length]];
-              [self addField: fieldName
-		    text: stringValue
-		    position: position++
-		    offset: tvoi];
-	    }
-          else
+    if ([field isIndexed]) {
+      if (![field isTokenized]) {		  // un-tokenized field
+        NSString *stringValue = [field stringValue];
+        if([field isOffsetWithTermVectorStored])
+	  {
+	    LCTermVectorOffsetInfo *tvoi = [[LCTermVectorOffsetInfo alloc] initWithStartOffset: offset endOffset: offset + [stringValue length]];
             [self addField: fieldName
 		    text: stringValue
 		    position: position++
+		    offset: tvoi];
+            DESTROY(tvoi);
+	  }
+        else
+          [self addField: fieldName
+		    text: stringValue
+		    position: position++
 		    offset: nil];
-          offset += [stringValue length];
-          length++;
-          } 
-	else 
-          {
-            id <LCReader> reader;			  // find or make Reader
-            if ([field readerValue] != nil)
-              reader = [field readerValue];
-            else if ([field stringValue] != nil)
-              reader = [[LCStringReader alloc] initWithString: [field stringValue]];
-            else
-	    {
-              NSLog(@"field must have either String or Reader value");
-	      return;
-	    }
 
-            // Tokenize field and add to postingTable
-            LCTokenStream *stream = [analyzer tokenStreamWithField: fieldName
+        offset += [stringValue length];
+        length++;
+      } 
+    else 
+      {
+        id <LCReader> reader = nil;  // find or make Reader
+        if ([field readerValue] != nil)
+          ASSIGN(reader, [field readerValue]);
+        else if ([field stringValue] != nil)
+          ASSIGN(reader, AUTORELEASE([[LCStringReader alloc] initWithString: [field stringValue]]));
+        else
+	  {
+            NSLog(@"field must have either String or Reader value");
+	    return;
+	  }
+
+        // Tokenize field and add to postingTable
+        LCTokenStream *stream = [analyzer tokenStreamWithField: fieldName
 	  	                 reader: reader];
-            LCToken *t, *lastToken = nil;
+        DESTROY(reader);
+        LCToken *t, *lastToken = nil;
 
-            for (t = [stream next]; t != nil; t = [stream next]) {
-              position += ([t positionIncrement] - 1);
+        for (t = [stream next]; t != nil; t = [stream next]) {
+          position += ([t positionIncrement] - 1);
               
-              if([field isOffsetWithTermVectorStored])
-	        {
-	          LCTermVectorOffsetInfo *tvoi = [[LCTermVectorOffsetInfo alloc] initWithStartOffset: [t startOffset] endOffset: offset + [t endOffset]];
-                  [self addField: fieldName
+          if([field isOffsetWithTermVectorStored])
+	    {
+	      LCTermVectorOffsetInfo *tvoi = [[LCTermVectorOffsetInfo alloc] initWithStartOffset: [t startOffset] endOffset: offset + [t endOffset]];
+              [self addField: fieldName
 		    text: [t termText]
 		    position: position++
 		    offset: tvoi];
-	        }
-              else
-                [self addField: fieldName
+              DESTROY(tvoi);
+	    }
+          else
+            [self addField: fieldName
 		    text: [t termText]
 		    position: position++
 		    offset: nil];
               
-              lastToken = t;
-              if (++length > maxFieldLength) {
-                break;
-              }
-            }
-            
-            if(lastToken != nil)
-              offset += [lastToken endOffset] + 1;
-            
-            [stream close];
+          lastToken = t;
+          if (++length > maxFieldLength) {
+            break;
           }
+        }
+            
+      if(lastToken != nil)
+        offset += [lastToken endOffset] + 1;
+            
+      [stream close];
+      stream = nil;
+    }
 
-	NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: 
+    NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: 
 		[NSNumber numberWithLong: length], LCFieldLength,
 		[NSNumber numberWithLong: position], LCFieldPosition,
 		[NSNumber numberWithLong: offset], LCFieldOffset,
 		nil];
-	if (fieldNumber < [fieldsCache count])
-	{
-	  [fieldsCache replaceObjectAtIndex: fieldNumber withObject: d];
-	}
-	else
-	  [fieldsCache addObject: d];
-
-	float newBoosts = [[fieldBoosts objectAtIndex: fieldNumber] floatValue] * [field boost];
-	[fieldBoosts replaceObjectAtIndex: fieldNumber withObject: [NSNumber numberWithFloat: newBoosts]];
-      } /* if tokenized */
-      else
+    if (fieldNumber < [fieldsCache count])
       {
-        [fieldsCache addObject: @""]; // fill the void
+        [fieldsCache replaceObjectAtIndex: fieldNumber withObject: d];
       }
-    } /* while */
-  }
+    else if (fieldNumber == [fieldsCache count])
+      [fieldsCache addObject: d];
+    else
+      {
+        NSLog(@"FIXME (LCDocumentWriter): out of range");
+      }
+
+      float newBoosts = [[fieldBoosts objectAtIndex: fieldNumber] floatValue] * [field boost];
+      [fieldBoosts replaceObjectAtIndex: fieldNumber withObject: [NSNumber numberWithFloat: newBoosts]];
+    } /* if tokenized */
+  else
+    {
+        [fieldsCache addObject: [NSNull null]];// fill the void
+    }
+  } /* while */
+}
 
   //private final Term termBuffer = new Term("", ""); // avoid consing
 
@@ -286,10 +317,9 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
       if (offset != nil) {
         if ([[ti offsets] count]== freq){
           [[ti offsets] addObject: offset];
-          }
-          else
-
-        [[ti offsets] replaceObjectAtIndex: freq withObject: offset];
+        }
+        else
+          [[ti offsets] replaceObjectAtIndex: freq withObject: offset];
       }
       [ti setFreq: (freq + 1)];			  // update frequency
     } else {					  // word not seen before
@@ -298,6 +328,7 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
 	      					position: position
 						offset: offset]
 		    forKey: term];
+      DESTROY(term);
     }
   }
 
@@ -315,7 +346,7 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
     // sort the array
     [array sortUsingSelector: @selector(compare:)];
 
-    return array;
+    return AUTORELEASE(array);
 }
 
 - (void) writePostings: (NSArray *) postings 
@@ -334,7 +365,9 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
 	     segment: segment
 	     fieldInfos: fieldInfos
              interval: termIndexInterval];
+  AUTORELEASE(tis);
   LCTermInfo *ti = [[LCTermInfo alloc] init];
+  AUTORELEASE(ti);
   NSString *currentField = nil;
 
   int i;
@@ -377,6 +410,7 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
       if ([fi isTermVectorStored]) {
         if (termVectorWriter == nil) {
   	  termVectorWriter = [[LCTermVectorsWriter alloc] initWithDirectory: directory segment: segment fieldInfos: fieldInfos];
+          AUTORELEASE(termVectorWriter);
 	  [termVectorWriter openDocument];
         }
         [termVectorWriter openField: currentField];
@@ -418,16 +452,6 @@ static NSString *LCFieldBoost = @"LCFieldBoost";
   }
 }
   
-  /** If non-null, a message will be printed to this if maxFieldLength is reached.
-   */
-#if 0
-  void setInfoStream(PrintStream infoStream) {
-    this.infoStream = infoStream;
-  }
-
-}
-#endif
-
 @end
 
 #ifdef HAVE_UKTEST

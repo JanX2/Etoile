@@ -65,7 +65,6 @@
 {
   UKNotNil(expected);
   UKNotNil(test);
-  int i;
   NSRange r = NSMakeRange(start, len);
   NSData *e = [expected subdataWithRange: r];
   NSData *t = [test subdataWithRange: r];

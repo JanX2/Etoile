@@ -19,7 +19,7 @@
 
 - (void) dealloc
 {
-  RELEASE(input);
+  DESTROY(input);
   [super dealloc];
 }
 

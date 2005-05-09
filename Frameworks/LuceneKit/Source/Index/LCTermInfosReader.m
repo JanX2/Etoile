@@ -76,7 +76,7 @@
 {
     if (indexTerms != nil)                       // index already read
       return;                                     // do nothing
-    int indexSize = (int)[indexEnum size];        // otherwise read index
+//    int indexSize = (int)[indexEnum size];        // otherwise read index
 
     ASSIGN(indexTerms, [[NSMutableArray alloc] init]);
     ASSIGN(indexInfos, [[NSMutableArray alloc] init]);
@@ -117,8 +117,8 @@
 {
   long index = [[indexPointers objectAtIndex: indexOffset] longValue];
   int pos = indexOffset * [[self termEnum] indexInterval] - 1;
-  LCTerm *t = [indexTerms objectAtIndex: indexOffset];
-  LCTermInfo *ti = [indexInfos objectAtIndex: indexOffset];
+//  LCTerm *t = [indexTerms objectAtIndex: indexOffset];
+//  LCTermInfo *ti = [indexInfos objectAtIndex: indexOffset];
   [[self termEnum] seek: index
 	       position: pos
                term: [indexTerms objectAtIndex: indexOffset]

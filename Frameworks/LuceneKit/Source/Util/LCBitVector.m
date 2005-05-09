@@ -26,7 +26,7 @@
 
 - (void) dealloc
 {
-  RELEASE(bits);
+  DESTROY(bits);
   [super dealloc];
 }
 

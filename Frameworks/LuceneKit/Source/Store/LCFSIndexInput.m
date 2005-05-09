@@ -7,12 +7,12 @@
 {
   LCFSIndexInput *clone = [[LCFSIndexInput allocWithZone: zone] initWithFile: path];
   [clone seek: [self filePointer]];
-  return AUTORELEASE(clone);
+  return clone;
 }
 
 - (id) initWithFile: (NSString *) absolutePath
 {
-  self = [super init];
+  self = [self init];
   ASSIGN(path, absolutePath);
   ASSIGN(handle, [NSFileHandle fileHandleForReadingAtPath: absolutePath]);
   NSFileManager *manager = [NSFileManager defaultManager];
@@ -40,6 +40,7 @@
   [d getBytes: buf length: l];
   [b replaceBytesInRange: r withBytes: buf];
   free(buf);
+  buf = NULL;
 }
 
 - (unsigned long long) filePointer
@@ -68,9 +69,9 @@
 
 - (void) dealloc
 {
-  [handle closeFile];
-  RELEASE(handle);
-  RELEASE(path);
+  [self close];
+  DESTROY(handle);
+  DESTROY(path);
   [super dealloc];
 }
 

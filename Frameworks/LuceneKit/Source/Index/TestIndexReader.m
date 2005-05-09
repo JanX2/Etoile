@@ -13,8 +13,7 @@
 @end
 
 @implementation TestIndexReader
-
-- (void) addDocumentWithFields: (LCIndexWriter *) writer
+- (void) _addDocumentWithFields: (LCIndexWriter *) writer
 {
   LCDocument *doc = [[LCDocument alloc] init];
   LCField *field = [[LCField alloc] initWithName: @"keyword"
@@ -45,7 +44,7 @@
   RELEASE(doc);
 }
 
-- (void) addDocumentWithDifferentFields: (LCIndexWriter *) writer
+- (void) _addDocWithDiffFields: (LCIndexWriter *) writer
 {
   LCDocument *doc = [[LCDocument alloc] init];
   LCField *field = [[LCField alloc] initWithName: @"keyword2"
@@ -76,7 +75,7 @@
   RELEASE(doc);
 }
 
-- (void) addDocumentWithTermVectorFields: (LCIndexWriter *) writer
+- (void) _addDocWithTVFields: (LCIndexWriter *) writer
 {
   LCDocument *doc = [[LCDocument alloc] init];
   LCField *field = [[LCField alloc] initWithName: @"tvnot"
@@ -118,7 +117,7 @@
   RELEASE(doc);
 }
 
-- (void) addDoc: (LCIndexWriter *) writer value: (NSString *) value
+- (void) _addDoc: (LCIndexWriter *) writer value: (NSString *) value
 {
   LCDocument *doc = [[LCDocument alloc] init];
   LCField *field = [[LCField alloc] initWithName: @"content"
@@ -142,9 +141,9 @@
   LCIndexWriter *writer = [[LCIndexWriter alloc] initWithDirectory: d
 	  analyzer: [[LCWhitespaceAnalyzer alloc] init]
 	  create: YES];
-  [self addDocumentWithFields: writer];
+  [self _addDocumentWithFields: writer];
   [writer close];
-        // set up reader
+  // set up reader
   LCIndexReader *reader = [LCIndexReader openDirectory: d];
   NSArray *fieldNames = [reader fieldNames: LCFieldOption_ALL];
   UKTrue([fieldNames containsObject: @"keyword"]);
@@ -152,6 +151,7 @@
   UKTrue([fieldNames containsObject: @"unindexed"]);
   UKTrue([fieldNames containsObject: @"unstored"]);
   [reader close];
+
   // add more documents
   writer = [[LCIndexWriter alloc] initWithDirectory: d
 	  analyzer: [[LCWhitespaceAnalyzer alloc] init]
@@ -160,17 +160,17 @@
   int i;
   for (i = 0; i < 5*[writer mergeFactor]; i++)
   {
-     [self addDocumentWithFields: writer];
+     [self _addDocumentWithFields: writer];
   }
   // new fields are in some different segments (we hope)
   for (i = 0; i < 5*[writer mergeFactor]; i++)
   {
-     [self addDocumentWithDifferentFields: writer];
+     [self _addDocWithDiffFields: writer];
   }
   // new termvector fields
   for (i = 0; i < 5*[writer mergeFactor]; i++)
   {
-    [self addDocumentWithTermVectorFields: writer];
+    [self _addDocWithTVFields: writer];
   }
         
   [writer close];
@@ -234,9 +234,9 @@
   UKTrue([fieldNames containsObject: @"tvpositionoffset"]);
         
   DESTROY(d);
-    }
+}
 
-- (void) assertTermDocsCount: (NSString *) msg
+- (void) _assertTermDocsCount: (NSString *) msg
                     reader: (LCIndexReader *) reader
 		    term: (LCTerm *) term
 		    expected: (int) expected
@@ -268,7 +268,7 @@
   int i;
   for (i = 0; i < 100; i++)
   {
-    [self addDoc: writer value: [searchTerm text]];
+    [self _addDoc: writer value: [searchTerm text]];
   }
   [writer close];
 
@@ -276,7 +276,7 @@
         // index at the point of having 100 "aaa" documents and 0 "bbb"
   reader = [LCIndexReader openDirectory: dir];
   UKIntsEqual(100, [reader documentFrequency: searchTerm]);
-  [self assertTermDocsCount: @"first reader"
+  [self _assertTermDocsCount: @"first reader"
 	  reader: reader
 	  term: searchTerm
 	  expected: 100];
@@ -287,7 +287,7 @@
   deleted = [reader deleteTerm: searchTerm];
   UKIntsEqual(100, deleted);
   UKIntsEqual(100, [reader documentFrequency: searchTerm]);
-  [self assertTermDocsCount: @"first reader"
+  [self _assertTermDocsCount: @"first reader"
 	  reader: reader
 	  term: searchTerm
 	  expected: 0];
@@ -296,14 +296,14 @@
   // CREATE A NEW READER and re-test
   reader = [LCIndexReader openDirectory: dir];
   UKIntsEqual(100, [reader documentFrequency: searchTerm]);
-  [self assertTermDocsCount: @"first reader"
+  [self _assertTermDocsCount: @"first reader"
 	  reader: reader
 	  term: searchTerm
 	  expected: 0];
   [reader close];
     }
 
-- (void) deleteReaderWriterConflict: (BOOL) optimize
+- (void) _deleteRWConflict: (BOOL) optimize
 {
   id <LCDirectory> dir = [[LCRAMDirectory alloc] init];
   // Directory dir = getDirectory(true);
@@ -318,7 +318,7 @@
   int i;
   for (i = 0; i < 100; i++)
     {
-      [self addDoc: writer value: [searchTerm text]];
+      [self _addDoc: writer value: [searchTerm text]];
     }
   [writer close];
 
@@ -327,9 +327,9 @@
   LCIndexReader *reader = [LCIndexReader openDirectory: dir];
   UKIntsEqual(100, [reader documentFrequency: searchTerm]);
   UKIntsEqual(0, [reader documentFrequency: searchTerm2]);
-  [self assertTermDocsCount: @"first reader" reader: reader
+  [self _assertTermDocsCount: @"first reader" reader: reader
 	  term: searchTerm expected: 100];
-  [self assertTermDocsCount: @"first reader" reader: reader
+  [self _assertTermDocsCount: @"first reader" reader: reader
 	  term: searchTerm2 expected: 0];
 
   // add 100 documents with term : bbb
@@ -338,7 +338,7 @@
 	  create: NO];
   for (i = 0; i < 100; i++)
     {
-      [self addDoc: writer value: [searchTerm2 text]];
+      [self _addDoc: writer value: [searchTerm2 text]];
     }
 
   // REQUEST OPTIMIZATION
@@ -353,9 +353,9 @@
    // The reader should not see the new data
    UKIntsEqual(100, [reader documentFrequency: searchTerm]);
    UKIntsEqual(0, [reader documentFrequency: searchTerm2]);
-   [self assertTermDocsCount: @"first reader" reader: reader
+   [self _assertTermDocsCount: @"first reader" reader: reader
 	   term: searchTerm expected: 100];
-   [self assertTermDocsCount: @"first reader" reader: reader
+   [self _assertTermDocsCount: @"first reader" reader: reader
 	   term: searchTerm2 expected: 0];
 
 
@@ -376,18 +376,18 @@
    reader = [LCIndexReader openDirectory: dir];
    UKIntsEqual(100, [reader documentFrequency: searchTerm]);
    UKIntsEqual(100, [reader documentFrequency: searchTerm2]);
-   [self assertTermDocsCount: @"first reader" reader: reader
+   [self _assertTermDocsCount: @"first reader" reader: reader
 	   term: searchTerm expected: 100];
-   [self assertTermDocsCount: @"first reader" reader: reader
+   [self _assertTermDocsCount: @"first reader" reader: reader
 	   term: searchTerm2 expected: 100];
 
    int deleted = [reader deleteTerm: searchTerm];
    UKIntsEqual(100, deleted);
    UKIntsEqual(100, [reader documentFrequency: searchTerm]);
    UKIntsEqual(100, [reader documentFrequency: searchTerm2]);
-   [self assertTermDocsCount: @"deleted termDocs" reader: reader
+   [self _assertTermDocsCount: @"deleted termDocs" reader: reader
 	   term: searchTerm expected: 0];
-   [self assertTermDocsCount: @"deleted termDocs" reader: reader
+   [self _assertTermDocsCount: @"deleted termDocs" reader: reader
 	   term: searchTerm2 expected: 100];
    [reader close];
 
@@ -395,21 +395,21 @@
    reader = [LCIndexReader openDirectory: dir];
    UKIntsEqual(100, [reader documentFrequency: searchTerm]);
    UKIntsEqual(100, [reader documentFrequency: searchTerm2]);
-   [self assertTermDocsCount: @"deleted termDocs" reader: reader
+   [self _assertTermDocsCount: @"deleted termDocs" reader: reader
 	   term: searchTerm expected: 0];
-   [self assertTermDocsCount: @"deleted termDocs" reader: reader
+   [self _assertTermDocsCount: @"deleted termDocs" reader: reader
 	   term: searchTerm2 expected: 100];
    [reader close];
 }
 	
-- (void) testDeleteReaderWriterConflictUnoptimized
+- (void) testDeleteRWConfUnoptimized
 {
-  [self deleteReaderWriterConflict: NO];
+  [self _deleteRWConflict: NO];
 }
     
-- (void) testDeleteReaderWriterConflictOptimized
+- (void) testDeleteRWConfOptimized
 {
-  [self deleteReaderWriterConflict: YES];
+  [self _deleteRWConflict: YES];
 }
 
 #if 0
@@ -448,7 +448,7 @@
     }
 #endif
 
-- (void) deleteReaderReaderConflict: (BOOL) optimize
+- (void) _deleteRRConflict: (BOOL) optimize
 {
   id <LCDirectory> dir = [[LCRAMDirectory alloc] init];
   // Should test on real file system
@@ -467,9 +467,9 @@
   int i;
   for (i = 0; i < 100; i++)
     {
-      [self addDoc: writer value: [searchTerm1 text]];
-      [self addDoc: writer value: [searchTerm2 text]];
-      [self addDoc: writer value: [searchTerm3 text]];
+      [self _addDoc: writer value: [searchTerm1 text]];
+      [self _addDoc: writer value: [searchTerm2 text]];
+      [self _addDoc: writer value: [searchTerm3 text]];
     }
   if(optimize)
     [writer optimize];
@@ -481,22 +481,22 @@
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm1]);
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm2]);
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm3]);
-  [self assertTermDocsCount: @"first opened"
+  [self _assertTermDocsCount: @"first opened"
 	  reader: reader1 term: searchTerm1 expected: 100];
-  [self assertTermDocsCount: @"first opened"
+  [self _assertTermDocsCount: @"first opened"
 	  reader: reader1 term: searchTerm2 expected: 100];
-  [self assertTermDocsCount: @"first opened"
+  [self _assertTermDocsCount: @"first opened"
 	  reader: reader1 term: searchTerm3 expected: 100];
 
   LCIndexReader *reader2 = [LCIndexReader openDirectory: dir];
   UKIntsEqual(100, [reader2 documentFrequency: searchTerm1]);
   UKIntsEqual(100, [reader2 documentFrequency: searchTerm2]);
   UKIntsEqual(100, [reader2 documentFrequency: searchTerm3]);
-  [self assertTermDocsCount: @"first opened"
+  [self _assertTermDocsCount: @"first opened"
 	  reader: reader2 term: searchTerm1 expected: 100];
-  [self assertTermDocsCount: @"first opened"
+  [self _assertTermDocsCount: @"first opened"
 	  reader: reader2 term: searchTerm2 expected: 100];
-  [self assertTermDocsCount: @"first opened"
+  [self _assertTermDocsCount: @"first opened"
 	  reader: reader2 term: searchTerm3 expected: 100];
 
         // DELETE DOCS FROM READER 2 and CLOSE IT
@@ -507,11 +507,11 @@
   UKIntsEqual(100, [reader2 documentFrequency: searchTerm1]);
   UKIntsEqual(100, [reader2 documentFrequency: searchTerm2]);
   UKIntsEqual(100, [reader2 documentFrequency: searchTerm3]);
-  [self assertTermDocsCount: @"after delete 1"
+  [self _assertTermDocsCount: @"after delete 1"
 	  reader: reader2 term: searchTerm1 expected: 0];
-  [self assertTermDocsCount: @"after delete 1"
+  [self _assertTermDocsCount: @"after delete 1"
 	  reader: reader2 term: searchTerm2 expected: 100];
-  [self assertTermDocsCount: @"after delete 1"
+  [self _assertTermDocsCount: @"after delete 1"
 	  reader: reader2 term: searchTerm3 expected: 100];
   [reader2 close];
 
@@ -519,11 +519,11 @@
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm1]);
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm2]);
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm3]);
-  [self assertTermDocsCount: @"after delete 1"
+  [self _assertTermDocsCount: @"after delete 1"
 	  reader: reader1 term: searchTerm1 expected: 100];
-  [self assertTermDocsCount: @"after delete 1"
+  [self _assertTermDocsCount: @"after delete 1"
 	  reader: reader1 term: searchTerm2 expected: 100];
-  [self assertTermDocsCount: @"after delete 1"
+  [self _assertTermDocsCount: @"after delete 1"
 	  reader: reader1 term: searchTerm3 expected: 100];
 
 
@@ -543,22 +543,22 @@
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm1]);
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm2]);
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm3]);
-  [self assertTermDocsCount: @"reopened"
+  [self _assertTermDocsCount: @"reopened"
 	  reader: reader1 term: searchTerm1 expected: 0];
-  [self assertTermDocsCount: @"reopened"
+  [self _assertTermDocsCount: @"reopened"
 	  reader: reader1 term: searchTerm2 expected: 100];
-  [self assertTermDocsCount: @"reopened"
+  [self _assertTermDocsCount: @"reopened"
 	  reader: reader1 term: searchTerm3 expected: 100];
 
   [reader1 deleteTerm: searchTerm2];
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm1]);
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm2]);
   UKIntsEqual(100, [reader1 documentFrequency: searchTerm3]);
-  [self assertTermDocsCount: @"deleted 2"
+  [self _assertTermDocsCount: @"deleted 2"
 	  reader: reader1 term: searchTerm1 expected: 0];
-  [self assertTermDocsCount: @"deleted 2"
+  [self _assertTermDocsCount: @"deleted 2"
 	  reader: reader1 term: searchTerm2 expected: 0];
-  [self assertTermDocsCount: @"deleted 2"
+  [self _assertTermDocsCount: @"deleted 2"
 	  reader: reader1 term: searchTerm3 expected: 100];
   [reader1 close];
 
@@ -567,24 +567,24 @@
   UKIntsEqual(100, [reader2 documentFrequency: searchTerm1]);
   UKIntsEqual(100, [reader2 documentFrequency: searchTerm2]);
   UKIntsEqual(100, [reader2 documentFrequency: searchTerm3]);
-  [self assertTermDocsCount: @"reopened 2"
+  [self _assertTermDocsCount: @"reopened 2"
 	  reader: reader2 term: searchTerm1 expected: 0];
-  [self assertTermDocsCount: @"reopened 2"
+  [self _assertTermDocsCount: @"reopened 2"
 	  reader: reader2 term: searchTerm2 expected: 0];
-  [self assertTermDocsCount: @"reopened 2"
+  [self _assertTermDocsCount: @"reopened 2"
 	  reader: reader2 term: searchTerm3 expected: 100];
   [reader2 close];
   [dir close];
 }
 
-- (void) testDeleteReaderReaderConflictUnoptimized
+- (void) testDeleteRRConfUnoptimized
 {
-  [self deleteReaderReaderConflict: NO];
+  [self _deleteRRConflict: NO];
 }
     
-- (void) testDeleteReaderReaderConflictOptimized
+- (void) testDeleteRRConfOptimized
 {
-  [self deleteReaderReaderConflict: YES];
+  [self _deleteRRConflict: YES];
 }
 
 @end

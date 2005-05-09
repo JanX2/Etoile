@@ -1,3 +1,18 @@
+2005-05-09 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Test units work again.
+	* Current test result: 
+	Result: 28 classes, 68 methods, 351511 tests, 0 failed
+
+2005-05-07 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Fix memory leak (in progress).
+
+2005-05-05 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Fix warning for GCC 4.
+	* Test is broken in GCC 4 due to memory leak.
+
 2005-05-04 Quentin Mathe <qmathe@club-internet.fr>
 
 	* Source/Analysis/LCSimpleAnalyser.m:

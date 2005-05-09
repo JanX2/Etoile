@@ -26,7 +26,7 @@
     storePositionWithTermVector: (BOOL) pos
     storeOffsetWithTermVector: (BOOL) off
 {
-  self = [super init];
+  self = [self init];
   ASSIGN(name, na);
   isIndexed = tk;
   number = nu;

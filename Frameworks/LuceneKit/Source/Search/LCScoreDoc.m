@@ -14,8 +14,9 @@
 - (void) setScore: (float) s { score = s; }
 - (int) document { return doc; }
 
-- (NSComparisonResult) compare: (LCScoreDoc *) other
+- (NSComparisonResult) compare: (id) o
 {
+  LCScoreDoc *other = (LCScoreDoc *) o;
   if ([self score] == [other score])
   {
     if ([self document] < [other document])

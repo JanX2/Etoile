@@ -47,7 +47,7 @@
        indexInput: (LCIndexInput *) b offset: (long long) f
        length: (long long) len
 {
-  self = [super init];
+  self = [self init];
   ASSIGN(reader, cr);
   ASSIGN(base, b);
   fileOffset = f;
@@ -56,10 +56,18 @@
   return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(reader);
+  DESTROY(base);
+  [super dealloc];
+}
+
 - (char) readByte
 {
   NSMutableData *data = [[NSMutableData alloc] init];
   [self readBytes: data offset: 0 length: 1];
+  AUTORELEASE(data);
   return *(char *)[data bytes];
 }
 
@@ -113,6 +121,9 @@
 {
   self = [super init];
   entries = [[NSMutableDictionary alloc] init];
+  directory = nil;
+  fileName = nil;
+  stream = nil;
   return self;
 }
 
@@ -124,39 +135,63 @@
   ASSIGN(fileName, name);
 
   BOOL success = NO;
-  stream = [dir openInput: name];
+  ASSIGN(stream, [dir openInput: name]);
 
   // read the directory and init files
   int count = [stream readVInt];
   LCFileEntry *entry = nil;
   int i;
-  NSString *iden;
+  long prevOffset = 0;
+  NSString *iden, *prevIden = nil;
   for (i=0; i<count; i++) {
     long offset = [stream readLong];
-    NSString *iden = [stream readString];
+    iden = [stream readString];
 
+#if 1
+    if (i > 0)
+      [(LCFileEntry *)[entries objectForKey: prevIden] setLength: offset - prevOffset];
+#else
     if (entry != nil) {
       // set length of the previous entry
       [entry setLength: offset - [entry offset]];
     }
+#endif
 
     entry = [[LCFileEntry alloc] init];
     [entry setOffset: offset];
     [entries setObject: entry forKey: iden];
+    ASSIGN(prevIden, AUTORELEASE([iden copy]));
+    prevOffset = offset;
+    DESTROY(entry);
   }
 
+#if 1
+  if ((count > 0) && (prevIden != nil))
+    [(LCFileEntry *)[entries objectForKey: prevIden] setLength: [stream length] - prevOffset];
+#else
   // set the length of the final entry
   if (entry != nil) {
     [entry setLength: [stream length] - [entry offset]];
   }
+#endif
 
   success = YES;
 
   if (! success && (stream != nil)) {
     [stream close];
+    DESTROY(stream);
   }
   
   return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(entries);
+  DESTROY(directory);
+  DESTROY(fileName);
+  DESTROY(stream);
+  [super dealloc];
 }
 
 - (id <LCDirectory>) directory { return directory; }
@@ -173,14 +208,14 @@
 
   [entries removeAllObjects];
   [stream close];
-  stream = nil;
+  DESTROY(stream);
 }
 
 - (LCIndexInput *) openInput: (NSString *) iden
 {
   if (stream == nil)
   {
-    [stream close];
+    NSLog(@"Stream closed");
     return nil;
   }
 
@@ -190,16 +225,16 @@
 	  NSLog(@"No sub-file with iden %@ found", iden);
 	  return nil;
   }
-    return [[LCCSIndexInput alloc] 
+    return AUTORELEASE([[LCCSIndexInput alloc] 
         initWithCompoundFileReader: self
        indexInput: stream offset: [entry offset]
-       length: [entry length]];
+       length: [entry length]]);
 }
 
     /** Returns an array of strings, one for each file in the directory. */
   - (NSArray *) list
   {
-    [entries allKeys];
+    return [entries allKeys];
   }
 
     /** Returns true iff a file with the given name exists. */
@@ -255,6 +290,7 @@
 - (LCIndexOutput *) createOutput: (NSString *) name
 {
 	NSLog(@"Not support");
+	return nil;
     }
 
     /** Not implemented

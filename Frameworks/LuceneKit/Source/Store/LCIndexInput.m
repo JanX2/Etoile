@@ -125,10 +125,11 @@
       {
         s1 = [s substringToIndex: start];
       }
-    NSRange r = NSMakeRange(start, length);
+//    NSRange r = NSMakeRange(start, length);
     s2 = [NSString stringWithCharacters: buffer length: length];
     [s setString: [NSString stringWithFormat: @"%@%@", s1, s2]];
     free(buffer);
+    buffer = NULL;
 }
 
   /** Closes the stream to futher operations. */
@@ -142,6 +143,7 @@
    */
 - (unsigned long long) filePointer
 {
+  return -1;
 }
 
   /** Sets current position in this file, where the next read will occur.

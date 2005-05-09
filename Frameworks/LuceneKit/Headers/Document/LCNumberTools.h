@@ -20,13 +20,14 @@
  */
 
 #define RADIX 36
+#define STR_SIZE 13
 
 static NSString *NEGATIVE_PREFIX = @"-";
 static NSString *POSITIVE_PREFIX = @"0";
 
 // long in java is 8 bytes, which is long long in C (most unix)
 @interface NSString (LuceneKit_Document_Number)
-+ (id) stringWithLongLong: (long long) l;
++ (NSString *) stringWithLongLong: (long long) l;
 - (long long) longLongValue;
 @end
 

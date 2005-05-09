@@ -5,7 +5,7 @@
 
 - (id) initWithFile: (NSString *) absolutePath
 {
-  self = [super init];
+  self = [self init];
   ASSIGN(path, absolutePath);
 
   // Create a file if it is not exist
@@ -63,7 +63,7 @@
 
 - (unsigned long long) filePointer
 {
-  [handle offsetInFile];
+  return [handle offsetInFile];
 }
 
   /** Random-access methods */
@@ -83,9 +83,9 @@
 
 - (void) dealloc
 {
-  [handle closeFile];
-  RELEASE(handle);
-  RELEASE(path);
+  [self close];
+  DESTROY(handle);
+  DESTROY(path);
   [super dealloc];
 }
 

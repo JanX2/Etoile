@@ -60,7 +60,7 @@
 
 - (unsigned long long) length
 {
-  [data length];
+  return  [data length];
 }
 
 - (void) testReadInt

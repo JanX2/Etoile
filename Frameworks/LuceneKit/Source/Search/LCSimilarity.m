@@ -3,7 +3,7 @@
 #include "Search/LCSearcher.h"
 #include "GNUstep/GNUstep.h"
 
-static float *NORM_TABLE;
+static float *NORM_TABLE = NULL;
 static LCSimilarity *defaultImpl = nil;
 
 @implementation LCSimilarity
@@ -31,7 +31,7 @@ static LCSimilarity *defaultImpl = nil;
       NORM_TABLE = malloc(sizeof(float)*256);
       int i;
       for(i = 0; i < 256; i++)
-        NORM_TABLE[i++] = [LCSimilarity byteToFloat: (char)i];
+        NORM_TABLE[i] = [LCSimilarity byteToFloat: (char)i];
     }
   return self;
 }
@@ -217,6 +217,7 @@ static LCSimilarity *defaultImpl = nil;
    *                                     */
 - (float) sloppyFrequency: (int) distance
 {
+	return -1;
 }
 
   /** Computes a score factor based on a term or phrase's frequency in a
@@ -234,6 +235,7 @@ static LCSimilarity *defaultImpl = nil;
    */
 - (float) termFrequencyWithFloat: (float) freq
 {
+return -1;
 }
 
   /** Computes a score factor for a simple term.

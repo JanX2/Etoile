@@ -234,7 +234,7 @@
 
 - (void) setFormatM1SkipInterval: (int) formatM1
 {
-  formatM1SkipInterval: formatM1;
+  formatM1SkipInterval = formatM1;
 }
 
 - (void) setFieldInfos: (LCFieldInfos *) fi

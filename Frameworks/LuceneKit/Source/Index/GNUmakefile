@@ -36,29 +36,24 @@ LuceneKit_Index_OBJC_FILES = \
 	LCCompoundFileWriter.m \
 	LCMultipleTermPositions.m
 
-ifeq ($(atest), yes)
-LuceneKit_Index_OBJC_FILES += \
-	TestDocHelper.m
-endif
-
 ifeq ($(test), yes)
 LuceneKit_Index_OBJC_FILES += \
 	TestMockIndexInput.m \
 	TestMockIndexOutput.m \
-	TestTermInfos.m \
-	TestSegmentReader.m \
-	TestSegmentMerger.m \
-	TestTermVectorsReader.m \
-	TestTermVectorsWriter.m \
-	TestIndexWriter.m \
-	TestIndexReader.m \
+	TestFieldsReader.m \
 	TestCompoundFile.m \
 	TestFilterIndexReader.m \
+	TestIndexWriter.m \
+	TestTermInfos.m \
+	TestSegmentReader.m \
+	TestTermVectorsReader.m \
+	TestTermVectorsWriter.m \
 	TestSegmentTermDocs.m \
 	TestSegmentTermEnum.m \
 	TestMultiReader.m \
-	TestFieldsReader.m \
-	TestDocHelper.m 
+	TestSegmentMerger.m \
+	TestIndexReader.m \
+	TestDocHelper.m
 endif
 
 LuceneKit_Index_INCLUDE_DIRS += -I../../Headers -I../

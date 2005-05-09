@@ -3,7 +3,7 @@
 
 #include <Foundation/Foundation.h>
 
-static float *NORM_TABLE;
+//static float *NORM_TABLE = NULL;
 
 //@class LCSearcher;
 @class LCTerm;

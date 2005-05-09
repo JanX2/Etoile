@@ -487,8 +487,9 @@
   return [(id <LCTermPositions>)current nextPosition];
 }
 
-- (NSComparisonResult) compare: (LCMultiTermPositions *) other
+- (NSComparisonResult) compare: (id) o
 {
+  LCMultiTermPositions *other = (LCMultiTermPositions *) o;
   if ([self document] < [other document])
     return NSOrderedAscending;
   else if ([self document] == [other document])

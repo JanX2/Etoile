@@ -54,7 +54,7 @@
 - (id) initWithPath: (NSString *) p create: (BOOL) b
 {
   BOOL isDir;
-  self = [super init];
+  self = [self init];
   ASSIGN(manager, [NSFileManager defaultManager]);
   ASSIGN(path, p);
   if (b) 
@@ -62,8 +62,8 @@
       if ([self create] == NO)
 	{	
           NSLog(@"Unable to create directory");
-          RELEASE(manager);
-          RELEASE(path);
+          DESTROY(manager);
+          DESTROY(path);
 	  return nil;
 	}
     }
@@ -73,8 +73,8 @@
   else
     {
       NSLog(@"Not a directory");
-      RELEASE(manager);
-      RELEASE(path);
+      DESTROY(manager);
+      DESTROY(path);
       return nil;
     }
   return self;
@@ -82,8 +82,8 @@
 
 - (void) dealloc
 {
-  RELEASE(manager);
-  RELEASE(path);
+  DESTROY(manager);
+  DESTROY(path);
   [super dealloc];
 }
 

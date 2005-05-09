@@ -65,7 +65,7 @@
 
 - (void) dealloc
 {
-  RELEASE(stopWords);
+  DESTROY(stopWords);
   [super dealloc];
 }
 
@@ -92,7 +92,7 @@
 - (LCToken *) next
 {
   // return the first non-stop word found
-  LCToken *t;
+  LCToken *t = nil;
   while((t = [input next]))
     {
       if (![stopWords containsObject: [t termText]])
