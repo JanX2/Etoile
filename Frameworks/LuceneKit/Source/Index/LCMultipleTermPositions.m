@@ -211,7 +211,7 @@
 /** Not implemented.
 * @throws UnsupportedOperationException
 */
-- (int) readDocuments: (NSMutableArray *) docs  frequency: (NSMutableArray *) freq
+- (int) readDocuments: (NSMutableArray *) docs  frequency: (NSMutableArray *) freq size: (int) size
 {
 	NSLog(@"UnsupportedOperation");
 	return 0;

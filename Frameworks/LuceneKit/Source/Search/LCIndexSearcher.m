@@ -286,8 +286,9 @@
 		collector = [[LCHitCollector3 alloc] initWithReader: reader 
 													 filter: filter hitCollector: results];
 	}
-	
+	NSLog(@"weight %@", weight);
 	LCScorer *scorer = [weight scorer: reader];
+	NSLog(@"scorer %@", scorer);
 	if (scorer == nil) return;
 	[scorer score: collector];
 }

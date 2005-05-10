@@ -130,16 +130,16 @@ static LCSimilarity *defaultImpl = nil;
 	float f = s * m * exp2f(e-150);
 	return f;
 #else
-	// Assume C follows IEEE standard.
+	/* LuceneKit:
+	* Assume C follows IEEE standard.
+	* Assum sizeof(float) == sizeof(int) == 4;
+	*/
 	union
     {
 		float fl;
-		char ch[4];
+		int il;
     } udata;
-	udata.ch[3] = (bits >> 24) & 0xff;
-	udata.ch[2] = (bits >> 16) & 0xff;
-	udata.ch[1] = (bits >> 8) & 0xff;
-	udata.ch[0] = bits & 0xff;
+	udata.il = bits;
 	return udata.fl;
 #endif
 }
@@ -153,18 +153,15 @@ static LCSimilarity *defaultImpl = nil;
 		return 0;
 	
 	//int bits = Float.floatToIntBits(f);           // parse float into parts
-	// FIXME: not sure it works
+	// Assum sizeof(float) == sizeof(int) == 4;
 	// Assume C follows IEEE standard.
 	union
     {
 		float fl;
-		char ch[4];
+		int il;
     } udata;
 	udata.fl = f;
-	int bits = (((int)udata.ch[3] << 24) |
-				((int)udata.ch[2] << 16) |
-				((int)udata.ch[1] << 8) |
-				(int)udata.ch[0]);
+	int bits = udata.il;
 	
 	int mantissa = (bits & 0xffffff) >> 21;
 	int exponent = (((bits >> 24) & 0x7f) - 63) + 15;

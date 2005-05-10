@@ -41,6 +41,11 @@ LuceneKit_Search_OBJC_FILES = \
 	LCTermQuery.m \
 	LCTermScorer.m
 
+ifeq ($(test), yes)
+LuceneKit_Search_OBJC_FILES += \
+	TestSimilarity.m
+endif
+
 LuceneKit_Search_INCLUDE_DIRS += -I../../Headers -I../
 
 -include ../../GNUmakefile.preamble

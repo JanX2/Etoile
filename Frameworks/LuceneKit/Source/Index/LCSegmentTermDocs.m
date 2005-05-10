@@ -111,9 +111,9 @@
 }
 
 /** Optimized implementation. */
-- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs
+- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs size: (int) size
 {
-    int length = [docs count];
+    int length = size;
     int i = 0;
     while (i < length && count < df) {
 		
@@ -127,8 +127,15 @@
 		count++;
 		
 		if (deletedDocs == nil|| ![deletedDocs getBit: doc]) {
-			[docs replaceObjectAtIndex: i withObject: [NSNumber numberWithLong: doc]];
-			[freqs replaceObjectAtIndex: i withObject: [NSNumber numberWithLong: freq]];
+			if (i < [docs count]) {
+				[docs replaceObjectAtIndex: i withObject: [NSNumber numberWithLong: doc]];
+				[freqs replaceObjectAtIndex: i withObject: [NSNumber numberWithLong: freq]];
+			}
+			else
+			{
+				[docs addObject: [NSNumber numberWithLong: doc]];
+				[freqs addObject: [NSNumber numberWithLong: freq]];
+			}
 			++i;
 		}
     }

@@ -43,9 +43,9 @@
 	return [input next];
 }
 
-- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs
+- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs size: (int) size
 {
-	return [input readDocuments: docs frequency: freqs];
+	return [input readDocuments: docs frequency: freqs size: size];
 }
 
 - (BOOL) skipTo: (int) i

@@ -4,6 +4,7 @@
 	* Current test result: 
 	Result: 28 classes, 68 methods, 351511 tests, 0 failed
 	* Re-ident source code.
+	* Source/Search/TestSimilarity.m: Test unit for LCSimilarity.
 
 2005-05-07 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

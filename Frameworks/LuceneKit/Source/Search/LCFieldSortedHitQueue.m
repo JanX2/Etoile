@@ -1,6 +1,7 @@
 #include "Search/LCFieldSortedHitQueue.h"
 #include "Search/LCFieldCacheImpl.h"
 #include "Search/LCScoreDoc.h"
+#include "Search/LCScoreDocComparator.h"
 #include "GNUstep/GNUstep.h"
 
 @implementation LCFieldSortedHitQueue

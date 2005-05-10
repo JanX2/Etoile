@@ -44,7 +44,8 @@ ordered by document number.
 	*
 	* <p>Returns the number of entries read.  Zero is only returned when the
 	* stream has been exhausted.  */
-- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs;
+- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs
+				 size: (int) size;
 
 	/** Skips entries to the first beyond the current whose document number is
 	* greater than or equal to <i>target</i>. <p>Returns true iff there is such

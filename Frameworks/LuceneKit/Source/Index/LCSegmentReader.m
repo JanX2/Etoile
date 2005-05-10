@@ -459,7 +459,7 @@
     LCNorm *norm = (LCNorm *) [norms objectForKey: field];
     if (norm == nil)                             // not an indexed field
 		return nil;
-    if ([norm bytes] == nil) {                     // value not yet read
+    if (([norm bytes] == nil) || ([[norm bytes] length] == 0)) {                     // value not yet read
 		NSMutableData *bytes = [[NSMutableData alloc] init];
 		[self setNorms: field bytes: bytes offset: 0];
 		[norm setBytes: bytes]; // cache it
@@ -494,7 +494,7 @@
     if (norm == nil)
 		return;					  // use zeros in array
 	
-    if ([norm bytes] != nil) {                     // can copy from cache
+    if (([norm bytes] != nil) && ([[norm bytes] length] > 0)) {                     // can copy from cache
 		NSRange r = NSMakeRange(offset, [self maximalDocument]);
 		[bytes replaceBytesInRange: r withBytes: [norm bytes]];
 		return;
@@ -518,7 +518,7 @@
 			// look first if there are separate norms in compound f%ormat
 			fileName = [NSString stringWithFormat: @"%@.s%d", segment, [fi number]];
 			d = [self directory];
-			if([d fileExists: fileName] == NO){
+			if([d fileExists: fileName] == NO) {
 				fileName = [NSString stringWithFormat: @"%@.f%d", segment, [fi number]];
 				d = cfsDir;
 			}

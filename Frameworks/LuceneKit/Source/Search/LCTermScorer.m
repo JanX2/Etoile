@@ -12,6 +12,8 @@ static int SCORE_CACHE_SIZE = 32;
 	docs = [[NSMutableArray alloc] init];
 	freqs = [[NSMutableArray alloc] init];
 	scoreCache = [[NSMutableArray alloc] init];
+	pointer = 0;
+	pointerMax = 0;
 	return self;
 }
 
@@ -52,7 +54,7 @@ static int SCORE_CACHE_SIZE = 32;
 		[hc collect: doc score: score]; // collect score
 		
 		if (++pointer >= pointerMax) {
-			pointerMax = [termDocs readDocuments: docs frequency: freqs];
+			pointerMax = [termDocs readDocuments: docs frequency: freqs size: SCORE_CACHE_SIZE];
 			if (pointerMax != 0) {
 				pointer = 0;
 			} else {
@@ -72,7 +74,7 @@ static int SCORE_CACHE_SIZE = 32;
 {
 	pointer++;
 	if (pointer >= pointerMax) {
-		pointerMax = [termDocs readDocuments: docs frequency: freqs]; // refill buffer
+		pointerMax = [termDocs readDocuments: docs frequency: freqs size: SCORE_CACHE_SIZE]; // refill buffer
 		if (pointerMax != 0) {
 			pointer = 0;
 		} else {
@@ -151,7 +153,7 @@ static int SCORE_CACHE_SIZE = 32;
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"scorer(%@)", weight];
+	return [NSString stringWithFormat: @"LCTermScorer: scorer(%@)", weight];
 }
 
 @end

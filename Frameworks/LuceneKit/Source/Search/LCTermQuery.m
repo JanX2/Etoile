@@ -68,15 +68,15 @@
 {
 	self = [super init];
 	ASSIGN(query, q);
-	ASSIGN(similarity, [query similarity: searcher]);
+	ASSIGN(similarity, [query similarity: s]);
 	idf = [similarity inverseDocumentFrequencyWithTerm: [query term]
-											  searcher: searcher];
+											  searcher: s];
 	return self;
 }
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"weight(%@)", self];
+	return [NSString stringWithFormat: @"weight(0x%x)", self];
 }
 
 - (LCQuery *) query { return query; }

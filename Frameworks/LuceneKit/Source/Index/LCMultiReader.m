@@ -408,7 +408,7 @@
 }
 
 /** Optimized implementation. */
-- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs
+- (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs size: (int) size
 {
     while (YES) {
 		while (current == nil) {
@@ -419,7 +419,7 @@
 				return 0;
 			}
 		}
-		int end = [current readDocuments: docs frequency: freqs];
+		int end = [current readDocuments: docs frequency: freqs size: size];
 		if (end == 0) {          // none left in segment
 			DESTROY(current);
 		} else {            // got some
