@@ -43,6 +43,7 @@ LuceneKit_Search_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \
+	TestSetNorm.m \
 	TestSimilarity.m
 endif
 

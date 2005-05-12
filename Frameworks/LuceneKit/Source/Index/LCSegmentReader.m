@@ -470,6 +470,7 @@
 
 - (void) doSetNorm: (int) doc field: (NSString *) field charValue: (char) value
 {
+	NSLog(@"LCSegmentReader doSetNorm: %d field: %@ charValue: %d", doc, field, value);
 	LCNorm *norm = (LCNorm *) [norms objectForKey: field];
     if (norm == nil)                             // not an indexed field
 		return;
@@ -480,9 +481,11 @@
     norms(field)[doc] = value;                    // set the value
 #else
 	NSMutableData *d = [[NSMutableData alloc] initWithData: [self norms: field]]; 
-	//  NSData *n = [NSData dataWithBytes: &value length: 1];
-	//  NSRange r = NSMakeRange(doc, 1);
-	[self setNorms: field bytes: AUTORELEASE(d) offset: 0];
+	NSData *n = [NSData dataWithBytes: &value length: 1];
+	NSRange r = NSMakeRange(doc, 1);
+	[d replaceBytesInRange: r withBytes: &value length: 1];
+    [norm setBytes: d];
+	DESTROY(d);
 #endif
 }
 
