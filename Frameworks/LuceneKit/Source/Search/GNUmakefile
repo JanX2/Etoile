@@ -46,6 +46,8 @@ LuceneKit_Search_OBJC_FILES += \
 	TestSetNorm.m \
 	TestDocBoost.m \
 	TestBooleanQuery.m \
+	TestEnglish.m \
+	TestTermVectors.m \
 	TestSimilarity.m
 endif
 

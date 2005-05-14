@@ -31,6 +31,9 @@
 - (NSArray *) offsets: (int) index
 {
 	if (offsets == nil) return nil;
+	/* LuceneKit: Not sure */
+	if ([offsets count] == 0) return nil;
+	
 	NSMutableArray *result = [[NSMutableArray alloc] init];
 	if (index >= 0 && index < [offsets count])
     {
@@ -48,6 +51,9 @@
 {
 	if(positions == nil)
 		return nil;
+	
+	/* LuceneKit: not sure */
+	if ([positions count] == 0) return nil;
 	
 	NSMutableArray *result = [[NSMutableArray alloc] init];
 	

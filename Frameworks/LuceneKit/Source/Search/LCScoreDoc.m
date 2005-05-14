@@ -20,11 +20,11 @@
 	if ([self score] == [other score])
 	{
 		if ([self document] < [other document])
-			return NSOrderedAscending;
+			return NSOrderedDescending;
 		else if ([self document] == [other document])
 			return NSOrderedSame;
 		else
-			return NSOrderedDescending;
+			return NSOrderedAscending;
 	}
 	else if ([self score] < [other score])
 	{

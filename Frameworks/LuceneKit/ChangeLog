@@ -1,3 +1,11 @@
+2005-05-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Source/Search/TestTermVectors.m: 
+	* Source/Search/TestEnglish.h:
+	* Source/Search/TestEnglish.m: ported.
+	* Current test result: 
+	  Result: 33 classes, 77 methods, 352023 tests, 0 failed
+
 2005-05-13 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Search/TestBooleanQuery.m: ported.

@@ -236,7 +236,10 @@
 	int i, count = [hq size];
 	for (i = 0; i < count; i++) // put docs in array
 	{
-		[scoreDocs addObject: [hq pop]];
+		if (i == 0)
+			[scoreDocs addObject: [hq pop]];
+		else
+			[scoreDocs insertObject: [hq pop] atIndex: 0];
 	}
 	
 	LCTopDocs *td = [[LCTopDocs alloc] initWithTotalHits: [hc totalHits]
@@ -268,7 +271,10 @@
 	for (i = 0; i < count; i++) // put docs in array
 	{
 		LCFieldDoc *fieldDoc = [hq fillFields: [hq pop]];
-		[scoreDocs addObject: fieldDoc];
+		if (i == 0)
+			[scoreDocs addObject: fieldDoc];
+		else
+			[scoreDocs insertObject: fieldDoc atIndex: 0];
 	}
 	
 	LCTopFieldDocs *td = [[LCTopFieldDocs alloc] initWithTotalHits: [hc totalHits]
@@ -286,9 +292,9 @@
 		collector = [[LCHitCollector3 alloc] initWithReader: reader 
 													 filter: filter hitCollector: results];
 	}
-	NSLog(@"weight %@", weight);
+	//NSLog(@"weight %@", weight);
 	LCScorer *scorer = [weight scorer: reader];
-	NSLog(@"scorer %@", scorer);
+	//NSLog(@"scorer %@", scorer);
 	if (scorer == nil) return;
 	[scorer score: collector];
 }
