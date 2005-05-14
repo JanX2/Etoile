@@ -481,7 +481,6 @@
     norms(field)[doc] = value;                    // set the value
 #else
 	NSMutableData *d = [[NSMutableData alloc] initWithData: [self norms: field]]; 
-	NSData *n = [NSData dataWithBytes: &value length: 1];
 	NSRange r = NSMakeRange(doc, 1);
 	[d replaceBytesInRange: r withBytes: &value length: 1];
     [norm setBytes: d];

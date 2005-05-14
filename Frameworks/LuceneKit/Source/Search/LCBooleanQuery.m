@@ -19,9 +19,15 @@ static int maxClauseCount = 1024;
 @implementation LCBooleanQuery
 + (int) maxClauseCount { return maxClauseCount; }
 + (void) setMaxClauseCount: (int) max { maxClauseCount = max; }
-- (id) initWithCoordination: (BOOL) dc
+- (id) init
 {
 	self = [super init];
+	clauses = [[NSMutableArray alloc] init];
+	return self;
+}
+- (id) initWithCoordination: (BOOL) dc
+{
+	self = [self init];
 	disableCoord = dc;
 	return self;
 }

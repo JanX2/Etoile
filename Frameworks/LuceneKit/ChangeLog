@@ -1,3 +1,8 @@
+2005-05-13 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Source/Search/TestBooleanQuery.m: ported.
+	* Source/Search/TestDocBoost.m: ported.
+
 2005-05-11 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Search/TestSetNorm.m: ported.
