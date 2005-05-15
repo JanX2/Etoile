@@ -13,6 +13,7 @@
 	self = [self initWithSimilarity: nil]; // No similarity used
 	ASSIGN(reqScorer, r);
 	ASSIGN(exclScorer, e);
+	//NSLog(@"LCReqExclScorer required: %@ excluded: %@", reqScorer, exclScorer);
 	firstTime = YES;
 	return self;
 }

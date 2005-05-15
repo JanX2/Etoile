@@ -43,6 +43,8 @@ LuceneKit_Search_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \
+	TestNot.m \
+	TestBooleanScorer.m \
 	TestSetNorm.m \
 	TestDocBoost.m \
 	TestBooleanQuery.m \

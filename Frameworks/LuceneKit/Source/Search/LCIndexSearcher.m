@@ -54,6 +54,7 @@
 
 - (void) collect: (int) doc score: (float) score
 {
+	//NSLog(@"LCHitCollector1 -collect: %d score: %f", doc, score);
 	if (score > 0.0f &&                     // ignore zeroed buckets
 		( bits == nil || [bits getBit: doc])) // skip docs not in bits
 	{
@@ -212,6 +213,7 @@
                 filter: (LCFilter *) filter
 			   maximum: (int) nDocs
 {
+	//NSLog(@"LCIndexSearcher search: %@ filter: %@ maximum: %d", weight, filter, nDocs);
 	if (nDocs <= 0)  // null might be returned from hq.top() below.
 	{
 		NSLog(@"nDocs must be > 0 ");
@@ -219,6 +221,7 @@
 	}
 	
 	LCScorer *scorer = [weight scorer: reader];
+	//NSLog(@"scorer: %@", scorer);
 	if (scorer == nil)
 	{
 		LCTopDocs *doc = [[LCTopDocs alloc] initWithTotalHits: 0

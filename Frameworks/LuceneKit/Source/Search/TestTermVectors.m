@@ -258,45 +258,6 @@
 		UKIntsEqual([freqInt intValue], freq);
 	}
 	[knownSearcher close];
-#if 0
-      Query query = new TermQuery(new Term("field", "chocolate"));
-      Hits hits = knownSearcher.search(query);
-      //doc 3 should be the first hit b/c it is the shortest match
-      assertTrue(hits.length() == 3);
-      float score = hits.score(0);
-      /*System.out.println("Hit 0: " + hits.id(0) + " Score: " + hits.score(0) + " String: " + hits.doc(0).toString());
-      System.out.println("Explain: " + knownSearcher.explain(query, hits.id(0)));
-      System.out.println("Hit 1: " + hits.id(1) + " Score: " + hits.score(1) + " String: " + hits.doc(1).toString());
-      System.out.println("Explain: " + knownSearcher.explain(query, hits.id(1)));
-      System.out.println("Hit 2: " + hits.id(2) + " Score: " + hits.score(2) + " String: " +  hits.doc(2).toString());
-      System.out.println("Explain: " + knownSearcher.explain(query, hits.id(2)));*/
-      assertTrue(hits.id(0) == 2);
-      assertTrue(hits.id(1) == 3);
-      assertTrue(hits.id(2) == 0);
-      TermFreqVector vector = knownSearcher.reader.getTermFreqVector(hits.id(1), "field");
-      assertTrue(vector != null);
-      //System.out.println("Vector: " + vector);
-      String[] terms = vector.getTerms();
-      int [] freqs = vector.getTermFrequencies();
-      assertTrue(terms != null && terms.length == 10);
-      for (int i = 0; i < terms.length; i++) {
-        String term = terms[i];
-        //System.out.println("Term: " + term);
-        int freq = freqs[i];
-        assertTrue(test4.indexOf(term) != -1);
-        Integer freqInt = (Integer)test4Map.get(term);
-        assertTrue(freqInt != null);
-        assertTrue(freqInt.intValue() == freq);        
-      } 
-      knownSearcher.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    }
-
-
-  } 
-#endif
 }
   
 @end

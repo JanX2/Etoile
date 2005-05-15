@@ -1,3 +1,11 @@
+2005-05-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Rewrite GNUmakefile and some headers to make correct installation.
+	* Source/Search/TestNot.m:
+	* Source/Search/TestBooleanScorer.m: ported.
+	* Current test result: 
+	Result: 35 classes, 79 methods, 352025 tests, 0 failed
+
 2005-05-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Search/TestTermVectors.m: 

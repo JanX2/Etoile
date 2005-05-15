@@ -1,0 +1,41 @@
+#ifndef __LuceneKit_Index__
+#define __LuceneKit_Index__
+
+#include <LuceneKit/Index/LCCompoundFileReader.h>
+#include <LuceneKit/Index/LCCompoundFileWriter.h>
+#include <LuceneKit/Index/LCDocumentWriter.h>
+#include <LuceneKit/Index/LCFieldInfo.h>
+#include <LuceneKit/Index/LCFieldInfos.h>
+#include <LuceneKit/Index/LCFieldsReader.h>
+#include <LuceneKit/Index/LCFieldsWriter.h>
+#include <LuceneKit/Index/LCFilterIndexReader.h>
+#include <LuceneKit/Index/LCIndexReader.h>
+#include <LuceneKit/Index/LCIndexWriter.h>
+#include <LuceneKit/Index/LCMultipleTermPositions.h>
+#include <LuceneKit/Index/LCMultiReader.h>
+#include <LuceneKit/Index/LCSegmentInfo.h>
+#include <LuceneKit/Index/LCSegmentInfos.h>
+#include <LuceneKit/Index/LCSegmentMergeInfo.h>
+#include <LuceneKit/Index/LCSegmentMergeQueue.h>
+#include <LuceneKit/Index/LCSegmentMerger.h>
+#include <LuceneKit/Index/LCSegmentReader.h>
+#include <LuceneKit/Index/LCSegmentTermDocs.h>
+#include <LuceneKit/Index/LCSegmentTermEnum.h>
+#include <LuceneKit/Index/LCSegmentTermPositions.h>
+#include <LuceneKit/Index/LCSegmentTermPositionVector.h>
+#include <LuceneKit/Index/LCSegmentTermVector.h>
+#include <LuceneKit/Index/LCTerm.h>
+#include <LuceneKit/Index/LCTermBuffer.h>
+#include <LuceneKit/Index/LCTermDocs.h>
+#include <LuceneKit/Index/LCTermEnum.h>
+#include <LuceneKit/Index/LCTermFreqVector.h>
+#include <LuceneKit/Index/LCTermInfo.h>
+#include <LuceneKit/Index/LCTermInfosReader.h>
+#include <LuceneKit/Index/LCTermInfosWriter.h>
+#include <LuceneKit/Index/LCTermPositions.h>
+#include <LuceneKit/Index/LCTermPositionVector.h>
+#include <LuceneKit/Index/LCTermVectorOffsetInfo.h>
+#include <LuceneKit/Index/LCTermVectorsReader.h>
+#include <LuceneKit/Index/LCTermVectorsWriter.h>
+
+#endif /* __LuceneKit_Index__ */

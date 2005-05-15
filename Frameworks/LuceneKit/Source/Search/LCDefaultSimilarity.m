@@ -35,9 +35,9 @@
 }
 
 /** Implemented as <code>overlap / maxOverlap</code>. */
-- (float) coordination: (int) overlap maxOverLap: (int) maxOverLap
+- (float) coordination: (int) overlap max: (int) maxOverLap
 {
-	return overlap / (float)maxOverLap;
+	return (float)overlap / (float)maxOverLap;
 }
 
 @end

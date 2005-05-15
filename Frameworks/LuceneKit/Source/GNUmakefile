@@ -1,12 +1,8 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-ifeq ($(test), yes)
-BUNDLE_NAME = LuceneKit
-else
-LIBRARY_NAME = LuceneKit
-endif
+SUBPROJECT_NAME = LuceneKit_Source
 
-LuceneKit_SUBPROJECTS = \
+LuceneKit_Source_SUBPROJECTS = \
 	Search \
 	Index \
 	Analysis \
@@ -15,18 +11,7 @@ LuceneKit_SUBPROJECTS = \
 	Util \
 	Java
 
-ifeq ($(FOUNDATION_LIB), apple)
-	LuceneKit_OBJC_LIBS = -framework UnitKit
-else
-	#LuceneKit_OBJC_LIBS = -lUnitKit -lgnustep-base
-LuceneKit_LDFLAGS = -lUnitKit -lgnustep-base
-endif
-
-ifeq ($(test), yes)
-include $(GNUSTEP_MAKEFILES)/bundle.make
-else
-include $(GNUSTEP_MAKEFILES)/library.make
-endif
+include $(GNUSTEP_MAKEFILES)/subproject.make
 
 -include ../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/aggregate.make

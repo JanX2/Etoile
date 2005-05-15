@@ -68,7 +68,7 @@
 - (void) initCountingSumScorer
 {
 	[coordinator initiation];
-	countingSumScorer = [self makeCountingSumScorer];
+	ASSIGN(countingSumScorer, [self makeCountingSumScorer]);
 }
 
 - (LCScorer *) countingDisjunctionSumScorer: (NSArray *) scorers
@@ -93,6 +93,12 @@
 
 - (LCScorer *) makeCountingSumScorer
 {
+#if 0
+	NSLog(@"LCBooleanScorer -makeCountingSumScorer");
+	NSLog(@"requiredScorers %@", requiredScorers);
+	NSLog(@"optionalScorers %@", optionalScorers);
+	NSLog(@"prohibitedScorers %@", prohibitedScorers);
+#endif
 	if ([requiredScorers count] == 0) {
 		if ([optionalScorers count] == 0) { // only prohibited scorers
 			return AUTORELEASE([[LCNonMatchingScorer alloc] init]);
@@ -109,7 +115,7 @@
 	} else if ([requiredScorers count] == 1) { // 1 required
 		LCSingleMatchScorer *ms = [[LCSingleMatchScorer alloc] initWithScorer: [requiredScorers objectAtIndex: 0]
 																  coordinator: coordinator];
-		return [self makeCountingSumScorer2: ms optional: optionalScorers];
+		return [self makeCountingSumScorer2: AUTORELEASE(ms) optional: optionalScorers];
 	} else { // more required scorers
 		LCScorer *s = [self countingConjunctionSumScorer: requiredScorers];
 		return [self makeCountingSumScorer2: s
@@ -120,6 +126,11 @@
 - (LCScorer *) makeCountingSumScorer2: (LCScorer *) requiredCountingSumScorer
 							 optional: (NSArray *) os
 {
+#if 0
+	NSLog(@"LCBooleanScorer -makeCountingSumScorer2");
+	NSLog(@"RequiredCountingSumScorer %@", requiredCountingSumScorer);
+	NSLog(@"optional %@", os);
+#endif
 	if ([os count] == 0) { // no optional
 		if ([prohibitedScorers count] == 0) { // no prohibited
 			return requiredCountingSumScorer;
@@ -160,10 +171,11 @@
 
 - (void) score: (LCHitCollector *) hc
 {
+	//NSLog(@"LCBooleanScorer -score: %@", hc);
 	if (countingSumScorer == nil) {
 		[self initCountingSumScorer];
 	}
-	
+	//NSLog(@"countingSumScorer %@", countingSumScorer);
 	while ([countingSumScorer next]) {
 		[hc collect: [countingSumScorer document] score: [self score]];
 	}
@@ -301,9 +313,11 @@
 {
 	coordFactors = [[NSMutableArray alloc] init];
 	LCSimilarity *sim = [scorer similarity];
+	//NSLog(@"sim %@", sim);
 	int i;
-	for (i = 0; i < maxCoord; i++)
+	for (i = 0; i <= maxCoord; i++)
 	{
+		//NSLog(@"LCCoordinator: i = %d, coord = %f, maxCoord = %d", i, [sim coordination: i max: maxCoord], maxCoord);
 		[coordFactors addObject: [NSNumber numberWithFloat: [sim coordination: i max: maxCoord]]];
 	}
 }
