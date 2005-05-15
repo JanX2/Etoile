@@ -1,3 +1,34 @@
+2005-05-15  Quentin Mathe <qmathe@club-internet.fr>
+    
+    WARNING: many tests fail
+    * Source/GNUmakefile: Updated to support UnitKit in order to produce tests
+    bundle.
+    * Headers/IKApplicationIconProvider.h: Adopted UKTest protocol to support 
+    UnitKit.
+    (-invalidCache): Renamed -invalidateCache.
+    (-invalidCacheAll): Renamed -invalidateCacheAll.
+    * Source/IKApplicationIconProvider.m:
+    Added macros DOCUMENT_PATH_COMPONENT and PLUGIN_PATH_COMPONENT for path 
+    components used in a recurrent way.	Fixed 'invalid' term incorrect use in 
+    method names when 'invalidate' should be used.
+    (-initWithBundlePath:): Raise needed exceptions.
+    (-initWithBundleIdentifier:): Raise needed exception.
+    (-invalidCache): Renamed -invalidateCache.
+    (-invalidCacheAll): Renamed -invalidateCacheAll.
+    (-_cacheIcon:forVariant:): Fixed cached icon file name in order to include an 
+    extension.
+    (-initForTest): Add custom init method for UnitKit tests suite.
+    (-testInit):
+    (-testApplicationIcon):
+    (-test_documentIconForExtension):
+    (-test_compositeIconForVariant):
+    (-test_compositedIconsPath):
+    (-test_cachedIconForVariant):
+    (-test_cacheIconForVariant):
+    (-test_buildDirectoryStructureForCompositedIconsCache):
+    (-test_blankDocumentIcon):
+    (-test_blankPluginIcon): Added unit tests with UnitKit (need to be refined).
+
 2005-05-05  Quentin Mathe <qmathe@club-internet.fr>
     
     * Source/GNUmakefile: Removed unneeded GNUSTEP_MAKEFILES definition which

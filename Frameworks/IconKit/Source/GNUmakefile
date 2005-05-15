@@ -29,12 +29,19 @@ include $(GNUSTEP_MAKEFILES)/common.make
 ADDITIONAL_OBJCFLAGS = -Wno-import
 ADDITIONAL_INCLUDE_DIRS = -I../Headers
 
-GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
-
 #
 # Main application
 #
+
+GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
+
+PACKAGE_NAME = IconKit
+ifeq ($(test), yes)
+BUNDLE_NAME = libIconKit
+ADDITIONAL_LDFLAGS = -lUnitKit -lgnustep-gui -lgnustep-base
+else
 LIBRARY_NAME = libIconKit	
+endif
 VERSION = 0.1
 
 #
@@ -87,6 +94,7 @@ libIconKit_HEADERS = \
 	NSFileManager+IconKit.h \
 	NSString+MD5Hash.h
 
+ifeq ($(test), no)
 libIconKit_HEADER_FILES_INSTALL_DIR = /IconKit
 
 libIconKit_HEADER_FILES = \
@@ -99,9 +107,14 @@ libIconKit_HEADER_FILES = \
 	IKIconProvider.h \
 	IKApplicationIconProvider.h \
 	IKWorkspaceAdditions.h	
+endif
 	
 -include GNUmakefile.preamble
 
+ifeq ($(test), yes)
+include $(GNUSTEP_MAKEFILES)/bundle.make
+else
 include $(GNUSTEP_MAKEFILES)/library.make
+endif
 
 -include GNUmakefile.postamble

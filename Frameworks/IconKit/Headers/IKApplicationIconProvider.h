@@ -27,10 +27,15 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+// FIXME: Must be renamed IKApplication may be and tweaked to fit this new scheme
+
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 
-@interface IKApplicationIconProvider : NSObject
+@protocol UKTest;
+
+
+@interface IKApplicationIconProvider : NSObject <UKTest>
 {
   NSString *_path;
   NSString *_identifier;
@@ -43,8 +48,8 @@
 - (NSImage *) documentIconForExtension: (NSString *)extension;
 - (NSImage *) pluginIcon;
 
-- (void) invalidCache;
-- (void) invalidCacheAll;
+- (void) invalidateCache;
+- (void) invalidateCacheAll;
 - (void) recache;
 
 @end
