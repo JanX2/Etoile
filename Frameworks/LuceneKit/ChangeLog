@@ -3,9 +3,10 @@
 	* Rewrite GNUmakefile and some headers to make correct installation.
 	* Adapt new directory structure.
 	* Source/Search/TestNot.m:
-	* Source/Search/TestBooleanScorer.m: ported.
+	* Source/Search/TestBooleanScorer.m: 
+	* Source/Search/TestBooleanOr.m: ported.
 	* Current test result: 
-	Result: 35 classes, 79 methods, 352025 tests, 0 failed
+	Result: 36 classes, 84 methods, 352033 tests, 0 failed
 
 2005-05-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

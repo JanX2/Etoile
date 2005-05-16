@@ -43,11 +43,12 @@ LuceneKit_Search_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \
-	TestNot.m \
+	TestBooleanOr.m \
 	TestBooleanScorer.m \
+	TestBooleanQuery.m \
+	TestNot.m \
 	TestSetNorm.m \
 	TestDocBoost.m \
-	TestBooleanQuery.m \
 	TestEnglish.m \
 	TestTermVectors.m \
 	TestSimilarity.m

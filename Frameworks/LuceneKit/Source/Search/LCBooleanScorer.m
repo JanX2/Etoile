@@ -144,7 +144,8 @@
 			return AUTORELEASE(res);
 		}
 	} else if ([optionalScorers count] == 1) { // 1 optional
-		LCSingleMatchScorer *sms = [[LCSingleMatchScorer alloc] initWithScorer: [optionalScorers objectAtIndex: 0]];
+		LCSingleMatchScorer *sms = [[LCSingleMatchScorer alloc] initWithScorer: [optionalScorers objectAtIndex: 0]
+																   coordinator: coordinator];
 		return [self makeCountingSumScorer3: requiredCountingSumScorer
 								   optional: sms];
 	} else { // more optional
