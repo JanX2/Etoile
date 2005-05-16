@@ -1,7 +1,7 @@
 #ifndef __LUCENE_STORE_RAM_DIRECTORY__
 #define __LUCENE_STORE_RAM_DIRECTORY__
 
-#include "LCDirectory.h"
+#include <LuceneKit/Store/LCDirectory.h>
 
 @interface LCRAMDirectory: NSObject <LCDirectory>
 {

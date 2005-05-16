@@ -6,9 +6,9 @@ else
 LIBRARY_NAME = LuceneKit
 endif
 
-LuceneKit_SUBPROJECTS = Source
-
 include GNUmakefile.headers
+
+LuceneKit_SUBPROJECTS = Source
 
 ifeq ($(FOUNDATION_LIB), apple)
         LuceneKit_OBJC_LIBS = -framework UnitKit
@@ -22,6 +22,8 @@ include $(GNUSTEP_MAKEFILES)/bundle.make
 else
 include $(GNUSTEP_MAKEFILES)/library.make
 endif
+
+include GNUmakefile.headers_build
 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/aggregate.make

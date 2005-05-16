@@ -1,5 +1,5 @@
-#include "Analysis/LCStopFilter.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Analysis/LCStopFilter.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 * Removes stop words from a token stream.

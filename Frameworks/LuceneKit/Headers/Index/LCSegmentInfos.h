@@ -2,7 +2,7 @@
 #define __LUCENE_INDEX_SEGMENT_INFOS__
 
 #include <Foundation/Foundation.h>
-#include "Index/LCSegmentInfo.h"
+#include <LuceneKit/Index/LCSegmentInfo.h>
 
 @interface LCSegmentInfos: NSObject
 {

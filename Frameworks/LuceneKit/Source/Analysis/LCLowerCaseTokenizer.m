@@ -1,4 +1,4 @@
-#include "Analysis/LCLowerCaseTokenizer.h"
+#include <LuceneKit/Analysis/LCLowerCaseTokenizer.h>
 
 /**
 * LowerCaseTokenizer performs the function of LetterTokenizer

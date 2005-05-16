@@ -2,7 +2,7 @@
 #define __LUCENE_ANALYSIS_TOKEN_FILTER__
 
 #include <Foundation/Foundation.h>
-#include "LCTokenStream.h"
+#include <LuceneKit/Analysis/LCTokenStream.h>
 
 @interface LCTokenFilter: LCTokenStream
 {

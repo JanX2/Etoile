@@ -1,7 +1,7 @@
 #ifndef __LUCENE_DISJUNCTION_SUM_SCORER__
 #define __LUCENE_DISJUNCTION_SUM_SCORER__
 
-#include "Search/LCScorer.h"
+#include <LuceneKit/Search/LCScorer.h>
 
 @class LCScorerQueue;
 

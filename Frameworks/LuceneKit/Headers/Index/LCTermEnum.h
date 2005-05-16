@@ -2,7 +2,7 @@
 #define __LUCENE_INDEX_TERM_ENUM__
 
 #include <Foundation/Foundation.h>
-#include "Index/LCTerm.h"
+#include <LuceneKit/Index/LCTerm.h>
 
 @interface LCTermEnum: NSObject
 {

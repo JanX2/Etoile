@@ -1,8 +1,8 @@
 #ifndef __LUCENE_INDEX_SEGMENT_TERM_POSITION_VECTOR__
 #define __LUCENE_INDEX_SEGMENT_TERM_POSITION_VECTOR__
 
-#include "LCSegmentTermVector.h"
-#include "LCTermPositionVector.h"
+#include <LuceneKit/Index/LCSegmentTermVector.h>
+#include <LuceneKit/Index/LCTermPositionVector.h>
 
 @interface LCSegmentTermPositionVector: LCSegmentTermVector <LCTermPositionVector>
 {

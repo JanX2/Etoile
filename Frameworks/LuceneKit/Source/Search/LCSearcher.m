@@ -1,12 +1,12 @@
-#include "Search/LCSearcher.h"
-#include "Search/LCSimilarity.h"
-#include "Search/LCHits.h"
-#include "Search/LCQuery.h"
-#include "Search/LCSort.h"
-#include "Search/LCFilter.h"
-#include "Search/LCHitCollector.h"
-#include "GNUstep/GNUstep.h"
-#include "Search/LCWeight.h"
+#include <LuceneKit/Search/LCSearcher.h>
+#include <LuceneKit/Search/LCSimilarity.h>
+#include <LuceneKit/Search/LCHits.h>
+#include <LuceneKit/Search/LCQuery.h>
+#include <LuceneKit/Search/LCSort.h>
+#include <LuceneKit/Search/LCFilter.h>
+#include <LuceneKit/Search/LCHitCollector.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
+#include <LuceneKit/Search/LCWeight.h>
 
 /** An abstract base class for search implementations.
 * Implements some common utility methods.

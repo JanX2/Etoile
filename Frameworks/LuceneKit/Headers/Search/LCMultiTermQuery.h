@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_MULTI_TERM_QUERY__
 #define __LUCENE_SEARCH_MULTI_TERM_QUERY__
 
-#include "Search/LCQuery.h"
+#include <LuceneKit/Search/LCQuery.h>
 
 @interface LCMultiTermQuery: LCQuery
 {

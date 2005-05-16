@@ -1,10 +1,10 @@
 #include "TestDocHelper.h"
-#include "Document/LCField.h"
-#include "Document/LCDocument.h"
-#include "Analysis/LCWhitespaceAnalyzer.h"
-#include "Search/LCSimilarity.h"
-#include "Index/LCDocumentWriter.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Document/LCField.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
+#include <LuceneKit/Search/LCSimilarity.h>
+#include <LuceneKit/Index/LCDocumentWriter.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 static NSString *FIELD_1_TEXT;
 static NSString *TEXT_FIELD_1_KEY;

@@ -1,6 +1,6 @@
-#include "Index/LCSegmentMergeQueue.h"
-#include "Index/LCSegmentMergeInfo.h"
-#include "Index/LCTerm.h"
+#include <LuceneKit/Index/LCSegmentMergeQueue.h>
+#include <LuceneKit/Index/LCSegmentMergeInfo.h>
+#include <LuceneKit/Index/LCTerm.h>
 
 @implementation LCSegmentMergeQueue
 

@@ -1,9 +1,9 @@
-#include "Search/LCSortComparator.h"
-#include "Search/LCScoreDocComparator.h"
-#include "Search/LCScoreDoc.h"
-#include "Search/LCSortField.h"
-#include "Search/LCFieldCache.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCSortComparator.h>
+#include <LuceneKit/Search/LCScoreDocComparator.h>
+#include <LuceneKit/Search/LCScoreDoc.h>
+#include <LuceneKit/Search/LCSortField.h>
+#include <LuceneKit/Search/LCFieldCache.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @interface LCCacheScoreDocComparator: NSObject <LCScoreDocComparator>
 {

@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_CACHING_WRAPPER_FILTER__
 #define __LUCENE_SEARCH_CACHING_WRAPPER_FILTER__
 
-#include "Search/LCFilter.h"
+#include <LuceneKit/Search/LCFilter.h>
 
 @interface LCCachingWrapperFilter
 {

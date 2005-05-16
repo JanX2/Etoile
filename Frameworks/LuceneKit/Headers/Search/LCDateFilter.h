@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_DATE_FILTLER__
 #define __LUCENE_SEARCH_DATE_FILTLER__
 
-#include "Search/LCFilter.h"
+#include <LuceneKit/Search/LCFilter.h>
 
 @interface LCDateFilter: LCFilter
 {

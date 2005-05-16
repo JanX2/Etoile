@@ -2,10 +2,10 @@
 #define __LUCENE_INDEX_INDEX_WRITER__
 
 #include <Foundation/Foundation.h>
-#include "Search/LCSimilarity.h"
-#include "Analysis/LCAnalyzer.h"
-#include "Document/LCDocument.h"
-#include "Store/LCDirectory.h"
+#include <LuceneKit/Search/LCSimilarity.h>
+#include <LuceneKit/Analysis/LCAnalyzer.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/Store/LCDirectory.h>
 
 #define WRITE_LOCK_TIMEOUT 1000
 #define COMMIT_LOCK_TIMEOUT 10000

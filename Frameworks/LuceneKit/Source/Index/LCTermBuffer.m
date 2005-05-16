@@ -1,5 +1,5 @@
-#include "Index/LCTermBuffer.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCTermBuffer.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCTermBuffer
 

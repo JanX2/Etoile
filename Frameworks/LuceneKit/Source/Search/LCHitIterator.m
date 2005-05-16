@@ -1,7 +1,7 @@
-#include "Search/LCHitIterator.h"
-#include "Search/LCHits.h"
-#include "Search/LCHit.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCHitIterator.h>
+#include <LuceneKit/Search/LCHits.h>
+#include <LuceneKit/Search/LCHit.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCHitIterator
 

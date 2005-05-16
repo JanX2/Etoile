@@ -2,7 +2,7 @@
 #define __LUCENE_UTIL_BIT_VECTOR__
 
 #include <Foundation/Foundation.h>
-#include "Store/LCDirectory.h"
+#include <LuceneKit/Store/LCDirectory.h>
 
 #ifdef HAVE_UKTEST
 #include <UnitKit/UnitKit.h>

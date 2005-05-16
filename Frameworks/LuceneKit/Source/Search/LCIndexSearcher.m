@@ -1,16 +1,16 @@
-#include "Search/LCIndexSearcher.h"
-#include "Search/LCFieldSortedHitQueue.h"
-#include "Search/LCHitQueue.h"
-#include "Search/LCFilter.h"
-#include "Search/LCScoreDoc.h"
-#include "Search/LCTopFieldDocs.h"
-#include "Search/LCQuery.h"
-#include "Search/LCSort.h"
-#include "Util/LCBitVector.h"
-#include "Index/LCIndexReader.h"
-#include "Index/LCTerm.h"
-#include "Document/LCDocument.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCIndexSearcher.h>
+#include <LuceneKit/Search/LCFieldSortedHitQueue.h>
+#include <LuceneKit/Search/LCHitQueue.h>
+#include <LuceneKit/Search/LCFilter.h>
+#include <LuceneKit/Search/LCScoreDoc.h>
+#include <LuceneKit/Search/LCTopFieldDocs.h>
+#include <LuceneKit/Search/LCQuery.h>
+#include <LuceneKit/Search/LCSort.h>
+#include <LuceneKit/Util/LCBitVector.h>
+#include <LuceneKit/Index/LCIndexReader.h>
+#include <LuceneKit/Index/LCTerm.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /** Implements search over a single IndexReader.
 *

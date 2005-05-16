@@ -53,7 +53,7 @@ LuceneKit_Search_OBJC_FILES += \
 	TestSimilarity.m
 endif
 
-LuceneKit_Search_INCLUDE_DIRS += -I../../Headers -I../
+LuceneKit_Search_INCLUDE_DIRS += -I../..
 
 -include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make

@@ -2,7 +2,7 @@
 #define __LUCENE_DOCUMENT_FIELD__
 
 #include <Foundation/Foundation.h>
-#include "Java/LCReader.h"
+#include <LuceneKit/Java/LCReader.h>
 
 typedef enum _LCStore_Type {
 	LCStore_Compress,

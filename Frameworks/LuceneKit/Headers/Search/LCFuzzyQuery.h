@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_FUZZY_QUERY__
 #define __LUCENE_SEARCH_FUZZY_QUERY__
 
-#include "Search/LCMultiTermQuery.h"
+#include <LuceneKit/Search/LCMultiTermQuery.h>
 
 @interface LCScoreTerm: NSObject
 {

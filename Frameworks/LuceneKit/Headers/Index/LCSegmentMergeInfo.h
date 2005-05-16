@@ -2,9 +2,9 @@
 #define __LUCENE_INDEX_SEGMENT_MERGE_INFO__
 
 #include <Foundation/Foundation.h>
-#include "Index/LCTermPositions.h"
-#include "Util/LCPriorityQueue.h"
-#include "Index/LCIndexReader.h"
+#include <LuceneKit/Index/LCTermPositions.h>
+#include <LuceneKit/Util/LCPriorityQueue.h>
+#include <LuceneKit/Index/LCIndexReader.h>
 
 @interface LCSegmentMergeInfo: NSObject <LCComparable>
 {

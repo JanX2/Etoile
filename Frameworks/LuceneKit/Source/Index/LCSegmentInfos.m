@@ -1,5 +1,5 @@
-#include "Index/LCSegmentInfos.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCSegmentInfos.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /** The file format version, a negative number. */
 /* Works since counter, the old 1st entry, is always >= 0 */

@@ -1,6 +1,6 @@
-#include "Search/LCReqExclScorer.h"
-#include "Search/LCExplanation.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCReqExclScorer.h>
+#include <LuceneKit/Search/LCExplanation.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @interface LCReqExclScorer (LCPrivate)
 - (BOOL) toNonExcluded;

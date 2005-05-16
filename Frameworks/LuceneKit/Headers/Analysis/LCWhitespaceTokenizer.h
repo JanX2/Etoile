@@ -1,7 +1,7 @@
 #ifndef __LUCENE_ANALYSIS_WHITESPACE_TOKENIZER__
 #define __LUCENE_ANALYSIS_WHITESPACE_TOKENIZER__
 
-#include "LCCharTokenizer.h"
+#include <LuceneKit/Analysis/LCCharTokenizer.h>
 
 @interface LCWhitespaceTokenizer: LCCharTokenizer
 

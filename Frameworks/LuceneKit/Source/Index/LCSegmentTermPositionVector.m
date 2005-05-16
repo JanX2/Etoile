@@ -1,5 +1,5 @@
-#include "Index/LCSegmentTermPositionVector.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCSegmentTermPositionVector.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCSegmentTermPositionVector
 - (id) initWithField: (NSString *) f

@@ -7,8 +7,8 @@ LuceneKit_Source_SUBPROJECTS = \
 	Index \
 	Analysis \
 	Document \
-	Store \
 	Util \
+	Store \
 	Java
 
 include $(GNUSTEP_MAKEFILES)/subproject.make

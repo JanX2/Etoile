@@ -1,5 +1,5 @@
-#include "Document/LCDocument.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /** Documents are the unit of indexing and search.
 *

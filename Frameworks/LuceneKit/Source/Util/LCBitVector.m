@@ -1,7 +1,7 @@
-#include "Util/LCBitVector.h"
-#include "Store/LCIndexInput.h"
-#include "Store/LCIndexOutput.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Util/LCBitVector.h>
+#include <LuceneKit/Store/LCIndexInput.h>
+#include <LuceneKit/Store/LCIndexOutput.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCBitVector
 
@@ -140,7 +140,7 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 
 #ifdef HAVE_UKTEST
 
-#include "Store/LCRAMDirectory.h"
+#include <LuceneKit/Store/LCRAMDirectory.h>
 
 @implementation LCBitVector (UKTest_Additions)
 

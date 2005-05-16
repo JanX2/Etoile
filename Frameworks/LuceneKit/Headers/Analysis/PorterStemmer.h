@@ -1,4 +1,4 @@
-// Modified by Yen-Ju Chen <yjchenx@gmail.com>
+// Modified by Yen-Ju Chen <yjchenx @ gmail _DOT_ com>
 /* This is the Porter stemming algorithm, coded up as thread-safe ANSI C
    by the author.
 

@@ -1,12 +1,12 @@
-#include "Store/LCRAMDirectory.h"
-#include "Index/LCFieldInfos.h"
-#include "Index/LCTermVectorsWriter.h"
-#include "Index/LCTermVectorsReader.h"
-#include "Analysis/LCWhitespaceAnalyzer.h"
-#include "Index/LCIndexWriter.h"
-#include "Document/LCField.h"
-#include "Document/LCDocument.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Store/LCRAMDirectory.h>
+#include <LuceneKit/Index/LCFieldInfos.h>
+#include <LuceneKit/Index/LCTermVectorsWriter.h>
+#include <LuceneKit/Index/LCTermVectorsReader.h>
+#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
+#include <LuceneKit/Index/LCIndexWriter.h>
+#include <LuceneKit/Document/LCField.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
 

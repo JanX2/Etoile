@@ -2,10 +2,10 @@
 #define __LUCENE_SEARCH_QUERY__
 
 #include <Foundation/Foundation.h>
-#include "Search/LCWeight.h"
-#include "Search/LCSearcher.h"
-#include "Search/LCSimilarity.h"
-#include "Index/LCIndexReader.h"
+#include <LuceneKit/Search/LCWeight.h>
+#include <LuceneKit/Search/LCSearcher.h>
+#include <LuceneKit/Search/LCSimilarity.h>
+#include <LuceneKit/Index/LCIndexReader.h>
 
 @interface LCQuery: NSObject <NSCopying> // Seriable
 {

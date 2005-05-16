@@ -1,13 +1,13 @@
-#include "Index/LCSegmentReader.h"
-#include "Index/LCSegmentTermPositions.h"
-#include "Document/LCDocument.h"
-#include "Store/LCIndexInput.h"
-#include "Store/LCIndexOutput.h"
-#include "Store/LCDirectory.h"
-#include "Index/LCFieldsReader.h"
-#include "Index/LCTermVectorsReader.h"
-#include "Index/LCTermInfo.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCSegmentReader.h>
+#include <LuceneKit/Index/LCSegmentTermPositions.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/Store/LCIndexInput.h>
+#include <LuceneKit/Store/LCIndexOutput.h>
+#include <LuceneKit/Store/LCDirectory.h>
+#include <LuceneKit/Index/LCFieldsReader.h>
+#include <LuceneKit/Index/LCTermVectorsReader.h>
+#include <LuceneKit/Index/LCTermInfo.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 * FIXME: Describe class <code>SegmentReader</code> here.

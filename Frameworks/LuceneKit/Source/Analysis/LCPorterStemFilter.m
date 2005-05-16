@@ -1,4 +1,4 @@
-#include "Analysis/LCPorterStemFilter.h"
+#include <LuceneKit/Analysis/LCPorterStemFilter.h>
 
 /** Transforms the token stream as per the Porter stemming algorithm.
 Note: the input to the stemming filter must already be in lower case,

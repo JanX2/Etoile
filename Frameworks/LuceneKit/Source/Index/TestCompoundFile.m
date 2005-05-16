@@ -1,10 +1,10 @@
-#include "Store/LCRAMDirectory.h"
-#include "Store/LCIndexInput.h"
-#include "Index/LCCompoundFileWriter.h"
-#include "Index/LCCompoundFileReader.h"
+#include <LuceneKit/Store/LCRAMDirectory.h>
+#include <LuceneKit/Store/LCIndexInput.h>
+#include <LuceneKit/Index/LCCompoundFileWriter.h>
+#include <LuceneKit/Index/LCCompoundFileReader.h>
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
-#include "Store/LCDirectory.h"
+#include <LuceneKit/Store/LCDirectory.h>
 
 @interface TestCompoundFile: NSObject <UKTest>
 {

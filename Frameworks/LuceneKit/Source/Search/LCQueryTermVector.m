@@ -1,7 +1,7 @@
-#include "Search/LCQueryTermVector.h"
-#include "Analysis/LCAnalyzer.h"
-#include "Java/LCStringReader.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCQueryTermVector.h>
+#include <LuceneKit/Analysis/LCAnalyzer.h>
+#include <LuceneKit/Java/LCStringReader.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCQueryTermVector
 - (id) init

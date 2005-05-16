@@ -1,7 +1,7 @@
 #ifndef __LUCENE_STORE_FSINDEX_OUTPUT__
 #define __LUCENE_STORE_FSINDEX_OUTPUT__
 
-#include "LCIndexOutput.h"
+#include <LuceneKit/Store/LCIndexOutput.h>
 
 @interface LCFSIndexOutput: LCIndexOutput
 {

@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_FILTERED_QUERY__
 #define __LUCENE_SEARCH_FILTERED_QUERY__
 
-#include "Search/LCQuery.h"
+#include <LuceneKit/Search/LCQuery.h.
 
 @interface LCFilteredQuery: LCQuery
 {

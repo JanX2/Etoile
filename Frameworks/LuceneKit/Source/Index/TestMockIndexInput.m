@@ -1,5 +1,5 @@
-#include "GNUstep/GNUstep.h"
-#include "Store/LCIndexInput.h"
+#include <LuceneKit/GNUstep/GNUstep.h>
+#include <LuceneKit/Store/LCIndexInput.h>
 #include <UnitKit/UnitKit.h>
 
 @interface TestMockIndexInput: LCIndexInput <UKTest>

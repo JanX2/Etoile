@@ -1,8 +1,8 @@
-#include "Search/LCBooleanQuery.h"
-#include "Search/LCSimilarityDelegator.h"
-#include "Search/LCSearcher.h"
-#include "Search/LCBooleanScorer.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCBooleanQuery.h>
+#include <LuceneKit/Search/LCSimilarityDelegator.h>
+#include <LuceneKit/Search/LCSearcher.h>
+#include <LuceneKit/Search/LCBooleanScorer.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @interface LCBooleanSimilarityDelegator: LCSimilarityDelegator
 @end

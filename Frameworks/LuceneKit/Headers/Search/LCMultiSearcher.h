@@ -1,6 +1,8 @@
 #ifndef __LUCENE_SEARCH_MULTI_SEARCHER__
 #define __LUCENE_SEARCH_MULTI_SEARCHER__
 
+#include <LuceneKit/Search/LCSearcher.h>
+
 @interface LCMultiSearcher: LCSearcher
 {
 	NSArray *searchables;

@@ -24,7 +24,7 @@ LuceneKit_Analysis_OBJC_FILES = \
 LuceneKit_Analysis_C_FILES = \
 	PorterStemmer.c
 
-LuceneKit_Analysis_INCLUDE_DIRS += -I../ -I../../Headers/
+LuceneKit_Analysis_INCLUDE_DIRS += -I../..
 
 -include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make

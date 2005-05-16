@@ -1,5 +1,5 @@
-#include "Index/LCSegmentMergeInfo.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCSegmentMergeInfo.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCSegmentMergeInfo
 - (id) initWithBase: (int) b termEnum: (LCTermEnum *) te

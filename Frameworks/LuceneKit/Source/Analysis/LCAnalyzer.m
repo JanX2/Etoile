@@ -1,6 +1,6 @@
-#include "Analysis/LCAnalyzer.h"
-#include "Java/LCReader.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Analysis/LCAnalyzer.h>
+#include <LuceneKit/Java/LCReader.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCAnalyzer
 /** An Analyzer builds TokenStreams, which analyze text.  It thus represents a
@@ -30,7 +30,8 @@ field name for backward compatibility. */
 #ifdef HAVE_UKTEST
 
 #include <UnitKit/UnitKit.h>
-#include "Java/LCStringReader.h"
+#include <LuceneKit/Java/LCStringReader.h>
+
 @implementation LCAnalyzer (UKTest_Additions)
 - (void) compare: (NSString *) s and: (NSArray *) a 
             with: (LCAnalyzer *) analyzer

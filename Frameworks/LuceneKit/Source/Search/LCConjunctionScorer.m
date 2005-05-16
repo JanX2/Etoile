@@ -1,5 +1,5 @@
-#include "Search/LCConjunctionScorer.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCConjunctionScorer.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @interface LCScorer (LCCompare_Document)
 - (NSComparisonResult) compareDocument: (LCScorer *) other;

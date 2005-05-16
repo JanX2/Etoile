@@ -1,7 +1,7 @@
-#include "Search/LCHit.h"
-#include "Search/LCHits.h"
-#include "Document/LCDocument.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCHit.h>
+#include <LuceneKit/Search/LCHits.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCHit
 

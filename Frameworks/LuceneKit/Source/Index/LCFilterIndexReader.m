@@ -1,6 +1,6 @@
-#include "Index/LCFilterIndexReader.h"
-#include "Document/LCDocument.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCFilterIndexReader.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCFilterTermDocs
 

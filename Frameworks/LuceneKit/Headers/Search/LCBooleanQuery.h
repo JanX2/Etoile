@@ -1,9 +1,9 @@
 #ifndef __LUCENE_SEARCH_BOOLEAN_QUERY__
 #define __LUCENE_SEARCH_BOOLEAN_QUERY__
 
-#include "Search/LCQuery.h"
-#include "Search/LCWeight.h"
-#include "Search/LCBooleanClause.h"
+#include <LuceneKit/Search/LCQuery.h>
+#include <LuceneKit/Search/LCWeight.h>
+#include <LuceneKit/Search/LCBooleanClause.h>
 
 @class LCSimilarity;
 @class LCSearcher;

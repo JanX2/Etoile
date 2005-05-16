@@ -1,7 +1,7 @@
 #ifndef __LUCENE_ANALYSIS_STOP_FILTER__
 #define __LUCENE_ANALYSIS_STOP_FILTER__
 
-#include "LCTokenFilter.h"
+#include <LuceneKit/Analysis/LCTokenFilter.h>
 
 @interface LCStopFilter: LCTokenFilter
 {

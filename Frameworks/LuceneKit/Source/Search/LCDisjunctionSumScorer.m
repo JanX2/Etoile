@@ -1,6 +1,6 @@
-#include "Search/LCDisjunctionSumScorer.h"
-#include "Util/LCPriorityQueue.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCDisjunctionSumScorer.h>
+#include <LuceneKit/Util/LCPriorityQueue.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @interface LCScorerQueue: LCPriorityQueue
 @end

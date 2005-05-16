@@ -2,11 +2,11 @@
 #define __LUCENE_INDEX_DOCUMENT_WRITER__
 
 #include <Foundation/Foundation.h>
-#include "Store/LCDirectory.h"
-#include "Analysis/LCAnalyzer.h"
-#include "Search/LCSimilarity.h"
-#include "Document/LCDocument.h"
-#include "Index/LCIndexWriter.h"
+#include <LuceneKit/Store/LCDirectory.h>
+#include <LuceneKit/Analysis/LCAnalyzer.h>
+#include <LuceneKit/Search/LCSimilarity.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/Index/LCIndexWriter.h>
 
 @class LCTermVectorOffsetInfo;
 @class LCTerm;

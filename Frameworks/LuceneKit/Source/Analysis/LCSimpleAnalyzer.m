@@ -1,6 +1,6 @@
-#include "Analysis/LCSimpleAnalyzer.h"
-#include "Analysis/LCLowerCaseTokenizer.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Analysis/LCSimpleAnalyzer.h>
+#include <LuceneKit/Analysis/LCLowerCaseTokenizer.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCSimpleAnalyzer
 

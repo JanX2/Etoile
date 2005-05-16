@@ -1,5 +1,5 @@
-#include "Util/LCPriorityQueue.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Util/LCPriorityQueue.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @interface LCPriorityQueue (LCPrivate)
 - (void) upHeap;

@@ -1,6 +1,6 @@
-#include "Search/LCTermScorer.h"
-#include "Search/LCTermQuery.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCTermScorer.h>
+#include <LuceneKit/Search/LCTermQuery.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 static int SCORE_CACHE_SIZE = 32;
 

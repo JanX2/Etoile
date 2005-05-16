@@ -2,6 +2,7 @@
 #define __LUCENE_SEARCH_EXPLANATION__
 
 #include <Foundation/Foundation.h> // Serializable
+
 @interface LCExplanation: NSObject
 {
 	float value; // the value of this node

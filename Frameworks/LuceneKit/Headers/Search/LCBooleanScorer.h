@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_BOOLEAN_SCORER2__
 #define __LUCENE_SEARCH_BOOLEAN_SCORER2__
 
-#include "Search/LCScorer.h"
+#include <LuceneKit/Search/LCScorer.h>
 
 /* LuceneKit: This is actuall the BooleanScorer2 in lucene */
 

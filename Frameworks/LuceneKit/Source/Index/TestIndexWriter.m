@@ -1,9 +1,9 @@
-#include "Document/LCDocument.h"
-#include "Document/LCField.h"
-#include "Store/LCRAMDirectory.h"
-#include "Index/LCIndexWriter.h"
-#include "Index/LCIndexReader.h"
-#include "Analysis/LCWhitespaceAnalyzer.h"
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/Document/LCField.h>
+#include <LuceneKit/Store/LCRAMDirectory.h>
+#include <LuceneKit/Index/LCIndexWriter.h>
+#include <LuceneKit/Index/LCIndexReader.h>
+#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
 

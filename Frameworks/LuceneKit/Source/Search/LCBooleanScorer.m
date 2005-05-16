@@ -1,11 +1,11 @@
-#include "Search/LCBooleanScorer.h"
-#include "Search/LCDisjunctionSumScorer.h"
-#include "Search/LCConjunctionScorer.h"
-#include "Search/LCReqExclScorer.h"
-#include "Search/LCReqOptSumScorer.h"
-#include "Search/LCDefaultSimilarity.h"
-#include "Search/LCNonMatchingScorer.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCBooleanScorer.h>
+#include <LuceneKit/Search/LCDisjunctionSumScorer.h>
+#include <LuceneKit/Search/LCConjunctionScorer.h>
+#include <LuceneKit/Search/LCReqExclScorer.h>
+#include <LuceneKit/Search/LCReqOptSumScorer.h>
+#include <LuceneKit/Search/LCDefaultSimilarity.h>
+#include <LuceneKit/Search/LCNonMatchingScorer.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /* LuceneKit: This is actually BooleanScorer2 in lucene */
 @interface LCBooleanDisjunctionSumScorer: LCDisjunctionSumScorer

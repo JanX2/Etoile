@@ -1,8 +1,8 @@
 #ifndef __LUCENE_SEARCH_FIELD_CACHE_IMPL__
 #define __LUCENE_SEARCH_FIELD_CACHE_IMPL__
 
-#include "Search/LCSortField.h"
-#include "Search/LCFieldCache.h"
+#include <LuceneKit/Search/LCSortField.h>
+#include <LuceneKit/Search/LCFieldCache.h>
 
 @interface LCEntry: NSObject
 {

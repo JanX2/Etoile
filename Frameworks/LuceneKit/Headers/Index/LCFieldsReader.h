@@ -2,7 +2,7 @@
 #define __LUCENE_INDEX_FIELDS_READER__
 
 #include <Foundation/Foundation.h>
-#include "Index/LCFieldInfos.h"
+#include <LuceneKit/Index/LCFieldInfos.h>
 
 @class LCIndexInput;
 

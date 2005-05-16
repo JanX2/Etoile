@@ -17,7 +17,7 @@ ifeq ($(test), yes)
 LuceneKit_Store_OBJC_FILES += TestStore.m
 endif
 
-LuceneKit_Store_INCLUDE_DIRS += -I../../Headers -I../
+LuceneKit_Store_INCLUDE_DIRS += -I../..
 
 -include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make

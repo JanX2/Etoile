@@ -1,7 +1,7 @@
 #ifndef __LUCENE_ANALYSIS_WHITESPACE_ANALYZER__
 #define __LUCENE_ANALYSIS_WHITESPACE_ANALYZER__
 
-#include "LCAnalyzer.h"
+#include <LuceneKit/Analysis/LCAnalyzer.h>
 
 /** An Analyzer that uses WhitespaceTokenizer. */
 #ifdef HAVE_UKTEST

@@ -1,9 +1,9 @@
-#include "Index/LCSegmentTermDocs.h"
-#include "Index/LCSegmentTermEnum.h"
-#include "Index/LCTermInfosReader.h"
-#include "Store/LCIndexInput.h"
-#include "Util/LCBitVector.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCSegmentTermDocs.h>
+#include <LuceneKit/Index/LCSegmentTermEnum.h>
+#include <LuceneKit/Index/LCTermInfosReader.h>
+#include <LuceneKit/Store/LCIndexInput.h>
+#include <LuceneKit/Util/LCBitVector.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCSegmentTermDocs
 

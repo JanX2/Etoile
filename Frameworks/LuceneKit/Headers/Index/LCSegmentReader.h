@@ -1,13 +1,13 @@
 #ifndef __LUCENE_INDEX_SEGMENT_READER__
 #define __LUCENE_INDEX_SEGMENT_READER__
 
-#include "Index/LCIndexReader.h"
-#include "Index/LCTermFreqVector.h"
-#include "Index/LCFieldInfos.h"
-#include "Index/LCCompoundFileReader.h"
-#include "Index/LCSegmentInfo.h"
-#include "Index/LCTermInfosReader.h"
-#include "Util/LCBitVector.h"
+#include <LuceneKit/Index/LCIndexReader.h>
+#include <LuceneKit/Index/LCTermFreqVector.h>
+#include <LuceneKit/Index/LCFieldInfos.h>
+#include <LuceneKit/Index/LCCompoundFileReader.h>
+#include <LuceneKit/Index/LCSegmentInfo.h>
+#include <LuceneKit/Index/LCTermInfosReader.h>
+#include <LuceneKit/Util/LCBitVector.h>
 
 @class LCFieldsReader;
 @class LCTermVectorsReader;

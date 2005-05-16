@@ -14,7 +14,7 @@ LuceneKit_Document_OBJC_FILES += \
 endif
 
 
-LuceneKit_Document_INCLUDE_DIRS += -I../ -I../../Headers
+LuceneKit_Document_INCLUDE_DIRS += -I../..
 
 -include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make

@@ -2,9 +2,9 @@
 #define __LUCENE_INDEX_SEGMENT_TERM_DOCS__
 
 #include <Foundation/Foundation.h>
-#include "Index/LCTermDocs.h"
-#include "Index/LCSegmentReader.h"
-#include "Index/LCTermInfo.h"
+#include <LuceneKit/Index/LCTermDocs.h>
+#include <LuceneKit/Index/LCSegmentReader.h>
+#include <LuceneKit/Index/LCTermInfo.h>
 
 @class LCIndexInput;
 @class LCBitVector;

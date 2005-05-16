@@ -1,5 +1,5 @@
-#include "Index/LCFieldInfos.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCFieldInfos.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /** Access to the Field Info file that describes document fields and whether or
 *  not they are indexed. Each segment has a separate Field Info file. Objects
@@ -324,7 +324,7 @@
 #ifdef HAVE_UKTEST
 #include <UnitKit/UnitKit.h>
 #include "TestDocHelper.h"
-#include "Store/LCRAMDirectory.h"
+#include <LuceneKit/Store/LCRAMDirectory.h>
 
 @interface TestFieldInfos: NSObject <UKTest>
 @end

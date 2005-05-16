@@ -7,7 +7,7 @@ LuceneKit_Util_OBJC_FILES = \
 	LCBitVector.m \
 	LCPriorityQueue.m 
 
-LuceneKit_Util_INCLUDE_DIRS += -I../../Headers -I../
+LuceneKit_Util_INCLUDE_DIRS += -I../..
 
 -include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make

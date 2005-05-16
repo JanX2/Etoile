@@ -1,9 +1,9 @@
 #ifndef __LUCENE_SEARCH_TERM_SCORER__
 #define __LUCENE_SEARCH_TERM_SCORER__
 
-#include "Search/LCScorer.h"
-#include "Search/LCWeight.h"
-#include "Index/LCTermDocs.h"
+#include <LuceneKit/Search/LCScorer.h>
+#include <LuceneKit/Search/LCWeight.h>
+#include <LuceneKit/Index/LCTermDocs.h>
 
 // static int SCORE_CACHE_SIZE = 32;
 

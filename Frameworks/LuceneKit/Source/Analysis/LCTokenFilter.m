@@ -1,5 +1,5 @@
-#include "Analysis/LCTokenFilter.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Analysis/LCTokenFilter.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCTokenFilter
 

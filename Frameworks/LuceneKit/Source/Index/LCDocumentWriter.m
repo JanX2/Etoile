@@ -1,14 +1,14 @@
-#include "Index/LCDocumentWriter.h"
-#include "Index/LCTermVectorOffsetInfo.h"
-#include "Index/LCTerm.h"
-#include "Index/LCTermBuffer.h"
-#include "Index/LCTermInfo.h"
-#include "Index/LCTermInfosWriter.h"
-#include "Index/LCTermVectorsWriter.h"
-#include "Index/LCFieldInfos.h"
-#include "Index/LCFieldsWriter.h"
-#include "Java/LCStringReader.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCDocumentWriter.h>
+#include <LuceneKit/Index/LCTermVectorOffsetInfo.h>
+#include <LuceneKit/Index/LCTerm.h>
+#include <LuceneKit/Index/LCTermBuffer.h>
+#include <LuceneKit/Index/LCTermInfo.h>
+#include <LuceneKit/Index/LCTermInfosWriter.h>
+#include <LuceneKit/Index/LCTermVectorsWriter.h>
+#include <LuceneKit/Index/LCFieldInfos.h>
+#include <LuceneKit/Index/LCFieldsWriter.h>
+#include <LuceneKit/Java/LCStringReader.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @interface LCPosting: NSObject // info about a Term in a doc
 {       
@@ -457,10 +457,10 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 #ifdef HAVE_UKTEST
 
 #include <UnitKit/UnitKit.h>
-#include "Store/LCRAMDirectory.h"
-#include "Analysis/LCWhitespaceAnalyzer.h"
-#include "Index/LCSegmentReader.h"
-#include "Index/LCSegmentInfo.h"
+#include <LuceneKit/Store/LCRAMDirectory.h>
+#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
+#include <LuceneKit/Index/LCSegmentReader.h>
+#include <LuceneKit/Index/LCSegmentInfo.h>
 #include "TestDocHelper.h"
 
 @interface TestDocumentWriter: NSObject <UKTest>

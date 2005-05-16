@@ -1,6 +1,6 @@
-#include "Search/LCScoreDocComparator.h"
-#include "Search/LCScoreDoc.h"
-#include "Search/LCSortField.h"
+#include <LuceneKit/Search/LCScoreDocComparator.h>
+#include <LuceneKit/Search/LCScoreDoc.h>
+#include <LuceneKit/Search/LCSortField.h>
 
 /** Special comparator for sorting hits according to computed relevance (document score). */
 @implementation LCRelevanceScoreDocComparator

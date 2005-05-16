@@ -12,7 +12,7 @@ static NSString *TVX_EXTENSION = @"tvx";
 static NSString *TVD_EXTENSION = @"tvd";
 static NSString *TVF_EXTENSION = @"tvf";
 
-#include "Index/LCFieldInfos.h"
+#include <LuceneKit/Index/LCFieldInfos.h>
 
 @class LCIndexOutput;
 @class LCTVField; // private

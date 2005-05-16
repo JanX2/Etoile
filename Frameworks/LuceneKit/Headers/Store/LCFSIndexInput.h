@@ -1,7 +1,7 @@
 #ifndef __LUCENE_STORE_FSINDEX_INPUT__
 #define __LUCENE_STORE_FSINDEX_INPUT__
 
-#include "LCIndexInput.h"
+#include <LuceneKit/Store/LCIndexInput.h>
 
 @interface LCFSIndexInput: LCIndexInput
 {

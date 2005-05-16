@@ -2,7 +2,7 @@
 #define __LUCENE_SEARCH_SCORE_DOC__
 
 #include <Foundation/Foundation.h>
-#include "Util/LCPriorityQueue.h"
+#include <LuceneKit/Util/LCPriorityQueue.h>
 
 @interface LCScoreDoc: NSObject <LCComparable>
 {

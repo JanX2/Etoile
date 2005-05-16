@@ -1,8 +1,8 @@
-#include "Index/LCFieldsReader.h"
-#include "Index/LCFieldsWriter.h"
-#include "Store/LCDirectory.h"
-#include "Store/LCIndexInput.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCFieldsReader.h>
+#include <LuceneKit/Index/LCFieldsWriter.h>
+#include <LuceneKit/Store/LCDirectory.h>
+#include <LuceneKit/Store/LCIndexInput.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 * Class responsible for access to stored document fields.

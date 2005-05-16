@@ -1,5 +1,5 @@
-#include "Search/LCNonMatchingScorer.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCNonMatchingScorer.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCNonMatchingScorer
 - (int) document { NSLog(@"Not supported"); return -1; }

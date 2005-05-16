@@ -2,9 +2,9 @@
 #define __LUCENE_SEARCH_SCORER__
 
 #include <Foundation/Foundation.h>
-#include "Search/LCSimilarity.h"
-#include "Search/LCHitCollector.h"
-#include "Search/LCExplanation.h"
+#include <LuceneKit/Search/LCSimilarity.h>
+#include <LuceneKit/Search/LCHitCollector.h>
+#include <LuceneKit/Search/LCExplanation.h>
 
 @interface LCScorer: NSObject
 {

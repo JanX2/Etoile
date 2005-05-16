@@ -1,5 +1,5 @@
-#include "Analysis/LCWordlistLoader.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Analysis/LCWordlistLoader.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 * Loader for text files that represent a list of stopwords.

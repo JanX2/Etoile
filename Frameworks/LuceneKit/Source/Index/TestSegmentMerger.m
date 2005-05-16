@@ -1,14 +1,14 @@
 #include "TestDocHelper.h"
-#include "Index/LCSegmentReader.h"
-#include "Index/LCSegmentInfo.h"
-#include "Index/LCSegmentMerger.h"
-#include "Index/LCTerm.h"
-#include "Index/LCTermPositionVector.h"
-#include "Document/LCDocument.h"
-#include "Store/LCRAMDirectory.h"
+#include <LuceneKit/Index/LCSegmentReader.h>
+#include <LuceneKit/Index/LCSegmentInfo.h>
+#include <LuceneKit/Index/LCSegmentMerger.h>
+#include <LuceneKit/Index/LCTerm.h>
+#include <LuceneKit/Index/LCTermPositionVector.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/Store/LCRAMDirectory.h>
 #include <UnitKit/UnitKit.h>
 #include <Foundation/Foundation.h>
-#include "Store/LCDirectory.h"
+#include <LuceneKit/Store/LCDirectory.h>
 
 @interface TestSegmentMerger: NSObject <UKTest>
 {

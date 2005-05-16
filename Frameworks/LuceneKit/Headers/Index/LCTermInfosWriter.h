@@ -2,10 +2,10 @@
 #define __LUCENE_INDEX_TERM_INFOS_WRITER__
 
 #include <Foundation/Foundation.h>
-#include "Index/LCFieldInfos.h"
-#include "Store/LCIndexOutput.h"
-#include "Index/LCTerm.h"
-#include "Index/LCTermInfo.h"
+#include <LuceneKit/Index/LCFieldInfos.h>
+#include <LuceneKit/Store/LCIndexOutput.h>
+#include <LuceneKit/Index/LCTerm.h>
+#include <LuceneKit/Index/LCTermInfo.h>
 
 /** The file format version, a negative number. */
 #define LCTermInfos_FORMAT -2

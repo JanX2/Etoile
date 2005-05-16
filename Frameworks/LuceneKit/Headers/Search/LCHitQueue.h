@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SERACH_HIT_QUEUE__
 #define __LUCENE_SERACH_HIT_QUEUE__
 
-#include "Util/LCPriorityQueue.h"
+#include <LuceneKit/Util/LCPriorityQueue.h>
 
 @interface LCHitQueue: LCPriorityQueue
 @end

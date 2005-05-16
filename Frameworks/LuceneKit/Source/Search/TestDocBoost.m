@@ -1,12 +1,12 @@
 #include <UnitKit/UnitKit.h>
 #include <Foundation/Foundation.h>
-#include "Analysis/LCSimpleAnalyzer.h"
-#include "Store/LCRAMDirectory.h"
-#include "Index/LCIndexWriter.h"
-#include "Index/LCTerm.h"
-#include "Document/LCDocument.h"
-#include "Search/LCTermQuery.h"
-#include "Search/LCIndexSearcher.h"
+#include <LuceneKit/Analysis/LCSimpleAnalyzer.h>
+#include <LuceneKit/Store/LCRAMDirectory.h>
+#include <LuceneKit/Index/LCIndexWriter.h>
+#include <LuceneKit/Index/LCTerm.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/Search/LCTermQuery.h>
+#include <LuceneKit/Search/LCIndexSearcher.h>
 
 @interface TestDocBoost: NSObject <UKTest>
 {

@@ -1,5 +1,5 @@
-#include "Document/LCDateTools.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Document/LCDateTools.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 * Provides support for converting dates to strings and vice-versa.

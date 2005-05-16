@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_REQ_EXCL_SCORER__
 #define __LUCENE_SEARCH_REQ_EXCL_SCORER__
 
-#include "Search/LCScorer.h"
+#include <LuceneKit/Search/LCScorer.h>
 
 @interface LCReqExclScorer: LCScorer
 {

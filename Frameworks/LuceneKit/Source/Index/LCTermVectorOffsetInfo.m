@@ -1,4 +1,4 @@
-#include "Index/LCTermVectorOffsetInfo.h"
+#include <LuceneKit/Index/LCTermVectorOffsetInfo.h>
 
 @implementation LCTermVectorOffsetInfo
 

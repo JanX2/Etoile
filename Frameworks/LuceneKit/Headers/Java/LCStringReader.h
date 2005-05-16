@@ -1,7 +1,7 @@
 #ifndef __LUCENE_JAVA_STRING_READER__
 #define __LUCENE_JAVA_STRING_READER__
 
-#include "LCReader.h"
+#include <LuceneKit/Java/LCReader.h>
 
 #ifdef HAVE_UKTEST
 #include <UnitKit/UnitKit.h>

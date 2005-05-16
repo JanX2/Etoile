@@ -1,14 +1,14 @@
 #include "TestDocHelper.h"
-#include "Document/LCDocument.h"
-#include "Store/LCRAMDirectory.h"
-#include "Index/LCSegmentInfos.h"
-#include "Index/LCSegmentInfo.h"
-#include "Index/LCSegmentReader.h"
-#include "Index/LCMultiReader.h"
-#include "Index/LCTermFreqVector.h"
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/Store/LCRAMDirectory.h>
+#include <LuceneKit/Index/LCSegmentInfos.h>
+#include <LuceneKit/Index/LCSegmentInfo.h>
+#include <LuceneKit/Index/LCSegmentReader.h>
+#include <LuceneKit/Index/LCMultiReader.h>
+#include <LuceneKit/Index/LCTermFreqVector.h>
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
-#include "Store/LCDirectory.h"
+#include <LuceneKit/Store/LCDirectory.h>
 
 @interface TestMultiReader: NSObject <UKTest>
 {

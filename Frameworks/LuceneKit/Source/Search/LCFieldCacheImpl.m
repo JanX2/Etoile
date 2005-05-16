@@ -1,5 +1,5 @@
-#include "Search/LCFieldCacheImpl.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCFieldCacheImpl.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 * Expert: The default cache implementation, storing all values in memory.

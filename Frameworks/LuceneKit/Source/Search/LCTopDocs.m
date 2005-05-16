@@ -1,5 +1,5 @@
-#include "Search/LCTopDocs.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCTopDocs.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /** Expert: Returned by low-level search implementations.
 * @see Searcher#search(Query,Filter,int) */

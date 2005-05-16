@@ -2,7 +2,7 @@
 #define __LUCENE_COMPOUND_FILE_WRITER__
 
 #include <Foundation/Foundation.h>
-#include "Store/LCDirectory.h"
+#include <LuceneKit/Store/LCDirectory.h>
 
 @interface LCCompoundFileWriter: NSObject
 {

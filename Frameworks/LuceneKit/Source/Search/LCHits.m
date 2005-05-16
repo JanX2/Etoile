@@ -1,13 +1,13 @@
-#include "Search/LCHits.h"
-#include "Search/LCSearcher.h"
-#include "Search/LCFilter.h"
-#include "Search/LCSort.h"
-#include "Search/LCQuery.h"
-#include "Search/LCTopDocs.h"
-#include "Search/LCScoreDoc.h"
-#include "Search/LCHitIterator.h"
-#include "Document/LCDocument.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCHits.h>
+#include <LuceneKit/Search/LCSearcher.h>
+#include <LuceneKit/Search/LCFilter.h>
+#include <LuceneKit/Search/LCSort.h>
+#include <LuceneKit/Search/LCQuery.h>
+#include <LuceneKit/Search/LCTopDocs.h>
+#include <LuceneKit/Search/LCScoreDoc.h>
+#include <LuceneKit/Search/LCHitIterator.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCHits
 - (id) init

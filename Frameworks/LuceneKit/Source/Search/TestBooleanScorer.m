@@ -1,14 +1,14 @@
 #include <UnitKit/UnitKit.h>
 #include <Foundation/Foundation.h>
-#include "Analysis/LCWhitespaceAnalyzer.h"
-#include "Document/LCDocument.h"
-#include "Index/LCIndexWriter.h"
-#include "Index/LCTerm.h"
-#include "Store/LCRAMDirectory.h"
-#include "Search/LCTermQuery.h"
-#include "Search/LCBooleanQuery.h"
-#include "Search/LCHits.h"
-#include "Search/LCIndexSearcher.h"
+#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/Index/LCIndexWriter.h>
+#include <LuceneKit/Index/LCTerm.h>
+#include <LuceneKit/Store/LCRAMDirectory.h>
+#include <LuceneKit/Search/LCTermQuery.h>
+#include <LuceneKit/Search/LCBooleanQuery.h>
+#include <LuceneKit/Search/LCHits.h>
+#include <LuceneKit/Search/LCIndexSearcher.h>
 
 @interface TestBooleanScorer: NSObject <UKTest>
 @end

@@ -93,5 +93,3 @@ LuceneKit_HEADER_FILES = \
 	Index/LCTermVectorsReader.h \
 	Index/LCTermVectorsWriter.h \
 	GNUstep/GNUstep.h
-
-

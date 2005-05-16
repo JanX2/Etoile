@@ -1,14 +1,14 @@
-#include "Index/LCSegmentInfo.h"
-#include "Document/LCField.h"
-#include "Index/LCTerm.h"
-#include "Index/LCTermEnum.h"
-#include "Index/LCSegmentTermEnum.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCSegmentInfo.h>
+#include <LuceneKit/Document/LCField.h>
+#include <LuceneKit/Index/LCTerm.h>
+#include <LuceneKit/Index/LCTermEnum.h>
+#include <LuceneKit/Index/LCSegmentTermEnum.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
-#include "Index/LCSegmentReader.h"
-#include "Document/LCDocument.h"
-#include "Store/LCRAMDirectory.h"
+#include <LuceneKit/Index/LCSegmentReader.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/Store/LCRAMDirectory.h>
 #include "TestDocHelper.h"
 
 @interface TestSegmentReader: NSObject <UKTest>

@@ -1,4 +1,4 @@
-#include "Search/LCDefaultSimilarity.h"
+#include <LuceneKit/Search/LCDefaultSimilarity.h>
 
 /** Expert: Default scoring implementation. */
 @implementation LCDefaultSimilarity

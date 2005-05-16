@@ -1,6 +1,6 @@
-#include "Search/LCFieldCache.h"
-#include "Search/LCFieldCacheImpl.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCFieldCache.h>
+#include <LuceneKit/Search/LCFieldCacheImpl.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 * Expert: Maintains caches of term values.

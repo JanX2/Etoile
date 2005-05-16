@@ -1,6 +1,6 @@
-#include "Analysis/LCCharTokenizer.h"
-#include "Java/LCReader.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Analysis/LCCharTokenizer.h>
+#include <LuceneKit/Java/LCReader.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /** An abstract base class for simple, character-oriented tokenizers.*/
 @implementation LCCharTokenizer

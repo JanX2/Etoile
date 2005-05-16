@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_FIELD_DOC__
 #define __LUCENE_SEARCH_FIELD_DOC__
 
-#include "Search/LCScoreDoc.h"
+#include <LuceneKit/Search/LCScoreDoc.h>
 
 @interface LCFieldDoc: LCScoreDoc
 {

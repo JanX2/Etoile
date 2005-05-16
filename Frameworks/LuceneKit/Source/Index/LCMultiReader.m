@@ -1,7 +1,7 @@
-#include "Index/LCMultiReader.h"
-#include "Index/LCSegmentMergeQueue.h"
-#include "Index/LCSegmentMergeInfo.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCMultiReader.h>
+#include <LuceneKit/Index/LCSegmentMergeQueue.h>
+#include <LuceneKit/Index/LCSegmentMergeInfo.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /** An IndexReader which reads multiple indexes, appending their content.
 *

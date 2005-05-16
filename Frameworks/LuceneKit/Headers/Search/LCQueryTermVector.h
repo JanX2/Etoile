@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_QUERY_TERM_VECTOR__
 #define __LUCENE_SEARCH_QUERY_TERM_VECTOR__
 
-#include "Index/LCTermFreqVector.h"
+#include <LuceneKit/Index/LCTermFreqVector.h>
 
 @class LCAnalyzer;
 

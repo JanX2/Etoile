@@ -1,5 +1,5 @@
-#include "Search/LCSort.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCSort.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 * Encapsulates sort criteria for returned hits.

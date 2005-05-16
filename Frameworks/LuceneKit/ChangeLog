@@ -1,6 +1,7 @@
 2005-05-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Rewrite GNUmakefile and some headers to make correct installation.
+	* Adapt new directory structure.
 	* Source/Search/TestNot.m:
 	* Source/Search/TestBooleanScorer.m: ported.
 	* Current test result: 

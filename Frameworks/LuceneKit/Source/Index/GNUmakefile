@@ -56,7 +56,7 @@ LuceneKit_Index_OBJC_FILES += \
 	TestDocHelper.m
 endif
 
-LuceneKit_Index_INCLUDE_DIRS += -I../../Headers -I../
+LuceneKit_Index_INCLUDE_DIRS += -I../..
 
 -include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make

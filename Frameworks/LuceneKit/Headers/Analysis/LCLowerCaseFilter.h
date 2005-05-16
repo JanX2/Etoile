@@ -1,7 +1,7 @@
 #ifndef __LUCENE_ANALYSIS_LOWER_CASE_FILTER__
 #define __LUCENE_ANALYSIS_LOWER_CASE_FILTER__
 
-#include "LCTokenFilter.h"
+#include <LuceneKit/Analysis/LCTokenFilter.h>
 
 @interface LCLowerCaseFilter: LCTokenFilter
 @end

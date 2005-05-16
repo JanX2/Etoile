@@ -1,5 +1,5 @@
-#include "Index/LCCompoundFileReader.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCCompoundFileReader.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 * Class for accessing a compound stream.

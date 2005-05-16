@@ -1,11 +1,11 @@
-#include "Index/LCIndexWriter.h"
-#include "Index/LCSegmentInfos.h"
-#include "Index/LCSegmentReader.h"
-#include "Index/LCSegmentMerger.h"
-#include "Index/LCDocumentWriter.h"
-#include "Store/LCRAMDirectory.h"
-#include "Store/LCFSDirectory.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Index/LCIndexWriter.h>
+#include <LuceneKit/Index/LCSegmentInfos.h>
+#include <LuceneKit/Index/LCSegmentReader.h>
+#include <LuceneKit/Index/LCSegmentMerger.h>
+#include <LuceneKit/Index/LCDocumentWriter.h>
+#include <LuceneKit/Store/LCRAMDirectory.h>
+#include <LuceneKit/Store/LCFSDirectory.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 An IndexWriter creates and maintains an index.

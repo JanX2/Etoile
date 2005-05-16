@@ -1,8 +1,8 @@
-#include "Store/LCRAMDirectory.h"
-#include "Store/LCFSDirectory.h"
-#include "Store/LCRAMInputStream.h"
-#include "Store/LCRAMOutputStream.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Store/LCRAMDirectory.h>
+#include <LuceneKit/Store/LCFSDirectory.h>
+#include <LuceneKit/Store/LCRAMInputStream.h>
+#include <LuceneKit/Store/LCRAMOutputStream.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 * A memory-resident {@link Directory} implementation.

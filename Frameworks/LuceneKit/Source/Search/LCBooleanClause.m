@@ -1,6 +1,6 @@
-#include "Search/LCBooleanClause.h"
-#include "Search/LCQuery.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCBooleanClause.h>
+#include <LuceneKit/Search/LCQuery.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCBooleanClause
 - (id) init

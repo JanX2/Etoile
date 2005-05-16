@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCHER_PHRASE_QUERY__
 #define __LUCENE_SEARCHER_PHRASE_QUERY__
 
-#include "Search/LCQuery.h"
+#include <LuceneKit/Search/LCQuery.h>
 
 @interface LCPhraseWeight: LCWeight
 {

@@ -2,9 +2,9 @@
 #define __LUCENE_SEARCH_WEIGHT__
 
 #include <Foundation/Foundation.h>
-#include "Index/LCIndexReader.h"
-#include "Search/LCScorer.h"
-#include "Search/LCExplanation.h"
+#include <LuceneKit/Index/LCIndexReader.h>
+#include <LuceneKit/Search/LCScorer.h>
+#include <LuceneKit/Search/LCExplanation.h>
 
 @class LCQuery;
 

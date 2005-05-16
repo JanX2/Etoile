@@ -1,10 +1,10 @@
-#include "Search/LCTermQuery.h"
-#include "Search/LCTermScorer.h"
-#include "Search/LCSimilarity.h"
-#include "Search/LCSearcher.h"
-#include "Index/LCTerm.h"
-#include "Index/LCTermDocs.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCTermQuery.h>
+#include <LuceneKit/Search/LCTermScorer.h>
+#include <LuceneKit/Search/LCSimilarity.h>
+#include <LuceneKit/Search/LCSearcher.h>
+#include <LuceneKit/Index/LCTerm.h>
+#include <LuceneKit/Index/LCTermDocs.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCTermQuery
 - (id) initWithTerm: (LCTerm *) t

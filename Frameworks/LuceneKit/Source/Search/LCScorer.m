@@ -1,5 +1,5 @@
-#include "Search/LCScorer.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCScorer.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /** Expert: Common scoring functionality for different types of queries.
 * <br>A <code>Scorer</code> either iterates over documents matching a query,

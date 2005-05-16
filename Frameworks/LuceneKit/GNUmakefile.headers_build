@@ -1,0 +1,11 @@
+#Make a temporary directory in order to have library/bundle complied
+
+before-all:: 
+	if [ ! -h "LuceneKit" ]; then \
+	  $(LN_S) Headers LuceneKit; \
+	fi;
+
+after-all::
+	if [ -h "LuceneKit" ]; then \
+	  rm LuceneKit; \
+	fi;

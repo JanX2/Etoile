@@ -1,5 +1,5 @@
-#include "Document/LCField.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Document/LCField.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
 A field is a section of a Document.  Each field has two parts, a name and a

@@ -1,6 +1,6 @@
-#include "Search/LCQuery.h"
-#include "Search/LCBooleanClause.h"
-#include "Search/LCBooleanQuery.h"
+#include <LuceneKit/Search/LCQuery.h>
+#include <LuceneKit/Search/LCBooleanClause.h>
+#include <LuceneKit/Search/LCBooleanQuery.h>
 
 /** The abstract base class for queries.
 <p>Instantiable subclasses are:

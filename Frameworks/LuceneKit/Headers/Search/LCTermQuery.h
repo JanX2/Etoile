@@ -1,8 +1,8 @@
 #ifndef __LUCENE_SEARCH_TERM_QUERY_
 #define __LUCENE_SEARCH_TERM_QUERY_
 
-#include "Search/LCQuery.h"
-#include "Search/LCWeight.h"
+#include <LuceneKit/Search/LCQuery.h>
+#include <LuceneKit/Search/LCWeight.h>
 
 @class LCTerm;
 @class LCTermQuery;

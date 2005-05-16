@@ -2,8 +2,8 @@
 #define __LUCENE_ANALYSIS_ANALYZER__
 
 #include <Foundation/Foundation.h>
-#include "Java/LCReader.h"
-#include "LCTokenStream.h"
+#include <LuceneKit/Java/LCReader.h>
+#include <LuceneKit/Analysis/LCTokenStream.h>
 
 @interface LCAnalyzer: NSObject
 {

@@ -1,5 +1,5 @@
-#include "Store/LCFSIndexInput.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Store/LCFSIndexInput.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCFSIndexInput
 

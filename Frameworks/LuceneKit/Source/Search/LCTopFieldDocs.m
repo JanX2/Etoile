@@ -1,5 +1,5 @@
-#include "Search/LCTopFieldDocs.h"
-#include "GNUstep/GNUstep.h"
+#include <LuceneKit/Search/LCTopFieldDocs.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCTopFieldDocs
 - (id) initWithTotalHits: (int) th

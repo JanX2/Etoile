@@ -2,7 +2,7 @@
 #define __LUCENE_ANALYSIS_TOKENIZER__
 
 #include <Foundation/Foundation.h>
-#include "LCTokenStream.h"
+#include <LuceneKit/Analysis/LCTokenStream.h>
 
 @protocol LCReader;
 
