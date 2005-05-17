@@ -7,6 +7,7 @@ ADDITIONAL_INSTALL_DIRS = \
 	$(GNUSTEP_HEADERS)/LuceneKit/Document \
 	$(GNUSTEP_HEADERS)/LuceneKit/Analysis \
 	$(GNUSTEP_HEADERS)/LuceneKit/Index \
+	$(GNUSTEP_HEADERS)/LuceneKit/Search \
 	$(GNUSTEP_HEADERS)/LuceneKit/GNUstep
 
 LuceneKit_HEADER_FILES_DIR = ./Headers
@@ -92,4 +93,62 @@ LuceneKit_HEADER_FILES = \
 	Index/LCTermVectorOffsetInfo.h \
 	Index/LCTermVectorsReader.h \
 	Index/LCTermVectorsWriter.h \
-	GNUstep/GNUstep.h
+	Search/Search.h \
+	Search/LCBooleanClause.h \
+	Search/LCBooleanQuery.h \
+	Search/LCBooleanScorer.h \
+	Search/LCCachingWrapperFilter.h \
+	Search/LCConjunctionScorer.h \
+	Search/LCDateFilter.h \
+	Search/LCDefaultSimilarity.h \
+	Search/LCDisjunctionSumScorer.h \
+	Search/LCExactPhraseScorer.h \
+	Search/LCExplanation.h \
+	Search/LCFieldCache.h \
+	Search/LCFieldCacheImpl.h \
+	Search/LCFieldDoc.h \
+	Search/LCFieldDocSortedHitQueue.h \
+	Search/LCFieldSortedHitQueue.h \
+	Search/LCFilter.h \
+	Search/LCFilteredQuery.h \
+	Search/LCFilteredTermEnum.h \
+	Search/LCFuzzyQuery.h \
+	Search/LCFuzzyTermEnum.h \
+	Search/LCHit.h \
+	Search/LCHitCollector.h \
+	Search/LCHitIterator.h \
+	Search/LCHitQueue.h \
+	Search/LCHits.h \
+	Search/LCIndexSearcher.h \
+	Search/LCMultiPhraseQuery.h \
+	Search/LCMultiSearcher.h \
+	Search/LCMultiTermQuery.h \
+	Search/LCNonMatchingScorer.h \
+	Search/LCPhrasePositions.h \
+	Search/LCPhrasePrefixQuery.h \
+	Search/LCPhraseQuery.h \
+	Search/LCPhraseQueue.h \
+	Search/LCPhraseScorer.h \
+	Search/LCQuery.h \
+	Search/LCQueryFilter.h \
+	Search/LCQueryTermVector.h \
+	Search/LCRangeFilter.h \
+	Search/LCReqExclScorer.h \
+	Search/LCReqOptSumScorer.h \
+	Search/LCScoreDoc.h \
+	Search/LCScoreDocComparator.h \
+	Search/LCScorer.h \
+	Search/LCSearchable.h \
+	Search/LCSearcher.h \
+	Search/LCSimilarity.h \
+	Search/LCSimilarityDelegator.h \
+	Search/LCSort.h \
+	Search/LCSortComparator.h \
+	Search/LCSortComparatorSource.h \
+	Search/LCSortField.h \
+	Search/LCTermQuery.h \
+	Search/LCTermScorer.h \
+	Search/LCTopDocs.h \
+	Search/LCTopFieldDocs.h \
+	Search/LCWeight.h \
+	GNUstep/GNUstep.h 

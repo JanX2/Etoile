@@ -1,3 +1,13 @@
+2005-05-16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Remove LuceneKit/ after clean.
+	* Source/Search/TestCheckHits.h:
+	* Source/Search/TestCheckHits.m:
+	* Source/Search/TestBoolean2.m: ported.
+	* Install headers of Search
+	* Current test result: 
+	Result: 37 classes, 94 methods, 352065 tests, 0 failed
+
 2005-05-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Rewrite GNUmakefile and some headers to make correct installation.

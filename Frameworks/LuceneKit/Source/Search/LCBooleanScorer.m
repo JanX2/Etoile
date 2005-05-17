@@ -35,7 +35,7 @@
 	optionalScorers = [[NSMutableArray alloc] init];
 	prohibitedScorers = [[NSMutableArray alloc] init];
 	countingSumScorer = nil;
-	similarity = [[LCDefaultSimilarity alloc] init];
+	ASSIGN(similarity, AUTORELEASE([[LCDefaultSimilarity alloc] init]));
 	return self;
 }
 
@@ -80,8 +80,11 @@
 
 - (LCScorer *) countingConjunctionSumScorer: (NSArray *) scorers
 {
-	//  int requiredNrMatchers = [requiredScorers count];
-	LCBooleanConjunctionScorer *cs = [[LCBooleanConjunctionScorer alloc] initWithSimilarity: defaultSimilarity];
+	int requiredNrMatchers = [requiredScorers count];
+	// LuceneKit: Why always use LCDefaultSimilarity ?
+	LCBooleanConjunctionScorer *cs = [[LCBooleanConjunctionScorer alloc] initWithSimilarity: AUTORELEASE([[LCDefaultSimilarity alloc] init])
+																				coordinator: coordinator
+																		 requiredNrMatchers: requiredNrMatchers];
 	NSEnumerator *e = [requiredScorers objectEnumerator];
 	LCScorer *scorer;
 	while ((scorer = [e nextObject]))
@@ -143,14 +146,14 @@
 			RELEASE(dss);
 			return AUTORELEASE(res);
 		}
-	} else if ([optionalScorers count] == 1) { // 1 optional
-		LCSingleMatchScorer *sms = [[LCSingleMatchScorer alloc] initWithScorer: [optionalScorers objectAtIndex: 0]
+	} else if ([os count] == 1) { // 1 optional
+		LCSingleMatchScorer *sms = [[LCSingleMatchScorer alloc] initWithScorer: [os objectAtIndex: 0]
 																   coordinator: coordinator];
 		return [self makeCountingSumScorer3: requiredCountingSumScorer
 								   optional: sms];
 	} else { // more optional
 		return [self makeCountingSumScorer3: requiredCountingSumScorer
-								   optional: [self countingDisjunctionSumScorer: optionalScorers]];
+								   optional: [self countingDisjunctionSumScorer: os]];
 	}
 }
 
@@ -176,7 +179,6 @@
 	if (countingSumScorer == nil) {
 		[self initCountingSumScorer];
 	}
-	//NSLog(@"countingSumScorer %@", countingSumScorer);
 	while ([countingSumScorer next]) {
 		[hc collect: [countingSumScorer document] score: [self score]];
 	}

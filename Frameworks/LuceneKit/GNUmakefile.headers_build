@@ -5,7 +5,7 @@ before-all::
 	  $(LN_S) Headers LuceneKit; \
 	fi;
 
-after-all::
+after-clean::
 	if [ -h "LuceneKit" ]; then \
 	  rm LuceneKit; \
 	fi;

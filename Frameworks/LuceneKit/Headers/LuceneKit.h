@@ -11,5 +11,6 @@
 #include <LuceneKit/Document/Document.h>
 #include <LuceneKit/Analysis/Analysis.h>
 #include <LuceneKit/Index/Index.h>
+#include <LuceneKit/Search/Search.h>
 
 #endif /* __LUCENE_KIT_UMBRELLA_HEADER__ */			   
