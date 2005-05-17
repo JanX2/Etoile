@@ -13,33 +13,95 @@ static Camaelon* theme;
 	return theme;
 }
 
-- (NSString*) themePath { return themePath; }
+- (NSString *) themePath 
+{ 
+	if (themePath == nil)
+	{
+		NSArray* paths = NSSearchPathForDirectoriesInDomains(NSAllLibrariesDirectory, 
+			NSAllDomainsMask & ~NSNetworkDomainMask, YES);   
+		NSString *path;
+		NSEnumerator *e = [paths objectEnumerator];
+		NSFileManager *fm = [NSFileManager defaultManager];
+		BOOL themeFound = NO;
+		
+		while ((path = [e nextObject]) != nil)
+		{
+			BOOL isDir;
+			
+			path = [path stringByAppendingPathComponent: @"Themes"];
+			path = [path stringByAppendingPathComponent: themeName];
+			path = [path stringByAppendingPathExtension: @"theme"];	
+			if ([fm fileExistsAtPath: path isDirectory:	&isDir])
+			{
+				themeFound = YES;
+				break;
+			}
+		}
+		
+		if (themeFound == NO)
+		{
+		   NSLog (@"No theme %@ found in search paths: %@", themeName, paths);
+		   
+		   // FIXME: Implement fall back on NeXT default theme. We probably need to 
+		   // hack a bit with the runtime in order to reactivate overriden methods (by
+		   // Camaelon categories).
+		   
+		   return nil;
+		}
+		
+		ASSIGN (themePath, path);	
+		NSLog (@"Found theme with path: %@", themePath);		
+	}
+	
+	return themePath;
+}
 
-- init
+- (id) init
 {
-    NSLog(@"Camaelon Theme Engine v2.0 10/03/05 - nicolas@roard.com\n");
-
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary* dict = [defaults persistentDomainForName: @"Camaelon"];
+    NSBundle *hostBundle;
+    
+    NSLog(@"Camaelon Theme Engine v2.0 17/03/05 - nicolas@roard.com\n");
+    
     self = [super init];
-
+    
+    /*
+     * Warn Camaelon needs to be disabled with Gorm.
+     * FIXME: Makes Camaelon compatible with Gorm.
+     */
+     
+    hostBundle = [NSBundle mainBundle];
+    if ([[[hostBundle infoDictionary] objectForKey: @"ApplicationName"] 
+    	isEqualToString: @"Gorm"])
+    {    
+        NSLog(@"Camaelon isn't supported with Gorm currently, then theme won't \
+        	be loaded");
+        
+		RELEASE(self);
+        return nil;
+    }
+    
     [CLImage setNSImageClass : [NSImage class]];
     [CLImage poseAsClass: [NSImage class]];
-
-    NSLog (@"Camaelon dictionary: %@",[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"Camaelon"]);
-
-	NSDictionary* dict = [[NSUserDefaults standardUserDefaults] 
-		persistentDomainForName: @"Camaelon"];
-    ASSIGN (themeName, [dict objectForKey: @"Theme"]);
-
-	NSLog (@"themeName: %@", themeName);
-
-    NSString* path = [[NSString stringWithFormat: @"~/GNUstep/Library/Themes/%@.theme/", 
-    			themeName] stringByExpandingTildeInPath];
-	
-	ASSIGN (themePath, path);
-
-	NSLog (@"themePath: %@", themePath);
-
+    
+    NSLog (@"Camaelon dictionary: %@", dict);
+   
+    /* Preventive check: Remove possible incorrect path extension set by user in 
+       NSDefaults. */
+    ASSIGN (themeName, [[dict objectForKey: @"Theme"] stringByDeletingPathExtension]);
+    
+	NSLog (@"Theme named %@ is set in defaults", themeName);
+    
+    themePath = [self themePath];
+    if (themePath == nil)
+    {
+		RELEASE(self);
+		return nil;
+	}
+    	
     theme = self;
+    
     return self;
 }
 
