@@ -51,7 +51,7 @@
 - (id) initWithSearcher: (LCSearcher *) s
 				  query: (LCQuery *) q
 				 filter: (LCFilter *) f
-				   sort: (LCSort *) s;
+				   sort: (LCSort *) o;
 - (void) moreDocuments: (int) min;
 - (unsigned int) count; /* LuceneKit: length() in lucene */
 - (LCDocument *) document: (int) n;
