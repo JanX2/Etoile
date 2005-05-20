@@ -1,11 +1,12 @@
 LuceneKit TODO
 ==============
 
-    * Support compression in LCDocument.
+    * Support compression in LCDocument (zlib).
     * Move private methods into category in class implementation 
     to reduce the headers.
     * Lock and Multithread.
     * Index files compatible with other implementation.
+    * LCSortField_AUTO (regular expression library required).
     * Implement following classes:
         org.apache.lucene.analysis.standard
         org.apache.lucene.queryParser
