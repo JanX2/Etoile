@@ -12,4 +12,5 @@ LuceneKit TODO
         org.apache.lucene.queryParser
 	org.apache.lucene.search.spans
 	org.apache.lucene.search.ParallelMultiSearcher
+	org.apache.lucene.index.ParallelReader
 
