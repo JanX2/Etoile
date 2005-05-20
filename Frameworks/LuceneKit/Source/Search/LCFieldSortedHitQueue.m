@@ -30,7 +30,7 @@
 		   sortFields: (NSArray *) f size: (int) size
 {
 	self = [super initWithSize: size];
-	int n = [fields count];
+	int n = [f count];
 	comparators = [[NSMutableArray alloc] init];
 	fields = [[NSMutableArray alloc] init];
 	int i;
@@ -38,8 +38,10 @@
 	for (i=0; i<n; ++i) {
 		LCSortField *field = [f objectAtIndex: i];
 		NSString *fieldname = [field field];
-		[comparators addObject: [cache cachedComparator: reader field: fieldname type: [field type] factory: [field factory]]];
-		[fields addObject: [[LCSortField alloc] initWithField: fieldname type: [[comparators objectAtIndex: i] sortType] reverse: [field reverse]]];
+		[comparators addObject: [cache cachedComparator: reader field: fieldname 
+												   type: [field type] factory: [field factory]]];
+		[fields addObject: [[LCSortField alloc] initWithField: fieldname 
+														 type: [[comparators objectAtIndex: i] sortType] reverse: [field reverse]]];
 	}
 	maxscore = 1.0f;
 	return self;
@@ -66,9 +68,12 @@
 	int i;
 	NSComparisonResult c = NSOrderedSame;
 	for (i=0; i<n && c == NSOrderedSame; ++i) {
-		c = ([[fields objectAtIndex: i] reverse]) ? 
-	    [[comparators objectAtIndex: i] compare: docB to: docA] :
-	    [[comparators objectAtIndex: i] compare: docA to: docB];
+		id comp = [comparators objectAtIndex: i];
+		BOOL r = [[fields objectAtIndex: i] reverse];
+		
+		c = (r == YES) ? 
+	    [comp compare: docB to: docA] :
+	    [comp compare: docA to: docB];
 	}
 	// avoid random sort order that could lead to duplicates (bug #31241):
 	if (c == NSOrderedSame)
@@ -101,7 +106,23 @@
 	NSMutableArray *f = [[NSMutableArray alloc] init];
 	int i;
 	for (i=0; i<n; ++i)
-		[f addObject: [[comparators objectAtIndex: i] sortValue: doc]];
+	{
+		id o = [[comparators objectAtIndex: i] sortValue: doc];
+		/* LuceneKit: not sure to skip or insert a NSNull */
+#if 1
+		if (o != nil)
+		{
+			[f addObject: [[comparators objectAtIndex: i] sortValue: doc]];
+	
+		}
+#else
+		if (o == nil)
+			[f addObject: [NSNull null]];
+		else
+			[f addObject: [[comparators objectAtIndex: i] sortValue: doc]];
+
+#endif
+	}
 	[doc setFields: f ];
 	if (maxscore > 1.0f) [doc setScore: ([doc score] / maxscore)];   // normalize scores
 	return doc;
@@ -295,8 +316,27 @@ static LCComparatorCache *sharedInstance;
 
 - (NSComparisonResult) compare: (LCScoreDoc *) i to: (LCScoreDoc*) j
 {
-	int fi = [[fieldOrder objectForKey: [NSNumber numberWithInt: [i document]]] intValue];
-	int fj = [[fieldOrder objectForKey: [NSNumber numberWithInt: [j document]]] intValue];
+	id oi = [fieldOrder objectForKey: [NSNumber numberWithInt: [i document]]];
+	id oj = [fieldOrder objectForKey: [NSNumber numberWithInt: [j document]]];
+#if 0
+	/* LuceneKit: in case of NSNull. NSNull has higher priority (weird!) */
+	if ([oi isKindOfClass: [NSNumber class]] == NO)
+	{
+		if ([oj isKindOfClass: [NSNumber class]] == NO)
+			return NSOrderedSame;
+		else
+		{
+			return NSOrderedAscending;
+		}
+	}
+	else
+	{
+		if ([oj isKindOfClass: [NSNumber class]] == NO)
+			return NSOrderedDescending;
+	}
+#endif
+	int fi = [oi intValue];
+	int fj = [oj intValue];
 	if (fi < fj) return NSOrderedAscending;
 	if (fi > fj) return NSOrderedDescending;
 	return NSOrderedSame;
@@ -332,8 +372,26 @@ static LCComparatorCache *sharedInstance;
 
 - (NSComparisonResult) compare: (LCScoreDoc *) i to: (LCScoreDoc*) j
 {
-	float fi = [[fieldOrder objectForKey: [NSNumber numberWithInt: [i document]]] floatValue];
-	float fj = [[fieldOrder objectForKey: [NSNumber numberWithInt: [j document]]] floatValue];
+	id oi = [fieldOrder objectForKey: [NSNumber numberWithInt: [i document]]];
+	id oj = [fieldOrder objectForKey: [NSNumber numberWithInt: [j document]]];
+	/* LuceneKit: in case of NSNull. NSNull has higher priority (weird!) */
+	if ([oi isKindOfClass: [NSNumber class]] == NO)
+	{
+		if ([oj isKindOfClass: [NSNumber class]] == NO)
+			return NSOrderedSame;
+		else
+		{
+			return NSOrderedAscending;
+		}
+	}
+	else
+	{
+		if ([oj isKindOfClass: [NSNumber class]] == NO)
+			return NSOrderedDescending;
+	}
+	
+	float fi = [oi floatValue];
+	float fj = [oj floatValue];
 	if (fi < fj) return NSOrderedAscending;
 	if (fi > fj) return NSOrderedDescending;
 	return NSOrderedSame;

@@ -532,7 +532,13 @@ public static boolean isLocked(String directory) throws IOException {
 		directory.makeLock(IndexWriter.WRITE_LOCK_NAME).release();
 		directory.makeLock(IndexWriter.COMMIT_LOCK_NAME).release();
 #endif
-	}
+}
+	
+- (id) copyWithZone: (NSZone *) zone
+{
+	RETAIN(self);
+	return self;
+}
 	
 	/**
 	* Prints the filename and size of each file within a given compound file.

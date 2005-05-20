@@ -30,7 +30,7 @@ typedef enum _LCFieldOption
 	LCFieldOption_TERMVECTOR_WITH_POSITION_OFFSET
 } LCFieldOption;
 
-@interface LCIndexReader: NSObject
+@interface LCIndexReader: NSObject <NSCopying>
 {
 	id <LCDirectory> directory;
 	BOOL directoryOwner;

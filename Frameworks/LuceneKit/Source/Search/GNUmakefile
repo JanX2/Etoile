@@ -54,6 +54,7 @@ LuceneKit_Search_OBJC_FILES += \
 	TestEnglish.m \
 	TestTermVectors.m \
 	TestQueryTermVector.m \
+	TestSort.m \
 	TestSimilarity.m
 endif
 

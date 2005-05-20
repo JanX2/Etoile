@@ -34,6 +34,10 @@
 - (NSString *) field { return field; }
 - (LCSortFieldType) type { return type; }
 - (id) custom { return custom; }
+- (void) setField: (NSString *) f { ASSIGN(field, f); }
+- (void) setType: (LCSortFieldType) t { type = t; }
+- (void) setCustom: (id) c { ASSIGN(custom, c); }
+
 
 - (BOOL) isEqual: (LCEntry *) other
 {
@@ -57,6 +61,13 @@
 - (unsigned) hash
 {
 	return [field hash] ^ type ^ ((custom == nil) ? 0 : [custom hash]);
+}
+
+- (id) copyWithZone: (NSZone *) zone
+{
+	LCEntry *entry = [[LCEntry allocWithZone: zone] initWithField: AUTORELEASE([[self field] copy]) type: [self type]];
+	[entry setCustom: [self custom]];
+	return entry;
 }
 
 @end
@@ -268,7 +279,9 @@ static int LCFieldCache_STRING_INDEX = -1;
 			// this puts them at the top - if it is changed, FieldDocSortedHitQueue
 			// needs to change as well.
 			/* LuceneKit: insert a non-NSString object */
-			[mterms addObject: AUTORELEASE([[NSObject alloc] init])];
+			//[mterms addObject: AUTORELEASE([[NSObject alloc] init])];
+			[mterms addObject: [NSNull null]];
+
 			
 			if ([termEnum term] == nil) {
 				NSLog(@"No terms in field %@", field);
@@ -297,7 +310,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 				// if there are no terms, make the term array
 				// have a single null entry
 				/* LuceneKit: This is not going to happend */
-				[mterms addObject: [NSString string]];
+				[mterms addObject: [NSNull null]];
 			} else if (t < [reader maximalDocument]+1) {
 				// if there are less terms than documents,
 				// trim off the dead array space

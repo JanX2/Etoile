@@ -28,8 +28,8 @@
 @implementation LCIndexOrderScoreDocComparator
 - (NSComparisonResult) compare: (LCScoreDoc *) i to: (LCScoreDoc *) j
 {
-	if ([i document] > [j document]) return NSOrderedAscending;
-	else if ([i document] < [j document]) return NSOrderedDescending;
+	if ([i document] < [j document]) return NSOrderedAscending;
+	else if ([i document] > [j document]) return NSOrderedDescending;
 	else return NSOrderedSame;
 }
 

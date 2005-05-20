@@ -4,7 +4,7 @@
 #include <LuceneKit/Search/LCSortField.h>
 #include <LuceneKit/Search/LCFieldCache.h>
 
-@interface LCEntry: NSObject
+@interface LCEntry: NSObject <NSCopying>
 {
 	NSString *field;
 	LCSortFieldType type;
@@ -18,6 +18,9 @@
 - (NSString *) field;
 - (LCSortFieldType) type;
 - (id) custom;
+- (void) setField: (NSString *) field;
+- (void) setType: (LCSortFieldType) type;
+- (void) setCustom: (id) custom;
 @end
 
 @interface LCFieldCacheImpl: LCFieldCache
