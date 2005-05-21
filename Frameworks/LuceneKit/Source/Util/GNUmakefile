@@ -4,6 +4,7 @@ SUBPROJECT_NAME = LuceneKit_Util
 
 LuceneKit_Util_OBJC_FILES = \
 	NSString+Additions.m \
+	NSData+Additions.m \
 	LCBitVector.m \
 	LCPriorityQueue.m 
 

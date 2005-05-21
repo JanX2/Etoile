@@ -1,3 +1,9 @@
+2005-05-21 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Headers/Util/NSData+Additions.h
+	* Source/Util/NSData+Additions.m:
+	Use zlib for compression.
+
 2005-05-20 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Move private methods into implementation.

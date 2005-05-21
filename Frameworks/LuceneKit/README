@@ -45,6 +45,11 @@ UnitKit (bundled with Etoile) is required.
 
     * ukrun LuceneKit.bundle
 
+Depedency
+---------
+
+zlib: compression/decompression.
+
 
 Contribute 
 ----------
