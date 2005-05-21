@@ -12,11 +12,6 @@
 }
 
 - (void) addScorer: (LCScorer *) scorer;
-- (LCScorer *) first;
-- (LCScorer *) last;
-- (BOOL) doNext;
-- (void) initWithScorers: (BOOL) initScorers;
-- (void) sortScorers;
 @end
 
 #endif /* __LUCENE_SEARCH_CONJUNCTION_SCORER__ */

@@ -9,17 +9,11 @@ typedef enum _OCCUR_TYPE
 	LCOccur_SHOULD,
 	LCOccur_MUST_NOT
 } LCOccurType;
-/*
- static NSString *OCCUR_MUST = @"MUST";
- static NSString *OCCUR_SHOULD = @"SHOULD";
- static NSString *OCCUR_MUST_NOT = @"MUST_NOT";
- */
 
 @class LCQuery;
 
 @interface LCBooleanClause: NSObject // Serializable
 {
-	//  NSString *occur;
 	LCOccurType occur;
 	LCQuery *query; // remove for lucene 2.0
 	BOOL required;
@@ -38,7 +32,6 @@ typedef enum _OCCUR_TYPE
 - (void) setQuery: (LCQuery *) q;
 - (BOOL) isProhibited;
 - (BOOL) isRequired;
-- (void) setFields: (LCOccurType) o;
 
 @end
 #endif /* __LUCENE_SEARCH_BOOLEAN_CLAUSE__ */

@@ -3,6 +3,10 @@
 #include <LuceneKit/Java/LCStringReader.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
+@interface LCQueryTermVector (LCPrivate)
+- (void) processTerms: (NSArray *) queryTerms;
+@end
+
 @implementation LCQueryTermVector
 - (id) init
 {

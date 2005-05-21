@@ -5,6 +5,10 @@
 @interface LCScorerQueue: LCPriorityQueue
 @end
 
+@interface LCDisjunctionSumScorer (LCPrivate)
+- (void) initScorerQueue;
+@end
+
 @implementation LCDisjunctionSumScorer
 - (id) init
 {

@@ -3,6 +3,10 @@
 #include <LuceneKit/Document/LCDocument.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
+@interface LCHit (LCPrivate)
+- (void) fetchTheHit;
+@end
+
 @implementation LCHit
 
 - (id) init

@@ -8,6 +8,24 @@
 #include <LuceneKit/GNUstep/GNUstep.h>
 
 /* LuceneKit: This is actually BooleanScorer2 in lucene */
+@interface LCCoordinator: NSObject
+{ 
+	int maxCoord;
+	NSMutableArray *coordFactors;
+	
+	int nrMatchers; 
+	LCBooleanScorer *scorer;
+}
+- (id) initWithScorer: (LCBooleanScorer *) scorer;
+- (void) initiation; /* LuceneKit: init in lucene */
+- (void) initiateDocument;
+- (float) coordFactor; 
+- (int) maxCoord;
+- (void) setMaxCoord: (int) maxCoord;
+- (int) nrMatchers;
+- (void) setNrMatchers: (int) matchers;
+@end
+
 @interface LCBooleanDisjunctionSumScorer: LCDisjunctionSumScorer
 {
 	LCCoordinator *coordinator;
@@ -25,6 +43,28 @@
 - (id) initWithSimilarity: (LCSimilarity *) similarity
 			  coordinator: (LCCoordinator *) c
        requiredNrMatchers: (int) required;
+@end
+
+@interface LCSingleMatchScorer: LCScorer
+{
+	LCScorer *scorer;
+	LCCoordinator *coordinator;
+}
+
+- (id) initWithScorer: (LCScorer *) scorer
+		  coordinator: (LCCoordinator *) coordinator;
+@end
+
+@interface LCBooleanScorer (LCPrivate)
+- (void) initCountingSumScorer;
+- (LCScorer *) countingDisjunctionSumScorer: (NSArray *) scorers;
+- (LCScorer *) countingConjunctionSumScorer: (NSArray *) requiredScorers;
+- (LCScorer *) makeCountingSumScorer;
+- (LCScorer *) makeCountingSumScorer2: (LCScorer *) requiredCountingSumScorer
+							 optional: (NSArray *) optionalScorers;
+- (LCScorer *) makeCountingSumScorer3: (LCScorer *) requiredCountingSumScorer
+							 optional: (LCScorer *) optionalCountingSumScorer;
+
 @end
 
 @implementation LCBooleanScorer

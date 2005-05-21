@@ -2,7 +2,21 @@
 #include <LuceneKit/Search/LCSimilarityDelegator.h>
 #include <LuceneKit/Search/LCSearcher.h>
 #include <LuceneKit/Search/LCBooleanScorer.h>
+#include <LuceneKit/Search/LCWeight.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
+
+/* LuceneKit: this is actually BooleanWeight2 in lucene */
+@interface LCBooleanWeight: NSObject <LCWeight>
+{
+	LCSimilarity *similarity;
+	LCBooleanQuery *query;
+	NSMutableArray *weights;
+}
+
+- (id) initWithSearcher: (LCSearcher *) searcher
+                  query: (LCBooleanQuery *) query;
+@end
+
 
 @interface LCBooleanSimilarityDelegator: LCSimilarityDelegator
 @end

@@ -2,6 +2,10 @@
 #include <LuceneKit/GNUstep/GNUstep.h>
 
 /** Expert: Describes the score computation for document and query. */
+@interface LCExplanation (LCPrivate)
+- (NSString *) descriptionWithDepth: (int) depth;
+@end
+
 @implementation LCExplanation
 
 - (id) initWithValue: (float) v representation: (NSString *) d

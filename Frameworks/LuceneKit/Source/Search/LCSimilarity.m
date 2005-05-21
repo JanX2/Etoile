@@ -6,6 +6,11 @@
 static float *NORM_TABLE = NULL;
 static LCSimilarity *defaultImpl = nil;
 
+@interface LCSimilarity (LCPrivate)
++ (float) byteToFloat: (char) b;
++ (char) floatToByte: (float) f;
+@end
+
 @implementation LCSimilarity
 
 + (void) setDefaultSimilarity: (LCSimilarity *) d

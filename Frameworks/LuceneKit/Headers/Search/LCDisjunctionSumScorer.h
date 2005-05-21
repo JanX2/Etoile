@@ -19,7 +19,6 @@
 - (id) initWithSubScorers: (NSArray *) subScorers
 		minimumNrMatchers: (int) minimumNrMatchers;
 - (id) initWithSubScorers: (NSArray *) subScorers;
-- (void) initScorerQueue;
 - (BOOL) advanceAfterCurrent;
 - (int) nrMatchers;
 

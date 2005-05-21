@@ -2,25 +2,11 @@
 #define __LUCENE_SEARCH_BOOLEAN_QUERY__
 
 #include <LuceneKit/Search/LCQuery.h>
-#include <LuceneKit/Search/LCWeight.h>
 #include <LuceneKit/Search/LCBooleanClause.h>
 
 @class LCSimilarity;
 @class LCSearcher;
 @class LCBooleanQuery;
-
-// private
-/* LuceneKit: this is actually BooleanWeight2 in lucene */
-@interface LCBooleanWeight: NSObject <LCWeight>
-{
-	LCSimilarity *similarity;
-	LCBooleanQuery *query;
-	NSMutableArray *weights;
-}
-
-- (id) initWithSearcher: (LCSearcher *) searcher
-                  query: (LCBooleanQuery *) query;
-@end
 
 //static int maxClauseCount = 1024;
 

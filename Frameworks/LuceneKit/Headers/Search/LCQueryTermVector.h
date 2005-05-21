@@ -14,8 +14,6 @@
 - (id) initWithQueryTerms: (NSArray *) queryTerms;
 - (id) initWithString: (NSString *) queryString
 			 analyzer: (LCAnalyzer *) analyzer;
-- (void) processTerms: (NSArray *) queryTerms;
-
 @end
 
 #endif /* __LUCENE_SEARCH_QUERY_TERM_VECTOR__ */

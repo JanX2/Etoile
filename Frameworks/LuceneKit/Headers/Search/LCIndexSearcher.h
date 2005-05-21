@@ -17,7 +17,6 @@
 - (id) initWithPath: (NSString *) path;
 - (id) initWithDirectory: (id <LCDirectory>) directory;
 - (id) initWithReader: (LCIndexReader *) indexReader;
-- (id) initWithReader: (LCIndexReader *) indexReader close: (BOOL) closeReader;
 - (LCIndexReader *) indexReader;
 @end
 

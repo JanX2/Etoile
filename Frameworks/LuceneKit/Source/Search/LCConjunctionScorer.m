@@ -14,6 +14,14 @@
 }
 @end
 
+@interface LCConjunctionScorer (LCPrivate)
+- (LCScorer *) first;
+- (LCScorer *) last;
+- (BOOL) doNext;
+- (void) initWithScorers: (BOOL) initScorers;
+- (void) sortScorers;
+@end
+
 @implementation LCConjunctionScorer
 - (id) initWithSimilarity: (LCSimilarity *) s
 {

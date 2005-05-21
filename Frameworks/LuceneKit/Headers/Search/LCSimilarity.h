@@ -22,8 +22,6 @@
 	/* override by subclass */
 - (float) queryNorm: (float) sumOfSquredWeights;
 + (char) encodeNorm: (float) f;
-+ (float) byteToFloat: (char) b;
-+ (char) floatToByte: (float) f;
 - (float) termFrequencyWithInt: (int) freq;
 - (float) sloppyFrequency: (int) distance;
 - (float) termFrequencyWithFloat: (float) freq;

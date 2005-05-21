@@ -6,6 +6,21 @@
 #include <LuceneKit/Index/LCTermDocs.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
+@interface LCTermWeight: NSObject <LCWeight>
+{
+	LCSimilarity *similarity;
+	//LCSearcher *searcher;
+	LCTermQuery *query;
+	float value;
+	float idf;
+	float queryNorm;
+	float queryWeight;
+}
+- (id) initWithTermQuery: (LCTermQuery *) query
+				searcher: (LCSearcher *) searcher;
+@end
+
+
 @implementation LCTermQuery
 - (id) initWithTerm: (LCTerm *) t
 {

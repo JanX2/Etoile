@@ -2,6 +2,10 @@
 #include <LuceneKit/Search/LCQuery.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
+@interface LCBooleanClause (LCPrivate)
+- (void) setFields: (LCOccurType) o;
+@end
+
 @implementation LCBooleanClause
 - (id) init
 {

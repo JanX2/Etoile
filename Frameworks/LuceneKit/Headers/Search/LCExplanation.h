@@ -18,7 +18,6 @@
 - (void) setRepresentation: (NSString *) d;
 - (NSArray *) details;
 - (void) addDetail: (LCExplanation *) details;
-- (NSString *) descriptionWithDepth: (int) depth;
 - (NSString *) descriptionWithHTML;
 @end
 #endif /* __LUCENE_SEARCH_EXPLANATION__ */

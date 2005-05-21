@@ -145,6 +145,10 @@
 }
 @end
 
+@interface LCIndexSearcher (LCPrivate)
+- (id) initWithReader: (LCIndexReader *) indexReader close: (BOOL) closeReader;
+@end
+
 @implementation LCIndexSearcher
 
 /** Creates a searcher searching the index in the named directory. */

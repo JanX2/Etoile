@@ -20,7 +20,6 @@
 - (LCDocument *) document;
 - (float) score;
 - (int) identifier;
-- (void) fetchTheHit;
 - (float) boost;
 - (NSString *) stringValue: (NSString *) name;
 
