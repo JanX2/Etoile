@@ -1,3 +1,8 @@
+2005-05-21  Quentin Mathe <qmathe@club-internet.fr>
+	
+	Warning! pmkfile not usable (unlike GNUmakefile now).
+	* GNUmakefile: Updated to take in account developer examples.
+
 2005-03-20  Quentin Mathe <qmathe@club-internet.fr>
 	
 	Warning! pmkfile not usable (unlike GNUmakefile now).
