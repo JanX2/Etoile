@@ -2,7 +2,7 @@
 #include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCSegmentMergeInfo
-- (id) initWithBase: (int) b termEnum: (LCTermEnum *) te
+- (id) initWithBase: (int) b termEnumerator: (LCTermEnumerator *) te
 			 reader: (LCIndexReader *) r
 {
 	self = [super init];
@@ -46,7 +46,7 @@
 }
 
 - (LCTerm *) term { return term; }
-- (LCTermEnum *) termEnum { return termEnum; }
+- (LCTermEnumerator *) termEnumerator { return termEnum; }
 - (int) base { return base; }
 - (NSArray *) docMap { return docMap; }
 - (id <LCTermPositions>) postings { return postings; }

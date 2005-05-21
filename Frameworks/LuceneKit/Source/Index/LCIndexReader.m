@@ -295,13 +295,13 @@ rely on a given document having the same number between sessions.
 The enumeration is ordered by Term.compareTo().  Each term
 is greater than all that precede it in the enumeration.
 */
-- (LCTermEnum *) terms { return nil; };
+- (LCTermEnumerator *) terms { return nil; };
 
 	/** Returns an enumeration of all terms after a given term.
 	The enumeration is ordered by Term.compareTo().  Each term
 	is greater than all that precede it in the enumeration.
 	*/
-- (LCTermEnum *) termsWithTerm: (LCTerm *) t { return nil; }
+- (LCTermEnumerator *) termsWithTerm: (LCTerm *) t { return nil; }
 
 	/** Returns the number of documents containing the term <code>t</code>. */
 - (long) documentFrequency: (LCTerm *) t { return 0; }

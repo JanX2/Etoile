@@ -3,16 +3,16 @@
 
 #include <LuceneKit/Index/LCTermEnum.h>
 
-@interface LCFilteredTermEnum: LCTermEnum
+@interface LCFilteredTermEnumerator: LCTermEnumerator
 {
 	LCTerm *currentTerm;
-	LCTermEnum *actualEnum;
+	LCTermEnumerator *actualEnum;
 }
 
 - (BOOL) termCompare: (LCTerm *) term;
 - (float) difference;
-- (BOOL) endEnum;
-- (void) setEnum: (LCTermEnum *) actualEnum;
+- (BOOL) endEnumerator;
+- (void) setEnumerator: (LCTermEnumerator *) actualEnum;
 - (int) documentFrequency;
 - (BOOL) next;
 - (LCTerm *) term;

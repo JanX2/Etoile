@@ -4,7 +4,7 @@
 #include <Foundation/Foundation.h>
 #include <LuceneKit/Index/LCTerm.h>
 
-@interface LCTermEnum: NSObject
+@interface LCTermEnumerator: NSObject
 {
 }
 

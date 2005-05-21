@@ -23,7 +23,7 @@ ordered by document number.
 	/** Sets this to the data for the current term in a {@link TermEnum}.
 	* This may be optimized in some implementations.
 	*/
-- (void) seekTermEnum: (LCTermEnum *) termEnum;
+- (void) seekTermEnumerator: (LCTermEnumerator *) termEnum;
 
 	/** Returns the current document number.  <p> This is invalid until {@link
 #next()} is called for the first time.*/

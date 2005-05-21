@@ -27,7 +27,7 @@
 - (void) verifyDocFreq: (id <LCDirectory>) dir count: (int) total
 {
 	LCIndexReader *reader = [LCIndexReader openDirectory: dir];
-	LCTermEnum *termEnum = nil;
+	LCTermEnumerator *termEnum = nil;
 	
 	// create enumeration of all terms
 	termEnum = [reader terms];

@@ -2,7 +2,7 @@
 #include <LuceneKit/Index/LCTermInfosWriter.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
-@implementation LCSegmentTermEnum
+@implementation LCSegmentTermEnumerator
 
 - (id) init
 {
@@ -274,7 +274,7 @@ Initially invalid, valid after next() called for the first time.*/
 
 - (id) copyWithZone: (NSZone *) zone
 {
-	LCSegmentTermEnum *clone = [[LCSegmentTermEnum allocWithZone: zone] init];
+	LCSegmentTermEnumerator *clone = [[LCSegmentTermEnumerator allocWithZone: zone] init];
 	
 	[clone setIndexInput: input];
 	[clone setFieldInfos: fieldInfos];

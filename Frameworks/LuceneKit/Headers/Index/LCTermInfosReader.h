@@ -11,14 +11,14 @@
 	id <LCDirectory> directory;
 	NSString *segment;
 	LCFieldInfos *fieldInfos;
-	LCSegmentTermEnum *origEnum;
+	LCSegmentTermEnumerator *origEnum;
 	unsigned long long size;
 	
 	NSMutableArray *indexTerms; // LCTerm
 	NSMutableArray *indexInfos;  // LCTermInfo
 	NSMutableArray *indexPointers; // NSNumber int
 	
-	LCSegmentTermEnum *indexEnum;
+	LCSegmentTermEnumerator *indexEnum;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) dir
@@ -30,8 +30,8 @@
 - (LCTermInfo *) termInfo: (LCTerm *) term;
 - (LCTerm *) termAtPosition: (int) position;
 - (long) positionOfTerm: (LCTerm *) term;
-- (LCSegmentTermEnum *) terms;
-- (LCSegmentTermEnum *) termsWithTerm: (LCTerm *) term;
+- (LCSegmentTermEnumerator *) terms;
+- (LCSegmentTermEnumerator *) termsWithTerm: (LCTerm *) term;
 
 @end
 

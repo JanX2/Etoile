@@ -6,7 +6,7 @@
 <p>Term enumerations are always ordered by Term.compareTo().  Each term in
 the enumeration is greater than all that precede it.  */
 
-@implementation LCTermEnum
+@implementation LCTermEnumerator
 
 /** Increments the enumeration to the next element.  True if one exists.*/
 - (BOOL) next

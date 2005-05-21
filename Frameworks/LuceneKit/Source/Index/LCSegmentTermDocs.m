@@ -33,15 +33,15 @@
 	[self seekTermInfo: ti];
 }
 
-- (void) seekTermEnum: (LCTermEnum *) termEnum
+- (void) seekTermEnumerator: (LCTermEnumerator *) termEnum
 {
 	LCTermInfo *ti;
     
     // use comparison of fieldinfos to verify that termEnum belongs to the same segment as this SegmentTermDocs
-	if ([termEnum isKindOfClass: [LCSegmentTermEnum class]] &&
-		[(LCSegmentTermEnum *)termEnum fieldInfos] == [parent fieldInfos])
+	if ([termEnum isKindOfClass: [LCSegmentTermEnumerator class]] &&
+		[(LCSegmentTermEnumerator *)termEnum fieldInfos] == [parent fieldInfos])
 		// optimized case
-		ti = [(LCSegmentTermEnum *)termEnum termInfo];
+		ti = [(LCSegmentTermEnumerator *)termEnum termInfo];
     else                                          // punt case
 		ti = [[parent termInfosReader] termInfo: [termEnum term]];
 	

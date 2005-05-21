@@ -10,16 +10,16 @@
 {
 	LCTerm *term;
 	int base;
-	LCTermEnum *termEnum;
+	LCTermEnumerator *termEnum;
 	LCIndexReader *reader;
 	id <LCTermPositions> postings;
 	NSMutableArray *docMap; // maps around deleted docs
 }
 
-- (id) initWithBase: (int) b termEnum: (LCTermEnum *) te 
+- (id) initWithBase: (int) b termEnumerator: (LCTermEnumerator *) te 
 			 reader: (LCIndexReader *) r;
 - (LCTerm *) term;
-- (LCTermEnum *) termEnum;
+- (LCTermEnumerator *) termEnumerator;
 - (int) base;
 - (BOOL) next;
 - (void) close;

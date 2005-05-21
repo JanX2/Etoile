@@ -128,7 +128,7 @@
 - (void) testTerms
 {
 	
-	LCSegmentTermEnum *terms = (LCSegmentTermEnum *)[reader terms];
+	LCSegmentTermEnumerator *terms = (LCSegmentTermEnumerator *)[reader terms];
 	UKNotNil(terms);
 	while([terms next])
 	{

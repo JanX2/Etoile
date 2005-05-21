@@ -23,9 +23,9 @@
 	[input seekTerm: term];
 }
 
-- (void) seekTermEnum: (LCTermEnum *) termEnum
+- (void) seekTermEnumerator: (LCTermEnumerator *) termEnum
 {
-	[input seekTermEnum: termEnum];
+	[input seekTermEnumerator: termEnum];
 }
 
 - (long) document
@@ -86,10 +86,10 @@
 
 @end
 
-@implementation LCFilterTermEnum
+@implementation LCFilterTermEnumerator
 
 /** Base class for filtering {@link TermEnum} implementations. */
-- (id) initWithTermEnum: (LCTermEnum *) termEnum
+- (id) initWithTermEnumerator: (LCTermEnumerator *) termEnum
 {
 	self = [self init];
 	ASSIGN(input, termEnum);
@@ -204,12 +204,12 @@
 	[input setNorm: d field: f charValue: b];
 }
 
-- (LCTermEnum *) terms
+- (LCTermEnumerator *) terms
 {
 	return [input terms];
 }
 
-- (LCTermEnum *) termsWithTerm: (LCTerm *) t
+- (LCTermEnumerator *) termsWithTerm: (LCTerm *) t
 {
 	return [input termsWithTerm: t];
 }

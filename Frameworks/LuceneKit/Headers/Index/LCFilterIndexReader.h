@@ -19,12 +19,12 @@
 - (id) initWithTermPositions: (id <LCTermPositions>) po;
 @end
 
-@interface LCFilterTermEnum: LCTermEnum
+@interface LCFilterTermEnumerator: LCTermEnumerator
 {
-	LCTermEnum* input;
+	LCTermEnumerator* input;
 }
 
-- (id) initWithTermEnum: (LCTermEnum *) termEnum;
+- (id) initWithTermEnumerator: (LCTermEnumerator *) termEnum;
 @end
 
 @interface LCFilterIndexReader: LCIndexReader

@@ -7,7 +7,7 @@
 #include <LuceneKit/Index/LCTermBuffer.h>
 #include <LuceneKit/Index/LCTermInfo.h>
 
-@interface LCSegmentTermEnum: LCTermEnum <NSCopying>
+@interface LCSegmentTermEnumerator: LCTermEnumerator <NSCopying>
 {
 	LCIndexInput *input;
 	LCFieldInfos *fieldInfos;

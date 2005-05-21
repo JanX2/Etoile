@@ -203,7 +203,7 @@
 /** Not implemented.
 * @throws UnsupportedOperationException
 */
-- (void) seekTermEnum: (LCTermEnum *) termEnum
+- (void) seekTermEnumerator: (LCTermEnumerator *) termEnum
 {
     NSLog(@"UnsupportedOperation");
 }

@@ -28,7 +28,7 @@ int min(int a, int b, int c);
 		   similarity: (LCSimilarity *) similarity prefixLength: (int) prefixLength;
 - (BOOL) termCompare: (LCTerm *) term;
 - (float) difference;
-- (BOOL) endEnum;
+- (BOOL) endEnumerator;
 - (NSArray *) initDistanceArray;
 - (float) similarity: (NSString *) target;
 - (void) growDistanceArray: (int) m;

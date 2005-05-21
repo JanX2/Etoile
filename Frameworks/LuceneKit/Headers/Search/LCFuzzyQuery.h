@@ -32,7 +32,7 @@ static int defaultPrefixLength = 0;
 - (id) initWithTerm: (LCTerm *) term;
 - (float) minSimilarity;
 - (int) prefixLength;
-- (LCFilteredTermEnum *) enum: (LCIndexReader *) reader;
+- (LCFilteredTermEnumerator *) enum: (LCIndexReader *) reader;
 - (LCQuery *) rewrite: (LCIndexReader *) reader;
 
 @end

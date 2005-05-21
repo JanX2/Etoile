@@ -3,7 +3,7 @@
 #include <LuceneKit/GNUstep/GNUstep.h>
 
 /** Filter that only permits terms containing 'e'.*/
-@interface TestTermEnum: LCFilterTermEnum
+@interface TestTermEnum: LCFilterTermEnumerator
 @end
 
 @implementation TestTermEnum
@@ -42,9 +42,9 @@
 
 @implementation TestReader
 /** Filter terms with TestTermEnum. */
-- (LCTermEnum *) terms
+- (LCTermEnumerator *) terms
 {
-	return [[TestTermEnum alloc] initWithTermEnum: [input terms]];
+	return [[TestTermEnum alloc] initWithTermEnumerator: [input terms]];
 }
 
 /** Filter positions with TestTermPositions. */
@@ -112,7 +112,7 @@
 	LCIndexReader *r = [LCIndexReader openDirectory: directory];
 	LCIndexReader *reader = [[TestReader alloc] initWithIndexReader: r];
 	
-	LCTermEnum *terms = [reader terms];
+	LCTermEnumerator *terms = [reader terms];
 	while ([terms next]) {
 		UKTrue([[[terms term] text] rangeOfString: @"e"].location != NSNotFound);
 	}

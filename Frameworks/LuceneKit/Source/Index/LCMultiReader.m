@@ -197,16 +197,16 @@
 	[[subReaders objectAtIndex: i] setNorm: (n-[[starts objectAtIndex: i] intValue]) field: field charValue: value]; // dispatch
 }
 
-- (LCTermEnum *) terms
+- (LCTermEnumerator *) terms
 {
-	return AUTORELEASE([[LCMultiTermEnum alloc] initWithReaders: subReaders
+	return AUTORELEASE([[LCMultiTermEnumerator alloc] initWithReaders: subReaders
 														 starts: starts
 														   term: nil]);
 }
 
-- (LCTermEnum *) termsWithTerm: (LCTerm *) term
+- (LCTermEnumerator *) termsWithTerm: (LCTerm *) term
 {
-	return AUTORELEASE([[LCMultiTermEnum alloc] initWithReaders: subReaders
+	return AUTORELEASE([[LCMultiTermEnumerator alloc] initWithReaders: subReaders
 														 starts: starts
 														   term: term]);
 }
@@ -265,7 +265,7 @@
 
 @end
 
-@implementation LCMultiTermEnum
+@implementation LCMultiTermEnumerator
 
 - (id) initWithReaders: (NSArray *) readers
 				starts: (NSArray *) starts
@@ -276,14 +276,14 @@
 	int i;
 	for (i = 0; i < [readers count]; i++) {
 		LCIndexReader *reader = [readers objectAtIndex: i];
-		LCTermEnum *termEnum;
+		LCTermEnumerator *termEnum;
 		
 		if (t != nil) {
 			termEnum = [reader termsWithTerm: t];
 		} else
 			termEnum = [reader terms];
 		
-		LCSegmentMergeInfo *smi = [[LCSegmentMergeInfo alloc] initWithBase: [[starts objectAtIndex: i] intValue] termEnum: termEnum reader: reader];
+		LCSegmentMergeInfo *smi = [[LCSegmentMergeInfo alloc] initWithBase: [[starts objectAtIndex: i] intValue] termEnumerator: termEnum reader: reader];
 		if ((t == nil ? [smi next] : ([termEnum term] != nil)))
 			[queue put: smi];          // initialize queue
 		else
@@ -311,7 +311,7 @@
 	
 	while (top != nil && [term compare: [top term]] == NSOrderedSame) {
 		[queue pop];
-		docFreq += [[top termEnum] documentFrequency];    // increment freq
+		docFreq += [[top termEnumerator] documentFrequency];    // increment freq
 		if ([top next])
 			[queue put: top];          // restore queue
 		else
@@ -389,7 +389,7 @@
 	DESTROY(current);
 }
 
-- (void) seekTermEnum: (LCTermEnum *) termEnum
+- (void) seekTermEnumerator: (LCTermEnumerator *) termEnum
 {
 	[self seekTerm: [termEnum term]];
 }

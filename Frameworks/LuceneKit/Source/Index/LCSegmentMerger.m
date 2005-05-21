@@ -299,9 +299,9 @@
 	int i;
 	for (i = 0; i < [readers count]; i++) {
 		LCIndexReader *reader = (LCIndexReader *) [readers objectAtIndex: i];
-		LCTermEnum *termEnum = [reader terms];
+		LCTermEnumerator *termEnum = [reader terms];
 		LCSegmentMergeInfo *smi = [[LCSegmentMergeInfo alloc] initWithBase: base
-																  termEnum: termEnum reader: reader];
+																  termEnumerator: termEnum reader: reader];
 		base += [reader numberOfDocuments];
 		if ([smi next])
 		{
@@ -391,7 +391,7 @@
 		id <LCTermPositions> postings = [smi postings];
 		int base = [smi base];
 		NSArray *docMap = [smi docMap];
-		[postings seekTermEnum: [smi termEnum]];
+		[postings seekTermEnumerator: [smi termEnumerator]];
 		while ([postings next]) {
 			int doc = [postings document];
 			if (docMap != nil)

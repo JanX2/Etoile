@@ -8,7 +8,7 @@
 
 @class LCSegmentMergeQueue;
 
-@interface LCMultiTermEnum: LCTermEnum
+@interface LCMultiTermEnumerator: LCTermEnumerator
 {
 	LCSegmentMergeQueue *queue;
 	LCTerm *term;

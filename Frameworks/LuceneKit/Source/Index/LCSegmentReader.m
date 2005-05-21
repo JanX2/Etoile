@@ -342,14 +342,14 @@
     return AUTORELEASE(files);
 }
 
-- (LCTermEnum *) terms
+- (LCTermEnumerator *) terms
 {
-    return (LCTermEnum *)[tis terms];
+    return (LCTermEnumerator *)[tis terms];
 }
 
-- (LCTermEnum *) termsWithTerm: (LCTerm *) t
+- (LCTermEnumerator *) termsWithTerm: (LCTerm *) t
 {
-    return (LCTermEnum *)[tis termsWithTerm: t];
+    return (LCTermEnumerator *)[tis termsWithTerm: t];
 }
 
 - (LCDocument *) document: (int) n
