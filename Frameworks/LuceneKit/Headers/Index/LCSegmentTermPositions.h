@@ -4,7 +4,7 @@
 #include <LuceneKit/Index/LCSegmentTermDocs.h>
 #include <LuceneKit/Index/LCTermPositions.h>
 
-@interface LCSegmentTermPositions: LCSegmentTermDocs <LCTermPositions>
+@interface LCSegmentTermPositions: LCSegmentTermDocuments <LCTermPositions>
 {
 	LCIndexInput *proxStream;
 	int proxCount;

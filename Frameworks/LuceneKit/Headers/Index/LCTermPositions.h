@@ -13,7 +13,7 @@
  * @see IndexReader#termPositions()
  */
 
-@protocol LCTermPositions <LCTermDocs, LCComparable>
+@protocol LCTermPositions <LCTermDocuments, LCComparable>
 /** Returns next position in the current document.  It is an error to call
 this more than {@link #freq()} times
 without calling {@link #next()}<p> This is

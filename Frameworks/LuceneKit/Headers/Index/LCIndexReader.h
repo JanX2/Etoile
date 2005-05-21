@@ -74,8 +74,8 @@ typedef enum _LCFieldOption
 - (LCTermEnumerator *) terms;
 - (LCTermEnumerator *) termsWithTerm: (LCTerm *) t;
 - (long) documentFrequency: (LCTerm *) t;
-- (id <LCTermDocs>) termDocsWithTerm: (LCTerm *) term;
-- (id <LCTermDocs>) termDocs;
+- (id <LCTermDocuments>) termDocumentsWithTerm: (LCTerm *) term;
+- (id <LCTermDocuments>) termDocuments;
 - (id <LCTermPositions>) termPositionsWithTerm: (LCTerm *) term;
 - (id <LCTermPositions>) termPositions;
 - (void) delete: (int) docNum;

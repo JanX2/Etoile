@@ -42,7 +42,7 @@
 	LCSegmentInfo *si = [[LCSegmentInfo alloc] initWithName: @"test" numberOfDocuments: 1 directory: dir];
 	LCSegmentReader *reader = [LCSegmentReader segmentReaderWithInfo: si];
 	UKNotNil(reader);
-	LCSegmentTermDocs *segTermDocs = [[LCSegmentTermDocs alloc] initWithSegmentReader: reader];
+	LCSegmentTermDocuments *segTermDocs = [[LCSegmentTermDocuments alloc] initWithSegmentReader: reader];
 	UKNotNil(segTermDocs);
 	LCTerm *t = [[LCTerm alloc] initWithField: [TestDocHelper TEXT_FIELD_2_KEY]
 										 text: @"field"];
@@ -62,7 +62,7 @@
 	LCSegmentInfo *si = [[LCSegmentInfo alloc] initWithName: @"test" numberOfDocuments: 3 directory: dir];
 	LCSegmentReader *reader = [LCSegmentReader segmentReaderWithInfo: si];
 	UKNotNil(reader);
-	LCSegmentTermDocs *segTermDocs = [[LCSegmentTermDocs alloc] initWithSegmentReader: reader];
+	LCSegmentTermDocuments *segTermDocs = [[LCSegmentTermDocuments alloc] initWithSegmentReader: reader];
 	UKNotNil(segTermDocs);
 	LCTerm *t = [[LCTerm alloc] initWithField: @"testField2" text: @"bad"];
 	UKFalse([segTermDocs next]);
@@ -71,7 +71,7 @@
 	si = [[LCSegmentInfo alloc] initWithName: @"test" numberOfDocuments: 3 directory: dir];
 	reader = [LCSegmentReader segmentReaderWithInfo: si];
 	UKNotNil(reader);
-	segTermDocs = [[LCSegmentTermDocs alloc] initWithSegmentReader: reader];
+	segTermDocs = [[LCSegmentTermDocuments alloc] initWithSegmentReader: reader];
 	UKNotNil(segTermDocs);
 	t = [[LCTerm alloc] initWithField: @"junk" text: @"bad"];
 	UKFalse([segTermDocs next]);
@@ -117,7 +117,7 @@
 	
 	//NSLog(@"===== TestSkipTo ======");
 	LCIndexReader *reader = [LCIndexReader openDirectory: d];
-	id <LCTermDocs> tdocs = [reader termDocs];
+	id <LCTermDocuments> tdocs = [reader termDocuments];
 	
 	// without optimization (assumption skipInterval == 16)
 	

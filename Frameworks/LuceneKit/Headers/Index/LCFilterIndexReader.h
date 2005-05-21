@@ -6,16 +6,16 @@
 #include <LuceneKit/Index/LCTermPositions.h>
 #include <LuceneKit/Index/LCTermEnum.h>
 
-@interface LCFilterTermDocs: NSObject <LCTermDocs>
+@interface LCFilterTermDocuments: NSObject <LCTermDocuments>
 {
-	id <LCTermDocs> input;
+	id <LCTermDocuments> input;
 }
 
-- (id) initWithTermDocs: (id <LCTermDocs>) docs;
+- (id) initWithTermDocuments: (id <LCTermDocuments>) docs;
 
 @end
 
-@interface LCFilterTermPositions: LCFilterTermDocs <LCTermPositions>
+@interface LCFilterTermPositions: LCFilterTermDocuments <LCTermPositions>
 - (id) initWithTermPositions: (id <LCTermPositions>) po;
 @end
 

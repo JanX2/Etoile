@@ -111,10 +111,10 @@
 
 - (LCScorer *) scorer: (LCIndexReader *) reader
 {
-	id <LCTermDocs> termDocs = [reader termDocsWithTerm: [query term]];
+	id <LCTermDocuments> termDocs = [reader termDocumentsWithTerm: [query term]];
 	if (termDocs == nil) return nil;
 	LCTermScorer *scorer = [[LCTermScorer alloc] initWithWeight: self
-													   termDocs: termDocs similarity: similarity
+													   termDocuments: termDocs similarity: similarity
 														  norms: [reader norms: [[query term] field]]];
 	return AUTORELEASE(scorer);
 }

@@ -316,15 +316,15 @@ is greater than all that precede it in the enumeration.
 	<p>The enumeration is ordered by document number.  Each document number
 	is greater than all that precede it in the enumeration.
 	*/
-- (id <LCTermDocs>) termDocsWithTerm: (LCTerm *) term
+- (id <LCTermDocuments>) termDocumentsWithTerm: (LCTerm *) term
 {
-	id <LCTermDocs> termDocs = [self termDocs];
+	id <LCTermDocuments> termDocs = [self termDocuments];
 	[termDocs seekTerm: term];
 	return termDocs;
 }
 
 /** Returns an unpositioned {@link TermDocs} enumerator. */
-- (id <LCTermDocs>) termDocs { return nil; }
+- (id <LCTermDocuments>) termDocuments { return nil; }
 
 	/** Returns an enumeration of all the documents which contain
 	<code>term</code>.  For each document, in addition to the document number
@@ -412,7 +412,7 @@ this will be corrected eventually as the index is further modified.
 	*/
 - (int) deleteTerm: (LCTerm *) term
 {
-	id <LCTermDocs> docs = [self termDocsWithTerm: term];
+	id <LCTermDocuments> docs = [self termDocumentsWithTerm: term];
 	if (docs == nil) return 0;
 	int n = 0;
 	while ([docs next])

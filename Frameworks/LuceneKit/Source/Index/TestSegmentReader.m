@@ -139,7 +139,7 @@
 		//     assertTrue(fieldValue.indexOf(term.text()) != -1);
 	}
 	
-	id <LCTermDocs> termDocs = [reader termDocs];
+	id <LCTermDocuments> termDocs = [reader termDocuments];
 	UKNotNil(termDocs);
 	LCTerm *t = [[LCTerm alloc] initWithField: [TestDocHelper TEXT_FIELD_1_KEY] text: @"field"];
 	[termDocs seekTerm: t];

@@ -2,10 +2,10 @@
 #include <LuceneKit/Document/LCDocument.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
-@implementation LCFilterTermDocs
+@implementation LCFilterTermDocuments
 
 /** Base class for filtering {@link TermDocs} implementations. */
-- (id) initWithTermDocs: (id <LCTermDocs>) docs
+- (id) initWithTermDocuments: (id <LCTermDocuments>) docs
 {
 	self = [self init];
 	ASSIGN(input, docs);
@@ -65,7 +65,7 @@
 
 - (id) initWithTermPositions: (id <LCTermPositions>) po
 {
-	return [self initWithTermDocs: po];
+	return [self initWithTermDocuments: po];
 }
 
 - (int) nextPosition
@@ -219,9 +219,9 @@
 	return [input documentFrequency: t];
 }
 
-- (id <LCTermDocs>) termDocs
+- (id <LCTermDocuments>) termDocuments
 {
-	return [input termDocs];
+	return [input termDocuments];
 }
 
 - (id <LCTermPositions>) termPositions

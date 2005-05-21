@@ -96,7 +96,7 @@
 	UKIntsEqual([TestDocHelper numFields: newDoc2], [TestDocHelper numFields: doc2]-2);
 	
 	LCTerm *t = [[LCTerm alloc] initWithField: [TestDocHelper TEXT_FIELD_2_KEY] text: @"field"];
-	id <LCTermDocs> termDocs = [mergedReader termDocsWithTerm: t];
+	id <LCTermDocuments> termDocs = [mergedReader termDocumentsWithTerm: t];
 	UKNotNil(termDocs);
 	UKTrue([termDocs next]);
 	

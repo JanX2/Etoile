@@ -11,7 +11,7 @@
 @interface LCTermScorer: LCScorer
 {
 	id <LCWeight> weight;
-	id <LCTermDocs> termDocs;
+	id <LCTermDocuments> termDocs;
 	NSData *norms;
 	float weightValue;
 	int doc;
@@ -24,7 +24,7 @@
 	NSMutableArray *scoreCache;
 }
 
-- (id) initWithWeight: (id <LCWeight>) weight termDocs: (id <LCTermDocs>) td
+- (id) initWithWeight: (id <LCWeight>) weight termDocuments: (id <LCTermDocuments>) td
 		   similarity: (LCSimilarity *) similarity norms: (NSData *) norms;
 
 @end

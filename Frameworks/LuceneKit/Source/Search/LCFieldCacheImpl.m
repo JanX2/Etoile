@@ -163,7 +163,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
 		if ([reader maximalDocument] > 0) {
-			id <LCTermDocs> termDocs = [reader termDocs];
+			id <LCTermDocuments> termDocs = [reader termDocuments];
 			LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
 			LCTermEnumerator *termEnum = [reader termsWithTerm: t];
 			if ([termEnum term] == nil)
@@ -196,7 +196,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
 		if ([reader maximalDocument] > 0) {
-			id <LCTermDocs> termDocs = [reader termDocs];
+			id <LCTermDocuments> termDocs = [reader termDocuments];
 			LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
 			LCTermEnumerator *termEnum = [reader termsWithTerm: t];
 			if ([termEnum term] == nil)
@@ -229,7 +229,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
 		if ([reader maximalDocument] > 0) {
-			id <LCTermDocs> termDocs = [reader termDocs];
+			id <LCTermDocuments> termDocs = [reader termDocuments];
 			LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
 			LCTermEnumerator *termEnum = [reader termsWithTerm: t];
 			if ([termEnum term] == nil)
@@ -268,7 +268,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 		String[] mterms = new String[reader.maxDoc()+1];
 #endif
 		if ([reader maximalDocument] > 0) {
-			id <LCTermDocs> termDocs = [reader termDocs];
+			id <LCTermDocuments> termDocs = [reader termDocuments];
 			LCTerm *tm = [[LCTerm alloc] initWithField: field text: @""];
 			LCTermEnumerator *termEnum = [reader termsWithTerm: tm];
 			RELEASE(tm);
@@ -406,7 +406,7 @@ protected static final Pattern pIntegers = Pattern.compile ("[0-9\\-]+");
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
 		if ([reader maximalDocument] > 0) {
-			id <LCTermDocs> termDocs = [reader termDocs];
+			id <LCTermDocuments> termDocs = [reader termDocuments];
 			LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
 			LCTermEnumerator *termEnum = [reader termsWithTerm: t];
 			if ([termEnum term] == nil) {

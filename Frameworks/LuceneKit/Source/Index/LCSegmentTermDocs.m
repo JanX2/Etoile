@@ -5,7 +5,7 @@
 #include <LuceneKit/Util/LCBitVector.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
-@implementation LCSegmentTermDocs
+@implementation LCSegmentTermDocuments
 
 - (id) initWithSegmentReader: (LCSegmentReader *) p
 {

@@ -367,9 +367,9 @@
     return (deletedDocs != nil && [deletedDocs getBit: n]);
 }
 
-- (id <LCTermDocs>) termDocs
+- (id <LCTermDocuments>) termDocuments
 {
-	return AUTORELEASE([[LCSegmentTermDocs alloc] initWithSegmentReader: self]);
+	return AUTORELEASE([[LCSegmentTermDocuments alloc] initWithSegmentReader: self]);
 }
 
 - (id <LCTermPositions>) termPositions

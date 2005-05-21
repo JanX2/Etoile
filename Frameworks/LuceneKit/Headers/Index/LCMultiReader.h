@@ -19,7 +19,7 @@
 				  term: (LCTerm *) t;
 @end
 
-@interface LCMultiTermDocs: NSObject <LCTermDocs>
+@interface LCMultiTermDocuments: NSObject <LCTermDocuments>
 {
 	NSArray *readers;
 	NSArray *starts; // 1st docno for each segment
@@ -27,14 +27,14 @@
 	int base;
 	int pointer;
 	NSMutableArray *readerTermDocs;
-	id <LCTermDocs> current;
+	id <LCTermDocuments> current;
 }
 - (id) initWithReaders: (NSArray *) r 
                 starts: (NSArray *) s;
-- (id <LCTermDocs>) termDocsWithReader: (LCIndexReader *) reader;
+- (id <LCTermDocuments>) termDocumentsWithReader: (LCIndexReader *) reader;
 @end
 
-@interface LCMultiTermPositions: LCMultiTermDocs <LCTermPositions>
+@interface LCMultiTermPositions: LCMultiTermDocuments <LCTermPositions>
 @end
 
 @interface LCMultiReader: LCIndexReader

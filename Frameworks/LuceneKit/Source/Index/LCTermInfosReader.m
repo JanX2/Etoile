@@ -5,7 +5,7 @@
 * Directory.  Pairs are accessed either by Term or by ordinal position the
 * set.  */
 @interface LCTermInfosReader (LCPrivate)
-- (LCSegmentTermEnumerator *) termEnum;
+- (LCSegmentTermEnumerator *) termEnumerator;
 - (void) ensureIndexIsRead;
 - (int) indexOffset: (LCTerm *) term;
 - (void) seekEnumerator: (int) indexOffset;

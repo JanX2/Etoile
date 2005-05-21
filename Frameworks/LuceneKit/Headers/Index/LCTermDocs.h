@@ -14,7 +14,7 @@ ordered by document number.
 @see IndexReader#termDocs()
 */
 
-@protocol LCTermDocs <NSObject>
+@protocol LCTermDocuments <NSObject>
 /** Sets this to the data for a term.
 * The enumeration is reset to the start of the data for this term.
 */

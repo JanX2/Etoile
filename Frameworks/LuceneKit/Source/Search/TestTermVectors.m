@@ -197,7 +197,7 @@
 	[w close];
 	LCIndexSearcher *knownSearcher = [[LCIndexSearcher alloc] initWithDirectory: dir];
 	LCTermEnumerator *termEnum = [[knownSearcher indexReader] terms];
-	id <LCTermDocs> termDocs = [[knownSearcher indexReader] termDocs];
+	id <LCTermDocuments> termDocs = [[knownSearcher indexReader] termDocuments];
 	//LCSimilarity *sim = [knownSearcher similarity];
 	while ([termEnum next] == YES)
 	{

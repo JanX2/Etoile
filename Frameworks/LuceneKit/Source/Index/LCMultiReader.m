@@ -222,9 +222,9 @@
 	return total;
 }
 
-- (id <LCTermDocs>) termDocs
+- (id <LCTermDocuments>) termDocuments
 {
-	return AUTORELEASE([[LCMultiTermDocs alloc] initWithReaders: subReaders
+	return AUTORELEASE([[LCMultiTermDocuments alloc] initWithReaders: subReaders
 														 starts: starts]);
 }
 
@@ -338,11 +338,11 @@
 
 @end
 
-@interface LCMultiTermDocs (LCPrivate)
-- (id <LCTermDocs>) termDocs: (int) i;
+@interface LCMultiTermDocuments (LCPrivate)
+- (id <LCTermDocuments>) termDocuments: (int) i;
 @end
 
-@implementation LCMultiTermDocs
+@implementation LCMultiTermDocuments
 
 - (id) init
 {
@@ -400,7 +400,7 @@
 		return YES;
     } else if (pointer < [readers count]) {
 		base = [[starts objectAtIndex: pointer] intValue];
-		ASSIGN(current, [self termDocs: pointer++]);
+		ASSIGN(current, [self termDocuments: pointer++]);
 		return [self next];
     } else {
 		return NO;
@@ -414,7 +414,7 @@
 		while (current == nil) {
 			if (pointer < [readers count]) {      // try next segment
 				base = [[starts objectAtIndex: pointer] intValue];
-				ASSIGN(current, [self termDocs: pointer++]);
+				ASSIGN(current, [self termDocuments: pointer++]);
 			} else {
 				return 0;
 			}
@@ -445,23 +445,23 @@
 	return YES;
 }
 
-- (id <LCTermDocs>) termDocs: (int) i
+- (id <LCTermDocuments>) termDocuments: (int) i
 {
     if (term == nil) return nil;
     /* LuceneKit implementation */
-    id <LCTermDocs> result;
+    id <LCTermDocuments> result;
     if (i >= [readerTermDocs count]) // Not Exist
     {
-		result = [self termDocsWithReader: [readers objectAtIndex: i]];
+		result = [self termDocumentsWithReader: [readers objectAtIndex: i]];
 		[readerTermDocs addObject: result];
     }
     [result seekTerm: term];
     return result;
 }
 
-- (id <LCTermDocs>) termDocsWithReader: (LCIndexReader *) reader
+- (id <LCTermDocuments>) termDocumentsWithReader: (LCIndexReader *) reader
 {
-    return [reader termDocs];
+    return [reader termDocuments];
 }
 
 - (void) close
@@ -477,9 +477,9 @@
 
 @implementation LCMultiTermPositions
 
-- (id <LCTermDocs>) termDocsWithReader: (LCIndexReader *) reader
+- (id <LCTermDocuments>) termDocumentsWithReader: (LCIndexReader *) reader
 {
-	return (id <LCTermDocs>)[reader termPositions];
+	return (id <LCTermDocuments>)[reader termPositions];
 }
 
 - (int) nextPosition

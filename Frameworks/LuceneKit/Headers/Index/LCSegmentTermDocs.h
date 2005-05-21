@@ -9,7 +9,7 @@
 @class LCIndexInput;
 @class LCBitVector;
 
-@interface LCSegmentTermDocs: NSObject <LCTermDocs>
+@interface LCSegmentTermDocuments: NSObject <LCTermDocuments>
 {
 	LCSegmentReader *parent;
 	LCIndexInput *freqStream;

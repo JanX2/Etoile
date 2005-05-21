@@ -241,8 +241,8 @@
 						 term: (LCTerm *) term
 					 expected: (int) expected
 {
-	id <LCTermDocs> tdocs = nil;
-	tdocs = [reader termDocsWithTerm: term];
+	id <LCTermDocuments> tdocs = nil;
+	tdocs = [reader termDocumentsWithTerm: term];
 	UKNotNil(tdocs);
 	int count = 0;
 	while ([tdocs next])

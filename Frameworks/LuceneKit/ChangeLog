@@ -2,6 +2,7 @@
 
 	* Move private methods into implementation.
 	* replace "Enum" with "Enumerator".
+	* replace "TermDocs" with "TermDocuments".
 
 2005-05-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

@@ -17,7 +17,7 @@ static int SCORE_CACHE_SIZE = 32;
 	return self;
 }
 
-- (id) initWithWeight: (id <LCWeight>) w termDocs: (id <LCTermDocs>) td
+- (id) initWithWeight: (id <LCWeight>) w termDocuments: (id <LCTermDocuments>) td
 		   similarity: (LCSimilarity *) s norms: (NSData *) n
 {
 	self = [self initWithSimilarity: s];
