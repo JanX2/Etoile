@@ -1,5 +1,6 @@
 #include <LuceneKit/Index/LCFieldsWriter.h>
 #include <LuceneKit/Store/LCIndexOutput.h>
+#include <LuceneKit/Util/NSData+Additions.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
 @implementation LCFieldsWriter
@@ -60,22 +61,20 @@
 				bits |= LCFieldsWriter_FIELD_IS_COMPRESSED;
 			
 			[fieldsStream writeByte: bits];
-			
 			if ([field isCompressed]) {
-#if 0 // FIXME: not supprt yet
-	  // compression is enabled for the current field
-				byte[] data = null;
+				// compression is enabled for the current field
+				NSData *data = nil;
 				// check if it is a binary field
-				if (field.isBinary()) {
-                    data = compress(field.binaryValue());
+				if ([field isBinary]) {
+                    ASSIGN(data, [field binaryValue]);
 				}
 				else {
-                    data = compress(field.stringValue().getBytes("UTF-8"));
+					ASSIGN(data, [[field stringValue] dataUsingEncoding: NSUTF8StringEncoding]);
 				}
-				final int len = data.length;
-				fieldsStream.writeVInt(len);
-				fieldsStream.writeBytes(data, len);
-#endif
+				ASSIGN(data, [data compressedData]);
+				int len = [data length];
+				[fieldsStream writeVInt: len];
+				[fieldsStream writeBytes: data length: len];
 			} else {
 				// compression is disabled for the current field
 				if ([field isBinary]) {

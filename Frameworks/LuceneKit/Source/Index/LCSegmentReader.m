@@ -9,11 +9,6 @@
 #include <LuceneKit/Index/LCTermInfo.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
-/**
-* FIXME: Describe class <code>SegmentReader</code> here.
- *
- * @version $Id$
- */
 @interface LCNorm: NSObject
 {
 	LCSegmentReader *reader;
@@ -470,7 +465,6 @@
 
 - (void) doSetNorm: (int) doc field: (NSString *) field charValue: (char) value
 {
-	NSLog(@"LCSegmentReader doSetNorm: %d field: %@ charValue: %d", doc, field, value);
 	LCNorm *norm = (LCNorm *) [norms objectForKey: field];
     if (norm == nil)                             // not an indexed field
 		return;

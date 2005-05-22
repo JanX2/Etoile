@@ -42,6 +42,12 @@ typedef enum _LCFieldOption
 	BOOL hasChanges;
 }
 
++ (LCIndexReader *) openPath: (NSString *) path;
++ (LCIndexReader *) openDirectory: (id <LCDirectory>) directory;
+/* Do NOT use -initWithDirectory:
+ * it is designed to be override by subclass
+ * Always use +openPath or +openDirectory.
+ */
 - (id) initWithDirectory: (id <LCDirectory>) directory;
 - (id) initWithDirectory: (id <LCDirectory>) dir       
 			segmentInfos: (LCSegmentInfos *) seg       
@@ -50,8 +56,7 @@ typedef enum _LCFieldOption
 			segmentInfos: (LCSegmentInfos *) seg       
 		  closeDirectory: (BOOL) close
 		  directoryOwner: (BOOL) owner;
-+ (LCIndexReader *) openPath: (NSString *) path;
-+ (LCIndexReader *) openDirectory: (id <LCDirectory>) directory;
+
 - (id <LCDirectory>) directory;
 + (long) currentVersionAtPath: (NSString *) path;
 + (long) currentVersionWithDirectory: (id <LCDirectory>) dir;

@@ -1,8 +1,11 @@
 2005-05-21 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
-	* Headers/Util/NSData+Additions.h
+	* Headers/Util/NSData+Additions.h:
 	* Source/Util/NSData+Additions.m:
+	* Source/Document/TestBinaryDocument.m:
 	Use zlib for compression.
+	* Current test result: 
+	Result: 40 classes, 102 methods, 352130 tests, 0 failed
 
 2005-05-20 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

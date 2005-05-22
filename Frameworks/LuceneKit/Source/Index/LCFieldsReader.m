@@ -2,6 +2,7 @@
 #include <LuceneKit/Index/LCFieldsWriter.h>
 #include <LuceneKit/Store/LCDirectory.h>
 #include <LuceneKit/Store/LCIndexInput.h>
+#include <LuceneKit/Util/NSData+Additions.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
 /**
@@ -69,14 +70,21 @@
 			[fieldsStream readBytes: b offset: 0 length: len];
 			if (compressed)
 			{
-				// FIXME
-				NSLog(@"Not support compression");
+				NSData *d = [b decompressedData];
+				if (d)
+				{
+					LCField *field = [[LCField alloc] initWithName: [fi name]
+															 value: d
+															 store: LCStore_Compress];
+					[doc addField: field];
+					DESTROY(field);
 				//doc.add(new Field(fi.name, uncompress(b), Field.Store.COMPRESS));
+				}
 			}
 			else
 			{
 				LCField *field = [[LCField alloc] initWithName: [fi name]
-														 value: [NSData dataWithBytes: b length: len]
+														 value: AUTORELEASE([b copy])
 														 store: LCStore_YES];
 				[doc addField: field];
 				DESTROY(field);
@@ -95,11 +103,20 @@
 				index = LCIndex_NO;
 			
 			if (compressed) {
-#if 0 // FIXME: Not supported
 				store = LCStore_Compress;
 				int len = [fieldsStream readVInt];
-				char *b = malloc(sizeof(char)*len);
+				NSMutableData *b = [[NSMutableData alloc] init];
 				[fieldsStream readBytes: b offset: 0 length: len];
+				NSString *s = [[NSString alloc] initWithData: [b decompressedData] encoding: NSUTF8StringEncoding];
+				LCField *field = [[LCField alloc] initWithName: [fi name]
+														string: s
+														 store: store
+														 index: index
+													termVector: ([fi isTermVectorStored] ? LCTermVector_YES : LCTermVector_NO)];
+				[doc addField: field];
+				DESTROY(field);
+				DESTROY(b);
+#if 0
 				doc.add(new Field(fi.name,      // field name
 								  new String(uncompress(b), "UTF-8"), // uncompress the value and add as string
 								  store,
@@ -107,7 +124,7 @@
 								  fi.storeTermVector ? Field.TermVector.YES : Field.TermVector.NO));
 #endif
 			}
-			else
+			else // Not compressed
 			{
 				LCField *field = [[LCField alloc] initWithName: [fi name]
 														string: [fieldsStream readString]

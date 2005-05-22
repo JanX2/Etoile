@@ -10,7 +10,8 @@ LuceneKit_Document_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Document_OBJC_FILES += \
-        TestNumberTools.m 
+        TestNumberTools.m \
+	TestBinaryDocument.m
 endif
 
 
