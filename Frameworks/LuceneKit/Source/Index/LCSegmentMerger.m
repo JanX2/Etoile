@@ -283,7 +283,7 @@
 														fieldInfos: fieldInfos
 														  interval: termIndexInterval];
 	skipInterval = [termInfosWriter skipInterval];
-	queue = [[LCSegmentMergeQueue alloc] initWithSize: [readers count]];
+	queue = [(LCSegmentMergeQueue *)[LCSegmentMergeQueue alloc] initWithSize: [readers count]];
 	
 	[self mergeTermInfos];
 	

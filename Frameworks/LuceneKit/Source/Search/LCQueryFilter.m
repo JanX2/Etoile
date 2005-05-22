@@ -44,7 +44,7 @@
 	LCBitVector *cached = [cache objectForKey: reader];
 	if (cached != nil) return cached;
 	
-	LCBitVector *bits = [[LCBitVector alloc] initWithSize: [reader maximalDocument]];
+	LCBitVector *bits = [(LCBitVector *)[LCBitVector alloc] initWithSize: [reader maximalDocument]];
 	LCQueryFilterHitCollector *hc = [[LCQueryFilterHitCollector alloc] initWithBits: bits];
 	LCIndexSearcher *searcher = [[LCIndexSearcher alloc] initWithReader: reader];
 	[searcher search: query hitCollector: hc];

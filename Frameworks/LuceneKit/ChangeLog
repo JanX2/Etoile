@@ -5,6 +5,7 @@
 	* Source/Document/TestBinaryDocument.m:
 	Use zlib for compression.
 	* Make <LuceneKit/LuceneKit.h> work.
+	* Fix a weird error of building framework with Xcode.
 	* Current test result: 
 	Result: 40 classes, 102 methods, 352130 tests, 0 failed
 

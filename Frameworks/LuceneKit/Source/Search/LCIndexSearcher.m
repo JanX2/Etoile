@@ -235,7 +235,7 @@
 		return AUTORELEASE(doc);
 	}
 	
-	LCHitQueue *hq = [[LCHitQueue alloc] initWithSize: nDocs];
+	LCHitQueue *hq = [(LCHitQueue *)[LCHitQueue alloc] initWithSize: nDocs];
 	LCHitCollector1 *hc = [[LCHitCollector1 alloc] initWithReader: reader 
 														   filter: filter maximum: nDocs
 															queue: hq];

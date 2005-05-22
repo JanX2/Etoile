@@ -47,7 +47,7 @@
 - (void) initScorerQueue
 {
 	NSEnumerator *si = [subScorers objectEnumerator];
-	scorerQueue = [[LCScorerQueue alloc] initWithSize: nrScorers];
+	scorerQueue = [(LCScorerQueue *)[LCScorerQueue alloc] initWithSize: nrScorers];
 	LCScorer *se;
 	while ((se = [si nextObject])) {
 		if ([se next]) { // doc() method will be used in scorerQueue

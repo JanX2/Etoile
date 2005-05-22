@@ -35,7 +35,7 @@
 - (id) initWithReaders: (NSArray *) r
 {
 	self = [self init];
-	[super initWithDirectory: ([r count] == 0) ? nil : [[r objectAtIndex: 0] directory]];
+	[super initWithDirectory: ([r count] == 0) ? nil : [(LCIndexReader *)[r objectAtIndex: 0] directory]];
 	[self initialize: r];
 	return self;
 }
@@ -127,7 +127,7 @@
 {
     numDocs = -1;                             // invalidate cache
     int i = [self readerIndex: n];        // find segment num
-    [[subReaders objectAtIndex: i] delete: (n - [[starts objectAtIndex: i] intValue])]; // dispatch to segment
+    [(LCIndexReader *)[subReaders objectAtIndex: i] delete: (n - [[starts objectAtIndex: i] intValue])]; // dispatch to segment
     hasDeletions = YES;
 }
 
@@ -272,7 +272,7 @@
                   term: (LCTerm *) t
 {
 	self = [super init];
-	queue = [[LCSegmentMergeQueue alloc] initWithSize: [readers count]];
+	queue = [(LCSegmentMergeQueue *)[LCSegmentMergeQueue alloc] initWithSize: [readers count]];
 	int i;
 	for (i = 0; i < [readers count]; i++) {
 		LCIndexReader *reader = [readers objectAtIndex: i];

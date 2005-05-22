@@ -295,7 +295,7 @@
 - (void) doDelete: (int) docNum
 {
 	if (deletedDocs == nil)
-		ASSIGN(deletedDocs, AUTORELEASE([[LCBitVector alloc] initWithSize: [self maximalDocument]]));
+		ASSIGN(deletedDocs, AUTORELEASE([(LCBitVector *)[LCBitVector alloc] initWithSize: [self maximalDocument]]));
 	deletedDocsDirty = YES;
 	undeleteAll = NO;
 	[deletedDocs setBit: docNum];
