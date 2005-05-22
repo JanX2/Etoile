@@ -1,11 +1,17 @@
 #ifndef __LUCENE_SEARCH_PHRASE_SCORER__
 #define __LUCENE_SEARCH_PHRASE_SCORER__
 
-#include "Search/LCScorer.h"
+#include "LCScorer.h"
+#include "LCWeight.h"
+
+@class LCPhraseQueue;
+@class LCPhrasePositions;
+@class LCSimilarity;
+@class LCExplanation;
 
 @interface LCPhraseScorer: LCScorer
 {
-	LCWeight *weight;
+	id <LCWeight> weight;
 	NSData *norms;
 	float value;
 	
@@ -17,7 +23,7 @@
 	float freq;
 }
 
-- (id) initWithWeight: (LCWeight *) weight termPositions: (NSArray *) tps
+- (id) initWithWeight: (id <LCWeight>) weight termPositions: (NSArray *) tps
 			positions: (NSArray *) similarity: (LCSimilarity *) similarity;
 - (int) document;
 - (BOOL) next;

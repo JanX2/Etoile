@@ -1,7 +1,11 @@
 #ifndef __LUCENE_SEARCH_MULTI_SEARCHER__
 #define __LUCENE_SEARCH_MULTI_SEARCHER__
 
-#include <LuceneKit/Search/LCSearcher.h>
+#include "LCSearcher.h"
+
+@class LCExplanation;
+@class LCDocument;
+@class LCTerm;
 
 @interface LCMultiSearcher: LCSearcher
 {
@@ -27,7 +31,7 @@
 - (void) search: (LCQuery *) query filter: (LCFilter *) filter
 		results: (LCHitCollector *) results;
 - (LCQuery *) rewrite: (LCQuery *) original;
-- (LCExplanantion *) explain: (LCQuery *) query doc: (int) doc;
+- (LCExplanation *) explain: (LCQuery *) query doc: (int) doc;
 
 @end
 

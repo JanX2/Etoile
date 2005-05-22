@@ -1,7 +1,10 @@
 #ifndef __LUCENE_SEARCH_FILTERED_QUERY__
 #define __LUCENE_SEARCH_FILTERED_QUERY__
 
-#include <LuceneKit/Search/LCQuery.h.
+#include "LCQuery.h"
+#include "LCWeight.h"
+
+@class LCFilter;
 
 @interface LCFilteredQuery: LCQuery
 {
@@ -10,7 +13,7 @@
 }
 
 - (id) initWithQuery: (LCQuery *) query filter: (LCFilter *) filter;
-- (LCWeight *) createWeight: (LCSearcher *) searcher;
+- (id <LCWeight>) createWeight: (LCSearcher *) searcher;
 - (float) value;
 - (float) sumOfSquaredWeights;
 - (void) normalize: (float) v;

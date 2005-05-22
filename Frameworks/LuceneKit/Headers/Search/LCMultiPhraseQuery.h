@@ -1,9 +1,11 @@
 #ifndef __LUCENE_SEARCH_MULTI_PHRASE_QUERY__
 #define __LUCENE_SEARCH_MULTI_PHRASE_QUERY__
 
-#include <LuceneKit/Search/LCQuery.h>
+#include "LCWeight.h"
 
-@interface LCMultiPhraseWeight: LCWeight
+@class LCSearcher;
+
+@interface LCMultiPhraseWeight: NSObject <LCWeight>
 {
 	LCSearcher *searcher;
 	float value;
@@ -37,7 +39,7 @@
 - (void) addTerms: (NSArray *) terms;
 - (void) addTerm: (LCTerm *) position: (int) position;
 - (NSArray *) positions;
-- (LCWeight *) createWeight: (LCSearcher *) searcher;
+- (id <LCWeight>) createWeight: (LCSearcher *) searcher;
 @end
 
 #endif /* __LUCENE_SEARCH_MULTI_PHRASE_QUERY__ */

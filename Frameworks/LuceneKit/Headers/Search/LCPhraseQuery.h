@@ -1,9 +1,11 @@
 #ifndef __LUCENE_SEARCHER_PHRASE_QUERY__
 #define __LUCENE_SEARCHER_PHRASE_QUERY__
 
-#include <LuceneKit/Search/LCQuery.h>
+#include "LCWeight.h"
 
-@interface LCPhraseWeight: LCWeight
+@class LCIndexReader;
+
+@interface LCPhraseWeight: NSObject <LCWeight>
 {
 	LCSearcher *searcher;
 	float value;
@@ -18,8 +20,8 @@
 - (float) sumOfSquaredWeights;
 - (void) normalize: (float) queryNorm;
 - (LCScorer *) scorer: (LCIndexReader *) reader;
-- (LCExplanation *) explain: (LCindexReader *) doc: (int) doc;
-- (LCWeight *) createWeight: (LCSearcher *) searcher;
+- (LCExplanation *) explain: (LCIndexReader *) doc: (int) doc;
+- (id <LCWeight>) createWeight: (LCSearcher *) searcher;
 @end
 
 @interface LCPhraseQuery: LCQuery

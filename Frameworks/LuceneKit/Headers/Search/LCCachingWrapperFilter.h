@@ -1,16 +1,20 @@
 #ifndef __LUCENE_SEARCH_CACHING_WRAPPER_FILTER__
 #define __LUCENE_SEARCH_CACHING_WRAPPER_FILTER__
 
-#include <LuceneKit/Search/LCFilter.h>
+#include "LCFilter.h"
 
-@interface LCCachingWrapperFilter
+@class LCBitVector;
+@class LCIndexReader;
+@class LCFilter;
+
+@interface LCCachingWrapperFilter: NSObject
 {
 	LCFilter *filter;
-	LCDictionary *cache;
+	NSDictionary *cache;
 }
 
 - (id) initWithFilter: (LCFilter *) filter;
-- (LCBitSet *) bits: (LCIndexReader *) reader;
+- (LCBitVector *) bits: (LCIndexReader *) reader;
 @end
 
 #endif /* __LUCENE_SEARCH_CACHING_WRAPPER_FILTER__ */

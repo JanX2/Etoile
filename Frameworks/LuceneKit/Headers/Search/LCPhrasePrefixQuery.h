@@ -1,9 +1,11 @@
 #ifndef __LUCENE_SEARCH_PHRASE_PREFIX_QUERY__
 #define __LUCENE_SEARCH_PHRASE_PREFIX_QUERY__
 
-#include <LuceneKit/Search/LCQuery.h>
+#include "LCWeight.h"
 
-@interface LCPhrasePrefixWeight: LCWeight
+@class LCIndexReader;
+
+@interface LCPhrasePrefixWeight: NSObject <LCWeight>
 {
 	LCSearcher *searcher;
 	float value;
@@ -36,7 +38,7 @@
 - (void) addTerms: (NSArray *) terms;
 - (void) addTerm: (LCTerm *) term position: (int) position;
 - (NSArray *) positions;
-- (LCWeight *) createWeight: (LCSearcher *) searcher;
+- (id <LCWeight>) createWeight: (LCSearcher *) searcher;
 
 @end
 

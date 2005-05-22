@@ -15,9 +15,9 @@
 - (id) initWithField: (NSString *) fieldName lowerTerm: (NSString *) lowerTerm
 		   upperTerm: (NSString *) upperTerm includeLower: (BOOL) includeLower
 		includeUpper: (BOOL) includeUpper;
-+ (LCRangeFilter) less: (NSString *) fieldName upperTerm: (NSString *) upperTerm;
-+ (LCRangeFilter) more: (NSString *) fieldName lowerTerm: (NSString *) lowerTerm;
-- (LCBitSet *) bits: (LCIndexReader *) reader;
++ (LCRangeFilter *) less: (NSString *) fieldName upperTerm: (NSString *) upperTerm;
++ (LCRangeFilter *) more: (NSString *) fieldName lowerTerm: (NSString *) lowerTerm;
+- (LCBitVector *) bits: (LCIndexReader *) reader;
 
 @end
 
