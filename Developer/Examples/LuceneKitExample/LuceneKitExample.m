@@ -195,6 +195,7 @@ void show_help()
   printf("--path PATH: Index and search text file (.txt) under PATH.\n");
   printf("             Default: under current directory (./).\n");
   printf("query: search terms. Use '+' for must-have, '-' for must-not-have.\n");
-  printf("Example: Programming +GNUstep -Cocoa\n");
-  printf("No space and quotation allowed, ex. +\"Mac Cocoa\"\n");
+  printf("Example: zoo -elephant +panda\n");
+  printf("No space and quotation allowed, ex. +\"great panda \"\n");
+  printf("Due to the analyzer used, all search terms must be lowercase.\n");
 }
