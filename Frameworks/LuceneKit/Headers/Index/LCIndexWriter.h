@@ -113,7 +113,7 @@
 - (void) close;
 - (id <LCDirectory>) directory;
 - (LCAnalyzer *) analyzer;
-- (int) documentCount;
+- (int) numberOfDocuments;
 - (void) addDocument: (LCDocument *) doc;
 - (void) addDocument: (LCDocument *) doc
 			analyzer: (LCAnalyzer *) analyzer;

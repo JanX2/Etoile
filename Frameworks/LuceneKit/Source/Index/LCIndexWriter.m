@@ -349,7 +349,7 @@ An IndexWriter creates and maintains an index.
 
 
 /** Returns the number of documents currently in this index. */
-- (int) documentCount
+- (int) numberOfDocuments
 {
 	int i, count = 0;
 	LCSegmentInfo *si;

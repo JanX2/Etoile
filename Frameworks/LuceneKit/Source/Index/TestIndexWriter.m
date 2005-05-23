@@ -38,7 +38,7 @@
 	for (i = 0; i < total; i++) {
 		[self addDoc: writer];
 	}
-	UKIntsEqual(total, [writer documentCount]);
+	UKIntsEqual(total, [writer numberOfDocuments]);
 	[writer close];
 	
 	// delete 40 documents
@@ -53,7 +53,7 @@
 	writer = [[LCIndexWriter alloc] initWithDirectory: dir
 											 analyzer: [[LCWhitespaceAnalyzer alloc] init]
 											   create: NO];
-	UKIntsEqual(total, [writer documentCount]);
+	UKIntsEqual(total, [writer numberOfDocuments]);
 	[writer close];
 	
 	reader = [LCIndexReader openDirectory: dir];
@@ -66,7 +66,7 @@
 											 analyzer: [[LCWhitespaceAnalyzer alloc] init]
 											   create: NO]; 
 	[writer optimize];
-	UKIntsEqual(total-40, [writer documentCount]);
+	UKIntsEqual(total-40, [writer numberOfDocuments]);
 	[writer close];
 	
 	// check that the index reader gives the same numbers.
