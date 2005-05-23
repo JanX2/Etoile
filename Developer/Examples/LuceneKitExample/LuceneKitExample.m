@@ -88,7 +88,7 @@ int main (int argc, const char * argv[]) {
       if ([[args objectAtIndex: i] hasPrefix: @"+"]) {
         occur = LCOccur_MUST;
         ASSIGN(text, [[args objectAtIndex: i] substringFromIndex: 1]);
-      } else if ([[args objectAtIndex: i] hasPrefix: @"+"]) {
+      } else if ([[args objectAtIndex: i] hasPrefix: @"-"]) {
         occur = LCOccur_MUST_NOT;
         ASSIGN(text, [[args objectAtIndex: i] substringFromIndex: 1]);
       } else {
