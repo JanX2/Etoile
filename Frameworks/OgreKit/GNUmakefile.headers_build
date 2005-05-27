@@ -1,0 +1,11 @@
+#Make a temporary directory in order to have library/bundle complied
+
+before-all:: 
+	if [ ! -h "OgreKit" ]; then \
+	  $(LN_S) Headers OgreKit; \
+	fi;
+
+after-clean::
+	if [ -h "OgreKit" ]; then \
+	  rm OgreKit; \
+	fi;

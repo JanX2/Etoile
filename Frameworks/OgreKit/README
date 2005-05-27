@@ -1,0 +1,54 @@
+OgreKit (GNUstep port)
+==============
+
+OgreKit is a regular expression library written in Objective-C in Cocoa.
+It use OniGuruma as regular expression engine.
+
+This is a GNUstep port of OgreKit 2.0.1 <http://www8.ocn.ne.jp/~sonoisa/OgreKit/>.
+
+Original licence of OgreKit is BSD License.
+This port use also BSD license.
+
+Maintainer: Yen-Ju Chen <yjchenx at_ gmail __dot com>
+Author: Yen-Ju Chen
+
+To know more about OgreKit: 
+<http://www.dromasoftware.com/etoile/mediawiki/index.php?title=OgreKit>
+
+
+Build and Install
+-----------------
+
+Read INSTALL document.
+
+
+Mac OS X support
+----------------
+
+Please use original OgreKit unless portability is considered.
+OgreKit (GNUstep port) is compatible with Cocoa.
+
+Developers notes
+================
+
+Tests suite
+-----------
+
+UnitKit (bundled with Etoile) is required.
+
+   Steps to produce a test bundle and run tests suite:
+
+    * make test=yes 
+
+    * ukrun OgreKit.bundle
+
+Depedency
+---------
+
+OniGuruma <http://www.geocities.jp/kosako3/oniguruma/>
+
+Contribute 
+----------
+
+Read TODO document.
+
