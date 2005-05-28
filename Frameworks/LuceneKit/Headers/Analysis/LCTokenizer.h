@@ -3,8 +3,7 @@
 
 #include <Foundation/Foundation.h>
 #include <LuceneKit/Analysis/LCTokenStream.h>
-
-@protocol LCReader;
+#include <LuceneKit/Java/LCReader.h>
 
 @interface LCTokenizer: LCTokenStream
 {
