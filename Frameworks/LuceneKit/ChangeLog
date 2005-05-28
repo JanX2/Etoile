@@ -4,6 +4,8 @@
 	remove dependency of UnitKit while make LuceneKit as library.
 	* Headers/Analysis/LCTokenizer.h:
 	include LCReader protocol correctly.
+	* Source/Util/NSData+Additions.m:
+	add new line in the end of file.
 
 2005-05-22 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
