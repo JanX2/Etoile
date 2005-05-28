@@ -5,8 +5,8 @@ SUBPROJECT_NAME = LuceneKit_Source
 LuceneKit_Source_SUBPROJECTS = \
 	Search \
 	Index \
-	Analysis \
 	Document \
+	Analysis \
 	Util \
 	Store \
 	Java

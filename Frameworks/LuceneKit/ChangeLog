@@ -1,3 +1,8 @@
+2005-05-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* GNUmakefile:
+	remove dependency of UnitKit while make LuceneKit as library.
+
 2005-05-22 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Headers/Index/LCIndexWriter.h

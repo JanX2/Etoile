@@ -51,7 +51,7 @@
     [doc addField: stringFldCompressed];
     
     /** test for field count */
-	UKIntsEqual(4, [[doc fields] count]);
+    UKIntsEqual(4, [[doc fields] count]);
     
     /** add the doc to a ram index */
     LCRAMDirectory *dir = [[LCRAMDirectory alloc] init];

@@ -156,6 +156,8 @@
 - (void) initWithSegmentInfo: (LCSegmentInfo *) si
 {
 	ASSIGN(segment, [si name]);
+	if ((segment == nil) && ([segment length] == 0))
+		NSLog(@"Error: nil segment");
 	// Use compound file directory for some files, if it exists
 	id <LCDirectory> cfsDir = nil;
 	ASSIGN(cfsDir, [self directory]);
