@@ -6,6 +6,8 @@
 	include LCReader protocol correctly.
 	* Source/Util/NSData+Additions.m:
 	add new line in the end of file.
+	* Source/Index/LCTermVectorOffsetInfo.m:
+	use id instead of NSObject for -isEqual:.
 
 2005-05-22 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

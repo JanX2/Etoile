@@ -30,7 +30,7 @@
 	startOffset = so;
 }
 
-- (BOOL) isEqual: (NSObject *) o
+- (BOOL) isEqual: (id) o
 {
 	if (self == o) return YES;
 	if ([o isKindOfClass: [LCTermVectorOffsetInfo class]] == NO) return NO;
