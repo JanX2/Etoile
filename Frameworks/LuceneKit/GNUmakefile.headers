@@ -21,6 +21,7 @@ LuceneKit_HEADER_FILES = \
 	Util/LCBitVector.h \
 	Util/LCPriorityQueue.h \
 	Util/NSString+Additions.h \
+	Util/NSData+Additions.h \
 	Store/Store.h \
 	Store/LCDirectory.h \
 	Store/LCFSDirectory.h \
