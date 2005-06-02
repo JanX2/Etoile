@@ -168,6 +168,11 @@
 Returns a stream writing this file. */
 - (LCIndexOutput *) createOutput: (NSString *) name
 {
+//FIXME: should delete old file and create new one.
+/*  File file = new File(directory, name);
+ 	     if (file.exists() && !file.delete())          // delete existing, if any
+	      	       throw new IOException("Cannot overwrite: " + file);
+		       */
 	NSString *p = [path stringByAppendingPathComponent: name];
 	LCFSIndexOutput *output = [[LCFSIndexOutput alloc] initWithFile: p];
 	return AUTORELEASE(output);

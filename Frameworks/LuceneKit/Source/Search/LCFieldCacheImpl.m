@@ -157,6 +157,21 @@ static int LCFieldCache_STRING_INDEX = -1;
 	//    }
 }
 
+#if 0 // FIXME
+   private static final IntParser INT_PARSER = new IntParser() {
+    	       public int parseInt(String value) {
+	        	         return Integer.parseInt(value);
+				  	       }
+					        	     };
+							      	 
+								  	   private static final FloatParser FLOAT_PARSER = new FloatParser() {
+									    	       public float parseFloat(String value) {
+										        	         return Float.parseFloat(value);
+													  	       }
+														        	     };
+																     #endif
+
+// FIXME: Need to re-implement with curretn Lucene with parser.
 - (NSDictionary *) ints: (LCIndexReader *) reader field: (NSString *) field
 {
 	id ret = [self lookup: reader field: field type: LCSortField_INT];
@@ -190,6 +205,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 	return ret;
 }
 
+// FIXME: Need to re-implement with current Lucene and parser
 - (NSDictionary *) floats: (LCIndexReader *) reader field: (NSString *) field
 {
 	id ret = [self lookup: reader field: field type: LCSortField_FLOAT];

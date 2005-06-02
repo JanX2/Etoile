@@ -33,6 +33,7 @@ An IndexWriter creates and maintains an index.
 - (void) flushRamSegments;
 - (void) maybeMergeSegments;
 - (void) mergeSegments: (int) minSegment;
+- (void) mergeSegments: (int) minSegment size: (int) end;
 - (void) deleteSegments: (NSArray *) segments;
 - (void) deleteFiles: (NSArray *) files;
 - (void) deleteFiles: (NSArray *) files directory: (id <LCDirectory>) dir;
@@ -431,6 +432,7 @@ for search. */
 - (void) addIndexesWithDirectories: (NSArray *) dirs
 {
 	[self optimize];	  // start with zero or 1 seg
+	int start = [segmentInfos numberOfSegments];
 	int i;
 	for (i = 0; i < [dirs count]; i++) {
 		LCSegmentInfos *sis = [[LCSegmentInfos alloc] init];  // read infos from dir
@@ -441,6 +443,16 @@ for search. */
 		}
 		DESTROY(sis);
 	}
+	// FIXME: optimize
+	/* 
+	while (segmentInfos.size() > start+mergeFactor) {
+	 	       for (int base = start+1; base < segmentInfos.size(); base++) {
+		        	         int end = Math.min(segmentInfos.size(), base+mergeFactor);
+					  	         if (end-base > 1)
+							  	           mergeSegments(base, end);
+									    	       }
+										        	     }
+												     */
 	[self optimize];					  // final cleanup
 }
 
@@ -564,6 +576,11 @@ for search. */
 and pushes the merged index onto the top of the segmentInfos stack. */
 - (void) mergeSegments: (int) minSegment
 {
+	[self mergeSegments: minSegment size: [segmentInfos numberOfSegments]];
+}
+
+- (void) mergeSegments: (int) minSegment size: (int) end
+{
 	NSString *mergedName = [self newSegmentName];
 	//    if (infoStream != nil) infoStream.print("merging segments");
 	LCSegmentMerger *merger = [[LCSegmentMerger alloc] initWithIndexWriter: self
@@ -573,7 +590,7 @@ and pushes the merged index onto the top of the segmentInfos stack. */
 	int i;
 	LCSegmentInfo *si = nil;
 	LCIndexReader *reader = nil;
-	for (i = minSegment; i < [segmentInfos numberOfSegments]; i++) {
+	for (i = minSegment; i < end; i++) {
 		
 		si = [segmentInfos segmentInfoAtIndex: i];
 		reader = [LCSegmentReader segmentReaderWithInfo: si];
@@ -584,8 +601,9 @@ and pushes the merged index onto the top of the segmentInfos stack. */
 	}
 	int mergedDocCount = [merger merge];
 	
-	NSRange r = NSMakeRange(minSegment, [segmentInfos numberOfSegments]-minSegment);
+	NSRange r = NSMakeRange(minSegment, end-minSegment);
 	[segmentInfos removeSegmentsInRange: r]; // pop old infos & add new
+
 	[segmentInfos addSegmentInfo: AUTORELEASE([[LCSegmentInfo alloc] initWithName: mergedName
 																numberOfDocuments: mergedDocCount directory: directory])];
     // close readers before we attempt to delete now-obsolete segments

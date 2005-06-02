@@ -1,3 +1,9 @@
+2005-06-02 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Source/Index/LCIndexWriter.m:
+	* Source/Store/LCFSDirectory.m:
+	Update to Lucene SVN (179620).
+
 2005-06-01 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Index/LCSegmentInfos.m:
