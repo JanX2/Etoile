@@ -1,3 +1,8 @@
+2005-06-01 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Source/Index/LCSegmentInfos:
+	Fix bug on Linux. Not sure why it causes problem.
+
 2005-05-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* GNUmakefile:

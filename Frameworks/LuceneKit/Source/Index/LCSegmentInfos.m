@@ -48,7 +48,8 @@
 	
 	long i;
 	for (i = [input readInt]; i > 0; i--) { // read segmentInfos
-        LCSegmentInfo *si = [[LCSegmentInfo alloc] initWithName: [input readString]
+		NSString *is = [input readString];
+        LCSegmentInfo *si = [[LCSegmentInfo alloc] initWithName: is
 											  numberOfDocuments: [input readInt]
 													  directory: directory];
 		[segments addObject: si];
