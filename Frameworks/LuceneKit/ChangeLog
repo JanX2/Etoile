@@ -1,7 +1,11 @@
 2005-06-01 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
-	* Source/Index/LCSegmentInfos:
+	* Source/Index/LCSegmentInfos.m:
 	Fix bug on Linux. Not sure why it causes problem.
+	* Source/Index/LCTerm.m:
+	Deal situation of nil LCTerm.
+	* GNUmakefile:
+	Fix typo for test units.
 
 2005-05-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

@@ -12,16 +12,14 @@ LuceneKit_SUBPROJECTS = Source
 
 ifeq ($(FOUNDATION_LIB), apple)
 	LuceneKit_OBJC_LIBS = -lz
+	ifeq ($(test), yes)
+		LuceneKit_OBJC_LIBS += -framework UnitKit
+	endif
 else
 	#LuceneKit_OBJC_LIBS = -lgnustep-base
 	LuceneKit_LDFLAGS = -lgnustep-base -lz
-endif
-
-ifeq ($(test), yes)
-	ifeq ($(FOUNDATION_LIB), apple)
-		LuceneKit_OJBC_LIBS += -framework UnitKit
-	else
-		LuceneKit_LDFLAGS += -UnitKit
+	ifeq ($(test), yes)
+		LuceneKit_LDFLAGS += -lUnitKit
 	endif
 endif
 

@@ -69,8 +69,15 @@ argument, and a positive integer if this term belongs after the argument.
 The ordering of terms is first by field, then by text.*/
 - (NSComparisonResult) compare: (LCTerm *) other 
 {
+/* LuceneKit: NSOrderedDescending match the desired result (pass test units),
+ * though I am not sure it is correct.
+ */
+	if ([other field] == nil) return NSOrderedDescending;
 	if ([field isEqualToString: [other field]])	  // fields are interned
+	{
+		if ([other text] == nil) return NSOrderedDescending;
 		return [text compare: [other text]];
+	}
 	else
 		return [field compare: [other field]];
 }

@@ -118,7 +118,7 @@
 - (void) scanTo: (LCTerm *) term
 {
 	if (scratch == nil)
-		scratch = [[LCTermBuffer alloc] init];
+		ASSIGN(scratch, AUTORELEASE([[LCTermBuffer alloc] init]));
 	[scratch setTerm: term];
 	while (([scratch compare: termBuffer] == NSOrderedDescending) && [self next]) {}
 }
