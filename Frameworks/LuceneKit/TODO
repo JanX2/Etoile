@@ -1,7 +1,7 @@
 LuceneKit TODO
 ==============
 
-    * Support compression in LCDocument (zlib).
+    * Implement all FIXME.
     * Move private methods into category in class implementation 
     to reduce the headers.
     * Lock and Multithread.
@@ -14,3 +14,4 @@ LuceneKit TODO
 	org.apache.lucene.search.ParallelMultiSearcher
 	org.apache.lucene.index.ParallelReader
 
+    * Support compression in LCDocument (zlib). ** Done ! **

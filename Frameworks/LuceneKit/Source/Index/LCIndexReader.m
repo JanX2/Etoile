@@ -141,6 +141,7 @@ rely on a given document having the same number between sessions.
  * @return version number.
  * @throws IOException if segments file cannot be read
  */
+ /* FIXME: LuceneKit: deprecated */
 + (long) currentVersionAtPath: (NSString *) path
 {
 	id <LCDirectory> dir = [LCFSDirectory getDirectory: path create: NO];
@@ -157,10 +158,28 @@ rely on a given document having the same number between sessions.
  * @return version number.
  * @throws IOException if segments file cannot be read.
  */
+ /* FIXME: LuceneKit: deprecated */
 + (long) currentVersionWithDirectory: (id <LCDirectory>) dir
 {
 	return [LCSegmentInfos currentVersion: dir];
 }
+
+#if 0 // FIXME: LuceneKit
+  /**
+   	    * Check whether this IndexReader still works on a current version of the index.
+	     	    * If this is not the case you will need to re-open the IndexReader to
+		     	    * make sure you see the latest changes made to the index.
+			     	    *
+				     	    * @throws IOException
+					     	    */
+						     	   public boolean isCurrent() throws IOException {
+							    	     if (SegmentInfos.readCurrentVersion(directory) != segmentInfos.getVersion()) {
+								      	       return false;
+									        	     }
+											      	     return true;
+												      	   }
+													    	 
+														 #endif
 
 /**
 *  Return an array of term frequency vectors for the specified document.
