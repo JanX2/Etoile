@@ -3,6 +3,10 @@
 	* Source/Index/LCIndexReader.m:
 	* Source/Store/LCSegmentInfos.m:
 	Update to Lucene SVN (180066).
+	* Headers/Util/Util.h:
+	Add NSData+Additions.h
+	* Source/Search/LCDefaultSimilarity.m:
+	Add math.h to fix a weird bug on Linux (wrong result from log()).
 
 2005-06-02 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
