@@ -83,8 +83,8 @@ int main (int argc, const char * argv[]) {
     int i;
     for (i = 0; i < [args count]; i++)
     {
-      LCOccurType occur;
-      NSString *text;
+      LCOccurType occur = LCOccur_SHOULD;
+      NSString *text = nil;
       if ([[args objectAtIndex: i] hasPrefix: @"+"]) {
         occur = LCOccur_MUST;
         ASSIGN(text, [[args objectAtIndex: i] substringFromIndex: 1]);
