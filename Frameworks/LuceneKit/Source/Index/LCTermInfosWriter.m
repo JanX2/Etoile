@@ -129,7 +129,11 @@ TermInfo pointers must be positive and greater than all previous.*/
 		/* FIXME: lucene doesn't care this */
 		if (size == 0)
 		{
+		#if 1
 			[other addTerm: term termInfo: ti];
+		#else
+			[other addTerm: [[LCTerm alloc] init] termInfo: lastTi];
+		#endif
 		}
 		else
 			[other addTerm: lastTerm termInfo:  lastTi];     // add an index term

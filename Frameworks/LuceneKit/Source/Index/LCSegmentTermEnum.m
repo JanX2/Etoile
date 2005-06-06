@@ -127,13 +127,13 @@
 Initially invalid, valid after next() called for the first time.*/
 - (LCTerm *) term
 {
-    return termBuffer;
+    return AUTORELEASE([termBuffer copy]);
 }
 
 /** Returns the previous Term enumerated. Initially null.*/
 - (LCTerm *) prev
 {
-    return prevBuffer;
+    return AUTORELEASE([prevBuffer copy]);
 }
 
 /** Returns the current TermInfo in the enumeration.

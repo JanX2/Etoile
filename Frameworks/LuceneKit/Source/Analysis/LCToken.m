@@ -120,4 +120,9 @@ last character corresponding to this token in the source text. */
 	return type; 
 }
 
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"LCToken<0x%x> %@", self, termText];
+}
+
 @end
