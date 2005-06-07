@@ -472,11 +472,12 @@
 			int j;
 			for (j = 0; j < [readers count]; j++) {
 				LCIndexReader *reader = (LCIndexReader *) [readers objectAtIndex: j];
-				int maxDoc = [reader maximalDocument];
+
 				NSMutableData *input = [[NSMutableData alloc] init];
 				[reader setNorms: [fi name] bytes: input offset: 0];
 				int k;
 				char *bytes = (char *)[input bytes];
+				int maxDoc = [input length];
 				for (k = 0; k < maxDoc; k++) {
 					if (![reader isDeleted: k]) {
 						[output writeByte: bytes[k]];
