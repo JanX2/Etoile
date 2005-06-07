@@ -133,6 +133,33 @@ rely on a given document having the same number between sessions.
 	return directory; 
 }
 
+#if 0 // FIXME
+public static long lastModified(String directory) throws IOException {
+     return lastModified(new File(directory));
+        }	   }
+	  public static long lastModified(File directory) throws IOException {
+  return FSDirectory.fileModified(directory, Constants.INDEX_SEGMENTS_FILENAME);
+	          }	   }
+		  public static long lastModified(Directory directory) throws IOException {
+		       return directory.fileModified(Constants.INDEX_SEGMENTS_FILENAME);
+		          }	   }
+
+public static long getCurrentVersion(String directory) throws IOException {
+     return getCurrentVersion(new File(directory));
+        }	   }
+
+	public static long getCurrentVersion(Directory directory) throws IOException {
+	     return SegmentInfos.readCurrentVersion(directory);	     return SegmentInfos.readCurrentVersion(directory);
+	      	   }
+		    	 
+			  	   /**
+				    	    * Version number when this IndexReader was opened.
+					     	    */
+						     	   public long getVersion() {
+							    	     return segmentInfos.getVersion();
+								        }	   }
+#endif
+
 /**
 * Reads version number from segments files. The version number counts the
  * number of changes of the index.

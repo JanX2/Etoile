@@ -34,21 +34,17 @@
 
 - (float) score
 {
-	if (!resolved) [self fetchTheHit];
-	return score;
+	return [hits score: hitNumber];
 }
 
 - (int) identifier
 {
-	if (!resolved) [self fetchTheHit];
-	return identifier;
+	return [hits identifier: hitNumber];
 }
 
 - (void) fetchTheHit
 {
 	doc = [hits document: hitNumber];
-	score = [hits score: hitNumber];
-	identifier = [hits identifier: hitNumber];
 	resolved = YES;
 }
 

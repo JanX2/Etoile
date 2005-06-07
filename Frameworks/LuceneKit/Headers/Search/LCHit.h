@@ -8,8 +8,6 @@
 
 @interface LCHit: NSObject
 {
-	float score;
-	int identifier;
 	LCDocument *doc;
 	BOOL resolved;
 	LCHits *hits;

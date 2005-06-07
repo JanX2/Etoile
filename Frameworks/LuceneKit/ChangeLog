@@ -1,7 +1,10 @@
 2005-06-07 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Index/LCSegmentMerger.m: 
-	initialize maxDoc correctly (patched by Quentin).
+	Initialize maxDoc correctly (patched by Quentin).
+	* Source/Headers/LCHit.m: 
+	* Source/Search/LCHit.m: 
+	Update to Apache Lucene SVN.
 
 2005-06-05 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
