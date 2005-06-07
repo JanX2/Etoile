@@ -1,3 +1,9 @@
+2005-06-07  Quentin Mathe <qmathe@club-internet.fr>
+	
+	Warning! pmkfile not usable (unlike GNUmakefile now).
+	* GNUmakefile: Updated to force UnitKit build with 'developer-base=no' 
+	when 'make test=yes' is used.
+
 2005-05-21  Quentin Mathe <qmathe@club-internet.fr>
 	
 	Warning! pmkfile not usable (unlike GNUmakefile now).
