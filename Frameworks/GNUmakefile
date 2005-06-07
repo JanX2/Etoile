@@ -73,31 +73,33 @@ ifeq ($(developer-base), yes)
     export unitkit ?= yes
 
 endif
+
+ifeq ($(test), yes)
+    
+    export unitkit ?= yes
+
+endif
   
 #
 # Subprojects choice
 #
 
 #
-# desktop-base
+# developer-base
 #
 
-ifeq ($(bookmarkkit), yes)
-   SUBPROJECTS += BookmarkKit
-endif
-
-ifeq ($(iconkit), yes)
-   SUBPROJECTS += IconKit
-endif
-
-ifeq ($(preferenceskit), yes)
-   #SUBPROJECTS += PreferencesKit
+# We need to build UnitKit first because other frameworks may depend on it 
+# (with 'make test=yes').
+ifeq ($(unitkit), yes)
+   SUBPROJECTS += UnitKit 
 endif
 
 #
 # etoile-extensions
 #
-    
+
+# We need to build EtoileExtensionsKit first because other frameworks like 
+# ExtendedWorkspaceKit, PreferencesKit depend on it.
 ifeq ($(etoileextensionskit), yes)
     SUBPROJECTS += EtoileExtensionsKit
 endif
@@ -119,11 +121,19 @@ ifeq ($(trackerkit), yes)
 endif
 
 #
-# developer-base
+# desktop-base
 #
 
-ifeq ($(unitkit), yes)
-   SUBPROJECTS += UnitKit
+ifeq ($(bookmarkkit), yes)
+   SUBPROJECTS += BookmarkKit
+endif
+
+ifeq ($(iconkit), yes)
+   SUBPROJECTS += IconKit
+endif
+
+ifeq ($(preferenceskit), yes)
+   #SUBPROJECTS += PreferencesKit
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

@@ -26,7 +26,7 @@
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
-ADDITIONAL_OBJCFLAGS = -Wno-import
+ADDITIONAL_OBJCFLAGS += -Wno-import
 
 #
 # Main application
@@ -83,8 +83,12 @@ libServicesBarKit_OBJC_FILES = \
 #
 libServicesBarKit_C_FILES = 
 
+-include GNUmakefile.preamble
+
 ifeq ($(test), yes)
 include $(GNUSTEP_MAKEFILES)/bundle.make
 else
 include $(GNUSTEP_MAKEFILES)/library.make
 endif
+
+-include GNUmakefile.postamble
