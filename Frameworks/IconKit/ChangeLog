@@ -1,3 +1,13 @@
+2005-06-14  Quentin Mathe <qmathe@club-internet.fr>
+    
+    WARNING: many tests fail
+    * GNUmakefile.postamble:
+    * GNUmakefile.preamble:
+    Added (in order to allow compilation with 'make test=yes' from parent
+    directories when UnitKit isn't already installed).
+    * GNUmakefile: Updated to include GNUmakefile.preamble and
+    GNUmakefile.postamble.
+
 2005-05-15  Quentin Mathe <qmathe@club-internet.fr>
     
     WARNING: many tests fail

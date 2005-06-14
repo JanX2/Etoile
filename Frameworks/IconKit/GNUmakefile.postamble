@@ -1,9 +1,9 @@
 #
-#	GNUmakefile
+#	GNUmakefile.postamble
 #
 #	Makefile for IconKit
 #
-#	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
+#	Copyright (C) 2005 Quentin Mathe <qmathe@club-internet.fr>
 #
 #	This Makefile is free software; you can redistribute it and/or
 #	modify it under the terms of the GNU General Public License
@@ -24,14 +24,19 @@
 #		Boston, MA  02111-1307, USA
 #
 
-PACKAGE_NAME = IconKit
+before-all::
+	@echo "Project: $(PROJECT_DIR)"
+	if [ "$(test)" = "yes" ]; then \
+	rm -f $(PROJECT_DIR)/UnitKit; \
+	$(LN_S) $(PROJECT_DIR)/../UnitKit/Source/FrameworkSource $(PROJECT_DIR)/UnitKit; \
+	fi;
 
-include $(GNUSTEP_MAKEFILES)/common.make
+after-all::
 
-SUBPROJECTS = Source
+after-clean::
+	if [ "$(test)" = "yes" ]; then \
+	rm -f $(PROJECT_DIR)/UnitKit; \
+	fi;
 
--include GNUmakefile.preamble
+after-distclean::
 
-include $(GNUSTEP_MAKEFILES)/aggregate.make
-
--include GNUmakefile.postamble

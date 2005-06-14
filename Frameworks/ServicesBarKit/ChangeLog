@@ -1,3 +1,9 @@
+2005-06-147  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * GNUmakefile.postamble:
+    * GNUmakefile.preamble: 
+    Updated to match changes in IconKit and LuceneKit.
+
 2005-06-07  Quentin Mathe <qmathe@club-internet.fr>
     
 	* GNUmakefile.postamble:

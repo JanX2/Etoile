@@ -1,3 +1,11 @@
+2005-06-14  Quentin Mathe <qmathe@club-internet.fr>
+
+    * GNUmakefile.postamble: Added.
+    * GNUmakefile.preamble:
+    Fixed in order to allow compilation with 'make test=yes' from parent
+    directories when UnitKit isn't already installed, and to avoid symbolic
+    links to UnitKit source directory replicated at each subproject level.
+
 2005-06-07 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/Index/LCSegmentMerger.m: 
