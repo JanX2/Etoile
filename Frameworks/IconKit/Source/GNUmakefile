@@ -109,7 +109,7 @@ libIconKit_HEADER_FILES = \
 	IKWorkspaceAdditions.h	
 endif
 	
--include GNUmakefile.preamble
+-include ../GNUmakefile.preamble
 
 ifeq ($(test), yes)
 include $(GNUSTEP_MAKEFILES)/bundle.make
@@ -117,4 +117,4 @@ else
 include $(GNUSTEP_MAKEFILES)/library.make
 endif
 
--include GNUmakefile.postamble
+-include ../GNUmakefile.postamble

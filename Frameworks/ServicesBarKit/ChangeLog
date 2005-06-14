@@ -1,4 +1,12 @@
-2005-06-147  Quentin Mathe <qmathe@club-internet.fr>
+2005-06-14  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * GNUmakefile.postamble: Inserted missing white space.
+    * SBServicesBar.h:
+    * SBServicesBarItem.h:
+    Replaced UnitKit import directive with '@protocol UKTest' declaration in 
+    order to avoid UnitKit dependency when we are making a standard build.
+
+2005-06-14  Quentin Mathe <qmathe@club-internet.fr>
     
     * GNUmakefile.postamble:
     * GNUmakefile.preamble: 

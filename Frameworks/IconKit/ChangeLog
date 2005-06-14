@@ -1,6 +1,12 @@
 2005-06-14  Quentin Mathe <qmathe@club-internet.fr>
     
     WARNING: many tests fail
+    * Source/GNUmakefile: Updated to include correctly GNUmakefile.preamble and
+    GNUmakefile.postamble.
+
+2005-06-14  Quentin Mathe <qmathe@club-internet.fr>
+    
+    WARNING: many tests fail
     * GNUmakefile.postamble:
     * GNUmakefile.preamble:
     Added (in order to allow compilation with 'make test=yes' from parent
