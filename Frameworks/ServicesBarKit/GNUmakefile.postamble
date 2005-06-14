@@ -25,13 +25,18 @@
 #
 
 before-all::
-	rm -f $(CURDIR)/UnitKit
-	$(LN_S) $(CURDIR)/../UnitKit/Source/FrameworkSource $(CURDIR)/UnitKit
+	@echo "Project: $(PROJECT_DIR)"
+	if [ "$(test)" = "yes" ]; then \
+	rm -f $(PROJECT_DIR)/UnitKit; \
+	$(LN_S) $(PROJECT_DIR)/../UnitKit/Source/FrameworkSource
+$(PROJECT_DIR)/UnitKit; \
+	fi;
 
 after-all::
 
 after-clean::
-	rm -f $(CURDIR)/UnitKit
+	if [ "$(test)" = "yes" ]; then \
+	rm -f $(PROJECT_DIR)/UnitKit; \
+	fi;
 
 after-distclean::
-
