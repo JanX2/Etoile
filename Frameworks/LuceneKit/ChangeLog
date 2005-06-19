@@ -1,3 +1,11 @@
+2005-06-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Headers/Store/LCFSIndexInput.h
+    * Headers/Store/LCFSIndexOutput.h
+    * Source/Store/LCFSIndexInput.m
+    * Source/Store/LCFSIndexOutput.m:
+    Prevent close NSFileHandle twice.
+
 2005-06-17  Quentin Mathe <qmathe@club-internet.fr>
 
     * Headers/Store/LCMMapDirectory.h:

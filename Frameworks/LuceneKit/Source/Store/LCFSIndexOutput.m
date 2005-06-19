@@ -3,6 +3,13 @@
 
 @implementation LCFSIndexOutput
 
+- (id) init
+{
+	self = [super init];
+	isClosed = YES;
+	return self;
+}
+
 - (id) initWithFile: (NSString *) absolutePath
 {
 	self = [self init];
@@ -33,6 +40,7 @@
 		NSLog(@"File %@ doesn't exist", path);
 		return nil;
 	}
+	isClosed = NO;
 	
 	return self;
 }
@@ -58,7 +66,11 @@
 
 - (void) close
 {
-	[handle closeFile];
+	if (isClosed == NO)
+	{
+		[handle closeFile];
+		isClosed = YES;
+	}
 }
 
 - (unsigned long long) filePointer

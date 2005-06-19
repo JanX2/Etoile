@@ -7,6 +7,7 @@
 {
 	NSFileHandle *handle;
 	NSString *path;
+	BOOL isClosed;
 }
 
 - (id) initWithFile: (NSString *) absolutePath;

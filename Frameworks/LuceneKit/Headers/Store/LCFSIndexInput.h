@@ -8,6 +8,7 @@
 	NSFileHandle *handle;
 	NSString *path;
 	unsigned long long length;
+	BOOL isClosed;
 }
 
 - (id) initWithFile: (NSString *) absolutePath;

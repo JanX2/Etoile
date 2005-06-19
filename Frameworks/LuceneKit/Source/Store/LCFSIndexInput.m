@@ -1,13 +1,25 @@
 #include <LuceneKit/Store/LCFSIndexInput.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
+@interface LCFSIndexInput (LCPrivate)
+- (void) setClosed: (BOOL) isClosed;
+@end
+
 @implementation LCFSIndexInput
 
 - (id) copyWithZone: (NSZone *) zone;
 {
 	LCFSIndexInput *clone = [[LCFSIndexInput allocWithZone: zone] initWithFile: path];
 	[clone seek: [self filePointer]];
+	[clone setClosed: isClosed];
 	return clone;
+}
+
+- (id) init
+{
+  self = [super init];
+  isClosed = YES;
+  return self;
 }
 
 - (id) initWithFile: (NSString *) absolutePath
@@ -15,6 +27,7 @@
 	self = [self init];
 	ASSIGN(path, absolutePath);
 	ASSIGN(handle, [NSFileHandle fileHandleForReadingAtPath: absolutePath]);
+	isClosed = NO;
 	NSFileManager *manager = [NSFileManager defaultManager];
 	NSDictionary *d = [manager fileAttributesAtPath: absolutePath
 									   traverseLink: YES];
@@ -59,7 +72,11 @@
 /** IndexInput methods */
 - (void) close
 {
-	[handle closeFile];
+	if (isClosed == NO)
+	{
+		[handle closeFile];
+		isClosed = YES;
+	}
 }
 
 - (unsigned long long) length
@@ -73,6 +90,11 @@
 	DESTROY(handle);
 	DESTROY(path);
 	[super dealloc];
+}
+
+- (void) setClosed: (BOOL) c
+{
+	isClosed = c;
 }
 
 @end
