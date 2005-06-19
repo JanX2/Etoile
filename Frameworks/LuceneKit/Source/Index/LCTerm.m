@@ -11,10 +11,18 @@ A Term represents a word from text.  This is the unit of search.  It is
 
 @implementation LCTerm
 
+- (id) init
+{
+  self = [super init];
+  [self setField: @""];
+  [self setText: @""];
+  return self;
+}
+
 /** Constructs a Term with the given field and text. */
 - (id) initWithField: (NSString *) fld text: (NSString *) txt
 {
-	self = [super init];
+	self = [self init];
 	[self setField: fld];
 	[self setText: txt];
 	return self;

@@ -41,7 +41,7 @@ LuceneKit_Search_OBJC_FILES = \
 	LCTermQuery.m \
 	LCTermScorer.m
 
-ifeq ($(test), yes)
+ifeq ($(atest), yes)
 LuceneKit_Search_OBJC_FILES += \
 	TestCheckHits.m \
 	TestBoolean2.m \

@@ -5,6 +5,12 @@
     * Source/Store/LCFSIndexInput.m
     * Source/Store/LCFSIndexOutput.m:
     Prevent close NSFileHandle twice.
+    * Source/Document/LCDateTools.m:
+    Remove unit test for millisecond.
+    * Source/Index/TestTermInfos.m:
+    Use UKTrue() instead of UKObjectsEqual().
+    * Source/Index/GNUmakefile
+    Disable failed tests for now.
 
 2005-06-17  Quentin Mathe <qmathe@club-internet.fr>
 

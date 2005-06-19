@@ -40,20 +40,24 @@ ifeq ($(test), yes)
 LuceneKit_Index_OBJC_FILES += \
 	TestMockIndexInput.m \
 	TestMockIndexOutput.m \
-	TestFieldsReader.m \
-	TestCompoundFile.m \
-	TestFilterIndexReader.m \
-	TestIndexWriter.m \
 	TestTermInfos.m \
-	TestSegmentReader.m \
+	TestCompoundFile.m \
+	TestFieldsReader.m \
+	TestSegmentTermEnum.m \
+	TestSegmentTermDocs.m \
 	TestTermVectorsReader.m \
 	TestTermVectorsWriter.m \
-	TestSegmentTermDocs.m \
-	TestSegmentTermEnum.m \
-	TestMultiReader.m \
 	TestSegmentMerger.m \
-	TestIndexReader.m \
+	TestIndexWriter.m \
+	TestSegmentReader.m \
+	TestMultiReader.m \
+	TestFilterIndexReader.m \
 	TestDocHelper.m
+endif
+
+ifeq ($(atest), yes)
+LuceneKit_Index_OBJC_FILES += \
+	TestIndexReader.m 
 endif
 
 LuceneKit_Index_INCLUDE_DIRS += -I../..

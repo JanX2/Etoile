@@ -106,7 +106,8 @@
     for (i = 0; i < [keys count]; i++) {
 		[enumerator next];
 		LCTerm *key = (LCTerm *)[keys objectAtIndex: i];
-		UKObjectsEqual(key, [enumerator term]);
+//		UKObjectsEqual(key, [enumerator term]); // Doesn't work
+		UKTrue([key isEqual: [enumerator term]]);
 		
 		LCTermInfo *ti = [enumerator termInfo];
 		UKIntsEqual([ti documentFrequency], [[docFreqs objectAtIndex: i] intValue]);
