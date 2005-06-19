@@ -52,6 +52,9 @@ int main (int argc, const char * argv[]) {
       /* Only deal with text file */
       if ([[file pathExtension] isEqualToString: @"txt"])
         {
+          /* Build complete path by appending file name to 'source' */
+          file = [source stringByAppendingPathComponent: file];
+
           LCDocument *doc = [[LCDocument alloc] init];
           /* <5> Add each LCField into LCDocument */
           /* Filename is a keyword. Stored and Untokenized. */
