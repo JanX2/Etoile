@@ -46,6 +46,7 @@
 
 - (void) _addDocWithDiffFields: (LCIndexWriter *) writer
 {
+NSLog(@"_addDocWithDiffFields: %@", writer);
 	LCDocument *doc = [[LCDocument alloc] init];
 	LCField *field = [[LCField alloc] initWithName: @"keyword2"
 											string: @"test1"
@@ -73,6 +74,7 @@
 	RELEASE(field);
 	[writer addDocument: doc];
 	RELEASE(doc);
+NSLog(@"_addDocWithDiffFields: end");
 }
 
 - (void) _addDocWithTVFields: (LCIndexWriter *) writer
@@ -135,6 +137,7 @@
  */
 - (void) testGetFieldNames
 {
+NSLog(@"<=== testGetFieldNames ===");
 	LCRAMDirectory *d = [[LCRAMDirectory alloc] init];
 	// set up writer
 	// FIXME: original test using StandardAnalyzer
@@ -234,6 +237,7 @@
 	UKTrue([fieldNames containsObject: @"tvpositionoffset"]);
 	
 	DESTROY(d);
+NSLog(@"=== testGetFieldNames ===>");
 }
 
 - (void) _assertTermDocsCount: (NSString *) msg

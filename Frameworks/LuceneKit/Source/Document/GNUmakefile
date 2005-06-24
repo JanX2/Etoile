@@ -8,7 +8,7 @@ LuceneKit_Document_OBJC_FILES = \
 	LCField.m \
 	LCDocument.m
 
-ifeq ($(test), yes)
+ifeq ($(atest), yes)
 LuceneKit_Document_OBJC_FILES += \
         TestNumberTools.m \
 	TestBinaryDocument.m

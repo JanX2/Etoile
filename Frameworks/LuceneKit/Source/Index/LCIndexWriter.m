@@ -380,6 +380,7 @@ An IndexWriter creates and maintains an index.
 - (void) addDocument: (LCDocument *) doc
 			analyzer: (LCAnalyzer *) a
 {
+//NSLog(@"addDocument %@ analyzer %@", doc, a);
 	LCDocumentWriter *dw = [[LCDocumentWriter alloc] initWithDirectory: ramDirectory
 															  analyzer: a indexWriter: self];
     //[dw setInfoStream: infoStream];

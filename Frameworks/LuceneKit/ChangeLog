@@ -1,3 +1,9 @@
+2005-06-23 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+    * Source/Search/LCBooleanQuery.m
+    * Source/Search/LCQuery.m
+    * Source/Store/LCStopAnalyzer.m:
+    Update to lastest Apache Lucene.
+
 2005-06-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Headers/Store/LCFSIndexInput.h

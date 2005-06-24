@@ -97,6 +97,7 @@
 */
 - (LCQuery *) combine: (NSArray *) queries
 {
+#if 1 // LuceneKit: Need to be updated
 	int i, count = [queries count];
 	for (i = 0; i < count; i++)
 	{
@@ -107,6 +108,41 @@
 		}
 	}
 	return self;
+#else  // Untested
+  NSMutableSet *uniques = [[NSMutableSet alloc] init];
+  int i, count = [queries count];
+  for (i = 0; i < count; i++) {
+    LCQuery *query = [queries objectAtIndex: i];
+    NSArray *clauses = nil;
+    BOOL splittable = [query isKindOfClass: [LCBooleanQuery class]];
+    if (splittable) {
+      LCBooleanQuery *bq = (LCBooleanQuery *) query;
+      splittable = [bq isCoordDisabled];
+      clauses = [bq clauses];
+      int j;
+      for (j = 0; splittable && (j < [clauses count]); j++) {
+        splittable = ([[clauses objectAtIndex: i] occur] == LCOccur_SHOULD) ? YES: NO;
+      }
+    }
+    if (splittable) {
+      int k;
+      for (k = 0; k < [clauses count]; k++) {
+        [uniques addObject: [[clauses objectAtIndex: k] query]];
+      }
+    } else {
+      [uniques addObject: query];
+    }
+  }
+// FIXME
+  if (uniques.size() == 1) {
+    return (Query)uniques.iterator().next();
+  }
+  Iterator it = uniques.iterator();
+  BooleanQuery result = new BooleanQuery(true);
+  while (it.haxNext())
+    result.add((Query)it.next(), BooleanClause.Occur.SHOULD);
+  return result;
+#endif
 }
 
 - (void) extractTerms: (NSMutableArray *) terms

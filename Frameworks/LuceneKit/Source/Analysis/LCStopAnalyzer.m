@@ -34,6 +34,10 @@
 public StopAnalyzer(File stopwordsFile) throws IOException {
 	stopWords = WordlistLoader.getWordSet(stopwordsFile);
 }
+
+public StopAnalyzer(Reader stopwords) {
+  stopWords = WordlistLoader.getWordSet(stopwords);
+}
 #endif
 
 - (void) dealloc

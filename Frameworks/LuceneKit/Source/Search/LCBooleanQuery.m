@@ -142,10 +142,12 @@ static int maxClauseCount = 1024;
 	}
 }
 
+#if 0 // LuceneKit: removed from Apache Lucene
 - (LCQuery *) combine: (NSArray *) queries
 {
 	return [LCQuery mergeBooleanQueries: queries];
 }
+#endif
 
 - (LCQuery *) copyWithZone: (NSZone *) zone
 {
