@@ -23,8 +23,8 @@
 	* Source/PKPrefPanesRegistry.m:
 	Added. Derived from Uli Kusterer's GSSystemPreferences code and
 	extended with unit tests, used to replace PKBundleController.
-	* Headers/PKPrefsModulePrefPane.h:
-	* Source/PKPrefsModulePrefPane.m:
+	* Headers/BackboneCompatibility/PKPrefsModulePrefPane.h:
+	* Source/BackboneCompatibility/PKPrefsModulePrefPane.m:
 	Added. Derived from Uli Kusterer's GSSystemPreferences code (PKPreferencePane
     adaptor class for Backbone Prefs module support).
 	* Headers/PreferencesKit.h: Added (new umbrella header).
