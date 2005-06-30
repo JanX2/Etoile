@@ -1,63 +1,60 @@
 /*
 	PKPreferencesController.h
 
-	Preferences window controller class
+	Abstract Preferences window controller class
 
-	Copyright (C) 2001 Dusk to Dawn Computing, Inc. 
-	              2004 Quentin Mathe
+	Copyright (C) 2004 Quentin Mathe
+                       Uli Kusterer
 
-	Author: Jeff Teunissen <deek@d2dc.net>
-	        Quentin Mathe <qmathe@club-internet.fr>
+	Author:  Quentin Mathe <qmathe@club-internet.fr>
+             Uli Kusterer
+    Date:  January 2005
 
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License as
-	published by the Free Software Foundation; either version 2 of
-	the License, or (at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
+ 
+	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	Lesser General Public License for more details.
+ 
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
-	See the GNU General Public License for more details.
+#import <Foundation/Foundation.h>
 
-	You should have received a copy of the GNU General Public
-	License along with this program; if not, write to:
-
-		Free Software Foundation, Inc.
-		59 Temple Place - Suite 330
-		Boston, MA  02111-1307, USA
-*/
-
-@class NSNotification, NSView, NSWindow;
-@protocol PrefsController, PrefsModule;
+@protocol PKPreferencePaneOwner;
+@class PKPreferencePane;
 
 
-@interface PKPreferencesController: NSObject <PrefsController>
+@interface PKPreferencesController: NSObject <PKPreferencePaneOwner>
 {
-	IBOutlet id	window;
-	IBOutlet id	owner;
+	IBOutlet id	owner; /* PKPreferencesView or NSWindow */
+    IBOutlet NSView *preferencesView; /* Necessary only when owner is not PKPreferencesView */
+    IBOutlet NSView *mainViewWaitSign;	/* View we show while next main view is being loaded. */
+    PKPreferencePane *currentPane; /* Currently showing pane. */
+    PKPreferencePane *nextPane; /* Pane to show in response to the next replyToShouldUnselect: YES. */
 }
 
-+ (PKPreferencesController *) sharedPrefencesController;
++ (PKPreferencesController *) sharedPreferencesController;
 
-/*
- * Accessors
- */
+/* Abstract method (in subclass, should return a view where loaded preference panes are listed) */
+- (NSView *) preferencesListView;
 
-- (NSWindow *) window;
-
-/*
- * Notifications
- */
-
-- (void) windowWillClose: (NSNotification *)aNotification;
-
-/*
- * Preferences UI related stuff
- */
-
+/* Preferences UI related stuff */
 - (void) initUI;
-- (void) updateUIForPreferencesModule: (id <PrefsModule>)module;
-- (NSView *) preferencesMainView;
+- (BOOL) updateUIForPreferencePane: (PKPreferencePane *)prefPane;
+
+/* Action methods */
+- (void) switchView: (id)sender;
+
+/* Accessors */
+- (id) owner;
+- (NSView *) preferencesView;
+- (PKPreferencePane *) selectedPreferencePane;
 
 @end

@@ -1,147 +1,196 @@
 /*
 	PKPreferencesController.m
 
-	Preferences window controller class
+	Abstract Preferences window controller class
 
-	Copyright (C) 2001 Dusk to Dawn Computing, Inc. 
-	              2004 Quentin Mathe
+	Copyright (C) 2004 Quentin Mathe
+                       Uli Kusterer
 
-	Author: Jeff Teunissen <deek@d2dc.net>
-	        Quentin Mathe <qmathe@club-internet.fr>
+	Author:  Quentin Mathe <qmathe@club-internet.fr>
+             Uli Kusterer
+    Date:  February 2005
 
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License as
-	published by the Free Software Foundation; either version 2 of
-	the License, or (at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
+ 
+	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	Lesser General Public License for more details.
+ 
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
-	See the GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public
-	License along with this program; if not, write to:
-
-		Free Software Foundation, Inc.
-		59 Temple Place - Suite 330
-		Boston, MA  02111-1307, USA
-*/
-
-#import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import <PrefsModule/PrefsModule.h>
+#import "PrefsModule.h"
+#import "PKPrefPanesRegistry.h"
+#import "PKPreferencePane.h"
 #import "PKPreferencesController.h"
 
-static PKPreferencesController *sharedInstance = nil;
-static NSMutableDictionary *modules = nil;
-static id currentModule = nil;
-static BOOL inited = NO;
 
+@interface PKPreferencesController (Private)
+- (void) windowWillClose: (NSNotification *)aNotification;
+@end
 
 @implementation PKPreferencesController
 
+static PKPreferencesController	*sharedInstance = nil;
+static BOOL 		inited = NO;
+
 + (PKPreferencesController *) sharedPreferencesController
 {
-	if (sharedInstance != nil)
-	{
-		return sharedInstance;
-	}
-	else
-	{
-		return [[self alloc] init];
-	}
+	return (sharedInstance ? sharedInstance : [[self alloc] init]);
 }
 
 - (id) init
 {
 	if (sharedInstance != nil) 
-	{
+    {
 		[self dealloc];
 	} 
-	else 
-	{
+    else 
+    {
 		self = [super init];
-		modules = [[[NSMutableDictionary alloc] initWithCapacity: 5] retain];
+        
+        /* Walk PrefPanes folder and list them: */
+        [[PKPrefPaneRegistry sharedRegistry] loadAllPlugins];
+        
+        inited = NO;
 	}
-	
+    
 	return sharedInstance = self;	
 }
 
 /* Initialize stuff that can't be set in the nib/gorm file. */
 - (void) awakeFromNib
 {
-	PKBundleController *bundleController = [PKBundleController sharedBundleController];
+    NSArray *prefPanes = [[PKPrefPaneRegistry sharedRegistry] loadedPlugins];
+	NSString *path = [[prefPanes objectAtIndex: 0] objectForKey: @"path"];
 	
-	/* Let the system keep track of where it belongs. */
-	[window setFrameAutosaveName: @"PreferencesMainWindow"];
-	[window setFrameUsingName: @"PreferencesMainWindow"];
+    /* Load a first pane. */
+	[self updateUIForPreferencePane: 
+        [[PKPrefPaneRegistry sharedRegistry] preferencePaneAtPath: path]];
+    
+	/* Let the system keep track of where it belongs */
+    if ([owner isKindOfClass: [NSWindow class]])
+    {
+        [owner setFrameAutosaveName: @"PreferencesMainWindow"];
+        [owner setFrameUsingName: @"PreferencesMainWindow"];
+    }
 	
-	[bundleController setDelegate: self];
-	[bundleController loadBundles];
-	[prefsController initUI];
-}
-
-/* 
- * Since we manage a single instance of the class, we override the -retain
- * and -release methods to do nothing.
- */
-
-- (id) retain
-{
-	return self;
-}
-
-- (oneway void) release
-{
-	return;
+	[self initUI];
 }
 
 /*
- * Do some special handling so that instances created with +alloc can be
- * deleted, while still not allowing the shared instance to be deallocated.
+ * Preferences window UI stuff
  */
-- (void) dealloc
+
+- (void) initUI
 {
-	if (sharedInstance != nil && self != sharedInstance)
+    
+}
+
+/* Abstract method */
+- (NSView *) preferencesListView
+{
+    return nil;
+}
+
+/*
+ * Preference pane related methods
+ */
+
+/* Main bottleneck for switching panes: */
+- (BOOL) updateUIForPreferencePane: (PKPreferencePane *)requestedPane
+{
+    NSView *mainViewContainer = preferencesView;
+    
+    if (currentPane != nil)	/* Have a previous pane that needs unloading? */
 	{
-		[super dealloc];
-	}
-	
-	return;
-}
-
-/*
- * Modules related methods
- */
- 
-- (BOOL) registerPrefsModule: (id)aPrefsModule;
-{
-	NSString *identifier;
-	
-	if (!aPrefsModule
-	|| ![aPrefsModule conformsToProtocol: @protocol(PrefsModule)])
-		return NO;
+		/* Make sure last text field gets an "end editing" message: */
+		if ([currentPane autoSaveTextFields])
+			[[mainViewContainer window] selectNextKeyView: self];
 		
-	identifier = [aPrefsModule buttonCaption];
-
-	if ([[modules allKeys] containsObject: identifier])
-	{
-		NSLog(@"The module named %@ cannot be loaded because there is \
-		already a loaded module with this name", aPrefsModule);
+		if(requestedPane) /* User passed in a new pane to select? */
+		{
+			switch ([currentPane shouldUnselect])	/* Ask old one to unselect. */
+			{
+				case NSUnselectCancel:
+					nextPane = nil;
+					return NO;
+					break;
+                    
+				case NSUnselectLater:
+					nextPane = requestedPane;	/* Remember next pane for later. */
+					return NO;
+					break;
+                    
+				case NSUnselectNow:
+					nextPane = nil;
+					break;
+			}
+		}
+		else /* Nil in currentPane. Called in response to replyToUnselect: to signal 'ok': */
+		{
+			requestedPane = nextPane;	/* Continue where we left off. */
+			nextPane = nil;
+		}
+		
+		/* Unload the old pane: */
+		[currentPane willUnselect];
+		[[currentPane mainView] removeFromSuperview];
+		[currentPane didUnselect];
+		currentPane = nil;
 	}
-	else
-	{
-		[modules setObject: aPrefsModule forKey: identifier];
-		[self updateUIForPrefsModule: aPrefsModule];
-	}
-
+	
+	/* Display "please wait" message in middle of content area: */
+	NSRect box = [mainViewWaitSign frame];
+	NSRect wBox = [mainViewContainer frame];
+	box.origin.x = truncf((wBox.size.width -box.size.width) /2);
+	box.origin.y = truncf((wBox.size.height -box.size.height) /2);
+	[mainViewWaitSign setFrameOrigin: box.origin];
+	[mainViewContainer addSubview: mainViewWaitSign];
+	[mainViewContainer setNeedsDisplay: YES];
+	[mainViewContainer display];
+	
+	/* Get main view for next pane: */
+	[requestedPane setOwner: self];
+	NSView *theView = [requestedPane mainView];
+	[requestedPane willSelect];
+	
+	/* Resize window so content area is large enough for prefs: */
+	box = [mainViewContainer frame];
+	wBox = [[mainViewContainer window] frame];
+	NSSize		lowerRightDist;
+	lowerRightDist.width = wBox.size.width -(box.origin.x +box.size.width);
+	lowerRightDist.height = wBox.size.height -(box.origin.y +box.size.height);
+	
+	box.size.width = lowerRightDist.width +box.origin.x +[theView frame].size.width;
+	box.size.height = lowerRightDist.height +box.origin.y +[theView frame].size.height;
+	box.origin.x = wBox.origin.x;
+	box.origin.y = wBox.origin.y -(box.size.height -wBox.size.height);
+	[[mainViewContainer window] setFrame: box display: YES animate: YES];
+	
+	/* Remove "wait" sign, show new pane: */
+	[mainViewWaitSign removeFromSuperview];
+	[mainViewContainer addSubview: theView];
+	
+	/* Finish up by setting up key views and remembering new current pane: */
+	currentPane = requestedPane;
+	[[mainViewContainer window] makeFirstResponder: [requestedPane initialKeyView]];
+	[requestedPane didSelect];
+	
+	/* Message window title:
+	[[mainViewContainer window] setTitle: [dict objectForKey: @"name"]]; */
+	
 	return YES;
-}
-
-- (BOOL) setCurrentModule: (id <PrefsModule>)aPrefsModule;
-{
-	NSView *mainView = [self prefsMainView];
+    
+    /* Previous code:
+    NSView *mainView = [self prefsMainView];
 	NSView *moduleView = [aPrefsModule view];
 	NSRect mavFrame = [mainView frame];
 	NSRect movFrame = [moduleView frame];
@@ -150,11 +199,9 @@ static BOOL inited = NO;
 	NSRect wFrame = [window frame];
 	float height;
 	
-	if (aPrefsModule == nil || [modules objectForKey: [aPrefsModule buttonCaption]] == NO
-		|| moduleView == nil)
-	{
+	if (!aPrefsModule || ![modules objectForKey: [aPrefsModule buttonCaption]]
+		|| !moduleView)
 		return NO;
-	}
 	
 	[[mainView subviews] makeObjectsPerformSelector: @selector(removeFromSuperview)];
 	
@@ -172,134 +219,70 @@ static BOOL inited = NO;
 	[window setTitle: [aPrefsModule buttonCaption]];
 	
 	return YES;
+     */
 }
 
 /*
- * PrefsApplication delegate method
+ * Runtime stuff (ripped from Preferences.app by Jeff Teunissen)
  */
 
-- (void) moduleLoaded: (NSBundle *)aBundle
+- (BOOL) respondsToSelector: (SEL) aSelector
 {
-	NSDictionary *info = nil;
-
-	/* Let's get paranoid about stuff we load... :) */
-	if (aBundle == nil) 
-	{
-		NSLog (@"Controller -moduleLoaded: sent nil bundle");
-		return;
-	}
-
-	if ((info = [aBundle infoDictionary]) == nil) 
-	{
-		NSLog (@"Bundle `%@ has no info dictionary!", aBundle);
-		return;
-	}
-
-	if ([info objectForKey: @"NSExecutable"] == nil) 
-	{
-		NSLog (@"Bundle `%@ has no executable!", aBundle);
-		return;
-	}
-
-	if ([aBundle principalClass] == nil) 
-	{
-		NSLog (@"Bundle `%@ has no principal class!", [[info objectForKey: @"NSExecutable"] lastPathComponent]);
-		return;
-	}
-
-	if ([[aBundle principalClass] conformsToProtocol: @protocol(PrefsModule)] == NO) 
-	{
-		NSLog (@"Bundle %@ principal class does not conform to the PrefsModule protocol.", [[info objectForKey: @"NSExecutable"] lastPathComponent]);
-		return;
-	}
-
-	[[[aBundle principalClass] alloc] initWithOwner: self];
-}
-
-/*
- * Accessors
- */
-
-/* For compatibility with Backbone module */
-- (id <PrefsController>) preferencesController 
-{
-	return self;
-}
-
-- (id) window;
-{
-	return window;
-}
-
-- (id <PrefsModule>) currentModule;
-{
-	return currentModule;
-}
-
-/*
- * Runtime stuff
- */
-
-- (BOOL) respondsToSelector: (SEL)aSelector
-{
-	if (aSelector != NULL)
+	if (aSelector == nil)
 		return NO;
 
 	if ([super respondsToSelector: aSelector])
 		return YES;
 
-	if (currentModule != nil)
-		return [currentModule respondsToSelector: aSelector];
+	if (currentPane)
+		return [currentPane respondsToSelector: aSelector];
 
 	return NO;
 }
 
 - (NSMethodSignature *) methodSignatureForSelector: (SEL)aSelector
 {
-	NSMethodSignature *sign = [super methodSignatureForSelector: aSelector];
+	NSMethodSignature * sign = [super methodSignatureForSelector: aSelector];
 
-	if (sign != nil && currentModule != nil)
-		sign = [(NSObject *)currentModule methodSignatureForSelector: aSelector];
+	if (sign == nil && currentPane) {
+		sign = [(NSObject *)currentPane methodSignatureForSelector: aSelector];
+	}
 
 	return sign;
 }
 
 - (void) forwardInvocation: (NSInvocation *)invocation
 {
-	[invocation invokeWithTarget: currentModule];
+	[invocation invokeWithTarget: currentPane];
 }
 
 /*
- * Preferences window UI stuff
+ * Accessors
  */
 
-- (void) initUI
+- (NSView *) preferencesView
 {
-
+	return preferencesView;
 }
 
-- (void) updateUIForPrefsModule: (id <PrefsModule>)module
+- (id) owner;
 {
-	if (inited)
-	{
-		[self initUI];
-		NSDebugLog(@"UI updated");
-	}
+    return owner;
 }
 
-- (NSView *) preferencesMainView
+- (PKPreferencePane *) selectedPreferencePane
 {
-	return nil;
+    return currentPane;
 }
 
 /*
- * Window delegate methods
+ * Notification methods
  */
 
 - (void) windowWillClose: (NSNotification *) aNotification
 {
-  // TODO: Tell the loaded modules about this so that they can clean up after
-  // themselves
+    [currentPane willUnselect];
+    [currentPane didUnselect];
 }
 
 /*
@@ -308,7 +291,7 @@ static BOOL inited = NO;
 
 - (void) switchView: (id)sender
 {
-	[self setCurrentModule: [modules objectForKey: [sender label]]];
+	//[self updateUIForPreferencePane: [preferences objectForKey: [sender label]]];
 }
 
 @end

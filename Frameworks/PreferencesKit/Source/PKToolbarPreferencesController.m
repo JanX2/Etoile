@@ -1,62 +1,69 @@
 /*
 	PKToolbarPreferencesController.m
 
-	Preferences window with toolbar controller class
+	Preferences controller subclass with preference panes listed in a toolbar
 
 	Copyright (C) 2005 Quentin Mathe
 
-	Author: Quentin Mathe <qmathe@club-internet.fr>
-	Date:	January 2005
+	Author:  Quentin Mathe <qmathe@club-interent.fr>
+	Date:  February 2005
 
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License as
-	published by the Free Software Foundation; either version 2 of
-	the License, or (at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
+ 
+	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	Lesser General Public License for more details.
+ 
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
-	See the GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public
-	License along with this program; if not, write to:
-
-		Free Software Foundation, Inc.
-		59 Temple Place - Suite 330
-		Boston, MA  02111-1307, USA
-*/
-
-#import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import "PKToolbarPreferencesController.h"
+#import "PKPrefPanesRegistry.h"
+#import "PKToolbarPreferencesController.h";
+/* We need to redeclare this PKPreferencesController variable because static 
+   variables are not inherited unlike class variables in other languages. */
+//static PKPreferencesController *sharedInstance = nil;
 
-static PreferencesController *sharedInstance = nil;
-static NSMutableDictionary *modules = nil;
-static id currentModule = nil;
-static BOOL inited = NO;
 
 @implementation PKToolbarPreferencesController
 
 /*
- * Preferences window UI stuff
+ * Overriden methods
  */
 
 - (void) initUI
 {
-	NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier: @"PrefsWindowToolbar"];
+	preferencesToolbar = [[NSToolbar alloc] initWithIdentifier: @"PrefsWindowToolbar"];
+    
+    [super initUI];
+    
+	[preferencesToolbar setDelegate: self];
+	[preferencesToolbar setAllowsUserCustomization: NO];
+    if ([owner isKindOfClass: [NSWindow class]])
+    {
+        [(NSWindow *)owner setToolbar: preferencesToolbar];
+    }
+    else
+    {
+        NSLog(@"Preferences panes cannot be listed in a toolbar when owner is \
+            not an NSWindow instance.");
+        [preferencesToolbar release];
+    }
 	
-	[toolbar setDelegate: self];
-	[toolbar setAllowsUserCustomization: NO];
-	[window setToolbar: toolbar];
-	inited = YES;
+    //inited = YES;
 	
-	NSDebugLog(@"UI inited");
+	//NSDebugLog(@"UI inited");
 }
 
-- (NSView *) preferencesMainView
+- (NSView *) preferencesListView
 {
-	return [window contentViewWithoutToolbar];
+    return nil;
 }
 
 /*
@@ -67,41 +74,37 @@ static BOOL inited = NO;
       itemForItemIdentifier:(NSString*)identifier
   willBeInsertedIntoToolbar:(BOOL)willBeInserted 
 {
-	NSToolbarItem *toolbarItem = [[NSToolbarItem alloc]
-    initWithItemIdentifier:identifier];
-	id module = [modules objectForKey: identifier];
-	
-	AUTORELEASE(toolbarItem);
+    NSToolbarItem *toolbarItem = 
+        [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
+    NSArray *plugins = [[PKPrefPaneRegistry sharedRegistry] loadedPlugins];
+    NSArray *bundles = [plugins valueForKey: @"bundle"];
+	NSDictionary *info = [bundles objectWithValue: identifier forKey: @"bundleIdentifier"];
 
-	[toolbarItem setLabel: [module buttonCaption]];
-	[toolbarItem setImage: [module buttonImage]];
-	if ([module buttonAction != NULL])
-	{
-		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector(switchView:)];
-	}
-	else 
-	{
-		[toolbarItem setTarget: module];
-		[toolbarItem setAction: [module buttonAction]];
-	}
+	[toolbarItem setLabel: [info objectForKey: @"name"]];
+	[toolbarItem setImage: [info objectForKey: @"image"]];
 	
-	return toolbarItem;
+    [toolbarItem setTarget: self];
+    [toolbarItem setAction: @selector(switchView:)];
+    
+	return [toolbarItem autorelease];
 }
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar 
 {
-	return [modules allKeys];
+    return [self toolbarAllowedItemIdentifiers: toolbar];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar 
 {    
-	return [modules allKeys];
+    NSArray *plugins = [[PKPrefPaneRegistry sharedRegistry] loadedPlugins];
+	NSArray *identifiers = [[plugins valueForKey: @"bundle"] valueForKey: @"bundleIdentifier"];
+    
+    return identifiers;
 }
 
 - (NSArray *) toolbarSelectableItemIdentifiers: (NSToolbar *)toolbar 
 {    
-	return [modules allKeys];
+	return [self toolbarAllowedItemIdentifiers: toolbar];
 }
 
 @end

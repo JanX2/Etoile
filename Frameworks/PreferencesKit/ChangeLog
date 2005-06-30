@@ -1,3 +1,34 @@
+2005-06-30  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile.
+	* Headers/PKBundleController.h:
+	* Source/PKBundleController.m: 
+	* Headers/PreferencePane.h:
+	Removed.
+	* Headers/PKPreferencesController.h:
+	* Headers/PKPreferencePane.h:
+	* Headers/PKToolbarPreferencesController.h:
+	* Source/PKPreferencesController.m:
+	* Source/PKPreferencePane.m:
+	* Source/PKToolbarPreferencesController.m:
+	Rewritten with Uli Kusterer's GSSystemPreferences code and removed
+	Preferences.app code. Now licensed under LGPL.
+	* Headers/PKTableViewPreferencesController.h: Updated to match 
+	implementation. Now licensed under LGPL.
+	* Source/PKTableViewPreferencesController.m:
+	Implemented. Now licensed under LGPL.
+	* Headers/UKPluginsRegistry.h:
+	* Source/UKPluginsRegistry.m:
+	* Headers/PKPrefPanesRegistry.h:
+	* Source/PKPrefPanesRegistry.m:
+	Added. Derived from Uli Kusterer's GSSystemPreferences code and
+	extended with unit tests, used to replace PKBundleController.
+	* Headers/PKPrefsModulePrefPane.h:
+	* Source/PKPrefsModulePrefPane.m:
+	Added. Derived from Uli Kusterer's GSSystemPreferences code (PKPreferencePane
+    adaptor class for Backbone Prefs module support).
+	* Headers/PreferencesKit.h: Added (new umbrella header).
+
 2005-04-06  Quentin Mathe <qmathe@club-internet.fr>
 	
 	WARNING: doesn't compile.
