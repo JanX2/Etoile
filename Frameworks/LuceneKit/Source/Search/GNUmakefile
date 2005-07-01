@@ -41,21 +41,21 @@ LuceneKit_Search_OBJC_FILES = \
 	LCTermQuery.m \
 	LCTermScorer.m
 
-ifeq ($(atest), yes)
+ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \
-	TestCheckHits.m \
-	TestBoolean2.m \
-	TestBooleanOr.m \
-	TestBooleanScorer.m \
-	TestBooleanQuery.m \
-	TestNot.m \
-	TestSetNorm.m \
-	TestDocBoost.m \
-	TestEnglish.m \
-	TestTermVectors.m \
-	TestQueryTermVector.m \
 	TestSort.m \
-	TestSimilarity.m
+	TestBoolean2.m \
+	TestQueryTermVector.m \
+	TestTermVectors.m \
+	TestBooleanQuery.m \
+	TestBooleanScorer.m \
+	TestBooleanOr.m \
+	TestNot.m \
+	TestDocBoost.m \
+	TestSetNorm.m \
+	TestSimilarity.m \
+	TestEnglish.m \
+	TestCheckHits.m 
 endif
 
 LuceneKit_Search_INCLUDE_DIRS += -I../..

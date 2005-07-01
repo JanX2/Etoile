@@ -13,7 +13,7 @@
 	int i;
 	for (i = 0; i < [terms count]; i++)
 	{
-		UKObjectsEqual([terms objectAtIndex: i], [gold objectAtIndex: i]);
+		UKStringsEqual([terms objectAtIndex: i], [gold objectAtIndex: i]);
 		UKIntsEqual([[freqs objectAtIndex: i] intValue], [[goldFreqs objectAtIndex: i] intValue]);
 	}
 }

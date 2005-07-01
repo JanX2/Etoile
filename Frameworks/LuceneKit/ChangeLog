@@ -2,6 +2,9 @@
 
     * Source/Index/LCCompoundFileReader.m:
     Fix false warning.
+    * Source/Search/TestQueryTermVector.m:
+    Fix warning.
+    * All test units should work now.
 
 2005-06-23 Yen-Ju Chen <yjchenx at gmail _dot_ com>
     * Source/Search/LCBooleanQuery.m
