@@ -463,7 +463,6 @@
 
 - (void) mergeNorms
 {
-NSLog(@"<=== mergeNorms ===");
 	int i;
     for (i = 0; i < [fieldInfos size]; i++) {
 		LCFieldInfo *fi = [fieldInfos fieldInfoWithNumber: i];
@@ -488,7 +487,6 @@ NSLog(@"<=== mergeNorms ===");
 			[output close];
 		}
     }
-NSLog(@"=== mergeNorms ===>");
 }
 
 @end

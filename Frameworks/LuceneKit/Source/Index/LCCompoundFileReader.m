@@ -78,8 +78,7 @@
 	long long start = [self filePointer];
 	if (start + len > length)
     {
-	    NSLog(@"read past EOF");
-	    return;
+		len = length - start;
     }
 	[base seek: fileOffset + start];
 	[base readBytes: b offset: offset length: len];

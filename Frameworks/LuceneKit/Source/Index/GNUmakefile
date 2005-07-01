@@ -38,12 +38,6 @@ LuceneKit_Index_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Index_OBJC_FILES += \
-	TestIndexReader.m \
-	TestDocHelper.m
-endif
-
-ifeq ($(atest), yes)
-LuceneKit_Index_OBJC_FILES += \
 	TestMockIndexInput.m \
 	TestMockIndexOutput.m \
 	TestTermInfos.m \
