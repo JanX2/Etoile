@@ -76,7 +76,7 @@
 {
     NSToolbarItem *toolbarItem = 
         [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
-    NSArray *plugins = [[PKPrefPaneRegistry sharedRegistry] loadedPlugins];
+    NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
     NSArray *bundles = [plugins valueForKey: @"bundle"];
 	NSDictionary *info = [bundles objectWithValue: identifier forKey: @"bundleIdentifier"];
 
@@ -96,7 +96,7 @@
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar 
 {    
-    NSArray *plugins = [[PKPrefPaneRegistry sharedRegistry] loadedPlugins];
+    NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
 	NSArray *identifiers = [[plugins valueForKey: @"bundle"] valueForKey: @"bundleIdentifier"];
     
     return identifiers;

@@ -26,10 +26,10 @@
  */
 
 #import <AppKit/AppKit.h>
-#import "UKPluginRegistry.h"
+#import "UKPluginsRegistry.h"
 
 #ifdef HAVE_UKTEST
-#import <UnitKit/Unit.h>
+#import <UnitKit/UnitKit.h>
 #endif
 
 #ifdef GNUSTEP
@@ -51,10 +51,10 @@ static NSFileManager *fm = nil;
 
 + (id) sharedRegistry
 {
-	static UKPluginRegistry *sharedPluginRegistry = nil;
+	static UKPluginsRegistry *sharedPluginRegistry = nil;
 	
 	if (sharedPluginRegistry == NO)
-		sharedPluginRegistry = [[UKPluginRegistry alloc] init];
+		sharedPluginRegistry = [[UKPluginsRegistry alloc] init];
 	
 	return sharedPluginRegistry;
 }

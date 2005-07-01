@@ -58,7 +58,7 @@ variables are not inherited unlike class variables in other languages. */
 
 - (int) numberOfRowsInTableView: (NSTableView *)tableView
 {
-	int count = [[[PKPrefPaneRegistry sharedRegistry] loadedPlugins] count];
+	int count = [[[PKPrefPanesRegistry sharedRegistry] loadedPlugins] count];
     
     return count;
 }
@@ -66,7 +66,7 @@ variables are not inherited unlike class variables in other languages. */
 
 - (id) tableView: (NSTableView*)tableView objectValueForTableColumn: (NSTableColumn *)tableColumn row: (int)row
 {
-	NSArray *plugins = [[PKPrefPaneRegistry sharedRegistry] loadedPlugins]; 
+	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins]; 
     NSDictionary *info = [plugins objectAtIndex: row];
 	
 	return [info objectForKey: @"Name"];
@@ -76,10 +76,10 @@ variables are not inherited unlike class variables in other languages. */
 - (void) tableViewSelectionDidChange: (NSNotification *)notification
 {
 	int row = [preferencesTableView selectedRow];
-	NSArray *plugins = [[PKPrefPaneRegistry sharedRegistry] loadedPlugins];
+	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
     NSString *path = (NSString *)[[plugins objectAtIndex: row] objectForKey: @"path"];
 	
-	[self updateUIForPreferencePane: [[PKPrefPaneRegistry sharedRegistry] preferencePaneAtPath: path]];
+	[self updateUIForPreferencePane: [[PKPrefPanesRegistry sharedRegistry] preferencePaneAtPath: path]];
 }
 
 @end

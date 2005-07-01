@@ -1,3 +1,21 @@
+2005-07-01  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile with GNUstep.
+	PreferencesKit compilation now works (with Xcode).
+	* PreferencesKit.xcode:
+	* PreferencesKit_Prefix.pch:
+	Removed.
+	* PreferencesKit.xcodeproj: Added (Xcode 2.1 project format update)
+	* Info.plist:
+	* version.plist:
+	Minor update.
+	* Source/PKPreferencesController.m
+    * Source/PKTableViewPreferencesController.m
+    * Source/PKToolbarPreferencesController.m
+    * Source/UKPluginsRegistry.m:
+    Fixed UKPluginsRegistry or PKPrefPanesRegistry references to be correct, 
+    which means not UKPluginRegistry (without 's') to take an example.
+
 2005-06-30  Quentin Mathe <qmathe@club-internet.fr>
 	
 	WARNING: doesn't compile.

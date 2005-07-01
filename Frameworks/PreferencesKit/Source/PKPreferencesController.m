@@ -57,7 +57,7 @@ static BOOL 		inited = NO;
 		self = [super init];
         
         /* Walk PrefPanes folder and list them: */
-        [[PKPrefPaneRegistry sharedRegistry] loadAllPlugins];
+        [[PKPrefPanesRegistry sharedRegistry] loadAllPlugins];
         
         inited = NO;
 	}
@@ -68,12 +68,12 @@ static BOOL 		inited = NO;
 /* Initialize stuff that can't be set in the nib/gorm file. */
 - (void) awakeFromNib
 {
-    NSArray *prefPanes = [[PKPrefPaneRegistry sharedRegistry] loadedPlugins];
+    NSArray *prefPanes = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
 	NSString *path = [[prefPanes objectAtIndex: 0] objectForKey: @"path"];
 	
     /* Load a first pane. */
 	[self updateUIForPreferencePane: 
-        [[PKPrefPaneRegistry sharedRegistry] preferencePaneAtPath: path]];
+        [[PKPrefPanesRegistry sharedRegistry] preferencePaneAtPath: path]];
     
 	/* Let the system keep track of where it belongs */
     if ([owner isKindOfClass: [NSWindow class]])
