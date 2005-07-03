@@ -276,7 +276,7 @@ Initially invalid, valid after next() called for the first time.*/
 {
 	LCSegmentTermEnumerator *clone = [[LCSegmentTermEnumerator allocWithZone: zone] init];
 	
-	[clone setIndexInput: input];
+	[clone setIndexInput: [input copy]];
 	[clone setFieldInfos: fieldInfos];
 	[clone setSize: size];
 	[clone setPosition: position];
