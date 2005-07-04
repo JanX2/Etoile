@@ -52,7 +52,7 @@ endif
 # 
 
 ifeq ($(installer), yes)
-	SUBPROJECTS = Installer
+	SUBPROJECTS = #Installer
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
