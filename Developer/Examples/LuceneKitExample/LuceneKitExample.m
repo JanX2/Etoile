@@ -110,10 +110,10 @@ int main (int argc, const char * argv[]) {
     }
     printf("\nQuery: %s\n", [[bq description] cString]);
 
-    /* <9> Use LCIndexSearcher to search with LCQuery */
+    /* <9> Initiate LCIndexSearcher. */
     LCIndexSearcher *searcher = [[LCIndexSearcher alloc] initWithDirectory: store];
 
-    /* <9.1> Show document frequency */
+    /* <9.1> Show document frequency through LCIndexReader. */
     if (showDetails)
     {
       NSArray *clauses = [bq clauses];
@@ -131,7 +131,7 @@ int main (int argc, const char * argv[]) {
       }
     }
 
-    /* <10> Retrive LCDocument from search results (LCHits) */
+    /* <10> Search with query. */
     LCHits *hits = [searcher search: bq];
     int n = [hits count];
     printf("\n=== %d files found ===\n", n);
@@ -145,18 +145,22 @@ int main (int argc, const char * argv[]) {
       /* <12> Shows details if requested */
       if (showDetails)
       {
+        /* <12.1> Show score of each document */
 	printf("\t- score: %f\n", [hits score: i]);
+
+        /* <12.2> Show internal identifier of each document */
         printf("\t- identifier: %d\n", [hits identifier: i]);
-        /* <12.1> Get weight
+
+        /* <12.3> Show weight information 
         id <LCWeight> weight = [bq weight: searcher];
         printf("\t- weight: %s\n", [[[weight explain: [searcher indexReader]
                                           document: [hits identifier: i]] description] cString]);
         */
-        /* <12.2> Get scorer 
+        /* <12.4> Show scorer information
         LCScorer *scorer = [weight scorer: [searcher indexReader]];
         printf("\t- scorer: %s\n", [[[scorer explain: [hits identifier: i]] description] cString]);
         */
-        /* <12.3> Show details associated with each term */
+        /* <12.5> Show details associated with each term */
         NSArray *clauses = [bq clauses];
         int j;
         for (j = 0; j < [clauses count]; j++)
@@ -168,7 +172,7 @@ int main (int argc, const char * argv[]) {
           LCTerm *term = [(LCTermQuery *)query term];
           LCIndexReader *reader = [searcher indexReader];
 #if 0 
-          /* <12.4> Show term frequency only */
+          /* <12.5.1> Show term frequency only */
           id <LCTermDocuments> td = [reader termDocumentsWithTerm: term];
           while([td next])
           {
@@ -179,7 +183,7 @@ int main (int argc, const char * argv[]) {
             }
           }
 #else
-          /* <12.5> Shows term frequency and positions. */
+          /* <12.5.2> Shows term frequency and positions. */
           id <LCTermPositions> tp = [reader termPositionsWithTerm: term];
           while([tp next])
           if ([tp document] == [hits identifier: i])
@@ -191,7 +195,7 @@ int main (int argc, const char * argv[]) {
               printf("\t\t\t- term position #%d: %d\n", k+1, [tp nextPosition]);
           }
 #endif
-          /* <12.6> Use term vector. */
+          /* <12.5.3> Use term vector. */
           id tv = [reader termFreqVector: [hits identifier: i]
                                            field: CONTENT];
           if ([tv conformsToProtocol: @protocol(LCTermPositionVector)])
@@ -199,13 +203,13 @@ int main (int argc, const char * argv[]) {
             id <LCTermPositionVector> termVector = (id <LCTermPositionVector>) tv;
             int index = [termVector indexOfTerm: [term text]];
 
-            /* <12.6.1> Shows term positions.
+            /* <12.5.3.1> Shows term positions.
              * Not useful here since term positions can be obtained
              * through -termPositionsWithTerm (LCIndexReader).
              * NSArray *positions = [termVector termPositions: index];
              */
  
-            /* <12.6.2> Shows term offsets. */
+            /* <12.5.3.2> Shows term offsets. */
             NSArray *offsets = [termVector offsets: index];
             int n;
             for (n = 0; n < [offsets count]; n++)
@@ -216,7 +220,7 @@ int main (int argc, const char * argv[]) {
           }
           else
           {
-            /* <12.6.3> Shows term frequency 
+            /* <12.5.3.3> Shows term frequency 
              * Not useful here since term frequency can be obtained
              * through -termPositionsWithTerm: or -termDocumentsWithTerm:
              * (LCIndexReader).
