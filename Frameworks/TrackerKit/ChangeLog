@@ -1,3 +1,18 @@
+2005-07-04  Quentin Mathe <qmathe@club-internet.fr>
+      
+    * Headers/TKStructuralKey.h:
+    * Source/TKStructuralKey.m: 
+    Removed.
+    * Headers/TKTracker.h:
+    Updated to match new TrackerKit model.
+    * Headers/TKCollection.h:
+    * Headers/TKKeyValuePredicate.h:
+    * Headers/TKObject.h:
+    * Source/TKCollection.m:
+    * Source/TKKeyValuePredicate.m:
+    * Source/TKObject.m:
+    Added (introduce completely redesigned TrackerKit model).
+
 2005-05-05  Quentin Mathe <qmathe@club-internet.fr>
     
     Warning! doesn't compile.

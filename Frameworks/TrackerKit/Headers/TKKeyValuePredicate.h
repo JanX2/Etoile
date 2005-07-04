@@ -1,8 +1,8 @@
 /*
-	TKStructuralKey.h
+	TKKeyValuePredicate.h
 
-	TKStructuralKey is the TrackerKit class used to encode the special keys which
-	drive track sessions
+	TKKeyValuePredicate is the TrackerKit class used to encode the special keys
+    which drive track sessions
 	
 	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>	                   
 
@@ -24,31 +24,38 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-@interface TKStructuralKey : NSObject // Light ordered dictionary
+#import <Foundation/Foundation.h>
+
+
+@interface TKKeyValuePath : NSObject /* Light ordered dictionary */
 {
-  NSMutableArray *_structuralKey;
-  NSString *_identifier
+  NSMutableDictionary *_keyValue;
+  NSString *_identifier;
 }
 
 - (id) initWithIdentifier: (NSString *)identifier;
 - (id) initWithIdentifier: (NSString *)identifier 
-      structuralKeyString: (NSString *)structuralKeyString; // not implemented
+             keyValuePath: (NSString *)keyValuePath; // not implemented
+
+- (NSString *) identifier;
 
 /*
-Structural key syntax
+Key value path syntax
 
 Example :
 (town = {"*York", "Helsinki"}).(street = "*").(door = {"1", "+2?", "4})
 
-Supported metacharacters in the current state : *
+Supported metacharacters in the current state: *
 */
 
 - (void) addValue: (NSString *)value forKeyComponent: (NSString *)keyComponent;
 - (void) addValuesArray: (NSArray *)valuesArray 
         forKeyComponent: (NSString *)keyComponent; // not implemented
 - (NSArray *) componentAtIndex: (unsigned int)index; // not implemented
-- (NSString *) identifier;
-- (NSArray *) structuralKey;
-- (NSString *) structuralKeyString; // not implemented -- called by description method
+- (NSArray *) components;
+- (NSString *) keyValuePath; // not implemented -- called by description method
+- (NSString *) keyPath;
+- (NSArray *) keyPathComponents;
+- (NSString *) valuePathComponents;
 
 @end

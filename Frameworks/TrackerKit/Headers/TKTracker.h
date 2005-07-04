@@ -3,7 +3,7 @@
 
 	TKTracker is the TrackerKit core class which is used to handle track sessions
 
-	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>	                   
+	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr> 
 
 	Author:  Quentin Mathe <qmathe@club-internet.fr>
 	Date:  March 2004
@@ -23,14 +23,17 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#import <Foundation/Foundation.h>
+
+
 @interface TKTracker : NSObject 
 // Like KVC with variables content (not with the variables name like traditional
 // KVC)
 {
-  NSMutableArray *structuralKeys;
-  NSMutableDictionary *objectsSoup;
-  NSMutableDictionary *trackingStructure;
-  BOOL renewTrack;
+    NSMutableArray *keyValuePredicates;
+    NSMutableDictionary *objectsSoup;
+    TKMutableCollection *objectsMap;
+    BOOL renewTrack;
 }
 
 /*
@@ -87,27 +90,28 @@ For structural key "class.identifier", the resulting tracker structure is :
 
 + (void) setArchiveDefault; // not implemented
 + (void) setArchiveUseTrackers: (NSArray *)trackers 
-            withStructuralKeys: (NSArray *)structuralKeys; // not implemented
+            withKeyValuePredicates: (NSArray *)keys; 
+// not implemented
 // something like + (NSData *) archive;
 
 /*
-With the method setArchiveUseTrackers:withStructuralKeys:, each tracker tracked 
-objects are merged in one dictionnary (using isEqual: to do the merge), which is
-saved at the start of the archive. Tracked objects in the first part of the 
-archive (the encoded dictionary) are identified by an id. The rest of the 
+With the method setArchiveUseTrackers:withKeyValuePredicates:, each tracker
+tracked objects are merged in one dictionnary (using isEqual: to do the merge),
+which is saved at the start of the archive. Tracked objects in the first part of
+the archive (the encoded dictionary) are identified by an id. The rest of the 
 archive stores the hierachical structures for the structural keys referring to
 the tracked objects by their id.
 */
 
-- (id) initWithStructuralKey: (TKStructuralKey *)structuralKey;
+- (id) initWithKeyValuePredicate: (TKKeyValuePredicate *)key;
 
-- (TKTracker *) trackerWithStructuralKey: (TKStructuralKey *)structuralKey; 
+- (TKTracker *) trackerWithKeyValuePredicate: (TKKeyValuePredicate *)key; 
 // not implemented
 
-- (TKStructuralKey *) structuralKey;
+- (TKKeyValuePredicate *) keyValuePredicate;
 - (void) trackObject: (id)object;
 - (void) _trackObject: (id)object 
-     forStructuralKey: (TKStructuralKey *)structuralKey;
-- (id) objectForStructuralKey: (TKStructuralKey *)structuralKey;
+     forKeyValuePredicate: (TKKeyValuePredicate *)key;
+- (id) objectForKeyValuePredicate: (TKKeyValuePredicate *)key;
 
 @end
