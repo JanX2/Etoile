@@ -10,6 +10,7 @@ static LCAnalyzer *analyzer;
 static LCIndexWriter *writer;
 static NSFileManager *manager;
 static NSMutableArray *args;
+static NSString *CONTENT = @"content";
 
 void show_help();
 BOOL process_args(int argc, const char *argv[]);
@@ -66,10 +67,11 @@ int main (int argc, const char * argv[]) {
                                             index: LCIndex_Untokenized];
           [doc addField: field];
           /* Content, tokenized, but not stored. */
-          field = [[LCField alloc] initWithName: @"content"
+          field = [[LCField alloc] initWithName: CONTENT
                                    string: [NSString stringWithContentsOfFile: file]
                                    store: LCStore_NO
-                                   index: LCIndex_Tokenized];
+                                   index: LCIndex_Tokenized
+                                   termVector: LCTermVector_WithPositionsAndOffsets];
           [doc addField: field];
 
           /* <6> Add each LCDocument into LCIndexWriter */
@@ -101,7 +103,7 @@ int main (int argc, const char * argv[]) {
         ASSIGNCOPY(text, [args objectAtIndex: i]);
       }
       
-      LCTerm *term = [[LCTerm alloc] initWithField: @"content"
+      LCTerm *term = [[LCTerm alloc] initWithField: CONTENT
                                               text: text];
       LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: term];
       [bq addQuery: tq occur: occur];
@@ -155,7 +157,7 @@ int main (int argc, const char * argv[]) {
         LCScorer *scorer = [weight scorer: [searcher indexReader]];
         printf("\t- scorer: %s\n", [[[scorer explain: [hits identifier: i]] description] cString]);
         */
-        /* <12.3> Shows term frequency and positions  in each document */
+        /* <12.3> Shows term frequency, positions, and offset in each document */
         NSArray *clauses = [bq clauses];
         int j;
         for (j = 0; j < [clauses count]; j++)
@@ -185,9 +187,34 @@ int main (int argc, const char * argv[]) {
             printf("\t\t- term frequency: %ld\n", [tp frequency]);
             int k, kcount = [tp frequency];
             for (k = 0; k < kcount; k++)    
-              printf("\t\t\t- term position: %d\n", [tp nextPosition]);
+              printf("\t\t\t- term position #%d: %d\n", k+1, [tp nextPosition]);
           }
 #endif
+          id tv = [reader termFreqVector: [hits identifier: i]
+                                           field: CONTENT];
+          if ([tv conformsToProtocol: @protocol(LCTermPositionVector)])
+          {
+            id <LCTermPositionVector> termVector = (id <LCTermPositionVector>) tv;
+            int index = [termVector indexOfTerm: [term text]];
+            /* Not useful since term positions can be obtained
+               through -termPositionsWithTerm (LCIndexReader).
+            NSArray *positions = [termVector termPositions: index];
+            */
+            NSArray *offsets = [termVector offsets: index];
+            int n;
+            for (n = 0; n < [offsets count]; n++)
+            {
+              LCTermVectorOffsetInfo *info = [offsets objectAtIndex: n];
+              printf("\t\t\t- term offset #%d: %d-%d\n", n+1, [info startOffset], [info endOffset]);;
+            }
+          }
+          else
+          {
+            /* Not useful here since term frequency can be obtained
+               through -termPositionsWithTerm: or -termDocumentsWithTerm:
+               (LCIndexReader).
+             */
+          }
 	}
       }
     }
@@ -210,6 +237,7 @@ void explain_details()
   printf("* Identifier: the internal document identifier, which often changes.\n");
   printf("* Term Frequency: the frequency of a given term contained in each dodocument.\n");
   printf("* Term Position: the position of a given term in each document,\n\tdetermied by analyzer and usually based on word.\n");
+  printf("* Term Offset: the offset of a given term in each document,\n\tbased on character(byte).\n");
 }
 
 BOOL process_args(int argc, const char *argv[])
