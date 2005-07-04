@@ -39,7 +39,7 @@ int main (int argc, const char * argv[]) {
     analyzer = [[LCSimpleAnalyzer alloc] init];
 
     /* <3> Initiate LCIndexWriter 
-     *     [create] is NO if adding new documents into index data.
+     *     [create] is NO if adding new documents into existed index data.
      */
     writer = [[LCIndexWriter alloc] initWithDirectory: store
                                              analyzer: analyzer
@@ -113,7 +113,7 @@ int main (int argc, const char * argv[]) {
     /* <9> Use LCIndexSearcher to search with LCQuery */
     LCIndexSearcher *searcher = [[LCIndexSearcher alloc] initWithDirectory: store];
 
-    /* <9.1> shows document frequency */
+    /* <9.1> Show document frequency */
     if (showDetails)
     {
       NSArray *clauses = [bq clauses];
@@ -131,9 +131,8 @@ int main (int argc, const char * argv[]) {
       }
     }
 
-    LCHits *hits = [searcher search: bq];
-
     /* <10> Retrive LCDocument from search results (LCHits) */
+    LCHits *hits = [searcher search: bq];
     int n = [hits count];
     printf("\n=== %d files found ===\n", n);
 
@@ -157,7 +156,7 @@ int main (int argc, const char * argv[]) {
         LCScorer *scorer = [weight scorer: [searcher indexReader]];
         printf("\t- scorer: %s\n", [[[scorer explain: [hits identifier: i]] description] cString]);
         */
-        /* <12.3> Shows term frequency, positions, and offset in each document */
+        /* <12.3> Show details associated with each term */
         NSArray *clauses = [bq clauses];
         int j;
         for (j = 0; j < [clauses count]; j++)
@@ -168,7 +167,8 @@ int main (int argc, const char * argv[]) {
             continue;
           LCTerm *term = [(LCTermQuery *)query term];
           LCIndexReader *reader = [searcher indexReader];
-#if 0 /* Use either LCTermDocuments or LCTermPositions */
+#if 0 
+          /* <12.4> Show term frequency only */
           id <LCTermDocuments> td = [reader termDocumentsWithTerm: term];
           while([td next])
           {
@@ -179,6 +179,7 @@ int main (int argc, const char * argv[]) {
             }
           }
 #else
+          /* <12.5> Shows term frequency and positions. */
           id <LCTermPositions> tp = [reader termPositionsWithTerm: term];
           while([tp next])
           if ([tp document] == [hits identifier: i])
@@ -190,16 +191,21 @@ int main (int argc, const char * argv[]) {
               printf("\t\t\t- term position #%d: %d\n", k+1, [tp nextPosition]);
           }
 #endif
+          /* <12.6> Use term vector. */
           id tv = [reader termFreqVector: [hits identifier: i]
                                            field: CONTENT];
           if ([tv conformsToProtocol: @protocol(LCTermPositionVector)])
           {
             id <LCTermPositionVector> termVector = (id <LCTermPositionVector>) tv;
             int index = [termVector indexOfTerm: [term text]];
-            /* Not useful since term positions can be obtained
-               through -termPositionsWithTerm (LCIndexReader).
-            NSArray *positions = [termVector termPositions: index];
-            */
+
+            /* <12.6.1> Shows term positions.
+             * Not useful here since term positions can be obtained
+             * through -termPositionsWithTerm (LCIndexReader).
+             * NSArray *positions = [termVector termPositions: index];
+             */
+ 
+            /* <12.6.2> Shows term offsets. */
             NSArray *offsets = [termVector offsets: index];
             int n;
             for (n = 0; n < [offsets count]; n++)
@@ -210,9 +216,10 @@ int main (int argc, const char * argv[]) {
           }
           else
           {
-            /* Not useful here since term frequency can be obtained
-               through -termPositionsWithTerm: or -termDocumentsWithTerm:
-               (LCIndexReader).
+            /* <12.6.3> Shows term frequency 
+             * Not useful here since term frequency can be obtained
+             * through -termPositionsWithTerm: or -termDocumentsWithTerm:
+             * (LCIndexReader).
              */
           }
 	}
