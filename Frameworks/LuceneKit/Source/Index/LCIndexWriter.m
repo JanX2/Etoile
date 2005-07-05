@@ -444,17 +444,19 @@ for search. */
 		}
 		DESTROY(sis);
 	}
-	// FIXME: optimize
-	/* 
-	while (segmentInfos.size() > start+mergeFactor) {
-	 	       for (int base = start+1; base < segmentInfos.size(); base++) {
-		        	         int end = Math.min(segmentInfos.size(), base+mergeFactor);
-					  	         if (end-base > 1)
-							  	           mergeSegments(base, end);
-									    	       }
-										        	     }
-												     */
-	[self optimize];					  // final cleanup
+	
+	while ([segmentInfos numberOfSegments] > start + mergeFactor)
+	{
+		int base, end;
+		for (base = start + 1; base < [segmentInfos numberOfSegments]; base++)
+		{
+			end = ([segmentInfos numberOfSegments] < (base+mergeFactor)) ? [segmentInfos numberOfSegments] : (base+mergeFactor);
+			if ((end - base) > 1)
+				[self mergeSegments: base size: end];
+		}
+	}
+
+	[self optimize];
 }
 
 /** Merges the provided indexes into this index.

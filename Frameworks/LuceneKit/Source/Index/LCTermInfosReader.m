@@ -133,17 +133,15 @@
     [self ensureIndexIsRead];
 	
     // optimize sequential access: first try scanning cached enum w/o seeking
-#if 0 // FIXME   
     LCSegmentTermEnumerator *enumerator = [self termEnumerator];
-    if (([enumerator term] != nil)// term is at or past current
-		&& (([enumerator prev] != nil && [term compareTo: [enumerator prev]] == NSOrderedDescending)
-			|| [term compareTo: [enumerator term]] != NSOrderedAscending)) {
+    if (([enumerator term] != nil) // term is at or past current
+		&& (([enumerator prev] != nil && [term compare: [enumerator prev]] == NSOrderedDescending)
+			|| [term compare: [enumerator term]] != NSOrderedAscending)) {
 		int enumOffset = (int)([enumerator position]/[enumerator indexInterval])+1;
 		if ([indexTerms count] == enumOffset	  // but before end of block
-			|| [term compareTo: [indexTerms objectAtIndex: enumOffset]] == NSOrderedAscending)
+			|| [term compare: [indexTerms objectAtIndex: enumOffset]] == NSOrderedAscending)
 			return [self scanEnumerator: term];			  // no need to seek
     }
-#endif
 	
     // random-access: must seek
     int index = [self indexOffset: term];

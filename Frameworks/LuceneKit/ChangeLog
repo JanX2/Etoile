@@ -1,3 +1,7 @@
+2005-07-04 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    Implement some optimization.
+
 2005-07-02 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/Index/LCSegmentTermEnum.m:
