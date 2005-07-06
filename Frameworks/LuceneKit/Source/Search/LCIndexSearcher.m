@@ -54,7 +54,6 @@
 
 - (void) collect: (int) doc score: (float) score
 {
-	//NSLog(@"LCHitCollector1 -collect: %d score: %f", doc, score);
 	if (score > 0.0f &&                     // ignore zeroed buckets
 		( bits == nil || [bits getBit: doc])) // skip docs not in bits
 	{
@@ -107,9 +106,7 @@
 	{
 		totalHits++;
 		LCFieldDoc *d = [[LCFieldDoc alloc] initWithDocument: doc score: score];
-		//NSLog(@"insert %@", d);
 		[hq insert: d];
-		//NSLog(@"done!");
 	}
 }
 @end
@@ -196,30 +193,25 @@
 		[reader close];
 }
 
-// inherit javadoc
 - (int) documentFrequencyWithTerm: (LCTerm *) term
 {
 	return [reader documentFrequency: term];
 }
 
-// inherit javadoc
 - (LCDocument *) document: (int) i
 {
 	return [reader document: i];
 }
 
-// inherit javadoc
 - (int) maximalDocument
 {
 	return [reader maximalDocument];
 }
 
-// inherit javadoc
 - (LCTopDocs *) search: (id <LCWeight>) weight
                 filter: (LCFilter *) filter
 			   maximum: (int) nDocs
 {
-	//NSLog(@"LCIndexSearcher search: %@ filter: %@ maximum: %d", weight, filter, nDocs);
 	if (nDocs <= 0)  // null might be returned from hq.top() below.
 	{
 		NSLog(@"nDocs must be > 0 ");
@@ -227,7 +219,6 @@
 	}
 	
 	LCScorer *scorer = [weight scorer: reader];
-	//NSLog(@"scorer: %@", scorer);
 	if (scorer == nil)
 	{
 		LCTopDocs *doc = [[LCTopDocs alloc] initWithTotalHits: 0
@@ -243,7 +234,7 @@
 	
 	NSMutableArray *scoreDocs = [[NSMutableArray alloc] init];
 	int i, count = [hq size];
-	for (i = 0; i < count; i++) // put docs in array
+	for (i = 0; i < count; i++)
 	{
 		if (i == 0)
 			[scoreDocs addObject: [hq pop]];
@@ -261,9 +252,7 @@
 					maximum: (int) nDocs
 					   sort: (LCSort *) sort
 {
-	//NSLog(@"LCIndexSearcher search: filter: maximum %d sort: %@", nDocs, sort);
 	LCScorer *scorer = [weight scorer: reader];
-	//NSLog(@"scorer %@", scorer);
 	if (scorer == nil)
 	{
 		LCTopFieldDocs *doc = [[LCTopDocs alloc] initWithTotalHits: 0
@@ -277,25 +266,19 @@
 	LCHitCollector2 *hc = [[LCHitCollector2 alloc] initWithReader: reader 
 														   filter: filter queue: hq];
 	[scorer score: hc];
-	//NSLog(@"after score");
 	NSMutableArray *scoreDocs = [[NSMutableArray alloc] init];
 	int i, count = [hq size];
-	//NSLog(@"count %d", count);
 	for (i = 0; i < count; i++) // put docs in array
 	{
-		//NSLog(@"i %d", i);
 		LCFieldDoc *fieldDoc = [hq fillFields: [hq pop]];
-		//NSLog(@"fieldDoc %@", fieldDoc);
 		if (i == 0)
 			[scoreDocs addObject: fieldDoc];
 		else
 			[scoreDocs insertObject: fieldDoc atIndex: 0];
 	}
-	//NSLog(@"after scoreDocs");
 	LCTopFieldDocs *td = [[LCTopFieldDocs alloc] initWithTotalHits: [hc totalHits]
 													scoreDocuments: scoreDocs
 														sortFields: [hq sortFields]];
-	//NSLog(@"search done");
 	return AUTORELEASE(td);
 }
 
@@ -308,9 +291,7 @@
 		collector = [[LCHitCollector3 alloc] initWithReader: reader 
 													 filter: filter hitCollector: results];
 	}
-	//NSLog(@"weight %@", weight);
 	LCScorer *scorer = [weight scorer: reader];
-	//NSLog(@"scorer %@", scorer);
 	if (scorer == nil) return;
 	[scorer score: collector];
 }

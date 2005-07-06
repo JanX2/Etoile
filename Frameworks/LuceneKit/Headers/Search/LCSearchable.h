@@ -15,23 +15,23 @@
 @class LCSort;
 
 @protocol LCSearchable <NSObject>
-- (void) search: (id <LCWeight>) weight 
-		 filter: (LCFilter *) filter
-   hitCollector: (LCHitCollector *) results;
 - (void) close;
 - (int) documentFrequencyWithTerm: (LCTerm *) term;
 - (NSArray *) documentFrequencyWithTerms: (NSArray *) terms;
 - (int) maximalDocument;
+- (LCDocument *) document: (int) i;
+- (LCQuery *) rewrite: (LCQuery *) query;
+- (void) search: (id <LCWeight>) weight 
+		 filter: (LCFilter *) filter
+   hitCollector: (LCHitCollector *) results;
 - (LCTopDocs *) search: (id <LCWeight>) weight 
                 filter: (LCFilter *) filter
 			   maximum: (int) n;
-- (LCDocument *) document: (int) i;
-- (LCQuery *) rewrite: (LCQuery *) query;
-- (LCExplanation *) explain: (id <LCWeight>) weight 
-				   document: (int) doc;
 - (LCTopFieldDocs *) search: (id <LCWeight>) weight 
                      filter: (LCFilter *) filter
 					maximum: (int) n
 					   sort: (LCSort *) sort;
+- (LCExplanation *) explain: (id <LCWeight>) weight 
+				   document: (int) doc;
 @end
 #endif /* __LUCENE_SEARCH_SEARCHABLE__ */
