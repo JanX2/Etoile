@@ -126,7 +126,7 @@ TermInfo pointers must be positive and greater than all previous.*/
     if (!isIndex && size % indexInterval == 0)
     {
 		/* Take care the first term while lastTerm == nil */
-		/* FIXME: lucene doesn't care this */
+		/* LuceneKit: lucene doesn't care this */
 		if (size == 0)
 			[other addTerm: term termInfo: ti];
 		else

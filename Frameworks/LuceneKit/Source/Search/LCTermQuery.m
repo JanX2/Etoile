@@ -70,7 +70,7 @@
 
 - (unsigned) hash
 {
-	// FIXME: not sure
+	// LuceneKit: should work. Otherwise, look LCSimilarity for implmentation of floatToIntbits()
 	return (int)[self boost] ^ [term hash];
 	// Float.floatToIntBits(getBoost()) ^ term.hashCode();
 }

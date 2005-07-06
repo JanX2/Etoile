@@ -127,15 +127,7 @@ static LCSimilarity *defaultImpl = nil;
 	int exponent = (b >> 3) & 31;
 	int bits = ((exponent+(63-15)) << 24) | (mantissa << 21);
 	
-	// Float.intBitsToFloat(bits);
-#if 0 // FIXME: not sure which one works
-	int s = ((bits >> 31) == 0) ? 1 : -1;
-	int e = ((bits >> 23) & 0xff);
-	int m = (e == 0) ? (bits & 0x7fffff) << 1 : (bits & 0x7fffff) | 0x800000;
-	float f = s * m * exp2f(e-150);
-	return f;
-#else
-	/* LuceneKit:
+	/* LuceneKit: // Float.intBitsToFloat(bits);
 	* Assume C follows IEEE standard.
 	* Assum sizeof(float) == sizeof(int) == 4;
 	*/
@@ -146,7 +138,6 @@ static LCSimilarity *defaultImpl = nil;
     } udata;
 	udata.il = bits;
 	return udata.fl;
-#endif
 }
 
 + (char) floatToByte: (float) f
