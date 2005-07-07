@@ -121,7 +121,7 @@ int main (int argc, const char * argv[]) {
       for (j = 0; j < [clauses count]; j++)
       {
         /* Only work for term query */
-        id query = [[clauses objectAtIndex: j] query];
+        id query = [(LCBooleanClause *)[clauses objectAtIndex: j] query];
         if (![query isKindOfClass: [LCTermQuery class]])
           continue;
         LCTerm *term = [(LCTermQuery *)query term];
@@ -166,7 +166,7 @@ int main (int argc, const char * argv[]) {
         for (j = 0; j < [clauses count]; j++)
         {
           /* Only work for term query */
-          id query = [[clauses objectAtIndex: j] query];
+          id query = [(LCBooleanClause *)[clauses objectAtIndex: j] query];
           if (![query isKindOfClass: [LCTermQuery class]])
             continue;
           LCTerm *term = [(LCTermQuery *)query term];

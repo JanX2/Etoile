@@ -1,3 +1,7 @@
+2005-07-07 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Source/Search/LCQuery.m: fix warning.
+
 2005-07-06 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/Search/LCQuery.m: update -combine:.

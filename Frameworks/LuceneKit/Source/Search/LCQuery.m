@@ -116,7 +116,7 @@
     if (splittable) {
       int k;
       for (k = 0; k < [clauses count]; k++) {
-        [uniques addObject: [[clauses objectAtIndex: k] query]];
+        [uniques addObject: [(LCBooleanClause *)[clauses objectAtIndex: k] query]];
       }
     } else {
       [uniques addObject: query];
