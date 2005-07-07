@@ -1,6 +1,7 @@
 #include <LuceneKit/Search/LCQuery.h>
 #include <LuceneKit/Search/LCBooleanClause.h>
 #include <LuceneKit/Search/LCBooleanQuery.h>
+#include <LuceneKit/GNUstep/GNUstep.h>
 
 /** The abstract base class for queries.
 <p>Instantiable subclasses are:
@@ -97,19 +98,7 @@
 */
 - (LCQuery *) combine: (NSArray *) queries
 {
-#if 1 // LuceneKit: Need to be updated
-	int i, count = [queries count];
-	for (i = 0; i < count; i++)
-	{
-		if ([self isEqual: [queries objectAtIndex: i]] == NO)
-		{
-			NSLog(@"Illegal Argument");
-			return nil;
-		}
-	}
-	return self;
-#else  // Untested
-  NSMutableSet *uniques = [[NSMutableSet alloc] init];
+  NSMutableArray *uniques = [[NSMutableArray alloc] init];
   int i, count = [queries count];
   for (i = 0; i < count; i++) {
     LCQuery *query = [queries objectAtIndex: i];
@@ -117,7 +106,7 @@
     BOOL splittable = [query isKindOfClass: [LCBooleanQuery class]];
     if (splittable) {
       LCBooleanQuery *bq = (LCBooleanQuery *) query;
-      splittable = [bq isCoordDisabled];
+      splittable = [bq isCoordinationDisabled];
       clauses = [bq clauses];
       int j;
       for (j = 0; splittable && (j < [clauses count]); j++) {
@@ -133,16 +122,19 @@
       [uniques addObject: query];
     }
   }
-// FIXME
-  if (uniques.size() == 1) {
-    return (Query)uniques.iterator().next();
+
+  if ([uniques count] == 1) {
+    return [uniques objectAtIndex: 0];
   }
-  Iterator it = uniques.iterator();
-  BooleanQuery result = new BooleanQuery(true);
-  while (it.haxNext())
-    result.add((Query)it.next(), BooleanClause.Occur.SHOULD);
-  return result;
-#endif
+
+  NSEnumerator *e = [uniques objectEnumerator];
+  LCQuery *q;
+  LCBooleanQuery *result = [[LCBooleanQuery alloc] initWithCoordination: YES];
+  while ((q = [e nextObject]))
+  {
+    [result addQuery: q occur: LCOccur_SHOULD];
+  }
+  return AUTORELEASE(result);
 }
 
 - (void) extractTerms: (NSMutableArray *) terms
