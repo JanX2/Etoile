@@ -11,15 +11,11 @@
 {
 	self = [super init];
 	counter = 0;
-#if 1 // FIXME
-	version = 0;
-#else
-/**
- 	    * counts how often the index has been changed by adding or deleting docs.
-	     	    * starting with the current time in milliseconds forces to create unique version numbers.
-		     	    */
-			     	   private long version = System.currentTimeMillis();
-#endif
+	/**
+	 * counts how often the index has been changed by adding or deleting docs.
+	 * starting with the current time in milliseconds forces to create unique version numbers.
+	 */
+	version = (long)([[NSDate date] timeIntervalSince1970]*1000);
 	segments = [[NSMutableArray alloc] init];
 	return self;
 }
@@ -66,11 +62,7 @@
 	
 	if(format >= 0){    // in old format the version number may be at the end of the file
 		if ([input filePointer] >= [input length])
-		#if 1 // FIXME LuceneKit
-			version = 0; // old file format without version number
-			#else
-			version = System.currentTimeMillis(); // old file format without version number
-			#endif
+			version = (long)([[NSDate date] timeIntervalSince1970]*1000); // old file format without version number
 		else
 			version = [input readLong]; // read version
 	}
