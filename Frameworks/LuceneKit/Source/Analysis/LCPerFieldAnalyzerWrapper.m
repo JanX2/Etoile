@@ -57,4 +57,9 @@
 								   reader: reader];
 }
 
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"PerFieldAnalyzerWrapper(%@, default=%@)", analyzerMap, defaultAnalyzer];
+}
+
 @end
