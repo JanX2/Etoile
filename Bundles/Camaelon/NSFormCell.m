@@ -70,10 +70,14 @@
 
   if (_cell.is_bezeled)
   {
-	[[NSColor textBackgroundColor] set];
+	if (_cell.is_highlighted)
+		[[NSColor selectedTextBackgroundColor] set];
+	else
+		[[NSColor textBackgroundColor] set];
 	NSRect frame = NSMakeRect (borderedFrame.origin.x + 2, borderedFrame.origin.y + 2, borderedFrame.size.width - 4, borderedFrame.size.height - 4);
  	NSRectFill (frame);	
   }
+  _cell.state = NSOffState;
 
   //
   // Draw interior

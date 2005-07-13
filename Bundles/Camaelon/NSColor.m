@@ -4,6 +4,44 @@
 
 static NSColor* titlebarTextColor;
 
++ (void) setSystemColorList
+{
+	NSColorList* systemColors = [NSColorList colorListNamed: @"System"];
+
+	if (systemColors == nil)
+	{
+		systemColors = [[NSColorList alloc] initWithName: @"System"];
+	}
+
+	[systemColors setColor: [NSColor titlebarTextColor] 
+		forKey: @"titlebarTextColor"];
+	[systemColors setColor: [NSColor selectedTitlebarTextColor] 
+		forKey: @"selectedTitlebarTextColor"];
+	[systemColors setColor: [NSColor rowBackgroundColor]
+		forKey: @"rowBackgroundColor"];
+	[systemColors setColor: [NSColor alternateRowBackgroundColor]
+		forKey: @"alternateRowBackgroundColor"];
+	[systemColors setColor: [NSColor rowTextColor]
+		forKey: @"rowTextColor"];
+	[systemColors setColor: [NSColor selectedRowBackgroundColor]
+		forKey: @"selectedRowBackgroundColor"];
+	[systemColors setColor: [NSColor selectedRowTextColor]
+		forKey: @"selectedRowTextColor"];
+	[systemColors setColor: [NSColor selectedControlColor]
+		forKey: @"selectedControlColor"];
+	[systemColors setColor: [NSColor selectedTextColor]
+		forKey: @"selectedTextColor"];
+	[systemColors setColor: [NSColor selectedTextBackgroundColor]
+		forKey: @"selectedTextBackgroundColor"];
+	[systemColors setColor: [NSColor windowBackgroundColor]
+		forKey: @"windowBackgroundColor"];
+	[systemColors setColor: [NSColor controlBackgroundColor]
+		forKey: @"controlBackgroundColor"];
+
+
+	//[systemColors writeToFile: nil];
+}
+
 + (NSColor*) titlebarTextColor
 {
 	if (titlebarTextColor == nil)

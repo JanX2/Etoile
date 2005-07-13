@@ -22,6 +22,7 @@ Class theNSImageClass;
 
 + (id) imageNamed: (NSString*) aName
 {
+//	NSLog (@"imageNamed: %@", aName);
 	NSBundle* bundle = [NSBundle bundleForClass: NSClassFromString (@"Camaelon")];
 	BOOL providedInTheme = YES;
 	NSImage* ret = nil;
@@ -150,6 +151,7 @@ Class theNSImageClass;
 
 		if (ret != nil) [GraphicToolbox setImage: ret named: aName];
 	}
+	//NSLog (@"imageNamed: %@, ret: %@", aName, ret);
 	return ret;
 }
 

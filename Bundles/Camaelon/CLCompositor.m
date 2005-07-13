@@ -25,7 +25,13 @@
 - (void) setName: (NSString*) n { ASSIGN (name, n); }
 
 - (void) drawOn: (NSView*) view {
-	[self drawInRect: [view bounds] on: view];
+	NSRect rect = [view bounds];
+	if ([view isKindOfClass: [NSBox class]])
+	{
+		//FIXME: that's a hack
+		rect.size.height -= 6;
+	}
+	[self drawInRect: rect on: view];
 }
 
 - (void) drawInRect: (NSRect) rect {

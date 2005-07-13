@@ -1,3 +1,22 @@
+2005-07-13 Nicolas Roard <nicolas@roard.com>
+
+	* CLCompositor.m: added a hack to have a proper title alignment for
+	NSBox's titles... will need to fix that properly.
+
+	* Camaelon.m: reverted the part that disabled camaelon when running
+	Gorm. Added +initialize to pose CLImage as NSImage and set the
+	colorlist via NSColor +setSystemColorList
+
+	* NSColor.m: added a +setSystemColorList method to save colors 
+	properly in the system color list -- for some strange reasons 
+	it wasn't done, hence the wrong colors in, for example, 
+	Gorm's inspectors.
+
+	* NSFormCell.m: the correct (either selectedTextBackgroundColor or
+	textBackgroundColor) text's color is set depending on 
+	_cell.is_highlighted
+
+	
 2005-05-17 Quentin Mathe <qmathe@club-internet.fr>
 
 	* Camaelon.m (-themePath): Added search paths support for theme bundles. 

@@ -56,13 +56,20 @@ static Camaelon* theme;
 	return themePath;
 }
 
++ (void) initialize
+{
+    [CLImage setNSImageClass : [NSImage class]];
+    [CLImage poseAsClass: [NSImage class]];
+    [NSColor setSystemColorList];
+}
+
 - (id) init
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary* dict = [defaults persistentDomainForName: @"Camaelon"];
     NSBundle *hostBundle;
     
-    NSLog(@"Camaelon Theme Engine v2.0 17/03/05 - nicolas@roard.com\n");
+    NSLog(@"Camaelon Theme Engine v2.0 13/07/05 - nicolas@roard.com\n");
     
     self = [super init];
     
@@ -72,6 +79,7 @@ static Camaelon* theme;
      */
      
     hostBundle = [NSBundle mainBundle];
+    /*
     if ([[[hostBundle infoDictionary] objectForKey: @"ApplicationName"] 
     	isEqualToString: @"Gorm"])
     {    
@@ -81,9 +89,10 @@ static Camaelon* theme;
 		RELEASE(self);
         return nil;
     }
+    */
     
-    [CLImage setNSImageClass : [NSImage class]];
-    [CLImage poseAsClass: [NSImage class]];
+    //[CLImage setNSImageClass : [NSImage class]];
+    //[CLImage poseAsClass: [NSImage class]];
     
     NSLog (@"Camaelon dictionary: %@", dict);
    

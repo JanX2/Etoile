@@ -11,7 +11,9 @@
 {
 //  _title_rect.origin.x=rect.origin.x + 8;
 //  rect.size.height -= _title_rect.size.height -2;
-  rect.size.height -= 4;
+//  rect.origin.y -= _title_rect.size.height -2;
+//  rect.size.height -= 20;
+//    _title_rect.origin.y+=6;
 
   // Draw border
 
