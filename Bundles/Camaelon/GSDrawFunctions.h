@@ -30,7 +30,7 @@
 + (void) drawRadioButton: (NSRect) border inView: (NSView*) view highlighted: (BOOL) highlighted;
 + (void) drawMenu: (NSRect) border inView: (NSView*) view;
 + (void) drawTextField: (NSRect) border focus: (BOOL) focus flipped: (BOOL) flipped;
-+ (void) drawButton: (NSRect) border inView: (NSView*) view highlighted: (BOOL) highlighted;
++ (void) drawButton: (NSRect) border inView: (NSView*) view style: (NSBezelStyle) bezelStyle highlighted: (BOOL) highlighted;
 + (void) drawProgressIndicatorBackgroundOn: (NSView*) view;
 + (void) drawProgressIndicatorForegroundInRect: (NSRect) rect;
 + (void) drawTitleBox: (NSRect) rect on: (id) box;

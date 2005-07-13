@@ -32,6 +32,7 @@
 	
 //	[GSDrawFunctions drawButton: cellFrame : NSZeroRect];
 	[GSDrawFunctions drawButton: cellFrame inView: controlView 
+			style: _bezel_style
 			highlighted: _cell.is_highlighted];
   }
   else if (_cell.is_highlighted)

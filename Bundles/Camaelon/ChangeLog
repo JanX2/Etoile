@@ -1,5 +1,11 @@
 2005-07-13 Nicolas Roard <nicolas@roard.com>
 
+	* GSDrawFunctions.m: added a shadowless button used when the style is
+	set to NSShadowlessSquareBezelStyle (and added a style paramater to
+	the method too)
+
+2005-07-13 Nicolas Roard <nicolas@roard.com>
+
 	* CLCompositor.m: added a hack to have a proper title alignment for
 	NSBox's titles... will need to fix that properly.
 

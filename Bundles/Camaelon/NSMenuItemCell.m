@@ -12,11 +12,11 @@
   if (_cell.is_highlighted && (_highlightsByMask & NSPushInCellMask))
     {
       //[GSDrawFunctions drawGrayBezel: cellFrame : NSZeroRect];
-      [GSDrawFunctions drawButton: cellFrame inView: nil highlighted: YES];
+      [GSDrawFunctions drawButton: cellFrame inView: nil style: NSRegularSquareBezelStyle highlighted: YES];
     }
   else
     {
-      [GSDrawFunctions drawButton: cellFrame inView: nil highlighted: NO];
+      [GSDrawFunctions drawButton: cellFrame inView: nil style: NSRegularSquareBezelStyle highlighted: NO];
     }
 }
 - (void) drawInteriorWithFrame: (NSRect)cellFrame inView: (NSView*)controlView

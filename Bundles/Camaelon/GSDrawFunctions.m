@@ -423,10 +423,13 @@ static CLHBoxCompositor* standardButton;
 static CLHBoxCompositor* standardButtonH;
 static CLBoxCompositor* button;
 static CLBoxCompositor* buttonH;
+static CLBoxCompositor* shadowlessButton;
+static CLBoxCompositor* shadowlessButtonH;
 
 static CLBoxCompositor* mygroupBox;
 
-+ (void) drawButton: (NSRect) border inView: (NSView*) view highlighted: (BOOL) highlighted 
++ (void) drawButton: (NSRect) border inView: (NSView*) view 
+	style: (NSBezelStyle) bezelStyle highlighted: (BOOL) highlighted 
 {
 
 	CLCompositor* compositor = nil;
@@ -494,6 +497,50 @@ static CLBoxCompositor* mygroupBox;
 			named: @"fill"];
 		[button setFill: CLFillScaledImage];
 	}
+
+	if (shadowlessButtonH == nil)
+	{
+		shadowlessButtonH = [CLBoxCompositor new];
+		[shadowlessButtonH setName: @"shadowlessButtonH"];
+		[shadowlessButtonH addImage: 
+			[NSImage imageNamed: @"ShadowlessButton/ShadowlessButton-corners-selected.tiff"]
+			named: @"corners"];
+		[shadowlessButtonH addImage:
+			[NSImage imageNamed: @"ShadowlessButton/ShadowlessButton-left-selected.tiff"]
+			named: @"left"];
+		[shadowlessButtonH addImage:
+			[NSImage imageNamed: @"ShadowlessButton/ShadowlessButton-right-selected.tiff"]
+			named: @"right"];
+		[shadowlessButtonH addImage:
+			[NSImage imageNamed: @"ShadowlessButton/ShadowlessButton-topbottom-selected.tiff"]
+			named: @"topbottom"];
+		[shadowlessButtonH addImage:
+			[NSImage imageNamed: @"ShadowlessButton/ShadowlessButton-fill-selected.tiff"]
+			named: @"fill"];
+		[shadowlessButtonH setFill: CLFillScaledImage];
+	}
+
+	if (shadowlessButton == nil)
+	{
+		shadowlessButton = [CLBoxCompositor new];
+		[shadowlessButton setName: @"shadowlessButton"];
+		[shadowlessButton addImage: 
+			[NSImage imageNamed: @"ShadowlessButton/ShadowlessButton-corners-unselected.tiff"]
+			named: @"corners"];
+		[shadowlessButton addImage:
+			[NSImage imageNamed: @"ShadowlessButton/ShadowlessButton-left-unselected.tiff"]
+			named: @"left"];
+		[shadowlessButton addImage:
+			[NSImage imageNamed: @"ShadowlessButton/ShadowlessButton-right-unselected.tiff"]
+			named: @"right"];
+		[shadowlessButton addImage:
+			[NSImage imageNamed: @"ShadowlessButton/ShadowlessButton-topbottom-unselected.tiff"]
+			named: @"topbottom"];
+		[shadowlessButton addImage:
+			[NSImage imageNamed: @"ShadowlessButton/ShadowlessButton-fill-unselected.tiff"]
+			named: @"fill"];
+		[shadowlessButton setFill: CLFillScaledImage];
+	}
 	/*
 	if ((border.size.height >= 22) && (border.size.height <= 28))
 	{
@@ -502,10 +549,21 @@ static CLBoxCompositor* mygroupBox;
 		else [standardButton drawInRect: border on: view];
 	}
 	else
-	*/
 	{
 		if (highlighted) [buttonH drawInRect: border on: view];
 		else [button drawInRect: border on: view];
+	}
+	*/
+
+	switch (bezelStyle)
+	{
+		case NSShadowlessSquareBezelStyle:
+			if (highlighted) [shadowlessButtonH drawInRect: border on: view];
+			else [shadowlessButton drawInRect: border on: view];
+			break;
+		default:
+			if (highlighted) [buttonH drawInRect: border on: view];
+			else [button drawInRect: border on: view];
 	}
 }
 

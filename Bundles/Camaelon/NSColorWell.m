@@ -19,11 +19,11 @@
     {
       if (_is_active == YES)
         {
-          [GSDrawFunctions drawButton: aRect inView: self highlighted: YES];
+          [GSDrawFunctions drawButton: aRect inView: self style: NSRegularSquareBezelStyle highlighted: YES];
         }
       else
         {
-          [GSDrawFunctions drawButton: aRect inView: self highlighted: NO];
+          [GSDrawFunctions drawButton: aRect inView: self style: NSRegularSquareBezelStyle highlighted: NO];
         }
 
       /*
