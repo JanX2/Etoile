@@ -90,6 +90,7 @@ int main (int argc, const char * argv[]) {
     int i;
     for (i = 0; i < [args count]; i++)
     {
+      /* <8.1> Check for boolean query. */
       LCOccurType occur = LCOccur_SHOULD;
       NSString *text = nil;
       if ([[args objectAtIndex: i] hasPrefix: @"+"]) {
@@ -102,11 +103,26 @@ int main (int argc, const char * argv[]) {
         occur = LCOccur_SHOULD;
         ASSIGNCOPY(text, [args objectAtIndex: i]);
       }
-      
-      LCTerm *term = [[LCTerm alloc] initWithField: CONTENT
-                                              text: text];
-      LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: term];
+   
+      LCTerm *term;
+      LCQuery *tq;
+      if ([text hasSuffix: @"*"]) 
+      {
+        /* <8.2> Prefix Query */
+        term = [[LCTerm alloc] initWithField: CONTENT
+                                        text: [text substringToIndex: [text length]-1]];
+        tq = [[LCPrefixQuery alloc] initWithTerm: term];
+      } 
+      else
+      { 
+        /* <8.3> Term Query */
+        term = [[LCTerm alloc] initWithField: CONTENT
+                                                text: text];
+        tq = [[LCTermQuery alloc] initWithTerm: term];
+      }
       [bq addQuery: tq occur: occur];
+      DESTROY(term);
+      DESTROY(tq);
     }
     printf("\nQuery: %s\n", [[bq description] cString]);
 
@@ -323,13 +339,12 @@ BOOL process_args(int argc, const char *argv[])
       showDetails = YES;
       [args removeObjectAtIndex: 0];
     }
-
+  
     if ([args count] < 1) {
       printf("Error: need query terms.\n\n");
       show_help();
       return NO;
     }
-
 
     return YES;
 }
@@ -347,4 +362,6 @@ void show_help()
   printf("Example: zoo -elephant +panda\n");
   printf("No space and quotation allowed, ex. +\"great panda \"\n");
   printf("Due to the analyzer used, all search terms must be lowercase.\n");
+  printf("Prefix search are supported, but no details.\n");
+  printf("Example: gnu\\* -gorm\n");
 }
