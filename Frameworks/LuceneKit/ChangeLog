@@ -1,3 +1,12 @@
+2005-07-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Source/Util/LCBitVector.m:
+    * Source/Util/LCPriorityQueue.m:
+    Disable unit test.
+    * Source/Search/LCPrefixQuery.m:
+    * Headers/Search/LCPrefixQuery.h:
+    New subclass of LCQuery.
+
 2005-07-12 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/Analysis/LCPerFieldAnalyzerWrapper.m:

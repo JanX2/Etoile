@@ -138,7 +138,7 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 
 @end
 
-#ifdef HAVE_UKTEST
+#ifdef HAVE_UKTEST_MORE
 
 #include <LuceneKit/Store/LCRAMDirectory.h>
 

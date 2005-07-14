@@ -39,7 +39,8 @@ LuceneKit_Search_OBJC_FILES = \
 	LCDefaultSimilarity.m \
 	LCSimilarityDelegator.m \
 	LCTermQuery.m \
-	LCTermScorer.m
+	LCTermScorer.m \
+	LCPrefixQuery.m
 
 ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \
