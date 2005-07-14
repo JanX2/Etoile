@@ -120,7 +120,7 @@ static int maxClauseCount = 1024;
 		LCBooleanClause *c = [clauses objectAtIndex: i];
 		LCQuery *query = [[c query] rewrite: reader];
 		if ([query isEqual: [c query]] == NO) { // clause rewrote: must clone
-			if (clone = nil)
+			if (clone == nil)
 				clone = [self copy];
 			LCBooleanClause *clause = [[LCBooleanClause alloc] initWithQuery: query occur: [c occur]];
 			[clone replaceClauseAtIndex: i withClause: AUTORELEASE(clause)];

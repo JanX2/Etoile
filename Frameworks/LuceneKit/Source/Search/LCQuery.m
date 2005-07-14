@@ -182,7 +182,11 @@
 /** Returns a clone of this query. */
 - (id) copyWithZone: (NSZone *) zone
 {
+#if 0
 	LCQuery *clone = [[LCQuery allocWithZone: zone] init];
+#else
+	LCQuery *clone = [[[self class] allocWithZone: zone] init];
+#endif
 	[clone setBoost: boost];
 	return clone;
 }

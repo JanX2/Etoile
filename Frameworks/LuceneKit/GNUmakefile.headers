@@ -125,6 +125,7 @@ LuceneKit_HEADER_FILES = \
 	Search/LCMultiSearcher.h \
 	Search/LCMultiTermQuery.h \
 	Search/LCNonMatchingScorer.h \
+	Search/LCPrefixQuery.h \
 	Search/LCPhrasePositions.h \
 	Search/LCPhrasePrefixQuery.h \
 	Search/LCPhraseQuery.h \

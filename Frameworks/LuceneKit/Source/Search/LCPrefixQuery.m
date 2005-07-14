@@ -52,7 +52,7 @@
 	NSMutableString *buffer = [[NSMutableString alloc] init];
 	if (![[prefix field] isEqualToString: field])
 	{
-		[buffer appendFormat: @":%@", [prefix field]];
+		[buffer appendFormat: @"%@:", [prefix field]];
     }
 	[buffer appendFormat: @"%@*", [prefix text]];
     if ([self boost] != 1.0f) {
