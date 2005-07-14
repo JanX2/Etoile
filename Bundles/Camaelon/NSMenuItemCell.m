@@ -2,6 +2,10 @@
 #include <AppKit/AppKit.h>
 #include "GSDrawFunctions.h"
 
+static NSImage  *arrowImageUnselected = nil; 
+static NSImage  *arrowImageSelected = nil; 
+static NSImage  *arrowImageCurrent = nil;
+
 @implementation NSMenuItemCell (theme)
 - (void) drawBorderAndBackgroundWithFrame: (NSRect)cellFrame
                                   inView: (NSView *)controlView
@@ -18,6 +22,7 @@
     {
       [GSDrawFunctions drawButton: cellFrame inView: nil style: NSRegularSquareBezelStyle highlighted: NO];
     }
+
 }
 - (void) drawInteriorWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
 {
@@ -50,12 +55,24 @@
    * Determine the background color and cache it in an ivar so that the
    * low-level drawing methods don't need to do it again.
    */
+  if (arrowImageSelected == nil) 
+	arrowImageSelected = [[NSImage imageNamed: @"Arrows/hierarchical-arrows-selected.tiff"] retain];
+  if (arrowImageUnselected == nil) 
+	arrowImageUnselected = [[NSImage imageNamed: @"Arrows/hierarchical-arrows-unselected.tiff"] retain];
+
   if (mask & (NSChangeGrayCellMask | NSChangeBackgroundCellMask))
     {
-      _backgroundColor = [NSColor selectedMenuItemColor];
-  [_backgroundColor set];
-  NSRectFill(cellFrame);
+      	_backgroundColor = [NSColor selectedMenuItemColor];
+	arrowImageCurrent = arrowImageSelected;
+  	[_backgroundColor set];
+  	NSRectFill(cellFrame);
     }
+  else
+    {
+	// not selected..
+	arrowImageCurrent = arrowImageUnselected;
+    }
+
   if (_backgroundColor == nil)
     _backgroundColor = [NSColor controlBackgroundColor];
 
@@ -264,5 +281,47 @@
   _backgroundColor = nil;
 }
 */
+
+- (void) drawKeyEquivalentWithFrame:(NSRect)cellFrame
+                            inView:(NSView *)controlView
+{
+  cellFrame = [self keyEquivalentRectForBounds: cellFrame];
+
+  if ([_menuItem hasSubmenu])
+    {
+      NSSize    size;
+      NSPoint   position;
+
+      size = [arrowImageCurrent size];
+      position.x = cellFrame.origin.x + cellFrame.size.width - size.width;
+      position.y = MAX(NSMidY(cellFrame) - (size.height/2.), 0.);
+      /*
+ *        * Images are always drawn with their bottom-left corner at the origin
+ *               * so we must adjust the position to take account of a flipped view.
+ *                      */
+      if ([controlView isFlipped])
+        position.y += size.height;
+
+      [arrowImageCurrent compositeToPoint: position operation: NSCompositeSourceOver];
+    }
+  /* FIXME/TODO here - decide a consistent policy for images.
+ *    *
+ *       * The reason of the following code is that we draw the key
+ *          * equivalent, but not if we are a popup button and are displaying
+ *             * an image (the image is displayed in the title or selected entry
+ *                * in the popup, it's the small square on the right). In that case,
+ *                   * the image will be drawn in the same position where the key
+ *                      * equivalent would be, so we do not display the key equivalent,
+ *                         * else they would be displayed one over the other one.
+ *                            */
+  else if (![[_menuView menu] _ownedByPopUp])
+    {
+      [self _drawText: [_menuItem keyEquivalent] inFrame: cellFrame];
+    }
+  else if (_imageToDisplay == nil)
+    {
+      [self _drawText: [_menuItem keyEquivalent] inFrame: cellFrame];
+    }
+}
 
 @end

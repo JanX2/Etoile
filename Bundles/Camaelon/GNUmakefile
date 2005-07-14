@@ -103,6 +103,7 @@ Camaelon_OBJC_FILES += \
 		NSFormCell.m \
 		NSMenuItemCell.m \
 		NSPopUpButtonCell.m \
+		NSComboBoxCell.m \
 		NSSliderCell.m \
 		NSTableHeaderCell.m \
 		NSTextFieldCell.m

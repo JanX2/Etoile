@@ -1,3 +1,16 @@
+2005-07-14 Nicolas Roard <nicolas@roard.com>
+
+	* NSColor.m: added the selectedMenuItemColor code, so now the menu
+	items use the correct background color when selected. Of course the
+	text is still wrong because of gnustep bug #13564 ... more infos on
+	https://savannah.gnu.org/bugs/?func=detailitem&item_id=13564
+
+	* NSMenuItemCell.m: added the code to support a different arrow image
+	when the menu item is selected.
+
+	* NSComboBoxCell.m: added the file. It's simply to correctly set the
+	bezelStyle of the NSButtonCell that NSComboBoxCell uses (shadowless)
+
 2005-07-13 Nicolas Roard <nicolas@roard.com>
 
 	* GSDrawFunctions.m: added a shadowless button used when the style is

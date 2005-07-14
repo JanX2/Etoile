@@ -33,6 +33,8 @@ static NSColor* titlebarTextColor;
 		forKey: @"selectedTextColor"];
 	[systemColors setColor: [NSColor selectedTextBackgroundColor]
 		forKey: @"selectedTextBackgroundColor"];
+	[systemColors setColor: [NSColor selectedMenuItemColor]
+		forKey: @"selectedMenuItemColor"];
 	[systemColors setColor: [NSColor windowBackgroundColor]
 		forKey: @"windowBackgroundColor"];
 	[systemColors setColor: [NSColor controlBackgroundColor]
@@ -168,6 +170,19 @@ static NSColor* selectedTextBackgroundColor;
 		[selectedTextBackgroundColor retain];
 	}
 	return selectedTextBackgroundColor;
+}
+
+static NSColor* selectedMenuItemColor;
+
++ (NSColor*) selectedMenuItemColor 
+{
+	if (selectedMenuItemColor == nil)
+	{
+		selectedMenuItemColor = [GraphicToolbox readColorFromImage:
+		[NSImage imageNamed: @"Colors/Colors-selected-text-background.tiff"]];
+		[selectedMenuItemColor retain];
+	}
+	return selectedMenuItemColor;
 }
 
 static NSColor* windowBackgroundColor;
