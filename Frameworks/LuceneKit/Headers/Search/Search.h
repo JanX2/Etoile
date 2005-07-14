@@ -36,6 +36,7 @@
 #include <LuceneKit/Search/LCPhraseQuery.h>
 #include <LuceneKit/Search/LCPhraseQueue.h>
 #include <LuceneKit/Search/LCPhraseScorer.h>
+#include <LuceneKit/Search/LCPrefixQuery.h>
 #include <LuceneKit/Search/LCQuery.h>
 #include <LuceneKit/Search/LCQueryFilter.h>
 #include <LuceneKit/Search/LCQueryTermVector.h>

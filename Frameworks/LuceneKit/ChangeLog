@@ -6,6 +6,8 @@
     * Source/Search/LCPrefixQuery.m:
     * Headers/Search/LCPrefixQuery.h:
     New subclass of LCQuery.
+    * Source/Search/TestPrefixQuery.m:
+    Test for LCPrefixQuery.
 
 2005-07-12 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

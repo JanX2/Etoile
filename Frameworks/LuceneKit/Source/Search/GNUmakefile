@@ -44,6 +44,7 @@ LuceneKit_Search_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \
+	TestPrefixQuery.m \
 	TestSort.m \
 	TestBoolean2.m \
 	TestQueryTermVector.m \
