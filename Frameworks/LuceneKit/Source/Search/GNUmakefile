@@ -40,7 +40,9 @@ LuceneKit_Search_OBJC_FILES = \
 	LCSimilarityDelegator.m \
 	LCTermQuery.m \
 	LCTermScorer.m \
-	LCPrefixQuery.m
+	LCPrefixQuery.m \
+	LCFilteredTermEnum.m \
+	LCMultiTermQuery.m
 
 ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \

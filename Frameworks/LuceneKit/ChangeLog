@@ -10,6 +10,9 @@
     Test for LCPrefixQuery.
     * Source/Search/LCBooleanQuery.m:
     Bug fixed.
+    * Source/Search/LCFilteredTermEnum.m:
+    * Source/Search/LCMultiTermQuery.m:
+    New classes.
 
 2005-07-12 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

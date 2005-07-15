@@ -9,14 +9,10 @@
 	LCTermEnumerator *actualEnum;
 }
 
-- (BOOL) termCompare: (LCTerm *) term;
+- (BOOL) isEqualToTerm: (LCTerm *) term;
 - (float) difference;
-- (BOOL) endEnumerator;
+- (BOOL) endOfEnumerator;
 - (void) setEnumerator: (LCTermEnumerator *) actualEnum;
-- (int) documentFrequency;
-- (BOOL) next;
-- (LCTerm *) term;
-- (void) close;
 @end
 
 #endif /* __LUCENE_SEARCH_FILTERED_TERM_ENUM__ */

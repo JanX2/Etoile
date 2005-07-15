@@ -14,9 +14,7 @@
 
 - (id) initWithTerm: (LCTerm *) term;
 - (LCTerm *) term;
-- (LCFilteredTermEnumerator *) enum: (LCIndexReader *) reader;
-- (LCQuery *) rewrite: (LCIndexReader *) reader;
-- (LCQuery *) combine: (NSArray *) queries;
+- (LCFilteredTermEnumerator *) enumerator: (LCIndexReader *) reader;
 
 @end
 
