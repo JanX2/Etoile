@@ -99,7 +99,7 @@
     int lo = 0;					  // binary search indexTerms[]
     int hi = [indexTerms count] - 1;
 	
-    while (hi >= lo) {
+    while (hi > lo) {
 		int mid = (lo + hi) >> 1;
 		NSComparisonResult delta = 
 			[term compare: [indexTerms objectAtIndex: mid]];

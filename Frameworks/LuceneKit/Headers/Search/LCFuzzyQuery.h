@@ -3,13 +3,16 @@
 
 #include <LuceneKit/Search/LCMultiTermQuery.h>
 
-@interface LCScoreTerm: NSObject
+@interface LCScoreTerm: NSObject <LCComparable>
 {
 	LCTerm *term;
 	float score;
 }
 
 - (id) initWithTerm: (LCTerm *) term score: (float) score;
+- (float) score;
+- (LCTerm *) term;
+
 @end
 
 @interface LCScoreTermQueue: LCPriorityQueue
@@ -29,11 +32,11 @@ static int defaultPrefixLength = 0;
        prefixLength: (int) prefixLength;
 - (id) initWithTerm: (LCTerm *) term
   minimumSimilarity: (float) minimumSimilarity;
-- (id) initWithTerm: (LCTerm *) term;
 - (float) minSimilarity;
 - (int) prefixLength;
-- (LCFilteredTermEnumerator *) enum: (LCIndexReader *) reader;
-- (LCQuery *) rewrite: (LCIndexReader *) reader;
++ (float) defaultMinSimilarity;
++ (int) defaultPrefixLength;
+
 
 @end
 

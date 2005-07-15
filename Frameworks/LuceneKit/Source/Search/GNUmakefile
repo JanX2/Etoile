@@ -42,10 +42,13 @@ LuceneKit_Search_OBJC_FILES = \
 	LCTermScorer.m \
 	LCPrefixQuery.m \
 	LCFilteredTermEnum.m \
-	LCMultiTermQuery.m
+	LCMultiTermQuery.m \
+	LCFuzzyQuery.m \
+	LCFuzzyTermEnum.m
 
 ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \
+	TestFuzzyQuery.m \
 	TestPrefixQuery.m \
 	TestSort.m \
 	TestBoolean2.m \

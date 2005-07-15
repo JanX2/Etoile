@@ -12,7 +12,10 @@
     Bug fixed.
     * Source/Search/LCFilteredTermEnum.m:
     * Source/Search/LCMultiTermQuery.m:
-    New classes.
+    * Source/Search/LCFuzzyQuery.m:
+    * Source/Search/LCFuzzyTermEnum.m:
+    * Source/Search/TestFuzzyQuery.m:
+    New classes and tests.
 
 2005-07-12 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
