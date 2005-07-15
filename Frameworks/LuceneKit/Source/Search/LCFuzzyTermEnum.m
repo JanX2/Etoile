@@ -206,16 +206,19 @@ int minOfTwo(int a, int b)
    */
 - (float) similarity: (NSString *) target
 {
+	float score = 0.0f;
 	int m = [target length];
 	int n = [text length];
 	if (n == 0) {
 		//we don't have anything to compare.  That means if we just add
 		//the letters for m we get the new word
-		return ([prefix length] == 0) ? 0.0f : (1.0f - ((float) m / [prefix length]));
+		score = ([prefix length] == 0) ? 0.0f : (1.0f - ((float) m / [prefix length]));
+		return score;
     }
     if (m == 0) 
 	{
-      return ([prefix length] == 0) ? 0.0f : (1.0f - ((float) n / [prefix length]));
+      score = ([prefix length] == 0) ? 0.0f : (1.0f - ((float) n / [prefix length]));
+	return score;
     }
 
 	int maxDistance = [self maxDistance:m];
@@ -275,7 +278,13 @@ int minOfTwo(int a, int b)
     // but this was the formula that was previously used in FuzzyTermEnum,
     // so it has not been changed (even though minimumSimilarity must be
     // greater than 0.0)
-    return 1.0f - ((float)d[n][m] / (float) ([prefix length] + minOfTwo(n, m)));
+
+    /* LuceneKit: the conversion doesn't work on Debian/PowerPC, at least */
+    int d_score = d[n][m];
+    float first_score = [prefix length] + minOfTwo(n, m);
+    score = 1.0f - d_score / first_score;
+//    score = 1.0f - ((float)d_score / (float)([prefix length] + minOfTwo(n, m)));
+    return score;
 }
 
   /**

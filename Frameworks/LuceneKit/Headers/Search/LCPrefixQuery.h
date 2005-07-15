@@ -8,3 +8,4 @@
 - (id) initWithTerm: (LCTerm *) prefix;
 - (LCTerm *) prefix;
 @end
+
