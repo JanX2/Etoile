@@ -134,7 +134,7 @@ int minOfTwo(int a, int b)
 - (BOOL) isEqualToTerm: (LCTerm *) term
 {
 	if (([field isEqualToString: [term field]]) && 
-		([[term text] hasPrefix: prefix]) || ([prefix length] == 0 /* no prefix */))
+		(([[term text] hasPrefix: prefix]) || ([prefix length] == 0 /* no prefix */)))
 	{
 		NSString *target = [[term text] substringFromIndex: [prefix length]];
 		similarity = [self similarity: target];

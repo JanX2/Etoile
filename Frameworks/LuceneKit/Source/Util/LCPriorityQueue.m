@@ -177,7 +177,7 @@ time. */
 
 @end
 
-#ifdef HAVE_UKTEST_MORE
+#ifdef HAVE_UKTEST
 #include <UnitKit/UnitKit.h>
 
 @interface LCIntegerQueue: LCPriorityQueue <UKTest>

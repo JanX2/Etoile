@@ -1,3 +1,11 @@
+2005-07-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Source/Search/LCFuzzyTermEnum.m:
+    * Source/Search/TestFuzzyQuery.m:
+    Pass all tests.
+    * Current test result: 
+    Result: 40 classes, 101 methods, 50181 tests, 0 failed
+
 2005-07-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/Util/LCBitVector.m:
