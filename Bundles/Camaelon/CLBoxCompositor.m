@@ -70,6 +70,9 @@
 	[bottom release];
 }
 
+- (float) topHeight { return topHeight; }
+- (float) bottomHeight { return bottomHeight; }
+
 - (void) drawInRect: (NSRect) rect
 {
 	/* 
@@ -127,6 +130,16 @@
 	if (topRight == nil) [self error: @"topRight"];
 	if (bottomLeft == nil) [self error: @"bottomLeft"];
 	if (bottomRight == nil) [self error: @"bottomRight"];
+
+	// We get the height of the top/bottom borders... (useful for NSBox's title positioning)
+	
+	topHeight = [top size].height / 2.0;
+	bottomHeight = [bottom size].height / 2.0;
+
+//	rect.origin.x -= leftWidth;
+//	rect.origin.y -= topHeight;
+//	rect.size.width += leftWidth + rightWidth;
+//	rect.size.height += topHeight + bottomHeight;
 	
 	// Ok, drawing ...
 

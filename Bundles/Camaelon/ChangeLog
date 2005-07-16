@@ -1,3 +1,16 @@
+2005-07-15 Nicolas Roard <nicolas@roard.com>
+
+	* NSBox.m : fixed the -drawRect: method to have a correct 
+	drawing (with the different borders, and all the possible 
+	title positioning)
+
+	* GSDrawFunctions : added +boxBorderHeight and +setGroupBoxImages
+
+	* CLBoxCompositor : added -topHeight/-bottomHeight (useful for NSBox's
+	title positioning)
+
+	* CLCompositor.m : removed the previous hack for the NSBox's title..
+	
 2005-07-14 Nicolas Roard <nicolas@roard.com>
 
 	* NSColor.m: added the selectedMenuItemColor code, so now the menu

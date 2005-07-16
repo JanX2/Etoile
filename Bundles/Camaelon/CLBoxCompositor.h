@@ -7,7 +7,11 @@
 {
 	CLFill fillType;
 	NSColor* colorFill;
+	float topHeight;
+	float bottomHeight;
 }
+- (float) topHeight;
+- (float) bottomHeight;
 - (void) setFill: (CLFill) filling; 
 - (void) setFillColor: (NSColor*) color; 
 @end

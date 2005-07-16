@@ -34,6 +34,8 @@
 + (void) drawProgressIndicatorBackgroundOn: (NSView*) view;
 + (void) drawProgressIndicatorForegroundInRect: (NSRect) rect;
 + (void) drawTitleBox: (NSRect) rect on: (id) box;
++ (void) setGroupBoxImages;
++ (float) boxBorderHeight;
 + (void) drawBox: (NSRect) rect on: (id) box;
 + (void) drawWindowBackground: (NSRect) rect on: (id) window;
 + (void) drawPopupButton: (NSRect) border inView: (NSView*) view;

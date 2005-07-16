@@ -75,6 +75,8 @@
 }
 + (NSRect) drawGroove: (NSRect)border : (NSRect)clip
 { 
+  	[GSDrawFunctions drawBox: border on: self];
+	/*
 	NSBezierPath* path = [NSBezierPath bezierPath];
 	NSBezierPath* path2 = [NSBezierPath bezierPath];
 	NSRect r = NSMakeRect (border.origin.x + 1, border.origin.y +3, border.size.width -4, border.size.height -4);
@@ -91,6 +93,7 @@
 	[path2 stroke];
  	[[NSColor blackColor] set];
 	[path stroke];
+	*/
 }
 
 ////
@@ -609,8 +612,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 	[GraphicToolbox fillRect: rect withImage: [NSImage imageNamed: @"Window/Window-background.tiff"]];
 }
 
-
-+ (void) drawBox: (NSRect) rect on: (NSView*) box
++ (void) setGroupBoxImages
 {
 	if (mygroupBox == nil)
 	{
@@ -638,9 +640,19 @@ static CLCompositor* cl_progressIndicatorBackground;
 		[mygroupBox setFillColor: [GraphicToolbox readColorFromImage: 
 			[NSImage imageNamed: @"GroupBox/GroupBox-fill.tiff"]]];
 	}
+}
 
-	//[mygroupBox drawInRect: rect on: box];
-	[mygroupBox drawOn: box];
++ (float) boxBorderHeight 
+{
+	[self setGroupBoxImages];
+	return [mygroupBox topHeight];
+}
+
++ (void) drawBox: (NSRect) rect on: (NSView*) box
+{
+	[self setGroupBoxImages];
+	[mygroupBox drawInRect: rect on: box];
+	//[mygroupBox drawOn: box];
 }
 
 + (void) drawWindowBackground: (NSRect) rect on: (id) window

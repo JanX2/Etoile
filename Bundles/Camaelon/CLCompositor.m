@@ -26,11 +26,6 @@
 
 - (void) drawOn: (NSView*) view {
 	NSRect rect = [view bounds];
-	if ([view isKindOfClass: [NSBox class]])
-	{
-		//FIXME: that's a hack
-		rect.size.height -= 6;
-	}
 	[self drawInRect: rect on: view];
 }
 
