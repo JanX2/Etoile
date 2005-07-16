@@ -201,7 +201,7 @@ int main (int argc, const char * argv[]) {
 #else
           /* <12.5.2> Shows term frequency and positions. */
           id <LCTermPositions> tp = [reader termPositionsWithTerm: term];
-          while([tp next])
+          while([tp hasNextDocument])
           if ([tp document] == [hits identifier: i])
           {
             printf("\t- term: %s\n", [[term description] cString]);
@@ -212,7 +212,7 @@ int main (int argc, const char * argv[]) {
           }
 #endif
           /* <12.5.3> Use term vector. */
-          id tv = [reader termFreqVector: [hits identifier: i]
+          id tv = [reader termFrequencyVector: [hits identifier: i]
                                            field: CONTENT];
           if ([tv conformsToProtocol: @protocol(LCTermPositionVector)])
           {
@@ -226,7 +226,7 @@ int main (int argc, const char * argv[]) {
              */
  
             /* <12.5.3.2> Shows term offsets. */
-            NSArray *offsets = [termVector offsets: index];
+            NSArray *offsets = [termVector termOffsets: index];
             int n;
             for (n = 0; n < [offsets count]; n++)
             {
