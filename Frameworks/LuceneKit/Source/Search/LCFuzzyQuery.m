@@ -106,7 +106,7 @@
 				DESTROY(sterm);
 			}
 		}
-	} while ([enumerator next]);
+	} while ([enumerator hasNextTerm]);
 	[enumerator close];
 	
 	LCBooleanQuery *query = [[LCBooleanQuery alloc] initWithCoordination: YES];

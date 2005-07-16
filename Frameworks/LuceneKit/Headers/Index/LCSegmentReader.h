@@ -47,9 +47,6 @@
 + (BOOL) usesCompoundFile: (LCSegmentInfo *) si;
 + (BOOL) hasSeparateNorms: (LCSegmentInfo *) si;
 - (NSArray *) files;
-- (id <LCTermFreqVector>) termFreqVector: (int) docNumber
-								   field: (NSString *) field;
-- (NSArray *) termFreqVectors: (int) docNumber;
 - (LCBitVector*) deletedDocs;
 - (LCTermInfosReader *) termInfosReader;
 - (LCIndexInput *) freqStream;

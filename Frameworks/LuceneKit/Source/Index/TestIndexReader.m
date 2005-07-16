@@ -245,7 +245,7 @@
 	tdocs = [reader termDocumentsWithTerm: term];
 	UKNotNil(tdocs);
 	int count = 0;
-	while ([tdocs next])
+	while ([tdocs hasNextDocument])
 	{
 		count++;
 	}

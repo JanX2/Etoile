@@ -21,7 +21,7 @@
 - (LCTerm *) term;
 - (LCTermEnumerator *) termEnumerator;
 - (int) base;
-- (BOOL) next;
+- (BOOL) hasNextTerm;
 - (void) close;
 - (NSArray *) docMap;
 - (id <LCTermPositions>) postings;

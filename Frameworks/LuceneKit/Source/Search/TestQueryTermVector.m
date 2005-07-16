@@ -26,20 +26,20 @@
 	NSArray *goldFreqs = [NSArray arrayWithObjects: @"1", @"2", @"3", @"3", nil];
 	LCQueryTermVector *result = [[LCQueryTermVector alloc] initWithQueryTerms: queryTerm];
 	UKNotNil(result);
-	NSArray *terms = [result terms];
+	NSArray *terms = [result allTerms];
 	UKIntsEqual(4, [terms count]);
-	NSArray *freqs = [result termFrequencies];
+	NSArray *freqs = [result allTermFrequencies];
 	UKIntsEqual(4, [freqs count]);
 	[self checkGold: terms gold: gold freqs: freqs goldFreqs: goldFreqs];
 	result = [[LCQueryTermVector alloc] initWithQueryTerms: nil];
-	UKIntsEqual(0, [[result terms] count]);
+	UKIntsEqual(0, [[result allTerms] count]);
 	
 	result = [[LCQueryTermVector alloc] initWithString: @"foo bar foo again foo bar go go go"
 											  analyzer: [[LCWhitespaceAnalyzer alloc] init]];
 	UKNotNil(result);
-	terms = [result terms];
+	terms = [result allTerms];
 	UKIntsEqual(4, [terms count]);
-	freqs = [result termFrequencies];
+	freqs = [result allTermFrequencies];
 	UKIntsEqual(4, [freqs count]);
 	[self checkGold: terms gold: gold freqs: freqs goldFreqs: goldFreqs];
 }

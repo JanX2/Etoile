@@ -339,14 +339,14 @@
     return AUTORELEASE(files);
 }
 
-- (LCTermEnumerator *) terms
+- (LCTermEnumerator *) termEnumerator
 {
-    return (LCTermEnumerator *)[tis terms];
+    return (LCTermEnumerator *)[tis termEnumerator];
 }
 
-- (LCTermEnumerator *) termsWithTerm: (LCTerm *) t
+- (LCTermEnumerator *) termEnumeratorWithTerm: (LCTerm *) t
 {
-    return (LCTermEnumerator *)[tis termsWithTerm: t];
+    return (LCTermEnumerator *)[tis termEnumeratorWithTerm: t];
 }
 
 - (LCDocument *) document: (int) n
@@ -566,7 +566,7 @@
 *  flag set.  If the flag was not set, the method returns null.
 * @throws IOException
 */
-- (id <LCTermFreqVector>) termFreqVector: (int) docNumber
+- (id <LCTermFrequencyVector>) termFrequencyVector: (int) docNumber
 								   field: (NSString *) field
 {
     // Check if this field is invalid or has no stored term vector
@@ -578,7 +578,7 @@
     if (termVectorsReader == nil)
 		return nil;
     
-    return [termVectorsReader termFreqVectorWithDocument: docNumber
+    return [termVectorsReader termFrequencyVector: docNumber
 												   field: field];
 }
 
@@ -590,7 +590,7 @@
 *  If no such fields existed, the method returns null.
 * @throws IOException
 */
-- (NSArray *) termFreqVectors: (int) docNumber
+- (NSArray *) termFrequencyVectors: (int) docNumber
 {
     if (termVectorsReaderOrig == nil)
 		return nil;
@@ -599,7 +599,7 @@
     if (termVectorsReader == nil)
 		return nil;
     
-    return [termVectorsReader termFreqVectorsWithDocument: docNumber];
+    return [termVectorsReader termFrequencyVectors: docNumber];
 }
 
 - (NSString *) segment

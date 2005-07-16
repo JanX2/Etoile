@@ -251,12 +251,12 @@
 #if 1
 				if ([tpVector size] > 0 && ([tpVector termPositions: 0] != nil) && ([[tpVector termPositions: 0] count] > 0))
 					storePositionWithTermVector = YES;
-				if ([tpVector size] > 0 && ([tpVector offsets: 0] != nil) && ([[tpVector offsets: 0] count] > 0))
+				if ([tpVector size] > 0 && ([tpVector termOffsets: 0] != nil) && ([[tpVector termOffsets: 0] count] > 0))
 					storeOffsetWithTermVector = YES;
 #else
 				if ([tpVector size] > 0 && [tpVector termPositions: 0] != nil)
 					storePositionWithTermVector = YES;
-				if ([tpVector size] > 0 && [tpVector offsets: 0] != nil)
+				if ([tpVector size] > 0 && [tpVector termOffsets: 0] != nil)
 					storeOffsetWithTermVector = YES;
 #endif
 				
@@ -270,10 +270,10 @@
 				int j;
 				for (j = 0; j < [tpVector size]; j++)
 				{
-					[self addTermInternal: [[tpVector terms] objectAtIndex: j]
-									 freq: [[[tpVector termFrequencies] objectAtIndex: j] longValue]
+					[self addTermInternal: [[tpVector allTerms] objectAtIndex: j]
+									 freq: [[[tpVector allTermFrequencies] objectAtIndex: j] longValue]
 								positions: [tpVector termPositions: j]
-								  offsets: [tpVector offsets: j]];
+								  offsets: [tpVector termOffsets: j]];
 				}
 				
 				[self closeField];
@@ -281,7 +281,7 @@
 			}
 			else
 			{
-				id <LCTermFreqVector> tfVector = [vectors objectAtIndex: i];
+				id <LCTermFrequencyVector> tfVector = [vectors objectAtIndex: i];
 				
 				LCFieldInfo *fieldInfo = [fieldInfos fieldInfo: [tfVector field]];
 				[self openField: [fieldInfo number]
@@ -290,8 +290,8 @@
 				
 				int j;
 				for (j = 0; j < [tfVector size]; j++)
-					[self addTermInternal: [[tfVector terms] objectAtIndex: j]
-									 freq: [[[tfVector termFrequencies] objectAtIndex: j] intValue]
+					[self addTermInternal: [[tfVector allTerms] objectAtIndex: j]
+									 freq: [[[tfVector allTermFrequencies] objectAtIndex: j] intValue]
 								positions: nil offsets: nil];
 				
 				[self closeField];

@@ -27,7 +27,7 @@ the enumeration is greater than all that precede it.  */
 	if (term != nil && [self isEqualToTerm: term])
 		ASSIGN(currentTerm, term);
 	else
-		[self next];
+		[self hasNextTerm];
 }
 
 /** 
@@ -41,13 +41,13 @@ the enumeration is greater than all that precede it.  */
 }
     
 /** Increments the enumeration to the next element.  True if one exists. */
-- (BOOL) next
+- (BOOL) hasNextTerm
 {
 	if (actualEnum == nil) return NO;
 	DESTROY(currentTerm);
 	while (currentTerm == nil) {
 		if ([self endOfEnumerator] == YES) return NO;
-		if ([actualEnum next]) {
+		if ([actualEnum hasNextTerm]) {
 			LCTerm *term = [actualEnum term];
 			if ([self isEqualToTerm: term]) {
 				ASSIGN(currentTerm, term);

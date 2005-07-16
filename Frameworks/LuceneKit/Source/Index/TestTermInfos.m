@@ -102,9 +102,9 @@
 	
     start = [NSDate date];
 	
-    LCSegmentTermEnumerator *enumerator = [reader terms];
+    LCSegmentTermEnumerator *enumerator = [reader termEnumerator];
     for (i = 0; i < [keys count]; i++) {
-		[enumerator next];
+		[enumerator hasNextTerm];
 		LCTerm *key = (LCTerm *)[keys objectAtIndex: i];
 //		UKObjectsEqual(key, [enumerator term]); // Doesn't work
 		UKTrue([key isEqual: [enumerator term]]);
@@ -132,7 +132,7 @@
     
     NSLog(@"%f average seconds per lookup.", ([end timeIntervalSince1970] - [start timeIntervalSince1970])/[keys count]);
     
-    LCTermEnumerator *e = [reader termsWithTerm: [[LCTerm alloc] initWithField: @"word" text: @"AP"]];
+    LCTermEnumerator *e = [reader termEnumeratorWithTerm: [[LCTerm alloc] initWithField: @"word" text: @"AP"]];
     UKStringsEqual([[e term] text], @"AProles");
     [reader close];
     [store close];

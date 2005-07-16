@@ -30,8 +30,8 @@
 - (LCTermInfo *) termInfo: (LCTerm *) term;
 - (LCTerm *) termAtPosition: (int) position;
 - (long) positionOfTerm: (LCTerm *) term;
-- (LCSegmentTermEnumerator *) terms;
-- (LCSegmentTermEnumerator *) termsWithTerm: (LCTerm *) term;
+- (LCSegmentTermEnumerator *) termEnumerator;
+- (LCSegmentTermEnumerator *) termEnumeratorWithTerm: (LCTerm *) term;
 
 @end
 

@@ -5,7 +5,7 @@
 
 @class LCAnalyzer;
 
-@interface LCQueryTermVector: NSObject <LCTermFreqVector>
+@interface LCQueryTermVector: NSObject <LCTermFrequencyVector>
 {
 	NSMutableArray *terms;
 	NSMutableArray *termFreqs;

@@ -128,9 +128,9 @@
 - (void) testTerms
 {
 	
-	LCSegmentTermEnumerator *terms = (LCSegmentTermEnumerator *)[reader terms];
+	LCSegmentTermEnumerator *terms = (LCSegmentTermEnumerator *)[reader termEnumerator];
 	UKNotNil(terms);
-	while([terms next])
+	while([terms hasNextTerm])
 	{
 		LCTerm *term = [terms term];
 		UKNotNil(term);
@@ -143,7 +143,7 @@
 	UKNotNil(termDocs);
 	LCTerm *t = [[LCTerm alloc] initWithField: [TestDocHelper TEXT_FIELD_1_KEY] text: @"field"];
 	[termDocs seekTerm: t];
-	UKTrue([termDocs next]);
+	UKTrue([termDocs hasNextDocument]);
 	
 	id <LCTermPositions> positions = [reader termPositions];
 	[positions seekTerm: t];
@@ -171,10 +171,10 @@ public void testNorms() {
 
 - (void) testTermVectors
 {
-	id <LCTermFreqVector> result = [reader termFreqVector: 0 field: [TestDocHelper TEXT_FIELD_2_KEY]];
+	id <LCTermFrequencyVector> result = [reader termFrequencyVector: 0 field: [TestDocHelper TEXT_FIELD_2_KEY]];
 	UKNotNil(result);
-	NSArray *terms = [result terms];
-	NSArray *freqs = [result termFrequencies];
+	NSArray *terms = [result allTerms];
+	NSArray *freqs = [result allTermFrequencies];
 	UKNotNil(terms);
 	UKIntsEqual([terms count], 3);
 	UKNotNil(freqs);
@@ -187,7 +187,7 @@ public void testNorms() {
 		UKTrue([[TestDocHelper FIELD_2_TEXT] rangeOfString: term].location != NSNotFound);
 		UKTrue(freq > 0);
 	}
-	NSArray *results = [reader termFreqVectors: 0];
+	NSArray *results = [reader termFrequencyVectors: 0];
 	UKNotNil(result);
 	UKIntsEqual([results count], 2);
 }

@@ -3,7 +3,7 @@
 
 #include <LuceneKit/Index/LCTermFreqVector.h>
 
-@interface LCSegmentTermVector: NSObject <LCTermFreqVector>
+@interface LCSegmentTermVector: NSObject <LCTermFrequencyVector>
 {
 	NSString *field;
 	NSArray *terms; // NSArray of NSString

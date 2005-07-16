@@ -47,7 +47,7 @@
 	LCTerm *t = [[LCTerm alloc] initWithField: [TestDocHelper TEXT_FIELD_2_KEY]
 										 text: @"field"];
 	[segTermDocs seekTerm: t];
-	if ([segTermDocs next] == YES)
+	if ([segTermDocs hasNextDocument] == YES)
 	{
         long docId = [segTermDocs document];
 		UKIntsEqual(docId, 0);
@@ -65,7 +65,7 @@
 	LCSegmentTermDocuments *segTermDocs = [[LCSegmentTermDocuments alloc] initWithSegmentReader: reader];
 	UKNotNil(segTermDocs);
 	LCTerm *t = [[LCTerm alloc] initWithField: @"testField2" text: @"bad"];
-	UKFalse([segTermDocs next]);
+	UKFalse([segTermDocs hasNextDocument]);
 	[reader close];
 	
 	si = [[LCSegmentInfo alloc] initWithName: @"test" numberOfDocuments: 3 directory: dir];
@@ -74,7 +74,7 @@
 	segTermDocs = [[LCSegmentTermDocuments alloc] initWithSegmentReader: reader];
 	UKNotNil(segTermDocs);
 	t = [[LCTerm alloc] initWithField: @"junk" text: @"bad"];
-	UKFalse([segTermDocs next]);
+	UKFalse([segTermDocs hasNextDocument]);
 	[reader close];
 }
 
@@ -123,10 +123,10 @@
 	
 	// with next
 	[tdocs seekTerm: ta];
-	UKTrue([tdocs next]);
+	UKTrue([tdocs hasNextDocument]);
 	UKIntsEqual(0, [tdocs document]);
 	UKIntsEqual(4, [tdocs frequency]);
-	UKTrue([tdocs next]);
+	UKTrue([tdocs hasNextDocument]);
 	UKIntsEqual(1, [tdocs document]);
 	UKIntsEqual(4, [tdocs frequency]);
 	UKTrue([tdocs skipTo: 0]);
@@ -151,10 +151,10 @@
 	
 	// with next
 	[tdocs seekTerm: tb];
-	UKTrue([tdocs next]);
+	UKTrue([tdocs hasNextDocument]);
 	UKIntsEqual(10, [tdocs document]);
 	UKIntsEqual(4, [tdocs frequency]);
-	UKTrue([tdocs next]);
+	UKTrue([tdocs hasNextDocument]);
 	UKIntsEqual(11, [tdocs document]);
 	UKIntsEqual(4, [tdocs frequency]);
 	UKTrue([tdocs skipTo: 5]);
@@ -183,10 +183,10 @@
 	
 	// with next
 	[tdocs seekTerm: tc];
-	UKTrue([tdocs next]);
+	UKTrue([tdocs hasNextDocument]);
 	UKIntsEqual(26, [tdocs document]);
 	UKIntsEqual(4, [tdocs frequency]);
-	UKTrue([tdocs next]);
+	UKTrue([tdocs hasNextDocument]);
 	UKIntsEqual(27, [tdocs document]);
 	UKIntsEqual(4, [tdocs frequency]);
 	UKTrue([tdocs skipTo: 5]);

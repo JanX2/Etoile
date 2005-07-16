@@ -47,13 +47,13 @@
 		[proxStream readVInt];
 }
 
-- (BOOL) next
+- (BOOL) hasNextDocument
 {
 	int f;
     for (f = proxCount; f > 0; f--)		  // skip unread positions
 		[proxStream readVInt];
 	
-    if ([super next]) {				  // run super
+    if ([super hasNextDocument]) {				  // run super
 		proxCount = freq;				  // note frequency
 		position = 0;				  // reset position
 		return YES;

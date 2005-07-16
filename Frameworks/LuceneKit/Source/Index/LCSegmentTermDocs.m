@@ -88,7 +88,7 @@
 {
 }
 
-- (BOOL) next
+- (BOOL) hasNextDocument
 {
     while (YES) {
 		if (count == df)
@@ -197,7 +197,7 @@
 	
     // done skipping, now just scan
     do {
-		if (![self next])
+		if (![self hasNextDocument])
 			return NO;
     } while (target > doc);
     return YES;

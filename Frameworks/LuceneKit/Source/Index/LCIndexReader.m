@@ -222,7 +222,7 @@ public static long getCurrentVersion(String directory) throws IOException {
  * @throws IOException if index cannot be accessed
  * @see org.apache.lucene.document.Field.TermVector
  */
-- (NSArray *) termFreqVectors: (int) number { return nil; }
+- (NSArray *) termFrequencyVectors: (int) number { return nil; }
 
 
 	/**
@@ -239,7 +239,7 @@ public static long getCurrentVersion(String directory) throws IOException {
 	 * @throws IOException if index cannot be accessed
 	 * @see org.apache.lucene.document.Field.TermVector
 	 */
-- (id <LCTermFreqVector>) termFreqVector: (int) docNumber
+- (id <LCTermFrequencyVector>) termFrequencyVector: (int) docNumber
 								   field: (NSString *) field
 { return nil; } 
 	/**
@@ -341,13 +341,13 @@ public static long getCurrentVersion(String directory) throws IOException {
 The enumeration is ordered by Term.compareTo().  Each term
 is greater than all that precede it in the enumeration.
 */
-- (LCTermEnumerator *) terms { return nil; };
+- (LCTermEnumerator *) termEnumerator { return nil; };
 
 	/** Returns an enumeration of all terms after a given term.
 	The enumeration is ordered by Term.compareTo().  Each term
 	is greater than all that precede it in the enumeration.
 	*/
-- (LCTermEnumerator *) termsWithTerm: (LCTerm *) t { return nil; }
+- (LCTermEnumerator *) termEnumeratorWithTerm: (LCTerm *) t { return nil; }
 
 	/** Returns the number of documents containing the term <code>t</code>. */
 - (long) documentFrequency: (LCTerm *) t { return 0; }
@@ -461,7 +461,7 @@ this will be corrected eventually as the index is further modified.
 	id <LCTermDocuments> docs = [self termDocumentsWithTerm: term];
 	if (docs == nil) return 0;
 	int n = 0;
-	while ([docs next])
+	while ([docs hasNextDocument])
 	{
 		[self delete: [docs document]];
 		n++;

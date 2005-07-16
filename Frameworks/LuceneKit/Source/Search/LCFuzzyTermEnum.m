@@ -122,7 +122,7 @@ int minOfTwo(int a, int b)
 	[self initDistanceArray];
 
 	LCTerm *tt = [[LCTerm alloc] initWithField: [searchTerm field] text: prefix];
-	[self setEnumerator: [reader termsWithTerm: tt]];
+	[self setEnumerator: [reader termEnumeratorWithTerm: tt]];
 	DESTROY(tt);
 	return self;
 }

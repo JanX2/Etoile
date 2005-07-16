@@ -16,7 +16,7 @@
 - (LCQuery *) rewrite: (LCIndexReader *) reader
 {
 	LCBooleanQuery *query = [[LCBooleanQuery alloc] initWithCoordination: YES];
-	LCTermEnumerator *enumerator = [reader termsWithTerm: prefix];
+	LCTermEnumerator *enumerator = [reader termEnumeratorWithTerm: prefix];
 	NSString *prefixText = [prefix text];
 	NSString *prefixField = [prefix field];
 	do {
@@ -31,7 +31,7 @@
 		} else {
 			break;
 		}
-	} while ([enumerator next]);
+	} while ([enumerator hasNextTerm]);
 	[enumerator close];
 	return AUTORELEASE(query);
 }

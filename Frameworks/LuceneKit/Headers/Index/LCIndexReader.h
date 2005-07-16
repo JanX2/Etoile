@@ -60,8 +60,8 @@ typedef enum _LCFieldOption
 - (id <LCDirectory>) directory;
 + (long) currentVersionAtPath: (NSString *) path;
 + (long) currentVersionWithDirectory: (id <LCDirectory>) dir;
-- (NSArray *) termFreqVectors: (int) number;
-- (id <LCTermFreqVector>) termFreqVector: (int) docNumber
+- (NSArray *) termFrequencyVectors: (int) document;
+- (id <LCTermFrequencyVector>) termFrequencyVector: (int) document
 								   field: (NSString *) field;
 + (BOOL) indexExistsAtPath: (NSString *) dir;
 + (BOOL) indexExistsWithDirectory: (id <LCDirectory>) dir;
@@ -76,8 +76,8 @@ typedef enum _LCFieldOption
 - (void) setNorm: (int) doc field: (NSString *) field charValue: (char) value;
 - (void) doSetNorm: (int) doc field: (NSString *) field charValue: (char) value;
 - (void) setNorm: (int) doc field: (NSString *) field floatValue: (float) value;
-- (LCTermEnumerator *) terms;
-- (LCTermEnumerator *) termsWithTerm: (LCTerm *) t;
+- (LCTermEnumerator *) termEnumerator;
+- (LCTermEnumerator *) termEnumeratorWithTerm: (LCTerm *) t;
 - (long) documentFrequency: (LCTerm *) t;
 - (id <LCTermDocuments>) termDocumentsWithTerm: (LCTerm *) term;
 - (id <LCTermDocuments>) termDocuments;

@@ -98,19 +98,19 @@
 	LCTerm *t = [[LCTerm alloc] initWithField: [TestDocHelper TEXT_FIELD_2_KEY] text: @"field"];
 	id <LCTermDocuments> termDocs = [mergedReader termDocumentsWithTerm: t];
 	UKNotNil(termDocs);
-	UKTrue([termDocs next]);
+	UKTrue([termDocs hasNextDocument]);
 	
 	NSArray *stored = [mergedReader fieldNames: LCFieldOption_INDEXED_WITH_TERMVECTOR];
 	UKNotNil(stored);
 	//NSLog(@"stored size:; %d", [stored count]);
 	UKIntsEqual([stored count], 2);
 	
-	id <LCTermFreqVector> vector = [mergedReader termFreqVector: 0 field: [TestDocHelper TEXT_FIELD_2_KEY]];
+	id <LCTermFrequencyVector> vector = [mergedReader termFrequencyVector: 0 field: [TestDocHelper TEXT_FIELD_2_KEY]];
 	UKNotNil(vector);
-	NSArray *terms = [vector terms];
+	NSArray *terms = [vector allTerms];
 	UKNotNil(terms);
 	UKIntsEqual([terms count], 3);
-	NSArray *freqs = [vector termFrequencies];
+	NSArray *freqs = [vector allTermFrequencies];
 	UKNotNil(freqs);
 	UKTrue([vector conformsToProtocol: @protocol(LCTermPositionVector)]);
 	

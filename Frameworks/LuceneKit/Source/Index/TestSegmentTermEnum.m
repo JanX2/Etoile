@@ -30,15 +30,15 @@
 	LCTermEnumerator *termEnum = nil;
 	
 	// create enumeration of all terms
-	termEnum = [reader terms];
+	termEnum = [reader termEnumerator];
 	// go to the first term (aaa)
-	[termEnum next];
+	[termEnum hasNextTerm];
 	
     // assert that term is 'aaa'
 	UKStringsEqual(@"aaa", [[termEnum term] text]);
 	UKIntsEqual(total*2, [termEnum documentFrequency]);
 	// go to the second term (bbb)
-	[termEnum next];
+	[termEnum hasNextTerm];
 	// assert that term is 'bbb'
 	UKStringsEqual(@"bbb", [[termEnum term] text]);
 	UKIntsEqual(total, [termEnum documentFrequency]);
@@ -46,12 +46,12 @@
 	[termEnum close];
 	
     // create enumeration of terms after term 'aaa', including 'aaa'
-    termEnum = [reader termsWithTerm: [[LCTerm alloc] initWithField: @"content" text: @"aaa"]];
+    termEnum = [reader termEnumeratorWithTerm: [[LCTerm alloc] initWithField: @"content" text: @"aaa"]];
     // assert that term is 'aaa'
 	UKStringsEqual(@"aaa", [[termEnum term] text]);
 	UKIntsEqual(2*total, [termEnum documentFrequency]);
 	// go to term 'bbb'
-    [termEnum next];
+    [termEnum hasNextTerm];
     // assert that term is 'bbb'
     UKStringsEqual(@"bbb", [[termEnum term] text]);
 	UKIntsEqual(total, [termEnum documentFrequency]);

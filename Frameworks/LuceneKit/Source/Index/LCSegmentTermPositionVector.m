@@ -28,7 +28,7 @@
  * @return An array of TermVectorOffsetInfo objects or the empty list
  * @see org.apache.lucene.analysis.Token
  */
-- (NSArray *) offsets: (int) index
+- (NSArray *) termOffsets: (int) index
 {
 	if (offsets == nil) return nil;
 	/* LuceneKit: Not sure */

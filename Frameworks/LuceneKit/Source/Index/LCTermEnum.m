@@ -9,7 +9,7 @@ the enumeration is greater than all that precede it.  */
 @implementation LCTermEnumerator
 
 /** Increments the enumeration to the next element.  True if one exists.*/
-- (BOOL) next
+- (BOOL) hasNextTerm
 {
 	return NO;
 }
@@ -38,7 +38,7 @@ the enumeration is greater than all that precede it.  */
 * an entry.  <p>Behaves as if written: <pre>
 *   public boolean skipTo(Term target) {
 	*     do {
-		*       if (!next())
+		*       if (!hasNextTerm())
 			* 	     return false;
 		*     } while (target > term());
 	*     return true;
@@ -49,7 +49,7 @@ the enumeration is greater than all that precede it.  */
 - (BOOL) skipTo: (LCTerm *) target
 {
 	do {
-		if (![self next])
+		if (![self hasNextTerm])
 			return NO;
 	} while ([target compare: [self term]] == NSOrderedDescending);
 	// } while (target.compareTo(term()) > 0);

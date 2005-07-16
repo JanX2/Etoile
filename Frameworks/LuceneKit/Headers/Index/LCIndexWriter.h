@@ -43,7 +43,7 @@
 		* Larger values are best for batched indexing and speedier searches.
 		*
 		* <p>The default value is {@link Integer#MAX_VALUE}.
-	* @deprecated use {@link #setMaxMergeDocs} instead
+	* @deprecated use {@link #setMaxMergeDocuments} instead
 		*/
     int maxMergeDocs;
 	
@@ -83,7 +83,7 @@
 		* the number of files open in a FSDirectory.
 		*
 		* <p> The default value is 10.
-	* @deprecated use {@link #setMaxBufferedDocs} instead
+	* @deprecated use {@link #setMaxBufferedDocuments} instead
 		*/
 	int minMergeDocs;
 	
@@ -102,12 +102,12 @@
 - (id) initWithDirectory: (id <LCDirectory>) dir 
 				analyzer: (LCAnalyzer *) a
 				  create: (BOOL) create;
-- (void) setMaxMergeDocs: (int) maxMergeDocs;
-- (int) maxMergeDocs;
+- (void) setMaxMergeDocuments: (int) maxMergeDocs;
+- (int) maxMergeDocuments;
 - (void) setMaxFieldLength: (int) maxFieldLength;
 - (int) maxFieldLength;
-- (void) setMaxBufferedDocs: (int) maxBufferedDocs;
-- (int) maxBufferedDocs;
+- (void) setMaxBufferedDocuments: (int) maxBufferedDocs;
+- (int) maxBufferedDocuments;
 - (void) setMergeFactor: (int) mergeFactor;
 - (int) mergeFactor;
 - (void) close;
@@ -117,10 +117,10 @@
 - (void) addDocument: (LCDocument *) doc;
 - (void) addDocument: (LCDocument *) doc
 			analyzer: (LCAnalyzer *) analyzer;
-- (int) segmentsCounter;
+- (int) numberOfSegments;
 - (void) optimize;
 - (void) addIndexesWithDirectories: (NSArray *) dirs;
-- (void) addIndexedWithReaders: (NSArray *) readers;
+- (void) addIndexesWithReaders: (NSArray *) readers;
 
 @end
 

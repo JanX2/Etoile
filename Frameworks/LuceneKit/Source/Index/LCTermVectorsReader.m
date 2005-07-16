@@ -85,12 +85,12 @@
  * @return The TermFreqVector for the document and field or null if there is no termVector for this field.
  * @throws IOException if there is an error reading the term vector files
  */ 
-- (id <LCTermFreqVector>) termFreqVectorWithDocument: (int) docNum
+- (id <LCTermFrequencyVector>) termFrequencyVector: (int) docNum
 											   field: (NSString *) field
 {
     // Check if no term vectors are available for this segment at all
 	int fieldNumber = [fieldInfos fieldNumber: field];
-	id <LCTermFreqVector> result = nil;
+	id <LCTermFrequencyVector> result = nil;
 	if (tvx != nil) {
 		//We need to account for the FORMAT_SIZE at when seeking in the tvx
 		//We don't need to do this in other seeks because we already have the
@@ -151,7 +151,7 @@
  * @return All term frequency vectors
  * @throws IOException if there is an error reading the term vector files 
  */
-- (NSArray *) termFreqVectorsWithDocument: (int) docNum
+- (NSArray *) termFrequencyVectors: (int) docNum
 {
 	NSArray *result;
     // Check if no term vectors are available for this segment at all

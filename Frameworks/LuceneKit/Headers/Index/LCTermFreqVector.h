@@ -6,7 +6,7 @@
 /** Provides access to stored term vector of 
 *  a document field.
 */
-@protocol LCTermFreqVector <NSObject>
+@protocol LCTermFrequencyVector <NSObject>
 /**
 * 
  * @return The field this vector is associated with.
@@ -22,7 +22,7 @@
 	/** 
 	* @return An Array of term texts in ascending order.
 	*/
-- (NSArray *) terms;
+- (NSArray *) allTerms;
 	//  public String[] getTerms();
 
 
@@ -32,7 +32,7 @@
 	*  term occurs in the document or the document field.
 	*/
 	// NSArray of NSNumber
-- (NSArray *) termFrequencies;
+- (NSArray *) allTermFrequencies;
 	//  public int[] getTermFrequencies();
 
 

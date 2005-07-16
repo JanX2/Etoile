@@ -20,7 +20,7 @@
 	id <LCTermPositions> tp;
 	while((tp = [e nextObject]))
 	{
-		if ([tp next])
+		if ([tp hasNextDocument])
 			[self put:tp];
 	}
 	return self;
@@ -121,7 +121,7 @@
 	return self;
 }
 
-- (BOOL) next
+- (BOOL) hasNextDocument
 {
 	if ([_termPositionsQueue size] == 0)
 		return NO;
@@ -138,7 +138,7 @@
 	    for (i=0; i< [tp frequency]; i++)
 			[_posList add: [tp nextPosition]];
 		
-	    if ([tp next])
+	    if ([tp hasNextDocument])
 			[_termPositionsQueue adjustTop];
 	    else
 	    {
@@ -172,7 +172,7 @@
 			[tp close];
 	}
 	
-	return [self next];
+	return [self hasNextDocument];
 }
 
 - (long) document

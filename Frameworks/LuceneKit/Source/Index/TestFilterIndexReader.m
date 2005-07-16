@@ -9,9 +9,9 @@
 @implementation TestTermEnum
 
 /** Scan for terms containing the letter 'e'.*/
-- (BOOL) next
+- (BOOL) hasNextTerm
 {
-	while ([input next])
+	while ([input hasNextTerm])
 	{
 		if ([[[input term] text] rangeOfString: @"e"].location != NSNotFound)
 			return YES;
@@ -26,9 +26,9 @@
 @end
 
 @implementation TestTermPositions
-- (BOOL) next
+- (BOOL) hasNextDocument
 {
-	while ([input next])
+	while ([input hasNextDocument])
 	{
 		if (([input document] % 2) == 1)
 			return YES;
@@ -42,9 +42,9 @@
 
 @implementation TestReader
 /** Filter terms with TestTermEnum. */
-- (LCTermEnumerator *) terms
+- (LCTermEnumerator *) termEnumerator
 {
-	return [[TestTermEnum alloc] initWithTermEnumerator: [input terms]];
+	return [[TestTermEnum alloc] initWithTermEnumerator: [input termEnumerator]];
 }
 
 /** Filter positions with TestTermPositions. */
@@ -112,15 +112,15 @@
 	LCIndexReader *r = [LCIndexReader openDirectory: directory];
 	LCIndexReader *reader = [[TestReader alloc] initWithIndexReader: r];
 	
-	LCTermEnumerator *terms = [reader terms];
-	while ([terms next]) {
+	LCTermEnumerator *terms = [reader termEnumerator];
+	while ([terms hasNextTerm]) {
 		UKTrue([[[terms term] text] rangeOfString: @"e"].location != NSNotFound);
 	}
 	[terms close];
     
 	LCTerm *term = [[LCTerm alloc] initWithField: @"default" text: @"one"];
 	id <LCTermPositions> positions = [reader termPositionsWithTerm: term];
-	while ([positions next] == YES) 
+	while ([positions hasNextDocument] == YES) 
 	{
 		UKIntsEqual(([positions document] % 2), 1);
 	}

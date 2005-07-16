@@ -28,9 +28,9 @@
 	return self;
 }
 
-- (BOOL) next
+- (BOOL) hasNextTerm
 {
-    if ([termEnum next]) {
+    if ([termEnum hasNextTerm]) {
 		term = [termEnum term];
 		return YES;
     } else {

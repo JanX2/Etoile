@@ -265,7 +265,7 @@
 			// skip deleted docs
 			if ([reader isDeleted: docNum]) 
 				continue;
-			[termVectorsWriter addAllDocumentVectors: [reader termFreqVectors: docNum]];
+			[termVectorsWriter addAllDocumentVectors: [reader termFrequencyVectors: docNum]];
 		}
 	}
 	[termVectorsWriter close];
@@ -299,11 +299,11 @@
 	int i;
 	for (i = 0; i < [readers count]; i++) {
 		LCIndexReader *reader = (LCIndexReader *) [readers objectAtIndex: i];
-		LCTermEnumerator *termEnum = [reader terms];
+		LCTermEnumerator *termEnum = [reader termEnumerator];
 		LCSegmentMergeInfo *smi = [[LCSegmentMergeInfo alloc] initWithBase: base
 																  termEnumerator: termEnum reader: reader];
 		base += [reader numberOfDocuments];
-		if ([smi next])
+		if ([smi hasNextTerm])
 		{
 			[queue put: smi];				  // initialize queue
 		}
@@ -337,7 +337,7 @@
 		
 		while (matchSize > 0) {
 			LCSegmentMergeInfo *smi = [match objectAtIndex: --matchSize];
-			if ([smi next])
+			if ([smi hasNextTerm])
 				[queue put: smi];			  // restore queue
 			else
 				[smi close];				  // done with a segment
@@ -392,7 +392,7 @@
 		int base = [smi base];
 		NSArray *docMap = [smi docMap];
 		[postings seekTermEnumerator: [smi termEnumerator]];
-		while ([postings next]) {
+		while ([postings hasNextDocument]) {
 			int doc = [postings document];
 			if (docMap != nil)
 				doc = [[docMap objectAtIndex: doc] intValue]; // map around deletions

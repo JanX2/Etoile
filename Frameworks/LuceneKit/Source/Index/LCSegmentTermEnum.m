@@ -74,7 +74,7 @@
 }
 
 /** Increments the enumeration to the next element.  True if one exists.*/
-- (BOOL) next
+- (BOOL) hasNextTerm
 {
     if (position++ >= size-1)
     {
@@ -120,7 +120,7 @@
 	if (scratch == nil)
 		ASSIGN(scratch, AUTORELEASE([[LCTermBuffer alloc] init]));
 	[scratch setTerm: term];
-	while (([scratch compare: termBuffer] == NSOrderedDescending) && [self next]) {}
+	while (([scratch compare: termBuffer] == NSOrderedDescending) && [self hasNextTerm]) {}
 }
 
 /** Returns the current Term in the enumeration.

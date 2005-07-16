@@ -38,9 +38,9 @@
 	return [input frequency];
 }
 
-- (BOOL) next
+- (BOOL) hasNextDocument
 {
-	return [input next];
+	return [input hasNextDocument];
 }
 
 - (int) readDocuments: (NSMutableArray *) docs frequency: (NSMutableArray *) freqs size: (int) size
@@ -102,9 +102,9 @@
 	[super dealloc];
 }
 
-- (BOOL) next
+- (BOOL) hasNextTerm
 {
-	return [input next];
+	return [input hasNextTerm];
 }
 
 - (LCTerm *) term
@@ -146,14 +146,14 @@
 	[super dealloc];
 }
 
-- (NSArray *) termFreqVectors: (int) docNumber
+- (NSArray *) termFrequencyVectors: (int) docNumber
 {
-	return [input termFreqVectors: docNumber];
+	return [input termFrequencyVectors: docNumber];
 }
 
-- (id <LCTermFreqVector>) termFreqVector: (int) docNumber field: (NSString *) field
+- (id <LCTermFrequencyVector>) termFrequencyVector: (int) docNumber field: (NSString *) field
 {
-	return [input termFreqVector: docNumber field: field];
+	return [input termFrequencyVector: docNumber field: field];
 }
 
 - (int) numberOfDocuments
@@ -204,14 +204,14 @@
 	[input setNorm: d field: f charValue: b];
 }
 
-- (LCTermEnumerator *) terms
+- (LCTermEnumerator *) termEnumerator
 {
-	return [input terms];
+	return [input termEnumerator];
 }
 
-- (LCTermEnumerator *) termsWithTerm: (LCTerm *) t
+- (LCTermEnumerator *) termEnumeratorWithTerm: (LCTerm *) t
 {
-	return [input termsWithTerm: t];
+	return [input termEnumeratorWithTerm: t];
 }
 
 - (long) documentFrequency: (LCTerm *) t

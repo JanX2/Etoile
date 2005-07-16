@@ -139,7 +139,7 @@ static int SCORE_CACHE_SIZE = 32;
 		pointer++;
 	}
 	if (tf == 0) {
-		while ([termDocs next]) {
+		while ([termDocs hasNextDocument]) {
 			if ([termDocs document] == document) {
 				tf = [termDocs frequency];
 			}

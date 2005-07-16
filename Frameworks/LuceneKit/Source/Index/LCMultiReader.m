@@ -76,16 +76,16 @@
 *  in a given vectorized field.
 *  If no such fields existed, the method returns null.
 */
-- (NSArray *) termFreqVectors: (int) n
+- (NSArray *) termFrequencyVectors: (int) n
 {
 	int i = [self readerIndex: n];        // find segment num
-	return [[subReaders objectAtIndex: i] termFreqVectors: (n - [[starts objectAtIndex: i] intValue])]; // dispatch to segment
+	return [[subReaders objectAtIndex: i] termFrequencyVectors: (n - [[starts objectAtIndex: i] intValue])]; // dispatch to segment
 }
 
-- (id <LCTermFreqVector>) termFreqVector: (int) n field: (NSString *) field
+- (id <LCTermFrequencyVector>) termFrequencyVector: (int) n field: (NSString *) field
 {
 	int i = [self readerIndex: n];       // find segment num
-	return [[subReaders objectAtIndex: i] termFreqVector: (n - [[starts objectAtIndex: i] intValue])
+	return [[subReaders objectAtIndex: i] termFrequencyVector: (n - [[starts objectAtIndex: i] intValue])
 												   field: field];
 }
 
@@ -197,14 +197,14 @@
 	[[subReaders objectAtIndex: i] setNorm: (n-[[starts objectAtIndex: i] intValue]) field: field charValue: value]; // dispatch
 }
 
-- (LCTermEnumerator *) terms
+- (LCTermEnumerator *) termEnumerator
 {
 	return AUTORELEASE([[LCMultiTermEnumerator alloc] initWithReaders: subReaders
 														 starts: starts
 														   term: nil]);
 }
 
-- (LCTermEnumerator *) termsWithTerm: (LCTerm *) term
+- (LCTermEnumerator *) termEnumeratorWithTerm: (LCTerm *) term
 {
 	return AUTORELEASE([[LCMultiTermEnumerator alloc] initWithReaders: subReaders
 														 starts: starts
@@ -279,12 +279,12 @@
 		LCTermEnumerator *termEnum;
 		
 		if (t != nil) {
-			termEnum = [reader termsWithTerm: t];
+			termEnum = [reader termEnumeratorWithTerm: t];
 		} else
-			termEnum = [reader terms];
+			termEnum = [reader termEnumerator];
 		
 		LCSegmentMergeInfo *smi = [[LCSegmentMergeInfo alloc] initWithBase: [[starts objectAtIndex: i] intValue] termEnumerator: termEnum reader: reader];
-		if ((t == nil ? [smi next] : ([termEnum term] != nil)))
+		if ((t == nil ? [smi hasNextTerm] : ([termEnum term] != nil)))
 			[queue put: smi];          // initialize queue
 		else
 			[smi close];
@@ -292,12 +292,12 @@
     }
 	
     if (t != nil && [queue size] > 0) {
-		[self next];
+		[self hasNextTerm];
     }
 	return self;
 }
 
-- (BOOL) next
+- (BOOL) hasNextTerm
 {
 	LCSegmentMergeInfo *top = (LCSegmentMergeInfo *)[queue top];
 	if (top == nil) {
@@ -312,7 +312,7 @@
 	while (top != nil && [term compare: [top term]] == NSOrderedSame) {
 		[queue pop];
 		docFreq += [[top termEnumerator] documentFrequency];    // increment freq
-		if ([top next])
+		if ([top hasNextTerm])
 			[queue put: top];          // restore queue
 		else
 			[top close];          // done with a segment
@@ -394,14 +394,14 @@
 	[self seekTerm: [termEnum term]];
 }
 
-- (BOOL) next
+- (BOOL) hasNextDocument
 {
-    if (current != nil && [current next]) {
+    if (current != nil && [current hasNextDocument]) {
 		return YES;
     } else if (pointer < [readers count]) {
 		base = [[starts objectAtIndex: pointer] intValue];
 		ASSIGN(current, [self termDocuments: pointer++]);
-		return [self next];
+		return [self hasNextDocument];
     } else {
 		return NO;
     }
@@ -439,7 +439,7 @@
 - (BOOL) skipTo: (int) target
 {
     do {
-		if (![self next])
+		if (![self hasNextDocument])
 			return NO;
     } while (target > [self document]);
 	return YES;

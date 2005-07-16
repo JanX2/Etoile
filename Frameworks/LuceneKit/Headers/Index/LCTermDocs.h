@@ -35,7 +35,7 @@ ordered by document number.
 
 	/** Moves to the next pair in the enumeration.  <p> Returns true iff there is
 	such a next pair in the enumeration. */
-- (BOOL) next;
+- (BOOL) hasNextDocument;
 
 	/** Attempts to read multiple entries from the enumeration, up to length of
 	* <i>docs</i>.  Document numbers are stored in <i>docs</i>, and term

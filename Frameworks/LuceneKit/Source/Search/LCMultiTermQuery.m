@@ -44,7 +44,7 @@
 			[tq setBoost: [self boost]*[enumerator difference]]; // set the boost
 			[query addQuery: tq occur: LCOccur_SHOULD]; // add to query];
 		}
-	} while ([enumerator next]);
+	} while ([enumerator hasNextTerm]);
 	[enumerator close];
 	return AUTORELEASE(query);
 }

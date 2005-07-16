@@ -5,7 +5,7 @@
 * Directory.  Pairs are accessed either by Term or by ordinal position the
 * set.  */
 @interface LCTermInfosReader (LCPrivate)
-- (LCSegmentTermEnumerator *) termEnumerator;
+- (LCSegmentTermEnumerator *) internalTermEnumerator;
 - (void) ensureIndexIsRead;
 - (int) indexOffset: (LCTerm *) term;
 - (void) seekEnumerator: (int) indexOffset;
@@ -59,17 +59,17 @@
     return size;
 }
 
-- (LCSegmentTermEnumerator *) termEnumerator
+- (LCSegmentTermEnumerator *) internalTermEnumerator
 {
 #if 0
     LCSegmentTermEnumerator *termEnum = (LCSegmentTermEnum *)enumerators.get();
     if (termEnum == nil) {
-		termEnum = [self terms];
+		termEnum = [self termEnumerator];
 		[enumerators set: termEnum];
     }
     return termEnum;
 #endif
-    return [self terms];
+    return [self termEnumerator];
 }
 
 - (void) ensureIndexIsRead
@@ -82,7 +82,7 @@
     ASSIGN(indexInfos, [[NSMutableArray alloc] init]);
     ASSIGN(indexPointers, [[NSMutableArray alloc] init]);
 	
-    while([indexEnum next])
+    while([indexEnum hasNextTerm])
 	{
 		[indexTerms addObject: [indexEnum term]];
 		[indexInfos addObject: [indexEnum termInfo]];
@@ -116,10 +116,10 @@
 - (void) seekEnumerator: (int) indexOffset
 {
 	long index = [[indexPointers objectAtIndex: indexOffset] longValue];
-	int pos = indexOffset * [[self termEnumerator] indexInterval] - 1;
+	int pos = indexOffset * [[self internalTermEnumerator] indexInterval] - 1;
 	//  LCTerm *t = [indexTerms objectAtIndex: indexOffset];
 	//  LCTermInfo *ti = [indexInfos objectAtIndex: indexOffset];
-	[[self termEnumerator] seek: index
+	[[self internalTermEnumerator] seek: index
 				 position: pos
 					 term: [indexTerms objectAtIndex: indexOffset]
 				 termInfo: [indexInfos objectAtIndex: indexOffset]];
@@ -133,7 +133,7 @@
     [self ensureIndexIsRead];
 	
     // optimize sequential access: first try scanning cached enum w/o seeking
-    LCSegmentTermEnumerator *enumerator = [self termEnumerator];
+    LCSegmentTermEnumerator *enumerator = [self internalTermEnumerator];
     if (([enumerator term] != nil) // term is at or past current
 		&& (([enumerator prev] != nil && [term compare: [enumerator prev]] == NSOrderedDescending)
 			|| [term compare: [enumerator term]] != NSOrderedAscending)) {
@@ -154,7 +154,7 @@
 /** Scans within block for matching term. */
 - (LCTermInfo *) scanEnumerator: (LCTerm *) term
 {
-    LCSegmentTermEnumerator *enumerator = [self termEnumerator];
+    LCSegmentTermEnumerator *enumerator = [self internalTermEnumerator];
     [enumerator scanTo: term];
     
     if ([enumerator term] != nil && [term compare: [enumerator term]] == NSOrderedSame)
@@ -168,7 +168,7 @@
 {
     if (size == 0) return nil;
 	
-    LCSegmentTermEnumerator *enumerator = [self termEnumerator];
+    LCSegmentTermEnumerator *enumerator = [self internalTermEnumerator];
     if (enumerator != nil && [enumerator term] != nil &&
         position >= [enumerator position] &&
 		position < ([enumerator position] + [enumerator indexInterval]))
@@ -180,9 +180,9 @@
 
 - (LCTerm *) scanEnumeratorAtPosition: (int) position
 {
-    LCSegmentTermEnumerator *enumerator = [self termEnumerator];
+    LCSegmentTermEnumerator *enumerator = [self internalTermEnumerator];
     while([enumerator position] < position)
-		if (![enumerator next])
+		if (![enumerator hasNextTerm])
 			return nil;
 	
     return [enumerator term];
@@ -197,8 +197,8 @@
     int indexOffset = [self indexOffset: term];
     [self seekEnumerator: indexOffset];
 	
-    LCSegmentTermEnumerator *enumerator = [self termEnumerator];
-    while([term compare: [enumerator term]] == NSOrderedDescending && [enumerator next]) {}
+    LCSegmentTermEnumerator *enumerator = [self internalTermEnumerator];
+    while([term compare: [enumerator term]] == NSOrderedDescending && [enumerator hasNextTerm]) {}
 	
     if ([term compare: [enumerator term]] == NSOrderedSame)
 		return [enumerator position];
@@ -207,21 +207,21 @@
 }
 
 /** Returns an enumeration of all the Terms and TermInfos in the set. */
-- (LCSegmentTermEnumerator *) terms
+- (LCSegmentTermEnumerator *) termEnumerator
 {
 	return (LCSegmentTermEnumerator *)[origEnum copy];
 	
 }
 
 /** Returns an enumeration of terms starting at or after the named term. */
-- (LCSegmentTermEnumerator *) termsWithTerm: (LCTerm *) term
+- (LCSegmentTermEnumerator *) termEnumeratorWithTerm: (LCTerm *) term
 {
 #if 0
 	[self termInfo: term];
-    return (LCSegmentTermEnumerator *)[[self termEnumerator] copy];
+    return (LCSegmentTermEnumerator *)[[self internalTermEnumerator] copy];
 #else
 	[self ensureIndexIsRead];
-    LCSegmentTermEnumerator *enumerator = [self termEnumerator];
+    LCSegmentTermEnumerator *enumerator = [self internalTermEnumerator];
     [self seekEnumerator: [self indexOffset: term]];
     [enumerator scanTo: term];
     return enumerator;

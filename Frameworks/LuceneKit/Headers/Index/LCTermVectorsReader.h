@@ -17,9 +17,9 @@
 			  fieldInfos: (LCFieldInfos *) fieldInfos;
 - (void) close;
 - (int) size;
-- (id <LCTermFreqVector>) termFreqVectorWithDocument: (int) docNum
+- (id <LCTermFrequencyVector>) termFrequencyVector: (int) document
 											   field: (NSString *) field;
-- (NSArray *) termFreqVectorsWithDocument: (int) docNum;
+- (NSArray *) termFrequencyVectors: (int) document;
 
 @end
 #endif /* __LUCENE_INDEX_TERM_VECTOR_READER__ */

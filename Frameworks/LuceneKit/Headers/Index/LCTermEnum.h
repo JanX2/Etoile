@@ -8,7 +8,7 @@
 {
 }
 
-- (BOOL) next;
+- (BOOL) hasNextTerm;
 - (LCTerm *) term;
 - (long) documentFrequency;
 - (void) close;

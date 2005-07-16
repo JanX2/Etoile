@@ -81,7 +81,7 @@
 	
 	int i, count = [hits count];
 	for (i = 0; i < count; i++) {
-		NSArray *vector = [[searcher indexReader] termFreqVectors: [hits identifier: i]];
+		NSArray *vector = [[searcher indexReader] termFrequencyVectors: [hits identifier: i]];
 		UKNotNil(vector);
 		UKIntsEqual(1, [vector count]);
 	}
@@ -96,7 +96,7 @@
 	int i, count = [hits count];
 	for (i = 0; i < count; i++) 
 	{
-		NSArray *vector = [[searcher indexReader] termFreqVectors: [hits identifier: i]];
+		NSArray *vector = [[searcher indexReader] termFrequencyVectors: [hits identifier: i]];
 		UKNotNil(vector);
 		UKIntsEqual(1, [vector count]);
 		
@@ -110,14 +110,14 @@
 		
 		if (shouldBePosVector || shouldBeOffVector) {
 			id <LCTermPositionVector> posVec = [vector objectAtIndex: 0];
-			NSArray *terms = [posVec terms];
+			NSArray *terms = [posVec allTerms];
 			UKNotNil(terms);
 			UKTrue([terms count] > 0);
 			
 			int j;
 			for (j = 0; j < [terms count]; j++) {
 				NSArray *positions = [posVec termPositions: j];
-				NSArray *offsets = [posVec offsets: j];
+				NSArray *offsets = [posVec termOffsets: j];
 				
 				if (shouldBePosVector) {
 					UKNotNil(positions);
@@ -135,8 +135,8 @@
 			}
 		} else {
 			UKTrue([[vector objectAtIndex: 0] conformsToProtocol: @protocol(LCTermPositionVector)] == NO);
-			id <LCTermFreqVector> freqVec = [vector objectAtIndex: 0];
-			NSArray *terms = [freqVec terms];
+			id <LCTermFrequencyVector> freqVec = [vector objectAtIndex: 0];
+			NSArray *terms = [freqVec allTerms];
 			UKNotNil(terms);
 			UKTrue([terms count] > 0);
 		}
@@ -152,7 +152,7 @@
 	int i, count = [hits count];
 	for (i = 0; i < count; i++)
 	{
-		NSArray *vector = [[searcher indexReader] termFreqVectors: [hits identifier: i]];
+		NSArray *vector = [[searcher indexReader] termFrequencyVectors: [hits identifier: i]];
 		UKNotNil(vector);
 		UKIntsEqual(1, [vector count]);
 	}
@@ -196,25 +196,25 @@
 	[w addDocument: testDoc4];
 	[w close];
 	LCIndexSearcher *knownSearcher = [[LCIndexSearcher alloc] initWithDirectory: dir];
-	LCTermEnumerator *termEnum = [[knownSearcher indexReader] terms];
+	LCTermEnumerator *termEnum = [[knownSearcher indexReader] termEnumerator];
 	id <LCTermDocuments> termDocs = [[knownSearcher indexReader] termDocuments];
 	//LCSimilarity *sim = [knownSearcher similarity];
-	while ([termEnum next] == YES)
+	while ([termEnum hasNextTerm] == YES)
 	{
 		LCTerm *term = [termEnum term];
 		[termDocs seekTerm: term];
-		while ([termDocs next])
+		while ([termDocs hasNextDocument])
 		{
 			int docId = [termDocs document];
 			int freq = [termDocs frequency];
-			id <LCTermFreqVector> vector = [[knownSearcher indexReader] termFreqVector: docId 
+			id <LCTermFrequencyVector> vector = [[knownSearcher indexReader] termFrequencyVector: docId 
 																				 field: @"field"];
 			//float tf = [sim termFrequencyWithInt: freq];
 			//float idf = [sim inverseDocumentFrequencyWithTerm: term searcher: knownSearcher];
-			//float lNorm = [sim lengthNorm: @"field" numberOfTerms: [[vector terms] count]];
+			//float lNorm = [sim lengthNorm: @"field" numberOfTerms: [[vector allTerms] count]];
 			UKNotNil(vector);
-			NSArray *vTerms = [vector terms];
-			NSArray *freqs = [vector termFrequencies];
+			NSArray *vTerms = [vector allTerms];
+			NSArray *freqs = [vector allTermFrequencies];
 			int i;
 			for (i = 0; i < [vTerms count]; i++)
 			{
@@ -240,11 +240,11 @@
 	UKIntsEqual(2, [hits identifier: 0]);
 	UKIntsEqual(3, [hits identifier: 1]);
 	UKIntsEqual(0, [hits identifier: 2]);
-	id <LCTermFreqVector> vector = [[knownSearcher indexReader] termFreqVector: [hits identifier: 1]
+	id <LCTermFrequencyVector> vector = [[knownSearcher indexReader] termFrequencyVector: [hits identifier: 1]
 																		 field: @"field"];
 	UKNotNil(vector);
-	NSArray *terms = [vector terms];
-	NSArray *freqs = [vector termFrequencies];
+	NSArray *terms = [vector allTerms];
+	NSArray *freqs = [vector allTermFrequencies];
 	UKNotNil(terms);
 	UKIntsEqual(10, [terms count]);
 	int i;

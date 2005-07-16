@@ -103,12 +103,12 @@
 	return [terms count];
 }
 
-- (NSArray *) terms
+- (NSArray *) allTerms
 {
 	return terms;
 }
 
-- (NSArray *) termFrequencies
+- (NSArray *) allTermFrequencies
 {
 	return termFreqs;
 }

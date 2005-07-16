@@ -73,7 +73,7 @@
 	LCDocument *newDoc2 = [reader document: 1];
 	UKNotNil(newDoc2);
 	UKIntsEqual([TestDocHelper numFields: newDoc2], [TestDocHelper numFields: doc2]-2);
-	id <LCTermFreqVector> vector = [reader termFreqVector: 0 field: [TestDocHelper TEXT_FIELD_2_KEY]];
+	id <LCTermFrequencyVector> vector = [reader termFrequencyVector: 0 field: [TestDocHelper TEXT_FIELD_2_KEY]];
 	UKNotNil(vector);
 }
 

@@ -229,15 +229,15 @@ An IndexWriter creates and maintains an index.
 *
 * <p>The default value is {@link Integer#MAX_VALUE}.
 */
-- (void) setMaxMergeDocs: (int) max
+- (void) setMaxMergeDocuments: (int) max
 {
 	maxMergeDocs = max;
 }
 
 /**
-* @see #setMaxMergeDocs
+* @see #setMaxMergeDocuments
  */
-- (int) maxMergeDocs
+- (int) maxMergeDocuments
 {
 	return maxMergeDocs;
 }
@@ -277,7 +277,7 @@ An IndexWriter creates and maintains an index.
 * 
 * @throws IllegalArgumentException if maxBufferedDocs is smaller than 1 
 */
-- (void) setMaxBufferedDocs: (int) max
+- (void) setMaxBufferedDocuments: (int) max
 {
 	if (max < 1)
 	{
@@ -287,9 +287,9 @@ An IndexWriter creates and maintains an index.
 }
 
 /**
-* @see #setMaxBufferedDocs
+* @see #setMaxBufferedDocuments
  */
-- (int) maxBufferedDocs
+- (int) maxBufferedDocuments
 {
 	return minMergeDocs;
 }
@@ -393,7 +393,7 @@ An IndexWriter creates and maintains an index.
 	//    }
 }
 
-- (int) segmentsCounter
+- (int) numberOfSegments
 {
 	return [segmentInfos counter];
 }
@@ -463,7 +463,7 @@ for search. */
 * <p>After this completes, the index is optimized. </p>
 * <p>The provided IndexReaders are not closed.</p>
 */
-- (void) addIndexedWithReaders: (NSArray *) readers
+- (void) addIndexesWithReaders: (NSArray *) readers
 {
 	[self optimize]; // start with zero or 1 seg
 	

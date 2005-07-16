@@ -7,7 +7,7 @@
 *  positions in which each of the terms is found. A TermPositionVector not necessarily
 * contains both positions and offsets, but at least one of these arrays exists.
 */
-@protocol LCTermPositionVector <LCTermFreqVector>
+@protocol LCTermPositionVector <LCTermFrequencyVector>
 
 /** Returns an array of positions in which the term is found.
 *  Terms are identified by the index at which its number appears in the
@@ -16,7 +16,6 @@
 */
 // NSArray of NSNumber
 - (NSArray *) termPositions: (int) index;
-	//    public int[] getTermPositions(int index);
 
     /**
 	* Returns an array of TermVectorOffsetInfo in which the term is found.
@@ -28,8 +27,7 @@
      * @return An array of TermVectorOffsetInfo objects or the empty list
      */ 
 	// NSArray of LCTermVectorOffsetInfo
-- (NSArray *) offsets: (int) index;
-	//    public TermVectorOffsetInfo [] getOffsets(int index);
+- (NSArray *) termOffsets: (int) index;
 
 @end
 

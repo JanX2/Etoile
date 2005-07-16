@@ -106,9 +106,9 @@ isStoreOffsetWithTermVector: storeOff];
 {
 	LCTermVectorsReader *reader = [[LCTermVectorsReader alloc] initWithDirectory: dir segment: seg fieldInfos: fieldInfos];
 	UKNotNil(reader);
-	id <LCTermFreqVector> vector = [reader termFreqVectorWithDocument: 0 field: [testFields objectAtIndex: 0]];
+	id <LCTermFrequencyVector> vector = [reader termFrequencyVector: 0 field: [testFields objectAtIndex: 0]];
 	UKNotNil(vector);
-	NSArray *terms = [vector terms];
+	NSArray *terms = [vector allTerms];
 	UKNotNil(terms);
 	UKIntsEqual([terms count], [testTerms count]);
 	int i;
@@ -125,9 +125,9 @@ isStoreOffsetWithTermVector: storeOff];
 	UKNotNil(reader);
 	id <LCTermPositionVector> vector;
 	NSArray *terms;
-	vector = (id <LCTermPositionVector>)[reader termFreqVectorWithDocument: 0 field: [testFields objectAtIndex: 0]];
+	vector = (id <LCTermPositionVector>)[reader termFrequencyVector: 0 field: [testFields objectAtIndex: 0]];
 	UKNotNil(vector);
-	terms = [vector terms];
+	terms = [vector allTerms];
 	UKNotNil(terms);
 	UKIntsEqual([terms count], [testTerms count]);
 	int i;
@@ -145,7 +145,7 @@ isStoreOffsetWithTermVector: storeOff];
 			UKIntsEqual(position, [[[positions objectAtIndex: i] objectAtIndex: j] intValue]);
 		}
 		
-		NSArray *off = [vector offsets: i];
+		NSArray *off = [vector termOffsets: i];
 		UKNotNil(off);
 		UKIntsEqual([off count], [[offsets objectAtIndex: i] count]);
 		for (j = 0; j < [off count]; j++)
@@ -155,10 +155,10 @@ isStoreOffsetWithTermVector: storeOff];
 		}
 	}
 	
-	id <LCTermFreqVector> freqVector = [reader termFreqVectorWithDocument: 0 field: [testFields objectAtIndex: 1]]; // no pos, no offset
+	id <LCTermFrequencyVector> freqVector = [reader termFrequencyVector: 0 field: [testFields objectAtIndex: 1]]; // no pos, no offset
 	UKNotNil(freqVector);
 	UKFalse([freqVector conformsToProtocol: @protocol(LCTermPositionVector)]);
-	terms = [freqVector terms];
+	terms = [freqVector allTerms];
 	UKNotNil(terms);
 	UKIntsEqual([terms count], [testTerms count]);
 	for (i = 0; i < [terms count]; i++)
