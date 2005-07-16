@@ -156,7 +156,7 @@ int main (int argc, const char * argv[]) {
     for (i = 0; i < n; i++)
     {
       LCDocument *doc = [hits document: i];
-      printf("%d: %s\n", i+1, [[doc stringValue: @"filename"] cString]);
+      printf("%d: %s\n", i+1, [[doc stringForField: @"filename"] cString]);
 
       /* <12> Shows details if requested */
       if (showDetails)
