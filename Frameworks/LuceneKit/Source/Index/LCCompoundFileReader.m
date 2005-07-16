@@ -75,12 +75,12 @@
 			offset: (int) offset
 			length: (int) len
 {
-	long long start = [self filePointer];
+	long long start = [self offsetInFile];
 	if (start + len > length)
     {
 		len = length - start;
     }
-	[base seek: fileOffset + start];
+	[base seekToFileOffset: fileOffset + start];
 	[base readBytes: b offset: offset length: len];
 	filePointer += len;
 }
@@ -89,7 +89,7 @@
 *  the next {@link #readInternal(byte[],int,int)} will occur.
 * @see #readInternal(byte[],int,int)
 */
-- (void) seek: (unsigned long long) pos 
+- (void) seekToFileOffset: (unsigned long long) pos 
 {
 	long long p = (pos < length) ? pos : length;
 	filePointer = p;
@@ -100,7 +100,7 @@
 
 - (unsigned long long) length { return length; }
 
-- (unsigned long long) filePointer { return filePointer; }
+- (unsigned long long) offsetInFile { return filePointer; }
 
 - (id) copyWithZone: (NSZone *) zone
 {
@@ -108,7 +108,7 @@
 	LCCSIndexInput *clone = [[LCCSIndexInput allocWithZone: zone] initWithCompoundFileReader: reader
 																				  indexInput: [base copy] offset: fileOffset
 																					  length: length];
-	[clone seek: filePointer];
+	[clone seekToFileOffset: filePointer];
 	return clone;
 }
 
@@ -231,7 +231,7 @@
 }
 
 /** Returns an array of strings, one for each file in the directory. */
-- (NSArray *) list
+- (NSArray *) fileList
 {
     return [entries allKeys];
 }

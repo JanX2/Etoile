@@ -10,11 +10,9 @@
 *  characters from the Reader into raw Tokens.  One or more TokenFilters may
 *  then be applied to the output of the Tokenizer.
 *  <p>
-*  WARNING: You must override one of the methods defined by this class in your
-*  subclass or the Analyzer will enter an infinite loop.
 */
 
-/** Creates a TokenStream which tokenizes all the text in the provided
+/** <override-subclass /> Creates a TokenStream which tokenizes all the text in the provided
 Reader.  Default implementation forwards to tokenStream(Reader) for 
 compatibility with older version.  Override to allow Analyzer to choose 
 strategy based on document and/or field.  Must be able to handle null
@@ -41,7 +39,7 @@ field name for backward compatibility. */
 													reader: reader];
 	int i = 0;
 	LCToken *token;
-	while((token = [stream next]))
+	while((token = [stream nextToken]))
     {
 		UKStringsEqual([a objectAtIndex: i++], [token termText]);
     }

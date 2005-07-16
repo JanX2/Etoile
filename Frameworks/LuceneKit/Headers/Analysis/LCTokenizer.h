@@ -5,6 +5,7 @@
 #include <LuceneKit/Analysis/LCTokenStream.h>
 #include <LuceneKit/Java/LCReader.h>
 
+/* A token stream specified for LCReader */
 @interface LCTokenizer: LCTokenStream
 {
 	/** The text source for this Tokenizer. */

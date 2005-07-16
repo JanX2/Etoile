@@ -50,7 +50,7 @@
 	count = -1; //Recalculate count
 }
 
-- (BOOL) getBit: (int) bit
+- (BOOL) bit: (int) bit
 {
 	NSRange r = NSMakeRange((bit >> 3), 1);
 	unsigned char b;
@@ -103,7 +103,7 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 }
 
 - (void) writeToDirectory: (id <LCDirectory>) d
-				 withName: (NSString *) name
+				 name: (NSString *) name
 {
 	LCIndexOutput *output = [d createOutput: name];
 	if (output)
@@ -116,7 +116,7 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) d
-				 andName: (NSString *) name
+				 name: (NSString *) name
 {
 	self = [self init];
 	LCIndexInput *input = [d openInput: name];
@@ -156,9 +156,9 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 	int i;
 	for(i = 0; i < [self size]; i++) 
     {
-		UKFalse([self getBit: i]);
+		UKFalse([self bit: i]);
 		[self setBit: i];
-		UKTrue([self getBit: i]);
+		UKTrue([self bit: i]);
     }
 }
 
@@ -168,11 +168,11 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 	int i;
 	for(i = 0; i < [self size]; i++) 
     {
-		UKFalse([self getBit: i]);
+		UKFalse([self bit: i]);
 		[self setBit: i];
-		UKTrue([self getBit: i]);
+		UKTrue([self bit: i]);
 		[self clearBit: i];
-		UKFalse([self getBit: i]);
+		UKFalse([self bit: i]);
     }
 }
 
@@ -182,10 +182,10 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 	int i;
 	for(i = 0; i < [self size]; i++) 
     {
-		UKFalse([self getBit: i]);
+		UKFalse([self bit: i]);
 		UKIntsEqual(i, [self count]);
 		[self setBit: i];
-		UKTrue([self getBit: i]);
+		UKTrue([self bit: i]);
 		UKIntsEqual(i+1, [self count]);
     }
 	
@@ -193,13 +193,13 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 	// bv = [[LCBitVector alloc] initWithSize: n];
 	for(i = 0; i < [self size]; i++) 
     {
-		UKFalse([self getBit: i]);
+		UKFalse([self bit: i]);
 		UKIntsEqual(0, [self count]);
 		[self setBit: i];
-		UKTrue([self getBit: i]);
+		UKTrue([self bit: i]);
 		UKIntsEqual(1, [self count]);
 		[self clearBit: i];
-		UKFalse([self getBit: i]);
+		UKFalse([self bit: i]);
 		UKIntsEqual(0, [self count]);
     }
 }
@@ -210,7 +210,7 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 	for(i = 0; i < [self size]; i++)
 	{
 		// bits must be equal
-		if([self getBit: i] != [other getBit: i]) 
+		if([self bit: i] != [other bit: i]) 
 		{
 			return NO;
 		}
@@ -227,15 +227,15 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 	int i;
 	for(i = 0; i < [self size]; i++) 
     {
-		UKFalse([self getBit: i]);
+		UKFalse([self bit: i]);
 		UKIntsEqual(i, [self count]);
 		[self setBit: i];
-		UKTrue([self getBit: i]);
+		UKTrue([self bit: i]);
 		UKIntsEqual(i+1, [self count]);
-		[self writeToDirectory: d withName: @"TESTBV"];
+		[self writeToDirectory: d name: @"TESTBV"];
 		
 		compare = [[LCBitVector alloc] initWithDirectory: d
-												 andName: @"TESTBV"];
+												 name: @"TESTBV"];
 		// compare bit vectors with bits set incrementally
 		UKTrue([self doCompare: compare]);
 		RELEASE(compare);

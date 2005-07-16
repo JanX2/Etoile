@@ -8,7 +8,6 @@
 
 @implementation LCPriorityQueue
 
-/** Subclass constructors must call this. */
 - (id) initWithSize: (int) m
 {
 	self = [self init];
@@ -23,11 +22,6 @@
 	[super dealloc];
 }
 
-/**
-* Adds an Object to a PriorityQueue in log(size) time.
- * If one tries to add more objects than maxSize from initialize
- * a RuntimeException (ArrayIndexOutOfBound) is thrown.
- */
 - (void) put: (id) element
 {
 	if ([heap count] >= maxSize)
@@ -121,7 +115,7 @@ time. */
 }
 
 /** Removes all entries from the PriorityQueue. */
-- (void) clear
+- (void) removeAllObjects
 {
 	[heap removeAllObjects];
 }
@@ -223,7 +217,7 @@ time. */
 	[self put: [NSNumber numberWithInt: 3]];
 	[self put: [NSNumber numberWithInt: 1]];
 	UKIntsEqual(3, [self size]);
-	[self clear];
+	[self removeAllObjects];
 	UKIntsEqual(0, [self size]);
 }
 

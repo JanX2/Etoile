@@ -22,7 +22,7 @@
 @protocol LCDirectory <NSObject>
 
 /** Returns an array of strings, one for each file in the directory. */
-- (NSArray *) list;
+- (NSArray *) fileList;
 
 	/** Returns true iff a file with the given name exists. */
 - (BOOL) fileExists: (NSString *) absolutePath;
@@ -44,40 +44,14 @@
 	/** Returns the length of a file in the directory. */
 - (unsigned long long) fileLength: (NSString *) absolutePath;
 
-#if 0
-	/** @deprecated use {@link #createOutput(String)} */
-	public OutputStream createFile(String name) throws IOException {
-    return (OutputStream)createOutput(name);
-}
-#endif
-
 /** Creates a new, empty file in the directory with the given name.
 Returns a stream writing this file. */
 - (LCIndexOutput *) createOutput: (NSString *) name;
-#if 0
-	public IndexOutput createOutput(String name) throws IOException {
-    // default implementation for back compatibility
-    // this method should be abstract
-    return (IndexOutput)createFile(name);
-}
-#endif
 
-#if 0
-/** @deprecated use {@link #openInput(String)} */
-public InputStream openFile(String name) throws IOException {
-    return (InputStream)openInput(name);
-}
-#endif
 
 /** Returns a stream reading an existing file. */
 - (LCIndexInput *) openInput: (NSString *) name;
-#if 0
-{
-    // default implementation for back compatibility
-    // this method should be abstract
-    return (IndexInput)openFile(name);
-}
-#endif
+
 
 #if 0 // FIXME: don't know how to do that
 /** Construct a {@link Lock}.

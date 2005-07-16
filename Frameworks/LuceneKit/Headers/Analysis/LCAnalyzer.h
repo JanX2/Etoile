@@ -9,6 +9,7 @@
 {
 }
 
+/* Return a stream of token */
 - (LCTokenStream *) tokenStreamWithField: (NSString *) name
                                   reader: (id <LCReader>) reader;
 @end

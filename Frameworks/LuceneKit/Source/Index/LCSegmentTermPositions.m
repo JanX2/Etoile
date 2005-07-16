@@ -24,7 +24,7 @@
 {
 	[super seekTermInfo: ti];
     if (ti != nil)
-	    [proxStream seek: [ti proxPointer]];
+	    [proxStream seekToFileOffset: [ti proxPointer]];
     proxCount = 0;
 }
 
@@ -71,7 +71,7 @@
 /** Called by super.skipTo(). */
 - (void) skipProx: (long) pp
 {
-    [proxStream seek: pp];
+    [proxStream seekToFileOffset: pp];
     proxCount = 0;
 }
 

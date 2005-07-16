@@ -96,11 +96,11 @@
 		//We don't need to do this in other seeks because we already have the
 		// file pointer
 		//that was written in another file
-		[tvx seek: ((docNum * 8L) + TERM_VECTORS_WRITER_FORMAT_SIZE)];
+		[tvx seekToFileOffset: ((docNum * 8L) + TERM_VECTORS_WRITER_FORMAT_SIZE)];
 		//System.out.println("TVX Pointer: " + tvx.getFilePointer());
 		long long position = [tvx readLong];
 		
-		[tvd seek: position];
+		[tvd seekToFileOffset: position];
 		long fieldCount = [tvd readVInt];
 		//System.out.println("Num Fields: " + fieldCount);
 		// There are only a few fields per document. We opt for a full scan
@@ -157,10 +157,10 @@
     // Check if no term vectors are available for this segment at all
     if (tvx != nil) {
 		//We need to offset by
-		[tvx seek: ((docNum * 8L) + TERM_VECTORS_WRITER_FORMAT_SIZE)];
+		[tvx seekToFileOffset: ((docNum * 8L) + TERM_VECTORS_WRITER_FORMAT_SIZE)];
 		long long position = [tvx readLong];
 		
-		[tvd seek: position];
+		[tvd seekToFileOffset: position];
 		long fieldCount = [tvd readVInt];
 		
 		// No fields are vectorized for this document
@@ -226,7 +226,7 @@
 {
     // Now read the data from specified position
     //We don't need to offset by the FORMAT here since the pointer already includes the offset
-    [tvf seek: tvfPointer];
+    [tvf seekToFileOffset: tvfPointer];
 	
     long numTerms = [tvf readVInt];
     //System.out.println("Num Terms: " + numTerms);

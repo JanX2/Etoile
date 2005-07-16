@@ -7,9 +7,9 @@
  */
 @implementation LCLowerCaseFilter
 
-- (LCToken *) next
+- (LCToken *) nextToken
 {
-	LCToken *t = [input next];
+	LCToken *t = [input nextToken];
 	
 	if (t == nil)
 		return nil;

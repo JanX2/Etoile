@@ -67,7 +67,7 @@
 - (void) seek: (long) pointer position: (int) p
          term: (LCTerm *) t termInfo: (LCTermInfo *) ti
 {
-	[input seek: pointer];
+	[input seekToFileOffset: pointer];
 	position = p;
 	[termBuffer setTerm: t];
 	[termInfo setTermInfo: ti];

@@ -29,18 +29,31 @@
 	float boost;
 }
 
+/** Set boost of this document */
 - (void) setBoost: (float) boost;
+/** Return boost of this document */
 - (float) boost;
+/** Add field */
 - (void) addField: (LCField *) field;
-- (void) removeFieldWithName: (NSString *) name;
-- (void) removeFieldsWithName: (NSString *) name;
-- (LCField *) fieldWithName: (NSString *) name;
-- (NSString *) stringValue: (NSString *) name;
+/** Remove the first field with name */
+- (void) removeField: (NSString *) name;
+/** Remove all fields with name */
+- (void) removeFields: (NSString *) name;
+/** Remove the first field with name */
+- (LCField *) field: (NSString *) name;
+/** Remove the string value of the first field with name */
+- (NSString *) stringForField: (NSString *) name;
+/** Return an enumerator of all fields */
 - (NSEnumerator *) fieldEnumerator;
-- (NSArray *) fieldsWithName: (NSString *) name;;
-- (NSArray *) stringValues: (NSString *) name;
-- (NSArray *) binaryValues: (NSString *) name;
-- (NSData *) binaryValue: (NSString *) name;
+/** Return all fields with name */
+- (NSArray *) fields: (NSString *) name;
+/** Return all string values of field with name */ 
+- (NSArray *) allStringsForField: (NSString *) name;
+/** Return all binary values of field with name */
+- (NSArray *) allDataForField: (NSString *) name;
+/** Return the first binary value of field with name */
+- (NSData *) dataForField: (NSString *) name;
+/** Return all fields */
 - (NSArray *) fields;
 
 @end

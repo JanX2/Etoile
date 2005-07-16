@@ -34,7 +34,7 @@
 
 - (void) addDocument: (LCDocument *) doc
 {
-	[indexStream writeLong: [fieldsStream filePointer]];
+	[indexStream writeLong: [fieldsStream offsetInFile]];
 	
 	int storedCount = 0;
 	NSEnumerator *fields = [doc fieldEnumerator];
@@ -55,7 +55,7 @@
 			char bits = 0;
 			if ([field isTokenized])
 				bits |= LCFieldsWriter_FIELD_IS_TOKENIZED;
-			if ([field isBinary])
+			if ([field isData])
 				bits |= LCFieldsWriter_FIELD_IS_BINARY;
 			if ([field isCompressed])
 				bits |= LCFieldsWriter_FIELD_IS_COMPRESSED;
@@ -65,11 +65,11 @@
 				// compression is enabled for the current field
 				NSData *data = nil;
 				// check if it is a binary field
-				if ([field isBinary]) {
-                    ASSIGN(data, [field binaryValue]);
+				if ([field isData]) {
+                    ASSIGN(data, [field data]);
 				}
 				else {
-					ASSIGN(data, [[field stringValue] dataUsingEncoding: NSUTF8StringEncoding]);
+					ASSIGN(data, [[field string] dataUsingEncoding: NSUTF8StringEncoding]);
 				}
 				ASSIGN(data, [data compressedData]);
 				int len = [data length];
@@ -77,14 +77,14 @@
 				[fieldsStream writeBytes: data length: len];
 			} else {
 				// compression is disabled for the current field
-				if ([field isBinary]) {
-					NSData *data = [field binaryValue];
+				if ([field isData]) {
+					NSData *data = [field data];
                     int len = [data length];
 					[fieldsStream writeVInt: len];
 					[fieldsStream writeBytes: data length: len];
 				}
 				else {
-					[fieldsStream writeString: [field stringValue]];
+					[fieldsStream writeString: [field string]];
 				}
 			}
 		}

@@ -4,6 +4,7 @@
 #include <Foundation/Foundation.h>
 #include <LuceneKit/Analysis/LCTokenStream.h>
 
+/* A filter for token stream */
 @interface LCTokenFilter: LCTokenStream
 {
 	LCTokenStream *input;

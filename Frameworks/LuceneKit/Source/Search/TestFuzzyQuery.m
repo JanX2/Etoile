@@ -102,9 +102,9 @@ static NSString *FIELD = @"field";
 								  prefixLength: 0];
 	hits = [searcher search: query];
 	UKIntsEqual(3, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"aaaaa");
-	UKStringsEqual([[hits document: 1] stringValue: FIELD], @"aaaab");
-	UKStringsEqual([[hits document: 2] stringValue: FIELD], @"aaabb");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"aaaaa");
+	UKStringsEqual([[hits document: 1] stringForField: FIELD], @"aaaab");
+	UKStringsEqual([[hits document: 2] stringForField: FIELD], @"aaabb");
 
     // query similar to a word in the index:
 	t = [[LCTerm alloc] initWithField: FIELD text: @"aaaac"];
@@ -113,9 +113,9 @@ static NSString *FIELD = @"field";
 								  prefixLength: 0];
 	hits = [searcher search: query];
 	UKIntsEqual(3, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"aaaaa");
-	UKStringsEqual([[hits document: 1] stringValue: FIELD], @"aaaab");
-	UKStringsEqual([[hits document: 2] stringValue: FIELD], @"aaabb");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"aaaaa");
+	UKStringsEqual([[hits document: 1] stringForField: FIELD], @"aaaab");
+	UKStringsEqual([[hits document: 2] stringForField: FIELD], @"aaabb");
 	
     // now with prefix
 	t = [[LCTerm alloc] initWithField: FIELD text: @"aaaac"];
@@ -124,35 +124,35 @@ static NSString *FIELD = @"field";
 								  prefixLength: 1];
 	hits = [searcher search: query];
 	UKIntsEqual(3, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"aaaaa");
-	UKStringsEqual([[hits document: 1] stringValue: FIELD], @"aaaab");
-	UKStringsEqual([[hits document: 2] stringValue: FIELD], @"aaabb");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"aaaaa");
+	UKStringsEqual([[hits document: 1] stringForField: FIELD], @"aaaab");
+	UKStringsEqual([[hits document: 2] stringForField: FIELD], @"aaabb");
 	
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
 							 minimumSimilarity: [LCFuzzyQuery defaultMinSimilarity]
 								  prefixLength: 2];
 	hits = [searcher search: query];
 	UKIntsEqual(3, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"aaaaa");
-	UKStringsEqual([[hits document: 1] stringValue: FIELD], @"aaaab");
-	UKStringsEqual([[hits document: 2] stringValue: FIELD], @"aaabb");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"aaaaa");
+	UKStringsEqual([[hits document: 1] stringForField: FIELD], @"aaaab");
+	UKStringsEqual([[hits document: 2] stringForField: FIELD], @"aaabb");
 	
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
 							 minimumSimilarity: [LCFuzzyQuery defaultMinSimilarity]
 								  prefixLength: 3];
 	hits = [searcher search: query];
 	UKIntsEqual(3, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"aaaaa");
-	UKStringsEqual([[hits document: 1] stringValue: FIELD], @"aaaab");
-	UKStringsEqual([[hits document: 2] stringValue: FIELD], @"aaabb");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"aaaaa");
+	UKStringsEqual([[hits document: 1] stringForField: FIELD], @"aaaab");
+	UKStringsEqual([[hits document: 2] stringForField: FIELD], @"aaabb");
 	
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
 							 minimumSimilarity: [LCFuzzyQuery defaultMinSimilarity]
 								  prefixLength: 4];
 	hits = [searcher search: query];
 	UKIntsEqual(2, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"aaaaa");
-	UKStringsEqual([[hits document: 1] stringValue: FIELD], @"aaaab");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"aaaaa");
+	UKStringsEqual([[hits document: 1] stringForField: FIELD], @"aaaab");
 	
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
 							 minimumSimilarity: [LCFuzzyQuery defaultMinSimilarity]
@@ -166,35 +166,35 @@ static NSString *FIELD = @"field";
 								  prefixLength: 0];
 	hits = [searcher search: query];
 	UKIntsEqual(1, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"ddddd");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"ddddd");
 	
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
 							 minimumSimilarity: [LCFuzzyQuery defaultMinSimilarity]
 								  prefixLength: 1];
 	hits = [searcher search: query];
 	UKIntsEqual(1, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"ddddd");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"ddddd");
 
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
 							 minimumSimilarity: [LCFuzzyQuery defaultMinSimilarity]
 								  prefixLength: 2];
 	hits = [searcher search: query];
 	UKIntsEqual(1, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"ddddd");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"ddddd");
 	
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
 							 minimumSimilarity: [LCFuzzyQuery defaultMinSimilarity]
 								  prefixLength: 3];
 	hits = [searcher search: query];
 	UKIntsEqual(1, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"ddddd");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"ddddd");
 
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
 							 minimumSimilarity: [LCFuzzyQuery defaultMinSimilarity]
 								  prefixLength: 4];
 	hits = [searcher search: query];
 	UKIntsEqual(1, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"ddddd");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"ddddd");
 
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
 							 minimumSimilarity: [LCFuzzyQuery defaultMinSimilarity]
@@ -243,7 +243,7 @@ static NSString *FIELD = @"field";
 								  prefixLength: 0];
 	hits = [searcher search: query];
 	UKIntsEqual(1, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"aaaaaaa");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"aaaaaaa");
 
 	// now with prefix
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
@@ -251,14 +251,14 @@ static NSString *FIELD = @"field";
 								  prefixLength: 1];
 	hits = [searcher search: query];
 	UKIntsEqual(1, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"aaaaaaa");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"aaaaaaa");
 
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
 							 minimumSimilarity: [LCFuzzyQuery defaultMinSimilarity]
 								  prefixLength: 4];
 	hits = [searcher search: query];
 	UKIntsEqual(1, [hits count]);
-	UKStringsEqual([[hits document: 0] stringValue: FIELD], @"aaaaaaa");
+	UKStringsEqual([[hits document: 0] stringForField: FIELD], @"aaaaaaa");
 
 	query = [[LCFuzzyQuery alloc] initWithTerm: t
 							 minimumSimilarity: [LCFuzzyQuery defaultMinSimilarity]

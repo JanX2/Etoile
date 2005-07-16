@@ -145,7 +145,7 @@
 	int i, n = [result count];
 	for (i = 0; i < n; i++) {
 		LCDocument *doc = [result document: i];
-		NSArray *v = [doc stringValues: @"tracer"];
+		NSArray *v = [doc allStringsForField: @"tracer"];
 		int j;
 		for (j = 0; j < [v count]; j++) {
 			[buff appendString: [v objectAtIndex: j]];

@@ -25,9 +25,11 @@
 static NSString *NEGATIVE_PREFIX = @"-";
 static NSString *POSITIVE_PREFIX = @"0";
 
-// long in java is 8 bytes, which is long long in C (most unix)
+/** Convert between NSString and long long */
 @interface NSString (LuceneKit_Document_Number)
+/** Convert long long (8 bytes )to NSString */
 + (NSString *) stringWithLongLong: (long long) l;
+/** Convert NSString to long long (8 bytes) */
 - (long long) longLongValue;
 @end
 

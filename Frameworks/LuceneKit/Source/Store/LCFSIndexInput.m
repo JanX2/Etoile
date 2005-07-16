@@ -10,7 +10,7 @@
 - (id) copyWithZone: (NSZone *) zone;
 {
 	LCFSIndexInput *clone = [[LCFSIndexInput allocWithZone: zone] initWithFile: path];
-	[clone seek: [self filePointer]];
+	[clone seekToFileOffset: [self offsetInFile]];
 	[clone setClosed: isClosed];
 	return clone;
 }
@@ -56,12 +56,12 @@
 	buf = NULL;
 }
 
-- (unsigned long long) filePointer
+- (unsigned long long) offsetInFile
 {
 	return [handle offsetInFile];
 }
 
-- (void) seek: (unsigned long long) pos
+- (void) seekToFileOffset: (unsigned long long) pos
 {
 	if (pos < [self length])
 		[handle seekToFileOffset: pos];

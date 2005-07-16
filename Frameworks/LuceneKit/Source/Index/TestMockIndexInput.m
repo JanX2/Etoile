@@ -48,12 +48,12 @@
 
 - (void) close {}
 
-- (unsigned long long) filePointer
+- (unsigned long long) offsetInFile
 {
 	return pointer;
 }
 
-- (void) seek: (unsigned long long) pos
+- (void) seekToFileOffset: (unsigned long long) pos
 {
 	pointer = pos;
 }

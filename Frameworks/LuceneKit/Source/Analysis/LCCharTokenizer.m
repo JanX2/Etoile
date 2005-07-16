@@ -18,7 +18,7 @@
 * tokenizer generates as tokens adjacent sequences of characters which
 * satisfy this predicate.  Characters for which this is false are used to
 * define token boundaries and are not included in tokens. */
-- (BOOL) isTokenChar: (char) c
+- (BOOL) characterIsPartOfToken: (char) c
 {
 	return NO;
 }
@@ -31,7 +31,7 @@
 	return c;
 }
 
-- (LCToken *) next
+- (LCToken *) nextToken
 {
 	/** Returns the next token in the stream, or null at EOS. */
 	int length = 0;
@@ -57,7 +57,7 @@
 		else
 			c = ioBuffer[bufferIndex++];
 		
-		if ([self isTokenChar: c])                // if it's a token char
+		if ([self characterIsPartOfToken: c])                // if it's a token char
         {
 			if (length == 0)			           // start of token
 				start = offset - 1;

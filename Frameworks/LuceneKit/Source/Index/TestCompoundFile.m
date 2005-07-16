@@ -78,12 +78,12 @@
 	UKNotNil(expected);
 	UKNotNil(test);
 	UKIntsEqual([expected length], [test length]);
-	UKIntsEqual([expected filePointer], [test filePointer]);
+	UKIntsEqual([expected offsetInFile], [test offsetInFile]);
 	
 	int size = 512;
 	NSMutableData *expectedBuffer = [[NSMutableData alloc] init];
 	NSMutableData *testBuffer = [[NSMutableData alloc] init];
-	long long remainder = [expected length] - [expected filePointer];
+	long long remainder = [expected length] - [expected offsetInFile];
 	while(remainder > 0) {
 		int readLen = (int) ((remainder < size) ? remainder : size);
 		[expected readBytes: expectedBuffer offset: 0 length: readLen];
@@ -104,8 +104,8 @@
 {
 	if (seekTo >= 0 && seekTo < [expected length])
     {
-		[expected seek: seekTo];
-		[actual seek: seekTo];
+		[expected seekToFileOffset: seekTo];
+		[actual seekToFileOffset: seekTo];
 		[self assertSameStreams: msg
 					   expected: expected
 						 actual: actual];
@@ -432,59 +432,59 @@ public void testClonedStreamsClosing() throws IOException {
 	LCIndexInput *a2 = [cr openInput: @"f3"];
 	
 	// Seek the first pair
-	[e1 seek: 100];
-	[a1 seek: 100];
-	UKIntsEqual(100, [e1 filePointer]);
-	UKIntsEqual(100, [a1 filePointer]);
+	[e1 seekToFileOffset: 100];
+	[a1 seekToFileOffset: 100];
+	UKIntsEqual(100, [e1 offsetInFile]);
+	UKIntsEqual(100, [a1 offsetInFile]);
 	char be1 = [e1 readByte];
 	char ba1 = [a1 readByte];
 	UKIntsEqual(be1, ba1);
 	
 	// Now seek the second pair
-	[e2 seek: 1027];
-	[a2 seek: 1027];
-	UKIntsEqual(1027, [e2 filePointer]);
-	UKIntsEqual(1027, [a2 filePointer]);
+	[e2 seekToFileOffset: 1027];
+	[a2 seekToFileOffset: 1027];
+	UKIntsEqual(1027, [e2 offsetInFile]);
+	UKIntsEqual(1027, [a2 offsetInFile]);
 	char be2 = [e2 readByte];
 	char ba2 = [a2 readByte];
 	UKIntsEqual(be2, ba2);
 	
 	// Now make sure the first one didn't move
-	UKIntsEqual(101, [e1 filePointer]);
-	UKIntsEqual(101, [a1 filePointer]);
+	UKIntsEqual(101, [e1 offsetInFile]);
+	UKIntsEqual(101, [a1 offsetInFile]);
 	be1 = [e1 readByte];
 	ba1 = [a1 readByte];
 	UKIntsEqual(be1, ba1);
 	
 	// Now more the first one again, past the buffer length
-	[e1 seek: 1910];
-	[a1 seek: 1910];
-	UKIntsEqual(1910, [e1 filePointer]);
-	UKIntsEqual(1910, [a1 filePointer]);
+	[e1 seekToFileOffset: 1910];
+	[a1 seekToFileOffset: 1910];
+	UKIntsEqual(1910, [e1 offsetInFile]);
+	UKIntsEqual(1910, [a1 offsetInFile]);
 	be1 = [e1 readByte];
 	ba1 = [a1 readByte];
 	UKIntsEqual(be1, ba1);
 	
 	// Now make sure the second set didn't move
-	UKIntsEqual(1028, [e2 filePointer]);
-	UKIntsEqual(1028, [a2 filePointer]);
+	UKIntsEqual(1028, [e2 offsetInFile]);
+	UKIntsEqual(1028, [a2 offsetInFile]);
 	be2 = [e2 readByte];
 	ba2 = [a2 readByte];
 	UKIntsEqual(be2, ba2);
 	
 	// Move the second set back, again cross the buffer size
-	[e2 seek: 17];
-	[a2 seek: 17];
-	UKIntsEqual(17, [e2 filePointer]);
-	UKIntsEqual(17, [a2 filePointer]);
+	[e2 seekToFileOffset: 17];
+	[a2 seekToFileOffset: 17];
+	UKIntsEqual(17, [e2 offsetInFile]);
+	UKIntsEqual(17, [a2 offsetInFile]);
 	be2 = [e2 readByte];
 	ba2 = [a2 readByte];
 	UKIntsEqual(be2, ba2);
 	
 	// Finally, make sure the first set didn't move
 	// Now make sure the first one didn't move
-	UKIntsEqual(1911, [e1 filePointer]);
-	UKIntsEqual(1911, [a1 filePointer]);
+	UKIntsEqual(1911, [e1 offsetInFile]);
+	UKIntsEqual(1911, [a1 offsetInFile]);
 	be1 = [e1 readByte];
 	ba1 = [a1 readByte];
 	UKIntsEqual(be1, ba1);
@@ -512,59 +512,59 @@ public void testClonedStreamsClosing() throws IOException {
 	LCIndexInput *a2 = [e2 copy];
 	
 	// Seek the first pair
-	[e1 seek: 100];
-	[a1 seek: 100];
-	UKIntsEqual(100, [e1 filePointer]);
-	UKIntsEqual(100, [a1 filePointer]);
+	[e1 seekToFileOffset: 100];
+	[a1 seekToFileOffset: 100];
+	UKIntsEqual(100, [e1 offsetInFile]);
+	UKIntsEqual(100, [a1 offsetInFile]);
 	char be1 = [e1 readByte];
 	char ba1 = [a1 readByte];
 	UKIntsEqual(be1, ba1);
 	
 	// Now seek the second pair
-	[e2 seek: 1027];
-	[a2 seek: 1027];
-	UKIntsEqual(1027, [e2 filePointer]);
-	UKIntsEqual(1027, [a2 filePointer]);
+	[e2 seekToFileOffset: 1027];
+	[a2 seekToFileOffset: 1027];
+	UKIntsEqual(1027, [e2 offsetInFile]);
+	UKIntsEqual(1027, [a2 offsetInFile]);
 	char be2 = [e2 readByte];
 	char ba2 = [a2 readByte];
 	UKIntsEqual(be2, ba2);
 	
 	// Now make sure the first one didn't move
-	UKIntsEqual(101, [e1 filePointer]);
-	UKIntsEqual(101, [a1 filePointer]);
+	UKIntsEqual(101, [e1 offsetInFile]);
+	UKIntsEqual(101, [a1 offsetInFile]);
 	be1 = [e1 readByte];
 	ba1 = [a1 readByte];
 	UKIntsEqual(be1, ba1);
 	
 	// Now more the first one again, past the buffer length
-	[e1 seek: 1910];
-	[a1 seek: 1910];
-	UKIntsEqual(1910, [e1 filePointer]);
-	UKIntsEqual(1910, [a1 filePointer]);
+	[e1 seekToFileOffset: 1910];
+	[a1 seekToFileOffset: 1910];
+	UKIntsEqual(1910, [e1 offsetInFile]);
+	UKIntsEqual(1910, [a1 offsetInFile]);
 	be1 = [e1 readByte];
 	ba1 = [a1 readByte];
 	UKIntsEqual(be1, ba1);
 	
 	// Now make sure the second set didn't move
-	UKIntsEqual(1028, [e2 filePointer]);
-	UKIntsEqual(1028, [a2 filePointer]);
+	UKIntsEqual(1028, [e2 offsetInFile]);
+	UKIntsEqual(1028, [a2 offsetInFile]);
 	be2 = [e2 readByte];
 	ba2 = [a2 readByte];
 	UKIntsEqual(be2, ba2);
 	
 	// Move the second set back, again cross the buffer size
-	[e2 seek: 17];
-	[a2 seek: 17];
-	UKIntsEqual(17, [e2 filePointer]);
-	UKIntsEqual(17, [a2 filePointer]);
+	[e2 seekToFileOffset: 17];
+	[a2 seekToFileOffset: 17];
+	UKIntsEqual(17, [e2 offsetInFile]);
+	UKIntsEqual(17, [a2 offsetInFile]);
 	be2 = [e2 readByte];
 	ba2 = [a2 readByte];
 	UKIntsEqual(be2, ba2);
 	
 	// Finally, make sure the first set didn't move
 	// Now make sure the first one didn't move
-	UKIntsEqual(1911, [e1 filePointer]);
-	UKIntsEqual(1911, [a1 filePointer]);
+	UKIntsEqual(1911, [e1 offsetInFile]);
+	UKIntsEqual(1911, [a1 offsetInFile]);
 	be1 = [e1 readByte];
 	ba1 = [a1 readByte];
 	UKIntsEqual(be1, ba1);

@@ -115,7 +115,7 @@
 - (void) openDocument
 {
 	[self closeDocument];
-	currentDocPointer = [tvd filePointer];
+	currentDocPointer = [tvd offsetInFile];
 }
 
 - (void) closeDocument
@@ -317,7 +317,7 @@
 - (void) writeField
 {
     // remember where this field is written
-    [currentField setTVFPointer: [tvf filePointer]];
+    [currentField setTVFPointer: [tvf offsetInFile]];
     //System.out.println("Field Pointer: " + currentField.tvfPointer);
     
     long size = (long)[terms count];

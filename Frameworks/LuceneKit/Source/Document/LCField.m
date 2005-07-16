@@ -80,9 +80,9 @@ A field is a section of a Document.  Each field has two parts, a name and a
 }
 
 /** The value of the field as a String, or null.  If null, the Reader value
-* or binary value is used.  Exactly one of stringValue(), readerValue(), and
-* binaryValue() must be set. */
-- (NSString *) stringValue
+* or binary value is used.  Exactly one of string(), reader(), and
+* data() must be set. */
+- (NSString *) string
 {
 	if ([fieldsData isKindOfClass: [NSString class]])
 		return (NSString *) fieldsData;
@@ -91,9 +91,9 @@ A field is a section of a Document.  Each field has two parts, a name and a
 }
 
 /** The value of the field as a Reader, or null.  If null, the String value
-* or binary value is  used.  Exactly one of stringValue(), readerValue(),
-* and binaryValue() must be set. */
-- (id <LCReader>) readerValue
+* or binary value is  used.  Exactly one of string(), reader(),
+* and data() must be set. */
+- (id <LCReader>) reader
 { 
 	if ([fieldsData conformsToProtocol: @protocol(LCReader)])
 		return (id <LCReader>)fieldsData; 
@@ -102,9 +102,9 @@ A field is a section of a Document.  Each field has two parts, a name and a
 }
 
 /** The value of the field in Binary, or null.  If null, the Reader or
-* String value is used.  Exactly one of stringValue(), readerValue() and
-* binaryValue() must be set. */
-- (NSData *) binaryValue
+* String value is used.  Exactly one of string(), reader() and
+* data() must be set. */
+- (NSData *) data
 {
 	if ([fieldsData isKindOfClass: [NSData class]])
 		return (NSData *)fieldsData;
@@ -276,7 +276,7 @@ A field is a section of a Document.  Each field has two parts, a name and a
  * @param store How <code>value</code> should be stored (compressed or not.)
  */
 - (id) initWithName: (NSString *) n
-			  value: (NSData *) value
+			  data: (NSData *) value
 			  store: (LCStore_Type) store
 { 
 	self = [self init];
@@ -298,7 +298,7 @@ A field is a section of a Document.  Each field has two parts, a name and a
 	} else if (store == LCStore_Compress) {
 		isStored = YES;
 		isCompressed = YES;
-	} else if (store = LCStore_NO) {
+	} else if (store == LCStore_NO) {
 		NSLog(@"binary values can't be unstored");
 	} else {
 		NSLog(@"unknown store parameter %d", store);
@@ -399,7 +399,7 @@ Reader-valued. */
 }
 
 /** True iff the value of the filed is stored as binary */
-- (BOOL) isBinary
+- (BOOL) isData
 {
 	return isBinary;
 }

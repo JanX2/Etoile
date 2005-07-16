@@ -47,9 +47,9 @@
 
 - (LCDocument *) document: (int) n
 {
-	[indexStream seek: (n * 8L)];
+	[indexStream seekToFileOffset: (n * 8L)];
 	long position = [indexStream readLong];
-	[fieldsStream seek: position];
+	[fieldsStream seekToFileOffset: position];
 	
 	LCDocument *doc = [[LCDocument alloc] init];
 	int numFields = [fieldsStream readVInt];
@@ -74,7 +74,7 @@
 				if (d)
 				{
 					LCField *field = [[LCField alloc] initWithName: [fi name]
-															 value: d
+															 data: d
 															 store: LCStore_Compress];
 					[doc addField: field];
 					DESTROY(field);
@@ -84,7 +84,7 @@
 			else
 			{
 				LCField *field = [[LCField alloc] initWithName: [fi name]
-														 value: AUTORELEASE([b copy])
+														 data: AUTORELEASE([b copy])
 														 store: LCStore_YES];
 				[doc addField: field];
 				DESTROY(field);

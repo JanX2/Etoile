@@ -88,7 +88,7 @@
 }
 
 /** Returns an array of strings, one for each file in the directory. */
-- (NSArray *) list
+- (NSArray *) fileList
 {
 	return [manager directoryContentsAtPath: path];
 }

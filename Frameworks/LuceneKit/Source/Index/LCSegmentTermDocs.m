@@ -62,7 +62,7 @@
 		freqPointer = [ti freqPointer];
 		proxPointer = [ti proxPointer];
 		skipPointer = freqPointer + [ti skipOffset];
-		[freqStream seek: freqPointer];
+		[freqStream seekToFileOffset: freqPointer];
 		haveSkipped = NO;
     }
 }
@@ -103,7 +103,7 @@
 		
 		count++;
 		
-		if (deletedDocs ==  nil|| ![deletedDocs getBit: doc])
+		if (deletedDocs ==  nil|| ![deletedDocs bit: doc])
 			break;
 		[self skippingDoc];
     }
@@ -126,7 +126,7 @@
 			freq = [freqStream readVInt];		  // else read freq
 		count++;
 		
-		if (deletedDocs == nil|| ![deletedDocs getBit: doc]) {
+		if (deletedDocs == nil|| ![deletedDocs bit: doc]) {
 			if (i < [docs count]) {
 				[docs replaceObjectAtIndex: i withObject: [NSNumber numberWithLong: doc]];
 				[freqs replaceObjectAtIndex: i withObject: [NSNumber numberWithLong: freq]];
@@ -156,13 +156,13 @@
 			skipStream = (LCIndexInput*) [freqStream copy]; // lazily clone
 		
 		if (!haveSkipped) {                          // lazily seek skip stream
-			[skipStream seek: skipPointer];
+			[skipStream seekToFileOffset: skipPointer];
 			haveSkipped = YES;
 		}
 		
 		// scan skip data
 		int lastSkipDoc = skipDoc;
-		long lastFreqPointer = [freqStream filePointer];
+		long lastFreqPointer = [freqStream offsetInFile];
 		long lastProxPointer = -1;
 		int numSkipped = -1 - (count % skipInterval);
 		
@@ -185,8 +185,8 @@
 		}
 		
 		// if we found something to skip, then skip it
-		if (lastFreqPointer > [freqStream filePointer]) {
-			[freqStream seek: lastFreqPointer];
+		if (lastFreqPointer > [freqStream offsetInFile]) {
+			[freqStream seekToFileOffset: lastFreqPointer];
 			[self skipProx: lastProxPointer];
 			
 			doc = lastSkipDoc;

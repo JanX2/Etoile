@@ -61,7 +61,7 @@
 	}
 	
 	if(format >= 0){    // in old format the version number may be at the end of the file
-		if ([input filePointer] >= [input length])
+		if ([input offsetInFile] >= [input length])
 			version = (long)([[NSDate date] timeIntervalSince1970]*1000); // old file format without version number
 		else
 			version = [input readLong]; // read version

@@ -145,8 +145,8 @@ TermInfo pointers must be positive and greater than all previous.*/
     }
 	
     if (isIndex) {
-		[output writeVLong: [[other output] filePointer] - lastIndexPointer];
-		lastIndexPointer = [[other output] filePointer]; // write pointer
+		[output writeVLong: [[other output] offsetInFile] - lastIndexPointer];
+		lastIndexPointer = [[other output] offsetInFile]; // write pointer
     }
 	
     [lastTi setTermInfo: ti];
@@ -180,7 +180,7 @@ TermInfo pointers must be positive and greater than all previous.*/
 /** Called to complete TermInfos creation. */
 - (void) close
 {
-	[output seek: 4];          // write size after format
+	[output seekToFileOffset: 4];          // write size after format
 	[output writeLong: size];
 	[output close];
 	

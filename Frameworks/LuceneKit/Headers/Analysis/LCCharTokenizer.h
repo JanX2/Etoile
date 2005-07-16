@@ -12,7 +12,9 @@
 	unichar buffer[MAX_WORD_LEN], ioBuffer[IO_BUFFER_SIZE];
 }
 
-- (BOOL) isTokenChar: (char) c;
+/** Check whether c belongs to token. Return NO is c is used to break tokens. */
+- (BOOL) characterIsPartOfToken: (char) c;
+/** Normalize a charactor. Ex. 'ue' in German will be 'u' */
 - (char) normalize: (char) c;
 
 @end

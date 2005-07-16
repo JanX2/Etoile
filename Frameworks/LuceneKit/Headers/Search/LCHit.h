@@ -19,7 +19,7 @@
 - (float) score;
 - (int) identifier;
 - (float) boost;
-- (NSString *) stringValue: (NSString *) name;
+- (NSString *) stringForField: (NSString *) name;
 
 @end
 

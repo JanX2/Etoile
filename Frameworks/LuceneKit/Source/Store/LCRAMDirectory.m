@@ -44,7 +44,7 @@
                    close: (BOOL) closeDirectory;
 {
 	self = [self init];
-	NSArray *f = [dir list];
+	NSArray *f = [dir fileList];
 	int i, count = [f count];
 	unsigned long long len;
 	NSMutableData *buf = [[NSMutableData alloc] init];
@@ -85,7 +85,7 @@
 }
 
 /** Returns an array of strings, one for each file in the directory. */
-- (NSArray *) list
+- (NSArray *) fileList
 {
 	return [files allKeys];
 }

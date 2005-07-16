@@ -4,11 +4,14 @@
 #include <Foundation/Foundation.h>
 #include <LuceneKit/Analysis/LCToken.h>
 
+/** A stream of tokens */
 @interface LCTokenStream: NSObject
 {
 }
 
-- (LCToken *) next;
+/** Next token */
+- (LCToken *) nextToken;
+/** Close stream */
 - (void) close;
 
 @end

@@ -86,7 +86,7 @@
  * a document has to be deleted from an index and a new changed version of that
  * document has to be added.</p>
  */
-- (void) removeFieldWithName: (NSString *) n
+- (void) removeField: (NSString *) n
 {
 	LCField *field;
 	int i, count = [fields count];
@@ -111,7 +111,7 @@
  * document has to be added.</p>
  */
 
-- (void) removeFieldsWithName: (NSString *) n
+- (void) removeFields: (NSString *) n
 {
 	LCField *field;
 	int i;
@@ -129,7 +129,7 @@
 * null.  If multiple fields exists with this name, this method returns the
 * first value added.
 */
-- (LCField *) fieldWithName: (NSString *) name
+- (LCField *) field: (NSString *) name
 {
 	LCField *field;
 	int i, count = [fields count];;
@@ -147,15 +147,15 @@
 * method returns the first value added. If only binary fields with this name
 * exist, returns null.
 */
-- (NSString *) stringValue: (NSString *) name
+- (NSString *) stringForField: (NSString *) name
 {
 	int i;
 	LCField *field;
 	for (i = 0; i < [fields count]; i++)
     {
 		field = [fields objectAtIndex: i];
-		if ([[field name] isEqualToString: name] && (![field isBinary]))
-			return [field stringValue];;
+		if ([[field name] isEqualToString: name] && (![field isData]))
+			return [field string];;
     }
 	return nil;
 }
@@ -173,7 +173,7 @@
  * @param name the name of the field
  * @return a <code>Field[]</code> array
  */
-- (NSArray *) fieldsWithName: (NSString *) name
+- (NSArray *) fields: (NSString *) name
 {
 	LCField *field;
 	int i, count = [fields count];;
@@ -202,7 +202,7 @@
  * @param name the name of the field
  * @return a <code>String[]</code> of field values
  */
-- (NSArray *) stringValues: (NSString *) name
+- (NSArray *) allStringsForField: (NSString *) name
 {
 	NSMutableArray *result = [[NSMutableArray alloc] init];
 	int i, count = [fields count];
@@ -210,8 +210,8 @@
 	for(i = 0; i < count; i++)
     {
 		field = [fields objectAtIndex: i];
-		if ([[field name] isEqualToString: name] && (![field isBinary]))
-			[result addObject: [field stringValue]];
+		if ([[field name] isEqualToString: name] && (![field isData]))
+			[result addObject: [field string]];
     }
 	if ([result count] > 0)
 		return AUTORELEASE(result);
@@ -231,15 +231,15 @@
  * @return a  <code>byte[][]</code> of binary field values.
  */
 
-- (NSArray *) binaryValues: (NSString *) name
+- (NSArray *) allDataForField: (NSString *) name
 {
 	NSMutableArray *result = [[NSMutableArray alloc] init];
 	int i, count = [fields count];
 	LCField *field;
 	for (i = 0; i < count; i++) {
 		field = [fields objectAtIndex: i];
-		if ([[field name] isEqualToString: name] && [field isBinary])
-			[result addObject: [field binaryValue]];
+		if ([[field name] isEqualToString: name] && [field isData])
+			[result addObject: [field data]];
 	}
 	if ([result count] > 0)
 		return AUTORELEASE(result);
@@ -250,14 +250,14 @@
 	}
 }
 
-- (NSData *) binaryValue: (NSString *) name
+- (NSData *) dataForField: (NSString *) name
 {
 	int i, count = [fields count];
 	LCField *field;
 	for (i = 0; i < count; i++) {
 		field = [fields objectAtIndex: i];
-		if ([[field name] isEqualToString: name] && [field isBinary])
-			return [field binaryValue];
+		if ([[field name] isEqualToString: name] && [field isData])
+			return [field data];
 	}
 	return nil;
 }
@@ -326,10 +326,10 @@
 
 - (void) doAssertFromIndex: (BOOL) fromIndex
 {
-	NSArray *keywordFieldValues = [self stringValues: @"keyword"];
-	NSArray *textFieldValues = [self stringValues: @"text"];
-	NSArray *unindexedFieldValues = [self stringValues: @"unindexed"];
-	NSArray *unstoredFieldValues = [self stringValues: @"unstored"];
+	NSArray *keywordFieldValues = [self allStringsForField: @"keyword"];
+	NSArray *textFieldValues = [self allStringsForField: @"text"];
+	NSArray *unindexedFieldValues = [self allStringsForField: @"unindexed"];
+	NSArray *unstoredFieldValues = [self allStringsForField: @"unstored"];
 	
 	UKIntsEqual(2, [keywordFieldValues count]);
 	UKIntsEqual(2, [textFieldValues count]);
@@ -360,24 +360,24 @@
 {
 	[self makeDocumentWithFields];
 	UKIntsEqual(8, [[self fields] count]);
-	[self removeFieldsWithName: @"keyword"];
+	[self removeFields: @"keyword"];
 	UKIntsEqual(6, [[self fields] count]);
-	[self removeFieldsWithName: @"doexnotexists"];
-	[self removeFieldsWithName: @"keyword"];
+	[self removeFields: @"doexnotexists"];
+	[self removeFields: @"keyword"];
 	UKIntsEqual(6, [[self fields] count]);
-	[self removeFieldWithName: @"text"];
+	[self removeField: @"text"];
 	UKIntsEqual(5, [[self fields] count]);
-	[self removeFieldWithName: @"text"];
+	[self removeField: @"text"];
 	UKIntsEqual(4, [[self fields] count]);
-	[self removeFieldWithName: @"text"];
+	[self removeField: @"text"];
 	UKIntsEqual(4, [[self fields] count]);
-	[self removeFieldWithName: @"doesnotexists"];
+	[self removeField: @"doesnotexists"];
 	UKIntsEqual(4, [[self fields] count]);
-	[self removeFieldsWithName: @"unindexed"];
+	[self removeFields: @"unindexed"];
 	UKIntsEqual(2, [[self fields] count]);
-	[self removeFieldsWithName: @"unstored"];
+	[self removeFields: @"unstored"];
 	UKIntsEqual(0, [[self fields] count]);
-	[self removeFieldWithName: @"doesnotexists"];
+	[self removeField: @"doesnotexists"];
 	UKIntsEqual(0, [[self fields] count]);
 }
 
@@ -397,10 +397,10 @@
 												 store: LCStore_YES
 												 index: LCIndex_NO];
 	LCField *binaryFld = [[LCField alloc] initWithName: @"binary"
-												 value: [binaryVal dataUsingEncoding: [NSString defaultCStringEncoding]]
+												 data: [binaryVal dataUsingEncoding: [NSString defaultCStringEncoding]]
 												 store: LCStore_YES];
 	LCField *binaryFld2 = [[LCField alloc] initWithName: @"binary"
-												  value: [binaryVal2 dataUsingEncoding: [NSString defaultCStringEncoding]]
+												  data: [binaryVal2 dataUsingEncoding: [NSString defaultCStringEncoding]]
 												  store: LCStore_YES];
 	
 	[self addField: stringFld];
@@ -408,22 +408,22 @@
 	
 	UKIntsEqual(2, [[self fields] count]);
 	
-	UKTrue([binaryFld isBinary]);
+	UKTrue([binaryFld isData]);
 	UKTrue([binaryFld isStored]);
 	UKFalse([binaryFld isIndexed]);
 	UKFalse([binaryFld isTokenized]);
 	
-	NSString *binaryTest = [[NSString alloc] initWithData: [self binaryValue: @"binary"] 
+	NSString *binaryTest = [[NSString alloc] initWithData: [self dataForField: @"binary"] 
 												 encoding: [NSString defaultCStringEncoding]];
 	UKStringsEqual(binaryTest, binaryVal);
 	
-	NSString *stringTest = [self stringValue: @"string"];
+	NSString *stringTest = [self stringForField: @"string"];
 	UKStringsEqual(binaryTest, stringTest);
 	
 	[self addField: binaryFld2];
 	UKIntsEqual(3, [[self fields] count]);
 	
-	NSArray *binaryTests = [self binaryValues: @"binary"];
+	NSArray *binaryTests = [self allDataForField: @"binary"];
 	UKIntsEqual(2, [binaryTests count]);
 	
 	binaryTest = [[NSString alloc] initWithData: [binaryTests objectAtIndex: 0] 
@@ -435,10 +435,10 @@
 	UKStringsEqual(binaryTest, binaryVal);
 	UKStringsEqual(binaryTest2, binaryVal2);
 	
-	[self removeFieldWithName: @"string"];
+	[self removeField: @"string"];
 	UKIntsEqual(2, [[self fields] count]);
 	
-	[self removeFieldsWithName: @"binary"];
+	[self removeFields: @"binary"];
 	UKIntsEqual(0, [[self fields] count]);
 }
 

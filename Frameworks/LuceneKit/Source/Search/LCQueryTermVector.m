@@ -44,7 +44,7 @@
 		{
 			LCToken *next = nil;
 			NSMutableArray *ts = [[NSMutableArray alloc] init];
-			while ((next = [stream next]))
+			while ((next = [stream nextToken]))
 			{
 				[ts addObject: [next termText]];
 			}

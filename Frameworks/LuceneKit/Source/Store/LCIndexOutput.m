@@ -125,7 +125,7 @@
 * occur.
 * @see #seek(long)
 */
-- (unsigned long long) filePointer
+- (unsigned long long) offsetInFile
 {
 	return 0;
 }
@@ -133,7 +133,7 @@
 /** Sets current position in this file, where the next write will occur.
 * @see #getFilePointer()
 */
-- (void) seek: (unsigned long long) pos
+- (void) seekToFileOffset: (unsigned long long) pos
 {
 }
 

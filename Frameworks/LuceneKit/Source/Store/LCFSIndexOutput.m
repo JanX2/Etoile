@@ -73,13 +73,13 @@
 	}
 }
 
-- (unsigned long long) filePointer
+- (unsigned long long) offsetInFile
 {
 	return [handle offsetInFile];
 }
 
 /** Random-access methods */
-- (void) seek: (unsigned long long) pos
+- (void) seekToFileOffset: (unsigned long long) pos
 {
 	[handle seekToFileOffset: pos];
 }

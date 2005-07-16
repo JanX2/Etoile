@@ -55,7 +55,7 @@
 - (void) collect: (int) doc score: (float) score
 {
 	if (score > 0.0f &&                     // ignore zeroed buckets
-		( bits == nil || [bits getBit: doc])) // skip docs not in bits
+		( bits == nil || [bits bit: doc])) // skip docs not in bits
 	{
 		totalHits++;
 		if ([hq size] < nDocs || score >= minScore) 
@@ -102,7 +102,7 @@
 - (void) collect: (int) doc score: (float) score
 {
 	if (score > 0.0f &&                     // ignore zeroed buckets
-		( bits == nil || [bits getBit: doc])) // skip docs not in bits
+		( bits == nil || [bits bit: doc])) // skip docs not in bits
 	{
 		totalHits++;
 		LCFieldDoc *d = [[LCFieldDoc alloc] initWithDocument: doc score: score];
@@ -135,7 +135,7 @@
 
 - (void) collect: (int) doc score: (float) score
 {
-	if ([bits getBit: doc]) // skip docs not in bits
+	if ([bits bit: doc]) // skip docs not in bits
 	{
 		[collector collect: doc score: score];
 	}

@@ -199,7 +199,7 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 		
 		if ([field isIndexed]) {
 			if (![field isTokenized]) {		  // un-tokenized field
-				NSString *stringValue = [field stringValue];
+				NSString *stringValue = [field string];
 				if([field isOffsetWithTermVectorStored])
 				{
 					LCTermVectorOffsetInfo *tvoi = [[LCTermVectorOffsetInfo alloc] initWithStartOffset: offset endOffset: offset + [stringValue length]];
@@ -221,10 +221,10 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 			else 
 			{
 				id <LCReader> reader = nil;  // find or make Reader
-				if ([field readerValue] != nil)
-					ASSIGN(reader, [field readerValue]);
-				else if ([field stringValue] != nil)
-					ASSIGN(reader, AUTORELEASE([[LCStringReader alloc] initWithString: [field stringValue]]));
+				if ([field reader] != nil)
+					ASSIGN(reader, [field reader]);
+				else if ([field string] != nil)
+					ASSIGN(reader, AUTORELEASE([[LCStringReader alloc] initWithString: [field string]]));
 				else
 				{
 					NSLog(@"field must have either String or Reader value");
@@ -237,7 +237,7 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 				DESTROY(reader);
 				LCToken *t, *lastToken = nil;
 				
-				for (t = [stream next]; t != nil; t = [stream next]) {
+				for (t = [stream nextToken]; t != nil; t = [stream nextToken]) {
 					position += ([t positionIncrement] - 1);
 					
 					if([field isOffsetWithTermVectorStored])
@@ -376,8 +376,8 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 		
 		// add an entry to the dictionary with pointers to prox and freq files
 		[ti setDocumentFrequency: 1];
-		[ti setFreqPointer: [freq filePointer]];
-		[ti setProxPointer: [prox filePointer]];
+		[ti setFreqPointer: [freq offsetInFile]];
+		[ti setProxPointer: [prox offsetInFile]];
 		[ti setSkipOffset: -1];
 		[tis addTerm: [posting term] termInfo: ti];
 		
@@ -488,22 +488,22 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 	UKNotNil(doc);
 	
 	//System.out.println("Document: " + doc);
-	NSArray *fields = [doc fieldsWithName: @"textField2"];
+	NSArray *fields = [doc fields: @"textField2"];
 	UKNotNil(fields);
 	UKIntsEqual(1, [fields count]);
-	UKStringsEqual([TestDocHelper FIELD_2_TEXT], [[fields objectAtIndex: 0] stringValue]);
+	UKStringsEqual([TestDocHelper FIELD_2_TEXT], [[fields objectAtIndex: 0] string]);
 	UKTrue([[fields objectAtIndex: 0] isTermVectorStored]);
 	
-	fields = [doc fieldsWithName: @"textField1"];
+	fields = [doc fields: @"textField1"];
 	UKNotNil(fields);
 	UKIntsEqual(1, [fields count]);
-	UKStringsEqual([TestDocHelper FIELD_1_TEXT], [[fields objectAtIndex: 0] stringValue]);
+	UKStringsEqual([TestDocHelper FIELD_1_TEXT], [[fields objectAtIndex: 0] string]);
 	UKFalse([[fields objectAtIndex: 0] isTermVectorStored]);
 	
-	fields = [doc fieldsWithName: @"keyField"];
+	fields = [doc fields: @"keyField"];
 	UKNotNil(fields);
 	UKIntsEqual(1, [fields count]);
-	UKStringsEqual([TestDocHelper KEYWORD_TEXT], [[fields objectAtIndex: 0] stringValue]);
+	UKStringsEqual([TestDocHelper KEYWORD_TEXT], [[fields objectAtIndex: 0] string]);
 #endif
 }
 @end

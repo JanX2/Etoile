@@ -28,9 +28,9 @@ class MyAnalyzer extends Analyzer {
 }
 
 /** Returns the next input Token, after being stemmed */
-- (LCToken *) next
+- (LCToken *) nextToken
 {
-	LCToken *token = [input next];
+	LCToken *token = [input nextToken];
 	if (token == nil)
 		return nil;
 	else 

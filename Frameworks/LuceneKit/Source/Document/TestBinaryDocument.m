@@ -18,10 +18,10 @@
 	NSString *binaryValCompressed = @"this text will be also stored and compressed as a byte array in the index";
 	
     LCField *binaryFldStored = [[LCField alloc] initWithName: @"binaryStored" 
-													   value: [binaryValStored dataUsingEncoding: NSUTF8StringEncoding]
+													   data: [binaryValStored dataUsingEncoding: NSUTF8StringEncoding]
 													   store: LCStore_YES];
 	LCField *binaryFldCompressed = [[LCField alloc] initWithName: @"binaryCompressed" 
-													   value: [binaryValCompressed dataUsingEncoding: NSUTF8StringEncoding]
+													   data: [binaryValCompressed dataUsingEncoding: NSUTF8StringEncoding]
 													   store: LCStore_Compress];
 	LCField *stringFldStored = [[LCField alloc] initWithName: @"stringStored" 
 													   string: binaryValStored
@@ -67,21 +67,21 @@
 	UKNotNil(docFromReader);
 
     /** fetch the binary stored field and compare it's content with the original one */
-    NSString *binaryFldStoredTest = [[NSString alloc] initWithData: [docFromReader binaryValue: @"binaryStored"]
+    NSString *binaryFldStoredTest = [[NSString alloc] initWithData: [docFromReader dataForField: @"binaryStored"]
 														  encoding: NSUTF8StringEncoding];
 	UKStringsEqual(binaryValStored, binaryFldStoredTest);
 
     /** fetch the binary compressed field and compare it's content with the original one */
-	NSString *binaryFldCompressedTest = [[NSString alloc] initWithData: [docFromReader binaryValue: @"binaryCompressed"]
+	NSString *binaryFldCompressedTest = [[NSString alloc] initWithData: [docFromReader dataForField: @"binaryCompressed"]
 														  encoding: NSUTF8StringEncoding];
 	UKStringsEqual(binaryValCompressed, binaryFldCompressedTest);
 	
     /** fetch the string field and compare it's content with the original one */
-	NSString *stringFldStoredTest = [docFromReader stringValue: @"stringStored"];
+	NSString *stringFldStoredTest = [docFromReader stringForField: @"stringStored"];
 	UKStringsEqual(binaryValStored, stringFldStoredTest);
 
     /** fetch the compressed string field and compare it's content with the original one */
-	NSString *stringFldCompressedTest = [docFromReader stringValue: @"stringCompressed"];
+	NSString *stringFldCompressedTest = [docFromReader stringForField: @"stringCompressed"];
 	UKStringsEqual(binaryValCompressed, stringFldCompressedTest);
 
     /** delete the document from index */

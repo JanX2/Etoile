@@ -4,7 +4,7 @@
 * Adjacent sequences of non-Whitespace characters form tokens. */
 @implementation LCWhitespaceTokenizer
 
-- (BOOL) isTokenChar: (char) c
+- (BOOL) characterIsPartOfToken: (char) c
 {
 	/** Collects only characters which do not satisfy
 	* {@link Character#isWhitespace(char)}.*/

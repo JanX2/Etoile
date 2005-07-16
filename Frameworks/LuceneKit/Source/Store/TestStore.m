@@ -71,7 +71,7 @@
     }
 	NSLog(@"Read %d files in %@: %f seconds", count, fs, [[NSDate date] timeIntervalSinceDate: date]);
 	
-	UKIntsEqual(count, [[store list] count]);
+	UKIntsEqual(count, [[store fileList] count]);
 	
 	date = [NSDate date];
 	for (i = 0; i < count; i++) {
@@ -80,7 +80,7 @@
 	}
 	NSLog(@"Delete %d files in %@: %f seconds", count, fs, [[NSDate date] timeIntervalSinceDate: date]);
 	
-	UKIntsEqual(0, [[store list] count]);
+	UKIntsEqual(0, [[store fileList] count]);
 	[store close];
 	
 	if (!ram)
@@ -127,16 +127,16 @@
 	
 	LCIndexInput *input = [store openInput: name];
 	UKIntsEqual('0', [input readByte]);
-	[input seek: 10];
+	[input seekToFileOffset: 10];
 	UKIntsEqual('A', [input readByte]);
 	LCIndexInput *clone = [input copy];
 	UKIntsEqual([input readByte], [clone readByte]);
 	UKIntsEqual('C', [clone readByte]);
-	[clone seek: 0];
+	[clone seekToFileOffset: 0];
 	UKIntsEqual('0', [clone readByte]);
 	UKIntsEqual('C', [input readByte]);
-	UKIntsEqual(1, [clone filePointer]);
-	UKIntsEqual(13, [input filePointer]);
+	UKIntsEqual(1, [clone offsetInFile]);
+	UKIntsEqual(13, [input offsetInFile]);
 	[input close];
 	if (!ram)
 		[[NSFileManager defaultManager] removeFileAtPath: p handler: nil];

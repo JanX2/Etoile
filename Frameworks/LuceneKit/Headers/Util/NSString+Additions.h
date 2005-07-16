@@ -4,6 +4,7 @@
 #include <Foundation/NSString.h>
 
 @interface NSString (LuceneKit_Util)
+/** Find the position these two strings differs */
 - (int) positionOfDifference: (NSString *) other;
 @end
 

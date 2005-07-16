@@ -77,12 +77,12 @@
 {
 }
 
-- (void) seek: (unsigned long long) pos
+- (void) seekToFileOffset: (unsigned long long) pos
 {
 	pointer = pos;
 }
 
-- (unsigned long long) filePointer
+- (unsigned long long) offsetInFile
 {
 	return pointer;
 }
@@ -99,7 +99,7 @@
 
 - (void) reset
 {
-	[self seek: 0];
+	[self seekToFileOffset: 0];
 	[file setLength: 0];
 }
 

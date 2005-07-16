@@ -6,6 +6,10 @@
 
 #ifdef HAVE_UKTEST
 #include <UnitKit/UnitKit.h>
+
+/** An array of bits.
+ * <author>Yen-Ju Chen</author>
+ */
 @interface LCBitVector: NSObject <UKTest>
 #else
 @interface LCBitVector: NSObject
@@ -16,23 +20,24 @@
 	int count;
 }
 
-/* Initialized to be able to contain n bits */
+/** <init/> Initialized to be able to contain n bits */
 - (id) initWithSize: (int) n;
-	/* Set YES at <bit> */
+/** Set YES at bit */
 - (void) setBit: (int) bit;
-	/* Set NO at ,bit> */
+/** Set NO at bit */
 - (void) clearBit: (int) bit;
-	/* Get <bit> value */
-- (BOOL) getBit: (int) bit;
-	/* Get size */
+/** Get bit value */
+- (BOOL) bit: (int) bit;
+/** Get size */
 - (int) size;
-	/* Count the number of bits which are YES */
+/** Count the number of bits which are YES */
 - (int) count;
-	/* Read / Write */
+/** Read from file */
 - (void) writeToDirectory: (id <LCDirectory>) d
-                 withName: (NSString *) name;
+                 name: (NSString *) name;
+/** Write to file */
 - (id) initWithDirectory: (id <LCDirectory>) d
-                 andName: (NSString *) name;
+                 name: (NSString *) name;
 
 @end
 

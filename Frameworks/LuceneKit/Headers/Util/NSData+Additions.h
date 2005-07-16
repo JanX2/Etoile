@@ -4,13 +4,17 @@
 
 #include <Foundation/Foundation.h>
 
+/** Compress and decompress data.
+ * NSData have no idea whether the data is compressed.
+* Users are responsible for tracking it.
+* Decompress an un-compressedData give a unpredictable result.
+* zlib is used for compression.
+*/
+
 @interface NSData (LuceneKit_Util)
-/* LuceneKit: NSData have no idea whether the data is compressed.
- * Users are responsible for tracking it.
- * Decompress an un-compressedData give a unpredictable result.
- * zlib is used for compression.
- */
+/** compress date */
 - (NSData *) compressedData;
+/** decompress data */
 - (NSData *) decompressedData;
 
 @end

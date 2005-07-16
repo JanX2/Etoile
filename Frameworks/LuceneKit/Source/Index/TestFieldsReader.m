@@ -47,8 +47,8 @@
 	UKIntsEqual([reader size], 1);
 	LCDocument *doc = [reader document: 0];
 	UKNotNil(doc);
-	UKNotNil([doc fieldWithName: @"textField1"]);
-	LCField *field = [doc fieldWithName: @"textField2"];
+	UKNotNil([doc field: @"textField1"]);
+	LCField *field = [doc field: @"textField2"];
 	UKNotNil(field);
 	UKTrue([field isTermVectorStored]);
 	[reader close];

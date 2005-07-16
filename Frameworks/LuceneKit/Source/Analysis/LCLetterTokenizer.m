@@ -9,7 +9,7 @@ job for some Asian languages, where words are not separated by spaces. */
 
 @implementation LCLetterTokenizer: LCCharTokenizer 
 
-- (BOOL) isTokenChar: (char) c
+- (BOOL) characterIsPartOfToken: (char) c
 {
 	/** Collects only characters which satisfy
 	* {@link Character#isLetter(char)}.*/

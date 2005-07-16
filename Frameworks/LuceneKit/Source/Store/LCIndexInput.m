@@ -141,7 +141,7 @@
 * occur.
 * @see #seek(long)
 */
-- (unsigned long long) filePointer
+- (unsigned long long) offsetInFile
 {
 	return -1;
 }
@@ -149,7 +149,7 @@
 /** Sets current position in this file, where the next read will occur.
 * @see #getFilePointer()
 */
-- (void) seek: (unsigned long long) pos
+- (void) seekToFileOffset: (unsigned long long) pos
 {
 }
 

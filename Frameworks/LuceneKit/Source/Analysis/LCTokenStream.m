@@ -14,7 +14,7 @@ whose input is another TokenStream.
 
 @implementation LCTokenStream
 
-- (LCToken *) next
+- (LCToken *) nextToken
 {
 	return nil;
 }

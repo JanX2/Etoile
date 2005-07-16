@@ -51,12 +51,12 @@
 	// Do nothing
 }
 
-- (unsigned long long) filePointer
+- (unsigned long long) offsetInFile
 {
 	return pointer;
 }
 
-- (void) seek: (unsigned long long) pos
+- (void) seekToFileOffset: (unsigned long long) pos
 {
 	pointer = (int)pos;
 }
@@ -70,7 +70,7 @@
 {
 	// Access the same file
 	LCRAMInputStream *clone = [[LCRAMInputStream allocWithZone: zone] initWithFile: file];
-	[clone seek: pointer];
+	[clone seekToFileOffset: pointer];
 	return clone;
 }
 

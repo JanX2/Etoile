@@ -216,7 +216,7 @@ retain];
 
 // FIXME : - (unsigned long long) offsetInFile would fit better with GNUstep 
 // vocabulary
-- (unsigned long long) filePointer
+- (unsigned long long) offsetInFile
 {
 	/* For ByteBuffer position() in Java. */
 	return position;
@@ -234,7 +234,7 @@ retain];
 
 // FIXME : - (void) seekToFileOffset: (unsigned long long)offset would fit 
 // better with GNUstep vocabulary
-- (void) seek: (unsigned long long)offset
+- (void) seekToFileOffset: (unsigned long long)offset
 {
 	/* For ByteBuffer seek() in Java. */
 	position = offset;
@@ -345,7 +345,7 @@ NSDefaultMallocZone());
             self->bufferSizes[i] = bufferSize;
             bufferStart += bufferSize;
         }
-        [self seek: 0L];
+        [self seekToFileOffset: 0L];
  
         return self;
     }
@@ -417,7 +417,7 @@ NSDefaultMallocZone());
 
 // NOTE: I would prefer to have this method called -offsetInFile, it would look
 // more steppish.
-- (unsigned long long) filePointer
+- (unsigned long long) offsetInFile
 {
    return (bufferIndex * (long) maxBufferSize) + positions[bufferIndex];
 }
@@ -428,7 +428,7 @@ NSDefaultMallocZone());
 
 // NOTE: - (void) seekToFileOffset: (unsigned long long)offset would fit better
 // with GNUstep vocabulary
-- (void) seek: (unsigned long long)pos
+- (void) seekToFileOffset: (unsigned long long)pos
  {
   bufferIndex = (int) (pos / maxBufferSize);
   currentBuffer = [buffers objectAtIndex: bufferIndex];
@@ -465,7 +465,7 @@ NSDefaultMallocZone());
     
     NS_DURING
 
-      [clone seek: [self filePointer]];
+      [clone seekToFileOffset: [self offsetInFile]];
     
     NS_HANDLER
         

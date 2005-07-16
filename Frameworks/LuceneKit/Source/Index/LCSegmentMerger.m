@@ -354,8 +354,8 @@
 */
 - (void) mergeTermInfo: (NSArray *) smis size: (int) n
 {
-	long freqPointer = [freqOutput filePointer];
-	long proxPointer = [proxOutput filePointer];
+	long freqPointer = [freqOutput offsetInFile];
+	long proxPointer = [proxOutput offsetInFile];
 	
 	int df = [self appendPosting: smis size: n];		  // append posting data
 	
@@ -436,14 +436,14 @@
 {
     [skipBuffer reset];
     lastSkipDoc = 0;
-    lastSkipFreqPointer = [freqOutput filePointer];
-    lastSkipProxPointer = [proxOutput filePointer];
+    lastSkipFreqPointer = [freqOutput offsetInFile];
+    lastSkipProxPointer = [proxOutput offsetInFile];
 }
 
 - (void) bufferSkip: (int) doc
 {
-    long freqPointer = [freqOutput filePointer];
-    long proxPointer = [proxOutput filePointer];
+    long freqPointer = [freqOutput offsetInFile];
+    long proxPointer = [proxOutput offsetInFile];
 	
     [skipBuffer writeVInt: (doc - lastSkipDoc)];
     [skipBuffer writeVInt: ((int) (freqPointer - lastSkipFreqPointer))];
@@ -456,7 +456,7 @@
 
 - (long) writeSkip
 {
-    long skipPointer = [freqOutput filePointer];
+    long skipPointer = [freqOutput offsetInFile];
     [skipBuffer writeTo: freqOutput];
     return skipPointer;
 }

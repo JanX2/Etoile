@@ -89,11 +89,11 @@ public static final Hashtable makeStopTable(String[] stopWords) {
 /**
 * Returns the next input Token whose termText() is not a stop word.
  */
-- (LCToken *) next
+- (LCToken *) nextToken
 {
 	// return the first non-stop word found
 	LCToken *t = nil;
-	while((t = [input next]))
+	while((t = [input nextToken]))
     {
 		if (![stopWords containsObject: [t termText]])
 			return t;

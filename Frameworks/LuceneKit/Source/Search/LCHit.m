@@ -53,9 +53,9 @@
 	return [[self document] boost];
 }
 
-- (NSString *) stringValue: (NSString *) name
+- (NSString *) stringForField: (NSString *) name
 {
-	return [[self document] stringValue: name];
+	return [[self document] stringForField: name];
 }
 
 - (NSString *) description

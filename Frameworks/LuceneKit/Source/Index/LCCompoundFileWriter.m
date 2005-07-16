@@ -186,7 +186,7 @@
 	LCWriterFileEntry *fe;
 	while ((fe = [e nextObject]))
 	{
-		[fe setDirectoryOffset: [os filePointer]];
+		[fe setDirectoryOffset: [os offsetInFile]];
 		[os writeLong: 0];    // for now
 		[os writeString: [fe file]];
 	}
@@ -198,7 +198,7 @@
 	while ((fe = [e nextObject]))
 	{
 		buffer = [[NSMutableData alloc] init];
-		[fe setDataOffset: [os filePointer]];
+		[fe setDataOffset: [os offsetInFile]];
 		[self copyFile: fe indexOutput: os data: buffer];
 		DESTROY(buffer);
 	}
@@ -207,7 +207,7 @@
 	e = [entries objectEnumerator];
 	while ((fe = [e nextObject]))
 	{
-		[os seek: [fe directoryOffset]];
+		[os seekToFileOffset: [fe directoryOffset]];
 		[os writeLong: [fe dataOffset]];
 	}
 	
@@ -231,7 +231,7 @@
              data: (NSMutableData *) buffer
 {
 	LCIndexInput *is = nil;
-	long startPtr = [os filePointer];
+	long startPtr = [os offsetInFile];
 	
 	is = [directory openInput: [source file]];
 	long length = [is length];
@@ -242,7 +242,7 @@
 	[os writeBytes: buffer length: length];
 	
 	// Verify that the output length diff is equal to original file
-	long endPtr = [os filePointer];
+	long endPtr = [os offsetInFile];
 	long diff = endPtr - startPtr;
 	if (diff != length)
 	{

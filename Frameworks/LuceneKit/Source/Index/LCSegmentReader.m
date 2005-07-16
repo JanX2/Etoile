@@ -183,7 +183,7 @@
     {
 		file = [segment stringByAppendingPathExtension: @"del"];
 		ASSIGN(deletedDocs, AUTORELEASE([[LCBitVector alloc] initWithDirectory: [self directory]
-																	   andName: file]));
+																	   name: file]));
     }
 	
 	// make sure that all index files have been read or are kept open
@@ -221,7 +221,7 @@
 	if (deletedDocsDirty) {               // re-write deleted 
 		file = [segment stringByAppendingPathExtension: @"tmp"];
 		[deletedDocs writeToDirectory: [self directory]
-							 withName: file];
+							 name: file];
 		[[self directory] renameFile: file
 								  to: [segment stringByAppendingPathExtension: @"del"]];
 	}
@@ -281,7 +281,7 @@
 
 + (BOOL) hasSeparateNorms: (LCSegmentInfo *) si
 {
-	NSArray *result = [[si directory] list];
+	NSArray *result = [[si directory] fileList];
 	NSString *pattern = [[si name] stringByAppendingPathExtension: @"s"];
 	int patternLength = [pattern length];
 	int i;
@@ -361,7 +361,7 @@
 
 - (BOOL) isDeleted: (int) n
 {
-    return (deletedDocs != nil && [deletedDocs getBit: n]);
+    return (deletedDocs != nil && [deletedDocs bit: n]);
 }
 
 - (id <LCTermDocuments>) termDocuments
@@ -500,7 +500,7 @@
 	
     LCIndexInput *normStream = (LCIndexInput *) [[norm input] copy];
 	// read from disk
-    [normStream seek: 0];
+    [normStream seekToFileOffset: 0];
     [normStream readBytes: bytes offset: offset length: [self maximalDocument]];
     [normStream close];
 }
