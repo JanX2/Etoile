@@ -30,8 +30,10 @@
 - (void) setSimilarity: (LCSimilarity *) similarity;
 - (LCSimilarity *) similarity;
 - (LCExplanation *) explainQuery: (LCQuery *) query document: (int) doc;
-- (id <LCWeight>) createWeight: (LCQuery *) query;
+@end
 
+@interface LCSearcher (LCProtected)
+- (id <LCWeight>) createWeight: (LCQuery *) query;
 @end
 
 #endif /* __LUCENE_SEARCH_SEARCHER__ */

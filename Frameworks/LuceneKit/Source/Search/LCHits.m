@@ -9,6 +9,13 @@
 #include <LuceneKit/Document/LCDocument.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
+@interface LCHits (LCPrivate)
+- (void) moreDocuments: (int) min;
+- (LCHitDocument *) hitDocument: (int) n;
+- (void) addToFront: (LCHitDocument *) hitDoc;
+- (void) remove: (LCHitDocument *) hitDoc;
+@end
+
 @implementation LCHits
 - (id) init
 {

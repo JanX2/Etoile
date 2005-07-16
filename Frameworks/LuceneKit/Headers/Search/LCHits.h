@@ -52,15 +52,11 @@
 				  query: (LCQuery *) q
 				 filter: (LCFilter *) f
 				   sort: (LCSort *) o;
-- (void) moreDocuments: (int) min;
 - (unsigned int) count; /* LuceneKit: length() in lucene */
 - (LCDocument *) document: (int) n;
 - (float) score: (int) n;
 - (int) identifier: (int) n;
 - (LCHitIterator *) iterator;
-- (LCHitDocument *) hitDocument: (int) n;
-- (void) addToFront: (LCHitDocument *) hitDoc;
-- (void) remove: (LCHitDocument *) hitDoc;
 
 @end
 
