@@ -2,6 +2,15 @@
 #include <LuceneKit/Search/LCFuzzyQuery.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
+@interface LCFuzzyTermEnumerator (LCPrivate)
+- (void) initDistanceArray;
+- (float) similarity: (NSString *) target;
+- (void) growDistanceArray: (int) m;
+- (int) maxDistance: (int) m;
+- (void) initializeMaxDistances;
+- (int) calculateMaxDistance: (int) m;
+@end
+
 /** Subclass of FilteredTermEnum for enumerating all terms that are similiar
  * to the specified filter term.
  *

@@ -9,8 +9,11 @@
 	LCTermEnumerator *actualEnum;
 }
 
-- (BOOL) isEqualToTerm: (LCTerm *) term;
 - (float) difference;
+@end
+
+@interface LCFilteredTermEnumerator (LCProtected)
+- (BOOL) isEqualToTerm: (LCTerm *) term;
 - (BOOL) endOfEnumerator;
 - (void) setEnumerator: (LCTermEnumerator *) actualEnum;
 @end

@@ -42,12 +42,6 @@ int min(int a, int b, int c);
 - (id) initWithReader: (LCIndexReader *) reader term: (LCTerm *) term 
 		   similarity: (float) similarity prefixLength: (int) prefixLength;
 
-- (void) initDistanceArray;
-- (float) similarity: (NSString *) target;
-- (void) growDistanceArray: (int) m;
-- (int) maxDistance: (int) m;
-- (void) initializeMaxDistances;
-- (int) calculateMaxDistance: (int) m;
 @end
 
 #endif /* __LUCENE_SEARCH_FUZZY_TERM_ENUM__ */

@@ -74,7 +74,6 @@ typedef enum _LCFieldOption
 - (void) setNorms: (NSString *) field 
             bytes: (NSMutableData *) bytes offset: (int) offset;
 - (void) setNorm: (int) doc field: (NSString *) field charValue: (char) value;
-- (void) doSetNorm: (int) doc field: (NSString *) field charValue: (char) value;
 - (void) setNorm: (int) doc field: (NSString *) field floatValue: (float) value;
 - (LCTermEnumerator *) termEnumerator;
 - (LCTermEnumerator *) termEnumeratorWithTerm: (LCTerm *) t;
@@ -84,19 +83,23 @@ typedef enum _LCFieldOption
 - (id <LCTermPositions>) termPositionsWithTerm: (LCTerm *) term;
 - (id <LCTermPositions>) termPositions;
 - (void) delete: (int) docNum;
-- (void) doDelete: (int) docNum;
 - (int) deleteTerm: (LCTerm *) term;
 - (void) undeleteAll;
-- (void) doUndeleteAll;
-- (void) commit;
-- (void) doCommit;
 - (void) close;
-- (void) doClose;
 - (NSArray *) fieldNames: (LCFieldOption) fieldOption;
 + (BOOL) isLocked: (id <LCDirectory>) dir;
 - (BOOL) isLockedAtPath: (NSString *) dir;
 - (void) unlock: (id <LCDirectory>) dir;
 
+@end
+
+@interface LCIndexReader (LCProtected)
+- (void) doSetNorm: (int) doc field: (NSString *) field charValue: (char) value;
+- (void) doDelete: (int) docNum;
+- (void) doUndeleteAll;
+- (void) commit;
+- (void) doCommit;
+- (void) doClose;
 @end
 
 #endif /* __LUCENE_INDEX_INDEX_READER__ */

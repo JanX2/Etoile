@@ -3,6 +3,21 @@
 #include <LuceneKit/Search/LCBooleanQuery.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
+@interface LCScoreTerm: NSObject <LCComparable>
+{
+	LCTerm *term;
+	float score;
+}
+
+- (id) initWithTerm: (LCTerm *) term score: (float) score;
+- (float) score;
+- (LCTerm *) term;
+
+@end
+
+@interface LCScoreTermQueue: LCPriorityQueue
+@end
+
 /** The abstract base class for queries.
 <p>Instantiable subclasses are:
 <ul>

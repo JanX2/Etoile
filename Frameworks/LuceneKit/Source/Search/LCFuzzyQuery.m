@@ -4,6 +4,21 @@
 #include <LuceneKit/Search//LCFuzzyTermEnum.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
+@interface LCScoreTerm: NSObject <LCComparable>
+{
+	LCTerm *term;
+	float score;
+}
+
+- (id) initWithTerm: (LCTerm *) term score: (float) score;
+- (float) score;
+- (LCTerm *) term;
+
+@end
+
+@interface LCScoreTermQueue: LCPriorityQueue
+@end
+
 /** Implements the fuzzy search query. The similiarity measurement
  * is based on the Levenshtein (edit distance) algorithm.
  */

@@ -39,4 +39,8 @@ require log(size) time. */
 - (void) removeAllObjects;
 
 @end
+
+@interface LCPriorityQueue (LCProtected)
+- (BOOL) lessThan: (id) a : (id) b;
+@end
 #endif /* __LUCENE_UTIL_PRIORITY_QUEUE__ */

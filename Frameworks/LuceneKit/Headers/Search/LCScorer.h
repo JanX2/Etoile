@@ -13,7 +13,6 @@
 - (id) initWithSimilarity: (LCSimilarity *) si;
 - (LCSimilarity *) similarity;
 - (void) score: (LCHitCollector *) hc;
-- (BOOL) score: (LCHitCollector *) hc maximalDocument: (int) max;
 	/* Override by subclass */
 - (BOOL) next;
 - (int) document;
@@ -21,4 +20,9 @@
 - (BOOL) skipTo: (int) target;
 - (LCExplanation *) explain: (int) doc;
 @end
+
+@interface LCScorer (LCProtected)
+- (BOOL) score: (LCHitCollector *) hc maximalDocument: (int) max;
+@end
+
 #endif /* __LUCENE_SEARCH_SCORER__ */
