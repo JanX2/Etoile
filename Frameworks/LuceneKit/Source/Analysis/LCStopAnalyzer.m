@@ -28,6 +28,14 @@
 	return self;
 }
 
+#if 0
+  /** Builds an analyzer with the stop words from the given set.
+ 	    */
+ 	   public StopAnalyzer(Set stopWords) {
+ 	     this.stopWords = stopWords;
+ 	   }
+#endif
+
 /* LuceneKit: TODO */
 #if 0
 /** Builds an analyzer with the stop words from the given file. */
