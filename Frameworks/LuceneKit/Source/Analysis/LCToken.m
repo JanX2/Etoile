@@ -122,7 +122,19 @@ last character corresponding to this token in the source text. */
 
 - (NSString *) description
 {
+#if 1
 	return [NSString stringWithFormat: @"LCToken<0x%x> %@", self, termText];
+#else
+    StringBuffer sb = new StringBuffer();
+    sb.append("(" + termText + "," + startOffset + "," + endOffset);
+    if (!type.equals("word"))
+      sb.append(",type="+type);
+    if (positionIncrement != 1)
+      sb.append(",posIncr="+positionIncrement);
+    sb.append(")");
+    return sb.toString();
+  }
+#endif
 }
 
 @end

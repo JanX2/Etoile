@@ -162,7 +162,11 @@
 
 - (BOOL)  skipTo: (int) target
 {
+#if 1
 	while (target > [[_termPositionsQueue peek] document])
+#else /* FIXME: below is new code */
+       while (_termPositionsQueue.peek() != null && target > _termPositionsQueue.peek().doc())
+#endif
 	{
 	    id <LCTermPositions> tp = (id <LCTermPositions>)[_termPositionsQueue pop];
 		
