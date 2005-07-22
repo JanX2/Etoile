@@ -1,3 +1,8 @@
+2005-07-22 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Source/Search/LCBooleanScorer.m:
+    Chase Apache Lucene.
+
 2005-07-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/Search/LCFuzzyTermEnum.m:

@@ -29,6 +29,7 @@
 @interface LCBooleanDisjunctionSumScorer: LCDisjunctionSumScorer
 {
 	LCCoordinator *coordinator;
+	int lastScoredDoc;
 }
 - (id) initWithSubScorers: (NSArray *) subScorers
 		minimumNrMatchers: (int) minimumNrMatchers
@@ -39,6 +40,7 @@
 {
 	LCCoordinator *coordinator;
 	int requiredNrMatchers;
+	int lastScoredDoc;
 }
 - (id) initWithSimilarity: (LCSimilarity *) similarity
 			  coordinator: (LCCoordinator *) c
@@ -49,6 +51,7 @@
 {
 	LCScorer *scorer;
 	LCCoordinator *coordinator;
+	int lastScoredDoc;
 }
 
 - (id) initWithScorer: (LCScorer *) scorer
@@ -278,12 +281,16 @@
 	self = [super initWithSimilarity: s];
 	ASSIGN(coordinator, c);
 	requiredNrMatchers = required;
+	lastScoredDoc = -1;
 	return self;
 }
 
 - (float) score
 {
-	[coordinator setNrMatchers: [coordinator nrMatchers] + requiredNrMatchers];
+	if ([self document] > lastScoredDoc) {
+		lastScoredDoc = [self document];
+		[coordinator setNrMatchers: [coordinator nrMatchers] + requiredNrMatchers];
+	}
 	return [super score];
 }
 @end
@@ -296,12 +303,16 @@
 	self = [super initWithSubScorers: sub
 				   minimumNrMatchers: minimum];
 	ASSIGN(coordinator, c);
+	lastScoredDoc = -1;
 	return self;
 }
 
 - (float) score
 {
-	[coordinator setNrMatchers: [coordinator nrMatchers] + nrMatchers];
+	if ([self document] > lastScoredDoc) {
+		lastScoredDoc = [self document];
+		[coordinator setNrMatchers: [coordinator nrMatchers] + nrMatchers];
+	}
 	return [super score];
 }
 @end
@@ -312,12 +323,17 @@
 	self = [self initWithSimilarity: [s similarity]];
 	ASSIGN(scorer, s);
 	ASSIGN(coordinator, c);
+	lastScoredDoc = -1;
 	return self;
 }
 
 - (float) score
 {
-	[coordinator setNrMatchers: [coordinator nrMatchers] + 1];
+	if ([self document] > lastScoredDoc)
+	{
+		lastScoredDoc = [self document];
+		[coordinator setNrMatchers: [coordinator nrMatchers] + 1];
+	}
 	return [scorer score];
 }
 
