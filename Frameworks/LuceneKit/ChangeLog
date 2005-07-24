@@ -2,6 +2,10 @@
 
     * Headers/LCIndexManager.h:
     * Headers/Importer/LCImporter.h:
+    * Headers/QueryParser/LCQueryParser.h:
+    * Headers/QueryParser/QueryParser.h:
+    * Source/QueryParser/LCQueryParser.m:
+    * Source/QueryParser/GNUmakefile:
     Add new classes.
 
 2005-07-22 Yen-Ju Chen <yjchenx at gmail _dot_ com>
