@@ -13,6 +13,11 @@ LuceneKit_Source_SUBPROJECTS = \
 	Store \
 	Java
 
+LuceneKit_Source_OBJC_FILES = \
+	LCIndexManager.m
+
+LuceneKit_Source_INCLUDE_DIRS += -I..
+
 include $(GNUSTEP_MAKEFILES)/subproject.make
 
 -include ../GNUmakefile.preamble

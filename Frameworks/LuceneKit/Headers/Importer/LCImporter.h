@@ -1,6 +1,8 @@
 #ifndef __LuceneKit_Importer__
 #define __LuceneKit_Importer__
 
+#include <Foundation/Foundation.h>
+
 @protocol LCImporter <NSObject>
 /** Return the attributes of file.
  * This method mimic Apple's Spotlight API:

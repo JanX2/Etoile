@@ -23,7 +23,7 @@
     {
 		p = [NSString stringWithFormat: @"LuceneKit_Test_%d_Can_Be_Deleted", (int)random()];
 		p = [NSTemporaryDirectory() stringByAppendingPathComponent: p];
-		store = [LCFSDirectory getDirectory: [p stringByStandardizingPath]
+		store = [LCFSDirectory directoryAtPath: [p stringByStandardizingPath]
 									 create: YES];
 		fs = @"Disk";
 		//store = FSDirectory.getDirectory("test.store", true);
@@ -54,7 +54,7 @@
 	if (!ram)
     {
 		//store = FSDirectory.getDirectory("test.store", true);
-		store = [LCFSDirectory getDirectory: [p stringByStandardizingPath]
+		store = [LCFSDirectory directoryAtPath: [p stringByStandardizingPath]
 									 create: NO];
     }
 	for (i = 0; i < count; i++)
@@ -110,7 +110,7 @@
     {
 		p = [NSString stringWithFormat: @"LuceneKit_Test_%d_Can_Be_Deleted", (int)random()];
 		p = [NSTemporaryDirectory() stringByAppendingPathComponent: p];
-		store = [LCFSDirectory getDirectory: [p stringByStandardizingPath]
+		store = [LCFSDirectory directoryAtPath: [p stringByStandardizingPath]
 									 create: YES];
 		fs = @"Disk";
 		//store = FSDirectory.getDirectory("test.store", true);

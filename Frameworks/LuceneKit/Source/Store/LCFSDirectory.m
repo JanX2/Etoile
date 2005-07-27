@@ -13,7 +13,7 @@
  */
 @implementation LCFSDirectory
 
-+ (LCFSDirectory *) getDirectory: (NSString *) absolutePath
++ (LCFSDirectory *) directoryAtPath: (NSString *) absolutePath
 						  create: (BOOL) create
 {
 	LCFSDirectory *dir = [[LCFSDirectory alloc] initWithPath: absolutePath

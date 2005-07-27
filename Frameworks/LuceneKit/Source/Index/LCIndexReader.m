@@ -94,7 +94,7 @@ rely on a given document having the same number between sessions.
 
 + (LCIndexReader *) openPath: (NSString *) path
 {
-	return [LCIndexReader openDirectory: [LCFSDirectory getDirectory: path create: NO] close: YES];
+	return [LCIndexReader openDirectory: [LCFSDirectory directoryAtPath: path create: NO] close: YES];
 }
 
 + (LCIndexReader *) openDirectory: (id <LCDirectory>) dir
@@ -171,7 +171,7 @@ public static long getCurrentVersion(String directory) throws IOException {
  /* FIXME: LuceneKit: deprecated */
 + (long) currentVersionAtPath: (NSString *) path
 {
-	id <LCDirectory> dir = [LCFSDirectory getDirectory: path create: NO];
+	id <LCDirectory> dir = [LCFSDirectory directoryAtPath: path create: NO];
 	long version = [LCIndexReader currentVersionWithDirectory: dir];
 	[dir close];
 	return version;

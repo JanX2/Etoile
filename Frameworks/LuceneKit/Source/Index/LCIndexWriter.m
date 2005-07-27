@@ -141,7 +141,7 @@ An IndexWriter creates and maintains an index.
 		   analyzer: (LCAnalyzer *) a
 			 create: (BOOL) create
 {
-	return [self initWithDirectory: [LCFSDirectory getDirectory: path
+	return [self initWithDirectory: [LCFSDirectory directoryAtPath: path
 														 create: create]
 						  analyzer: a create: create close: YES];
 }

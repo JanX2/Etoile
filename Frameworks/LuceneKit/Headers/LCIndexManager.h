@@ -1,8 +1,12 @@
 #ifndef __LuceneKit_Index_Manager__
 #define __LuceneKit_Index_Manager__
 
-#include <Foundation/Foundation.h>
 #include <LuceneKit/Importer/LCImporter.h>
+#include <LuceneKit/Store/LCDirectory.h>
+#include <LuceneKit/Document/LCDocument.h>
+#include <LuceneKit/Analysis/LCAnalyzer.h>
+#include <LuceneKit/Index/LCIndexModifier.h>
+#include <LuceneKit/Search/LCQuery.h>
 
 /** LCIndexManager try to bridge GNUstep and Lucene.
  * Currently it is designed to work on file system,
@@ -10,12 +14,18 @@
  * as long as there is a commony way to access these data in GNUstep (See LCDirectory).
  */
 
-@interface LCIndexManager: NSObject
+@interface LCIndexManager: LCIndexModifier
+{
+	NSMutableArray *importers;
+	NSMutableArray *paths;
+	NSMutableDictionary *pairs;
+}
+
 /** Check whether an index is existed at path */
 + (BOOL) indexExistsAt: (NSString *) path;
 
 /** Initiate an index data in memory */
-+ (id) defaultManager;
+- (id) init;
 
 /** Initiate an index data at path.
  * If create is YES and path doesn't exist, a new index data (directory) will be created.
@@ -24,10 +34,10 @@
  * If create is NO, path exists and is indeed an index data, it will used.
  * If create is NO, path exists and is not an index data, it will return nil;
  */
-+ (id) defaultManagerAtPath: (NSString *) path create: (BOOL) create;
+- (id) initWithPath: (NSString *) path create: (BOOL) create;
 
 /** Use Lucene LCDirectory as virtual file system */
-+ (id) defaultManagerAt: (id <LCDirectory>) directory create: (BOOL) create;
+- (id) initWithDirectory: (id <LCDirectory>) directory create: (BOOL) create;
 
 /** Add path for indexing.
  * This is not stored in index, therefore, for each new LCIndexManager,
@@ -81,8 +91,6 @@
  * It do search, delete.
  */
 - (void) removeFileAtPath: (NSString *) path;
-/** Optimize index */
-- (void) optimize;
 
 /* Search */
 /** Return search result based on query.

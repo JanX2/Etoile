@@ -9,7 +9,7 @@
 	NSFileManager *manager;
 	NSString *path;
 }
-+ (LCFSDirectory *) getDirectory: (NSString *) absolutePath
++ (LCFSDirectory *) directoryAtPath: (NSString *) absolutePath
                           create: (BOOL) create;
 
 - (id) initWithPath: (NSString *) absolutePath create: (BOOL) b;
