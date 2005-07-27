@@ -13,5 +13,6 @@
 #include <LuceneKit/Index/Index.h>
 #include <LuceneKit/Search/Search.h>
 #include <LuceneKit/QueryParser/QueryParser.h>
+#include <LuceneKit/LCMetadataAttribute.h>
 
 #endif /* __LUCENE_KIT_UMBRELLA_HEADER__ */			   

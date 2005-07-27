@@ -85,7 +85,7 @@
 	UKStringsEqual(binaryValCompressed, stringFldCompressedTest);
 
     /** delete the document from index */
-	[reader delete: 0];
+	[reader deleteDocument: 0];
 	UKIntsEqual(0, [reader numberOfDocuments]);
 
     [reader close];

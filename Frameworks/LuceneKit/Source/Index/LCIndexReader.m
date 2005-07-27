@@ -435,7 +435,7 @@ method will result in an error.  The presence of this document may still be
 reflected in the {@link #docFreq} statistic, though
 this will be corrected eventually as the index is further modified.
 */
-- (void) delete: (int) docNum
+- (void) deleteDocument: (int) docNum
 {
 	if (directoryOwner)
 		[self aquireWriteLock];
@@ -463,7 +463,7 @@ this will be corrected eventually as the index is further modified.
 	int n = 0;
 	while ([docs hasNextDocument])
 	{
-		[self delete: [docs document]];
+		[self deleteDocument: [docs document]];
 		n++;
 	}
 	[docs close];

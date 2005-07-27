@@ -82,7 +82,7 @@ typedef enum _LCFieldOption
 - (id <LCTermDocuments>) termDocuments;
 - (id <LCTermPositions>) termPositionsWithTerm: (LCTerm *) term;
 - (id <LCTermPositions>) termPositions;
-- (void) delete: (int) docNum;
+- (void) deleteDocument: (int) docNum;
 - (int) deleteTerm: (LCTerm *) term;
 - (void) undeleteAll;
 - (void) close;

@@ -231,7 +231,7 @@
 
 - (void) doDelete: (int) n
 {
-	[input delete: n];
+	[input deleteDocument: n];
 }
 
 - (void) doCommit

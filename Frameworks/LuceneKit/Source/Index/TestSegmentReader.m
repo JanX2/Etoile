@@ -70,7 +70,7 @@
 	LCSegmentReader *deleteReader = [LCSegmentReader segmentReaderWithInfo: info];
 	UKNotNil(deleteReader);
 	UKIntsEqual([deleteReader numberOfDocuments], 1);
-	[deleteReader delete: 0];
+	[deleteReader deleteDocument: 0];
 	UKTrue([deleteReader isDeleted: 0]);
 	UKTrue([deleteReader hasDeletions]);
 	UKIntsEqual([deleteReader numberOfDocuments], 0);

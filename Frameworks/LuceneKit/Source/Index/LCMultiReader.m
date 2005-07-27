@@ -127,7 +127,7 @@
 {
     numDocs = -1;                             // invalidate cache
     int i = [self readerIndex: n];        // find segment num
-    [(LCIndexReader *)[subReaders objectAtIndex: i] delete: (n - [[starts objectAtIndex: i] intValue])]; // dispatch to segment
+    [(LCIndexReader *)[subReaders objectAtIndex: i] deleteDocument: (n - [[starts objectAtIndex: i] intValue])]; // dispatch to segment
     hasDeletions = YES;
 }
 

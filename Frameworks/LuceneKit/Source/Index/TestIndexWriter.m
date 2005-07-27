@@ -45,7 +45,7 @@
 	reader = [LCIndexReader openDirectory: dir];
 	
 	for (i = 0; i < 40; i++) {
-		[reader delete: i];
+		[reader deleteDocument: i];
 	}
 	[reader close];
 	

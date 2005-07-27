@@ -28,6 +28,7 @@ LuceneKit_Index_OBJC_FILES = \
 	LCSegmentMerger.m \
 	LCSegmentReader.m \
 	LCMultiReader.m \
+	LCIndexModifier.m \
 	LCIndexReader.m \
 	LCIndexWriter.m \
 	LCDocumentWriter.m \
@@ -53,6 +54,7 @@ LuceneKit_Index_OBJC_FILES += \
 	TestMultiReader.m \
 	TestFilterIndexReader.m \
 	TestIndexReader.m \
+	TestIndexModifier.m \
 	TestDocHelper.m
 endif
 

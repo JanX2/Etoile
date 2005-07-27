@@ -8,12 +8,16 @@ ADDITIONAL_INSTALL_DIRS = \
 	$(GNUSTEP_HEADERS)/LuceneKit/Analysis \
 	$(GNUSTEP_HEADERS)/LuceneKit/Index \
 	$(GNUSTEP_HEADERS)/LuceneKit/Search \
+	$(GNUSTEP_HEADERS)/LuceneKit/QueryParser \
+	$(GNUSTEP_HEADERS)/LuceneKit/Importer \
 	$(GNUSTEP_HEADERS)/LuceneKit/GNUstep
 
 LuceneKit_HEADER_FILES_DIR = ./Headers
 LuceneKit_HEADER_FILES_INSTALL_DIR = LuceneKit
 LuceneKit_HEADER_FILES = \
 	LuceneKit.h \
+	LCIndexManager.h \
+	LCMetadataAttribute.h \
 	Java/Java.h \
 	Java/LCReader.h \
 	Java/LCStringReader.h \
@@ -66,6 +70,7 @@ LuceneKit_HEADER_FILES = \
 	Index/LCFieldsReader.h \
 	Index/LCFieldsWriter.h \
 	Index/LCFilterIndexReader.h \
+	Index/LCIndexModifier.h \
 	Index/LCIndexReader.h \
 	Index/LCIndexWriter.h \
 	Index/LCMultiReader.h \

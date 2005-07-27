@@ -3,6 +3,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME = LuceneKit_Source
 
 LuceneKit_Source_SUBPROJECTS = \
+	Importer \
 	QueryParser \
 	Search \
 	Index \

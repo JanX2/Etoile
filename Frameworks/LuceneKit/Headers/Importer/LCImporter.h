@@ -9,6 +9,9 @@
  * path: the file path.
  * type: the file type.
  * attributes: place to store attributes.
+ * LCIndexManager will put the original metadata in the attributes.
+ * Importer can decide whether to update these metadata.
+ * If there is no needed to update the metadata, return NO;
  */
 - (BOOL) metadataForFile: (NSString *) path type: (NSString *) type 
 			  attributes: (NSMutableDictionary *) attributes;
@@ -26,13 +29,6 @@
  * This attribute must exists in the attributes return by -metadataForFile:type:attributes:
  */
 - (NSString *) keyAttribute;
-
-/** Use these attributes to determine whether an file should be reindex.
- * This attributes will be stored as it is.
- * The more updateAttributes, the bigger the index data.
- * If updateAttributes is nil, file will always be indexed.
- */
-- (NSArray *) attributesForUpdate;
 
 @end
 
