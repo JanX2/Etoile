@@ -45,3 +45,4 @@
 @end
 
 #endif /*  __LuceneKit_Index_Modifier__ */
+
