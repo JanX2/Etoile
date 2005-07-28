@@ -291,9 +291,9 @@ int minOfTwo(int a, int b)
     // greater than 0.0)
 
     /* LuceneKit: the conversion doesn't work on Debian/PowerPC, at least */
-    int d_score = d[n][m];
+    d_value = d[n][m];
     float first_score = [prefix length] + minOfTwo(n, m);
-    score = 1.0f - d_score / first_score;
+    score = 1.0f - d_value / first_score;
 //    score = 1.0f - ((float)d_score / (float)([prefix length] + minOfTwo(n, m)));
     return score;
 }
