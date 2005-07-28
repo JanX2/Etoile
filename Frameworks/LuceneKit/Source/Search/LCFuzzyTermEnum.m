@@ -247,6 +247,7 @@ int minOfTwo(int a, int b)
 	int dn = [text length];
 	int dm = (TYPICAL_LONGEST_WORD_IN_INDEX < m) ? m: TYPICAL_LONGEST_WORD_IN_INDEX;
 	int d[dn][dm];
+	int d_value;
 	/*
 	if (d_count_column <= m) {
 		[self growDistanceArray: m];
@@ -268,7 +269,8 @@ int minOfTwo(int a, int b)
 			} else {
 				d[i][j] = minOfThree(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]);
 			}
-			bestPossibleEditDistance = minOfTwo(bestPossibleEditDistance, d[i][j]);
+			d_value = d[i][j];
+			bestPossibleEditDistance = minOfTwo(bestPossibleEditDistance, d_value);
 		}
 
       //After calculating row i, the best possible edit distance
