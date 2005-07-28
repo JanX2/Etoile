@@ -2,7 +2,7 @@
 #include <LuceneKit/LuceneKit.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
 
-/** This version use high-level classes as much as possible. */
+/** This version uses low-level classes. **/
 
 static BOOL inMemory = YES;
 static BOOL showDetails = NO;
@@ -12,6 +12,7 @@ static LCAnalyzer *analyzer;
 static LCIndexWriter *writer;
 static NSFileManager *manager;
 static NSMutableArray *args;
+static NSString *CONTENT = @"content";
 
 void show_help();
 BOOL process_args(int argc, const char *argv[]);
@@ -62,13 +63,13 @@ int main (int argc, const char * argv[]) {
           LCDocument *doc = [[LCDocument alloc] init];
           /* <5> Add each LCField into LCDocument */
           /* Filename is a keyword. Stored and Untokenized. */
-          LCField *field = [[LCField alloc] initWithName: LCPathAttribute
+          LCField *field = [[LCField alloc] initWithName: @"filename"
                                             string: file
                                             store: LCStore_YES
                                             index: LCIndex_Untokenized];
           [doc addField: field];
           /* Content, tokenized, but not stored. */
-          field = [[LCField alloc] initWithName: LCTextContentAttribute
+          field = [[LCField alloc] initWithName: CONTENT
                                    string: [NSString stringWithContentsOfFile: file]
                                    store: LCStore_NO
                                    index: LCIndex_Tokenized
@@ -87,26 +88,52 @@ int main (int argc, const char * argv[]) {
     [writer close];
 
     /* <8> Build query (LCQuery). */
-      /* <8.1> Combine all argus into one string */
+    LCBooleanQuery *bq = [[LCBooleanQuery alloc] init];
     int i;
-    NSMutableString *queryString = [[NSMutableString alloc] init];
     for (i = 0; i < [args count]; i++)
     {
-        [queryString appendString: [args objectAtIndex: i]];
-        if (i < [args count]-1) 
-            [queryString appendString: @" "];
+      /* <8.1> Check for boolean query. */
+      LCOccurType occur = LCOccur_SHOULD;
+      NSString *text = nil;
+      if ([[args objectAtIndex: i] hasPrefix: @"+"]) {
+        occur = LCOccur_MUST;
+        ASSIGN(text, [[args objectAtIndex: i] substringFromIndex: 1]);
+      } else if ([[args objectAtIndex: i] hasPrefix: @"-"]) {
+        occur = LCOccur_MUST_NOT;
+        ASSIGN(text, [[args objectAtIndex: i] substringFromIndex: 1]);
+      } else {
+        occur = LCOccur_SHOULD;
+        ASSIGNCOPY(text, [args objectAtIndex: i]);
+      }
+   
+      LCTerm *term;
+      LCQuery *tq;
+      if ([text hasSuffix: @"*"]) 
+      {
+        /* <8.2> Prefix Query */
+        term = [[LCTerm alloc] initWithField: CONTENT
+                                        text: [text substringToIndex: [text length]-1]];
+        tq = [[LCPrefixQuery alloc] initWithTerm: term];
+      } 
+      else
+      { 
+        /* <8.3> Term Query */
+        term = [[LCTerm alloc] initWithField: CONTENT
+                                                text: text];
+        tq = [[LCTermQuery alloc] initWithTerm: term];
+      }
+      [bq addQuery: tq occur: occur];
+      DESTROY(term);
+      DESTROY(tq);
     }
-
-    LCQuery *query = (LCBooleanQuery *)[LCQueryParser parse: queryString];
-    printf("\nQuery: %s\n", [[query description] cString]);
+    printf("\nQuery: %s\n", [[bq description] cString]);
 
     /* <9> Initiate LCIndexSearcher. */
     LCIndexSearcher *searcher = [[LCIndexSearcher alloc] initWithDirectory: store];
 
     /* <9.1> Show document frequency through LCIndexReader. */
-    if (showDetails && [query isKindOfClass: [LCBooleanQuery class]])
+    if (showDetails)
     {
-      LCBooleanQuery *bq = (LCBooleanQuery *)query;
       NSArray *clauses = [bq clauses];
       int j;
       for (j = 0; j < [clauses count]; j++)
@@ -123,7 +150,7 @@ int main (int argc, const char * argv[]) {
     }
 
     /* <10> Search with query. */
-    LCHits *hits = [searcher search: query];
+    LCHits *hits = [searcher search: bq];
     int n = [hits count];
     printf("\n=== %d files found ===\n", n);
 
@@ -131,13 +158,11 @@ int main (int argc, const char * argv[]) {
     for (i = 0; i < n; i++)
     {
       LCDocument *doc = [hits document: i];
-      printf("%d: %s\n", i+1, [[doc stringForField: LCPathAttribute] cString]);
+      printf("%d: %s\n", i+1, [[doc stringForField: @"filename"] cString]);
 
       /* <12> Shows details if requested */
-      if (showDetails && [query isKindOfClass: [LCBooleanQuery class]])
+      if (showDetails)
       {
-        LCBooleanQuery *bq = (LCBooleanQuery *)query;
-
         /* <12.1> Show score of each document */
 	printf("\t- score: %f\n", [hits score: i]);
 
@@ -190,7 +215,7 @@ int main (int argc, const char * argv[]) {
 #endif
           /* <12.5.3> Use term vector. */
           id tv = [reader termFrequencyVector: [hits identifier: i]
-                                           field: LCTextContentAttribute];
+                                           field: CONTENT];
           if ([tv conformsToProtocol: @protocol(LCTermPositionVector)])
           {
             id <LCTermPositionVector> termVector = (id <LCTermPositionVector>) tv;
