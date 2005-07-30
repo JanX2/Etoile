@@ -246,7 +246,9 @@ int minOfTwo(int a, int b)
     //let's make sure we have enough room in our array to do the distance calculations.
 	int dn = [text length];
 	int dm = (TYPICAL_LONGEST_WORD_IN_INDEX < m) ? m: TYPICAL_LONGEST_WORD_IN_INDEX;
-	int d[dn][dm];
+	//int d[dn][dm];
+	int *d = malloc(sizeof(int)*dn*dm);
+
 	int d_value;
 	/*
 	if (d_count_column <= m) {
@@ -256,8 +258,15 @@ int minOfTwo(int a, int b)
 
     // init matrix d
 	int i, j;
-    for (i = 0; i <= n; i++) d[i][0] = i;
-    for (j = 0; j <= m; j++) d[0][j] = j;
+    for (i = 0; i <= n; i++) {
+	// d[i][0] = i;
+	*(d+i*dn) = i;
+    }
+
+    for (j = 0; j <= m; j++) {
+	// d[0][j] = j;
+	*(d+j) = j;
+    }
     
     // start computing edit distance
     for (i = 1; i <= n; i++) {
@@ -265,11 +274,14 @@ int minOfTwo(int a, int b)
 		unichar s_i = [text characterAtIndex: (i - 1)];
 		for ( j = 1; j <= m; j++) {
 			if (s_i != [target characterAtIndex: (j-1)]) {
-				d[i][j] = minOfThree(d[i-1][j], d[i][j-1], d[i-1][j-1])+1;
+//				d[i][j] = minOfThree(d[i-1][j], d[i][j-1], d[i-1][j-1])+1;
+				*(d+i*dn+j) = minOfThree(*(d+(i-1)*dn+j), *(d+i*dn+(j-1)), *(d+(i-1)*dn+j-1))+1;
 			} else {
-				d[i][j] = minOfThree(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]);
+//				d[i][j] = minOfThree(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]);
+                                *(d+i*dn+j) = minOfThree((*(d+(i-1)*dn+j))+1, (*(d+i*dn+(j-1)))+1, *(d+(i-1)*dn+j-1));
+
 			}
-			d_value = d[i][j];
+			d_value = *(d+i*dn+j) /*d[i][j]*/;
 			bestPossibleEditDistance = minOfTwo(bestPossibleEditDistance, d_value);
 		}
 
@@ -280,6 +292,7 @@ int minOfTwo(int a, int b)
 		if (i > maxDistance && bestPossibleEditDistance > maxDistance) {  //equal is okay, but not greater
         //the closest the target can be to the text is just too far away.
         //this target is leaving the party early.
+			free(d);
 			return 0.0f;
 		}
 	}
@@ -291,10 +304,11 @@ int minOfTwo(int a, int b)
     // greater than 0.0)
 
     /* LuceneKit: the conversion doesn't work on Debian/PowerPC, at least */
-    d_value = d[n][m];
+    d_value = *(d+n*dn+m)/*d[n][m]*/;
     float first_score = [prefix length] + minOfTwo(n, m);
     score = 1.0f - d_value / first_score;
 //    score = 1.0f - ((float)d_score / (float)([prefix length] + minOfTwo(n, m)));
+    free(d);
     return score;
 }
 

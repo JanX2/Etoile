@@ -1,3 +1,8 @@
+2005-07-29 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Source/Search/LCFuzzyTermEnum.m:
+    A possible fix for memory leak.
+
 2005-07-26 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/QueryParser/LCQueryParser.m:
