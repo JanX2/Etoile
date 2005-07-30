@@ -1,4 +1,4 @@
-ADDITIONAL_OBJCFLAGS = -Wno-import
+ADDITIONAL_OBJCFLAGS += -Wno-import
 
 ifeq ($(test), yes)
 ADDITIONAL_OBJCFLAGS += -DHAVE_UKTEST
