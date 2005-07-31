@@ -1,4 +1,4 @@
-LuceneKit Preview 1
+LuceneKit 0.1
 ==============
 
 Lucene is a high-performance, full-featured text search engine library. It is a 
@@ -45,7 +45,7 @@ UnitKit (bundled with Etoile) is required.
 
     * ukrun LuceneKit.bundle
 
-Depedency
+Dependency
 ---------
 
 zlib: compression/decompression.
