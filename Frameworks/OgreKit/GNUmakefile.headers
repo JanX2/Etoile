@@ -1,0 +1,16 @@
+#Install Public Headers
+
+OgreKit_HEADER_FILES_DIR = ./Headers
+OgreKit_HEADER_FILES_INSTALL_DIR = OgreKit
+OgreKit_HEADER_FILES = \
+	NSString_OgreKitAdditions.h \
+	OGMutableString.h \
+	OGRegularExpressionCapture.h \
+	OGRegularExpressionEnumerator.h \
+	OGRegularExpressionFormatter.h \
+	OGRegularExpression.h \
+	OGRegularExpressionMatch.h \
+	OGReplaceExpression.h \
+	OGString.h \
+	OgreKit.h
+

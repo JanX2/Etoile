@@ -77,7 +77,7 @@ NSString	* const OgreFormatterException = @"OGRegularExpressionFormatterExceptio
 			NSString	*reason = [localException reason];
 			//NSLog(@"reason: \"%@\"", reason); 
 			
-			if (error != nil) {
+			if (error != NULL) {
 				*error = reason;
 			}
 		} else {

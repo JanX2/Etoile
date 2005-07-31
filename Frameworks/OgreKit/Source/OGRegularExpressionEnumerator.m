@@ -109,7 +109,7 @@ NSString	* const OgreEnumeratorException = @"OGRegularExpressionEnumeratorExcept
 		
 	} else {
 		/* 空文字列へのマッチを許さない場合 */
-		while (TRUE) {
+		while (YES) {
 			r = onig_search(regexBuffer, (unsigned char *)_UTF16TargetString, (unsigned char *)end, (unsigned char *)start, (unsigned char *)range, region, searchOptions);
 			if ((r >= 0) && (region->beg[0] == region->end[0]) && (start < range)) {
 				// 空文字列にマッチした場合

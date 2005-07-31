@@ -95,3 +95,4 @@
 @end
 
 #endif /* __OgreKit_NSString_OgreKitAdditions__ */
+

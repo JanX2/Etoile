@@ -200,7 +200,7 @@
 				[expressionString appendString: [NSString stringWithFormat:@"|(%@)", scannedName]];
 			}
         }
-        [scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:nil];
+        [scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL];
 		
 		counterOfAutorelease++;
 		if (counterOfAutorelease % 100 == 0) {

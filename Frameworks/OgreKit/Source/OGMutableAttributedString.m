@@ -372,7 +372,7 @@
 		attrString = [[[NSAttributedString alloc] initWithString:@" "] autorelease];
 	}
 	
-	font = [attrString attribute:NSFontAttributeName atIndex:attrIndex effectiveRange:nil];
+	font = [attrString attribute:NSFontAttributeName atIndex:attrIndex effectiveRange:NULL];
 	if (font == nil) {
 		font = [NSFont systemFontOfSize:[NSFont systemFontSize]];
 	}
