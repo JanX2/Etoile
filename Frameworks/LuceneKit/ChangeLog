@@ -1,5 +1,14 @@
 2005-07-29 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
+    * Headers/LCIndexManager.h:
+    * Headers/Importer/LCImporter.h:
+    * Source/LCIndexManager.h:
+    * Source/Importer/LCTextImporter.h:
+    Improve interface a little.
+
+
+2005-07-29 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
     * Source/Search/LCFuzzyTermEnum.m:
     A possible fix for memory leak.
 

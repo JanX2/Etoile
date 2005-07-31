@@ -9,7 +9,7 @@ static LCIndexManager *sharedInstance;
 @implementation LCIndexManager
 
 /** Check whether an index is existed at path */
-+ (BOOL) indexExistsAt: (NSString *) path
++ (BOOL) indexExistsAtPath: (NSString *) path
 {
 	return [LCIndexReader indexExistsAtPath: path];
 }
@@ -44,7 +44,7 @@ static LCIndexManager *sharedInstance;
 	else
 	{
 		if ([manager fileExistsAtPath: path isDirectory: &isDir]) {
-			if (isDir && [LCIndexManager indexExistsAt: path]) { /* (4) */ }
+			if (isDir && [LCIndexManager indexExistsAtPath: path]) { /* (4) */ }
 			else { return nil; /* (5) */ }
 		} else {
 			/* (2) */
@@ -148,20 +148,20 @@ static LCIndexManager *sharedInstance;
 	* It is basically a combination of -setIndexPaths: and -indexAll.
 	* Since there is only one file at a time, the cost is less. 
 	*/
-- (void) indexFileAtPath: (NSString *) path
+- (void) indexAtPath: (NSString *) path
 {
 }
 
 	/** Index one file with importer
 	*/
-- (void) indexFileAtPath: (NSString *) path importer: (id <LCImporter>) importer
+- (void) indexAtPath: (NSString *) path importer: (id <LCImporter>) importer
 {
 }
 
 	/** Remove the document at path.
 	* It do search, delete.
 	*/
-- (void) removeFileAtPath: (NSString *) path
+- (void) removeMetadataAtPath: (NSString *) path
 {
 }
 

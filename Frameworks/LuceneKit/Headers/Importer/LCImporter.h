@@ -24,13 +24,13 @@
  */
 - (NSArray *) types;
 
-/** Each kind of data has a key attribute for identification.
- * The value for this key attribute must to be unique.
- * For example, the keyAttribute of a file is path.
+/** Each kind of data has an attribute of identifier.
+ * The value for this identifier must to be unique.
+ * For example, the identifier of a file is path.
  * For contact, it must be something unique.
  * This attribute must exists in the attributes return by -metadataForFile:type:attributes:
  */
-- (NSString *) keyAttribute;
+- (NSString *) identifier;
 
 @end
 

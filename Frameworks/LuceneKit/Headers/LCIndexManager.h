@@ -22,7 +22,7 @@
 }
 
 /** Check whether an index is existed at path */
-+ (BOOL) indexExistsAt: (NSString *) path;
++ (BOOL) indexExistsAtPath: (NSString *) path;
 
 /** Initiate an index data in memory */
 - (id) init;
@@ -78,19 +78,21 @@
  * Warn: it cost a lot. It do search, compare and delete, add, index if necessary.
  */
 - (void) indexUpdatedFiles;
+
 /** Index one file
  * This should be used most commonly within any application while an file (item) changed.
  * It is basically a combination of -setIndexPaths: and -indexAll.
  * Since there is only one file at a time, the cost is less. 
  */
-- (void) indexFileAtPath: (NSString *) path;
+- (void) indexAtPath: (NSString *) path;
 /** Index one file with importer
  */
-- (void) indexFileAtPath: (NSString *) path importer: (id <LCImporter>) importer;
+- (void) indexAtPath: (NSString *) path importer: (id <LCImporter>) importer;
+
 /** Remove the document at path.
  * It do search, delete.
  */
-- (void) removeFileAtPath: (NSString *) path;
+- (void) removeMetadataAtPath: (NSString *) path;
 
 /* Search */
 /** Return search result based on query.
@@ -100,7 +102,7 @@
 /** Return search result based on query. */
 - (NSArray *) searchWithQuery: (LCQuery *) query;
 
-/* Advanced funcation */
+/* Low-level function */
 /** Return indexReader.
  * IndexReader and IndexWriter cannot exist at the same time.
  * When one is called, the other is closed by IndexManager.

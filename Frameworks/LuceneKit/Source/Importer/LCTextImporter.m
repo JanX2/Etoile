@@ -30,7 +30,7 @@
 	return [NSArray arrayWithObjects: @"txt", @"text", nil];
 }
 
-- (NSString *) keyAttribute
+- (NSString *) identifier
 {
 	return LCPathAttribute;
 }
