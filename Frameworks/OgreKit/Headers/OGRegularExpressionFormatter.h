@@ -23,18 +23,18 @@ extern NSString	* const OgreFormatterException;
 
 @interface OGRegularExpressionFormatter : NSFormatter <NSCopying, NSCoding>
 {
-	NSString			*_escapeCharacter;		// \の代替文字
-	unsigned			_options;				// コンパイルオプション
-	OgreSyntax			_syntax;				// 正規表現の構文
+	NSString			*_escapeCharacter;		// escape character (\)
+	unsigned			_options;				// options
+	OgreSyntax			_syntax;				// synax
 }
 
-// 必須メソッド
+// essential methods
 - (NSString*)stringForObjectValue:(id)anObject;
 - (NSAttributedString*)attributedStringForObjectValue:(id)anObject 
 	withDefaultAttributes:(NSDictionary*)attributes;
 - (NSString*)editingStringForObjectValue:(id)anObject;
 
-// エラー判定
+// error handle
 - (BOOL)getObjectValue:(id*)obj forString:(NSString*)string 
 	errorDescription:(NSString**)error;
 
