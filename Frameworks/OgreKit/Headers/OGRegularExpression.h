@@ -41,9 +41,9 @@ extern const unsigned	OgreNegateSingleLineOption;
 extern const unsigned	OgreDontCaptureGroupOption;
 extern const unsigned	OgreCaptureGroupOption;
 
-// (REG_OPTION_POSIX_REGIONは使用しない)
-// OgreDelimitByWhitespaceOptionはOgreSimpleMatchingSyntaxの使用時に、空白文字を単語の区切りとみなすかどうか
-// 例: @"AAA BBB CCC" -> @"(AAA)|(BBB)|(CCC)"
+// (Doesn't work with REG_OPTION_POSIX_REGION)
+// OgreDelimitByWhitespaceOptionはOgreSimpleMatchingSyntax: use space as seperator
+// For example: @"AAA BBB CCC" -> @"(AAA)|(BBB)|(CCC)"
 extern const unsigned	OgreDelimitByWhitespaceOption;
 
 #define OgreCompileTimeOptionMask(x)	((x) & (OgreSingleLineOption | OgreMultilineOption | OgreIgnoreCaseOption | OgreExtendOption | OgreFindLongestOption | OgreFindNotEmptyOption | OgreNegateSingleLineOption | OgreDontCaptureGroupOption | OgreCaptureGroupOption | OgreDelimitByWhitespaceOption))
@@ -79,7 +79,7 @@ typedef enum {
 #define	OgreBackslashCharacter			@"\\"
 // "\\"
 //#define	OgreCStringBackslashCharacter	[NSString stringWithCString:"\\"]
-// GUI中の￥マーク
+// Symbol of Yen (Japenese dollar) in GUI
 #define	OgreGUIYenCharacter				[NSString stringWithUTF8String:"\xc2\xa5"]
 
 // newline character
@@ -101,27 +101,27 @@ extern NSString	* const OgreException;
 
 @interface OGRegularExpression : NSObject <NSCopying, NSCoding>
 {
-	NSString			*_escapeCharacter;				// \の代替文字
-	NSString			*_expressionString;				// 正規表現を表す文字列
-	unichar             *_UTF16ExpressionString;        // 正規表現を表すUTF16文字列
-	unsigned			_options;						// コンパイルオプション
-	OgreSyntax			_syntax;						// 正規表現の構文
+	NSString			*_escapeCharacter;				// escape charactor (\_
+	NSString			*_expressionString;				// string of regular expression
+	unichar             *_UTF16ExpressionString;        // string of regular expression in UTF16
+	unsigned			_options;						// options
+	OgreSyntax			_syntax;						// syntax of regular expresion
 	
-	NSMutableDictionary	*_groupIndexForNameDictionary;	// nameでindexを引く辞書
-														// 構造: /(?<a>a+)(?<b>b+)(?<a>c+)/ => {"a" = (1,3), "b" = (2)}
-	NSMutableArray		*_nameForGroupIndexArray;		// (index-1)でnameを引く逆引き辞書(配列)
-														// 構造: /(?<a>a+)(?<b>b+)(?<a>c+)/ => ("a", "b", "a")
-	regex_t				*_regexBuffer;					// 鬼車正規表現構造体
+	NSMutableDictionary	*_groupIndexForNameDictionary;	// dictionary of index for name
+														// Usage: /(?<a>a+)(?<b>b+)(?<a>c+)/ => {"a" = (1,3), "b" = (2)}
+	NSMutableArray		*_nameForGroupIndexArray;		// array of name for index
+														// Usage: /(?<a>a+)(?<b>b+)(?<a>c+)/ => ("a", "b", "a")
+	regex_t				*_regexBuffer;					// regular expression in OniGuruma
 }
 
 /****************************
  * creation, initialization *
  ****************************/
 //  Arguments:
-//   expressionString: 正規表現を表す文字列
-//   options: オプション(後述参照)
-//   syntax: 構文(後述参照)
-//   escapeCharacter: \の代替文字
+//   expressionString: regular expression
+//   options: options (see below)
+//   syntax: syntax (see below)
+//   escapeCharacter: escape character (\)
 //  Return value:
 //   success: a pointer to OGRegularExpression instance
 //   error:  exception raised
@@ -177,39 +177,39 @@ extern NSString	* const OgreException;
 /*************
  * accessors *
  *************/
-// 正規表現を表している文字列をコピーして返す。変更するにはrecompileが必要。
+// regular expression string, recompile if change
 - (NSString*)expressionString;
-// 現在有効なオプション。変更するにはrecompileが必要。
+// current option, recompile if change
 - (unsigned)options;
-// 現在使用している正規表現の構文。変更するにはrecompileが必要。
+// current syntax, recompile if change
 - (OgreSyntax)syntax;
-// エスケープ文字 @"\\" の代替文字。変更するにはrecompileが必要。変更すると数割遅くなります。
+// escape character, recompile if change
 - (NSString*)escapeCharacter;
 
-// capture groupの数
+// number of capture group
 - (unsigned)numberOfGroups;
-// named groupの数
+// number of named group
 - (unsigned)numberOfNames;
-// nameの配列
-// named groupを使用していない場合はnilを返す。
+// array of names
+// return nil if named group is not used
 - (NSArray*)names;
 
-// 現在のデフォルトのエスケープ文字。初期値は @"\\"(GUI中の\記号)
+// default escape character (\)
 + (NSString*)defaultEscapeCharacter;
-// デフォルトのエスケープ文字を変更する。変更すると数割遅くなります。
-// 変更前に作成されたインスタンスには影響を与えない。
-// character が使用できない文字の場合には例外を発生する。
+// change escape character.
+// Won't affect instance generated before change
+// raise while character cannot be used.
 + (void)setDefaultEscapeCharacter:(NSString*)character;
 
-// 現在のデフォルトの正規表現構文。初期値は OgreRubySyntax
+// default syntax (OgreRubySyntax)
 + (OgreSyntax)defaultSyntax;
-// デフォルトの正規表現構文を変更する。
-// 変更前に作成されたインスタンスには影響を与えない。
+// change default syntax
+// Won't affect instance generated before change
 + (void)setDefaultSyntax:(OgreSyntax)syntax;
 
-// OgreKitのバージョン文字列を返す
+// OgreKit version
 + (NSString*)version;
-// onigurumaのバージョン文字列を返す
+// oniguruma version
 + (NSString*)onigurumaVersion;
 
 // description
@@ -219,12 +219,12 @@ extern NSString	* const OgreException;
 /*******************
  * Validation test *
  *******************/
-// 正しければ YES、正しくなければ NO を返す。
-/* 正しくない理由を知りたい場合は、次のようにして例外を拾って下さい。
+// return YES if valid, NO if invalid
+/* Usage to know the reason of invalidation.
 	NS_DURING
 		OGRegularExpression	*rx = [OGRegularExpression regularExpressionWithString:expressionString];
 	NS_HANDLER
-		// 例外処理
+		// exceptioni handle
 		NSLog(@"%@ caught\n", [localException name]);
 		NSLog(@"reason = \"%@\"\n", [localException reason]);
 	NS_ENDHANDLER
@@ -258,8 +258,8 @@ extern NSString	* const OgreException;
  
 	(comment: OgreFindEmptyOption is useful in the case of a matching like [a-z]+|\z.)
  */
-// 最初にマッチした部分の OGRegularExpressionMatch オブジェクトを返す。
-// マッチしなかった場合は nil を返す。
+// The first match
+// return nil if no match
 - (OGRegularExpressionMatch*)matchInString:(NSString*)string;
 - (OGRegularExpressionMatch*)matchInString:(NSString*)string 
 	range:(NSRange)range;
@@ -282,8 +282,8 @@ extern NSString	* const OgreException;
 	options:(unsigned)options 
 	range:(NSRange)searchRange;
 
-// 全てのマッチした部分の OGRegularExpressionMatch オブジェクトを
-// 列挙する OGRegularExpressionEnumerator オブジェクトを返す。
+// All matches in enumerator of OGRegularExpressionMatch
+// return OGRegularExpressionEnumerator
 - (NSEnumerator*)matchEnumeratorInString:(NSString*)string;
 - (NSEnumerator*)matchEnumeratorInString:(NSString*)string 
 	options:(unsigned)options;
@@ -306,10 +306,10 @@ extern NSString	* const OgreException;
 	options:(unsigned)options 
 	range:(NSRange)searchRange;
 	
-// 全てのマッチした部分の OGRegularExpressionMatch オブジェクトを
-// 要素に持つ NSArray オブジェクトを返す。順序はマッチした順。
-// ([[self matchEnumeratorInString:string] allObject]と同じ)
-// マッチしなかった場合は nil を返す。
+// All matches in array of OGRegularExpressionMatch
+// The order is the matched order
+// The same  as ([[self matchEnumeratorInString:string] allObject])
+// return nil if there is no match
 - (NSArray*)allMatchesInString:(NSString*)string;
 - (NSArray*)allMatchesInString:(NSString*)string
 	options:(unsigned)options;
@@ -336,9 +336,9 @@ extern NSString	* const OgreException;
 /***********
  * Replace *
  ***********/
-// 文字列targetString中の正規表現にマッチした箇所を文字列replaceStringに置換したものを返す。
-// replaceString中で使用できるエスケープシーケンスはOGReplaceExpression.hを参照。
-// 最初にマッチした部分のみを置換
+// return matched regular expression in targetString with replaceString
+// replaceString can use escape, see OGReplaceExpression.h
+// Only replace the first match
 - (NSString*)replaceFirstMatchInString:(NSString*)targetString 
 	withString:(NSString*)replaceString;
 - (NSString*)replaceFirstMatchInString:(NSString*)targetString 
@@ -359,7 +359,7 @@ extern NSString	* const OgreException;
 	options:(unsigned)searchOptions
 	range:(NSRange)replaceRange;
 
-// 全てのマッチした部分を置換
+// replace all matches
 - (NSString*)replaceAllMatchesInString:(NSString*)targetString 
 	withString:(NSString*)replaceString;
 - (NSString*)replaceAllMatchesInString:(NSString*)targetString 
@@ -380,11 +380,11 @@ extern NSString	* const OgreException;
 	options:(unsigned)searchOptions
 	range:(NSRange)replaceRange;
 
-// マッチした部分を置換
+// replace matches
 /*
- isReplaceAll == YES ならば全てのマッチした部分を置換
-				 NO  ならば最初にマッチした部分のみを置換
- count: 置換した数
+ isReplaceAll == YES replace all matches
+				 NO  replace first match
+ count: number of replace
  */
 - (NSString*)replaceString:(NSString*)targetString 
 	withString:(NSString*)replaceString 
@@ -419,17 +419,17 @@ extern NSString	* const OgreException;
 	replaceAll:(BOOL)replaceAll
 	numberOfReplacement:(unsigned*)numberOfReplacement;
 
-// デリゲートに処理を委ねた置換
+// delegate for replacement
 /*
- aSelectorは次の形式でなければならない
- 引数:
-	1番目: マッチしたOGRegularExpressionMatchオブジェクト
-	2番目: contextInfo:で渡したcontextInfo
- 戻り値:
-	置換した文字列
-	(ただし、nilを返した場合はそこで置換を中止する。)
+ aSelector must be this format:
+ messages:
+	1st: insatnce of OGRegularExpressionMatch
+	2nd: contextInfo
+ return:
+	string for replacement
+	(but return nil if replacement is stop)
 	
- 例: 摂氏を華氏に変換する。
+ For example: conversion of temperature (celcius to fahrenheit).
 	- (NSString*)fahrenheitForCelsius:(OGRegularExpressionMatch*)aMatch contextInfo:(id)contextInfo
 	{
 		double	celcius = [[aMatch substringAtIndex:1] doubleValue];
@@ -437,7 +437,7 @@ extern NSString	* const OgreException;
 		return [NSString stringWithFormat:@"%.1fF", fahrenheit];
 	}
  */
-// 最初にマッチした部分のみを置換
+// replace first match
 - (NSString*)replaceFirstMatchInString:(NSString*)targetString 
 	delegate:(id)aDelegate 
 	replaceSelector:(SEL)aSelector 
@@ -477,7 +477,7 @@ extern NSString	* const OgreException;
 	options:(unsigned)searchOptions
 	range:(NSRange)replaceRange;
 
-// 全てのマッチした部分を置換
+// replace all matches
 - (NSString*)replaceAllMatchesInString:(NSString*)targetString 
 	delegate:(id)aDelegate 
 	replaceSelector:(SEL)aSelector 
@@ -517,11 +517,11 @@ extern NSString	* const OgreException;
 	options:(unsigned)searchOptions
 	range:(NSRange)replaceRange;
 
-// マッチした部分を置換
+// replace matches
 /*
- isReplaceAll == YES ならば全てのマッチした部分を置換
-				 NO  ならば最初にマッチした部分のみを置換
- count: 置換した数
+ isReplaceAll == YES replace all matches
+				 NO  replace first match
+ count: number of replace
  */
 - (NSString*)replaceString:(NSString*)targetString 
 	delegate:(id)aDelegate 
@@ -568,7 +568,7 @@ extern NSString	* const OgreException;
 /*********
  * Split *
  *********/
-// マッチした部分で文字列を分割し、NSArrayに収めて返す。
+// split string with regular expression
 - (NSArray*)splitString:(NSString*)aString;
 
 - (NSArray*)splitString:(NSString*)aString 
@@ -579,10 +579,10 @@ extern NSString	* const OgreException;
 	range:(NSRange)searchRange;
 	
 /*
- 分割数limitの意味 (例は@","にマッチさせた場合のもの)
-	limit >  0:				最大でlimit個の単語に分割する。limit==3のとき、@"a,b,c,d,e" -> (@"a", @"b", @"c")
-	limit == 0(デフォルト):	最後が空文字列のときは無視する。@"a,b,c," -> (@"a", @"b", @"c")
-	limit <  0:				最後が空文字列でも含める。@"a,b,c," -> (@"a", @"b", @"c", @"")
+ Usage of limit (use @"," as example)
+	limit >  0:				the max number of split. limit==3 means @"a,b,c,d,e" -> (@"a", @"b", @"c")
+	limit == 0(silent):	ignore the last aString @"a,b,c," -> (@"a", @"b", @"c")
+	limit <  0:				include the last aString @"a,b,c," -> (@"a", @"b", @"c", @"")
  */
 - (NSArray*)splitString:(NSString*)aString 
 	options:(unsigned)searchOptions 
@@ -593,22 +593,22 @@ extern NSString	* const OgreException;
 /*************
  * Utilities *
  *************/
-// OgreSyntaxとintの相互変換
+// conversion between OgreSyntax and int
 + (int)intValueForSyntax:(OgreSyntax)syntax;
 + (OgreSyntax)syntaxForIntValue:(int)intValue;
-// OgreSyntaxを表す文字列
+// string of OgreSyntax
 + (NSString*)stringForSyntax:(OgreSyntax)syntax;
-// Optionsを表す文字列配列
+// strings of Options
 + (NSArray*)stringsForOptions:(unsigned)options;
 
-// 文字列を正規表現で安全な文字列に変換する。(@"|().?*+{}^$[]-&#:=!<>@\\"を退避する)
+// convert string into regex-safe string (@"|().?*+{}^$[]-&#:=!<>@\\" are avoided)
 + (NSString*)regularizeString:(NSString*)string;
 
-// 改行コードが何か調べる
+// newline character in string
 + (OgreNewlineCharacter)newlineCharacterInString:(NSString*)aString;
-// 改行コードをnewlineCharacterに統一する。
+// replace newline character
 + (NSString*)replaceNewlineCharactersInString:(NSString*)aString withCharacter:(OgreNewlineCharacter)newlineCharacter;
-// 改行コードを取り除く
+// remove newline character
 + (NSString*)chomp:(NSString*)aString;
 
 @end

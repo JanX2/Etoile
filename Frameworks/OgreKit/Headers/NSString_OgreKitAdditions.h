@@ -63,13 +63,13 @@
 /*********
  * Split *
  *********/
-// マッチした部分で文字列を分割し、NSArrayに収めて返す。
+// Seperate string based on regular expression。
 - (NSArray*)componentsSeparatedByRegularExpressionString:(NSString*)expressionString;
 
 /*********************
  * Newline Character *
  *********************/
-// 改行コードが何か調べる
+// Newline Charactor, see OGRegularExpression.h
 - (OgreNewlineCharacter)newlineCharacter;
 
 @end
@@ -87,9 +87,9 @@
 /*********************
  * Newline Character *
  *********************/
-// 改行コードをnewlineCharacterに統一する。
+// Change newline style.。
 - (void)replaceNewlineCharactersWithCharacter:(OgreNewlineCharacter)newlineCharacter;
-// 改行コードを取り除く
+// Remove newline character.
 - (void)chomp;
 
 @end

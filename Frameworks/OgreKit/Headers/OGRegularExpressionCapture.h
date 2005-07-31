@@ -57,36 +57,36 @@ static NSString *const calcRegex = @"\\g<e>(?<e>\\g<t>(?:(?@<e1>\\+\\g<t>)|(?@<e
 @interface OGRegularExpressionCapture : NSObject <NSCopying, NSCoding>
 {
 	OnigCaptureTreeNode         *_captureNode;      // Oniguruma capture tree node
-	unsigned                    _index,             // マッチした順番
-                                _level;             // 深さ
-	OGRegularExpressionMatch	*_match;            // 生成主のOGRegularExpressionMatchオブジェクト
-	OGRegularExpressionCapture	*_parent;           // 親
+	unsigned                    _index,             // order of capture
+                                _level;             // level
+	OGRegularExpressionMatch	*_match;            // OGRegularExpressionMatch where capture comes from
+	OGRegularExpressionCapture	*_parent;           // parent
 }
 
 /*********
- * 諸情報 *
+ * Information *
  *********/
-// グループ番号
+// index of capture
 - (unsigned)groupIndex;
 
-// グループ名
+// name of capture
 - (NSString*)groupName;
 
-// 何番目の子要素であるか 0,1,2,...
+// index of children 0,1,2,...
 - (unsigned)index;
 
-// 深さ
+// level
 // 0: root
 - (unsigned)level;
 
-// 子要素の数
+// number of children
 - (unsigned)numberOfChildren;
 
-// 子要素たち
+// children
 // return nil in the case of numberOfChildren == 0
 - (NSArray*)children;
 
-// index番目の子要素
+// children at index
 - (OGRegularExpressionCapture*)childAtIndex:(unsigned)index;
 
 // match
@@ -96,20 +96,20 @@ static NSString *const calcRegex = @"\\g<e>(?<e>\\g<t>(?:(?@<e1>\\+\\g<t>)|(?@<e
 - (NSString*)description;
 
 /*********
- * 文字列 *
+ * string *
  *********/
-// マッチの対象になった文字列
+// target string
 - (NSString*)targetString;
 - (NSAttributedString*)targetAttributedString;
 
-// マッチした文字列
+// matched string
 - (NSString*)string;
 - (NSAttributedString*)attributedString;
 
 /*******
- * 範囲 *
+ * range *
  *******/
-// マッチした文字列の範囲
+// range of matched string
 - (NSRange)range;
 
 /************************

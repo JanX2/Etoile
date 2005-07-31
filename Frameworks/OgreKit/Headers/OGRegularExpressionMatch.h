@@ -32,24 +32,26 @@ extern NSString	* const OgreMatchException;
 @class OGRegularExpression, OGRegularExpressionEnumerator, OGRegularExpressionCapture;
 @protocol OGStringProtocol;
 
+/* A match for regular expression (\0), may contain many substrings (\1, \2...) */
+
 @interface OGRegularExpressionMatch : NSObject <NSCopying, NSCoding>
 {
 	OnigRegion		*_region;						// match result region
 	OGRegularExpressionEnumerator	*_enumerator;	// matcher
-	unsigned		_terminalOfLastMatch;           // 前回にマッチした文字列の終端位置 (_region->end[0] / sizeof(unichar))
+	unsigned		_terminalOfLastMatch;           // The terminal position of last match (_region->end[0] / sizeof(unichar))
 	
-	NSObject<OGStringProtocol>	*_targetString;		// 検索対象文字列
-	NSRange			_searchRange;					// 検索範囲
-	unsigned		_index;							// マッチした順番
+	NSObject<OGStringProtocol>	*_targetString;		// target for regular expression search
+	NSRange			_searchRange;					// search range
+	unsigned		_index;							// index of match
 }
 
 /*********
- * 諸情報 *
+ * Information *
  *********/
-// マッチした順番 0,1,2,...
+// index of this match in all matches (0,1,2,...)
 - (unsigned)index;
 
-// 部分文字列の数 + 1
+// number of total substring, including \0
 - (unsigned)count;
 
 // description
@@ -57,99 +59,99 @@ extern NSString	* const OgreMatchException;
 
 
 /*********
- * 文字列 *
+ * String *
  *********/
-// マッチの対象になった文字列
+// Target string
 - (NSObject<OGStringProtocol>*)targetOGString;
 - (NSString*)targetString;
 - (NSAttributedString*)targetAttributedString;
 
-// マッチした文字列 \&, \0
+// Matched string \&, \0
 - (NSObject<OGStringProtocol>*)matchedOGString;
 - (NSString*)matchedString;
 - (NSAttributedString*)matchedAttributedString;
 
-// index番目のsubstring \index
-//  index番目のsubstringが存在しない時には nil を返す。
+// substring at index \index
+//  return nil if substring at index doesn't exist
 - (NSObject<OGStringProtocol>*)ogSubstringAtIndex:(unsigned)index;
 - (NSString*)substringAtIndex:(unsigned)index;
 - (NSAttributedString*)attributedSubstringAtIndex:(unsigned)index;
 
-// マッチした部分より前の文字列 \`
+// substring before match \`
 - (NSObject<OGStringProtocol>*)prematchOGString;
 - (NSString*)prematchString;
 - (NSAttributedString*)prematchAttributedString;
 
-// マッチした部分より後ろの文字列 \'
+// substring after match \'
 - (NSObject<OGStringProtocol>*)postmatchOGString;
 - (NSString*)postmatchString;
 - (NSAttributedString*)postmatchAttributedString;
 
-// 最後にマッチした部分文字列 \+
-// 存在しないときには nil を返す。
+// the last substring \+
+// return nil if not exist
 - (NSObject<OGStringProtocol>*)lastMatchOGSubstring;
 - (NSString*)lastMatchSubstring;
 - (NSAttributedString*)lastMatchAttributedSubstring;
 
-// マッチした部分と一つ前にマッチした部分の間の文字列 \- (独自に追加)
+// string between this match and previous match \-
 - (NSObject<OGStringProtocol>*)ogStringBetweenMatchAndLastMatch;
 - (NSString*)stringBetweenMatchAndLastMatch;
 - (NSAttributedString*)attributedStringBetweenMatchAndLastMatch;
 
 
 /*******
- * 範囲 *
+ * range *
  *******/
-// マッチした文字列の範囲
+// range of matched string
 - (NSRange)rangeOfMatchedString;
 
-// index番目のsubstringの範囲
-//  index番目のsubstringが存在しない時には {-1, 0} を返す。
+// range of substring at index
+//  return (-1, 0) if substring at index doesn't exist
 - (NSRange)rangeOfSubstringAtIndex:(unsigned)index;
 
-// マッチした部分より前の文字列の範囲
+// range of string before match
 - (NSRange)rangeOfPrematchString;
 
-// マッチした部分より後ろの文字列の範囲
+// range of string after match
 - (NSRange)rangeOfPostmatchString;
 
-// 最後にマッチした部分文字列の範囲
-// 存在しないときには {-1,0} を返す。
+// range of last substring
+// return (-1, 0) is last match doesn't exist
 - (NSRange)rangeOfLastMatchSubstring;
 
-// マッチした部分と一つ前にマッチした部分の間の文字列の範囲
+// range between this match and previous match
 - (NSRange)rangeOfStringBetweenMatchAndLastMatch;
 
 
 /***************************************************************
- * named group関連 (OgreCaptureGroupOptionを指定したときに使用可能) *
+ * named group relationship (while OgreCaptureGroupOption is specified) *
  ***************************************************************/
-// 名前(ラベル)がnameの部分文字列
-// 存在しない名前の場合は nil を返す。
-// 同一の名前を持つ部分文字列が複数ある場合は例外を発生させる。
+// substring with name.
+// return nil if name doesn't exist
+// raise exception if there are more than one substring with the same name.
 - (NSObject<OGStringProtocol>*)ogSubstringNamed:(NSString*)name;
 - (NSString*)substringNamed:(NSString*)name;
 - (NSAttributedString*)attributedSubstringNamed:(NSString*)name;
 
-// 名前がnameの部分文字列の範囲
-// 存在しない名前の場合は {-1, 0} を返す。
-// 同一の名前を持つ部分文字列が複数ある場合は例外を発生させる。
+// range of substring with name
+// return (-1, 0) if name doesn't exist
+// raise exception if there are more than one substring with the same name.
 - (NSRange)rangeOfSubstringNamed:(NSString*)name;
 
-// 名前がnameの部分文字列のindex
-// 存在しない名前の場合は -1 を返す。
-// 同一の名前を持つ部分文字列が複数ある場合は例外を発生させる。
+// index of substring with name
+// return -1 if name doesn't exist
+// raise exception if there are more than one substring with the same name.
 - (unsigned)indexOfSubstringNamed:(NSString*)name;
 
-// index番目の部分文字列の名前
-// 存在しない名前の場合は nil を返す。
+// namd of substring at index
+// return nil if substring at index doesn't exist
 - (NSString*)nameOfSubstringAtIndex:(unsigned)index;
 
 /***********************
-* マッチした部分文字列を得る *
+* information of substring *
 ************************/
-// (regex1)|(regex2)|... のような正規表現で、どのregex*にマッチしたかによって条件分岐する場合に便利。
-/* 使用例: 
+// (regex1)|(regex2)|... An easier way to divide a string into different substrings based on regular expression.
+/* For example: 
 	OGRegularExpression *regex = [OGRegularExpression regularExpressionWithString:@"([0-9]+)|([a-zA-Z]+)"];
 	NSEnumerator	*matchEnum = [regex matchEnumeratorInString:@"123abc"];
 	OGRegularExpressionMatch	*match;
@@ -164,45 +166,49 @@ extern NSString	* const OgreMatchException;
 		}
 	}
 */
-// マッチした部分文字列のうちグループ番号が最小のもの (ない場合は0を返す)
+// The first matched substring, return 0 if none.
 - (unsigned)indexOfFirstMatchedSubstring;
 - (unsigned)indexOfFirstMatchedSubstringBeforeIndex:(unsigned)anIndex;
 - (unsigned)indexOfFirstMatchedSubstringAfterIndex:(unsigned)anIndex;
 - (unsigned)indexOfFirstMatchedSubstringInRange:(NSRange)aRange;
-// その名前
+// name of substring
 - (NSString*)nameOfFirstMatchedSubstring;
 - (NSString*)nameOfFirstMatchedSubstringBeforeIndex:(unsigned)anIndex;
 - (NSString*)nameOfFirstMatchedSubstringAfterIndex:(unsigned)anIndex;
 - (NSString*)nameOfFirstMatchedSubstringInRange:(NSRange)aRange;
 
-// マッチした部分文字列のうちグループ番号が最大のもの (ない場合は0を返す)
+// The last matched substring, return 0 if none.
 - (unsigned)indexOfLastMatchedSubstring;
 - (unsigned)indexOfLastMatchedSubstringBeforeIndex:(unsigned)anIndex;
 - (unsigned)indexOfLastMatchedSubstringAfterIndex:(unsigned)anIndex;
 - (unsigned)indexOfLastMatchedSubstringInRange:(NSRange)aRange;
-// その名前
+// name of substring
 - (NSString*)nameOfLastMatchedSubstring;
 - (NSString*)nameOfLastMatchedSubstringBeforeIndex:(unsigned)anIndex;
 - (NSString*)nameOfLastMatchedSubstringAfterIndex:(unsigned)anIndex;
 - (NSString*)nameOfLastMatchedSubstringInRange:(NSRange)aRange;
 
-// マッチした部分文字列のうち最長のもの (ない場合は0を返す。同じ長さの物が複数あれば、番号の小さい物が優先される)
+// The longest substring, return 0 if none.
+// If there are more than one substring with the same length,
+// return the one with smaller index.
 - (unsigned)indexOfLongestSubstring;
 - (unsigned)indexOfLongestSubstringBeforeIndex:(unsigned)anIndex;
 - (unsigned)indexOfLongestSubstringAfterIndex:(unsigned)anIndex;
 - (unsigned)indexOfLongestSubstringInRange:(NSRange)aRange;
-// その名前
+// name of longest substring
 - (NSString*)nameOfLongestSubstring;
 - (NSString*)nameOfLongestSubstringBeforeIndex:(unsigned)anIndex;
 - (NSString*)nameOfLongestSubstringAfterIndex:(unsigned)anIndex;
 - (NSString*)nameOfLongestSubstringInRange:(NSRange)aRange;
 
-// マッチした部分文字列のうち最短のもの (ない場合は0を返す。同じ長さの物が複数あれば、番号の小さい物が優先される)
+// The shortest substring, return 0 if none.
+// If there are more than one substring with the same length,
+// return the one with smaller index.
 - (unsigned)indexOfShortestSubstring;
 - (unsigned)indexOfShortestSubstringBeforeIndex:(unsigned)anIndex;
 - (unsigned)indexOfShortestSubstringAfterIndex:(unsigned)anIndex;
 - (unsigned)indexOfShortestSubstringInRange:(NSRange)aRange;
-// その名前
+// name of shortest substring
 - (NSString*)nameOfShortestSubstring;
 - (NSString*)nameOfShortestSubstringBeforeIndex:(unsigned)anIndex;
 - (NSString*)nameOfShortestSubstringAfterIndex:(unsigned)anIndex;
@@ -211,7 +217,7 @@ extern NSString	* const OgreMatchException;
 /******************
 * Capture History *
 *******************/
-/*例:
+/*Example:
 	NSString					*target = @"abc de";
 	OGRegularExpression			*regex = [OGRegularExpression regularExpressionWithString:@"(?@[a-z])+"];
 	OGRegularExpressionMatch	*match;
@@ -226,7 +232,7 @@ extern NSString	* const OgreMatchException;
             NSLog(@" %@", [[capture childAtIndex:i] string]);
 	}
 	
-ログ:
+Record:
 number of capture history: 3
  a
  b
@@ -236,13 +242,13 @@ number of capture history: 2
  e
  */
 
-// 捕獲履歴
-// 履歴がない場合はnilを返す。
+// capture history
+// return nil if there is no history
 - (OGRegularExpressionCapture*)captureHistory;
 
 @end
 
-// UTF16文字列の長さを得る
+// Length of UTF16 string
 unsigned Ogre_UTF16strlen(unichar *const aUTF16string, unichar *const end);
 
 #endif /* __OgreKit_OGRegularExpressionMatch__ */

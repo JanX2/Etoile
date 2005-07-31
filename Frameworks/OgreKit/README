@@ -1,4 +1,4 @@
-OgreKit (GNUstep fork)
+OgreKit (GNUstep)
 ==============
 
 OgreKit is a regular expression library written in Objective-C in Cocoa.
@@ -28,7 +28,7 @@ Mac OS X support
 ----------------
 
 Please use original OgreKit unless portability is considered.
-OgreKit (GNUstep fork) is compatible with Cocoa.
+OgreKit (GNUstep) is compatible with Cocoa.
 
 Developers notes
 ================

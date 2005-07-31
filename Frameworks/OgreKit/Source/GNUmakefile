@@ -23,7 +23,7 @@ OgreKit_Source_OBJC_FILES = \
 
 ifeq ($(test), yes)
 OgreKit_Source_OBJC_FILES += \
-	TestOGRegularExpression.m
+	TestOGRegularExpression.m 
 endif
 
 OgreKit_Source_INCLUDE_DIRS += -I.. -I/opt/local/include

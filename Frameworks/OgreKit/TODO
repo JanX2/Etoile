@@ -1,2 +1,2 @@
 * More test units.
-* Detect oniguruma library automatically.
+* Detect oniguruma library automatically. (Done with OniGuruma 3.8.6 or higher)
