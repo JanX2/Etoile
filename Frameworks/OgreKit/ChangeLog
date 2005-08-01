@@ -1,3 +1,8 @@
+2005-07-31 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Source/TestOGRegularExpression.m:
+	Add more tests.
+
 2005-07-30 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Build on Debian/PowerPC.
