@@ -22,7 +22,6 @@
 #ifndef HAVE_CONFIG_H
 #	define HAVE_CONFIG_H
 #endif
-#include <OgreKit/oniguruma.h>
 
 // Regular Expressions
 #include <OgreKit/OGRegularExpression.h>

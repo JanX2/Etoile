@@ -22,7 +22,6 @@
 #	define HAVE_CONFIG_H
 #endif
 #include <oniguruma.h>
-//#include <OgreKit/oniguruma.h>
 
 
 /* constants */
