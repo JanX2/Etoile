@@ -24,12 +24,31 @@
  */
 
 #import <AppKit/AppKit.h>
+#ifdef GNUSTEP
+#import <GNUstepGUI/GSToolbarView.h>
+#endif
 #import "PKPrefPanesRegistry.h"
-#import "PKToolbarPreferencesController.h";
+#import "PKToolbarPreferencesController.h"
 /* We need to redeclare this PKPreferencesController variable because static 
    variables are not inherited unlike class variables in other languages. */
 //static PKPreferencesController *sharedInstance = nil;
 
+
+@interface NSArray (ObjectWithValueForKey)
+- (id) objectWithValue: (id)value forKey: (NSString *)key;
+@end
+
+// NOTE: Hack needed for -resizePreferencesViewForView: with GNUstep
+#ifdef GNUSTEP
+
+@interface GSToolbarView (GNUstepPrivate)
+- (int) _heightFromLayout;
+@end
+
+@interface NSToolbar (GNUstepPrivate)
+- (GSToolbarView *) _toolbarView;
+@end
+#endif
 
 @implementation PKToolbarPreferencesController
 
@@ -84,7 +103,23 @@
     delta = [mainView frame].size.height - viewFrame.size.height;
     viewFrame.origin = [[mainView window] frame].origin;
     viewFrame.origin.y += delta;
+
+#ifndef GNUSTEP
+
+    // FIXME: Implement -frameRectForContentRect: in GNUstep 
     windowFrame = [[mainView window] frameRectForContentRect: viewFrame];
+
+#else
+
+    windowFrame = viewFrame;
+    windowFrame.size.height += [[preferencesToolbar _toolbarView]
+_heightFromLayout];
+    windowFrame.origin.y -= [[preferencesToolbar _toolbarView]
+_heightFromLayout];
+    windowFrame = [NSWindow 
+        frameRectForContentRect: windowFrame styleMask: NSTitledWindowMask];
+
+#endif
     
 	[[mainView window] setFrame: windowFrame display: YES animate: YES];
 }

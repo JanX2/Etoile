@@ -1,5 +1,22 @@
 2005-08-05  Quentin Mathe <qmathe@club-internet.fr>
 
+    PreferencesKit now compiles with GNUstep.
+    * Source/GNUmakefile: Fixed in order compilation works on GNUstep.
+    * Source/GNUmakefile.postamble: Added to allow PKPrefsModulePrefPane.m 
+    compilation.
+    * Source/PKPreferencesController.m: 
+    Included NSArray(ObjectsWithValueForKey) declaration only with Cocoa.
+    (-respondsToSelector:): Fixed test equality for selector (use NULL and not
+    nil).
+    * Source/PKToolbarPreferencesController.m: 
+    Added NSArray (ObjectWithValueForKey) declaration to shut down warning.
+    (-resizePreferencesViewForView:): Hacked to workaround 
+    -[NSWindow frameRectForContentRect:] not implemented on GNUstep.
+    * Source/PKPrefPanesRegistry.m: Added NSArray (ObjectWithValueForKey) 
+    declaration to shut down warning.
+
+2005-08-05  Quentin Mathe <qmathe@club-internet.fr>
+
 	WARNING: doesn't compile with GNUstep.
 	* Headers/PreferencesKit.h: Removed PKApplicationController.h import directive.
 	

@@ -28,7 +28,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS = -Wno-import
 
-ADDITIONAL_INCLUDE_DIRS = -I../Headers
+ADDITIONAL_INCLUDE_DIRS = -I../Headers -I../Headers/BackboneCompatibility
 
 #
 # Main application
@@ -55,37 +55,42 @@ libPreferencesKit_LANGUAGES = \
 # Class files
 #
 libPreferencesKit_OBJC_FILES = \
-	PKApplicationController.m \
-	PKBundleController.m \
 	PKPreferencesController.m \
 	PKPreferencePane.m \
 	PKTableViewPreferencesController.m \
 	PKToolbarPreferencesController.m \
+	PKPrefPanesRegistry.m \
+	UKPluginsRegistry.m \
+	PKPrefsModulePrefPane.m
 
 #
 # Header files
 #
 libPreferencesKit_HEADER_FILES = \
-	PreferencePane.h \
-	PKApplicationController.h \
-	PKBundleController.h \
+	#PreferencePane.h \
 	PKPreferencesController.h \
 	PKPreferencePane.h \
 	PKTableViewPreferencesController.h \
-	PKToolbarPreferencesController.h
+	PKToolbarPreferencesController.h \
+	PKPrefPanesRegistry.h \
+	UKPluginsRegistry.h \
+	PrefsModule.h \
+	PKPrefsModulePrefPane.h
 
 libPreferencesKit_HEADER_FILES_DIR = ../Headers
 
 libPreferencesKit_HEADER_FILES_INSTALL_DIR = /PreferencesKit
 
 libPreferencesKit_HEADER_INSTALL = \
-	PreferencePane.h \
-	PKApplicationController.h \
-	PKBundleController.h \
+	#PreferencePane.h \
 	PKPreferencesController.h \
 	PKPreferencePane.h \
 	PKTableViewPreferencesController.h \
-	PKToolbarPreferencesController.h
+	PKToolbarPreferencesController.h \
+	PKPrefPanesRegistry.h \
+	UKPluginsRegistry.h \
+	PrefsModule.h \
+	PKPrefsModulePrefPane.h
 
 #
 # C files

@@ -70,13 +70,13 @@
 }
 @end
 
-#endif 
-/* NOT GNUSTEP */
-
 // FIXME: Hack to avoid compiler varning with next method -objectWithValue:forKey:
 @interface NSArray (ObjectsWithValueForKey)
 - (id) objectsWithValue: (id)value forKey: (NSString *)key;
 @end
+
+#endif 
+/* NOT GNUSTEP */
 
 // FIXME: Move -objectWithValue:forKey: method in a more appropriate place.
 
@@ -309,7 +309,7 @@ static BOOL 		inited = NO;
 
 - (BOOL) respondsToSelector: (SEL) aSelector
 {
-	if (aSelector == nil)
+	if (aSelector == NULL)
 		return NO;
 
 	if ([super respondsToSelector: aSelector])

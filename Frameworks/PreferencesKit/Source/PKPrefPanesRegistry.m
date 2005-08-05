@@ -35,6 +35,10 @@
 
 static PKPrefPanesRegistry *sharedPrefPanesRegistry;
 
+// FIXME: Will need to removed when implemented elsewhere
+@interface NSArray (ObjectWithValueForKey)
+- (id) objectWithValue: (id)value forKey: (NSString *)key;
+@end
 
 @implementation PKPrefPanesRegistry
 
