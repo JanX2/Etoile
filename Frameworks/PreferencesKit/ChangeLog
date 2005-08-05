@@ -1,4 +1,9 @@
 2005-08-05  Quentin Mathe <qmathe@club-internet.fr>
+
+	WARNING: doesn't compile with GNUstep.
+	* Headers/PreferencesKit.h: Removed PKApplicationController.h import directive.
+	
+2005-08-05  Quentin Mathe <qmathe@club-internet.fr>
 	
 	WARNING: doesn't compile with GNUstep.
 	PreferencesKit is now usable on Mac OS X.
