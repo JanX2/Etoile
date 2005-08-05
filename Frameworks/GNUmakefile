@@ -133,7 +133,7 @@ ifeq ($(iconkit), yes)
 endif
 
 ifeq ($(preferenceskit), yes)
-   #SUBPROJECTS += PreferencesKit
+   SUBPROJECTS += PreferencesKit
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
