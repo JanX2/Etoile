@@ -1,3 +1,8 @@
+2005-08-05 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Headers/OgreKit.h:
+	Remove unnecessary include.
+
 2005-07-31 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Source/TestOGRegularExpression.m:
