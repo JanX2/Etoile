@@ -27,11 +27,13 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol UKTest;
+
 @protocol PKPreferencePaneOwner;
 @class PKPreferencePane;
 
 
-@interface PKPreferencesController: NSObject <PKPreferencePaneOwner>
+@interface PKPreferencesController: NSObject <PKPreferencePaneOwner, UKTest>
 {
 	IBOutlet id	owner; /* PKPreferencesView or NSWindow */
     IBOutlet NSView *preferencesView; /* Necessary only when owner is not PKPreferencesView */
@@ -56,5 +58,6 @@
 - (id) owner;
 - (NSView *) preferencesView;
 - (PKPreferencePane *) selectedPreferencePane;
+
 
 @end

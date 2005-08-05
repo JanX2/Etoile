@@ -28,10 +28,12 @@
 #import <Foundation/Foundation.h>
 #import "UKPluginsRegistry.h"
 
+@protocol UKTest;
+
 @class PKPreferencePane;
 
 
-@interface PKPrefPanesRegistry : UKPluginsRegistry
+@interface PKPrefPanesRegistry : UKPluginsRegistry <UKTest>
 {
 
 }
@@ -40,5 +42,6 @@
 
 - (void) loadAllPlugins;
 - (PKPreferencePane *) preferencePaneAtPath: (NSString *)path;
+- (PKPreferencePane *) preferencePaneWithIdentifier: (NSString *)identifier;
 
 @end

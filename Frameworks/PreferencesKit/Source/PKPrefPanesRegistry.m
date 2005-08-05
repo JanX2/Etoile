@@ -25,23 +25,38 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef HAVE_UKTEST
+#import <UnitKit/UnitKit.h>
+#endif
+
 #import "PKPrefsModulePrefPane.h"
+#import "PKPreferencePane.h"
 #import "PKPrefPanesRegistry.h"
 
-
-static PKPrefPanesRegistry *sharedRegistry = nil;
+static PKPrefPanesRegistry *sharedPrefPanesRegistry;
 
 
 @implementation PKPrefPanesRegistry
 
++ (void) initialize
+{
+    if (self == [PKPrefPanesRegistry class])
+    {
+        sharedPrefPanesRegistry = [[PKPrefPanesRegistry alloc] init];
+    }
+}
+
 + (id) sharedRegistry
-{	
-	if(sharedRegistry == nil)
-	{
-		sharedRegistry = [[self alloc] init];
-	}
-	
-	return sharedRegistry;
+{	    
+    return sharedPrefPanesRegistry;
+}
+
+- (id) init
+{
+    self = [super init];
+    [self setInstantiate: NO];
+
+    return self;
 }
 
 - (void) loadAllPlugins
@@ -50,12 +65,19 @@ static PKPrefPanesRegistry *sharedRegistry = nil;
 	[self loadPluginsOfType: @"prefsModule"];
 }
 
+#ifdef HAVE_UKTEST
+- (void) testPreferencePaneAtPath
+{
+    UKFalse([self instantiate]);
+}
+#endif
+
 - (PKPreferencePane *) preferencePaneAtPath: (NSString *)path
 {
 	NSMutableDictionary *info = [self loadPluginForPath: path];
 	PKPreferencePane *pane = [info objectForKey: @"instance"];
 	
-	if(pane == nil)
+	if (pane == nil)
 	{
 		NSString *type = [[info objectForKey: @"path"] pathExtension];
 		
@@ -68,19 +90,36 @@ static PKPrefPanesRegistry *sharedRegistry = nil;
 		{
 			Class mainClass = [[info objectForKey: @"class"] pointerValue];
             id module;
+            NSImage *image;
+            NSString *name;
             
             pane = [[[PKPrefsModulePrefPane alloc] initWithBundle: [info objectForKey: @"bundle"]] autorelease];
 			module = [[[mainClass alloc] initWithOwner: (PKPrefsModulePrefPane *)pane] autorelease];	/* Pane takes over ownership of the module. */
-			[info setObject: [module buttonImage] forKey: @"image"];
-			[info setObject: [module buttonCaption] forKey: @"name"];
+			image = [module buttonImage];
+            if (image == nil)
+                image = [NSImage imageNamed: @"NSApplicationIcon"]; /* Falling back on our default icon */
+            [info setObject: image forKey: @"image"];
+            name = [module buttonCaption];
+            if (name == nil)
+                name = @"Unknown";
+			[info setObject: name forKey: @"name"];
 		}
 		
 		[info setObject: pane forKey: @"instance"];
-		[pane loadMainView];
 	}
+    [pane loadMainView];
 	
 	return pane;
 }
 
+- (PKPreferencePane *) preferencePaneWithIdentifier: (NSString *)identifier
+{
+    NSDictionary *plugin = [[self loadedPlugins] objectWithValue: identifier forKey: @"identifier"];
+    PKPreferencePane *pane;
+    
+    pane = [self preferencePaneAtPath: [plugin objectForKey: @"path"]];
+    
+    return pane;
+}
 
 @end

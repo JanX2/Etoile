@@ -52,6 +52,24 @@ variables are not inherited unlike class variables in other languages. */
     return preferencesTableView;
 }
 
+- (void) resizePreferencesViewForView: (NSView *)theView
+{
+    NSView *mainViewContainer = [self preferencesView];
+    
+    /* Resize window so content area is large enough for prefs: */
+	NSRect box = [mainViewContainer frame];
+	NSRect wBox = [[mainViewContainer window] frame];
+	NSSize		lowerRightDist;
+	lowerRightDist.width = wBox.size.width -(box.origin.x +box.size.width);
+	lowerRightDist.height = wBox.size.height -(box.origin.y +box.size.height);
+	
+	box.size.width = lowerRightDist.width +box.origin.x +[theView frame].size.width;
+	box.size.height = lowerRightDist.height +box.origin.y +[theView frame].size.height;
+	box.origin.x = wBox.origin.x;
+	box.origin.y = wBox.origin.y -(box.size.height -wBox.size.height);
+	[[mainViewContainer window] setFrame: box display: YES animate: YES];
+}
+
 /*
  * Table view delegate methods
  */

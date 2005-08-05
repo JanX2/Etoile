@@ -54,12 +54,13 @@
     Each plugin is represented by an NSMutableDictionary to which you can add your
     own entries as needed. The keys UKPluginRegistry adds to this dictionary are:
     
-    bundle  -   NSBundle instance for this plugin.
-    image   -   Icon (NSImage) of the plugin (for display in toolbars etc.)
-    name    -   Display name of the plugin (for display in lists, toolbars etc.)
-    path    -   Full path to the bundle.
-    class   -   NSValue containing pointer to the principal class (type Class)
-                for this bundle, so you can instantiate it.
-    instance -  If instantiate == YES, this contains an instance of the principal
-                class, instantiated using alloc+init.
+    bundle      - NSBundle instance for this plugin.
+    identifier  - Unique identifier for this plugin (bundle identifier in current implementation)
+    image       - Icon (NSImage) of the plugin (for display in toolbars etc.)
+    name        - Display name of the plugin (for display in lists, toolbars etc.)
+    path        - Full path to the bundle.
+    class       - NSValue containing pointer to the principal class (type Class)
+                  for this bundle, so you can instantiate it.
+    instance    - If instantiate == YES, this contains an instance of the principal
+                  class, instantiated using alloc+init.
  */

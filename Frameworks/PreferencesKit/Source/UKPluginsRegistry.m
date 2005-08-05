@@ -32,18 +32,6 @@
 #import <UnitKit/UnitKit.h>
 #endif
 
-#ifdef GNUSTEP
-#define EXECUTABLE_ENTRY @"NSExecutable"
-#define NAME_ENTRY @"ApplicationName"
-#define ICON_FILE_ENTRY @"NSIcon"
-#define BUNDLE_INDENTIFIER_ENTRY @"CFBundleIdentifier"
-#else
-#define EXECUTABLE_ENTRY @"CFBundleExecutable"
-#define NAME_ENTRY @"CFBundleName"
-#define ICON_FILE_ENTRY @"CFBundleIconFile"
-#define BUNDLE_INDENTIFIER_ENTRY @"CFBundleIdentifier"
-#endif
-
 static NSFileManager *fm = nil;
 
 
@@ -118,7 +106,9 @@ static NSFileManager *fm = nil;
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSAllDomainsMask, YES);
     NSEnumerator *e = [paths objectEnumerator];
 	NSString *path = nil;
-	NSString *appName = [[bundle infoDictionary] objectForKey: EXECUTABLE_ENTRY];
+	NSString *appName = [[bundle infoDictionary] objectForKey: @"NSExecutable"];
+    if (appName == nil)
+        appName = [[bundle infoDictionary] objectForKey: @"CFBundleExecutable"];
 	NSString *pluginsDir = [[@"Application Support" stringByAppendingPathComponent: appName] 
         stringByAppendingPathComponent: @"PlugIns"];
 	
@@ -202,36 +192,61 @@ static NSFileManager *fm = nil;
 {
 	NSMutableDictionary *info = [pluginPaths objectForKey: path];
 	
-	if(info == nil)
+	if (info == nil || [info count] == 0)
 	{
 		NSBundle *bundle = [NSBundle bundleWithPath: path];
-		NSString *prefPaneName = [[bundle infoDictionary] objectForKey: NAME_ENTRY];
-		if (prefPaneName == nil)
-			prefPaneName = @"Unknown";
-		
+        NSString *identifier;
+        NSImage *image;
+		NSString *name;
+        
+        /* We retrieve plugin's name */
+        
+        name = [[bundle infoDictionary] objectForKey: @"CFBundleName"];
+        
+        if (name == nil)
+			name = [[bundle infoDictionary] objectForKey: @"ApplicationName"];
+        if (name == nil)
+			name = [[bundle infoDictionary] objectForKey: @"NSExecutable"];
+		if (name == nil)
+			name = @"Unknown";
+        
+        /* We retrieve plugin's identifier */
+        
+        identifier = [bundle bundleIdentifier];
+        
+		if (identifier == nil)
+        {
+            NSLog(@"Plugin %@ is missing an identifier, it may be impossible to use it.", name);
+
+            identifier = path; /* When no identifier is available, falling back on path otherwise. */
+        }
+        
 		/* Get icon, falling back on file icon when needed, or in worst case using our app icon: */
 		NSString *iconFileName = [[bundle infoDictionary] objectForKey: @"NSPrefPaneIconFile"];
-        NSString *imageFileName = nil;
-        NSImage *image;
+        NSString *iconPath = nil;
 		
         if(iconFileName == nil)
-			iconFileName = [[bundle infoDictionary] objectForKey: ICON_FILE_ENTRY];
+			iconFileName = [[bundle infoDictionary] objectForKey: @"NSIcon"];
+        if(iconFileName == nil)
+			iconFileName = [[bundle infoDictionary] objectForKey: @"ApplicationIcon"];
+        if(iconFileName == nil)
+			iconFileName = [[bundle infoDictionary] objectForKey: @"CFBundleIcon"];
 
 		if (iconFileName != nil) 
-            imageFileName = [bundle pathForResource: iconFileName ofType: @""];
+            iconPath = [bundle pathForImageResource: iconFileName];
             
-        if (imageFileName == nil)
+        if (iconPath == nil)
         {
             image = [NSImage imageNamed: @"NSApplicationIcon"];
         }
         else
         {
-            image = [[[NSImage alloc] initWithContentsOfFile: imageFileName] autorelease];
+            image = [[[NSImage alloc] initWithContentsOfFile: iconPath] autorelease];
         }
 		
 		/* Add a new entry for this pane to our list: */
-		info = [NSMutableDictionary dictionaryWithObjectsAndKeys: 
-            bundle, @"bundle", image, @"image", prefPaneName, @"name", path, @"path", 
+		info = [NSMutableDictionary dictionaryWithObjectsAndKeys: bundle, @"bundle", 
+            identifier, @"identifier", image, @"image", name, @"name", path, @"path", 
             [NSValue valueWithPointer: [bundle principalClass]], @"class", nil];
 
         if (instantiate)
@@ -256,7 +271,14 @@ static NSFileManager *fm = nil;
 
 - (NSArray *) loadedPlugins
 {
-	return plugins;
+	if ([plugins count] > 0)
+    {
+        return plugins;
+    }
+    else
+    {
+        return nil;
+    }
 }
 
 

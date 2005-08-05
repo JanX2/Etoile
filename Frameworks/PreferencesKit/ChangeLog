@@ -1,3 +1,40 @@
+2005-08-05  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile with GNUstep.
+	PreferencesKit is now usable on Mac OS X.
+	* PreferencesKit.xcodeproj: Updated
+    * Headers/UKPluginsRegistry.h: Declared new documented plugin dictionary keys.
+    * Source/UKPluginsRegistry.m:
+    (-loadPluginsOfType:): Took in account 'CFBundleExecutable' variant and not 
+    only 'NSExecutable'.
+    (-loadPluginForPath:): Improved a lot (we take in account more 'identifier',
+    'image' and 'name' related plugin dictionary possible values).
+    (-loadedPlugins): Added a check to return nil when plugins array is empty.
+    * Headers/PKPrefPanesRegistry.h: Declared UnitKit protocol UKTest.
+	* Source/PKPrefPanesRegistry.m: 
+	Tweaked a bit shared instance creation, 
+	(-preferencePaneAtPath:): Took in account new 'image' and 'name' plugin 
+	dictionary values have to support for 'prefsModule' type.
+	(-testPreferencePaneAtPath:): Added.
+	(-preferencePaneWithIdentifier:): Added.
+	* Source/PKTableViewPreferencesController.m (-resizePreferencesViewForView:): Added.
+    * Source/PKToolbarPreferencesController.m:
+    (-initUI): Modified to set up toolbar more completely.
+    (-resizePreferencesViewForView:): Added.
+    (-switchView:): Added.
+    (-toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:): Fixed plugin 
+    identifier retrieve code and renamed 'info' dictionary variable to 'plugin'.
+	* Headers/PKPreferencesController.h:
+    * Source/PKPreferencesController.m:
+    Added a complete tests set.
+    (-awakeFromNib): Added a check to load pane safely.
+    (-[NSArray objectsWithValue:forKey:]): Added NSArray method with a category 
+    for Cocoa compatibility. 
+    (-[NSArray objectWithValue:forKey:]): Added NSArray method with a category.
+    (-resizePreferencesViewForView:): Added (abstract).
+    (-updateUIForPreferencePane:): Refactored with the previous method.
+    (-mainViewWaitSign): Added.
+    
 2005-07-01  Quentin Mathe <qmathe@club-internet.fr>
 	
 	WARNING: doesn't compile with GNUstep.

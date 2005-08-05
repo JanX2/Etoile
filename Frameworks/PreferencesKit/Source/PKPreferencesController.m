@@ -26,14 +26,73 @@
  */
 
 #import <AppKit/AppKit.h>
+
+#ifdef HAVE_UKTEST
+#import <UnitKit/UnitKit.h>
+#endif
+
 #import "PrefsModule.h"
 #import "PKPrefPanesRegistry.h"
 #import "PKPreferencePane.h"
 #import "PKPreferencesController.h"
 
 
+#ifndef GNUSTEP
+
+// FIXME: Move such GNUstep imported extensions in a Cocoa compatibility file.
+// In GNUstep, this method is located in AppKit within GSToolbar.
+
+@implementation NSArray (ObjectsWithValueForKey)
+
+- (NSArray *) objectsWithValue: (id)value forKey: (NSString *)key 
+{
+    NSMutableArray *result = [NSMutableArray array];
+    NSArray *values = [self valueForKey: key];
+    int i, n = 0;
+    
+    if (values == nil)
+        return nil;
+    
+    n = [values count];
+    
+    for (i = 0; i < n; i++)
+    {
+        if ([[values objectAtIndex: i] isEqual: value])
+        {
+            [result addObject: [self objectAtIndex: i]];
+        }
+    }
+    
+    if ([result count] == 0)
+        return nil;
+    
+    return result;
+}
+@end
+
+#endif 
+/* NOT GNUSTEP */
+
+// FIXME: Hack to avoid compiler varning with next method -objectWithValue:forKey:
+@interface NSArray (ObjectsWithValueForKey)
+- (id) objectsWithValue: (id)value forKey: (NSString *)key;
+@end
+
+// FIXME: Move -objectWithValue:forKey: method in a more appropriate place.
+
+@implementation NSArray (ObjectWithValueForKey)
+
+- (id) objectWithValue: (id)value forKey: (NSString *)key
+{
+    return [[self objectsWithValue: value forKey: key] objectAtIndex: 0];
+}
+
+@end
+
 @interface PKPreferencesController (Private)
+- (void) initExtra;
 - (void) windowWillClose: (NSNotification *)aNotification;
+- (NSView *) mainViewWaitSign;
 @end
 
 @implementation PKPreferencesController
@@ -56,8 +115,7 @@ static BOOL 		inited = NO;
     {
 		self = [super init];
         
-        /* Walk PrefPanes folder and list them: */
-        [[PKPrefPanesRegistry sharedRegistry] loadAllPlugins];
+        [self initExtra];
         
         inited = NO;
 	}
@@ -65,15 +123,36 @@ static BOOL 		inited = NO;
 	return sharedInstance = self;	
 }
 
+- (void) initExtra
+{
+    /* Walk PrefPanes folder and list them: */
+    [[PKPrefPanesRegistry sharedRegistry] loadAllPlugins];
+}
+
 /* Initialize stuff that can't be set in the nib/gorm file. */
 - (void) awakeFromNib
 {
-    NSArray *prefPanes = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-	NSString *path = [[prefPanes objectAtIndex: 0] objectForKey: @"path"];
+    NSArray *prefPanes; 
+	NSString *path;
+    
+    sharedInstance = self;
+    
+    // NOTE: [self initExtra]; is not needed here because -init is called when nib is loaded (checked on Cocoa)
+    
+    prefPanes = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
+    
+    if (prefPanes != nil)
+    {
+        path = [[prefPanes objectAtIndex: 0] objectForKey: @"path"];
 	
-    /* Load a first pane. */
-	[self updateUIForPreferencePane: 
-        [[PKPrefPanesRegistry sharedRegistry] preferencePaneAtPath: path]];
+        /* Load a first pane. */
+        [self updateUIForPreferencePane: 
+            [[PKPrefPanesRegistry sharedRegistry] preferencePaneAtPath: path]];
+    }
+    else
+    {
+        NSLog(@"No PreferencePane loaded are available.");
+    }
     
 	/* Let the system keep track of where it belongs */
     if ([owner isKindOfClass: [NSWindow class]])
@@ -94,10 +173,18 @@ static BOOL 		inited = NO;
     
 }
 
-/* Abstract method */
+/*
+ * Abstract methods
+ */
+
 - (NSView *) preferencesListView
 {
     return nil;
+}
+
+- (void) resizePreferencesViewForView: (NSView *)view
+{
+
 }
 
 /*
@@ -107,7 +194,7 @@ static BOOL 		inited = NO;
 /* Main bottleneck for switching panes: */
 - (BOOL) updateUIForPreferencePane: (PKPreferencePane *)requestedPane
 {
-    NSView *mainViewContainer = preferencesView;
+    NSView *mainViewContainer = [self preferencesView];
     
     if (currentPane != nil)	/* Have a previous pane that needs unloading? */
 	{
@@ -127,7 +214,7 @@ static BOOL 		inited = NO;
 				case NSUnselectLater:
 					nextPane = requestedPane;	/* Remember next pane for later. */
 					return NO;
-					break;
+                    break;
                     
 				case NSUnselectNow:
 					nextPane = nil;
@@ -148,14 +235,17 @@ static BOOL 		inited = NO;
 	}
 	
 	/* Display "please wait" message in middle of content area: */
-	NSRect box = [mainViewWaitSign frame];
-	NSRect wBox = [mainViewContainer frame];
-	box.origin.x = truncf((wBox.size.width -box.size.width) /2);
-	box.origin.y = truncf((wBox.size.height -box.size.height) /2);
-	[mainViewWaitSign setFrameOrigin: box.origin];
-	[mainViewContainer addSubview: mainViewWaitSign];
-	[mainViewContainer setNeedsDisplay: YES];
-	[mainViewContainer display];
+    if (mainViewWaitSign != nil)
+    {
+        NSRect box = [mainViewWaitSign frame];
+        NSRect wBox = [mainViewContainer frame];
+        box.origin.x = truncf(abs(wBox.size.width -box.size.width) /2);
+        box.origin.y = truncf(abs(wBox.size.height -box.size.height) /2);
+        [mainViewWaitSign setFrameOrigin: box.origin];
+        [mainViewContainer addSubview: mainViewWaitSign];
+        [mainViewContainer setNeedsDisplay: YES];
+        [mainViewContainer display];
+    }
 	
 	/* Get main view for next pane: */
 	[requestedPane setOwner: self];
@@ -163,20 +253,11 @@ static BOOL 		inited = NO;
 	[requestedPane willSelect];
 	
 	/* Resize window so content area is large enough for prefs: */
-	box = [mainViewContainer frame];
-	wBox = [[mainViewContainer window] frame];
-	NSSize		lowerRightDist;
-	lowerRightDist.width = wBox.size.width -(box.origin.x +box.size.width);
-	lowerRightDist.height = wBox.size.height -(box.origin.y +box.size.height);
-	
-	box.size.width = lowerRightDist.width +box.origin.x +[theView frame].size.width;
-	box.size.height = lowerRightDist.height +box.origin.y +[theView frame].size.height;
-	box.origin.x = wBox.origin.x;
-	box.origin.y = wBox.origin.y -(box.size.height -wBox.size.height);
-	[[mainViewContainer window] setFrame: box display: YES animate: YES];
+	[self resizePreferencesViewForView: theView];
 	
 	/* Remove "wait" sign, show new pane: */
-	[mainViewWaitSign removeFromSuperview];
+    if (mainViewWaitSign != nil)
+        [mainViewWaitSign removeFromSuperview];
 	[mainViewContainer addSubview: theView];
 	
 	/* Finish up by setting up key views and remembering new current pane: */
@@ -275,6 +356,18 @@ static BOOL 		inited = NO;
     return currentPane;
 }
 
+- (NSView *) mainViewWaitSign
+{
+    if (mainViewWaitSign == nil)
+    {
+        return [self preferencesView];
+    }
+    else
+    {
+        return mainViewWaitSign;
+    }
+}
+
 /*
  * Notification methods
  */
@@ -289,9 +382,9 @@ static BOOL 		inited = NO;
  * Action methods
  */
 
-- (void) switchView: (id)sender
+- (IBAction) switchView: (id)sender
 {
-	//[self updateUIForPreferencePane: [preferences objectForKey: [sender label]]];
+    // NOTE: Subclass responsability
 }
 
 @end

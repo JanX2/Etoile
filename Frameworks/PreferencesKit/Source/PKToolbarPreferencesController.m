@@ -39,7 +39,8 @@
 
 - (void) initUI
 {
-	preferencesToolbar = [[NSToolbar alloc] initWithIdentifier: @"PrefsWindowToolbar"];
+    
+    preferencesToolbar = [[NSToolbar alloc] initWithIdentifier: @"PrefsWindowToolbar"];
     
     [super initUI];
     
@@ -48,6 +49,12 @@
     if ([owner isKindOfClass: [NSWindow class]])
     {
         [(NSWindow *)owner setToolbar: preferencesToolbar];
+        
+        PKPreferencePane *pane = [self selectedPreferencePane];
+        NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
+        NSDictionary *plugin = [plugins objectWithValue: pane forKey: @"instance"];
+
+        [preferencesToolbar setSelectedItemIdentifier: [plugin objectForKey: @"identifier"]];
     }
     else
     {
@@ -66,6 +73,32 @@
     return nil;
 }
 
+- (void) resizePreferencesViewForView: (NSView *)paneView
+{
+ 	NSView *mainView = [self preferencesView];
+    NSRect viewFrame = [paneView frame];
+	NSRect windowFrame;
+    int delta;
+    
+     /* Resize window so content area is large enough for prefs: */
+    delta = [mainView frame].size.height - viewFrame.size.height;
+    viewFrame.origin = [[mainView window] frame].origin;
+    viewFrame.origin.y += delta;
+    windowFrame = [[mainView window] frameRectForContentRect: viewFrame];
+    
+	[[mainView window] setFrame: windowFrame display: YES animate: YES];
+}
+
+- (IBAction) switchView: (id)sender
+{
+	NSString *identifier = [sender itemIdentifier];
+    PKPreferencePane *pane;
+    
+    pane = [[PKPrefPanesRegistry sharedRegistry] preferencePaneWithIdentifier: identifier];
+    
+    [self updateUIForPreferencePane: pane];
+}
+
 /*
  * Toolbar delegate methods
  */
@@ -77,11 +110,10 @@
     NSToolbarItem *toolbarItem = 
         [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
     NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-    NSArray *bundles = [plugins valueForKey: @"bundle"];
-	NSDictionary *info = [bundles objectWithValue: identifier forKey: @"bundleIdentifier"];
+    NSDictionary *plugin = [plugins objectWithValue: identifier forKey: @"identifier"];
 
-	[toolbarItem setLabel: [info objectForKey: @"name"]];
-	[toolbarItem setImage: [info objectForKey: @"image"]];
+	[toolbarItem setLabel: [plugin objectForKey: @"name"]];
+	[toolbarItem setImage: [plugin objectForKey: @"image"]];
 	
     [toolbarItem setTarget: self];
     [toolbarItem setAction: @selector(switchView:)];
@@ -97,7 +129,7 @@
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar 
 {    
     NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-	NSArray *identifiers = [[plugins valueForKey: @"bundle"] valueForKey: @"bundleIdentifier"];
+	NSArray *identifiers = [plugins valueForKey: @"identifier"];
     
     return identifiers;
 }
