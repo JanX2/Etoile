@@ -1,3 +1,7 @@
+2005-08-07  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/GNUmakefile: Fixed issue which prevented to have headers installed.
+
 2005-08-05  Quentin Mathe <qmathe@club-internet.fr>
 
     PreferencesKit now compiles with GNUstep.
