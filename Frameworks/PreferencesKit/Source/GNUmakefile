@@ -30,6 +30,8 @@ ADDITIONAL_OBJCFLAGS = -Wno-import
 
 ADDITIONAL_INCLUDE_DIRS = -I../Headers -I../Headers/BackboneCompatibility
 
+GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
+
 #
 # Main application
 #
@@ -64,10 +66,9 @@ libPreferencesKit_OBJC_FILES = \
 	PKPrefsModulePrefPane.m
 
 #
-# Header files
+# Header files (to install)
 #
 libPreferencesKit_HEADER_FILES = \
-	#PreferencePane.h \
 	PKPreferencesController.h \
 	PKPreferencePane.h \
 	PKTableViewPreferencesController.h \
@@ -75,22 +76,11 @@ libPreferencesKit_HEADER_FILES = \
 	PKPrefPanesRegistry.h \
 	UKPluginsRegistry.h \
 	PrefsModule.h \
-	PKPrefsModulePrefPane.h
+	PreferencesKit.h
 
 libPreferencesKit_HEADER_FILES_DIR = ../Headers
 
 libPreferencesKit_HEADER_FILES_INSTALL_DIR = /PreferencesKit
-
-libPreferencesKit_HEADER_INSTALL = \
-	#PreferencePane.h \
-	PKPreferencesController.h \
-	PKPreferencePane.h \
-	PKTableViewPreferencesController.h \
-	PKToolbarPreferencesController.h \
-	PKPrefPanesRegistry.h \
-	UKPluginsRegistry.h \
-	PrefsModule.h \
-	PKPrefsModulePrefPane.h
 
 #
 # C files
