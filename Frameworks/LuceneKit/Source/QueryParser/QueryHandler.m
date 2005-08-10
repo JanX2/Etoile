@@ -47,7 +47,6 @@
 
 - (void) token: (NSString *) token
 {
-  NSLog(@"token %@", token);
   if STRING_EQUAL(@"(")
     {
       if (parenthesesCount == 0)
