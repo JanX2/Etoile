@@ -1,3 +1,8 @@
+2005-08-10 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Source/QueryParser:
+    Initial import of LCQueryParser.
+
 2005-07-29 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Headers/LCIndexManager.h:

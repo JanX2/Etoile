@@ -4,11 +4,20 @@
 #include <LuceneKit/Search/LCTermQuery.h>
 #include <LuceneKit/LCMetadataAttribute.h>
 #include <LuceneKit/GNUstep/GNUstep.h>
+#include "CodeParser.h"
+#include "QueryHandler.h"
 
 @implementation LCQueryParser
 
 + (LCQuery *) parse: (NSString *) query
 {
+#if 1
+  QueryHandler *handler = [[QueryHandler alloc] init];
+  CodeParser *parser = [[CodeParser alloc] initWithCodeHandler: handler withString: query];
+  [parser parse];
+//  NSLog(@"%@", [handler query]);
+  return [handler query];
+#else
 	NSArray *subclauses = [query componentsSeparatedByString: @" "];
 	
 	LCBooleanQuery *bq = [[LCBooleanQuery alloc] init];
@@ -48,6 +57,7 @@
     }
 	
 	return bq;
+#endif
 }
 
 @end
