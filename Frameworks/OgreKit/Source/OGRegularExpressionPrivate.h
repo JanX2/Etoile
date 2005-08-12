@@ -17,6 +17,7 @@
 #include <Foundation/Foundation.h>
 #include <OgreKit/OGRegularExpression.h>
 #include <OgreKit/OGString.h>
+#include <oniguruma.h>
 
 @class OGRegularExpression;
 
