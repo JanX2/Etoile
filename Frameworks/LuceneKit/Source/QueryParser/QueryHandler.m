@@ -151,7 +151,8 @@
              term = [[LCTerm alloc] initWithField: f 
                          text: [token substringToIndex: [token length]-1]];
              q = [[LCPrefixQuery alloc] initWithTerm: term];
-
+             /* Disable coordination for prefix */
+             [_query setCoordinationDisabled: YES];
             }
           else
             { 

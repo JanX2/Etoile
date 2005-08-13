@@ -46,6 +46,7 @@ static int maxClauseCount = 1024;
 	return self;
 }
 - (BOOL) isCoordinationDisabled { return disableCoord; }
+- (void) setCoordinationDisabled: (BOOL) disable { disableCoord = disable; }
 - (LCSimilarity *) similarity: (LCSearcher *) searcher
 {
 	LCSimilarity *result = [super similarity: searcher];

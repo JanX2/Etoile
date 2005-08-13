@@ -22,6 +22,8 @@
 - (id) initWithCoordination: (BOOL) disableCoord;
 
 - (BOOL) isCoordinationDisabled;
+- (void) setCoordinationDisabled: (BOOL) disable;
+
 - (LCSimilarity *) similarity: (LCSearcher *) searcher;
 - (void) addQuery: (LCQuery *) query
          required: (BOOL) required

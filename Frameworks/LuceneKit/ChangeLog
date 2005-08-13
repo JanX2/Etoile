@@ -1,3 +1,7 @@
+2005-08-13 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Disable coordination for prefix query.
+
 2005-08-10 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/QueryParser:
