@@ -1,3 +1,9 @@
+2005-08-14  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/GNUmakefile.postamble: Added symbolic link creation in order to
+    have BackboneCompatibility headers installed and BackboneCompatibility
+    sources virtually put together with other sources when compilation occurs.
+
 2005-08-07  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/GNUmakefile: Fixed issue which prevented to have headers installed.
