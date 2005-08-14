@@ -1,32 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
-	<key>CFBundleExecutable</key>
-	<string>SamplePrefPane</string>
-	<key>CFBundleIconFile</key>
-	<string></string>
-	<key>CFBundleIdentifier</key>
-	<string>org.etoile-project.sampleprefpane</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>My PreferencePane</string>
-	<key>CFBundlePackageType</key>
-	<string>BNDL</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
-	<key>NSMainNibFile</key>
-	<string>SamplePrefPane</string>
-	<key>NSPrefPaneIconFile</key>
-	<string>SamplePrefPaneIcon.tiff</string>
-	<key>NSPrefPaneIconLabel</key>
-	<string>SamplePrefPane</string>
-	<key>NSPrincipalClass</key>
-	<string>SamplePrefPane</string>
-</dict>
-</plist>
+{
+    CFBundleIdentifier = "org.etoile-project.sampleprefpane";
+    Authors = (
+        "Uli Kusterer <witness.of.teachtext@gmx.net>",
+        "Quentin Mathé <qmathe@club-internet.fr>"
+    ); 
+    Copyright = "Uli Kusterer"; 
+    CopyrightDescription = "Copyright 2005 M. Uli Kusterer."; 
+    FullVersionID = "0.1";
+    URL = ""; 
+}
