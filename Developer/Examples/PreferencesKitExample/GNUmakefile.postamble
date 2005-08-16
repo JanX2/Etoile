@@ -33,9 +33,10 @@ endif
 before-all::
 
 after-all::
-	mkdir -p $(CURDIR)/PreferencesKitExample.app/PlugIns; \
-	cp -Rfp $(CURDIR)/SamplePrefPane/SamplePrefPane.prefPane $(CURDIR)/PreferencesKitExample.$(extension)/PlugIns/; \
-	cp -Rfp $(CURDIR)/SamplePrefsModule/SamplePrefsModule.prefsModule $(CURDIR)/PreferencesKitExample.$(extension)/PlugIns/;
+	mkdir -p $(CURDIR)/PreferencesKitExample.$(extension)/PlugIns; \
+	cp -Rfp $(CURDIR)/SamplePrefPane/SamplePrefPane.prefPane \
+	$(CURDIR)/SamplePrefsModule/SamplePrefsModule.prefsModule \
+	$(CURDIR)/PreferencesKitExample.$(extension)/PlugIns/; \
 
 after-clean::
 
