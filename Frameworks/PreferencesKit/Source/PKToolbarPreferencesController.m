@@ -58,22 +58,16 @@
 
 - (void) initUI
 {
-    
-    preferencesToolbar = [[NSToolbar alloc] initWithIdentifier: @"PrefsWindowToolbar"];
-    
-    [super initUI];
-    
+    preferencesToolbar = 
+        [[NSToolbar alloc] initWithIdentifier: @"PrefsWindowToolbar"];
+
 	[preferencesToolbar setDelegate: self];
 	[preferencesToolbar setAllowsUserCustomization: NO];
+    
     if ([owner isKindOfClass: [NSWindow class]])
     {
         [(NSWindow *)owner setToolbar: preferencesToolbar];
-        
-        PKPreferencePane *pane = [self selectedPreferencePane];
-        NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-        NSDictionary *plugin = [plugins objectWithValue: pane forKey: @"instance"];
 
-        [preferencesToolbar setSelectedItemIdentifier: [plugin objectForKey: @"identifier"]];
     }
     else
     {
@@ -81,10 +75,6 @@
             not an NSWindow instance.");
         [preferencesToolbar release];
     }
-	
-    //inited = YES;
-	
-	//NSDebugLog(@"UI inited");
 }
 
 - (NSView *) preferencesListView
@@ -92,46 +82,66 @@
     return nil;
 }
 
+- (NSView *) preferencesView
+{
+    if (preferencesView == nil && [owner isKindOfClass: [NSWindow class]])
+    {
+        NSView *contentView;
+        
+        // NOTE: With GNUstep, content view currently includes the toolbar
+        // view.
+        #ifdef GNUSTEP
+        contentView = [owner contentViewWithoutToolbar];
+        #else
+        contentView = [owner contentView];
+        #endif
+
+        return contentView;
+    }
+    
+    return preferencesView;
+}
+
 - (void) resizePreferencesViewForView: (NSView *)paneView
 {
  	NSView *mainView = [self preferencesView];
-    NSRect viewFrame = [paneView frame];
+    NSRect paneViewFrame = [paneView frame];
 	NSRect windowFrame;
-    int delta;
-    
-     /* Resize window so content area is large enough for prefs: */
-    delta = [mainView frame].size.height - viewFrame.size.height;
-    viewFrame.origin = [[mainView window] frame].origin;
-    viewFrame.origin.y += delta;
 
 #ifndef GNUSTEP
 
     // FIXME: Implement -frameRectForContentRect: in GNUstep 
-    windowFrame = [[mainView window] frameRectForContentRect: viewFrame];
+    windowFrame = [[mainView window] frameRectForContentRect: paneViewFrame];
+
+    [[mainView window] setFrame: windowFrame display: YES animate: YES];
 
 #else
-
-    windowFrame = viewFrame;
-    windowFrame.size.height += [[preferencesToolbar _toolbarView]
-_heightFromLayout];
-    windowFrame.origin.y -= [[preferencesToolbar _toolbarView]
-_heightFromLayout];
-    windowFrame = [NSWindow 
-        frameRectForContentRect: windowFrame styleMask: NSTitledWindowMask];
-
-#endif
+    NSRect mainViewFrame = [mainView frame];
     
-	[[mainView window] setFrame: windowFrame display: YES animate: YES];
+    /* Resize window so content area is large enough for prefs: */
+    mainViewFrame.size = paneViewFrame.size;
+    mainViewFrame.size.height += 
+        [[preferencesToolbar _toolbarView] frame].size.height;
+    mainViewFrame.origin = [[mainView window] frame].origin;
+    windowFrame = [NSWindow frameRectForContentRect: mainViewFrame 
+        styleMask: [[mainView window] styleMask]];
+
+    // FIXME: It looks like animate option is not working well on GNUstep.
+    [[mainView window] setFrame: windowFrame display: YES animate: NO];
+#endif
+	
+}
+
+- (void) selectPreferencePaneWithIdentifier: (NSString *)identifier
+{
+    [super selectPreferencePaneWithIdentifier: identifier];
+
+    [preferencesToolbar setSelectedItemIdentifier: identifier];
 }
 
 - (IBAction) switchView: (id)sender
 {
-	NSString *identifier = [sender itemIdentifier];
-    PKPreferencePane *pane;
-    
-    pane = [[PKPrefPanesRegistry sharedRegistry] preferencePaneWithIdentifier: identifier];
-    
-    [self updateUIForPreferencePane: pane];
+    [self selectPreferencePaneWithIdentifier: [sender itemIdentifier]];
 }
 
 /*
@@ -145,7 +155,8 @@ _heightFromLayout];
     NSToolbarItem *toolbarItem = 
         [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
     NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-    NSDictionary *plugin = [plugins objectWithValue: identifier forKey: @"identifier"];
+    NSDictionary *plugin = 
+        [plugins objectWithValue: identifier forKey: @"identifier"];
 
 	[toolbarItem setLabel: [plugin objectForKey: @"name"]];
 	[toolbarItem setImage: [plugin objectForKey: @"image"]];
@@ -162,15 +173,15 @@ _heightFromLayout];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar 
-{    
+{
     NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-	NSArray *identifiers = [plugins valueForKey: @"identifier"];
+    NSArray *identifiers = [plugins valueForKey: @"identifier"];
     
     return identifiers;
 }
 
 - (NSArray *) toolbarSelectableItemIdentifiers: (NSToolbar *)toolbar 
-{    
+{
 	return [self toolbarAllowedItemIdentifiers: toolbar];
 }
 

@@ -36,7 +36,6 @@
 #import "PKPreferencePane.h"
 #import "PKPreferencesController.h"
 
-
 #ifndef GNUSTEP
 
 // FIXME: Move such GNUstep imported extensions in a Cocoa compatibility file.
@@ -132,36 +131,37 @@ static BOOL 		inited = NO;
 /* Initialize stuff that can't be set in the nib/gorm file. */
 - (void) awakeFromNib
 {
-    NSArray *prefPanes; 
-	NSString *path;
+    NSArray *prefPanes;
     
     sharedInstance = self;
     
     // NOTE: [self initExtra]; is not needed here because -init is called when nib is loaded (checked on Cocoa)
     
+    if ([owner isKindOfClass: [NSWindow class]])
+    {
+        /* Let the system keep track of where it belongs */
+        [owner setFrameAutosaveName: @"PreferencesMainWindow"];
+        [owner setFrameUsingName: @"PreferencesMainWindow"];
+    }
+
+    /* In subclasses, we set up our list view where preference panes will be
+       listed. */
+    [self initUI];
+
     prefPanes = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
     
     if (prefPanes != nil)
     {
-        path = [[prefPanes objectAtIndex: 0] objectForKey: @"path"];
+        NSString *identifier = 
+            [[prefPanes objectAtIndex: 0] objectForKey: @"identifier"];
 	
         /* Load a first pane. */
-        [self updateUIForPreferencePane: 
-            [[PKPrefPanesRegistry sharedRegistry] preferencePaneAtPath: path]];
+        [self selectPreferencePaneWithIdentifier: identifier];
     }
     else
     {
         NSLog(@"No PreferencePane loaded are available.");
     }
-    
-	/* Let the system keep track of where it belongs */
-    if ([owner isKindOfClass: [NSWindow class]])
-    {
-        [owner setFrameAutosaveName: @"PreferencesMainWindow"];
-        [owner setFrameUsingName: @"PreferencesMainWindow"];
-    }
-	
-	[self initUI];
 }
 
 /*
@@ -194,17 +194,18 @@ static BOOL 		inited = NO;
 /* Main bottleneck for switching panes: */
 - (BOOL) updateUIForPreferencePane: (PKPreferencePane *)requestedPane
 {
-    NSView *mainViewContainer = [self preferencesView];
+    NSView *prefsView = [self preferencesView];
     
     if (currentPane != nil)	/* Have a previous pane that needs unloading? */
 	{
 		/* Make sure last text field gets an "end editing" message: */
 		if ([currentPane autoSaveTextFields])
-			[[mainViewContainer window] selectNextKeyView: self];
+			[[prefsView window] selectNextKeyView: self];
 		
 		if(requestedPane) /* User passed in a new pane to select? */
 		{
-			switch ([currentPane shouldUnselect])	/* Ask old one to unselect. */
+			switch ([currentPane shouldUnselect])	/* Ask old one to unselect.
+*/
 			{
 				case NSUnselectCancel:
 					nextPane = nil;
@@ -212,7 +213,8 @@ static BOOL 		inited = NO;
 					break;
                     
 				case NSUnselectLater:
-					nextPane = requestedPane;	/* Remember next pane for later. */
+					nextPane = requestedPane;	/* Remember next pane for later.
+*/
 					return NO;
                     break;
                     
@@ -221,7 +223,8 @@ static BOOL 		inited = NO;
 					break;
 			}
 		}
-		else /* Nil in currentPane. Called in response to replyToUnselect: to signal 'ok': */
+		else /* Nil in currentPane. Called in response to replyToUnselect: to
+signal 'ok': */
 		{
 			requestedPane = nextPane;	/* Continue where we left off. */
 			nextPane = nil;
@@ -238,69 +241,47 @@ static BOOL 		inited = NO;
     if (mainViewWaitSign != nil)
     {
         NSRect box = [mainViewWaitSign frame];
-        NSRect wBox = [mainViewContainer frame];
+        NSRect wBox = [prefsView frame];
         box.origin.x = truncf(abs(wBox.size.width -box.size.width) /2);
         box.origin.y = truncf(abs(wBox.size.height -box.size.height) /2);
         [mainViewWaitSign setFrameOrigin: box.origin];
-        [mainViewContainer addSubview: mainViewWaitSign];
-        [mainViewContainer setNeedsDisplay: YES];
-        [mainViewContainer display];
+        [prefsView addSubview: mainViewWaitSign];
+        [prefsView setNeedsDisplay: YES];
+        [prefsView display];
     }
 	
 	/* Get main view for next pane: */
 	[requestedPane setOwner: self];
-	NSView *theView = [requestedPane mainView];
+	NSView *paneView = [requestedPane mainView];
+    // NOTE: By security, we check frame origin.
+    [paneView setFrameOrigin: NSMakePoint(0, 0)];
 	[requestedPane willSelect];
 	
 	/* Resize window so content area is large enough for prefs: */
-	[self resizePreferencesViewForView: theView];
+	[self resizePreferencesViewForView: paneView];
 	
 	/* Remove "wait" sign, show new pane: */
     if (mainViewWaitSign != nil)
         [mainViewWaitSign removeFromSuperview];
-	[mainViewContainer addSubview: theView];
+	[prefsView addSubview: paneView];
 	
 	/* Finish up by setting up key views and remembering new current pane: */
 	currentPane = requestedPane;
-	[[mainViewContainer window] makeFirstResponder: [requestedPane initialKeyView]];
+	[[prefsView window] makeFirstResponder: [requestedPane initialKeyView]];
 	[requestedPane didSelect];
 	
 	/* Message window title:
-	[[mainViewContainer window] setTitle: [dict objectForKey: @"name"]]; */
+	[[prefsView window] setTitle: [dict objectForKey: @"name"]]; */
 	
 	return YES;
-    
-    /* Previous code:
-    NSView *mainView = [self prefsMainView];
-	NSView *moduleView = [aPrefsModule view];
-	NSRect mavFrame = [mainView frame];
-	NSRect movFrame = [moduleView frame];
-	NSRect cvFrame = [[window contentView] frame];
-	NSRect cvWithoutToolbarFrame = [[window contentViewWithoutToolbar] frame];
-	NSRect wFrame = [window frame];
-	float height;
-	
-	if (!aPrefsModule || ![modules objectForKey: [aPrefsModule buttonCaption]]
-		|| !moduleView)
-		return NO;
-	
-	[[mainView subviews] makeObjectsPerformSelector: @selector(removeFromSuperview)];
-	
-	height = cvFrame.size.height - cvWithoutToolbarFrame.size.height +
-	movFrame.size.height;
-	
-	[window setFrame: NSMakeRect(wFrame.origin.x, wFrame.origin.y + (wFrame.size.height - height),
-		wFrame.size.width, height) display: YES animate: YES];	
-	[moduleView setFrame: NSMakeRect(mavFrame.origin.x + (cvFrame.size.width - movFrame.size.width) / 2,
-		movFrame.origin.y, movFrame.size.width, movFrame.size.height)];
-		
-	[mainView addSubview: moduleView];
-	[mainView setNeedsDisplay: YES];
-	
-	[window setTitle: [aPrefsModule buttonCaption]];
-	
-	return YES;
-     */
+}
+
+- (void) selectPreferencePaneWithIdentifier: (NSString *)identifier
+{
+    PKPreferencePane *pane = [[PKPrefPanesRegistry sharedRegistry] 
+        preferencePaneWithIdentifier: identifier];
+
+    [self updateUIForPreferencePane: pane];
 }
 
 /*
