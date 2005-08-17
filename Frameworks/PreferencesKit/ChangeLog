@@ -1,7 +1,12 @@
 2005-08-17  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Headers/PKPreferencesController.h (-selectPreferencePaneWithIdentifier:):
+    Added (forgotten to declare it in previous commit).
+
+2005-08-17  Quentin Mathe <qmathe@club-internet.fr>
+
     PreferencesKit is now usable on GNUstep.
-    * Source/PKPreferencesController:
+    * Source/PKPreferencesController.m:
     (-awakeFromNib): Moved -initUI call before code to load initial preference
     pane because this code needs preferences list view to be set up. Replaced
     -updateUIForPreferencePaneWithPath: call by new method
@@ -10,7 +15,7 @@
     to 'prefsView' and'theView' to 'paneView'. Removed unused commented code.
     (-selectPreferencePaneWithIdentifier:): New method to change current
     preference pane (equivalent to -switchView: action).
-    * Source/PKToolbarPreferencesController:
+    * Source/PKToolbarPreferencesController.m:
     (-initUI): Moved code to select toolbar item related to current preference
     pane in -selectPreferencePaneWithIdentifier:.
     (-selectPreferencePaneWithIdentifier:): New overriden method.

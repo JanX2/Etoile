@@ -51,6 +51,8 @@
 - (void) initUI;
 - (BOOL) updateUIForPreferencePane: (PKPreferencePane *)prefPane;
 
+- (void) selectPreferencePaneWithIdentifier: (NSString *)identifier;
+
 /* Action methods */
 - (void) switchView: (id)sender;
 
