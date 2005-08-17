@@ -31,7 +31,8 @@ static id <PrefsApplication>	owner = nil;
         
         [self initUI];
 		// window can be any size, as long as it's 486x228 :)
-		// view = [[NSBox alloc] initWithFrame: PrefsRect];
+		view = [[window contentView] retain];
+        [view removeFromSuperview];
 
 		sharedInstance = self;
 	}
