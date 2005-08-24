@@ -257,7 +257,7 @@
 	return (sum * [coordinator coordFactor]);
 }
 
-- (BOOL) stkipTo: (int) target
+- (BOOL) skipTo: (int) target
 {
 	if (countingSumScorer == nil) {
 		[self initCountingSumScorer];
