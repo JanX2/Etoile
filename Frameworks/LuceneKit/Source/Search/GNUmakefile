@@ -44,10 +44,13 @@ LuceneKit_Search_OBJC_FILES = \
 	LCFilteredTermEnum.m \
 	LCMultiTermQuery.m \
 	LCFuzzyQuery.m \
-	LCFuzzyTermEnum.m
+	LCFuzzyTermEnum.m \
+	LCWildcardQuery.m \
+	LCWildcardTermEnum.m
 
 ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \
+	TestWildcard.m \
 	TestFuzzyQuery.m \
 	TestPrefixQuery.m \
 	TestSort.m \
@@ -65,7 +68,7 @@ LuceneKit_Search_OBJC_FILES += \
 	TestCheckHits.m 
 endif
 
-LuceneKit_Search_INCLUDE_DIRS += -I../..
+LuceneKit_Search_INCLUDE_DIRS += -I../.. `onig-config --cflags`
 
 -include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make

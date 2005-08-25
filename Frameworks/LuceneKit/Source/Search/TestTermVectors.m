@@ -230,12 +230,6 @@
 	LCQuery *query = [[LCTermQuery alloc] initWithTerm: term];
 	LCHits *hits = [knownSearcher search: query];
 	UKIntsEqual(3, [hits count]);
-//	float score = [hits score: 0];
-#if 0
-	NSLog(@"Hit 0: %d Score: %f String: %@", [hits identifier: 0], [hits score: 0], [hits document: 0]);
-	NSLog(@"Hit 1: %d Score: %f String: %@", [hits identifier: 1], [hits score: 1], [hits document: 1]);
-	NSLog(@"Hit 2: %d Score: %f String: %@", [hits identifier: 2], [hits score: 2], [hits document: 2]);
-#endif
 
 	UKIntsEqual(2, [hits identifier: 0]);
 	UKIntsEqual(3, [hits identifier: 1]);

@@ -158,6 +158,8 @@ LuceneKit_HEADER_FILES = \
 	Search/LCTopDocs.h \
 	Search/LCTopFieldDocs.h \
 	Search/LCWeight.h \
+	Search/LCWildcardQuery.h \
+	Search/LCWildcardTermEnum.h \
 	QueryParser/QueryParser.h \
 	QueryParser/LCQueryParser.h \
 	GNUstep/GNUstep.h 

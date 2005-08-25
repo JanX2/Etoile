@@ -59,5 +59,7 @@
 #include <LuceneKit/Search/LCTopDocs.h>
 #include <LuceneKit/Search/LCTopFieldDocs.h>
 #include <LuceneKit/Search/LCWeight.h>
+#include <LuceneKit/Search/LCWildcardQuery.h>
+#include <LuceneKit/Search/LCWildcardTermEnum.h>
 
 #endif /* __LuceneKit_Search__ */

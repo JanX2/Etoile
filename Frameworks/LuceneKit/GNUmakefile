@@ -11,13 +11,15 @@ include GNUmakefile.headers
 LuceneKit_SUBPROJECTS = Source
 
 ifeq ($(FOUNDATION_LIB), apple)
-	LuceneKit_OBJC_LIBS = -lz
+	LuceneKit_LIBRARIES_DEPEND_UPON = -lz -lOgreKit
+	LuceneKit_OBJC_LIBS = -lz -lOgreKit
 	ifeq ($(test), yes)
 		LuceneKit_OBJC_LIBS += -framework UnitKit
 	endif
 else
 	#LuceneKit_OBJC_LIBS = -lgnustep-base
-	LuceneKit_LDFLAGS = -lgnustep-base -lz
+	LuceneKit_LIBRARIES_DEPEND_UPON = -lz -lOgreKit
+	LuceneKit_LDFLAGS = -lgnustep-base -lz -lOgreKit
 	ifeq ($(test), yes)
 		LuceneKit_LDFLAGS += -lUnitKit
 	endif
