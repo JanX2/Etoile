@@ -39,6 +39,8 @@ LuceneKit_Index_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Index_OBJC_FILES += \
+	TestFieldInfos.m \
+	TestDocumentWriter.m \
 	TestMockIndexInput.m \
 	TestMockIndexOutput.m \
 	TestTermInfos.m \
