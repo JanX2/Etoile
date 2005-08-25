@@ -1,24 +1,24 @@
 /*
-**  QueryHandler.m
-**
-**  Copyright (c) 2003, 2004
-**
-**  Author: Yen-Ju  <yjchenx@hotmail.com>
-**
-**  This program is free software; you can redistribute it and/or modify
-**  it under the terms of the GNU General Public License as published by
-**  the Free Software Foundation; either version 2 of the License, or
-**  (at your option) any later version.
-**
-**  This program is distributed in the hope that it will be useful,
-**  but WITHOUT ANY WARRANTY; without even the implied warranty of
-**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**  GNU General Public License for more details.
-**
-**  You should have received a copy of the GNU General Public License
-**  along with this program; if not, write to the Free Software
-**  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ **  QueryHandler.m
+ **
+ **  Copyright (c) 2003, 2004, 2005
+ **
+ **  Author: Yen-Ju  <yjchenx@hotmail.com>
+ **
+ **  This program is free software; you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation; either version 2 of the License, or
+ **  (at your option) any later version.
+ **
+ **  This program is distributed in the hope that it will be useful,
+ **  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **  GNU General Public License for more details.
+ **
+ **  You should have received a copy of the GNU General Public License
+ **  along with this program; if not, write to the Free Software
+ **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 #include "CodeParser.h"
 #include "QueryHandler.h"
@@ -26,191 +26,205 @@
 #include <LuceneKit/LCMetadataAttribute.h>
 #include <LuceneKit/Search/LCTermQuery.h>
 #include <LuceneKit/Search/LCPrefixQuery.h>
+#include <LuceneKit/Search/LCWildcardQuery.h>
 #include <Foundation/Foundation.h>
 
 @implementation QueryHandler
 
 - (void) flushQuery
 {
-  /* Flush query */
-  if (currentQuery)
+	/* Flush query */
+	if (currentQuery)
     {
-      [self query: currentQuery];
-      currentQuery = nil; 
-      //DESTROY(currentQuery);
+		[self query: currentQuery];
+		currentQuery = nil; 
+		//DESTROY(currentQuery);
     }
-  [queryString setString: @""];
+	[queryString setString: @""];
 }
 
 #define STRING_EQUAL(b) \
-	([token isEqualToString: b])
+([token isEqualToString: b])
 
 - (void) token: (NSString *) token
 {
-  if STRING_EQUAL(@"(")
+	if STRING_EQUAL(@"(")
     {
-      if (parenthesesCount == 0)
-        [self flushQuery];
-      else
+		if (parenthesesCount == 0)
+			[self flushQuery];
+		else
         {
-          [queryString appendFormat: @"%@ ", token];
+			[queryString appendFormat: @"%@ ", token];
         }
-      parenthesesCount++;
-      currentType = SubqueryType;
-      return;
+		parenthesesCount++;
+		currentType = SubqueryType;
+		return;
     }
-  else if STRING_EQUAL(@")")
+	else if STRING_EQUAL(@")")
     {
-      parenthesesCount--;
-      if (parenthesesCount == 0)
+		parenthesesCount--;
+		if (parenthesesCount == 0)
         {
-          /* Parse again */
-          QueryHandler *handler = [[QueryHandler alloc] init];
-          CodeParser *parser = [[CodeParser alloc] initWithCodeHandler: handler withString: [queryString copy]];
-          [parser parse];
-          [_query addQuery: [handler query] occur: occur];
-          [queryString setString: @""];
-	  currentType = ReadyType;
+			/* Parse again */
+			QueryHandler *handler = [[QueryHandler alloc] init];
+			CodeParser *parser = [[CodeParser alloc] initWithCodeHandler: handler withString: [queryString copy]];
+			[parser parse];
+			[_query addQuery: [handler query] occur: occur];
+			[queryString setString: @""];
+			currentType = ReadyType;
         }
-      else
+		else
         {
-          [queryString appendFormat: @"%@ ", token];
+			[queryString appendFormat: @"%@ ", token];
         }
-      return;
+		return;
     }
-  else if (parenthesesCount > 0)
+	else if (parenthesesCount > 0)
     {
-      [queryString appendFormat: @"%@ ", token];
-      return;
+		[queryString appendFormat: @"%@ ", token];
+		return;
     }
-
-  if (STRING_EQUAL(@"[") || STRING_EQUAL(@"{"))
+	
+	if (STRING_EQUAL(@"[") || STRING_EQUAL(@"{"))
     {
-      inRange = YES;
+		inRange = YES;
     }
-  else if (STRING_EQUAL(@"]") || STRING_EQUAL(@"}"))
+	else if (STRING_EQUAL(@"]") || STRING_EQUAL(@"}"))
     {
-      inRange = NO;
+		inRange = NO;
     }
-  else if STRING_EQUAL(@"+")
+	else if STRING_EQUAL(@"+")
     {
-      currentType = ModifierType;
-      occur = LCOccur_MUST;
+		currentType = ModifierType;
+		occur = LCOccur_MUST;
     }
-  else if STRING_EQUAL(@"-")
+	else if STRING_EQUAL(@"-")
     {
-      currentType = ModifierType;
-      occur = LCOccur_MUST_NOT;
+		currentType = ModifierType;
+		occur = LCOccur_MUST_NOT;
     }
-  else if (STRING_EQUAL(@"AND") ||
-           STRING_EQUAL(@"&&"))
+	else if (STRING_EQUAL(@"AND") ||
+			 STRING_EQUAL(@"&&"))
     {
-      /* Modified current token to be MUST and flush it out*/
-      [[[_query clauses] lastObject] setOccur: LCOccur_MUST];;
-      occur = LCOccur_MUST; /* for next token */
+		/* Modified current token to be MUST and flush it out*/
+		[[[_query clauses] lastObject] setOccur: LCOccur_MUST];;
+		occur = LCOccur_MUST; /* for next token */
     }
-  else if STRING_EQUAL(@"NOT")
+	else if STRING_EQUAL(@"NOT")
     {
-      /* Flush out */
-      [self flushQuery];
-      //[self query: currentQuery];
-      occur = LCOccur_MUST_NOT; /* for next token */
+		/* Flush out */
+		[self flushQuery];
+		//[self query: currentQuery];
+		occur = LCOccur_MUST_NOT; /* for next token */
     }
-  else if (STRING_EQUAL(@"OR") ||
-           STRING_EQUAL(@"||"))
+	else if (STRING_EQUAL(@"OR") ||
+			 STRING_EQUAL(@"||"))
     {
-      occur = LCOccur_SHOULD; /* for next token */
+		occur = LCOccur_SHOULD; /* for next token */
     }
-  else
+	else
     {
-      if ([token hasSuffix: @":"])
+		if ([token hasSuffix: @":"])
         {
-          /* field */
-          ASSIGNCOPY(field, [token substringToIndex: [token length]-1]);
+			/* field */
+			ASSIGNCOPY(field, [token substringToIndex: [token length]-1]);
         }
-      else if (inRange)
+		else if (inRange)
         {
         }
-      else
+		else
         {
-          NSString *f;
-	  LCTerm *term;
-          LCQuery *q;
-          if (field)
+			NSString *f;
+			LCTerm *term;
+			LCQuery *q;
+			if (field)
             {
-              f = field;
+				f = field;
             }
-          else
+			else
             {
-              /* Default field */
-              f = LCTextContentAttribute;
+				/* Default field */
+				f = LCTextContentAttribute;
             }
-
-          if ([token hasSuffix: @"*"])
+			
+			if ([token hasSuffix: @"*"])
             {
-             term = [[LCTerm alloc] initWithField: f 
-                         text: [token substringToIndex: [token length]-1]];
-             q = [[LCPrefixQuery alloc] initWithTerm: term];
-             /* Disable coordination for prefix */
-             [_query setCoordinationDisabled: YES];
+				/* Prefix Query*/
+				term = [[LCTerm alloc] initWithField: f 
+												text: [token substringToIndex: [token length]-1]];
+				q = [[LCPrefixQuery alloc] initWithTerm: term];
+				/* Disable coordination for prefix */
+				[_query setCoordinationDisabled: YES];
             }
-          else
+			else if ([token rangeOfCharacterFromSet: wildcardCharacterSet].location != NSNotFound)
+			{
+				/* Wildcard Query */
+				term = [[LCTerm alloc] initWithField: f text: token];
+				q = [[LCWildcardQuery alloc] initWithTerm: term];
+				/* Disable coordination for wildcard */
+				[_query setCoordinationDisabled: YES];
+			}
+			else
             { 
-              term = [[LCTerm alloc] initWithField: f text: token];
-              q = [[LCTermQuery alloc] initWithTerm: term];
+				/* Term Query */
+				term = [[LCTerm alloc] initWithField: f text: token];
+				q = [[LCTermQuery alloc] initWithTerm: term];
             }
-          ASSIGN(currentQuery, q);
-          DESTROY(term);
-          //DESTROY(q);
-          //DESTROY(field);
-
-          [self flushQuery];
- 
-          /* Fall back to SHOULD */
-          if ((occur == LCOccur_MUST) ||
-              (occur == LCOccur_SHOULD))
+			ASSIGN(currentQuery, q);
+			DESTROY(term);
+			//DESTROY(q);
+			//DESTROY(field);
+			
+			[self flushQuery];
+			
+			/* Fall back to SHOULD */
+			if ((occur == LCOccur_MUST) ||
+				(occur == LCOccur_SHOULD))
             {
-              occur = LCOccur_SHOULD;
+				occur = LCOccur_SHOULD;
             }
         }
     }
-  [queryString appendString: token];
-  [queryString appendString: @" "];
+	[queryString appendString: token];
+	[queryString appendString: @" "];
 }
 
 - (void) endParsing 
 { 
-  [super endParsing]; 
-  [self flushQuery];
+	[super endParsing]; 
+	[self flushQuery];
 }
 
 - (LCQuery *) query
 {
-  return _query;
+	return _query;
 }
 
 - (id) init
 {
-  self = [super init];
-  parenthesesCount = 0;
-  queryString = [[NSMutableString alloc] init];
-  _query = [[LCBooleanQuery alloc] init];
-  currentType = ReadyType;
-  occur = LCOccur_SHOULD;
-  inRange = NO;
-  return self;
+	self = [super init];
+	parenthesesCount = 0;
+	queryString = [[NSMutableString alloc] init];
+	_query = [[LCBooleanQuery alloc] init];
+	currentType = ReadyType;
+	occur = LCOccur_SHOULD;
+	inRange = NO;
+	
+	ASSIGN(wildcardCharacterSet, [NSCharacterSet characterSetWithCharactersInString: @"*?"]);
+	
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(queryString);
-  DESTROY(_currentToken);
-  [super dealloc];
+	DESTROY(queryString);
+	DESTROY(_currentToken);
+	[super dealloc];
 }
 
 - (void) query: (LCQuery *) q
 {
-  [_query addQuery: q occur: occur]; 
+	[_query addQuery: q occur: occur]; 
 }
 
 /* Called by CodeParser */

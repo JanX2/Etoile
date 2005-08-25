@@ -49,6 +49,9 @@ typedef enum _TokenType {
   NSString *field;
   TokenType currentType;
   BOOL inRange;
+  
+  /* Wildcard character set */
+  NSCharacterSet *wildcardCharacterSet;
 }
 
 /* Override by subclass */

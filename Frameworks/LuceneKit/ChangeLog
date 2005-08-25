@@ -5,6 +5,8 @@
     * Headers/Search/LCWildcardQuery.h:
     * Headers/Search/LCWildcardTermEnum.h:
     Add LCWildcardQuery.
+    * Source/QueryParser/QueryHandler.m:
+    Support LCWildcardQuery.
 
 2005-08-23 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
