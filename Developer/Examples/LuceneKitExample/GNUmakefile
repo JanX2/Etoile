@@ -6,7 +6,7 @@ LuceneKitExample_OBJC_FILES = \
 	LuceneKitExample.m 
 
 LuceneKitExample_INCLUDE_DIRS += 
-LuceneKitExample_LDFLAGS += -lLuceneKit 
+LuceneKitExample_LDFLAGS += -lLuceneKit  -lOgreKit
 
 include $(GNUSTEP_MAKEFILES)/tool.make
 
