@@ -14,11 +14,4 @@
                                   reader: (id <LCReader>) reader;
 @end
 
-#ifdef HAVE_UKTEST
-@interface LCAnalyzer (UKTest_Additions)
-- (void) compare: (NSString *) s and: (NSArray *) a 
-            with: (LCAnalyzer *) analyzer;
-@end
-#endif /* HAVE_UKTEST */
-
 #endif /* __LUCENE_ANALYSIS_ANALYZER__ */

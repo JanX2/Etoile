@@ -24,6 +24,14 @@ LuceneKit_Analysis_OBJC_FILES = \
 LuceneKit_Analysis_C_FILES = \
 	PorterStemmer.c
 
+ifeq ($(test), yes)
+LuceneKit_Analysis_OBJC_FILES += \
+	TestWhitespaceAnalyzer.m \
+	TestStopAnalyzer.m \
+	TestSimpleAnalyzer.m \
+	TestAnalyzer.m 
+endif
+
 LuceneKit_Analysis_INCLUDE_DIRS += -I../..
 
 -include ../../GNUmakefile.preamble

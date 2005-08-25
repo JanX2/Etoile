@@ -66,13 +66,4 @@ public StopAnalyzer(Reader stopwords) {
 	return AUTORELEASE(filter);
 }
 
-#ifdef HAVE_UKTEST
-- (void) testStopAnalyzer
-{
-	NSString *s = @"This is a beautiful day!";
-	NSArray *a = [NSArray arrayWithObjects: @"beautiful", @"day", nil];
-	[self compare: s and: a with: self];
-}
-#endif
-
 @end

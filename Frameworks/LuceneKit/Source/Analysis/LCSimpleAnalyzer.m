@@ -12,13 +12,4 @@
 	return AUTORELEASE(tokenizer); 
 }
 
-#ifdef HAVE_UKTEST
-- (void) testSimpleAnalyzer
-{
-	NSString *s = @"This is a beautiful day!";
-	NSArray *a = [NSArray arrayWithObjects: @"this", @"is", @"a", @"beautiful", @"day", nil];
-	[self compare: s and: a with: self];
-}
-#endif /* HAVE_UKTEST */
-
 @end

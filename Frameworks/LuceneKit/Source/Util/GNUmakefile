@@ -10,6 +10,9 @@ LuceneKit_Util_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Util_OBJC_FILES += \
+	TestString+Additions.m \
+	TestData+Additions.m \
+	TestPriorityQueue.m \
 	TestBitVector.m 
 endif
 
