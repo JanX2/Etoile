@@ -55,22 +55,4 @@
     }
 }
 
-#ifdef HAVE_UKTEST
-- (void) testStringReader
-{
-	self = [self initWithString: @"This is a reader"];
-	UKTrue([self ready]);
-	UKIntsEqual('T', [self read]);
-	unichar buf[4];
-	[self read: buf length: 3];
-	UKIntsEqual('s', buf[2]);
-	UKIntsEqual(' ', [self read]);
-	UKIntsEqual(8, [self skip: 8]);
-	UKIntsEqual('d', [self read]);
-	UKIntsEqual(2, [self read: buf length: 3]);
-	UKIntsEqual('r', buf[1]);
-	UKIntsEqual(0, [self skip: 3]);
-}
-#endif
-
 @end

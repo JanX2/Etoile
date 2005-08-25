@@ -8,6 +8,12 @@ LuceneKit_Util_OBJC_FILES = \
 	LCBitVector.m \
 	LCPriorityQueue.m 
 
+ifeq ($(test), yes)
+LuceneKit_Util_OBJC_FILES += \
+	TestBitVector.m 
+endif
+
+
 LuceneKit_Util_INCLUDE_DIRS += -I../..
 
 -include ../../GNUmakefile.preamble

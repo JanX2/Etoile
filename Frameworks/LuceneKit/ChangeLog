@@ -7,6 +7,9 @@
     Add LCWildcardQuery.
     * Source/QueryParser/QueryHandler.m:
     Support LCWildcardQuery.
+    * Source/Java/LCStringReader.m:
+    * Source/Util/LCBitVector.m:
+    Move tests out of classes.
 
 2005-08-23 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

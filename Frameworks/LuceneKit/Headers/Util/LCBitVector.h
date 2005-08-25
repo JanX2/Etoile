@@ -4,16 +4,10 @@
 #include <Foundation/Foundation.h>
 #include <LuceneKit/Store/LCDirectory.h>
 
-#ifdef HAVE_UKTEST
-#include <UnitKit/UnitKit.h>
-
 /** An array of bits.
  * <author>Yen-Ju Chen</author>
  */
-@interface LCBitVector: NSObject <UKTest>
-#else
 @interface LCBitVector: NSObject
-#endif
 {
 	NSMutableData *bits;
 	int size;
