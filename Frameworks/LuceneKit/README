@@ -49,6 +49,7 @@ Dependency
 ---------
 
 zlib: compression/decompression.
+OgreKit: regular expression searching and replacing.
 
 
 Contribute 
