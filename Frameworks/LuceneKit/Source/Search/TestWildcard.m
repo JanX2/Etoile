@@ -14,7 +14,6 @@
 
 - (void) testEquals
 {
-NSLog(@"testEquals");
 	LCTerm *t = [[LCTerm alloc] initWithField: @"field" text: @"b*a"];
 	LCWildcardQuery *wq1 = [[LCWildcardQuery alloc] initWithTerm: t];
 	t = [[LCTerm alloc] initWithField: @"field" text: @"b*a"];
