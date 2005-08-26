@@ -147,16 +147,7 @@
 				f = LCTextContentAttribute;
             }
 			
-			if ([token hasSuffix: @"*"])
-            {
-				/* Prefix Query*/
-				term = [[LCTerm alloc] initWithField: f 
-												text: [token substringToIndex: [token length]-1]];
-				q = [[LCPrefixQuery alloc] initWithTerm: term];
-				/* Disable coordination for prefix */
-				[_query setCoordinationDisabled: YES];
-            }
-			else if ([token rangeOfCharacterFromSet: wildcardCharacterSet].location != NSNotFound)
+			if ([token rangeOfCharacterFromSet: wildcardCharacterSet].location != NSNotFound)
 			{
 				/* Wildcard Query */
 				term = [[LCTerm alloc] initWithField: f text: token];
