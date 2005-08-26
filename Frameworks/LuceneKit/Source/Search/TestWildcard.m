@@ -14,6 +14,7 @@
 
 - (void) testEquals
 {
+NSLog(@"testEquals");
 	LCTerm *t = [[LCTerm alloc] initWithField: @"field" text: @"b*a"];
 	LCWildcardQuery *wq1 = [[LCWildcardQuery alloc] initWithTerm: t];
 	t = [[LCTerm alloc] initWithField: @"field" text: @"b*a"];
@@ -21,11 +22,11 @@
 	t = [[LCTerm alloc] initWithField: @"field" text: @"b*a"];
 	LCWildcardQuery *wq3 = [[LCWildcardQuery alloc] initWithTerm: t];
 
-	UKObjectsEqual(wq1, wq2);
-	UKObjectsEqual(wq2, wq1);
+	UKTrue([wq1 isEqual: wq2]);
+	UKTrue([wq2 isEqual: wq1]);
 
-	UKObjectsEqual(wq2, wq3);
-	UKObjectsEqual(wq1, wq3);
+	UKTrue([wq2 isEqual: wq3]);
+	UKTrue([wq1 isEqual: wq3]);
 	
 	t = [[LCTerm alloc] initWithField: @"field" text: @"b*a"];
 	LCFuzzyQuery *fq = [[LCFuzzyQuery alloc] initWithTerm: t];
