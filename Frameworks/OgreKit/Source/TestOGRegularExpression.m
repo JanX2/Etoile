@@ -18,6 +18,13 @@
   UKStringsEqual(@"aga", [match matchedString]);
   match = [matches objectAtIndex: 2];;
   UKStringsEqual(@"adelta", [match matchedString]);
+
+  regex = [OGRegularExpression regularExpressionWithString:@"^pa.*d.*$"];
+  matches = [regex allMatchesInString:@"panda"];
+  UKIntsEqual(1, [matches count]);
+
+  match = [matches objectAtIndex: 0];;
+  UKStringsEqual(@"panda", [match matchedString]);
 }
 
 - (void) testSubstring

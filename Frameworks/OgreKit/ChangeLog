@@ -1,3 +1,8 @@
+2005-08-25 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* GNUmakefile:
+	Work on linux.
+
 2005-08-05 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Headers/OgreKit.h:

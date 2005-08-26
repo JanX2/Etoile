@@ -18,6 +18,7 @@ ifeq ($(FOUNDATION_LIB), apple)
 else
 	x := $(shell onig-config --libs)
 	BUNDLE_LIBS += $(x)
+	OgreKit_LIBRARIES_DEPEND_UPON = $(x)
 	OgreKit_LDFLAGS += -lgnustep-base $(x)
 	ifeq ($(test), yes)
 		OgreKit_OBJC_LIBS += $(x)
