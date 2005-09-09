@@ -1,3 +1,9 @@
+2005-09-10  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/Search/LCFuzzyQuery.m:
+    * Source/Store/LCMMapDirectory.m:
+    Fixed compilation with Cocoa.
+
 2005-08-25 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     Move more tests out of classes.

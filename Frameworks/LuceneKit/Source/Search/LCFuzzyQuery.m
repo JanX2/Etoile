@@ -104,7 +104,7 @@
 {
 	LCFilteredTermEnumerator *enumerator = [self enumerator: reader];
 	int maxClauseCount = [LCBooleanQuery maxClauseCount];
-	LCScoreTermQueue *stQueue = [[LCScoreTermQueue alloc] initWithSize: maxClauseCount];
+	LCScoreTermQueue *stQueue = [(LCScoreTermQueue *)[LCScoreTermQueue alloc] initWithSize: maxClauseCount];
 	
 	do {
 		float minScore = 0.0f;

@@ -320,12 +320,12 @@ NSDefaultMallocZone());
         // FIXME: -dataWithContentsOfURL:options:error: needs to be implemented
         // in GNUstep.
         NSError *err = nil;
-        NSMutableData *buffer = [NSMutableData dataWithContentsOfURL: url
+        NSMutableData *fileMap = [NSMutableData dataWithContentsOfURL: url
             options: NSMappedRead error: &err];
         if (err != nil)
         {
             [NSException raise: @"FileIOException" format: @"%@: Failed to \
-                map in memory contents of url %@.", self, path, nil];
+                map in memory contents of url %@.", self, [url path], nil];
             // FIXME: Implement error checking and eventually recovery.
         }
 #endif
