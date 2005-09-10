@@ -1,3 +1,10 @@
+2005-09-11  Quentin Mathe <qmathe@club-internet.fr>
+
+    Warning! compilation broken with Xcode.
+    * LuceneKit.xcodeproj:
+    * English.lproj/InfoPlist.strings:
+    Added Xcode project.
+
 2005-09-10  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/Search/LCFuzzyQuery.m:
