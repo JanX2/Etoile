@@ -1,8 +1,8 @@
-#include <LuceneKit/Search/LCMultiTermQuery.h>
-#include <LuceneKit/Search/LCBooleanQuery.h>
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/Search/LCFilteredTermEnum.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCMultiTermQuery.h"
+#include "LCBooleanQuery.h"
+#include "LCTermQuery.h"
+#include "LCFilteredTermEnum.h"
+#include "GNUstep.h"
 
 /**
  * A {@link Query} that matches documents containing a subset of terms provided

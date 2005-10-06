@@ -1,5 +1,5 @@
-#include <LuceneKit/Store/LCFSIndexInput.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCFSIndexInput.h"
+#include "GNUstep.h"
 
 @interface LCFSIndexInput (LCPrivate)
 - (void) setClosed: (BOOL) isClosed;

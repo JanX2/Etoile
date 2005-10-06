@@ -21,7 +21,7 @@
 */
 
 #include "TokenHandler.h"
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "GNUstep.h"
 #include <Foundation/Foundation.h>
 
 @implementation TokenHandler

@@ -1,6 +1,6 @@
-#include <LuceneKit/Index/LCCompoundFileWriter.h>
-#include <LuceneKit/Store/LCIndexOutput.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCCompoundFileWriter.h"
+#include "LCIndexOutput.h"
+#include "GNUstep.h"
 
 /**
 * Combines multiple files into a single compound file.

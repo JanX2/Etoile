@@ -1,9 +1,9 @@
-#include <LuceneKit/Search/LCBooleanQuery.h>
-#include <LuceneKit/Search/LCSimilarityDelegator.h>
-#include <LuceneKit/Search/LCSearcher.h>
-#include <LuceneKit/Search/LCBooleanScorer.h>
-#include <LuceneKit/Search/LCWeight.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCBooleanQuery.h"
+#include "LCSimilarityDelegator.h"
+#include "LCSearcher.h"
+#include "LCBooleanScorer.h"
+#include "LCWeight.h"
+#include "GNUstep.h"
 
 /* LuceneKit: this is actually BooleanWeight2 in lucene */
 @interface LCBooleanWeight: NSObject <LCWeight>

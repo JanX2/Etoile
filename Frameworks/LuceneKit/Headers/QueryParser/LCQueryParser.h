@@ -2,7 +2,7 @@
 #define __LuceneKit_LCQuery_Parser__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Search/LCQuery.h>
+#include "LCQuery.h"
 
 /** It parse a query string into LCQuery.
  * Since there is JavaCC for GNUstep,

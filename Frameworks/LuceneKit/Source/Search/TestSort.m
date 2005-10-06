@@ -1,18 +1,18 @@
 #include <UnitKit/UnitKit.h>
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Analysis/LCSimpleAnalyzer.h>
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
-#include <LuceneKit/Search/LCIndexSearcher.h>
-#include <LuceneKit/Search/LCQuery.h>
-#include <LuceneKit/Search/LCSort.h>
-#include <LuceneKit/Index/LCTerm.h>
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/Search/LCSort.h>
-#include <LuceneKit/Search/LCHits.h>
-#include <LuceneKit/Search/LCSortField.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCRAMDirectory.h"
+#include "LCSimpleAnalyzer.h"
+#include "LCDocument.h"
+#include "LCIndexWriter.h"
+#include "LCIndexSearcher.h"
+#include "LCQuery.h"
+#include "LCSort.h"
+#include "LCTerm.h"
+#include "LCTermQuery.h"
+#include "LCSort.h"
+#include "LCHits.h"
+#include "LCSortField.h"
+#include "GNUstep.h"
 
 @interface TestSort: NSObject <UKTest>
 {

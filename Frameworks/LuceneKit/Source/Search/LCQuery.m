@@ -1,7 +1,7 @@
-#include <LuceneKit/Search/LCQuery.h>
-#include <LuceneKit/Search/LCBooleanClause.h>
-#include <LuceneKit/Search/LCBooleanQuery.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCQuery.h"
+#include "LCBooleanClause.h"
+#include "LCBooleanQuery.h"
+#include "GNUstep.h"
 
 @interface LCScoreTerm: NSObject <LCComparable>
 {

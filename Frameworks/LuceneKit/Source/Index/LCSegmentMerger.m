@@ -1,20 +1,20 @@
-#include <LuceneKit/Index/LCSegmentMerger.h>
-#include <LuceneKit/Index/LCSegmentMergeInfo.h>
-#include <LuceneKit/Index/LCSegmentMergeQueue.h>
-#include <LuceneKit/Index/LCFieldInfos.h>
-#include <LuceneKit/Index/LCFieldInfo.h>
-#include <LuceneKit/Index/LCFieldsWriter.h>
-#include <LuceneKit/Index/LCTermInfosWriter.h>
-#include <LuceneKit/Index/LCTermInfo.h>
-#include <LuceneKit/Index/LCTerm.h>
-#include <LuceneKit/Index/LCTermVectorsWriter.h>
-#include <LuceneKit/Index/LCIndexReader.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
-#include <LuceneKit/Index/LCCompoundFileWriter.h>
-#include <LuceneKit/Document/LCField.h>
-#include <LuceneKit/Store/LCIndexOutput.h>
-#include <LuceneKit/Store/LCRAMOutputStream.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCSegmentMerger.h"
+#include "LCSegmentMergeInfo.h"
+#include "LCSegmentMergeQueue.h"
+#include "LCFieldInfos.h"
+#include "LCFieldInfo.h"
+#include "LCFieldsWriter.h"
+#include "LCTermInfosWriter.h"
+#include "LCTermInfo.h"
+#include "LCTerm.h"
+#include "LCTermVectorsWriter.h"
+#include "LCIndexReader.h"
+#include "LCIndexWriter.h"
+#include "LCCompoundFileWriter.h"
+#include "LCField.h"
+#include "LCIndexOutput.h"
+#include "LCRAMOutputStream.h"
+#include "GNUstep.h"
 
 /**
 * The SegmentMerger class combines two or more Segments, represented by an IndexReader ({@link #add}),

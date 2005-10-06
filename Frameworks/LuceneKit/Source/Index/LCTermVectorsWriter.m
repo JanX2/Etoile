@@ -1,9 +1,9 @@
-#include <LuceneKit/Index/LCTermVectorsWriter.h>
-#include <LuceneKit/Store/LCIndexOutput.h>
-#include <LuceneKit/Index/LCTermPositionVector.h>
-#include <LuceneKit/Index/LCTermVectorOffsetInfo.h>
-#include <LuceneKit/Util/NSString+Additions.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCTermVectorsWriter.h"
+#include "LCIndexOutput.h"
+#include "LCTermPositionVector.h"
+#include "LCTermVectorOffsetInfo.h"
+#include "NSString+Additions.h"
+#include "GNUstep.h"
 
 /**
 * Writer works by opening a document and then opening the fields within the document and then

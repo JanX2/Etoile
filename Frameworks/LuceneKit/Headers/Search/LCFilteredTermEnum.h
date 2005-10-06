@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_FILTERED_TERM_ENUM__
 #define __LUCENE_SEARCH_FILTERED_TERM_ENUM__
 
-#include <LuceneKit/Index/LCTermEnum.h>
+#include "LCTermEnum.h"
 
 @interface LCFilteredTermEnumerator: LCTermEnumerator
 {

@@ -1,7 +1,7 @@
-#include <LuceneKit/Search/LCQueryTermVector.h>
-#include <LuceneKit/Analysis/LCAnalyzer.h>
-#include <LuceneKit/Java/LCStringReader.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCQueryTermVector.h"
+#include "LCAnalyzer.h"
+#include "LCStringReader.h"
+#include "GNUstep.h"
 
 @interface LCQueryTermVector (LCPrivate)
 - (void) processTerms: (NSArray *) queryTerms;

@@ -21,7 +21,7 @@
 */
 
 #include "CodeParser.h"
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "GNUstep.h"
 
 typedef enum _CodeType {
   StringCodeType, /* 41-5A, 61-7A, 5F */

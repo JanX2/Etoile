@@ -1,4 +1,4 @@
-#include <LuceneKit/Java/LCStringReader.h>
+#include "LCStringReader.h"
 #include <UnitKit/UnitKit.h>
 
 @interface TestStringReader: NSObject <UKTest>

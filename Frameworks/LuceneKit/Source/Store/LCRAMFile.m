@@ -1,5 +1,5 @@
-#include <LuceneKit/Store/LCRAMFile.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCRAMFile.h"
+#include "GNUstep.h"
 
 @implementation LCRAMFile
 

@@ -1,5 +1,5 @@
-#include <LuceneKit/Search/LCFilteredTermEnum.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCFilteredTermEnum.h"
+#include "GNUstep.h"
 
 /** Abstract class for enumerating a subset of all terms. 
 

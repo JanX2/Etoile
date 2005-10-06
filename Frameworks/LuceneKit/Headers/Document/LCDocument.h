@@ -2,7 +2,7 @@
 #define __LUCENE_DOCUMENT_DOCUMENT__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Document/LCField.h>
+#include "LCField.h"
 
 /** Documents are the unit of indexing and search.
 *

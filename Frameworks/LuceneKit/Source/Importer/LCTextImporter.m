@@ -1,6 +1,6 @@
-#include <LuceneKit/Importer/LCTextImporter.h>
-#include <LuceneKit/Document/LCDateTools.h>
-#include <LuceneKit/LCMetadataAttribute.h>
+#include "LCTextImporter.h"
+#include "LCDateTools.h"
+#include "LCMetadataAttribute.h"
 
 @implementation LCTextImporter
 - (BOOL) metadataForFile: (NSString *) path type: (NSString *) type 

@@ -1,7 +1,7 @@
-#include <LuceneKit/Util/LCBitVector.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
+#include "LCBitVector.h"
+#include "LCRAMDirectory.h"
 #include <UnitKit/UnitKit.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "GNUstep.h"
 
 @interface TestBitVector: NSObject <UKTest>
 @end

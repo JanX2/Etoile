@@ -1,6 +1,6 @@
-#include <LuceneKit/Index/LCFilterIndexReader.h>
-#include <LuceneKit/Index/LCTerm.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCFilterIndexReader.h"
+#include "LCTerm.h"
+#include "GNUstep.h"
 
 /** Filter that only permits terms containing 'e'.*/
 @interface TestTermEnum: LCFilterTermEnumerator
@@ -54,11 +54,11 @@
 }
 @end
 
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
-#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/Document/LCField.h>
+#include "LCRAMDirectory.h"
+#include "LCIndexWriter.h"
+#include "LCWhitespaceAnalyzer.h"
+#include "LCDocument.h"
+#include "LCField.h"
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
 

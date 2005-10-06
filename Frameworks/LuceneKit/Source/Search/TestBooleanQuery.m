@@ -1,8 +1,8 @@
 #include <UnitKit/UnitKit.h>
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Search/LCBooleanQuery.h>
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/Index/LCTerm.h>
+#include "LCBooleanQuery.h"
+#include "LCTermQuery.h"
+#include "LCTerm.h"
 
 @interface TestBooleanQuery : NSObject <UKTest>
 @end

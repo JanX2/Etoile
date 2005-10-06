@@ -1,13 +1,13 @@
-#include <LuceneKit/Search/LCHits.h>
-#include <LuceneKit/Search/LCSearcher.h>
-#include <LuceneKit/Search/LCFilter.h>
-#include <LuceneKit/Search/LCSort.h>
-#include <LuceneKit/Search/LCQuery.h>
-#include <LuceneKit/Search/LCTopDocs.h>
-#include <LuceneKit/Search/LCScoreDoc.h>
-#include <LuceneKit/Search/LCHitIterator.h>
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCHits.h"
+#include "LCSearcher.h"
+#include "LCFilter.h"
+#include "LCSort.h"
+#include "LCQuery.h"
+#include "LCTopDocs.h"
+#include "LCScoreDoc.h"
+#include "LCHitIterator.h"
+#include "LCDocument.h"
+#include "GNUstep.h"
 
 @interface LCHits (LCPrivate)
 - (void) moreDocuments: (int) min;

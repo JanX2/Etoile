@@ -1,7 +1,7 @@
 #ifndef __LuceneKit_Wildcard_Query__
 #define __LuceneKit_Wildcard_Query__
 
-#include <LuceneKit/Search/LCMultiTermQuery.h>
+#include "LCMultiTermQuery.h"
 
 @interface LCWildcardQuery: LCMultiTermQuery
 @end

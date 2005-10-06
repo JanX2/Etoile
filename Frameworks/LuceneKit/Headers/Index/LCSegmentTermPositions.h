@@ -1,8 +1,8 @@
 #ifndef __LUCENE_INDEX_SEGMENT_TERM_POSITIONS__
 #define __LUCENE_INDEX_SEGMENT_TERM_POSITIONS__
 
-#include <LuceneKit/Index/LCSegmentTermDocs.h>
-#include <LuceneKit/Index/LCTermPositions.h>
+#include "LCSegmentTermDocs.h"
+#include "LCTermPositions.h"
 
 @interface LCSegmentTermPositions: LCSegmentTermDocuments <LCTermPositions>
 {

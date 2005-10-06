@@ -1,8 +1,8 @@
 #ifndef __LUCENE_INDEX_TERM_POSITIONS__
 #define __LUCENE_INDEX_TERM_POSITIONS__
 
-#include <LuceneKit/Index/LCTermDocs.h>
-#include <LuceneKit/Util/LCPriorityQueue.h>
+#include "LCTermDocs.h"
+#include "LCPriorityQueue.h"
 
 /**
 * TermPositions provides an interface for enumerating the &lt;document,

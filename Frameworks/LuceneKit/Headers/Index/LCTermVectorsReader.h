@@ -2,8 +2,8 @@
 #define __LUCENE_INDEX_TERM_VECTOR_READER__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Index/LCTermFreqVector.h>
-#include <LuceneKit/Index/LCFieldInfos.h>
+#include "LCTermFreqVector.h"
+#include "LCFieldInfos.h"
 
 @interface LCTermVectorsReader: NSObject <NSCopying>
 {

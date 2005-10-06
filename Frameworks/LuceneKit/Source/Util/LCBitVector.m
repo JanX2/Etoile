@@ -1,7 +1,7 @@
-#include <LuceneKit/Util/LCBitVector.h>
-#include <LuceneKit/Store/LCIndexInput.h>
-#include <LuceneKit/Store/LCIndexOutput.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCBitVector.h"
+#include "LCIndexInput.h"
+#include "LCIndexOutput.h"
+#include "GNUstep.h"
 
 @implementation LCBitVector
 

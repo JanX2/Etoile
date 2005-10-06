@@ -2,10 +2,10 @@
 #define __LUCENE_INDEX_FIELD_INFOS__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Store/LCDirectory.h>
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/Index/LCFieldInfo.h>
-#include <LuceneKit/Store/LCIndexInput.h>
+#include "LCDirectory.h"
+#include "LCDocument.h"
+#include "LCFieldInfo.h"
+#include "LCIndexInput.h"
 
 @interface LCFieldInfos: NSObject
 {

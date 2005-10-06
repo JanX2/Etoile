@@ -1,8 +1,8 @@
 /* Author: Quentin Mathe <qmathe@club-internet.fr> */
 
 #import <Foundation/Foundation.h>
-#import <LuceneKit/Store/LCIndexInput.h>
-#import <LuceneKit/Store/LCMMapDirectory.h>
+#import "LCIndexInput.h"
+#import "LCMMapDirectory.h"
 
 static int MAX_BBUF = INT_MAX;
 

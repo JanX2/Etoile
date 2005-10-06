@@ -1,3 +1,36 @@
+2005-10-06 Quentin Mathe <qmathe@club-internet.fr>
+
+    Warning! Xcode compilation untested.
+    * Current test result:
+    Result: 45 classes, 109 methods, 352233 tests, 8 failed
+    * Source/*.m:
+    * Source/Analysis/*.m:
+    * Source/Document/*.m:
+    * Source/Importer/*.m:
+    * Source/Index/*.m:
+    * Source/Java/*.m:
+    * Source/QueryParser/*.m:
+    * Source/QueryParser/*.h:
+    * Source/Search/*.m:
+    * Source/Store/*.m:
+    * Source/Util/*.m:
+    (Most of their related headers have been modified too)
+    * Source/GNUmakefile:
+    * Source/GNUmakefile.preamble:
+    * Source/GNUmakefile.postamble:
+    * Source/GNUmakefile.headers:
+    * Source/GNUmakefile.headers_build:
+    * Source/*/GNUmakefile:
+    Modified to have compilation and deployment relying on a flat headers
+    directory. It allows us to replace #include <LuceneKit/Whatever/MyHeader.h>
+    by "MyHeader.h" in order to fix Xcode compilation without relying on a
+    custom shell script a la GNUmakefile.headers_build.
+    NOTE: We couldn't have used in any headers subdirectory a directive
+    like #include "Whatever1/MyHeader.h" because when MyHeader would have
+    been installed, it would have been reachable from another subdirectory only
+    by #include "../MyHeader.h", finally it is impossible to predict which
+    value '..' will take when headers are included by some other project.
+
 2005-09-11  Quentin Mathe <qmathe@club-internet.fr>
 
     Warning! compilation broken with Xcode.

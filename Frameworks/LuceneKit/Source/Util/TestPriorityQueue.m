@@ -1,5 +1,5 @@
-#include <LuceneKit/Util/LCPriorityQueue.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCPriorityQueue.h"
+#include "GNUstep.h"
 #include <UnitKit/UnitKit.h>
 
 @interface LCIntegerQueue: LCPriorityQueue <UKTest>

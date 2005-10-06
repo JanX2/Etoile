@@ -2,8 +2,8 @@
 #define __LUCENE_SEARCH_FIELD_CACHE__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Search/LCSortComparator.h>
-#include <LuceneKit/Index/LCIndexReader.h>
+#include "LCSortComparator.h"
+#include "LCIndexReader.h"
 
 /** Indicator for StringIndex values in the cache. */
 // NOTE: the value assigned to this constant must not be

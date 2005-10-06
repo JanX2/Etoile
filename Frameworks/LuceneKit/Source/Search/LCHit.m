@@ -1,7 +1,7 @@
-#include <LuceneKit/Search/LCHit.h>
-#include <LuceneKit/Search/LCHits.h>
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCHit.h"
+#include "LCHits.h"
+#include "LCDocument.h"
+#include "GNUstep.h"
 
 @interface LCHit (LCPrivate)
 - (void) fetchTheHit;

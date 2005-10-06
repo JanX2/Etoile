@@ -2,8 +2,8 @@
 #define __LUCENE_SEARCH_FILTER__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Util/LCBitVector.h>
-#include <LuceneKit/Index/LCIndexReader.h>
+#include "LCBitVector.h"
+#include "LCIndexReader.h"
 
 @interface LCFilter: NSObject
 /* LuceneKit: use LCBitVector for BitSet in Java */

@@ -1,9 +1,9 @@
-#include <LuceneKit/Index/LCIndexReader.h>
-#include <LuceneKit/Index/LCSegmentReader.h>
-#include <LuceneKit/Index/LCMultiReader.h>
-#include <LuceneKit/Store/LCFSDirectory.h>
-#include <LuceneKit/Search/LCSimilarity.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCIndexReader.h"
+#include "LCSegmentReader.h"
+#include "LCMultiReader.h"
+#include "LCFSDirectory.h"
+#include "LCSimilarity.h"
+#include "GNUstep.h"
 
 /** IndexReader is an abstract class, providing an interface for accessing an
 index.  Search of an index is done entirely through this abstract interface,

@@ -1,7 +1,7 @@
 #ifndef __LUCENE_INDEX_TERM_POSITION_VECTOR__
 #define __LUCENE_INDEX_TERM_POSITION_VECTOR__
 
-#include <LuceneKit/Index/LCTermFreqVector.h>
+#include "LCTermFreqVector.h"
 
 /** Extends <code>TermFreqVector</code> to provide additional information about
 *  positions in which each of the terms is found. A TermPositionVector not necessarily

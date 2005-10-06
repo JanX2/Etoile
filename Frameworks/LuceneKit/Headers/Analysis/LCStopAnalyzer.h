@@ -1,7 +1,7 @@
 #ifndef __LUCENE_ANALYSIS_STOP_ANALYZER__
 #define __LUCENE_ANALYSIS_STOP_ANALYZER__
 
-#include <LuceneKit/Analysis/LCAnalyzer.h>
+#include "LCAnalyzer.h"
 
 #ifdef HAVE_UKTEST
 #include <UnitKit/UnitKit.h>

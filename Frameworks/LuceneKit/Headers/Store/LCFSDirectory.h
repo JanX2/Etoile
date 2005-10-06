@@ -2,7 +2,7 @@
 #define __LUCENE_STORE_FSDIRECTORY__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Store/LCDirectory.h>
+#include "LCDirectory.h"
 
 @interface LCFSDirectory: NSObject <LCDirectory>
 {

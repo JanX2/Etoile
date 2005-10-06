@@ -1,7 +1,7 @@
-#include <LuceneKit/Index/LCFieldsWriter.h>
-#include <LuceneKit/Store/LCIndexOutput.h>
-#include <LuceneKit/Util/NSData+Additions.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCFieldsWriter.h"
+#include "LCIndexOutput.h"
+#include "NSData+Additions.h"
+#include "GNUstep.h"
 
 @implementation LCFieldsWriter
 

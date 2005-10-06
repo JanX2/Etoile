@@ -2,7 +2,7 @@
 #define __LUCENE_ANALYSIS_TOKEN_STREAM__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Analysis/LCToken.h>
+#include "LCToken.h"
 
 /** A stream of tokens */
 @interface LCTokenStream: NSObject

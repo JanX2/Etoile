@@ -7,19 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6047502408D19B5F000F2531 /* Search in Resources */ = {isa = PBXBuildFile; fileRef = 60474F7308D19B5E000F2531 /* Search */; };
-		6047502508D19B5F000F2531 /* QueryParser in Resources */ = {isa = PBXBuildFile; fileRef = 60474FB108D19B5E000F2531 /* QueryParser */; };
-		6047502608D19B5F000F2531 /* LuceneKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 60474FB508D19B5E000F2531 /* LuceneKit.h */; };
-		6047502708D19B5F000F2531 /* Util in Resources */ = {isa = PBXBuildFile; fileRef = 60474FB608D19B5E000F2531 /* Util */; };
-		6047502808D19B5F000F2531 /* Index in Resources */ = {isa = PBXBuildFile; fileRef = 60474FBE08D19B5E000F2531 /* Index */; };
-		6047502908D19B5F000F2531 /* Java in Resources */ = {isa = PBXBuildFile; fileRef = 60474FE708D19B5E000F2531 /* Java */; };
-		6047502A08D19B5F000F2531 /* LCIndexManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 60474FED08D19B5E000F2531 /* LCIndexManager.h */; };
-		6047502B08D19B5F000F2531 /* Analysis in Resources */ = {isa = PBXBuildFile; fileRef = 60474FEE08D19B5E000F2531 /* Analysis */; };
-		6047502C08D19B5F000F2531 /* Document in Resources */ = {isa = PBXBuildFile; fileRef = 6047500408D19B5E000F2531 /* Document */; };
-		6047502D08D19B5F000F2531 /* GNUstep in Resources */ = {isa = PBXBuildFile; fileRef = 6047500C08D19B5E000F2531 /* GNUstep */; };
-		6047502E08D19B5F000F2531 /* Importer in Resources */ = {isa = PBXBuildFile; fileRef = 6047501008D19B5E000F2531 /* Importer */; };
-		6047502F08D19B5F000F2531 /* LCMetadataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 6047501408D19B5E000F2531 /* LCMetadataAttribute.h */; };
-		6047503008D19B5F000F2531 /* Store in Resources */ = {isa = PBXBuildFile; fileRef = 6047501508D19B5E000F2531 /* Store */; };
 		6047503108D19B5F000F2531 /* Search in Headers */ = {isa = PBXBuildFile; fileRef = 60474F7308D19B5E000F2531 /* Search */; };
 		6047503208D19B5F000F2531 /* QueryParser in Headers */ = {isa = PBXBuildFile; fileRef = 60474FB108D19B5E000F2531 /* QueryParser */; };
 		6047503308D19B5F000F2531 /* LuceneKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 60474FB508D19B5E000F2531 /* LuceneKit.h */; };
@@ -33,124 +20,6 @@
 		6047503B08D19B5F000F2531 /* Importer in Headers */ = {isa = PBXBuildFile; fileRef = 6047501008D19B5E000F2531 /* Importer */; };
 		6047503C08D19B5F000F2531 /* LCMetadataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 6047501408D19B5E000F2531 /* LCMetadataAttribute.h */; };
 		6047503D08D19B5F000F2531 /* Store in Headers */ = {isa = PBXBuildFile; fileRef = 6047501508D19B5E000F2531 /* Store */; };
-		6069307008BFDF17009D3B3F /* TestCheckHits.h in Headers */ = {isa = PBXBuildFile; fileRef = 64C924E208B78CCA00ACE251 /* TestCheckHits.h */; };
-		6069307108BFDF17009D3B3F /* TestDocHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 64C9249808B78CCA00ACE251 /* TestDocHelper.h */; };
-		6069307208BFDF17009D3B3F /* TestEnglish.h in Headers */ = {isa = PBXBuildFile; fileRef = 64C924E508B78CCA00ACE251 /* TestEnglish.h */; };
-		6069307408BFDF2D009D3B3F /* LCAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245408B78CCA00ACE251 /* LCAnalyzer.m */; };
-		6069307508BFDF2D009D3B3F /* LCBitVector.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9250008B78CCB00ACE251 /* LCBitVector.m */; };
-		6069307608BFDF2D009D3B3F /* LCBooleanClause.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924B408B78CCA00ACE251 /* LCBooleanClause.m */; };
-		6069307708BFDF2D009D3B3F /* LCBooleanQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924B508B78CCA00ACE251 /* LCBooleanQuery.m */; };
-		6069307808BFDF2D009D3B3F /* LCBooleanScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924B608B78CCA00ACE251 /* LCBooleanScorer.m */; };
-		6069307908BFDF2D009D3B3F /* LCCharTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245508B78CCA00ACE251 /* LCCharTokenizer.m */; };
-		6069307A08BFDF2D009D3B3F /* LCCompoundFileReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9247608B78CCA00ACE251 /* LCCompoundFileReader.m */; };
-		6069307B08BFDF2D009D3B3F /* LCCompoundFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9247708B78CCA00ACE251 /* LCCompoundFileWriter.m */; };
-		6069307C08BFDF2D009D3B3F /* LCConjunctionScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924B708B78CCA00ACE251 /* LCConjunctionScorer.m */; };
-		6069307D08BFDF2D009D3B3F /* LCDateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9246908B78CCA00ACE251 /* LCDateTools.m */; };
-		6069307E08BFDF2D009D3B3F /* LCDefaultSimilarity.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924B808B78CCA00ACE251 /* LCDefaultSimilarity.m */; };
-		6069307F08BFDF2D009D3B3F /* LCDisjunctionSumScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924B908B78CCA00ACE251 /* LCDisjunctionSumScorer.m */; };
-		6069308008BFDF2D009D3B3F /* LCDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9246A08B78CCA00ACE251 /* LCDocument.m */; };
-		6069308108BFDF2D009D3B3F /* LCDocumentWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9247808B78CCA00ACE251 /* LCDocumentWriter.m */; };
-		6069308208BFDF2D009D3B3F /* LCExplanation.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924BA08B78CCA00ACE251 /* LCExplanation.m */; };
-		6069308308BFDF2D009D3B3F /* LCField.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9246B08B78CCA00ACE251 /* LCField.m */; };
-		6069308408BFDF2D009D3B3F /* LCFieldCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924BB08B78CCA00ACE251 /* LCFieldCache.m */; };
-		6069308508BFDF2D009D3B3F /* LCFieldCacheImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924BC08B78CCA00ACE251 /* LCFieldCacheImpl.m */; };
-		6069308608BFDF2D009D3B3F /* LCFieldDoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924BD08B78CCA00ACE251 /* LCFieldDoc.m */; };
-		6069308708BFDF2D009D3B3F /* LCFieldInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9247908B78CCA00ACE251 /* LCFieldInfo.m */; };
-		6069308808BFDF2D009D3B3F /* LCFieldInfos.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9247A08B78CCA00ACE251 /* LCFieldInfos.m */; };
-		6069308908BFDF2D009D3B3F /* LCFieldSortedHitQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924BE08B78CCA00ACE251 /* LCFieldSortedHitQueue.m */; };
-		6069308A08BFDF2D009D3B3F /* LCFieldsReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9247B08B78CCA00ACE251 /* LCFieldsReader.m */; };
-		6069308B08BFDF2D009D3B3F /* LCFieldsWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9247C08B78CCA00ACE251 /* LCFieldsWriter.m */; };
-		6069308C08BFDF2D009D3B3F /* LCFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924BF08B78CCA00ACE251 /* LCFilter.m */; };
-		6069308D08BFDF2D009D3B3F /* LCFilteredTermEnum.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924C008B78CCA00ACE251 /* LCFilteredTermEnum.m */; };
-		6069308E08BFDF2D009D3B3F /* LCFilterIndexReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9247D08B78CCA00ACE251 /* LCFilterIndexReader.m */; };
-		6069308F08BFDF2D009D3B3F /* LCFSDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924F208B78CCA00ACE251 /* LCFSDirectory.m */; };
-		6069309008BFDF2D009D3B3F /* LCFSIndexInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924F308B78CCA00ACE251 /* LCFSIndexInput.m */; };
-		6069309108BFDF2D009D3B3F /* LCFSIndexOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924F408B78CCA00ACE251 /* LCFSIndexOutput.m */; };
-		6069309208BFDF2D009D3B3F /* LCFuzzyQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924C108B78CCA00ACE251 /* LCFuzzyQuery.m */; };
-		6069309308BFDF2D009D3B3F /* LCFuzzyTermEnum.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924C208B78CCA00ACE251 /* LCFuzzyTermEnum.m */; };
-		6069309408BFDF2D009D3B3F /* LCHit.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924C308B78CCA00ACE251 /* LCHit.m */; };
-		6069309508BFDF2D009D3B3F /* LCHitCollector.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924C408B78CCA00ACE251 /* LCHitCollector.m */; };
-		6069309608BFDF2D009D3B3F /* LCHitIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924C508B78CCA00ACE251 /* LCHitIterator.m */; };
-		6069309708BFDF2D009D3B3F /* LCHitQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924C608B78CCA00ACE251 /* LCHitQueue.m */; };
-		6069309808BFDF2D009D3B3F /* LCHits.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924C708B78CCA00ACE251 /* LCHits.m */; };
-		6069309908BFDF2D009D3B3F /* LCIndexInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924F508B78CCA00ACE251 /* LCIndexInput.m */; };
-		6069309A08BFDF2D009D3B3F /* LCIndexManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924AD08B78CCA00ACE251 /* LCIndexManager.m */; };
-		6069309B08BFDF2D009D3B3F /* LCIndexModifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9247E08B78CCA00ACE251 /* LCIndexModifier.m */; };
-		6069309C08BFDF2D009D3B3F /* LCIndexOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924F608B78CCA00ACE251 /* LCIndexOutput.m */; };
-		6069309D08BFDF2D009D3B3F /* LCIndexReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9247F08B78CCA00ACE251 /* LCIndexReader.m */; };
-		6069309E08BFDF2D009D3B3F /* LCIndexSearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924C808B78CCA00ACE251 /* LCIndexSearcher.m */; };
-		6069309F08BFDF2D009D3B3F /* LCIndexWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248008B78CCA00ACE251 /* LCIndexWriter.m */; };
-		606930A008BFDF2D009D3B3F /* LCLetterTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245608B78CCA00ACE251 /* LCLetterTokenizer.m */; };
-		606930A108BFDF2D009D3B3F /* LCLowerCaseFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245708B78CCA00ACE251 /* LCLowerCaseFilter.m */; };
-		606930A208BFDF2D009D3B3F /* LCLowerCaseTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245808B78CCA00ACE251 /* LCLowerCaseTokenizer.m */; };
-		606930A308BFDF2D009D3B3F /* LCMMapDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924F708B78CCA00ACE251 /* LCMMapDirectory.m */; };
-		606930A408BFDF2D009D3B3F /* LCMultipleTermPositions.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248108B78CCA00ACE251 /* LCMultipleTermPositions.m */; };
-		606930A508BFDF2D009D3B3F /* LCMultiReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248208B78CCA00ACE251 /* LCMultiReader.m */; };
-		606930A608BFDF2D009D3B3F /* LCMultiTermQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924C908B78CCA00ACE251 /* LCMultiTermQuery.m */; };
-		606930A708BFDF2D009D3B3F /* LCNonMatchingScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924CA08B78CCA00ACE251 /* LCNonMatchingScorer.m */; };
-		606930A808BFDF2D009D3B3F /* LCNumberTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9246C08B78CCA00ACE251 /* LCNumberTools.m */; };
-		606930A908BFDF2D009D3B3F /* LCPerFieldAnalyzerWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245908B78CCA00ACE251 /* LCPerFieldAnalyzerWrapper.m */; };
-		606930AA08BFDF2D009D3B3F /* LCPorterStemFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245A08B78CCA00ACE251 /* LCPorterStemFilter.m */; };
-		606930AB08BFDF2D009D3B3F /* LCPrefixQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924CB08B78CCA00ACE251 /* LCPrefixQuery.m */; };
-		606930AC08BFDF2D009D3B3F /* LCPriorityQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9250108B78CCB00ACE251 /* LCPriorityQueue.m */; };
-		606930AD08BFDF2D009D3B3F /* LCQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924CC08B78CCA00ACE251 /* LCQuery.m */; };
-		606930AE08BFDF2D009D3B3F /* LCQueryFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924CD08B78CCA00ACE251 /* LCQueryFilter.m */; };
-		606930AF08BFDF2D009D3B3F /* LCQueryParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924B008B78CCA00ACE251 /* LCQueryParser.m */; };
-		606930B008BFDF2D009D3B3F /* LCQueryTermVector.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924CE08B78CCA00ACE251 /* LCQueryTermVector.m */; };
-		606930B108BFDF2D009D3B3F /* LCRAMDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924F808B78CCA00ACE251 /* LCRAMDirectory.m */; };
-		606930B208BFDF2D009D3B3F /* LCRAMFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924F908B78CCA00ACE251 /* LCRAMFile.m */; };
-		606930B308BFDF2D009D3B3F /* LCRAMInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924FA08B78CCA00ACE251 /* LCRAMInputStream.m */; };
-		606930B408BFDF2D009D3B3F /* LCRAMOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924FB08B78CCA00ACE251 /* LCRAMOutputStream.m */; };
-		606930B508BFDF2D009D3B3F /* LCReqExclScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924CF08B78CCA00ACE251 /* LCReqExclScorer.m */; };
-		606930B608BFDF2D009D3B3F /* LCReqOptSumScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924D008B78CCA00ACE251 /* LCReqOptSumScorer.m */; };
-		606930B708BFDF2D009D3B3F /* LCScoreDoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924D108B78CCA00ACE251 /* LCScoreDoc.m */; };
-		606930B808BFDF2D009D3B3F /* LCScoreDocComparator.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924D208B78CCA00ACE251 /* LCScoreDocComparator.m */; };
-		606930B908BFDF2D009D3B3F /* LCScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924D308B78CCA00ACE251 /* LCScorer.m */; };
-		606930BA08BFDF2D009D3B3F /* LCSearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924D408B78CCA00ACE251 /* LCSearcher.m */; };
-		606930BB08BFDF2D009D3B3F /* LCSegmentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248308B78CCA00ACE251 /* LCSegmentInfo.m */; };
-		606930BC08BFDF2D009D3B3F /* LCSegmentInfos.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248408B78CCA00ACE251 /* LCSegmentInfos.m */; };
-		606930BD08BFDF2D009D3B3F /* LCSegmentMergeInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248508B78CCA00ACE251 /* LCSegmentMergeInfo.m */; };
-		606930BE08BFDF2D009D3B3F /* LCSegmentMergeQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248608B78CCA00ACE251 /* LCSegmentMergeQueue.m */; };
-		606930BF08BFDF2D009D3B3F /* LCSegmentMerger.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248708B78CCA00ACE251 /* LCSegmentMerger.m */; };
-		606930C008BFDF2D009D3B3F /* LCSegmentReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248808B78CCA00ACE251 /* LCSegmentReader.m */; };
-		606930C108BFDF2D009D3B3F /* LCSegmentTermDocs.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248908B78CCA00ACE251 /* LCSegmentTermDocs.m */; };
-		606930C208BFDF2D009D3B3F /* LCSegmentTermEnum.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248A08B78CCA00ACE251 /* LCSegmentTermEnum.m */; };
-		606930C308BFDF2D009D3B3F /* LCSegmentTermPositions.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248B08B78CCA00ACE251 /* LCSegmentTermPositions.m */; };
-		606930C408BFDF2D009D3B3F /* LCSegmentTermPositionVector.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248C08B78CCA00ACE251 /* LCSegmentTermPositionVector.m */; };
-		606930C508BFDF2D009D3B3F /* LCSegmentTermVector.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248D08B78CCA00ACE251 /* LCSegmentTermVector.m */; };
-		606930C608BFDF2D009D3B3F /* LCSimilarity.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924D508B78CCA00ACE251 /* LCSimilarity.m */; };
-		606930C708BFDF2D009D3B3F /* LCSimilarityDelegator.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924D608B78CCA00ACE251 /* LCSimilarityDelegator.m */; };
-		606930C808BFDF2D009D3B3F /* LCSimpleAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245B08B78CCA00ACE251 /* LCSimpleAnalyzer.m */; };
-		606930C908BFDF2D009D3B3F /* LCSort.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924D708B78CCA00ACE251 /* LCSort.m */; };
-		606930CA08BFDF2D009D3B3F /* LCSortComparator.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924D808B78CCA00ACE251 /* LCSortComparator.m */; };
-		606930CB08BFDF2D009D3B3F /* LCSortField.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924D908B78CCA00ACE251 /* LCSortField.m */; };
-		606930CC08BFDF2D009D3B3F /* LCStopAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245C08B78CCA00ACE251 /* LCStopAnalyzer.m */; };
-		606930CD08BFDF2D009D3B3F /* LCStopFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245D08B78CCA00ACE251 /* LCStopFilter.m */; };
-		606930CE08BFDF2D009D3B3F /* LCStringReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924AC08B78CCA00ACE251 /* LCStringReader.m */; };
-		606930CF08BFDF2D009D3B3F /* LCTerm.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248E08B78CCA00ACE251 /* LCTerm.m */; };
-		606930D008BFDF2D009D3B3F /* LCTermBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9248F08B78CCA00ACE251 /* LCTermBuffer.m */; };
-		606930D108BFDF2D009D3B3F /* LCTermEnum.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9249008B78CCA00ACE251 /* LCTermEnum.m */; };
-		606930D208BFDF2D009D3B3F /* LCTermInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9249108B78CCA00ACE251 /* LCTermInfo.m */; };
-		606930D308BFDF2D009D3B3F /* LCTermInfosReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9249208B78CCA00ACE251 /* LCTermInfosReader.m */; };
-		606930D408BFDF2D009D3B3F /* LCTermInfosWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9249308B78CCA00ACE251 /* LCTermInfosWriter.m */; };
-		606930D508BFDF2D009D3B3F /* LCTermQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924DA08B78CCA00ACE251 /* LCTermQuery.m */; };
-		606930D608BFDF2D009D3B3F /* LCTermScorer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924DB08B78CCA00ACE251 /* LCTermScorer.m */; };
-		606930D708BFDF2D009D3B3F /* LCTermVectorOffsetInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9249408B78CCA00ACE251 /* LCTermVectorOffsetInfo.m */; };
-		606930D808BFDF2D009D3B3F /* LCTermVectorsReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9249508B78CCA00ACE251 /* LCTermVectorsReader.m */; };
-		606930D908BFDF2D009D3B3F /* LCTermVectorsWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9249608B78CCA00ACE251 /* LCTermVectorsWriter.m */; };
-		606930DA08BFDF2D009D3B3F /* LCTextImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9247208B78CCA00ACE251 /* LCTextImporter.m */; };
-		606930DB08BFDF2D009D3B3F /* LCToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245E08B78CCA00ACE251 /* LCToken.m */; };
-		606930DC08BFDF2D009D3B3F /* LCTokenFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245F08B78CCA00ACE251 /* LCTokenFilter.m */; };
-		606930DD08BFDF2D009D3B3F /* LCTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9246008B78CCA00ACE251 /* LCTokenizer.m */; };
-		606930DE08BFDF2D009D3B3F /* LCTokenStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9246108B78CCA00ACE251 /* LCTokenStream.m */; };
-		606930DF08BFDF2D009D3B3F /* LCTopDocs.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924DC08B78CCA00ACE251 /* LCTopDocs.m */; };
-		606930E008BFDF2D009D3B3F /* LCTopFieldDocs.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924DD08B78CCA00ACE251 /* LCTopFieldDocs.m */; };
-		606930E108BFDF2D009D3B3F /* LCWhitespaceAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9246208B78CCA00ACE251 /* LCWhitespaceAnalyzer.m */; };
-		606930E208BFDF2D009D3B3F /* LCWhitespaceTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9246308B78CCA00ACE251 /* LCWhitespaceTokenizer.m */; };
-		606930E308BFDF2D009D3B3F /* LCWordlistLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9246408B78CCA00ACE251 /* LCWordlistLoader.m */; };
-		606930E408BFDF2D009D3B3F /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9250208B78CCB00ACE251 /* NSData+Additions.m */; };
-		606930E508BFDF2D009D3B3F /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9250308B78CCB00ACE251 /* NSString+Additions.m */; };
-		606930E608BFDF2D009D3B3F /* PorterStemmer.c in Sources */ = {isa = PBXBuildFile; fileRef = 64C9246508B78CCA00ACE251 /* PorterStemmer.c */; };
 		606930E708BFDF2D009D3B3F /* TestBinaryDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9246D08B78CCA00ACE251 /* TestBinaryDocument.m */; };
 		606930E808BFDF2D009D3B3F /* TestBoolean2.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924DE08B78CCA00ACE251 /* TestBoolean2.m */; };
 		606930E908BFDF2D009D3B3F /* TestBooleanOr.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924DF08B78CCA00ACE251 /* TestBooleanOr.m */; };
@@ -187,6 +56,19 @@
 		6069310808BFDF2D009D3B3F /* TestTermVectorsReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924A708B78CCA00ACE251 /* TestTermVectorsReader.m */; };
 		6069310908BFDF2D009D3B3F /* TestTermVectorsWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C924A808B78CCA00ACE251 /* TestTermVectorsWriter.m */; };
 		6069310A08BFDF3A009D3B3F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		609A9FCB08D3A1190008B25B /* QueryHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 609A9FC908D3A1190008B25B /* QueryHandler.m */; };
+		609A9FCE08D3A1210008B25B /* TokenHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 609A9FCC08D3A1210008B25B /* TokenHandler.m */; };
+		609A9FD108D3A1310008B25B /* CodeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 609A9FCF08D3A1310008B25B /* CodeParser.m */; };
+		609A9FDD08D3A14E0008B25B /* QueryHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 609A9FD508D3A14E0008B25B /* QueryHandler.h */; };
+		609A9FDE08D3A14E0008B25B /* TokenHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 609A9FD608D3A14E0008B25B /* TokenHandler.h */; };
+		609A9FDF08D3A14E0008B25B /* CodeHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 609A9FD708D3A14E0008B25B /* CodeHandler.h */; };
+		609A9FE008D3A14E0008B25B /* CodeParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 609A9FD808D3A14E0008B25B /* CodeParser.h */; };
+		609A9FEE08D3A2810008B25B /* TestWildcard.m in Sources */ = {isa = PBXBuildFile; fileRef = 609A9FEB08D3A2810008B25B /* TestWildcard.m */; };
+		609A9FEF08D3A2810008B25B /* LCWildcardTermEnum.m in Sources */ = {isa = PBXBuildFile; fileRef = 609A9FE908D3A2810008B25B /* LCWildcardTermEnum.m */; };
+		609A9FF008D3A2810008B25B /* LCWildcardQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 609A9FEA08D3A2810008B25B /* LCWildcardQuery.m */; };
+		609AA00608D3A4D60008B25B /* OgreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609AA00508D3A4D60008B25B /* OgreKit.framework */; };
+		609AA00708D3A4D60008B25B /* OgreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609AA00508D3A4D60008B25B /* OgreKit.framework */; };
+		609D38C708D62C0F0028C389 /* UnitKitInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 60692FC108BFDE76009D3B3F /* UnitKitInfo.plist */; };
 		60F50A0108D1A2D7005DA730 /* UnitKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64C922B908B78AF100ACE251 /* UnitKit.framework */; };
 		64C925B008B78CCB00ACE251 /* LCAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245408B78CCA00ACE251 /* LCAnalyzer.m */; };
 		64C925B108B78CCB00ACE251 /* LCCharTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C9245508B78CCA00ACE251 /* LCCharTokenizer.m */; };
@@ -331,27 +213,47 @@
 		};
 /* End PBXBuildStyle section */
 
+/* Begin PBXContainerItemProxy section */
+		609D38C208D627AA0028C389 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* LuceneKit */;
+			remoteInfo = LuceneKit;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		32DBCF5E0370ADEE00C91783 /* LuceneKit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LuceneKit_Prefix.pch; sourceTree = "<group>"; };
-		60474F7308D19B5E000F2531 /* Search */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Search; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/Search; sourceTree = "<absolute>"; };
-		60474FB108D19B5E000F2531 /* QueryParser */ = {isa = PBXFileReference; lastKnownFileType = folder; name = QueryParser; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/QueryParser; sourceTree = "<absolute>"; };
+		60474F7308D19B5E000F2531 /* Search */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Search; sourceTree = "<group>"; };
+		60474FB108D19B5E000F2531 /* QueryParser */ = {isa = PBXFileReference; lastKnownFileType = folder; name = QueryParser; path = "/cvs/Etoile work/Frameworks/LuceneKit/Headers/QueryParser"; sourceTree = "<absolute>"; };
 		60474FB508D19B5E000F2531 /* LuceneKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LuceneKit.h; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/LuceneKit.h; sourceTree = "<absolute>"; };
-		60474FB608D19B5E000F2531 /* Util */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Util; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/Util; sourceTree = "<absolute>"; };
-		60474FBE08D19B5E000F2531 /* Index */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Index; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/Index; sourceTree = "<absolute>"; };
-		60474FE708D19B5E000F2531 /* Java */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Java; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/Java; sourceTree = "<absolute>"; };
-		60474FED08D19B5E000F2531 /* LCIndexManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LCIndexManager.h; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/LCIndexManager.h; sourceTree = "<absolute>"; };
-		60474FEE08D19B5E000F2531 /* Analysis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Analysis; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/Analysis; sourceTree = "<absolute>"; };
-		6047500408D19B5E000F2531 /* Document */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Document; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/Document; sourceTree = "<absolute>"; };
-		6047500C08D19B5E000F2531 /* GNUstep */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GNUstep; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/GNUstep; sourceTree = "<absolute>"; };
-		6047501008D19B5E000F2531 /* Importer */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Importer; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/Importer; sourceTree = "<absolute>"; };
-		6047501408D19B5E000F2531 /* LCMetadataAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LCMetadataAttribute.h; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/LCMetadataAttribute.h; sourceTree = "<absolute>"; };
-		6047501508D19B5E000F2531 /* Store */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Store; path = /cvs/Etoile/Frameworks/LuceneKit/Headers/Store; sourceTree = "<absolute>"; };
+		60474FB608D19B5E000F2531 /* Util */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Util; sourceTree = "<group>"; };
+		60474FBE08D19B5E000F2531 /* Index */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Index; sourceTree = "<group>"; };
+		60474FE708D19B5E000F2531 /* Java */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Java; sourceTree = "<group>"; };
+		60474FED08D19B5E000F2531 /* LCIndexManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCIndexManager.h; sourceTree = "<group>"; };
+		60474FEE08D19B5E000F2531 /* Analysis */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Analysis; sourceTree = "<group>"; };
+		6047500408D19B5E000F2531 /* Document */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Document; sourceTree = "<group>"; };
+		6047500C08D19B5E000F2531 /* GNUstep */ = {isa = PBXFileReference; lastKnownFileType = folder; path = GNUstep; sourceTree = "<group>"; };
+		6047501008D19B5E000F2531 /* Importer */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Importer; sourceTree = "<group>"; };
+		6047501408D19B5E000F2531 /* LCMetadataAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCMetadataAttribute.h; sourceTree = "<group>"; };
+		6047501508D19B5E000F2531 /* Store */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Store; sourceTree = "<group>"; };
 		60692FC008BFDE76009D3B3F /* UnitKit.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitKit.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
-		60692FC108BFDE76009D3B3F /* UnitKit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "UnitKit-Info.plist"; sourceTree = "<group>"; };
+		60692FC108BFDE76009D3B3F /* UnitKitInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = UnitKitInfo.plist; sourceTree = "<group>"; };
+		609A9FC908D3A1190008B25B /* QueryHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryHandler.m; sourceTree = "<group>"; };
+		609A9FCC08D3A1210008B25B /* TokenHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenHandler.m; sourceTree = "<group>"; };
+		609A9FCF08D3A1310008B25B /* CodeParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CodeParser.m; sourceTree = "<group>"; };
+		609A9FD508D3A14E0008B25B /* QueryHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryHandler.h; sourceTree = "<group>"; };
+		609A9FD608D3A14E0008B25B /* TokenHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenHandler.h; sourceTree = "<group>"; };
+		609A9FD708D3A14E0008B25B /* CodeHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CodeHandler.h; sourceTree = "<group>"; };
+		609A9FD808D3A14E0008B25B /* CodeParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CodeParser.h; sourceTree = "<group>"; };
+		609A9FE908D3A2810008B25B /* LCWildcardTermEnum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LCWildcardTermEnum.m; sourceTree = "<group>"; };
+		609A9FEA08D3A2810008B25B /* LCWildcardQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LCWildcardQuery.m; sourceTree = "<group>"; };
+		609A9FEB08D3A2810008B25B /* TestWildcard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestWildcard.m; sourceTree = "<group>"; };
+		609AA00508D3A4D60008B25B /* OgreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OgreKit.framework; path = /Library/Frameworks/OgreKit.framework; sourceTree = "<absolute>"; };
 		64C922B908B78AF100ACE251 /* UnitKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnitKit.framework; path = /Library/Frameworks/UnitKit.framework; sourceTree = "<absolute>"; };
 		64C9245408B78CCA00ACE251 /* LCAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LCAnalyzer.m; sourceTree = "<group>"; };
 		64C9245508B78CCA00ACE251 /* LCCharTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LCCharTokenizer.m; sourceTree = "<group>"; };
@@ -506,7 +408,7 @@
 		64C9250108B78CCB00ACE251 /* LCPriorityQueue.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LCPriorityQueue.m; sourceTree = "<group>"; };
 		64C9250208B78CCB00ACE251 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSData+Additions.m"; sourceTree = "<group>"; };
 		64C9250308B78CCB00ACE251 /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSString+Additions.m"; sourceTree = "<group>"; };
-		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8DC2EF5A0486A6940098B216 /* LuceneKitInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = LuceneKitInfo.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* LuceneKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LuceneKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -517,6 +419,7 @@
 			files = (
 				60F50A0108D1A2D7005DA730 /* UnitKit.framework in Frameworks */,
 				6069310A08BFDF3A009D3B3F /* Cocoa.framework in Frameworks */,
+				609AA00608D3A4D60008B25B /* OgreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,6 +428,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
+				609AA00708D3A4D60008B25B /* OgreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -548,7 +452,7 @@
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
 				034768DFFF38A50411DB9C8B /* Products */,
-				60692FC108BFDE76009D3B3F /* UnitKit-Info.plist */,
+				60692FC108BFDE76009D3B3F /* UnitKitInfo.plist */,
 			);
 			name = LuceneKit;
 			sourceTree = "<group>";
@@ -556,6 +460,7 @@
 		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				609AA00508D3A4D60008B25B /* OgreKit.framework */,
 				64C922B908B78AF100ACE251 /* UnitKit.framework */,
 				1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */,
 				1058C7B2FEA5585E11CA2CBB /* Other Frameworks */,
@@ -566,7 +471,7 @@
 		089C1665FE841158C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8DC2EF5A0486A6940098B216 /* Info.plist */,
+				8DC2EF5A0486A6940098B216 /* LuceneKitInfo.plist */,
 				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
 			);
 			name = Resources;
@@ -601,7 +506,6 @@
 		32C88DFF0371C24200C91783 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				32DBCF5E0370ADEE00C91783 /* LuceneKit_Prefix.pch */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -738,7 +642,14 @@
 		64C924AE08B78CCA00ACE251 /* QueryParser */ = {
 			isa = PBXGroup;
 			children = (
+				609A9FD508D3A14E0008B25B /* QueryHandler.h */,
+				609A9FD608D3A14E0008B25B /* TokenHandler.h */,
+				609A9FD708D3A14E0008B25B /* CodeHandler.h */,
+				609A9FD808D3A14E0008B25B /* CodeParser.h */,
 				64C924B008B78CCA00ACE251 /* LCQueryParser.m */,
+				609A9FCF08D3A1310008B25B /* CodeParser.m */,
+				609A9FC908D3A1190008B25B /* QueryHandler.m */,
+				609A9FCC08D3A1210008B25B /* TokenHandler.m */,
 			);
 			path = QueryParser;
 			sourceTree = "<group>";
@@ -788,6 +699,8 @@
 				64C924DB08B78CCA00ACE251 /* LCTermScorer.m */,
 				64C924DC08B78CCA00ACE251 /* LCTopDocs.m */,
 				64C924DD08B78CCA00ACE251 /* LCTopFieldDocs.m */,
+				609A9FE908D3A2810008B25B /* LCWildcardTermEnum.m */,
+				609A9FEA08D3A2810008B25B /* LCWildcardQuery.m */,
 				64C924DE08B78CCA00ACE251 /* TestBoolean2.m */,
 				64C924DF08B78CCA00ACE251 /* TestBooleanOr.m */,
 				64C924E008B78CCA00ACE251 /* TestBooleanQuery.m */,
@@ -805,6 +718,7 @@
 				64C924EC08B78CCA00ACE251 /* TestSimilarity.m */,
 				64C924ED08B78CCA00ACE251 /* TestSort.m */,
 				64C924EE08B78CCA00ACE251 /* TestTermVectors.m */,
+				609A9FEB08D3A2810008B25B /* TestWildcard.m */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -865,12 +779,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6069307008BFDF17009D3B3F /* TestCheckHits.h in Headers */,
-				6069307108BFDF17009D3B3F /* TestDocHelper.h in Headers */,
-				6069307208BFDF17009D3B3F /* TestEnglish.h in Headers */,
-				6047502608D19B5F000F2531 /* LuceneKit.h in Headers */,
-				6047502A08D19B5F000F2531 /* LCIndexManager.h in Headers */,
-				6047502F08D19B5F000F2531 /* LCMetadataAttribute.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -878,6 +786,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				609A9FDD08D3A14E0008B25B /* QueryHandler.h in Headers */,
+				609A9FDE08D3A14E0008B25B /* TokenHandler.h in Headers */,
+				609A9FDF08D3A14E0008B25B /* CodeHandler.h in Headers */,
+				609A9FE008D3A14E0008B25B /* CodeParser.h in Headers */,
 				6047503108D19B5F000F2531 /* Search in Headers */,
 				6047503208D19B5F000F2531 /* QueryParser in Headers */,
 				6047503408D19B5F000F2531 /* Util in Headers */,
@@ -928,6 +840,7 @@
 				WARNING_CFLAGS = "-Wmost";
 			};
 			dependencies = (
+				609D38C308D627AA0028C389 /* PBXTargetDependency */,
 			);
 			name = UnitKit;
 			productName = UnitKit;
@@ -1025,16 +938,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6047502408D19B5F000F2531 /* Search in Resources */,
-				6047502508D19B5F000F2531 /* QueryParser in Resources */,
-				6047502708D19B5F000F2531 /* Util in Resources */,
-				6047502808D19B5F000F2531 /* Index in Resources */,
-				6047502908D19B5F000F2531 /* Java in Resources */,
-				6047502B08D19B5F000F2531 /* Analysis in Resources */,
-				6047502C08D19B5F000F2531 /* Document in Resources */,
-				6047502D08D19B5F000F2531 /* GNUstep in Resources */,
-				6047502E08D19B5F000F2531 /* Importer in Resources */,
-				6047503008D19B5F000F2531 /* Store in Resources */,
+				609D38C708D62C0F0028C389 /* UnitKitInfo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1060,7 +964,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "/usr/local/bin/ukrun \"$BUILD_DIR/$PRODUCT_NAME.$WRAPPER_EXTENSION\"";
+			shellScript = "/usr/local/bin/ukrun \"$TARGET_BUILD_DIR/$PRODUCT_NAME.$WRAPPER_EXTENSION\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1069,156 +973,42 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6069307408BFDF2D009D3B3F /* LCAnalyzer.m in Sources */,
-				6069307508BFDF2D009D3B3F /* LCBitVector.m in Sources */,
-				6069307608BFDF2D009D3B3F /* LCBooleanClause.m in Sources */,
-				6069307708BFDF2D009D3B3F /* LCBooleanQuery.m in Sources */,
-				6069307808BFDF2D009D3B3F /* LCBooleanScorer.m in Sources */,
-				6069307908BFDF2D009D3B3F /* LCCharTokenizer.m in Sources */,
-				6069307A08BFDF2D009D3B3F /* LCCompoundFileReader.m in Sources */,
-				6069307B08BFDF2D009D3B3F /* LCCompoundFileWriter.m in Sources */,
-				6069307C08BFDF2D009D3B3F /* LCConjunctionScorer.m in Sources */,
-				6069307D08BFDF2D009D3B3F /* LCDateTools.m in Sources */,
-				6069307E08BFDF2D009D3B3F /* LCDefaultSimilarity.m in Sources */,
-				6069307F08BFDF2D009D3B3F /* LCDisjunctionSumScorer.m in Sources */,
-				6069308008BFDF2D009D3B3F /* LCDocument.m in Sources */,
-				6069308108BFDF2D009D3B3F /* LCDocumentWriter.m in Sources */,
-				6069308208BFDF2D009D3B3F /* LCExplanation.m in Sources */,
-				6069308308BFDF2D009D3B3F /* LCField.m in Sources */,
-				6069308408BFDF2D009D3B3F /* LCFieldCache.m in Sources */,
-				6069308508BFDF2D009D3B3F /* LCFieldCacheImpl.m in Sources */,
-				6069308608BFDF2D009D3B3F /* LCFieldDoc.m in Sources */,
-				6069308708BFDF2D009D3B3F /* LCFieldInfo.m in Sources */,
-				6069308808BFDF2D009D3B3F /* LCFieldInfos.m in Sources */,
-				6069308908BFDF2D009D3B3F /* LCFieldSortedHitQueue.m in Sources */,
-				6069308A08BFDF2D009D3B3F /* LCFieldsReader.m in Sources */,
-				6069308B08BFDF2D009D3B3F /* LCFieldsWriter.m in Sources */,
-				6069308C08BFDF2D009D3B3F /* LCFilter.m in Sources */,
-				6069308D08BFDF2D009D3B3F /* LCFilteredTermEnum.m in Sources */,
-				6069308E08BFDF2D009D3B3F /* LCFilterIndexReader.m in Sources */,
-				6069308F08BFDF2D009D3B3F /* LCFSDirectory.m in Sources */,
-				6069309008BFDF2D009D3B3F /* LCFSIndexInput.m in Sources */,
-				6069309108BFDF2D009D3B3F /* LCFSIndexOutput.m in Sources */,
-				6069309208BFDF2D009D3B3F /* LCFuzzyQuery.m in Sources */,
-				6069309308BFDF2D009D3B3F /* LCFuzzyTermEnum.m in Sources */,
-				6069309408BFDF2D009D3B3F /* LCHit.m in Sources */,
-				6069309508BFDF2D009D3B3F /* LCHitCollector.m in Sources */,
-				6069309608BFDF2D009D3B3F /* LCHitIterator.m in Sources */,
-				6069309708BFDF2D009D3B3F /* LCHitQueue.m in Sources */,
-				6069309808BFDF2D009D3B3F /* LCHits.m in Sources */,
-				6069309908BFDF2D009D3B3F /* LCIndexInput.m in Sources */,
-				6069309A08BFDF2D009D3B3F /* LCIndexManager.m in Sources */,
-				6069309B08BFDF2D009D3B3F /* LCIndexModifier.m in Sources */,
-				6069309C08BFDF2D009D3B3F /* LCIndexOutput.m in Sources */,
-				6069309D08BFDF2D009D3B3F /* LCIndexReader.m in Sources */,
-				6069309E08BFDF2D009D3B3F /* LCIndexSearcher.m in Sources */,
-				6069309F08BFDF2D009D3B3F /* LCIndexWriter.m in Sources */,
-				606930A008BFDF2D009D3B3F /* LCLetterTokenizer.m in Sources */,
-				606930A108BFDF2D009D3B3F /* LCLowerCaseFilter.m in Sources */,
-				606930A208BFDF2D009D3B3F /* LCLowerCaseTokenizer.m in Sources */,
-				606930A308BFDF2D009D3B3F /* LCMMapDirectory.m in Sources */,
-				606930A408BFDF2D009D3B3F /* LCMultipleTermPositions.m in Sources */,
-				606930A508BFDF2D009D3B3F /* LCMultiReader.m in Sources */,
-				606930A608BFDF2D009D3B3F /* LCMultiTermQuery.m in Sources */,
-				606930A708BFDF2D009D3B3F /* LCNonMatchingScorer.m in Sources */,
-				606930A808BFDF2D009D3B3F /* LCNumberTools.m in Sources */,
-				606930A908BFDF2D009D3B3F /* LCPerFieldAnalyzerWrapper.m in Sources */,
-				606930AA08BFDF2D009D3B3F /* LCPorterStemFilter.m in Sources */,
-				606930AB08BFDF2D009D3B3F /* LCPrefixQuery.m in Sources */,
-				606930AC08BFDF2D009D3B3F /* LCPriorityQueue.m in Sources */,
-				606930AD08BFDF2D009D3B3F /* LCQuery.m in Sources */,
-				606930AE08BFDF2D009D3B3F /* LCQueryFilter.m in Sources */,
-				606930AF08BFDF2D009D3B3F /* LCQueryParser.m in Sources */,
-				606930B008BFDF2D009D3B3F /* LCQueryTermVector.m in Sources */,
-				606930B108BFDF2D009D3B3F /* LCRAMDirectory.m in Sources */,
-				606930B208BFDF2D009D3B3F /* LCRAMFile.m in Sources */,
-				606930B308BFDF2D009D3B3F /* LCRAMInputStream.m in Sources */,
-				606930B408BFDF2D009D3B3F /* LCRAMOutputStream.m in Sources */,
-				606930B508BFDF2D009D3B3F /* LCReqExclScorer.m in Sources */,
-				606930B608BFDF2D009D3B3F /* LCReqOptSumScorer.m in Sources */,
-				606930B708BFDF2D009D3B3F /* LCScoreDoc.m in Sources */,
-				606930B808BFDF2D009D3B3F /* LCScoreDocComparator.m in Sources */,
-				606930B908BFDF2D009D3B3F /* LCScorer.m in Sources */,
-				606930BA08BFDF2D009D3B3F /* LCSearcher.m in Sources */,
-				606930BB08BFDF2D009D3B3F /* LCSegmentInfo.m in Sources */,
-				606930BC08BFDF2D009D3B3F /* LCSegmentInfos.m in Sources */,
-				606930BD08BFDF2D009D3B3F /* LCSegmentMergeInfo.m in Sources */,
-				606930BE08BFDF2D009D3B3F /* LCSegmentMergeQueue.m in Sources */,
-				606930BF08BFDF2D009D3B3F /* LCSegmentMerger.m in Sources */,
-				606930C008BFDF2D009D3B3F /* LCSegmentReader.m in Sources */,
-				606930C108BFDF2D009D3B3F /* LCSegmentTermDocs.m in Sources */,
-				606930C208BFDF2D009D3B3F /* LCSegmentTermEnum.m in Sources */,
-				606930C308BFDF2D009D3B3F /* LCSegmentTermPositions.m in Sources */,
-				606930C408BFDF2D009D3B3F /* LCSegmentTermPositionVector.m in Sources */,
-				606930C508BFDF2D009D3B3F /* LCSegmentTermVector.m in Sources */,
-				606930C608BFDF2D009D3B3F /* LCSimilarity.m in Sources */,
-				606930C708BFDF2D009D3B3F /* LCSimilarityDelegator.m in Sources */,
-				606930C808BFDF2D009D3B3F /* LCSimpleAnalyzer.m in Sources */,
-				606930C908BFDF2D009D3B3F /* LCSort.m in Sources */,
-				606930CA08BFDF2D009D3B3F /* LCSortComparator.m in Sources */,
-				606930CB08BFDF2D009D3B3F /* LCSortField.m in Sources */,
-				606930CC08BFDF2D009D3B3F /* LCStopAnalyzer.m in Sources */,
-				606930CD08BFDF2D009D3B3F /* LCStopFilter.m in Sources */,
-				606930CE08BFDF2D009D3B3F /* LCStringReader.m in Sources */,
-				606930CF08BFDF2D009D3B3F /* LCTerm.m in Sources */,
-				606930D008BFDF2D009D3B3F /* LCTermBuffer.m in Sources */,
-				606930D108BFDF2D009D3B3F /* LCTermEnum.m in Sources */,
-				606930D208BFDF2D009D3B3F /* LCTermInfo.m in Sources */,
-				606930D308BFDF2D009D3B3F /* LCTermInfosReader.m in Sources */,
-				606930D408BFDF2D009D3B3F /* LCTermInfosWriter.m in Sources */,
-				606930D508BFDF2D009D3B3F /* LCTermQuery.m in Sources */,
-				606930D608BFDF2D009D3B3F /* LCTermScorer.m in Sources */,
-				606930D708BFDF2D009D3B3F /* LCTermVectorOffsetInfo.m in Sources */,
-				606930D808BFDF2D009D3B3F /* LCTermVectorsReader.m in Sources */,
-				606930D908BFDF2D009D3B3F /* LCTermVectorsWriter.m in Sources */,
-				606930DA08BFDF2D009D3B3F /* LCTextImporter.m in Sources */,
-				606930DB08BFDF2D009D3B3F /* LCToken.m in Sources */,
-				606930DC08BFDF2D009D3B3F /* LCTokenFilter.m in Sources */,
-				606930DD08BFDF2D009D3B3F /* LCTokenizer.m in Sources */,
-				606930DE08BFDF2D009D3B3F /* LCTokenStream.m in Sources */,
-				606930DF08BFDF2D009D3B3F /* LCTopDocs.m in Sources */,
-				606930E008BFDF2D009D3B3F /* LCTopFieldDocs.m in Sources */,
-				606930E108BFDF2D009D3B3F /* LCWhitespaceAnalyzer.m in Sources */,
-				606930E208BFDF2D009D3B3F /* LCWhitespaceTokenizer.m in Sources */,
-				606930E308BFDF2D009D3B3F /* LCWordlistLoader.m in Sources */,
-				606930E408BFDF2D009D3B3F /* NSData+Additions.m in Sources */,
-				606930E508BFDF2D009D3B3F /* NSString+Additions.m in Sources */,
-				606930E608BFDF2D009D3B3F /* PorterStemmer.c in Sources */,
-				606930E708BFDF2D009D3B3F /* TestBinaryDocument.m in Sources */,
-				606930E808BFDF2D009D3B3F /* TestBoolean2.m in Sources */,
-				606930E908BFDF2D009D3B3F /* TestBooleanOr.m in Sources */,
-				606930EA08BFDF2D009D3B3F /* TestBooleanQuery.m in Sources */,
-				606930EB08BFDF2D009D3B3F /* TestBooleanScorer.m in Sources */,
-				606930EC08BFDF2D009D3B3F /* TestCheckHits.m in Sources */,
-				606930ED08BFDF2D009D3B3F /* TestCompoundFile.m in Sources */,
-				606930EE08BFDF2D009D3B3F /* TestDocBoost.m in Sources */,
 				606930EF08BFDF2D009D3B3F /* TestDocHelper.m in Sources */,
-				606930F008BFDF2D009D3B3F /* TestEnglish.m in Sources */,
-				606930F108BFDF2D009D3B3F /* TestFieldsReader.m in Sources */,
-				606930F208BFDF2D009D3B3F /* TestFilterIndexReader.m in Sources */,
-				606930F308BFDF2D009D3B3F /* TestFuzzyQuery.m in Sources */,
-				606930F408BFDF2D009D3B3F /* TestIndexModifier.m in Sources */,
-				606930F508BFDF2D009D3B3F /* TestIndexReader.m in Sources */,
-				606930F608BFDF2D009D3B3F /* TestIndexWriter.m in Sources */,
 				606930F708BFDF2D009D3B3F /* TestMockIndexInput.m in Sources */,
-				606930F808BFDF2D009D3B3F /* TestMockIndexOutput.m in Sources */,
-				606930F908BFDF2D009D3B3F /* TestMultiReader.m in Sources */,
-				606930FA08BFDF2D009D3B3F /* TestNot.m in Sources */,
-				606930FB08BFDF2D009D3B3F /* TestNumberTools.m in Sources */,
-				606930FC08BFDF2D009D3B3F /* TestPrefixQuery.m in Sources */,
-				606930FD08BFDF2D009D3B3F /* TestQueryTermVector.m in Sources */,
-				606930FE08BFDF2D009D3B3F /* TestSegmentMerger.m in Sources */,
-				606930FF08BFDF2D009D3B3F /* TestSegmentReader.m in Sources */,
 				6069310008BFDF2D009D3B3F /* TestSegmentTermDocs.m in Sources */,
-				6069310108BFDF2D009D3B3F /* TestSegmentTermEnum.m in Sources */,
 				6069310208BFDF2D009D3B3F /* TestSetNorm.m in Sources */,
-				6069310308BFDF2D009D3B3F /* TestSimilarity.m in Sources */,
-				6069310408BFDF2D009D3B3F /* TestSort.m in Sources */,
 				6069310508BFDF2D009D3B3F /* TestStore.m in Sources */,
-				6069310608BFDF2D009D3B3F /* TestTermInfos.m in Sources */,
-				6069310708BFDF2D009D3B3F /* TestTermVectors.m in Sources */,
+				606930F308BFDF2D009D3B3F /* TestFuzzyQuery.m in Sources */,
 				6069310808BFDF2D009D3B3F /* TestTermVectorsReader.m in Sources */,
+				606930F908BFDF2D009D3B3F /* TestMultiReader.m in Sources */,
+				606930F608BFDF2D009D3B3F /* TestIndexWriter.m in Sources */,
+				606930F108BFDF2D009D3B3F /* TestFieldsReader.m in Sources */,
+				6069310708BFDF2D009D3B3F /* TestTermVectors.m in Sources */,
+				606930E908BFDF2D009D3B3F /* TestBooleanOr.m in Sources */,
+				606930F808BFDF2D009D3B3F /* TestMockIndexOutput.m in Sources */,
+				606930FA08BFDF2D009D3B3F /* TestNot.m in Sources */,
+				606930FE08BFDF2D009D3B3F /* TestSegmentMerger.m in Sources */,
+				609A9FEE08D3A2810008B25B /* TestWildcard.m in Sources */,
+				606930EB08BFDF2D009D3B3F /* TestBooleanScorer.m in Sources */,
+				606930FD08BFDF2D009D3B3F /* TestQueryTermVector.m in Sources */,
+				606930F008BFDF2D009D3B3F /* TestEnglish.m in Sources */,
+				6069310108BFDF2D009D3B3F /* TestSegmentTermEnum.m in Sources */,
+				606930FB08BFDF2D009D3B3F /* TestNumberTools.m in Sources */,
+				606930E708BFDF2D009D3B3F /* TestBinaryDocument.m in Sources */,
+				606930EA08BFDF2D009D3B3F /* TestBooleanQuery.m in Sources */,
 				6069310908BFDF2D009D3B3F /* TestTermVectorsWriter.m in Sources */,
+				606930F508BFDF2D009D3B3F /* TestIndexReader.m in Sources */,
+				6069310308BFDF2D009D3B3F /* TestSimilarity.m in Sources */,
+				606930EC08BFDF2D009D3B3F /* TestCheckHits.m in Sources */,
+				606930FC08BFDF2D009D3B3F /* TestPrefixQuery.m in Sources */,
+				606930FF08BFDF2D009D3B3F /* TestSegmentReader.m in Sources */,
+				606930F408BFDF2D009D3B3F /* TestIndexModifier.m in Sources */,
+				606930ED08BFDF2D009D3B3F /* TestCompoundFile.m in Sources */,
+				6069310408BFDF2D009D3B3F /* TestSort.m in Sources */,
+				606930F208BFDF2D009D3B3F /* TestFilterIndexReader.m in Sources */,
+				606930E808BFDF2D009D3B3F /* TestBoolean2.m in Sources */,
+				606930EE08BFDF2D009D3B3F /* TestDocBoost.m in Sources */,
+				6069310608BFDF2D009D3B3F /* TestTermInfos.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1226,6 +1016,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				609A9FD108D3A1310008B25B /* CodeParser.m in Sources */,
+				609A9FCB08D3A1190008B25B /* QueryHandler.m in Sources */,
+				609A9FCE08D3A1210008B25B /* TokenHandler.m in Sources */,
 				64C925B008B78CCB00ACE251 /* LCAnalyzer.m in Sources */,
 				64C925B108B78CCB00ACE251 /* LCCharTokenizer.m in Sources */,
 				64C925B208B78CCB00ACE251 /* LCLetterTokenizer.m in Sources */,
@@ -1341,10 +1134,20 @@
 				64C9265508B78CCB00ACE251 /* LCPriorityQueue.m in Sources */,
 				64C9265608B78CCB00ACE251 /* NSData+Additions.m in Sources */,
 				64C9265708B78CCB00ACE251 /* NSString+Additions.m in Sources */,
+				609A9FEF08D3A2810008B25B /* LCWildcardTermEnum.m in Sources */,
+				609A9FF008D3A2810008B25B /* LCWildcardQuery.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		609D38C308D627AA0028C389 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DC2EF4F0486A6940098B216 /* LuceneKit */;
+			targetProxy = 609D38C208D627AA0028C389 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
@@ -1367,13 +1170,27 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				INFOPLIST_FILE = "UnitKit-Info.plist";
+				HEADER_SEARCH_PATHS = (
+					"Headers/**",
+					"Analysis/*",
+					"Document/*",
+					"GNUstep/*",
+					"Importer/*",
+					"Index/*",
+					"Java/*",
+					"QueryParser/*",
+					"Search/*",
+					"Store/*",
+					"Util/*",
+				);
+				INFOPLIST_FILE = UnitKitInfo.plist;
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
+					"-lz",
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = UnitKit;
@@ -1391,13 +1208,27 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				INFOPLIST_FILE = "UnitKit-Info.plist";
+				HEADER_SEARCH_PATHS = (
+					"Headers/**",
+					"Analysis/*",
+					"Document/*",
+					"GNUstep/*",
+					"Importer/*",
+					"Index/*",
+					"Java/*",
+					"QueryParser/*",
+					"Search/*",
+					"Store/*",
+					"Util/*",
+				);
+				INFOPLIST_FILE = UnitKitInfo.plist;
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
+					"-lz",
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = UnitKit;
@@ -1413,13 +1244,27 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				INFOPLIST_FILE = "UnitKit-Info.plist";
+				HEADER_SEARCH_PATHS = (
+					"Headers/**",
+					"Analysis/*",
+					"Document/*",
+					"GNUstep/*",
+					"Importer/*",
+					"Index/*",
+					"Java/*",
+					"QueryParser/*",
+					"Search/*",
+					"Store/*",
+					"Util/*",
+				);
+				INFOPLIST_FILE = UnitKitInfo.plist;
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
+					"-lz",
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = UnitKit;
@@ -1441,7 +1286,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = LuceneKit_Prefix.pch;
+				GCC_PREFIX_HEADER = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -1457,11 +1302,12 @@
 					"Store/*",
 					"Util/*",
 				);
-				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_FILE = LuceneKitInfo.plist;
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_LDFLAGS = "-lz";
 				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_NAME = LuceneKit;
 				WRAPPER_EXTENSION = framework;
 				ZERO_LINK = YES;
@@ -1479,7 +1325,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = LuceneKit_Prefix.pch;
+				GCC_PREFIX_HEADER = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -1495,11 +1341,12 @@
 					"Store/*",
 					"Util/*",
 				);
-				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_FILE = LuceneKitInfo.plist;
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_LDFLAGS = "-lz";
 				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_NAME = LuceneKit;
 				WRAPPER_EXTENSION = framework;
 				ZERO_LINK = NO;
@@ -1515,7 +1362,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = LuceneKit_Prefix.pch;
+				GCC_PREFIX_HEADER = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -1531,11 +1378,12 @@
 					"Store/*",
 					"Util/*",
 				);
-				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_FILE = LuceneKitInfo.plist;
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_LDFLAGS = "-lz";
 				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_NAME = LuceneKit;
 				WRAPPER_EXTENSION = framework;
 			};

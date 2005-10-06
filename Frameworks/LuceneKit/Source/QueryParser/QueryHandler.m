@@ -22,11 +22,11 @@
 
 #include "CodeParser.h"
 #include "QueryHandler.h"
-#include <LuceneKit/GNUstep/GNUstep.h>
-#include <LuceneKit/LCMetadataAttribute.h>
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/Search/LCPrefixQuery.h>
-#include <LuceneKit/Search/LCWildcardQuery.h>
+#include "GNUstep.h"
+#include "LCMetadataAttribute.h"
+#include "LCTermQuery.h"
+#include "LCPrefixQuery.h"
+#include "LCWildcardQuery.h"
 #include <Foundation/Foundation.h>
 
 @implementation QueryHandler

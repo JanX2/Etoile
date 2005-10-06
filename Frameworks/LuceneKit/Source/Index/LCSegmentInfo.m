@@ -1,5 +1,5 @@
-#include <LuceneKit/Index/LCSegmentInfo.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCSegmentInfo.h"
+#include "GNUstep.h"
 
 @implementation LCSegmentInfo
 

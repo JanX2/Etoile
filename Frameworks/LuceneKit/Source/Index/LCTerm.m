@@ -1,5 +1,5 @@
-#include <LuceneKit/Index/LCTerm.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCTerm.h"
+#include "GNUstep.h"
 
 /**
 A Term represents a word from text.  This is the unit of search.  It is

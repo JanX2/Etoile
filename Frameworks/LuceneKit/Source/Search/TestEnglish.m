@@ -1,5 +1,5 @@
 #include "TestEnglish.h"
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "GNUstep.h"
 
 @implementation TestEnglish
 

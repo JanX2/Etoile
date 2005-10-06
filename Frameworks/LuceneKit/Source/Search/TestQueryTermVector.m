@@ -1,7 +1,7 @@
 #include <UnitKit/UnitKit.h>
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Search/LCQueryTermVector.h>
-#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
+#include "LCQueryTermVector.h"
+#include "LCWhitespaceAnalyzer.h"
 
 @interface TestQueryTermVector: NSObject <UKTest>
 @end

@@ -1,7 +1,7 @@
 #ifndef __LUCENE_INDEX_SEGMENT_TERM_VECTOR__
 #define __LUCENE_INDEX_SEGMENT_TERM_VECTOR__
 
-#include <LuceneKit/Index/LCTermFreqVector.h>
+#include "LCTermFreqVector.h"
 
 @interface LCSegmentTermVector: NSObject <LCTermFrequencyVector>
 {

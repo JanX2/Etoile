@@ -1,13 +1,13 @@
-#include <LuceneKit/Index/LCSegmentReader.h>
-#include <LuceneKit/Index/LCSegmentTermPositions.h>
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/Store/LCIndexInput.h>
-#include <LuceneKit/Store/LCIndexOutput.h>
-#include <LuceneKit/Store/LCDirectory.h>
-#include <LuceneKit/Index/LCFieldsReader.h>
-#include <LuceneKit/Index/LCTermVectorsReader.h>
-#include <LuceneKit/Index/LCTermInfo.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCSegmentReader.h"
+#include "LCSegmentTermPositions.h"
+#include "LCDocument.h"
+#include "LCIndexInput.h"
+#include "LCIndexOutput.h"
+#include "LCDirectory.h"
+#include "LCFieldsReader.h"
+#include "LCTermVectorsReader.h"
+#include "LCTermInfo.h"
+#include "GNUstep.h"
 
 @interface LCNorm: NSObject
 {

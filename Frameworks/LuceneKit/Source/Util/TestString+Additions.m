@@ -1,4 +1,4 @@
-#include <LuceneKit/Util/NSString+Additions.h>
+#include "NSString+Additions.h"
 #include <UnitKit/UnitKit.h>
 
 @interface NSStringAdditions: NSObject <UKTest>

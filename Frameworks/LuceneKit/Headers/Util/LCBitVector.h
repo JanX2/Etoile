@@ -2,7 +2,7 @@
 #define __LUCENE_UTIL_BIT_VECTOR__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Store/LCDirectory.h>
+#include "LCDirectory.h"
 
 /** An array of bits.
  * <author>Yen-Ju Chen</author>

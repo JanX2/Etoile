@@ -1,5 +1,5 @@
-#include <LuceneKit/Search/LCSortField.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCSortField.h"
+#include "GNUstep.h"
 
 /**
 * Stores information about how to sort documents by terms in an individual

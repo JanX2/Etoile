@@ -1,6 +1,6 @@
-#include <LuceneKit/Search/LCWildcardTermEnum.h>
-#include <LuceneKit/Index/LCIndexReader.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCWildcardTermEnum.h"
+#include "LCIndexReader.h"
+#include "GNUstep.h"
 #include <OgreKit/OgreKit.h>
 
 @interface LCWildcardTermEnumerator (LCPrivate)

@@ -1,11 +1,11 @@
 #ifndef __LUCENE_INDEX_SEGMENT_TERM_ENUM__
 #define __LUCENE_INDEX_SEGMENT_TERM_ENUM__
 
-#include <LuceneKit/Index/LCTermEnum.h>
-#include <LuceneKit/Store/LCIndexInput.h>
-#include <LuceneKit/Index/LCFieldInfos.h>
-#include <LuceneKit/Index/LCTermBuffer.h>
-#include <LuceneKit/Index/LCTermInfo.h>
+#include "LCTermEnum.h"
+#include "LCIndexInput.h"
+#include "LCFieldInfos.h"
+#include "LCTermBuffer.h"
+#include "LCTermInfo.h"
 
 @interface LCSegmentTermEnumerator: LCTermEnumerator <NSCopying>
 {

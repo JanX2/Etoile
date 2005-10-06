@@ -1,7 +1,7 @@
 #ifndef __LuceneKit_Wildcard_TermEnum__
 #define __LuceneKit_Wildcard_TermEnum__
 
-#include <LuceneKit/Search/LCFilteredTermEnum.h>
+#include "LCFilteredTermEnum.h"
 
 @class OGRegularExpression;
 @class LCTerm;

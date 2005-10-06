@@ -1,4 +1,4 @@
-#include <LuceneKit/LuceneKit.h>
+#include "LuceneKit.h"
 #include <UnitKit/UnitKit.h>
 
 @interface TestWildcardQuery: NSObject <UKTest>

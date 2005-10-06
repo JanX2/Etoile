@@ -1,6 +1,6 @@
-#include <LuceneKit/Index/LCTermInfosWriter.h>
-#include <LuceneKit/Util/NSString+Additions.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCTermInfosWriter.h"
+#include "NSString+Additions.h"
+#include "GNUstep.h"
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
 Directory.  A TermInfos can be written once, in order.  */

@@ -1,13 +1,13 @@
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
-#include <LuceneKit/Index/LCIndexReader.h>
-#include <LuceneKit/Index/LCTerm.h>
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/Document/LCField.h>
-#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCRAMDirectory.h"
+#include "LCIndexWriter.h"
+#include "LCIndexReader.h"
+#include "LCTerm.h"
+#include "LCDocument.h"
+#include "LCField.h"
+#include "LCWhitespaceAnalyzer.h"
+#include "GNUstep.h"
 
 @interface TestIndexReader: NSObject <UKTest>
 @end

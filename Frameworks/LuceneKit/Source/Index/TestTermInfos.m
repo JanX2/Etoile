@@ -1,11 +1,11 @@
-#include <LuceneKit/Index/LCTerm.h>
-#include <LuceneKit/Index/LCTermInfo.h>
-#include <LuceneKit/Index/LCFieldInfos.h>
-#include <LuceneKit/Index/LCTermInfosWriter.h>
-#include <LuceneKit/Index/LCTermInfosReader.h>
-#include <LuceneKit/Index/LCSegmentTermEnum.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
+#include "LCTerm.h"
+#include "LCTermInfo.h"
+#include "LCFieldInfos.h"
+#include "LCTermInfosWriter.h"
+#include "LCTermInfosReader.h"
+#include "LCSegmentTermEnum.h"
+#include "LCIndexWriter.h"
+#include "LCRAMDirectory.h"
 #include <UnitKit/UnitKit.h>
 #include <Foundation/Foundation.h>
 

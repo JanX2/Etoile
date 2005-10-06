@@ -1,8 +1,8 @@
-#include <LuceneKit/LCIndexManager.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Store/LCFSDirectory.h>
-#include <LuceneKit/Analysis/LCSimpleAnalyzer.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCIndexManager.h"
+#include "LCRAMDirectory.h"
+#include "LCFSDirectory.h"
+#include "LCSimpleAnalyzer.h"
+#include "GNUstep.h"
 
 static LCIndexManager *sharedInstance;
 

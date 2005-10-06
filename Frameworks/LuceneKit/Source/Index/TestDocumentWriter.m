@@ -1,10 +1,10 @@
-#include <LuceneKit/Index/LCDocumentWriter.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCDocumentWriter.h"
+#include "GNUstep.h"
 #include <UnitKit/UnitKit.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
-#include <LuceneKit/Index/LCSegmentReader.h>
-#include <LuceneKit/Index/LCSegmentInfo.h>
+#include "LCRAMDirectory.h"
+#include "LCWhitespaceAnalyzer.h"
+#include "LCSegmentReader.h"
+#include "LCSegmentInfo.h"
 #include "TestDocHelper.h"
 
 @interface TestDocumentWriter: NSObject <UKTest>

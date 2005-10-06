@@ -1,5 +1,5 @@
-#include <LuceneKit/Index/LCFieldInfo.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCFieldInfo.h"
+#include "GNUstep.h"
 
 /**
 * Copyright 2004 The Apache Software Foundation

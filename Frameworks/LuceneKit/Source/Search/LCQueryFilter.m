@@ -1,8 +1,8 @@
-#include <LuceneKit/Search/LCQueryFilter.h>
-#include <LuceneKit/Search/LCHitCollector.h>
-#include <LuceneKit/Search/LCIndexSearcher.h>
-#include <LuceneKit/Util/LCBitVector.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCQueryFilter.h"
+#include "LCHitCollector.h"
+#include "LCIndexSearcher.h"
+#include "LCBitVector.h"
+#include "GNUstep.h"
 
 @interface LCQueryFilterHitCollector: LCHitCollector
 {

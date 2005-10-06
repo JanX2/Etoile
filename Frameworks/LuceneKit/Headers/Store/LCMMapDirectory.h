@@ -1,6 +1,6 @@
 /* Author: Quentin Mathe <qmathe@club-internet.fr> */
 
-#import <LuceneKit/Store/LCFSDirectory.h>
+#import "LCFSDirectory.h"
 
 
 @interface LCMMapDirectory : LCFSDirectory

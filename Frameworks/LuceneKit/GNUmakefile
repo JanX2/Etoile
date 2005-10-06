@@ -6,7 +6,7 @@ else
 LIBRARY_NAME = LuceneKit
 endif
 
-include GNUmakefile.headers
+-include GNUmakefile.headers
 
 LuceneKit_SUBPROJECTS = Source
 
@@ -31,7 +31,7 @@ else
 include $(GNUSTEP_MAKEFILES)/library.make
 endif
 
-include GNUmakefile.headers_build
+-include GNUmakefile.headers_build
 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/aggregate.make

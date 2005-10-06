@@ -1,5 +1,5 @@
-#include <LuceneKit/Index/LCIndexModifier.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCIndexModifier.h"
+#include "GNUstep.h"
 
 @interface LCIndexModifier (LCPrivate)
 - (void) initializeDirectory: (id <LCDirectory>) d

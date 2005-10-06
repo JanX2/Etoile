@@ -9,4 +9,4 @@ LuceneKit_Importer_INCLUDE_DIRS += -I../..
 
 -include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make
--include ../../GNUmakefile.postamble
+-include GNUmakefile.postamble

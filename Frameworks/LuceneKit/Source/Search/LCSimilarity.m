@@ -1,7 +1,7 @@
-#include <LuceneKit/Search/LCSimilarity.h>
-#include <LuceneKit/Search/LCDefaultSimilarity.h>
-#include <LuceneKit/Search/LCSearcher.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCSimilarity.h"
+#include "LCDefaultSimilarity.h"
+#include "LCSearcher.h"
+#include "GNUstep.h"
 
 static float *NORM_TABLE = NULL;
 static LCSimilarity *defaultImpl = nil;

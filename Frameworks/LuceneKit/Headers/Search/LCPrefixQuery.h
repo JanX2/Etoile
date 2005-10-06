@@ -1,4 +1,4 @@
-#include <LuceneKit/Search/LCQuery.h>
+#include "LCQuery.h"
 
 @interface LCPrefixQuery: LCQuery
 {

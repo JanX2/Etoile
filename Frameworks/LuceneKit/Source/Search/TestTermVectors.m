@@ -1,14 +1,14 @@
 #include <UnitKit/UnitKit.h>
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Analysis/LCSimpleAnalyzer.h>
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Search/LCIndexSearcher.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
-#include <LuceneKit/Index/LCIndexReader.h>
-#include <LuceneKit/Index/LCTermPositionVector.h>
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/Search/LCHits.h>
+#include "LCSimpleAnalyzer.h"
+#include "LCDocument.h"
+#include "LCRAMDirectory.h"
+#include "LCIndexSearcher.h"
+#include "LCIndexWriter.h"
+#include "LCIndexReader.h"
+#include "LCTermPositionVector.h"
+#include "LCTermQuery.h"
+#include "LCHits.h"
 #include "TestEnglish.h"
 
 @interface TestTermVectors: NSObject <UKTest>

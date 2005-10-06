@@ -1,7 +1,7 @@
-#include <LuceneKit/Analysis/LCStopAnalyzer.h>
-#include <LuceneKit/Analysis/LCStopFilter.h>
-#include <LuceneKit/Analysis/LCLowerCaseTokenizer.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCStopAnalyzer.h"
+#include "LCStopFilter.h"
+#include "LCLowerCaseTokenizer.h"
+#include "GNUstep.h"
 
 /** Filters LetterTokenizer with LowerCaseFilter and StopFilter. */
 @implementation LCStopAnalyzer

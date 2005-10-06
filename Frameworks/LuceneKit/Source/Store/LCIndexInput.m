@@ -1,5 +1,5 @@
-#include <LuceneKit/Store/LCIndexInput.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCIndexInput.h"
+#include "GNUstep.h"
 
 /** Abstract base class for input from a file in a {@link Directory}.  A
 * random-access input stream.  Used for all Lucene index input operations.

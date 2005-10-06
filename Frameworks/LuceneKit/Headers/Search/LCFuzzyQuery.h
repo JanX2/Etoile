@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_FUZZY_QUERY__
 #define __LUCENE_SEARCH_FUZZY_QUERY__
 
-#include <LuceneKit/Search/LCMultiTermQuery.h>
+#include "LCMultiTermQuery.h"
 
 static float defaultMinSimilarity = 0.5f;
 static int defaultPrefixLength = 0;

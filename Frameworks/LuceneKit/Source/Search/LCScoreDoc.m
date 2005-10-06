@@ -1,4 +1,4 @@
-#include <LuceneKit/Search/LCScoreDoc.h>
+#include "LCScoreDoc.h"
 
 @implementation LCScoreDoc
 

@@ -1,7 +1,7 @@
-#include <LuceneKit/Store/LCFSDirectory.h>
-#include <LuceneKit/Store/LCFSIndexInput.h>
-#include <LuceneKit/Store/LCFSIndexOutput.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCFSDirectory.h"
+#include "LCFSIndexInput.h"
+#include "LCFSIndexOutput.h"
+#include "GNUstep.h"
 
 /**
 * Straightforward implementation of {@link Directory} as a directory of files.

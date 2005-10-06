@@ -1,8 +1,8 @@
-#include <LuceneKit/Index/LCSegmentTermPositions.h>
-#include <LuceneKit/Index/LCSegmentReader.h>
-#include <LuceneKit/Index/LCTermInfo.h>
-#include <LuceneKit/Store/LCIndexInput.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCSegmentTermPositions.h"
+#include "LCSegmentReader.h"
+#include "LCTermInfo.h"
+#include "LCIndexInput.h"
+#include "GNUstep.h"
 
 
 @implementation LCSegmentTermPositions

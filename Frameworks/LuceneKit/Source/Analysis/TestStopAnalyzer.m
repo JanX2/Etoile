@@ -1,5 +1,5 @@
-#include <LuceneKit/Analysis/LCStopAnalyzer.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCStopAnalyzer.h"
+#include "GNUstep.h"
 #include <UnitKit/UnitKit.h>
 #include "TestAnalyzer.h"
 

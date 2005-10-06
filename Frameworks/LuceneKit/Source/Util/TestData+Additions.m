@@ -1,5 +1,5 @@
-#include <LuceneKit/Util/NSData+Additions.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "NSData+Additions.h"
+#include "GNUstep/GNUstep.h"
 #include <UnitKit/UnitKit.h>
 
 @interface TestCompressData: NSObject <UKTest>

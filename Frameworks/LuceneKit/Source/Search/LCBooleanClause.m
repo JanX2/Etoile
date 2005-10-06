@@ -1,6 +1,6 @@
-#include <LuceneKit/Search/LCBooleanClause.h>
-#include <LuceneKit/Search/LCQuery.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCBooleanClause.h"
+#include "LCQuery.h"
+#include "GNUstep.h"
 
 @interface LCBooleanClause (LCPrivate)
 - (void) setFields: (LCOccurType) o;

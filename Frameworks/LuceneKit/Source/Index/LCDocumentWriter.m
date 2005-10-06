@@ -1,14 +1,14 @@
-#include <LuceneKit/Index/LCDocumentWriter.h>
-#include <LuceneKit/Index/LCTermVectorOffsetInfo.h>
-#include <LuceneKit/Index/LCTerm.h>
-#include <LuceneKit/Index/LCTermBuffer.h>
-#include <LuceneKit/Index/LCTermInfo.h>
-#include <LuceneKit/Index/LCTermInfosWriter.h>
-#include <LuceneKit/Index/LCTermVectorsWriter.h>
-#include <LuceneKit/Index/LCFieldInfos.h>
-#include <LuceneKit/Index/LCFieldsWriter.h>
-#include <LuceneKit/Java/LCStringReader.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCDocumentWriter.h"
+#include "LCTermVectorOffsetInfo.h"
+#include "LCTerm.h"
+#include "LCTermBuffer.h"
+#include "LCTermInfo.h"
+#include "LCTermInfosWriter.h"
+#include "LCTermVectorsWriter.h"
+#include "LCFieldInfos.h"
+#include "LCFieldsWriter.h"
+#include "LCStringReader.h"
+#include "GNUstep.h"
 
 @interface LCPosting: NSObject // info about a Term in a doc
 {       

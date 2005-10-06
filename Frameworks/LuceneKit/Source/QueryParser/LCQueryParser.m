@@ -1,9 +1,9 @@
-#include <LuceneKit/QueryParser/LCQueryParser.h>
-#include <LuceneKit/Search/LCBooleanQuery.h>
-#include <LuceneKit/Search/LCPrefixQuery.h>
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/LCMetadataAttribute.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCQueryParser.h"
+#include "LCBooleanQuery.h"
+#include "LCPrefixQuery.h"
+#include "LCTermQuery.h"
+#include "LCMetadataAttribute.h"
+#include "GNUstep.h"
 #include "CodeParser.h"
 #include "QueryHandler.h"
 

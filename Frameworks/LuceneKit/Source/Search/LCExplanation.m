@@ -1,5 +1,5 @@
-#include <LuceneKit/Search/LCExplanation.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCExplanation.h"
+#include "GNUstep.h"
 
 /** Expert: Describes the score computation for document and query. */
 @interface LCExplanation (LCPrivate)

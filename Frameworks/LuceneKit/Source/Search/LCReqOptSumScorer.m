@@ -1,5 +1,5 @@
-#include <LuceneKit/Search/LCReqOptSumScorer.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCReqOptSumScorer.h"
+#include "GNUstep.h"
 
 @implementation LCReqOptSumScorer
 

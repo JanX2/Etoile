@@ -2,7 +2,7 @@
 #define __LUCENE_SEARCH_SORT__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Search/LCSortField.h>
+#include "LCSortField.h"
 
 @interface LCSort: NSObject // Serializable
 {

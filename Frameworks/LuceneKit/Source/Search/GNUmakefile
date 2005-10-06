@@ -72,4 +72,4 @@ LuceneKit_Search_INCLUDE_DIRS += -I../.. `onig-config --cflags`
 
 -include ../../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/subproject.make
--include ../../GNUmakefile.postamble
+-include GNUmakefile.postamble

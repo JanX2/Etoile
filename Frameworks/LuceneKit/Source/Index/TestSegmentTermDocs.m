@@ -1,19 +1,19 @@
 #include "TestDocHelper.h"
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/Document/LCField.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Index/LCSegmentReader.h>
-#include <LuceneKit/Index/LCSegmentInfo.h>
-#include <LuceneKit/Index/LCSegmentTermDocs.h>
-#include <LuceneKit/Index/LCTerm.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
-#include <LuceneKit/Index/LCIndexReader.h>
-#include <LuceneKit/Index/LCTermDocs.h>
-#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
+#include "LCDocument.h"
+#include "LCField.h"
+#include "LCRAMDirectory.h"
+#include "LCSegmentReader.h"
+#include "LCSegmentInfo.h"
+#include "LCSegmentTermDocs.h"
+#include "LCTerm.h"
+#include "LCIndexWriter.h"
+#include "LCIndexReader.h"
+#include "LCTermDocs.h"
+#include "LCWhitespaceAnalyzer.h"
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
-#include <LuceneKit/Store/LCDirectory.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCDirectory.h"
+#include "GNUstep.h"
 
 @interface TestSegmentTermDocs: NSObject <UKTest>
 {

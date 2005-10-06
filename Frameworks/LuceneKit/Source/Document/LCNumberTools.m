@@ -1,4 +1,4 @@
-#include <LuceneKit/Document/LCNumberTools.h>
+#include "LCNumberTools.h"
 
 char _dig_vec[] =
 "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

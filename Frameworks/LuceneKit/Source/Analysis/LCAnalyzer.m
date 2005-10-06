@@ -1,6 +1,6 @@
-#include <LuceneKit/Analysis/LCAnalyzer.h>
-#include <LuceneKit/Java/LCReader.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCAnalyzer.h"
+#include "LCReader.h"
+#include "GNUstep.h"
 
 @implementation LCAnalyzer
 /** An Analyzer builds TokenStreams, which analyze text.  It thus represents a

@@ -1,9 +1,9 @@
-#include <LuceneKit/Index/LCFieldsReader.h>
-#include <LuceneKit/Index/LCFieldsWriter.h>
-#include <LuceneKit/Store/LCDirectory.h>
-#include <LuceneKit/Store/LCIndexInput.h>
-#include <LuceneKit/Util/NSData+Additions.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCFieldsReader.h"
+#include "LCFieldsWriter.h"
+#include "LCDirectory.h"
+#include "LCIndexInput.h"
+#include "NSData+Additions.h"
+#include "GNUstep.h"
 
 /**
 * Class responsible for access to stored document fields.

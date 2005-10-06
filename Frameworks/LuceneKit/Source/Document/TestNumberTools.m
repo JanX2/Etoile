@@ -1,5 +1,5 @@
 #include <UnitKit/UnitKit.h>
-#include <LuceneKit/Document/LCNumberTools.h>
+#include "LCNumberTools.h"
 
 @interface TestNumberTools: NSObject <UKTest>
 @end

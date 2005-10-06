@@ -1,13 +1,13 @@
 #include <UnitKit/UnitKit.h>
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Analysis/LCSimpleAnalyzer.h>
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/Search/LCBooleanQuery.h>
-#include <LuceneKit/Search/LCIndexSearcher.h>
-#include <LuceneKit/Search/LCHits.h>
+#include "LCIndexWriter.h"
+#include "LCRAMDirectory.h"
+#include "LCSimpleAnalyzer.h"
+#include "LCDocument.h"
+#include "LCTermQuery.h"
+#include "LCBooleanQuery.h"
+#include "LCIndexSearcher.h"
+#include "LCHits.h"
 
 @interface TestNot: NSObject <UKTest>
 @end

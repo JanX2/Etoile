@@ -2,7 +2,7 @@
 #define __LUCENE_SEARCH_SEARCHABLE__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Search/LCWeight.h>
+#include "LCWeight.h"
 
 @class LCQuery;
 @class LCFilter;

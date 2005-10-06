@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_SIMILARITY_DELEGATOR__
 #define __LUCENE_SEARCH_SIMILARITY_DELEGATOR__
 
-#include <LuceneKit/Search/LCSimilarity.h>
+#include "LCSimilarity.h"
 
 @interface LCSimilarityDelegator: LCSimilarity
 {

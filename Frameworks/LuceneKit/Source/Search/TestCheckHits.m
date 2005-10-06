@@ -1,7 +1,7 @@
 #include "TestCheckHits.h"
-#include <LuceneKit/Search/LCQuery.h>
-#include <LuceneKit/Search/LCSearcher.h>
-#include <LuceneKit/Search/LCHits.h>
+#include "LCQuery.h"
+#include "LCSearcher.h"
+#include "LCHits.h"
 #include <UnitKit/UnitKit.h>
 
 @implementation TestCheckHits

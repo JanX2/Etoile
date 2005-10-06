@@ -1,11 +1,11 @@
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
-#include <LuceneKit/Analysis/LCSimpleAnalyzer.h>
-#include <LuceneKit/Index/LCIndexReader.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Document/LCDocument.h>
+#include "GNUstep.h"
+#include "LCSimpleAnalyzer.h"
+#include "LCIndexReader.h"
+#include "LCIndexWriter.h"
+#include "LCRAMDirectory.h"
+#include "LCDocument.h"
 
 @interface TestBinaryDocument: NSObject <UKTest>
 @end

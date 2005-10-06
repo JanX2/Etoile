@@ -1,8 +1,8 @@
 #ifndef __LUCENE_ANALYSIS_PORTERSTEM_FILTER__
 #define __LUCENE_ANALYSIS_PORTERSTEM_FILTER__
 
-#include <LuceneKit/Analysis/LCTokenFilter.h>
-#include <LuceneKit/Analysis/PorterStemmer.h>
+#include "LCTokenFilter.h"
+#include "PorterStemmer.h"
 
 @interface LCPorterStemFilter: LCTokenFilter
 {

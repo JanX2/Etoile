@@ -2,7 +2,7 @@
 #define __LuceneKit_Text_Importer__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Importer/LCImporter.h>
+#include "LCImporter.h"
 
 @interface LCTextImporter: NSObject <LCImporter>
 @end

@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_FIELD_DOC_SORTED_HIT_QUEUE__
 #define __LUCENE_SEARCH_FIELD_DOC_SORTED_HIT_QUEUE__
 
-#include <LuceneKit/Util/LCPriorityQueue.h>
+#include "LCPriorityQueue.h"
 
 @interface LCFieldDocSortedHitQueue: LCPriorityQueue
 {

@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_PHRASE_QUEUE__
 #define __LUCENE_SEARCH_PHRASE_QUEUE__
 
-#include <LuceneKit/Util/LCPriorityQueue.h>
+#include "LCPriorityQueue.h"
 
 @interface LCPhraseQueue: LCPriorityQueue
 @end

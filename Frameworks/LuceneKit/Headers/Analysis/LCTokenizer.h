@@ -2,8 +2,8 @@
 #define __LUCENE_ANALYSIS_TOKENIZER__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Analysis/LCTokenStream.h>
-#include <LuceneKit/Java/LCReader.h>
+#include "LCTokenStream.h"
+#include "LCReader.h"
 
 /* A token stream specified for LCReader */
 @interface LCTokenizer: LCTokenStream

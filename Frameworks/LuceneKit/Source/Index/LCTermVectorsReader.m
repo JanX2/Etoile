@@ -1,9 +1,9 @@
-#include <LuceneKit/Index/LCTermVectorsReader.h>
-#include <LuceneKit/Index/LCTermVectorsWriter.h>
-#include <LuceneKit/Index/LCSegmentTermVector.h>
-#include <LuceneKit/Index/LCSegmentTermPositionVector.h>
-#include <LuceneKit/Index/LCTermVectorOffsetInfo.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCTermVectorsReader.h"
+#include "LCTermVectorsWriter.h"
+#include "LCSegmentTermVector.h"
+#include "LCSegmentTermPositionVector.h"
+#include "LCTermVectorOffsetInfo.h"
+#include "GNUstep.h"
 
 @interface LCTermVectorsReader (LCPrivate)
 - (long) checkValidFormat: (LCIndexInput *) input;

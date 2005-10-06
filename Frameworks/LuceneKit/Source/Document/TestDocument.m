@@ -1,5 +1,5 @@
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCDocument.h"
+#include "GNUstep.h"
 #include <UnitKit/UnitKit.h>
 
 @interface TestDocument: NSObject <UKTest>

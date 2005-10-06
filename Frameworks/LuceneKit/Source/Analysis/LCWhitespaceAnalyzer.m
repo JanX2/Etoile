@@ -1,6 +1,6 @@
-#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
-#include <LuceneKit/Analysis/LCWhitespaceTokenizer.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCWhitespaceAnalyzer.h"
+#include "LCWhitespaceTokenizer.h"
+#include "GNUstep.h"
 
 @implementation LCWhitespaceAnalyzer
 

@@ -2,9 +2,9 @@
 #define __LUCENE_INDEX_TERM_INFOS_READER__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Index/LCFieldInfos.h>
-#include <LuceneKit/Index/LCSegmentTermEnum.h>
-#include <LuceneKit/Index/LCTerm.h>
+#include "LCFieldInfos.h"
+#include "LCSegmentTermEnum.h"
+#include "LCTerm.h"
 
 @interface LCTermInfosReader: NSObject
 {

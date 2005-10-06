@@ -22,4 +22,4 @@ include $(GNUSTEP_MAKEFILES)/subproject.make
 
 -include ../GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/aggregate.make
--include ../GNUmakefile.postamble
+#-include ../GNUmakefile.postamble

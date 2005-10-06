@@ -1,8 +1,8 @@
-#include <LuceneKit/Search/LCPrefixQuery.h>
-#include <LuceneKit/Search/LCBooleanQuery.h>
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/Index/LCTermEnum.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCPrefixQuery.h"
+#include "LCBooleanQuery.h"
+#include "LCTermQuery.h"
+#include "LCTermEnum.h"
+#include "GNUstep.h"
 
 @implementation LCPrefixQuery
 

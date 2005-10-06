@@ -2,7 +2,7 @@
 #define __LUCENE_SEARCH_HITS__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Search/LCWeight.h>
+#include "LCWeight.h"
 
 @class LCDocument;
 @class LCSearcher;

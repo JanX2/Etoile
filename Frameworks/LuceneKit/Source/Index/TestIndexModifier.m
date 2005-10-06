@@ -1,7 +1,7 @@
-#include <LuceneKit/Index/LCIndexModifier.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
-#include <LuceneKit/Analysis/LCSimpleAnalyzer.h>
+#include "LCIndexModifier.h"
+#include "LCRAMDirectory.h"
+#include "LCWhitespaceAnalyzer.h"
+#include "LCSimpleAnalyzer.h"
 #include <UnitKit/UnitKit.h>
 
 static int docCount = 0;

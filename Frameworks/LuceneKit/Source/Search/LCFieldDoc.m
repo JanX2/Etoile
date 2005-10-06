@@ -1,5 +1,5 @@
-#include <LuceneKit/Search/LCFieldDoc.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCFieldDoc.h"
+#include "GNUstep.h"
 
 @implementation LCFieldDoc
 

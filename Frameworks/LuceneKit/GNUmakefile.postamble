@@ -23,19 +23,40 @@
 #		59 Temple Place - Suite 330
 #		Boston, MA  02111-1307, USA
 
+#
+# Allow to run 'make test=yes' with the whole repository in one pass
+#
 
 before-all::
-	@echo "Project: $(PROJECT_DIR)"
+	$(ECHO_NOTHING) \
+	echo "Build Project: $(PROJECT_DIR)"; \
+	echo ""; \
 	if [ "$(test)" = "yes" ]; then \
-	rm -f $(PROJECT_DIR)/UnitKit; \
-	$(LN_S) $(PROJECT_DIR)/../UnitKit/Source/FrameworkSource $(PROJECT_DIR)/UnitKit; \
-	fi;
+	  rm -f $(PROJECT_DIR)/UnitKit; \
+	  $(LN_S) $(PROJECT_DIR)/../UnitKit/Source/FrameworkSource $(PROJECT_DIR)/UnitKit; \
+	  echo " Imported UnitKit dependency"; \
+	  echo ""; \
+	fi \
+	$(END_ECHO)
 
 after-all::
 
 after-clean::
+	$(ECHO_NOTHING) \
+	echo ""; \
 	if [ "$(test)" = "yes" ]; then \
-	rm -f $(PROJECT_DIR)/UnitKit; \
-	fi;
+	  rm -f $(PROJECT_DIR)/UnitKit; \
+	fi; \
+	echo " Removed UnitKit dependency import"; \
+	echo "" \
+	$(END_ECHO)
 
 after-distclean::
+	$(ECHO_NOTHING) \
+	echo ""; \
+	if [ "$(test)" = "yes" ]; then \
+	  rm -f $(PROJECT_DIR)/UnitKit; \
+	fi; \
+	echo " Removed UnitKit dependency import"; \
+	echo "" \
+	$(END_ECHO)

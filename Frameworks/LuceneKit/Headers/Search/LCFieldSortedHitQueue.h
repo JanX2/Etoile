@@ -1,12 +1,12 @@
 #ifndef __LUCENE_SEARCH_FIELD_SORTED_HIT_QUEUE__
 #define __LUCENE_SEARCH_FIELD_SORTED_HIT_QUEUE__
 
-#include <LuceneKit/Util/LCPriorityQueue.h>
-#include <LuceneKit/Index/LCIndexReader.h>
-#include <LuceneKit/Search/LCScoreDocComparator.h>
-#include <LuceneKit/Search/LCSortComparatorSource.h>
-#include <LuceneKit/Search/LCFieldCache.h>
-#include <LuceneKit/Search/LCFieldDoc.h>
+#include "LCPriorityQueue.h"
+#include "LCIndexReader.h"
+#include "LCScoreDocComparator.h"
+#include "LCSortComparatorSource.h"
+#include "LCFieldCache.h"
+#include "LCFieldDoc.h"
 
 @interface LCIntsScoreDocComparator: NSObject <LCScoreDocComparator>
 {

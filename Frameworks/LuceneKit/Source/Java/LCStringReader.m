@@ -1,5 +1,5 @@
-#include <LuceneKit/Java/LCStringReader.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCStringReader.h"
+#include "GNUstep.h"
 
 @implementation LCStringReader
 - (id) initWithString: (NSString *) s

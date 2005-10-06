@@ -1,6 +1,6 @@
-#include <LuceneKit/Search/LCWildcardQuery.h>
-#include <LuceneKit/Search/LCWildcardTermEnum.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCWildcardQuery.h"
+#include "LCWildcardTermEnum.h"
+#include "GNUstep.h"
 
 /* Use OgreKit for wildcard, which is caseless by default */
 /** Implements the wildcard search query. Supported wildcards are <code>*</code>, which

@@ -1,10 +1,10 @@
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/Search/LCTermScorer.h>
-#include <LuceneKit/Search/LCSimilarity.h>
-#include <LuceneKit/Search/LCSearcher.h>
-#include <LuceneKit/Index/LCTerm.h>
-#include <LuceneKit/Index/LCTermDocs.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCTermQuery.h"
+#include "LCTermScorer.h"
+#include "LCSimilarity.h"
+#include "LCSearcher.h"
+#include "LCTerm.h"
+#include "LCTermDocs.h"
+#include "GNUstep.h"
 
 @interface LCTermWeight: NSObject <LCWeight>
 {

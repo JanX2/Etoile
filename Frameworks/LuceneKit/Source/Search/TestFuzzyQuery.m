@@ -1,6 +1,6 @@
-#include <LuceneKit/LuceneKit.h>
+#include "LuceneKit.h"
 #include <UnitKit/UnitKit.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "GNUstep.h"
 
 static NSString *FIELD = @"field";
 

@@ -24,7 +24,7 @@
 #define _QueryHandler_H_
 
 #include "TokenHandler.h"
-#include <LuceneKit/Search/LCBooleanQuery.h>
+#include "LCBooleanQuery.h"
 
 typedef enum _TokenType {
 	ReadyType = 0, /* Usually set when start or a query is finished */

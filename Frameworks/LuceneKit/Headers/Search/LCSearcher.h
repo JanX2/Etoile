@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_SEARCHER__
 #define __LUCENE_SEARCH_SEARCHER__
 
-#include <LuceneKit/Search/LCSearchable.h>
+#include "LCSearchable.h"
 
 @class LCSimilarity;
 @class LCHits;

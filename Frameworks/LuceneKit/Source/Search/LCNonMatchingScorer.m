@@ -1,5 +1,5 @@
-#include <LuceneKit/Search/LCNonMatchingScorer.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCNonMatchingScorer.h"
+#include "GNUstep.h"
 
 @implementation LCNonMatchingScorer
 - (int) document 

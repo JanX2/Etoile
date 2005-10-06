@@ -1,7 +1,7 @@
-#include <LuceneKit/Analysis/LCSimpleAnalyzer.h>
-#include <LuceneKit/Analysis/LCLowerCaseTokenizer.h>
+#include "LCSimpleAnalyzer.h"
+#include "LCLowerCaseTokenizer.h"
 #include "TestAnalyzer.h"
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "GNUstep.h"
 
 @interface TestSimpleAnalyzer: NSObject <UKTest>
 @end

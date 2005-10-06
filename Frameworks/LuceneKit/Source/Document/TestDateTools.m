@@ -1,5 +1,5 @@
-#include <LuceneKit/Document/LCDateTools.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCDateTools.h"
+#include "GNUstep.h"
 #include <UnitKit/UnitKit.h>
 
 @interface TestDateTools: NSObject <UKTest>

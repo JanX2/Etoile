@@ -1,5 +1,5 @@
-#include <LuceneKit/Index/LCTermInfosReader.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCTermInfosReader.h"
+#include "GNUstep.h"
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
 * Directory.  Pairs are accessed either by Term or by ordinal position the

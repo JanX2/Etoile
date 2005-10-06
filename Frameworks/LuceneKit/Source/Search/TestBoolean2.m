@@ -1,16 +1,16 @@
 #include <UnitKit/UnitKit.h>
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
-#include <LuceneKit/Analysis/LCWhitespaceAnalyzer.h>
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/Search/LCIndexSearcher.h>
-#include <LuceneKit/Index/LCTerm.h>
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/Search/LCBooleanQuery.h>
-#include <LuceneKit/Search/LCHits.h>
-#include <LuceneKit/Search/LCDefaultSimilarity.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCRAMDirectory.h"
+#include "LCIndexWriter.h"
+#include "LCWhitespaceAnalyzer.h"
+#include "LCDocument.h"
+#include "LCIndexSearcher.h"
+#include "LCTerm.h"
+#include "LCTermQuery.h"
+#include "LCBooleanQuery.h"
+#include "LCHits.h"
+#include "LCDefaultSimilarity.h"
+#include "GNUstep.h"
 #include "TestCheckHits.h"
 
 static NSString *FIELD = @"field";

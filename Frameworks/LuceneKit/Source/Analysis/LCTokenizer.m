@@ -1,6 +1,6 @@
-#include <LuceneKit/Analysis/LCTokenizer.h>
-#include <LuceneKit/Java/LCReader.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCTokenizer.h"
+#include "LCReader.h"
+#include "GNUstep.h"
 
 @implementation LCTokenizer
 

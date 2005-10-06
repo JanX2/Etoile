@@ -2,8 +2,8 @@
 #define __LuceneKit_Index_Modifier__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Index/LCIndexReader.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
+#include "LCIndexReader.h"
+#include "LCIndexWriter.h"
 
 @interface LCIndexModifier: NSObject
 {

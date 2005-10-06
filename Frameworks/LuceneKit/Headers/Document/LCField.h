@@ -2,7 +2,7 @@
 #define __LUCENE_DOCUMENT_FIELD__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Java/LCReader.h>
+#include "LCReader.h"
 
 /** Specify whether to store a value in field.
  * LCStore_Compress: store a value in compressed form.

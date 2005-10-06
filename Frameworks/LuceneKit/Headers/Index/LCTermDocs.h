@@ -2,8 +2,8 @@
 #define __LUCENE_INDEX_TERM_DOCS__
 
 #include <Foundation/Foundation.h>
-#include <LuceneKit/Index/LCTerm.h>
-#include <LuceneKit/Index/LCTermEnum.h>
+#include "LCTerm.h"
+#include "LCTermEnum.h"
 
 /** TermDocs provides an interface for enumerating &lt;document, frequency&gt;
 pairs for a term.  <p> The document portion names each document containing

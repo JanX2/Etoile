@@ -1,7 +1,7 @@
 #ifndef __LUCENE_SEARCH_RANGE_FILTER__
 #define __LUCENE_SEARCH_RANGE_FILTER__
 
-#include <LuceneKit/Search/LCFilter.h>
+#include "LCFilter.h"
 
 @interface LCRangeFilter: LCFilter
 {

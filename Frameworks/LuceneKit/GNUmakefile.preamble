@@ -2,10 +2,27 @@ export PROJECT_DIR ?= $(CURDIR)
 
 ADDITIONAL_OBJCFLAGS = -Wno-import
 
+ADDITIONAL_INCLUDE_DIRS = \
+	-I$(PROJECT_DIR)/Headers \
+	-I$(PROJECT_DIR)/Headers/Analysis \
+	-I$(PROJECT_DIR)/Headers/Document \
+	-I$(PROJECT_DIR)/Headers/GNUstep \
+	-I$(PROJECT_DIR)/Headers/Importer \
+	-I$(PROJECT_DIR)/Headers/Index \
+	-I$(PROJECT_DIR)/Headers/Java \
+	-I$(PROJECT_DIR)/Headers/QueryParser \
+	-I$(PROJECT_DIR)/Headers/Search \
+	-I$(PROJECT_DIR)/Headers/Store \
+	-I$(PROJECT_DIR)/Headers/Util
+
 ifeq ($(test), yes)
 ADDITIONAL_OBJCFLAGS += -DHAVE_UKTEST
 
-ADDITIONAL_INCLUDE_DIRS +=-I$(PROJECT_DIR)/UnitKit 
+#
+# Allow to run 'make test=yes' with the whole repository in one pass
+#
+
+ADDITIONAL_INCLUDE_DIRS += -I$(PROJECT_DIR)/UnitKit 
 
 ADDITIONAL_LIB_DIRS += -L$(PROJECT_DIR)/UnitKit/$(GNUSTEP_OBJ_DIR)
 endif

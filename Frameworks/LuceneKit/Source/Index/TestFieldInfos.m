@@ -1,8 +1,8 @@
-#include <LuceneKit/Index/LCFieldInfos.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCFieldInfos.h"
+#include "GNUstep.h"
 #include <UnitKit/UnitKit.h>
 #include "TestDocHelper.h"
-#include <LuceneKit/Store/LCRAMDirectory.h>
+#include "LCRAMDirectory.h"
 
 @interface TestFieldInfos: NSObject <UKTest>
 @end

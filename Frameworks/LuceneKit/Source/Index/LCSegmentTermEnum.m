@@ -1,6 +1,6 @@
-#include <LuceneKit/Index/LCSegmentTermEnum.h>
-#include <LuceneKit/Index/LCTermInfosWriter.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCSegmentTermEnum.h"
+#include "LCTermInfosWriter.h"
+#include "GNUstep.h"
 
 @implementation LCSegmentTermEnumerator
 

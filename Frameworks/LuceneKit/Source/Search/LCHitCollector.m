@@ -1,5 +1,5 @@
-#include <LuceneKit/Search/LCHitCollector.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCHitCollector.h"
+#include "GNUstep.h"
 
 @implementation LCHitCollector
 - (void) collect: (int) doc score: (float) score 

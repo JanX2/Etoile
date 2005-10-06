@@ -1,8 +1,8 @@
-#include <LuceneKit/Search/LCFuzzyQuery.h>
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/Search/LCBooleanQuery.h>
-#include <LuceneKit/Search//LCFuzzyTermEnum.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "LCFuzzyQuery.h"
+#include "LCTermQuery.h"
+#include "LCBooleanQuery.h"
+#include "LCFuzzyTermEnum.h"
+#include "GNUstep.h"
 
 @interface LCScoreTerm: NSObject <LCComparable>
 {

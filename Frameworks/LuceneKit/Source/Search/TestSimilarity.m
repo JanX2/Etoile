@@ -1,13 +1,13 @@
 #include <UnitKit/UnitKit.h>
-#include <LuceneKit/Search/LCSimilarity.h>
-#include <LuceneKit/Store/LCRAMDirectory.h>
-#include <LuceneKit/Index/LCIndexWriter.h>
-#include <LuceneKit/Analysis/LCSimpleAnalyzer.h>
-#include <LuceneKit/Document/LCDocument.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
-#include <LuceneKit/Search/LCIndexSearcher.h>
-#include <LuceneKit/Search/LCTermQuery.h>
-#include <LuceneKit/Search/LCBooleanQuery.h>
+#include "LCSimilarity.h"
+#include "LCRAMDirectory.h"
+#include "LCIndexWriter.h"
+#include "LCSimpleAnalyzer.h"
+#include "LCDocument.h"
+#include "GNUstep.h"
+#include "LCIndexSearcher.h"
+#include "LCTermQuery.h"
+#include "LCBooleanQuery.h"
 
 @interface TestSimilarity: NSObject <UKTest>
 @end

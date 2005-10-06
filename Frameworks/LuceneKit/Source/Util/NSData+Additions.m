@@ -1,5 +1,5 @@
-#include <LuceneKit/Util/NSData+Additions.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "NSData+Additions.h"
+#include "GNUstep.h"
 #include <zlib.h>
 
 @implementation NSData (LuceneKit_Util)
