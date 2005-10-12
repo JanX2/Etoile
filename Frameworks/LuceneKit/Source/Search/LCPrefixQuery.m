@@ -61,4 +61,20 @@
 	return AUTORELEASE(buffer);
 }
 
+#if 0
+   /** Returns true iff <code>o</code> is equal to this. */
+ 	   public boolean equals(Object o) {
+ 	     if (!(o instanceof PrefixQuery))
+ 	       return false;
+ 	     PrefixQuery other = (PrefixQuery)o;
+ 	     return (this.getBoost() == other.getBoost())
+ 	       && this.prefix.equals(other.prefix);
+ 	   }
+ 	 
+ 	   /** Returns a hash code value for this object.*/
+ 	   public int hashCode() {
+ 	     return Float.floatToIntBits(getBoost()) ^ prefix.hashCode();
+ 	   }
+#endif
+
 @end

@@ -1,4 +1,9 @@
-2005-08-25 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+2005-10-12 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Source/Search/LCPrefixQuery.m:
+    Add new methods (not ported yet).
+
+2005-10-08 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/Analysis/TestAnalyzer.h:
     Fix headers.
