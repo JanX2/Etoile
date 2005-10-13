@@ -12,9 +12,9 @@
 		604D700F089D920C002CA3F7 /* SamplePrefsModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 60EE1E4D089D4CE900D4629C /* SamplePrefsModule.m */; };
 		604D7011089D9215002CA3F7 /* SamplePrefPane.m in Sources */ = {isa = PBXBuildFile; fileRef = 60EE1E56089D4CE900D4629C /* SamplePrefPane.m */; };
 		604D7013089D9223002CA3F7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EE1E50089D4CE900D4629C /* InfoPlist.strings */; };
-		604D7015089D9223002CA3F7 /* SamplePrefPaneInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 60EE1E54089D4CE900D4629C /* SamplePrefPaneInfo.plist */; };
+		604D7015089D9223002CA3F7 /* SamplePrefPaneInfo_Cocoa.plist in Resources */ = {isa = PBXBuildFile; fileRef = 60EE1E54089D4CE900D4629C /* SamplePrefPaneInfo_Cocoa.plist */; };
 		604D7016089D9223002CA3F7 /* SamplePrefPaneIcon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 60EE1E57089D4CE900D4629C /* SamplePrefPaneIcon.tiff */; };
-		604D7018089D9237002CA3F7 /* SamplePrefsModuleInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 60EE1E4E089D4CE900D4629C /* SamplePrefsModuleInfo.plist */; };
+		604D7018089D9237002CA3F7 /* SamplePrefsModuleInfo_Cocoa.plist in Resources */ = {isa = PBXBuildFile; fileRef = 60EE1E4E089D4CE900D4629C /* SamplePrefsModuleInfo_Cocoa.plist */; };
 		604D7019089D9237002CA3F7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EE1E4A089D4CE900D4629C /* InfoPlist.strings */; };
 		604D701C089D9241002CA3F7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		604D701D089D9241002CA3F7 /* PreferencesKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60EE1DC0089D494F00D4629C /* PreferencesKit.framework */; };
@@ -104,13 +104,13 @@
 		60EE1E4B089D4CE900D4629C /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		60EE1E4C089D4CE900D4629C /* SamplePrefsModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SamplePrefsModule.h; sourceTree = "<group>"; };
 		60EE1E4D089D4CE900D4629C /* SamplePrefsModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SamplePrefsModule.m; sourceTree = "<group>"; };
-		60EE1E4E089D4CE900D4629C /* SamplePrefsModuleInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SamplePrefsModuleInfo.plist; sourceTree = "<group>"; };
+		60EE1E4E089D4CE900D4629C /* SamplePrefsModuleInfo_Cocoa.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SamplePrefsModuleInfo_Cocoa.plist; sourceTree = "<group>"; };
 		60EE1E51089D4CE900D4629C /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		60EE1E54089D4CE900D4629C /* SamplePrefPaneInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SamplePrefPaneInfo.plist; sourceTree = "<group>"; };
+		60EE1E54089D4CE900D4629C /* SamplePrefPaneInfo_Cocoa.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SamplePrefPaneInfo_Cocoa.plist; sourceTree = "<group>"; };
 		60EE1E55089D4CE900D4629C /* SamplePrefPane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SamplePrefPane.h; sourceTree = "<group>"; };
 		60EE1E56089D4CE900D4629C /* SamplePrefPane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SamplePrefPane.m; sourceTree = "<group>"; };
 		60EE1E57089D4CE900D4629C /* SamplePrefPaneIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SamplePrefPaneIcon.tiff; sourceTree = "<group>"; };
-		8D1107310486CEB800E47090 /* PreferencesKitExampleInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PreferencesKitExampleInfo.plist; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* PreferencesKitExampleInfo_Cocoa.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PreferencesKitExampleInfo_Cocoa.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* PreferencesKitExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PreferencesKitExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -205,7 +205,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107310486CEB800E47090 /* PreferencesKitExampleInfo.plist */,
+				8D1107310486CEB800E47090 /* PreferencesKitExampleInfo_Cocoa.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
 			);
@@ -225,7 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				60A86A8A089FB0A100A79B64 /* SamplePrefsModule.nib */,
-				60EE1E4E089D4CE900D4629C /* SamplePrefsModuleInfo.plist */,
+				60EE1E4E089D4CE900D4629C /* SamplePrefsModuleInfo_Cocoa.plist */,
 				60EE1E4A089D4CE900D4629C /* InfoPlist.strings */,
 				60EE1E4C089D4CE900D4629C /* SamplePrefsModule.h */,
 				60EE1E4D089D4CE900D4629C /* SamplePrefsModule.m */,
@@ -239,7 +239,7 @@
 			children = (
 				60A86A7A089FADEF00A79B64 /* SamplePrefPane.nib */,
 				60EE1E50089D4CE900D4629C /* InfoPlist.strings */,
-				60EE1E54089D4CE900D4629C /* SamplePrefPaneInfo.plist */,
+				60EE1E54089D4CE900D4629C /* SamplePrefPaneInfo_Cocoa.plist */,
 				60EE1E55089D4CE900D4629C /* SamplePrefPane.h */,
 				60EE1E56089D4CE900D4629C /* SamplePrefPane.m */,
 				60EE1E57089D4CE900D4629C /* SamplePrefPaneIcon.tiff */,
@@ -439,7 +439,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				604D7013089D9223002CA3F7 /* InfoPlist.strings in Resources */,
-				604D7015089D9223002CA3F7 /* SamplePrefPaneInfo.plist in Resources */,
+				604D7015089D9223002CA3F7 /* SamplePrefPaneInfo_Cocoa.plist in Resources */,
 				604D7016089D9223002CA3F7 /* SamplePrefPaneIcon.tiff in Resources */,
 				60A86A7C089FADEF00A79B64 /* SamplePrefPane.nib in Resources */,
 			);
@@ -449,7 +449,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				604D7018089D9237002CA3F7 /* SamplePrefsModuleInfo.plist in Resources */,
+				604D7018089D9237002CA3F7 /* SamplePrefsModuleInfo_Cocoa.plist in Resources */,
 				604D7019089D9237002CA3F7 /* InfoPlist.strings in Resources */,
 				6074E334089E99BD00FB6C4E /* Preferences.tiff in Resources */,
 				60A86A8C089FB0A100A79B64 /* SamplePrefsModule.nib in Resources */,
@@ -569,7 +569,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				INFOPLIST_FILE = SamplePrefPane/SamplePrefPaneInfo.plist;
+				INFOPLIST_FILE = SamplePrefPane/SamplePrefPaneInfo_Cocoa.plist;
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				LIBRARY_STYLE = BUNDLE;
 				OPTIMIZATION_CFLAGS = "-O0";
@@ -602,7 +602,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				INFOPLIST_FILE = SamplePrefPane/SamplePrefPaneInfo.plist;
+				INFOPLIST_FILE = SamplePrefPane/SamplePrefPaneInfo_Cocoa.plist;
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				LIBRARY_STYLE = BUNDLE;
 				OPTIMIZATION_CFLAGS = "-O0";
@@ -634,7 +634,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				INFOPLIST_FILE = SamplePrefPane/SamplePrefPaneInfo.plist;
+				INFOPLIST_FILE = SamplePrefPane/SamplePrefPaneInfo_Cocoa.plist;
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				LIBRARY_STYLE = BUNDLE;
 				OPTIMIZATION_CFLAGS = "-O0";
@@ -667,7 +667,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				INFOPLIST_FILE = SamplePrefsModule/SamplePrefsModuleInfo.plist;
+				INFOPLIST_FILE = SamplePrefsModule/SamplePrefsModuleInfo_Cocoa.plist;
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				LIBRARY_STYLE = BUNDLE;
 				OPTIMIZATION_CFLAGS = "-O0";
@@ -699,7 +699,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = SamplePrefsModule/SamplePrefsModuleInfo.plist;
+				INFOPLIST_FILE = SamplePrefsModule/SamplePrefsModuleInfo_Cocoa.plist;
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				LIBRARY_STYLE = BUNDLE;
 				OPTIMIZATION_CFLAGS = "-O0";
@@ -730,7 +730,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = SamplePrefsModule/SamplePrefsModuleInfo.plist;
+				INFOPLIST_FILE = SamplePrefsModule/SamplePrefsModuleInfo_Cocoa.plist;
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				LIBRARY_STYLE = BUNDLE;
 				OPTIMIZATION_CFLAGS = "-O0";
@@ -768,7 +768,7 @@
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = PreferencesKitExampleInfo.plist;
+				INFOPLIST_FILE = PreferencesKitExampleInfo_Cocoa.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PREBINDING = YES;
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
@@ -793,7 +793,7 @@
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = PreferencesKitExampleInfo.plist;
+				INFOPLIST_FILE = PreferencesKitExampleInfo_Cocoa.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PREBINDING = YES;
 				PRODUCT_NAME = PreferencesKitExample;
@@ -811,7 +811,7 @@
 				GCC_PREFIX_HEADER = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = PreferencesKitExampleInfo.plist;
+				INFOPLIST_FILE = PreferencesKitExampleInfo_Cocoa.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = PreferencesKitExample;
 				WRAPPER_EXTENSION = app;
