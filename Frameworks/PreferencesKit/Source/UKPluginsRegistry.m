@@ -2,13 +2,13 @@
 	UKPluginsRegistry.m
  
 	Plugins manager class used to register new plugins and obtain already
- registered plugins
+    registered plugins
  
 	Copyright (C) 2004 Uli Kusterer
  
-	Author:  Uli Kusterer
+	Author: Uli Kusterer
             Quentin Mathe <qmathe@club-internet.fr>
-	Date:  August 2004
+	Date:   August 2004
  
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -35,8 +35,24 @@
 static NSFileManager *fm = nil;
 
 
+/**
+    Each plugin is represented by an NSMutableDictionary to which you can add your
+    own entries as needed. The keys UKPluginRegistry adds to this dictionary are:
+    
+    bundle      - NSBundle instance for this plugin.
+    identifier  - Unique identifier for this plugin (bundle identifier in current implementation)
+    image       - Icon (NSImage) of the plugin (for display in toolbars etc.)
+    name        - Display name of the plugin (for display in lists, toolbars etc.)
+    path        - Full path to the bundle.
+    class       - NSValue containing pointer to the principal class (type Class)
+                  for this bundle, so you can instantiate it.
+    instance    - If instantiate == YES, this contains an instance of the principal
+                  class, instantiated using alloc+init.
+ */
+
 @implementation UKPluginsRegistry
 
+/** Returns UKPluginsRegistry shared instance (singleton). */
 + (id) sharedRegistry
 {
 	static UKPluginsRegistry *sharedPluginRegistry = nil;
@@ -72,7 +88,6 @@ static NSFileManager *fm = nil;
 	return self;
 }
 
-
 - (void) dealloc
 {
 	[plugins release];
@@ -100,6 +115,9 @@ static NSFileManager *fm = nil;
 }
 #endif
 
+// FIXME: Implement UTI check support for type parameter.
+/** Locates and loads plugin bundles with extension <var>ext</var>. 
+    Normally this is the only method you need to call to load a plugin. */
 - (void) loadPluginsOfType: (NSString *)ext
 {
 	NSBundle *bundle = [NSBundle mainBundle];
@@ -119,6 +137,10 @@ static NSFileManager *fm = nil;
 	[self loadPluginsFromPath: [bundle builtInPlugInsPath] ofType: ext];
 }
 
+// FIXME: Implement UTI check support for type parameter.
+/** Finds plugins within <var>folder</folder> path which are identified by an 
+    extension matching <var>ext</var>. Finally loads these plugins by calling 
+    <ref>-loadPluginAtPath:</ref>. */
 - (void) loadPluginsFromPath: (NSString *)folder ofType: (NSString *)ext
 {
 	NSDirectoryEnumerator *e = [fm enumeratorAtPath: folder];
@@ -149,6 +171,7 @@ static NSFileManager *fm = nil;
 		NS_ENDHANDLER
 	}
 }
+
 #ifdef HAVE_UKTEST
 - (void) testLoadPluginForPath
 {
@@ -188,6 +211,13 @@ static NSFileManager *fm = nil;
 }
 #endif
 
+/** <p>Loads the plugin bundle located at <var>path</var>, checks it conforms to 
+    <strong>Plugin schema</strong> stored in the related bundle property list.
+    </p>
+    <p>Every property list values associated to Plugin schema are put in a
+    dictionary which represents a plugin object; eventual validity errors
+    may be reported each time a value is read in NSBundle description values
+    returned by <ref>-infoDictionary</ref>.</p> */
 - (NSMutableDictionary *) loadPluginForPath: (NSString *)path
 {
 	NSMutableDictionary *info = [pluginPaths objectForKey: path];
@@ -269,6 +299,8 @@ static NSFileManager *fm = nil;
 }
 #endif
 
+/** <p>Returns the currently registered plugins (loaded by the way).</p> 
+    <p><code>Nil</code> is returned when no plugins have been registered.</p> */
 - (NSArray *) loadedPlugins
 {
 	if ([plugins count] > 0)
@@ -281,13 +313,15 @@ static NSFileManager *fm = nil;
     }
 }
 
-
+/** <p>Returns <code>instantiate</code> value.</p> />
+    <p>Read <ref>-setInstantiate</ref> documentation to learn more.</p> */
 - (BOOL)  instantiate
 {
     return instantiate;
 }
 
-
+/** Sets <var>instantiate</var> value to <code>YES</code> if you want to have 
+    plugins main class automatically instantiated when they are loaded. */
 - (void) setInstantiate: (BOOL)n
 {
     instantiate = n;

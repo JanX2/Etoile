@@ -50,6 +50,7 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
     }
 }
 
+/** Returns PKPrefPanesRegistry shared instance (singleton). */
 + (id) sharedRegistry
 {	    
     return sharedPrefPanesRegistry;
@@ -63,6 +64,8 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
     return self;
 }
 
+/** Locates and loads Preference Pane bundles.<br />
+    Normally you only need to call this method to load a preference pane. */
 - (void) loadAllPlugins
 {
 	[self loadPluginsOfType: @"prefPane"];
@@ -76,6 +79,12 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
 }
 #endif
 
+/** <p>Loads the plugin bundle located at <var>path</var>, checks it conforms to 
+    <strong>Plugin schema</strong> stored in the related bundle property list.</p>
+    <p>Every property list values associated to Plugin schema are put in a
+    dictionary to be used as plugin object, eventual validity errors
+    are reported each time a value is read in NSBundle description values
+    returned by <ref>-infoDictionary</ref>.</p> */
 - (PKPreferencePane *) preferencePaneAtPath: (NSString *)path
 {
 	NSMutableDictionary *info = [self loadPluginForPath: path];

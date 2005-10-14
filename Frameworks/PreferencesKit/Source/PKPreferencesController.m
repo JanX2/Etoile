@@ -168,30 +168,47 @@ static BOOL 		inited = NO;
  * Preferences window UI stuff
  */
 
+/** <override-subclass />
+    Uses this method to do possible preferences window related UI set up you may
+    have to do and usually done in <ref>-awakeFromNib</ref>. */
 - (void) initUI
 {
-    
+    [self subclassResponsability: _cmd];
 }
 
 /*
  * Abstract methods
  */
 
+/** <override-subclass />
+    <p>Returns the <strong>presentation view</strong> where every preference 
+    panes should be listed.</p>
+    <p>Overrides this abstract method to return your custom <strong>presentation 
+    view</strong> like toolbar, table view, popup menu, tab view etc.</p> */
 - (NSView *) preferencesListView
 {
     return nil;
 }
 
+/** <override-subclass />
+    <p>Computes and assigns the correct size to <strong>preferences
+    view</strong> where <var>view</var> parameter is going to displayed.</p>
+    <p>Overrides this abstract method to resize preferences view container to
+    match size of the preference pane view which is shown or should be.<p> */
 - (void) resizePreferencesViewForView: (NSView *)view
 {
-
+    [self subclassResponsability: _cmd];
 }
 
 /*
  * Preference pane related methods
  */
 
-/* Main bottleneck for switching panes: */
+/** Sets or resets up completely the currently selected <strong>preference 
+    pane</strong> UI.
+    <p>By being the main bottleneck for switching preference panes, this method
+    must be called each time a new preference pane is selected like with
+    <ref>-selectedPreferencePaneWithIdentifier:</ref> method.</p> */
 - (BOOL) updateUIForPreferencePane: (PKPreferencePane *)requestedPane
 {
     NSView *prefsView = [self preferencesView];
@@ -224,7 +241,7 @@ static BOOL 		inited = NO;
 			}
 		}
 		else /* Nil in currentPane. Called in response to replyToUnselect: to
-signal 'ok': */
+                signal 'ok': */
 		{
 			requestedPane = nextPane;	/* Continue where we left off. */
 			nextPane = nil;
@@ -276,6 +293,9 @@ signal 'ok': */
 	return YES;
 }
 
+/** <p>Switches to <strong>preference pane</strong> with the given identifier.
+    </p> 
+    <p>This method needs to be call in <ref>-switchView:</ref>.</p> */
 - (void) selectPreferencePaneWithIdentifier: (NSString *)identifier
 {
     PKPreferencePane *pane = [[PKPrefPanesRegistry sharedRegistry] 
@@ -322,21 +342,39 @@ signal 'ok': */
  * Accessors
  */
 
+/** Returns the view which encloses both preference pane loaded view and 
+    presentation view where where every preferences panes are usually listed, it
+    is often a window content view.<br /> 
+    To take an example, for [ PKToolbarPreferencesController ], the view which 
+    contains both toolbar view and preference pane dedicated view is returned. */
 - (NSView *) preferencesView
 {
 	return preferencesView;
 }
 
+/** Returns the owner object for the current <ref>-preferencesView</ref>, it
+    is usually the parent window in order to allow automatic resizing and window 
+    title update when selected preference pane changes.<br /> 
+    However it is possible to specify an ancestor view when you need to layout 
+    <strong>preferences view</strong> with other views in the content view, but 
+    this possibility involves to manage resizing yourself by overriding 
+    <ref>-resizesPreferencesViewForView:</ref> method. */
 - (id) owner;
 {
     return owner;
 }
 
+/** Returns the currently selected <strong>preference pane</strong>. */
 - (PKPreferencePane *) selectedPreferencePane
 {
     return currentPane;
 }
 
+/** <p>Returns the <strong>wait view</strong> displayed between each preference 
+    pane switch until UI is fully set up. By default, it displays a circular 
+    progress indicator.</p>
+    <p>Overrides this method if you want to provide to customize such wait view.
+    </p> */
 - (NSView *) mainViewWaitSign
 {
     if (mainViewWaitSign == nil)
@@ -363,9 +401,16 @@ signal 'ok': */
  * Action methods
  */
 
+/** <override-subclass>
+    <p>Switches the current preference pane viewed to another one provided by
+    <var>sender</var>.</p>
+    <p>Overrides this abstract method in your subclass in order to implement this
+    behavior by calling <ref>-selectPreferencePaneWithIdentifier:</ref>;
+    you have to be able to retrieve the preference pane through your custom
+    <var>sender</var>.</p> */
 - (IBAction) switchView: (id)sender
 {
-    // NOTE: Subclass responsability
+    [self subclassResponsability: _cmd];
 }
 
 @end

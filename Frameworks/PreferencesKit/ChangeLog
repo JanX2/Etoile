@@ -1,3 +1,11 @@
+2005-10-15  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPreferencesController.m:
+    * Source/PKPrefPanesRegistry.m:
+    * Source/UKPluginsRegistry.m:
+    Written PreferencesKit documentation first part.
+    * PreferencesKit.xcodeproj: Tuned a bit build target options.
+
 2005-08-17  Quentin Mathe <qmathe@club-internet.fr>
 
     * Headers/PKPreferencesController.h (-selectPreferencePaneWithIdentifier:):
