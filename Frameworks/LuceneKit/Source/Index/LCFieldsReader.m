@@ -101,28 +101,27 @@
 				index = LCIndex_Untokenized;
 			else
 				index = LCIndex_NO;
-#if 0 // Update to date
-        Field.TermVector termVector = null;
-        if (fi.storeTermVector) {
-          if (fi.storeOffsetWithTermVector) {
-            if (fi.storePositionWithTermVector) {
-              termVector = Field.TermVector.WITH_POSITIONS_OFFSETS;
-            }
-            else {
-              termVector = Field.TermVector.WITH_OFFSETS;
+
+	LCTermVector_Type termVector = LCTermVector_NO;
+        if ([fi isTermVectorStored]) {
+          if ([fi isOffsetWithTermVectorStored]) {
+            if ([fi isPositionWithTermVectorStored]) {
+              termVector = LCTermVector_WithPositionsAndOffsets;
+            }                    
+            else {        
+              termVector = LCTermVector_WithOffsets;
             }
           }
-          else if (fi.storePositionWithTermVector) {
-            termVector = Field.TermVector.WITH_POSITIONS;
+          else if ([fi isPositionWithTermVectorStored]) {
+            termVector = LCTermVector_WithPositions;
           }
           else {
-            termVector = Field.TermVector.YES;
+            termVector = LCTermVector_YES;
           }
         }
         else {
-          termVector = Field.TermVector.NO;
+          termVector = LCTermVector_NO;
         }
-#endif
 			
 			if (compressed) {
 				store = LCStore_Compress;
@@ -134,17 +133,11 @@
 														string: s
 														 store: store
 														 index: index
-													termVector: ([fi isTermVectorStored] ? LCTermVector_YES : LCTermVector_NO)];
+			termVector: termVector];
+
 				[doc addField: field];
 				DESTROY(field);
 				DESTROY(b);
-#if 0
-				doc.add(new Field(fi.name,      // field name
-								  new String(uncompress(b), "UTF-8"), // uncompress the value and add as string
-								  store,
-								  index,
-								  termVector));
-#endif
 			}
 			else // Not compressed
 			{
@@ -152,11 +145,7 @@
 														string: [fieldsStream readString]
 														 store: store
 														 index: index
-#if 1
-													termVector: ([fi isTermVectorStored] ? LCTermVector_YES : LCTermVector_NO)];
-#else
 													termVector: termVector];
-#endif
 				[doc addField: field];
 				DESTROY(field);
 			}

@@ -51,11 +51,8 @@
 	LCField *field = [doc field: @"textField2"];
 	UKNotNil(field);
 	UKTrue([field isTermVectorStored]);
-
-#if 0
-assertTrue(field.isStoreOffsetWithTermVector() == true);
- 	     assertTrue(field.isStorePositionWithTermVector() == true);
-#endif
+	UKTrue([field isOffsetWithTermVectorStored]);
+	UKTrue([field isPositionWithTermVectorStored]);
 	[reader close];
 }
 
