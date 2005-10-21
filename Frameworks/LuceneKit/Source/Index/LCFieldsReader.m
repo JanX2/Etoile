@@ -101,6 +101,28 @@
 				index = LCIndex_Untokenized;
 			else
 				index = LCIndex_NO;
+#if 0 // Update to date
+        Field.TermVector termVector = null;
+        if (fi.storeTermVector) {
+          if (fi.storeOffsetWithTermVector) {
+            if (fi.storePositionWithTermVector) {
+              termVector = Field.TermVector.WITH_POSITIONS_OFFSETS;
+            }
+            else {
+              termVector = Field.TermVector.WITH_OFFSETS;
+            }
+          }
+          else if (fi.storePositionWithTermVector) {
+            termVector = Field.TermVector.WITH_POSITIONS;
+          }
+          else {
+            termVector = Field.TermVector.YES;
+          }
+        }
+        else {
+          termVector = Field.TermVector.NO;
+        }
+#endif
 			
 			if (compressed) {
 				store = LCStore_Compress;
@@ -121,7 +143,7 @@
 								  new String(uncompress(b), "UTF-8"), // uncompress the value and add as string
 								  store,
 								  index,
-								  fi.storeTermVector ? Field.TermVector.YES : Field.TermVector.NO));
+								  termVector));
 #endif
 			}
 			else // Not compressed
@@ -130,7 +152,11 @@
 														string: [fieldsStream readString]
 														 store: store
 														 index: index
+#if 1
 													termVector: ([fi isTermVectorStored] ? LCTermVector_YES : LCTermVector_NO)];
+#else
+													termVector: termVector];
+#endif
 				[doc addField: field];
 				DESTROY(field);
 			}
