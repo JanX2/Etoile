@@ -22,7 +22,9 @@ ADDITIONAL_OBJCFLAGS += -DHAVE_UKTEST
 # Allow to run 'make test=yes' with the whole repository in one pass
 #
 
-ADDITIONAL_INCLUDE_DIRS += -I$(PROJECT_DIR)/UnitKit 
+ADDITIONAL_INCLUDE_DIRS += -I$(PROJECT_DIR)/UnitKit -I/$(PROJECT_DIR)/OgreKit
 
-ADDITIONAL_LIB_DIRS += -L$(PROJECT_DIR)/UnitKit/$(GNUSTEP_OBJ_DIR)
+ADDITIONAL_LIB_DIRS += \
+    -L$(PROJECT_DIR)/UnitKit/$(GNUSTEP_OBJ_DIR) \
+    -L$(PROJECT_DIR)/OgreKit/$(GNUSTEP_OBJ_DIR)                
 endif

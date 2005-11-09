@@ -1,3 +1,11 @@
+2005-11-09 Quentin Mathe <qmathe@club-internet.fr>
+
+    Warning! Xcode compilation untested.
+    * Source/GNUmakefile.preamble:
+    * Source/GNUmakefile.postamble:
+    Fixed compilation in order to link OgreKit correctly even when it is not 
+    installed (now the whole repository compiles in one pass).
+
 2005-10-21 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/Index/LCFieldsReader.m:
