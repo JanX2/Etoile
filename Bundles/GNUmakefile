@@ -33,6 +33,21 @@ include $(GNUSTEP_MAKEFILES)/common.make
 #
 
 export etoile ?= yes
+
+ifeq ($(etoile), no)
+
+    export desktop-base ?= yes
+	#export etoile-extensions ?= no
+
+endif
+
+ifeq ($(etoile), yes)
+
+    export desktop-base ?= yes
+	#export etoile-extensions ?= yes
+
+endif
+
 export desktop-base ?= yes
 
 ifeq ($(desktop-base), yes)
@@ -41,12 +56,27 @@ ifeq ($(desktop-base), yes)
 
 endif
 
+#export etoile-extensions ?= yes
+
+# At this time, SQLiteClient is not built by default by being not part of
+# etoile-extensions because it introduces too much dependencies.
+
+#ifeq ($(etoile-extensions), yes)
+#
+#    export sqliteclient ?= yes
+#
+#endif
+
 #
 # Subprojects choice
 #
 
 ifeq ($(camaelon), yes)
     SUBPROJECTS = Camaelon
+endif
+
+ifeq ($(sqliteclient), yes)
+    SUBPROJECTS = SQLiteClient
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
