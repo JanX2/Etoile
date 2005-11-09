@@ -58,8 +58,10 @@ endif
 
 #export etoile-extensions ?= yes
 
+#
 # At this time, SQLiteClient is not built by default by being not part of
-# etoile-extensions because it introduces too much dependencies.
+# etoile-extensions because it introduces too many dependencies.
+#
 
 #ifeq ($(etoile-extensions), yes)
 #

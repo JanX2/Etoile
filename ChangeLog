@@ -1,3 +1,9 @@
+2005-11-09  Quentin Mathe <qmathe@club-internet.fr>
+    
+    Note: pmkfile is deprecated.
+    * GNUmakefile: Improved clarity for 'etoile' option.
+    * pmkfile: Updated (this file will be removed soon).
+
 2005-06-07  Quentin Mathe <qmathe@club-internet.fr>
 	
 	Warning! pmkfile not usable (unlike GNUmakefile now).
