@@ -1,14 +1,35 @@
-IconKit README
-==============
-
-About
-=====
+==================
+IconKit 0.1 README
+==================
 
 This framework is used to create icons using different elements. It helps keeping consistency accross a set of icons
 (for example, using the same background..) and permit to easily create icons "families".
 
+Maintainers: Quentin Mathe <qmathe@club-internet.fr>, Uli Kusterer
+Authors: Uli Kusterer, Nicolas Roard, Quentin Mathe
+
+To know more about IconKit:
+<http://www.dromasoftware.com/etoile/mediawiki/index.php?title=IconKit>
+
+
+Build and Install
+-----------------
+
+Read INSTALL document.
+
+
+Mac OS X support
+----------------
+
+IconKit is supported on Mac OS X (by relying on Carbon Icon Services). 
+An Xcode project is provided to build it.
+
+
+Developer Notes
+===============
+
 Example
-=======
+-------
 
 1) Create a NSImage composed of two images programmatically:
 
@@ -37,9 +58,6 @@ Example
 
 	// get the result
 	NSImage* result = [compositor render];
-
-note:
-----
 
 Here is the plist used in the example:
 
@@ -79,3 +97,15 @@ Here is the plist used in the example:
 	}
     );
 }
+
+
+Tests suite
+-----------
+
+UnitKit (bundled with Etoile) is required.
+
+    Steps to produce a test bundle and run tests suite:
+
+    * make test=yes 
+
+    * ukrun IconKit.bundle
