@@ -1,5 +1,6 @@
+=============
 LuceneKit 0.1
-==============
+=============
 
 Lucene is a high-performance, full-featured text search engine library. It is a 
 technology suitable for nearly any application that requires full-text search.
@@ -31,7 +32,7 @@ cross-platform and written in Objective-C, unlike SearchKit which is a Carbon
 framework.
 
 
-Developers notes
+Developer notes
 ================
 
 Tests suite
@@ -45,11 +46,13 @@ UnitKit (bundled with Etoile) is required.
 
     * ukrun LuceneKit.bundle
 
+
 Dependency
 ---------
 
-zlib: compression/decompression.
-OgreKit: regular expression searching and replacing.
+    * zlib: compression/decompression
+    
+    * OgreKit: regular expression searching and replacing
 
 
 Contribute 

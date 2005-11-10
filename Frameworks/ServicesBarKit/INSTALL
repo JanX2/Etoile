@@ -1,3 +1,7 @@
+======================
+ServicesBarKit INSTALL
+======================
+
 Required software
 -----------------
 
@@ -13,12 +17,14 @@ You need to have the GNUstep core libraries installed in order to compile and us
 
    See <http://www.gnustep.org/> for further information.
 
+
 Build and Install
 -----------------
 
    Steps to build:
 
    * make install
+
 
 Trouble
 -------

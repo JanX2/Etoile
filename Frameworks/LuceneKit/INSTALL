@@ -1,3 +1,4 @@
+=================
 LuceneKit INSTALL
 =================
 
@@ -13,7 +14,15 @@ compile and use LuceneKit. The core packages are, at a minimum:
 
 See <http://www.gnustep.org/> for further information.
 
-You also need OgreKit, which can be found in Etoile/Frameworks/OgreKit.
+You also need to have zlib library installed:
+    
+    * zlib 
+    
+See <http://www.zlib.net/> for further information.
+
+You also need OgreKit, which can be found in Etoile/Frameworks/OgreKit. This
+dependency is automatically handled when LuceneKit is built by running
+'make' tool in Frameworks or any other parent directories.
 
 
 Build and Install
