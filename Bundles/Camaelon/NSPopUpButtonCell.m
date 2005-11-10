@@ -24,8 +24,8 @@
       (!_shows_border_only_while_mouse_inside || _mouse_inside))
   {
 	
-//	[GSDrawFunctions drawButton: cellFrame : NSZeroRect];
-	[GSDrawFunctions drawPopupButton: cellFrame inView: controlView];
+//	[THEME drawButton: cellFrame : NSZeroRect];
+	[THEME drawPopupButton: cellFrame inView: controlView];
   }
   else if (_cell.is_highlighted)
   {
@@ -44,7 +44,7 @@
   if (_cell.shows_first_responder
 	  && [[controlView window] firstResponder] == controlView)
   {
-	[GSDrawFunctions drawFocusFrame: cellFrame];
+	[THEME drawFocusFrame: cellFrame];
   }
 */
 }
@@ -70,7 +70,7 @@
       new = YES;
     }
   
-//  [GSDrawFunctions drawButton: cellFrame inView: controlView highlighted: NO];
+//  [THEME drawButton: cellFrame inView: controlView highlighted: NO];
 
 
   /* We need to calc our size to get images placed correctly */
@@ -82,7 +82,7 @@
     {
       cellFrame = [self drawingRectForBounds: cellFrame];
       //NSDottedFrameRect(cellFrame);
-	[GSDrawFunctions drawFocusFrame: cellFrame];
+	[THEME drawFocusFrame: cellFrame];
     }
 */
   /* Unset the item to restore balance if a new was created */

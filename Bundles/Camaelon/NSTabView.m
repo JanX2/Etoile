@@ -25,18 +25,18 @@
 	aRect.size.height -= [img size].height;
 	//aRect.size.height -= 16;
 //	aRect.origin.y += 1;
-	[GSDrawFunctions drawTabFrame: aRect on: self];
+	[THEME drawTabFrame: aRect on: self];
 	break;
 
       case NSBottomTabsBezelBorder: 
 	aRect.size.height -= 16;
 	aRect.origin.y += 16;
-	[GSDrawFunctions drawTabFrame: aRect on: self];
+	[THEME drawTabFrame: aRect on: self];
 	aRect.origin.y -= 16;
 	break;
 
       case NSNoTabsBezelBorder: 
-	[GSDrawFunctions drawTabFrame: aRect on: self];
+	[THEME drawTabFrame: aRect on: self];
 	break;
 
       case NSNoTabsLineBorder: 

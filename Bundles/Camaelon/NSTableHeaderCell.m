@@ -18,7 +18,7 @@ static NSColor* clearCol;
 - (void) drawInteriorWithFrame: (NSRect)cellFrame 
 			inView: (NSView*)controlView
 {
-  [GSDrawFunctions drawTableHeaderCellInRect: cellFrame
+  [THEME drawTableHeaderCellInRect: cellFrame
 	highlighted: _cell.is_highlighted];
   _textfieldcell_draws_background = NO;
 

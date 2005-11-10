@@ -15,12 +15,12 @@ static NSImage  *arrowImageCurrent = nil;
 
   if (_cell.is_highlighted && (_highlightsByMask & NSPushInCellMask))
     {
-      //[GSDrawFunctions drawGrayBezel: cellFrame : NSZeroRect];
-      [GSDrawFunctions drawButton: cellFrame inView: nil style: NSRegularSquareBezelStyle highlighted: YES];
+      //[THEME drawGrayBezel: cellFrame : NSZeroRect];
+      [THEME drawButton: cellFrame inView: nil style: NSRegularSquareBezelStyle highlighted: YES];
     }
   else
     {
-      [GSDrawFunctions drawButton: cellFrame inView: nil style: NSRegularSquareBezelStyle highlighted: NO];
+      [THEME drawButton: cellFrame inView: nil style: NSRegularSquareBezelStyle highlighted: NO];
     }
 
 }

@@ -91,10 +91,10 @@
 {
   _cell.is_bordered = NO;
   _cell.is_bezeled = YES;
-  //[GSDrawFunctions drawGrayBezelRound: cellFrame :NSZeroRect];
+  //[THEME drawGrayBezelRound: cellFrame :NSZeroRect];
   //[[NSColor greenColor] set];
   //NSRectFill (cellFrame);
-  [GSDrawFunctions drawWindowBackground: cellFrame on: controlView];
+  [THEME drawWindowBackground: cellFrame on: controlView];
   [self drawInteriorWithFrame: cellFrame inView: controlView];
 }
 - (void) drawKnob: (NSRect)knobRect

@@ -1,3 +1,23 @@
+2005-10-28 Nicolas Roard <nicolas@roard.com>
+
+	Modified GSDrawFunctions so that all the methods are now instance methods;
+	and modified the classes to call them properly (using a THEME macro
+	defined in GSDrawFunctions.h).
+	GSDrawFunctions holds an instance of a "theme" class (by default, an
+	instance of GSDrawFunctions itself) accessible via GSDrawFunctions +theme.
+	Themes can be swapped by using the +setTheme: method.
+	A new UI "theme engine" (Camaelon for example) thus simply need to be
+	loaded by -gui (with the existing GSAppKitUserBundles mechanism), and set
+	one of its class as a theme, this class implementing the GSDrawFunctions
+	methods.
+	That way we should be able to easily:
+	- NOT load Camaelon if the indicated pixmap theme is not found :-)
+	- SWAP theme on the fly (untested for the moment but should work).
+	For the swap on the fly, we will also need a distributed notification to
+	ask all the apps to redraw their widgets (registering each NSWindow/NSPanel
+	and redrawing from the root should do the work, but I need to implement/test
+	it).
+
 2005-07-15 Nicolas Roard <nicolas@roard.com>
 
 	* NSBox.m : fixed the -drawRect: method to have a correct 

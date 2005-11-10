@@ -50,7 +50,7 @@
     }
   else if (_cell.is_bezeled)
     {
-      NSRect frame = [GSDrawFunctions drawWhiteBezel: borderedFrame : NSZeroRect];
+      NSRect frame = [THEME drawWhiteBezel: borderedFrame : NSZeroRect];
       [[NSColor textBackgroundColor] set];
       NSRectFill (frame);
     }
@@ -65,7 +65,7 @@
   	{
 		focus = YES;
 	}
-	[GSDrawFunctions drawTextField: borderedFrame focus: focus flipped: [controlView isFlipped]];
+	[THEME drawTextField: borderedFrame focus: focus flipped: [controlView isFlipped]];
   }
 
   if (_cell.is_bezeled)

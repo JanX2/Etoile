@@ -100,12 +100,12 @@ static  NSButtonCell* knobCell;
 {
 	if (_isHorizontal)
 	{
-		[GSDrawFunctions drawHorizontalScrollerSlot: rect knobPresent: knob 
+		[THEME drawHorizontalScrollerSlot: rect knobPresent: knob 
 			buttonPressed: button on: self];
 	}
 	else
 	{
-		[GSDrawFunctions drawVerticalScrollerSlot: rect knobPresent: knob 
+		[THEME drawVerticalScrollerSlot: rect knobPresent: knob 
 			buttonPressed: button on: self];
 	}
 }
@@ -149,11 +149,11 @@ static  NSButtonCell* knobCell;
 	//NSRectFill (knob);
 	if (_isHorizontal)
 	{
-		[GSDrawFunctions drawHorizontalScrollerKnob: knob on: self];
+		[THEME drawHorizontalScrollerKnob: knob on: self];
 	}
 	else
 	{
-		[GSDrawFunctions drawVerticalScrollerKnob: knob on: self];
+		[THEME drawVerticalScrollerKnob: knob on: self];
 	}
 }
 

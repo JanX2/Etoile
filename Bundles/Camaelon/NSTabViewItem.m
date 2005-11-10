@@ -34,13 +34,13 @@
      // fRect.size.height += 2;
      // [[NSColor controlBackgroundColor] set];
      // NSRectFill(fRect);
-     [GSDrawFunctions drawTopTabFill: fRect selected: YES on: nil];
+     [THEME drawTopTabFill: fRect selected: YES on: nil];
     }
   else if (_state == NSBackgroundTab)
     {
      // [[NSColor controlBackgroundColor] set];
      // NSRectFill(fRect);
-     [GSDrawFunctions drawTopTabFill: fRect selected: NO on: nil];
+     [THEME drawTopTabFill: fRect selected: NO on: nil];
     }
   else
     {

@@ -12,7 +12,7 @@
 {
   if (NSIntersectsRect(rect, contentRect))
     {
-      [GSDrawFunctions drawWindowBackground: rect on: self];
+      [THEME drawWindowBackground: rect on: self];
     }
 }
 @end

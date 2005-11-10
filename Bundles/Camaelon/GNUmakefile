@@ -47,6 +47,7 @@ Camaelon_OBJC_FILES = \
 		Camaelon.m \
 		GraphicToolbox.m \
 		GSDrawFunctions.m \
+		CamaelonDrawFunctions.m \
 		CLImage.m \
 		CLCompositor.m \
 		CLBoxCompositor.m \

@@ -9,7 +9,7 @@
 {
    NSRect       r = _bounds;
 
-   [GSDrawFunctions drawProgressIndicatorBackgroundOn: self];
+   [THEME drawProgressIndicatorBackgroundOn: self];
 
    if (_doubleValue > _minValue)
    {
@@ -24,7 +24,7 @@
         else
              r.size.width = NSWidth(r) * (val / (_maxValue - _minValue));
 
-	[GSDrawFunctions drawProgressIndicatorForegroundInRect: r];
+	[THEME drawProgressIndicatorForegroundInRect: r];
    }
 }
 

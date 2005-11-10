@@ -1,6 +1,7 @@
 #include "GSDrawFunctions.h"
 
 @implementation GSDrawFunctions (theme)
+
 /*
 + (NSRect) drawButton: (NSRect)border : (NSRect)clip
 { 
@@ -24,7 +25,7 @@
 }
 */
 
-+ (NSRect) drawGrayBezelRound: (NSRect)border : (NSRect)clip
+- (NSRect) drawGrayBezelRound: (NSRect)border : (NSRect)clip
 { 
 	NSBezierPath* path = [NSBezierPath bezierPath];
 	NSBezierPath* path2 = [NSBezierPath bezierPath];
@@ -50,7 +51,7 @@
 	[inside fill];
 	return r3;
 }
-+ (NSRect) drawGrayBezel: (NSRect)border : (NSRect)clip
+- (NSRect) drawGrayBezel: (NSRect)border : (NSRect)clip
 { 
 	NSBezierPath* path = [NSBezierPath bezierPath];
 	NSBezierPath* path2 = [NSBezierPath bezierPath];
@@ -73,9 +74,9 @@
 	[inside fill];
 	return r3;
 }
-+ (NSRect) drawGroove: (NSRect)border : (NSRect)clip
+- (NSRect) drawGroove: (NSRect)border : (NSRect)clip
 { 
-  	[GSDrawFunctions drawBox: border on: self];
+  	[THEME drawBox: border on: self];
 	/*
 	NSBezierPath* path = [NSBezierPath bezierPath];
 	NSBezierPath* path2 = [NSBezierPath bezierPath];
@@ -100,7 +101,7 @@
 
 static NSColor* browserHeaderTextColor;
 
-+ (NSColor*) browserHeaderTextColor 
+- (NSColor*) browserHeaderTextColor 
 {
 	if (browserHeaderTextColor == nil)
 	{
@@ -113,7 +114,7 @@ static NSColor* browserHeaderTextColor;
 
 static CLCompositor* myBrowserHeader;
 
-+ (void) drawBrowserHeaderInRect: (NSRect) frame
+- (void) drawBrowserHeaderInRect: (NSRect) frame
 {
 
 	if (myBrowserHeader == nil)
@@ -137,12 +138,12 @@ static CLCompositor* myBrowserHeader;
 */
 }
 
-+ (float) ListHeaderHeight
+- (float) ListHeaderHeight
 {
 	return [[NSImage imageNamed: @"ListHeader/ListHeader-fill-unselected.tiff"] size].height;
 }
 
-+ (void) drawTableHeaderCornerInRect: (NSRect) frame
+- (void) drawTableHeaderCornerInRect: (NSRect) frame
 {
 	NSImage* fill = [NSImage imageNamed: @"ListHeader/ListHeader-corner.tiff"];
 	NSSize fillSize = NSMakeSize ([fill size].width, frame.size.height);
@@ -151,7 +152,7 @@ static CLCompositor* myBrowserHeader;
 	[GraphicToolbox fillHorizontalRect: frame withImage: fill];
 }
 
-+ (void) drawTableHeaderInRect: (NSRect) frame
+- (void) drawTableHeaderInRect: (NSRect) frame
 {
 	NSImage* fill = [NSImage imageNamed: @"ListHeader/ListHeader-fill-unselected.tiff"];
 	NSSize fillSize = NSMakeSize ([fill size].width, frame.size.height);
@@ -160,7 +161,7 @@ static CLCompositor* myBrowserHeader;
 	[GraphicToolbox fillHorizontalRect: frame withImage: fill];
 }
 
-+ (void) drawTableHeaderCellInRect: (NSRect) frame highlighted: (BOOL) highlighted 
+- (void) drawTableHeaderCellInRect: (NSRect) frame highlighted: (BOOL) highlighted 
 {
 	frame.origin.y -= 1;
 	NSImage* separation = nil;
@@ -187,7 +188,7 @@ static CLCompositor* myBrowserHeader;
 		operation: NSCompositeSourceOver];
 }
 
-+ (void) drawGradient: (NSData*) gradient withSize: (NSArray*) size 
+- (void) drawGradient: (NSData*) gradient withSize: (NSArray*) size 
 	border: (NSRect) border
 {
         NSAffineTransform *transform;
@@ -238,7 +239,7 @@ static CLCompositor* myBrowserHeader;
 	//[shader release]; //FIXME ..
 }
 
-+ (void) drawHorizontalGradient: (NSColor*) start to: (NSColor*) end frame: (NSRect) frame
+- (void) drawHorizontalGradient: (NSColor*) start to: (NSColor*) end frame: (NSRect) frame
 {
 
 	unsigned char * data;
@@ -254,11 +255,11 @@ static CLCompositor* myBrowserHeader;
 
 	NSData* gradient = [NSData dataWithBytesNoCopy: data length: datasize];
 	NSArray* size = [NSArray arrayWithObjects: [NSNumber numberWithInt: 2], [NSNumber numberWithInt: 1], nil];
-	[GSDrawFunctions drawGradient: gradient withSize: size border: frame];
+	[THEME drawGradient: gradient withSize: size border: frame];
 	free (data);
 }
 
-+ (void) drawVerticalGradient: (NSColor*) start to: (NSColor*) end frame: (NSRect) frame
+- (void) drawVerticalGradient: (NSColor*) start to: (NSColor*) end frame: (NSRect) frame
 {
 
 	unsigned char * data;
@@ -274,11 +275,11 @@ static CLCompositor* myBrowserHeader;
 
 	NSData* gradient = [NSData dataWithBytesNoCopy: data length: datasize];
 	NSArray* size = [NSArray arrayWithObjects: [NSNumber numberWithInt: 1], [NSNumber numberWithInt: 2], nil];
-	[GSDrawFunctions drawGradient: gradient withSize: size border: frame];
+	[THEME drawGradient: gradient withSize: size border: frame];
 	free (data);
 }
 
-+ (void) drawDiagonalGradient: (NSColor*) start to: (NSColor*) end frame: (NSRect) frame direction: (int) direction
+- (void) drawDiagonalGradient: (NSColor*) start to: (NSColor*) end frame: (NSRect) frame direction: (int) direction
 {
 
 	unsigned char * data;
@@ -344,11 +345,11 @@ static CLCompositor* myBrowserHeader;
 
 	NSData* gradient = [NSData dataWithBytesNoCopy: data length: datasize];
 	NSArray* size = [NSArray arrayWithObjects: [NSNumber numberWithInt: 2], [NSNumber numberWithInt: 2], nil];
-	[GSDrawFunctions drawGradient: gradient withSize: size border: frame];
+	[THEME drawGradient: gradient withSize: size border: frame];
 	free (data);
 }
 
-+ (void) drawRadioButton: (NSRect) border inView: (NSView*) view highlighted: (BOOL) highlighted 
+- (void) drawRadioButton: (NSRect) border inView: (NSView*) view highlighted: (BOOL) highlighted 
 {
 	NSBezierPath* path = [NSBezierPath bezierPath];
 	NSRect r = NSMakeRect (border.origin.x + 1, border.origin.y + 1, border.size.width -2 , border.size.height -2);
@@ -360,7 +361,7 @@ static CLCompositor* myBrowserHeader;
 	NSGraphicsContext *ctxt = GSCurrentContext();
 	//DPSgsave (ctxt);
 	//[path addClip];
-	[GSDrawFunctions drawVerticalGradient: start to: end frame: border];
+	[THEME drawVerticalGradient: start to: end frame: border];
 	//DPSgrestore (ctxt);
 	[[NSColor blackColor] set];
 	[path setLineWidth: 1.5];
@@ -376,7 +377,7 @@ static CLCompositor* myBrowserHeader;
 	}
 }
 
-+ (void) drawMenu: (NSRect) border inView: (NSView*) view 
+- (void) drawMenu: (NSRect) border inView: (NSView*) view 
 {
 	NSBezierPath* path = [NSBezierPath bezierPath];
 	[path appendBezierPathWithRect: border];
@@ -387,7 +388,7 @@ static CLCompositor* myBrowserHeader;
 	NSColor* start = [NSColor colorWithCalibratedRed: 0.8 green: 0.8 blue: 0.8 alpha: 1.0];
 	NSColor* end   = [NSColor colorWithCalibratedRed: 1.0 green: 1.0 blue: 1.0 alpha: 1.0];
 
-	[GSDrawFunctions drawHorizontalGradient: end to: start frame: border];
+	[THEME drawHorizontalGradient: end to: start frame: border];
 
 	[[NSColor blackColor] set];
 	[path setLineWidth: 1.5];
@@ -399,7 +400,7 @@ static CLCompositor* myBrowserHeader;
 	[path stroke];
 }
 
-+ (void) drawTextField: (NSRect) border focus: (BOOL) focus flipped: (BOOL) flipped
+- (void) drawTextField: (NSRect) border focus: (BOOL) focus flipped: (BOOL) flipped
 {
 	if (focus)
 	{
@@ -431,9 +432,18 @@ static CLBoxCompositor* shadowlessButtonH;
 
 static CLBoxCompositor* mygroupBox;
 
-+ (void) drawButton: (NSRect) border inView: (NSView*) view 
+- (void) drawButton: (NSRect) border inView: (NSView*) view 
 	style: (NSBezelStyle) bezelStyle highlighted: (BOOL) highlighted 
 {
+      if (highlighted)
+      {
+      [GSDrawFunctions drawGrayBezel: border : NSZeroRect];
+      }
+      else
+      {
+      [GSDrawFunctions drawButton: border : NSZeroRect];
+      }
+      return;
 
 	CLCompositor* compositor = nil;
 
@@ -573,7 +583,7 @@ static CLBoxCompositor* mygroupBox;
 static CLCompositor* cl_progressIndicatorForeground;
 static CLCompositor* cl_progressIndicatorBackground;
 
-+ (void) drawProgressIndicatorBackgroundOn: (NSView*) view
+- (void) drawProgressIndicatorBackgroundOn: (NSView*) view
 {
 	if (cl_progressIndicatorBackground == nil)
 	{
@@ -590,7 +600,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 	[cl_progressIndicatorBackground drawOn: view];
 }
 
-+ (void) drawProgressIndicatorForegroundInRect: (NSRect) rect
+- (void) drawProgressIndicatorForegroundInRect: (NSRect) rect
 {
 	if (cl_progressIndicatorForeground == nil)
 	{
@@ -607,12 +617,12 @@ static CLCompositor* cl_progressIndicatorBackground;
 	[cl_progressIndicatorForeground drawInRect: rect];
 }
 
-+ (void) drawTitleBox: (NSRect) rect on: (id) box
+- (void) drawTitleBox: (NSRect) rect on: (id) box
 {
 	[GraphicToolbox fillRect: rect withImage: [NSImage imageNamed: @"Window/Window-background.tiff"]];
 }
 
-+ (void) setGroupBoxImages
+- (void) setGroupBoxImages
 {
 	if (mygroupBox == nil)
 	{
@@ -642,26 +652,26 @@ static CLCompositor* cl_progressIndicatorBackground;
 	}
 }
 
-+ (float) boxBorderHeight 
+- (float) boxBorderHeight 
 {
 	[self setGroupBoxImages];
 	return [mygroupBox topHeight];
 }
 
-+ (void) drawBox: (NSRect) rect on: (NSView*) box
+- (void) drawBox: (NSRect) rect on: (NSView*) box
 {
 	[self setGroupBoxImages];
 	[mygroupBox drawInRect: rect on: box];
 	//[mygroupBox drawOn: box];
 }
 
-+ (void) drawWindowBackground: (NSRect) rect on: (id) window
+- (void) drawWindowBackground: (NSRect) rect on: (id) window
 {
 	[[NSColor windowBackgroundColor] set];
 	NSRectFill (rect);
 }
 
-+ (void) drawPopupButton: (NSRect) border inView: (NSView*) view 
+- (void) drawPopupButton: (NSRect) border inView: (NSView*) view 
 {
 	CLHBoxCompositor* compositor = [CLHBoxCompositor new];
 	[compositor addImage: [NSImage imageNamed: @"PopupButton/PopupButton-endcap.tiff"]
@@ -685,7 +695,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 	[arrow compositeToPoint: NSMakePoint (border.origin.x+border.size.width-w,border.origin.y+deltaY) operation: NSCompositeSourceOver];
 }
 
-+ (void) drawHorizontalScrollerKnob: (NSRect) knob on: (NSView*) view
+- (void) drawHorizontalScrollerKnob: (NSRect) knob on: (NSView*) view
 {
 	[GraphicToolbox drawHorizontalButton: knob 
 		withCaps: [NSImage imageNamed: @"Scrollbar/Scrollbar-horizontal-thumb-caps.tiff"]
@@ -699,7 +709,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 		operation: NSCompositeSourceOver];
 }
 
-+ (void) drawVerticalScrollerKnob: (NSRect) knob on: (NSView*) view
+- (void) drawVerticalScrollerKnob: (NSRect) knob on: (NSView*) view
 {
 	[GraphicToolbox drawVerticalButton: knob 
 		withCaps: [NSImage imageNamed: @"Scrollbar/Scrollbar-vertical-thumb-caps.tiff"]
@@ -713,7 +723,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 		operation: NSCompositeSourceOver];
 }
 
-+ (void) drawHorizontalScrollerSlot: (NSRect) slot knobPresent: (BOOL) knob 
+- (void) drawHorizontalScrollerSlot: (NSRect) slot knobPresent: (BOOL) knob 
 	buttonPressed: (int) buttonPressed on: (NSView*) view
 {
 	if (knob)
@@ -746,7 +756,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 	}
 }
 
-+ (void) drawVerticalScrollerSlot: (NSRect) slot knobPresent: (BOOL) knob 
+- (void) drawVerticalScrollerSlot: (NSRect) slot knobPresent: (BOOL) knob 
 	buttonPressed: (int) buttonPressed on: (NSView*) view
 {
 	if (knob)
@@ -780,7 +790,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 	}
 }
 
-+ (void) drawTopTabFill: (NSRect) rect selected: (BOOL) selected on: (NSView*) view
+- (void) drawTopTabFill: (NSRect) rect selected: (BOOL) selected on: (NSView*) view
 {
 	NSImage* fill = nil;
 	if (selected) fill = [NSImage imageNamed: @"Tabs/Tabs-selected-fill.tiff"];
@@ -789,7 +799,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 	[GraphicToolbox fillHorizontalRect: rect withImage: fill];
 }
 
-+ (void) drawTabFrame: (NSRect) rect on: (NSView*) view
+- (void) drawTabFrame: (NSRect) rect on: (NSView*) view
 {
 	/*
 	NSBezierPath* path = [NSBezierPath bezierPathWithRect: rect];
@@ -824,7 +834,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 	
 }
 
-+ (void) drawScrollViewFrame: (NSRect) rect on: (NSView*) view
+- (void) drawScrollViewFrame: (NSRect) rect on: (NSView*) view
 {
 	/*
 	NSBezierPath* path = [NSBezierPath bezierPathWithRect: rect];
@@ -840,12 +850,14 @@ static CLCompositor* cl_progressIndicatorBackground;
 	*/
 }
 
-+ (void) drawFocusFrame: (NSRect) cellFrame
+- (void) drawFocusFrame: (NSRect) cellFrame on: (NSView*) view
 {
 /*
 	NSRect rect = NSMakeRect (cellFrame.origin.x + 1, cellFrame.origin.y + 1, cellFrame.size.width - 2, cellFrame.size.height - 2);
 	NSDottedFrameRect (rect);
 */
+	NSDottedFrameRect (cellFrame);
+/*
 	NSBezierPath* path = [NSBezierPath bezierPath];
 	//NSRect rect = cellFrame;
 	NSRect rect = NSMakeRect (cellFrame.origin.x + 1, cellFrame.origin.y + 1, cellFrame.size.width - 2, cellFrame.size.height - 2);
@@ -860,5 +872,6 @@ static CLCompositor* cl_progressIndicatorBackground;
 	[[NSColor colorWithCalibratedRed: 0.4 green: 0.4 blue: 1.0 alpha: 1.0] set];
 	[path setLineWidth: 1];
 	[path stroke];
+*/
 }
 @end

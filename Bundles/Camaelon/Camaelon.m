@@ -67,29 +67,10 @@ static Camaelon* theme;
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary* dict = [defaults persistentDomainForName: @"Camaelon"];
-    NSBundle *hostBundle;
     
-    NSLog(@"Camaelon Theme Engine v2.0 13/07/05 - nicolas@roard.com\n");
+    NSLog(@"Camaelon Theme Engine v2.0pre 28/10/05 - nicolas@roard.com\n");
     
     self = [super init];
-    
-    /*
-     * Warn Camaelon needs to be disabled with Gorm.
-     * FIXME: Makes Camaelon compatible with Gorm.
-     */
-     
-    hostBundle = [NSBundle mainBundle];
-    /*
-    if ([[[hostBundle infoDictionary] objectForKey: @"ApplicationName"] 
-    	isEqualToString: @"Gorm"])
-    {    
-        NSLog(@"Camaelon isn't supported with Gorm currently, then theme won't \
-        	be loaded");
-        
-		RELEASE(self);
-        return nil;
-    }
-    */
     
     //[CLImage setNSImageClass : [NSImage class]];
     //[CLImage poseAsClass: [NSImage class]];
@@ -110,6 +91,9 @@ static Camaelon* theme;
 	}
     	
     theme = self;
+    
+//    [GSDrawFunctions setTheme: [CamaelonDrawFunctions new]];
+//    [NSApplication setTheme: [GSDrawFunctions new]];
     
     return self;
 }

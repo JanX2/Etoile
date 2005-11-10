@@ -25,11 +25,11 @@
       NSFrameRect(_border_rect);
       break;
     case NSBezelBorder:
-      [GSDrawFunctions drawDarkBezel: _border_rect : rect];
+      [THEME drawDarkBezel: _border_rect : rect];
       break;
     case NSGrooveBorder: // default on gnustep
-      //[GSDrawFunctions drawGroove: _border_rect : rect];
-      [GSDrawFunctions drawBox: _border_rect on: self];
+      //[THEME drawGroove: _border_rect : rect];
+      [THEME drawBox: _border_rect on: self];
       break;
     }
 
@@ -37,7 +37,7 @@
   // Draw title
   
   NSRect _final_title_rect = _title_rect;
-  float addBorderHeight = [GSDrawFunctions boxBorderHeight] / 2.0;
+  float addBorderHeight = [THEME boxBorderHeight] / 2.0;
   
   if (_title_position != NSNoTitle)
     {

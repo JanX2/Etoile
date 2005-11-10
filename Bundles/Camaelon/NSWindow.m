@@ -67,7 +67,7 @@ static NSColor *titleColor[3];
 //		NSImage* caps= [NSImage imageNamed: @"Window/Window-titlebar-caps.tiff"];
     contentRect.origin.y -= 1;
     contentRect.size.height += 2;
-    [GSDrawFunctions drawWindowBackground: contentRect on: self];
+    [THEME drawWindowBackground: contentRect on: self];
   //  titleBarRect.origin.x -= 1;
   if (hasTitleBar && NSIntersectsRect(rect, titleBarRect))
     {
@@ -215,7 +215,7 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
 	NSGraphicsContext *ctxt = GSCurrentContext();
 	DPSgsave (ctxt);
 	[path addClip];
-	[GSDrawFunctions drawVerticalGradient: start to: end frame: workRect];
+	[THEME drawVerticalGradient: start to: end frame: workRect];
 	DPSgrestore (ctxt);
 	[outlinePath setLineWidth: 1.5];
   	[[NSColor windowBackgroundColor] set];

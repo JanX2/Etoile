@@ -16,7 +16,7 @@
   int i;
   NSCell *cell;
 
-  [GSDrawFunctions drawTableHeaderInRect: aRect];
+  [THEME drawTableHeaderInRect: aRect];
 
   if (_tableView == nil)
     return;

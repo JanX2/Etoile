@@ -22,7 +22,7 @@
   //NSDrawTiledRects(rect, rect, sides, grays, 2);
 //  [[NSColor clearColor] set];
 //  NSRectFillUsingOperation (rect, NSCompositeClear);
-  [GSDrawFunctions drawMenu: rect inView: self];
+  [THEME drawMenu: rect inView: self];
 
   // Draw the menu cells.
   for (i = 0; i < howMany; i++)

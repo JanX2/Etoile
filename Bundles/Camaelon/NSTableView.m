@@ -36,7 +36,7 @@
 	_selectedRow = -1;
 	_highlightedTableColumn = nil;
 	_headerView = [NSTableHeaderView new];
-	float height = [GSDrawFunctions ListHeaderHeight]; 
+	float height = [THEME ListHeaderHeight]; 
 	[_headerView setFrameSize: NSMakeSize (frameRect.size.width, height)];
 	[_headerView setTableView: self];
 	_cornerView = [GSTableCornerView new];

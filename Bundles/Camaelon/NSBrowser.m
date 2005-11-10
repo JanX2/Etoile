@@ -153,7 +153,7 @@ static NSTextFieldCell *titleCell;
   [[_window backgroundColor] set];
   NSRectFill(rect);
 */
-//  [GSDrawFunctions drawWindowBackground: rect];
+//  [THEME drawWindowBackground: rect];
 
   // Load the first column if not already done
   if (!_isLoaded)
@@ -173,7 +173,7 @@ static NSTextFieldCell *titleCell;
           NSRect titleRect = [self titleFrameOfColumn: i];
           if (NSIntersectsRect (titleRect, rect) == YES)
             {
-   	      [GSDrawFunctions drawBrowserHeaderInRect: titleRect];
+   	      [THEME drawBrowserHeaderInRect: titleRect];
               [self drawTitleOfColumn: i
                     inRect: titleRect];
             }
@@ -199,7 +199,7 @@ static NSTextFieldCell *titleCell;
 
       if ((NSIntersectsRect (scrollerBorderRect, rect) == YES) && _window)
         {
-//      [GSDrawFunctions drawScrollViewFrame: scrollerBorderRect on: self];
+//      [THEME drawScrollViewFrame: scrollerBorderRect on: self];
         }
     }
 

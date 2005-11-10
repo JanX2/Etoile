@@ -88,7 +88,7 @@ NSRect vS = [_vertScroller frame];
 	[path setLineWidth: 0];
 	[path stroke];
 	*/
-	[GSDrawFunctions drawScrollViewFrame: rect on: self];
+	[THEME drawScrollViewFrame: rect on: self];
 	
 
 /*

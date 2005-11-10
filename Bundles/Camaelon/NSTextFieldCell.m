@@ -57,7 +57,7 @@
 	}
 
 
-	[GSDrawFunctions drawTextField: cellFrame focus: focus flipped: [controlView isFlipped]];
+	[THEME drawTextField: cellFrame focus: focus flipped: [controlView isFlipped]];
     }
 
   [self drawInteriorWithFrame: cellFrame inView: controlView];

@@ -13,6 +13,7 @@
   if (_drawsBackground)
     {
 //      [_backgroundColor set];
+//	[[NSColor blueColor] set];
 //      NSRectFill(rect);
     }
 

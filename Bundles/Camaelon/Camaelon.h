@@ -5,6 +5,7 @@
 #include <AppKit/AppKit.h>
 
 #include "CLImage.h"
+#include "CamaelonDrawFunctions.h"
 
 @interface Camaelon : NSObject
 {

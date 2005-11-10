@@ -19,11 +19,11 @@
     {
       if (_is_active == YES)
         {
-          [GSDrawFunctions drawButton: aRect inView: self style: NSRegularSquareBezelStyle highlighted: YES];
+          [THEME drawButton: aRect inView: self style: NSRegularSquareBezelStyle highlighted: YES];
         }
       else
         {
-          [GSDrawFunctions drawButton: aRect inView: self style: NSRegularSquareBezelStyle highlighted: NO];
+          [THEME drawButton: aRect inView: self style: NSRegularSquareBezelStyle highlighted: NO];
         }
 
       /*
@@ -47,7 +47,7 @@
       /*
        * Draw inner frame.
        */
-      [GSDrawFunctions drawGrayBezel: aRect : clipRect];
+      [THEME drawGrayBezel: aRect : clipRect];
       aRect = NSInsetRect(aRect, 2.0, 2.0);
     }
 

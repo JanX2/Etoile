@@ -40,7 +40,7 @@
 }
 - (NSColor *)textColor
 {
-	return [GSDrawFunctions browserHeaderTextColor];
+	return [THEME browserHeaderTextColor];
 } 
 
 @end

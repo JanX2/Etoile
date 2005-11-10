@@ -12,7 +12,7 @@
     return NO;
 }
 
-- (void) drawWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
+- (void) _drawWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
 {
   // Save last view drawn to
   if (_control_view != controlView)
@@ -30,8 +30,8 @@
       (!_shows_border_only_while_mouse_inside || _mouse_inside))
   {
 	
-//	[GSDrawFunctions drawButton: cellFrame : NSZeroRect];
-	[GSDrawFunctions drawButton: cellFrame inView: controlView 
+//	[THEME drawButton: cellFrame : NSZeroRect];
+	[THEME drawButton: cellFrame inView: controlView 
 			style: _bezel_style
 			highlighted: _cell.is_highlighted];
   }
@@ -52,12 +52,12 @@
   if (_cell.shows_first_responder
 	  && [[controlView window] firstResponder] == controlView)
   {
-	[GSDrawFunctions drawFocusFrame: cellFrame];
+	[THEME drawFocusFrame: cellFrame];
   }
 */
 }
 
-- (void) drawInteriorWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
+- (void) _drawInteriorWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
 {
   unsigned	mask;
   NSImage	*imageToDisplay;
