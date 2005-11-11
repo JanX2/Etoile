@@ -88,7 +88,7 @@ extern NSString *NSPreferencePaneCancelUnselectNotification;
 -(NSString*) mainNibName;
 
 // Take the content view of _window and make it our main view:
--(void) assignMainView;
+-(NSView*) assignMainView;
 
 // This pane is gonna be/has finished being shown in the window:
 -(void) willSelect;

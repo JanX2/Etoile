@@ -1,3 +1,11 @@
+2005-11-11  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Headers/PKPreferencePane.h:
+    * Source/PKPreferencePane.m: Documented completely except methods 
+    -didSelect, -willSelect, -didUnselect, -willUnselect.
+    (-assignView:): Now returns NSView and not void to match Cocoa API.
+    * PreferencesKit.xcodeproj: Included ChangeLog.
+
 2005-10-15  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/PKPreferencesController.m:
