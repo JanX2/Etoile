@@ -1,3 +1,9 @@
+2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Source/UKPluginsRegistry.m (-loadPluginForPath:): Taken in account when 
+    the icon cannot be loaded by setting 'image' to null object what 
+    still allows to build plugin dictionary gracefully.
+
 2005-11-11  Quentin Mathe <qmathe@club-internet.fr>
     
     * Headers/PKPreferencePane.h:

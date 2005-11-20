@@ -273,6 +273,12 @@ static NSFileManager *fm = nil;
         {
             image = [[[NSImage alloc] initWithContentsOfFile: iconPath] autorelease];
         }
+        
+        /* When image loading has failed, we set its value to null object in
+           in order to be able to create info dictionary without glitches a
+           'nil' value would produce (like subsequent elements being ignored). */
+        if (image == nil)
+            image = [NSNull null];
 		
 		/* Add a new entry for this pane to our list: */
 		info = [NSMutableDictionary dictionaryWithObjectsAndKeys: bundle, @"bundle", 
