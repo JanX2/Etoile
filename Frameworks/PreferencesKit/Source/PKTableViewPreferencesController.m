@@ -46,6 +46,8 @@ extern const NSString *PKTablePresentationMode;
     /* We use a completely prebuilt table view we retrieve in a dedicated gorm file
        to avoid the nightmare to set up it manually in code with every elements it
        includes like corner view, scroll view etc. */
+    
+    [NSBundle loadNibNamed: @"PrebuiltTableView" owner: self];
 
     [prebuiltTableView removeFromSuperview];
     

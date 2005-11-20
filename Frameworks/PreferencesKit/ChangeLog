@@ -1,5 +1,12 @@
 2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
     
+    * PrebuiltTableView.nib: Added.
+    * Headers/PKTableViewPreferencesController.h: Minor outlet tweak.
+    * Source/PKTableViewPreferencesController.m (-loadUI): Extended with 
+    missing code to set outlets value by loading PrebuiltTableView nib.
+    
+2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
+    
     Major refactoring.
     * Headers/CocoaCompatibility.h:
     * Headers/CocoaCompatibility.m:

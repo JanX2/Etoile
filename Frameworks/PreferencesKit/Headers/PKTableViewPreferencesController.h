@@ -29,7 +29,7 @@
 @interface PKTableViewPresentation : PKPresentationBuilder
 {
     IBOutlet NSTableView *preferencesTableView;
-    IBOutlet id prebuiltTableView;
+    IBOutlet NSView *prebuiltTableView;
 }
 
 @end
