@@ -1,5 +1,78 @@
 2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
     
+    Major refactoring.
+    * Headers/CocoaCompatibility.h:
+    * Headers/CocoaCompatibility.m:
+    New files to put together various GNUstep extensions we depend on.
+    * Headers/PreferencesKit.h: Updated.
+    * Headers/PKPresentationBuilder.h:
+    * Source/PKPresentationBuilder.m:
+    Added.
+    * Headers/PKPreferencesController.h:
+    * Source/PKPreferencesController.m:
+    Moved NSArray categories to CocoaCompatibility header and source files.
+    Refactored by splitting preference panes handling logic in current class and 
+    presentational logic in a separate class hierarchy based on new 
+    PresentationBuilder abstract class. This new objects model closely relates
+    to Builder pattern.  
+    Added a new 'presentation' ivar to store the current presentation
+    manager we have to interact with.
+    (-initWithPresentationMode:): New method to obtain a controller inited with 
+    a custom presentation (provided through presentation builder class cluster).
+    (-initExtra): Inlined in previous method.
+    (-preferencesListView:) Moved to PresentationBuilder under new name
+    -presentationView.
+    (-initUI): Moved to PresentationBuilder.
+    (-selectPreferencePaneWithIdentifier:): Tailored with two delegate inspired
+    messages sent to presentation side, allowing it to react to preference pane 
+    changes; the two involved methods are -willSelectPreferencePaneWithIdentifier: 
+    and -didSelectPreferencePaneWithIdentifier:.
+    (-repondsToSelector:):
+    (-forwardInvocation:):
+    Extended to include presentation objects in forwarding.
+    (-selectedPreferencePaneIdentifier): Added conveniency method.
+    (-setPresentationMode:): New method to allow switching between presentation
+    like toolbar, table view etc. on the fly.
+    (-presentationMode): Added getter related to previous method.
+    (-switchPreferencePaneView:): Renamed -switchView: to 
+    -switchPreferencePaneView:.
+    * Headers/PKPreferencesToolbarController.h:
+    * Source/PKPreferencesToolbarController.m:
+    Refactored existing class into a new class PKToolbarPresentation. Added an
+    ivar 'switchActionTriggered'
+    (-loadUI): Renamed -initUI to -loadUI.
+    (-unloadUI): Added.
+    (-presentationMode): Added.
+    (-presentationView): Renamed -preferencesListView to -presentationView to
+    follow current trend.
+    (-resizePreferencesViewForView:): Fixed bug in Cocoa code which 
+    wrongly reset window origin to 0 and added a minimum window frame size.
+    (-switchPreferencePaneView:): Added.
+    (-didSelectPreferencePaneWithIdentifier:): Added.
+    (-selectPreferencePaneWithIdentifier:): Removed (logic moved to the two 
+    previous methods).
+    (-toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:): Added a check
+    to avoid -setImage: call when plugin image is a null object (otherwise we
+    we would get an error) and corrected the action selector to match 
+    -switchPreferencePaneView:. 
+    * Headers/PKTableViewPreferencesController.h:
+    * Source/PKTableViewPreferencesController.m:
+    Refactored existing class into a new class PKTableViewPresentation.
+    (-loadUI): Renamed -initUI to -loadUI and added implementation code.
+    (-unloadUI): Added.
+    (-presentationMode): Added.
+    (-presentationView): Renamed -preferencesListView to -presentationView to
+    follow current trend.
+    (-resizePreferencesViewForView:): Rewritten from scratch (commented out old 
+    code).
+    (-switchPreferencePaneView:): Added.
+    (-didSelectPreferencePaneWithIdentifier:): Added.
+    * PreferencesKit.xcodeproj: Tuned build options to have project correctly
+    compiled with Xcode 2.2 for debugging and framework installed with the right 
+    permissions.
+    
+2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
+    
     * Source/UKPluginsRegistry.m (-loadPluginForPath:): Taken in account when 
     the icon cannot be loaded by setting 'image' to null object what 
     still allows to build plugin dictionary gracefully.

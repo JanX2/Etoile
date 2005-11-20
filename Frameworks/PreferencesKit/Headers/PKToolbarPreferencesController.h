@@ -1,5 +1,5 @@
 /*
-	PKToolbarPreferencesController.h
+	PKToolbarPresentation.h
  
 	Preferences controller subclass with preference panes listed in a toolbar
  
@@ -23,13 +23,13 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <Foundation/Foundation.h>
-#import "PKPreferencesController.h"
+#import "PKPresentationBuilder.h"
 
 
-@interface PKToolbarPreferencesController : PKPreferencesController
+@interface PKToolbarPresentation : PKPresentationBuilder
 {
     NSToolbar *preferencesToolbar;
+    BOOL switchActionTriggered;
 }
 
 @end

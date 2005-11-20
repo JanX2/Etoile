@@ -1,12 +1,13 @@
 /*
-	PreferencesKit.h
-
-	PreferencesKit umbrella header
-
+	CocoaCompatibility.h
+ 
+	GNUstep extensions provided for PreferencesKit Cocoa compatibility
+ 
 	Copyright (C) 2005 Quentin Mathe
-
-	Author:  Quentin Mathe <qmathe@club-internet.fr>
-
+ 
+	Author:  Quentin Mathe
+	Date:  November 2005
+ 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
 	License as published by the Free Software Foundation; either
@@ -22,10 +23,10 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <PreferencesKit/PKPreferencePane.h>
+#import <Foundation/Foundation.h>
 
-#import <PreferencesKit/PKPreferencesController.h>
-#import <PreferencesKit/PKPresentationBuilder.h>
-
-#import <PreferencesKit/PKPrefPanesRegistry.h>
-#import <PreferencesKit/UKPluginsRegistry.h>
+// FIXME: Hack to avoid compiler varning with next method -objectWithValue:forKey:
+@interface NSArray (ObjectsWithValueForKey)
+- (id) objectsWithValue: (id)value forKey: (NSString *)key;
+- (id) objectWithValue: (id)value forKey: (NSString *)key;
+@end

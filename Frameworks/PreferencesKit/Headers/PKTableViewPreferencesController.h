@@ -1,5 +1,5 @@
 /*
-	PKTableViewPreferencesController.h
+	PKTableViewPresentation.h
 
 	Preferences controller subclass with preference panes listed in a table bview
 
@@ -23,12 +23,13 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import "PKPreferencesController.h"
+#import "PKPresentationBuilder.h"
 
 
-@interface PKTableViewPreferencesController : PKPreferencesController
+@interface PKTableViewPresentation : PKPresentationBuilder
 {
-    NSTableView *preferencesTableView;
+    IBOutlet NSTableView *preferencesTableView;
+    IBOutlet id prebuiltTableView;
 }
 
 @end

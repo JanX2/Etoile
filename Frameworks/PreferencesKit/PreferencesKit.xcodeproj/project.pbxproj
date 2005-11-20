@@ -23,8 +23,8 @@
 		600B9FB00872BAE50024A432 /* PKPreferencesController.h in Headers */ = {isa = PBXBuildFile; fileRef = 600B9BE7087222120024A432 /* PKPreferencesController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		600B9FB10872BAE50024A432 /* PKPrefPanesRegistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D12FE22072C1E190091A574 /* PKPrefPanesRegistry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		600B9FB20872BAE50024A432 /* PKPrefsModulePrefPane.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DB0B499072C8E930012721E /* PKPrefsModulePrefPane.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		600B9FB30872BAE50024A432 /* PKTableViewPreferencesController.h in Headers */ = {isa = PBXBuildFile; fileRef = 600B9BE9087222120024A432 /* PKTableViewPreferencesController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		600B9FB40872BAE50024A432 /* PKToolbarPreferencesController.h in Headers */ = {isa = PBXBuildFile; fileRef = 600B9BE8087222120024A432 /* PKToolbarPreferencesController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		600B9FB30872BAE50024A432 /* PKTableViewPreferencesController.h in Headers */ = {isa = PBXBuildFile; fileRef = 600B9BE9087222120024A432 /* PKTableViewPreferencesController.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		600B9FB40872BAE50024A432 /* PKToolbarPreferencesController.h in Headers */ = {isa = PBXBuildFile; fileRef = 600B9BE8087222120024A432 /* PKToolbarPreferencesController.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		600B9FB50872BAE50024A432 /* PrefsModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DB0B4EA072C98450012721E /* PrefsModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		600B9FB60872BAE50024A432 /* UKPluginsRegistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D12FDA8072C14500091A574 /* UKPluginsRegistry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		600B9FB70872BAF80024A432 /* PKPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = 600B9BBC08721F5B0024A432 /* PKPreferencePane.m */; };
@@ -34,11 +34,17 @@
 		600B9FBB0872BAF80024A432 /* PKTableViewPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 600B9BE4087222120024A432 /* PKTableViewPreferencesController.m */; };
 		600B9FBC0872BAF80024A432 /* PKToolbarPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 600B9BE6087222120024A432 /* PKToolbarPreferencesController.m */; };
 		600B9FBD0872BAF80024A432 /* UKPluginsRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D12FDA9072C14500091A574 /* UKPluginsRegistry.m */; };
-		600B9FBE0872BB050024A432 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* Info.plist */; };
-		600B9FBF0872BB050024A432 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		600B9FC20872BB230024A432 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		604B431E0924BCA300127256 /* ChangeLog in Resources */ = {isa = PBXBuildFile; fileRef = 604B431D0924BCA300127256 /* ChangeLog */; };
+		608A97A909291261009145A7 /* PKPresentationBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 608A97A709291261009145A7 /* PKPresentationBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		608A97AA09291261009145A7 /* PKPresentationBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 608A97A809291261009145A7 /* PKPresentationBuilder.m */; };
+		608A97AB09291261009145A7 /* PKPresentationBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 608A97A709291261009145A7 /* PKPresentationBuilder.h */; };
+		608A97AC09291261009145A7 /* PKPresentationBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 608A97A809291261009145A7 /* PKPresentationBuilder.m */; };
+		608A97BC092A0D1B009145A7 /* CocoaCompatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 608A97BA092A0D1A009145A7 /* CocoaCompatibility.h */; };
+		608A97BE092A0D1B009145A7 /* CocoaCompatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 608A97BA092A0D1A009145A7 /* CocoaCompatibility.h */; };
 		60EE1ECF089D69F800D4629C /* PreferencesKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 60EE1ECE089D69F800D4629C /* PreferencesKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		60F5FAF2092FCBBA00683FCF /* PrebuiltTableView.nib in Resources */ = {isa = PBXBuildFile; fileRef = 60F5FAF0092FCBBA00683FCF /* PrebuiltTableView.nib */; };
+		60F5FC1D092FEF4400683FCF /* CocoaCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */; };
+		60F5FC1E092FEF4400683FCF /* CocoaCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildStyle section */
@@ -66,7 +72,6 @@
 /* End PBXBuildStyle section */
 
 /* Begin PBXFileReference section */
-		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; lineEnding = 0; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -90,7 +95,14 @@
 		600B9E9B0872A46F0024A432 /* UnitKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnitKit.framework; path = /Library/Frameworks/UnitKit.framework; sourceTree = "<absolute>"; };
 		600B9F8F0872BA230024A432 /* PreferencesKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PreferencesKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		604B431D0924BCA300127256 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
+		604B431F0924BDC400127256 /* PreferencesKit.xcclassmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcclassmodel; path = PreferencesKit.xcclassmodel; sourceTree = "<group>"; };
+		608A97A709291261009145A7 /* PKPresentationBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PKPresentationBuilder.h; path = Headers/PKPresentationBuilder.h; sourceTree = "<group>"; };
+		608A97A809291261009145A7 /* PKPresentationBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PKPresentationBuilder.m; path = Source/PKPresentationBuilder.m; sourceTree = "<group>"; };
+		608A97BA092A0D1A009145A7 /* CocoaCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaCompatibility.h; path = Headers/CocoaCompatibility.h; sourceTree = "<group>"; };
+		609F1209092E690F00EBD7F7 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		60EE1ECE089D69F800D4629C /* PreferencesKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferencesKit.h; path = Headers/PreferencesKit.h; sourceTree = "<group>"; };
+		60F5FAF1092FCBBA00683FCF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PrebuiltTableView.nib; sourceTree = "<group>"; };
+		60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaCompatibility.m; path = Source/CocoaCompatibility.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; lineEnding = 0; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -119,8 +131,10 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */,
 				600B9BBC08721F5B0024A432 /* PKPreferencePane.m */,
 				600B9BE5087222120024A432 /* PKPreferencesController.m */,
+				608A97A809291261009145A7 /* PKPresentationBuilder.m */,
 				600B9BE6087222120024A432 /* PKToolbarPreferencesController.m */,
 				600B9BE4087222120024A432 /* PKTableViewPreferencesController.m */,
 				3D12FDA9072C14500091A574 /* UKPluginsRegistry.m */,
@@ -162,12 +176,14 @@
 			isa = PBXGroup;
 			children = (
 				604B431D0924BCA300127256 /* ChangeLog */,
+				604B431F0924BDC400127256 /* PreferencesKit.xcclassmodel */,
 				600B9F980872BA330024A432 /* Headers */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				60F5FAF0092FCBBA00683FCF /* PrebuiltTableView.nib */,
 			);
 			name = GSSystemPreferences;
 			sourceTree = "<group>";
@@ -183,7 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107310486CEB800E47090 /* Info.plist */,
-				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				609F1208092E690F00EBD7F7 /* InfoPlist.strings */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -200,9 +216,11 @@
 		600B9F980872BA330024A432 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				608A97BA092A0D1A009145A7 /* CocoaCompatibility.h */,
 				60EE1ECE089D69F800D4629C /* PreferencesKit.h */,
 				600B9BBB08721F5B0024A432 /* PKPreferencePane.h */,
 				600B9BE7087222120024A432 /* PKPreferencesController.h */,
+				608A97A709291261009145A7 /* PKPresentationBuilder.h */,
 				600B9BE8087222120024A432 /* PKToolbarPreferencesController.h */,
 				600B9BE9087222120024A432 /* PKTableViewPreferencesController.h */,
 				3D12FDA8072C14500091A574 /* UKPluginsRegistry.h */,
@@ -241,6 +259,8 @@
 				600B9C67087296F20024A432 /* PKPreferencePane.h in Headers */,
 				600B9C64087296DB0024A432 /* UKPluginsRegistry.h in Headers */,
 				600B9C65087296DB0024A432 /* PKPrefPanesRegistry.h in Headers */,
+				608A97AB09291261009145A7 /* PKPresentationBuilder.h in Headers */,
+				608A97BE092A0D1B009145A7 /* CocoaCompatibility.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,6 +277,8 @@
 				600B9FB50872BAE50024A432 /* PrefsModule.h in Headers */,
 				600B9FB60872BAE50024A432 /* UKPluginsRegistry.h in Headers */,
 				60EE1ECF089D69F800D4629C /* PreferencesKit.h in Headers */,
+				608A97A909291261009145A7 /* PKPresentationBuilder.h in Headers */,
+				608A97BC092A0D1B009145A7 /* CocoaCompatibility.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,9 +450,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				600B9FBE0872BB050024A432 /* Info.plist in Resources */,
-				600B9FBF0872BB050024A432 /* InfoPlist.strings in Resources */,
-				604B431E0924BCA300127256 /* ChangeLog in Resources */,
+				60F5FAF2092FCBBA00683FCF /* PrebuiltTableView.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,6 +481,8 @@
 				600B9C68087296F70024A432 /* PKPreferencePane.m in Sources */,
 				600B9C63087296CE0024A432 /* PKPrefPanesRegistry.m in Sources */,
 				600B9C66087296EA0024A432 /* UKPluginsRegistry.m in Sources */,
+				608A97AC09291261009145A7 /* PKPresentationBuilder.m in Sources */,
+				60F5FC1E092FEF4400683FCF /* CocoaCompatibility.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,18 +497,28 @@
 				600B9FBB0872BAF80024A432 /* PKTableViewPreferencesController.m in Sources */,
 				600B9FBC0872BAF80024A432 /* PKToolbarPreferencesController.m in Sources */,
 				600B9FBD0872BAF80024A432 /* UKPluginsRegistry.m in Sources */,
+				608A97AA09291261009145A7 /* PKPresentationBuilder.m in Sources */,
+				60F5FC1D092FEF4400683FCF /* CocoaCompatibility.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+		609F1208092E690F00EBD7F7 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				089C165DFE840E0CC02AAC07 /* English */,
+				609F1209092E690F00EBD7F7 /* English */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		60F5FAF0092FCBBA00683FCF /* PrebuiltTableView.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				60F5FAF1092FCBBA00683FCF /* English */,
+			);
+			name = PrebuiltTableView.nib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -611,13 +643,17 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
+				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_SYMBOL_SEPARATION = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				INFOPLIST_FILE = Info.plist;
+				INSTALL_MODE_FLAG = "a+rwX";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LIBRARY_STYLE = DYNAMIC;
 				MACH_O_TYPE = mh_dylib;
@@ -633,6 +669,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = PreferencesKit;
 				SECTORDER_FLAGS = "";
+				STRIP_INSTALLED_PRODUCT = NO;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -652,12 +689,15 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_AUTO_VECTORIZATION = NO;
+				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_ENABLE_SYMBOL_SEPARATION = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				INFOPLIST_FILE = Info.plist;
+				INSTALL_MODE_FLAG = "a+rwX";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LIBRARY_STYLE = DYNAMIC;
 				MACH_O_TYPE = mh_dylib;
@@ -689,11 +729,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
+				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_ENABLE_SYMBOL_SEPARATION = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = Info.plist;
+				INSTALL_MODE_FLAG = "a+rwX";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LIBRARY_STYLE = DYNAMIC;
 				MACH_O_TYPE = mh_dylib;
@@ -752,13 +795,17 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
+				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_SYMBOL_SEPARATION = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				INFOPLIST_FILE = Info.plist;
+				INSTALL_MODE_FLAG = "a+rwX";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LIBRARY_STYLE = DYNAMIC;
 				MACH_O_TYPE = mh_dylib;
@@ -771,9 +818,10 @@
 					AppKit,
 				);
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
+				PREBINDING = YES;
 				PRODUCT_NAME = PreferencesKit;
 				SECTORDER_FLAGS = "";
+				STRIP_INSTALLED_PRODUCT = NO;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",

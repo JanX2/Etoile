@@ -31,6 +31,12 @@
 
 @protocol PKPreferencePaneOwner;
 @class PKPreferencePane;
+@class PKPresentationBuilder;
+
+extern const NSString *PKNoPresentationMode;
+extern const NSString *PKToolbarPresentationMode;
+extern const NSString *PKTablePresentationMode;
+extern const NSString *PKOtherPresentationMode;
 
 
 @interface PKPreferencesController: NSObject <PKPreferencePaneOwner, UKTest>
@@ -40,26 +46,29 @@
     IBOutlet NSView *mainViewWaitSign;	/* View we show while next main view is being loaded. */
     PKPreferencePane *currentPane; /* Currently showing pane. */
     PKPreferencePane *nextPane; /* Pane to show in response to the next replyToShouldUnselect: YES. */
+    PKPresentationBuilder *presentation;
 }
 
 + (PKPreferencesController *) sharedPreferencesController;
 
-/* Abstract method (in subclass, should return a view where loaded preference panes are listed) */
-- (NSView *) preferencesListView;
+- (id) initWithPresentationMode: (NSString *)presentationMode;
 
 /* Preferences UI related stuff */
-- (void) initUI;
 - (BOOL) updateUIForPreferencePane: (PKPreferencePane *)prefPane;
 
 - (void) selectPreferencePaneWithIdentifier: (NSString *)identifier;
 
 /* Action methods */
-- (void) switchView: (id)sender;
+- (IBAction) switchPreferencePaneView: (id)sender;
 
 /* Accessors */
 - (id) owner;
 - (NSView *) preferencesView;
+
+- (NSString *) selectedPreferencePaneIdentifier;
 - (PKPreferencePane *) selectedPreferencePane;
 
+- (NSString *) presentationMode;
+- (void) setPresentationMode: (NSString *)presentationMode;
 
 @end

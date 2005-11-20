@@ -32,64 +32,19 @@
 #endif
 
 #import "PrefsModule.h"
+#import "CocoaCompatibility.h"
 #import "PKPrefPanesRegistry.h"
 #import "PKPreferencePane.h"
+#import "PKPresentationBuilder.h"
 #import "PKPreferencesController.h"
 
-#ifndef GNUSTEP
+const NSString *PKNoPresentationMode;
+const NSString *PKToolbarPresentationMode;
+const NSString *PKTablePresentationMode;
+const NSString *PKOtherPresentationMode;
 
-// FIXME: Move such GNUstep imported extensions in a Cocoa compatibility file.
-// In GNUstep, this method is located in AppKit within GSToolbar.
-
-@implementation NSArray (ObjectsWithValueForKey)
-
-- (NSArray *) objectsWithValue: (id)value forKey: (NSString *)key 
-{
-    NSMutableArray *result = [NSMutableArray array];
-    NSArray *values = [self valueForKey: key];
-    int i, n = 0;
-    
-    if (values == nil)
-        return nil;
-    
-    n = [values count];
-    
-    for (i = 0; i < n; i++)
-    {
-        if ([[values objectAtIndex: i] isEqual: value])
-        {
-            [result addObject: [self objectAtIndex: i]];
-        }
-    }
-    
-    if ([result count] == 0)
-        return nil;
-    
-    return result;
-}
-@end
-
-// FIXME: Hack to avoid compiler varning with next method -objectWithValue:forKey:
-@interface NSArray (ObjectsWithValueForKey)
-- (id) objectsWithValue: (id)value forKey: (NSString *)key;
-@end
-
-#endif 
-/* NOT GNUSTEP */
-
-// FIXME: Move -objectWithValue:forKey: method in a more appropriate place.
-
-@implementation NSArray (ObjectWithValueForKey)
-
-- (id) objectWithValue: (id)value forKey: (NSString *)key
-{
-    return [[self objectsWithValue: value forKey: key] objectAtIndex: 0];
-}
-
-@end
 
 @interface PKPreferencesController (Private)
-- (void) initExtra;
 - (void) windowWillClose: (NSNotification *)aNotification;
 - (NSView *) mainViewWaitSign;
 @end
@@ -97,7 +52,8 @@
 @implementation PKPreferencesController
 
 static PKPreferencesController	*sharedInstance = nil;
-static BOOL 		inited = NO;
+static BOOL inited = NO;
+
 
 + (PKPreferencesController *) sharedPreferencesController
 {
@@ -106,26 +62,30 @@ static BOOL 		inited = NO;
 
 - (id) init
 {
+    return [self initWithPresentationMode: (NSString *)PKToolbarPresentationMode];
+}
+
+- (id) initWithPresentationMode: (NSString *)presentationMode
+{
 	if (sharedInstance != nil) 
     {
 		[self dealloc];
 	} 
     else 
     {
-		self = [super init];
+        self = [super init];
         
-        [self initExtra];
+        /* Walk PrefPanes folder and list them. */
+        [[PKPrefPanesRegistry sharedRegistry] loadAllPlugins];
+        
+        /* Request a builder which matches presentationMode to presentation backend. */
+        presentation = [PKPresentationBuilder builderForPresentationMode: presentationMode];
+        [presentation retain];
         
         inited = NO;
 	}
     
 	return sharedInstance = self;	
-}
-
-- (void) initExtra
-{
-    /* Walk PrefPanes folder and list them: */
-    [[PKPrefPanesRegistry sharedRegistry] loadAllPlugins];
 }
 
 /* Initialize stuff that can't be set in the nib/gorm file. */
@@ -134,8 +94,10 @@ static BOOL 		inited = NO;
     NSArray *prefPanes;
     
     sharedInstance = self;
-    
-    // NOTE: [self initExtra]; is not needed here because -init is called when nib is loaded (checked on Cocoa)
+        
+    // NOTE: [[PKPrefPanesRegistry sharedRegistry] loadAllPlugins]; is not 
+    // needed here because -init is called when nib is loaded (checked on Cocoa)
+    // Idem for presentationControllerAssociation set up
     
     if ([owner isKindOfClass: [NSWindow class]])
     {
@@ -146,7 +108,7 @@ static BOOL 		inited = NO;
 
     /* In subclasses, we set up our list view where preference panes will be
        listed. */
-    [self initUI];
+    [presentation loadUI];
 
     prefPanes = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
     
@@ -165,50 +127,14 @@ static BOOL 		inited = NO;
 }
 
 /*
- * Preferences window UI stuff
- */
-
-/** <override-subclass />
-    Uses this method to do possible preferences window related UI set up you may
-    have to do and usually done in <ref>-awakeFromNib</ref>. */
-- (void) initUI
-{
-    [self subclassResponsability: _cmd];
-}
-
-/*
- * Abstract methods
- */
-
-/** <override-subclass />
-    <p>Returns the <strong>presentation view</strong> where every preference 
-    panes should be listed.</p>
-    <p>Overrides this abstract method to return your custom <strong>presentation 
-    view</strong> like toolbar, table view, popup menu, tab view etc.</p> */
-- (NSView *) preferencesListView
-{
-    return nil;
-}
-
-/** <override-subclass />
-    <p>Computes and assigns the correct size to <strong>preferences
-    view</strong> where <var>view</var> parameter is going to displayed.</p>
-    <p>Overrides this abstract method to resize preferences view container to
-    match size of the preference pane view which is shown or should be.<p> */
-- (void) resizePreferencesViewForView: (NSView *)view
-{
-    [self subclassResponsability: _cmd];
-}
-
-/*
  * Preference pane related methods
  */
 
 /** Sets or resets up completely the currently selected <strong>preference 
-    pane</strong> UI.
-    <p>By being the main bottleneck for switching preference panes, this method
-    must be called each time a new preference pane is selected like with
-    <ref>-selectedPreferencePaneWithIdentifier:</ref> method.</p> */
+pane</strong> UI.
+<p>By being the main bottleneck for switching preference panes, this method
+must be called each time a new preference pane is selected like with
+<ref>-selectedPreferencePaneWithIdentifier:</ref> method.</p> */
 - (BOOL) updateUIForPreferencePane: (PKPreferencePane *)requestedPane
 {
     NSView *prefsView = [self preferencesView];
@@ -222,7 +148,7 @@ static BOOL 		inited = NO;
 		if(requestedPane) /* User passed in a new pane to select? */
 		{
 			switch ([currentPane shouldUnselect])	/* Ask old one to unselect.
-*/
+                */
 			{
 				case NSUnselectCancel:
 					nextPane = nil;
@@ -231,7 +157,7 @@ static BOOL 		inited = NO;
                     
 				case NSUnselectLater:
 					nextPane = requestedPane;	/* Remember next pane for later.
-*/
+                    */
 					return NO;
                     break;
                     
@@ -241,7 +167,7 @@ static BOOL 		inited = NO;
 			}
 		}
 		else /* Nil in currentPane. Called in response to replyToUnselect: to
-                signal 'ok': */
+            signal 'ok': */
 		{
 			requestedPane = nextPane;	/* Continue where we left off. */
 			nextPane = nil;
@@ -275,7 +201,7 @@ static BOOL 		inited = NO;
 	[requestedPane willSelect];
 	
 	/* Resize window so content area is large enough for prefs: */
-	[self resizePreferencesViewForView: paneView];
+	[presentation resizePreferencesViewForView: paneView];
 	
 	/* Remove "wait" sign, show new pane: */
     if (mainViewWaitSign != nil)
@@ -288,20 +214,26 @@ static BOOL 		inited = NO;
 	[requestedPane didSelect];
 	
 	/* Message window title:
-	[[prefsView window] setTitle: [dict objectForKey: @"name"]]; */
+        [[prefsView window] setTitle: [dict objectForKey: @"name"]]; */
 	
 	return YES;
 }
 
 /** <p>Switches to <strong>preference pane</strong> with the given identifier.
     </p> 
-    <p>This method needs to be call in <ref>-switchView:</ref>.</p> */
+    <p>This method needs to be call in <ref>-switchPreferencePaneView:</ref>.</p> */
 - (void) selectPreferencePaneWithIdentifier: (NSString *)identifier
 {
     PKPreferencePane *pane = [[PKPrefPanesRegistry sharedRegistry] 
         preferencePaneWithIdentifier: identifier];
-
+    
+    if ([presentation respondsToSelector: @selector(willSelectPreferencePaneWithIdentifier:)])
+        [presentation willSelectPreferencePaneWithIdentifier: identifier];
+    
     [self updateUIForPreferencePane: pane];
+    
+    if ([presentation respondsToSelector: @selector(didSelectPreferencePaneWithIdentifier:)])
+        [presentation didSelectPreferencePaneWithIdentifier: identifier];
 }
 
 /*
@@ -315,8 +247,11 @@ static BOOL 		inited = NO;
 
 	if ([super respondsToSelector: aSelector])
 		return YES;
+    
+    if (presentation != nil)
+        return [presentation respondsToSelector: aSelector];
 
-	if (currentPane)
+	if (currentPane != nil)
 		return [currentPane respondsToSelector: aSelector];
 
 	return NO;
@@ -335,7 +270,12 @@ static BOOL 		inited = NO;
 
 - (void) forwardInvocation: (NSInvocation *)invocation
 {
-	[invocation invokeWithTarget: currentPane];
+    /* First we try to forward messages to our builder. */
+    if ([presentation respondsToSelector: [invocation selector]])
+        [invocation invokeWithTarget: presentation];
+    
+    if ([currentPane respondsToSelector: [invocation selector]])
+        [invocation invokeWithTarget: currentPane];
 }
 
 /*
@@ -364,6 +304,15 @@ static BOOL 		inited = NO;
     return owner;
 }
 
+/** Returns identifier of the currently selected <strong>preference pane</strong>. */
+- (NSString *) selectedPreferencePaneIdentifier
+{
+    NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins]; 
+    NSDictionary *plugin = [plugins objectWithValue: currentPane forKey: @"instance"];
+    
+    return [plugin objectForKey: @"identifier"];
+}
+
 /** Returns the currently selected <strong>preference pane</strong>. */
 - (PKPreferencePane *) selectedPreferencePane
 {
@@ -379,11 +328,41 @@ static BOOL 		inited = NO;
 {
     if (mainViewWaitSign == nil)
     {
-        return [self preferencesView];
+        // FIXME: We should probably return [self waitView];
+        return nil;
     }
     else
     {
         return mainViewWaitSign;
+    }
+}
+
+/** <override-subclass> */
+- (NSString *) presentationMode
+{
+    return [presentation presentationMode];
+}
+
+/** <override-subclass> */
+- (void) setPresentationMode: (NSString *)presentationMode
+{
+    if ([presentationMode isEqual: [presentation presentationMode]])
+        return;
+    
+    id presentationToCheck = [PKPresentationBuilder builderForPresentationMode: presentationMode];
+    
+    if (presentationToCheck == nil)
+    {
+        // FIXME: We may throw an exception here.
+    }
+    else
+    {
+        [presentation unloadUI];
+    
+        [presentation release];
+        presentation = [presentationToCheck retain];
+    
+        [presentation loadUI];
     }
 }
 
@@ -408,9 +387,12 @@ static BOOL 		inited = NO;
     behavior by calling <ref>-selectPreferencePaneWithIdentifier:</ref>;
     you have to be able to retrieve the preference pane through your custom
     <var>sender</var>.</p> */
-- (IBAction) switchView: (id)sender
+- (IBAction) switchPreferencePaneView: (id)sender
 {
-    [self subclassResponsability: _cmd];
+    // NOTE: It could be better to have a method like 
+    // -preferencePaneIdentifierForSender: on presentation builder side than
+    // propagating the action method.
+    [presentation switchPreferencePaneView: sender];
 }
 
 @end

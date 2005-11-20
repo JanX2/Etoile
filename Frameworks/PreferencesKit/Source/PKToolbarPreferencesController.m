@@ -1,5 +1,5 @@
 /*
-	PKToolbarPreferencesController.m
+	PKToolbarPresentation.m
 
 	Preferences controller subclass with preference panes listed in a toolbar
 
@@ -27,16 +27,12 @@
 #ifdef GNUSTEP
 #import <GNUstepGUI/GSToolbarView.h>
 #endif
+#import "CocoaCompatibility.h"
+#import "PKPreferencesController.h"
 #import "PKPrefPanesRegistry.h"
 #import "PKToolbarPreferencesController.h"
-/* We need to redeclare this PKPreferencesController variable because static 
-   variables are not inherited unlike class variables in other languages. */
-//static PKPreferencesController *sharedInstance = nil;
 
-
-@interface NSArray (ObjectWithValueForKey)
-- (id) objectWithValue: (id)value forKey: (NSString *)key;
-@end
+extern const NSString *PKToolbarPresentationMode;
 
 // NOTE: Hack needed for -resizePreferencesViewForView: with GNUstep
 #ifdef GNUSTEP
@@ -48,16 +44,20 @@
 @interface NSToolbar (GNUstepPrivate)
 - (GSToolbarView *) _toolbarView;
 @end
+
 #endif
 
-@implementation PKToolbarPreferencesController
+@implementation PKToolbarPresentation
 
 /*
  * Overriden methods
  */
 
-- (void) initUI
+- (void) loadUI
 {
+    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
+    id owner = [pc owner];
+    
     preferencesToolbar = 
         [[NSToolbar alloc] initWithIdentifier: @"PrefsWindowToolbar"];
 
@@ -75,15 +75,32 @@
             not an NSWindow instance.");
         [preferencesToolbar release];
     }
+    
+    [super loadUI];
 }
 
-- (NSView *) preferencesListView
+- (void) unloadUI
+{
+    [preferencesToolbar setVisible: NO];
+    [preferencesToolbar release];
+}
+
+- (NSString *) presentationMode
+{
+    return (NSString *)PKToolbarPresentationMode;
+}
+
+- (NSView *) presentationView
 {
     return nil;
 }
 
 - (NSView *) preferencesView
 {
+    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
+    id owner = [pc owner];
+    NSView *preferencesView = [pc preferencesView];
+    
     if (preferencesView == nil && [owner isKindOfClass: [NSWindow class]])
     {
         NSView *contentView;
@@ -106,16 +123,30 @@
 {
  	NSView *mainView = [self preferencesView];
     NSRect paneViewFrame = [paneView frame];
-	NSRect windowFrame;
+	NSRect windowFrame = [[mainView window] frame];
+    int previousHeight = windowFrame.size.height;
+    int heightDelta;
 
-#ifndef GNUSTEP
+    #ifndef GNUSTEP
 
     // FIXME: Implement -frameRectForContentRect: in GNUstep 
-    windowFrame = [[mainView window] frameRectForContentRect: paneViewFrame];
-
+    windowFrame.size = [[mainView window] frameRectForContentRect: paneViewFrame].size;
+    
+    // NOTE: We have to check carefully the view is not undersized to avoid
+    // limiting switch possibilities in listed panes.
+    if (windowFrame.size.height < 150)
+        windowFrame.size.height = 150;
+    if (windowFrame.size.width < 400)
+        windowFrame.size.width = 400;
+    
+    /* We take in account the fact the origin is located at bottom left corner. */
+    heightDelta = previousHeight - windowFrame.size.height;
+    windowFrame.origin.y += heightDelta;
+    
     [[mainView window] setFrame: windowFrame display: YES animate: YES];
 
-#else
+    #else
+    
     NSRect mainViewFrame = [mainView frame];
     
     /* Resize window so content area is large enough for prefs: */
@@ -125,23 +156,44 @@
     mainViewFrame.origin = [[mainView window] frame].origin;
     windowFrame = [NSWindow frameRectForContentRect: mainViewFrame 
         styleMask: [[mainView window] styleMask]];
+    
+    // NOTE: We have to check carefully the view is not undersized to avoid
+    // limiting switch possibilities in listed panes.
+    if (windowFrame.size.height < 150)
+        windowFrame.size.height = 150;
+    if (windowFrame.size.width < 400)
+        windowFrame.size.width = 400;
 
     // FIXME: It looks like animate option is not working well on GNUstep.
     [[mainView window] setFrame: windowFrame display: YES animate: NO];
-#endif
+    
+    #endif
 	
 }
 
-- (void) selectPreferencePaneWithIdentifier: (NSString *)identifier
+- (IBAction) switchPreferencePaneView: (id)sender
 {
-    [super selectPreferencePaneWithIdentifier: identifier];
-
-    [preferencesToolbar setSelectedItemIdentifier: identifier];
+    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
+    
+    // NOTE: When -selectPreferencePaneWithIdentifier: is not the result of a
+    // user click/action in toolbar, we have to update toolbar selection ourself
+    // in -didSelectPreferencePaneWithIdentifier, so we set this flag.
+    switchActionTriggered = YES;
+    
+    if ([sender isKindOfClass: [NSToolbarItem class]])
+        [pc selectPreferencePaneWithIdentifier: [sender itemIdentifier]];
+    
+    switchActionTriggered = NO;
 }
 
-- (IBAction) switchView: (id)sender
-{
-    [self selectPreferencePaneWithIdentifier: [sender itemIdentifier]];
+/*
+ * Preferences controller delegate methods
+ */
+
+- (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier
+{    
+    if (switchActionTriggered == NO)
+        [preferencesToolbar setSelectedItemIdentifier: identifier];
 }
 
 /*
@@ -159,10 +211,13 @@
         [plugins objectWithValue: identifier forKey: @"identifier"];
 
 	[toolbarItem setLabel: [plugin objectForKey: @"name"]];
-	[toolbarItem setImage: [plugin objectForKey: @"image"]];
+    
+    /* We need to check if 'image' is not null because it can unlike 'name'. */
+    if ([[plugin objectForKey: @"image"] isEqual: [NSNull null]] == NO)
+        [toolbarItem setImage: [plugin objectForKey: @"image"]];
 	
     [toolbarItem setTarget: self];
-    [toolbarItem setAction: @selector(switchView:)];
+    [toolbarItem setAction: @selector(switchPreferencePaneView:)];
     
 	return [toolbarItem autorelease];
 }
