@@ -9,11 +9,13 @@
 #import <PreferencesKit/PreferencesKit.h>
 
 
-@interface SamplePrefPane : PKPreferencePane 
+@interface SamplePrefPane : NSPreferencePane 
 {
 
 }
 
 - (void) mainViewDidLoad;
+
+- (IBAction) switchPresentation: (id)sender;
 
 @end

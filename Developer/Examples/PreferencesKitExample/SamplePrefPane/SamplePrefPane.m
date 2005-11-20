@@ -16,6 +16,24 @@
 
 }
 
+- (IBAction) switchPresentation: (id)sender
+{
+    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
+    
+    // TODO: We should be able to send -setPresentationMode message through 
+    // responder chain without referencing explicitely our preferences 
+    // controller.
+    switch ([sender selectedRow])
+    {
+        case 0:
+            [pc setPresentationMode: @"PKToolbarPresentationMode"];
+            break;
+        case 1:
+            [pc setPresentationMode: @"PKTableViewPresentationMode"];
+            break;
+    }
+}
+
 /*
 -(NSPreferencePaneUnselectReply) shouldUnselect
 {
