@@ -78,36 +78,46 @@ extern const NSString *PKTablePresentationMode;
     return prebuiltTableView;
 }
 
+// FIXME: Actual code in this method have to be improved to work when
+// preferencesView is not equal to contentView and we should move some portions
+// common with other presentation classes in PKPresentationBuilder superclass.
 - (void) resizePreferencesViewForView: (NSView *)paneView
 {
-    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    NSView *mainViewContainer = [pc preferencesView];
+ 	PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
+    NSView *mainView = [pc preferencesView];
+    NSRect paneFrame = [paneView frame];
+    NSRect tableFrame = [prebuiltTableView frame];
+	NSRect windowFrame = [[mainView window] frame];
+    NSRect contentFrame = NSZeroRect;
+    int previousHeight = windowFrame.size.height;
+    int heightDelta;
     
     /* Resize window so content area is large enough for prefs. */
     
-	/* NSRect box = [mainViewContainer frame];
-	NSRect wBox = [[mainViewContainer window] frame];
-	NSSize lowerRightDist;
-    
-	lowerRightDist.width = wBox.size.width -(box.origin.x +box.size.width);
-	lowerRightDist.height = wBox.size.height -(box.origin.y +box.size.height);
-	
-	box.size.width = lowerRightDist.width +box.origin.x +[theView frame].size.width;
-	box.size.height = lowerRightDist.height +box.origin.y +[theView frame].size.height;
-	box.origin.x = wBox.origin.x;
-	box.origin.y = wBox.origin.y -(box.size.height -wBox.size.height); */
-    
-    NSRect tableFrame = [prebuiltTableView frame];
-    NSRect paneFrame = [paneView frame];
-    NSRect windowFrame;
-    
     tableFrame.size.height = paneFrame.size.height;
-    paneFrame.origin.x = tableFrame.origin.x + tableFrame.size.width;
+    paneFrame.origin.x = tableFrame.size.width;
     paneFrame.origin.y = 0;
-    windowFrame.size.width = tableFrame.size.width + paneFrame.size.width;
-    windowFrame.size.height = paneFrame.size.height;
+    [prebuiltTableView setFrame: tableFrame];
+    [paneView setFrame: paneFrame];
     
-	[[mainViewContainer window] setFrame: windowFrame display: YES animate: YES];
+    contentFrame.size.width = tableFrame.size.width + paneFrame.size.width;
+    contentFrame.size.height = paneFrame.size.height;
+    
+    // FIXME: Implement -frameRectForContentRect: in GNUstep 
+    windowFrame.size = [[mainView window] frameRectForContentRect: contentFrame].size;
+
+    // NOTE: We have to check carefully the view is not undersized to avoid
+    // limiting switch possibilities in listed panes.
+    if (windowFrame.size.height < 150)
+        windowFrame.size.height = 150;
+    if (windowFrame.size.width < 400)
+        windowFrame.size.width = 400;
+    
+    /* We take in account the fact the origin is located at bottom left corner. */
+    heightDelta = previousHeight - windowFrame.size.height;
+    windowFrame.origin.y += heightDelta;
+    
+	[[mainView window] setFrame: windowFrame display: YES animate: YES];
 }
 
 - (IBAction) switchPreferencePaneView: (id)sender

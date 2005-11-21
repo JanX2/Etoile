@@ -1,5 +1,11 @@
 2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Source/PKTableViewPreferencesController.m (-resizePreferencesViewForView:): 
+    Removed old commented out code and corrected resizing issues by reusing
+    code written in equivalent method within PKToolbarPresentation class.
+    
+2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
+
     * Source/PKPreferencePane.m: Declared NSPreferencePane implementation, this
     hack allows NSPreferencePane reference in PreferencesKit based 
     applications.
