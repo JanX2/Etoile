@@ -68,29 +68,36 @@ static Camaelon* theme;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary* dict = [defaults persistentDomainForName: @"Camaelon"];
     
-    NSLog(@"Camaelon Theme Engine v2.0pre 28/10/05 - nicolas@roard.com\n");
+    NSLog(@"Camaelon Theme Engine v2.0pre 20/11/05 - nicolas@roard.com\n");
     
     self = [super init];
     
     //[CLImage setNSImageClass : [NSImage class]];
     //[CLImage poseAsClass: [NSImage class]];
     
-    NSLog (@"Camaelon dictionary: %@", dict);
+    //NSLog (@"Camaelon dictionary: %@", dict);
    
-    /* Preventive check: Remove possible incorrect path extension set by user in 
-       NSDefaults. */
-    ASSIGN (themeName, [[dict objectForKey: @"Theme"] stringByDeletingPathExtension]);
-    
+    NSNumber* themeActive = [dict objectForKey: @"Activated"];
+    if ((themeActive == nil) || ([themeActive boolValue] == YES))
+    {   
+    	/* Preventive check: Remove possible incorrect path extension set by user in 
+       	   NSDefaults. */
+        ASSIGN (themeName, [[dict objectForKey: @"Theme"] stringByDeletingPathExtension]);
 	NSLog (@"Theme named %@ is set in defaults", themeName);
-    
-    themePath = [self themePath];
-    if (themePath == nil)
-    {
+	themePath = [self themePath];
+	if (themePath == nil)
+	{
 		RELEASE(self);
 		return nil;
 	}
-    	
-    theme = self;
+		
+	theme = self;
+    }
+    else
+    {
+	NSLog (@"Camaelon is not activated");
+	return nil;
+    }
     
 //    [GSDrawFunctions setTheme: [CamaelonDrawFunctions new]];
 //    [NSApplication setTheme: [GSDrawFunctions new]];
