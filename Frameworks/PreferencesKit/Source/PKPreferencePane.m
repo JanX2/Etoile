@@ -244,3 +244,11 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 
 
 @end
+
+
+// HACK: We need a blank implementation for NSPreferencePane to eliminate unknown
+// NSPreferencePane symbol error when we link PreferencesKit (it is probably
+// related to dead symbols stripping).
+@implementation NSPreferencePane
+
+@end

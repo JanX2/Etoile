@@ -1,4 +1,10 @@
 2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPreferencePane.m: Declared NSPreferencePane implementation, this
+    hack allows NSPreferencePane reference in PreferencesKit based 
+    applications.
+
+2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
     
     * PrebuiltTableView.nib: Added.
     * Headers/PKTableViewPreferencesController.h: Minor outlet tweak.
