@@ -7,11 +7,6 @@
             LANGUAGE = ObjC; 
             OUTLETS = {mainViewWaitSign = NSView; owner = id; preferencesView = NSView; }; 
             SUPERCLASS = NSObject; 
-        }, 
-        {
-            CLASS = PKToolbarPreferencesController; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = PKPreferencesController; 
         }
     ); 
     IBVersion = 1; 
