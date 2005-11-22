@@ -57,8 +57,11 @@ libPreferencesKit_LANGUAGES = \
 # Class files
 #
 libPreferencesKit_OBJC_FILES = \
+	CocoaCompatibility.m \
+	NSPreferencePane.m \
 	PKPreferencesController.m \
 	PKPreferencePane.m \
+	PKPresentationBuilder.m \
 	PKTableViewPreferencesController.m \
 	PKToolbarPreferencesController.m \
 	PKPrefPanesRegistry.m \
@@ -69,8 +72,11 @@ libPreferencesKit_OBJC_FILES = \
 # Header files (to install)
 #
 libPreferencesKit_HEADER_FILES = \
+	CocoaCompatibility.h \
+	NSPreferencePane.h \
 	PKPreferencesController.h \
 	PKPreferencePane.h \
+	PKPresentationBuilder.h \
 	PKTableViewPreferencesController.h \
 	PKToolbarPreferencesController.h \
 	PKPrefPanesRegistry.h \

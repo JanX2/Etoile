@@ -1,3 +1,20 @@
+2005-11-22  Quentin Mathe <qmathe@club-internet.fr>
+    
+    PreferencesKit compilation restored on GNUstep (breaks Cocoa compilation).
+    * Source/GNUmakefile: Included CocoaCompatibility files to fix compilation
+    on GNUstep.
+    * Headers/CocoaCompatibility.h:
+    * Source/CocoaCompatibility.m:
+    Updated to be usable on GNUstep side.
+    * Source/PKTableViewPreferencesController.h:
+    (-resizePreferencesViewForView:): Minor fix in order it works on GNUstep.
+    * Headers/PKPreferencePane.h:
+    * Source/PKPreferencePane.m:
+    Moved NSPreferencePane related code in NSPreferencePane new files.
+    * Headers/NSPreferencePane.h:
+    * Source/NSPreferencePane.m:
+    Added.
+
 2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/PKTableViewPreferencesController.m (-resizePreferencesViewForView:): 

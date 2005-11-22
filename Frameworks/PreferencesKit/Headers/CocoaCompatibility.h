@@ -25,8 +25,20 @@
 
 #import <Foundation/Foundation.h>
 
-// FIXME: Hack to avoid compiler varning with next method -objectWithValue:forKey:
+// NOTE: For now, this header is included not only with Cocoa but with GNUstep
+// too because -objectWithValue:forKey is not implemented in GNUstep,
+// moreover -objectsWithValue:forKey: is not part of Foundation for now.
+
+
 @interface NSArray (ObjectsWithValueForKey)
+
+// FIXME: This method is included in GSToolbar.h, but we don't
+// import it, then to avoid compiler warning with next method
+// -objectWithValue:forKey:  which is calling it, we have to redeclare it in
+// GNUstep PreferencesKit even if it is not used, until it is made
+// public in NSArray or -objectWithValue:forKey is implemented in GNUstep.
 - (id) objectsWithValue: (id)value forKey: (NSString *)key;
+
 - (id) objectWithValue: (id)value forKey: (NSString *)key;
+
 @end

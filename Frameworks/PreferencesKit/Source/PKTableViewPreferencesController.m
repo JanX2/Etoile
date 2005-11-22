@@ -104,8 +104,9 @@ extern const NSString *PKTablePresentationMode;
     contentFrame.size.height = paneFrame.size.height;
     
     // FIXME: Implement -frameRectForContentRect: in GNUstep 
-    windowFrame.size = [[mainView window] frameRectForContentRect: contentFrame].size;
-
+    windowFrame.size = [NSWindow frameRectForContentRect: contentFrame
+        styleMask: [[mainView window] styleMask]].size;
+    
     // NOTE: We have to check carefully the view is not undersized to avoid
     // limiting switch possibilities in listed panes.
     if (windowFrame.size.height < 150)

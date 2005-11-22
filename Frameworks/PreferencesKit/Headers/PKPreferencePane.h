@@ -137,9 +137,3 @@ extern NSString *NSPreferencePaneCancelUnselectNotification;
 @end
 
 
-
-// The class name you should actually use:
-@interface NSPreferencePane : PKPreferencePane {}
-
-@end
-
