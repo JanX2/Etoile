@@ -1,5 +1,18 @@
 {
     "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "switchPresentation:"
+	);
+	Super = NSObject;
+    };
+    NSPreferencePane = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = PKPreferencePane;
+    };
     PKPreferencePane = {
 	Actions = (
 	);
@@ -10,5 +23,13 @@
 	    _lastKeyView
 	);
 	Super = NSObject;
+    };
+    SamplePrefPane = {
+	Actions = (
+	    "switchPresentation:"
+	);
+	Outlets = (
+	);
+	Super = NSPreferencePane;
     };
 }
