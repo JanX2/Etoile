@@ -289,7 +289,23 @@ must be called each time a new preference pane is selected like with
     contains both toolbar view and preference pane dedicated view is returned. */
 - (NSView *) preferencesView
 {
-	return preferencesView;
+	if (preferencesView == nil && [owner isKindOfClass: [NSWindow class]])
+    {
+        // FIXME: Hack statement because on GNUstep the view bound to
+        // -contentView includes the toolbar view unlike Cocoa (when a
+        // toolbar is visible), by the way we have to rely on a special method
+        // until GNUstep implementation matches Cocoa better.
+        
+        #ifndef GNUstep
+        return [(NSWindow *)owner contentView];
+        
+        #else
+        return [(NSWindow *)owner contentViewWithoutToolbar];
+        
+        #endif
+    }
+
+    return preferencesView;
 }
 
 /** Returns the owner object for the current <ref>-preferencesView</ref>, it

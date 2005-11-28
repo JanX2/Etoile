@@ -1,3 +1,8 @@
+2005-11-28  Quentin Mathe <qmathe@club-internet.fr>
+   
+    * Source/PKPreferencesController.m (-preferencesView): Fixed to return the
+    right view when 'preferencesView' outlet is nil (was returning nil).
+    
 2005-11-22  Quentin Mathe <qmathe@club-internet.fr>
     
     PreferencesKit compilation restored on GNUstep (breaks Cocoa compilation).
