@@ -435,6 +435,7 @@ static CLBoxCompositor* mygroupBox;
 - (void) drawButton: (NSRect) border inView: (NSView*) view 
 	style: (NSBezelStyle) bezelStyle highlighted: (BOOL) highlighted 
 {
+/*
       if (highlighted)
       {
       [GSDrawFunctions drawGrayBezel: border : NSZeroRect];
@@ -444,7 +445,7 @@ static CLBoxCompositor* mygroupBox;
       [GSDrawFunctions drawButton: border : NSZeroRect];
       }
       return;
-
+*/
 	CLCompositor* compositor = nil;
 
 	if (standardButtonH == nil)

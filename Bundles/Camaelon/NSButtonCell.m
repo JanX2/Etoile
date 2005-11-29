@@ -12,7 +12,7 @@
     return NO;
 }
 
-- (void) _drawWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
+- (void) drawWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
 {
   // Save last view drawn to
   if (_control_view != controlView)
@@ -57,7 +57,7 @@
 */
 }
 
-- (void) _drawInteriorWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
+- (void) drawInteriorWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
 {
   unsigned	mask;
   NSImage	*imageToDisplay;
