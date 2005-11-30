@@ -1,0 +1,19 @@
+WildMenus, by Michael Hanni (mhanni@yahoo.com)
+==============================================
+
+Based off Nicolas Roard's excellent Camaelon:
+
+make
+
+defaults write NSGlobalDomain GUIThemeBundles "YourLocation"
+
+(with YourLocation the path to WildMenus.themeEngine, included).
+
+Now, just try to run a GNUstep program ... :-)
+
+Tips:
+=====
+
+(20:14:29) MrBIOS-GS: mykull: you should make an addition to that README 
+that says you need to blow away your menu location defaults
+(20:14:38) MrBIOS-GS: eg 'defaults delete GWorkspace NSMenuLocations'

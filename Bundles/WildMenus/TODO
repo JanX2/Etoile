@@ -1,0 +1,13 @@
+//1.) _reorganizeMenu should compare selectors not titles (for localized 
+//apps) (does this work now?)
+2.) setApplicationMenu: / applicationMenu in NSApplication?
+//3.) submenus of the main menu should be atleast the same size as the 
+//    item that calls them
+3b.) is that enough, or should I add another pixel or two?
+//4.) copy app-icon and use the copy
+//5.) spacing of appicon and app title fixups.
+5b.) So what if the icon has a lot of empty space in it? a 'la GNUMail?
+//6.) center menu text vertically
+7.) if a submenu has no children, i.e. items, should it be disabled? in 
+update
+8.) fix GORM buglets.
