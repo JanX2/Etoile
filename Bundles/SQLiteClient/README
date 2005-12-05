@@ -1,10 +1,13 @@
-SQLiteClient 1.0
+SQLiteClient 1.1
 ==============
 
-SQLiteClient is a SQLite bundle for SQLClient library in GNUstep/dev-libs.
-It use sqlite3.
+SQLiteClient is a port of SQLClient/SQLite from GNUstep/dev-libs.
+It uses sqlite3 and build as a single library.
+Therefore, it will not load other database bundles.
+It is intended to be used within Etoile project on Mac OS X.
+For GNUstep, please use SQLClient/SQLite instead.
 
-SQLClient and GNUstep  uses LGPL2.
+SQLClient and GNUstep uses LGPL2.
 SQLiteClient uses BSD license whenever it is applicable.
 
 Maintainer: Yen-Ju Chen <yjchenx at gmail dot com>
@@ -14,15 +17,6 @@ Build and Install
 -----------------
 
 Read INSTALL document.
-
-
-Mac OS X support
-----------------
-
-SQLiteClient build SQLClient and SQLiteClient as a single library.
-Therefore, it will not load other database bundles.
-It is intended to be used within Etoile project.
-It can be modified to load other bundles easily, though.
 
 Developers notes
 ================

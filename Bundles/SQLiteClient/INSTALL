@@ -4,12 +4,7 @@ SQLiteClient INSTALL
 Required software
 -----------------
 
-You need to have the GNUstep core libraries installed in order to
-compile and use LuceneKit. The core packages are, at a minimum:
-
    * gnustep-make
-
-   * gnustep-base
 
 See <http://www.gnustep.org/> for further information.
 
