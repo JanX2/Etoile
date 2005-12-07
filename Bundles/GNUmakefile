@@ -53,6 +53,7 @@ export desktop-base ?= yes
 ifeq ($(desktop-base), yes)
 
     export camaelon ?= yes
+    export wildmenus ?= yes
 
 endif
 
@@ -74,11 +75,15 @@ endif
 #
 
 ifeq ($(camaelon), yes)
-    SUBPROJECTS = Camaelon
+    SUBPROJECTS += Camaelon
 endif
 
 ifeq ($(sqliteclient), yes)
-    SUBPROJECTS = SQLiteClient
+    SUBPROJECTS += SQLiteClient
+endif
+
+ifeq ($(wildmenus), yes)
+    SUBPROJECTS += WildMenus
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
