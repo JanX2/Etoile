@@ -25,7 +25,7 @@
 
 //#import <TrackerKit/TKQuery.h>
 
-@class TKQuery
+@class TKQuery;
 
 @interface EXQuery : TKQuery // TKQuery should support XPath queries
 {
