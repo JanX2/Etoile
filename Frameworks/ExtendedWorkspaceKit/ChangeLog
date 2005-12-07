@@ -1,3 +1,11 @@
+2005-12-07  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Source/GNUmakefile: Removed HEADERS_INSTALL variable which is not part of
+    gnustep-make, HEADERS_FILES is the right variable to specify headers to be
+    installed. Finally included ExtendedWorkspaceConfig.h (to fix error
+    reported by Placid Pundit) and removed some implementation related headers
+    which shouldn't be installed.
+    
 2005-05-05  Quentin Mathe <qmathe@club-internet.fr>
     
     * Source/GNUmakefile: Removed unneeded GNUSTEP_MAKEFILES definition which

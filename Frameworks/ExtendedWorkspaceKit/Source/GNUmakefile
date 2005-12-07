@@ -98,44 +98,27 @@ libExtendedWorkspace_HEADER_FILES_DIR = ../Headers
 
 libExtendedWorkspace_HEADER_FILES_INSTALL_DIR = /ExtendedWorkspaceKit
 
+# FIXME: We need to clean a bit more headers to be installed
 libExtendedWorkspace_HEADER_FILES = \
+	ExtendedWorkspaceConfig.h \
     ExtendedWorkspaceKit.h \
 	EXAttribute.h \
-	EXAttributesCore.h \
 	EXBasicFSAttributesExtracter.h \
 	EXContext.h \
 	EXEXIFAttributesExtracter.h \
 	EXExtendedFSAttributesExtracter.h \
 	EXFileManager.h \
-	EXGNUstepVFS.h \
 	EXPresentationAttribute.h \
 	EXPreviewAttribute.h \
 	EXQuery.h \
-	EXRDFAttributesCore.h \
-	EXSearchCore.h \
 	EXTypeAttribute.h \
 	EXVFS.h \
-	EXVFSBack.h \
 	EXVFSHandle.h \
+	EXVFSProtocol.h \
 	EXWorkspace.h \
 	EXXMLAttributesExtracter.h \
 	NSURL+ExtendedWorkspace.h \
-	EXExtensionProtocols.h 
-	
-HEADERS_INSTALL = \
-    ExtendedWorkspaceKit.h \
-	EXAttribute.h \
-	EXContext.h \
-	EXFileManager.h \
-	EXPresentationAttribute.h \
-	EXPreviewAttribute.h \
-	EXQuery.h \
-	EXSearchCore.h \
-	EXTypeAttribute.h \
-	EXVFS.h \
-	EXVFSHandle.h \
-	EXWorkspace.h \
-	NSURL+ExtendedWorkspace.h 
+	EXExtensionProtocols.h
 	
 	
 -include GNUmakefile.preamble
