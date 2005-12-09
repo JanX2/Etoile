@@ -1,3 +1,8 @@
+2005-12-09 Quentin Mathe <qmathe@club-internet.fr>
+
+   * Source/Index/LCSegmentMergeInfo.m:
+   Load docMap and postings only when needed.
+
 2005-12-08 Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/Search/LCQueryFilter.m:

@@ -10,12 +10,29 @@
 	ASSIGN(reader, r);
 	ASSIGN(termEnum, te);
 	ASSIGN(term, [te term]);
-	ASSIGN(postings, [reader termPositions]);
+	postings = nil;
+	docMap = nil;
+	return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(reader);
+	DESTROY(termEnum);
+	DESTROY(term);
+	DESTROY(postings);
+	DESTROY(docMap);
+	[super dealloc];
+}
 	
+- (NSArray *) docMap
+{
+    if (docMap == nil)
+    {
     // build array which maps document numbers around deletions 
 	if ([reader hasDeletions]) {
 		int maxDoc = [reader maximalDocument];
-		ASSIGN(docMap, [[NSMutableArray alloc] init]);
+		ASSIGN(docMap, AUTORELEASE([[NSMutableArray alloc] init]));
 		int j = 0;
 		int i;
 		for (i = 0; i < maxDoc; i++) {
@@ -25,16 +42,25 @@
 				[docMap addObject: [NSNumber numberWithInt: j++]];
 		}
     }
-	return self;
+    }
+	return docMap;
+}
+
+- (id <LCTermPositions>) postings
+{
+	if (postings == nil) {
+		ASSIGN(postings, [reader termPositions]);
+	}
+	return postings;
 }
 
 - (BOOL) hasNextTerm
 {
     if ([termEnum hasNextTerm]) {
-		term = [termEnum term];
+		ASSIGN(term, [termEnum term]);
 		return YES;
     } else {
-		term = nil;
+		DESTROY(term);
 		return NO;
     }
 }
@@ -42,14 +68,14 @@
 - (void) close
 {
     [termEnum close];
-    [postings close];
+    if (postings != nil) {
+	    [postings close];
+	}
 }
 
 - (LCTerm *) term { return term; }
 - (LCTermEnumerator *) termEnumerator { return termEnum; }
 - (int) base { return base; }
-- (NSArray *) docMap { return docMap; }
-- (id <LCTermPositions>) postings { return postings; }
 - (NSString *) description
 { 
 	return [NSString stringWithFormat: @"LCSegmentMergeInfo %@, base %d", term, base];
