@@ -60,4 +60,15 @@
 	return [NSString stringWithFormat: @"LCQueryFilter(%@)", query];
 }
 
+- (unsigned) hash
+{
+  return [query hash]^0x923F64B9;
+}
+
+- (BOOL) isEqual: (id) o
+{
+  if (!([o isKindOfClass: [LCQueryFilter class]])) return NO;
+  return [query isEqual: [o query]];
+}
+
 @end
