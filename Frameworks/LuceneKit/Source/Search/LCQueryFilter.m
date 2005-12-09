@@ -2,6 +2,7 @@
 #include "LCHitCollector.h"
 #include "LCIndexSearcher.h"
 #include "LCBitVector.h"
+#include "LCQuery.h"
 #include "GNUstep.h"
 
 @interface LCQueryFilterHitCollector: LCHitCollector
@@ -32,6 +33,11 @@
 	cache = nil;
 	ASSIGN(query, q);
 	return self;
+}
+
+- (LCQuery *) query
+{
+	return query;
 }
 
 - (LCBitVector *) bits: (LCIndexReader *) reader
@@ -68,7 +74,7 @@
 - (BOOL) isEqual: (id) o
 {
   if (!([o isKindOfClass: [LCQueryFilter class]])) return NO;
-  return [query isEqual: [o query]];
+  return [query isEqual: [(LCQueryFilter *)o query]];
 }
 
 @end

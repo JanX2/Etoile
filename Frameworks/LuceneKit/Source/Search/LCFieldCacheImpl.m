@@ -39,7 +39,7 @@
 - (void) setCustom: (id) c { ASSIGN(custom, c); }
 
 
-- (BOOL) isEqual: (LCEntry *) other
+- (BOOL) isEqual: (id) other
 {
 	if ([other isKindOfClass: [self class]])
 	{

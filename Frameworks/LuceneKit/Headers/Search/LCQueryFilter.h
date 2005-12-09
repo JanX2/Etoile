@@ -14,6 +14,7 @@
 * <code>query</code>.
 */
 - (id) initWithQuery: (LCQuery *) query;
+- (LCQuery *) query;
 
 @end
 

@@ -53,7 +53,7 @@ encoding of the object as a string.  */
 
 /** Compares two terms, returning true iff they have the same
 field and text. */
-- (BOOL) isEqual: (NSObject *) o
+- (BOOL) isEqual: (id) o
 {
 	if (o == nil) return NO;
 	return ([self compare: (LCTerm *)o] == NSOrderedSame) ? YES : NO;

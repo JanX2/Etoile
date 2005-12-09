@@ -5,7 +5,7 @@
 /** An abstract base class for simple, character-oriented tokenizers.*/
 @implementation LCCharTokenizer
 
-- (id) initWithReader: (id) r
+- (id) initWithReader: (id <LCReader>) r
 {
 	self = [super initWithReader: r];
 	offset = 0;

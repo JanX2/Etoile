@@ -58,9 +58,9 @@
 	[super dealloc];
 }
 
-- (NSComparisonResult) compare: (LCPosting *) other
+- (NSComparisonResult) compare: (id) other
 {
-	return [[self term] compare: [other term]];
+	return [[self term] compare: [(LCPosting *)other term]];
 }
 
 - (LCTerm *) term { return term; }
