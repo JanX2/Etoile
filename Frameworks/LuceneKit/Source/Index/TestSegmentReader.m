@@ -1,23 +1,15 @@
+#include "TestSegmentReader.h"
 #include "LCSegmentInfo.h"
 #include "LCField.h"
 #include "LCTerm.h"
 #include "LCTermEnum.h"
 #include "LCSegmentTermEnum.h"
 #include "GNUstep.h"
-#include <Foundation/Foundation.h>
-#include <UnitKit/UnitKit.h>
 #include "LCSegmentReader.h"
 #include "LCDocument.h"
 #include "LCRAMDirectory.h"
 #include "TestDocHelper.h"
-
-@interface TestSegmentReader: NSObject <UKTest>
-{
-	LCRAMDirectory *dir;
-	LCDocument *testDoc;
-	LCSegmentReader *reader;
-}
-@end
+#include "LCDefaultSimilarity.h"
 
 @implementation TestSegmentReader
 
@@ -39,7 +31,7 @@
 	UKNotNil(dir);
 	UKNotNil(reader);
 	UKTrue([[TestDocHelper nameValues] count] > 0);
-	UKTrue([TestDocHelper numFields: testDoc] == 6);
+	UKTrue([TestDocHelper numFields: testDoc] == [[TestDocHelper all] count]);
 }
 
 - (void) testDocument
@@ -49,7 +41,7 @@
 	LCDocument *result = [reader document: 0];
 	UKNotNil(result);
 	//There are 2 unstored fields on the document that are not preserved across writing
-	UKIntsEqual([TestDocHelper numFields: result], [TestDocHelper numFields: testDoc]-2);
+	UKIntsEqual([TestDocHelper numFields: result], [TestDocHelper numFields: testDoc]-[[TestDocHelper unstored] count]);
 	
 	NSEnumerator *fields = [result fieldEnumerator];
 	LCField *field;
@@ -92,7 +84,7 @@
 {
 	NSArray *result = [reader fieldNames: LCFieldOption_ALL];
 	UKNotNil(result);
-	UKIntsEqual([result count], 6);
+	UKIntsEqual([result count], [[TestDocHelper all] count]);
 	NSEnumerator *e = [result objectEnumerator];
 	NSString *s;
 	while ((s = [e nextObject]))
@@ -103,7 +95,7 @@
 	
 	result = [reader fieldNames: LCFieldOption_INDEXED];
 	UKNotNil(result);
-	UKIntsEqual([result count], 5);
+	UKIntsEqual([result count], [[TestDocHelper indexed] count]);
 	e = [result objectEnumerator];
 	while ((s = [e nextObject]))
 	{
@@ -112,16 +104,16 @@
     
 	result = [reader fieldNames: LCFieldOption_UNINDEXED];
 	UKNotNil(result);
-	UKIntsEqual([result count], 1);
+	UKIntsEqual([result count], [[TestDocHelper unindexed] count]);
 	
     //Get all indexed fields that are storing term vectors
 	result = [reader fieldNames: LCFieldOption_INDEXED_WITH_TERMVECTOR];
 	UKNotNil(result);
-	UKIntsEqual([result count], 2);
+	UKIntsEqual([result count], [[TestDocHelper termvector] count]);
 	
 	result = [reader fieldNames: LCFieldOption_INDEXED_NO_TERMVECTOR];
 	UKNotNil(result);
-	UKIntsEqual([result count], 3);
+	UKIntsEqual([result count], [[TestDocHelper notermvector] count]);
 	
 } 
 
@@ -144,6 +136,10 @@
 	LCTerm *t = [[LCTerm alloc] initWithField: [TestDocHelper TEXT_FIELD_1_KEY] text: @"field"];
 	[termDocs seekTerm: t];
 	UKTrue([termDocs hasNextDocument]);
+
+	t = [[LCTerm alloc] initWithField: [TestDocHelper NO_NORMS_KEY] text: [TestDocHelper NO_NORMS_TEXT]];
+	[termDocs seekTerm: t];
+	UKTrue([termDocs hasNextDocument]);
 	
 	id <LCTermPositions> positions = [reader termPositions];
 	[positions seekTerm: t];
@@ -152,6 +148,9 @@
 	UKTrue([positions nextPosition] >= 0);
 }
 
+
+- (void) testNorms
+{
 #if 0
 public void testNorms() {
     //TODO: Not sure how these work/should be tested
@@ -168,6 +167,42 @@ public void testNorms() {
 	
 }
 #endif
+
+	[TestSegmentReader checkNorms: reader];
+}
+
++ (void) checkNorms: (LCIndexReader *) reader
+{
+	int i;
+	for (i = 0; i < [[TestDocHelper fields] count]; i++)
+	{
+		LCField *f = [[TestDocHelper fields] objectAtIndex: i];
+		if ([f isIndexed]) {
+			UKTrue([reader hasNorms: [f name]] == (![f omitNorms]));
+			UKTrue([reader hasNorms: [f name]] == ([[TestDocHelper noNorms] objectForKey: [f name]] == nil));
+			if (![reader hasNorms: [f name]]) {
+				// test for fake norms of 1.0
+				NSLog(@"Test for fake norms");
+				NSData *norms = [reader norms: [f name]];
+				UKIntsEqual([norms length], [reader maximalDocument]);
+				char b = [LCDefaultSimilarity encodeNorm: 1.0f];
+				char *bytes = (char *)[norms bytes];
+
+				int j;
+				for (j = 0; j < [reader maximalDocument]; j++) {
+					NSLog(@"b = %d, byte = %d", b, *(bytes+j));
+					UKTrue(*(bytes+j) == b);
+				}
+				NSMutableData *norms1 = [[NSMutableData alloc] init];
+				[reader setNorms: [f name] bytes: norms1 offset: 0];
+				bytes = (char *)[norms bytes];
+				for (j = 0; j < [reader maximalDocument]; j++) {
+					UKTrue(*(bytes+j) == b);
+				}
+			}
+		}
+	}
+}
 
 - (void) testTermVectors
 {

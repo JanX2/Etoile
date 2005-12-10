@@ -2,6 +2,7 @@
 #include "LCBooleanQuery.h"
 #include "LCTermQuery.h"
 #include "LCTermEnum.h"
+#include "NSString+Additions.h"
 #include "GNUstep.h"
 
 @implementation LCPrefixQuery
@@ -55,9 +56,7 @@
 		[buffer appendFormat: @"%@:", [prefix field]];
     }
 	[buffer appendFormat: @"%@*", [prefix text]];
-    if ([self boost] != 1.0f) {
-		[buffer appendFormat: @"^%f", [self boost]];
-    }
+	[buffer appendString: LCStringFromBoost([self boost])];
 	return AUTORELEASE(buffer);
 }
 

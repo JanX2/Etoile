@@ -53,6 +53,14 @@
 	UKTrue([field isTermVectorStored]);
 	UKTrue([field isOffsetWithTermVectorStored]);
 	UKTrue([field isPositionWithTermVectorStored]);
+	UKFalse([field omitNorms]);
+
+	field = [doc field: @"textField3"];
+	UKNotNil(field);
+	UKFalse([field isTermVectorStored]);
+	UKFalse([field isOffsetWithTermVectorStored]);
+	UKFalse([field isPositionWithTermVectorStored]);
+	UKTrue([field omitNorms]);
 	[reader close];
 }
 

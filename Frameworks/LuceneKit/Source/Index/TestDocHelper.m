@@ -10,6 +10,8 @@ static NSString *FIELD_1_TEXT;
 static NSString *TEXT_FIELD_1_KEY;
 static NSString *FIELD_2_TEXT;
 static NSString *TEXT_FIELD_2_KEY;
+static NSString *FIELD_3_TEXT;
+static NSString *TEXT_FIELD_3_KEY;
 static NSString *KEYWORD_TEXT;
 static NSString *KEYWORD_FIELD_KEY;
 static NSString *UNINDEXED_FIELD_TEXT;
@@ -18,7 +20,20 @@ static NSString *UNSTORED_1_FIELD_TEXT;
 static NSString *UNSTORED_2_FIELD_TEXT;
 static NSString *UNSTORED_FIELD_1_KEY;
 static NSString *UNSTORED_FIELD_2_KEY;
+static NSString *NO_NORMS_TEXT;
+static NSString *NO_NORMS_KEY;
 static NSArray *FIELD_2_FREQS;
+
+static NSMutableDictionary *all;
+static NSMutableDictionary *indexed;
+static NSMutableDictionary *stored;
+static NSMutableDictionary *unstored;
+static NSMutableDictionary *unindexed;
+static NSMutableDictionary *termvector;
+static NSMutableDictionary *notermvector;
+static NSMutableDictionary *noNorms;
+
+static NSArray *fields;
 
 @implementation TestDocHelper
 + (NSString *) FIELD_1_TEXT
@@ -39,6 +54,16 @@ static NSArray *FIELD_2_FREQS;
 + (NSString *) TEXT_FIELD_2_KEY
 {
 	return TEXT_FIELD_2_KEY;
+}
+
++ (NSString *) FIELD_3_TEXT
+{
+	return FIELD_3_TEXT;
+}
+
++ (NSString *) TEXT_FIELD_3_KEY
+{
+	return TEXT_FIELD_3_KEY;
 }
 
 + (NSString *) KEYWORD_TEXT 
@@ -81,9 +106,64 @@ static NSArray *FIELD_2_FREQS;
 	return UNSTORED_FIELD_2_KEY;
 }
 
++ (NSString *) NO_NORMS_TEXT 
+{
+	return NO_NORMS_TEXT;
+}
+
++ (NSString *) NO_NORMS_KEY
+{
+	return NO_NORMS_KEY;
+}
+
 + (NSArray *) FIELD_2_FREQS
 {
 	return FIELD_2_FREQS;
+}
+
++ (NSDictionary *) all
+{
+	return all;
+}
+
++ (NSDictionary *) indexed
+{
+	return indexed;
+}
+
++ (NSDictionary *) stored
+{
+	return stored;
+}
+
++ (NSDictionary *) unstored
+{
+	return unstored;
+}
+
++ (NSDictionary *) unindexed
+{
+	return unindexed;
+}
+
++ (NSDictionary *) termvector
+{
+	return termvector;
+}
+
++ (NSDictionary *) notermvector
+{
+	return notermvector;
+}
+
++ (NSDictionary *) noNorms
+{
+	return noNorms;
+}
+
++ (NSArray *) fields
+{
+	return fields;
 }
 
 + (void) setupDoc: (LCDocument *) doc
@@ -108,12 +188,27 @@ static NSArray *FIELD_2_FREQS;
 												  index: LCIndex_Tokenized
 											 termVector: LCTermVector_WithPositionsAndOffsets];
 	
+	FIELD_3_TEXT = @"aaaNoNorms aaaNoNorms bbbNoNorms";
+	TEXT_FIELD_3_KEY = @"textField3";
+	LCField *textField3 = [[LCField alloc] initWithName: TEXT_FIELD_3_KEY
+												 string: FIELD_3_TEXT
+												  store: LCStore_YES
+												  index: LCIndex_Tokenized];
+	[textField3 setOmitNorms: YES];
+
 	KEYWORD_TEXT = @"Keyword";
 	KEYWORD_FIELD_KEY = @"keyField";
 	LCField *keyField = [[LCField alloc] initWithName: KEYWORD_FIELD_KEY 
 											   string: KEYWORD_TEXT
 												store: LCStore_YES
 												index: LCIndex_Untokenized];
+	
+	NO_NORMS_TEXT = @"omitNormsText";
+	NO_NORMS_KEY = @"omitNorms";
+	LCField *noNormsField = [[LCField alloc] initWithName: NO_NORMS_KEY 
+											   string: NO_NORMS_TEXT
+												store: LCStore_YES
+												index: LCIndex_NoNorms];
 	
 	UNINDEXED_FIELD_TEXT = @"unindexed field text";
 	UNINDEXED_FIELD_KEY = @"unIndField";
@@ -137,17 +232,71 @@ static NSArray *FIELD_2_FREQS;
 													  store: LCStore_NO
 													  index: LCIndex_Tokenized
 												 termVector: LCTermVector_YES];
-	
-	/**
-		* Adds the fields above to a document 
-	 * @param doc The document to write
-	 */ 
-	[doc addField: textField1];
-	[doc addField: textField2];
-	[doc addField: keyField];
-	[doc addField: unIndField];
-	[doc addField: unStoredField1];
-	[doc addField: unStoredField2];
+
+	fields = [[NSArray alloc] initWithObjects:
+				textField1, textField2, textField3,
+				keyField, noNormsField, unIndField,
+				unStoredField1, unStoredField2, nil];
+
+	all = [[NSMutableDictionary alloc] init];
+	indexed = [[NSMutableDictionary alloc] init];
+	stored = [[NSMutableDictionary alloc] init];
+	unstored = [[NSMutableDictionary alloc] init];
+	unindexed = [[NSMutableDictionary alloc] init];
+	termvector = [[NSMutableDictionary alloc] init];
+	notermvector = [[NSMutableDictionary alloc] init];
+	noNorms = [[NSMutableDictionary alloc] init];
+
+	int j;
+	for (j = 0; j < [fields count]; j++)
+	{
+		LCField *f = [fields objectAtIndex: j];
+		[all setObject: f forKey: [f name]]; 
+		if ([f isIndexed]) 
+			[indexed setObject: f forKey: [f name]]; 
+		else
+			[unindexed setObject: f forKey: [f name]]; 
+		if ([f isTermVectorStored]) 
+			[termvector setObject: f forKey: [f name]]; 
+		if ([f isIndexed] && (![f isTermVectorStored]))
+			[notermvector setObject: f forKey: [f name]]; 
+		if ([f isStored])
+			[stored setObject: f forKey: [f name]];
+		else
+			[unstored setObject: f forKey: [f name]];
+		if ([f omitNorms])
+			[noNorms setObject: f forKey: [f name]];
+	}
+		
+
+
+#if 0 // Not sure what does this do
+  	 
+  	   static {
+  	     for (int i=0; i<fields.length; i++) {
+  	       Field f = fields[i];
+  	       add(all,f);
+  	       if (f.isIndexed()) add(indexed,f);
+  	       else add(unindexed,f);
+  	       if (f.isTermVectorStored()) add(termvector,f);
+  	       if (f.isIndexed() && !f.isTermVectorStored()) add(notermvector,f);
+  	       if (f.isStored()) add(stored,f);
+  	       else add(unstored,f);
+  	       if (f.getOmitNorms()) add(noNorms,f);
+  	     }
+  	   }
+  	 
+  	 
+  	   private static void add(Map map, Field field) {
+  	     map.put(field.name(), field);
+  	   }
+  	 
+#endif
+
+	int i;
+	for (i = 0; i < [fields count]; i++) {
+		[doc addField: [fields objectAtIndex: i]];
+	}
 }                         
 
 + (NSDictionary *) nameValues
@@ -155,8 +304,10 @@ static NSArray *FIELD_2_FREQS;
 	NSDictionary *nameValues = [[NSDictionary alloc] initWithObjectsAndKeys:
 		FIELD_1_TEXT, TEXT_FIELD_1_KEY,
 		FIELD_2_TEXT, TEXT_FIELD_2_KEY,
+		FIELD_3_TEXT, TEXT_FIELD_3_KEY,
 		KEYWORD_TEXT, KEYWORD_FIELD_KEY,
 		UNINDEXED_FIELD_TEXT, UNINDEXED_FIELD_KEY,
+		NO_NORMS_TEXT, NO_NORMS_KEY,
 		UNSTORED_1_FIELD_TEXT, UNSTORED_FIELD_1_KEY, 
 		UNSTORED_2_FIELD_TEXT, UNSTORED_FIELD_2_KEY, nil];
     return AUTORELEASE(nameValues);

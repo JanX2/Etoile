@@ -140,7 +140,14 @@
     
 - (NSString *) descriptionWithField: (NSString *) field
 {
-	return [NSString stringWithFormat: @"%@~%f", [super descriptionWithField: field], minimumSimilarity];
+	NSMutableString *ms = [[NSMutableString alloc] init];
+	LCTerm *t = [self term];
+	if (![[t field] isEqual: field]) {
+		[ms appendFormat: @"%@:", [t field]];
+	}
+	[ms appendFormat: @"%@~%f%@", [t text], minimumSimilarity, LCStringFromBoost([self boost])];
+	return AUTORELEASE(ms);
+//	return [NSString stringWithFormat: @"%@~%f", [super descriptionWithField: field], minimumSimilarity];
 }
 
 - (BOOL) isEqual: (id) o

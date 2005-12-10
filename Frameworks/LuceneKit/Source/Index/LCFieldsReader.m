@@ -134,6 +134,7 @@
 														 store: store
 														 index: index
 			termVector: termVector];
+				[field setOmitNorms: [fi omitNorms]];
 
 				[doc addField: field];
 				DESTROY(field);
@@ -146,6 +147,7 @@
 														 store: store
 														 index: index
 													termVector: termVector];
+				[field setOmitNorms: [fi omitNorms]];
 				[doc addField: field];
 				DESTROY(field);
 			}

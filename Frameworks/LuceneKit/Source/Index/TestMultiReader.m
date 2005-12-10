@@ -1,4 +1,5 @@
 #include "TestDocHelper.h"
+#include "TestSegmentReader.h"
 #include "LCDocument.h"
 #include "LCRAMDirectory.h"
 #include "LCSegmentInfos.h"
@@ -69,12 +70,15 @@
 	UKNotNil(reader);
 	LCDocument *newDoc1 = [reader document: 0];
 	UKNotNil(newDoc1);
-	UKIntsEqual([TestDocHelper numFields: newDoc1], [TestDocHelper numFields: doc1]-2);
+	UKIntsEqual([TestDocHelper numFields: newDoc1], [TestDocHelper numFields: doc1]-[[TestDocHelper unstored] count]);
 	LCDocument *newDoc2 = [reader document: 1];
 	UKNotNil(newDoc2);
-	UKIntsEqual([TestDocHelper numFields: newDoc2], [TestDocHelper numFields: doc2]-2);
+	UKIntsEqual([TestDocHelper numFields: newDoc2], [TestDocHelper numFields: doc2]-[[TestDocHelper unstored] count]);
 	id <LCTermFrequencyVector> vector = [reader termFrequencyVector: 0 field: [TestDocHelper TEXT_FIELD_2_KEY]];
 	UKNotNil(vector);
+NSLog(@"LCMultiReader");
+	[TestSegmentReader checkNorms: reader];
+NSLog(@"LCMultiReader ===");
 }
 
 - (void) testTermVectors 

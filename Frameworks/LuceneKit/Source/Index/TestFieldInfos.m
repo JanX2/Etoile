@@ -19,7 +19,7 @@
 	[fieldInfos addDocument: testDoc];
 	
 	//Since the complement is stored as well in the fields map
-	UKIntsEqual(6, [fieldInfos size]); //this is 6 b/c we are using the no-arg constructor
+	UKIntsEqual([[TestDocHelper all] count], [fieldInfos size]); //this is all b/c we are using the no-arg constructor
 	LCRAMDirectory *dir = [[LCRAMDirectory alloc] init];
 	NSString *name = @"testFile";
 	LCIndexOutput *output = [dir createOutput: name];
@@ -34,10 +34,22 @@
 	LCFieldInfo *info = [readIn fieldInfo: @"textField1"];
 	UKNotNil(info);
 	UKFalse([info isTermVectorStored]);
+	UKFalse([info omitNorms]);
 	
 	info = [readIn fieldInfo: @"textField2"];
 	UKNotNil(info);
 	UKTrue([info isTermVectorStored]);
+	UKFalse([info omitNorms]);
+
+	info = [readIn fieldInfo: @"textField3"];
+	UKNotNil(info);
+	UKFalse([info isTermVectorStored]);
+	UKTrue([info omitNorms]);
+
+	info = [readIn fieldInfo: @"omitNorms"];
+	UKNotNil(info);
+	UKFalse([info isTermVectorStored]);
+	UKTrue([info omitNorms]);
 	
 	[dir close];
 }

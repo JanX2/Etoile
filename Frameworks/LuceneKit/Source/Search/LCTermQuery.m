@@ -4,6 +4,7 @@
 #include "LCSearcher.h"
 #include "LCTerm.h"
 #include "LCTermDocs.h"
+#include "NSString+Additions.h"
 #include "GNUstep.h"
 
 @interface LCTermWeight: NSObject <LCWeight>
@@ -48,10 +49,7 @@
 		[buffer appendString: @":"];
 	}
 	[buffer appendString: [term text]];
-	if ([self boost] != 1.0f) {
-		[buffer appendString: @"^"];
-		[buffer appendFormat: @"%f", [self boost]];
-	}
+	[buffer appendString: LCStringFromBoost([self boost])];
 	return AUTORELEASE(buffer);
 }
 

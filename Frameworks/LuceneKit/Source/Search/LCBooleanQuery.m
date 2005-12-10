@@ -188,6 +188,10 @@ static int maxClauseCount = 1024;
 		if (i != [clauses count]-1)
 			[s appendString: @" "];
 	}
+
+	if ([self boost] != 1.0) {
+		[s appendFormat: @")%@", LCStringFromBoost([self boost])];
+	}
 	
 	return AUTORELEASE(s);
 }

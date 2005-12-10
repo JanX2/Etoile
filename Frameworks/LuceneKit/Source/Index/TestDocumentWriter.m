@@ -24,14 +24,12 @@
 	UKNotNil(writer);
 	[writer addDocument: @"test" document: testDoc];
 	
-#if 0
 	//After adding the document, we should be able to read it back in
 	LCSegmentReader *reader = [LCSegmentReader segmentReaderWithInfo: [[LCSegmentInfo alloc] initWithName: @"test" numberOfDocuments: 1 directory: dir]];
 	UKNotNil(reader);
 	LCDocument *doc = [reader document: 0];
 	UKNotNil(doc);
 	
-	//System.out.println("Document: " + doc);
 	NSArray *fields = [doc fields: @"textField2"];
 	UKNotNil(fields);
 	UKIntsEqual(1, [fields count]);
@@ -48,7 +46,17 @@
 	UKNotNil(fields);
 	UKIntsEqual(1, [fields count]);
 	UKStringsEqual([TestDocHelper KEYWORD_TEXT], [[fields objectAtIndex: 0] string]);
-#endif
+
+	fields = [doc fields: [TestDocHelper NO_NORMS_KEY]];
+	UKNotNil(fields);
+	UKIntsEqual(1, [fields count]);
+	UKStringsEqual([TestDocHelper NO_NORMS_TEXT], [[fields objectAtIndex: 0] string]);
+
+	fields = [doc fields: [TestDocHelper TEXT_FIELD_3_KEY]];
+	UKNotNil(fields);
+	UKIntsEqual(1, [fields count]);
+	UKStringsEqual([TestDocHelper FIELD_3_TEXT], [[fields objectAtIndex: 0] string]);
+
 }
 @end
 

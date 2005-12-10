@@ -1,4 +1,5 @@
 #include "TestDocHelper.h"
+#include "TestSegmentReader.h"
 #include "LCSegmentReader.h"
 #include "LCSegmentInfo.h"
 #include "LCSegmentMerger.h"
@@ -90,10 +91,10 @@
 	LCDocument *newDoc1 = [mergedReader document: 0];
 	UKNotNil(newDoc1);
 	//There are 2 unstored fields on the document
-	UKIntsEqual([TestDocHelper numFields: newDoc1], [TestDocHelper numFields: doc1]-2);
+	UKIntsEqual([TestDocHelper numFields: newDoc1], [TestDocHelper numFields: doc1]-[[TestDocHelper unstored] count]);
 	LCDocument *newDoc2 = [mergedReader document: 1];
 	UKNotNil(newDoc2);
-	UKIntsEqual([TestDocHelper numFields: newDoc2], [TestDocHelper numFields: doc2]-2);
+	UKIntsEqual([TestDocHelper numFields: newDoc2], [TestDocHelper numFields: doc2]-[[TestDocHelper unstored] count]);
 	
 	LCTerm *t = [[LCTerm alloc] initWithField: [TestDocHelper TEXT_FIELD_2_KEY] text: @"field"];
 	id <LCTermDocuments> termDocs = [mergedReader termDocumentsWithTerm: t];
@@ -122,8 +123,12 @@
 		UKTrue([[TestDocHelper FIELD_2_TEXT] rangeOfString: term].location != NSNotFound);
 		UKIntsEqual([[[TestDocHelper FIELD_2_FREQS] objectAtIndex: i] intValue], freq);
 	}
+
+	NSLog(@"---------------------begin TestMerge-------------------");
+
+	[TestSegmentReader checkNorms: mergedReader];
 	
-	//NSLog(@"---------------------end TestMerge-------------------");
+	NSLog(@"---------------------end TestMerge-------------------");
 }
 
 @end
