@@ -8,4 +8,6 @@
 - (int) positionOfDifference: (NSString *) other;
 @end
 
+NSString *LCStringFromBoost(float boost);
+
 #endif /* __LUCENE_UTIL_STRING_HELPER__ */

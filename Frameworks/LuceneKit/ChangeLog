@@ -1,9 +1,9 @@
-2005-12-10 Quentin Mathe <qmathe@club-internet.fr>
+2005-12-10 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
    * Pass all test units on Cocoa:
    Result: 49 classes, 109 methods, 352235 tests, 0 failed.
 
-2005-12-09 Quentin Mathe <qmathe@club-internet.fr>
+2005-12-09 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
    * Source/Index/LCSegmentMergeInfo.m:
    Load docMap and postings only when needed.
@@ -19,7 +19,7 @@
    Support index without norms.
    (Test units are broken!!)
 
-2005-12-08 Quentin Mathe <qmathe@club-internet.fr>
+2005-12-08 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/Search/LCQueryFilter.m:
     Add -hash: and -isEqual:

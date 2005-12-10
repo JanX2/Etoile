@@ -48,15 +48,6 @@ LuceneKit_Search_OBJC_FILES = \
 	LCWildcardQuery.m \
 	LCWildcardTermEnum.m
 
-ifeq ($(atest), yes)
-LuceneKit_Search_OBJC_FILES += \
-	TestBoolean2.m \
-	TestSetNorm.m \
-	TestNot.m \
-	TestEnglish.m \
-	TestCheckHits.m 
-endif
-
 ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \
 	TestWildcard.m \

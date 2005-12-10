@@ -17,3 +17,11 @@
 	return len;
 }
 @end
+
+NSString *LCStringFromBoost(float boost)
+{
+	if (boost != 1.0f) {
+		return [NSString stringWithFormat: @"^%f", boost];
+	} else return [NSString stringWithString: @""];
+}
+
