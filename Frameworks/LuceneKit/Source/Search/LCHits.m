@@ -39,14 +39,10 @@
 				 filter: (LCFilter *) f
 {
 	self = [self init];
-	//NSLog(@"get weight");
 	ASSIGN(weight, [q weight: s]);
-	//NSLog(@"weight %@", weight);
 	ASSIGN(searcher, s);
 	ASSIGN(filter, f);
-	//NSLog(@"get more document");
 	[self moreDocuments: 50]; // retrieve 100 initially
-	//NSLog(@"return");
 	return self;
 }
 
@@ -71,7 +67,6 @@
 	}
 	
 	int n = min * 2; // double # retrieved
-	//NSLog(@"n %d", n);
 	LCTopDocs *topDocs;
 	if (sort) {
 		topDocs = (LCTopDocs *)[searcher search: weight filter: filter maximum: n sort: sort];
@@ -79,7 +74,6 @@
 	else {
 		topDocs = [searcher search: weight filter: filter maximum: n];
 	}
-	//NSLog(@"topDocs %@", topDocs);
 	
 	length = [topDocs totalHits];
 	NSArray * scoreDocs = [topDocs scoreDocuments];

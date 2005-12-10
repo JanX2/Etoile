@@ -9,7 +9,6 @@
 @interface LCTermWeight: NSObject <LCWeight>
 {
 	LCSimilarity *similarity;
-	//LCSearcher *searcher;
 	LCTermQuery *query;
 	float value;
 	float idf;

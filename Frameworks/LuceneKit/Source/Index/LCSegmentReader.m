@@ -465,8 +465,7 @@ static NSData *ones = nil;
         char b = [LCDefaultSimilarity encodeNorm: 1.0f];
         for (i = 0; i < size; i++)
 	{
-		*p = b;
-               p++;
+		*(p+i) = b;
 	}
         NSData *d = [NSData dataWithBytes: p length: size];
         free(p);
@@ -497,7 +496,9 @@ static NSData *ones = nil;
 - (NSData *) norms: (NSString *) field
 {
   NSData *d = [self getNorms: field];
-  if (d = nil) d = [self fakeNorms];
+  if (d == nil) {
+	d = [self fakeNorms];
+  }
   return d;
 }
 

@@ -218,7 +218,6 @@
 
 - (void) score: (LCHitCollector *) hc
 {
-	//NSLog(@"LCBooleanScorer -score: %@", hc);
 	if (countingSumScorer == nil) {
 		[self initCountingSumScorer];
 	}
@@ -372,11 +371,9 @@
 {
 	coordFactors = [[NSMutableArray alloc] init];
 	LCSimilarity *sim = [scorer similarity];
-	//NSLog(@"sim %@", sim);
 	int i;
 	for (i = 0; i <= maxCoord; i++)
 	{
-		//NSLog(@"LCCoordinator: i = %d, coord = %f, maxCoord = %d", i, [sim coordination: i max: maxCoord], maxCoord);
 		[coordFactors addObject: [NSNumber numberWithFloat: [sim coordination: i max: maxCoord]]];
 	}
 }

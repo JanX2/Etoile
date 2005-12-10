@@ -101,6 +101,7 @@ static NSArray *docFields = nil;
 	[self queries: b expDocNrs: a];
 }
 
+
 - (void) testQueries03
 {
 	NSLog(@"Test Query \"w3 xx\"");
