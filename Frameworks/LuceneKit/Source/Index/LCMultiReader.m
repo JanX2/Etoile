@@ -1,7 +1,10 @@
 #include "LCMultiReader.h"
 #include "LCSegmentMergeQueue.h"
 #include "LCSegmentMergeInfo.h"
+#include "LCSegmentReader.h"
 #include "GNUstep.h"
+
+static NSData *ones = nil; // for fake norms
 
 /** An IndexReader which reads multiple indexes, appending their content.
 *
@@ -161,11 +164,30 @@
     return hi;
 }
 
+- (BOOL) hasNorms: (NSString *) field
+{
+	int i;
+	for (i = 0; i < [subReaders count]; i++)
+	{
+		if ([[subReaders objectAtIndex: i] hasNorms: field]) return YES;
+	}
+	return NO;
+}
+
+- (NSData *) fakeNorms
+{
+	if (ones == nil)
+		ASSIGN(ones, [LCSegmentReader createFakeNorms: [self maximalDocument]]);
+	return ones;
+}
+
 - (NSData *) norms: (NSString *) field
 {
 	NSMutableData *bytes = [normsCache objectForKey: field];
 	if (bytes != nil)
 		return bytes;          // cache hit
+	if (![self hasNorms: field])
+		return [self fakeNorms];
 	
 	bytes = [[NSMutableData alloc] init];
 	int i;
@@ -179,6 +201,8 @@
             bytes: (NSMutableData *) result offset: (int) offset
 {
 	NSData *bytes = [normsCache objectForKey: field];
+	if ((bytes == nil) && (![self hasNorms: field]))
+		bytes = [self fakeNorms];
 	if (bytes != nil)                            // cache hit
 	{
 		NSRange r = NSMakeRange(offset, [self maximalDocument]);

@@ -13,6 +13,7 @@
 	BOOL storeTermVector;
 	BOOL storeOffsetWithTermVector;
 	BOOL storePositionWithTermVector;
+	BOOL omitNorms;
 }
 
 - (id) initWithName: (NSString *) na
@@ -20,17 +21,20 @@
 			 number: (int) nu
 	   storeTermVector: (BOOL) tv
 	   storePositionWithTermVector: (BOOL) pos
-	   storeOffsetWithTermVector: (BOOL) off;
+	   storeOffsetWithTermVector: (BOOL) off
+	   omitNorms: (BOOL) ons;
 - (NSString *) name;
 - (BOOL) isIndexed;
 - (BOOL) isTermVectorStored;
 - (BOOL) isOffsetWithTermVectorStored;
 - (BOOL) isPositionWithTermVectorStored;
 - (int) number;
+- (BOOL) omitNorms;
 - (void) setIndexed: (BOOL) b;
 - (void) setTermVectorStored: (BOOL) b;
 - (void) setPositionWithTermVectorStored: (BOOL) b;
 - (void) setOffsetWithTermVectorStored: (BOOL) b;
+- (void) setOmitNorms: (BOOL) b;
 
 @end
 

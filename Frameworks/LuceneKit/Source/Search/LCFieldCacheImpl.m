@@ -39,10 +39,11 @@
 - (void) setCustom: (id) c { ASSIGN(custom, c); }
 
 
-- (BOOL) isEqual: (id) other
+- (BOOL) isEqual: (id) o
 {
-	if ([other isKindOfClass: [self class]])
+	if ([o isKindOfClass: [self class]])
 	{
+		LCEntry *other = (LCEntry *) o;
 		if ([[other field] isEqualToString: field] && ([other type] == type))
 		{
 			if (([other custom] == nil) && (custom == nil))

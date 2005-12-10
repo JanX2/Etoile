@@ -70,6 +70,7 @@ typedef enum _LCFieldOption
 - (LCDocument *) document: (int) n;
 - (BOOL) isDeleted: (int) n;
 - (BOOL) hasDeletions;
+- (BOOL) hasNorms: (NSString *) field;
 - (NSData *) norms: (NSString *) field;
 - (void) setNorms: (NSString *) field 
             bytes: (NSMutableData *) bytes offset: (int) offset;

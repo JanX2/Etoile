@@ -46,6 +46,7 @@
 + (BOOL) hasDeletions: (LCSegmentInfo *) si;
 + (BOOL) usesCompoundFile: (LCSegmentInfo *) si;
 + (BOOL) hasSeparateNorms: (LCSegmentInfo *) si;
++ (NSData *) createFakeNorms: (int) size;
 - (NSArray *) files;
 - (LCBitVector*) deletedDocs;
 - (LCTermInfosReader *) termInfosReader;

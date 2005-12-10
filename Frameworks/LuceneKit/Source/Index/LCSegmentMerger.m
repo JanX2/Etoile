@@ -40,6 +40,13 @@
 - (void) bufferSkip: (int) doc;
 - (long) writeSkip;
 - (void) mergeNorms;
+
+- (void) addIndexed: (LCIndexReader *) r
+	  fieldInfos: (LCFieldInfos *) fi
+	  names: (NSArray *) n
+	 isTermVectorStored: (BOOL) tv
+	isStorePositionsWithTermVector: (BOOL) pos
+	isStoreOffsetWithTermVector: (BOOL) off;
 @end
 
 @implementation LCSegmentMerger
@@ -161,7 +168,7 @@
     // Field norm files
     for (i = 0; i < [fieldInfos size]; i++) {
 		LCFieldInfo *fi = [fieldInfos fieldInfoWithNumber: i];
-		if ([fi isIndexed]) {
+		if ([fi isIndexed] && (![fi omitNorms])) {
 			file = [segment stringByAppendingPathExtension: [NSString stringWithFormat: @"f%d", i]];
 			[files addObject: file];
 		}
@@ -187,6 +194,26 @@
     return AUTORELEASE(files);
 }
 
+- (void) addIndexed: (LCIndexReader *) r
+          fieldInfos: (LCFieldInfos *) fi
+          names: (NSArray *) n
+         isTermVectorStored: (BOOL) tv
+        isStorePositionWithTermVector: (BOOL) pos
+        isStoreOffsetWithTermVector: (BOOL) off
+{
+	NSEnumerator *e = [n objectEnumerator];
+	NSString *field;
+	while ((field = [e nextObject]))
+	{
+		[fi addName: field
+           isIndexed: YES
+         isTermVectorStored: tv
+         isStorePositionWithTermVector: pos
+         isStoreOffsetWithTermVector: off
+        omitNorms: (![r hasNorms: field])];
+	}
+}
+
 /**
 * 
  * @return The number of documents in all of the readers
@@ -201,28 +228,38 @@
 	LCIndexReader *reader;
 	for (i = 0; i < [readers count]; i++) {
 		reader = (LCIndexReader *) [readers objectAtIndex: i];
-		[fieldInfos addIndexedCollection: [reader fieldNames: LCFieldOption_TERMVECTOR_WITH_POSITION_OFFSET]
-						 storeTermVector: YES
-			 storePositionWithTermVector: YES 
-			   storeOffsetWithTermVector: YES];
-		[fieldInfos addIndexedCollection: [reader fieldNames: LCFieldOption_TERMVECTOR_WITH_POSITION]
-						 storeTermVector: YES
-			 storePositionWithTermVector: YES 
-			   storeOffsetWithTermVector: NO];
-		[fieldInfos addIndexedCollection: [reader fieldNames: LCFieldOption_TERMVECTOR_WITH_OFFSET]
-						 storeTermVector: YES
-			 storePositionWithTermVector: NO 
-			   storeOffsetWithTermVector: YES];
-		[fieldInfos addIndexedCollection: [reader fieldNames: LCFieldOption_TERMVECTOR]
-						 storeTermVector: YES
-			 storePositionWithTermVector: NO 
-			   storeOffsetWithTermVector: NO];
-		[fieldInfos addIndexedCollection: [reader fieldNames: LCFieldOption_INDEXED]
-						 storeTermVector: NO 
-			 storePositionWithTermVector: NO 
-			   storeOffsetWithTermVector: NO];
-		[fieldInfos addCollection: [reader fieldNames: LCFieldOption_UNINDEXED]
-						isIndexed: NO];
+  [self addIndexed: reader
+                fieldInfos: fieldInfos
+                names: [reader fieldNames: LCFieldOption_TERMVECTOR_WITH_POSITION_OFFSET]
+                isTermVectorStored: YES
+                isStorePositionWithTermVector: YES
+                isStoreOffsetWithTermVector: YES];
+  [self addIndexed: reader
+                fieldInfos: fieldInfos
+                names: [reader fieldNames: LCFieldOption_TERMVECTOR_WITH_POSITION]
+                isTermVectorStored: YES
+                isStorePositionWithTermVector: YES
+                isStoreOffsetWithTermVector: NO];
+  [self addIndexed: reader
+                fieldInfos: fieldInfos
+                names: [reader fieldNames: LCFieldOption_TERMVECTOR_WITH_OFFSET]
+                isTermVectorStored: YES
+                isStorePositionWithTermVector: NO 
+                isStoreOffsetWithTermVector: YES];
+  [self addIndexed: reader
+                fieldInfos: fieldInfos
+                names: [reader fieldNames: LCFieldOption_TERMVECTOR]
+                isTermVectorStored: YES
+                isStorePositionWithTermVector: NO
+                isStoreOffsetWithTermVector: NO];
+  [self addIndexed: reader
+                fieldInfos: fieldInfos
+                names: [reader fieldNames: LCFieldOption_INDEXED]
+		isTermVectorStored: NO
+                isStorePositionWithTermVector: NO
+                isStoreOffsetWithTermVector: NO];
+  [fieldInfos addCollection: [reader fieldNames: LCFieldOption_UNINDEXED]
+                                                isIndexed: NO];
     }
     NSString *file = [segment stringByAppendingPathExtension: @"fnm"];
     [fieldInfos write: directory name: file];
@@ -466,7 +503,7 @@
 	int i;
     for (i = 0; i < [fieldInfos size]; i++) {
 		LCFieldInfo *fi = [fieldInfos fieldInfoWithNumber: i];
-		if ([fi isIndexed]) {
+		if ([fi isIndexed] && (![fi omitNorms])) {
 			NSString *file = [segment stringByAppendingPathExtension: [NSString stringWithFormat: @"f%d", i]];
 			LCIndexOutput *output = [directory createOutput: file];
 			int j;

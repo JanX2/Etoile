@@ -442,7 +442,7 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 	int n;
 	for(n = 0; n < [fieldInfos size]; n++){
 		LCFieldInfo *fi = [fieldInfos fieldInfoWithNumber: n];
-		if([fi isIndexed]){
+		if([fi isIndexed] && (![fi omitNorms])){
 			float norm = [[fieldBoosts objectAtIndex: n] floatValue] * [similarity lengthNorm: [fi name] numberOfTerms: [[[fieldsCache objectAtIndex: n] objectForKey: LCFieldLength] longValue]];
 			NSString *name = [NSString stringWithFormat: @"%@.f%d", segment, n];
 			LCIndexOutput *norms = [directory createOutput: name];

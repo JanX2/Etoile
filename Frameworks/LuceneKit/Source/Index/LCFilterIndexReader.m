@@ -186,6 +186,11 @@
 	[input undeleteAll];
 }
 
+- (BOOL) hasNorms: (NSString *) f
+{
+	return [input hasNorms: f];
+}
+
 - (NSData *) norms: (NSString *) f
 {
 	return [input norms: f];

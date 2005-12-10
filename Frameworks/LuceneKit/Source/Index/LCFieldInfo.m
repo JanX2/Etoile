@@ -25,6 +25,7 @@
     storeTermVector: (BOOL) tv
     storePositionWithTermVector: (BOOL) pos
     storeOffsetWithTermVector: (BOOL) off
+    omitNorms: (BOOL) ons
 {
 	self = [self init];
 	ASSIGN(name, na);
@@ -33,6 +34,7 @@
 	storeTermVector = tv;
 	storePositionWithTermVector = pos;
 	storeOffsetWithTermVector = off;
+	omitNorms = ons;
 	return self;
 }
 
@@ -90,6 +92,16 @@
 - (void) setOffsetWithTermVectorStored: (BOOL) b
 {
 	storeOffsetWithTermVector = b;
+}
+
+- (BOOL) omitNorms
+{
+	return omitNorms;
+}
+
+- (void) setOmitNorms: (BOOL) b
+{
+	omitNorms = b;
 }
 
 - (NSString *) description

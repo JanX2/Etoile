@@ -13,7 +13,8 @@
 		   isIndexed: (BOOL) isIndexed
   isTermVectorStored: (BOOL)isTermVectorStored
          isStorePositionWithTermVector: (BOOL) isStorePositionWithTermVector
-         isStoreOffsetWithTermVector: (BOOL) isStoreOffsetWithTermVector;
+         isStoreOffsetWithTermVector: (BOOL) isStoreOffsetWithTermVector
+	omitNorms: (BOOL) ons;
 - (void) read: (LCIndexInput *) input;
 @end
 
@@ -21,6 +22,7 @@
 #define STORE_TERMVECTOR 0x2
 #define STORE_POSITIONS_WITH_TERMVECTOR 0x4
 #define STORE_OFFSET_WITH_TERMVECTOR 0x8
+#define OMIT_NORMS 0x10
 
 @implementation LCFieldInfos
 
@@ -66,7 +68,8 @@
 		[self addName: [field name] isIndexed: [field isIndexed]
    isTermVectorStored: [field isTermVectorStored]
    isStorePositionWithTermVector: [field isPositionWithTermVectorStored]
-   isStoreOffsetWithTermVector: [field isOffsetWithTermVectorStored]];
+   isStoreOffsetWithTermVector: [field isOffsetWithTermVectorStored]
+   omitNorms: [field omitNorms]];
     }
 }
 
@@ -126,7 +129,8 @@
         isIndexed: isIndexed
 	isTermVectorStored: NO
 	isStorePositionWithTermVector: NO
-	isStoreOffsetWithTermVector: NO];
+	isStoreOffsetWithTermVector: NO
+	omitNorms: NO];
 }
 
 /**
@@ -144,7 +148,8 @@
         isIndexed: isIndexed
 	isTermVectorStored: isTermVectorStored
 	isStorePositionWithTermVector: NO
-	isStoreOffsetWithTermVector: NO];
+	isStoreOffsetWithTermVector: NO
+	omitNorms: NO];
 }
 
 /** If the field is not yet known, adds it. If it is known, checks to make
@@ -164,13 +169,29 @@
 	 isStorePositionWithTermVector: (BOOL) storePositionWithTermVector
   	 isStoreOffsetWithTermVector: (BOOL) storeOffsetWithTermVector
 {
+	[self addName: name
+		isIndexed: isIndexed
+		isTermVectorStored: storeTermVector
+		isStorePositionWithTermVector: storePositionWithTermVector
+		isStoreOffsetWithTermVector: storeOffsetWithTermVector
+		omitNorms: NO];
+}
+
+- (void) addName: (NSString *) name        
+	   isIndexed: (BOOL) isIndexed                   
+	 isTermVectorStored: (BOOL) storeTermVector
+	 isStorePositionWithTermVector: (BOOL) storePositionWithTermVector
+  	 isStoreOffsetWithTermVector: (BOOL) storeOffsetWithTermVector
+	omitNorms: (BOOL) ons
+{
 	LCFieldInfo *fi = [self fieldInfo: name];
 	if (fi == nil) {
 		[self addInternal: name 
 				isIndexed: isIndexed 
 	   isTermVectorStored: storeTermVector
 	    isStorePositionWithTermVector: storePositionWithTermVector
-	    isStoreOffsetWithTermVector: storeOffsetWithTermVector];
+	    isStoreOffsetWithTermVector: storeOffsetWithTermVector
+		omitNorms: ons];
     } else {
 		if ([fi isIndexed] != isIndexed) {
 			[fi setIndexed: YES];              // once indexed, always index
@@ -184,6 +205,9 @@
 		if ([fi isOffsetWithTermVectorStored] != storeOffsetWithTermVector) {
 			[fi setOffsetWithTermVectorStored: YES]; // once vector, always vector
 		}
+		if ([fi omitNorms] != ons) {
+			[fi setOmitNorms: NO]; // once norms are stored, always store 
+		}
     }
 }
 
@@ -191,14 +215,16 @@
 		   isIndexed: (BOOL) isIndexed
   isTermVectorStored: (BOOL)isTermVectorStored
          isStorePositionWithTermVector: (BOOL) isStorePositionWithTermVector
-         isStoreOffsetWithTermVector: (BOOL) isStoreOffsetWithTermVector;
+         isStoreOffsetWithTermVector: (BOOL) isStoreOffsetWithTermVector
+	omitNorms: (BOOL) ons;
 {
 	LCFieldInfo *fi = [[LCFieldInfo alloc] initWithName: AUTORELEASE([name copy])
 											  isIndexed: isIndexed
 												 number: [byNumber count]
 										storeTermVector: isTermVectorStored
 							storePositionWithTermVector: isStorePositionWithTermVector
-							  storeOffsetWithTermVector: isStoreOffsetWithTermVector];
+							  storeOffsetWithTermVector: isStoreOffsetWithTermVector
+	omitNorms: ons];
 	[byNumber addObject: fi];
 	[byName setObject: fi forKey: name];
 	DESTROY(fi);
@@ -289,6 +315,7 @@
 		if ([fi isTermVectorStored]) bits |= STORE_TERMVECTOR;
 		if ([fi isPositionWithTermVectorStored]) bits |= STORE_POSITIONS_WITH_TERMVECTOR;
 		if ([fi isOffsetWithTermVectorStored]) bits |= STORE_OFFSET_WITH_TERMVECTOR;
+		if ([fi omitNorms]) bits |= OMIT_NORMS;
 		[output writeString: [fi name]];
 		[output writeByte: bits];
     }
@@ -306,11 +333,13 @@
 		BOOL storeTermVector = ((bits & STORE_TERMVECTOR) != 0);
 		BOOL storePositionsWithTermVector = ((bits & STORE_POSITIONS_WITH_TERMVECTOR) != 0);
 		BOOL storeOffsetWithTermVector = ((bits & STORE_OFFSET_WITH_TERMVECTOR) != 0);
+		BOOL ons = ((bits & OMIT_NORMS) != 0);
 		[self addInternal: name
 				isIndexed: isIndexed
 	   isTermVectorStored: storeTermVector
             isStorePositionWithTermVector: storePositionsWithTermVector
-            isStoreOffsetWithTermVector: storeOffsetWithTermVector];
+            isStoreOffsetWithTermVector: storeOffsetWithTermVector
+		omitNorms: ons];
     }    
 }
 

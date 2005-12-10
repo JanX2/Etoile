@@ -30,6 +30,12 @@
        isTermVectorStored: (BOOL)isTermVectorStored
        isStorePositionWithTermVector: (BOOL) isStorePositionWithTermVector
        isStoreOffsetWithTermVector: (BOOL) isStoreOffsetWithTermVector;
+- (void) addName: (NSString *) name   
+           isIndexed: (BOOL) isIndexed
+         isTermVectorStored: (BOOL) storeTermVector
+         isStorePositionWithTermVector: (BOOL) storePositionWithTermVector
+         isStoreOffsetWithTermVector: (BOOL) storeOffsetWithTermVector
+        omitNorms: (BOOL) ons;
 - (int) fieldNumber: (NSString *) fieldName;
 - (LCFieldInfo *) fieldInfo: (NSString *) name;
 - (NSString *) fieldName: (int) fieldNumber;

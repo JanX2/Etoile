@@ -24,7 +24,8 @@ typedef enum _LCStore_Type {
 typedef enum _LCIndex_Type {
 	LCIndex_NO,
 	LCIndex_Tokenized,
-	LCIndex_Untokenized
+	LCIndex_Untokenized,
+	LCIndex_NoNorms
 } LCIndex_Type;
 
 /** Specify whether to vectorize a term
@@ -57,6 +58,7 @@ typedef enum _LCTermVector_Type {
 	BOOL storePositionWithTermVector;
 	BOOL isStored, isIndexed, isTokenized;
 	BOOL isBinary, isCompressed;
+	BOOL omitNorms;
 	float boost;
 }
 
@@ -112,6 +114,9 @@ typedef enum _LCTermVector_Type {
 - (BOOL) isPositionWithTermVectorStored;
 /** Is value a data (NSData) */
 - (BOOL) isData;
+
+- (BOOL) omitNorms;
+- (void) setOmitNorms: (BOOL) b;
 
 @end
 

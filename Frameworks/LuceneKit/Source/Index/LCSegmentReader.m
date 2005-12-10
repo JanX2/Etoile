@@ -7,6 +7,7 @@
 #include "LCFieldsReader.h"
 #include "LCTermVectorsReader.h"
 #include "LCTermInfo.h"
+#include "LCDefaultSimilarity.h"
 #include "GNUstep.h"
 
 @interface LCNorm: NSObject
@@ -105,6 +106,7 @@
 @end
 
 //static LCTermVectorsReader *tvReader;
+static NSData *ones = nil;
 
 @implementation LCSegmentReader: LCIndexReader
 
@@ -326,7 +328,7 @@
 	
     for (i = 0; i < [fieldInfos size]; i++) {
 		LCFieldInfo *fi = [fieldInfos fieldInfoWithNumber: i];
-		if ([fi isIndexed]){
+		if ([fi isIndexed] && (![fi omitNorms])){
 			NSString *name;
 			if(cfsReader == nil)
 				name = [NSString stringWithFormat: @"%@.f%d", segment, i];
@@ -451,18 +453,52 @@
     return AUTORELEASE(fieldSet);
 }
 
-- (NSData *) norms: (NSString *) field
+- (BOOL) hasNorms: (NSString *) field
+{
+	return ([norms objectForKey: field] != nil);
+}
+
++ (NSData *) createFakeNorms: (int) size
+{
+        int i;
+        char *p = malloc(sizeof(char)*size);
+        char b = [LCDefaultSimilarity encodeNorm: 1.0f];
+        for (i = 0; i < size; i++)
+	{
+		*p = b;
+               p++;
+	}
+        NSData *d = [NSData dataWithBytes: p length: size];
+        free(p);
+        return d;
+}
+
+- (NSData *) fakeNorms
+{
+	if (ones == nil) ASSIGN(ones, [LCSegmentReader createFakeNorms: [self maximalDocument]]);
+	return ones;
+}
+
+- (NSData *) getNorms: (NSString *) field
 {
     LCNorm *norm = (LCNorm *) [norms objectForKey: field];
     if (norm == nil)                             // not an indexed field
-		return nil;
-    if (([norm bytes] == nil) || ([[norm bytes] length] == 0)) {                     // value not yet read
-		NSMutableData *bytes = [[NSMutableData alloc] init];
-		[self setNorms: field bytes: bytes offset: 0];
-		[norm setBytes: bytes]; // cache it
-		DESTROY(bytes);
+                return nil;
+    if (([norm bytes] == nil) || ([[norm bytes] length] == 0)) {                
+     // value not yet read
+                NSMutableData *bytes = [[NSMutableData alloc] init];
+                [self setNorms: field bytes: bytes offset: 0];
+                [norm setBytes: bytes]; // cache it
+                DESTROY(bytes);
     }
     return [norm bytes];
+}
+
+- (NSData *) norms: (NSString *) field
+{
+  NSData *d = [self getNorms: field];
+  if (d = nil) d = [self fakeNorms];
+  return d;
 }
 
 - (void) doSetNorm: (int) doc field: (NSString *) field charValue: (char) value
@@ -490,7 +526,11 @@
 {
     LCNorm *norm = (LCNorm *) [norms objectForKey: field];
     if (norm == nil)
-		return;					  // use zeros in array
+        {
+                NSRange r = NSMakeRange(offset, [self maximalDocument]);
+                [bytes replaceBytesInRange: r withBytes: [self fakeNorms]];
+                return;                                   // use zeros in array
+        }
 	
     if (([norm bytes] != nil) && ([[norm bytes] length] > 0)) {                     // can copy from cache
 		NSRange r = NSMakeRange(offset, [self maximalDocument]);
@@ -512,7 +552,7 @@
 	NSString *fileName = nil;
 	for (i = 0; i < [fieldInfos size]; i++) {
 		LCFieldInfo *fi = [fieldInfos fieldInfoWithNumber: i];
-		if ([fi isIndexed]) {
+		if ([fi isIndexed] && (![fi omitNorms])) {
 			// look first if there are separate norms in compound f%ormat
 			fileName = [NSString stringWithFormat: @"%@.s%d", segment, [fi number]];
 			d = [self directory];

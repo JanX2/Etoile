@@ -2,6 +2,17 @@
 
    * Source/Index/LCSegmentMergeInfo.m:
    Load docMap and postings only when needed.
+   * Source/Document/LCField.m:
+   * Source/Index/LCDocumentWriter.m:
+   * Source/Index/LCFieldInfo.m:
+   * Source/Index/LCFieldInfos.m:
+   * Source/Index/LCFilterIndexReader.m:
+   * Source/Index/LCIndexReader.m:
+   * Source/Index/LCMultiReader.m:
+   * Source/Index/LCSegmentMerger.m:
+   * Source/Index/LCSegmentReader.m:
+   Support index without norms.
+   (Test units are broken!!)
 
 2005-12-08 Quentin Mathe <qmathe@club-internet.fr>
 

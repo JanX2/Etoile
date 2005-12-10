@@ -291,6 +291,11 @@ public static long getCurrentVersion(String directory) throws IOException {
 	/** Returns true if any documents have been deleted */
 - (BOOL) hasDeletions { return NO; }
 
+- (BOOL) hasNorms: (NSString *) field
+{
+	return ([self norms: field] != nil);
+}
+
 	/** Returns the byte-encoded normalization factor for the named field of
 	* every document.  This is used by the search code to score documents.
 	*

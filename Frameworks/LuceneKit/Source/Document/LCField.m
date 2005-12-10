@@ -23,6 +23,7 @@ A field is a section of a Document.  Each field has two parts, a name and a
 	isTokenized = YES;
 	isBinary = NO;
 	isCompressed = NO;
+	omitNorms = NO;
 	boost = 1.0f;
 	return self;
 }
@@ -209,6 +210,10 @@ A field is a section of a Document.  Each field has two parts, a name and a
 	} else if (index == LCIndex_Untokenized) {
 		isIndexed = YES;
 		isTokenized = NO;
+	} else if (index == LCIndex_NoNorms) {
+		isIndexed = YES;
+		isTokenized = NO;
+		omitNorms = YES;
 	} else {
 		NSLog(@"Unknown index parameter %d", index);
 	}
@@ -404,6 +409,17 @@ Reader-valued. */
 	return isBinary;
 }
 
+- (BOOL) omitNorms
+{
+	return omitNorms;
+}
+
+- (void) setOmitNorms: (BOOL) b
+{
+	omitNorms = b;
+}
+
+
 /** Prints a Field for human consumption. */
 - (NSString *) description 
 {
@@ -444,6 +460,9 @@ Reader-valued. */
 		if ([result length] > 0)
 			[result appendString: @","];
 		[result appendString: @"binary"];
+	}
+	if (omitNorms) {
+		[result appendString: @",omitNorms"];
 	}
 	
 	[result appendFormat: @"<%@:", name];
