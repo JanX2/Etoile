@@ -1,0 +1,11 @@
+{
+    CFBundleIdentifier = "org.etoile-project.appearanceprefpane";
+    Authors = (
+        "Quentin Mathé <qmathe@club-internet.fr>"
+    ); 
+    Copyright = "Copyright (C) 2005 Quentin Mathé"; 
+    CopyrightDescription = "Released under the GNU Lesser General Public
+License 2.0"; 
+    FullVersionID = "0.1";
+    URL = ""; 
+}

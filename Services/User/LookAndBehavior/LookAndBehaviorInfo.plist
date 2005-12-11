@@ -1,0 +1,15 @@
+{
+    ApplicationDescription = "Étoilé Look & Behavior Utility"; 
+    ApplicationIcon = ""; 
+    ApplicationName = "Look & Behavior"; 
+    ApplicationRelease = "0.1"; 
+    Authors = (
+        "Quentin Mathé <qmathe@club-internet.fr>",
+    ); 
+    Copyright = "Copyright (C) 2005 Quentin Mathé"; 
+    CopyrightDescription = "Released under the GNU Lesser General Public
+License 2.0"; 
+    FullVersionID = "0.1";
+    NSMainNibFile = "MainMenu.gorm"; 
+    URL = ""; 
+}

@@ -1,0 +1,21 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    NSPreferencePane = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = PKPreferencePane;
+    };
+    PKPreferencePane = {
+	Actions = (
+	);
+	Outlets = (
+	    _firstKeyView,
+	    _initialKeyView,
+	    _lastKeyVIew,
+	    _window
+	);
+	Super = NSObject;
+    };
+}
