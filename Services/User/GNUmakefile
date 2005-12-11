@@ -38,12 +38,14 @@ export user-base ?= yes
 ifeq ($(user-base), yes)
 
     export installer ?= yes
+    export look-and-behavior ?= yes
 
 endif
 
 ifeq ($(user-base), no)
 
     export installer ?= no
+    export look-and-behavior ?= no
 
 endif
 
@@ -53,6 +55,10 @@ endif
 
 ifeq ($(installer), yes)
 	SUBPROJECTS = #Installer
+endif
+
+ifeq ($(look-and-behavior), yes)
+	SUBPROJECTS += LookAndBehavior
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
