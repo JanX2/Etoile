@@ -22,10 +22,11 @@
 	LCDocumentWriter *writer = [[LCDocumentWriter alloc] initWithDirectory: dir
 																  analyzer: analyzer similarity: similarity maxFieldLength: 50];
 	UKNotNil(writer);
-	[writer addDocument: @"test" document: testDoc];
+	NSString *segName = @"test";
+	[writer addDocument: segName document: testDoc];
 	
 	//After adding the document, we should be able to read it back in
-	LCSegmentReader *reader = [LCSegmentReader segmentReaderWithInfo: [[LCSegmentInfo alloc] initWithName: @"test" numberOfDocuments: 1 directory: dir]];
+	LCSegmentReader *reader = [LCSegmentReader segmentReaderWithInfo: [[LCSegmentInfo alloc] initWithName: segName numberOfDocuments: 1 directory: dir]];
 	UKNotNil(reader);
 	LCDocument *doc = [reader document: 0];
 	UKNotNil(doc);
@@ -56,6 +57,18 @@
 	UKNotNil(fields);
 	UKIntsEqual(1, [fields count]);
 	UKStringsEqual([TestDocHelper FIELD_3_TEXT], [[fields objectAtIndex: 0] string]);
+
+	// test that the norm file is not present if omitNorms is true
+	int i;
+	for(i = 0; i < [[reader fieldInfos] size]; i++) {
+		LCFieldInfo *fi = [[reader fieldInfos] fieldInfoWithNumber: i];
+		if ([fi isIndexed]) {
+			NSString *filename = [NSString stringWithFormat: @"%@.f%d", segName, i];
+			BOOL fileExist = [dir fileExists: filename];
+			UKTrue([fi omitNorms] == !fileExist);
+		}
+	}
+			
 
 }
 @end

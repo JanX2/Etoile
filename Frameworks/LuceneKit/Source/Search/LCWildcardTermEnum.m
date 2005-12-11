@@ -47,7 +47,7 @@
 										 withString: @"\\.\\+"
 											options: 0
 											  range: NSMakeRange(0, [ms length])];
-	NSLog(@"converted %@", ms);
+	//NSLog(@"converted %@", ms);
 	
 	ASSIGN(ogre, ([OGRegularExpression regularExpressionWithString: [NSString stringWithFormat: @"^%@$", ms]]));
 	AUTORELEASE(ms);

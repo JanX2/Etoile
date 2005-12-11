@@ -158,7 +158,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 	//    }
 }
 
-#if 0 // FIXME
+#if 0 // FIXME: need to update to lastest version.
    private static final IntParser INT_PARSER = new IntParser() {
     	       public int parseInt(String value) {
 	        	         return Integer.parseInt(value);

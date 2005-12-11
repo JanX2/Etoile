@@ -21,7 +21,11 @@
    Test omitNorms.
    (Unit test failed on TestSegmentMerger: FIXED).
    * Source/Search/TestWildcardQuery.m:
-   Add unit test.
+   * Source/Search/TestCheckHits.m:
+   * Source/Search/TestCheckHits.h:
+   * Source/Index/TestDocumentWriter.m:
+   Add unit tests.
+   
 
 2005-12-09 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
