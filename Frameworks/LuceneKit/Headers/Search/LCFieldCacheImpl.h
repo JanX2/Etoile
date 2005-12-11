@@ -36,6 +36,7 @@
 		type: (LCSortFieldType) type custom: (id) value;
 - (id) store: (LCIndexReader *) reader field: (NSString *) field
 	comparer: (id) comparer custom: (id) value;
+
 @end
 
 #endif /* __LUCENE_SEARCH_FIELD_CACHE_IMPL__ */

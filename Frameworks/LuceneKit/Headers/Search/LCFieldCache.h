@@ -5,6 +5,14 @@
 #include "LCSortComparator.h"
 #include "LCIndexReader.h"
 
+@interface LCIntParser: NSObject
+- (int) parseInt: (NSString *) value;
+@end
+
+@interface LCFloatParser: NSObject
+- (float) parseFloat: (NSString *) value;
+@end
+
 /** Indicator for StringIndex values in the cache. */
 // NOTE: the value assigned to this constant must not be
 // the same as any of those in SortField!!
@@ -42,7 +50,11 @@
 	* use NSDictionary, in which document number is key (NSNumber)
 	*/
 - (NSDictionary *) ints: (LCIndexReader *) reader field: (NSString *) field;
+- (NSDictionary *) ints: (LCIndexReader *) reader field: (NSString *) field
+                   parser: (LCIntParser *) parser;
 - (NSDictionary *) floats: (LCIndexReader *) reader field: (NSString *) field;
+- (NSDictionary *) floats: (LCIndexReader *) reader field: (NSString *) field
+                   parser: (LCFloatParser *) parser;
 - (NSDictionary *) strings: (LCIndexReader *) reader field: (NSString *) field;
 - (LCStringIndex *) stringIndex: (LCIndexReader *) reader 
 						  field: (NSString *) field;

@@ -1,3 +1,16 @@
+2005-12-11 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+   * Source/Search/LCFieldCacheImpl.m:
+   * Source/Search/LCFieldCache.m:
+   * Headers/Search/LCFieldCacheImpl.h:
+   * Headers/Search/LCFieldCache.h:
+   Implement parsers.
+   * Source/Search/LCFieldSortedHitQueue.m:
+   * Source/Search/TestSort.m:
+   Bugs fixed.
+   * Pass all test units on Cocoa:
+   Result: 49 classes, 111 methods, 352364 tests, 0 failed
+
 2005-12-10 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
    * Pass all test units on Cocoa:

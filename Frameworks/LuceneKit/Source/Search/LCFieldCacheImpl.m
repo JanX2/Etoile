@@ -1,6 +1,12 @@
 #include "LCFieldCacheImpl.h"
 #include "GNUstep.h"
 
+@interface LCIntParserImpl: LCIntParser
+@end
+
+@interface LCFloatParserImpl: LCFloatParser
+@end
+
 /**
 * Expert: The default cache implementation, storing all values in memory.
  * A WeakHashMap is used for storage.
@@ -158,24 +164,15 @@ static int LCFieldCache_STRING_INDEX = -1;
 	//    }
 }
 
-#if 0 // FIXME: need to update to lastest version.
-   private static final IntParser INT_PARSER = new IntParser() {
-    	       public int parseInt(String value) {
-	        	         return Integer.parseInt(value);
-				  	       }
-					        	     };
-							      	 
-								  	   private static final FloatParser FLOAT_PARSER = new FloatParser() {
-									    	       public float parseFloat(String value) {
-										        	         return Float.parseFloat(value);
-													  	       }
-														        	     };
-																     #endif
-
-// FIXME: Need to re-implement with curretn Lucene with parser.
 - (NSDictionary *) ints: (LCIndexReader *) reader field: (NSString *) field
 {
-	id ret = [self lookup: reader field: field type: LCSortField_INT];
+	[self ints: reader field: field parser: AUTORELEASE([[LCIntParserImpl alloc] init])];
+}
+
+- (NSDictionary *) ints: (LCIndexReader *) reader field: (NSString *) field
+		   parser: (LCIntParser *) parser
+{
+	id ret = [self lookup: reader field: field comparer: parser];
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
 		if ([reader maximalDocument] > 0) {
@@ -190,7 +187,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 			do {
 				LCTerm *term = [termEnum term];
 				if ([[term field] isEqualToString: field] == NO) break;
-				int termval = [[term text] intValue];
+				int termval = [parser parseInt: [term text]];
 				[termDocs seekTermEnumerator: termEnum];
 				while ([termDocs hasNextDocument]) {
 					[retDic setObject: [NSNumber numberWithInt: termval]
@@ -200,16 +197,21 @@ static int LCFieldCache_STRING_INDEX = -1;
 			[termDocs close];
 			[termEnum close];
 		}
-		[self store: reader field: field type: LCSortField_INT custom: retDic];
+		[self store: reader field: field comparer: parser custom: retDic];
 		return retDic;
 	}
 	return ret;
 }
 
-// FIXME: Need to re-implement with current Lucene and parser
 - (NSDictionary *) floats: (LCIndexReader *) reader field: (NSString *) field
 {
-	id ret = [self lookup: reader field: field type: LCSortField_FLOAT];
+	[self floats: reader field: field parser: AUTORELEASE([[LCFloatParserImpl alloc] init])];
+}
+
+- (NSDictionary *) floats: (LCIndexReader *) reader field: (NSString *) field
+		parser: (LCFloatParser *) parser
+{
+	id ret = [self lookup: reader field: field comparer: parser];
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
 		if ([reader maximalDocument] > 0) {
@@ -224,7 +226,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 			do {
 				LCTerm *term = [termEnum term];
 				if ([[term field] isEqualToString: field] == NO) break;
-				float termval = [[term text] floatValue];
+				float termval = [parser parseFloat: [term text]];
 				[termDocs seekTermEnumerator: termEnum];
 				while ([termDocs hasNextDocument]) {
 					[retDic setObject: [NSNumber numberWithFloat: termval]
@@ -234,7 +236,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 			[termDocs close];
 			[termEnum close];
 		}
-		[self store: reader field: field type: LCSortField_FLOAT custom: retDic];
+		[self store: reader field: field comparer: parser custom: retDic];
 		return retDic;
 	}
 	return ret;
@@ -447,6 +449,24 @@ protected static final Pattern pIntegers = Pattern.compile ("[0-9\\-]+");
 		return retDic;
 	}
 	return ret;
+}
+
+@end
+
+@implementation LCIntParserImpl
+
+- (int) parseInt: (NSString *) value
+{
+	return [value intValue];
+}
+
+@end
+
+@implementation LCFloatParserImpl
+
+- (float) parseFloat: (NSString *) value
+{
+	return [value floatValue];
 }
 
 @end

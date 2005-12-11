@@ -77,6 +77,7 @@
 
 - (LCFieldDoc *) fillFields: (LCFieldDoc *) doc;
 - (NSArray *) sortFields;
+- (float) maximalScore;
 
 @end
 

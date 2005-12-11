@@ -12,7 +12,16 @@
 #include "LCSort.h"
 #include "LCHits.h"
 #include "LCSortField.h"
+#include "LCFilter.h"
+#include "LCTopFieldDocs.h"
 #include "GNUstep.h"
+
+@interface TestSortFilter: LCFilter
+{
+	LCTopDocs *td;
+}
+- (id) initWithTopDocs: (LCTopDocs *) topDocs;
+@end
 
 @interface TestSort: NSObject <UKTest>
 {
@@ -22,7 +31,9 @@
 	LCQuery *queryX;
 	LCQuery *queryY;
 	LCQuery *queryA;
+	LCQuery *queryE;
 	LCQuery *queryF;
+	LCQuery *queryG;
 	LCSort *sort;
 	NSArray *data;
 }
@@ -71,6 +82,7 @@
 												store: LCStore_NO index: LCIndex_Untokenized];
 				[doc addField: field];
 			}
+			[doc setBoost: 2];
 			[writer addDocument: doc];
 		}
 	}
@@ -120,7 +132,10 @@
 		[NSArray arrayWithObjects:	@"H",	@"y a b c d",		@"0",			@"1.4E-45",		@"e",	@"C-88", nil],
 		[NSArray arrayWithObjects:	@"I",	@"x a b c d e f",	@"-2147483648",	@"1.0e+0",		@"d",	@"A-10", nil],
 		[NSArray arrayWithObjects:	@"J",	@"y a b c d e f",	@"4",			@".5",			@"b",	@"C-7", nil],
-		[NSArray arrayWithObjects:	@"Z",	@"f",				[NSNull null],	[NSNull null],	[NSNull null],	[NSNull null], nil],
+		[NSArray arrayWithObjects:	@"W",	@"g",				@"1",	[NSNull null],	[NSNull null],	[NSNull null], nil],
+		[NSArray arrayWithObjects:	@"X",	@"g",				@"1",	@"0.1",	[NSNull null],	[NSNull null], nil],
+		[NSArray arrayWithObjects:	@"Y",	@"g",				@"1",	@"0.2",	[NSNull null],	[NSNull null], nil],
+		[NSArray arrayWithObjects:	@"Z",	@"f g",				[NSNull null],	[NSNull null],	[NSNull null],	[NSNull null], nil],
 		nil];
 	ASSIGN(full, [self getFullIndex]);
 	ASSIGN(searchX, [self getXIndex]);
@@ -131,8 +146,12 @@
 	ASSIGN(queryY, [[LCTermQuery alloc] initWithTerm: term]);
 	term = [[LCTerm alloc] initWithField: @"contents" text: @"a"];
 	ASSIGN(queryA, [[LCTermQuery alloc] initWithTerm: term]);
+	term = [[LCTerm alloc] initWithField: @"contents" text: @"e"];
+	ASSIGN(queryE, [[LCTermQuery alloc] initWithTerm: term]);
 	term = [[LCTerm alloc] initWithField: @"contents" text: @"f"];
 	ASSIGN(queryF, [[LCTermQuery alloc] initWithTerm: term]);
+	term = [[LCTerm alloc] initWithField: @"contents" text: @"g"];
+	ASSIGN(queryG, [[LCTermQuery alloc] initWithTerm: term]);
 	ASSIGN(sort, [[LCSort alloc] init]);
 	return self;
 }
@@ -290,6 +309,48 @@
 	sf = [[LCSortField alloc] initWithField: @"float" type: LCSortField_FLOAT reverse: YES];
 	[sort setSortFields: [NSArray arrayWithObjects: sf, [LCSortField sortField_DOC], nil]];
 	[self assertMatches: full query: queryF sort: sort expected: @"IJZ"];
+
+	sf = [[LCSortField alloc] initWithField: @"int" type: LCSortField_INT];
+	sf1 = [[LCSortField alloc] initWithField: @"string" type: LCSortField_STRING];
+	LCSortField *sf2 = [[LCSortField alloc] initWithField: @"float" type: LCSortField_FLOAT];
+	[sort setSortFields: [NSArray arrayWithObjects: sf, sf1, sf2, nil]];
+	[self assertMatches: full query: queryG sort: sort expected: @"ZWXY"];
+
+	sf = [[LCSortField alloc] initWithField: @"int" type: LCSortField_INT];
+	sf1 = [[LCSortField alloc] initWithField: @"string" type: LCSortField_STRING];
+	sf2 = [[LCSortField alloc] initWithField: @"float" type: LCSortField_FLOAT reverse: YES];
+	[sort setSortFields: [NSArray arrayWithObjects: sf, sf1, sf2, nil]];
+	[self assertMatches: full query: queryG sort: sort expected: @"ZYXW"];
+
+#if 0
+ // Do the same for a MultiSearcher
+ 	                 Searcher multiSearcher=new MultiSearcher (new Searchable[] { full });
+ 	 
+ 	                 sort.setSort (new SortField[] { new SortField ("int"),
+ 	                                 new SortField ("string", SortField.STRING),
+ 	                                 new SortField ("float") });
+ 	                 assertMatches (multiSearcher, queryG, sort, "ZWXY");
+ 	 
+ 	                 sort.setSort (new SortField[] { new SortField ("int"),
+ 	                                 new SortField ("string", SortField.STRING),
+ 	                                 new SortField ("float", true) });
+ 	                 assertMatches (multiSearcher, queryG, sort, "ZYXW");
+ 	                 // Don't close the multiSearcher. it would close the full searcher too!
+ 	 
+ 	                 // Do the same for a ParallelMultiSearcher
+ 	                 Searcher parallelSearcher=new ParallelMultiSearcher (new Searchable[] { full });
+ 	 
+ 	                 sort.setSort (new SortField[] { new SortField ("int"),
+ 	                                 new SortField ("string", SortField.STRING),
+ 	                                 new SortField ("float") });
+ 	                 assertMatches (parallelSearcher, queryG, sort, "ZWXY");
+ 	 
+ 	                 sort.setSort (new SortField[] { new SortField ("int"),
+ 	                                 new SortField ("string", SortField.STRING),
+ 	                                 new SortField ("float", true) });
+ 	                 assertMatches (parallelSearcher, queryG, sort, "ZYXW");
+ 	                 // Don't close the parallelSearcher. it would close the full searcher too!
+#endif
 }
 
 // test sorts using a series of fields
@@ -310,6 +371,24 @@
 	[sort setSortFields: [NSArray arrayWithObjects: sf, sf1, nil]];
 	[self assertMatches: full query: queryX sort: sort expected: @"GICEA"];
 }
+
+- (void) testTopDocsScores
+{
+	LCSort *s = [[LCSort alloc] init];
+	int nDocs = 10;
+
+	LCTopFieldDocs *docs1 = [full searchQuery: queryE filter: nil
+				 maximum: nDocs sort: s];
+	TestSortFilter *sf = [[TestSortFilter alloc] initWithTopDocs: docs1];
+	LCTopFieldDocs *docs2 = [full searchQuery: queryE filter: sf
+			      	 maximum: nDocs sort: s];
+	UKFloatsEqual([[[docs1 scoreDocuments] objectAtIndex: 0] score],
+		      [[[docs2 scoreDocuments] objectAtIndex: 0] score],
+			0.000001f);
+
+ 	// assertEquals(docs1.scoreDocs[0].score, docs2.scoreDocs[0].score, 1e-6);
+}
+
 
 #if 0
 	// test using a Locale for sorting strings
@@ -608,3 +687,18 @@
 
 @end
 
+@implementation TestSortFilter
+- (id) initWithTopDocs: (LCTopDocs *) topDocs
+{
+	self = [self init];
+	ASSIGN(td, topDocs);
+	return self;
+}
+
+- (LCBitVector *) bits: (LCIndexReader *) reader
+{
+	LCBitVector *bv = [[LCBitVector alloc] initWithSize: [reader maximalDocument]];
+	[bv setBit: [[[td scoreDocuments] objectAtIndex: 0] document]];
+	return AUTORELEASE(bv);
+}
+@end

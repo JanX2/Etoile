@@ -43,7 +43,7 @@
 		[fields addObject: [[LCSortField alloc] initWithField: fieldname 
 														 type: [[comparators objectAtIndex: i] sortType] reverse: [field reverse]]];
 	}
-	maxscore = 1.0f;
+	maxscore = FLT_MIN;
 	return self;
 }
 
@@ -58,10 +58,6 @@
 {
 	LCScoreDoc *docA = (LCScoreDoc *) a;
 	LCScoreDoc *docB = (LCScoreDoc *) b;
-	
-	// keep track of maximum score
-	if ([docA score] > maxscore) maxscore = [docA score];
-	if ([docB score] > maxscore) maxscore = [docB score];
 	
 	// run comparators
 	int n = [comparators count];
@@ -133,6 +129,18 @@
 - (NSArray *) sortFields
 {
 	return fields;
+}
+
+- (float) maximalScore
+{
+	return maxscore;
+}
+
+- (BOOL) insert: (id) o
+{
+	LCFieldDoc *fd = (LCFieldDoc *) o;
+	maxscore = (maxscore > [fd score]) ? maxscore : [fd score];
+	return [super insert: fd];
 }
 
 @end
