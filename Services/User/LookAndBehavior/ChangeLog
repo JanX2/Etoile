@@ -1,0 +1,18 @@
+2005-12-11  Quentin Mathe <qmathe@club-internet.fr>
+	
+	* GNUmakefile:
+    * GNUmakefile.postamble:
+    * LookAndBehaviorInfo.plist:
+    * main.m:
+    * MainMenu.gorm:
+    * AppearancePrefPane/AppearancePrefPane.h:
+    * AppearancePrefPane/AppearancePrefPane.m:
+    * AppearancePrefPane/Appearance.gorm:
+    * AppearancePrefPane/AppearancePrefPaneInfo.plist:
+    * AppearancePrefPane/GNUmakefile:
+    * LanguagesPrefPane/LanguagesPrefPane.h:
+    * LanguagesPrefPane/LanguagesPrefPane.m:
+    * LanguagesPrefPane/Languages.gorm:
+    * LanguagesPrefPane/LanguagesPrefPaneInfo.plist:
+    * LanguagesPrefPane/GNUmakefile:
+	Initial import for Look & Behavior.
