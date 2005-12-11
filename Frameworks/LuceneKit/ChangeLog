@@ -1,3 +1,11 @@
+2005-12-12 Quentin Mathe <qmathe@club-internet.fr>
+
+   * Source/Search/LCFieldSortedHitQueue.m:
+    Fixed compilation on Linux (Ubuntu Linux x86) broken by the previous commit,
+    float.h is not included by default on most platforms.
+    Result: 49 classes, 112 methods, 352367 tests, 12 failed
+    (Failed tests are located in TestWildcard.m)
+
 2005-12-11 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
    * Source/Search/LCFieldCacheImpl.m:

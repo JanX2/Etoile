@@ -4,6 +4,12 @@
 #include "LCScoreDocComparator.h"
 #include "GNUstep.h"
 
+// FIXME: Would be better to use HAVE_FLOAT_H inspired macro (but that implies
+// to add a config file).
+#ifndef __APPLE__
+#include <float.h>
+#endif
+
 @implementation LCFieldSortedHitQueue
 
 /**
