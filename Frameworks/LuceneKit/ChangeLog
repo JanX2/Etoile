@@ -19,7 +19,9 @@
    * Source/Index/TestSegmentReader.h:
    * Source/Index/TestSegmentMerger.m:
    Test omitNorms.
-   (Unit test failed on TestSegmentMerger).
+   (Unit test failed on TestSegmentMerger: FIXED).
+   * Source/Search/TestWildcardQuery.m:
+   Add unit test.
 
 2005-12-09 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

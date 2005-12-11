@@ -98,31 +98,48 @@
 	[self assertMatches: searcher query: query10 expected: 1];
 	[self assertMatches: searcher query: query11 expected: 2];
 }
-#if 0
 
-  /**
-   * Tests Wildcard queries with a question mark.
-   *
-   * @throws IOException if an error occurs
-   */
-  public void testQuestionmark()
-      throws IOException {
-    RAMDirectory indexStore = getIndexStore("body", new String[]
-    {"metal", "metals", "mXtals", "mXtXls"});
-    IndexSearcher searcher = new IndexSearcher(indexStore);
-    Query query1 = new WildcardQuery(new Term("body", "m?tal"));
-    Query query2 = new WildcardQuery(new Term("body", "metal?"));
-    Query query3 = new WildcardQuery(new Term("body", "metals?"));
-    Query query4 = new WildcardQuery(new Term("body", "m?t?ls"));
-    Query query5 = new WildcardQuery(new Term("body", "M?t?ls"));
+- (void) testQuestionmark
+{
+	LCRAMDirectory *indexStore = [[LCRAMDirectory alloc] init];
+	LCIndexWriter *writer = [[LCIndexWriter alloc] initWithDirectory: indexStore
+															analyzer: [[LCSimpleAnalyzer alloc] init]
+															  create: YES];
+	int i;
+	NSArray *strings = [[NSArray alloc] initWithObjects: @"metal", @"metals", @"mXtals", @"mXtXls", nil];
+	for (i = 0; i < [strings count]; i++)
+	{
+		LCField *field = [[LCField alloc] initWithName: @"body"
+												string: [strings objectAtIndex: i]
+												 store: LCStore_YES
+												 index: LCIndex_Tokenized];
+		LCDocument *doc = [[LCDocument alloc] init];
+		[doc addField: field];
+		[writer addDocument: doc];
+	}
+	[writer optimize];
+	[writer close];
 
-    assertMatches(searcher, query1, 1);
-    assertMatches(searcher, query2, 2);
-    assertMatches(searcher, query3, 1);
-    assertMatches(searcher, query4, 3);
-    assertMatches(searcher, query5, 0);
-  }
+	LCIndexSearcher *searcher = [[LCIndexSearcher alloc] initWithDirectory: indexStore];
+	LCTerm *t = [[LCTerm alloc] initWithField: @"body" text: @"m?tal"];
+	LCQuery *query1 = [[LCWildcardQuery alloc] initWithTerm: t];
+	t = [[LCTerm alloc] initWithField: @"body"  text: @"metal?"];
+	LCQuery *query2 = [[LCWildcardQuery alloc] initWithTerm: t];
+	t = [[LCTerm alloc] initWithField: @"body"  text: @"metals?"];
+	LCQuery *query3 = [[LCWildcardQuery alloc] initWithTerm: t];
+	t = [[LCTerm alloc] initWithField: @"body"  text: @"m?t?ls"];
+	LCQuery *query4 = [[LCWildcardQuery alloc] initWithTerm: t];
+	t = [[LCTerm alloc] initWithField: @"body"  text: @"M?t?ls"];
+	LCQuery *query5 = [[LCWildcardQuery alloc] initWithTerm: t];
+	t = [[LCTerm alloc] initWithField: @"body"  text: @"meta??"];
+	LCQuery *query6 = [[LCWildcardQuery alloc] initWithTerm: t];
 
-#endif
+	[self assertMatches: searcher query: query1 expected: 1];
+	[self assertMatches: searcher query: query2 expected: 1];
+	[self assertMatches: searcher query: query3 expected: 0];
+	[self assertMatches: searcher query: query4 expected: 3];
+	[self assertMatches: searcher query: query5 expected: 0];
+	[self assertMatches: searcher query: query6 expected: 1];
+}
 
 @end

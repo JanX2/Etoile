@@ -76,9 +76,9 @@
 	UKIntsEqual([TestDocHelper numFields: newDoc2], [TestDocHelper numFields: doc2]-[[TestDocHelper unstored] count]);
 	id <LCTermFrequencyVector> vector = [reader termFrequencyVector: 0 field: [TestDocHelper TEXT_FIELD_2_KEY]];
 	UKNotNil(vector);
-NSLog(@"LCMultiReader");
+//NSLog(@"LCMultiReader");
 	[TestSegmentReader checkNorms: reader];
-NSLog(@"LCMultiReader ===");
+//NSLog(@"LCMultiReader ===");
 }
 
 - (void) testTermVectors 

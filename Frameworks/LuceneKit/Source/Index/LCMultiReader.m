@@ -4,8 +4,6 @@
 #include "LCSegmentReader.h"
 #include "GNUstep.h"
 
-static NSData *ones = nil; // for fake norms
-
 /** An IndexReader which reads multiple indexes, appending their content.
 *
 * @version $Id$

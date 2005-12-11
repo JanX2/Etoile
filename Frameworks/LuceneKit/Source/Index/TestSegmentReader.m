@@ -182,7 +182,7 @@ public void testNorms() {
 			UKTrue([reader hasNorms: [f name]] == ([[TestDocHelper noNorms] objectForKey: [f name]] == nil));
 			if (![reader hasNorms: [f name]]) {
 				// test for fake norms of 1.0
-				NSLog(@"Test for fake norms");
+				//NSLog(@"Test for fake norms");
 				NSData *norms = [reader norms: [f name]];
 				UKIntsEqual([norms length], [reader maximalDocument]);
 				char b = [LCDefaultSimilarity encodeNorm: 1.0f];
@@ -190,7 +190,7 @@ public void testNorms() {
 
 				int j;
 				for (j = 0; j < [reader maximalDocument]; j++) {
-					NSLog(@"b = %d, byte = %d", b, *(bytes+j));
+					//NSLog(@"b = %d, byte = %d", b, *(bytes+j));
 					UKTrue(*(bytes+j) == b);
 				}
 				NSMutableData *norms1 = [[NSMutableData alloc] init];

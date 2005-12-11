@@ -124,11 +124,11 @@
 		UKIntsEqual([[[TestDocHelper FIELD_2_FREQS] objectAtIndex: i] intValue], freq);
 	}
 
-	NSLog(@"---------------------begin TestMerge-------------------");
+	//NSLog(@"---------------------begin TestMerge-------------------");
 
 	[TestSegmentReader checkNorms: mergedReader];
 	
-	NSLog(@"---------------------end TestMerge-------------------");
+	//NSLog(@"---------------------end TestMerge-------------------");
 }
 
 @end

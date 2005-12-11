@@ -105,9 +105,6 @@
 
 @end
 
-//static LCTermVectorsReader *tvReader;
-static NSData *ones = nil;
-
 @implementation LCSegmentReader: LCIndexReader
 
 - (id) init

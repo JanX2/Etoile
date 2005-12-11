@@ -32,6 +32,8 @@
 	LCIndexInput *freqStream;
 	LCIndexInput *proxStream;
 	LCCompoundFileReader *cfsReader;
+
+	NSData *ones;
 }
 
 + (id) segmentReaderWithInfo: (LCSegmentInfo *) si;

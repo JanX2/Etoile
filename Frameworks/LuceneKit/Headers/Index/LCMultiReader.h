@@ -45,6 +45,8 @@
 	int maxDoc;
 	int numDocs;
 	BOOL hasDeletions;
+
+	NSData *ones;
 }
 
 - (id) initWithReaders: (NSArray *) subReaders;
