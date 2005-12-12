@@ -1,3 +1,17 @@
+2005-12-12  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * COPYING: Added.
+    * GNUmakefile:
+    * GNUmakefile.postamble:
+    * AppearancePrefPane/GNUmakefile:
+    * LanguagesPrefPane/GNUmakefile:
+    Removed verbose license notice not really needed.
+    * AppearancePrefPane/AppearancePrefPane.h:
+    * AppearancePrefPane/AppearancePrefPane.m:
+    * LanguagesPrefPane/LanguagesPrefPane.h:
+    * LanguagesPrefPane/LanguagesPrefPane.m:
+    Added LGPL header notice.
+
 2005-12-11  Quentin Mathe <qmathe@club-internet.fr>
 	
 	* GNUmakefile:
