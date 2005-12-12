@@ -1,0 +1,38 @@
+2005-12-12  Quentin Mathe <qmathe@club-internet.fr>
+	
+	* GNUmakefile:
+    * GNUmakefile.postamble:
+    * HardwareInfo.plist:
+    * main.m:
+    * MainMenu.gorm:
+    * EnergyPrefPane/EnergyPrefPane.h:
+    * EnergyPrefPane/EnergyPrefPane.m:
+    * EnergyPrefPane/Energy.gorm:
+    * EnergyPrefPane/EnergyPrefPaneInfo.plist:
+    * EnergyPrefPane/GNUmakefile:
+    * KeyboardPrefPane/KeyboardPrefPane.h:
+    * KeyboardPrefPane/KeyboardPrefPane.m:
+    * KeyboardPrefPane/Keyboard.gorm:
+    * KeyboardPrefPane/KeyboardPrefPaneInfo.plist:
+    * KeyboardPrefPane/GNUmakefile:
+    * MonitorPrefPane/MonitorPrefPane.h:
+    * MonitorPrefPane/MonitorPrefPane.m:
+    * MonitorPrefPane/Monitor.gorm:
+    * MonitorPrefPane/MonitorPrefPaneInfo.plist:
+    * MonitorPrefPane/GNUmakefile:
+    * MousePrefPane/MousePrefPane.h:
+    * MousePrefPane/MousePrefPane.m:
+    * MousePrefPane/Mouse.gorm:
+    * MousePrefPane/MousePrefPaneInfo.plist:
+    * MousePrefPane/GNUmakefile:
+    * SoundPrefPane/SoundPrefPane.h:
+    * SoundPrefPane/SoundPrefPane.m:
+    * SoundPrefPane/Sound.gorm:
+    * SoundPrefPane/SoundPrefPaneInfo.plist:
+    * SoundPrefPane/GNUmakefile:
+    * StartupPrefPane/StartupPrefPane.h:
+    * StartupPrefPane/StartupPrefPane.m:
+    * StartupPrefPane/Startup.gorm:
+    * StartupPrefPane/StartupPrefPaneInfo.plist:
+    * StartupPrefPane/GNUmakefile:
+	Initial import for Hardware.
