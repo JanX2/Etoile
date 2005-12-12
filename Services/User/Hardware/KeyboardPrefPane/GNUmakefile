@@ -1,0 +1,59 @@
+include $(GNUSTEP_MAKEFILES)/common.make
+
+ADDITIONAL_OBJCFLAGS = -Wno-import
+
+ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
+
+#
+# Main application
+#
+BUNDLE_NAME = KeyboardPrefPane
+VERSION = 0.1
+BUNDLE_EXTENSION = .prefPane
+BUNDLE_INSTALL_DIR = 
+
+KeyboardPrefPane_PRINCIPAL_CLASS = KeyboardPrefPane
+KeyboardPrefPane_APPLICATION_ICON =
+
+KeyboardPrefPane_GUI_LIBS = -lPreferencesKit
+
+#
+# Resource files
+#
+KeyboardPrefPane_MAIN_MODEL_FILE = \
+	Keyboard.gorm
+
+KeyboardPrefPane_RESOURCE_FILES = \
+	Keyboard.gorm \
+	KeyboardPrefPaneInfo.plist
+
+KeyboardPrefPane_LOCALIZED_RESOURCE_FILES =
+
+#
+# Languages we're localized for
+#
+KeyboardPrefPane_LANGUAGES = \
+	English
+	
+#
+# Class files
+#
+KeyboardPrefPane_OBJC_FILES = \
+	KeyboardPrefPane.m
+
+#
+# Header files
+#
+KeyboardPrefPane_HEADER_FILES = \
+	KeyboardPrefPane.h
+
+#
+# C files
+#
+KeyboardPrefPane_C_FILES =
+
+-include GNUmakefile.preamble
+
+include $(GNUSTEP_MAKEFILES)/bundle.make
+
+-include GNUmakefile.postamble

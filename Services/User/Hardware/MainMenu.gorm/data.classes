@@ -1,0 +1,21 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "switchPreferencePaneView:",
+	    "switchView:"
+	);
+	Super = NSObject;
+    };
+    PKPreferencesController = {
+	Actions = (
+	    "switchPreferencePaneView:"
+	);
+	Outlets = (
+	    owner,
+	    preferencesView,
+	    mainViewWaitSign
+	);
+	Super = NSObject;
+    };
+}

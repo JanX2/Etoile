@@ -1,0 +1,19 @@
+{
+    ApplicationDescription = "\U00C9toil\U00E9 Hardware Utility";
+    ApplicationIcon = "";
+    ApplicationName = Hardware;
+    ApplicationRelease = 0.1;
+    Authors = (
+	"Quentin Math\U00E9 <qmathe@club-internet.fr>"
+    );
+    Copyright = "Copyright (C) 2005 Quentin Math\U00E9";
+    CopyrightDescription = "Released under the GNU Lesser General Public
+License 2.1";
+    FullVersionID = 0.1;
+    GSMainMarkupFile = "";
+    NOTE = "Automatically generated, do not edit!";
+    NSExecutable = Hardware;
+    NSMainNibFile = MainMenu.gorm;
+    NSPrincipalClass = NSApplication;
+    URL = "";
+}

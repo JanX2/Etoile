@@ -1,0 +1,22 @@
+ifeq ($(debug), yes)
+	extension = debug
+else
+	extension = app
+endif
+
+before-all::
+
+after-all::
+	mkdir -p $(CURDIR)/Hardware.$(extension)/PlugIns; \
+	cp -Rfp $(CURDIR)/EnergyPrefPane/EnergyPrefPane.prefPane \
+	$(CURDIR)/KeyboardPrefPane/KeyboardPrefPane.prefPane \
+	$(CURDIR)/MonitorPrefPane/MonitorPrefPane.prefPane \
+	$(CURDIR)/MousePrefPane/MousePrefPane.prefPane \
+	$(CURDIR)/SoundPrefPane/SoundPrefPane.prefPane \
+	$(CURDIR)/StartupPrefPane/StartupPrefPane.prefPane \
+	$(CURDIR)/Hardware.$(extension)/PlugIns/; \
+
+after-clean::
+
+after-distclean::
+

@@ -1,0 +1,59 @@
+include $(GNUSTEP_MAKEFILES)/common.make
+
+ADDITIONAL_OBJCFLAGS = -Wno-import
+
+ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
+
+#
+# Main application
+#
+BUNDLE_NAME = MousePrefPane
+VERSION = 0.1
+BUNDLE_EXTENSION = .prefPane
+BUNDLE_INSTALL_DIR = 
+
+MousePrefPane_PRINCIPAL_CLASS = MousePrefPane
+MousePrefPane_APPLICATION_ICON =
+
+MousePrefPane_GUI_LIBS = -lPreferencesKit
+
+#
+# Resource files
+#
+MousePrefPane_MAIN_MODEL_FILE = \
+	Mouse.gorm
+
+MousePrefPane_RESOURCE_FILES = \
+	Mouse.gorm \
+	MousePrefPaneInfo.plist
+
+MousePrefPane_LOCALIZED_RESOURCE_FILES =
+
+#
+# Languages we're localized for
+#
+MousePrefPane_LANGUAGES = \
+	English
+	
+#
+# Class files
+#
+MousePrefPane_OBJC_FILES = \
+	MousePrefPane.m
+
+#
+# Header files
+#
+MousePrefPane_HEADER_FILES = \
+	MousePrefPane.h
+
+#
+# C files
+#
+MousePrefPane_C_FILES =
+
+-include GNUmakefile.preamble
+
+include $(GNUSTEP_MAKEFILES)/bundle.make
+
+-include GNUmakefile.postamble
