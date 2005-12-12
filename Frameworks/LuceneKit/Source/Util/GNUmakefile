@@ -3,6 +3,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME = LuceneKit_Util
 
 LuceneKit_Util_OBJC_FILES = \
+	LCSmallFloat.m \
 	NSString+Additions.m \
 	NSData+Additions.m \
 	LCBitVector.m \
@@ -10,6 +11,7 @@ LuceneKit_Util_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Util_OBJC_FILES += \
+	TestSmallFloat.m \
 	TestString+Additions.m \
 	TestData+Additions.m \
 	TestPriorityQueue.m \

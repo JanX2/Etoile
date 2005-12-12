@@ -5,6 +5,10 @@
     float.h is not included by default on most platforms.
     Result: 49 classes, 112 methods, 352367 tests, 12 failed
     (Failed tests are located in TestWildcard.m)
+   * Headers/Util/LCSmallFloat.h:
+   * Source/Util/LCSmallFloat.m:
+   * Source/Util/TestSmallFloat.m:
+   New class and test.
 
 2005-12-11 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

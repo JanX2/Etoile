@@ -16,6 +16,7 @@ LuceneKit_HEADER_FILES += \
 # Headers/Util
 LuceneKit_HEADER_FILES += \
 	Util.h \
+	LCSmallFloat.h \
 	LCBitVector.h \
 	LCPriorityQueue.h \
 	NSString+Additions.h \
