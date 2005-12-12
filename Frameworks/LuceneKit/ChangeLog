@@ -9,6 +9,8 @@
    * Source/Util/LCSmallFloat.m:
    * Source/Util/TestSmallFloat.m:
    New class and test.
+   * Source/Search/LCBooleanQuery.m:
+   Warn when maxClauseCount < 1.
 
 2005-12-11 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

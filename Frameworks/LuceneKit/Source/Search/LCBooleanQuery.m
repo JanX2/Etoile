@@ -32,7 +32,15 @@ static int maxClauseCount = 1024;
 
 @implementation LCBooleanQuery
 + (int) maxClauseCount { return maxClauseCount; }
-+ (void) setMaxClauseCount: (int) max { maxClauseCount = max; }
++ (void) setMaxClauseCount: (int) max 
+{ 
+	if (max < 1)
+	{
+		NSLog(@"Error: maxClauseCount must be >= 1");
+	}
+	else
+		maxClauseCount = max; 
+}
 - (id) init
 {
 	self = [super init];
