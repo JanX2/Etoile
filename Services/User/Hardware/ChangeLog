@@ -1,4 +1,8 @@
 2005-12-12  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * COPYING: Added.
+
+2005-12-12  Quentin Mathe <qmathe@club-internet.fr>
 	
 	* GNUmakefile:
     * GNUmakefile.postamble:
