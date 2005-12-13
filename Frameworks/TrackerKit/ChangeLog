@@ -1,9 +1,10 @@
 2005-12-12  Quentin Mathe <qmathe@club-internet.fr>
 
-    * GNUmakefile: Added ADDITIONAL_INCLUDE_DIRS to have headers properly
+    * Source/GNUmakefile: Added ADDITIONAL_INCLUDE_DIRS to have headers properly
     available and removed Query.[hm] and Tracker.[hm] from it (residual
     references to TKStructuralKey may prevent compilation). Fixes submitted
     by Placid Pundit.
+    Removed verbose license notice not really needed.
 
 2005-07-04  Quentin Mathe <qmathe@club-internet.fr>
       
