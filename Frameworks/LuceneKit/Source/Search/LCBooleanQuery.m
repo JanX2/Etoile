@@ -3,6 +3,7 @@
 #include "LCSearcher.h"
 #include "LCBooleanScorer.h"
 #include "LCWeight.h"
+#include "LCSmallFloat.h"
 #include "GNUstep.h"
 
 /* LuceneKit: this is actually BooleanWeight2 in lucene */
@@ -11,9 +12,12 @@
 	LCSimilarity *similarity;
 	LCBooleanQuery *query;
 	NSMutableArray *weights;
+	
+	int minNrShouldMatch;
 }
 
 - (id) initWithSearcher: (LCSearcher *) searcher
+	minimumNumberShouldMatch: (int) min
                   query: (LCBooleanQuery *) query;
 @end
 
@@ -45,6 +49,7 @@ static int maxClauseCount = 1024;
 {
 	self = [super init];
 	clauses = [[NSMutableArray alloc] init];
+	minNrShouldMatch = 0;
 	return self;
 }
 - (id) initWithCoordination: (BOOL) dc
@@ -105,7 +110,7 @@ static int maxClauseCount = 1024;
 
 - (id <LCWeight>) createWeight: (LCSearcher *) searcher
 {
-	return AUTORELEASE([[LCBooleanWeight alloc] initWithSearcher: searcher query: self]);
+	return AUTORELEASE([[LCBooleanWeight alloc] initWithSearcher: searcher minimumNumberShouldMatch: minNrShouldMatch query: self]);
 }
 
 - (LCQuery *) rewrite: (LCIndexReader *) reader
@@ -174,7 +179,8 @@ static int maxClauseCount = 1024;
 - (NSString *) descriptionWithField: (NSString *) field
 {
 	NSMutableString *s = [[NSMutableString alloc] init];
-	if ([self boost] != 1.0) {
+	BOOL needParens = (([self boost] != 1.0) || ([self minimumNumberShouldMatch] > 0));
+	if (needParens) {
 		[s appendString: @"("];
 	}
 	int i;
@@ -197,8 +203,16 @@ static int maxClauseCount = 1024;
 			[s appendString: @" "];
 	}
 
-	if ([self boost] != 1.0) {
-		[s appendFormat: @")%@", LCStringFromBoost([self boost])];
+	if (needParens) {
+		[s appendFormat: @")"];
+	}
+	if ([self minimumNumberShouldMatch] > 0) {
+		[s appendFormat: @"~%d", [self minimumNumberShouldMatch]];
+	}
+
+	if ([self boost] != 1.0f)
+	{
+		[s appendFormat: @"%@", LCStringFromBoost([self boost])];
 	}
 	
 	return AUTORELEASE(s);
@@ -210,7 +224,8 @@ static int maxClauseCount = 1024;
 		return NO;
 	LCBooleanQuery *other = (LCBooleanQuery *)o;
 	if (([self boost] == [other boost]) &&
-		([clauses isEqualToArray: [other clauses]]))
+		([clauses isEqualToArray: [other clauses]]) &&
+		([self minimumNumberShouldMatch] == [other minimumNumberShouldMatch]))
 		return YES;
 	else
 		return NO;
@@ -218,18 +233,52 @@ static int maxClauseCount = 1024;
 
 - (unsigned) hash
 {
-	return (unsigned)((int)[self boost] ^ [clauses hash]);
+	return (unsigned)(FloatToIntBits([self boost]) ^ [clauses hash] + [self minimumNumberShouldMatch]);
+}
+
+/**
+ * Specifies a minimum number of the optional BooleanClauses
+ * which must be satisifed.
+ *
+ * <p>
+ * By default no optional clauses are neccessary for a match
+ * (unless there are no required clauses).  If this method is used,
+ * then the specified numebr of clauses is required.
+ * </p>
+ * <p>
+ * Use of this method is totally independant of specifying that
+ * any specific clauses are required (or prohibited).  This number will
+ * only be compared against the number of matching optional clauses.
+ * </p>
+ * <p>
+ * EXPERT NOTE: Using this method will force the use of BooleanWeight2,
+ * regardless of wether setUseScorer14(true) has been called.
+ * </p>
+ *
+ * @param min the number of optional clauses that must match
+ * @see #setUseScorer14
+ */
+- (void) setMinimumNumberShouldMatch: (int) min
+{
+	minNrShouldMatch = min;
+}
+
+- (int) minimumNumberShouldMatch
+{
+	return minNrShouldMatch;
 }
 
 @end
 
 @implementation LCBooleanWeight
 - (id) initWithSearcher: (LCSearcher *) searcher
+	minimumNumberShouldMatch: (int) min
                   query: (LCBooleanQuery *) q
 {
 	self = [super init];
 	ASSIGN(query, q);
 	ASSIGN(similarity, [query similarity: searcher]);
+	minNrShouldMatch = min;
 	weights = [[NSMutableArray alloc] init];
 	NSArray *clauses = [query clauses];
 	int i;
@@ -289,7 +338,7 @@ static int maxClauseCount = 1024;
 - (LCScorer *) scorer: (LCIndexReader *) reader
 {
 	/* LuceneKit: this is actually BooleanScorer2 in lucene */
-	LCBooleanScorer *result = [[LCBooleanScorer alloc] initWithSimilarity: similarity];
+	LCBooleanScorer *result = [[LCBooleanScorer alloc] initWithSimilarity: similarity minimumNumberShouldMatch: minNrShouldMatch];
 	NSArray *clauses = [query clauses];
 	int i;
 	for (i = 0; i < [weights count]; i++)

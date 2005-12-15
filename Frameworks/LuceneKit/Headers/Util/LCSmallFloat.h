@@ -3,6 +3,9 @@
 
 #include <Foundation/Foundation.h>
 
+float IntBitsToFloat(int b);
+int FloatToIntBits (float f);
+
 @interface LCSmallFloat: NSObject
 
 + (char) floatToByte: (float) f numberOfMantissaBits: (int) numMantissaBits

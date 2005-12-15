@@ -3,6 +3,11 @@
    * Source/QueryParser/LCQueryParser.m:
    * Headers/QueryParser/LCQueryParser.h:
    Add new method.
+   * Source/Search/LCBooleanQuery.m:
+   * Source/Search/LCBooleanScorer.m:
+   Support minimumNumberShouldMatch.
+   * Pass all tests.
+   Result: 46 classes, 114 methods, 651959 tests, 0 failed
 
 2005-12-12 Quentin Mathe <qmathe@club-internet.fr>
 

@@ -18,9 +18,13 @@
 	LCScorer *countingSumScorer;
 	
 	LCSimilarity *defaultSimilarity;
+	
+	int minNrShouldMatch;
 }
 
 - (id) initWithSimilarity: (LCSimilarity *) similarity;
+- (id) initWithSimilarity: (LCSimilarity *) similarity
+	minimumNumberShouldMatch: (int) min;
 - (void) addScorer: (LCScorer *) scorer
 		  required: (BOOL) required
 		prohibited: (BOOL) prohibited;

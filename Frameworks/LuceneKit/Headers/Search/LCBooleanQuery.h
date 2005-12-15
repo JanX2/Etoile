@@ -14,6 +14,8 @@
 {
 	NSMutableArray *clauses;
 	BOOL disableCoord;
+
+	int minNrShouldMatch;
 }
 
 + (int) maxClauseCount;
@@ -23,6 +25,9 @@
 
 - (BOOL) isCoordinationDisabled;
 - (void) setCoordinationDisabled: (BOOL) disable;
+
+- (void) setMinimumNumberShouldMatch: (int) min;
+- (int) minimumNumberShouldMatch;
 
 - (LCSimilarity *) similarity: (LCSearcher *) searcher;
 - (void) addQuery: (LCQuery *) query

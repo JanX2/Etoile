@@ -16,9 +16,9 @@ float IntBitsToFloat(int b)
     return udata.fl;
 }
 
-int FloatToRawIntBits (float f)
+int FloatToIntBits (float f)
 {
-    /* C implement of Float.floatToRawIntBits() */
+    /* C implement of Float.floatToIntBits() */
     // Assum sizeof(float) == sizeof(int) == 4;
     // Assume C follows IEEE standard.
     union
@@ -49,7 +49,7 @@ int FloatToRawIntBits (float f)
     // Adjustment from a float zero exponent to our zero exponent,
     // shifted over to our exponent position.
     int fzero = (63-zeroExp)<<numMantissaBits;
-    int bits = FloatToRawIntBits(f);
+    int bits = FloatToIntBits(f);
 
     int smallfloat = bits >> (24-numMantissaBits);
     if (smallfloat < fzero) {
@@ -86,7 +86,7 @@ int FloatToRawIntBits (float f)
    */
 + (char) floatToByte315: (float) f
 {
-    int bits = FloatToRawIntBits(f);
+    int bits = FloatToIntBits(f);
     int smallfloat = bits >> (24-3);
     if (smallfloat < (63-15)<<3) {
       return (bits<=0) ? (char)0 : (char)1;
@@ -114,7 +114,7 @@ int FloatToRawIntBits (float f)
    */
 + (char) floatToByte52: (float) f
 {
-    int bits = FloatToRawIntBits(f);
+    int bits = FloatToIntBits(f);
     int smallfloat = bits >> (24-5);
     if (smallfloat < (63-2)<<5) {
       return (bits<=0) ? (char)0 : (char)1;
