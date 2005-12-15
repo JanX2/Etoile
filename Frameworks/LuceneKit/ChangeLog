@@ -1,3 +1,9 @@
+2005-12-11 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+   * Source/QueryParser/LCQueryParser.m:
+   * Headers/QueryParser/LCQueryParser.h:
+   Add new method.
+
 2005-12-12 Quentin Mathe <qmathe@club-internet.fr>
 
    * Source/Search/LCFieldSortedHitQueue.m:

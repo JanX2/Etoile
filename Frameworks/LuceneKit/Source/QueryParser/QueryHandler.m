@@ -144,7 +144,7 @@
 			else
             {
 				/* Default field */
-				f = LCTextContentAttribute;
+				f = defaultField;
             }
 			
 			if ([token rangeOfCharacterFromSet: wildcardCharacterSet].location != NSNotFound)
@@ -200,6 +200,7 @@
 	currentType = ReadyType;
 	occur = LCOccur_SHOULD;
 	inRange = NO;
+	ASSIGN(defaultField, [NSString stringWithString: LCTextContentAttribute]);
 	
 	ASSIGN(wildcardCharacterSet, [NSCharacterSet characterSetWithCharactersInString: @"*?"]);
 	
@@ -216,6 +217,16 @@
 - (void) query: (LCQuery *) q
 {
 	[_query addQuery: q occur: occur]; 
+}
+
+- (void) setDefaultField: (NSString *) f
+{
+	ASSIGN(defaultField, f);
+}
+
+- (NSString *) defaultField
+{
+	return defaultField;
 }
 
 /* Called by CodeParser */

@@ -43,6 +43,7 @@ typedef enum _TokenType {
   LCQuery *currentQuery;
   LCOccurType occur;
   LCBooleanQuery *_query;
+  NSString *defaultField;
 
   /* Reconstitue token */
   NSMutableString *_currentToken;
@@ -59,6 +60,9 @@ typedef enum _TokenType {
 - (void) query: (LCQuery *) query;
 
 - (LCQuery *) query;
+
+- (void) setDefaultField: (NSString *) field;
+- (NSString *) defaultField;
 
 @end
 
