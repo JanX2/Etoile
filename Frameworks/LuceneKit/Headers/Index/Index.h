@@ -9,6 +9,7 @@
 #include "LCFieldsReader.h"
 #include "LCFieldsWriter.h"
 #include "LCFilterIndexReader.h"
+#include "LCIndexModifier.h"
 #include "LCIndexReader.h"
 #include "LCIndexWriter.h"
 #include "LCMultipleTermPositions.h"

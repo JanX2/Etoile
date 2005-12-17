@@ -11,6 +11,7 @@
    * Source/Search/LCIndexSearcher.m:
    * Source/Index/LCMultiReader.m:
    * Source/Index/TestMultiReader.m:
+   * Headers/Index/Index.h:
    Update to date.
 
 2005-12-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
