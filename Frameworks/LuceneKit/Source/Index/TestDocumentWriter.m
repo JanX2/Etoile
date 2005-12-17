@@ -6,8 +6,13 @@
 #include "LCSegmentReader.h"
 #include "LCSegmentInfo.h"
 #include "TestDocHelper.h"
+#include "LCField.h"
+#include "LCWhitespaceTokenizer.h"
 
 @interface TestDocumentWriter: NSObject <UKTest>
+@end
+
+@interface TestDocAnalyzer: LCAnalyzer
 @end
 
 @implementation TestDocumentWriter
@@ -71,5 +76,62 @@
 			
 
 }
+
+- (void) testPositionIncrementGap
+{
+	LCRAMDirectory *dir = [[LCRAMDirectory alloc] init];
+	LCAnalyzer *analyzer = [[TestDocAnalyzer alloc] init];
+	LCSimilarity *similarity= [LCSimilarity defaultSimilarity];
+	LCDocumentWriter *writer = [[LCDocumentWriter alloc] initWithDirectory: dir
+																  analyzer: analyzer similarity: similarity maxFieldLength: 50];
+	LCDocument *doc = [[LCDocument alloc] init];
+	LCField *field = [[LCField alloc] initWithName: @"repeated"
+					string: @"repeated one"
+					store: LCStore_YES
+					index: LCIndex_Tokenized];
+	[doc addField: field];
+	field = [[LCField alloc] initWithName: @"repeated"
+					string: @"repeated two"
+					store: LCStore_YES
+					index: LCIndex_Tokenized];
+	[doc addField: field];
+
+	NSString *segName = @"test";
+	[writer addDocument: segName document: doc];
+
+	LCSegmentReader *reader = [LCSegmentReader segmentReaderWithInfo: [[LCSegmentInfo alloc] initWithName: segName numberOfDocuments: 1 directory: dir]];
+	LCTerm *t = [[LCTerm alloc] initWithField: @"repeated" text: @"repeated"];
+	id <LCTermPositions> termPositions = [reader termPositionsWithTerm: t];
+	UKTrue([termPositions hasNextDocument]);
+	int freq = [termPositions frequency];
+	UKIntsEqual(2, freq);
+ 	UKIntsEqual(0, [termPositions nextPosition]);
+ 	UKIntsEqual(502, [termPositions nextPosition]);
+}
+#if 0
+  	     SegmentReader reader = SegmentReader.get(new SegmentInfo(segName, 1, dir));
+  	 
+  	     TermPositions termPositions = reader.termPositions(new Term("repeated", "repeated"));
+  	     assertTrue(termPositions.next());
+  	     int freq = termPositions.freq();
+  	     assertEquals(2, freq);
+  	     assertEquals(0, termPositions.nextPosition());
+  	     assertEquals(502, termPositions.nextPosition());
+   } 	   }
+#endif
+
 @end
 
+@implementation TestDocAnalyzer
+- (LCTokenStream *) tokenStreamWithField: (NSString *) name
+                                  reader: (id <LCReader>) reader
+{
+	return AUTORELEASE([[LCWhitespaceTokenizer alloc] initWithReader: reader]);
+}
+
+- (int) positionIncrementGap: (NSString *) fieldName
+{
+	return 500;
+}
+
+@end

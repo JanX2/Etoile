@@ -1,15 +1,11 @@
 #include "LCSimilarity.h"
 #include "LCDefaultSimilarity.h"
 #include "LCSearcher.h"
+#include "LCSmallFloat.h"
 #include "GNUstep.h"
 
 static float *NORM_TABLE = NULL;
 static LCSimilarity *defaultImpl = nil;
-
-@interface LCSimilarity (LCPrivate)
-+ (float) byteToFloat: (char) b;
-+ (char) floatToByte: (float) f;
-@end
 
 @implementation LCSimilarity
 
@@ -36,7 +32,7 @@ static LCSimilarity *defaultImpl = nil;
 		NORM_TABLE = malloc(sizeof(float)*256);
 		int i;
 		for(i = 0; i < 256; i++)
-			NORM_TABLE[i] = [LCSimilarity byteToFloat: (char)i];
+			NORM_TABLE[i] = [LCSmallFloat byte315ToFloat: (char)i];
     }
 	return self;
 }
@@ -117,62 +113,7 @@ static LCSimilarity *defaultImpl = nil;
 */
 + (char) encodeNorm: (float) f
 {
-	return [LCSimilarity floatToByte: f];
-}
-
-+ (float) byteToFloat: (char) b
-{
-	if (b == 0) return 0.0f; // zero is a special case
-	int mantissa = b & 7;
-	int exponent = (b >> 3) & 31;
-	int bits = ((exponent+(63-15)) << 24) | (mantissa << 21);
-	
-	/* LuceneKit: // Float.intBitsToFloat(bits);
-	* Assume C follows IEEE standard.
-	* Assum sizeof(float) == sizeof(int) == 4;
-	*/
-	union
-    {
-		float fl;
-		int il;
-    } udata;
-	udata.il = bits;
-	return udata.fl;
-}
-
-+ (char) floatToByte: (float) f
-{
-	if (f < 0.0f)                                 // round negatives up to zero
-		f = 0.0f;
-	
-	if (f == 0.0f)                                // zero is a special case
-		return 0;
-	
-	//int bits = Float.floatToIntBits(f);           // parse float into parts
-	// Assum sizeof(float) == sizeof(int) == 4;
-	// Assume C follows IEEE standard.
-	union
-    {
-		float fl;
-		int il;
-    } udata;
-	udata.fl = f;
-	int bits = udata.il;
-	
-	int mantissa = (bits & 0xffffff) >> 21;
-	int exponent = (((bits >> 24) & 0x7f) - 63) + 15;
-	
-	if (exponent > 31) {                          // overflow: use max value
-		exponent = 31;
-		mantissa = 7;
-	}
-	
-	if (exponent < 0) {                           // underflow: use min value
-		exponent = 0;
-		mantissa = 1;
-	}
-	
-	return (char)((exponent << 3) | mantissa);    // pack into a byte
+	return [LCSmallFloat floatToByte315: f];
 }
 
 /** Computes a score factor based on a term or phrase's frequency in a

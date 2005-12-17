@@ -12,6 +12,7 @@
 /* Return a stream of token */
 - (LCTokenStream *) tokenStreamWithField: (NSString *) name
                                   reader: (id <LCReader>) reader;
+- (int) positionIncrementGap: (NSString *) fieldName;
 @end
 
 #endif /* __LUCENE_ANALYSIS_ANALYZER__ */

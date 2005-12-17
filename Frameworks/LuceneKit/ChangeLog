@@ -2,6 +2,10 @@
    * Source/Search/LCBooleanScorer.m:
    * Source/Search/LCBooleanMinShouldMatch.m:
    Pass all tests: Result: 51 classes, 127 methods, 651972 tests, 0 failed
+   * Source/Analysis/LCAnalyzer.m:
+   * Source/Index/LCDocumentWriter.m:
+   * Source/Search/LCSmiliarity.m:
+   Update to date.
 
 2005-12-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

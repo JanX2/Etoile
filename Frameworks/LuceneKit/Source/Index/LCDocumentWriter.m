@@ -194,6 +194,7 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 		{
 			length = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldLength] longValue];
 			position = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldPosition] longValue];
+			if (length > 0) position += [analyzer positionIncrementGap: fieldName];
 			offset = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldOffset] longValue];
 		}
 		
