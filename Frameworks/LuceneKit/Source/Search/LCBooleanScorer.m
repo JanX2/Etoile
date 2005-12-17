@@ -32,7 +32,6 @@
 	int lastScoredDoc;
 }
 - (id) initWithSubScorers: (NSArray *) subScorers
-	minimumNumberShouldMatch: (int) min
 		minimumNrMatchers: (int) minimumNrMatchers
 			  coordinator: (LCCoordinator *) c;
 @end
@@ -72,16 +71,6 @@
 @end
 
 @implementation LCBooleanScorer
-- (id) init
-{
-	self = [super init];
-	requiredScorers = [[NSMutableArray alloc] init];
-	optionalScorers = [[NSMutableArray alloc] init];
-	prohibitedScorers = [[NSMutableArray alloc] init];
-	countingSumScorer = nil;
-	ASSIGN(similarity, AUTORELEASE([[LCDefaultSimilarity alloc] init]));
-	return self;
-}
 
 - (id) initWithSimilarity: (LCSimilarity *) s
 {
@@ -98,6 +87,10 @@
 	}
 	coordinator = [[LCCoordinator alloc] initWithScorer: self];
 	minNrShouldMatch = min;
+	requiredScorers = [[NSMutableArray alloc] init];
+	optionalScorers = [[NSMutableArray alloc] init];
+	prohibitedScorers = [[NSMutableArray alloc] init];
+	countingSumScorer = nil;
 	return self;
 }
 - (void) addScorer: (LCScorer *) scorer
@@ -130,19 +123,18 @@
 		minimumNumberShouldMatch: (int) min
 {
 	return AUTORELEASE([[LCBooleanDisjunctionSumScorer alloc] initWithSubScorers: scorers
-	minimumNumberShouldMatch: min
-															   minimumNrMatchers: 1
+															   minimumNrMatchers: min
 																	 coordinator: coordinator]);
 }
 
 - (LCScorer *) countingConjunctionSumScorer: (NSArray *) scorers
 {
-	int requiredNrMatchers = [requiredScorers count];
+	int requiredNrMatchers = [scorers count];
 	// LuceneKit: Why always use LCDefaultSimilarity ?
 	LCBooleanConjunctionScorer *cs = [[LCBooleanConjunctionScorer alloc] initWithSimilarity: AUTORELEASE([[LCDefaultSimilarity alloc] init])
 																				coordinator: coordinator
 																		 requiredNrMatchers: requiredNrMatchers];
-	NSEnumerator *e = [requiredScorers objectEnumerator];
+	NSEnumerator *e = [scorers objectEnumerator];
 	LCScorer *scorer;
 	while ((scorer = [e nextObject]))
 	{
@@ -154,7 +146,7 @@
 - (LCScorer *) dualConjunctionSumScorer1: (LCScorer *) req1 scorer2: (LCScorer *) req2
 {
 	int requiredNrMatchers = [requiredScorers count];
-	LCConjunctionScorer *cs = [[LCConjunctionScorer alloc] initWithSimilarity: defaultSimilarity];
+	LCConjunctionScorer *cs = [[LCConjunctionScorer alloc] initWithSimilarity: similarity];
     // All scorers match, so defaultSimilarity super.score() always has 1 as
   	     // the coordination factor.
   	     // Therefore the sum of the scores of two scorers
@@ -258,9 +250,11 @@
 
 - (LCScorer *) addProhibitedScorers: (LCScorer *) requiredCountingSumScorer
 {
+	RETAIN(requiredCountingSumScorer);
+	//NSLog(@"AddProhibitedScorers %@", requiredCountingSumScorer);
 	if ([prohibitedScorers count] == 0)
 	{
-		return requiredCountingSumScorer; // no prohibited
+		return AUTORELEASE(requiredCountingSumScorer); // no prohibited
 	}
 	else
 	{
@@ -273,7 +267,7 @@
 		{
 			ex = AUTORELEASE([[LCDisjunctionSumScorer alloc] initWithSubScorers: prohibitedScorers]);
 		}
-		return AUTORELEASE([[LCReqExclScorer alloc] initWithRequired: requiredCountingSumScorer excluded: ex]);
+		return AUTORELEASE([[LCReqExclScorer alloc] initWithRequired: AUTORELEASE(requiredCountingSumScorer) excluded: ex]);
 	}
 }
 
@@ -357,7 +351,6 @@
 
 @implementation LCBooleanDisjunctionSumScorer
 - (id) initWithSubScorers: (NSArray *) sub
-	minimumNumberShouldMatch: (int) min
 		minimumNrMatchers: (int) minimum
 			  coordinator: (LCCoordinator *) c
 {
@@ -370,9 +363,11 @@
 
 - (float) score
 {
+	int t;
 	if ([self document] > lastScoredDoc) {
 		lastScoredDoc = [self document];
-		[coordinator setNrMatchers: [coordinator nrMatchers] + nrMatchers];
+		t = [coordinator nrMatchers] + [super nrMatchers];
+		[coordinator setNrMatchers: t];
 	}
 	return [super score];
 }

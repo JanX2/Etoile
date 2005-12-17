@@ -50,6 +50,7 @@ LuceneKit_Search_OBJC_FILES = \
 
 ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \
+	TestBooleanMinShouldMatch.m \
 	TestWildcard.m \
 	TestFuzzyQuery.m \
 	TestPrefixQuery.m \

@@ -17,8 +17,6 @@
 	LCCoordinator *coordinator;
 	LCScorer *countingSumScorer;
 	
-	LCSimilarity *defaultSimilarity;
-	
 	int minNrShouldMatch;
 }
 
