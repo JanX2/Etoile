@@ -5,8 +5,9 @@
 - (id) initWithTotalHits: (int) th
 		  scoreDocuments: (NSArray *) sd
 			  sortFields: (NSArray *) f
+			maxScore: (float) max
 {
-	self = [self initWithTotalHits: th scoreDocuments: sd];
+	self = [self initWithTotalHits: th scoreDocuments: sd maxScore: max];
 	ASSIGN(fields, f);
 	return self;
 }

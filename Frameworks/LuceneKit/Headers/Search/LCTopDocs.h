@@ -11,12 +11,17 @@
 	int totalHits;
 	/** Expert: The top hits for the query. */
 	NSArray *scoreDocs;
+	float maxScore;
 }
 /** Expert: Constructs a TopDocs.*/
 - (id) initWithTotalHits: (int) totalHits 
-		  scoreDocuments: (NSArray *) scoreDocs;
+		  scoreDocuments: (NSArray *) scoreDocs
+		maxScore: (float) maxScore;
 - (int) totalHits;
 - (NSArray *) scoreDocuments;
+
+- (float) maxScore;
+- (void) setMaxScore: (float) maxScore;
 @end
 
 #endif /* __LUCENE_SEARCH_TOP_DOCS__ */

@@ -79,9 +79,9 @@
 	NSArray * scoreDocs = [topDocs scoreDocuments];
 	
 	float scoreNorm = 1.0f;
-	if (length > 0 && [[scoreDocs objectAtIndex: 0] score] > 1.0f)
+	if (length > 0 && [topDocs maxScore] > 1.0f)
 	{
-		scoreNorm = 1.0f / [[scoreDocs objectAtIndex: 0] score];
+		scoreNorm = 1.0f / [topDocs maxScore];
 	}
 	
 	int end = ([scoreDocs count] < length) ? [scoreDocs count] : length;

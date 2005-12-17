@@ -9,7 +9,8 @@
 }
 - (id) initWithTotalHits: (int) totalHits 
 		  scoreDocuments: (NSArray *) scoreDocs
-			  sortFields: (NSArray *) fields;
+			  sortFields: (NSArray *) fields
+			maxScore: (float) maxScore;
 @end
 
 #endif /* __LUCENE_SEARCH_TOP_FIELD_DOCS__ */

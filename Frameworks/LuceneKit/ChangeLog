@@ -5,6 +5,12 @@
    * Source/Analysis/LCAnalyzer.m:
    * Source/Index/LCDocumentWriter.m:
    * Source/Search/LCSmiliarity.m:
+   * Source/Search/LCHits.m:
+   * Source/Search/LCTopDocs.m:
+   * Source/Search/LCTopFieldDocs.m:
+   * Source/Search/LCIndexSearcher.m:
+   * Source/Index/LCMultiReader.m:
+   * Source/Index/TestMultiReader.m:
    Update to date.
 
 2005-12-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>

@@ -109,6 +109,7 @@
 		[hq insert: d];
 	}
 }
+
 @end
 
 @interface LCHitCollector3: LCHitCollector
@@ -222,7 +223,8 @@
 	if (scorer == nil)
 	{
 		LCTopDocs *doc = [[LCTopDocs alloc] initWithTotalHits: 0
-											   scoreDocuments: [NSArray array]];
+											   scoreDocuments: [NSArray array]
+		maxScore: FLT_MIN];
 		return AUTORELEASE(doc);
 	}
 	
@@ -242,8 +244,9 @@
 			[scoreDocs insertObject: [hq pop] atIndex: 0];
 	}
 	
+	float maxScore = ([hc totalHits] == 0) ? FLT_MIN : [[scoreDocs  objectAtIndex: 0] score];
 	LCTopDocs *td = [[LCTopDocs alloc] initWithTotalHits: [hc totalHits]
-										  scoreDocuments: scoreDocs];
+										  scoreDocuments: scoreDocs maxScore: maxScore];
 	return AUTORELEASE(td);
 }
 
@@ -257,7 +260,8 @@
 	{
 		LCTopFieldDocs *doc = [[LCTopDocs alloc] initWithTotalHits: 0
 													scoreDocuments: [NSArray array]
-														sortFields: [sort sortFields]];
+														sortFields: [sort sortFields]
+				maxScore: FLT_MIN];
 		return AUTORELEASE(doc);
 	}
 	
@@ -278,7 +282,8 @@
 	}
 	LCTopFieldDocs *td = [[LCTopFieldDocs alloc] initWithTotalHits: [hc totalHits]
 													scoreDocuments: scoreDocs
-														sortFields: [hq sortFields]];
+														sortFields: [hq sortFields]
+			maxScore: [hq maximalScore]];
 	return AUTORELEASE(td);
 }
 

@@ -7,10 +7,12 @@
 
 - (id) initWithTotalHits: (int) th
 		  scoreDocuments: (NSArray *) sd
+		maxScore: (float) max
 {
 	self = [super init];
 	totalHits = th;
 	ASSIGN(scoreDocs, sd);
+	maxScore = max;
 	return self;
 }
 
@@ -22,5 +24,8 @@
 
 - (int) totalHits { return totalHits; }
 - (NSArray *) scoreDocuments { return scoreDocs; }
+
+- (float) maxScore { return maxScore; }
+- (void) setMaxScore: (float) max { maxScore = max; }
 
 @end

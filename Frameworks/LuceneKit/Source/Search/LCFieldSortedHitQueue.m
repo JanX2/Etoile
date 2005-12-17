@@ -126,7 +126,7 @@
 #endif
 	}
 	[doc setFields: f ];
-	if (maxscore > 1.0f) [doc setScore: ([doc score] / maxscore)];   // normalize scores
+	//if (maxscore > 1.0f) [doc setScore: ([doc score] / maxscore)];   // normalize scores
 	return doc;
 }
 

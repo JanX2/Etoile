@@ -138,6 +138,7 @@
 	for (i = 0; i < [subReaders count]; i++)
 		[[subReaders objectAtIndex: i] undeleteAll];
     hasDeletions = NO;
+	numDocs = -1; // invalidate cache
 }
 
 - (int) readerIndex: (int) n  // find reader for doc n:

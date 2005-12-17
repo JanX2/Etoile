@@ -81,6 +81,21 @@
 //NSLog(@"LCMultiReader ===");
 }
 
+- (void) testUndeleteAll
+{
+	[sis readFromDirectory: dir];
+	LCMultiReader *reader = [[LCMultiReader alloc] initWithDirectory: dir
+														segmentInfos: sis
+															   close: NO
+															 readers: readers];
+	UKNotNil(reader);
+	UKIntsEqual(2, [reader numberOfDocuments]);
+	[reader deleteDocument: 0];
+	UKIntsEqual(1, [reader numberOfDocuments]);
+	[reader undeleteAll];
+	UKIntsEqual(2, [reader numberOfDocuments]);
+}
+
 - (void) testTermVectors 
 {
 	LCMultiReader *reader = [[LCMultiReader alloc] initWithDirectory: dir
