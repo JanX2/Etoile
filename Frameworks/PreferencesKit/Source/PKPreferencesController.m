@@ -296,7 +296,7 @@ must be called each time a new preference pane is selected like with
         // toolbar is visible), by the way we have to rely on a special method
         // until GNUstep implementation matches Cocoa better.
         
-        #ifndef GNUstep
+        #ifndef GNUSTEP
         return [(NSWindow *)owner contentView];
         
         #else

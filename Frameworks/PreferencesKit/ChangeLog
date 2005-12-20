@@ -1,3 +1,10 @@
+2005-12-20  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Source/PKPreferencesController.m (-preferencesView): Really fixed
+    this time, in our last commit the conditional directive wrongly
+    referenced 'GNUstep' and not 'GNUSTEP' (-contentViewWithoutToolbar was
+    thus not called).
+
 2005-11-28  Quentin Mathe <qmathe@club-internet.fr>
    
     * Source/PKPreferencesController.m (-preferencesView): Fixed to return the
