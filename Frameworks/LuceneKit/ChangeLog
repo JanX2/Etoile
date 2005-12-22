@@ -1,3 +1,9 @@
+2005-12-22 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+   * Source/Search/LCFieldCacheImpl.m:
+   * Source/Search/LCBooleanScorer.m:
+   fix missing 'return' suggested by Dirk Theisen <d.theisen...>
+
 2005-12-16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
    * Source/Search/LCBooleanScorer.m:
    * Source/Search/LCBooleanMinShouldMatch.m:

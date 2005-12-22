@@ -166,7 +166,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 
 - (NSDictionary *) ints: (LCIndexReader *) reader field: (NSString *) field
 {
-	[self ints: reader field: field parser: AUTORELEASE([[LCIntParserImpl alloc] init])];
+	return [self ints: reader field: field parser: AUTORELEASE([[LCIntParserImpl alloc] init])];
 }
 
 - (NSDictionary *) ints: (LCIndexReader *) reader field: (NSString *) field
@@ -205,7 +205,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 
 - (NSDictionary *) floats: (LCIndexReader *) reader field: (NSString *) field
 {
-	[self floats: reader field: field parser: AUTORELEASE([[LCFloatParserImpl alloc] init])];
+	return [self floats: reader field: field parser: AUTORELEASE([[LCFloatParserImpl alloc] init])];
 }
 
 - (NSDictionary *) floats: (LCIndexReader *) reader field: (NSString *) field

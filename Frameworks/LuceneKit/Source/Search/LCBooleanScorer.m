@@ -74,7 +74,7 @@
 
 - (id) initWithSimilarity: (LCSimilarity *) s
 {
-	[self initWithSimilarity: s minimumNumberShouldMatch: 0];
+	return [self initWithSimilarity: s minimumNumberShouldMatch: 0];
 }
 
 - (id) initWithSimilarity: (LCSimilarity *) s
