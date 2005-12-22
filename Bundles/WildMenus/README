@@ -5,11 +5,18 @@ Based off Nicolas Roard's excellent Camaelon:
 
 make
 
-defaults write NSGlobalDomain GUIThemeBundles "YourLocation"
+defaults write NSGlobalDomain GSAppKitUserBundles '( "WildMenusLocation/WildMenus.themeEngine" )'
 
-(with YourLocation the path to WildMenus.themeEngine, included).
+(with WildMenusLocation the path to WildMenus.themeEngine).
 
 Now, just try to run a GNUstep program ... :-)
+
+Camaelon and WildMenus
+======================
+
+In case you are using both WildMenus and Camaelon, you need to do:
+
+defaults write NSGlobalDomain GSAppKitUserBundles '( "WildMenusLocation/WildMenus.themeEngine", "CamaelonLocation/Camaelon.themeEngine" )'
 
 Tips:
 =====
