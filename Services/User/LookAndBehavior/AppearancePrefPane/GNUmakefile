@@ -10,7 +10,9 @@ ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
 BUNDLE_NAME = AppearancePrefPane
 VERSION = 0.1
 BUNDLE_EXTENSION = .prefPane
-BUNDLE_INSTALL_DIR = 
+
+AppearancePrefPane_INSTALL_DIR = 
+AppearancePrefPane_STANDARD_INSTALL = no
 
 AppearancePrefPane_PRINCIPAL_CLASS = AppearancePrefPane
 AppearancePrefPane_APPLICATION_ICON =
@@ -41,12 +43,6 @@ AppearancePrefPane_LANGUAGES = \
 #
 AppearancePrefPane_OBJC_FILES = \
 	AppearancePrefPane.m
-
-#
-# Header files
-#
-AppearancePrefPane_HEADER_FILES = \
-	AppearancePrefPane.h
 
 #
 # C files

@@ -10,7 +10,9 @@ ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
 BUNDLE_NAME = LanguagesPrefPane
 VERSION = 0.1
 BUNDLE_EXTENSION = .prefPane
-BUNDLE_INSTALL_DIR = 
+
+LanguagesPrefPane_INSTALL_DIR = 
+LanguagesPrefPane_STANDARD_INSTALL = no
 
 LanguagesPrefPane_PRINCIPAL_CLASS = LanguagesPrefPane
 LanguagesPrefPane_APPLICATION_ICON =
@@ -41,12 +43,6 @@ LanguagesPrefPane_LANGUAGES = \
 #
 LanguagesPrefPane_OBJC_FILES = \
 	LanguagesPrefPane.m
-
-#
-# Header files
-#
-LanguagesPrefPane_HEADER_FILES = \
-	LanguagesPrefPane.h
 
 #
 # C files

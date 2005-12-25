@@ -1,3 +1,11 @@
+2005-12-25  Quentin Mathe <qmathe@club-internet.fr>
+   
+    * AppearancePrefPane/GNUmakefile:
+    * LanguagesPrefPane/GNUmakefile:
+    Removed xxx_HEADER_FILES because headers haven't to be installed and added
+    xxx_STANDARD_INSTALL set to 'no' in order to ignore install phase with
+    the related bundles (bug reported by Rob Burns). 
+
 2005-12-12  Quentin Mathe <qmathe@club-internet.fr>
     
     * COPYING: Added.
