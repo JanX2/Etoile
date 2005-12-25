@@ -10,7 +10,9 @@ ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
 BUNDLE_NAME = EnergyPrefPane
 VERSION = 0.1
 BUNDLE_EXTENSION = .prefPane
-BUNDLE_INSTALL_DIR = 
+
+EnergyPrefPane_STANDARD_INSTALL = no
+EnergyPrefPane_INSTALL_DIR =
 
 EnergyPrefPane_PRINCIPAL_CLASS = EnergyPrefPane
 EnergyPrefPane_APPLICATION_ICON =
@@ -40,12 +42,6 @@ EnergyPrefPane_LANGUAGES = \
 #
 EnergyPrefPane_OBJC_FILES = \
 	EnergyPrefPane.m
-
-#
-# Header files
-#
-EnergyPrefPane_HEADER_FILES = \
-	EnergyPrefPane.h
 
 #
 # C files

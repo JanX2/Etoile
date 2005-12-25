@@ -10,7 +10,9 @@ ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
 BUNDLE_NAME = MonitorPrefPane
 VERSION = 0.1
 BUNDLE_EXTENSION = .prefPane
-BUNDLE_INSTALL_DIR = 
+
+MonitorPrefPane_STANDARD_INSTALL = no
+MonitorPrefPane_INSTALL_DIR =
 
 MonitorPrefPane_PRINCIPAL_CLASS = MonitorPrefPane
 MonitorPrefPane_APPLICATION_ICON =
@@ -40,12 +42,6 @@ MonitorPrefPane_LANGUAGES = \
 #
 MonitorPrefPane_OBJC_FILES = \
 	MonitorPrefPane.m
-
-#
-# Header files
-#
-MonitorPrefPane_HEADER_FILES = \
-	MonitorPrefPane.h
 
 #
 # C files

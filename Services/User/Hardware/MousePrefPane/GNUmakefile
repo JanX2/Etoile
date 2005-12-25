@@ -10,7 +10,9 @@ ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
 BUNDLE_NAME = MousePrefPane
 VERSION = 0.1
 BUNDLE_EXTENSION = .prefPane
-BUNDLE_INSTALL_DIR = 
+
+MousePrefPane_STANDARD_INSTALL = no
+MousePrefPane_INSTALL_DIR =
 
 MousePrefPane_PRINCIPAL_CLASS = MousePrefPane
 MousePrefPane_APPLICATION_ICON =
@@ -40,12 +42,6 @@ MousePrefPane_LANGUAGES = \
 #
 MousePrefPane_OBJC_FILES = \
 	MousePrefPane.m
-
-#
-# Header files
-#
-MousePrefPane_HEADER_FILES = \
-	MousePrefPane.h
 
 #
 # C files

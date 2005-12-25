@@ -10,7 +10,9 @@ ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
 BUNDLE_NAME = StartupPrefPane
 VERSION = 0.1
 BUNDLE_EXTENSION = .prefPane
-BUNDLE_INSTALL_DIR = 
+
+StartupPrefPane_STANDARD_INSTALL = no
+StartupPrefPane_INSTALL_DIR =
 
 StartupPrefPane_PRINCIPAL_CLASS = StartupPrefPane
 StartupPrefPane_APPLICATION_ICON =
@@ -40,12 +42,6 @@ StartupPrefPane_LANGUAGES = \
 #
 StartupPrefPane_OBJC_FILES = \
 	StartupPrefPane.m
-
-#
-# Header files
-#
-StartupPrefPane_HEADER_FILES = \
-	StartupPrefPane.h
 
 #
 # C files

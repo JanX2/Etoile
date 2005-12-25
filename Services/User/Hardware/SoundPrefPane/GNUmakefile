@@ -10,7 +10,9 @@ ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
 BUNDLE_NAME = SoundPrefPane
 VERSION = 0.1
 BUNDLE_EXTENSION = .prefPane
-BUNDLE_INSTALL_DIR = 
+
+SoundPrefPane_STANDARD_INSTALL = no
+SoundPrefPane_INSTALL_DIR =
 
 SoundPrefPane_PRINCIPAL_CLASS = SoundPrefPane
 SoundPrefPane_APPLICATION_ICON =
@@ -40,12 +42,6 @@ SoundPrefPane_LANGUAGES = \
 #
 SoundPrefPane_OBJC_FILES = \
 	SoundPrefPane.m
-
-#
-# Header files
-#
-SoundPrefPane_HEADER_FILES = \
-	SoundPrefPane.h
 
 #
 # C files

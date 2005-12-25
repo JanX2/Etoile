@@ -10,7 +10,9 @@ ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
 BUNDLE_NAME = KeyboardPrefPane
 VERSION = 0.1
 BUNDLE_EXTENSION = .prefPane
-BUNDLE_INSTALL_DIR = 
+
+KeyboardPrefPane_STANDARD_INSTALL = no
+KeyboardPrefPane_INSTALL_DIR =
 
 KeyboardPrefPane_PRINCIPAL_CLASS = KeyboardPrefPane
 KeyboardPrefPane_APPLICATION_ICON =
@@ -40,12 +42,6 @@ KeyboardPrefPane_LANGUAGES = \
 #
 KeyboardPrefPane_OBJC_FILES = \
 	KeyboardPrefPane.m
-
-#
-# Header files
-#
-KeyboardPrefPane_HEADER_FILES = \
-	KeyboardPrefPane.h
 
 #
 # C files
