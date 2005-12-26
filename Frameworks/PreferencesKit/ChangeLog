@@ -1,3 +1,9 @@
+2005-12-26  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Source/UKPluginsRegistry.m: Added 'APPLICATION_SUPPORT' macro
+    wrapped in a conditional directive to take in account folder name variations
+    between GNUstep and Cocoa (bug reported by Rob Burns) 
+
 2005-12-20  Quentin Mathe <qmathe@club-internet.fr>
     
     * Source/PKPreferencesController.m (-preferencesView): Really fixed

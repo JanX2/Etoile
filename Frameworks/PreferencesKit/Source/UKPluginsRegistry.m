@@ -32,6 +32,12 @@
 #import <UnitKit/UnitKit.h>
 #endif
 
+#ifdef GNUSTEP
+#define APPLICATION_SUPPORT @"ApplicationSupport"
+#else /* Cocoa */
+#define APPLICATION_SUPPORT @"Application Support"
+#endif
+
 static NSFileManager *fm = nil;
 
 
@@ -106,8 +112,8 @@ static NSFileManager *fm = nil;
     UKNotNil(bundle);
     UKNotNil(info);
 
-    NSString *supportDir = 
-        [[paths objectAtIndex: 0] stringByAppendingPathComponent: @"Application Support"];
+    NSString *supportDir = [[paths objectAtIndex: 0]
+        stringByAppendingPathComponent: APPLICATION_SUPPORT];
     BOOL isDir;
     
     UKTrue([fm fileExistsAtPath: supportDir isDirectory:&isDir]);
@@ -127,7 +133,8 @@ static NSFileManager *fm = nil;
 	NSString *appName = [[bundle infoDictionary] objectForKey: @"NSExecutable"];
     if (appName == nil)
         appName = [[bundle infoDictionary] objectForKey: @"CFBundleExecutable"];
-	NSString *pluginsDir = [[@"Application Support" stringByAppendingPathComponent: appName] 
+	NSString *pluginsDir = [[APPLICATION_SUPPORT 
+        stringByAppendingPathComponent: appName] 
         stringByAppendingPathComponent: @"PlugIns"];
 	
 	while ((path = [e nextObject]) != nil)
