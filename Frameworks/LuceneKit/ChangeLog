@@ -1,3 +1,8 @@
+2005-12-25 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+   * Source/Index/LCTermVectorsReader.m:
+   initiate return value suggested by Dirk Theisen <d.theisen...>
+
 2005-12-22 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
    * Source/Search/LCFieldCacheImpl.m:

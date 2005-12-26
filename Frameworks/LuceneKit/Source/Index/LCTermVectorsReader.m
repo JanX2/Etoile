@@ -153,7 +153,7 @@
  */
 - (NSArray *) termFrequencyVectors: (int) docNum
 {
-	NSArray *result;
+	NSArray *result = nil;;
     // Check if no term vectors are available for this segment at all
     if (tvx != nil) {
 		//We need to offset by
