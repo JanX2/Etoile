@@ -11,6 +11,7 @@
 #include "LCTerm.h"
 #include "LCDocument.h"
 #include "GNUstep.h"
+#include "float.h"
 
 /** Implements search over a single IndexReader.
 *

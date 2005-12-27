@@ -1,3 +1,8 @@
+2005-12-27 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+   * Source/Search/LCIndexSearcher.m:
+   include float.h
+
 2005-12-26 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
    add autorelease pool to reduce memory usage.
