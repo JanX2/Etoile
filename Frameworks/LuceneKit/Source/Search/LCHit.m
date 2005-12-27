@@ -26,6 +26,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(hits);
+	[super dealloc];
+}
+
 - (LCDocument *) document
 {
 	if (!resolved) [self fetchTheHit];

@@ -58,6 +58,13 @@ static int maxClauseCount = 1024;
 	disableCoord = dc;
 	return self;
 }
+
+- (void) dealloc
+{
+	DESTROY(clauses);
+	[super dealloc];
+}
+
 - (BOOL) isCoordinationDisabled { return disableCoord; }
 - (void) setCoordinationDisabled: (BOOL) disable { disableCoord = disable; }
 - (LCSimilarity *) similarity: (LCSearcher *) searcher
@@ -77,7 +84,7 @@ static int maxClauseCount = 1024;
 	LCBooleanClause *clause = [[LCBooleanClause alloc] initWithQuery: query
 															required: required prohibited: prohibited];
 	[self addClause: clause];
-	RELEASE(clause);
+	DESTROY(clause);
 }
 
 - (void) addQuery: (LCQuery *) query
@@ -85,7 +92,7 @@ static int maxClauseCount = 1024;
 {
 	LCBooleanClause *clause = [[LCBooleanClause alloc] initWithQuery: query occur: occur];
 	[self addClause: clause];
-	RELEASE(clause);
+	DESTROY(clause);
 }
 
 - (void) addClause: (LCBooleanClause *) clause
@@ -155,13 +162,6 @@ static int maxClauseCount = 1024;
 		[[clause query] extractTerms: terms];
 	}
 }
-
-#if 0 // LuceneKit: removed from Apache Lucene
-- (LCQuery *) combine: (NSArray *) queries
-{
-	return [LCQuery mergeBooleanQueries: queries];
-}
-#endif
 
 - (LCQuery *) copyWithZone: (NSZone *) zone
 {
@@ -293,6 +293,8 @@ static int maxClauseCount = 1024;
 - (void) dealloc
 {
 	DESTROY(weights);
+	DESTROY(query);
+	DESTROY(similarity);
 	[super dealloc];
 }
 

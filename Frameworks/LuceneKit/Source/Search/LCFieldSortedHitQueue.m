@@ -53,6 +53,13 @@
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(comparators);
+	DESTROY(fields);
+	[super dealloc];
+}
+
 /* LuceneKit: use old style -lessThan method */
 /**
 * Returns whether <code>a</code> is less relevant than <code>b</code>.
@@ -127,6 +134,7 @@
 	}
 	[doc setFields: f ];
 	//if (maxscore > 1.0f) [doc setScore: ([doc score] / maxscore)];   // normalize scores
+	DESTROY(f);
 	return doc;
 }
 
@@ -171,6 +179,12 @@ static LCComparatorCache *sharedInstance;
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(comparators);
+	[super dealloc];
+}
+
 /** Returns a comparator if it is in the cache. */
 - (id <LCScoreDocComparator>) lookup: (LCIndexReader *) reader
 							   field: (NSString *) field type: (int) type
@@ -188,7 +202,7 @@ static LCComparatorCache *sharedInstance;
 	
 	NSDictionary *readerCache = [comparators objectForKey: reader];
 	if (readerCache == nil) return nil;
-	return [readerCache objectForKey: entry];
+	return [readerCache objectForKey: AUTORELEASE(entry)];
 }
 
 /** Stores a comparator into the cache. */
@@ -212,6 +226,7 @@ static LCComparatorCache *sharedInstance;
 	}
 	[readerCache setObject: value forKey: entry];
 	[comparators setObject: readerCache forKey: reader];
+	DESTROY(entry);
 	return readerCache;
 }
 
@@ -328,6 +343,12 @@ static LCComparatorCache *sharedInstance;
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(fieldOrder);
+	[super dealloc];
+}
+
 - (NSComparisonResult) compare: (LCScoreDoc *) i to: (LCScoreDoc*) j
 {
 	id oi = [fieldOrder objectForKey: [NSNumber numberWithInt: [i document]]];
@@ -382,6 +403,12 @@ static LCComparatorCache *sharedInstance;
 	self = [super init];
 	ASSIGN(fieldOrder, values);
 	return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(fieldOrder);
+	[super dealloc];
 }
 
 - (NSComparisonResult) compare: (LCScoreDoc *) i to: (LCScoreDoc*) j

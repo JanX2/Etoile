@@ -29,6 +29,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(term);
+	[super dealloc];
+}
+
 - (id <LCWeight>) createWeight: (LCSearcher *) searcher
 {
 	return AUTORELEASE([[LCTermWeight alloc] initWithTermQuery: self searcher: searcher]);
@@ -84,6 +90,13 @@
 	idf = [similarity inverseDocumentFrequencyWithTerm: [query term]
 											  searcher: s];
 	return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(query);
+	DESTROY(similarity);
+	[super dealloc];
 }
 
 - (NSString *) description
@@ -161,7 +174,7 @@
 	if ([queryExpl value] == 1.0f)
 		return fieldExpl;
 	
-	return result;
+	return AUTORELEASE(result);
 }
 
 @end

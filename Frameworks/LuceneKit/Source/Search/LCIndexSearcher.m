@@ -61,11 +61,18 @@
 		if ([hq size] < nDocs || score >= minScore) 
 		{
 			LCScoreDoc *d = [[LCScoreDoc alloc] initWithDocument: doc score: score];
-			[hq insert: d];
+			[hq insert: AUTORELEASE(d)];
 			minScore = [((LCScoreDoc *)[hq top]) score]; // maintain minScore
 		}
 	}
 }
+
+- (void) dealloc
+{
+	DESTROY(hq);
+	[super dealloc];
+}
+
 @end
 
 @interface LCHitCollector2: LCHitCollector
@@ -106,8 +113,14 @@
 	{
 		totalHits++;
 		LCFieldDoc *d = [[LCFieldDoc alloc] initWithDocument: doc score: score];
-		[hq insert: d];
+		[hq insert: AUTORELEASE(d)];
 	}
+}
+
+- (void) dealloc
+{
+	DESTROY(hq);
+	[super dealloc];
 }
 
 @end
@@ -140,6 +153,12 @@
 	{
 		[collector collect: doc score: score];
 	}
+}
+
+- (void) dealloc
+{
+	DESTROY(collector);
+	[super dealloc];
 }
 @end
 
@@ -247,6 +266,9 @@
 	float maxScore = ([hc totalHits] == 0) ? FLT_MIN : [[scoreDocs  objectAtIndex: 0] score];
 	LCTopDocs *td = [[LCTopDocs alloc] initWithTotalHits: [hc totalHits]
 										  scoreDocuments: scoreDocs maxScore: maxScore];
+	DESTROY(hq);
+	DESTROY(hc);
+	DESTROY(scoreDocs);
 	return AUTORELEASE(td);
 }
 
@@ -284,6 +306,9 @@
 													scoreDocuments: scoreDocs
 														sortFields: [hq sortFields]
 			maxScore: [hq maximalScore]];
+	DESTROY(hq);
+	DESTROY(hc);
+	DESTROY(scoreDocs);
 	return AUTORELEASE(td);
 }
 
@@ -295,6 +320,7 @@
 	if (filter != nil) {
 		collector = [[LCHitCollector3 alloc] initWithReader: reader 
 													 filter: filter hitCollector: results];
+		AUTORELEASE(collector);
 	}
 	LCScorer *scorer = [weight scorer: reader];
 	if (scorer == nil) return;

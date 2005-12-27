@@ -35,6 +35,17 @@ static int SCORE_CACHE_SIZE = 32;
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(weight);
+	DESTROY(termDocs);
+	DESTROY(norms);
+	DESTROY(docs);
+	DESTROY(freqs);
+	DESTROY(scoreCache);
+	[super dealloc];
+}
+
 - (void) score: (LCHitCollector *) hc
 {
 	[self next];

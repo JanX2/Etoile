@@ -20,6 +20,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(similarity);
+	[super dealloc];
+}
+
 - (LCHits *) search: (LCQuery *) query
 {
 	return [self search: query filter: nil];

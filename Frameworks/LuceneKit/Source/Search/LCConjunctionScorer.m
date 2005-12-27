@@ -32,6 +32,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(scorers);
+	[super dealloc];
+}
+
 - (void) addScorer: (LCScorer *) scorer
 {
 	[scorers addObject: scorer];

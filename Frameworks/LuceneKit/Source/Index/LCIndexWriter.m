@@ -408,6 +408,7 @@ An IndexWriter creates and maintains an index.
 for search. */
 - (void) optimize
 {
+	CREATE_AUTORELEASE_POOL(pool);
 	[self flushRamSegments];
 	while ([segmentInfos numberOfSegments] > 1 ||
 		   ([segmentInfos numberOfSegments] == 1 &&
@@ -419,6 +420,7 @@ for search. */
 		int minSegment = [segmentInfos numberOfSegments] - mergeFactor;
 		[self mergeSegments: ((minSegment < 0) ? 0 : minSegment)];
 	}
+	DESTROY(pool);
 }
 
 /** Merges all segments from an array of indexes into this index.

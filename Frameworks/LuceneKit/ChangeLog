@@ -1,3 +1,7 @@
+2005-12-26 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+   add autorelease pool to reduce memory usage.
+
 2005-12-25 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
    * Source/Index/LCTermVectorsReader.m:

@@ -56,6 +56,12 @@
 	}
 }
 
+- (void) dealloc
+{
+	DESTROY(subScorers);
+	[super dealloc];
+}
+
 - (BOOL) next
 {
 	if (scorerQueue == nil) {

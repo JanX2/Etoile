@@ -216,6 +216,7 @@
 
 - (void) doCommit
 {
+	CREATE_AUTORELEASE_POOL(pool);
 	NSString *file;
 	if (deletedDocsDirty) {               // re-write deleted 
 		file = [segment stringByAppendingPathExtension: @"tmp"];
@@ -242,6 +243,7 @@
 	deletedDocsDirty = NO;
 	normsDirty = NO;
 	undeleteAll = NO;
+	DESTROY(pool);
 }
 
 - (void) doClose
@@ -295,11 +297,13 @@
 
 - (void) doDelete: (int) docNum
 {
+	CREATE_AUTORELEASE_POOL(pool);
 	if (deletedDocs == nil)
 		ASSIGN(deletedDocs, AUTORELEASE([(LCBitVector *)[LCBitVector alloc] initWithSize: [self maximalDocument]]));
 	deletedDocsDirty = YES;
 	undeleteAll = NO;
 	[deletedDocs setBit: docNum];
+	DESTROY(pool);
 }
 
 - (void) doUndeleteAll

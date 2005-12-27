@@ -31,6 +31,12 @@
 - (void) dealloc
 {
 	DESTROY(hitDocs);
+	DESTROY(weight);
+	DESTROY(searcher);
+	DESTROY(filter);
+	DESTROY(sort);
+	DESTROY(first);
+	DESTROY(last);
 	[super dealloc];
 }
 
@@ -62,6 +68,7 @@
 
 - (void) moreDocuments: (int)  min
 {
+	CREATE_AUTORELEASE_POOL(pool);
 	if ([hitDocs count] > min) {
 		min = [hitDocs count];
 	}
@@ -93,6 +100,7 @@
 		[hitDocs addObject: newDoc];
 		RELEASE(newDoc);
 	}
+	DESTROY(pool);
 }
 
 - (unsigned int) count 
@@ -196,6 +204,14 @@
 	score = s;
 	identifier = i;
 	return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(prev);
+	DESTROY(next);
+	DESTROY(doc);
+	[super dealloc];
 }
 
 - (LCHitDocument *) prev { return prev; };

@@ -12,6 +12,13 @@
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(reqScorer);
+	DESTROY(optScorer);
+	[super dealloc];
+}
+
 - (BOOL) next
 {
 	return [reqScorer next];

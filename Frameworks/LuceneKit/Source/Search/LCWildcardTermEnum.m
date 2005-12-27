@@ -50,7 +50,7 @@
 	//NSLog(@"converted %@", ms);
 	
 	ASSIGN(ogre, ([OGRegularExpression regularExpressionWithString: [NSString stringWithFormat: @"^%@$", ms]]));
-	AUTORELEASE(ms);
+	DESTROY(ms);
 	
 	LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
 	LCTermEnumerator *e = [reader termEnumeratorWithTerm: t];
@@ -58,6 +58,15 @@
 	AUTORELEASE(t);
 	//AUTORELEASE(e);  // FIXME: cause segment fault
 	return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(searchTerm);
+	DESTROY(field);
+	DESTROY(text);
+	DESTROY(ogre);
+	[super dealloc];
 }
 
 - (BOOL) isEqualToTerm: (LCTerm *) term

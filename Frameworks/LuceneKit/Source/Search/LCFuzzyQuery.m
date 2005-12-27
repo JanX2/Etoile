@@ -2,6 +2,7 @@
 #include "LCTermQuery.h"
 #include "LCBooleanQuery.h"
 #include "LCFuzzyTermEnum.h"
+#include "LCSmallFloat.h"
 #include "GNUstep.h"
 
 @interface LCScoreTerm: NSObject <LCComparable>
@@ -102,6 +103,8 @@
 
 - (LCQuery *) rewrite: (LCIndexReader *) reader
 {
+	LCBooleanQuery *query = [[LCBooleanQuery alloc] initWithCoordination: YES];
+	CREATE_AUTORELEASE_POOL(pool);
 	LCFilteredTermEnumerator *enumerator = [self enumerator: reader];
 	int maxClauseCount = [LCBooleanQuery maxClauseCount];
 	LCScoreTermQueue *stQueue = [(LCScoreTermQueue *)[LCScoreTermQueue alloc] initWithSize: maxClauseCount];
@@ -124,7 +127,6 @@
 	} while ([enumerator hasNextTerm]);
 	[enumerator close];
 	
-	LCBooleanQuery *query = [[LCBooleanQuery alloc] initWithCoordination: YES];
 	int i, size = [stQueue size];
 	for (i = 0; i < size; i++) {
 		LCScoreTerm *st = (LCScoreTerm *) [stQueue pop];
@@ -133,7 +135,7 @@
 		[query addQuery: tq occur: LCOccur_SHOULD]; // add to query
 		DESTROY(tq);
 	}
-
+	DESTROY(pool);
 	return AUTORELEASE(query);
 }
 
@@ -147,7 +149,6 @@
 	}
 	[ms appendFormat: @"%@~%f%@", [t text], minimumSimilarity, LCStringFromBoost([self boost])];
 	return AUTORELEASE(ms);
-//	return [NSString stringWithFormat: @"%@~%f", [super descriptionWithField: field], minimumSimilarity];
 }
 
 - (BOOL) isEqual: (id) o
@@ -165,7 +166,7 @@
 {
 	int result = [super hash];
 	//		result = 29 * result + minimumSimilarity != +0.0f ? Float.floatToIntBits(minimumSimilarity) : 0;
-	result = (29 * result + minimumSimilarity != +0.0f) ? (int)(minimumSimilarity) : 0;
+	result = (29 * result + minimumSimilarity != +0.0f) ? (int)(FloatToIntBits(minimumSimilarity)) : 0;
 	result = 29 * result + prefixLength;
 	return result;
 }
@@ -180,6 +181,12 @@
 	ASSIGN(term, t);
 	score = s;
 	return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(term);
+	[super dealloc];
 }
 
 - (float) score { return score; }

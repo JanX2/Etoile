@@ -136,6 +136,16 @@ int minOfTwo(int a, int b)
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(maxDistances);
+	DESTROY(searchTerm);
+	DESTROY(field);
+	DESTROY(text);
+	DESTROY(prefix);
+	[super dealloc];
+}
+
   /**
    * The termCompare method in FuzzyTermEnum uses Levenshtein distance to 
    * calculate the distance between the given term and the comparing term. 

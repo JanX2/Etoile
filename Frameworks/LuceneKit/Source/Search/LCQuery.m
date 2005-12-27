@@ -92,11 +92,15 @@
 /** Expert: Constructs an initializes a Weight for a top-level query. */
 - (id <LCWeight>) weight: (LCSearcher *) searcher
 {
+	CREATE_AUTORELEASE_POOL(pool);
 	LCQuery *query = [searcher rewrite: self];
 	id <LCWeight> weight = [query createWeight: searcher];
+	RETAIN(weight);
 	float sum = [weight sumOfSquaredWeights];
 	float norm = [[self similarity: searcher] queryNorm: sum];
 	[weight normalize: norm];
+	DESTROY(pool);
+	AUTORELEASE(weight);
 	return weight;
 }
 
@@ -114,6 +118,7 @@
 - (LCQuery *) combine: (NSArray *) queries
 {
   NSMutableArray *uniques = [[NSMutableArray alloc] init];
+  AUTORELEASE(uniques);
   int i, count = [queries count];
   for (i = 0; i < count; i++) {
     LCQuery *query = [queries objectAtIndex: i];
@@ -182,7 +187,8 @@
 	{
 		[result addClause: clause];
 	}
-	return result;
+	DESTROY(allClauses);
+	return AUTORELEASE(result);
 }
 
 /** Expert: Returns the Similarity implementation to be used for this query.

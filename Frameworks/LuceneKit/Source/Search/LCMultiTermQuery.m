@@ -27,6 +27,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(term);
+	[super dealloc];
+}
+
 - (LCTerm *) term { return term; }
 
 /** Construct the enumeration to be used, expanding the pattern term. */
@@ -34,8 +40,9 @@
 
 - (LCQuery *) rewrite: (LCIndexReader *) reader
 {
-	LCFilteredTermEnumerator *enumerator = [self enumerator: reader];
 	LCBooleanQuery *query = [[LCBooleanQuery alloc] initWithCoordination: YES];
+	CREATE_AUTORELEASE_POOL(pool);
+	LCFilteredTermEnumerator *enumerator = [self enumerator: reader];
 	do {
 		LCTerm *t = [enumerator term];
 		if (t != nil) 
@@ -46,6 +53,7 @@
 		}
 	} while ([enumerator hasNextTerm]);
 	[enumerator close];
+	DESTROY(pool);
 	return AUTORELEASE(query);
 }
 

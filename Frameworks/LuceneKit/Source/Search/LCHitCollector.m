@@ -30,4 +30,10 @@
 }
 - (id) target { return target; }
 - (SEL) selector { return selector; }
+
+- (void) dealloc
+{
+	DESTROY(target);
+	[super dealloc];
+}
 @end

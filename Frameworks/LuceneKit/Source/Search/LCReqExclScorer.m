@@ -13,9 +13,15 @@
 	self = [self initWithSimilarity: nil]; // No similarity used
 	ASSIGN(reqScorer, r);
 	ASSIGN(exclScorer, e);
-	//NSLog(@"LCReqExclScorer required: %@ excluded: %@", reqScorer, exclScorer);
 	firstTime = YES;
 	return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(reqScorer);
+	DESTROY(exclScorer);
+	[super dealloc];
 }
 
 - (BOOL) next
