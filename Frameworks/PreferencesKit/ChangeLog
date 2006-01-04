@@ -1,3 +1,8 @@
+2006-01-03  Yen-Ju Chen <yjchenx At__ gmail>
+
+   * Source/PKPreferencesController:
+   Remove declaration on mac in order to build successfully..
+
 2005-12-26  Quentin Mathe <qmathe@club-internet.fr>
     
     * Source/UKPluginsRegistry.m: Added 'APPLICATION_SUPPORT' macro

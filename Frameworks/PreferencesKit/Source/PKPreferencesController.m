@@ -38,10 +38,12 @@
 #import "PKPresentationBuilder.h"
 #import "PKPreferencesController.h"
 
+#ifdef GNUSTEP  // build failed on mac
 const NSString *PKNoPresentationMode;
 const NSString *PKToolbarPresentationMode;
 const NSString *PKTablePresentationMode;
 const NSString *PKOtherPresentationMode;
+#endif
 
 
 @interface PKPreferencesController (Private)
