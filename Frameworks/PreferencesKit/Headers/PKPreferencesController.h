@@ -36,6 +36,7 @@
 extern const NSString *PKNoPresentationMode;
 extern const NSString *PKToolbarPresentationMode;
 extern const NSString *PKTablePresentationMode;
+extern const NSString *PKMatrixPresentationMode;
 extern const NSString *PKOtherPresentationMode;
 
 

@@ -41,10 +41,12 @@
 // HACK: Temporary solution to instantiate concrete presentation classes.
 @class PKToolbarPresentation;
 @class PKTableViewPresentation;
+@class PKMatrixViewPresentation;
 
 const NSString *PKNoPresentationMode = @"PKNoPresentationMode";
 const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
 const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
+const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
 
 
@@ -59,6 +61,10 @@ const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
     else if ([presentationMode isEqual: PKTablePresentationMode])
     {
         return [[[PKTableViewPresentation alloc] init] autorelease];
+    }
+    else if ([presentationMode isEqual: PKMatrixPresentationMode])
+    {
+        return [[[PKMatrixViewPresentation alloc] init] autorelease];
     }
     
     return nil;

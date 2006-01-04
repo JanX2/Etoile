@@ -63,6 +63,8 @@ libPreferencesKit_OBJC_FILES = \
 	PKPreferencePane.m \
 	PKPresentationBuilder.m \
 	PKTableViewPreferencesController.m \
+	PKMatrixViewPreferencesController.m \
+	PKMatrixView.m \
 	PKToolbarPreferencesController.m \
 	PKPrefPanesRegistry.m \
 	UKPluginsRegistry.m \
@@ -78,6 +80,7 @@ libPreferencesKit_HEADER_FILES = \
 	PKPreferencePane.h \
 	PKPresentationBuilder.h \
 	PKTableViewPreferencesController.h \
+	PKMatrixViewPreferencesController.h \
 	PKToolbarPreferencesController.h \
 	PKPrefPanesRegistry.h \
 	UKPluginsRegistry.h \
