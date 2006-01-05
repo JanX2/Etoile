@@ -1,29 +1,3 @@
-#
-#	GNUmakefile
-#
-#	Makefile for Etoile PreferencesKit
-#
-#	Copyright (C) 2005 Quentin Mathe <qmathe@club-internet.fr>
-#
-#	This Makefile is free software; you can redistribute it and/or
-#	modify it under the terms of the GNU General Public License
-#	as published by the Free Software Foundation; either version 2
-#	of the License, or (at your option) any later version.
-#
-#	This program is distributed in the hope that it will be useful,
-#	but WITHOUT ANY WARRANTY; without even the implied warranty of
-#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#
-#	See the GNU General Public License for more details.
-#
-#	You should have received a copy of the GNU General Public License
-#	along with this program; if not, write to:
-#
-#		Free Software Foundation, Inc.
-#		59 Temple Place - Suite 330
-#		Boston, MA  02111-1307, USA
-#
-
 include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS = -Wno-import
@@ -35,28 +9,30 @@ GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 #
 # Main application
 #
-LIBRARY_NAME = libPreferencesKit
+FRAMEWORK_NAME = PreferencesKit
 VERSION = 0.1
 
 #
 # Resource files
 #
-libPreferencesKit_MAIN_MODEL_FILE =
+PreferencesKit_RESOURCE_FILES = \
+	../PrebuiltTableView.gorm
 
-libPreferencesKit_RESOURCE_FILES =
+PreferencesKit_LOCALIZED_RESOURCE_FILES =
 
-libPreferencesKit_LOCALIZED_RESOURCE_FILES =
+# FIXME: xxx_RESOURCE_DIRS doesn't seem to be take in account at least with ..
+PreferencesKit_RESOURCE_DIRS = ../
 
 #
 # Languages we're localized for
 #
-libPreferencesKit_LANGUAGES = \
+PreferencesKit_LANGUAGES = \
 	English
 	
 #
 # Class files
 #
-libPreferencesKit_OBJC_FILES = \
+PreferencesKit_OBJC_FILES = \
 	CocoaCompatibility.m \
 	NSPreferencePane.m \
 	PKPreferencesController.m \
@@ -73,7 +49,7 @@ libPreferencesKit_OBJC_FILES = \
 #
 # Header files (to install)
 #
-libPreferencesKit_HEADER_FILES = \
+PreferencesKit_HEADER_FILES = \
 	CocoaCompatibility.h \
 	NSPreferencePane.h \
 	PKPreferencesController.h \
@@ -87,17 +63,20 @@ libPreferencesKit_HEADER_FILES = \
 	PrefsModule.h \
 	PreferencesKit.h
 
-libPreferencesKit_HEADER_FILES_DIR = ../Headers
+PreferencesKit_HEADER_FILES_DIR = ../Headers
 
-libPreferencesKit_HEADER_FILES_INSTALL_DIR = /PreferencesKit
+# NOTE: We are not a library anymore, by the way next line is not needed.
+#libPreferencesKit_HEADER_FILES_INSTALL_DIR = /PreferencesKit
 
 #
 # C files
 #
-libPreferencesKit_C_FILES =
+PreferencesKit_C_FILES =
 
 -include GNUmakefile.preamble
-
-include $(GNUSTEP_MAKEFILES)/library.make
-
 -include GNUmakefile.postamble
+include $(GNUSTEP_MAKEFILES)/framework.make
+
+# FIXME: GNUmakefile.postamble wasn't called with framework.make until I move
+# its declaration above the latter.
+#-include GNUmakefile.postamble

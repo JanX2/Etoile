@@ -1,15 +1,24 @@
+2006-01-05  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Source/GNUmakefile: Modified to build PreferencesKit as a framework (was
+    a library) in order to allow resource files like PrebuiltTableView.gorm
+    to be easily deployed. Removed superfluous license notice too.
+    * Source/GNUmakefile.postamble: 
+    * GNUmakefile:
+    Removed superfluous license notice.
+
 2006-01-04  Yen-Ju Chen <yjchenx At__ gmail>
 
-   * Source/PKMatrixViewPresentation.m
-   * Source/PKMatrixView.h
-   * Source/PKMatrixView.m
+   * Source/PKMatrixViewPresentation.m:
+   * Source/PKMatrixView.h:
+   * Source/PKMatrixView.m:
    * Headers/PKMatrixViewPresentation.h:
    New matrix-style presentation.
 
 2006-01-03  Yen-Ju Chen <yjchenx At__ gmail>
 
    * Source/PKPreferencesController:
-   Remove declaration on mac in order to build successfully..
+   Remove declaration on mac in order to build successfully.
 
 2005-12-26  Quentin Mathe <qmathe@club-internet.fr>
     
