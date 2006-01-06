@@ -47,7 +47,15 @@ extern const NSString *PKTablePresentationMode;
        to avoid the nightmare to set up it manually in code with every elements it
        includes like corner view, scroll view etc. */
     
-    [NSBundle loadNibNamed: @"PrebuiltTableView" owner: self];
+    BOOL nibLoaded = [NSBundle loadNibNamed: @"PrebuiltTableView" owner: self];
+    
+    if (nibLoaded == NO)
+        [NSException raise: @"PKTableViewPresentationException"
+            format: @"Impossible to load PrebuiltTableView nib"];
+    
+    if (prebuiltTableView == nil)
+        [NSException raise: @"PKTableViewPresentationException"
+            format: @"PrebuiltTableView is nil"];
 
     [prebuiltTableView removeFromSuperview];
     
