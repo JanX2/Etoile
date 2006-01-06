@@ -11,7 +11,7 @@
 
 @implementation SamplePrefPane
 
--(void) mainViewDidLoad
+- (void) mainViewDidLoad
 {
 
 }
@@ -26,10 +26,13 @@
     switch ([sender selectedRow])
     {
         case 0:
-            [pc setPresentationMode: @"PKToolbarPresentationMode"];
+            [pc setPresentationMode: PKToolbarPresentationMode];
             break;
         case 1:
-            [pc setPresentationMode: @"PKTableViewPresentationMode"];
+            [pc setPresentationMode: PKTablePresentationMode];
+            break;
+        case 2:
+            [pc setPresentationMode: PKMatrixPresentationMode];
             break;
     }
 }
