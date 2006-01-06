@@ -28,7 +28,7 @@
 #import "CocoaCompatibility.h"
 #import "PKPreferencesController.h"
 #import "PKPrefPanesRegistry.h"
-#import "PKMatrixViewPreferencesController.h"
+#import "PKMatrixViewPresentation.h"
 #import "PKMatrixView.h"
 #include "GNUstep.h"
 

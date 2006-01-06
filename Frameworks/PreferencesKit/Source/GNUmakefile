@@ -38,10 +38,10 @@ PreferencesKit_OBJC_FILES = \
 	PKPreferencesController.m \
 	PKPreferencePane.m \
 	PKPresentationBuilder.m \
-	PKTableViewPreferencesController.m \
-	PKMatrixViewPreferencesController.m \
+	PKTableViewPresentation.m \
+	PKMatrixViewPresentation.m \
 	PKMatrixView.m \
-	PKToolbarPreferencesController.m \
+	PKToolbarPresentation.m \
 	PKPrefPanesRegistry.m \
 	UKPluginsRegistry.m \
 	PKPrefsModulePrefPane.m
@@ -55,9 +55,9 @@ PreferencesKit_HEADER_FILES = \
 	PKPreferencesController.h \
 	PKPreferencePane.h \
 	PKPresentationBuilder.h \
-	PKTableViewPreferencesController.h \
-	PKMatrixViewPreferencesController.h \
-	PKToolbarPreferencesController.h \
+	PKTableViewPresentation.h \
+	PKMatrixViewPresentation.h \
+	PKToolbarPresentation.h \
 	PKPrefPanesRegistry.h \
 	UKPluginsRegistry.h \
 	PrefsModule.h \

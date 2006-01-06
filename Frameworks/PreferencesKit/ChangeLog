@@ -1,5 +1,20 @@
 2006-01-06  Quentin Mathe <qmathe@club-internet.fr>
     
+    WARNING: this commit breaks Xcode project.
+    Finished major refactoring started on 2005-11-20.
+    * Headers/PKToolbarPresentation.h:
+    * Headers/PKMatrixViewPresentation.h:
+    * Headers/PKTableViewPresentation.h:
+    Renamed (was PKxxxPreferencesController.h).
+    * Source/PKToolbarPresentation.m:
+    * Source/PKMatrixViewPresentation.m:
+    * Source/PKTableViewPresentation.m: Renamed (was
+    PKxxxPreferencesController.m) and updated to take in account the new
+    related header names.
+    * Source/GNUmakefile: Updated.
+
+2006-01-06  Quentin Mathe <qmathe@club-internet.fr>
+    
     * Source/PKTableViewPreferencesController.m (-loadUI): Added checks
     to test whether prebuiltTableView nib is correctly loaded, exceptions are
     now thrown otherwise.

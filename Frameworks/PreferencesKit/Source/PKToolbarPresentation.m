@@ -30,7 +30,7 @@
 #import "CocoaCompatibility.h"
 #import "PKPreferencesController.h"
 #import "PKPrefPanesRegistry.h"
-#import "PKToolbarPreferencesController.h"
+#import "PKToolbarPresentation.h"
 
 extern const NSString *PKToolbarPresentationMode;
 

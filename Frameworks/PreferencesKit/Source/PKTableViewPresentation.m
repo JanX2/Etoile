@@ -27,7 +27,7 @@
 #import "CocoaCompatibility.h"
 #import "PKPreferencesController.h"
 #import "PKPrefPanesRegistry.h"
-#import "PKTableViewPreferencesController.h"
+#import "PKTableViewPresentation.h"
 
 extern const NSString *PKTablePresentationMode;
 
