@@ -36,15 +36,15 @@
 		600B9FC20872BB230024A432 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		606766A8096EBD1100AF2C8A /* PKToolbarPresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766A7096EBD1100AF2C8A /* PKToolbarPresentation.m */; };
 		606766A9096EBD1100AF2C8A /* PKToolbarPresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766A7096EBD1100AF2C8A /* PKToolbarPresentation.m */; };
-		606766CB096EBDAE00AF2C8A /* PKMatrixViewPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 606766CA096EBDAE00AF2C8A /* PKMatrixViewPresentation.h */; };
+		606766CB096EBDAE00AF2C8A /* PKMatrixViewPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 606766CA096EBDAE00AF2C8A /* PKMatrixViewPresentation.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		606766CC096EBDAE00AF2C8A /* PKMatrixViewPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 606766CA096EBDAE00AF2C8A /* PKMatrixViewPresentation.h */; };
 		606766CE096EBDCB00AF2C8A /* PKMatrixViewPresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766CD096EBDCB00AF2C8A /* PKMatrixViewPresentation.m */; };
 		606766CF096EBDCB00AF2C8A /* PKMatrixViewPresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766CD096EBDCB00AF2C8A /* PKMatrixViewPresentation.m */; };
 		606766D1096EBDE300AF2C8A /* PKMatrixView.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766D0096EBDE300AF2C8A /* PKMatrixView.m */; };
 		606766D2096EBDE300AF2C8A /* PKMatrixView.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766D0096EBDE300AF2C8A /* PKMatrixView.m */; };
-		606766D4096EBE1000AF2C8A /* PKMatrixView.h in Headers */ = {isa = PBXBuildFile; fileRef = 606766D3096EBE1000AF2C8A /* PKMatrixView.h */; };
+		606766D4096EBE1000AF2C8A /* PKMatrixView.h in Headers */ = {isa = PBXBuildFile; fileRef = 606766D3096EBE1000AF2C8A /* PKMatrixView.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		606766D5096EBE1000AF2C8A /* PKMatrixView.h in Headers */ = {isa = PBXBuildFile; fileRef = 606766D3096EBE1000AF2C8A /* PKMatrixView.h */; };
-		60676757096EC28100AF2C8A /* NSPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = 60676756096EC28100AF2C8A /* NSPreferencePane.h */; };
+		60676757096EC28100AF2C8A /* NSPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = 60676756096EC28100AF2C8A /* NSPreferencePane.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		60676758096EC28100AF2C8A /* NSPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = 60676756096EC28100AF2C8A /* NSPreferencePane.h */; };
 		6067677C096EC2B700AF2C8A /* NSPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = 6067677B096EC2B700AF2C8A /* NSPreferencePane.m */; };
 		6067677D096EC2B700AF2C8A /* NSPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = 6067677B096EC2B700AF2C8A /* NSPreferencePane.m */; };
