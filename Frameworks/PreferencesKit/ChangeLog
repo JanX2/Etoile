@@ -1,3 +1,8 @@
+2006-01-04  Yen-Ju Chen <yjchenx At__ gmail>
+
+    * Source/GNUmakefile:
+    add right paths of headers in order to compile with GNUstep-make.
+
 2006-01-06  Quentin Mathe <qmathe@club-internet.fr>
 
     * PreferencesKit.xclassmodel: Added.

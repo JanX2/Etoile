@@ -50,18 +50,18 @@ PreferencesKit_OBJC_FILES = \
 # Header files (to install)
 #
 PreferencesKit_HEADER_FILES = \
-	CocoaCompatibility.h \
-	NSPreferencePane.h \
-	PKPreferencesController.h \
-	PKPreferencePane.h \
-	PKPresentationBuilder.h \
-	PKTableViewPresentation.h \
-	PKMatrixViewPresentation.h \
-	PKToolbarPresentation.h \
-	PKPrefPanesRegistry.h \
-	UKPluginsRegistry.h \
-	PrefsModule.h \
-	PreferencesKit.h
+	../Headers/CocoaCompatibility.h \
+	../Headers/NSPreferencePane.h \
+	../Headers/PKPreferencesController.h \
+	../Headers/PKPreferencePane.h \
+	../Headers/PKPresentationBuilder.h \
+	../Headers/PKTableViewPresentation.h \
+	../Headers/PKMatrixViewPresentation.h \
+	../Headers/PKToolbarPresentation.h \
+	../Headers/PKPrefPanesRegistry.h \
+	../Headers/UKPluginsRegistry.h \
+	../Headers/PrefsModule.h \
+	../Headers/PreferencesKit.h
 
 PreferencesKit_HEADER_FILES_DIR = ../Headers
 
