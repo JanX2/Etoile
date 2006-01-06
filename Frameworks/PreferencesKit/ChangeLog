@@ -1,5 +1,12 @@
 2006-01-06  Quentin Mathe <qmathe@club-internet.fr>
     
+    Xcode compilation restored (on Mac OS X, PreferencesKitExample was broken 
+    since 2005-11-22, it is fixed now).
+    * PreferencesKit.xcodeproj: Updated to include files renamed with previous
+    commit and new files related to MatrixView presentation and NSPreferencePane.
+
+2006-01-06  Quentin Mathe <qmathe@club-internet.fr>
+    
     WARNING: this commit breaks Xcode project.
     Finished major refactoring started on 2005-11-20.
     * Headers/PKToolbarPresentation.h:
