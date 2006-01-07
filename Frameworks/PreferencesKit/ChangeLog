@@ -1,7 +1,12 @@
-2006-01-04  Yen-Ju Chen <yjchenx At__ gmail>
+2006-01-07  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKToolbarPresentation.m (-preferencesView): Removed, because 
+    it is never called (unlike the identical PKPreferencesController method).
+
+2006-01-06  Yen-Ju Chen <yjchenx At__ gmail>
 
     * Source/GNUmakefile:
-    add right paths of headers in order to compile with GNUstep-make.
+    add right paths of headers in order to compile with GNUstep-make and Cocoa.
 
 2006-01-06  Quentin Mathe <qmathe@club-internet.fr>
 

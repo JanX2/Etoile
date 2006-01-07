@@ -5,7 +5,7 @@
 
 	Copyright (C) 2005 Quentin Mathe
 
-	Author:  Quentin Mathe <qmathe@club-interent.fr>
+	Author:  Quentin Mathe <qmathe@club-internet.fr>
 	Date:  February 2005
 
 	This library is free software; you can redistribute it and/or
@@ -93,30 +93,6 @@ extern const NSString *PKToolbarPresentationMode;
 - (NSView *) presentationView
 {
     return nil;
-}
-
-- (NSView *) preferencesView
-{
-    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    id owner = [pc owner];
-    NSView *preferencesView = [pc preferencesView];
-    
-    if (preferencesView == nil && [owner isKindOfClass: [NSWindow class]])
-    {
-        NSView *contentView;
-        
-        // NOTE: With GNUstep, content view currently includes the toolbar
-        // view.
-        #ifdef GNUSTEP
-        contentView = [owner contentViewWithoutToolbar];
-        #else
-        contentView = [owner contentView];
-        #endif
-
-        return contentView;
-    }
-    
-    return preferencesView;
 }
 
 - (void) resizePreferencesViewForView: (NSView *)paneView
