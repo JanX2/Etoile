@@ -1,3 +1,18 @@
+2006-01-08  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPresentationBuilder.m (-resizePreferencesViewForView:): Modified
+    to reset pane view position to zero (was purely abstract until then).
+    * Source/PKToolbarPresentation.m:
+    * Source/PKTableViewPresentation.m:
+    * Source/PKMatrixViewPresentation.m:
+    (-resizePreferencesViewForView:): Updated to include a call to the 
+    corresponding super class method (in PKPresentationBuilder). For 
+    PKToolbarPresentation, fixed the receiver of -preferencesView message
+    to be preferences controller and not self anymore (bug introduced with 
+    incomplete previous commit).
+    The incorrectly positioned pane view when you switch back from table view
+    to toolbar presentation is corrected.
+
 2006-01-07  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/PKToolbarPresentation.m (-preferencesView): Removed, because 

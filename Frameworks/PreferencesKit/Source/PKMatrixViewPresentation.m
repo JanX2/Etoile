@@ -53,7 +53,7 @@ extern const NSString *PKMatrixPresentationMode;
     NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
 
     int count = [plugins count];
-    NSRect rect = [mainViewContainer bounds];   
+    NSRect rect = [mainViewContainer bounds];  
     
     matrixView = [[PKMatrixView alloc] initWithFrame: rect numberOfButtons: count];
     [matrixView setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
@@ -108,6 +108,9 @@ extern const NSString *PKMatrixPresentationMode;
 - (void) resizePreferencesViewForView: (NSView *)paneView
 {
     if (paneView == nil) return;
+    
+    [super resizePreferencesViewForView: paneView];
+    
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];
     NSRect rect = NSMakeRect(0, 0, size.width, size.height);

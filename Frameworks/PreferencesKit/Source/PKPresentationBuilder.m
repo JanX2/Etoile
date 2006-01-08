@@ -100,7 +100,9 @@ const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
     match size of the preference pane view which is shown or should be.<p> */
 - (void) resizePreferencesViewForView: (NSView *)view
 {
-    [self subclassResponsability: _cmd];
+    /* Presentation switches might modify pane view default position, so we reset
+       it. */
+    [view setFrameOrigin: NSZeroPoint];
 }
 
 /*

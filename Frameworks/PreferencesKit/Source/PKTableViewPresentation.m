@@ -100,6 +100,8 @@ extern const NSString *PKTablePresentationMode;
     int previousHeight = windowFrame.size.height;
     int heightDelta;
     
+    [super resizePreferencesViewForView: paneView];
+    
     /* Resize window so content area is large enough for prefs. */
     
     tableFrame.size.height = paneFrame.size.height;
