@@ -226,6 +226,9 @@ must be called each time a new preference pane is selected like with
     <p>This method needs to be call in <ref>-switchPreferencePaneView:</ref>.</p> */
 - (void) selectPreferencePaneWithIdentifier: (NSString *)identifier
 {
+    if ([[self selectedPreferencePaneIdentifier] isEqualToString: identifier])
+	return;
+
     PKPreferencePane *pane = [[PKPrefPanesRegistry sharedRegistry] 
         preferencePaneWithIdentifier: identifier];
     
