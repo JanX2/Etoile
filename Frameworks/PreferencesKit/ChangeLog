@@ -1,3 +1,9 @@
+2006-01-09  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKTableViewPresentation.m 
+    (tableView:objectValueForTableColumn:row:): Fixed table view presentation 
+    to have pane names shown (not just empty rows).
+
 2006-01-08  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/PKPresentationBuilder.m (-resizePreferencesViewForView:): Modified

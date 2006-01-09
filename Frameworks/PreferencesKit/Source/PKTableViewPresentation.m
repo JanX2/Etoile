@@ -171,7 +171,7 @@ extern const NSString *PKTablePresentationMode;
 	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins]; 
     NSDictionary *info = [plugins objectAtIndex: row];
 	
-	return [info objectForKey: @"Name"];
+	return [info objectForKey: @"name"];
 }
 
 
