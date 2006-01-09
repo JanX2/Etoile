@@ -28,11 +28,9 @@
 		Boston, MA  02111-1307, USA
 */
 
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
-#import "PKApplicationController.h"
-#import "PKBundleController.h"
-#import "PKPreferencesController.h"
+#include "PKApplicationController.h"
+#include "PKBundleController.h"
+#include "PKPreferencesController.h"
 
 static NSUserDefaults *defaults = nil;
 static BOOL doneLaunching = NO;

@@ -22,11 +22,16 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <PreferencesKit/NSPreferencePane.h>
-#import <PreferencesKit/PKPreferencePane.h>
+#ifndef __PreferencesKit_PreferencesKit__
+#define __PreferencesKit_PreferencesKit__
 
-#import <PreferencesKit/PKPreferencesController.h>
-#import <PreferencesKit/PKPresentationBuilder.h>
+#include <PreferencesKit/NSPreferencePane.h>
+#include <PreferencesKit/PKPreferencePane.h>
 
-#import <PreferencesKit/PKPrefPanesRegistry.h>
-#import <PreferencesKit/UKPluginsRegistry.h>
+#include <PreferencesKit/PKPreferencesController.h>
+#include <PreferencesKit/PKPresentationBuilder.h>
+
+#include <PreferencesKit/PKPrefPanesRegistry.h>
+#include <PreferencesKit/UKPluginsRegistry.h>
+
+#endif /* __PreferencesKit_PreferencesKit__ */

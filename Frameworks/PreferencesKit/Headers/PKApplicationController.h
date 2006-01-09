@@ -28,7 +28,10 @@
 		Boston, MA  02111-1307, USA
 */
 
-#import <PrefsModule/PrefsModule.h>
+#ifndef __PreferencesKit_ApplicationController__
+#define __PreferencesKit_ApplicationController__
+
+#include <PrefsModule/PrefsModule.h>
 
 @class NSNotification, NSString, NSApplication;
 @class PKPreferencesController;
@@ -69,3 +72,5 @@
 - (PKPreferencesController *) preferencesController;
 
 @end
+
+#endif /* __PreferencesKit_ApplicationController__ */

@@ -25,7 +25,10 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <Foundation/Foundation.h>
+#ifndef __PreferencesKit__PreferencesController__
+#define __PreferencesKit__PreferencesController__
+
+#include <AppKit/AppKit.h>
 
 @protocol UKTest;
 
@@ -33,12 +36,11 @@
 @class PKPreferencePane;
 @class PKPresentationBuilder;
 
-extern const NSString *PKNoPresentationMode;
-extern const NSString *PKToolbarPresentationMode;
-extern const NSString *PKTablePresentationMode;
-extern const NSString *PKMatrixPresentationMode;
-extern const NSString *PKOtherPresentationMode;
-
+extern NSString *PKNoPresentationMode;
+extern NSString *PKToolbarPresentationMode;
+extern NSString *PKTablePresentationMode;
+extern NSString *PKMatrixPresentationMode;
+extern NSString *PKOtherPresentationMode;
 
 @interface PKPreferencesController: NSObject <PKPreferencePaneOwner, UKTest>
 {
@@ -46,6 +48,7 @@ extern const NSString *PKOtherPresentationMode;
     IBOutlet NSView *preferencesView; /* Necessary only when owner is not PKPreferencesView */
     IBOutlet NSView *mainViewWaitSign;	/* View we show while next main view is being loaded. */
     PKPreferencePane *currentPane; /* Currently showing pane. */
+    NSString *currentIdentifier; /* cache identifier for current pane */
     PKPreferencePane *nextPane; /* Pane to show in response to the next replyToShouldUnselect: YES. */
     PKPresentationBuilder *presentation;
 }
@@ -73,3 +76,6 @@ extern const NSString *PKOtherPresentationMode;
 - (void) setPresentationMode: (NSString *)presentationMode;
 
 @end
+
+#endif /* __PreferencesKit__PreferencesController__ */
+

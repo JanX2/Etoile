@@ -23,8 +23,10 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import "PKPresentationBuilder.h"
+#ifndef __PreferencesKit_Toolbar_Presentation__
+#define __PreferencesKit_Toolbar_Presentation__
 
+#include "PKPresentationBuilder.h"
 
 @interface PKToolbarPresentation : PKPresentationBuilder
 {
@@ -33,3 +35,5 @@
 }
 
 @end
+
+#endif /* __PreferencesKit_Toolbar_Presentation__ */

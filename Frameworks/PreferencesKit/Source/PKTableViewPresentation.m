@@ -23,11 +23,10 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <AppKit/AppKit.h>
-#import "CocoaCompatibility.h"
-#import "PKPreferencesController.h"
-#import "PKPrefPanesRegistry.h"
-#import "PKTableViewPresentation.h"
+#include "CocoaCompatibility.h"
+#include "PKPreferencesController.h"
+#include "PKPrefPanesRegistry.h"
+#include "PKTableViewPresentation.h"
 
 extern const NSString *PKTablePresentationMode;
 

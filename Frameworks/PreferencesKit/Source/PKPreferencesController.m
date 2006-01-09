@@ -25,30 +25,28 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <AppKit/AppKit.h>
 
 #ifdef HAVE_UKTEST
-#import <UnitKit/UnitKit.h>
+#include <UnitKit/UnitKit.h>
 #endif
 
-#import "PrefsModule.h"
-#import "CocoaCompatibility.h"
-#import "PKPrefPanesRegistry.h"
-#import "PKPreferencePane.h"
-#import "PKPresentationBuilder.h"
-#import "PKPreferencesController.h"
-
-#ifdef GNUSTEP  // build failed on mac
-const NSString *PKNoPresentationMode;
-const NSString *PKToolbarPresentationMode;
-const NSString *PKTablePresentationMode;
-const NSString *PKOtherPresentationMode;
-#endif
-
+#include "PrefsModule.h"
+#include "CocoaCompatibility.h"
+#include "PKPrefPanesRegistry.h"
+#include "PKPreferencePane.h"
+#include "PKPresentationBuilder.h"
+#include "PKPreferencesController.h"
 
 @interface PKPreferencesController (Private)
 - (void) windowWillClose: (NSNotification *)aNotification;
 - (NSView *) mainViewWaitSign;
+@end
+
+@interface NSObject (PKPresentationController)
+
+- (void) willSelectPreferencePaneWithIdentifier: (NSString *) identifier;
+- (void) didSelectPreferencePaneWithIdentifier: (NSString *) identifier;
+
 @end
 
 @implementation PKPreferencesController

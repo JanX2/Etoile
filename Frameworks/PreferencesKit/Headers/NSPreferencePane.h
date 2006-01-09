@@ -25,7 +25,10 @@
 
 /* The class name you should actually use */
 
-#import "PKPreferencePane.h"
+#ifndef __PreferencesKit_NSPreferencePane__
+#define __PreferencesKit_NSPreferencePane__
+
+#include "PKPreferencePane.h"
 
 @interface NSPreferencePane : PKPreferencePane 
 {
@@ -33,3 +36,6 @@
 }
 
 @end
+
+#endif /* __PreferencesKit_NSPreferencePane__ */
+

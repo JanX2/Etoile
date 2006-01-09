@@ -23,7 +23,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <Foundation/Foundation.h>
+
+#ifndef __PreferencesKit_CocoaCompatibility__
+#define __PreferencesKit_CocoaCompatibility__
+
+#include <Foundation/Foundation.h>
 
 // NOTE: For now, this header is included not only with Cocoa but with GNUstep
 // too because -objectWithValue:forKey is not implemented in GNUstep,
@@ -37,8 +41,10 @@
 // -objectWithValue:forKey:  which is calling it, we have to redeclare it in
 // GNUstep PreferencesKit even if it is not used, until it is made
 // public in NSArray or -objectWithValue:forKey is implemented in GNUstep.
-- (id) objectsWithValue: (id)value forKey: (NSString *)key;
+- (NSArray *) objectsWithValue: (id)value forKey: (NSString *)key;
 
 - (id) objectWithValue: (id)value forKey: (NSString *)key;
 
 @end
+
+#endif /* __PreferencesKit_CocoaCompatibility__ */
