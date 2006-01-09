@@ -1,3 +1,24 @@
+2006-01-09  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPreferencesController (-selectPreferencePaneWithIdentifier:): 
+    Done with the previous commit... Yen-Ju has been faster than me on this 
+    one :-) 
+    Here is my own ChangeLog entry (more detailed)...
+    Included a test to return when the currently selected preference pane is 
+    identical to the one to select. It prevents -updateUIForPreferencePane to 
+    be called, which would reload the preference pane when it isn't needed.
+    Moreover -[PKPrefPanesRegistry preferencePaneWithIdentifier:] 
+    code triggers the bug discussed below, which means 
+    -updateUIForPreferencePane code would introduce the new pane view instance
+    ignoring the current one.
+    * Source/PKPrefPanesRegistry.m (-preferencePaneAtPath:): Moved 
+    -loadMainView, because it must not be called when the preference pane has 
+    already been loaded. -loadMainView creates a new pane view instance 
+    when called, it takes care in theory to dealloc the one in use... but it 
+    doesn't happen when the latter is retained. Usually it is retained by its 
+    superview, therefore it remains stuck in the view hierarchy (being 
+    overlapped by the new one).
+
 2006-01-09  Yen-Ju Chen <yjchenx At__ gmail>
 
     * Source/PKPreferencesController.m

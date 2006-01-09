@@ -119,8 +119,9 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
 		}
 		
 		[info setObject: pane forKey: @"instance"];
+
+		[pane loadMainView];
 	}
-    [pane loadMainView];
 	
 	return pane;
 }
