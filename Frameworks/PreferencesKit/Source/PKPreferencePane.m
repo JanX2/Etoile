@@ -24,8 +24,8 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "PKPreferencePane.h"
-#include <AppKit/AppKit.h>
+#import "PKPreferencePane.h"
+#import <AppKit/AppKit.h>
 
 NSString *NSPreferencePaneDoUnselectNotification = @"NSPreferencePaneDoUnselect";
 NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelUnselect";

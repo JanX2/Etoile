@@ -25,10 +25,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __PreferencesKit_UKPluginsRegistry__
-#define __PreferencesKit_UKPluginsRegistry__
-
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
 @protocol UKTest;
 
@@ -67,5 +64,3 @@
     instance    - If instantiate == YES, this contains an instance of the principal
                   class, instantiated using alloc+init.
  */
-
-#endif /* __PreferencesKit_UKPluginsRegistry__ */

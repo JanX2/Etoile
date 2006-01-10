@@ -23,10 +23,8 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __PreferencesKit_PKPreferencePane__
-#define __PreferencesKit_PKPreferencePane__
-
-#include <AppKit/AppKit.h>
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 
 @class PKPreferencePane;
 
@@ -138,5 +136,4 @@ extern NSString *NSPreferencePaneCancelUnselectNotification;
 
 @end
 
-#endif /* __PreferencesKit_PKPreferencePane__ */
 

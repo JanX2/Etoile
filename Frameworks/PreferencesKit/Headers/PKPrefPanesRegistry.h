@@ -25,11 +25,8 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __PreferencesKit_PKPrefPanesRegistry__
-#define __PreferencesKit_PKPrefPanesRegistry__
-
-#include <Foundation/Foundation.h>
-#include "UKPluginsRegistry.h"
+#import <Foundation/Foundation.h>
+#import "UKPluginsRegistry.h"
 
 @protocol UKTest;
 
@@ -48,5 +45,3 @@
 - (PKPreferencePane *) preferencePaneWithIdentifier: (NSString *)identifier;
 
 @end
-
-#endif /* __PreferencesKit_PKPrefPanesRegistry__ */

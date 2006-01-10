@@ -23,10 +23,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __PreferencesKit_TableView_Presentation__
-#define __PreferencesKit_TableView_Presentation__
-
-#include "PKPresentationBuilder.h"
+#import "PKPresentationBuilder.h"
 
 
 @interface PKTableViewPresentation : PKPresentationBuilder
@@ -36,6 +33,3 @@
 }
 
 @end
-
-#endif /*__PreferencesKit_TableView_Presentation__*/
-

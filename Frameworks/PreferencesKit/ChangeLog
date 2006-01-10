@@ -1,21 +1,3 @@
-2006-01-09  Yen-Ju Chen <yjchenx At__ gmail>
-
-    * Headers/CocoaCompatibility.h:
-    Chane -(id)objectsForKey: to -(NSArray *) objectsForKey: 
-    to match implementation.
-    * Headers/PKPreferencesController.h:
-    * Source/PKPreferencesController.m:
-    * Source/PKPresentationBuilder.m:
-    Make 'const NSString' to 'static NSString' to remove the complain
-    while comparing "const NSString' to 'NSString' with -isEqual:.
-    * Source/PKPresentationBuilder.m:
-    Call -subclassResponsibility: only with GNUstep.
-    * Source/UKPluginsRegistry.m: 
-    Change 'NSImage *image" to 'id image' because image may point to 
-    NSNull instead of NSImage.
-    * Change '#import' to '#include'
-    * Remove all warnings with GNUstep-make on mac.
-
 2006-01-09  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/PKPreferencesController (-selectPreferencePaneWithIdentifier:): 

@@ -25,16 +25,18 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#import <AppKit/AppKit.h>
+
 #ifdef HAVE_UKTEST
-#include <UnitKit/UnitKit.h>
+#import <UnitKit/UnitKit.h>
 #endif
 
-#include "CocoaCompatibility.h"
-#include "PrefsModule.h"
-#include "PKPreferencesController.h"
-#include "PKPrefPanesRegistry.h"
-#include "PKPreferencePane.h"
-#include "PKPresentationBuilder.h"
+#import "CocoaCompatibility.h"
+#import "PrefsModule.h"
+#import "PKPreferencesController.h"
+#import "PKPrefPanesRegistry.h"
+#import "PKPreferencePane.h"
+#import "PKPresentationBuilder.h"
 
 // HACK: Temporary solution to instantiate concrete presentation classes.
 @class PKToolbarPresentation;
@@ -47,19 +49,20 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
 
+
 @implementation PKPresentationBuilder
 
 + (id) builderForPresentationMode: (NSString *)presentationMode
 {
-    if ([presentationMode isEqual: (NSString *)PKToolbarPresentationMode])
+    if ([presentationMode isEqual: PKToolbarPresentationMode])
     {
         return [[[PKToolbarPresentation alloc] init] autorelease];
     }
-    else if ([presentationMode isEqual: (NSString *)PKTablePresentationMode])
+    else if ([presentationMode isEqual: PKTablePresentationMode])
     {
         return [[[PKTableViewPresentation alloc] init] autorelease];
     }
-    else if ([presentationMode isEqual: (NSString *)PKMatrixPresentationMode])
+    else if ([presentationMode isEqual: PKMatrixPresentationMode])
     {
         return [[[PKMatrixViewPresentation alloc] init] autorelease];
     }
@@ -87,9 +90,7 @@ const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
     to change. */
 - (void) unloadUI
 {
-#ifdef GNUSTEP
     [self subclassResponsability: _cmd];
-#endif
 }
 
 /** <override-subclass />
@@ -117,9 +118,7 @@ you have to be able to retrieve the preference pane through your custom
 <var>sender</var>.</p> */
 - (IBAction) switchPreferencePaneView: (id)sender
 {
-#ifdef GNUSTEP
     [self subclassResponsability: _cmd];
-#endif
 }
 
 /*

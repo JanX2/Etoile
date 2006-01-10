@@ -25,21 +25,13 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __PreferencesKit_Presentation_Builder__
-#define __PreferencesKit_Presentation_Builder__
-
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
 @protocol UKTest;
 
 @protocol PKPreferencePaneOwner;
 @class PKPreferencePane;
 
-extern NSString *PKNoPresentationMode;
-extern NSString *PKToolbarPresentationMode;
-extern NSString *PKTablePresentationMode;
-extern NSString *PKMatrixPresentationMode;
-extern NSString *PKOtherPresentationMode;
 
 @interface PKPresentationBuilder : NSObject {
 
@@ -62,6 +54,3 @@ extern NSString *PKOtherPresentationMode;
 - (NSString *) presentationMode;
 
 @end
-
-#endif /* __PreferencesKit_Presentation_Builder__ */
-

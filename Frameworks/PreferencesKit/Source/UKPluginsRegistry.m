@@ -25,11 +25,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <AppKit/AppKit.h>
-#include "UKPluginsRegistry.h"
+#import <AppKit/AppKit.h>
+#import "UKPluginsRegistry.h"
 
 #ifdef HAVE_UKTEST
-#include <UnitKit/UnitKit.h>
+#import <UnitKit/UnitKit.h>
 #endif
 
 #ifdef GNUSTEP
@@ -233,7 +233,7 @@ static NSFileManager *fm = nil;
 	{
 		NSBundle *bundle = [NSBundle bundleWithPath: path];
         NSString *identifier;
-        id image; // could be NSNull if image is missing.
+        NSImage *image;
 		NSString *name;
         
         /* We retrieve plugin's name */

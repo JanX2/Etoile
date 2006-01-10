@@ -23,13 +23,14 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#import <AppKit/AppKit.h>
 #ifdef GNUSTEP
-#include <GNUstepGUI/GSToolbarView.h>
+#import <GNUstepGUI/GSToolbarView.h>
 #endif
-#include "CocoaCompatibility.h"
-#include "PKPreferencesController.h"
-#include "PKPrefPanesRegistry.h"
-#include "PKToolbarPresentation.h"
+#import "CocoaCompatibility.h"
+#import "PKPreferencesController.h"
+#import "PKPrefPanesRegistry.h"
+#import "PKToolbarPresentation.h"
 
 extern const NSString *PKToolbarPresentationMode;
 
