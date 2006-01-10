@@ -138,6 +138,7 @@
 
 				[doc addField: field];
 				DESTROY(field);
+				DESTROY(s);
 				DESTROY(b);
 			}
 			else // Not compressed
@@ -156,36 +157,5 @@
 	
     return AUTORELEASE(doc);
 }
-
-#if 0
-private final byte[] uncompress(final byte[] input)
-throws IOException
-{
-	
-    Inflater decompressor = new Inflater();
-    decompressor.setInput(input);
-	
-    // Create an expandable byte array to hold the decompressed data
-    ByteArrayOutputStream bos = new ByteArrayOutputStream(input.length);
-	
-    // Decompress the data
-    byte[] buf = new byte[1024];
-    while (!decompressor.finished()) {
-		try {
-			int count = decompressor.inflate(buf);
-			bos.write(buf, 0, count);
-		}
-		catch (DataFormatException e) {
-			// this will happen if the field is not compressed
-			throw new IOException ("field data are in wrong format: " + e.toString());
-		}
-    }
-	
-    decompressor.end();
-    
-    // Get the decompressed data
-    return bos.toByteArray();
-}
-#endif
 
 @end

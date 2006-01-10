@@ -75,6 +75,7 @@
 				int len = [data length];
 				[fieldsStream writeVInt: len];
 				[fieldsStream writeBytes: data length: len];
+				DESTROY(data);
 			} else {
 				// compression is disabled for the current field
 				if ([field isData]) {
@@ -90,38 +91,5 @@
 		}
 	}
 }
-
-#if 0
-private final byte[] compress (byte[] input) {
-	
-	// Create the compressor with highest level of compression
-	Deflater compressor = new Deflater();
-	compressor.setLevel(Deflater.BEST_COMPRESSION);
-	
-	// Give the compressor the data to compress
-	compressor.setInput(input);
-	compressor.finish();
-	
-	/*
-	 * Create an expandable byte array to hold the compressed data.
-	 * You cannot use an array that's the same size as the orginal because
-	 * there is no guarantee that the compressed data will be smaller than
-	 * the uncompressed data.
-	 */
-	ByteArrayOutputStream bos = new ByteArrayOutputStream(input.length);
-	
-	// Compress the data
-	byte[] buf = new byte[1024];
-	while (!compressor.finished()) {
-        int count = compressor.deflate(buf);
-        bos.write(buf, 0, count);
-	}
-	
-	compressor.end();
-	
-	// Get the compressed data
-	return bos.toByteArray();
-}
-#endif
 
 @end

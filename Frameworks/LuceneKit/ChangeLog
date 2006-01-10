@@ -3,6 +3,9 @@
    * Source/Index/LCDocumentWriter.m:
    * Headers/Index/LCDocumentWriter.h:
    Use C type instead of objects to optimize the code.
+   * Source/Index/LCFieldsReader.m:
+   * Soruce/Index/LCFieldsWriter.m:
+   Improve memory management.
 
 2005-12-27 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
