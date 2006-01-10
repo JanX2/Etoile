@@ -1,3 +1,9 @@
+2006-01-09 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+   * Source/Index/LCDocumentWriter.m:
+   * Headers/Index/LCDocumentWriter.h:
+   Use C type instead of objects to optimize the code.
+
 2005-12-27 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
    * Source/Search/LCIndexSearcher.m:

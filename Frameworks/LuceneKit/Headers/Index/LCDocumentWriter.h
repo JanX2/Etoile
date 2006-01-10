@@ -8,8 +8,6 @@
 #include "LCDocument.h"
 #include "LCIndexWriter.h"
 
-@class LCTermVectorOffsetInfo;
-@class LCTerm;
 @class LCFieldInfos;
 
 @interface LCDocumentWriter: NSObject
@@ -17,17 +15,18 @@
 	LCAnalyzer *analyzer;
 	id <LCDirectory> directory;
 	LCSimilarity *similarity;
-	LCFieldInfos *fieldInfos;
 	int maxFieldLength;
 	int termIndexInterval;
 	
+	/*** Private ***/
 	// Keys are Terms, values are Postings.
 	// Used to buffer a document before it is written to the index.
+	LCFieldInfos *fieldInfos;
 	NSMutableDictionary *postingTable;
-	NSMutableArray *fieldsCache;
-	NSMutableArray *fieldBoosts; // flost
-	
-	LCTerm *termBuffer;
+	float *fieldBoosts;
+	long long *fieldLengths;
+	long long *fieldPositions;
+	long long *fieldOffsets;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) directory

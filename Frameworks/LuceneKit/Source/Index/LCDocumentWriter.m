@@ -26,8 +26,6 @@
 - (NSMutableArray *) positions;
 - (NSMutableArray *) offsets;
 - (void) setFreq: (long) f;
-- (void) setPositions: (NSArray *) p;
-- (void) setOffsets: (NSArray *) o;
 @end
 
 @implementation LCPosting
@@ -68,8 +66,6 @@
 - (NSMutableArray *) positions { return positions; }
 - (NSMutableArray *) offsets { return offsets; }
 - (void) setFreq: (long) f { freq = f; }
-- (void) setPositions: (NSArray *) p { [positions setArray: p]; }
-- (void) setOffsets: (NSArray *) o { [offsets setArray: o]; }
 
 @end
 
@@ -85,18 +81,11 @@
 - (void) writeNorms: (NSString *) segment;
 @end
 
-static NSString *LCFieldLength = @"LCFieldLength";
-static NSString *LCFieldPosition = @"LCFieldPosition";
-static NSString *LCFieldOffset = @"LCFieldOffsets";
-// static NSString *LCFieldBoost = @"LCFieldBoost";
-
 @implementation LCDocumentWriter
 - (id) init
 {
 	self = [super init];
 	termIndexInterval = DEFAULT_TERM_INDEX_INTERVAL;
-	termBuffer = [[LCTerm alloc] init];
-	postingTable = [[NSMutableDictionary alloc] init];
 	return self;
 }
 
@@ -138,20 +127,15 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 	DESTROY(analyzer);
 	DESTROY(directory);
 	DESTROY(similarity);
-	DESTROY(fieldInfos);
-	
-	DESTROY(postingTable);
-	DESTROY(fieldsCache);
-	DESTROY(fieldBoosts);
-	DESTROY(termBuffer);
 	[super dealloc];
 }
 
 - (void) addDocument: (NSString *) segment
 			document: (LCDocument *) doc
 {
+	CREATE_AUTORELEASE_POOL(x);
 	// write field names
-	ASSIGN(fieldInfos, AUTORELEASE([[LCFieldInfos alloc] init]));
+	fieldInfos = [[LCFieldInfos alloc] init];
 	[fieldInfos addDocument: doc];
 	[fieldInfos write: directory name: [segment stringByAppendingPathExtension: @"fnm"]];
 	
@@ -162,22 +146,35 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 	DESTROY(fieldsWriter);
 	
     // invert doc into postingTable
-	[postingTable removeAllObjects]; // clear postingTable
-	ASSIGN(fieldsCache, AUTORELEASE([[NSMutableArray alloc] init]));
-	ASSIGN(fieldBoosts, AUTORELEASE([[NSMutableArray alloc] init])); // init fieldBoosts
+	postingTable = [[NSMutableDictionary alloc] init];
+	fieldLengths = calloc([fieldInfos size], sizeof(long long));
+	fieldPositions = calloc([fieldInfos size], sizeof(long long));
+	fieldOffsets = calloc([fieldInfos size], sizeof(long long));
+	fieldBoosts = calloc([fieldInfos size], sizeof(float));
+
 	int i, count = [fieldInfos size];
 	for(i = 0; i < count; i++)
-		[fieldBoosts addObject: [NSNumber numberWithFloat: [doc boost]]];
+	{
+		fieldBoosts[i] = [doc boost];
+	}
 	
 	[self invertDocument: doc];
     // sort postingTable into an array
 	NSArray *postings = [self sortPostingTable];
+
     // write postings
     [self writePostings: postings segment: segment];
 	
     // write norms of indexed fields
     [self writeNorms: segment];
-	
+
+    free(fieldLengths);
+    free(fieldPositions);
+    free(fieldOffsets);
+    free(fieldBoosts);
+    DESTROY(postingTable);
+    DESTROY(fieldInfos);
+	DESTROY(x);
 }
 
 // Tokenizes the fields of a document into Postings.
@@ -189,14 +186,12 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 	{
 		NSString *fieldName = [field name];
 		int fieldNumber = [fieldInfos fieldNumber: fieldName];
-		long length = 0, position = 0, offset = 0;
-		if (fieldNumber < [fieldsCache count])
-		{
-			length = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldLength] longValue];
-			position = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldPosition] longValue];
-			if (length > 0) position += [analyzer positionIncrementGap: fieldName];
-			offset = [[[fieldsCache objectAtIndex: fieldNumber] objectForKey: LCFieldOffset] longValue];
-		}
+		long long length = 0, position = 0, offset = 0;
+
+		length = fieldLengths[fieldNumber];
+		position = fieldPositions[fieldNumber];
+		if (length > 0) position += [analyzer positionIncrementGap: fieldName];
+		offset = fieldOffsets[fieldNumber];
 		
 		if ([field isIndexed]) {
 			if (![field isTokenized]) {		  // un-tokenized field
@@ -269,29 +264,13 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 				stream = nil;
 			}
 			
-			NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: 
-				[NSNumber numberWithLong: length], LCFieldLength,
-				[NSNumber numberWithLong: position], LCFieldPosition,
-				[NSNumber numberWithLong: offset], LCFieldOffset,
-				nil];
-			if (fieldNumber < [fieldsCache count])
-			{
-				[fieldsCache replaceObjectAtIndex: fieldNumber withObject: d];
-			}
-			else if (fieldNumber == [fieldsCache count])
-				[fieldsCache addObject: d];
-			else
-			{
-				NSLog(@"FIXME (LCDocumentWriter): out of range");
-			}
+		fieldLengths[fieldNumber] = length;
+		fieldPositions[fieldNumber] = position;
+		fieldOffsets[fieldNumber] = offset;
 			
-			float newBoosts = [[fieldBoosts objectAtIndex: fieldNumber] floatValue] * [field boost];
-			[fieldBoosts replaceObjectAtIndex: fieldNumber withObject: [NSNumber numberWithFloat: newBoosts]];
+			float newBoosts = fieldBoosts[fieldNumber] * [field boost];
+			fieldBoosts[fieldNumber] = newBoosts;
 		} /* if tokenized */
-  else
-  {
-	  [fieldsCache addObject: [NSNull null]];// fill the void
-  }
 	} /* while */
 }
 
@@ -302,9 +281,10 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 		 position: (long) position
 		   offset: (LCTermVectorOffsetInfo *) offset
 {
+	LCTerm *termBuffer = [[LCTerm alloc] init];
 	[termBuffer setField: field];
 	[termBuffer setText: text];
-    //System.out.println("Offset: " + offset);
+
 	LCPosting *ti = (LCPosting*) [postingTable objectForKey: termBuffer];
     if (ti != nil) {				  // word seen before
 		int freq = [ti freq];
@@ -331,6 +311,7 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 						 forKey: term];
 		DESTROY(term);
     }
+	DESTROY(termBuffer);
 }
 
 - (NSArray *) sortPostingTable
@@ -444,7 +425,7 @@ static NSString *LCFieldOffset = @"LCFieldOffsets";
 	for(n = 0; n < [fieldInfos size]; n++){
 		LCFieldInfo *fi = [fieldInfos fieldInfoWithNumber: n];
 		if([fi isIndexed] && (![fi omitNorms])){
-			float norm = [[fieldBoosts objectAtIndex: n] floatValue] * [similarity lengthNorm: [fi name] numberOfTerms: [[[fieldsCache objectAtIndex: n] objectForKey: LCFieldLength] longValue]];
+			float norm = fieldBoosts[n] * [similarity lengthNorm: [fi name] numberOfTerms: fieldLengths[n]];
 			NSString *name = [NSString stringWithFormat: @"%@.f%d", segment, n];
 			LCIndexOutput *norms = [directory createOutput: name];
 			[norms writeByte: [LCSimilarity encodeNorm: norm]];
