@@ -13,20 +13,26 @@ A Term represents a word from text.  This is the unit of search.  It is
 
 - (id) init
 {
-  self = [super init];
-  [self setField: @""];
-  [self setText: @""];
-  return self;
+  return [self initWithField: [NSString string] text: [NSString string]];
 }
 
 /** Constructs a Term with the given field and text. */
 - (id) initWithField: (NSString *) fld text: (NSString *) txt
 {
-	self = [self init];
-	[self setField: fld];
-	[self setText: txt];
+	self = [super init];
+	ASSIGNCOPY(field, fld);
+	ASSIGNCOPY(text, txt);
 	return self;
 	//  this(fld, txt, true);
+}
+
+- (void) dealloc
+{
+#if 0 // FIXME: memory leak
+	DESTROY(field);
+	DESTROY(text);
+#endif
+	[super dealloc];
 }
 
 #if 0
@@ -57,11 +63,6 @@ field and text. */
 {
 	if (o == nil) return NO;
 	return ([self compare: (LCTerm *)o] == NSOrderedSame) ? YES : NO;
-#if 0
-	LCTerm *other = (LCTerm *) o;
-	return ([field isEqualToString: [other field]] && 
-			[text isEqualToString: [other text]]);
-#endif
 }
 
 /** Combines the hashCode() of the field and the text. */
@@ -93,12 +94,12 @@ The ordering of terms is first by field, then by text.*/
 /** Resets the field and text of a Term. */
 - (void) setField: (NSString *) fld
 {
-	ASSIGN(field, AUTORELEASE([fld copy]));
+	ASSIGNCOPY(field, fld);
 }
 
 - (void) setText: (NSString *) txt
 {
-	ASSIGN(text, AUTORELEASE([txt copy]));
+	ASSIGNCOPY(text, txt);
 }
 
 - (void) setTerm: (LCTerm *) other

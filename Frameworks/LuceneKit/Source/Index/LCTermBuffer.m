@@ -15,6 +15,7 @@
 	[input readChars: txt start: start length: length];
 	[self setField: [fieldInfos fieldName: [input readVInt]]];
 	[self setText: txt];
+	DESTROY(txt);
 }
 
 - (id) copyWithZone: (NSZone *) zone

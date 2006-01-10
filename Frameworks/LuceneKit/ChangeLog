@@ -6,6 +6,9 @@
    * Source/Index/LCFieldsReader.m:
    * Soruce/Index/LCFieldsWriter.m:
    Improve memory management.
+   * Source/Index/LCTerm.m:
+   * Source/Index/LCTermBuffer.m:
+   Improve memory management and one bug found.
 
 2005-12-27 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
