@@ -1,3 +1,10 @@
+2006-01-10 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+   * Source/Index/LCTerm.m:
+   * Source/Search/LCFieldCache.m:
+   Bug fixed.
+   * Unit Test Result: 51 classes, 129 methods, 651980 tests, 0 failed
+
 2006-01-09 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
    * Source/Index/LCDocumentWriter.m:

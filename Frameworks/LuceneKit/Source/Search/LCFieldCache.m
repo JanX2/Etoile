@@ -16,8 +16,8 @@
 - (id) initWithOrder: (NSDictionary *) values lookup: (NSArray *) l
 {
 	self = [super init];
-	ASSIGN(order, values);
-	ASSIGN(lookup, l);
+	ASSIGNCOPY(order, values);
+	ASSIGNCOPY(lookup, l);
 	return self;
 }
 

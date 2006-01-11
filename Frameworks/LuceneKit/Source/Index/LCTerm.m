@@ -28,10 +28,8 @@ A Term represents a word from text.  This is the unit of search.  It is
 
 - (void) dealloc
 {
-#if 0 // FIXME: memory leak
 	DESTROY(field);
 	DESTROY(text);
-#endif
 	[super dealloc];
 }
 
