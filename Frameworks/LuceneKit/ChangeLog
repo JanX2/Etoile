@@ -1,3 +1,13 @@
+2006-01-11 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+   * Source/Index/LCIndexReader.m:
+   * Source/Search/LCPrefixQuery.m:
+   * Source/Search/LCTopDocCollector.m:
+   * Source/Search/LCTopFieldDocCollector.m:
+   * Source/Search/LCIndexSearcher.m:
+   * Source/Search/LCMultiTermQuery.m:
+   Up-to-date.
+
 2006-01-10 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
    * Source/Index/LCTerm.m:

@@ -165,7 +165,9 @@ LuceneKit_HEADER_FILES += \
 	LCSortField.h \
 	LCTermQuery.h \
 	LCTermScorer.h \
+	LCTopDocCollector.h \
 	LCTopDocs.h \
+	LCTopFieldDocCollector.h \
 	LCTopFieldDocs.h \
 	LCWeight.h \
 	LCWildcardQuery.h \

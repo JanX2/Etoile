@@ -133,7 +133,7 @@ rely on a given document having the same number between sessions.
 	return directory; 
 }
 
-#if 0 // FIXME
+#if 0 // FIXME: Check newest version first !!
 public static long lastModified(String directory) throws IOException {
      return lastModified(new File(directory));
         }	   }
@@ -191,7 +191,7 @@ public static long getCurrentVersion(String directory) throws IOException {
 	return [LCSegmentInfos currentVersion: dir];
 }
 
-#if 0 // FIXME: LuceneKit
+#if 0 // FIXME: LuceneKit. Check newest version first !!
   /**
    	    * Check whether this IndexReader still works on a current version of the index.
 	     	    * If this is not the case you will need to re-open the IndexReader to

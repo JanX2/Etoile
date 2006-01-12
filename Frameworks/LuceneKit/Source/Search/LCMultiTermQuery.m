@@ -84,7 +84,7 @@
 
 - (unsigned) hash
 {
-	return [term hash];
+	return [term hash] + FloatToIntBits([self boost]);
 }
 
 @end

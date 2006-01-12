@@ -10,6 +10,8 @@
 #include "LCIndexReader.h"
 #include "LCTerm.h"
 #include "LCDocument.h"
+#include "LCTopDocCollector.h"
+#include "LCTopFieldDocCollector.h"
 #include "GNUstep.h"
 #include "float.h"
 
@@ -19,113 +21,6 @@
 * or {@link #search(Query,Filter)} methods. For performance reasons it is 
 * recommended to open only one IndexSearcher and use it for all of your searches.
 */
-@interface LCHitCollector1: LCHitCollector
-{
-	LCBitVector *bits;
-	LCHitQueue *hq;
-	int totalHits;
-	float minScore;
-	int nDocs;
-}
-- (id) initWithReader: (LCIndexReader *) reader
-			   filter: (LCFilter *) filter maximum: (int) nDos
-				queue: (LCHitQueue *) hq;
-- (int) totalHits;
-@end
-
-@implementation LCHitCollector1
-
-- (id) initWithReader: (LCIndexReader *) reader
-			   filter: (LCFilter *) filter maximum: (int) n
-				queue: (LCHitQueue *) q
-{
-	self = [self init];
-	bits = (filter != nil) ? [filter bits: reader] : nil;
-	nDocs = n;
-	ASSIGN(hq, q);
-	totalHits = 0;
-	minScore = 0.0f;
-	return self;
-}
-
-- (int) totalHits
-{
-	return totalHits;
-}
-
-- (void) collect: (int) doc score: (float) score
-{
-	if (score > 0.0f &&                     // ignore zeroed buckets
-		( bits == nil || [bits bit: doc])) // skip docs not in bits
-	{
-		totalHits++;
-		if ([hq size] < nDocs || score >= minScore) 
-		{
-			LCScoreDoc *d = [[LCScoreDoc alloc] initWithDocument: doc score: score];
-			[hq insert: AUTORELEASE(d)];
-			minScore = [((LCScoreDoc *)[hq top]) score]; // maintain minScore
-		}
-	}
-}
-
-- (void) dealloc
-{
-	DESTROY(hq);
-	[super dealloc];
-}
-
-@end
-
-@interface LCHitCollector2: LCHitCollector
-{
-	LCBitVector *bits;
-	LCFieldSortedHitQueue *hq;
-	int totalHits;
-	int nDocs;
-}
-- (id) initWithReader: (LCIndexReader *) reader
-			   filter: (LCFilter *) filter
-				queue: (LCFieldSortedHitQueue *) hq;
-- (int) totalHits;
-@end
-
-@implementation LCHitCollector2
-
-- (id) initWithReader: (LCIndexReader *) reader
-			   filter: (LCFilter *) filter
-				queue: (LCFieldSortedHitQueue *) q
-{
-	self = [self init];
-	bits = (filter != nil) ? [filter bits: reader] : nil;
-	ASSIGN(hq, q);
-	totalHits = 0;
-	return self;
-}
-
-- (int) totalHits
-{
-	return totalHits;
-}
-
-- (void) collect: (int) doc score: (float) score
-{
-	if (score > 0.0f &&                     // ignore zeroed buckets
-		( bits == nil || [bits bit: doc])) // skip docs not in bits
-	{
-		totalHits++;
-		LCFieldDoc *d = [[LCFieldDoc alloc] initWithDocument: doc score: score];
-		[hq insert: AUTORELEASE(d)];
-	}
-}
-
-- (void) dealloc
-{
-	DESTROY(hq);
-	[super dealloc];
-}
-
-@end
-
 @interface LCHitCollector3: LCHitCollector
 {
 	LCBitVector *bits;
@@ -239,38 +134,10 @@
 		return nil;
 	}
 	
-	LCScorer *scorer = [weight scorer: reader];
-	if (scorer == nil)
-	{
-		LCTopDocs *doc = [[LCTopDocs alloc] initWithTotalHits: 0
-											   scoreDocuments: [NSArray array]
-		maxScore: FLT_MIN];
-		return AUTORELEASE(doc);
-	}
-	
-	LCHitQueue *hq = [(LCHitQueue *)[LCHitQueue alloc] initWithSize: nDocs];
-	LCHitCollector1 *hc = [[LCHitCollector1 alloc] initWithReader: reader 
-														   filter: filter maximum: nDocs
-															queue: hq];
-	[scorer score: hc];
-	
-	NSMutableArray *scoreDocs = [[NSMutableArray alloc] init];
-	int i, count = [hq size];
-	for (i = 0; i < count; i++)
-	{
-		if (i == 0)
-			[scoreDocs addObject: [hq pop]];
-		else
-			[scoreDocs insertObject: [hq pop] atIndex: 0];
-	}
-	
-	float maxScore = ([hc totalHits] == 0) ? FLT_MIN : [[scoreDocs  objectAtIndex: 0] score];
-	LCTopDocs *td = [[LCTopDocs alloc] initWithTotalHits: [hc totalHits]
-										  scoreDocuments: scoreDocs maxScore: maxScore];
-	DESTROY(hq);
-	DESTROY(hc);
-	DESTROY(scoreDocs);
-	return AUTORELEASE(td);
+	LCTopDocCollector *collector = [[LCTopDocCollector alloc] initWithMaximalHits: nDocs];
+	[self search: weight filter: filter hitCollector: collector];
+	AUTORELEASE(collector);
+	return [collector topDocs];
 }
 
 - (LCTopFieldDocs *) search: (id <LCWeight>) weight 
@@ -278,39 +145,10 @@
 					maximum: (int) nDocs
 					   sort: (LCSort *) sort
 {
-	LCScorer *scorer = [weight scorer: reader];
-	if (scorer == nil)
-	{
-		LCTopFieldDocs *doc = [[LCTopDocs alloc] initWithTotalHits: 0
-													scoreDocuments: [NSArray array]
-														sortFields: [sort sortFields]
-				maxScore: FLT_MIN];
-		return AUTORELEASE(doc);
-	}
-	
-	LCFieldSortedHitQueue *hq = [[LCFieldSortedHitQueue alloc] initWithReader: reader 
-																   sortFields: [sort sortFields] size: nDocs];
-	LCHitCollector2 *hc = [[LCHitCollector2 alloc] initWithReader: reader 
-														   filter: filter queue: hq];
-	[scorer score: hc];
-	NSMutableArray *scoreDocs = [[NSMutableArray alloc] init];
-	int i, count = [hq size];
-	for (i = 0; i < count; i++) // put docs in array
-	{
-		LCFieldDoc *fieldDoc = [hq fillFields: [hq pop]];
-		if (i == 0)
-			[scoreDocs addObject: fieldDoc];
-		else
-			[scoreDocs insertObject: fieldDoc atIndex: 0];
-	}
-	LCTopFieldDocs *td = [[LCTopFieldDocs alloc] initWithTotalHits: [hc totalHits]
-													scoreDocuments: scoreDocs
-														sortFields: [hq sortFields]
-			maxScore: [hq maximalScore]];
-	DESTROY(hq);
-	DESTROY(hc);
-	DESTROY(scoreDocs);
-	return AUTORELEASE(td);
+	LCTopFieldDocCollector *collector = [[LCTopFieldDocCollector alloc] initWithReader: reader sort: sort maximalHits: nDocs];
+	[self search: weight filter: filter hitCollector: collector];
+	AUTORELEASE(collector);
+	return (LCTopFieldDocs *)[collector topDocs];
 }
 
 - (void) search: (id <LCWeight>) weight 

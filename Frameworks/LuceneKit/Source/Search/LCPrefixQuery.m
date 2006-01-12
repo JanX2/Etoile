@@ -63,20 +63,19 @@
 	return AUTORELEASE(buffer);
 }
 
-#if 0
-   /** Returns true iff <code>o</code> is equal to this. */
- 	   public boolean equals(Object o) {
- 	     if (!(o instanceof PrefixQuery))
- 	       return false;
- 	     PrefixQuery other = (PrefixQuery)o;
- 	     return (this.getBoost() == other.getBoost())
- 	       && this.prefix.equals(other.prefix);
- 	   }
- 	 
- 	   /** Returns a hash code value for this object.*/
- 	   public int hashCode() {
- 	     return Float.floatToIntBits(getBoost()) ^ prefix.hashCode();
- 	   }
-#endif
+- (BOOL) isEqual: (id) o
+{
+	if ([o isKindOfClass: [self class]] == NO)
+	{
+		return NO;
+	}
+	LCPrefixQuery *other = (LCPrefixQuery *) o;
+	return (([self boost] == [other boost]) && ([[self prefix] isEqual: [other prefix]]));
+}
+
+- (unsigned) hash
+{
+	return FloatToIntBits([self boost]) ^ [prefix hash] ^ 0x6634D93C;
+}
 
 @end
