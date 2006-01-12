@@ -15,6 +15,3 @@ LuceneKit TODO
 	org.apache.lucene.search.spans
 	org.apache.lucene.search.ParallelMultiSearcher
 	org.apache.lucene.index.ParallelReader
-	org.apache.lucene.index.IndexModifier
-
-    * Support compression in LCDocument (zlib). ** Done ! **
