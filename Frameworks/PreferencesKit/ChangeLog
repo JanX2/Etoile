@@ -1,3 +1,9 @@
+2006-01-13  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPreferencePane (-loadMainView): 
+    Added a security check to prevent new mainView instanciation when it isn't 
+    advised.
+
 2006-01-09  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/PKPreferencesController (-selectPreferencePaneWithIdentifier:): 

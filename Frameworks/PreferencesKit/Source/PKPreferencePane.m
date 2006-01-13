@@ -63,7 +63,12 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
     <p>Related nib file is known by <ref>mainNibName</ref>.</p> */
 -(NSView*) loadMainView
 {
-	_topLevelObjects = [[NSMutableArray alloc] init];
+	// NOTE: Paranoid check which eliminates the possibility to reload the nib
+    // when the mainView is possibly still in use.
+    if ([self mainView] != nil)
+        return nil;
+    
+    _topLevelObjects = [[NSMutableArray alloc] init];
 	NSDictionary*	ent = [NSDictionary dictionaryWithObjectsAndKeys:
 							self, @"NSOwner",
 							_topLevelObjects, @"NSTopLevelObjects",
