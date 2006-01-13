@@ -59,7 +59,7 @@ extern const NSString *PKTablePresentationMode;
 
     [prebuiltTableView removeFromSuperview];
     
-    [prebuiltTableView setFrameSize: NSMakeSize(100, [mainViewContainer frame].size.height)];
+    [prebuiltTableView setFrameSize: NSMakeSize(180, [mainViewContainer frame].size.height)];
     [prebuiltTableView setFrameOrigin: NSMakePoint(0, 0)];
     [mainViewContainer addSubview: prebuiltTableView];
     
