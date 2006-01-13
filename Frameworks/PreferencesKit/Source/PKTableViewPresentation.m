@@ -148,7 +148,7 @@ extern const NSString *PKTablePresentationMode;
 - (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier
 {    
 	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-    NSDictionary *info = [plugins objectWithValue: identifier forKey: @"path"];
+    NSDictionary *info = [plugins objectWithValue: identifier forKey: @"identifier"];
     int row = [plugins indexOfObject: info];
     
     [preferencesTableView selectRow: row byExtendingSelection: NO];
