@@ -229,7 +229,20 @@ static NSFileManager *fm = nil;
 {
 	NSMutableDictionary *info = [pluginPaths objectForKey: path];
 	
-	if (info == nil || [info count] == 0)
+    // NOTE: We may refactor plugin schema conformance test in a dedicated
+    // method. We would be able to call it in subclasses to validate plugins
+    // in a specific method. For example -validatePreferencePane could be
+    // used by -preferencePaneForPath: to know when the preference pane has to
+    // be reloaded because it is invalid.
+    /* 
+    if (isInvalid)
+    {
+        [pluginsPath removeObjectForKey: path];
+        [plugins removeObject: info];
+        info = nil
+    } */
+    
+	if (info == nil)
 	{
 		NSBundle *bundle = [NSBundle bundleWithPath: path];
         NSString *identifier;

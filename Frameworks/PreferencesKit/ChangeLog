@@ -1,17 +1,35 @@
 2006-01-13  Quentin Mathe <qmathe@club-internet.fr>
 
-    * Source/PKTableViewPresentation (-didSelectPreferencePaneWithIdentifier:): 
+    * Source/UKPluginsRegistry.m (-loadPluginForPath:): More comments. 
+    Removed a possible condition for plugin reloading, which may be replaced 
+    later by a schema conformance test.
+    * Source/PKPrefPanesRegistry.m 
+    (-loadPluginForPath:): New method extending its superclass counterpart. It
+    includes code to retrieve NSPrefPaneLabelIcon and NSPrefPaneIconFile which
+    are specific to preference pane plugins. Fixed prefs module missing label 
+    and icon bug, they weren't loaded until the module has been selected; 
+    it was related to the fact prefs modules have to be instantied to retrieve 
+    them (their icon and label being not defined in a plist). Now prefs module
+    is instantiated on loading.
+    (-preferencePaneAtPath:): Moved most of its code in -loadPluginForPath: and
+    moved again -loadMainView call to allow nib loading for prefs module (their 
+    pane instance is never nil in this method now) but added a condition to 
+    avoid the overlapping views bug fixed on 2006-01-09 (r423).
+
+2006-01-13  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKTableViewPresentation.m (-didSelectPreferencePaneWithIdentifier:): 
     Minor fix.
 
 2006-01-13  Quentin Mathe <qmathe@club-internet.fr>
 
-    * Source/PKPreferencePane (-loadMainView): 
+    * Source/PKPreferencePane.m (-loadMainView): 
     Added a security check to prevent new mainView instanciation when it isn't 
     advised.
 
 2006-01-09  Quentin Mathe <qmathe@club-internet.fr>
 
-    * Source/PKPreferencesController (-selectPreferencePaneWithIdentifier:): 
+    * Source/PKPreferencesController.m (-selectPreferencePaneWithIdentifier:): 
     Done with the previous commit... Yen-Ju has been faster than me on this 
     one :-) 
     Here is my own ChangeLog entry (more detailed)...
