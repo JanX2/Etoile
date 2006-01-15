@@ -1,3 +1,10 @@
+2006-01-15  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPreferencesController.m (-updateUIForPreferencePaneWithPath:): 
+    Added a hack to avoid resigning first responder status with table 
+    presentation when pane is switched (it eliminates flickering between
+    blue and gray of the selection in table view).
+    
 2006-01-13  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/UKPluginsRegistry.m (-loadPluginForPath:): More comments. 

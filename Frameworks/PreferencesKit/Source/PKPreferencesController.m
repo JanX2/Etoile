@@ -212,7 +212,11 @@ must be called each time a new preference pane is selected like with
 	
 	/* Finish up by setting up key views and remembering new current pane: */
 	currentPane = requestedPane;
-	[[prefsView window] makeFirstResponder: [requestedPane initialKeyView]];
+    // FIXME: The hack below will have to be decently reimplemented in order we
+    // we can support not resigning first responder for other presentation
+    // views when a new pane gets selected.
+    if ([[self presentationMode] isEqual: PKTablePresentationMode] == NO)
+        [[prefsView window] makeFirstResponder: [requestedPane initialKeyView]];
 	[requestedPane didSelect];
 	
 	/* Message window title:
