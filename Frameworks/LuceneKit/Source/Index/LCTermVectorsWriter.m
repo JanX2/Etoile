@@ -166,10 +166,6 @@
 - (void) closeField
 {
 	if ([self isFieldOpen]) {
-		/* DEBUG */
-		//System.out.println("closeField()");
-		/* DEBUG */
-		
 		// save field and terms
 		[self writeField];
 		[fields addObject: currentField];
@@ -224,7 +220,7 @@
     [term setPositions: positions];
     [term setOffsets: offsets];
     [terms addObject: term];
-    RELEASE(term);
+    DESTROY(term);
 }
 
 /**
@@ -261,8 +257,6 @@
 #endif
 				
 				LCFieldInfo *fieldInfo = [fieldInfos fieldInfo: [tpVector field]];
-				//NSLog(@"tpVector %@, TermVectorStore %d, pos %d, off %d", [tpVector field], [fieldInfo isTermVectorStored], [fieldInfo isPositionWithTermVectorStored], [fieldInfo isOffsetWithTermVectorStored]);
-				//NSLog(@"storePos %d, storeOff %d", storePositionWithTermVector, storeOffsetWithTermVector);
 				[self openField: [fieldInfo number] 
  isPositionWithTermVectorStored: storePositionWithTermVector
    isOffsetWithTermVectorStored: storeOffsetWithTermVector];
@@ -318,7 +312,6 @@
 {
     // remember where this field is written
     [currentField setTVFPointer: [tvf offsetInFile]];
-    //System.out.println("Field Pointer: " + currentField.tvfPointer);
     
     long size = (long)[terms count];
     [tvf writeVInt: size];
@@ -385,7 +378,6 @@
     {
 		NSLog(@"Field is still open while writing document");
     }
-    //System.out.println("Writing doc pointer: " + currentDocPointer);
     // write document index record
     [tvx writeLong: currentDocPointer];
 	
@@ -409,7 +401,6 @@
 		[tvd writeVLong: [field tvfPointer] - lastFieldPointer];
 		lastFieldPointer = [field tvfPointer];
     }
-    //System.out.println("After writing doc pointer: " + tvx.getFilePointer());
 }
 @end
 
@@ -496,13 +487,13 @@
 - (void) setPositions: (NSArray *) p
 {
 	// Keep a copy
-	ASSIGN(positions, [p copy]);
+	ASSIGNCOPY(positions, p);
 }
 
 - (void) setOffsets: (NSArray *) o
 {
 	// Keep a copy
-	ASSIGN(offsets, [o copy]);
+	ASSIGNCOPY(offsets, o);
 }
 
 - (NSString *) termText

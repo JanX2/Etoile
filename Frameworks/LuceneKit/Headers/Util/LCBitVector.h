@@ -9,9 +9,10 @@
  */
 @interface LCBitVector: NSObject
 {
-	NSMutableData *bits;
+	unsigned char *bits; // size of bits won't change. It is fixed in -initWithSize.
 	int size;
 	int count;
+	int it;
 }
 
 /** <init/> Initialized to be able to contain n bits */

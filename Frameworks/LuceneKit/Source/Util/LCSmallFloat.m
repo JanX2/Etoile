@@ -2,16 +2,23 @@
 
 /** Floating point numbers smaller than 32 bits. */
 
+union    {
+                float fl;
+                int il;
+} udata;
+
 float IntBitsToFloat(int b)
 {
     /* LuceneKit: // Float.intBitsToFloat(bits);
     * Assume C follows IEEE standard.
     * Assum sizeof(float) == sizeof(int) == 4;
     */
+#if 0
     union    {
                 float fl;
                 int il;
     } udata;
+#endif
     udata.il = b;
     return udata.fl;
 }
@@ -21,11 +28,13 @@ int FloatToIntBits (float f)
     /* C implement of Float.floatToIntBits() */
     // Assum sizeof(float) == sizeof(int) == 4;
     // Assume C follows IEEE standard.
+#if 0
     union
     {
                 float fl;
                 int il;
     } udata;
+#endif
     udata.fl = f;
     return udata.il;
 }

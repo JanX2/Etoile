@@ -1,3 +1,9 @@
+2006-01-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+ 
+   * Source/Util/LCBitVector.m:
+   * Headers/Util/LCBitVector.h:
+   Use C type instead of objects to optimize the code.
+
 2006-01-11 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
    * Source/Index/LCIndexReader.m:

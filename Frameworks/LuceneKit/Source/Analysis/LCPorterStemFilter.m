@@ -27,6 +27,12 @@ class MyAnalyzer extends Analyzer {
 	return self;
 }
 
+- (void) dealloc
+{
+	free_stemmer(st);
+	[super dealloc];
+}
+
 /** Returns the next input Token, after being stemmed */
 - (LCToken *) nextToken
 {

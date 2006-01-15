@@ -21,8 +21,7 @@
               fieldInfos: (LCFieldInfos *) fis
 {
 	self = [super init];
-	NSString *file;
-	file = [segment stringByAppendingPathExtension: TVX_EXTENSION];
+	NSString *file = [segment stringByAppendingPathExtension: TVX_EXTENSION];
 	if ([d fileExists: file])
 	{
 		ASSIGN(tvx, [d openInput: file]);
@@ -97,12 +96,10 @@
 		// file pointer
 		//that was written in another file
 		[tvx seekToFileOffset: ((docNum * 8L) + TERM_VECTORS_WRITER_FORMAT_SIZE)];
-		//System.out.println("TVX Pointer: " + tvx.getFilePointer());
 		long long position = [tvx readLong];
 		
 		[tvd seekToFileOffset: position];
 		long fieldCount = [tvd readVInt];
-		//System.out.println("Num Fields: " + fieldCount);
 		// There are only a few fields per document. We opt for a full scan
 		// rather then requiring that they be ordered. We need to read through
 		// all of the fields anyway to get to the tvf pointers.
@@ -135,11 +132,9 @@
 								  pointer: position];
 		} else {
 			NSLog(@"Field not found");
-			//System.out.println("Field not found");
 		}
     } else {
 		NSLog(@"No tvx file");
-		//System.out.println("No tvx file");
     }
     return result;
 }
@@ -189,11 +184,11 @@
 			
 			result = [self readTermVectors: fields
 								  pointers: tvfPointers];
-			RELEASE(fields);
-			RELEASE(tvfPointers);
+			DESTROY(fields);
+			DESTROY(tvfPointers);
 		}
     } else {
-		//System.out.println("No tvx file");
+		NSLog(@"No tvx file");
     }
     return result;
 }
@@ -229,7 +224,6 @@
     [tvf seekToFileOffset: tvfPointer];
 	
     long numTerms = [tvf readVInt];
-    //System.out.println("Num Terms: " + numTerms);
     // If no terms - return a constant empty termvector. However, this should never occur!
     if (numTerms == 0) 
     {
@@ -262,7 +256,6 @@
 		positions = [[NSMutableArray alloc] init];
     if(storeOffsets)
 		offsets = [[NSMutableArray alloc] init];
-    //NSLog(@"LCTermVectosReader <%@>, pos %d, off %d", field, storePositions, storeOffsets);
     
     long start = 0;
     long deltaLength = 0;
@@ -298,7 +291,7 @@
 			}
 		}
 		[positions addObject: pos];
-		RELEASE(pos);
+		DESTROY(pos);
 		
 		NSMutableArray *offs = [[NSMutableArray alloc] init];
 		if (storeOffsets) {
@@ -313,7 +306,7 @@
 			}
 		}
 		[offsets addObject: offs];
-		RELEASE(offs);
+		DESTROY(offs);
     }
     
     LCSegmentTermVector *tv;
@@ -329,9 +322,9 @@
 												  terms: terms
 											  termFreqs: termFreqs];
     }
-    AUTORELEASE(buffer);
-    AUTORELEASE(terms);
-    AUTORELEASE(termFreqs);
+    DESTROY(buffer);
+    DESTROY(terms);
+    DESTROY(termFreqs);
     return AUTORELEASE(tv);
 }
 
@@ -378,9 +371,9 @@
 		return nil;
     
     LCTermVectorsReader *clone = [[LCTermVectorsReader allocWithZone: zone] init];
-    [clone setTVX: [tvx copy]];
-    [clone setTVD: [tvd copy]];
-    [clone setTVF: [tvf copy]];
+    [clone setTVX: AUTORELEASE([tvx copy])];
+    [clone setTVD: AUTORELEASE([tvd copy])];
+    [clone setTVF: AUTORELEASE([tvf copy])];
     [clone setSize: size];
     [clone setTVDFormat: tvdFormat];
     [clone setTVFFormat: tvfFormat];

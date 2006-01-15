@@ -17,8 +17,8 @@ Directory.  A TermInfos can be written once, in order.  */
 - (id) init
 {
 	self = [super init];
-	ASSIGN(lastTerm, [[LCTerm alloc] initWithField: @"" text: @""]);
-	ASSIGN(lastTi, [[LCTermInfo alloc] init]);
+	ASSIGN(lastTerm, AUTORELEASE([[LCTerm alloc] initWithField: @"" text: @""]));
+	ASSIGN(lastTi, AUTORELEASE([[LCTermInfo alloc] init]));
 	size = 0;
 	
 	// TODO: the default values for these two parameters should be settable from
@@ -59,11 +59,11 @@ Directory.  A TermInfos can be written once, in order.  */
 						fieldInfos: fis
 						  interval: interval
 						   isIndex: NO];
-	ASSIGN(other, [[LCTermInfosWriter alloc] initWithDirectory: directory
+	ASSIGN(other, AUTORELEASE([[LCTermInfosWriter alloc] initWithDirectory: directory
 													   segment: segment
 													fieldInfos: fis
 													  interval: interval
-													   isIndex: YES]);
+													   isIndex: YES]));
 	[other setOther: self];
 	return self;
 }
@@ -98,6 +98,15 @@ Directory.  A TermInfos can be written once, in order.  */
     [output writeInt: indexInterval];             // write indexInterval
     [output writeInt: skipInterval];              // write skipInterval
     return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(lastTerm);
+	DESTROY(lastTi);
+	DESTROY(other);
+	DESTROY(fieldInfos);
+	[super dealloc];
 }
 
 /** Adds a new <Term, TermInfo> pair to the set.

@@ -93,7 +93,7 @@ The type defaults to "word." */
 
 - (void) setTermText: (NSString *) text
 {
-	ASSIGN(termText, AUTORELEASE([text copy]));
+	ASSIGNCOPY(termText, text);
 }
 
 /** Returns this Token's starting offset, the position of the first character

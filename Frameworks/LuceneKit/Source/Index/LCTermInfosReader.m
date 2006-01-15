@@ -35,8 +35,11 @@
 
 - (void) dealloc
 {
-	RELEASE(origEnum);
-	RELEASE(indexEnum);
+	DESTROY(origEnum);
+	DESTROY(indexEnum);
+        DESTROY(directory);
+        DESTROY(segment);
+        DESTROY(fieldInfos);
 	[super dealloc];
 }
 
@@ -78,9 +81,9 @@
 		return;                                     // do nothing
 													//    int indexSize = (int)[indexEnum size];        // otherwise read index
 	
-    ASSIGN(indexTerms, [[NSMutableArray alloc] init]);
-    ASSIGN(indexInfos, [[NSMutableArray alloc] init]);
-    ASSIGN(indexPointers, [[NSMutableArray alloc] init]);
+    ASSIGN(indexTerms, AUTORELEASE([[NSMutableArray alloc] init]));
+    ASSIGN(indexInfos, AUTORELEASE([[NSMutableArray alloc] init]));
+    ASSIGN(indexPointers, AUTORELEASE([[NSMutableArray alloc] init]));
 	
     while([indexEnum hasNextTerm])
 	{
@@ -209,7 +212,9 @@
 /** Returns an enumeration of all the Terms and TermInfos in the set. */
 - (LCSegmentTermEnumerator *) termEnumerator
 {
-	return (LCSegmentTermEnumerator *)[origEnum copy];
+	// FIXME: should autorelease origEnum
+	id result = ([origEnum copy]);
+	return (LCSegmentTermEnumerator *)result;
 	
 }
 

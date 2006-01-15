@@ -5,7 +5,7 @@
 - (id) initWithString: (NSString *) s
 {
 	self = [self init];
-	ASSIGN(source, AUTORELEASE([s copy]));
+	ASSIGNCOPY(source, s);
 	return self;
 }
 

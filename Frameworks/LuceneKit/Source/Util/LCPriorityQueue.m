@@ -56,7 +56,6 @@
 		return YES;
     }
 	else if([heap count] > 0 && ![self lessThan: element : [self top]])
-		//else if([heap count] > 0 && ([(id <LCComparable>)element compare: [self top]] != NSOrderedAscending))
     {
 		[heap replaceObjectAtIndex: 0 withObject: element];
 		[self adjustTop];
@@ -86,8 +85,8 @@ time. */
 		NSObject *result = [heap objectAtIndex: 0]; // save first value
 		RETAIN(result);
 		[heap replaceObjectAtIndex: 0 withObject: [heap lastObject]];  // move last to first
-		[heap removeLastObject];			  // permit GC of objects
-		[self downHeap];				  // adjust heap
+		[heap removeLastObject]; // permit GC of objects
+		[self downHeap]; // adjust heap
 		return AUTORELEASE(result);
     }
 	else
@@ -124,11 +123,10 @@ time. */
 {
 	if ([heap count] == 0) return;
 	int i = [heap count]-1;
-	id <LCComparable> node = [heap objectAtIndex: i];	  // save bottom node
+	id node = [heap objectAtIndex: i];  // save bottom node
 	RETAIN(node);
 	int j = i >> 1;
 	while (j >= 0 && [self lessThan: node : [heap objectAtIndex: j]]) 
-		//  while (j >= 0 && ([node compare: [heap objectAtIndex: j]] == NSOrderedAscending)) 
     {
 		// shift parents down
 		[heap replaceObjectAtIndex: i withObject: [heap objectAtIndex: j]];
@@ -145,23 +143,20 @@ time. */
 {
 	if ([heap count] == 0) return;
 	int i = 0;
-	NSObject *node = [heap objectAtIndex: i];	  // save top node
+	id node = [heap objectAtIndex: i];	  // save top node
 	RETAIN(node);
 	int j = i << 1;				  // find smaller child
 	int k = j + 1;
 	if (k < [heap count] && [self lessThan: [heap objectAtIndex: k]: [heap objectAtIndex: j]]) {
-		//  if (k < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: k] compare: [heap objectAtIndex: j]] == NSOrderedAscending)) {
 		j = k;
 		}
 	while (j < [heap count] && [self lessThan: [heap objectAtIndex: j] : node]) {
-		//  while (j < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: j] compare: node] == NSOrderedAscending)) {
 		// shift up child
 		[heap replaceObjectAtIndex: i withObject: [heap objectAtIndex: j]];
 		i = j;
 		j = i << 1;
 		k = j + 1;
 		if (k < [heap count] && [self lessThan: [heap objectAtIndex: k] : [heap objectAtIndex: j]]) {
-			//if (k < [heap count] && ([(id <LCComparable>)[heap objectAtIndex: k] compare: [heap objectAtIndex: j]] == NSOrderedAscending)) {
 			j = k;
 			}
 		}

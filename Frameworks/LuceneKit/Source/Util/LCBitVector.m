@@ -5,56 +5,48 @@
 
 @implementation LCBitVector
 
-- (id) init
+- (id) initWithSize: (int) n
 {
 	self = [super init];
 	count = -1;
-	size = 0;
-	bits = [[NSMutableData alloc] init];
-	return self;
-}
-
-- (id) initWithSize: (int) n
-{
-	self = [self init];
 	size = n;
-	NSRange r = NSMakeRange(0, [bits length]);
-	[bits resetBytesInRange: r];
-	[bits setLength: (n >> 3) + 1];
+	it = ((n >> 3) + 1);
+	bits = calloc(it, sizeof(unsigned char));
 	return self;
 }
 
 - (void) dealloc
 {
-	DESTROY(bits);
+	free(bits);
+	bits = NULL;
 	[super dealloc];
 }
 
 - (void) setBit: (int) bit
 {
 	unsigned char b;
-	NSRange r = NSMakeRange((bit >> 3), 1);
-	[bits getBytes: &b range: r];
+	it = (bit >> 3);
+	b = bits[it];
 	b |= 1 << (bit & 7);
-	[bits replaceBytesInRange: r withBytes: &b];
+	bits[it] = b;
 	count = -1; // Recalculate count
 }
 
 - (void) clearBit: (int) bit
 {
 	unsigned char b;
-	NSRange r = NSMakeRange((bit >> 3), 1);
-	[bits getBytes: &b range: r];
+	it = (bit >> 3);
+	b = bits[it];
 	b &= ~(1 << (bit & 7));
-	[bits replaceBytesInRange: r withBytes: &b];
+	bits[it] = b;
 	count = -1; //Recalculate count
 }
 
 - (BOOL) bit: (int) bit
 {
-	NSRange r = NSMakeRange((bit >> 3), 1);
+	it = (bit >> 3);
 	unsigned char b;
-	[bits getBytes: &b range: r];
+	b = bits[it];
 	int result = b & (1 << (bit & 7));
 	return ((result != 0) ? YES : NO);
 }
@@ -90,11 +82,10 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 		int i, c = 0;
 		unsigned char b;
 		NSRange r;
-		int end = [bits length];
+		int end = ((size >> 3) + 1);
 		for (i = 0; i < end; i++)
         {
-			r = NSMakeRange(i, 1);
-			[bits getBytes: &b range: r];
+			b = bits[i];
 			c += BYTE_COUNTS[b & 0xFF];	  // sum bits per byte
 		}
 		count = c;
@@ -110,7 +101,8 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 	{
 		[output writeInt: [self size]];
 		[output writeInt: [self count]];
-		[output writeBytes: bits length: [bits length]];
+		NSData *data = [NSData dataWithBytes: bits length: (size >> 3) + 1];
+		[output writeBytes: data length: [data length]];
 		[output close];
 	}
 }
@@ -125,7 +117,10 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
 		size = [input readInt];
 		self = [self initWithSize: size];
 		count = [input readInt];
-		[input readBytes: bits offset: 0 length: (size >> 3) + 1];
+		NSMutableData *b = [[NSMutableData alloc] init];
+		[input readBytes: b offset: 0 length: (size >> 3) + 1];
+		[b getBytes: bits];
+		DESTROY(b);
 		[input close];
 		return self;
 	}

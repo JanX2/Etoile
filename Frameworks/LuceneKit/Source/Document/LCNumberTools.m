@@ -3,7 +3,7 @@
 char _dig_vec[] =
 "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-long long MAX_LONG = (((unsigned long long)(-1)) / 2) - 1; // MAX of long
+//long long MAX_LONG = (((unsigned long long)(-1)) / 2) - 1; // MAX of long
 
 //#define STR_SIZE 13
 
@@ -14,7 +14,7 @@ long long MAX_LONG = (((unsigned long long)(-1)) / 2) - 1; // MAX of long
 	char *buffer = malloc(sizeof(char)*(STR_SIZE+1));
 	register char *p;
 	long long new_val;
-	long long val = (v < 0) ? (v + MAX_LONG + 1) : v;
+	long long val = (v < 0) ? (v + LLONG_MAX + 1) : v;
 	
 	bzero(buffer, (STR_SIZE+1));
 	memset(buffer, '0', STR_SIZE);
@@ -92,7 +92,7 @@ long long MAX_LONG = (((unsigned long long)(-1)) / 2) - 1; // MAX of long
 	
 	if (minus == -1)
     {
-		new_val = new_val - MAX_LONG -1;
+		new_val = new_val - LLONG_MAX -1;
 		return new_val;
     }
 	else
