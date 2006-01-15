@@ -219,7 +219,6 @@
 {
 	id result = AUTORELEASE([origEnum copy]);
 	return (LCSegmentTermEnumerator *)result;
-	
 }
 
 /** Returns an enumeration of terms starting at or after the named term. */
