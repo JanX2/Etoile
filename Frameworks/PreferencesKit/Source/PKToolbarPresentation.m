@@ -81,8 +81,14 @@ extern const NSString *PKToolbarPresentationMode;
 
 - (void) unloadUI
 {
+    id owner = 
+        [[PKPreferencesController sharedPreferencesController] owner];
+        
     [preferencesToolbar setVisible: NO];
-    [preferencesToolbar release];
+    // NOTE: -[toolbar release] shouldn't be used because it doesn't clean
+    // everything (like validation objects). We should document this point in
+    // GSToolbar.
+    [(NSWindow *)owner setToolbar: nil];
 }
 
 - (NSString *) presentationMode

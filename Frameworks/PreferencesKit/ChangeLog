@@ -1,5 +1,11 @@
 2006-01-15  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Source/PKToolbarPresentation.m (-unloadUI): Fixed toolbar release which
+    was leaking validation objects in activity (that resulted in segmentation
+    fault).
+
+2006-01-15  Quentin Mathe <qmathe@club-internet.fr>
+
     * Source/PKPreferencesController.m (-updateUIForPreferencePaneWithPath:): 
     Added a hack to avoid resigning first responder status with table 
     presentation when pane is switched (it eliminates flickering between
