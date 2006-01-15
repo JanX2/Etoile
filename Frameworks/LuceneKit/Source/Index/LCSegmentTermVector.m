@@ -16,8 +16,9 @@
 
 - (void) dealloc
 {
-	RELEASE(terms);
-	RELEASE(termFreqs);
+	DESTROY(terms);
+	DESTROY(termFreqs);
+	DESTROY(field);
 	[super dealloc];
 }
 

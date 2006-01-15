@@ -57,7 +57,7 @@
 											  numberOfDocuments: [input readInt]
 													  directory: directory];
 		[segments addObject: si];
-		RELEASE(si);
+		DESTROY(si);
 	}
 	
 	if(format >= 0){    // in old format the version number may be at the end of the file
@@ -123,6 +123,7 @@
 	
     LCSegmentInfos *sis = [[LCSegmentInfos alloc] init];
     [sis readFromDirectory: directory];
+    AUTORELEASE(sis);
     return [sis version];
 }
 

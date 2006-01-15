@@ -40,6 +40,11 @@
         DESTROY(directory);
         DESTROY(segment);
         DESTROY(fieldInfos);
+	
+	DESTROY(indexTerms);
+	DESTROY(indexInfos);
+	DESTROY(indexPointers);
+
 	[super dealloc];
 }
 
@@ -212,8 +217,7 @@
 /** Returns an enumeration of all the Terms and TermInfos in the set. */
 - (LCSegmentTermEnumerator *) termEnumerator
 {
-	// FIXME: should autorelease origEnum
-	id result = ([origEnum copy]);
+	id result = AUTORELEASE([origEnum copy]);
 	return (LCSegmentTermEnumerator *)result;
 	
 }
@@ -221,18 +225,11 @@
 /** Returns an enumeration of terms starting at or after the named term. */
 - (LCSegmentTermEnumerator *) termEnumeratorWithTerm: (LCTerm *) term
 {
-#if 0
-	[self termInfo: term];
-    return (LCSegmentTermEnumerator *)[[self internalTermEnumerator] copy];
-#else
 	[self ensureIndexIsRead];
     LCSegmentTermEnumerator *enumerator = [self internalTermEnumerator];
     [self seekEnumerator: [self indexOffset: term]];
     [enumerator scanTo: term];
     return enumerator;
-	
-#endif
-	
 }
 
 @end

@@ -88,13 +88,13 @@
     // Open files for TermVector storage
     NSString *file;
     file = [segment stringByAppendingPathExtension: TVX_EXTENSION];
-    tvx = [directory createOutput: file];
+    ASSIGN(tvx, [directory createOutput: file]);
     [tvx writeInt: (long)TERM_VECTORS_WRITER_FORMAT_VERSION];
     file = [segment stringByAppendingPathExtension: TVD_EXTENSION];
-    tvd = [directory createOutput: file];
+    ASSIGN(tvd, [directory createOutput: file]);
     [tvd writeInt: (long)TERM_VECTORS_WRITER_FORMAT_VERSION];
     file = [segment stringByAppendingPathExtension: TVF_EXTENSION];
-    tvf = [directory createOutput: file];
+    ASSIGN(tvf, [directory createOutput: file]);
     [tvf writeInt: (long)TERM_VECTORS_WRITER_FORMAT_VERSION];
 	
     ASSIGN(fieldInfos, fis);
@@ -106,9 +106,13 @@
 
 - (void) dealloc
 {
-	RELEASE(fieldInfos);
-	RELEASE(fields);
-	RELEASE(terms);
+	DESTROY(fieldInfos);
+	DESTROY(fields);
+	DESTROY(terms);
+	DESTROY(tvx);
+	DESTROY(tvd);
+	DESTROY(tvf);
+	DESTROY(currentField);
 	[super dealloc];
 }
 
@@ -155,9 +159,9 @@
 		NSLog(@"Cannot open field when no document is open.");
 	}
 	[self closeField];
-	currentField = [[LCTVField alloc] initWithNumber: fieldNumber
+	ASSIGN(currentField, AUTORELEASE([[LCTVField alloc] initWithNumber: fieldNumber
 									   storePosition: storePositionWithTermVector
-										 storeOffset: storeOffsetWithTermVector];
+										 storeOffset: storeOffsetWithTermVector]));
 }
 
 /** Finished processing current field. This should be followed by a call to
@@ -170,7 +174,7 @@
 		[self writeField];
 		[fields addObject: currentField];
 		[terms removeAllObjects];
-		currentField = nil;
+		DESTROY(currentField);
     }
 }
 

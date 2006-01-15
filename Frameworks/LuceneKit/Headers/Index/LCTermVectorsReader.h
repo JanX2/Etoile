@@ -9,7 +9,7 @@
 {
 	LCFieldInfos *fieldInfos;
 	LCIndexInput *tvx, *tvd, *tvf;
-	long size, tvdFormat, tvfFormat;;
+	long size, tvdFormat, tvfFormat;
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) d

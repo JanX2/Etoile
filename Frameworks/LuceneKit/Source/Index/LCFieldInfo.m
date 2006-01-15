@@ -40,7 +40,7 @@
 
 - (void) dealloc
 {
-	RELEASE(name);
+	DESTROY(name);
 	[super dealloc];
 }
 

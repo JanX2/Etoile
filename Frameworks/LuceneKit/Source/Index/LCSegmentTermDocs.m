@@ -20,16 +20,16 @@
 
 - (void) dealloc
 {
-	RELEASE(freqStream);
-	RELEASE(deletedDocs);
-	RELEASE(parent);
+	DESTROY(freqStream);
+	DESTROY(skipStream);
+	DESTROY(deletedDocs);
+	DESTROY(parent);
 	[super dealloc];
 }
 
 - (void) seekTerm: (LCTerm *) term
 {
 	LCTermInfo *ti = [[parent termInfosReader] termInfo: term];
-	//  NSLog(@"seekTerm %@: %@", term, ti);
 	[self seekTermInfo: ti];
 }
 
@@ -153,7 +153,7 @@
     if (df >= skipInterval) {                      // optimized case
 		
 		if (skipStream == nil)
-			skipStream = (LCIndexInput*) [freqStream copy]; // lazily clone
+			ASSIGNCOPY(skipStream, freqStream);
 		
 		if (!haveSkipped) {                          // lazily seek skip stream
 			[skipStream seekToFileOffset: skipPointer];

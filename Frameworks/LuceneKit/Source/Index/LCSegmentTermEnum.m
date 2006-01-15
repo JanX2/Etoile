@@ -64,6 +64,17 @@
 	
 }
 
+- (void) dealloc
+{
+	DESTROY(termInfo);
+	DESTROY(input);
+	DESTROY(fieldInfos);
+	DESTROY(termBuffer);
+	DESTROY(prevBuffer);
+	DESTROY(scratch);
+	[super dealloc];
+}
+
 - (void) seek: (long) pointer position: (int) p
          term: (LCTerm *) t termInfo: (LCTermInfo *) ti
 {
@@ -276,13 +287,13 @@ Initially invalid, valid after next() called for the first time.*/
 {
 	LCSegmentTermEnumerator *clone = [[LCSegmentTermEnumerator allocWithZone: zone] init];
 	
-	[clone setIndexInput: [input copy]];
+	[clone setIndexInput: AUTORELEASE([input copy])];
 	[clone setFieldInfos: fieldInfos];
 	[clone setSize: size];
 	[clone setPosition: position];
-	[clone setTermInfo: [termInfo copy]];
-	[clone setTermBuffer: [termBuffer copy]];
-	[clone setPrevBuffer: [prevBuffer copy]];
+	[clone setTermInfo: AUTORELEASE([termInfo copy])];
+	[clone setTermBuffer: AUTORELEASE([termBuffer copy])];
+	[clone setPrevBuffer: AUTORELEASE([prevBuffer copy])];
 	[clone setScratch: nil];
 	[clone setFormat: format];
 	[clone setIndexed: isIndex];
@@ -291,7 +302,7 @@ Initially invalid, valid after next() called for the first time.*/
 	[clone setSkipInterval: skipInterval];
 	[clone setFormatM1SkipInterval: formatM1SkipInterval];
 	
-	return AUTORELEASE(clone);
+	return clone;
 }
 
 @end

@@ -92,7 +92,7 @@ Directory.  A TermInfos can be written once, in order.  */
     {
 	    s = [segment stringByAppendingPathExtension: @"tis"];
     }
-    output = [directory createOutput: s];
+    ASSIGN(output, [directory createOutput: s]);
     [output writeInt: LCTermInfos_FORMAT]; //write format
     [output writeLong: 0];                          // leave space for size
     [output writeInt: indexInterval];             // write indexInterval
@@ -106,6 +106,7 @@ Directory.  A TermInfos can be written once, in order.  */
 	DESTROY(lastTi);
 	DESTROY(other);
 	DESTROY(fieldInfos);
+	DESTROY(output);
 	[super dealloc];
 }
 
