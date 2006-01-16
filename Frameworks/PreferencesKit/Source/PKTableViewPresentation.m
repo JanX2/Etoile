@@ -129,8 +129,8 @@ extern const NSString *PKTablePresentationMode;
         windowFrame.size.width = 400;
     
     /* We take in account the fact the origin is located at bottom left corner. */
-    //heightDelta = previousHeight - windowFrame.size.height;
-    //windowFrame.origin.y += heightDelta;
+    heightDelta = previousHeight - windowFrame.size.height;
+    windowFrame.origin.y += heightDelta;
     
     // FIXME: Animated resizing is buggy on GNUstep (exception thrown about
     // periodic events already generated for the current thread)
