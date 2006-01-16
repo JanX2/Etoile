@@ -82,6 +82,7 @@ const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     
     [self resizePreferencesViewForView: [[pc selectedPreferencePane] mainView]];
+    [self didSelectPreferencePaneWithIdentifier: [pc selectedPreferencePaneIdentifier]];
 }
 
 /** <override-subclass />

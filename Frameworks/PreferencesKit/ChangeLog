@@ -1,5 +1,10 @@
 2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Source/PKPresentationBuilder.m (-loadUI): Updated to notify itself about
+    the need to reflect the currently selected pane in presentation view.
+
+2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
+
     * Source/PKPreferencesController.m (-updateUIForPreferencePane:):
     Added a security check to disable autoresizing with pane views (it corrects 
     the bug you can observe with table presentation in PreferencesKitExample
