@@ -1,3 +1,11 @@
+2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKToolbarPresentation.m (-unloadUI): Fixed switching from toolbar
+    presentation to other ones, which has been broken on GNUstep until then.
+    This bug was triggered by -setToolbarVisibility: call which is not needed
+    in fact. That means table presentation is now usable
+    in PreferencesKitExample.
+
 2006-01-15  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/PKToolbarPresentation.m (-unloadUI): Fixed toolbar release which

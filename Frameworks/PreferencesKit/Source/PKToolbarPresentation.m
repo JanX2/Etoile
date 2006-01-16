@@ -83,8 +83,13 @@ extern const NSString *PKToolbarPresentationMode;
 {
     id owner = 
         [[PKPreferencesController sharedPreferencesController] owner];
-        
-    [preferencesToolbar setVisible: NO];
+    
+    // FIXME: this line is not needed, but we keep it because it outlines a bug
+    // in GSToolbar; toolbar view is not removed properly from the views
+    // hierarchy when the window toolbar is set to nil consecutively to the
+    // method call on the next line.
+    //[preferencesToolbar setVisible: NO];
+    
     // NOTE: -[toolbar release] shouldn't be used because it doesn't clean
     // everything (like validation objects). We should document this point in
     // GSToolbar.
