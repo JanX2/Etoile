@@ -1,5 +1,12 @@
 2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Source/PKPreferencesController.m (-updateUIForPreferencePane:):
+    Added a security check to disable autoresizing with pane views (it corrects 
+    the bug you can observe with table presentation in PreferencesKitExample
+    when you switch back to SamplePrefPane from SamplePrefsModule).
+
+2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
+
     * Source/PKTablePresentation.m
     (-loadUI): Updated to hide column headers on GNUstep too.
     (-resizePreferencesViewForView:): Disabled buggy animated window resize.

@@ -198,8 +198,10 @@ must be called each time a new preference pane is selected like with
 	/* Get main view for next pane: */
 	[requestedPane setOwner: self];
 	NSView *paneView = [requestedPane mainView];
-    // NOTE: By security, we check frame origin.
+    // NOTE: By security, we check both frame origin and
+    // autoresizing.
     [paneView setFrameOrigin: NSMakePoint(0, 0)];
+    [paneView setAutoresizingMask: NSViewNotSizable];
 	[requestedPane willSelect];
 	
 	/* Resize window so content area is large enough for prefs: */
