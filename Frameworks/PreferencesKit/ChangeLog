@@ -1,7 +1,8 @@
 2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
 
-    * Source/PKToolbarPresentation.m (-loadUI): Updated to hide column headers 
-    on GNUstep too.
+    * Source/PKTablePresentation.m
+    (-loadUI): Updated to hide column headers on GNUstep too.
+    (-resizePreferencesViewForView:): Disabled buggy animated window resize.
     * PrebuiltTableView.gorm: Added (I have forgotten to commit it until then).
 
 2006-01-16  Quentin Mathe <qmathe@club-internet.fr>

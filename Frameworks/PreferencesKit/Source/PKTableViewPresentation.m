@@ -64,6 +64,10 @@ extern const NSString *PKTablePresentationMode;
     [mainViewContainer addSubview: prebuiltTableView];
     
     /* Finish table view specific set up. */
+    // NOTE: the next two lines are needed only with Gorm because it doesn't
+    // support to disable column headers.
+    [preferencesTableView setCornerView: nil];
+    [preferencesTableView setHeaderView: nil];
     [preferencesTableView setDataSource: self];
     [preferencesTableView setDelegate: self];
     [preferencesTableView reloadData];
@@ -125,10 +129,16 @@ extern const NSString *PKTablePresentationMode;
         windowFrame.size.width = 400;
     
     /* We take in account the fact the origin is located at bottom left corner. */
-    heightDelta = previousHeight - windowFrame.size.height;
-    windowFrame.origin.y += heightDelta;
+    //heightDelta = previousHeight - windowFrame.size.height;
+    //windowFrame.origin.y += heightDelta;
     
+    // FIXME: Animated resizing is buggy on GNUstep (exception thrown about
+    // periodic events already generated for the current thread)
+    #ifndef GNUSTEP
 	[[mainView window] setFrame: windowFrame display: YES animate: YES];
+    #else
+    [[mainView window] setFrame: windowFrame display: YES animate: NO];
+    #endif
 }
 
 - (IBAction) switchPreferencePaneView: (id)sender
