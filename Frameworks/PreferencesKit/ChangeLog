@@ -1,5 +1,11 @@
 2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Source/PKToolbarPresentation.m (-loadUI): Updated to hide column headers 
+    on GNUstep too.
+    * PrebuiltTableView.gorm: Added (I have forgotten to commit it until then).
+
+2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
+
     * Source/PKToolbarPresentation.m (-unloadUI): Fixed switching from toolbar
     presentation to other ones, which has been broken on GNUstep until then.
     This bug was triggered by -setToolbarVisibility: call which is not needed
