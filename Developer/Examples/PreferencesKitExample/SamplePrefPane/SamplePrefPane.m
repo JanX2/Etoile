@@ -20,6 +20,9 @@
 {
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     
+    NSLog(@"-switchPresentation with radio matrix selection: %@ %d", 
+        [sender selectedCell], [sender selectedRow]);
+    
     // TODO: We should be able to send -setPresentationMode message through 
     // responder chain without referencing explicitely our preferences 
     // controller.
