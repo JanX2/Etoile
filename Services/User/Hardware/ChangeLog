@@ -1,3 +1,10 @@
+2006-01-17  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * MainMenu.gorm: Turned on resize bar option for the main window. Such 
+    temporary GNUstep related workaround is mandatory because non resizable
+    windows are losing their backend decorations otherwise when Metacity is
+    used.
+
 2005-12-25  Quentin Mathe <qmathe@club-internet.fr>
     
     * EnergyPrefPane/GNUmakefile:
