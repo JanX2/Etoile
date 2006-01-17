@@ -1,5 +1,7 @@
 {
     CFBundleIdentifier = "org.etoile-project.languagesprefpane";
+    NSPrefPaneIconFile = "whatever";
+    NSPrefPaneIconLabel = "Languages";
     Authors = (
         "Quentin Mathé <qmathe@club-internet.fr>"
     ); 
