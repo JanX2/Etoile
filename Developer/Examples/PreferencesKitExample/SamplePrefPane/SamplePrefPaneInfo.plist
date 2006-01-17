@@ -1,5 +1,7 @@
 {
     CFBundleIdentifier = "org.etoile-project.sampleprefpane";
+    NSPrefPaneIconFile = "SamplePrefPaneIcon.tiff";
+    NSPrefPaneIconLabel = "My Preference Pane";
     Authors = (
         "Uli Kusterer <witness.of.teachtext@gmx.net>",
         "Quentin Mathé <qmathe@club-internet.fr>"
