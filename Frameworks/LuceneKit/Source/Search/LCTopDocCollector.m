@@ -3,6 +3,7 @@
 #include "LCScoreDoc.h"
 #include "LCTopDocs.h"
 #include "GNUstep.h"
+#include <float.h>
 
 /** A {@link HitCollector} implementation that collects the top-scoring
  * documents, returning them as a {@link TopDocs}.  This is used by {@link

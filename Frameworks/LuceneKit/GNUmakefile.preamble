@@ -1,6 +1,10 @@
 export PROJECT_DIR ?= $(CURDIR)
 
-ADDITIONAL_OBJCFLAGS = -Wno-import
+# NOTE: C99 needs to be enabled to support LLONG_MAX to take an example because
+# current GCC versions support only few C99 features by default. In fact, 
+# the default C dialect is currently 'gnu89' (aka C90 with GNU extensions).
+# It may be better to use 'gnu99' rather than 'c99'.
+ADDITIONAL_OBJCFLAGS = -Wno-import -std=c99
 
 ADDITIONAL_INCLUDE_DIRS = \
 	-I$(PROJECT_DIR)/Headers \

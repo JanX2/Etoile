@@ -1,3 +1,13 @@
+2006-01-17 Quentin Mathe <qmathe@club-internet.fr>
+    
+   Fixed compilation on Linux Ubuntu x86
+   * Source/Search/LCTopDocCollector.m: Included float.h to restore
+   compilation (error: FLT_MIN not declared)
+   * Source/Document/LCNumberTools.m: Included limits.h to restore compilation
+   (error: LLONG_MAX not declared)
+   * Source/GNUmakefile.preamble: Updated to enable C99 support (LLONG_MAX is
+   not a C99 extension that GCC supports by default).
+
 2006-01-14 Yen-Ju Chen <yjchenx at gmail _dot_ com>
  
    * Source/Util/LCBitVector.m:

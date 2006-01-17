@@ -1,4 +1,5 @@
 #include "LCNumberTools.h"
+#include <limits.h>
 
 char _dig_vec[] =
 "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
