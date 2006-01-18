@@ -1,3 +1,16 @@
+2006-01-19  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * COPYING: Added.
+    * SBServicesBarItem.h:
+    * SBServicesBarItem.m:
+    * SBServicesBar.h:
+    * SBServicesBar.m:
+    Updated LGPL license notice to 2.1 from 2.
+    * GNUmakefile:
+    * GNUmakefile.preamble:
+    * GNUmakefile.postamble:
+    Removed superfluous license notice.
+
 2005-06-14  Quentin Mathe <qmathe@club-internet.fr>
     
     * GNUmakefile.postamble: Inserted missing white space.
