@@ -1,5 +1,7 @@
 {
     CFBundleIdentifier = "org.etoile-project.energyprefpane";
+    NSPrefPaneIconFile = "whatever";
+    NSPrefPaneIconLabel = "Energy Settings";
     Authors = (
         "Quentin Mathé <qmathe@club-internet.fr>"
     ); 

@@ -1,5 +1,7 @@
 {
     CFBundleIdentifier = "org.etoile-project.monitorprefpane";
+    NSPrefPaneIconFile = "whatever";
+    NSPrefPaneIconLabel = "Monitor";
     Authors = (
         "Quentin Mathé <qmathe@club-internet.fr>"
     ); 

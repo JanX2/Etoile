@@ -1,5 +1,7 @@
 {
     CFBundleIdentifier = "org.etoile-project.keyboardprefpane";
+    NSPrefPaneIconFile = "whatever";
+    NSPrefPaneIconLabel = "Keyboard";
     Authors = (
         "Quentin Mathé <qmathe@club-internet.fr>"
     ); 

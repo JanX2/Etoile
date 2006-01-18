@@ -1,5 +1,7 @@
 {
     CFBundleIdentifier = "org.etoile-project.startupprefpane";
+    NSPrefPaneIconFile = "whatever";
+    NSPrefPaneIconLabel = "Startup";
     Authors = (
         "Quentin Mathé <qmathe@club-internet.fr>"
     ); 

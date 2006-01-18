@@ -1,5 +1,7 @@
 {
     CFBundleIdentifier = "org.etoile-project.soundprefpane";
+    NSPrefPaneIconFile = "whatever";
+    NSPrefPaneIconLabel = "Sound";
     Authors = (
         "Quentin Mathé <qmathe@club-internet.fr>"
     ); 

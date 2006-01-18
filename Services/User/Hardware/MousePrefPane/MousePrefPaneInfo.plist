@@ -1,5 +1,7 @@
 {
     CFBundleIdentifier = "org.etoile-project.mouseprefpane";
+    NSPrefPaneIconFile = "whatever";
+    NSPrefPaneIconLabel = "Mouse";
     Authors = (
         "Quentin Mathé <qmathe@club-internet.fr>"
     ); 

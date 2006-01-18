@@ -1,3 +1,14 @@
+2006-01-18  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * KeyboardPrefPane/KeyboardPrefPaneInfo.plist:
+    * StartupPrefPane/StartupPrefPaneInfo.plist:
+    * MonitorPrefPane/MonitorPrefPaneInfo.plist:
+    * MousePrefPane/MousePrefPaneInfo.plist:
+    * SoundPrefPane/SoundPrefPaneInfo.plist:
+    * EnergyPrefPane/EnergyPrefPaneInfo.plist:
+   Updated to include user friendly titles in the presentation view (where
+   panes are listed).
+   
 2006-01-17  Quentin Mathe <qmathe@club-internet.fr>
     
     * MainMenu.gorm: Turned on resize bar option for the main window. Such 
