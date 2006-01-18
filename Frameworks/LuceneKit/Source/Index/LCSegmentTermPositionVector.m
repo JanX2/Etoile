@@ -16,8 +16,8 @@
 
 - (void) dealloc
 {
-	RELEASE(positions);
-	RELEASE(offsets);
+	DESTROY(positions);
+	DESTROY(offsets);
 	[super dealloc];
 }
 

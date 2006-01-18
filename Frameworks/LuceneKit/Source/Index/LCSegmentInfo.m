@@ -16,8 +16,8 @@
 
 - (void) dealloc
 {
-	RELEASE(name);
-	RELEASE(dir);
+	DESTROY(name);
+	DESTROY(dir);
 	[super dealloc];
 }
 

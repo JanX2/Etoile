@@ -44,6 +44,12 @@
 
 @implementation LCWriterFileEntry
 
+- (void) dealloc
+{
+	DESTROY(file);
+	[super dealloc];
+}
+
 - (NSString *) file { return file; }
 - (long long) directoryOffset { return directoryOffset; }
 - (long long) dataOffset { return dataOffset; }

@@ -106,7 +106,7 @@
 {
 	// Access the same file
 	LCCSIndexInput *clone = [[LCCSIndexInput allocWithZone: zone] initWithCompoundFileReader: reader
-																				  indexInput: [base copy] offset: fileOffset
+																				  indexInput: AUTORELEASE([base copy]) offset: fileOffset
 																					  length: length];
 	[clone seekToFileOffset: filePointer];
 	return clone;
@@ -159,7 +159,7 @@
 		entry = [[LCFileEntry alloc] init];
 		[entry setOffset: offset];
 		[entries setObject: entry forKey: iden];
-		ASSIGN(prevIden, AUTORELEASE([iden copy]));
+		ASSIGNCOPY(prevIden, iden);
 		prevOffset = offset;
 		DESTROY(entry);
 	}

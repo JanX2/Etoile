@@ -10,7 +10,7 @@
 	position = -1;
 	[self setTermBuffer: AUTORELEASE([[LCTermBuffer alloc] init])];
 	[self setPrevBuffer: AUTORELEASE([[LCTermBuffer alloc] init])];
-	termInfo = [[LCTermInfo alloc] init];
+	ASSIGN(termInfo, AUTORELEASE([[LCTermInfo alloc] init]));
 	indexPointer = 0;
 	return self;
 }

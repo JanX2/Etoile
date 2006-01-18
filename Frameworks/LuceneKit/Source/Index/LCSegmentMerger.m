@@ -64,17 +64,24 @@
 		@"tvx", @"tvd", @"tvf", nil];
 	
 	skipBuffer = [[LCRAMOutputStream alloc] init];
-	termInfo = [[LCTermInfo alloc] init];
 	return self;
 }
 
 - (void) dealloc
 {
-	RELEASE(directory);
-	RELEASE(readers);
-	RELEASE(fieldInfos);
-	RELEASE(termInfo);
-	RELEASE(segment);
+	DESTROY(directory);
+	DESTROY(segment);
+	DESTROY(readers);
+	DESTROY(fieldInfos);
+	DESTROY(COMPOUND_EXTENSIONS);
+	DESTROY(VECTOR_EXTENSIONS);
+
+	DESTROY(freqOutput);
+	DESTROY(proxOutput);
+	DESTROY(termInfosWriter);
+	DESTROY(queue);
+	DESTROY(skipBuffer);
+
 	[super dealloc];
 }
 
@@ -190,6 +197,7 @@
     
     // Perform the merge
     [cfsWriter close];
+    DESTROY(cfsWriter);
 	
     return AUTORELEASE(files);
 }
@@ -221,8 +229,8 @@
  */
 - (int) mergeFields
 {
-	//ASSIGN(fieldInfos, AUTORELEASE([[LCFieldInfos alloc] init]));  // merge field names
-	fieldInfos = [[LCFieldInfos alloc] init];  // merge field names
+	ASSIGN(fieldInfos, AUTORELEASE([[LCFieldInfos alloc] init]));  // merge field names
+	//fieldInfos = [[LCFieldInfos alloc] init];  // merge field names
 	int docCount = 0;
 	int i;
 	LCIndexReader *reader;
@@ -281,6 +289,7 @@
 			}
 	}
 		[fieldsWriter close];
+		DESTROY(fieldsWriter);
 		return docCount;
 }
 
@@ -312,15 +321,15 @@
 - (void) mergeTerms;
 {
 	NSString *file = [segment stringByAppendingPathExtension: @"frq"];
-	freqOutput = [directory createOutput: file];
+	ASSIGN(freqOutput, [directory createOutput: file]);
 	file = [segment stringByAppendingPathExtension: @"prx"];
-	proxOutput = [directory createOutput: file];
-	termInfosWriter = [[LCTermInfosWriter alloc] initWithDirectory: directory
+	ASSIGN(proxOutput, [directory createOutput: file]);
+	ASSIGN(termInfosWriter, AUTORELEASE([[LCTermInfosWriter alloc] initWithDirectory: directory
 														   segment: segment
 														fieldInfos: fieldInfos
-														  interval: termIndexInterval];
+														  interval: termIndexInterval]));
 	skipInterval = [termInfosWriter skipInterval];
-	queue = [(LCSegmentMergeQueue *)[LCSegmentMergeQueue alloc] initWithSize: [readers count]];
+	ASSIGN(queue, AUTORELEASE([(LCSegmentMergeQueue *)[LCSegmentMergeQueue alloc] initWithSize: [readers count]]));
 	
 	[self mergeTermInfos];
 	
@@ -346,6 +355,7 @@
 		}
 		else
 			[smi close];
+		DESTROY(smi);
     }
 	
     NSMutableArray *match = [[NSMutableArray alloc] init];
@@ -380,6 +390,7 @@
 				[smi close];				  // done with a segment
 		}
     }
+	DESTROY(match);
 }
 
 /** Merge one term found in one or more segments. The array <code>smis</code>
@@ -397,15 +408,18 @@
 	int df = [self appendPosting: smis size: n];		  // append posting data
 	
 	long skipPointer = [self writeSkip];
+
+	LCTermInfo *ti = [[LCTermInfo alloc] init];
 	
 	if (df > 0) {
 		// add an entry to the dictionary with pointers to prox and freq files
-		[termInfo setDocumentFrequency: df];
-		[termInfo setFreqPointer: freqPointer];
-		[termInfo setProxPointer: proxPointer];
-		[termInfo setSkipOffset: (long)(skipPointer - freqPointer)];
+		[ti setDocumentFrequency: df];
+		[ti setFreqPointer: freqPointer];
+		[ti setProxPointer: proxPointer];
+		[ti setSkipOffset: (long)(skipPointer - freqPointer)];
 		[termInfosWriter addTerm: [[smis objectAtIndex: 0] term]
-						termInfo: termInfo];
+						termInfo: ti];
+		DESTROY(ti);
     }
 }
 
@@ -520,6 +534,7 @@
 						[output writeByte: bytes[k]];
 					}
 				}
+				DESTROY(input);
 			}
 			[output close];
 		}

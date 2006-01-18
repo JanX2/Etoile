@@ -22,7 +22,7 @@
 
 - (void) dealloc
 {
-	RELEASE(segments);
+	DESTROY(segments);
 	[super dealloc];
 }
 
@@ -123,8 +123,9 @@
 	
     LCSegmentInfos *sis = [[LCSegmentInfos alloc] init];
     [sis readFromDirectory: directory];
-    AUTORELEASE(sis);
-    return [sis version];
+    ver = [sis version];
+    DESTROY(sis);
+    return ver;
 }
 
 - (int) numberOfSegments 

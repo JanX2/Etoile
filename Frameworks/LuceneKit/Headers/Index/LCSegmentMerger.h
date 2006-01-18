@@ -29,8 +29,6 @@
 	int skipInterval;
 	LCSegmentMergeQueue *queue;
 	
-	LCTermInfo *termInfo; // minimize consing
-	
 	LCRAMOutputStream *skipBuffer;
 	int lastSkipDoc;
 	unsigned long long lastSkipFreqPointer;

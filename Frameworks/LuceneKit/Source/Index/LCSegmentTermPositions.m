@@ -10,13 +10,13 @@
 - (id) initWithSegmentReader: (LCSegmentReader *) p
 {
 	self = [super initWithSegmentReader: p];
-	ASSIGN(proxStream, [[p proxStream] copy]);
+	ASSIGNCOPY(proxStream, [p proxStream]);
 	return self;
 }
 
 - (void) dealloc
 {
-	RELEASE(proxStream);
+	DESTROY(proxStream);
 	[super dealloc];
 }
 
