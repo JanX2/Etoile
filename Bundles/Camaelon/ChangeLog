@@ -1,5 +1,9 @@
 2006-01-18 Quentin Mathe <qmathe@club-internet.fr>
 
+    * GNUmakefile: Removed superfluous license notice.
+
+2006-01-18 Quentin Mathe <qmathe@club-internet.fr>
+
     * COPYING: Relicensed current Camaelon code under LGPL (was previously
     GPLed).
 
