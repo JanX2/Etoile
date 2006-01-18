@@ -2,6 +2,7 @@
 #include "LCBooleanQuery.h"
 #include "LCTermQuery.h"
 #include "LCFilteredTermEnum.h"
+#include "LCSmallFloat.h"
 #include "GNUstep.h"
 
 /**

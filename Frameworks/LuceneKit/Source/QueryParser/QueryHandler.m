@@ -68,6 +68,8 @@
 			/* Parse again */
 			QueryHandler *handler = [[QueryHandler alloc] init];
 			CodeParser *parser = [[CodeParser alloc] initWithCodeHandler: handler withString: [queryString copy]];
+			/* Propogate the default field */
+			[handler setDefaultField: defaultField];
 			[parser parse];
 			[_query addQuery: [handler query] occur: occur];
 			[queryString setString: @""];
