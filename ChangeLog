@@ -1,6 +1,13 @@
 2006-01-18  Quentin Mathe <qmathe@club-internet.fr>
     
-    * GNUmakefile: Removed superfluous license notice.
+    * INSTALL:
+    * README: 
+    Word wrapped the whole text to 80 characters, removed erratic 
+    tabs. Added Michael Hanni (WildMenus) in README Authors list.
+
+2006-01-18  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * GNUmakefile: Removed superfluous license notice and PMK mention.
 
 2005-11-29  Quentin Mathe <qmathe@club-internet.fr>
     
