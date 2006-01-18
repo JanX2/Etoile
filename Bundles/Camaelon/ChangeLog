@@ -1,3 +1,8 @@
+2006-01-18 Quentin Mathe <qmathe@club-internet.fr>
+
+    * COPYING: Relicensed current Camaelon code under LGPL (was previously
+    GPLed).
+
 2005-10-28 Nicolas Roard <nicolas@roard.com>
 
 	Modified GSDrawFunctions so that all the methods are now instance methods;
