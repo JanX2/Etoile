@@ -1,5 +1,11 @@
 2006-01-19  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Headers/PKApplicationController.h:
+    * Source/PKApplicationController.m:
+    Removed (not used at all for a bunch of time).
+
+2006-01-19  Quentin Mathe <qmathe@club-internet.fr>
+
     * COPYING: Added.
 
 2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
