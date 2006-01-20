@@ -1,7 +1,6 @@
 #
-# Makefile for DistributedViewExample
+#    Makefile for Etoile DistributedViewExample
 #
-
 
 ADDITIONAL_INCLUDE_DIRS +=-IEtoileExtensions
 

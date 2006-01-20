@@ -1,5 +1,5 @@
 #
-# Makefile for DistributedViewExample
+#    Makefile for Etoile DistributedViewExample
 #
 
 include $(GNUSTEP_MAKEFILES)/common.make
