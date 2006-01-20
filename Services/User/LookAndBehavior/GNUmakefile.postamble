@@ -2,6 +2,12 @@
 # Makefile for LookAndBehavior
 #
 
+ifeq ($(debug), yes)
+	extension = debug
+else
+	extension = app
+endif
+
 before-all::
 	$(ECHO_NOTHING) \
 	echo "Build Project: $(PROJECT_DIR)"; \
@@ -13,6 +19,10 @@ before-all::
 	$(END_ECHO)
 
 after-all::
+	mkdir -p $(CURDIR)/LookAndBehavior.$(extension)/PlugIns; \
+	cp -Rfp $(CURDIR)/AppearancePrefPane/AppearancePrefPane.prefPane \
+	$(CURDIR)/LanguagesPrefPane/LanguagesPrefPane.prefPane \
+	$(CURDIR)/LookAndBehavior.$(extension)/PlugIns/; \
 
 after-clean::
 	$(ECHO_NOTHING) \
