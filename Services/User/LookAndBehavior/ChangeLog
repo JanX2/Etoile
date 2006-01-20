@@ -1,3 +1,14 @@
+2006-01-20  Quentin Mathe <qmathe@club-internet.fr>
+    
+    Fixed complete repository scratch build (bug reported by Henri Orlando
+    Acevedo Lopez)
+    * GNUmakefile.postamble:
+    * GNUmakefile.preamble:
+    Added (to allow a build without having PreferencesKit deployed).
+    * AppearancePrefPane/GNUmakefile: 
+    * LanguagesPrefPane/GNUmakefile:
+    Updated to take in account new GNUmakefile.preamble.
+
 2006-01-17  Quentin Mathe <qmathe@club-internet.fr>
     
     * AppearancePrefPane/AppearancePrefPaneInfo.plist: 

@@ -49,7 +49,7 @@ AppearancePrefPane_OBJC_FILES = \
 #
 AppearancePrefPane_C_FILES =
 
--include GNUmakefile.preamble
+-include ../GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/bundle.make
 
