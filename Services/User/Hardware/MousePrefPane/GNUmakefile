@@ -48,7 +48,7 @@ MousePrefPane_OBJC_FILES = \
 #
 MousePrefPane_C_FILES =
 
--include GNUmakefile.preamble
+-include ../GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/bundle.make
 

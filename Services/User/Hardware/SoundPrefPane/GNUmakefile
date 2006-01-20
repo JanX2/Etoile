@@ -48,7 +48,7 @@ SoundPrefPane_OBJC_FILES = \
 #
 SoundPrefPane_C_FILES =
 
--include GNUmakefile.preamble
+-include ../GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/bundle.make
 

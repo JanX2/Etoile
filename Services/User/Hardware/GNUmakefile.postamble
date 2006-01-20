@@ -1,22 +1,30 @@
-ifeq ($(debug), yes)
-	extension = debug
-else
-	extension = app
-endif
+#
+# Makefile for Hardware
+#
 
 before-all::
+	$(ECHO_NOTHING) \
+	echo "Build Project: $(PROJECT_DIR)"; \
+	echo ""; \
+	rm -f $(PROJECT_DIR)/PreferencesKit; \
+	$(LN_S) $(PROJECT_DIR)/../../../Frameworks/PreferencesKit/Headers $(PROJECT_DIR)/PreferencesKit; \
+	echo " Imported PreferencesKit dependency"; \
+	echo ""; \
+	$(END_ECHO)
 
 after-all::
-	mkdir -p $(CURDIR)/Hardware.$(extension)/PlugIns; \
-	cp -Rfp $(CURDIR)/EnergyPrefPane/EnergyPrefPane.prefPane \
-	$(CURDIR)/KeyboardPrefPane/KeyboardPrefPane.prefPane \
-	$(CURDIR)/MonitorPrefPane/MonitorPrefPane.prefPane \
-	$(CURDIR)/MousePrefPane/MousePrefPane.prefPane \
-	$(CURDIR)/SoundPrefPane/SoundPrefPane.prefPane \
-	$(CURDIR)/StartupPrefPane/StartupPrefPane.prefPane \
-	$(CURDIR)/Hardware.$(extension)/PlugIns/; \
 
 after-clean::
+	$(ECHO_NOTHING) \
+	echo ""; \
+	rm -f $(PROJECT_DIR)/PreferencesKit; \
+	echo " Removed PreferencesKit dependency import"; \
+	$(END_ECHO)
 
 after-distclean::
-
+	$(ECHO_NOTHING) \
+	echo ""; \
+	rm -f $(PROJECT_DIR)/PreferencesKit; \
+	echo " Removed PreferencesKit dependency import"; \
+	$(END_ECHO)
+	

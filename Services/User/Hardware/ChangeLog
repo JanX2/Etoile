@@ -1,3 +1,16 @@
+2006-01-20  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * GNUmakefile.postamble:
+    * GNUmakefile.preamble:
+    Added (to allow a build without having PreferencesKit deployed).
+    * KeyboardPrefPane/GNUmakefile: 
+    * StartupPrefPane/GNUmakefile:
+    * MonitorPrefPane/GNUmakefile:
+    * MousePrefPane/GNUmakefile:
+    * SoundPrefPane/GNUmakefile:
+    * EnergyPrefPane/GNUmakefile:
+    Updated to take in account new GNUmakefile.preamble.
+
 2006-01-18  Quentin Mathe <qmathe@club-internet.fr>
     
     * KeyboardPrefPane/KeyboardPrefPaneInfo.plist:
