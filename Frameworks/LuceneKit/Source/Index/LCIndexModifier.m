@@ -5,9 +5,6 @@
 - (void) initializeDirectory: (id <LCDirectory>) d
 	analyzer: (LCAnalyzer *) a
 	create: (BOOL) c;
-- (void) assureOpen;
-- (void) createIndexWriter;
-- (void) createIndexReader;
 @end
 
 @implementation LCIndexModifier

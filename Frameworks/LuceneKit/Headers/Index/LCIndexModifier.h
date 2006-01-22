@@ -42,6 +42,11 @@
 - (int) mergeFactor;
 - (void) close;
 
+/* protected */
+- (void) assureOpen;
+- (void) createIndexWriter;
+- (void) createIndexReader;
+
 @end
 
 #endif /*  __LuceneKit_Index_Modifier__ */

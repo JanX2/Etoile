@@ -29,7 +29,7 @@ static LCSimilarity *defaultImpl = nil;
 	self = [super init];
 	if (NORM_TABLE == NULL)
     {
-		NORM_TABLE = malloc(sizeof(float)*256);
+		NORM_TABLE = calloc(sizeof(float), 256);
 		int i;
 		for(i = 0; i < 256; i++)
 			NORM_TABLE[i] = [LCSmallFloat byte315ToFloat: (char)i];

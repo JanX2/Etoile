@@ -24,7 +24,7 @@ LuceneKit_Analysis_OBJC_FILES = \
 LuceneKit_Analysis_C_FILES = \
 	PorterStemmer.c
 
-ifeq ($(test), yes)
+ifeq ($(atest), yes)
 LuceneKit_Analysis_OBJC_FILES += \
 	TestWhitespaceAnalyzer.m \
 	TestStopAnalyzer.m \

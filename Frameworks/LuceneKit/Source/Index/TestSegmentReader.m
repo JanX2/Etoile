@@ -26,6 +26,8 @@
 	return self;
 }
 
+#if 1
+
 - (void) testBasic
 {
 	UKNotNil(dir);
@@ -170,6 +172,7 @@ public void testNorms() {
 
 	[TestSegmentReader checkNorms: reader];
 }
+#endif
 
 + (void) checkNorms: (LCIndexReader *) reader
 {
@@ -203,6 +206,7 @@ public void testNorms() {
 		}
 	}
 }
+#if 0
 
 - (void) testTermVectors
 {
@@ -226,5 +230,7 @@ public void testNorms() {
 	UKNotNil(result);
 	UKIntsEqual([results count], 2);
 }
+
+#endif
 
 @end

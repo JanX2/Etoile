@@ -8,6 +8,10 @@
 {
 	LCRAMFile *file;
 	unsigned long long pointer;
+	
+	NSRange bufferRange;
+	unsigned char *buffer;
+	unsigned int position;  // position within bufferRange
 }
 
 - (id) initWithFile: (LCRAMFile *) file;
