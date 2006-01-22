@@ -3,6 +3,9 @@
    * Headers/Index/LCIndexModifier.h:
    * Source/Index/LCIndexModifier.h:
    make protected methods in Java public in Objective-C.
+   * Source/Search/LCBooleanQuery.m:
+   * Source/Search/LCFuzzyQuery.m:
+   fix warning.
 
 2006-01-17 Quentin Mathe <qmathe@club-internet.fr>
     

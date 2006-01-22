@@ -3,6 +3,7 @@
 #include "LCBooleanQuery.h"
 #include "LCFuzzyTermEnum.h"
 #include "LCSmallFloat.h"
+#include "NSString+Additions.h"
 #include "GNUstep.h"
 
 @interface LCScoreTerm: NSObject <LCComparable>

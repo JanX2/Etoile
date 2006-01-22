@@ -4,6 +4,7 @@
 #include "LCBooleanScorer.h"
 #include "LCWeight.h"
 #include "LCSmallFloat.h"
+#include "NSString+Additions.h"
 #include "GNUstep.h"
 
 /* LuceneKit: this is actually BooleanWeight2 in lucene */
