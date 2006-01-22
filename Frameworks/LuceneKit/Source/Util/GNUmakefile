@@ -9,7 +9,7 @@ LuceneKit_Util_OBJC_FILES = \
 	LCBitVector.m \
 	LCPriorityQueue.m 
 
-ifeq ($(atest), yes)
+ifeq ($(test), yes)
 LuceneKit_Util_OBJC_FILES += \
 	TestSmallFloat.m \
 	TestString+Additions.m \

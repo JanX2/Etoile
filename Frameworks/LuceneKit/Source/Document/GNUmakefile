@@ -8,7 +8,7 @@ LuceneKit_Document_OBJC_FILES = \
 	LCField.m \
 	LCDocument.m
 
-ifeq ($(atest), yes)
+ifeq ($(test), yes)
 LuceneKit_Document_OBJC_FILES += \
 	TestDocument.m \
 	TestDateTools.m \
