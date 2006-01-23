@@ -19,7 +19,7 @@ else
 	x := $(shell onig-config --libs)
 	BUNDLE_LIBS += $(x)
 	OgreKit_LIBRARIES_DEPEND_UPON = $(x)
-	OgreKit_LDFLAGS += -lgnustep-base $(x)
+	OgreKit_LDFLAGS += -lgnustep-base -lgnustep-gui $(x)
 	ifeq ($(test), yes)
 		OgreKit_OBJC_LIBS += $(x)
 		OgreKit_LDFLAGS += -lUnitKit

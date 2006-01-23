@@ -1,3 +1,8 @@
+2006-01-23 Quentin Mathe <qmathe@club-internet.fr>
+
+    * GNUmakefile: Link AppKit (that should fix undefined reference errors 
+    reported with NSFont and NSFontManager in LuceneKitExample).
+
 2005-08-25 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* GNUmakefile:
