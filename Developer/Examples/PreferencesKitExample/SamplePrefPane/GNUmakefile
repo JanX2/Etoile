@@ -57,7 +57,7 @@ SamplePrefPane_HEADER_FILES = \
 #
 SamplePrefPane_C_FILES =
 
--include GNUmakefile.preamble
+-include ../GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/bundle.make
 

@@ -9,14 +9,19 @@ else
 endif
 
 before-all::
-
+	rm -f $(PROJECT_DIR)/PreferencesKit; \
+	$(LN_S) $(PROJECT_DIR)/../../../Frameworks/PreferencesKit/Headers \
+	$(PROJECT_DIR)/PreferencesKit; \
+	
 after-all::
-	mkdir -p $(CURDIR)/PreferencesKitExample.$(extension)/PlugIns; \
-	cp -Rfp $(CURDIR)/SamplePrefPane/SamplePrefPane.prefPane \
-	$(CURDIR)/SamplePrefsModule/SamplePrefsModule.prefsModule \
-	$(CURDIR)/PreferencesKitExample.$(extension)/PlugIns/; \
+	mkdir -p $(PROJECT_DIR)/PreferencesKitExample.$(extension)/PlugIns; \
+	cp -Rfp $(PROJECT_DIR)/SamplePrefPane/SamplePrefPane.prefPane \
+	$(PROJECT_DIR)/SamplePrefsModule/SamplePrefsModule.prefsModule \
+	$(PROJECT_DIR)/PreferencesKitExample.$(extension)/PlugIns/; \
 
 after-clean::
+	rm -f $(PROJECT_DIR)/PreferencesKit; \
 
 after-distclean::
+	rm -f $(PROJECT_DIR)/PreferencesKit; \
 
