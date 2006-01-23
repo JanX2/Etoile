@@ -30,7 +30,12 @@ endif
 # 
 
 ifeq ($(examples), yes)	
-	SUBPROJECTS = DistributedViewExample
+	SUBPROJECTS = DistributedViewExample LuceneKitExample PreferencesKitExample
+
+ifeq ($sqlliteclient, yes)
+    SUBPROJECTS += SQLLiteClientExample
+endif
+
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
