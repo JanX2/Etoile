@@ -9,7 +9,34 @@ static int docCount = 0;
 @interface TestIndexModifier: NSObject <UKTest>
 @end
 
+@interface TestIndexModifier1: LCIndexModifier <UKTest>
+@end
+
+@implementation TestIndexModifier1
+
+- (void) iterateEnumerator
+{
+  [self assureOpen];
+  [self createIndexReader];
+
+  LCTermEnumerator *te = [indexReader termEnumerator];
+  while ([te hasNextTerm])
+  {
+  }
+}
+
+@end
+
 @implementation TestIndexModifier
+
+- (void) testEmpty
+{
+  LCRAMDirectory *store = [[LCRAMDirectory alloc] init];
+  LCAnalyzer *analyzer = [[LCWhitespaceAnalyzer alloc] init];
+  TestIndexModifier1 *modifier = [[TestIndexModifier1 alloc] initWithDirectory: store analyzer: analyzer create: YES];
+
+  [modifier iterateEnumerator];
+}
 
 - (LCDocument *) getDoc
 {
@@ -86,5 +113,6 @@ static int docCount = 0;
 	
 	[i close];
   }
+
 @end
 

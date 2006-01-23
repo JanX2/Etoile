@@ -8,6 +8,7 @@
    * Headers/Index/LCIndexModifier.h:
    * Source/Index/LCIndexModifier.h:
    make protected methods in Java public in Objective-C.
+   improve memory management.
    * Source/Search/LCBooleanQuery.m:
    * Source/Search/LCFuzzyQuery.m:
    fix warning.

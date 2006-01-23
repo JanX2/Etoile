@@ -1,6 +1,7 @@
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
 #include "LCRAMDirectory.h"
+#include "LCFSDirectory.h"
 #include "LCIndexWriter.h"
 #include "LCIndexReader.h"
 #include "LCTerm.h"
@@ -13,6 +14,29 @@
 @end
 
 @implementation TestIndexReader
+
+- (void) testEmpty
+{
+  LCRAMDirectory *store = [[LCRAMDirectory alloc] init];
+//  LCFSDirectory *store = [[LCFSDirectory alloc] initWithPath: @"/tmp/yjchen/unique" create: YES];
+  LCAnalyzer *analyzer = [[LCWhitespaceAnalyzer alloc] init];
+  LCIndexWriter *writer = [[LCIndexWriter alloc] initWithDirectory: store
+				analyzer: analyzer
+				create: YES];
+  [writer close];
+
+  LCIndexReader *reader = [LCIndexReader openDirectory: store];
+  UKIntsEqual(0, [reader numberOfDocuments]);
+  LCTermEnumerator *te = [reader termEnumerator];
+  while ([te hasNextTerm])
+  {
+    [te term];
+  }
+  [te close];
+
+  [reader close];
+}
+
 - (void) _addDocumentWithFields: (LCIndexWriter *) writer
 {
 	LCDocument *doc = [[LCDocument alloc] init];

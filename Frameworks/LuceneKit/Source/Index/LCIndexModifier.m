@@ -53,8 +53,17 @@
 {
 	ASSIGN(directory, d);
 	ASSIGN(analyzer, a);
-	indexWriter = [[LCIndexWriter alloc] initWithDirectory: d analyzer: a create: c];
+	ASSIGN(indexWriter, AUTORELEASE([[LCIndexWriter alloc] initWithDirectory: d analyzer: a create: c]));
 	open = YES;
+}
+
+- (void) dealloc
+{
+  DESTROY(directory);
+  DESTROY(analyzer);
+  DESTROY(indexWriter);
+  DESTROY(indexReader);
+  [super dealloc];
 }
 
 - (void) assureOpen
@@ -69,7 +78,7 @@
 			[indexReader close];
 			DESTROY(indexReader);
 		}
-		indexWriter = [[LCIndexWriter alloc] initWithDirectory: directory analyzer: analyzer create: NO];
+		ASSIGN(indexWriter, AUTORELEASE([[LCIndexWriter alloc] initWithDirectory: directory analyzer: analyzer create: NO]));
 		[indexWriter setUseCompoundFile: useCompoundFile];
 		[indexWriter setMaxBufferedDocuments: maxBufferedDocs];
 		[indexWriter setMaxFieldLength: maxFieldLength];
@@ -85,7 +94,7 @@
 			[indexWriter close];
 			DESTROY(indexWriter);
 		}
-	indexReader = [LCIndexReader openDirectory: directory];
+	ASSIGN(indexReader, [LCIndexReader openDirectory: directory]);
 	}
 }
 
