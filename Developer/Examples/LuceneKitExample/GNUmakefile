@@ -1,3 +1,7 @@
+#
+#    Makefile for Etoile LuceneKitExample
+#
+
 include $(GNUSTEP_MAKEFILES)/common.make
 
 TOOL_NAME = LuceneKitExample
@@ -5,11 +9,8 @@ TOOL_NAME = LuceneKitExample
 LuceneKitExample_OBJC_FILES = \
 	LuceneKitExample.m 
 
-LuceneKitExample_INCLUDE_DIRS += 
-LuceneKitExample_LDFLAGS += -lLuceneKit  -lOgreKit
+LuceneKitExample_TOOL_LIBS = -lLuceneKit -lOgreKit
 
+-include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/tool.make
-
--include ../GNUmakefile.preamble
-include $(GNUSTEP_MAKEFILES)/aggregate.make
--include ../GNUmakefile.postamble
+-include GNUmakefile.postamble

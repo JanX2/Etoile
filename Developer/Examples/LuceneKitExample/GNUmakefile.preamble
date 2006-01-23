@@ -1,0 +1,9 @@
+#
+#    Makefile for Etoile LuceneKitExample
+#
+
+ADDITIONAL_INCLUDE_DIRS += -I$(CURDIR)
+
+ADDITIONAL_LIB_DIRS += \
+	-L$(CURDIR)/../../../Frameworks/LuceneKit/$(GNUSTEP_OBJ_DIR) \
+	-L$(CURDIR)/../../../Frameworks/OgreKit/$(GNUSTEP_OBJ_DIR)

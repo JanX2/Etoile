@@ -1,0 +1,15 @@
+#
+#    Makefile for Etoile LuceneKitExample
+#
+
+before-all::
+	rm -f $(CURDIR)/LuceneKit
+	$(LN_S) $(CURDIR)/../../../Frameworks/LuceneKit/LuceneKit $(CURDIR)/LuceneKit
+
+after-all::
+
+after-clean::
+	rm -f $(CURDIR)/LuceneKit
+
+after-distclean::
+

@@ -1,6 +1,6 @@
 #include <Foundation/Foundation.h>
 #include <LuceneKit/LuceneKit.h>
-#include <LuceneKit/GNUstep/GNUstep.h>
+#include "GNUstep.h"
 
 /** This version uses low-level classes. **/
 
