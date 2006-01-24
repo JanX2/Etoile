@@ -24,7 +24,7 @@
 - (BOOL) create // Create new directory, remove existed
 {
 	NSArray *paths = [path pathComponents];
-	NSString *p;
+	NSString *p = nil;
 	BOOL isDir;
 	int i, count = [paths count];
 	ASSIGN(p, [NSString string]);

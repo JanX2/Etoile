@@ -1,6 +1,9 @@
 2006-01-23 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Fix bugs for file system.
+    * Source/Store/LCFSDirectory.m:
+    Fix memory leak.
+    * Result: 52 classes, 130 methods, 651932 tests, 0 failed
 
 2006-01-23 Quentin Mathe <qmathe@club-internet.fr>
     

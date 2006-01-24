@@ -101,35 +101,39 @@
 {
 	srandom((int)[[NSDate date] timeIntervalSince1970]);
 	int j;
-	NSString *p, *fs = @"RAM";
+	NSString *p = nil;
     
-	id <LCDirectory> store;
+	id <LCDirectory> store = nil;
 	if (ram)
-		store = [[LCRAMDirectory alloc] init];
+		ASSIGN(store, AUTORELEASE([[LCRAMDirectory alloc] init]));
 	else
     {
-		p = [NSString stringWithFormat: @"LuceneKit_Test_%d_Can_Be_Deleted", (int)random()];
-		p = [NSTemporaryDirectory() stringByAppendingPathComponent: p];
-		store = [LCFSDirectory directoryAtPath: [p stringByStandardizingPath]
-									 create: YES];
-		fs = @"Disk";
+		ASSIGN(p, ([NSString stringWithFormat: @"LuceneKit_Test_%d_Can_Be_Deleted", (int)random()]));
+		ASSIGN(p, ([NSTemporaryDirectory() stringByAppendingPathComponent: p]));
+		ASSIGN(store, [LCFSDirectory directoryAtPath: [p stringByStandardizingPath]
+									 create: YES]);
+
 		//store = FSDirectory.getDirectory("test.store", true);
     }
 	
 	NSString *name = @"1.dat";
-	LCIndexOutput *file = [store createOutput: name];
+	LCIndexOutput *file = nil;
+        ASSIGN(file, [store createOutput: name]);
 	for (j = 0; j < 10; j++)
 		[file writeByte: (j+'0')];
 	for (j = 0; j < 26; j++)
 		[file writeByte: (j+'A')];
 	
 	[file close];
+	DESTROY(file);
 	
-	LCIndexInput *input = [store openInput: name];
+	LCIndexInput *input = nil;
+        ASSIGN(input, [store openInput: name]);
 	UKIntsEqual('0', [input readByte]);
 	[input seekToFileOffset: 10];
 	UKIntsEqual('A', [input readByte]);
-	LCIndexInput *clone = [input copy];
+	LCIndexInput *clone = nil;
+        ASSIGNCOPY(clone, input);
 	UKIntsEqual([input readByte], [clone readByte]);
 	UKIntsEqual('C', [clone readByte]);
 	[clone seekToFileOffset: 0];
@@ -138,8 +142,13 @@
 	UKIntsEqual(1, [clone offsetInFile]);
 	UKIntsEqual(13, [input offsetInFile]);
 	[input close];
+	[clone close];
 	if (!ram)
 		[[NSFileManager defaultManager] removeFileAtPath: p handler: nil];
+	DESTROY(input);
+	DESTROY(clone);
+	DESTROY(store);
+	DESTROY(p);
 }
 
 - (void) testRAMClone
