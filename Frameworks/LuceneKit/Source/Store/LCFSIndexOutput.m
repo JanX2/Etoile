@@ -13,7 +13,7 @@
 - (id) initWithFile: (NSString *) absolutePath
 {
 	self = [self init];
-	ASSIGN(path, absolutePath);
+	ASSIGNCOPY(path, absolutePath);
 	
 	// Create a file if it is not exist
 	BOOL isDir;
@@ -89,7 +89,7 @@
 	[handle synchronizeFile];
 	NSFileManager *manager = [NSFileManager defaultManager];
 	NSDictionary *d = [manager fileAttributesAtPath: path 
-									   traverseLink: YES];
+					   traverseLink: YES];
 	return [[d objectForKey: NSFileSize] unsignedLongLongValue];
 }
 

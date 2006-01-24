@@ -24,13 +24,14 @@
 - (BOOL) create // Create new directory, remove existed
 {
 	NSArray *paths = [path pathComponents];
-	NSString *p = @"";
+	NSString *p;
 	BOOL isDir;
 	int i, count = [paths count];
+	ASSIGN(p, [NSString string]);
 	
 	for(i = 0; i < count; i++)
     {
-		p = [p stringByAppendingPathComponent: [paths objectAtIndex: i]];
+		ASSIGN(p, [p stringByAppendingPathComponent: [paths objectAtIndex: i]]);
 		if ([manager fileExistsAtPath: p isDirectory: &isDir])
         {
 			if (isDir == NO)
@@ -38,6 +39,7 @@
 				NSLog(@"Error: Not a directory %@", p);
 				// Very dangerous !!
 				//[manager removeFileAtPath: p handle: nil];
+				DESTROY(p);
 				return NO;
 			}
         }
@@ -48,6 +50,7 @@
 		}
     }
 	
+	DESTROY(p);
 	return YES;
 }
 
@@ -56,7 +59,7 @@
 	BOOL isDir;
 	self = [self init];
 	ASSIGN(manager, [NSFileManager defaultManager]);
-	ASSIGN(path, p);
+	ASSIGNCOPY(path, p);
 	if (b) 
     {
 		if ([self create] == NO)
@@ -105,7 +108,7 @@
 {
 	NSString *p = [path stringByAppendingPathComponent: name];
 	NSDictionary *d = [manager fileAttributesAtPath: p
-									   traverseLink: NO];
+					   traverseLink: NO];
 	return [[d objectForKey: NSFileModificationDate] timeIntervalSince1970];
 }
 
@@ -114,7 +117,7 @@
 {
 	NSString *p = [path stringByAppendingPathComponent: name];
 	NSDictionary *d = [manager fileAttributesAtPath: p
-									   traverseLink: NO];
+					   traverseLink: NO];
 	NSMutableDictionary *n = [NSMutableDictionary dictionaryWithDictionary: d];
 	[n setObject: [NSDate date] forKey: NSFileModificationDate];
 	[manager changeFileAttributes: n atPath: p];
@@ -185,8 +188,16 @@ Returns a stream writing this file. */
 - (LCIndexInput *) openInput: (NSString *) name
 {
 	NSString *p = [path stringByAppendingPathComponent: name];
-	LCFSIndexInput *input = [[LCFSIndexInput alloc] initWithFile: p];
-	return AUTORELEASE(input);
+       if ([manager fileExistsAtPath: p] == YES)
+       {
+	  LCFSIndexInput *input = [[LCFSIndexInput alloc] initWithFile: p];
+	  return AUTORELEASE(input);
+       }
+       else
+       {
+          NSLog(@"File %@ does not exist", p);
+	  return nil;
+       }
 }
 
 /**

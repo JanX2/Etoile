@@ -49,7 +49,7 @@
 {
 	self = [self init];
 	ASSIGN(reader, cr);
-	ASSIGN(base, b);
+	ASSIGNCOPY(base, b);
 	fileOffset = f;
 	length = len;
 	filePointer = 0;
@@ -131,7 +131,7 @@
 {
 	self = [self init];
 	ASSIGN(directory, dir);
-	ASSIGN(fileName, name);
+	ASSIGNCOPY(fileName, name);
 	
 	BOOL success = NO;
 	ASSIGN(stream, [dir openInput: name]);

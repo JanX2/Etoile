@@ -1,3 +1,7 @@
+2006-01-23 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Fix bugs for file system.
+
 2006-01-23 Quentin Mathe <qmathe@club-internet.fr>
     
     * GNUmakefile.preamble: Fixed to correctly link OgreKit when LuceneKit is

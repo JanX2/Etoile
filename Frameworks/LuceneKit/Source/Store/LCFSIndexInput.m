@@ -25,12 +25,12 @@
 - (id) initWithFile: (NSString *) absolutePath
 {
 	self = [self init];
-	ASSIGN(path, absolutePath);
-	ASSIGN(handle, [NSFileHandle fileHandleForReadingAtPath: absolutePath]);
+	ASSIGNCOPY(path, absolutePath);
+	ASSIGN(handle, [NSFileHandle fileHandleForReadingAtPath: path]);
 	isClosed = NO;
 	NSFileManager *manager = [NSFileManager defaultManager];
-	NSDictionary *d = [manager fileAttributesAtPath: absolutePath
-									   traverseLink: YES];
+	NSDictionary *d = [manager fileAttributesAtPath: path
+					   traverseLink: YES];
 	length = [[d objectForKey: NSFileSize] longValue];
 	return self;
 }
@@ -64,9 +64,13 @@
 - (void) seekToFileOffset: (unsigned long long) pos
 {
 	if (pos < [self length])
+        {
 		[handle seekToFileOffset: pos];
+        }
 	else
+        {
 		[handle seekToEndOfFile];
+        }
 }
 
 /** IndexInput methods */
