@@ -19,6 +19,7 @@
 - (int) documentFrequencyWithTerm: (LCTerm *) term;
 - (NSArray *) documentFrequencyWithTerms: (NSArray *) terms;
 - (int) maximalDocument;
+/* if closed, -document: will not work propertly */
 - (LCDocument *) document: (int) i;
 - (LCQuery *) rewrite: (LCQuery *) query;
 - (void) search: (id <LCWeight>) weight 

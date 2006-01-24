@@ -3,6 +3,7 @@
 #include "LCIndexOutput.h"
 #include "LCRAMDirectory.h"
 #include "LCRAMFile.h"
+#include "GNUstep.h"
 #include <UnitKit/UnitKit.h>
 
 @interface TestStore: NSObject <UKTest>

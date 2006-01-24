@@ -46,6 +46,11 @@
 - (void) readBytes: (NSMutableData *) b 
 			offset: (int) offset length: (int) len
 {
+	if (isClosed)
+	{
+		NSLog(@"Error: %@ is closed");
+		return;
+	}
 	NSData *d = [handle readDataOfLength: len];
 	unsigned l = [d length];
 	NSRange r = NSMakeRange(offset, l);
@@ -63,6 +68,12 @@
 
 - (void) seekToFileOffset: (unsigned long long) pos
 {
+	if (isClosed)
+	{
+		NSLog(@"Error: %@ is closed", self);
+		return;
+	}
+
 	if (pos < [self length])
         {
 		[handle seekToFileOffset: pos];
@@ -85,6 +96,11 @@
 
 - (unsigned long long) length
 {
+	if (isClosed)
+	{
+		NSLog(@"Error: %@ is closed", self);
+		return 0;
+	}
 	return length;
 }
 
