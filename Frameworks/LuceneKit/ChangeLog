@@ -1,3 +1,8 @@
+2006-02-06 Quentin Mathe <qmathe@club-internet.fr>
+    
+    * README: Updated to reflect Xcode project is now bundled.
+    * INSTALL: Fixed contact mailing list.
+
 2006-01-23 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Fix bugs for file system.
