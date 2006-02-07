@@ -1,3 +1,7 @@
+2006-02-07 Quentin Mathe <qmathe@club-internet.fr>
+
+    * INSTALL: Fixed bug reports contact.
+
 2006-01-23 Quentin Mathe <qmathe@club-internet.fr>
 
     * GNUmakefile: Link AppKit (that should fix undefined reference errors 
