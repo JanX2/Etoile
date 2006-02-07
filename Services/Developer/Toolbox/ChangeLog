@@ -1,9 +1,0 @@
-2005-03-19  Quentin Mathe <qmathe@club-internet.fr>
-    
-    * collect-fix-me.pl: Perl script from Mono Develop to collect FIXMEs and 
-    TODOs (C# support).
-    * prepare-change-log.pl: Perl script from GNOME to prepare ChangeLog for cvs
-    repositories (C, C++ support).
-    * ChangeLog:
-    Initial import for Developer utilities (scripts and other stuff)
-        
