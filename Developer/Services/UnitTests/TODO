@@ -1,0 +1,22 @@
+TODO UnitTests
+==============
+
+Last update: 03/05/2005
+
+Fixes
+=====
+
+- ?
+
+Features
+========
+
+- build process support (make test=yes)
+- log window for standard output (but without ukrun output)
+- hierarchical presentation (probably with NSOutlineView) of unit tests results like
+	--> Tests bundles --> Tested classes --> Tests
+- search support for unit tests results
+- move most of the code in a separate framework to have the possibility to use UnitTests functionality wrapped in a bundle within ProjectCenter etc.
+- port to Cocoa
+- support of other Unit testing frameworks like OCUnit (not sure but people could be interested)
+

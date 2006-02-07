@@ -1,0 +1,55 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    AppController = {
+	Actions = (
+	    "showPreferencesPanel:",
+	    "runTests:",
+	    "savePreferences:",
+	    "popupTestsSets:"
+	);
+	Outlets = (
+	    list,
+	    status,
+	    summary,
+	    preferencesPanel,
+	    popupTestsSets,
+	    preferencesController
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "addTestsBundle:",
+	    "checkWithTests:",
+	    "endSetWindow:",
+	    "popupTestsSets:",
+	    "orderFrontFontPanel:",
+	    "popupRunTestsSets:",
+	    "removeTestsBundle:",
+	    "runTests:",
+	    "savePreferences:",
+	    "showPreferencesPanel:",
+	    "ukrunPath:"
+	);
+	Super = NSObject;
+    };
+    PreferencesController = {
+	Actions = (
+	    "checkWithTests:",
+	    "popupRunTestsSets:",
+	    "ukrunPath:",
+	    "endSetWindow:",
+	    "addTestsBundle:",
+	    "removeTestsBundle:"
+	);
+	Outlets = (
+	    popupTestsSets,
+	    tvBundles,
+	    windowNewSet,
+	    windowRenameSet,
+	    toolPathField,
+	    windowPreferences
+	);
+	Super = NSObject;
+    };
+}
