@@ -17,13 +17,10 @@
 		604D7018089D9237002CA3F7 /* SamplePrefsModuleInfo_Cocoa.plist in Resources */ = {isa = PBXBuildFile; fileRef = 60EE1E4E089D4CE900D4629C /* SamplePrefsModuleInfo_Cocoa.plist */; };
 		604D7019089D9237002CA3F7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EE1E4A089D4CE900D4629C /* InfoPlist.strings */; };
 		604D701C089D9241002CA3F7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		604D701D089D9241002CA3F7 /* PreferencesKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60EE1DC0089D494F00D4629C /* PreferencesKit.framework */; };
 		604D701E089D9247002CA3F7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		604D701F089D9247002CA3F7 /* PreferencesKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60EE1DC0089D494F00D4629C /* PreferencesKit.framework */; };
 		6074E334089E99BD00FB6C4E /* Preferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 6074E332089E99BD00FB6C4E /* Preferences.tiff */; };
 		60A86A7C089FADEF00A79B64 /* SamplePrefPane.nib in Resources */ = {isa = PBXBuildFile; fileRef = 60A86A7A089FADEF00A79B64 /* SamplePrefPane.nib */; };
 		60A86A8C089FB0A100A79B64 /* SamplePrefsModule.nib in Resources */ = {isa = PBXBuildFile; fileRef = 60A86A8A089FB0A100A79B64 /* SamplePrefsModule.nib */; };
-		60EE1DC2089D494F00D4629C /* PreferencesKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60EE1DC0089D494F00D4629C /* PreferencesKit.framework */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -100,7 +97,6 @@
 		6074E332089E99BD00FB6C4E /* Preferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Preferences.tiff; sourceTree = "<group>"; };
 		60A86A7B089FADEF00A79B64 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SamplePrefPane.nib; sourceTree = "<group>"; };
 		60A86A8B089FB0A100A79B64 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = SamplePrefsModule/English.lproj/SamplePrefsModule.nib; sourceTree = "<group>"; };
-		60EE1DC0089D494F00D4629C /* PreferencesKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencesKit.framework; path = /Library/Frameworks/PreferencesKit.framework; sourceTree = "<absolute>"; };
 		60EE1E4B089D4CE900D4629C /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		60EE1E4C089D4CE900D4629C /* SamplePrefsModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SamplePrefsModule.h; sourceTree = "<group>"; };
 		60EE1E4D089D4CE900D4629C /* SamplePrefsModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SamplePrefsModule.m; sourceTree = "<group>"; };
@@ -120,7 +116,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				604D701C089D9241002CA3F7 /* Cocoa.framework in Frameworks */,
-				604D701D089D9241002CA3F7 /* PreferencesKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,7 +124,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				604D701E089D9247002CA3F7 /* Cocoa.framework in Frameworks */,
-				604D701F089D9247002CA3F7 /* PreferencesKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,7 +132,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				60EE1DC2089D494F00D4629C /* PreferencesKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,7 +148,6 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				60EE1DC0089D494F00D4629C /* PreferencesKit.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -563,9 +555,13 @@
 		604D6FD5089D8F83002CA3F7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					/Users/qmathe/Library/Frameworks,
+				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
@@ -579,17 +575,20 @@
 					Foundation,
 					"-framework",
 					AppKit,
+					"-framework",
+					PreferencesKit,
 				);
 				OTHER_REZFLAGS = "";
-				PREBINDING = YES;
 				PRODUCT_NAME = SamplePrefPane;
 				SECTORDER_FLAGS = "";
+				STRIP_INSTALLED_PRODUCT = NO;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
 				WRAPPER_EXTENSION = prefPane;
+				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
@@ -597,6 +596,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					/Users/qmathe/Library/Frameworks,
+				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -612,9 +615,10 @@
 					Foundation,
 					"-framework",
 					AppKit,
+					"-framework",
+					PreferencesKit,
 				);
 				OTHER_REZFLAGS = "";
-				PREBINDING = YES;
 				PRODUCT_NAME = SamplePrefPane;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -629,6 +633,10 @@
 		604D6FD7089D8F83002CA3F7 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					/Users/qmathe/Library/Frameworks,
+				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -644,9 +652,10 @@
 					Foundation,
 					"-framework",
 					AppKit,
+					"-framework",
+					PreferencesKit,
 				);
 				OTHER_REZFLAGS = "";
-				PREBINDING = YES;
 				PRODUCT_NAME = SamplePrefPane;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -661,9 +670,13 @@
 		604D6FE2089D9090002CA3F7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					/Users/qmathe/Library/Frameworks,
+				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
@@ -677,26 +690,32 @@
 					Foundation,
 					"-framework",
 					AppKit,
+					"-framework",
+					PreferencesKit,
 				);
 				OTHER_REZFLAGS = "";
-				PREBINDING = YES;
 				PRODUCT_NAME = SamplePrefsModule;
 				SECTORDER_FLAGS = "";
+				STRIP_INSTALLED_PRODUCT = NO;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
 				WRAPPER_EXTENSION = prefsModule;
+				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
 		604D6FE3089D9090002CA3F7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					/Users/qmathe/Library/Frameworks,
+				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
+				GCC_MODEL_TUNING = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = SamplePrefsModule/SamplePrefsModuleInfo_Cocoa.plist;
@@ -709,9 +728,10 @@
 					Foundation,
 					"-framework",
 					AppKit,
+					"-framework",
+					PreferencesKit,
 				);
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = SamplePrefsModule;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -726,8 +746,12 @@
 		604D6FE4089D9090002CA3F7 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					/Users/qmathe/Library/Frameworks,
+				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
+				GCC_MODEL_TUNING = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = SamplePrefsModule/SamplePrefsModuleInfo_Cocoa.plist;
@@ -740,9 +764,10 @@
 					Foundation,
 					"-framework",
 					AppKit,
+					"-framework",
+					PreferencesKit,
 				);
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = SamplePrefsModule;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -758,6 +783,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					/Users/qmathe/Library/Frameworks,
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -770,9 +799,12 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = PreferencesKitExampleInfo_Cocoa.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PREBINDING = YES;
-				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
+				OTHER_LDFLAGS = (
+					"-framework",
+					PreferencesKit,
+				);
 				PRODUCT_NAME = PreferencesKitExample;
+				STRIP_INSTALLED_PRODUCT = NO;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -785,6 +817,10 @@
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = /;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					/Users/qmathe/Library/Frameworks,
+				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G4;
@@ -795,7 +831,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = PreferencesKitExampleInfo_Cocoa.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PREBINDING = YES;
+				OTHER_LDFLAGS = (
+					"-framework",
+					PreferencesKit,
+				);
 				PRODUCT_NAME = PreferencesKitExample;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
@@ -805,6 +844,10 @@
 		6057C114087540C8003AC566 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					/Users/qmathe/Library/Frameworks,
+				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -813,6 +856,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = PreferencesKitExampleInfo_Cocoa.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					PreferencesKit,
+				);
 				PRODUCT_NAME = PreferencesKitExample;
 				WRAPPER_EXTENSION = app;
 			};
@@ -847,6 +894,7 @@
 				604D6FD7089D8F83002CA3F7 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
 		};
 		604D6FE1089D9090002CA3F7 /* Build configuration list for PBXNativeTarget "SamplePrefsModule" */ = {
 			isa = XCConfigurationList;
@@ -856,6 +904,7 @@
 				604D6FE4089D9090002CA3F7 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
 		};
 		6057C111087540C8003AC566 /* Build configuration list for PBXNativeTarget "PreferencesKitExample" */ = {
 			isa = XCConfigurationList;
