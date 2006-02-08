@@ -1,3 +1,17 @@
+2006-02-08 Quentin Mathe <qmathe@club-internet.fr>
+    
+    Fixed Xcode project compilation.
+    * Info.plist:
+    * UnitKitInfo.plist:
+    Added.
+    * Source/Search/TestBooleanMinShouldMatch.m:
+    * Source/Util/TestData+Additions.m:
+    Modified bad include statements to fix compilation with Xcode.
+    * LuceneKit.xcodeproj: Fixed compilation and updated to include recent new 
+    source code files. Fixed and improved tests bundle (loads LuceneKit directly 
+    from $BUILT_PRODUCTS_DIR, without deployment needed now).
+    Xcode Test Result: 46 classes, 127 methods, 651919 tests, 0 failed
+    
 2006-02-06 Quentin Mathe <qmathe@club-internet.fr>
     
     * README: Updated to reflect Xcode project is now bundled.

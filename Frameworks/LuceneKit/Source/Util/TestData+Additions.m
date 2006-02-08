@@ -1,5 +1,5 @@
 #include "NSData+Additions.h"
-#include "GNUstep/GNUstep.h"
+#include "GNUstep.h"
 #include <UnitKit/UnitKit.h>
 
 @interface TestCompressData: NSObject <UKTest>

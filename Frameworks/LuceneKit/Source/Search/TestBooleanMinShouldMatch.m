@@ -1,6 +1,14 @@
 #include <Foundation/Foundation.h>
 #include <UnitKit/UnitKit.h>
-#include <LuceneKit/LuceneKit.h>
+#include "LCDirectory.h"
+#include "LCQuery.h"
+#include "LCBooleanQuery.h"
+#include "LCIndexSearcher.h"
+#include "LCIndexWriter.h"
+#include "LCTermQuery.h"
+#include "LCTerm.h"
+#include "LCRAMDirectory.h"
+#include "LCWhitespaceAnalyzer.h"
 #include "GNUstep.h"
 
 @interface TestBooleanMinShouldMatch: NSObject <UKTest>
