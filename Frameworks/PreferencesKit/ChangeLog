@@ -1,3 +1,11 @@
+2006-02-08  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/UKPluginsRegistry.m: Disabled some unit tests which ought to be 
+    reformulated (to pass without hassles).
+    * PreferencesKit.xcodeproj: Fixed broken test bundle compilation and 
+    updated build settings.
+    Xcode Test Result: 3 classes, 5 methods, 13 tests, 0 failed
+
 2006-02-06  Quentin Mathe <qmathe@club-internet.fr>
 
     * README: Updated.
