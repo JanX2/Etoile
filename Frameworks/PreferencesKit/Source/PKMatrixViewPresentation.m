@@ -105,11 +105,11 @@ extern const NSString *PKMatrixPresentationMode;
 // FIXME: Actual code in this method have to be improved to work when
 // preferencesView is not equal to contentView and we should move some portions
 // common with other presentation classes in PKPresentationBuilder superclass.
-- (void) resizePreferencesViewForView: (NSView *)paneView
+- (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
     if (paneView == nil) return;
     
-    [super resizePreferencesViewForView: paneView];
+    [super layoutPreferencesViewWithPaneView: paneView];
     
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];

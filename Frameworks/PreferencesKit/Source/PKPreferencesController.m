@@ -132,11 +132,11 @@ static BOOL inited = NO;
  * Preference pane related methods
  */
 
-/** Sets or resets up completely the currently selected <strong>preference 
-pane</strong> UI.
-<p>By being the main bottleneck for switching preference panes, this method
-must be called each time a new preference pane is selected like with
-<ref>-selectedPreferencePaneWithIdentifier:</ref> method.</p> */
+/** <p>Sets or resets up completely the currently selected <strong>preference 
+    pane</strong> UI.</p>
+    <p>By being the main bottleneck for switching preference panes, this method
+    must be called each time a new preference pane is selected like with
+    <ref>-selectedPreferencePaneWithIdentifier:</ref> method.</p> */
 - (BOOL) updateUIForPreferencePane: (PKPreferencePane *)requestedPane
 {
     NSView *prefsView = [self preferencesView];
@@ -203,14 +203,13 @@ must be called each time a new preference pane is selected like with
     [paneView setFrameOrigin: NSMakePoint(0, 0)];
     [paneView setAutoresizingMask: NSViewNotSizable];
 	[requestedPane willSelect];
-	
-	/* Resize window so content area is large enough for prefs: */
-	[presentation resizePreferencesViewForView: paneView];
-	
-	/* Remove "wait" sign, show new pane: */
+    
+    /* Remove "wait" sign: */
     if (mainViewWaitSign != nil)
         [mainViewWaitSign removeFromSuperview];
-	[prefsView addSubview: paneView];
+	
+	/* Resize window so content area is large enough for prefs and show new pane: */
+	[presentation layoutPreferencesViewWithPaneView: paneView];
 	
 	/* Finish up by setting up key views and remembering new current pane: */
 	currentPane = requestedPane;
@@ -227,9 +226,10 @@ must be called each time a new preference pane is selected like with
 	return YES;
 }
 
-/** <p>Switches to <strong>preference pane</strong> with the given identifier.
-    </p> 
-    <p>This method needs to be call in <ref>-switchPreferencePaneView:</ref>.</p> */
+/** <p>Switches to <strong>preference pane</strong> with the given 
+    identifier.</p> 
+    <p>This method needs to be called in 
+    <ref>-switchPreferencePaneView:</ref>.</p> */
 - (void) selectPreferencePaneWithIdentifier: (NSString *)identifier
 {
     /* If the preference pane is already selected, we don't take in account the
@@ -299,7 +299,7 @@ must be called each time a new preference pane is selected like with
 /** Returns the view which encloses both preference pane loaded view and 
     presentation view where where every preferences panes are usually listed, it
     is often a window content view.<br /> 
-    To take an example, for [ PKToolbarPreferencesController ], the view which 
+    To take an example, for <code>PKToolbarPresentationMode<code>, the view which 
     contains both toolbar view and preference pane dedicated view is returned. */
 - (NSView *) preferencesView
 {
@@ -328,7 +328,7 @@ must be called each time a new preference pane is selected like with
     However it is possible to specify an ancestor view when you need to layout 
     <strong>preferences view</strong> with other views in the content view, but 
     this possibility involves to manage resizing yourself by overriding 
-    <ref>-resizesPreferencesViewForView:</ref> method. */
+    <ref>-layoutPreferencesViewWithPaneView:</ref> method. */
 - (id) owner;
 {
     return owner;
@@ -367,13 +367,15 @@ must be called each time a new preference pane is selected like with
     }
 }
 
-/** <override-subclass> */
+/** <p>Returns the <strong>presentation mode</strong> which is used to identify
+    the current presentation style.</p> */
 - (NSString *) presentationMode
 {
     return [presentation presentationMode];
 }
 
-/** <override-subclass> */
+/** <p>Sets the <strong>presentation</strong> style used to display the 
+    preferences pane list and identified by <var>presentationMode</var>.</p> */
 - (void) setPresentationMode: (NSString *)presentationMode
 {
     if ([presentationMode isEqual: [presentation presentationMode]])

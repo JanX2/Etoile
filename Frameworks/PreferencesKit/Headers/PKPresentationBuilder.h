@@ -42,7 +42,7 @@
 /* Preferences UI related stuff */
 - (void) loadUI;
 - (void) unloadUI;
-- (void) resizePreferencesViewForView: (NSView *)view;
+- (void) layoutPreferencesViewWithPaneView: (NSView *)view;
 
 /* Method from PKPreferencesController which needs to be customized in subclass */
 - (IBAction) switchPreferencePaneView: (id)sender;

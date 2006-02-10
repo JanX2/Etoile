@@ -1,3 +1,27 @@
+2006-02-10  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Headers/PKPresentationBuilder.h:
+    * Source/PKPresentationBuilder.m: 
+    (-layoutPreferencesViewWithPaneView:): Renamed method 
+    -resizePreferencesViewForView: and incorporated few lines of 
+    PKPreferencesController code. Updated documentation too.
+    (-presentationMode): Updated documentation.
+    * Source/PKPreferencesController.m:
+    (-updateUIForPreferencePane:): Moved the code to add pane view to 
+    preferences view in -[PKPresentationBuilder layoutPreferencesViewWithPaneView:],
+    reshuffled related code a bit and renamed -resizePreferencesViewForView: call
+    in accordance with the new terminology. Updated documentation too.
+    (-owner):
+    (-preferencesView):
+    (-presentationMode):
+    (-setPresentationMode:):
+    Updated documentation.
+    * Source/PKToolbarPresentation.m:
+    * Source/PKMatrixViewPresentation.m:
+    * Source/PKTableViewPresentation.m:
+    (-layoutPreferencesViewWithPaneView:): Renamed method 
+    -resizePreferencesViewForView:.
+
 2006-02-08  Quentin Mathe <qmathe@club-internet.fr>
 
     * Source/UKPluginsRegistry.m: Disabled some unit tests which ought to be 

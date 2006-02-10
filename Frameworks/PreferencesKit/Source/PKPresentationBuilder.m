@@ -81,7 +81,7 @@ const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
 {
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     
-    [self resizePreferencesViewForView: [[pc selectedPreferencePane] mainView]];
+    [self layoutPreferencesViewWithPaneView: [[pc selectedPreferencePane] mainView]];
     [self didSelectPreferencePaneWithIdentifier: [pc selectedPreferencePaneIdentifier]];
 }
 
@@ -95,15 +95,33 @@ const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
 }
 
 /** <override-subclass />
-    <p>Computes and assigns the correct size to <strong>preferences
-    view</strong> where <var>view</var> parameter is going to displayed.</p>
-    <p>Overrides this abstract method to resize preferences view container to
-    match size of the preference pane view which is shown or should be.<p> */
-- (void) resizePreferencesViewForView: (NSView *)view
+    <p>Computes and assigns the right size to <strong>preferences view</strong> 
+    (where <var>paneView</var> parameter is going to displayed), then the right 
+    frame to both <strong>presentation view</strong> and <var>paneView</var>.
+    Finally adds <var>paneView</paneView> as a subview of <strong>preferences 
+    view</strong> (if it isn't already done).</p>
+    <p>By default, this method just takes care to add the <var>paneVie</var>
+    to <strong>preferences view</strong>.</p>
+    <p>Overrides this abstract method to layout subviews of the preferences 
+    view container (in a way specific to your presentation), it must take in 
+    account the size of <strong>preference pane</strong> view which is shown or
+    is going to be. If <var>paneView</var> can be directly added to 
+    <strong>preferences view</strong>, just call this method with 
+    <code>super</code>. That might not always be true, to take an example, 
+    consider your presentation view is a <strong>tab view<strong>, it means 
+    <var>paneView<var> has to be added this time to tab view itself and not 
+    preferences view, otherwise it would be overlapped by the former.<p> */
+- (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
+    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
+    NSView *prefsView = [pc preferencesView];
+    
+    if ([[paneView superview] isEqual: prefsView] == NO)
+        [prefsView addSubview: paneView];
+    
     /* Presentation switches might modify pane view default position, so we reset
        it. */
-    [view setFrameOrigin: NSZeroPoint];
+    [paneView setFrameOrigin: NSZeroPoint];
 }
 
 /*
@@ -136,7 +154,12 @@ view</strong> like toolbar, table view, popup menu, tab view etc.</p> */
     return nil;
 }
 
-/** <override-subclass> */
+/** <override-subclass>
+    <p>Returns the <strong>presentation mode</strong> which is used to identify
+    the presentation.</p>
+    <p>By default, this methods returns <code>PKNoPresentationMode</code>.</p>
+    <p>Overrides this abstract method to return the specific <strong>presentation 
+    identifier</strong> related to your subclass.</p> */
 - (NSString *) presentationMode
 {
     return (NSString *)PKNoPresentationMode;

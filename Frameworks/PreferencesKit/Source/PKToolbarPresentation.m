@@ -106,7 +106,7 @@ extern const NSString *PKToolbarPresentationMode;
     return nil;
 }
 
-- (void) resizePreferencesViewForView: (NSView *)paneView
+- (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
  	PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     NSView *mainView = [pc preferencesView];
@@ -115,7 +115,7 @@ extern const NSString *PKToolbarPresentationMode;
     int previousHeight = windowFrame.size.height;
     int heightDelta;
     
-    [super resizePreferencesViewForView: paneView];
+    [super layoutPreferencesViewWithPaneView: paneView];
 
     #ifndef GNUSTEP
 

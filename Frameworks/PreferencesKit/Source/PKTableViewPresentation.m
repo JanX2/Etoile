@@ -93,7 +93,7 @@ extern const NSString *PKTablePresentationMode;
 // FIXME: Actual code in this method have to be improved to work when
 // preferencesView is not equal to contentView and we should move some portions
 // common with other presentation classes in PKPresentationBuilder superclass.
-- (void) resizePreferencesViewForView: (NSView *)paneView
+- (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
  	PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     NSView *mainView = [pc preferencesView];
@@ -104,7 +104,7 @@ extern const NSString *PKTablePresentationMode;
     int previousHeight = windowFrame.size.height;
     int heightDelta;
     
-    [super resizePreferencesViewForView: paneView];
+    [super layoutPreferencesViewWithPaneView: paneView];
     
     /* Resize window so content area is large enough for prefs. */
     
