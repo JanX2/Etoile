@@ -1,5 +1,14 @@
 2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Headers/PKMatrixViewPresentation.h:
+    * Source/PKMatrixViewPresentation.m:
+    * Headers/PKMatrixView.h:
+    * Source/PKMatrixView.m:
+    Reindented and reformated a bit. Included correct license notices.
+    * Source/PKPreferencePane.m: Minor update.
+
+2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
+
     * Headers/NSPreferencePane.h:
     * Source/PKPreferencePane.m:
     Updated documentation markup (to work well with autogsdoc).
