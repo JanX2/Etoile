@@ -1,5 +1,9 @@
 2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Source/PKMatrixViewPresentation.m: Fixed wrong commit (this file was wrongly replaced by PKTableViewPresentation).
+
+2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
+
     Fixed broken GNUstep version and updated with a new dependency 
     injection model (it permits to register for use any 
     PKPresentationBuilder subclasses automatically when they are loaded 

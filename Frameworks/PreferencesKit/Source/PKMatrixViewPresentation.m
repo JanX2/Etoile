@@ -1,3 +1,4 @@
+// Modified by Yen-Ju Chen
 /*
 	PKTableViewPresentation.m
  
@@ -27,75 +28,86 @@
 #import "CocoaCompatibility.h"
 #import "PKPreferencesController.h"
 #import "PKPrefPanesRegistry.h"
-#import "PKTableViewPresentation.h"
+#import "PKMatrixViewPresentation.h"
+#import "PKMatrixView.h"
+#include "GNUstep.h"
 
-const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
+const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 
 
-@implementation PKTableViewPresentation
+@implementation PKMatrixViewPresentation
 
 /* Dependency injection relying on -load method being sent to superclass before
    subclasses. It means we can be sure PKPresentationBuilder is already loaded
    by runtime, when each subclass receives this message. */
 + (void) load
 {
-  [super inject: self forKey: PKTablePresentationMode];
+  [super inject: self forKey: PKMatrixPresentationMode];
 }
 
 /*
  * Overriden methods
  */
 
+- (void) buttonAction: (id) sender
+{
+	[self switchPreferencePaneView: self];
+}
+
 - (void) loadUI
 {
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     NSView *mainViewContainer = [pc preferencesView];
-    
-    /* We use a completely prebuilt table view we retrieve in a dedicated gorm file
-       to avoid the nightmare to set up it manually in code with every elements it
-       includes like corner view, scroll view etc. */
-    
-    BOOL nibLoaded = [NSBundle loadNibNamed: @"PrebuiltTableView" owner: self];
-    
-    if (nibLoaded == NO)
-        [NSException raise: @"PKTableViewPresentationException"
-            format: @"Impossible to load PrebuiltTableView nib"];
-    
-    if (prebuiltTableView == nil)
-        [NSException raise: @"PKTableViewPresentationException"
-            format: @"PrebuiltTableView is nil"];
+    NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
 
-    [prebuiltTableView removeFromSuperview];
+    int count = [plugins count];
+    NSRect rect = [mainViewContainer bounds];  
     
-    [prebuiltTableView setFrameSize: NSMakeSize(180, [mainViewContainer frame].size.height)];
-    [prebuiltTableView setFrameOrigin: NSMakePoint(0, 0)];
-    [mainViewContainer addSubview: prebuiltTableView];
-    
-    /* Finish table view specific set up. */
-    // NOTE: the next two lines are needed only with Gorm because it doesn't
-    // support to disable column headers.
-    [preferencesTableView setCornerView: nil];
-    [preferencesTableView setHeaderView: nil];
-    [preferencesTableView setDataSource: self];
-    [preferencesTableView setDelegate: self];
-    [preferencesTableView reloadData];
+    matrixView = [[PKMatrixView alloc] initWithFrame: rect numberOfButtons: count];
+    [matrixView setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
+    [matrixView setAutoresizesSubviews: YES];
+    [matrixView setTarget: self];
+    [matrixView setAction: @selector(buttonAction:)];
+    [mainViewContainer addSubview: matrixView];
+    [mainViewContainer setAutoresizesSubviews: YES];
+
+    ASSIGN(identifiers, [plugins valueForKey: @"identifier"]);
+    NSEnumerator *e = [identifiers objectEnumerator];
+    id identifier;
+    int tag = 0;
+    while ((identifier = [e nextObject]))
+    {
+      NSDictionary *plugin = [plugins objectWithValue: identifier forKey: @"identifier"];
+      NSButtonCell *button = [[NSButtonCell alloc] init];
+      [button setTitle: [plugin objectForKey: @"name"]];
+      NSImage *image = [plugin objectForKey: @"image"];
+      [image setSize: NSMakeSize(48, 48)];
+      [button setImage: image];
+      [button setImagePosition: NSImageAbove];
+      [button setBordered: NO];
+      [button setTag: tag++];
+      [button setTarget: self];
+      [button setAction: @selector(buttonAction:)];
+      [matrixView addButtonCell: button];
+      [button release];
+    }
     
     [super loadUI];
 }
 
 - (void) unloadUI
 {
-    [prebuiltTableView removeFromSuperview];
+    [matrixView removeFromSuperview];
 }
 
 - (NSString *) presentationMode
 {
-    return (NSString *)PKTablePresentationMode;
+    return (NSString *)PKMatrixPresentationMode;
 }
 
 - (NSView *) presentationView
 {
-    return prebuiltTableView;
+    return [matrixView contentView];
 }
 
 // FIXME: Actual code in this method have to be improved to work when
@@ -103,104 +115,43 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 // common with other presentation classes in PKPresentationBuilder superclass.
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
- 	PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    NSView *mainView = [pc preferencesView];
-    NSRect paneFrame = [paneView frame];
-    NSRect tableFrame = [prebuiltTableView frame];
-	NSRect windowFrame = [[mainView window] frame];
-    NSRect contentFrame = NSZeroRect;
-    int previousHeight = windowFrame.size.height;
-    int heightDelta;
+    if (paneView == nil) return;
     
     [super layoutPreferencesViewWithPaneView: paneView];
     
-    /* Resize window so content area is large enough for prefs. */
-    
-    tableFrame.size.height = paneFrame.size.height;
-    paneFrame.origin.x = tableFrame.size.width;
-    paneFrame.origin.y = 0;
-    [prebuiltTableView setFrame: tableFrame];
-    [paneView setFrame: paneFrame];
-    
-    contentFrame.size.width = tableFrame.size.width + paneFrame.size.width;
-    contentFrame.size.height = paneFrame.size.height;
+    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
+    NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];
+    NSRect rect = NSMakeRect(0, 0, size.width, size.height);
+    [matrixView setFrame: rect];
+
+    NSRect windowFrame = [[matrixView window] frame];
+    int oldHeight = windowFrame.size.height;
     
     // FIXME: Implement -frameRectForContentRect: in GNUstep 
-    windowFrame.size = [NSWindow frameRectForContentRect: contentFrame
-        styleMask: [[mainView window] styleMask]].size;
+    windowFrame.size = [NSWindow frameRectForContentRect: [matrixView frame]
+        styleMask: [[matrixView window] styleMask]].size;
     
+#if 0 // Not sure we want to do that 
     // NOTE: We have to check carefully the view is not undersized to avoid
     // limiting switch possibilities in listed panes.
     if (windowFrame.size.height < 150)
         windowFrame.size.height = 150;
     if (windowFrame.size.width < 400)
         windowFrame.size.width = 400;
+#endif
     
     /* We take in account the fact the origin is located at bottom left corner. */
-    heightDelta = previousHeight - windowFrame.size.height;
-    windowFrame.origin.y += heightDelta;
+    int delta = oldHeight - windowFrame.size.height;
+    windowFrame.origin.y += delta;
     
-    // FIXME: Animated resizing is buggy on GNUstep (exception thrown about
-    // periodic events already generated for the current thread)
-    #ifndef GNUSTEP
-	[[mainView window] setFrame: windowFrame display: YES animate: YES];
-    #else
-    [[mainView window] setFrame: windowFrame display: YES animate: NO];
-    #endif
+    [[matrixView window] setFrame: windowFrame display: YES];
 }
 
 - (IBAction) switchPreferencePaneView: (id)sender
 {
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    int row = [preferencesTableView selectedRow];
-	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-    NSString *path = [[plugins objectAtIndex: row] identifier];
-    
-    [pc selectPreferencePaneWithIdentifier: path];
-}
-
-/*
- * Preferences controller delegate methods
- */
-
-- (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier
-{    
-	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-    NSDictionary *info = [plugins objectWithValue: identifier forKey: @"identifier"];
-    int row = [plugins indexOfObject: info];
-    
-    [preferencesTableView selectRow: row byExtendingSelection: NO];
-}
-
-/*
- * Table view delegate methods
- */
-
-- (int) numberOfRowsInTableView: (NSTableView *)tableView
-{
-	int count = [[[PKPrefPanesRegistry sharedRegistry] loadedPlugins] count];
-    
-    return count;
-}
-
-
-- (id) tableView: (NSTableView*)tableView objectValueForTableColumn: (NSTableColumn *)tableColumn row: (int)row
-{
-	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins]; 
-    NSDictionary *info = [plugins objectAtIndex: row];
-	
-	return [info objectForKey: @"name"];
-}
-
-
-- (void) tableViewSelectionDidChange: (NSNotification *)notification
-{
-	PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    int row = [preferencesTableView selectedRow];
-	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-    NSString *path = (NSString *)[[plugins objectAtIndex: row] objectForKey: @"path"];
-	
-	[pc updateUIForPreferencePane: [[PKPrefPanesRegistry sharedRegistry] preferencePaneAtPath: path]];
+    int tag = [[matrixView selectedButtonCell] tag];
+    [pc selectPreferencePaneWithIdentifier: [identifiers objectAtIndex: tag]];
 }
 
 @end
