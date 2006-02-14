@@ -1,13 +1,13 @@
-// Modified by Yen-Ju Chen
 /*
-	PKTableViewPresentation.m
+	PKMatrixViewPresentation.m
  
-	Preferences controller subclass with preference panes listed in a table bview
+	Preferences controller subclass with preference panes listed in a matrix
  
-	Copyright (C) 2005 Quentin Mathe    
+	Copyright (C) 2005 Yen-Ju Chen, Quentin Mathe 
  
-	Author:  Quentin Mathe <qmathe@club-internet.fr>
-	Date:  June 2005
+	Author:  Yen-Ju Chen
+             Quentin Mathe <qmathe@club-internet.fr>
+	Date:  December 2005
  
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -30,7 +30,6 @@
 #import "PKPrefPanesRegistry.h"
 #import "PKMatrixViewPresentation.h"
 #import "PKMatrixView.h"
-#include "GNUstep.h"
 
 const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 
@@ -42,7 +41,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
    by runtime, when each subclass receives this message. */
 + (void) load
 {
-  [super inject: self forKey: PKMatrixPresentationMode];
+    [super inject: self forKey: PKMatrixPresentationMode];
 }
 
 /*
@@ -68,28 +67,36 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
     [matrixView setAutoresizesSubviews: YES];
     [matrixView setTarget: self];
     [matrixView setAction: @selector(buttonAction:)];
+    
     [mainViewContainer addSubview: matrixView];
     [mainViewContainer setAutoresizesSubviews: YES];
 
-    ASSIGN(identifiers, [plugins valueForKey: @"identifier"]);
+    [identifiers autorelease];
+    identifiers = [plugins valueForKey: @"identifier"];
+    
     NSEnumerator *e = [identifiers objectEnumerator];
     id identifier;
     int tag = 0;
+    
     while ((identifier = [e nextObject]))
     {
-      NSDictionary *plugin = [plugins objectWithValue: identifier forKey: @"identifier"];
-      NSButtonCell *button = [[NSButtonCell alloc] init];
-      [button setTitle: [plugin objectForKey: @"name"]];
-      NSImage *image = [plugin objectForKey: @"image"];
-      [image setSize: NSMakeSize(48, 48)];
-      [button setImage: image];
-      [button setImagePosition: NSImageAbove];
-      [button setBordered: NO];
-      [button setTag: tag++];
-      [button setTarget: self];
-      [button setAction: @selector(buttonAction:)];
-      [matrixView addButtonCell: button];
-      [button release];
+        NSDictionary *plugin = [plugins objectWithValue: identifier forKey: @"identifier"];
+        NSButtonCell *button = [[NSButtonCell alloc] init];
+        
+        [button setTitle: [plugin objectForKey: @"name"]];
+        
+        NSImage *image = [plugin objectForKey: @"image"];
+        [image setSize: NSMakeSize(48, 48)];
+        
+        [button setImage: image];
+        [button setImagePosition: NSImageAbove];
+        [button setBordered: NO];
+        [button setTag: tag++];
+        [button setTarget: self];
+        [button setAction: @selector(buttonAction:)];
+        
+        [matrixView addButtonCell: button];
+        [button release];
     }
     
     [super loadUI];
@@ -115,13 +122,15 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 // common with other presentation classes in PKPresentationBuilder superclass.
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
-    if (paneView == nil) return;
+    if (paneView == nil) 
+        return;
     
     [super layoutPreferencesViewWithPaneView: paneView];
     
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];
     NSRect rect = NSMakeRect(0, 0, size.width, size.height);
+    
     [matrixView setFrame: rect];
 
     NSRect windowFrame = [[matrixView window] frame];
@@ -151,6 +160,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 {
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     int tag = [[matrixView selectedButtonCell] tag];
+    
     [pc selectPreferencePaneWithIdentifier: [identifiers objectAtIndex: tag]];
 }
 

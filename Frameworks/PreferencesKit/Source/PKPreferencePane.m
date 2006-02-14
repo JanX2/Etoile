@@ -34,6 +34,7 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 
 @implementation PKPreferencePane
 
+/** <init /> */
 -(id)	initWithBundle: (NSBundle*) bundle
 {
 	self = [super init];
