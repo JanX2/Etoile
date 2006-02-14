@@ -29,10 +29,18 @@
 #import "PKPrefPanesRegistry.h"
 #import "PKTableViewPresentation.h"
 
-extern const NSString *PKTablePresentationMode;
+const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 
 
 @implementation PKTableViewPresentation
+
+/* Dependency injection relying on -load method being sent to superclass before
+   subclasses. It means we can be sure PKPresentationBuilder is already loaded
+   by runtime, when each subclass receives this message. */
++ (void) load
+{
+  [super inject: self forKey: PKTablePresentationMode];
+}
 
 /*
  * Overriden methods
@@ -161,7 +169,7 @@ extern const NSString *PKTablePresentationMode;
     NSDictionary *info = [plugins objectWithValue: identifier forKey: @"identifier"];
     int row = [plugins indexOfObject: info];
     
-    [preferencesTableView selectRow: row byExtendingSelection: NO];
+   [preferencesTableView selectRow: row byExtendingSelection: NO];
 }
 
 /*

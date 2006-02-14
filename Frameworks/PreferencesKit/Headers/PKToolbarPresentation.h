@@ -25,6 +25,8 @@
 
 #import "PKPresentationBuilder.h"
 
+extern const NSString *PKToolbarPresentationMode;
+
 
 @interface PKToolbarPresentation : PKPresentationBuilder
 {

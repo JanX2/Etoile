@@ -1,3 +1,38 @@
+2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
+
+    Fixed broken GNUstep version and updated with a new dependency 
+    injection model (it permits to register for use any 
+    PKPresentationBuilder subclasses automatically when they are loaded 
+    by the runtime).
+    * Headers/PKMatrixViewPresentation.h:
+    * Source/PKMatrixViewPresentation.m:
+    * Headers/PKToolbarPresentation.h:
+    * Source/PKToolbarPresentation.m:
+    * Headers/PKTableViewPresentation.h:
+    * Source/PKTableViewPresentation.m:
+    Fixed constant declaration/definition.
+    (+load): New overriden method to handle dependency injection.
+    * Headers/PKPresentationBuilder.h:
+    * Source/PKPresentationBuilder.m:
+    Fixed constant declaration/definition.
+    (+load): New overriden method to set up dependency injection support.
+    (+inject:forKey:): New method to handle dependency injection.
+    (+builderForPresentationMode:): Rewritten with depency injection  
+    model.
+    (-layoutPreferencesViewWithPaneView:): Fixed 'paneView' being 
+    potentially 'nil' on initial -loadUI call (was resulting in yet 
+    another GNUstep crash by trying to add a 'nil' subview).
+    Updated documentation to be properly generated and more 
+    comprehensive.
+    * Headers/PKPreferencesController.h (-updateUIForPreferencePane:): 
+    Eliminated a warning on mismatched implementation parameter name.
+    * Source/PKPreferencesController.m: Updated documentation to be 
+    properly generated and more comprehensive.
+    * Source/PKPrefPanesRegistry.m (-loadPluginForPath:): Fixed incorrect
+    compound test to avoid any -setObject:forKey: calls with 'nil' 
+    values (that eliminates crash with GNUstep). It now matches previous
+    similar test statement used with prefPane plugin above in the method.
+
 2006-02-10  Quentin Mathe <qmathe@club-internet.fr>
 
     * Headers/PKPresentationBuilder.h:

@@ -55,7 +55,7 @@ extern const NSString *PKOtherPresentationMode;
 - (id) initWithPresentationMode: (NSString *)presentationMode;
 
 /* Preferences UI related stuff */
-- (BOOL) updateUIForPreferencePane: (PKPreferencePane *)prefPane;
+- (BOOL) updateUIForPreferencePane: (PKPreferencePane *)requestedPane;
 
 - (void) selectPreferencePaneWithIdentifier: (NSString *)identifier;
 

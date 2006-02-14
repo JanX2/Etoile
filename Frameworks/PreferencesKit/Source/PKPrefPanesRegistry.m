@@ -128,14 +128,12 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
         module = [[[mainClass alloc] initWithOwner: (PKPrefsModulePrefPane *)pane] autorelease];	/* Pane takes over ownership of the module. */
         
         image = [module buttonImage];
-        if (image == nil && [[info objectForKey: @"image"] isEqual: [NSNull null]])
-            image = [NSImage imageNamed: @"NSApplicationIcon"]; /* Falling back on our default icon */
-        [info setObject: image forKey: @"image"];
+        if (image != nil)
+            [info setObject: image forKey: @"image"];
                 
         name = [module buttonCaption];
-        if (name == nil && [[info objectForKey: @"name"] length] == 0)
-            name = @"Unknown";
-        [info setObject: name forKey: @"name"];
+        if (name != nil && [name length] != 0)
+            [info setObject: name forKey: @"name"];
     }
     
     return info;

@@ -32,7 +32,8 @@
 #import "PKPrefPanesRegistry.h"
 #import "PKToolbarPresentation.h"
 
-extern const NSString *PKToolbarPresentationMode;
+const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
+
 
 // NOTE: Hack needed for -resizePreferencesViewForView: with GNUstep
 #ifdef GNUSTEP
@@ -48,6 +49,14 @@ extern const NSString *PKToolbarPresentationMode;
 #endif
 
 @implementation PKToolbarPresentation
+
+/* Dependency injection relying on -load method being sent to superclass before
+   subclasses. It means we can be sure PKPresentationBuilder is already loaded
+   by runtime, when each subclass receives this message. */
++ (void) load
+{
+  [super inject: self forKey: PKToolbarPresentationMode];
+}
 
 /*
  * Overriden methods

@@ -1,7 +1,8 @@
-/*
+/** <title>PKPresentationBuilder</title>
+
 	PKPresentationBuilder.m
 
-	Abstract Preferences window controller class
+	<abstract>Abstract Preferences window controller class</abstract>
 
 	Copyright (C) 2005 Quentin Mathe
                        Uli Kusterer
@@ -38,36 +39,40 @@
 #import "PKPreferencePane.h"
 #import "PKPresentationBuilder.h"
 
-// HACK: Temporary solution to instantiate concrete presentation classes.
-@class PKToolbarPresentation;
-@class PKTableViewPresentation;
-@class PKMatrixViewPresentation;
-
 const NSString *PKNoPresentationMode = @"PKNoPresentationMode";
-const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
-const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
-const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
 
+static NSMutableDictionary *injectedObjects = nil;
 
+/** PKPresentationBuilder Description */
 @implementation PKPresentationBuilder
 
++ (void) load
+{
+  injectedObjects = [[NSMutableDictionary alloc] initWithCapacity: 10];
+  [injectedObjects retain];
+}
+
+/** Dependency injection relying on -load method being sent to superclass before
+    subclasses. It means we can be sure [PKPresentationBuilder] is already loaded
+    by runtime, when each subclass receives this message. */
++ (BOOL) inject: (id)obj forKey: (id)key
+{
+    [injectedObjects setObject: obj forKey: key];
+    
+    return YES;
+}
+
+/** <factory /> */
 + (id) builderForPresentationMode: (NSString *)presentationMode
 {
-    if ([presentationMode isEqual: PKToolbarPresentationMode])
-    {
-        return [[[PKToolbarPresentation alloc] init] autorelease];
-    }
-    else if ([presentationMode isEqual: PKTablePresentationMode])
-    {
-        return [[[PKTableViewPresentation alloc] init] autorelease];
-    }
-    else if ([presentationMode isEqual: PKMatrixPresentationMode])
-    {
-        return [[[PKMatrixViewPresentation alloc] init] autorelease];
-    }
+    id presentationUnit = [injectedObjects objectForKey: presentationMode];
     
-    return nil;
+    // NOTE: [myClass class] == myClass (and [myObject class] == myClass)
+    if ([presentationUnit isEqual: [presentationUnit class]])
+      presentationUnit = [[[presentationUnit alloc] init] autorelease];
+      
+    return presentationUnit;
 }
 
 /*
@@ -76,7 +81,7 @@ const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
 
 /** <override-subclass />
     Uses this method to do preferences window related UI set up you may
-    have to do and usually done in <ref>-awakeFromNib</ref>. */
+    have to do and usually done in -awakeFromNib. */
 - (void) loadUI
 {
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
@@ -86,8 +91,8 @@ const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
 }
 
 /** <override-subclass />
-    Uses this method to remove preferences window related UI elements, previously 
-    set up in <ref>-loadUI</ref>. Usually called when presentation mode is going
+    Uses this method to remove preferences window related UI elements, 
+    previously set up in -loadUI. Usually called when presentation mode is going
     to change. */
 - (void) unloadUI
 {
@@ -95,26 +100,31 @@ const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
 }
 
 /** <override-subclass />
-    <p>Computes and assigns the right size to <strong>preferences view</strong> 
+    <p>Computes and assigns the right size to <em>preferences view</em> 
     (where <var>paneView</var> parameter is going to displayed), then the right 
-    frame to both <strong>presentation view</strong> and <var>paneView</var>.
-    Finally adds <var>paneView</paneView> as a subview of <strong>preferences 
-    view</strong> (if it isn't already done).</p>
+    frame to both <em>presentation view</em> and <var>paneView</var>.
+    Finally adds <var>paneView</paneView> as a subview of <em>preferences 
+    view</em> (if it isn't already done).</p>
     <p>By default, this method just takes care to add the <var>paneVie</var>
-    to <strong>preferences view</strong>.</p>
-    <p>Overrides this abstract method to layout subviews of the preferences 
-    view container (in a way specific to your presentation), it must take in 
-    account the size of <strong>preference pane</strong> view which is shown or
+    to <em>preferences view</em>.</p>
+    <p><strong>Overrides this abstract method to layout subviews of the preferences 
+    view container (in a way specific to your presentation)</strong>, it must take in 
+    account the size of <em>preference pane</em> view which is shown or
     is going to be. If <var>paneView</var> can be directly added to 
-    <strong>preferences view</strong>, just call this method with 
+    <em>preferences view</em>, just call this method with 
     <code>super</code>. That might not always be true, to take an example, 
-    consider your presentation view is a <strong>tab view<strong>, it means 
+    consider your presentation view is a <em>tab view<em>, it means 
     <var>paneView<var> has to be added this time to tab view itself and not 
-    preferences view, otherwise it would be overlapped by the former.<p> */
+    preferences view, otherwise it would be overlapped by the former.</p> */
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     NSView *prefsView = [pc preferencesView];
+    
+    /* We give up here when no paneView is provided and let our subclasses 
+       finishing their custom layout. */
+    if (paneView == nil)
+        return;
     
     if ([[paneView superview] isEqual: prefsView] == NO)
         [prefsView addSubview: paneView];
@@ -129,12 +139,12 @@ const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
  */
 
 /** <override-subclass>
-<p>Switches the current preference pane viewed to another one provided by
-<var>sender</var>.</p>
-<p>Overrides this abstract method in your subclass in order to implement this
-behavior by calling <ref>-selectPreferencePaneWithIdentifier:</ref>;
-you have to be able to retrieve the preference pane through your custom
-<var>sender</var>.</p> */
+    <p>Switches the current preference pane viewed to another one provided by
+    <var>sender</var>.</p>
+    <p><strong>Overrides this abstract method in your subclass in order to 
+    implement this behavior by calling -selectPreferencePaneWithIdentifier:;
+    you have to be able to retrieve the preference pane through your custom
+    <var>sender</var>.</strong></p> */
 - (IBAction) switchPreferencePaneView: (id)sender
 {
     [self subclassResponsability: _cmd];
@@ -145,21 +155,21 @@ you have to be able to retrieve the preference pane through your custom
  */
 
 /** <override-subclass />
-<p>Returns the <strong>presentation view</strong> where every preference 
+<p>Returns the <em>presentation view</em> where every preference 
 panes should be listed.</p>
-<p>Overrides this abstract method to return your custom <strong>presentation 
-view</strong> like toolbar, table view, popup menu, tab view etc.</p> */
+<p><strong>Overrides this abstract method to return your custom <em>presentation 
+view</em> like toolbar, table view, popup menu, tab view etc.</strong></p> */
 - (NSView *) presentationView
 {
     return nil;
 }
 
-/** <override-subclass>
-    <p>Returns the <strong>presentation mode</strong> which is used to identify
+/** <override-subclass />
+    <p>Returns the <em>presentation mode</em> which is used to identify
     the presentation.</p>
     <p>By default, this methods returns <code>PKNoPresentationMode</code>.</p>
-    <p>Overrides this abstract method to return the specific <strong>presentation 
-    identifier</strong> related to your subclass.</p> */
+    <p><strong>Overrides this abstract method to return the specific 
+    <em>presentation identifier</em> related to your subclass.</strong></p> */
 - (NSString *) presentationMode
 {
     return (NSString *)PKNoPresentationMode;

@@ -5,6 +5,9 @@
 
 @class PKMatrixView;
 
+extern const NSString *PKMatrixPresentationMode;
+
+
 @interface PKMatrixViewPresentation : PKPresentationBuilder
 {
   PKMatrixView *matrixView;

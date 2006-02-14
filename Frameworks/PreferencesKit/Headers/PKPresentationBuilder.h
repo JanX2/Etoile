@@ -32,12 +32,18 @@
 @protocol PKPreferencePaneOwner;
 @class PKPreferencePane;
 
+extern const NSString *PKNoPresentationMode;
+extern const NSString *PKOtherPresentationMode;
+
 
 @interface PKPresentationBuilder : NSObject {
 
 }
 
 + (id) builderForPresentationMode: (NSString *)presentationMode;
+
+/* Method to inject custom Presentation */
++ (BOOL) inject: (id)obj forKey: (id)key;
 
 /* Preferences UI related stuff */
 - (void) loadUI;
