@@ -1,8 +1,9 @@
-/*
-	PKPrefPanesRegistry.h
+/** <title>PKPrefPanesRegistry</title>
+
+	PKPrefPanesRegistry.m
  
-	PrefPanes manager class used to register new preference panes and obtain 
- already registered preference panes
+	<abstract>PrefPanes manager class used to register new preference panes and 
+    obtain already registered preference panes</abstract>
  
 	Copyright (C) 2004 Uli Kusterer
  
@@ -35,11 +36,7 @@
 
 static PKPrefPanesRegistry *sharedPrefPanesRegistry;
 
-// FIXME: Will need to removed when implemented elsewhere
-@interface NSArray (ObjectWithValueForKey)
-- (id) objectWithValue: (id)value forKey: (NSString *)key;
-@end
-
+/** PKPrefPanesRegistry Description */
 @implementation PKPrefPanesRegistry
 
 + (void) initialize
@@ -64,8 +61,8 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
     return self;
 }
 
-/** Locates and loads Preference Pane bundles.<br />
-    Normally you only need to call this method to load a preference pane. */
+/** <p>Locates and loads <em>preference pane</em> bundles.</p>
+    <p>Normally you only need to call this method to load a preference pane.</p> */
 - (void) loadAllPlugins
 {
 	[self loadPluginsOfType: @"prefPane"];
@@ -147,11 +144,11 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
 #endif
 
 /** <p>Loads the plugin bundle located at <var>path</var>, checks it conforms to 
-    <strong>Plugin schema</strong> stored in the related bundle property list.</p>
-    <p>Every property list values associated to Plugin schema are put in a
+    <em>Plugin schema</em> stored in the related bundle property list.</p>
+    <p>Every property list values associated to <em>Plugin schema</em> are put in a
     dictionary to be used as plugin object, eventual validity errors
     are reported each time a value is read in NSBundle description values
-    returned by <ref>-infoDictionary</ref>.</p> */
+    returned by -infoDictionary.</p> */
 - (PKPreferencePane *) preferencePaneAtPath: (NSString *)path
 {
     NSMutableDictionary *info = [pluginPaths objectForKey: path];

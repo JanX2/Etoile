@@ -1,7 +1,9 @@
-/*
-	PKPrefsModulePrefPane.h
+/*  <title>PKPrefsModulePrefPane</title>
+
+	PKPrefsModulePrefPane.m
  
-	Backbone preferences modules compatiblity subclass (was GSPrefsModulePrefPane)
+	<abstract>Backbone preferences modules compatiblity subclass (was 
+    GSPrefsModulePrefPane)</abstract>
  
 	Copyright (C) 2004 Uli Kusterer
  
