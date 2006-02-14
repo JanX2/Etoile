@@ -2,7 +2,8 @@
 
 	PKPresentationBuilder.m
 
-	<abstract>Abstract Preferences window controller class</abstract>
+	<abstract>Abstract Presentation class that returns concrete presentation 
+    objects (used by PKPreferencesController as layout delegates).</abstract>
 
 	Copyright (C) 2005 Quentin Mathe
                        Uli Kusterer
@@ -53,9 +54,9 @@ static NSMutableDictionary *injectedObjects = nil;
   [injectedObjects retain];
 }
 
-/** Dependency injection relying on -load method being sent to superclass before
-    subclasses. It means we can be sure [PKPresentationBuilder] is already loaded
-    by runtime, when each subclass receives this message. */
+/** <p>Dependency injection relying on +load method being sent to superclass    
+    before subclasses. It means we can be sure [PKPresentationBuilder] is 
+    already loaded by runtime, when each subclass receives this message.</p> */
 + (BOOL) inject: (id)obj forKey: (id)key
 {
     [injectedObjects setObject: obj forKey: key];
@@ -63,7 +64,10 @@ static NSMutableDictionary *injectedObjects = nil;
     return YES;
 }
 
-/** <factory /> */
+/** <p>Factory method that returns the right presentation instance when 
+    possible.</p>
+    <p>It returns nil when no presentation subclass registered against 
+    <var>presentationMode</var> could be found.</p> */
 + (id) builderForPresentationMode: (NSString *)presentationMode
 {
     id presentationUnit = [injectedObjects objectForKey: presentationMode];
@@ -80,8 +84,8 @@ static NSMutableDictionary *injectedObjects = nil;
  */
 
 /** <override-subclass />
-    Uses this method to do preferences window related UI set up you may
-    have to do and usually done in -awakeFromNib. */
+    <p>Uses this method to do preferences window related UI set up you may
+    have to do and usually done in -awakeFromNib.</p> */
 - (void) loadUI
 {
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
@@ -91,9 +95,9 @@ static NSMutableDictionary *injectedObjects = nil;
 }
 
 /** <override-subclass />
-    Uses this method to remove preferences window related UI elements, 
+    <p>Uses this method to remove preferences window related UI elements, 
     previously set up in -loadUI. Usually called when presentation mode is going
-    to change. */
+    to change.</p> */
 - (void) unloadUI
 {
     [self subclassResponsability: _cmd];
@@ -103,9 +107,9 @@ static NSMutableDictionary *injectedObjects = nil;
     <p>Computes and assigns the right size to <em>preferences view</em> 
     (where <var>paneView</var> parameter is going to displayed), then the right 
     frame to both <em>presentation view</em> and <var>paneView</var>.
-    Finally adds <var>paneView</paneView> as a subview of <em>preferences 
+    Finally adds <var>paneView</var> as a subview of <em>preferences 
     view</em> (if it isn't already done).</p>
-    <p>By default, this method just takes care to add the <var>paneVie</var>
+    <p>By default, this method just takes care to add the <var>paneView</var>
     to <em>preferences view</em>.</p>
     <p><strong>Overrides this abstract method to layout subviews of the preferences 
     view container (in a way specific to your presentation)</strong>, it must take in 
@@ -113,8 +117,8 @@ static NSMutableDictionary *injectedObjects = nil;
     is going to be. If <var>paneView</var> can be directly added to 
     <em>preferences view</em>, just call this method with 
     <code>super</code>. That might not always be true, to take an example, 
-    consider your presentation view is a <em>tab view<em>, it means 
-    <var>paneView<var> has to be added this time to tab view itself and not 
+    consider your presentation view is a <em>tab view</em>, it means 
+    <var>paneView</var> has to be added this time to tab view itself and not 
     preferences view, otherwise it would be overlapped by the former.</p> */
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
@@ -138,12 +142,13 @@ static NSMutableDictionary *injectedObjects = nil;
  * Action methods
  */
 
-/** <override-subclass>
+/** <override-subclass />
     <p>Switches the current preference pane viewed to another one provided by
     <var>sender</var>.</p>
     <p><strong>Overrides this abstract method in your subclass in order to 
-    implement this behavior by calling -selectPreferencePaneWithIdentifier:;
-    you have to be able to retrieve the preference pane through your custom
+    implement this behavior by calling 
+    [PKPreferencesController -selectPreferencePaneWithIdentifier:]; you have to 
+    be able to retrieve the preference pane through your custom
     <var>sender</var>.</strong></p> */
 - (IBAction) switchPreferencePaneView: (id)sender
 {

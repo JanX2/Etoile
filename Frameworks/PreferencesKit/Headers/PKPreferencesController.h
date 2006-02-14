@@ -1,7 +1,7 @@
 /*
 	PKPreferencesController.h
 
-	Abstract Preferences window controller class
+	Preferences window controller class
 
 	Copyright (C) 2004 Quentin Mathe
                        Uli Kusterer

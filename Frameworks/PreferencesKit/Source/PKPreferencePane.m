@@ -1,6 +1,6 @@
 /** <title>PKPreferencePane</title>
 
-	PKPreferencePane.h
+	PKPreferencePane.m
  
 	<abstract>Preference pane class (was GSPreferencePane)</abstract>
  
@@ -32,6 +32,7 @@ NSString *NSPreferencePaneDoUnselectNotification = @"NSPreferencePaneDoUnselect"
 NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelUnselect";
 
 
+/* <p>PKPreferencePane Description</p> */
 @implementation PKPreferencePane
 
 /** <init /> */
@@ -53,7 +54,8 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 	[super dealloc];
 }
 
-/** Returns the <em>bundle instance</em> which the preference pane stored. */
+/** <p>Returns the <em>bundle instance</em> which the preference pane 
+    stored.</p> */
 -(NSBundle*) bundle
 {
 	return _bundle;
@@ -84,7 +86,7 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 	return _mainView;
 }
 
-/** <p>Assigns the main view loaded with -loadMainView:.</p>
+/** <p>Assigns the main view loaded with -loadMainView.</p>
     <p>By default this method, retrieves the main view by calling 
     -contentView on window referenced in the nib file by 
     <code>_window</code> outlet.</p>
@@ -136,7 +138,7 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
     deselected right now. Various values may be returned, look at 
     <code>NSPreferencePaneUnselectReply</code> constants.</p>
     <p>Overrides this method when you want to delay or cancel a deselect 
-    request, but take note that you will have to call -replyToShouldUnselect 
+    request, but take note that you will have to call -replyToShouldUnselect: 
     later (when deselection is processed) if you return 
     <code>NSUnselectLater</code>.</p> */
 -(NSPreferencePaneUnselectReply) shouldUnselect
@@ -147,7 +149,7 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 /** <override-never />
     <p>Asks the preference pane to know if it accepts to be deselected.</p>
     <p>Take care to invoke this method yourself when you have overriden 
-    -shouldUnselect: to return <code>NSUnselectLater</code> (it
+    -shouldUnselect to return <code>NSUnselectLater</code> (it
     implies you know when the preference should be unselected).</p> */
 -(void)	replyToShouldUnselect: (BOOL)shouldUnselect
 {
@@ -165,51 +167,52 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 	_mainView = [view retain];
 }
 
-/** Returns the <em>preference pane view</em> which is presented to the user. */
+/** <p>Returns the <em>preference pane view</em> which is presented to the 
+    user.</p> */
 -(NSView*) mainView
 {
 	return _mainView;
 }
 
-/** Returns the view which initially owns the focus in the responder chain when
-    the preference pane view is loaded. */
+/** <p>Returns the view which initially owns the focus in the responder chain 
+    when the preference pane view is loaded.</p> */
 -(NSView*) initialKeyView
 {
 	return _initialKeyView;
 }
 
-/** Sets the view which initially owns the focus in the responder chain when the
-    preference pane view is loaded. */
+/** <p>Sets the view which initially owns the focus in the responder chain when 
+    the preference pane view is loaded.</p> */
 -(void) setInitialKeyView: (NSView*)view
 {
 	[_initialKeyView autorelease];
 	_initialKeyView = [view retain];
 }
 
-/** Returns the view which starts the responder chain bound to the preference 
-    pane view. */
+/** <p>Returns the view which starts the responder chain bound to the preference 
+    pane view.</p> */
 -(NSView*) firstKeyView
 {
 	return _firstKeyView;
 }
 
-/** Sets the view which starts the responder chain bound to the preference pane 
-    view. */
+/** <p>Sets the view which starts the responder chain bound to the preference 
+    pane view.</p> */
 -(void) setFirstKeyView: (NSView*)view
 {
 	[_firstKeyView autorelease];
 	_firstKeyView = [view retain];
 }
 
-/** Returns the view which ends the responder chain bound to the preference pane
-    view. */
+/** <p>Returns the view which ends the responder chain bound to the preference 
+    pane view.</p> */
 -(NSView*) lastKeyView
 {
 	return _lastKeyView;
 }
 
-/** Sets the view which ends the responder chain bound to the preference pane
-    view. */
+/** <p>Sets the view which ends the responder chain bound to the preference pane
+    view.</p> */
 -(void) setLastKeyView: (NSView*)view
 {
 	[_lastKeyView autorelease];
@@ -227,14 +230,14 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 	return YES;
 }
 
-/** Returns YES when the receiver is the currently selected
-    preference pane, otherwise returns NO. */
+/** <p>Returns YES when the receiver is the currently selected
+    preference pane, otherwise returns NO.</p> */
 -(BOOL) isSelected
 {
 	return( [_owner selectedPreferencePane] == self );
 }
 
-/** Not implemented. */
+/** <p><em>Not implemented.</em></p> */
 -(void) updateHelpMenuWithArray:(NSArray *)inArrayOfMenuItems
 {
 	NSLog(@"PKPreferencePane: updateHelpMenuWithArray: not yet implemented.");

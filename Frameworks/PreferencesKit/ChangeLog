@@ -1,5 +1,22 @@
 2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Headers/PKPreferencesController.h: Made class summary in notice more 
+    accurate.
+    * Source/PKPreferencesController.m: Fixed documentation markup and removed 
+    some constants not needed (enclosed in a conditional directive).
+    * Headers/PKPresentationBuilder.h: Replaced class summary to describe this 
+    class and not PKPreferencesController. Fixed mismatched paramater name in 
+    method -layoutPreferencesViewWithPaneView: between interface and 
+    implementation.
+    * Source/PKPresentationBuilder.m: Fixed documentation markup and replaced 
+    class summary to describe this class and not PKPreferencesController.
+    * Source/UKPluginsRegistry.m:
+    * Source/PKPreferencePane.m:
+    * Source/PKPrefPanesRegistry.m: 
+    Fixed documentation markup.
+
+2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
+
     * Headers/PKMatrixViewPresentation.h:
     * Source/PKMatrixViewPresentation.m:
     * Headers/PKMatrixView.h:

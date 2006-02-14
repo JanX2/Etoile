@@ -2,7 +2,7 @@
 
 	PKPreferencesController.m
 
-	<abstract>Abstract Preferences window controller class</abstract>
+	<abstract>Preferences window controller class</abstract>
 
 	Copyright (C) 2004 Quentin Mathe
                        Uli Kusterer
@@ -39,13 +39,6 @@
 #import "PKPresentationBuilder.h"
 #import "PKPreferencesController.h"
 
-#ifdef GNUSTEP  // build failed on mac
-const NSString *PKNoPresentationMode;
-const NSString *PKToolbarPresentationMode;
-const NSString *PKTablePresentationMode;
-const NSString *PKOtherPresentationMode;
-#endif
-
 
 @interface PKPreferencesController (Private)
 - (void) windowWillClose: (NSNotification *)aNotification;
@@ -58,7 +51,7 @@ const NSString *PKOtherPresentationMode;
 static PKPreferencesController	*sharedInstance = nil;
 static BOOL inited = NO;
 
-/** <factory /> */
+/** <p>Factory method which returns a singleton instance.</p> */
 + (PKPreferencesController *) sharedPreferencesController
 {
 	return (sharedInstance ? sharedInstance : [[self alloc] init]);
@@ -139,7 +132,7 @@ static BOOL inited = NO;
    pane</em> UI.</p>
    <p><strong>By being the main bottleneck for switching preference panes, this 
    method must be called each time a new preference pane is selected like with
-   -selectedPreferencePaneWithIdentifier: method.</strong></p> */
+   -selectPreferencePaneWithIdentifier: method.</strong></p> */
 - (BOOL) updateUIForPreferencePane: (PKPreferencePane *)requestedPane
 {
     NSView *prefsView = [self preferencesView];

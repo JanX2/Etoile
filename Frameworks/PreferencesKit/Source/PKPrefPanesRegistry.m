@@ -36,7 +36,7 @@
 
 static PKPrefPanesRegistry *sharedPrefPanesRegistry;
 
-/** PKPrefPanesRegistry Description */
+/** <p>PKPrefPanesRegistry Description</p> */
 @implementation PKPrefPanesRegistry
 
 + (void) initialize
@@ -47,7 +47,7 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
     }
 }
 
-/** Returns PKPrefPanesRegistry shared instance (singleton). */
+/** <p>Returns PKPrefPanesRegistry shared instance (singleton).</p> */
 + (id) sharedRegistry
 {	    
     return sharedPrefPanesRegistry;

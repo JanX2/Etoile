@@ -1,14 +1,15 @@
 /*
-	PKPreferencesController.h
+	PKPresentationBuilder.h
  
-	Abstract Preferences window controller class
+	Abstract Presentation class that returns concrete presentation objects 
+    (used by PKPreferencesController as layout delegates)
  
 	Copyright (C) 2004 Quentin Mathe
- Uli Kusterer
+                       Uli Kusterer
  
 	Author:  Quentin Mathe <qmathe@club-internet.fr>
- Uli Kusterer
- Date:  January 2005
+             Uli Kusterer
+    Date:  January 2005
  
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -48,7 +49,7 @@ extern const NSString *PKOtherPresentationMode;
 /* Preferences UI related stuff */
 - (void) loadUI;
 - (void) unloadUI;
-- (void) layoutPreferencesViewWithPaneView: (NSView *)view;
+- (void) layoutPreferencesViewWithPaneView: (NSView *)paneView;
 
 /* Method from PKPreferencesController which needs to be customized in subclass */
 - (IBAction) switchPreferencePaneView: (id)sender;
