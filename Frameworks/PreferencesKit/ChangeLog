@@ -1,5 +1,11 @@
 2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Headers/NSPreferencePane.h:
+    * Source/PKPreferencePane.m:
+    Updated documentation markup (to work well with autogsdoc).
+
+2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
+
     * Source/PKPluginsRegistry.m:
     * Source/PKPrefPanesRegistry.m:
     * Source/PKPrefsModulePrefPane.m:

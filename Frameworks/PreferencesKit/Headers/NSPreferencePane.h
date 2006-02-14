@@ -1,7 +1,8 @@
-/*
+/** <title>NSPreferencePane</title>
+
     NSPreferencePane.h
  
-    PKPreferencePane empty subclass which allows Cocoa compatibility
+    <abstract>PKPreferencePane empty subclass which allows Cocoa compatibility</abstract>
     
     Copyright (C) 2005 Quentin Mathe
  
@@ -23,7 +24,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* The class name you should actually use */
+/** The class name you should actually use most often in place of [PKPreferencePane]. **/
 
 #import "PKPreferencePane.h"
 

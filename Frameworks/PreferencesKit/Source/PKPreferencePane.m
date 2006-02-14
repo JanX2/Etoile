@@ -1,7 +1,8 @@
-/*
+/** <title>PKPreferencePane</title>
+
 	PKPreferencePane.h
  
-	Preference pane class (was GSPreferencePane)
+	<abstract>Preference pane class (was GSPreferencePane)</abstract>
  
 	Copyright (C) 2004 Uli Kusterer
  
@@ -51,8 +52,7 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 	[super dealloc];
 }
 
-/** Returns the bundle instance which the <strong>preference pane</strong> 
-    stored. */
+/** Returns the <em>bundle instance</em> which the preference pane stored. */
 -(NSBundle*) bundle
 {
 	return _bundle;
@@ -60,7 +60,7 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 
 /** <p>Loads preference pane's view by loading the nib file which contains it.
     </p>
-    <p>Related nib file is known by <ref>mainNibName</ref>.</p> */
+    <p>Related nib file is known by -mainNibName.</p> */
 -(NSView*) loadMainView
 {
 	// NOTE: Paranoid check which eliminates the possibility to reload the nib
@@ -83,15 +83,15 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 	return _mainView;
 }
 
-/** <p>Assigns the main view loaded with <ref>-loadMainView:</ref>.</p>
+/** <p>Assigns the main view loaded with -loadMainView:.</p>
     <p>By default this method, retrieves the main view by calling 
-    <ref>-contentView</ref> on window referenced in the nib file by 
+    -contentView on window referenced in the nib file by 
     <code>_window</code> outlet.</p>
-    <p>Overrides this method if your preference pane
-    view is located in different place within the nib file. Takes note that when 
+    <p><em>Overrides this method if your preference pane
+    view is located in different place within the nib file.</em> Takes note that when 
     assignement is done, <code>_window</code> is released and sets to 
-    <code>nil</code>. Finally this method returns <ref>-mainView</ref> if no 
-    errors occured, otherwise <code>nil</code>.</p> */
+    nil. Finally this method returns -mainView if no 
+    errors occured, otherwise nil.</p> */
 -(NSView *)	assignMainView
 {
 	[self setMainView: [_window contentView]];
@@ -101,41 +101,41 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 	return [self mainView];
 }
 
-/** <p>Returns the nib name adverstised as <em>main</em> in enclosing bundle's 
+/** <p>Returns the nib name advertised as <em>main</em> in enclosing bundle's 
     property list.</p>
-    <p>Related nib file is known by <ref>mainNibName</ref>.</p> */
+    <p>Related nib file is known by mainNibName.</p> */
 -(NSString*)	mainNibName
 {
 	return [[_bundle infoDictionary] objectForKey: @"NSMainNibFile"];
 }
 
-/** <override-subclass> */
+/** <override-subclass /> */
 -(void)	willSelect		{}
 
-/** <override-subclass> */
+/** <override-subclass /> */
 -(void)	didSelect		{}
 
-/** <override-subclass> */
+/** <override-subclass /> */
 -(void)	willUnselect	{}
 
-/** <override-subclass> */
+/** <override-subclass /> */
 -(void)	didUnselect		{}
 
-/** <override-subclass>
+/** <override-subclass />
     <p>Notifies the preference pane that everything is set up and ready to be 
-    displayed, similarly to <ref>-windowDidLoad</ref> when the main nib file
-    has been awaken. It is called by <ref>-loadMainView</ref> when the main
-    view is correctly set. By default this method does nothing.</p>
-    <p>Override this method to have extra preference pane view set up according to 
-    its stored settings.</p> */
+    displayed, similarly to -windowDidLoad when the main nib file
+    has been awaken. It is called by -loadMainView when the main
+    view is correctly set. <em>By default this method does nothing.</em></p>
+    <p><em>Override this method to have extra preference pane view set up according to 
+    its stored settings.</em></p> */
 -(void)	mainViewDidLoad	{}
 
-/** <override-subclass>
-    Returns a value to state if the preference pane accepts to be deselected
-    right now. Various values may be returned, look at 
-    <ref>NSPreferencePaneUnselectReply</ref> constants.</p>
-    <p>Overrides this method when you want to delay or cancel a deselect request,
-    but take note that you will have to call <ref>-replyToShouldUnselect</ref> 
+/** <override-dummy />
+    <p>Returns a value to state if the preference pane accepts to be 
+    deselected right now. Various values may be returned, look at 
+    <code>NSPreferencePaneUnselectReply</code> constants.</p>
+    <p>Overrides this method when you want to delay or cancel a deselect 
+    request, but take note that you will have to call -replyToShouldUnselect 
     later (when deselection is processed) if you return 
     <code>NSUnselectLater</code>.</p> */
 -(NSPreferencePaneUnselectReply) shouldUnselect
@@ -143,28 +143,28 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 	return NSUnselectNow;
 }
 
-/** <override-never>
+/** <override-never />
     <p>Asks the preference pane to know if it accepts to be deselected.</p>
-    Take care to invoke this method yourself when you have overriden 
-    <ref>shouldUnselect:</ref> to return <code>NSUnselectLater</code> (it
-    implies you know when the preference should be unselected).<p> */
+    <p>Take care to invoke this method yourself when you have overriden 
+    -shouldUnselect: to return <code>NSUnselectLater</code> (it
+    implies you know when the preference should be unselected).</p> */
 -(void)	replyToShouldUnselect: (BOOL)shouldUnselect
 {
 	if( shouldUnselect )
 		[_owner updateUIForPreferencePane: nil];
 }
 
-/** <p>Sets the preference pane view which is presented to the user.</p>
+/** <p>Sets the <em>preference pane view</em> which is presented to the user.</p>
     <p>Take note, you should avoid to call this method in your code unless you
-    have already overriden <ref>-loadMainView</ref> and 
-    <ref>-assignMainView</ref>.</p>*/
+    have already overriden -loadMainView and 
+    -assignMainView.</p> */
 -(void) setMainView: (NSView*)view
 {
 	[_mainView autorelease];
 	_mainView = [view retain];
 }
 
-/** Returns the preference pane view which is presented to the user. */
+/** Returns the <em>preference pane view</em> which is presented to the user. */
 -(NSView*) mainView
 {
 	return _mainView;
@@ -215,21 +215,19 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 	_lastKeyView = [view retain];
 }
 
-/** <override-subclass>
-    <p>Returns <code>YES</code> when text fields are asked to resign their 
-    responder status when <ref>-shouldUnselect<ref> is going to be called, 
-    otherwise returns <code>NO</code> if the preference pane must itself request
-    each text field resigning its responder status (to have their content
-    saved).</p> 
-    <p>By default this method returns <code>YES</code>, but it is possible
+/** <p>Returns YES when text fields are asked to resign their responder status
+    when -shouldUnselect is going to be called, otherwise returns NO if the 
+    preference pane must itself request each text field resigning its responder
+    status (to have their content saved).</p> 
+    <p>By default this method returns YES, but it is possible
     to override it to alter the returned value.</p> */
 -(BOOL) autoSaveTextFields
 {
 	return YES;
 }
 
-/** Returns <code>YES</code> when the receiver is the currently selected
-    preference pane, otherwise returns <code>NO</code>. */
+/** Returns YES when the receiver is the currently selected
+    preference pane, otherwise returns NO. */
 -(BOOL) isSelected
 {
 	return( [_owner selectedPreferencePane] == self );
