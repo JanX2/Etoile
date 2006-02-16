@@ -1,0 +1,139 @@
+This is a GNUstep port of WindowMaker, 
+based on Enrico Sersale's work (see below).
+
+It depends on libwraster.
+
+*** WARNING ***
+This is an experimental verion.
+Please figure out the key combination to quite Xwindow before starting.
+Mine is ALT+CTRL+ESC+DELETE (Ubuntu/PowerPC).
+Please read BEHAVIOR and TODO below.
+*** WARNING ***
+
+It does not share defaults with WindowMaker.
+Therefore, you may lose all your setting for WindowMaker.
+It should not crash randomly, but it may not work properly.
+
+Yen-Ju
+
+BEHAVIOR:
+1. Right-click to show up the WMaker menu.
+   Double-click on WMaker icon can bring up WMaker menu most of the time.
+2. "Hide Others" will hide all windows except the focused one.
+   But sometimes the main menu is the focused one.
+   Therefore, all windows are hidden.
+   So be sure that the window is correctly focused,
+   which might be difficult or impossible in some cases.
+3. In Window Inspector, use ENTER key on keyboard for button "Select Window"
+   instead of left-click of mouse.
+   Otherwise, it will not work properly.
+4. Do not press ESC while a dialog is open.
+   It may disable all the menu.
+5. Most of the user defaults are not fault-proof.
+   Typo in user defaults may trigger segment fault.
+
+TODO:
+1. use _() for localization.
+2. fix RESOURCE_PATH in WINGs/GNUmakefile and RGBTXT in wcolorpanel.c
+3. fix loading resources in WINGs subproject.
+4. while moving menu of WMApplication, it does not follow mouse.
+5. beautify all panels in WMDialogController.
+6. kwm.m and gnome.m are not compiled. Therefore, they are not tested.
+7. cannot update switch menu in real time while it is detached.
+8. cannot use popup button in WMaker (probably related to event handling).
+9. can use NSPanel, but cannot use NSWindow (weird).
+10. no way to find out whether user defaults changed.
+11. use the default defauls when user put the invalide defaults.
+12. recover these functions in defaults.m.bak
+    * switch panel
+    * background
+    * update preferences in real-time.
+13. cannot refresh user defaults while WMaker is running (memory leak).
+14. do not save WMaker in the session.
+15. while dialog (NSPanel) is open in modal,
+    press ESC key will disable menu actions permanently.
+16. InitScript and ExitScript is removed.
+17. should move CachedPixmap into ApplicationSupport.
+
+ChangeLog:
+a26: * start to work on winspector.
+a25: * clean up icon chooser in dialog and remove unused files in WINGs.
+a24: * first implementation of icon chooser.
+a23: * remove unused code.
+a22: * save sessions into GNUstep user default.
+a21: * move window attributes into GNUstep user default.
+a20: * draw background in solid color.
+a19: * keep working on default.m.
+a18: * keep working on default.m.
+a17: * start to clean up defaults.m.
+a16: * text.h and text.m because menu is not editable anymore.
+       The only editable menu, workspace menu, is in WMaker menu.
+     * open WMaker menu with right mouse click.
+     * start working on window inspector.
+a15: * remove switch_menu.
+a14: * move switchmenu into WMaker menu.
+a13: * remove most of unused code.
+a12: * add execCommand() from rootmenu.
+     * remove workspace menu, usermenu (not used mostly) and most of rootmenu 
+       in favor of WMaker menu.
+     * remove WDRootMenu.
+     * remove menu editing.
+a11: * add session, windows, workspace commands from rootmenu.
+a10: * rewrite wInputDialog() and wExitDialog() to use GNUstep.
+a9: * rewrite wShowGNUstepPanel(), wShowLegalPanel(),
+      and wShowInfoPanel() to use GNUstep.
+    * move COPYRIGHT_TEXT to WMakerInfo.plist.
+    * remove hidden sillyness in wShowInfoPanel().
+a8: * combine wapplication into WMApplication based on WMApp.
+a7: * remove unused files in WINGs.
+a6: * compile WINGs as subproject so that it can be minimized. (TODO 3).
+a5: * create an autorelease pool in main() instead of real_main().
+    * move fallbackWMs from WPreferences to WMDefatuls.
+a4: * remove focus_mode. Always use click-focus for GNUstep applications.
+a3: * remove _(). (TODO 1).
+
+From: Enrico Sersale <enrico@xxx>	Mailed-By: gnu.org
+Reply-To: enrico@xxx
+To: gnustep-dev@gnu.org
+Date: Jan 24, 2006 8:25 AM
+Subject: Re: Graceful termination again
+On 2006-01-23 12:54:01 +0200 Chris B. Vetter <chris.vetter@xxx> wrote:
+
+> On 1/23/06, Roman Belenov <rbelenov@yandex.ru> wrote:
+>> I hacked a bit trying to implement logoff with graceful application
+>> termination on GNUstep and got some questions:
+> [...]
+>
+> The way I see it would be sending a
+> NSWorkspaceWillPowerOffNotification when "Logout" (or similar) is
+> clicked to the Workspace / Desktop / Window Manager.
+>
+> The Manager would then use -launchedApplications to send each
+> application a terminate message.
+>
+> Problem is that there currently is no 'real' GNUstep-based XY Manager
+> that implements the above. This could be "fixed" if (for example)
+> GWorkspace could also act as a window manager, to replace the 'need'
+> of Window Maker.
+> --
+> Chris
+
+Having GWorkspace acting also as a window manager would mean too much work :-)
+But you are right when you say that a "logout" notification should come from 
+the window manager; at http://www.gnustep.it/enrico/wmaker.tar.gz
+ there is a hacked WindowMaker that builds as a GNUstep application; 
+wmaker.tar.gz contains the "src" directory of WindowMaker 0.92 with a 
+GNUmakefile and two added files, WMApp.h and WMApp.m.
+In WMApp.m there is the implementation of a very simple class that, 
+in -applicationWillFinishLaunching: adds the file descriptor returned 
+by XConnectionNumber() to the run loop and, in receivedEvent::::, 
+sends the XEvent to the normal WindowMaker function. Nothing else. 
+But, being a real application, WMaker.app could send notifications, 
+communicate with other apps, etc..
+This is only an experiment but, if somebody would be interested in working 
+at it, I think that WMaker.app could become the GNUstep window manager. 
+This is a project that should not be very difficult to maintain; if, 
+for the moment, we want only to send some notifications, the work should 
+consist only in writing a better configure script and, when a new WindowMaker 
+will be released, updating our sources (that are only a little part of 
+all the WindowMaker sources, I want to remember).

@@ -1,0 +1,9 @@
+{
+    NSIcon = "Desktop.tiff";
+    NSRole = "NSNone";
+    ApplicationDescription = "WMaker";
+    ApplicationIcon = "Desktop.tiff";
+    ApplicationName = "WMaker";
+    ApplicationRelease = "0.1.0";
+    Copyright = "Copyright (c) 1997-2005 Alfredo K. Kojima\nCopyright (c) 1998-2005 Dan Pascu";
+}
