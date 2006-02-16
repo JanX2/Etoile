@@ -66,7 +66,13 @@ static id <PrefsApplication>	owner = nil;
 
 - (NSImage *) buttonImage
 {
-	return [NSImage imageNamed: @"Preferences.tiff"];
+    // FIXME: the next line doesn't work on GNUstep
+    // return [NSImage imageNamed: @"Preferences.tiff"];
+    
+    NSString *path = [[NSBundle bundleForClass: [SamplePrefsModule class]] 
+        pathForImageResource: @"Preferences.tiff"];
+        
+    return [[[NSImage alloc] initWithContentsOfFile: path] autorelease];
 }
 
 - (SEL) buttonAction
