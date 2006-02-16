@@ -89,7 +89,10 @@ ifeq ($(lucenekit), yes)
 endif
 
 ifeq ($(servicesbarkit), yes)
-   SUBPROJECTS += ServicesBarKit
+  ifneq ($(FOUNDATION_LIB), apple)
+    # do not compile for apple
+    SUBPROJECTS += ServicesBarKit
+  endif
 endif
 
 ifeq ($(extendedworkspacekit), yes)
