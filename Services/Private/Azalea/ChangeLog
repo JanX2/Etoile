@@ -1,0 +1,40 @@
+2006-02-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Initial import.
+    * WMWindowInspector.m: finish up interface.
+
+a26: * start to work on winspector.
+a25: * clean up icon chooser in dialog and remove unused files in WINGs.
+a24: * first implementation of icon chooser.
+a23: * remove unused code.
+a22: * save sessions into GNUstep user default.
+a21: * move window attributes into GNUstep user default.
+a20: * draw background in solid color.
+a19: * keep working on default.m.
+a18: * keep working on default.m.
+a17: * start to clean up defaults.m.
+a16: * text.h and text.m because menu is not editable anymore.
+       The only editable menu, workspace menu, is in WMaker menu.
+     * open WMaker menu with right mouse click.
+     * start working on window inspector.
+a15: * remove switch_menu.
+a14: * move switchmenu into WMaker menu.
+a13: * remove most of unused code.
+a12: * add execCommand() from rootmenu.
+     * remove workspace menu, usermenu (not used mostly) and most of rootmenu 
+       in favor of WMaker menu.
+     * remove WDRootMenu.
+     * remove menu editing.
+a11: * add session, windows, workspace commands from rootmenu.
+a10: * rewrite wInputDialog() and wExitDialog() to use GNUstep.
+a9: * rewrite wShowGNUstepPanel(), wShowLegalPanel(),
+      and wShowInfoPanel() to use GNUstep.
+    * move COPYRIGHT_TEXT to WMakerInfo.plist.
+    * remove hidden sillyness in wShowInfoPanel().
+a8: * combine wapplication into WMApplication based on WMApp.
+a7: * remove unused files in WINGs.
+a6: * compile WINGs as subproject so that it can be minimized. (TODO 3).
+a5: * create an autorelease pool in main() instead of real_main().
+    * move fallbackWMs from WPreferences to WMDefatuls.
+a4: * remove focus_mode. Always use click-focus for GNUstep applications.
+a3: * remove _(). (TODO 1).

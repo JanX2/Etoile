@@ -78,6 +78,7 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
   DESTROY(attrButtons);
   DESTROY(advanButtons);
   DESTROY(appButtons);
+  DESTROY(wsButtons);
   [super dealloc];
 }
 
@@ -116,6 +117,12 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
       NSLog(@"iwin %d", iwin);
       [self readAttributesFromWindow: iwin];
       [self updateInterfaceForWindow: iwin];
+
+      /* disable save if noupdates */
+      if (wPreferences.flags.noupdates || !(iwin->wm_class || iwin->wm_instance))
+      {
+        [saveButton setEnabled: NO];
+      }
 #if 0
     iwin->flags.inspector_open = 1;
     iwin->inspector = createInspectorForWindow(iwin,
@@ -154,7 +161,7 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 
 - (void) readAttributesFromWindow: (WWindow *) wwin
 {
-  int i;
+  int i, flag;
 
   if (wPreferences.flags.noupdates || !(wwin->wm_class || wwin->wm_instance))
     [saveButton setEnabled: NO];
@@ -169,7 +176,7 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 
   for (i = 0; i < 11; i++)
   {
-    int flag = 0;
+    flag = 0;
 
     switch(i) {
       case 0:
@@ -180,64 +187,55 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 	 * settings).
 	 */
 	flag = WFLAGP(wwin, no_titlebar);
-	NSLog(@"Disable titlebar: %d", flag);
 	break;
       case 1:
 	/** Remove the resizebar of this window. */
 	flag = WFLAGP(wwin, no_resizebar);
-	NSLog(@"Disable resizebar: %d", flag);
 	break;
       case 2:
 	/** Remove the `close window' button of this window. */
 	flag = WFLAGP(wwin, no_close_button);
-	NSLog(@"Disable close button: %d", flag);
 	break;
       case 3:
 	/** Remove the `miniaturize window' button of the window. */
 	flag = WFLAGP(wwin, no_miniaturize_button);
-	NSLog(@"Disable miniaturize button: %d", flag);
 	break;
       case 4:
 	/** Remove the 1 pixel black border around the window. */
 	flag = WFLAGP(wwin, no_border);
-	NSLog(@"Disable border: %d", flag);
 	break;
       case 5:
 	/** Keep the window over other windows, not allowing
 	 * them to cover it. */
 	flag = WFLAGP(wwin, floating);
-	NSLog(@"Keep on top (floating): %d", flag);
 	break;
       case 6:
 	/** Keep the window under all other windows */
 	flag = WFLAGP(wwin, sunken);
-	NSLog(@"Keep at bottom (sunken): %d", flag);
 	break;
       case 7:
 	/** Make window present in all workspaces */
 	flag = WFLAGP(wwin, omnipresent);
-	NSLog(@"Omnipresent: %d", flag);
 	break;
       case 8:
 	/** Make the window be automatically minaturized when it's
 	 * first shown. */
 	flag = WFLAGP(wwin, start_miniaturized);
-	NSLog(@"Start miniaturized: %d", flag);
 	break;
       case 9:
 	/** Make the window be automatically maximized when it's
 	 * first shown. */
 	flag = WFLAGP(wwin, start_maximized!=0);
-	NSLog(@"Start miximized: %d", flag);
 	break;
       case 10:
 	/** Make the window use the whole screen space when it's
 	 * maximized. The titlebar and resizebar will be moved
 	 * to outside the screen. */
 	flag = WFLAGP(wwin, full_maximize);
-	NSLog(@"Full screen maximization: %d", flag);
 	break;
     }
+    [[attrButtons objectAtIndex: i] setState: (flag ? NSOnState: NSOffState)];
+    /* FIXME: unable to set balloon */
   }
 
   /* More attributes */
@@ -249,7 +247,7 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 #endif
        i++)
   {
-    int flag = 0;
+    flag = 0;
     switch(i) {
       case 0:
 	/** Do not bind keyboard shortcuts from Window Maker
@@ -257,37 +255,31 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 	 * window to receive all key combinations regardless
 	 * of your shortcut configuration. */
 	flag = WFLAGP(wwin, no_bind_keys);
-	NSLog(@"Do not bind keyboard shortcuts: %d", flag);
 	break;
       case 1:
 	/** Do not bind mouse actions, such as `Alt'+drag
 	 * in the window (when alt is the modifier you have
 	 * configured. */
 	flag = WFLAGP(wwin, no_bind_mouse);
-	NSLog(@"Do not bind mouse clicks: %d", flag);
 	break;
       case 2:
 	/** Do not list the window in the window list menu. */
 	flag = WFLAGP(wwin, skip_window_list);
-	NSLog(@"Do not show in the window list: %d", flag);
 	break;
       case 3:
 	/** Do not let the window take keyboard focus when you
 	 * click on it. */
 	flag = WFLAGP(wwin, no_focusable);
-	NSLog(@"Do no let it take focus: %d", flag);
 	break;
       case 4:
 	/** Do not allow the window to move itself completely
 	 * outside the screen. For bug compatibility. */
 	flag = WFLAGP(wwin, dont_move_off);
-	NSLog(@"Keep inside screen: %d", flag);
 	break;
       case 5:
 	/** Do not hide the window when issuing the
 	 * `HideOthers' command */
 	flag = WFLAGP(wwin, no_hide_others);
-	NSLog(@"Ignore `Hide Others': %d", flag);
 	break;
       case 6:
 	/** Do not save the associated application in the
@@ -295,26 +287,42 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 	 * together with other applications when Window Maker
 	 * starts */
 	flag = WFLAGP(wwin, dont_save_session);
-	NSLog(@"Ignore `Save Session': %d", flag);
 	break;
       case 7:
 	/** Make this window act as an application that provides
 	 * enough information to Window Maker for a dockable
 	 * application icon to be created. */
 	flag = WFLAGP(wwin, emulate_appicon);
-	NSLog(@"Emulate application icon: %d", flag);
 	break;
 #ifdef XKB_BUTTON_HINT
       case 8:
 	/** Remove the `toggle language' button of the window */
 	flag = WFLAGP(wwin, no_language_button);
-	NSLog(@"Disable language button %d", flag);
 	break;
 #endif
     }
+    [[advanButtons objectAtIndex: i] setState: (flag ? NSOnState: NSOffState)];
+    /* FIXME: unable to set balloon */
   }
 
   /* miniwindows/workspace */
+  flag = WFLAGP(wwin, always_user_icon);
+  [ignoreIconButton setState: (flag ? NSOnState : NSOffState)];
+
+  flag = wDefaultGetStartWorkspace(wwin->screen_ptr, wwin->wm_instance,
+		  wwin->wm_class);
+  if (flag >= 0 && flag <= wwin->screen_ptr->workspace_count) {
+    if (flag == wwin->screen_ptr->current_workspace)
+    {
+      [self workspaceButtonAction: [wsButtons objectAtIndex: 1]];
+    }
+    else
+    {
+      [self workspaceButtonAction: [wsButtons objectAtIndex: 2]];
+    }
+  } else {
+    [self workspaceButtonAction: [wsButtons objectAtIndex: 0]];
+  }
 
   /* application specific */
   if (wwin->main_window != None)
@@ -323,13 +331,12 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 
     for (i = 0; i < 3; i++)
     {
-      int flag = 0;
+      flag = 0;
 
       switch(i) {
         case 0:
 	  /** Automatically hide application when it's started */
 	  flag = WFLAGP(wapp->main_window_desc, start_hidden);
-	  NSLog(@"Start hidden: %d", flag);
 	  break;
 	case 1:
 	  /** Disable the application icon for the application.
@@ -337,57 +344,73 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 	   * and any icons that are already docked will stop
 	   * working correctly. */
 	  flag = WFLAGP(wapp->main_window_desc, no_appicon);
-	  NSLog(@"No application icon: %d", flag);
 	  break;
 	case 2:
 	  /** Use a single shared application icon for all of
 	   * the instances of this application. */
 	  flag = WFLAGP(wapp->main_window_desc, shared_appicon);
-	  NSLog(@"Shared application icon: %d", flag);
 	  break;
       }
+      [[appButtons objectAtIndex: i] setState: (flag ? NSOnState: NSOffState)];
     }
-#if 0 // FIXME
+
     if (WFLAGP(wwin, emulate_appicon)) {
-        WMSetButtonEnabled(panel->appChk[1], False);
-        WMSetButtonEnabled(panel->moreChk[7], True);
+      [[attrButtons objectAtIndex: 1] setEnabled: NO];
+      [[advanButtons objectAtIndex: 7] setEnabled: YES];
     } else {
-        WMSetButtonEnabled(panel->appChk[1], True);
-        WMSetButtonEnabled(panel->moreChk[7], False);
+      [[attrButtons objectAtIndex: 1] setEnabled: YES];
+      [[advanButtons objectAtIndex: 7] setEnabled: NO];
     }
-#endif
+
+    flag = YES;
   }
   else
   {
-#if 0 // FIXME
-    int tmp;
-
-     if ((wwin->transient_for!=None && wwin->transient_for!=scr->root_win)
+     if ((wwin->transient_for!=None && wwin->transient_for!=wwin->screen_ptr->root_win)
          || !wwin->wm_class || !wwin->wm_instance)
-         tmp = False;
+     {
+	 [[advanButtons objectAtIndex: 7] setEnabled: NO];
+     }
      else
-         tmp = True;
-     WMSetButtonEnabled(panel->moreChk[7], tmp);
+     {
+	 [[advanButtons objectAtIndex: 7] setEnabled: YES];
+     }
 
-     WMSetPopUpButtonItemEnabled(panel->pagePopUp, 4, False);
-		        panel->appFrm = NULL;
-#endif
+     flag = NO;
+  }
+  /* FIXME: unable to disable tab item.
+   * Disable every button instead
+   */
+  for (i = 0; i < [appButtons count]; i++) {
+    [[appButtons objectAtIndex: i] setEnabled: flag];
   }
 
-#if 0
   /* if the window is a transient, don't let it have a miniaturize
    * button */
-  if (wwin->transient_for!=None && wwin->transient_for!=scr->root_win)
-      WMSetButtonEnabled(panel->attrChk[3], False);
+  if (wwin->transient_for!=None && wwin->transient_for!=wwin->screen_ptr->root_win)
+  {
+    [[attrButtons objectAtIndex: 3] setEnabled: NO];
+  }
   else
-      WMSetButtonEnabled(panel->attrChk[3], True);
+  {
+    [[attrButtons objectAtIndex: 3] setEnabled: YES];
+  }
 
   if (!wwin->wm_class && !wwin->wm_instance) {
-    WMSetPopUpButtonItemEnabled(panel->pagePopUp, 0, False);
+    flag = NO;
+    /* select default target */
+    [self targetButtonsAction: [targetButtons objectAtIndex: 3]];
   }
-#endif
-
-
+  else
+  {
+    flag = YES;
+  }
+  /* FIXME: unable to disable tab item.
+   * Disable all buttons instead
+   */
+  for (i = 0; i < [targetButtons count]; i++) {
+    [[targetButtons objectAtIndex: i] setEnabled: flag];
+  }
 }
 
 - (void) updateInterfaceForWindow: (WWindow *) wwin
@@ -406,7 +429,6 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 
   button = [targetButtons objectAtIndex: 2];
   [button setStringValue: [NSString stringWithCString: wwin->wm_instance]];
-
 }
 
 /* tabitem1 */
@@ -772,6 +794,17 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 
 - (void) workspaceButtonAction: (id) sender
 {
+  /* Make sure only one is selected */
+  int i;
+  NSButton *b;
+  for (i = 0; i < [wsButtons count]; i++)
+  {
+    b = [wsButtons objectAtIndex: i];
+    if (b != sender)
+      [b setState: NSOffState];
+    else
+      [sender setState: NSOnState]; // always on
+  }
 }
 
 - (NSTabViewItem *) createItem4
@@ -835,6 +868,10 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 
   DESTROY(box);
 
+  /* workspace box */
+
+  wsButtons = [[NSMutableArray alloc] init];
+
   rect = NSMakeRect(rect.origin.x, 5, 
 		  rect.size.width, rect.origin.y-10);
   box = [[NSBox alloc] initWithFrame: rect];
@@ -843,11 +880,38 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
   [box setBorderType: NSGrooveBorder];
   [view addSubview: box];
 
+  button = [[NSButton alloc] initWithFrame: NSMakeRect(5, 5, 180, 25)];
+  [button setButtonType: NSRadioButton];
+  [button setStringValue: @"Nowhere in particular"];
+  [button setState: NSOnState]; // default
+  [button setTarget: self];
+  [button setAction: @selector(workspaceButtonAction:)];
+  [wsButtons addObject: button];
+  [box addSubview: button];
+  DESTROY(button);
+
+  button = [[NSButton alloc] initWithFrame: NSMakeRect(190, 5, 180, 25)];
+  [button setButtonType: NSRadioButton];
+  [button setStringValue: @"Current workspace"];
+  [button setTarget: self];
+  [button setAction: @selector(workspaceButtonAction:)];
+  [wsButtons addObject: button];
+  [box addSubview: button];
+  DESTROY(button);
+
+  button = [[NSButton alloc] initWithFrame: NSMakeRect(380, 5, 180, 25)];
+  [button setButtonType: NSRadioButton];
+  [button setStringValue: @"Keep original setting"];
+  [button setTarget: self];
+  [button setAction: @selector(workspaceButtonAction:)];
+  [wsButtons addObject: button];
+  [box addSubview: button];
+  DESTROY(button);
+
   DESTROY(box);
 
   [item4 setView: view];
   DESTROY(view);
-
 
   return AUTORELEASE(item4);
 }
