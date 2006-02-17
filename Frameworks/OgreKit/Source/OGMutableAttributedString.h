@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGMutableAttributedString__
-#define __OgreKit_OGMutableAttributedString__
-
 /*
  * Name: OGMutableAttributedString.h
  * Project: OgreKit
@@ -14,9 +11,9 @@
  * Tabsize: 4
  */
 
-#include <AppKit/AppKit.h>
-#include <OgreKit/OGMutableString.h>
-#include "OGAttributedString.h"
+#import <OgreKit/OGMutableString.h>
+#import "OGAttributedString.h"
+#import <AppKit/AppKit.h>
 
 @interface OGMutableAttributedString : OGAttributedString <OGMutableStringProtocol>
 {
@@ -29,5 +26,3 @@
 }
 
 @end
-
-#endif /* __OgreKit_OGMutableAttributedString__ */

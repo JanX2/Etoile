@@ -1,6 +1,3 @@
-#ifndef __OgreKit_NSString_OgreKitAdditions__
-#define __OgreKit_NSString_OgreKitAdditions__
-
 /*
  * Name: OGRegularExpressionFormatter.m
  * Project: OgreKit
@@ -14,7 +11,7 @@
  * Tabsize: 4
  */
 
-#include <OgreKit/OGRegularExpression.h>
+#import <OgreKit/OGRegularExpression.h>
 
 @interface NSString (OgreKitAdditions)
 
@@ -63,7 +60,7 @@
 /*********
  * Split *
  *********/
-// Seperate string based on regular expressionã€‚
+// Seperate string based on regular expressionã
 - (NSArray*)componentsSeparatedByRegularExpressionString:(NSString*)expressionString;
 
 /*********************
@@ -87,12 +84,10 @@
 /*********************
  * Newline Character *
  *********************/
-// Change newline style.ã€‚
+// Change newline style.ã
 - (void)replaceNewlineCharactersWithCharacter:(OgreNewlineCharacter)newlineCharacter;
 // Remove newline character.
 - (void)chomp;
 
 @end
-
-#endif /* __OgreKit_NSString_OgreKitAdditions__ */
 

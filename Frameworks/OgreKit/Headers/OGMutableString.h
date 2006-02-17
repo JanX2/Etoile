@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGMutableString__
-#define __OgreKit_OGMutableString__
-
 /*
  * Name: OGMutableString.h
  * Project: OgreKit
@@ -14,8 +11,8 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
-#include <OgreKit/OGString.h>
+#import <Foundation/Foundation.h>
+#import <OgreKit/OGString.h>
 
 @protocol OGMutableStringProtocol
 - (void)appendString:(NSString*)string;
@@ -38,4 +35,3 @@
 	atIndex:(unsigned)index;
 @end
 
-#endif /* __OgreKit_OGMutableString__ */

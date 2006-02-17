@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGAttributedString__
-#define __OgreKit_OGAttributedString__
-
 /*
  * Name: OGAttributedString.h
  * Project: OgreKit
@@ -14,7 +11,7 @@
  * Tabsize: 4
  */
 
-#include <OgreKit/OGString.h>
+#import <OgreKit/OGString.h>
 
 @interface OGAttributedString : NSObject <OGStringProtocol, NSCopying, NSCoding>
 {
@@ -33,5 +30,3 @@
 - (void)_setAttributedString:(NSAttributedString*)attributedString;
 
 @end
-
-#endif /* __OgreKit_OGAttributedString__ */

@@ -11,19 +11,19 @@
  * Tabsize: 4
  */
 
-#include <OgreKit/OGRegularExpression.h>
-#include "OGRegularExpressionPrivate.h"
-#include <OgreKit/OGRegularExpressionMatch.h>
-#include "OGRegularExpressionMatchPrivate.h"
-#include <OgreKit/OGRegularExpressionCapture.h>
-#include <OgreKit/OGReplaceExpression.h>
-#include "OGReplaceExpressionPrivate.h"
-#include <OgreKit/OGString.h>
-#include <OgreKit/OGMutableString.h>
-#include "OGPlainString.h"
-#include "OGAttributedString.h"
-#include <stdlib.h>
-#include <limits.h>
+#import <OgreKit/OGRegularExpression.h>
+#import "OGRegularExpressionPrivate.h"
+#import <OgreKit/OGRegularExpressionMatch.h>
+#import "OGRegularExpressionMatchPrivate.h"
+#import <OgreKit/OGRegularExpressionCapture.h>
+#import <OgreKit/OGReplaceExpression.h>
+#import "OGReplaceExpressionPrivate.h"
+#import <OgreKit/OGString.h>
+#import <OgreKit/OGMutableString.h>
+#import "OGPlainString.h"
+#import "OGAttributedString.h"
+#import <stdlib.h>
+#import <limits.h>
 
 // exception name
 NSString	* const OgreReplaceException = @"OGReplaceExpressionException";

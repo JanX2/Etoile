@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGRegularExpressionFormatter__
-#define __OgreKit_OGRegularExpressionFormatter__
-
 /*
  * Name: OGRegularExpressionFormatter.h
  * Project: OgreKit
@@ -14,8 +11,8 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
-#include <OgreKit/OGRegularExpression.h>
+#import <Foundation/Foundation.h>
+#import <OgreKit/OGRegularExpression.h>
 
 // Exception name
 extern NSString	* const OgreFormatterException;
@@ -54,4 +51,3 @@ extern NSString	* const OgreFormatterException;
 
 @end
 
-#endif /* __OgreKit_OGRegularExpressionFormatter__ */

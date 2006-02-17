@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGMutablePlainString__
-#define __OgreKit_OGMutablePlainString__
-
 /*
  * Name: OGMutablePlainString.h
  * Project: OgreKit
@@ -14,12 +11,10 @@
  * Tabsize: 4
  */
 
-#include <OgreKit/OGMutableString.h>
-#include "OGPlainString.h"
+#import <OgreKit/OGMutableString.h>
+#import "OGPlainString.h"
 
 @interface OGMutablePlainString : OGPlainString <OGMutableStringProtocol>
 {
 }
 @end
-
-#endif /* __OgreKit_OGMutablePlainString__ */

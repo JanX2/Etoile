@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGRegularExpressionMatch__
-#define __OgreKit_OGRegularExpressionMatch__
-
 /*
  * Name: OGRegularExpressionMatch.h
  * Project: OgreKit
@@ -14,14 +11,14 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 #ifndef NOT_RUBY
 #	define NOT_RUBY
 #endif
 #ifndef HAVE_CONFIG_H
 #	define HAVE_CONFIG_H
 #endif
-#include <oniguruma.h>
+#import <oniguruma.h>
 //#include <OgreKit/oniguruma.h>
 
 
@@ -251,4 +248,3 @@ number of capture history: 2
 // Length of UTF16 string
 unsigned Ogre_UTF16strlen(unichar *const aUTF16string, unichar *const end);
 
-#endif /* __OgreKit_OGRegularExpressionMatch__ */

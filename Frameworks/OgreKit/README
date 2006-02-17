@@ -1,11 +1,11 @@
 ============================
-OgreKit (GNUstep) 1.0 README
+OgreKit (GNUstep) 1.1 README
 ============================
 
 OgreKit is a regular expression library written in Objective-C in Cocoa. It 
 uses OniGuruma as regular expression engine.
 
-This is a GNUstep fork of OgreKit 2.0.1 
+This is a GNUstep fork of OgreKit 2.1.1 
 <http://www8.ocn.ne.jp/~sonoisa/OgreKit/>.
 Since it is a fork, the API may differ in the future.
 It only supports the non-GUI part.

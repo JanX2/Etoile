@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGRegularExpressionEnumeratorPrivate__
-#define __OgreKit_OGRegularExpressionEnumeratorPrivate__
-
 /*
  * Name: OGRegularExpressionEnumeratorPrivate.h
  * Project: OgreKit
@@ -14,12 +11,12 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
-#include <OgreKit/OGRegularExpressionEnumerator.h>
-#include <OgreKit/OGString.h>
+#import <Foundation/Foundation.h>
+#import <OgreKit/OGRegularExpressionEnumerator.h>
+#import <OgreKit/OGString.h>
 
 // aUTF16StringのUTF16文字長
-static unsigned Ogre_UTF16charlen(unichar *const aUTF16String)
+static inline unsigned Ogre_UTF16charlen(unichar *const aUTF16String)
 {
 	unichar UTF16Char = *aUTF16String;
 	
@@ -33,7 +30,7 @@ static unsigned Ogre_UTF16charlen(unichar *const aUTF16String)
 }
 
 // aUTF16Stringより１文字前のUTF16文字長
-static unsigned Ogre_UTF16prevcharlen(unichar *const aUTF16String)
+static inline unsigned Ogre_UTF16prevcharlen(unichar *const aUTF16String)
 {
     unichar UTF16Char = *(aUTF16String - 1);
 	if ((UTF16Char <= 0x9FFF) || (UTF16Char >= 0xE000)) return 1;       // 1 code point
@@ -42,7 +39,7 @@ static unsigned Ogre_UTF16prevcharlen(unichar *const aUTF16String)
 	// 出会わないはずなので、出会ったら例外を起こす。
 	[NSException raise:OgreEnumeratorException format:@"illegal byte code"];
 	
-	return -1 /* NULL */;	// dummy
+	return 0;	// dummy
 }
 
 
@@ -75,5 +72,3 @@ static unsigned Ogre_UTF16prevcharlen(unichar *const aUTF16String)
 - (NSRange)searchRange;
 
 @end
-
-#endif /* __OgreKit_OGRegularExpressionEnumeratorPrivate__ */

@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGRegularExpressionCapture__
-#define __OgreKit_OGRegularExpressionCapture__
-
 /*
  * Name: OGRegularExpressionCapture.h
  * Project: OgreKit
@@ -14,14 +11,14 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 #ifndef NOT_RUBY
 #	define NOT_RUBY
 #endif
 #ifndef HAVE_CONFIG_H
 #	define HAVE_CONFIG_H
 #endif
-#include <oniguruma.h>
+#import <oniguruma.h>
 //#include <OgreKit/oniguruma.h>
 
 
@@ -119,4 +116,3 @@ static NSString *const calcRegex = @"\\g<e>(?<e>\\g<t>(?:(?@<e1>\\+\\g<t>)|(?@<e
 
 @end
 
-#endif /* __OgreKit_OGRegularExpressionCapture__ */

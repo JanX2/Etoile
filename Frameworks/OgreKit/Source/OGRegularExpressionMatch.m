@@ -17,18 +17,17 @@
 #ifndef HAVE_CONFIG_H
 #	define HAVE_CONFIG_H
 #endif
-#include <oniguruma.h>
-//#include <OgreKit/oniguruma.h>
+#import <oniguruma.h>
 
-#include <OgreKit/OGRegularExpression.h>
-#include "OGRegularExpressionPrivate.h"
-#include <OgreKit/OGRegularExpressionMatch.h>
-#include "OGRegularExpressionMatchPrivate.h"
-#include <OgreKit/OGRegularExpressionEnumerator.h>
-#include "OGRegularExpressionEnumeratorPrivate.h"
-#include <OgreKit/OGRegularExpressionCapture.h>
-#include "OGRegularExpressionCapturePrivate.h"
-#include <OgreKit/OGString.h>
+#import <OgreKit/OGRegularExpression.h>
+#import "OGRegularExpressionPrivate.h"
+#import <OgreKit/OGRegularExpressionMatch.h>
+#import "OGRegularExpressionMatchPrivate.h"
+#import <OgreKit/OGRegularExpressionEnumerator.h>
+#import "OGRegularExpressionEnumeratorPrivate.h"
+#import <OgreKit/OGRegularExpressionCapture.h>
+#import "OGRegularExpressionCapturePrivate.h"
+#import <OgreKit/OGString.h>
 
 
 NSString	* const OgreMatchException = @"OGRegularExpressionMatchException";
@@ -41,7 +40,7 @@ static NSString	* const OgreIndexOfMatchKey        = @"OgreMatchIndexOfMatch";
 static NSString	* const OgreCaptureHistoryKey      = @"OgreMatchCaptureHistory";
 
 
-unsigned Ogre_UTF16strlen(unichar *const aUTF16string, unichar *const end)
+inline unsigned Ogre_UTF16strlen(unichar *const aUTF16string, unichar *const end)
 {
 	return end - aUTF16string;
 }
@@ -886,4 +885,5 @@ static OnigCaptureTreeNode *Ogre_onigCaptureTreeNodeWithArray(NSArray *captureAr
         parentNode:nil 
         match:self] autorelease];
 }
+
 @end

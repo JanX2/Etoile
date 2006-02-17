@@ -11,8 +11,8 @@
  * Tabsize: 4
  */
 
-#include <OgreKit/OGReplaceExpression.h>
-#include "OGReplaceExpressionPrivate.h"
+#import <OgreKit/OGReplaceExpression.h>
+#import "OGReplaceExpressionPrivate.h"
 
 
 @implementation OGReplaceExpression (Private)

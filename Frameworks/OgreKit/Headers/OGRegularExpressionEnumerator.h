@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGRegularExpressionEnumerator__
-#define __OgreKit_OGRegularExpressionEnumerator__
-
 /*
  * Name: OGRegularExpressionEnumerator.h
  * Project: OgreKit
@@ -14,7 +11,7 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
 @class OGRegularExpression;
 
@@ -46,4 +43,3 @@ extern NSString	* const OgreEnumeratorException;
 
 @end
 
-#endif /* __OgreKit_OGRegularExpressionEnumerator__ */

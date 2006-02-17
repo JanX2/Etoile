@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGRegularExpressionMatchPrivate__
-#define __OgreKit_OGRegularExpressionMatchPrivate__
-
 /*
  * Name: OGRegularExpressionMatchPrivate.h
  * Project: OgreKit
@@ -14,9 +11,9 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
-#include <OgreKit/OGRegularExpressionMatch.h>
-#include <OgreKit/OGString.h>
+#import <Foundation/Foundation.h>
+#import <OgreKit/OGRegularExpressionMatch.h>
+#import <OgreKit/OGString.h>
 
 @interface OGRegularExpressionMatch (Private)
 
@@ -33,5 +30,3 @@
 - (OnigRegion*)_region;
 
 @end
-
-#endif /* __OgreKit_OGRegularExpressionMatchPrivate__ */

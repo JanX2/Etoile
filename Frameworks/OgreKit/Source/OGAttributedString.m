@@ -11,9 +11,9 @@
  * Tabsize: 4
  */
 
-#include <AppKit/AppKit.h>
-#include "OGAttributedString.h"
-#include "OGMutableAttributedString.h"
+#import <AppKit/AppKit.h>
+#import "OGAttributedString.h"
+#import "OGMutableAttributedString.h"
 
 // 自身をencoding/decodingするためのkey
 static NSString * const	OgreAttributedStringKey = @"OgreAttributedString";

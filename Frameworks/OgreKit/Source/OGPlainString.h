@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGPlainString__
-#define __OgreKit_OGPlainString__
-
 /*
  * Name: OGPlainString.h
  * Project: OgreKit
@@ -14,7 +11,7 @@
  * Tabsize: 4
  */
 
-#include <OgreKit/OGString.h>
+#import <OgreKit/OGString.h>
 
 @interface OGPlainString : NSObject <OGStringProtocol, NSCopying, NSCoding>
 {
@@ -33,5 +30,3 @@
 - (void)_setString:(NSString*)string;
 
 @end
-
-#endif /* __OgreKit_OGPlainString__ */

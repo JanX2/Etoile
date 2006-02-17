@@ -11,9 +11,9 @@
  * Tabsize: 4
  */
 
-#include <OgreKit/OGString.h>
-#include "OGPlainString.h"
-#include "OGAttributedString.h"
+#import <OgreKit/OGString.h>
+#import "OGPlainString.h"
+#import "OGAttributedString.h"
 
 // exception name
 NSString * const	OgreStringException = @"OGStringException";

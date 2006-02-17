@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGString__
-#define __OgreKit_OGString__
-
 /*
  * Name: OGString.h
  * Project: OgreKit
@@ -14,7 +11,7 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
 // exception name
 extern NSString	* const OgreStringException;
@@ -29,4 +26,3 @@ extern NSString	* const OgreStringException;
 - (Class)mutableClass;
 @end
 
-#endif /* __OgreKit_OGString__ */

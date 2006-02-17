@@ -12,7 +12,7 @@
  */
 
 
-#include "OGRegularExpressionCapturePrivate.h"
+#import "OGRegularExpressionCapturePrivate.h"
 
 
 @implementation OGRegularExpressionCapture (Private)

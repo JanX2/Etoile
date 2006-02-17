@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGRegularExpressionCapturePrivate__
-#define __OgreKit_OGRegularExpressionCapturePrivate__
-
 /*
  * Name: OGRegularExpressionCapturePrivate.h
  * Project: OgreKit
@@ -15,9 +12,9 @@
  */
 
 
-#include <OgreKit/OGRegularExpressionCapture.h>
-#include <OgreKit/OGRegularExpressionMatch.h>
-#include "OGRegularExpressionMatchPrivate.h"
+#import <OgreKit/OGRegularExpressionCapture.h>
+#import <OgreKit/OGRegularExpressionMatch.h>
+#import "OGRegularExpressionMatchPrivate.h"
 
 
 @interface OGRegularExpressionCapture (Private)
@@ -31,5 +28,3 @@
 - (OnigCaptureTreeNode*)_captureNode;
 
 @end
-
-#endif /* __OgreKit_OGRegularExpressionCapturePrivate__ */

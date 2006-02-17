@@ -1,6 +1,3 @@
-#ifndef __Ogre_OGRegularExpression__
-#define __Ogre_OGRegularExpression__
-
 /*
  * Name: OGRegularExpression.h
  * Project: OgreKit
@@ -14,14 +11,14 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 #ifndef NOT_RUBY
 #	define NOT_RUBY
 #endif
 #ifndef HAVE_CONFIG_H
 #	define HAVE_CONFIG_H
 #endif
-#include <oniguruma.h>
+#import <oniguruma.h>
 
 
 /* constants */
@@ -612,4 +609,3 @@ extern NSString	* const OgreException;
 
 @end
 
-#endif /* __Ogre_OGRegularExpression__ */

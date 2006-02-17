@@ -11,7 +11,7 @@
  * Tabsize: 4
  */
 
-#include "OGMutablePlainString.h"
+#import "OGMutablePlainString.h"
 
 @implementation OGMutablePlainString
 

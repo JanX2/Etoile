@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGRegularExpressionPrivate__
-#define __OgreKit_OGRegularExpressionPrivate__
-
 /*
  * Name: OGRegularExpressionPrivate.h
  * Project: OgreKit
@@ -14,10 +11,9 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
-#include <OgreKit/OGRegularExpression.h>
-#include <OgreKit/OGString.h>
-#include <oniguruma.h>
+#import <Foundation/Foundation.h>
+#import <OgreKit/OGRegularExpression.h>
+#import <OgreKit/OGString.h>
 
 @class OGRegularExpression;
 
@@ -29,8 +25,6 @@ typedef enum OgreKindOfCharacters {
 	OgreKindOfNormal
 } OgreKindOfCharacter;
 
-/* OgreKit (GNUstep): use static to prevent multiple definition */
-#if 0
 // 正規表現構文
 static OnigSyntaxType  OgrePrivatePOSIXBasicSyntax;
 static OnigSyntaxType  OgrePrivatePOSIXExtendedSyntax;
@@ -40,15 +34,14 @@ static OnigSyntaxType  OgrePrivateGNURegexSyntax;
 static OnigSyntaxType  OgrePrivateJavaSyntax;
 static OnigSyntaxType  OgrePrivatePerlSyntax;
 static OnigSyntaxType  OgrePrivateRubySyntax;
-#endif
+
 
 @interface OGRegularExpression (Private)
 
 /* 非公開メソッド */
 
-// OgreKit (GNUstep)
 // OgreSyntaxに対応するOnigSyntaxType*を返す。
-//+ (OnigSyntaxType*)onigSyntaxTypeForSyntax:(OgreSyntax)syntax;
++ (OnigSyntaxType*)onigSyntaxTypeForSyntax:(OgreSyntax)syntax;
 
 // string中の\をcharacterに置き換えた文字列を返す。characterがnilの場合、stringを返す。
 + (NSObject<OGStringProtocol>*)changeEscapeCharacterInOGString:(NSObject<OGStringProtocol>*)string toCharacter:(NSString*)character;
@@ -79,5 +72,3 @@ static OnigSyntaxType  OgrePrivateRubySyntax;
 
 
 @end
-
-#endif /* __OgreKit_OGRegularExpressionPrivate__ */

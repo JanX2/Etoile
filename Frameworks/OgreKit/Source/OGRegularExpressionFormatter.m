@@ -11,7 +11,7 @@
  * Tabsize: 4
  */
 
-#include <OgreKit/OGRegularExpressionFormatter.h>
+#import <OgreKit/OGRegularExpressionFormatter.h>
 
 // ©g‚ğencode/decode‚·‚é‚Ì‚É•K—v‚Èkey
 static NSString	* const OgreOptionsKey            = @"OgreFormatterOptions";

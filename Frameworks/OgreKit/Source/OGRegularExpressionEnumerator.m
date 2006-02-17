@@ -11,13 +11,13 @@
  * Tabsize: 4
  */
 
-#include <OgreKit/OGRegularExpression.h>
-#include <OgreKit/OGRegularExpressionMatch.h>
-#include <OgreKit/OGRegularExpressionEnumerator.h>
-#include "OGRegularExpressionPrivate.h"
-#include "OGRegularExpressionMatchPrivate.h"
-#include "OGRegularExpressionEnumeratorPrivate.h"
-#include <OgreKit/OGString.h>
+#import <OgreKit/OGRegularExpression.h>
+#import <OgreKit/OGRegularExpressionMatch.h>
+#import <OgreKit/OGRegularExpressionEnumerator.h>
+#import "OGRegularExpressionPrivate.h"
+#import "OGRegularExpressionMatchPrivate.h"
+#import "OGRegularExpressionEnumeratorPrivate.h"
+#import <OgreKit/OGString.h>
 
 
 // é©êgÇencoding/decodingÇ∑ÇÈÇΩÇﬂÇÃkey

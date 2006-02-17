@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGReplaceExpressionPrivate__
-#define __OgreKit_OGReplaceExpressionPrivate__
-
 /*
  * Name: OGReplaceExpressionPrivate.h
  * Project: OgreKit
@@ -27,5 +24,3 @@
 - (void)_setOptions:(unsigned)options;
 
 @end
-
-#endif /* __OgreKit_OGReplaceExpressionPrivate__ */

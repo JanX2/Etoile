@@ -17,13 +17,13 @@
 #ifndef HAVE_CONFIG_H
 # define HAVE_CONFIG_H
 #endif
-#include <oniguruma.h>
-//#include <OgreKit/oniguruma.h>
+#import <oniguruma.h>
 
-#include <OgreKit/OGRegularExpression.h>
-#include "OGRegularExpressionPrivate.h"
-#include <OgreKit/OGString.h>
-#include <OgreKit/OGMutableString.h>
+#import <OgreKit/OGRegularExpression.h>
+#import "OGRegularExpressionPrivate.h"
+#import <OgreKit/OGString.h>
+#import <OgreKit/OGMutableString.h>
+
 
 @implementation OGRegularExpression (Private)
 
@@ -57,13 +57,9 @@
 	return _regexBuffer;
 }
 
-#if 0 // OgreKit (GNUstep)
 // OgreSyntaxに対応するOnigSyntaxType*を返す。
 + (OnigSyntaxType*)onigSyntaxTypeForSyntax:(OgreSyntax)syntax
 {
-	NSLog(@"+onigSyntaxTypeForSyntax: %d", syntax);
-	NSLog(@"OgreRubySyntax %d", OgreRubySyntax);
-	NSLog(@"%d", OgrePrivateRubySyntax.op);
 	if(syntax == OgreSimpleMatchingSyntax)	return &OgrePrivateRubySyntax;
 	if(syntax == OgrePOSIXBasicSyntax)		return &OgrePrivatePOSIXBasicSyntax;
 	if(syntax == OgrePOSIXExtendedSyntax)	return &OgrePrivatePOSIXExtendedSyntax;
@@ -77,7 +73,6 @@
 	[NSException raise:OgreException format:@"unknown syntax."];
 	return NULL;	// dummy
 }
-#endif
 
 // string中の\をcharacterに置き換えた文字列を返す。characterがnilの場合、stringを返す。
 + (NSObject<OGStringProtocol>*)changeEscapeCharacterInOGString:(NSObject<OGStringProtocol>*)string toCharacter:(NSString*)character

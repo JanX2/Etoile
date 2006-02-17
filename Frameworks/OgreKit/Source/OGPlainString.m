@@ -11,8 +11,8 @@
  * Tabsize: 4
  */
 
-#include "OGPlainString.h"
-#include "OGMutablePlainString.h"
+#import "OGPlainString.h"
+#import "OGMutablePlainString.h"
 
 // 自身をencoding/decodingするためのkey
 static NSString * const	OgrePlainStringKey = @"OgrePlainString";

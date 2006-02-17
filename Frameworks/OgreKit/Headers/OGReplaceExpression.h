@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OGReplaceExpression__
-#define __OgreKit_OGReplaceExpression__
-
 /*
  * Name: OGReplaceExpression.h
  * Project: OgreKit
@@ -14,8 +11,8 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
-#include <OgreKit/OGRegularExpression.h>
+#import <Foundation/Foundation.h>
+#import <OgreKit/OGRegularExpression.h>
 
 @class OGRegularExpressionMatch;
 
@@ -101,4 +98,3 @@ extern NSString	* const OgreReplaceException;
 
 @end
 
-#endif /* __OgreKit_OGReplaceExpression__ */

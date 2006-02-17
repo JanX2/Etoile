@@ -17,18 +17,17 @@
 #ifndef HAVE_CONFIG_H
 # define HAVE_CONFIG_H
 #endif
-#include <oniguruma.h>
-//#include <OgreKit/oniguruma.h>
+#import <oniguruma.h>
 
-#include <OgreKit/OGRegularExpression.h>
-#include "OGRegularExpressionPrivate.h"
-#include "OGRegularExpressionMatchPrivate.h"
-#include "OGRegularExpressionEnumeratorPrivate.h"
-#include <OgreKit/OGReplaceExpression.h>
-#include <OgreKit/OGString.h>
-#include <OgreKit/OGMutableString.h>
-#include "OGPlainString.h"
-#include "OGAttributedString.h"
+#import <OgreKit/OGRegularExpression.h>
+#import "OGRegularExpressionPrivate.h"
+#import "OGRegularExpressionMatchPrivate.h"
+#import "OGRegularExpressionEnumeratorPrivate.h"
+#import <OgreKit/OGReplaceExpression.h>
+#import <OgreKit/OGString.h>
+#import <OgreKit/OGMutableString.h>
+#import "OGPlainString.h"
+#import "OGAttributedString.h"
 
 /* constants */
 // compile time options:
@@ -77,17 +76,8 @@ static NSCharacterSet	*OgrePrivateNewlineCharacterSet = nil;
 static NSString			*OgrePrivateUnicodeLineSeparator = nil;
 static NSString			*OgrePrivateUnicodeParagraphSeparator = nil;
 
-static OnigSyntaxType  OgrePrivatePOSIXBasicSyntax;
-static OnigSyntaxType  OgrePrivatePOSIXExtendedSyntax;
-static OnigSyntaxType  OgrePrivateEmacsSyntax;
-static OnigSyntaxType  OgrePrivateGrepSyntax;
-static OnigSyntaxType  OgrePrivateGNURegexSyntax;
-static OnigSyntaxType  OgrePrivateJavaSyntax;
-static OnigSyntaxType  OgrePrivatePerlSyntax;
-static OnigSyntaxType  OgrePrivateRubySyntax;
-
 /* onig_foreach_namesのcallback関数 */
-static int namedGroupCallback(unsigned char *name, unsigned char *name_end, int numberOfGroups, int* listOfGroupNumbers, regex_t* reg, void* nameDict)
+static int namedGroupCallback(const unsigned char *name, const unsigned char *name_end, int numberOfGroups, int* listOfGroupNumbers, regex_t* reg, void* nameDict)
 {
 	// 名前 -> グループ個数
 	[(NSMutableDictionary*)nameDict setObject:[NSNumber numberWithUnsignedInt:numberOfGroups] forKey:[NSString stringWithCharacters:(unichar*)name length:((unichar*)name_end - (unichar*)name)]];
@@ -294,8 +284,15 @@ static int namedGroupCallback(unsigned char *name, unsigned char *name_end, int 
 	// 正規表現オブジェクトの作成
     OnigCompileInfo ci;
     ci.num_of_elements = 5;
+
+    // Next seven lines by MATSUMOTO Satoshi, Sep 31 2005
+#if defined( __BIG_ENDIAN__ )
     ci.pattern_enc = ONIG_ENCODING_UTF16_BE;
     ci.target_enc  = ONIG_ENCODING_UTF16_BE;
+#else
+    ci.pattern_enc = ONIG_ENCODING_UTF16_LE;
+    ci.target_enc  = ONIG_ENCODING_UTF16_LE;
+#endif
 #if 0 // OgreKit (GNUstep): FIXME
     ci.syntax      = [[self class] onigSyntaxTypeForSyntax:_syntax];
 #else
@@ -482,14 +479,16 @@ static int namedGroupCallback(unsigned char *name, unsigned char *name_end, int 
     [compileTimeString getCharacters:UTF16Str range:NSMakeRange(0, length)];
 	
 	// 正規表現オブジェクトの作成・解放
-#if 0
+
+	// Next 11 lines by MATSUMOTO Satoshi, Sep 31 2005
+#if defined( __BIG_ENDIAN__ )
 	r = onig_new(&regexBuffer, (unsigned char*)UTF16Str, (unsigned char*)(UTF16Str + length),
 		compileTimeOptions, ONIG_ENCODING_UTF16_BE, 
 			[[self class] onigSyntaxTypeForSyntax:syntax] 
 		, &einfo);
 #else
 	r = onig_new(&regexBuffer, (unsigned char*)UTF16Str, (unsigned char*)(UTF16Str + length),
-				 compileTimeOptions, ONIG_ENCODING_UTF16_BE, 
+				 compileTimeOptions, ONIG_ENCODING_UTF16_LE, 
 				 [[self class] _onigSyntaxTypeForSyntax:syntax] 
 				 , &einfo);
 #endif	
@@ -1522,7 +1521,7 @@ static int namedGroupCallback(unsigned char *name, unsigned char *name_end, int 
 	NSString		*expressionString;
 	id				anObject;
 	unsigned		options;
-	OgreSyntax		syntax = -1 /* NULL */;
+	OgreSyntax		syntax = 0;
 	
 	BOOL			allowsKeyedCoding = [decoder allowsKeyedCoding];
 	
@@ -1665,7 +1664,7 @@ static int namedGroupCallback(unsigned char *name, unsigned char *name_end, int 
 	if(intValue == 8) return OgreRubySyntax;
 	
 	[NSException raise:OgreException format:@"unknown syntax."];
-	return -1 /* NULL */;	// dummy
+	return 0;	// dummy
 }
 
 // OgreSyntaxを表す文字列
