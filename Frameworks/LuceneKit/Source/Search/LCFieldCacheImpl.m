@@ -175,28 +175,21 @@ static int LCFieldCache_STRING_INDEX = -1;
 	id ret = [self lookup: reader field: field comparer: parser];
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
-		if ([reader maximalDocument] > 0) {
-			id <LCTermDocuments> termDocs = [reader termDocuments];
-			LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
-			LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
-			if ([termEnum term] == nil)
-			{
-				NSLog(@"No Terms in field %@", field);
-				return nil;
+		id <LCTermDocuments> termDocs = [reader termDocuments];
+		LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
+		LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
+		do {
+			LCTerm *term = [termEnum term];
+			if (term == nil || [[term field] isEqualToString: field] == NO) break;
+			int termval = [parser parseInt: [term text]];
+			[termDocs seekTermEnumerator: termEnum];
+			while ([termDocs hasNextDocument]) {
+				[retDic setObject: [NSNumber numberWithInt: termval]
+						   forKey: [NSNumber numberWithInt: [termDocs document]]];
 			}
-			do {
-				LCTerm *term = [termEnum term];
-				if ([[term field] isEqualToString: field] == NO) break;
-				int termval = [parser parseInt: [term text]];
-				[termDocs seekTermEnumerator: termEnum];
-				while ([termDocs hasNextDocument]) {
-					[retDic setObject: [NSNumber numberWithInt: termval]
-							   forKey: [NSNumber numberWithInt: [termDocs document]]];
-				}
-			} while ([termEnum hasNextTerm]);
-			[termDocs close];
-			[termEnum close];
-		}
+		} while ([termEnum hasNextTerm]);
+		[termDocs close];
+		[termEnum close];
 		[self store: reader field: field comparer: parser custom: retDic];
 		return retDic;
 	}
@@ -214,28 +207,22 @@ static int LCFieldCache_STRING_INDEX = -1;
 	id ret = [self lookup: reader field: field comparer: parser];
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
-		if ([reader maximalDocument] > 0) {
-			id <LCTermDocuments> termDocs = [reader termDocuments];
-			LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
-			LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
-			if ([termEnum term] == nil)
-			{
-				NSLog(@"No Terms in field %@", field);
-				return nil;
+		id <LCTermDocuments> termDocs = [reader termDocuments];
+		LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
+		LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
+
+		do {
+			LCTerm *term = [termEnum term];
+			if (term == nil || [[term field] isEqualToString: field] == NO) break;
+			float termval = [parser parseFloat: [term text]];
+			[termDocs seekTermEnumerator: termEnum];
+			while ([termDocs hasNextDocument]) {
+				[retDic setObject: [NSNumber numberWithFloat: termval]
+						   forKey: [NSNumber numberWithInt: [termDocs document]]];
 			}
-			do {
-				LCTerm *term = [termEnum term];
-				if ([[term field] isEqualToString: field] == NO) break;
-				float termval = [parser parseFloat: [term text]];
-				[termDocs seekTermEnumerator: termEnum];
-				while ([termDocs hasNextDocument]) {
-					[retDic setObject: [NSNumber numberWithFloat: termval]
-							   forKey: [NSNumber numberWithInt: [termDocs document]]];
-				}
-			} while ([termEnum hasNextTerm]);
-			[termDocs close];
-			[termEnum close];
-		}
+		} while ([termEnum hasNextTerm]);
+		[termDocs close];
+		[termEnum close];
 		[self store: reader field: field comparer: parser custom: retDic];
 		return retDic;
 	}
@@ -247,28 +234,22 @@ static int LCFieldCache_STRING_INDEX = -1;
 	id ret = [self lookup: reader field: field type: LCSortField_STRING];
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
-		if ([reader maximalDocument] > 0) {
-			id <LCTermDocuments> termDocs = [reader termDocuments];
-			LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
-			LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
-			if ([termEnum term] == nil)
-			{
-				NSLog(@"No Terms in field %@", field);
-				return nil;
+		id <LCTermDocuments> termDocs = [reader termDocuments];
+		LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
+		LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
+
+		do {
+			LCTerm *term = [termEnum term];
+			if (term == nil || [[term field] isEqualToString: field] == NO) break;
+			NSString *termval = [[term text] copy];
+			[termDocs seekTermEnumerator: termEnum];
+			while ([termDocs hasNextDocument]) {
+				[retDic setObject: AUTORELEASE(termval)
+						   forKey: [NSNumber numberWithInt: [termDocs document]]];
 			}
-			do {
-				LCTerm *term = [termEnum term];
-				if ([[term field] isEqualToString: field] == NO) break;
-				NSString *termval = [[term text] copy];
-				[termDocs seekTermEnumerator: termEnum];
-				while ([termDocs hasNextDocument]) {
-					[retDic setObject: AUTORELEASE(termval)
-							   forKey: [NSNumber numberWithInt: [termDocs document]]];
-				}
-			} while ([termEnum hasNextTerm]);
-			[termDocs close];
-			[termEnum close];
-		}
+		} while ([termEnum hasNextTerm]);
+		[termDocs close];
+		[termEnum close];
 		[self store: reader field: field type: LCSortField_STRING custom: retDic];
 		return retDic;
 	}
@@ -286,59 +267,54 @@ static int LCFieldCache_STRING_INDEX = -1;
 		final int[] retArray = new int[reader.maxDoc()];
 		String[] mterms = new String[reader.maxDoc()+1];
 #endif
-		if ([reader maximalDocument] > 0) {
-			id <LCTermDocuments> termDocs = [reader termDocuments];
-			LCTerm *tm = [[LCTerm alloc] initWithField: field text: @""];
-			LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: tm];
-			RELEASE(tm);
-			int t = 0;  // current term number
+		id <LCTermDocuments> termDocs = [reader termDocuments];
+		LCTerm *tm = [[LCTerm alloc] initWithField: field text: @""];
+		LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: tm];
+		RELEASE(tm);
+		int t = 0;  // current term number
 			
-			// an entry for documents that have no terms in this field
-			// should a document with no terms be at top or bottom?
-			// this puts them at the top - if it is changed, FieldDocSortedHitQueue
-			// needs to change as well.
-			/* LuceneKit: insert a non-NSString object */
-			//[mterms addObject: AUTORELEASE([[NSObject alloc] init])];
-			[mterms addObject: [NSNull null]];
+		// an entry for documents that have no terms in this field
+		// should a document with no terms be at top or bottom?
+		// this puts them at the top - if it is changed, FieldDocSortedHitQueue
+		// needs to change as well.
+		/* LuceneKit: insert a non-NSString object */
+		//[mterms addObject: AUTORELEASE([[NSObject alloc] init])];
+		[mterms addObject: [NSNull null]];
 
 			
-			if ([termEnum term] == nil) {
-				NSLog(@"No terms in field %@", field);
-			}
-			do {
-				LCTerm *term = [termEnum term];
-				if ([[term field] isEqualToString: field] == NO) break;
+		do {
+			LCTerm *term = [termEnum term];
+			if (term == nil || [[term field] isEqualToString: field] == NO) break;
 				
-				// store term text
-				// we expect that there is at most one term per document
-				//    if (t >= mterms.length) throw new RuntimeException ("there are more terms than documents in field \"" + field + "\"");
-				[mterms addObject: AUTORELEASE([term text])];
-				
-				[termDocs seekTermEnumerator: termEnum];
-				while ([termDocs hasNextDocument]) {
-					[retDic setObject: [NSNumber numberWithInt: t]
-							   forKey: [NSNumber numberWithInt: [termDocs document]]];
-				}
-				
-				t++;
-			} while ([termEnum hasNextTerm]);
-			[termDocs close];
-			[termEnum close];
+			// store term text
+			// we expect that there is at most one term per document
+			//    if (t >= mterms.length) throw new RuntimeException ("there are more terms than documents in field \"" + field + "\"");
+			[mterms addObject: AUTORELEASE([term text])];
 			
-			if (t == 0) {
-				// if there are no terms, make the term array
-				// have a single null entry
-				/* LuceneKit: This is not going to happend */
-				[mterms addObject: [NSNull null]];
-			} else if (t < [reader maximalDocument]+1) {
-				// if there are less terms than documents,
-				// trim off the dead array space
-				/* LuceneKit: not necessary
-				String[] terms = new String[t];
-				System.arraycopy (mterms, 0, terms, 0, t);
-				mterms = terms;
-				*/
+			[termDocs seekTermEnumerator: termEnum];
+			while ([termDocs hasNextDocument]) {
+				[retDic setObject: [NSNumber numberWithInt: t]
+						   forKey: [NSNumber numberWithInt: [termDocs document]]];
 			}
+				
+			t++;
+		} while ([termEnum hasNextTerm]);
+		[termDocs close];
+		[termEnum close];
+			
+		if (t == 0) {
+			// if there are no terms, make the term array
+			// have a single null entry
+			/* LuceneKit: This is not going to happend */
+			[mterms addObject: [NSNull null]];
+		} else if (t < [reader maximalDocument]+1) {
+			// if there are less terms than documents,
+			// trim off the dead array space
+			/* LuceneKit: not necessary
+			String[] terms = new String[t];
+			System.arraycopy (mterms, 0, terms, 0, t);
+			mterms = terms;
+			*/
 		}
 		LCStringIndex *value = [[LCStringIndex alloc] initWithOrder: retDic
 															 lookup: mterms];
@@ -424,27 +400,22 @@ protected static final Pattern pIntegers = Pattern.compile ("[0-9\\-]+");
 	id ret = [self lookup: reader field: field comparer: comparator];
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
-		if ([reader maximalDocument] > 0) {
-			id <LCTermDocuments> termDocs = [reader termDocuments];
-			LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
-			LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
-			if ([termEnum term] == nil) {
-				NSLog(@"No terms in field %@", field);
-				return nil;
+		id <LCTermDocuments> termDocs = [reader termDocuments];
+		LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
+		LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
+
+		do {
+			LCTerm *term = [termEnum term];
+			if (term == nil || [[term field] isEqualToString: field] == NO) break;
+			id termval = [comparator comparable: [term text]];
+			[termDocs seekTermEnumerator: termEnum];
+			while ([termDocs hasNextDocument]) {
+				[retDic setObject: termval 
+					   forKey: [NSNumber numberWithInt: [termDocs document]]];
 			}
-			do {
-				LCTerm *term = [termEnum term];
-				if ([[term field] isEqualToString: field] == NO) break;
-				id termval = [comparator comparable: [term text]];
-				[termDocs seekTermEnumerator: termEnum];
-				while ([termDocs hasNextDocument]) {
-					[retDic setObject: termval 
-							   forKey: [NSNumber numberWithInt: [termDocs document]]];
-				}
-			} while ([termEnum hasNextTerm]);
-			[termDocs close];
-			[termEnum close];
-		}
+		} while ([termEnum hasNextTerm]);
+		[termDocs close];
+		[termEnum close];
 		[self store: reader field: field type: LCSortField_CUSTOM custom: retDic];
 		return retDic;
 	}

@@ -453,8 +453,8 @@
 				int tmp = [[docs objectAtIndex: i] intValue] + b;;
 				[docs replaceObjectAtIndex: i withObject: [NSNumber numberWithInt: tmp]];
 			}
+        		return end;
 		}
-        return end;
     }
 }
 

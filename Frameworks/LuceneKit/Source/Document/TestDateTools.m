@@ -45,85 +45,77 @@
 {
 	NSTimeInterval t = [@"197001010000" timeIntervalSince1970];
 	NSCalendarDate *d = [NSCalendarDate dateWithYear: 1970
-											   month: 1 day: 1 hour: 0 minute: 0 second: 0
-											timeZone: nil];
+		month: 1 day: 1 hour: 0 minute: 0 second: 0
+		timeZone: [NSTimeZone timeZoneWithAbbreviation: @"GMT"]];
 	UKTrue(t == [d timeIntervalSince1970]);
 	t = [@"198002021105" timeIntervalSince1970];
 	d = [NSCalendarDate dateWithYear: 1980
-							   month: 2 day: 2 hour: 11 minute: 5 second: 0
-							timeZone: nil];
+		month: 2 day: 2 hour: 11 minute: 5 second: 0
+		timeZone: [NSTimeZone timeZoneWithAbbreviation: @"GMT"]];
 	UKTrue(t == [d timeIntervalSince1970]);
 }
 
 - (void) testDateAndTimeToString
 {
-	NSCalendarDate *d = [NSCalendarDate dateWithYear: 2004
-											   month: 2 day: 3 hour: 22 minute: 8 second: 56
-											timeZone: nil];
-	NSString *dateString = [NSString stringWithCalendarDate: d
-												 resolution: LCResolution_YEAR];;
-												 UKStringsEqual(@"2004", dateString);
-												 UKStringsEqual(@"2004-01-01 00:00:00:000", [self isoFormat: [dateString calendarDate]]);
-												 
-												 dateString = [NSString stringWithCalendarDate: d
-																					resolution: LCResolution_MONTH];;
-																					UKStringsEqual(@"200402", dateString);
-																					UKStringsEqual(@"2004-02-01 00:00:00:000", [self isoFormat: [dateString calendarDate]]);
-																					
-																					dateString = [NSString stringWithCalendarDate: d
-																													   resolution: LCResolution_DAY];;
-																													   UKStringsEqual(@"20040203", dateString);
-																													   UKStringsEqual(@"2004-02-03 00:00:00:000", [self isoFormat: [dateString calendarDate]]);
-																													   
-																													   dateString = [NSString stringWithCalendarDate: d
-																																						  resolution: LCResolution_HOUR];;
-																																						  UKStringsEqual(@"2004020322", dateString);
-																																						  UKStringsEqual(@"2004-02-03 22:00:00:000", [self isoFormat: [dateString calendarDate]]);
-																																						  
-																																						  dateString = [NSString stringWithCalendarDate: d
-																																															 resolution: LCResolution_MINUTE];;
-																																															 UKStringsEqual(@"200402032208", dateString);
-																																															 UKStringsEqual(@"2004-02-03 22:08:00:000", [self isoFormat: [dateString calendarDate]]);
-																																															 
-																																															 dateString = [NSString stringWithCalendarDate: d
-																																																								resolution: LCResolution_SECOND];;
-																																																								UKStringsEqual(@"20040203220856", dateString);
-																																																								UKStringsEqual(@"2004-02-03 22:08:56:000", [self isoFormat: [dateString calendarDate]]);
-																																																								
+  NSCalendarDate *d = [NSCalendarDate dateWithYear: 2004
+	month: 2 day: 3 hour: 22 minute: 8 second: 56
+	timeZone: [NSTimeZone timeZoneWithAbbreviation: @"GMT"]];
+
+  NSString *dateString = [NSString stringWithCalendarDate: d resolution: LCResolution_YEAR];
+  UKStringsEqual(@"2004", dateString);
+  UKStringsEqual(@"2004-01-01 00:00:00:000", [self isoFormat: [dateString calendarDate]]);
+
+  dateString = [NSString stringWithCalendarDate: d resolution: LCResolution_MONTH];
+  UKStringsEqual(@"200402", dateString);
+  UKStringsEqual(@"2004-02-01 00:00:00:000", [self isoFormat: [dateString calendarDate]]);
+
+  dateString = [NSString stringWithCalendarDate: d resolution: LCResolution_DAY];
+  UKStringsEqual(@"20040203", dateString);
+  UKStringsEqual(@"2004-02-03 00:00:00:000", [self isoFormat: [dateString calendarDate]]);
+
+  dateString = [NSString stringWithCalendarDate: d resolution: LCResolution_HOUR];
+  UKStringsEqual(@"2004020322", dateString);
+  UKStringsEqual(@"2004-02-03 22:00:00:000", [self isoFormat: [dateString calendarDate]]);
+
+  dateString = [NSString stringWithCalendarDate: d resolution: LCResolution_MINUTE];
+  UKStringsEqual(@"200402032208", dateString);
+  UKStringsEqual(@"2004-02-03 22:08:00:000", [self isoFormat: [dateString calendarDate]]);
+
+  dateString = [NSString stringWithCalendarDate: d resolution: LCResolution_SECOND];
+  UKStringsEqual(@"20040203220856", dateString);
+  UKStringsEqual(@"2004-02-03 22:08:56:000", [self isoFormat: [dateString calendarDate]]);
+
 #if 0
-																																																								dateString = DateTools.dateToString(cal.getTime(), DateTools.Resolution.MILLISECOND);
-																																																								assertEquals("20040203220856333", dateString);
-																																																								assertEquals("2004-02-03 22:08:56:333", isoFormat(DateTools.stringToDate(dateString)));
+  dateString = DateTools.dateToString(cal.getTime(), DateTools.Resolution.MILLISECOND);
+  assertEquals("20040203220856333", dateString);
+  assertEquals("2004-02-03 22:08:56:333", isoFormat(DateTools.stringToDate(dateString)));
 #endif
-																																																								
-																																																								// date before 1970:
-																																																								d = [NSCalendarDate dateWithYear: 1961
-																																																														   month: 3 day: 5 hour: 23 minute: 9 second: 51
-																																																														timeZone: nil];
-																																																								dateString = [NSString stringWithCalendarDate: d
-																																																																   resolution: LCResolution_SECOND];;
-																																																																   UKStringsEqual(@"19610305230951", dateString);
-																																																																   UKStringsEqual(@"1961-03-05 23:09:51:000", [self isoFormat: [dateString calendarDate]]);
-																																																																   
-																																																																   dateString = [NSString stringWithCalendarDate: d
-																																																																									  resolution: LCResolution_HOUR];;
-																																																																									  UKStringsEqual(@"1961030523", dateString);
-																																																																									  UKStringsEqual(@"1961-03-05 23:00:00:000", [self isoFormat: [dateString calendarDate]]);
-																																																																									  
-																																																																									  // timeToString:
-																																																																									  d = [NSCalendarDate dateWithYear: 1970
-																																																																																 month: 1 day: 1 hour: 0 minute: 0 second: 0 
-																																																																															  timeZone: nil];
-																																																																									  dateString = [NSString stringWithTimeIntervalSince1970: [d timeIntervalSince1970]
-																																																																																				  resolution: LCResolution_MILLISECOND];;
-																																																																																				  UKStringsEqual(@"19700101000000000", dateString);
-																																																																																				  
-																																																																																				  d = [NSCalendarDate dateWithYear: 1970
-																																																																																											 month: 1 day: 1 hour: 1 minute: 2 second: 3 
-																																																																																										  timeZone: nil];
-																																																																																				  dateString = [NSString stringWithTimeIntervalSince1970: [d timeIntervalSince1970]
-																																																																																															  resolution: LCResolution_MILLISECOND];;
-																																																																																															  UKStringsEqual(@"19700101010203000", dateString);
+
+  // date before 1970:
+  d = [NSCalendarDate dateWithYear: 1961 month: 3 day: 5 
+	hour: 23 minute: 9 second: 51 timeZone: [NSTimeZone timeZoneWithAbbreviation: @"GMT"]];
+  dateString = [NSString stringWithCalendarDate: d 
+	resolution: LCResolution_SECOND];;
+  UKStringsEqual(@"19610305230951", dateString);
+  UKStringsEqual(@"1961-03-05 23:09:51:000", [self isoFormat: [dateString calendarDate]]);
+
+  dateString = [NSString stringWithCalendarDate: d
+	resolution: LCResolution_HOUR];;
+  UKStringsEqual(@"1961030523", dateString);
+  UKStringsEqual(@"1961-03-05 23:00:00:000", [self isoFormat: [dateString calendarDate]]);
+
+  // timeToString:
+  d = [NSCalendarDate dateWithYear: 1970 month: 1 day: 1 
+       hour: 0 minute: 0 second: 0 timeZone: [NSTimeZone timeZoneWithAbbreviation: @"GMT"]];
+  dateString = [NSString stringWithTimeIntervalSince1970: [d timeIntervalSince1970]
+	resolution: LCResolution_MILLISECOND];;
+  UKStringsEqual(@"19700101000000000", dateString);
+
+  d = [NSCalendarDate dateWithYear: 1970 month: 1 day: 1 
+	hour: 1 minute: 2 second: 3 timeZone: [NSTimeZone timeZoneWithAbbreviation: @"GMT"]];
+  dateString = [NSString stringWithTimeIntervalSince1970: [d timeIntervalSince1970]
+	resolution: LCResolution_MILLISECOND];;
+  UKStringsEqual(@"19700101010203000", dateString);
 }
 
 - (void) testRound

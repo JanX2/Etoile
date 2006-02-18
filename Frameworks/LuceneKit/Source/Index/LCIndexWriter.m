@@ -560,7 +560,7 @@ for search. */
 		int mergeDocs = 0;
 		while (--minSegment >= 0) {
 			LCSegmentInfo *si = [segmentInfos segmentInfoAtIndex: minSegment];
-			if ([si numberOfDocuments] >= targetMergeDocs)
+			if ([si numberOfDocuments] > targetMergeDocs)
 				break;
 			mergeDocs += [si numberOfDocuments];
 		}

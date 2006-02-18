@@ -16,7 +16,7 @@ typedef enum _LCResolution {
 
 /** Convert between NSString and NSCalendarDate */
 @interface NSString (LuceneKit_Document_Date)
-/** Convert a NSCalendarDate to NSString with resolution */
+/** Convert a NSCalendarDate to NSString in GMT with resolution */
 + (id) stringWithCalendarDate: (NSCalendarDate *) date
                    resolution: (LCResolution) resolution;
 /** Convert a NSTimeInterval to NSString with resolution */
@@ -24,7 +24,7 @@ typedef enum _LCResolution {
                             resolution: (LCResolution) resolution;
 /** Convert a NSString to NSTimeInterval */
 - (NSTimeInterval) timeIntervalSince1970;
-/** Convert a NSString to NSCalendarDate */
+/** Convert a NSString in GMT to NSCalendarDate */
 - (NSCalendarDate *) calendarDate;
 @end
 

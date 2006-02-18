@@ -17,14 +17,8 @@
  */
 @implementation NSString (LuceneKit_Document_Date)
 
-/**
-* Converts a Date to a string suitable for indexing.
- * 
- * @param date the date to be converted
- * @param resolution the desired resolution, see
- *  {@link #round(Date, DateTools.Resolution)}
- * @return a string in format <code>yyyyMMddHHmmssSSS</code> or shorter,
- *  depeding on <code>resolution</code>
+/** convert a date to string in this format depending on resolution:
+ * "%Y%m%d%H%M%S%F" (yyyyMMddHHmmssSSS) in GMT.
  */
 + (id) stringWithCalendarDate: (NSCalendarDate *) date
                    resolution: (LCResolution) res;
@@ -33,14 +27,8 @@
 										  resolution: res];
 }
 
-/**
-* Converts a millisecond time to a string suitable for indexing.
- * 
- * @param time the date expressed as milliseconds since January 1, 1970, 00:00:00 GMT
- * @param resolution the desired resolution, see
- *  {@link #round(long, DateTools.Resolution)}
- * @return a string in format <code>yyyyMMddHHmmssSSS</code> or shorter,
- *  depeding on <code>resolution</code>
+/** convert a millisecond to string in this format depending on resolution:
+ * "%Y%m%d%H%M%S%F" (yyyyMMddHHmmssSSS) in GMT.
  */
 + (id) stringWithTimeIntervalSince1970: (NSTimeInterval) time
                             resolution: (LCResolution) resolution;
@@ -51,6 +39,8 @@
 	date = [NSCalendarDate dateWithTimeIntervalSince1970: time];
 	interval = [date timeIntervalSince1970WithResolution: resolution];
 	date = [NSCalendarDate dateWithTimeIntervalSince1970: interval];
+	/* Make sure date is in GMT format */
+	[date setTimeZone: [NSTimeZone timeZoneWithAbbreviation: @"GMT"]];
 	
 	if (resolution == LCResolution_YEAR) {
 		pattern = @"%Y";
@@ -88,15 +78,8 @@
 	return [[self calendarDate] timeIntervalSince1970];
 }
 
-/**
-* Converts a string produced by <code>timeToString</code> or
- * <code>dateToString</code> back to a time, represented as a
- * Date object.
- * 
- * @param dateString the date string to be converted
- * @return the parsed time as a Date object 
- * @throws ParseException if <code>dateString</code> is not in the 
- *  expected format 
+/* Convert a string in this format to date:
+ * "%Y%m%d%H%M%S%F" (yyyyMMddHHmmssSSS) in GMT.
  */
 - (NSCalendarDate *) calendarDate;
 {
@@ -105,31 +88,33 @@
 	switch(len)
 	{
 		case 4:
-			pattern = @"%Y";
+			pattern = @"%Y%Z";
 			break;
 		case 6:
-			pattern = @"%Y%m";
+			pattern = @"%Y%m%Z";
 			break;
 		case 8:
-			pattern = @"%Y%m%d";
+			pattern = @"%Y%m%d%Z";
 			break;
 		case 10:
-			pattern = @"%Y%m%d%H";
+			pattern = @"%Y%m%d%H%Z";
 			break;
 		case 12:
-			pattern = @"%Y%m%d%H%M";
+			pattern = @"%Y%m%d%H%M%Z";
 			break;
 		case 14:
-			pattern = @"%Y%m%d%H%M%S";
+			pattern = @"%Y%m%d%H%M%S%Z";
 			break;
 		case 17:
-			pattern = @"%Y%m%d%H%M%S%F";
+			pattern = @"%Y%m%d%H%M%S%F%Z";
 			break;
 		default: 
 			return nil; // Not Valid Date String
 	}
 	
-	return [NSCalendarDate dateWithString: self calendarFormat: pattern];
+	/* make sure the string is in GMT format */
+	return [NSCalendarDate dateWithString: [self stringByAppendingString:@"GMT"] 
+                               calendarFormat: pattern];
 }
 
 @end
@@ -171,7 +156,7 @@
 										   hour: 0
 										 minute: 0
 										 second: 0
-									   timeZone: nil];
+									   timeZone: [self timeZone]];
 		case LCResolution_MONTH:
 			return [NSCalendarDate dateWithYear: [self yearOfCommonEra]
 										  month: [self monthOfYear]
@@ -179,7 +164,7 @@
 										   hour: 0
 										 minute: 0
 										 second: 0
-									   timeZone: nil];
+									   timeZone: [self timeZone]];
 		case LCResolution_DAY:
 			return [NSCalendarDate dateWithYear: [self yearOfCommonEra]
 										  month: [self monthOfYear]
@@ -187,7 +172,7 @@
 										   hour: 0
 										 minute: 0
 										 second: 0
-									   timeZone: nil];
+									   timeZone: [self timeZone]];
 		case LCResolution_HOUR:
 			return [NSCalendarDate dateWithYear: [self yearOfCommonEra]
 										  month: [self monthOfYear]
@@ -195,7 +180,7 @@
 										   hour: [self hourOfDay]
 										 minute: 0
 										 second: 0
-									   timeZone: nil];
+									   timeZone: [self timeZone]];
 		case LCResolution_MINUTE:
 			return [NSCalendarDate dateWithYear: [self yearOfCommonEra]
 										  month: [self monthOfYear]
@@ -203,7 +188,7 @@
 										   hour: [self hourOfDay]
 										 minute: [self minuteOfHour]
 										 second: 0
-									   timeZone: nil];
+									   timeZone: [self timeZone]];
 		case LCResolution_SECOND: 
 			return [NSCalendarDate dateWithYear: [self yearOfCommonEra]
 										  month: [self monthOfYear]
@@ -211,7 +196,7 @@
 										   hour: [self hourOfDay]
 										 minute: [self minuteOfHour]
 										 second: [self secondOfMinute]
-									   timeZone: nil];
+									   timeZone: [self timeZone]];
 		case LCResolution_MILLISECOND:
 			return AUTORELEASE([self copy]);
 			// don't cut off anything
