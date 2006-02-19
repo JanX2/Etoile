@@ -40,10 +40,10 @@
 #include "keybind.h"
 #include "framewin.h"
 #include "workspace.h"
-#include "winspector.h"
 #include "dialog.h"
 #include "stacking.h"
 #include "icon.h"
+#include "WMWindowInspector.h"
 
 
 #define MC_MAXIMIZE	0
@@ -169,8 +169,13 @@ execMenuCommand(WMenu *menu, WMenuEntry *entry)
         break;
 
     case MC_PROPERTIES:
-        wShowInspectorForWindow(wwin);
-        break;
+	{
+	  WMWindowInspector *inspector = [WMWindowInspector sharedWindowInspector];
+	  [inspector setWindow: wwin];
+	  [inspector makeKeyAndOrderFront: nil];
+          //wShowInspectorForWindow(wwin);
+          break;
+	}
 
     case MC_HIDE:
         wapp = wApplicationOf(wwin->main_window);
@@ -595,10 +600,18 @@ updateMenuForWindow(WMenu *menu, WWindow *wwin)
 
     wMenuSetEnabled(menu, MC_DUMMY_MOVETO, !IS_OMNIPRESENT(wwin));
 
+#if 0 // FIXME: not used
     if (!wwin->flags.inspector_open) {
         wMenuSetEnabled(menu, MC_PROPERTIES, True);
     } else {
         wMenuSetEnabled(menu, MC_PROPERTIES, False);
+    }
+#endif
+    WMWindowInspector *inspector = [WMWindowInspector sharedWindowInspector];
+    if (wwin == [inspector window]) {
+        wMenuSetEnabled(menu, MC_PROPERTIES, False);
+    } else {
+        wMenuSetEnabled(menu, MC_PROPERTIES, True);
     }
 
     /* set the client data of the entries to the window */

@@ -2,9 +2,13 @@
 #define __WM_WINDOW_INSPECTOR__
 
 #include <AppKit/AppKit.h>
+#include "window.h"
 
 @interface WMWindowInspector: NSPanel
 {
+  WWindow *inspectedWin;
+
+  /* interface */
   NSSize size; // inspector window size
   int button_height;
 
@@ -45,6 +49,9 @@
 - (void) reloadButtonAction: (id) sender;
 - (void) applyButtonAction: (id) sender;
 - (void) saveButtonAction: (id) sender;
+
+- (void) setWindow: (WWindow *) wwin;
+- (WWindow *) window;
 
 @end
 

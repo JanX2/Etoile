@@ -60,27 +60,8 @@ extern XContext wVEdgeContext;
 
 extern void ProcessPendingEvents();
 
-#if 0
-static WMPropList *dWorkspaces=NULL;
-static WMPropList *dClip, *dName;
-#endif
-
 static NSString *dClip = @"Clip";
 static NSString *dName = @"Name";
-
-#if 0
-static void
-make_keys()
-{
-    if (dWorkspaces!=NULL)
-        return;
-
-    dWorkspaces = WMCreatePLString("Workspaces");
-    dName = WMCreatePLString("Name");
-    dClip = WMCreatePLString("Clip");
-}
-#endif
-
 
 void
 wWorkspaceMake(WScreen *scr, int count)
@@ -1223,46 +1204,6 @@ wWorkspaceSetViewport(WScreen *scr, int workspace, int view_x, int view_y)
 }
 
 
-#endif
-
-
-#if 0
-static void
-switchWSCommand(WMenu *menu, WMenuEntry *entry)
-{
-    wWorkspaceChange(menu->frame->screen_ptr, (long)entry->clientdata);
-}
-
-
-static void
-deleteWSCommand(WMenu *menu, WMenuEntry *entry)
-{
-    wWorkspaceDelete(menu->frame->screen_ptr,
-                     menu->frame->screen_ptr->workspace_count-1);
-}
-
-
-static void
-newWSCommand(WMenu *menu, WMenuEntry *foo)
-{
-    int ws;
-
-    ws = wWorkspaceNew(menu->frame->screen_ptr);
-    /* autochange workspace*/
-    if (ws>=0)
-        wWorkspaceChange(menu->frame->screen_ptr, ws);
-
-
-    /*
-     if (ws<9) {
-     int kcode;
-     if (wKeyBindings[WKBD_WORKSPACE1+ws]) {
-     kcode = wKeyBindings[WKBD_WORKSPACE1+ws]->keycode;
-     entry->rtext =
-     wstrdup(XKeysymToString(XKeycodeToKeysym(dpy, kcode, 0)));
-     }
-     }*/
-}
 #endif
 
 static char*

@@ -31,6 +31,9 @@ BEHAVIOR:
    It may disable all the menu.
 5. Most of the user defaults are not fault-proof.
    Typo in user defaults may trigger segment fault.
+6. The window inspector will disassociate with target window
+   when target window is hide and closed.
+   Beware that there may be glitches now.
 
 TODO:
 1. use _() for localization.
@@ -55,6 +58,7 @@ TODO:
 16. InitScript and ExitScript is removed.
 17. should move CachedPixmap into ApplicationSupport.
 18. fix 'initial workspace' in WMWindowInspector.
+19: enable XSMP_ENABLED ?
 
 From: Enrico Sersale <enrico@xxx>	Mailed-By: gnu.org
 Reply-To: enrico@xxx

@@ -71,7 +71,6 @@ Azalea_OBJC_FILES = \
 	window.m \
 	wmspec.m \
 	winmenu.m \
-	winspector.m \
 	workspace.m \
 	wsound.m 
 

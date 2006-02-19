@@ -45,11 +45,10 @@
 #include "appicon.h"
 #include "dock.h"
 #include "appmenu.h"
-#include "winspector.h"
 #include "workspace.h"
 #include "wsound.h"
 #include "xinerama.h"
-
+#include "WMWindowInspector.h"
 
 /****** Global Variables ******/
 extern Time LastTimestamp;
@@ -1266,9 +1265,19 @@ hideWindow(WIcon *icon, int icon_x, int icon_y, WWindow *wwin, int animate)
         return;
     }
 
+    /* If wwin is the target of window inspector,
+     * disassociate window with inspector
+     */
+    WMWindowInspector *inspector = [WMWindowInspector sharedWindowInspector];
+    if (wwin == [inspector window])
+    {
+      [inspector setWindow: NULL];
+    }
+#if 0 // FIXME: not used
     if (wwin->flags.inspector_open) {
         wHideInspectorForWindow(wwin);
     }
+#endif
 
     wwin->flags.hidden = 1;
     wWindowUnmap(wwin);
@@ -1308,7 +1317,10 @@ wHideOtherApplications(WWindow *awin)
             && wwin->frame->workspace == awin->screen_ptr->current_workspace
             && !(wwin->flags.miniaturized||wwin->flags.hidden)
             && !wwin->flags.internal_window
+#if 0 // FIXME: not used
             && wGetWindowOfInspectorForWindow(wwin) != awin
+#endif
+	    && ([[WMWindowInspector sharedWindowInspector] window] != awin)
             && !WFLAGP(wwin, no_hide_others)) {
 
             if (wwin->main_window==None || WFLAGP(wwin, no_appicon)) {
@@ -1441,9 +1453,13 @@ unhideWindow(WIcon *icon, int icon_x, int icon_y, WWindow *wwin, int animate,
         wwin->flags.mapped=1;
         wRaiseFrame(wwin->frame->core);
     }
+#if 0 /* FIXME: not used because when window hide,
+       * it is disassociate from target window already
+       */
     if (wwin->flags.inspector_open) {
         wUnhideInspectorForWindow(wwin);
     }
+#endif
 
     WMPostNotificationName(WMNChangedState, wwin, "hide");
 }

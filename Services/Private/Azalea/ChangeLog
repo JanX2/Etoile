@@ -1,3 +1,11 @@
+2006-02-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * WMWindowInspector.h:
+    * WMWindowInspector.m:
+    * winspector.h (removed):
+    * winspector.m (removed):
+    rewrite winspector into WMWindowInspector.
+
 2006-02-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Initial import.

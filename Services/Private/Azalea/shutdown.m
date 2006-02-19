@@ -34,7 +34,6 @@
 #include "funcs.h"
 #include "properties.h"
 #include "session.h"
-#include "winspector.h"
 #include "wmspec.h"
 
 extern Atom _XA_WM_DELETE_WINDOW;
@@ -190,7 +189,9 @@ RestoreDesktop(WScreen *scr)
     }
 
     XGrabServer(dpy);
+#if 0 // FIXME: not used
     wDestroyInspectorPanels();
+#endif
 
     /* reparent windows back to the root window, keeping the stacking order */
     restoreWindows(scr->stacking_list, NULL);

@@ -614,7 +614,7 @@ int WMCurrentScreen()
 #ifdef XSMP_ENABLED
   if (wSessionIsManaged()) {
     int r;
-    r = [[WMDialogController sharedController] exitDialogWithTitle: @"Close X session",
+    r = [[WMDialogController sharedController] exitDialogWithTitle: @"Close X session"
       message: @"Close Window System session?\nKill might close apploications with unsaved data."
 	      defaultButton: @"Close"
 	      alternateButton: @"Kill"
@@ -628,6 +628,7 @@ int WMCurrentScreen()
 	      break;
 	    default:
 	      result = R_CANCEL;
+    }
   } else
 #endif
   {

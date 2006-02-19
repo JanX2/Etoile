@@ -189,8 +189,9 @@ typedef struct WWindow {
     WWindowAttributes defined_user_flags;/* mask for user_flags */
     WWindowAttributes client_flags;    /* window attribute flags set by app
                                         * initialized with global defaults */
-
+#if 0 // FIXME: not used
     struct InspectorPanel *inspector;  /*  pointer to attribute editor panel */
+#endif
 
     struct WFrameWindow *frame;	       /* the frame window */
     int frame_x, frame_y;	       /* position of the frame in root*/
@@ -282,8 +283,9 @@ typedef struct WWindow {
         unsigned int skip_next_animation:1;
         unsigned int internal_window:1;
         unsigned int changing_workspace:1;
-
+#if 0 // FIXME: not used
         unsigned int inspector_open:1; /* attrib inspector is already open */
+#endif
 
         unsigned int destroyed:1;      /* window was already destroyed */
 
