@@ -2,6 +2,9 @@
 
     * window.m:
     Prevent creating NSPanel before NSApp is running.
+    * dockedapp.m (removed):
+    * WMDockedAppPanel.m:
+    rewrite dockedapp into WMDockedAppPanel.
 
 2006-02-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

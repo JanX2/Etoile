@@ -26,6 +26,7 @@
 #include "WMApplication.h"	
 #include "WMDialogController.h"
 #include "WMWindowInspector.h"
+#include "WMDockedAppPanel.h"
 #include "WMDefaults.h"
 #include <X11/Xlib.h>
 
@@ -241,7 +242,7 @@ int WMCurrentScreen()
 	                     action: NULL keyEquivalent: @""];
   [mainMenu setSubmenu: services forItem: item];
 
-#if 0
+#if 1
   /* Debug */
   NSMenu *debug = AUTORELEASE([[NSMenu alloc] init]);
   [debug addItemWithTitle: @"Open Window"
@@ -715,7 +716,7 @@ int WMCurrentScreen()
 
 - (void) debugWindow: (id) sender
 {
-//  [[WMDialogController sharedController] showTestWindow: self];
+  [[WMDockedAppPanel sharedPanel] makeKeyAndOrderFront: self];
 }
 
 /** Private **/

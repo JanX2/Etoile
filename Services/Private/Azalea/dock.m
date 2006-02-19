@@ -58,7 +58,7 @@
 
 #include "WMDialogController.h"
 #include "WMDefaults.h"
-
+#include "WMDockedAppPanel.h"
 
 /**** Local variables ****/
 #define CLIP_REWIND       1
@@ -68,11 +68,12 @@
 
 /**** Global variables ****/
 
+#if 0
 /* in dockedapp.c */
 extern void DestroyDockAppSettingsPanel();
 
 extern void ShowDockAppSettingsPanel(WAppIcon *aicon);
-
+#endif
 
 extern XContext wWinContext;
 
@@ -776,7 +777,10 @@ settingsCallback(WMenu *menu, WMenuEntry *entry)
 
     if (btn->editing)
         return;
-    ShowDockAppSettingsPanel(btn);
+//    ShowDockAppSettingsPanel(btn);
+    WMDockedAppPanel *panel = [WMDockedAppPanel sharedPanel];
+    [panel setAppIcon: btn];
+    [panel makeKeyAndOrderFront: nil];
 }
 
 
@@ -2264,8 +2268,16 @@ wDockDetach(WDock *dock, WAppIcon *icon)
     int index;
 
     /* make the settings panel be closed */
+#if 0
     if (icon->panel) {
         DestroyDockAppSettingsPanel(icon->panel);
+    }
+#endif
+    WMDockedAppPanel *panel = [WMDockedAppPanel sharedPanel];
+    if (icon == [panel appIcon])
+    {
+      [panel setAppIcon: NULL];
+      [panel close];
     }
 
     /* This must be called before icon->dock is set to NULL.

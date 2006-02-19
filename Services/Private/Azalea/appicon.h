@@ -59,7 +59,7 @@ typedef struct WAppIcon {
 
     struct WDock *dock;		       /* In which dock is docked. */
 
-    struct _AppSettingsPanel *panel;   /* Settings Panel */
+//    struct _AppSettingsPanel *panel;   /* Settings Panel */
 
     unsigned int gnustep_app:1;	       /* if this is a GNUstep application */
     unsigned int docked:1;

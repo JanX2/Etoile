@@ -37,7 +37,6 @@ Azalea_OBJC_FILES = \
 	defaults.m \
 	dialog.m \
 	dock.m \
-	dockedapp.m \
 	event.m \
 	framewin.m \
 	geomview.m \
