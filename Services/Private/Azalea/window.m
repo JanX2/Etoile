@@ -1744,17 +1744,15 @@ wUnmanageWindow(WWindow *wwin, Bool restore, Bool destroyed)
     int wasFocused;
     WScreen *scr = wwin->screen_ptr;
 
-#if 0 // FIXME: not used
-    /* First close attribute editor window if open */
-    if (wwin->flags.inspector_open) {
-        wCloseInspectorForWindow(wwin);
-    }
-#endif
-    WMWindowInspector *inspector = [WMWindowInspector sharedWindowInspector];
-    if ([inspector window] == wwin)
+    /* Safe guard: this can be called before NSApp is running */
+    if ([NSApp isRunning])
     {
-      [inspector setWindow: NULL];
-      [inspector close]; // FIXME: not sure whether -performClose: is better
+      WMWindowInspector *inspector = [WMWindowInspector sharedWindowInspector];
+      if ([inspector window] == wwin)
+      {
+        [inspector setWindow: NULL];
+        [inspector close]; // FIXME: not sure whether -performClose: is better
+      }
     }
 
     /* Close window menu if it's open for this window */
