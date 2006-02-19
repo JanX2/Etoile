@@ -86,8 +86,7 @@ static NSString *WMApplicationSpecificItem = @"WMApplicationSpecificItem";
 
 - (id) init
 {
-  self = [super init];
-
+  /* call -initWithFrame: in -createInterface */
   [self createInterface];
 
   return self;

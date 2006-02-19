@@ -10,6 +10,9 @@
     merge WPreferences and WINGsConfiguration.
     * WINGs/wapplication.c:
     removed.
+    * WMDockedAppPanel.h:
+    * WMDockedAppPanel.m:
+    new.
 
 2006-02-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

@@ -25,6 +25,7 @@ Azalea_OBJC_FILES = \
 	WMDefaults.m \
 	WMDialogController.m \
 	WMWindowInspector.m \
+	WMDockedAppPanel.m \
 	actions.m \
 	appicon.m \
 	application.m \
