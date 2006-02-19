@@ -446,8 +446,10 @@ static NSString *WSWorkspace = @"Workspace";
   [self readStaticDefaults];
 
   /* from WINGsConfiguration */
-  wPreferences.mouseWheelUp = Button4;
-  wPreferences.mouseWheelDown = Button5;
+  if (wPreferences.mouseWheelUp == 0)
+    wPreferences.mouseWheelUp = Button4;
+  if (wPreferences.mouseWheelDown == 0)
+    wPreferences.mouseWheelDown = Button5;
 
   /* window attributes */
   if ([defaults objectForKey: WDWindowAttributes] == nil)
