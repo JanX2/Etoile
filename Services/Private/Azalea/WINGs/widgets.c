@@ -770,9 +770,10 @@ WMCreateScreenWithRContext(Display *display, int screen, RContext *context)
 
         return NULL;
     }
-
+#if 0 // FIXME: not used
     /* create input method stuff */
     W_InitIM(scrPtr);
+#endif
 
     scrPtr->checkButtonImageOn = makePixmap(scrPtr, CHECK_BUTTON_ON,
                                             CHECK_BUTTON_ON_WIDTH,

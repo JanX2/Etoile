@@ -5,6 +5,9 @@
     * dockedapp.m (removed):
     * WMDockedAppPanel.m:
     rewrite dockedapp into WMDockedAppPanel.
+    * WINGs/wtextfield.c:
+    * WINGs/winputmethod.c:
+    not used and removed.
 
 2006-02-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

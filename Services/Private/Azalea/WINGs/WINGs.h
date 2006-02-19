@@ -263,7 +263,6 @@ typedef struct W_Window WMWindow;
 typedef struct W_Frame WMFrame;
 typedef struct W_Button WMButton;
 typedef struct W_Label WMLabel;
-typedef struct W_TextField WMTextField;
 typedef struct W_PopUpButton WMPopUpButton;
 typedef struct W_Box WMBox;
 
@@ -305,26 +304,6 @@ typedef void WMAction(WMWidget *self, void *clientData);
 
 /* same as WMAction, but for stuff that arent widgets */
 typedef void WMAction2(void *self, void *clientData);
-
-typedef struct WMTextFieldDelegate {
-    void *data;
-
-    void (*didBeginEditing)(struct WMTextFieldDelegate *self,
-                            WMNotification *notif);
-
-    void (*didChange)(struct WMTextFieldDelegate *self,
-                      WMNotification *notif);
-
-    void (*didEndEditing)(struct WMTextFieldDelegate *self,
-                          WMNotification *notif);
-
-    Bool (*shouldBeginEditing)(struct WMTextFieldDelegate *self,
-                               WMTextField *tPtr);
-
-    Bool (*shouldEndEditing)(struct WMTextFieldDelegate *self,
-                             WMTextField *tPtr);
-} WMTextFieldDelegate;
-
 
 typedef void WMSelectionCallback(WMView *view, Atom selection, Atom target,
                                  Time timestamp, void *cdata, WMData *data);
@@ -871,51 +850,6 @@ void WMSetFrameTitlePosition(WMFrame *fPtr, WMTitlePosition position);
 void WMSetFrameRelief(WMFrame *fPtr, WMReliefType relief);
 
 void WMSetFrameTitle(WMFrame *fPtr, char *title);
-
-/* ....................................................................... */
-
-WMTextField* WMCreateTextField(WMWidget *parent);
-
-void WMInsertTextFieldText(WMTextField *tPtr, char *text, int position);
-
-void WMDeleteTextFieldRange(WMTextField *tPtr, WMRange range);
-
-/* you can free the returned string */
-char* WMGetTextFieldText(WMTextField *tPtr);
-
-void WMSetTextFieldText(WMTextField *tPtr, char *text);
-
-void WMSetTextFieldAlignment(WMTextField *tPtr, WMAlignment alignment);
-
-void WMSetTextFieldFont(WMTextField *tPtr, WMFont *font);
-
-WMFont* WMGetTextFieldFont(WMTextField *tPtr);
-
-void WMSetTextFieldBordered(WMTextField *tPtr, Bool bordered);
-
-void WMSetTextFieldBeveled(WMTextField *tPtr, Bool flag);
-
-Bool WMGetTextFieldEditable(WMTextField *tPtr);
-
-void WMSetTextFieldEditable(WMTextField *tPtr, Bool flag);
-
-void WMSetTextFieldSecure(WMTextField *tPtr, Bool flag);
-
-void WMSelectTextFieldRange(WMTextField *tPtr, WMRange range);
-
-void WMSetTextFieldCursorPosition(WMTextField *tPtr, unsigned int position);
-
-void WMSetTextFieldNextTextField(WMTextField *tPtr, WMTextField *next);
-
-void WMSetTextFieldPrevTextField(WMTextField *tPtr, WMTextField *prev);
-
-void WMSetTextFieldDelegate(WMTextField *tPtr, WMTextFieldDelegate *delegate);
-
-WMTextFieldDelegate* WMGetTextFieldDelegate(WMTextField *tPtr);
-
-extern char *WMTextDidChangeNotification;
-extern char *WMTextDidBeginEditingNotification;
-extern char *WMTextDidEndEditingNotification;
 
 /* ....................................................................... */
 

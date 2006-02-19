@@ -29,14 +29,12 @@ WINGs_C_FILES = \
 	wframe.c \
 	wfont.c \
 	widgets.c \
-	winputmethod.c \
 	wlabel.c \
 	wmenuitem.c \
 	wmisc.c \
 	wpanel.c \
 	wpixmap.c \
 	wpopupbutton.c \
-	wtextfield.c \
 	wview.c \
 	wwindow.c
 

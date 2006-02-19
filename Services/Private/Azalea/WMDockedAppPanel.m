@@ -340,8 +340,11 @@ static WMDockedAppPanel *sharedInstance;
   }
   else
   {
-    aicon->editing = 0; 
-    aicon = NULL;
+    if (aicon)
+    {
+      aicon->editing = 0; 
+      aicon = NULL;
+    }
   }
 }
 
