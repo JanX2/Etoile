@@ -5,6 +5,7 @@
 
 #include <X11/Xatom.h>
 
+extern struct W_Application WMApp;
 
 typedef struct W_Window {
     W_Class widgetClass;
@@ -490,7 +491,7 @@ realizeWindow(WMWindow *win)
 
     classHint = XAllocClassHint();
     classHint->res_name = win->wname;
-    classHint->res_class = WMGetApplicationName();
+    classHint->res_class = WMApp.applicationName;
     XSetClassHint(scr->display, win->view->window, classHint);
     XFree(classHint);
 

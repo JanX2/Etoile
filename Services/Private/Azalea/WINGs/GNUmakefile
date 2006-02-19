@@ -21,7 +21,6 @@ WINGs_C_FILES = \
 	snprintf.c \
 	string.c \
 	usleep.c \
-	wapplication.c \
 	wappresource.c \
 	wballoon.c \
 	wbox.c \

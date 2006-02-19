@@ -8,6 +8,8 @@
     * WINGs/configuration.c (removed):
     * WindowMaker.h:
     merge WPreferences and WINGsConfiguration.
+    * WINGs/wapplication.c:
+    removed.
 
 2006-02-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
