@@ -415,23 +415,6 @@ typedef struct W_EventHandler {
     void *clientData;
 } W_EventHandler;
 
-
-
-
-typedef struct _WINGsConfiguration {
-    char *systemFont;
-    char *boldSystemFont;
-    int  defaultFontSize;
-    Bool antialiasedText;
-    unsigned doubleClickDelay;
-    unsigned mouseWheelUp;
-    unsigned mouseWheelDown;
-} _WINGsConfiguration;
-
-extern _WINGsConfiguration WINGsConfiguration;
-
-
-
 #define CHECK_CLASS(widget, class) assert(W_CLASS(widget)==(class))
 
 

@@ -5,7 +5,6 @@ SUBPROJECT_NAME = WINGs
 WINGs_C_FILES = \
 	array.c \
 	bagtree.c \
-	configuration.c \
 	data.c \
 	dragcommon.c \
 	dragdestination.c \
@@ -42,7 +41,7 @@ WINGs_C_FILES = \
 	wview.c \
 	wwindow.c
 
-WINGs_INCLUDE_DIRS += `freetype-config --cflags` -DRESOURCE_PATH=\"./\"
+WINGs_INCLUDE_DIRS += -I../ `freetype-config --cflags` -DRESOURCE_PATH=\"./\"
 WINGs_LDFLAGS = -L/usr/lib -lc `freetype-config --libs`
 
 -include GNUmakefile.preamble

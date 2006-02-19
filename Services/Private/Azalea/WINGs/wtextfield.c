@@ -4,6 +4,9 @@
 
 #include "WINGsP.h"
 #include "wconfig.h"
+#include "WindowMaker.h"
+
+extern WPreferences wPreferences;
 
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
@@ -1568,9 +1571,9 @@ handleTextFieldActionEvents(XEvent *event, void *data)
 
         if (!tPtr->flags.secure &&
             event->xbutton.time - lastButtonReleasedEvent
-            <= WINGsConfiguration.doubleClickDelay) {
+            <= wPreferences.dblclick_time) {
 
-            if (event->xbutton.time - lastButtonReleasedEvent2 <= 2*WINGsConfiguration.doubleClickDelay) {
+            if (event->xbutton.time - lastButtonReleasedEvent2 <= 2*wPreferences.dblclick_time) {
                 tPtr->selection.position = 0;
                 tPtr->selection.count = tPtr->textLen;
             } else {

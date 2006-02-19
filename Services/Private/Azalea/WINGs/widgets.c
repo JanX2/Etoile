@@ -2,6 +2,7 @@
 
 #include "WINGsP.h"
 #include "wconfig.h"
+#include "WindowMaker.h"
 
 #include <X11/Xft/Xft.h>
 
@@ -11,6 +12,8 @@
 #include <X11/cursorfont.h>
 
 #include <X11/Xlocale.h>
+
+extern WPreferences wPreferences;
 
 /********** data ************/
 
@@ -601,8 +604,6 @@ WMCreateScreenWithRContext(Display *display, int screen, RContext *context)
 
         initialized = 1;
 
-        W_ReadConfigurations();
-
         //assert(W_ApplicationInitialized());
     }
 
@@ -754,7 +755,7 @@ WMCreateScreenWithRContext(Display *display, int screen, RContext *context)
 
     scrPtr->stipple = stipple;
 
-    scrPtr->antialiasedText = WINGsConfiguration.antialiasedText;
+    scrPtr->antialiasedText = wPreferences.antialiasedText;
 
     scrPtr->normalFont = WMSystemFontOfSize(scrPtr, 0);
 

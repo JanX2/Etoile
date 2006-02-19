@@ -3,7 +3,9 @@
 
 
 #include "WINGsP.h"
+#include "WindowMaker.h"
 
+extern WPreferences wPreferences;
 
 typedef struct W_PopUpButton {
     W_Class widgetClass;
@@ -707,12 +709,12 @@ handleActionEvents(XEvent *event, void *data)
         if (!bPtr->flags.enabled)
             break;
 
-        if (event->xbutton.button==WINGsConfiguration.mouseWheelUp) {
+        if (event->xbutton.button==wPreferences.mouseWheelUp) {
             if (!bPtr->menuView->flags.mapped && !bPtr->flags.pullsDown) {
                 wheelScrollUp(bPtr);
             }
             break;
-        } else if (event->xbutton.button==WINGsConfiguration.mouseWheelDown) {
+        } else if (event->xbutton.button==wPreferences.mouseWheelDown) {
             if (!bPtr->menuView->flags.mapped && !bPtr->flags.pullsDown) {
                 wheelScrollDown(bPtr);
             }
@@ -733,8 +735,8 @@ handleActionEvents(XEvent *event, void *data)
         break;
 
     case ButtonRelease:
-        if (event->xbutton.button==WINGsConfiguration.mouseWheelUp ||
-            event->xbutton.button==WINGsConfiguration.mouseWheelDown) {
+        if (event->xbutton.button==wPreferences.mouseWheelUp ||
+            event->xbutton.button==wPreferences.mouseWheelDown) {
             break;
         }
         XUngrabPointer(bPtr->view->screen->display, event->xbutton.time);

@@ -5,13 +5,11 @@
 #include "keybind.h"
 #include "framewin.h"
 #include "resources.h"
-#include "WINGs/WINGsP.h"
 #include <wraster.h>
 
 extern WPreferences wPreferences;
 extern WShortKey wKeyBindings[WKBD_LAST];
 extern Cursor wCursor[WCUR_LAST];
-extern _WINGsConfiguration WINGsConfiguration;
 
 static WMDefaults *sharedInstance;
 
@@ -447,6 +445,10 @@ static NSString *WSWorkspace = @"Workspace";
 
   [self readStaticDefaults];
 
+  /* from WINGsConfiguration */
+  wPreferences.mouseWheelUp = Button4;
+  wPreferences.mouseWheelDown = Button5;
+
   /* window attributes */
   if ([defaults objectForKey: WDWindowAttributes] == nil)
   {
@@ -868,7 +870,6 @@ static NSString *WSWorkspace = @"Workspace";
   wPreferences.dblclick_time = [defaults integerForKey: WMDDoubleClickTime];
   if (wPreferences.dblclick_time < 0)
     wPreferences.dblclick_time = 1;
-  WINGsConfiguration.doubleClickDelay = wPreferences.dblclick_time;
 
   wPreferences.save_session_on_exit = [defaults boolForKey: WMDSaveSessionOnExit];
   wPreferences.wrap_menus = [defaults boolForKey: WMDWrapMenus];

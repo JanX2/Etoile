@@ -474,6 +474,11 @@ typedef struct WPreferences {
         unsigned int nopolling:1;      /* don't poll for defaults changes */
         unsigned int restarting:2;
     } flags;			       /* internal flags */
+
+    /* from WINGsConfiguration */
+    Bool antialiasedText;
+    unsigned mouseWheelUp;
+    unsigned mouseWheelDown;
 } WPreferences;
 
 

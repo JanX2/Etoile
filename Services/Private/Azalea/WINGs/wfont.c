@@ -4,7 +4,7 @@
 #include "wconfig.h"
 
 #include "WINGsP.h"
-
+#include "WindowMaker.h"
 #include <wraster.h>
 #include <assert.h>
 #include <X11/Xlocale.h>
@@ -12,11 +12,12 @@
 #include <X11/Xft/Xft.h>
 #include <fontconfig/fontconfig.h>
 
-
+#define SYSTEM_FONT "Trebuchet MS,Luxi Sans"
+#define BOLD_SYSTEM_FONT "Trebuchet MS,Luxi Sans:bold"
 #define DEFAULT_FONT "sans serif:pixelsize=12"
+#define DEFAULT_SIZE 12
 
-#define DEFAULT_SIZE WINGsConfiguration.defaultFontSize
-
+extern WPreferences wPreferences;
 
 static FcPattern*
 xlfdToFcPattern(char *xlfd)
@@ -141,7 +142,7 @@ WMCreateFont(WMScreen *scrPtr, char *fontName)
         fname = wstrdup(fontName);
     }
 
-    if (!WINGsConfiguration.antialiasedText && !strstr(fname, ":antialias=")) {
+    if (!wPreferences.antialiasedText && !strstr(fname, ":antialias=")) {
         fname = wstrappend(fname, ":antialias=false");
     }
 
@@ -249,7 +250,7 @@ WMSystemFontOfSize(WMScreen *scrPtr, int size)
     WMFont *font;
     char *fontSpec;
 
-    fontSpec = makeFontOfSize(WINGsConfiguration.systemFont, size, NULL);
+    fontSpec = makeFontOfSize(SYSTEM_FONT, size, NULL);
 
     font = WMCreateFont(scrPtr, fontSpec);
 
@@ -269,7 +270,7 @@ WMBoldSystemFontOfSize(WMScreen *scrPtr, int size)
     WMFont *font;
     char *fontSpec;
 
-    fontSpec = makeFontOfSize(WINGsConfiguration.boldSystemFont, size, NULL);
+    fontSpec = makeFontOfSize(BOLD_SYSTEM_FONT, size, NULL);
 
     font = WMCreateFont(scrPtr, fontSpec);
 

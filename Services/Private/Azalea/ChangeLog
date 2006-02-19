@@ -5,6 +5,9 @@
     * winspector.h (removed):
     * winspector.m (removed):
     rewrite winspector into WMWindowInspector.
+    * WINGs/configuration.c (removed):
+    * WindowMaker.h:
+    merge WPreferences and WINGsConfiguration.
 
 2006-02-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

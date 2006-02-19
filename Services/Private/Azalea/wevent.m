@@ -5,7 +5,9 @@
  */
 
 #include "WINGs/WINGsP.h"
+#include "WindowMaker.h"
 
+extern WPreferences wPreferences;
 
 /* table to map event types to event masks */
 static unsigned long eventMasks[] = {
@@ -357,7 +359,7 @@ WMIsDoubleClick(XEvent *event)
         return False;
 
     if (event->xbutton.time - view->screen->lastClickTime
-        < WINGsConfiguration.doubleClickDelay) {
+        < wPreferences.dblclick_time) {
         view->screen->lastClickTime = 0;
         view->screen->lastClickWindow = None;
         view->screen->ignoreNextDoubleClick = 1;

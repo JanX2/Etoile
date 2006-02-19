@@ -34,9 +34,6 @@
 #include <stdio.h>
 #include <string.h>
 
-/* For getting mouse wheel mappings from WINGs */
-#include <WINGs/WINGsP.h>
-
 #include "WindowMaker.h"
 #include "GNUstep.h"
 #include "wcore.h"
@@ -3148,9 +3145,9 @@ titlebarDblClick(WCoreWindow *sender, void *data, XEvent *event)
         }
     } else if (event->xbutton.button==Button2) {
         wSelectWindow(wwin, !wwin->flags.selected);
-    } else if (event->xbutton.button == WINGsConfiguration.mouseWheelUp) {
+    } else if (event->xbutton.button == wPreferences.mouseWheelUp) {
         wShadeWindow(wwin);
-    } else if (event->xbutton.button == WINGsConfiguration.mouseWheelDown) {
+    } else if (event->xbutton.button == wPreferences.mouseWheelDown) {
         wUnshadeWindow(wwin);
     }
 }
