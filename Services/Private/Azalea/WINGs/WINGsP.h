@@ -27,8 +27,6 @@ extern "C" {
 
 #define WC_UserWidget	128
 
-#define SCROLLER_WIDTH	20
-
 #define XDND_VERSION    4
 
 

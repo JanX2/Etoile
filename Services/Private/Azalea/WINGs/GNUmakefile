@@ -23,7 +23,6 @@ WINGs_C_FILES = \
 	usleep.c \
 	wappresource.c \
 	wballoon.c \
-	wbox.c \
 	wbutton.c \
 	wcolor.c \
 	wframe.c \
@@ -32,7 +31,6 @@ WINGs_C_FILES = \
 	wlabel.c \
 	wmenuitem.c \
 	wmisc.c \
-	wpanel.c \
 	wpixmap.c \
 	wpopupbutton.c \
 	wview.c \

@@ -46,7 +46,7 @@ TODO:
 8. cannot use popup button in WMaker (probably related to event handling).
 9. can use NSPanel, but cannot use NSWindow (weird).
 10. no way to find out whether user defaults changed.
-11. use the default defauls when user put the invalide defaults.
+11. use the default defauls when user put the invalid defaults.
 12. recover these functions in defaults.m.bak
     * switch panel
     * background
@@ -59,6 +59,8 @@ TODO:
 17. should move CachedPixmap into ApplicationSupport.
 18. fix 'initial workspace' in WMWindowInspector.
 19: enable XSMP_ENABLED ?
+20: when NSAlertPanel is used, it may be not focused (winmenu).
+21: Balloon is mostly nonfunctional.
 
 From: Enrico Sersale <enrico@xxx>	Mailed-By: gnu.org
 Reply-To: enrico@xxx

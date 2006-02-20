@@ -121,9 +121,8 @@ execMenuCommand(WMenu *menu, WMenuEntry *entry)
     case MC_KILL:
         wretain(wwin);
         if (wPreferences.dont_confirm_kill
-            || wMessageDialog(menu->frame->screen_ptr, ("Kill Application"),
-                              ("This will kill the application.\nAny unsaved changes will be lost.\nPlease confirm."),
-                              ("Yes"), ("No"), NULL)==WAPRDefault) {
+            || NSRunAlertPanel(@"Kill Application", @"This will kill the application.\nAny unsaved changes will be lost.\nPlease confirm.", @"Yes", @"No", nil) == NSAlertDefaultReturn)
+	{
             if (!wwin->flags.destroyed)
                 wClientKill(wwin);
         }

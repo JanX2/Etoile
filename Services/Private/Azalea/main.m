@@ -259,12 +259,16 @@ static void
 shellCommandHandler(pid_t pid, unsigned char status, _tuple *data)
 {
     if (status == 127) {
-        char *buffer;
-
-        buffer = wstrconcat(("Could not execute command: "), data->command);
-
-        wMessageDialog(data->scr, ("Error"), buffer, ("OK"), NULL, NULL);
-        wfree(buffer);
+      NSString *s = [NSString stringWithFormat: @"Could not execute command: %s", data->command];
+      if ([NSApp isRunning])
+      {
+	NSRunAlertPanel(@"Error", s, @"OK", nil, nil);
+	return;
+      }
+      else
+      {
+        NSLog(@"Error: %@", s);
+      }
     } else if (status != 127) {
         /*
          printf("%s: %i\n", data->command, status);

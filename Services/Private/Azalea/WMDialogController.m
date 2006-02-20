@@ -127,11 +127,12 @@ static WMDialogController *sharedInstance;
       /* preview icon */
       NSFileManager *manager = [NSFileManager defaultManager];
       BOOL isDir;
-      if ([manager fileExistsAtPath: iconPath isDirectory: &isDir] && isDir == NO)
+      if ([manager fileExistsAtPath: [iconPath stringByExpandingTildeInPath] isDirectory: &isDir] && isDir == NO)
       {
-        NSImage *image = [[NSImage alloc] initWithContentsOfFile: iconPath];
-        [iconView setImage: image];
 	[chooserOKButton setEnabled: YES];
+        NSImage *image = [[NSImage alloc] initWithContentsOfFile: [iconPath stringByExpandingTildeInPath]];
+        [iconView setImage: image];
+	//[chooserOKButton setEnabled: YES];
       }
       else
       {

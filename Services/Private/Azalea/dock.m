@@ -232,8 +232,8 @@ killCallback(WMenu *menu, WMenuEntry *entry)
     }
 
     if (wPreferences.dont_confirm_kill
-        || wMessageDialog(menu->frame->screen_ptr, ("Kill Application"),
-                          buffer, ("Yes"), ("No"), NULL)==WAPRDefault) {
+        || NSRunAlertPanel(@"Kill Application", [NSString stringWithCString: buffer], @"Yes", @"No", nil) == NSAlertDefaultReturn)
+    {
         if (fPtr!=NULL) {
             WWindow *wwin, *twin;
 
@@ -478,21 +478,11 @@ omnipresentCallback(WMenu *menu, WMenuEntry *entry)
     WMFreeArray(selectedIcons);
 
     if (failed > 1) {
-        wMessageDialog(dock->screen_ptr, ("Warning"),
-                       ("Some icons cannot be made omnipresent. "
-                         "Please make sure that no other icon is "
-                         "docked in the same positions on the other "
-                         "workspaces and the Clip is not full in "
-                         "some workspace."),
-                       ("OK"), NULL, NULL);
+        NSRunAlertPanel(@"Warning", @"Some icons cannot be made omnipresent.\nPlease make sure that no other icon is\ndocked in the same positions on the other\nworkspaces and the Clip is not full in\nsome workspace",
+			@"OK", nil, nil);
     } else if (failed == 1) {
-        wMessageDialog(dock->screen_ptr, ("Warning"),
-                       ("Icon cannot be made omnipresent. "
-                         "Please make sure that no other icon is "
-                         "docked in the same position on the other "
-                         "workspaces and the Clip is not full in "
-                         "some workspace."),
-                       ("OK"), NULL, NULL);
+        NSRunAlertPanel(@"Warning", @"Icon cannot be made omnipresent.\nPlease make sure that no other icon is\ndocked in the same positions on the other\nworkspaces and the Clip is not full in\nsome workspace",
+			@"OK", nil, nil);
     }
 }
 
@@ -514,9 +504,9 @@ removeIconsCallback(WMenu *menu, WMenuEntry *entry)
     selectedIcons = getSelected(dock);
 
     if (WMGetArrayItemCount(selectedIcons)) {
-        if (wMessageDialog(dock->screen_ptr, ("Workspace Clip"),
-                           ("All selected icons will be removed!"),
-                           ("OK"), ("Cancel"), NULL)!=WAPRDefault) {
+        if (NSRunAlertPanel(@"Workspace Clip", @"All selected icons will be removed!", @"OK", @"Cancel", nil) != NSAlertDefaultReturn)
+
+	{
             WMFreeArray(selectedIcons);
             return;
         }
@@ -3229,7 +3219,6 @@ trackDeadProcess(pid_t pid, unsigned char status, WDock *dock)
             wDockFinishLaunch(dock, icon);
             icon->pid = 0;
             if (status==111) {
-                char msg[PATH_MAX];
                 char *cmd;
 
 #ifdef XDND
@@ -3242,11 +3231,8 @@ trackDeadProcess(pid_t pid, unsigned char status, WDock *dock)
                 else
                     cmd = icon->command;
 
-                snprintf(msg, sizeof(msg),
-                         ("Could not execute command \"%s\""), cmd);
-
-                wMessageDialog(dock->screen_ptr, ("Error"), msg,
-                               ("OK"), NULL, NULL);
+		NSRunAlertPanel(@"Error", [NSString stringWithFormat: @"Could not execute command \"%s\"", cmd],
+				@"OK", nil, nil);
             }
             break;
         }

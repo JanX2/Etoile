@@ -8,6 +8,11 @@
     * WINGs/wtextfield.c:
     * WINGs/winputmethod.c:
     not used and removed.
+    * dialog.m:
+    use NSRunAlertPanel() for wMessage...().
+    * WINGs/wbox.c:
+    * WINGs/wpanel.c:
+    not used and removed.
 
 2006-02-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

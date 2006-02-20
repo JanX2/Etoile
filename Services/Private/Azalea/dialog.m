@@ -69,99 +69,9 @@
 
 extern WPreferences wPreferences;
 
-
-static WMPoint
-getCenter(WScreen *scr, int width, int height)
-{
-    return wGetPointToCenterRectInHead(scr, wGetHeadForPointerLocation(scr),
-                                       width, height);
-}
-
-
-int
-wMessageDialog(WScreen *scr, char *title, char *message,
-               char *defBtn, char *altBtn, char *othBtn)
-{
-#if 0
-  /* Cannot do this because it might be called before NSApp start */
-  WMDialogController *controller = [WMDialogController sharedController];
-  NSString *tle, *msg;
-  NSString *defaultButton, *alternateButton, *otherButton;
-
-  if (title)
-    tle = [NSString stringWithCString: title];
-  else
-    tle = nil;
-
-  if (message)
-    msg = [NSString stringWithCString: message];
-  else
-    msg = nil;
-
-  if (defBtn)
-    defaultButton = [NSString stringWithCString: defBtn];
-  else
-    defaultButton = nil;
-
-  if (altBtn)
-    alternateButton = [NSString stringWithCString: altBtn];
-  else
-    alternateButton = nil;
-
-  if (othBtn)
-    otherButton = [NSString stringWithCString: othBtn];
-  else
-    otherButton = nil;
-
-  return [controller messageDialogWithTitle: tle
-	                     message: msg
-	 	       defaultButton: defaultButton
-		     alternateButton: alternateButton
-		         otherButton: otherButton];
-#else
-    WMAlertPanel *panel;
-    Window parent;
-    WWindow *wwin;
-    int result;
-    WMPoint center;
-
-    panel = WMCreateAlertPanel(scr->wmscreen, NULL, title, message,
-                               defBtn, altBtn, othBtn);
-
-    parent = XCreateSimpleWindow(dpy, scr->root_win, 0, 0, 400, 180, 0, 0, 0);
-
-    XReparentWindow(dpy, WMWidgetXID(panel->win), parent, 0, 0);
-
-
-    center = getCenter(scr, 400, 180);
-    wwin = wManageInternalWindow(scr, parent, None, NULL, center.x, center.y,
-                                 400, 180);
-    wwin->client_leader = WMWidgetXID(panel->win);
-
-    WMMapWidget(panel->win);
-
-    wWindowMap(wwin);
-
-    WMRunModalLoop(WMWidgetScreen(panel->win), WMWidgetView(panel->win));
-
-    result = panel->result;
-
-    WMUnmapWidget(panel->win);
-
-    wUnmanageWindow(wwin, False, False);
-
-    WMDestroyAlertPanel(panel);
-
-    XDestroyWindow(dpy, parent);
-
-    return result;
-#endif
-}
-
 int
 wInputDialog(WScreen *scr, char *title, char *message, char **text)
 {
-#if 1
   NSString *tle, *msg, *txt;
   if (title)
     tle = [NSString stringWithCString: title];
@@ -190,7 +100,6 @@ wInputDialog(WScreen *scr, char *title, char *message, char **text)
     return True;
   }
   else
-#endif
   {
     return False;
   }

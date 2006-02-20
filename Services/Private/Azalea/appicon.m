@@ -48,7 +48,7 @@
 #include "xdnd.h"
 #endif
 #include "wsound.h"
-
+#include "WMDialogController.h"
 
 /*
  * icon_file for the dock is got from the preferences file by
@@ -391,9 +391,7 @@ static void
 setIconCallback(WMenu *menu, WMenuEntry *entry)
 {
     WAppIcon *icon = ((WApplication*)entry->clientdata)->app_icon;
-    char *file=NULL;
     WScreen *scr;
-    int result;
 
     assert(icon!=NULL);
 
@@ -404,24 +402,19 @@ setIconCallback(WMenu *menu, WMenuEntry *entry)
 
     wretain(icon);
 
-    result = wIconChooserDialog(scr, &file, icon->wm_instance, icon->wm_class);
-
-    if (result && !icon->destroyed) {
-        if (file && *file==0) {
-            wfree(file);
-            file = NULL;
-        }
-        if (!wIconChangeImageFile(icon->icon, file)) {
-            wMessageDialog(scr, ("Error"),
-                           ("Could not open specified icon file"),
-                           ("OK"), NULL, NULL);
-        } else {
-            wDefaultChangeIcon(scr, icon->wm_instance, icon->wm_class, file);
-            wAppIconPaint(icon);
-        }
-        if (file)
-            wfree(file);
+    NSString *file = [[WMDialogController sharedController] iconChooserDialogWithInstance: [NSString stringWithCString: icon->wm_instance]
+	    class: [NSString stringWithCString: icon->wm_class]];
+    if (file && !icon->destroyed)
+    {
+      if (!wIconChangeImageFile(icon->icon, (char*)[file cString])) {
+	NSRunAlertPanel(@"Error", @"Could not open specified icon file",
+		@"OK", nil, nil);
+      } else {
+        wDefaultChangeIcon(scr, icon->wm_instance, icon->wm_class, (char*)[file cString]);
+	wAppIconPaint(icon);
+      }
     }
+
     icon->editing = 0;
     wrelease(icon);
 }
@@ -450,8 +443,8 @@ killCallback(WMenu *menu, WMenuEntry *entry)
 
     wretain(wapp->main_window_desc);
     if (wPreferences.dont_confirm_kill
-        || wMessageDialog(menu->frame->screen_ptr, ("Kill Application"),
-                          buffer, ("Yes"), ("No"), NULL)==WAPRDefault) {
+        || NSRunAlertPanel(@"Kill Application", [NSString stringWithCString: buffer], @"Yes", @"No", nil) == NSAlertDefaultReturn)
+    {
         if (fPtr!=NULL) {
             WWindow *wwin, *twin;
 

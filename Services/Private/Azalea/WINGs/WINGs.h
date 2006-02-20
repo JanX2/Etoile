@@ -228,10 +228,8 @@ enum {
     WC_Frame = 1,
     WC_Label = 2,
     WC_Button = 3,
-    WC_TextField = 4,
     WC_PopUpButton = 9,
     WC_MenuView = 16,
-    WC_Box = 19
 };
 
 /* All widgets must start with the following structure
@@ -264,26 +262,10 @@ typedef struct W_Frame WMFrame;
 typedef struct W_Button WMButton;
 typedef struct W_Label WMLabel;
 typedef struct W_PopUpButton WMPopUpButton;
-typedef struct W_Box WMBox;
 
 
 /* not widgets */
 typedef struct W_MenuItem WMMenuItem;
-
-/* struct for message panel */
-typedef struct WMAlertPanel {
-    WMWindow *win;		       /* window */
-    WMBox *vbox;
-    WMBox *hbox;
-    WMButton *defBtn;		       /* default button */
-    WMButton *altBtn;		       /* alternative button */
-    WMButton *othBtn;		       /* other button */
-    WMLabel *iLbl;		       /* icon label */
-    WMLabel *tLbl;		       /* title label */
-    WMLabel *mLbl;		       /* message label */
-    WMFrame *line;		       /* separator */
-    short result;		       /* button that was pushed */
-} WMAlertPanel;
 
 /* Basic font styles. Used to easily get one style from another */
 typedef enum WMFontStyle {
@@ -949,33 +931,6 @@ int WMGetPopUpButtonNumberOfItems(WMPopUpButton *bPtr);
 void WMSetPopUpButtonEnabled(WMPopUpButton *bPtr, Bool flag);
 
 Bool WMGetPopUpButtonEnabled(WMPopUpButton *bPtr);
-
-/* ....................................................................... */
-
-WMBox* WMCreateBox(WMWidget *parent);
-
-void WMSetBoxBorderWidth(WMBox *box, unsigned width);
-
-void WMAddBoxSubview(WMBox *bPtr, WMView *view, Bool expand, Bool fill,
-                     int minSize, int maxSize, int space);
-
-void WMAddBoxSubviewAtEnd(WMBox *bPtr, WMView *view, Bool expand, Bool fill,
-                          int minSize, int maxSize, int space);
-
-void WMRemoveBoxSubview(WMBox *bPtr, WMView *view);
-
-void WMSetBoxHorizontal(WMBox *box, Bool flag);
-
-/* ....................................................................... */
-
-int WMRunAlertPanel(WMScreen *app, WMWindow *owner, char *title, char *msg,
-                    char *defaultButton, char *alternateButton,
-                    char *otherButton);
-
-WMAlertPanel* WMCreateAlertPanel(WMScreen *app, WMWindow *owner, char *title,
-                                 char *msg, char *defaultButton,
-                                 char *alternateButton, char *otherButton);
-void WMDestroyAlertPanel(WMAlertPanel *panel);
 
 #ifdef __cplusplus
 }

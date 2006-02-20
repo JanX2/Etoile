@@ -30,9 +30,6 @@ enum {
     WMStartAlternate
 };
 
-int wMessageDialog(WScreen *scr, char *title, char *message,
-                   char *defBtn, char *altBtn, char *othBtn);
-
 int wShowCrashingDialogPanel(int whatSig);
 
 /* dockedapp.m, winspector.m, appicon.m */
