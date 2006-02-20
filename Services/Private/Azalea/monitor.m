@@ -50,7 +50,7 @@ extern int wScreenCount;
 
 
 
-
+/* return 1 for restart, 0 for abort (also when restart alternative failed) */
 int showCrashDialog(int sig)
 {
     int crashAction;

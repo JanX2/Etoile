@@ -49,6 +49,7 @@
 #include "xutil.h"
 #include "xmodifier.h"
 #include "Foundation/Foundation.h"
+#include "WMDialogController.h"
 
 /**** global variables *****/
 
@@ -691,10 +692,18 @@ getuserinput(WScreen *scr, char *line, int *ptr)
 #undef _PROMPT
 #undef _DONE
 
-    if (!wInputDialog(scr, title, prompt, &ret))
-        return NULL;
+    NSString *result = [[WMDialogController sharedController] inputDialogWithTitle: [NSString stringWithCString: title]
+	    message: [NSString stringWithCString: prompt]
+	    text: nil]; // ret is not set, so use nil.
+    if (result)
+    {
+      ret = wstrdup((char*)[result cString]);
+      return ret;
+    }
     else
-        return ret;
+    {
+      return NULL;
+    }
 }
 
 

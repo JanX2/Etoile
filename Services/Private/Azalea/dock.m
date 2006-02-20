@@ -68,13 +68,6 @@
 
 /**** Global variables ****/
 
-#if 0
-/* in dockedapp.c */
-extern void DestroyDockAppSettingsPanel();
-
-extern void ShowDockAppSettingsPanel(WAppIcon *aicon);
-#endif
-
 extern XContext wWinContext;
 
 extern Cursor wCursor[WCUR_LAST];
@@ -152,23 +145,19 @@ static void
 renameCallback(WMenu *menu, WMenuEntry *entry)
 {
     WDock *dock = entry->clientdata;
-    char buffer[128];
     int wspace;
-    char *name;
 
     assert(entry->clientdata!=NULL);
 
     wspace = dock->screen_ptr->current_workspace;
 
-    name = wstrdup(dock->screen_ptr->workspaces[wspace]->name);
 
-    snprintf(buffer, sizeof(buffer), ("Type the name for workspace %i:"), wspace+1);
-    if (wInputDialog(dock->screen_ptr, ("Rename Workspace"), buffer,
-                     &name)) {
-        wWorkspaceRename(dock->screen_ptr, wspace, name);
-    }
-    if (name) {
-        wfree(name);
+    NSString *result = [[WMDialogController sharedController] inputDialogWithTitle: @"Rename Workspace"
+	    message: [NSString stringWithFormat: @"Type the name for workspace %i:", wspace]
+	    text: [NSString stringWithCString: dock->screen_ptr->workspaces[wspace]->name]];
+    if (result)
+    {
+	wWorkspaceRename(dock->screen_ptr, wspace, (char*)[result cString]);
     }
 }
 
@@ -557,9 +546,12 @@ keepIconsCallback(WMenu *menu, WMenuEntry *entry)
 
         if (!clickedIcon->command && !clickedIcon->editing) {
             clickedIcon->editing = 1;
-            if (wInputDialog(dock->screen_ptr, ("Keep Icon"),
-                             ("Type the command used to launch the application"),
-                             &command)) {
+	    NSString *result = [[WMDialogController sharedController] inputDialogWithTitle: @"Keep Icon"
+		    message: @"Type the command used to launch the application"
+		    text: nil]; // command is not set yet
+	    if (result)
+	    {
+		command = wstrdup((char*)[result cString]);
                 if (command && (command[0]==0 ||
                                 (command[0]=='-' && command[1]==0))) {
                     wfree(command);
@@ -2019,7 +2011,7 @@ wDockAttachIcon(WDock *dock, WAppIcon *icon, int x, int y)
 
     wwin = icon->icon->owner;
     if (icon->command==NULL) {
-        char *command;
+        char *command = NULL;
 
         icon->editing = 0;
 
@@ -2030,9 +2022,12 @@ wDockAttachIcon(WDock *dock, WAppIcon *icon, int x, int y)
             /* icon->forced_dock = 1;*/
             if (dock->type!=WM_CLIP || !icon->attracted) {
                 icon->editing = 1;
-                if (wInputDialog(dock->screen_ptr, ("Dock Icon"),
-                                 ("Type the command used to launch the application"),
-                                 &command)) {
+		NSString *result = [[WMDialogController sharedController] inputDialogWithTitle: @"Dock Icon"
+			message: @"Type the command used to launch the application"
+			text: nil]; // command is NULL here.
+		if (result)
+		{
+		    command = wstrdup((char*)[result cString]);
                     if (command && (command[0]==0 ||
                                     (command[0]=='-' && command[1]==0))) {
                         wfree(command);
@@ -2167,9 +2162,12 @@ moveIconBetweenDocks(WDock *src, WDock *dest, WAppIcon *icon, int x, int y)
         } else {
             icon->editing = 1;
             /* icon->forced_dock = 1;*/
-            if (wInputDialog(src->screen_ptr, ("Dock Icon"),
-                             ("Type the command used to launch the application"),
-                             &command)) {
+	    NSString *result = [[WMDialogController sharedController] inputDialogWithTitle: @"Dock Icon"
+		    message: @"Type the command used to launch the application"
+		    text: nil]; // command is NULL here.
+	    if (result)
+	    {
+		command = wstrdup((char*)[result cString]);
                 if (command && (command[0]==0 ||
                                 (command[0]=='-' && command[1]==0))) {
                     wfree(command);

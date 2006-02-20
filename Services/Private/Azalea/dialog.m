@@ -69,66 +69,6 @@
 
 extern WPreferences wPreferences;
 
-int
-wInputDialog(WScreen *scr, char *title, char *message, char **text)
-{
-  NSString *tle, *msg, *txt;
-  if (title)
-    tle = [NSString stringWithCString: title];
-  else
-    tle = nil;
-
-  if (message)
-    msg = [NSString stringWithCString: message];
-  else
-    msg = nil;
-
-  if (*text)
-    txt = [NSString stringWithCString: *text];
-  else
-    txt = nil;
-
-  WMDialogController *controller = [WMDialogController sharedController];
-  NSString *string = [controller inputDialogWithTitle: tle
-	                                      message: msg text: txt];
-  if (string)
-  {
-    if (*text)
-      wfree(*text);
-    *text = wstrdup((char*)[string cString]);
-
-    return True;
-  }
-  else
-  {
-    return False;
-  }
-}
-
-
-/*
- *****************************************************************
- * Icon Selection Panel
- *****************************************************************
- */
-
-Bool
-wIconChooserDialog(WScreen *scr, char **file, char *instance, char *class)
-{
-  NSString *path = [[WMDialogController sharedController] iconChooserDialogWithInstance: [NSString stringWithCString: instance] class: [NSString stringWithCString: class]];
-  if (path)
-  {
-    *file = wstrdup((char*)[path cString]);
-    return True;
-  }
-  else
-  {
-    *file = NULL;
-    return False;
-  }
-}
-
-
 /*
  ***********************************************************************
  * Crashing Dialog Panel

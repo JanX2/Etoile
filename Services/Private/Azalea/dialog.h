@@ -32,10 +32,4 @@ enum {
 
 int wShowCrashingDialogPanel(int whatSig);
 
-/* dockedapp.m, winspector.m, appicon.m */
-Bool wIconChooserDialog(WScreen *scr, char **file, char *instance, char *class);
-
-/* dock.m, misc.m */
-int wInputDialog(WScreen *scr, char *title, char *message, char **text);
-
 #endif

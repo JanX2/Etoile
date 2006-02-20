@@ -13,6 +13,12 @@
     * WINGs/wbox.c:
     * WINGs/wpanel.c:
     not used and removed.
+    * dialog.m:
+    use inputDialgWithTitle:message:text: instead of wInputDialog();
+    remove wIconChooser() because it is not used.
+    * README:
+    put some notes about crashing panel before really removing it.
+    * This is the last update today. :)
 
 2006-02-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

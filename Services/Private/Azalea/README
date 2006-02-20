@@ -34,6 +34,8 @@ BEHAVIOR:
 6. The window inspector will disassociate with target window
    when target window is hide and closed.
    Beware that there may be glitches now.
+7. The crashing panel is removed !!
+   It will restart xterm so that you can launch any real window manager.
 
 TODO:
 1. use _() for localization.
@@ -61,6 +63,10 @@ TODO:
 19: enable XSMP_ENABLED ?
 20: when NSAlertPanel is used, it may be not focused (winmenu).
 21: Balloon is mostly nonfunctional.
+22: Reimplement crashing panel ?
+    WindowMaker basically regenerate a new panel independent from WindowMaker
+    in order to handle the crash. Do we launch a backup NSApplication
+    containing a panel to handle the crash ?
 
 From: Enrico Sersale <enrico@xxx>	Mailed-By: gnu.org
 Reply-To: enrico@xxx
