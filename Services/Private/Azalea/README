@@ -11,7 +11,7 @@ Please read BEHAVIOR and TODO below.
 *** WARNING ***
 
 It does not share defaults with WindowMaker.
-Therefore, you may lose all your setting for WindowMaker.
+Therefore, your settings for WindowMaker will not be applied to Azalea.
 It should not crash randomly, but it may not work properly.
 
 Yen-Ju
@@ -35,7 +35,7 @@ BEHAVIOR:
    when target window is hide and closed.
    Beware that there may be glitches now.
 7. The crashing panel is removed !!
-   It will restart xterm so that you can launch any real window manager.
+   It will restart fallback window manager automatically.
 
 TODO:
 1. use _() for localization.

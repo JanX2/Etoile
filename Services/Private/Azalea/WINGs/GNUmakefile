@@ -23,16 +23,13 @@ WINGs_C_FILES = \
 	usleep.c \
 	wappresource.c \
 	wballoon.c \
-	wbutton.c \
 	wcolor.c \
 	wframe.c \
 	wfont.c \
 	widgets.c \
 	wlabel.c \
-	wmenuitem.c \
 	wmisc.c \
 	wpixmap.c \
-	wpopupbutton.c \
 	wview.c \
 	wwindow.c
 

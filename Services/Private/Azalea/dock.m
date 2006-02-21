@@ -44,7 +44,6 @@
 #include "actions.h"
 #include "stacking.h"
 #include "dock.h"
-#include "dialog.h"
 #include "funcs.h"
 #include "properties.h"
 #include "menu.h"

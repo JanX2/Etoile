@@ -227,9 +227,6 @@ enum {
     WC_Window = 0,
     WC_Frame = 1,
     WC_Label = 2,
-    WC_Button = 3,
-    WC_PopUpButton = 9,
-    WC_MenuView = 16,
 };
 
 /* All widgets must start with the following structure
@@ -259,9 +256,7 @@ typedef struct W_View WMView;
 
 typedef struct W_Window WMWindow;
 typedef struct W_Frame WMFrame;
-typedef struct W_Button WMButton;
 typedef struct W_Label WMLabel;
-typedef struct W_PopUpButton WMPopUpButton;
 
 
 /* not widgets */
@@ -735,70 +730,6 @@ void WMCloseWindow(WMWindow *win);
 
 /* ....................................................................... */
 
-void WMSetButtonAction(WMButton *bPtr, WMAction *action, void *clientData);
-
-#define WMCreateCommandButton(parent) \
-    WMCreateCustomButton((parent), WBBSpringLoadedMask\
-    |WBBPushInMask\
-    |WBBPushLightMask\
-    |WBBPushChangeMask)
-
-#define WMCreateRadioButton(parent) \
-    WMCreateButton((parent), WBTRadio)
-
-#define WMCreateSwitchButton(parent) \
-    WMCreateButton((parent), WBTSwitch)
-
-WMButton* WMCreateButton(WMWidget *parent, WMButtonType type);
-
-WMButton* WMCreateCustomButton(WMWidget *parent, int behaviourMask);
-
-void WMSetButtonImageDefault(WMButton *bPtr);
-
-void WMSetButtonImage(WMButton *bPtr, WMPixmap *image);
-
-void WMSetButtonAltImage(WMButton *bPtr, WMPixmap *image);
-
-void WMSetButtonImagePosition(WMButton *bPtr, WMImagePosition position);
-
-void WMSetButtonFont(WMButton *bPtr, WMFont *font);
-
-void WMSetButtonTextAlignment(WMButton *bPtr, WMAlignment alignment);
-
-void WMSetButtonText(WMButton *bPtr, char *text);
-
-void WMSetButtonAltText(WMButton *bPtr, char *text);
-
-void WMSetButtonTextColor(WMButton *bPtr, WMColor *color);
-
-void WMSetButtonAltTextColor(WMButton *bPtr, WMColor *color);
-
-void WMSetButtonDisabledTextColor(WMButton *bPtr, WMColor *color);
-
-void WMSetButtonSelected(WMButton *bPtr, int isSelected);
-
-int WMGetButtonSelected(WMButton *bPtr);
-
-void WMSetButtonBordered(WMButton *bPtr, int isBordered);
-
-void WMSetButtonEnabled(WMButton *bPtr, Bool flag);
-
-int WMGetButtonEnabled(WMButton *bPtr);
-
-void WMSetButtonImageDimsWhenDisabled(WMButton *bPtr, Bool flag);
-
-void WMSetButtonTag(WMButton *bPtr, int tag);
-
-void WMGroupButtons(WMButton *bPtr, WMButton *newMember);
-
-void WMPerformButtonClick(WMButton *bPtr);
-
-void WMSetButtonContinuous(WMButton *bPtr, Bool flag);
-
-void WMSetButtonPeriodicDelay(WMButton *bPtr, float delay, float interval);
-
-/* ....................................................................... */
-
 WMLabel* WMCreateLabel(WMWidget *parent);
 
 void WMSetLabelWraps(WMLabel *lPtr, Bool flag);
@@ -832,105 +763,6 @@ void WMSetFrameTitlePosition(WMFrame *fPtr, WMTitlePosition position);
 void WMSetFrameRelief(WMFrame *fPtr, WMReliefType relief);
 
 void WMSetFrameTitle(WMFrame *fPtr, char *title);
-
-/* ....................................................................... */
-
-Bool WMMenuItemIsSeparator(WMMenuItem *item);
-
-WMMenuItem* WMCreateMenuItem(void);
-
-void WMDestroyMenuItem(WMMenuItem *item);
-
-Bool WMGetMenuItemEnabled(WMMenuItem *item);
-
-void WMSetMenuItemEnabled(WMMenuItem *item, Bool flag);
-
-char* WMGetMenuItemShortcut(WMMenuItem *item);
-
-unsigned WMGetMenuItemShortcutModifierMask(WMMenuItem *item);
-
-void WMSetMenuItemShortcut(WMMenuItem *item, char *shortcut);
-
-void WMSetMenuItemShortcutModifierMask(WMMenuItem *item, unsigned mask);
-
-void* WMGetMenuItemRepresentedObject(WMMenuItem *item);
-
-void WMSetMenuItemRepresentedObject(WMMenuItem *item, void *object);
-
-void WMSetMenuItemAction(WMMenuItem *item, WMAction *action, void *data);
-
-WMAction* WMGetMenuItemAction(WMMenuItem *item);
-
-void* WMGetMenuItemData(WMMenuItem *item);
-
-void WMSetMenuItemTitle(WMMenuItem *item, char *title);
-
-char* WMGetMenuItemTitle(WMMenuItem *item);
-
-void WMSetMenuItemState(WMMenuItem *item, int state);
-
-int WMGetMenuItemState(WMMenuItem *item);
-
-void WMSetMenuItemPixmap(WMMenuItem *item, WMPixmap *pixmap);
-
-WMPixmap* WMGetMenuItemPixmap(WMMenuItem *item);
-
-void WMSetMenuItemOnStatePixmap(WMMenuItem *item, WMPixmap *pixmap);
-
-WMPixmap* WMGetMenuItemOnStatePixmap(WMMenuItem *item);
-
-void WMSetMenuItemOffStatePixmap(WMMenuItem *item, WMPixmap *pixmap);
-
-WMPixmap* WMGetMenuItemOffStatePixmap(WMMenuItem *item);
-
-void WMSetMenuItemMixedStatePixmap(WMMenuItem *item, WMPixmap *pixmap);
-
-WMPixmap* WMGetMenuItemMixedStatePixmap(WMMenuItem *item);
-
-/*void WMSetMenuItemSubmenu(WMMenuItem *item, WMMenu *submenu);
-
-
-WMMenu* WMGetMenuItemSubmenu(WMMenuItem *item);
-
-Bool WMGetMenuItemHasSubmenu(WMMenuItem *item);
-*/
-
-/* ....................................................................... */
-
-WMPopUpButton* WMCreatePopUpButton(WMWidget *parent);
-
-void WMSetPopUpButtonAction(WMPopUpButton *sPtr, WMAction *action,
-                            void *clientData);
-
-void WMSetPopUpButtonPullsDown(WMPopUpButton *bPtr, Bool flag);
-
-WMMenuItem* WMAddPopUpButtonItem(WMPopUpButton *bPtr, char *title);
-
-WMMenuItem* WMInsertPopUpButtonItem(WMPopUpButton *bPtr, int index,
-                                    char *title);
-
-void WMRemovePopUpButtonItem(WMPopUpButton *bPtr, int index);
-
-void WMSetPopUpButtonItemEnabled(WMPopUpButton *bPtr, int index, Bool flag);
-
-Bool WMGetPopUpButtonItemEnabled(WMPopUpButton *bPtr, int index);
-
-void WMSetPopUpButtonSelectedItem(WMPopUpButton *bPtr, int index);
-
-int WMGetPopUpButtonSelectedItem(WMPopUpButton *bPtr);
-
-void WMSetPopUpButtonText(WMPopUpButton *bPtr, char *text);
-
-/* don't free the returned data */
-char* WMGetPopUpButtonItem(WMPopUpButton *bPtr, int index);
-
-WMMenuItem* WMGetPopUpButtonMenuItem(WMPopUpButton *bPtr, int index);
-
-int WMGetPopUpButtonNumberOfItems(WMPopUpButton *bPtr);
-
-void WMSetPopUpButtonEnabled(WMPopUpButton *bPtr, Bool flag);
-
-Bool WMGetPopUpButtonEnabled(WMPopUpButton *bPtr);
 
 #ifdef __cplusplus
 }

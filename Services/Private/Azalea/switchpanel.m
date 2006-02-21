@@ -79,6 +79,9 @@ extern WPreferences wPreferences;
 #define SCREEN_BORDER_SPACING 2*20
 #define SCROLL_STEPS (ICON_TILE_SIZE/2)
 
+/* Return 1 if wwin can receive focus, 0 if not, -1 if not mapped 
+ * It is used to put up the order in the panel.
+ */
 static int canReceiveFocus(WWindow *wwin)
 {
   if (wwin->frame->workspace != wwin->screen_ptr->current_workspace)
@@ -607,7 +610,7 @@ void wSwitchPanelDestroy(WSwitchPanel *panel)
     wfree(panel);
 }
 
-
+/* If back is 1, backward. Return selected window */
 WWindow *wSwitchPanelSelectNext(WSwitchPanel *panel, int back)
 {
     WWindow *wwin;
@@ -652,7 +655,7 @@ WWindow *wSwitchPanelSelectNext(WSwitchPanel *panel, int back)
     return wwin;
 }
 
-
+/* If back is 1, return last, otherwise, return first */
 WWindow *wSwitchPanelSelectFirst(WSwitchPanel *panel, int back)
 {
     WWindow *wwin;
@@ -682,7 +685,7 @@ WWindow *wSwitchPanelSelectFirst(WSwitchPanel *panel, int back)
     return wwin;
 }
 
-
+/* Return NULL to leave switch panel */
 WWindow *wSwitchPanelHandleEvent(WSwitchPanel *panel, XEvent *event)
 {
     WMFrame *icon;
@@ -721,7 +724,7 @@ WWindow *wSwitchPanelHandleEvent(WSwitchPanel *panel, XEvent *event)
     return NULL;
 }
 
-
+/* Got Xwindow */
 Window wSwitchPanelGetWindow(WSwitchPanel *swpanel)
 {
     if (!swpanel->win)

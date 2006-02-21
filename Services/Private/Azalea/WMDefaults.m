@@ -29,6 +29,13 @@ dummyErrorHandler(Display *dpy, XErrorEvent *err)
   return 0;
 }
 
+static RImage *chopOffImage(RImage *image, int x, int y, int w, int h)
+{
+  RImage *img= RCreateImage(w, h, image->format == RRGBAFormat);
+  RCopyArea(img, image, x, y, w, h, 0, 0);
+  return img;
+}
+
 /** static defaults **/
 static NSString *WMDColormapSize = @"ColormapSize";
 static NSString *WMDDisableDithering = @"DisableDithering";
@@ -434,11 +441,8 @@ static NSString *WSWorkspace = @"Workspace";
   {
     [fallback addObject: [NSString stringWithCString: alt]];
   }
-  [fallback addObject: [NSString stringWithCString: "blackbox"]];
-  [fallback addObject: [NSString stringWithCString: "metacity"]];
-  [fallback addObject: [NSString stringWithCString: "fvwm"]];
+  [fallback addObject: [NSString stringWithCString: "wmaker"]];
   [fallback addObject: [NSString stringWithCString: "twm"]];
-  [fallback addObject: [NSString stringWithCString: "rxvt"]];
   [fallback addObject: [NSString stringWithCString: "xterm"]];
   ASSIGNCOPY(fallbackWMs, fallback);
   DESTROY(fallback);
@@ -1016,6 +1020,55 @@ static NSString *WSWorkspace = @"Workspace";
 
   object = [defaults objectForKey: WMDWorkspaceBack];
   [self setWorkspaceBack: object screen: scr];
+
+  /* switch panel */
+  // FIXME: hard-written (swtile.png, swback.png, 30, 40)
+  RImage *bgimage;
+  int cwidth = 30, cheight = 40;
+  int swidth, theight;
+  NSBundle *mainBundle = [NSBundle mainBundle];
+  NSString *path = [mainBundle pathForResource: @"swback" ofType: @"png"];
+  NSLog(@"path %@", path);
+  bgimage = RLoadImage(scr->rcontext, (char*)[path cString], 0);
+  if (!bgimage) {
+    NSLog(@"Could not load image %@", path);
+    return;
+  }
+  for (i = 0; i < 9; i++) {
+    if (wPreferences.swbackImage[i])
+      RReleaseImage(wPreferences.swbackImage[i]);
+    wPreferences.swbackImage[i]=NULL;
+  }
+  swidth = (bgimage->width - cwidth) / 2;
+  theight = (bgimage->height - cheight) / 2;
+  wPreferences.swbackImage[0] = chopOffImage(bgimage, 0, 0, swidth, theight);
+  wPreferences.swbackImage[1] = chopOffImage(bgimage, swidth, 0, cwidth, theight);
+  wPreferences.swbackImage[2] = chopOffImage(bgimage, swidth+cwidth, 0, swidth, theight);
+  wPreferences.swbackImage[3] = chopOffImage(bgimage, 0, theight, swidth, cheight);
+  wPreferences.swbackImage[4] = chopOffImage(bgimage, swidth, theight, cwidth, cheight);
+  wPreferences.swbackImage[5] = chopOffImage(bgimage, swidth+cwidth, theight, swidth, cheight);
+  wPreferences.swbackImage[6] = chopOffImage(bgimage, 0, theight+cheight, swidth, theight);
+  wPreferences.swbackImage[7] = chopOffImage(bgimage, swidth, theight+cheight, cwidth, theight);
+  wPreferences.swbackImage[8] = chopOffImage(bgimage, swidth+cwidth, theight+cheight, swidth, theight);
+  // check if anything failed
+  for (i= 0; i < 9; i++) {
+    if (!wPreferences.swbackImage[i]) {
+      for (; i>=0; --i) {
+        RReleaseImage(wPreferences.swbackImage[i]);
+        wPreferences.swbackImage[i]= NULL;
+      }
+      break;
+    }
+  }
+  RReleaseImage(bgimage);
+
+  path = [mainBundle pathForResource: @"swtile" ofType: @"png"];
+  NSLog(@"path %@", path);
+  if (wPreferences.swtileImage) 
+    RReleaseImage(wPreferences.swtileImage);
+  wPreferences.swtileImage = RLoadImage(scr->rcontext, (char*)[path cString], 0);
+  if (!wPreferences.swtileImage)
+    NSLog(@"Warning: Could not load image %@", path);
 }
 
 - (void) readStaticDefaults

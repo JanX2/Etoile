@@ -37,7 +37,6 @@
 #include "WindowMaker.h"
 #include "screen.h"
 #include "window.h"
-#include "dialog.h"
 #include "funcs.h"
 
 #include "WMDefaults.h"
@@ -48,45 +47,24 @@ extern WPreferences wPreferences;
 
 extern int wScreenCount;
 
-
-
-/* return 1 for restart, 0 for abort (also when restart alternative failed) */
+/* return 1 for restart itself, 
+ * 0 for abort (also when restart alternative failed) */
 int showCrashDialog(int sig)
 {
-    int crashAction;
-    
-    dpy = XOpenDisplay(NULL);
-    if (dpy) {
 /* XXX TODO make sure that window states are saved and restored via netwm */
-
-        XGrabServer(dpy);
-        crashAction = wShowCrashingDialogPanel(sig);
-        XCloseDisplay(dpy);
-        dpy = NULL;
-    } else {
-        wsyserror(("cannot open connection for crashing dialog panel. Aborting."));
-        crashAction = WMAbort;
-    }
     
-    if (crashAction == WMStartAlternate)
-    {
-        int i;
+  int i;
 
-    	wmessage(("trying to start alternate window manager..."));
+  NSLog(@"Trying to start alternate window manager...");
 
-	NSArray *fallbackWMs = [[WMDefaults sharedDefaults] fallbackWMs];
-        for (i=0; i<[fallbackWMs count]; i++) {
-            Restart((char*)[[fallbackWMs objectAtIndex: i] cString], False);
-        }
+  NSArray *fallbackWMs = [[WMDefaults sharedDefaults] fallbackWMs];
+  for (i=0; i<[fallbackWMs count]; i++) {
+    Restart((char*)[[fallbackWMs objectAtIndex: i] cString], False);
+  }
 
-        wfatal(("failed to start alternate window manager. Aborting."));
+  NSLog(@"Fatal: failed to start alternate window manager. Aborting.");
 
-        return 0;
-    } 
-    else if (crashAction == WMAbort)
-      return 0;
-    else
-      return 1;
+  return 0;
 }
 
 

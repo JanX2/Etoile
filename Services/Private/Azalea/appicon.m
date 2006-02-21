@@ -42,7 +42,6 @@
 #include "superfluous.h"
 #include "menu.h"
 #include "framewin.h"
-#include "dialog.h"
 #include "client.h"
 #ifdef XDND
 #include "xdnd.h"

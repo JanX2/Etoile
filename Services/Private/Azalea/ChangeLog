@@ -1,3 +1,16 @@
+2006-02-20 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * monitor.m:
+    * dialog.m:
+    remove crashing panel. Automatically restart fallback window managers.
+    See README for possible implementation.
+    * WINGs/wbutton.c:
+    * WINGs/wpopupbutton.c:
+    * WINGs/wmenuitem.c:
+    was used in crashing panel and now removed.
+    * WMDefaults.m:
+    recover switch panel.
+
 2006-02-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * window.m:

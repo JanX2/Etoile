@@ -35,7 +35,6 @@ Azalea_OBJC_FILES = \
 	colormap.m \
 	cycling.m \
 	defaults.m \
-	dialog.m \
 	dock.m \
 	event.m \
 	framewin.m \

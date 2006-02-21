@@ -36,7 +36,6 @@ client.m \
 colormap.m \
 cycling.m \
 defaults.m \
-dialog.m \
 dock.m \
 dockedapp.m \
 event.m \

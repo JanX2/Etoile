@@ -40,7 +40,6 @@
 #include "keybind.h"
 #include "framewin.h"
 #include "workspace.h"
-#include "dialog.h"
 #include "stacking.h"
 #include "icon.h"
 #include "WMWindowInspector.h"

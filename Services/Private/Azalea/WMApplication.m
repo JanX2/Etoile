@@ -242,7 +242,7 @@ int WMCurrentScreen()
 	                     action: NULL keyEquivalent: @""];
   [mainMenu setSubmenu: services forItem: item];
 
-#if 1
+#if 0
   /* Debug */
   NSMenu *debug = AUTORELEASE([[NSMenu alloc] init]);
   [debug addItemWithTitle: @"Open Window"
