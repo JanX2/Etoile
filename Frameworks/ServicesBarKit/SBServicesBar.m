@@ -31,6 +31,10 @@
 #import "SBServicesBarItem.h"
 #import "SBServicesBar.h"
 
+#ifdef HAVE_UKTEST
+#import <UnitKit/UnitKit.h>
+#endif
+
 
 @implementation SBServicesBar
 
@@ -39,6 +43,7 @@
 	return [[SBServicesBar alloc] init];
 }
 
+#ifdef HAVE_UKTEST
 - (void) testInit
 {
 	UKNotNil(_items);
@@ -49,6 +54,7 @@
 	
 	UKTrue([_toolbarView isDescendantOf: [_window contentView]]);
 }
+#endif
 
 - (id) init
 {
@@ -64,6 +70,7 @@
 	return nil;
 }
 
+#ifdef HAVE_UKTEST
 - (id) initForTest
 {
 	self = [SBServicesBar sharedServicesBar];
@@ -80,6 +87,7 @@
 	
 	return self;
 }
+#endif
 
 - (void) dealloc
 {
@@ -89,6 +97,7 @@
 	[super dealloc];
 }
 
+#ifdef HAVE_UKTEST
 - (void) releaseForTest
 {
 	if ([self retainCount] == 1)
@@ -98,12 +107,14 @@
 	}
 	[super release];
 }
+#endif
 
 - (void) addServicesBarItem: (SBServicesBarItem *)item
 {
 	[self insertServicesBarItem: item atIndex: [[_itemsToolbar items] count]];
 }
 
+#ifdef HAVE_UKTEST
 - (void) testInsertServicesBarItemAtIndexA
 {
 	SBServicesBarItem *item = [[SBServicesBarItem alloc] initWithTitle: @"Whatever"];
@@ -152,6 +163,7 @@
 	UKFalse([[[_itemsToolbar items] objectsWithValue: @"Whatever" forKey: @"identifier"] count] == 1);
 	UKTrue([[[_itemsToolbar items] objectsWithValue: @"Whatever" forKey: @"label"] count] == 2);
 }
+#endif
 
 - (void) insertServicesBarItem: (SBServicesBarItem *)item atIndex: (int)index
 {
@@ -159,10 +171,12 @@
 	[_itemsToolbar insertItemWithItemIdentifier: [item title] atIndex: index];
 }
 
+#ifdef HAVE_UKTEST
 - (void) testRemoveServicesBarItem
 {
 
 }
+#endif
 
 - (void) removeServicesBarItem: (SBServicesBarItem *)item
 {

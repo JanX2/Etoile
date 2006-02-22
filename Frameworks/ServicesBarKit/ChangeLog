@@ -1,3 +1,13 @@
+2006-01-23  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * SBServicesBarItem.m:
+    * SBServicesBar.m:
+    * GNUmakefile.preamble:
+    Fixed test bundle run by adding UnitKit related import directives. Wrapped 
+    test methods (or UnitKit related code) into conditional directives, thus this 
+    test code is stripped off on normal build.
+    Test result (on Linux x86): 2 classes, 4 methods, 10 tests, 0 failed
+
 2006-01-19  Quentin Mathe <qmathe@club-internet.fr>
     
     * COPYING: Added.

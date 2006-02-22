@@ -30,9 +30,14 @@
 #import "SBServicesBar.h"
 #import "SBServicesBarItem.h"
 
+#ifdef HAVE_UKTEST
+#import <UnitKit/UnitKit.h>
+#endif
+
 
 @implementation SBServicesBarItem
 
+#ifdef HAVE_UKTEST
 - (void) testInitWithTitle
 {	
 	//UKRaisesException([[SBServicesBarItem alloc] initWithTitle: @""]);
@@ -46,6 +51,7 @@
 	if ([self length] < 0)
 		UKFail();
 }
+#endif
 
 - (id) initWithTitle: (NSString *)title
 {
@@ -60,6 +66,7 @@
 	return nil;
 }
 
+#ifdef HAVE_UKTEST
 - (id) initForTest
 {
 	self = [self initWithTitle: @"Whatever"];
@@ -69,6 +76,7 @@
 	
 	return self;
 }
+#endif
 
 - (void) dealloc
 {
@@ -78,6 +86,7 @@
 	[super dealloc];
 }
 
+#ifdef HAVE_UKTEST
 - (void) testServicesBar
 {
 	SBServicesBar *bar = [SBServicesBar sharedServicesBar];
@@ -85,6 +94,7 @@
 	[bar addServicesBarItem: self];
 	UKNotNil([self servicesBar]);
 }
+#endif
 
 - (SBServicesBar *) servicesBar
 {
@@ -106,6 +116,7 @@
 	return _itemView;
 }
 
+#ifdef HAVE_UKTEST
 - (void) testSetView
 {
 	SBServicesBar *bar = [SBServicesBar sharedServicesBar];
@@ -115,6 +126,7 @@
 	UKObjectsSame([self view], [_toolbarItem view]);
 	UKTrue([[[bar valueForKey: @"_window"] contentView] isDescendantOf: [self view]]);
 }
+#endif
 
 - (void) setView: (NSView *)view;
 {
