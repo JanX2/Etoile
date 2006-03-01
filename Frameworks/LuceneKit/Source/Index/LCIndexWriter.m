@@ -279,11 +279,15 @@ An IndexWriter creates and maintains an index.
 */
 - (void) setMaxBufferedDocuments: (int) max
 {
-	if (max < 1)
+	if (max < 2)
 	{
-		NSLog(@"maxBufferedDocs must at least be 1");
+		NSLog(@"maxBufferedDocs must at least be 2");
+    		minMergeDocs = 2;
 	}
-    minMergeDocs = max;
+	else
+	{
+		minMergeDocs = max;
+	}
 }
 
 /**
@@ -560,7 +564,7 @@ for search. */
 		int mergeDocs = 0;
 		while (--minSegment >= 0) {
 			LCSegmentInfo *si = [segmentInfos segmentInfoAtIndex: minSegment];
-			if ([si numberOfDocuments] > targetMergeDocs)
+			if ([si numberOfDocuments] >= targetMergeDocs)
 				break;
 			mergeDocs += [si numberOfDocuments];
 		}
