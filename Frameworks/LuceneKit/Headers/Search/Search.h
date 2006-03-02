@@ -41,6 +41,7 @@
 #include "LCQueryFilter.h"
 #include "LCQueryTermVector.h"
 #include "LCRangeFilter.h"
+#include "LCRangeQuery.h"
 #include "LCReqExclScorer.h"
 #include "LCReqOptSumScorer.h"
 #include "LCScoreDoc.h"

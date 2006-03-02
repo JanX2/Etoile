@@ -1,3 +1,10 @@
+2006-03-01 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Source/Search/LCRangeQuery.m:
+    * Source/Search/TestRangeQuery.m:
+    * Headers/Search/LCRangeQuery.h:
+    new classes.
+
 2006-02-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/Index/LCIndexWriter.m:

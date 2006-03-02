@@ -150,6 +150,7 @@ LuceneKit_HEADER_FILES += \
 	LCQueryFilter.h \
 	LCQueryTermVector.h \
 	LCRangeFilter.h \
+	LCRangeQuery.h \
 	LCReqExclScorer.h \
 	LCReqOptSumScorer.h \
 	LCScoreDoc.h \

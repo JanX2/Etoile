@@ -4,6 +4,7 @@
 #include "LCSearcher.h"
 #include "LCTerm.h"
 #include "LCTermDocs.h"
+#include "LCSmallFloat.h"
 #include "NSString+Additions.h"
 #include "GNUstep.h"
 
@@ -74,7 +75,8 @@
 - (unsigned) hash
 {
 	// LuceneKit: should work. Otherwise, look LCSimilarity for implmentation of floatToIntbits()
-	return (int)[self boost] ^ [term hash];
+	//return (int)[self boost] ^ [term hash];
+	return FloatToIntBits([self boost]) ^ [term hash];
 	// Float.floatToIntBits(getBoost()) ^ term.hashCode();
 }
 

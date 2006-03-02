@@ -48,10 +48,12 @@ LuceneKit_Search_OBJC_FILES = \
 	LCFuzzyQuery.m \
 	LCFuzzyTermEnum.m \
 	LCWildcardQuery.m \
-	LCWildcardTermEnum.m
+	LCWildcardTermEnum.m \
+	LCRangeQuery.m 
 
 ifeq ($(test), yes)
 LuceneKit_Search_OBJC_FILES += \
+	TestRangeQuery.m \
 	TestBooleanMinShouldMatch.m \
 	TestWildcard.m \
 	TestFuzzyQuery.m \
