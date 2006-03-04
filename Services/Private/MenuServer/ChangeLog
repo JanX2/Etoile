@@ -1,0 +1,30 @@
+2006-03-04  Saso Kiselkov <diablos@manga.sk>
+
+    * BundleExtensionLoader.h:
+    * BundleExtensionLoader.m:
+    * ChangeLog:
+    * Controller.h:
+    * Controller.m:
+    * EtoileMenulet.h:
+    * GNUmakefile:
+    * GNUmakefile.postamble:
+    * GNUmakefile.preamble:
+    * Images/EtoileLogoH.tiff:
+    * Images/EtoileLogo.tiff:
+    * Images/MenuBarFiller.tiff:
+    * Images/MenuBarLeftEdge.tiff:
+    * Images/MenuBarRightEdge.tiff:
+    * main.m:
+    * MenuBarView.h:
+    * MenuBarView.m:
+    * MenuBarWindow.h:
+    * MenuBarWindow.m:
+    * MenuletLoader.h:
+    * MenuletLoader.m:
+    * Menulets/ClockMenulet/ClockMenulet.h:
+    * Menulets/ClockMenulet/ClockMenulet.m:
+    * Menulets/ClockMenulet/GNUmakefile:
+    * README:
+    Initial import for Etoile MenuServer written by Saso Kiselkov (the other
+    part of the menu bar support will be imported in Etoile/Bundles by updating
+    WildMenus).

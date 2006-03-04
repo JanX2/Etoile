@@ -1,0 +1,31 @@
+# GNUmakefile.postamble
+#
+# Postamble makefile of the ProjectManager application.
+#
+# Copyright (C) 2005  Saso Kiselkov
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+ifeq ($(debug), yes)
+        APP=$(APP_NAME).debug
+else
+        APP=$(APP_NAME).app
+endif
+
+after-all::
+	@ echo "Copying menulet into app wrapper..." && \
+          find Menulets -name '*.menulet' -exec cp -r '{}' '$(APP)/Resources' ';' && \
+          echo "Purging bogus CVS entries from app..." && \
+          find "$(APP)" -type d -name CVS -print0 | xargs -0 /bin/rm -rf
