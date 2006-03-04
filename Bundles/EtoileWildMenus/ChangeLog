@@ -1,0 +1,37 @@
+2006-03-04  Saso Kiselkov <diablos@manga.sk>
+
+    * ChangeLog:
+    * EtoileMenuTitleView.h:
+    * EtoileMenuTitleView.m:
+    * EtoileMenuUtilities.h:
+    * GNUmakefile:
+    * GNUmakefile.preamble:
+    * GSHorizontalMenuItemCell.h:
+    * GSHorizontalMenuItemCell.m:
+    * GSHorizontalMenuView.h:
+    * GSHorizontalMenuView.m:
+    * GSTitleView+Hackery.h:
+    * GSTitleView+Hackery.m:
+    * MenuBarHeight.h:
+    * MHMenuItemCell.h:
+    * MHMenuItemCell.m:
+    * NSApplication+Hackery.h:
+    * NSApplication+Hackery.m:
+    * NSBezierPath+Hackery.h:
+    * NSBezierPath+Hackery.m:
+    * NSMenu+Hackery.h:
+    * NSMenu+Hackery.m:
+    * NSMenuItemCell+Hackery.h:
+    * NSMenuItemCell+Hackery.m:
+    * NSMenuView+Hackery.h:
+    * NSMenuView+Hackery.m:
+    * README:
+    * Images/EtoileMenuCloseH.tiff:
+    * Images/EtoileMenuClose.tiff:
+    * Images/MenuBarFiller.tiff:
+    * Images/MenuTitleFiller.tiff:
+    * Images_src/CloseButtonH.xcf:
+    * Images_src/CloseButton.xcf:
+    Initial import for EtoileWildMenus, major refactoring done by Saso Kiselkov 
+    on WildMenus (the other part of the menu bar support has been imported in 
+    Etoile/Services/Private/MenuServer). 2003-03-03 22:40 version.

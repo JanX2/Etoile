@@ -1,0 +1,6 @@
+
+ADDITIONAL_OBJCFLAGS+= -W -Wall -Wno-unused -Wno-import
+
+ifeq ($(debug), yes)
+  ADDITIONAL_OBJCFLAGS += -O0 -ggdb3
+endif
