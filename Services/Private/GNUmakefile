@@ -17,7 +17,10 @@ endif
 
 ifeq ($(etoile-extensions), yes)
 
-    export menuserver ?= yes # Was servicesbar
+    export azalea ?= yes
+
+    # Was servicesbar
+    export menuserver ?= yes
 
 endif
 
@@ -29,7 +32,11 @@ ifeq ($(workspace), yes)
     #SUBPROJECTS = Workspace
 endif
 
-ifeq ($(menuserver), yes)
+ifeq ($(azalea), yes)
+    SUBPROJECTS += Azalea
+endif
+
+ifeq ($(menuserver),yes)
     SUBPROJECTS += MenuServer
 endif
 
