@@ -29,6 +29,10 @@
 #import "EtoileMenuTitleView.h"
 #import "MenuBarHeight.h"
 
+enum {
+  BottomBorderOffset = 1
+};
+
 @implementation NSMenuView (Hackery)
 - (NSRect) rectOfItemAtIndex: (int)index
 {
@@ -47,10 +51,10 @@
     { 
       if (![_attachedMenu _ownedByPopUp])
         {
-          theRect.origin.y = 2 + (_cellSize.height * ([_itemCells count] - 
+          theRect.origin.y = 1 + (_cellSize.height * ([_itemCells count] - 
 						  index - 1));
           theRect.origin.x = 1;
-          theRect.size.width -= 2;
+          theRect.size.width -= 1;
         }
       else
         {
@@ -85,17 +89,7 @@
   else
     submenuFrame = NSZeroRect;
             
-  if (_horizontal == NO)
-    {
-      NSRect aRect = [self rectOfItemAtIndex:
-            [_attachedMenu indexOfItemWithSubmenu: aSubmenu]];
-      NSPoint subOrigin = [_window convertBaseToScreen:
-            NSMakePoint(aRect.origin.x, aRect.origin.y)];
-    
-      return NSMakePoint (NSMaxX(frame),
-                          subOrigin.y - NSHeight(submenuFrame) + aRect.size.height);
-    }
-  else
+  if (_horizontal == YES)
     {
       NSRect aRect = [self rectOfItemAtIndex:
                        [_attachedMenu indexOfItemWithSubmenu: aSubmenu]];
@@ -104,6 +98,17 @@
                                     NSMinY(aRect))];
           
       return NSMakePoint(subOrigin.x, subOrigin.y - NSHeight(submenuFrame));
+    }
+  else
+    {
+      NSRect aRect = [self rectOfItemAtIndex:
+            [_attachedMenu indexOfItemWithSubmenu: aSubmenu]];
+      NSPoint subOrigin = [_window convertBaseToScreen:
+            NSMakePoint(aRect.origin.x, aRect.origin.y)];
+
+      return NSMakePoint (NSMaxX(frame),
+        subOrigin.y - NSHeight(submenuFrame) + aRect.size.height +
+        [EtoileMenuTitleView height]);
     }
 }
 
@@ -298,20 +303,20 @@
       _keyEqOffset = _cellSize.width - _keyEqWidth - popupImageWidth;
     }
 
-  if (_horizontal == NO)
-    {
-      [self setFrameSize: NSMakeSize(_cellSize.width + _leftBorderOffset,
-                                     (howMany * _cellSize.height)
-                                     + MenuTitleHeight)];
-      [_titleView setFrame: NSMakeRect (0, howMany * _cellSize.height,
-                                        NSWidth (_bounds), MenuBarHeight)];
-    }
-  else
+  if (_horizontal == YES)
     {
       [self setFrameSize: NSMakeSize(((howMany + 1) * _cellSize.width),
                                      _cellSize.height + _leftBorderOffset)];
       [_titleView setFrame: NSMakeRect (0, 0,
                                         _cellSize.width, _cellSize.height + 1)];
+    }
+  else
+    {
+      [self setFrameSize: NSMakeSize(_cellSize.width + _leftBorderOffset,
+        (howMany * _cellSize.height) + [EtoileMenuTitleView height] +
+        BottomBorderOffset)];
+      [_titleView setFrame: NSMakeRect (0, howMany * _cellSize.height +
+        BottomBorderOffset, NSWidth (_bounds), [EtoileMenuTitleView height])];
     }
      
   _needsSizing = NO;
@@ -361,6 +366,7 @@
 
 - (void) drawRect: (NSRect)rect
 {
+  NSRect myFrame;
   int        i;
   int        howMany = [_itemCells count];
 
@@ -393,8 +399,19 @@
         }
     }
 
-  [[NSColor lightGrayColor] set];
-  NSFrameRect([self frame]);
+  myFrame = [self frame];
+
+  [[NSColor whiteColor] set];
+  PSmoveto(0, 0);
+  PSrlineto(0, NSHeight(myFrame));
+  PSrlineto(NSWidth(myFrame), 0);
+  PSstroke();
+
+  [[NSColor darkGrayColor] set];
+  PSmoveto(NSMaxX(myFrame) - 1, NSMaxY(myFrame));
+  PSrlineto(0, -(NSHeight(myFrame) - 1));
+  PSrlineto(-NSWidth(myFrame), 0);
+  PSstroke();
 }
 
 - (void) mouseDown: (NSEvent*)theEvent
@@ -437,303 +454,5 @@
         }
     }
 }
-
-
-#define MOVE_THRESHOLD_DELTA 2.0
-#define DELAY_MULTIPLIER     10
-
-- (BOOL) trackWithEvent: (NSEvent*)event
-{
-  unsigned	eventMask = NSPeriodicMask;
-  NSDate        *theDistantFuture = [NSDate distantFuture];
-  NSPoint	lastLocation = {0,0};
-  BOOL		justAttachedNewSubmenu = NO;
-  BOOL          subMenusNeedRemoving = YES;
-  int		delayCount = 0;
-  int           indexOfActionToExecute = -1;
-  NSEvent	*original;
-  NSEventType	type;
-  NSEventType	end;
-
-  /*
-   * The original event is unused except to determine whether the method
-   * was invoked in response to a right or left mouse down.
-   * We pass the same event on when we want tracking to move into a
-   * submenu.
-   */
-  original = AUTORELEASE(RETAIN(event));
-
-  type = [event type];
-
-  if (type == NSRightMouseDown || type == NSRightMouseDragged)
-    {
-      end = NSRightMouseUp;
-      eventMask |= NSRightMouseUpMask | NSRightMouseDraggedMask;
-    }
-  else if (type == NSOtherMouseDown || type == NSOtherMouseDragged)
-    {
-      end = NSOtherMouseUp;
-      eventMask |= NSOtherMouseUpMask | NSOtherMouseDraggedMask;
-    }
-  else if (type == NSLeftMouseDown || type == NSLeftMouseDragged)
-    {
-      end = NSLeftMouseUp;
-      eventMask |= NSLeftMouseUpMask | NSLeftMouseDraggedMask;
-    }
-  else
-    {
-      NSLog (@"Unexpected event: %d during event tracking in NSMenuView", type);
-      end = NSLeftMouseUp;
-      eventMask |= NSLeftMouseUpMask | NSLeftMouseDraggedMask;
-    }
-
-  do
-    {
-      if (type == NSPeriodic || event == original)
-        {
-          NSPoint	location;
-          int           index;
-
-          location     = [_window mouseLocationOutsideOfEventStream];
-          index        = [self indexOfItemAtPoint: location];
-
-          /*
-           * 1 - if menus is only partly visible and the mouse is at the
-           *     edge of the screen we move the menu so it will be visible.
-           */ 
-          if ([_attachedMenu isPartlyOffScreen])
-            {
-              NSPoint pointerLoc = [_window convertBaseToScreen: location];
-              /*
-               * The +/-1 in the y - direction is because the flipping
-               * between X-coordinates and GNUstep coordinates let the
-               * GNUstep screen coordinates start with 1.
-               */
-              if (pointerLoc.x == 0 || pointerLoc.y == 1
-                  || pointerLoc.x == [[_window screen] frame].size.width - 1
-                  || pointerLoc.y == [[_window screen] frame].size.height)
-                [_attachedMenu shiftOnScreen];
-            }
-
-
-          /*
-           * 2 - Check if we have to reset the justAttachedNewSubmenu
-           * flag to NO.
-           */
-          if (justAttachedNewSubmenu && index != -1
-              && index != _highlightedItemIndex)
-            { 
-              if (location.x - lastLocation.x > MOVE_THRESHOLD_DELTA)
-                {
-                  delayCount ++;
-                  if (delayCount >= DELAY_MULTIPLIER)
-                    {
-                      justAttachedNewSubmenu = NO;
-                    }
-                }
-              else
-                {
-                  justAttachedNewSubmenu = NO;
-                }
-            }
-
-
-          // 3 - If we have moved outside this menu, take appropriate action
-          if (index == -1)
-            {
-              NSPoint   locationInScreenCoordinates;
-              NSWindow *windowUnderMouse;
-              NSMenu   *candidateMenu;
-
-              subMenusNeedRemoving = NO;
-
-              locationInScreenCoordinates
-                = [_window convertBaseToScreen: location];
-
-              /*
-               * 3a - Check if moved into one of the ancester menus.
-               *      This is tricky, there are a few possibilities:
-               *          We are a transient attached menu of a
-               *          non-transient menu
-               *          We are a non-transient attached menu
-               *          We are a root: isTornOff of AppMenu
-               */
-              candidateMenu = [_attachedMenu supermenu];
-              while (candidateMenu  
-                     && !NSMouseInRect (locationInScreenCoordinates, 
-                                        [[candidateMenu window] frame], 
-                                        NO) // not found yet
-                     && (! ([candidateMenu isTornOff] 
-                            && ![candidateMenu isTransient]))  // no root of display tree
-                     && [candidateMenu isAttached]) // has displayed parent
-                {
-                  candidateMenu = [candidateMenu supermenu];
-                }
-
-              if (candidateMenu != nil
-                  && NSMouseInRect (locationInScreenCoordinates,
-                                    [[candidateMenu window] frame], NO))
-                {
-                  // The call to fetch attachedMenu is not needed. But putting
-                  // it here avoids flicker when we go back to an ancestor 
-		  // menu and the attached menu is already correct.
-                  [[[candidateMenu attachedMenu] menuRepresentation]
-                    detachSubmenu];
-                  
-                  // Reset highlighted index for this menu.
-                  // This way if we return to this submenu later there 
-                  // won't be a highlighted item.
-                  [[[candidateMenu attachedMenu] menuRepresentation]
-                    setHighlightedItemIndex: -1];
-                  
-                  return [[candidateMenu menuRepresentation]
-                           trackWithEvent: original];
-                }
-
-              // 3b - Check if we enter the attached submenu
-              windowUnderMouse = [[_attachedMenu attachedMenu] window];
-              if (windowUnderMouse != nil
-                  && NSMouseInRect (locationInScreenCoordinates,
-                                    [windowUnderMouse frame], NO))
-                {
-                  BOOL wasTransient = [_attachedMenu isTransient];
-                  BOOL subMenuResult;
-
-                  subMenuResult
-                    = [[self attachedMenuView] trackWithEvent: original];
-                  if (subMenuResult && wasTransient == [_attachedMenu isTransient])
-                    {
-                      [self detachSubmenu];
-                    }
-                  return subMenuResult;
-                }
-            }
-
-          // 4 - We changed the selected item and should update.
-          if (!justAttachedNewSubmenu && index != _highlightedItemIndex)
-            {
-              subMenusNeedRemoving = NO;
-              [self detachSubmenu];
-              [self setHighlightedItemIndex: index];
-
-              // WO: Question?  Why the ivar _items_link
-              if (index >= 0 && [[_items_link objectAtIndex: index] submenu])
-                {
-                  [self attachSubmenuForItemAtIndex: index];
-                  justAttachedNewSubmenu = YES;
-                  delayCount = 0;
-                }
-            }
-
-          // Update last seen location for the justAttachedNewSubmenu logic.
-          lastLocation = location;
-        }
-
-      event = [[NSApplication sharedApplication] nextEventMatchingMask: eventMask
-        untilDate: theDistantFuture
-        inMode: NSEventTrackingRunLoopMode
-        dequeue: YES];
-      type = [event type];
-    }
-  while (type != end);
-
-  /*
-   * Ok, we released the mouse
-   * There are now a few possibilities:
-   * A - We released the mouse outside the menu.
-   *     Then we want the situation as it was before
-   *     we entered everything.
-   * B - We released the mouse on a submenu item
-   *     (i) - this was highlighted before we started clicking:
-   *           Remove attached menus
-   *     (ii) - this was not highlighted before pressed the mouse button;
-   *            Keep attached menus.
-   * C - We released the mouse above an ordinary action:
-   *     Execute the action.
-   *
-   *  In case A, B and C we want the transient menus to be removed
-   *  In case A and C we want to remove the menus that were created
-   *  during the dragging.
-   *
-   *  So we should do the following things:
-   * 
-   * 1 - Stop periodic events,
-   * 2 - Determine the action.
-   * 3 - Remove the Transient menus from the screen.
-   * 4 - Perform the action if there is one.
-   */
-
-  [NSEvent stopPeriodicEvents];
-
-  /*
-   * We need to store this, because _highlightedItemIndex
-   * will not be valid after we removed this menu from the screen.
-   */
-  indexOfActionToExecute = _highlightedItemIndex;
-
-  // remove transient menus. --------------------------------------------
-    {
-      NSMenu *currentMenu = _attachedMenu;
-
-      while (currentMenu && ![currentMenu isTransient])
-        {
-          currentMenu = [currentMenu attachedMenu];
-        }
-
-      while ([currentMenu isTransient] &&
-             [currentMenu supermenu])
-        {
-          currentMenu = [currentMenu supermenu];
-          [currentMenu close];
-        }
-
-      if ([currentMenu isTransient])
-        {
-          [currentMenu closeTransient];
-        }
-    }
-
-  // ---------------------------------------------------------------------
-  if (indexOfActionToExecute == -1)
-    {
-      return YES;
-    }
-
-  if (indexOfActionToExecute >= 0
-      && [_attachedMenu attachedMenu] != nil && [_attachedMenu attachedMenu] ==
-      [[_items_link objectAtIndex: indexOfActionToExecute] submenu])
-    {
-      // Clicked on a submenu.
-      return NO;
-    }
-  [_attachedMenu close];
-
-  if([_attachedMenu supermenu])
-  {
-      NSMenu *currentMenu = _attachedMenu;
-
-      while ([currentMenu supermenu])
-      {
-          currentMenu = [currentMenu supermenu];
-          if(![currentMenu isEqual:[NSApp mainMenu]])
-              [currentMenu close];
-      }
-  }
-
-  [_attachedMenu performActionForItemAtIndex: indexOfActionToExecute];
-
-  /*
-   * Remove highlighting.
-   * We first check if it still highlighted because it could be the
-   * case that we choose an action in a transient window which
-   * has already dissappeared.  
-   */
-  if (_highlightedItemIndex >= 0)
-    {
-      [self setHighlightedItemIndex: -1];
-    }
-  return YES;
-}
-
 
 @end

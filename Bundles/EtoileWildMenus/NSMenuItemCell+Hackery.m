@@ -53,10 +53,10 @@
     {
       NSColor * backgroundColor;
 
-      backgroundColor = [NSColor colorWithCalibratedRed: 0.1
-                                                  green: 0.1
-                                                   blue: 0.8
-                                                  alpha: 0.35];
+      backgroundColor = [NSColor colorWithCalibratedRed: 0.0
+                                                  green: 0.0
+                                                   blue: 1
+                                                  alpha: 0.3];
 
       [backgroundColor set];
       NSRectFill(cellFrame);

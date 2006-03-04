@@ -1,5 +1,14 @@
 2006-03-04  Saso Kiselkov <diablos@manga.sk>
 
+    Update based on 2006-03-04 21:03 version.
+    * NSMenu+Hackery.m:
+    * GSHorizontalMenuItemCell.m:
+    * NSMenuItemCell+Hackery.m:
+    * NSMenuView+Hackery.m:
+    Updated.
+
+2006-03-04  Saso Kiselkov <diablos@manga.sk>
+
     * ChangeLog:
     * EtoileMenuTitleView.h:
     * EtoileMenuTitleView.m:
@@ -34,4 +43,4 @@
     * Images_src/CloseButton.xcf:
     Initial import for EtoileWildMenus, major refactoring done by Saso Kiselkov 
     on WildMenus (the other part of the menu bar support has been imported in 
-    Etoile/Services/Private/MenuServer). 2003-03-03 22:40 version.
+    Etoile/Services/Private/MenuServer). 2006-03-03 22:40 version.

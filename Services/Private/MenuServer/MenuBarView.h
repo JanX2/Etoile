@@ -3,10 +3,9 @@
 
 @interface MenuBarView : NSView
 {
-  BOOL drawsCorners;
-}
+  NSMenu * systemMenu;
 
-- (BOOL) drawsCorners;
-- (void) setDrawsCorners: (BOOL) flag;
+  BOOL systemLogoPushedIn;
+}
 
 @end

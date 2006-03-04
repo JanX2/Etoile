@@ -31,6 +31,11 @@
 
 #import "MenuBarHeight.h"
 
+static inline int my_round(float x)
+{
+  return (float) (x + 0.5);
+}
+
 @implementation NSMenu (HorizontalHackery)
 
 #define SHIFT_DELTA 18.0
@@ -98,7 +103,8 @@
 - (void)setGeometry
 {
   NSPoint origin;
-  origin = NSMakePoint (21, [[NSScreen mainScreen] frame].size.height - [_aWindow frame].size.height);
+  origin = NSMakePoint (my_round(1.5 * MenuBarHeight),
+    [[NSScreen mainScreen] frame].size.height - [_aWindow frame].size.height);
   [_aWindow setFrameOrigin: origin];
   [_bWindow setFrameOrigin: origin];
 }

@@ -25,7 +25,9 @@ else
 endif
 
 after-all::
-	@ echo "Copying menulet into app wrapper..." && \
+	@ echo "Copying menulets into app wrapper..." && \
           find Menulets -name '*.menulet' -exec cp -r '{}' '$(APP)/Resources' ';' && \
+          echo "Copying system bar entries into app wrapper..." && \
+          find SystemBarEntries -name '*.sysbarentry' -exec cp -r '{}' '$(APP)/Resources' ';' && \
           echo "Purging bogus CVS entries from app..." && \
           find "$(APP)" -type d -name CVS -print0 | xargs -0 /bin/rm -rf

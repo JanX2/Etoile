@@ -1,7 +1,9 @@
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
-SUBPROJECTS=$(wildcard Menulets/*)
+SUBPROJECTS= \
+$(wildcard Menulets/*) \
+$(wildcard SystemBarEntries/*)
 
 APP_NAME=EtoileMenuServer
 

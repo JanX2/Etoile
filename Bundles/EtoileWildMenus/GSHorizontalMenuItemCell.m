@@ -103,9 +103,6 @@ static NSImage * arrowImage = nil;
 
   cellFrame.size.height -= 2;
 
-  // make the text offset from the left edge a bit
-  cellFrame.origin.x += 6;
-
   switch (_cell.image_position)
     {
       case NSNoImage:
@@ -172,10 +169,10 @@ static NSImage * arrowImage = nil;
    */
   if (mask & (NSChangeGrayCellMask | NSChangeBackgroundCellMask))
     {
-      [[NSColor colorWithCalibratedRed: 0.1
-                                 green: 0.1
-                                  blue: 0.85
-                                 alpha: 0.35] set];
+      [[NSColor colorWithCalibratedRed: 0.0
+                                 green: 0.0
+                                  blue: 1
+                                 alpha: 0.3] set];
 
       NSRectFill(cellFrame);
     }
@@ -213,8 +210,12 @@ static NSImage * arrowImage = nil;
   // Draw the key equivalent
   if (_keyEquivalentWidth > 0)
     {
-      [self drawKeyEquivalentWithFrame: cellFrame inView: controlView];
+//      [self drawKeyEquivalentWithFrame: cellFrame inView: controlView];
     }
+
+
+
+  // draw the borders of the menu item
 
   [[NSColor colorWithCalibratedWhite: 1.0 alpha: 0.4] set];
   PSmoveto(NSMinX(cellFrame), NSMinY(cellFrame));
@@ -236,7 +237,7 @@ static NSImage * arrowImage = nil;
       NSPoint   position;
 
       size = [arrowImage size];
-      position.x = NSMaxX(cellFrame) - size.width - 4;
+      position.x = NSMaxX(cellFrame) - size.width - 5;
       position.y = MAX(NSMidY(cellFrame) - (size.height/2.0), 0.0);
       /*
        * Images are always drawn with their bottom-left corner at the origin
@@ -285,7 +286,7 @@ static NSImage * arrowImage = nil;
       color = [NSColor controlTextColor];
     }
 
-  [value setAlignment: NSLeftTextAlignment];
+  [value setAlignment: NSCenterTextAlignment];
 
   attr = [[NSDictionary alloc] initWithObjectsAndKeys:
                                value, NSParagraphStyleAttributeName,
@@ -298,8 +299,7 @@ static NSImage * arrowImage = nil;
   else
     _cell.is_disabled = YES;
 
-  [[_menuItem title] drawInRect: cf
-          withAttributes: attr];
+  [[_menuItem title] drawInRect: cf withAttributes: attr];
 
   RELEASE(attr);
 }
@@ -374,24 +374,16 @@ static NSImage * arrowImage = nil;
   componentSize = [self _sizeText: [_menuItem title]];
 
    // add a slight border around horizontal menu items
-  componentSize.width += 6;
+  componentSize.width += 8;
 
   _titleWidth = componentSize.width;
   if (componentSize.height > neededMenuItemHeight)
     neededMenuItemHeight = componentSize.height;
+
   componentSize = [self _sizeText: [_menuItem keyEquivalent]];
   _keyEquivalentWidth = componentSize.width;
   if (componentSize.height > neededMenuItemHeight)
     neededMenuItemHeight = componentSize.height;
-
-  // Submenu Arrow
-  if ([_menuItem hasSubmenu])
-    {
-      componentSize = [arrowImage size];
-      _keyEquivalentWidth = componentSize.width;
-      if (componentSize.height > neededMenuItemHeight)
-        neededMenuItemHeight = componentSize.height;
-    }
 
   // Cache definitive height
   _menuItemHeight = neededMenuItemHeight;

@@ -40,7 +40,7 @@ static MenuletLoader * shared = nil;
   NSArray * bundles = [[BundleExtensionLoader shared]
     extensionsForBundleType: @"menulet"
      principalClassProtocol: @protocol(EtoileMenulet)
-         bundleSubdirectory: @"MenuMenulets"
+         bundleSubdirectory: @"EtoileMenuServer"
                   inDomains: 0
        domainDetectionByKey: @"MenuMenulets"];
   NSEnumerator * e;

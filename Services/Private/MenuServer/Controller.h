@@ -4,10 +4,6 @@
 
 @class NSNotification, MenuBarWindow;
 
-enum {
-  MenuBarHeight = 21
-};
-
 extern MenuBarWindow * ServerMenuBarWindow;
 
 @interface Controller : NSObject

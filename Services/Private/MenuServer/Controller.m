@@ -5,10 +5,17 @@
 #import <AppKit/NSApplication.h>
 #import <AppKit/NSButton.h>
 #import <AppKit/NSImage.h>
+#import <AppKit/NSMenu.h>
 
+#import "MenuBarHeight.h"
 #import "MenuBarWindow.h"
 #import "MenuBarView.h"
 #import "MenuletLoader.h"
+
+static inline int my_round(float x)
+{
+  return (int) (x + 0.5);
+}
 
 @implementation Controller
 
@@ -30,7 +37,6 @@ MenuBarWindow * ServerMenuBarWindow = nil;
   if (ServerMenuBarWindow == nil)
     {
       MenuBarView * menuBarView;
-      NSButton * menuBarButton;
 
       ServerMenuBarWindow = [[MenuBarWindow alloc]
         initWithContentRect: [self menuBarWindowFrame]
@@ -44,22 +50,7 @@ MenuBarWindow * ServerMenuBarWindow = nil;
       menuBarView = [[[MenuBarView alloc]
         initWithFrame: NSZeroRect]
         autorelease];
-      [menuBarView setDrawsCorners: YES];
       [ServerMenuBarWindow setContentView: menuBarView];
-
-      menuBarButton = [[[NSButton alloc]
-        initWithFrame: NSMakeRect(0, 0, MenuBarHeight, MenuBarHeight)]
-        autorelease];
-      [menuBarButton setImagePosition: NSImageOnly];
-      [menuBarButton setBordered: NO];
-      [menuBarButton setButtonType: NSMomentaryChangeButton];
-      [menuBarButton setImage: [NSImage imageNamed: @"EtoileLogo"]];
-      [menuBarButton setAlternateImage: [NSImage imageNamed: @"EtoileLogoH"]];
-      [menuBarButton setTarget: NSApp];
-      [menuBarButton setAction: @selector(terminate:)];
-      [menuBarButton setRefusesFirstResponder: YES];
-
-      [menuBarView addSubview: menuBarButton];
 
       [ServerMenuBarWindow setLevel: NSMainMenuWindowLevel - 1];
     }

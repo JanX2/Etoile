@@ -1,0 +1,4 @@
+
+enum {
+  MenuBarHeight = 21
+};
