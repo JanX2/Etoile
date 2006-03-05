@@ -1,0 +1,937 @@
+# Indonesian translation of setup-tools-backend.
+# Copyright (C) 2004 THE setup-tools-backend's COPYRIGHT HOLDER
+# This file is distributed under the same license as the setup-tools-backend package.
+# Mohammad DAMT <mdamt@bisnisweb.com>, 2004.
+# 
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: setup-tools-backend HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-03-08 20:46+0700\n"
+"PO-Revision-Date: 2005-03-08 20:36+0700\n"
+"Last-Translator: Mohammad DAMT <mdamt@bisnisweb.com>\n"
+"Language-Team: Indonesian <sukarelawan@gnome.linux.or.id>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: service-list.pl.in:36
+msgid "ACPI event handler"
+msgstr "Pengatur kejadian ACPI"
+
+#: service-list.pl.in:36
+msgid ""
+"Notifies user-space programs of ACPI events: executes arbitrary commands in "
+"response to ACPI events such as power buttons."
+msgstr ""
+"Memberitahukan program pemakai terhadap semua kejadian ACPI: lalu "
+"menjalankan perintah sesuai kejadian yang diterima, misalnya penekanan "
+"tombol daya."
+
+#: service-list.pl.in:37
+msgid "Advanced Linux Sound Architecture"
+msgstr "Advanced Linux Sound Architecture"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid "web server"
+msgstr "server web"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid ""
+"Apache is a World Wide Web server.  It is used to serve HTML files and CGI."
+msgstr ""
+"Apache adalah server World Wide Web. Gunanya untuk menyediakan layanan "
+"berkas HTML dan CGI."
+
+#: service-list.pl.in:39
+msgid "Run missed scheduled jobs at startup"
+msgstr ""
+"Pada saat komputer dinyalakan, jalankan tugas-tugas yang tidak sempat "
+"dilakukan sebelumnya."
+
+#: service-list.pl.in:39
+msgid "Run cron jobs that were left out due to downtime"
+msgstr "Jalankan tugas-tugas cron yang belum dilakukan karena komputer mati"
+
+#: service-list.pl.in:40
+msgid "Automatic power management daemon"
+msgstr "Daemon pengelolaan daya listrik otomatis"
+
+#: service-list.pl.in:40
+msgid ""
+"apmd is used for monitoring battery status and logging it via syslog(8). It "
+"can also be used for shutting down the machine when the battery is low."
+msgstr ""
+"apmd digunakan untuk memantau status baterai dan mencatatnya melalui syslog"
+"(8). Ini juga dapat digunakan untuk mematikan komputer saat baterainya habis."
+
+#: service-list.pl.in:41
+msgid "Runs a command at a given time"
+msgstr "Jalankan perintah pada saat tertentu"
+
+#: service-list.pl.in:41
+msgid ""
+"Runs commands scheduled by the at command at the time specified when at was "
+"run, and runs batch commands when the load average is low enough."
+msgstr ""
+"Jalankan perintah yang dijadwal menggunakan program \"at\" pada waktu yang "
+"ditentukan, dan jalankan perintah batch saat tingkat beban komputer rendah."
+
+#: service-list.pl.in:42
+msgid "Audio mixer"
+msgstr "Mikser audio"
+
+#: service-list.pl.in:42
+msgid "This program adjusts the settings of an audio mixing device"
+msgstr "Program ini mengatur perangkat mikser audio"
+
+#: service-list.pl.in:43
+msgid "BinFormat Support"
+msgstr "Dukungan BinFormat"
+
+#: service-list.pl.in:43
+msgid "Support for running non ELF binaries on Linux"
+msgstr "Dukungan terhadap berkas program biner non ELF pada Linux"
+
+#: service-list.pl.in:44
+msgid "Boot messages recorder"
+msgstr "Perekam pesan boot"
+
+#: service-list.pl.in:44
+msgid ""
+"Runs in the background and copies all strings sent to the /dev/console "
+"device to a logfile"
+msgstr ""
+"Jalan di belakang dan menyalin semua data dari /dev/console ke file log"
+
+#: service-list.pl.in:45
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the tcp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"Layanan internal xinetd yang menghasilkan karakter-karakter. Layanan "
+"internal yang terus-menerus menghasilkan berbagai macam karakter sampai "
+"koneksi diputus. Ini adalah versi tcp-nya. Anda harus aktifkan dulu xinetd "
+"untuk menggunakna layanan ini."
+
+#: service-list.pl.in:46
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the udp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"Layanan internal xinetd yang menghasilkan karakter-karakter. Layanan "
+"internal yang terus-menerus menghasilkan berbagai macam karakter sampai "
+"koneksi diputus. Ini adalah versi udp-nya. Anda harus aktifkan dulu xinetd "
+"untuk menggunakna layanan ini."
+
+#: service-list.pl.in:47
+msgid "CPU frequency monitor"
+msgstr "Pemantau frekuensi CPU"
+
+#: service-list.pl.in:47
+msgid ""
+"cpufreqd is used to monitor the status of the battery and adjust the "
+"frequency of the CPU accordingly in order to preserve battery power while "
+"providing optimal performance"
+msgstr ""
+"cpufreqd digunakan untuk memantau status baterai dan mengatur frekuensi CPU "
+"dalam rangka untuk menghemat daya baterai tanpa harus kehilangan tenaga "
+"komputasi"
+
+#: service-list.pl.in:48 service-list.pl.in:130
+msgid "daemon to execute scheduled commands"
+msgstr "daemon yang mengatur perintah terjadwal"
+
+#: service-list.pl.in:49
+msgid "Run scheduled jobs"
+msgstr "Jalankan tugas-tugas yang sudah dijadwal"
+
+#: service-list.pl.in:49
+msgid ""
+"cron is a standard UNIX program that runs user-specified programs at "
+"periodic scheduled times. vixie cron adds a number of features to the basic "
+"UNIX cron, including better security and more powerful configuration options."
+msgstr ""
+"cron adalah program UNIX standar yang menjalankan program-program milik "
+"pemakai pada waktu-waktu tertentu secara periodik. vixie cron adalah program "
+"sejenis yang menambahkan fitur-fitur yang lebih lengkap dari cron UNIX, "
+"termasuk di dalamnya penanganan keamanan yang lebih handal dan pilihan "
+"konfigurasi yang lebih lengkap."
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Common Unix Printing System"
+msgstr "Sistem Pencetakan Umum pada Unix (Common Unix Printing System/CUPS)"
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Printing system based upon the Internet Printing Protocol, version  1.1"
+msgstr ""
+"Sistem pencetakan yang dibuat berdasarkan Internet Printing Protocol versi "
+"1.1"
+
+#: service-list.pl.in:52
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the tcp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"Layanan internal xinetd yang mencetak waktu saat ini dalam bentuk seperti "
+"ini: 'Wed Nov 13 22:30:27 EST 2002'. Ini adalah versi tcp-nya. Anda harus "
+"mengaktifkan xinetd untuk mengaktifkan layanan ini."
+
+#: service-list.pl.in:53
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the udp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"Layanan internal xinetd yang mencetak waktu saat ini dalam bentuk seperti "
+"ini: 'Wed Nov 13 22:30:27 EST 2002'. Ini adalah versi udp-nya. Anda harus "
+"mengaktifkan xinetd untuk mengaktifkan layanan ini."
+
+#: service-list.pl.in:54 service-list.pl.in:55
+msgid "Dynamic DNS Client"
+msgstr "Klien DNS Dinamis"
+
+#: service-list.pl.in:54
+msgid "A Dynamic DNS Name service from www.dyndns.org"
+msgstr "Layanan DNS Dinamis dari www.dyndns.org"
+
+#: service-list.pl.in:55
+msgid "A Dynamic DNS Name service from www.dhis.org"
+msgstr "Layanan DNS Dinamis dari www.dhis.org"
+
+#: service-list.pl.in:56
+msgid "Dict Dictionary Server"
+msgstr "Server Kamus Dict"
+
+#: service-list.pl.in:57
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"Layanan internal xinetd yang mencetak apa pun karakter yang diterima. Ini "
+"adalah versi tcp-nya. Anda harus mengaktifkan xinetd untuk mengaktifkan "
+"layanan ini."
+
+#: service-list.pl.in:58
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"Layanan internal xinetd yang mencetak apa pun karakter yang diterima. Ini "
+"adalah versi udp-nya. Anda harus mengaktifkan xinetd untuk mengaktifkan "
+"layanan ini."
+
+#: service-list.pl.in:59
+msgid "Sound mixing server"
+msgstr "Server mikser suara"
+
+#: service-list.pl.in:59
+msgid "The Enlightened Sound Daemon"
+msgstr "The Enlightened Sound Daemon"
+
+#: service-list.pl.in:60
+msgid "Exim SMTP Server"
+msgstr "Server SMTP Exim"
+
+#: service-list.pl.in:61
+msgid "file alteration monitor"
+msgstr "pemantau perubahan berkas"
+
+#: service-list.pl.in:62
+msgid "Firstboot is a druid style program that runs on the first time"
+msgstr "Firstboot adalah program yang dijalankan pertama kali"
+
+#: service-list.pl.in:63
+msgid "Text-to-speech system"
+msgstr "Sistem teks-ke-suara"
+
+#: service-list.pl.in:63
+msgid "Festival is a general purpose text-to-speech system"
+msgstr "Festival adalah sistem teks-ke-suara serba guna"
+
+#: service-list.pl.in:64
+msgid "Mail Fetcher"
+msgstr "Pengambil Email"
+
+#: service-list.pl.in:64
+msgid "A Mail Fetcher from external Servers"
+msgstr "Pengambil Email dari server eksternal"
+
+#: service-list.pl.in:65
+msgid "IPv6 Tunnel Broker"
+msgstr "Broker Terowongan IPv6"
+
+#: service-list.pl.in:65
+msgid "A IPv6 Dynamic Tunnel Broker"
+msgstr "Broker Terowongan IPv6 Dinamis"
+
+#: service-list.pl.in:66
+msgid "GNOME Display Manager"
+msgstr "Pengatur Layar GNOME (GNOME Display Manager/GDM)"
+
+#: service-list.pl.in:66
+msgid "gdm provides the GNOME equivalent of a \"login:\" prompt."
+msgstr "gdm menyediakan layar login untuk GNOME"
+
+#: service-list.pl.in:67
+msgid "console mouse support"
+msgstr "dukungan mouse konsol"
+
+#: service-list.pl.in:67
+msgid ""
+"GPM adds mouse support to text-based Linux applications such the Midnight "
+"Commander. It also allows mouse-based console cut-and-paste operations, and "
+"includes support for pop-up menus on the console."
+msgstr ""
+"GPM menediakan dukungan mouse untuk aplikasi Linux berbasis teks seperti "
+"Midnight Commander. Program ini juga menyediakan fasilitas salin dan tempel "
+"dan juga mendukung penggunaan menu pop-up."
+
+#: service-list.pl.in:68
+msgid "Set hard disk parameters"
+msgstr "Mengatur parameter hard disk"
+
+#: service-list.pl.in:68
+msgid ""
+"Provides a interface to various hard disk ioctls supported by the stock "
+"Linux ATA/IDE device driver subsystem."
+msgstr ""
+"Menyediakan antarmuka ke beragam kendali internal (ioctl) hard disk yang "
+"didukung oleh kebanyakan subsistem penggerak perangkat Linux ATA/IDE."
+
+#: service-list.pl.in:69
+msgid "Linux hotplugging support"
+msgstr "Dukungan Linux buka-pasang (hotplug)"
+
+#: service-list.pl.in:69
+msgid ""
+"hotplug is a program which is used by the kernel to notify user mode "
+"software when some significant (usually hardware-related) events take place. "
+"An example is when a USB or Cardbus device has just been plugged in."
+msgstr ""
+"hotplug adalah program yang digunakan kernel untuk memberitahu program "
+"pemakai saat ada kejadian tertentu (biasanya berhubungan dengan perangkat "
+"keras) terjadi. Misalnya apda saat perangkat USB atau Cardbus dicolokkan ke "
+"dalam komputer."
+
+#: service-list.pl.in:71
+msgid "internet superserver"
+msgstr "superserver internet"
+
+#: service-list.pl.in:71
+msgid ""
+"inetd allows running one daemon to invoke several others, reducing load on "
+"the system."
+msgstr ""
+"inetd mengatur jalannya daemon-daemon dan menurunkan tingkat beban sistem."
+
+#: service-list.pl.in:72
+msgid "administration tool for IPv4 packet filtering and NAT"
+msgstr "program administrasi untuk pemfilter paket IPv4 dan NAT"
+
+#: service-list.pl.in:72
+msgid ""
+"Iptables is used to set up, maintain, and inspect the tables of IP packet "
+"filter rules in the Linux kernel."
+msgstr ""
+"Iptables digunakan untuk menata, mengelola dan mengendalikan tabel aturan "
+"paket filter IP pada kernel Linux."
+
+#: service-list.pl.in:73
+msgid "IrDA stack for Linux"
+msgstr "Program IrDA Linux"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol"
+msgstr "Protokol Internet Key Exchange"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol openbsd implementation"
+msgstr "Protokol Internet Key Exchange implementasi openbsd"
+
+#: service-list.pl.in:75
+msgid "start and stop ISDN services"
+msgstr "jalankan dan berhentikan layanan ISDN"
+
+#: service-list.pl.in:76
+msgid "Check and fix joystick device nodes"
+msgstr "Periksa dan betulkan titik perangkat joystik"
+
+#: service-list.pl.in:76
+msgid ""
+"Runs joystick-device-check.  joystick-device-check is a program which "
+"ensures that the /dev/js* device nodes are correct for the kernel version in "
+"use."
+msgstr ""
+"Jalankan joystick-device-check. Program ini adalah program yang memastikan "
+"bahwa titik perangkat /dev/js* sudah dipasang sesuai dengan versi kernel "
+"yang aktif."
+
+#: service-list.pl.in:77
+msgid ""
+"This package loads the selected keyboard map as set in /etc/sysconfig/"
+"keyboard.  This can be selected using the kbdconfig utility.  You should "
+"leave this enabled for most machines."
+msgstr ""
+"Paket ini membuka peta keyboard yang dipilih sebagaimana disebutkan pada /"
+"etc/sysconfig/keyboard. Peta ini dapat dipilih dengan menggunakan program "
+"kbdconfig. Biasanya pilihan ini diaktifkan."
+
+#: service-list.pl.in:78
+msgid "Kernel Log Daemon"
+msgstr "Daemon Log Kernel"
+
+#: service-list.pl.in:78
+msgid ""
+"klogd is a system daemon which intercepts and logs Linux kernel messages."
+msgstr ""
+"klogd adalah daemon sistem yang mencegat dan mencatat pesan-pesan kernel "
+"Linux"
+
+#: service-list.pl.in:79
+msgid ""
+"This runs the hardware probe, and optionally configures changed hardware."
+msgstr ""
+"Program ini mendeteksi perangkat keras dan, bila suka, dapat mengatur "
+"perangkat keras yang berubah."
+
+#: service-list.pl.in:80 service-list.pl.in:81
+msgid ""
+"LIRC is a package that allows you to decode and send infra-red signals of "
+"many commonly used remote controls"
+msgstr ""
+"LIRC adalah paket yang dapat membuka kode dan mengirim sinyal-sinyal infra "
+"merah dari beragam jenis remote-control."
+
+#: service-list.pl.in:82
+msgid "Starts misc programs that should be started"
+msgstr "Jalankan berbagai program yang ingin dijalankan"
+
+#: service-list.pl.in:83
+msgid ""
+"lpd is the print daemon required for lpr to work properly. It is basically a "
+"server that arbitrates print jobs to printer(s)."
+msgstr ""
+"lpd adalah daemon print yang dibutuhkan supaya lpr bisa bekerja dengan baik. "
+"Program ini adalah server yang mengirimkan pencetakan ke pencetak."
+
+#: service-list.pl.in:84
+msgid "Create devices"
+msgstr "Buat perangkat"
+
+#: service-list.pl.in:84
+msgid ""
+"Script that will create the devices in /dev used to interface with drivers "
+"in the kernel"
+msgstr ""
+"Skrip yang akan membuat perangkat di /dev yang akan berhubungan dengan "
+"program penggerak di kernel"
+
+#: service-list.pl.in:85
+msgid "Syslog Replacement"
+msgstr "Pengganti Syslog"
+
+#: service-list.pl.in:85
+msgid "Modern logging daemon"
+msgstr "Daemon pencatat modern"
+
+#: service-list.pl.in:86
+msgid "Load kernel modules"
+msgstr "Aktifkan modul kernel"
+
+#: service-list.pl.in:87
+msgid "tools for managing Linux kernel modules"
+msgstr "Program untuk mengatur modul kernel Linux"
+
+#: service-list.pl.in:88 service-list.pl.in:105
+msgid "database server"
+msgstr "server basis data"
+
+#: service-list.pl.in:88
+msgid "MySQL, a SQL-based relational database daemon"
+msgstr "MySQL, daemon basis data SQL berbasis basis data relasional"
+
+#: service-list.pl.in:89
+msgid "dns server"
+msgstr "server dns"
+
+#: service-list.pl.in:89
+msgid ""
+"named (BIND) is a Domain Name Server (DNS) that is used to resolve host "
+"names to IP addresses."
+msgstr ""
+"named (BIND) adalah Server Layanan Ranah/Domain (Domain Name Server/DNS) "
+"yang digunakan untuk menerjemahkan nama host ke alamat IP."
+
+#: service-list.pl.in:90
+msgid ""
+"Mounts and unmounts all Network File System (NFS), SMB (Lan Manager/"
+"Windows), and NCP (NetWare) mount points."
+msgstr ""
+"Memasang dan melepas semua titik pasang Sistem Berkas Jaringan (Network File "
+"System/NFS), SMB (Lan Manager/Windows) dan NCP (Netware)."
+
+#: service-list.pl.in:91
+msgid ""
+"Activates/Deactivates all network interfaces configured to start at boot "
+"time."
+msgstr ""
+"Menyalakan/mematikan semua antarmuka jaringan yang dikonfigurasikan aktif "
+"pada saat boot."
+
+#: service-list.pl.in:92
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS server functionality, which is configured via the /etc/"
+"exports file."
+msgstr ""
+"NFS adalah protokol yang terkenal digunakan untuk menyediakan berkas bersama "
+"melalui jaringan TCP/IP. Layanan ini memberikan fungsi-fungsi server NFS "
+"yang dapat dinyalakan lewat berkas /etc/exports."
+
+#: service-list.pl.in:93
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS file locking functionality."
+msgstr ""
+"NFS adalah protokol yang terkenal digunakan untuk menyediakan berkas bersama "
+"melalui jaringan TCP/IP. Layanan ini memberikan fungsi penguncian berkas NFS."
+
+#: service-list.pl.in:94
+msgid "Name service cache daemon"
+msgstr "Daemon cache layanan nama (name service cache)"
+
+#: service-list.pl.in:94
+msgid "Daemon that provides a cache for the most common name service requests."
+msgstr ""
+"Daemon yang menyediakan data singgahan (cache) paa setiap permintaan layanan "
+"nama (name service)."
+
+#: service-list.pl.in:95
+msgid "Network Time Protocol daemon"
+msgstr "Daemon Protokol Waktu Jaringan (Network Time Protocol/NTP)"
+
+#: service-list.pl.in:95
+msgid "ntpd is the NTPv4 daemon."
+msgstr "ntpd adalah daemon NTPv4."
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid "Update the system time over the network"
+msgstr "Cocokkan waktu sistem melalui jaringan"
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid ""
+"Checks the time from a Network Time Protocol (ntp) server and adjusts the "
+"system time accordingly."
+msgstr ""
+"Mencocokkan waktu sistem dengan menggunakan server Protokol Waktu Jaringan "
+"(Network Time Protocol/ntp)."
+
+#: service-list.pl.in:98
+msgid "Network Time Protocol (NTP) server"
+msgstr "Server Protokol Waktu Jaringan (Network Time Protocol/NTP)"
+
+#: service-list.pl.in:98
+msgid ""
+"Daemon which sets and maintains the system time-of-day in synchronism with "
+"Internet standard time servers"
+msgstr ""
+"Daemon yang mengatur dan mengelola waktu sistem dengan cara melakukan "
+"sinkronisasi dengan server-server di Internet"
+
+#: service-list.pl.in:99
+msgid "HTTP caching proxy"
+msgstr "Proksi data singgahan HTTP"
+
+#: service-list.pl.in:100
+msgid "PCMCIA Services"
+msgstr "Layanan PCMCIA"
+
+#: service-list.pl.in:101
+msgid "Caching-Only DNS Server"
+msgstr "Server DNS Singgahan (caching only)"
+
+#: service-list.pl.in:102
+msgid "IPsec tunnel implementation"
+msgstr "Implementasi terowongan IPsec"
+
+#: service-list.pl.in:103
+msgid "DARPA port to RPC program number mapper"
+msgstr "Program pemetaan nomor port DARPA ke RPC"
+
+#: service-list.pl.in:103
+msgid ""
+"The portmapper manages RPC connections, which are used by protocols such as "
+"NFS and NIS. The portmap server must be running on machines which act as "
+"servers for protocols which make use of the RPC mechanism."
+msgstr ""
+"Program portmapper mengatur koneksi RPC yang digunakan oleh beberapa jenis "
+"protokol seperti NFS dan NIS. Server portmap harus jalan pada komputer yang "
+"berperan sebagai server pada protokol yang menggunakan mekanisme RPC."
+
+#: service-list.pl.in:104
+msgid "Mail Transport Agent"
+msgstr "Agen Transport Email (Mail Transport Agent/MTA)"
+
+#: service-list.pl.in:106
+msgid "Point to Point Protocol daemon"
+msgstr "Daemon Point-to-Point Protocol"
+
+#: service-list.pl.in:106
+msgid ""
+"The  Point-to-Point Protocol (PPP) provides a method for transmitting "
+"datagrams over serial point-to-point links."
+msgstr ""
+"Protokol Point-to-Point (PPP) menyediakan metode pemancaran datagram melalui "
+"jalur serial dari suatu titik ke titik yang lain."
+
+#: service-list.pl.in:107
+msgid "Privacy enhancing HTTP Proxy"
+msgstr "Proksi HTTP dengan kapabilitas privasi ekstra"
+
+#: service-list.pl.in:108
+msgid ""
+"Saves and restores system entropy pool for higher quality random number "
+"generation."
+msgstr ""
+"Menyimpan dan membuka bandar entropi sistem yang menyediakan angka acak yang "
+"benar-benar acak."
+
+#: service-list.pl.in:109
+msgid ""
+"This scripts assignes raw devices to block devices (such as hard drive "
+"partitions). This is for the use of applications such as Oracle. You can set "
+"up the raw device to block device mapping by editing the file /etc/sysconfig/"
+"rawdevices."
+msgstr ""
+"Skrip ini memasangkan perangkat raw ke perangkat blok (misalnya partisi hard "
+"disk). Biasanya ini digunakan pada aplikasi-aplikasi tertentu seperti "
+"Oracle. Anda dapat menata penggunaan pemetaan perangkat raw ke blok dengan "
+"mengatur isi file /etc/sysconfig/rawdevices."
+
+#: service-list.pl.in:110
+msgid ""
+"This is a daemon which handles the task of connecting periodically to the "
+"Red Hat Network servers to check for updates, notifications and perform "
+"system monitoring tasks according to the service level that this server is "
+"subscribed for."
+msgstr ""
+"Ini adalah daemon yang mengatur koneksi ke server-server Jaringan Red Hat "
+"secara periodik dalam rangka mendapatkan informasi terbaru mengenai paket-"
+"paket terbaru, peringatan keamanan, dan melakukan pemantauan sistem sesuai "
+"dengan tingkat layanan yang dilanggan khusus server ini."
+
+#: service-list.pl.in:111 service-list.pl.in:112
+msgid ""
+"The rsync server is a good addition to am ftp server, as it allows crc "
+"checksumming etc. You must enable xinetd to use this service."
+msgstr ""
+"Server rsync adalah tambahan server ftp yang menyediakan fasilitas crc, "
+"checksum dan sebagainya. Anda harus mengaktifkan xinetd untuk menyalakan "
+"fasilitas ini."
+
+#: service-list.pl.in:112
+msgid "Faster, flexible replacement for rcp"
+msgstr "Program pengganti rcp yang lebih cepat dan lebih fleksibel"
+
+#: service-list.pl.in:113
+msgid "A Windows SMB/CIFS fileserver for UNIX"
+msgstr "Server berkas Windows SMB/CIFS untuk UNIX"
+
+#: service-list.pl.in:113
+msgid ""
+"The Samba software suite is a collection of programs that implements the "
+"Server Message Block protocol for UNIX systems."
+msgstr ""
+"Program Samba adalah kumpulan program yang mengimplementasikan protokol "
+"Server-Message-Block di sistem-sistem Unix."
+
+#: service-list.pl.in:114
+msgid ""
+"saslauthd is a server process which handles plaintext authentication "
+"requests on behalf of the cyrus-sasl library."
+msgstr ""
+"saslauthd adalah proses server yang mengatur permintaan otentikasi teks di "
+"atas pustaka program cyrus-sasl."
+
+#: service-list.pl.in:115
+msgid ""
+"Sendmail is a Mail Transport Agent, which is the program that moves mail "
+"from one machine to another."
+msgstr ""
+"Sendmail adalah Agen Transpor Email, yaitu program yang mengirimkan email-"
+"email dari satu komputer ke komputer lain."
+
+#: service-list.pl.in:116
+msgid ""
+"An internal xinetd service, listing active servers. You must enable xinetd "
+"to use this service."
+msgstr ""
+"Layanan xinetd internal, menampilkan daftar server yang aktif. Anda harus "
+"mengaktifkan xinetd untuk mengaktifkan layanan ini."
+
+#: service-list.pl.in:117
+msgid ""
+"An internal xinetd service, listing active services. You must enable xinetd "
+"to use this service."
+msgstr ""
+"Layanan xinetd internal, menampilkan daftar layanan yang aktif. Anda harus "
+"mengaktifkan xinetd untuk mengaktifkan layanan ini."
+
+#: service-list.pl.in:118
+msgid "get/set serial port information"
+msgstr "Ambil/pasang informasi port serial"
+
+#: service-list.pl.in:118
+msgid ""
+"setserial is a program designed to set and/or report the configuration "
+"information associated with a serial port."
+msgstr ""
+"setserial adalah program yang dirancang untuk memasang/mengambil isi "
+"konfigurasi port serial."
+
+#: service-list.pl.in:119
+msgid ""
+"FAM is a file monitoring daemon. It can be used to get reports when files "
+"change. You must enable xinetd to use this service."
+msgstr ""
+"FAM adalah daemon pemantau berkas. Program ini digunakan untuk mengetahui "
+"apakah suatu berkas telah berubah atau belum. Anda harus mengaktifkan xinetd "
+"untuk menggunakan layanan ini."
+
+#: service-list.pl.in:120
+msgid "control and monitor storage systems using S.M.A.R.T."
+msgstr "mengatur dan memantau sistem penyimpanan menggunakan S.M.A.R.T."
+
+#: service-list.pl.in:121
+msgid "Perl-based spam filter using text analysis"
+msgstr "Penyaring spam berbasis Perl dengan metoda analisis teks"
+
+#: service-list.pl.in:122
+msgid "Simple Network Management Protocol (SNMP) Daemon"
+msgstr "Daemon Simple Network Management Protocol (SNMP)"
+
+#: service-list.pl.in:123 service-list.pl.in:124
+msgid "OpenSSH SSH server"
+msgstr "Server SSH OpenSSH"
+
+#: service-list.pl.in:123
+msgid ""
+"ssh is a program for logging into a remote machine and for executing "
+"commands on a remote machine."
+msgstr ""
+"ssh adalah program untuk masuk ke mesin remote dan menjalankan perintah "
+"dalam mesin remote."
+
+#: service-list.pl.in:124
+msgid "OpenSSH server daemon"
+msgstr "Daemon server OpenSSH"
+
+#: service-list.pl.in:125
+msgid "Linux system logging utilities"
+msgstr "Program pencatat/logging sistem Linux"
+
+#: service-list.pl.in:125
+msgid ""
+"Sysklogd provides two system utilities which provide support for system  "
+"logging  and  kernel  message  trapping."
+msgstr ""
+"Sysklogd menyediakan dua program bantu yang menyediakan dukungan untuk "
+"pencatatan sistem dan pesan kernel."
+
+#: service-list.pl.in:126
+msgid ""
+"Syslog is the facility by which many daemons use to log messages to various "
+"system log files.  It is a good idea to always run syslog."
+msgstr ""
+"Syslog adalah fasilitas yang digunakan banyak daemon untuk mencatat pesan-"
+"pesan tertentu ke berbagai berkas catatan log. Syslog sebaiknya selalu "
+"dijalankan."
+
+#: service-list.pl.in:127
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"Server jam berbasis RFC 868. Protokol ini menyediakan tanggal dan jam yang "
+"tidak bergantung komputer dan dapat dibaca oleh komputer. Layanan waktu ini "
+"menghasilkan waktu dalam detik sejak tengah malah Januari 1900. Ini adalah "
+"program versi tcp-nya. Anda harus mengaktifkan xinetd untuk menggunakan "
+"layanan ini."
+
+#: service-list.pl.in:128
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"Server jam berbasis RFC 868. Protokol ini menyediakan tanggal dan jam yang "
+"tidak bergantung komputer dan dapat dibaca oleh komputer. Layanan waktu ini "
+"menghasilkan waktu dalam detik sejak tengah malah Januari 1900. Ini adalah "
+"program versi udp-nya. Anda harus mengaktifkan xinetd untuk menggunakan "
+"layanan ini."
+
+#: service-list.pl.in:129
+msgid "kernel random number source devices"
+msgstr "perangkat sumber angka acak milik kernel"
+
+#: service-list.pl.in:129
+msgid ""
+"The  random  number  generator  gathers environmental noise from device "
+"drivers and other sources into an entropy pool. From this entropy pool "
+"random numbers are created."
+msgstr ""
+"Pembangkit angka acak mengambil polusi lingkungan dari berbagai program "
+"penggerak perangkat dan sumber-sumber lainnya dan disimpan dalam bandar "
+"entropi. Dari bandar entropi inilah angka acak akan dihasilkan."
+
+#: service-list.pl.in:131
+msgid "Intel(TM) x86(TM)-based virtual machine"
+msgstr "Mesin virtual berbasiskan Intel(TM) x86(TM)"
+
+#: service-list.pl.in:131
+msgid ""
+"The vmware command starts an Intel X86-based virtual machine. This script "
+"manages the services needed to run VMware software."
+msgstr ""
+"Perintah vmware akan menjalakan mesin virtual berbasis Intel X86. Skrip ini "
+"mengatur layanan yang dibutuhkan untuk menjalankan program VMWare."
+
+#: service-list.pl.in:132
+msgid "Web-based administration toolkit"
+msgstr "Kumpulan program pengatur administrasi berbasis Web"
+
+#: service-list.pl.in:133
+msgid "Name Service Switch daemon for resolving names from NT servers"
+msgstr "Daemon Name-Service-Switch untuk menerjemahkan nama komputer server NT"
+
+#: service-list.pl.in:133
+msgid "Starts and stops the Samba winbind daemon"
+msgstr "Jalankan dan berhentikan daemon winbind Samba"
+
+#: service-list.pl.in:134
+msgid ""
+"Allow users to run Windows(tm) applications by just clicking on them (or "
+"typing ./file.exe)"
+msgstr ""
+"Dengan ini, pemakai dapat menjalankan program-program Windows(tm) dengan "
+"cara mengklik nama programnya (atau mengetikkan ./file.exe)"
+
+#: service-list.pl.in:135
+msgid "X Display Manager"
+msgstr "X Display Manager"
+
+#: service-list.pl.in:135
+msgid "Provides the X equivalent of a \"login:\" prompt."
+msgstr "Menyediakan layar login untuk X."
+
+#: service-list.pl.in:136
+msgid "X font server"
+msgstr "Server font X"
+
+#: service-list.pl.in:136
+msgid ""
+"Xfs is the X Window System font server. It supplies fonts to X Window System "
+"display servers."
+msgstr ""
+"Xfs adalah server fonta X Window System. Program ini menyediakan fonta untuk "
+"server penampil X Window System."
+
+#: service-list.pl.in:137
+msgid ""
+"xinetd is a powerful replacement for inetd. xinetd has access control "
+"machanisms, extensive logging capabilities, the ability to make services "
+"available based on time, and can place limits on the number of servers that "
+"can be started, among other things."
+msgstr ""
+"xinetd adalah program pengganti inetd. xinetd memiliki fasilitas mekanisme "
+"kendali akses, kapabilitas pencatatan/logging yang mendalam, dan kemampuan "
+"untuk mengatur layanan berdasarkan waktu dan dapat membatasi jumlah server "
+"yang dapat dijalankan, dan sebagainya."
+
+#: service.pl.in:229 service.pl.in:234
+msgid "Halting the system"
+msgstr "Matikan sistem"
+
+#: service.pl.in:230 service.pl.in:236
+msgid "Text mode"
+msgstr "Moda teks"
+
+#: service.pl.in:231 service.pl.in:235 service.pl.in:244
+msgid "Graphical mode"
+msgstr "Moda grafis"
+
+#: service.pl.in:232 service.pl.in:237
+msgid "Rebooting the system"
+msgstr "Reboot system"
+
+#: service.pl.in:239
+msgid "Starts all system neccesary services"
+msgstr "Jalankan semua layanan sistem yang dibutuhkan"
+
+#: service.pl.in:240
+msgid "Default runlevel"
+msgstr "Level jalan default"
+
+#: service.pl.in:241
+msgid "Networkless runlevel"
+msgstr "Level jalan tanpa jaringan"
+
+#: users-conf.in:179
+msgid "Monitor system logs"
+msgstr "Amati logs sistem"
+
+#: users-conf.in:180
+msgid "Use audio devices"
+msgstr "Gunakan perangkat audio"
+
+#: users-conf.in:181
+msgid "Access to CD-ROM drives"
+msgstr "Akses ke drive CD-ROM"
+
+#: users-conf.in:182
+msgid "Access to modem devices"
+msgstr "Akses ke perangkat modem"
+
+#: users-conf.in:183
+msgid "Connect to Internet through modem devices"
+msgstr "Sambung ke internet melalui perangkat modem"
+
+#: users-conf.in:184
+msgid "Send and receive faxes"
+msgstr "Kirim dan terima faks"
+
+#: users-conf.in:185
+msgid "Access to floppy drives"
+msgstr "Akses ke drive floppy"
+
+#: users-conf.in:186
+msgid "Enable access to external storage devices automatically"
+msgstr "Bolehkan akse ke perangkat penyimpanan luar secara automatis"
+
+#: users-conf.in:187
+msgid "Access to tape drives"
+msgstr "Akses ke drive tape"
+
+#: users-conf.in:188
+msgid "Be able to get administrator privileges"
+msgstr "Bisa mendapatkan hak adminstrator"
+
+#: users-conf.in:492
+msgid "Default"
+msgstr "Default"
+
+#: users-conf.in:493
+msgid "Default profile"
+msgstr "Profile default"
+

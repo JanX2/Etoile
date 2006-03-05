@@ -1,0 +1,1299 @@
+#!/usr/bin/env perl
+#-*- Mode: perl; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+
+# Common stuff for the ximian-setup-tools backends.
+#
+# Copyright (C) 2000-2001 Ximian, Inc.
+#
+# Authors: Arturo Espinosa <arturo@ximian.com>,
+#          Tambet Ingo <tambet@ximian.com>.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Library General Public License as published
+# by the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+
+my $SCRIPTSDIR = "@scriptsdir@";
+if ($SCRIPTSDIR =~ /^@scriptsdir[@]/)
+{
+    $SCRIPTSDIR = ".";
+    $DOTIN = ".in";
+}
+
+require "$SCRIPTSDIR/file.pl$DOTIN";
+require "$SCRIPTSDIR/service.pl$DOTIN";
+
+use File::Copy;
+use File::Basename;
+use IO::File;
+use English;
+
+my $GST_FONT_DIR = "/usr/share/fonts/gst";
+
+
+# This code is some experimental stuff that may be useful on the future.
+# Commented due to the dependency to the TTF perl module.i
+if (0)
+{
+
+# use Font::TTF::Font;
+
+sub regexp_cmp_foreach
+{
+  my ($map, $value) = @_;
+  my ($key);
+  
+  foreach $key (keys %$map)
+  {
+    return $$map{$key} if $value =~ /$key/i;
+  }
+
+  return undef;
+}
+
+# Heuristics to deduct the foundry from a copyright notice.
+sub gst_font_info_get_foundry_from_notice
+{
+  my ($notice) = @_;
+  my ($ret);
+  
+  # Maps from a person (company of physical person) to a foundry.
+  my %map =
+	 ("hershey"               => "hershey",
+    
+    # Some of these taken from the X Registry: http://ftp.x.org/pub/DOCS/registry
+    "copyright.*acorn"      => "acorn",
+    "copyright.*adobe"      => "adobe",
+    " aix "                 => "aix", # This is IBM, but maybe we'll determine aix foundry this way.
+    "copyright.*apple"      => "apple",
+    "copyright.*bigelow.*holmes" => "b&h",
+    "copyright.*bitstream"  => "bitstream",
+    "copyright.*cognition"  => "cognition",
+    "copyright.*cronyx"     => "cronyx",
+    "copyright.*fujitsu"    => "fujitsu",
+    "copyright.*fuji xerox" => "fujixerox",
+    "copyright.*ipsys"      => "ipsys",
+    "copyright.*metheus"    => "metheus",
+    "copyright.*misc"       => "misc",
+    "copyright.*monotype"   => "monotype",
+    "copyright.*omron"      => "omron",
+    "copyright.*panasonic"  => "panasonic",
+    "copyright.*matsushita" => "panasonic",
+    "copyright.*sony"       => "sony",
+	  "copyright.*urw"        => "urw",
+    
+    "copyright.*digital equipment" => "dec",
+    "copyright.*evans.*sutherland" => "eands",
+    "copyright.*international business machines" => "ibm",
+    "copyright.*network computing" => "ncd",
+    "copyright.*sun microsystems"  => "sun",
+
+    # Those that may give false positives go last.
+    "copyright.*dec"        => "dec",
+    "copyright.*ibm"        => "ibm",
+    "copyright.*ncd"        => "ncd",
+    "copyright.*sun"        => "sun",
+	  "copyright.*microsoft"  => "microsoft"
+    );
+
+  # first aptempt: match sth like "Copyright 1987-1990 as an unpublished work by Bitstream"
+  $ret = &regexp_cmp_foreach (\%map, $notice);
+  return $ret if $ret ne undef;
+
+  # Give up: use misc.
+  return "misc";
+}
+
+sub gst_font_info_get_setwidth_from_label
+{
+  my ($label) = @_;
+  my ($ret);
+  
+  # FIXME: find cases for "semicondensed" and others.
+  my %map =
+      ("narrow" => "condensed");
+  
+
+  $ret = &regexp_cmp_foreach (\%map, $label);
+  return $ret if $ret ne undef;
+
+  # The default value.
+  return "normal";
+}
+
+sub gst_font_info_deduct_extras
+{
+  my ($info) = @_;
+  
+  $$info{"foundry"} = &gst_font_info_get_foundry_from_notice ($$info{"notice"});
+  $$info{"setwidth"} = &gst_font_info_get_setwidth_from_label ($$info{"label"});
+  $$info{"weight"} = " $$info{weight} ";
+  $$info{"weight"} =~ s/[ \t]+/ /g;
+
+  # Solve "Oblique" fonts.
+  if (!$$info{"weight"} =~ / Italic /)
+  {
+    if ($$info{"angle"} < 0.0)
+    {
+      $$info{"weight"} .= "Oblique ";
+    }
+    elsif ($$info{"angle"} > 0.0)
+    {
+      $$info{"weight"} .= "ReverseOblique ";
+    }
+  }
+}
+
+# buff is an array with one line of text per entry.
+sub gst_font_info_get_from_afm_buff
+{
+  my ($buff) = @_;
+  my ($line, $key, $value, %info);
+
+  my %map =
+	 ("FontName"     => "name",
+	  "FullName"     => "label",
+	  "FamilyName"   => "family",
+	  "Weight"       => "weight",
+	  "IsFixedPitch" => "fixed",
+	  "Notice"       => "notice",
+	  "ItalicAngle"  => "angle",
+    "CharacterSet" => "charset",
+	  );
+
+  foreach $line (@$buff)
+  {
+    ($key, $value) = split ("[ \t]+", $line, 2);
+    chomp $value;
+    last if $key eq "StartCharMetrics";
+    $info{$map{$key}} = $value if exists $map{$key};
+  }
+
+  &gst_font_info_deduct_extras (\%info);
+
+  return \%info;
+}
+
+sub gst_font_info_get_from_afm_str
+{
+  my ($str) = @_;
+  my (@buff);
+
+  @buff = split ('\n', $str);
+
+  return &gst_font_info_get_from_afm_buff (\@buff);
+}
+
+sub gst_font_info_get_from_afm
+{
+  my ($file) = @_;
+  local *AFM;
+  my (@buff, $info);
+
+  open AFM, $file;
+  @buff = (<AFM>);
+  close AFM;
+
+  $info = &gst_font_info_get_from_afm_buff (\@buff);
+  $$info{"file"} = $file;
+  $$info{"file"} =~ s/.*\///;
+  
+  return $info;
+}
+
+sub gst_font_info_get_from_ttf2pt1
+{
+  my ($file) = @_;
+  my ($key, $value, @buff, $info);
+  my $fd;
+  
+  $fd = &gst_file_run_pipe_read ("ttf2pt1 -A $file -");
+  @buff = <$fd>;
+  &gst_file_close ($fd);
+
+  $info = &gst_font_info_get_from_afm_buff (\@buff);
+  $$info{"file"} = $file;
+  $$info{"file"} =~ s/.*\///;
+
+  return $info;
+}
+
+sub namerec_value
+{
+  my ($table, $idx) = @_;
+  my ($ms, $apple, $uni);
+
+  # As documented in http://fonts.apple.com/TTRefMan/RM06/Chap6name.html
+  # Get the Unicode (0) value, trying any semantic.
+  $uni = $ {$$table[$idx]}[0];
+  if ($uni)
+  {
+    my $i;
+
+    # FIXME: dunno if we are following the way the structure comes built.
+    $uni = $$uni[0];
+    for ($i = 0; $i < 4; $i++)
+    {
+      return $$uni{$i} if $$uni{$i} ne undef;
+    }
+  }
+  
+  # Get the Microsoft (3) value, western encoding (1033).
+  $ms = $ {$ {$ {$$table[$idx]}[3]}[1]}{"1033"};
+  return $ms if $ms ne undef;
+
+  # Get the Apple (1) value, Roman encoding (0).
+  $apple = $ {$ {$ {$$table[$idx]}[1]}[0]}{"0"};
+  return $apple if $apple ne undef;
+}
+
+sub gst_font_info_get_from_ttf
+{
+  my ($file) = @_;
+  my ($font, $t, $post, %info);
+
+  $font = Font::TTF::Font->open($file);
+  return undef if !$font;
+
+  $post = $$font{"post"}->read;
+  $t = $$font{"name"}->read;
+  $t = $$t{"strings"};
+
+  # As documented in http://fonts.apple.com/TTRefMan/RM06/Chap6name.html
+  $info{"name"} = &namerec_value ($t, 6);
+  $info{"label"} = &namerec_value ($t, 4);
+  $info{"family"} = &namerec_value ($t, 1);
+  $info{"weight"} = &namerec_value ($t, 2);
+  $info{"notice"} = &namerec_value ($t, 0);
+  $info{"angle"} = $$post{"italicAngle"};
+  $info{"fixed"} = $$post{"isFixedPitch"}? "true": "false";
+  
+  $info{"file"} = $file;
+  $info{"file"} =~ s/.*\///;
+
+  &gst_font_info_deduct_extras (\%info);
+
+  $font->DESTROY;
+
+  return \%info;
+}
+
+sub gst_font_info_to_fontdir
+{
+  my ($info) = @_;
+  my ($line, $i);
+  my (%map);
+  my ($weight, $slant, $addstyle, $pitch, $charmap);
+
+  $i = $info;
+  
+  %map = (" Light "    => "light",
+          " Regular "  => "regular",
+          " Roman "    => "medium",
+          " Normal "   => "medium",
+          " Medium "   => "medium",
+          " Book "     => "book",
+          " DemiBold " => "demibold",
+          " Demi "     => "demibold",
+          " Bold "     => "bold",
+          " Black "    => "black");
+  $weight = &regexp_cmp_foreach (\%map, $$i{"weight"});
+
+  %map = (" Italic "        => "i",
+          " ReverseItalic " => "ri",
+          " Oblique "       => "o",
+          " ReverseOblique" => "ro");
+  $slant = &regexp_cmp_foreach (\%map, $$i{"weight"});
+  $slant = "r" if $slant eq undef;
+
+  # No way to know addstyle for now.
+  $addstyle = "";
+  $pitch = ($$i{"fixed"} eq "false")? "p" : "m";
+  # FIXME: no way to tell charactermap. Should use X encodings in get funcs
+  # or see how ttmkfdir takes care of this.
+  $charmap = "-";
+
+  # We're using 0's because we assume we are dealing with scalable fonts.
+  return "$$i{file} -$$i{foundry}-$$i{family}-$weight-$slant-$$i{setwidth}-$addstyle-0-0-0-0-$pitch-0-$charmap";
+}
+
+} # if (0)
+
+
+use strict;
+
+
+# XFS Config
+
+my $xfs_boolean = {
+    'parse' => \&xfs_parse_boolean,
+  };
+
+my $xfs_cardinal = {
+    'parse' => \&xfs_parse_cardinal,
+  };
+
+my $xfs_string = {
+    'parse' => \&xfs_parse_string,
+  };
+
+my $xfs_string_list = {
+    'parse' => \&xfs_parse_string_list,
+  };
+
+my $xfs_resol_list = {
+    'parse' => \&xfs_parse_string_list,
+  };
+
+my $xfs_trans_type = {
+    'parse' => \&xfs_parse_string,
+  };
+
+my $xfs_table = {
+    'catalogue'           => $xfs_string_list,
+    'alternate-servers'   => $xfs_string_list,
+    'client-limit'        => $xfs_cardinal,
+    'clone-self'          => $xfs_boolean,
+    'default-point-size'  => $xfs_cardinal,
+    'default-resolutions' => $xfs_resol_list,
+    'error-file'          => $xfs_string,
+    'no-listen'           => $xfs_trans_type,
+    'port'                => $xfs_cardinal,
+    'use-syslog'          => $xfs_boolean,
+    'deferglyphs'         => $xfs_string,
+  };
+
+# XFS boolean
+
+sub xfs_parse_boolean
+{
+  my $val = shift;
+  my $buf = shift;
+
+  unless ($val eq 'on' || $val eq 'off')
+  {
+    # TODO: Give error;
+    return;
+  }
+
+  return $val;
+}
+
+
+# XFS cardinal (integer)
+
+sub xfs_parse_cardinal
+{
+  my $val = shift;
+  my $buf = shift;
+
+  unless ($val =~ /^\d+$/)
+  {
+    # TODO: Give error;
+    return;
+  }
+
+  return $val;
+}
+
+
+# XFS string
+
+sub xfs_parse_string
+{
+  my $val = shift;
+  my $buf = shift;
+
+  # TODO: Dunno what do check here
+#  unless ($val =~ /^\d+$/)
+#  {
+    # TODO: Give error;
+#    return;
+#  }
+
+  return $val;
+}
+
+# XFS string list
+
+sub xfs_parse_string_list
+{
+  my $val = shift;
+  my $buf = shift;
+  my $last;
+  my $list = [];
+
+  while (1)
+  {
+    $val =~ s/\s+$//;
+    $val =~ s/^\s+//;
+
+    $last++ unless $val =~ s/,$//;
+    if ($val)
+    {
+      my @tmp = split (/[ \t]*,[ \t]*/, $val);
+      push @$list, @tmp;
+    }
+    else
+    {
+      # TODO: Give error;
+      last;
+    }
+    shift @$buf;
+    last if $last;
+    $val = $$buf[0];
+  }
+
+  return $list;
+}
+
+sub xfs_parse
+{
+  my $fname = shift;
+  $fname = $fname || '/etc/X11/fs/config';
+  my $config = {};
+  return unless $fname;
+
+  my $buf = &gst_file_buffer_load ($fname);
+  return unless $buf;
+
+  while (@$buf)
+  {
+    my $line = shift @$buf;
+    next if &gst_ignore_line ($line);
+
+    chomp ($line);
+    my ($kw, $val) = split (/[ \t]*=[ \t]*/, $line, 2);
+    if (exists ($xfs_table->{$kw}))
+    {
+      my $func = $xfs_table->{$kw}{'parse'};
+      my $val = &$func ($val, $buf);
+      if ($val)
+      {
+        $config->{$kw} = $val;
+      }
+      else
+      {
+        # TODO: Give error;
+        1;
+      }
+    }
+    else
+    {
+      # TODO: report error;
+      1;
+    }
+  }
+
+  return $config;
+}
+
+
+################################
+#                              #
+#         MAIN PROGRAM         #
+#                              #
+################################
+
+BEGIN {
+  &gst_report_table ({
+    'font_install_success'    => ['info',  _('Font [%s] installed successfully.')],
+    'font_install_fail'       => ['warn',  _('File [%s] not installed.')],
+    'font_remove_success'     => ['info',  _('Font [%s] removed successfully.')],
+    'font_dir_update_success' => ['info',  _('Font dir [%s] updated successfully.')],
+    'font_dir_update_fail'    => ['warn',  _('Couldn\'t update font dir [%s].')],
+
+    'font_list'               => ['info',  _('[%s] fonts read successfully.')],
+
+  });
+}
+
+my $cmd = 'gnome-font-install';
+
+my $GNOME_PRINT_DATADIR;
+my $GNOME_PRINT_SYSCONFDIR;
+
+open (FD, "$cmd --dir 2>&1 |");
+if (FD)
+{
+  my @output = (<FD>);
+  close (FD);
+
+  foreach (@output)
+  {
+    if (/^\$DATADIR=(.*)/) { $GNOME_PRINT_DATADIR = $1; next; }
+    if (/^\$SYSCONFDIR=(.*)/) { $GNOME_PRINT_SYSCONFDIR = $1; next; }
+  }
+}
+
+unless ($GNOME_PRINT_DATADIR || $GNOME_PRINT_SYSCONFDIR)
+{
+  print ("Can't find gnome-print's \$DATADIR or \$SYSCONFDIR.\n");
+  return;
+}
+
+my $font_map = {
+  'name' => [],
+  'get'  => [],
+  'set'  => [],
+};
+
+# Gets a hash of all fonts we currently support.
+# Hash keys are name of modules, values are lists of fonts.
+sub font_list
+{
+  my $names = $font_map->{'name'};
+  my $list = $font_map->{'get'};
+  my $fonts = {};
+
+  for (my $i = 0; $i < scalar @$list; $i++)
+  {
+    my $func = $$list[$i];
+
+    &gst_report ("font_list", $$names[$i]);
+
+    my $tmp = &$func ();
+    $fonts->{$$names[$i]} = $tmp if $tmp;
+  }
+
+  return $fonts;
+}
+
+
+# Returns a hash of all fonts.
+# Unifies different systems, abstracts font systems.
+sub font_get_all
+{
+  my %font_list;
+  my $fonts = &font_list ();
+
+  foreach my $system (keys %$fonts)
+  {
+    my $tmp_fonts = $fonts->{$system};
+    %font_list = (%font_list, %$tmp_fonts);
+  }
+
+  return \%font_list;
+}
+
+# Takes two arguments with lists of fonts.
+# Returns two lists with unique items from passed lists.
+sub font_lists_compare
+{
+  my $sys_fonts = shift;
+  my $xml_fonts = shift;
+
+  # Make a copy of xml_fonts.
+  my %fonts_copy = %$xml_fonts;
+
+  my %del;
+  my %add;
+
+  # Build list of removals
+  foreach my $key (keys (%$sys_fonts))
+  {
+    if (exists $fonts_copy{$key})
+    {
+      delete $fonts_copy{$key};
+    }
+    else
+    {
+      $del{$key} = $sys_fonts->{$key};
+    }
+  }
+
+  # Build list of additions
+  %add = %fonts_copy;
+
+  return (\%del, \%add);
+}
+
+# Returns true if file should be copied.
+sub font_file_copy_need
+{
+  my $path = shift;
+
+  # Can we be a bit smarter?
+  return if ($path =~ /\/usr\//);
+
+  return 1;
+}
+
+# Copy new font files to our fonts dir.
+# Pass a fontslist as single argument and modifies it's file locations.
+sub font_file_copy
+{
+  my $add = shift;
+  return unless $add;
+
+  foreach (keys %$add)
+  {
+    my $font = $add->{$_};
+    next unless exists $font->{'name'};
+
+    my $type = $font->{'format'};
+    foreach my $file (@{$font->{'file'}})
+    {
+      my $path = $file->{'path'};
+      next unless &font_file_copy_need ($path);
+
+      my $new_path = "$GST_FONT_DIR/$type/";
+      &gst_file_create_path ($new_path, 0755) unless (-d $new_path);
+      $new_path .= lc (basename ($path));
+
+      unless (-f $new_path)
+      {
+        # FIXME: Report.
+        copy ($path, $new_path);
+      }
+      $file->{'path'} = $new_path;
+    }
+  }
+}
+
+#
+sub font_file_del
+{
+  my $del = shift;
+  return unless $del;
+
+  foreach (keys %$del)
+  {
+    my $font = $del->{$_};
+
+    # FIXME: Report.
+    foreach my $file (@{$font->{'file'}})
+    {
+      # unlink $file->{'path'} if (-f $file->{'path'});
+    }
+  }
+}
+
+#
+sub font_set
+{
+  my $xml_fonts = shift;
+  return unless $xml_fonts;
+  return unless ref ($xml_fonts) eq 'HASH';
+
+  my $names = $font_map->{'name'};
+  my $get_functions = $font_map->{'get'};
+  my $set_functions = $font_map->{'set'};
+
+  for (my $i = 0; $i < scalar @$names; $i++)
+  {
+    my $get = $$get_functions[$i];
+    my $set = $$set_functions[$i];
+
+    my $sys_fonts = &$get ();
+    my ($del, $add) = &font_lists_compare ($sys_fonts, $xml_fonts);
+    &font_file_copy ($add);
+    &$set ($del, $add);
+    &font_file_del ($del);
+  }
+}
+
+# Pass list of fonts, prints out XML
+sub font_xml_print
+{
+  my $fonts = shift;
+
+  foreach (keys %$fonts)
+  {
+    my $font = $fonts->{$_};
+
+    &gst_xml_print_line ("<font format=\"$font->{format}\" name=\"$font->{name}\" version=\"$font->{version}\"" .
+                         " familyname=\"$font->{familyname}\" speciesname=\"$font->{speciesname}\"" .
+                         " psname=\"$font->{psname}\" weight=\"$font->{weight}\" italicangle=\"$font->{italicangle}\">");
+
+    &gst_xml_enter ();
+    foreach my $file (@{$font->{'file'}})
+    {
+      &gst_xml_print_line ("<file type=\"$file->{type}\" path=\"$file->{path}\"" .
+                           " size=\"$file->{size}\" mtime=\"$file->{mtime}\"/>");
+    }
+    &gst_xml_leave ();
+    &gst_xml_print_line ("</font>");
+  }
+}
+
+# Just a dumb wrapper due to fact that we are using gnome-print's XML.
+sub font_xml_parse
+{
+  my $fname = shift;
+  return &gp_parse ($fname);
+}
+
+sub font_test
+{
+  my $dir = shift || return;
+
+  # FIXME: Report.
+  my $fonts = &gp_invoke (join (" ", @$dir), 0) if scalar @$dir;
+  return $fonts;
+}
+
+
+################################
+#                              #
+#           MODULES            #
+#                              #
+################################
+
+# Each 'module' should register itself in their own BEGIN {} block. It should add
+# a name of the module and 2 function references
+# to $font_map global variable: get and set.
+
+
+################################
+#                              #
+#    Gnome-print module.       #
+#                              #
+################################
+
+# Module info:
+# This is THE MODULE since we use gnome-print's
+# XML format to interact with frontend.
+
+# Register.
+push @{$font_map->{'name'}}, 'Gnome-print';
+push @{$font_map->{'get'}}, \&gp_read_fontmaps;
+push @{$font_map->{'set'}}, \&gp_font_set;
+
+
+sub gp_run
+{
+  my $dir = shift;
+  my $user = shift;
+  my $set = shift;
+  $user = $user ? "--user " : "--dynamic ";
+  $set = $set ? "" : "--clean --target - ";
+
+  my $command = "gnome-font-install --debug --recursive -a $GNOME_PRINT_DATADIR/gnome/fonts/adobe-urw.font " .
+      $set . $user . $dir;
+
+  open (FD, "$command 2>&1 |");
+  if (FD)
+  {
+    my @output = (<FD>);
+    close (FD);
+    return \@output;
+  }
+
+  # TODO: Give error;
+  return;
+}
+
+sub gp_parse_xml
+{
+  my $data = shift;
+  my $toplevel;
+
+  my $xml = shift @$data;
+  while (@$data)
+  {
+    my $tag = shift @$data;
+    unless ($toplevel)
+    {
+      $toplevel = $1 if $tag =~ /<(\S+)/;
+    }
+
+    last if $tag =~ /<\/$toplevel[ \t]+/;
+
+    $xml .= $tag;
+  }
+  return &gp_parse ($xml);
+}
+
+sub gp_run_collect
+{
+  my $data = shift;
+  my $xml;
+
+  return unless ($data || scalar @$data < 1);
+
+  while (@$data)
+  {
+    local $_ = $$data[0];
+
+    if (/<\?xml version/) { $xml = &gp_parse_xml ($data); };
+    # TODO: Add parser for all output messages and report them.
+
+    shift @$data;
+  }
+
+  return $xml;
+}
+
+sub gp_invoke
+{
+  my $dir = shift || '/';
+  my $set = shift;
+  my $user = $UID; # Used as a boolean here, we care only for root (uid 0, false) or other (!0, true).
+
+  my $proc = &gst_process_fork (\&gp_run, $dir, $user, $set);
+  &gst_process_list_check_ready (60, $proc);
+  my $list = &gst_process_result_collect ($proc, \&gp_run_collect);
+
+  return $list;
+}
+
+
+# gnome-font-installer output's (XML) parser.
+
+
+sub gp_parse_font
+{
+  my $font_list = shift;
+  my $tree = shift;
+  my $font;
+
+  $font = shift @$tree;
+  while (@$tree)
+  {
+    my $tag = shift @$tree;
+    my $data = shift @$tree;
+
+    $font->{$tag} = [] unless exists $font->{$tag};
+    push @{$font->{$tag}}, $$data[0];
+  }
+
+  $font_list->{$font->{'name'}} = $font;
+}
+
+
+sub gp_parse
+{
+  my $fname = shift;
+  my $font_list = {};
+
+  my $tree = &gst_xml_scan ($fname);
+
+  if ($$tree[0] eq 'fontmap')
+  {
+    $tree = $$tree[1];
+    unless (&gst_xml_get_attribute ($tree, 'version') >= 2)
+    {
+      # TODO: report
+      &gst_debug_print_line ("gp_parse: File '$fname' fontmap version should be 2.0 or higher.");
+      return;
+    }
+  }
+
+  elsif ($$tree[0] eq 'font')
+  {
+    # shift @$tree;
+    $tree = $$tree[1];
+  }
+
+  else
+  {
+    # TODO: report
+    &gst_debug_print_line ("gp_parse: File '$fname' doesn't seem to be fontmap file.");
+    return;
+  }
+
+  shift @$tree;
+  while (@$tree)
+  {
+    my $tag = shift @$tree;
+    unless ($tag eq 'font')
+    {
+      # TODO: report
+      next;
+    }
+
+    &gp_parse_font ($font_list, shift @$tree);
+  }
+
+  return $font_list;
+}
+
+# Read gnome-print's fontmap files:
+#  $HOME/.gnome/fonts      (user)
+#  $SYSCONFDIR/gnome/fonts (dynamic)
+#  $DATADIR/gnome/fonts    (static)
+sub gp_read_fontmaps
+{
+  my $fontmap = 'gnome-print.fontmap';
+  my $home = $ENV{'HOME'};
+
+  # FIXME: There are couple of hardcoded ones too.
+  my @dirs = ("$home/.gnome/fonts", "$GNOME_PRINT_SYSCONFDIR/gnome/fonts", "$GNOME_PRINT_DATADIR/gnome/fonts");
+
+  # FIXME: Report.
+  my %gp_fonts;
+  foreach my $dir (@dirs)
+  {
+    my @files;
+    push @files, "$dir/$fontmap";
+    opendir(DIR, $dir);
+    foreach my $file (grep { /\.fontmap$/ } readdir(DIR))
+    {
+      next if $file eq $fontmap;
+      push @files, "$dir/$file";
+    }
+    closedir(DIR);
+
+    foreach (@files)
+    {
+      my $font_ref = &gp_parse ($_) if (-f $_);
+      next unless scalar keys %$font_ref;
+      %gp_fonts = (%gp_fonts, %$font_ref);
+    }
+  }
+
+  return \%gp_fonts;
+}
+
+sub gp_font_set
+{
+  my $del = shift;
+  my $add = shift;
+  my @list;
+
+  # FIXME: Report.
+
+  # FIXME: Delete
+
+  foreach (keys %$add)
+  {
+    my $font = $add->{$_};
+    next unless exists $font->{'file'};
+
+    foreach my $file (@{$font->{'file'}})
+    {
+      push @list, $file->{'path'};
+    }
+  }
+  &gp_invoke (join (" ", @list), 1) if scalar @list;
+}
+
+
+
+################################
+#                              #
+#          xfs module.         #
+#                              #
+################################
+
+# Module info:
+# This module is distro and version specific. Some xfs implementations (older?)
+# doesn't have truetype support.
+
+# Register.
+#push @{$font_map->{'name'}}, 'xfs';
+#push @{$font_map->{'get'}}, \&x_read_fonts;
+#push @{$font_map->{'set'}}, \&gp_font_install;
+
+
+sub xfs_get_fontpath
+{
+  my $cmd = &gst_file_locate_tool ('chkfontpath');
+  return unless $cmd;
+
+  my $fh = IO::File->new ("$cmd |");
+  return unless $fh;
+
+  my @output = <$fh>;
+  $fh->close;
+
+  my @fonts;
+  foreach (@output)
+  {
+    my $path = $1 if (/^\d+: (.+)$/);
+    $path =~ s/:unscaled$//;
+    push @fonts, $path if $path;
+  }
+
+  return \@fonts;
+}
+
+# Adds new fontpath to XFS
+# Before calling it make sure it's really needed.
+sub xfs_add_fontpath
+{
+  my $paths = shift || return;
+  my $cmd = &gst_file_locate_tool ('chkfontpath');
+
+  foreach my $path (@$paths)
+  {
+    &gst_file_run ("$cmd -a $path");
+  }
+}
+
+sub xfs_reload
+{
+  &gst_service_sysv_restart (90, 'xfs');
+}
+
+
+################################
+#                              #
+#         XFree module.        #
+#                              #
+################################
+
+# Module info:
+# Depends on:
+# Gnome-print module
+# xfs module
+
+# Register.
+push @{$font_map->{'name'}}, 'XFree';
+push @{$font_map->{'get'}}, \&x_read_fonts;
+push @{$font_map->{'set'}}, \&x_font_set;
+
+
+sub x_fontpath_get
+{
+  my $cmd = &gst_file_locate_tool ('xset');
+  return unless $cmd;
+
+  my $output = &gst_file_run_backtick ("$cmd q");
+  return unless $output;
+
+  $output = $1 if $output =~ /Font Path:\n\s+(.+)/;
+  unless ($output)
+  {
+    &gst_debug_print_line ("x_fontpath_get: Couldn't find 'Font Path' from 'xset q' output.");
+    return;
+  }
+
+  my @tmp =  split (/[ \t]*,[ \t]*/, $output);
+  my $fonts = [];
+  foreach (@tmp)
+  {
+    if (/^unix\/:/)
+    {
+      my $xfs_fonts = &xfs_get_fontpath ();
+      push @$fonts, @$xfs_fonts;
+    }
+    else
+    {
+      push @$fonts, $_;
+    }
+  }
+
+  return $fonts;
+}
+
+sub x_fontpath_add
+{
+  my $new_paths = shift || return;
+  my $old_paths = &x_fontpath_get ();
+  my (@path, %seen);
+
+  @seen{@$old_paths} = (); # Tricky perl to build a lookup table.
+  foreach my $item (@$new_paths)
+  {
+    push @path, $item unless (exists $seen{$item});
+  }
+
+  # Now we have a list of new paths, let's add them
+  # FIXME: Where do we add it? xfs? xftt? current x server fontpath? XF86Config?
+
+  &xfs_add_fontpath (\@path);
+}
+
+sub x_fonts_refresh
+{
+  &xfs_reload ();
+  &gst_file_run ("xset fp rehash");
+}
+
+sub x_fonts_dir_parse
+{
+  my $path = shift;
+  return unless $path;
+  my $file = shift || 'fonts.dir';
+
+  my $fh = IO::File->new ("$path/$file");
+  return unless $fh;
+
+  # Known font suffixes
+  my @suffixlist = qw (.afm .pfm .pfa .pfb .ttf);
+
+  my $fonts;
+  while (<$fh>)
+  {
+    next if /^\d+\s+$/; # Probably the first line, showing the number of fonts.
+
+    if (/^(\S+) (\S+)/)
+    {
+      my $f = basename ($1, @suffixlist);
+      $fonts->{"$path/$f.*"} = undef;
+    }
+  }
+
+  $fh->close ();
+  return $fonts;
+}
+
+# Not used.
+sub x_fonts_dir_modify
+{
+  # Don't delete it, I have some plans with it.
+  my $del = shift;
+  my $add = shift;
+  my $path = shift;
+  return unless $path;
+  my $file = shift || 'fonts.dir';
+
+  my $buf = &gst_file_buffer_load ("$path/$file");
+  return unless $buf;
+
+  # Find files which are to be removed
+  my @del_files;
+  foreach my $font (@$del)
+  {
+    foreach my $file (@{$font->{'path'}})
+    {
+      push @del_files, $file;
+    }
+  }
+
+  for (my $i = 1; $i < scalar @$buf; $i++)
+  {
+    my $line = $$buf[$i];
+    my ($fname, $xname) = split ('/ /', $line);
+
+    if (&gst_item_is_in_list ($fname, @del_files))
+    {
+      $line = '';
+      $$buf[0]--;
+    }
+  }
+
+  &gst_file_buffer_save ($buf, $file);
+  
+  # Add:
+  # Bad bad hack, FIXME.
+  my $cmd = "type1inst -nolog -q -d " .
+      "$GST_FONT_DIR/type1/";
+  &gst_file_run ($cmd);
+
+  $cmd = &gst_file_locate_tool ('ttmkfdir');
+  &gst_file_run ("$cmd -d $GST_FONT_DIR/truetype/ -o $GST_FONT_DIR/truetype/fonts.scale");
+}
+
+sub x_get_fonts
+{
+  my $x_font_path = &x_fontpath_get ();
+  return unless $x_font_path;
+
+  # FIXME: Report.
+
+  my %x_fonts;
+  foreach (@$x_font_path)
+  {
+    my $fonts = &x_fonts_dir_parse ($_);
+    next unless scalar keys %$fonts;
+    %x_fonts = (%x_fonts, %$fonts);
+  }
+
+  return \%x_fonts;
+}
+
+sub x_read_fonts
+{
+  my $x_font_paths = &x_get_fonts ();
+  return unless $x_font_paths || scalar @$x_font_paths > 1;
+
+  return &gp_invoke (join (" ", keys (%$x_font_paths)), 0);
+}
+
+# Maybe it should be common function:
+# Scans font_list and returns list of different directories
+# these fotns are in.
+sub x_font_dirs
+{
+  my $font_list = shift;
+  my $dirlist = [];
+  my %seen = ();
+
+  foreach my $font (@$font_list)
+  {
+    foreach my $file (@{$font->{'file'}})
+    {
+      my $item = dirname ($file->{'path'});
+      push @$dirlist, $item unless $seen{$item}++; # It's a kinda magic! No wait, it's just perl :)
+    }
+  }
+
+  return $dirlist;
+}
+
+sub x_add_font
+{
+  my $add = shift;
+  my $type1_tool = &gst_file_locate_tool ("$SCRIPTSDIR/type1inst");
+  my $true_tool  = &gst_file_locate_tool ("ttmkfdir");
+  my $true_tool2 = &gst_file_locate_tool ("mkfontdir");
+  my $tmp;
+
+  my $type1 = [];
+  my $true  = [];
+
+  my $path = [];
+
+  foreach (keys %$add)
+  {
+    my $font = $add->{$_};
+
+    if    ($font->{'format'} eq 'type1') { push @$type1, $font; }
+    elsif ($font->{'format'} eq 'truetype') { push @$true, $font; }
+
+    else { &gst_debug_print_line ("x_add_font: unknonw font type: $font->{format}.") }
+  }
+
+  # Install type1 fonts.
+  $tmp = &x_font_dirs ($type1);
+  push @$path, @$tmp if $tmp;
+  foreach my $dir (@$tmp)
+  {
+    &gst_file_run ("$type1_tool -q -d $dir");
+  }
+
+  # Install TrueType fonts.
+  $tmp = &x_font_dirs ($true);
+  push @$path, @$tmp if $tmp;  
+  foreach my $dir (@$tmp)
+  {
+    &gst_file_run ("$true_tool -d $dir -o $dir/fonts.scale");
+    &gst_file_run ("$true_tool2 $dir");
+  }
+
+  &x_fontpath_add ($path);
+}
+
+sub x_font_set
+{
+  my $del = shift;
+  my $add = shift;
+
+  return unless ($del && $add);
+  return if (scalar (keys (%$del)) == 0 &&
+             scalar (keys (%$add)) == 0);
+
+  # FIXME: Report.
+
+  &x_add_font ($add);
+
+  #FIXME: $del
+
+  &x_fonts_refresh ();
+}
+
+
+1;

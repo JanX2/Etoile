@@ -1,0 +1,781 @@
+#!/usr/bin/env perl
+#-*- Mode: perl; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+
+# Working with filesystems, both local and networked.
+#
+# Copyright (C) 2000-2001 Ximian, Inc.
+#
+# Authors: Arturo Espinosa <arturo@ximian.com>
+#          Carlos Garcia Campos <carlosgc@gnome.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Library General Public License as published
+# by the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+$SCRIPTSDIR = "@scriptsdir@";
+if ($SCRIPTSDIR =~ /^@scriptsdir[@]/)
+{
+    $SCRIPTSDIR = ".";
+    $DOTIN = ".in";
+}
+
+use Errno;
+
+require "$SCRIPTSDIR/general.pl$DOTIN";
+require "$SCRIPTSDIR/report.pl$DOTIN";
+require "$SCRIPTSDIR/file.pl$DOTIN";
+
+@DEVICE_NAMES = (
+    {
+      "name" => "da",
+      "max"  => 16,
+    },
+    {
+      "name" => "ad",
+      "max"  => 16,
+    },
+    {
+      "name" => "ar",
+      "max"  => 16,
+    },
+    {
+      "name" => "fla",
+      "max"  => 16,
+    },
+    {
+      "name" => "afd",
+      "max"  => 4,
+    },
+    {
+      "name" => "mlx",
+      "max"  => 4,
+    },
+    {
+      "name" => "amrd",
+      "max"  => 4,
+    },
+    {
+      "name" => "idad",
+      "max"  => 4,
+    },
+    {
+      "name" => "twed",
+      "max"  => 4,
+    },
+    {
+      "name" => "aacd",
+      "max"  => 4,
+    },
+    {
+      "name" => "ipsd",
+      "max"  => 4,
+    },
+    {
+      "name" => "wd",
+      "max"  => 16,
+    },
+);
+
+sub gst_partition_scan_freebsd_info
+{
+  my ($fd, $line);
+  my (%hash);
+  my (@table);
+  local (*DEV);
+
+  # Some of this code has been adapted from the way
+  # sysinstall learns about devices.
+  foreach my $device (@DEVICE_NAMES)
+  {
+    for (my $i = 0; $i < $device->{"max"}; $i++)
+    {
+      my $dev = "/dev/" . $device->{"name"} . $i;
+
+      if (open (DEV, $dev) || $! == EBUSY)
+      {
+        if ($! == 0)
+        {
+          close (DEV);
+        }
+
+        $fd = &gst_file_run_pipe ("fdisk -s " . $dev);
+
+        if ($fd eq undef)
+        {
+          &gst_report ("fdisk_failed");
+          return undef;
+        }
+
+        while ($line = <$fd>)
+        {
+          # Example output from fdisk -s:
+          # /dev/ad0: 26310 cyl 16 hd 63 sec
+          # Part        Start        Size Type Flags
+          #    1:          63    26520417 0xa5 0x80
+          #
+          if ($line =~ /^[ \t]+(\d+):[ \t]+(\d+)[ \t]+(\d+)[ \t]+0x([a-f0-9A-F][a-f0-9A-F])[ \t]+0x([a-f0-9A-F][a-f0-9A-F])$/)
+          {
+            $bootable = ($5 eq 80)? 0: 1;
+            push @table, {"dev" => $dev . "s" . $1,
+#                          "id"     => $1,
+#                          "start"  => $2,
+#                          "size"   => $3,
+#                          "boot"   => $bootable,
+                          "type" => $GST_FILESYS_TYPES{$4}
+                         };
+          }
+        }
+
+        &gst_file_close ($fd);
+      }
+    }
+  }
+
+  $hash{"partition"} = \@table;
+
+  return \%hash;
+}
+
+sub gst_partition_scan_linux_info
+{
+  my ($fd, $line);
+  my (%hash);
+  my (@table);
+  
+  $fd = &gst_file_run_pipe ("sfdisk -d");
+  if ($fd eq undef)
+  {
+    &gst_report ("sfdisk_failed");
+    return undef;
+  }
+  
+  while ($line = <$fd>)
+  {
+    # Woohoo! sfdisk -d scanner in one line! Gotta love perl! OK, I'm a pig.
+    if ($line =~ /^(\/dev\/[^ \t]+)[ \t]*: start=[ \t]*([0-9]+), size=[ \t]*([0-9]+), Id=[ \t]*([0-9a-fA-F][0-9a-fA-F]?)(, bootable)?/)
+    {
+      # we don't need empty partitions, so we reject those with id = 0
+      if ($4 ne 0)
+      {
+        $bootable = ($5 eq undef)? 0: 1;
+
+        push @table, {"dev" => $1,
+#                     "start"   => $2,
+#                     "size"    => $3,
+#                     "id"      => $4,
+#                     "boot"    => $bootable,
+                      "type" => $GST_FILESYS_TYPES{$4}
+                  };
+      }
+    }
+  }
+  close $fd;
+
+  $hash{"partition"} = \@table;
+
+  return \%hash;
+}
+
+sub gst_partition_scan_info
+{
+  my ($plat) = $$tool{"system"};
+
+  return &gst_partition_scan_linux_info   if ($plat eq "Linux");
+  return &gst_partition_scan_freebsd_info if ($plat eq "FreeBSD");
+}
+
+%GST_FILESYS_TYPES =
+    ("0" => "Empty",
+	"1" => "DOS 12-bit FAT",
+	"2" => "XENIX root",
+	"3" => "XENIX /usr",
+	"4" => "DOS 3.0+ 16-bit FAT",
+	"5" => "DOS 3.3+ Ext",
+	"6" => "DOS 3.31+ 16-bit FAT",
+	"7" => "NTFS, OS/2 or QNX",
+	"8" => "AIX boot",
+	"9" => "AIX data, QNX 1.x / 2.x",
+	"a" => "OS/2 Boot, Coherent swap or OPUS",
+	"b" => "WIN95 OSR2 32-bit FAT",
+	"c" => "WIN95 OSR2 32-bit FAT, LBA",
+	"e" => "WIN95: DOS 16-bit FAT, LBA",
+	"f" => "WIN95: Ext., LBA",
+	"10" => "OPUS",
+	"11" => "Hidden DOS 12-bit FAT",
+	"12" => "Compaq config",
+	"14" => "Hidden DOS 16-bit FAT",
+	"16" => "Hidden DOS 16-bit FAT",
+	"17" => "Hidden IFS",
+	"18" => "AST SmartSleep",
+	"19" => "Unused",
+	"1b" => "Hidden WIN95 OSR2 32-bit FAT",
+	"1c" => "Hidden WIN95 OSR2 32-bit FAT, LBA",
+	"1e" => "Hidden WIN95 16-bit FAT, LBA",
+	"20" => "Unused",
+	"21" => "Reserved",
+	"22" => "Unused",
+	"23" => "Reserved",
+	"24" => "NEC DOS 3.x",
+	"26" => "Reserved",
+	"31" => "Reserved",
+	"32" => "NOS",
+	"33" => "Reserved",
+	"34" => "Reserved",
+	"35" => "JFS on OS/2 or eCS",
+	"36" => "Reserved",
+	"38" => "THEOS 3.2 2gb",
+	"39" => "Plan 9 or THEOS ver 4 spanned",
+	"3a" => "THEOS ver 4 4gb",
+	"3b" => "THEOS ver 4 extended",
+	"3c" => "PartitionMagic recovery",
+	"3d" => "Hidden NetWare",
+	"40" => "Venix 80286",
+	"41" => "Personal RISC Boot",
+	"41" => "Power PC Reference Platform Boot",
+	"42" => "SFS or Windows 2000 marker",
+	"43" => "Linux native",
+	"44" => "GoBack",
+	"45" => "Boot-US boot manager",
+	"45" => "EUMEL/Elan",
+	"46" => "EUMEL/Elan",
+	"47" => "EUMEL/Elan",
+	"48" => "EUMEL/Elan",
+	"4a" => "AdaOS Aquila",
+	"4d" => "QNX4.x",
+	"4e" => "QNX4.x 2nd part",
+	"4f" => "QNX4.x 3rd part",
+	"50" => "Lynx RTOS",
+	"51" => "Novell",
+	"52" => "Microport SysV/AT",
+	"53" => "Disk Manager 6.0 Aux3",
+	"54" => "Disk Manager 6.0 Dynamic Drive Overlay",
+	"55" => "EZ-Drive",
+	"56" => "Golden Bow VFeatureed Volume",
+	"57" => "DrivePro",
+	"5c" => "Priam EDisk",
+	"61" => "SpeedStor",
+	"63" => "Unix System V",
+	"64" => "Novell Netware 286, 2.xx",
+	"65" => "Novell Netware 386, 3.xx or 4.xx",
+	"66" => "Novell Netware SMS",
+	"67" => "Novell",
+	"68" => "Novell",
+	"69" => "Novell Netware 5+, Novell Netware NSS",
+	"6e" => "??",
+	"70" => "DiskSecure Multi-Boot",
+	"71" => "Reserved",
+	"73" => "Reserved",
+	"74" => "Scramdisk",
+	"75" => "IBM PC/IX",
+	"76" => "Reserved",
+	"77" => "M2FS/M2CS",
+	"78" => "XOSL FS",
+	"7E" => "F.I.X.",
+	"80" => "MINIX until 1.4a",
+	"81" => "MINIX since 1.4b, early Linux",
+	"81" => "Mitac disk manager",
+	"82" => "Linux swap",
+	"83" => "Linux",
+	"84" => "Hibernation",
+	"85" => "Linux extended",
+	"86" => "NTFS volume set",
+	"87" => "NTFS volume set",
+	"8a" => "Linux Kernel (used by AiR-BOOT)",
+	"8b" => "Legacy Fault Tolerant FAT32 volume",
+	"8c" => "Legacy Fault Tolerant FAT32 volume using BIOS extd INT 13h",
+	"8d" => "Free FDISK hidden Primary DOS FAT12 partitition",
+	"8e" => "Linux LVM",
+	"90" => "Free FDISK hidden Primary DOS FAT16 partitition",
+	"91" => "Free FDISK hidden DOS extended partitition",
+	"92" => "Free FDISK hidden Primary DOS large FAT16 partitition",
+	"93" => "Hidden Linux native or Amoeba",
+	"94" => "Amoeba bad block table",
+	"95" => "MIT EXOPC natives",
+	"97" => "Free FDISK hidden Primary DOS FAT32 partitition",
+	"98" => "Free FDISK hidden Primary DOS FAT32 partitition (LBA)",
+	"99" => "DCE376 logical drive",
+	"9a" => "Free FDISK hidden Primary DOS FAT16 partitition (LBA)",
+	"9b" => "Free FDISK hidden DOS extended partitition (LBA)",
+	"9f" => "BSD/OS",
+	"a0" => "Laptop hibernation",
+	"a1" => "Laptop hibernation",
+	"a3" => "Reserved",
+	"a4" => "Reserved",
+	"a5" => "BSD/386, 386BSD, NetBSD, FreeBSD",
+	"a6" => "OpenBSD",
+	"a7" => "NEXTSTEP",
+	"a9" => "NetBSD",
+	"aa" => "Olivetti Fat 12 1.44Mb Service",
+	"ab" => "GO!",
+	"ae" => "ShagOS filesystem",
+	"af" => "ShagOS swap",
+	"b0" => "BootStar Dummy",
+	"b1" => "Reserved",
+	"b3" => "Reserved",
+	"b4" => "Reserved",
+	"b6" => "Reserved",
+	"b7" => "BSDI BSD/386 filesystem",
+	"b8" => "BSDI BSD/386 swap",
+	"bb" => "Boot Wizard hidden",
+	"be" => "Solaris 8 boot",
+	"c0" => "NTFT",
+	"c1" => "DRDOS/secured (FAT-12)",
+	"c2" => "Hidden Linux",
+	"c3" => "Hidden Linux swap",
+	"c4" => "DRDOS/secured (FAT-16, < 32M)",
+	"c5" => "DRDOS/secured (extended)",
+	"c6" => "DRDOS/secured (FAT-16, >= 32M)",
+	"c6" => "Windows NT corrupted FAT16 volume/stripe set",
+	"c7" => "Windows NT corrupted NTFS volume/stripe set",
+	"c8" => "Hidden Linux",
+	"c9" => "Hidden Linux",
+	"ca" => "Hidden Linux",
+	"cb" => "reserved for DRDOS/secured (FAT32)",
+	"cc" => "reserved for DRDOS/secured (FAT32, LBA)",
+	"cd" => "CTOS Memdump? ",
+	"ce" => "reserved for DRDOS/secured (FAT16, LBA)",
+	"d0" => "REAL/32 secure big",
+	"d1" => "Old Multiuser DOS secured FAT12",
+	"d4" => "Old Multiuser DOS secured FAT16 <32M",
+	"d5" => "Old Multiuser DOS secured extended",
+	"d6" => "Old Multiuser DOS secured FAT16 >=32M",
+	"d8" => "CP/M-86",
+	"da" => "Non-FS Data",
+	"db" => "Digital Research CP/M, Concurrent CP/M, Concurrent DOS",
+	"db" => "CTOS",
+	"dd" => "Hidden CTOS Memdump?",
+	"de" => "Dell PowerEdge Server utilities (FAT fs)",
+	"df" => "BootIt EMBRM",
+	"e1" => "DOS access or SpeedStor 12-bit FAT extended",
+	"e3" => "DOS R/O or SpeedStor",
+	"e4" => "SpeedStor 16-bit FAT extended < 1024 cyl.",
+	"e5" => "Tandy DOS with logical sectored FAT",
+	"e6" => "Reserved",
+	"eb" => "BeOS",
+	"ed" => "Reserved for Matthias Paul's Spryt*x",
+	"ee" => "Indication that this legacy MBR is followed by an EFI header",
+	"ef" => "Partition that contains an EFI file system",
+	"f0" => "Linux/PA-RISC boot loader",
+	"f1" => "SpeedStor",
+	"f2" => "DOS 3.3+ secondary",
+	"f3" => "Reserved",
+	"f4" => "Prologue single-volume",
+	"f5" => "Prologue multi-volume",
+	"f6" => "Reserved",
+	"fb" => "VMware File System",
+	"fc" => "VMware Swap",
+	"fd" => "Linux raid w/autodetect, persistent superblock",
+	"fe" => "Windows NT Disk Administrator hidden",
+	"ff" => "Xenix Bad Block Table");
+
+
+
+# TODO: fix code style	
+sub sort_by_start
+{
+   return ($a->{'start'} <=> $b->{'start'});
+}
+
+sub get_fdisk
+{
+  my $check_dev = shift;
+
+  my $fdisk_tool;
+
+  for ($i = 0; $cf_disks[$i]; $i++) {
+     if (($cf_disks[$i])->{media} =~ /disk/) {
+	if ($check_dev) {
+	   if (($cf_disks[$i])->{device} eq $check_dev) {
+	      push (@check_devs, ($cf_disks[$i])->{device});
+	   }
+	} else {
+	   push (@check_devs, ($cf_disks[$i])->{device});
+	}
+     }
+  }
+
+  $fdisk_tool = &gst_file_locate_tool("fdisk");
+
+  for $dev (@check_devs)
+  {
+    my ($disk, $device, $point, $fs, $options, $check, $size, $bootable, $fd);
+   
+    &gst_report ("disks_partition_probe", $dev);
+
+    $fd = &gst_file_run_pipe_read ("fdisk -l $dev");
+    # We want to cache fdisk work!
+    
+    my @fdisk_data = <$fd>; 
+    my ($block_size, $dev_size);
+    my $unit = "";
+
+    # First of all we get the global disk data: size, unit
+    foreach (@fdisk_data) {
+        &update_disk_data ($dev, "present", 1);
+        if (/^Block size/) {
+	    # fdisk in Debian PowerPC
+            # Block size=512, Number of Blocks=78140160
+            ($block_size, $dev_size) = ($_ =~ /^Block size=([0-9]*)[^0-9]*([0-9]*).*$/);
+	    $last_end = $dev_size;
+	    # $unit must be 1024
+	    # my $fsize = ($fend - $fstart + 1) * ($unit / 1024);
+	    # we need ($unit / 1024) = 1
+	    $unit = 1024;
+            &update_disk_data ($dev, "size", $dev_size);
+            &update_disk_data ($dev, "block_size", $block_size);
+            
+        } elsif (/^Disk/) {
+            # fdisk in Debian i386 
+            # Disk /dev/hda: 60.0 GB, 60022480896 bytes
+            ($dev_size) = ($_ =~ /^Disk [^0-9]* .* ([0-9]*) bytes$/);
+            $block_size=1024;
+	    
+            # fdisk in Suse Desktop i386
+            # Disk /dev/hda: 255 heads, 63 sectors, 2491 cylinders
+            if ($dev_size eq "") {
+                $dev_size = `fdisk -s $dev`;
+                $dev_size = $dev_size * $block_size;
+		($last_end) = ($_ =~ /^Disk [^0-9]* [0-9]+ heads, [0-9]+ sectors, ([0-9]+) cylinders$/);
+            } 
+            
+            &update_disk_data ($dev, "size", $dev_size/$block_size);
+            &update_disk_data ($dev, "block_size", $block_size);
+        } elsif (/^Units/) {
+	   # i386
+	   # Units = cylinders * 512
+	   
+	   # fdisk in Debian i386
+	   # Units = cylinders of 16065 * 512 = 8225280 bytes
+	   ($unit) = ($_ =~ /^Units = cylinders of [0-9]+ \* [0-9]+ = ([0-9]+) bytes$/);
+
+	   if ($unit eq "") {
+	      # fdisk in Suse Desktop i386
+	      # Units = cylinders of 16065 * 512 bytes
+	      my ($a, $b) = ($_ =~ /^Units = cylinders of ([0-9]+) \* ([0-9]+) bytes$/);
+	      $unit = $a * $b;
+	   }
+	} elsif (/^[0-9]+ heads/) {
+	   # i386
+	   # fdisk in Debian i386
+	   # 255 heads, 63 sectors/track, 1222 cylinders
+	   ($last_end) = ($_ =~ /^[0-9]+ heads, [0-9]+ sectors\/track, ([0-9]+) cylinders$/);
+	}
+
+    }
+    
+    # Now we get the data of each partition
+    my @fdisk_hash = ();
+    foreach (@fdisk_data)
+    {
+      if (/^\/dev/)
+      {
+        @line = split(/[ \n\r\t]+/, $_);
+
+	my (%parts);
+
+	# fdisk i386
+	#    Device Boot    Start       End    Blocks   Id  System
+	# /dev/hda3           694      1046   2835472+  83  Linux
+	#
+	# fdisk powerpc
+	#         #                    type name                 length   base     ( size )  system
+	# /dev/hdc3          Apple_Driver43 Macintosh                56 @ 120      ( 28.0k)  Driver 4.3
+
+	
+        # fdisk in Debian PowerBook gives the disks as the first line 
+        next if scalar @line == 1;
+
+	# device file
+	%parts->{'device'} = $line[0];
+        $device = $line[0]; shift @line;
+        ($disk) = ($device =~ /([a-zA-Z\/]+)/);
+        if ($line[0] eq "\*") {
+          # NOTE: Currently unused.
+	  %parts->{'bootable'} = 1;
+          $bootable = 1; shift @line;
+        }
+        else { %parts->{'bootable'} = 0; $bootable = 0; }
+	
+	# first cylinder of the partition
+	($start) = ($line[0] =~ /^([0-9]+)/);
+	if ($start eq "") {
+	   # there is no start cylinder, we are in powerpc
+	   # look for length @ base
+	   while ($line[0] ne "@") {
+	      ($length) = ($line[0] =~ /^([0-9]+)/);
+	      shift @line;
+	   }
+	   # skip @
+	   shift @line;
+	   #print "start $line[0]\n";
+	   ($start) = ($line[0] =~ /^([0-9]+)/);
+	   %parts->{'start'} = $start;
+	   $end = $start + $length - 1;
+	   %parts->{'end'} = $end;
+	   %parts->{'size'} = $length;
+	   %parts->{'type'} = "";
+	   push (@fdisk_hash, \%parts);
+	   # go to next device
+	   next;
+	}
+	%parts->{'start'} = $start;
+	shift @line;
+
+	# last cylinder of the partition
+	($end) = ($line[0] =~ /^([0-9]+)/);
+	%parts->{'end'} = $end;
+	shift @line;
+
+	# size of partition in blocks
+	($size) = ($line[0] =~ /([0-9]+)/);
+	%parts->{'size'} = $size;
+        shift @line;
+
+	# FIXME: add new popular ones, such as reiser and xfs and add
+	# those documented by fdisk.
+	if ($line[0] eq "5"  || $line[0] eq "f"  || $line[0] eq "85") { next; } # extended.
+	elsif ($line[0] eq "82") { $type = "swap"; }
+	elsif ($line[0] eq "83") { $type = "ext2"; }
+	elsif ($line[0] eq "e")  { $type = "vfat"; }
+	elsif ($line[0] eq "c" || $line[0] eq "b") { $type = "fat32"; }
+	elsif ($line[0] eq "6" || $line[0] eq "4" || $line[0] eq "1") { $type = "msdos"; }
+	elsif ($line[0] eq "7")  { $type = "ntfs"; }
+	else  { $type = ""; }
+
+	# fs type
+	#%parts->{'type'} = $type;
+	%parts->{'type'} = &get_fs_type ($device);
+	push (@fdisk_hash, \%parts);
+      }
+    }
+
+    my ($prev_end) = 0; # last cylinder of previous partition
+    my $max_cyl = 0; # bigest cylinder found
+    
+    # In order to find empty partitions we have to sort 
+    # the array by start (first cylinder)
+    @ord = sort sort_by_start (@fdisk_hash);
+    my $empty_count = 1;
+
+    # Now we update the data and detect empty partitions
+    foreach $partition (@ord)
+    {
+       if ($partition->{'end'} > $max_cyl) {
+	  $max_cyl = $partition->{'end'};
+       }
+       
+       if ($prev_end ne 0) {
+	  if ($partition->{'start'} - 1 ne $prev_end) {
+	     # There is no partition, free space found
+	     my $fstart = $prev_end + 1;
+	     my $fend;
+	     $fend = $partition->{'start'} - 1;
+	     # size = (number of cylinders) * (unit in bloks)
+	     # number of cylinders = last cylinder - first cylinder + 1
+	     my $fsize = ($fend - $fstart + 1) * ($unit / 1024);
+             if ($fend > $max_cyl) { 
+	        $max_cyl = $fend; 
+	     }
+             if ($fstart ne $fend) {
+	        &update_partition ($disk, "/dev/empty$empty_count", "", "", "empty", "noauto", 0, $fsize, 0,
+	                           0, 1, "", $fstart, $fend);
+		$empty_count ++;
+	     }
+	  }
+       } else {
+	  if ($partition->{'start'} ne 1) {
+	     # There is no partition, free space found in the top of the disk
+	     my $fstart = 1;
+             my $fend = $partition->{'start'} - 1;
+	     # size = (number of cylinders) * (unit in bloks)
+	     # number of cylinders = last cylinder - first cylinder + 1
+             my $fsize = ($fend - $fstart + 1) * ($unit / 1024);
+             if ($fend > $max_cyl) {
+		$max_cyl = $fend;
+	     }
+	     if ($fend ne $fstart) {
+		&update_partition ($disk, "/dev/empty$empty_count", "", "", "empty", "noauto", 0, $fsize, 0,
+	                           0, 1, "", $fstart, $fend);
+		$empty_count ++;
+	     }
+	  }
+       }
+
+       # partition found update it
+       if ($partition->{'end'} ne $partition->{'start'}) {
+	  &update_partition ($disk, $partition->{'device'}, "", "", $partition->{'type'}, "noauto", 0, 
+	                     $partition->{'size'}, 0, $partition->{'bootable'}, 1, "", 
+			     $partition->{'start'}, $partition->{'end'});
+       }
+       
+       if ($partition->{'end'} eq $last_end) {
+	  $prev_end = 0;
+       } else {
+	  $prev_end = $partition->{'end'};
+       }	
+    } 
+    
+    # Now we are out of the loop and we have to check if the current disk is 
+    # valid
+    if ($disk ne "") {
+       if (($max_cyl < $last_end) and ($max_cyl < ($last_end - 1))) {
+	  # There is no partition, free space found in the bottom of the disk
+	  my $fstart = $max_cyl + 1;
+          my $fend = $last_end;
+          # size = (number of cylinders) * (unit in bloks)
+          # number of cylinders = last cylinder - first cylinder + 1
+          my $fsize = ($fend - $fstart + 1) * ($unit / 1024);
+          &update_partition ($disk, "/dev/empty$empty_count", "", "", "empty", "noauto", 0, $fsize, 0,
+                             0, 1, "", $fstart, $fend);
+       }
+    }
+    
+    &gst_file_close ($fd);
+
+    &gst_report ("disks_size_query", $dev);
+    
+    &gst_print_progress ();
+  }
+}
+
+## Mount functions
+sub gst_partition_is_mounted
+{
+   my ($device) = @_;
+
+   my $line = `mount | grep "$device"`;
+   
+   if ($line ne "") 
+   {
+      return 1;
+   }
+   else
+   {
+      return 0;
+   }
+}
+
+sub gst_partition_get_mount_point
+{
+   my ($device) = @_;
+
+   my ($point) = `mount | grep $device` =~ /^$device on (.*) type .*$/;
+   if ($point)
+   {
+      return $point;
+   } 
+   else 
+   {
+      return undef;
+   }
+}
+
+sub gst_partition_mount_temp
+{
+   my ($device) = @_;
+   my ($filesys);
+
+   my ($dev) = ($device =~ /\/dev\/(.*)/);
+   my $point = "/tmp/disks-conf-$dev";
+
+   mkdir ($point);
+
+   $cmd = "mount $device $point";
+   $fd = &gst_file_run_pipe_read_with_stderr ($cmd);
+
+   if (!$fd) 
+   {
+      my $err = `umount $device`;
+      rmdir ($point);
+      return "error";
+   }
+   
+   # Not mounted: not supported or unformatted
+   while (<$fd>) 
+   {
+      if (/not supported/) 
+      {
+	 #($filesys) = ($_ =~ /^mount: fs type (.*) not supported by kernel$/);
+	 &gst_file_close ($fd);
+	 rmdir ($point);
+	 return "not_supported::$_";
+      }
+      elsif (/looks like swapspace/) 
+      {
+	 #$filesys = "swap";
+	 &gst_file_close ($fd);
+	 rmdir ($point);
+	 return "swap";
+      }
+      elsif (/you must specify the filesystem type/)
+      {
+	 #$filesys = "none";
+	 &gst_file_close ($fd);
+	 rmdir ($point);
+	 return "none";
+      }
+   }
+
+   &gst_file_close ($fd);
+
+   return $point;
+}
+
+sub gst_partition_umount_temp
+{
+   my ($device, $point) = @_;
+
+   my $err = `umount $device`;
+   rmdir ($point);
+}
+
+sub gst_format_partition
+{
+   my ($command, $device, $type, $options) = @_;
+   my ($cmd, $fd);
+
+   if ($type eq "reiserfs") 
+   {
+      $options = "$options -f -f"; #-f specified twice, do not ask for confirmation
+   } 
+   elsif ($type eq "xfs") 
+   {
+      $options = "$options -f";
+   } 
+   elsif ($type eq "xfs") 
+   {
+      $options = "$options -q";
+   }
+
+   $cmd = "$command $device $options";
+   
+   $fd = &gst_file_run_pipe_read_with_stderr ($cmd);
+   if (!$fd) 
+   {
+      # TODO
+      return;
+   }
+
+   while (<$fd>) 
+   {
+#      print"DBG: $_\n";
+   }
+
+   &gst_file_close ($fd);
+
+
+   &gst_report_leave ();
+   
+}
+	
+1;

@@ -1,0 +1,9 @@
+to extract the configuracion
+============================
+
+backend --get
+
+to restore the configuration from XML
+=====================================
+
+backend --set < file.xml

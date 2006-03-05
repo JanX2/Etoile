@@ -1,0 +1,335 @@
+#!/usr/bin/env perl
+#-*- Mode: perl; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+
+# Common printer configuration functionality.
+#
+# Copyright (C) 2000-2001 Ximian, Inc.
+#
+# Authors: Hans Petter Jansson <hpj@ximian.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Library General Public License as published
+# by the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+
+$SCRIPTSDIR = "@scriptsdir@";
+if ($SCRIPTSDIR =~ /^@scriptsdir[@]/)
+{
+    $SCRIPTSDIR = ".";
+    $DOTIN = ".in";
+}
+
+require "$SCRIPTSDIR/general.pl$DOTIN";
+require "$SCRIPTSDIR/file.pl$DOTIN";
+require "$SCRIPTSDIR/parse.pl$DOTIN";
+require "$SCRIPTSDIR/replace.pl$DOTIN";
+
+
+sub gst_print_conf_get
+{
+  my (%dist_attrib, %hash, %fn, @printers, $printer);
+  my ($dist, $value, $file, $proc);
+  my ($i, $j);
+
+  %dist_attrib = &gst_print_get_printer_parse_table ();
+  %fn = %{$dist_attrib{"fn"}};
+  $proc = $dist_attrib{"printers_get"};
+  @printers = &$proc ();
+
+  foreach $i (@printers)
+  {
+    foreach $j (keys (%fn))
+    {
+      my $spooldir = "/var/spool/lpd/$i";  # Not flexible, FIXME.
+
+      $value = $fn {$j};
+      $value =~ s/\#printer\#/$i/;
+      $value =~ s/\#spooldir\#/$spooldir/;
+      $ {$dist_attrib{"fn"}}{$j} = $value;
+    }
+
+    $printer = &gst_parse_from_table ($dist_attrib{"fn"},
+                                      $dist_attrib{"table"});
+    $hash {$i} = $printer;
+  }
+
+  return \%hash;
+}
+
+sub gst_print_conf_set
+{
+  my ($values_hash) = @_;
+  my ($old_hash);
+  my (%dist_attrib, %hash, %fn, @printers, $printer);
+  my ($dist, $value, $file, $proc);
+  my ($i, $j);
+  my $res = 0;
+
+  $old_hash = &gst_print_conf_get ();
+
+  %dist_attrib = &gst_print_get_printer_replace_table ();
+  %fn = %{$dist_attrib{"fn"}};
+
+  # Remove unspecified printers.
+
+  foreach $i (keys (%$old_hash))
+  {
+    if (!$$values_hash{$i})
+    {
+      # TODO: Delete spool dir recursively.
+      $proc = $dist_attrib {"printer_remove"};
+      &$proc ($fn {'PRINTCAP'}, $i);
+    }
+  }
+
+  # Change/add printer values as specified.
+
+  foreach $i (keys (%$values_hash))
+  {
+    foreach $j (keys (%fn))
+    {
+      my $spooldir = "/var/spool/lpd/$i";  # Not flexible, FIXME.
+
+      $value = $fn {$j};
+      $value =~ s/\#printer\#/$i/;
+      $value =~ s/\#spooldir\#/$spooldir/;
+      $ {$dist_attrib{"fn"}}{$j} = $value;
+    }
+
+    my $tmpres = &gst_replace_from_table ($dist_attrib {"fn"},
+                                          $dist_attrib {"table"},
+                                          $$values_hash {$i},
+                                          $$old_hash {$i});
+
+    if ($tmpres < 0) { $res = $tmpres; }
+  }
+
+  return $res;
+}
+
+sub gst_print_printers_get_rh70
+{
+  my @printers;
+
+  @printers = &gst_parse_cap_sections ("/etc/printcap");
+  return @printers;
+}
+
+sub gst_print_printers_get_rh71
+{
+  my @printers;
+
+  @printers = &gst_parse_xml_child_names ("/etc/alchemist/namespace/printconf/local.adl",
+                                          "/adm_context/datatree/printconf/print_queues");
+  return @printers;
+}
+
+sub gst_print_remove_printer_rh71
+{
+}
+
+sub gst_print_get_printer_parse_table
+{
+  my %dist_map =
+	(
+	  "redhat-7.0" => "redhat-7.0",
+	  "redhat-7.1" => "redhat-7.1",
+	  "openna-1.0" => "redhat-7.0",
+    "debian-2.2" => "redhat-7.0",
+		"debian-woody" => "redhat-7.0"
+  );
+
+  my %dist_tables =
+  (
+    "redhat-7.0" =>
+	  {
+      printers_get => \&gst_print_printers_get_rh70,
+	    fn =>
+	    {
+        PRINTCAP   => "/etc/printcap",
+        GENERAL    => "#spooldir#/general.cfg",
+        POSTSCRIPT => "#spooldir#/postscript.cfg",
+        TEXTONLY   => "#spooldir#/textonly.cfg",
+        PRINTER    => "#printer#"
+      },
+	    table =>
+      [
+        [ "spooldir",           \&gst_parse_printcap,       [PRINTCAP,  PRINTER],    "sd" ],
+        [ "jobsize_max_k",      \&gst_parse_printcap,       [PRINTCAP,  PRINTER],    "mx" ],
+        [ "suppress_headers",   \&gst_parse_printcap_bool,  [PRINTCAP,  PRINTER],    "sh" ],
+        [ "device",             \&gst_parse_printcap,       [PRINTCAP,  PRINTER],    "lp" ],
+        [ "filter",             \&gst_parse_printcap,       [PRINTCAP,  PRINTER],    "if" ],
+        [ "papersize",          \&gst_parse_sh_export,      GENERAL,    PAPERSIZE         ],
+        [ "type",               \&gst_parse_sh_export,      GENERAL,    PRINTERTYPE       ],
+        [ "ascii_to_ps",        \&gst_parse_sh_export_bool, GENERAL,    ASCII_TO_PS       ],
+        [ "gsdevice",           \&gst_parse_sh,             POSTSCRIPT, GSDEVICE          ],
+        [ "resolution",         \&gst_parse_sh,             POSTSCRIPT, RESOLUTION        ],
+        [ "color",              \&gst_parse_sh,             POSTSCRIPT, COLOR             ],
+        [ "gs_papersize",       \&gst_parse_sh,             POSTSCRIPT, PAPERSIZE         ],
+        [ "gs_options",         \&gst_parse_sh,             POSTSCRIPT, EXTRA_GS_OPTIONS  ],
+        [ "ps_send_eof",        \&gst_parse_sh_bool,        POSTSCRIPT, PS_SEND_EOF       ],
+        [ "pages_per_sheet",    \&gst_parse_sh,             POSTSCRIPT, NUP               ],
+        [ "rt_margin",          \&gst_parse_sh,             POSTSCRIPT, RTLFTMAR          ],
+        [ "tb_margin",          \&gst_parse_sh,             POSTSCRIPT, TOPBOTMAR         ],
+        [ "text_options",       \&gst_parse_sh,             TEXTONLY,   TEXTONLYOPTIONS   ],
+        [ "trans_crlf",         \&gst_parse_sh_bool,        TEXTONLY,   CRLFTRANS         ],
+        [ "text_send_eof",      \&gst_parse_sh_bool,        TEXTONLY,   TEXT_SEND_EOF     ]
+      ]
+    },
+    "redhat-7.1" =>
+	  {
+      printers_get => \&gst_print_printers_get_rh71,
+	    fn =>
+	    {
+        PRINTCONF  => "/etc/alchemist/namespace/printconf/local.adl",
+        PRINTER    => "#printer#"
+      },
+	    table =>
+      [
+#        [ "spooldir",           \&gst_parse_printcap,       [PRINTCAP,  PRINTER],    "sd" ],
+#        [ "jobsize_max_k",      \&gst_parse_printcap,       [PRINTCAP,  PRINTER],    "mx" ],
+#        [ "suppress_headers",   \&gst_parse_printcap_bool,  [PRINTCAP,  PRINTER],    "sh" ],
+        [ "device",             \&gst_parse_alchemist_print, [PRINTCONF,  PRINTER], "queue_data/local_printer_device" ],
+#        [ "papersize",          \&gst_parse_sh_export,      GENERAL,    PAPERSIZE         ],
+#        [ "ascii_to_ps",        \&gst_parse_sh_export_bool, GENERAL,    ASCII_TO_PS       ],
+        [ "filter_type",        \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "filter_type" ],
+        [ "type",               \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_type" ],
+        [ "printer_id",         \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "filter_data/printer_id" ],
+         [ "gsdevice",           \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "filter_data/gs_driver" ],
+         [ "smb_workgroup",      \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_data/smb_workgroup" ],
+         [ "smb_share",          \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_data/smb_share" ],
+         [ "smb_ip",            \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_data/smb_ip" ],
+         [ "smb_user",          \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_data/smb_user" ],
+         [ "smb_password",      \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_data/smb_password" ],
+         [ "smb_translate",     \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_data/smb_translate" ],
+         [ "lpd_server",     \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_data/lpd_server" ],
+         [ "lpd_queue",     \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_data/lpd_queue" ],
+         [ "lpd_server",     \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_data/lpd_server" ],
+         [ "jetdirect_ip",     \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_data/jetdirect_ip" ],
+         [ "jetdirect_port",     \&gst_parse_alchemist_print, [PRINTCONF, PRINTER], "queue_data/jetdirect_port" ],
+         [ "resolution",         \&gst_parse_alchemist_print_option, [PRINTCONF, PRINTER], "Resolution" ],
+#        [ "color",              \&gst_parse_sh,             POSTSCRIPT, COLOR             ],
+#        [ "gs_papersize",       \&gst_parse_sh,             POSTSCRIPT, PAPERSIZE         ],
+#        [ "gs_options",         \&gst_parse_sh,             POSTSCRIPT, EXTRA_GS_OPTIONS  ],
+#        [ "ps_send_eof",        \&gst_parse_sh_bool,        POSTSCRIPT, PS_SEND_EOF       ],
+#        [ "pages_per_sheet",    \&gst_parse_sh,             POSTSCRIPT, NUP               ],
+#        [ "rt_margin",          \&gst_parse_sh,             POSTSCRIPT, RTLFTMAR          ],
+#        [ "tb_margin",          \&gst_parse_sh,             POSTSCRIPT, TOPBOTMAR         ],
+#        [ "text_options",       \&gst_parse_sh,             TEXTONLY,   TEXTONLYOPTIONS   ],
+#        [ "trans_crlf",         \&gst_parse_sh_bool,        TEXTONLY,   CRLFTRANS         ],
+#        [ "text_send_eof",      \&gst_parse_sh_bool,        TEXTONLY,   TEXT_SEND_EOF     ]
+      ]
+    }
+  );
+
+  my $dist = $dist_map{$gst_dist};
+  return %{$dist_tables{$dist}} if $dist;
+
+  &gst_report ("platform_no_table", $gst_dist);
+  return undef;
+}
+
+sub gst_print_get_printer_replace_table
+{
+  my %dist_map =
+	(
+	  "redhat-7.0" => "redhat-7.0",
+	  "redhat-7.1" => "redhat-7.1",
+	  "openna-1.0" => "redhat-7.0",
+    "debian-2.2" => "redhat-7.0",
+		"debian-woody" => "redhat-7.0"
+  );
+
+  my %dist_tables =
+  (
+    "redhat-7.0" =>
+	  {
+      printers_get   => \&gst_print_printers_get_rh70,
+      printer_remove => \&gst_replace_printcap_remove_printer,
+	    fn =>
+	    {
+        PRINTCAP   => "/etc/printcap",
+        GENERAL    => "#spooldir#/general.cfg",
+        POSTSCRIPT => "#spooldir#/postscript.cfg",
+        TEXTONLY   => "#spooldir#/textonly.cfg",
+        PRINTER    => "#printer#"
+      },
+	    table =>
+      [
+        [ "spooldir",           \&gst_replace_printcap,       [PRINTCAP,  PRINTER],    "sd", "=" ],
+        [ "jobsize_max_k",      \&gst_replace_printcap,       [PRINTCAP,  PRINTER],    "mx", "#" ],
+        [ "suppress_headers",   \&gst_replace_printcap,       [PRINTCAP,  PRINTER],    "sh", ""  ],
+        [ "device",             \&gst_replace_printcap,       [PRINTCAP,  PRINTER],    "lp", "=" ],
+        [ "filter",             \&gst_replace_printcap,       [PRINTCAP,  PRINTER],    "if", "=" ],
+        [ "papersize",          \&gst_replace_sh_export,      GENERAL,    PAPERSIZE              ],
+        [ "type",               \&gst_replace_sh_export,      GENERAL,    PRINTERTYPE            ],
+        [ "ascii_to_ps",        \&gst_replace_sh_export_bool, GENERAL,    ASCII_TO_PS            ],
+        [ "gsdevice",           \&gst_replace_sh,             POSTSCRIPT, GSDEVICE               ],
+        [ "resolution",         \&gst_replace_sh,             POSTSCRIPT, RESOLUTION             ],
+        [ "color",              \&gst_replace_sh,             POSTSCRIPT, COLOR                  ],
+        [ "gs_papersize",       \&gst_replace_sh,             POSTSCRIPT, PAPERSIZE              ],
+        [ "gs_options",         \&gst_replace_sh,             POSTSCRIPT, EXTRA_GS_OPTIONS       ],
+        [ "ps_send_eof",        \&gst_replace_sh_bool,        POSTSCRIPT, PS_SEND_EOF            ],
+        [ "pages_per_sheet",    \&gst_replace_sh,             POSTSCRIPT, NUP                    ],
+        [ "rt_margin",          \&gst_replace_sh,             POSTSCRIPT, RTLFTMAR               ],
+        [ "tb_margin",          \&gst_replace_sh,             POSTSCRIPT, TOPBOTMAR              ],
+        [ "text_options",       \&gst_replace_sh,             TEXTONLY,   TEXTONLYOPTIONS        ],
+        [ "trans_crlf",         \&gst_replace_sh_bool,        TEXTONLY,   CRLFTRANS              ],
+        [ "text_send_eof",      \&gst_replace_sh_bool,        TEXTONLY,   TEXT_SEND_EOF          ]
+      ]
+    },
+    "redhat-7.1" =>
+	  {
+      printers_get   => \&gst_print_printers_get_rh71,
+      printer_remove => \&gst_print_remove_printer_rh71,
+	    fn =>
+	    {
+        PRINTCONF  => "/etc/alchemist/namespace/printconf/local.adl",
+        PRINTER    => "#printer#"
+      },
+	    table =>
+      [
+#        [ "spooldir",           \&gst_replace_printcap,       [PRINTCAP,  PRINTER],    "sd", "=" ],
+#        [ "jobsize_max_k",      \&gst_replace_printcap,       [PRINTCAP,  PRINTER],    "mx", "#" ],
+#        [ "suppress_headers",   \&gst_replace_printcap,       [PRINTCAP,  PRINTER],    "sh", ""  ],
+        [ "device",             \&gst_replace_alchemist_print, [PRINTCONF, PRINTER], "queue_data/local_printer_device/", "STRING" ],
+        [ "filter_type",        \&gst_replace_alchemist_print, [PRINTCONF, PRINTER], "filter_type", "STRING" ],
+        [ "type",               \&gst_replace_alchemist_print, [PRINTCONF, PRINTER], "queue_type", "STRING" ],
+        [ "printer_id",         \&gst_replace_alchemist_print, [PRINTCONF, PRINTER], "filter_data/printer_id", "STRING" ],
+#        [ "filter",             \&gst_replace_printcap,        [PRINTCAP,  PRINTER],    "if", "=" ],
+#        [ "papersize",          \&gst_replace_sh_export,       GENERAL,    PAPERSIZE              ],
+#        [ "ascii_to_ps",        \&gst_replace_sh_export_bool,  GENERAL,    ASCII_TO_PS            ],
+        [ "gsdevice",           \&gst_replace_alchemist_print, [PRINTCONF, PRINTER], "filter_data/gs_driver", "STRING" ],
+        [ "resolution",         \&gst_replace_alchemist_print_option, [PRINTCONF, PRINTER], "Resolution", "enum" ]
+#        [ "color",              \&gst_replace_sh,              POSTSCRIPT, COLOR                  ],
+#        [ "gs_papersize",       \&gst_replace_sh,              POSTSCRIPT, PAPERSIZE              ],
+#        [ "gs_options",         \&gst_replace_sh,              POSTSCRIPT, EXTRA_GS_OPTIONS       ],
+#        [ "ps_send_eof",        \&gst_replace_sh_bool,         POSTSCRIPT, PS_SEND_EOF            ],
+#        [ "pages_per_sheet",    \&gst_replace_sh,              POSTSCRIPT, NUP                    ],
+#        [ "rt_margin",          \&gst_replace_sh,              POSTSCRIPT, RTLFTMAR               ],
+#        [ "tb_margin",          \&gst_replace_sh,              POSTSCRIPT, TOPBOTMAR              ],
+#        [ "text_options",       \&gst_replace_sh,              TEXTONLY,   TEXTONLYOPTIONS        ],
+#        [ "trans_crlf",         \&gst_replace_sh_bool,         TEXTONLY,   CRLFTRANS              ],
+#        [ "text_send_eof",      \&gst_replace_sh_bool,         TEXTONLY,   TEXT_SEND_EOF          ]
+      ]
+    }
+  );
+
+  my $dist = $dist_map{$gst_dist};
+  return %{$dist_tables{$dist}} if $dist;
+
+  &gst_report ("platform_no_table", $gst_dist);
+  return undef;
+}
+
+1;

@@ -1,0 +1,261 @@
+#!/usr/bin/env perl
+#-*- Mode: perl; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+
+# Print configurator. Designed to be architecture and distribution independent.
+#
+# Copyright (C) 2000-2001 Ximian, Inc.
+#
+# Authors: Hans Petter Jansson <hpj@ximian.com>
+#          Michael Vogt <mvo@debian.org> (Debian Support)
+#          Arturo Espinosa <arturo@ximian.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Library General Public License as published
+# by the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+# Best viewed with 100 columns of width.
+
+# Configuration files affected:
+#
+# /etc/resolv.conf
+# /etc/host.conf
+# /etc/hosts
+# /etc/sysconfig/print
+# /etc/rc.config
+# /etc/smb.conf
+
+# Running programs affected:
+#
+# smbd
+# nmbd
+# ifconfig: check current printers and activate/deactivate.
+
+
+BEGIN {
+  $SCRIPTSDIR = "@scriptsdir@";
+  if ($SCRIPTSDIR =~ /^@scriptsdir[@]/)
+  {
+      $SCRIPTSDIR = ".";
+      $DOTIN = ".in";
+  }
+  
+  require "$SCRIPTSDIR/general.pl$DOTIN";
+  require "$SCRIPTSDIR/platform.pl$DOTIN";
+  require "$SCRIPTSDIR/util.pl$DOTIN";
+  require "$SCRIPTSDIR/file.pl$DOTIN";
+  require "$SCRIPTSDIR/xml.pl$DOTIN";
+  require "$SCRIPTSDIR/print.pl$DOTIN";
+}
+
+
+# --- Tool information --- #
+
+$name = "print";
+$version = "@VERSION@";
+@platforms = ("redhat-7.0", "redhat-7.1", "debian-woody", "turbolinux-7.0");
+
+$description =<<"end_of_description;";
+       Configures the lpr subsystem.
+end_of_description;
+
+$progress_max = 10;
+
+
+# --- XML parsing ---
+
+# Scan XML from standard input to an internal tree.
+
+sub xml_parse
+{
+  my ($tree, %hash);
+  # Scan XML to tree.
+
+  $tree = &gst_xml_scan;
+
+  # Walk the tree recursively and extract configuration parameters.
+  # This is the top level - find and enter the "print" tag.
+
+  while (@$tree)
+  {
+    if ($$tree[0] eq "print") { &xml_parse_print ($$tree[1], \%hash); }
+
+    shift @$tree;
+    shift @$tree;
+  }
+
+  return(\%hash);
+}
+
+# <print>...</print>
+
+sub xml_parse_print
+{
+  my $tree = $_[0];
+  my $hash = $_[1];
+  my %printer;
+
+  shift @$tree;  # Skip attributes.
+
+  while (@$tree)
+  {
+    if ($$tree[0] eq "printer") { &xml_parse_printer ($$tree[1], \%printer); }
+
+    shift @$tree;
+    shift @$tree;
+  }
+  
+  %$hash = %printer if scalar keys %printer;
+}
+
+# <printer>...</printer>
+
+sub xml_parse_printer
+{
+  my $tree = $_[0];
+  my $printer = $_[1];
+  my %hash, %section_hash;
+  my $dev;
+
+  shift @$tree;
+
+  while (@$tree)
+  {
+    $hash{$$tree[0]} = &gst_xml_get_pcdata ($$tree[1]);
+
+    # If get_pcdata returns an array instead of a scalar, we have
+    #  a subsection to process.
+    if ( ref($hash{$$tree[0]}) eq "ARRAY" ) {
+      $hash{$$tree[0]} = &xml_parse_section($$tree[1]);
+    }
+
+    shift @$tree;
+    shift @$tree;
+  }
+
+  $dev = $hash{"name"};
+  $$printer{$dev} = \%hash;
+}
+
+sub xml_parse_section
+{
+  my $tree = $_[0];
+  my %hash;
+  my $dev;
+
+  while (@$tree)
+  {
+    $hash{$$tree[0]} = &gst_xml_get_pcdata ($$tree[1]);
+
+    shift @$tree;
+    shift @$tree;
+  }
+ 
+  return \%hash;
+}
+
+# --- XML printing --- #
+
+sub xml_print_section
+{
+    
+}
+
+sub xml_print_printer
+{
+  my ($h, $spool) = @_;
+  my ($i, $val, $section);
+
+  &gst_xml_print_vspace ();
+  &gst_xml_print_line ("<printer>\n");
+  &gst_xml_enter ();
+
+  $val = &gst_xml_quote ($spool);
+  &gst_xml_print_line ("<name>$val</name>");
+
+  foreach $i (keys (%$h))
+  {
+    $val = &gst_xml_quote ($$h{$i});
+    &gst_xml_print_line ("<$i>$val</$i>\n");
+  }
+
+  &gst_xml_leave ();
+  &gst_xml_print_line ("</printer>\n");  
+}
+
+sub xml_print
+{
+  my $h = $_[0];
+  my ($i, $val);
+
+  &gst_xml_print_begin ();
+
+  foreach $i (keys (%$h))
+  {
+    &xml_print_printer ($$h{$i}, $i);
+  }
+
+  &gst_xml_print_end ();
+}
+
+
+# Top-level actions.
+
+
+sub get
+{
+  my $hash;
+
+  $hash = &gst_print_conf_get ();
+  &gst_report_end ();
+  &xml_print ($hash);
+}
+
+
+sub set
+{
+  my $hash;
+  
+  $hash = &xml_parse ();
+  &gst_print_conf_set ($hash);
+  &gst_report_end ();
+}
+
+
+# --- Filter config: XML in, XML out --- #
+
+
+sub filter
+{
+  my $hash;
+  
+  $hash = &xml_parse ();
+  &gst_report_end ();
+  &xml_print ($hash);
+}
+
+
+# --- Main --- #
+
+# get, set and filter are special cases that don't need more parameters than a ref to their function.
+# Read general.pl.in:gst_run_directive to know about the format of this hash.
+
+$directives =
+{
+  "get"    => [ \&get,    [], "" ],
+  "set"    => [ \&set,    [], "" ],
+  "filter" => [ \&filter, [], "" ]
+};
+
+$tool = &gst_init ($name, $version, $description, $directives, @ARGV);
+&gst_platform_ensure_supported ($tool, @platforms);
+&gst_run ($tool);

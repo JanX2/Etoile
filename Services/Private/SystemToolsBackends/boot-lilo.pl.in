@@ -1,0 +1,597 @@
+#!/usr/bin/env perl
+#-*- Mode: perl; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+
+# Boot manager configurator: LILO-related routines.
+#
+# Copyright (C) 2001 Ximian, Inc.
+#
+# Authors: Arturo Espinosa <arturo@ximian.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Library General Public License as published
+# by the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+
+$SCRIPTSDIR = "@scriptsdir@";
+if ($SCRIPTSDIR =~ /^@scriptsdir[@]/)
+{
+    $SCRIPTSDIR = ".";
+    $DOTIN = ".in";
+}
+
+require "$SCRIPTSDIR/general.pl$DOTIN";
+require "$SCRIPTSDIR/util.pl$DOTIN";
+require "$SCRIPTSDIR/file.pl$DOTIN";
+require "$SCRIPTSDIR/xml.pl$DOTIN";
+require "$SCRIPTSDIR/parse.pl$DOTIN";
+require "$SCRIPTSDIR/replace.pl$DOTIN";
+require "$SCRIPTSDIR/partition.pl$DOTIN";
+
+my @lilo_global_vars = qw (default prompt delay timeout append boot root);
+my @lilo_common_image_vars = qw (label password);
+my @lilo_image_vars = (@lilo_common_image_vars, qw (image append root vga initrd));
+my @lilo_other_vars = (@lilo_common_image_vars, qw (other));
+
+sub gst_boot_lilo_verify_entrylabel
+{
+  my ($label) = @_;
+  
+  return "toolong" if length ($label) > 15;
+  $label =~ s/[\w!%^&*()_\-:;+\[\]{}?\/<>]//g;
+  return "badchar" if $label ne "";
+  return "success";
+}
+
+sub gst_boot_lilo_verify
+{
+  my ($key, @values) = @_;
+  my ($i);
+  my %keymap =
+      (
+       "entrylabel" => \&gst_boot_lilo_verify_entrylabel
+       );
+
+  return "notable" if not exists ($keymap{$key});
+  return &{$keymap{$key}}(@values);
+}
+
+sub gst_boot_lilo_known_var
+{
+  my $key = shift;
+  my $list = shift;
+  my $from_xml = shift;
+
+  if (ref ($list) ne "ARRAY")
+  {
+    # TODO: Give warning;
+    return 0;
+  }
+
+  $key = lc ($key);
+  
+  # Hard coded known variables which are not standard lilo.conf variables.
+  return 0 if ($key eq "key" && $from_xml); # "key" is valid in xml only.
+  return 0 if ($key eq "type" && $from_xml); # "key" is valid in xml only.
+
+  return &gst_item_is_in_list ($key, @$list);
+}
+
+sub gst_boot_lilo_parse_global_kw
+{
+  my ($file, $key) = @_;
+  my $fd;
+
+  return undef unless &gst_boot_lilo_known_var ($key, \@lilo_global_vars, 0);
+  $fd = &gst_file_open_read_from_names ($file);
+  if (! $fd)
+  {
+    &gst_report ("boot_conf_read_failed", $file);
+    return undef;
+  }
+
+  while (<$fd>)
+  {
+    chomp;
+    s/^[ \t]+//;
+    next if (/^\#/ || /^$/);
+    last if (/^(image|other)/);
+
+    if ($key eq $_)
+    {
+      &gst_file_close ($fd);
+      return 1;
+    }
+  }
+
+  &gst_file_close ($fd);
+  return undef;
+}
+
+
+sub gst_boot_lilo_parse_global
+{
+  my ($file, $key) = @_;
+  my ($fd, $line, $re);
+
+  return undef unless &gst_boot_lilo_known_var ($key, \@lilo_global_vars, 0);
+  
+  $re = "[ \t]*=[ \t]*";
+  $fd = &gst_file_open_read_from_names ($file);
+  if (! $fd)
+  {
+    &gst_report ("boot_conf_read_failed", $file);
+    return undef;
+  }
+
+  while ($line = <$fd>)
+  {
+    chomp $line;
+    $line =~ s/^[ \t]+//;
+    $line = &gst_parse_process_sh_line ($line);
+    
+    next if ($line eq "");
+    last if ($line =~ /^(image|other)/);
+    my @line = split ($re, $line, 2);
+
+    if (shift (@line) eq $key)
+    {
+      &gst_file_close ($fd);
+      return $line[0];
+    }
+  }
+
+  &gst_file_close ($fd);
+  return undef;
+}
+
+sub gst_boot_lilo_set_default_type
+{
+  my ($entry, $partition) = @_;
+  my ($dev, $type);
+
+  $dev = $$entry{"root"};
+  $dev = $$entry{"other"} if $dev eq undef;
+  $dev =~ s/.*\///;
+
+  if (exists $$partition{$dev})
+  {
+    $type = $ {$$partition{$dev}}{"typestr"};
+    $$entry{"type"} = $type if $type ne undef;
+  }
+}
+    
+sub gst_boot_lilo_parse_entries
+{
+  my ($file, $partition) = @_;
+  my ($fd, $line, @entries, $entry);
+  my ($line, $known_vars, $found);
+
+  $found = -1;
+  
+  $fd = &gst_file_open_read_from_names ($file);
+  if (! $fd)
+  {
+    &gst_report ("boot_conf_read_failed", $file);
+    return undef;
+  }
+
+  while (($line = <$fd>))
+  {
+    chomp $line;
+    $line =~ s/^[ \t]+//;
+
+    if ($line =~ /^image/i)
+    {
+      $found++;
+      $known_vars = \@lilo_image_vars;
+      $entries[$found]{"key"} = $found;
+    }
+    elsif ($line =~ /^other/i)
+    {
+      $found++;
+      $known_vars = \@lilo_other_vars;
+      $entries[$found]{"key"} = $found;
+    }
+    
+    next if $found < 0;
+    
+    next if $line =~ /^\#/;
+
+    $line = &gst_parse_process_sh_line ($line);
+    next if $line eq "";
+    
+    my @line = split ("[ \t]*=[ \t]*", $line, 2);    
+    my $key = shift @line;
+
+    # Only deal with known variables
+    next unless &gst_boot_lilo_known_var ($key, $known_vars, 0);
+    
+    my $val = shift @line;
+    $val =~ s/^[ \t]+//;
+    $val =~ s/\"//g;    
+    $val =~ s/[ \t]+$//;
+
+    #if the variable is "vga", we append it to the "append" var
+    if ($key eq "vga")
+    {
+      $entries[$found]{"append"} .= " vga=" . $val. " ";
+    }
+    else
+    {
+      $entries[$found]{$key} = $val;
+    }
+  }
+
+  &gst_file_close ($fd);
+
+  foreach $entry (@entries)
+  {
+    &gst_boot_lilo_set_default_type ($entry, $partition);
+  }
+  
+  return \@entries;
+}
+
+
+sub gst_boot_lilo_replace_global_kw
+{
+  my ($file, $key) = @_;
+  my ($buff, $i, $found);
+  my $lineno = 0;
+
+  return 0 unless &gst_boot_lilo_known_var ($key, \@lilo_global_vars, 0);
+  
+  $buff = &gst_file_buffer_load ($file);
+  $found = 0;
+
+  foreach $i (@$buff)
+  {
+    if (&gst_ignore_line ($i))
+    {
+      $lineno++;
+      next;
+    }
+
+    if ($i =~ /^[ \t]*$key/)
+    {
+      $found++;
+      last;
+    }
+
+    if ($i =~ /^[ \t]*(image|other)/)
+    {
+      $lineno--; # "pop" it back
+      last;
+    }
+    $lineno++;
+  }
+
+  # Not found, let's add
+  if (!$found)
+  {
+    # pop back empty lines
+    while ($lineno > 0 && $$buff[$lineno] =~ /^\s*$/)
+    {
+      $lineno--;
+    }
+    
+    $$buff[$lineno] .= $key . "\n";
+  } 
+  
+  &gst_file_buffer_clean ($buff);
+  return &gst_file_buffer_save ($buff, $file);
+}
+
+sub gst_boot_lilo_replace_global
+{
+  my ($file, $key, $val) = @_;
+  my ($buff, $i, $found);
+  my $quote = '"';
+  my $lineno = 0;
+
+  return 0 unless &gst_boot_lilo_known_var ($key, \@lilo_global_vars, 0);
+
+  $val = "\"$val\"" if ($val =~ /[ \t]/ && (! ($val =~ /^\".+\"$/)));
+  $val = "\"$val\"" if ($val =~ /\=/ && (!($val =~ /^\".+\"$/)));
+  
+  $buff = &gst_file_buffer_load ($file);
+  $found = 0;
+
+  foreach $i (@$buff)
+  {
+    if (&gst_ignore_line ($i))
+    {
+      $lineno++;
+      next;
+    }
+
+    if ($i =~ /^[ \t]*(image|other)/)
+    {
+      $lineno--;
+      last;
+    }
+    
+    if ($i =~ /^[ \t]*$key([ \t]*=[ \t]*)/)
+    {
+      $found++;
+      my $op = $1;
+
+      chomp $i;
+      
+      my $pre_space = $1 if $i =~ s/^([ \t]+)//;
+      my $post_comment = $1 if $i =~ s/([ \t]*\#.*)//;
+
+      $i = $pre_space . $key . $op . $val . $post_comment . "\n";
+      last;
+    }
+    
+    $lineno++;
+  }
+
+  if (!$found)
+  {
+    # pop back empty lines
+    while ($lineno > 0 && $$buff[$lineno] =~ /^\s*$/)
+    {
+      $lineno--;
+    }
+    
+    $$buff[$lineno] .= $key . " = " . $val . "\n";
+  }
+  
+  &gst_file_buffer_clean ($buff);
+  return &gst_file_buffer_save ($buff, $file);
+}
+
+
+sub gst_boot_lilo_del_global
+{
+  my ($file, $key) = @_;
+  my ($buff, $i);
+
+  return 0 unless &gst_boot_lilo_known_var ($key, \@lilo_global_vars, 0);
+  
+  $buff = &gst_file_buffer_load ($file);
+
+  foreach $i (@$buff)
+  {
+    last if ($i =~ /^[ \t]*(image|other)/);
+    
+    if ($i =~ /^[ \t]*$key/)
+    {
+      $i = "";
+      last;
+    }
+  }
+  
+  &gst_file_buffer_clean ($buff);
+  return &gst_file_buffer_save ($buff, $file);
+}
+
+
+# Scans @buff until finds first line which looks like entry.
+# Returns line number or -1 if no entry found.
+sub gst_boot_lilo_find_entry
+{
+  my ($buff, $lineno) = @_;
+  my $i;
+
+  for (; $lineno <= $#$buff; $lineno++)
+  {
+    $i = $$buff[$lineno];
+
+    return $lineno if ($i =~ /^[ \t]*(image)|(other)[ \t]*=[ \t]*\S+/);
+  }
+
+  # Not found.
+  return -1;
+}
+
+
+# Deletes lines from $buff starting from $lineno till the next entry
+# or till end of the file if no more entries left.
+sub gst_boot_lilo_delete_entry
+{
+  my ($buff, $lineno) = @_;
+  my ($end, $i);
+
+  $end = &gst_boot_lilo_find_entry ($buff, $lineno + 1);
+  $end = scalar @$buff if ($end < 0);
+
+  for ($i = $lineno; $i < $end; $i++)
+  {
+    $$buff[$i] = "";
+  }
+
+  return $buff;
+}
+
+
+# Edit entry in $buff which starts at $lineno. Get changes from $entry.
+sub gst_boot_lilo_edit_entry
+{
+  my ($entry, $buff, $lineno) = @_;
+
+  my $known_vars = \@lilo_image_vars if (exists $entry->{'image'});
+  $known_vars = \@lilo_other_vars if (!$known_vars && exists $entry->{'other'});
+  return $buff unless $known_vars;
+  
+  my $end = &gst_boot_lilo_find_entry ($buff, $lineno + 1);
+  $end = scalar @$buff if ($end < 0);
+
+  # extract the "vga" var from the "append" var, this is done this way for
+  # compatibility with grub
+  if ($entry->{"append"} =~ /[ \t]*vga[ \t]*=[ \t]*(((0x)?[0-9][0-9][0-9]|ask))/)
+  {
+      $entry->{"vga"} = $1;
+      $entry->{"append"} =~ s/[ \t]*vga[ \t]*=[ \t]*((0x)?[0-9][0-9][0-9]|ask)//;
+  }
+
+  for ($lineno; $lineno < $end; $lineno++)
+  {
+    # Get the variable.
+    my $key = $1 if ($$buff[$lineno] =~ /^[ \t]*([\w\-]+)/);
+    next if ($key && (!&gst_boot_lilo_known_var ($key, $known_vars, 0)));
+    next unless $key;
+
+    unless (exists ($entry->{$key}))
+    {
+      # Keyword is known, but isn't in entry.
+      delete $$buff[$lineno];
+      next;
+    }
+
+    # Read old value
+    my $old_val = $$buff[$lineno];
+
+    $old_val =~ s/^[ \t]*$key[ \t]*=[ \t]*//; #everything till value
+    
+    $old_val =~ s/[ \t]*\#.*$//;              #post comment;
+    chomp $old_val;
+
+    if ($old_val)
+    {
+      # String.
+      my $val = $entry->{$key};
+      $val = "\"$val\"" if ($val =~ /[ \t]/ && (! ($val =~ /^\".+\"$/)));
+      $val = "\"$val\"" if ($val =~ /\=/ && (!($val =~ /^\".+\"$/)));
+
+      $$buff[$lineno] =~ s/$old_val/$val/;
+    }
+    
+    delete $entry->{$key};
+  }
+
+  # Add new fields.
+  foreach my $key (keys %$entry)
+  {
+    next unless &gst_boot_lilo_known_var ($key, $known_vars, 1);
+    
+    my $val = $entry->{$key};
+    $val = "\"$val\"" if ($val =~ /[ \t]/ && (! ($val =~ /^\".+\"$/)));
+    $val = "\"$val\"" if ($val =~ /\=/ && (!($val =~ /^\".+\"$/)));
+
+    my $line = "\t$key";;
+
+    $line .= " = $val" if $val;
+    $line .= "\n";
+    
+    $$buff[$end -1] .= $line;
+  }
+}
+
+
+# Add $entry to the end of $buff.
+sub gst_boot_lilo_add_entry
+{
+  my ($entry, $buff) = @_;
+  my ($line, $key, $value, $known_vars);
+
+  # Entry line
+  if (exists $entry->{'image'})
+  {
+    $known_vars = \@lilo_image_vars;
+    $value = 'image';
+  }
+  elsif (exists $entry->{'other'})
+  {
+    $known_vars = \@lilo_other_vars;
+    $value = 'other';
+  }
+  else
+  {
+    return;
+  }
+
+  $line = $value . " = " . $$entry{$value} . "\n";
+  push @$buff, $line;
+  delete $$entry{$value};
+  
+  # extract the "vga" var from the "append" var, this is done this way for
+  # compatibility with grub
+  if ($entry->{"append"} =~ /[ \t]*vga[ \t]*=[ \t]*(((0x)?[0-9][0-9][0-9]|ask))/)
+  {
+    $entry->{"vga"} = $1;
+    $entry->{"append"} =~ s/[ \t]*vga[ \t]*=[ \t]*((0x)?[0-9][0-9][0-9]|ask)//;
+  }
+
+  # Parameters for entry
+  foreach $key (keys %$entry)
+  {
+    next unless &gst_boot_lilo_known_var ($key, $known_vars, 1);
+    
+    $value = $$entry{$key};
+    $value = "\"$value\"" if ($value =~ /[ \t]/ && (!($value =~ /^\".+\"$/)));
+    $value = "\"$value\"" if ($value =~ /\=/&& (!($value =~ /^\".+\"$/)));
+
+    $line = "\t$key";
+
+    $line .= " = " . $value if $value;
+    $line .= "\n";
+
+    push @$buff, $line;
+  }
+}
+
+sub gst_boot_lilo_entries_set
+{
+  my ($file, $entries) = @_;
+  my ($buff, $lineno, $found, $entry);
+
+  return if (scalar @$entries <= 0);
+  
+  $buff = &gst_file_buffer_load ($file);
+  &gst_file_buffer_join_lines ($buff);
+
+  my $entry_nr = -1;
+  $lineno = &gst_boot_lilo_find_entry ($buff, 0);
+  while ($lineno > 0)
+  {
+    $entry_nr++;
+    $found = 0;
+    foreach $entry (@$entries)
+    {
+      next unless $entry;
+
+      if (exists ($entry->{"key"}))
+      {
+        $found++ if $entry->{"key"} == $entry_nr;
+          
+        if ($found > 0)
+        {
+          # Found entry, change it if necessary,
+          # remove %entry from @entries and find new entry.
+          &gst_boot_lilo_edit_entry ($entry, $buff, $lineno);
+          $entry = undef;
+          last;
+        }
+      }
+    }
+
+    # Found entry wasn't in our @entries list: delete.
+    $buff = &gst_boot_lilo_delete_entry ($buff, $lineno) if ($found <= 0);
+
+    # Search new entry line.
+    $lineno = &gst_boot_lilo_find_entry ($buff, $lineno + 1);
+  }
+
+  # At this point @entries contains only new entries, let's add them.
+  foreach $entry (@$entries)
+  {
+    &gst_boot_lilo_add_entry ($entry, $buff);
+  }
+
+  &gst_file_buffer_clean ($buff);
+  return &gst_file_buffer_save ($buff, $file);
+}
+

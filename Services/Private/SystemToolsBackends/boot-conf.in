@@ -1,0 +1,270 @@
+#!/usr/bin/env perl
+#-*- Mode: perl; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+
+# Boot manager configurator. Designed to be architecture and distribution independent.
+#
+# Copyright (C) 2000-2001 Ximian, Inc.
+#
+# Authors: Tambet Ingo       <tambet@ximian.com>
+#          Arturo Espinosa   <arturo@ximian.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Library General Public License as published
+# by the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+# Best viewed with 100 columns of width.
+
+# Configuration files that may be affected:
+#
+# /etc/lilo.conf
+# /boot/grub/menu.lst
+# /etc/grub.conf
+# /boot/grub/grub.conf
+
+# Running programs affected:
+#
+# /sbin/lilo
+
+BEGIN {
+  $SCRIPTSDIR = "@scriptsdir@";
+  if ($SCRIPTSDIR =~ /^@scriptsdir[@]/)
+  {
+      $SCRIPTSDIR = ".";
+      $DOTIN = ".in";
+  }
+  
+  require "$SCRIPTSDIR/general.pl$DOTIN";
+  require "$SCRIPTSDIR/platform.pl$DOTIN";
+  require "$SCRIPTSDIR/util.pl$DOTIN";
+  require "$SCRIPTSDIR/file.pl$DOTIN";
+  require "$SCRIPTSDIR/xml.pl$DOTIN";
+  require "$SCRIPTSDIR/parse.pl$DOTIN";
+  require "$SCRIPTSDIR/boot.pl$DOTIN";
+  require "$SCRIPTSDIR/boot-lilo.pl$DOTIN";
+  require "$SCRIPTSDIR/boot-grub.pl$DOTIN";
+}
+
+
+# --- Tool information --- #
+
+$name = "boot";
+$version = "@VERSION@";
+
+$description =<<"end_of_description;";
+       Configures Boot manager (LILO and GRUB at the moment).
+end_of_description;
+
+# --- XML parsing ---
+
+# Scan XML from standard input to an internal tree.
+
+
+sub xml_parse
+{
+  my ($tree, %hash, $elem);
+  # Scan XML to tree.
+
+  $tree = &gst_xml_scan ();
+
+  # Walk the tree recursively and extract configuration parameters.
+  # This is the top level - find and enter the "boot" tag.
+
+  while ($elem = shift @$tree)
+  {
+    if ($elem eq "boot") { &xml_parse_boot (shift @$tree, \%hash); }
+    else { &gst_report ("xml_unexp_tag", $elem); shift @$tree; }
+  }
+
+  return(\%hash);
+}
+
+
+sub xml_parse_boot
+{
+  my ($tree, $hash) = @_;
+  my (@entries, $elem);
+
+  shift @$tree;  # Skip attributes.
+
+  $$hash{"timeout"} = -1;
+
+  while ($elem = shift @$tree)
+  {
+    if    ($elem eq "prompt")    { $$hash{"prompt"}    = &gst_xml_get_pcdata (shift @$tree); }
+    elsif ($elem eq "boot")      { $$hash{"boot"}      = &gst_xml_get_pcdata (shift @$tree); }
+    elsif ($elem eq "root")      { $$hash{"root"}      = &gst_xml_get_pcdata (shift @$tree); }
+    elsif ($elem eq "timeout")   { $$hash{"timeout"}   = &gst_xml_get_pcdata (shift @$tree); }
+    elsif ($elem eq "default")   { $$hash{"default"}   = &gst_xml_get_pcdata (shift @$tree); }
+    elsif ($elem eq "append")    { $$hash{"append"}    = &gst_xml_get_pcdata (shift @$tree); }
+    elsif ($elem eq "pixmap")    { $$hash{"pixmap"}    = &gst_xml_get_pcdata (shift @$tree); }
+    elsif ($elem eq "pixmapsup") { $$hash{"pixmapsup"} = &gst_xml_get_pcdata (shift @$tree); }
+    elsif ($elem eq "entry")     { &xml_parse_entry (shift @$tree, \@entries); }
+    elsif ($elem eq "partitions") { shift @$tree; } # Just skip it.
+    else { &gst_report ("xml_unexp_tag", $elem); shift @$tree; }
+  }
+
+  $$hash{"entry"} = \@entries unless scalar @entries == 0;
+}
+
+
+sub xml_parse_entry
+{
+  my ($tree, $entries) = @_;
+  my (%hash, $buf);
+
+  shift @$tree;
+
+  while ($elem = shift @$tree)
+  {
+    $hash{$elem} = &gst_xml_get_pcdata (shift @$tree);
+  }
+
+  push @$entries, \%hash;
+}
+		   
+
+# --- XML printing --- #
+
+sub xml_print
+{
+  my ($h) = @_;
+  my @scalars = qw(default timeout pixmap pixmapsup prompt boot root);
+
+  &gst_xml_print_begin ();
+
+  &gst_xml_print_structure ($$h{"bootloaders"}, "bootloaders") if ($$h{"bootloaders"} ne undef);
+
+  &gst_xml_print_hash ($$h{"partitions"}, "partitions") if ($$h{"partitions"} ne undef);
+  &gst_xml_print_vspace ();
+  &gst_xml_print_scalars ($h, @scalars);
+  &gst_xml_print_structure ($$h{"entry"}, "entry") if ($$h{"entry"} ne undef);
+
+  &gst_xml_print_end ();
+}
+  
+
+# Top-level actions.
+sub get
+{
+  my ($hash, $bootl) = @_;
+  my ($count);
+
+  #FIXME: do mount in a more generic way, this is done because /boot may be unmounted
+  gst_file_run ("mount /boot");
+
+  ($count, $hash) = &gst_boot_bootloader_list ();
+
+  if (($bootl ne undef) || ($count == 1))
+  {
+    $bootloader = $bootl;
+    $bootloader = &gst_boot_bootloader_get () if ($bootl eq undef);
+
+    $hash = &gst_boot_conf_get ($bootloader);
+    &gst_boot_fix ($hash);
+  }
+  
+  &gst_report_end ();
+  &xml_print ($hash);
+}
+
+
+# --- Set (write) config --- #
+sub set
+{
+  my ($hash);
+
+  #FIXME: do mount in a more generic way, this is done because /boot may be unmounted
+  gst_file_run ("mount /boot");
+  
+  $hash = &xml_parse ();
+
+  if ($hash)
+  {
+    $bootloader = &gst_boot_bootloader_get () if ($bootloader eq undef);
+      
+    &gst_boot_fix ($hash);
+    &gst_boot_conf_set ($hash);
+
+    if ($bootloader eq "lilo")
+    {
+      &gst_file_run (&gst_file_locate_tool ("lilo"));
+    }
+    elsif ($bootloader eq "yaboot")
+    {
+      &gst_file_run (&gst_file_locate_tool ("ybin"));
+    }
+  }
+  else
+  {
+    # TODO: report error.
+    1;
+  }
+  
+  &gst_report_end ();
+}
+
+
+# --- Filter config: XML in, XML out --- #
+sub filter
+{
+  my $hash = &xml_parse;
+
+  &gst_report_end ();
+  &xml_print ($hash);
+}
+
+sub verify_print
+{
+  my ($res) = @_;
+
+  &gst_xml_print_begin ("verify");
+  &gst_xml_print_structure ($res, "result");
+  &gst_xml_print_end ("verify");
+}
+
+sub verify
+{
+  my ($hash, $key, @values) = @_;
+  my ($i, $proc, $res);
+
+  my %bootloader_func =
+    (
+     "lilo" => \&gst_boot_lilo_verify,
+     "grub" => \&gst_boot_grub_verify,
+     "yaboot" => \&gst_boot_yaboot_verify
+    );
+
+  $bootloader = &gst_boot_bootloader_get () if ($bootloader eq undef);
+  $proc = $bootloader_func{$bootloader};
+  $res = &$proc ($key, @values);
+
+  &gst_report_end ();
+  &verify_print ($res);
+}
+
+
+# --- Main --- #
+
+# get, set and filter are special cases that don't need more parameters than a ref to their function.
+# Read general.pl.in:gst_run_directive to know about the format of this hash.
+
+$directives = {
+  "get"     => [ \&get,    [], "" ],
+  "set"     => [ \&set,    [], "" ],
+  "filter"  => [ \&filter, [], "" ],
+  "getfrom" => [ \&get,    [ "bootloader" ], "Get the configuration from an specified bootloader."],
+  "verify"  => [ \&verify, [ "type", "value", "xtravalues*" ], "Verifies the values, depending on the type." ]
+    };
+
+$tool = &gst_init ($name, $version, $description, $directives, @ARGV);
+&gst_run ($tool);

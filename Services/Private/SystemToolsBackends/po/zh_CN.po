@@ -1,0 +1,851 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Funda Wang <fundawang@linux.net.cn>, 2004
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: setup-tools-backends\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-02-06 15:18+0100\n"
+"PO-Revision-Date: 2005-01-22 21:30+0800\n"
+"Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
+"Language-Team: zh_CN  <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. please, keep this list sorted
+#. service => [long_name, description]
+#: service-list.pl.in:36
+msgid "ACPI event handler"
+msgstr "ACPI 事件处理句柄"
+
+#: service-list.pl.in:36
+msgid ""
+"Notifies user-space programs of ACPI events: executes arbitrary commands in "
+"response to ACPI events such as power buttons."
+msgstr ""
+"向用户空间的程序通知 ACPI 事件：执行相应的命令来响应诸如电源按钮之类的 ACPI "
+"事件。"
+
+#: service-list.pl.in:37
+msgid "Advanced Linux Sound Architecture"
+msgstr "高级 Linux 声音架构(ALSA)"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid "web server"
+msgstr "Web 服务器"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid ""
+"Apache is a World Wide Web server.  It is used to serve HTML files and CGI."
+msgstr "Apache 是万维网服务器。它可为 HTML 文件和 CGI 提供服务。"
+
+#: service-list.pl.in:39
+msgid "Run missed scheduled jobs at startup"
+msgstr "启动时运行错过的计划任务"
+
+#: service-list.pl.in:39
+msgid "Run cron jobs that were left out due to downtime"
+msgstr "运行由于关机错过的 cron 任务"
+
+#: service-list.pl.in:40
+msgid "Automatic power management daemon"
+msgstr "自动电源管理守护程序"
+
+#: service-list.pl.in:40
+msgid ""
+"apmd is used for monitoring battery status and logging it via syslog(8). It "
+"can also be used for shutting down the machine when the battery is low."
+msgstr ""
+"apmd 用于监视电池状态，并通过 syslog(8) 进行记录。它还可在电池电量低时关闭计"
+"算机。"
+
+#: service-list.pl.in:41
+msgid "Runs a command at a given time"
+msgstr "在给定时间运行命令"
+
+#: service-list.pl.in:41
+msgid ""
+"Runs commands scheduled by the at command at the time specified when at was "
+"run, and runs batch commands when the load average is low enough."
+msgstr ""
+"当 at 运行时，会在指定时间运行计划的命令，并在平均负载较低时运行批命令。"
+
+#: service-list.pl.in:42
+msgid "Audio mixer"
+msgstr "混音器"
+
+#: service-list.pl.in:42
+msgid "This program adjusts the settings of an audio mixing device"
+msgstr "此程序将调整混音设备的设置"
+
+#: service-list.pl.in:43
+msgid "BinFormat Support"
+msgstr "BinFormat 支持"
+
+#: service-list.pl.in:43
+msgid "Support for running non ELF binaries on Linux"
+msgstr "在 Linux 上支持 ELF 二进制文件"
+
+#: service-list.pl.in:44
+msgid "Boot messages recorder"
+msgstr "启动信息记录"
+
+#: service-list.pl.in:44
+msgid ""
+"Runs in the background and copies all strings sent to the /dev/console "
+"device to a logfile"
+msgstr "在后台运行并将发送给 /dev/console 设备的字符串都复制到日志文件中"
+
+#: service-list.pl.in:45
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the tcp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"生成字符的一项 xinetd 内部服务。xinetd 内部服务会在连接端掉时不断生成字符。这"
+"是 tcp 版本。要使用此服务，您必须启用 xinetd。"
+
+#: service-list.pl.in:46
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the udp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"生成字符的一项 xinetd 内部服务。xinetd 内部服务会在连接断掉时不断生成字符。这"
+"是 udp 版本。要使用此服务，您必须启用 xinetd。"
+
+#: service-list.pl.in:47
+msgid "CPU frequency monitor"
+msgstr "CPU 频率监视器"
+
+#: service-list.pl.in:47
+msgid ""
+"cpufreqd is used to monitor the status of the battery and adjust the "
+"frequency of the CPU accordingly in order to preserve battery power while "
+"providing optimal performance"
+msgstr ""
+"cpufreqd 可用于监视电池的状态并相应的调整 CPU 的频率，以便在节省电池电量和保"
+"持适当的工作效率之间取得一种平衡"
+
+#: service-list.pl.in:48 service-list.pl.in:130
+msgid "daemon to execute scheduled commands"
+msgstr "执行计划命令的守护程序"
+
+#: service-list.pl.in:49
+msgid "Run scheduled jobs"
+msgstr "运行计划任务"
+
+#: service-list.pl.in:49
+msgid ""
+"cron is a standard UNIX program that runs user-specified programs at "
+"periodic scheduled times. vixie cron adds a number of features to the basic "
+"UNIX cron, including better security and more powerful configuration options."
+msgstr ""
+"cron 是一个标准的 UNIX 程序，它会按照周期性的预定时间执行用户指定的程序。"
+"vixie cron 在基本 UNIX cron 的基础上添加了一些新特性，其中包括更好的安全性及"
+"更强大的配置选项。"
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Common Unix Printing System"
+msgstr "公共 Unix 打印系统(CUPS)"
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Printing system based upon the Internet Printing Protocol, version  1.1"
+msgstr "基于 Internet 打印协议(IPP)版本 1.1 的打印系统"
+
+#: service-list.pl.in:52
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the tcp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"这是一项 xinetd 内部服务。该服务会获取当前系统事件并按如下格式进行输出：“Wed "
+"Nov 13 22:30:27 EST 2002”。这是 tcp 版本。要使用此服务，您必须启用 xinetd。"
+
+#: service-list.pl.in:53
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the udp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"这是一项 xinetd 内部服务。该服务会获取当前系统事件并按如下格式进行输出：“Wed "
+"Nov 13 22:30:27 EST 2002”。这是 udp 版本。要使用此服务，您必须启用 xinetd。"
+
+#: service-list.pl.in:54 service-list.pl.in:55
+msgid "Dynamic DNS Client"
+msgstr "动态 DNS 客户"
+
+#: service-list.pl.in:54
+msgid "A Dynamic DNS Name service from www.dyndns.org"
+msgstr "来自 www.dyndns.org 的动态 DNS 名称服务"
+
+#: service-list.pl.in:55
+msgid "A Dynamic DNS Name service from www.dhis.org"
+msgstr "来自 www.dhis.org 的动态 DNS 名称服务"
+
+#: service-list.pl.in:56
+msgid "Dict Dictionary Server"
+msgstr "Dict 字典服务器"
+
+#: service-list.pl.in:57
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"将字符回显给客户的一项 xinetd 内部服务。这是 tcp 版本。要使用此服务，您必须启"
+"用 xinetd。"
+
+#: service-list.pl.in:58
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"将字符回显给客户的一项 xinetd 内部服务。这是 udp 版本。要使用此服务，您必须启"
+"用 xinetd。"
+
+#: service-list.pl.in:59
+msgid "Sound mixing server"
+msgstr "混音服务器"
+
+#: service-list.pl.in:59
+msgid "The Enlightened Sound Daemon"
+msgstr "Enlightened 声音守护程序(ESD)"
+
+#: service-list.pl.in:60
+msgid "Exim SMTP Server"
+msgstr "Exim SMTP 服务器"
+
+#: service-list.pl.in:61
+msgid "file alteration monitor"
+msgstr "文件更改监视器"
+
+#: service-list.pl.in:62
+msgid "Firstboot is a druid style program that runs on the first time"
+msgstr "Firstboot 是在首次使用时运行的类似向导风格的程序"
+
+#: service-list.pl.in:63
+msgid "Text-to-speech system"
+msgstr "文本到语音(TTS)系统"
+
+#: service-list.pl.in:63
+msgid "Festival is a general purpose text-to-speech system"
+msgstr "Festival 是通用的文本到语音系统"
+
+#: service-list.pl.in:64
+msgid "Mail Fetcher"
+msgstr "邮件获取器"
+
+#: service-list.pl.in:64
+msgid "A Mail Fetcher from external Servers"
+msgstr "从外部服务器上获取邮件"
+
+#: service-list.pl.in:65
+msgid "IPv6 Tunnel Broker"
+msgstr "IPv6 隧道中间者"
+
+#: service-list.pl.in:65
+msgid "A IPv6 Dynamic Tunnel Broker"
+msgstr "IPv6 动态隧道中间者"
+
+#: service-list.pl.in:66
+msgid "GNOME Display Manager"
+msgstr "GNOME 显示管理器"
+
+#: service-list.pl.in:66
+msgid "gdm provides the GNOME equivalent of a \"login:\" prompt."
+msgstr "gdm 为 GNOME 提供了与“login:”提示等价的功能。"
+
+#: service-list.pl.in:67
+msgid "console mouse support"
+msgstr "控制台鼠标支持"
+
+#: service-list.pl.in:67
+msgid ""
+"GPM adds mouse support to text-based Linux applications such the Midnight "
+"Commander. It also allows mouse-based console cut-and-paste operations, and "
+"includes support for pop-up menus on the console."
+msgstr ""
+"GPM 为像 Midnight Commander 这样基于文本的 Linux 应用程序添加了鼠标支持。它还"
+"允许基于鼠标的控制台剪切/粘贴操作，并支持控制台中的弹出菜单。"
+
+#: service-list.pl.in:68
+msgid "Set hard disk parameters"
+msgstr "设置硬盘参数"
+
+#: service-list.pl.in:68
+msgid ""
+"Provides a interface to various hard disk ioctls supported by the stock "
+"Linux ATA/IDE device driver subsystem."
+msgstr "提供到 Linux ATA/IDE 设备驱动程序子系统支持的各种硬盘控制器的接口。"
+
+#: service-list.pl.in:69
+msgid "Linux hotplugging support"
+msgstr "Linux 热插拔支持"
+
+#: service-list.pl.in:69
+msgid ""
+"hotplug is a program which is used by the kernel to notify user mode "
+"software when some significant (usually hardware-related) events take place. "
+"An example is when a USB or Cardbus device has just been plugged in."
+msgstr ""
+"hotplug 是内核使用的一个程序，它可通知用户模式的软件发生了重大事件(通常与硬件"
+"相关)。常见的例子是刚刚插入了 USB 或 Cardbus 设备。"
+
+#: service-list.pl.in:71
+msgid "internet superserver"
+msgstr "Internet 超级服务器"
+
+#: service-list.pl.in:71
+msgid ""
+"inetd allows running one daemon to invoke several others, reducing load on "
+"the system."
+msgstr "inetd 允许运行一个守护程序来执行多种功能，这样可以减少系统的负载。"
+
+#: service-list.pl.in:72
+msgid "administration tool for IPv4 packet filtering and NAT"
+msgstr "IPv4 包过滤和 NAT 的管理工具"
+
+#: service-list.pl.in:72
+msgid ""
+"Iptables is used to set up, maintain, and inspect the tables of IP packet "
+"filter rules in the Linux kernel."
+msgstr "Iptables 用于设置、维护和检查 Linux 内核中的 IP 包过滤规则表。"
+
+#: service-list.pl.in:73
+msgid "IrDA stack for Linux"
+msgstr "Linux 下的 IrDA 塔"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol"
+msgstr "Internet 密钥交换协议"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol openbsd implementation"
+msgstr "Internet 密钥交换协议"
+
+#: service-list.pl.in:75
+msgid "start and stop ISDN services"
+msgstr "启动和停止 ISDN 服务"
+
+#: service-list.pl.in:76
+msgid "Check and fix joystick device nodes"
+msgstr "检查并修复游戏杆设备结点"
+
+#: service-list.pl.in:76
+msgid ""
+"Runs joystick-device-check.  joystick-device-check is a program which "
+"ensures that the /dev/js* device nodes are correct for the kernel version in "
+"use."
+msgstr ""
+"运行 joystick-device-check。joystick-device-check 是一个确保 /dev/js* 设备结"
+"点都适合正在使用的内核。"
+
+#: service-list.pl.in:77
+msgid ""
+"This package loads the selected keyboard map as set in /etc/sysconfig/"
+"keyboard.  This can be selected using the kbdconfig utility.  You should "
+"leave this enabled for most machines."
+msgstr ""
+"此软件包将装入 /etc/sysconfig/keyboard 中设置的选中键盘映射。您可使用 "
+"kbdconfig 工具选择该选项。您应该为大多数计算机启用此选项。"
+
+#: service-list.pl.in:78
+msgid "Kernel Log Daemon"
+msgstr "内核日志守护程序"
+
+#: service-list.pl.in:78
+msgid ""
+"klogd is a system daemon which intercepts and logs Linux kernel messages."
+msgstr "klogd 是一个拦截并记录 Linux 内核消息的系统守护程序。"
+
+#: service-list.pl.in:79
+msgid ""
+"This runs the hardware probe, and optionally configures changed hardware."
+msgstr "这将运行硬件检测，并可选配置更改了的硬件。"
+
+#: service-list.pl.in:80 service-list.pl.in:81
+msgid ""
+"LIRC is a package that allows you to decode and send infra-red signals of "
+"many commonly used remote controls"
+msgstr "LIRC 软件包允许您解码并发送许多通用遥控终端的红外信号"
+
+#: service-list.pl.in:82
+msgid "Starts misc programs that should be started"
+msgstr "启动应该启动的其它程序"
+
+#: service-list.pl.in:83
+msgid ""
+"lpd is the print daemon required for lpr to work properly. It is basically a "
+"server that arbitrates print jobs to printer(s)."
+msgstr ""
+"要让 lpr 工作正常，需要启动 lpd 打印守护程序。该守护程序基本只是简单的将打印"
+"任务发送给打印机。"
+
+#: service-list.pl.in:84
+msgid "Create devices"
+msgstr "创建设备"
+
+#: service-list.pl.in:84
+msgid ""
+"Script that will create the devices in /dev used to interface with drivers "
+"in the kernel"
+msgstr "脚本将会在 /dev 中创建设备，以便与内核中的驱动程序建立接口"
+
+#: service-list.pl.in:85
+msgid "Syslog Replacement"
+msgstr "系统日志替换"
+
+#: service-list.pl.in:85
+msgid "Modern logging daemon"
+msgstr "现代日志守护程序"
+
+#: service-list.pl.in:86
+msgid "Load kernel modules"
+msgstr "装入内核模块"
+
+#: service-list.pl.in:87
+msgid "tools for managing Linux kernel modules"
+msgstr "管理 Linux 内核模块的工具"
+
+#: service-list.pl.in:88 service-list.pl.in:105
+msgid "database server"
+msgstr "数据库服务器"
+
+#: service-list.pl.in:88
+msgid "MySQL, a SQL-based relational database daemon"
+msgstr "MySQL，基于 SQL 的关系型数据库守护程序"
+
+#: service-list.pl.in:89
+msgid "dns server"
+msgstr "DNS 服务器"
+
+#: service-list.pl.in:89
+msgid ""
+"named (BIND) is a Domain Name Server (DNS) that is used to resolve host "
+"names to IP addresses."
+msgstr "named (BIND) 是一个用于将主机名解析为 IP 地址的域名服务器(DNS)。"
+
+#: service-list.pl.in:90
+msgid ""
+"Mounts and unmounts all Network File System (NFS), SMB (Lan Manager/"
+"Windows), and NCP (NetWare) mount points."
+msgstr ""
+"挂载并卸载全部网络文件系统(NFS)、SMB (Lan Manager/Windows)及 NCP(NetWare)挂载"
+"点。"
+
+#: service-list.pl.in:91
+msgid ""
+"Activates/Deactivates all network interfaces configured to start at boot "
+"time."
+msgstr "在启动时激活/取消配置为启动的全部网络接口。"
+
+#: service-list.pl.in:92
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS server functionality, which is configured via the /etc/"
+"exports file."
+msgstr ""
+"NFS 是跨越 TCP/IP 网络的文件共享协议。此服务提供了 NFS 服务器的功能，您可通"
+"过 /etc/exports 文件加以配置。"
+
+#: service-list.pl.in:93
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS file locking functionality."
+msgstr "NFS 是跨越 TCP/IP 网络的文件共享协议。此服务提供了 NFS 服务器的功能，"
+
+#: service-list.pl.in:94
+msgid "Name service cache daemon"
+msgstr "名称服务缓存守护程序"
+
+#: service-list.pl.in:94
+msgid "Daemon that provides a cache for the most common name service requests."
+msgstr "提供最常用的公共名称服务请求缓存的守护程序。"
+
+#: service-list.pl.in:95
+msgid "Network Time Protocol daemon"
+msgstr "网络时间协议守护程序"
+
+#: service-list.pl.in:95
+msgid "ntpd is the NTPv4 daemon."
+msgstr "ntpd 是 NTPv4 守护程序。"
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid "Update the system time over the network"
+msgstr "在网络上更新系统时间"
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid ""
+"Checks the time from a Network Time Protocol (ntp) server and adjusts the "
+"system time accordingly."
+msgstr "从网络时间协议(NTP)服务器上检查时间，并相应进行系统时间调整。"
+
+#: service-list.pl.in:98
+msgid "Network Time Protocol (NTP) server"
+msgstr "网络时间协议(NTP)服务器"
+
+#: service-list.pl.in:98
+msgid ""
+"Daemon which sets and maintains the system time-of-day in synchronism with "
+"Internet standard time servers"
+msgstr "设置并维护系统每日时间与 Internet 标准时间服务器同步的守护程序"
+
+#: service-list.pl.in:99
+msgid "HTTP caching proxy"
+msgstr "HTTP 缓存代理"
+
+#: service-list.pl.in:100
+msgid "PCMCIA Services"
+msgstr "PCMCIA 服务"
+
+#: service-list.pl.in:101
+msgid "Caching-Only DNS Server"
+msgstr "只缓存 DNS 服务器"
+
+#: service-list.pl.in:102
+msgid "IPsec tunnel implementation"
+msgstr "IPsec 隧道实现"
+
+#: service-list.pl.in:103
+msgid "DARPA port to RPC program number mapper"
+msgstr "DARPA 端口到 RPC 程序号码映射器"
+
+#: service-list.pl.in:103
+msgid ""
+"The portmapper manages RPC connections, which are used by protocols such as "
+"NFS and NIS. The portmap server must be running on machines which act as "
+"servers for protocols which make use of the RPC mechanism."
+msgstr ""
+"Portmapper 将管理被 NFS 和 NIS 协议使用的 RPC 连接。Portmap 服务器必须在计算"
+"机上运行，以便作为 RPC 架构下诸协议的服务器。"
+
+#: service-list.pl.in:104
+msgid "Mail Transport Agent"
+msgstr "邮件传送代理"
+
+#: service-list.pl.in:106
+msgid "Point to Point Protocol daemon"
+msgstr "点对点协议守护程序"
+
+#: service-list.pl.in:106
+msgid ""
+"The  Point-to-Point Protocol (PPP) provides a method for transmitting "
+"datagrams over serial point-to-point links."
+msgstr "点对点协议(PPP)提供了通过点对点连接传送数据报的方式。"
+
+#: service-list.pl.in:107
+msgid "Privacy enhancing HTTP Proxy"
+msgstr "隐私增强型 HTTP 代理"
+
+#: service-list.pl.in:108
+msgid ""
+"Saves and restores system entropy pool for higher quality random number "
+"generation."
+msgstr "保存并恢复系统的熵池，以便进行高质量的随机数生成。"
+
+#: service-list.pl.in:109
+msgid ""
+"This scripts assignes raw devices to block devices (such as hard drive "
+"partitions). This is for the use of applications such as Oracle. You can set "
+"up the raw device to block device mapping by editing the file /etc/sysconfig/"
+"rawdevices."
+msgstr ""
+"此脚本将把原始型设备指派为块设备(例如硬盘分区)。像 Oracle 这样的应用程序会用"
+"到此功能。如果您想要设置原始性设备到快设备的映射，可以编辑文件 /etc/"
+"sysconfig/rawdevices。"
+
+#: service-list.pl.in:110
+msgid ""
+"This is a daemon which handles the task of connecting periodically to the "
+"Red Hat Network servers to check for updates, notifications and perform "
+"system monitoring tasks according to the service level that this server is "
+"subscribed for."
+msgstr ""
+"这一守护程序将根据服务器订阅的服务级别，定时连接到 Red Hat Network 服务器，检"
+"查更新、通知并执行系统监视任务。"
+
+#: service-list.pl.in:111 service-list.pl.in:112
+msgid ""
+"The rsync server is a good addition to am ftp server, as it allows crc "
+"checksumming etc. You must enable xinetd to use this service."
+msgstr ""
+"rsync 服务器是对 FTP 有益的补充，因为前者允许进行 CRC 校验等。要使用此服务"
+"器，您必须启用 xinetd。"
+
+#: service-list.pl.in:112
+msgid "Faster, flexible replacement for rcp"
+msgstr "rcp 更快更灵活的替代品"
+
+#: service-list.pl.in:113
+msgid "A Windows SMB/CIFS fileserver for UNIX"
+msgstr "UNIX 下的 Windows SMB/CIFS 文件服务器"
+
+#: service-list.pl.in:113
+msgid ""
+"The Samba software suite is a collection of programs that implements the "
+"Server Message Block protocol for UNIX systems."
+msgstr ""
+"Samba 软件套装收集了许多应用程序，它实现了 UNIX 系统下的服务器消息块(SMB)协"
+"议。"
+
+#: service-list.pl.in:114
+msgid ""
+"saslauthd is a server process which handles plaintext authentication "
+"requests on behalf of the cyrus-sasl library."
+msgstr "saslauthd 是一个服务器进程，它可用纯文本验证请求来代表 cyrus-sasl 库。"
+
+#: service-list.pl.in:115
+msgid ""
+"Sendmail is a Mail Transport Agent, which is the program that moves mail "
+"from one machine to another."
+msgstr "Sendmail 是邮件传送代理，它可将邮件从一台计算机传送到另外一台。"
+
+#: service-list.pl.in:116
+msgid ""
+"An internal xinetd service, listing active servers. You must enable xinetd "
+"to use this service."
+msgstr "列出当前激活服务器的 xinetd 服务。要使用此服务，您必须启用 xinetd。"
+
+#: service-list.pl.in:117
+msgid ""
+"An internal xinetd service, listing active services. You must enable xinetd "
+"to use this service."
+msgstr "列出当前激活服务的 xinetd 服务。要使用此服务，您必须启用 xinetd。"
+
+#: service-list.pl.in:118
+msgid "get/set serial port information"
+msgstr "获取/设置串口信息"
+
+#: service-list.pl.in:118
+msgid ""
+"setserial is a program designed to set and/or report the configuration "
+"information associated with a serial port."
+msgstr "setserial 程序可设置和/或报告与串口关联的配置信息。"
+
+#: service-list.pl.in:119
+msgid ""
+"FAM is a file monitoring daemon. It can be used to get reports when files "
+"change. You must enable xinetd to use this service."
+msgstr ""
+"FAM 是文件监视守护程序。它可在文件更改时获得报告。要使用此服务，您必须启用 "
+"xinetd。"
+
+#: service-list.pl.in:120
+msgid "control and monitor storage systems using S.M.A.R.T."
+msgstr "使用 S.M.A.R.T 控制并监视存储系统。"
+
+#: service-list.pl.in:121
+msgid "Perl-based spam filter using text analysis"
+msgstr "使用文本分析的基于 Perl 的垃圾邮件过滤器"
+
+#: service-list.pl.in:122
+msgid "Simple Network Management Protocol (SNMP) Daemon"
+msgstr "简单网络管理协议(SNMP)守护程序"
+
+#: service-list.pl.in:123 service-list.pl.in:124
+msgid "OpenSSH SSH server"
+msgstr "OpenSSH SSH 服务器"
+
+#: service-list.pl.in:123
+msgid ""
+"ssh is a program for logging into a remote machine and for executing "
+"commands on a remote machine."
+msgstr "ssh 程序可登录到远程计算机，并在远程计算机上执行命令。"
+
+#: service-list.pl.in:124
+msgid "OpenSSH server daemon"
+msgstr "OpenSSH 服务器守护程序"
+
+#: service-list.pl.in:125
+msgid "Linux system logging utilities"
+msgstr "Linux 系统日志实用工具"
+
+#: service-list.pl.in:125
+msgid ""
+"Sysklogd provides two system utilities which provide support for system  "
+"logging  and  kernel  message  trapping."
+msgstr ""
+"Sysklogd 提供了两个系统工具，它们提供了对系统日志和内核消息处理的支持。"
+
+#: service-list.pl.in:126
+msgid ""
+"Syslog is the facility by which many daemons use to log messages to various "
+"system log files.  It is a good idea to always run syslog."
+msgstr ""
+"许多守护程序都需要使用 Syslog 工具将日志消息记录到各种系统日志文件。所以应该"
+"总是运行 syslog。"
+
+#: service-list.pl.in:127
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"RFC 868 时间服务器。此协议提供了与站点无关的机读日期和时间。时间服务发回自"
+"1900年1月1日午夜起流逝的秒数。这是 tcp 版本。要使用此服务，您必须启用 "
+"xinetd。"
+
+#: service-list.pl.in:128
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"RFC 868 时间服务器。此协议提供了与站点无关的机读日期和时间。时间服务发回自"
+"1900年1月1日午夜起流逝的秒数。这是 udp 版本。要使用此服务，您必须启用 "
+"xinetd。"
+
+#: service-list.pl.in:129
+msgid "kernel random number source devices"
+msgstr "内核随机数源设备"
+
+#: service-list.pl.in:129
+msgid ""
+"The  random  number  generator  gathers environmental noise from device "
+"drivers and other sources into an entropy pool. From this entropy pool "
+"random numbers are created."
+msgstr ""
+"随机数生成器会从设备驱动程序及其它源中收取环境噪音，并存入熵池。随后再从该熵"
+"池中生成随机数。"
+
+#: service-list.pl.in:131
+msgid "Intel(TM) x86(TM)-based virtual machine"
+msgstr "基于 Intel(TM) x86(TM) 的虚拟机"
+
+#: service-list.pl.in:131
+msgid ""
+"The vmware command starts an Intel X86-based virtual machine. This script "
+"manages the services needed to run VMware software."
+msgstr ""
+"vmware 命令将启动基于 Intel X86 的虚拟机。此脚本将管理运行 VMware 软件所需的"
+"服务。"
+
+#: service-list.pl.in:132
+msgid "Web-based administration toolkit"
+msgstr "基于 Web 的管理工具"
+
+#: service-list.pl.in:133
+msgid "Name Service Switch daemon for resolving names from NT servers"
+msgstr "从 NT 服务器中解析名称的名称服务切换守护程序"
+
+#: service-list.pl.in:133
+msgid "Starts and stops the Samba winbind daemon"
+msgstr "启动和停止 Samba winbind 守护程序"
+
+#: service-list.pl.in:134
+msgid ""
+"Allow users to run Windows(tm) applications by just clicking on them (or "
+"typing ./file.exe)"
+msgstr "允许用户只需单击(或输入 ./file.exe)即可运行 Windows(tm)应用程序"
+
+#: service-list.pl.in:135
+msgid "X Display Manager"
+msgstr "X 显示管理器"
+
+#: service-list.pl.in:135
+msgid "Provides the X equivalent of a \"login:\" prompt."
+msgstr "提供与“login:”提示等价的 X 登录。"
+
+#: service-list.pl.in:136
+msgid "X font server"
+msgstr "X 字体服务器"
+
+#: service-list.pl.in:136
+msgid ""
+"Xfs is the X Window System font server. It supplies fonts to X Window System "
+"display servers."
+msgstr ""
+"Xfs 是 X Window 系统的字体服务器。它为 X Window 系统的显示服务器提供字体。"
+
+#: service-list.pl.in:137
+msgid ""
+"xinetd is a powerful replacement for inetd. xinetd has access control "
+"machanisms, extensive logging capabilities, the ability to make services "
+"available based on time, and can place limits on the number of servers that "
+"can be started, among other things."
+msgstr ""
+"xinetd 是 inetd 的强大替代者。xinetd 有访问控制机制，广泛的日志能力，基于时间"
+"开放服务的能力，并可限制可启动的服务器数。"
+
+#: service.pl.in:226 service.pl.in:231
+msgid "Halting the system"
+msgstr "关闭系统"
+
+#: service.pl.in:227 service.pl.in:233
+msgid "Text mode"
+msgstr "文本模式"
+
+#: service.pl.in:228 service.pl.in:232 service.pl.in:241
+msgid "Graphical mode"
+msgstr "图形模式"
+
+#: service.pl.in:229 service.pl.in:234
+msgid "Rebooting the system"
+msgstr "重新启动系统"
+
+#: service.pl.in:236
+msgid "Starts all system neccesary services"
+msgstr "启动系统所需的全部服务"
+
+#: service.pl.in:237
+msgid "Default runlevel"
+msgstr "默认运行级别"
+
+#: service.pl.in:238
+msgid "Networkless runlevel"
+msgstr "无网络运行级别"
+
+#: users-conf.in:179
+msgid "Monitor system logs"
+msgstr "监视系统日志"
+
+#: users-conf.in:180
+msgid "Use audio devices"
+msgstr "使用音频设备"
+
+#: users-conf.in:181
+msgid "Access to CD-ROM drives"
+msgstr "访问 CD-ROM 驱动器"
+
+#: users-conf.in:182
+msgid "Access to modem devices"
+msgstr "访问调制解调器设备"
+
+#: users-conf.in:183
+msgid "Connect to Internet through modem devices"
+msgstr "通过调制解调器设备访问 Internet"
+
+#: users-conf.in:184
+msgid "Send and receive faxes"
+msgstr "收发传真"
+
+#: users-conf.in:185
+msgid "Access to floppy drives"
+msgstr "访问软盘驱动器"
+
+#: users-conf.in:186
+msgid "Enable access to external storage devices automatically"
+msgstr "允许自动访问外部存储设备"
+
+#: users-conf.in:187
+msgid "Access to tape drives"
+msgstr "访问磁带驱动器"
+
+#: users-conf.in:188
+msgid "Be able to get administrator privileges"
+msgstr "可以获得管理员权限"
+
+#: users-conf.in:491
+msgid "Default"
+msgstr "默认"
+
+#: users-conf.in:492
+msgid "Default profile"
+msgstr "默认配置文件"

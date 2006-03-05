@@ -1,0 +1,938 @@
+# Brazilian Portuguese translation of system-tools-backends.
+# Copyright (C) 2004-2005 Free Software Foundation, Inc.
+# This file is distributed under the same license as the system-tools-backends package.
+# Raphael Higino <raphaelh@uai.com.br>, 2004-2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ssystem-tools-backends\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-02-20 06:34+0100\n"
+"PO-Revision-Date: 2005-02-20 08:20-0300\n"
+"Last-Translator: Raphael Higino <raphaelh@uai.com.br>\n"
+"Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. please, keep this list sorted
+#. service => [long_name, description]
+#: service-list.pl.in:36
+msgid "ACPI event handler"
+msgstr "Manipulador de evento ACPI"
+
+#: service-list.pl.in:36
+msgid ""
+"Notifies user-space programs of ACPI events: executes arbitrary commands in "
+"response to ACPI events such as power buttons."
+msgstr ""
+"Notifica programas no espaço do usuário sobre eventos ACPI: executa comandos "
+"arbitrários em resposta a eventos ACPI, tais como botões de energia."
+
+#: service-list.pl.in:37
+msgid "Advanced Linux Sound Architecture"
+msgstr "Arquiterura de Som Avançada do Linux"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid "web server"
+msgstr "servidor web"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid ""
+"Apache is a World Wide Web server.  It is used to serve HTML files and CGI."
+msgstr ""
+"Apache é um servidor World Wide Web. Ele é usado para servir arquivos HTML e "
+"CGI."
+
+#: service-list.pl.in:39
+msgid "Run missed scheduled jobs at startup"
+msgstr "Ao iniciar, executar tarefas agendadas que foram perdidas"
+
+#: service-list.pl.in:39
+msgid "Run cron jobs that were left out due to downtime"
+msgstr ""
+"Executa tarefas do cron que não foram realizadas porque a máquina estava "
+"desligada"
+
+#: service-list.pl.in:40
+msgid "Automatic power management daemon"
+msgstr "Serviço de gerência automática de energia"
+
+#: service-list.pl.in:40
+msgid ""
+"apmd is used for monitoring battery status and logging it via syslog(8). It "
+"can also be used for shutting down the machine when the battery is low."
+msgstr ""
+"O apmd é usado para monitorar o status da bateria e registrar isso via syslog"
+"(8). Ele pode também ser usado para desligar a máquina quando a bateria "
+"estiver fraca."
+
+#: service-list.pl.in:41
+msgid "Runs a command at a given time"
+msgstr "Executa um comando em um horário determinado"
+
+#: service-list.pl.in:41
+msgid ""
+"Runs commands scheduled by the at command at the time specified when at was "
+"run, and runs batch commands when the load average is low enough."
+msgstr ""
+"Executa comandos agendados pelo comando at na hora especificada quando ele "
+"foi executado, e executa comandos em lote quando a carga média estiver baixa "
+"o suficiente."
+
+#: service-list.pl.in:42
+msgid "Audio mixer"
+msgstr "Mixador de áudio"
+
+#: service-list.pl.in:42
+msgid "This program adjusts the settings of an audio mixing device"
+msgstr ""
+"Este programa ajusta as configurações de um dispositivo de mixagem de áudio"
+
+#: service-list.pl.in:43
+msgid "BinFormat Support"
+msgstr "Suporte a BinFormat"
+
+#: service-list.pl.in:43
+msgid "Support for running non ELF binaries on Linux"
+msgstr "Suporte para executar binários não-ELF no Linux"
+
+#: service-list.pl.in:44
+msgid "Boot messages recorder"
+msgstr "Gravador de mensagens de boot"
+
+#: service-list.pl.in:44
+msgid ""
+"Runs in the background and copies all strings sent to the /dev/console "
+"device to a logfile"
+msgstr ""
+"Executa em plano de fundo e copia para um arquivo de registro todas as "
+"strings enviadas para o dispositivo /dev/console"
+
+#: service-list.pl.in:45
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the tcp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"Um serviço interno do xinetd que gera caracteres. O serviço interno do "
+"xinetd que, continuamente, gera caracteres até que a conexão caia. Esta é a "
+"versão tcp. Você deve habilitar o xinetd para usar este serviço."
+
+#: service-list.pl.in:46
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the udp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"Um serviço interno do xinetd que gera caracteres. O serviço interno do "
+"xinetd que, continuamente, gera caracteres até que a conexão caia. Esta é a "
+"versão udp. Você deve habilitar o xinetd para usar este serviço."
+
+#: service-list.pl.in:47
+msgid "CPU frequency monitor"
+msgstr "Monitor de freqüência da CPU"
+
+#: service-list.pl.in:47
+msgid ""
+"cpufreqd is used to monitor the status of the battery and adjust the "
+"frequency of the CPU accordingly in order to preserve battery power while "
+"providing optimal performance"
+msgstr ""
+"O cpufreqd é usado para monitorar o status da bateria e ajustar a freqüência "
+"da CPU de acordo com isto, para preservar a energia da bateria enquanto "
+"provê performance ótima"
+
+#: service-list.pl.in:48 service-list.pl.in:130
+msgid "daemon to execute scheduled commands"
+msgstr "servidor para executar comandos agendados"
+
+#: service-list.pl.in:49
+msgid "Run scheduled jobs"
+msgstr "Executar tarefas agendadas"
+
+#: service-list.pl.in:49
+msgid ""
+"cron is a standard UNIX program that runs user-specified programs at "
+"periodic scheduled times. vixie cron adds a number of features to the basic "
+"UNIX cron, including better security and more powerful configuration options."
+msgstr ""
+"O cron é um programa padrão UNIX que executa programas especificados pelo "
+"usuário em períodos agendados. O vixie cron acrescenta recursos ao cron "
+"básico do UNIX, incluindo melhor segurança e opções de configuração mais "
+"poderosas."
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Common Unix Printing System"
+msgstr "Sistema de Impressão Comum do Unix"
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Printing system based upon the Internet Printing Protocol, version  1.1"
+msgstr ""
+"Sistema de impressão baseado no Protocolo de Impressão da Internet (Internet "
+"Printing Protocol), versão 1.1"
+
+#: service-list.pl.in:52
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the tcp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"Um serviço interno do xinetd que obtem a hora atual do sistema e então a "
+"mostra num formato como este: 'Qua 13 de Mar de 2002 22:30:27 EST'. Esta é a "
+"versão tcp. Você deve habilitar o xinetd para usar este serviço."
+
+#: service-list.pl.in:53
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the udp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"Um serviço interno do xinetd que obtem a hora atual do sistema e então a "
+"mostra num formato como este: 'Qua 13 de Mar de 2002 22:30:27 EST'. Esta é a "
+"versão udp. Você deve habilitar o xinetd para usar este serviço."
+
+#: service-list.pl.in:54 service-list.pl.in:55
+msgid "Dynamic DNS Client"
+msgstr "Cliente de DNS Dinâmico"
+
+#: service-list.pl.in:54
+msgid "A Dynamic DNS Name service from www.dyndns.org"
+msgstr "Um serviço de Nome DNS Dinâmico de www.dyndns.org"
+
+#: service-list.pl.in:55
+msgid "A Dynamic DNS Name service from www.dhis.org"
+msgstr "Um serviço de Nome DNS Dinâmico de www.dhis.org"
+
+#: service-list.pl.in:56
+msgid "Dict Dictionary Server"
+msgstr "Servidor de Dicionário Dict"
+
+#: service-list.pl.in:57
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"Um serviço interno do xinetd que ecoa caracteres de volta para clientes. "
+"Esta é a versão tcp. Você deve habilitar o xinetd para usar este serviço."
+
+#: service-list.pl.in:58
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"Um serviço interno do xinetd que ecoa caracteres de volta para clientes. "
+"Esta é a versão udp. Você deve habilitar o xinetd para usar este serviço."
+
+#: service-list.pl.in:59
+msgid "Sound mixing server"
+msgstr "Servidor de mixagem de som"
+
+#: service-list.pl.in:59
+msgid "The Enlightened Sound Daemon"
+msgstr "O servidor de som Enlightened"
+
+#: service-list.pl.in:60
+msgid "Exim SMTP Server"
+msgstr "Servidor SMTP Exim"
+
+#: service-list.pl.in:61
+msgid "file alteration monitor"
+msgstr "monitor de alteração em arquivos"
+
+#: service-list.pl.in:62
+msgid "Firstboot is a druid style program that runs on the first time"
+msgstr "Firstboot é um programa ao estilo do druid que executa na primeira vez"
+
+#: service-list.pl.in:63
+msgid "Text-to-speech system"
+msgstr "Sistema de síntese de voz (text-to-speech)"
+
+#: service-list.pl.in:63
+msgid "Festival is a general purpose text-to-speech system"
+msgstr "O Festival é um sistema de síntese de voz de propósito geral"
+
+#: service-list.pl.in:64
+msgid "Mail Fetcher"
+msgstr "Buscador de Correspondência"
+
+#: service-list.pl.in:64
+msgid "A Mail Fetcher from external Servers"
+msgstr "Um programa que Busca Correspondência em Servidores externos"
+
+#: service-list.pl.in:65
+msgid "IPv6 Tunnel Broker"
+msgstr "Negociador de Túneis IPv6"
+
+#: service-list.pl.in:65
+msgid "A IPv6 Dynamic Tunnel Broker"
+msgstr "Um Negociador de Túneis IPv6 Dinâmicos"
+
+#: service-list.pl.in:66
+msgid "GNOME Display Manager"
+msgstr "Gerenciador de Telas do GNOME"
+
+#: service-list.pl.in:66
+msgid "gdm provides the GNOME equivalent of a \"login:\" prompt."
+msgstr "O gdm provê o equivalente de um prompt \"login:\" para o GNOME."
+
+#: service-list.pl.in:67
+msgid "console mouse support"
+msgstr "suporte para mouse no console"
+
+#: service-list.pl.in:67
+msgid ""
+"GPM adds mouse support to text-based Linux applications such the Midnight "
+"Commander. It also allows mouse-based console cut-and-paste operations, and "
+"includes support for pop-up menus on the console."
+msgstr ""
+"O GPM acrescenta suporte a mouse em aplicações Linux de modo texto tais como "
+"o Midnight Commander. Ele permite, ainda, operações de 'recortar e colar' em "
+"console baseados em mouse, e inclui suporte a menus pop-up no console."
+
+#: service-list.pl.in:68
+msgid "Set hard disk parameters"
+msgstr "Definir parâmetros de disco rígido"
+
+#: service-list.pl.in:68
+msgid ""
+"Provides a interface to various hard disk ioctls supported by the stock "
+"Linux ATA/IDE device driver subsystem."
+msgstr ""
+"Provê uma interface para diversos controles E/S de disco rígido suportados "
+"pelo conjunto do sub-sistema de drivers de dispositivos ATA/IDE do Linux."
+
+#: service-list.pl.in:69
+msgid "Linux hotplugging support"
+msgstr "Suporte a hotplugging do Linux"
+
+#: service-list.pl.in:69
+msgid ""
+"hotplug is a program which is used by the kernel to notify user mode "
+"software when some significant (usually hardware-related) events take place. "
+"An example is when a USB or Cardbus device has just been plugged in."
+msgstr ""
+"O hotplug é um programa que é usado pelo kernel para notificar softwares em "
+"modo usuário quando alguns eventos significativos (normalmente relacionados "
+"a hardware) acontecem. Um exemplo é quando um dispositivo USB ou Cardbus "
+"acaba de ser conectado."
+
+#: service-list.pl.in:71
+msgid "internet superserver"
+msgstr "super servidor internet"
+
+#: service-list.pl.in:71
+msgid ""
+"inetd allows running one daemon to invoke several others, reducing load on "
+"the system."
+msgstr ""
+"O inetd permite executar um servidor para invocar muitos outros, reduzindo a "
+"carga no sistema."
+
+#: service-list.pl.in:72
+msgid "administration tool for IPv4 packet filtering and NAT"
+msgstr "ferramenta de administração para filtragem de pacotes IPv4 e NAT"
+
+#: service-list.pl.in:72
+msgid ""
+"Iptables is used to set up, maintain, and inspect the tables of IP packet "
+"filter rules in the Linux kernel."
+msgstr ""
+"O Iptables é usado para configurar, manter e inspecionar as tabelas de "
+"regras dos filtros de pacotes IP no kernel Linux."
+
+#: service-list.pl.in:73
+msgid "IrDA stack for Linux"
+msgstr "Pilha IrDA para Linux"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol"
+msgstr "O protocolo Internet Key Exchange (Troca de Chaves na Internet)"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol openbsd implementation"
+msgstr "A implementação openbsd do protocolo Internet Key Exchange"
+
+#: service-list.pl.in:75
+msgid "start and stop ISDN services"
+msgstr "iniciar e parar serviços ISDN"
+
+#: service-list.pl.in:76
+msgid "Check and fix joystick device nodes"
+msgstr "Verificar e consertar nós de dispositivos de joystick"
+
+#: service-list.pl.in:76
+msgid ""
+"Runs joystick-device-check.  joystick-device-check is a program which "
+"ensures that the /dev/js* device nodes are correct for the kernel version in "
+"use."
+msgstr ""
+"Executa joystick-device-check. O joystick-device-check é programa que se "
+"certifica que os nós de dispositivos /dev/js* estão corretos para a versão "
+"do kernel em uso."
+
+#: service-list.pl.in:77
+msgid ""
+"This package loads the selected keyboard map as set in /etc/sysconfig/"
+"keyboard.  This can be selected using the kbdconfig utility.  You should "
+"leave this enabled for most machines."
+msgstr ""
+"Este pacote carrega o mapa de teclado selecionado como está configurado /etc/"
+"sysconfig/keyboard. Isto pode ser configurado usando o utilitário kbdconfig. "
+"Você deve deixar isso habilitado para a maioria das máquinas."
+
+#: service-list.pl.in:78
+msgid "Kernel Log Daemon"
+msgstr "Serviço de Log do Kernel"
+
+#: service-list.pl.in:78
+msgid ""
+"klogd is a system daemon which intercepts and logs Linux kernel messages."
+msgstr ""
+"O klogd é um servidor do sistema que intercepta e registra as mensagens do "
+"kernel do Linux."
+
+#: service-list.pl.in:79
+msgid ""
+"This runs the hardware probe, and optionally configures changed hardware."
+msgstr ""
+"Isso executa o teste de hardware e, opcionalmente, configura o hardware "
+"alterado."
+
+#: service-list.pl.in:80 service-list.pl.in:81
+msgid ""
+"LIRC is a package that allows you to decode and send infra-red signals of "
+"many commonly used remote controls"
+msgstr ""
+"O LIRC é um pacote que permite a você decodificar e enviar sinais infra-"
+"vermelhos de muitos controles remotos comuns"
+
+#: service-list.pl.in:82
+msgid "Starts misc programs that should be started"
+msgstr "Inicia programas variados que precisam ser iniciados"
+
+#: service-list.pl.in:83
+msgid ""
+"lpd is the print daemon required for lpr to work properly. It is basically a "
+"server that arbitrates print jobs to printer(s)."
+msgstr ""
+"O lpd é um servidor de impressão para que o lpr funcione corretamente. Ele "
+"é, basicamente, um servidor que intermedia trabalhos de impressão para a(s) "
+"impressora(a)."
+
+#: service-list.pl.in:84
+msgid "Create devices"
+msgstr "Criar dispositivos"
+
+#: service-list.pl.in:84
+msgid ""
+"Script that will create the devices in /dev used to interface with drivers "
+"in the kernel"
+msgstr ""
+"Um script que criará os dispositivos em /dev usados para se comunicar com "
+"drivers no kernel"
+
+#: service-list.pl.in:85
+msgid "Syslog Replacement"
+msgstr "Substituição do Syslog"
+
+#: service-list.pl.in:85
+msgid "Modern logging daemon"
+msgstr "Serviço moderno de registros"
+
+#: service-list.pl.in:86
+msgid "Load kernel modules"
+msgstr "Carregar módulos do kernel"
+
+#: service-list.pl.in:87
+msgid "tools for managing Linux kernel modules"
+msgstr "ferramentas para gerenciar módulos do kernel do Linux"
+
+#: service-list.pl.in:88 service-list.pl.in:105
+msgid "database server"
+msgstr "servidor de banco de dados"
+
+#: service-list.pl.in:88
+msgid "MySQL, a SQL-based relational database daemon"
+msgstr "MySQL, um servidor de banco de dados relacional baseado no SQL"
+
+#: service-list.pl.in:89
+msgid "dns server"
+msgstr "servidor dns"
+
+#: service-list.pl.in:89
+msgid ""
+"named (BIND) is a Domain Name Server (DNS) that is used to resolve host "
+"names to IP addresses."
+msgstr ""
+"O named (BIND) é um Servidor de Nomes de Domínio (DNS) que é usado para "
+"resolver nomes de máquinas para endereços IP."
+
+#: service-list.pl.in:90
+msgid ""
+"Mounts and unmounts all Network File System (NFS), SMB (Lan Manager/"
+"Windows), and NCP (NetWare) mount points."
+msgstr ""
+"Monta e desmonta todos os pontos de montagem Sistema de Arquivos de Rede "
+"(NFS), SMB (Lan Manager/Windows), e NCP (NetWare)."
+
+#: service-list.pl.in:91
+msgid ""
+"Activates/Deactivates all network interfaces configured to start at boot "
+"time."
+msgstr ""
+"Ativa/Desativa todas as interfaces de rede configuradas para iniciar durante "
+"a inicialização."
+
+#: service-list.pl.in:92
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS server functionality, which is configured via the /etc/"
+"exports file."
+msgstr ""
+"NFS é um protocolo popular para compartilhamento de arquivos através de "
+"redes TCP/IP. Este serviço provê a funcionalidade de um servidor NFS, que é "
+"configurado através do arquivo /etc/exports."
+
+#: service-list.pl.in:93
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS file locking functionality."
+msgstr ""
+"NFS é um protocolo popular para compartilhamento de arquivos através de "
+"redes TCP/IP. Este serviço provê a funcionalidade de travamento de arquivos "
+"NFS."
+
+#: service-list.pl.in:94
+msgid "Name service cache daemon"
+msgstr "Servidor de cache do serviço de nomes"
+
+#: service-list.pl.in:94
+msgid "Daemon that provides a cache for the most common name service requests."
+msgstr ""
+"Um servidor que provê um cache para as requisições de serviço de nomes mais "
+"comuns."
+
+#: service-list.pl.in:95
+msgid "Network Time Protocol daemon"
+msgstr "Servidor de Protocolo de Horário da Rede (NTP)"
+
+#: service-list.pl.in:95
+msgid "ntpd is the NTPv4 daemon."
+msgstr "O ntpd é o servidor NTPv4."
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid "Update the system time over the network"
+msgstr "Atualizar a hora do sistema pela rede"
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid ""
+"Checks the time from a Network Time Protocol (ntp) server and adjusts the "
+"system time accordingly."
+msgstr ""
+"Verifica a hora a partir de um servidor de Protocolo de Hora da Rede (NTP - "
+"Network Time Protocol) e ajusta a hora do sistema de acordo com ele."
+
+#: service-list.pl.in:98
+msgid "Network Time Protocol (NTP) server"
+msgstr "Servidor de Protocolo de Horário da Rede (NTP)"
+
+#: service-list.pl.in:98
+msgid ""
+"Daemon which sets and maintains the system time-of-day in synchronism with "
+"Internet standard time servers"
+msgstr ""
+"Um servidor que define e mantém a hora do sistema em sincronismo com "
+"servidores de horário padrão da Internet"
+
+#: service-list.pl.in:99
+msgid "HTTP caching proxy"
+msgstr "Proxy de cache HTTP"
+
+#: service-list.pl.in:100
+msgid "PCMCIA Services"
+msgstr "Serviços PCMCIA"
+
+#: service-list.pl.in:101
+msgid "Caching-Only DNS Server"
+msgstr "Servidor DNS apenas para cache"
+
+#: service-list.pl.in:102
+msgid "IPsec tunnel implementation"
+msgstr "Implementação de túnel IPsec"
+
+#: service-list.pl.in:103
+msgid "DARPA port to RPC program number mapper"
+msgstr "Porta DARPA para mapa de números de programas RPC."
+
+#: service-list.pl.in:103
+msgid ""
+"The portmapper manages RPC connections, which are used by protocols such as "
+"NFS and NIS. The portmap server must be running on machines which act as "
+"servers for protocols which make use of the RPC mechanism."
+msgstr ""
+"O portmapper gerencia conexões RPC, que são usadas por protocolos tais como "
+"NFS e NIS. O servidor portmap deve estar sendo executado em máquinas que "
+"hajem como servidores para protocolos que fazem uso do mecanismo RPC."
+
+#: service-list.pl.in:104
+msgid "Mail Transport Agent"
+msgstr "Agente de Transporte de Correspondência"
+
+#: service-list.pl.in:106
+msgid "Point to Point Protocol daemon"
+msgstr "Servidor de Protocolo Ponto a Ponto"
+
+#: service-list.pl.in:106
+msgid ""
+"The  Point-to-Point Protocol (PPP) provides a method for transmitting "
+"datagrams over serial point-to-point links."
+msgstr ""
+"O Protocolo Ponto a Ponto (PPP) provê um método para transmitir datagramas "
+"em links seriais ponto a ponto."
+
+#: service-list.pl.in:107
+msgid "Privacy enhancing HTTP Proxy"
+msgstr "Proxy HTTP de melhoria de privacidade"
+
+#: service-list.pl.in:108
+msgid ""
+"Saves and restores system entropy pool for higher quality random number "
+"generation."
+msgstr ""
+"Salva e restaura a reserva de entropia do sistema para geração de números "
+"aleatórios de melhor qualidade."
+
+#: service-list.pl.in:109
+msgid ""
+"This scripts assignes raw devices to block devices (such as hard drive "
+"partitions). This is for the use of applications such as Oracle. You can set "
+"up the raw device to block device mapping by editing the file /etc/sysconfig/"
+"rawdevices."
+msgstr ""
+"Estes scripts atribuem dispositivos brutos a dispositivos de bloco (tais "
+"como partições de disco rígido). Isso é para o uso de aplicações como "
+"Oracle. Você pode configurar os dispositivos brutos para mapeamento de "
+"dispositivos de bloco editando o arquivo /etc/sysconfig/rawdevices."
+
+#: service-list.pl.in:110
+msgid ""
+"This is a daemon which handles the task of connecting periodically to the "
+"Red Hat Network servers to check for updates, notifications and perform "
+"system monitoring tasks according to the service level that this server is "
+"subscribed for."
+msgstr ""
+"Este é um servidor que lida com a tarefa de conectar periodicamente aos "
+"servidores da Red Hat Network para verificar se há atualizações, "
+"notificações e executar tarefas de monitoramento do sistema de acordo com o "
+"nível de serviço assinado com esse servidor."
+
+#: service-list.pl.in:111 service-list.pl.in:112
+msgid ""
+"The rsync server is a good addition to am ftp server, as it allows crc "
+"checksumming etc. You must enable xinetd to use this service."
+msgstr ""
+"O servidor rsync é uma boa adição a um servidor ftp, já que ele permite "
+"verificação de crc etc. Você deve habilitar o xinetd para usar este serviço."
+
+#: service-list.pl.in:112
+msgid "Faster, flexible replacement for rcp"
+msgstr "Um substituto flexível e mais para o rcp"
+
+#: service-list.pl.in:113
+msgid "A Windows SMB/CIFS fileserver for UNIX"
+msgstr "Um sistema de arquivos Windows SMB/CIFS para UNIX"
+
+#: service-list.pl.in:113
+msgid ""
+"The Samba software suite is a collection of programs that implements the "
+"Server Message Block protocol for UNIX systems."
+msgstr ""
+"O conjunto de softwares Samba é uma coleção de programas que implementam o "
+"protocolo SMB para sistemas UNIX."
+
+#: service-list.pl.in:114
+msgid ""
+"saslauthd is a server process which handles plaintext authentication "
+"requests on behalf of the cyrus-sasl library."
+msgstr ""
+"O saslauthd é um processo servidor que lida com requisições de autenticação "
+"em texto puro, com ajuda da biblioteca cyrus-sasl."
+
+#: service-list.pl.in:115
+msgid ""
+"Sendmail is a Mail Transport Agent, which is the program that moves mail "
+"from one machine to another."
+msgstr ""
+"Sendmail é um Agente de Transporte de Correspondência, que é o programa que "
+"leva mensagens de uma máquina a outra."
+
+#: service-list.pl.in:116
+msgid ""
+"An internal xinetd service, listing active servers. You must enable xinetd "
+"to use this service."
+msgstr ""
+"Um serviço interno do xinetd, para listar servidores ativos. Você deve "
+"habilitar o xinetd para usar esse serviço."
+
+#: service-list.pl.in:117
+msgid ""
+"An internal xinetd service, listing active services. You must enable xinetd "
+"to use this service."
+msgstr ""
+"Um serviço interno do xinetd, para listar serviços ativos. Você deve "
+"habilitar o xinetd para usar esse serviço."
+
+#: service-list.pl.in:118
+msgid "get/set serial port information"
+msgstr "obter/definir informação da porta serial"
+
+#: service-list.pl.in:118
+msgid ""
+"setserial is a program designed to set and/or report the configuration "
+"information associated with a serial port."
+msgstr ""
+"O setserial é um programa desenvolvido para definir e/ou reportar a "
+"informação de configuração associada com uma porta serial."
+
+#: service-list.pl.in:119
+msgid ""
+"FAM is a file monitoring daemon. It can be used to get reports when files "
+"change. You must enable xinetd to use this service."
+msgstr ""
+"FAM é um serviço de monitoramento de arquivos. Ele pode ser usado para obter "
+"relatórios quando arquivos forem alterados. Você deve habilitar o xinetd "
+"para usar este serviço."
+
+#: service-list.pl.in:120
+msgid "control and monitor storage systems using S.M.A.R.T."
+msgstr "controla e monitora sistemas de armazenamento usando S.M.A.R.T."
+
+#: service-list.pl.in:121
+msgid "Perl-based spam filter using text analysis"
+msgstr "Filtro de spam baseado em Perl usando análise de texto"
+
+#: service-list.pl.in:122
+msgid "Simple Network Management Protocol (SNMP) Daemon"
+msgstr "Servidor do Protocolo Simples para Gerenciamento de Rede (SMTP)"
+
+#: service-list.pl.in:123 service-list.pl.in:124
+msgid "OpenSSH SSH server"
+msgstr "Servidor SSH OpenSSH"
+
+#: service-list.pl.in:123
+msgid ""
+"ssh is a program for logging into a remote machine and for executing "
+"commands on a remote machine."
+msgstr ""
+"O ssh é um programa para logar numa máquina remota e para executar comandos "
+"numa máquina remota."
+
+#: service-list.pl.in:124
+msgid "OpenSSH server daemon"
+msgstr "Executável do servidor OpenSSH"
+
+#: service-list.pl.in:125
+msgid "Linux system logging utilities"
+msgstr "Utilitários de registro do sistema Linux"
+
+#: service-list.pl.in:125
+msgid ""
+"Sysklogd provides two system utilities which provide support for system  "
+"logging  and  kernel  message  trapping."
+msgstr ""
+"O Sysklogd provê dois utilitários de sistema que dão suporte a registros de "
+"eventos do sistema e a captura de mensagens do kernel."
+
+#: service-list.pl.in:126
+msgid ""
+"Syslog is the facility by which many daemons use to log messages to various "
+"system log files.  It is a good idea to always run syslog."
+msgstr ""
+"Syslog é a facilidade pela qual muitos serviços costumam registrar mensagens "
+"em vários arquivos de log do sistema. É uma boa idéia sempre executar o "
+"syslog."
+
+#: service-list.pl.in:127
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"Um servidor de horário de acordo com o RFC 868. Este protocolo provê data e "
+"hora independente do lugar. O serviço de horário envia o tempo, em segundos, "
+"desde a meia-noite de 1 de Janeiro de 1900, de volta para o originador do "
+"pedido. Esta é a versão tcp. Você deve habilitar o xinetd para usar este "
+"serviço."
+
+#: service-list.pl.in:128
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"Um servidor de horário de acordo com o RFC 868. Este protocolo provê data e "
+"hora independente do lugar. O serviço de horário envia o tempo, em segundos, "
+"desde a meia-noite de 1 de Janeiro de 1900, de volta para o originador do "
+"pedido. Esta é a versão udp. Você deve habilitar o xinetd para usar este "
+"serviço."
+
+#: service-list.pl.in:129
+msgid "kernel random number source devices"
+msgstr "dispositivos fonte de números aleatórios do kernel"
+
+#: service-list.pl.in:129
+msgid ""
+"The  random  number  generator  gathers environmental noise from device "
+"drivers and other sources into an entropy pool. From this entropy pool "
+"random numbers are created."
+msgstr ""
+"O gerador de números aleatórios reúne, na reserva de entropia, ruído "
+"ambiental de drivers de dispositivos e de outras fontes. Números aleatórios "
+"são criados a partir desta reserva de entropia."
+
+#: service-list.pl.in:131
+msgid "Intel(TM) x86(TM)-based virtual machine"
+msgstr "Máquina virtual baseada no Intel(TM) x86(TM)"
+
+#: service-list.pl.in:131
+msgid ""
+"The vmware command starts an Intel X86-based virtual machine. This script "
+"manages the services needed to run VMware software."
+msgstr ""
+"O comando vmware inicia uma máquina virtual baseada no Intel x86. Este "
+"script gerencia os serviços necessários para executar o software VMware."
+
+#: service-list.pl.in:132
+msgid "Web-based administration toolkit"
+msgstr "Conjunto de ferramentas de administração baseadas na Web"
+
+#: service-list.pl.in:133
+msgid "Name Service Switch daemon for resolving names from NT servers"
+msgstr ""
+"Um servidor NSS (Name Service Switch) para resolver nomes a partir de "
+"servidores NT"
+
+#: service-list.pl.in:133
+msgid "Starts and stops the Samba winbind daemon"
+msgstr "Inicia e pára o servidor winbind do Samba"
+
+#: service-list.pl.in:134
+msgid ""
+"Allow users to run Windows(tm) applications by just clicking on them (or "
+"typing ./file.exe)"
+msgstr ""
+"Permite aos usuários executar aplicações Windows(tm) apenas clicando nelas "
+"(ou digitando ./arquivo.exe)"
+
+#: service-list.pl.in:135
+msgid "X Display Manager"
+msgstr "Gerenciador de Telas do X"
+
+#: service-list.pl.in:135
+msgid "Provides the X equivalent of a \"login:\" prompt."
+msgstr "Provê o equivalente de um prompt \"login:\" para o X."
+
+#: service-list.pl.in:136
+msgid "X font server"
+msgstr "Servidor de fontes do X"
+
+#: service-list.pl.in:136
+msgid ""
+"Xfs is the X Window System font server. It supplies fonts to X Window System "
+"display servers."
+msgstr ""
+"Xfs é o servidor de fontes do X Window System. Ele fornece fontes para os "
+"servidores de tela do X Window System."
+
+#: service-list.pl.in:137
+msgid ""
+"xinetd is a powerful replacement for inetd. xinetd has access control "
+"machanisms, extensive logging capabilities, the ability to make services "
+"available based on time, and can place limits on the number of servers that "
+"can be started, among other things."
+msgstr ""
+"O xinetd é um poderoso substituto para o inetd. O xinetd tem mecanismos de "
+"controle de acesso, capacidades extensivas de registro, a habilidade de "
+"tornar serviços disponíveis baseado na hora, e pode limitar o número de "
+"servidores que podem ser iniciados, além de outras coisas."
+
+#: service.pl.in:226 service.pl.in:231
+msgid "Halting the system"
+msgstr "Parando o sistema"
+
+#: service.pl.in:227 service.pl.in:233
+msgid "Text mode"
+msgstr "Modo texto"
+
+#: service.pl.in:228 service.pl.in:232 service.pl.in:241
+msgid "Graphical mode"
+msgstr "Modo gráfico"
+
+#: service.pl.in:229 service.pl.in:234
+msgid "Rebooting the system"
+msgstr "Reiniciando o sistema"
+
+#: service.pl.in:236
+msgid "Starts all system neccesary services"
+msgstr "Inicia todos os serviços necessários ao sistema"
+
+#: service.pl.in:237
+msgid "Default runlevel"
+msgstr "Nível de execução padrão"
+
+#: service.pl.in:238
+msgid "Networkless runlevel"
+msgstr "Nível de execução sem rede"
+
+#: users-conf.in:179
+msgid "Monitor system logs"
+msgstr "Monitorar registros do sistema"
+
+#: users-conf.in:180
+msgid "Use audio devices"
+msgstr "Usar dispositivos de áudio"
+
+#: users-conf.in:181
+msgid "Access to CD-ROM drives"
+msgstr "Acesso às unidades de CD-ROM"
+
+#: users-conf.in:182
+msgid "Access to modem devices"
+msgstr "Acesso aos dispositivos de modem"
+
+#: users-conf.in:183
+msgid "Connect to Internet through modem devices"
+msgstr "Conectar à Internet através de dispositivos de modem"
+
+#: users-conf.in:184
+msgid "Send and receive faxes"
+msgstr "Enviar e receber faxes"
+
+#: users-conf.in:185
+msgid "Access to floppy drives"
+msgstr "Acesso unidades de disquete"
+
+#: users-conf.in:186
+msgid "Enable access to external storage devices automatically"
+msgstr "Habilitar o acesso a dispositivos de armazenamento externos automaticamente"
+
+#: users-conf.in:187
+msgid "Access to tape drives"
+msgstr "Acesso a unidades de fita"
+
+#: users-conf.in:188
+msgid "Be able to get administrator privileges"
+msgstr "Poder obter privilégios de administrador"
+
+#: users-conf.in:491
+msgid "Default"
+msgstr "Padrão"
+
+#: users-conf.in:492
+msgid "Default profile"
+msgstr "Perfil padrão"

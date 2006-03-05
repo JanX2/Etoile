@@ -1,0 +1,896 @@
+# setup-tools-backends korean translation
+# Copyright (C) 2004 setup-tools-backends'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the setup-tools-backends package.
+# Young-Ho Cha <ganadist at mizi.com>, 2004
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: AC_PACKAGE_NAME AC_PACKAGE_VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-02-14 20:24+0900\n"
+"PO-Revision-Date: 2005-02-14 20:26+0900\n"
+"Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
+"Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. please, keep this list sorted
+#. service => [long_name, description]
+#: service-list.pl.in:36
+msgid "ACPI event handler"
+msgstr "ACPI 이벤트 처리기"
+
+#: service-list.pl.in:36
+msgid ""
+"Notifies user-space programs of ACPI events: executes arbitrary commands in "
+"response to ACPI events such as power buttons."
+msgstr ""
+"ACPI 이벤트를 사용자 영역 프로그램에게 알려줍니다: 전원 단추같은 ACPI 이벤트"
+"에 등록된 명령을 실행합니다."
+
+#: service-list.pl.in:37
+msgid "Advanced Linux Sound Architecture"
+msgstr "고급 리눅스 사운드 구조"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid "web server"
+msgstr "웹 서버"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid ""
+"Apache is a World Wide Web server.  It is used to serve HTML files and CGI."
+msgstr "아파치는 WWW서버입니다. HTML파일과 CGI를 제공할 때 쓰입니다."
+
+#: service-list.pl.in:39
+msgid "Run missed scheduled jobs at startup"
+msgstr "시작할 때 잊었던 예약 작업 실행"
+
+#: service-list.pl.in:39
+msgid "Run cron jobs that were left out due to downtime"
+msgstr "시스템이 동작하지 않았던 시간의 예약작업을 실행 "
+
+#: service-list.pl.in:40
+msgid "Automatic power management daemon"
+msgstr "고급 전원 관리 데몬"
+
+#: service-list.pl.in:40
+msgid ""
+"apmd is used for monitoring battery status and logging it via syslog(8). It "
+"can also be used for shutting down the machine when the battery is low."
+msgstr ""
+"apmd는 배터리 상태를 감시하고 syslog를 통해서 로그를 저장하는데 쓰입니다. 또"
+"한 배터리가 방전되었을 때 시스템의 전원을 꺼줍니다."
+
+#: service-list.pl.in:41
+msgid "Runs a command at a given time"
+msgstr "맞춰진 시간에 명령을 실행합니다"
+
+#: service-list.pl.in:41
+msgid ""
+"Runs commands scheduled by the at command at the time specified when at was "
+"run, and runs batch commands when the load average is low enough."
+msgstr ""
+"at 명령으로 지정한 시간 이후, 시스템 부하가 충분히 낮을 때 예약한 명령을 실행"
+"합니다."
+
+#: service-list.pl.in:42
+msgid "Audio mixer"
+msgstr "오디오 소리크기 조절"
+
+#: service-list.pl.in:42
+msgid "This program adjusts the settings of an audio mixing device"
+msgstr "오디오 소리크기 조절을 합니다"
+
+#: service-list.pl.in:43
+msgid "BinFormat Support"
+msgstr "Bin형식 지원"
+
+#: service-list.pl.in:43
+msgid "Support for running non ELF binaries on Linux"
+msgstr "리눅스에서 ELF형식이 아닌 바이너리를 실행하도록 지원"
+
+#: service-list.pl.in:44
+msgid "Boot messages recorder"
+msgstr "부팅 메세지 기록"
+
+#: service-list.pl.in:44
+msgid ""
+"Runs in the background and copies all strings sent to the /dev/console "
+"device to a logfile"
+msgstr "/dev/console장치에서 로그파일로 모든 기록을 옮깁니다."
+
+#: service-list.pl.in:45
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the tcp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"문자를 생성하는 xinetd 내부 서비스입니다. 연결이 끊길때까지 계속해서 문자를 "
+"생성하여 주는 xinetd 내부 서비스입니다. 이것은 tcp버젼입니다. 이 서비스를 쓰"
+"려면 xinetd에서 켜야 합니다."
+
+#: service-list.pl.in:46
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the udp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"문자를 생성하는 xinetd 내부 서비스입니다. 연결이 끊길때까지 계속해서 문자를 "
+"생성하여 주는 xinetd 내부 서비스입니다. 이것은 udp버젼입니다. 이 서비스를 쓰"
+"려면 xinetd에서 켜야 합니다."
+
+#: service-list.pl.in:47
+msgid "CPU frequency monitor"
+msgstr "CPU 클럭 감시기"
+
+#: service-list.pl.in:47
+msgid ""
+"cpufreqd is used to monitor the status of the battery and adjust the "
+"frequency of the CPU accordingly in order to preserve battery power while "
+"providing optimal performance"
+msgstr ""
+"cpufreqd는 건전지 상태를 감시하면서 적절한 성능을 제공하도록 전원을 소비하지 "
+"않게 CPU의 클럭을 조절합니다"
+
+#: service-list.pl.in:48 service-list.pl.in:130
+msgid "daemon to execute scheduled commands"
+msgstr "예약된 명령을 실행하는 데몬"
+
+#: service-list.pl.in:49
+msgid "Run scheduled jobs"
+msgstr "예약 작업 실행"
+
+#: service-list.pl.in:49
+msgid ""
+"cron is a standard UNIX program that runs user-specified programs at "
+"periodic scheduled times. vixie cron adds a number of features to the basic "
+"UNIX cron, including better security and more powerful configuration options."
+msgstr ""
+"cron은 주기적으로 예약된 시간에 사용자가 지정한 프로그램을 실행하는 표준 유닉"
+"스 프로그램입니다. vixie cron은 기본 유닉스 cron에 더 나은 보안기능 및 강력"
+"한 설정옵션이 포함된 많은 기능이 덧붙여졌습니다."
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Common Unix Printing System"
+msgstr "일반 유닉스 인쇄 시스템"
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Printing system based upon the Internet Printing Protocol, version  1.1"
+msgstr "인터넷 인쇄 프로토콜 1.1기반의 인쇄 시스템"
+
+#: service-list.pl.in:52
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the tcp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"현재 시스템의 시간을 다음 형식처럼 출력하는 xinetd 내부 서비스입니다: 'Wed "
+"Nov 13 22:30:27 EST 2002'. 이것은 tcp버젼입니다. 이 서비스를 쓰려면 xinetd에"
+"서 켜야 합니다."
+
+#: service-list.pl.in:53
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the udp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"현재 시스템의 시간을 다음 형식처럼 출력하는 xinetd 내부 서비스입니다: 'Wed "
+"Nov 13 22:30:27 EST 2002'. 이것은 udp버젼입니다. 이 서비스를 쓰려면 xinetd에"
+"서 켜야 합니다."
+
+#: service-list.pl.in:54 service-list.pl.in:55
+msgid "Dynamic DNS Client"
+msgstr "동적 DNS 클라이언트"
+
+#: service-list.pl.in:54
+msgid "A Dynamic DNS Name service from www.dyndns.org"
+msgstr "www.dyndns.org의 동적 DNS 이름 서비스"
+
+#: service-list.pl.in:55
+msgid "A Dynamic DNS Name service from www.dhis.org"
+msgstr "www.dhis.org의 동적 DNS 이름 서비스"
+
+#: service-list.pl.in:56
+msgid "Dict Dictionary Server"
+msgstr "Dict 사전 서버"
+
+#: service-list.pl.in:57
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"echo의 글자를 클라이언트에게 되돌려주는 xinetd 내부서비스 입니다. 이것은 tcp"
+"버젼입니다. 이 서비스를 쓰려면 xinetd에서 켜야 합니다."
+
+#: service-list.pl.in:58
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"echo의 글자를 클라이언트에게 되돌려주는 xinetd 내부서비스 입니다. 이것은 udp"
+"버젼입니다. 이 서비스를 쓰려면 xinetd에서 켜야 합니다."
+
+#: service-list.pl.in:59
+msgid "Sound mixing server"
+msgstr "사운드 섞기 서버"
+
+#: service-list.pl.in:59
+msgid "The Enlightened Sound Daemon"
+msgstr "인라이튼먼트 사운드 데몬"
+
+#: service-list.pl.in:60
+msgid "Exim SMTP Server"
+msgstr "Exim SMTP 서버"
+
+#: service-list.pl.in:61
+msgid "file alteration monitor"
+msgstr "파일 변경 감시기"
+
+#: service-list.pl.in:62
+msgid "Firstboot is a druid style program that runs on the first time"
+msgstr "Firstboot는 처음에 실행되는 마법사 형식의 프로그램입니다."
+
+#: service-list.pl.in:63
+msgid "Text-to-speech system"
+msgstr "글자 음성변환 시스템"
+
+#: service-list.pl.in:63
+msgid "Festival is a general purpose text-to-speech system"
+msgstr "Festival는 범용 글자 음성 변환 시스템입니다"
+
+#: service-list.pl.in:64
+msgid "Mail Fetcher"
+msgstr "메일 가져오기"
+
+#: service-list.pl.in:64
+msgid "A Mail Fetcher from external Servers"
+msgstr "외부 서버에서 메일 가져오기 프로그램"
+
+#: service-list.pl.in:65
+msgid "IPv6 Tunnel Broker"
+msgstr "IPv6 터널 중계기"
+
+#: service-list.pl.in:65
+msgid "A IPv6 Dynamic Tunnel Broker"
+msgstr "IPv6 동적 터널 중계기"
+
+#: service-list.pl.in:66
+msgid "GNOME Display Manager"
+msgstr "그놈 디스플레이 관리자"
+
+#: service-list.pl.in:66
+msgid "gdm provides the GNOME equivalent of a \"login:\" prompt."
+msgstr "gdm은 그놈에서 \"login:\"프롬프트와 같은 역할을 합니다."
+
+#: service-list.pl.in:67
+msgid "console mouse support"
+msgstr "콘솔 마우스 지원"
+
+#: service-list.pl.in:67
+msgid ""
+"GPM adds mouse support to text-based Linux applications such the Midnight "
+"Commander. It also allows mouse-based console cut-and-paste operations, and "
+"includes support for pop-up menus on the console."
+msgstr ""
+"GPM은 Midnight Commander와 같은 글자 기반 리눅스 프로그램에서 마우스를 지원하"
+"도록 합니다. 이것은 콘솔에서 자르기와 붙여넣기, 팝업 메뉴등을 지원할 수 있습"
+"니다."
+
+#: service-list.pl.in:68
+msgid "Set hard disk parameters"
+msgstr "하드디스크 특성 설정"
+
+#: service-list.pl.in:68
+msgid ""
+"Provides a interface to various hard disk ioctls supported by the stock "
+"Linux ATA/IDE device driver subsystem."
+msgstr ""
+"저장해 두었던 리눅스 ATA/IDE장치 드라이버 서브시스템에서의 다양한 하드디스크 "
+"ioctl 인터페이스의 값을 설정합니다."
+
+#: service-list.pl.in:69
+msgid "Linux hotplugging support"
+msgstr "리눅스 핫플러그 지원"
+
+#: service-list.pl.in:69
+msgid ""
+"hotplug is a program which is used by the kernel to notify user mode "
+"software when some significant (usually hardware-related) events take place. "
+"An example is when a USB or Cardbus device has just been plugged in."
+msgstr ""
+"hotplug는 USB나 카드버스 장치를 꽂았을 때와 같은 이벤트(특히 하드웨어 관련)"
+"가 발생하면 커널이 사용자 모드 프로그램에게 전달할 때 쓰이는 프로그램입니다."
+
+#: service-list.pl.in:71
+msgid "internet superserver"
+msgstr "인터넷 슈퍼서버"
+
+#: service-list.pl.in:71
+msgid ""
+"inetd allows running one daemon to invoke several others, reducing load on "
+"the system."
+msgstr ""
+"inetd는 시스템의 부하를 줄이기 위해서 다른 데몬을 대신 실행해 주는 데몬입니"
+"다."
+
+#: service-list.pl.in:72
+msgid "administration tool for IPv4 packet filtering and NAT"
+msgstr "IPv4 필터링과 NAT 도구"
+
+#: service-list.pl.in:72
+msgid ""
+"Iptables is used to set up, maintain, and inspect the tables of IP packet "
+"filter rules in the Linux kernel."
+msgstr ""
+"Iptables은 리눅스 커널의 IP 패킷 거르개 규칙 테이블을 설정, 관리, 검사하는데 "
+"쓰입니다."
+
+#: service-list.pl.in:73
+msgid "IrDA stack for Linux"
+msgstr "리눅스용 IrDA 스택"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol"
+msgstr "인터넷 키 교환 프로토콜"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol openbsd implementation"
+msgstr "인터넷 키 교환 프로토콜 openbsd 구현"
+
+#: service-list.pl.in:75
+msgid "start and stop ISDN services"
+msgstr "ISDN 서비스를 시작하거나 마칩니다"
+
+#: service-list.pl.in:76
+msgid "Check and fix joystick device nodes"
+msgstr "조이스틱 장치 노드 확인"
+
+#: service-list.pl.in:76
+msgid ""
+"Runs joystick-device-check.  joystick-device-check is a program which "
+"ensures that the /dev/js* device nodes are correct for the kernel version in "
+"use."
+msgstr ""
+"joystick-device-check를 실행합니다. joystick-device-check는 /dev/js* 장치파일"
+"이 쓰고 있는 커널버젼에 따라 맞게 만들어졌는지 확인하는 프로그램입니다."
+
+#: service-list.pl.in:77
+msgid ""
+"This package loads the selected keyboard map as set in /etc/sysconfig/"
+"keyboard.  This can be selected using the kbdconfig utility.  You should "
+"leave this enabled for most machines."
+msgstr ""
+"이 꾸러미는 /etc/sysconfig/keyboard에서 설정한 대로 글쇠판 맵을 읽어들입니"
+"다. 이것은 kbdconfig 도구를 사용하여 선택할 수 있습니다. 대부분의 시스템에서"
+"는 켜두기만 하면 됩니다."
+
+#: service-list.pl.in:78
+msgid "Kernel Log Daemon"
+msgstr "커널 로깅 데몬"
+
+#: service-list.pl.in:78
+msgid ""
+"klogd is a system daemon which intercepts and logs Linux kernel messages."
+msgstr "klogd는 리눅스 커널로그를 가로채어 저장하는 시스템 데몬입니다."
+
+#: service-list.pl.in:79
+msgid ""
+"This runs the hardware probe, and optionally configures changed hardware."
+msgstr "이것은 하드웨어를 찾아서 바뀐 하드웨어를 설정합니다."
+
+#: service-list.pl.in:80 service-list.pl.in:81
+msgid ""
+"LIRC is a package that allows you to decode and send infra-red signals of "
+"many commonly used remote controls"
+msgstr ""
+"LIRC는 일반적으로 많이 사용되는 원격 조정 장치의 적외선 신호를 보내거나 받을"
+"수 있도록 합니다."
+
+#: service-list.pl.in:82
+msgid "Starts misc programs that should be started"
+msgstr "시스템이 시작할 때 실행할 여러가지 프로그램을 시작합니다"
+
+#: service-list.pl.in:83
+msgid ""
+"lpd is the print daemon required for lpr to work properly. It is basically a "
+"server that arbitrates print jobs to printer(s)."
+msgstr ""
+"lpd는 lpr이 올바르게 동작할 수 있도록 하는 인쇄 데몬입니다. 이것은 인쇄작업"
+"을 프린터에 적절히 분배하는 서버입니다."
+
+#: service-list.pl.in:84
+msgid "Create devices"
+msgstr "장치 만들기"
+
+#: service-list.pl.in:84
+msgid ""
+"Script that will create the devices in /dev used to interface with drivers "
+"in the kernel"
+msgstr "/dev디렉토리에 커널의 드라이버들이 쓸 장치파일을 만드는 스크립트입니다"
+
+#: service-list.pl.in:85
+msgid "Syslog Replacement"
+msgstr "Syslog 대체품"
+
+#: service-list.pl.in:85
+msgid "Modern logging daemon"
+msgstr "최신 로깅 데몬"
+
+#: service-list.pl.in:86
+msgid "Load kernel modules"
+msgstr "커널 모듈 적재"
+
+#: service-list.pl.in:87
+msgid "tools for managing Linux kernel modules"
+msgstr "리눅스 커널 모듈 관리 도구"
+
+#: service-list.pl.in:88 service-list.pl.in:105
+msgid "database server"
+msgstr "데이터베이스 서버"
+
+#: service-list.pl.in:88
+msgid "MySQL, a SQL-based relational database daemon"
+msgstr "MySQL, SQL기반 관계형 데이터베이스 데몬"
+
+#: service-list.pl.in:89
+msgid "dns server"
+msgstr "dns 서버"
+
+#: service-list.pl.in:89
+msgid ""
+"named (BIND) is a Domain Name Server (DNS) that is used to resolve host "
+"names to IP addresses."
+msgstr ""
+"named (BIND)는 호스트 이름을 IP 주소로 바꿔줄 때 쓰이는 도메인 네임 서버입니"
+"다."
+
+#: service-list.pl.in:90
+msgid ""
+"Mounts and unmounts all Network File System (NFS), SMB (Lan Manager/"
+"Windows), and NCP (NetWare) mount points."
+msgstr ""
+"모든 네트워크 파일시스템 (NFS), 삼바(랜매니저/윈도우즈), NCP (NetWare)의 마운"
+"트 위치를 마운트하거나 마운트 해제를 합니다."
+
+#: service-list.pl.in:91
+msgid ""
+"Activates/Deactivates all network interfaces configured to start at boot "
+"time."
+msgstr ""
+"부팅할 때 모든 네트워크 인터페이스 설정을 활성화 하거나 비활성시킵니다."
+
+#: service-list.pl.in:92
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS server functionality, which is configured via the /etc/"
+"exports file."
+msgstr ""
+"NFS는 TCP/IP 네트워크에서 파일 공유를 위해 자주 사용되는 프로토콜입니다. 이 "
+"서비스는 /etc/exports 파일에 설정된 NFS 서버를 제공합니다."
+
+#: service-list.pl.in:93
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS file locking functionality."
+msgstr ""
+"NFS는 TCP/IP 네트워크에서 파일 공유를 위해 자주 사용되는 프로토콜입니다.이 서"
+"비스는 NFS 파일 잠금을 제공합니다."
+
+#: service-list.pl.in:94
+msgid "Name service cache daemon"
+msgstr "네임 서비스 캐시 데몬"
+
+#: service-list.pl.in:94
+msgid "Daemon that provides a cache for the most common name service requests."
+msgstr "일반적인 네임 서비스 요청에 대한 캐시를 제공하는 데몬입니다."
+
+#: service-list.pl.in:95
+msgid "Network Time Protocol daemon"
+msgstr "네트워크 시간 프로토콜 데몬"
+
+#: service-list.pl.in:95
+msgid "ntpd is the NTPv4 daemon."
+msgstr "ntpd는 NTPv4 데몬입니다."
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid "Update the system time over the network"
+msgstr "네트워크를 통해 시스템 시간 고치기"
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid ""
+"Checks the time from a Network Time Protocol (ntp) server and adjusts the "
+"system time accordingly."
+msgstr ""
+"네트워크 시간 프로토콜(npt)서버에서 시간을 확인하고 시스템 시간을 조정합니다."
+
+#: service-list.pl.in:98
+msgid "Network Time Protocol (NTP) server"
+msgstr "네트워크 시간 프로토콜(NTP) 서버"
+
+#: service-list.pl.in:98
+msgid ""
+"Daemon which sets and maintains the system time-of-day in synchronism with "
+"Internet standard time servers"
+msgstr ""
+"시스템의 time-of-day 동기화를 관리하고 설정하는 인터넷 표준 시간 서버와 동기"
+"화 하는 데몬입니다"
+
+#: service-list.pl.in:99
+msgid "HTTP caching proxy"
+msgstr "HTTP 캐싱 프록시"
+
+#: service-list.pl.in:100
+msgid "PCMCIA Services"
+msgstr "PCMCIA 서비스"
+
+#: service-list.pl.in:101
+msgid "Caching-Only DNS Server"
+msgstr "DNS 캐싱전용 서버"
+
+#: service-list.pl.in:102
+msgid "IPsec tunnel implementation"
+msgstr "IPsec 터널 구현"
+
+#: service-list.pl.in:103
+msgid "DARPA port to RPC program number mapper"
+msgstr "RPC 프로그램 넘버 매퍼의 DARPA 포트"
+
+#: service-list.pl.in:103
+msgid ""
+"The portmapper manages RPC connections, which are used by protocols such as "
+"NFS and NIS. The portmap server must be running on machines which act as "
+"servers for protocols which make use of the RPC mechanism."
+msgstr ""
+"NFS나 NIS같은 프로토콜에서 쓰이는 RPC연결을 관리하는 포트매퍼입니다. 포트맵 "
+"서버는 RPC메카니즘을 사용하는 프로토콜의 서버로 동작하는 시스템에서 실행하여"
+"야 합니다."
+
+#: service-list.pl.in:104
+msgid "Mail Transport Agent"
+msgstr "메일 전송 에이전트"
+
+#: service-list.pl.in:106
+msgid "Point to Point Protocol daemon"
+msgstr "점대점 프로토콜 데몬"
+
+#: service-list.pl.in:106
+msgid ""
+"The  Point-to-Point Protocol (PPP) provides a method for transmitting "
+"datagrams over serial point-to-point links."
+msgstr ""
+"점대점 프로토콜(PPP)는 몇몇 점대점 연결위로 데이터그램을 전송하는 방법을 제공"
+"합니다."
+
+#: service-list.pl.in:107
+msgid "Privacy enhancing HTTP Proxy"
+msgstr "보안 강화 HTTP 프록시"
+
+#: service-list.pl.in:108
+msgid ""
+"Saves and restores system entropy pool for higher quality random number "
+"generation."
+msgstr "고품질 난수의 발생을 위한 시스템 엔트로피를 저장하고 되돌립니다."
+
+#: service-list.pl.in:109
+msgid ""
+"This scripts assignes raw devices to block devices (such as hard drive "
+"partitions). This is for the use of applications such as Oracle. You can set "
+"up the raw device to block device mapping by editing the file /etc/sysconfig/"
+"rawdevices."
+msgstr ""
+"이 스크립트는 (하드 드라이브 분할영역 같은) 블럭장치를 raw 장치에 할당합니"
+"다. 이것은 오라클 같은 프로그램에서 사용됩니다. raw장치로 할당할 블럭장치는 /"
+"etc/sysconfig/rawdevices를 편집하여 설정합니다."
+
+#: service-list.pl.in:110
+msgid ""
+"This is a daemon which handles the task of connecting periodically to the "
+"Red Hat Network servers to check for updates, notifications and perform "
+"system monitoring tasks according to the service level that this server is "
+"subscribed for."
+msgstr ""
+"이것은 서버가 등록된 서비스 수준에 따라서 시스템 업데이트, 알림, 시스템 감시 "
+"수행등을 검사하는 Red Hat 네트워크 서버에 주기적으로 접속하는 작업을 처리하"
+"는 데몬입니다."
+
+#: service-list.pl.in:111 service-list.pl.in:112
+msgid ""
+"The rsync server is a good addition to am ftp server, as it allows crc "
+"checksumming etc. You must enable xinetd to use this service."
+msgstr ""
+"rsync 서버는 am ftp서버에 crc 체크섭등등의 괜찮은 기능을 덧붙인 것입니다. 이 "
+"서비스를 쓰려면 xinetd에서 켜야 합니다."
+
+#: service-list.pl.in:112
+msgid "Faster, flexible replacement for rcp"
+msgstr "빠르고 유연한 rcp의 교체프로그램"
+
+#: service-list.pl.in:113
+msgid "A Windows SMB/CIFS fileserver for UNIX"
+msgstr "유닉스용 윈도우즈 SMB/CIFS 파일서버"
+
+#: service-list.pl.in:113
+msgid ""
+"The Samba software suite is a collection of programs that implements the "
+"Server Message Block protocol for UNIX systems."
+msgstr ""
+"삼바 소프트웨어 모음은 유닉스 시스템을 위한 서버 메세지 블럭 프로토콜이 구현"
+"된 프로그램의 모음입니다."
+
+#: service-list.pl.in:114
+msgid ""
+"saslauthd is a server process which handles plaintext authentication "
+"requests on behalf of the cyrus-sasl library."
+msgstr ""
+"saslauthd는 cyrus-sasl 라이브러리를 대신하여 일반 텍스트 인증 요청을 처리하"
+"는 서버입니다."
+
+#: service-list.pl.in:115
+msgid ""
+"Sendmail is a Mail Transport Agent, which is the program that moves mail "
+"from one machine to another."
+msgstr ""
+"Sendmail은 메일 전송 에이전트입니다. 이것은 한 서버에서 다른 서버로 메일을 전"
+"달할 때 사용됩니다."
+
+#: service-list.pl.in:116
+msgid ""
+"An internal xinetd service, listing active servers. You must enable xinetd "
+"to use this service."
+msgstr ""
+"활성된 서버 목록을 보이는 xinetd 내부 서비스입니다. 이 서비스를 쓰려면 xinetd"
+"에서 켜야 합니다."
+
+#: service-list.pl.in:117
+msgid ""
+"An internal xinetd service, listing active services. You must enable xinetd "
+"to use this service."
+msgstr ""
+"활성된 서버 목록을 보이는 xinetd 내부 서비스입니다. 이 서비스를 쓰려면 xinetd"
+"에서 켜야 합니다."
+
+#: service-list.pl.in:118
+msgid "get/set serial port information"
+msgstr "직렬 포트 정보 설정/가져오기"
+
+#: service-list.pl.in:118
+msgid ""
+"setserial is a program designed to set and/or report the configuration "
+"information associated with a serial port."
+msgstr ""
+"setserial은 직력포트에 관련된 설정 정보를 설정하거나 보고할 때 쓰입니다."
+
+#: service-list.pl.in:119
+msgid ""
+"FAM is a file monitoring daemon. It can be used to get reports when files "
+"change. You must enable xinetd to use this service."
+msgstr ""
+"FAM은 파일 감시 데몬입니다. 파일에 바뀐 점이 있으면 보고하도록 할 때 쓰입니"
+"다.이 서비스는 xinetd에서 쓸 수 있도록 하여야합니다."
+
+#: service-list.pl.in:120
+msgid "control and monitor storage systems using S.M.A.R.T."
+msgstr "S.M.A.R.T를 사용해서 저장장치를 조정하거나 감시합니다."
+
+#: service-list.pl.in:121
+msgid "Perl-based spam filter using text analysis"
+msgstr "문자 분석을 이용한 펄 기반 스팸 거르게"
+
+#: service-list.pl.in:122
+msgid "Simple Network Management Protocol (SNMP) Daemon"
+msgstr "간단한 네트워크 관리 프로토콜 (SNMP) 데몬"
+
+#: service-list.pl.in:123 service-list.pl.in:124
+msgid "OpenSSH SSH server"
+msgstr "OpenSSh SSH 서버"
+
+#: service-list.pl.in:123
+msgid ""
+"ssh is a program for logging into a remote machine and for executing "
+"commands on a remote machine."
+msgstr ""
+"ssh는 원격 기계에 들어가거나, 원격 기계의 명령을 실행할 수 있도록 하는 프로그"
+"램입니다."
+
+#: service-list.pl.in:124
+msgid "OpenSSH server daemon"
+msgstr "OpenSSH 서버 데몬"
+
+#: service-list.pl.in:125
+msgid "Linux system logging utilities"
+msgstr "리눅스 시스템 로깅 도구"
+
+#: service-list.pl.in:125
+msgid ""
+"Sysklogd provides two system utilities which provide support for system  "
+"logging  and  kernel  message  trapping."
+msgstr ""
+"Sysklogd는 시스템 로깅과 커널 메세지를 가로채어서 저장하는 두가지 도구를 제공"
+"합니다."
+
+#: service-list.pl.in:126
+msgid ""
+"Syslog is the facility by which many daemons use to log messages to various "
+"system log files.  It is a good idea to always run syslog."
+msgstr ""
+"Syslog는 많은 데몬이 저장하는 메세지를 여러가지 시스템 로그파일로 저장하는 기"
+"능을 가지고 있습니다. 항상 syslog를 실행하는 것이 좋습니다."
+
+#: service-list.pl.in:127
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"RFC 868 시간서버. 이 프로토콜은 사이트 독립적인 컴퓨터가 읽을 수 있는 날짜와 "
+"시간을 제공합니다. 시간 서비스는 1900년 1월 1일 자정으로 부터 지난 시간을 초"
+"단위로 제공합니다. 이것은 tcp용 입니다. xinetd에서 이 서비스를 시작하여야 합"
+"니다."
+
+#: service-list.pl.in:128
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"RFC 868 시간서버. 이 프로토콜은 사이트 독립적인 컴퓨터가 읽을 수 있는 날짜와 "
+"시간을 제공합니다. 시간 서비스는 1900년 1월 1일 자정으로 부터 지난 시간을 초"
+"단위로 제공합니다. 이것은 udp용 입니다. xinetd에서 이 서비스를 시작하여야 합"
+"니다."
+
+#: service-list.pl.in:129
+msgid "kernel random number source devices"
+msgstr "커널 난수 발생기 장치"
+
+#: service-list.pl.in:129
+msgid ""
+"The  random  number  generator  gathers environmental noise from device "
+"drivers and other sources into an entropy pool. From this entropy pool "
+"random numbers are created."
+msgstr ""
+"난수 발생기가 주변 장치의 신호와 그외의 신호를 엔트로피 풀로 모읍니다. 이 엔"
+"트로피 풀에서 난수를 발생키도록 합니다."
+
+#: service-list.pl.in:131
+msgid "Intel(TM) x86(TM)-based virtual machine"
+msgstr "Intel(TM) x86(TM)기반 가상 기계"
+
+#: service-list.pl.in:131
+msgid ""
+"The vmware command starts an Intel X86-based virtual machine. This script "
+"manages the services needed to run VMware software."
+msgstr ""
+"vmware는 Intel X86기반의 가상기계를 시작하는 명령입니다. 이 스크립트는 VMWare"
+"소프트웨어를 실행할 때 필요한 서비스를 관리합니다."
+
+#: service-list.pl.in:132
+msgid "Web-based administration toolkit"
+msgstr "웹 기반 관리 도구"
+
+#: service-list.pl.in:133
+msgid "Name Service Switch daemon for resolving names from NT servers"
+msgstr "NT서버에서 컴퓨터 이름을 찾아주는 이름 서비스 교환 데몬"
+
+#: service-list.pl.in:133
+msgid "Starts and stops the Samba winbind daemon"
+msgstr "삼바 winbind 데몬을 시작하거나 마치기"
+
+#: service-list.pl.in:134
+msgid ""
+"Allow users to run Windows(tm) applications by just clicking on them (or "
+"typing ./file.exe)"
+msgstr ""
+"사용자가 Windows(tm) 프로그램을 클릭만 하여 (또는 ./file.exe를 입력하여) 실행"
+"할 수 있도록 합니다."
+
+#: service-list.pl.in:135
+msgid "X Display Manager"
+msgstr "X 디스플레이 관리자"
+
+#: service-list.pl.in:135
+msgid "Provides the X equivalent of a \"login:\" prompt."
+msgstr "X에서 제공하는 \"login:\"프롬프트와 같은 역할을 합니다."
+
+#: service-list.pl.in:136
+msgid "X font server"
+msgstr "X 글꼴 서버"
+
+#: service-list.pl.in:136
+msgid ""
+"Xfs is the X Window System font server. It supplies fonts to X Window System "
+"display servers."
+msgstr ""
+"Xfs는 X 윈도우 시스템의 글꼴 서버입니다. 이것은 X 윈도우 시스템 디스플레이 서"
+"버에 글꼴을 제공합니다."
+
+#: service-list.pl.in:137
+msgid ""
+"xinetd is a powerful replacement for inetd. xinetd has access control "
+"machanisms, extensive logging capabilities, the ability to make services "
+"available based on time, and can place limits on the number of servers that "
+"can be started, among other things."
+msgstr ""
+"xinetd는 inetd를 대체하는 강력한 서비스입니다. xinetd는 접근제어 메카니즘, 확"
+"장 가능한 로깅 기능, 시간에 기반한 서비스 가능 능력, 시작할 수 있는 서버의 개"
+"수 제한, 등등, 그외 여러가지 기능을 가지고 있습니다."
+
+#: service.pl.in:226 service.pl.in:231
+msgid "Halting the system"
+msgstr "시스템 종료"
+
+#: service.pl.in:227 service.pl.in:233
+msgid "Text mode"
+msgstr "문자 모드"
+
+#: service.pl.in:228 service.pl.in:232 service.pl.in:241
+msgid "Graphical mode"
+msgstr "그래픽 모드"
+
+#: service.pl.in:229 service.pl.in:234
+msgid "Rebooting the system"
+msgstr "시스템을 재시작"
+
+#: service.pl.in:236
+msgid "Starts all system neccesary services"
+msgstr "시스템에서 필요한 모든 서비스 시작"
+
+#: service.pl.in:237
+msgid "Default runlevel"
+msgstr "기본 실행 레벨"
+
+#: service.pl.in:238
+msgid "Networkless runlevel"
+msgstr "네트워크가 필요없는 실행 레벨"
+
+#: users-conf.in:179
+msgid "Monitor system logs"
+msgstr "시스템 로그 감시"
+
+#: users-conf.in:180
+msgid "Use audio devices"
+msgstr "오디오 장치 사용"
+
+#: users-conf.in:181
+msgid "Access to CD-ROM drives"
+msgstr "CD-ROM 장치 접근"
+
+#: users-conf.in:182
+msgid "Access to modem devices"
+msgstr "모뎀장치 접근"
+
+#: users-conf.in:183
+msgid "Connect to Internet through modem devices"
+msgstr "모뎀장치로 인터넷 연결"
+
+#: users-conf.in:184
+msgid "Send and receive faxes"
+msgstr "팩스 주고 받기"
+
+#: users-conf.in:185
+msgid "Access to floppy drives"
+msgstr "플로피 드라이브 접근"
+
+#: users-conf.in:186
+msgid "Enable access to external storage devices automatically"
+msgstr "외부 저장장치에 자동으로 접근 가능"
+
+#: users-conf.in:187
+msgid "Access to tape drives"
+msgstr "테이프 장치 접근"
+
+#: users-conf.in:188
+msgid "Be able to get administrator privileges"
+msgstr "관리자 권한 얻을 수 있음"
+
+#: users-conf.in:491
+msgid "Default"
+msgstr "기본값"
+
+#: users-conf.in:492
+msgid "Default profile"
+msgstr "기본 프로파일"

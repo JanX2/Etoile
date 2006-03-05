@@ -1,0 +1,506 @@
+#!/usr/bin/env perl
+#-*- Mode: perl; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+
+# Boot manager configurator. Designed to be architecture and distribution independent.
+#
+# Copyright (C) 2000-2001 Ximian, Inc.
+#
+# Authors: Tambet Ingo     <tambet@ximian.com>
+#          Arturo Espinosa <arturo@ximian.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Library General Public License as published
+# by the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+
+$SCRIPTSDIR = "@scriptsdir@";
+if ($SCRIPTSDIR =~ /^@scriptsdir[@]/)
+{
+    $SCRIPTSDIR = ".";
+    $DOTIN = ".in";
+}
+
+require "$SCRIPTSDIR/general.pl$DOTIN";
+require "$SCRIPTSDIR/util.pl$DOTIN";
+require "$SCRIPTSDIR/file.pl$DOTIN";
+require "$SCRIPTSDIR/xml.pl$DOTIN";
+require "$SCRIPTSDIR/util.pl$DOTIN";
+require "$SCRIPTSDIR/parse.pl$DOTIN";
+require "$SCRIPTSDIR/replace.pl$DOTIN";
+require "$SCRIPTSDIR/boot-grub.pl$DOTIN";
+require "$SCRIPTSDIR/boot-lilo.pl$DOTIN";
+require "$SCRIPTSDIR/boot-yaboot.pl$DOTIN";
+
+# ----------------------------------------------------------------------------
+# Fix functions.
+#
+# The main reason for these functions is to add default values to xml so the
+# frontend doesn't have to know anything about lilo or its defaults.
+
+sub gst_boot_fix_default
+{
+  my ($hash) = @_;
+  my ($entries, $found, $entry);
+  
+  $entries = $$hash{"entry"};
+  return unless $entries;
+  
+  # 'default'
+  if (exists ($$hash{"default"}))
+  {
+    # Check if valid
+    foreach $entry (@$entries)
+    {
+      if ($$hash{"default"} eq $$entry{"label"})
+      {
+        $found = 1;
+        last;
+      }
+    }
+    delete $$hash{"default"} unless $found;
+  }
+  
+  if (not exists ($$hash{"default"}))
+  {
+    # No 'default', let's add
+    foreach $entry (@$entries)
+    {
+      if ($$hash{"key"} == 0)
+      {
+        $$hash{"default"} = $$entry{"label"};
+        last;
+      }
+    }
+  }
+}
+
+# Internal. Should be run after fix_entries.
+sub gst_boot_fix_globals
+{
+  my ($hash) = @_;
+  
+  return unless $hash;
+  &gst_boot_fix_default ($hash);
+}
+
+# Internal
+sub gst_boot_fix_entry
+{
+  my ($entry) = @_;
+  my ($name);
+  
+  return unless $entry;
+
+  $name = $$entry{"image"} if exists $$entry{"image"};
+  $name = $$entry{"other"} if (!$name && exists $$entry{"other"});
+    
+  # Remove entries without entry identifier 'entry' or 'other'.
+  unless ($name) {
+    undef $entry;
+    return;
+  }
+
+  # Add 'label' field which is optional in lilo.conf
+  unless (exists $$entry{"label"})
+  {
+    $$entry{"label"} = $1 if ($name =~ /\S+\/(\S+)$/);
+  }
+}
+
+# Internal
+sub gst_boot_fix_entries
+{
+  my ($hash) = @_;
+  my ($entries, $entry);
+
+  return unless $hash;
+
+  $entries = $$hash{"entry"};
+  return unless $entries;
+
+  foreach $entry (@$entries)
+  {
+    &gst_boot_fix_entry ($entry);
+  }
+}
+
+sub gst_boot_fix
+{
+  my ($hash) = @_;
+  
+  return unless $hash;
+  
+  &gst_boot_fix_entries ($hash);
+  &gst_boot_fix_globals ($hash);
+}
+
+# --------------------------------------------------------
+
+sub gst_boot_bootloader_list
+{
+  my (@list);
+
+  if (gst_file_locate_tool ("lilo"))
+  {
+    push @list, { "name" => "LILO",
+                  "exec" => "lilo" };
+  }
+
+  if (gst_file_locate_tool ("grub-install"))
+  {
+    push @list, { "name" => "Grub",
+                  "exec" => "grub" };
+  }
+
+  if (gst_file_locate_tool ("ybin"))
+  {
+    push @list, { "name" => "YaBoot",
+                  "exec" => "yaboot" };
+  }
+
+  return (scalar @list, { "bootloaders" => { "bootloader" => \@list }});
+}
+
+sub gst_boot_bootloader_get
+{
+  my ($current_tool, $current_date, $bootl, $date);
+
+  $current_date = 0;
+  $bootl = gst_file_locate_tool ("lilo");
+  if ($bootl ne "")
+  {
+    $date = (stat ($bootl)) [8];
+    if ($date > $current_date)
+    {
+      $current_date = $date;
+      $current_tool = "lilo";
+    }
+  }
+  
+  $bootl = gst_file_locate_tool ("grub-install");
+  if ($bootl ne "")
+  {
+    $date = (stat ($bootl)) [8];
+    if ($date > $current_date)
+    {
+      $current_date = $date;
+      $current_tool = "grub";
+    }
+  }
+
+  $bootl = gst_file_locate_tool ("ybin");
+  if ($bootl ne "")
+  {
+    $date = (stat ($bootl)) [8];
+    if ($date > $current_date)
+    {
+      $current_date = $date;
+      $current_tool = "yaboot";
+    }
+  }
+  
+  if ($current_date eq 0)
+  {
+    &gst_report ("platform_no_bootloader", $main::gst_dist);
+    return undef;
+  }
+  return $current_tool;
+}
+
+
+sub gst_boot_entries_get
+{
+  my ($partition) = @_;
+  my (%dist_attrib, @res, %fn, @entries, $entry);
+  my ($dist, $value, $file, $proc);
+  my ($entry, $j, $key, $tmp);
+
+  %dist_attrib = &gst_boot_get_entry_parse_table ();
+  %fn = %{$dist_attrib{"fn"}};
+  $proc = $dist_attrib{"entries_get"};
+  @entries = &$proc (\%fn);
+
+  &gst_boot_grub_check_device_map ();
+
+  ${$dist_attrib{"fn"}}{"PARTITION"} = $partition;
+
+  $key = 0;
+  foreach $entry (@entries)
+  {
+    foreach $j (keys (%fn))
+    {
+      $tmp = &gst_parse_expand ($fn{$j}, "key", $key);
+      $ {$dist_attrib{"fn"}}{$j} = &gst_parse_expand ($tmp, "label", $entry);
+    }
+
+    $entry = &gst_parse_from_table ($dist_attrib{"fn"},
+                                    $dist_attrib{"table"});
+
+    if (exists ($$entry {"image"}))
+    {
+      # this is filled even when it's a linux style entry, delete it
+      delete $$entry {"other"};
+      push @res, $entry;
+    }
+    elsif (exists ($$entry {"other"}))
+    {
+      # this may be filled, but it's not necessary
+      delete $$entry {"root"};
+      push @res, $entry;
+    }
+
+    $key++;
+  }
+
+  return \@res;
+}
+
+
+sub gst_boot_conf_get
+{
+  my ($bootl) = @_;
+  my $config_file = &gst_boot_grub_get_config_file ();
+  my %tool_tables =
+  (
+       "lilo" =>
+       {
+         fn =>
+         {
+           LILO_CONF => "/etc/lilo.conf"
+         },
+         table =>
+             [
+              [ "partitions", \&gst_partition_scan_info ],
+#              [ "pixmapsup", \&gst_parse_trivial,             0 ],
+              [ "timeout",   \&gst_boot_lilo_parse_global,    LILO_CONF, "delay" ],
+              [ "prompt",    \&gst_boot_lilo_parse_global_kw, LILO_CONF, "prompt"  ],
+              [ "default",   \&gst_boot_lilo_parse_global,    LILO_CONF, "default" ],
+              [ "boot",      \&gst_boot_lilo_parse_global,    LILO_CONF, "boot"    ],
+#	      [ "root",      \&gst_boot_lilo_parse_global,    LILO_CONF, "root"    ],
+              [ "entry",     \&gst_boot_lilo_parse_entries,   LILO_CONF, "%partitions%" ],
+              ] 
+       },
+
+       "grub" =>
+       {
+         fn =>
+         {
+           GRUB_CONF  => $config_file,
+           DEVICE_MAP => "/boot/grub/device.map",
+#           MTAB       => "/etc/mtab"
+         },
+         table =>
+             [
+              [ "partitions", \&gst_partition_scan_info ],
+#              [ "pixmapsup", \&gst_parse_trivial,           1 ],
+#              [ "pixmap",    \&gst_boot_grub_parse_pixmap,  [GRUB_CONF, DEVICE_MAP, MTAB] ],
+              [ "timeout",   \&gst_boot_grub_parse_timeout, GRUB_CONF ],
+              [ "prompt",    \&gst_boot_grub_parse_prompt,  GRUB_CONF ],
+              [ "default",   \&gst_boot_grub_parse_default, GRUB_CONF ],
+              [ "entry",     \&gst_boot_entries_get,        "%partitions%" ],
+              ] 
+       },
+
+       "yaboot" =>
+       {
+         fn =>
+         {
+             YABOOT_CONF => "/etc/yaboot.conf",
+         },
+         table =>
+             [
+              [ "partitions", \&gst_partition_scan_info ],
+              [ "timeout",    \&gst_boot_lilo_parse_global, YABOOT_CONF, "timeout" ],
+              [ "default",    \&gst_boot_lilo_parse_global, YABOOT_CONF, "default" ],
+              [ "boot",       \&gst_boot_lilo_parse_global, YABOOT_CONF, "boot" ],
+              [ "root",       \&gst_boot_lilo_parse_global, YABOOT_CONF, "root" ],
+              [ "entry",      \&gst_boot_yaboot_parse_entries, YABOOT_CONF, "%partitions%", "%root%" ]
+             ]
+       }
+  );
+       
+  return &gst_parse_from_table ($ {$tool_tables{$bootl}}{"fn"},
+                                $ {$tool_tables{$bootl}}{"table"});
+}
+
+sub gst_boot_get_entry_parse_table
+{
+  my $config_file = &gst_boot_grub_get_config_file ();
+  my %tool_tables =
+      (
+         entries_get => \&gst_boot_grub_get_entries_fn,
+         fn =>
+         {
+           KEY        => "#key#",
+           LABEL      => "#label#",
+           GRUB_CONF  => $config_file,
+           DEVICE_MAP => "/boot/grub/device.map",
+           MTAB       => "/etc/mtab"
+         },
+         table =>
+             [
+              ["key",    \&gst_parse_trivial,          [KEY]],
+              ["label",  \&gst_parse_trivial,          [LABEL]],
+              ["root",   \&gst_boot_grub_parse_root,   [GRUB_CONF, DEVICE_MAP, KEY]],
+              ["type",   \&gst_boot_grub_parse_type,   [GRUB_CONF, KEY, PARTITION], "%root%"],
+              ["image",  \&gst_boot_grub_parse_image,  [GRUB_CONF, DEVICE_MAP, MTAB, KEY]],
+              ["other",  \&gst_boot_grub_parse_other,  [GRUB_CONF, DEVICE_MAP, MTAB, KEY]],
+              ["append", \&gst_boot_grub_parse_append, [GRUB_CONF, KEY]],
+              ["initrd", \&gst_boot_grub_parse_initrd, [GRUB_CONF, DEVICE_MAP, MTAB, KEY]],
+              ["module", \&gst_boot_grub_parse_module, [GRUB_CONF, DEVICE_MAP, MTAB, KEY]],
+              ["password", \&gst_boot_grub_parse_password, [GRUB_CONF, KEY]]
+             ]
+       );
+
+  return %tool_tables;
+
+  &gst_report ("platform_no_table", $gst_dist);
+  return undef;
+}
+
+sub gst_boot_entry_set
+{
+  my ($dist_attrib, $values_hash) = @_;
+  my ($j, %fn, $res);
+
+  %fn = %{$$dist_attrib{"fn"}};
+  foreach $j (keys (%fn))
+  {
+    $fn{$j} = &gst_parse_expand ($ {$$dist_attrib{"fn"}}{$j}, "key", $$values_hash{"key"});
+  }
+  
+  return &gst_replace_from_table (\%fn, $$dist_attrib{"table"}, $values_hash);
+}
+
+sub gst_boot_entries_set
+{
+  my ($entries) = @_;
+  my (%dist_attrib, %fn, @old, @new, @del);
+  my ($i, $proc, $entry);
+  my ($tmp, $res);
+  %dist_attrib = &gst_boot_get_entry_replace_table ();
+  %fn = %{$dist_attrib{"fn"}};
+
+  foreach $entry (@$entries)
+  {
+    $new[$$entry{"key"}] = $entry;
+  }
+  $proc = $dist_attrib{"entries_get"};
+  @old = &$proc (\%fn);
+  
+  for ($i = 0; $i < &gst_max (scalar @old, scalar @$entries); $i++)
+  {
+    if ($new[$i] ne undef)
+    {
+      $tmp = &gst_boot_entry_set (\%dist_attrib, $new[$i]);
+      $res = $tmp if !$res;
+    }
+    else
+    {
+      push @del, $i;
+    }
+  }
+
+  # Delete all old entries that are not in the hash.
+  $proc = $dist_attrib{"entries_del"};
+  $tmp = &$proc (\%fn, \@del);
+  $res = $tmp if !$res;
+
+  return $res;
+}
+    
+sub gst_boot_conf_set
+{
+  my $values_hash = $_[0];
+  my $config_file = &gst_boot_grub_get_config_file ();
+  $bootl = &gst_boot_bootloader_get ();
+
+  my %tool_tables =
+      (
+       "lilo" => {
+         fn => { LILO_CONF => "/etc/lilo.conf"},
+         table => [
+	           [ "boot",    \&gst_boot_lilo_replace_global,    LILO_CONF, "boot"    ],
+#	           [ "root",    \&gst_boot_lilo_replace_global,    LILO_CONF, "root"    ],
+             [ "timeout", \&gst_boot_lilo_replace_global,    LILO_CONF, "timeout" ],
+             [ "timeout", \&gst_boot_lilo_replace_global,    LILO_CONF, "delay" ],
+             [ "prompt",  \&gst_boot_lilo_replace_global_kw, LILO_CONF, "prompt"  ],
+             [ "default", \&gst_boot_lilo_replace_global,    LILO_CONF, "default" ],
+             [ "entry",   \&gst_boot_lilo_entries_set,       LILO_CONF ],
+         ] 
+       },
+       
+       "grub" =>
+       {
+         fn =>
+         {
+           GRUB_CONF  => $config_file,
+           DEVICE_MAP => "/boot/grub/device.map",
+           MTAB       => "/etc/mtab"
+         },
+         table =>
+             [
+ #             [ "pixmap",  \&gst_boot_grub_replace_pixmap,  [GRUB_CONF, DEVICE_MAP, MTAB] ],
+              [ "timeout", \&gst_boot_grub_replace_timeout,  GRUB_CONF ],
+              [ "prompt",  \&gst_boot_grub_replace_prompt,   GRUB_CONF ],
+              [ "default", \&gst_boot_grub_replace_default,  GRUB_CONF , "%entry%"],
+              [ "entry",   \&gst_boot_grub_entries_set, [GRUB_CONF, DEVICE_MAP, MTAB] ],
+              ] 
+       },
+
+       "yaboot" =>
+       {
+         fn => { YABOOT_CONF => "/etc/yaboot.conf" },
+         table =>
+             [
+              [ "boot",    \&gst_boot_lilo_replace_global, YABOOT_CONF, "boot"    ],
+              [ "timeout", \&gst_boot_lilo_replace_global, YABOOT_CONF, "timeout" ],
+              [ "default", \&gst_boot_lilo_replace_global, YABOOT_CONF, "default" ],
+              [ "entry",   \&gst_boot_yaboot_entries_set,  YABOOT_CONF ],
+             ]
+         }
+       );
+
+  return &gst_replace_from_table ($ {$tool_tables{$bootl}}{"fn"},
+                                  $ {$tool_tables{$bootl}}{"table"}, $values_hash);
+}
+
+sub gst_boot_get_entry_replace_table
+{
+  my $config_file = &gst_boot_grub_get_config_file ();
+  my %tool_tables =
+      (
+         entries_get => \&gst_boot_grub_get_entries_fn,
+         entries_del => \&gst_boot_grub_remove_entries,
+         fn =>
+         {
+           KEY        => "#key#",
+           GRUB_CONF  => $config_file,
+           DEVICE_MAP => "/boot/grub/device.map",
+           MTAB       => "/etc/mtab"
+         },
+         table =>
+             [
+              # label has to go first, because it creates the entry if non-existent.
+              ["label",  \&gst_boot_grub_replace_label,  [GRUB_CONF, KEY]],
+#              ["type",   \&gst_boot_grub_replace_type,   [GRUB_CONF, KEY]],
+              ["root",   \&gst_boot_grub_replace_root,   [GRUB_CONF, DEVICE_MAP, KEY, "%type%"]],
+              ["image",  \&gst_boot_grub_replace_image,  [GRUB_CONF, DEVICE_MAP, MTAB, KEY]],
+              ["other",  \&gst_boot_grub_replace_other,  [GRUB_CONF, DEVICE_MAP, KEY]],
+              ["append", \&gst_boot_grub_replace_append, [GRUB_CONF, DEVICE_MAP, KEY]],
+              ]
+       );
+  return %tool_tables;
+}
+
+

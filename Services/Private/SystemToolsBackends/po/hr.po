@@ -1,0 +1,647 @@
+# Translation of setup-tools-backends to Croatiann
+# Copyright (C) Croatiann team
+# Translators: Automatski Prijevod <>,Denis Lackovic <delacko@fly.srk.fer.hr>,Nikola Planinac <>,Robert Sedak <robert.sedak@sk.tel.hr>,
+msgid ""
+msgstr ""
+"Project-Id-Version: setup-tools-backends 0\n"
+"POT-Creation-Date: 2004-03-18 00:11+0100\n"
+"PO-Revision-Date: 2004-03-18 00:11+CET\n"
+"Last-Translator: auto\n"
+"Language-Team: Croatian <lokalizacija@linux.hr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: TransDict server\n"
+
+#. please, keep this list sorted
+#.  service => [long_name, description]
+#: service-list.pl.in:36
+msgid "Advanced Linux Sound Architecture"
+msgstr "Napradna Linux arhitektura za zvuk (ALSA)"
+
+#: service-list.pl.in:37 service-list.pl.in:61
+msgid "web server"
+msgstr "Posljužitelj weba"
+
+#: service-list.pl.in:37 service-list.pl.in:61
+msgid "Apache is a World Wide Web server.  It is used to serve HTML files and CGI."
+msgstr "Apache je WWW poslužitelj. Koristi se za posluživanje HTML datoteka i za CGI aplikacije."
+
+#: service-list.pl.in:38
+msgid "Run missed scheduled jobs at startup"
+msgstr "Pokretanje propuštenih cron poslova prilikom pokretanja"
+
+#: service-list.pl.in:38
+msgid "Run cron jobs that were left out due to downtime"
+msgstr "Pokretanje cron poslova koji su izostavljeni zbog gašenja računala"
+
+#: service-list.pl.in:39
+msgid "Automatic power management daemon"
+msgstr "Daemon za upravljanje potrošnjom energije (APM)"
+
+#: service-list.pl.in:39
+msgid ""
+"apmd is used for monitoring battery status and logging it via syslog(8). It "
+"can also be used for shutting down the machine when the battery is low."
+msgstr ""
+"apmd se koristi za nadzor nad statusom beterija i zapisivanje tog statusa u "
+"logove korištenjem sysloga (8). Također se može koristiti za gašenje računala "
+"kada je baterija gotovo prazna."
+
+#: service-list.pl.in:40
+msgid "Runs a command at a given time"
+msgstr "Pokreće naredbu u dato vrijeme"
+
+#: service-list.pl.in:40
+msgid ""
+"Runs commands scheduled by the at command at the time specified when at was "
+"run, and runs batch commands when the load average is low enough."
+msgstr ""
+"Pokreće naredbe zakazane at naredbom u vrijeme dato prilikom "
+"pokretanja at naredbe, također pokreće naredbe kada je opterećenje sustava "
+"dovoljno nisko."
+
+#: service-list.pl.in:41
+msgid "BinFormat Support"
+msgstr "BinFormat podrška"
+
+#: service-list.pl.in:41
+msgid "Support for running non ELF binaries on Linux"
+msgstr "Podrška za pokretanje ne ELF binarnih datoteka na Linuxu"
+
+#: service-list.pl.in:42
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the tcp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"Interni xinetd servis koji stvara znakove. Servis će stvarati znakove dok "
+"se veza ne ugasi. Ovo je tcp inačica. "
+"Morate omogućiti xinetd za korištenje ovog servisa."
+
+#: service-list.pl.in:43
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the udp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"Interni xinetd servis koji stvara znakove. Servis će stvarati znakove dok "
+"se veza ne ugasi. Ovo je udp inačica. "
+"Morate omogućiti xinetd za korištenje ovog servisa."
+
+#: service-list.pl.in:44
+msgid "daemon to execute scheduled commands"
+msgstr "daemon za periodičko izvršavanje naredaba"
+
+#: service-list.pl.in:45
+msgid "Run scheduled jobs"
+msgstr "Pokretanje zakazanih poslova"
+
+#: service-list.pl.in:45
+msgid ""
+"cron is a standard UNIX program that runs user-specified programs at "
+"periodic scheduled times. vixie cron adds a number of features to the basic "
+"UNIX cron, including better security and more powerful configuration options."
+msgstr ""
+"cron je standardni UNIX program koji pokreće korisnički navedene programe u "
+"periodičkim razdobljima. vixies cron dodaj niz mogućnosti na osnovni UNIX "
+"cron, uključujući podršku za bolju sigurnost i više mogućnosti za postavljanje."
+
+#: service-list.pl.in:46
+msgid "Common Unix Printing System"
+msgstr "Sustav za ispis na UNIX-u (CUPS)"
+
+#: service-list.pl.in:47
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the tcp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"Interni xinetd servis koji dohvaća trenutno vrijeme sustava i tada ga ispisuje "
+"u formatu poput ovog 'Sri Sij 13 22:30:23 EST 2004'. Ovo je tcp"
+"inačica. Morate omogućiti xinetd za korištenje ovog servisa."
+
+#: service-list.pl.in:48
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the udp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"Interni xinetd servis koji dohvaća ternutno vrijeme sustava i tada ga ispisuje "
+"u formatu poput ovog 'Sri Sij 13 22:30:23 EST 2004'. Ovo je udp"
+"inačica. Morate omogućiti xinetd za korištenje ovog servisa."
+
+#: service-list.pl.in:49 service-list.pl.in:50
+msgid "Dynamic DNS Client"
+msgstr "Dinamički DNS klijent"
+
+#: service-list.pl.in:49
+msgid "A Dynamic DNS Name service from www.dyndns.org"
+msgstr "Dinamički DNS imenički servis od www.dyndns.org"
+
+#: service-list.pl.in:50
+msgid "A Dynamic DNS Name service from www.dhis.org"
+msgstr "Dinamički DNS imenički servis od www.dhis.org"
+
+#: service-list.pl.in:51
+msgid "Dict Dictionary Server"
+msgstr "Dict poslužitelj za rječnike"
+
+#: service-list.pl.in:52
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"Interni xinetd servis koji vraća (echo) znakove klijentima. Ovo je tcp inačica. "
+"Morate omogućiti xinetd za korištenje ovog servisa."
+
+#: service-list.pl.in:53
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"Interni xinetd servis koji vraća (echo) znakove klijentima. Ovo je udp inačica. "
+"Morate omogućiti xinetd za korištenje ovog servisa."
+
+#: service-list.pl.in:54
+msgid "Exim SMTP Server"
+msgstr "EXIM SMTP poslužitelj"
+
+#: service-list.pl.in:55
+msgid "file alteration monitor"
+msgstr "nadzor promjena nad datotekama"
+
+#: service-list.pl.in:56
+msgid "Firstboot is a druid style program that runs on the first time"
+msgstr "Firstboot je program u stilu čarobnjaka koji se pokreće prvi puta"
+
+#: service-list.pl.in:57
+msgid "Mail Fetcher"
+msgstr "Program za dohvat pošte"
+
+#: service-list.pl.in:57
+msgid "A Mail Fetcher from external Servers"
+msgstr "Program za dohvaćanje pošte s vanjskih poslužitelja"
+
+#: service-list.pl.in:58
+msgid "IPv6 Tunnel Broker"
+msgstr "IPv6 tunel broker"
+
+#: service-list.pl.in:58
+msgid "A IPv6 Dynamic Tunnel Broker"
+msgstr "Dinamički broker IPv6 tunela"
+
+#: service-list.pl.in:59
+msgid "GNOME Display Manager"
+msgstr "GNOME Upravitelj prikaza"
+
+#: service-list.pl.in:59
+msgid "gdm provides the GNOME equivalent of a \"login:\" prompt."
+msgstr "gdm daje GNOME inačicu programa za prijavu u sustav"
+
+#: service-list.pl.in:60
+msgid "console mouse support"
+msgstr "podrška za konzolni miš"
+
+#: service-list.pl.in:60
+msgid ""
+"GPM adds mouse support to text-based Linux applications such the Midnight "
+"Commander. It also allows mouse-based console cut-and-paste operations, and "
+"includes support for pop-up menus on the console."
+msgstr ""
+"GPM daje podršku za miša tekstualnim Linux aplikacijama poput  Midnight "
+"Commandera. Također omogućava kopiranje i umetanje teksta korištenjem "
+"miša u konzoli, a uključuje i podršku za skočne izbornike u konzoli."
+
+#: service-list.pl.in:62
+msgid "internet superserver"
+msgstr "internet superserver"
+
+#: service-list.pl.in:62
+msgid ""
+"inetd allows running one daemon to invoke several others, reducing load on "
+"the system."
+msgstr ""
+"indetd omogućava pokretanje jednog daemona koji će pokretati ostale, smanjujući "
+"opterećenje sustava."
+
+#: service-list.pl.in:63
+msgid "administration tool for IPv4 packet filtering and NAT"
+msgstr "administracijski alat za IPv4 paketno filtriranje i NAT"
+
+#: service-list.pl.in:63
+msgid ""
+"Iptables is used to set up, maintain, and inspect the tables of IP packet "
+"filter rules in the Linux kernel."
+msgstr ""
+"Iptables se koristi za postavljanje, održavanje i pregled tablica pravila IP "
+"paketnih filtera u Linux kernelu."
+
+#: service-list.pl.in:64
+msgid "IrDA stack for Linux"
+msgstr "IrDA stog za Linux"
+
+#: service-list.pl.in:65
+msgid "The Internet Key Exchange protocol"
+msgstr "Internet Key Exchange protokol"
+
+#: service-list.pl.in:65
+msgid "The Internet Key Exchange protocol openbsd implementation"
+msgstr "OpenBSD implementacija Internet Key Exchange protokola"
+
+#: service-list.pl.in:66
+msgid "start and stop ISDN services"
+msgstr "pokretanje i zaustavljanje ISDN servisa"
+
+#: service-list.pl.in:67
+msgid ""
+"This package loads the selected keyboard map as set in /etc/sysconfig/"
+"keyboard.  This can be selected using the kbdconfig utility.  You should "
+"leave this enabled for most machines."
+msgstr ""
+"Ovaj paket učitava odabranu mapu tipkovnice koja je postavljena u "
+"/etc/sysconfig/keyboard. Ona može biti odabrana korištenjem kbdconfig "
+"pomoćnog programa. Ovo biste trebali ostaviti omogućeno za većinu "
+"računala."
+
+#: service-list.pl.in:68
+msgid "klogd is a system daemon which intercepts and logs Linux kernel messages."
+msgstr "klogd je sustavski daemon koji predusreće i logira Linux kernel poruke."
+
+#: service-list.pl.in:69
+msgid "This runs the hardware probe, and optionally configures changed hardware."
+msgstr "Pokretanje traženja hardvera, i, opcionalno, podešavanje promijenjenog hardvera."
+
+#: service-list.pl.in:70 service-list.pl.in:71
+msgid ""
+"LIRC is a package that allows you to decode and send infra-red signals of "
+"many commonly used remote controls"
+msgstr ""
+"LIRC je paket koji omogućava dekodiranje i slanje infra-crvenih signala "
+"mnogih daljinskih upravljača"
+
+#: service-list.pl.in:72
+msgid ""
+"lpd is the print daemon required for lpr to work properly. It is basically a "
+"server that arbitrates print jobs to printer(s)."
+msgstr ""
+"lpd je daemon za ispis potreban kako bi lpr radio ispravno. U osnovni "
+"je to poslužitelj koji određuje kada će se poslovi ispisa slati pisačima."
+
+#: service-list.pl.in:73
+msgid "Syslog Replacement"
+msgstr "Zamjena za syslog"
+
+#: service-list.pl.in:73
+msgid "Modern logging daemon"
+msgstr "Suvremeni daemon za logiranje"
+
+#: service-list.pl.in:74
+msgid "tools for managing Linux kernel modules"
+msgstr "alati za upravljanje Linux kernel modulima"
+
+#: service-list.pl.in:75
+msgid "dns server"
+msgstr "dns poslužitelj"
+
+#: service-list.pl.in:75
+msgid ""
+"named (BIND) is a Domain Name Server (DNS) that is used to resolve host "
+"names to IP addresses."
+msgstr ""
+"named (BIND) je Domain Name Server (DNS) poslužitelj koji se upotrebljava\n"
+"za razlučivanje imena računala u IP adrese."
+
+#: service-list.pl.in:76
+msgid ""
+"Mounts and unmounts all Network File System (NFS), SMB (Lan Manager/"
+"Windows), and NCP (NetWare) mount points."
+msgstr ""
+"Mounta i odmountava sve Network File System (NFS), SMB (Lan Manager/"
+"Windows), i NCP (NetWare) točke pristupa."
+
+#: service-list.pl.in:77
+msgid ""
+"Activates/Deactivates all network interfaces configured to start at boot "
+"time."
+msgstr "Aktivira/Deaktivira sva mrežna sučelja namještena da se startaju prilikom podizanja sustava."
+
+#: service-list.pl.in:78
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS server functionality, which is configured via the /etc/"
+"exports file."
+msgstr ""
+"NFS je popularni protokol za dijeljenje datoteka preko TCP/IP mreža. "
+"Ovaj servis daje NFS poslužitelj koji se podešava kroz /etc/exports "
+"datoteku."
+
+#: service-list.pl.in:79
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS file locking functionality."
+msgstr ""
+"NFS je popularni protokol za dijeljenje datoteka preko TCP/IP mreža. "
+"Ovaj servis daje mogućnost zaključavanja NFS datoteka."
+
+#: service-list.pl.in:80
+msgid "ntpd is the NTPv4 daemon."
+msgstr "ntpd je NTPv4 daemon."
+
+#: service-list.pl.in:81
+msgid "HTTP caching proxy"
+msgstr "HTTP proxy koji koristi međuspremnike"
+
+#: service-list.pl.in:82
+msgid "PCMCIA Services"
+msgstr "PCMCIA servisi"
+
+#: service-list.pl.in:83
+msgid "Caching-Only DNS Server"
+msgstr "DNS poslužitelj s međuspremanjem podataka"
+
+#: service-list.pl.in:84
+msgid "IPsec tunnel implementation"
+msgstr "Implementacija IPsec tunela"
+
+#: service-list.pl.in:85
+msgid "DARPA port to RPC program number mapper"
+msgstr "Program za mapiranje DARPA portova u RPC"
+
+#: service-list.pl.in:85
+msgid ""
+"The portmapper manages RPC connections, which are used by protocols such as "
+"NFS and NIS. The portmap server must be running on machines which act as "
+"servers for protocols which make use of the RPC mechanism."
+msgstr ""
+"Portmapper upravlja RPC vezama koje koriste protokoli poput NFS-a i NIS-a."
+"Portmap poslužitelj mora biti pokrenut na računalima koji su poslužitelji protokola "
+"koji koriste RPC mehanizam."
+
+#: service-list.pl.in:86
+msgid "Mail Transport Agent"
+msgstr "Agent za prijenos pošte (MTA)"
+
+#: service-list.pl.in:87
+msgid "database server"
+msgstr "Poslužitelj baze podataka"
+
+#: service-list.pl.in:88
+msgid "Point to Point Protocol daemon"
+msgstr "PTP daemon"
+
+#: service-list.pl.in:88
+msgid ""
+"The  Point-to-Point Protocol (PPP) provides a method for transmitting "
+"datagrams over serial point-to-point links."
+msgstr "PPP protokol omogućuje prenošenje podataka preko serijskih veza."
+
+#: service-list.pl.in:89
+msgid "Privacy enhancing HTTP Proxy"
+msgstr "HTTP proxy s pojačanom zaštitom privatnosti"
+
+#: service-list.pl.in:90
+msgid ""
+"Saves and restores system entropy pool for higher quality random number "
+"generation."
+msgstr ""
+"Sprema i vraća entropiju sustava za bolju kvalitetu stvaranja slučajnih "
+"brojeva."
+
+#: service-list.pl.in:91
+msgid ""
+"This scripts assignes raw devices to block devices (such as hard drive "
+"partitions). This is for the use of applications such as Oracle. You can set "
+"up the raw device to block device mapping by editing the file /etc/sysconfig/"
+"rawdevices."
+msgstr ""
+"Ova skripta pridružuje raw uređaje blok uređajima (poput particija tvrdog diska). "
+"Ovo se koristi za aplikacije poput Oraclea. Mapiranje ovih uređaja možete "
+"podesiti u datoteci /etc/sysconfig/rawdevices."
+
+#: service-list.pl.in:92
+msgid ""
+"This is a daemon which handles the task of connecting periodically to the "
+"Red Hat Network servers to check for updates, notifications and perform "
+"system monitoring tasks according to the service level that this server is "
+"subscribed for."
+msgstr ""
+"Ovo je daemon koji upravlja zadatkom periodoičkog spajanja na"
+"Red Hat Network poslužitelje u svrhu traženja ažuriranih paketa, upozorenja i "
+"izvršavanja zadataka nadzora sustava u skladu s uslugom na koju je ovaj "
+"poslužitelj pretplaćen."
+
+#: service-list.pl.in:93
+msgid ""
+"The rsync server is a good addition to am ftp server, as it allows crc "
+"checksumming etc. You must enable xinetd to use this service."
+msgstr ""
+"Rsync poslužitelj je dobar dodatak am ftp poslužitelju, jer dopušta "
+"crc provjeru zaštitne sume, itd. Morate omogućiti xinetd za korištenje "
+"ovog servisa."
+
+#: service-list.pl.in:94
+msgid ""
+"saslauthd is a server process which handles plaintext authentication "
+"requests on behalf of the cyrus-sasl library."
+msgstr ""
+"saslauthd je poslužitelj koji upravlja nekriptiranim zahtjevima za autentifikacijom "
+"za cyrus-sasl biblioteku."
+
+#: service-list.pl.in:95
+msgid ""
+"Sendmail is a Mail Transport Agent, which is the program that moves mail "
+"from one machine to another."
+msgstr ""
+"Sendmail je agent za prijenos pošte, a to je program koji šalje poštu "
+"s jednog računala na drugo."
+
+#: service-list.pl.in:96
+msgid ""
+"An internal xinetd service, listing active servers. You must enable xinetd "
+"to use this service."
+msgstr ""
+"Interni xinetd servis, izlistava aktivne poslužitelje. Da biste koristili "
+"ovaj servis morate prvo omogućiti xinetd."
+
+#: service-list.pl.in:97
+msgid ""
+"An internal xinetd service, listing active services. You must enable xinetd "
+"to use this service."
+msgstr ""
+"Interni xinetd servis, izlistava aktivne poslužitelje. Da biste koristili "
+"ovaj servis morate prvo omogućiti xinetd."
+
+#: service-list.pl.in:98
+msgid "get/set serial port information"
+msgstr "dohvat/postavljanje podataka o serijskom portu"
+
+#: service-list.pl.in:98
+msgid ""
+"setserial is a program designed to set and/or report the configuration "
+"information associated with a serial port."
+msgstr ""
+"setserial je program dizajniran za postavljanje ili izvještavanje o postavkama "
+"serijskog porta."
+
+#: service-list.pl.in:99
+msgid ""
+"FAM is a file monitoring daemon. It can be used to get reports when files "
+"change. You must enable xinetd to use this service."
+msgstr ""
+"FAM je daemon za nadzor datoteka. Može se koristiti za dobivanje izvještaja kada "
+"se datoteka promijeni. Morate omogućiti xinetd za korištenje ovog servisa."
+
+#: service-list.pl.in:100
+msgid "control and monitor storage systems using S.M.A.R.T."
+msgstr "upravljanje i nadzor sustava za pohranu korištenjem S.M.A.R.T.-a"
+
+#: service-list.pl.in:101
+msgid "Perl-based spam filter using text analysis"
+msgstr "Perl-bazirani filtar za neželjenu poštu korištenjem tekstualne analize"
+
+#: service-list.pl.in:102
+msgid "Simple Network Management Protocol (SNMP) Daemon"
+msgstr "Simple Network Management Protocol (SNMP) Daemon"
+
+#: service-list.pl.in:103 service-list.pl.in:104
+msgid "OpenSSH SSH server"
+msgstr "OpenSSH SSH poslužitelj"
+
+#: service-list.pl.in:103
+msgid ""
+"ssh is a program for logging into a remote machine and for executing "
+"commands on a remote machine."
+msgstr ""
+"ssh je program za prijavu na udaljeno računalo i izvršavanje naredaba "
+"na njemu."
+
+#: service-list.pl.in:104
+msgid "OpenSSH server daemon"
+msgstr "OpenSSH daemon poslužitelj"
+
+#: service-list.pl.in:105
+msgid "Linux system logging utilities"
+msgstr "Sustavski programi za logiranje"
+
+#: service-list.pl.in:105
+msgid ""
+"Sysklogd provides two system utilities which provide support for system  "
+"logging  and  kernel  message  trapping."
+msgstr ""
+"Sysklogd daje dva pomoćna programa koji daju podršku za logiranje sustavskih i "
+"kernel poruka."
+
+#: service-list.pl.in:106
+msgid ""
+"Syslog is the facility by which many daemons use to log messages to various "
+"system log files.  It is a good idea to always run syslog."
+msgstr ""
+"Syslog je usluga koju koriste mnogi daemoni za logiranje poruka u razne "
+"sustavske log datoteke. Uvijek je dobro imati pokrenut syslog."
+
+#: service-list.pl.in:107
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"RFC 868 poslužitelj vremena. Ovaj protokol daje podatke o vremenu i datumu "
+"neovisne o mjestu u strojno razumljivom obliku. Ovaj vremenski servis šalje "
+"vrijeme u sekundama od ponoći 1. siječnja 1900. godine. Ovo je tcp inačica. "
+"Morate omogućiti xinetd za korištenje ovog servisa."
+
+#: service-list.pl.in:108
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"RFC 868 poslužitelj vremena. Ovaj protokol daje podatke o vremenu i datumu "
+"neovisne o mjestu u strojno razumljivom obliku. Ovaj vremenski servis šalje "
+"vrijeme u sekundama od ponoći 1. siječnja 1900. godine. Ovo je udp inačica. "
+"Morate omogućiti xinetd za korištenje ovog servisa."
+
+#: service-list.pl.in:109
+msgid "kernel random number source devices"
+msgstr "kernel uređaj za slučajne brojeve"
+
+#: service-list.pl.in:109
+msgid ""
+"The  random  number  generator  gathers environmental noise from device "
+"drivers and other sources into an entropy pool. From this entropy pool "
+"random numbers are created."
+msgstr ""
+"Generator slučajnih brojeva sakuplja buku okoliša iz upravljačkih programa "
+"uređaja i ostalih izvora u skup entropija. Iz tog skupa entropija "
+"stvaraju se slučajni brojevi."
+
+#: service-list.pl.in:110
+msgid "Intel(TM) x86(TM)-based virtual machine"
+msgstr "Intel(TM) x86(TM)-bazirani virtualni stroj"
+
+#: service-list.pl.in:110
+msgid ""
+"The vmware command starts an Intel X86-based virtual machine. This script "
+"manages the services needed to run VMware software."
+msgstr ""
+"Vmware naredba pokreće Intel X86-bazirani virtualni stroj. Ova skripta upravlja "
+"servisima potrebnim za pokretanje VMware softvera."
+
+#: service-list.pl.in:111
+msgid "Web-based administration toolkit"
+msgstr "Web-bazirani skup alata za administraciju"
+
+#: service-list.pl.in:112
+msgid "Starts and stops the Samba winbind daemon"
+msgstr "Pokreće i zaustavlja Samba winbind daemon."
+
+#: service-list.pl.in:113
+msgid ""
+"Allow users to run Windows(tm) applications by just clicking on them (or "
+"typing ./file.exe)"
+msgstr ""
+"Dozvoli korisnicima pokretanje Windows(tm) aplikacija klikanjem na njih ( "
+"ili upisivanjem ./datoteka.exe)"
+
+#: service-list.pl.in:114
+msgid "X font server"
+msgstr "Poslužitelj pisama za X-e"
+
+#: service-list.pl.in:114
+msgid ""
+"Xfs is the X Window System font server. It supplies fonts to X Window System "
+"display servers."
+msgstr "Xfs je X Window System poslužitelj pisama. Daje pisma za X poslužitelje."
+
+#: service-list.pl.in:115
+msgid ""
+"xinetd is a powerful replacement for inetd. xinetd has access control "
+"machanisms, extensive logging capabilities, the ability to make services "
+"available based on time, and can place limits on the number of servers that "
+"can be started, among other things."
+msgstr ""
+"xinetd je moćna zamjena za inetd. Između ostalog xinetd ima mehanizme za nadzor "
+"pristupa,  opširne mogućnosti logiranja, mogućnost vremenskog ograničavanja"
+"servisa, i ograničavanje broja pokrenutih poslužitelja."
+
+#: service.pl.in:178 service.pl.in:183
+msgid "Halting the system"
+msgstr "Zaustavljanje sustava"
+
+#: service.pl.in:179 service.pl.in:185
+msgid "Text mode"
+msgstr "Način rada s tekstom"
+
+#: service.pl.in:180 service.pl.in:184 service.pl.in:188
+msgid "Graphical mode"
+msgstr "Grafički način rada"
+
+#: service.pl.in:181 service.pl.in:186
+msgid "Rebooting the system"
+msgstr "Ponovno pokretanje sustava"
+

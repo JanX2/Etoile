@@ -1,0 +1,927 @@
+# Ukrainian translation to setup-tools-backends.
+# Copyright (C) Free Software Foundation
+# This file is distributed under the same license as the setup-tools-backends package.
+# Maxim Dziumanenko <mvd@mylinux.com.ua>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: setup-tools-backends\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-02-17 10:36+0200\n"
+"PO-Revision-Date: 2005-02-17 15:00+0300\n"
+"Last-Translator: Maxim Dziumanenko <mvd@mylinux.com.ua>\n"
+"Language-Team: Ukrainian <uk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. please, keep this list sorted
+#. service => [long_name, description]
+#: service-list.pl.in:36
+msgid "ACPI event handler"
+msgstr "Обробник подій ACPI"
+
+#: service-list.pl.in:36
+msgid ""
+"Notifies user-space programs of ACPI events: executes arbitrary commands in "
+"response to ACPI events such as power buttons."
+msgstr ""
+"Сповіщає програму про ACPI події: виконує довільні команди у відповідь на "
+"ACPI події, наприклад натискання кнопки живлення."
+
+#: service-list.pl.in:37
+msgid "Advanced Linux Sound Architecture"
+msgstr "Вдосконалена звукова архітектура для Linux (ALSA)"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid "web server"
+msgstr "веб-сервер"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid ""
+"Apache is a World Wide Web server.  It is used to serve HTML files and CGI."
+msgstr ""
+"Apache - є WWW сервером. Він використовується для обслуговування HTML файлів "
+"та CGI."
+
+#: service-list.pl.in:39
+msgid "Run missed scheduled jobs at startup"
+msgstr "Запускає пропущені заплановані завдання при запуску"
+
+#: service-list.pl.in:39
+msgid "Run cron jobs that were left out due to downtime"
+msgstr "Запускає завдання cron, які були пропущені через вимкнення"
+
+#: service-list.pl.in:40
+msgid "Automatic power management daemon"
+msgstr "Служба автоматичного керування живленням"
+
+#: service-list.pl.in:40
+msgid ""
+"apmd is used for monitoring battery status and logging it via syslog(8). It "
+"can also be used for shutting down the machine when the battery is low."
+msgstr ""
+"apmd використовується для контролю стану батареї та реєстрації через syslog"
+"(8). Він також може використовуватись для вимикання машини при зниженні "
+"заряду батареї."
+
+#: service-list.pl.in:41
+msgid "Runs a command at a given time"
+msgstr "Запускає команду у зазначений час"
+
+#: service-list.pl.in:41
+msgid ""
+"Runs commands scheduled by the at command at the time specified when at was "
+"run, and runs batch commands when the load average is low enough."
+msgstr ""
+"Запускає команди сплановані командою at у час, коли система була вимкнена, "
+"та запускає команди у час, коли середнє навантаження досить низьке."
+
+#: service-list.pl.in:42
+msgid "Audio mixer"
+msgstr "Мікшер звуку"
+
+#: service-list.pl.in:42
+msgid "This program adjusts the settings of an audio mixing device"
+msgstr "Ця програма корегує параметри пристрою мікшеру звуку"
+
+#: service-list.pl.in:43
+msgid "BinFormat Support"
+msgstr "Підтримка BinFormat"
+
+#: service-list.pl.in:43
+msgid "Support for running non ELF binaries on Linux"
+msgstr "Підтримка запуску не ELF двійкових файлів у Linux"
+
+#: service-list.pl.in:44
+msgid "Boot messages recorder"
+msgstr "Запис завантажувальних повідомлень"
+
+#: service-list.pl.in:44
+msgid ""
+"Runs in the background and copies all strings sent to the /dev/console "
+"device to a logfile"
+msgstr ""
+"Запускається на тлі та копіює у файл журналу усі рядки надіслані у пристрій /"
+"dev/console"
+
+#: service-list.pl.in:45
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the tcp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"Внутрішня служба xinetd, яка генерує символи. Внутрішня служба xinetd яка "
+"безперервно генерує символи доки з'єднання не буде розірвано. Це її tcp "
+"версія. Для використання цієї служби необхідно увімкнути службу xinetd."
+
+#: service-list.pl.in:46
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the udp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"Внутрішня служба xinetd, яка генерує символи. Внутрішня служба xinetd яка "
+"безперервно генерує символи доки з'єднання не буде розірвано. Це її udp "
+"версія. Для використання цієї служби необхідно увімкнути службу xinetd."
+
+#: service-list.pl.in:47
+msgid "CPU frequency monitor"
+msgstr "Контроль частоти процесору"
+
+#: service-list.pl.in:47
+msgid ""
+"cpufreqd is used to monitor the status of the battery and adjust the "
+"frequency of the CPU accordingly in order to preserve battery power while "
+"providing optimal performance"
+msgstr ""
+"cpufreqd використовується для контролю стану батареї та корегування частоти "
+"процесора для збереження енергії батареї при оптимальній швидкодії"
+
+#: service-list.pl.in:48 service-list.pl.in:130
+msgid "daemon to execute scheduled commands"
+msgstr "daemon що виконує заплановані команди"
+
+#: service-list.pl.in:49
+msgid "Run scheduled jobs"
+msgstr "Запуск запланованих завдань"
+
+#: service-list.pl.in:49
+msgid ""
+"cron is a standard UNIX program that runs user-specified programs at "
+"periodic scheduled times. vixie cron adds a number of features to the basic "
+"UNIX cron, including better security and more powerful configuration options."
+msgstr ""
+"cron - є стандартною UNIX програмою, яка запускає вказану користувачем "
+"програму за періодичним графіком. vixie cron має декілька додаткових функцій "
+"у порівнянні з UNIX cron, такі як, краща безпека та більш потужні параметри "
+"конфігурації."
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Common Unix Printing System"
+msgstr "Загальна система друку для Unix (CUPS)"
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Printing system based upon the Internet Printing Protocol, version  1.1"
+msgstr ""
+"Система друку, що основана на протоколі друку для Інтернет (IPP) версії 1.1"
+
+#: service-list.pl.in:52
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the tcp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"Внутрішня служба xinetd, яка виводить системний час у подібному форматі: "
+"'Wed Nov 13 22:30:27 EST 2002'. Це її tcp версія. Для використання цієї "
+"служби необхідно увімкнути службу xinetd."
+
+#: service-list.pl.in:53
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the udp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"Внутрішня служба xinetd, яка виводить системний час у подібному форматі: "
+"'Wed Nov 13 22:30:27 EST 2002'. Це її udp версія. Для використання цієї "
+"служби необхідно увімкнути службу xinetd."
+
+#: service-list.pl.in:54 service-list.pl.in:55
+msgid "Dynamic DNS Client"
+msgstr "Клієнт динамічного DNS"
+
+#: service-list.pl.in:54
+msgid "A Dynamic DNS Name service from www.dyndns.org"
+msgstr "Служба назв динамічного DNS з www.dyndns.org"
+
+#: service-list.pl.in:55
+msgid "A Dynamic DNS Name service from www.dhis.org"
+msgstr "Служба назв динамічного DNS з www.dhis.org"
+
+#: service-list.pl.in:56
+msgid "Dict Dictionary Server"
+msgstr "Сервер Dict словників"
+
+#: service-list.pl.in:57
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"Внутрішня служба xinetd, яка надсилає назад отримані від клієнта символи. Це "
+"її tcp версія. Для використання цієї служби необхідно увімкнути службу "
+"xinetd."
+
+#: service-list.pl.in:58
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"Внутрішня служба xinetd, яка надсилає назад отримані від клієнта символи. Це "
+"її udp версія. Для використання цієї служби необхідно увімкнути службу "
+"xinetd."
+
+#: service-list.pl.in:59
+msgid "Sound mixing server"
+msgstr "Сервер мікшера звуку"
+
+#: service-list.pl.in:59
+msgid "The Enlightened Sound Daemon"
+msgstr "Служба звуку Enlightened (esound)"
+
+#: service-list.pl.in:60
+msgid "Exim SMTP Server"
+msgstr "SMTP сервер Exim"
+
+#: service-list.pl.in:61
+msgid "file alteration monitor"
+msgstr "контроль змін файлів (fam)"
+
+#: service-list.pl.in:62
+msgid "Firstboot is a druid style program that runs on the first time"
+msgstr ""
+"Firstboot - є програмою виконаною у стилі помічника, яка виконується при "
+"першому запуску"
+
+#: service-list.pl.in:63
+msgid "Text-to-speech system"
+msgstr "Система вимови тексту"
+
+#: service-list.pl.in:63
+msgid "Festival is a general purpose text-to-speech system"
+msgstr "Festival є системою загального призначення для вимови тексту"
+
+#: service-list.pl.in:64
+msgid "Mail Fetcher"
+msgstr "Отримання пошти"
+
+#: service-list.pl.in:64
+msgid "A Mail Fetcher from external Servers"
+msgstr "Програма отримання пошти з зовнішніх серверів"
+
+#: service-list.pl.in:65
+msgid "IPv6 Tunnel Broker"
+msgstr "Брокер тунелів IPv6"
+
+#: service-list.pl.in:65
+msgid "A IPv6 Dynamic Tunnel Broker"
+msgstr "Брокер динамічних тунелів IPv6"
+
+#: service-list.pl.in:66
+msgid "GNOME Display Manager"
+msgstr "Менеджер дисплеїв GNOME"
+
+#: service-list.pl.in:66
+msgid "gdm provides the GNOME equivalent of a \"login:\" prompt."
+msgstr "gdm забезпечує еквівалент \"login:\" підказки для GNOME."
+
+#: service-list.pl.in:67
+msgid "console mouse support"
+msgstr "підтримка миші у консолі"
+
+#: service-list.pl.in:67
+msgid ""
+"GPM adds mouse support to text-based Linux applications such the Midnight "
+"Commander. It also allows mouse-based console cut-and-paste operations, and "
+"includes support for pop-up menus on the console."
+msgstr ""
+"GPM додає підтримку миші у програмах з текстовим інтерфейсом для Linux, "
+"наприклад, Midnight Commander. Також дозволяє виконувати мишею операції "
+"копіювання-вставки у консолі, та включає підтримку спливаючих меню у консолі."
+
+#: service-list.pl.in:68
+msgid "Set hard disk parameters"
+msgstr "Встановлення параметрів жорсткого диску"
+
+#: service-list.pl.in:68
+msgid ""
+"Provides a interface to various hard disk ioctls supported by the stock "
+"Linux ATA/IDE device driver subsystem."
+msgstr ""
+"Забезпечує інтерфейс до різних ioctl-викликів жорсткого диску, підтримуваних "
+"Linux підсистемою драйверів ATA/IDE пристроїв"
+
+#: service-list.pl.in:69
+msgid "Linux hotplugging support"
+msgstr "Підтримка гарячого підключення у Linux"
+
+#: service-list.pl.in:69
+msgid ""
+"hotplug is a program which is used by the kernel to notify user mode "
+"software when some significant (usually hardware-related) events take place. "
+"An example is when a USB or Cardbus device has just been plugged in."
+msgstr ""
+"hotplug - програма, яка використовується ядром для сповіщення "
+"користувацького режиму коли відбуваються певні значні (зазвичай пов'язані з "
+"обладнанням) події. Наприклад, коли підключається пристрій USB чи Cardbus."
+
+#: service-list.pl.in:71
+msgid "internet superserver"
+msgstr "суперсервер Інтернет"
+
+#: service-list.pl.in:71
+msgid ""
+"inetd allows running one daemon to invoke several others, reducing load on "
+"the system."
+msgstr ""
+"inetd дозволяє запускати одну службу для виклик кількох інших, що зменшує "
+"навантаження системи"
+
+#: service-list.pl.in:72
+msgid "administration tool for IPv4 packet filtering and NAT"
+msgstr "утиліта адміністрування фільтрування та NAT пакетів IPv4"
+
+#: service-list.pl.in:72
+msgid ""
+"Iptables is used to set up, maintain, and inspect the tables of IP packet "
+"filter rules in the Linux kernel."
+msgstr ""
+"Iptables використовується для встановлення, обстеження таблиць правил "
+"фільтрації IP пакетів у ядрі Linux"
+
+#: service-list.pl.in:73
+msgid "IrDA stack for Linux"
+msgstr "IrDA стек для Linux"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol"
+msgstr "Протокол обміну ключами для Інтернет"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol openbsd implementation"
+msgstr "Протокол обміну ключами для Інтернет у реалізації openbsd"
+
+#: service-list.pl.in:75
+msgid "start and stop ISDN services"
+msgstr "запуск та зупинення ISDN служб"
+
+#: service-list.pl.in:76
+msgid "Check and fix joystick device nodes"
+msgstr "Перевірка та виправлення файлів-пристроїв джойстіків"
+
+#: service-list.pl.in:76
+msgid ""
+"Runs joystick-device-check.  joystick-device-check is a program which "
+"ensures that the /dev/js* device nodes are correct for the kernel version in "
+"use."
+msgstr ""
+"Запускає joystick-device-check.  joystick-device-check - програма, яка "
+"перевіряє, що /dev/js* файли-пристрої є коректними для вашої версії ядра."
+
+#: service-list.pl.in:77
+msgid ""
+"This package loads the selected keyboard map as set in /etc/sysconfig/"
+"keyboard.  This can be selected using the kbdconfig utility.  You should "
+"leave this enabled for most machines."
+msgstr ""
+"Цей пакет завантажує вибрану розкладку клавіатури як встановлено у /etc/"
+"sysconfig/keyboard. Вона може бути вибрана використовуючи утиліту kbdconfig. "
+"Необхідно залишити її увімкненою для більшості комп'ютерів."
+
+#: service-list.pl.in:78
+msgid "Kernel Log Daemon"
+msgstr "Служба журналу ядра"
+
+#: service-list.pl.in:78
+msgid ""
+"klogd is a system daemon which intercepts and logs Linux kernel messages."
+msgstr ""
+"klogd є системною службою, яка перехоплює та реєструє повідомлення ядра "
+"Linux."
+
+#: service-list.pl.in:79
+msgid ""
+"This runs the hardware probe, and optionally configures changed hardware."
+msgstr ""
+"Запускає визначення апаратури, та, не обов'язково, налаштовує знайдене "
+"обладнання."
+
+#: service-list.pl.in:80 service-list.pl.in:81
+msgid ""
+"LIRC is a package that allows you to decode and send infra-red signals of "
+"many commonly used remote controls"
+msgstr ""
+"LIRC є пакетом, який дозволяє декодувати та надсилати інфра-червоні сигнали "
+"від багатьох поширених пультів дистанційного керування"
+
+#: service-list.pl.in:82
+msgid "Starts misc programs that should be started"
+msgstr "Запускає різні програми, які необхідно запускати"
+
+#: service-list.pl.in:83
+msgid ""
+"lpd is the print daemon required for lpr to work properly. It is basically a "
+"server that arbitrates print jobs to printer(s)."
+msgstr ""
+"lpd є службою друку, яка вимагається для коректної роботи. Це сервер, який "
+"передає завдання друку на принтери."
+
+#: service-list.pl.in:84
+msgid "Create devices"
+msgstr "Створити пристрої"
+
+#: service-list.pl.in:84
+msgid ""
+"Script that will create the devices in /dev used to interface with drivers "
+"in the kernel"
+msgstr ""
+"Сценарій, який буде створювати пристрої у /dev, що використовуються для "
+"зв'язку з драйверами ядра"
+
+#: service-list.pl.in:85
+msgid "Syslog Replacement"
+msgstr "Заміна Syslog"
+
+#: service-list.pl.in:85
+msgid "Modern logging daemon"
+msgstr "Сучасна служба журналу"
+
+#: service-list.pl.in:86
+msgid "Load kernel modules"
+msgstr "Завантаження модулів ядра"
+
+#: service-list.pl.in:87
+msgid "tools for managing Linux kernel modules"
+msgstr "утиліти керування модулями ядра Linux"
+
+#: service-list.pl.in:88 service-list.pl.in:105
+msgid "database server"
+msgstr "сервер баз даних"
+
+#: service-list.pl.in:88
+msgid "MySQL, a SQL-based relational database daemon"
+msgstr "MySQL, реляційна база даних побудована на SQL"
+
+#: service-list.pl.in:89
+msgid "dns server"
+msgstr "сервер DNS"
+
+#: service-list.pl.in:89
+msgid ""
+"named (BIND) is a Domain Name Server (DNS) that is used to resolve host "
+"names to IP addresses."
+msgstr ""
+"named (BIND) - сервер доменних назв (DNS), який використовується для "
+"перетворення назв вузлів у IP адреси."
+
+#: service-list.pl.in:90
+msgid ""
+"Mounts and unmounts all Network File System (NFS), SMB (Lan Manager/"
+"Windows), and NCP (NetWare) mount points."
+msgstr ""
+"Підключає та відключає усі точки монтування файлових систем Network File "
+"System (NFS), SMB (Lan Manager/Windows), та NCP (NetWare)."
+
+#: service-list.pl.in:91
+msgid ""
+"Activates/Deactivates all network interfaces configured to start at boot "
+"time."
+msgstr ""
+"Активує/деактивує усі мережні інтерфейси, налаштовані для запуску при "
+"завантаженні."
+
+#: service-list.pl.in:92
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS server functionality, which is configured via the /etc/"
+"exports file."
+msgstr ""
+"NFS - популярний протокол для спільного доступу до фалів у TCP/IP мережах. "
+"Ця служба забезпечує функціональність NFS серверу, яка налаштовується через "
+"файл /etc/exports"
+
+#: service-list.pl.in:93
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS file locking functionality."
+msgstr ""
+"NFS - популярний протокол для спільного доступу до фалів у TCP/IP мережах. "
+"Ця служба забезпечує функціональність NFS серверу."
+
+#: service-list.pl.in:94
+msgid "Name service cache daemon"
+msgstr "Служба кешування відповідей служби імен"
+
+#: service-list.pl.in:94
+msgid "Daemon that provides a cache for the most common name service requests."
+msgstr ""
+"Служба, що забезпечує кеш для найбільш частих відповідей загальної служби "
+"назв."
+
+#: service-list.pl.in:95
+msgid "Network Time Protocol daemon"
+msgstr "Служба Network Time Protocol"
+
+#: service-list.pl.in:95
+msgid "ntpd is the NTPv4 daemon."
+msgstr "ntpd - це служба NTPv4."
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid "Update the system time over the network"
+msgstr "Оновлення системного часу через мережу"
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid ""
+"Checks the time from a Network Time Protocol (ntp) server and adjusts the "
+"system time accordingly."
+msgstr ""
+"Перевіряє час з сервера Network Time Protocol (ntp) та відповідно корегує "
+"системний час."
+
+#: service-list.pl.in:98
+msgid "Network Time Protocol (NTP) server"
+msgstr "Сервер Network Time Protocol (NTP)"
+
+#: service-list.pl.in:98
+msgid ""
+"Daemon which sets and maintains the system time-of-day in synchronism with "
+"Internet standard time servers"
+msgstr ""
+"Служба, яка встановлює та підтримує системну дату й час у відповідності зі "
+"стандартними Інтернет-серверами точного часу"
+
+#: service-list.pl.in:99
+msgid "HTTP caching proxy"
+msgstr "кешуючий проксі HTTP"
+
+#: service-list.pl.in:100
+msgid "PCMCIA Services"
+msgstr "Служби PCMCIA"
+
+#: service-list.pl.in:101
+msgid "Caching-Only DNS Server"
+msgstr "Лише кешуючий сервер DNS"
+
+#: service-list.pl.in:102
+msgid "IPsec tunnel implementation"
+msgstr "реалізація тунелю IPsec"
+
+#: service-list.pl.in:103
+msgid "DARPA port to RPC program number mapper"
+msgstr "DARPA порт до RPC програми прив'язки чисел"
+
+#: service-list.pl.in:103
+msgid ""
+"The portmapper manages RPC connections, which are used by protocols such as "
+"NFS and NIS. The portmap server must be running on machines which act as "
+"servers for protocols which make use of the RPC mechanism."
+msgstr ""
+"portmapper керує RPC з'єднаннями, які використовуються такими протоколами як "
+"NFS та NIS. portmap сервер повинен бути запущений на машинах, які виконують "
+"роль сервера для протоколів, що використовують механізм RPC."
+
+#: service-list.pl.in:104
+msgid "Mail Transport Agent"
+msgstr "Агент транспортування пошти"
+
+#: service-list.pl.in:106
+msgid "Point to Point Protocol daemon"
+msgstr "Служба Point to Point Protocol"
+
+#: service-list.pl.in:106
+msgid ""
+"The  Point-to-Point Protocol (PPP) provides a method for transmitting "
+"datagrams over serial point-to-point links."
+msgstr ""
+"Point-to-Point Protocol (PPP) забезпечує метод передавання датаграм через "
+"з'єднання типу точка-точка."
+
+#: service-list.pl.in:107
+msgid "Privacy enhancing HTTP Proxy"
+msgstr "HTTP-проксі з вдосконаленою конфіденційністю"
+
+#: service-list.pl.in:108
+msgid ""
+"Saves and restores system entropy pool for higher quality random number "
+"generation."
+msgstr ""
+"Зберігає та відновлює системний пул ентропії для якісного генерування "
+"випадкових чисел."
+
+#: service-list.pl.in:109
+msgid ""
+"This scripts assignes raw devices to block devices (such as hard drive "
+"partitions). This is for the use of applications such as Oracle. You can set "
+"up the raw device to block device mapping by editing the file /etc/sysconfig/"
+"rawdevices."
+msgstr ""
+"Сценарій призначає raw-пристрої блочним пристроям (наприклад розділам "
+"жорсткого диску). Використовується такими програми як Oracle. Ви можете "
+"встановити відповідність raw-пристрою до блочного пристрою у файлі /etc/"
+"sysconfig/rawdevices."
+
+#: service-list.pl.in:110
+msgid ""
+"This is a daemon which handles the task of connecting periodically to the "
+"Red Hat Network servers to check for updates, notifications and perform "
+"system monitoring tasks according to the service level that this server is "
+"subscribed for."
+msgstr ""
+"Служба, яка обробляє завдання періодичного з'єднання з серверами Red Hat "
+"Network, для перевірки оновлень, сповіщень та виконання завдань контролю, у "
+"відповідності до рівня обслуговування, на який підписаний цей сервер."
+
+#: service-list.pl.in:111 service-list.pl.in:112
+msgid ""
+"The rsync server is a good addition to am ftp server, as it allows crc "
+"checksumming etc. You must enable xinetd to use this service."
+msgstr ""
+"rsync сервер - добре доповнення до ftp сервера, він дозволяє виконувати "
+"перевірку crc контрольних сум, тощо. Для використання цієї служби необхідно "
+"увімкнути службу xinetd."
+
+#: service-list.pl.in:112
+msgid "Faster, flexible replacement for rcp"
+msgstr "Швидка, гнучка заміна для rcp"
+
+#: service-list.pl.in:113
+msgid "A Windows SMB/CIFS fileserver for UNIX"
+msgstr "Файловий сервер Windows SMB/CIFS для UNIX"
+
+#: service-list.pl.in:113
+msgid ""
+"The Samba software suite is a collection of programs that implements the "
+"Server Message Block protocol for UNIX systems."
+msgstr ""
+"Комплект програм Samba - колекція програм, які реалізують протокол Server "
+"Message Block для UNIX систем."
+
+#: service-list.pl.in:114
+msgid ""
+"saslauthd is a server process which handles plaintext authentication "
+"requests on behalf of the cyrus-sasl library."
+msgstr ""
+"saslauthd - серверний процес, який обробляє запити автентифікації зі "
+"звичайним текстовим паролем у інтересах бібліотеки cyrus-sasl."
+
+#: service-list.pl.in:115
+msgid ""
+"Sendmail is a Mail Transport Agent, which is the program that moves mail "
+"from one machine to another."
+msgstr ""
+"Sendmail - агент доставки пошти, який є програмою., що передає пошту з "
+"однієї машини на іншу."
+
+#: service-list.pl.in:116
+msgid ""
+"An internal xinetd service, listing active servers. You must enable xinetd "
+"to use this service."
+msgstr ""
+"Внутрішня служба xinetd, виводить активні сервери. Для використання цієї "
+"служби необхідно увімкнути службу xinetd."
+
+#: service-list.pl.in:117
+msgid ""
+"An internal xinetd service, listing active services. You must enable xinetd "
+"to use this service."
+msgstr ""
+"Внутрішня служба xinetd, виводить активні служби. Для використання цієї "
+"служби необхідно увімкнути службу xinetd."
+
+#: service-list.pl.in:118
+msgid "get/set serial port information"
+msgstr "отримання/встановлення інформації послідовного порту"
+
+#: service-list.pl.in:118
+msgid ""
+"setserial is a program designed to set and/or report the configuration "
+"information associated with a serial port."
+msgstr ""
+"setserial - програма розроблена для встановлення та/чи тримання "
+"конфігураційної інформації, пов'язаної з послідовним портом."
+
+#: service-list.pl.in:119
+msgid ""
+"FAM is a file monitoring daemon. It can be used to get reports when files "
+"change. You must enable xinetd to use this service."
+msgstr ""
+"FAM - служба контролю файлів. Може використовуватись для отримання звітів "
+"про зміни файлів. Для використання цієї служби необхідно увімкнути службу "
+"xinetd."
+
+#: service-list.pl.in:120
+msgid "control and monitor storage systems using S.M.A.R.T."
+msgstr "управління та контроль системами зберігання S.M.A.R.T."
+
+#: service-list.pl.in:121
+msgid "Perl-based spam filter using text analysis"
+msgstr "Побудований на Perl спам-фільтр, що використовує аналіз тексту"
+
+#: service-list.pl.in:122
+msgid "Simple Network Management Protocol (SNMP) Daemon"
+msgstr "Служба Simple Network Management Protocol (SNMP)"
+
+#: service-list.pl.in:123 service-list.pl.in:124
+msgid "OpenSSH SSH server"
+msgstr "Сервер OpenSSH SSH"
+
+#: service-list.pl.in:123
+msgid ""
+"ssh is a program for logging into a remote machine and for executing "
+"commands on a remote machine."
+msgstr ""
+"ssh -програма входу у віддалені машини та виконання команд на віддаленій "
+"машині."
+
+#: service-list.pl.in:124
+msgid "OpenSSH server daemon"
+msgstr "Служба сервера OpenSSH"
+
+#: service-list.pl.in:125
+msgid "Linux system logging utilities"
+msgstr "Утиліти системної реєстрації Linux"
+
+#: service-list.pl.in:125
+msgid ""
+"Sysklogd provides two system utilities which provide support for system  "
+"logging  and  kernel  message  trapping."
+msgstr ""
+"Sysklogd надає дві системні утиліти, які забезпечують підтримку системної "
+"реєстрації та перехоплення повідомлень ядра."
+
+#: service-list.pl.in:126
+msgid ""
+"Syslog is the facility by which many daemons use to log messages to various "
+"system log files.  It is a good idea to always run syslog."
+msgstr ""
+"Syslog - можливість, через яку багато служб реєструють повідомлення у різні "
+"системні журнальні файли. Рекомендується мати службу syslog завжди запущеною."
+
+#: service-list.pl.in:127
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"Сервер часу відповідний RFC 868. Цей протокол впроваджує незалежні від "
+"місця, зрозумілі машині дані про час та дату. Служба часу надсилає вузлу, що "
+"підключається, час у секундах від півночі першого Січня 1900. Це її tcp "
+"версія. Для використання цієї служби необхідно увімкнути службу xinetd."
+
+#: service-list.pl.in:128
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"Сервер часу відповідний RFC 868. Цей протокол впроваджує незалежні від "
+"місця, зрозумілі машині дані про час та дату. Служба часу надсилає вузлу, що "
+"підключається, час у секундах від півночі першого Січня 1900. Це її udp "
+"версія. Для використання цієї служби необхідно увімкнути службу xinetd."
+
+#: service-list.pl.in:129
+msgid "kernel random number source devices"
+msgstr "пристрій ядра джерела випадкових чисел"
+
+#: service-list.pl.in:129
+msgid ""
+"The  random  number  generator  gathers environmental noise from device "
+"drivers and other sources into an entropy pool. From this entropy pool "
+"random numbers are created."
+msgstr ""
+"Генератор випадкових чисел збирає оточуючий шум з драйверів пристроїв та "
+"інших джерел у пул ентропії. З цього пулу ентропії створюються випадкові "
+"числа."
+
+#: service-list.pl.in:131
+msgid "Intel(TM) x86(TM)-based virtual machine"
+msgstr "Віртуальна машина побудована Intel(TM) x86(TM)"
+
+#: service-list.pl.in:131
+msgid ""
+"The vmware command starts an Intel X86-based virtual machine. This script "
+"manages the services needed to run VMware software."
+msgstr ""
+"Команда vmware запускає Intel X86-сумісні віртуальні машини. Цей сценарій "
+"керує службами запуску програмного забезпечення VMware."
+
+#: service-list.pl.in:132
+msgid "Web-based administration toolkit"
+msgstr "Набір утиліт адміністрування з веб-інтерфейсом"
+
+#: service-list.pl.in:133
+msgid "Name Service Switch daemon for resolving names from NT servers"
+msgstr "Служба Name Service Switch для розв'язання назв від NT серверів"
+
+#: service-list.pl.in:133
+msgid "Starts and stops the Samba winbind daemon"
+msgstr "Запускає та зупиняє службу Samba winbind"
+
+#: service-list.pl.in:134
+msgid ""
+"Allow users to run Windows(tm) applications by just clicking on them (or "
+"typing ./file.exe)"
+msgstr ""
+"Дозволяє користувачам запускати Windows(tm) програми, шляхом клацання (або "
+"набору ./file.exe)"
+
+#: service-list.pl.in:135
+msgid "X Display Manager"
+msgstr "Менеджер дисплею X"
+
+#: service-list.pl.in:135
+msgid "Provides the X equivalent of a \"login:\" prompt."
+msgstr "Надає X еквівалент запрошення \"login:\""
+
+#: service-list.pl.in:136
+msgid "X font server"
+msgstr "Сервер шрифтів системи X"
+
+#: service-list.pl.in:136
+msgid ""
+"Xfs is the X Window System font server. It supplies fonts to X Window System "
+"display servers."
+msgstr ""
+"Xfs - сервер шрифтів для системи X Window. Він постачає шрифти для серверів "
+"дисплеїв системи X Window."
+
+#: service-list.pl.in:137
+msgid ""
+"xinetd is a powerful replacement for inetd. xinetd has access control "
+"machanisms, extensive logging capabilities, the ability to make services "
+"available based on time, and can place limits on the number of servers that "
+"can be started, among other things."
+msgstr ""
+"xinetd - потужна заміна для inetd. xinetd серед іншого має механізми "
+"контролю доступу, широкі можливості реєстрації, можливість регулювати "
+"доступність служб в залежності від часу, може накладати обмеження на "
+"кількість запущених служб."
+
+#: service.pl.in:226 service.pl.in:231
+msgid "Halting the system"
+msgstr "Зупинення системи"
+
+#: service.pl.in:227 service.pl.in:233
+msgid "Text mode"
+msgstr "Текстовий режим"
+
+#: service.pl.in:228 service.pl.in:232 service.pl.in:241
+msgid "Graphical mode"
+msgstr "Графічний режим"
+
+#: service.pl.in:229 service.pl.in:234
+msgid "Rebooting the system"
+msgstr "Перезапуск системи"
+
+#: service.pl.in:236
+msgid "Starts all system neccesary services"
+msgstr "Запускає усі необхідні служби"
+
+#: service.pl.in:237
+msgid "Default runlevel"
+msgstr "Типовий рівень запуску"
+
+#: service.pl.in:238
+msgid "Networkless runlevel"
+msgstr "Рівень запуску без мережі"
+
+#: users-conf.in:179
+msgid "Monitor system logs"
+msgstr "Контроль системних журналів"
+
+#: users-conf.in:180
+msgid "Use audio devices"
+msgstr "Використання звукових пристроїв"
+
+#: users-conf.in:181
+msgid "Access to CD-ROM drives"
+msgstr "Доступ до пристроїв CD-ROM"
+
+#: users-conf.in:182
+msgid "Access to modem devices"
+msgstr "Доступ до пристроїв модемів"
+
+#: users-conf.in:183
+msgid "Connect to Internet through modem devices"
+msgstr "З'єднання до Інтернет через модеми"
+
+#: users-conf.in:184
+msgid "Send and receive faxes"
+msgstr "Надсилання та отримання факсів"
+
+#: users-conf.in:185
+msgid "Access to floppy drives"
+msgstr "Доступ до дисководів"
+
+#: users-conf.in:186
+msgid "Enable access to external storage devices automatically"
+msgstr "Автоматично вмикати доступ до зовнішніх носіїв"
+
+#: users-conf.in:187
+msgid "Access to tape drives"
+msgstr "Доступ до стрічкових накопичувачів"
+
+#: users-conf.in:188
+msgid "Be able to get administrator privileges"
+msgstr "Має змогу отримати привілеї адміністратора"
+
+#: users-conf.in:491
+msgid "Default"
+msgstr "Типова"
+
+#: users-conf.in:492
+msgid "Default profile"
+msgstr "Типовий профіль"

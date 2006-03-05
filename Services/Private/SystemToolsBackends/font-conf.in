@@ -1,0 +1,124 @@
+#!/usr/bin/env perl
+#-*- Mode: perl; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+
+# Display configurator. Designed to be architecture and distribution independent.
+#
+# Copyright (C) 2000-2001 Ximian, Inc.
+#
+# Authors: Tambet Ingo <tambet@ximian.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Library General Public License as published
+# by the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+# Best viewed with 100 columns of width.
+
+# Configuration files affected:
+#
+# /etc/X11/XF86Config
+
+# Running programs affected:
+#
+
+BEGIN {
+  $SCRIPTSDIR = "@scriptsdir@";
+  if ($SCRIPTSDIR =~ /^@scriptsdir[@]/)
+  {
+      $SCRIPTSDIR = ".";
+      $DOTIN = ".in";
+  }
+  
+  require "$SCRIPTSDIR/general.pl$DOTIN";
+  require "$SCRIPTSDIR/platform.pl$DOTIN";
+  require "$SCRIPTSDIR/file.pl$DOTIN";
+  require "$SCRIPTSDIR/font.pl$DOTIN";
+}
+
+use Benchmark;
+
+# --- Tool information --- #
+
+$name = 'font';
+$version = "@VERSION@";
+@platforms = qw(redhat-6.2 redhat-7.0 redhat-7.1 redhat-7.2 turbolinux-7.0
+                mandrake-7.2 mandrake-8.0);
+
+$description =<<"end_of_description;";
+       Configures fonts.
+end_of_description;
+
+
+sub xml_print
+{
+  my $font_list = shift;
+
+  &gst_xml_print_begin ();
+  &gst_xml_print_vspace ();
+
+  &font_xml_print ($font_list);
+
+  &gst_xml_print_end ();
+}
+
+# Top-level actions.
+
+sub get
+{
+  my $font_list = &font_get_all ();
+
+  &gst_report_end ();
+  &xml_print ($font_list);
+}
+
+sub set
+{
+  my $font_list = &font_xml_parse ();
+
+  &font_set ($font_list);
+  &gst_report_end ();
+}
+
+sub filter
+{
+  my $font_list = &font_xml_parse ();
+
+  &gst_report_end ();
+  &xml_print ($font_list);
+}
+
+sub test
+{
+  my ($tool, @dir) = @_;
+  my $font_list = &font_test (\@dir);
+
+  &gst_report_end ();
+  &xml_print ($font_list);
+}
+
+
+# --- Main --- #
+
+# get, set and filter are special cases that don't need more parameters than a ref to their function.
+# Read general.pl.in:gst_run_directive to know about the format of this hash.
+
+$directives = {
+  "get"    => [ \&get,    [], "" ],
+  "set"    => [ \&set,    [], "" ],
+  "filter" => [ \&filter, [], "" ],
+  "test"   => [ \&test,   [ "dir*" ], "Get font information on specified file or directory." ],
+};
+
+
+$tool = &gst_init ($name, $version, $description, $directives, @ARGV);
+&gst_platform_ensure_supported ($tool, @platforms);
+&gst_run ($tool);

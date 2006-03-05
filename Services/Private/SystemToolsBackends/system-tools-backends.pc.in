@@ -1,0 +1,14 @@
+prefix=@prefix@
+exec_prefix=
+libdir=
+includedir=
+
+filessdir=@filesdir@
+backenddir=@scriptsdir@
+
+Name: gst-backends
+Description: GNOME System Tools backends
+Version: @VERSION@
+Requires: 
+Libs:
+Cflags:

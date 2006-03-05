@@ -1,0 +1,936 @@
+# Hungarian translation of system-tools-backends.
+# Copyright (C) 2005 Free Software Foundation, Inc.
+# This file is distributed under the same license as the system-tools-backends package.
+# Szabolcs Varga <shirokuma@shirokuma.hu>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: system-tools-backends\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-03-29 05:02+0200\n"
+"PO-Revision-Date: 2005-03-06 10:44+0100\n"
+"Last-Translator: Szabolcs Varga <shirokuma@shirokuma.hu>\n"
+"Language-Team: Hungarian <gnome@gnome.hu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. please, keep this list sorted
+#. service => [long_name, description]
+#: service-list.pl.in:36
+msgid "ACPI event handler"
+msgstr "ACPI eseménykezelő"
+
+#: service-list.pl.in:36
+msgid ""
+"Notifies user-space programs of ACPI events: executes arbitrary commands in "
+"response to ACPI events such as power buttons."
+msgstr ""
+"Értesíti a felhasználói területen futó programokat az ACPI-eseményekről: "
+"tetszőleges parancsot végrehajt a különféle ACPI-eseményekre (pl. a "
+"bekapcsológomb megnyomására) válaszul."
+
+#: service-list.pl.in:37
+msgid "Advanced Linux Sound Architecture"
+msgstr "Továbbfejlesztett Linux hangarchitektúra (ALSA)"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid "web server"
+msgstr "webkiszolgáló"
+
+#: service-list.pl.in:38 service-list.pl.in:70
+msgid ""
+"Apache is a World Wide Web server.  It is used to serve HTML files and CGI."
+msgstr ""
+"Az Apache egy WWW-kiszolgáló. HTML fájlok kiszolgálására és CGI-programok "
+"futtatására szolgál."
+
+#: service-list.pl.in:39
+msgid "Run missed scheduled jobs at startup"
+msgstr "A kihagyott ütemezett feladatok futtatása rendszerindításkor"
+
+#: service-list.pl.in:39
+msgid "Run cron jobs that were left out due to downtime"
+msgstr "A leállás miatt kihagyott cron-feladatok futtatása"
+
+#: service-list.pl.in:40
+msgid "Automatic power management daemon"
+msgstr "Automatikus energiafelügyeleti démon"
+
+#: service-list.pl.in:40
+msgid ""
+"apmd is used for monitoring battery status and logging it via syslog(8). It "
+"can also be used for shutting down the machine when the battery is low."
+msgstr ""
+"Az apmd szolgál az akkumulátor állapotának figyelésére és a syslog(8)-ot "
+"keresztüli naplózására. Használható továbbá a gép kikapcsolására, ha az "
+"akkumulátor kifogyott."
+
+#: service-list.pl.in:41
+msgid "Runs a command at a given time"
+msgstr "Egy adott parancsot futtat egy megadott időben"
+
+#: service-list.pl.in:41
+msgid ""
+"Runs commands scheduled by the at command at the time specified when at was "
+"run, and runs batch commands when the load average is low enough."
+msgstr ""
+"Az at parancs által meghatározott időre ütemezett parancsok futtatása az at "
+"futtatásakor megadott időben, valamint a kötegelt parancsok futtatása, ha az "
+"átlagos terhelés alacsony."
+
+#: service-list.pl.in:42
+msgid "Audio mixer"
+msgstr "Keverőpult"
+
+#: service-list.pl.in:42
+msgid "This program adjusts the settings of an audio mixing device"
+msgstr "Ez a program módosítja az audiokeverő eszköz beállításait"
+
+#: service-list.pl.in:43
+msgid "BinFormat Support"
+msgstr "BinFormat támogatás"
+
+#: service-list.pl.in:43
+msgid "Support for running non ELF binaries on Linux"
+msgstr "Nem ELF bináris fájlok Linuxon futtatásának támogatása"
+
+#: service-list.pl.in:44
+msgid "Boot messages recorder"
+msgstr "Rendszerindítási üzenetek rögzítője"
+
+#: service-list.pl.in:44
+msgid ""
+"Runs in the background and copies all strings sent to the /dev/console "
+"device to a logfile"
+msgstr ""
+"A háttérben futva a /dev/console eszközre küldött üzeneteket átmásolja egy "
+"naplófájlba"
+
+#: service-list.pl.in:45
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the tcp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"Egy belső xinetd szolgáltatás, amely karaktereket állít elő. A belső xinetd "
+"szolgáltatás, amely folyamatosan állít elő karaktereket, amíg a kapcsolat "
+"megszakításra nem kerül. Ez a tcp változat. A szolgáltatás használatához "
+"engedélyezni kell a xinetd-t."
+
+#: service-list.pl.in:46
+msgid ""
+"An xinetd internal service which generate characters. The xinetd internal "
+"service which continuously generates characters until the connection is "
+"dropped.  This is the udp version. You must enable xinetd to use this "
+"service."
+msgstr ""
+"Egy belső xinetd szolgáltatás, amely karaktereket állít elő. A belső xinetd "
+"szolgáltatás, amely folyamatosan állít elő karaktereket, amíg a kapcsolat "
+"megszakításra nem kerül. Ez az udp változat. A szolgáltatás használatához "
+"engedélyezni kell a xinetd-t."
+
+#: service-list.pl.in:47
+msgid "CPU frequency monitor"
+msgstr "CPU-frekvenciafigyelő"
+
+#: service-list.pl.in:47
+msgid ""
+"cpufreqd is used to monitor the status of the battery and adjust the "
+"frequency of the CPU accordingly in order to preserve battery power while "
+"providing optimal performance"
+msgstr ""
+"A cpufreqd szolgál az akkumulátor állapotának figyelésére, és a CPU "
+"frekvenciájának megfelelő szabályozására az energiatakarékosság érdekében, "
+"ugyanakkor fenntartva az optimális működést"
+
+#: service-list.pl.in:48 service-list.pl.in:130
+msgid "daemon to execute scheduled commands"
+msgstr "az ütemezett parancsok végrehajtására szolgáló démon"
+
+#: service-list.pl.in:49
+msgid "Run scheduled jobs"
+msgstr "Ütemezett feladatok futtatása"
+
+#: service-list.pl.in:49
+msgid ""
+"cron is a standard UNIX program that runs user-specified programs at "
+"periodic scheduled times. vixie cron adds a number of features to the basic "
+"UNIX cron, including better security and more powerful configuration options."
+msgstr ""
+"A cron egy szabványos UNIX program, amely meghatározott időközönként "
+"lefuttatja a felhasználó által megadott programokat. A vixie cron számos "
+"extra funkcióval bővíti ki a UNIX alapszintű cron segédprogramját, szigorúbb "
+"biztonságot és szélesebb körű beállítási lehetőségeket biztosít."
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Common Unix Printing System"
+msgstr "Egységes UNIX-nyomtatási rendszer (CUPS)"
+
+#: service-list.pl.in:50 service-list.pl.in:51
+msgid "Printing system based upon the Internet Printing Protocol, version  1.1"
+msgstr ""
+"Az IPP (Internet Printing Protocol) v1.1 ajánlásra épülő nyomtatási rendszer"
+
+#: service-list.pl.in:52
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the tcp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"Egy belső xinetd szolgáltatás, amely lekérdezi az aktuális rendszeridőt, "
+"majd kinyomtatja az alábbihoz hasonló formátumban: 'Wed Nov 13 22:30:27 EST "
+"2002'. Ez a tcp változat. A szolgáltatás használatához engedélyezni kell a "
+"xinetd-t."
+
+#: service-list.pl.in:53
+msgid ""
+"An internal xinetd service which gets the current system time then prints it "
+"out in a format like this: 'Wed Nov 13 22:30:27 EST 2002'.  This is the udp "
+"version. You must enable xinetd to use this service."
+msgstr ""
+"Egy belső xinetd szolgáltatás, amely lekérdezi az aktuális rendszeridőt, "
+"majd kinyomtatja az alábbihoz hasonló formátumban: 'Wed Nov 13 22:30:27 EST "
+"2002'. Ez az udpváltozat. A szolgáltatás használatához engedélyezni kell a "
+"xinetd-t."
+
+#: service-list.pl.in:54 service-list.pl.in:55
+msgid "Dynamic DNS Client"
+msgstr "Dinamikus DNS kliens"
+
+#: service-list.pl.in:54
+msgid "A Dynamic DNS Name service from www.dyndns.org"
+msgstr "Dinamikus névszolgáltatás a www.dyndns.org-tól"
+
+#: service-list.pl.in:55
+msgid "A Dynamic DNS Name service from www.dhis.org"
+msgstr "Dinamikus névszolgáltatás a www.dhis.org-tól"
+
+#: service-list.pl.in:56
+msgid "Dict Dictionary Server"
+msgstr "Dict szótárkiszolgáló"
+
+#: service-list.pl.in:57
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"Egy belső xinetd szolgáltatás, amely visszaküldi a karaktereket a kliensek "
+"felé. Ez a tcp változat. A szolgáltatás használatához engedélyezni kell a "
+"xinetd-t."
+
+#: service-list.pl.in:58
+msgid ""
+"An xinetd internal service which echo's characters back to clients.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"Egy belső xinetd szolgáltatás, amely visszaküldi a karaktereket a kliensek "
+"felé. Ez az udp változat. A szolgáltatás használatához engedélyezni kell a "
+"xinetd-t."
+
+#: service-list.pl.in:59
+msgid "Sound mixing server"
+msgstr "Hangkeverő kiszolgáló"
+
+#: service-list.pl.in:59
+msgid "The Enlightened Sound Daemon"
+msgstr "A Megvilágosult hang démon (ESD)"
+
+#: service-list.pl.in:60
+msgid "Exim SMTP Server"
+msgstr "Exim SMTP-kiszolgáló"
+
+#: service-list.pl.in:61
+msgid "file alteration monitor"
+msgstr "fájlmódosítás-figyelő"
+
+#: service-list.pl.in:62
+msgid "Firstboot is a druid style program that runs on the first time"
+msgstr "A Firstboot egy druid-stílusú program, amely az első alkalommal lefut"
+
+#: service-list.pl.in:63
+msgid "Text-to-speech system"
+msgstr "Szövegfelolvasó rendszer"
+
+#: service-list.pl.in:63
+msgid "Festival is a general purpose text-to-speech system"
+msgstr "A Festival egy általános célú szövegfelolvasó rendszer"
+
+#: service-list.pl.in:64
+msgid "Mail Fetcher"
+msgstr "Levélbegyűjtő"
+
+#: service-list.pl.in:64
+msgid "A Mail Fetcher from external Servers"
+msgstr "Külső kiszolgálókról gyűjti be a leveleket"
+
+#: service-list.pl.in:65
+msgid "IPv6 Tunnel Broker"
+msgstr "IPv6-alagútbróker"
+
+#: service-list.pl.in:65
+msgid "A IPv6 Dynamic Tunnel Broker"
+msgstr "Dinamikus IPv6-alagútbróker"
+
+#: service-list.pl.in:66
+msgid "GNOME Display Manager"
+msgstr "GNOME képernyőkezelő"
+
+#: service-list.pl.in:66
+msgid "gdm provides the GNOME equivalent of a \"login:\" prompt."
+msgstr "A gdm a \"login:\" ablak GNOME-megfelelőjét biztosítja."
+
+#: service-list.pl.in:67
+msgid "console mouse support"
+msgstr "egértámogatás konzolon"
+
+#: service-list.pl.in:67
+msgid ""
+"GPM adds mouse support to text-based Linux applications such the Midnight "
+"Commander. It also allows mouse-based console cut-and-paste operations, and "
+"includes support for pop-up menus on the console."
+msgstr ""
+"A GPM egérkezeléssel bővíti a szöveges képernyőn működő linuxos "
+"alkalmazásokat, például a Midnight Commandert. Lehetővé teszi továbbá "
+"kivágási és beillesztési műveletek egérrel elvégzését, valamint támogatja a "
+"konzol legördülő menüinek használatát."
+
+#: service-list.pl.in:68
+msgid "Set hard disk parameters"
+msgstr "Merevlemez-paraméterek beállítása"
+
+#: service-list.pl.in:68
+msgid ""
+"Provides a interface to various hard disk ioctls supported by the stock "
+"Linux ATA/IDE device driver subsystem."
+msgstr ""
+"Felületet biztosít a 'gyári' Linux ATA/IDE eszközillesztő-alrendszer által "
+"támogatott különféle merevlemez ioctl-ekhez."
+
+#: service-list.pl.in:69
+msgid "Linux hotplugging support"
+msgstr "Üzem közbeni csere támogatása Linux alatt"
+
+#: service-list.pl.in:69
+msgid ""
+"hotplug is a program which is used by the kernel to notify user mode "
+"software when some significant (usually hardware-related) events take place. "
+"An example is when a USB or Cardbus device has just been plugged in."
+msgstr ""
+"A hotplug programot a kernel használja, hogy értesítse a felhasználói módú "
+"programokat, ha valamilyen fontos (jellemzően hardverrel kapcsolatos) "
+"esemény történik. Ilyen például, ha egy USB vagy Cardbus eszközt "
+"csatlakoztatnak a géphez."
+
+#: service-list.pl.in:71
+msgid "internet superserver"
+msgstr "internetes szuperszerver"
+
+#: service-list.pl.in:71
+msgid ""
+"inetd allows running one daemon to invoke several others, reducing load on "
+"the system."
+msgstr ""
+"Az inetd lehetővé teszi, hogy egyetlen futó démon hívjon meg sok másikat, "
+"így csökkenti a rendszer terhelését."
+
+#: service-list.pl.in:72
+msgid "administration tool for IPv4 packet filtering and NAT"
+msgstr "adminisztrációs eszköz IPv4 csomagszűréshez és címfordításhoz (NAT)"
+
+#: service-list.pl.in:72
+msgid ""
+"Iptables is used to set up, maintain, and inspect the tables of IP packet "
+"filter rules in the Linux kernel."
+msgstr ""
+"Az Iptables szolgál a Linux kernel IP-csomagszűrési szabálytáblázatainak "
+"létrehozására, karbantartására és vizsgálatára."
+
+#: service-list.pl.in:73
+msgid "IrDA stack for Linux"
+msgstr "IrDA-csomag Linuxhoz"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol"
+msgstr "Az Internet Key Exchange (internetes kulcscsere) protokoll"
+
+#: service-list.pl.in:74
+msgid "The Internet Key Exchange protocol openbsd implementation"
+msgstr "Az Internet Key Exchange protokoll openbsd-megvalósítása"
+
+#: service-list.pl.in:75
+msgid "start and stop ISDN services"
+msgstr "ISDN-szolgáltatások elindítása és leállítása"
+
+#: service-list.pl.in:76
+msgid "Check and fix joystick device nodes"
+msgstr "Botkormány-eszköz csomópontok ellenőrzése és javítása"
+
+#: service-list.pl.in:76
+msgid ""
+"Runs joystick-device-check.  joystick-device-check is a program which "
+"ensures that the /dev/js* device nodes are correct for the kernel version in "
+"use."
+msgstr ""
+"A joystick-device-check futtatása. A joystick-device-check program "
+"ellenőrzi, hogy a /dev/js* eszközcsomópontok megfelelnek a használt "
+"kernelverziónak."
+
+#: service-list.pl.in:77
+msgid ""
+"This package loads the selected keyboard map as set in /etc/sysconfig/"
+"keyboard.  This can be selected using the kbdconfig utility.  You should "
+"leave this enabled for most machines."
+msgstr ""
+"Ez a csomag betölti az /etc/sysconfig/ könyvtárban megadott "
+"billentyűzetkiosztást. Ez a kbdconfig segédprogrammal választható ki. Ezt a "
+"beállítást a legtöbb gépen bekapcsolva kell hagyni."
+
+#: service-list.pl.in:78
+msgid "Kernel Log Daemon"
+msgstr "Kernelnaplózó démon"
+
+#: service-list.pl.in:78
+msgid ""
+"klogd is a system daemon which intercepts and logs Linux kernel messages."
+msgstr ""
+"A klogd egy rendszerdémon, amelyik elfogja és naplózza a Linux-kernel "
+"üzeneteit."
+
+#: service-list.pl.in:79
+msgid ""
+"This runs the hardware probe, and optionally configures changed hardware."
+msgstr ""
+"Lefuttatja a hardverkeresőt, és igény esetén beállítja a megváltozott "
+"hardvert."
+
+#: service-list.pl.in:80 service-list.pl.in:81
+msgid ""
+"LIRC is a package that allows you to decode and send infra-red signals of "
+"many commonly used remote controls"
+msgstr ""
+"Az LIRC csomaggal dekódolhatók, illetve elküldhetők a legtöbb elterjedt "
+"távvezérlő infravörös jelei"
+
+#: service-list.pl.in:82
+msgid "Starts misc programs that should be started"
+msgstr "Elindítja a különféle elindítandó programokat"
+
+#: service-list.pl.in:83
+msgid ""
+"lpd is the print daemon required for lpr to work properly. It is basically a "
+"server that arbitrates print jobs to printer(s)."
+msgstr ""
+"Az lpd az lpr helyes működéséhez szükséges nyomtatódémon. Lényegében egy "
+"kiszolgáló, amely irányítja a nyomtatási feladatokat a nyomtató(k)ra."
+
+#: service-list.pl.in:84
+msgid "Create devices"
+msgstr "Eszközök létrehozása"
+
+#: service-list.pl.in:84
+msgid ""
+"Script that will create the devices in /dev used to interface with drivers "
+"in the kernel"
+msgstr ""
+"A /dev könyvtárban a kernelhez csatlakozásra használt eszközöket létrehozó "
+"parancsfájl"
+
+#: service-list.pl.in:85
+msgid "Syslog Replacement"
+msgstr "Syslog-helyettesítő"
+
+#: service-list.pl.in:85
+msgid "Modern logging daemon"
+msgstr "Modern naplózó démon"
+
+#: service-list.pl.in:86
+msgid "Load kernel modules"
+msgstr "Kernelmodulok betöltése"
+
+#: service-list.pl.in:87
+msgid "tools for managing Linux kernel modules"
+msgstr "Eszközök Linux-kernelmodulok kezeléséhez"
+
+#: service-list.pl.in:88 service-list.pl.in:105
+msgid "database server"
+msgstr "adatbázis-kiszolgáló"
+
+#: service-list.pl.in:88
+msgid "MySQL, a SQL-based relational database daemon"
+msgstr "MySQL, egy SQL alapú relációsadatbázis-démon"
+
+#: service-list.pl.in:89
+msgid "dns server"
+msgstr "dns-kiszolgáló"
+
+#: service-list.pl.in:89
+msgid ""
+"named (BIND) is a Domain Name Server (DNS) that is used to resolve host "
+"names to IP addresses."
+msgstr ""
+"A named (BIND) egy DNS-névkiszolgáló, amely a gépneveket IP-címekké oldja "
+"fel."
+
+#: service-list.pl.in:90
+msgid ""
+"Mounts and unmounts all Network File System (NFS), SMB (Lan Manager/"
+"Windows), and NCP (NetWare) mount points."
+msgstr ""
+"Felcsatolja és lekapcsolja az összes NFS (Network File System ), SMB (Lan "
+"Manager/Windows) és NCP (NetWare) csatolási pontot."
+
+#: service-list.pl.in:91
+msgid ""
+"Activates/Deactivates all network interfaces configured to start at boot "
+"time."
+msgstr ""
+"Aktiválja/lekapcsolja a rendszerindításkor indulásra beállított összes "
+"hálózati eszközt."
+
+#: service-list.pl.in:92
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS server functionality, which is configured via the /etc/"
+"exports file."
+msgstr ""
+"Az NFS egy népszerű protokoll fájlok TCP/IP-hálózatokon keresztüli "
+"megosztására. Ez a szolgáltatás NFS-kiszolgáló funkcionalitást biztosít, "
+"amely az /etc/exports fájlon keresztül állítható be."
+
+#: service-list.pl.in:93
+msgid ""
+"NFS is a popular protocol for file sharing across TCP/IP networks. This "
+"service provides NFS file locking functionality."
+msgstr ""
+"Az NFS egy népszerű protokoll fájlok TCP/IP-hálózatokon keresztüli "
+"megosztására. Ez a szolgáltatás NFS-fájlzárolási funkcionalitást biztosít."
+
+#: service-list.pl.in:94
+msgid "Name service cache daemon"
+msgstr "Névszolgáltatás-cache démon"
+
+#: service-list.pl.in:94
+msgid "Daemon that provides a cache for the most common name service requests."
+msgstr ""
+"A szokásos névszolgáltatási kérésekhez átmeneti tárolást biztosító démon."
+
+#: service-list.pl.in:95
+msgid "Network Time Protocol daemon"
+msgstr "NTP (Network Time Protocol) démon"
+
+#: service-list.pl.in:95
+msgid "ntpd is the NTPv4 daemon."
+msgstr "Az ntpd az NTPv4-démon."
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid "Update the system time over the network"
+msgstr "A rendszer idejét frissíti hálózaton keresztüli egyeztetéssel"
+
+#: service-list.pl.in:96 service-list.pl.in:97
+msgid ""
+"Checks the time from a Network Time Protocol (ntp) server and adjusts the "
+"system time accordingly."
+msgstr ""
+"Ellenőrzi az időt egy NTP (Network Time Protocol) kiszolgáló segítségével, "
+"majd ennek megfelelően beállítja a rendszer idejét."
+
+#: service-list.pl.in:98
+msgid "Network Time Protocol (NTP) server"
+msgstr "NTP (Network Time Protocol) kiszolgáló"
+
+#: service-list.pl.in:98
+msgid ""
+"Daemon which sets and maintains the system time-of-day in synchronism with "
+"Internet standard time servers"
+msgstr ""
+"A rendszeridőt az internetes időszerverekkel egyeztetve beállító és "
+"fenntartó démon"
+
+#: service-list.pl.in:99
+msgid "HTTP caching proxy"
+msgstr "Ideiglenes tárolást biztosító HTTP-proxy"
+
+#: service-list.pl.in:100
+msgid "PCMCIA Services"
+msgstr "PCMCIA-szolgáltatások"
+
+#: service-list.pl.in:101
+msgid "Caching-Only DNS Server"
+msgstr "Csak átmeneti tárolást biztosító DNS-kiszolgáló"
+
+#: service-list.pl.in:102
+msgid "IPsec tunnel implementation"
+msgstr "IPsec-alagút megvalósítás"
+
+#: service-list.pl.in:103
+msgid "DARPA port to RPC program number mapper"
+msgstr "A DARPA portok és az RPC programszámok megfeleltetése"
+
+#: service-list.pl.in:103
+msgid ""
+"The portmapper manages RPC connections, which are used by protocols such as "
+"NFS and NIS. The portmap server must be running on machines which act as "
+"servers for protocols which make use of the RPC mechanism."
+msgstr ""
+"A portleképező kezeli a például az NFS és NIC protokollok által használt RPC-"
+"kapcsolatokat. A portmap kiszolgálónak futnia kell az olyan gépeken, amelyek "
+"az RPC-mechanizmust használó protokollok számára kiszolgálóként viselkednek."
+
+#: service-list.pl.in:104
+msgid "Mail Transport Agent"
+msgstr "Levéltovábbítási ügynök"
+
+#: service-list.pl.in:106
+msgid "Point to Point Protocol daemon"
+msgstr "PPP (Point to Point Protocol) démon"
+
+#: service-list.pl.in:106
+msgid ""
+"The  Point-to-Point Protocol (PPP) provides a method for transmitting "
+"datagrams over serial point-to-point links."
+msgstr ""
+"A Point-to-Point Protocol (PPP) megoldást kínál datagramok soros pont-pont "
+"kapcsolatokon keresztüli elküldésére."
+
+#: service-list.pl.in:107
+msgid "Privacy enhancing HTTP Proxy"
+msgstr "Biztonságnövelő HTTP-proxy"
+
+#: service-list.pl.in:108
+msgid ""
+"Saves and restores system entropy pool for higher quality random number "
+"generation."
+msgstr ""
+"Elmenti és visszaállítja a rendszerentrópia-tárolót a jobb minőségű "
+"véletlenszám-előállítás érdekében."
+
+#: service-list.pl.in:109
+msgid ""
+"This scripts assignes raw devices to block devices (such as hard drive "
+"partitions). This is for the use of applications such as Oracle. You can set "
+"up the raw device to block device mapping by editing the file /etc/sysconfig/"
+"rawdevices."
+msgstr ""
+"Ezek a parancsfájlok a nyers (raw) eszközöket blokkeszközökhöz (például "
+"merevlemez-partíciókhoz) rendelik hozzá. Erre az olyan alkalmazások miatt "
+"van szükség, mint például az Oracle. A nyers- és blokkeszközök közötti "
+"megfeleltetés az /etc/sysconfig/rawdevices fájl módosításával állítható be."
+
+#: service-list.pl.in:110
+msgid ""
+"This is a daemon which handles the task of connecting periodically to the "
+"Red Hat Network servers to check for updates, notifications and perform "
+"system monitoring tasks according to the service level that this server is "
+"subscribed for."
+msgstr ""
+"Ez a démon időről időre hozzácsatlakozik a Red Hat Network kiszolgálóihoz, "
+"ellenőrzi, hogy rendelkezésre állnak-e frissítések, értesítések, valamint "
+"rendszerfigyelési feladatokat hajt végre, attól függően, hogy milyen szintű "
+"szolgáltatásra van feliratkozva az adott kiszolgáló."
+
+#: service-list.pl.in:111 service-list.pl.in:112
+msgid ""
+"The rsync server is a good addition to am ftp server, as it allows crc "
+"checksumming etc. You must enable xinetd to use this service."
+msgstr ""
+"Az rsync kiszolgáló az am ftp kiszolgáló hasznos kiegészítője, ugyanis "
+"lehetővé teszi például a crc alapú ellenőrző összegek használatát. A "
+"szolgáltatás használatához engedélyezni kell a xinetd-t."
+
+#: service-list.pl.in:112
+msgid "Faster, flexible replacement for rcp"
+msgstr "Az rcp gyorsabb, rugalmasabb helyettesítője"
+
+#: service-list.pl.in:113
+msgid "A Windows SMB/CIFS fileserver for UNIX"
+msgstr "Windows SMB/CIFS fájlkiszolgáló UNIX alá"
+
+#: service-list.pl.in:113
+msgid ""
+"The Samba software suite is a collection of programs that implements the "
+"Server Message Block protocol for UNIX systems."
+msgstr ""
+"A Samba szoftvercsomag programok gyűjteménye, amelyek a Server Message Block "
+"protokollt valósítják meg UNIX-rendszereken is."
+
+#: service-list.pl.in:114
+msgid ""
+"saslauthd is a server process which handles plaintext authentication "
+"requests on behalf of the cyrus-sasl library."
+msgstr ""
+"Az saslauthd a cyrus-sasl könyvtár nevében az egyszerű szöveges hitelesítési "
+"kéréseket kezelő kiszolgálófolyamat."
+
+#: service-list.pl.in:115
+msgid ""
+"Sendmail is a Mail Transport Agent, which is the program that moves mail "
+"from one machine to another."
+msgstr ""
+"A Sendmail egy levéltovábbító ügynökprogram, amely az elektronikus "
+"üzeneteket továbbítja az egyes gépek között."
+
+#: service-list.pl.in:116
+msgid ""
+"An internal xinetd service, listing active servers. You must enable xinetd "
+"to use this service."
+msgstr ""
+"Egy belső xinetd szolgáltatás, az aktív kiszolgálókat listázza. A "
+"szolgáltatás használatához engedélyezni kell a xinetd-t."
+
+#: service-list.pl.in:117
+msgid ""
+"An internal xinetd service, listing active services. You must enable xinetd "
+"to use this service."
+msgstr ""
+"Egy belső xinetd szolgáltatás, az aktív szolgáltatásokat listázza. A "
+"szolgáltatás használatához engedélyezni kell a xinetd-t."
+
+#: service-list.pl.in:118
+msgid "get/set serial port information"
+msgstr "soros portok adatainak lekérdezése és beállítása"
+
+#: service-list.pl.in:118
+msgid ""
+"setserial is a program designed to set and/or report the configuration "
+"information associated with a serial port."
+msgstr ""
+"A setserial program szolgál a soros portok beállítási adatainak "
+"lekérdezésére és megadására."
+
+#: service-list.pl.in:119
+msgid ""
+"FAM is a file monitoring daemon. It can be used to get reports when files "
+"change. You must enable xinetd to use this service."
+msgstr ""
+"A FAM egy fájlfigyelő démon. Képes jelentéseket készíteni, ha a fájlok "
+"módosulnak. A szolgáltatás használatához engedélyezni kell a xinetd-t."
+
+#: service-list.pl.in:120
+msgid "control and monitor storage systems using S.M.A.R.T."
+msgstr ""
+"Tárolórendszerek figyelése és vezérlése a S.M.A.R.T. szabványnak megfelelően"
+
+#: service-list.pl.in:121
+msgid "Perl-based spam filter using text analysis"
+msgstr "Perl alapú, szövegelemző spamszűrő"
+
+#: service-list.pl.in:122
+msgid "Simple Network Management Protocol (SNMP) Daemon"
+msgstr "SNMP (Simple Network Management Protocol) démon"
+
+#: service-list.pl.in:123 service-list.pl.in:124
+msgid "OpenSSH SSH server"
+msgstr "OpenSSH SSH kiszolgáló"
+
+#: service-list.pl.in:123
+msgid ""
+"ssh is a program for logging into a remote machine and for executing "
+"commands on a remote machine."
+msgstr ""
+"Az ssh program segítségével be lehet jelentkezni egy távoli gépre és "
+"parancsokat lehet rajta végrehajtani."
+
+#: service-list.pl.in:124
+msgid "OpenSSH server daemon"
+msgstr "OpenSSH kiszolgáló démon"
+
+#: service-list.pl.in:125
+msgid "Linux system logging utilities"
+msgstr "Linux rendszernaplózási segédprogramok"
+
+#: service-list.pl.in:125
+msgid ""
+"Sysklogd provides two system utilities which provide support for system  "
+"logging  and  kernel  message  trapping."
+msgstr ""
+"A Sysklogd két rendszer-segédprogramot biztosít a rendszer naplózásához és a "
+"kernelüzenetek elfogásához."
+
+#: service-list.pl.in:126
+msgid ""
+"Syslog is the facility by which many daemons use to log messages to various "
+"system log files.  It is a good idea to always run syslog."
+msgstr ""
+"A Syslog nevű segédprogramot használja számos más démon az üzenetek "
+"naplózására különféle rendszernaplófájlokba. A syslog folyamatos futtatása "
+"okos dolog."
+
+#: service-list.pl.in:127
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the tcp version. You must enable xinetd to use this service."
+msgstr ""
+"Egy RFC 868 időszerver. Ez a protokoll egy helyfüggetlen, géppel olvasható "
+"dátumot és időt biztosít. Az időszolgáltatás a forrásnak elküldi az 1900. "
+"január 1. óta eltelt időt másodpercekben. Ez a tcp változat. A szolgáltatás "
+"használatához engedélyezni kell a xinetd-t."
+
+#: service-list.pl.in:128
+msgid ""
+"An RFC 868 time server. This protocol provides a site-independent, machine "
+"readable date and time. The Time service sends back to the originating "
+"source the time in seconds since midnight on January first 1900.  This is "
+"the udp version. You must enable xinetd to use this service."
+msgstr ""
+"Egy RFC 868 időszerver. Ez a protokoll egy helyfüggetlen, géppel olvasható "
+"dátumot és időt biztosít. Az időszolgáltatás a forrásnak elküldi az 1900. "
+"január 1. óta eltelt időt másodpercekben. Ez az udp változat. A szolgáltatás "
+"használatához engedélyezni kell a xinetd-t."
+
+#: service-list.pl.in:129
+msgid "kernel random number source devices"
+msgstr "kernel véletlenszám-forrás eszközök"
+
+#: service-list.pl.in:129
+msgid ""
+"The  random  number  generator  gathers environmental noise from device "
+"drivers and other sources into an entropy pool. From this entropy pool "
+"random numbers are created."
+msgstr ""
+"A véletlenszám-generátor környezeti zajt szed fel az eszközillesztőkből és "
+"más forrásokból egy entrópiatárolóba. A véletlenszámok előállításához ezt az "
+"entrópiatárolót használja a rendszer."
+
+#: service-list.pl.in:131
+msgid "Intel(TM) x86(TM)-based virtual machine"
+msgstr "Intel(TM) x86(TM) alapú virtuális gép"
+
+#: service-list.pl.in:131
+msgid ""
+"The vmware command starts an Intel X86-based virtual machine. This script "
+"manages the services needed to run VMware software."
+msgstr ""
+"A vmware parancs elindít egy Intel X86 alapú virtuális gépet. Ez a "
+"parancsfájl kezeli a VMware szoftver futtatásához szükséges szolgáltatásokat."
+
+#: service-list.pl.in:132
+msgid "Web-based administration toolkit"
+msgstr "Webes adminisztrációs eszközcsomag"
+
+#: service-list.pl.in:133
+msgid "Name Service Switch daemon for resolving names from NT servers"
+msgstr "Name Service Switch démon NT kiszolgálók neveinek feloldásához"
+
+#: service-list.pl.in:133
+msgid "Starts and stops the Samba winbind daemon"
+msgstr "A Samba winbind démon indítása és leállítása"
+
+#: service-list.pl.in:134
+msgid ""
+"Allow users to run Windows(tm) applications by just clicking on them (or "
+"typing ./file.exe)"
+msgstr ""
+"Lehetővé teszi a felhasználók számára a Windows(tm)-alkalmazások futtatását "
+"egyszerű rájuk kattintással (vagy a nevük, pl. ./file.exe beírásával)"
+
+#: service-list.pl.in:135
+msgid "X Display Manager"
+msgstr "X kijelzővezérlő"
+
+#: service-list.pl.in:135
+msgid "Provides the X equivalent of a \"login:\" prompt."
+msgstr "A \"login:\" képernyő X-megfelelője."
+
+#: service-list.pl.in:136
+msgid "X font server"
+msgstr "X betűtípus-kezelő kiszolgáló"
+
+#: service-list.pl.in:136
+msgid ""
+"Xfs is the X Window System font server. It supplies fonts to X Window System "
+"display servers."
+msgstr ""
+"Az Xfs az X Window rendszer betűtípus-kezelő kiszolgálója. Ez biztosítja az "
+"X Window rendszer megjelenítő kiszolgálói számára a betűtípusokat."
+
+#: service-list.pl.in:137
+msgid ""
+"xinetd is a powerful replacement for inetd. xinetd has access control "
+"machanisms, extensive logging capabilities, the ability to make services "
+"available based on time, and can place limits on the number of servers that "
+"can be started, among other things."
+msgstr ""
+"A xinetd az inetd hatékony helyettesítője. A xinetd hozzáférés-vezérlési "
+"mechanizmusokat is tartalmaz, sokoldalú naplózási lehetőségeket, lehetővé "
+"teszi a szolgáltatások idő alapján szabályozott elérését, korlátozhatja az "
+"elindítható kiszolgálók számát... és még sok minden másra is képes."
+
+#: service.pl.in:229 service.pl.in:234
+msgid "Halting the system"
+msgstr "A rendszer leállítása"
+
+#: service.pl.in:230 service.pl.in:236
+msgid "Text mode"
+msgstr "Szöveges mód"
+
+#: service.pl.in:231 service.pl.in:235 service.pl.in:244
+msgid "Graphical mode"
+msgstr "Grafikus mód"
+
+#: service.pl.in:232 service.pl.in:237
+msgid "Rebooting the system"
+msgstr "A rendszer újraindítása"
+
+#: service.pl.in:239
+msgid "Starts all system neccesary services"
+msgstr "Az összes szükséges rendszerszolgáltatás elindítása"
+
+#: service.pl.in:240
+msgid "Default runlevel"
+msgstr "Alapértelmezett futási szint"
+
+#: service.pl.in:241
+msgid "Networkless runlevel"
+msgstr "Hálózat nélküli futási szint"
+
+#: users-conf.in:179
+msgid "Monitor system logs"
+msgstr "Rendszernaplók figyelése"
+
+#: users-conf.in:180
+msgid "Use audio devices"
+msgstr "Audioeszközök használata"
+
+#: users-conf.in:181
+msgid "Access to CD-ROM drives"
+msgstr "CD-olvasók elérése"
+
+#: users-conf.in:182
+msgid "Access to modem devices"
+msgstr "Modemeszközök elérése"
+
+#: users-conf.in:183
+msgid "Connect to Internet through modem devices"
+msgstr "Kapcsolódás az internethez modemeszközökkel"
+
+#: users-conf.in:184
+msgid "Send and receive faxes"
+msgstr "Faxok küldése és fogadása"
+
+#: users-conf.in:185
+msgid "Access to floppy drives"
+msgstr "Hajlékonylemez-meghajtók elérése"
+
+#: users-conf.in:186
+msgid "Enable access to external storage devices automatically"
+msgstr "Külső tárolóeszközök hozzáférésének automatikus engedélyezése"
+
+#: users-conf.in:187
+msgid "Access to tape drives"
+msgstr "Szalagos meghajtók elérése"
+
+#: users-conf.in:188
+msgid "Be able to get administrator privileges"
+msgstr "Adminisztrátori jogosultságok megszerzésének lehetősége"
+
+#: users-conf.in:492
+msgid "Default"
+msgstr "Alapértelmezett"
+
+#: users-conf.in:493
+msgid "Default profile"
+msgstr "Alapértelmezett profil"

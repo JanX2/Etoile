@@ -1,0 +1,1827 @@
+#!/usr/bin/env perl
+#-*- Mode: perl; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+
+# Simple fixed media configurator. Designed to be architecture- and distribution independent.
+# Growing it in order to support the new disk-tool
+#
+# Copyright (C) 2000-2001 Ximian, Inc.
+# Copyright (C) 2003 Alvaro del Castillo
+#
+# Authors: Hans Petter Jansson <hpj@ximian.com>
+# Authors: Alvaro del Castillo <acs@barrapunto.com>
+# Authors: Carlos Garciía Campos <elkalmail@yahoo.es>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Library General Public License as published
+# by the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+# Best viewed with 100 columns of width.
+
+# Configuration files affected:
+#
+# /etc/fstab
+
+# Running programs affected/used:
+#
+# fdisk
+# mount
+# awk (already used in guess_system.sh) 
+# cat
+
+# For debuging
+# use Data::Dumper;
+
+BEGIN {
+  $SCRIPTSDIR = "@scriptsdir@";
+  if ($SCRIPTSDIR =~ /^@scriptsdir[@]/)
+  {
+      $SCRIPTSDIR = ".";
+      $DOTIN = ".in";
+  }
+  
+  require "$SCRIPTSDIR/general.pl$DOTIN";
+  require "$SCRIPTSDIR/platform.pl$DOTIN";
+  require "$SCRIPTSDIR/util.pl$DOTIN";
+  require "$SCRIPTSDIR/file.pl$DOTIN";
+  require "$SCRIPTSDIR/xml.pl$DOTIN";
+  require "$SCRIPTSDIR/filesys.pl$DOTIN";
+  require "$SCRIPTSDIR/partition.pl$DOTIN";
+}
+
+
+# --- Tool information --- #
+
+$name = "disks";
+$version = "@VERSION@";
+@platforms = ("redhat-5.2", "redhat-6.0", "redhat-6.1", "redhat-6.2", "redhat-7.0",
+              "redhat-7.1", "mandrake-7.2", "debian-2.2", "debian-woody", "debian-sarge",
+	      "debian-3.1", "suse-7.0", "suse-9.1", "suse-1.0", "unitedlinux-1.0", 
+	      "turbolinux-7.0", "rpath");
+
+$description =<<"end_of_description;";
+       Configures locally mounted partitioned media.
+end_of_description;
+
+$progress_max = 16;
+
+
+# --- System config file locations --- #
+
+# We list each config file type with as many alternate locations as possible.
+# They are tried in array order. First found = used.
+
+# Right now there's only one entry per array, as I couldn't find any
+# typical deviations.
+
+@fstab_names = ( "/etc/fstab" );
+
+
+# --- Internal configuration variables --- #
+
+# Configuration is parsed/read to, and printed/written from, these temporary variables.
+
+@cf_disks = ();
+
+
+# --- Backend-specific helper subs --- #
+
+# to filesys
+#sub get_media_type
+#{
+#   my ($dev_clean, $dev_prefix);
+#   
+#   ($dev) = @_;   
+#
+#  ($dev_clean) = ($dev =~ /^\/dev\/([a-zA-Z0-9]*)$/);
+#   
+#  ($dev_prefix) = ($dev_clean =~ /(^[a-z]*)[a-z]/);
+  
+#  if ($dev_prefix eq "hd") {
+#      return ("disk-ide");
+#   } elsif ($dev_prefix eq "sd") {
+#        return ("disk-scsi");
+#	{ else {
+#	    return ("unknown");
+#	 }
+#      }
+
+sub update_partition
+{
+  my ($disk, $device, $point, $fs, $options, $check);
+  my ($listed, $bootable, $detected);
+  my ($disk_found, $point_found) = (0, 0);
+  my $label;
+  my ($start, $end);
+
+  ($disk, $device, $alias, $point, $fs, $options, $check, $size, 
+  $listed, $bootable, $detected, $label, $start, $end) = @_;
+
+
+  if ($fs eq "auto") { $fs = ""; }
+  if ($label eq "")
+  {
+    if ($device eq "") { return; }
+    $label = gst_filesys_ext2_device_to_label ($device);
+  }
+
+  for ($i = 0; $cf_disks[$i]; $i++)
+  {
+    if ($disk eq "" || ($cf_disks[$i])->{device} eq $disk)
+    {
+      # Found disk. Now look for partition.
+          
+      for ($j = 0; $cf_disks[$i]->{partitions}[$j]; $j++)
+      {
+        if ($cf_disks[$i]->{partitions}[$j]->{device} eq $device ||
+            ($label ne "") && ($cf_disks[$i]->{partitions}[$j]->{label} eq $label))
+        {
+          # Found partition.
+          
+          if ($options ne "")
+          {
+            if ($options =~ /noauto/)
+            {
+              if (`mount | grep \"$device \"` eq "") {
+		  # TODO: get used swap with the free command
+                  $cf_disks[$i]->{partitions}[$j]->{mounted} = 0;
+	      }
+            }
+            else
+            {
+              if (`mount | grep \"$device \"` eq "") {
+		 $cf_disks[$i]->{partitions}[$j]->{mounted} = 0;
+	      } else {
+		 $cf_disks[$i]->{partitions}[$j]->{mounted} = 1;
+		 # If the partition is mounted we can show free space
+		 $block_size = $cf_disks[$i]->{block_size};
+		 $free_space=0;
+		 $free_space = `df --block-size=$block_size $device | grep $device | awk  '/\\/dev/ {print \$4}'`;
+		 $cf_disks[$i]->{partitions}[$j]->{free} = $free_space if $free_space;
+	      }
+	      if ($cf_disks[$i]->{partitions}[$j]->{type} eq "swap") {
+		 $cf_disks[$i]->{partitions}[$j]->{mounted} = 1;
+	      }
+            }
+          }
+
+          if ($point ne "") { $cf_disks[$i]->{partitions}[$j]->{point} = $point; }
+	  if ($alias ne "") { $cf_disks[$i]->{partitions}[$j]->{alias} = $alias; }
+          if ($fs) { $cf_disks[$i]->{partitions}[$j]->{type} = $fs; }
+          if ($listed) { $cf_disks[$i]->{partitions}[$j]->{listed} = 1; }
+	  #if ($bootable) { $cf_disks[$i]->{partitions}[$j]->{bootable} = 1; }
+	  #if ($detected) { $cf_disks[$i]->{partitions}[$j]->{detected} = 1; }
+	  #if ($check) { $cf_disks[$i]->{partitions}[$j]->{check} = 1; }
+          if ($size) { $cf_disks[$i]->{partitions}[$j]->{size} = $size; }
+          if ($label) { $cf_disks[$i]->{partitions}[$j]->{label} = $label; }
+
+          $disk_found = 1;
+          $point_found = 1; last;
+        }
+      }
+
+      if (!$point_found && $device)
+      {
+        # Make new partition entry.
+
+        my %partition;
+
+        # if ($options =~ /noauto/) { %partition->{mounted} = 0; }
+        if (`df | grep \"$device \"` eq "") { %partition->{mounted} = 0; }
+        else                      
+        { 
+            %partition->{mounted} = 1;
+            $block_size = $cf_disks[$i]->{block_size};
+            $free_space = 0;
+            $free_space = `df --block-size=$block_size $device | grep $device | awk  '/\\/dev/ {print \$4}'`;
+            %partition->{free} = $free_space if $free_space;
+            %partition->{point} = `mount | grep $device | awk '{print \$3}'`;
+            %partition->{type} =  `mount | grep $device | awk '{print \$5}'`;
+        }
+
+        %partition->{device} = $device;
+        # we use better the mount info, no fstab info - KaL
+        if (%partition->{mounted} == 0) {
+            %partition->{point} = $point;
+            %partition->{type} = $fs;
+        }
+        %partition->{listed} = $listed;
+        if ($bootable) { %partition->{bootable} = 1; }
+        if ($detected) { %partition->{detected} = 1; }
+        if ($check) { %partition->{check} = 1; }
+        %partition->{size} = $size;
+        %partition->{label} = $label;
+	if ($start < $end) {
+	   %partition->{start} = $start;
+	   %partition->{end} = $end;
+	}
+
+        $bleh = $cf_disks[$i]->{partitions};
+        push(@$bleh, \%partition);
+
+        $disk_found = 1; last;
+      }
+    }
+  }
+
+  if (!$disk_found)
+  {
+    # Make new disk entry containing this partition.
+
+    my (%disk, %partition);
+
+    if ($options =~ /noauto/) { %partition->{mounted} = 0; }
+    else                      { %partition->{mounted} = 1; }
+
+    %partition->{device} = $device;
+    %partition->{device} = $alias;
+    %partition->{point} = $point;
+    %partition->{type} = $fs;
+    %partition->{listed} = $listed;
+    #if ($bootable) { %partition->{bootable} = 1; }
+    #if ($detected) { %partition->{detected} = 1; }
+    #if ($check) { %partition->{check} = 1; }
+    %partition->{size} = $size;
+    %partition->{label} = $label;
+    if ($start < $end) {
+       %partition->{start} = $start;
+       %partition->{end} = $end;
+    }
+
+    %disk->{device} = $disk;
+    %disk->{partitions} = [];
+
+    $bleh = %disk->{partitions};
+    push(@$bleh, \%partition);
+    push(@cf_disks, \%disk);
+  }
+}
+
+
+sub get_partition
+{
+  my ($disk, $device, $label) = @_;
+  my ($i, $j);
+
+  for ($i = 0; $cf_disks[$i]; $i++)
+  {
+    if ($disk eq "" || ($cf_disks[$i])->{device} eq $disk)
+    {
+      # Found disk. Now look for partition.
+
+      for ($j = 0; $cf_disks[$i]->{partitions}[$j]; $j++)
+      {
+        if ($cf_disks[$i]->{partitions}[$j]->{device} eq $device ||
+            ($device eq "" && $cf_disks[$i]->{partitions}[$j]->{label} eq $label))
+        {
+          # Found partition.
+
+          return ($cf_disks[$i]->{partitions}[$j]);
+        }
+      }
+    }
+  }
+}
+
+
+sub get_partition_data
+{
+  my ($disk, $device, $label);
+
+  ($disk, $device, $label) = @_;
+
+  for ($i = 0; $cf_disks[$i]; $i++)
+  {
+    if ($disk eq "" || ($cf_disks[$i])->{device} eq $disk)
+    {
+      # Found disk. Now look for partition.
+
+      for ($j = 0; $cf_disks[$i]->{partitions}[$j]; $j++)
+      {
+        if ($cf_disks[$i]->{partitions}[$j]->{device} eq $device ||
+            ($device eq "" && $cf_disks[$i]->{partitions}[$j]->{label} eq $label))
+        {
+          # Found partition.
+
+          return ($cf_disks[$i]->{partitions}[$j]->{point},
+                  $cf_disks[$i]->{partitions}[$j]->{type},
+                  $cf_disks[$i]->{partitions}[$j]->{listed},
+                  $cf_disks[$i]->{partitions}[$j]->{mounted},
+                  $cf_disks[$i]->{partitions}[$j]->{bootable},
+                  $cf_disks[$i]->{partitions}[$j]->{check},
+                  $cf_disks[$i]->{partitions}[$j]->{label});
+        }
+      }
+    }
+  }
+}
+
+sub get_ide_setting
+{
+   my ($dev_clean, $setting);
+
+   ($dev_clean, $setting) = @_;
+
+   $value = `cat /proc/ide/$dev_clean/settings 2>/dev/null | grep $setting | awk '{print \$2}'`;
+
+   return $value;
+}
+
+sub get_cdrom_settings
+{
+   my ($device) = @_;
+ 
+   
+   if (!sysopen (RD, $device, O_RDONLY|O_NONBLOCK)) {
+      return;
+   }
+   
+   if ($^O eq 'linux') {
+      $CDROM_GET_CAPABILITY = 0x5331;
+      
+      $CDC_PLAY_AUDIO = 0x100;
+      $CDC_CD_R       = 0x2000;
+      $CDC_CD_RW      = 0x4000;
+      $CDC_DVD        = 0x8000;
+      $CDC_DVD_R      = 0x10000;
+      $CDC_DVD_RAM    = 0x20000;
+   }
+
+   #foreach $device (@devices) {
+   
+   my $drivetype = ioctl (RD, $CDROM_GET_CAPABILITY, 0);
+
+   &update_disk_data ($device, "play-audio", ($drivetype & $CDC_PLAY_AUDIO) ? 1 : 0);
+   &update_disk_data ($device, "write-cdr", ($drivetype & $CDC_CD_R) ? 1 : 0);
+   &update_disk_data ($device, "write-cdrw", ($drivetype & $CDC_CD_RW) ? 1 : 0);
+   &update_disk_data ($device, "read-dvd", ($drivetype & $CDC_DVD) ? 1 : 0);
+   &update_disk_data ($device, "write-dvdr", ($drivetype & $CDC_DVD_R) ? 1 : 0);
+   &update_disk_data ($device, "write-dvdram", ($drivetype & $CDC_DVD_RAM) ? 1 : 0);
+   
+   close (RD);
+}
+
+sub update_disk_data
+{
+  my ($disk, $data, $value);
+
+
+  ($disk, $data, $value) = @_;
+
+  my $disk_found = 0;
+
+  for ($i = 0; $cf_disks[$i]; $i++)
+  {
+    if (($cf_disks[$i])->{device} eq $disk)
+    {
+        # Found disk.
+        $cf_disks[$i]->{$data} = $value;
+        $disk_found = 1;
+        last;
+    }
+  }
+
+  if (!$disk_found)
+  {
+    # Make new disk entry
+
+    my (%disk);
+
+    %disk->{device} = $disk;
+    %disk->{$data} = $value;
+    %disk->{partitions} = [];
+
+    push(@cf_disks, \%disk);
+  }
+}
+
+
+
+
+# --- Configuration file manipulation --- #
+
+
+# /etc/fstab
+#
+# <device> <mount point> <filesystem> <option,option,...> <dump> <fsck>
+# <device> <mount point> <filesystem> <option,option,...> <dump> <fsck>
+# ...
+#
+# Exists: (Presumably everywhere)
+#
+# Absent: (Presumably nowhere)
+
+sub read_fstab
+{
+  my $fstab_file;
+  local *FSTAB_FILE;
+
+  # Find the file.
+
+  $fstab_file = &gst_file_open_read_from_names(@fstab_names);
+  if (not $fstab_file) { return; }  # We didn't find it.
+  *FSTAB_FILE = $fstab_file;
+
+  # Parse the file.
+
+  while (<FSTAB_FILE>)
+  {
+    my ($disk, $device, $point, $fs, $options, $check, $label);
+
+    @line = split(/[ \n\r\t]+/, $_);
+
+    if ($line[0] eq "") { shift @line; }
+    if ($line[0] eq "") { next; }
+    if (&gst_ignore_line($line[0])) { next; }
+    ($device, $point, $fs, $options, $dump, $check) = @line;
+
+    if ($device =~ /$LABEL=(.*)/) { 
+       $label = $1; 
+       $device = ""; 
+    } else { 
+       $label = ""; 
+    }
+
+    # we want to inform the backend about the swap
+    if ($fs eq "nfs" || $fs eq "smbfs" || $fs eq "proc" || $fs eq "devpts" ||
+        $fs eq "sysfs" || $fs eq "usbdevfs" || $fs eq "usbfs") {
+      next;  # We can skip these filesystems for sure.
+    }
+
+    # look for symlinks to manage alias
+    my $alias = $device;
+    my $link;
+    while ($link = readlink ($alias)) {
+       $alias = $link;
+    }
+
+    if ($alias ne $device) {
+       my $temp = $alias;
+       $alias = $device;
+       $device = $temp;
+       # maybe device file is in short format
+       if (!($device =~ /^\/dev\/.*$/)) {
+	  $device = "/dev/$device";
+       }
+    } else {
+       # there is no alias
+       $alias = "";
+    }
+
+    if ($point eq "none") { $dir = ""; }
+    ($disk) = ($device =~ /([a-zA-Z\/]+)/);
+
+    #if ($disk eq "/dev/fd" || ($disk ne "" && $disk eq $device)) {
+       #  next;  # Skip floppies and CD-ROMs.
+       #}
+    if (($disk eq "/dev/fd") || ($disk eq "/dev/scd")) {
+       # fd0, scd0 are not partitions
+       $disk = $device;
+    }
+
+    if (sysopen (HANDLE, $disk, O_RDONLY|O_NONBLOCK)) {
+       &update_disk_data ($disk, "present", 1);
+       close HANDLE;
+    } else {
+       &update_disk_data ($disk, "present", 0);
+       # FIXME removable disk by defualt
+       &update_disk_data ($disk, "media", "disk");
+    }
+
+    
+    # (Find and update) or (add) our internal disk/partition record.
+
+    for ($i = 0; $cf_disks[$i]; $i++) {
+       if ($cf_disks[$i]->{device} eq $disk) {
+	  for ($j = 0; $cf_disks[$i]->{partitions}[$j]; $j++) {
+	     if ($cf_disks[$i]->{partitions}[$j]->{device} eq $device) {
+		$type = $cf_disks[$i]->{partitions}[$j]->{type};
+		last;
+	     }
+	  }
+	  last;
+       }
+    }
+
+    if ($disk eq $device) {
+       # Disk, not partition, we only want filesystem type, 
+       # mount point and mount options
+       # we use alias to manage symlinks
+       &update_disk_data ($disk, "alias", $alias);
+       &update_disk_data ($disk, "point", $point);
+       &update_disk_data ($disk, "type", $fs);
+       #&update_disk_data ($disk, "mount-options", $options);
+    } elsif (($disk ne "" || $label ne "") && $type ne "empty") {
+      &update_partition ($disk, $device, $alias, $point, $fs, $options, $check, "", 1, 0, "", $label, 0, 0);
+    }
+  }
+
+  close(FILE);
+}
+
+sub write_fstab
+{
+  my ($ifh, $ofh);
+  local (*INFILE, *OUTFILE);
+
+  ($ifh, $ofh) = &gst_file_open_filter_write_from_names(@fstab_names);
+  if (not $ofh) { return; }  # No point if we can't write.
+  *INFILE = $ifh; *OUTFILE = $ofh;
+
+  while (<INFILE>)
+  {
+    my ($disk, $device, $point, $fs, $options, $dump, $check, $label);
+    my ($ipoint, $itype, $icheck, $ilisted, $imounted, $ibootable, $ilabel);
+
+    @line = split(/[ \n\r\t]+/, $_);
+
+    if ($line[0] eq "") { shift @line; }
+    if ($line[0] eq "") { print OUTFILE; next; }
+    if (&gst_ignore_line($line[0])) { print OUTFILE; next; }
+    ($device, $point, $fs, $options, $dump, $check) = @line;
+
+    if ($fs eq "nfs" || $fs eq "smbfs" || $fs eq "proc" || $fs eq "devpts" ||
+        $fs eq "iso9660" || $fs eq "swap" || $device =~ /$\/dev\/fd.*/)
+    {
+      print OUTFILE; next;  # We can skip these filesystems for sure.
+    }
+
+    # By now, we know that the "entry" is "interesting". Check if known.
+
+    if ($device =~ /$LABEL=(.*)/)
+    {
+      $label = $1;
+      $device = "";
+      $disk = "";
+    }
+    else
+    {
+      $label = "";
+      ($disk) = ($device =~ /([a-zA-Z\/]+)/);
+    }
+
+    if ($disk eq "/dev/fd") { print OUTFILE; next; }
+
+    ($ipoint, $itype, $ilisted, $imounted, $ibootable, $icheck, $ilabel) =
+      &get_partition_data($disk, $device, $label);
+
+    if ($ilisted)
+    {
+      # Write record if listedness requested.
+
+      if ($ilabel ne "")
+      {
+        print OUTFILE "LABEL=" . $ilabel . " ";
+      }
+      else
+      {
+        print OUTFILE $device . " ";
+      }
+
+      if ($ipoint eq "") { print OUTFILE "none "; }
+      else { print OUTFILE $ipoint . " "; }
+
+      if ($itype eq "") { print OUTFILE "auto "; }
+      else              { print OUTFILE $itype . " "; }
+
+      # Options merging and printing.
+
+      my $prev = 0;
+      if (!$imounted) { print OUTFILE "noauto"; $prev = 1; }
+      my @options = ($options =~ /([a-zA-Z0-9=-]+),?/mg);
+      for $option (@options)
+      {
+        # Strip options we handle, keep the rest.
+
+        if ($option eq "auto" || $option eq "noauto" ||
+            $option eq "defaults") { next; }
+        if ($prev) { print OUTFILE ","; }
+        print OUTFILE $option;
+        $prev = 1;
+      }
+      
+      if (!$prev) { print OUTFILE "defaults"; }
+      
+      # Leave dump alone.
+      
+      print OUTFILE " $dump ";
+      
+      # Fsck onboot priority.
+
+      if ($icheck eq "") { $icheck = 0; }
+      if ($icheck == 1)
+      {
+        if ($ipoint eq "/") { print OUTFILE "1\n"; }
+        else { print OUTFILE "2\n"; }
+      }
+      else { print OUTFILE "0\n"; }
+      
+      # Indicate that parameters for this partition have been stored.
+      
+      my $partition = &get_partition($disk, $device, $label);
+      %$partition->{stored} = 1;
+    }
+    
+    # Unknown or unlisted-by-request partitions are not written.
+  }
+  
+  # Print the remaining partitions from our internal list. These are
+  # newly added, and didn't exist in the fstab previously.
+  
+  for ($i = 0; $cf_disks[$i]; $i++)
+  {
+    for ($j = 0; $cf_disks[$i]->{partitions}[$j]; $j++)
+    {
+      if ($cf_disks[$i]->{partitions}[$j]->{listed} &&
+          !$cf_disks[$i]->{partitions}[$j]->{stored})
+      {
+        my $part = $cf_disks[$i]->{partitions}[$j];
+
+        &gst_report ("disks_fstab_add", $cf_disks[$i]->{partitions}[$j]->{device});
+        
+        # Write record.
+
+        print OUTFILE %$part->{device} . " ";
+        if (%$part->{point} eq "") { print OUTFILE "none "; }
+        else { print OUTFILE %$part->{point} . " "; }
+
+        if (%$part->{type} eq "") { print OUTFILE "auto "; }
+        else                     { print OUTFILE %$part->{type} . " "; }
+
+        # Options printing.
+
+        if (!%$part->{mounted}) { print OUTFILE "noauto "; }
+        else { print OUTFILE "defaults "; }
+
+        # No dumping by default.
+
+        print OUTFILE " 0 ";
+      
+        # Fsck onboot priority.
+
+        if (%$part->{check} == 1)
+        {
+          if (%$part->{point} eq "/") { print OUTFILE "1\n"; }
+          else { print OUTFILE "2\n"; }
+        }
+        else { print OUTFILE "0\n"; }
+      }
+    }
+  }
+  
+  close OUTFILE;
+}
+
+sub is_ide_scsi
+{
+   my ($dev) = @_;
+
+   my $line = `cat /proc/cmdline`;
+   
+   if ($line && $line ne "") {
+      if ($line =~ /(.*)$dev=ide-scsi(.*)$/) {
+	 return 1;
+      } else {
+	 return 0;
+      }
+   } else {
+      return 0;
+   }
+}
+
+sub scan_ide_bus
+{
+   my $device = shift;
+
+   if (! opendir (DIR, "/proc/ide/")) {
+      return;
+   }
+
+   foreach (readdir (DIR)) {
+      if ($_ =~ /^hd[a-z]$/) {
+	 if (&is_ide_scsi ($_)) {
+	    next;
+	 }
+	 
+         if ($device && ($device ne "/dev/$_")) {
+	    next;
+	 }
+	 
+	 my $dma = &get_ide_setting ($_, "using_dma");
+	 my $model = `cat /proc/ide/$_/model 2>/dev/null`;
+	 my $media = `cat /proc/ide/$_/media 2>/dev/null`;
+	 if ($model ne "") { 
+	    &update_disk_data ("/dev/$_", "model", $model); 
+	    if ($media =~ /cdrom/) {
+	       &get_cdrom_settings ("/dev/$_");
+	    }
+	 }
+
+	 if ($media ne "") { &update_disk_data ("/dev/$_", "media", $media); }
+	 if ($dma ne "")   { &update_disk_data ("/dev/$_", "dma", $dma); }
+      }
+   }
+   closedir (DIR);
+}
+
+sub scan_scsi_bus
+{
+   my $device = shift;
+
+   if (! `cat /proc/scsi/scsi | grep "Host"`) {
+      return;
+   }
+   
+   if ($device) {
+      @files = ( $device );
+   } else {
+      @files = ( "/dev/sda", "/dev/sdb", "/dev/sdc", "/dev/sdd", 
+                 "/dev/sde", "/dev/sdf", "/dev/sdg", "/dev/sdh",
+	         "/dev/sdi", "/dev/sdj", "/dev/sdk", "/dev/sdl",
+	         "/dev/sdm", "/dev/sdn", "/dev/sdo", "/dev/sdp",
+                 "/dev/scd0", "/dev/scd1", "/dev/scd2", "/dev/scd3" );
+   }	      
+
+   $SCSI_IOCTL_GET_IDLUN      = 0x5382;
+   $SCSI_IOCTL_GET_BUS_NUMBER = 0x5386;
+
+   my $proc_scsi_file;
+   local *PROC_SCSI_FILE;
+   $proc_scsi_file = &gst_file_open_read_from_names ("/proc/scsi/scsi");
+   if (not $proc_scsi_file) { return; }
+   *PROC_SCSI_FILE = $proc_scsi_file;
+  
+   my @scsi = ();
+   for $dev (@files) {
+      if (sysopen (RD, $dev, O_RDONLY | O_NONBLOCK)) {
+	 my $info;
+	 if (ioctl (RD, $SCSI_IOCTL_GET_IDLUN, $info)) {
+	    my @scsi_info = unpack ("II", $info);
+            my (%scsi_data);
+  
+            %scsi_data->{'device'} = $dev;
+            %scsi_data->{'id'} = $scsi_info[0] & 0xff;
+	    %scsi_data->{'lun'} = ($scsi_info[0] >> 8) & 0xff;
+	    %scsi_data->{'channel'} = ($scsi_info[0] >> 16) & 0xff;
+	    %scsi_data->{'host'} = (($scsi_info[0] >> 24) & 0xff);
+
+	    if (ioctl(RD, $SCSI_IOCTL_GET_BUS_NUMBER, $arg)) {
+	       my @args = unpack ("CCCCCC", $arg);
+	       %scsi_data->{'host'} = $args[0];
+	    }
+
+            push (@scsi, \%scsi_data);
+         }
+
+	 close (RD);
+      }
+   }
+  
+   my $vendor;
+   my $model;
+   my $media;
+   my ($host, $channel, $id, $lun);
+   my $i = 0;
+
+   while (<PROC_SCSI_FILE>) {
+      my $data = $_;
+      $data =~ s/^\s*//;
+      $data =~ s/\s*$//;
+      @line = split(":", $data);
+      if ($line[0] eq "Host") {
+         ($host, $channel, $id, $lun) = ($data =~ /^Host:.*scsi([0-9]+).*Channel:.*([0-9]+).*Id:.*([0-9]+).*Lun:.*([0-9]+).*$/);
+         
+         $i = 0;
+	 while ($scsi[$i]) {
+	    #print "DBG: device: " . $scsi[$i]->{'device'} . " host " . $scsi[$i]->{'host'} . " id " . $scsi[$i]->{'id'} . " lun " .  $scsi[$i]->{'lun'} . "\n";
+	    #print "DBG: host $host id $id lun $lun\n";
+            if ($scsi[$i]->{'id'} == int ($id) && $scsi[$i]->{'lun'} == int ($lun) &&
+                $scsi[$i]->{'channel'} == int ($channel) && $scsi[$i]->{'host'} == int ($host)) {
+		   last;
+            }
+	    $i++;
+         }
+      } elsif ($line[0] eq "Vendor") {
+         ($vendor, $model) = ($data =~ /^Vendor:(.*)Model:(.*)Rev:.*$/);
+         
+         $vendor =~ s/^\s*//;
+         $vendor =~ s/\s*$//;
+         $model  =~ s/^\s*//;
+         $model  =~ s/\s*$//;
+         
+	 if ($scsi[$i]->{'device'}) { &update_disk_data ($scsi[$i]->{'device'}, "model", "$vendor $model");}
+      } elsif ($line[0] eq "Type") {
+         if ($data =~ /CD-ROM/) {
+            $media = "cdrom";
+	    &get_cdrom_settings ($scsi[$i]->{'device'});
+         } elsif ($data =~ /Direct-Access/) {
+            $media = "disk";
+         }
+         
+	 if ($scsi[$i]->{'device'}) { &update_disk_data ($scsi[$i]->{'device'}, "media", $media);}
+      }
+   }
+   close (PROC_SCSI_FILE);
+}
+
+sub scan_floppy
+{
+   #FIXME: I don't like it
+   $floppy = `grep fd /proc/devices | wc -l`;
+   chomp $floopy;
+   if ($floppy == 0) {
+      return;
+   } elsif ($floppy >= 1) {
+      $dev="/dev/fd0";
+      &update_disk_data ($dev, "media", "floppy"); 
+   } elsif (system ("fdisk /dev/fd1 > /dev/null 2>&1")) {
+      $dev="/dev/fd1";
+      &update_disk_data ($dev, "media", "floppy");
+   }
+}
+
+sub get_fs_type
+{
+   my ($device) = @_;
+   my ($cmd, $fd, $fstype, $line);
+   my ($filesys);
+
+   # if mounted get fs
+   if (&gst_partition_is_mounted ($device))
+   {
+      #$line = `mount | grep "$device"`;
+      #if ($line ne "") {
+      # already mounted
+      ($filesys) = $line =~ /^$device on .* type (.*) .*$/;
+      if ($filesys) 
+      {
+	 return $filesys;
+      } 
+      else 
+      {
+	 return "unknown";
+      }
+   }  
+
+   # Not already mounted
+   # Try to mount it
+   my $ret = &gst_partition_mount_temp ($device);
+   
+   #my ($dev) = ($device =~ /\/dev\/(.*)/);
+   #my $point = "/tmp/disks-conf-$dev";
+
+   #mkdir ($point);
+
+   #$cmd = "mount $device $point";
+   
+   #$fd = &gst_file_run_pipe_read_with_stderr ($cmd);
+   
+   #if (!$fd) {
+      #   my $err = `umount $device`;
+      #rmdir ($point);
+      #return "unknown";
+      #}
+
+   # Not mounted: not supported or unformatted
+   #while (<$fd>) {
+      #   if (/not supported/) {
+#	 ($filesys) = ($_ =~ /^mount: fs type (.*) not supported by kernel$/);
+#     } elsif (/looks like swapspace/) {
+#	 $filesys = "swap";
+#     } elsif (/you must specify the filesystem type/) {
+#	 $filesys = "none";
+#     }
+#  }
+
+#  &gst_file_close ($fd);
+
+   if ($ret eq "error")
+   {
+      return "unknown";
+   } 
+   elsif ($ret =~ /not_supported/)
+   {
+      my ($msg) = ($ret =~ /^not_supported::(.*)/);
+      ($filesys) = ($msg =~ /^mount: fs type (.*) not supported by kernel$/);
+      return $filesys;
+   }
+   elsif ($ret eq "swap")
+   {
+      return "swap";
+   }
+   elsif ($ret eq "none")
+   {
+      return "none";
+   }
+
+   #if ($filesys) {
+      #   rmdir ($point);
+      #return $filesys;
+      #}
+
+   # Mounted by me
+   $line = `mount | grep "$device"`;
+   if ($line ne "") {
+      ($filesys) = ($line =~ /^$device on .* type (.*) .*$/);
+   }
+   
+   &gst_partition_umount_temp ($device, $ret);
+   #my $err = `umount $device`;
+   #rmdir ($point);
+
+   if ($filesys) {
+      return $filesys;
+   } else {
+      return "unknown";
+   }  
+}
+
+# --- XML parsing --- #
+
+sub xml_parse
+{
+  # Scan XML to tree.
+
+  $tree = &gst_xml_scan;
+
+  # Walk the tree recursively and extract configuration parameters.
+  # This is the top level - find and enter the toplevel tag.
+
+  while (@$tree)
+  {
+    if ($$tree[0] eq "disks") { &xml_parse_toplevel($$tree[1]); }
+
+    shift @$tree;
+    shift @$tree;
+  }
+
+  return($tree);
+}
+
+
+sub xml_parse_toplevel
+{
+  my $tree = $_[0];
+
+  shift @$tree;  # Skip attributes.
+
+  while (@$tree)
+  {
+    if ($$tree[0] eq "disk") { &xml_parse_disk($$tree[1]); }
+
+    shift @$tree;
+    shift @$tree;
+  }
+}
+
+
+sub xml_parse_disk
+{
+  my %disk;
+
+  my $tree = $_[0];
+  shift @$tree;  # Skip attributes.
+
+  %disk->{partitions} = [];  # Init partition list.
+
+  while (@$tree)
+  {
+    if ($$tree[0] eq "device") { %disk->{device} = &gst_xml_get_word($$tree[1]); }
+    elsif ($$tree[0] eq "size") { %disk->{size} = &gst_xml_get_word($$tree[1]); }
+    elsif ($$tree[0] eq "partition")
+    {
+      my %partition = &xml_parse_partition($$tree[1]);
+      $bleh = %disk->{partitions};
+      push(@$bleh, \%partition);
+    }
+    
+    shift @$tree; shift @$tree;
+  }
+
+  push(@cf_disks, \%disk);
+}
+
+
+sub xml_parse_partition
+{
+  my %partition;
+
+  my $tree = $_[0];
+  shift @$tree;  # Skip attributes.
+
+  while (@$tree)
+  {
+    if ($$tree[0] eq "device") { %partition->{device} = &gst_xml_get_word($$tree[1]); }
+    elsif ($$tree[0] eq "type") { %partition->{type} = &gst_xml_get_word($$tree[1]); }
+    elsif ($$tree[0] eq "point") { %partition->{point} = &gst_xml_get_word($$tree[1]); }
+    elsif ($$tree[0] eq "label") { %partition->{label} = &gst_xml_get_word($$tree[1]); }
+    elsif ($$tree[0] eq "size") { %partition->{size} = &gst_xml_get_word($$tree[1]); }
+    elsif ($$tree[0] eq "bootable") { %partition->{bootable} = &xml_parse_state($$tree[1]); }
+    elsif ($$tree[0] eq "integritycheck") { %partition->{check} = &xml_parse_state($$tree[1]); }
+    elsif ($$tree[0] eq "mounted") { %partition->{mounted} = &xml_parse_state($$tree[1]); }
+    elsif ($$tree[0] eq "listed") { %partition->{listed} = &xml_parse_state($$tree[1]); }
+    elsif ($$tree[0] eq "detected") { %partition->{detected} = &xml_parse_state($$tree[1]); }
+    
+    shift @$tree; shift @$tree;
+  }
+
+  return(%partition);
+}
+
+
+sub xml_parse_state
+{
+  my $tree = $_[0];
+
+  # Check attribute; 'yes', 'true', 'no', 'false'.
+
+  return(&gst_util_read_boolean($$tree[0]->{state}));
+}
+
+
+# --- XML printing --- #
+
+sub sort_by_media
+{
+   my %medias = ("disk" => 1, "cdrom" => 2, "floppy" => 3, "" => 4);
+
+   $ia = $a->{media};
+   $ia =~ s/^\s*//;
+   $ia =~ s/\s*$//;
+
+   $ib = $b->{media};
+   $ib =~ s/^\s*//;
+   $ib =~ s/\s*$//;
+   
+   if ($ia eq $ib) {
+      return ($a->{device} gt $b->{device});
+   } else {
+      return (($medias{$ia}) <=> ($medias{$ib}));
+   }
+}
+
+sub xml_print_common 
+{
+   my ($disk) = @_;
+
+   &gst_xml_print_line ("<device>" . %$disk->{device} . "</device>\n");
+   if (%$disk->{alias}) { &gst_xml_print_line ("<alias>" . %$disk->{alias} . "</alias>\n"); }
+   if (%$disk->{size}) {
+      # The frontend wants KB
+      &gst_xml_print_line ("<size>" . %$disk->{size}*(%$disk->{block_size}/1024) . "</size>\n");
+   }
+   if (%$disk->{media}) { &gst_xml_print_line ("<media>" . %$disk->{media} . "</media>\n"); }
+   if (%$disk->{model}) { &gst_xml_print_line ("<model>" . %$disk->{model} . "</model>\n"); }
+   &gst_xml_print_state_tag ("present", %$disk->{present}); 
+   if (%$disk->{type})  { &gst_xml_print_line ("<type>" .  %$disk->{type} . "</type>\n"); }
+   if (%$disk->{point}) { &gst_xml_print_line ("<point>" . %$disk->{point} . "</point>\n"); }
+}
+
+sub xml_print_cdrom
+{
+   my ($disk) = @_;
+
+   &gst_xml_print_state_tag ("play-audio",   %$disk->{"play-audio"});
+   &gst_xml_print_state_tag ("write-cdr",    %$disk->{"write-cdr"});
+   &gst_xml_print_state_tag ("write-cdrw",   %$disk->{"write-cdrw"});
+   &gst_xml_print_state_tag ("read-dvd",     %$disk->{"read-dvd"});
+   &gst_xml_print_state_tag ("write-dvdr",   %$disk->{"write-dvdr"});
+   &gst_xml_print_state_tag ("write-dvdram", %$disk->{"write-dvdram"});
+}
+
+sub xml_print_partitions
+{
+   my ($disk, $partitions) = @_;
+
+   while (@$partitions)
+   {
+      my $partition = $$partitions[0];
+
+      &gst_xml_print_vspace ();
+      &gst_xml_print_line ("<partition>\n");
+      &gst_xml_enter ();
+
+      &gst_xml_print_line ("<device>" . %$partition->{device} . "</device>\n");
+      if (%$partition->{alias}) { &gst_xml_print_line ("<alias>" . %$partition->{alias} . "</alias>\n"); }
+      if (%$partition->{type})  { &gst_xml_print_line ("<type>" .  %$partition->{type} .  "</type>\n"); }
+      if (%$partition->{point}) { &gst_xml_print_line ("<point>" . %$partition->{point} . "</point>\n"); }
+      if (%$partition->{label}) { &gst_xml_print_line ("<label>" . %$partition->{label} . "</label>\n"); }
+      if (%$partition->{size}) {
+	 # The frontend wants KB 
+	 &gst_xml_print_line ("<size>" . %$partition->{size}*(%$disk->{block_size}/1024) . "</size>\n");
+      }
+
+      if (%$partition->{start}) { &gst_xml_print_line ("<start>" . %$partition->{start} . "</start>\n"); }
+      if (%$partition->{end}) { &gst_xml_print_line ("<end>" . %$partition->{end} . "</end>\n"); }
+
+      #&gst_xml_print_state_tag ("bootable", %$partition->{bootable});
+      #&gst_xml_print_state_tag ("integritycheck", %$partition->{check});
+	
+      &gst_xml_print_state_tag ("mounted", %$partition->{mounted});
+      if (%$partition->{free}) {
+	 # The frontend wants KB
+         &gst_xml_print_line ("<free>" . %$partition->{free}*(%$disk->{block_size}/1024) . "</free>\n");
+      }        
+      &gst_xml_print_state_tag ("listed", %$partition->{listed});
+      #&gst_xml_print_state_tag ("detected", %$partition->{detected});
+
+      &gst_xml_leave ();
+      &gst_xml_print_line ("</partition>\n");
+        
+      shift @$partitions;
+   }
+}
+
+sub xml_print
+{
+  # print Dumper (@cf_disks);
+  
+  &gst_xml_print_begin ();
+
+  &gst_xml_print_line ("<!-- Local fixed media and partitions -->\n");
+  &gst_xml_print_vspace ();
+
+  my @disks = sort sort_by_media (@cf_disks);
+
+  while (@disks)
+  {
+    if ($disks[0])
+    {
+      my $disk = $disks[0];
+      
+      &gst_xml_print_vspace ();
+      &gst_xml_print_line ("<disk>\n");
+      &gst_xml_enter ();
+
+      &xml_print_common ($disk);
+      
+      if (%$disk->{media} =~ /cdrom/) { 
+	 &xml_print_cdrom ($disk);
+      }
+      if (%$disk->{dma}) { &gst_xml_print_state_tag ("dma", %$disk->{dma}); }
+      
+      my $partitions = %$disk->{partitions};
+
+      &xml_print_partitions ($disk, $partitions);
+      
+      &gst_xml_leave ();
+      &gst_xml_print_line ("</disk>\n");
+      &gst_xml_print_vspace ();
+    }
+  
+    shift @disks;
+  }
+
+  &gst_xml_print_end ();
+}
+
+
+# --- Get (read) config --- #
+
+sub get
+{
+  setlocale (LC_ALL, "en_US");
+ 
+  &scan_ide_bus ();
+  &scan_scsi_bus ();
+  &scan_floppy ();
+  &get_fdisk ();
+  &read_fstab;
+
+  &gst_report_end ();
+  &xml_print ();
+}
+
+
+# --- Set (write) config --- #
+
+
+sub set_immediate
+{
+  my $mount_tool;
+  my $umount_tool;
+
+  $mount_tool = &gst_file_locate_tool("mount");
+  $umount_tool = &gst_file_locate_tool("umount");
+
+  # Count partitions.
+
+  my $i; my $j;
+  my $num_partitions = 0;
+  my $num_done = 0;
+  
+  for ($i = 0; $cf_disks[$i]; $i++)
+  {
+    for ($j = 0; $cf_disks[$i]->{partitions}[$j]; $j++)
+    {
+      $num_partitions++;
+    }
+  }
+
+  # Update mount status.
+
+  if (($mount_tool ne "") && ($umount_tool ne ""))
+  {
+    my $i; my $j;
+
+    for ($i = 0; $cf_disks[$i]; $i++)
+    {
+      for ($j = 0; $cf_disks[$i]->{partitions}[$j]; $j++)
+      {
+        if ($cf_disks[$i]->{partitions}[$j]->{mounted})
+        {
+          &gst_report ("disks_mount", $cf_disks[$i]->{partitions}[$j]->{device});
+          system "$mount_tool " . $cf_disks[$i]->{partitions}[$j]->{device} . " " .
+                 $cf_disks[$i]->{partitions}[$j]->{point} . " >/dev/null 2>/dev/null";
+        }
+        else
+        {
+          &gst_report ("disks_umount", $cf_disks[$i]->{partitions}[$j]->{device});
+          system "$umount_tool " . $cf_disks[$i]->{partitions}[$j]->{device} . " >/dev/null 2>/dev/null";
+        }
+	
+        $num_done++;
+        &gst_progress(10 + (80 / ($num_partitions - $num_done + 1)));
+      }
+    }
+  }
+  else
+  {
+    &gst_report ("disks_mount_error");
+  }
+  
+  &gst_progress(90);
+}
+
+
+sub set
+{
+  &xml_parse ();
+
+  &write_fstab; &gst_progress(10);
+
+  if ($gst_do_immediate)
+  {
+    &set_immediate;
+  }
+  
+  &gst_report_end ();
+}
+
+
+# --- Filter config: XML in, XML out --- #
+
+
+sub filter
+{
+  &xml_parse ();
+  &gst_report_end ();
+  &xml_print ();
+}
+
+# --- Test XML file: return to the frontend a fixed XML file --- #
+sub test_xml
+{
+    my ($tool, $file) = @_;
+
+    &gst_report_end ();
+    &gst_progress(100);
+    # lazy boy - acs
+    system ("cat $file");
+}
+
+#sub msf2lba
+#{
+#   ($m, $s, $f) = @_;
+
+#   return int (((($m * 60) + $s) * 75 + $f) - 150);
+#}
+
+#sub lba2msf
+#{
+#  $lba = @_;
+
+#   $lba += 150;
+#   $lba &= 0xffffff;
+
+#   my $m = int ($lba / (60 * 75));
+#   $lba %= (60 * 75);
+
+#   return ($m, int ($lba / 75), int ($lba % 75));
+#}
+
+sub get_cdrom_disc_info
+{
+   my ($device, $alias) = @_;
+   my $cdrom;
+
+   if ($alias eq " ") { undef ($alias); }
+   
+   if (!sysopen (RD, $device, O_RDONLY | O_NONBLOCK)) {
+      $cdrom->{'empty'} = 1;
+      return $cdrom;
+   }
+
+   if ($^O eq 'linux') {
+      $CDS_AUDIO  = 100;
+      $CDS_DATA_1 = 101;
+      $CDS_DATA_2 = 102;
+      $CDS_XA_2_1 = 103;
+      $CDS_XA_2_2 = 104;
+      $CDS_MIXED  = 105;
+
+      $CDROM_DATA_TRACK = 0x04;
+      $CDROM_LEADOUT    = 0xAA;
+      $CDROM_MSF = 0x02;
+      
+      $CDROM_DISC_STATUS = 0x5327;
+
+      $CDROMREADTOCHDR   = 0x5305;
+      $CDROMREADTOCENTRY = 0x5306;
+   } elsif ($^O =~ /bsd/) {
+      $CDROMREADTOCHDR   = 0x40046304;
+      $CDROMREADTOCENTRY = 0xc0086305;
+   } elsif (($^O eq 'solaris') || ($^O eq 'sunos')) {
+      $CDROMREADTOCHDR   = 0x49b;
+      $CDROMREADTOCENTRY = 0x49c;
+   } else {
+      return;
+   }
+   
+   my ($mp, $umount);
+   my $cdtype;
+   my $disctype = ioctl (RD, $CDROM_DISC_STATUS, 0);
+   if ($disctype eq $CDS_AUDIO) { 
+      $cdtype = "audio";
+   } elsif ($disctype eq $CDS_DATA_1) {
+      # Chack if it's a DVD
+      if (! &gst_partition_is_mounted ($device)) {
+	 $umount = 1;
+	 $mp = &gst_partition_mount_temp ($device);
+      } else {
+	 $umount = 0;
+	 $mp = &gst_partition_get_mount_point ($device);
+      }
+      
+      if (($mp =~ /^\/.*$/) && (-d $mp)) {
+	 my $audio_ts = "audio_ts";
+	 my $video_ts = "video_ts";
+	 if ((-d "$mp/$audio_ts") || (-d "$mp/$video_ts") || 
+             (-d "$mp/" . uc ($audio_ts)) || (-d "$mp/" . uc ($video_ts))) {
+	    $cdtype = "dvd";
+	 } else {
+	    $cdtype = "data";
+	 }
+      } else {
+	 $cdtype = "data";
+      }
+
+      if ($umount) {
+	 &gst_partition_umount_temp ($device, $mp);
+      }
+   } elsif (($disctype eq $CDS_DATA_2) || ($disctype eq $CDS_XA_2_1) || 
+            ($disctype eq $CDS_XA_2_2)) {
+      $cdtype = "data";
+   } elsif ($disctype eq $CDS_MIXED) {
+      $cdtype = "mixed";
+   } else {
+      $cdtype = "unknown";
+   }
+
+   if (!ioctl (RD, $CDROMREADTOCHDR, $tochdr)) {
+      $cdrom->{'empty'} = 1;
+      close (RD);
+      return $cdrom;
+   }
+  
+   $cdrom->{'empty'} = 0;
+   
+   my ($start, $end);
+   if ($^O =~ /bsd/) {
+      ($start, $end) = unpack "CC", (substr $tochdr, 2, 2);
+   } else {
+      ($start, $end) = unpack "CC", $tochdr;
+   }
+
+   my @tracks;
+
+   for (my $i = $start; $i <= $end; $i++ ) {
+      push @tracks, $i;
+   }
+   push @tracks, $CDROM_LEADOUT;
+
+   my $min = 0;
+   my $sec = 0;
+   my $frame = 0;
+   my $audio = 0;
+   my $data = 0;
+   my $first_data = 0;
+   my $last_audio = 0;
+   my $duration = 0;
+   
+   foreach (@tracks) {
+      ioctl (RD, $CDROMREADTOCENTRY, $tocentry = pack ("CCCCCCCCC", $_, 0, $CDROM_MSF, 0, 0, 0, 0));
+      my @times = unpack ("CCCCCCCCC", $tocentry);
+      if ($times[1] & ($CDROM_DATA_TRACK << 4)) {
+	 $data ++;
+	 if ($data eq 1) {
+	    $first_data = $_;
+	 }
+      } else {
+	 $audio ++;
+	 $last_audio = $_;
+      }
+      
+      my $temp2 = 0;
+      $temp2 += int ($times[6]);
+      $temp2 += int ($times[5] * 75);
+      $temp2 += int ($times[4] * 60 * 75);
+
+      my $temp1 = 0;
+      $temp1 += $frame;
+      $temp1 += $sec * 75;
+      $temp1 += $min * 60 * 75;
+
+      $temp2 -= $temp1;
+      
+      my $length_min = int ($temp2 / (60 * 75));
+      $temp2 %= (60 * 75);
+      my $length_sec = int ($temp2 / 75);
+      my $length_frame = int ($temp2 % 60);
+
+      my $dur = int (($length_min * 60) + $length_sec);
+      if ($first_data eq $_) {
+	 $dur -= 152; # Mixed CD
+      }
+      if ($_ gt 1 && ($last_audio eq $_ || $first_data eq $_)) {
+	 $duration += $dur;
+      }
+      
+      
+      $min = $times[4];
+      $sec = $times[5];
+      $frame = $times[6];
+   }
+
+   close (RD);
+
+   $min = int ($duration / 60);
+   $sec = int ($duration % 60);
+   
+   # Some corrections
+   if ($data gt 0 && $audio gt 0) {
+      $data --;
+   } elsif ($audio gt 0) {
+      $audio --;
+   } else {
+      $data --;
+   }
+   
+   $cdrom->{'cdtype'} = $cdtype;
+   if (($cdtype eq "audio") || ($cdtype eq "mixed")) {
+      $cdrom->{'atracks'} = $audio;
+      $cdrom->{'duration'} = "$min:$sec";
+      $cdrom->{'dtracks'} = $data;
+   }
+
+   if (($cdtype eq "data") || ($cdtype eq "mixed")) {
+      if (`mount | grep $device`) {
+	 $cdrom->{'mounted'} = 1;
+	 my ($point) = `mount | grep $device` =~ /^$device on (.*) type .*$/;
+	 if ($point) { $cdrom->{'point'} = $point; }
+	 my ($size) = `df $device | grep $device | awk  '/\\/dev/ {print \$2}'`;
+	 if ($size) { $cdrom->{'size'} = $size; }
+      } else {
+	 $cdrom->{'mounted'} = 0;
+	 # try to get mount point from fstab
+	 if ($device && ($line = `cat /etc/fstab | grep $device`)) {
+	    my @sline = split(/[ \n\r\t]+/, $line);
+	    my $point = $sline[1];
+	    if ($point) { $cdrom->{'point'} = $point; }
+	 } elsif ($alias && ($line = `cat /etc/fstab | grep $alias`)) {
+	    my @sline = split(/[ \n\r\t]+/, $line);
+	    my ($point) = $sline[1];
+	    if ($point) { $cdrom->{'point'} = $point; }
+	 }
+      }
+   }
+
+   return $cdrom;
+}
+  
+sub cdrom_disc_info
+{
+   my ($tool, $device, $alias) = @_;
+   my $cdrom;
+   
+   $cdrom = &get_cdrom_disc_info ($device, $alias);
+   &gst_report_end ();
+   &gst_xml_print_begin ("disc_info");
+   &gst_xml_print_state_tag ("empty", %$cdrom->{'empty'});
+   if (%$cdrom->{'empty'} == 0) {
+      &gst_xml_print_line ("<type-content>" . %$cdrom->{'cdtype'}  . "</type-content>\n");
+      
+      if (%$cdrom->{'cdtype'} eq "audio" || %$cdrom->{'cdtype'} eq "mixed") {
+	 &gst_xml_print_line ("<audio-tracks>" . %$cdrom->{'atracks'} . "</audio-tracks>\n");
+	 &gst_xml_print_line ("<duration>" . %$cdrom->{'duration'} . "</duration>\n");
+	 &gst_xml_print_line ("<data-tracks>" . %$cdrom->{'dtracks'} . "</data-tracks>\n");
+      }
+
+      if (%$cdrom->{'cdtype'} eq "data" || %$cdrom->{'cdtype'} eq "mixed") {
+	 &gst_xml_print_state_tag ("mounted", %$cdrom->{'mounted'});
+	 if (%$cdrom->{'point'}) { &gst_xml_print_line ("<point>" . %$cdrom->{'point'} . "</point>\n"); }
+	 if (%$cdrom->{'size'}) { &gst_xml_print_line ("<size>" . %$cdrom->{'size'} . "</size>\n"); }
+      }
+   }
+      
+   &gst_xml_print_end ("disc_info");
+}	       
+
+sub get_disk_info
+{
+   my ($device, $present) = @_;
+
+   my $is_present;
+   
+   if (sysopen (HANDLE, $device, O_RDONLY|O_NONBLOCK)) {
+      $is_present = 1;
+      close HANDLE;
+   } else {
+      $is_present = 0;
+   }
+   
+   if ($present) {
+      # We only want to know if the device is attached
+      return ($is_present);
+   }
+   
+   for ($i = 0; $cf_disks[$i]; $i++) {
+      delete ($cf_disks[$i]);
+   }
+
+   @cf_disks = ();
+   
+   $cf_disks[0]->{device} = $device;
+   $cf_disks[0]->{media} = "disk";
+
+   &scan_ide_bus ($device);
+   &scan_scsi_bus ($device);
+   
+   &get_fdisk ($device);
+   &read_fstab;
+   
+   return ($is_present, $cf_disks[0]); 
+}
+
+sub disk_info
+{
+   my ($tool, $device, $present) = @_;
+   
+   my ($is_present, $disk) = &get_disk_info ($device, $present);
+   &gst_report_end ();
+   &gst_xml_print_begin ("disk_info");
+   
+   if ($disk) {
+      &xml_print_common ($disk);
+      my $partitions = %$disk->{partitions};
+      if ($partitions) {
+	 &xml_print_partitions ($disk, $partitions);
+      }
+   } else {
+      &gst_xml_print_line ("<device>" . $device . "</device>\n");
+      &gst_xml_print_state_tag ("present", $is_present);
+   }
+   
+   &gst_xml_print_end ("disk_info");
+}
+   
+# --- Calculates the speed of a device in human readable Kib/sec, Mib/sec, etc.--- #
+sub get_dev_speed
+{
+   my ($device) = @_;
+
+   use IO::Handle;
+   use Time::HiRes qw( setitimer getitimer ITIMER_REAL );
+
+   sysopen (HANDLE, $device, O_RDONLY|O_NONBLOCK);
+
+   IO::Handle::sync (HANDLE);
+   sleep (3);
+   flush STDOUT;
+
+   setitimer (ITIMER_REAL, (1000.0, 1000.0));
+
+   $max_iterations = 1024;
+   $iterations = 0;
+   ($e11, $e12) = getitimer (ITIMER_REAL);
+
+   do {
+      ++$iterations;
+      if (($rc = sysread (HANDLE, $buf, (2 * 1024 * 1024))) != (2 * 1024 * 1024)) {
+	 return;
+      }
+      for ($i = 0; $i < (2 * 1024 * 1024); $i += 512) {
+	 $buf[$i] &= 1;
+      }
+      ($e21, $e22) = getitimer (ITIMER_REAL);
+      $elapsed = ($e11 - $e21) + (($e12 - $e22) / 1000000.0);
+   } while ($elapsed < 3.0 and $iterations < $max_iterations);
+
+   close HANDLE;
+
+   $total = ($iterations * 2) / $elapsed;
+
+   if ($total > 1.0) { # more than 1MiB/s 
+      $total =~ s/^([0-9]+\.[0-9][0-9]).+/$1/;
+      return "$total MiB/sec";
+   } else {
+      $total *= 1024;
+      $total =~ s/^([0-9]+\.[0-9][0-9]).+/$1/;
+      return "$total KiB/sec";
+   }
+}
+
+sub dev_speed
+{
+   my ($tool, $device) = @_;
+   my ($speed) = &get_dev_speed ($device);
+
+   &gst_report_end ();
+   &gst_xml_print_begin ("dev_speed");
+   &gst_xml_print_pcdata ("speed", $speed) if ($speed ne undef);
+   &gst_xml_print_end ("dev_speed");
+}
+
+sub do_mount
+{
+   my ($device, $typefs, $point, $mounted, $listed) = @_;
+
+   my $error;
+
+   if ($mounted) {
+      $error = `umount $device 2>&1`;
+   } else {
+      if ($listed) {
+	 $error = `mount $device 2>&1`;
+      } else {
+	 $error = `mount -t $typefs $device $point 2>&1`;
+      }
+   }
+   
+   return ($error);
+}
+
+sub mount_fs
+{
+   my ($tool, $device, $media, $typefs, $point, $mounted, $listed, $uid) = @_;
+
+   &gst_report_end ();
+   &gst_xml_print_begin ("mount");
+
+   my $error;
+
+   if ($uid == 0 || $mounted == 1) {
+      # allways umount as root
+      $error = &do_mount ($device, $typefs, $point, $mounted, $listed);
+   } else {
+      # try to mount as the user who launched the frontend
+      if (fork () == 0) {
+	 POSIX::setuid ($uid);
+        
+	 my $error;
+	 $error = &do_mount ($device, $typefs, $point, $mounted, $listed);
+	 if ($error ne "") {
+	    &gst_xml_print_line ("<error>" . $error  . "</error>\n");
+	 }
+      
+	 exit (0);
+      } else {
+	 wait ();
+      }
+   }
+
+   my $is_mounted = `mount | grep \"$device\"`;
+   if ($is_mounted && $mounted == 1) {
+      # umount failed
+      if ($error ne "") {
+	 &gst_xml_print_line ("<error>" . $error  . "</error>\n");
+      } 
+      $mounted = 1;
+   } elsif (!$is_mounted && $mounted == 0) {
+      # mount failed
+      if ($uid != 0) {
+	 # try again, now as root
+	 $error = &do_mount ($device, $typefs, $point, $mounted, $listed);
+	 if (`mount | grep \"$device\"`) {
+	    # mounted successfully at this time
+	    $mounted = 1;
+	 } else {
+	    # mount failed again
+	    if ($error ne "") {
+	       &gst_xml_print_line ("<error>" . $error  . "</error>\n");
+	    }
+	    $mounted = 0;
+	 }
+      } else {
+	 if ($error ne "") {
+	    &gst_xml_print_line ("<error>" . $error  . "</error>\n");
+	 }
+	 $mounted = 0;
+      }
+   } elsif ($is_mounted && $mounted == 0) {
+      # mounted successfully
+      $mounted = 1;
+   } else {
+      # umounted successfully
+      $mounted = 0;
+   }
+  
+   if ($error ne "") { 
+      &gst_xml_print_line ("<error>" . $error  . "</error>\n"); 
+   }
+
+   if ($media eq "disk") {
+      &gst_xml_print_line ("<partition>\n");
+      &gst_xml_enter ();
+
+      &gst_xml_print_state_tag ("mounted", $mounted);
+   
+      if ($mounted) {
+	 ($point, $typefs) = `mount | grep $device` =~ /^$device on (.*) type (.*) .*$/;
+         #TODO  check block size 
+         #$free = `df --block-size=$block_size $device | grep $device | awk  '/\\/dev/ {print \$4}'`;
+         $free = `df $device | grep $device | awk  '/\\/dev/ {print \$4}'`;	 
+      }
+      
+      if ($typefs) { &gst_xml_print_line ("<typefs>" . $typefs . "</typefs>\n"); }
+      if ($point ) { &gst_xml_print_line ("<point>" . $point . "</point>\n"); }
+      if ($free) { &gst_xml_print_line ("<free>" . $free . "</free>\n"); }
+
+      &gst_xml_leave ();
+      &gst_xml_print_line ("</partition>\n");
+   } elsif ($media eq "cdrom") {
+      &gst_xml_print_line ("<cdrom>\n");
+      &gst_xml_enter ();
+      &get_cdrom_disc_info ($device);
+      &gst_xml_leave ();
+      &gst_xml_print_line ("</cdrom>\n");
+   }
+
+   &gst_xml_print_end ("mount");
+}
+
+sub format
+{
+   my ($tool, $command, $device, $type, $options) = @_;
+
+   &gst_format_partition ($command, $device, $type, $options);
+   my $typefs = &get_fs_type ($device);
+   
+   &gst_report_end ();
+   &gst_xml_print_begin ("format");
+   
+   if ($typefs ne "none" && $typefs ne "unknown") {
+      &gst_xml_print_line ("<type>" . $typefs . "</type>\n");
+   } else {
+      # TODO: manage errors
+      &gst_xml_print_line ("<error> Unknown error</error>\n");
+   }
+   
+   &gst_xml_print_end ("format");
+}
+
+# --- Main --- #
+
+# get, set and filter are special cases that don't need more parameters than a ref to their function.
+# Read general.pl.in:gst_run_directive to know about the format of this hash.
+
+$directives = {
+  "get"             => [ \&get,      [], "" ],
+  "set"             => [ \&set,      [], "" ],
+  "filter"          => [ \&filter,   [], "" ],
+  "test_xml"        => [ \&test_xml, ["test_xml_file"],
+                       "Return a XML file to the frontend." ],
+  "dev_speed"       => [ \&dev_speed, ["device"],
+                       "Return the speed of a device in kb/s" ],
+  "cdrom_disc_info" => [ \&cdrom_disc_info, ["device", "alias"],
+                       "Return info about the cdrom discs"],
+  "disk_info"       => [ \&disk_info, ["device", "present"], 
+                       "Return info about disks"],
+  "mount"           => [ \&mount_fs, ["device", "media", "typefs", "point", "mounted", "listed", "uid"], 
+                       "Immediatly mount or umount a given partition"],
+  "format"          => [ \&format, ["command", "device", "type", "options"],
+                       "Format a partition"],
+};
+
+$tool = &gst_init ($name, $version, $description, $directives, @ARGV);
+&gst_platform_ensure_supported ($tool, @platforms);
+&gst_run ($tool);
