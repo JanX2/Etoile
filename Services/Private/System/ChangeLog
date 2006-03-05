@@ -1,0 +1,9 @@
+2006-03-05  Quentin Mathe <qmathe@club-internet.fr>
+
+    * ChangeLog:
+    * COPYING:
+    * EtoileSystem.h:
+    * EtoileSystem.m:
+    * main.m:
+    * GNUmakefile:
+    Initial import of EtoileSystem tool which owns any running Etoile system.
