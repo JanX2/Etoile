@@ -1,0 +1,25 @@
+2006-03-03  Quentin Mathe <qmathe@club-internet.fr>
+
+    Initial import for iTerm (based on 2006-03-03 snapshot of the cvs repository).
+    Not yet usable (nib to gorm files conversion to be done), but builds
+    without warnings on Linux Ubuntu x86.
+    * ChangeLog.gnustep: 
+    * GNUmakefile:
+    * GNUmakefile.postamble:
+    * Cocoa/Cocoa.h:
+    Added.
+    * AddressBookWindowController.m:
+    * ITAddressBookMgr.h:
+    * ITAddressBookMgr.m:
+    * PTYSession.m:
+    * PTYTask.m:
+    * PTYTextView.m:
+    * PseudoTerminal.m:
+    * VT100Typesetter.m:
+    * iTermApplicationDelegate.m:
+    * iTermController.m:
+    * Headers/iTerm/PTYSession.h:
+    * Headers/iTerm/PTYTask.h:
+    * Headers/iTerm/PseudoTerminal.h:
+    * Headers/iTerm/VT100Typesetter.h:
+    Updated to compile with GNUstep (on Linux x86 at least).

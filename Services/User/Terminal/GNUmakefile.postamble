@@ -1,0 +1,26 @@
+
+before-all::
+	$(ECHO_NOTHING) \
+	echo ""; \
+	rm -f $(CURDIR)/Headers/iTerm/ITAddressBookMgr.h; \
+	rm -f $(CURDIR)/Headers/iTerm/iTermApplicationDelegate.h; \
+	rm -f $(CURDIR)/Headers/iTerm/ITConfigPanelController.h; \
+	rm -f $(CURDIR)/Headers/iTerm/PTToolbarController.h; \
+	rm -f $(CURDIR)/Headers/iTerm/ITSessionMgr.h; \
+	$(LN_S) $(CURDIR)/ITAddressBookMgr.h $(CURDIR)/Headers/iTerm/ITAddressBookMgr.h; \
+	$(LN_S) $(CURDIR)/iTermApplicationDelegate.h $(CURDIR)/Headers/iTerm/iTermApplicationDelegate.h; \
+	$(LN_S) $(CURDIR)/ITConfigPanelController.h $(CURDIR)/Headers/iTerm/ITConfigPanelController.h; \
+	$(LN_S) $(CURDIR)/PTToolbarController.h $(CURDIR)/Headers/iTerm/PTToolbarController.h; \
+	$(LN_S) $(CURDIR)/ITSessionMgr.h $(CURDIR)/Headers/iTerm/ITSessionMgr.h; \
+	echo " Replicated few root headers inside Headers directory with links"; \
+	echo ""; \
+	$(END_ECHO)
+
+after-all::
+#	rm -f $(CURDIR)/Headers/iTerm/ITAddressBookMgr.h; \
+#	rm -f $(CURDIR)/Headers/iTerm/iTermApplicationDelegate.h;
+
+after-clean::
+
+
+after-distclean::

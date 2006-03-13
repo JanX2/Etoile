@@ -1,0 +1,1280 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		874205F00564168A00CFC3F1 /* NSStringITerm.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC5304E42E320073D10E /* NSStringITerm.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874205F10564168A00CFC3F1 /* PTYTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC5404E42E320073D10E /* PTYTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874205F30564168A00CFC3F1 /* PTYTabView.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC5704E42E320073D10E /* PTYTabView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874205F40564168A00CFC3F1 /* PTYTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC5804E42E320073D10E /* PTYTask.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874205F60564168A00CFC3F1 /* VT100Screen.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC5A04E42E320073D10E /* VT100Screen.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874205F70564168A00CFC3F1 /* PTYWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC5B04E42E320073D10E /* PTYWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874205F90564168A00CFC3F1 /* PTYTabViewItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC5F04E42E320073D10E /* PTYTabViewItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874205FA0564168A00CFC3F1 /* PTYScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC6004E42E320073D10E /* PTYScrollView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874205FB0564168A00CFC3F1 /* VT100Terminal.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC6104E42E320073D10E /* VT100Terminal.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874205FC0564168A00CFC3F1 /* iTermController.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC6204E42E320073D10E /* iTermController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874205FE0564168A00CFC3F1 /* PreferencePanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC6504E42E320073D10E /* PreferencePanel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874205FF0564168A00CFC3F1 /* PTYSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC6604E42E320073D10E /* PTYSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874206000564168A00CFC3F1 /* FindPanelWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC6804E42E320073D10E /* FindPanelWindowController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874206020564168A00CFC3F1 /* iTerm.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC6A04E42E320073D10E /* iTerm.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874206030564168A00CFC3F1 /* charmaps.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC6B04E42E320073D10E /* charmaps.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874206040564168A00CFC3F1 /* PseudoTerminal.h in Headers */ = {isa = PBXBuildFile; fileRef = 872EBC6C04E42E320073D10E /* PseudoTerminal.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874206050564168A00CFC3F1 /* PTToolbarController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2076B15704E8817300000106 /* PTToolbarController.h */; };
+		874206060564168A00CFC3F1 /* ITAddressBookMgr.h in Headers */ = {isa = PBXBuildFile; fileRef = 20E74F4804E9089700000106 /* ITAddressBookMgr.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874206070564168A00CFC3F1 /* ITViewLocalizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 20B8892A04E9342100000106 /* ITViewLocalizer.h */; };
+		874206080564168A00CFC3F1 /* ITConfigPanelController.h in Headers */ = {isa = PBXBuildFile; fileRef = 20B8891904E924CD00000106 /* ITConfigPanelController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		874206090564168A00CFC3F1 /* ITSessionMgr.h in Headers */ = {isa = PBXBuildFile; fileRef = 20B88B6004E948FA00000106 /* ITSessionMgr.h */; };
+		8742060C0564168A00CFC3F1 /* PseudoTerminal.nib in Resources */ = {isa = PBXBuildFile; fileRef = E813FB86029754BB03A80106 /* PseudoTerminal.nib */; };
+		8742060D0564168A00CFC3F1 /* iTerm.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBB8B60039FC04E01F955DB /* iTerm.png */; };
+		8742060E0564168A00CFC3F1 /* addressbook.png in Resources */ = {isa = PBXBuildFile; fileRef = FB094A14033D58AE01F955DB /* addressbook.png */; };
+		8742060F0564168A00CFC3F1 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = FB094A16033D58B601F955DB /* close.png */; };
+		874206100564168A00CFC3F1 /* config.png in Resources */ = {isa = PBXBuildFile; fileRef = FB754C5F036EFC5301F955DB /* config.png */; };
+		874206110564168A00CFC3F1 /* exec.png in Resources */ = {isa = PBXBuildFile; fileRef = FB47BCC403686CAC01F955DB /* exec.png */; };
+		874206120564168A00CFC3F1 /* important.png in Resources */ = {isa = PBXBuildFile; fileRef = FBB2EBCD040AC7C201F955DB /* important.png */; };
+		874206130564168A00CFC3F1 /* important_l.png in Resources */ = {isa = PBXBuildFile; fileRef = DD6ACB0204112FB700A8A065 /* important_l.png */; };
+		874206140564168A00CFC3F1 /* important_r.png in Resources */ = {isa = PBXBuildFile; fileRef = DD6ACB0304112FB700A8A065 /* important_r.png */; };
+		874206150564168A00CFC3F1 /* new.png in Resources */ = {isa = PBXBuildFile; fileRef = FB094A18033D58BD01F955DB /* new.png */; };
+		874206160564168A00CFC3F1 /* newwin.png in Resources */ = {isa = PBXBuildFile; fileRef = FB896717038D935801F955DB /* newwin.png */; };
+		874206170564168A00CFC3F1 /* iTerm.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = DD48F1C703EBB1C400A8A065 /* iTerm.scriptSuite */; };
+		874206180564168A00CFC3F1 /* iTerm.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = DD48F1CC03EBB20500A8A065 /* iTerm.scriptTerminology */; };
+		874206190564168A00CFC3F1 /* iTerm.strings in Resources */ = {isa = PBXBuildFile; fileRef = FB151F2903648AC401F955DB /* iTerm.strings */; };
+		8742061B0564168A00CFC3F1 /* PreferencePanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 870EAAB504325A880073D10E /* PreferencePanel.nib */; };
+		8742061C0564168A00CFC3F1 /* FindPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 870BCD83047070AC0073D10E /* FindPanel.nib */; };
+		8742061D0564168A00CFC3F1 /* ITConfigPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 8723EDEC04EAADBB0073D10E /* ITConfigPanel.nib */; };
+		8742061E0564168A00CFC3F1 /* iTerm-Aqua.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DD9C1AE2051F45C000A8A065 /* iTerm-Aqua.jpg */; };
+		874206200564168A00CFC3F1 /* PseudoTerminal.m in Sources */ = {isa = PBXBuildFile; fileRef = FBD0AD0A0337A5B701F955DB /* PseudoTerminal.m */; };
+		874206210564168A00CFC3F1 /* PTYScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E8CF755F026DDA6303A80106 /* PTYScrollView.m */; };
+		874206220564168A00CFC3F1 /* PTYTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = E8CF7561026DDA6303A80106 /* PTYTextView.m */; };
+		874206230564168A00CFC3F1 /* PTYTask.m in Sources */ = {isa = PBXBuildFile; fileRef = E8CF7560026DDA6303A80106 /* PTYTask.m */; };
+		874206240564168A00CFC3F1 /* VT100Screen.m in Sources */ = {isa = PBXBuildFile; fileRef = E8CF7562026DDA6303A80106 /* VT100Screen.m */; };
+		874206250564168A00CFC3F1 /* VT100Terminal.m in Sources */ = {isa = PBXBuildFile; fileRef = E8CF7563026DDA6303A80106 /* VT100Terminal.m */; };
+		874206260564168A00CFC3F1 /* iTermController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8A66F030272453F03A80106 /* iTermController.m */; };
+		874206270564168A00CFC3F1 /* NSStringITerm.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E901A202743CA303A80106 /* NSStringITerm.m */; };
+		874206280564168A00CFC3F1 /* PreferencePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = FB019DE103670C6501F955DB /* PreferencePanel.m */; };
+		874206290564168A00CFC3F1 /* PTYSession.m in Sources */ = {isa = PBXBuildFile; fileRef = F52ED8DD037F0A7D01A8A066 /* PTYSession.m */; };
+		8742062A0564168A00CFC3F1 /* PTYTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = F5E533B403B2959201A8A066 /* PTYTabView.m */; };
+		8742062B0564168A00CFC3F1 /* PTYTabViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F5E533B303B2959201A8A066 /* PTYTabViewItem.m */; };
+		8742062C0564168A00CFC3F1 /* PTYWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = F56B230B03A1B36701A8A066 /* PTYWindow.m */; };
+		8742062E0564168A00CFC3F1 /* FindPanelWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD4BAB7C0470C44C00A8A065 /* FindPanelWindowController.m */; };
+		874206320564168A00CFC3F1 /* PTToolbarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2076B15804E8817300000106 /* PTToolbarController.m */; };
+		874206330564168A00CFC3F1 /* ITAddressBookMgr.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E74F4904E9089700000106 /* ITAddressBookMgr.m */; };
+		874206340564168A00CFC3F1 /* ITViewLocalizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B8892B04E9342100000106 /* ITViewLocalizer.m */; };
+		874206350564168A00CFC3F1 /* ITConfigPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B8891A04E924CD00000106 /* ITConfigPanelController.m */; };
+		874206360564168A00CFC3F1 /* ITSessionMgr.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B88B6104E948FA00000106 /* ITSessionMgr.m */; };
+		874206390564168A00CFC3F1 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0464AB2F006CD2EC7F000001 /* AppKit.framework */; };
+		8742063A0564168A00CFC3F1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0464AB30006CD2EC7F000001 /* Foundation.framework */; };
+		874206490564169600CFC3F1 /* iTermApplicationDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 20D5CC6304E7AA0500000106 /* iTermApplicationDelegate.h */; };
+		8742064B0564169600CFC3F1 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = E813FB7D0297522703A80106 /* MainMenu.nib */; };
+		8742064C0564169600CFC3F1 /* iTerm Help in Resources */ = {isa = PBXBuildFile; fileRef = DD8CF2DD03CDD34B00A8A065 /* iTerm Help */; };
+		8742064D0564169600CFC3F1 /* iTerm.icns in Resources */ = {isa = PBXBuildFile; fileRef = E8EDCE69015E0A5703000001 /* iTerm.icns */; };
+		8742064F0564169600CFC3F1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E8CF757F026DDAD703A80106 /* main.m */; };
+		874206500564169600CFC3F1 /* iTermApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CC6404E7AA0500000106 /* iTermApplicationDelegate.m */; };
+		874206520564169600CFC3F1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0464AB30006CD2EC7F000001 /* Foundation.framework */; };
+		874206530564169600CFC3F1 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0464AB2F006CD2EC7F000001 /* AppKit.framework */; };
+		8742069E056416F600CFC3F1 /* iTerm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 874206430564168A00CFC3F1 /* iTerm.framework */; };
+		8742069F0564170000CFC3F1 /* iTerm.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 874206430564168A00CFC3F1 /* iTerm.framework */; };
+		8787B0DA05FD160F00901149 /* iTermProfileWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8787B0D805FD160F00901149 /* iTermProfileWindowController.m */; };
+		8787B14005FD191400901149 /* iTermProfileWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8787B13F05FD191400901149 /* iTermProfileWindowController.h */; };
+		DD46BAC605FD689F00027283 /* iTermDisplayProfileMgr.m in Sources */ = {isa = PBXBuildFile; fileRef = DD46BAC405FD689F00027283 /* iTermDisplayProfileMgr.m */; };
+		DD46BB5505FD6B9B00027283 /* iTermDisplayProfileMgr.h in Headers */ = {isa = PBXBuildFile; fileRef = DD46BB5405FD6B9B00027283 /* iTermDisplayProfileMgr.h */; };
+		DD57633105653C2E00F1905E /* iTerm_Framework.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD57633005653C2E00F1905E /* iTerm_Framework.plist */; };
+		DD57633705653C5F00F1905E /* iTerm.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD57633605653C5F00F1905E /* iTerm.plist */; };
+		DD8EC83106095CDA0085A27D /* Tree.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8EC82F06095CDA0085A27D /* Tree.m */; };
+		DD8EC959060980C90085A27D /* Tree.h in Headers */ = {isa = PBXBuildFile; fileRef = DD8EC958060980C90085A27D /* Tree.h */; };
+		DDB79A9B0612BBBF00EAE159 /* Profiles.plist in Resources */ = {isa = PBXBuildFile; fileRef = DDB79A9A0612BBBF00EAE159 /* Profiles.plist */; };
+		DDDB7ABF05D7736600E197C2 /* iTermKeyBindingMgr.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDB7ABD05D7736600E197C2 /* iTermKeyBindingMgr.m */; };
+		DDDB7AD705D773B400E197C2 /* iTermKeyBindingMgr.h in Headers */ = {isa = PBXBuildFile; fileRef = DDDB7AD605D773B400E197C2 /* iTermKeyBindingMgr.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DDF0FD65062916F70080EF74 /* iTermApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = DDF0FD63062916F70080EF74 /* iTermApplication.h */; };
+		DDF0FD66062916F70080EF74 /* iTermApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF0FD64062916F70080EF74 /* iTermApplication.m */; };
+		F658C86E06054425000A13D5 /* iTermTerminalProfileMgr.m in Sources */ = {isa = PBXBuildFile; fileRef = F658C86C06054425000A13D5 /* iTermTerminalProfileMgr.m */; };
+		F658CAFB060587A0000A13D5 /* iTermTerminalProfileMgr.h in Headers */ = {isa = PBXBuildFile; fileRef = F658CAFA060587A0000A13D5 /* iTermTerminalProfileMgr.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		05A162CE006CD5FC7F000001 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = Headers/iTerm/;
+				OPTIMIZATION_CFLAGS = "-O0";
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		05A162CF006CD5FC7F000001 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				MACOSX_DEPLOYMENT_TARGET = 10.2;
+				OPTIMIZATION_CFLAGS = "-O3";
+				UNSTRIPPED_PRODUCT = NO;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXContainerItemProxy section */
+		8742069A056416D000CFC3F1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0464AB0C006CD2EC7F000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 874205EE0564168A00CFC3F1;
+			remoteInfo = "iTerm Framework";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8742063C0564168A00CFC3F1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Fonts;
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		874206560564169600CFC3F1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8742069F0564170000CFC3F1 /* iTerm.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0464AB2F006CD2EC7F000001 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		0464AB30006CD2EC7F000001 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		2076B15704E8817300000106 /* PTToolbarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTToolbarController.h; sourceTree = "<group>"; };
+		2076B15804E8817300000106 /* PTToolbarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTToolbarController.m; sourceTree = "<group>"; };
+		20B8891904E924CD00000106 /* ITConfigPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITConfigPanelController.h; sourceTree = "<group>"; };
+		20B8891A04E924CD00000106 /* ITConfigPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ITConfigPanelController.m; sourceTree = "<group>"; };
+		20B8892A04E9342100000106 /* ITViewLocalizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITViewLocalizer.h; sourceTree = "<group>"; };
+		20B8892B04E9342100000106 /* ITViewLocalizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ITViewLocalizer.m; sourceTree = "<group>"; };
+		20B88B6004E948FA00000106 /* ITSessionMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITSessionMgr.h; sourceTree = "<group>"; };
+		20B88B6104E948FA00000106 /* ITSessionMgr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ITSessionMgr.m; sourceTree = "<group>"; };
+		20D5CC6304E7AA0500000106 /* iTermApplicationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iTermApplicationDelegate.h; sourceTree = "<group>"; };
+		20D5CC6404E7AA0500000106 /* iTermApplicationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iTermApplicationDelegate.m; sourceTree = "<group>"; };
+		20E74F4804E9089700000106 /* ITAddressBookMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITAddressBookMgr.h; sourceTree = "<group>"; };
+		20E74F4904E9089700000106 /* ITAddressBookMgr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ITAddressBookMgr.m; sourceTree = "<group>"; };
+		870BCD84047070AC0073D10E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		870BCD86047071180073D10E /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		870BCD87047071260073D10E /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		870BCD88047071320073D10E /* Korean */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Korean; path = Korean.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		870BCD890470713F0073D10E /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_CN; path = zh_CN.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		870BCD8A0470714A0073D10E /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		870EAAB604325A880073D10E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferencePanel.nib; sourceTree = "<group>"; };
+		8723EDED04EAADBB0073D10E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ITConfigPanel.nib; sourceTree = "<group>"; };
+		8723EDEF04EABBB40073D10E /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/ITConfigPanel.nib; sourceTree = "<group>"; };
+		8723EDF004EABD030073D10E /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/ITConfigPanel.nib; sourceTree = "<group>"; };
+		8723EDF104EABE1C0073D10E /* Korean */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Korean; path = Korean.lproj/ITConfigPanel.nib; sourceTree = "<group>"; };
+		8723EDF204EABF990073D10E /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_CN; path = zh_CN.lproj/ITConfigPanel.nib; sourceTree = "<group>"; };
+		8723EDF304EAD4A00073D10E /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/ITConfigPanel.nib; sourceTree = "<group>"; };
+		872EBC5304E42E320073D10E /* NSStringITerm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NSStringITerm.h; path = Headers/iTerm/NSStringITerm.h; sourceTree = "<group>"; };
+		872EBC5404E42E320073D10E /* PTYTextView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PTYTextView.h; path = Headers/iTerm/PTYTextView.h; sourceTree = "<group>"; };
+		872EBC5704E42E320073D10E /* PTYTabView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PTYTabView.h; path = Headers/iTerm/PTYTabView.h; sourceTree = "<group>"; };
+		872EBC5804E42E320073D10E /* PTYTask.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PTYTask.h; path = Headers/iTerm/PTYTask.h; sourceTree = "<group>"; };
+		872EBC5A04E42E320073D10E /* VT100Screen.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = VT100Screen.h; path = Headers/iTerm/VT100Screen.h; sourceTree = "<group>"; };
+		872EBC5B04E42E320073D10E /* PTYWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PTYWindow.h; path = Headers/iTerm/PTYWindow.h; sourceTree = "<group>"; };
+		872EBC5F04E42E320073D10E /* PTYTabViewItem.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PTYTabViewItem.h; path = Headers/iTerm/PTYTabViewItem.h; sourceTree = "<group>"; };
+		872EBC6004E42E320073D10E /* PTYScrollView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PTYScrollView.h; path = Headers/iTerm/PTYScrollView.h; sourceTree = "<group>"; };
+		872EBC6104E42E320073D10E /* VT100Terminal.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = VT100Terminal.h; path = Headers/iTerm/VT100Terminal.h; sourceTree = "<group>"; };
+		872EBC6204E42E320073D10E /* iTermController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iTermController.h; path = Headers/iTerm/iTermController.h; sourceTree = "<group>"; };
+		872EBC6504E42E320073D10E /* PreferencePanel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PreferencePanel.h; path = Headers/iTerm/PreferencePanel.h; sourceTree = "<group>"; };
+		872EBC6604E42E320073D10E /* PTYSession.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PTYSession.h; path = Headers/iTerm/PTYSession.h; sourceTree = "<group>"; };
+		872EBC6804E42E320073D10E /* FindPanelWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = FindPanelWindowController.h; path = Headers/iTerm/FindPanelWindowController.h; sourceTree = "<group>"; };
+		872EBC6A04E42E320073D10E /* iTerm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iTerm.h; path = Headers/iTerm/iTerm.h; sourceTree = "<group>"; };
+		872EBC6B04E42E320073D10E /* charmaps.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = charmaps.h; path = Headers/iTerm/charmaps.h; sourceTree = "<group>"; };
+		872EBC6C04E42E320073D10E /* PseudoTerminal.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PseudoTerminal.h; path = Headers/iTerm/PseudoTerminal.h; sourceTree = "<group>"; };
+		874206430564168A00CFC3F1 /* iTerm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iTerm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8742065A0564169600CFC3F1 /* iTerm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iTerm.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		876DBBC1043277AF0073D10E /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_CN; path = zh_CN.lproj/PreferencePanel.nib; sourceTree = "<group>"; };
+		876DBBC304327CC90073D10E /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/PreferencePanel.nib; sourceTree = "<group>"; };
+		876DBBC5043281250073D10E /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/PreferencePanel.nib; sourceTree = "<group>"; };
+		876DBBC7043284990073D10E /* Korean */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Korean; path = Korean.lproj/PreferencePanel.nib; sourceTree = "<group>"; };
+		8786A96E052CEC220073D10E /* script.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = script.png; path = images/script.png; sourceTree = "<group>"; };
+		8787B0D805FD160F00901149 /* iTermProfileWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iTermProfileWindowController.m; sourceTree = "<group>"; };
+		8787B13F05FD191400901149 /* iTermProfileWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iTermProfileWindowController.h; path = Headers/iTerm/iTermProfileWindowController.h; sourceTree = "<group>"; };
+		87898DDD0444F9070073D10E /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		87898DDF0444F93C0073D10E /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/PreferencePanel.nib; sourceTree = "<group>"; };
+		87898DE00444F94E0073D10E /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/PseudoTerminal.nib; sourceTree = "<group>"; };
+		DD46BAC405FD689F00027283 /* iTermDisplayProfileMgr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iTermDisplayProfileMgr.m; sourceTree = "<group>"; };
+		DD46BB5405FD6B9B00027283 /* iTermDisplayProfileMgr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iTermDisplayProfileMgr.h; path = Headers/iTerm/iTermDisplayProfileMgr.h; sourceTree = "<group>"; };
+		DD48F1C703EBB1C400A8A065 /* iTerm.scriptSuite */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = iTerm.scriptSuite; sourceTree = "<group>"; };
+		DD48F1CD03EBB20500A8A065 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = English; path = English.lproj/iTerm.scriptTerminology; sourceTree = "<group>"; };
+		DD4BAB7C0470C44C00A8A065 /* FindPanelWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindPanelWindowController.m; sourceTree = "<group>"; };
+		DD57633005653C2E00F1905E /* iTerm_Framework.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = iTerm_Framework.plist; sourceTree = "<group>"; };
+		DD57633605653C5F00F1905E /* iTerm.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = iTerm.plist; sourceTree = "<group>"; };
+		DD6ACB0204112FB700A8A065 /* important_l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = important_l.png; path = images/important_l.png; sourceTree = "<group>"; };
+		DD6ACB0304112FB700A8A065 /* important_r.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = important_r.png; path = images/important_r.png; sourceTree = "<group>"; };
+		DD8CF2DE03CDD34C00A8A065 /* iTerm Help */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = "iTerm Help"; path = "English.lproj/iTerm Help"; sourceTree = "<group>"; };
+		DD8EC82F06095CDA0085A27D /* Tree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tree.m; sourceTree = "<group>"; };
+		DD8EC958060980C90085A27D /* Tree.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Tree.h; path = Headers/iTerm/Tree.h; sourceTree = "<group>"; };
+		DD9C1AE2051F45C000A8A065 /* iTerm-Aqua.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "iTerm-Aqua.jpg"; path = "images/iTerm-Aqua.jpg"; sourceTree = "<group>"; };
+		DDB79A9A0612BBBF00EAE159 /* Profiles.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Profiles.plist; sourceTree = "<group>"; };
+		DDDB7ABD05D7736600E197C2 /* iTermKeyBindingMgr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iTermKeyBindingMgr.m; sourceTree = "<group>"; };
+		DDDB7AD605D773B400E197C2 /* iTermKeyBindingMgr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iTermKeyBindingMgr.h; path = Headers/iTerm/iTermKeyBindingMgr.h; sourceTree = "<group>"; };
+		DDF0FD63062916F70080EF74 /* iTermApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iTermApplication.h; sourceTree = "<group>"; };
+		DDF0FD64062916F70080EF74 /* iTermApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iTermApplication.m; sourceTree = "<group>"; };
+		DDF28988047764E300A8A065 /* Korean */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Korean; path = Korean.lproj/iTerm.strings; sourceTree = "<group>"; };
+		E813FB7E0297522703A80106 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		E813FB87029754BB03A80106 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PseudoTerminal.nib; sourceTree = "<group>"; };
+		E8A66F030272453F03A80106 /* iTermController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = iTermController.m; sourceTree = "<group>"; };
+		E8CF755F026DDA6303A80106 /* PTYScrollView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PTYScrollView.m; sourceTree = "<group>"; };
+		E8CF7560026DDA6303A80106 /* PTYTask.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PTYTask.m; sourceTree = "<group>"; };
+		E8CF7561026DDA6303A80106 /* PTYTextView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PTYTextView.m; sourceTree = "<group>"; };
+		E8CF7562026DDA6303A80106 /* VT100Screen.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = VT100Screen.m; sourceTree = "<group>"; };
+		E8CF7563026DDA6303A80106 /* VT100Terminal.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = VT100Terminal.m; sourceTree = "<group>"; };
+		E8CF757F026DDAD703A80106 /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E8E901A202743CA303A80106 /* NSStringITerm.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSStringITerm.m; sourceTree = "<group>"; };
+		E8EDCE69015E0A5703000001 /* iTerm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iTerm.icns; sourceTree = "<group>"; };
+		F500A65D0395269C01A8A066 /* Changelog */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Changelog; sourceTree = "<group>"; };
+		F52ED8DD037F0A7D01A8A066 /* PTYSession.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PTYSession.m; sourceTree = "<group>"; };
+		F56B230B03A1B36701A8A066 /* PTYWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PTYWindow.m; sourceTree = "<group>"; };
+		F5E533B303B2959201A8A066 /* PTYTabViewItem.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PTYTabViewItem.m; sourceTree = "<group>"; };
+		F5E533B403B2959201A8A066 /* PTYTabView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PTYTabView.m; sourceTree = "<group>"; };
+		F61DBB350557A72A005F354A /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		F61DBB360557A754005F354A /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/PseudoTerminal.nib; sourceTree = "<group>"; };
+		F61DBB380557A788005F354A /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/PreferencePanel.nib; sourceTree = "<group>"; };
+		F61DBB390557A7A4005F354A /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		F61DBB3A0557A7BA005F354A /* German */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = German; path = German.lproj/ITConfigPanel.nib; sourceTree = "<group>"; };
+		F61DBB3B0557A7D2005F354A /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/iTerm.strings; sourceTree = "<group>"; };
+		F63C15F806139B3800C79EBB /* download.shtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html.other; name = download.shtml; path = website/download.shtml; sourceTree = "<group>"; };
+		F63C16590613A7B200C79EBB /* funnyfont-m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "funnyfont-m.jpg"; path = "website/funnyfont-m.jpg"; sourceTree = "<group>"; };
+		F63C165A0613A7B200C79EBB /* funnyfont.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = funnyfont.jpg; path = website/funnyfont.jpg; sourceTree = "<group>"; };
+		F63C165B0613A7B200C79EBB /* keymap-m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "keymap-m.jpg"; path = "website/keymap-m.jpg"; sourceTree = "<group>"; };
+		F63C165C0613A7B200C79EBB /* keymap.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = keymap.jpg; path = website/keymap.jpg; sourceTree = "<group>"; };
+		F645F2B00557B868005F354A /* iTerm-sinomac.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTerm-sinomac.png"; path = "website/iTerm-sinomac.png"; sourceTree = "<group>"; };
+		F64B59D405ED49B600FE8ACB /* sidebar.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = sidebar.html; path = website/sidebar.html; sourceTree = "<group>"; };
+		F64B59FA05ED4AA800FE8ACB /* header.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = header.html; path = website/header.html; sourceTree = "<group>"; };
+		F64B5A1705ED4AF000FE8ACB /* footer.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = footer.html; path = website/footer.html; sourceTree = "<group>"; };
+		F658C86C06054425000A13D5 /* iTermTerminalProfileMgr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iTermTerminalProfileMgr.m; sourceTree = "<group>"; };
+		F658CAFA060587A0000A13D5 /* iTermTerminalProfileMgr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iTermTerminalProfileMgr.h; path = Headers/iTerm/iTermTerminalProfileMgr.h; sourceTree = "<group>"; };
+		F65CCFFA05F7EB0700F04CFF /* screenshot2-m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "screenshot2-m.jpg"; path = "website/screenshot2-m.jpg"; sourceTree = "<group>"; };
+		F65CCFFB05F7EB0700F04CFF /* screenshot2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = screenshot2.jpg; path = website/screenshot2.jpg; sourceTree = "<group>"; };
+		F69D78B405FBEA6D009BC3FC /* faq.shtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html.other; name = faq.shtml; path = website/faq.shtml; sourceTree = "<group>"; };
+		F6FAFD99050E90C300EA4EE7 /* contrib.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = contrib.png; path = website/contrib.png; sourceTree = "<group>"; };
+		F6FAFD9A050E90C300EA4EE7 /* iTerm-orig.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTerm-orig.png"; path = "website/iTerm-orig.png"; sourceTree = "<group>"; };
+		FB019DE103670C6501F955DB /* PreferencePanel.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PreferencePanel.m; sourceTree = "<group>"; };
+		FB01DCDE04433DFB01F955DB /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/iTerm.strings; sourceTree = "<group>"; };
+		FB094A14033D58AE01F955DB /* addressbook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = addressbook.png; path = images/addressbook.png; sourceTree = "<group>"; };
+		FB094A16033D58B601F955DB /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = close.png; path = images/close.png; sourceTree = "<group>"; };
+		FB094A18033D58BD01F955DB /* new.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = new.png; path = images/new.png; sourceTree = "<group>"; };
+		FB151F2603648AB401F955DB /* iTerm.strings */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = iTerm.strings; path = English.lproj/iTerm.strings; sourceTree = "<group>"; };
+		FB47BCC403686CAC01F955DB /* exec.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = exec.png; path = images/exec.png; sourceTree = "<group>"; };
+		FB754C5F036EFC5301F955DB /* config.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = config.png; path = images/config.png; sourceTree = "<group>"; };
+		FB80352E03CA060201F955DB /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		FB80352F03CA060A01F955DB /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/PseudoTerminal.nib; sourceTree = "<group>"; };
+		FB80353003CA062601F955DB /* Japanese */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/iTerm.strings; sourceTree = "<group>"; };
+		FB896717038D935801F955DB /* newwin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newwin.png; path = images/newwin.png; sourceTree = "<group>"; };
+		FBB2EBCD040AC7C201F955DB /* important.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = important.png; path = images/important.png; sourceTree = "<group>"; };
+		FBBB8B47039D9E1701F955DB /* zh_CN */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/iTerm.strings; sourceTree = "<group>"; };
+		FBBB8B48039D9E1F01F955DB /* zh_TW */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/iTerm.strings; sourceTree = "<group>"; };
+		FBBB8B49039D9E6501F955DB /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_CN; path = zh_CN.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		FBBB8B4A039D9E6D01F955DB /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		FBBB8B4B039D9E7E01F955DB /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_CN; path = zh_CN.lproj/PseudoTerminal.nib; sourceTree = "<group>"; };
+		FBBB8B4C039D9E8501F955DB /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = zh_TW; path = zh_TW.lproj/PseudoTerminal.nib; sourceTree = "<group>"; };
+		FBBB8B60039FC04E01F955DB /* iTerm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTerm.png; path = images/iTerm.png; sourceTree = "<group>"; };
+		FBD0AD0A0337A5B701F955DB /* PseudoTerminal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PseudoTerminal.m; sourceTree = "<group>"; };
+		FBDF6A55042795CE01F955DB /* Korean */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Korean; path = Korean.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		FBDF6A56042795EB01F955DB /* Korean */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Korean; path = Korean.lproj/PseudoTerminal.nib; sourceTree = "<group>"; };
+		FBDF6B8F042A6BD801F955DB /* history.shtml */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html.other; name = history.shtml; path = website/history.shtml; sourceTree = "<group>"; };
+		FBDF6B90042A6BD801F955DB /* index.shtml */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html.other; name = index.shtml; path = website/index.shtml; sourceTree = "<group>"; };
+		FBDF6B91042A6BD801F955DB /* install.shtml */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html.other; name = install.shtml; path = website/install.shtml; sourceTree = "<group>"; };
+		FBDF6B92042A6BD801F955DB /* iTerm_icon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = iTerm_icon.gif; path = website/iTerm_icon.gif; sourceTree = "<group>"; };
+		FBDF6B93042A6BD801F955DB /* iTerm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTerm.png; path = website/iTerm.png; sourceTree = "<group>"; };
+		FBDF6B94042A6BD801F955DB /* misc.shtml */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html.other; name = misc.shtml; path = website/misc.shtml; sourceTree = "<group>"; };
+		FBDF6B95042A6BD801F955DB /* navigation.shtml */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html.other; name = navigation.shtml; path = website/navigation.shtml; sourceTree = "<group>"; };
+		FBDF6B96042A6BD801F955DB /* new.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = new.gif; path = website/new.gif; sourceTree = "<group>"; };
+		FBDF6B97042A6BD801F955DB /* preferences.shtml */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html.other; name = preferences.shtml; path = website/preferences.shtml; sourceTree = "<group>"; };
+		FBDF6B98042A6BD801F955DB /* resource.shtml */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html.other; name = resource.shtml; path = website/resource.shtml; sourceTree = "<group>"; };
+		FBDF6B99042A6BD801F955DB /* screenshot-mini.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "screenshot-mini.jpg"; path = "website/screenshot-mini.jpg"; sourceTree = "<group>"; };
+		FBDF6B9A042A6BD801F955DB /* screenshot.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = screenshot.jpg; path = website/screenshot.jpg; sourceTree = "<group>"; };
+		FBDF6B9B042A6BD801F955DB /* scripting.shtml */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html.other; name = scripting.shtml; path = website/scripting.shtml; sourceTree = "<group>"; };
+		FBDF6B9C042A6BD801F955DB /* styles.css */ = {isa = PBXFileReference; lastKnownFileType = text; name = styles.css; path = website/styles.css; sourceTree = "<group>"; };
+		FBDF6B9D042A6BD801F955DB /* upload.sh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.sh; name = upload.sh; path = website/upload.sh; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		874206380564168A00CFC3F1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				874206390564168A00CFC3F1 /* AppKit.framework in Frameworks */,
+				8742063A0564168A00CFC3F1 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		874206510564169600CFC3F1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				874206520564169600CFC3F1 /* Foundation.framework in Frameworks */,
+				874206530564169600CFC3F1 /* AppKit.framework in Frameworks */,
+				8742069E056416F600CFC3F1 /* iTerm.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0464AB0D006CD2EC7F000001 /* JTerminal */ = {
+			isa = PBXGroup;
+			children = (
+				0464AB0E006CD2EC7F000001 /* Classes */,
+				0464AB15006CD2EC7F000001 /* Headers */,
+				0464AB1F006CD2EC7F000001 /* Other Sources */,
+				0464AB22006CD2EC7F000001 /* Interfaces */,
+				0464AB27006CD2EC7F000001 /* Supporting Files */,
+				0464AB2E006CD2EC7F000001 /* External Frameworks and Libraries */,
+				0464AB32006CD2EC7F000001 /* Products */,
+			);
+			name = JTerminal;
+			sourceTree = "<group>";
+		};
+		0464AB0E006CD2EC7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				DD4BAB7C0470C44C00A8A065 /* FindPanelWindowController.m */,
+				DDF0FD64062916F70080EF74 /* iTermApplication.m */,
+				20D5CC6404E7AA0500000106 /* iTermApplicationDelegate.m */,
+				E8A66F030272453F03A80106 /* iTermController.m */,
+				DD46BAC405FD689F00027283 /* iTermDisplayProfileMgr.m */,
+				DDDB7ABD05D7736600E197C2 /* iTermKeyBindingMgr.m */,
+				8787B0D805FD160F00901149 /* iTermProfileWindowController.m */,
+				F658C86C06054425000A13D5 /* iTermTerminalProfileMgr.m */,
+				20E74F4904E9089700000106 /* ITAddressBookMgr.m */,
+				20B8891A04E924CD00000106 /* ITConfigPanelController.m */,
+				20B88B6104E948FA00000106 /* ITSessionMgr.m */,
+				20B8892B04E9342100000106 /* ITViewLocalizer.m */,
+				E8E901A202743CA303A80106 /* NSStringITerm.m */,
+				FB019DE103670C6501F955DB /* PreferencePanel.m */,
+				FBD0AD0A0337A5B701F955DB /* PseudoTerminal.m */,
+				2076B15804E8817300000106 /* PTToolbarController.m */,
+				E8CF755F026DDA6303A80106 /* PTYScrollView.m */,
+				F52ED8DD037F0A7D01A8A066 /* PTYSession.m */,
+				F5E533B403B2959201A8A066 /* PTYTabView.m */,
+				F5E533B303B2959201A8A066 /* PTYTabViewItem.m */,
+				E8CF7561026DDA6303A80106 /* PTYTextView.m */,
+				E8CF7560026DDA6303A80106 /* PTYTask.m */,
+				F56B230B03A1B36701A8A066 /* PTYWindow.m */,
+				DD8EC82F06095CDA0085A27D /* Tree.m */,
+				E8CF7562026DDA6303A80106 /* VT100Screen.m */,
+				E8CF7563026DDA6303A80106 /* VT100Terminal.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		0464AB15006CD2EC7F000001 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				872EBC6B04E42E320073D10E /* charmaps.h */,
+				872EBC6804E42E320073D10E /* FindPanelWindowController.h */,
+				872EBC6A04E42E320073D10E /* iTerm.h */,
+				DDF0FD63062916F70080EF74 /* iTermApplication.h */,
+				20D5CC6304E7AA0500000106 /* iTermApplicationDelegate.h */,
+				872EBC6204E42E320073D10E /* iTermController.h */,
+				DD46BB5405FD6B9B00027283 /* iTermDisplayProfileMgr.h */,
+				DDDB7AD605D773B400E197C2 /* iTermKeyBindingMgr.h */,
+				8787B13F05FD191400901149 /* iTermProfileWindowController.h */,
+				F658CAFA060587A0000A13D5 /* iTermTerminalProfileMgr.h */,
+				20E74F4804E9089700000106 /* ITAddressBookMgr.h */,
+				20B8891904E924CD00000106 /* ITConfigPanelController.h */,
+				20B88B6004E948FA00000106 /* ITSessionMgr.h */,
+				20B8892A04E9342100000106 /* ITViewLocalizer.h */,
+				872EBC5304E42E320073D10E /* NSStringITerm.h */,
+				872EBC6504E42E320073D10E /* PreferencePanel.h */,
+				872EBC6C04E42E320073D10E /* PseudoTerminal.h */,
+				872EBC6004E42E320073D10E /* PTYScrollView.h */,
+				872EBC6604E42E320073D10E /* PTYSession.h */,
+				872EBC5704E42E320073D10E /* PTYTabView.h */,
+				872EBC5F04E42E320073D10E /* PTYTabViewItem.h */,
+				872EBC5804E42E320073D10E /* PTYTask.h */,
+				872EBC5404E42E320073D10E /* PTYTextView.h */,
+				872EBC5B04E42E320073D10E /* PTYWindow.h */,
+				2076B15704E8817300000106 /* PTToolbarController.h */,
+				DD8EC958060980C90085A27D /* Tree.h */,
+				872EBC5A04E42E320073D10E /* VT100Screen.h */,
+				872EBC6104E42E320073D10E /* VT100Terminal.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		0464AB1F006CD2EC7F000001 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				E8CF757F026DDAD703A80106 /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		0464AB22006CD2EC7F000001 /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				E813FB7D0297522703A80106 /* MainMenu.nib */,
+				E813FB86029754BB03A80106 /* PseudoTerminal.nib */,
+				870EAAB504325A880073D10E /* PreferencePanel.nib */,
+				870BCD83047070AC0073D10E /* FindPanel.nib */,
+				8723EDEC04EAADBB0073D10E /* ITConfigPanel.nib */,
+				E8EDCE69015E0A5703000001 /* iTerm.icns */,
+				FBBB8B60039FC04E01F955DB /* iTerm.png */,
+				DD9C1AE2051F45C000A8A065 /* iTerm-Aqua.jpg */,
+				FB094A14033D58AE01F955DB /* addressbook.png */,
+				FB094A16033D58B601F955DB /* close.png */,
+				FB754C5F036EFC5301F955DB /* config.png */,
+				FB47BCC403686CAC01F955DB /* exec.png */,
+				FBB2EBCD040AC7C201F955DB /* important.png */,
+				DD6ACB0204112FB700A8A065 /* important_l.png */,
+				DD6ACB0304112FB700A8A065 /* important_r.png */,
+				FB094A18033D58BD01F955DB /* new.png */,
+				FB896717038D935801F955DB /* newwin.png */,
+				8786A96E052CEC220073D10E /* script.png */,
+				DD48F1C703EBB1C400A8A065 /* iTerm.scriptSuite */,
+				DD48F1CC03EBB20500A8A065 /* iTerm.scriptTerminology */,
+				FB151F2903648AC401F955DB /* iTerm.strings */,
+				DD57633005653C2E00F1905E /* iTerm_Framework.plist */,
+				DD57633605653C5F00F1905E /* iTerm.plist */,
+			);
+			name = Interfaces;
+			sourceTree = "<group>";
+		};
+		0464AB27006CD2EC7F000001 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FBDF6B63042A6B3101F955DB /* website */,
+				F500A65D0395269C01A8A066 /* Changelog */,
+				DD8CF2DD03CDD34B00A8A065 /* iTerm Help */,
+				DDB79A9A0612BBBF00EAE159 /* Profiles.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0464AB2E006CD2EC7F000001 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				0464AB2F006CD2EC7F000001 /* AppKit.framework */,
+				0464AB30006CD2EC7F000001 /* Foundation.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		0464AB32006CD2EC7F000001 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				874206430564168A00CFC3F1 /* iTerm.framework */,
+				8742065A0564169600CFC3F1 /* iTerm.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FBDF6B63042A6B3101F955DB /* website */ = {
+			isa = PBXGroup;
+			children = (
+				FBDF6B8F042A6BD801F955DB /* history.shtml */,
+				FBDF6B90042A6BD801F955DB /* index.shtml */,
+				F63C15F806139B3800C79EBB /* download.shtml */,
+				FBDF6B91042A6BD801F955DB /* install.shtml */,
+				FBDF6B92042A6BD801F955DB /* iTerm_icon.gif */,
+				FBDF6B93042A6BD801F955DB /* iTerm.png */,
+				FBDF6B94042A6BD801F955DB /* misc.shtml */,
+				FBDF6B95042A6BD801F955DB /* navigation.shtml */,
+				FBDF6B96042A6BD801F955DB /* new.gif */,
+				F6FAFD99050E90C300EA4EE7 /* contrib.png */,
+				F6FAFD9A050E90C300EA4EE7 /* iTerm-orig.png */,
+				F645F2B00557B868005F354A /* iTerm-sinomac.png */,
+				FBDF6B97042A6BD801F955DB /* preferences.shtml */,
+				FBDF6B98042A6BD801F955DB /* resource.shtml */,
+				F63C16590613A7B200C79EBB /* funnyfont-m.jpg */,
+				F63C165A0613A7B200C79EBB /* funnyfont.jpg */,
+				F63C165B0613A7B200C79EBB /* keymap-m.jpg */,
+				F63C165C0613A7B200C79EBB /* keymap.jpg */,
+				FBDF6B99042A6BD801F955DB /* screenshot-mini.jpg */,
+				FBDF6B9A042A6BD801F955DB /* screenshot.jpg */,
+				F65CCFFA05F7EB0700F04CFF /* screenshot2-m.jpg */,
+				F65CCFFB05F7EB0700F04CFF /* screenshot2.jpg */,
+				FBDF6B9B042A6BD801F955DB /* scripting.shtml */,
+				FBDF6B9C042A6BD801F955DB /* styles.css */,
+				FBDF6B9D042A6BD801F955DB /* upload.sh */,
+				F64B59D405ED49B600FE8ACB /* sidebar.html */,
+				F64B59FA05ED4AA800FE8ACB /* header.html */,
+				F64B5A1705ED4AF000FE8ACB /* footer.html */,
+				F69D78B405FBEA6D009BC3FC /* faq.shtml */,
+			);
+			name = website;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		874205EF0564168A00CFC3F1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				874205F00564168A00CFC3F1 /* NSStringITerm.h in Headers */,
+				874205F10564168A00CFC3F1 /* PTYTextView.h in Headers */,
+				874205F30564168A00CFC3F1 /* PTYTabView.h in Headers */,
+				874205F40564168A00CFC3F1 /* PTYTask.h in Headers */,
+				874205F60564168A00CFC3F1 /* VT100Screen.h in Headers */,
+				874205F70564168A00CFC3F1 /* PTYWindow.h in Headers */,
+				874205F90564168A00CFC3F1 /* PTYTabViewItem.h in Headers */,
+				874205FA0564168A00CFC3F1 /* PTYScrollView.h in Headers */,
+				874205FB0564168A00CFC3F1 /* VT100Terminal.h in Headers */,
+				874205FC0564168A00CFC3F1 /* iTermController.h in Headers */,
+				874205FE0564168A00CFC3F1 /* PreferencePanel.h in Headers */,
+				874205FF0564168A00CFC3F1 /* PTYSession.h in Headers */,
+				874206000564168A00CFC3F1 /* FindPanelWindowController.h in Headers */,
+				874206020564168A00CFC3F1 /* iTerm.h in Headers */,
+				874206030564168A00CFC3F1 /* charmaps.h in Headers */,
+				874206040564168A00CFC3F1 /* PseudoTerminal.h in Headers */,
+				874206050564168A00CFC3F1 /* PTToolbarController.h in Headers */,
+				874206060564168A00CFC3F1 /* ITAddressBookMgr.h in Headers */,
+				874206070564168A00CFC3F1 /* ITViewLocalizer.h in Headers */,
+				874206080564168A00CFC3F1 /* ITConfigPanelController.h in Headers */,
+				874206090564168A00CFC3F1 /* ITSessionMgr.h in Headers */,
+				DDDB7AD705D773B400E197C2 /* iTermKeyBindingMgr.h in Headers */,
+				8787B14005FD191400901149 /* iTermProfileWindowController.h in Headers */,
+				DD46BB5505FD6B9B00027283 /* iTermDisplayProfileMgr.h in Headers */,
+				F658CAFB060587A0000A13D5 /* iTermTerminalProfileMgr.h in Headers */,
+				DD8EC959060980C90085A27D /* Tree.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		874206480564169600CFC3F1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				874206490564169600CFC3F1 /* iTermApplicationDelegate.h in Headers */,
+				DDF0FD65062916F70080EF74 /* iTermApplication.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		874205EE0564168A00CFC3F1 /* iTerm Framework */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB024D31096EE4080021E793 /* Build configuration list for PBXNativeTarget "iTerm Framework" */;
+			buildPhases = (
+				874205EF0564168A00CFC3F1 /* Headers */,
+				8742060B0564168A00CFC3F1 /* Resources */,
+				8742061F0564168A00CFC3F1 /* Sources */,
+				874206380564168A00CFC3F1 /* Frameworks */,
+				8742063B0564168A00CFC3F1 /* Rez */,
+				8742063C0564168A00CFC3F1 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = iTerm_Framework.plist;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				JAVA_COMPILER_DEBUGGING_SYMBOLS = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x14000000,
+				);
+				OTHER_LIBTOOL_FLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRINCIPAL_CLASS = "";
+				PRODUCT_NAME = iTerm;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				WRAPPER_EXTENSION = framework;
+			};
+			dependencies = (
+			);
+			name = "iTerm Framework";
+			productInstallPath = "@executable_path/../Frameworks";
+			productName = "iTerm Framework";
+			productReference = 874206430564168A00CFC3F1 /* iTerm.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		874206460564169600CFC3F1 /* iTerm */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB024D35096EE4080021E793 /* Build configuration list for PBXNativeTarget "iTerm" */;
+			buildPhases = (
+				874206480564169600CFC3F1 /* Headers */,
+				8742064A0564169600CFC3F1 /* Resources */,
+				8742064E0564169600CFC3F1 /* Sources */,
+				874206510564169600CFC3F1 /* Frameworks */,
+				874206550564169600CFC3F1 /* Rez */,
+				874206560564169600CFC3F1 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = iTerm.plist;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = iTerm;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wmost",
+				);
+				WRAPPER_EXTENSION = app;
+			};
+			dependencies = (
+				8742069B056416D000CFC3F1 /* PBXTargetDependency */,
+			);
+			name = iTerm;
+			productName = "JTerminal (Application)";
+			productReference = 8742065A0564169600CFC3F1 /* iTerm.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0464AB0C006CD2EC7F000001 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = BB024D39096EE4080021E793 /* Build configuration list for PBXProject "iTerm" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				05A162CE006CD5FC7F000001 /* Development */,
+				05A162CF006CD5FC7F000001 /* Deployment */,
+			);
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				Chinese,
+				zh_CN,
+				zh_TW,
+				Korean,
+			);
+			mainGroup = 0464AB0D006CD2EC7F000001 /* JTerminal */;
+			productRefGroup = 0464AB32006CD2EC7F000001 /* Products */;
+			projectDirPath = "";
+			targets = (
+				874206460564169600CFC3F1 /* iTerm */,
+				874205EE0564168A00CFC3F1 /* iTerm Framework */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8742060B0564168A00CFC3F1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8742060C0564168A00CFC3F1 /* PseudoTerminal.nib in Resources */,
+				8742060D0564168A00CFC3F1 /* iTerm.png in Resources */,
+				8742060E0564168A00CFC3F1 /* addressbook.png in Resources */,
+				8742060F0564168A00CFC3F1 /* close.png in Resources */,
+				874206100564168A00CFC3F1 /* config.png in Resources */,
+				874206110564168A00CFC3F1 /* exec.png in Resources */,
+				874206120564168A00CFC3F1 /* important.png in Resources */,
+				874206130564168A00CFC3F1 /* important_l.png in Resources */,
+				874206140564168A00CFC3F1 /* important_r.png in Resources */,
+				874206150564168A00CFC3F1 /* new.png in Resources */,
+				874206160564168A00CFC3F1 /* newwin.png in Resources */,
+				874206170564168A00CFC3F1 /* iTerm.scriptSuite in Resources */,
+				874206180564168A00CFC3F1 /* iTerm.scriptTerminology in Resources */,
+				874206190564168A00CFC3F1 /* iTerm.strings in Resources */,
+				8742061B0564168A00CFC3F1 /* PreferencePanel.nib in Resources */,
+				8742061C0564168A00CFC3F1 /* FindPanel.nib in Resources */,
+				8742061D0564168A00CFC3F1 /* ITConfigPanel.nib in Resources */,
+				8742061E0564168A00CFC3F1 /* iTerm-Aqua.jpg in Resources */,
+				DD57633105653C2E00F1905E /* iTerm_Framework.plist in Resources */,
+				DDB79A9B0612BBBF00EAE159 /* Profiles.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8742064A0564169600CFC3F1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8742064B0564169600CFC3F1 /* MainMenu.nib in Resources */,
+				8742064C0564169600CFC3F1 /* iTerm Help in Resources */,
+				8742064D0564169600CFC3F1 /* iTerm.icns in Resources */,
+				DD57633705653C5F00F1905E /* iTerm.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		8742063B0564168A00CFC3F1 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		874206550564169600CFC3F1 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8742061F0564168A00CFC3F1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				874206200564168A00CFC3F1 /* PseudoTerminal.m in Sources */,
+				874206210564168A00CFC3F1 /* PTYScrollView.m in Sources */,
+				874206220564168A00CFC3F1 /* PTYTextView.m in Sources */,
+				874206230564168A00CFC3F1 /* PTYTask.m in Sources */,
+				874206240564168A00CFC3F1 /* VT100Screen.m in Sources */,
+				874206250564168A00CFC3F1 /* VT100Terminal.m in Sources */,
+				874206260564168A00CFC3F1 /* iTermController.m in Sources */,
+				874206270564168A00CFC3F1 /* NSStringITerm.m in Sources */,
+				874206280564168A00CFC3F1 /* PreferencePanel.m in Sources */,
+				874206290564168A00CFC3F1 /* PTYSession.m in Sources */,
+				8742062A0564168A00CFC3F1 /* PTYTabView.m in Sources */,
+				8742062B0564168A00CFC3F1 /* PTYTabViewItem.m in Sources */,
+				8742062C0564168A00CFC3F1 /* PTYWindow.m in Sources */,
+				8742062E0564168A00CFC3F1 /* FindPanelWindowController.m in Sources */,
+				874206320564168A00CFC3F1 /* PTToolbarController.m in Sources */,
+				874206330564168A00CFC3F1 /* ITAddressBookMgr.m in Sources */,
+				874206340564168A00CFC3F1 /* ITViewLocalizer.m in Sources */,
+				874206350564168A00CFC3F1 /* ITConfigPanelController.m in Sources */,
+				874206360564168A00CFC3F1 /* ITSessionMgr.m in Sources */,
+				DDDB7ABF05D7736600E197C2 /* iTermKeyBindingMgr.m in Sources */,
+				8787B0DA05FD160F00901149 /* iTermProfileWindowController.m in Sources */,
+				DD46BAC605FD689F00027283 /* iTermDisplayProfileMgr.m in Sources */,
+				F658C86E06054425000A13D5 /* iTermTerminalProfileMgr.m in Sources */,
+				DD8EC83106095CDA0085A27D /* Tree.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8742064E0564169600CFC3F1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8742064F0564169600CFC3F1 /* main.m in Sources */,
+				874206500564169600CFC3F1 /* iTermApplicationDelegate.m in Sources */,
+				DDF0FD66062916F70080EF74 /* iTermApplication.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8742069B056416D000CFC3F1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 874205EE0564168A00CFC3F1 /* iTerm Framework */;
+			targetProxy = 8742069A056416D000CFC3F1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		870BCD83047070AC0073D10E /* FindPanel.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				870BCD84047070AC0073D10E /* English */,
+				870BCD86047071180073D10E /* French */,
+				870BCD87047071260073D10E /* Japanese */,
+				870BCD88047071320073D10E /* Korean */,
+				870BCD890470713F0073D10E /* zh_CN */,
+				870BCD8A0470714A0073D10E /* zh_TW */,
+				F61DBB390557A7A4005F354A /* German */,
+			);
+			name = FindPanel.nib;
+			sourceTree = "<group>";
+		};
+		870EAAB504325A880073D10E /* PreferencePanel.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				870EAAB604325A880073D10E /* English */,
+				876DBBC1043277AF0073D10E /* zh_CN */,
+				876DBBC304327CC90073D10E /* zh_TW */,
+				876DBBC5043281250073D10E /* Japanese */,
+				876DBBC7043284990073D10E /* Korean */,
+				87898DDF0444F93C0073D10E /* French */,
+				F61DBB380557A788005F354A /* German */,
+			);
+			name = PreferencePanel.nib;
+			sourceTree = "<group>";
+		};
+		8723EDEC04EAADBB0073D10E /* ITConfigPanel.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8723EDED04EAADBB0073D10E /* English */,
+				8723EDEF04EABBB40073D10E /* French */,
+				8723EDF004EABD030073D10E /* Japanese */,
+				8723EDF104EABE1C0073D10E /* Korean */,
+				8723EDF204EABF990073D10E /* zh_CN */,
+				8723EDF304EAD4A00073D10E /* zh_TW */,
+				F61DBB3A0557A7BA005F354A /* German */,
+			);
+			name = ITConfigPanel.nib;
+			sourceTree = "<group>";
+		};
+		DD48F1CC03EBB20500A8A065 /* iTerm.scriptTerminology */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DD48F1CD03EBB20500A8A065 /* English */,
+			);
+			name = iTerm.scriptTerminology;
+			sourceTree = "<group>";
+		};
+		DD8CF2DD03CDD34B00A8A065 /* iTerm Help */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DD8CF2DE03CDD34C00A8A065 /* iTerm Help */,
+			);
+			name = "iTerm Help";
+			sourceTree = "<group>";
+		};
+		E813FB7D0297522703A80106 /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E813FB7E0297522703A80106 /* English */,
+				FBBB8B49039D9E6501F955DB /* zh_CN */,
+				FBBB8B4A039D9E6D01F955DB /* zh_TW */,
+				FB80352E03CA060201F955DB /* Japanese */,
+				FBDF6A55042795CE01F955DB /* Korean */,
+				87898DDD0444F9070073D10E /* French */,
+				F61DBB350557A72A005F354A /* German */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+		E813FB86029754BB03A80106 /* PseudoTerminal.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E813FB87029754BB03A80106 /* English */,
+				FBBB8B4B039D9E7E01F955DB /* zh_CN */,
+				FBBB8B4C039D9E8501F955DB /* zh_TW */,
+				FB80352F03CA060A01F955DB /* Japanese */,
+				FBDF6A56042795EB01F955DB /* Korean */,
+				87898DE00444F94E0073D10E /* French */,
+				F61DBB360557A754005F354A /* German */,
+			);
+			name = PseudoTerminal.nib;
+			sourceTree = "<group>";
+		};
+		FB151F2903648AC401F955DB /* iTerm.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FB151F2603648AB401F955DB /* iTerm.strings */,
+				FBBB8B47039D9E1701F955DB /* zh_CN */,
+				FBBB8B48039D9E1F01F955DB /* zh_TW */,
+				FB80353003CA062601F955DB /* Japanese */,
+				DDF28988047764E300A8A065 /* Korean */,
+				FB01DCDE04433DFB01F955DB /* French */,
+				F61DBB3B0557A7D2005F354A /* German */,
+			);
+			name = iTerm.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BB024D32096EE4080021E793 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = Headers/iTerm/;
+				INFOPLIST_FILE = iTerm_Framework.plist;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				JAVA_COMPILER_DEBUGGING_SYMBOLS = NO;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x14000000,
+				);
+				OTHER_LIBTOOL_FLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRINCIPAL_CLASS = "";
+				PRODUCT_NAME = iTerm;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				WRAPPER_EXTENSION = framework;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		BB024D33096EE4080021E793 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = iTerm_Framework.plist;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				JAVA_COMPILER_DEBUGGING_SYMBOLS = NO;
+				MACOSX_DEPLOYMENT_TARGET = 10.2;
+				OPTIMIZATION_CFLAGS = "-O3";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x14000000,
+				);
+				OTHER_LIBTOOL_FLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRINCIPAL_CLASS = "";
+				PRODUCT_NAME = iTerm;
+				SECTORDER_FLAGS = "";
+				UNSTRIPPED_PRODUCT = NO;
+				WARNING_CFLAGS = "-Wmost";
+				WRAPPER_EXTENSION = framework;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		BB024D34096EE4080021E793 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = iTerm_Framework.plist;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				JAVA_COMPILER_DEBUGGING_SYMBOLS = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x14000000,
+				);
+				OTHER_LIBTOOL_FLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRINCIPAL_CLASS = "";
+				PRODUCT_NAME = iTerm;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Default;
+		};
+		BB024D36096EE4080021E793 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = Headers/iTerm/;
+				INFOPLIST_FILE = iTerm.plist;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = iTerm;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wmost",
+				);
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		BB024D37096EE4080021E793 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = iTerm.plist;
+				MACOSX_DEPLOYMENT_TARGET = 10.2;
+				OPTIMIZATION_CFLAGS = "-O3";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = iTerm;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				UNSTRIPPED_PRODUCT = NO;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wmost",
+				);
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		BB024D38096EE4080021E793 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = iTerm.plist;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = iTerm;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wmost",
+				);
+				WRAPPER_EXTENSION = app;
+			};
+			name = Default;
+		};
+		BB024D3A096EE4080021E793 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = ppc;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Development;
+		};
+		BB024D3B096EE4080021E793 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Deployment;
+		};
+		BB024D3C096EE4080021E793 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Default;
+		};
+		BB1FA4F1099716FF00B9A377 /* Deployment <= 10.3 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = iTerm_Framework.plist;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				JAVA_COMPILER_DEBUGGING_SYMBOLS = NO;
+				MACOSX_DEPLOYMENT_TARGET = 10.2;
+				OPTIMIZATION_CFLAGS = "-O3";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x14000000,
+				);
+				OTHER_LIBTOOL_FLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRINCIPAL_CLASS = "";
+				PRODUCT_NAME = iTerm;
+				SECTORDER_FLAGS = "";
+				UNSTRIPPED_PRODUCT = NO;
+				WARNING_CFLAGS = "-Wmost";
+				WRAPPER_EXTENSION = framework;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment <= 10.3";
+		};
+		BB1FA4F2099716FF00B9A377 /* Deployment <= 10.3 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = iTerm.plist;
+				MACOSX_DEPLOYMENT_TARGET = 10.2;
+				OPTIMIZATION_CFLAGS = "-O3";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = iTerm;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				UNSTRIPPED_PRODUCT = NO;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wmost",
+				);
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment <= 10.3";
+		};
+		BB1FA4F3099716FF00B9A377 /* Deployment <= 10.3 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = ppc;
+				MACOSX_DEPLOYMENT_TARGET = 10.2;
+				PREBINDING = YES;
+				SDKROOT = /Developer/SDKs/MacOSX10.3.9.sdk;
+			};
+			name = "Deployment <= 10.3";
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BB024D31096EE4080021E793 /* Build configuration list for PBXNativeTarget "iTerm Framework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB024D32096EE4080021E793 /* Development */,
+				BB024D33096EE4080021E793 /* Deployment */,
+				BB1FA4F1099716FF00B9A377 /* Deployment <= 10.3 */,
+				BB024D34096EE4080021E793 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		BB024D35096EE4080021E793 /* Build configuration list for PBXNativeTarget "iTerm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB024D36096EE4080021E793 /* Development */,
+				BB024D37096EE4080021E793 /* Deployment */,
+				BB1FA4F2099716FF00B9A377 /* Deployment <= 10.3 */,
+				BB024D38096EE4080021E793 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		BB024D39096EE4080021E793 /* Build configuration list for PBXProject "iTerm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB024D3A096EE4080021E793 /* Development */,
+				BB024D3B096EE4080021E793 /* Deployment */,
+				BB1FA4F3099716FF00B9A377 /* Deployment <= 10.3 */,
+				BB024D3C096EE4080021E793 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0464AB0C006CD2EC7F000001 /* Project object */;
+}
