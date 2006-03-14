@@ -1,0 +1,43 @@
+\section{RSSFeed(Fetching) Class Reference}
+\label{categoryRSSFeed(Fetching)}\index{RSSFeed(Fetching)@{RSSFeed(Fetching)}}
+{\tt \#import $<$Feed\-Fetching.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+(enum RSSFeed\-Error) - {\bf last\-Error}
+\item 
+(enum RSSFeed\-Error) - {\bf fetch}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+The ,,Fetching'' category of {\bf RSSFeed}{\rm (p.\,\pageref{interfaceRSSFeed})} contains methods for the {\bf RSSFeed}{\rm (p.\,\pageref{interfaceRSSFeed})} class, which are responsible for fetching and parsing feeds.
+
+
+
+\subsection{Member Function Documentation}
+\index{RSSFeed(Fetching)@{RSSFeed(Fetching)}!fetch@{fetch}}
+\index{fetch@{fetch}!RSSFeed(Fetching)@{RSSFeed(Fetching)}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (enum RSSFeed\-Error) fetch }\label{categoryRSSFeed(Fetching)_a2}
+
+
+Fetches the feed from the web (using NSURL).
+
+\begin{Desc}
+\item[Returns:]An error number (of type enum RSSFeed\-Error) \end{Desc}
+\begin{Desc}
+\item[See also:]NSURL 
+
+RSSFeed\-Error\end{Desc}
+\index{RSSFeed(Fetching)@{RSSFeed(Fetching)}!lastError@{lastError}}
+\index{lastError@{lastError}!RSSFeed(Fetching)@{RSSFeed(Fetching)}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (enum RSSFeed\-Error) last\-Error }\label{categoryRSSFeed(Fetching)_a0}
+
+
+Returns the last error. Guaranteed to return the last fetching result.
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+Feed\-Fetching.h\item 
+Feed\-Fetching.m\end{CompactItemize}

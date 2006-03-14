@@ -1,0 +1,224 @@
+\section{RSSFeed Class Reference}
+\label{interfaceRSSFeed}\index{RSSFeed@{RSSFeed}}
+{\tt \#import $<$RSSFeed.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+(id) - {\bf init\-With\-URL:}
+\item 
+(NSString $\ast$) - {\bf description}
+\item 
+(enum RSSFeed\-Status) - {\bf status}
+\item 
+({\bf RSSArticle} $\ast$) - {\bf article\-At\-Index:}
+\item 
+(unsigned int) - {\bf count}
+\item 
+(NSEnumerator $\ast$) - {\bf article\-Enumerator}
+\item 
+(void) - {\bf remove\-Article:}
+\item 
+(NSString $\ast$) - {\bf feed\-Name}
+\item 
+(NSURL $\ast$) - {\bf feed\-URL}
+\item 
+(void) - {\bf set\-Auto\-Clear:}
+\item 
+(BOOL) - {\bf auto\-Clear}
+\item 
+(void) - {\bf clear\-Articles}
+\item 
+(void) - {\bf set\-Article\-Class:}
+\item 
+(Class) - {\bf article\-Class}
+\item 
+(NSDate $\ast$) - {\bf last\-Retrieval}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Objects of this class represent a RSS/ATOM feed, which is basically just a source for new articles. When creating a RSSFeed object, you'll just have to provide it with the URL, where the feed can be downloaded from.
+
+This is the generic way to read feeds:
+
+\begin{itemize}
+\item Create a URL object with the location of the feed.\par
+ {\tt  NSURL$\ast$ url = [NSURL URLWith\-String:@\char`\"{}http://www.example.com/feed.xml\char`\"{}]; }  \item Create a RSSFeed object with the URL:\par
+ {\tt  RSSFeed$\ast$ feed = [RSSFeed init\-With\-URL: url]; }  \item Fetch the contents of the feed:\par
+ {\tt  enum RSSFeed\-Error err = [feed fetch]; }  \item Optionally tell the RSSFeed to keep old articles.\par
+ {\tt  [feed set\-Auto\-Clear: NO]; }  \item Iterate over the articles contained in the feed. This is analogous to the iteration over a NSArray. \small\begin{alltt}
+      int i;
+      for (i=0; i<[feed count]; i++)
+        \{
+          RSSArticle* myArticle = [feed articleAtIndex: i];
+          // [...] more code here
+        \}
+    \end{alltt}\normalsize 
+  \end{itemize}
+
+
+\begin{Desc}
+\item[See also:]{\bf - init\-With\-URL: (RSSFeed)}{\rm (p.\,\pageref{interfaceRSSFeed_a1})} 
+
+{\bf - fetch (RSSFeed(Fetching))}{\rm (p.\,\pageref{categoryRSSFeed(Fetching)_a2})} 
+
+{\bf - set\-Auto\-Clear: (RSSFeed)}{\rm (p.\,\pageref{interfaceRSSFeed_a14})}
+
+{\bf RSSArticle}{\rm (p.\,\pageref{interfaceRSSArticle})} 
+
+NSURL\end{Desc}
+
+
+
+
+\subsection{Member Function Documentation}
+\index{RSSFeed@{RSSFeed}!articleAtIndex:@{articleAtIndex:}}
+\index{articleAtIndex:@{articleAtIndex:}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- ({\bf RSSArticle}$\ast$) article\-At\-Index: (int) {\em index}}\label{interfaceRSSFeed_a6}
+
+
+Lets you access the individual articles in the feed. Often used in conjunction with the count method. Also take a look at the example in the description of this class. (RSSFeed)
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em index}]of the article to get \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]Article number index \end{Desc}
+\begin{Desc}
+\item[See also:]{\bf RSSArticle}{\rm (p.\,\pageref{interfaceRSSArticle})} 
+
+{\bf - count}{\rm (p.\,\pageref{interfaceRSSFeed_a7})} 
+
+RSSFeed\end{Desc}
+\index{RSSFeed@{RSSFeed}!articleClass@{articleClass}}
+\index{articleClass@{articleClass}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (Class) article\-Class }\label{interfaceRSSFeed_a18}
+
+
+Returns the class of the article objects. This will be a subtype of {\bf RSSArticle}{\rm (p.\,\pageref{interfaceRSSArticle})}.
+
+\begin{Desc}
+\item[Returns:]the article class\end{Desc}
+\index{RSSFeed@{RSSFeed}!articleEnumerator@{articleEnumerator}}
+\index{articleEnumerator@{articleEnumerator}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSEnumerator$\ast$) article\-Enumerator }\label{interfaceRSSFeed_a8}
+
+
+\begin{Desc}
+\item[Returns:]an enumerator for the articles in this feed\end{Desc}
+\index{RSSFeed@{RSSFeed}!autoClear@{autoClear}}
+\index{autoClear@{autoClear}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (BOOL) auto\-Clear }\label{interfaceRSSFeed_a15}
+
+
+\begin{Desc}
+\item[Returns:]YES, if the automatic clearing of the article list is enabled for this feed. NO otherwise.\end{Desc}
+\index{RSSFeed@{RSSFeed}!clearArticles@{clearArticles}}
+\index{clearArticles@{clearArticles}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (void) clear\-Articles }\label{interfaceRSSFeed_a16}
+
+
+Clears the list of articles.\index{RSSFeed@{RSSFeed}!count@{count}}
+\index{count@{count}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (unsigned int) count }\label{interfaceRSSFeed_a7}
+
+
+\begin{Desc}
+\item[Returns:]the number of articles in this feed.\end{Desc}
+\index{RSSFeed@{RSSFeed}!description@{description}}
+\index{description@{description}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSString$\ast$) description }\label{interfaceRSSFeed_a2}
+
+
+\begin{Desc}
+\item[Returns:]Description of the Feed (the feed name)\end{Desc}
+\index{RSSFeed@{RSSFeed}!feedName@{feedName}}
+\index{feedName@{feedName}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSString$\ast$) feed\-Name }\label{interfaceRSSFeed_a10}
+
+
+\begin{Desc}
+\item[Returns:]The name of the feed\end{Desc}
+\index{RSSFeed@{RSSFeed}!feedURL@{feedURL}}
+\index{feedURL@{feedURL}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSURL$\ast$) feed\-URL }\label{interfaceRSSFeed_a11}
+
+
+\begin{Desc}
+\item[Returns:]the URL where the feed can be downloaded from (as NSURL object) \end{Desc}
+\begin{Desc}
+\item[See also:]NSURL\end{Desc}
+\index{RSSFeed@{RSSFeed}!initWithURL:@{initWithURL:}}
+\index{initWithURL:@{initWithURL:}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (id) init\-With\-URL: (NSURL $\ast$) {\em a\-URL}}\label{interfaceRSSFeed_a1}
+
+
+Designated initializer.
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em a\-URL}]The URL where the feed can be downloaded from.\end{description}
+\end{Desc}
+\index{RSSFeed@{RSSFeed}!lastRetrieval@{lastRetrieval}}
+\index{lastRetrieval@{lastRetrieval}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSDate$\ast$) last\-Retrieval }\label{interfaceRSSFeed_a19}
+
+
+Returns the date of last retrieval of this feed. If the feed hasn't been retrieved yet, this method returns nil.
+
+\begin{Desc}
+\item[Returns:]The date of last retrieval as a NSDate pointer.\end{Desc}
+\index{RSSFeed@{RSSFeed}!removeArticle:@{removeArticle:}}
+\index{removeArticle:@{removeArticle:}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (void) remove\-Article: ({\bf RSSArticle} $\ast$) {\em article}}\label{interfaceRSSFeed_a9}
+
+
+Deletes an article from the feed.
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em article}]The index of the article to delete.\end{description}
+\end{Desc}
+\index{RSSFeed@{RSSFeed}!setArticleClass:@{setArticleClass:}}
+\index{setArticleClass:@{setArticleClass:}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (void) set\-Article\-Class: (Class) {\em a\-Class}}\label{interfaceRSSFeed_a17}
+
+
+Sets the class of the article objects. This needs to be a subtype of {\bf RSSArticle}{\rm (p.\,\pageref{interfaceRSSArticle})}.
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em a\-Class}]The class newly created article objects should have.\end{description}
+\end{Desc}
+\index{RSSFeed@{RSSFeed}!setAutoClear:@{setAutoClear:}}
+\index{setAutoClear:@{setAutoClear:}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (void) set\-Auto\-Clear: (BOOL) {\em auto\-Clear}}\label{interfaceRSSFeed_a14}
+
+
+Lets you decide if the feed should be cleared before new articles are downloaded.
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em auto\-Clear}]YES, if the feed should clear its article list before fetching new articles. NO otherwise\end{description}
+\end{Desc}
+\index{RSSFeed@{RSSFeed}!status@{status}}
+\index{status@{status}!RSSFeed@{RSSFeed}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (enum RSSFeed\-Status) status }\label{interfaceRSSFeed_a5}
+
+
+Accessor for the status of the feed. This can be used by a multithreaded GUI to indicate if a feed is currently fetching...
+
+\begin{Desc}
+\item[Returns:]either RSSFeed\-Is\-Fetching or RSSFeed\-Is\-Idle\end{Desc}
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+RSSFeed.h\end{CompactItemize}

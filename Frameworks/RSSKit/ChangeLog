@@ -1,0 +1,48 @@
+
+Jan-16-2006
+	Version 0.6.1-2
+
+	Got ATOM working again. Needed to restructure and extend the DOM
+	classes a bit. Implementing HTML parsing with it should be trivial
+	to do now. :-)
+	
+Nov-27-2005
+	Stable release 0.6
+
+	Main 'feature' added:
+	- Finally threw away the last code using the GSXML* classes,
+	  so now it uses NSSAXParser and is thum *fully OSX compatible* :-)
+
+Aug-19-2005
+	Another Pre-Release
+	Version 0.5pre4
+	
+	- Support for the ATOM 1.0 draft, as published by the IETF.
+	- Support for Podcasting information (for ATOM 1.0 only ATM :->)
+
+	If you want to use the podcasting features, call 'links' on an
+	RSSArticle. This returns an array of NSURL objects. Call 
+	propertyForKey:@"type" and propertyForKey:@"rel" on those to
+	get additional information to the URL. (This is a nightly hack,
+	still not tested.)
+	
+Jul-23-2005
+	Pre-Release
+	Version 0.5pre2
+	interface mostly compatible to old releases.
+	
+	The 'dirty' flag is deprecated, we now save the date of
+	the last retrieval.
+	
+	You can supply a feed with a class type which should be used
+	to create new RSSArticle objects. This must be derivated from
+	RSSArticle.
+	
+Apr-12-2005
+	Initial release
+	Version 0.4
+	only small bugfixes
+
+Mar-26-2005
+	Preview release
+	Version, umm, 0.1

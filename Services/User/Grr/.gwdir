@@ -1,0 +1,6 @@
+{
+    fsn_info_type = <*I3>;
+    iconposition = <*I2>;
+    iconsize = <*I48>;
+    labeltxtsize = <*I10>;
+}

@@ -1,0 +1,27 @@
+
+Main author:
+
+Günther Noack <guenther@unix-ag.uni-kl.de>
+IRC: guenther in channel #gnustep on irc.freenode.net
+                                  or irc.oftc.net
+
+Lots of work on splitting up the Grr Gorm file is
+done by Yen-Ju Chen. Thanks a lot! :-)
+
+Patches to version 0.2.x and previous versions
+submitted by:
+   
+   jtregunna
+       22.12.2004
+       Many general bugfixes towards OSX compatibility
+
+   ratmice
+       6.12.2004
+       Description text is now properly aligned when
+       resizing the window. Big thanks! :-)
+
+
+I would also like to thank fabien, rburns, tarzeau,
+ludovic, Dirk Olmes and many, many others for submitting
+wishes and bugs. :-)
+

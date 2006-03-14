@@ -1,0 +1,24 @@
+
+The OSX port hasn't even begun for versions above 0.4, but
+here are some hints what you have to be aware of if you port
+Grr to OSX:
+
+1 We don't need the OpenURL.m and OpenURL.h any more. These
+  files contain an implementation of openURL: in NSWorkspace,
+  which supports web URLs. The original GNUstep implementation
+  doesn't support this at the moment.
+  
+  As a result, the configuration dialog for the web browser
+  may be omitted in the OSX version. Although there aren't
+  any other things to configure in the preferences at the
+  time of this writing, keep in mind that this might change
+  in the near future.
+
+2 The interface has to be rebuilt with InterfaceBuilder. I'd
+  like to see the 'Feeds' window as a drawer on OSX. :-) On
+  the left side of the main window, I want to add a window
+  (drawer on OSX?) for managing the filters (which aren't
+  implemented yet).
+
+3 Try to keep a source tree which compiles on GNUstep.
+

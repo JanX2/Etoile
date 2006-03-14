@@ -1,0 +1,33 @@
+
+Grr 0.6.1-2 - Guenther's RSS Reader
+===================================
+
+This is the tenth official Grr release.
+Grr was formerly named RSSReader.app
+
+------------------------------------------------------------
+0.5pre4 and later releases are incompatible with older ones!
+You will lose all your saved feeds if you update.
+------------------------------------------------------------
+
+Here's a small overview over the working features:
+
+    * Basic RSS functionality
+       * Fetching feeds from the web
+       * Parsing RSS Feeds
+       * Showing headlines
+       * Showing the article's descriptions
+       * Jumping to the corresponding website
+       * Parsing ATOM feeds. (versions 0.3 and 1.0)
+    * Serializing obtained feed-information to hard-disk
+    * Managing (Adding, removing) feeds
+    * Configurable web browser on GNUstep. :-)
+
+...and here's a overview over the non-working
+   features, ordered by importance:
+
+    * More feed managing
+    * Basic filters
+    * The last feature, which makes RSS Reader a killer app,
+      and which will be added when everything else works. ;-)
+

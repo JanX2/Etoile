@@ -1,0 +1,89 @@
+
+INTRODUCTION
+------------
+
+This is a short introduction about how you use RSSKit.
+
+RSSKit is built of two classes: RSSFeed and RSSArticle.
+You should not instantiate RSSArticle by yourself.
+RSSFeed does that for you.
+
+To read in a RSS feed, you do the following:
+
+
+1 Instantiate RSSFeed
+=====================
+
+  for example:
+   RSSFeed* myFeed = [[RSSFeed alloc] initWithURL:
+                      [NSURL URLWithString:
+                        @"http://www.blabla.com/rss.xml"]];
+
+
+2 Fetch the RSS information
+===========================
+
+  enum RSSFeedError myError = [myFeed fetch];
+
+  The error code is specified as follows:
+
+  enum RSSFeedError
+  {
+    RSSFeedErrorNoError = 0,
+    RSSFeedErrorNoFetcherError,
+    RSSFeedErrorMalformedURL,
+    RSSFeedErrorDomainNotKnown,
+    RSSFeedErrorServerNotReachable,
+    RSSFeedErrorDocumentNotPresent,
+    RSSFeedErrorMalformedRSS
+  };
+
+  If this makes problems, please take a look at
+  RSSFeed.h to check if the information above is
+  outdated.
+  
+  Not all of these error codes occur in real life.
+  I just made up some error codes which might turn
+  out to be useful someday. This list may be changed
+  a lot in the future.
+
+
+3 Get the name of the feed
+==========================
+
+  NSString* feedName = [myFeed feedName];
+
+
+4 Access the articles of the feed
+=================================
+
+  RSSFeed can be used like NSArray for this:
+
+  int i;
+  for (i=0; i<[myFeed count]; i++)
+   {
+     RSSArticle* myArticle = [myFeed articleAtIndex: i];
+     //                              ^^^^^^^
+     
+     // [...] more code here
+   }
+
+
+5 Use the articles
+==================
+
+  Articles are instances of RSSArticle.
+  The following methods are most useful:
+
+     -(NSString*) headline;
+     -(NSString*) url;         // This is a NSString*, not a NSURL*
+     -(NSString*) description;
+     -(NSDate*)   date;
+     -(RSSFeed*)  feed;
+
+  The names should speak for themselves.
+  
+  WARNING: *ALL* methods return internal data structures for
+     performance reasons. So please don't modify those objects!
+
+
