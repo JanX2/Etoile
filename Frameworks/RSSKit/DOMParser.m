@@ -1,7 +1,7 @@
 // -*-objc-*-
 
 #import "DOMParser.h"
-
+#import "GNUstep.h"
 
 // #define DEBUG 1
 
@@ -63,6 +63,7 @@
 {
   RELEASE(_next);
   RELEASE(_content);
+  [super dealloc];
 }
 
 @end

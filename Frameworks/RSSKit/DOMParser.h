@@ -64,7 +64,7 @@
 
 -(void) dealloc;
 
-- (void) _setNext: (XMLNode*) node;
+- (void) _setNext: (id <XMLTextOrNode>) node;
 
 - (void) appendTextOrNode: (id<XMLTextOrNode>) aThing
 	       fromParser: (NSXMLParser*) aParser;

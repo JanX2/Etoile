@@ -3,7 +3,7 @@
 
 #import "FeedFetching.h"
 #import "DublinCore.h"
-
+#import "GNUstep.h"
 
 // #define DEBUG 1
 

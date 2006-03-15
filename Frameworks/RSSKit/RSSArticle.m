@@ -4,7 +4,7 @@
 // #define DEBUG 1
 
 #import "RSSArticle.h"
-
+#import "GNUstep.h"
 
 @implementation RSSArticle
 

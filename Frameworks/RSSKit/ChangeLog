@@ -1,3 +1,6 @@
+Mar-14-2006 Yen-Ju Chen <yjchen at gmail>
+        * GNUstep.h: New
+        Make it compile on mac and fix some compilation warnings..
 
 Jan-16-2006
 	Version 0.6.1-2
