@@ -4,6 +4,7 @@ Grr Changelog
 
 Mar-19-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Remove .gwdir, created by GWorkspace.app.
+	* Remove PC.project.backup, created by ProjectCenter.app.
 
 Mar-18-2006 Guenther Noack
 	* A bit of project restructuring (move to Etoile SVN)
