@@ -1,4 +1,4 @@
-#	GNUmakefila
+#	GNUmakefile
 #
 #  Copyright (C) 2000 Free Software Foundation, Inc.
 #
@@ -41,14 +41,14 @@ libRSSKit_LIBRARIES_DEPEND_UPON += $(FND_LIBS)
 libRSSKit_OBJC_FILES = \
 RSSArticle.m \
 RSSFeed.m \
-FeedFetching.m \
+RSSFeed+Fetching.m \
 DublinCore.m \
 DOMParser.m \
 
 libRSSKit_HEADER_FILES = \
 RSSArticle.h \
 RSSFeed.h \
-FeedFetching.h \
+RSSFeed+Fetching.h \
 DublinCore.h \
 RSSKit.h \
 DOMParser.h \

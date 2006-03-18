@@ -10,5 +10,5 @@
  */
 
 #import <RSSKit/RSSFeed.h>
-#import <RSSKit/FeedFetching.h>
+#import <RSSKit/RSSFeed+Fetching.h>
 #import <RSSKit/RSSArticle.h>

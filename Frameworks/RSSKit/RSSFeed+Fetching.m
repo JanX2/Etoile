@@ -1,7 +1,7 @@
 // -*-objc-*-
 
 
-#import "FeedFetching.h"
+#import "RSSFeed+Fetching.h"
 #import "DublinCore.h"
 #import "GNUstep.h"
 

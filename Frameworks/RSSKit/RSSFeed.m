@@ -4,7 +4,7 @@
 // #define DEBUGX
 
 #import "RSSFeed.h"
-#import "FeedFetching.h"
+#import "RSSFeed+Fetching.h"
 #import "GNUstep.h"
 
 //#define DEBUG YES
