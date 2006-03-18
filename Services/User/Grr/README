@@ -1,9 +1,33 @@
 
-Grr 0.6.1-2 - Guenther's RSS Reader
-===================================
+==========
+Grr README
+==========
 
-This is the tenth official Grr release.
+Grr is a RSS Reader application which is based on RSSKit.
+This application is released under GPLv2 license (see COPYING document).
+
+Author: Guenther Noack <guenther@unix-ag.uni-kl.de>
+
 Grr was formerly named RSSReader.app
+
+
+Build and Install
+-----------------
+
+Read INSTALL document.
+
+
+Dependency
+----------
+
+RSSKit
+
+
+Contribute
+----------
+
+Read TODO document.
+
 
 ------------------------------------------------------------
 0.5pre4 and later releases are incompatible with older ones!

@@ -16,8 +16,9 @@ Grr_STANDARD_INSTALL = yes
 #
 # Subprojects
 #
-SUBPROJECTS = \
-	RSSKit
+# Not a subproject any more
+#SUBPROJECTS = \
+#	RSSKit
 
 
 #
