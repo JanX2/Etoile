@@ -1,0 +1,125 @@
+
+========
+Grr NEWS
+========
+
+0.6.1-2 16.1.05
+	Production release. Changes were only done to RSSKit between 0.6.1-1
+	and 0.6.1-2. See the RSSKit changelog for details.
+
+0.6.1-1 15.1.05
+	Strictly a developer-release, completely done by Yen-Ju Chen
+	The Gorm file is now split up into several smaller parts, which
+	makes it more flexible and component-oriented. Thanks a lot! :-)
+	
+0.6.1 6.1.05
+	Bugfix release
+
+	Bugs fixed:
+	- In 0.6 some article bodys were mistakenly replaced by
+	  'strange' description strings for the XML nodes. That's
+	  fixed.
+	- Exception on unsuccesful browser execution is caught.
+	- Existing articles aren't replaced by new versions any more.
+	  (They were marked as unread again, which stopped users
+	   from effectively use the read-flag. :->)
+
+	Not yet done:
+	- OSX support still pending. Got everything to compile, but
+	  Interface was still lacking. Then I accidentally removed
+	  the project. :-(
+	- When compiling Grr.app, I experienced that RSSKit needs
+	  to be installed before Grr.app will compile. Install this
+	  way: cd RSSKit ; gmake install ; cd .. ; gmake install
+
+0.6 27.11.05
+	Looks quite stable. So this is 0.6 :-)
+
+	New features:
+	- It's multithreaded. :-)
+	- OSX support should be trivial now.
+	
+0.5pre4 19.8.05
+
+	Work in progress, as usual.
+	New features:
+
+	RSSReader:
+	- You can select that only articles from the selected feed
+	  are displayed.
+
+	RSSKit:
+	- Support for the ATOM 1.0 draft, as published by the IETF.
+	- Support for Podcasting information (for ATOM 1.0 only ATM :->)
+	
+0.5pre2 23.7.05
+	This is to be considered work-in-progress, although
+	it's quite stable
+
+	Most important detail:
+	There's a search field now. :-)
+
+	Problems:
+	The service doesn't work yet. (Other apps seem to hang
+	for some time when trying to access it.)
+
+	Internal stuff:
+	Needs newest (0.5pre2) RSSKit, which should come bundled
+	with RSSReader.app.
+
+	
+0.4 26.3.05
+	New icons again (wow, this is going to be
+	a running gag ;-))
+
+	This is what I did this time:
+
+	Project has been split into a library (RSSKit)
+	and an application (RSSReader). Both can be
+	obtained from the RSS Reader homepage at
+	http://www.unix-ag.uni-kl.de/~guenther/rssreader.html
+
+	The application part has been rewritten from scratch.
+	I use Gorm now. Thanks for the Gorm authors for such
+	a sophisticated tool. It's impressive how easy it
+	really was. :-)
+
+	I almost forgot to mention it: The parser has also
+	been rewritten from scratch. RSSKit is free from
+	Snownews code. The new parser uses the GSXML class.
+	Advantages:
+
+	- Internationalisation works correctly now.
+	- We are hopefully independant from libxml2 on OSX
+	  when the port is done.
+
+	The application now shows a progress bar when fetching
+	the feeds.
+	
+0.2.3 9.1.05
+	New icons (again) ;-)
+	
+	Some minor bugfixes (Thanks to ratmice and
+	rburns for the help!)
+	
+	Applied a patch by jtregunna, which is a
+	general bugfix at many places and is also
+	another step towards OSX compatibility.
+	Thanks to you, too! :-)
+	
+0.2.2 19.12.04
+	Slightly improved icons by tarzeau,
+	some bugfixes in the makefile.
+
+0.2.1 16.12.04
+	Added support for the dillo web browser
+	
+0.2 16.12.04
+	First working release.
+
+0.1.2 6.12.04
+	Improved some GUI issues when resizing
+	windows. Patch commited by ratmice.
+	
+0.1.1 6.12.04
+	First preview release
