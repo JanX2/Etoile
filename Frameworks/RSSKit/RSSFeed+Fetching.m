@@ -14,6 +14,7 @@
 #define URI_ATOM10              @"http://www.w3.org/2005/Atom"
 #define URI_PURL_CONTENT        @"http://purl.org/rss/1.0/modules/content/"
 #define URI_PURL_DUBLINCORE     @"http://purl.org/dc/elements/1.1/"
+#define URI_PODCAST             @"http://www.itunes.com/dtds/podcast-1.0.dtd"
 
 #define REL_KEY @"rel"
 #define TYPE_KEY @"type"
@@ -237,6 +238,25 @@
 	andType: nil];
 }
 
+/**
+ * Adds a link with a specified URL, relation type and file type.
+ * 
+ * Relation type is one of:
+ * <ul>
+ *  <li>"alternate": This link leads to an alternative location where
+ *                   this article's contents can be found.</li>
+ *  <li>"enclosure": A related resource which is probably large in size.
+ *                   This may link to a movie, a mp3 file, etc.</li>
+ *  <li>"related":   A related document</li>
+ *  <li>"self":      The feed itself</li>
+ *  <li>"via":       The source of the information provided in the entry.</li>
+ * </ul>
+ *
+ * These relation types are compatible with the ones of the ATOM
+ * specification. For details, see
+ * <a href="http://www.atomenabled.org/developers/syndication/#link">
+ * the ATOM specification.</a>
+ */
 -(void) addLinkWithURL: (NSString*) anURL
 		andRel: (NSString*) aRelation
 	       andType: (NSString*) aType
@@ -369,7 +389,9 @@
 		    [[secondlevelnode attributes]
 		      objectForKey: @"type"];
 		  
-		  if (tmp == nil)
+		  if (tmp == nil ||
+		      [tmp isEqualToString: @"text"] ||
+		      [tmp isEqualToString: @"html"])
 		    [creator setContent: [secondlevelnode content]];
 		  else
 		    {
@@ -459,7 +481,9 @@
 		    [[secondlevelnode attributes]
 		      objectForKey: @"type"];
 		  
-		  if (tmp == nil)
+		  if (tmp == nil ||
+		      [tmp isEqualToString: @"text"] ||
+		      [tmp isEqualToString: @"html"])
 		    [creator setContent: [secondlevelnode content]];
 		  else
 		    {
@@ -552,6 +576,17 @@
 				 isEqualToString: @"description"])
 			{
 			  [creator setSummary: [thirdlevelnode content]];
+			}
+		      else if ([[thirdlevelnode name]
+				 isEqualToString: @"enclosure"])
+			{
+			  [creator
+			    addLinkWithURL: [[thirdlevelnode attributes]
+					      objectForKey: @"url"]
+			    andRel: @"enclosure"
+			    andType: [[thirdlevelnode attributes]
+				       objectForKey: @"type"]
+			   ];
 			}
 		      else if ([[thirdlevelnode name]
 				 isEqualToString: @"encoded"])
@@ -733,7 +768,7 @@
   else if ([[root name] isEqualToString: @"feed"] &&
 	   [[root namespace] isEqualToString: URI_ATOM10]) // ATOM 1.0
     {
-      rssVersion = @"ATOM 1.0 (draft)";
+      rssVersion = @"ATOM 1.0";
       [self parseATOM10WithRootNode: root];
     }
   else if ([[root name] isEqualToString: @"feed"] &&

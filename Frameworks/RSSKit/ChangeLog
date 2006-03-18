@@ -1,3 +1,8 @@
+
+Mar-18-2006 Guenther Noack
+	* FeedFetching.* renamed to RSSFeed+Fetching.*
+	* Added RSS2.0 enclosure support (a.k.a. Podcasts).
+
 Mar-14-2006 Yen-Ju Chen <yjchen at gmail>
         * GNUstep.h: New
         Make it compile on mac and fix some compilation warnings..
