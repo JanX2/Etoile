@@ -23,9 +23,16 @@
   if ((_cell.is_bordered) &&
       (!_shows_border_only_while_mouse_inside || _mouse_inside))
   {
-	
-//	[THEME drawButton: cellFrame : NSZeroRect];
-	[THEME drawPopupButton: cellFrame inView: controlView];
+	switch ([self bezelStyle])
+	{
+		case NSRoundedBezelStyle:
+			[THEME drawPopupButton: cellFrame inView: controlView];
+			break;
+		default:
+			[THEME drawButton: cellFrame inView: controlView
+				style: [self bezelStyle] highlighted: _cell.is_highlighted];
+			break;
+	}
   }
   else if (_cell.is_highlighted)
   {
