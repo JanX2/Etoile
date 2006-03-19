@@ -1,3 +1,8 @@
+2006-03-19 Nicolas Roard <nicolas@roard.com>
+
+	* committed a patch in NSPopupMenu by matt rice
+	* removed GSWindowDecorationView from the makefile
+
 2006-01-18 Quentin Mathe <qmathe@club-internet.fr>
 
     * GNUmakefile: Removed superfluous license notice.

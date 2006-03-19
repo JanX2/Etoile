@@ -43,7 +43,6 @@ Camaelon_OBJC_FILES += \
 #
 Camaelon_OBJC_FILES += \
 		NSClipView.m \
-		GSWindowDecoratorView.m \
 		NSMenuView.m \
 		NSSplitView.m \
 		NSOutlineView.m \
@@ -51,7 +50,8 @@ Camaelon_OBJC_FILES += \
 		NSTabView.m \
 		NSTableView.m \
 		NSTableHeaderView.m \
-		GSTableCornerView.m \
+		GSTableCornerView.m 
+#		GSWindowDecoratorView.m \
 		#NSView.m 
 
 #
