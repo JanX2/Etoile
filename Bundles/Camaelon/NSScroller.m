@@ -320,23 +320,23 @@ static  NSButtonCell* knobCell;
           /* calc the slot Height */
           slotHeight = height - (_arrowsPosition == NSScrollerArrowsNone
                                  ?  0 : buttonsSize);
-		  NSLog (@"_knobProportion: %f", _knobProportion);
-		  NSLog (@"slotHeight: %f", slotHeight);
+	  //NSLog (@"_knobProportion: %f", _knobProportion);
+	 //NSLog (@"slotHeight: %f", slotHeight);
           knobHeight = _knobProportion * slotHeight;
      //     knobHeight = (float)floor(knobHeight);
           if (knobHeight < buttonsWidth)
             knobHeight = buttonsWidth;
 
-	  NSLog (@"_floatValue: %f", _floatValue);
-	  NSLog (@"slotHeight : %f", slotHeight);
- 	  NSLog (@"knobHeight : %f", knobHeight);
+//	  NSLog (@"_floatValue: %f", _floatValue);
+//	  NSLog (@"slotHeight : %f", slotHeight);
+ //	  NSLog (@"knobHeight : %f", knobHeight);
 
           /* calc knob's position */
           knobPosition = _floatValue * (slotHeight - knobHeight);
-	  NSLog (@"knobPosition: %f", knobPosition);
+//	  NSLog (@"knobPosition: %f", knobPosition);
     //      knobPosition = floor(knobPosition);
 
-	  NSLog (@"y : %f knobPosition: %f", y, knobPosition);
+//	  NSLog (@"y : %f knobPosition: %f", y, knobPosition);
 
           /* calc actual position */
           y += knobPosition + ((_arrowsPosition == NSScrollerArrowsMaxEnd
@@ -345,7 +345,7 @@ static  NSButtonCell* knobCell;
 
           height = knobHeight;
 	  width = buttonsWidth;
-		NSLog (@"NSScrollerKnob rect (%f,%f,%f,%f)", x, y, width, height);
+//		NSLog (@"NSScrollerKnob rect (%f,%f,%f,%f)", x, y, width, height);
           break;
         }
 
