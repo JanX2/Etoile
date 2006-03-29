@@ -12,8 +12,10 @@
 
 - (id) initWithTokenStream: (LCTokenStream *) stream
           stopWordsInArray: (NSArray *) sw;
+#if 0
 - (id) initWithTokenStream: (LCTokenStream *) stream
      stopWordsInDictionary: (NSDictionary *) st;
+#endif
 - (id) initWithTokenStream: (LCTokenStream *) stream 
             stopWordsInSet: (NSSet *) sw;
 

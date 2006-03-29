@@ -79,16 +79,6 @@ static int maxClauseCount = 1024;
 }
 
 - (void) addQuery: (LCQuery *) query
-         required: (BOOL) required
-	   prohibited: (BOOL) prohibited
-{
-	LCBooleanClause *clause = [[LCBooleanClause alloc] initWithQuery: query
-															required: required prohibited: prohibited];
-	[self addClause: clause];
-	DESTROY(clause);
-}
-
-- (void) addQuery: (LCQuery *) query
 			occur: (LCOccurType) occur
 {
 	LCBooleanClause *clause = [[LCBooleanClause alloc] initWithQuery: query occur: occur];

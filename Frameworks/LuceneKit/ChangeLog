@@ -1,3 +1,8 @@
+2006-03-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Update-to-date (2.0-pre).
+    Result: 50 classes, 133 methods, 651987 tests, 0 failed.
+
 2006-03-01 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Source/Search/LCRangeQuery.m:

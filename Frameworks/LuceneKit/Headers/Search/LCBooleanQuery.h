@@ -31,9 +31,6 @@
 
 - (LCSimilarity *) similarity: (LCSearcher *) searcher;
 - (void) addQuery: (LCQuery *) query
-         required: (BOOL) required
-	   prohibited: (BOOL) prohibited;
-- (void) addQuery: (LCQuery *) query
 			occur: (LCOccurType) occur;
 - (void) addClause: (LCBooleanClause *) clause;
 - (NSArray *) clauses;

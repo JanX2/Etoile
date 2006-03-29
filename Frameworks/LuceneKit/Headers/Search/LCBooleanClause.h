@@ -16,13 +16,8 @@ typedef enum _OCCUR_TYPE
 {
 	LCOccurType occur;
 	LCQuery *query; // remove for lucene 2.0
-	BOOL required;
-	BOOL prohibited;
 }
 
-- (id) initWithQuery: (LCQuery *) q
-			required: (BOOL) r
-	      prohibited: (BOOL) p;
 - (id) initWithQuery: (LCQuery *) q
 			   occur: (LCOccurType) o;
 - (LCOccurType) occur;
@@ -30,6 +25,7 @@ typedef enum _OCCUR_TYPE
 - (NSString *) occurString;
 - (LCQuery *) query;
 - (void) setQuery: (LCQuery *) q;
+
 - (BOOL) isProhibited;
 - (BOOL) isRequired;
 

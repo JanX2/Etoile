@@ -92,7 +92,7 @@
 		LCTerm *t = [[LCTerm alloc] initWithField: @"data"
 			text: [NSString stringWithFormat: @"%d", i]];
 		LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-		[q addQuery: tq required: NO prohibited: NO];
+		[q addQuery: tq occur: LCOccur_SHOULD];
 	}
 	[q setMinimumNumberShouldMatch: 2]; // match at least two of 4
 	[self verifyNrHits: q : 2];
@@ -104,25 +104,25 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"all" text: @"all"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"5"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"4"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"3"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
@@ -136,31 +136,31 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"all" text: @"all"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"6"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"5"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"4"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"3"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
@@ -174,25 +174,25 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"data" text: @"1"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"2"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"3"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: YES];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"4"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
@@ -206,31 +206,31 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"data" text: @"1"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"2"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"3"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: YES];
+	[q addQuery: tq occur: LCOccur_MUST_NOT];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"4"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"C"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: YES];
+	[q addQuery: tq occur: LCOccur_MUST_NOT];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
@@ -244,37 +244,37 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"data" text: @"6"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"5"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"4"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"3"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: YES];
+	[q addQuery: tq occur: LCOccur_MUST_NOT];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"2"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"1"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
@@ -288,43 +288,43 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"all" text: @"all"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"6"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"5"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"4"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"3"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: YES];
+	[q addQuery: tq occur: LCOccur_MUST_NOT];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"2"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"1"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
@@ -338,43 +338,43 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"data" text: @"6"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"5"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"4"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"3"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: YES];
+	[q addQuery: tq occur: LCOccur_MUST_NOT];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"2"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"1"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"C"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: YES];
+	[q addQuery: tq occur: LCOccur_MUST_NOT];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
@@ -388,49 +388,49 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"all" text: @"all"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"6"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 	t = [[LCTerm alloc] initWithField: @"data" text: @"5"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"4"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"3"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: YES];
+	[q addQuery: tq occur: LCOccur_MUST_NOT];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"2"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"1"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"C"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: YES];
+	[q addQuery: tq occur: LCOccur_MUST_NOT];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
@@ -444,49 +444,49 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"all" text: @"all"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"6"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 	t = [[LCTerm alloc] initWithField: @"data" text: @"5"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"4"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"3"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: YES];
+	[q addQuery: tq occur: LCOccur_MUST_NOT];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"2"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"1"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"C"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: YES];
+	[q addQuery: tq occur: LCOccur_MUST_NOT];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
@@ -500,25 +500,25 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"all" text: @"all"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"6"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"3"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"2"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
@@ -532,19 +532,19 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"all" text: @"all"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"3"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: NO prohibited: NO];
+	[q addQuery: tq occur: LCOccur_SHOULD];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"2"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
@@ -558,13 +558,13 @@
 
 	LCTerm *t = [[LCTerm alloc] initWithField: @"all" text: @"all"];
 	LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 
 	t = [[LCTerm alloc] initWithField: @"data" text: @"2"];
 	tq = [[LCTermQuery alloc] initWithTerm: t];
-	[q addQuery: tq required: YES prohibited: NO];
+	[q addQuery: tq occur: LCOccur_MUST];
 	AUTORELEASE(t);
 	AUTORELEASE(tq);
 

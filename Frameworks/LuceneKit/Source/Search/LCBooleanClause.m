@@ -11,32 +11,6 @@
 {
 	self = [super init];
 	occur = LCOccur_SHOULD;
-	required = NO;
-	prohibited = NO;
-	return self;
-}
-
-- (id) initWithQuery: (LCQuery *) q
-			required: (BOOL) r
-		  prohibited: (BOOL) p
-{
-	self = [self init];
-	ASSIGN(query, q);
-	required = r;
-	prohibited = p;
-	if (required) {
-		if (prohibited) {
-			occur = LCOccur_MUST_NOT;
-		} else {
-			occur = LCOccur_MUST;
-		}
-	} else {
-		if (prohibited) {
-			occur = LCOccur_MUST_NOT;
-		} else {
-			occur = LCOccur_SHOULD;
-		}
-	}
 	return self;
 }
 
@@ -46,7 +20,6 @@
 	self = [self init];
 	ASSIGN(query, q);
 	occur = o;
-	[self setFields: occur];
 	return self;
 }
 
@@ -54,7 +27,6 @@
 - (void) setOccur: (LCOccurType) o
 {
 	occur = o;
-	[self setFields: occur];
 }
 - (NSString *) occurString
 {
@@ -76,28 +48,8 @@
 	ASSIGN(query, q);
 }
 
-- (BOOL) isProhibited { return prohibited; }
-- (BOOL) isRequired { return required; }
-- (void) setFields: (LCOccurType) o
-{
-	switch(o) {
-		case LCOccur_MUST:
-			required = YES;
-			prohibited = NO;
-			break;
-		case LCOccur_SHOULD:
-			required = NO;
-			prohibited = NO;
-			break;
-		case LCOccur_MUST_NOT:
-			required = NO;
-			prohibited = YES;
-			break;
-		default:
-			NSLog(@"Unknown operator %@", [self occurString]);
-			return;
-	}
-}
+- (BOOL) isProhibited { return (LCOccur_MUST_NOT == occur); }
+- (BOOL) isRequired { return (LCOccur_MUST == occur); }
 
 - (BOOL) isEqual: (id) o
 {
@@ -105,8 +57,7 @@
 		return NO;
 	LCBooleanClause *other = (LCBooleanClause *) o;
 	if ([query isEqual: [other query]] &&
-		(required == [other isRequired]) &&
-		(prohibited == [other isProhibited]))
+                occur == [other occur])
 		return YES;
 	else
 		return NO;
@@ -114,7 +65,7 @@
 
 - (unsigned) hash
 {
-	return [query hash] ^ (required ? 1 : 0) ^ (prohibited ? 2 : 0);
+	return [query hash] ^ ((LCOccur_MUST == occur)? 1 : 0) ^ ((LCOccur_MUST_NOT == occur)? 2 : 0);
 }
 
 - (NSString *) description
