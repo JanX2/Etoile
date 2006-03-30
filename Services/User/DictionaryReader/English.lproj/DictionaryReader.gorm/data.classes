@@ -1,0 +1,19 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    AppController = {
+	Actions = (
+	    "searchAction:"
+	);
+	Outlets = (
+	    searchStringControl,
+	    searchResultView
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "searchAction:"
+	);
+	Super = NSObject;
+    };
+}
