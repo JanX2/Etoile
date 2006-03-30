@@ -17,6 +17,7 @@
  */
 
 #import "StreamLineReader.h"
+#import "GNUstep.h"
 
 @implementation StreamLineReader
 

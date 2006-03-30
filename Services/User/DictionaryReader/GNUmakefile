@@ -25,13 +25,17 @@ main.m \
 
 DictionaryReader_OBJCC_FILES = 
 DictionaryReader_C_FILES = 
-DictionaryReader_RESOURCE_FILES = Resources/dict.png \
+DictionaryReader_RESOURCE_FILES = Resources/dict.png 
 
-DictionaryReader_LANGUAGES = English \
+DictionaryReader_LANGUAGES = English 
 
-DictionaryReader_LOCALIZED_RESOURCE_FILES = DictionaryReader.gorm \
-
-DictionaryReader_MAIN_MODEL_FILE = DictionaryReader.gorm
+ifeq ($(FOUNDATION_LIB), apple)
+	DictionaryReader_LOCALIZED_RESOURCE_FILES = DictionaryReader.nib
+	DictionaryReader_MAIN_MODEL_FILE = DictionaryReader.nib
+else
+	DictionaryReader_LOCALIZED_RESOURCE_FILES = DictionaryReader.gorm 
+	DictionaryReader_MAIN_MODEL_FILE = DictionaryReader.gorm
+endif
 
 DictionaryReader_PRINCIPAL_CLASS = 
 

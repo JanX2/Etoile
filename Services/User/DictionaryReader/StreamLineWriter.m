@@ -17,6 +17,7 @@
  */
 
 #import "StreamLineWriter.h"
+#import "GNUstep.h"
 
 @implementation StreamLineWriter
 

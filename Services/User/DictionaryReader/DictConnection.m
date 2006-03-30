@@ -17,7 +17,7 @@
  */
 
 #import "DictConnection.h"
-
+#import "GNUstep.h"
 
 @implementation DictConnection
 

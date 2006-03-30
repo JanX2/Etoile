@@ -18,6 +18,7 @@
 
 #import "AppController.h"
 #import <AppKit/AppKit.h>
+#import "GNUstep.h"
 
 #import "DictConnection.h"
 
