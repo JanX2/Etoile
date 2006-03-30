@@ -42,6 +42,9 @@
       RELEASE(articles);
       articles = [[NSArray alloc] initWithArray: result];
       success = YES;
+      
+      [_delegate feed: self
+		 addedArticle: anArticle];
     }
   else
     {
@@ -103,6 +106,8 @@
       else
 	{
 	  [result addObject: art];
+	  [_delegate feed: self
+		     addedArticle: art];
 	}
     }
   
@@ -271,6 +276,17 @@
 - (enum RSSFeedStatus) status
 {
   return status;
+}
+
+
+-(void)setDelegate: (id<RSSFeedDelegate>)aDelegate
+{
+  ASSIGN(_delegate, aDelegate);
+}
+
+-(id<RSSFeedDelegate>)delegate
+{
+  return AUTORELEASE(RETAIN(_delegate));
 }
 
 

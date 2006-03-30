@@ -32,6 +32,11 @@ enum RSSFeedStatus
   };
 
 /**
+ * The protocol for RSSFeed delegate objects.
+ */
+@protocol RSSFeedDelegate;
+
+/**
  * Objects of this class represent a RSS/ATOM feed, which is basically
  * just a source for new articles. When creating a RSSFeed object, you'll
  * just have to provide it with the URL, where the feed can be downloaded
@@ -95,6 +100,8 @@ enum RSSFeedStatus
   
   enum RSSFeedStatus status;
   NSRecursiveLock*  lock;
+  
+  id<RSSFeedDelegate> _delegate;
 }
 
 
@@ -113,6 +120,12 @@ enum RSSFeedStatus
  */
 -(NSString*) description;
 
+// ----------------------------------------------------------------------
+// The RSSFeed's delegate
+// ----------------------------------------------------------------------
+
+-(void)setDelegate: (id<RSSFeedDelegate>)aDelegate;
+-(id<RSSFeedDelegate>)delegate;
 
 // ----------------------------------------------------------------------
 // NSCoding methods
@@ -286,5 +299,21 @@ enum RSSFeedStatus
  * @return YES on success, NO on failure.
  */
 -(BOOL) _submitArticles: (NSArray*) newArticles;
+
+@end
+
+
+/**
+ * The protocol for RSSFeed delegates.
+ * TODO: Maybe an informal protocol could be more appropriate here if
+ *       this protocol is about to grow.
+ */
+@protocol RSSFeedDelegate <NSObject>
+
+/**
+ * Inidcates that a new article has just been added to this feed.
+ */
+- (void) feed: (RSSFeed*) aFeed
+ addedArticle: (RSSArticle*) anArticle;
 
 @end

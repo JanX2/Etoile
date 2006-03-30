@@ -1,4 +1,10 @@
 
+Mar-30-2006 Guenther Noack
+	* RSSFeed: Added a delegate to the RSSFeed. (Completely untested)
+	  The delegate will be notified for every new article that has been
+	  added to the feed. This may be useful for more easy coding of
+	  small applications (e.g. AppCasting stuff)
+	
 Mar-18-2006 Guenther Noack
 	* FeedFetching.* renamed to RSSFeed+Fetching.*
 	* Added RSS2.0 enclosure support (a.k.a. Podcasts).
