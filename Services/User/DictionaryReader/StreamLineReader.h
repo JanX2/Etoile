@@ -47,6 +47,7 @@
 
 -(void)dealloc;
 
+-(NSString*)readLineAndRetry;
 -(NSString*)readLine;
 
 -(BOOL) getMoreCharacters;

@@ -66,6 +66,14 @@
   [super dealloc];
 }
 
+-(NSString*)readLineAndRetry
+{
+  NSString* result;
+  while (result == nil) {
+    result = [self readLine];
+  }
+  return result;
+}
 
 -(NSString*)readLine
 {

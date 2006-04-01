@@ -65,13 +65,16 @@
 
 -(void) sendClientString: (NSString*) clientName
 {
+  [self log: @"Sending client String:"];
+  [self log: clientName];
+  
   [writer writeLine:
 	    [NSString stringWithFormat: @"client \"%@\"\r\n",
 		      clientName]];
   
-  NSString* answer = [reader readLine];
+  NSString* answer = [reader readLineAndRetry];
   
-  if (![answer startsWith: @"220"]) {
+  if (![answer startsWith: @"250"]) {
     [self log: @"Answer not accepted?:"];
     [self log: answer];
   }
@@ -97,9 +100,7 @@
 		      aDict, aWord]];
   
   
-  NSString* answer;
-  
-  answer = [reader readLine];
+  NSString* answer = [reader readLineAndRetry];
   
   if ([answer startsWith: @"552"]) { // word not found
     [defWriter clearResults];
@@ -111,14 +112,14 @@
     [defWriter clearResults];
     BOOL lastDefinition = NO;
     do {
-      answer = [reader readLine];
+      answer = [reader readLineAndRetry];
       if ([answer startsWith: @"151"]) {
 	// TODO: Extract database information here!
 	[defWriter writeHeadline: answer];
 	
 	BOOL lastLine = NO;
 	do {
-	  answer = [reader readLine];
+	  answer = [reader readLineAndRetry];
 	  if ([answer isEqualToString: @"."]) {
 	    lastLine = YES;
 	  } else { // wow, actual text! ^^
@@ -165,7 +166,8 @@
   }
   
   // fetch server banner
-  NSString* banner = [reader readLine];
+  NSString* banner = [reader readLineAndRetry];
+  
   
   // interprete server banner
   if ([banner startsWith: @"220"]) {
