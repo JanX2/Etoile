@@ -68,7 +68,7 @@
 
 -(NSString*)readLineAndRetry
 {
-  NSString* result;
+  NSString* result = nil;
   while (result == nil) {
     result = [self readLine];
   }
