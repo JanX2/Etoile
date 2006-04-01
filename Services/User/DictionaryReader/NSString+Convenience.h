@@ -26,4 +26,9 @@
 
 -(BOOL)startsWith: (NSString*)aString;
 
+-(int)firstIndexOf: (unichar)aCharacter;
+
+-(int)firstIndexOf: (unichar)aCharacter
+	 fromIndex: (int) startIndex;
+
 @end

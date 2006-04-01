@@ -20,11 +20,58 @@
 
 @implementation NSString (Convenience)
 
+/**
+ * Returns YES if - and only if - the string starts
+ * with the string given by the aString parameter.
+ */
 -(BOOL)startsWith: (NSString*)aString
 {
   return ([self length] >= [aString length] &&
 	  [[self substringToIndex: [aString length]]
 	    isEqualToString: aString]) ? YES : NO;
+}
+
+/**
+ * Returns the first index in the string where the
+ * character given by the aCharacter parameter can
+ * be found. If there's no such character in the
+ * string, a value of -1 is returned.
+ */
+-(int)firstIndexOf: (unichar)aCharacter
+{
+  return [self firstIndexOf: aCharacter
+	       fromIndex: 0];
+}
+
+/**
+ * Searching from startIndex, this method returns the
+ * first index in the string where the character given
+ * by the aCharacter parameter can be found. If there's
+ * no such character in the string, a value of -1 is
+ * returned.
+ */
+-(int)firstIndexOf: (unichar)aCharacter
+	 fromIndex: (int) startIndex
+{
+  // -1 means 'not found' or -inside this method- 'not *yet* found'
+  int result = -1;
+  
+  // the length of this string
+  unsigned length = [self length];
+  
+  // the index where we are searching at the moment
+  unsigned index = startIndex;
+  
+  while (index < length && result == -1)
+    {
+      if ([self characterAtIndex: index] == aCharacter) {
+	result = index;
+      }
+      
+      index++;
+    }
+  
+  return result;
 }
 
 @end
