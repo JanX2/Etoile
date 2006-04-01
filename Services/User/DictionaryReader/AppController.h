@@ -29,7 +29,23 @@
 }
 
 -(id)init;
+
+// TextView delegate stuff
+-(BOOL) textView: (NSTextView*) textView
+   clickedOnLink: (id) link
+	 atIndex: (unsigned) charIndex;
+
+
+// Listen for actions...
+
+// ...from the GUI
 -(void)searchAction: (id)sender;
+
+// ...from the Links in the text field
+-(void)clickSearchNotification: (NSNotification*)aNotification;
+
+
+-(void)defineWord: (NSString*)aWord;
 
 @end
 
@@ -40,9 +56,11 @@
 -(void) writeBigHeadline: (NSString*) aString;
 -(void) writeHeadline: (NSString*) aString;
 -(void) writeLine: (NSString*) aString;
+-(void) writeString: (NSString*) aString
+	       link: (id) aClickable;
 
 // not part of the protocol
--(void) writeLine: (NSString*) aString
-       attributes: (NSDictionary*) attributes;
+-(void) writeString: (NSString*) aString
+	 attributes: (NSDictionary*) attributes;
 
 @end

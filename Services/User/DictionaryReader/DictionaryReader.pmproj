@@ -22,7 +22,8 @@
 		StreamLineWriter.m,
 		StreamLineReader.m,
 		DictConnection.m,
-		"NSString+Convenience.m"
+		"NSString+Convenience.m",
+		"NSString+Clickable.m"
 	    );
 	    Name = "Class Files";
 	},
@@ -32,7 +33,8 @@
 		StreamLineWriter.h,
 		StreamLineReader.h,
 		DictConnection.h,
-		"NSString+Convenience.h"
+		"NSString+Convenience.h",
+		"NSString+Clickable.h"
 	    );
 	    Name = "Header Files";
 	},

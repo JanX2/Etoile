@@ -19,6 +19,9 @@
 #import "DictConnection.h"
 #import "GNUstep.h"
 
+#import "NSString+Clickable.h"
+
+
 @implementation DictConnection
 
 -(id)initWithHost: (NSHost*) aHost

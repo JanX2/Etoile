@@ -21,21 +21,18 @@ StreamLineWriter.m \
 StreamLineReader.m \
 DictConnection.m \
 NSString+Convenience.m \
+NSString+Clickable.m \
 main.m \
 
 DictionaryReader_OBJCC_FILES = 
 DictionaryReader_C_FILES = 
-DictionaryReader_RESOURCE_FILES = Resources/dict.png 
+DictionaryReader_RESOURCE_FILES = Resources/dict.png \
 
-DictionaryReader_LANGUAGES = English 
+DictionaryReader_LANGUAGES = English \
 
-ifeq ($(FOUNDATION_LIB), apple)
-	DictionaryReader_LOCALIZED_RESOURCE_FILES = DictionaryReader.nib
-	DictionaryReader_MAIN_MODEL_FILE = DictionaryReader.nib
-else
-	DictionaryReader_LOCALIZED_RESOURCE_FILES = DictionaryReader.gorm 
-	DictionaryReader_MAIN_MODEL_FILE = DictionaryReader.gorm
-endif
+DictionaryReader_LOCALIZED_RESOURCE_FILES = DictionaryReader.gorm \
+
+DictionaryReader_MAIN_MODEL_FILE = DictionaryReader.gorm
 
 DictionaryReader_PRINCIPAL_CLASS = 
 

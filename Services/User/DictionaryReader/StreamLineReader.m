@@ -79,7 +79,7 @@
 {
   BOOL canProceed = YES;
   while([self canExtractNextLine] == NO && canProceed) {
-    NSLog(@"getting more, bufSize=%d bufPos=%d", strBufSize, strBufPos);
+    //NSLog(@"getting more, bufSize=%d bufPos=%d", strBufSize, strBufPos);
     canProceed = [self getMoreCharacters];
   }
   
@@ -91,8 +91,9 @@
 
 -(BOOL) getMoreCharacters
 {
-  NSLog(@"getMoreChars opened (stream status = %d)",
-	[inputStream streamStatus]);
+  //NSLog(@"getMoreChars opened (stream status = %d)",
+  //      [inputStream streamStatus]);
+  
   // cancel if nothing in queue
   if ([inputStream hasBytesAvailable] == NO) {
     NSLog(@"stream says nothing available (GNUstep impl b0rken?)");
@@ -113,12 +114,15 @@
   
   assert(strBufPos < strBufSize);
   
-  NSLog(@"getMoreChars: now reading from %@", inputStream);
+  //NSLog(@"getMoreChars: now reading from %@", inputStream);
+  
   // read bytes
   int numBytesRead = [inputStream read: (strBuf+strBufPos)
 				  maxLength: (strBufSize-strBufPos)];
   
-  NSLog(@"getMoreChars closed with %d bytes read", numBytesRead);
+  
+  //NSLog(@"getMoreChars closed with %d bytes read", numBytesRead);
+  
   if (numBytesRead > 0) {
     strBufPos += numBytesRead;
     return YES;
