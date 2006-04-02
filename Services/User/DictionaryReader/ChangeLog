@@ -2,6 +2,19 @@
 DictionaryReader Changelog
 ==========================
 
+Apr 2 2006 Guenther Noack
+	* Defaults now used for Dict server finding
+	  Applied the patch by Chris B. Vetter
+	
+Apr 2 2006 Guenther Noack
+	* Link ability added
+	
+Apr 1 2006 Guenther Noack
+	* Convenience methods added to NSString
+	* Notifications are now used for the coordination of
+	  search invocations from different 'sources' (GUI, links)
+	* Prepared for Links
+
 Mar 30 2006 Yen-Ju
     * Work on Cocoa.
 

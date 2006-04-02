@@ -21,6 +21,10 @@
 
 #import "NSString+Clickable.h"
 
+// easier logging
+#define LOG(format, args...) \
+	[self log: [NSString stringWithFormat: format, ##args]];
+
 
 @implementation DictConnection
 
@@ -49,7 +53,15 @@
 
 -(id)init
 {
-  return [self initWithHost: [NSHost hostWithName: @"dict.org"]];
+  NSString
+    *hostname = nil;
+  
+  hostname = [[NSUserDefaults standardUserDefaults] objectForKey: @"Dict Server"];
+  
+  if (hostname == nil)
+    hostname = @"dict.org";
+  
+  return [self initWithHost: [NSHost hostWithName: hostname]];
 }
 
 -(void)dealloc
@@ -68,8 +80,7 @@
 
 -(void) sendClientString: (NSString*) clientName
 {
-  [self log: @"Sending client String:"];
-  [self log: clientName];
+  LOG(@"Sending client String: %@", clientName);
   
   [writer writeLine:
 	    [NSString stringWithFormat: @"client \"%@\"\r\n",
@@ -78,8 +89,7 @@
   NSString* answer = [reader readLineAndRetry];
   
   if (![answer startsWith: @"250"]) {
-    [self log: @"Answer not accepted?:"];
-    [self log: answer];
+    LOG(@"Answer not accepted?: %@", answer);
   }
 }
 
@@ -174,7 +184,7 @@
   
   // interprete server banner
   if ([banner startsWith: @"220"]) {
-    [self log: banner];
+    LOG(@"Server banner: %@", banner);
   } else {
     if ([banner startsWith: @"530"]) {
       [self showError: @"Access to server denied."];
@@ -183,8 +193,7 @@
     } else if ([banner startsWith: @"421"]) {
       [self showError: @"Server shutting down at operator request."];
     } else {
-      [self log: @"Bad banner:"];
-      [self log: banner];
+      LOG(@"Bad banner: %@", banner);
     }
   } 
 }
@@ -219,3 +228,4 @@
 }
 
 @end
+
