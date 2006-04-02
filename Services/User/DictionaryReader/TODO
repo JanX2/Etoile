@@ -1,3 +1,10 @@
 
+* Extract the dictionary names correctly from the "code 150 messages"
+  that come back when retrieving word definitions. This is to parse:
+
+  The 'code 150 lines' is: "150 " + word + " " + word + " " + word
+  where each word is either a string without spaces or a string with
+  or without spaces that's surrounded with '"'.
+ 
 * Add a preferences dialog, so that users can set their dict server
   themselves.
