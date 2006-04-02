@@ -1,10 +1,30 @@
 
-* Extract the dictionary names correctly from the "code 150 messages"
+* Extract the dictionary names correctly from the "code 151 messages"
   that come back when retrieving word definitions. This is to parse:
 
-  The 'code 150 lines' is: "150 " + word + " " + word + " " + word
+  The 'code 151 lines' is: "151 " + word + " " + word + " " + word
   where each word is either a string without spaces or a string with
   or without spaces that's surrounded with '"'.
  
-* Add a preferences dialog, so that users can set their dict server
-  themselves.
+* Add a preferences dialog:
+	* Let users set their dict server.
+	* Let users choose their preferred fonts and colors.
+
+* Add a history:
+	* Here's an idea on how to do this:
+	  Create a history manager object. The HM receives Notifications
+	  for each issued query. The HM must also be able to handle more
+	  complicated search queries, not only words. (Use dictionaries?)
+	  Upon receiving such a notification, it stores the issued query
+	  in a stack if the HM didn't issue that query himself. Query types
+	  can also be realized via different notification names.
+	
+	  These notifications can be hooked easily into AppControllers
+	  keyword definition methods.
+
+	  When you click back, the HM gets a message and pops the last
+	  query from its stack. It then issues a special notification to
+	  issue a new keyword definition query.
+	
+	* Maybe it's better to wait for a OSX compatible history managing kit.
+
