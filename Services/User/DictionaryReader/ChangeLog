@@ -3,7 +3,8 @@ DictionaryReader Changelog
 ==========================
 
 Apr 2 2006 Guenther Noack
-	* Defaults now used for Dict server finding
+	* Defaults now used for Dict server finding:
+	  Use the "Dict Server" default for it.
 	  Applied the patch by Chris B. Vetter
 	
 Apr 2 2006 Guenther Noack
