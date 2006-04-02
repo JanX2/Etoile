@@ -59,8 +59,76 @@ NSDictionary* normalAttributes;
 }
 
 -(void) writeLine: (NSString*) aString {
-  [self writeString: [NSString stringWithFormat: @"%@\n", aString]
+  // the index of the next character to write
+  unsigned index = 0;
+  unsigned strLength = [aString length];
+  
+  // YES if and only if we are inside a link
+  BOOL inLink = NO;
+  
+  unsigned nextBracketIdx;
+  
+  while (index < strLength) {
+    if (inLink == YES) {
+      nextBracketIdx = [aString firstIndexOf: (unichar)'}'
+				fromIndex: index];
+      
+      if (nextBracketIdx == -1) {
+	// treat as if the next bracket started right after the
+	// last character in the string
+	nextBracketIdx = strLength;
+	
+	// FIXME: Handle multiline links, too!
+	NSLog(@"multiline link detected!");
+      }
+      
+      // crop text out of the input string
+      NSString* linkContent =
+	[aString substringWithRange: NSMakeRange(index, nextBracketIdx-index)];
+      
+      // next index is right after the found bracket
+      index = nextBracketIdx + 1;
+      
+      // we're not in the link any more
+      inLink = NO;
+      
+      // write link!
+      [self writeString: linkContent
+	    link: linkContent];
+      
+    } else { // inLink == FALSE
+      nextBracketIdx = [aString firstIndexOf: (unichar)'{'
+				fromIndex: index];
+      
+      if (nextBracketIdx == -1) {
+	// treat as if the next bracket was right after the
+	// last character in the string
+	nextBracketIdx = strLength;
+      }
+      
+      // crop text
+      NSString* text =
+	[aString substringWithRange: NSMakeRange(index, nextBracketIdx-index)];
+      
+      // proceed right after the bracket
+      index = nextBracketIdx + 1;
+      
+      // now we're in a link
+      inLink = YES;
+      
+      // write text!
+      [self writeString: text
+	    attributes: normalAttributes];
+      
+    } // end if(inLink)
+    
+  } // end while(index < strLength)
+  
+  
+  // after everything is done, write a newline!
+  [self writeString: @"\n"
 	attributes: normalAttributes];
+  
 }
 
 -(void) writeString: (NSString*) aString
@@ -75,6 +143,9 @@ NSDictionary* normalAttributes;
       [NSDictionary dictionaryWithObjectsAndKeys:
 		      // the link itself
 		      aClickable, NSLinkAttributeName,
+		    
+		    // font
+		    [NSFont userFixedPitchFontOfSize: 10], NSFontAttributeName,
 		    
 		    // underlining
 		    [NSNumber numberWithInt: NSSingleUnderlineStyle],
