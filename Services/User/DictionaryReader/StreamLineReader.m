@@ -60,9 +60,11 @@
 
 -(void)dealloc
 {
+  NSLog(@"%@ dealloc start", self);
   free(delim);
   free(strBuf);
   RELEASE(inputStream);
+  NSLog(@"%@ dealloc end", self);
   [super dealloc];
 }
 

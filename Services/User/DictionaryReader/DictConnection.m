@@ -128,7 +128,7 @@
       answer = [reader readLineAndRetry];
       if ([answer startsWith: @"151"]) {
 	// TODO: Extract database information here!
-	[defWriter writeHeadline: answer];
+	[defWriter writeHeadline: [answer substringFromIndex: 4]];
 	
 	BOOL lastLine = NO;
 	do {

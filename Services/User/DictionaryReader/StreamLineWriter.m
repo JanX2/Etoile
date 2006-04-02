@@ -33,8 +33,10 @@
 }
 
 -(void)dealloc {
-    RELEASE(outputStream);
-    [super dealloc];
+  NSLog(@"%@ dealloc start", self);
+  RELEASE(outputStream);
+  NSLog(@"%@ dealloc end", self);
+  [super dealloc];
 }
 
 // ---------------------------------------

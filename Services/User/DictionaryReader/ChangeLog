@@ -3,6 +3,11 @@ DictionaryReader Changelog
 ==========================
 
 Apr 2 2006 Guenther Noack
+	* More patches by Chris B. Vetter:
+	* Results scroll to top after each query
+	* Dictionary name extraction improved (numbers are cut)
+
+Apr 2 2006 Guenther Noack
 	* Defaults now used for Dict server finding:
 	  Use the "Dict Server" default for it.
 	  Applied the patch by Chris B. Vetter

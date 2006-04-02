@@ -46,6 +46,12 @@ NSDictionary* normalAttributes;
       attributes: attributes];
   [[searchResultView textStorage] appendAttributedString: attrStr];
   [attrStr release];
+  
+  // Tell the search result view to scroll to the top,
+  // select nothing and redraw
+  [searchResultView scrollRangeToVisible: NSMakeRange(0.0,0.0)];
+  [searchResultView setSelectedRange: NSMakeRange(0.0,0.0)];
+  [searchResultView setNeedsDisplay: YES];
 }
 
 -(void) writeBigHeadline: (NSString*) aString {
