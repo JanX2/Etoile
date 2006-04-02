@@ -2,6 +2,10 @@
 DictionaryReader Changelog
 ==========================
 
+Mar 30 2006 Yen-Ju
+	* Use GNUstep-make to compile on Cocoa.
+	* Make link work.
+
 Apr 2 2006 Guenther Noack
 	* More patches by Chris B. Vetter:
 	* Results scroll to top after each query

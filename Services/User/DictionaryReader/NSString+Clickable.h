@@ -19,7 +19,7 @@
 
 #import <Foundation/Foundation.h>
 
-NSString* WordClickedNotificationType;
+extern NSString* WordClickedNotificationType;
 
 @interface NSString (Clickable)
 
