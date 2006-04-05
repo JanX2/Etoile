@@ -1,7 +1,8 @@
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
-   session.h for the Openbox window manager
+   color.h for the Openbox window manager
    Copyright (c) 2003        Ben Jansens
+   Copyright (c) 2003        Derek Foreman
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -16,33 +17,35 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#ifndef __ob__session_h
-#define __ob__session_h
+#ifndef __color_h
+#define __color_h
 
+#include "render.h"
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <glib.h>
 
-struct _ObClient;
+struct _RrColor {
+    const RrInstance *inst;
 
-typedef struct _ObSessionState ObSessionState;
+    gint r;
+    gint g;
+    gint b;
+    gulong pixel;
+    GC gc;
 
-struct _ObSessionState {
-    gchar *id, *name, *class, *role;
-    guint stacking;
-    guint desktop;
-    gint x, y, w, h;
-    gboolean shaded, iconic, skip_pager, skip_taskbar, fullscreen;
-    gboolean above, below, max_horz, max_vert;
+    gint key;
+    gint refcount;
 
-    gboolean matched;
+#ifdef DEBUG
+    gint id;
+#endif
 };
 
-extern GList *session_saved_state;
+void RrColorAllocateGC(RrColor *in);
+XColor *RrPickColor(const RrInstance *inst, gint r, gint g, gint b);
+void RrReduceDepth(const RrInstance *inst, RrPixel32 *data, XImage *im);
+void RrIncreaseDepth(const RrInstance *inst, RrPixel32 *data, XImage *im);
 
-void session_startup(gint *argc, gchar ***argv);
-void session_shutdown();
-
-GList* session_state_find(struct _ObClient *c);
-gboolean session_state_cmp(ObSessionState *s, struct _ObClient *c);
-void session_state_free(ObSessionState *state);
-
-#endif
+#endif /* __color_h */

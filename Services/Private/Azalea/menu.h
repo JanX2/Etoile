@@ -1,131 +1,149 @@
-/*
- *  Window Maker window manager
- *
- *  Copyright (c) 1997-2003 Alfredo K. Kojima
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
- *  USA.
- */
+/* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
-#ifndef WMMENU_H_
-#define WMMENU_H_
+   menu.h for the Openbox window manager
+   Copyright (c) 2003        Ben Jansens
 
-#include "wcore.h"
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
 
-#define MI_DIAMOND	0
-#define MI_CHECK	1
-#define MI_MINIWINDOW	2
-#define MI_HIDDEN	3
-#define MI_SHADED	4
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-typedef struct WMenuEntry {
-    int order;
-    char *text;			       /* entry text */
-    char *rtext;		       /* text to show in the right part */
-    void (*callback)(struct WMenu *menu, struct WMenuEntry *entry);
-    void (*free_cdata)(void *data);    /* proc to be used to free clientdata */
-    void *clientdata;		       /* data to pass to callback */
-    int cascade;		       /* cascade menu index */
-    struct {
-        unsigned int enabled:1;	       /* entry is selectable */
-        unsigned int indicator:1;      /* left indicator */
-        unsigned int indicator_on:1;
-        unsigned int indicator_type:3;
-    } flags;
-} WMenuEntry;
+   See the COPYING file for a copy of the GNU General Public License.
+*/
 
+#ifndef __menu_h
+#define __menu_h
 
-typedef struct WMenu {
-    struct WMenu *parent;
-    struct WMenu *brother;
+#include "action.h"
+#include "window.h"
+#include "geom.h"
+#include "render/render.h"
+#include "parser/parse.h"
 
-    time_t timestamp;		       /* for the root menu. Last time
-                                        * menu was reloaded */
+#include <glib.h>
 
-    /* decorations */
-    struct WFrameWindow *frame;
-    WCoreWindow *menu;		       /* the window menu */
-    Pixmap menu_texture_data;
-    int frame_x, frame_y;	       /* position of the frame in root*/
+struct _ObClient;
+struct _ObMenuFrame;
+struct _ObMenuEntryFrame;
 
-    WMenuEntry **entries;	       /* array of entries. This is shared
-                                        * by the menu and it's "brother" */
-    short alloced_entries;	       /* number of entries allocated in
-                                        * entry array */
-    struct WMenu **cascades;	       /* array of cascades */
-    short cascade_no;
+typedef struct _ObMenu ObMenu;
+typedef struct _ObMenuEntry ObMenuEntry;
+typedef struct _ObNormalMenuEntry ObNormalMenuEntry;
+typedef struct _ObSubmenuMenuEntry ObSubmenuMenuEntry;
+typedef struct _ObSeparatorMenuEntry ObSeparatorMenuEntry;
 
-    short entry_no;		       /* number of entries */
-    short selected_entry;
+typedef void (*ObMenuUpdateFunc)(struct _ObMenuFrame *frame, gpointer data);
+typedef void (*ObMenuExecuteFunc)(struct _ObMenuEntry *entry,
+                                  guint state, gpointer data);
+typedef void (*ObMenuDestroyFunc)(struct _ObMenu *menu, gpointer data);
 
-    short entry_height;		       /* height of each entry */
+struct _ObMenu
+{
+    /* Name of the menu. Used in the showmenu action. */
+    gchar *name;
+    /* Displayed title */
+    gchar *title;
 
-    WMHandlerID timer;		       /* timer for the autoscroll */
+    /* Command to execute to rebuild the menu */
+    gchar *execute;
 
-    void *jump_back;                   /* jump back data */
+    /* ObMenuEntry list */
+    GList *entries;
 
-    /* to be called when destroyed */
-    void (*on_destroy)(struct WMenu *menu);
+    /* plugin data */
+    gpointer data;
 
-    struct {
-        unsigned int titled:1;
-        unsigned int realized:1;       /* whether the window was configured */
-        unsigned int app_menu:1;     /* this is a application or root menu */
-        unsigned int mapped:1;	       /* if menu is already mapped on screen*/
-        unsigned int buttoned:1;     /* if the close button is visible
-                                        * (menu was torn off) */
-        unsigned int open_to_left:1;   /* direction to open submenus */
-        unsigned int lowered:1;
+    ObMenuUpdateFunc update_func;
+    ObMenuExecuteFunc execute_func;
+    ObMenuDestroyFunc destroy_func;
 
-        unsigned int brother:1;	       /* if this is a copy of the menu*/
-        unsigned int jump_back_pending:1;
+    /* Pipe-menu parent, we get destroyed when it is destroyed */
+    ObMenu *pipe_creator;
+};
 
-        unsigned int inside_handler:1;
-    } flags;
-} WMenu;
+typedef enum
+{
+    OB_MENU_ENTRY_TYPE_NORMAL,
+    OB_MENU_ENTRY_TYPE_SUBMENU,
+    OB_MENU_ENTRY_TYPE_SEPARATOR
+} ObMenuEntryType;
 
+struct _ObNormalMenuEntry {
+    gchar *label;
 
-void wMenuPaint(WMenu *menu);
-void wMenuDestroy(WMenu *menu, int recurse);
-void wMenuRealize(WMenu *menu);
-WMenuEntry *wMenuInsertCascade(WMenu *menu, int index, char *text,
-                               WMenu *cascade);
-WMenuEntry *wMenuInsertCallback(WMenu *menu, int index, char *text,
-                                void (*callback)(WMenu *menu, WMenuEntry *entry),
-                                void *clientdata);
+    /* state */
+    gboolean enabled;
 
-void wMenuEntrySetCascade(WMenu *menu, WMenuEntry *entry, WMenu *cascade);
+    /* List of ObActions */
+    GSList *actions;
 
-#define wMenuAddCallback(menu, text, callback, data) \
-    wMenuInsertCallback(menu, -1, text, callback, data)
+    /* Icon shit */
+    gint icon_width;
+    gint icon_height;
+    RrPixel32 *icon_data;
 
-void wMenuRemoveItem(WMenu *menu, int index);
+    /* Mask icon */
+    RrPixmapMask *mask;
+    RrColor *mask_normal_color;
+    RrColor *mask_disabled_color;
+    RrColor *mask_selected_color;
+};
 
-WMenu *wMenuCreate(WScreen *screen, char *title, int main_menu);
-WMenu *wMenuCreateForApp(WScreen *screen, char *title, int main_menu);
-void wMenuMap(WMenu *menu);
-void wMenuMapAt(WMenu *menu, int x, int y, int keyboard);
-#define wMenuMapCopyAt(menu, x, y) wMenuMapAt((menu)->brother, (x), (y), False)
-void wMenuUnmap(WMenu *menu);
-void wMenuSetEnabled(WMenu *menu, int index, int enable);
-void wMenuMove(WMenu *menu, int x, int y, int submenus);
-void wMenuEntryRemoveCascade(WMenu *menu, WMenuEntry *entry);
-void wMenuScroll(WMenu *menu, XEvent *event);
-WMenu *wMenuUnderPointer(WScreen *screen);
-void wMenuSaveState(WScreen *scr);
-void wMenuRestoreState(WScreen *scr);
+struct _ObSubmenuMenuEntry {
+    gchar *name;
+    ObMenu *submenu;
+};
 
+struct _ObSeparatorMenuEntry {
+    gchar foo; /* placeholder */
+};
+
+struct _ObMenuEntry
+{
+    ObMenuEntryType type;
+    ObMenu *menu;
+
+    gint id;
+
+    union u {
+        ObNormalMenuEntry normal;
+        ObSubmenuMenuEntry submenu;
+        ObSeparatorMenuEntry separator;
+    } data;
+};
+
+void menu_startup(gboolean reconfig);
+void menu_shutdown(gboolean reconfig);
+
+ObMenu* menu_new(gchar *name, gchar *title, gpointer data);
+void menu_free(ObMenu *menu);
+
+/* Repopulate a pipe-menu by running its command */
+void menu_pipe_execute(ObMenu *self);
+
+void menu_show(gchar *name, gint x, gint y, struct _ObClient *client);
+
+void menu_set_update_func(ObMenu *menu, ObMenuUpdateFunc func);
+void menu_set_execute_func(ObMenu *menu, ObMenuExecuteFunc func);
+void menu_set_destroy_func(ObMenu *menu, ObMenuDestroyFunc func);
+
+/* functions for building menus */
+ObMenuEntry* menu_add_normal(ObMenu *menu, gint id, gchar *label,
+                             GSList *actions);
+ObMenuEntry* menu_add_submenu(ObMenu *menu, gint id, gchar *submenu);
+ObMenuEntry* menu_add_separator(ObMenu *menu, gint id);
+
+void menu_clear_entries(ObMenu *menu);
+void menu_entry_remove(ObMenuEntry *self);
+
+ObMenuEntry* menu_find_entry_id(ObMenu *self, gint id);
+
+/* fills in the submenus, for use when a menu is being shown */
+void menu_find_submenus(ObMenu *self);
 
 #endif

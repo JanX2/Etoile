@@ -1,91 +1,102 @@
-2006-02-20 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+2006-04-04 Yen-Ju Chen <yjchenx at gmail>
 
-    * monitor.m:
-    * dialog.m:
-    remove crashing panel. Automatically restart fallback window managers.
-    See README for possible implementation.
-    * WINGs/wbutton.c:
-    * WINGs/wpopupbutton.c:
-    * WINGs/wmenuitem.c:
-    was used in crashing panel and now removed.
-    * WMDefaults.m:
-    recover switch panel.
+	* Move focus into AZFocusManager.
+	* Use AZClient in transients.
+	* Support GNUstep window style.
+	* Merge into trunk (Hope it work).
 
-2006-02-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+2006-04-03 Yen-Ju Chen <yjchenx at gmail>
 
-    * window.m:
-    Prevent creating NSPanel before NSApp is running.
-    * dockedapp.m (removed):
-    * WMDockedAppPanel.m:
-    rewrite dockedapp into WMDockedAppPanel.
-    * WINGs/wtextfield.c:
-    * WINGs/winputmethod.c:
-    not used and removed.
-    * dialog.m:
-    use NSRunAlertPanel() for wMessage...().
-    * WINGs/wbox.c:
-    * WINGs/wpanel.c:
-    not used and removed.
-    * dialog.m:
-    use inputDialgWithTitle:message:text: instead of wInputDialog();
-    remove wIconChooser() because it is not used.
-    * README:
-    put some notes about crashing panel before really removing it.
-    * This is the last update today. :)
+	* move place and resist as category of AZClient.
+	* finish porting on popup, icon popup and pager popup.
+	* add stacking back in AZPopUp.
+	  It has no any effect, but potentially useful for stacking.
+	* port moveresize.
+	* use AZClient in focus.
+	* use protocol instead of callback for x event.
 
-2006-02-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+2006-04-02 Yen-Ju Chen <yjchenx at gmail>
 
-    * WMWindowInspector.h:
-    * WMWindowInspector.m:
-    * winspector.h (removed):
-    * winspector.m (removed):
-    rewrite winspector into WMWindowInspector.
-    * WINGs/configuration.c (removed):
-    * WindowMaker.h:
-    merge WPreferences and WINGsConfiguration.
-    * WINGs/wapplication.c:
-    removed.
-    * WMDockedAppPanel.h:
-    * WMDockedAppPanel.m:
-    new.
+	* revert back to r632.
+	* use AZClient for AZClientManager.
+	* use AZClient in moveresize.
+	* use AZClient in place.
+	* fix a weird bug in AZStacking.
+	* use AZClient in AZGroup.
+	* use AZClient in resist.
+	This should be a stable version.
+	* use AZClient in AZEventHandler and AZScreen.
+	* remove usued stacking handling in popup for porting later.
 
-2006-02-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+2006-04-01 Yen-Ju Chen <yjchenx at gmail>
 
-    * Initial import.
-    * WMWindowInspector.m: finish up interface.
+	* Move some functions of ObClient into AZClient.
+	* Merge ObClient into AZClient.
+	* Remove client.
+	* Use AZClient as mush as possible.
+	  If Azalea becomes unstable, use this version for debug.
 
-a26: * start to work on winspector.
-a25: * clean up icon chooser in dialog and remove unused files in WINGs.
-a24: * first implementation of icon chooser.
-a23: * remove unused code.
-a22: * save sessions into GNUstep user default.
-a21: * move window attributes into GNUstep user default.
-a20: * draw background in solid color.
-a19: * keep working on default.m.
-a18: * keep working on default.m.
-a17: * start to clean up defaults.m.
-a16: * text.h and text.m because menu is not editable anymore.
-       The only editable menu, workspace menu, is in WMaker menu.
-     * open WMaker menu with right mouse click.
-     * start working on window inspector.
-a15: * remove switch_menu.
-a14: * move switchmenu into WMaker menu.
-a13: * remove most of unused code.
-a12: * add execCommand() from rootmenu.
-     * remove workspace menu, usermenu (not used mostly) and most of rootmenu 
-       in favor of WMaker menu.
-     * remove WDRootMenu.
-     * remove menu editing.
-a11: * add session, windows, workspace commands from rootmenu.
-a10: * rewrite wInputDialog() and wExitDialog() to use GNUstep.
-a9: * rewrite wShowGNUstepPanel(), wShowLegalPanel(),
-      and wShowInfoPanel() to use GNUstep.
-    * move COPYRIGHT_TEXT to WMakerInfo.plist.
-    * remove hidden sillyness in wShowInfoPanel().
-a8: * combine wapplication into WMApplication based on WMApp.
-a7: * remove unused files in WINGs.
-a6: * compile WINGs as subproject so that it can be minimized. (TODO 3).
-a5: * create an autorelease pool in main() instead of real_main().
-    * move fallbackWMs from WPreferences to WMDefatuls.
-a4: * remove focus_mode. Always use click-focus for GNUstep applications.
-a3: * remove _(). (TODO 1).
+2006-03-31 Yen-Ju Chen <yjchenx at gmail>
+
+	* Move some members and functions of ObClient into AZClient.
+
+2006-03-30 Yen-Ju Chen <yjchenx at gmail>
+
+	* Move some members of ObClient into AZClient.
+
+2006-03-29 Yen-Ju Chen <yjchenx at gmail>
+
+	* Move some members of ObClient into AZClient.
+
+2006-03-28 Yen-Ju Chen <yjchenx at gmail>
+
+	* Finish up AZFrame for now.
+	* Move ObClientIcon into AZClientIcon.
+	* Start working on ObClient.
+
+2006-03-27 Yen-Ju Chen <yjchenx at gmail>
+
+	* use AZFrame for frame and framerender.
+	* port framerender as render category of AZFrame.
+	* move some of the members of ObFrame into AZFrame.
+	* Simplified GNUmakefile a little.
+
+2006-03-26 Yen-Ju Chen <yjchenx at gmail>
+
+	* Merge stacking into AZStacking.
+	* Add an alternative way of using run loop.
+	* Start merging frame into AZFrame.
+	  Note: There is a potential bug that maximizing or closing 
+	  triggers crash.
+	  It should be fixed, but it is not easy to reproduce.
+	  If it happends again, use this version to track it down
+	  before any furthur porting.
+
+2006-03-24 Yen-Ju Chen <yjchenx at gmail>
+
+	* Merge dock into AZDock and AZDockApp.
+	* Merge group into AZGroup.
+	* Remove unused code in stacking.
+
+2006-03-23 Yen-Ju Chen <yjchenx at gmail>
+	
+	* Merge event into AZEventHandler.
+	* Merge debug and xerror into AZDebug.
+
+2006-03-22 Yen-Ju Chen <yjchenx at gmail>
+
+	* Merge screen into AZScreen.
+	* Merge startupnotifiction into AZStartupHandler.
+
+2006-03-21 Yen-Ju Chen <yjchenx at gmail>
+
+	* Merge mainloop into AZMainLoop
+
+2006-03-20 Yen-Ju Chen <yjchenx at gmail>
+
+	* Remove gettext.h
+	* Try to convert mainloop into AZMainLoop.
+
+2006-03-20 Yen-Ju Chen <yjchenx at gmail>
+	* Initial Import.
+	* Work with NSApplication runloop.

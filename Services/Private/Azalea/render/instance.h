@@ -1,6 +1,6 @@
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
-   session.h for the Openbox window manager
+   instance.h for the Openbox window manager
    Copyright (c) 2003        Ben Jansens
 
    This program is free software; you can redistribute it and/or modify
@@ -16,33 +16,40 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#ifndef __ob__session_h
-#define __ob__session_h
+#ifndef __render_instance_h
+#define __render_instance_h
 
+#include <X11/Xlib.h>
 #include <glib.h>
 
-struct _ObClient;
+struct _RrInstance {
+    Display *display;
+    gint screen;
 
-typedef struct _ObSessionState ObSessionState;
+    Visual *visual;
+    gint depth;
+    Colormap colormap;
 
-struct _ObSessionState {
-    gchar *id, *name, *class, *role;
-    guint stacking;
-    guint desktop;
-    gint x, y, w, h;
-    gboolean shaded, iconic, skip_pager, skip_taskbar, fullscreen;
-    gboolean above, below, max_horz, max_vert;
+    gint red_offset;
+    gint green_offset;
+    gint blue_offset;
 
-    gboolean matched;
+    gint red_shift;
+    gint green_shift;
+    gint blue_shift;
+
+    gint red_mask;
+    gint green_mask;
+    gint blue_mask;
+
+    gint pseudo_bpc;
+    XColor *pseudo_colors;
+
+    GHashTable *color_hash;
 };
 
-extern GList *session_saved_state;
-
-void session_startup(gint *argc, gchar ***argv);
-void session_shutdown();
-
-GList* session_state_find(struct _ObClient *c);
-gboolean session_state_cmp(ObSessionState *s, struct _ObClient *c);
-void session_state_free(ObSessionState *state);
+guint       RrPseudoBPC    (const RrInstance *inst);
+XColor*     RrPseudoColors (const RrInstance *inst);
+GHashTable* RrColorHash    (const RrInstance *inst);
 
 #endif

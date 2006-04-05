@@ -1,6 +1,6 @@
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
-   session.h for the Openbox window manager
+   translate.h for the Openbox window manager
    Copyright (c) 2003        Ben Jansens
 
    This program is free software; you can redistribute it and/or modify
@@ -16,33 +16,12 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#ifndef __ob__session_h
-#define __ob__session_h
+#ifndef ob__translate_h
+#define ob__translate_h
 
 #include <glib.h>
 
-struct _ObClient;
-
-typedef struct _ObSessionState ObSessionState;
-
-struct _ObSessionState {
-    gchar *id, *name, *class, *role;
-    guint stacking;
-    guint desktop;
-    gint x, y, w, h;
-    gboolean shaded, iconic, skip_pager, skip_taskbar, fullscreen;
-    gboolean above, below, max_horz, max_vert;
-
-    gboolean matched;
-};
-
-extern GList *session_saved_state;
-
-void session_startup(gint *argc, gchar ***argv);
-void session_shutdown();
-
-GList* session_state_find(struct _ObClient *c);
-gboolean session_state_cmp(ObSessionState *s, struct _ObClient *c);
-void session_state_free(ObSessionState *state);
+gboolean translate_button(const gchar *str, guint *state, guint *keycode);
+gboolean translate_key(const gchar *str, guint *state, guint *keycode);
 
 #endif

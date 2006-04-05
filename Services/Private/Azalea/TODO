@@ -1,0 +1,31 @@
+1. remove glib
+2. remove USE_PANGO in render/
+3. it might be tricky to support arbitrary window levels.
+4. decide which way to use run loop (See ALTERNATIVE_RUN_LOOP in openbox.m).
+
+GNUstep window protocol
+
+1. XSizeHints - XSetWMNormalHints() - window
+2. XWMHints - XSetWMHints() - APP_ROOT - window
+3. MwmHints ("_MOTIF_WM_HINTS") - XChangeProperty(), window
+4. XClassHint - XSetClassHint() - APP_ROOT, window
+5. - XSetWMName() - APP_ROOT, window
+6. - XSetWMIconName() - APP_ROOT, window
+7. - XSetCommand() - APP_ROOT
+8. - XSetWMClientMachine() - APP_ROOT
+9. GNUstepWMAttributes ("_GNUSTEP_WM_ATTR") - XChangeProperty() - APP_ROOT, window
+10. ("_NET_WM_PID") - XChangeProperty() - APP_ROOT.
+11. ("_NET_WM_ICON") - XChangeProperty() - window
+12. - XSetWindowBackground() - window
+
+
+Bugs
+
+1. While changing dock settings in obconf. Azalea can freeze completely.
+   It is probably related to the USR2 signal (reconfigure)
+   sending to Azalea from obconf.
+   And Azalea only updated when mouse is out of obconfig,
+   which suggests an issue of run loop from NSApplication with USR2.
+   (Fixed by calling AZMainLoop to run once before [NSApp run]. 
+    It is a kind of hack.)
+

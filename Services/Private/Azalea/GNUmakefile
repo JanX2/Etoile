@@ -1,95 +1,75 @@
 
 include $(GNUSTEP_MAKEFILES)/common.make
-GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
+#GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 
-PACKAGE_NAME = Azalea
-VERSION = 0.1
+APP_NAME = Azalea
 
-# The application to be compiled
-APP_NAME = Azalea 
-Azalea_PRINCIPAL_CLASS = WMApplication
-Azalea_APPLICATION_ICON = Desktop.tiff
-Azalea_SUBPROJECTS = WINGs
-
-Azalea_HAS_RESOURCE_BUNDLE = yes
-
-Azalea_RESOURCE_FILES = \
-    Resources/Images/* 
-
-Azalea_LANGUAGES = 
+Azalea_SUBPROJECTS = \
+	parser \
+	render
 
 Azalea_OBJC_FILES = \
-	main.m \
-	WMApplication.m \
-	WMApplication+Event.m \
-	WMDefaults.m \
-	WMDialogController.m \
-	WMWindowInspector.m \
-	WMDockedAppPanel.m \
-	actions.m \
-	appicon.m \
-	application.m \
-	appmenu.m \
-	balloon.m \
-	client.m \
-	colormap.m \
-	cycling.m \
-	defaults.m \
-	dock.m \
-	event.m \
-	framewin.m \
-	geomview.m \
-	icon.m \
+	AZApplication.m \
+	AZClient.m \
+	AZClientManager.m \
+	AZClient+GNUstep.m \
+	AZClient+Place.m \
+	AZClient+Resist.m \
+	AZDebug.m \
+	AZDock.m \
+	AZDockApp.m \
+	AZEventHandler.m \
+	AZFocusManager.m \
+	AZFrame.m \
+	AZFrame+Render.m \
+	AZGroup.m \
+	AZMainLoop.m \
+	AZMoveResizeHandler.m \
+	AZPopUp.m \
+	AZScreen.m \
+	AZStacking.m \
+	AZStartupHandler.m \
+	action.m \
+	client_list_menu.m \
+	client_menu.m \
+	config.m \
+	extensions.m \
+	grab.m \
+	keyboard.m \
+	keytree.m \
 	menu.m \
-	misc.m \
-	monitor.m \
-	motif.m \
-	moveres.m \
-	openlook.m \
-	pixmap.m \
-	placement.m \
-	properties.m \
-	resources.m \
-	rootmenu.m \
-	screen.m \
+	menuframe.m \
+	mouse.m \
+	openbox.m \
+	prop.m \
 	session.m \
-	shutdown.m \
-	stacking.m \
-	startup.m \
-	superfluous.m \
-	switchmenu.m \
-	switchpanel.m \
-	texture.m \
-	xdnd.m \
-	xinerama.m \
-	xmodifier.m \
-	xutil.m \
-	wcore.m \
-	wdefaults.m \
-	wevent.m \
-	window.m \
-	wmspec.m \
-	winmenu.m \
-	workspace.m \
-	wsound.m 
+	translate.m \
+	window.m 
 
-ADDITIONAL_INCLUDE_DIRS += -I/usr/local/include -I/usr/X11R6/include
-ADDITIONAL_INCLUDE_DIRS += `freetype-config --cflags` -DRESOURCE_PATH=\"./\"
+#ADDITIONAL_=-DDEBUG=1
 
-ADDITIONAL_LIB_DIRS += -L/usr/local/lib -L/usr/X11R6/lib
+ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags glib-2.0` `pkg-config --cflags freetype2` `pkg-config --cflags libxml-2.0` `pkg-config --cflags fontconfig` -I..
 
-ADDITIONAL_GUI_LIBS += -ltiff -lXpm -lpng -lz -ljpeg -lungif -lXft
+ADDITIONAL_INCLUDE_DIRS += -DPACKAGE_VERSION=\"3.3-rc2\" -DPACKAGE_BUGREPORT=\"http://bugzilla.icculus.org\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_CTYPE_H=1 -DHAVE_FCNTL_H=1 -DHAVE_LOCALE_H=1 -DHAVE_SIGNAL_H=1 -DHAVE_STRING_H=1 -DHAVE_STDIO_H=1 -DHAVE_STDLIB_H=1 -DHAVE_UNISTD_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_SELECT_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_WAIT_H=1 
 
-ADDITIONAL_GUI_LIBS += -lwraster
-ADDITIONAL_GUI_LIBS += `freetype-config --libs`
-ADDITIONAL_GUI_LIBS += -lXext -lX11 -ldl
+ADDITIONAL_LIB_DIRS += `pkg-config --libs glib-2.0` `pkg-config --libs freetype2` `pkg-config --libs libxml-2.0` `pkg-config --libs fontconfig` 
 
--include GNUmakefile.preamble
+# Xwindow
+ADDITIONAL_INCLUDE_DIRS += -DHAVE_LIBX11=1 -DXKB=1 -DXRANDR=1 -DSHAPE=1
+ADDITIONAL_LIB_DIRS += -lXext -lX11 -lXrender -lXrandr -lXft
 
--include GNUmakefile.local
+# Session Manager
+ADDITIONAL_INCLUDE_DIRS += -DHAVE_X11_SM_SMLIB_H=1 -DUSE_SM=1
+ADDITIONAL_LIB_DIRS += -lSM -lICE
+
+# Xinerama
+ADDITIONAL_INCLUDE_DIRS += -DXINERAMA=1 
+ADDITIONAL_LIB_DIRS += -lXinerama
+
+# Startup Notification
+ADDITIONAL_INCLUDE_DIRS += -DUSE_LIBSN=1 `pkg-config --cflags libstartup-notification-1.0`
+ADDITIONAL_LIB_DIRS += `pkg-config --libs libstartup-notification-1.0`
 
 include $(GNUSTEP_MAKEFILES)/application.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
-
--include GNUmakefile.postamble
 
