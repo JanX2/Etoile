@@ -3037,6 +3037,14 @@ AZClient *AZUnderPointer()
     else if (below) l = OB_STACKING_LAYER_BELOW;
     else l = OB_STACKING_LAYER_NORMAL;
 
+    if ([self isGNUstep])
+    {
+      if (gnustep_attr.flags & GSWindowLevelAttr) {
+        /* use window level */
+	l = gnustep_attr.window_level + OB_STACKING_LAYER_NORMAL;
+      }
+    }
+
     return l;
 }
 

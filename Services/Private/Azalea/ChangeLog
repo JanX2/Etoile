@@ -1,8 +1,9 @@
 2006-04-05 Yen-Ju Chen <yjchenx at gmail>
 
-	* Try to implement artitrary window level.
+	* Try to implement arbitrary window level.
 	* Improve GNUstep window style.
 	{Hope it is a stable version).
+	* Finish arbitrary window level (sort of).
 
 2006-04-04 Yen-Ju Chen <yjchenx at gmail>
 
