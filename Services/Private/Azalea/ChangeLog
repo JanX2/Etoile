@@ -4,6 +4,7 @@
 	* Use AZClient in transients.
 	* Support GNUstep window style.
 	* Merge into trunk (Hope it work).
+	* Add README.
 
 2006-04-03 Yen-Ju Chen <yjchenx at gmail>
 
