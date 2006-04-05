@@ -8,17 +8,23 @@
 
 - (BOOL) isGNUstep
 {
+#if 1
+  if (class && (strcmp(class, "GNUstep") == 0))
+    return YES;
+  else
+    return NO;
+#else
   unsigned int data = 0;
   if (PROP_GET32(window, gnustep_wm_attr, gnustep_wm_attr, &data))
     return YES;
   return NO;
+#endif
 }
 
 - (void) updateGNUstepWMAttributes
 {
   unsigned long *data;
   unsigned int num;
-  GNUstepWMAttributes attr;
   if (!prop_get_array32(window, prop_atoms.gnustep_wm_attr,
 		  prop_atoms.gnustep_wm_attr, (unsigned int **)&data, &num))
     return;
@@ -27,17 +33,19 @@
 	    NSLog(@"Internal Error: wrong GNUstep attributes");
 	    return;
   }
-  attr.flags = data[0];
-  attr.window_style = data[1];
-  attr.window_level = data[2];
-  attr.reserved = data[3];
-  attr.miniaturize_pixmap = data[4];
-  attr.close_pixmap = data[5];
-  attr.miniaturize_mask = data[6];
-  attr.close_mask = data[7];
-  attr.extra_flags = data[8];
+  gnustep_attr.flags = data[0];
+  gnustep_attr.window_style = data[1];
+  gnustep_attr.window_level = data[2];
+  gnustep_attr.reserved = data[3];
+  gnustep_attr.miniaturize_pixmap = data[4];
+  gnustep_attr.close_pixmap = data[5];
+  gnustep_attr.miniaturize_mask = data[6];
+  gnustep_attr.close_mask = data[7];
+  gnustep_attr.extra_flags = data[8];
 
   XFree(data);
+
+  return;
 
 #if 0
   NSMutableString *ms = [[NSMutableString alloc] init];
@@ -54,29 +62,29 @@
 #endif
 
   /* Override the decoration */
-  if (attr.flags & GSWindowStyleAttr) {
+  if (gnustep_attr.flags & GSWindowStyleAttr) {
 
       functions = 0;
       decorations = OB_FRAME_DECOR_ICON;
 
-      if (!(attr.window_style & NSBorderlessWindowMask)) {
+      if (!(gnustep_attr.window_style & NSBorderlessWindowMask)) {
 	decorations |= OB_FRAME_DECOR_BORDER;
       }
-      if (attr.window_style & NSTitledWindowMask) {
+      if (gnustep_attr.window_style & NSTitledWindowMask) {
 	decorations |= OB_FRAME_DECOR_TITLEBAR |
 		       OB_FRAME_DECOR_SHADE;
 	functions |= OB_CLIENT_FUNC_MOVE |
 	       	     OB_CLIENT_FUNC_SHADE;
       }
-      if (attr.window_style & NSClosableWindowMask) {
+      if (gnustep_attr.window_style & NSClosableWindowMask) {
 	decorations |= OB_FRAME_DECOR_CLOSE;
 	functions |= OB_CLIENT_FUNC_CLOSE;
       }
-      if (attr.window_style & NSMiniaturizableWindowMask) {
+      if (gnustep_attr.window_style & NSMiniaturizableWindowMask) {
 	decorations |= OB_FRAME_DECOR_ICONIFY;
 	functions |= OB_CLIENT_FUNC_ICONIFY;
       }
-      if (attr.window_style & NSResizableWindowMask) {
+      if (gnustep_attr.window_style & NSResizableWindowMask) {
 	decorations |= OB_FRAME_DECOR_HANDLE |
 		       OB_FRAME_DECOR_GRIPS |
 		       OB_FRAME_DECOR_MAXIMIZE;
@@ -84,7 +92,7 @@
 		     OB_CLIENT_FUNC_MAXIMIZE;
       }
 
-#if 0 /* For some reason, decorations is correct without reconfigure */
+#if 0
       [self changeAllowedActions];
 
       if (frame) {

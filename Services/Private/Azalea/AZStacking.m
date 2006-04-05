@@ -208,6 +208,51 @@ static AZStacking *sharedInstance;
 
 - (void) doRaise: (GList *) wins
 {
+#if 1
+    NSMutableDictionary *dict = AUTORELEASE([[NSMutableDictionary alloc] init]);
+    NSMutableArray *array = nil;
+    int i, icount = g_list_length(wins);
+    for (i = 0; i < icount; i++) {
+      ObStackingLayer l;
+      l = window_layer(g_list_nth_data(wins, i));
+
+      array = [dict objectForKey: [NSNumber numberWithInt: l]];
+      if (array == nil) {
+        array = AUTORELEASE([[NSMutableArray alloc] init]);
+      }
+      [array addObject: [NSValue valueWithPointer: g_list_nth_data(wins, i)]];
+      [dict setObject: array forKey: [NSNumber numberWithInt: l]];
+    }
+
+    NSArray *allLayers = [dict allKeys];
+    NSArray *sorted = [allLayers sortedArrayUsingSelector: @selector(compare:)];
+
+    GList *it = stacking_list;
+    GList *layer = NULL;
+    int j, jcount = [sorted count];
+    int k, kcount = 0;
+    for (j = jcount - 1; j > -1; j--) {
+      NSArray *a = [dict objectForKey: [sorted objectAtIndex: j]];
+      kcount = [a count];
+      if (kcount) {
+	/* build layer */
+	for (k = 0; k < kcount; k++) {
+          layer = g_list_append(layer, [[a objectAtIndex: k] pointerValue]);
+	}
+
+	for (; it; it = g_list_next(it)) {
+          /* look for the top of the layer */
+	  if (window_layer(it->data) <= (ObStackingLayer)[[sorted objectAtIndex: j] intValue])
+	  {
+	    break;
+	  }
+	}
+	[self doRestack: layer before: it];
+	g_list_free(layer);
+	layer = NULL;
+      }
+    }
+#else
     GList *it;
     GList *layer[OB_NUM_STACKING_LAYERS] = {NULL};
     gint i;
@@ -231,10 +276,56 @@ static AZStacking *sharedInstance;
             g_list_free(layer[i]);
         }
     }
+#endif
 }
 
 - (void) doLower: (GList *) wins
 {
+#if 1
+    NSMutableDictionary *dict = AUTORELEASE([[NSMutableDictionary alloc] init]);
+    NSMutableArray *array = nil;
+    int i, icount = g_list_length(wins);
+    for (i = 0; i < icount; i++) {
+      ObStackingLayer l;
+      l = window_layer(g_list_nth_data(wins, i));
+
+      array = [dict objectForKey: [NSNumber numberWithInt: l]];
+      if (array == nil) {
+        array = AUTORELEASE([[NSMutableArray alloc] init]);
+      }
+      [array addObject: [NSValue valueWithPointer: g_list_nth_data(wins, i)]];
+      [dict setObject: array forKey: [NSNumber numberWithInt: l]];
+    }
+
+    NSArray *allLayers = [dict allKeys];
+    NSArray *sorted = [allLayers sortedArrayUsingSelector: @selector(compare:)];
+
+    GList *it = stacking_list;
+    GList *layer = NULL;
+    int j, jcount = [sorted count];
+    int k, kcount = 0;
+    for (j = jcount - 1; j > -1; j--) {
+      NSArray *a = [dict objectForKey: [sorted objectAtIndex: j]];
+      kcount = [a count];
+      if (kcount) {
+	/* build layer */
+	for (k = 0; k < kcount; k++) {
+          layer = g_list_append(layer, [[a objectAtIndex: k] pointerValue]);
+	}
+
+	for (; it; it = g_list_next(it)) {
+          /* look for the top of the layer */
+	  if (window_layer(it->data) < (ObStackingLayer)[[sorted objectAtIndex: j] intValue])
+	  {
+	    break;
+	  }
+	}
+	[self doRestack: layer before: it];
+	g_list_free(layer);
+	layer = NULL;
+      }
+    }
+#else
     GList *it;
     GList *layer[OB_NUM_STACKING_LAYERS] = {NULL};
     gint i;
@@ -258,6 +349,7 @@ static AZStacking *sharedInstance;
             g_list_free(layer[i]);
         }
     }
+#endif
 }
 
 - (GList *)pickWindowsFrom: (ObClient *) top to: (ObClient *) selected 

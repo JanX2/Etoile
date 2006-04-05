@@ -291,10 +291,6 @@ static AZClientManager *sharedInstance;
     [self setList];
 
     AZDebug("Managed window 0x%lx (%s)\n", window, [client->_self class]);
-
-    if ([client->_self isGNUstep]) {
-      [client->_self updateGNUstepWMAttributes];
-    }
 }
 
 - (void) unmanageAll

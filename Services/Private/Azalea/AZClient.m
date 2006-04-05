@@ -18,6 +18,7 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
+#import <AppKit/AppKit.h>
 #import "AZClient.h"
 #import "AZClient+GNUstep.h"
 #import "AZScreen.h"
@@ -1603,6 +1604,38 @@ no_number:
         }
     }
 
+    if ([self isGNUstep]) {
+        /* Override the decoration */
+	    decorations = functions = 0;
+	if (gnustep_attr.flags & GSWindowStyleAttr) {
+	  if (gnustep_attr.window_style & NSBorderlessWindowMask) {
+	  } else {
+	    decorations |= OB_FRAME_DECOR_BORDER;
+	  }
+	  if (gnustep_attr.window_style & NSTitledWindowMask) {
+	    decorations |= OB_FRAME_DECOR_TITLEBAR |
+	                   OB_FRAME_DECOR_SHADE;
+	    functions |= OB_CLIENT_FUNC_MOVE |
+	                 OB_CLIENT_FUNC_SHADE;
+	  }
+	  if (gnustep_attr.window_style & NSClosableWindowMask) {
+	    decorations |= OB_FRAME_DECOR_CLOSE;
+	      functions |= OB_CLIENT_FUNC_CLOSE;
+	  }
+	  if (gnustep_attr.window_style & NSMiniaturizableWindowMask) {
+	    decorations |= OB_FRAME_DECOR_ICONIFY;
+	    functions |= OB_CLIENT_FUNC_ICONIFY;
+	  }
+	  if (gnustep_attr.window_style & NSResizableWindowMask) {
+	    decorations |= OB_FRAME_DECOR_HANDLE |
+	                   OB_FRAME_DECOR_GRIPS |
+	                   OB_FRAME_DECOR_MAXIMIZE;
+	    functions |= OB_CLIENT_FUNC_RESIZE |
+	                 OB_CLIENT_FUNC_MAXIMIZE;
+	 }
+	}
+    }
+
     if (!(functions & OB_CLIENT_FUNC_SHADE))
         decorations &= ~OB_FRAME_DECOR_SHADE;
     if (!(functions & OB_CLIENT_FUNC_ICONIFY))
@@ -2303,12 +2336,16 @@ no_number:
     [self updateNormalHints]; /* this may override the attribute
                                          gravity */
 
+    /* Need class information to tell whether it is a GNUstpe window */
+    [self updateClass];
+    if ([self isGNUstep])
+      [self updateGNUstepWMAttributes];
+
     /* got the type, the mwmhints, the protocols, and the normal hints
        (min/max sizes), so we're ready to set up the decorations/functions */
     [self setupDecorAndFunctions];
   
     [self updateTitle];
-    [self updateClass];
     [self updateSmClientId];
     [self updateStrut];
     [self updateIcons];

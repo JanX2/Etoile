@@ -25,6 +25,7 @@
 #import "window.h"
 #import "geom.h"
 #import "misc.h"
+#import "gnustep.h"
 
 /*! Holds an icon in ARGB format */
 @interface AZClientIcon: NSObject
@@ -201,6 +202,9 @@ typedef struct _ObClient  ObClient;
 
     /*! Window decoration and functionality hints */
     ObMwmHints mwmhints;
+
+    /*! GNUstep attributes */
+    GNUstepWMAttributes gnustep_attr;
 
     /*! Where to place the decorated window in relation to the undecorated
       window */
