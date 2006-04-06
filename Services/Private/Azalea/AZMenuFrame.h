@@ -49,11 +49,11 @@ extern GList *menu_frame_visible;
   /* On-screen area (including borders!) */
   Rect area;
   Strut item_margin;
-  gint inner_w; /* inside the borders */
-  gint title_h; /* includes the bwidth below it */
-  gint item_h;  /* height of all normal items */
-  gint text_x;  /* offset at which the text appears in the items */
-  gint text_w;  /* width of the text area in the items */
+  int inner_w; /* inside the borders */
+  int title_h; /* includes the bwidth below it */
+  int item_h;  /* height of all normal items */
+  int text_x;  /* offset at which the text appears in the items */
+  int text_w;  /* width of the text area in the items */
 
   int monitor; /* monitor on which to show the menu in xinerama */
 

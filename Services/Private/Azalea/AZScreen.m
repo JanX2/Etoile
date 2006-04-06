@@ -39,16 +39,16 @@
 
 static inline void
 screen_area_add_strut_left(const StrutPartial *s, const Rect *monitor_area,
-                           gint edge, Strut *ret);
+                           int edge, Strut *ret);
 static inline void
 screen_area_add_strut_top(const StrutPartial *s, const Rect *monitor_area,
-                           gint edge, Strut *ret);
+                           int edge, Strut *ret);
 static inline void
 screen_area_add_strut_right(const StrutPartial *s, const Rect *monitor_area,
-                           gint edge, Strut *ret);
+                           int edge, Strut *ret);
 static inline void
 screen_area_add_strut_bottom(const StrutPartial *s, const Rect *monitor_area,
-                           gint edge, Strut *ret);
+                           int edge, Strut *ret);
 
 static AZScreen *sharedInstance;
 
@@ -73,11 +73,11 @@ static AZScreen *sharedInstance;
 {
     XSetWindowAttributes attrib;
     pid_t pid;
-    gint i, num_support;
-    gulong *supported;
+    int i, num_support;
+    unsigned long *supported;
 
     /* create the netwm support window */
-    attrib.override_redirect = TRUE;
+    attrib.override_redirect = YES;
     screen_support_win = XCreateWindow(ob_display,
                                        RootWindow(ob_display, ob_screen),
                                        -100, -100, 1, 1, 0,
@@ -88,7 +88,7 @@ static AZScreen *sharedInstance;
 
     if (![self replaceWM]) {
         XDestroyWindow(ob_display, screen_support_win);
-        return FALSE;
+        return NO;
     }
 
     AZXErrorSetIgnore(YES);
@@ -101,7 +101,7 @@ static AZScreen *sharedInstance;
                   ob_screen);
 
         XDestroyWindow(ob_display, screen_support_win);
-        return FALSE;
+        return NO;
     }
 
 
@@ -124,7 +124,7 @@ static AZScreen *sharedInstance;
     /* set the _NET_SUPPORTED_ATOMS hint */
     num_support = 51;
     i = 0;
-    supported = g_new(gulong, num_support);
+    supported = g_new(unsigned long, num_support);
     supported[i++] = prop_atoms.net_current_desktop;
     supported[i++] = prop_atoms.net_number_of_desktops;
     supported[i++] = prop_atoms.net_desktop_geometry;
@@ -185,13 +185,13 @@ static AZScreen *sharedInstance;
                 net_supported, atom, supported, num_support);
     g_free(supported);
 
-    return TRUE;
+    return YES;
 }
 
 - (void) startup: (BOOL) reconfig
 {
     GSList *it;
-    guint i;
+    unsigned int i;
 
     desktop_cycle_popup = [[AZPagerPopUp alloc] initWithIcon: YES];
 
@@ -219,7 +219,7 @@ static AZScreen *sharedInstance;
         [self setDesktop:(MIN(config_screen_firstdesk, screen_num_desktops)-1)];
 
         /* don't start in showing-desktop mode */
-        screen_showing_desktop = FALSE;
+        screen_showing_desktop = NO;
         PROP_SET32(RootWindow(ob_display, ob_screen),
                    net_showing_desktop, cardinal, screen_showing_desktop);
 
@@ -257,10 +257,10 @@ static AZScreen *sharedInstance;
 
 - (void) resize
 {
-    static gint oldw = 0, oldh = 0;
-    gint w, h;
+    static int oldw = 0, oldh = 0;
+    int w, h;
     GList *it;
-    gulong geometry[2];
+    unsigned long geometry[2];
 
     w = WidthOfScreen(ScreenOfDisplay(ob_display, ob_screen));
     h = HeightOfScreen(ScreenOfDisplay(ob_display, ob_screen));
@@ -292,8 +292,8 @@ static AZScreen *sharedInstance;
 
 - (void) setNumberOfDesktops: (unsigned int) num
 {
-    guint i, old;
-    gulong *viewport;
+    unsigned int i, old;
+    unsigned long *viewport;
 
     g_assert(num > 0);
 
@@ -305,7 +305,7 @@ static AZScreen *sharedInstance;
                net_number_of_desktops, cardinal, num);
 
     /* set the viewport hint */
-    viewport = g_new0(gulong, num * 2);
+    viewport = g_new0(unsigned long, num * 2);
     PROP_SETA32(RootWindow(ob_display, ob_screen),
                 net_desktop_viewport, cardinal, viewport, num * 2);
     g_free(viewport);
@@ -353,7 +353,7 @@ static AZScreen *sharedInstance;
 - (void) setDesktop: (unsigned int) num
 {
     int i, count;
-    guint old;
+    unsigned int old;
     AZStacking *stacking = [AZStacking stacking];
      
     g_assert(num < screen_num_desktops);
@@ -426,9 +426,9 @@ static AZScreen *sharedInstance;
 		         done: (BOOL) done
 		       cancel: (BOOL) cancel
 {
-    static gboolean first = TRUE;
-    static guint origd, d;
-    guint r, c;
+    static BOOL first = YES;
+    static unsigned int origd, d;
+    unsigned int r, c;
 
     if (cancel) {
         d = origd;
@@ -437,7 +437,7 @@ static AZScreen *sharedInstance;
         goto done_cycle;
     }
     if (first) {
-        first = FALSE;
+        first = NO;
         d = origd = screen_desktop;
     }
 
@@ -558,7 +558,7 @@ show_cycle_dialog:
     }
 
 done_cycle:
-    first = TRUE;
+    first = YES;
 
     [self desktopPopup: d show: NO];
 
@@ -647,11 +647,11 @@ done_cycle:
 {
     ObOrientation orient;
     ObCorner corner;
-    guint rows;
-    guint cols;
+    unsigned int rows;
+    unsigned int cols;
     guint32 *data;
-    guint num;
-    gboolean valid = FALSE;
+    unsigned int num;
+    BOOL valid = NO;
 
     if (PROP_GETA32(RootWindow(ob_display, ob_screen),
                     net_desktop_layout, cardinal, &data, &num)) {
@@ -714,7 +714,7 @@ done_cycle:
                     !!(screen_num_desktops % cols);
             }
 
-            valid = TRUE;
+            valid = YES;
         }
     screen_update_layout_bail:
         g_free(data);
@@ -736,7 +736,7 @@ done_cycle:
 
 - (void) updateDesktopNames
 {
-    guint i;
+    unsigned int i;
 
     /* empty the array */
     g_strfreev(screen_desktop_names);
@@ -781,9 +781,9 @@ done_cycle:
 
 - (void) updateAreas
 {
-    guint i, x;
-    gulong *dims;
-    gint o;
+    unsigned int i, x;
+    unsigned long *dims;
+    int o;
 
     g_free(monitor_area);
     extensions_xinerama_screens(&monitor_area, &screen_num_monitors);
@@ -799,11 +799,11 @@ done_cycle:
         area[i] = g_new0(Rect, screen_num_monitors + 1);
     area[i] = NULL;
      
-    dims = g_new(gulong, 4 * screen_num_desktops);
+    dims = g_new(unsigned long, 4 * screen_num_desktops);
 
     for (i = 0; i < screen_num_desktops + 1; ++i) {
         Strut *struts;
-        gint l, r, t, b;
+        int l, r, t, b;
 	StrutPartial dock_strut = [[AZDock defaultDock] strut];
 
         struts = g_new0(Strut, screen_num_monitors);
@@ -1030,8 +1030,8 @@ done_cycle:
 - (BOOL) pointerPosAtX: (int *) x y: (int *) y
 {
     Window w;
-    gint i;
-    guint u;
+    int i;
+    unsigned int u;
 
     return !!XQueryPointer(ob_display, RootWindow(ob_display, ob_screen),
                            &w, &w, x, y, &i, &i, &u);
@@ -1090,7 +1090,7 @@ done_cycle:
     Time timestamp;
 
     wm_sn = g_strdup_printf("WM_S%d", ob_screen);
-    wm_sn_atom = XInternAtom(ob_display, wm_sn, FALSE);
+    wm_sn_atom = XInternAtom(ob_display, wm_sn, NO);
     g_free(wm_sn);
 
     current_wm_sn_owner = XGetSelectionOwner(ob_display, wm_sn_atom);
@@ -1100,14 +1100,14 @@ done_cycle:
         if (!ob_replace_wm) {
             g_warning("A window manager is already running on screen %d",
                       ob_screen);
-            return FALSE;
+            return NO;
         }
 	AZXErrorSetIgnore(YES);
         xerror_occured = NO;
 
         /* We want to find out when the current selection owner dies */
         XSelectInput(ob_display, current_wm_sn_owner, StructureNotifyMask);
-        XSync(ob_display, FALSE);
+        XSync(ob_display, NO);
 
 	AZXErrorSetIgnore(NO);
         if (xerror_occured)
@@ -1137,14 +1137,14 @@ done_cycle:
     if (XGetSelectionOwner(ob_display, wm_sn_atom) != screen_support_win) {
         g_warning("Could not acquire window manager selection on screen %d",
                   ob_screen);
-        return FALSE;
+        return NO;
     }
 
     /* Wait for old window manager to go away */
     if (current_wm_sn_owner) {
       XEvent event;
-      gulong wait = 0;
-      const gulong timeout = G_USEC_PER_SEC * 15; /* wait for 15s max */
+      unsigned long wait = 0;
+      const unsigned long timeout = G_USEC_PER_SEC * 15; /* wait for 15s max */
 
       while (wait < timeout) {
           if (XCheckWindowEvent(ob_display, current_wm_sn_owner,
@@ -1158,7 +1158,7 @@ done_cycle:
       if (wait >= timeout) {
           g_warning("Timeout expired while waiting for the current WM to die "
                     "on screen %d", ob_screen);
-          return FALSE;
+          return NO;
       }
     }
 
@@ -1167,7 +1167,7 @@ done_cycle:
                  timestamp, wm_sn_atom, 0, 0, SubstructureNotifyMask);
 
 
-    return TRUE;
+    return YES;
 }
 
 - (void) getRowCol: (unsigned int) d
@@ -1284,7 +1284,7 @@ done_cycle:
 
 static inline void
 screen_area_add_strut_left(const StrutPartial *s, const Rect *monitor_area,
-                           gint edge, Strut *ret)
+                           int edge, Strut *ret)
 {
     if (s->left &&
         ((s->left_end <= s->left_start) ||
@@ -1295,7 +1295,7 @@ screen_area_add_strut_left(const StrutPartial *s, const Rect *monitor_area,
 
 static inline void
 screen_area_add_strut_top(const StrutPartial *s, const Rect *monitor_area,
-                          gint edge, Strut *ret)
+                          int edge, Strut *ret)
 {
     if (s->top &&
         ((s->top_end <= s->top_start) ||
@@ -1306,7 +1306,7 @@ screen_area_add_strut_top(const StrutPartial *s, const Rect *monitor_area,
 
 static inline void
 screen_area_add_strut_right(const StrutPartial *s, const Rect *monitor_area,
-                            gint edge, Strut *ret)
+                            int edge, Strut *ret)
 {
     if (s->right &&
         ((s->right_end <= s->right_start) ||
@@ -1317,7 +1317,7 @@ screen_area_add_strut_right(const StrutPartial *s, const Rect *monitor_area,
 
 static inline void
 screen_area_add_strut_bottom(const StrutPartial *s, const Rect *monitor_area,
-                             gint edge, Strut *ret)
+                             int edge, Strut *ret)
 {
     if (s->bottom &&
         ((s->bottom_end <= s->bottom_start) ||

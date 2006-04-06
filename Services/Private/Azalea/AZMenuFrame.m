@@ -39,7 +39,7 @@ GList *menu_frame_visible;
 #define ENTRY_EVENTMASK (EnterWindowMask | LeaveWindowMask | \
                          ButtonPressMask | ButtonReleaseMask)
 
-static Window createWindow(Window parent, gulong mask,
+static Window createWindow(Window parent, unsigned long mask,
                            XSetWindowAttributes *attrib)
 {
     return XCreateWindow(ob_display, parent, 0, 0, 1, 1, 0,
@@ -124,7 +124,7 @@ static Window createWindow(Window parent, gulong mask,
 - (void) render
 {
     RrAppearance *item_a, *text_a;
-    gint th; /* temp */
+    int th; /* temp */
     ObMenu *sub;
 
     item_a = ((entry->type == OB_MENU_ENTRY_TYPE_NORMAL &&
@@ -365,7 +365,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     menu = _menu;
     selected = nil;
-    show_title = TRUE;
+    show_title = YES;
     client = _client;
 
     attr.event_mask = FRAME_EVENTMASK;
@@ -412,9 +412,9 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 - (void) moveOnScreen
 {
     Rect *a = NULL;
-    guint i;
-    gint dx = 0, dy = 0;
-    gint pos, half;
+    unsigned int i;
+    int dx = 0, dy = 0;
+    int pos, half;
 
     a = [[AZScreen defaultScreen] physicalAreaOfMonitor: monitor];
 
@@ -455,11 +455,11 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
 - (void) render
 {
-    gint w = 0, h = 0;
-    gint allitems_h = 0;
-    gint tw, th; /* temps */
+    int w = 0, h = 0;
+    int allitems_h = 0;
+    int tw, th; /* temps */
     GList *it;
-    gboolean has_icon = FALSE;
+    BOOL has_icon = NO;
     ObMenu *sub;
 
     XSetWindowBorderWidth(ob_display, window, ob_rr_theme->bwidth);
@@ -487,7 +487,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     if (entries) {
         AZMenuEntryFrame *e = entries->data;
-        gint l, t, r, b;
+        int l, t, r, b;
 
         [e a_text_normal]->texture[0].data.text.string = "";
         RrMinsize([e a_text_normal], &tw, &th);
@@ -539,7 +539,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
             if ([e entry]->data.normal.icon_data ||
                 [e entry]->data.normal.mask)
-                has_icon = TRUE;
+                has_icon = YES;
             break;
         case OB_MENU_ENTRY_TYPE_SUBMENU:
             sub = [e entry]->data.submenu.submenu;
@@ -549,7 +549,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
             if ([e entry]->data.normal.icon_data ||
                 [e entry]->data.normal.mask)
-                has_icon = TRUE;
+                has_icon = YES;
 
             tw += self->item_h - PADDING;
             break;
@@ -643,15 +643,15 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     GList *it;
 
     if (g_list_find(menu_frame_visible, self))
-        return TRUE;
+        return YES;
 
     if (menu_frame_visible == NULL) {
         /* no menus shown yet */
-        if (!grab_pointer(TRUE, OB_CURSOR_NONE))
-            return FALSE;
-        if (!grab_keyboard(TRUE)) {
-            grab_pointer(FALSE, OB_CURSOR_NONE);
-            return FALSE;
+        if (!grab_pointer(YES, OB_CURSOR_NONE))
+            return NO;
+        if (!grab_keyboard(YES)) {
+            grab_pointer(NO, OB_CURSOR_NONE);
+            return NO;
         }
     }
 
@@ -683,7 +683,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     XMapWindow(ob_display, window);
 
-    return TRUE;
+    return YES;
 }
 
 - (void) hide
@@ -704,8 +704,8 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     if (menu_frame_visible == NULL) {
         /* last menu shown */
-        grab_pointer(FALSE, OB_CURSOR_NONE);
-        grab_keyboard(FALSE);
+        grab_pointer(NO, OB_CURSOR_NONE);
+        grab_keyboard(NO);
     }
 
     XUnmapWindow(ob_display, window);
@@ -745,7 +745,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     if (entries) {
         start = it = g_list_find(entries, selected);
-        while (TRUE) {
+        while (YES) {
             AZMenuEntryFrame *e;
 
             it = it ? g_list_previous(it) : g_list_last(entries);
@@ -771,7 +771,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     if (entries) {
         start = it = g_list_find(entries, selected);
-        while (TRUE) {
+        while (YES) {
             AZMenuEntryFrame *e;
 
             it = it ? g_list_next(it) : entries;

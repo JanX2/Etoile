@@ -31,8 +31,8 @@ static AZStacking *sharedInstance;
 - (void) doRestack: (GList *) wins before: (GList *) before;
 - (void) doRaise: (GList *) wins;
 - (void) doLower: (GList *) wins;
-- (GList *)pickWindowsFrom: (AZClient *) top to: (AZClient *) selected raise: (gboolean) raise;
-- (GList *)pickGroupWindowsFrom: (AZClient *) top to: (AZClient *) selected raise: (gboolean) raise normal: (gboolean) normal;
+- (GList *)pickWindowsFrom: (AZClient *) top to: (AZClient *) selected raise: (BOOL) raise;
+- (GList *)pickGroupWindowsFrom: (AZClient *) top to: (AZClient *) selected raise: (BOOL) raise normal: (BOOL) normal;
 @end
 
 @implementation AZStacking
@@ -41,7 +41,7 @@ static AZStacking *sharedInstance;
 {
     Window *windows = NULL;
     GList *it;
-    guint i = 0;
+    unsigned int i = 0;
 
     /* on shutdown, don't update the properties, so that we can read it back
        in on startup and re-stack the windows as they were before we shut down
@@ -73,8 +73,8 @@ static AZStacking *sharedInstance;
         AZClient *selected;
         selected = (AZClient *)window;
 	c = [selected searchTopTransient];
-	wins = [self pickWindowsFrom: c to: selected raise: TRUE];
-	wins = g_list_concat(wins, [self pickGroupWindowsFrom: c to: selected raise: TRUE normal: group]);
+	wins = [self pickWindowsFrom: c to: selected raise: YES];
+	wins = g_list_concat(wins, [self pickGroupWindowsFrom: c to: selected raise: YES normal: group]);
     } else {
         wins = g_list_append(NULL, window);
         stacking_list = g_list_remove(stacking_list, window);
@@ -92,8 +92,8 @@ static AZStacking *sharedInstance;
         AZClient *selected;
         selected = (AZClient*)window;
 	c = [selected searchTopTransient];
-	wins = [self pickWindowsFrom: c to: selected raise: FALSE];
-        wins = g_list_concat([self pickGroupWindowsFrom: c to: selected raise: FALSE normal: group], wins);
+	wins = [self pickWindowsFrom: c to: selected raise: NO];
+        wins = g_list_concat([self pickGroupWindowsFrom: c to: selected raise: NO normal: group], wins);
     } else {
         wins = g_list_append(NULL, window);
         stacking_list = g_list_remove(stacking_list, window);
@@ -127,7 +127,7 @@ static AZStacking *sharedInstance;
     l = [win windowLayer];
 
     stacking_list = g_list_append(stacking_list, win);
-    [self raiseWindow: win group: FALSE];
+    [self raiseWindow: win group: NO];
 }
 
 - (void) removeWindow: (id <AZWindow>) win
@@ -162,7 +162,7 @@ static AZStacking *sharedInstance;
 {
     GList *it, *next;
     Window *win;
-    gint i;
+    int i;
 
 #ifdef DEBUG
     /* pls only restack stuff in the same layer at a time */
@@ -255,7 +255,7 @@ static AZStacking *sharedInstance;
 #else
     GList *it;
     GList *layer[OB_NUM_STACKING_LAYERS] = {NULL};
-    gint i;
+    int i;
 
     for (it = wins; it; it = g_list_next(it)) {
         ObStackingLayer l;
@@ -328,7 +328,7 @@ static AZStacking *sharedInstance;
 #else
     GList *it;
     GList *layer[OB_NUM_STACKING_LAYERS] = {NULL};
-    gint i;
+    int i;
 
     for (it = wins; it; it = g_list_next(it)) {
         ObStackingLayer l;
@@ -353,11 +353,11 @@ static AZStacking *sharedInstance;
 }
 
 - (GList *)pickWindowsFrom: (AZClient *) top to: (AZClient *) selected 
-		     raise: (gboolean) raise
+		     raise: (BOOL) raise
 {
     GList *ret = NULL;
     GList *it, *next, *prev;
-    gint i, n;
+    int i, n;
     GList *modals = NULL;
     GList *trans = NULL;
     GList *modal_sel = NULL; /* the selected guys if modal */
@@ -386,12 +386,12 @@ static AZStacking *sharedInstance;
 
 	if (index != NSNotFound) {
             AZClient *c = [[top transients] objectAtIndex: index];
-            gboolean sel_child;
+            BOOL sel_child;
 
             ++i;
 
             if (c == selected)
-                sel_child = TRUE;
+                sel_child = YES;
             else
 	    {
 		sel_child = ([c searchTransient: selected] != nil);
@@ -434,11 +434,11 @@ static AZStacking *sharedInstance;
 }
 
 - (GList *)pickGroupWindowsFrom: (AZClient *) top to: (AZClient *) selected
-                     raise: (gboolean) raise normal: (gboolean) normal
+                     raise: (BOOL) raise normal: (BOOL) normal
 {
     GList *ret = NULL;
     GList *it = NULL, *next = NULL, *prev = NULL;
-    gint i, n;
+    int i, n;
 
     /* add group members in their stacking order */
     if ((top) && (top != OB_TRAN_GROUP) && ([top group])) {

@@ -259,7 +259,7 @@ static void mr_client_dest(struct _ObClient *client, gpointer data)
 	    [self end: NO];
         else {
             if (corner == prop_atoms.net_wm_moveresize_size_keyboard) {
-                gint dx = 0, dy = 0, ox = cur_x, oy = cur_y;
+                int dx = 0, dy = 0, ox = cur_x, oy = cur_y;
 
                 if (e->xkey.keycode == ob_keycode(OB_KEY_RIGHT))
                     dx = MAX(4, [moveresize_client size_inc].width);
@@ -291,8 +291,8 @@ static void mr_client_dest(struct _ObClient *client, gpointer data)
                 start_x += dx - (cur_x - ox);
                 start_y += dy - (cur_y - oy);
             } else if (corner == prop_atoms.net_wm_moveresize_move_keyboard) {
-                gint dx = 0, dy = 0, ox = cur_x, oy = cur_y;
-                gint opx, px, opy, py;
+                int dx = 0, dy = 0, ox = cur_x, oy = cur_y;
+                int opx, px, opy, py;
 		AZScreen *screen = [AZScreen defaultScreen];
 
                 if (e->xkey.keycode == ob_keycode(OB_KEY_RIGHT))

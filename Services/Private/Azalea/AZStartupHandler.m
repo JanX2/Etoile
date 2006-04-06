@@ -50,7 +50,7 @@ static AZStartupHandler *sharedInstance;
 
 typedef struct {
     SnStartupSequence *seq;
-    gboolean feedback;
+    BOOL feedback;
 } ObWaitData;
 
 /* callback */
@@ -141,7 +141,7 @@ static void sn_wait_destroy(void *data);
     ObWaitData *d;
 
     if (iden && (d = [self waitFind: iden])) {
-        gint desk = sn_startup_sequence_get_workspace(d->seq);
+        int desk = sn_startup_sequence_get_workspace(d->seq);
         if (desk != -1) {
             *desktop = desk;
             return YES;
@@ -172,7 +172,7 @@ static void sn_wait_destroy(void *data);
 {
     ObWaitData *d = g_new(ObWaitData, 1);
     d->seq = seq;
-    d->feedback = TRUE;
+    d->feedback = YES;
 
     sn_startup_sequence_ref(d->seq);
 
@@ -221,7 +221,7 @@ static void sn_wait_destroy(void *data);
 - (void) snEventFunc: (SnMonitorEvent *) ev data: (void *) data;
 {
     SnStartupSequence *seq;
-    gboolean change = FALSE;
+    BOOL change = NO;
     ObWaitData *d;
 
     if (!(seq = sn_monitor_event_get_startup_sequence(ev)))
@@ -238,19 +238,19 @@ static void sn_wait_destroy(void *data);
 		        microseconds: 30 & G_USEC_PER_SEC
 			data: d
 			notify: sn_wait_destroy];
-        change = TRUE;
+        change = YES;
         break;
     case SN_MONITOR_EVENT_CHANGED:
         /* XXX feedback changed? */
-        change = TRUE;
+        change = YES;
         break;
     case SN_MONITOR_EVENT_COMPLETED:
     case SN_MONITOR_EVENT_CANCELED:
         if ((d = [self waitFind: sn_startup_sequence_get_id(seq)])) {
-            d->feedback = FALSE;
+            d->feedback = NO;
 	    [mainLoop removeTimeoutHandler: sn_wait_timeout
 		                      data: d];
-            change = TRUE;
+            change = YES;
         }
         break;
     };

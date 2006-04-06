@@ -40,8 +40,8 @@
 
 - (void) sizeToString: (gchar *) _text
 {
-  gint textw, texth;
-  gint iconw;
+  int textw, texth;
+  int iconw;
 
   a_text->texture[0].data.text.string = _text;
   RrMinsize(a_text, &textw, &texth);
@@ -60,10 +60,10 @@
 
 - (void) showText: (gchar *) _text
 {
-    gint l, t, r, b;
-    gint _x, _y, _w, _h;
-    gint textw, texth;
-    gint iconw;
+    int l, t, r, b;
+    int _x, _y, _w, _h;
+    int textw, texth;
+    int iconw;
     Rect *area; /* won't go outside this */
 
 
@@ -276,12 +276,12 @@
 
 - (void) drawIconAtX: (int) px y: (int) py width: (int) pw height: (int) ph
 {
-    gint _x, _y;
-    guint rown, n;
-    guint horz_inc;
-    guint vert_inc;
-    guint r, c;
-    gint eachw, eachh;
+    int _x, _y;
+    unsigned int rown, n;
+    unsigned int horz_inc;
+    unsigned int vert_inc;
+    unsigned int r, c;
+    int eachw, eachh;
     AZScreen *screen = [AZScreen defaultScreen];
     DesktopLayout desktop_layout = [screen desktopLayout];
 
@@ -387,7 +387,7 @@
 
 - (void) showText: (gchar *) _text desktop: (unsigned int) desk
 {
-    guint i;
+    unsigned int i;
     unsigned int num_desktops = [[AZScreen defaultScreen] numberOfDesktops];
 
     if (num_desktops < desks)
