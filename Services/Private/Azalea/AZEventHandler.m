@@ -126,8 +126,8 @@ static AZEventHandler *sharedInstance;
 - (void) handleClient: (AZClient *) c event: (XEvent *) e;
 - (void) handleGroup: (AZGroup *) g event: (XEvent *) e;
 
-- (ObMenuFrame *) findActiveMenu;
-- (ObMenuFrame *) findActiveOrLastMenu;
+- (AZMenuFrame *) findActiveMenu;
+- (AZMenuFrame *) findActiveOrLastMenu;
 - (Window) getWindow: (XEvent *) e;
 - (void) setLastTime: (XEvent *) e;
 - (void) hackMods: (XEvent *) e;
@@ -1048,23 +1048,23 @@ static AZEventHandler *sharedInstance;
     }
 }
 
-- (ObMenuFrame *) findActiveMenu
+- (AZMenuFrame *) findActiveMenu
 {
     GList *it;
-    ObMenuFrame *ret = NULL;
+    AZMenuFrame *ret = nil;
 
     for (it = menu_frame_visible; it; it = g_list_next(it)) {
         ret = it->data;
-        if (ret->selected)
+        if ([ret selected])
             break;
-        ret = NULL;
+        ret = nil;
     }
     return ret;
 }
 
-- (ObMenuFrame *) findActiveOrLastMenu
+- (AZMenuFrame *) findActiveOrLastMenu
 {
-    ObMenuFrame *ret = NULL;
+    AZMenuFrame *ret = nil;
 
     ret = [self findActiveMenu];
     if (!ret && menu_frame_visible)
@@ -1074,7 +1074,7 @@ static AZEventHandler *sharedInstance;
 
 - (void) handleMenuEvent: (XEvent *) ev
 {
-    ObMenuFrame *f;
+    AZMenuFrame *f;
     AZMenuEntryFrame *e;
 
     switch (ev->type) {
@@ -1084,51 +1084,50 @@ static AZEventHandler *sharedInstance;
                                             ev->xbutton.y_root)))
 		[e execute: ev->xbutton.state];
             else
-                menu_frame_hide_all();
+		AZMenuFrameHideAll();
         }
         break;
     case MotionNotify:
-        if ((f = menu_frame_under(ev->xmotion.x_root,
-                                  ev->xmotion.y_root))) {
-            menu_frame_move_on_screen(f);
+        if ((f = AZMenuFrameUnder(ev->xmotion.x_root, ev->xmotion.y_root))) {
+	    [f moveOnScreen];
             if ((e = AZMenuEntryFrameUnder(ev->xmotion.x_root,
                                             ev->xmotion.y_root)))
-                menu_frame_select(f, e);
+		[f selectMenuEntryFrame: e];
         }
         {
-            ObMenuFrame *a;
+            AZMenuFrame *a;
 
             a = [self findActiveMenu];
             if (a && a != f &&
-                [a->selected entry]->type != OB_MENU_ENTRY_TYPE_SUBMENU)
+                [[a selected] entry]->type != OB_MENU_ENTRY_TYPE_SUBMENU)
             {
-                menu_frame_select(a, NULL);
+		[a selectMenuEntryFrame: nil];
             }
         }
         break;
     case KeyPress:
         if (ev->xkey.keycode == ob_keycode(OB_KEY_ESCAPE))
-            menu_frame_hide_all();
+	    AZMenuFrameHideAll();
         else if (ev->xkey.keycode == ob_keycode(OB_KEY_RETURN)) {
-            ObMenuFrame *f;
+            AZMenuFrame *f;
             if ((f = [self findActiveMenu]))
-		[f->selected execute: ev->xkey.state];
+		[[f selected] execute: ev->xkey.state];
         } else if (ev->xkey.keycode == ob_keycode(OB_KEY_LEFT)) {
-            ObMenuFrame *f;
-            if ((f = [self findActiveOrLastMenu]) && f->parent)
-                menu_frame_select(f, NULL);
+            AZMenuFrame *f;
+            if ((f = [self findActiveOrLastMenu]) && [f parent])
+		[f selectMenuEntryFrame: nil];
         } else if (ev->xkey.keycode == ob_keycode(OB_KEY_RIGHT)) {
-            ObMenuFrame *f;
-            if ((f = [self findActiveOrLastMenu]) && f->child)
-                menu_frame_select_next(f->child);
+            AZMenuFrame *f;
+            if ((f = [self findActiveOrLastMenu]) && [f child])
+		[[f child] selectNext];
         } else if (ev->xkey.keycode == ob_keycode(OB_KEY_UP)) {
-            ObMenuFrame *f;
+            AZMenuFrame *f;
             if ((f = [self findActiveOrLastMenu]))
-                menu_frame_select_previous(f);
+		[f selectPrevious];
         } else if (ev->xkey.keycode == ob_keycode(OB_KEY_DOWN)) {
-            ObMenuFrame *f;
+            AZMenuFrame *f;
             if ((f = [self findActiveOrLastMenu]))
-                menu_frame_select_next(f);
+		[f selectNext];
         }
         break;
     }

@@ -19,12 +19,99 @@
 
 #import "menuframe.h"
 #import "menu.h"
+#import "window.h"
 #import <Foundation/Foundation.h>
+
+struct _ObMenuEntry;
+@class AZMenuEntryFrame;
+@class AZClient;
+
+@interface AZMenuFrame: NSObject <AZWindow>
+{    
+  Window window;
+
+  struct _ObMenu *menu;
+
+  /* The client that the visual instance of the menu is associated with for
+     its actions */
+  AZClient *client;
+
+  AZMenuFrame *parent;
+  AZMenuFrame *child;
+
+  GList *entries;
+  AZMenuEntryFrame *selected;
+
+  /* If a titlebar is displayed for the menu or not (for top-level menus) */
+  gboolean show_title;
+
+  /* On-screen area (including borders!) */
+  Rect area;
+  Strut item_margin;
+  gint inner_w; /* inside the borders */
+  gint title_h; /* includes the bwidth below it */
+  gint item_h;  /* height of all normal items */
+  gint text_x;  /* offset at which the text appears in the items */
+  gint text_w;  /* width of the text area in the items */
+
+  int monitor; /* monitor on which to show the menu in xinerama */
+
+  Window title;
+  Window items;
+
+  RrAppearance *a_title;
+  RrAppearance *a_items;
+
+  struct _ObMenuFrame *obMenuFrame;
+}
+
+- (void) moveToX: (int) x y: (int) y;
+- (void) moveOnScreen;
+- (BOOL) showWithParent: (AZMenuFrame *) parent;
+- (void) hide;
+- (void) selectMenuEntryFrame: (AZMenuEntryFrame *) entry;
+- (void) selectPrevious;
+- (void) selectNext;
+
+/* Accessories */
+- (Rect) area;
+- (AZMenuFrame *) parent;
+- (AZMenuFrame *) child;
+- (AZMenuEntryFrame *) selected;
+- (int) monitor;
+- (struct _ObMenu *) menu;
+- (AZClient *) client;
+- (void) set_child: (AZMenuFrame *) child;
+- (void) set_parent: (AZMenuFrame *) parent;
+- (void) set_monitor: (int) monitor;
+
+- (Window) items;
+- (Window) window;
+- (int) item_h;
+- (int) title_h;
+- (int) inner_w;
+- (RrAppearance *) a_items;
+- (int) text_x;
+- (int) text_w;
+- (Strut) item_margin;
+- (GList *) entries;
+- (void) set_show_title: (BOOL) show_title;
+
+- (void) set_obMenuFrame: (struct _ObMenuFrame *) obMenuFrame;
+- (struct _ObMenuFrame *) obMenuFrame;
+
+- (id) initWithMenu: (struct _ObMenu *) menu client: (AZClient *) client;
+
+/* Private */
+- (void) render;
+- (void) update;
+
+@end
 
 @interface AZMenuEntryFrame: NSObject
 {
     struct _ObMenuEntry *entry;
-    ObMenuFrame *frame;
+    AZMenuFrame *frame;
 
     Rect area;
 
@@ -48,7 +135,7 @@
 }
 
 - (id) initWithMenuEntry: (ObMenuEntry *) entry 
-               menuFrame: (ObMenuFrame *) frame;
+               menuFrame: (AZMenuFrame *) frame;
 - (void) render;
 - (void) showSubmenu;
 - (void) execute: (unsigned int) state;
@@ -68,5 +155,8 @@
 
 @end
 
+void AZMenuFrameHideAllClient(AZClient *client);
+void AZMenuFrameHideAll();
+AZMenuFrame *AZMenuFrameUnder(int x, int y);
 AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y);
 

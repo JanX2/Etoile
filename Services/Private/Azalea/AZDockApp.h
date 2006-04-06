@@ -31,7 +31,7 @@ struct _AZDockAppStruct
   AZDockApp *dock_app;
 };
 
-@interface AZDockApp: NSObject <NSCopying>
+@interface AZDockApp: NSObject <NSCopying, AZWindow>
 {
     ObWindow obwin;
 

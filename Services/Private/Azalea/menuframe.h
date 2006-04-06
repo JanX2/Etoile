@@ -25,70 +25,23 @@
 
 #include <glib.h>
 
-struct _ObClient;
 struct _ObMenu;
-struct _ObMenuEntry;
-
-typedef struct _ObMenuFrame ObMenuFrame;
-@class AZMenuEntryFrame;
 
 extern GList *menu_frame_visible;
+
+typedef struct _ObMenuFrame ObMenuFrame;
+
+@class AZMenuFrame;
+@class AZClient;
 
 struct _ObMenuFrame
 {
     /* stuff to be an ObWindow */
     Window_InternalType type;
-    Window window;
-
-    struct _ObMenu *menu;
-
-    /* The client that the visual instance of the menu is associated with for
-       its actions */
-    struct _ObClient *client;
-
-    ObMenuFrame *parent;
-    ObMenuFrame *child;
-
-    GList *entries;
-    AZMenuEntryFrame *selected;
-
-    /* If a titlebar is displayed for the menu or not (for top-level menus) */
-    gboolean show_title;
-
-    /* On-screen area (including borders!) */
-    Rect area;
-    Strut item_margin;
-    gint inner_w; /* inside the borders */
-    gint title_h; /* includes the bwidth below it */
-    gint item_h;  /* height of all normal items */
-    gint text_x;  /* offset at which the text appears in the items */
-    gint text_w;  /* width of the text area in the items */
-
-    gint monitor; /* monitor on which to show the menu in xinerama */
-
-    Window title;
-    Window items;
-
-    RrAppearance *a_title;
-    RrAppearance *a_items;
+    AZMenuFrame *_self;
 };
 
-ObMenuFrame* menu_frame_new(struct _ObMenu *menu, struct _ObClient *client);
+ObMenuFrame* menu_frame_new(struct _ObMenu *menu, AZClient *client);
 void menu_frame_free(ObMenuFrame *self);
-
-void menu_frame_move(ObMenuFrame *self, gint x, gint y);
-void menu_frame_move_on_screen(ObMenuFrame *self);
-
-gboolean menu_frame_show(ObMenuFrame *self, ObMenuFrame *parent);
-void menu_frame_hide(ObMenuFrame *self);
-
-void menu_frame_hide_all();
-void menu_frame_hide_all_client(struct _ObClient *client);
-
-void menu_frame_select(ObMenuFrame *self, AZMenuEntryFrame *entry);
-void menu_frame_select_previous(ObMenuFrame *self);
-void menu_frame_select_next(ObMenuFrame *self);
-
-ObMenuFrame* menu_frame_under(gint x, gint y);
 
 #endif

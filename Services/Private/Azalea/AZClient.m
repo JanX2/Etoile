@@ -2777,6 +2777,10 @@ no_number:
     }
 }
 
+- (Window_InternalType) windowType { return Window_Client; }
+- (int) windowLayer { return layer; }
+- (Window) windowTop { return [[self frame] window]; }
+
 @end
 
 AZClient *AZUnderPointer()

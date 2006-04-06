@@ -36,7 +36,7 @@ struct _AZDockStruct
   AZDock *dock;
 };
 
-@interface AZDock: NSObject
+@interface AZDock: NSObject <AZWindow>
 {
     ObWindow obwin;
 

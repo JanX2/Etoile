@@ -84,7 +84,7 @@ struct _ObClient
 
 typedef struct _ObClient  ObClient;
 
-@interface AZClient: NSObject
+@interface AZClient: NSObject <AZWindow>
 {
     Window  window;
 

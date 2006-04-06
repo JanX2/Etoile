@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    window.h for the Openbox window manager
@@ -19,6 +20,7 @@
 #ifndef __window__
 #define __window__
 
+#import <Foundation/Foundation.h>
 #import <X11/Xlib.h>
 #import <glib.h>
 
@@ -29,6 +31,20 @@ typedef enum {
     Window_Client,
     Window_Internal /* used for stacking but not events */
 } Window_InternalType;
+
+@protocol AZWindow <NSObject>
+- (Window_InternalType) windowType;
+- (Window) windowTop;
+- (int) windowLayer; /* ObStackingLayer */
+@end
+
+@interface AZInternalWindow: NSObject <AZWindow>
+{
+  Window window;
+}
+- (Window) window;
+- (void) set_window: (Window) window;
+@end
 
 typedef struct _ObWindow ObWindow;
 typedef struct _ObInternalWindow ObInternalWindow;

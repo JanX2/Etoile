@@ -151,4 +151,10 @@
   RETAIN(self);
 }
 
+/* AZWindow protocol */
+- (Window_InternalType) windowType { return Window_DockApp; }
+- (int) windowLayer { g_assert_not_reached(); return 0; }
+- (Window) windowTop { g_assert_not_reached(); return 0; }
+
+
 @end

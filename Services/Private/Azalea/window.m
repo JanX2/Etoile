@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    window.c for the Openbox window manager
@@ -18,6 +19,7 @@
 
 #import "AZDock.h"
 #import "AZClient.h"
+#import "AZMenuFrame.h"
 #include "window.h"
 #include "menuframe.h"
 #include "config.h"
@@ -42,7 +44,7 @@ Window window_top(ObWindow *self)
 {
     switch (self->type) {
     case Window_Menu:
-        return ((ObMenuFrame*)self)->window;
+        return [(AZMenuFrame *)(((ObMenuFrame*)self)->_self) window];
     case Window_Dock:
         return [((struct _AZDockStruct *)self)->dock frame];
     case Window_DockApp:
@@ -77,3 +79,14 @@ Window window_layer(ObWindow *self)
     g_assert_not_reached();
     return None;
 }
+
+@implementation AZInternalWindow
+
+- (Window) window { return window; }
+- (void) set_window: (Window) w { window = w; }
+
+- (Window_InternalType) windowType { return Window_Internal; }
+- (Window) windowTop { return window; }
+- (int) windowLayer { return OB_STACKING_LAYER_INTERNAL; }
+
+@end

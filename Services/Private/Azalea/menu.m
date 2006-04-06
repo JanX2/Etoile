@@ -19,6 +19,7 @@
 #import "AZScreen.h"
 #import "AZClient.h"
 #import "AZClientManager.h"
+#import "AZMenuFrame.h"
 #include "menu.h"
 #include "openbox.h"
 #include "config.h"
@@ -54,7 +55,7 @@ static void client_dest(ObClient *client, gpointer data)
 {
     /* menus can be associated with a client, so close any that are since
        we are disappearing now */
-    menu_frame_hide_all_client(client);
+    AZMenuFrameHideAllClient((client ? client->_self: nil));
 }
 
 void menu_startup(gboolean reconfig)
@@ -108,7 +109,7 @@ void menu_shutdown(gboolean reconfig)
     parse_shutdown(menu_parse_inst);
     menu_parse_inst = NULL;
 
-    menu_frame_hide_all();
+    AZMenuFrameHideAll();
     g_hash_table_destroy(menu_hash);
     menu_hash = NULL;
 }
@@ -254,12 +255,12 @@ static void menu_destroy_hash_value(ObMenu *self)
     /* make sure its not visible */
     {
         GList *it;
-        ObMenuFrame *f;
+        AZMenuFrame *f;
 
         for (it = menu_frame_visible; it; it = g_list_next(it)) {
             f = it->data;
-            if (f->menu == self)
-                menu_frame_hide_all();
+            if ([f menu] == self)
+		AZMenuFrameHideAll();
         }
     }
 
@@ -282,7 +283,7 @@ void menu_free(ObMenu *menu)
 void menu_show(gchar *name, gint x, gint y, ObClient *client)
 {
     ObMenu *self;
-    ObMenuFrame *frame;
+    AZMenuFrame *frame;
     guint i;
 
     if (!(self = menu_from_name(name))) return;
@@ -291,30 +292,29 @@ void menu_show(gchar *name, gint x, gint y, ObClient *client)
        bother */
     if (menu_frame_visible) {
         frame = menu_frame_visible->data;
-        if (frame->menu == self)
+        if ([frame menu] == self)
             return;
     }
 
-    menu_frame_hide_all();
+    AZMenuFrameHideAll();
 
-    frame = menu_frame_new(self, client);
+    frame = menu_frame_new(self, (client ? client->_self : nil))->_self;
     if (client && x < 0 && y < 0) {
         x = [[client->_self frame] area].x + [[client->_self frame] size].left;
         y = [[client->_self frame] area].y + [[client->_self frame] size].top;
-        menu_frame_move(frame, x, y);
+	[frame moveToX: x y: y];
     } else
-        menu_frame_move(frame,
-                        x - ob_rr_theme->bwidth, y - ob_rr_theme->bwidth);
+	[frame moveToX: x - ob_rr_theme->bwidth y: y - ob_rr_theme->bwidth];
     AZScreen *screen = [AZScreen defaultScreen];
     for (i = 0; i < [screen numberOfMonitors]; ++i) {
         Rect *a = [screen physicalAreaOfMonitor: i];
         if (RECT_CONTAINS(*a, x, y)) {
-            frame->monitor = i;
+	    [frame set_monitor: i];
             break;
         }
     }
-    if (!menu_frame_show(frame, NULL))
-        menu_frame_free(frame);
+    if (![frame showWithParent: nil])
+        menu_frame_free([frame obMenuFrame]);
 }
 
 static ObMenuEntry* menu_entry_new(ObMenu *menu, ObMenuEntryType type, gint id)

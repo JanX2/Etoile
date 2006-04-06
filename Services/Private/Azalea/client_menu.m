@@ -18,6 +18,7 @@
 
 #import "AZScreen.h"
 #import "AZClient.h"
+#import "AZMenuFrame.h"
 #import "menu.h"
 #import "menuframe.h"
 #import "openbox.h"
@@ -48,80 +49,83 @@ enum {
     CLIENT_CLOSE
 };
 
-static void client_update(ObMenuFrame *frame, gpointer data)
+static void client_update(ObMenuFrame *_frame, gpointer data)
 {
-    ObMenu *menu = frame->menu;
+    AZMenuFrame *frame = _frame->_self;
+    ObMenu *menu = [frame menu];
     ObMenuEntry *e;
     GList *it;
 
-    frame->show_title = FALSE;
+    [frame set_show_title: NO];
 
     for (it = menu->entries; it; it = g_list_next(it)) {
         e = it->data;
         if (e->type == OB_MENU_ENTRY_TYPE_NORMAL)
-            e->data.normal.enabled = !!frame->client;
+            e->data.normal.enabled = !![frame client];
     }
 
-    if (!frame->client)
+    if (![frame client])
         return;
 
     e = menu_find_entry_id(menu, CLIENT_ICONIFY);
-    e->data.normal.enabled = [frame->client->_self functions] & OB_CLIENT_FUNC_ICONIFY;
+    e->data.normal.enabled = [[frame client] functions] & OB_CLIENT_FUNC_ICONIFY;
 
     e = menu_find_entry_id(menu, CLIENT_MAXIMIZE);
     g_free(e->data.normal.label);
     e->data.normal.label =
-        g_strdup([frame->client->_self max_vert] || [frame->client->_self max_horz] ?
+        g_strdup([[frame client] max_vert] || [[frame client] max_horz] ?
                  ("Restore") : ("Maximize"));
-    e->data.normal.enabled = [frame->client->_self functions] & OB_CLIENT_FUNC_MAXIMIZE;
+    e->data.normal.enabled = [[frame client] functions] & OB_CLIENT_FUNC_MAXIMIZE;
 
     e = menu_find_entry_id(menu, CLIENT_SHADE);
     g_free(e->data.normal.label);
-    e->data.normal.label = g_strdup([frame->client->_self shaded] ?
+    e->data.normal.label = g_strdup([[frame client] shaded] ?
                                     ("Roll down") : ("Roll up"));
-    e->data.normal.enabled = [frame->client->_self functions] & OB_CLIENT_FUNC_SHADE;
+    e->data.normal.enabled = [[frame client] functions] & OB_CLIENT_FUNC_SHADE;
 
     e = menu_find_entry_id(menu, CLIENT_MOVE);
-    e->data.normal.enabled = [frame->client->_self functions] & OB_CLIENT_FUNC_MOVE;
+    e->data.normal.enabled = [[frame client] functions] & OB_CLIENT_FUNC_MOVE;
 
     e = menu_find_entry_id(menu, CLIENT_RESIZE);
-    e->data.normal.enabled = [frame->client->_self functions] & OB_CLIENT_FUNC_RESIZE;
+    e->data.normal.enabled = [[frame client] functions] & OB_CLIENT_FUNC_RESIZE;
 
     e = menu_find_entry_id(menu, CLIENT_CLOSE);
-    e->data.normal.enabled = [frame->client->_self functions] & OB_CLIENT_FUNC_CLOSE;
+    e->data.normal.enabled = [[frame client] functions] & OB_CLIENT_FUNC_CLOSE;
 
     e = menu_find_entry_id(menu, CLIENT_DECORATE);
-    e->data.normal.enabled = [frame->client->_self normal];
+    e->data.normal.enabled = [[frame client] normal];
 }
 
-static void layer_update(ObMenuFrame *frame, gpointer data)
+static void layer_update(ObMenuFrame *_frame, gpointer data)
 {
-    ObMenu *menu = frame->menu;
+    AZMenuFrame *frame = _frame->_self;
+    ObMenu *menu = [frame menu];
     ObMenuEntry *e;
     GList *it;
 
     for (it = menu->entries; it; it = g_list_next(it)) {
         e = it->data;
         if (e->type == OB_MENU_ENTRY_TYPE_NORMAL)
-            e->data.normal.enabled = !!frame->client;
+            e->data.normal.enabled = !![frame client];
     }
 
-    if (!frame->client)
+    if (![frame client])
         return;
 
     e = menu_find_entry_id(menu, LAYER_TOP);
-    e->data.normal.enabled = ![frame->client->_self above];
+    e->data.normal.enabled = ![[frame client] above];
 
     e = menu_find_entry_id(menu, LAYER_NORMAL);
-    e->data.normal.enabled = ([frame->client->_self above] || [frame->client->_self below]);
+    e->data.normal.enabled = ([[frame client] above] || [[frame client] below]);
 
     e = menu_find_entry_id(menu, LAYER_BOTTOM);
-    e->data.normal.enabled = ![frame->client->_self below];
+    e->data.normal.enabled = ![[frame client] below];
 }
 
-static void send_to_update(ObMenuFrame *frame, gpointer data)
+static void send_to_update(ObMenuFrame *_frame, gpointer data)
 {
-    ObMenu *menu = frame->menu;
+    AZMenuFrame *frame = _frame->_self;
+    ObMenu *menu = [frame menu];
     guint i;
     GSList *acts;
     ObAction *act;
@@ -129,7 +133,7 @@ static void send_to_update(ObMenuFrame *frame, gpointer data)
 
     menu_clear_entries(menu);
 
-    if (!frame->client)
+    if (![frame client])
         return;
 
     AZScreen *screen = [AZScreen defaultScreen];
@@ -155,7 +159,7 @@ static void send_to_update(ObMenuFrame *frame, gpointer data)
         acts = g_slist_prepend(NULL, act);
         e = menu_add_normal(menu, desk, name, acts);
 
-        if ([frame->client->_self desktop] == desk)
+        if ([[frame client] desktop] == desk)
             e->data.normal.enabled = FALSE;
     }
 }

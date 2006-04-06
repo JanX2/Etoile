@@ -611,6 +611,11 @@ static BOOL show_timeout(void *data);
   return sharedInstance;
 }
 
+/* AZWindow protocol */
+- (Window_InternalType) windowType { return Window_Dock; }
+- (int) windowLayer { config_dock_layer; }
+- (Window) windowTop { return frame; }
+
 @end
 
 @implementation AZDock (AZPrivate)

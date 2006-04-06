@@ -19,6 +19,7 @@
 #import "AZScreen.h"
 #import "AZClient.h"
 #import "AZFocusManager.h"
+#import "AZMenuFrame.h"
 #import "openbox.h"
 #import "menu.h"
 #import "menuframe.h"
@@ -38,7 +39,7 @@ typedef struct
 
 static void desk_menu_update(ObMenuFrame *frame, gpointer data)
 {
-    ObMenu *menu = frame->menu;
+    ObMenu *menu = [frame->_self menu];
     DesktopData *d = data;
     GList *it;
     gint i;
@@ -122,7 +123,7 @@ static void desk_menu_destroy(ObMenu *menu, gpointer data)
 
 static void self_update(ObMenuFrame *frame, gpointer data)
 {
-    ObMenu *menu = frame->menu;
+    ObMenu *menu = [frame->_self menu];
     guint i;
     GSList *it, *next;
     
