@@ -35,15 +35,14 @@
 #import "prop.h"
 #import "extensions.h"
 #import "menu.h"
+#import "mouse.h"
+#import "keyboard.h"
 
 #import <X11/keysym.h>
 #import <X11/Xatom.h>
 
 #if 0
 #include "window.h"
-#include "keyboard.h"
-#include "mouse.h"
-#include "stacking.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -370,8 +369,10 @@ static AZEventHandler *sharedInstance;
 	AZXErrorSetIgnore(NO);
     }
 
+#if 0
     ObClient *_client = NULL;
     if (client) _client = [client obClient];
+#endif
 
     /* user input (action-bound) events */
     if (e->type == ButtonPress || e->type == ButtonRelease ||
@@ -381,14 +382,14 @@ static AZEventHandler *sharedInstance;
         if (menu_frame_visible)
             [self handleMenuEvent: e];
         else {
-            if (!keyboard_process_interactive_grab(e, &_client)) {
+            if (!keyboard_process_interactive_grab(e, &client)) {
 		AZMoveResizeHandler *mrHandler = [AZMoveResizeHandler defaultHandler];
 		if ([mrHandler moveresize_in_progress]) {
  		   [mrHandler event: e];
 
                     /* make further actions work on the client being
                        moved/resized */
-		    _client = [[mrHandler moveresize_client] obClient];
+		    client = [mrHandler moveresize_client];
                 }
 
                 menu_can_hide = NO;
@@ -398,13 +399,13 @@ static AZEventHandler *sharedInstance;
 
                 if (e->type == ButtonPress || e->type == ButtonRelease ||
                     e->type == MotionNotify) {
-                    mouse_event(_client, e);
+                    mouse_event(client, e);
 		} else if (e->type == KeyPress) {
 		    AZFocusManager *fManager = [AZFocusManager defaultManager];
 		    AZClient *focus_cycle_target = [fManager focus_cycle_target];
 		    AZClient *focus_hilite = [fManager focus_hilite];
-                    keyboard_event((focus_cycle_target ? [focus_cycle_target obClient]:
-                                    (focus_hilite ? [focus_hilite obClient] : _client)),
+                    keyboard_event((focus_cycle_target ? focus_cycle_target:
+                                    (focus_hilite ? focus_hilite : client)),
                                    e);
 		}
             }

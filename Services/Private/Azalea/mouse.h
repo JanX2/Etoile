@@ -1,3 +1,4 @@
+// Modifiedy by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    mouse.h for the Openbox window manager
@@ -31,9 +32,9 @@ gboolean mouse_bind(const gchar *buttonstr, const gchar *contextstr,
                     ObMouseAction mact, ObAction *action);
 void mouse_unbind_all();
 
-void mouse_event(struct _ObClient *client, XEvent *e);
+void mouse_event(AZClient *client, XEvent *e);
 
-void mouse_grab_for_client(struct _ObClient *client, gboolean grab);
+void mouse_grab_for_client(AZClient *client, gboolean grab);
 
 ObFrameContext mouse_button_frame_context(ObFrameContext context,
                                           guint button);

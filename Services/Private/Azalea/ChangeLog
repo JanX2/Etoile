@@ -4,6 +4,7 @@
 	(This could be unstable).
 	* Remove menuframe and clean up ObWindow.
 	* Remove some of the glib (gint, glong and gboolean mainly).
+	* Use AZClient in mouse and keyboard.
 
 2006-04-05 Yen-Ju Chen <yjchenx at gmail>
 

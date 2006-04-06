@@ -33,6 +33,7 @@
 #import "openbox.h"
 #import "grab.h"
 #import "prop.h"
+#import "mouse.h"
 
 
 /*! The event mask to grab on client windows */
@@ -253,8 +254,8 @@ static AZClientManager *sharedInstance;
 	    [client->_self moveToX: x y: y];
     }
 
-    keyboard_grab_for_client(client, YES);
-    mouse_grab_for_client(client, YES);
+    keyboard_grab_for_client(client->_self, YES);
+    mouse_grab_for_client(client->_self, YES);
 
     [client->_self showhide];
 
@@ -312,8 +313,8 @@ static AZClientManager *sharedInstance;
 
     g_assert(client != NULL);
 
-    keyboard_grab_for_client(client, NO);
-    mouse_grab_for_client(client, NO);
+    keyboard_grab_for_client(client->_self, NO);
+    mouse_grab_for_client(client->_self, NO);
 
     /* potentially fix focusLast */
     if (config_focus_last)

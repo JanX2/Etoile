@@ -36,7 +36,7 @@ KeyBindingTree *keyboard_firstnode;
 
 typedef struct {
     guint state;
-    ObClient *client;
+    AZClient *client;
     GSList *actions;
     ObFrameContext context;
 } ObInteractiveState;
@@ -64,9 +64,9 @@ static void grab_for_window(Window win, gboolean grab)
     }
 }
 
-void keyboard_grab_for_client(ObClient *c, gboolean grab)
+void keyboard_grab_for_client(AZClient *c, gboolean grab)
 {
-    grab_for_window([c->_self window], grab);
+    grab_for_window([c window], grab);
 }
 
 static void grab_keys(gboolean grab)
@@ -156,7 +156,7 @@ gboolean keyboard_bind(GList *keylist, ObAction *action)
     return TRUE;
 }
 
-gboolean keyboard_interactive_grab(guint state, ObClient *client,
+gboolean keyboard_interactive_grab(guint state, AZClient *client,
                                    ObAction *action)
 {
     ObInteractiveState *s;
@@ -186,7 +186,7 @@ gboolean keyboard_interactive_grab(guint state, ObClient *client,
 void keyboard_interactive_end(ObInteractiveState *s,
                               guint state, gboolean cancel)
 {
-    action_run_interactive(s->actions, s->client, state, cancel, TRUE);
+    action_run_interactive(s->actions, [s->client obClient], state, cancel, TRUE);
 
     g_slist_free(s->actions);
     g_free(s);
@@ -209,12 +209,12 @@ void keyboard_interactive_end_client(ObClient *client, gpointer data)
 
         next = g_slist_next(it);
 
-        if (s->client == client)
-            s->client = NULL;
+        if (s->client == (client ? client->_self : nil))
+            s->client = nil;
     }
 }
 
-gboolean keyboard_process_interactive_grab(const XEvent *e, ObClient **client)
+gboolean keyboard_process_interactive_grab(const XEvent *e, AZClient **client)
 {
     GSList *it, *next;
     gboolean handled = FALSE;
@@ -246,7 +246,7 @@ gboolean keyboard_process_interactive_grab(const XEvent *e, ObClient **client)
     return handled;
 }
 
-void keyboard_event(ObClient *client, const XEvent *e)
+void keyboard_event(AZClient *client, const XEvent *e)
 {
     KeyBindingTree *p;
 
@@ -282,7 +282,7 @@ void keyboard_event(ObClient *client, const XEvent *e)
 
                 keyboard_reset_chains();
 
-                action_run_key(p->actions, client, e->xkey.state,
+                action_run_key(p->actions, [client obClient], e->xkey.state,
                                e->xkey.x_root, e->xkey.y_root);
             }
             break;

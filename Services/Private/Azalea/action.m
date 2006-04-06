@@ -979,7 +979,7 @@ void action_run_list(GSList *acts, ObClient *c, ObFrameContext context,
                 a->data.inter.cancel = cancel;
                 a->data.inter.final = done;
                 if (!(cancel || done))
-                    if (!keyboard_interactive_grab(state, a->data.any.c, a))
+                    if (!keyboard_interactive_grab(state, (a->data.any.c ? a->data.any.c->_self : nil), a))
                         continue;
             }
 

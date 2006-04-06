@@ -24,8 +24,8 @@
 #include <glib.h>
 #include <X11/Xlib.h>
 
-struct _ObClient;
 struct _ObAction;
+@class AZClient;
 
 extern KeyBindingTree *keyboard_firstnode;
 
@@ -35,14 +35,13 @@ void keyboard_shutdown(gboolean reconfig);
 gboolean keyboard_bind(GList *keylist, ObAction *action);
 void keyboard_unbind_all();
 
-void keyboard_event(struct _ObClient *client, const XEvent *e);
+void keyboard_event(AZClient *client, const XEvent *e);
 void keyboard_reset_chains();
 
-gboolean keyboard_interactive_grab(guint state, struct _ObClient *client,
+gboolean keyboard_interactive_grab(guint state, AZClient *client,
                                    struct _ObAction *action);
-gboolean keyboard_process_interactive_grab(const XEvent *e,
-                                           struct _ObClient **client);
+gboolean keyboard_process_interactive_grab(const XEvent *e, AZClient **client);
 
-void keyboard_grab_for_client(struct _ObClient *c, gboolean grab);
+void keyboard_grab_for_client(AZClient *c, gboolean grab);
 
 #endif

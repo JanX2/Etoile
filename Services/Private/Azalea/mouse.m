@@ -34,9 +34,9 @@ typedef struct {
     GSList *actions[OB_NUM_MOUSE_ACTIONS]; /* lists of Action pointers */
 } ObMouseBinding;
 
-#define FRAME_CONTEXT(co, cl) ((cl && [cl->_self type] != OB_CLIENT_TYPE_DESKTOP) ? \
+#define FRAME_CONTEXT(co, cl) ((cl && [cl type] != OB_CLIENT_TYPE_DESKTOP) ? \
                                co == OB_FRAME_CONTEXT_FRAME : FALSE)
-#define CLIENT_CONTEXT(co, cl) ((cl && [cl->_self type] == OB_CLIENT_TYPE_DESKTOP) ? \
+#define CLIENT_CONTEXT(co, cl) ((cl && [cl type] == OB_CLIENT_TYPE_DESKTOP) ? \
                                 co == OB_FRAME_CONTEXT_DESKTOP : \
                                 co == OB_FRAME_CONTEXT_CLIENT)
 
@@ -86,7 +86,7 @@ ObFrameContext mouse_button_frame_context(ObFrameContext context,
     return x;
 }
 
-void mouse_grab_for_client(ObClient *client, gboolean grab)
+void mouse_grab_for_client(AZClient *client, gboolean grab)
 {
     gint i;
     GSList *it;
@@ -100,11 +100,11 @@ void mouse_grab_for_client(ObClient *client, gboolean grab)
             guint mask;
 
             if (FRAME_CONTEXT(i, client)) {
-                win = [[client->_self frame] window];
+                win = [[client frame] window];
                 mode = GrabModeAsync;
                 mask = ButtonPressMask | ButtonMotionMask | ButtonReleaseMask;
             } else if (CLIENT_CONTEXT(i, client)) {
-                win = [[client->_self frame] plate];
+                win = [[client frame] plate];
                 mode = GrabModeSync; /* this is handled in event */
                 mask = ButtonPressMask; /* can't catch more than this with Sync
                                            mode the release event is
@@ -126,7 +126,7 @@ static void grab_all_clients(gboolean grab)
   for (i = 0; i < count; i++)
   {
     AZClient *data = [cManager clientAtIndex: i];
-    mouse_grab_for_client([data obClient], grab);
+    mouse_grab_for_client(data, grab);
   }
 }
 
@@ -155,7 +155,7 @@ void mouse_unbind_all()
 }
 
 static gboolean fire_binding(ObMouseAction a, ObFrameContext context,
-                             ObClient *c, guint state,
+                             AZClient *c, guint state,
                              guint button, gint x, gint y)
 {
     GSList *it;
@@ -169,11 +169,11 @@ static gboolean fire_binding(ObMouseAction a, ObFrameContext context,
     /* if not bound, then nothing to do! */
     if (it == NULL) return FALSE;
 
-    action_run_mouse(b->actions[a], c, context, state, button, x, y);
+    action_run_mouse(b->actions[a], [c obClient], context, state, button, x, y);
     return TRUE;
 }
 
-void mouse_event(ObClient *client, XEvent *e)
+void mouse_event(AZClient *client, XEvent *e)
 {
     static Time ltime;
     static guint button = 0, state = 0, lbutton = 0;
@@ -186,7 +186,7 @@ void mouse_event(ObClient *client, XEvent *e)
 
     switch (e->type) {
     case ButtonPress:
-        context = frame_context((client ? client->_self : nil), e->xany.window);
+        context = frame_context(client, e->xany.window);
         context = mouse_button_frame_context(context, e->xbutton.button);
 
         px = e->xbutton.x_root;
@@ -207,7 +207,7 @@ void mouse_event(ObClient *client, XEvent *e)
             break;
 
     case ButtonRelease:
-        context = frame_context((client ? client->_self : nil), e->xany.window);
+        context = frame_context(client, e->xany.window);
         context = mouse_button_frame_context(context, e->xbutton.button);
 
         if (e->xbutton.button == button) {
@@ -267,7 +267,7 @@ void mouse_event(ObClient *client, XEvent *e)
 
     case MotionNotify:
         if (button) {
-            context = frame_context((client ? client->_self : nil), e->xany.window);
+            context = frame_context(client, e->xany.window);
             context = mouse_button_frame_context(context, button);
 
             if (ABS(e->xmotion.x_root - px) >=
