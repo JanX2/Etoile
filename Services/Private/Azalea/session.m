@@ -335,78 +335,78 @@ static gboolean session_save()
         fprintf(f, "<openbox_session id=\"%s\">\n\n", sm_id);
 
 	for (i = 0; i < count; i++) {
-	    ObWindow *temp = [[AZStacking stacking] windowAtIndex: i];
+	    id <AZWindow> temp = [[AZStacking stacking] windowAtIndex: i];
             gint prex, prey, prew, preh;
-            ObClient *c;
+            AZClient *c;
             gchar *t;
 
             if (WINDOW_IS_CLIENT(temp))
-                c = WINDOW_AS_CLIENT(temp);
+                c = (AZClient *)temp;
             else
                 continue;
 
-            if (![c->_self normal])
+            if (![c normal])
                 continue;
 
-            if (![c->_self sm_client_id])
+            if (![c sm_client_id])
                 continue;
 
-            prex = [c->_self area].x;
-            prey = [c->_self area].y;
-            prew = [c->_self area].width;
-            preh = [c->_self area].height;
-            if ([c->_self fullscreen]) {
-                prex = [c->_self pre_fullscreen_area].x;
-                prey = [c->_self pre_fullscreen_area].x;
-                prew = [c->_self pre_fullscreen_area].width;
-                preh = [c->_self pre_fullscreen_area].height;
+            prex = [c area].x;
+            prey = [c area].y;
+            prew = [c area].width;
+            preh = [c area].height;
+            if ([c fullscreen]) {
+                prex = [c pre_fullscreen_area].x;
+                prey = [c pre_fullscreen_area].x;
+                prew = [c pre_fullscreen_area].width;
+                preh = [c pre_fullscreen_area].height;
             }
-            if ([c->_self max_horz]) {
-                prex = [c->_self pre_max_area].x;
-                prew = [c->_self pre_max_area].width;
+            if ([c max_horz]) {
+                prex = [c pre_max_area].x;
+                prew = [c pre_max_area].width;
             }
-            if ([c->_self max_vert]) {
-                prey = [c->_self pre_max_area].y;
-                preh = [c->_self pre_max_area].height;
+            if ([c max_vert]) {
+                prey = [c pre_max_area].y;
+                preh = [c pre_max_area].height;
             }
 
-            fprintf(f, "<window id=\"%s\">\n", [c->_self sm_client_id]);
+            fprintf(f, "<window id=\"%s\">\n", [c sm_client_id]);
 
-            t = g_markup_escape_text([c->_self name], -1);
+            t = g_markup_escape_text([c name], -1);
             fprintf(f, "\t<name>%s</name>\n", t);
             g_free(t);
 
-            t = g_markup_escape_text([c->_self class], -1);
+            t = g_markup_escape_text([c class], -1);
             fprintf(f, "\t<class>%s</class>\n", t);
             g_free(t);
 
-            t = g_markup_escape_text([c->_self role], -1);
+            t = g_markup_escape_text([c role], -1);
             fprintf(f, "\t<role>%s</role>\n", t);
             g_free(t);
 
-            fprintf(f, "\t<desktop>%d</desktop>\n", [c->_self desktop]);
+            fprintf(f, "\t<desktop>%d</desktop>\n", [c desktop]);
             fprintf(f, "\t<stacking>%d</stacking>\n", stack_pos);
             fprintf(f, "\t<x>%d</x>\n", prex);
             fprintf(f, "\t<y>%d</y>\n", prey);
             fprintf(f, "\t<width>%d</width>\n", prew);
             fprintf(f, "\t<height>%d</height>\n", preh);
-            if ([c->_self shaded])
+            if ([c shaded])
                 fprintf(f, "\t<shaded />\n");
-            if ([c->_self iconic])
+            if ([c iconic])
                 fprintf(f, "\t<iconic />\n");
-            if ([c->_self skip_pager])
+            if ([c skip_pager])
                 fprintf(f, "\t<skip_pager />\n");
-            if ([c->_self skip_taskbar])
+            if ([c skip_taskbar])
                 fprintf(f, "\t<skip_taskbar />\n");
-            if ([c->_self fullscreen])
+            if ([c fullscreen])
                 fprintf(f, "\t<fullscreen />\n");
-            if ([c->_self above])
+            if ([c above])
                 fprintf(f, "\t<above />\n");
-            if ([c->_self below])
+            if ([c below])
                 fprintf(f, "\t<below />\n");
-            if ([c->_self max_horz])
+            if ([c max_horz])
                 fprintf(f, "\t<max_horz />\n");
-            if ([c->_self max_vert])
+            if ([c max_vert])
                 fprintf(f, "\t<max_vert />\n");
             fprintf(f, "</window>\n\n");
 

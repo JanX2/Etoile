@@ -37,7 +37,7 @@ typedef enum {
 
 @interface AZStacking: NSObject
 {
-  /* list of ObWindow*s in stacking order from highest to lowest */
+  /* list of AZWindow*s in stacking order from highest to lowest */
   GList *stacking_list;
 }
 
@@ -47,24 +47,24 @@ typedef enum {
   stacking_list */
 - (void) setList;
 
-- (void) addWindow: (ObWindow *) win;
-- (void) removeWindow: (ObWindow *) win;
+- (void) addWindow: (id <AZWindow>) win;
+- (void) removeWindow: (id <AZWindow>) win;
 
 /*! Raises a window above all others in its stacking layer */
-- (void) raiseWindow: (ObWindow *) win group: (BOOL) group;
+- (void) raiseWindow: (id <AZWindow>) win group: (BOOL) group;
 
 /*! Lowers a window below all others in its stacking layer */
-- (void) lowerWindow: (ObWindow *) win group: (BOOL) group;
+- (void) lowerWindow: (id <AZWindow>) win group: (BOOL) group;
 
 /*! Moves a window below another if its in the same layer.
   This function does not enforce stacking rules IRT transients n such, and so
   it should really ONLY be used to restore stacking orders from saved sessions
 */
-- (void) moveWindow: (ObWindow *) window belowWindow: (ObWindow *) below;
+- (void) moveWindow: (id <AZWindow>) window belowWindow: (id <AZWindow>) below;
 
 /* Accessories */
 - (int) count;
-- (ObWindow *) windowAtIndex: (int) index;
+- (id <AZWindow>) windowAtIndex: (int) index;
 
 @end
 

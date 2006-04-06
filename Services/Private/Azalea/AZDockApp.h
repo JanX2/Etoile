@@ -21,22 +21,10 @@
 #import <X11/Xlib.h>
 #import "window.h"
 
-struct _ObWindow;
-
 @class AZDockApp;
-
-struct _AZDockAppStruct
-{
-  Window_InternalType type;
-  AZDockApp *dock_app;
-};
 
 @interface AZDockApp: NSObject <NSCopying, AZWindow>
 {
-    ObWindow obwin;
-
-    struct _AZDockAppStruct _self;
-
     int ignore_unmaps;
 
     Window icon_win;
@@ -69,15 +57,12 @@ struct _AZDockAppStruct
 - (char *) name;
 - (char *) class;
 - (int) ignoreUnmaps;
-- (void) setType: (int) type;
 - (void) setWindow: (Window) win;
 - (void) setIconWindow: (Window) icon_win;
 - (void) setName: (char *) name;
 - (void) setClass: (char *) class;
 - (void) setIgnoreUnmaps: (int) value;
 
-/* FIXME: need to remove after porting */
-- (struct _AZDockAppStruct *) fakeObWindow;
 - (Window *) iconWindowPointer;
 
 @end

@@ -221,7 +221,7 @@ static gboolean place_smart(AZClient *client, gint *x, gint *y,
     AZScreen *screen = [AZScreen defaultScreen];
     AZStacking *stacking = [AZStacking stacking];
     int j, index = NSNotFound, count = [stacking count];
-    ObWindow *temp;
+    id <AZWindow> temp;
 
     for (i = 0; i < [screen numberOfMonitors]; ++i)
         spaces = area_add(spaces, [screen areaOfDesktop: [client desktop]
@@ -230,10 +230,10 @@ static gboolean place_smart(AZClient *client, gint *x, gint *y,
     /* stay out from under windows in higher layers */
     for (j = 0; j < count; j++) {
 	temp = [stacking windowAtIndex: j];
-        AZClient *c;
+        AZClient *c = nil;
 
         if (WINDOW_IS_CLIENT(temp)) {
-            c = ((ObClient *)temp)->_self;
+            c = (AZClient *)temp;
             if ([c fullscreen])
                 continue;
         } else

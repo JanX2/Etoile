@@ -57,9 +57,7 @@ static BOOL show_timeout(void *data);
         RrAppearanceFree(a_frame);
         a_frame = RrAppearanceCopy(ob_rr_theme->a_unfocused_title);
 
-	_self.type = Window_Dock;
-	_self.dock = self;
-        [[AZStacking stacking] addWindow: (DOCK_AS_WINDOW(&_self))];
+        [[AZStacking stacking] addWindow: self];
 
 	[self configure];
 	[self setHide: YES];
@@ -74,8 +72,6 @@ static BOOL show_timeout(void *data);
 
     STRUT_PARTIAL_SET(dock_strut, 0, 0, 0, 0,
                       0, 0, 0, 0, 0, 0, 0, 0);
-
-    obwin.type = Window_Dock;
 
     hidden = YES;
 
@@ -92,11 +88,8 @@ static BOOL show_timeout(void *data);
                      RrColorPixel(ob_rr_theme->b_color));
     XSetWindowBorderWidth(ob_display, frame, ob_rr_theme->bwidth);
 
-    _self.type = Window_Dock;
-    _self.dock = self;
-
     g_hash_table_insert(window_map, &frame, self);
-    [[AZStacking stacking] addWindow: (DOCK_AS_WINDOW(&_self))];
+    [[AZStacking stacking] addWindow: self];
 }
 
 - (void) shutdown: (BOOL) reconfig
@@ -104,7 +97,7 @@ static BOOL show_timeout(void *data);
     if (reconfig) {
         GList *it;
 
-        [[AZStacking stacking] removeWindow: (DOCK_AS_WINDOW(&_self))];
+        [[AZStacking stacking] removeWindow: self];
 
 	int i, count = [dock_apps count];
 	for (i = 0; i < count; i++)
@@ -117,7 +110,7 @@ static BOOL show_timeout(void *data);
 
     XDestroyWindow(ob_display, frame);
     RrAppearanceFree(a_frame);
-    [[AZStacking stacking] removeWindow: (ObWindow *)(&_self)];
+    [[AZStacking stacking] removeWindow: self];
     g_hash_table_remove(window_map, &frame);
 }
 
@@ -128,7 +121,6 @@ static BOOL show_timeout(void *data);
     char **data;
 
     app = [[AZDockApp alloc] init];
-    [app setType: Window_DockApp];
     [app setWindow: win];
     [app setIconWindow: (wmhints->flags & IconWindowHint) ?
         wmhints->icon_window : win];
@@ -582,11 +574,6 @@ static BOOL show_timeout(void *data);
   if (orig < index) index--;
   [dock_apps insertObject: app atIndex: index];
   RELEASE(app);
-}
-
-- (struct _AZDockStruct *) _self
-{
-  return &_self;
 }
 
 - (id) init

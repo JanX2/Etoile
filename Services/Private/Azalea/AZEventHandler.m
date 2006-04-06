@@ -1008,9 +1008,9 @@ static AZEventHandler *sharedInstance;
     switch (e->type) {
     case ButtonPress:
         if (e->xbutton.button == 1)
-            [stacking raiseWindow: DOCK_AS_WINDOW([s _self]) group: FALSE];
+            [stacking raiseWindow: s group: FALSE];
         else if (e->xbutton.button == 2)
-            [stacking lowerWindow: DOCK_AS_WINDOW([s _self]) group: FALSE];
+            [stacking lowerWindow: s group: FALSE];
         break;
     case EnterNotify:
 	[s setHide: NO];

@@ -127,19 +127,11 @@
 - (char *) name { return name; }
 - (char *) class { return class; }
 - (int) ignoreUnmaps { return ignore_unmaps; }
-- (void) setType: (int) type { obwin.type = type; }
 - (void) setWindow: (Window) window { win = window; }
 - (void) setIconWindow: (Window) window { icon_win = window; }
 - (void) setName: (char *) n { name = n; }
 - (void) setClass: (char *) c { class = c; }
 - (void) setIgnoreUnmaps: (int) value { ignore_unmaps = value; }
-
-- (struct _AZDockAppStruct *) fakeObWindow
-{
-  _self.type = obwin.type;
-  _self.dock_app = self;
-  return &_self;
-}
 
 - (Window *) iconWindowPointer
 {

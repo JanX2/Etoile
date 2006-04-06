@@ -27,13 +27,7 @@
 
 @class AZPopUp;
 
-/* For stacking */
-struct _AZPopUpStruct {
-  Window_InternalType type;
-  Window win;
-};
-
-@interface AZPopUp: NSObject
+@interface AZPopUp: NSObject <AZWindow>
 {
   Window bg;
 
@@ -48,8 +42,6 @@ struct _AZPopUpStruct {
   int w;
   int h;
   BOOL mapped;
-
-  struct _AZPopUpStruct popup;
 }
 - (id) initWithIcon: (BOOL) hasIcon;
 /*! Position the popup. The gravity rules are not the same X uses for windows,

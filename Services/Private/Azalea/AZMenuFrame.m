@@ -388,7 +388,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
             entries = g_list_delete_link(entries, entries);
         }
 
-        [[AZStacking stacking] removeWindow: MENU_AS_WINDOW(self)];
+        [[AZStacking stacking] removeWindow: self];
 
         XDestroyWindow(ob_display, items);
         XDestroyWindow(ob_display, title);

@@ -993,7 +993,7 @@
             target = ((AZClient *)(g_hash_table_lookup(window_map, &t)));
             /* if this happens then we need to check for it*/
             g_assert(target != self);
-            if (target && !WINDOW_IS_CLIENT([target obClient])) {
+            if (target && !WINDOW_IS_CLIENT(target)) {
                 /* this can happen when a dialog is a child of
                    a dockapp, for example */
                 target = nil;
@@ -2558,8 +2558,7 @@ no_number:
 	}
         if (found) {
 	    [self calcLayer];
-	    [[AZStacking stacking] moveWindow: CLIENT_AS_WINDOW(obClient)
-		                  belowWindow: CLIENT_AS_WINDOW([data obClient])];
+	    [[AZStacking stacking] moveWindow: self belowWindow: data];
             break;
         }
     }
@@ -2701,7 +2700,7 @@ no_number:
 - (void) addIcon: (AZClientIcon *) icon { [icons addObject: icon]; }
 
 - (struct _ObClient *) obClient { return obClient; }
-- (struct _ObClient **) obClientPointer { return &obClient; }
+//- (struct _ObClient **) obClientPointer { return &obClient; }
 - (void) set_obClient: (struct _ObClient *) c { obClient = c; }
 
 - (id) init
@@ -2786,16 +2785,16 @@ no_number:
 AZClient *AZUnderPointer()
 {
     gint x, y;
-    struct _ObClient *ret = NULL;
+    AZClient *ret = nil;
     int i, count = [[AZStacking stacking] count];
 
     if ([[AZScreen defaultScreen] pointerPosAtX: &x y: &y]) {
 	for (i = 0; i < count; i++) {
-	    ObWindow *temp = [[AZStacking stacking] windowAtIndex: i];
+	    id <AZWindow> temp = [[AZStacking stacking] windowAtIndex: i];
             if (WINDOW_IS_CLIENT(temp)) {
-                struct _ObClient *c = WINDOW_AS_CLIENT(temp);
-                if ([[c->_self frame] visible] &&
-                    RECT_CONTAINS([[c->_self frame] area], x, y)) {
+                AZClient *c = temp;
+                if ([[c frame] visible] &&
+                    RECT_CONTAINS([[c frame] area], x, y)) {
                     ret = c;
                     break;
                 }
@@ -2803,7 +2802,7 @@ AZClient *AZUnderPointer()
         }
     }
     if (ret) 
-	return ret->_self;
+	return ret;
     else
     	return nil;
 }
@@ -3072,8 +3071,8 @@ AZClient *AZUnderPointer()
 
     if (!raised && l != old)
         if ([orig frame]) { /* only restack if the original window is managed */
-            [stacking removeWindow: (CLIENT_AS_WINDOW(obClient))];
-            [stacking addWindow: (CLIENT_AS_WINDOW(obClient))];
+            [stacking removeWindow: self];
+            [stacking addWindow: self];
         }
 }
 

@@ -35,10 +35,10 @@
 #import <assert.h>
 
 struct {
-    InternalWindow top;
-    InternalWindow left;
-    InternalWindow right;
-    InternalWindow bottom;
+    AZInternalWindow *top;
+    AZInternalWindow *left;
+    AZInternalWindow *right;
+    AZInternalWindow *bottom;
 } focus_indicator;
 
 static void focus_cycle_destructor(ObClient *client, gpointer data)
@@ -88,35 +88,35 @@ static AZFocusManager *sharedInstance;
         /* start with nothing focused */
 	[self setClient: nil];
 
-        focus_indicator.top.obwin.type = Window_Internal;
-        focus_indicator.left.obwin.type = Window_Internal;
-        focus_indicator.right.obwin.type = Window_Internal;
-        focus_indicator.bottom.obwin.type = Window_Internal;
+        focus_indicator.top = [[AZInternalWindow alloc] init];
+        focus_indicator.left = [[AZInternalWindow alloc] init];
+        focus_indicator.right = [[AZInternalWindow alloc] init];
+        focus_indicator.bottom = [[AZInternalWindow alloc] init];
 
         attr.save_under = True;
         attr.override_redirect = True;
         attr.background_pixel = BlackPixel(ob_display, ob_screen);
-        focus_indicator.top.win =
+        [focus_indicator.top set_window: 
             createWindow(RootWindow(ob_display, ob_screen),
                          CWOverrideRedirect | CWBackPixel | CWSaveUnder,
-                         &attr);
-        focus_indicator.left.win =
+                         &attr)];
+        [focus_indicator.left set_window:
             createWindow(RootWindow(ob_display, ob_screen),
                          CWOverrideRedirect | CWBackPixel | CWSaveUnder,
-                         &attr);
-        focus_indicator.right.win =
+                         &attr)];
+        [focus_indicator.right set_window:
             createWindow(RootWindow(ob_display, ob_screen),
                          CWOverrideRedirect | CWBackPixel | CWSaveUnder,
-                         &attr);
-        focus_indicator.bottom.win =
+                         &attr)];
+        [focus_indicator.bottom set_window:
             createWindow(RootWindow(ob_display, ob_screen),
                          CWOverrideRedirect | CWBackPixel | CWSaveUnder,
-                         &attr);
+                         &attr)];
 
-        [stacking addWindow: (INTERNAL_AS_WINDOW(&focus_indicator.top))];
-        [stacking addWindow: (INTERNAL_AS_WINDOW(&focus_indicator.left))];
-        [stacking addWindow: (INTERNAL_AS_WINDOW(&focus_indicator.right))];
-        [stacking addWindow: (INTERNAL_AS_WINDOW(&focus_indicator.bottom))];
+        [stacking addWindow: focus_indicator.top];
+        [stacking addWindow: focus_indicator.left];
+        [stacking addWindow: focus_indicator.right];
+        [stacking addWindow: focus_indicator.bottom];
 
         color_white = RrColorNew(ob_rr_inst, 0xff, 0xff, 0xff);
 
@@ -157,10 +157,15 @@ static AZFocusManager *sharedInstance;
 
         RrAppearanceFree(a_focus_indicator);
 
-        XDestroyWindow(ob_display, focus_indicator.top.win);
-        XDestroyWindow(ob_display, focus_indicator.left.win);
-        XDestroyWindow(ob_display, focus_indicator.right.win);
-        XDestroyWindow(ob_display, focus_indicator.bottom.win);
+        XDestroyWindow(ob_display, [focus_indicator.top window]);
+        XDestroyWindow(ob_display, [focus_indicator.left window]);
+        XDestroyWindow(ob_display, [focus_indicator.right window]);
+        XDestroyWindow(ob_display, [focus_indicator.bottom window]);
+
+	DESTROY(focus_indicator.top);
+	DESTROY(focus_indicator.left);
+	DESTROY(focus_indicator.right);
+	DESTROY(focus_indicator.bottom);
     }
 }
 
@@ -286,10 +291,10 @@ static AZFocusManager *sharedInstance;
 - (void) cycleDrawIndicator
 {
     if (!focus_cycle_target) {
-        XUnmapWindow(ob_display, focus_indicator.top.win);
-        XUnmapWindow(ob_display, focus_indicator.left.win);
-        XUnmapWindow(ob_display, focus_indicator.right.win);
-        XUnmapWindow(ob_display, focus_indicator.bottom.win);
+        XUnmapWindow(ob_display, [focus_indicator.top window]);
+        XUnmapWindow(ob_display, [focus_indicator.left window]);
+        XUnmapWindow(ob_display, [focus_indicator.right window]);
+        XUnmapWindow(ob_display, [focus_indicator.bottom window]);
     } else {
         gint x, y, w, h;
         gint wt, wl, wr, wb;
@@ -303,7 +308,7 @@ static AZFocusManager *sharedInstance;
         w = [[focus_cycle_target frame] area].width;
         h = wt;
 
-        XMoveResizeWindow(ob_display, focus_indicator.top.win,
+        XMoveResizeWindow(ob_display, [focus_indicator.top window],
                           x, y, w, h);
         a_focus_indicator->texture[0].data.lineart.x1 = 0;
         a_focus_indicator->texture[0].data.lineart.y1 = h-1;
@@ -321,7 +326,7 @@ static AZFocusManager *sharedInstance;
         a_focus_indicator->texture[3].data.lineart.y1 = h-1;
         a_focus_indicator->texture[3].data.lineart.x2 = w - wr;
         a_focus_indicator->texture[3].data.lineart.y2 = h-1;
-        RrPaint(a_focus_indicator, focus_indicator.top.win,
+        RrPaint(a_focus_indicator, [focus_indicator.top window],
                 w, h);
 
         x = [[focus_cycle_target frame] area].x;
@@ -329,7 +334,7 @@ static AZFocusManager *sharedInstance;
         w = wl;
         h = [[focus_cycle_target frame] area].height;
 
-        XMoveResizeWindow(ob_display, focus_indicator.left.win,
+        XMoveResizeWindow(ob_display, [focus_indicator.left window],
                           x, y, w, h);
         a_focus_indicator->texture[0].data.lineart.x1 = w-1;
         a_focus_indicator->texture[0].data.lineart.y1 = 0;
@@ -347,7 +352,7 @@ static AZFocusManager *sharedInstance;
         a_focus_indicator->texture[3].data.lineart.y1 = wt-1;
         a_focus_indicator->texture[3].data.lineart.x2 = w-1;
         a_focus_indicator->texture[3].data.lineart.y2 = h - wb;
-        RrPaint(a_focus_indicator, focus_indicator.left.win,
+        RrPaint(a_focus_indicator, [focus_indicator.left window],
                 w, h);
 
         x = [[focus_cycle_target frame] area].x +
@@ -356,7 +361,7 @@ static AZFocusManager *sharedInstance;
         w = wr;
         h = [[focus_cycle_target frame] area].height ;
 
-        XMoveResizeWindow(ob_display, focus_indicator.right.win,
+        XMoveResizeWindow(ob_display, [focus_indicator.right window],
                           x, y, w, h);
         a_focus_indicator->texture[0].data.lineart.x1 = 0;
         a_focus_indicator->texture[0].data.lineart.y1 = 0;
@@ -374,7 +379,7 @@ static AZFocusManager *sharedInstance;
         a_focus_indicator->texture[3].data.lineart.y1 = wt-1;
         a_focus_indicator->texture[3].data.lineart.x2 = 0;
         a_focus_indicator->texture[3].data.lineart.y2 = h - wb;
-        RrPaint(a_focus_indicator, focus_indicator.right.win,
+        RrPaint(a_focus_indicator, [focus_indicator.right window],
                 w, h);
 
         x = [[focus_cycle_target frame] area].x;
@@ -383,7 +388,7 @@ static AZFocusManager *sharedInstance;
         w = [[focus_cycle_target frame] area].width;
         h = wb;
 
-        XMoveResizeWindow(ob_display, focus_indicator.bottom.win,
+        XMoveResizeWindow(ob_display, [focus_indicator.bottom window],
                           x, y, w, h);
         a_focus_indicator->texture[0].data.lineart.x1 = 0;
         a_focus_indicator->texture[0].data.lineart.y1 = 0;
@@ -401,13 +406,13 @@ static AZFocusManager *sharedInstance;
         a_focus_indicator->texture[3].data.lineart.y1 = 0;
         a_focus_indicator->texture[3].data.lineart.x2 = w - wr;
         a_focus_indicator->texture[3].data.lineart.y2 = 0;
-        RrPaint(a_focus_indicator, focus_indicator.bottom.win,
+        RrPaint(a_focus_indicator, [focus_indicator.bottom window],
                 w, h);
 
-        XMapWindow(ob_display, focus_indicator.top.win);
-        XMapWindow(ob_display, focus_indicator.left.win);
-        XMapWindow(ob_display, focus_indicator.right.win);
-        XMapWindow(ob_display, focus_indicator.bottom.win);
+        XMapWindow(ob_display, [focus_indicator.top window]);
+        XMapWindow(ob_display, [focus_indicator.left window]);
+        XMapWindow(ob_display, [focus_indicator.right window]);
+        XMapWindow(ob_display, [focus_indicator.bottom window]);
     }
 }
 

@@ -165,7 +165,7 @@
 
     if (!mapped) {
         XMapWindow(ob_display, bg);
-	[[AZStacking stacking] raiseWindow: INTERNAL_AS_WINDOW(&popup) group: NO];
+	[[AZStacking stacking] raiseWindow: self group: NO];
         mapped = TRUE;
     }
 }
@@ -201,10 +201,7 @@
 
   XMapWindow(ob_display, text);
 
-  popup.type = Window_Internal;
-  popup.win = bg;
-  
-  [[AZStacking stacking] addWindow: INTERNAL_AS_WINDOW(&popup)];
+  [[AZStacking stacking] addWindow: self];
 
   return self;
 }
@@ -215,7 +212,7 @@
   XDestroyWindow(ob_display, text);
   RrAppearanceFree(a_bg);
   RrAppearanceFree(a_text);
-  [[AZStacking stacking] removeWindow: INTERNAL_AS_WINDOW(&popup)];
+  [[AZStacking stacking] removeWindow: self];
   [super dealloc];
 }
 
@@ -223,6 +220,11 @@
 {
   // subclass responsibility
 }
+
+/* AZWindow protocol */
+- (Window_InternalType) windowType { return Window_Internal; }
+- (int) windowLayer { OB_STACKING_LAYER_INTERNAL; }
+- (Window) windowTop { return bg; }
 
 @end
 

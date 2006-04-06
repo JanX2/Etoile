@@ -51,13 +51,13 @@
     
     if (config_resist_win)
 	for (j = 0; j < count; j++) {
-	    ObWindow *temp = [stacking windowAtIndex: j];
+	    id <AZWindow> temp = [stacking windowAtIndex: j];
             AZClient *target;
             gint tl, tt, tr, tb; /* 1 past the target's edges on each side */
 
             if (!WINDOW_IS_CLIENT(temp))
                 continue;
-            target = ((ObClient *)temp)->_self;
+            target = (AZClient *)temp;
 
             /* don't snap to self or non-visibles */
             if (![[target frame] visible] || target == self) continue; 
@@ -200,10 +200,10 @@
 
     if (config_resist_win) {
 	for (j = 0; j < count; j++) {
-	    ObWindow *temp = [stacking windowAtIndex: j];
+	    id <AZWindow> temp = [stacking windowAtIndex: j];
             if (!WINDOW_IS_CLIENT(temp))
                 continue;
-            target = ((ObClient *)temp)->_self;
+            target = (AZClient *)temp;
 
             /* don't snap to invisibles or ourself */
             if (![[target frame] visible] || target == self) continue;

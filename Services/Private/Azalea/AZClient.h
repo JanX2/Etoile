@@ -691,7 +691,7 @@ typedef struct _ObClient  ObClient;
 - (void) addIcon: (AZClientIcon *) icon;
 
 - (struct _ObClient *) obClient;
-- (struct _ObClient **) obClientPointer;
+//- (struct _ObClient **) obClientPointer;
 - (void) set_obClient: (struct _ObClient *) obClient; 
 
 /* Only used for category */

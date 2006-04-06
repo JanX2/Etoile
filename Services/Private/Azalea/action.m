@@ -1100,7 +1100,7 @@ void action_raiselower(union ActionData *data)
 void action_raise(union ActionData *data)
 {
     client_action_start(data);
-    [[AZStacking stacking] raiseWindow: CLIENT_AS_WINDOW(data->client.any.c)
+    [[AZStacking stacking] raiseWindow: data->client.any.c->_self
 	                   group: data->stacking.group];
     client_action_end(data);
 }
@@ -1124,7 +1124,7 @@ void action_shadelower(union ActionData *data)
 void action_lower(union ActionData *data)
 {
     client_action_start(data);
-    [[AZStacking stacking] lowerWindow: CLIENT_AS_WINDOW(data->client.any.c)
+    [[AZStacking stacking] lowerWindow: data->client.any.c->_self
 	                   group: data->stacking.group];
     client_action_end(data);
 }

@@ -40,7 +40,7 @@ ObMenuFrame* menu_frame_new(ObMenu *menu, AZClient *client)
     self->_self = [[AZMenuFrame alloc] initWithMenu: menu client: client];
     [self->_self set_obMenuFrame: self];
 
-    [[AZStacking stacking] addWindow: MENU_AS_WINDOW(self)];
+    [[AZStacking stacking] addWindow: self->_self];
 
     return self;
 }
@@ -48,7 +48,7 @@ ObMenuFrame* menu_frame_new(ObMenu *menu, AZClient *client)
 void menu_frame_free(ObMenuFrame *self)
 {
     if (self) {
-        [[AZStacking stacking] removeWindow: MENU_AS_WINDOW(self)];
+        [[AZStacking stacking] removeWindow: self->_self];
 
 	DESTROY(self->_self);
         g_free(self);

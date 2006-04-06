@@ -378,9 +378,9 @@ static AZScreen *sharedInstance;
     /* show windows from top to bottom */
     count = [stacking count];
     for (i = 0; i < count; i++) {
-	ObWindow *temp = [stacking windowAtIndex: i];
+	id <AZWindow> temp = [stacking windowAtIndex: i];
 	if (WINDOW_IS_CLIENT(temp)) {
-            AZClient *c = ((ObClient *)temp)->_self;
+            AZClient *c = (AZClient *)temp;
 	    if ([c shouldShow])
 		[[c frame] show];
         }
@@ -389,9 +389,9 @@ static AZScreen *sharedInstance;
     /* hide windows from bottom to top */
     count = [stacking count];
     for (i = count-1; i > -1; i--) {
-	ObWindow *temp = [stacking windowAtIndex: i];
+	id <AZWindow> temp = [stacking windowAtIndex: i];
         if (WINDOW_IS_CLIENT(temp)) {
-            AZClient *c = ((ObClient *) temp)->_self;
+            AZClient *c = (AZClient *) temp;
             if ([[c frame] visible] && ![c shouldShow])
 		[[c frame] hide];
         }
@@ -601,9 +601,9 @@ done_cycle:
         /* bottom to top */
         count = [stacking count];
         for (i = count-1; i > -1 ; i--) {
-            ObWindow *temp = [stacking windowAtIndex: i];
+            id <AZWindow> temp = [stacking windowAtIndex: i];
             if (WINDOW_IS_CLIENT(temp)) {
-                AZClient *client = ((ObClient *)temp)->_self;
+                AZClient *client = (AZClient *)temp;
                 if ([[client frame] visible] && ![client shouldShow])
 		    [[client frame] hide];
             }
@@ -612,9 +612,9 @@ done_cycle:
         /* top to bottom */
     	count = [stacking count];
         for (i = 0; i < count; i++) {
-	    ObWindow *temp = [stacking windowAtIndex: i];
+	    id <AZWindow> temp = [stacking windowAtIndex: i];
             if (WINDOW_IS_CLIENT(temp)) {
-                AZClient *client = ((ObClient *)temp)->_self;
+                AZClient *client = (AZClient *)temp;
                 if (![[client frame] visible] && [client shouldShow])
 	            [[client frame] show];
             }

@@ -210,7 +210,7 @@ static AZClientManager *sharedInstance;
 
     [client->_self applyStartupState];
 
-    [[AZStacking stacking] addWindow: (CLIENT_AS_WINDOW([client->_self obClient]))];
+    [[AZStacking stacking] addWindow: client->_self];
     [client->_self restoreSessionStacking];
 
     /* focus the new window? */
@@ -328,7 +328,7 @@ static AZClientManager *sharedInstance;
     [[client->_self frame] hide];
 
     [clist removeObject: client->_self];
-    [[AZStacking stacking] removeWindow: (ObWindow *)client];
+    [[AZStacking stacking] removeWindow: client->_self];
     g_hash_table_remove(window_map, [client->_self windowPointer]);
 
     /* update the focus lists */

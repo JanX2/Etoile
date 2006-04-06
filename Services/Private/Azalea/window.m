@@ -40,46 +40,6 @@ void window_shutdown(gboolean reconfig)
     g_hash_table_destroy(window_map);
 }
 
-Window window_top(ObWindow *self)
-{
-    switch (self->type) {
-    case Window_Menu:
-        return [(AZMenuFrame *)(((ObMenuFrame*)self)->_self) window];
-    case Window_Dock:
-        return [((struct _AZDockStruct *)self)->dock frame];
-    case Window_DockApp:
-        /* not to be used for stacking */
-        g_assert_not_reached();
-        break;
-    case Window_Client:
-        return [[((ObClient*)self)->_self frame] window];
-    case Window_Internal:
-        return ((InternalWindow*)self)->win;
-    }
-    g_assert_not_reached();
-    return None;
-}
-
-Window window_layer(ObWindow *self)
-{
-    switch (self->type) {
-    case Window_Menu:
-        return OB_STACKING_LAYER_INTERNAL;
-    case Window_Dock:
-        return config_dock_layer;
-    case Window_DockApp:
-        /* not to be used for stacking */
-        g_assert_not_reached();
-        break;
-    case Window_Client:
-        return [((ObClient*)self)->_self layer];
-    case Window_Internal:
-        return OB_STACKING_LAYER_INTERNAL;
-    }
-    g_assert_not_reached();
-    return None;
-}
-
 @implementation AZInternalWindow
 
 - (Window) window { return window; }
@@ -90,3 +50,4 @@ Window window_layer(ObWindow *self)
 - (int) windowLayer { return OB_STACKING_LAYER_INTERNAL; }
 
 @end
+

@@ -29,19 +29,8 @@
 
 @class AZDock;
 
-/* use this to trick stacking */
-struct _AZDockStruct
-{
-  Window_InternalType type;
-  AZDock *dock;
-};
-
 @interface AZDock: NSObject <AZWindow>
 {
-    ObWindow obwin;
-
-    struct _AZDockStruct _self;
-
     Window frame;
     RrAppearance *a_frame;
 
@@ -79,8 +68,6 @@ struct _AZDockStruct
 
 - (NSArray *) dockApplications;
 - (void) moveDockApp: (AZDockApp *) app toIndex: (int) index;
-
-- (struct _AZDockStruct *) _self;
 
 @end
 
