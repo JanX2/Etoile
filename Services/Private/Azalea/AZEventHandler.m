@@ -29,6 +29,7 @@
 #import "AZFrame+Render.h"
 #import "AZMoveResizeHandler.h"
 #import "AZFocusManager.h"
+#import "AZMenuFrame.h"
 #import "menuframe.h"
 #import "openbox.h"
 #import "config.h"
@@ -1074,14 +1075,14 @@ static AZEventHandler *sharedInstance;
 - (void) handleMenuEvent: (XEvent *) ev
 {
     ObMenuFrame *f;
-    ObMenuEntryFrame *e;
+    AZMenuEntryFrame *e;
 
     switch (ev->type) {
     case ButtonRelease:
         if (menu_can_hide) {
-            if ((e = menu_entry_frame_under(ev->xbutton.x_root,
+            if ((e = AZMenuEntryFrameUnder(ev->xbutton.x_root,
                                             ev->xbutton.y_root)))
-                menu_entry_frame_execute(e, ev->xbutton.state);
+		[e execute: ev->xbutton.state];
             else
                 menu_frame_hide_all();
         }
@@ -1090,7 +1091,7 @@ static AZEventHandler *sharedInstance;
         if ((f = menu_frame_under(ev->xmotion.x_root,
                                   ev->xmotion.y_root))) {
             menu_frame_move_on_screen(f);
-            if ((e = menu_entry_frame_under(ev->xmotion.x_root,
+            if ((e = AZMenuEntryFrameUnder(ev->xmotion.x_root,
                                             ev->xmotion.y_root)))
                 menu_frame_select(f, e);
         }
@@ -1099,7 +1100,7 @@ static AZEventHandler *sharedInstance;
 
             a = [self findActiveMenu];
             if (a && a != f &&
-                a->selected->entry->type != OB_MENU_ENTRY_TYPE_SUBMENU)
+                [a->selected entry]->type != OB_MENU_ENTRY_TYPE_SUBMENU)
             {
                 menu_frame_select(a, NULL);
             }
@@ -1111,7 +1112,7 @@ static AZEventHandler *sharedInstance;
         else if (ev->xkey.keycode == ob_keycode(OB_KEY_RETURN)) {
             ObMenuFrame *f;
             if ((f = [self findActiveMenu]))
-                menu_entry_frame_execute(f->selected, ev->xkey.state);
+		[f->selected execute: ev->xkey.state];
         } else if (ev->xkey.keycode == ob_keycode(OB_KEY_LEFT)) {
             ObMenuFrame *f;
             if ((f = [self findActiveOrLastMenu]) && f->parent)

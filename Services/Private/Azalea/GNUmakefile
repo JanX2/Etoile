@@ -24,6 +24,7 @@ Azalea_OBJC_FILES = \
 	AZFrame+Render.m \
 	AZGroup.m \
 	AZMainLoop.m \
+	AZMenuFrame.m \
 	AZMoveResizeHandler.m \
 	AZPopUp.m \
 	AZScreen.m \

@@ -29,7 +29,6 @@
 
 struct _ObClient;
 struct _ObMenuFrame;
-struct _ObMenuEntryFrame;
 
 typedef struct _ObMenu ObMenu;
 typedef struct _ObMenuEntry ObMenuEntry;
