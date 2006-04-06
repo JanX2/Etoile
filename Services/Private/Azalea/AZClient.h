@@ -110,7 +110,7 @@ typedef struct _ObClient  ObClient;
       members of its ObGroup, and is not a valid pointer to be followed in this
       case.
      */
-    struct _ObClient *transient_for;
+    AZClient *transient_for;
 
     /*! The clients which are transients (children) of this client */
     NSMutableArray *transients;
@@ -580,8 +580,8 @@ typedef struct _ObClient  ObClient;
 - (BOOL) transient;
 - (void) set_transient: (BOOL) transient;
 
-- (struct _ObClient *) transient_for;
-- (void) set_transient_for: (struct _ObClient *) transient_for;
+- (AZClient *) transient_for;
+- (void) set_transient_for: (AZClient *) transient_for;
 
 - (NSArray *) transients;
 - (void) removeTransient: (AZClient *) client;

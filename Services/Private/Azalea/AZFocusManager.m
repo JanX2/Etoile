@@ -248,7 +248,7 @@ static AZFocusManager *sharedInstance;
                     }
                 } else {
                     if ((target =
-			 [self fallbackTransient: [old transient_for]->_self : old]))
+			 [self fallbackTransient: [old transient_for] : old]))
                         return target;
                 }
             }
@@ -767,7 +767,7 @@ done_cycle:
 
         /* use the transient's parent's title/icon */
         while ([p transient_for] && [p transient_for] != OB_TRAN_GROUP)
-            p = [p transient_for]->_self;
+            p = [p transient_for];
 
         if (p != c && !strcmp("", ([c iconic] ? [c icon_title] : [c title])))
             title = g_strdup([p iconic] ? [p icon_title] : [p title]);

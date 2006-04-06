@@ -985,18 +985,18 @@
 - (void) updateTransientFor
 {
     Window t = None;
-    ObClient *target = NULL;
+    AZClient *target = nil;
 
     if (XGetTransientForHint(ob_display, window, &t)) {
         transient = YES;
         if (t != window) { /* cant be transient to itoself! */
-            target = [((AZClient *)(g_hash_table_lookup(window_map, &t))) obClient];
+            target = ((AZClient *)(g_hash_table_lookup(window_map, &t)));
             /* if this happens then we need to check for it*/
-            g_assert(target != obClient);
-            if (target && !WINDOW_IS_CLIENT(target)) {
+            g_assert(target != self);
+            if (target && !WINDOW_IS_CLIENT([target obClient])) {
                 /* this can happen when a dialog is a child of
                    a dockapp, for example */
-                target = NULL;
+                target = nil;
             }
             
             if (!target && group) {
@@ -1027,9 +1027,9 @@
               if (c != self && ![c transient_for])
 		[c removeTransient: self];
             }
-        } else if (transient_for != NULL) { /* transient of window */
+        } else if (transient_for != nil) { /* transient of window */
             /* remove from old parent */
-	    [transient_for->_self removeTransient: self];
+	    [transient_for removeTransient: self];
         }
         transient_for = target;
         if (transient_for == OB_TRAN_GROUP) { /* transient of group */
@@ -1048,9 +1048,9 @@
 	      AZClient *data = [group memberAtIndex: i];
 	      [transients removeObject: data];
             }
-        } else if (transient_for != NULL) { /* transient of window */
+        } else if (transient_for != nil) { /* transient of window */
             /* add to new parent */
-	    [transient_for->_self addTransient: self];
+	    [transient_for addTransient: self];
         }
     }
 }
@@ -1757,8 +1757,8 @@ no_number:
 {
     if (transient_for) {
         if (transient_for != OB_TRAN_GROUP) {
-	    if ([transient_for->_self focused])
-                return transient_for->_self;
+	    if ([transient_for focused])
+                return transient_for;
         } else {
             int i, count = [[group members] count];
 	    for (i = 0; i < count; i++) {
@@ -1838,7 +1838,7 @@ no_number:
     /* move up the transient chain as far as possible */
     if (transient_for) {
         if (transient_for != OB_TRAN_GROUP) {
-	    return [transient_for->_self searchTopTransient];
+	    return [transient_for searchTopTransient];
         } else {
             g_assert(group);
 	    BOOL found = NO;
@@ -2590,9 +2590,9 @@ no_number:
 - (void) set_session: (struct _ObSessionState *) s { session = s; }
 
 - (BOOL) transient { return transient; }
-- (struct _ObClient *) transient_for { return transient_for; }
+- (AZClient *) transient_for { return transient_for; }
 - (void) set_transient: (BOOL) t { transient = t; }
-- (void) set_transient_for: (struct _ObClient *) t { transient_for = t; }
+- (void) set_transient_for: (AZClient *) t { transient_for = t; }
 
 - (NSArray *) transients { return transients; }
 - (void) removeTransient: (AZClient *) c { [transients removeObject: c]; }
@@ -2876,7 +2876,7 @@ AZClient *AZUnderPointer()
 
         if (transient_for) {
             if (transient_for != OB_TRAN_GROUP) {
-                desktop = [transient_for->_self desktop];
+                desktop = [transient_for desktop];
                 trdesk = TRUE;
             } else {
 		int i, count = [[group members] count];
@@ -3207,7 +3207,7 @@ AZClient *AZUnderPointer()
 
         if (transient_for) {
             if (transient_for != OB_TRAN_GROUP)
-	        parent = [[self transient_for]->_self iconRecursiveWithWidth: w height: h];
+	        parent = [[self transient_for] iconRecursiveWithWidth: w height: h];
             else {
 	        int i, count = [[group members] count];
 		for (i = 0; i < count; i++) {

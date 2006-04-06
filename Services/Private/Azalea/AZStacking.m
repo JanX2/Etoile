@@ -442,7 +442,7 @@ static AZStacking *sharedInstance;
     gint i, n;
 
     /* add group members in their stacking order */
-    if ((top) && (top != OB_TRAN_GROUP) && ([top->_self group])) {
+    if ((top) && (top->_self != OB_TRAN_GROUP) && ([top->_self group])) {
         i = 0;
 	n = [[[top->_self group] members] count]-1;
         for (it = stacking_list; i < n && it; it = next) {

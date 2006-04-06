@@ -5,6 +5,7 @@
 	{Hope it is a stable version).
 	* Finish arbitrary window level (sort of).
 	* Finish porting menuframe.
+	* Use AZClient for transient_for (This was unstable before).
 
 2006-04-04 Yen-Ju Chen <yjchenx at gmail>
 

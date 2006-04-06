@@ -30,7 +30,7 @@ static Rect* pick_head(AZClient *c)
     /* try direct parent first */
     if ([c transient_for] && [c transient_for] != OB_TRAN_GROUP) {
 	return [screen areaOfDesktop: [c desktop]
-		       monitor: [[c transient_for]->_self monitor]];
+		       monitor: [[c transient_for] monitor]];
     }
 
     /* more than one guy in his group (more than just him) */
@@ -370,7 +370,7 @@ static gboolean place_transient(AZClient *client, gint *x, gint *y)
     if ([client transient_for]) {
         if ([client transient_for] != OB_TRAN_GROUP) {
             AZClient *c = client;
-            AZClient *p = [client transient_for]->_self;
+            AZClient *p = [client transient_for];
             *x = ([[p frame] area].width - [[c frame] area].width) / 2 +
                 [[p frame] area].x;
             *y = ([[p frame] area].height - [[c frame] area].height) / 2 +

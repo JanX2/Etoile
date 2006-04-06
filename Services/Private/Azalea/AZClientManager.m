@@ -370,7 +370,7 @@ static AZClientManager *sharedInstance;
 	  }
 	}
     } else if ([client->_self transient_for]) {        /* transient of window */
-	[[client->_self transient_for]->_self removeTransient: client->_self];
+	[[client->_self transient_for] removeTransient: client->_self];
     }
 
     /* tell our transients that we're gone */
