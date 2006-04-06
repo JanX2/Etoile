@@ -27,7 +27,7 @@
 #include <glib.h>
 
 struct _ObClient;
-struct _ObMenuFrame;
+@class AZMenuFrame;
 
 typedef struct _ObMenu ObMenu;
 typedef struct _ObMenuEntry ObMenuEntry;
@@ -35,7 +35,7 @@ typedef struct _ObNormalMenuEntry ObNormalMenuEntry;
 typedef struct _ObSubmenuMenuEntry ObSubmenuMenuEntry;
 typedef struct _ObSeparatorMenuEntry ObSeparatorMenuEntry;
 
-typedef void (*ObMenuUpdateFunc)(struct _ObMenuFrame *frame, gpointer data);
+typedef void (*ObMenuUpdateFunc)(AZMenuFrame *frame, gpointer data);
 typedef void (*ObMenuExecuteFunc)(struct _ObMenuEntry *entry,
                                   guint state, gpointer data);
 typedef void (*ObMenuDestroyFunc)(struct _ObMenu *menu, gpointer data);

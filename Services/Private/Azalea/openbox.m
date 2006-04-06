@@ -36,7 +36,6 @@
 #include "keyboard.h"
 #include "mouse.h"
 #include "extensions.h"
-#include "menuframe.h"
 #include "grab.h"
 #include "config.h"
 #include "parser/parse.h"

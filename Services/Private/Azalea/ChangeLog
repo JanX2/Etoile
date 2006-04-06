@@ -2,6 +2,7 @@
 
 	* Use AZWindow protocol instead crash-prone ObWindow.
 	(This could be unstable).
+	* Remove menuframe and clean up ObWindow.
 
 2006-04-05 Yen-Ju Chen <yjchenx at gmail>
 

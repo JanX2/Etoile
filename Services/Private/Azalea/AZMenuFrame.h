@@ -17,7 +17,6 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#import "menuframe.h"
 #import "menu.h"
 #import "window.h"
 #import <Foundation/Foundation.h>
@@ -25,6 +24,8 @@
 struct _ObMenuEntry;
 @class AZMenuEntryFrame;
 @class AZClient;
+
+extern GList *menu_frame_visible;
 
 @interface AZMenuFrame: NSObject <AZWindow>
 {    
@@ -61,8 +62,6 @@ struct _ObMenuEntry;
 
   RrAppearance *a_title;
   RrAppearance *a_items;
-
-  struct _ObMenuFrame *obMenuFrame;
 }
 
 - (void) moveToX: (int) x y: (int) y;
@@ -96,9 +95,6 @@ struct _ObMenuEntry;
 - (Strut) item_margin;
 - (GList *) entries;
 - (void) set_show_title: (BOOL) show_title;
-
-- (void) set_obMenuFrame: (struct _ObMenuFrame *) obMenuFrame;
-- (struct _ObMenuFrame *) obMenuFrame;
 
 - (id) initWithMenu: (struct _ObMenu *) menu client: (AZClient *) client;
 

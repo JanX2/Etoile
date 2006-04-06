@@ -23,7 +23,6 @@
 #include "menu.h"
 #include "openbox.h"
 #include "config.h"
-#include "menuframe.h"
 #include "geom.h"
 #include "misc.h"
 #include "client_menu.h"
@@ -298,7 +297,7 @@ void menu_show(gchar *name, gint x, gint y, ObClient *client)
 
     AZMenuFrameHideAll();
 
-    frame = menu_frame_new(self, (client ? client->_self : nil))->_self;
+    frame = [[AZMenuFrame alloc] initWithMenu: self client: (client ? client->_self : nil)];
     if (client && x < 0 && y < 0) {
         x = [[client->_self frame] area].x + [[client->_self frame] size].left;
         y = [[client->_self frame] area].y + [[client->_self frame] size].top;
@@ -314,7 +313,7 @@ void menu_show(gchar *name, gint x, gint y, ObClient *client)
         }
     }
     if (![frame showWithParent: nil])
-        menu_frame_free([frame obMenuFrame]);
+	DESTROY(frame);
 }
 
 static ObMenuEntry* menu_entry_new(ObMenu *menu, ObMenuEntryType type, gint id)
@@ -370,11 +369,11 @@ void menu_clear_entries(ObMenu *self)
     /* assert that the menu isn't visible */
     {
         GList *it;
-        ObMenuFrame *f;
+        AZMenuFrame *f;
 
         for (it = menu_frame_visible; it; it = g_list_next(it)) {
             f = it->data;
-            g_assert(f->menu != self);
+            g_assert([f menu] != self);
         }
     }
 #endif

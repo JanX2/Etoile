@@ -22,10 +22,11 @@
 #import "AZClient.h"
 #import "AZScreen.h"
 #import "menu.h"
-#import "menuframe.h"
 #import "config.h"
 #import "openbox.h"
 #import "render/theme.h"
+
+GList *menu_frame_visible;
 
 #define PADDING 2
 #define SEPARATOR_HEIGHT 3
@@ -90,6 +91,7 @@ static Window createWindow(Window parent, gulong mask,
   a_text_normal = RrAppearanceCopy(ob_rr_theme->a_menu_text_normal);
   a_text_disabled = RrAppearanceCopy(ob_rr_theme->a_menu_text_disabled);
   a_text_selected = RrAppearanceCopy(ob_rr_theme->a_menu_text_selected);
+
 
   return self;
 }
@@ -285,7 +287,8 @@ static Window createWindow(Window parent, gulong mask,
 
     if (!entry->data.submenu.submenu) return;
 
-    f = menu_frame_new(entry->data.submenu.submenu, [frame client])->_self;
+    f = [[AZMenuFrame alloc] initWithMenu: entry->data.submenu.submenu
+	                           client: [frame client]];
     [f moveToX: [frame area].x + [frame area].width
                     - ob_rr_theme->menu_overlap - ob_rr_theme->bwidth
 	     y: [frame area].y + [frame title_h] +
@@ -376,7 +379,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     a_title = RrAppearanceCopy(ob_rr_theme->a_menu_title);
     a_items = RrAppearanceCopy(ob_rr_theme->a_menu);
 
-    //[[AZStacking stacking] addWindow: MENU_AS_WINDOW(self)];
+    [[AZStacking stacking] addWindow: self];
 
     return self;
 }
@@ -669,7 +672,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     }
     if (!it) {
         if (menu->update_func)
-            menu->update_func([self obMenuFrame], menu->data);
+            menu->update_func(self, menu->data);
     }
 
     [self update];
@@ -708,7 +711,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     XUnmapWindow(ob_display, window);
 
     // FIXME
-    menu_frame_free([self obMenuFrame]);
+    RELEASE(self);
 }
 
 - (void) selectMenuEntryFrame: (AZMenuEntryFrame *) entry
@@ -811,9 +814,6 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 - (Strut) item_margin { return item_margin; }
 - (GList *) entries { return entries; }
 - (void) set_show_title: (BOOL) b { show_title = b; }
-
-- (void) set_obMenuFrame: (struct _ObMenuFrame *) o { obMenuFrame = o; }
-- (struct _ObMenuFrame *) obMenuFrame { return obMenuFrame; }
 
 - (Window_InternalType) windowType { return Window_Menu; }
 - (int) windowLayer { return OB_STACKING_LAYER_INTERNAL; }

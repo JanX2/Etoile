@@ -25,8 +25,6 @@
 #define POPUP_WIDTH 320
 #define POPUP_HEIGHT 48
 
-@class AZPopUp;
-
 @interface AZPopUp: NSObject <AZWindow>
 {
   Window bg;

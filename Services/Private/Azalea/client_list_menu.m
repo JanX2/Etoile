@@ -22,7 +22,6 @@
 #import "AZMenuFrame.h"
 #import "openbox.h"
 #import "menu.h"
-#import "menuframe.h"
 #import "action.h"
 #import "config.h"
 
@@ -37,9 +36,9 @@ typedef struct
     guint desktop;
 } DesktopData;
 
-static void desk_menu_update(ObMenuFrame *frame, gpointer data)
+static void desk_menu_update(AZMenuFrame *frame, gpointer data)
 {
-    ObMenu *menu = [frame->_self menu];
+    ObMenu *menu = [frame menu];
     DesktopData *d = data;
     GList *it;
     gint i;
@@ -121,9 +120,9 @@ static void desk_menu_destroy(ObMenu *menu, gpointer data)
     desktop_menus = g_slist_remove(desktop_menus, menu);
 }
 
-static void self_update(ObMenuFrame *frame, gpointer data)
+static void self_update(AZMenuFrame *frame, gpointer data)
 {
-    ObMenu *menu = [frame->_self menu];
+    ObMenu *menu = [frame menu];
     guint i;
     GSList *it, *next;
     

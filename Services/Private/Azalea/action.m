@@ -21,7 +21,6 @@
 #import "AZClient.h"
 #import "AZMoveResizeHandler.h"
 #import "menu.h"
-#import "menuframe.h"
 #import "prop.h"
 #import "action.h"
 #import "openbox.h"
@@ -32,6 +31,7 @@
 #import "AZScreen.h"
 #import "AZEventHandler.h"
 #import "AZFocusManager.h"
+#import "AZMenuFrame.h"
 
 #include <glib.h>
 

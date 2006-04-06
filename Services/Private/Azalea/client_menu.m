@@ -20,7 +20,6 @@
 #import "AZClient.h"
 #import "AZMenuFrame.h"
 #import "menu.h"
-#import "menuframe.h"
 #import "openbox.h"
 
 #include <glib.h>
@@ -49,9 +48,8 @@ enum {
     CLIENT_CLOSE
 };
 
-static void client_update(ObMenuFrame *_frame, gpointer data)
+static void client_update(AZMenuFrame *frame, gpointer data)
 {
-    AZMenuFrame *frame = _frame->_self;
     ObMenu *menu = [frame menu];
     ObMenuEntry *e;
     GList *it;
@@ -96,9 +94,8 @@ static void client_update(ObMenuFrame *_frame, gpointer data)
     e->data.normal.enabled = [[frame client] normal];
 }
 
-static void layer_update(ObMenuFrame *_frame, gpointer data)
+static void layer_update(AZMenuFrame *frame, gpointer data)
 {
-    AZMenuFrame *frame = _frame->_self;
     ObMenu *menu = [frame menu];
     ObMenuEntry *e;
     GList *it;
@@ -122,9 +119,8 @@ static void layer_update(ObMenuFrame *_frame, gpointer data)
     e->data.normal.enabled = ![[frame client] below];
 }
 
-static void send_to_update(ObMenuFrame *_frame, gpointer data)
+static void send_to_update(AZMenuFrame *frame, gpointer data)
 {
-    AZMenuFrame *frame = _frame->_self;
     ObMenu *menu = [frame menu];
     guint i;
     GSList *acts;

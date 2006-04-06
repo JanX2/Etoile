@@ -21,8 +21,6 @@
 #import <X11/Xlib.h>
 #import "window.h"
 
-@class AZDockApp;
-
 @interface AZDockApp: NSObject <NSCopying, AZWindow>
 {
     int ignore_unmaps;

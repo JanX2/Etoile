@@ -17,12 +17,8 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#import "AZDock.h"
-#import "AZClient.h"
-#import "AZMenuFrame.h"
-#include "window.h"
-#include "menuframe.h"
-#include "config.h"
+#import "window.h"
+#import "AZStacking.h"
 
 GHashTable *window_map;
 

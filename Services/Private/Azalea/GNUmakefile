@@ -39,7 +39,6 @@ Azalea_OBJC_FILES = \
 	keyboard.m \
 	keytree.m \
 	menu.m \
-	menuframe.m \
 	mouse.m \
 	openbox.m \
 	prop.m \

@@ -27,8 +27,6 @@
 #import "X11/Xutil.h"
 #import "geom.h"
 
-@class AZDock;
-
 @interface AZDock: NSObject <AZWindow>
 {
     Window frame;
