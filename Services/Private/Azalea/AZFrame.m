@@ -39,7 +39,7 @@
 
 #define FRAME_HANDLE_Y(f) (innersize.top + [_client area].height + cbwidth_y)
 
-static Window createWindow(Window parent, gulong mask,
+static Window createWindow(Window parent, unsigned long mask,
                            XSetWindowAttributes *attrib)
 {
     return XCreateWindow(ob_display, parent, 0, 0, 1, 1, 0,
@@ -110,7 +110,7 @@ static BOOL flash_timeout(void *data);
 - (void) releaseClient: (AZClient *) client
 {
     XEvent ev;
-    gboolean reparent = TRUE;
+    BOOL reparent = YES;
 
     g_assert(_client == client);
 
@@ -126,7 +126,7 @@ static BOOL flash_timeout(void *data);
            They are of no consequence to us anyhow.
         */
         if (ev.xreparent.parent != plate) {
-            reparent = FALSE;
+            reparent = NO;
             XPutBackEvent(ob_display, &ev);
             break;
         }
@@ -198,7 +198,7 @@ static BOOL flash_timeout(void *data);
 - (void) adjustShape
 {
 #ifdef SHAPE
-    gint num;
+    int num;
     XRectangle xrect[2];
 
     if (![_client shaped]) {
@@ -410,7 +410,7 @@ static BOOL flash_timeout(void *data);
         }
 
         if (!STRUT_EQUAL(size, oldsize)) {
-            gulong vals[4];
+            unsigned long vals[4];
             vals[0] = size.left;
             vals[1] = size.right;
             vals[2] = size.top;
@@ -550,12 +550,12 @@ static BOOL flash_timeout(void *data);
     g_get_current_time(&flash_end);
     g_time_val_add(&flash_end, G_USEC_PER_SEC * 5);
     
-    flashing = TRUE;
+    flashing = YES;
 }
 
 - (void) flashStop
 {
-    flashing = FALSE;
+    flashing = NO;
 }
 
 - (id) init
@@ -564,9 +564,9 @@ static BOOL flash_timeout(void *data);
 
   {
     XSetWindowAttributes attrib;
-    gulong mask;
+    unsigned long mask;
 
-    obscured = TRUE;
+    obscured = YES;
 
     /* create all of the decor windows */
     mask = CWEventMask;
@@ -604,7 +604,7 @@ static BOOL flash_timeout(void *data);
     attrib.cursor = ob_cursor(OB_CURSOR_SOUTHEAST);
     rgrip = createWindow(handle, mask, &attrib); 
 
-    focused = FALSE;
+    focused = NO;
 
     /* the other stuff is shown based on decor settings */
     XMapWindow(ob_display, plate);
@@ -687,10 +687,10 @@ static BOOL flash_timeout(void *data);
 - (void) layoutTitle
 {
     gchar *lc;
-    gint x;
-    gboolean n, d, i, l, m, c, s;
+    int x;
+    BOOL n, d, i, l, m, c, s;
 
-    n = d = i = l = m = c = s = FALSE;
+    n = d = i = l = m = c = s = NO;
 
     /* figure out whats being shown, and the width of the label */
     label_width = width - (ob_rr_theme->padding + 1) * 2;
@@ -698,7 +698,7 @@ static BOOL flash_timeout(void *data);
         switch (*lc) {
         case 'N':
             if (n) { *lc = ' '; break; } /* rm duplicates */
-            n = TRUE;
+            n = YES;
             label_width -= (ob_rr_theme->button_size + 2 +
                                   ob_rr_theme->padding + 1);
             break;
@@ -706,7 +706,7 @@ static BOOL flash_timeout(void *data);
             if (d) { *lc = ' '; break; }
             if (!(decorations & OB_FRAME_DECOR_ALLDESKTOPS) && config_theme_hidedisabled)
                 break;
-            d = TRUE;
+            d = YES;
             label_width -= (ob_rr_theme->button_size +
                                   ob_rr_theme->padding + 1);
             break;
@@ -714,7 +714,7 @@ static BOOL flash_timeout(void *data);
             if (s) { *lc = ' '; break; }
             if (!(decorations & OB_FRAME_DECOR_SHADE) && config_theme_hidedisabled)
                 break;
-            s = TRUE;
+            s = YES;
             label_width -= (ob_rr_theme->button_size +
                                   ob_rr_theme->padding + 1);
             break;
@@ -722,19 +722,19 @@ static BOOL flash_timeout(void *data);
             if (i) { *lc = ' '; break; }
             if (!(decorations & OB_FRAME_DECOR_ICONIFY) && config_theme_hidedisabled)
                 break;
-            i = TRUE;
+            i = YES;
             label_width -= (ob_rr_theme->button_size +
                                   ob_rr_theme->padding + 1);
             break;
         case 'L':
             if (l) { *lc = ' '; break; }
-            l = TRUE;
+            l = YES;
             break;
         case 'M':
             if (m) { *lc = ' '; break; }
             if (!(decorations & OB_FRAME_DECOR_MAXIMIZE) && config_theme_hidedisabled)
                 break;
-            m = TRUE;
+            m = YES;
             label_width -= (ob_rr_theme->button_size +
                                   ob_rr_theme->padding + 1);
             break;
@@ -742,7 +742,7 @@ static BOOL flash_timeout(void *data);
             if (c) { *lc = ' '; break; }
             if (!(decorations & OB_FRAME_DECOR_CLOSE) && config_theme_hidedisabled)
                 break;
-            c = TRUE;
+            c = YES;
             label_width -= (ob_rr_theme->button_size +
                                   ob_rr_theme->padding + 1);
             break;
@@ -886,7 +886,7 @@ static BOOL flash_timeout(void *data);
     if (now.tv_sec > flash_end.tv_sec ||
         (now.tv_sec == flash_end.tv_sec &&
          now.tv_usec >= flash_end.tv_usec))
-        flashing = FALSE;
+        flashing = NO;
 
     if (!flashing)
         return NO; /* we are done */
@@ -894,7 +894,7 @@ static BOOL flash_timeout(void *data);
     flash_on = !flash_on;
     if (!focused) {
 	[self adjustFocusWithHilite: flash_on];
-        focused = FALSE;
+        focused = NO;
     }
 
     return YES; /* go again */

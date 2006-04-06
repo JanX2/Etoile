@@ -609,7 +609,7 @@ static BOOL show_timeout(void *data);
 - (BOOL) hideTimeout
 {
     /* hide */
-    hidden = TRUE;
+    hidden = YES;
     [self configure];
 
     return NO; /* don't repeat */

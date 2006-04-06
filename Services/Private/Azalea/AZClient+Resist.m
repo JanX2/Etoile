@@ -29,9 +29,9 @@
 
 - (void) resistMoveWindowsAtX: (int *) x y: (int *) y
 {
-    gint l, t, r, b; /* requested edges */
-    gint cl, ct, cr, cb; /* current edges */
-    gint w, h; /* current size */
+    int l, t, r, b; /* requested edges */
+    int cl, ct, cr, cb; /* current edges */
+    int w, h; /* current size */
     AZClient *snapx = nil, *snapy = nil;
     AZStacking *stacking = [AZStacking stacking];
     int j, count = [stacking count];
@@ -53,7 +53,7 @@
 	for (j = 0; j < count; j++) {
 	    id <AZWindow> temp = [stacking windowAtIndex: j];
             AZClient *target;
-            gint tl, tt, tr, tb; /* 1 past the target's edges on each side */
+            int tl, tt, tr, tb; /* 1 past the target's edges on each side */
 
             if (!WINDOW_IS_CLIENT(temp))
                 continue;
@@ -119,12 +119,12 @@
 - (void) resistMoveMonitorsAtX: (int *) x y: (int *) y;
 {
     Rect *_area, *parea;
-    guint i;
-    gint l, t, r, b; /* requested edges */
-    gint al, at, ar, ab; /* screen area edges */
-    gint pl, pt, pr, pb; /* physical screen area edges */
-    gint cl, ct, cr, cb; /* current edges */
-    gint w, h; /* current size */
+    unsigned int i;
+    int l, t, r, b; /* requested edges */
+    int al, at, ar, ab; /* screen area edges */
+    int pl, pt, pr, pb; /* physical screen area edges */
+    int cl, ct, cr, cb; /* current edges */
+    int w, h; /* current size */
     AZScreen *screen = [AZScreen defaultScreen];
 
     w = [[self frame] area].width;
@@ -182,10 +182,10 @@
                             corner: (ObCorner) corn;
 {
     AZClient *target; /* target */
-    gint l, t, r, b; /* my left, top, right and bottom sides */
-    gint dlt, drb; /* my destination left/top and right/bottom sides */
-    gint tl, tt, tr, tb; /* target's left, top, right and bottom bottom sides*/
-    gint incw, inch;
+    int l, t, r, b; /* my left, top, right and bottom sides */
+    int dlt, drb; /* my destination left/top and right/bottom sides */
+    int tl, tt, tr, tb; /* target's left, top, right and bottom bottom sides*/
+    int incw, inch;
     AZClient *snapx = nil, *snapy = nil;
     AZStacking *stacking = [AZStacking stacking];
     int j, count = [stacking count];
@@ -270,13 +270,13 @@
 - (void) resistSizeMonitorsWithWidth: (int *) w height: (int *) h 
                               corner: (ObCorner) corn;
 {
-    gint l, t, r, b; /* my left, top, right and bottom sides */
-    gint dlt, drb; /* my destination left/top and right/bottom sides */
+    int l, t, r, b; /* my left, top, right and bottom sides */
+    int dlt, drb; /* my destination left/top and right/bottom sides */
     Rect *_area, *parea;
-    gint al, at, ar, ab; /* screen boundaries */ 
-    gint pl, pt, pr, pb; /* physical screen boundaries */
-    gint incw, inch;
-    guint i;
+    int al, at, ar, ab; /* screen boundaries */ 
+    int pl, pt, pr, pb; /* physical screen boundaries */
+    int incw, inch;
+    unsigned int i;
     AZScreen *screen = [AZScreen defaultScreen];
 
     l = RECT_LEFT([[self frame] area]);

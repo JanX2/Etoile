@@ -25,8 +25,8 @@
 - (void) processXEvent: (XEvent *) e;
 @end
 
-typedef void (*ObMainLoopFdHandler) (gint fd, gpointer data);
-typedef void (*ObMainLoopSignalHandler) (gint signal, gpointer data);
+typedef void (*ObMainLoopFdHandler) (int fd, void * data);
+typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
 
 @interface AZMainLoop: NSObject
 {

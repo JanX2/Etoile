@@ -33,13 +33,13 @@
 
 struct _ObMainLoop
 {
-  gint fd_x; /* The X fd is a special case! */
-  gint fd_max;
+  int fd_x; /* The X fd is a special case! */
+  int fd_max;
   GHashTable *fd_handlers;
   fd_set fd_set;
 
-  gboolean signal_fired;
-  guint signals_fired[NUM_SIGNALS];
+  BOOL signal_fired;
+  unsigned int signals_fired[NUM_SIGNALS];
   GSList *signal_handlers[NUM_SIGNALS];
 };
 
@@ -55,7 +55,7 @@ static GSList *all_loops;
 
 /* signals are global to all loops */
 struct {
-    guint installed; /* a ref count */
+    unsigned int installed; /* a ref count */
     struct sigaction oldact;
 } all_signals[NUM_SIGNALS];
 
@@ -63,7 +63,7 @@ struct {
 sigset_t all_signals_set;
 
 /* signals which cause a core dump, these can't be used for callbacks */
-static gint core_signals[] =
+static int core_signals[] =
 {
     SIGABRT,
     SIGSEGV,
@@ -78,18 +78,18 @@ static gint core_signals[] =
 };
 #define NUM_CORE_SIGNALS (sizeof(core_signals) / sizeof(core_signals[0]))
 
-static void sighandler(gint sig);
-static void fd_handler_destroy(gpointer data);
-static void fd_handle_foreach(gpointer key,
-                              gpointer value,
-                              gpointer data);
+static void sighandler(int sig);
+static void fd_handler_destroy(void * data);
+static void fd_handle_foreach(void * key,
+                              void * value,
+                              void * data);
 static void calc_max_fd(ObMainLoop *loop);
 
 struct _ObMainLoopTimer
 {
-    gulong delay;
+    unsigned long delay;
     GSourceFunc func;
-    gpointer data;
+    void * data;
     GDestroyNotify destroy;
 
     /* The timer needs to be freed */
@@ -102,14 +102,14 @@ struct _ObMainLoopTimer
 
 struct _ObMainLoopSignalHandlerType
 {
-    gint signal;
+    int signal;
     ObMainLoopSignalHandler func;
 };
 
 struct _ObMainLoopFdHandlerType
 {
-    gint fd;
-    gpointer data;
+    int fd;
+    void * data;
     ObMainLoopFdHandler func;
     GDestroyNotify destroy;
 };
@@ -176,7 +176,7 @@ static AZMainLoop *sharedInstance;
     t->func = handler;
     t->data = data;
     t->destroy = notify;
-    t->del_me = FALSE;
+    t->del_me = NO;
     g_get_current_time(&now);
     t->last = t->timeout = now;
     g_time_val_add(&t->timeout, t->delay);
@@ -236,7 +236,7 @@ static AZMainLoop *sharedInstance;
 
 - (void) removeSignalHandler: (ObMainLoopSignalHandler) handler
 {
-    guint i;
+    unsigned int i;
     GSList *it, *next;
 
     for (i = 0; i < NUM_SIGNALS; ++i) {
@@ -312,7 +312,7 @@ static AZMainLoop *sharedInstance;
     while (run)
     {
         if (loop->signal_fired) {
-            guint i;
+            unsigned int i;
             sigset_t oldset;
 
             /* block signals so that we can do this without the data changing
@@ -329,7 +329,7 @@ static AZMainLoop *sharedInstance;
                     loop->signals_fired[i]--;
                 }
             }
-            loop->signal_fired = FALSE;
+            loop->signal_fired = NO;
 
             sigprocmask(SIG_SETMASK, &oldset, NULL);
         } else if (XPending(ob_display)) {
@@ -418,7 +418,7 @@ static AZMainLoop *sharedInstance;
 
     /* only do this if we're the first loop created */
     if (!all_loops) {
-        guint i;
+        unsigned int i;
         struct sigaction action;
         sigset_t sigset;
 
@@ -600,9 +600,9 @@ static AZMainLoop *sharedInstance;
 
 @end
 
-static void fd_handle_foreach(gpointer key,
-                              gpointer value,
-                              gpointer data)
+static void fd_handle_foreach(void * key,
+                              void * value,
+                              void * data)
 {
     ObMainLoopFdHandlerType *h = value;
     fd_set *set = data;
@@ -619,10 +619,10 @@ void ob_main_loop_client_destroy(ObClient *client, void *data)
 
 /*** SIGNAL WATCHERS ***/
 
-static void sighandler(gint sig)
+static void sighandler(int sig)
 {
     GSList *it;
-    guint i;
+    unsigned int i;
 
     g_return_if_fail(sig < NUM_SIGNALS);
 
@@ -639,19 +639,19 @@ static void sighandler(gint sig)
 
     for (it = all_loops; it; it = g_slist_next(it)) {
         ObMainLoop *loop = it->data;
-        loop->signal_fired = TRUE;
+        loop->signal_fired = YES;
         loop->signals_fired[sig]++;
     }
 }
 
 /*** FILE DESCRIPTOR WATCHERS ***/
 
-static void max_fd_func(gpointer key, gpointer value, gpointer data)
+static void max_fd_func(void * key, void * value, void * data)
 {
     ObMainLoop *loop = data;
 
     /* key is the fd */
-    loop->fd_max = MAX(loop->fd_max, *(gint*)key);
+    loop->fd_max = MAX(loop->fd_max, *(int*)key);
 }
 
 static void calc_max_fd(ObMainLoop *loop)
@@ -661,7 +661,7 @@ static void calc_max_fd(ObMainLoop *loop)
     g_hash_table_foreach(loop->fd_handlers, max_fd_func, loop);
 }
 
-static void fd_handler_destroy(gpointer data)
+static void fd_handler_destroy(void * data)
 {
     ObMainLoopFdHandlerType *h = data;
 

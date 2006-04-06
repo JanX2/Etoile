@@ -40,7 +40,7 @@
 - (void) render
 {
     {
-        gulong px;
+        unsigned long px;
 
         px = ([self focused] ?
               RrColorPixel(ob_rr_theme->cb_focused_color) :

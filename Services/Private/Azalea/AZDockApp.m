@@ -49,9 +49,9 @@
     AZDock *dock = [AZDock defaultDock];
     AZDockApp *over = nil;
     int pos, i, count;
-    gint ex, ey;
-    gboolean after;
-    gboolean stop;
+    int ex, ey;
+    BOOL after;
+    BOOL stop;
 
     ex = e->x_root;
     ey = e->y_root;
@@ -67,7 +67,7 @@
     ey -= [dock y];
 
     /* which dock app are we on top of? */
-    stop = FALSE;
+    stop = NO;
     count = [[dock dockApplications] count];
     for (i = 0; i < count; i++) {
 	over = [[dock dockApplications] objectAtIndex: i];
@@ -75,11 +75,11 @@
         switch (config_dock_orient) {
         case OB_ORIENTATION_HORZ:
             if (ex >= [over x] && ex < [over x] + [over w])
-                stop = TRUE;
+                stop = YES;
             break;
         case OB_ORIENTATION_VERT:
             if (ey >= [over y] && ey < [over y] + [over h])
-                stop = TRUE;
+                stop = YES;
             break;
         }
         /* dont go to it->next! */

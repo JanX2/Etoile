@@ -104,11 +104,11 @@
                       user: (BOOL) user final: (BOOL) final
                 forceReply: (BOOL) force_reply;
 {
-    gint oldw, oldh;
-    gboolean send_resize_client;
-    gboolean moved = FALSE, resized = FALSE;
-    guint fdecor = [frame decorations];
-    gboolean fhorz = [frame max_horz];
+    int oldw, oldh;
+    BOOL send_resize_client;
+    BOOL moved = NO, resized = NO;
+    unsigned int fdecor = [frame decorations];
+    BOOL fhorz = [frame max_horz];
 
     /* make the frame recalculate its dimentions n shit without changing
        anything visible for real, this way the constraints below can work with
@@ -123,11 +123,11 @@
     /* set the size and position if fullscreen */
     if (fullscreen) {
 #ifdef VIDMODE
-        gint dot;
+        int dot;
         XF86VidModeModeLine mode;
 #endif
         Rect *a;
-        guint i;
+        unsigned int i;
 
         i = [self monitor];
 	a = [[AZScreen defaultScreen] physicalAreaOfMonitor: i];
@@ -152,7 +152,7 @@
             h = a->height;
         }
 
-        user = FALSE; /* ignore that increment etc shit when in fullscreen */
+        user = NO; /* ignore that increment etc shit when in fullscreen */
     } else {
         Rect *a;
 
@@ -186,7 +186,7 @@
     }
 
     if (!(w == area.width && h == area.height)) {
-        gint basew, baseh, minw, minh;
+        int basew, baseh, minw, minh;
 
         /* base size is substituted with min size if not specified */
         if (base_size.width || base_size.height) {
@@ -244,22 +244,22 @@
         if (!fullscreen) {
             if (min_ratio)
                 if (h * min_ratio > w) {
-                    h = (gint)(w / min_ratio);
+                    h = (int)(w / min_ratio);
 
                     /* you cannot resize to nothing */
                     if (h < 1) {
                         h = 1;
-                        w = (gint)(h * min_ratio);
+                        w = (int)(h * min_ratio);
                     }
                 }
             if (max_ratio)
                 if (h * max_ratio < w) {
-                    h = (gint)(w / max_ratio);
+                    h = (int)(w / max_ratio);
 
                     /* you cannot resize to nothing */
                     if (h < 1) {
                         h = 1;
-                        w = (gint)(h * min_ratio);
+                        w = (int)(h * min_ratio);
                     }
                 }
         }
@@ -307,7 +307,7 @@
     /* move/resize the frame to match the request */
     if (frame) {
         if (decorations != fdecor || max_horz != fhorz)
-            moved = resized = TRUE;
+            moved = resized = YES;
 
         if (moved || resized)
 	    [frame adjustAreaWithMoved: moved resized: resized fake: NO];
@@ -329,9 +329,9 @@
             event.xconfigure.height = h;
             event.xconfigure.border_width = 0;
             event.xconfigure.above = [frame plate];
-            event.xconfigure.override_redirect = FALSE;
+            event.xconfigure.override_redirect = NO;
             XSendEvent(event.xconfigure.display, event.xconfigure.window,
-                       FALSE, StructureNotifyMask, &event);
+                       NO, StructureNotifyMask, &event);
         }
     }
 
@@ -345,7 +345,7 @@
 
 - (void) reconfigure
 {
-    /* by making this pass FALSE for user, we avoid the emacs event storm where
+    /* by making this pass NO for user, we avoid the emacs event storm where
        every configurenotify causes an update in its normal hints, i think this
        is generally what we want anyways... */
   [self configureToCorner: OB_CORNER_TOPLEFT x: area.x y: area.y
@@ -354,8 +354,8 @@
 
 - (void) moveOnScreen: (BOOL) rude
 {
-    gint x = area.x;
-    gint y = area.y;
+    int x = area.x;
+    int y = area.y;
     if ([self findOnScreenAtX: &x y: &y
 		        width: [frame area].width height: [frame area].height
 			rude: rude]) 
@@ -368,7 +368,7 @@
                    width: (int) w height: (int) h rude: (BOOL) rude
 {
     Rect *a;
-    gint ox = *x, oy = *y;
+    int ox = *x, oy = *y;
     AZScreen *screen = [AZScreen defaultScreen];
 
     [frame clientGravityAtX: x y: y]; /* get where the frame would be */
@@ -419,7 +419,7 @@
 
 - (void) fullscreen: (BOOL) fs saveArea: (BOOL) savearea
 {
-    gint x, y, w, h;
+    int x, y, w, h;
 
     if (!(functions & OB_CLIENT_FUNC_FULLSCREEN) || /* can't */
         fullscreen == fs) return;                   /* already done */
@@ -476,7 +476,7 @@
 
 - (void) maximize: (BOOL) max direction: (int) dir saveArea: (BOOL) savearea
 {
-    gint x, y, w, h;
+    int x, y, w, h;
      
     g_assert(dir == 0 || dir == 1 || dir == 2);
     if (!(functions & OB_CLIENT_FUNC_MAXIMIZE)) return; /* can't */
@@ -564,7 +564,7 @@
 
     /* when we're iconic, don't change the wmstate */
     if (!iconic) {
-        glong old;
+        long old;
 
         old = wmstate;
         wmstate = (shade ? IconicState : NormalState);
@@ -607,7 +607,7 @@
     ce.xclient.data.l[2] = 0l;
     ce.xclient.data.l[3] = 0l;
     ce.xclient.data.l[4] = 0l;
-    XSendEvent(ob_display, window, FALSE, NoEventMask, &ce);
+    XSendEvent(ob_display, window, NO, NoEventMask, &ce);
 }
 
 - (void) kill
@@ -625,15 +625,15 @@
 {
     XEvent e; 
 
-    XSync(ob_display, FALSE); /* get all events on the server */
+    XSync(ob_display, NO); /* get all events on the server */
 
     if (XCheckTypedWindowEvent(ob_display, window, DestroyNotify, &e) ||
         XCheckTypedWindowEvent(ob_display, window, UnmapNotify, &e)) {
         XPutBackEvent(ob_display, &e);
-        return FALSE;
+        return NO;
     }
 
-    return TRUE;
+    return YES;
 }
 
 - (BOOL) focused
@@ -890,19 +890,19 @@
         ce.xclient.data.l[2] = 0l;
         ce.xclient.data.l[3] = 0l;
         ce.xclient.data.l[4] = 0l;
-        XSendEvent(ob_display, [oself window], FALSE, NoEventMask, &ce);
+        XSendEvent(ob_display, [oself window], NO, NoEventMask, &ce);
     }
 
 #ifdef DEBUG_FOCUS
     AZDebug("%sively focusing %lx at %d\n",
              (oself->can_focus ? "act" : "pass"),
-             oself->window, (gint) [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
+             oself->window, (int) [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
 #endif
 
     /* Cause the FocusIn to come back to us. Important for desktop switches,
        since otherwise we'll have no FocusIn on the queue and send it off to
        the focus_backup. */
-    XSync(ob_display, FALSE);
+    XSync(ob_display, NO);
     return YES;
 }
 
@@ -1058,7 +1058,7 @@
 - (void) updateProtocols
 {
     guint32 *proto;
-    guint num_return, i;
+    unsigned int num_return, i;
 
     focus_notify = NO;
     delete_window = NO;
@@ -1080,8 +1080,8 @@
 - (void) updateNormalHints
 {
     XSizeHints size;
-    glong ret;
-    gint oldgravity = gravity;
+    long ret;
+    int oldgravity = gravity;
 
     /* defaults */
     min_ratio = 0.0f;
@@ -1146,7 +1146,7 @@
 - (void) updateWmhints
 {
     XWMHints *hints;
-    gboolean ur = FALSE;
+    BOOL ur = NO;
     GSList *it;
 
     /* assume a window takes input if it doesnt specify */
@@ -1163,7 +1163,7 @@
                 iconic = (hints->initial_state == IconicState);
 
         if (hints->flags & XUrgencyHint)
-            ur = TRUE;
+            ur = YES;
 
         if (!(hints->flags & WindowGroupHint))
             hints->window_group = None;
@@ -1236,10 +1236,10 @@
 
 - (void) updateTitle
 {
-    guint32 nums;
-    guint i;
+    gint32 nums;
+    unsigned int i;
     gchar *data = NULL;
-    gboolean read_title;
+    BOOL read_title;
     gchar *old_title;
 
     old_title = title;
@@ -1305,13 +1305,13 @@ no_number:
     g_free(icon_title);
     icon_title = NULL;
 
-    read_title = TRUE;
+    read_title = YES;
     /* try netwm */
     if (!PROP_GETS(window, net_wm_icon_name, utf8, &data))
         /* try old x stuff */
         if (!PROP_GETS(window, wm_icon_name, locale, &data)) {
             data = g_strdup(title);
-            read_title = FALSE;
+            read_title = NO;
         }
 
     /* append the title count, dont display the number for the first window */
@@ -1361,15 +1361,15 @@ no_number:
 
 - (void) updateStrut
 {
-    guint num;
+    unsigned int num;
     guint32 *data;
-    gboolean got = FALSE;
+    BOOL got = NO;
     StrutPartial _strut;
 
     if (PROP_GETA32(window, net_wm_strut_partial, cardinal,
                     &data, &num)) {
         if (num == 12) {
-            got = TRUE;
+            got = YES;
             STRUT_PARTIAL_SET(_strut,
                               data[0], data[2], data[1], data[3],
                               data[4], data[5], data[8], data[9],
@@ -1383,7 +1383,7 @@ no_number:
         if (num == 4) {
             const Rect *a;
 
-            got = TRUE;
+            got = YES;
 
             /* use the screen's width/height */
             a = [[AZScreen defaultScreen] physicalArea];
@@ -1416,9 +1416,9 @@ no_number:
 
 - (void) updateIcons;
 {
-    guint num;
+    unsigned int num;
     guint32 *data;
-    guint w, h, i, j;
+    unsigned int w, h, i, j;
 
     [self removeAllIcons];
 
@@ -1437,7 +1437,7 @@ no_number:
         /* store the icons */
         i = 0;
         for (j = 0; j < nicons; ++j) {
-            guint x, y, t;
+            unsigned int x, y, t;
 
 	    AZClientIcon *icon = AUTORELEASE([[AZClientIcon alloc] init]);
 	    w = data[i++];
@@ -1686,7 +1686,7 @@ no_number:
 
 - (void) getType
 {
-    guint num, i;
+    unsigned int num, i;
     guint32 *val;
 
     type = -1;
@@ -1796,7 +1796,7 @@ no_number:
         if (transient_for != OB_TRAN_GROUP) {
 	    return [transient_for->_self searchFocusTreeFull];
         } else {
-            gboolean recursed = FALSE;
+            BOOL recursed = NO;
             int i, count = [[group members] count];
 	    for (i = 0; i < count; i++) {
 	      AZClient *data = [group memberAtIndex: i];
@@ -1804,7 +1804,7 @@ no_number:
                     AZClient *c = nil;
 		    if ((c = [data searchFocusTreeFull]))
                         return c;
-                    recursed = TRUE;
+                    recursed = YES;
                 }
 	    }
             if (recursed)
@@ -1901,10 +1901,10 @@ no_number:
 - (AZClient *) findDirectional: (ObDirection) dir
 {
     /* this be mostly ripped from fvwm */
-    gint my_cx, my_cy, his_cx, his_cy;
-    gint offset = 0;
-    gint distance = 0;
-    gint score, best_score;
+    int my_cx, my_cy, his_cx, his_cy;
+    int offset = 0;
+    int distance = 0;
+    int score, best_score;
     AZClient *best_client = nil, *cur = nil;
     AZClientManager *cManager = [AZClientManager defaultManager];
 
@@ -1944,7 +1944,7 @@ no_number:
 
         if(dir == OB_DIRECTION_NORTHEAST || dir == OB_DIRECTION_SOUTHEAST ||
            dir == OB_DIRECTION_SOUTHWEST || dir == OB_DIRECTION_NORTHWEST) {
-            gint tx;
+            int tx;
             /* Rotate the diagonals 45 degrees counterclockwise.
              * To do this, multiply the matrix /+h +h\ with the
              * vector (x y).                   \-h +h/
@@ -2003,8 +2003,8 @@ no_number:
  */
 - (int) directionalEdgeSearch: (ObDirection) dir
 {
-    gint dest, monitor_dest;
-    gint my_edge_start, my_edge_end, my_offset;
+    int dest, monitor_dest;
+    int my_edge_start, my_edge_end, my_offset;
     Rect *a, *monitor;
     AZScreen *screen = [AZScreen defaultScreen];
     AZClientManager *cManager = [AZClientManager defaultManager];
@@ -2032,7 +2032,7 @@ no_number:
 	count = [cManager count];
 	for (i = 0; ((i < count) && (my_offset != dest)); i++) {
 	    AZClient *cur = [cManager clientAtIndex: i];
-            gint his_edge_start, his_edge_end, his_offset;
+            int his_edge_start, his_edge_end, his_offset;
 
             if(cur == self)
                 continue;
@@ -2081,7 +2081,7 @@ no_number:
         count = [cManager count];
 	for (i = 0; ((i < count) && (my_offset != dest)); i++) {
 	    AZClient *cur = [cManager clientAtIndex: i];
-            gint his_edge_start, his_edge_end, his_offset;
+            int his_edge_start, his_edge_end, his_offset;
 
             if(cur == self)
                 continue;
@@ -2131,7 +2131,7 @@ no_number:
         count = [cManager count];
 	for (i = 0; ((i < count) && (my_offset != dest)); i++) {
 	    AZClient *cur = [cManager clientAtIndex: i];
-            gint his_edge_start, his_edge_end, his_offset;
+            int his_edge_start, his_edge_end, his_offset;
 
             if(cur == self)
                 continue;
@@ -2181,7 +2181,7 @@ no_number:
         count = [cManager count];
 	for (i = 0; ((i < count) && (my_offset != dest)); i++) {
 	    AZClient *cur = [cManager clientAtIndex: i];
-            gint his_edge_start, his_edge_end, his_offset;
+            int his_edge_start, his_edge_end, his_offset;
 
             if(cur == self)
                 continue;
@@ -2250,7 +2250,7 @@ no_number:
         /* Make sure the client knows it might have moved. Maybe there is a
          * better way of doing this so only one client_configure is sent, but
          * since 125 of these are sent per second when moving the window (with
-         * user = FALSE) i doubt it matters much.
+         * user = NO) i doubt it matters much.
          */
 	[self configureToCorner: OB_CORNER_TOPLEFT
 		x: area.x y: area.y width: area.width height: area.height
@@ -2264,16 +2264,16 @@ no_number:
    monitor containing the greatest area of the client is returned.*/
 - (unsigned int) monitor
 {
-    guint i;
-    guint most = 0;
-    guint mostv = 0;
+    unsigned int i;
+    unsigned int most = 0;
+    unsigned int mostv = 0;
     AZScreen *screen = [AZScreen defaultScreen];
 
     for (i = 0; i < [screen numberOfMonitors]; ++i) {
 	Rect *_area = [screen physicalAreaOfMonitor: i];
         if (RECT_INTERSECTS_RECT(*_area, [frame area])) {
             Rect r;
-            guint v;
+            unsigned int v;
 
             RECT_SET_INTERSECTION(r, *_area, [frame area]);
             v = r.width * r.height;
@@ -2387,9 +2387,9 @@ no_number:
 
 - (void) changeState
 {
-    gulong state[2];
-    gulong netstate[11];
-    guint num;
+    unsigned long state[2];
+    unsigned long netstate[11];
+    unsigned int num;
 
     state[0] = wmstate;
     state[1] = None;
@@ -2433,8 +2433,8 @@ no_number:
        different position.
        when re-adding the border to the client, the same operation needs to be
        reversed. */
-    gint oldx = area.x, oldy = area.y;
-    gint x = oldx, y = oldy;
+    int oldx = area.x, oldy = area.y;
+    int x = oldx, y = oldy;
     switch(gravity) {
     default:
     case NorthWestGravity:
@@ -2724,8 +2724,8 @@ no_number:
 
 - (void) changeAllowedActions
 {
-    gulong actions[9];
-    gint num = 0;
+    unsigned long actions[9];
+    int num = 0;
 
     /* desktop windows are kept on all desktops */
     if (type != OB_CLIENT_TYPE_DESKTOP)
@@ -2784,7 +2784,7 @@ no_number:
 
 AZClient *AZUnderPointer()
 {
-    gint x, y;
+    int x, y;
     AZClient *ret = nil;
     int i, count = [[AZStacking stacking] count];
 
@@ -2871,19 +2871,19 @@ AZClient *AZUnderPointer()
         else
             desktop = d;
     } else {
-        gboolean trdesk = FALSE;
+        BOOL trdesk = NO;
 
         if (transient_for) {
             if (transient_for != OB_TRAN_GROUP) {
                 desktop = [transient_for desktop];
-                trdesk = TRUE;
+                trdesk = YES;
             } else {
 		int i, count = [[group members] count];
 		for (i = 0; i < count; i++) {
 		  AZClient *data = [group memberAtIndex: i];
 		  if (data != self && (![data transient_for])) {
 		    desktop = [data desktop];
-		    trdesk = TRUE;
+		    trdesk = YES;
 		    break;
 		  }
 		}
@@ -2912,10 +2912,10 @@ AZClient *AZUnderPointer()
 - (void) getState
 {
     guint32 *state;
-    guint num;
+    unsigned int num;
   
     if (PROP_GETA32(window, net_wm_state, atom, &state, &num)) {
-        gulong i;
+        unsigned long i;
         for (i = 0; i < num; ++i) {
             if (state[i] == prop_atoms.net_wm_state_modal)
                 modal = YES;
@@ -2947,7 +2947,7 @@ AZClient *AZUnderPointer()
     if (!(above || below)) {
         if (group) {
             /* apply stuff from the group */
-            gint _layer = -2;
+            int _layer = -2;
 	    int i, count = [[group members] count];
 	    for (i = 0; i < count; i++) {
 	      AZClient *c = [group memberAtIndex: i];
@@ -2981,9 +2981,9 @@ AZClient *AZUnderPointer()
     shaped = NO;
 #ifdef   SHAPE
     if (extensions_shape) {
-        gint foo;
-        guint ufoo;
-        gint s;
+        int foo;
+        unsigned int ufoo;
+        int s;
 
         XShapeSelectInput(ob_display, window, ShapeNotifyMask);
 
@@ -2997,7 +2997,7 @@ AZClient *AZUnderPointer()
 
 - (void) getMwmHints
 {
-    guint num;
+    unsigned int num;
     guint32 *hints;
 
     mwmhints.flags = 0; /* default to none */
@@ -3078,7 +3078,7 @@ AZClient *AZUnderPointer()
 
 - (void) iconifyRecursive: (BOOL) _iconic currentDesktop: (BOOL) curdesk
 {
-    gboolean changed = FALSE;
+    BOOL changed = NO;
 
 
     if (iconic != _iconic) {
@@ -3089,7 +3089,7 @@ AZClient *AZUnderPointer()
 
         if (_iconic) {
             if (functions & OB_CLIENT_FUNC_ICONIFY) {
-                glong old;
+                long old;
 
                 old = wmstate;
                 wmstate = IconicState;
@@ -3101,10 +3101,10 @@ AZClient *AZUnderPointer()
                    bottom'. */
 		[[AZFocusManager defaultManager] focusOrderToTop: self];
 
-                changed = TRUE;
+                changed = YES;
             }
         } else {
-            glong old;
+            long old;
 
             if (curdesk)
 		[self setDesktop: [[AZScreen defaultScreen] desktop]
@@ -3126,7 +3126,7 @@ AZClient *AZUnderPointer()
                of the viewport */
 	    [self reconfigure];
 
-            changed = TRUE;
+            changed = YES;
         }
     }
 
@@ -3150,7 +3150,7 @@ AZClient *AZUnderPointer()
 - (void) setDesktopRecursive: (unsigned int) target
                         hide: (BOOL) donthide 
 {
-    guint old;
+    unsigned int old;
     AZFocusManager *fManager = [AZFocusManager defaultManager];
 
     if (target != desktop) {
@@ -3195,10 +3195,10 @@ AZClient *AZUnderPointer()
 
 - (AZClientIcon *) iconRecursiveWithWidth: (int) w height: (int) h
 {
-    guint i;
+    unsigned int i;
     /* si is the smallest image >= req */
     /* li is the largest image < req */
-    gulong size, smallest = 0xffffffff, largest = 0, si = 0, li = 0;
+    unsigned long size, smallest = 0xffffffff, largest = 0, si = 0, li = 0;
 
     if ([icons count] == 0) {
 	// No icon

@@ -50,7 +50,7 @@ static void focus_cycle_destructor(ObClient *client, gpointer data)
 	          dialog: YES done: YES cancel: YES];
 }
 
-static Window createWindow(Window parent, gulong mask,
+static Window createWindow(Window parent, unsigned long mask,
                            XSetWindowAttributes *attrib)
 {
     return XCreateWindow(ob_display, parent, 0, 0, 1, 1, 0,
@@ -138,7 +138,7 @@ static AZFocusManager *sharedInstance;
 
 - (void) shutdown: (BOOL) reconfig
 {
-    guint i;
+    unsigned int i;
     unsigned int count = [[AZScreen defaultScreen] numberOfDesktops];
 
     DESTROY(focus_cycle_popup);
@@ -190,7 +190,7 @@ static AZFocusManager *sharedInstance;
         /* when nothing will be focused, send focus to the backup target */
         XSetInputFocus(ob_display, [screen supportXWindow], RevertToNone,
                        [[AZEventHandler defaultHandler] eventLastTime]);
-        XSync(ob_display, FALSE);
+        XSync(ob_display, NO);
     }
 
     /* in the middle of cycling..? kill it. */
@@ -224,15 +224,15 @@ static AZFocusManager *sharedInstance;
 
     if (type == OB_FOCUS_FALLBACK_UNFOCUSING && old) {
         if ([old transient_for]) {
-            gboolean trans = FALSE;
+            BOOL trans = NO;
 
             if (!config_focus_follow || config_focus_last)
-                trans = TRUE;
+                trans = YES;
             else {
                 if ((target = AZUnderPointer()) &&
 	            [[target searchTopTransient] searchTransient: old])
                 {
-                    trans = TRUE;
+                    trans = YES;
                 }
             }
 
@@ -296,8 +296,8 @@ static AZFocusManager *sharedInstance;
         XUnmapWindow(ob_display, [focus_indicator.right window]);
         XUnmapWindow(ob_display, [focus_indicator.bottom window]);
     } else {
-        gint x, y, w, h;
-        gint wt, wl, wr, wb;
+        int x, y, w, h;
+        int wt, wl, wr, wb;
 
         wt = wl = wr = wb = MAX(3,
                                 ob_rr_theme->handle_height +
@@ -505,7 +505,7 @@ static AZFocusManager *sharedInstance;
 	        return;
 	    } else if (ft != focus_cycle_target) {
 	        focus_cycle_target = ft;
-	        done = TRUE;
+	        done = YES;
 	        break;
 	    }
         }
@@ -538,7 +538,7 @@ static AZFocusManager *sharedInstance;
                   return;
               } else if (ft != focus_cycle_target) {
                   focus_cycle_target = ft;
-                  done = TRUE;
+                  done = YES;
                   break;
               }
           }
@@ -623,7 +623,7 @@ done_cycle:
 
 - (void) focusOrderAdd: (AZClient *) c
 {
-    guint d, i;
+    unsigned int d, i;
     unsigned int count = [[AZScreen defaultScreen] numberOfDesktops];
 
     if ([c iconic])
@@ -650,7 +650,7 @@ done_cycle:
 
 - (void) focusOrderRemove: (AZClient *) c
 {
-    guint d, i;
+    unsigned int d, i;
     unsigned int count = [[AZScreen defaultScreen] numberOfDesktops];
 
     d = [c desktop];
@@ -663,7 +663,7 @@ done_cycle:
 
 - (void) focusOrderToTop: (AZClient *) c
 {
-    guint d, i;
+    unsigned int d, i;
     unsigned int count = [[AZScreen defaultScreen] numberOfDesktops];
 
     d = [c desktop];
@@ -676,7 +676,7 @@ done_cycle:
 
 - (void) focusOrderToBottom: (AZClient *) c
 {
-    guint d, i;
+    unsigned int d, i;
     unsigned int count = [[AZScreen defaultScreen] numberOfDesktops];
 
     d = [c desktop];
@@ -712,7 +712,7 @@ done_cycle:
 
 - (void) pushToTop: (AZClient *) client
 {
-    guint desktop;
+    unsigned int desktop;
 
     desktop = [client desktop];
     if (desktop == DESKTOP_ALL) desktop = [[AZScreen defaultScreen] desktop];

@@ -63,9 +63,9 @@ static Rect* pick_head(AZClient *c)
     return NULL;
 }
 
-static gboolean place_random(AZClient *client, gint *x, gint *y)
+static BOOL place_random(AZClient *client, int *x, int *y)
 {
-    gint l, r, t, b;
+    int l, r, t, b;
     Rect *area;
 
     area = pick_head(client);
@@ -86,7 +86,7 @@ static gboolean place_random(AZClient *client, gint *x, gint *y)
     if (b > t) *y = g_random_int_range(t, b + 1);
     else       *y = 0;
 
-    return TRUE;
+    return YES;
 }
 
 static GSList* area_add(GSList *list, Rect *a)
@@ -149,14 +149,14 @@ static GSList* area_remove(GSList *list, Rect *a)
     return result;
 }
 
-static gint area_cmp(gconstpointer p1, gconstpointer p2, gpointer data)
+static int area_cmp(gconstpointer p1, gconstpointer p2, gpointer data)
 {
     AZClient *c = data;
     Rect temp = [[c frame] area];
     Rect *carea = &temp;
     const Rect *a1 = p1, *a2 = p2;
-    gboolean diffhead = FALSE;
-    guint i;
+    BOOL diffhead = NO;
+    unsigned int i;
     Rect *a;
     AZScreen *screen = [AZScreen defaultScreen];
 
@@ -165,18 +165,18 @@ static gint area_cmp(gconstpointer p1, gconstpointer p2, gpointer data)
         if (RECT_CONTAINS(*a, a1->x, a1->y) &&
             !RECT_CONTAINS(*a, a2->x, a2->y))
         {
-            diffhead = TRUE;
+            diffhead = YES;
             break;
         }
     }
 
     /* has to be more than me in the group */
     if (diffhead && [c hasGroupSiblings]) {
-        guint *num, most;
+        unsigned int *num, most;
 
         /* find how many clients in the group are on each monitor, use the
            monitor with the most in it */
-        num = g_new0(guint, [screen numberOfMonitors]);
+        num = g_new0(unsigned int, [screen numberOfMonitors]);
         int i, count = [[[c group] members] count];
 	for (i = 0; i < count; i++) {
 	  AZClient *data = [[c group] memberAtIndex: i];
@@ -212,11 +212,11 @@ typedef enum
       [c desktop] != ([placer desktop] == DESKTOP_ALL ? \
                      ([[AZScreen defaultScreen] desktop]) : [placer desktop])))
 
-static gboolean place_smart(AZClient *client, gint *x, gint *y,
+static BOOL place_smart(AZClient *client, int *x, int *y,
                             ObSmartType type)
 {
-    guint i;
-    gboolean ret = FALSE;
+    unsigned int i;
+    BOOL ret = NO;
     GSList *spaces = NULL, *sit;
     AZScreen *screen = [AZScreen defaultScreen];
     AZStacking *stacking = [AZStacking stacking];
@@ -253,7 +253,7 @@ static gboolean place_smart(AZClient *client, gint *x, gint *y,
 
     if ([client type] == OB_CLIENT_TYPE_NORMAL) {
         if (type == SMART_FULL || type == SMART_FOCUSED) {
-            gboolean found_foc = FALSE, stop = FALSE;
+            BOOL found_foc = NO, stop = NO;
             AZClient *foc;
             GList *list;
 	    unsigned int d = ([client desktop] == DESKTOP_ALL ? [screen desktop] : [client desktop]);
@@ -275,7 +275,7 @@ static gboolean place_smart(AZClient *client, gint *x, gint *y,
                 if (!SMART_IGNORE(client, c)) {
                     if (type == SMART_FOCUSED)
                         if (found_foc)
-                            stop = TRUE;
+                            stop = YES;
                     if (!stop) {
 			Rect temp = [[c frame] area];
                         spaces = area_remove(spaces, &temp);
@@ -284,12 +284,12 @@ static gboolean place_smart(AZClient *client, gint *x, gint *y,
                 }
 
                 if (c == foc)
-                    found_foc = TRUE;
+                    found_foc = YES;
             }
         } else if (type == SMART_GROUP) {
             /* has to be more than me in the group */
             if (![client hasGroupSiblings])
-                return FALSE;
+                return NO;
 
             int i, count = [[[client group] members] count];
 	    for (i = 0; i < count; i++) {
@@ -312,7 +312,7 @@ static gboolean place_smart(AZClient *client, gint *x, gint *y,
         if (!ret) {
             if (r->width >= [[client frame] area].width &&
                 r->height >= [[client frame] area].height) {
-                ret = TRUE;
+                ret = YES;
                 if ([client type] == OB_CLIENT_TYPE_DIALOG ||
                     type != SMART_FULL)
                 {
@@ -332,11 +332,11 @@ static gboolean place_smart(AZClient *client, gint *x, gint *y,
     return ret;
 }
 
-static gboolean place_under_mouse(AZClient *client, gint *x, gint *y)
+static BOOL place_under_mouse(AZClient *client, int *x, int *y)
 {
-    guint i;
-    gint l, r, t, b;
-    gint px, py;
+    unsigned int i;
+    int l, r, t, b;
+    int px, py;
     Rect *area;
     AZScreen *screen = [AZScreen defaultScreen];
 
@@ -362,10 +362,10 @@ static gboolean place_under_mouse(AZClient *client, gint *x, gint *y)
     *y = py - [client area].height / 2 - [[client frame] size].top;
     *y = MIN(MAX(*y, t), b);
 
-    return TRUE;
+    return YES;
 }
 
-static gboolean place_transient(AZClient *client, gint *x, gint *y)
+static BOOL place_transient(AZClient *client, int *x, int *y)
 {
     if ([client transient_for]) {
         if ([client transient_for] != OB_TRAN_GROUP) {
@@ -375,10 +375,10 @@ static gboolean place_transient(AZClient *client, gint *x, gint *y)
                 [[p frame] area].x;
             *y = ([[p frame] area].height - [[c frame] area].height) / 2 +
                 [[p frame] area].y;
-            return TRUE;
+            return YES;
         } else {
-            gboolean first = TRUE;
-            gint l, r, t, b;
+            BOOL first = YES;
+            int l, r, t, b;
             int i, count = [[[client group] members] count];
 	    for (i = 0; i < count; i++) {
 	      AZClient *m = [[client group] memberAtIndex: i];
@@ -388,7 +388,7 @@ static gboolean place_transient(AZClient *client, gint *x, gint *y)
                         t = RECT_TOP([[m frame] area]);
                         r = RECT_RIGHT([[m frame] area]);
                         b = RECT_BOTTOM([[m frame] area]);
-                        first = FALSE;
+                        first = NO;
                     } else {
                         l = MIN(l, RECT_LEFT([[m frame] area]));
                         t = MIN(t, RECT_TOP([[m frame] area]));
@@ -400,11 +400,11 @@ static gboolean place_transient(AZClient *client, gint *x, gint *y)
             if (!first) {
                 *x = ((r + 1 - l) - [[client frame] area].width) / 2 + l; 
                 *y = ((b + 1 - t) - [[client frame] area].height) / 2 + t;
-                return TRUE;
+                return YES;
             }
         }
     }
-    return FALSE;
+    return NO;
 }
 
 @implementation AZClient (AZPlace)

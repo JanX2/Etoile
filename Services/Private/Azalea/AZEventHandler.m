@@ -30,7 +30,6 @@
 #import "AZMoveResizeHandler.h"
 #import "AZFocusManager.h"
 #import "AZMenuFrame.h"
-#import "menuframe.h"
 #import "openbox.h"
 #import "config.h"
 #import "prop.h"
@@ -67,7 +66,7 @@
 
 typedef struct
 {
-    gboolean ignored;
+    BOOL ignored;
 } ObEventData;
 
 /* callback */
@@ -85,14 +84,14 @@ static gboolean menu_hide_delay_func(void *data);
                              (e)->xfocus.detail > NotifyNonlinearVirtual)
 
 /*! Table of the constant modifier masks */
-static const gint mask_table[] = {
+static const int mask_table[] = {
     ShiftMask, LockMask, ControlMask, Mod1Mask,
     Mod2Mask, Mod3Mask, Mod4Mask, Mod5Mask
 };
 
 
 #ifdef USE_SM
-static void ice_handler(gint fd, gpointer conn)
+static void ice_handler(int fd, gpointer conn)
 {
     Bool b;
     IceProcessMessages(conn, NULL, &b);
@@ -101,7 +100,7 @@ static void ice_handler(gint fd, gpointer conn)
 static void ice_watch(IceConn conn, IcePointer data, Bool opening,
                       IcePointer *watch_data)
 {
-    static gint fd = -1;
+    static int fd = -1;
     AZMainLoop *mainLoop = [AZMainLoop mainLoop];
 
     if (opening) {
@@ -235,10 +234,10 @@ static AZEventHandler *sharedInstance;
     GSList *saved = NULL, *it;
     XEvent *e;
                 
-    XSync(ob_display, FALSE);
+    XSync(ob_display, NO);
 
     /* count the events */
-    while (TRUE) {
+    while (YES) {
         e = g_new(XEvent, 1);
         if (XCheckTypedEvent(ob_display, EnterNotify, e)) {
 #if 1
@@ -332,10 +331,10 @@ static AZEventHandler *sharedInstance;
     [self hackMods: e];
     if ([self ignoreEvent: e forClient: client]) {
         if (ed)
-            ed->ignored = TRUE;
+            ed->ignored = YES;
         return;
     } else if (ed)
-            ed->ignored = FALSE;
+            ed->ignored = NO;
 
     /* deal with it in the kernel */
     if (group)
@@ -392,7 +391,7 @@ static AZEventHandler *sharedInstance;
 		    _client = [[mrHandler moveresize_client] obClient];
                 }
 
-                menu_can_hide = FALSE;
+                menu_can_hide = NO;
 		[[AZMainLoop mainLoop] addTimeoutHandler: menu_hide_delay_func
 	                     microseconds: config_menu_hide_delay * 1000
 			     data: NULL notify: NULL];
@@ -429,13 +428,13 @@ static AZEventHandler *sharedInstance;
 
         msgtype = e->xclient.message_type;
         if (msgtype == prop_atoms.net_current_desktop) {
-            guint d = e->xclient.data.l[0];
+            unsigned int d = e->xclient.data.l[0];
             if (d < [screen numberOfDesktops])
 	    {
 		[screen setDesktop: d];
 	    }
         } else if (msgtype == prop_atoms.net_number_of_desktops) {
-            guint d = e->xclient.data.l[0];
+            unsigned int d = e->xclient.data.l[0];
             if (d > 0)
 	    {
 		[screen setNumberOfDesktops: d];
@@ -483,7 +482,7 @@ static AZEventHandler *sharedInstance;
 {
     XEvent ce;
     Atom msgtype;
-    gint i=0;
+    int i=0;
     ObFrameContext con;
      
     switch (e->type) {
@@ -588,11 +587,11 @@ static AZEventHandler *sharedInstance;
         break;
     case EnterNotify:
     {
-        gboolean nofocus = FALSE;
+        BOOL nofocus = NO;
 
         if (ignore_enter_focus) {
             ignore_enter_focus--;
-            nofocus = TRUE;
+            nofocus = YES;
         }
 
         con = frame_context(client, e->xcrossing.window);
@@ -678,7 +677,7 @@ static AZEventHandler *sharedInstance;
         if (e->xconfigurerequest.value_mask & (CWWidth | CWHeight |
                                                CWX | CWY |
                                                CWBorderWidth)) {
-            gint x, y, w, h;
+            int x, y, w, h;
             ObCorner corner;
 
             if (e->xconfigurerequest.value_mask & CWBorderWidth)
@@ -694,11 +693,11 @@ static AZEventHandler *sharedInstance;
                 e->xconfigurerequest.height : [client area].height;
 
             {
-                gint newx = x;
-                gint newy = y;
-                gint fw = w +
+                int newx = x;
+                int newy = y;
+                int fw = w +
                      [[client frame] size].left + [[client frame] size].right;
-                gint fh = h +
+                int fh = h +
                      [[client frame] size].top + [[client frame] size].bottom;
 		[client findOnScreenAtX: &newx y: &newy
 			width: fw height: fh rude: [client normal]];
@@ -871,8 +870,8 @@ static AZEventHandler *sharedInstance;
                        corner: e->xclient.data.l[2]];
             }
         } else if (msgtype == prop_atoms.net_moveresize_window) {
-            gint oldg = [client gravity];
-            gint tmpg, x, y, w, h;
+            int oldg = [client gravity];
+            int tmpg, x, y, w, h;
 
             if (e->xclient.data.l[0] & 0xff)
                 tmpg = e->xclient.data.l[0] & 0xff;
@@ -898,11 +897,11 @@ static AZEventHandler *sharedInstance;
             [client set_gravity: tmpg];
 
             {
-                gint newx = x;
-                gint newy = y;
-                gint fw = w +
+                int newx = x;
+                int newy = y;
+                int fw = w +
                      [[client frame] size].left + [[client frame] size].right;
-                gint fh = h +
+                int fh = h +
                      [[client frame] size].top + [[client frame] size].bottom;
 		[client findOnScreenAtX: &newx y: &newy
 			width: fw height: fh rude: [client normal]];
@@ -1008,9 +1007,9 @@ static AZEventHandler *sharedInstance;
     switch (e->type) {
     case ButtonPress:
         if (e->xbutton.button == 1)
-            [stacking raiseWindow: s group: FALSE];
+            [stacking raiseWindow: s group: NO];
         else if (e->xbutton.button == 2)
-            [stacking lowerWindow: s group: FALSE];
+            [stacking lowerWindow: s group: NO];
         break;
     case EnterNotify:
 	[s setHide: NO];
@@ -1251,7 +1250,7 @@ static AZEventHandler *sharedInstance;
     XkbStateRec xkb_state;
 #endif
     KeyCode *kp;
-    gint i, k;
+    int i, k;
 
     switch (e->type) {
     case ButtonPress:
@@ -1306,7 +1305,7 @@ static AZEventHandler *sharedInstance;
     case EnterNotify:
     case LeaveNotify:
         if (e->xcrossing.detail == NotifyInferior)
-            return TRUE;
+            return YES;
         break;
     case FocusIn:
         /* NotifyAncestor is not ignored in FocusIn like it is in FocusOut
@@ -1325,7 +1324,7 @@ static AZEventHandler *sharedInstance;
                event was not found.
             */
             e->xfocus.window = None;
-            return TRUE;
+            return YES;
         }
 
 #ifdef DEBUG_FOCUS
@@ -1339,7 +1338,7 @@ static AZEventHandler *sharedInstance;
         AZDebug("FocusOut on %lx mode %d detail %d IGNORED\n",
                  e->xfocus.window, e->xfocus.mode, e->xfocus.detail);
 #endif
-            return TRUE;
+            return YES;
         }
 
 #ifdef DEBUG_FOCUS
@@ -1348,9 +1347,9 @@ static AZEventHandler *sharedInstance;
 #endif
         {
             XEvent fe;
-            gboolean fallback = TRUE;
+            BOOL fallback = YES;
 
-            while (TRUE) {
+            while (YES) {
                 if (!XCheckTypedWindowEvent(ob_display, e->xfocus.window,
                                             FocusOut, &fe))
                     if (!XCheckTypedEvent(ob_display, FocusIn, &fe))
@@ -1363,7 +1362,7 @@ static AZEventHandler *sharedInstance;
                         /* if there is a VALID FocusOut still coming, don't
                            fallback focus yet, we'll deal with it then */
                         XPutBackEvent(ob_display, &fe);
-                        fallback = FALSE;
+                        fallback = NO;
                         break;
                     }
                 } else {
@@ -1388,7 +1387,7 @@ static AZEventHandler *sharedInstance;
                             AZDebug("focused window got an Out/In back to "
                                      "itself IGNORED both\n");
 #endif
-                            return TRUE;
+                            return YES;
                         } else {
 			    [self processEvent: &fe data: NULL];
 #ifdef DEBUG_FOCUS
@@ -1396,7 +1395,7 @@ static AZEventHandler *sharedInstance;
                                      "itself but focus_client was null "
                                      "IGNORED just the Out\n");
 #endif
-                            return TRUE;
+                            return YES;
                         }
                     }
 
@@ -1411,7 +1410,7 @@ static AZEventHandler *sharedInstance;
 #ifdef DEBUG_FOCUS
                             AZDebug("FocusIn was OK, so don't fallback\n");
 #endif
-                            fallback = FALSE;
+                            fallback = NO;
                             break;
                         }
                     }
@@ -1427,7 +1426,7 @@ static AZEventHandler *sharedInstance;
         }
         break;
     }
-    return FALSE;
+    return NO;
 }
 
 @end

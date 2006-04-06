@@ -72,7 +72,7 @@ static AZClientManager *sharedInstance;
         windows = NULL;
 
     PROP_SETA32(RootWindow(ob_display, ob_screen),
-                net_client_list, window, (gulong*)windows, count);
+                net_client_list, window, (unsigned long*)windows, count);
 
     if (windows)
         free(windows);
@@ -126,10 +126,10 @@ static AZClientManager *sharedInstance;
     XWindowAttributes attrib;
     XSetWindowAttributes attrib_set;
     XWMHints *wmhint;
-    BOOL activate = FALSE;
+    BOOL activate = NO;
     AZScreen *screen = [AZScreen defaultScreen];
 
-    grab_server(TRUE);
+    grab_server(YES);
 
     /* check if it has already been unmapped by the time we started mapping
        the grab does a sync so we don't have to here */
@@ -137,14 +137,14 @@ static AZClientManager *sharedInstance;
         XCheckTypedWindowEvent(ob_display, window, UnmapNotify, &e)) {
         XPutBackEvent(ob_display, &e);
 
-        grab_server(FALSE);
+        grab_server(NO);
         return; /* don't manage it */
     }
 
     /* make sure it isn't an override-redirect window */
     if (!XGetWindowAttributes(ob_display, window, &attrib) ||
         attrib.override_redirect) {
-        grab_server(FALSE);
+        grab_server(NO);
         return; /* don't manage it */
     }
   
@@ -153,7 +153,7 @@ static AZClientManager *sharedInstance;
         if ((wmhint->flags & StateHint) &&
             wmhint->initial_state == WithdrawnState) {
 	    [[AZDock defaultDock] addWindow: window hints: wmhint];
-            grab_server(FALSE);
+            grab_server(NO);
             XFree(wmhint);
             return;
         }
@@ -206,7 +206,7 @@ static AZClientManager *sharedInstance;
 
     [[client->_self frame] grabClient: client->_self];
 
-    grab_server(FALSE);
+    grab_server(NO);
 
     [client->_self applyStartupState];
 
@@ -222,12 +222,12 @@ static AZClientManager *sharedInstance;
         ([client->_self type] == OB_CLIENT_TYPE_NORMAL ||
          [client->_self type] == OB_CLIENT_TYPE_DIALOG))
     {        
-        activate = TRUE;
+        activate = YES;
     }
 
     if (ob_state() == OB_STATE_RUNNING) {
-        gint x = [client->_self area].x, ox = x;
-        gint y = [client->_self area].y, oy = y;
+        int x = [client->_self area].x, ox = x;
+        int y = [client->_self area].y, oy = y;
 
 	[client->_self placeAtX: &x y: &y];
 
@@ -253,8 +253,8 @@ static AZClientManager *sharedInstance;
 	    [client->_self moveToX: x y: y];
     }
 
-    keyboard_grab_for_client(client, TRUE);
-    mouse_grab_for_client(client, TRUE);
+    keyboard_grab_for_client(client, YES);
+    mouse_grab_for_client(client, YES);
 
     [client->_self showhide];
 
@@ -312,12 +312,12 @@ static AZClientManager *sharedInstance;
 
     g_assert(client != NULL);
 
-    keyboard_grab_for_client(client, FALSE);
-    mouse_grab_for_client(client, FALSE);
+    keyboard_grab_for_client(client, NO);
+    mouse_grab_for_client(client, NO);
 
     /* potentially fix focusLast */
     if (config_focus_last)
-        grab_pointer(TRUE, OB_CURSOR_NONE);
+        grab_pointer(YES, OB_CURSOR_NONE);
 
     /* remove the window from our save set */
     XChangeSaveSet(ob_display, [client->_self window], SetModeDelete);
@@ -435,7 +435,7 @@ static AZClientManager *sharedInstance;
     [self setList];
 
     if (config_focus_last)
-        grab_pointer(FALSE, OB_CURSOR_NONE);
+        grab_pointer(NO, OB_CURSOR_NONE);
 }
 
 - (AZClient *) clientAtIndex: (int) index
