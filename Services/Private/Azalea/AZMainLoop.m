@@ -114,7 +114,7 @@ struct _ObMainLoopFdHandlerType
     GDestroyNotify destroy;
 };
 
-void ob_main_loop_client_destroy(ObClient *client, void *data);
+void ob_main_loop_client_destroy(AZClient *client, void *data);
 
 struct _ObAction;
 
@@ -125,7 +125,7 @@ struct _ObMainLoop *ob_main_loop;
 static AZMainLoop *sharedInstance;
 
 @interface AZMainLoop (AZPrivate)
-- (void) destroyActionForClient: (ObClient *) client;
+- (void) destroyActionForClient: (AZClient *) client;
 - (long) timeCompare: (GTimeVal *) a to: (GTimeVal *) b;
 - (void) insertTimer: (ObMainLoopTimer *) ins;
 - (BOOL) nearestTimeoutWait: (GTimeVal *) tm;
@@ -471,7 +471,7 @@ static AZMainLoop *sharedInstance;
 @end
 
 @implementation AZMainLoop (AZPrivate)
-- (void) destroyActionForClient: (ObClient *) client
+- (void) destroyActionForClient: (AZClient *) client
 {
   int i, count = [actionQueue count];
   for (i = 0; i < count; i++)
@@ -479,7 +479,7 @@ static AZMainLoop *sharedInstance;
     ObAction *act = (ObAction *)[[actionQueue objectAtIndex: i] pointerValue];
     if (act->data.any.c == client)
     {
-      act->data.any.c = NULL;
+      act->data.any.c = nil;
     }
   }
 }
@@ -611,7 +611,7 @@ static void fd_handle_foreach(void * key,
         h->func(h->fd, h->data);
 }
 
-void ob_main_loop_client_destroy(ObClient *client, void *data)
+void ob_main_loop_client_destroy(AZClient *client, void *data)
 {
   AZMainLoop *mainLoop = (AZMainLoop *) data;
   [mainLoop destroyActionForClient: client];

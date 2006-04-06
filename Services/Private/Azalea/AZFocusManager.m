@@ -41,11 +41,11 @@ struct {
     AZInternalWindow *bottom;
 } focus_indicator;
 
-static void focus_cycle_destructor(ObClient *client, gpointer data)
+static void focus_cycle_destructor(AZClient *client, gpointer data)
 {
     /* end cycling if the target disappears */
     AZFocusManager *fManager = [AZFocusManager defaultManager];
-    if ([[fManager focus_cycle_target] obClient] == client)
+    if ([fManager focus_cycle_target] == client)
       [fManager cycleForward: YES linear: YES interactive: YES
 	          dialog: YES done: YES cancel: YES];
 }

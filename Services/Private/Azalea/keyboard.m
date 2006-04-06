@@ -186,7 +186,7 @@ gboolean keyboard_interactive_grab(guint state, AZClient *client,
 void keyboard_interactive_end(ObInteractiveState *s,
                               guint state, gboolean cancel)
 {
-    action_run_interactive(s->actions, [s->client obClient], state, cancel, TRUE);
+    action_run_interactive(s->actions, s->client, state, cancel, TRUE);
 
     g_slist_free(s->actions);
     g_free(s);
@@ -200,7 +200,7 @@ void keyboard_interactive_end(ObInteractiveState *s,
     }
 }
 
-void keyboard_interactive_end_client(ObClient *client, gpointer data)
+void keyboard_interactive_end_client(AZClient *client, gpointer data)
 {
     GSList *it, *next;
 
@@ -209,7 +209,7 @@ void keyboard_interactive_end_client(ObClient *client, gpointer data)
 
         next = g_slist_next(it);
 
-        if (s->client == (client ? client->_self : nil))
+        if (s->client == client)
             s->client = nil;
     }
 }
@@ -282,7 +282,7 @@ void keyboard_event(AZClient *client, const XEvent *e)
 
                 keyboard_reset_chains();
 
-                action_run_key(p->actions, [client obClient], e->xkey.state,
+                action_run_key(p->actions, client, e->xkey.state,
                                e->xkey.x_root, e->xkey.y_root);
             }
             break;

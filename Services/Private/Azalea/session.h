@@ -21,7 +21,7 @@
 
 #include <glib.h>
 
-struct _ObClient;
+@class AZClient;
 
 typedef struct _ObSessionState ObSessionState;
 
@@ -41,8 +41,8 @@ extern GList *session_saved_state;
 void session_startup(gint *argc, gchar ***argv);
 void session_shutdown();
 
-GList* session_state_find(struct _ObClient *c);
-gboolean session_state_cmp(ObSessionState *s, struct _ObClient *c);
+GList* session_state_find(AZClient *c);
+gboolean session_state_cmp(ObSessionState *s, AZClient *c);
 void session_state_free(ObSessionState *state);
 
 #endif

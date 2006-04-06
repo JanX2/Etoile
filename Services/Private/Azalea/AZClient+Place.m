@@ -266,7 +266,7 @@ static BOOL place_smart(AZClient *client, int *x, int *y,
                 AZClient *c;
 
                 if (WINDOW_IS_CLIENT(temp)) {
-                    c = ((ObClient *)temp)->_self;
+                    c = (AZClient *)temp;
                     if ([c fullscreen])
                         continue;
                 } else

@@ -65,7 +65,7 @@ static void desk_menu_update(AZMenuFrame *frame, gpointer data)
 
             act = action_from_string("Activate",
                                      OB_USER_ACTION_MENU_SELECTION);
-            act->data.activate.any.c = [c obClient];
+            act->data.activate.any.c = c;
             acts = g_slist_append(acts, act);
             act = action_from_string("Desktop",
                                      OB_USER_ACTION_MENU_SELECTION);

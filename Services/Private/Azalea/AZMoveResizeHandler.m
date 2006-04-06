@@ -35,10 +35,10 @@
 
 static AZMoveResizeHandler *sharedInstance = nil;
 
-static void mr_client_dest(struct _ObClient *client, gpointer data)
+static void mr_client_dest(AZClient *client, gpointer data)
 {
   AZMoveResizeHandler *handler = [AZMoveResizeHandler defaultHandler];
-  if ([handler moveresize_client] == client->_self)
+  if ([handler moveresize_client] == client)
     [handler end: YES];
 }
 

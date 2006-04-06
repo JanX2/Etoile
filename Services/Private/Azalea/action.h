@@ -23,8 +23,6 @@
 #include "misc.h"
 #include "parser/parse.h"
 
-struct _ObClient;
-
 typedef struct _ObAction ObAction;
 
 /* These have to all have a Client* at the top even if they don't use it, so
@@ -41,7 +39,7 @@ typedef enum
 
 struct AnyAction {
     ObClientActionReq client_action;
-    struct _ObClient *c;
+    AZClient *c;
     ObFrameContext context;
     gboolean interactive;
     gint x;
@@ -201,7 +199,7 @@ ObAction* action_copy(const ObAction *a);
   @param done If the action is completing an interactive action. This only
          affects interactive actions, but should generally always be FALSE.
 */
-void action_run_list(GSList *acts, struct _ObClient *c, ObFrameContext context,
+void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
                      guint state, guint button, gint x, gint y,
                      gboolean cancel, gboolean done);
 
@@ -217,7 +215,7 @@ void action_run_list(GSList *acts, struct _ObClient *c, ObFrameContext context,
 #define action_run(a, c, s) \
     action_run_list(a, c, OB_FRAME_CONTEXT_NONE, s, 0, -1, -1, FALSE, FALSE)
 
-void action_run_string(const gchar *name, struct _ObClient *c);
+void action_run_string(const gchar *name, AZClient *c);
 
 /* Execute */
 void action_execute(union ActionData *data);

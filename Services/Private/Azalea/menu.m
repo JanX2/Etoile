@@ -50,11 +50,11 @@ static void parse_menu_separator(ObParseInst *i,
 static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                        gpointer data);
 
-static void client_dest(ObClient *client, gpointer data)
+static void client_dest(AZClient *client, gpointer data)
 {
     /* menus can be associated with a client, so close any that are since
        we are disappearing now */
-    AZMenuFrameHideAllClient((client ? client->_self: nil));
+    AZMenuFrameHideAllClient(client);
 }
 
 void menu_startup(gboolean reconfig)
@@ -279,7 +279,7 @@ void menu_free(ObMenu *menu)
     g_hash_table_remove(menu_hash, menu->name);
 }
 
-void menu_show(gchar *name, gint x, gint y, ObClient *client)
+void menu_show(gchar *name, gint x, gint y, AZClient *client)
 {
     ObMenu *self;
     AZMenuFrame *frame;
@@ -297,10 +297,10 @@ void menu_show(gchar *name, gint x, gint y, ObClient *client)
 
     AZMenuFrameHideAll();
 
-    frame = [[AZMenuFrame alloc] initWithMenu: self client: (client ? client->_self : nil)];
+    frame = [[AZMenuFrame alloc] initWithMenu: self client: client];
     if (client && x < 0 && y < 0) {
-        x = [[client->_self frame] area].x + [[client->_self frame] size].left;
-        y = [[client->_self frame] area].y + [[client->_self frame] size].top;
+        x = [[client frame] area].x + [[client frame] size].left;
+        y = [[client frame] area].y + [[client frame] size].top;
 	[frame moveToX: x y: y];
     } else
 	[frame moveToX: x - ob_rr_theme->bwidth y: y - ob_rr_theme->bwidth];

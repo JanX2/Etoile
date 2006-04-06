@@ -26,7 +26,6 @@
 
 #include <glib.h>
 
-struct _ObClient;
 @class AZMenuFrame;
 
 typedef struct _ObMenu ObMenu;
@@ -124,7 +123,7 @@ void menu_free(ObMenu *menu);
 /* Repopulate a pipe-menu by running its command */
 void menu_pipe_execute(ObMenu *self);
 
-void menu_show(gchar *name, gint x, gint y, struct _ObClient *client);
+void menu_show(gchar *name, gint x, gint y, AZClient *client);
 
 void menu_set_update_func(ObMenu *menu, ObMenuUpdateFunc func);
 void menu_set_execute_func(ObMenu *menu, ObMenuExecuteFunc func);

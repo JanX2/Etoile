@@ -315,7 +315,7 @@ static Window createWindow(Window parent, unsigned long mask,
         if (func)
             func(entry, state, data);
         else
-            action_run(acts, [client obClient], state);
+            action_run(acts, client, state);
     }
 }
 

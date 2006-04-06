@@ -69,9 +69,9 @@ typedef struct
 } ObEventData;
 
 /* callback */
-static void event_client_dest(ObClient *client, void *data);
+static void event_client_dest(AZClient *client, void *data);
 static gboolean focus_delay_func(void *data);
-static void focus_delay_client_dest(ObClient *client, void *data);
+static void focus_delay_client_dest(AZClient *client, void *data);
 static gboolean menu_hide_delay_func(void *data);
 
 #define INVALID_FOCUSIN(e) ((e)->xfocus.detail == NotifyInferior || \
@@ -133,9 +133,9 @@ static AZEventHandler *sharedInstance;
 
 /* callback */
 - (void) processEvent: (XEvent *) e data: (void *) data;
-- (void) clientDestroy: (ObClient *) client data: (void *) data;
+- (void) clientDestroy: (AZClient *) client data: (void *) data;
 - (BOOL) focusDelayFunc: (void *) data;
-- (void) focusDelayClientDestroy: (ObClient *) client data: (void *) data;
+- (void) focusDelayClientDestroy: (AZClient *) client data: (void *) data;
 - (BOOL) menuHideDelayFunc: (void *) data;
 @end
 
@@ -216,10 +216,10 @@ static AZEventHandler *sharedInstance;
 	  [mainLoop removeTimeoutHandler: focus_delay_func];
 	  [mainLoop addTimeoutHandler: focus_delay_func
 		         microseconds: config_focus_delay
-			 data: [client obClient]
+			 data: client 
 			 notify: NULL];
         } else
-            focus_delay_func([client obClient]);
+            focus_delay_func(client);
     }
 }
 
@@ -368,11 +368,6 @@ static AZEventHandler *sharedInstance;
                          e->xconfigurerequest.value_mask, &xwc);
 	AZXErrorSetIgnore(NO);
     }
-
-#if 0
-    ObClient *_client = NULL;
-    if (client) _client = [client obClient];
-#endif
 
     /* user input (action-bound) events */
     if (e->type == ButtonPress || e->type == ButtonRelease ||
@@ -579,7 +574,7 @@ static AZEventHandler *sharedInstance;
             if (config_focus_follow && config_focus_delay)
 	    {
 	      [[AZMainLoop mainLoop] removeTimeoutHandler: focus_delay_func
-		                     data: [client obClient]];
+		                     data: client];
 	    }
             break;
         default:
@@ -1141,25 +1136,25 @@ static AZEventHandler *sharedInstance;
 
 - (BOOL) focusDelayFunc: (void *) data
 {
-    ObClient *c = data;
+    AZClient *c = data;
 
-    if ([[[AZFocusManager defaultManager] focus_client] obClient] != c) {
-	[c->_self focus];
+    if ([[AZFocusManager defaultManager] focus_client] != c) {
+	[c focus];
         if (config_focus_raise)
-	    [c->_self raise];
+	    [c raise];
     }
     return NO; /* no repeat */
 }
 
-- (void) focusDelayClientDestroy: (ObClient *) client data: (void *) data
+- (void) focusDelayClientDestroy: (AZClient *) client data: (void *) data
 {
   [[AZMainLoop mainLoop] removeTimeoutHandler: focus_delay_func
 	                 data: client];
 }
 
-- (void) clientDestroy: (ObClient *) client data: (void *) data;
+- (void) clientDestroy: (AZClient *) client data: (void *) data;
 {
-    if (client == [[[AZFocusManager defaultManager] focus_hilite] obClient])
+    if (client == [[AZFocusManager defaultManager] focus_hilite])
 	[[AZFocusManager defaultManager] set_focus_hilite: nil];
 }
 
@@ -1433,7 +1428,7 @@ static AZEventHandler *sharedInstance;
 @end
 
 /* callback */
-static void event_client_dest(ObClient *client, void *data)
+static void event_client_dest(AZClient *client, void *data)
 {
   [[AZEventHandler defaultHandler] clientDestroy: client data: data];
 }
@@ -1443,7 +1438,7 @@ static gboolean focus_delay_func(void *data)
   [[AZEventHandler defaultHandler] focusDelayFunc: data];
 }
 
-static void focus_delay_client_dest(ObClient *client, void *data)
+static void focus_delay_client_dest(AZClient *client, void *data)
 {
   [[AZEventHandler defaultHandler] focusDelayClientDestroy: client data: data];
 }

@@ -169,7 +169,7 @@ static gboolean fire_binding(ObMouseAction a, ObFrameContext context,
     /* if not bound, then nothing to do! */
     if (it == NULL) return FALSE;
 
-    action_run_mouse(b->actions[a], [c obClient], context, state, button, x, y);
+    action_run_mouse(b->actions[a], c, context, state, button, x, y);
     return TRUE;
 }
 

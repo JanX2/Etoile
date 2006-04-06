@@ -122,7 +122,7 @@ static AZClientManager *sharedInstance;
 
 - (void) manageWindow: (Window) window
 {
-    ObClient *client;
+    AZClient *client;
     XEvent e;
     XWindowAttributes attrib;
     XSetWindowAttributes attrib_set;
@@ -172,70 +172,67 @@ static AZClientManager *sharedInstance;
 
     /* create the ObClient struct, and populate it from the hints on the
        window */
-    client = g_new0(ObClient, 1);
-    ASSIGN(client->_self, AUTORELEASE([[AZClient alloc] init]));
-    [client->_self set_obClient: client];
-    client->type = Window_Client;
-    [client->_self set_window: window];
+    client = [[AZClient alloc] init];
+    [client set_window: window];
 
     /* non-zero defaults */
-    [client->_self set_title_count: 1];
-    [client->_self set_wmstate: NormalState];
-    [client->_self set_layer: -1];
-    [client->_self set_desktop: [screen numberOfDesktops]]; /* always an invalid value */
+    [client set_title_count: 1];
+    [client set_wmstate: NormalState];
+    [client set_layer: -1];
+    [client set_desktop: [screen numberOfDesktops]]; /* always an invalid value */
 
-    [client->_self getAll];
-    [client->_self restoreSessionState];
+    [client getAll];
+    [client restoreSessionState];
 
-    [[AZStartupHandler defaultHandler] applicationStarted: [client->_self class]];
+    [[AZStartupHandler defaultHandler] applicationStarted: [client class]];
 
     /* update the focus lists, do this before the call to change_state or
        it can end up in the list twice! */
-    [[AZFocusManager defaultManager] focusOrderAdd: client->_self];
+    [[AZFocusManager defaultManager] focusOrderAdd: client];
 
-    [client->_self changeState];
+    [client changeState];
 
     /* remove the client's border (and adjust re gravity) */
-    [client->_self toggleBorder: NO];
+    [client toggleBorder: NO];
      
     /* specify that if we exit, the window should not be destroyed and should
        be reparented back to root automatically */
     XChangeSaveSet(ob_display, window, SetModeInsert);
 
     /* create the decoration frame for the client window */
-    [client->_self set_frame: AUTORELEASE([[AZFrame alloc] init])];
+    [client set_frame: AUTORELEASE([[AZFrame alloc] init])];
 
-    [[client->_self frame] grabClient: client->_self];
+    [[client frame] grabClient: client];
 
     grab_server(NO);
 
-    [client->_self applyStartupState];
+    [client applyStartupState];
 
-    [[AZStacking stacking] addWindow: client->_self];
-    [client->_self restoreSessionStacking];
+    [[AZStacking stacking] addWindow: client];
+    [client restoreSessionStacking];
 
     /* focus the new window? */
     if (ob_state() != OB_STATE_STARTING &&
-        (config_focus_new || [client->_self searchFocusParent]) &&
+        (config_focus_new || [client searchFocusParent]) &&
         /* note the check against Type_Normal/Dialog, not client_normal(client),
            which would also include other types. in this case we want more
            strict rules for focus */
-        ([client->_self type] == OB_CLIENT_TYPE_NORMAL ||
-         [client->_self type] == OB_CLIENT_TYPE_DIALOG))
+        ([client type] == OB_CLIENT_TYPE_NORMAL ||
+         [client type] == OB_CLIENT_TYPE_DIALOG))
     {        
         activate = YES;
     }
 
     if (ob_state() == OB_STATE_RUNNING) {
-        int x = [client->_self area].x, ox = x;
-        int y = [client->_self area].y, oy = y;
+        int x = [client area].x, ox = x;
+        int y = [client area].y, oy = y;
 
-	[client->_self placeAtX: &x y: &y];
+	[client placeAtX: &x y: &y];
 
         /* make sure the window is visible. */
-	[client->_self findOnScreenAtX: &x y: &y
-		width: [[client->_self frame] area].width
-		height: [[client->_self frame] area].height
+	[client findOnScreenAtX: &x y: &y
+		width: [[client frame] area].width
+		height: [[client frame] area].height
                              /* non-normal clients has less rules, and
                                 windows that are being restored from a
                                 session do also. we can assume you want
@@ -246,18 +243,18 @@ static AZClientManager *sharedInstance;
                                 off-screen and on xinerama divides (ie,
                                 it is up to the placement routines to avoid
                                 the xinerama divides) */
-                        rude: (([client->_self positioned] & PPosition) &&
-                              !([client->_self positioned] & USPosition)) &&
-                             [client->_self normal] &&
-                             ![client->_self session]];
+                        rude: (([client positioned] & PPosition) &&
+                              !([client positioned] & USPosition)) &&
+                             [client normal] &&
+                             ![client session]];
         if (x != ox || y != oy) 	 
-	    [client->_self moveToX: x y: y];
+	    [client moveToX: x y: y];
     }
 
-    keyboard_grab_for_client(client->_self, YES);
-    mouse_grab_for_client(client->_self, YES);
+    keyboard_grab_for_client(client, YES);
+    mouse_grab_for_client(client, YES);
 
-    [client->_self showhide];
+    [client showhide];
 
     /* use client_focus instead of client_activate cuz client_activate does
        stuff like switch desktops etc and I'm not interested in all that when
@@ -269,11 +266,11 @@ static AZClientManager *sharedInstance;
            moving on us */
 	[[AZEventHandler defaultHandler] haltFocusDelay];
 
-	[client->_self focus];
+	[client focus];
         /* since focus can change the stacking orders, if we focus the window
            then the standard raise it gets is not enough, we need to queue one
            for after the focus change takes place */
-	[client->_self raise];
+	[client raise];
     }
 
     /* client_activate does this but we aret using it so we have to do it
@@ -282,8 +279,8 @@ static AZClientManager *sharedInstance;
       [screen showDesktop: NO];
 
     /* add to client list/map */
-    [clist addObject: client->_self];
-    g_hash_table_insert(window_map, [client->_self windowPointer], client->_self);
+    [clist addObject: client];
+    g_hash_table_insert(window_map, [client windowPointer], client);
 
     /* this has to happen after we're in the client_list */
     [screen updateAreas];
@@ -291,7 +288,7 @@ static AZClientManager *sharedInstance;
     /* update the list hints */
     [self setList];
 
-    AZDebug("Managed window 0x%lx (%s)\n", window, [client->_self class]);
+    AZDebug("Managed window 0x%lx (%s)\n", window, [client class]);
 }
 
 - (void) unmanageAll
@@ -303,37 +300,35 @@ static AZClientManager *sharedInstance;
   }
 }
 
-- (void) unmanageClient: (AZClient *) _client
+- (void) unmanageClient: (AZClient *) client
 {
     unsigned int j;
 
-    struct _ObClient *client = [_client obClient];
-
-    AZDebug("Unmanaging window: %lx (%s)\n", [client->_self window], [client->_self class]);
+    AZDebug("Unmanaging window: %lx (%s)\n", [client window], [client class]);
 
     g_assert(client != NULL);
 
-    keyboard_grab_for_client(client->_self, NO);
-    mouse_grab_for_client(client->_self, NO);
+    keyboard_grab_for_client(client, NO);
+    mouse_grab_for_client(client, NO);
 
     /* potentially fix focusLast */
     if (config_focus_last)
         grab_pointer(YES, OB_CURSOR_NONE);
 
     /* remove the window from our save set */
-    XChangeSaveSet(ob_display, [client->_self window], SetModeDelete);
+    XChangeSaveSet(ob_display, [client window], SetModeDelete);
 
     /* we dont want events no more */
-    XSelectInput(ob_display, [client->_self window], NoEventMask);
+    XSelectInput(ob_display, [client window], NoEventMask);
 
-    [[client->_self frame] hide];
+    [[client frame] hide];
 
-    [clist removeObject: client->_self];
-    [[AZStacking stacking] removeWindow: client->_self];
-    g_hash_table_remove(window_map, [client->_self windowPointer]);
+    [clist removeObject: client];
+    [[AZStacking stacking] removeWindow: client];
+    g_hash_table_remove(window_map, [client windowPointer]);
 
     /* update the focus lists */
-    [[AZFocusManager defaultManager] focusOrderRemove: client->_self];
+    [[AZFocusManager defaultManager] focusOrderRemove: client];
 
     /* once the client is out of the list, update the struts to remove it's
        influence */
@@ -345,7 +340,7 @@ static AZClientManager *sharedInstance;
         d->func(client, d->data);
     }
         
-    if ([[AZFocusManager defaultManager] focus_client] == client->_self) {
+    if ([[AZFocusManager defaultManager] focus_client] == client) {
         XEvent e;
 
         /* focus the last focused window on the desktop, and ignore enter
@@ -353,32 +348,32 @@ static AZClientManager *sharedInstance;
         while (XCheckTypedEvent(ob_display, EnterNotify, &e));
         /* remove these flags so we don't end up getting focused in the
            fallback! */
-        [client->_self set_can_focus: NO];
-        [client->_self set_focus_notify: NO];
-        [client->_self set_modal: NO];
-	[client->_self unfocus];
+        [client set_can_focus: NO];
+        [client set_focus_notify: NO];
+        [client set_modal: NO];
+	[client unfocus];
     }
 
     /* tell our parent(s) that we're gone */
-    if ([client->_self transient_for] == OB_TRAN_GROUP) { /* transient of group */
-	int i, count = [[[client->_self group] members] count];
+    if ([client transient_for] == OB_TRAN_GROUP) { /* transient of group */
+	int i, count = [[[client group] members] count];
 	for (i = 0; i < count; i++)
 	{
-	  AZClient *data = [[client->_self group] memberAtIndex: i];
-	  if ([data obClient] != client)
+	  AZClient *data = [[client group] memberAtIndex: i];
+	  if (data != client)
 	  {
-            [data removeTransient: client->_self];
+            [data removeTransient: client];
 	  }
 	}
-    } else if ([client->_self transient_for]) {        /* transient of window */
-	[[client->_self transient_for] removeTransient: client->_self];
+    } else if ([client transient_for]) {        /* transient of window */
+	[[client transient_for] removeTransient: client];
     }
 
     /* tell our transients that we're gone */
-    int k, kcount = [[client->_self transients] count];
+    int k, kcount = [[client transients] count];
     AZClient *temp = nil;
     for (k = 0; k < kcount; k++) {
-	temp = [[client->_self transients] objectAtIndex: k];
+	temp = [[client transients] objectAtIndex: k];
         if ([temp transient_for] != OB_TRAN_GROUP) {
             [temp set_transient_for: NULL];
 	    [temp calcLayer];
@@ -386,51 +381,49 @@ static AZClientManager *sharedInstance;
     }
 
     /* remove from its group */
-    if ([client->_self group]) {
-	[[AZGroupManager defaultManager] removeClient: client->_self fromGroup: [client->_self group]];
-	[client->_self set_group: nil];
+    if ([client group]) {
+	[[AZGroupManager defaultManager] removeClient: client fromGroup: [client group]];
+	[client set_group: nil];
     }
 
     /* give the client its border back */
-    [client->_self toggleBorder: YES];
+    [client toggleBorder: YES];
 
     /* reparent the window out of the frame, and free the frame */
-    [[client->_self frame] releaseClient: client->_self];
-    [client->_self set_frame: nil];
+    [[client frame] releaseClient: client];
+    [client set_frame: nil];
      
     if (ob_state() != OB_STATE_EXITING) {
         /* these values should not be persisted across a window
            unmapping/mapping */
-        PROP_ERASE([client->_self window], net_wm_desktop);
-        PROP_ERASE([client->_self window], net_wm_state);
-        PROP_ERASE([client->_self window], wm_state);
+        PROP_ERASE([client window], net_wm_desktop);
+        PROP_ERASE([client window], net_wm_state);
+        PROP_ERASE([client window], wm_state);
     } else {
         /* if we're left in an unmapped state, the client wont be mapped. this
            is bad, since we will no longer be managing the window on restart */
-        XMapWindow(ob_display, [client->_self window]);
+        XMapWindow(ob_display, [client window]);
     }
 
 
-    AZDebug("Unmanaged window 0x%lx\n", [client->_self window]);
+    AZDebug("Unmanaged window 0x%lx\n", [client window]);
 
     /* free all data allocated in the client struct */
-    [client->_self removeAllTransients];
-    [client->_self removeAllIcons];
-    g_free([client->_self title]);
-    [client->_self set_title: NULL];
-    g_free([client->_self icon_title]);
-    [client->_self set_icon_title: NULL];
-    g_free([client->_self name]);
-    [client->_self set_name: NULL];
-    g_free([client->_self class]);
-    [client->_self set_class: NULL];
-    g_free([client->_self role]);
-    [client->_self set_role: NULL];
-    g_free([client->_self sm_client_id]);
-    [client->_self set_sm_client_id: NULL];
-    DESTROY(client->_self);
-    [client->_self set_obClient: NULL];
-    g_free(client);
+    [client removeAllTransients];
+    [client removeAllIcons];
+    g_free([client title]);
+    [client set_title: NULL];
+    g_free([client icon_title]);
+    [client set_icon_title: NULL];
+    g_free([client name]);
+    [client set_name: NULL];
+    g_free([client class]);
+    [client set_class: NULL];
+    g_free([client role]);
+    [client set_role: NULL];
+    g_free([client sm_client_id]);
+    [client set_sm_client_id: NULL];
+    DESTROY(client);
      
     /* update the list hints */
     [self setList];

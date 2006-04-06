@@ -929,7 +929,7 @@ ObAction *action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     return act;
 }
 
-void action_run_list(GSList *acts, ObClient *c, ObFrameContext context,
+void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
                      guint state, guint button, gint x, gint y,
                      gboolean cancel, gboolean done)
 {
@@ -961,14 +961,14 @@ void action_run_list(GSList *acts, ObClient *c, ObFrameContext context,
            it won't work right unless we XUngrabKeyboard first,
            even though we grabbed the key/button Asychronously.
            e.g. "gnome-panel-control --main-menu" */
-        XUngrabKeyboard(ob_display, [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
+        XUngrabKeyboard(ob_display, [[AZEventHandler defaultHandler] eventLastTime]);
     }
 
     for (it = acts; it; it = g_slist_next(it)) {
         a = it->data;
 
         if (!(a->data.any.client_action == OB_CLIENT_ACTION_ALWAYS && !c)) {
-            a->data.any.c = a->data.any.client_action ? c : NULL;
+            a->data.any.c = a->data.any.client_action ? c : nil;
             a->data.any.context = context;
             a->data.any.x = x;
             a->data.any.y = y;
@@ -979,7 +979,7 @@ void action_run_list(GSList *acts, ObClient *c, ObFrameContext context,
                 a->data.inter.cancel = cancel;
                 a->data.inter.final = done;
                 if (!(cancel || done))
-                    if (!keyboard_interactive_grab(state, (a->data.any.c ? a->data.any.c->_self : nil), a))
+                    if (!keyboard_interactive_grab(state, a->data.any.c, a))
                         continue;
             }
 
@@ -996,7 +996,7 @@ void action_run_list(GSList *acts, ObClient *c, ObFrameContext context,
     }
 }
 
-void action_run_string(const gchar *name, struct _ObClient *c)
+void action_run_string(const gchar *name, AZClient *c)
 {
     ObAction *a;
     GSList *l;
@@ -1039,52 +1039,51 @@ void action_execute(union ActionData *data)
 
 void action_activate(union ActionData *data)
 {
-    [(data->activate.any.c)->_self activateHere: data->activate.here];
+    [data->activate.any.c activateHere: data->activate.here];
 }
 
 void action_focus(union ActionData *data)
 {
     /* if using focus_delay, stop the timer now so that focus doesn't go moving
        on us */
-    //event_halt_focus_delay();
     [[AZEventHandler defaultHandler] haltFocusDelay];
 
-    [((ObClient *)(data->client.any.c))->_self focus];
+    [data->client.any.c focus];
 }
 
 void action_unfocus (union ActionData *data)
 {
-    [((ObClient *)(data->client.any.c))->_self unfocus];
+    [data->client.any.c unfocus];
 }
 
 void action_iconify(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self iconify: YES currentDesktop: YES];
+    [data->client.any.c iconify: YES currentDesktop: YES];
     client_action_end(data);
 }
 
 void action_focus_order_to_bottom(union ActionData *data)
 {
-  [[AZFocusManager defaultManager] focusOrderToBottom: ((ObClient *)(data->client.any.c))->_self];
+  [[AZFocusManager defaultManager] focusOrderToBottom: data->client.any.c];
 }
 
 void action_raiselower(union ActionData *data)
 {
-    ObClient *c = data->client.any.c;
+    AZClient *c = data->client.any.c;
     gboolean raise = FALSE;
     int i, count = [[AZStacking stacking] count];
 
     for (i = 0; i < count; i++) {
-	ObClient *cit = (ObClient *)[[AZStacking stacking] windowAtIndex: i];
+	AZClient *cit = (AZClient *)[[AZStacking stacking] windowAtIndex: i];
 
         if (cit == c) break;
-        if ([cit->_self normal] == [c->_self normal] &&
-            [cit->_self layer] == [c->_self layer] &&
-            [[cit->_self frame] visible] &&
-            ![c->_self searchTransient: cit->_self]/*client_search_transient(c, cit)*/)
+        if ([cit normal] == [c normal] &&
+            [cit layer] == [c layer] &&
+            [[cit frame] visible] &&
+            ![c searchTransient: cit])
         {
-            if (RECT_INTERSECTS_RECT([[cit->_self frame] area], [[c->_self frame] area])) {
+            if (RECT_INTERSECTS_RECT([[cit frame] area], [[c frame] area])) {
                 raise = TRUE;
                 break;
             }
@@ -1100,14 +1099,14 @@ void action_raiselower(union ActionData *data)
 void action_raise(union ActionData *data)
 {
     client_action_start(data);
-    [[AZStacking stacking] raiseWindow: data->client.any.c->_self
+    [[AZStacking stacking] raiseWindow: data->client.any.c
 	                   group: data->stacking.group];
     client_action_end(data);
 }
 
 void action_unshaderaise(union ActionData *data)
 {
-    if ([data->client.any.c->_self shaded])
+    if ([data->client.any.c shaded])
         action_unshade(data);
     else
         action_raise(data);
@@ -1115,7 +1114,7 @@ void action_unshaderaise(union ActionData *data)
 
 void action_shadelower(union ActionData *data)
 {
-    if ([data->client.any.c->_self shaded])
+    if ([data->client.any.c shaded])
         action_lower(data);
     else
         action_shade(data);
@@ -1124,96 +1123,96 @@ void action_shadelower(union ActionData *data)
 void action_lower(union ActionData *data)
 {
     client_action_start(data);
-    [[AZStacking stacking] lowerWindow: data->client.any.c->_self
+    [[AZStacking stacking] lowerWindow: data->client.any.c
 	                   group: data->stacking.group];
     client_action_end(data);
 }
 
 void action_close(union ActionData *data)
 {
-    [data->client.any.c->_self close];
+    [data->client.any.c close];
 }
 
 void action_kill(union ActionData *data)
 {
-    [data->client.any.c->_self kill];
+    [data->client.any.c kill];
 }
 
 void action_shade(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self shade: YES];
+    [data->client.any.c shade: YES];
     client_action_end(data);
 }
 
 void action_unshade(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self shade: NO];
+    [data->client.any.c shade: NO];
     client_action_end(data);
 }
 
 void action_toggle_shade(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self shade: ![data->client.any.c->_self shaded]];
+    [data->client.any.c shade: ![data->client.any.c shaded]];
     client_action_end(data);
 }
 
 void action_toggle_omnipresent(union ActionData *data)
 { 
-  int num = ([data->client.any.c->_self desktop] == DESKTOP_ALL) ?
+  int num = ([data->client.any.c desktop] == DESKTOP_ALL) ?
             [[AZScreen defaultScreen] desktop] : DESKTOP_ALL;
-    [data->client.any.c->_self setDesktop: num hide: NO];
+    [data->client.any.c setDesktop: num hide: NO];
 }
 
 void action_move_relative_horz(union ActionData *data)
 {
-    ObClient *c = data->relative.any.c;
+    AZClient *c = data->relative.any.c;
     client_action_start(data);
-    [c->_self moveToX: [c->_self area].x + data->relative.delta
-	            y: [c->_self area].y];
+    [c moveToX: [c area].x + data->relative.delta
+	            y: [c area].y];
     client_action_end(data);
 }
 
 void action_move_relative_vert(union ActionData *data)
 {
-    ObClient *c = data->relative.any.c;
+    AZClient *c = data->relative.any.c;
     client_action_start(data);
-    [c->_self moveToX: [c->_self area].x
-	            y: [c->_self area].y + data->relative.delta];
+    [c moveToX: [c area].x
+	            y: [c area].y + data->relative.delta];
     client_action_end(data);
 }
 
 void action_move_to_center(union ActionData *data)
 {
-    ObClient *c = data->client.any.c;
+    AZClient *c = data->client.any.c;
     Rect *area;
-    area = [[AZScreen defaultScreen] areaOfDesktop: [c->_self desktop]
+    area = [[AZScreen defaultScreen] areaOfDesktop: [c desktop]
 	                                   monitor: 0];
     client_action_start(data);
-    [c->_self moveToX: area->width / 2 - [c->_self area].width / 2
-	            y: area->height / 2 - [c->_self area].height / 2];
+    [c moveToX: area->width / 2 - [c area].width / 2
+	            y: area->height / 2 - [c area].height / 2];
     client_action_end(data);
 }
 
 void action_resize_relative_horz(union ActionData *data)
 {
-    ObClient *c = data->relative.any.c;
+    AZClient *c = data->relative.any.c;
     client_action_start(data);
-    [c->_self resizeToWidth: [c->_self area].width + data->relative.delta * [c->_self size_inc].width
-                     height:  [c->_self area].height];
+    [c resizeToWidth: [c area].width + data->relative.delta * [c size_inc].width
+                     height:  [c area].height];
     client_action_end(data);
 }
 
 void action_resize_relative_vert(union ActionData *data)
 {
-    ObClient *c = data->relative.any.c;
-    if (![c->_self shaded]) {
+    AZClient *c = data->relative.any.c;
+    if (![c shaded]) {
         client_action_start(data);
-	[c->_self resizeToWidth: [c->_self area].width
-		height: [c->_self area].height +
-                     data->relative.delta * [c->_self size_inc].height];
+	[c resizeToWidth: [c area].width
+		height: [c area].height +
+                     data->relative.delta * [c size_inc].height];
         client_action_end(data);
     }
 }
@@ -1221,23 +1220,23 @@ void action_resize_relative_vert(union ActionData *data)
 void action_maximize_full(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self maximize: YES direction: 0 saveArea: YES];
+    [data->client.any.c maximize: YES direction: 0 saveArea: YES];
     client_action_end(data);
 }
 
 void action_unmaximize_full(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self maximize: NO direction: 0 saveArea: YES];
+    [data->client.any.c maximize: NO direction: 0 saveArea: YES];
     client_action_end(data);
 }
 
 void action_toggle_maximize_full(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self maximize:  
-	       !([data->client.any.c->_self max_horz] || 
-		 [data->client.any.c->_self max_vert])
+    [data->client.any.c maximize:  
+	       !([data->client.any.c max_horz] || 
+		 [data->client.any.c max_vert])
 	    direction: 0 saveArea: YES];
     client_action_end(data);
 }
@@ -1245,21 +1244,21 @@ void action_toggle_maximize_full(union ActionData *data)
 void action_maximize_horz(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self maximize: YES direction: 1 saveArea: YES];
+    [data->client.any.c maximize: YES direction: 1 saveArea: YES];
     client_action_end(data);
 }
 
 void action_unmaximize_horz(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self maximize: NO direction: 1 saveArea: YES];
+    [data->client.any.c maximize: NO direction: 1 saveArea: YES];
     client_action_end(data);
 }
 
 void action_toggle_maximize_horz(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self maximize: ![data->client.any.c->_self max_horz]
+    [data->client.any.c maximize: ![data->client.any.c max_horz]
 	    direction: 1 saveArea: YES];
     client_action_end(data);
 }
@@ -1267,21 +1266,21 @@ void action_toggle_maximize_horz(union ActionData *data)
 void action_maximize_vert(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self maximize: YES direction: 2 saveArea: YES];
+    [data->client.any.c maximize: YES direction: 2 saveArea: YES];
     client_action_end(data);
 }
 
 void action_unmaximize_vert(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self maximize: NO direction: 2 saveArea: YES];
+    [data->client.any.c maximize: NO direction: 2 saveArea: YES];
     client_action_end(data);
 }
 
 void action_toggle_maximize_vert(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self maximize: ![data->client.any.c->_self max_vert]
+    [data->client.any.c maximize: ![data->client.any.c max_vert]
 	    direction: 2 saveArea: YES];
     client_action_end(data);
 }
@@ -1289,22 +1288,22 @@ void action_toggle_maximize_vert(union ActionData *data)
 void action_toggle_fullscreen(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c->_self fullscreen: !([data->client.any.c->_self fullscreen])
+    [data->client.any.c fullscreen: !([data->client.any.c fullscreen])
 	                       saveArea: YES];
     client_action_end(data);
 }
 
 void action_send_to_desktop(union ActionData *data)
 {
-    ObClient *c = data->sendto.any.c;
+    AZClient *c = data->sendto.any.c;
 
-    if (![c->_self normal]) return;
+    if (![c normal]) return;
 
     AZScreen *defaultScreen = [AZScreen defaultScreen];
 
     if (data->sendto.desk < [defaultScreen numberOfDesktops] ||
         data->sendto.desk == DESKTOP_ALL) {
-	[c->_self setDesktop: data->sendto.desk hide: data->sendto.follow];
+	[c setDesktop: data->sendto.desk hide: data->sendto.follow];
         if (data->sendto.follow)
 	{
 	  [defaultScreen setDesktop: data->sendto.desk];
@@ -1367,10 +1366,10 @@ void action_desktop_dir(union ActionData *data)
 
 void action_send_to_desktop_dir(union ActionData *data)
 {
-    ObClient *c = data->sendtodir.inter.any.c;
+    AZClient *c = data->sendtodir.inter.any.c;
     guint d;
 
-    if (![c->_self normal]) return;
+    if (![c normal]) return;
     AZScreen *screen = [AZScreen defaultScreen];
     d = [screen cycleDesktop: data->sendtodir.dir
 	                wrap: data->sendtodir.wrap
@@ -1382,7 +1381,7 @@ void action_send_to_desktop_dir(union ActionData *data)
         !data->sendtodir.inter.final ||
         data->sendtodir.inter.cancel)
     {
-	[c->_self setDesktop: d hide: data->sendtodir.follow];
+	[c setDesktop: d hide: data->sendtodir.follow];
         if (data->sendtodir.follow)
 	{
             [screen setDesktop: d];
@@ -1398,10 +1397,10 @@ void action_desktop_last(union ActionData *data)
 
 void action_toggle_decorations(union ActionData *data)
 {
-    ObClient *c = data->client.any.c;
+    AZClient *c = data->client.any.c;
 
     client_action_start(data);
-    [c->_self setUndecorated: ![c->_self undecorated]];
+    [c setUndecorated: ![c undecorated]];
     client_action_end(data);
 }
 
@@ -1446,10 +1445,10 @@ static guint32 pick_corner(gint x, gint y, gint cx, gint cy, gint cw, gint ch)
 
 void action_moveresize(union ActionData *data)
 {
-    ObClient *c = data->moveresize.any.c;
+    AZClient *c = data->moveresize.any.c;
     guint32 corner;
 
-    if (![c->_self normal]) return;
+    if (![c normal]) return;
 
     if (data->moveresize.keyboard) {
         corner = (data->moveresize.move ?
@@ -1459,19 +1458,19 @@ void action_moveresize(union ActionData *data)
         corner = (data->moveresize.move ?
                   prop_atoms.net_wm_moveresize_move :
                   pick_corner(data->any.x, data->any.y,
-                              [[c->_self frame] area].x, [[c->_self frame] area].y,
+                              [[c frame] area].x, [[c frame] area].y,
                               /* use the client size because the frame
                                  can be differently sized (shaded
                                  windows) and we want this based on the
                                  clients size */
-                              [c->_self area].width + [[c->_self frame] size].left +
-                              [[c->_self frame] size].right,
-                              [c->_self area].height + [[c->_self frame] size].top +
-                              [[c->_self frame] size].bottom));
+                              [c area].width + [[c frame] size].left +
+                              [[c frame] size].right,
+                              [c area].height + [[c frame] size].top +
+                              [[c frame] size].bottom));
     }
 
     [[AZMoveResizeHandler defaultHandler]
-	    startWithClient: c->_self x: data->any.x y: data->any.y
+	    startWithClient: c x: data->any.x y: data->any.y
 	    button: data->any.button corner: corner];
 }
 
@@ -1529,128 +1528,118 @@ void action_directional_focus(union ActionData *data)
 void action_movetoedge(union ActionData *data)
 {
     gint x, y;
-    ObClient *c = data->diraction.any.c;
+    AZClient *c = data->diraction.any.c;
 
-    x = [[c->_self frame] area].x;
-    y = [[c->_self frame] area].y;
+    x = [[c frame] area].x;
+    y = [[c frame] area].y;
     
     switch(data->diraction.direction) {
     case OB_DIRECTION_NORTH:
-	y = [c->_self directionalEdgeSearch: OB_DIRECTION_NORTH];
-        //y = client_directional_edge_search(c, OB_DIRECTION_NORTH);
+	y = [c directionalEdgeSearch: OB_DIRECTION_NORTH];
         break;
     case OB_DIRECTION_WEST:
-	x = [c->_self directionalEdgeSearch: OB_DIRECTION_WEST];
-        //x = client_directional_edge_search(c, OB_DIRECTION_WEST);
+	x = [c directionalEdgeSearch: OB_DIRECTION_WEST];
         break;
     case OB_DIRECTION_SOUTH:
-	y = [c->_self directionalEdgeSearch: OB_DIRECTION_SOUTH] -
-        /*y = client_directional_edge_search(c, OB_DIRECTION_SOUTH) -*/
-            [[c->_self frame] area].height;
+	y = [c directionalEdgeSearch: OB_DIRECTION_SOUTH] -
+            [[c frame] area].height;
         break;
     case OB_DIRECTION_EAST:
-	x = [c->_self directionalEdgeSearch: OB_DIRECTION_EAST] -
-        /*x = client_directional_edge_search(c, OB_DIRECTION_EAST) - */
-            [[c->_self frame] area].width;
+	x = [c directionalEdgeSearch: OB_DIRECTION_EAST] -
+            [[c frame] area].width;
         break;
     default:
         g_assert_not_reached();
     }
-    [[c->_self frame] frameGravityAtX: &x y: &y];
+    [[c frame] frameGravityAtX: &x y: &y];
     client_action_start(data);
-    [c->_self moveToX: x y: y];
+    [c moveToX: x y: y];
     client_action_end(data);
 }
 
 void action_growtoedge(union ActionData *data)
 {
     gint x, y, width, height, dest;
-    ObClient *c = data->diraction.any.c;
+    AZClient *c = data->diraction.any.c;
     Rect *a;
 
     //FIXME growtoedge resizes shaded windows to 0 height
-    if ([c->_self shaded])
+    if ([c shaded])
         return;
 
-    a = [[AZScreen defaultScreen] areaOfDesktop: [c->_self desktop]];
-    x = [[c->_self frame] area].x;
-    y = [[c->_self frame] area].y;
-    width = [[c->_self frame] area].width;
-    height = [[c->_self frame] area].height;
+    a = [[AZScreen defaultScreen] areaOfDesktop: [c desktop]];
+    x = [[c frame] area].x;
+    y = [[c frame] area].y;
+    width = [[c frame] area].width;
+    height = [[c frame] area].height;
 
     switch(data->diraction.direction) {
     case OB_DIRECTION_NORTH:
-	dest = [c->_self directionalEdgeSearch: OB_DIRECTION_NORTH];
-        //dest = client_directional_edge_search(c, OB_DIRECTION_NORTH);
+	dest = [c directionalEdgeSearch: OB_DIRECTION_NORTH];
         if (a->y == y)
-            height = [[c->_self frame] area].height / 2;
+            height = [[c frame] area].height / 2;
         else {
-            height = [[c->_self frame] area].y + [[c->_self frame] area].height - dest;
+            height = [[c frame] area].y + [[c frame] area].height - dest;
             y = dest;
         }
         break;
     case OB_DIRECTION_WEST:
-	dest = [c->_self directionalEdgeSearch: OB_DIRECTION_WEST];
-        //dest = client_directional_edge_search(c, OB_DIRECTION_WEST);
+	dest = [c directionalEdgeSearch: OB_DIRECTION_WEST];
         if (a->x == x)
-            width = [[c->_self frame] area].width / 2;
+            width = [[c frame] area].width / 2;
         else {
-            width = [[c->_self frame] area].x + [[c->_self frame] area].width - dest;
+            width = [[c frame] area].x + [[c frame] area].width - dest;
             x = dest;
         }
         break;
     case OB_DIRECTION_SOUTH:
-	dest = [c->_self directionalEdgeSearch: OB_DIRECTION_SOUTH];
-        //dest = client_directional_edge_search(c, OB_DIRECTION_SOUTH);
-        if (a->y + a->height == y + [[c->_self frame] area].height) {
-            height = [[c->_self frame] area].height / 2;
+	dest = [c directionalEdgeSearch: OB_DIRECTION_SOUTH];
+        if (a->y + a->height == y + [[c frame] area].height) {
+            height = [[c frame] area].height / 2;
             y = a->y + a->height - height;
         } else
-            height = dest - [[c->_self frame] area].y;
-        y += (height - [[c->_self frame] area].height) % [c->_self size_inc].height;
-        height -= (height - [[c->_self frame] area].height) % [c->_self size_inc].height;
+            height = dest - [[c frame] area].y;
+        y += (height - [[c frame] area].height) % [c size_inc].height;
+        height -= (height - [[c frame] area].height) % [c size_inc].height;
         break;
     case OB_DIRECTION_EAST:
-	dest = [c->_self directionalEdgeSearch: OB_DIRECTION_EAST];
-        //dest = client_directional_edge_search(c, OB_DIRECTION_EAST);
-        if (a->x + a->width == x + [[c->_self frame] area].width) {
-            width = [[c->_self frame] area].width / 2;
+	dest = [c directionalEdgeSearch: OB_DIRECTION_EAST];
+        if (a->x + a->width == x + [[c frame] area].width) {
+            width = [[c frame] area].width / 2;
             x = a->x + a->width - width;
         } else
-            width = dest - [[c->_self frame] area].x;
-        x += (width - [[c->_self frame] area].width) % [c->_self size_inc].width;
-        width -= (width - [[c->_self frame] area].width) % [c->_self size_inc].width;
+            width = dest - [[c frame] area].x;
+        x += (width - [[c frame] area].width) % [c size_inc].width;
+        width -= (width - [[c frame] area].width) % [c size_inc].width;
         break;
     default:
         g_assert_not_reached();
     }
-    [[c->_self frame] frameGravityAtX: &x y: &y];
-    width -= [[c->_self frame] size].left + [[c->_self frame] size].right;
-    height -= [[c->_self frame] size].top + [[c->_self frame] size].bottom;
+    [[c frame] frameGravityAtX: &x y: &y];
+    width -= [[c frame] size].left + [[c frame] size].right;
+    height -= [[c frame] size].top + [[c frame] size].bottom;
     client_action_start(data);
-    [c->_self moveAndResizeToX: x y: y width: width height: height];
+    [c moveAndResizeToX: x y: y width: width height: height];
     client_action_end(data);
 }
 
 void action_send_to_layer(union ActionData *data)
 {
-  [(data->layer.any.c)->_self setLayer: data->layer.layer];
+  [(data->layer.any.c) setLayer: data->layer.layer];
 }
 
 void action_toggle_layer(union ActionData *data)
 {
-    ObClient *c = data->layer.any.c;
+    AZClient *c = data->layer.any.c;
 
     client_action_start(data);
     if (data->layer.layer < 0)
     {
-        [c->_self setLayer: [c->_self below] ? 0 : -1];
-        //client_set_layer(c, [c->_self below] ? 0 : -1);
+        [c setLayer: [c below] ? 0 : -1];
     }
     else if (data->layer.layer > 0)
     {
-        [c->_self setLayer: [c->_self above] ? 0 : 1];
-        //client_set_layer(c, [c->_self above] ? 0 : 1);
+        [c setLayer: [c above] ? 0 : 1];
     }
     client_action_end(data);
 }

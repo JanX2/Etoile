@@ -26,8 +26,8 @@ GList *session_saved_state;
 
 void session_startup(gint *argc, gchar ***argv) {}
 void session_shutdown() {}
-GList* session_state_find(ObClient *c) { return NULL; }
-gboolean session_state_cmp(ObSessionState *s, ObClient *c) { return FALSE; }
+GList* session_state_find(AZClient *c) { return NULL; }
+gboolean session_state_cmp(ObSessionState *s, AZClient *c) { return FALSE; }
 void session_state_free(ObSessionState *state) {}
 
 #else
@@ -438,16 +438,16 @@ void session_state_free(ObSessionState *state)
     }
 }
 
-gboolean session_state_cmp(ObSessionState *s, ObClient *c)
+gboolean session_state_cmp(ObSessionState *s, AZClient *c)
 {
-    return ([c->_self sm_client_id] &&
-            !strcmp(s->id, [c->_self sm_client_id]) &&
-            !strcmp(s->name, [c->_self name]) &&
-            !strcmp(s->class, [c->_self class]) &&
-            !strcmp(s->role, [c->_self role]));
+    return ([c sm_client_id] &&
+            !strcmp(s->id, [c sm_client_id]) &&
+            !strcmp(s->name, [c name]) &&
+            !strcmp(s->class, [c class]) &&
+            !strcmp(s->role, [c role]));
 }
 
-GList* session_state_find(ObClient *c)
+GList* session_state_find(AZClient *c)
 {
     GList *it;
 

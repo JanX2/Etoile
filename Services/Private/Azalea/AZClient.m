@@ -974,12 +974,12 @@
 
 - (void) raise
 {
-    action_run_string("Raise", obClient);
+    action_run_string("Raise", self);
 }
 
 - (void) lower
 {
-    action_run_string("Lower", obClient);
+    action_run_string("Lower", self);
 }
 
 - (void) updateTransientFor
@@ -2355,7 +2355,7 @@ no_number:
 {
     GList *it;
 
-    if (!(it = session_state_find(obClient)))
+    if (!(it = session_state_find(self)))
         return;
 
     session = it->data;
@@ -2550,7 +2550,7 @@ no_number:
 	for (i = 0; i < count; i++)
 	{
 	    data = [cManager clientAtIndex: i];
-            if (session_state_cmp(it->data, [data obClient]))
+            if (session_state_cmp(it->data, data))
 	    {
 		found = YES;
                 break;
@@ -2698,10 +2698,6 @@ no_number:
 - (NSArray *) icons { return icons; }
 - (void) removeAllIcons { [icons removeAllObjects]; }
 - (void) addIcon: (AZClientIcon *) icon { [icons addObject: icon]; }
-
-- (struct _ObClient *) obClient { return obClient; }
-//- (struct _ObClient **) obClientPointer { return &obClient; }
-- (void) set_obClient: (struct _ObClient *) c { obClient = c; }
 
 - (id) init
 {

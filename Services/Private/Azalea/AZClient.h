@@ -74,16 +74,6 @@ typedef enum
     OB_CLIENT_FUNC_CLOSE      = 1 << 6  /*!< Allow to be closed */
 } ObFunctions;
 
-struct _ObClient
-{
-    Window_InternalType type;
-
-    /* FIXME: remove after porting */
-    AZClient *_self;
-};
-
-typedef struct _ObClient  ObClient;
-
 @interface AZClient: NSObject <AZWindow>
 {
     Window  window;
@@ -281,9 +271,6 @@ typedef struct _ObClient  ObClient;
 
     /*! Icons for the client as specified on the client window */
     NSMutableArray *icons;
-
-    // FIXME: remove after porting
-    struct _ObClient *obClient;
 }
 
 /*! Determines if the client should be shown or hidden currently.
@@ -689,10 +676,6 @@ typedef struct _ObClient  ObClient;
 - (NSArray *) icons;
 - (void) removeAllIcons;
 - (void) addIcon: (AZClientIcon *) icon;
-
-- (struct _ObClient *) obClient;
-//- (struct _ObClient **) obClientPointer;
-- (void) set_obClient: (struct _ObClient *) obClient; 
 
 /* Only used for category */
 - (void) changeAllowedActions;

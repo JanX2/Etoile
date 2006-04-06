@@ -21,7 +21,7 @@
 #import <X11/Xlib.h>
 #import "AZClient.h"
 
-typedef void (*ObClientDestructor)(struct _ObClient *client, void *data);
+typedef void (*ObClientDestructor)(AZClient *client, void *data);
 
 typedef struct
 {
