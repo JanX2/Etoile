@@ -19,22 +19,34 @@
 
 #import <AppKit/AppKit.h>
 #import "DictConnection.h"
+#import "HistoryManager.h"
 
 @interface AppController : NSObject
 {
+  @private
   NSTextField* searchStringControl;
   NSTextView* searchResultView;
+  NSButton* browseBackButton;
+  NSButton* browseForwardButton;
   
   DictConnection* dict;
+  HistoryManager* historyManager;
 }
 
 -(id)init;
+
+
+// Some methods called by the GUI
+-(void) browseBackClicked: (id)sender;
+-(void) browseForwardClicked: (id)sender;
+
 
 // TextView delegate stuff
 -(BOOL) textView: (NSTextView*) textView
    clickedOnLink: (id) link
 	 atIndex: (unsigned) charIndex;
 
+-(void)updateGUI;
 
 // Listen for actions...
 
@@ -63,4 +75,10 @@
 -(void) writeString: (NSString*) aString
 	 attributes: (NSDictionary*) attributes;
 
+@end
+
+
+@interface AppController (HistoryManagerDelegate) <HistoryManagerDelegate>
+-(BOOL) historyManager: (HistoryManager*) aHistoryManager
+	 needsBrowseTo: (id) aLocation;
 @end

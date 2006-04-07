@@ -2,16 +2,22 @@
     "## Comment" = "Do NOT change this file, Gorm maintains it";
     AppController = {
 	Actions = (
-	    "searchAction:"
+	    "searchAction:",
+	    "browseBackClicked:",
+	    "browseForwardClicked:"
 	);
 	Outlets = (
 	    searchStringControl,
-	    searchResultView
+	    searchResultView,
+	    browseBackButton,
+	    browseForwardButton
 	);
 	Super = NSObject;
     };
     FirstResponder = {
 	Actions = (
+	    "browseBackClicked:",
+	    "browseForwardClicked:",
 	    "searchAction:"
 	);
 	Super = NSObject;

@@ -22,6 +22,7 @@
 		StreamLineWriter.m,
 		StreamLineReader.m,
 		DictConnection.m,
+		HistoryManager.m,
 		"NSString+Convenience.m",
 		"NSString+Clickable.m"
 	    );
@@ -33,6 +34,7 @@
 		StreamLineWriter.h,
 		StreamLineReader.h,
 		DictConnection.h,
+		HistoryManager.h,
 		"NSString+Convenience.h",
 		"NSString+Clickable.h"
 	    );

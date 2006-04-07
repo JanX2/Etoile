@@ -28,6 +28,20 @@ NSDictionary* bigHeadlineAttributes;
 NSDictionary* headlineAttributes;
 NSDictionary* normalAttributes;
 
+
+@implementation AppController (HistoryManagerDelegate)
+
+-(BOOL) historyManager: (HistoryManager*) aHistoryManager
+	 needsBrowseTo: (id) aLocation {
+  if ([[aLocation class] isSubclassOfClass: [NSString class]]) {
+    [self defineWord: (NSString*) aLocation];
+  }
+  
+  return YES;
+}
+
+@end
+
 @implementation AppController (DefinitionWriter)
 
 -(void) clearResults
@@ -181,6 +195,9 @@ NSDictionary* normalAttributes;
   if (self = [super init]) {
     dict = [[DictConnection alloc] init];
     [dict setDefinitionWriter: self];
+    
+    historyManager = [[HistoryManager alloc] init];
+    [historyManager setDelegate: self];
   }
   
   if (bigHeadlineAttributes == nil) {
@@ -221,7 +238,37 @@ NSDictionary* normalAttributes;
 }
 
 
-// ---- This is the delegate for the result view, too.
+// ---- Some methods called by the GUI
+-(void) browseBackClicked: (id)sender {
+  [historyManager browseBack];
+}
+
+-(void) browseForwardClicked: (id)sender {
+  [historyManager browseForward];
+}
+
+-(void)updateGUI {
+  if ([historyManager canBrowseBack]) {
+    [browseBackButton setEnabled: YES];
+    [browseBackButton setImage: [NSImage imageNamed: @"common_ArrowLeft"]];
+  } else { // cannot browse back
+    [browseBackButton setEnabled: NO];
+    [browseBackButton setImage: [NSImage imageNamed: @"common_ArrowLeftH"]];
+  }
+  [browseBackButton setNeedsDisplay: YES];
+  
+  if ([historyManager canBrowseForward]) {
+    [browseForwardButton setEnabled: YES];
+    [browseForwardButton setImage: [NSImage imageNamed: @"common_ArrowRight"]];
+  } else { // cannot browse forward
+    [browseForwardButton setEnabled: NO];
+    [browseForwardButton setImage: [NSImage imageNamed: @"common_ArrowRightH"]];
+  }
+  [browseForwardButton setNeedsDisplay: YES];
+}
+
+
+// ---- This object is the delegate for the result view, too.
 -(BOOL) textView: (NSTextView*) textView
    clickedOnLink: (id) link
 	 atIndex: (unsigned) charIndex
@@ -275,9 +322,6 @@ NSDictionary* normalAttributes;
   assert(searchString != nil);
   
   if ( ![[searchStringControl stringValue] isEqualToString: searchString] ) {
-    // set string in search field
-    [searchStringControl setStringValue: searchString];
-    
     // invoke search
     [self defineWord: searchString];
   }
@@ -291,12 +335,21 @@ NSDictionary* normalAttributes;
  */ 
 -(void)defineWord: (NSString*)aWord
 {
+  if ( ![[searchStringControl stringValue] isEqualToString: aWord] ) {
+    // set string in search field
+    [searchStringControl setStringValue: aWord];
+  }
+  
   NS_DURING
     {
       [dict open];
       [dict sendClientString: @"GNUstep DictionaryReader.app"];
       [dict definitionFor: aWord];
       // [dict close]; // FIXME: That crashes!
+      
+      [historyManager browser: self
+		      didBrowseTo: aWord];
+      [self updateGUI];
     }
   NS_HANDLER
     {
