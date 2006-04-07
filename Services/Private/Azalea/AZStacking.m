@@ -29,10 +29,10 @@ static AZStacking *sharedInstance;
 
 @interface AZStacking (AZPrivate)
 - (void) doRestack: (GList *) wins before: (GList *) before;
-- (void) doRaise: (GList *) wins;
-- (void) doLower: (GList *) wins;
-- (GList *)pickWindowsFrom: (AZClient *) top to: (AZClient *) selected raise: (BOOL) raise;
-- (GList *)pickGroupWindowsFrom: (AZClient *) top to: (AZClient *) selected raise: (BOOL) raise normal: (BOOL) normal;
+- (void) doRaise: (NSArray *) wins;
+- (void) doLower: (NSArray *) wins;
+- (NSArray *)pickWindowsFrom: (AZClient *) top to: (AZClient *) selected raise: (BOOL) raise;
+- (NSArray *)pickGroupWindowsFrom: (AZClient *) top to: (AZClient *) selected raise: (BOOL) raise normal: (BOOL) normal;
 @end
 
 @implementation AZStacking
@@ -52,10 +52,20 @@ static AZStacking *sharedInstance;
        reverse order!) */
     if (stacking_list) {
         windows = g_new(Window, g_list_length(stacking_list));
+#if 1
+	int j, jcount = g_list_length(stacking_list);
+	for (j = jcount-1; j > -1; j--) {
+	  id <AZWindow> temp = g_list_nth_data(stacking_list, j);
+	  if (WINDOW_IS_CLIENT(temp)) {
+	    windows[i++] = [(AZClient *)temp window];
+	  }
+	}
+#else
         for (it = g_list_last(stacking_list); it; it = g_list_previous(it)) {
             if (WINDOW_IS_CLIENT(it->data))
                 windows[i++] = [((AZClient*)(it->data)) window];
         }
+#endif
     }
 
     PROP_SETA32(RootWindow(ob_display, ob_screen),
@@ -66,40 +76,39 @@ static AZStacking *sharedInstance;
 
 - (void) raiseWindow: (id <AZWindow>) window group: (BOOL) group
 {
-    GList *wins;
+    NSMutableArray *wins = AUTORELEASE([[NSMutableArray alloc] init]);
 
     if (WINDOW_IS_CLIENT(window)) {
         AZClient *c;
         AZClient *selected;
         selected = (AZClient *)window;
 	c = [selected searchTopTransient];
-	wins = [self pickWindowsFrom: c to: selected raise: YES];
-	wins = g_list_concat(wins, [self pickGroupWindowsFrom: c to: selected raise: YES normal: group]);
+	[wins addObjectsFromArray: [self pickWindowsFrom: c to: selected raise: YES]];
+	[wins addObjectsFromArray: [self pickGroupWindowsFrom: c to: selected raise: YES normal: group]];
     } else {
-        wins = g_list_append(NULL, window);
+	[wins addObject: window];
         stacking_list = g_list_remove(stacking_list, window);
     }
     [self doRaise: wins];
-    g_list_free(wins);
 }
 
 - (void) lowerWindow: (id <AZWindow>) window group: (BOOL) group
 {
-    GList *wins;
+    NSMutableArray *wins = AUTORELEASE([[NSMutableArray alloc] init]);
 
     if (WINDOW_IS_CLIENT(window)) {
         AZClient *c;
         AZClient *selected;
         selected = (AZClient*)window;
 	c = [selected searchTopTransient];
-	wins = [self pickWindowsFrom: c to: selected raise: NO];
-        wins = g_list_concat([self pickGroupWindowsFrom: c to: selected raise: NO normal: group], wins);
+	NSArray *w = [self pickWindowsFrom: c to: selected raise: NO];
+	[wins addObjectsFromArray: [self pickGroupWindowsFrom: c to: selected raise: NO normal: group]];
+	[wins addObjectsFromArray: w];
     } else {
-        wins = g_list_append(NULL, window);
+	[wins addObject: window];
         stacking_list = g_list_remove(stacking_list, window);
     }
     [self doLower: wins];
-    g_list_free(wins);
 }
 
 - (void) moveWindow: (id <AZWindow>) window belowWindow: (id <AZWindow>) below
@@ -206,21 +215,20 @@ static AZStacking *sharedInstance;
     [self setList];
 }
 
-- (void) doRaise: (GList *) wins
+- (void) doRaise: (NSArray *) wins
 {
-#if 1
     NSMutableDictionary *dict = AUTORELEASE([[NSMutableDictionary alloc] init]);
     NSMutableArray *array = nil;
-    int i, icount = g_list_length(wins);
+    int i, icount = [wins count];
     for (i = 0; i < icount; i++) {
       ObStackingLayer l;
-      l = [(id <AZWindow>)(g_list_nth_data(wins, i)) windowLayer];
+      l = [(id <AZWindow>)[wins objectAtIndex: i] windowLayer];
 
       array = [dict objectForKey: [NSNumber numberWithInt: l]];
       if (array == nil) {
         array = AUTORELEASE([[NSMutableArray alloc] init]);
       }
-      [array addObject: [NSValue valueWithPointer: g_list_nth_data(wins, i)]];
+      [array addObject: [wins objectAtIndex: i]];
       [dict setObject: array forKey: [NSNumber numberWithInt: l]];
     }
 
@@ -237,7 +245,7 @@ static AZStacking *sharedInstance;
       if (kcount) {
 	/* build layer */
 	for (k = 0; k < kcount; k++) {
-          layer = g_list_append(layer, [[a objectAtIndex: k] pointerValue]);
+          layer = g_list_append(layer, [a objectAtIndex: k]);
 	}
 
 	for (; it; it = g_list_next(it)) {
@@ -252,48 +260,22 @@ static AZStacking *sharedInstance;
 	layer = NULL;
       }
     }
-#else
-    GList *it;
-    GList *layer[OB_NUM_STACKING_LAYERS] = {NULL};
-    int i;
-
-    for (it = wins; it; it = g_list_next(it)) {
-        ObStackingLayer l;
-
-        l = window_layer(it->data);
-        layer[l] = g_list_append(layer[l], it->data);
-    }
-
-    it = stacking_list;
-    for (i = OB_NUM_STACKING_LAYERS - 1; i >= 0; --i) {
-        if (layer[i]) {
-            for (; it; it = g_list_next(it)) {
-                /* look for the top of the layer */
-                if (window_layer(it->data) <= (ObStackingLayer) i)
-                    break;
-            }
-	    [self doRestack: layer[i] before: it];
-            g_list_free(layer[i]);
-        }
-    }
-#endif
 }
 
-- (void) doLower: (GList *) wins
+- (void) doLower: (NSArray *) wins
 {
-#if 1
     NSMutableDictionary *dict = AUTORELEASE([[NSMutableDictionary alloc] init]);
     NSMutableArray *array = nil;
-    int i, icount = g_list_length(wins);
+    int i, icount = [wins count];
     for (i = 0; i < icount; i++) {
       ObStackingLayer l;
-      l = [(id <AZWindow>)(g_list_nth_data(wins, i)) windowLayer];
+      l = [(id <AZWindow>)[wins objectAtIndex: i] windowLayer];
 
       array = [dict objectForKey: [NSNumber numberWithInt: l]];
       if (array == nil) {
         array = AUTORELEASE([[NSMutableArray alloc] init]);
       }
-      [array addObject: [NSValue valueWithPointer: g_list_nth_data(wins, i)]];
+      [array addObject: [wins objectAtIndex: i]];
       [dict setObject: array forKey: [NSNumber numberWithInt: l]];
     }
 
@@ -310,7 +292,7 @@ static AZStacking *sharedInstance;
       if (kcount) {
 	/* build layer */
 	for (k = 0; k < kcount; k++) {
-          layer = g_list_append(layer, [[a objectAtIndex: k] pointerValue]);
+          layer = g_list_append(layer, [a objectAtIndex: k]);
 	}
 
 	for (; it; it = g_list_next(it)) {
@@ -325,64 +307,38 @@ static AZStacking *sharedInstance;
 	layer = NULL;
       }
     }
-#else
-    GList *it;
-    GList *layer[OB_NUM_STACKING_LAYERS] = {NULL};
-    int i;
-
-    for (it = wins; it; it = g_list_next(it)) {
-        ObStackingLayer l;
-
-        l = window_layer(it->data);
-        layer[l] = g_list_append(layer[l], it->data);
-    }
-
-    it = stacking_list;
-    for (i = OB_NUM_STACKING_LAYERS - 1; i >= 0; --i) {
-        if (layer[i]) {
-            for (; it; it = g_list_next(it)) {
-                /* look for the top of the next layer down */
-                if (window_layer(it->data) < (ObStackingLayer) i)
-                    break;
-            }
-	    [self doRestack: layer[i] before: it];
-            g_list_free(layer[i]);
-        }
-    }
-#endif
 }
 
-- (GList *)pickWindowsFrom: (AZClient *) top to: (AZClient *) selected 
+- (NSArray *)pickWindowsFrom: (AZClient *) top to: (AZClient *) selected 
 		     raise: (BOOL) raise
 {
-    GList *ret = NULL;
-    GList *it, *next, *prev;
+    NSMutableArray *ret = AUTORELEASE([[NSMutableArray alloc] init]);
+    GList *it;
     int i, n;
-    GList *modals = NULL;
-    GList *trans = NULL;
-    GList *modal_sel = NULL; /* the selected guys if modal */
-    GList *trans_sel = NULL; /* the selected guys if not */
+    NSMutableArray *modals = AUTORELEASE([[NSMutableArray alloc] init]);
+    NSMutableArray *trans = AUTORELEASE([[NSMutableArray alloc] init]);
+    NSMutableArray *modal_sel = AUTORELEASE([[NSMutableArray alloc] init]); /* the selected guys if modal */
+    NSMutableArray *tran_sel = AUTORELEASE([[NSMutableArray alloc] init]); /* the selected guys if not */
 
     /* remove first so we can't run into ourself */
     if ((it = g_list_find(stacking_list, top)))
         stacking_list = g_list_delete_link(stacking_list, it);
     else
-        return NULL;
+        return ret; /* Empty */
 
     i = 0;
     n = [[top transients] count];
 
-    for (it = stacking_list; i < n && it; it = next) {
-        prev = g_list_previous(it);
-        next = g_list_next(it);
-
+    int prev_index;
+    int j;
+    for (j = 0; i < n, j < g_list_length(stacking_list);/*j++ in the end */ ) {
+	it = g_list_nth(stacking_list, j);
+	prev_index = j - 1;
 
 	int index = NSNotFound;
 
 	if (WINDOW_IS_CLIENT(it->data))
-	{
 	  index = [[top transients] indexOfObject: ((AZClient*)(it->data))];
-	}
 
 	if (index != NSNotFound) {
             AZClient *c = [[top transients] objectAtIndex: index];
@@ -393,57 +349,100 @@ static AZStacking *sharedInstance;
             if (c == selected)
                 sel_child = YES;
             else
-	    {
 		sel_child = ([c searchTransient: selected] != nil);
-	    }
 
             if (![c modal]) {
                 if (!sel_child) {
-                    trans = g_list_concat(trans,
-                         [self pickWindowsFrom: c to: selected raise: raise]);
+		    [trans addObjectsFromArray: [self pickWindowsFrom: c to: selected raise: raise]];
                 } else {
-                    trans_sel = g_list_concat(trans_sel,
-		   	 [self pickWindowsFrom: c to: selected raise: raise]);
+		    [tran_sel addObjectsFromArray: [self pickWindowsFrom: c to: selected raise: raise]];
                 }
             } else {
                 if (!sel_child) {
-                    modals = g_list_concat(modals,
-                         [self pickWindowsFrom: c to: selected raise: raise]);
+		    [modals addObjectsFromArray: [self pickWindowsFrom: c to: selected raise: raise]];
                 } else {
-                    modal_sel = g_list_concat(modal_sel,
-                         [self pickWindowsFrom: c to: selected raise: raise]);
+		    [modal_sel addObjectsFromArray: [self pickWindowsFrom: c to: selected raise: raise]];
                 }
             }
             /* if we dont have a prev then start back at the beginning,
                otherwise skip back to the prev's next */
-            next = prev ? g_list_next(prev) : stacking_list;
+	    if (prev_index < 0) {
+              j = 0;
+	      continue;
+	    }
         }
+	j++;
     }
 
-    ret = g_list_concat((raise ? modal_sel : modals),
-                        (raise ? modals : modal_sel));
+    [ret addObjectsFromArray: (raise ? modal_sel : modals)];
+    [ret addObjectsFromArray: (raise ? modals : modal_sel)];
 
-    ret = g_list_concat(ret, (raise ? trans_sel : trans));
-    ret = g_list_concat(ret, (raise ? trans : trans_sel));
+    [ret addObjectsFromArray: (raise ? tran_sel : trans)];
+    [ret addObjectsFromArray: (raise ? trans : tran_sel)];
 
 
     /* add itself */
-    ret = g_list_append(ret, top);
+    [ret addObject: top];
+    /* FIXME: should destroy modals, modal_sel, trans, tran_sel here */
 
     return ret;
 }
 
-- (GList *)pickGroupWindowsFrom: (AZClient *) top to: (AZClient *) selected
+- (NSArray *)pickGroupWindowsFrom: (AZClient *) top to: (AZClient *) selected
                      raise: (BOOL) raise normal: (BOOL) normal
 {
-    GList *ret = NULL;
-    GList *it = NULL, *next = NULL, *prev = NULL;
+    NSMutableArray *ret = AUTORELEASE([[NSMutableArray alloc] init]);
+    GList *it = NULL;
     int i, n;
 
     /* add group members in their stacking order */
     if ((top) && (top != OB_TRAN_GROUP) && ([top group])) {
         i = 0;
 	n = [[[top group] members] count]-1;
+#if 1
+	int prev_index;
+	int j;
+	for (j = 0; i < n, j < g_list_length(stacking_list); /* j++ later */) {
+	    it = g_list_nth(stacking_list, j);
+	    prev_index = j - 1;
+
+	    /* Not in openbox. Maybe have side-effect. */
+	    if (!WINDOW_IS_CLIENT(it->data)) {
+              j++;
+	      continue;
+            }
+
+	    int sit = [[top group] indexOfMember: (AZClient*)(it->data)];
+	    if (sit != NSNotFound) {
+                AZClient *c = nil;
+                ObClientType t;
+
+                ++i;
+                c = it->data;
+                t = [c type];
+
+                if (([c desktop] == [selected desktop] ||
+                     [c desktop] == DESKTOP_ALL) &&
+                    (t == OB_CLIENT_TYPE_TOOLBAR ||
+                     t == OB_CLIENT_TYPE_MENU ||
+                     t == OB_CLIENT_TYPE_UTILITY ||
+                     (normal && t == OB_CLIENT_TYPE_NORMAL)))
+                {
+		    AZClient *data = [[top group] memberAtIndex: sit];
+                    [ret addObjectsFromArray:
+                        [self pickWindowsFrom: data to: selected raise: raise]];
+                    /* if we dont have a prev then start back at the beginning,
+                       otherwise skip back to the prev's next */
+		    if (prev_index < 0) {
+		      j = 0;
+		      continue;
+		    }
+                }
+            }
+	    j++;
+        }
+#else
+	GList *next = NULL, *prev = NULL;
         for (it = stacking_list; i < n && it; it = next) {
             prev = g_list_previous(it);
             next = g_list_next(it);
@@ -481,6 +480,7 @@ static AZStacking *sharedInstance;
                 }
             }
         }
+#endif
     }
     return ret;
 }

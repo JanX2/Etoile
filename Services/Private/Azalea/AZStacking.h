@@ -38,6 +38,7 @@ typedef enum {
 @interface AZStacking: NSObject
 {
   /* list of AZWindow*s in stacking order from highest to lowest */
+  //NSMutableArray *stacking_list;
   GList *stacking_list;
 }
 
