@@ -111,24 +111,24 @@ typedef enum
 
     /*! The startup id for the startup-notification protocol. This will be
       NULL if a startup id is not set. */
-    gchar *startup_id;
+    NSString *startup_id;
 
     /*! Normal window title */
-    gchar *title;
+    NSString *title;
     /*! The count for the title. When another window with the same title
       exists, a count will be appended to it. */
     unsigned int title_count;
     /*! Window title when iconified */
-    gchar *icon_title;
+    NSString *icon_title;
 
     /*! The application that created the window */
-    gchar *name;
+    NSString *name;
     /*! The class of the window, can used for grouping */
-    gchar *class;
+    NSString *class;
     /*! The specified role of the window, used for identification */
-    gchar *role;
+    NSString *role;
     /*! The session client id for the window. *This can be NULL!* */
-    gchar *sm_client_id;
+    NSString  *sm_client_id;
 
     /*! The type of window (what its function is) */
     ObClientType type;
@@ -576,25 +576,25 @@ typedef enum
 - (void) removeAllTransients;
 
 - (unsigned int) desktop;
-- (gchar *) startup_id;
+- (NSString *) startup_id;
 - (void) set_desktop: (unsigned int) desktop;
-- (void) set_startup_id: (gchar *) startup_id;
+- (void) set_startup_id: (NSString *) startup_id;
 
-- (gchar *) title;
+- (NSString *) title;
 - (unsigned int ) title_count;
-- (gchar *) icon_title;
-- (gchar *) name;
-- (gchar *) class;
-- (gchar *) role;
-- (gchar *) sm_client_id;
+- (NSString *) icon_title;
+- (NSString *) name;
+- (NSString *) class;
+- (NSString *) role;
+- (NSString *) sm_client_id;
 - (ObClientType) type;
-- (void) set_title: (gchar *) title;
+- (void) set_title: (NSString *) title;
 - (void) set_title_count: (unsigned int ) title_count;
-- (void) set_icon_title: (gchar *) icon_title;
-- (void) set_name: (gchar *) name;
-- (void) set_class: (gchar *) class;
-- (void) set_role: (gchar *) role;
-- (void) set_sm_client_id: (gchar *) sm_client_id;
+- (void) set_icon_title: (NSString *) icon_title;
+- (void) set_name: (NSString *) name;
+- (void) set_class: (NSString *) class;
+- (void) set_role: (NSString *) role;
+- (void) set_sm_client_id: (NSString *) sm_client_id;
 - (void) set_type: (ObClientType) type;
 
 - (Rect) area;

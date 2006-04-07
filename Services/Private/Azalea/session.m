@@ -370,17 +370,17 @@ static BOOL session_save()
                 preh = [c pre_max_area].height;
             }
 
-            fprintf(f, "<window id=\"%s\">\n", [c sm_client_id]);
+            fprintf(f, "<window id=\"%s\">\n", (char*)[[c sm_client_id] cString]);
 
-            t = g_markup_escape_text([c name], -1);
+            t = g_markup_escape_text((char*)[[c name] cString], -1);
             fprintf(f, "\t<name>%s</name>\n", t);
             g_free(t);
 
-            t = g_markup_escape_text([c class], -1);
+            t = g_markup_escape_text((char*)[[c class] cString], -1);
             fprintf(f, "\t<class>%s</class>\n", t);
             g_free(t);
 
-            t = g_markup_escape_text([c role], -1);
+            t = g_markup_escape_text((char*)[[c role] cString], -1);
             fprintf(f, "\t<role>%s</role>\n", t);
             g_free(t);
 
@@ -441,10 +441,10 @@ void session_state_free(ObSessionState *state)
 BOOL session_state_cmp(ObSessionState *s, AZClient *c)
 {
     return ([c sm_client_id] &&
-            !strcmp(s->id, [c sm_client_id]) &&
-            !strcmp(s->name, [c name]) &&
-            !strcmp(s->class, [c class]) &&
-            !strcmp(s->role, [c role]));
+            !strcmp(s->id, (char*)[[c sm_client_id] cString]) &&
+            !strcmp(s->name, (char*)[[c name] cString]) &&
+            !strcmp(s->class, (char*)[[c class] cString]) &&
+            !strcmp(s->role, (char*)[[c role] cString]));
 }
 
 GList* session_state_find(AZClient *c)

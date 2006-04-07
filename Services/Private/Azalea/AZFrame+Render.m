@@ -238,7 +238,7 @@
 {
     if (label_x < 0) return;
     /* set the texture's text! */
-    a->texture[0].data.text.string = [[self client] title];
+    a->texture[0].data.text.string = (char*)[[[self client] title] UTF8String];
     RrPaint(a, [self label], label_width, ob_rr_theme->label_height);
 }
 

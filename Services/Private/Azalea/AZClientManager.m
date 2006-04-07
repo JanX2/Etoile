@@ -184,7 +184,7 @@ static AZClientManager *sharedInstance;
     [client getAll];
     [client restoreSessionState];
 
-    [[AZStartupHandler defaultHandler] applicationStarted: [client class]];
+    [[AZStartupHandler defaultHandler] applicationStarted: (char*)[[client class] cString]];
 
     /* update the focus lists, do this before the call to change_state or
        it can end up in the list twice! */
@@ -411,18 +411,6 @@ static AZClientManager *sharedInstance;
     /* free all data allocated in the client struct */
     [client removeAllTransients];
     [client removeAllIcons];
-    g_free([client title]);
-    [client set_title: NULL];
-    g_free([client icon_title]);
-    [client set_icon_title: NULL];
-    g_free([client name]);
-    [client set_name: NULL];
-    g_free([client class]);
-    [client set_class: NULL];
-    g_free([client role]);
-    [client set_role: NULL];
-    g_free([client sm_client_id]);
-    [client set_sm_client_id: NULL];
     DESTROY(client);
      
     /* update the list hints */

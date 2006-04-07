@@ -23,8 +23,6 @@
 #import "config.h"
 #import "parser/parse.h"
 
-#include <glib.h>
-
 @implementation AZClient (AZResist)
 
 - (void) resistMoveWindowsAtX: (int *) x y: (int *) y

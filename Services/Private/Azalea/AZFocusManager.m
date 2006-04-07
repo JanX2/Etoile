@@ -760,7 +760,7 @@ done_cycle:
     } else {
         Rect *a;
         AZClient *p = c;
-        gchar *title = NULL;
+        NSString *title = nil;
 
 	a = [[AZScreen defaultScreen] physicalAreaOfMonitor: 0];
 	[focus_cycle_popup positionWithGravity: CenterGravity
@@ -774,11 +774,11 @@ done_cycle:
         while ([p transient_for] && [p transient_for] != OB_TRAN_GROUP)
             p = [p transient_for];
 
-        if (p != c && !strcmp("", ([c iconic] ? [c icon_title] : [c title])))
-            title = g_strdup([p iconic] ? [p icon_title] : [p title]);
-	  [focus_cycle_popup showText: (title ? title : ([c iconic] ? [c icon_title] : [c title]))
+        if (p != c && [([c iconic] ? [c icon_title] : [c title]) length] != 0)
+	    ASSIGN(title, ([p iconic] ? [p icon_title] : [p title]));
+	  [focus_cycle_popup showText: (char*)[(title ? title : ([c iconic] ? [c icon_title] : [c title])) UTF8String]
 		                 icon: [p iconWithWidth: 48 height: 48]];
-        g_free(title);
+	DESTROY(title);
     }
 }
 

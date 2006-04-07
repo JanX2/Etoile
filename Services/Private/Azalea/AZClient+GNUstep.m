@@ -8,17 +8,10 @@
 
 - (BOOL) isGNUstep
 {
-#if 1
-  if (class && (strcmp(class, "GNUstep") == 0))
+  if ([class isEqualToString: @"GNUstep"] == YES)
     return YES;
   else
     return NO;
-#else
-  unsigned int data = 0;
-  if (PROP_GET32(window, gnustep_wm_attr, gnustep_wm_attr, &data))
-    return YES;
-  return NO;
-#endif
 }
 
 - (void) updateGNUstepWMAttributes

@@ -1,4 +1,4 @@
-// Modified by Yen-Ju
+
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
    
    client.c for the Openbox window manager
@@ -1238,30 +1238,38 @@
 {
     gint32 nums;
     unsigned int i;
-    gchar *data = NULL;
+    char *data = NULL;
     BOOL read_title;
-    gchar *old_title;
+    NSString *old_title = nil;
 
-    old_title = title;
+    ASSIGN(old_title, title);
      
     /* try netwm */
-    if (!PROP_GETS(window, net_wm_name, utf8, &data)) {
-	/* try old x with utf */
-        if (!PROP_GETS(window, wm_name, utf8, &data)) {
-          /* try old x stuff */
-          if (!PROP_GETS(window, wm_name, locale, &data)) {
-              // http://developer.gnome.org/projects/gup/hig/draft_hig_new/windows-alert.html
+    if (PROP_GETS(window, net_wm_name, utf8, &data)) {
+      ASSIGN(title, [NSString stringWithUTF8String: data]);
+      XFree(data);
+      data = NULL;
+    } else if (PROP_GETS(window, wm_name, utf8, &data)) {
+      /* try old x with utf */
+      ASSIGN(title, [NSString stringWithUTF8String: data]);
+      XFree(data);
+      data = NULL;
+    } else if (PROP_GETS(window, wm_name, locale, &data)) {
+      /* try old x stuff */
+      ASSIGN(title, [NSString stringWithCString: data]);
+      XFree(data);
+      data = NULL;
+    } else {
+          // http://developer.gnome.org/projects/gup/hig/draft_hig_new/windows-alert.html
               if (transient) {
-                  data = g_strdup("");
+		  ASSIGN(title, [NSString string]);
                   goto no_number;
               } else
-                  data = g_strdup("Unnamed Window");
-	  }
-        }
+		  ASSIGN(title, [NSString stringWithCString: "Unnamed Window"]);
     }
 
     /* did the title change? then reset the title_count */
-    if (old_title && 0 != strncmp(old_title, data, strlen(data)))
+    if (old_title && [title compare: old_title options: 0 range: NSMakeRange(0, [title length])] != NSOrderedSame)
 	title_count = 1;
 
     /* look for duplicates and append a number */
@@ -1272,7 +1280,7 @@
     {
       AZClient *c = [cManager clientAtIndex: j];
       if (c != self) {
-            if (0 == strncmp([c title], data, strlen(data)))
+	    if ([title compare: [c title] options: 0 range: NSMakeRange(0, [title length])] == NSOrderedSame)
                 nums |= 1 << [c title_count];
         }
     }
@@ -1285,78 +1293,71 @@
         }
     /* dont display the number for the first window */
     if (title_count > 1) {
-        gchar *ndata;
-        ndata = g_strdup_printf("%s - [%u]", data, title_count);
-        g_free(data);
-        data = ndata;
+	ASSIGN(title, ([NSString stringWithFormat: @"%@ - [%u]", title, title_count]));
     }
 
-    PROP_SETS(window, net_wm_visible_name, data);
+    PROP_SETS(window, net_wm_visible_name, (char*)[title UTF8String]);
 no_number:
-    title = data;
 
     if (frame)
 	[frame adjustTitle];
 
-    g_free(old_title);
+    DESTROY(old_title);
 
     /* update the icon title */
     data = NULL;
-    g_free(icon_title);
-    icon_title = NULL;
+    DESTROY(icon_title);
 
     read_title = YES;
     /* try netwm */
-    if (!PROP_GETS(window, net_wm_icon_name, utf8, &data))
-        /* try old x stuff */
-        if (!PROP_GETS(window, wm_icon_name, locale, &data)) {
-            data = g_strdup(title);
-            read_title = NO;
-        }
+    if (PROP_GETS(window, net_wm_icon_name, utf8, &data)) {
+      ASSIGN(icon_title, [NSString stringWithUTF8String: data]);
+      XFree(data);
+      data = NULL;
+    } else if (PROP_GETS(window, wm_icon_name, locale, &data)) {
+      /* try old x stuff */
+      ASSIGN(icon_title, [NSString stringWithCString: data]);
+      XFree(data);
+      data = NULL;
+    } else {
+      ASSIGNCOPY(icon_title, title);
+      read_title = NO;
+    }
 
     /* append the title count, dont display the number for the first window */
     if (read_title && title_count > 1) {
-        gchar *vdata, *ndata;
-        ndata = g_strdup_printf(" - [%u]", title_count);
-        vdata = g_strconcat(data, ndata, NULL);
-        g_free(ndata);
-        g_free(data);
-        data = vdata;
+	ASSIGN(icon_title, ([NSString stringWithFormat: @"%@ - [%u]", icon_title, title_count]));
     }
 
-    PROP_SETS(window, net_wm_visible_icon_name, data);
-
-    icon_title = data;
+    PROP_SETS(window, net_wm_visible_icon_name, (char*)[icon_title UTF8String]);
 }
 
 - (void) updateClass
 {
-    gchar **data;
-    gchar *s;
+    char **data;
+    char *s;
 
-    if (name) g_free(name);
-    if (class) g_free(class);
-    if (role) g_free(role);
-
-    name = NULL;
-    class = NULL;
-    role = NULL;
+    DESTROY(name);
+    DESTROY(class);
+    DESTROY(role);
 
     if (PROP_GETSS(window, wm_class, locale, &data)) {
         if (data[0]) {
-            name = g_strdup(data[0]);
+	    ASSIGN(name, [NSString stringWithCString: data[0]]);
             if (data[1])
-                class = g_strdup(data[1]);
+		ASSIGN(class, [NSString stringWithCString: data[1]]);
         }
-        g_strfreev(data);     
+	XFree(data);
     }
 
-    if (PROP_GETS(window, wm_window_role, locale, &s))
-	role = s;
+    if (PROP_GETS(window, wm_window_role, locale, &s)) {
+	ASSIGN(role, [NSString stringWithCString: s]);
+	XFree(s);
+    }
 
-    if (name == NULL) name = g_strdup("");
-    if (class == NULL) class = g_strdup("");
-    if (role == NULL) role = g_strdup("");
+    if (name == nil) ASSIGN(name, [NSString string]);
+    if (class == nil) ASSIGN(class, [NSString string]);
+    if (role == nil) ASSIGN(role, [NSString string]);
 }
 
 - (void) updateStrut
@@ -2289,12 +2290,18 @@ no_number:
 
 - (void) updateSmClientId;
 {
-    g_free(sm_client_id);
-    sm_client_id = NULL;
+    DESTROY(sm_client_id);
+    char *data = NULL;
 
-    if ((!PROP_GETS(window, sm_client_id, locale, &sm_client_id)) && (group))
+    if ((!PROP_GETS(window, sm_client_id, locale, &data)) && (group))
     {
-       PROP_GETS([group leader], sm_client_id, locale, &sm_client_id);
+       PROP_GETS([group leader], sm_client_id, locale, &data);
+    }
+
+    if (data) {
+        ASSIGN(sm_client_id, [NSString stringWithCString: data]);
+	XFree(data);
+	data = NULL;
     }
 }
 
@@ -2599,25 +2606,25 @@ no_number:
 - (void) removeAllTransients { [transients removeAllObjects]; }
 
 - (unsigned int) desktop { return desktop; }
-- (gchar *) startup_id { return startup_id; }
+- (NSString *) startup_id { return startup_id; }
 - (void) set_desktop: (unsigned int) d  { desktop = d; }
-- (void) set_startup_id: (gchar *) s { startup_id = s; }
+- (void) set_startup_id: (NSString *) s { ASSIGN(startup_id, s); }
 
-- (gchar *) title { return title; }
+- (NSString *) title { return title; }
 - (unsigned int ) title_count { return title_count; }
-- (gchar *) icon_title { return icon_title; }
-- (gchar *) name { return name; }
-- (gchar *) class { return class; }
-- (gchar *) role { return role; }
-- (gchar *) sm_client_id { return sm_client_id; }
+- (NSString *) icon_title { return icon_title; }
+- (NSString *) name { return name; }
+- (NSString *) class { return class; }
+- (NSString *) role { return role; }
+- (NSString *) sm_client_id { return sm_client_id; }
 - (ObClientType) type { return type; }
-- (void) set_title: (gchar *) t { title = t; }
+- (void) set_title: (NSString *) t { ASSIGN(title, t); }
 - (void) set_title_count: (unsigned int ) t { title_count = t; }
-- (void) set_icon_title: (gchar *) i { icon_title = i; }
-- (void) set_name: (gchar *) n { name = n; }
-- (void) set_class: (gchar *) c { class = c; }
-- (void) set_role: (gchar *) r { role = r; }
-- (void) set_sm_client_id: (gchar *) s { sm_client_id = s; }
+- (void) set_icon_title: (NSString *) i { ASSIGN(icon_title, i); }
+- (void) set_name: (NSString *) n { ASSIGN(name, n); }
+- (void) set_class: (NSString *) c { ASSIGN(class, c); }
+- (void) set_role: (NSString *) r { ASSIGN(role, r); }
+- (void) set_sm_client_id: (NSString *) s { ASSIGN(sm_client_id, s); }
 - (void) set_type: (ObClientType) t { type = t; }
 
 - (Rect) area { return area; }
@@ -2713,6 +2720,11 @@ no_number:
   DESTROY(icons);
   DESTROY(group);
   DESTROY(frame);
+  DESTROY(title);
+  DESTROY(icon_title);
+  DESTROY(name);
+  DESTROY(class);
+  DESTROY(role);
   [super dealloc];
 }
 
@@ -2833,13 +2845,20 @@ AZClient *AZUnderPointer()
 
 - (void) getStartupId
 {
-    if (!(PROP_GETS(window, net_startup_id, utf8, &startup_id)))
+    char *data = NULL;
+    DESTROY(startup_id);
+
+    if (!(PROP_GETS(window, net_startup_id, utf8, &data)))
     {
         if (group)
 	{
-            PROP_GETS([group leader],
-                      net_startup_id, utf8, &startup_id);
+            PROP_GETS([group leader], net_startup_id, utf8, &data);
 	}
+    }
+    if (data) {
+      ASSIGN(startup_id, [NSString stringWithUTF8String: data]);
+      XFree(data);
+      data = NULL;
     }
 }
 
@@ -2889,7 +2908,7 @@ AZClient *AZUnderPointer()
             /* try get from the startup-notification protocol */
             AZStartupHandler *handler = [AZStartupHandler defaultHandler];
 	    if ([handler getDesktop: &desktop
-			 forIdentifier: startup_id])
+			 forIdentifier: (char*)[startup_id UTF8String]])
 	    {
                 if (desktop >= num_desktops &&
                     desktop != DESKTOP_ALL)

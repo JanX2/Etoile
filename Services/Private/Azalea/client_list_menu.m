@@ -71,8 +71,7 @@ static void desk_menu_update(AZMenuFrame *frame, gpointer data)
                                      OB_USER_ACTION_MENU_SELECTION);
             act->data.desktop.desk = d->desktop;
             acts = g_slist_append(acts, act);
-            e = menu_add_normal(menu, i,
-                                ([c iconic] ? [c icon_title] : [c title]), acts);
+            e = menu_add_normal(menu, i, (char*)[([c iconic] ? [c icon_title] : [c title]) UTF8String], acts);
 
             if (config_menu_client_list_icons && 
 		(icon = [c iconWithWidth: 32 height: 32])) {
