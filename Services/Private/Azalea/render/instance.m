@@ -44,17 +44,17 @@ dest(gpointer data)
 static void f(gpointer key, gpointer value, gpointer n)
 {
     RrColor *c = value;
-    if (c->id == *(gint*)n)
+    if (c->id == *(int*)n)
         g_message("color %d has %d references", c->id, c->refcount);
 }
 
-void print_refs(gint id)
+void print_refs(int id)
 {
     g_hash_table_foreach(RrColorHash(definst), f, &id);
 }
 #endif
 
-RrInstance* RrInstanceNew (Display *display, gint screen)
+RrInstance* RrInstanceNew (Display *display, int screen)
 {
     definst = g_new (RrInstance, 1);
     definst->display = display;
@@ -120,9 +120,9 @@ void RrTrueColorSetup (RrInstance *inst)
 void RrPseudoColorSetup (RrInstance *inst)
 {
     XColor icolors[256];
-    gint tr, tg, tb, n, r, g, b, i, incolors, ii;
+    int tr, tg, tb, n, r, g, b, i, incolors, ii;
     gulong dev;
-    gint cpc, _ncolors;
+    int cpc, _ncolors;
 
     /* determine the number of colors and the bits-per-color */
     inst->pseudo_bpc = 2; /* XXX THIS SHOULD BE A USER OPTION */
@@ -142,9 +142,9 @@ void RrPseudoColorSetup (RrInstance *inst)
     for (n = 0, r = 0; r < cpc; r++)
         for (g = 0; g < cpc; g++)
             for (b = 0; b < cpc; b++, n++) {
-                tr = (gint)(((gfloat)(r)/(gfloat)(cpc-1)) * 0xFF);
-                tg = (gint)(((gfloat)(g)/(gfloat)(cpc-1)) * 0xFF);
-                tb = (gint)(((gfloat)(b)/(gfloat)(cpc-1)) * 0xFF);
+                tr = (int)(((gfloat)(r)/(gfloat)(cpc-1)) * 0xFF);
+                tg = (int)(((gfloat)(g)/(gfloat)(cpc-1)) * 0xFF);
+                tb = (int)(((gfloat)(b)/(gfloat)(cpc-1)) * 0xFF);
                 inst->pseudo_colors[n].red = tr | tr << 8;
                 inst->pseudo_colors[n].green = tg | tg << 8;
                 inst->pseudo_colors[n].blue = tb | tb << 8;
@@ -217,7 +217,7 @@ Display* RrDisplay (const RrInstance *inst)
     return (inst ? inst : definst)->display;
 }
 
-gint RrScreen (const RrInstance *inst)
+int RrScreen (const RrInstance *inst)
 {
     return (inst ? inst : definst)->screen;
 }
@@ -232,7 +232,7 @@ Visual *RrVisual (const RrInstance *inst)
     return (inst ? inst : definst)->visual;
 }
 
-gint RrDepth (const RrInstance *inst)
+int RrDepth (const RrInstance *inst)
 {
     return (inst ? inst : definst)->depth;
 }
@@ -242,52 +242,52 @@ Colormap RrColormap (const RrInstance *inst)
     return (inst ? inst : definst)->colormap;
 }
 
-gint RrRedOffset (const RrInstance *inst)
+int RrRedOffset (const RrInstance *inst)
 {
     return (inst ? inst : definst)->red_offset;
 }
 
-gint RrGreenOffset (const RrInstance *inst)
+int RrGreenOffset (const RrInstance *inst)
 {
     return (inst ? inst : definst)->green_offset;
 }
 
-gint RrBlueOffset (const RrInstance *inst)
+int RrBlueOffset (const RrInstance *inst)
 {
     return (inst ? inst : definst)->blue_offset;
 }
 
-gint RrRedShift (const RrInstance *inst)
+int RrRedShift (const RrInstance *inst)
 {
     return (inst ? inst : definst)->red_shift;
 }
 
-gint RrGreenShift (const RrInstance *inst)
+int RrGreenShift (const RrInstance *inst)
 {
     return (inst ? inst : definst)->green_shift;
 }
 
-gint RrBlueShift (const RrInstance *inst)
+int RrBlueShift (const RrInstance *inst)
 {
     return (inst ? inst : definst)->blue_shift;
 }
 
-gint RrRedMask (const RrInstance *inst)
+int RrRedMask (const RrInstance *inst)
 {
     return (inst ? inst : definst)->red_mask;
 }
 
-gint RrGreenMask (const RrInstance *inst)
+int RrGreenMask (const RrInstance *inst)
 {
     return (inst ? inst : definst)->green_mask;
 }
 
-gint RrBlueMask (const RrInstance *inst)
+int RrBlueMask (const RrInstance *inst)
 {
     return (inst ? inst : definst)->blue_mask;
 }
 
-guint RrPseudoBPC (const RrInstance *inst)
+unsigned int RrPseudoBPC (const RrInstance *inst)
 {
     return (inst ? inst : definst)->pseudo_bpc;
 }

@@ -57,11 +57,11 @@ static void client_dest(AZClient *client, gpointer data)
     AZMenuFrameHideAllClient(client);
 }
 
-void menu_startup(gboolean reconfig)
+void menu_startup(BOOL reconfig)
 {
     xmlDocPtr doc;
     xmlNodePtr node;
-    gboolean loaded = FALSE;
+    BOOL loaded = NO;
     GSList *it;
 
     menu_hash = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
@@ -82,7 +82,7 @@ void menu_startup(gboolean reconfig)
 
     for (it = config_menu_files; it; it = g_slist_next(it)) {
         if (parse_load_menu(it->data, &doc, &node)) {
-            loaded = TRUE;
+            loaded = YES;
             parse_tree(menu_parse_inst, doc, node->children);
             xmlFreeDoc(doc);
         }
@@ -100,7 +100,7 @@ void menu_startup(gboolean reconfig)
 	[[AZClientManager defaultManager] addDestructor: client_dest data: NULL];
 }
 
-void menu_shutdown(gboolean reconfig)
+void menu_shutdown(BOOL reconfig)
 {
     if (!reconfig)
 	[[AZClientManager defaultManager] removeDestructor: client_dest];
@@ -279,11 +279,11 @@ void menu_free(ObMenu *menu)
     g_hash_table_remove(menu_hash, menu->name);
 }
 
-void menu_show(gchar *name, gint x, gint y, AZClient *client)
+void menu_show(gchar *name, int x, int y, AZClient *client)
 {
     ObMenu *self;
     AZMenuFrame *frame;
-    guint i;
+    unsigned int i;
 
     if (!(self = menu_from_name(name))) return;
 
@@ -316,7 +316,7 @@ void menu_show(gchar *name, gint x, gint y, AZClient *client)
 	DESTROY(frame);
 }
 
-static ObMenuEntry* menu_entry_new(ObMenu *menu, ObMenuEntryType type, gint id)
+static ObMenuEntry* menu_entry_new(ObMenu *menu, ObMenuEntryType type, int id)
 {
     ObMenuEntry *self;
 
@@ -329,7 +329,7 @@ static ObMenuEntry* menu_entry_new(ObMenu *menu, ObMenuEntryType type, gint id)
 
     switch (type) {
     case OB_MENU_ENTRY_TYPE_NORMAL:
-        self->data.normal.enabled = TRUE;
+        self->data.normal.enabled = YES;
         break;
     case OB_MENU_ENTRY_TYPE_SUBMENU:
     case OB_MENU_ENTRY_TYPE_SEPARATOR:
@@ -390,7 +390,7 @@ void menu_entry_remove(ObMenuEntry *self)
     menu_entry_free(self);
 }
 
-ObMenuEntry* menu_add_normal(ObMenu *self, gint id, gchar *label,
+ObMenuEntry* menu_add_normal(ObMenu *self, int id, gchar *label,
                              GSList *actions)
 {
     ObMenuEntry *e;
@@ -403,7 +403,7 @@ ObMenuEntry* menu_add_normal(ObMenu *self, gint id, gchar *label,
     return e;
 }
 
-ObMenuEntry* menu_add_submenu(ObMenu *self, gint id, gchar *submenu)
+ObMenuEntry* menu_add_submenu(ObMenu *self, int id, gchar *submenu)
 {
     ObMenuEntry *e;
 
@@ -414,7 +414,7 @@ ObMenuEntry* menu_add_submenu(ObMenu *self, gint id, gchar *submenu)
     return e;
 }
 
-ObMenuEntry* menu_add_separator(ObMenu *self, gint id)
+ObMenuEntry* menu_add_separator(ObMenu *self, int id)
 {
     ObMenuEntry *e;
 
@@ -439,7 +439,7 @@ void menu_set_destroy_func(ObMenu *self, ObMenuDestroyFunc func)
     self->destroy_func = func;
 }
 
-ObMenuEntry* menu_find_entry_id(ObMenu *self, gint id)
+ObMenuEntry* menu_find_entry_id(ObMenu *self, int id)
 {
     ObMenuEntry *ret = NULL;
     GList *it;

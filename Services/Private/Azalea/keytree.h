@@ -24,8 +24,8 @@
 #include <glib.h>
 
 typedef struct KeyBindingTree {
-    guint state;
-    guint key;
+    unsigned int state;
+    unsigned int key;
     GList *keylist;
     GSList *actions; /* list of Action pointers */
 
@@ -38,6 +38,6 @@ typedef struct KeyBindingTree {
 void tree_destroy(KeyBindingTree *tree);
 KeyBindingTree *tree_build(GList *keylist);
 void tree_assimilate(KeyBindingTree *node);
-KeyBindingTree *tree_find(KeyBindingTree *search, gboolean *conflict);
+KeyBindingTree *tree_find(KeyBindingTree *search, BOOL *conflict);
 
 #endif

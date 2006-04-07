@@ -56,15 +56,15 @@ RrColor *RrColorParse(const RrInstance *inst, gchar *colorname)
 
 /*#define NO_COLOR_CACHE*/
 #ifdef DEBUG
-gint id;
+int id;
 #endif
 
-RrColor *RrColorNew(const RrInstance *inst, gint r, gint g, gint b)
+RrColor *RrColorNew(const RrInstance *inst, int r, int g, int b)
 {
     /* this should be replaced with something far cooler */
     RrColor *out = NULL;
     XColor xcol;
-    gint key;
+    int key;
 
     key = (r << 24) + (g << 16) + (b << 8);
 #ifndef NO_COLOR_CACHE
@@ -114,8 +114,8 @@ void RrColorFree(RrColor *c)
 
 void RrReduceDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
 {
-    gint r, g, b;
-    gint x,y;
+    int r, g, b;
+    int x,y;
     RrPixel32 *p32 = (RrPixel32 *) im->data;
     RrPixel16 *p16 = (RrPixel16 *) im->data;
     guchar *p8 = (guchar *)im->data;
@@ -173,7 +173,7 @@ void RrReduceDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
     }
 }
 
-XColor *RrPickColor(const RrInstance *inst, gint r, gint g, gint b) 
+XColor *RrPickColor(const RrInstance *inst, int r, int g, int b) 
 {
   r = (r & 0xff) >> (8-RrPseudoBPC(inst));
   g = (g & 0xff) >> (8-RrPseudoBPC(inst));
@@ -185,7 +185,7 @@ XColor *RrPickColor(const RrInstance *inst, gint r, gint g, gint b)
 
 static void swap_byte_order(XImage *im)
 {
-    gint x, y, di;
+    int x, y, di;
 
     di = 0;
     for (y = 0; y < im->height; ++y) {
@@ -220,8 +220,8 @@ static void swap_byte_order(XImage *im)
 
 void RrIncreaseDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
 {
-    gint r, g, b;
-    gint x,y;
+    int r, g, b;
+    int x,y;
     RrPixel32 *p32 = (RrPixel32 *) im->data;
     RrPixel16 *p16 = (RrPixel16 *) im->data;
     guchar *p8 = (guchar *)im->data;
@@ -286,22 +286,22 @@ void RrIncreaseDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
     }
 }
 
-gint RrColorRed(const RrColor *c)
+int RrColorRed(const RrColor *c)
 {
     return c->r;
 }
 
-gint RrColorGreen(const RrColor *c)
+int RrColorGreen(const RrColor *c)
 {
     return c->g;
 }
 
-gint RrColorBlue(const RrColor *c)
+int RrColorBlue(const RrColor *c)
 {
     return c->b;
 }
 
-gulong RrColorPixel(const RrColor *c)
+unsigned long RrColorPixel(const RrColor *c)
 {
     return c->pixel;
 }

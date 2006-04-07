@@ -26,59 +26,59 @@
 #import "parser/parse.h"
 #import "openbox.h"
 
-gboolean config_focus_new;
-gboolean config_focus_follow;
-guint    config_focus_delay;
-gboolean config_focus_raise;
-gboolean config_focus_last;
+BOOL config_focus_new;
+BOOL config_focus_follow;
+unsigned int    config_focus_delay;
+BOOL config_focus_raise;
+BOOL config_focus_last;
 
 ObPlacePolicy config_place_policy;
 
 gchar   *config_theme;
-gboolean config_theme_keepborder;
-gboolean config_theme_hidedisabled;
+BOOL config_theme_keepborder;
+BOOL config_theme_hidedisabled;
 
 gchar *config_title_layout;
 
-gint    config_desktops_num;
+int    config_desktops_num;
 GSList *config_desktops_names;
-gint    config_screen_firstdesk;
+int    config_screen_firstdesk;
 
-gboolean config_resize_redraw;
-gboolean config_resize_four_corners;
-gint     config_resize_popup_show;
-gint     config_resize_popup_pos;
+BOOL config_resize_redraw;
+BOOL config_resize_four_corners;
+int     config_resize_popup_show;
+int     config_resize_popup_pos;
 
 ObStackingLayer config_dock_layer;
-gboolean        config_dock_floating;
-gboolean        config_dock_nostrut;
+BOOL        config_dock_floating;
+BOOL        config_dock_nostrut;
 ObDirection     config_dock_pos;
-gint            config_dock_x;
-gint            config_dock_y;
+int            config_dock_x;
+int            config_dock_y;
 ObOrientation   config_dock_orient;
-gboolean        config_dock_hide;
-guint           config_dock_hide_delay;
-guint           config_dock_show_delay;
-guint           config_dock_app_move_button;
-guint           config_dock_app_move_modifiers;
+BOOL        config_dock_hide;
+unsigned int           config_dock_hide_delay;
+unsigned int           config_dock_show_delay;
+unsigned int           config_dock_app_move_button;
+unsigned int           config_dock_app_move_modifiers;
 
-guint config_keyboard_reset_keycode;
-guint config_keyboard_reset_state;
+unsigned int config_keyboard_reset_keycode;
+unsigned int config_keyboard_reset_state;
 
-gint config_mouse_threshold;
-gint config_mouse_dclicktime;
+int config_mouse_threshold;
+int config_mouse_dclicktime;
 
-gboolean config_menu_warppointer;
-gboolean config_menu_xorstyle;
-guint    config_menu_hide_delay;
-gboolean config_menu_client_list_icons;
+BOOL config_menu_warppointer;
+BOOL config_menu_xorstyle;
+unsigned int    config_menu_hide_delay;
+BOOL config_menu_client_list_icons;
 
 GSList *config_menu_files;
 
-gint config_resist_win;
-gint config_resist_edge;
+int config_resist_win;
+int config_resist_edge;
 
-gboolean config_resist_layers_below;
+BOOL config_resist_layers_below;
 
 /*
 
@@ -271,12 +271,12 @@ static void parse_desktops(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     node = node->children;
     
     if ((n = parse_find_node("number", node))) {
-        gint d = parse_int(doc, n);
+        int d = parse_int(doc, n);
         if (d > 0)
             config_desktops_num = d;
     }
     if ((n = parse_find_node("firstdesk", node))) {
-        gint d = parse_int(doc, n);
+        int d = parse_int(doc, n);
         if (d > 0)
             config_screen_firstdesk = d;
     }
@@ -336,31 +336,31 @@ static void parse_dock(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
 
     if ((n = parse_find_node("position", node))) {
         if (parse_contains("TopLeft", doc, n))
-            config_dock_floating = FALSE,
+            config_dock_floating = NO,
             config_dock_pos = OB_DIRECTION_NORTHWEST;
         else if (parse_contains("Top", doc, n))
-            config_dock_floating = FALSE,
+            config_dock_floating = NO,
             config_dock_pos = OB_DIRECTION_NORTH;
         else if (parse_contains("TopRight", doc, n))
-            config_dock_floating = FALSE,
+            config_dock_floating = NO,
             config_dock_pos = OB_DIRECTION_NORTHEAST;
         else if (parse_contains("Right", doc, n))
-            config_dock_floating = FALSE,
+            config_dock_floating = NO,
             config_dock_pos = OB_DIRECTION_EAST;
         else if (parse_contains("BottomRight", doc, n))
-            config_dock_floating = FALSE,
+            config_dock_floating = NO,
             config_dock_pos = OB_DIRECTION_SOUTHEAST;
         else if (parse_contains("Bottom", doc, n))
-            config_dock_floating = FALSE,
+            config_dock_floating = NO,
             config_dock_pos = OB_DIRECTION_SOUTH;
         else if (parse_contains("BottomLeft", doc, n))
-            config_dock_floating = FALSE,
+            config_dock_floating = NO,
             config_dock_pos = OB_DIRECTION_SOUTHWEST;
         else if (parse_contains("Left", doc, n))
-            config_dock_floating = FALSE,
+            config_dock_floating = NO,
             config_dock_pos = OB_DIRECTION_WEST;
         else if (parse_contains("Floating", doc, n))
-            config_dock_floating = TRUE;
+            config_dock_floating = YES;
     }
     if (config_dock_floating) {
         if ((n = parse_find_node("floatingX", node)))
@@ -393,7 +393,7 @@ static void parse_dock(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
         config_dock_show_delay = parse_int(doc, n) * 1000;
     if ((n = parse_find_node("moveButton", node))) {
         gchar *str = parse_string(doc, n);
-        guint b, s;
+        unsigned int b, s;
         if (translate_button(str, &s, &b)) {
             config_dock_app_move_button = b;
             config_dock_app_move_modifiers = s;
@@ -547,11 +547,11 @@ static void bind_default_mouse()
 
 void config_startup(ObParseInst *i)
 {
-    config_focus_new = TRUE;
-    config_focus_follow = FALSE;
+    config_focus_new = YES;
+    config_focus_follow = NO;
     config_focus_delay = 0;
-    config_focus_raise = FALSE;
-    config_focus_last = FALSE;
+    config_focus_raise = NO;
+    config_focus_last = NO;
 
     parse_register(i, "focus", parse_focus, NULL);
 
@@ -562,8 +562,8 @@ void config_startup(ObParseInst *i)
     config_theme = NULL;
 
     config_title_layout = g_strdup("NLIMC");
-    config_theme_keepborder = TRUE;
-    config_theme_hidedisabled = FALSE;
+    config_theme_keepborder = YES;
+    config_theme_hidedisabled = NO;
 
     parse_register(i, "theme", parse_theme, NULL);
 
@@ -573,8 +573,8 @@ void config_startup(ObParseInst *i)
 
     parse_register(i, "desktops", parse_desktops, NULL);
 
-    config_resize_redraw = TRUE;
-    config_resize_four_corners = FALSE;
+    config_resize_redraw = YES;
+    config_resize_four_corners = NO;
     config_resize_popup_show = 1; /* nonpixel increments */
     config_resize_popup_pos = 0;  /* center of client */
 
@@ -582,12 +582,12 @@ void config_startup(ObParseInst *i)
 
     config_dock_layer = OB_STACKING_LAYER_ABOVE;
     config_dock_pos = OB_DIRECTION_NORTHEAST;
-    config_dock_floating = FALSE;
-    config_dock_nostrut = FALSE;
+    config_dock_floating = NO;
+    config_dock_nostrut = NO;
     config_dock_x = 0;
     config_dock_y = 0;
     config_dock_orient = OB_ORIENTATION_VERT;
-    config_dock_hide = FALSE;
+    config_dock_hide = NO;
     config_dock_hide_delay = 300;
     config_dock_show_delay = 300;
     config_dock_app_move_button = 2; /* middle */
@@ -611,14 +611,14 @@ void config_startup(ObParseInst *i)
 
     config_resist_win = 10;
     config_resist_edge = 20;
-    config_resist_layers_below = FALSE;
+    config_resist_layers_below = NO;
 
     parse_register(i, "resistance", parse_resistance, NULL);
 
-    config_menu_warppointer = TRUE;
-    config_menu_xorstyle = TRUE;
+    config_menu_warppointer = YES;
+    config_menu_xorstyle = YES;
     config_menu_hide_delay = 250;
-    config_menu_client_list_icons = TRUE;
+    config_menu_client_list_icons = YES;
     config_menu_files = NULL;
 
     parse_register(i, "menu", parse_menu, NULL);

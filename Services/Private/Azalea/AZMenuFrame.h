@@ -44,7 +44,7 @@ extern GList *menu_frame_visible;
   AZMenuEntryFrame *selected;
 
   /* If a titlebar is displayed for the menu or not (for top-level menus) */
-  gboolean show_title;
+  BOOL show_title;
 
   /* On-screen area (including borders!) */
   Rect area;

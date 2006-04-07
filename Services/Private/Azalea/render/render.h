@@ -22,6 +22,7 @@
 
 #include "geom.h"
 #include "version.h"
+#import <Foundation/Foundation.h>
 
 #include <X11/Xlib.h> /* some platforms dont include this as needed for Xft */
 #define _XFT_NO_COMPAT_ /* no Xft 1 API */
@@ -92,11 +93,11 @@ struct _RrSurface {
     RrColor *bevel_dark; 
     RrColor *bevel_light;
     RrColor *interlace_color;
-    gboolean interlaced;
-    gboolean border;
+    BOOL interlaced;
+    BOOL border;
     RrAppearance *parent;
-    gint parentx;
-    gint parenty;
+    int parentx;
+    int parenty;
     RrPixel32 *pixel_data;
 };
 
@@ -110,8 +111,8 @@ struct _RrTextureText {
 struct _RrPixmapMask {
     const RrInstance *inst;
     Pixmap mask;
-    gint width;
-    gint height;
+    int width;
+    int height;
     gchar *data;
 };
 
@@ -121,21 +122,21 @@ struct _RrTextureMask {
 };
 
 struct _RrTextureRGBA {
-    gint width;
-    gint height;
+    int width;
+    int height;
     RrPixel32 *data;
 /* cached scaled so we don't have to scale often */
-    gint cwidth;
-    gint cheight;
+    int cwidth;
+    int cheight;
     RrPixel32 *cache;
 };
 
 struct _RrTextureLineArt {
     RrColor *color;
-    gint x1;
-    gint y1;
-    gint x2;
-    gint y2;
+    int x1;
+    int y1;
+    int x2;
+    int y2;
 };
 
 union _RrTextureData {
@@ -154,13 +155,13 @@ struct _RrAppearance {
     const RrInstance *inst;
 
     RrSurface surface;
-    gint textures;
+    int textures;
     RrTexture *texture;
     Pixmap pixmap;
     XftDraw *xftdraw;
 
     /* cached for internal use */
-    gint w, h;
+    int w, h;
 };
 
 /* these are the same on all endian machines because it seems to be dependant
@@ -170,50 +171,50 @@ struct _RrAppearance {
 #define RrDefaultGreenOffset 8
 #define RrDefaultBlueOffset 0
 
-RrInstance* RrInstanceNew (Display *display, gint screen);
+RrInstance* RrInstanceNew (Display *display, int screen);
 void        RrInstanceFree (RrInstance *inst);
 
 Display* RrDisplay      (const RrInstance *inst);
-gint     RrScreen       (const RrInstance *inst);
+int     RrScreen       (const RrInstance *inst);
 Window   RrRootWindow   (const RrInstance *inst);
 Visual*  RrVisual       (const RrInstance *inst);
-gint     RrDepth        (const RrInstance *inst);
+int     RrDepth        (const RrInstance *inst);
 Colormap RrColormap     (const RrInstance *inst);
-gint     RrRedOffset    (const RrInstance *inst);
-gint     RrGreenOffset  (const RrInstance *inst);
-gint     RrBlueOffset   (const RrInstance *inst);
-gint     RrRedShift     (const RrInstance *inst);
-gint     RrGreenShift   (const RrInstance *inst);
-gint     RrBlueShift    (const RrInstance *inst);
-gint     RrRedMask      (const RrInstance *inst);
-gint     RrGreenMask    (const RrInstance *inst);
-gint     RrBlueMask     (const RrInstance *inst);
+int     RrRedOffset    (const RrInstance *inst);
+int     RrGreenOffset  (const RrInstance *inst);
+int     RrBlueOffset   (const RrInstance *inst);
+int     RrRedShift     (const RrInstance *inst);
+int     RrGreenShift   (const RrInstance *inst);
+int     RrBlueShift    (const RrInstance *inst);
+int     RrRedMask      (const RrInstance *inst);
+int     RrGreenMask    (const RrInstance *inst);
+int     RrBlueMask     (const RrInstance *inst);
 
-RrColor *RrColorNew   (const RrInstance *inst, gint r, gint g, gint b);
+RrColor *RrColorNew   (const RrInstance *inst, int r, int g, int b);
 RrColor *RrColorParse (const RrInstance *inst, gchar *colorname);
 void     RrColorFree  (RrColor *in);
 
-gint     RrColorRed   (const RrColor *c);
-gint     RrColorGreen (const RrColor *c);
-gint     RrColorBlue  (const RrColor *c);
+int     RrColorRed   (const RrColor *c);
+int     RrColorGreen (const RrColor *c);
+int     RrColorBlue  (const RrColor *c);
 gulong   RrColorPixel (const RrColor *c);
 GC       RrColorGC    (RrColor *c);
 
-RrAppearance *RrAppearanceNew  (const RrInstance *inst, gint numtex);
+RrAppearance *RrAppearanceNew  (const RrInstance *inst, int numtex);
 RrAppearance *RrAppearanceCopy (RrAppearance *a);
 void          RrAppearanceFree (RrAppearance *a);
 
 RrSize *RrFontMeasureString (const RrFont *f, const gchar *str);
-gint RrFontHeight        (const RrFont *f);
-gint RrFontMaxCharWidth  (const RrFont *f);
+int RrFontHeight        (const RrFont *f);
+int RrFontMaxCharWidth  (const RrFont *f);
 
-void RrPaint   (RrAppearance *a, Window win, gint w, gint h);
-void RrMinsize (RrAppearance *a, gint *w, gint *h);
-void RrMargins (RrAppearance *a, gint *l, gint *t, gint *r, gint *b);
+void RrPaint   (RrAppearance *a, Window win, int w, int h);
+void RrMinsize (RrAppearance *a, int *w, int *h);
+void RrMargins (RrAppearance *a, int *l, int *t, int *r, int *b);
 
-gboolean RrPixmapToRGBA(const RrInstance *inst,
+BOOL RrPixmapToRGBA(const RrInstance *inst,
                         Pixmap pmap, Pixmap mask,
-                        gint *w, gint *h, RrPixel32 **data);
+                        int *w, int *h, RrPixel32 **data);
 
 G_END_DECLS
 

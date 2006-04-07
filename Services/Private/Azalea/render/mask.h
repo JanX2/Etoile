@@ -24,7 +24,7 @@
 #include "geom.h"
 
 RrPixmapMask *RrPixmapMaskNew(const RrInstance *inst,
-                              gint w, gint h, const gchar *data);
+                              int w, int h, const gchar *data);
 void RrPixmapMaskFree(RrPixmapMask *m);
 RrPixmapMask *RrPixmapMaskCopy(const RrPixmapMask *src);
 void RrPixmapMaskDraw(Pixmap p, const RrTextureMask *m, const RrRect *area);

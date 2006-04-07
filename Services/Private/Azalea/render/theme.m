@@ -33,17 +33,17 @@
 #define DEFAULT_THEME "TheBear"
 
 static XrmDatabase loaddb(RrTheme *theme, gchar *name);
-static gboolean read_int(XrmDatabase db, gchar *rname, gint *value);
-static gboolean read_string(XrmDatabase db, gchar *rname, gchar **value);
-static gboolean read_color(XrmDatabase db, const RrInstance *inst,
+static BOOL read_int(XrmDatabase db, gchar *rname, int *value);
+static BOOL read_string(XrmDatabase db, gchar *rname, gchar **value);
+static BOOL read_color(XrmDatabase db, const RrInstance *inst,
                            gchar *rname, RrColor **value);
-static gboolean read_mask(const RrInstance *inst,
+static BOOL read_mask(const RrInstance *inst,
                           gchar *maskname, RrTheme *theme,
                           RrPixmapMask **value);
-static gboolean read_appearance(XrmDatabase db, const RrInstance *inst,
+static BOOL read_appearance(XrmDatabase db, const RrInstance *inst,
                                 gchar *rname, RrAppearance *value,
-                                gboolean allow_trans);
-static RrPixel32* read_c_image(gint width, gint height, const guint8 *data);
+                                BOOL allow_trans);
+static RrPixel32* read_c_image(int width, int height, const guint8 *data);
 static void set_default_appearance(RrAppearance *a);
 
 RrTheme* RrThemeNew(const RrInstance *inst, gchar *name)
@@ -58,7 +58,7 @@ RrTheme* RrThemeNew(const RrInstance *inst, gchar *name)
 
     theme->inst = inst;
 
-    theme->show_handle = TRUE;
+    theme->show_handle = YES;
 
     theme->a_disabled_focused_max = RrAppearanceNew(inst, 1);
     theme->a_disabled_unfocused_max = RrAppearanceNew(inst, 1);
@@ -171,7 +171,7 @@ RrTheme* RrThemeNew(const RrInstance *inst, gchar *name)
     if (!read_int(db, "window.handle.width", &theme->handle_height))
         theme->handle_height = 6;
     if (!theme->handle_height)
-        theme->show_handle = FALSE;
+        theme->show_handle = NO;
     if (theme->handle_height <= 0 || theme->handle_height > 100)
         theme->handle_height = 6;
     if (!read_int(db, "padding.width", &theme->padding) ||
@@ -442,47 +442,47 @@ RrTheme* RrThemeNew(const RrInstance *inst, gchar *name)
     /* read the decoration textures */
     if (!read_appearance(db, inst,
                          "window.active.title.bg", theme->a_focused_title,
-                         FALSE))
+                         NO))
         set_default_appearance(theme->a_focused_title);
     if (!read_appearance(db, inst,
                          "window.inactive.title.bg", theme->a_unfocused_title,
-                         FALSE))
+                         NO))
         set_default_appearance(theme->a_unfocused_title);
     if (!read_appearance(db, inst,
                          "window.active.label.bg", theme->a_focused_label,
-                         TRUE))
+                         YES))
         set_default_appearance(theme->a_focused_label);
     if (!read_appearance(db, inst,
                          "window.inactive.label.bg", theme->a_unfocused_label,
-                         TRUE))
+                         YES))
         set_default_appearance(theme->a_unfocused_label);
     if (!read_appearance(db, inst,
                          "window.active.handle.bg", theme->a_focused_handle,
-                         FALSE))
+                         NO))
         set_default_appearance(theme->a_focused_handle);
     if (!read_appearance(db, inst,
                          "window.inactive.handle.bg",theme->a_unfocused_handle,
-                         FALSE))
+                         NO))
         set_default_appearance(theme->a_unfocused_handle);
     if (!read_appearance(db, inst,
                          "window.active.grip.bg", theme->a_focused_grip,
-                         TRUE))
+                         YES))
         set_default_appearance(theme->a_focused_grip);
     if (!read_appearance(db, inst,
                          "window.inactive.grip.bg", theme->a_unfocused_grip,
-                         TRUE))
+                         YES))
         set_default_appearance(theme->a_unfocused_grip);
     if (!read_appearance(db, inst,
                          "menu.items.bg", theme->a_menu,
-                         FALSE))
+                         NO))
         set_default_appearance(theme->a_menu);
     if (!read_appearance(db, inst,
                          "menu.title.bg", theme->a_menu_title,
-                         FALSE))
+                         NO))
         set_default_appearance(theme->a_menu_title);
     if (!read_appearance(db, inst,
                          "menu.items.active.bg", theme->a_menu_selected,
-                         TRUE))
+                         YES))
         set_default_appearance(theme->a_menu_selected);
 
     /* read the appearances for rendering non-decorations */
@@ -503,27 +503,27 @@ RrTheme* RrThemeNew(const RrInstance *inst, gchar *name)
     if (!read_appearance(db, inst,
                          "window.active.button.disabled.bg",
                          theme->a_disabled_focused_max,
-                         TRUE))
+                         YES))
         set_default_appearance(theme->a_disabled_focused_max);
     if (!read_appearance(db, inst,
                          "window.inactive.button.disabled.bg",
                          theme->a_disabled_unfocused_max,
-                         TRUE))
+                         YES))
         set_default_appearance(theme->a_disabled_unfocused_max);
     if (!read_appearance(db, inst,
                          "window.active.button.pressed.bg",
                          theme->a_focused_pressed_max,
-                         TRUE))
+                         YES))
         set_default_appearance(theme->a_focused_pressed_max);
     if (!read_appearance(db, inst,
                          "window.inactive.button.pressed.bg",
                          theme->a_unfocused_pressed_max,
-                         TRUE))
+                         YES))
         set_default_appearance(theme->a_unfocused_pressed_max);
     if (!read_appearance(db, inst,
                          "window.active.button.toggled.bg",
                          theme->a_toggled_focused_max,
-                         TRUE))
+                         YES))
     {
         RrAppearanceFree(theme->a_toggled_focused_max);
         theme->a_toggled_focused_max =
@@ -532,7 +532,7 @@ RrTheme* RrThemeNew(const RrInstance *inst, gchar *name)
     if (!read_appearance(db, inst,
                          "window.inactive.button.toggled.bg",
                          theme->a_toggled_unfocused_max,
-                         TRUE))
+                         YES))
     {
         RrAppearanceFree(theme->a_toggled_unfocused_max);
         theme->a_toggled_unfocused_max =
@@ -541,17 +541,17 @@ RrTheme* RrThemeNew(const RrInstance *inst, gchar *name)
     if (!read_appearance(db, inst,
                          "window.active.button.unpressed.bg",
                          theme->a_focused_unpressed_max,
-                         TRUE))
+                         YES))
         set_default_appearance(theme->a_focused_unpressed_max);
     if (!read_appearance(db, inst,
                          "window.inactive.button.unpressed.bg",
                          theme->a_unfocused_unpressed_max,
-                         TRUE))
+                         YES))
         set_default_appearance(theme->a_unfocused_unpressed_max);
     if (!read_appearance(db, inst,
                          "window.active.button.hover.bg",
                          theme->a_hover_focused_max,
-                         TRUE))
+                         YES))
     {
         RrAppearanceFree(theme->a_hover_focused_max);
         theme->a_hover_focused_max =
@@ -560,7 +560,7 @@ RrTheme* RrThemeNew(const RrInstance *inst, gchar *name)
     if (!read_appearance(db, inst,
                          "window.inactive.button.hover.bg",
                          theme->a_hover_unfocused_max,
-                         TRUE))
+                         YES))
     {
         RrAppearanceFree(theme->a_hover_unfocused_max);
         theme->a_hover_unfocused_max =
@@ -882,7 +882,7 @@ RrTheme* RrThemeNew(const RrInstance *inst, gchar *name)
     XrmDestroyDatabase(db);
 
     {
-        gint ft, fb, fl, fr, ut, ub, ul, ur;
+        int ft, fb, fl, fr, ut, ub, ul, ur;
 
         RrMargins(theme->a_focused_label, &fl, &ft, &fr, &fb);
         RrMargins(theme->a_unfocused_label, &ul, &ut, &ur, &ub);
@@ -1092,7 +1092,7 @@ static gchar *create_class_name(gchar *rname)
     gchar *rclass = g_strdup(rname);
     gchar *p = rclass;
 
-    while (TRUE) {
+    while (YES) {
         *p = toupper(*p);
         p = strchr(p+1, '.');
         if (p == NULL) break;
@@ -1102,27 +1102,27 @@ static gchar *create_class_name(gchar *rname)
     return rclass;
 }
 
-static gboolean read_int(XrmDatabase db, gchar *rname, gint *value)
+static BOOL read_int(XrmDatabase db, gchar *rname, int *value)
 {
-    gboolean ret = FALSE;
+    BOOL ret = NO;
     gchar *rclass = create_class_name(rname);
     gchar *rettype, *end;
     XrmValue retvalue;
   
     if (XrmGetResource(db, rname, rclass, &rettype, &retvalue) &&
         retvalue.addr != NULL) {
-        *value = (gint)strtol(retvalue.addr, &end, 10);
+        *value = (int)strtol(retvalue.addr, &end, 10);
         if (end != retvalue.addr)
-            ret = TRUE;
+            ret = YES;
     }
 
     g_free(rclass);
     return ret;
 }
 
-static gboolean read_string(XrmDatabase db, gchar *rname, gchar **value)
+static BOOL read_string(XrmDatabase db, gchar *rname, gchar **value)
 {
-    gboolean ret = FALSE;
+    BOOL ret = NO;
     gchar *rclass = create_class_name(rname);
     gchar *rettype;
     XrmValue retvalue;
@@ -1130,17 +1130,17 @@ static gboolean read_string(XrmDatabase db, gchar *rname, gchar **value)
     if (XrmGetResource(db, rname, rclass, &rettype, &retvalue) &&
         retvalue.addr != NULL) {
         *value = retvalue.addr;
-        ret = TRUE;
+        ret = YES;
     }
 
     g_free(rclass);
     return ret;
 }
 
-static gboolean read_color(XrmDatabase db, const RrInstance *inst,
+static BOOL read_color(XrmDatabase db, const RrInstance *inst,
                            gchar *rname, RrColor **value)
 {
-    gboolean ret = FALSE;
+    BOOL ret = NO;
     gchar *rclass = create_class_name(rname);
     gchar *rettype;
     XrmValue retvalue;
@@ -1150,7 +1150,7 @@ static gboolean read_color(XrmDatabase db, const RrInstance *inst,
         RrColor *c = RrColorParse(inst, retvalue.addr);
         if (c != NULL) {
             *value = c;
-            ret = TRUE;
+            ret = YES;
         }
     }
 
@@ -1158,19 +1158,19 @@ static gboolean read_color(XrmDatabase db, const RrInstance *inst,
     return ret;
 }
 
-static gboolean read_mask(const RrInstance *inst,
+static BOOL read_mask(const RrInstance *inst,
                           gchar *maskname, RrTheme *theme,
                           RrPixmapMask **value)
 {
-    gboolean ret = FALSE;
+    BOOL ret = NO;
     gchar *s;
-    gint hx, hy; /* ignored */
+    int hx, hy; /* ignored */
     guint w, h;
     guchar *b;
 
     s = g_build_filename(theme->path, maskname, NULL);
     if (XReadBitmapFileData(s, &w, &h, &b, &hx, &hy) == BitmapSuccess) {
-        ret = TRUE;
+        ret = YES;
         *value = RrPixmapMaskNew(inst, w, h, (gchar*)b);
         XFree(b);
     }
@@ -1181,8 +1181,8 @@ static gboolean read_mask(const RrInstance *inst,
 
 static void parse_appearance(gchar *tex, RrSurfaceColorType *grad,
                              RrReliefType *relief, RrBevelType *bevel,
-                             gboolean *interlaced, gboolean *border,
-                             gboolean allow_trans)
+                             BOOL *interlaced, BOOL *border,
+                             BOOL allow_trans)
 {
     gchar *t;
 
@@ -1215,10 +1215,10 @@ static void parse_appearance(gchar *tex, RrSurfaceColorType *grad,
         else
             *relief = RR_RELIEF_RAISED;
 
-        *border = FALSE;
+        *border = NO;
         if (*relief == RR_RELIEF_FLAT) {
             if (strstr(tex, "border") != NULL)
-                *border = TRUE;
+                *border = YES;
         } else {
             if (strstr(tex, "bevel2") != NULL)
                 *bevel = RR_BEVEL_2;
@@ -1227,18 +1227,18 @@ static void parse_appearance(gchar *tex, RrSurfaceColorType *grad,
         }
 
         if (strstr(tex, "interlaced") != NULL)
-            *interlaced = TRUE;
+            *interlaced = YES;
         else
-            *interlaced = FALSE;
+            *interlaced = NO;
     }
 }
 
 
-static gboolean read_appearance(XrmDatabase db, const RrInstance *inst,
+static BOOL read_appearance(XrmDatabase db, const RrInstance *inst,
                                 gchar *rname, RrAppearance *value,
-                                gboolean allow_trans)
+                                BOOL allow_trans)
 {
-    gboolean ret = FALSE;
+    BOOL ret = NO;
     gchar *rclass = create_class_name(rname);
     gchar *cname, *ctoname, *bcname, *icname;
     gchar *rettype;
@@ -1270,7 +1270,7 @@ static gboolean read_appearance(XrmDatabase db, const RrInstance *inst,
             if (!read_color(db, inst, icname,
                             &value->surface.interlace_color))
                 value->surface.interlace_color = RrColorNew(inst, 0, 0, 0);
-        ret = TRUE;
+        ret = YES;
     }
 
     g_free(icname);
@@ -1286,18 +1286,18 @@ static void set_default_appearance(RrAppearance *a)
     a->surface.grad = RR_SURFACE_SOLID;
     a->surface.relief = RR_RELIEF_FLAT;
     a->surface.bevel = RR_BEVEL_1;
-    a->surface.interlaced = FALSE;
-    a->surface.border = FALSE;
+    a->surface.interlaced = NO;
+    a->surface.border = NO;
     a->surface.primary = RrColorNew(a->inst, 0, 0, 0);
     a->surface.secondary = RrColorNew(a->inst, 0, 0, 0);
 }
 
 /* Reads the output from gimp's C-Source file format into valid RGBA data for
    an RrTextureRGBA. */
-static RrPixel32* read_c_image(gint width, gint height, const guint8 *data)
+static RrPixel32* read_c_image(int width, int height, const guint8 *data)
 {
     RrPixel32 *im, *p;
-    gint i;
+    int i;
 
     p = im = g_memdup(data, width * height * sizeof(RrPixel32));
 

@@ -23,7 +23,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-static gboolean xdg_start;
+static BOOL xdg_start;
 static gchar   *xdg_config_home_path;
 static gchar   *xdg_data_home_path;
 static GSList  *xdg_config_dir_paths;
@@ -78,11 +78,11 @@ void parse_register(ObParseInst *i, const gchar *tag,
     g_hash_table_insert(i->callbacks, c->tag, c);
 }
 
-gboolean parse_load_rc(xmlDocPtr *doc, xmlNodePtr *root)
+BOOL parse_load_rc(xmlDocPtr *doc, xmlNodePtr *root)
 {
     GSList *it;
     gchar *path;
-    gboolean r = FALSE;
+    BOOL r = NO;
 
     for (it = xdg_config_dir_paths; !r && it; it = g_slist_next(it)) {
         path = g_build_filename(it->data, "openbox", "rc.xml", NULL);
@@ -94,11 +94,11 @@ gboolean parse_load_rc(xmlDocPtr *doc, xmlNodePtr *root)
     return r;
 }
 
-gboolean parse_load_menu(const gchar *file, xmlDocPtr *doc, xmlNodePtr *root)
+BOOL parse_load_menu(const gchar *file, xmlDocPtr *doc, xmlNodePtr *root)
 {
     GSList *it;
     gchar *path;
-    gboolean r = FALSE;
+    BOOL r = NO;
 
     if (file[0] == '/') {
         r = parse_load(file, "openbox_menu", doc, root);
@@ -114,7 +114,7 @@ gboolean parse_load_menu(const gchar *file, xmlDocPtr *doc, xmlNodePtr *root)
     return r;
 }
 
-gboolean parse_load(const gchar *path, const gchar *rootname,
+BOOL parse_load(const gchar *path, const gchar *rootname,
                     xmlDocPtr *doc, xmlNodePtr *root)
 {
     if ((*doc = xmlParseFile(path))) {
@@ -133,11 +133,11 @@ gboolean parse_load(const gchar *path, const gchar *rootname,
         }
     }
     if (!*doc)
-        return FALSE;
-    return TRUE;
+        return NO;
+    return YES;
 }
 
-gboolean parse_load_mem(gpointer data, guint len, const gchar *rootname,
+BOOL parse_load_mem(gpointer data, unsigned int len, const gchar *rootname,
                         xmlDocPtr *doc, xmlNodePtr *root)
 {
     if ((*doc = xmlParseMemory(data, len))) {
@@ -156,8 +156,8 @@ gboolean parse_load_mem(gpointer data, guint len, const gchar *rootname,
         }
     }
     if (!*doc)
-        return FALSE;
-    return TRUE;
+        return NO;
+    return YES;
 }
 
 void parse_close(xmlDocPtr doc)
@@ -179,38 +179,38 @@ void parse_tree(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node)
 
 gchar *parse_string(xmlDocPtr doc, xmlNodePtr node)
 {
-    xmlChar *c = xmlNodeListGetString(doc, node->children, TRUE);
+    xmlChar *c = xmlNodeListGetString(doc, node->children, YES);
     gchar *s = g_strdup(c ? (gchar*)c : "");
     xmlFree(c);
     return s;
 }
 
-gint parse_int(xmlDocPtr doc, xmlNodePtr node)
+int parse_int(xmlDocPtr doc, xmlNodePtr node)
 {
-    xmlChar *c = xmlNodeListGetString(doc, node->children, TRUE);
-    gint i = atoi((gchar*)c);
+    xmlChar *c = xmlNodeListGetString(doc, node->children, YES);
+    int i = atoi((gchar*)c);
     xmlFree(c);
     return i;
 }
 
-gboolean parse_bool(xmlDocPtr doc, xmlNodePtr node)
+BOOL parse_bool(xmlDocPtr doc, xmlNodePtr node)
 {
-    xmlChar *c = xmlNodeListGetString(doc, node->children, TRUE);
-    gboolean b = FALSE;
+    xmlChar *c = xmlNodeListGetString(doc, node->children, YES);
+    BOOL b = NO;
     if (!xmlStrcasecmp(c, (const xmlChar*) "true"))
-        b = TRUE;
+        b = YES;
     else if (!xmlStrcasecmp(c, (const xmlChar*) "yes"))
-        b = TRUE;
+        b = YES;
     else if (!xmlStrcasecmp(c, (const xmlChar*) "on"))
-        b = TRUE;
+        b = YES;
     xmlFree(c);
     return b;
 }
 
-gboolean parse_contains(const gchar *val, xmlDocPtr doc, xmlNodePtr node)
+BOOL parse_contains(const gchar *val, xmlDocPtr doc, xmlNodePtr node)
 {
-    xmlChar *c = xmlNodeListGetString(doc, node->children, TRUE);
-    gboolean r;
+    xmlChar *c = xmlNodeListGetString(doc, node->children, YES);
+    BOOL r;
     r = !xmlStrcasecmp(c, (const xmlChar*) val);
     xmlFree(c);
     return r;
@@ -226,41 +226,41 @@ xmlNodePtr parse_find_node(const gchar *tag, xmlNodePtr node)
     return NULL;
 }
 
-gboolean parse_attr_int(const gchar *name, xmlNodePtr node, gint *value)
+BOOL parse_attr_int(const gchar *name, xmlNodePtr node, int *value)
 {
     xmlChar *c = xmlGetProp(node, (const xmlChar*) name);
-    gboolean r = FALSE;
+    BOOL r = NO;
     if (c) {
         *value = atoi((gchar*)c);
-        r = TRUE;
+        r = YES;
     }
     xmlFree(c);
     return r;
 }
 
-gboolean parse_attr_string(const gchar *name, xmlNodePtr node, gchar **value)
+BOOL parse_attr_string(const gchar *name, xmlNodePtr node, gchar **value)
 {
     xmlChar *c = xmlGetProp(node, (const xmlChar*) name);
-    gboolean r = FALSE;
+    BOOL r = NO;
     if (c) {
         *value = g_strdup((gchar*)c);
-        r = TRUE;
+        r = YES;
     }
     xmlFree(c);
     return r;
 }
 
-gboolean parse_attr_contains(const gchar *val, xmlNodePtr node,
+BOOL parse_attr_contains(const gchar *val, xmlNodePtr node,
                              const gchar *name)
 {
     xmlChar *c = xmlGetProp(node, (const xmlChar*) name);
-    gboolean r;
+    BOOL r;
     r = !xmlStrcasecmp(c, (const xmlChar*) val);
     xmlFree(c);
     return r;
 }
 
-static gint slist_path_cmp(const gchar *a, const gchar *b)
+static int slist_path_cmp(const gchar *a, const gchar *b)
 {
     return strcmp(a, b);
 }
@@ -300,7 +300,7 @@ void parse_paths_startup()
 
     if (xdg_start)
         return;
-    xdg_start = TRUE;
+    xdg_start = YES;
 
     path = g_getenv("XDG_CONFIG_HOME");
     if (path && path[0] != '\0') /* not unset or empty */
@@ -366,7 +366,7 @@ void parse_paths_shutdown()
 
     if (!xdg_start)
         return;
-    xdg_start = FALSE;
+    xdg_start = NO;
 
     for (it = xdg_config_dir_paths; it; it = g_slist_next(it))
         g_free(it->data);
@@ -391,26 +391,26 @@ gchar *parse_expand_tilde(const gchar *f)
     return ret;
 }
 
-gboolean parse_mkdir(const gchar *path, gint mode)
+BOOL parse_mkdir(const gchar *path, int mode)
 {
-    gboolean ret = TRUE;
+    BOOL ret = YES;
 
-    g_return_val_if_fail(path != NULL, FALSE);
-    g_return_val_if_fail(path[0] != '\0', FALSE);
+    g_return_val_if_fail(path != NULL, NO);
+    g_return_val_if_fail(path[0] != '\0', NO);
 
     if (!g_file_test(path, G_FILE_TEST_IS_DIR))
         if (mkdir(path, mode) == -1)
-            ret = FALSE;
+            ret = NO;
 
     return ret;
 }
 
-gboolean parse_mkdir_path(const gchar *path, gint mode)
+BOOL parse_mkdir_path(const gchar *path, int mode)
 {
-    gboolean ret = TRUE;
+    BOOL ret = YES;
 
-    g_return_val_if_fail(path != NULL, FALSE);
-    g_return_val_if_fail(path[0] == '/', FALSE);
+    g_return_val_if_fail(path != NULL, NO);
+    g_return_val_if_fail(path[0] == '/', NO);
 
     if (!g_file_test(path, G_FILE_TEST_IS_DIR)) {
         gchar *c, *e;

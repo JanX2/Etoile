@@ -19,6 +19,7 @@
 #ifndef __parse_h
 #define __parse_h
 
+#import <Foundation/Foundation.h>
 #include "version.h"
 
 #include <libxml/parser.h>
@@ -35,9 +36,9 @@ ObParseInst* parse_startup();
 void parse_shutdown(ObParseInst *inst);
 
 /* Loads Openbox's rc, from the normal paths */
-gboolean parse_load_rc(xmlDocPtr *doc, xmlNodePtr *root);
+BOOL parse_load_rc(xmlDocPtr *doc, xmlNodePtr *root);
 /* Loads an Openbox menu, from the normal paths */
-gboolean parse_load_menu(const gchar *file, xmlDocPtr *doc, xmlNodePtr *root);
+BOOL parse_load_menu(const gchar *file, xmlDocPtr *doc, xmlNodePtr *root);
 
 void parse_register(ObParseInst *inst, const gchar *tag,
                     ParseCallback func, gpointer data);
@@ -46,9 +47,9 @@ void parse_tree(ObParseInst *inst, xmlDocPtr doc, xmlNodePtr node);
 
 /* open/close */
 
-gboolean parse_load(const gchar *path, const gchar *rootname,
+BOOL parse_load(const gchar *path, const gchar *rootname,
                     xmlDocPtr *doc, xmlNodePtr *root);
-gboolean parse_load_mem(gpointer data, guint len, const gchar *rootname,
+BOOL parse_load_mem(gpointer data, unsigned int len, const gchar *rootname,
                         xmlDocPtr *doc, xmlNodePtr *root);
 void parse_close(xmlDocPtr doc);
 
@@ -58,15 +59,15 @@ void parse_close(xmlDocPtr doc);
 xmlNodePtr parse_find_node(const gchar *tag, xmlNodePtr node);
 
 gchar *parse_string(xmlDocPtr doc, xmlNodePtr node);
-gint parse_int(xmlDocPtr doc, xmlNodePtr node);
-gboolean parse_bool(xmlDocPtr doc, xmlNodePtr node);
+int parse_int(xmlDocPtr doc, xmlNodePtr node);
+BOOL parse_bool(xmlDocPtr doc, xmlNodePtr node);
 
-gboolean parse_contains(const gchar *val, xmlDocPtr doc, xmlNodePtr node);
-gboolean parse_attr_contains(const gchar *val, xmlNodePtr node,
+BOOL parse_contains(const gchar *val, xmlDocPtr doc, xmlNodePtr node);
+BOOL parse_attr_contains(const gchar *val, xmlNodePtr node,
                              const gchar *name);
 
-gboolean parse_attr_string(const gchar *name, xmlNodePtr node, gchar **value);
-gboolean parse_attr_int(const gchar *name, xmlNodePtr node, gint *value);
+BOOL parse_attr_string(const gchar *name, xmlNodePtr node, gchar **value);
+BOOL parse_attr_int(const gchar *name, xmlNodePtr node, int *value);
 
 /* paths */
 
@@ -82,9 +83,9 @@ GSList* parse_xdg_data_dir_paths();
   string */
 gchar *parse_expand_tilde(const gchar *f);
 /*! Makes a directory */
-gboolean parse_mkdir(const gchar *path, gint mode);
+BOOL parse_mkdir(const gchar *path, int mode);
 /*! Makes a directory and all its parents */
-gboolean parse_mkdir_path(const gchar *path, gint mode);
+BOOL parse_mkdir_path(const gchar *path, int mode);
 
 G_END_DECLS
 

@@ -35,7 +35,7 @@
 KeyBindingTree *keyboard_firstnode;
 
 typedef struct {
-    guint state;
+    unsigned int state;
     AZClient *client;
     GSList *actions;
     ObFrameContext context;
@@ -45,7 +45,7 @@ static GSList *interactive_states;
 
 static KeyBindingTree *curpos;
 
-static void grab_for_window(Window win, gboolean grab)
+static void grab_for_window(Window win, BOOL grab)
 {
     KeyBindingTree *p;
 
@@ -64,12 +64,12 @@ static void grab_for_window(Window win, gboolean grab)
     }
 }
 
-void keyboard_grab_for_client(AZClient *c, gboolean grab)
+void keyboard_grab_for_client(AZClient *c, BOOL grab)
 {
     grab_for_window([c window], grab);
 }
 
-static void grab_keys(gboolean grab)
+static void grab_keys(BOOL grab)
 {
     grab_for_window([[AZScreen defaultScreen] supportXWindow], grab);
     AZClientManager *cManager = [AZClientManager defaultManager];
@@ -85,7 +85,7 @@ static gboolean chain_timeout(gpointer data)
 {
     keyboard_reset_chains();
 
-    return FALSE; /* don't repeat */
+    return NO; /* don't repeat */
 }
 
 void keyboard_reset_chains()
@@ -93,9 +93,9 @@ void keyboard_reset_chains()
     [[AZMainLoop mainLoop] removeTimeoutHandler: chain_timeout];
 
     if (curpos) {
-        grab_keys(FALSE);
+        grab_keys(NO);
         curpos = NULL;
-        grab_keys(TRUE);
+        grab_keys(YES);
     }
 }
 
@@ -103,21 +103,21 @@ void keyboard_unbind_all()
 {
     tree_destroy(keyboard_firstnode);
     keyboard_firstnode = NULL;
-    grab_keys(FALSE);
+    grab_keys(NO);
     curpos = NULL;
 }
 
-gboolean keyboard_bind(GList *keylist, ObAction *action)
+BOOL keyboard_bind(GList *keylist, ObAction *action)
 {
     KeyBindingTree *tree, *t;
-    gboolean conflict;
-    gboolean mods = TRUE;
+    BOOL conflict;
+    BOOL mods = YES;
 
     g_assert(keylist != NULL);
     g_assert(action != NULL);
 
     if (!(tree = tree_build(keylist)))
-        return FALSE;
+        return NO;
 
     if ((t = tree_find(tree, &conflict)) != NULL) {
         /* already bound to something, use the existing tree */
@@ -129,22 +129,22 @@ gboolean keyboard_bind(GList *keylist, ObAction *action)
     if (conflict) {
         g_warning("conflict with binding");
         tree_destroy(tree);
-        return FALSE;
+        return NO;
     }
 
     /* find if every key in this chain has modifiers, and also find the
        bottom node of the tree */
     while (t->first_child) {
         if (!t->state)
-            mods = FALSE;
+            mods = NO;
         t = t->first_child;
     }
 
     /* when there are no modifiers in the binding, then the action cannot
        be interactive */
     if (!mods && action->data.any.interactive) {
-        action->data.any.interactive = FALSE;
-        action->data.inter.final = TRUE;
+        action->data.any.interactive = NO;
+        action->data.inter.final = YES;
     }
 
     /* set the action */
@@ -153,10 +153,10 @@ gboolean keyboard_bind(GList *keylist, ObAction *action)
        destroys/uses the tree */
     if (tree) tree_assimilate(tree);
 
-    return TRUE;
+    return YES;
 }
 
-gboolean keyboard_interactive_grab(guint state, AZClient *client,
+BOOL keyboard_interactive_grab(unsigned int state, AZClient *client,
                                    ObAction *action)
 {
     ObInteractiveState *s;
@@ -164,11 +164,11 @@ gboolean keyboard_interactive_grab(guint state, AZClient *client,
     g_assert(action->data.any.interactive);
 
     if (!interactive_states) {
-        if (!grab_keyboard(TRUE))
-            return FALSE;
-        if (!grab_pointer(TRUE, OB_CURSOR_NONE)) {
-            grab_keyboard(FALSE);
-            return FALSE;
+        if (!grab_keyboard(YES))
+            return NO;
+        if (!grab_pointer(YES, OB_CURSOR_NONE)) {
+            grab_keyboard(NO);
+            return NO;
         }
     }
 
@@ -180,13 +180,13 @@ gboolean keyboard_interactive_grab(guint state, AZClient *client,
 
     interactive_states = g_slist_append(interactive_states, s);
 
-    return TRUE;
+    return YES;
 }
 
 void keyboard_interactive_end(ObInteractiveState *s,
-                              guint state, gboolean cancel)
+                              unsigned int state, BOOL cancel)
 {
-    action_run_interactive(s->actions, s->client, state, cancel, TRUE);
+    action_run_interactive(s->actions, s->client, state, cancel, YES);
 
     g_slist_free(s->actions);
     g_free(s);
@@ -194,8 +194,8 @@ void keyboard_interactive_end(ObInteractiveState *s,
     interactive_states = g_slist_remove(interactive_states, s);
 
     if (!interactive_states) {
-        grab_keyboard(FALSE);
-        grab_pointer(FALSE, OB_CURSOR_NONE);
+        grab_keyboard(NO);
+        grab_pointer(NO, OB_CURSOR_NONE);
         keyboard_reset_chains();
     }
 }
@@ -214,12 +214,12 @@ void keyboard_interactive_end_client(AZClient *client, gpointer data)
     }
 }
 
-gboolean keyboard_process_interactive_grab(const XEvent *e, AZClient **client)
+BOOL keyboard_process_interactive_grab(const XEvent *e, AZClient **client)
 {
     GSList *it, *next;
-    gboolean handled = FALSE;
-    gboolean done = FALSE;
-    gboolean cancel = FALSE;
+    BOOL handled = NO;
+    BOOL done = NO;
+    BOOL cancel = NO;
 
     for (it = interactive_states; it; it = next) {
         ObInteractiveState *s = it->data;
@@ -228,17 +228,17 @@ gboolean keyboard_process_interactive_grab(const XEvent *e, AZClient **client)
         
         if ((e->type == KeyRelease && 
              !(s->state & e->xkey.state)))
-            done = TRUE;
+            done = YES;
         else if (e->type == KeyPress) {
             /*if (e->xkey.keycode == ob_keycode(OB_KEY_RETURN))
-                done = TRUE;
+                done = YES;
             else */if (e->xkey.keycode == ob_keycode(OB_KEY_ESCAPE))
-                cancel = done = TRUE;
+                cancel = done = YES;
         }
         if (done) {
             keyboard_interactive_end(s, e->xkey.state, cancel);
 
-            handled = TRUE;
+            handled = YES;
         } else
             *client = s->client;
     }
@@ -275,9 +275,9 @@ void keyboard_event(AZClient *client, const XEvent *e)
 			     microseconds: 5 * G_USEC_PER_SEC
 			     data: NULL
 			     notify: NULL];
-                grab_keys(FALSE);
+                grab_keys(NO);
                 curpos = p;
-                grab_keys(TRUE);
+                grab_keys(YES);
             } else {
 
                 keyboard_reset_chains();
@@ -291,15 +291,15 @@ void keyboard_event(AZClient *client, const XEvent *e)
     }
 }
 
-void keyboard_startup(gboolean reconfig)
+void keyboard_startup(BOOL reconfig)
 {
-    grab_keys(TRUE);
+    grab_keys(YES);
 
     if (!reconfig)
 	[[AZClientManager defaultManager] addDestructor: keyboard_interactive_end_client data: NULL];
 }
 
-void keyboard_shutdown(gboolean reconfig)
+void keyboard_shutdown(BOOL reconfig)
 {
     GSList *it;
 

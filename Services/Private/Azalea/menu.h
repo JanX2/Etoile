@@ -36,7 +36,7 @@ typedef struct _ObSeparatorMenuEntry ObSeparatorMenuEntry;
 
 typedef void (*ObMenuUpdateFunc)(AZMenuFrame *frame, gpointer data);
 typedef void (*ObMenuExecuteFunc)(struct _ObMenuEntry *entry,
-                                  guint state, gpointer data);
+                                  unsigned int state, gpointer data);
 typedef void (*ObMenuDestroyFunc)(struct _ObMenu *menu, gpointer data);
 
 struct _ObMenu
@@ -74,14 +74,14 @@ struct _ObNormalMenuEntry {
     gchar *label;
 
     /* state */
-    gboolean enabled;
+    BOOL enabled;
 
     /* List of ObActions */
     GSList *actions;
 
     /* Icon shit */
-    gint icon_width;
-    gint icon_height;
+    int icon_width;
+    int icon_height;
     RrPixel32 *icon_data;
 
     /* Mask icon */
@@ -105,7 +105,7 @@ struct _ObMenuEntry
     ObMenuEntryType type;
     ObMenu *menu;
 
-    gint id;
+    int id;
 
     union u {
         ObNormalMenuEntry normal;
@@ -114,8 +114,8 @@ struct _ObMenuEntry
     } data;
 };
 
-void menu_startup(gboolean reconfig);
-void menu_shutdown(gboolean reconfig);
+void menu_startup(BOOL reconfig);
+void menu_shutdown(BOOL reconfig);
 
 ObMenu* menu_new(gchar *name, gchar *title, gpointer data);
 void menu_free(ObMenu *menu);
@@ -123,22 +123,22 @@ void menu_free(ObMenu *menu);
 /* Repopulate a pipe-menu by running its command */
 void menu_pipe_execute(ObMenu *self);
 
-void menu_show(gchar *name, gint x, gint y, AZClient *client);
+void menu_show(gchar *name, int x, int y, AZClient *client);
 
 void menu_set_update_func(ObMenu *menu, ObMenuUpdateFunc func);
 void menu_set_execute_func(ObMenu *menu, ObMenuExecuteFunc func);
 void menu_set_destroy_func(ObMenu *menu, ObMenuDestroyFunc func);
 
 /* functions for building menus */
-ObMenuEntry* menu_add_normal(ObMenu *menu, gint id, gchar *label,
+ObMenuEntry* menu_add_normal(ObMenu *menu, int id, gchar *label,
                              GSList *actions);
-ObMenuEntry* menu_add_submenu(ObMenu *menu, gint id, gchar *submenu);
-ObMenuEntry* menu_add_separator(ObMenu *menu, gint id);
+ObMenuEntry* menu_add_submenu(ObMenu *menu, int id, gchar *submenu);
+ObMenuEntry* menu_add_separator(ObMenu *menu, int id);
 
 void menu_clear_entries(ObMenu *menu);
 void menu_entry_remove(ObMenuEntry *self);
 
-ObMenuEntry* menu_find_entry_id(ObMenu *self, gint id);
+ObMenuEntry* menu_find_entry_id(ObMenu *self, int id);
 
 /* fills in the submenus, for use when a menu is being shown */
 void menu_find_submenus(ObMenu *self);

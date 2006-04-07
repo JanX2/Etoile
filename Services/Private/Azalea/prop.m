@@ -162,10 +162,10 @@ void prop_startup()
 #include <string.h>
 
 /* this just isn't used... and it also breaks on 64bit, watch out
-static gboolean get(Window win, Atom prop, Atom type, gint size,
+static BOOL get(Window win, Atom prop, Atom type, gint size,
                     guchar **data, gulong num)
 {
-    gboolean ret = FALSE;
+    BOOL ret = FALSE;
     gint res;
     guchar *xdata = NULL;
     Atom ret_type;
@@ -187,10 +187,10 @@ static gboolean get(Window win, Atom prop, Atom type, gint size,
 }
 */
 
-static gboolean get_prealloc(Window win, Atom prop, Atom type, gint size,
+static BOOL get_prealloc(Window win, Atom prop, Atom type, gint size,
                              guchar *data, gulong num)
 {
-    gboolean ret = FALSE;
+    BOOL ret = FALSE;
     gint res;
     guchar *xdata = NULL;
     Atom ret_type;
@@ -225,10 +225,10 @@ static gboolean get_prealloc(Window win, Atom prop, Atom type, gint size,
     return ret;
 }
 
-static gboolean get_all(Window win, Atom prop, Atom type, gint size,
+static BOOL get_all(Window win, Atom prop, Atom type, gint size,
                         guchar **data, guint *num)
 {
-    gboolean ret = FALSE;
+    BOOL ret = FALSE;
     gint res;
     guchar *xdata = NULL;
     Atom ret_type;
@@ -265,10 +265,10 @@ static gboolean get_all(Window win, Atom prop, Atom type, gint size,
     return ret;
 }
 
-static gboolean get_stringlist(Window win, Atom prop, gchar ***list, gint *nstr)
+static BOOL get_stringlist(Window win, Atom prop, gchar ***list, gint *nstr)
 {
     XTextProperty tprop;
-    gboolean ret = FALSE;
+    BOOL ret = FALSE;
 
     if (XGetTextProperty(ob_display, win, &tprop, prop) && tprop.nitems) {
         if (XTextPropertyToStringList(&tprop, list, nstr))
@@ -278,18 +278,18 @@ static gboolean get_stringlist(Window win, Atom prop, gchar ***list, gint *nstr)
     return ret;
 }
 
-gboolean prop_get32(Window win, Atom prop, Atom type, guint32 *ret)
+BOOL prop_get32(Window win, Atom prop, Atom type, guint32 *ret)
 {
     return get_prealloc(win, prop, type, 32, (guchar*)ret, 1);
 }
 
-gboolean prop_get_array32(Window win, Atom prop, Atom type, guint32 **ret,
+BOOL prop_get_array32(Window win, Atom prop, Atom type, guint32 **ret,
                           guint *nret)
 {
     return get_all(win, prop, type, 32, (guchar**)ret, nret);
 }
 
-gboolean prop_get_string_locale(Window win, Atom prop, gchar **ret)
+BOOL prop_get_string_locale(Window win, Atom prop, gchar **ret)
 {
     gchar **list;
     gint nstr;
@@ -307,7 +307,7 @@ gboolean prop_get_string_locale(Window win, Atom prop, gchar **ret)
     return FALSE;
 }
 
-gboolean prop_get_strings_locale(Window win, Atom prop, gchar ***ret)
+BOOL prop_get_strings_locale(Window win, Atom prop, gchar ***ret)
 {
     GSList *strs = NULL, *it;
     gchar *raw, *p;
@@ -339,7 +339,7 @@ gboolean prop_get_strings_locale(Window win, Atom prop, gchar ***ret)
     return FALSE;
 }
 
-gboolean prop_get_string_utf8(Window win, Atom prop, gchar **ret)
+BOOL prop_get_string_utf8(Window win, Atom prop, gchar **ret)
 {
     gchar *raw;
     gchar *str;
@@ -357,7 +357,7 @@ gboolean prop_get_string_utf8(Window win, Atom prop, gchar **ret)
     return FALSE;
 }
 
-gboolean prop_get_strings_utf8(Window win, Atom prop, gchar ***ret)
+BOOL prop_get_strings_utf8(Window win, Atom prop, gchar ***ret)
 {
     GSList *strs = NULL, *it;
     gchar *raw, *p;

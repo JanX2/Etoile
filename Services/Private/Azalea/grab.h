@@ -24,23 +24,23 @@
 #include <glib.h>
 #include <X11/Xlib.h>
 
-void grab_startup(gboolean reconfig);
-void grab_shutdown(gboolean reconfig);
+void grab_startup(BOOL reconfig);
+void grab_shutdown(BOOL reconfig);
 
-gboolean grab_keyboard(gboolean grab);
-gboolean grab_pointer(gboolean grab, ObCursor cur);
-gboolean grab_pointer_window(gboolean grab, ObCursor cur, Window win);
-gint grab_server(gboolean grab);
+BOOL grab_keyboard(BOOL grab);
+BOOL grab_pointer(BOOL grab, ObCursor cur);
+BOOL grab_pointer_window(BOOL grab, ObCursor cur, Window win);
+int grab_server(BOOL grab);
 
-gboolean grab_on_keyboard();
-gboolean grab_on_pointer();
+BOOL grab_on_keyboard();
+BOOL grab_on_pointer();
 
-void grab_button(guint button, guint state, Window win, guint mask);
-void grab_button_full(guint button, guint state, Window win, guint mask,
-                      gint pointer_mode, ObCursor cursor);
-void ungrab_button(guint button, guint state, Window win);
+void grab_button(unsigned int button, unsigned int state, Window win, unsigned int mask);
+void grab_button_full(unsigned int button, unsigned int state, Window win, unsigned int mask,
+                      int pointer_mode, ObCursor cursor);
+void ungrab_button(unsigned int button, unsigned int state, Window win);
 
-void grab_key(guint keycode, guint state, Window win, gint keyboard_mode);
+void grab_key(unsigned int keycode, unsigned int state, Window win, int keyboard_mode);
 
 void ungrab_all_keys(Window win);
 

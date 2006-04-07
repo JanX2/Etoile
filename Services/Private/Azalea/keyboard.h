@@ -29,19 +29,19 @@ struct _ObAction;
 
 extern KeyBindingTree *keyboard_firstnode;
 
-void keyboard_startup(gboolean reconfig);
-void keyboard_shutdown(gboolean reconfig);
+void keyboard_startup(BOOL reconfig);
+void keyboard_shutdown(BOOL reconfig);
 
-gboolean keyboard_bind(GList *keylist, ObAction *action);
+BOOL keyboard_bind(GList *keylist, ObAction *action);
 void keyboard_unbind_all();
 
 void keyboard_event(AZClient *client, const XEvent *e);
 void keyboard_reset_chains();
 
-gboolean keyboard_interactive_grab(guint state, AZClient *client,
+BOOL keyboard_interactive_grab(unsigned int state, AZClient *client,
                                    struct _ObAction *action);
-gboolean keyboard_process_interactive_grab(const XEvent *e, AZClient **client);
+BOOL keyboard_process_interactive_grab(const XEvent *e, AZClient **client);
 
-void keyboard_grab_for_client(AZClient *c, gboolean grab);
+void keyboard_grab_for_client(AZClient *c, BOOL grab);
 
 #endif

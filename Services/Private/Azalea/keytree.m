@@ -101,11 +101,11 @@ void tree_assimilate(KeyBindingTree *node)
     }
 }
 
-KeyBindingTree *tree_find(KeyBindingTree *search, gboolean *conflict)
+KeyBindingTree *tree_find(KeyBindingTree *search, BOOL *conflict)
 {
     KeyBindingTree *a, *b;
 
-    *conflict = FALSE;
+    *conflict = NO;
 
     a = keyboard_firstnode;
     b = search;
@@ -119,7 +119,7 @@ KeyBindingTree *tree_find(KeyBindingTree *search, gboolean *conflict)
                     return a;
                 }
             } else {
-                *conflict = TRUE;
+                *conflict = YES;
                 return NULL; /* the chain status' don't match (conflict!) */
             }
             b = b->first_child;

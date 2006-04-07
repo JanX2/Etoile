@@ -172,13 +172,13 @@ Atoms prop_atoms;
 
 void prop_startup();
 
-gboolean prop_get32(Window win, Atom prop, Atom type, guint32 *ret);
-gboolean prop_get_array32(Window win, Atom prop, Atom type, guint32 **ret,
+BOOL prop_get32(Window win, Atom prop, Atom type, guint32 *ret);
+BOOL prop_get_array32(Window win, Atom prop, Atom type, guint32 **ret,
                           guint *nret);
-gboolean prop_get_string_locale(Window win, Atom prop, gchar **ret);
-gboolean prop_get_string_utf8(Window win, Atom prop, gchar **ret);
-gboolean prop_get_strings_locale(Window win, Atom prop, gchar ***ret);
-gboolean prop_get_strings_utf8(Window win, Atom prop, gchar ***ret);
+BOOL prop_get_string_locale(Window win, Atom prop, gchar **ret);
+BOOL prop_get_string_utf8(Window win, Atom prop, gchar **ret);
+BOOL prop_get_strings_locale(Window win, Atom prop, gchar ***ret);
+BOOL prop_get_strings_utf8(Window win, Atom prop, gchar ***ret);
 
 void prop_set32(Window win, Atom prop, Atom type, gulong val);
 void prop_set_array32(Window win, Atom prop, Atom type, gulong *val,

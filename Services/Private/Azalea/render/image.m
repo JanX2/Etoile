@@ -20,16 +20,14 @@
 #include "image.h"
 #include "color.h"
 
-#include <glib.h>
-
 #define FRACTION        12
 #define FLOOR(i)        ((i) & (~0UL << FRACTION))
 #define AVERAGE(a, b)   (((((a) ^ (b)) & 0xfefefefeL) >> 1) + ((a) & (b)))
 
-static RrPixel32* scale_half(RrPixel32 *source, gint w, gint h)
+static RrPixel32* scale_half(RrPixel32 *source, int w, int h)
 {
     RrPixel32 *out, *dest, *sourceline, *sourceline2;
-    gint dw, dh, x, y;
+    int dw, dh, x, y;
 
     sourceline = source;
     sourceline2 = source + w;
@@ -58,12 +56,12 @@ static RrPixel32* scale_half(RrPixel32 *source, gint w, gint h)
 }
 
 static void ImageCopyResampled(RrPixel32 *dst, RrPixel32 *src,
-                               gulong dstW, gulong dstH,
-                               gulong srcW, gulong srcH)
+                               unsigned long dstW, unsigned long dstH,
+                               unsigned long srcW, unsigned long srcH)
 {
-    gulong dstX, dstY, srcX, srcY;
-    gulong srcX1, srcX2, srcY1, srcY2;
-    gulong ratioX, ratioY;
+    unsigned long dstX, dstY, srcX, srcY;
+    unsigned long srcX1, srcX2, srcY1, srcY2;
+    unsigned long ratioX, ratioY;
     
     ratioX = (srcW << FRACTION) / dstW;
     ratioY = (srcH << FRACTION) / dstH;
@@ -75,8 +73,8 @@ static void ImageCopyResampled(RrPixel32 *dst, RrPixel32 *src,
         
         srcX2 = 0;
         for (dstX = 0; dstX < dstW; dstX++) {
-            gulong red = 0, green = 0, blue = 0, alpha = 0;
-            gulong portionX, portionY, portionXY, sumXY = 0;
+            unsigned long red = 0, green = 0, blue = 0, alpha = 0;
+            unsigned long portionX, portionY, portionXY, sumXY = 0;
             RrPixel32 pixel;
             
             srcX1 = srcX2;
@@ -132,23 +130,23 @@ static void ImageCopyResampled(RrPixel32 *dst, RrPixel32 *src,
 }
 
 void RrImageDraw(RrPixel32 *target, RrTextureRGBA *rgba,
-                 gint target_w, gint target_h,
+                 int target_w, int target_h,
                  RrRect *area)
 {
     RrPixel32 *dest;
     RrPixel32 *source;
-    gint sw, sh, dw, dh;
-    gint col, num_pixels;
+    int sw, sh, dw, dh;
+    int col, num_pixels;
 
     sw = rgba->width;
     sh = rgba->height;
 
     /* keep the ratio */
     dw = area->width;
-    dh = (gint)(dw * ((gdouble)sh / sw));
+    dh = (int)(dw * ((gdouble)sh / sw));
     if (dh > area->height) {
         dh = area->height;
-        dw = (gint)(dh * ((gdouble)sw / sh));
+        dw = (int)(dh * ((gdouble)sw / sh));
     }
 
     if (!(dw && dh))

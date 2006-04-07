@@ -23,7 +23,7 @@
 #include "geom.h"
 
 void RrImageDraw(RrPixel32 *target, RrTextureRGBA *rgba,
-                 gint target_w, gint target_h,
+                 int target_w, int target_h,
                  RrRect *area);
 
 #endif

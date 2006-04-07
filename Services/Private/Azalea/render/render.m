@@ -43,7 +43,7 @@ void RrPaint(RrAppearance *a, Window win, gint w, gint h)
     RrPixel32 *source, *dest;
     Pixmap oldp;
     RrRect tarea; /* area in which to draw textures */
-    gboolean resized;
+    BOOL resized;
 
     if (w <= 0 || h <= 0) return;
 
@@ -360,7 +360,7 @@ static void reverse_bits(gchar *c, gint n)
                  (*c * 0x8020UL & 0x88440UL)) * 0x10101UL) >> 16;
 }
 
-gboolean RrPixmapToRGBA(const RrInstance *inst,
+BOOL RrPixmapToRGBA(const RrInstance *inst,
                         Pixmap pmap, Pixmap mask,
                         gint *w, gint *h, RrPixel32 **data)
 {

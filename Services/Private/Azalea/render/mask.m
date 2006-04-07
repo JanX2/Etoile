@@ -22,7 +22,7 @@
 #include "mask.h"
 
 RrPixmapMask *RrPixmapMaskNew(const RrInstance *inst,
-                              gint w, gint h, const gchar *data)
+                              int w, int h, const gchar *data)
 {
     RrPixmapMask *m = g_new(RrPixmapMask, 1);
     m->inst = inst;
@@ -46,7 +46,7 @@ void RrPixmapMaskFree(RrPixmapMask *m)
 
 void RrPixmapMaskDraw(Pixmap p, const RrTextureMask *m, const RrRect *area)
 {
-    gint x, y;
+    int x, y;
     if (m->mask == None) return; /* no mask given */
 
     /* set the clip region */

@@ -20,6 +20,7 @@
 #define __theme_h
 
 #include "render.h"
+#import <Foundation/Foundation.h>
 
 G_BEGIN_DECLS
 
@@ -32,19 +33,19 @@ struct _RrTheme {
     const RrInstance *inst;
 
     /* style settings - optional decor */
-    gboolean show_handle;
+    BOOL show_handle;
 
     /* style settings - geometry */
-    gint padding;
-    gint handle_height;
-    gint bwidth;
-    gint cbwidth;
-    gint label_height;
-    gint title_height;
-    gint menu_title_height;
-    gint button_size;
-    gint grip_width;
-    gint menu_overlap;
+    int padding;
+    int handle_height;
+    int bwidth;
+    int cbwidth;
+    int label_height;
+    int title_height;
+    int menu_title_height;
+    int button_size;
+    int grip_width;
+    int menu_overlap;
 
     /* style settings - colors */
     RrColor *b_color;
@@ -68,12 +69,12 @@ struct _RrTheme {
     RrColor *menu_selected_color;
 
     /* style settings - fonts */
-    gint win_font_height;
+    int win_font_height;
     RrFont *win_font_focused;
     RrFont *win_font_unfocused;
-    gint menu_title_font_height;
+    int menu_title_font_height;
     RrFont *menu_title_font;
-    gint menu_font_height;
+    int menu_font_height;
     RrFont *menu_font;
 
     /* style settings - pics */

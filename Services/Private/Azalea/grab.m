@@ -31,45 +31,45 @@
 #define MASK_LIST_SIZE 8
 
 /*! A list of all possible combinations of keyboard lock masks */
-static guint mask_list[MASK_LIST_SIZE];
-static guint kgrabs = 0;
-static guint pgrabs = 0;
+static unsigned int mask_list[MASK_LIST_SIZE];
+static unsigned int kgrabs = 0;
+static unsigned int pgrabs = 0;
 
-gboolean grab_on_keyboard()
+BOOL grab_on_keyboard()
 {
     return kgrabs > 0;
 }
 
-gboolean grab_on_pointer()
+BOOL grab_on_pointer()
 {
     return pgrabs > 0;
 }
 
-gboolean grab_keyboard(gboolean grab)
+BOOL grab_keyboard(BOOL grab)
 {
-    gboolean ret = FALSE;
+    BOOL ret = NO;
 
     if (grab) {
         if (kgrabs++ == 0) {
             ret = XGrabKeyboard(ob_display, RootWindow(ob_display, ob_screen),
-                                FALSE, GrabModeAsync, GrabModeAsync,
+                                NO, GrabModeAsync, GrabModeAsync,
                                 [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/) == Success;
             if (!ret)
                 --kgrabs;
         } else
-            ret = TRUE;
+            ret = YES;
     } else if (kgrabs > 0) {
         if (--kgrabs == 0)
             XUngrabKeyboard(ob_display, [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
-        ret = TRUE;
+        ret = YES;
     }
 
     return ret;
 }
 
-gboolean grab_pointer(gboolean grab, ObCursor cur)
+BOOL grab_pointer(BOOL grab, ObCursor cur)
 {
-    gboolean ret = FALSE;
+    BOOL ret = NO;
 
     if (grab) {
         if (pgrabs++ == 0) {
@@ -81,19 +81,19 @@ gboolean grab_pointer(gboolean grab, ObCursor cur)
             if (!ret)
                 --pgrabs;
         } else
-            ret = TRUE;
+            ret = YES;
     } else if (pgrabs > 0) {
         if (--pgrabs == 0) {
             XUngrabPointer(ob_display, [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
         }
-        ret = TRUE;
+        ret = YES;
     }
     return ret;
 }
 
-gboolean grab_pointer_window(gboolean grab, ObCursor cur, Window win)
+BOOL grab_pointer_window(BOOL grab, ObCursor cur, Window win)
 {
-    gboolean ret = FALSE;
+    BOOL ret = NO;
 
     if (grab) {
         if (pgrabs++ == 0) {
@@ -104,23 +104,23 @@ gboolean grab_pointer_window(gboolean grab, ObCursor cur, Window win)
             if (!ret)
                 --pgrabs;
         } else
-            ret = TRUE;
+            ret = YES;
     } else if (pgrabs > 0) {
         if (--pgrabs == 0) {
             XUngrabPointer(ob_display, [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
         }
-        ret = TRUE;
+        ret = YES;
     }
     return ret;
 }
 
-gint grab_server(gboolean grab)
+int grab_server(BOOL grab)
 {
-    static guint sgrabs = 0;
+    static unsigned int sgrabs = 0;
     if (grab) {
         if (sgrabs++ == 0) {
             XGrabServer(ob_display);
-            XSync(ob_display, FALSE);
+            XSync(ob_display, NO);
         }
     } else if (sgrabs > 0) {
         if (--sgrabs == 0) {
@@ -131,9 +131,9 @@ gint grab_server(gboolean grab)
     return sgrabs;
 }
 
-void grab_startup(gboolean reconfig)
+void grab_startup(BOOL reconfig)
 {
-    guint i = 0;
+    unsigned int i = 0;
 
     if (reconfig) return;
 
@@ -151,52 +151,52 @@ void grab_startup(gboolean reconfig)
     g_assert(i == MASK_LIST_SIZE);
 }
 
-void grab_shutdown(gboolean reconfig)
+void grab_shutdown(BOOL reconfig)
 {
     if (reconfig) return;
 
-    while (grab_keyboard(FALSE));
-    while (grab_pointer(FALSE, OB_CURSOR_NONE));
-    while (grab_pointer_window(FALSE, OB_CURSOR_NONE, None));
-    while (grab_server(FALSE));
+    while (grab_keyboard(NO));
+    while (grab_pointer(NO, OB_CURSOR_NONE));
+    while (grab_pointer_window(NO, OB_CURSOR_NONE, None));
+    while (grab_server(NO));
 }
 
-void grab_button_full(guint button, guint state, Window win, guint mask,
-                      gint pointer_mode, ObCursor cur)
+void grab_button_full(unsigned int button, unsigned int state, Window win, unsigned int mask,
+                      int pointer_mode, ObCursor cur)
 {
-    guint i;
+    unsigned int i;
 
     AZXErrorSetIgnore(YES); /* can get BadAccess' from these */
-    xerror_occured = FALSE;
+    xerror_occured = NO;
     for (i = 0; i < MASK_LIST_SIZE; ++i)
-        XGrabButton(ob_display, button, state | mask_list[i], win, FALSE, mask,
+        XGrabButton(ob_display, button, state | mask_list[i], win, NO, mask,
                     pointer_mode, GrabModeSync, None, ob_cursor(cur));
     AZXErrorSetIgnore(NO);
     if (xerror_occured)
         g_warning("failed to grab button %d modifiers %d", button, state);
 }
 
-void grab_button(guint button, guint state, Window win, guint mask)
+void grab_button(unsigned int button, unsigned int state, Window win, unsigned int mask)
 {
     grab_button_full(button, state, win, mask, GrabModeAsync, OB_CURSOR_NONE);
 }
 
-void ungrab_button(guint button, guint state, Window win)
+void ungrab_button(unsigned int button, unsigned int state, Window win)
 {
-    guint i;
+    unsigned int i;
 
     for (i = 0; i < MASK_LIST_SIZE; ++i)
         XUngrabButton(ob_display, button, state | mask_list[i], win);
 }
 
-void grab_key(guint keycode, guint state, Window win, gint keyboard_mode)
+void grab_key(unsigned int keycode, unsigned int state, Window win, int keyboard_mode)
 {
-    guint i;
+    unsigned int i;
 
     AZXErrorSetIgnore(YES); /* can get BadAccess' from these */
-    xerror_occured = FALSE;
+    xerror_occured = NO;
     for (i = 0; i < MASK_LIST_SIZE; ++i)
-        XGrabKey(ob_display, keycode, state | mask_list[i], win, FALSE,
+        XGrabKey(ob_display, keycode, state | mask_list[i], win, NO,
                  GrabModeAsync, keyboard_mode);
     AZXErrorSetIgnore(NO);
     if (xerror_occured)

@@ -17,6 +17,7 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
+#import <Foundation/Foundation.h>
 #include "font.h"
 #include "color.h"
 #include "mask.h"
@@ -48,7 +49,7 @@ FcObjectType objs[] = {
 #ifdef USE_PANGO
 static PangoContext *context;
 #endif
-static gboolean started = FALSE;
+static BOOL started = NO;
 
 static void font_startup(void)
 {
@@ -86,10 +87,10 @@ static RrFont *openfont(const RrInstance *inst, gchar *fontstring)
     FcPattern *pat, *match;
     XftFont *font;
     FcResult res;
-    gint tint;
+    int tint;
 #ifdef USE_PANGO
     guchar *tmp_string = NULL;
-    gint tmp_int;
+    int tmp_int;
 #endif /* USE_PANGO */
 
     if (!(pat = XftNameParse(fontstring)))
@@ -150,7 +151,7 @@ static RrFont *openfont(const RrInstance *inst, gchar *fontstring)
 #endif /* USE_PANGO */
 
     if (FcPatternGetBool(match, OB_SHADOW, 0, &out->shadow) != FcResultMatch)
-        out->shadow = FALSE;
+        out->shadow = NO;
 
     if (FcPatternGetInteger(match, OB_SHADOW_OFFSET, 0, &out->offset) !=
         FcResultMatch)
@@ -184,7 +185,7 @@ RrFont *RrFontOpen(const RrInstance *inst, gchar *fontstring)
 
     if (!started) {
         font_startup();
-        started = TRUE;
+        started = YES;
     }
 
     if ((out = openfont(inst, fontstring)))
@@ -211,7 +212,7 @@ void RrFontClose(RrFont *f)
 }
 
 static void font_measure_full(const RrFont *f, const gchar *str,
-                              gint *x, gint *y)
+                              int *x, int *y)
 {
 #ifdef USE_PANGO
     PangoLayout *pl;
@@ -219,7 +220,7 @@ static void font_measure_full(const RrFont *f, const gchar *str,
     pl = pango_layout_new (context);
     pango_layout_set_text(pl, str, -1);
     pango_layout_set_font_description(pl, f->pango_font_description);
-    pango_layout_set_single_paragraph_mode(pl, TRUE);
+    pango_layout_set_single_paragraph_mode(pl, YES);
     pango_layout_get_pixel_extents(pl, NULL, &rect);
     *x = rect.width + (f->shadow ? ABS(f->offset) : 0);
     *y = rect.height + (f->shadow ? ABS(f->offset) : 0);
@@ -244,7 +245,7 @@ RrSize *RrFontMeasureString(const RrFont *f, const gchar *str)
     return size;
 }
 
-gint RrFontHeight(const RrFont *f)
+int RrFontHeight(const RrFont *f)
 {
 #ifdef USE_PANGO
     return (f->pango_ascent
@@ -257,13 +258,13 @@ gint RrFontHeight(const RrFont *f)
 #endif
 }
 
-gint RrFontMaxCharWidth(const RrFont *f)
+int RrFontMaxCharWidth(const RrFont *f)
 {
     return (signed) f->xftfont->max_advance_width;
 }
 
 #ifdef USE_PANGO
-static inline int font_calculate_baseline(RrFont *f, gint height)
+static inline int font_calculate_baseline(RrFont *f, int height)
 {
 /* For my own reference:
  *   _________
@@ -288,13 +289,13 @@ static inline int font_calculate_baseline(RrFont *f, gint height)
 
 void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
 {
-    gint x,y,w,h;
+    int x,y,w,h;
     XftColor c;
     GString *text;
-    gint mw, mh;
+    int mw, mh;
 #ifndef USE_PANGO
     size_t l;
-    gboolean shortened = FALSE;
+    BOOL shortened = NO;
 #else
     PangoLayout *pl;
     PangoRectangle rect;
@@ -325,12 +326,12 @@ void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
     l = g_utf8_strlen(text->str, -1);
     font_measure_full(t->font, text->str, &mw, &mh);
     while (l && mw > area->width) {
-        shortened = TRUE;
+        shortened = YES;
         /* remove a character from the middle */
         text = g_string_erase(text, l-- / 2, 1);
         /* if the elipses are too large, don't show them at all */
         if (ELIPSES_LENGTH(t->font) > area->width)
-            shortened = FALSE;
+            shortened = NO;
         font_measure_full(t->font, text->str, &mw, &mh);
         mw += ELIPSES_LENGTH(t->font);
     }
@@ -345,7 +346,7 @@ void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
 #else
     pango_layout_set_text(pl, text->str, -1);
     pango_layout_set_font_description(pl, t->font->pango_font_description);
-    pango_layout_set_single_paragraph_mode(pl, TRUE);
+    pango_layout_set_single_paragraph_mode(pl, YES);
     pango_layout_set_width(pl, w * PANGO_SCALE);
     pango_layout_set_ellipsize(pl, PANGO_ELLIPSIZE_MIDDLE);
     /* This doesn't work with layout_line() of course */
@@ -413,6 +414,6 @@ void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
     g_object_unref(pl);
 #endif
 
-    g_string_free(text, TRUE);
+    g_string_free(text, YES);
     return;
 }

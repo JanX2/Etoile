@@ -41,22 +41,22 @@ struct AnyAction {
     ObClientActionReq client_action;
     AZClient *c;
     ObFrameContext context;
-    gboolean interactive;
-    gint x;
-    gint y;
-    gint button;
+    BOOL interactive;
+    int x;
+    int y;
+    int button;
 };
 
 struct InteractiveAction {
     struct AnyAction any;
-    gboolean final;
-    gboolean cancel;
+    BOOL final;
+    BOOL cancel;
 };
 
 struct InterDirectionalAction{
     struct InteractiveAction inter;
     ObDirection direction;
-    gboolean dialog;
+    BOOL dialog;
 };
 
 struct DirectionalAction{
@@ -75,49 +75,49 @@ struct ClientAction {
 
 struct Activate {
     struct AnyAction any;
-    gboolean here; /* bring it to the current desktop */
+    BOOL here; /* bring it to the current desktop */
 };
 
 struct MoveResizeRelative {
     struct AnyAction any;
-    gint delta;
+    int delta;
 };
 
 struct SendToDesktop {
     struct AnyAction any;
-    guint desk;
-    gboolean follow;
+    unsigned int desk;
+    BOOL follow;
 };
 
 struct SendToDesktopDirection {
     struct InteractiveAction inter;
     ObDirection dir;
-    gboolean wrap;
-    gboolean linear;
-    gboolean follow;
+    BOOL wrap;
+    BOOL linear;
+    BOOL follow;
 };
 
 struct Desktop {
     struct InteractiveAction inter;
-    guint desk;
+    unsigned int desk;
 };
 
 struct Layer {
     struct AnyAction any;
-    gint layer; /* < 0 = below, 0 = normal, > 0 = above */
+    int layer; /* < 0 = below, 0 = normal, > 0 = above */
 };
 
 struct DesktopDirection {
     struct InteractiveAction inter;
     ObDirection dir;
-    gboolean wrap;
-    gboolean linear;
+    BOOL wrap;
+    BOOL linear;
 };
 
 struct MoveResize {
     struct AnyAction any;
-    gboolean move;
-    gboolean keyboard;
+    BOOL move;
+    BOOL keyboard;
 };
 
 struct ShowMenu {
@@ -127,14 +127,14 @@ struct ShowMenu {
 
 struct CycleWindows {
     struct InteractiveAction inter;
-    gboolean linear;
-    gboolean forward;
-    gboolean dialog;
+    BOOL linear;
+    BOOL forward;
+    BOOL dialog;
 };
 
 struct Stacking {
     struct AnyAction any;
-    gboolean group;
+    BOOL group;
 };
 
 union ActionData {
@@ -158,7 +158,7 @@ union ActionData {
 };
 
 struct _ObAction {
-    guint ref;
+    unsigned int ref;
 
     /* The func member acts like an enum to tell which one of the structs in
        the data union are valid.
@@ -200,8 +200,8 @@ ObAction* action_copy(const ObAction *a);
          affects interactive actions, but should generally always be FALSE.
 */
 void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
-                     guint state, guint button, gint x, gint y,
-                     gboolean cancel, gboolean done);
+                     unsigned int state, unsigned int button, int x, int y,
+                     BOOL cancel, BOOL done);
 
 #define action_run_mouse(a, c, n, s, b, x, y) \
     action_run_list(a, c, n, s, b, x, y, FALSE, FALSE)

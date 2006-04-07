@@ -24,31 +24,31 @@
 
 struct _RrInstance {
     Display *display;
-    gint screen;
+    int screen;
 
     Visual *visual;
-    gint depth;
+    int depth;
     Colormap colormap;
 
-    gint red_offset;
-    gint green_offset;
-    gint blue_offset;
+    int red_offset;
+    int green_offset;
+    int blue_offset;
 
-    gint red_shift;
-    gint green_shift;
-    gint blue_shift;
+    int red_shift;
+    int green_shift;
+    int blue_shift;
 
-    gint red_mask;
-    gint green_mask;
-    gint blue_mask;
+    int red_mask;
+    int green_mask;
+    int blue_mask;
 
-    gint pseudo_bpc;
+    int pseudo_bpc;
     XColor *pseudo_colors;
 
     GHashTable *color_hash;
 };
 
-guint       RrPseudoBPC    (const RrInstance *inst);
+unsigned int       RrPseudoBPC    (const RrInstance *inst);
 XColor*     RrPseudoColors (const RrInstance *inst);
 GHashTable* RrColorHash    (const RrInstance *inst);
 

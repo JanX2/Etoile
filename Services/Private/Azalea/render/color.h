@@ -24,27 +24,26 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <glib.h>
 
 struct _RrColor {
     const RrInstance *inst;
 
-    gint r;
-    gint g;
-    gint b;
-    gulong pixel;
+    int r;
+    int g;
+    int b;
+    unsigned long pixel;
     GC gc;
 
-    gint key;
-    gint refcount;
+    int key;
+    int refcount;
 
 #ifdef DEBUG
-    gint id;
+    int id;
 #endif
 };
 
 void RrColorAllocateGC(RrColor *in);
-XColor *RrPickColor(const RrInstance *inst, gint r, gint g, gint b);
+XColor *RrPickColor(const RrInstance *inst, int r, int g, int b);
 void RrReduceDepth(const RrInstance *inst, RrPixel32 *data, XImage *im);
 void RrIncreaseDepth(const RrInstance *inst, RrPixel32 *data, XImage *im);
 
