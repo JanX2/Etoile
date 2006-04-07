@@ -3,6 +3,7 @@
         * Working on AZStacking.
 	* Hope to tam the beast.
 	* Use NSString in AZClient.
+	* Remove glib from AZEventHandler.
 
 2006-04-06 Yen-Ju Chen <yjchenx at gmail>
 

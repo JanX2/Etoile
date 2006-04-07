@@ -163,7 +163,7 @@ static AZEventHandler *sharedInstance;
      
     /* get lock masks that are defined by the display (not constant) */
     modmap = XGetModifierMapping(ob_display);
-    g_assert(modmap);
+    NSAssert(modmap != NULL, @"Cannot get ModifierMapping");
     if (modmap && modmap->max_keypermod > 0) {
         size_t cnt;
         const size_t size = mask_table_size * modmap->max_keypermod;
@@ -208,7 +208,7 @@ static AZEventHandler *sharedInstance;
 
 - (void) enterClient: (AZClient *) client;
 {
-    g_assert(config_focus_follow);
+    NSAssert(config_focus_follow == YES, @"enterClient:");
 
     if ([client normal] && [client canFocus]) {
         if (config_focus_delay) {
@@ -230,14 +230,15 @@ static AZEventHandler *sharedInstance;
 
 - (void) ignoreQueuedEnters
 {
-    GSList *saved = NULL, *it;
+    NSMutableArray *saved = [[NSMutableArray alloc] init];
+    int i, count;
     XEvent *e;
                 
     XSync(ob_display, NO);
 
     /* count the events */
     while (YES) {
-        e = g_new(XEvent, 1);
+	e = calloc(sizeof(XEvent), 1);
         if (XCheckTypedEvent(ob_display, EnterNotify, e)) {
             id _win;
             
@@ -245,18 +246,22 @@ static AZEventHandler *sharedInstance;
             if (_win && [_win isKindOfClass: [AZClient class]])
                 ++ignore_enter_focus;
             
-            saved = g_slist_append(saved, e);
+	    [saved addObject: [NSValue valueWithPointer: e]];
         } else {
-            g_free(e);
+	    free(e);
+	    e = NULL;
             break;
         }
     }
     /* put the events back */
-    for (it = saved; it; it = g_slist_next(it)) {
-        XPutBackEvent(ob_display, it->data);
-        g_free(it->data);
+    count = [saved count];
+    for (i = 0; i < count; i++) {
+	e = [[saved objectAtIndex: i] pointerValue];
+        XPutBackEvent(ob_display, e);
+	free(e);
+	e = NULL;
     }
-    g_slist_free(saved);
+    DESTROY(saved);
 }
 
 - (Time) eventLastTime
@@ -313,7 +318,7 @@ static AZEventHandler *sharedInstance;
                 /*Window_Menu:*/
                 /*Window_Internal: */
                 /* not to be used for events */
-                g_assert_not_reached();
+		NSAssert(NO, @"Should not reach here");
 	    }
 	}
     }
@@ -459,7 +464,7 @@ static AZEventHandler *sharedInstance;
 
 - (void) handleGroup: (AZGroup *) group event: (XEvent *) e
 {
-    g_assert(e->type == PropertyNotify);
+    //NSAssert(e->type == PropertyNotify, @"Not a PropertyNotify");
 
     int i, count = [[group members] count];
     for (i = 0; i < count; i++)
@@ -533,10 +538,10 @@ static AZEventHandler *sharedInstance;
                  e->xfocus.mode, e->xfocus.detail);
 #endif
 	{
-	AZFocusManager *fManager = [AZFocusManager defaultManager];
-	[fManager set_focus_hilite: nil];
-	[[client frame] adjustFocusWithHilite: NO];
-	[client calcLayer];
+  	  AZFocusManager *fManager = [AZFocusManager defaultManager];
+	  [fManager set_focus_hilite: nil];
+	  [[client frame] adjustFocusWithHilite: NO];
+	  [client calcLayer];
 	}
         break;
     case LeaveNotify:

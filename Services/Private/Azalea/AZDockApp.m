@@ -102,14 +102,6 @@
     if (after) pos++;
 
     [dock moveDockApp: self toIndex: pos];
-#if 0
-    /* remove before doing the it->next! */
-    [dock setDockApplications: g_list_remove([dock dockApplications], self)];
-
-    if (after) it = it->next;
-
-    [dock setDockApplications: g_list_insert_before([dock dockApplications], it, self)];
-#endif
     [dock configure];
 }
 
@@ -124,21 +116,21 @@
 
 - (Window) window { return win; }
 - (Window) iconWindow { return icon_win; }
-- (char *) name { return name; }
-- (char *) class { return class; }
+- (NSString *) name { return name; }
+- (NSString *) class { return class; }
 - (int) ignoreUnmaps { return ignore_unmaps; }
 - (void) setWindow: (Window) window { win = window; }
 - (void) setIconWindow: (Window) window { icon_win = window; }
-- (void) setName: (char *) n { name = n; }
-- (void) setClass: (char *) c { class = c; }
+- (void) setName: (NSString *) n { ASSIGN(name, n); }
+- (void) setClass: (NSString *) c { ASSIGN(class, c); }
 - (void) setIgnoreUnmaps: (int) value { ignore_unmaps = value; }
 
-#if 0
-- (Window *) iconWindowPointer
+- (void) dealloc
 {
-  return &icon_win;
+  DESTROY(name);
+  DESTROY(class);
+  [super dealloc];
 }
-#endif
 
 - (id) copyWithZone: (NSZone *) zone
 {

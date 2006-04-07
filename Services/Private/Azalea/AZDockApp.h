@@ -28,8 +28,8 @@
     Window icon_win;
     Window win;
 
-    char *name;
-    char *class;
+    NSString *name;
+    NSString *class;
 
     int x;
     int y;
@@ -52,16 +52,14 @@
 
 - (Window) window;
 - (Window) iconWindow;
-- (char *) name;
-- (char *) class;
+- (NSString *) name;
+- (NSString *) class;
 - (int) ignoreUnmaps;
 - (void) setWindow: (Window) win;
 - (void) setIconWindow: (Window) icon_win;
-- (void) setName: (char *) name;
-- (void) setClass: (char *) class;
+- (void) setName: (NSString *) name;
+- (void) setClass: (NSString *) class;
 - (void) setIgnoreUnmaps: (int) value;
-
-//- (Window *) iconWindowPointer;
 
 @end
 

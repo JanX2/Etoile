@@ -48,7 +48,6 @@ static BOOL show_timeout(void *data);
     XSetWindowAttributes attrib;
 
     if (reconfig) {
-        GList *it;
 
         XSetWindowBorder(ob_display, frame,
                          RrColorPixel(ob_rr_theme->b_color));
@@ -95,7 +94,6 @@ static BOOL show_timeout(void *data);
 - (void) shutdown: (BOOL) reconfig
 {
     if (reconfig) {
-        GList *it;
 
         [[AZStacking stacking] removeWindow: self];
 
@@ -118,7 +116,7 @@ static BOOL show_timeout(void *data);
 {
     AZDockApp *app;
     XWindowAttributes attrib;
-    char **data;
+    char **data = NULL;
 
     app = [[AZDockApp alloc] init];
     [app setWindow: win];
@@ -127,15 +125,16 @@ static BOOL show_timeout(void *data);
 
     if (PROP_GETSS([app window], wm_class, locale, &data)) {
         if (data[0]) {
-	    [app setName: g_strdup(data[0])];
+	    [app setName: [NSString stringWithCString: data[0]]];
             if (data[1])
-	      [app setClass: g_strdup(data[1])];
+	      [app setClass: [NSString stringWithCString: data[1]]];
         }
-        g_strfreev(data);     
+	XFree(data);
+	data = NULL;
     }
 
-    if ([app name] == NULL) [app setName: g_strdup("")];
-    if ([app class] == NULL) [app setClass: g_strdup("")];
+    if ([app name] == nil) [app setName: [NSString string]];
+    if ([app class] == nil) [app setClass: [NSString string]];
     
     if (XGetWindowAttributes(ob_display, [app iconWindow], &attrib)) {
         [app setW: attrib.width];
@@ -180,6 +179,8 @@ static BOOL show_timeout(void *data);
     [window_map setObject: app forKey: [NSNumber numberWithInt: [app iconWindow]]];
 
     AZDebug("Managed Dock App: 0x%lx (%s)\n", [app iconWindow], [app class]);
+
+    //RELEASE(app); /* crash if release here. Have to release at -remove:: */
 }
 
 - (void) removeAll
@@ -209,16 +210,11 @@ static BOOL show_timeout(void *data);
     [self configure];
 
     AZDebug("Unmanaged Dock App: 0x%lx (%s)\n", [app iconWindow], [app class]);
-
-    g_free([app name]);
-    g_free([app class]);
-    DESTROY(app);
-    //g_free(app);
+    DESTROY(app); /* it is added in addWindow: */
 }
 
 - (void) configure
 {
-    GList *it;
     int spot;
     int gravity;
     int minw, minh;
