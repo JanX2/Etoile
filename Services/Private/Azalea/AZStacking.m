@@ -49,7 +49,7 @@ static AZStacking *sharedInstance;
 
     /* create an array of the window ids (from bottom to top,
        reverse order!) */
-    if (stacking_list) {
+    if ([self count]) {
         windows = g_new(Window, [self count]);
 	int j, jcount = [self count];
 	for (j = jcount-1; j > -1; j--) {
@@ -79,7 +79,7 @@ static AZStacking *sharedInstance;
 	[wins addObjectsFromArray: [self pickGroupWindowsFrom: c to: selected raise: YES normal: group]];
     } else {
 	[wins addObject: window];
-        stacking_list = g_list_remove(stacking_list, window);
+	[self removeWindow: window];
     }
     [self doRaise: wins];
     DESTROY(wins);
@@ -99,7 +99,7 @@ static AZStacking *sharedInstance;
 	[wins addObjectsFromArray: w];
     } else {
 	[wins addObject: window];
-        stacking_list = g_list_remove(stacking_list, window);
+	[self removeWindow: window];
     }
     [self doLower: wins];
     DESTROY(wins);
@@ -115,8 +115,8 @@ static AZStacking *sharedInstance;
     NSMutableArray *wins = [[NSMutableArray alloc] init];
 
     [wins addObject: window];
-    stacking_list = g_list_remove(stacking_list, window);
-    int index = g_list_index(stacking_list, below);
+    [self removeWindow: window];
+    int index = [stacking_list indexOfObject: below];
     if ((index == -1 || (index > [self count]-2))) // Not found
       before = nil;
     else
@@ -135,24 +135,37 @@ static AZStacking *sharedInstance;
 
     l = [win windowLayer];
 
-    stacking_list = g_list_append(stacking_list, win);
+    [stacking_list addObject: win];
     [self raiseWindow: win group: NO];
 }
 
 - (void) removeWindow: (id <AZWindow>) win
 {
-  stacking_list = g_list_remove(stacking_list, win);
+  [stacking_list removeObject: win];
 }
 
 /* Accessories */
 - (int) count
 {
-  return g_list_length(stacking_list);
+  [stacking_list count];
 }
 
 - (id <AZWindow>) windowAtIndex: (int) index
 {
-  return (id <AZWindow>)g_list_nth_data(stacking_list, index);
+  return [stacking_list objectAtIndex: index];
+}
+
+- (id) init
+{
+  self = [super init];
+  stacking_list = [[NSMutableArray alloc] init];
+  return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(stacking_list);
+  [super dealloc];
 }
 
 + (AZStacking *) stacking
@@ -187,12 +200,12 @@ static AZStacking *sharedInstance;
 
     win = g_new(Window, [wins count] + 1);
 
-    if (before == (stacking_list ? stacking_list->data : nil))
+    if (before == ([self count] ? [self windowAtIndex: 0] : nil)) {
         win[0] = [[AZScreen defaultScreen] supportXWindow];
-    else if (!before)
-        win[0] = [(id <AZWindow>)(g_list_last(stacking_list)->data) windowTop];
-    else {
-	int index = g_list_index(stacking_list, before);
+    } else if (!before) {
+        win[0] = [[stacking_list lastObject] windowTop];
+    } else {
+	int index = [stacking_list indexOfObject: before];
 	if (index < 1) {
 	  NSLog(@"Internal Error: cannot find window in doRestack:before:");
 	} else {
@@ -206,11 +219,16 @@ static AZStacking *sharedInstance;
         g_assert(win[i] != None); /* better not call stacking shit before
                                      setting your top level window value */
 	if (before == nil) {
-          stacking_list = g_list_insert_before(stacking_list, NULL, data);
+	  [stacking_list addObject: data];
 	} else {
-	  int index = g_list_index(stacking_list, before);
-	  GList *bit = g_list_nth(stacking_list, index);
-	  stacking_list = g_list_insert_before(stacking_list, bit, data);
+	  int index = [stacking_list indexOfObject: before];
+	  if (index == NSNotFound) {
+	    [stacking_list addObject: data];
+	  } else if (index > 0) {
+	    [stacking_list insertObject: data atIndex: index];
+	  } else { /* Not sure 0 or last */
+	    [stacking_list insertObject: data atIndex: 0];
+	  } 
 	}
     }
 
@@ -249,10 +267,11 @@ static AZStacking *sharedInstance;
     NSArray *allLayers = [dict allKeys];
     NSArray *sorted = [allLayers sortedArrayUsingSelector: @selector(compare:)];
 
-    GList *it = stacking_list;
+    id <AZWindow> data = nil;
     NSMutableArray *layer = nil;
     int j, jcount = [sorted count];
     int k, kcount = 0;
+    int b, index;
     for (j = jcount - 1; j > -1; j--) {
       NSArray *a = [dict objectForKey: [sorted objectAtIndex: j]];
       kcount = [a count];
@@ -263,14 +282,20 @@ static AZStacking *sharedInstance;
 	  [layer addObject: [a objectAtIndex: k]];
 	}
 
-	for (; it; it = g_list_next(it)) {
+	index = NSNotFound;
+	for (b = 0; b < [self count]; b++) {
           /* look for the top of the layer */
-	  if ([(id <AZWindow>)(it->data) windowLayer] <= (ObStackingLayer)[[sorted objectAtIndex: j] intValue])
+	  if ([[self windowAtIndex: b] windowLayer] <= (ObStackingLayer)[[sorted objectAtIndex: j] intValue])
 	  {
+	    index = b;
 	    break;
 	  }
 	}
-	[self doRestack: layer before: (it ? it->data : nil)];
+	if (index != NSNotFound)
+	  data = [self windowAtIndex: index];
+	else
+          data = nil;
+	[self doRestack: layer before: data];
 	DESTROY(layer);
       }
     }
@@ -296,10 +321,11 @@ static AZStacking *sharedInstance;
     NSArray *allLayers = [dict allKeys];
     NSArray *sorted = [allLayers sortedArrayUsingSelector: @selector(compare:)];
 
-    GList *it = stacking_list;
+    id <AZWindow> data = nil;
     NSMutableArray *layer = nil;
     int j, jcount = [sorted count];
     int k, kcount = 0;
+    int b, index;
     for (j = jcount - 1; j > -1; j--) {
       NSArray *a = [dict objectForKey: [sorted objectAtIndex: j]];
       kcount = [a count];
@@ -310,14 +336,20 @@ static AZStacking *sharedInstance;
 	  [layer addObject: [a objectAtIndex: k]];
 	}
 
-	for (; it; it = g_list_next(it)) {
+	index = NSNotFound;
+	for (b = 0; b < [self count]; b++) {
           /* look for the top of the layer */
-	  if ([(id <AZWindow>)(it->data) windowLayer] < (ObStackingLayer)[[sorted objectAtIndex: j] intValue])
+	  if ([[self windowAtIndex: b] windowLayer] < (ObStackingLayer)[[sorted objectAtIndex: j] intValue])
 	  {
+	    index = b;
 	    break;
 	  }
 	}
-	[self doRestack: layer before: (it ? it->data : nil)];
+	if (index != NSNotFound)
+	  data = [self windowAtIndex: index];
+	else
+          data = nil;
+	[self doRestack: layer before: data];
 	DESTROY(layer);
       }
     }
@@ -335,11 +367,11 @@ static AZStacking *sharedInstance;
     NSMutableArray *tran_sel = [[NSMutableArray alloc] init]; /* the selected guys if not */
 
     /* remove first so we can't run into ourself */
-    GList *it;
-    if ((it = g_list_find(stacking_list, top)))
-        stacking_list = g_list_delete_link(stacking_list, it);
+    int index = [stacking_list indexOfObject: top];
+    if (index != NSNotFound)
+      [self removeWindow: top];
     else
-        return ret; /* Empty */
+      return ret; /* Empty */
 
     i = 0;
     n = [[top transients] count];
