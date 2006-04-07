@@ -61,7 +61,7 @@
 - (void) setClass: (char *) class;
 - (void) setIgnoreUnmaps: (int) value;
 
-- (Window *) iconWindowPointer;
+//- (Window *) iconWindowPointer;
 
 @end
 

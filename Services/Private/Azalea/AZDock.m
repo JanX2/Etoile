@@ -88,7 +88,7 @@ static BOOL show_timeout(void *data);
                      RrColorPixel(ob_rr_theme->b_color));
     XSetWindowBorderWidth(ob_display, frame, ob_rr_theme->bwidth);
 
-    g_hash_table_insert(window_map, &frame, self);
+    [window_map setObject: self forKey: [NSNumber numberWithInt: frame]];
     [[AZStacking stacking] addWindow: self];
 }
 
@@ -111,7 +111,7 @@ static BOOL show_timeout(void *data);
     XDestroyWindow(ob_display, frame);
     RrAppearanceFree(a_frame);
     [[AZStacking stacking] removeWindow: self];
-    g_hash_table_remove(window_map, &frame);
+    [window_map removeObjectForKey: [NSNumber numberWithInt: frame]];
 }
 
 - (void) addWindow: (Window) win hints: (XWMHints *) wmhints
@@ -177,7 +177,7 @@ static BOOL show_timeout(void *data);
     [app grabButton: YES];
 
     /* Fake dock_app struct */
-    g_hash_table_insert(window_map, [app iconWindowPointer], app);
+    [window_map setObject: app forKey: [NSNumber numberWithInt: [app iconWindow]]];
 
     AZDebug("Managed Dock App: 0x%lx (%s)\n", [app iconWindow], [app class]);
 }
@@ -199,7 +199,7 @@ static BOOL show_timeout(void *data);
     XChangeSaveSet(ob_display, [app iconWindow], SetModeDelete);
     XSync(ob_display, False);
 
-    g_hash_table_remove(window_map, [app iconWindowPointer]);
+    [window_map removeObjectForKey: [NSNumber numberWithInt: [app iconWindow]]];
 
     if (reparent)
         XReparentWindow(ob_display, [app iconWindow],

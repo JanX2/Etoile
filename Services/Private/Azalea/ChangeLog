@@ -5,6 +5,7 @@
 	* Remove menuframe and clean up ObWindow.
 	* Remove some of the glib (gint, glong and gboolean mainly).
 	* Remove ObClient.
+	* de-glib window.
 
 2006-04-05 Yen-Ju Chen <yjchenx at gmail>
 

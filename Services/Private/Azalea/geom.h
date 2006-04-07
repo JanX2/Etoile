@@ -16,9 +16,6 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#ifndef __geom_h
-#define __geom_h
-
 typedef struct _Point {
     int x;
     int y;
@@ -132,4 +129,3 @@ typedef struct _StrutPartial {
      (s1).bottom_start == (s2).bottom_start && \
      (s1).bottom_end == (s2).bottom_end)
 
-#endif

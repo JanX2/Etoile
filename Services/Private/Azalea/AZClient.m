@@ -990,7 +990,7 @@
     if (XGetTransientForHint(ob_display, window, &t)) {
         transient = YES;
         if (t != window) { /* cant be transient to itoself! */
-            target = ((AZClient *)(g_hash_table_lookup(window_map, &t)));
+	    target = (AZClient *)[window_map objectForKey: [NSNumber numberWithInt: t]];
             /* if this happens then we need to check for it*/
             g_assert(target != self);
             if (target && !WINDOW_IS_CLIENT(target)) {
@@ -2577,7 +2577,7 @@ no_number:
 - (void) set_frame: (AZFrame *) f { ASSIGN(frame, f); }
 
 - (Window) window { return window; }
-- (Window *) windowPointer { return &window; }
+//- (Window *) windowPointer { return &window; }
 - (int) ignore_unmaps { return ignore_unmaps; }
 - (void) set_window: (Window) w { window = w; }
 - (void) set_ignore_unmaps: (int) i { ignore_unmaps = i; }

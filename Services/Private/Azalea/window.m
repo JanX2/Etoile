@@ -20,20 +20,19 @@
 #import "window.h"
 #import "AZStacking.h"
 
-GHashTable *window_map;
+NSMutableDictionary *window_map = nil;
 
-void window_startup(gboolean reconfig)
+void window_startup(BOOL reconfig)
 {
     if (reconfig) return;
-
-    window_map = g_hash_table_new(g_int_hash, g_int_equal);
+    window_map = [[NSMutableDictionary alloc] init];
 }
 
-void window_shutdown(gboolean reconfig)
+void window_shutdown(BOOL reconfig)
 {
     if (reconfig) return;
 
-    g_hash_table_destroy(window_map);
+    DESTROY(window_map);
 }
 
 @implementation AZInternalWindow

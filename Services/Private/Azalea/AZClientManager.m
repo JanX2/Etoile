@@ -280,7 +280,7 @@ static AZClientManager *sharedInstance;
 
     /* add to client list/map */
     [clist addObject: client];
-    g_hash_table_insert(window_map, [client windowPointer], client);
+    [window_map setObject: client forKey: [NSNumber numberWithInt: [client window]]];
 
     /* this has to happen after we're in the client_list */
     [screen updateAreas];
@@ -325,7 +325,7 @@ static AZClientManager *sharedInstance;
 
     [clist removeObject: client];
     [[AZStacking stacking] removeWindow: client];
-    g_hash_table_remove(window_map, [client windowPointer]);
+    [window_map removeObjectForKey: [NSNumber numberWithInt: [client window]]];
 
     /* update the focus lists */
     [[AZFocusManager defaultManager] focusOrderRemove: client];

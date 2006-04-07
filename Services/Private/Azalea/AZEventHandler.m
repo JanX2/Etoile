@@ -239,19 +239,11 @@ static AZEventHandler *sharedInstance;
     while (YES) {
         e = g_new(XEvent, 1);
         if (XCheckTypedEvent(ob_display, EnterNotify, e)) {
-#if 1
             id _win;
             
-            _win = g_hash_table_lookup(window_map, &e->xany.window);
+	    _win = [window_map objectForKey: [NSNumber numberWithInt: e->xany.window]];
             if (_win && [_win isKindOfClass: [AZClient class]])
                 ++ignore_enter_focus;
-#else
-            ObWindow *win;
-            
-            win = g_hash_table_lookup(window_map, &e->xany.window);
-            if (win && WINDOW_IS_CLIENT(win))
-                ++ignore_enter_focus;
-#endif
             
             saved = g_slist_append(saved, e);
         } else {
@@ -310,7 +302,7 @@ static AZEventHandler *sharedInstance;
           (group = [[AZGroupManager defaultManager] groupWithLeader: window])))
     {
 	id _win = nil;
-        if ((_win = g_hash_table_lookup(window_map, &window))) {
+        if ((_win = [window_map objectForKey: [NSNumber numberWithInt: window]])) {
 	    if ([_win isKindOfClass: [AZDock class]]) {
 		    dock = _win;
 	    } else if ([_win isKindOfClass: [AZDockApp class]]) {

@@ -19,8 +19,6 @@
 #ifndef __ob__mwm_h
 #define __ob__mwm_h
 
-#include <glib.h>
-
 typedef struct _ObMwmHints ObMwmHints;
 
 /*! The MWM Hints as retrieved from the window property
@@ -31,11 +29,11 @@ typedef struct _ObMwmHints ObMwmHints;
 struct _ObMwmHints
 {
     /*! A bitmask of ObMwmFlags values */
-    guint flags;
+    unsigned int flags;
     /*! A bitmask of ObMwmFunctions values */
-    guint functions;
+    unsigned int functions;
     /*! A bitmask of ObMwmDecorations values */
-    guint decorations;
+    unsigned int decorations;
 };
 
 /*! The number of elements in the ObMwmHints struct */

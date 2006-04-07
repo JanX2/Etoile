@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    translate.h for the Openbox window manager
@@ -21,7 +22,7 @@
 
 #include <glib.h>
 
-gboolean translate_button(const gchar *str, guint *state, guint *keycode);
-gboolean translate_key(const gchar *str, guint *state, guint *keycode);
+BOOL translate_button(const gchar *str, unsigned int *state, unsigned int *keycode);
+BOOL translate_key(const gchar *str, unsigned int *state, unsigned int *keycode);
 
 #endif

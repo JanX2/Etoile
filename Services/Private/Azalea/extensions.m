@@ -20,20 +20,20 @@ See the COPYING file for a copy of the GNU General Public License.
 #include "geom.h"
 #include "extensions.h"
 
-gboolean extensions_xkb       = FALSE;
-gint     extensions_xkb_event_basep;
-gboolean extensions_shape     = FALSE;
-gint     extensions_shape_event_basep;
-gboolean extensions_xinerama  = FALSE;
-gint     extensions_xinerama_event_basep;
-gboolean extensions_randr     = FALSE;
-gint     extensions_randr_event_basep;
-gboolean extensions_vidmode   = FALSE;
-gint     extensions_vidmode_event_basep;
+BOOL extensions_xkb       = NO;
+int     extensions_xkb_event_basep;
+BOOL extensions_shape     = NO;
+int     extensions_shape_event_basep;
+BOOL extensions_xinerama  = NO;
+int     extensions_xinerama_event_basep;
+BOOL extensions_randr     = NO;
+int     extensions_randr_event_basep;
+BOOL extensions_vidmode   = NO;
+int     extensions_vidmode_event_basep;
 
 void extensions_query_all()
 {
-    gint junk;
+    int junk;
     (void)junk;
      
 #ifdef XKB
@@ -67,14 +67,14 @@ void extensions_query_all()
 #endif
 }
 
-void extensions_xinerama_screens(Rect **xin_areas, guint *nxin)
+void extensions_xinerama_screens(Rect **xin_areas, unsigned int *nxin)
 {
-    guint i;
-    gint l, r, t, b;
+    unsigned int i;
+    int l, r, t, b;
 #ifdef XINERAMA
     if (extensions_xinerama) {
-        guint i;
-        gint n;
+        unsigned int i;
+        int n;
         XineramaScreenInfo *info = XineramaQueryScreens(ob_display, &n);
         *nxin = n;
         *xin_areas = g_new(Rect, *nxin + 1);

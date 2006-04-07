@@ -19,6 +19,7 @@
 #ifndef __openbox_h
 #define __openbox_h
 
+#import <Foundation/Foundation.h>
 #include "misc.h"
 
 #include "render/render.h"
@@ -34,18 +35,18 @@ extern RrTheme    *ob_rr_theme;
 extern Display *ob_display; 
 
 /*! The number of the screen on which we're running */
-extern gint     ob_screen;
+extern int     ob_screen;
 
 extern gchar   *ob_sm_id;
-extern gboolean ob_sm_use;
-extern gboolean ob_replace_wm;
+extern BOOL ob_sm_use;
+extern BOOL ob_replace_wm;
 
 /* The state of execution of the window manager */
 ObState ob_state();
 
 void ob_restart_other(const gchar *path);
 void ob_restart();
-void ob_exit(gint code);
+void ob_exit(int code);
 
 void ob_reconfigure();
 

@@ -77,24 +77,24 @@ RrInstance *ob_rr_inst;
 RrTheme    *ob_rr_theme;
 Display    *ob_display;
 int        ob_screen;
-gboolean    ob_replace_wm;
+BOOL    ob_replace_wm;
 
 static ObState   state;
-static gboolean  xsync;
-static gboolean  reconfigure;
-static gboolean  restart;
+static BOOL  xsync;
+static BOOL  reconfigure;
+static BOOL  restart;
 static gchar    *restart_path;
 static Cursor    cursors[OB_NUM_CURSORS];
 static KeyCode   keys[OB_NUM_KEYS];
-static gint      exitcode = 0;
+static int      exitcode = 0;
 
-static void signal_handler(gint signal, gpointer data);
-static void parse_args(gint argc, gchar **argv);
+static void signal_handler(int signal, gpointer data);
+static void parse_args(int argc, gchar **argv);
 
-gint main(gint argc, gchar **argv)
+int main(int argc, gchar **argv)
 {
 #ifdef DEBUG
-    AZDebug_show_output(TRUE);
+    AZDebug_show_output(YES);
 #endif
 
     CREATE_AUTORELEASE_POOL(x);
@@ -281,7 +281,7 @@ gint main(gint argc, gchar **argv)
                 }
             }
 
-            reconfigure = FALSE;
+            reconfigure = NO;
 
             state = OB_STATE_RUNNING;
 	    {
@@ -330,7 +330,7 @@ gint main(gint argc, gchar **argv)
         } while (reconfigure);
     }
 
-    XSync(ob_display, FALSE);
+    XSync(ob_display, NO);
 
     RrThemeFree(ob_rr_theme);
     RrInstanceFree(ob_rr_inst);
@@ -343,7 +343,7 @@ gint main(gint argc, gchar **argv)
 
     if (restart) {
         if (restart_path != NULL) {
-            gint argcp;
+            int argcp;
             gchar **argvp;
             GError *err = NULL;
 
@@ -369,7 +369,7 @@ gint main(gint argc, gchar **argv)
     return exitcode;
 }
 
-static void signal_handler(gint signal, gpointer data)
+static void signal_handler(int signal, gpointer data)
 {
     switch (signal) {
     case SIGUSR1:
@@ -422,9 +422,9 @@ static void print_help()
     g_print("\nPlease report bugs at %s\n\n", PACKAGE_BUGREPORT);
 }
 
-static void parse_args(gint argc, gchar **argv)
+static void parse_args(int argc, gchar **argv)
 {
-    gint i;
+    int i;
 
     for (i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "--version")) {
@@ -436,11 +436,11 @@ static void parse_args(gint argc, gchar **argv)
         } else if (!strcmp(argv[i], "--g-fatal-warnings")) {
             g_log_set_always_fatal(G_LOG_LEVEL_CRITICAL);
         } else if (!strcmp(argv[i], "--replace")) {
-            ob_replace_wm = TRUE;
+            ob_replace_wm = YES;
         } else if (!strcmp(argv[i], "--sync")) {
-            xsync = TRUE;
+            xsync = YES;
         } else if (!strcmp(argv[i], "--debug")) {
-            AZDebugShowOutput(TRUE);
+            AZDebugShowOutput(YES);
         } else {
             g_printerr("Invalid option: '%s'\n\n", argv[i]);
             print_help();
@@ -464,17 +464,17 @@ void ob_restart_other(const gchar *path)
 
 void ob_restart()
 {
-    restart = TRUE;
+    restart = YES;
     ob_exit(0);
 }
 
 void ob_reconfigure()
 {
-    reconfigure = TRUE;
+    reconfigure = YES;
     ob_exit(0);
 }
 
-void ob_exit(gint code)
+void ob_exit(int code)
 {
     exitcode = code;
     [mainLoop exit];

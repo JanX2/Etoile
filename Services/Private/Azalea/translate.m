@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    translate.c for the Openbox window manager
@@ -23,7 +24,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-static guint translate_modifier(gchar *str)
+static unsigned int translate_modifier(gchar *str)
 {
     if (!g_ascii_strcasecmp("Mod1", str) ||
         !g_ascii_strcasecmp("A", str)) return Mod1Mask;
@@ -41,12 +42,12 @@ static guint translate_modifier(gchar *str)
     return 0;
 }
 
-gboolean translate_button(const gchar *str, guint *state, guint *button)
+BOOL translate_button(const gchar *str, unsigned int *state, unsigned int *button)
 {
     gchar **parsed;
     gchar *l;
-    gint i;
-    gboolean ret = FALSE;
+    int i;
+    BOOL ret = NO;
 
     parsed = g_strsplit(str, "-", -1);
     
@@ -60,7 +61,7 @@ gboolean translate_button(const gchar *str, guint *state, guint *button)
     /* figure out the mod mask */
     *state = 0;
     for (i = 0; parsed[i] != l; ++i) {
-        guint m = translate_modifier(parsed[i]);
+        unsigned int m = translate_modifier(parsed[i]);
         if (!m) goto translation_fail;
         *state |= m;
     }
@@ -77,19 +78,19 @@ gboolean translate_button(const gchar *str, guint *state, guint *button)
         goto translation_fail;
     }
 
-    ret = TRUE;
+    ret = YES;
 
 translation_fail:
     g_strfreev(parsed);
     return ret;
 }
 
-gboolean translate_key(const gchar *str, guint *state, guint *keycode)
+BOOL translate_key(const gchar *str, unsigned int *state, unsigned int *keycode)
 {
     gchar **parsed;
     gchar *l;
-    gint i;
-    gboolean ret = FALSE;
+    int i;
+    BOOL ret = NO;
     KeySym sym;
 
     parsed = g_strsplit(str, "-", -1);
@@ -104,7 +105,7 @@ gboolean translate_key(const gchar *str, guint *state, guint *keycode)
     /* figure out the mod mask */
     *state = 0;
     for (i = 0; parsed[i] != l; ++i) {
-        guint m = translate_modifier(parsed[i]);
+        unsigned int m = translate_modifier(parsed[i]);
         if (!m) goto translation_fail;
         *state |= m;
     }
@@ -132,7 +133,7 @@ gboolean translate_key(const gchar *str, guint *state, guint *keycode)
         goto translation_fail;
     }
 
-    ret = TRUE;
+    ret = YES;
 
 translation_fail:
     g_strfreev(parsed);

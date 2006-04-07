@@ -19,7 +19,6 @@
 
 #import <Foundation/Foundation.h>
 #import <X11/Xlib.h>
-#import <glib.h>
 
 typedef enum {
     Window_Menu,
@@ -49,8 +48,8 @@ typedef enum {
 #define WINDOW_IS_CLIENT(win) ([((id <AZWindow>)(win)) windowType] == Window_Client)
 #define WINDOW_IS_INTERNAL(win) ([((id <AZWindow>)(win)) windowType] == Window_Internal)
 
-extern GHashTable *window_map;
+extern NSMutableDictionary *window_map;
 
-void window_startup(gboolean reconfig);
-void window_shutdown(gboolean reconfig);
+void window_startup(BOOL reconfig);
+void window_shutdown(BOOL reconfig);
 

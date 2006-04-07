@@ -27,22 +27,22 @@ typedef struct _ObSessionState ObSessionState;
 
 struct _ObSessionState {
     gchar *id, *name, *class, *role;
-    guint stacking;
-    guint desktop;
-    gint x, y, w, h;
-    gboolean shaded, iconic, skip_pager, skip_taskbar, fullscreen;
-    gboolean above, below, max_horz, max_vert;
+    unsigned int stacking;
+    unsigned int desktop;
+    int x, y, w, h;
+    BOOL shaded, iconic, skip_pager, skip_taskbar, fullscreen;
+    BOOL above, below, max_horz, max_vert;
 
-    gboolean matched;
+    BOOL matched;
 };
 
 extern GList *session_saved_state;
 
-void session_startup(gint *argc, gchar ***argv);
+void session_startup(int *argc, gchar ***argv);
 void session_shutdown();
 
 GList* session_state_find(AZClient *c);
-gboolean session_state_cmp(ObSessionState *s, AZClient *c);
+BOOL session_state_cmp(ObSessionState *s, AZClient *c);
 void session_state_free(ObSessionState *state);
 
 #endif

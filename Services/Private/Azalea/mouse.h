@@ -25,16 +25,16 @@
 
 #include <X11/Xlib.h>
 
-void mouse_startup(gboolean reconfig);
-void mouse_shutdown(gboolean reconfig);
+void mouse_startup(BOOL reconfig);
+void mouse_shutdown(BOOL reconfig);
 
-gboolean mouse_bind(const gchar *buttonstr, const gchar *contextstr,
+BOOL mouse_bind(const gchar *buttonstr, const gchar *contextstr,
                     ObMouseAction mact, ObAction *action);
 void mouse_unbind_all();
 
 void mouse_event(AZClient *client, XEvent *e);
 
-void mouse_grab_for_client(AZClient *client, gboolean grab);
+void mouse_grab_for_client(AZClient *client, BOOL grab);
 
 ObFrameContext mouse_button_frame_context(ObFrameContext context,
                                           guint button);

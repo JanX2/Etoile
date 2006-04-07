@@ -133,10 +133,12 @@
 - (void) setClass: (char *) c { class = c; }
 - (void) setIgnoreUnmaps: (int) value { ignore_unmaps = value; }
 
+#if 0
 - (Window *) iconWindowPointer
 {
   return &icon_win;
 }
+#endif
 
 - (id) copyWithZone: (NSZone *) zone
 {

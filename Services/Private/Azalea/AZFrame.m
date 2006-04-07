@@ -90,21 +90,21 @@ static BOOL flash_timeout(void *data);
     [self adjustAreaWithMoved: YES resized: YES fake: NO];
 
     /* set all the windows for the frame in the window_map */
-    g_hash_table_insert(window_map, &window, client);
-    g_hash_table_insert(window_map, &plate, client);
-    g_hash_table_insert(window_map, &title, client);
-    g_hash_table_insert(window_map, &label, client);
-    g_hash_table_insert(window_map, &max, client);
-    g_hash_table_insert(window_map, &close, client);
-    g_hash_table_insert(window_map, &desk, client);
-    g_hash_table_insert(window_map, &shade, client);
-    g_hash_table_insert(window_map, &icon, client);
-    g_hash_table_insert(window_map, &iconify, client);
-    g_hash_table_insert(window_map, &handle, client);
-    g_hash_table_insert(window_map, &lgrip, client);
-    g_hash_table_insert(window_map, &rgrip, client);
-    g_hash_table_insert(window_map, &tlresize, client);
-    g_hash_table_insert(window_map, &trresize, client);
+    [window_map setObject: client forKey: [NSNumber numberWithInt: window]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: plate]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: title]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: label]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: max]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: close]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: desk]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: shade]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: icon]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: iconify]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: handle]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: lgrip]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: rgrip]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: tlresize]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: trresize]];
 }
 
 - (void) releaseClient: (AZClient *) client
@@ -142,21 +142,21 @@ static BOOL flash_timeout(void *data);
     }
 
     /* remove all the windows for the frame from the window_map */
-    g_hash_table_remove(window_map, &window);
-    g_hash_table_remove(window_map, &plate);
-    g_hash_table_remove(window_map, &title);
-    g_hash_table_remove(window_map, &label);
-    g_hash_table_remove(window_map, &max);
-    g_hash_table_remove(window_map, &close);
-    g_hash_table_remove(window_map, &desk);
-    g_hash_table_remove(window_map, &shade);
-    g_hash_table_remove(window_map, &icon);
-    g_hash_table_remove(window_map, &iconify);
-    g_hash_table_remove(window_map, &handle);
-    g_hash_table_remove(window_map, &lgrip);
-    g_hash_table_remove(window_map, &rgrip);
-    g_hash_table_remove(window_map, &tlresize);
-    g_hash_table_remove(window_map, &trresize);
+    [window_map removeObjectForKey: [NSNumber numberWithInt: window]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: plate]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: title]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: label]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: max]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: close]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: desk]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: shade]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: icon]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: iconify]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: handle]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: lgrip]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: rgrip]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: tlresize]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: trresize]];
 
     [[AZMainLoop mainLoop] removeTimeoutHandler: (GSourceFunc)flash_timeout
 	                                   data: self];

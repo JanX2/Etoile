@@ -16,10 +16,8 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#ifndef __extensions_h
-#define __extensions_h
-
-#include "geom.h"
+#import "geom.h"
+#import <Foundation/Foundation.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h> /* shape.h uses Region which is in here */
@@ -39,35 +37,32 @@
 #include <X11/extensions/xf86vmode.h>
 #endif
 
-#include <glib.h>
-
 /*! Does the display have the XKB extension? */
-extern gboolean extensions_xkb;
+extern BOOL extensions_xkb;
 /*! Base for events for the XKB extension */
-extern gint extensions_xkb_event_basep;
+extern int extensions_xkb_event_basep;
 
 /*! Does the display have the Shape extension? */
-extern gboolean extensions_shape;
+extern BOOL extensions_shape;
 /*! Base for events for the Shape extension */
-extern gint extensions_shape_event_basep;
+extern int extensions_shape_event_basep;
 
 /*! Does the display have the Xinerama extension? */
-extern gboolean extensions_xinerama;
+extern BOOL extensions_xinerama;
 /*! Base for events for the Xinerama extension */
-extern gint extensions_xinerama_event_basep;
+extern int extensions_xinerama_event_basep;
 
 /*! Does the display have the RandR extension? */
-extern gboolean extensions_randr;
+extern BOOL extensions_randr;
 /*! Base for events for the Randr extension */
-extern gint extensions_randr_event_basep;
+extern int extensions_randr_event_basep;
 
 /*! Does the display have the VidMode extension? */
-extern gboolean extensions_vidmode;
+extern BOOL extensions_vidmode;
 /*! Base for events for the VidMode extension */
-extern gint extensions_vidmode_event_basep;
+extern int extensions_vidmode_event_basep;
 
 void extensions_query_all();
 
-void extensions_xinerama_screens(Rect **areas, guint *nxin);
+void extensions_xinerama_screens(Rect **areas, unsigned int *nxin);
   
-#endif

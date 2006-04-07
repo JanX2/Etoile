@@ -553,7 +553,7 @@ typedef enum
 - (void) set_frame: (AZFrame *) frame;
 
 - (Window) window;
-- (Window *) windowPointer;
+//- (Window *) windowPointer;
 - (int) ignore_unmaps;
 - (void) set_window: (Window) window;
 - (void) set_ignore_unmaps: (int) ignore_unmaps;

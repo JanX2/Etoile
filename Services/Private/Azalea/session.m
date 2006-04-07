@@ -24,10 +24,10 @@
 
 GList *session_saved_state;
 
-void session_startup(gint *argc, gchar ***argv) {}
+void session_startup(int *argc, gchar ***argv) {}
 void session_shutdown() {}
 GList* session_state_find(AZClient *c) { return NULL; }
-gboolean session_state_cmp(ObSessionState *s, AZClient *c) { return FALSE; }
+BOOL session_state_cmp(ObSessionState *s, AZClient *c) { return NO; }
 void session_state_free(ObSessionState *state) {}
 
 #else
@@ -53,19 +53,19 @@ void session_state_free(ObSessionState *state) {}
 
 GList *session_saved_state;
 
-static gboolean    sm_disable;
+static BOOL    sm_disable;
 static SmcConn     sm_conn;
 static gchar      *save_file;
 static gchar      *sm_id;
-static gint        sm_argc;
+static int        sm_argc;
 static gchar     **sm_argv;
 static gchar      *sm_sessions_path;
 
 static void session_load(gchar *path);
-static gboolean session_save();
+static BOOL session_save();
 
-static void sm_save_yourself(SmcConn conn, SmPointer data, gint save_type,
-                             Bool shutdown, gint interact_style, Bool fast);
+static void sm_save_yourself(SmcConn conn, SmPointer data, int save_type,
+                             Bool shutdown, int interact_style, Bool fast);
 static void sm_die(SmcConn conn, SmPointer data);
 static void sm_save_complete(SmcConn conn, SmPointer data);
 static void sm_shutdown_cancelled(SmcConn conn, SmPointer data);
@@ -75,7 +75,7 @@ static void save_commands()
     SmProp *props[2];
     SmProp prop_cmd = { SmCloneCommand, SmLISTofARRAY8, 1, };
     SmProp prop_res = { SmRestartCommand, SmLISTofARRAY8, };
-    gint i;
+    int i;
 
     prop_cmd.vals = g_new(SmPropValue, sm_argc);
     prop_cmd.num_vals = sm_argc;
@@ -104,18 +104,18 @@ static void save_commands()
     g_free(prop_cmd.vals);
 }
 
-static void remove_args(gint *argc, gchar ***argv, gint index, gint num)
+static void remove_args(int *argc, gchar ***argv, int index, int num)
 {
-    gint i;
+    int i;
 
     for (i = index; i < index + num; ++i)
         (*argv)[i] = (*argv)[i+num];
     *argc -= num;
 }
 
-static void parse_args(gint *argc, gchar ***argv)
+static void parse_args(int *argc, gchar ***argv)
 {
-    gint i;
+    int i;
 
     for (i = 1; i < *argc; ++i) {
         if (!strcmp((*argv)[i], "--sm-client-id")) {
@@ -135,13 +135,13 @@ static void parse_args(gint *argc, gchar ***argv)
                 ++i;
             }
         } else if (!strcmp((*argv)[i], "--sm-disable")) {
-            sm_disable = TRUE;
+            sm_disable = YES;
             remove_args(argc, argv, i, 1);
         }
     }
 }
 
-void session_startup(gint *argc, gchar ***argv)
+void session_startup(int *argc, gchar ***argv)
 {
 #define SM_ERR_LEN 1024
 
@@ -166,8 +166,8 @@ void session_startup(gint *argc, gchar ***argv)
 
         /* this algo is from metacity */
         filename = g_strdup_printf("%d-%d-%u.obs",
-                                   (gint) time(NULL),
-                                   (gint) getpid(),
+                                   (int) time(NULL),
+                                   (int) getpid(),
                                    g_random_int());
         save_file = g_build_filename(sm_sessions_path, filename, NULL);
         g_free(filename);
@@ -286,7 +286,7 @@ void session_shutdown()
 
 static void sm_save_yourself_phase2(SmcConn conn, SmPointer data)
 {
-    gboolean success;
+    BOOL success;
 
     success = session_save();
     save_commands();
@@ -294,12 +294,12 @@ static void sm_save_yourself_phase2(SmcConn conn, SmPointer data)
     SmcSaveYourselfDone(conn, success);
 }
 
-static void sm_save_yourself(SmcConn conn, SmPointer data, gint save_type,
-                             Bool shutdown, gint interact_style, Bool fast)
+static void sm_save_yourself(SmcConn conn, SmPointer data, int save_type,
+                             Bool shutdown, int interact_style, Bool fast)
 {
     if (!SmcRequestSaveYourselfPhase2(conn, sm_save_yourself_phase2, data)) {
         AZDebug("SAVE YOURSELF PHASE 2 failed\n");
-        SmcSaveYourselfDone(conn, FALSE);
+        SmcSaveYourselfDone(conn, NO);
     }
 }
 
@@ -316,27 +316,27 @@ static void sm_shutdown_cancelled(SmcConn conn, SmPointer data)
 {
 }
 
-static gboolean session_save()
+static BOOL session_save()
 {
     FILE *f;
     //GList *it;
-    gboolean success = TRUE;
+    BOOL success = YES;
     int i, count = [[AZStacking stacking] count];
 
     f = fopen(save_file, "w");
     if (!f) {
-        success = FALSE;
+        success = NO;
         g_warning("unable to save the session to %s: %s",
                   save_file, g_strerror(errno));
     } else {
-        guint stack_pos = 0;
+        unsigned int stack_pos = 0;
 
         fprintf(f, "<?xml version=\"1.0\"?>\n\n");
         fprintf(f, "<openbox_session id=\"%s\">\n\n", sm_id);
 
 	for (i = 0; i < count; i++) {
 	    id <AZWindow> temp = [[AZStacking stacking] windowAtIndex: i];
-            gint prex, prey, prew, preh;
+            int prex, prey, prew, preh;
             AZClient *c;
             gchar *t;
 
@@ -416,7 +416,7 @@ static gboolean session_save()
         fprintf(f, "</openbox_session>\n");
 
         if (fflush(f)) {
-            success = FALSE;
+            success = NO;
             g_warning("error while saving the session to %s: %s",
                       save_file, g_strerror(errno));
         }
@@ -438,7 +438,7 @@ void session_state_free(ObSessionState *state)
     }
 }
 
-gboolean session_state_cmp(ObSessionState *s, AZClient *c)
+BOOL session_state_cmp(ObSessionState *s, AZClient *c)
 {
     return ([c sm_client_id] &&
             !strcmp(s->id, [c sm_client_id]) &&
@@ -454,14 +454,14 @@ GList* session_state_find(AZClient *c)
     for (it = session_saved_state; it; it = g_list_next(it)) {
         ObSessionState *s = it->data;
         if (!s->matched && session_state_cmp(s, c)) {
-            s->matched = TRUE;
+            s->matched = YES;
             break;
         }
     }
     return it;
 }
 
-static gint stack_sort(const ObSessionState *s1, const ObSessionState *s2)
+static int stack_sort(const ObSessionState *s1, const ObSessionState *s2)
 {
     return s1->stacking - s2->stacking;
 }

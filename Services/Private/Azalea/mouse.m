@@ -29,13 +29,13 @@
 #include <glib.h>
 
 typedef struct {
-    guint state;
-    guint button;
+    unsigned int state;
+    unsigned int button;
     GSList *actions[OB_NUM_MOUSE_ACTIONS]; /* lists of Action pointers */
 } ObMouseBinding;
 
 #define FRAME_CONTEXT(co, cl) ((cl && [cl type] != OB_CLIENT_TYPE_DESKTOP) ? \
-                               co == OB_FRAME_CONTEXT_FRAME : FALSE)
+                               co == OB_FRAME_CONTEXT_FRAME : NO)
 #define CLIENT_CONTEXT(co, cl) ((cl && [cl type] == OB_CLIENT_TYPE_DESKTOP) ? \
                                 co == OB_FRAME_CONTEXT_DESKTOP : \
                                 co == OB_FRAME_CONTEXT_CLIENT)
@@ -44,7 +44,7 @@ typedef struct {
 static GSList *bound_contexts[OB_FRAME_NUM_CONTEXTS];
 
 ObFrameContext mouse_button_frame_context(ObFrameContext context,
-                                          guint button)
+                                          unsigned int button)
 {
     GSList *it;
     ObFrameContext x = context;
@@ -86,9 +86,9 @@ ObFrameContext mouse_button_frame_context(ObFrameContext context,
     return x;
 }
 
-void mouse_grab_for_client(AZClient *client, gboolean grab)
+void mouse_grab_for_client(AZClient *client, BOOL grab)
 {
-    gint i;
+    int i;
     GSList *it;
 
     for (i = 0; i < OB_FRAME_NUM_CONTEXTS; ++i)
@@ -96,8 +96,8 @@ void mouse_grab_for_client(AZClient *client, gboolean grab)
             /* grab/ungrab the button */
             ObMouseBinding *b = it->data;
             Window win;
-            gint mode;
-            guint mask;
+            int mode;
+            unsigned int mask;
 
             if (FRAME_CONTEXT(i, client)) {
                 win = [[client frame] window];
@@ -119,7 +119,7 @@ void mouse_grab_for_client(AZClient *client, gboolean grab)
         }
 }
 
-static void grab_all_clients(gboolean grab)
+static void grab_all_clients(BOOL grab)
 {
   AZClientManager *cManager = [AZClientManager defaultManager];
   int i, count = [cManager count];
@@ -132,13 +132,13 @@ static void grab_all_clients(gboolean grab)
 
 void mouse_unbind_all()
 {
-    gint i;
+    int i;
     GSList *it;
     
     for(i = 0; i < OB_FRAME_NUM_CONTEXTS; ++i) {
         for (it = bound_contexts[i]; it; it = g_slist_next(it)) {
             ObMouseBinding *b = it->data;
-            gint j;
+            int j;
 
             for (j = 0; j < OB_NUM_MOUSE_ACTIONS; ++j) {
                 GSList *it;
@@ -154,9 +154,9 @@ void mouse_unbind_all()
     }
 }
 
-static gboolean fire_binding(ObMouseAction a, ObFrameContext context,
-                             AZClient *c, guint state,
-                             guint button, gint x, gint y)
+static BOOL fire_binding(ObMouseAction a, ObFrameContext context,
+                             AZClient *c, unsigned int state,
+                             unsigned int button, int x, int y)
 {
     GSList *it;
     ObMouseBinding *b;
@@ -167,22 +167,22 @@ static gboolean fire_binding(ObMouseAction a, ObFrameContext context,
             break;
     }
     /* if not bound, then nothing to do! */
-    if (it == NULL) return FALSE;
+    if (it == NULL) return NO;
 
     action_run_mouse(b->actions[a], c, context, state, button, x, y);
-    return TRUE;
+    return YES;
 }
 
 void mouse_event(AZClient *client, XEvent *e)
 {
     static Time ltime;
-    static guint button = 0, state = 0, lbutton = 0;
+    static unsigned int button = 0, state = 0, lbutton = 0;
     static Window lwindow = None;
-    static gint px, py;
+    static int px, py;
 
     ObFrameContext context;
-    gboolean click = FALSE;
-    gboolean dclick = FALSE;
+    BOOL click = NO;
+    BOOL dclick = NO;
 
     switch (e->type) {
     case ButtonPress:
@@ -212,9 +212,9 @@ void mouse_event(AZClient *client, XEvent *e)
 
         if (e->xbutton.button == button) {
             /* clicks are only valid if its released over the window */
-            gint junk1, junk2;
+            int junk1, junk2;
             Window wjunk;
-            guint ujunk, b, w, h;
+            unsigned int ujunk, b, w, h;
             /* this can cause errors to occur when the window closes */
 	    AZXErrorSetIgnore(YES);
             junk1 = XGetGeometry(ob_display, e->xbutton.window,
@@ -225,13 +225,13 @@ void mouse_event(AZClient *client, XEvent *e)
                     e->xbutton.y >= (signed)-b &&
                     e->xbutton.x < (signed)(w+b) &&
                     e->xbutton.y < (signed)(h+b)) {
-                    click = TRUE;
+                    click = YES;
                     /* double clicks happen if there were 2 in a row! */
                     if (lbutton == button &&
                         lwindow == e->xbutton.window &&
                         e->xbutton.time - config_mouse_dclicktime <=
                         ltime) {
-                        dclick = TRUE;
+                        dclick = YES;
                         lbutton = 0;
                     } else {
                         lbutton = button;
@@ -297,38 +297,38 @@ void mouse_event(AZClient *client, XEvent *e)
     }
 }
 
-gboolean mouse_bind(const gchar *buttonstr, const gchar *contextstr,
+BOOL mouse_bind(const gchar *buttonstr, const gchar *contextstr,
                     ObMouseAction mact, ObAction *action)
 {
-    guint state, button;
+    unsigned int state, button;
     ObFrameContext context;
     ObMouseBinding *b;
     GSList *it;
 
     if (!translate_button(buttonstr, &state, &button)) {
         g_warning("invalid button '%s'", buttonstr);
-        return FALSE;
+        return NO;
     }
 
     context = frame_context_from_string(contextstr);
     if (!context) {
         g_warning("invalid context '%s'", contextstr);
-        return FALSE;
+        return NO;
     }
 
     for (it = bound_contexts[context]; it; it = g_slist_next(it)) {
         b = it->data;
         if (b->state == state && b->button == button) {
             b->actions[mact] = g_slist_append(b->actions[mact], action);
-            return TRUE;
+            return YES;
         }
     }
 
     /* when there are no modifiers in the binding, then the action cannot
        be interactive */
     if (!state && action->data.any.interactive) {
-        action->data.any.interactive = FALSE;
-        action->data.inter.final = TRUE;
+        action->data.any.interactive = NO;
+        action->data.inter.final = YES;
     }
 
     /* add the binding */
@@ -338,16 +338,16 @@ gboolean mouse_bind(const gchar *buttonstr, const gchar *contextstr,
     b->actions[mact] = g_slist_append(NULL, action);
     bound_contexts[context] = g_slist_append(bound_contexts[context], b);
 
-    return TRUE;
+    return YES;
 }
 
-void mouse_startup(gboolean reconfig)
+void mouse_startup(BOOL reconfig)
 {
-    grab_all_clients(TRUE);
+    grab_all_clients(YES);
 }
 
-void mouse_shutdown(gboolean reconfig)
+void mouse_shutdown(BOOL reconfig)
 {
-    grab_all_clients(FALSE);
+    grab_all_clients(NO);
     mouse_unbind_all();
 }
