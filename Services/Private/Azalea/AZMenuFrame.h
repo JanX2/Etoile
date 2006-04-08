@@ -25,8 +25,6 @@ struct _ObMenuEntry;
 @class AZMenuEntryFrame;
 @class AZClient;
 
-extern GList *menu_frame_visible;
-
 @interface AZMenuFrame: NSObject <AZWindow>
 {    
   Window window;
@@ -40,7 +38,7 @@ extern GList *menu_frame_visible;
   AZMenuFrame *parent;
   AZMenuFrame *child;
 
-  GList *entries;
+  NSMutableArray *entries;
   AZMenuEntryFrame *selected;
 
   /* If a titlebar is displayed for the menu or not (for top-level menus) */
@@ -63,6 +61,8 @@ extern GList *menu_frame_visible;
   RrAppearance *a_title;
   RrAppearance *a_items;
 }
+
++ (NSMutableArray *) visibleFrames;
 
 - (void) moveToX: (int) x y: (int) y;
 - (void) moveOnScreen;
@@ -93,7 +93,7 @@ extern GList *menu_frame_visible;
 - (int) text_x;
 - (int) text_w;
 - (Strut) item_margin;
-- (GList *) entries;
+- (NSArray *) entries;
 - (void) set_show_title: (BOOL) show_title;
 
 - (id) initWithMenu: (struct _ObMenu *) menu client: (AZClient *) client;

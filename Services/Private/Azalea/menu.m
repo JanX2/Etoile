@@ -253,11 +253,12 @@ static void menu_destroy_hash_value(ObMenu *self)
 {
     /* make sure its not visible */
     {
-        GList *it;
+	NSArray *visibles = [AZMenuFrame visibleFrames];
+	int i, count = [visibles count];
         AZMenuFrame *f;
 
-        for (it = menu_frame_visible; it; it = g_list_next(it)) {
-            f = it->data;
+	for (i = 0; i < count; i++) {
+	    f = [visibles objectAtIndex: i];
             if ([f menu] == self)
 		AZMenuFrameHideAll();
         }
@@ -289,8 +290,9 @@ void menu_show(gchar *name, int x, int y, AZClient *client)
 
     /* if the requested menu is already the top visible menu, then don't
        bother */
-    if (menu_frame_visible) {
-        frame = menu_frame_visible->data;
+    NSArray *visibles = [AZMenuFrame visibleFrames];
+    if ([visibles count]) {
+	frame = [visibles objectAtIndex: 0];
         if ([frame menu] == self)
             return;
     }

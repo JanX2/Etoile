@@ -371,7 +371,7 @@ static AZEventHandler *sharedInstance;
         e->type == MotionNotify || e->type == KeyPress ||
         e->type == KeyRelease)
     {
-        if (menu_frame_visible)
+        if ([[AZMenuFrame visibleFrames] count])
             [self handleMenuEvent: e];
         else {
             if (!keyboard_process_interactive_grab(e, &client)) {
@@ -1042,11 +1042,12 @@ static AZEventHandler *sharedInstance;
 
 - (AZMenuFrame *) findActiveMenu
 {
-    GList *it;
     AZMenuFrame *ret = nil;
+    NSArray *visibles = [AZMenuFrame visibleFrames];
+    int i, count = [visibles count];
 
-    for (it = menu_frame_visible; it; it = g_list_next(it)) {
-        ret = it->data;
+    for (i = 0; i < count; i++) {
+	ret = [visibles objectAtIndex: i];
         if ([ret selected])
             break;
         ret = nil;
@@ -1057,10 +1058,11 @@ static AZEventHandler *sharedInstance;
 - (AZMenuFrame *) findActiveOrLastMenu
 {
     AZMenuFrame *ret = nil;
+    NSArray *visibles = [AZMenuFrame visibleFrames];
 
     ret = [self findActiveMenu];
-    if (!ret && menu_frame_visible)
-        ret = menu_frame_visible->data;
+    if (!ret && [visibles count])
+        ret = [visibles objectAtIndex: 0];
     return ret;
 }
 

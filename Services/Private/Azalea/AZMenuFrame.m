@@ -26,7 +26,7 @@
 #import "openbox.h"
 #import "render/theme.h"
 
-GList *menu_frame_visible;
+static NSMutableArray *menu_frame_visible = nil;
 
 #define PADDING 2
 #define SEPARATOR_HEIGHT 3
@@ -337,14 +337,14 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 {
     AZMenuFrame *frame;
     AZMenuEntryFrame *ret = nil;
-    GList *it;
 
     if ((frame = AZMenuFrameUnder(x, y))) {
         x -= ob_rr_theme->bwidth + [frame area].x;
         y -= [frame title_h] + ob_rr_theme->bwidth + [frame area].y;
 
-        for (it = [frame entries]; it; it = g_list_next(it)) {
-            AZMenuEntryFrame *e = it->data;
+	int i, count = [[frame entries] count];
+	for (i = 0; i < count; i++) {
+	    AZMenuEntryFrame *e = [[frame entries] objectAtIndex: i];
 
             if (RECT_CONTAINS([e area], x, y)) {
                 ret = e;            
@@ -356,6 +356,15 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 }
 
 @implementation AZMenuFrame
+
++ (NSMutableArray *) visibleFrames
+{
+  if (menu_frame_visible == nil)
+  {
+    menu_frame_visible = [[NSMutableArray alloc] init];
+  }
+  return menu_frame_visible;
+}
 
 - (id) initWithMenu: (struct _ObMenu *) _menu 
              client: (AZClient *) _client
@@ -381,15 +390,14 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     [[AZStacking stacking] addWindow: self];
 
+    entries = [[NSMutableArray alloc] init];
+
     return self;
 }
 
 - (void) dealloc
 {
-        while (entries) {
-	    DESTROY(entries->data);
-            entries = g_list_delete_link(entries, entries);
-        }
+	DESTROY(entries);
 
         [[AZStacking stacking] removeWindow: self];
 
@@ -418,8 +426,8 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     a = [[AZScreen defaultScreen] physicalAreaOfMonitor: monitor];
 
-    half = g_list_length(entries) / 2;
-    pos = g_list_index(entries, selected);
+    half = [entries count] / 2;
+    pos = [entries indexOfObject: selected];
 
     /* if in the bottom half then check this shit first, will keep the bottom
        edge of the menu visible */
@@ -458,7 +466,6 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     int w = 0, h = 0;
     int allitems_h = 0;
     int tw, th; /* temps */
-    GList *it;
     BOOL has_icon = NO;
     ObMenu *sub;
 
@@ -485,8 +492,8 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     STRUT_SET(item_margin, 0, 0, 0, 0);
 
-    if (entries) {
-        AZMenuEntryFrame *e = entries->data;
+    if ([entries count]) {
+        AZMenuEntryFrame *e = [entries objectAtIndex: 0];
         int l, t, r, b;
 
         [e a_text_normal]->texture[0].data.text.string = "";
@@ -516,9 +523,10 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     } else
         item_h = 0;
 
-    for (it = entries; it; it = g_list_next(it)) {
+    int i, count = [entries count];
+    for (i = 0; i < count; i++) {
         RrAppearance *text_a;
-        AZMenuEntryFrame *e = it->data;
+        AZMenuEntryFrame *e = [entries objectAtIndex: i];
 
 	Rect _area = [e area];
         RECT_SET_POINT(_area, 0, allitems_h);
@@ -568,7 +576,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     text_x = PADDING;
     text_w = w;
 
-    if (entries) {
+    if ([entries count]) {
         if (has_icon) {
             w += item_h + PADDING;
             text_x += item_h + PADDING;
@@ -595,8 +603,10 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     RrPaint(a_items, items, w, allitems_h);
 
-    for (it = entries; it; it = g_list_next(it))
-	[((AZMenuEntryFrame*)(it->data)) render];
+    count = [entries count];
+    for (i = 0; i < count; i++) {
+	[(AZMenuEntryFrame*)[entries objectAtIndex: i] render];
+    }
 
     w += ob_rr_theme->bwidth * 2;
     h += ob_rr_theme->bwidth * 2;
@@ -608,31 +618,31 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
 - (void) update
 {
-    GList *mit, *fit;
+    GList *mit;
+    int fit, fcount;
 
     menu_pipe_execute(menu);
     menu_find_submenus(menu);
 
     selected = nil;
 
-    for (mit = menu->entries, fit = entries; mit && fit;
-         mit = g_list_next(mit), fit = g_list_next(fit))
+    fcount = [entries count];
+    for (mit = menu->entries, fit = 0; mit && fit < fcount;
+         mit = g_list_next(mit), fit++)
     {
-        AZMenuEntryFrame *f = fit->data;
+        AZMenuEntryFrame *f = [entries objectAtIndex: fit];
         [f set_entry: mit->data];
     }
 
     while (mit) {
         AZMenuEntryFrame *e = [[AZMenuEntryFrame alloc] initWithMenuEntry: mit->data menuFrame: self];
-        entries = g_list_append(entries, e);
+	[entries addObject: e];
         mit = g_list_next(mit);
+	DESTROY(e);
     }
     
-    while (fit) {
-        GList *n = g_list_next(fit);
-	DESTROY(fit->data);
-        entries = g_list_delete_link(entries, fit);
-        fit = n;
+    for(; fit < fcount; fit++) {
+      [entries removeObjectAtIndex: fit];
     }
 
     [self render];
@@ -640,12 +650,13 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
 - (BOOL) showWithParent: (AZMenuFrame *) p
 {
-    GList *it;
+    NSMutableArray *visibles = [AZMenuFrame visibleFrames];
+    int i, count = [visibles count];
 
-    if (g_list_find(menu_frame_visible, self))
+    if ([visibles containsObject: self])
         return YES;
 
-    if (menu_frame_visible == NULL) {
+    if (count == 0) {
         /* no menus shown yet */
         if (!grab_pointer(YES, OB_CURSOR_NONE))
             return NO;
@@ -665,19 +676,22 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     parent = p;
 
     /* determine if the underlying menu is already visible */
-    for (it = menu_frame_visible; it; it = g_list_next(it)) {
-        AZMenuFrame *f = it->data;
-        if ([f menu] == menu)
+    int found = NSNotFound;
+    for (i = 0; i < count; i++) {
+        AZMenuFrame *f = [visibles objectAtIndex: i];
+        if ([f menu] == menu) {
+	    found = i;
             break;
+	}
     }
-    if (!it) {
+    if (found == NSNotFound) {
         if (menu->update_func)
             menu->update_func(self, menu->data);
     }
 
     [self update];
 
-    menu_frame_visible = g_list_prepend(menu_frame_visible, self);
+    [visibles insertObject: self atIndex: 0];
 
     [self moveOnScreen];
 
@@ -688,9 +702,9 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
 - (void) hide
 {
-    GList *it = g_list_find(menu_frame_visible, self);
+    NSMutableArray *visibles = [AZMenuFrame visibleFrames];
 
-    if (!it)
+    if ([visibles containsObject: self] == NO)
         return;
 
     if (child)
@@ -700,9 +714,9 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
         [parent set_child: nil];
     parent = nil;
 
-    menu_frame_visible = g_list_delete_link(menu_frame_visible, it);
+    [visibles removeObject: self];
 
-    if (menu_frame_visible == NULL) {
+    if ([visibles count] == 0) {
         /* last menu shown */
         grab_pointer(NO, OB_CURSOR_NONE);
         grab_keyboard(NO);
@@ -741,19 +755,22 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
 - (void) selectPrevious
 {
-    GList *it = NULL, *start;
+    int start, it;
 
-    if (entries) {
-        start = it = g_list_find(entries, selected);
+    if ([entries count]) {
+	start = it = [entries indexOfObject: selected];
+	if (start == NSNotFound) start = 0;
         while (YES) {
             AZMenuEntryFrame *e;
 
-            it = it ? g_list_previous(it) : g_list_last(entries);
+	    it = (it == NSNotFound) ? [entries count]-1 : it-1;
+	    if (it < 0) it = [entries count]-1;
+	    
             if (it == start)
                 break;
 
-            if (it) {
-                e = ((AZMenuEntryFrame*)(it->data));
+            {
+                e = (AZMenuEntryFrame*)[entries objectAtIndex: it];
                 if ([e entry]->type == OB_MENU_ENTRY_TYPE_SUBMENU)
                     break;
                 if ([e entry]->type == OB_MENU_ENTRY_TYPE_NORMAL &&
@@ -762,24 +779,26 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
             }
         }
     }
-    [self selectMenuEntryFrame: (it ? it->data : nil)];
+    [self selectMenuEntryFrame: ((it == NSNotFound) ? nil : [entries objectAtIndex: it])];
 }
 
 - (void) selectNext
 {
-    GList *it = NULL, *start;
+    int start, it;
 
     if (entries) {
-        start = it = g_list_find(entries, selected);
+	start = it = [entries indexOfObject: selected];
+	if (start == NSNotFound) start = [entries count]-1;
         while (YES) {
             AZMenuEntryFrame *e;
 
-            it = it ? g_list_next(it) : entries;
+	    it = (it == NSNotFound) ? 0 : it+1;
+	    if (it >= [entries count]) it = 0;
             if (it == start)
                 break;
 
-            if (it) {
-                e = ((AZMenuEntryFrame *)(it->data));
+            {
+                e = (AZMenuEntryFrame *)[entries objectAtIndex: it];
                 if ([e entry]->type == OB_MENU_ENTRY_TYPE_SUBMENU)
                     break;
                 if ([e entry]->type == OB_MENU_ENTRY_TYPE_NORMAL &&
@@ -788,7 +807,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
             }
         }
     }
-    [self selectMenuEntryFrame: (it ? it->data : nil)];
+    [self selectMenuEntryFrame: ((it == NSNotFound) ? nil : [entries objectAtIndex: it])];
 }
 
 /* Accessories */
@@ -812,7 +831,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 - (int) text_x { return text_x; }
 - (int) text_w { return text_w; }
 - (Strut) item_margin { return item_margin; }
-- (GList *) entries { return entries; }
+- (NSArray *) entries { return entries; }
 - (void) set_show_title: (BOOL) b { show_title = b; }
 
 - (Window_InternalType) windowType { return Window_Menu; }
@@ -823,34 +842,32 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
 void AZMenuFrameHideAll()
 {
-    GList *it = g_list_last(menu_frame_visible);
-    if (it) 
-	[((AZMenuFrame *)(it->data)) hide];
+    AZMenuFrame *last = [[AZMenuFrame visibleFrames] lastObject];
+    if (last) {
+      [last hide];
+    }
 }
 
 void AZMenuFrameHideAllClient (AZClient *_client)
 {
-    GList *it = g_list_last(menu_frame_visible);
-    if (it) {
-        AZMenuFrame *f = it->data;
-        if ([f client] == _client)
-	    [f hide];
+    AZMenuFrame *f = [[AZMenuFrame visibleFrames] lastObject];
+    if (f) {
+      if ([f client] == _client)
+        [f hide];
     }
 }
 
 AZMenuFrame *AZMenuFrameUnder(int x, int y)
 {
-    AZMenuFrame *ret = nil;
-    GList *it;
-
-    for (it = menu_frame_visible; it; it = g_list_next(it)) {
-        AZMenuFrame *f = it->data;
-
-        if (RECT_CONTAINS([f area], x, y)) {
-            ret = f;
-            break;
-        }
+    NSArray *visibles = [AZMenuFrame visibleFrames];
+    int i, count = [visibles count];
+    for (i = 0; i < count; i++) {
+	AZMenuFrame *f = [visibles objectAtIndex: i];
+	if (RECT_CONTAINS([f area], x, y)) {
+	    return f;
+	}
     }
-    return ret;
+
+    return nil;
 }
 
