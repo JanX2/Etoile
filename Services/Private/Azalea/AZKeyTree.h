@@ -26,7 +26,7 @@
 {
     unsigned int state;
     unsigned int key;
-    GSList *actions; /* list of Action pointers */
+    NSMutableArray *actions; /* list of Action pointers */
 
     /* the next binding in the tree at the same level */
     AZKeyBindingTree *next_sibling; 
@@ -35,14 +35,14 @@
 }
 - (unsigned int) state;
 - (unsigned int) key;
-- (GSList *) actions;
+- (NSArray *) actions;
 - (AZKeyBindingTree *) next_sibling;
 - (AZKeyBindingTree *) first_child;
 - (void) set_state: (unsigned int) state;
 - (void) set_key: (unsigned int) key;
-- (void) set_actions: (GSList *) actions;
 - (void) set_next_sibling: (AZKeyBindingTree *) next_sibling;
 - (void) set_first_child: (AZKeyBindingTree *) first_child;
+- (void) addAction: (ObAction *) action;
 
 @end
 

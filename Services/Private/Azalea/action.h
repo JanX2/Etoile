@@ -209,8 +209,7 @@ void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
 #define action_run_interactive(a, c, s, n, d) \
     action_run_list(a, c, OB_FRAME_CONTEXT_NONE, s, 0, -1, -1, n, d)
 
-#define action_run_key(a, c, s, x, y) \
-    action_run_list(a, c, OB_FRAME_CONTEXT_NONE, s, 0, x, y, FALSE, FALSE)
+void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y);
 
 #define action_run(a, c, s) \
     action_run_list(a, c, OB_FRAME_CONTEXT_NONE, s, 0, -1, -1, FALSE, FALSE)

@@ -148,7 +148,7 @@ BOOL keyboard_bind(GList *keylist, ObAction *action)
     }
 
     /* set the action */
-    [t set_actions: g_slist_append([t actions], action)];
+    [t addAction: action];
     /* assimilate this built tree into the main tree. assimilation
        destroys/uses the tree */
     if (tree) tree_assimilate(tree);

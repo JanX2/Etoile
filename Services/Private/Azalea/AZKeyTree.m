@@ -20,19 +20,36 @@
 #import "AZKeyTree.h"
 #import "keyboard.h"
 #import "translate.h"
-#import <glib.h>
 
 @implementation AZKeyBindingTree
 - (unsigned int) state { return state; }
 - (unsigned int) key { return key; }
-- (GSList *) actions { return actions; }
+- (NSArray *) actions { return actions; }
 - (AZKeyBindingTree *) next_sibling { return next_sibling; }
 - (AZKeyBindingTree *) first_child { return first_child; }
 - (void) set_state: (unsigned int) s { state = s; }
 - (void) set_key: (unsigned int) k { key = k; }
-- (void) set_actions: (GSList *) a { actions = a; }
-- (void) set_next_sibling: (AZKeyBindingTree *) n { next_sibling = n; }
-- (void) set_first_child: (AZKeyBindingTree *) f { first_child = f; }
+- (void) set_next_sibling: (AZKeyBindingTree *) n { ASSIGN(next_sibling, n); }
+- (void) set_first_child: (AZKeyBindingTree *) f { ASSIGN(first_child, f); }
+- (void) addAction: (ObAction *) action
+{
+  [actions addObject: [NSValue valueWithPointer: action]];
+}
+
+- (id) init
+{
+  self = [super init];
+  actions = [[NSMutableArray alloc] init];
+  return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(next_sibling);
+  DESTROY(first_child);
+  DESTROY(actions);
+  [super dealloc];
+}
 
 @end
 
@@ -44,10 +61,10 @@ void tree_destroy(AZKeyBindingTree *tree)
         tree_destroy([tree next_sibling]);
         c = [tree first_child];
         if (c == NULL) {
-            GSList *sit;
-            for (sit = [tree actions]; sit != NULL; sit = sit->next)
-                action_unref(sit->data);
-            g_slist_free([tree actions]);
+	    int i, count = [[tree actions] count];
+	    for (i = 0; i < count; i++) {
+		action_unref([[[tree actions] objectAtIndex: i] pointerValue]);
+	    }
         }
 	DESTROY(tree);
         tree = c;

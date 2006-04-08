@@ -929,6 +929,17 @@ ObAction *action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     return act;
 }
 
+void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y)
+{
+    GSList *a = NULL;
+    int i, count = [acts count];
+    for (i = 0; i < count; i++) {
+      a = g_slist_append(a, [[acts objectAtIndex: i] pointerValue]);
+    }
+    action_run_list(a, c, OB_FRAME_CONTEXT_NONE, state, 0, x, y, FALSE, FALSE);
+}
+
+
 void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
                      unsigned int state, unsigned int button, int x, int y,
                      BOOL cancel, BOOL done)
