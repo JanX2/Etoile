@@ -26,13 +26,13 @@
 #include "action.h"
 #include "prop.h"
 #include "config.h"
-#include "keytree.h"
+#import "AZKeyTree.h"
 #include "keyboard.h"
 #include "translate.h"
 
 #include <glib.h>
 
-KeyBindingTree *keyboard_firstnode;
+AZKeyBindingTree *keyboard_firstnode;
 
 typedef struct {
     unsigned int state;
@@ -43,19 +43,19 @@ typedef struct {
 
 static GSList *interactive_states;
 
-static KeyBindingTree *curpos;
+static AZKeyBindingTree *curpos;
 
 static void grab_for_window(Window win, BOOL grab)
 {
-    KeyBindingTree *p;
+    AZKeyBindingTree *p;
 
     ungrab_all_keys(win);
 
     if (grab) {
-        p = curpos ? curpos->first_child : keyboard_firstnode;
+        p = curpos ? [curpos first_child] : keyboard_firstnode;
         while (p) {
-            grab_key(p->key, p->state, win, GrabModeAsync);
-            p = p->next_sibling;
+            grab_key([p key], [p state], win, GrabModeAsync);
+            p = [p next_sibling];
         }
         if (curpos)
             grab_key(config_keyboard_reset_keycode,
@@ -109,7 +109,7 @@ void keyboard_unbind_all()
 
 BOOL keyboard_bind(GList *keylist, ObAction *action)
 {
-    KeyBindingTree *tree, *t;
+    AZKeyBindingTree *tree, *t;
     BOOL conflict;
     BOOL mods = YES;
 
@@ -134,10 +134,10 @@ BOOL keyboard_bind(GList *keylist, ObAction *action)
 
     /* find if every key in this chain has modifiers, and also find the
        bottom node of the tree */
-    while (t->first_child) {
-        if (!t->state)
+    while ([t first_child]) {
+        if (![t state])
             mods = NO;
-        t = t->first_child;
+        t = [t first_child];
     }
 
     /* when there are no modifiers in the binding, then the action cannot
@@ -148,7 +148,7 @@ BOOL keyboard_bind(GList *keylist, ObAction *action)
     }
 
     /* set the action */
-    t->actions = g_slist_append(t->actions, action);
+    [t set_actions: g_slist_append([t actions], action)];
     /* assimilate this built tree into the main tree. assimilation
        destroys/uses the tree */
     if (tree) tree_assimilate(tree);
@@ -248,7 +248,7 @@ BOOL keyboard_process_interactive_grab(const XEvent *e, AZClient **client)
 
 void keyboard_event(AZClient *client, const XEvent *e)
 {
-    KeyBindingTree *p;
+    AZKeyBindingTree *p;
 
     g_assert(e->type == KeyPress);
 
@@ -262,12 +262,12 @@ void keyboard_event(AZClient *client, const XEvent *e)
     if (curpos == NULL)
         p = keyboard_firstnode;
     else
-        p = curpos->first_child;
+        p = [curpos first_child];
     while (p) {
-        if (p->key == e->xkey.keycode &&
-            p->state == e->xkey.state)
+        if ([p key] == e->xkey.keycode &&
+            [p state] == e->xkey.state)
         {
-            if (p->first_child != NULL) { /* part of a chain */
+            if ([p first_child] != nil) { /* part of a chain */
 		AZMainLoop *mainLoop = [AZMainLoop mainLoop];
 		[mainLoop removeTimeoutHandler: chain_timeout];
                 /* 5 second timeout for chains */
@@ -282,12 +282,12 @@ void keyboard_event(AZClient *client, const XEvent *e)
 
                 keyboard_reset_chains();
 
-                action_run_key(p->actions, client, e->xkey.state,
+                action_run_key([p actions], client, e->xkey.state,
                                e->xkey.x_root, e->xkey.y_root);
             }
             break;
         }
-        p = p->next_sibling;
+        p = [p next_sibling];
     }
 }
 

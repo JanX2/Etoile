@@ -16,18 +16,14 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#ifndef ob__keybaord_h
-#define ob__keybaord_h
-
-#include "keytree.h"
-
-#include <glib.h>
-#include <X11/Xlib.h>
+#import "AZKeyTree.h"
+#import <glib.h>
+#import <X11/Xlib.h>
 
 struct _ObAction;
 @class AZClient;
 
-extern KeyBindingTree *keyboard_firstnode;
+extern AZKeyBindingTree *keyboard_firstnode;
 
 void keyboard_startup(BOOL reconfig);
 void keyboard_shutdown(BOOL reconfig);
@@ -44,4 +40,3 @@ BOOL keyboard_process_interactive_grab(const XEvent *e, AZClient **client);
 
 void keyboard_grab_for_client(AZClient *c, BOOL grab);
 
-#endif

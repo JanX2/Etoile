@@ -5,6 +5,7 @@
 	* Use NSString in AZClient.
 	* Remove glib from AZEventHandler.
 	* Remove glib from AZMenuFrame.m (Need more test).
+	* Port keytree to AZKeyTree.
 
 2006-04-06 Yen-Ju Chen <yjchenx at gmail>
 

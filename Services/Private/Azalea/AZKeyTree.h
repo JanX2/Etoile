@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    keytree.h for the Openbox window manager
@@ -16,28 +17,37 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#ifndef __plugin_keyboard_tree_h
-#define __plugin_keyboard_tree_h
+#import <Foundation/Foundation.h>
+#import "action.h"
 
-#include "action.h"
+#import <glib.h>
 
-#include <glib.h>
-
-typedef struct KeyBindingTree {
+@interface AZKeyBindingTree: NSObject
+{
     unsigned int state;
     unsigned int key;
-    GList *keylist;
     GSList *actions; /* list of Action pointers */
 
     /* the next binding in the tree at the same level */
-    struct KeyBindingTree *next_sibling; 
+    AZKeyBindingTree *next_sibling; 
     /* the first child of this binding (next binding in a chained sequence).*/
-    struct KeyBindingTree *first_child;
-} KeyBindingTree;
+    AZKeyBindingTree *first_child;
+}
+- (unsigned int) state;
+- (unsigned int) key;
+- (GSList *) actions;
+- (AZKeyBindingTree *) next_sibling;
+- (AZKeyBindingTree *) first_child;
+- (void) set_state: (unsigned int) state;
+- (void) set_key: (unsigned int) key;
+- (void) set_actions: (GSList *) actions;
+- (void) set_next_sibling: (AZKeyBindingTree *) next_sibling;
+- (void) set_first_child: (AZKeyBindingTree *) first_child;
 
-void tree_destroy(KeyBindingTree *tree);
-KeyBindingTree *tree_build(GList *keylist);
-void tree_assimilate(KeyBindingTree *node);
-KeyBindingTree *tree_find(KeyBindingTree *search, BOOL *conflict);
+@end
 
-#endif
+void tree_destroy(AZKeyBindingTree *tree);
+AZKeyBindingTree *tree_build(GList *keylist);
+void tree_assimilate(AZKeyBindingTree *node);
+AZKeyBindingTree *tree_find(AZKeyBindingTree *search, BOOL *conflict);
+
