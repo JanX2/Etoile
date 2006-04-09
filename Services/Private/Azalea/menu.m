@@ -50,13 +50,6 @@ static void parse_menu_separator(ObParseInst *i,
 static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                        gpointer data);
 
-static void client_dest(AZClient *client, gpointer data)
-{
-    /* menus can be associated with a client, so close any that are since
-       we are disappearing now */
-    AZMenuFrameHideAllClient(client);
-}
-
 void menu_startup(BOOL reconfig)
 {
     xmlDocPtr doc;
@@ -95,16 +88,10 @@ void menu_startup(BOOL reconfig)
     }
     
     g_assert(menu_parse_state.parent == NULL);
-
-    if (!reconfig)
-	[[AZClientManager defaultManager] addDestructor: client_dest data: NULL];
 }
 
 void menu_shutdown(BOOL reconfig)
 {
-    if (!reconfig)
-	[[AZClientManager defaultManager] removeDestructor: client_dest];
-
     parse_shutdown(menu_parse_inst);
     menu_parse_inst = NULL;
 

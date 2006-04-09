@@ -35,6 +35,7 @@
 #import "grab.h"
 #import "prop.h"
 #import "mouse.h"
+#import "AZMenuFrame.h"
 
 NSString *AZClientDestroyNotification = @"AZClientDestroyNotification";
 
@@ -338,13 +339,13 @@ static AZClientManager *sharedInstance;
 
     [[NSNotificationCenter defaultCenter] postNotificationName: AZClientDestroyNotification
 	    object: client];
+    /* Taken from menu (AZMenu in the future). Since it uses global function,
+     * it is not really suitable in object, or it will be called multiple
+     * time in each object, which is not good */
+    /* menus can be associated with a client, so close any that are since
+       we are disappearing now */
+    AZMenuFrameHideAllClient(client);
 
-    GSList *it;
-    for (it = client_destructors; it; it = g_slist_next(it)) {
-        Destructor *d = it->data;
-        d->func(client, d->data);
-    }
-        
     if ([[AZFocusManager defaultManager] focus_client] == client) {
         XEvent e;
 
@@ -438,29 +439,6 @@ static AZClientManager *sharedInstance;
 - (int) indexOfClient: (AZClient *) client
 {
   return [clist indexOfObject: client];
-}
-
-/* Destructor */
-- (void) addDestructor: (ObClientDestructor) func data: (void *) data
-{
-    Destructor *d = g_new(Destructor, 1);
-    d->func = func;
-    d->data = data;
-    client_destructors = g_slist_prepend(client_destructors, d);
-}
-
-- (void) removeDestructor: (ObClientDestructor) func
-{
-    GSList *it;
-
-    for (it = client_destructors; it; it = g_slist_next(it)) {
-      Destructor *d = it->data;
-      if (d->func == func) {
-        g_free(d);
-        client_destructors = g_slist_delete_link(client_destructors, it);
-        break;
-      }
-    }
 }
 
 - (id) init

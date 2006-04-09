@@ -23,18 +23,9 @@
 
 extern NSString *AZClientDestroyNotification;
 
-typedef void (*ObClientDestructor)(AZClient *client, void *data);
-
-typedef struct
-{
-  ObClientDestructor func;
-  void *data;
-} Destructor;
-
 @interface AZClientManager: NSObject
 {
   NSMutableArray *clist;
-  GSList *client_destructors;
 }
 + (AZClientManager *) defaultManager;
 - (void) startup: (BOOL) reconfig;
@@ -54,9 +45,5 @@ typedef struct
 - (AZClient *) clientAtIndex: (int) index;
 - (int) count;
 - (int) indexOfClient: (AZClient *) client;
-
-/* Destructor */
-- (void) addDestructor: (ObClientDestructor) func data: (void *) data;
-- (void) removeDestructor: (ObClientDestructor) func;
 
 @end

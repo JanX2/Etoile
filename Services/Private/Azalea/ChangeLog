@@ -3,7 +3,6 @@
 	* move parse one-level up.
 	* port keyboard.
 	* use notification when client is destroyed.
-	(need to port menu to complete remove callback).
 
 2006-04-07 Yen-Ju Chen <yjchenx at gmail>
 
