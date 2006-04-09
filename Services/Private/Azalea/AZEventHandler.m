@@ -36,7 +36,7 @@
 #import "extensions.h"
 #import "menu.h"
 #import "mouse.h"
-#import "keyboard.h"
+#import "AZKeyboardHandler.h"
 
 #import <X11/keysym.h>
 #import <X11/Xatom.h>
@@ -69,9 +69,9 @@ typedef struct
 } ObEventData;
 
 /* callback */
-static void event_client_dest(AZClient *client, void *data);
+//static void event_client_dest(AZClient *client, void *data);
 static gboolean focus_delay_func(void *data);
-static void focus_delay_client_dest(AZClient *client, void *data);
+//static void focus_delay_client_dest(AZClient *client, void *data);
 static gboolean menu_hide_delay_func(void *data);
 
 #define INVALID_FOCUSIN(e) ((e)->xfocus.detail == NotifyInferior || \
@@ -133,9 +133,8 @@ static AZEventHandler *sharedInstance;
 
 /* callback */
 - (void) processEvent: (XEvent *) e data: (void *) data;
-- (void) clientDestroy: (AZClient *) client data: (void *) data;
+- (void) clientDestroy: (NSNotification *) not;
 - (BOOL) focusDelayFunc: (void *) data;
-- (void) focusDelayClientDestroy: (AZClient *) client data: (void *) data;
 - (BOOL) menuHideDelayFunc: (void *) data;
 @end
 
@@ -190,8 +189,10 @@ static AZEventHandler *sharedInstance;
     IceAddConnectionWatch(ice_watch, NULL);
 #endif
 
-    [[AZClientManager defaultManager] addDestructor: focus_delay_client_dest data: NULL];
-    [[AZClientManager defaultManager] addDestructor: event_client_dest data: NULL];
+    [[NSNotificationCenter defaultCenter] addObserver: self
+	    selector: @selector(clientDestroy:)
+	    name: AZClientDestroyNotification
+	    object: nil];
 }
 
 - (void) shutdown: (BOOL) reconfig
@@ -202,7 +203,8 @@ static AZEventHandler *sharedInstance;
     IceRemoveConnectionWatch(ice_watch, NULL);
 #endif
 
-    [[AZClientManager defaultManager] removeDestructor: focus_delay_client_dest]; 
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+
     XFreeModifiermap(modmap);
 }
 
@@ -374,7 +376,8 @@ static AZEventHandler *sharedInstance;
         if ([[AZMenuFrame visibleFrames] count])
             [self handleMenuEvent: e];
         else {
-            if (!keyboard_process_interactive_grab(e, &client)) {
+	    AZKeyboardHandler *kHandler = [AZKeyboardHandler defaultHandler];
+	    if (![kHandler processInteractiveGrab: e forClient: &client]) {
 		AZMoveResizeHandler *mrHandler = [AZMoveResizeHandler defaultHandler];
 		if ([mrHandler moveresize_in_progress]) {
  		   [mrHandler event: e];
@@ -396,9 +399,8 @@ static AZEventHandler *sharedInstance;
 		    AZFocusManager *fManager = [AZFocusManager defaultManager];
 		    AZClient *focus_cycle_target = [fManager focus_cycle_target];
 		    AZClient *focus_hilite = [fManager focus_hilite];
-                    keyboard_event((focus_cycle_target ? focus_cycle_target:
-                                    (focus_hilite ? focus_hilite : client)),
-                                   e);
+		    [kHandler processEvent: e
+			    forClient: (focus_cycle_target ? focus_cycle_target: (focus_hilite ? focus_hilite : client))];
 		}
             }
         }
@@ -1145,16 +1147,14 @@ static AZEventHandler *sharedInstance;
     return NO; /* no repeat */
 }
 
-- (void) focusDelayClientDestroy: (AZClient *) client data: (void *) data
+- (void) clientDestroy: (NSNotification *) not
 {
+  AZClient *client = [not object];
   [[AZMainLoop mainLoop] removeTimeoutHandler: focus_delay_func
 	                 data: client];
-}
 
-- (void) clientDestroy: (AZClient *) client data: (void *) data;
-{
-    if (client == [[AZFocusManager defaultManager] focus_hilite])
-	[[AZFocusManager defaultManager] set_focus_hilite: nil];
+  if (client == [[AZFocusManager defaultManager] focus_hilite])
+    [[AZFocusManager defaultManager] set_focus_hilite: nil];
 }
 
 - (Window) getWindow: (XEvent *) e
@@ -1427,19 +1427,9 @@ static AZEventHandler *sharedInstance;
 @end
 
 /* callback */
-static void event_client_dest(AZClient *client, void *data)
-{
-  [[AZEventHandler defaultHandler] clientDestroy: client data: data];
-}
-
 static gboolean focus_delay_func(void *data)
 {
   [[AZEventHandler defaultHandler] focusDelayFunc: data];
-}
-
-static void focus_delay_client_dest(AZClient *client, void *data)
-{
-  [[AZEventHandler defaultHandler] focusDelayClientDestroy: client data: data];
 }
 
 static gboolean menu_hide_delay_func(void *data)

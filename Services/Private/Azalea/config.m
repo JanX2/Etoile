@@ -19,7 +19,7 @@
 
 #import "AZDock.h"
 #import "config.h"
-#import "keyboard.h"
+#import "AZKeyboardHandler.h"
 #import "mouse.h"
 #import "prop.h"
 #import "translate.h"
@@ -122,8 +122,10 @@ static void parse_key(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
         nact = parse_find_node("action", node);
         while (nact) {
             if ((action = action_parse(i, doc, nact,
-                                       OB_USER_ACTION_KEYBOARD_KEY)))
-                keyboard_bind(keylist, action);
+                                       OB_USER_ACTION_KEYBOARD_KEY))) {
+		AZKeyboardHandler *kHandler = [AZKeyboardHandler defaultHandler];
+		[kHandler bind: keylist action: action];
+	    }
             nact = parse_find_node("action", nact->next);
         }
     }
@@ -132,7 +134,7 @@ static void parse_key(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
 static void parse_keyboard(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                            gpointer d)
 {
-    keyboard_unbind_all();
+    [[AZKeyboardHandler defaultHandler] unbindAll];
 
     parse_key(i, doc, node->children, NULL);
 }
@@ -460,8 +462,8 @@ static void bind_default_keyboard()
 
     for (it = binds; it->key; ++it) {
         GList *l = g_list_append(NULL, g_strdup(it->key));
-        keyboard_bind(l, action_from_string(it->actname,
-                                            OB_USER_ACTION_KEYBOARD_KEY));
+	[[AZKeyboardHandler defaultHandler] bind: l
+		action: action_from_string(it->actname, OB_USER_ACTION_KEYBOARD_KEY)];
     }
 }
 

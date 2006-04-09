@@ -18,7 +18,7 @@
 */
 
 #import "AZKeyTree.h"
-#import "keyboard.h"
+#import "AZKeyboardHandler.h"
 #import "translate.h"
 
 @implementation AZKeyBindingTree
@@ -98,10 +98,13 @@ AZKeyBindingTree *tree_build(GList *keylist)
 void tree_assimilate(AZKeyBindingTree *node)
 {
     AZKeyBindingTree *a, *b, *tmp, *last;
+    AZKeyboardHandler *kHandler = [AZKeyboardHandler defaultHandler];
+    AZKeyBindingTree *keyboard_firstnode = [kHandler firstnode];
 
     if (keyboard_firstnode == nil) {
         /* there are no nodes at this level yet */
         keyboard_firstnode = node;
+	[kHandler set_firstnode: node];
     } else {
         a = keyboard_firstnode;
         last = a;
@@ -129,6 +132,8 @@ void tree_assimilate(AZKeyBindingTree *node)
 AZKeyBindingTree *tree_find(AZKeyBindingTree *search, BOOL *conflict)
 {
     AZKeyBindingTree *a, *b;
+    AZKeyboardHandler *kHandler = [AZKeyboardHandler defaultHandler];
+    AZKeyBindingTree *keyboard_firstnode = [kHandler firstnode];
 
     *conflict = NO;
 

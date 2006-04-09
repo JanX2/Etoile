@@ -35,18 +35,12 @@
 
 static AZMoveResizeHandler *sharedInstance = nil;
 
-static void mr_client_dest(AZClient *client, gpointer data)
-{
-  AZMoveResizeHandler *handler = [AZMoveResizeHandler defaultHandler];
-  if ([handler moveresize_client] == client)
-    [handler end: YES];
-}
-
 @interface AZMoveResizeHandler (AZPrivate)
 
 - (void) popupFormat: (gchar *) format a: (int) a b: (int) b;
 - (void) doMove: (BOOL) resist;
 - (void) doResize: (BOOL) resist;
+- (void) clientDestroy: (NSNotification *) not;
 
 @end
 
@@ -76,8 +70,12 @@ static void mr_client_dest(AZClient *client, gpointer data)
 - (void) startup: (BOOL) reconfig
 {
   popup = [[AZPopUp alloc] initWithIcon: NO];
-  if (!reconfig)
-    [[AZClientManager defaultManager] addDestructor: mr_client_dest data: NULL];
+  if (!reconfig) {
+    [[NSNotificationCenter defaultCenter] addObserver: self
+	    selector: @selector(clientDestroy:)
+	    name: AZClientDestroyNotification
+	    object: nil];
+  }
 }
 
 - (void) shutdown: (BOOL) reconfig
@@ -85,7 +83,7 @@ static void mr_client_dest(AZClient *client, gpointer data)
   if (!reconfig) {
     if (moveresize_in_progress)
       [self end: NO];
-    [[AZClientManager defaultManager] removeDestructor: mr_client_dest];
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
   }
   DESTROY(popup);
 }
@@ -408,6 +406,13 @@ static void mr_client_dest(AZClient *client, gpointer data)
 	[self popupFormat: "%d x %d"
               a: [moveresize_client logical_size].width
               b: [moveresize_client logical_size].height];
+}
+
+- (void) clientDestroy: (NSNotification *) not
+{
+  AZClient *client = [not object];
+  if (moveresize_client == client)
+    [self end: YES];
 }
 
 @end

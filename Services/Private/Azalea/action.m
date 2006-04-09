@@ -25,7 +25,7 @@
 #import "action.h"
 #import "openbox.h"
 #import "grab.h"
-#import "keyboard.h"
+#import "AZKeyboardHandler.h"
 #import "config.h"
 #import "AZMainLoop.h"
 #import "AZScreen.h"
@@ -989,9 +989,14 @@ void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
             if (a->data.any.interactive) {
                 a->data.inter.cancel = cancel;
                 a->data.inter.final = done;
-                if (!(cancel || done))
-                    if (!keyboard_interactive_grab(state, a->data.any.c, a))
+                if (!(cancel || done)) {
+		    AZKeyboardHandler *kHandler = [AZKeyboardHandler defaultHandler];
+
+		    if (![kHandler interactiveGrab: state
+				    client: a->data.any.c
+				    action: a])
                         continue;
+		}
             }
 
             /* XXX UGLY HACK race with motion event starting a move and the

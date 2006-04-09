@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    keyboard.c for the Openbox window manager
@@ -19,95 +20,59 @@
 
 #import "AZMainLoop.h"
 #import "AZScreen.h"
-
 #import "AZClientManager.h"
-#include "openbox.h"
-#include "grab.h"
-#include "action.h"
-#include "prop.h"
-#include "config.h"
+#import "openbox.h"
+#import "grab.h"
+#import "action.h"
+#import "prop.h"
+#import "config.h"
 #import "AZKeyTree.h"
-#include "keyboard.h"
-#include "translate.h"
+#import "AZKeyboardHandler.h"
+#import "translate.h"
 
-#include <glib.h>
-
-AZKeyBindingTree *keyboard_firstnode;
-
-typedef struct {
-    unsigned int state;
-    AZClient *client;
-    GSList *actions;
-    ObFrameContext context;
-} ObInteractiveState;
-
-static GSList *interactive_states;
-
-static AZKeyBindingTree *curpos;
-
-static void grab_for_window(Window win, BOOL grab)
-{
-    AZKeyBindingTree *p;
-
-    ungrab_all_keys(win);
-
-    if (grab) {
-        p = curpos ? [curpos first_child] : keyboard_firstnode;
-        while (p) {
-            grab_key([p key], [p state], win, GrabModeAsync);
-            p = [p next_sibling];
-        }
-        if (curpos)
-            grab_key(config_keyboard_reset_keycode,
-                     config_keyboard_reset_state,
-                     win, GrabModeAsync);
-    }
-}
-
-void keyboard_grab_for_client(AZClient *c, BOOL grab)
-{
-    grab_for_window([c window], grab);
-}
-
-static void grab_keys(BOOL grab)
-{
-    grab_for_window([[AZScreen defaultScreen] supportXWindow], grab);
-    AZClientManager *cManager = [AZClientManager defaultManager];
-    int i, count = [cManager count];
-    for (i = 0; i < count; i++)
-    {
-      AZClient *data = [cManager clientAtIndex: i];
-      grab_for_window([data window], grab);
-    }
-}
+static AZKeyboardHandler *sharedInstance;
 
 static gboolean chain_timeout(gpointer data)
 {
-    keyboard_reset_chains();
-
+    [[AZKeyboardHandler defaultHandler] resetChains];
     return NO; /* don't repeat */
 }
 
-void keyboard_reset_chains()
+@interface AZKeyboardHandler (AZPrivate)
+- (void) grab: (BOOL) grab forWindow: (Window) win;
+- (void) grabKeys: (BOOL) grab;
+- (void) interactiveEnd: (ObInteractiveState *) s state: (unsigned int) state cancel: (BOOL) cancel;
+- (void) clientDestroy: (NSNotification *) not;
+
+@end
+
+@implementation AZKeyboardHandler
+
+- (void) grab: (BOOL) grab forClient: (AZClient *) client
+{
+    [self grab: grab forWindow: [client window]];
+}
+
+- (void) resetChains
 {
     [[AZMainLoop mainLoop] removeTimeoutHandler: chain_timeout];
 
     if (curpos) {
-        grab_keys(NO);
+        [self grabKeys: NO];
         curpos = NULL;
-        grab_keys(YES);
+	[self grabKeys: YES];
     }
 }
 
-void keyboard_unbind_all()
+- (void) unbindAll
 {
     tree_destroy(keyboard_firstnode);
-    keyboard_firstnode = NULL;
-    grab_keys(NO);
-    curpos = NULL;
+    keyboard_firstnode = nil;
+    [self grabKeys: NO];
+    curpos = nil;
 }
 
-BOOL keyboard_bind(GList *keylist, ObAction *action)
+- (BOOL) bind: (GList *) keylist action: (struct _ObAction *) action
 {
     AZKeyBindingTree *tree, *t;
     BOOL conflict;
@@ -156,8 +121,9 @@ BOOL keyboard_bind(GList *keylist, ObAction *action)
     return YES;
 }
 
-BOOL keyboard_interactive_grab(unsigned int state, AZClient *client,
-                                   ObAction *action)
+- (BOOL) interactiveGrab: (unsigned int) state
+                  client: (AZClient *) client
+                  action: (struct _ObAction *) action
 {
     ObInteractiveState *s;
 
@@ -183,38 +149,8 @@ BOOL keyboard_interactive_grab(unsigned int state, AZClient *client,
     return YES;
 }
 
-void keyboard_interactive_end(ObInteractiveState *s,
-                              unsigned int state, BOOL cancel)
-{
-    action_run_interactive(s->actions, s->client, state, cancel, YES);
-
-    g_slist_free(s->actions);
-    g_free(s);
-
-    interactive_states = g_slist_remove(interactive_states, s);
-
-    if (!interactive_states) {
-        grab_keyboard(NO);
-        grab_pointer(NO, OB_CURSOR_NONE);
-        keyboard_reset_chains();
-    }
-}
-
-void keyboard_interactive_end_client(AZClient *client, gpointer data)
-{
-    GSList *it, *next;
-
-    for (it = interactive_states; it; it = next) {
-        ObInteractiveState *s = it->data;
-
-        next = g_slist_next(it);
-
-        if (s->client == client)
-            s->client = nil;
-    }
-}
-
-BOOL keyboard_process_interactive_grab(const XEvent *e, AZClient **client)
+- (BOOL) processInteractiveGrab: (XEvent *) e
+                      forClient: (AZClient **) client
 {
     GSList *it, *next;
     BOOL handled = NO;
@@ -236,7 +172,9 @@ BOOL keyboard_process_interactive_grab(const XEvent *e, AZClient **client)
                 cancel = done = YES;
         }
         if (done) {
-            keyboard_interactive_end(s, e->xkey.state, cancel);
+	    [self interactiveEnd: s
+		    state: e->xkey.state
+		    cancel: cancel];
 
             handled = YES;
         } else
@@ -246,7 +184,7 @@ BOOL keyboard_process_interactive_grab(const XEvent *e, AZClient **client)
     return handled;
 }
 
-void keyboard_event(AZClient *client, const XEvent *e)
+- (void) processEvent: (XEvent *) e forClient: (AZClient *) client
 {
     AZKeyBindingTree *p;
 
@@ -255,7 +193,7 @@ void keyboard_event(AZClient *client, const XEvent *e)
     if (e->xkey.keycode == config_keyboard_reset_keycode &&
         e->xkey.state == config_keyboard_reset_state)
     {
-        keyboard_reset_chains();
+	[self resetChains];
         return;
     }
 
@@ -275,12 +213,12 @@ void keyboard_event(AZClient *client, const XEvent *e)
 			     microseconds: 5 * G_USEC_PER_SEC
 			     data: NULL
 			     notify: NULL];
-                grab_keys(NO);
+		[self grabKeys: NO];
                 curpos = p;
-                grab_keys(YES);
+		[self grabKeys: YES];
             } else {
 
-                keyboard_reset_chains();
+		[self resetChains];
 
                 action_run_key([p actions], client, e->xkey.state,
                                e->xkey.x_root, e->xkey.y_root);
@@ -291,20 +229,25 @@ void keyboard_event(AZClient *client, const XEvent *e)
     }
 }
 
-void keyboard_startup(BOOL reconfig)
+- (void) startup: (BOOL) reconfig
 {
-    grab_keys(YES);
+    [self grabKeys: YES];
 
-    if (!reconfig)
-	[[AZClientManager defaultManager] addDestructor: keyboard_interactive_end_client data: NULL];
+    if (!reconfig) {
+	[[NSNotificationCenter defaultCenter] addObserver: self
+		selector: @selector(clientDestroy:)
+		name: AZClientDestroyNotification
+		object: nil];
+    }
 }
 
-void keyboard_shutdown(BOOL reconfig)
+- (void) shutdown: (BOOL) reconfig
 {
     GSList *it;
 
-    if (!reconfig)
-	[[AZClientManager defaultManager] removeDestructor: keyboard_interactive_end_client];
+    if (!reconfig) {
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
+    }
 
     for (it = interactive_states; it; it = g_slist_next(it))
         g_free(it->data);
@@ -313,6 +256,91 @@ void keyboard_shutdown(BOOL reconfig)
 
     [[AZMainLoop mainLoop] removeTimeoutHandler: chain_timeout];
 
-    keyboard_unbind_all();
+    [self unbindAll];
 }
 
+- (AZKeyBindingTree *) firstnode
+{
+  return keyboard_firstnode;
+}
+
+- (void) set_firstnode: (AZKeyBindingTree *) first
+{
+  keyboard_firstnode = first;
+}
+
++ (AZKeyboardHandler *) defaultHandler
+{
+  if (sharedInstance == nil)
+    sharedInstance = [[AZKeyboardHandler alloc] init];
+  return sharedInstance;
+}
+
+@end
+
+@implementation AZKeyboardHandler (AZPrivate)
+- (void) grab: (BOOL) grab forWindow: (Window) win
+{
+    AZKeyBindingTree *p;
+
+    ungrab_all_keys(win);
+
+    if (grab) {
+        p = curpos ? [curpos first_child] : keyboard_firstnode;
+        while (p) {
+            grab_key([p key], [p state], win, GrabModeAsync);
+            p = [p next_sibling];
+        }
+        if (curpos)
+            grab_key(config_keyboard_reset_keycode,
+                     config_keyboard_reset_state,
+                     win, GrabModeAsync);
+    }
+}
+
+- (void) grabKeys: (BOOL) grab
+{
+    [self grab: grab forWindow: [[AZScreen defaultScreen] supportXWindow]];
+    AZClientManager *cManager = [AZClientManager defaultManager];
+    int i, count = [cManager count];
+    for (i = 0; i < count; i++)
+    {
+      AZClient *data = [cManager clientAtIndex: i];
+      [self grab: grab forWindow: [data window]];
+    }
+}
+
+- (void) interactiveEnd: (ObInteractiveState *) s
+                  state: (unsigned int) state
+		  cancel: (BOOL) cancel
+{
+    action_run_interactive(s->actions, s->client, state, cancel, YES);
+
+    g_slist_free(s->actions);
+    g_free(s);
+
+    interactive_states = g_slist_remove(interactive_states, s);
+
+    if (!interactive_states) {
+        grab_keyboard(NO);
+        grab_pointer(NO, OB_CURSOR_NONE);
+        [self resetChains];
+    }
+}
+
+- (void) clientDestroy: (NSNotification *) not
+{
+    AZClient *client = [not object];
+    GSList *it, *next;
+
+    for (it = interactive_states; it; it = next) {
+        ObInteractiveState *s = it->data;
+
+        next = g_slist_next(it);
+
+        if (s->client == client)
+            s->client = nil;
+    }
+}
+
+@end

@@ -29,12 +29,14 @@
 #import "AZStacking.h"
 #import "AZFrame.h"
 #import "AZFocusManager.h"
+#import "AZKeyboardHandler.h"
 #import "config.h"
 #import "openbox.h"
 #import "grab.h"
 #import "prop.h"
 #import "mouse.h"
 
+NSString *AZClientDestroyNotification = @"AZClientDestroyNotification";
 
 /*! The event mask to grab on client windows */
 #define CLIENT_EVENTMASK (PropertyChangeMask | FocusChangeMask | \
@@ -251,7 +253,7 @@ static AZClientManager *sharedInstance;
 	    [client moveToX: x y: y];
     }
 
-    keyboard_grab_for_client(client, YES);
+    [[AZKeyboardHandler defaultHandler] grab: YES forClient: client];
     mouse_grab_for_client(client, YES);
 
     [client showhide];
@@ -308,7 +310,7 @@ static AZClientManager *sharedInstance;
 
     g_assert(client != NULL);
 
-    keyboard_grab_for_client(client, NO);
+    [[AZKeyboardHandler defaultHandler] grab: NO forClient: client];
     mouse_grab_for_client(client, NO);
 
     /* potentially fix focusLast */
@@ -333,6 +335,9 @@ static AZClientManager *sharedInstance;
     /* once the client is out of the list, update the struts to remove it's
        influence */
     [[AZScreen defaultScreen] updateAreas];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName: AZClientDestroyNotification
+	    object: client];
 
     GSList *it;
     for (it = client_destructors; it; it = g_slist_next(it)) {

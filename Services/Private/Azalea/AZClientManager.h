@@ -21,6 +21,8 @@
 #import <X11/Xlib.h>
 #import "AZClient.h"
 
+extern NSString *AZClientDestroyNotification;
+
 typedef void (*ObClientDestructor)(AZClient *client, void *data);
 
 typedef struct

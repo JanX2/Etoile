@@ -22,6 +22,7 @@ Azalea_OBJC_FILES = \
 	AZFrame.m \
 	AZFrame+Render.m \
 	AZGroup.m \
+	AZKeyboardHandler.m \
 	AZKeyTree.m \
 	AZMainLoop.m \
 	AZMenuFrame.m \
@@ -36,7 +37,6 @@ Azalea_OBJC_FILES = \
 	config.m \
 	extensions.m \
 	grab.m \
-	keyboard.m \
 	menu.m \
 	mouse.m \
 	openbox.m \

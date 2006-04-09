@@ -114,8 +114,6 @@ struct _ObMainLoopFdHandlerType
     GDestroyNotify destroy;
 };
 
-void ob_main_loop_client_destroy(AZClient *client, void *data);
-
 struct _ObAction;
 
 extern Display *ob_display;
@@ -125,7 +123,7 @@ struct _ObMainLoop *ob_main_loop;
 static AZMainLoop *sharedInstance;
 
 @interface AZMainLoop (AZPrivate)
-- (void) destroyActionForClient: (AZClient *) client;
+- (void) destroyActionForClient: (NSNotification *) not;
 - (long) timeCompare: (GTimeVal *) a to: (GTimeVal *) b;
 - (void) insertTimer: (ObMainLoopTimer *) ins;
 - (BOOL) nearestTimeoutWait: (GTimeVal *) tm;
@@ -271,12 +269,15 @@ static AZMainLoop *sharedInstance;
 
 - (void) willStartRunning
 {
-  [[AZClientManager defaultManager] addDestructor: ob_main_loop_client_destroy data: (void *)self];
+  [[NSNotificationCenter defaultCenter] addObserver: self
+	  selector: @selector(destroyActionForClient:)
+	  name: AZClientDestroyNotification
+	  object: nil];
 }
 
 - (void) didFinishRunning
 {
-  [[AZClientManager defaultManager] removeDestructor: ob_main_loop_client_destroy];
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
 - (BOOL) run
@@ -471,8 +472,9 @@ static AZMainLoop *sharedInstance;
 @end
 
 @implementation AZMainLoop (AZPrivate)
-- (void) destroyActionForClient: (AZClient *) client
+- (void) destroyActionForClient: (NSNotification *) not 
 {
+  AZClient *client = [not object];
   int i, count = [actionQueue count];
   for (i = 0; i < count; i++)
   {
@@ -609,12 +611,6 @@ static void fd_handle_foreach(void * key,
 
     if (FD_ISSET(h->fd, set))
         h->func(h->fd, h->data);
-}
-
-void ob_main_loop_client_destroy(AZClient *client, void *data)
-{
-  AZMainLoop *mainLoop = (AZMainLoop *) data;
-  [mainLoop destroyActionForClient: client];
 }
 
 /*** SIGNAL WATCHERS ***/

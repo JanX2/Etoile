@@ -41,15 +41,6 @@ struct {
     AZInternalWindow *bottom;
 } focus_indicator;
 
-static void focus_cycle_destructor(AZClient *client, gpointer data)
-{
-    /* end cycling if the target disappears */
-    AZFocusManager *fManager = [AZFocusManager defaultManager];
-    if ([fManager focus_cycle_target] == client)
-      [fManager cycleForward: YES linear: YES interactive: YES
-	          dialog: YES done: YES cancel: YES];
-}
-
 static Window createWindow(Window parent, unsigned long mask,
                            XSetWindowAttributes *attrib)
 {
@@ -70,6 +61,7 @@ static AZFocusManager *sharedInstance;
 - (BOOL) validFocusTarget: (AZClient *) ft;
 - (void) toTop: (AZClient *) c desktop: (unsigned int) d;
 - (void) toBottom: (AZClient *) c desktop: (unsigned int) d;
+- (void) clientDestroy: (NSNotification *) not;
 
 @end
 
@@ -83,7 +75,10 @@ static AZFocusManager *sharedInstance;
         XSetWindowAttributes attr;
 	AZStacking *stacking = [AZStacking stacking];
 
-	[[AZClientManager defaultManager] addDestructor: focus_cycle_destructor data: NULL];
+	[[NSNotificationCenter defaultCenter] addObserver: self
+		selector: @selector(clientDestroy:)
+		name: AZClientDestroyNotification
+		object: nil];
 
         /* start with nothing focused */
 	[self setClient: nil];
@@ -144,7 +139,7 @@ static AZFocusManager *sharedInstance;
     DESTROY(focus_cycle_popup);
 
     if (!reconfig) {
-	[[AZClientManager defaultManager] removeDestructor: focus_cycle_destructor];
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
 
         for (i = 0; i < count; ++i)
             g_list_free(focus_order[i]);
@@ -831,6 +826,15 @@ done_cycle:
              it && ![((AZClient*)it->data) iconic]; it = g_list_next(it));
         g_list_insert_before(focus_order[d], it, c);
     }
+}
+
+- (void) clientDestroy: (NSNotification *) not
+{
+    /* end cycling if the target disappears */
+    AZClient *client = [not object];
+    if (focus_cycle_target == client)
+      [self cycleForward: YES linear: YES interactive: YES
+  	                        dialog: YES done: YES cancel: YES];
 }
 
 @end
