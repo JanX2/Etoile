@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    parse.c for the Openbox window manager
@@ -16,18 +17,19 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#include "parse.h"
-#include <glib.h>
-#include <string.h>
-#include <errno.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#import <Foundation/Foundation.h>
+#import "parse.h"
+#import <glib.h>
+#import <string.h>
+#import <errno.h>
+#import <sys/stat.h>
+#import <sys/types.h>
 
 static BOOL xdg_start;
-static gchar   *xdg_config_home_path;
-static gchar   *xdg_data_home_path;
-static GSList  *xdg_config_dir_paths;
-static GSList  *xdg_data_dir_paths;
+static NSString *xdg_config_home_path;
+static NSString *xdg_data_home_path;
+static NSMutableArray *xdg_config_dir_paths;
+static NSMutableArray *xdg_data_dir_paths;
 
 struct Callback {
     gchar *tag;
@@ -80,12 +82,12 @@ void parse_register(ObParseInst *i, const gchar *tag,
 
 BOOL parse_load_rc(xmlDocPtr *doc, xmlNodePtr *root)
 {
-    GSList *it;
     gchar *path;
     BOOL r = NO;
 
-    for (it = xdg_config_dir_paths; !r && it; it = g_slist_next(it)) {
-        path = g_build_filename(it->data, "openbox", "rc.xml", NULL);
+    int i, count = [xdg_config_dir_paths count];
+    for (i = 0; !r && (i < count); i++) {
+	path = g_build_filename((char*)[[xdg_config_dir_paths objectAtIndex: i] cString], "openbox", "rc.xml", NULL);
         r = parse_load(path, "openbox_config", doc, root);
         g_free(path);
     }
@@ -96,15 +98,15 @@ BOOL parse_load_rc(xmlDocPtr *doc, xmlNodePtr *root)
 
 BOOL parse_load_menu(const gchar *file, xmlDocPtr *doc, xmlNodePtr *root)
 {
-    GSList *it;
     gchar *path;
     BOOL r = NO;
 
     if (file[0] == '/') {
         r = parse_load(file, "openbox_menu", doc, root);
     } else {
-        for (it = xdg_config_dir_paths; !r && it; it = g_slist_next(it)) {
-            path = g_build_filename(it->data, "openbox", file, NULL);
+        int i, count = [xdg_config_dir_paths count];
+        for (i = 0; !r && (i < count); i++) {
+	    path = g_build_filename((char*)[[xdg_config_dir_paths objectAtIndex: i] cString], "openbox", file, NULL);
             r = parse_load(path, "openbox_menu", doc, root);
             g_free(path);
         }
@@ -280,118 +282,67 @@ static GSList* slist_path_add(GSList *list, gpointer data, GSListFunc func)
     return list;
 }
 
-static GSList* split_paths(const gchar *paths)
-{
-    GSList *list = NULL;
-    gchar **spl, **it;
-
-    if (!paths)
-        return NULL;
-    spl = g_strsplit(paths, ":", -1);
-    for (it = spl; *it; ++it)
-        list = slist_path_add(list, *it, (GSListFunc) g_slist_append);
-    g_free(spl);
-    return list;
-}
-
 void parse_paths_startup()
 {
-    const gchar *path;
+    NSString *p;
+    NSProcessInfo *processInfo = [NSProcessInfo processInfo];
+    NSDictionary *env = [processInfo environment];
 
     if (xdg_start)
         return;
     xdg_start = YES;
 
-    path = g_getenv("XDG_CONFIG_HOME");
-    if (path && path[0] != '\0') /* not unset or empty */
-        xdg_config_home_path = g_build_filename(path, NULL);
+    p = [env objectForKey: @"XDG_CONFIG_HOME"];
+    if (p && [p length] > 0) /* not unset or empty */
+	ASSIGNCOPY(xdg_config_home_path, p);
     else
-        xdg_config_home_path = g_build_filename(g_get_home_dir(), ".config",
-                                                NULL);
+	ASSIGN(xdg_config_home_path, [NSHomeDirectory() stringByAppendingPathComponent: @".config"]);
 
-    path = g_getenv("XDG_DATA_HOME");
-    if (path && path[0] != '\0') /* not unset or empty */
-        xdg_data_home_path = g_build_filename(path, NULL);
+    p = [env objectForKey: @"XDG_DATA_HOME"];
+    if (p && [p length] > 0) /* not unset or empty */
+	ASSIGNCOPY(xdg_data_home_path, p);
     else
-        xdg_data_home_path = g_build_filename(g_get_home_dir(), ".local",
-                                              "share", NULL);
+	ASSIGN(xdg_data_home_path, [[NSHomeDirectory() stringByAppendingPathComponent: @".local"] stringByAppendingPathComponent: @"share"]);
 
-    path = g_getenv("XDG_CONFIG_DIRS");
-    if (path && path[0] != '\0') /* not unset or empty */
-        xdg_config_dir_paths = split_paths(path);
+    p = [env objectForKey: @"XDG_CONFIG_DIRS"];
+    xdg_config_dir_paths = [[NSMutableArray alloc] init];
+    [xdg_config_dir_paths addObject: xdg_config_home_path];
+    if (p && [p length] > 0) /* not unset or empty */
+        [xdg_config_dir_paths addObjectsFromArray: [p componentsSeparatedByString: @":"]];
     else {
-        xdg_config_dir_paths = slist_path_add(xdg_config_dir_paths,
-                                              g_build_filename
-                                              (G_DIR_SEPARATOR_S,
-                                               "etc", "xdg", NULL),
-                                              (GSListFunc) g_slist_append);
-#if 0 // FIXME: not exist 
-        xdg_config_dir_paths = slist_path_add(xdg_config_dir_paths,
-                                              g_strdup(CONFIGDIR),
-                                              (GSListFunc) g_slist_append);
-#endif
+	[xdg_config_dir_paths addObject: [NSString pathWithComponents: [NSArray arrayWithObjects: @"/", @"etc", @"xdg", nil]]];
     }
-    xdg_config_dir_paths = slist_path_add(xdg_config_dir_paths,
-                                          xdg_config_home_path,
-                                          (GSListFunc) g_slist_prepend);
     
-    path = g_getenv("XDG_DATA_DIRS");
-    if (path && path[0] != '\0') /* not unset or empty */
-        xdg_data_dir_paths = split_paths(path);
+    p = [env objectForKey: @"XDG_DATA_DIRS"];
+    xdg_data_dir_paths = [[NSMutableArray alloc] init];
+    [xdg_data_dir_paths addObject: xdg_data_home_path];
+    if (p && [p length] > 0) /* not unset or empty */
+        [xdg_data_dir_paths addObjectsFromArray: [p componentsSeparatedByString: @":"]];
     else {
-        xdg_data_dir_paths = slist_path_add(xdg_data_dir_paths,
-                                            g_build_filename
-                                            (G_DIR_SEPARATOR_S,
-                                             "usr", "local", "share", NULL),
-                                            (GSListFunc) g_slist_append);
-        xdg_data_dir_paths = slist_path_add(xdg_data_dir_paths,
-                                            g_build_filename
-                                            (G_DIR_SEPARATOR_S,
-                                             "usr", "share", NULL),
-                                            (GSListFunc) g_slist_append);
-#if 0 // FIXME: not used
-        xdg_data_dir_paths = slist_path_add(xdg_data_dir_paths,
-                                            g_strdup(DATADIR),
-                                            (GSListFunc) g_slist_append);
-#endif
+	[xdg_data_dir_paths addObject: [NSString pathWithComponents: [NSArray arrayWithObjects: @"/", @"usr", @"local", @"share", nil]]];
+	[xdg_data_dir_paths addObject: [NSString pathWithComponents: [NSArray arrayWithObjects: @"/", @"usr", @"share", nil]]];
     }
-    xdg_data_dir_paths = slist_path_add(xdg_data_dir_paths,
-                                        xdg_data_home_path,
-                                        (GSListFunc) g_slist_prepend);
 }
 
 void parse_paths_shutdown()
 {
-    GSList *it;
-
     if (!xdg_start)
         return;
     xdg_start = NO;
 
-    for (it = xdg_config_dir_paths; it; it = g_slist_next(it))
-        g_free(it->data);
-    g_slist_free(xdg_config_dir_paths);
-    xdg_config_dir_paths = NULL;
-    for (it = xdg_data_dir_paths; it; it = g_slist_next(it))
-        g_free(it->data);
-    g_slist_free(xdg_data_dir_paths);
-    xdg_data_dir_paths = NULL;
+    DESTROY(xdg_config_dir_paths);
+    DESTROY(xdg_data_dir_paths);
 }
 
-gchar *parse_expand_tilde(const gchar *f)
+char *parse_expand_tilde(char *f)
 {
-    gchar **spl;
-    gchar *ret;
-
-    if (!f)
-        return NULL;
-    spl = g_strsplit(f, "~", 0);
-    ret = g_strjoinv(g_get_home_dir(), spl);
-    g_strfreev(spl);
-    return ret;
+    if (!f) return NULL;
+    NSString *p = [NSString stringWithCString: f];
+    p = [p stringByExpandingTildeInPath];
+    return g_strdup((char*)[p cString]);
 }
 
-BOOL parse_mkdir(const gchar *path, int mode)
+static BOOL parse_mkdir(const gchar *path, int mode)
 {
     BOOL ret = YES;
 
@@ -432,22 +383,22 @@ BOOL parse_mkdir_path(const gchar *path, int mode)
     return ret;
 }
 
-const gchar* parse_xdg_config_home_path()
+NSString* parse_xdg_config_home_path()
 {
     return xdg_config_home_path;
 }
 
-const gchar* parse_xdg_data_home_path()
+NSString* parse_xdg_data_home_path()
 {
     return xdg_data_home_path;
 }
 
-GSList* parse_xdg_config_dir_paths()
+NSArray* parse_xdg_config_dir_paths()
 {
     return xdg_config_dir_paths;
 }
 
-GSList* parse_xdg_data_dir_paths()
+NSArray * parse_xdg_data_dir_paths()
 {
     return xdg_data_dir_paths;
 }

@@ -38,7 +38,7 @@ void session_state_free(ObSessionState *state) {}
 #include "openbox.h"
 #include "session.h"
 #include "prop.h"
-#include "parser/parse.h"
+#include "parse.h"
 
 #include <time.h>
 #include <errno.h>
@@ -153,7 +153,7 @@ void session_startup(int *argc, gchar ***argv)
     if (sm_disable)
         return;
 
-    sm_sessions_path = g_build_filename(parse_xdg_data_home_path(),
+    sm_sessions_path = g_build_filename((char*)[parse_xdg_data_home_path() cString],
                                         "openbox", "sessions", NULL);
     if (!parse_mkdir_path(sm_sessions_path, 0700))
         g_warning(("Unable to make directory '%s': %s"),

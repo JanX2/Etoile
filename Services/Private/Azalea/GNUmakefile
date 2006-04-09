@@ -5,7 +5,6 @@ include $(GNUSTEP_MAKEFILES)/common.make
 APP_NAME = Azalea
 
 Azalea_SUBPROJECTS = \
-	parser \
 	render
 
 Azalea_OBJC_FILES = \
@@ -41,6 +40,7 @@ Azalea_OBJC_FILES = \
 	menu.m \
 	mouse.m \
 	openbox.m \
+	parse.m \
 	prop.m \
 	session.m \
 	translate.m \

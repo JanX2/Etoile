@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    parse.h for the Openbox window manager
@@ -20,10 +21,10 @@
 #define __parse_h
 
 #import <Foundation/Foundation.h>
-#include "version.h"
+#import "version.h"
 
-#include <libxml/parser.h>
-#include <glib.h>
+#import <libxml/parser.h>
+#import <glib.h>
 
 G_BEGIN_DECLS
 
@@ -74,16 +75,14 @@ BOOL parse_attr_int(const gchar *name, xmlNodePtr node, int *value);
 void parse_paths_startup();
 void parse_paths_shutdown();
 
-const gchar* parse_xdg_config_home_path();
-const gchar* parse_xdg_data_home_path();
-GSList* parse_xdg_config_dir_paths();
-GSList* parse_xdg_data_dir_paths();
+NSString *parse_xdg_config_home_path();
+NSString *parse_xdg_data_home_path();
+NSArray *parse_xdg_config_dir_paths();
+NSArray *parse_xdg_data_dir_paths();
 
 /*! Expands the ~ character to the home directory throughout the given
   string */
-gchar *parse_expand_tilde(const gchar *f);
-/*! Makes a directory */
-BOOL parse_mkdir(const gchar *path, int mode);
+char *parse_expand_tilde(char *f);
 /*! Makes a directory and all its parents */
 BOOL parse_mkdir_path(const gchar *path, int mode);
 

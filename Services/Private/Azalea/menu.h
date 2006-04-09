@@ -22,7 +22,6 @@
 #include "action.h"
 #include "geom.h"
 #include "render/render.h"
-#include "parser/parse.h"
 
 #include <glib.h>
 

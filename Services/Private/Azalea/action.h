@@ -21,7 +21,7 @@
 
 #import "AZFrame.h"
 #include "misc.h"
-#include "parser/parse.h"
+#include "parse.h"
 
 typedef struct _ObAction ObAction;
 

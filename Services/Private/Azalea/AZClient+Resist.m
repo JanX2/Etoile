@@ -21,7 +21,7 @@
 #import "AZStacking.h"
 #import "AZClient+Resist.h"
 #import "config.h"
-#import "parser/parse.h"
+#import "parse.h"
 
 @implementation AZClient (AZResist)
 

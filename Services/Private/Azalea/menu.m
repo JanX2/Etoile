@@ -27,7 +27,7 @@
 #include "misc.h"
 #include "client_menu.h"
 #include "client_list_menu.h"
-#include "parser/parse.h"
+#include "parse.h"
 
 typedef struct _ObMenuParseState ObMenuParseState;
 

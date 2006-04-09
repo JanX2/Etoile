@@ -22,7 +22,7 @@
 #include "mask.h"
 #include "theme.h"
 #include "icon.h"
-#include "parser/parse.h"
+#include "parse.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xresource.h>
@@ -1049,7 +1049,6 @@ void RrThemeFree(RrTheme *theme)
 
 static XrmDatabase loaddb(RrTheme *theme, gchar *name)
 {
-    GSList *it;
     XrmDatabase db = NULL;
     gchar *s;
 
@@ -1066,10 +1065,11 @@ static XrmDatabase loaddb(RrTheme *theme, gchar *name)
             theme->path = g_path_get_dirname(s);
         g_free(s);
 
-        for (it = parse_xdg_data_dir_paths(); !db && it;
-             it = g_slist_next(it))
+	int i, count = [parse_xdg_data_dir_paths() count];
+	for (i = 0; (db == NULL) && (i < count); i++) 
         {
-            s = g_build_filename(it->data, "themes", name,
+	    char *p = (char*)[[parse_xdg_data_dir_paths() objectAtIndex: i] cString];
+            s = g_build_filename(p, "themes", name,
                                  "openbox-3", "themerc", NULL);
             if ((db = XrmGetFileDatabase(s)))
                 theme->path = g_path_get_dirname(s);

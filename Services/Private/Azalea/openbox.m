@@ -38,7 +38,7 @@
 #include "extensions.h"
 #include "grab.h"
 #include "config.h"
-#include "parser/parse.h"
+#include "parse.h"
 #include "render/render.h"
 #include "render/theme.h"
 

@@ -23,7 +23,7 @@
 #import "mouse.h"
 #import "prop.h"
 #import "translate.h"
-#import "parser/parse.h"
+#import "parse.h"
 #import "openbox.h"
 
 BOOL config_focus_new;
