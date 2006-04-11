@@ -22,19 +22,16 @@
 #include "action.h"
 #include "geom.h"
 #include "render/render.h"
+#import "AZMenu.h"
 
 #include <glib.h>
 
 @class AZMenuFrame;
 
 typedef struct _ObMenu ObMenu;
-typedef struct _ObMenuEntry ObMenuEntry;
-typedef struct _ObNormalMenuEntry ObNormalMenuEntry;
-typedef struct _ObSubmenuMenuEntry ObSubmenuMenuEntry;
-typedef struct _ObSeparatorMenuEntry ObSeparatorMenuEntry;
 
 typedef void (*ObMenuUpdateFunc)(AZMenuFrame *frame, gpointer data);
-typedef void (*ObMenuExecuteFunc)(struct _ObMenuEntry *entry,
+typedef void (*ObMenuExecuteFunc)(AZMenuEntry *entry,
                                   unsigned int state, gpointer data);
 typedef void (*ObMenuDestroyFunc)(struct _ObMenu *menu, gpointer data);
 
@@ -49,7 +46,7 @@ struct _ObMenu
     gchar *execute;
 
     /* ObMenuEntry list */
-    GList *entries;
+    NSMutableArray *entries;
 
     /* plugin data */
     gpointer data;
@@ -60,57 +57,6 @@ struct _ObMenu
 
     /* Pipe-menu parent, we get destroyed when it is destroyed */
     ObMenu *pipe_creator;
-};
-
-typedef enum
-{
-    OB_MENU_ENTRY_TYPE_NORMAL,
-    OB_MENU_ENTRY_TYPE_SUBMENU,
-    OB_MENU_ENTRY_TYPE_SEPARATOR
-} ObMenuEntryType;
-
-struct _ObNormalMenuEntry {
-    gchar *label;
-
-    /* state */
-    BOOL enabled;
-
-    /* List of ObActions */
-    GSList *actions;
-
-    /* Icon shit */
-    int icon_width;
-    int icon_height;
-    RrPixel32 *icon_data;
-
-    /* Mask icon */
-    RrPixmapMask *mask;
-    RrColor *mask_normal_color;
-    RrColor *mask_disabled_color;
-    RrColor *mask_selected_color;
-};
-
-struct _ObSubmenuMenuEntry {
-    gchar *name;
-    ObMenu *submenu;
-};
-
-struct _ObSeparatorMenuEntry {
-    gchar foo; /* placeholder */
-};
-
-struct _ObMenuEntry
-{
-    ObMenuEntryType type;
-    ObMenu *menu;
-
-    int id;
-
-    union u {
-        ObNormalMenuEntry normal;
-        ObSubmenuMenuEntry submenu;
-        ObSeparatorMenuEntry separator;
-    } data;
 };
 
 void menu_startup(BOOL reconfig);
@@ -129,15 +75,15 @@ void menu_set_execute_func(ObMenu *menu, ObMenuExecuteFunc func);
 void menu_set_destroy_func(ObMenu *menu, ObMenuDestroyFunc func);
 
 /* functions for building menus */
-ObMenuEntry* menu_add_normal(ObMenu *menu, int id, gchar *label,
+AZNormalMenuEntry* menu_add_normal(ObMenu *menu, int id, gchar *label,
                              GSList *actions);
-ObMenuEntry* menu_add_submenu(ObMenu *menu, int id, gchar *submenu);
-ObMenuEntry* menu_add_separator(ObMenu *menu, int id);
+AZSubmenuMenuEntry* menu_add_submenu(ObMenu *menu, int id, gchar *submenu);
+AZSeparatorMenuEntry* menu_add_separator(ObMenu *menu, int id);
 
 void menu_clear_entries(ObMenu *menu);
-void menu_entry_remove(ObMenuEntry *self);
+void menu_entry_remove(AZMenuEntry *menuentry);
 
-ObMenuEntry* menu_find_entry_id(ObMenu *self, int id);
+AZMenuEntry* menu_find_entry_id(ObMenu *self, int id);
 
 /* fills in the submenus, for use when a menu is being shown */
 void menu_find_submenus(ObMenu *self);

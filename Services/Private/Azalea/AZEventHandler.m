@@ -30,6 +30,7 @@
 #import "AZMoveResizeHandler.h"
 #import "AZFocusManager.h"
 #import "AZMenuFrame.h"
+#import "AZMenu.h"
 #import "openbox.h"
 #import "config.h"
 #import "prop.h"
@@ -1095,7 +1096,7 @@ static AZEventHandler *sharedInstance;
 
             a = [self findActiveMenu];
             if (a && a != f &&
-                [[a selected] entry]->type != OB_MENU_ENTRY_TYPE_SUBMENU)
+                [[[a selected] entry] type] != OB_MENU_ENTRY_TYPE_SUBMENU)
             {
 		[a selectMenuEntryFrame: nil];
             }

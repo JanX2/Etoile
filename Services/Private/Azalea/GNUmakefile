@@ -25,6 +25,7 @@ Azalea_OBJC_FILES = \
 	AZKeyboardHandler.m \
 	AZKeyTree.m \
 	AZMainLoop.m \
+	AZMenu.m \
 	AZMenuFrame.m \
 	AZMoveResizeHandler.m \
 	AZPopUp.m \

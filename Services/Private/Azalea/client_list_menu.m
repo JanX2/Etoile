@@ -21,6 +21,7 @@
 #import "AZFocusManager.h"
 #import "AZMenuFrame.h"
 #import "openbox.h"
+#import "AZMenu.h"
 #import "menu.h"
 #import "action.h"
 #import "config.h"
@@ -53,7 +54,7 @@ static void desk_menu_update(AZMenuFrame *frame, gpointer data)
         if ([c normal] && ![c skip_taskbar]) {
             GSList *acts = NULL;
             ObAction* act;
-            ObMenuEntry *e;
+            AZNormalMenuEntry *e;
             AZClientIcon *icon;
 
             empty = FALSE;
@@ -75,9 +76,9 @@ static void desk_menu_update(AZMenuFrame *frame, gpointer data)
 
             if (config_menu_client_list_icons && 
 		(icon = [c iconWithWidth: 32 height: 32])) {
-                e->data.normal.icon_width = [icon width];
-                e->data.normal.icon_height = [icon height];
-                e->data.normal.icon_data = [icon data];
+                [e set_icon_width: [icon width]];
+                [e set_icon_height: [icon height]];
+                [e set_icon_data: [icon data]];
             }
         }
     }
@@ -87,26 +88,26 @@ static void desk_menu_update(AZMenuFrame *frame, gpointer data)
 
         GSList *acts = NULL;
         ObAction* act;
-        ObMenuEntry *e;
+        AZNormalMenuEntry *e;
 
         act = action_from_string("Desktop", OB_USER_ACTION_MENU_SELECTION);
         act->data.desktop.desk = d->desktop;
         acts = g_slist_append(acts, act);
         e = menu_add_normal(menu, 0, ("Go there..."), acts);
         if (d->desktop == [[AZScreen defaultScreen] desktop])
-            e->data.normal.enabled = FALSE;
+            [e set_enabled: NO];
     }
 }
 
 /* executes it using the client in the actions, since we set that
    when we make the actions! */
-static void desk_menu_execute(ObMenuEntry *self, guint state, gpointer data)
+static void desk_menu_execute(AZNormalMenuEntry *self, guint state, gpointer data)
 {
     ObAction *a;
 
-    if (self->data.normal.actions) {
-        a = self->data.normal.actions->data;
-        action_run(self->data.normal.actions, a->data.any.c, state);
+    if ([self actions]) {
+        a = [self actions]->data;
+        action_run([self actions], a->data.any.c, state);
     }
 }
 

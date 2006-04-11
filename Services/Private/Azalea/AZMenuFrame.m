@@ -21,6 +21,7 @@
 #import "AZMenuFrame.h"
 #import "AZClient.h"
 #import "AZScreen.h"
+#import "AZMenu.h"
 #import "menu.h"
 #import "config.h"
 #import "openbox.h"
@@ -49,7 +50,7 @@ static Window createWindow(Window parent, unsigned long mask,
 
 @implementation AZMenuEntryFrame
 
-- (id) initWithMenuEntry: (ObMenuEntry *) _entry 
+- (id) initWithMenuEntry: (AZMenuEntry *) _entry 
                menuFrame: (AZMenuFrame *) _frame
 {
   self = [super init];
@@ -62,7 +63,7 @@ static Window createWindow(Window parent, unsigned long mask,
   attr.event_mask = ENTRY_EVENTMASK;
   window = createWindow([frame items], CWEventMask, &attr);
   text = createWindow(window, 0, NULL);
-  if (entry->type != OB_MENU_ENTRY_TYPE_SEPARATOR) {
+  if ([entry type] != OB_MENU_ENTRY_TYPE_SEPARATOR) {
       icon = createWindow(window, 0, NULL);
       bullet = createWindow(window, 0, NULL);
   }
@@ -74,7 +75,7 @@ static Window createWindow(Window parent, unsigned long mask,
   a_disabled = RrAppearanceCopy(ob_rr_theme->a_menu_disabled);
   a_selected = RrAppearanceCopy(ob_rr_theme->a_menu_selected);
 
-  if (entry->type == OB_MENU_ENTRY_TYPE_SEPARATOR) {
+  if ([entry type] == OB_MENU_ENTRY_TYPE_SEPARATOR) {
     a_separator = RrAppearanceCopy(ob_rr_theme->a_clear_tex);
     a_separator->texture[0].type = RR_TEXTURE_LINE_ART;
   } else {
@@ -100,7 +101,7 @@ static Window createWindow(Window parent, unsigned long mask,
 {
         XDestroyWindow(ob_display, text);
         XDestroyWindow(ob_display, window);
-        if (entry->type != OB_MENU_ENTRY_TYPE_SEPARATOR) {
+        if ([entry type] != OB_MENU_ENTRY_TYPE_SEPARATOR) {
             XDestroyWindow(ob_display, icon);
             XDestroyWindow(ob_display, bullet);
         }
@@ -127,10 +128,11 @@ static Window createWindow(Window parent, unsigned long mask,
     int th; /* temp */
     ObMenu *sub;
 
-    item_a = ((entry->type == OB_MENU_ENTRY_TYPE_NORMAL &&
-               !entry->data.normal.enabled) ?
+    item_a = (([entry type] == OB_MENU_ENTRY_TYPE_NORMAL &&
+               ![(AZNormalMenuEntry *)entry enabled]) ?
               a_disabled : (self == [frame selected] ?  a_selected : a_normal));
-    switch (entry->type) {
+
+    switch ([entry type]) {
     case OB_MENU_ENTRY_TYPE_NORMAL:
     case OB_MENU_ENTRY_TYPE_SUBMENU:
         th = [frame item_h];
@@ -138,6 +140,8 @@ static Window createWindow(Window parent, unsigned long mask,
     case OB_MENU_ENTRY_TYPE_SEPARATOR:
         th = SEPARATOR_HEIGHT + 2*PADDING;
         break;
+    default: 
+	NSLog(@"Internal Error: unknown type");
     }
     RECT_SET_SIZE(area, [frame inner_w], th);
     XResizeWindow(ob_display, window, area.width, area.height);
@@ -146,23 +150,24 @@ static Window createWindow(Window parent, unsigned long mask,
     item_a->surface.parenty = area.y;
     RrPaint(item_a, window, area.width, area.height);
 
-    text_a = ((entry->type == OB_MENU_ENTRY_TYPE_NORMAL &&
-               !entry->data.normal.enabled) ?
+    RECT_SET_SIZE(area, [frame inner_w], th);
+    text_a = (([entry type] == OB_MENU_ENTRY_TYPE_NORMAL &&
+               ![(AZNormalMenuEntry *)entry enabled]) ?
               a_text_disabled :
               (self == [frame selected] ?  a_text_selected : a_text_normal));
-    switch (entry->type) {
+    switch ([entry type]) {
     case OB_MENU_ENTRY_TYPE_NORMAL:
-        text_a->texture[0].data.text.string = entry->data.normal.label;
+        text_a->texture[0].data.text.string = [(AZNormalMenuEntry *)entry label];
         break;
     case OB_MENU_ENTRY_TYPE_SUBMENU:
-        sub = entry->data.submenu.submenu;
+        sub = [(AZSubmenuMenuEntry *)entry submenu];
         text_a->texture[0].data.text.string = sub ? sub->title : "";
         break;
     case OB_MENU_ENTRY_TYPE_SEPARATOR:
         break;
     }
 
-    switch (entry->type) {
+    switch ([entry type]) {
     case OB_MENU_ENTRY_TYPE_NORMAL:
         XMoveResizeWindow(ob_display, text,
                           [frame text_x], PADDING,
@@ -201,8 +206,8 @@ static Window createWindow(Window parent, unsigned long mask,
         break;
     }
 
-    if (entry->type != OB_MENU_ENTRY_TYPE_SEPARATOR &&
-        entry->data.normal.icon_data)
+    if ([entry type] != OB_MENU_ENTRY_TYPE_SEPARATOR &&
+        [(AZIconMenuEntry *)entry icon_data])
     {
         XMoveResizeWindow(ob_display, icon,
                           PADDING, [frame item_margin].top,
@@ -211,11 +216,11 @@ static Window createWindow(Window parent, unsigned long mask,
                           [frame item_h] - [frame item_margin].top
                           - [frame item_margin].bottom);
         a_icon->texture[0].data.rgba.width =
-            entry->data.normal.icon_width;
+            [(AZIconMenuEntry *)entry icon_width];
         a_icon->texture[0].data.rgba.height =
-            entry->data.normal.icon_height;
+            [(AZIconMenuEntry *)entry icon_height];
         a_icon->texture[0].data.rgba.data =
-            entry->data.normal.icon_data;
+            [(AZIconMenuEntry *)entry icon_data];
         a_icon->surface.parent = item_a;
         a_icon->surface.parentx = PADDING;
         a_icon->surface.parenty = [frame item_margin].top;
@@ -225,8 +230,8 @@ static Window createWindow(Window parent, unsigned long mask,
                 [frame item_h] - [frame item_margin].top
                 - [frame item_margin].bottom);
         XMapWindow(ob_display, icon);
-    } else if (entry->type != OB_MENU_ENTRY_TYPE_SEPARATOR &&
-               entry->data.normal.mask)
+    } else if ([entry type] != OB_MENU_ENTRY_TYPE_SEPARATOR &&
+               [(AZIconMenuEntry *)entry mask])
     {
         RrColor *c;
 
@@ -236,14 +241,14 @@ static Window createWindow(Window parent, unsigned long mask,
                           - [frame item_margin].bottom,
                           [frame item_h] - [frame item_margin].top
                           - [frame item_margin].bottom);
-        a_mask->texture[0].data.mask.mask = entry->data.normal.mask;
+        a_mask->texture[0].data.mask.mask = [(AZIconMenuEntry *)entry mask];
 
-        c = ((entry->type == OB_MENU_ENTRY_TYPE_NORMAL &&
-              !entry->data.normal.enabled) ?
-             entry->data.normal.mask_disabled_color :
+        c = (([entry type] == OB_MENU_ENTRY_TYPE_NORMAL &&
+              ![(AZNormalMenuEntry *)entry enabled]) ?
+             [(AZNormalMenuEntry *)entry mask_disabled_color] :
              (self == [frame selected] ?
-              entry->data.normal.mask_selected_color :
-              entry->data.normal.mask_normal_color));
+              [(AZNormalMenuEntry *)entry mask_selected_color] :
+              [(AZNormalMenuEntry *)entry mask_normal_color]));
         a_mask->texture[0].data.mask.color = c;
 
         a_mask->surface.parent = item_a;
@@ -258,7 +263,7 @@ static Window createWindow(Window parent, unsigned long mask,
     } else
         XUnmapWindow(ob_display, icon);
 
-    if (entry->type == OB_MENU_ENTRY_TYPE_SUBMENU) {
+    if ([entry type] == OB_MENU_ENTRY_TYPE_SUBMENU) {
         RrAppearance *bullet_a;
         XMoveResizeWindow(ob_display, bullet,
                           [frame text_x] + [frame text_w]
@@ -285,9 +290,10 @@ static Window createWindow(Window parent, unsigned long mask,
 {
     AZMenuFrame *f;
 
-    if (!entry->data.submenu.submenu) return;
+    if (!(([entry type] == OB_MENU_ENTRY_TYPE_SUBMENU) && 
+	    ([(AZSubmenuMenuEntry *)entry submenu] != NULL))) return;
 
-    f = [[AZMenuFrame alloc] initWithMenu: entry->data.submenu.submenu
+    f = [[AZMenuFrame alloc] initWithMenu: [(AZSubmenuMenuEntry *)entry submenu]
 	                           client: [frame client]];
     [f moveToX: [frame area].x + [frame area].width
                     - ob_rr_theme->menu_overlap - ob_rr_theme->bwidth
@@ -298,14 +304,14 @@ static Window createWindow(Window parent, unsigned long mask,
 
 - (void) execute: (unsigned int) state
 {
-    if (entry->type == OB_MENU_ENTRY_TYPE_NORMAL &&
-        entry->data.normal.enabled)
+    if ([entry type] == OB_MENU_ENTRY_TYPE_NORMAL &&
+        [(AZNormalMenuEntry *)entry enabled])
     {
         /* grab all this shizzle, cuz when the menu gets hidden, 'self'
            gets freed */
         ObMenuExecuteFunc func = [frame menu]->execute_func;
         gpointer data = [frame menu]->data;
-        GSList *acts = entry->data.normal.actions;
+        GSList *acts = [(AZNormalMenuEntry *)entry actions];
         AZClient *client = [frame client];
 
         /* release grabs before executing the shit */
@@ -328,8 +334,8 @@ static Window createWindow(Window parent, unsigned long mask,
 - (RrAppearance *) a_selected { return a_selected; }
 - (RrAppearance *) a_disabled { return a_disabled; }
 - (Window) window { return window; }
-- (struct _ObMenuEntry *) entry { return entry; }
-- (void) set_entry: (struct _ObMenuEntry *) e { entry = e; }
+- (AZMenuEntry *) entry { return entry; }
+- (void) set_entry: (AZMenuEntry *) e { entry = e; }
 
 @end
 
@@ -533,30 +539,30 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 	[e set_area: _area];
         XMoveWindow(ob_display, [e window], 0, [e area].y);
 
-        text_a = (([e entry]->type == OB_MENU_ENTRY_TYPE_NORMAL &&
-                   ![e entry]->data.normal.enabled) ?
+        text_a = (([[e entry] type] == OB_MENU_ENTRY_TYPE_NORMAL &&
+                   ![(AZNormalMenuEntry *)[e entry] enabled]) ?
                   [e a_text_disabled] :
                   (e == self->selected ?
                    [e a_text_selected] :
                    [e a_text_normal]));
-        switch ([e entry]->type) {
+        switch ([[e entry] type]) {
         case OB_MENU_ENTRY_TYPE_NORMAL:
-            text_a->texture[0].data.text.string = [e entry]->data.normal.label;
+            text_a->texture[0].data.text.string = [(AZNormalMenuEntry *)[e entry] label];
             RrMinsize(text_a, &tw, &th);
             tw = MIN(tw, MAX_MENU_WIDTH);
 
-            if ([e entry]->data.normal.icon_data ||
-                [e entry]->data.normal.mask)
+            if ([(AZIconMenuEntry *)[e entry] icon_data] ||
+                [(AZIconMenuEntry *)[e entry] mask])
                 has_icon = YES;
             break;
         case OB_MENU_ENTRY_TYPE_SUBMENU:
-            sub = [e entry]->data.submenu.submenu;
+            sub = [(AZSubmenuMenuEntry *)[e entry] submenu];
             text_a->texture[0].data.text.string = sub ? sub->title : "";
             RrMinsize(text_a, &tw, &th);
             tw = MIN(tw, MAX_MENU_WIDTH);
 
-            if ([e entry]->data.normal.icon_data ||
-                [e entry]->data.normal.mask)
+            if ([(AZIconMenuEntry *)[e entry] icon_data] ||
+                [(AZIconMenuEntry *)[e entry] mask])
                 has_icon = YES;
 
             tw += self->item_h - PADDING;
@@ -618,8 +624,8 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
 - (void) update
 {
-    GList *mit;
     int fit, fcount;
+    int mit, mcount;
 
     menu_pipe_execute(menu);
     menu_find_submenus(menu);
@@ -627,17 +633,16 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     selected = nil;
 
     fcount = [entries count];
-    for (mit = menu->entries, fit = 0; mit && fit < fcount;
-         mit = g_list_next(mit), fit++)
+    mcount = [menu->entries count];
+    for (mit = 0, fit = 0; mit < mcount, fit < fcount; mit++, fit++)
     {
         AZMenuEntryFrame *f = [entries objectAtIndex: fit];
-        [f set_entry: mit->data];
+        [f set_entry: [menu->entries objectAtIndex: mit]];
     }
 
-    while (mit) {
-        AZMenuEntryFrame *e = [[AZMenuEntryFrame alloc] initWithMenuEntry: mit->data menuFrame: self];
+    for (; mit < mcount; mit++) {
+        AZMenuEntryFrame *e = [[AZMenuEntryFrame alloc] initWithMenuEntry: [menu->entries objectAtIndex: mit] menuFrame: self];
 	[entries addObject: e];
-        mit = g_list_next(mit);
 	DESTROY(e);
     }
     
@@ -733,7 +738,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     AZMenuEntryFrame *old = selected;
     AZMenuFrame *oldchild = child;
 
-    if (entry && [entry entry]->type == OB_MENU_ENTRY_TYPE_SEPARATOR)
+    if (entry && [[entry entry] type] == OB_MENU_ENTRY_TYPE_SEPARATOR)
         entry = old;
 
     if (old == entry) return;
@@ -748,7 +753,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     if (selected) {
 	[selected render];
 
-        if ([selected entry]->type == OB_MENU_ENTRY_TYPE_SUBMENU)
+        if ([[selected entry] type] == OB_MENU_ENTRY_TYPE_SUBMENU)
 	    [selected showSubmenu];
     }
 }
@@ -771,10 +776,10 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
             {
                 e = (AZMenuEntryFrame*)[entries objectAtIndex: it];
-                if ([e entry]->type == OB_MENU_ENTRY_TYPE_SUBMENU)
+                if ([[e entry] type] == OB_MENU_ENTRY_TYPE_SUBMENU)
                     break;
-                if ([e entry]->type == OB_MENU_ENTRY_TYPE_NORMAL &&
-                    [e entry]->data.normal.enabled)
+                if ([[e entry] type] == OB_MENU_ENTRY_TYPE_NORMAL &&
+                    [(AZNormalMenuEntry *)[e entry] enabled])
                     break;
             }
         }
@@ -799,10 +804,10 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
             {
                 e = (AZMenuEntryFrame *)[entries objectAtIndex: it];
-                if ([e entry]->type == OB_MENU_ENTRY_TYPE_SUBMENU)
+                if ([[e entry] type] == OB_MENU_ENTRY_TYPE_SUBMENU)
                     break;
-                if ([e entry]->type == OB_MENU_ENTRY_TYPE_NORMAL &&
-                    [e entry]->data.normal.enabled)
+                if ([[e entry] type] == OB_MENU_ENTRY_TYPE_NORMAL &&
+                    [(AZNormalMenuEntry *)[e entry] enabled])
                     break;
             }
         }

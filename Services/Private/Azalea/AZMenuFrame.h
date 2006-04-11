@@ -21,7 +21,7 @@
 #import "window.h"
 #import <Foundation/Foundation.h>
 
-struct _ObMenuEntry;
+@class AZMenuEntry;
 @class AZMenuEntryFrame;
 @class AZClient;
 
@@ -106,7 +106,7 @@ struct _ObMenuEntry;
 
 @interface AZMenuEntryFrame: NSObject
 {
-    struct _ObMenuEntry *entry;
+    AZMenuEntry *entry;
     AZMenuFrame *frame;
 
     Rect area;
@@ -130,7 +130,7 @@ struct _ObMenuEntry;
     RrAppearance *a_text_selected;
 }
 
-- (id) initWithMenuEntry: (ObMenuEntry *) entry 
+- (id) initWithMenuEntry: (AZMenuEntry *) entry 
                menuFrame: (AZMenuFrame *) frame;
 - (void) render;
 - (void) showSubmenu;
@@ -146,8 +146,8 @@ struct _ObMenuEntry;
 - (RrAppearance *) a_selected;
 - (RrAppearance *) a_disabled;
 - (Window) window;
-- (struct _ObMenuEntry *) entry;
-- (void) set_entry: (struct _ObMenuEntry *) entry;
+- (AZMenuEntry *) entry;
+- (void) set_entry: (AZMenuEntry *) entry;
 
 @end
 

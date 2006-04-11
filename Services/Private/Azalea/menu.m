@@ -230,6 +230,7 @@ ObMenu* menu_new(gchar *name, gchar *title, gpointer data)
     self->name = g_strdup(name);
     self->title = g_strdup(title);
     self->data = data;
+    self->entries = [[NSMutableArray alloc] init];
 
     g_hash_table_replace(menu_hash, self->name, self);
 
@@ -265,6 +266,7 @@ static void menu_destroy_hash_value(ObMenu *self)
 void menu_free(ObMenu *menu)
 {
     g_hash_table_remove(menu_hash, menu->name);
+    DESTROY(menu->entries);
 }
 
 void menu_show(gchar *name, int x, int y, AZClient *client)
@@ -305,53 +307,6 @@ void menu_show(gchar *name, int x, int y, AZClient *client)
 	DESTROY(frame);
 }
 
-static ObMenuEntry* menu_entry_new(ObMenu *menu, ObMenuEntryType type, int id)
-{
-    ObMenuEntry *self;
-
-    g_assert(menu);
-
-    self = g_new0(ObMenuEntry, 1);
-    self->type = type;
-    self->menu = menu;
-    self->id = id;
-
-    switch (type) {
-    case OB_MENU_ENTRY_TYPE_NORMAL:
-        self->data.normal.enabled = YES;
-        break;
-    case OB_MENU_ENTRY_TYPE_SUBMENU:
-    case OB_MENU_ENTRY_TYPE_SEPARATOR:
-        break;
-    }
-
-    return self;
-}
-
-void menu_entry_free(ObMenuEntry *self)
-{
-    if (self) {
-        switch (self->type) {
-        case OB_MENU_ENTRY_TYPE_NORMAL:
-            g_free(self->data.normal.label);
-            while (self->data.normal.actions) {
-                action_unref(self->data.normal.actions->data);
-                self->data.normal.actions =
-                    g_slist_delete_link(self->data.normal.actions,
-                                        self->data.normal.actions);
-            }
-            break;
-        case OB_MENU_ENTRY_TYPE_SUBMENU:
-            g_free(self->data.submenu.name);
-            break;
-        case OB_MENU_ENTRY_TYPE_SEPARATOR:
-            break;
-        }
-
-        g_free(self);
-    }
-}
-
 void menu_clear_entries(ObMenu *self)
 {
 #ifdef DEBUG
@@ -367,50 +322,37 @@ void menu_clear_entries(ObMenu *self)
     }
 #endif
 
-    while (self->entries) {
-        menu_entry_free(self->entries->data);
-        self->entries = g_list_delete_link(self->entries, self->entries);
-    }
+    [self->entries removeAllObjects];
 }
 
-void menu_entry_remove(ObMenuEntry *self)
+void menu_entry_remove(AZMenuEntry *menuentry)
 {
-    self->menu->entries = g_list_remove(self->menu->entries, self);
-    menu_entry_free(self);
+    [[menuentry menu]->entries removeObject: menuentry];
+    DESTROY(menuentry);
 }
 
-ObMenuEntry* menu_add_normal(ObMenu *self, int id, gchar *label,
+AZNormalMenuEntry* menu_add_normal(ObMenu *self, int id, gchar *label,
                              GSList *actions)
 {
-    ObMenuEntry *e;
-
-    e = menu_entry_new(self, OB_MENU_ENTRY_TYPE_NORMAL, id);
-    e->data.normal.label = g_strdup(label);
-    e->data.normal.actions = actions;
-
-    self->entries = g_list_append(self->entries, e);
-    return e;
+  AZNormalMenuEntry *e = [[AZNormalMenuEntry alloc] initWithMenu: self identifier: id
+	                        label: label actions: actions];
+  [self->entries addObject: e];
+  return e;
 }
 
-ObMenuEntry* menu_add_submenu(ObMenu *self, int id, gchar *submenu)
+AZSubmenuMenuEntry* menu_add_submenu(ObMenu *self, int id, gchar *submenu)
 {
-    ObMenuEntry *e;
+  AZSubmenuMenuEntry *e = [[AZSubmenuMenuEntry alloc] initWithMenu: self identifier: id submenu: submenu];
 
-    e = menu_entry_new(self, OB_MENU_ENTRY_TYPE_SUBMENU, id);
-    e->data.submenu.name = g_strdup(submenu);
-
-    self->entries = g_list_append(self->entries, e);
-    return e;
+  [self->entries addObject: e];
+  return e;
 }
 
-ObMenuEntry* menu_add_separator(ObMenu *self, int id)
+AZSeparatorMenuEntry* menu_add_separator(ObMenu *self, int id)
 {
-    ObMenuEntry *e;
-
-    e = menu_entry_new(self, OB_MENU_ENTRY_TYPE_SEPARATOR, id);
-
-    self->entries = g_list_append(self->entries, e);
-    return e;
+  AZSeparatorMenuEntry *e = [[AZSeparatorMenuEntry alloc] initWithMenu: self identifier: id];
+  [self->entries addObject: e];
+  return e;
 }
 
 void menu_set_update_func(ObMenu *self, ObMenuUpdateFunc func)
@@ -428,30 +370,27 @@ void menu_set_destroy_func(ObMenu *self, ObMenuDestroyFunc func)
     self->destroy_func = func;
 }
 
-ObMenuEntry* menu_find_entry_id(ObMenu *self, int id)
+AZMenuEntry* menu_find_entry_id(ObMenu *self, int id)
 {
-    ObMenuEntry *ret = NULL;
-    GList *it;
-
-    for (it = self->entries; it; it = g_list_next(it)) {
-        ObMenuEntry *e = it->data;
-
-        if (e->id == id) {
-            ret = e;
-            break;
-        }
+    AZMenuEntry *ret = NULL;
+    int i, count = [self->entries count];
+    for (i = 0; i < count; i++) {
+      AZMenuEntry *e = [self->entries objectAtIndex: i];
+      if ([e identifier] == id) {
+	ret = e;
+	break;
+      }
     }
     return ret;
 }
 
 void menu_find_submenus(ObMenu *self)
 {
-    GList *it;
-
-    for (it = self->entries; it; it = g_list_next(it)) {
-        ObMenuEntry *e = it->data;
-
-        if (e->type == OB_MENU_ENTRY_TYPE_SUBMENU)
-            e->data.submenu.submenu = menu_from_name(e->data.submenu.name);
-    }
+  int i, count = [self->entries count];
+  for (i = 0; i < count; i++) {
+    AZMenuEntry *e = [self->entries objectAtIndex: i];
+    if ([e type] == OB_MENU_ENTRY_TYPE_SUBMENU)
+      [(AZSubmenuMenuEntry *)e set_submenu: menu_from_name([(AZSubmenuMenuEntry *)e name])];
+  }
 }
+
