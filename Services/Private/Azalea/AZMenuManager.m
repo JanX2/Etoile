@@ -137,7 +137,7 @@ static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
         if (!parse_attr_string("label", node, &title))
             goto parse_menu_fail;
 
-        if ((menu = [[AZMenu alloc] initWithName: name title: title data: NULL])) {
+        if ((menu = [[AZMenu alloc] initWithName: name title: title])) {
             [menu set_pipe_creator: state->pipe_creator];
             if (parse_attr_string("execute", node, &script)) {
                 [menu set_execute: parse_expand_tilde(script)];
@@ -176,9 +176,6 @@ static void menu_destroy_hash_value(AZMenu *self)
 		AZMenuFrameHideAll();
         }
     }
-
-    if ([self destroy_func])
-        [self destroy_func](self, [self data]);
 
     DESTROY(self);
 }

@@ -50,7 +50,12 @@ enum {
     CLIENT_CLOSE
 };
 
-static void client_update(AZMenuFrame *frame, gpointer data)
+@interface AZClientMenu: AZMenu
+@end
+
+@implementation AZClientMenu
+
+- (void) update: (AZMenuFrame *) frame 
 {
     AZMenu *menu = [frame menu];
     AZMenuEntry *e;
@@ -97,8 +102,13 @@ static void client_update(AZMenuFrame *frame, gpointer data)
     e = [menu entryWithIdentifier: CLIENT_DECORATE];
     [(AZNormalMenuEntry *)e set_enabled: [[frame client] normal]];
 }
+@end
 
-static void layer_update(AZMenuFrame *frame, gpointer data)
+@interface AZLayerMenu: AZMenu
+@end
+
+@implementation AZLayerMenu
+- (void) update: (AZMenuFrame *) frame 
 {
     AZMenu *menu = [frame menu];
     AZMenuEntry *e;
@@ -123,8 +133,13 @@ static void layer_update(AZMenuFrame *frame, gpointer data)
     e = [menu entryWithIdentifier: LAYER_BOTTOM];
     [(AZNormalMenuEntry *)e set_enabled: ![[frame client] below]];
 }
+@end
 
-static void send_to_update(AZMenuFrame *frame, gpointer data)
+@interface AZSendMenu: AZMenu
+@end
+
+@implementation  AZSendMenu
+- (void) update: (AZMenuFrame *) frame 
 {
     AZMenu *menu = [frame menu];
     guint i;
@@ -140,17 +155,17 @@ static void send_to_update(AZMenuFrame *frame, gpointer data)
     AZScreen *screen = [AZScreen defaultScreen];
     unsigned int num_desktops = [screen numberOfDesktops];
     for (i = 0; i <= num_desktops; ++i) {
-        gchar *name;
+        gchar *n;
         guint desk;
 
         if (i >= num_desktops) {
             [menu addSeparatorMenuEntry: -1];
 
             desk = DESKTOP_ALL;
-            name = ("All desktops");
+            n = ("All desktops");
         } else {
             desk = i;
-            name = [screen nameOfDesktopAtIndex: i];
+            n = [screen nameOfDesktopAtIndex: i];
         }
 
         act = action_from_string("SendToDesktop",
@@ -158,49 +173,46 @@ static void send_to_update(AZMenuFrame *frame, gpointer data)
         act->data.sendto.desk = desk;
         act->data.sendto.follow = FALSE;
         acts = g_slist_prepend(NULL, act);
-	e = [menu addNormalMenuEntry: desk label: name actions: acts];
+	e = [menu addNormalMenuEntry: desk label: n actions: acts];
 
         if ([[frame client] desktop] == desk)
             [e set_enabled: NO];
     }
 }
+@end
 
 void client_menu_startup()
 {
     GSList *acts;
-    AZMenu *menu;
     AZMenuEntry *e;
 
-    menu = [[AZMenu alloc] initWithName: LAYER_MENU_NAME title: "Layer"
-	                            data: NULL];
-    [menu setUpdateFunc: layer_update];
+    /* Layer */
+    AZLayerMenu *layer_menu = [[AZLayerMenu alloc] initWithName: LAYER_MENU_NAME title: "Layer"];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("SendToTopLayer", OB_USER_ACTION_MENU_SELECTION));
-    [menu addNormalMenuEntry: LAYER_TOP label: "Always on top" actions: acts];
+    [layer_menu addNormalMenuEntry: LAYER_TOP label: "Always on top" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("SendToNormalLayer",
                             OB_USER_ACTION_MENU_SELECTION));
-    [menu addNormalMenuEntry: LAYER_NORMAL label: "Normal" actions: acts];
+    [layer_menu addNormalMenuEntry: LAYER_NORMAL label: "Normal" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("SendToBottomLayer",
                             OB_USER_ACTION_MENU_SELECTION));
-    [menu addNormalMenuEntry: LAYER_BOTTOM label: "Always on bottom" actions: acts];
+    [layer_menu addNormalMenuEntry: LAYER_BOTTOM label: "Always on bottom" actions: acts];
 
-    [[AZMenuManager defaultManager] registerMenu: menu];
+    [[AZMenuManager defaultManager] registerMenu: layer_menu];
 
-    menu = [[AZMenu alloc] initWithName: SEND_TO_MENU_NAME 
-	                          title: "Send to desktop"
-	                           data: NULL];
-    [menu setUpdateFunc: send_to_update];
-    [[AZMenuManager defaultManager] registerMenu: menu];
+    /* Send Menu */
+    AZSendMenu *send_menu = [[AZSendMenu alloc] initWithName: SEND_TO_MENU_NAME 
+	                          title: "Send to desktop"];
+    [[AZMenuManager defaultManager] registerMenu: send_menu];
 
-    menu = [[AZMenu alloc] initWithName: CLIENT_MENU_NAME 
-	                          title: "Client menu"
-	                           data: NULL];
-    [menu setUpdateFunc: client_update];
+    /* Client menu */
+    AZClientMenu *menu = [[AZClientMenu alloc] initWithName: CLIENT_MENU_NAME 
+	                          title: "Client menu"];
 
     e = [menu addSubmenuMenuEntry: CLIENT_SEND_TO submenu: SEND_TO_MENU_NAME];
     [(AZSubmenuMenuEntry*)e set_mask: ob_rr_theme->desk_mask];

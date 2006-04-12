@@ -152,21 +152,6 @@
   }
 }
 
-- (void) setUpdateFunc: (ObMenuUpdateFunc) func
-{
-  update_func = func;
-}
-
-- (void) setExecuteFunc: (ObMenuExecuteFunc) func
-{
-  execute_func = func;
-}
-
-- (void) setDestroyFunc: (ObMenuDestroyFunc) func
-{
-  destroy_func = func;
-}
-
 - (AZNormalMenuEntry *) addNormalMenuEntry: (int) identifier 
                         label: (gchar *) label actions: (GSList *) actions
 {
@@ -213,12 +198,11 @@
     [entries removeAllObjects];
 }
 
-- (id) initWithName: (gchar *) n title: (gchar *) t data: (gpointer) d
+- (id) initWithName: (gchar *) n title: (gchar *) t
 {
   self = [super init];
   name = g_strdup(n);
   title = g_strdup(t);
-  data = d;
   entries = [[NSMutableArray alloc] init];
   return self;
 }
@@ -238,19 +222,25 @@
   menu_pipe_execute(self);
 }
 
+- (void) update: (AZMenuFrame *) frame 
+{
+  // subclass
+}
+
+- (BOOL) execute: (AZMenuEntry *) entry state: (unsigned int) state 
+{
+  return NO;
+}
+
+
 - (gchar *) name { return name; }
 - (gchar *) title { return title; }
 - (gchar *) execute { return execute; }
 - (NSMutableArray *) entries { return entries; }
-- (gpointer) data { return data; }
-- (ObMenuUpdateFunc) update_func { return update_func; }
-- (ObMenuExecuteFunc) execute_func { return execute_func; }
-- (ObMenuDestroyFunc) destroy_func { return destroy_func; }
 - (AZMenu *) pipe_creator { return pipe_creator; }
 - (void) set_name: (gchar *) n { name = n; }
 - (void) set_title: (gchar *) t { title = t; }
 - (void) set_execute: (gchar *) e { execute = e; }
-- (void) set_data: (gpointer) d { data = d; }
 - (void) set_pipe_creator: (AZMenu *) p { pipe_creator = p; }
 
 @end

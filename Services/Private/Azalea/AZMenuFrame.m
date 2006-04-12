@@ -309,8 +309,6 @@ static Window createWindow(Window parent, unsigned long mask,
     {
         /* grab all this shizzle, cuz when the menu gets hidden, 'self'
            gets freed */
-        ObMenuExecuteFunc func = [[frame menu] execute_func];
-        gpointer data = [[frame menu] data];
         GSList *acts = [(AZNormalMenuEntry *)entry actions];
         AZClient *client = [frame client];
 
@@ -318,9 +316,7 @@ static Window createWindow(Window parent, unsigned long mask,
         if (!(state & ControlMask))
 	    AZMenuFrameHideAll();
 
-        if (func)
-            func(entry, state, data);
-        else
+	if ([[frame menu] execute: entry state: state] == NO)
             action_run(acts, client, state);
     }
 }
@@ -690,8 +686,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 	}
     }
     if (found == NSNotFound) {
-        if ([menu update_func])
-            [menu update_func](self, [menu data]);
+	[menu update: self];
     }
 
     [self update];

@@ -28,11 +28,6 @@
 @class AZSeparatorMenuEntry;
 
 /* Menu */
-typedef void (*ObMenuUpdateFunc)(AZMenuFrame *frame, gpointer data);
-typedef void (*ObMenuExecuteFunc)(AZMenuEntry *entry,
-                                  unsigned int state, gpointer data);
-typedef void (*ObMenuDestroyFunc)(AZMenu *menu, gpointer data);
-
 @interface AZMenu: NSObject
 {
     /* Name of the menu. Used in the showmenu action. */
@@ -46,25 +41,14 @@ typedef void (*ObMenuDestroyFunc)(AZMenu *menu, gpointer data);
     /* ObMenuEntry list */
     NSMutableArray *entries;
 
-    /* plugin data */
-    gpointer data;
-
-    ObMenuUpdateFunc update_func;
-    ObMenuExecuteFunc execute_func;
-    ObMenuDestroyFunc destroy_func;
-
     /* Pipe-menu parent, we get destroyed when it is destroyed */
     AZMenu *pipe_creator;
 }
 
-- (id) initWithName: (gchar *) name title: (gchar *) title data: (gpointer) data;
+- (id) initWithName: (gchar *) name title: (gchar *) title;
 
 /* Repopulate a pipe-menu by running its command */
 - (void) pipeExecute;
-
-- (void) setUpdateFunc: (ObMenuUpdateFunc) func;
-- (void) setExecuteFunc: (ObMenuExecuteFunc) func;
-- (void) setDestroyFunc: (ObMenuDestroyFunc) func;
 
 /* functions for building menus */
 - (AZNormalMenuEntry *) addNormalMenuEntry: (int) identifier label: (gchar *) label actions: (GSList *) actions;
@@ -78,20 +62,18 @@ typedef void (*ObMenuDestroyFunc)(AZMenu *menu, gpointer data);
 /* fills in the submenus, for use when a menu is being shown */
 - (void) findSubmenus;
 
+- (void) update: (AZMenuFrame *) frame;
+- (BOOL) execute: (AZMenuEntry *) entry state: (unsigned int) state;
+
 /* Accessoris */
 - (gchar *) name;
 - (gchar *) title;
 - (gchar *) execute;
 - (NSMutableArray *) entries;
-- (gpointer) data;
-- (ObMenuUpdateFunc) update_func;
-- (ObMenuExecuteFunc) execute_func;
-- (ObMenuDestroyFunc) destroy_func;
 - (AZMenu *) pipe_creator;
 - (void) set_name: (gchar *) name;
 - (void) set_title: (gchar *) title;
 - (void) set_execute: (gchar *) execute;
-- (void) set_data: (gpointer) data;
 - (void) set_pipe_creator: (AZMenu *) pipe_creator;
 
 @end

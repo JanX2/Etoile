@@ -32,15 +32,26 @@
 
 static GSList *desktop_menus;
 
-typedef struct
+@interface AZDesktopMenu: AZMenu
 {
-    guint desktop;
-} DesktopData;
+  unsigned int data;
+}
 
-static void desk_menu_update(AZMenuFrame *frame, gpointer data)
+- (id) initWithName: (gchar *) name title: (gchar *) title desktop: (unsigned int) desktop;
+@end
+
+@implementation AZDesktopMenu
+
+- (id) initWithName: (gchar *) n title: (gchar *) t desktop: (unsigned int) d
+{
+  self = [super initWithName: n title: t];
+  data = d;
+  return self;
+}
+
+- (void) update: (AZMenuFrame *) frame 
 {
     AZMenu *menu = [frame menu];
-    DesktopData *d = data;
     GList *it;
     gint i;
     gboolean icons = FALSE;
@@ -49,7 +60,7 @@ static void desk_menu_update(AZMenuFrame *frame, gpointer data)
     [menu clearEntries];
 
     AZFocusManager *fManager = [AZFocusManager defaultManager];
-    for (it = [fManager focus_order][d->desktop], i = 0; it; it = g_list_next(it), ++i) {
+    for (it = [fManager focus_order][data], i = 0; it; it = g_list_next(it), ++i) {
         AZClient *c = ((AZClient*)(it->data));
         if ([c normal] && ![c skip_taskbar]) {
             GSList *acts = NULL;
@@ -70,7 +81,7 @@ static void desk_menu_update(AZMenuFrame *frame, gpointer data)
             acts = g_slist_append(acts, act);
             act = action_from_string("Desktop",
                                      OB_USER_ACTION_MENU_SELECTION);
-            act->data.desktop.desk = d->desktop;
+            act->data.desktop.desk = data;
             acts = g_slist_append(acts, act);
 	    e = [menu addNormalMenuEntry: i label: (char*)[([c iconic] ? [c icon_title] : [c title]) UTF8String] actions: acts];
 
@@ -91,36 +102,42 @@ static void desk_menu_update(AZMenuFrame *frame, gpointer data)
         AZNormalMenuEntry *e;
 
         act = action_from_string("Desktop", OB_USER_ACTION_MENU_SELECTION);
-        act->data.desktop.desk = d->desktop;
+        act->data.desktop.desk = data;
         acts = g_slist_append(acts, act);
 	e = [menu addNormalMenuEntry: 0 label: "Go there..." actions: acts];
-        if (d->desktop == [[AZScreen defaultScreen] desktop])
+        if (data== [[AZScreen defaultScreen] desktop])
             [e set_enabled: NO];
     }
 }
 
 /* executes it using the client in the actions, since we set that
    when we make the actions! */
-static void desk_menu_execute(AZNormalMenuEntry *self, guint state, gpointer data)
+- (BOOL) execute: (AZMenuEntry *) entry state: (unsigned int) state
 {
     ObAction *a;
 
-    if ([self actions]) {
-        a = [self actions]->data;
-        action_run([self actions], a->data.any.c, state);
+    if ([entry isKindOfClass: [AZNormalMenuEntry class]] &&
+		    [(AZNormalMenuEntry *)entry actions]) {
+        a = [(AZNormalMenuEntry *)entry actions]->data;
+	NSLog(@"Go to %d", a->data.desktop.desk);
+        action_run([(AZNormalMenuEntry *)entry actions], a->data.any.c, state);
     }
+    return YES;
 }
 
-static void desk_menu_destroy(AZMenu *menu, gpointer data)
+- (void) dealloc
 {
-    DesktopData *d = data;
-
-    g_free(d);
-
-    desktop_menus = g_slist_remove(desktop_menus, menu);
+  desktop_menus = g_slist_remove(desktop_menus, self);
+  [super dealloc];
 }
+@end
 
-static void self_update(AZMenuFrame *frame, gpointer data)
+@interface AZClientListMenu: AZMenu
+@end
+
+@implementation AZClientListMenu
+
+- (void) update: (AZMenuFrame *) frame 
 {
     AZMenu *menu = [frame menu];
     guint i;
@@ -130,20 +147,14 @@ static void self_update(AZMenuFrame *frame, gpointer data)
     AZScreen *screen = [AZScreen defaultScreen];
     for (i = 0; i < [screen numberOfDesktops]; ++i) {
         if (!it) {
-            AZMenu *submenu;
-            gchar *name = g_strdup_printf("%s-%u", MENU_NAME, i);
-            DesktopData *data = g_new(DesktopData, 1);
+            AZDesktopMenu *submenu;
+            gchar *n = g_strdup_printf("%s-%u", MENU_NAME, i);
+	    submenu = [[AZDesktopMenu alloc] initWithName: n title: [screen nameOfDesktopAtIndex: i] desktop: i];
 
-            data->desktop = i;
-	    submenu = [[AZMenu alloc] initWithName: name title: [screen nameOfDesktopAtIndex: i] data: data];
-	    [submenu setUpdateFunc: desk_menu_update];
-	    [submenu setExecuteFunc: desk_menu_execute];
-	    [submenu setDestroyFunc: desk_menu_destroy];
-
-	    [menu addSubmenuMenuEntry: i submenu: name];
+	    [menu addSubmenuMenuEntry: i submenu: n];
 	    [[AZMenuManager defaultManager] registerMenu: submenu];
 
-            g_free(name);
+            g_free(n);
 
             desktop_menus = g_slist_append(desktop_menus, submenu);
         } else
@@ -156,13 +167,13 @@ static void self_update(AZMenuFrame *frame, gpointer data)
         menu_entry_remove([menu entryWithIdentifier: i]);
     }
 }
+@end
 
 void client_list_menu_startup()
 {
-    AZMenu *menu;
+    AZClientListMenu *menu;
 
-    menu = [[AZMenu alloc] initWithName: MENU_NAME title: "Desktops" data: NULL];
-    [menu setUpdateFunc: self_update];
+    menu = [[AZClientListMenu alloc] initWithName: MENU_NAME title: "Desktops"];
     [[AZMenuManager defaultManager] registerMenu: menu];
 }
 
