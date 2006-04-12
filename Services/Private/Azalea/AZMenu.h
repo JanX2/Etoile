@@ -20,7 +20,83 @@
 #import <Foundation/Foundation.h>
 #import "render/render.h"
 
-struct _ObMenu;
+@class AZMenu;
+@class AZMenuFrame;
+@class AZMenuEntry;
+@class AZNormalMenuEntry;
+@class AZSubmenuMenuEntry;
+@class AZSeparatorMenuEntry;
+
+/* Menu */
+typedef void (*ObMenuUpdateFunc)(AZMenuFrame *frame, gpointer data);
+typedef void (*ObMenuExecuteFunc)(AZMenuEntry *entry,
+                                  unsigned int state, gpointer data);
+typedef void (*ObMenuDestroyFunc)(AZMenu *menu, gpointer data);
+
+@interface AZMenu: NSObject
+{
+    /* Name of the menu. Used in the showmenu action. */
+    gchar *name;
+    /* Displayed title */
+    gchar *title;
+
+    /* Command to execute to rebuild the menu */
+    gchar *execute;
+
+    /* ObMenuEntry list */
+    NSMutableArray *entries;
+
+    /* plugin data */
+    gpointer data;
+
+    ObMenuUpdateFunc update_func;
+    ObMenuExecuteFunc execute_func;
+    ObMenuDestroyFunc destroy_func;
+
+    /* Pipe-menu parent, we get destroyed when it is destroyed */
+    AZMenu *pipe_creator;
+}
+
+- (id) initWithName: (gchar *) name title: (gchar *) title data: (gpointer) data;
+
+/* Repopulate a pipe-menu by running its command */
+- (void) pipeExecute;
+
+- (void) setUpdateFunc: (ObMenuUpdateFunc) func;
+- (void) setExecuteFunc: (ObMenuExecuteFunc) func;
+- (void) setDestroyFunc: (ObMenuDestroyFunc) func;
+
+/* functions for building menus */
+- (AZNormalMenuEntry *) addNormalMenuEntry: (int) identifier label: (gchar *) label actions: (GSList *) actions;
+- (AZSubmenuMenuEntry *) addSubmenuMenuEntry: (int) identifer submenu: (gchar *) submenu;
+- (AZSeparatorMenuEntry *) addSeparatorMenuEntry: (int) identifier;
+
+- (void) clearEntries;
+- (AZMenuEntry *) entryWithIdentifier: (int) identifier;
+
+//FIXME: should change name. This is confusing.
+/* fills in the submenus, for use when a menu is being shown */
+- (void) findSubmenus;
+
+/* Accessoris */
+- (gchar *) name;
+- (gchar *) title;
+- (gchar *) execute;
+- (NSMutableArray *) entries;
+- (gpointer) data;
+- (ObMenuUpdateFunc) update_func;
+- (ObMenuExecuteFunc) execute_func;
+- (ObMenuDestroyFunc) destroy_func;
+- (AZMenu *) pipe_creator;
+- (void) set_name: (gchar *) name;
+- (void) set_title: (gchar *) title;
+- (void) set_execute: (gchar *) execute;
+- (void) set_data: (gpointer) data;
+- (void) set_pipe_creator: (AZMenu *) pipe_creator;
+
+@end
+
+/* Menu Entry */
 
 typedef enum
 {
@@ -32,17 +108,17 @@ typedef enum
 @interface AZMenuEntry: NSObject
 {
     ObMenuEntryType type;
-    struct _ObMenu *menu;
+    AZMenu *menu;
     int identifier;
 }
-- (id) initWithMenu: (struct _ObMenu *) menu identifier: (int) identifier;
+- (id) initWithMenu: (AZMenu *) menu identifier: (int) identifier;
 
 /* accessories */
 - (ObMenuEntryType) type;
-- (struct _ObMenu *) menu;
+- (AZMenu *) menu;
 - (int) identifier;
 - (void) set_type: (ObMenuEntryType) type;
-- (void) set_menu: (struct _ObMenu *) menu;
+- (void) set_menu: (AZMenu *) menu;
 - (void) set_identifier: (int) identifier;
 
 @end
@@ -89,7 +165,7 @@ typedef enum
 
 }
 
-- (id) initWithMenu: (struct _ObMenu *) menu identifier: (int) identifier label: (gchar *) label actions: (GSList *) actions;
+- (id) initWithMenu: (AZMenu *) menu identifier: (int) identifier label: (gchar *) label actions: (GSList *) actions;
          
 /* Accessories */
 - (gchar *)label;
@@ -103,14 +179,14 @@ typedef enum
 @interface AZSubmenuMenuEntry: AZIconMenuEntry
 {
     gchar *name;
-    struct _ObMenu *submenu;
+    AZMenu *submenu;
 }
-- (id) initWithMenu: (struct _ObMenu *) menu identifier: (int) identifier
+- (id) initWithMenu: (AZMenu *) menu identifier: (int) identifier
               submenu: (gchar *) submenu;
 - (gchar *) name;
-- (struct _ObMenu *) submenu;
+- (AZMenu *) submenu;
 - (void) set_name: (gchar *) name;
-- (void) set_submenu: (struct _ObMenu *) submenu;
+- (void) set_submenu: (AZMenu *) submenu;
 @end
 
 @interface AZSeparatorMenuEntry: AZMenuEntry

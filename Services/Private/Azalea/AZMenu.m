@@ -18,11 +18,11 @@
 */
 
 #import "AZMenu.h"
-#import "menu.h"
+#import "AZMenuManager.h"
 
 @implementation AZMenuEntry
 
-- (id) initWithMenu: (struct _ObMenu *) m identifier: (int) iden
+- (id) initWithMenu: (AZMenu *) m identifier: (int) iden
 {
   self = [super init];
   menu = m;
@@ -31,10 +31,10 @@
 }
 
 - (ObMenuEntryType) type { return type; }
-- (struct _ObMenu *) menu { return menu; }
+- (AZMenu *) menu { return menu; }
 - (int) identifier { return identifier; }
 - (void) set_type: (ObMenuEntryType) t { type = t; }
-- (void) set_menu: (struct _ObMenu *) m { menu = m; }
+- (void) set_menu: (AZMenu *) m { menu = m; }
 - (void) set_identifier: (int) i { identifier = i; }
 
 @end
@@ -58,7 +58,7 @@
 
 @implementation AZNormalMenuEntry
 
-- (id) initWithMenu: (struct _ObMenu *) m identifier: (int) iden
+- (id) initWithMenu: (AZMenu *) m identifier: (int) iden
               label: (gchar *) lab actions: (GSList *) acts
 {
     self = [super initWithMenu: m identifier: iden];
@@ -93,11 +93,11 @@
 @implementation AZSubmenuMenuEntry
 
 - (gchar *) name { return name; }
-- (struct _ObMenu *) submenu { return submenu; }
+- (AZMenu *) submenu { return submenu; }
 - (void) set_name: (gchar *) n { name = n; }
-- (void) set_submenu: (struct _ObMenu *) s { submenu = s; }
+- (void) set_submenu: (AZMenu *) s { submenu = s; }
 
-- (id) initWithMenu: (struct _ObMenu *) m identifier: (int) iden submenu: (gchar *) s
+- (id) initWithMenu: (AZMenu *) m identifier: (int) iden submenu: (gchar *) s
 {
   self = [super initWithMenu: m identifier: iden];
   type = OB_MENU_ENTRY_TYPE_SUBMENU;
@@ -115,7 +115,7 @@
 
 @implementation AZSeparatorMenuEntry
 
-- (id) initWithMenu: (struct _ObMenu *) m identifier: (int) iden
+- (id) initWithMenu: (AZMenu *) m identifier: (int) iden
 {
   self = [super initWithMenu: m identifier: iden];
   type = OB_MENU_ENTRY_TYPE_SEPARATOR;
@@ -123,4 +123,136 @@
 }
 
 @end
+
+@implementation AZMenu
+
+- (AZMenuEntry *) entryWithIdentifier: (int) identifier
+{
+    AZMenuEntry *ret = nil;
+    int i, count = [entries count];
+    for (i = 0; i < count; i++) {
+        AZMenuEntry *e = [entries objectAtIndex: i];
+        if ([e identifier] == identifier) {
+	        ret = e;
+	        break;
+        }
+    }
+    return ret;
+}
+
+
+- (void) findSubmenus
+{
+  AZMenuManager *mManager = [AZMenuManager defaultManager];
+  int i, count = [entries count];
+  for (i = 0; i < count; i++) {
+     AZMenuEntry *e = [entries objectAtIndex: i];
+     if ([e type] == OB_MENU_ENTRY_TYPE_SUBMENU)
+       [(AZSubmenuMenuEntry *)e set_submenu: [mManager menuWithName: [(AZSubmenuMenuEntry *)e name]]];
+  }
+}
+
+- (void) setUpdateFunc: (ObMenuUpdateFunc) func
+{
+  update_func = func;
+}
+
+- (void) setExecuteFunc: (ObMenuExecuteFunc) func
+{
+  execute_func = func;
+}
+
+- (void) setDestroyFunc: (ObMenuDestroyFunc) func
+{
+  destroy_func = func;
+}
+
+- (AZNormalMenuEntry *) addNormalMenuEntry: (int) identifier 
+                        label: (gchar *) label actions: (GSList *) actions
+{
+  AZNormalMenuEntry *e = [[AZNormalMenuEntry alloc] initWithMenu: self 
+	                                  identifier: identifier
+	                                  label: label actions: actions];
+  [entries addObject: e];
+  return e;
+}
+
+- (AZSubmenuMenuEntry *) addSubmenuMenuEntry: (int) iden 
+                         submenu: (gchar *) submenu
+{
+  AZSubmenuMenuEntry *e = [[AZSubmenuMenuEntry alloc] initWithMenu: self 
+	                             identifier: iden submenu: submenu];
+
+  [entries addObject: e];
+  return e;
+}
+
+- (AZSeparatorMenuEntry *) addSeparatorMenuEntry: (int) identifier
+{
+  AZSeparatorMenuEntry *e = [[AZSeparatorMenuEntry alloc] initWithMenu: self 
+	           identifier: identifier];
+  [entries addObject: e];
+  return e;
+}
+
+- (void) clearEntries
+{
+#ifdef DEBUG
+    /* assert that the menu isn't visible */
+    {
+        GList *it;
+        AZMenuFrame *f;
+
+        for (it = menu_frame_visible; it; it = g_list_next(it)) {
+            f = it->data;
+            g_assert([f menu] != self);
+        }
+    }
+#endif
+
+    [entries removeAllObjects];
+}
+
+- (id) initWithName: (gchar *) n title: (gchar *) t data: (gpointer) d
+{
+  self = [super init];
+  name = g_strdup(n);
+  title = g_strdup(t);
+  data = d;
+  entries = [[NSMutableArray alloc] init];
+  return self;
+}
+
+- (void) dealloc
+{
+  [self clearEntries];
+  DESTROY(entries);
+  g_free(name);
+  g_free(title);
+  g_free(execute);
+  [super dealloc];
+}
+
+- (void) pipeExecute
+{
+  menu_pipe_execute(self);
+}
+
+- (gchar *) name { return name; }
+- (gchar *) title { return title; }
+- (gchar *) execute { return execute; }
+- (NSMutableArray *) entries { return entries; }
+- (gpointer) data { return data; }
+- (ObMenuUpdateFunc) update_func { return update_func; }
+- (ObMenuExecuteFunc) execute_func { return execute_func; }
+- (ObMenuDestroyFunc) destroy_func { return destroy_func; }
+- (AZMenu *) pipe_creator { return pipe_creator; }
+- (void) set_name: (gchar *) n { name = n; }
+- (void) set_title: (gchar *) t { title = t; }
+- (void) set_execute: (gchar *) e { execute = e; }
+- (void) set_data: (gpointer) d { data = d; }
+- (void) set_pipe_creator: (AZMenu *) p { pipe_creator = p; }
+
+@end
+
 

@@ -29,10 +29,10 @@
 #import "AZMoveResizeHandler.h"
 #import "AZFocusManager.h"
 #import "AZKeyboardHandler.h"
+#import "AZMenuManager.h"
 
 #include "openbox.h"
 #include "session.h"
-#include "menu.h"
 #include "prop.h"
 #include "mouse.h"
 #include "extensions.h"
@@ -136,6 +136,7 @@ int main(int argc, gchar **argv)
     AZDock *defaultDock = [AZDock defaultDock];
     AZFocusManager *focusManager = [AZFocusManager defaultManager];
     AZKeyboardHandler *keyboardHandler = [AZKeyboardHandler defaultHandler];
+    AZMenuManager *menuManager = [AZMenuManager defaultManager];
 
     /* Initiate main loop */
     mainLoop = [AZMainLoop mainLoop];
@@ -266,7 +267,7 @@ int main(int argc, gchar **argv)
 	    [mrHandler startup: reconfigure];
 	    [keyboardHandler startup: reconfigure];
             mouse_startup(reconfigure);
-            menu_startup(reconfigure);
+	    [menuManager startup: reconfigure];
 
             if (!reconfigure) {
                 /* get all the existing windows */
@@ -314,7 +315,7 @@ int main(int argc, gchar **argv)
 		[clientManager unmanageAll];
             }
 
-            menu_shutdown(reconfigure);
+	    [menuManager shutdown: reconfigure];
             mouse_shutdown(reconfigure);
 	    [keyboardHandler shutdown: reconfigure];
 	    [mrHandler shutdown: reconfigure];

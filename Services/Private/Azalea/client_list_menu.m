@@ -20,9 +20,9 @@
 #import "AZClient.h"
 #import "AZFocusManager.h"
 #import "AZMenuFrame.h"
+#import "AZMenuManager.h"
 #import "openbox.h"
 #import "AZMenu.h"
-#import "menu.h"
 #import "action.h"
 #import "config.h"
 
@@ -39,14 +39,14 @@ typedef struct
 
 static void desk_menu_update(AZMenuFrame *frame, gpointer data)
 {
-    ObMenu *menu = [frame menu];
+    AZMenu *menu = [frame menu];
     DesktopData *d = data;
     GList *it;
     gint i;
     gboolean icons = FALSE;
     gboolean empty = TRUE;
 
-    menu_clear_entries(menu);
+    [menu clearEntries];
 
     AZFocusManager *fManager = [AZFocusManager defaultManager];
     for (it = [fManager focus_order][d->desktop], i = 0; it; it = g_list_next(it), ++i) {
@@ -61,7 +61,7 @@ static void desk_menu_update(AZMenuFrame *frame, gpointer data)
 
             if (!icons && [c iconic]) {
                 icons = TRUE;
-                menu_add_separator(menu, -1);
+		[menu addSeparatorMenuEntry: -1];
             }
 
             act = action_from_string("Activate",
@@ -72,7 +72,7 @@ static void desk_menu_update(AZMenuFrame *frame, gpointer data)
                                      OB_USER_ACTION_MENU_SELECTION);
             act->data.desktop.desk = d->desktop;
             acts = g_slist_append(acts, act);
-            e = menu_add_normal(menu, i, (char*)[([c iconic] ? [c icon_title] : [c title]) UTF8String], acts);
+	    e = [menu addNormalMenuEntry: i label: (char*)[([c iconic] ? [c icon_title] : [c title]) UTF8String] actions: acts];
 
             if (config_menu_client_list_icons && 
 		(icon = [c iconWithWidth: 32 height: 32])) {
@@ -93,7 +93,7 @@ static void desk_menu_update(AZMenuFrame *frame, gpointer data)
         act = action_from_string("Desktop", OB_USER_ACTION_MENU_SELECTION);
         act->data.desktop.desk = d->desktop;
         acts = g_slist_append(acts, act);
-        e = menu_add_normal(menu, 0, ("Go there..."), acts);
+	e = [menu addNormalMenuEntry: 0 label: "Go there..." actions: acts];
         if (d->desktop == [[AZScreen defaultScreen] desktop])
             [e set_enabled: NO];
     }
@@ -111,7 +111,7 @@ static void desk_menu_execute(AZNormalMenuEntry *self, guint state, gpointer dat
     }
 }
 
-static void desk_menu_destroy(ObMenu *menu, gpointer data)
+static void desk_menu_destroy(AZMenu *menu, gpointer data)
 {
     DesktopData *d = data;
 
@@ -122,7 +122,7 @@ static void desk_menu_destroy(ObMenu *menu, gpointer data)
 
 static void self_update(AZMenuFrame *frame, gpointer data)
 {
-    ObMenu *menu = [frame menu];
+    AZMenu *menu = [frame menu];
     guint i;
     GSList *it, *next;
     
@@ -130,17 +130,18 @@ static void self_update(AZMenuFrame *frame, gpointer data)
     AZScreen *screen = [AZScreen defaultScreen];
     for (i = 0; i < [screen numberOfDesktops]; ++i) {
         if (!it) {
-            ObMenu *submenu;
+            AZMenu *submenu;
             gchar *name = g_strdup_printf("%s-%u", MENU_NAME, i);
             DesktopData *data = g_new(DesktopData, 1);
 
             data->desktop = i;
-            submenu = menu_new(name, [screen nameOfDesktopAtIndex: i], data);
-            menu_set_update_func(submenu, desk_menu_update);
-            menu_set_execute_func(submenu, desk_menu_execute);
-            menu_set_destroy_func(submenu, desk_menu_destroy);
+	    submenu = [[AZMenu alloc] initWithName: name title: [screen nameOfDesktopAtIndex: i] data: data];
+	    [submenu setUpdateFunc: desk_menu_update];
+	    [submenu setExecuteFunc: desk_menu_execute];
+	    [submenu setDestroyFunc: desk_menu_destroy];
 
-            menu_add_submenu(menu, i, name);
+	    [menu addSubmenuMenuEntry: i submenu: name];
+	    [[AZMenuManager defaultManager] registerMenu: submenu];
 
             g_free(name);
 
@@ -150,16 +151,18 @@ static void self_update(AZMenuFrame *frame, gpointer data)
     }
     for (; it; it = next, ++i) {
         next = g_slist_next(it);
-        menu_free(it->data);
+	[[AZMenuManager defaultManager] removeMenu: it->data];
         desktop_menus = g_slist_delete_link(desktop_menus, it);
-        menu_entry_remove(menu_find_entry_id(menu, i));
+        menu_entry_remove([menu entryWithIdentifier: i]);
     }
 }
 
 void client_list_menu_startup()
 {
-    ObMenu *menu;
+    AZMenu *menu;
 
-    menu = menu_new(MENU_NAME, ("Desktops"), NULL);
-    menu_set_update_func(menu, self_update);
+    menu = [[AZMenu alloc] initWithName: MENU_NAME title: "Desktops" data: NULL];
+    [menu setUpdateFunc: self_update];
+    [[AZMenuManager defaultManager] registerMenu: menu];
 }
+

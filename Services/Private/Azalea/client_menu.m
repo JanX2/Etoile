@@ -20,8 +20,9 @@
 #import "AZClient.h"
 #import "AZMenuFrame.h"
 #import "AZMenu.h"
-#import "menu.h"
+#import "AZMenuManager.h"
 #import "openbox.h"
+#import "action.h"
 
 #include <glib.h>
 
@@ -51,16 +52,16 @@ enum {
 
 static void client_update(AZMenuFrame *frame, gpointer data)
 {
-    ObMenu *menu = [frame menu];
+    AZMenu *menu = [frame menu];
     AZMenuEntry *e;
     int i, count;
 
 
     [frame set_show_title: NO];
 
-    count = [menu->entries count];
+    count = [[menu entries] count];
     for (i = 0; i < count; i++) {
-	e = [menu->entries objectAtIndex: i];
+	e = [[menu entries] objectAtIndex: i];
         if ([e type] == OB_MENU_ENTRY_TYPE_NORMAL)
             [(AZNormalMenuEntry*)e set_enabled: !![frame client]];
     }
@@ -68,44 +69,44 @@ static void client_update(AZMenuFrame *frame, gpointer data)
     if (![frame client])
         return;
 
-    e = menu_find_entry_id(menu, CLIENT_ICONIFY);
+    e = [menu entryWithIdentifier: CLIENT_ICONIFY];
     [(AZNormalMenuEntry *)e set_enabled: [[frame client] functions] & OB_CLIENT_FUNC_ICONIFY];
 
-    e = menu_find_entry_id(menu, CLIENT_MAXIMIZE);
+    e = [menu entryWithIdentifier: CLIENT_MAXIMIZE];
     g_free([(AZNormalMenuEntry *)e label]);
     [(AZNormalMenuEntry *)e set_label: 
         g_strdup([[frame client] max_vert] || [[frame client] max_horz] ?
                  ("Restore") : ("Maximize"))];
     [(AZNormalMenuEntry *)e set_enabled: [[frame client] functions] & OB_CLIENT_FUNC_MAXIMIZE];
 
-    e = menu_find_entry_id(menu, CLIENT_SHADE);
+    e = [menu entryWithIdentifier: CLIENT_SHADE];
     g_free([(AZNormalMenuEntry *)e label]);
     [(AZNormalMenuEntry *)e set_label: g_strdup([[frame client] shaded] ?
                                     ("Roll down") : ("Roll up"))];
     [(AZNormalMenuEntry *)e set_enabled: [[frame client] functions] & OB_CLIENT_FUNC_SHADE];
 
-    e = menu_find_entry_id(menu, CLIENT_MOVE);
+    e = [menu entryWithIdentifier: CLIENT_MOVE];
     [(AZNormalMenuEntry *)e set_enabled: [[frame client] functions] & OB_CLIENT_FUNC_MOVE];
 
-    e = menu_find_entry_id(menu, CLIENT_RESIZE);
+    e = [menu entryWithIdentifier: CLIENT_RESIZE];
     [(AZNormalMenuEntry *)e set_enabled: [[frame client] functions] & OB_CLIENT_FUNC_RESIZE];
 
-    e = menu_find_entry_id(menu, CLIENT_CLOSE);
+    e = [menu entryWithIdentifier: CLIENT_CLOSE];
     [(AZNormalMenuEntry *)e set_enabled: [[frame client] functions] & OB_CLIENT_FUNC_CLOSE];
 
-    e = menu_find_entry_id(menu, CLIENT_DECORATE);
+    e = [menu entryWithIdentifier: CLIENT_DECORATE];
     [(AZNormalMenuEntry *)e set_enabled: [[frame client] normal]];
 }
 
 static void layer_update(AZMenuFrame *frame, gpointer data)
 {
-    ObMenu *menu = [frame menu];
+    AZMenu *menu = [frame menu];
     AZMenuEntry *e;
     int i, count;
 
-    count = [menu->entries count];
+    count = [[menu entries] count];
     for (i = 0; i < count; i++) {
-	e = [menu->entries objectAtIndex: i];
+	e = [[menu entries] objectAtIndex: i];
         if ([e type] == OB_MENU_ENTRY_TYPE_NORMAL)
             [(AZNormalMenuEntry *)e set_enabled: !![frame client]];
     }
@@ -113,25 +114,25 @@ static void layer_update(AZMenuFrame *frame, gpointer data)
     if (![frame client])
         return;
 
-    e = menu_find_entry_id(menu, LAYER_TOP);
+    e = [menu entryWithIdentifier: LAYER_TOP];
     [(AZNormalMenuEntry *)e set_enabled: ![[frame client] above]];
 
-    e = menu_find_entry_id(menu, LAYER_NORMAL);
+    e = [menu entryWithIdentifier: LAYER_NORMAL];
     [(AZNormalMenuEntry *)e set_enabled: ([[frame client] above] || [[frame client] below])];
 
-    e = menu_find_entry_id(menu, LAYER_BOTTOM);
+    e = [menu entryWithIdentifier: LAYER_BOTTOM];
     [(AZNormalMenuEntry *)e set_enabled: ![[frame client] below]];
 }
 
 static void send_to_update(AZMenuFrame *frame, gpointer data)
 {
-    ObMenu *menu = [frame menu];
+    AZMenu *menu = [frame menu];
     guint i;
     GSList *acts;
     ObAction *act;
     AZNormalMenuEntry *e;;
 
-    menu_clear_entries(menu);
+    [menu clearEntries];
 
     if (![frame client])
         return;
@@ -143,7 +144,7 @@ static void send_to_update(AZMenuFrame *frame, gpointer data)
         guint desk;
 
         if (i >= num_desktops) {
-            menu_add_separator(menu, -1);
+            [menu addSeparatorMenuEntry: -1];
 
             desk = DESKTOP_ALL;
             name = ("All desktops");
@@ -157,7 +158,7 @@ static void send_to_update(AZMenuFrame *frame, gpointer data)
         act->data.sendto.desk = desk;
         act->data.sendto.follow = FALSE;
         acts = g_slist_prepend(NULL, act);
-        e = menu_add_normal(menu, desk, name, acts);
+	e = [menu addNormalMenuEntry: desk label: name actions: acts];
 
         if ([[frame client] desktop] == desk)
             [e set_enabled: NO];
@@ -167,45 +168,51 @@ static void send_to_update(AZMenuFrame *frame, gpointer data)
 void client_menu_startup()
 {
     GSList *acts;
-    ObMenu *menu;
+    AZMenu *menu;
     AZMenuEntry *e;
 
-    menu = menu_new(LAYER_MENU_NAME, ("Layer"), NULL);
-    menu_set_update_func(menu, layer_update);
+    menu = [[AZMenu alloc] initWithName: LAYER_MENU_NAME title: "Layer"
+	                            data: NULL];
+    [menu setUpdateFunc: layer_update];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("SendToTopLayer", OB_USER_ACTION_MENU_SELECTION));
-    menu_add_normal(menu, LAYER_TOP, ("Always on top"), acts);
+    [menu addNormalMenuEntry: LAYER_TOP label: "Always on top" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("SendToNormalLayer",
                             OB_USER_ACTION_MENU_SELECTION));
-    menu_add_normal(menu, LAYER_NORMAL, ("Normal"), acts);
+    [menu addNormalMenuEntry: LAYER_NORMAL label: "Normal" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("SendToBottomLayer",
                             OB_USER_ACTION_MENU_SELECTION));
-    menu_add_normal(menu, LAYER_BOTTOM, ("Always on bottom"),acts);
+    [menu addNormalMenuEntry: LAYER_BOTTOM label: "Always on bottom" actions: acts];
 
+    [[AZMenuManager defaultManager] registerMenu: menu];
 
-    menu = menu_new(SEND_TO_MENU_NAME, ("Send to desktop"), NULL);
-    menu_set_update_func(menu, send_to_update);
+    menu = [[AZMenu alloc] initWithName: SEND_TO_MENU_NAME 
+	                          title: "Send to desktop"
+	                           data: NULL];
+    [menu setUpdateFunc: send_to_update];
+    [[AZMenuManager defaultManager] registerMenu: menu];
 
+    menu = [[AZMenu alloc] initWithName: CLIENT_MENU_NAME 
+	                          title: "Client menu"
+	                           data: NULL];
+    [menu setUpdateFunc: client_update];
 
-    menu = menu_new(CLIENT_MENU_NAME, ("Client menu"), NULL);
-    menu_set_update_func(menu, client_update);
-
-    e = menu_add_submenu(menu, CLIENT_SEND_TO, SEND_TO_MENU_NAME);
+    e = [menu addSubmenuMenuEntry: CLIENT_SEND_TO submenu: SEND_TO_MENU_NAME];
     [(AZSubmenuMenuEntry*)e set_mask: ob_rr_theme->desk_mask];
     [(AZSubmenuMenuEntry*)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZSubmenuMenuEntry*)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
     [(AZSubmenuMenuEntry*)e set_mask_selected_color: ob_rr_theme->menu_selected_color];
 
-    menu_add_submenu(menu, CLIENT_LAYER, LAYER_MENU_NAME);
+    [menu addSubmenuMenuEntry: CLIENT_LAYER submenu: LAYER_MENU_NAME];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Iconify", OB_USER_ACTION_MENU_SELECTION));
-    e = menu_add_normal(menu, CLIENT_ICONIFY, ("Iconify"), acts);
+    e = [menu addNormalMenuEntry: CLIENT_ICONIFY label: "Iconify" actions: acts];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->iconify_mask];
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZNormalMenuEntry *)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
@@ -214,7 +221,7 @@ void client_menu_startup()
     acts = g_slist_prepend(NULL, action_from_string
                            ("ToggleMaximizeFull",
                             OB_USER_ACTION_MENU_SELECTION));
-    e = menu_add_normal(menu, CLIENT_MAXIMIZE, "MAXIMIZE", acts);
+    e = [menu addNormalMenuEntry: CLIENT_MAXIMIZE label: "MAXIMIZE" actions: acts];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->max_mask]; 
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZNormalMenuEntry *)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
@@ -222,15 +229,15 @@ void client_menu_startup()
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Raise", OB_USER_ACTION_MENU_SELECTION));
-    menu_add_normal(menu, CLIENT_RAISE, ("Raise to top"), acts);
+    [menu addNormalMenuEntry: CLIENT_RAISE label: "Raise to top" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Lower", OB_USER_ACTION_MENU_SELECTION));
-    menu_add_normal(menu, CLIENT_LOWER, ("Lower to bottom"),acts);
+    [menu addNormalMenuEntry: CLIENT_LOWER label: "Lower to bottom" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("ToggleShade", OB_USER_ACTION_MENU_SELECTION));
-    e = menu_add_normal(menu, CLIENT_SHADE, "SHADE", acts);
+    e = [menu addNormalMenuEntry: CLIENT_SHADE label: "SHADE" actions: acts];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->shade_mask];
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZNormalMenuEntry *)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
@@ -239,25 +246,26 @@ void client_menu_startup()
     acts = g_slist_prepend(NULL, action_from_string
                            ("ToggleDecorations",
                             OB_USER_ACTION_MENU_SELECTION));
-    menu_add_normal(menu, CLIENT_DECORATE, ("Decorate"), acts);
+    [menu addNormalMenuEntry: CLIENT_DECORATE label: "Decorate" actions: acts];
 
-    menu_add_separator(menu, -1);
+    [menu addSeparatorMenuEntry: -1];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Move", OB_USER_ACTION_MENU_SELECTION));
-    menu_add_normal(menu, CLIENT_MOVE, ("Move"), acts);
+    [menu addNormalMenuEntry: CLIENT_MOVE label: "Move" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Resize", OB_USER_ACTION_MENU_SELECTION));
-    menu_add_normal(menu, CLIENT_RESIZE, ("Resize"), acts);
+    [menu addNormalMenuEntry: CLIENT_RESIZE label: "Resize" actions: acts];
 
-    menu_add_separator(menu, -1);
+    [menu addSeparatorMenuEntry: -1];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Close", OB_USER_ACTION_MENU_SELECTION));
-    e = menu_add_normal(menu, CLIENT_CLOSE, ("Close"), acts);
+    e = [menu addNormalMenuEntry: CLIENT_CLOSE label: "Close" actions: acts];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->close_mask];
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZNormalMenuEntry *)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
     [(AZNormalMenuEntry *)e set_mask_selected_color: ob_rr_theme->menu_selected_color];
+    [[AZMenuManager defaultManager] registerMenu: menu];
 }

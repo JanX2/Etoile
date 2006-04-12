@@ -27,6 +27,7 @@ Azalea_OBJC_FILES = \
 	AZMainLoop.m \
 	AZMenu.m \
 	AZMenuFrame.m \
+	AZMenuManager.m \
 	AZMoveResizeHandler.m \
 	AZPopUp.m \
 	AZScreen.m \
@@ -38,7 +39,6 @@ Azalea_OBJC_FILES = \
 	config.m \
 	extensions.m \
 	grab.m \
-	menu.m \
 	mouse.m \
 	openbox.m \
 	parse.m \

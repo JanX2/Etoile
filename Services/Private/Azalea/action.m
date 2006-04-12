@@ -20,7 +20,6 @@
 #import "AZStacking.h"
 #import "AZClient.h"
 #import "AZMoveResizeHandler.h"
-#import "menu.h"
 #import "prop.h"
 #import "action.h"
 #import "openbox.h"
@@ -32,6 +31,7 @@
 #import "AZEventHandler.h"
 #import "AZFocusManager.h"
 #import "AZMenuFrame.h"
+#import "AZMenuManager.h"
 
 #include <glib.h>
 
@@ -1508,8 +1508,9 @@ void action_exit(union ActionData *data)
 void action_showmenu(union ActionData *data)
 {
     if (data->showmenu.name) {
-        menu_show(data->showmenu.name, data->any.x, data->any.y,
-                  data->showmenu.any.c);
+	[[AZMenuManager defaultManager] showMenu: data->showmenu.name
+		x: data->any.x y: data->any.y
+		client: data->showmenu.any.c];
     }
 }
 

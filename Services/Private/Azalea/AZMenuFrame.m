@@ -22,10 +22,10 @@
 #import "AZClient.h"
 #import "AZScreen.h"
 #import "AZMenu.h"
-#import "menu.h"
 #import "config.h"
 #import "openbox.h"
 #import "render/theme.h"
+#import "action.h"
 
 static NSMutableArray *menu_frame_visible = nil;
 
@@ -126,7 +126,7 @@ static Window createWindow(Window parent, unsigned long mask,
 {
     RrAppearance *item_a, *text_a;
     int th; /* temp */
-    ObMenu *sub;
+    AZMenu *sub;
 
     item_a = (([entry type] == OB_MENU_ENTRY_TYPE_NORMAL &&
                ![(AZNormalMenuEntry *)entry enabled]) ?
@@ -161,7 +161,7 @@ static Window createWindow(Window parent, unsigned long mask,
         break;
     case OB_MENU_ENTRY_TYPE_SUBMENU:
         sub = [(AZSubmenuMenuEntry *)entry submenu];
-        text_a->texture[0].data.text.string = sub ? sub->title : "";
+        text_a->texture[0].data.text.string = sub ? [sub title] : "";
         break;
     case OB_MENU_ENTRY_TYPE_SEPARATOR:
         break;
@@ -309,8 +309,8 @@ static Window createWindow(Window parent, unsigned long mask,
     {
         /* grab all this shizzle, cuz when the menu gets hidden, 'self'
            gets freed */
-        ObMenuExecuteFunc func = [frame menu]->execute_func;
-        gpointer data = [frame menu]->data;
+        ObMenuExecuteFunc func = [[frame menu] execute_func];
+        gpointer data = [[frame menu] data];
         GSList *acts = [(AZNormalMenuEntry *)entry actions];
         AZClient *client = [frame client];
 
@@ -372,7 +372,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
   return menu_frame_visible;
 }
 
-- (id) initWithMenu: (struct _ObMenu *) _menu 
+- (id) initWithMenu: (AZMenu *) _menu 
              client: (AZClient *) _client
 {
     self = [super init];
@@ -473,7 +473,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     int allitems_h = 0;
     int tw, th; /* temps */
     BOOL has_icon = NO;
-    ObMenu *sub;
+    AZMenu *sub;
 
     XSetWindowBorderWidth(ob_display, window, ob_rr_theme->bwidth);
     XSetWindowBorder(ob_display, window, RrColorPixel(ob_rr_theme->b_color));
@@ -482,7 +482,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
         XMoveWindow(ob_display, title, 
                     -ob_rr_theme->bwidth, h - ob_rr_theme->bwidth);
 
-        a_title->texture[0].data.text.string = menu->title;
+        a_title->texture[0].data.text.string = [menu title];
         RrMinsize(a_title, &tw, &th);
         tw = MIN(tw, MAX_MENU_WIDTH) + ob_rr_theme->padding * 2;
         w = MAX(w, tw);
@@ -557,7 +557,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
             break;
         case OB_MENU_ENTRY_TYPE_SUBMENU:
             sub = [(AZSubmenuMenuEntry *)[e entry] submenu];
-            text_a->texture[0].data.text.string = sub ? sub->title : "";
+            text_a->texture[0].data.text.string = sub ? [sub title] : "";
             RrMinsize(text_a, &tw, &th);
             tw = MIN(tw, MAX_MENU_WIDTH);
 
@@ -627,21 +627,21 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     int fit, fcount;
     int mit, mcount;
 
-    menu_pipe_execute(menu);
-    menu_find_submenus(menu);
+    [menu pipeExecute];
+    [menu findSubmenus];
 
     selected = nil;
 
     fcount = [entries count];
-    mcount = [menu->entries count];
+    mcount = [[menu entries] count];
     for (mit = 0, fit = 0; mit < mcount, fit < fcount; mit++, fit++)
     {
         AZMenuEntryFrame *f = [entries objectAtIndex: fit];
-        [f set_entry: [menu->entries objectAtIndex: mit]];
+        [f set_entry: [[menu entries] objectAtIndex: mit]];
     }
 
     for (; mit < mcount; mit++) {
-        AZMenuEntryFrame *e = [[AZMenuEntryFrame alloc] initWithMenuEntry: [menu->entries objectAtIndex: mit] menuFrame: self];
+        AZMenuEntryFrame *e = [[AZMenuEntryFrame alloc] initWithMenuEntry: [[menu entries] objectAtIndex: mit] menuFrame: self];
 	[entries addObject: e];
 	DESTROY(e);
     }
@@ -690,8 +690,8 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 	}
     }
     if (found == NSNotFound) {
-        if (menu->update_func)
-            menu->update_func(self, menu->data);
+        if ([menu update_func])
+            [menu update_func](self, [menu data]);
     }
 
     [self update];
@@ -821,7 +821,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 - (AZMenuFrame *) child { return child; }
 - (AZMenuEntryFrame *) selected { return selected; }
 - (int) monitor { return monitor; }
-- (struct _ObMenu *) menu { return menu; }
+- (AZMenu *) menu { return menu; }
 - (AZClient *) client { return client; }
 - (void) set_child: (AZMenuFrame *) c { child = c; }
 - (void) set_parent: (AZMenuFrame *) p { parent = p; }

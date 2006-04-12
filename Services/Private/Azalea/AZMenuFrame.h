@@ -17,10 +17,12 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#import "menu.h"
 #import "window.h"
 #import <Foundation/Foundation.h>
+#import "geom.h"
+#import "render/render.h"
 
+@class AZMenu;
 @class AZMenuEntry;
 @class AZMenuEntryFrame;
 @class AZClient;
@@ -29,7 +31,7 @@
 {    
   Window window;
 
-  struct _ObMenu *menu;
+  AZMenu *menu;
 
   /* The client that the visual instance of the menu is associated with for
      its actions */
@@ -78,7 +80,7 @@
 - (AZMenuFrame *) child;
 - (AZMenuEntryFrame *) selected;
 - (int) monitor;
-- (struct _ObMenu *) menu;
+- (AZMenu *) menu;
 - (AZClient *) client;
 - (void) set_child: (AZMenuFrame *) child;
 - (void) set_parent: (AZMenuFrame *) parent;
@@ -96,7 +98,7 @@
 - (NSArray *) entries;
 - (void) set_show_title: (BOOL) show_title;
 
-- (id) initWithMenu: (struct _ObMenu *) menu client: (AZClient *) client;
+- (id) initWithMenu: (AZMenu *) menu client: (AZClient *) client;
 
 /* Private */
 - (void) render;

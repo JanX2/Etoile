@@ -35,7 +35,6 @@
 #import "config.h"
 #import "prop.h"
 #import "extensions.h"
-#import "menu.h"
 #import "mouse.h"
 #import "AZKeyboardHandler.h"
 
