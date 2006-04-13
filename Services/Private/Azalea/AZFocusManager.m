@@ -682,15 +682,46 @@ done_cycle:
 	[self toBottom: c desktop: d];
 }
 
+- (int) numberOfFocusOrderInScreen: (int) d
+{
+  if (focus_order[d])
+    return g_list_length(focus_order[d]);
+  return 0;
+}
+
+- (AZClient *) focusOrder: (int) index inScreen: (int) d
+{
+  GList *it;
+
+  it = focus_order[d];
+  if (it) {
+    gpointer *data = g_list_nth_data(focus_order[d], index);
+    if (data) 
+      return (AZClient *)data;
+  } 
+
+  return nil;
+}
+
+- (void) setNumberOfScreens: (int) num old: (int) old
+{
+  int i;
+  for (i = num; i < old; ++i)
+    g_list_free(focus_order[i]);
+  /* realloc the array */
+  focus_order = g_renew(GList*, focus_order, num);
+  /* set the new lists to be empty */
+  for (i = old; i < num; ++i)
+    focus_order[i] = NULL;
+}
+
 /* accessories */
 - (void) set_focus_client: (AZClient *) f { focus_client = f; }
 - (void) set_focus_hilite: (AZClient *) f { focus_hilite = f; }
 - (void) set_focus_cycle_target: (AZClient *) f { focus_cycle_target = f; }
-- (void) set_focus_order: (GList **) f { focus_order = f; }
 - (AZClient *) focus_client { return focus_client; }
 - (AZClient *) focus_hilite { return focus_hilite; }
 - (AZClient *) focus_cycle_target { return focus_cycle_target; }
-- (GList **) focus_order { return focus_order; }
 
 + (AZFocusManager *) defaultManager
 {

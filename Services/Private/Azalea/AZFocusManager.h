@@ -89,14 +89,16 @@ typedef enum {
   very bottom always though). */
 - (void) focusOrderToBottom: (AZClient *) c;
 
+- (void) setNumberOfScreens: (int) num old: (int) old;
+- (int) numberOfFocusOrderInScreen: (int) i;
+- (AZClient *) focusOrder: (int) index inScreen: (int) i;
+
 /* accessories */
 - (void) set_focus_client: (AZClient *) focus_client;
 - (void) set_focus_hilite: (AZClient *) focus_hilite;
 - (void) set_focus_cycle_target: (AZClient *) focus_cycle_target;
-- (void) set_focus_order: (GList **) focus_order;
 - (AZClient *) focus_client;
 - (AZClient *) focus_hilite;
 - (AZClient *) focus_cycle_target;
-- (GList **) focus_order;
 
 @end

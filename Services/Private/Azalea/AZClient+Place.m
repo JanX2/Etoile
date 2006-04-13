@@ -255,11 +255,10 @@ static BOOL place_smart(AZClient *client, int *x, int *y,
         if (type == SMART_FULL || type == SMART_FOCUSED) {
             BOOL found_foc = NO, stop = NO;
             AZClient *foc;
-            GList *list;
 	    unsigned int d = ([client desktop] == DESKTOP_ALL ? [screen desktop] : [client desktop]);
 
-	    list = [[AZFocusManager defaultManager] focus_order][d];
-            foc = list ? ((AZClient *)(list->data)) : nil;
+	    // foc can be nil.
+	    foc = [[AZFocusManager defaultManager] focusOrder: 0 inScreen: d];
 
 	    for (j = index; j < count && !stop; j++) {
 		temp = [stacking windowAtIndex: j];

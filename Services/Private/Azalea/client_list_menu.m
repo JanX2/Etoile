@@ -53,16 +53,17 @@ static GSList *desktop_menus;
 - (void) update: (AZMenuFrame *) frame 
 {
     AZMenu *menu = [frame menu];
-    GList *it;
     int i;
+    int j, jcount;
     BOOL icons = NO;
     BOOL empty = YES;
 
     [menu clearEntries];
 
     AZFocusManager *fManager = [AZFocusManager defaultManager];
-    for (it = [fManager focus_order][data], i = 0; it; it = g_list_next(it), ++i) {
-        AZClient *c = ((AZClient*)(it->data));
+    jcount = [fManager numberOfFocusOrderInScreen: data];
+    for (j = 0, i = 0; j < jcount; j++, ++i) {
+        AZClient *c = [fManager focusOrder: j inScreen: data];
         if ([c normal] && ![c skip_taskbar]) {
             GSList *acts = NULL;
             ObAction* act;

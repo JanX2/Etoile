@@ -336,6 +336,8 @@ static AZScreen *sharedInstance;
    /* update the focus lists */
     AZFocusManager *fManager = [AZFocusManager defaultManager];
     /* free our lists for the desktops which have disappeared */
+    [fManager setNumberOfScreens: num old: old];
+#if 0
     for (i = num; i < old; ++i)
         g_list_free([fManager focus_order][i]);
     /* realloc the array */
@@ -343,6 +345,7 @@ static AZScreen *sharedInstance;
     /* set the new lists to be empty */
     for (i = old; i < num; ++i)
         [fManager focus_order][i] = NULL;
+#endif
 }
 
 - (unsigned int) numberOfDesktops
@@ -625,10 +628,12 @@ done_cycle:
 
     if (show) {
         /* focus desktop */
-        for (it = [fManager focus_order][screen_desktop]; it; it = g_list_next(it))
-            if ([((AZClient*)(it->data)) type] == OB_CLIENT_TYPE_DESKTOP &&
-                [((AZClient*)(it->data)) focus])
+	int i, count = [fManager numberOfFocusOrderInScreen: screen_desktop];
+	for (i = 0; i < count; i++) {
+	  AZClient *c = [fManager focusOrder: i inScreen: screen_desktop];
+          if ([c type] == OB_CLIENT_TYPE_DESKTOP && [c focus])
                 break;
+	}
     } else {
         [fManager fallback: OB_FOCUS_FALLBACK_NOFOCUS];
     }
