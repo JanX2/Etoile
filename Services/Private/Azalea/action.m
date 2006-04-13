@@ -1508,7 +1508,7 @@ void action_exit(union ActionData *data)
 void action_showmenu(union ActionData *data)
 {
     if (data->showmenu.name) {
-	[[AZMenuManager defaultManager] showMenu: data->showmenu.name
+	[[AZMenuManager defaultManager] showMenu: [NSString stringWithCString: data->showmenu.name]
 		x: data->any.x y: data->any.y
 		client: data->showmenu.any.c];
     }

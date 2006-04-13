@@ -31,12 +31,12 @@
 @interface AZMenu: NSObject
 {
     /* Name of the menu. Used in the showmenu action. */
-    gchar *name;
+    NSString *name;
     /* Displayed title */
-    gchar *title;
+    NSString *title;
 
     /* Command to execute to rebuild the menu */
-    gchar *execute;
+    NSString *execute;
 
     /* ObMenuEntry list */
     NSMutableArray *entries;
@@ -45,16 +45,16 @@
     AZMenu *pipe_creator;
 }
 
-- (id) initWithName: (gchar *) name title: (gchar *) title;
+- (id) initWithName: (NSString *) name title: (NSString *) title;
 
 /* Repopulate a pipe-menu by running its command */
 - (void) pipeExecute;
 
 /* functions for building menus */
-- (AZNormalMenuEntry *) addNormalMenuEntry: (int) identifier label: (gchar *) label actions: (GSList *) actions;
-- (AZSubmenuMenuEntry *) addSubmenuMenuEntry: (int) identifer submenu: (gchar *) submenu;
+- (AZNormalMenuEntry *) addNormalMenuEntry: (int) identifier label: (NSString *) label actions: (GSList *) actions;
+- (AZSubmenuMenuEntry *) addSubmenuMenuEntry: (int) identifer submenu: (NSString *) submenu;
 - (AZSeparatorMenuEntry *) addSeparatorMenuEntry: (int) identifier;
-
+- (void) removeEntryWithIdentifier: (int) identifier;
 - (void) clearEntries;
 - (AZMenuEntry *) entryWithIdentifier: (int) identifier;
 
@@ -66,14 +66,14 @@
 - (BOOL) execute: (AZMenuEntry *) entry state: (unsigned int) state;
 
 /* Accessoris */
-- (gchar *) name;
-- (gchar *) title;
-- (gchar *) execute;
+- (NSString *) name;
+- (NSString *) title;
+- (NSString *) execute;
 - (NSMutableArray *) entries;
 - (AZMenu *) pipe_creator;
-- (void) set_name: (gchar *) name;
-- (void) set_title: (gchar *) title;
-- (void) set_execute: (gchar *) execute;
+- (void) set_name: (NSString *) name;
+- (void) set_title: (NSString *) title;
+- (void) set_execute: (NSString *) execute;
 - (void) set_pipe_creator: (AZMenu *) pipe_creator;
 
 @end
@@ -137,7 +137,7 @@ typedef enum
 
 @interface AZNormalMenuEntry: AZIconMenuEntry
 {
-    gchar *label;
+    NSString *label;
 
     /* state */
     BOOL enabled;
@@ -147,27 +147,27 @@ typedef enum
 
 }
 
-- (id) initWithMenu: (AZMenu *) menu identifier: (int) identifier label: (gchar *) label actions: (GSList *) actions;
+- (id) initWithMenu: (AZMenu *) menu identifier: (int) identifier label: (NSString *) label actions: (GSList *) actions;
          
 /* Accessories */
-- (gchar *)label;
+- (NSString *)label;
 - (BOOL) enabled;
 - (GSList *) actions;
-- (void) set_label: (gchar *)label;
+- (void) set_label: (NSString *)label;
 - (void) set_enabled: (BOOL) enabled;
 - (void) set_actions: (GSList *) actions;
 @end
 
 @interface AZSubmenuMenuEntry: AZIconMenuEntry
 {
-    gchar *name;
+    NSString *name;
     AZMenu *submenu;
 }
 - (id) initWithMenu: (AZMenu *) menu identifier: (int) identifier
-              submenu: (gchar *) submenu;
-- (gchar *) name;
+              submenu: (NSString *) submenu;
+- (NSString *) name;
 - (AZMenu *) submenu;
-- (void) set_name: (gchar *) name;
+- (void) set_name: (NSString *) name;
 - (void) set_submenu: (AZMenu *) submenu;
 @end
 

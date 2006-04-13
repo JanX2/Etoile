@@ -59,19 +59,19 @@
 @implementation AZNormalMenuEntry
 
 - (id) initWithMenu: (AZMenu *) m identifier: (int) iden
-              label: (gchar *) lab actions: (GSList *) acts
+              label: (NSString *) lab actions: (GSList *) acts
 {
     self = [super initWithMenu: m identifier: iden];
     type = OB_MENU_ENTRY_TYPE_NORMAL;
     enabled = YES;
-    label = g_strdup(lab);
+    ASSIGNCOPY(label, lab);
     actions = acts;
     return self;
 }
 
 - (void) dealloc
 {
-  g_free(label);
+  DESTROY(label);
   while (actions) {
     action_unref(actions->data);
     actions =
@@ -81,10 +81,10 @@
 }
 
 /* Accessories */
-- (gchar *)label { return label; }
+- (NSString *)label { return label; }
 - (BOOL) enabled { return enabled; }
 - (GSList *) actions { return actions; }
-- (void) set_label: (gchar *) l { label = l; }
+- (void) set_label: (NSString *) l { ASSIGNCOPY(label, l); }
 - (void) set_enabled: (BOOL) e { enabled = e; }
 - (void) set_actions: (GSList *) a { actions = a; }
 
@@ -92,22 +92,22 @@
 
 @implementation AZSubmenuMenuEntry
 
-- (gchar *) name { return name; }
+- (NSString *) name { return name; }
 - (AZMenu *) submenu { return submenu; }
-- (void) set_name: (gchar *) n { name = n; }
+- (void) set_name: (NSString *) n { ASSIGNCOPY(name, n); }
 - (void) set_submenu: (AZMenu *) s { submenu = s; }
 
-- (id) initWithMenu: (AZMenu *) m identifier: (int) iden submenu: (gchar *) s
+- (id) initWithMenu: (AZMenu *) m identifier: (int) iden submenu: (NSString *) s
 {
   self = [super initWithMenu: m identifier: iden];
   type = OB_MENU_ENTRY_TYPE_SUBMENU;
-  name = g_strdup(s);
+  ASSIGNCOPY(name, s);
   return self;
 }
 
 - (void) dealloc
 {
-  g_free(name);
+  DESTROY(name);
   [super dealloc];
 }
 
@@ -153,23 +153,23 @@
 }
 
 - (AZNormalMenuEntry *) addNormalMenuEntry: (int) identifier 
-                        label: (gchar *) label actions: (GSList *) actions
+                        label: (NSString *) label actions: (GSList *) actions
 {
   AZNormalMenuEntry *e = [[AZNormalMenuEntry alloc] initWithMenu: self 
 	                                  identifier: identifier
 	                                  label: label actions: actions];
   [entries addObject: e];
-  return e;
+  return AUTORELEASE(e);
 }
 
 - (AZSubmenuMenuEntry *) addSubmenuMenuEntry: (int) iden 
-                         submenu: (gchar *) submenu
+                         submenu: (NSString *) submenu
 {
   AZSubmenuMenuEntry *e = [[AZSubmenuMenuEntry alloc] initWithMenu: self 
 	                             identifier: iden submenu: submenu];
 
   [entries addObject: e];
-  return e;
+  return AUTORELEASE(e);
 }
 
 - (AZSeparatorMenuEntry *) addSeparatorMenuEntry: (int) identifier
@@ -177,7 +177,14 @@
   AZSeparatorMenuEntry *e = [[AZSeparatorMenuEntry alloc] initWithMenu: self 
 	           identifier: identifier];
   [entries addObject: e];
-  return e;
+  return AUTORELEASE(e);
+}
+
+- (void) removeEntryWithIdentifier: (int) iden
+{
+  AZMenuEntry *e = [self entryWithIdentifier: iden];
+  if (e)
+    [entries removeObject: e];
 }
 
 - (void) clearEntries
@@ -198,11 +205,11 @@
     [entries removeAllObjects];
 }
 
-- (id) initWithName: (gchar *) n title: (gchar *) t
+- (id) initWithName: (NSString *) n title: (NSString *) t
 {
   self = [super init];
-  name = g_strdup(n);
-  title = g_strdup(t);
+  ASSIGNCOPY(name, n);
+  ASSIGNCOPY(title, t);
   entries = [[NSMutableArray alloc] init];
   return self;
 }
@@ -211,9 +218,9 @@
 {
   [self clearEntries];
   DESTROY(entries);
-  g_free(name);
-  g_free(title);
-  g_free(execute);
+  DESTROY(name);
+  DESTROY(title);
+  DESTROY(execute);
   [super dealloc];
 }
 
@@ -233,14 +240,14 @@
 }
 
 
-- (gchar *) name { return name; }
-- (gchar *) title { return title; }
-- (gchar *) execute { return execute; }
+- (NSString *) name { return name; }
+- (NSString *) title { return title; }
+- (NSString *) execute { return execute; }
 - (NSMutableArray *) entries { return entries; }
 - (AZMenu *) pipe_creator { return pipe_creator; }
-- (void) set_name: (gchar *) n { name = n; }
-- (void) set_title: (gchar *) t { title = t; }
-- (void) set_execute: (gchar *) e { execute = e; }
+- (void) set_name: (NSString *) n { ASSIGNCOPY(name, n); }
+- (void) set_title: (NSString *) t { ASSIGNCOPY(title, t); }
+- (void) set_execute: (NSString *) e { ASSIGNCOPY(execute, e); }
 - (void) set_pipe_creator: (AZMenu *) p { pipe_creator = p; }
 
 @end

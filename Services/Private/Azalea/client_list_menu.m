@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    client_list_menu.c for the Openbox window manager
@@ -28,7 +29,7 @@
 
 #include <glib.h>
 
-#define MENU_NAME "client-list-menu"
+#define MENU_NAME @"client-list-menu"
 
 static GSList *desktop_menus;
 
@@ -37,12 +38,12 @@ static GSList *desktop_menus;
   unsigned int data;
 }
 
-- (id) initWithName: (gchar *) name title: (gchar *) title desktop: (unsigned int) desktop;
+- (id) initWithName: (NSString *) name title: (NSString *) title desktop: (unsigned int) desktop;
 @end
 
 @implementation AZDesktopMenu
 
-- (id) initWithName: (gchar *) n title: (gchar *) t desktop: (unsigned int) d
+- (id) initWithName: (NSString *) n title: (NSString *) t desktop: (unsigned int) d
 {
   self = [super initWithName: n title: t];
   data = d;
@@ -53,9 +54,9 @@ static GSList *desktop_menus;
 {
     AZMenu *menu = [frame menu];
     GList *it;
-    gint i;
-    gboolean icons = FALSE;
-    gboolean empty = TRUE;
+    int i;
+    BOOL icons = NO;
+    BOOL empty = YES;
 
     [menu clearEntries];
 
@@ -83,7 +84,7 @@ static GSList *desktop_menus;
                                      OB_USER_ACTION_MENU_SELECTION);
             act->data.desktop.desk = data;
             acts = g_slist_append(acts, act);
-	    e = [menu addNormalMenuEntry: i label: (char*)[([c iconic] ? [c icon_title] : [c title]) UTF8String] actions: acts];
+	    e = [menu addNormalMenuEntry: i label: ([c iconic] ? [c icon_title] : [c title]) actions: acts];
 
             if (config_menu_client_list_icons && 
 		(icon = [c iconWithWidth: 32 height: 32])) {
@@ -104,7 +105,7 @@ static GSList *desktop_menus;
         act = action_from_string("Desktop", OB_USER_ACTION_MENU_SELECTION);
         act->data.desktop.desk = data;
         acts = g_slist_append(acts, act);
-	e = [menu addNormalMenuEntry: 0 label: "Go there..." actions: acts];
+	e = [menu addNormalMenuEntry: 0 label: @"Go there..." actions: acts];
         if (data== [[AZScreen defaultScreen] desktop])
             [e set_enabled: NO];
     }
@@ -119,7 +120,6 @@ static GSList *desktop_menus;
     if ([entry isKindOfClass: [AZNormalMenuEntry class]] &&
 		    [(AZNormalMenuEntry *)entry actions]) {
         a = [(AZNormalMenuEntry *)entry actions]->data;
-	NSLog(@"Go to %d", a->data.desktop.desk);
         action_run([(AZNormalMenuEntry *)entry actions], a->data.any.c, state);
     }
     return YES;
@@ -148,13 +148,12 @@ static GSList *desktop_menus;
     for (i = 0; i < [screen numberOfDesktops]; ++i) {
         if (!it) {
             AZDesktopMenu *submenu;
-            gchar *n = g_strdup_printf("%s-%u", MENU_NAME, i);
-	    submenu = [[AZDesktopMenu alloc] initWithName: n title: [screen nameOfDesktopAtIndex: i] desktop: i];
+	    NSString *n = [NSString stringWithFormat: @"%@-%u", MENU_NAME, i];
+	    submenu = [[AZDesktopMenu alloc] initWithName: n title: [NSString stringWithCString: [screen nameOfDesktopAtIndex: i]] desktop: i];
 
 	    [menu addSubmenuMenuEntry: i submenu: n];
 	    [[AZMenuManager defaultManager] registerMenu: submenu];
-
-            g_free(n);
+	    RELEASE(submenu);
 
             desktop_menus = g_slist_append(desktop_menus, submenu);
         } else
@@ -164,7 +163,7 @@ static GSList *desktop_menus;
         next = g_slist_next(it);
 	[[AZMenuManager defaultManager] removeMenu: it->data];
         desktop_menus = g_slist_delete_link(desktop_menus, it);
-        menu_entry_remove([menu entryWithIdentifier: i]);
+	[menu removeEntryWithIdentifier: i];
     }
 }
 @end
@@ -173,7 +172,8 @@ void client_list_menu_startup()
 {
     AZClientListMenu *menu;
 
-    menu = [[AZClientListMenu alloc] initWithName: MENU_NAME title: "Desktops"];
+    menu = [[AZClientListMenu alloc] initWithName: MENU_NAME title: @"Desktops"];
     [[AZMenuManager defaultManager] registerMenu: menu];
+    DESTROY(menu);
 }
 

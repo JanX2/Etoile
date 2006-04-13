@@ -25,7 +25,7 @@
 
 @interface AZMenuManager: NSObject
 {
-  GHashTable *menu_hash;
+  NSMutableDictionary *menu_hash;
 }
 
 + (AZMenuManager *) defaultManager;
@@ -33,15 +33,13 @@
 - (void) startup: (BOOL) reconfig;
 - (void) shutdown: (BOOL) reconfig;
 
-- (AZMenu *) menuWithName: (gchar *) name;
+- (AZMenu *) menuWithName: (NSString *) name;
 - (void) removeMenu: (AZMenu *) menu;
-- (void) showMenu: (gchar *) name x: (int) x y: (int) y client: (AZClient *) client;
+- (void) removePipeMenu: (AZMenu *) pipe_menu;
+- (void) showMenu: (NSString *) name x: (int) x y: (int) y client: (AZClient *) client;
 - (void) registerMenu: (AZMenu *) menu;
-
-- (GHashTable *) menu_hash;
 
 @end
 
-void menu_entry_remove(AZMenuEntry *menuentry);
 void menu_pipe_execute(AZMenu *menu);
 

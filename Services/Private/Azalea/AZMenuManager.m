@@ -51,11 +51,13 @@ static void parse_menu_separator(ObParseInst *i,
 static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                        gpointer data);
 
+#if 0
 static gboolean menu_pipe_submenu(gpointer key, gpointer val, gpointer data)
 {
     AZMenu *menu = val;
     return [menu pipe_creator] == data;
 }
+#endif
 
 void menu_pipe_execute(AZMenu *self)
 {
@@ -67,7 +69,7 @@ void menu_pipe_execute(AZMenu *self)
     if (![self execute])
         return;
 
-    if (!g_spawn_command_line_sync([self execute], &output, NULL, NULL, &err)) {
+    if (!g_spawn_command_line_sync((char*)[[self execute] cString], &output, NULL, NULL, &err)) {
         g_warning("Failed to execute command for pipe-menu: %s", err->message);
         g_error_free(err);
         return;
@@ -76,7 +78,8 @@ void menu_pipe_execute(AZMenu *self)
     if (parse_load_mem(output, strlen(output),
                        "openbox_pipe_menu", &doc, &node))
     {
-        g_hash_table_foreach_remove([[AZMenuManager defaultManager] menu_hash], menu_pipe_submenu, self);
+	[[AZMenuManager defaultManager] removePipeMenu: self];
+        //g_hash_table_foreach_remove([[AZMenuManager defaultManager] menu_hash], menu_pipe_submenu, self);
 	[self clearEntries];
 
         menu_parse_state.pipe_creator = self;
@@ -107,7 +110,7 @@ static void parse_menu_item(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                     if (a)
                         acts = g_slist_append(acts, a);
                 }
-	    [state->parent addNormalMenuEntry: -1 label: label actions: acts];
+	    [state->parent addNormalMenuEntry: -1 label: [NSString stringWithCString: label] actions: acts];
             g_free(label);
         }
     }
@@ -133,14 +136,14 @@ static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     if (!parse_attr_string("id", node, &name))
         goto parse_menu_fail;
 
-    if (!g_hash_table_lookup([[AZMenuManager defaultManager] menu_hash], name)) {
+    if (![[AZMenuManager defaultManager] menuWithName: [NSString stringWithCString: name]]) {
         if (!parse_attr_string("label", node, &title))
             goto parse_menu_fail;
 
-        if ((menu = [[AZMenu alloc] initWithName: name title: title])) {
+        if ((menu = [[AZMenu alloc] initWithName: [NSString stringWithCString: name] title: [NSString stringWithCString: title]])) {
             [menu set_pipe_creator: state->pipe_creator];
             if (parse_attr_string("execute", node, &script)) {
-                [menu set_execute: parse_expand_tilde(script)];
+                [menu set_execute: [NSString stringWithCString: parse_expand_tilde(script)]];
             } else {
                 AZMenu *old;
 
@@ -150,11 +153,12 @@ static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                 state->parent = old;
             }
 	    [[AZMenuManager defaultManager] registerMenu: menu];
+	    DESTROY(menu);
         }
     }
 
     if (state->parent)
-	[state->parent addSubmenuMenuEntry: -1 submenu: name];
+	[state->parent addSubmenuMenuEntry: -1 submenu: [NSString stringWithCString: name]];
 
 parse_menu_fail:
     g_free(name);
@@ -198,8 +202,7 @@ static AZMenuManager *sharedInstance;
     BOOL loaded = NO;
     GSList *it;
 
-    menu_hash = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
-                                      (GDestroyNotify)menu_destroy_hash_value);
+    menu_hash = [[NSMutableDictionary alloc] init];
 
     client_list_menu_startup();
     client_menu_startup();
@@ -237,28 +240,51 @@ static AZMenuManager *sharedInstance;
     menu_parse_inst = NULL;
 
     AZMenuFrameHideAll();
-    g_hash_table_destroy(menu_hash);
-    menu_hash = NULL;
+    DESTROY(menu_hash);
 }
 
-- (AZMenu *) menuWithName: (gchar *) name
+- (AZMenu *) menuWithName: (NSString *) name
 {
-    AZMenu *menu = NULL;
+    AZMenu *menu = nil;
 
-    g_assert(name != NULL);
+    NSAssert(name != nil, @"menuWithName: cannot take 'nil'.");
 
-    if (!(menu = g_hash_table_lookup(menu_hash, name)))
-        g_warning("Attempted to access menu '%s' but it does not exist.",
-                  name);
+    if (!(menu = [menu_hash objectForKey: name]))
+	NSLog(@"Warning: Attemped to access menu '%@' but it does not exist.", name);
     return menu;
 }  
 
 - (void) removeMenu: (AZMenu *) menu
 {
-    g_hash_table_remove(menu_hash, [menu name]);
+  /* make sure its not visible */
+  {
+    NSArray *visibles = [AZMenuFrame visibleFrames];
+    int i, count = [visibles count];
+    AZMenuFrame *f;
+
+    for (i = 0; i < count; i++) {
+      f = [visibles objectAtIndex: i];
+      if ([f menu] == menu)
+        AZMenuFrameHideAll();
+    }
+  }
+
+  [menu_hash removeObjectForKey: [menu name]];
 }
 
-- (void) showMenu: (gchar *) name x: (int) x y: (int) y 
+- (void) removePipeMenu: (AZMenu *) pipe_menu
+{
+  NSArray *keys = [menu_hash allKeys];
+  int i, count = [keys count];
+  for (i = 0; i < count; i++) {
+     AZMenu *m = [menu_hash objectForKey: [keys objectAtIndex: i]];
+     if ([m pipe_creator] == pipe_menu) {
+       [self removeMenu: m];
+     }
+  }
+}
+
+- (void) showMenu: (NSString *) name x: (int) x y: (int) y 
 	   client: (AZClient *) client
 {
     AZMenu *menu;
@@ -299,17 +325,12 @@ static AZMenuManager *sharedInstance;
 
 - (void) registerMenu: (AZMenu *) menu
 {
-  g_hash_table_replace(menu_hash, [menu name], menu);
+  AZMenu *m = nil;
+  if ((m = [menu_hash objectForKey: [menu name]]))  {
+    [self removeMenu: m];
+  }
+  [menu_hash setObject: menu forKey: [menu name]];
 }
-
-- (GHashTable *) menu_hash { return menu_hash; }
 
 @end
-
-void menu_entry_remove(AZMenuEntry *menuentry)
-{
-    [[[menuentry menu] entries] removeObject: menuentry];
-    DESTROY(menuentry);
-}
-
 

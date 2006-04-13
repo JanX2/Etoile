@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    client_menu.c for the Openbox window manager
@@ -26,9 +27,9 @@
 
 #include <glib.h>
 
-#define CLIENT_MENU_NAME  "client-menu"
-#define SEND_TO_MENU_NAME "client-send-to-menu"
-#define LAYER_MENU_NAME   "client-layer-menu"
+#define CLIENT_MENU_NAME  @"client-menu"
+#define SEND_TO_MENU_NAME @"client-send-to-menu"
+#define LAYER_MENU_NAME   @"client-layer-menu"
 
 enum {
     LAYER_TOP,
@@ -78,16 +79,12 @@ enum {
     [(AZNormalMenuEntry *)e set_enabled: [[frame client] functions] & OB_CLIENT_FUNC_ICONIFY];
 
     e = [menu entryWithIdentifier: CLIENT_MAXIMIZE];
-    g_free([(AZNormalMenuEntry *)e label]);
     [(AZNormalMenuEntry *)e set_label: 
-        g_strdup([[frame client] max_vert] || [[frame client] max_horz] ?
-                 ("Restore") : ("Maximize"))];
+        ([[frame client] max_vert] || [[frame client] max_horz] ?  @"Restore" : @"Maximize")];
     [(AZNormalMenuEntry *)e set_enabled: [[frame client] functions] & OB_CLIENT_FUNC_MAXIMIZE];
 
     e = [menu entryWithIdentifier: CLIENT_SHADE];
-    g_free([(AZNormalMenuEntry *)e label]);
-    [(AZNormalMenuEntry *)e set_label: g_strdup([[frame client] shaded] ?
-                                    ("Roll down") : ("Roll up"))];
+    [(AZNormalMenuEntry *)e set_label: ([[frame client] shaded] ?  @"Roll down" : @"Roll up")];
     [(AZNormalMenuEntry *)e set_enabled: [[frame client] functions] & OB_CLIENT_FUNC_SHADE];
 
     e = [menu entryWithIdentifier: CLIENT_MOVE];
@@ -173,7 +170,7 @@ enum {
         act->data.sendto.desk = desk;
         act->data.sendto.follow = FALSE;
         acts = g_slist_prepend(NULL, act);
-	e = [menu addNormalMenuEntry: desk label: n actions: acts];
+	e = [menu addNormalMenuEntry: desk label: [NSString stringWithCString: n] actions: acts];
 
         if ([[frame client] desktop] == desk)
             [e set_enabled: NO];
@@ -187,32 +184,32 @@ void client_menu_startup()
     AZMenuEntry *e;
 
     /* Layer */
-    AZLayerMenu *layer_menu = [[AZLayerMenu alloc] initWithName: LAYER_MENU_NAME title: "Layer"];
+    AZLayerMenu *layer_menu = [[AZLayerMenu alloc] initWithName: LAYER_MENU_NAME title: @"Layer"];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("SendToTopLayer", OB_USER_ACTION_MENU_SELECTION));
-    [layer_menu addNormalMenuEntry: LAYER_TOP label: "Always on top" actions: acts];
+    [layer_menu addNormalMenuEntry: LAYER_TOP label: @"Always on top" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("SendToNormalLayer",
                             OB_USER_ACTION_MENU_SELECTION));
-    [layer_menu addNormalMenuEntry: LAYER_NORMAL label: "Normal" actions: acts];
+    [layer_menu addNormalMenuEntry: LAYER_NORMAL label: @"Normal" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("SendToBottomLayer",
                             OB_USER_ACTION_MENU_SELECTION));
-    [layer_menu addNormalMenuEntry: LAYER_BOTTOM label: "Always on bottom" actions: acts];
+    [layer_menu addNormalMenuEntry: LAYER_BOTTOM label: @"Always on bottom" actions: acts];
 
     [[AZMenuManager defaultManager] registerMenu: layer_menu];
+    DESTROY(layer_menu);
 
     /* Send Menu */
-    AZSendMenu *send_menu = [[AZSendMenu alloc] initWithName: SEND_TO_MENU_NAME 
-	                          title: "Send to desktop"];
+    AZSendMenu *send_menu = [[AZSendMenu alloc] initWithName: SEND_TO_MENU_NAME title: @"Send to desktop"];
     [[AZMenuManager defaultManager] registerMenu: send_menu];
+    DESTROY(send_menu);
 
     /* Client menu */
-    AZClientMenu *menu = [[AZClientMenu alloc] initWithName: CLIENT_MENU_NAME 
-	                          title: "Client menu"];
+    AZClientMenu *menu = [[AZClientMenu alloc] initWithName: CLIENT_MENU_NAME title: @"Client menu"];
 
     e = [menu addSubmenuMenuEntry: CLIENT_SEND_TO submenu: SEND_TO_MENU_NAME];
     [(AZSubmenuMenuEntry*)e set_mask: ob_rr_theme->desk_mask];
@@ -224,7 +221,7 @@ void client_menu_startup()
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Iconify", OB_USER_ACTION_MENU_SELECTION));
-    e = [menu addNormalMenuEntry: CLIENT_ICONIFY label: "Iconify" actions: acts];
+    e = [menu addNormalMenuEntry: CLIENT_ICONIFY label: @"Iconify" actions: acts];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->iconify_mask];
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZNormalMenuEntry *)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
@@ -233,7 +230,7 @@ void client_menu_startup()
     acts = g_slist_prepend(NULL, action_from_string
                            ("ToggleMaximizeFull",
                             OB_USER_ACTION_MENU_SELECTION));
-    e = [menu addNormalMenuEntry: CLIENT_MAXIMIZE label: "MAXIMIZE" actions: acts];
+    e = [menu addNormalMenuEntry: CLIENT_MAXIMIZE label: @"MAXIMIZE" actions: acts];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->max_mask]; 
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZNormalMenuEntry *)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
@@ -241,15 +238,15 @@ void client_menu_startup()
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Raise", OB_USER_ACTION_MENU_SELECTION));
-    [menu addNormalMenuEntry: CLIENT_RAISE label: "Raise to top" actions: acts];
+    [menu addNormalMenuEntry: CLIENT_RAISE label: @"Raise to top" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Lower", OB_USER_ACTION_MENU_SELECTION));
-    [menu addNormalMenuEntry: CLIENT_LOWER label: "Lower to bottom" actions: acts];
+    [menu addNormalMenuEntry: CLIENT_LOWER label: @"Lower to bottom" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("ToggleShade", OB_USER_ACTION_MENU_SELECTION));
-    e = [menu addNormalMenuEntry: CLIENT_SHADE label: "SHADE" actions: acts];
+    e = [menu addNormalMenuEntry: CLIENT_SHADE label: @"SHADE" actions: acts];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->shade_mask];
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZNormalMenuEntry *)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
@@ -258,26 +255,27 @@ void client_menu_startup()
     acts = g_slist_prepend(NULL, action_from_string
                            ("ToggleDecorations",
                             OB_USER_ACTION_MENU_SELECTION));
-    [menu addNormalMenuEntry: CLIENT_DECORATE label: "Decorate" actions: acts];
+    [menu addNormalMenuEntry: CLIENT_DECORATE label: @"Decorate" actions: acts];
 
     [menu addSeparatorMenuEntry: -1];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Move", OB_USER_ACTION_MENU_SELECTION));
-    [menu addNormalMenuEntry: CLIENT_MOVE label: "Move" actions: acts];
+    [menu addNormalMenuEntry: CLIENT_MOVE label: @"Move" actions: acts];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Resize", OB_USER_ACTION_MENU_SELECTION));
-    [menu addNormalMenuEntry: CLIENT_RESIZE label: "Resize" actions: acts];
+    [menu addNormalMenuEntry: CLIENT_RESIZE label: @"Resize" actions: acts];
 
     [menu addSeparatorMenuEntry: -1];
 
     acts = g_slist_prepend(NULL, action_from_string
                            ("Close", OB_USER_ACTION_MENU_SELECTION));
-    e = [menu addNormalMenuEntry: CLIENT_CLOSE label: "Close" actions: acts];
+    e = [menu addNormalMenuEntry: CLIENT_CLOSE label: @"Close" actions: acts];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->close_mask];
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZNormalMenuEntry *)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
     [(AZNormalMenuEntry *)e set_mask_selected_color: ob_rr_theme->menu_selected_color];
     [[AZMenuManager defaultManager] registerMenu: menu];
+    DESTROY(menu);
 }
