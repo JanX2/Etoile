@@ -66,7 +66,7 @@ static GSList *desktop_menus;
         AZClient *c = [fManager focusOrder: j inScreen: data];
         if ([c normal] && ![c skip_taskbar]) {
             GSList *acts = NULL;
-            ObAction* act;
+            AZAction* act;
             AZNormalMenuEntry *e;
             AZClientIcon *icon;
 
@@ -79,11 +79,11 @@ static GSList *desktop_menus;
 
             act = action_from_string("Activate",
                                      OB_USER_ACTION_MENU_SELECTION);
-            act->data.activate.any.c = c;
+            [act data_pointer]->activate.any.c = c;
             acts = g_slist_append(acts, act);
             act = action_from_string("Desktop",
                                      OB_USER_ACTION_MENU_SELECTION);
-            act->data.desktop.desk = data;
+            [act data_pointer]->desktop.desk = data;
             acts = g_slist_append(acts, act);
 	    e = [menu addNormalMenuEntry: i label: ([c iconic] ? [c icon_title] : [c title]) actions: acts];
 
@@ -100,11 +100,11 @@ static GSList *desktop_menus;
         /* no entries */
 
         GSList *acts = NULL;
-        ObAction* act;
+        AZAction* act;
         AZNormalMenuEntry *e;
 
         act = action_from_string("Desktop", OB_USER_ACTION_MENU_SELECTION);
-        act->data.desktop.desk = data;
+        [act data_pointer]->desktop.desk = data;
         acts = g_slist_append(acts, act);
 	e = [menu addNormalMenuEntry: 0 label: @"Go there..." actions: acts];
         if (data == [[AZScreen defaultScreen] desktop])
@@ -116,12 +116,12 @@ static GSList *desktop_menus;
    when we make the actions! */
 - (BOOL) execute: (AZMenuEntry *) entry state: (unsigned int) state
 {
-    ObAction *a;
+    AZAction *a;
 
     if ([entry isKindOfClass: [AZNormalMenuEntry class]] &&
 		    [(AZNormalMenuEntry *)entry actions]) {
         a = [(AZNormalMenuEntry *)entry actions]->data;
-        action_run([(AZNormalMenuEntry *)entry actions], a->data.any.c, state);
+        action_run([(AZNormalMenuEntry *)entry actions], [a data].any.c, state);
     }
     return YES;
 }

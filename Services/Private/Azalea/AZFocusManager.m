@@ -903,13 +903,19 @@ done_cycle:
     } else {
 	NSMutableArray *order = [focus_order objectAtIndex: d];
 	int i, count = [order count];
+	BOOL found = NO;
         /* insert before first iconic window */
 	for (i = 0; i < count; i++) {
 	  AZClient *temp = [order objectAtIndex: i];
 	  if ([temp iconic]) {
-	    [order insertObject: c atIndex: i];
+	    found = YES;
 	    break;
 	  }
+	}
+	if (found) {
+	  [order insertObject: c atIndex: i];
+	} else {
+	  [order addObject: c];
 	}
     }
 }
@@ -922,13 +928,19 @@ done_cycle:
     } else {
 	NSMutableArray *order = [focus_order objectAtIndex: d];
 	int i, count = [order count];
+	BOOL found = NO;
         /* insert before first iconic window */
 	for (i = 0; i < count; i++) {
 	  AZClient *temp = [order objectAtIndex: i];
 	  if ([temp iconic]) {
-	    [order insertObject: c atIndex: i];
+	    found = YES;
 	    break;
 	  }
+	}
+	if (found) {
+	  [order insertObject: c atIndex: i];
+	} else {
+	  [order addObject: c];
 	}
     }
 }

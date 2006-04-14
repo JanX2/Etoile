@@ -114,8 +114,6 @@ struct _ObMainLoopFdHandlerType
     GDestroyNotify destroy;
 };
 
-struct _ObAction;
-
 extern Display *ob_display;
 
 struct _ObMainLoop *ob_main_loop;
@@ -262,9 +260,9 @@ static AZMainLoop *sharedInstance;
 
 /*! Queues an action, which will be run when there are no more X events
   to process */
-- (void) queueAction: (struct _ObAction *) act
+- (void) queueAction: (AZAction *) act
 {
-  [actionQueue addObject: [NSValue valueWithPointer: (void *)action_copy(act)]];
+  [actionQueue addObject: action_copy(act)];
 }
 
 - (void) willStartRunning
@@ -306,7 +304,7 @@ static AZMainLoop *sharedInstance;
     struct timeval *wait;
     fd_set selset;
     GSList *it;
-    ObAction *act;
+    AZAction *act;
 
     ObMainLoop *loop = ob_main_loop;
 
@@ -349,18 +347,18 @@ static AZMainLoop *sharedInstance;
                FocusIn :) */
 
             do {
-		act = [[actionQueue objectAtIndex: 0] pointerValue];
-                if (act->data.any.client_action == OB_CLIENT_ACTION_ALWAYS &&
-                    !act->data.any.c)
+		act = [actionQueue objectAtIndex: 0];
+                if ([act data].any.client_action == OB_CLIENT_ACTION_ALWAYS &&
+                    ![act data].any.c)
                 {
 		    [actionQueue removeObjectAtIndex: 0];
                     action_unref(act);
-                    act = NULL;
+                    act = nil;
                 }
             } while (!act && [actionQueue count]);
 
             if  (act) {
-                act->func(&act->data);
+                [act func]([act data_pointer]);
 		[actionQueue removeObjectAtIndex: 0];
                 action_unref(act);
             }
@@ -478,10 +476,10 @@ static AZMainLoop *sharedInstance;
   int i, count = [actionQueue count];
   for (i = 0; i < count; i++)
   {
-    ObAction *act = (ObAction *)[[actionQueue objectAtIndex: i] pointerValue];
-    if (act->data.any.c == client)
+    AZAction *act = [actionQueue objectAtIndex: i];
+    if ([act data].any.c == client)
     {
-      act->data.any.c = nil;
+      [act data_pointer]->any.c = nil;
     }
   }
 }

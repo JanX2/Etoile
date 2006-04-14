@@ -141,7 +141,7 @@ enum {
     AZMenu *menu = [frame menu];
     guint i;
     GSList *acts;
-    ObAction *act;
+    AZAction *act;
     AZNormalMenuEntry *e;;
 
     [menu clearEntries];
@@ -167,8 +167,8 @@ enum {
 
         act = action_from_string("SendToDesktop",
                                  OB_USER_ACTION_MENU_SELECTION);
-        act->data.sendto.desk = desk;
-        act->data.sendto.follow = FALSE;
+        [act data_pointer]->sendto.desk = desk;
+        [act data_pointer]->sendto.follow = FALSE;
         acts = g_slist_prepend(NULL, act);
 	e = [menu addNormalMenuEntry: desk label: [NSString stringWithCString: n] actions: acts];
 

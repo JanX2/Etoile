@@ -1,6 +1,13 @@
+2006-04-14 Yen-Ju Chen <yjchenx at gmail>
+
+	* Revert back to an older version
+	  because newer one break the move/resize initialied by menu 
+	  then mouse movement.
+
 2006-04-13 Yen-Ju Chen <yjchenx at gmail>
 
 	* Use NSMutableArray for focus_order;
+	* port ObAction into AZAction.
 
 2006-04-10 Yen-Ju Chen <yjchenx at gmail>
 

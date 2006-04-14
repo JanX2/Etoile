@@ -21,6 +21,7 @@
 #import <glib.h>
 #import <X11/Xlib.h>
 
+@class AZAction;
 @class AZClient;
 @class AZKeyBindingTree;
 
@@ -46,7 +47,7 @@ typedef struct {
 - (void) startup: (BOOL) reconfig;
 - (void) shutdown: (BOOL) reconfig;
 
-- (BOOL) bind: (GList *) keylist action: (struct _ObAction *) action;
+- (BOOL) bind: (GList *) keylist action: (AZAction *) action;
 - (void) unbindAll;
 
 - (void) processEvent: (XEvent *) e forClient: (AZClient *) client;
@@ -54,7 +55,7 @@ typedef struct {
 
 - (BOOL) interactiveGrab: (unsigned int) state
                     client: (AZClient *) client
-		    action: (struct _ObAction *) action;
+		    action: (AZAction *) action;
 - (BOOL) processInteractiveGrab: (XEvent *) e
                       forClient: (AZClient **) client;
 - (void) grab: (BOOL) grab forClient: (AZClient *) client;

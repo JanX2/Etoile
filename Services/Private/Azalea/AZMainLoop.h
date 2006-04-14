@@ -25,6 +25,8 @@
 - (void) processXEvent: (XEvent *) e;
 @end
 
+@class AZAction;
+
 typedef void (*ObMainLoopFdHandler) (int fd, void * data);
 typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
 
@@ -61,7 +63,7 @@ typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
                 forSignal: (int) signal;
 - (void) removeSignalHandler: (ObMainLoopSignalHandler) handler;
 
-- (void) queueAction: (struct _ObAction *) act;
+- (void) queueAction: (AZAction *) act;
 
 - (void) willStartRunning;
 - (void) didFinishRunning;
