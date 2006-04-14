@@ -19,6 +19,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AZMenu.h"
+#import <glib.h>
 
 @class AZClient;
 

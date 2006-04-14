@@ -59,35 +59,34 @@
 @implementation AZNormalMenuEntry
 
 - (id) initWithMenu: (AZMenu *) m identifier: (int) iden
-              label: (NSString *) lab actions: (NSArray *) acts
+              label: (NSString *) lab actions: (GSList *) acts
 {
     self = [super initWithMenu: m identifier: iden];
     type = OB_MENU_ENTRY_TYPE_NORMAL;
     enabled = YES;
     ASSIGNCOPY(label, lab);
-    ASSIGN(actions, acts);
+    actions = acts;
     return self;
 }
 
 - (void) dealloc
 {
   DESTROY(label);
-
-  int i, count = [actions count];
-  for (i = 0; i < count; i++) {
-    action_unref([actions objectAtIndex: i]);
+  while (actions) {
+    action_unref(actions->data);
+    actions =
+      g_slist_delete_link(actions, actions);
   }
-  DESTROY(actions);
   [super dealloc];
 }
 
 /* Accessories */
 - (NSString *)label { return label; }
 - (BOOL) enabled { return enabled; }
-- (NSArray *) actions { return actions; }
+- (GSList *) actions { return actions; }
 - (void) set_label: (NSString *) l { ASSIGNCOPY(label, l); }
 - (void) set_enabled: (BOOL) e { enabled = e; }
-- (void) set_actions: (NSArray *) a { ASSIGN(actions, a); }
+- (void) set_actions: (GSList *) a { actions = a; }
 
 @end
 
@@ -154,7 +153,7 @@
 }
 
 - (AZNormalMenuEntry *) addNormalMenuEntry: (int) identifier 
-                        label: (NSString *) label actions: (NSArray *) actions
+                        label: (NSString *) label actions: (GSList *) actions
 {
   AZNormalMenuEntry *e = [[AZNormalMenuEntry alloc] initWithMenu: self 
 	                                  identifier: identifier

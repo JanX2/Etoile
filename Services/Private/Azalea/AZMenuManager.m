@@ -22,15 +22,14 @@
 #import "AZClient.h"
 #import "AZClientManager.h"
 #import "AZMenuFrame.h"
-#import "openbox.h"
-#import "config.h"
-#import "geom.h"
-#import "misc.h"
-#import "client_menu.h"
-#import "client_list_menu.h"
-#import "parse.h"
+#include "openbox.h"
+#include "config.h"
+#include "geom.h"
+#include "misc.h"
+#include "client_menu.h"
+#include "client_list_menu.h"
+#include "parse.h"
 #import "action.h"
-#import "glib.h"
 
 typedef struct _ObMenuParseState ObMenuParseState;
 
@@ -51,6 +50,14 @@ static void parse_menu_separator(ObParseInst *i,
                                  gpointer data);
 static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                        gpointer data);
+
+#if 0
+static gboolean menu_pipe_submenu(gpointer key, gpointer val, gpointer data)
+{
+    AZMenu *menu = val;
+    return [menu pipe_creator] == data;
+}
+#endif
 
 void menu_pipe_execute(AZMenu *self)
 {
@@ -94,17 +101,16 @@ static void parse_menu_item(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     
     if (state->parent) {
         if (parse_attr_string("label", node, &label)) {
-	    NSMutableArray *acts = [[NSMutableArray alloc] init];
+            GSList *acts = NULL;
 
             for (node = node->children; node; node = node->next)
                 if (!xmlStrcasecmp(node->name, (const xmlChar*) "action")) {
-                    AZAction *a = action_parse
+                    ObAction *a = action_parse
                         (i, doc, node, OB_USER_ACTION_MENU_SELECTION);
                     if (a)
-			[acts addObject: a];
+                        acts = g_slist_append(acts, a);
                 }
 	    [state->parent addNormalMenuEntry: -1 label: [NSString stringWithCString: label] actions: acts];
-	    DESTROY(acts);
             g_free(label);
         }
     }

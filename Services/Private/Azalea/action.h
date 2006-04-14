@@ -23,6 +23,8 @@
 #include "misc.h"
 #include "parse.h"
 
+typedef struct _ObAction ObAction;
+
 /* These have to all have a Client* at the top even if they don't use it, so
    that I can set it blindly later on. So every function will have a Client*
    available (possibly NULL though) if it wants it.
@@ -155,26 +157,15 @@ union ActionData {
     struct Stacking stacking;
 };
 
-typedef void (*AZActionFunc)(union ActionData *data);
-
-@interface AZAction: NSObject
-{
+struct _ObAction {
     unsigned int ref;
 
     /* The func member acts like an enum to tell which one of the structs in
        the data union are valid.
     */
-    AZActionFunc func;
+    void (*func)(union ActionData *data);
     union ActionData data;
-}
-- (unsigned int) ref;
-- (AZActionFunc) func;
-- (union ActionData) data;
-- (union ActionData *) data_pointer;
-- (void) set_ref: (unsigned int) ref;
-- (void) set_func: (AZActionFunc) func;
-- (void) set_data: (union ActionData) data;
-@end
+};
 
 /* Creates a new Action from the name of the action
    A few action types need data set after making this call still. Check if
@@ -189,13 +180,13 @@ typedef void (*AZActionFunc)(union ActionData *data);
    action_resize_relative_vert - the delta
 */
 
-AZAction* action_from_string(const gchar *name, ObUserAction uact);
-AZAction* action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+ObAction* action_from_string(const gchar *name, ObUserAction uact);
+ObAction* action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                        ObUserAction uact);
-void action_ref(AZAction *a);
-void action_unref(AZAction *a);
+void action_ref(ObAction *a);
+void action_unref(ObAction *a);
 
-AZAction* action_copy(AZAction *a);
+ObAction* action_copy(const ObAction *a);
 
 /*! Executes a list of actions.
   @param c The client associated with the action. Can be NULL.
@@ -208,7 +199,7 @@ AZAction* action_copy(AZAction *a);
   @param done If the action is completing an interactive action. This only
          affects interactive actions, but should generally always be FALSE.
 */
-void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
+void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
                      unsigned int state, unsigned int button, int x, int y,
                      BOOL cancel, BOOL done);
 
@@ -218,10 +209,7 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
 #define action_run_interactive(a, c, s, n, d) \
     action_run_list(a, c, OB_FRAME_CONTEXT_NONE, s, 0, -1, -1, n, d)
 
-#define action_run_key(a, c, s, x, y) \
-    action_run_list(a, c, OB_FRAME_CONTEXT_NONE, s, 0, x, y, FALSE, FALSE)
-
-//void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y);
+void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y);
 
 #define action_run(a, c, s) \
     action_run_list(a, c, OB_FRAME_CONTEXT_NONE, s, 0, -1, -1, FALSE, FALSE)

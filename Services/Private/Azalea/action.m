@@ -66,343 +66,333 @@ typedef struct
 {
     const gchar *name;
     void (*func)(union ActionData *);
-    void (*setup)(AZAction **, ObUserAction uact);
+    void (*setup)(ObAction **, ObUserAction uact);
 } ActionString;
 
-@implementation AZAction
-- (unsigned int) ref { return ref; }
-- (AZActionFunc) func { return func; }
-- (union ActionData) data { return data; }
-- (union ActionData *) data_pointer { return &data; }
-- (void) set_ref: (unsigned int) r { ref = r; }
-- (void) set_func: (AZActionFunc) f { func = f; }
-- (void) set_data: (union ActionData) d { data = d; }
-@end
-
-AZAction *action_new(AZActionFunc func)
+static ObAction *action_new(void (*func)(union ActionData *data))
 {
-    AZAction *a = [[AZAction alloc] init];
-    [a set_ref: 1];
-    [a set_func: func];
-    return a;
-}
-
-void action_ref(AZAction *a)
-{
-    [a set_ref: [a ref]+1];
-}
-
-void action_unref(AZAction *a)
-{
-    if (a == nil) return;
-
-    [a set_ref: [a ref]-1];
-    if ([a ref] > 0) return;
-
-    /* deal with pointers */
-    if ([a func] == action_execute || [a func] == action_restart)
-        g_free([a data].execute.path);
-    else if ([a func] == action_showmenu)
-        g_free([a data].showmenu.name);
-
-    DESTROY(a);
-}
-
-AZAction* action_copy(AZAction *src)
-{
-    AZAction *a = action_new([src func]);
-
-    [a set_data: [src data]];
-
-    /* deal with pointers */
-    if ([a func] == action_execute || [a func] == action_restart)
-        [a data_pointer]->execute.path = g_strdup([a data].execute.path);
-    else if ([a func] == action_showmenu)
-        [a data_pointer]->showmenu.name = g_strdup([a data].showmenu.name);
+    ObAction *a = g_new0(ObAction, 1);
+    a->ref = 1;
+    a->func = func;
 
     return a;
 }
 
-void setup_action_directional_focus_north(AZAction **a, ObUserAction uact)
+void action_ref(ObAction *a)
 {
-    [(*a) data_pointer]->inter.any.interactive = YES;
-    [(*a) data_pointer]->interdiraction.direction = OB_DIRECTION_NORTH;
-    [(*a) data_pointer]->interdiraction.dialog = YES;
+    ++a->ref;
 }
 
-void setup_action_directional_focus_east(AZAction **a, ObUserAction uact)
+void action_unref(ObAction *a)
 {
-    [(*a) data_pointer]->interdiraction.inter.any.interactive = YES;
-    [(*a) data_pointer]->interdiraction.direction = OB_DIRECTION_EAST;
-    [(*a) data_pointer]->interdiraction.dialog = YES;
+    if (a == NULL) return;
+
+    if (--a->ref > 0) return;
+
+    /* deal with pointers */
+    if (a->func == action_execute || a->func == action_restart)
+        g_free(a->data.execute.path);
+    else if (a->func == action_showmenu)
+        g_free(a->data.showmenu.name);
+
+    g_free(a);
 }
 
-void setup_action_directional_focus_south(AZAction **a, ObUserAction uact)
+ObAction* action_copy(const ObAction *src)
 {
-    [(*a) data_pointer]->interdiraction.inter.any.interactive = YES;
-    [(*a) data_pointer]->interdiraction.direction = OB_DIRECTION_SOUTH;
-    [(*a) data_pointer]->interdiraction.dialog = YES;
+    ObAction *a = action_new(src->func);
+
+    a->data = src->data;
+
+    /* deal with pointers */
+    if (a->func == action_execute || a->func == action_restart)
+        a->data.execute.path = g_strdup(a->data.execute.path);
+    else if (a->func == action_showmenu)
+        a->data.showmenu.name = g_strdup(a->data.showmenu.name);
+
+    return a;
 }
 
-void setup_action_directional_focus_west(AZAction **a, ObUserAction uact)
+void setup_action_directional_focus_north(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->interdiraction.inter.any.interactive = YES;
-    [(*a) data_pointer]->interdiraction.direction = OB_DIRECTION_WEST;
-    [(*a) data_pointer]->interdiraction.dialog = YES;
+    (*a)->data.interdiraction.inter.any.interactive = YES;
+    (*a)->data.interdiraction.direction = OB_DIRECTION_NORTH;
+    (*a)->data.interdiraction.dialog = YES;
 }
 
-void setup_action_directional_focus_northeast(AZAction **a, ObUserAction uact)
+void setup_action_directional_focus_east(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->interdiraction.inter.any.interactive = YES;
-    [(*a) data_pointer]->interdiraction.direction = OB_DIRECTION_NORTHEAST;
-    [(*a) data_pointer]->interdiraction.dialog = YES;
+    (*a)->data.interdiraction.inter.any.interactive = YES;
+    (*a)->data.interdiraction.direction = OB_DIRECTION_EAST;
+    (*a)->data.interdiraction.dialog = YES;
 }
 
-void setup_action_directional_focus_southeast(AZAction **a, ObUserAction uact)
+void setup_action_directional_focus_south(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->interdiraction.inter.any.interactive = YES;
-    [(*a) data_pointer]->interdiraction.direction = OB_DIRECTION_SOUTHEAST;
-    [(*a) data_pointer]->interdiraction.dialog = YES;
+    (*a)->data.interdiraction.inter.any.interactive = YES;
+    (*a)->data.interdiraction.direction = OB_DIRECTION_SOUTH;
+    (*a)->data.interdiraction.dialog = YES;
 }
 
-void setup_action_directional_focus_southwest(AZAction **a, ObUserAction uact)
+void setup_action_directional_focus_west(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->interdiraction.inter.any.interactive = YES;
-    [(*a) data_pointer]->interdiraction.direction = OB_DIRECTION_SOUTHWEST;
-    [(*a) data_pointer]->interdiraction.dialog = YES;
+    (*a)->data.interdiraction.inter.any.interactive = YES;
+    (*a)->data.interdiraction.direction = OB_DIRECTION_WEST;
+    (*a)->data.interdiraction.dialog = YES;
 }
 
-void setup_action_directional_focus_northwest(AZAction **a, ObUserAction uact)
+void setup_action_directional_focus_northeast(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->interdiraction.inter.any.interactive = YES;
-    [(*a) data_pointer]->interdiraction.direction = OB_DIRECTION_NORTHWEST;
-    [(*a) data_pointer]->interdiraction.dialog = YES;
+    (*a)->data.interdiraction.inter.any.interactive = YES;
+    (*a)->data.interdiraction.direction = OB_DIRECTION_NORTHEAST;
+    (*a)->data.interdiraction.dialog = YES;
 }
 
-void setup_action_send_to_desktop(AZAction **a, ObUserAction uact)
+void setup_action_directional_focus_southeast(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->sendto.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->sendto.follow = YES;
+    (*a)->data.interdiraction.inter.any.interactive = YES;
+    (*a)->data.interdiraction.direction = OB_DIRECTION_SOUTHEAST;
+    (*a)->data.interdiraction.dialog = YES;
 }
 
-void setup_action_send_to_desktop_prev(AZAction **a, ObUserAction uact)
+void setup_action_directional_focus_southwest(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->sendtodir.inter.any.interactive = YES;
-    [(*a) data_pointer]->sendtodir.dir = OB_DIRECTION_WEST;
-    [(*a) data_pointer]->sendtodir.linear = YES;
-    [(*a) data_pointer]->sendtodir.wrap = YES;
-    [(*a) data_pointer]->sendtodir.follow = YES;
+    (*a)->data.interdiraction.inter.any.interactive = YES;
+    (*a)->data.interdiraction.direction = OB_DIRECTION_SOUTHWEST;
+    (*a)->data.interdiraction.dialog = YES;
 }
 
-void setup_action_send_to_desktop_next(AZAction **a, ObUserAction uact)
+void setup_action_directional_focus_northwest(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->sendtodir.inter.any.interactive = YES;
-    [(*a) data_pointer]->sendtodir.dir = OB_DIRECTION_EAST;
-    [(*a) data_pointer]->sendtodir.linear = YES;
-    [(*a) data_pointer]->sendtodir.wrap = YES;
-    [(*a) data_pointer]->sendtodir.follow = YES;
+    (*a)->data.interdiraction.inter.any.interactive = YES;
+    (*a)->data.interdiraction.direction = OB_DIRECTION_NORTHWEST;
+    (*a)->data.interdiraction.dialog = YES;
 }
 
-void setup_action_send_to_desktop_left(AZAction **a, ObUserAction uact)
+void setup_action_send_to_desktop(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->sendtodir.inter.any.interactive = YES;
-    [(*a) data_pointer]->sendtodir.dir = OB_DIRECTION_WEST;
-    [(*a) data_pointer]->sendtodir.linear = NO;
-    [(*a) data_pointer]->sendtodir.wrap = YES;
-    [(*a) data_pointer]->sendtodir.follow = YES;
+    (*a)->data.sendto.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.sendto.follow = YES;
 }
 
-void setup_action_send_to_desktop_right(AZAction **a, ObUserAction uact)
+void setup_action_send_to_desktop_prev(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->sendtodir.inter.any.interactive = YES;
-    [(*a) data_pointer]->sendtodir.dir = OB_DIRECTION_EAST;
-    [(*a) data_pointer]->sendtodir.linear = NO;
-    [(*a) data_pointer]->sendtodir.wrap = YES;
-    [(*a) data_pointer]->sendtodir.follow = YES;
+    (*a)->data.sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.sendtodir.inter.any.interactive = YES;
+    (*a)->data.sendtodir.dir = OB_DIRECTION_WEST;
+    (*a)->data.sendtodir.linear = YES;
+    (*a)->data.sendtodir.wrap = YES;
+    (*a)->data.sendtodir.follow = YES;
 }
 
-void setup_action_send_to_desktop_up(AZAction **a, ObUserAction uact)
+void setup_action_send_to_desktop_next(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->sendtodir.inter.any.interactive = YES;
-    [(*a) data_pointer]->sendtodir.dir = OB_DIRECTION_NORTH;
-    [(*a) data_pointer]->sendtodir.linear = NO;
-    [(*a) data_pointer]->sendtodir.wrap = YES;
-    [(*a) data_pointer]->sendtodir.follow = YES;
+    (*a)->data.sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.sendtodir.inter.any.interactive = YES;
+    (*a)->data.sendtodir.dir = OB_DIRECTION_EAST;
+    (*a)->data.sendtodir.linear = YES;
+    (*a)->data.sendtodir.wrap = YES;
+    (*a)->data.sendtodir.follow = YES;
 }
 
-void setup_action_send_to_desktop_down(AZAction **a, ObUserAction uact)
+void setup_action_send_to_desktop_left(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->sendtodir.inter.any.interactive = YES;
-    [(*a) data_pointer]->sendtodir.dir = OB_DIRECTION_SOUTH;
-    [(*a) data_pointer]->sendtodir.linear = NO;
-    [(*a) data_pointer]->sendtodir.wrap = YES;
-    [(*a) data_pointer]->sendtodir.follow = YES;
+    (*a)->data.sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.sendtodir.inter.any.interactive = YES;
+    (*a)->data.sendtodir.dir = OB_DIRECTION_WEST;
+    (*a)->data.sendtodir.linear = NO;
+    (*a)->data.sendtodir.wrap = YES;
+    (*a)->data.sendtodir.follow = YES;
 }
 
-void setup_action_desktop(AZAction **a, ObUserAction uact)
+void setup_action_send_to_desktop_right(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->desktop.inter.any.interactive = NO;
+    (*a)->data.sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.sendtodir.inter.any.interactive = YES;
+    (*a)->data.sendtodir.dir = OB_DIRECTION_EAST;
+    (*a)->data.sendtodir.linear = NO;
+    (*a)->data.sendtodir.wrap = YES;
+    (*a)->data.sendtodir.follow = YES;
 }
 
-void setup_action_desktop_prev(AZAction **a, ObUserAction uact)
+void setup_action_send_to_desktop_up(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->desktopdir.inter.any.interactive = YES;
-    [(*a) data_pointer]->desktopdir.dir = OB_DIRECTION_WEST;
-    [(*a) data_pointer]->desktopdir.linear = YES;
-    [(*a) data_pointer]->desktopdir.wrap = YES;
+    (*a)->data.sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.sendtodir.inter.any.interactive = YES;
+    (*a)->data.sendtodir.dir = OB_DIRECTION_NORTH;
+    (*a)->data.sendtodir.linear = NO;
+    (*a)->data.sendtodir.wrap = YES;
+    (*a)->data.sendtodir.follow = YES;
 }
 
-void setup_action_desktop_next(AZAction **a, ObUserAction uact)
+void setup_action_send_to_desktop_down(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->desktopdir.inter.any.interactive = YES;
-    [(*a) data_pointer]->desktopdir.dir = OB_DIRECTION_EAST;
-    [(*a) data_pointer]->desktopdir.linear = YES;
-    [(*a) data_pointer]->desktopdir.wrap = YES;
+    (*a)->data.sendtodir.inter.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.sendtodir.inter.any.interactive = YES;
+    (*a)->data.sendtodir.dir = OB_DIRECTION_SOUTH;
+    (*a)->data.sendtodir.linear = NO;
+    (*a)->data.sendtodir.wrap = YES;
+    (*a)->data.sendtodir.follow = YES;
 }
 
-void setup_action_desktop_left(AZAction **a, ObUserAction uact)
+void setup_action_desktop(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->desktopdir.inter.any.interactive = YES;
-    [(*a) data_pointer]->desktopdir.dir = OB_DIRECTION_WEST;
-    [(*a) data_pointer]->desktopdir.linear = NO;
-    [(*a) data_pointer]->desktopdir.wrap = YES;
+    (*a)->data.desktop.inter.any.interactive = NO;
 }
 
-void setup_action_desktop_right(AZAction **a, ObUserAction uact)
+void setup_action_desktop_prev(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->desktopdir.inter.any.interactive = YES;
-    [(*a) data_pointer]->desktopdir.dir = OB_DIRECTION_EAST;
-    [(*a) data_pointer]->desktopdir.linear = NO;
-    [(*a) data_pointer]->desktopdir.wrap = YES;
+    (*a)->data.desktopdir.inter.any.interactive = YES;
+    (*a)->data.desktopdir.dir = OB_DIRECTION_WEST;
+    (*a)->data.desktopdir.linear = YES;
+    (*a)->data.desktopdir.wrap = YES;
 }
 
-void setup_action_desktop_up(AZAction **a, ObUserAction uact)
+void setup_action_desktop_next(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->desktopdir.inter.any.interactive = YES;
-    [(*a) data_pointer]->desktopdir.dir = OB_DIRECTION_NORTH;
-    [(*a) data_pointer]->desktopdir.linear = NO;
-    [(*a) data_pointer]->desktopdir.wrap = YES;
+    (*a)->data.desktopdir.inter.any.interactive = YES;
+    (*a)->data.desktopdir.dir = OB_DIRECTION_EAST;
+    (*a)->data.desktopdir.linear = YES;
+    (*a)->data.desktopdir.wrap = YES;
 }
 
-void setup_action_desktop_down(AZAction **a, ObUserAction uact)
+void setup_action_desktop_left(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->desktopdir.inter.any.interactive = YES;
-    [(*a) data_pointer]->desktopdir.dir = OB_DIRECTION_SOUTH;
-    [(*a) data_pointer]->desktopdir.linear = NO;
-    [(*a) data_pointer]->desktopdir.wrap = YES;
+    (*a)->data.desktopdir.inter.any.interactive = YES;
+    (*a)->data.desktopdir.dir = OB_DIRECTION_WEST;
+    (*a)->data.desktopdir.linear = NO;
+    (*a)->data.desktopdir.wrap = YES;
 }
 
-void setup_action_cycle_windows_next(AZAction **a, ObUserAction uact)
+void setup_action_desktop_right(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->cycle.inter.any.interactive = YES;
-    [(*a) data_pointer]->cycle.linear = NO;
-    [(*a) data_pointer]->cycle.forward = YES;
-    [(*a) data_pointer]->cycle.dialog = YES;
+    (*a)->data.desktopdir.inter.any.interactive = YES;
+    (*a)->data.desktopdir.dir = OB_DIRECTION_EAST;
+    (*a)->data.desktopdir.linear = NO;
+    (*a)->data.desktopdir.wrap = YES;
 }
 
-void setup_action_cycle_windows_previous(AZAction **a, ObUserAction uact)
+void setup_action_desktop_up(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->cycle.inter.any.interactive = YES;
-    [(*a) data_pointer]->cycle.linear = NO;
-    [(*a) data_pointer]->cycle.forward = NO;
-    [(*a) data_pointer]->cycle.dialog = YES;
+    (*a)->data.desktopdir.inter.any.interactive = YES;
+    (*a)->data.desktopdir.dir = OB_DIRECTION_NORTH;
+    (*a)->data.desktopdir.linear = NO;
+    (*a)->data.desktopdir.wrap = YES;
 }
 
-void setup_action_movetoedge_north(AZAction **a, ObUserAction uact)
+void setup_action_desktop_down(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->diraction.direction = OB_DIRECTION_NORTH;
+    (*a)->data.desktopdir.inter.any.interactive = YES;
+    (*a)->data.desktopdir.dir = OB_DIRECTION_SOUTH;
+    (*a)->data.desktopdir.linear = NO;
+    (*a)->data.desktopdir.wrap = YES;
 }
 
-void setup_action_movetoedge_south(AZAction **a, ObUserAction uact)
+void setup_action_cycle_windows_next(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->diraction.direction = OB_DIRECTION_SOUTH;
+    (*a)->data.cycle.inter.any.interactive = YES;
+    (*a)->data.cycle.linear = NO;
+    (*a)->data.cycle.forward = YES;
+    (*a)->data.cycle.dialog = YES;
 }
 
-void setup_action_movetoedge_east(AZAction **a, ObUserAction uact)
+void setup_action_cycle_windows_previous(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->diraction.direction = OB_DIRECTION_EAST;
+    (*a)->data.cycle.inter.any.interactive = YES;
+    (*a)->data.cycle.linear = NO;
+    (*a)->data.cycle.forward = NO;
+    (*a)->data.cycle.dialog = YES;
 }
 
-void setup_action_movetoedge_west(AZAction **a, ObUserAction uact)
+void setup_action_movetoedge_north(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->diraction.direction = OB_DIRECTION_WEST;
+    (*a)->data.diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.diraction.direction = OB_DIRECTION_NORTH;
 }
 
-void setup_action_growtoedge_north(AZAction **a, ObUserAction uact)
+void setup_action_movetoedge_south(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->diraction.direction = OB_DIRECTION_NORTH;
+    (*a)->data.diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.diraction.direction = OB_DIRECTION_SOUTH;
 }
 
-void setup_action_growtoedge_south(AZAction **a, ObUserAction uact)
+void setup_action_movetoedge_east(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->diraction.direction = OB_DIRECTION_SOUTH;
+    (*a)->data.diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.diraction.direction = OB_DIRECTION_EAST;
 }
 
-void setup_action_growtoedge_east(AZAction **a, ObUserAction uact)
+void setup_action_movetoedge_west(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->diraction.direction = OB_DIRECTION_EAST;
+    (*a)->data.diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.diraction.direction = OB_DIRECTION_WEST;
 }
 
-void setup_action_growtoedge_west(AZAction **a, ObUserAction uact)
+void setup_action_growtoedge_north(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->diraction.direction = OB_DIRECTION_WEST;
+    (*a)->data.diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.diraction.direction = OB_DIRECTION_NORTH;
 }
 
-void setup_action_top_layer(AZAction **a, ObUserAction uact)
+void setup_action_growtoedge_south(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->layer.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->layer.layer = 1;
+    (*a)->data.diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.diraction.direction = OB_DIRECTION_SOUTH;
 }
 
-void setup_action_normal_layer(AZAction **a, ObUserAction uact)
+void setup_action_growtoedge_east(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->layer.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->layer.layer = 0;
+    (*a)->data.diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.diraction.direction = OB_DIRECTION_EAST;
 }
 
-void setup_action_bottom_layer(AZAction **a, ObUserAction uact)
+void setup_action_growtoedge_west(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->layer.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->layer.layer = -1;
+    (*a)->data.diraction.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.diraction.direction = OB_DIRECTION_WEST;
 }
 
-void setup_action_move(AZAction **a, ObUserAction uact)
+void setup_action_top_layer(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->moveresize.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->moveresize.move = YES;
-    [(*a) data_pointer]->moveresize.keyboard =
+    (*a)->data.layer.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.layer.layer = 1;
+}
+
+void setup_action_normal_layer(ObAction **a, ObUserAction uact)
+{
+    (*a)->data.layer.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.layer.layer = 0;
+}
+
+void setup_action_bottom_layer(ObAction **a, ObUserAction uact)
+{
+    (*a)->data.layer.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.layer.layer = -1;
+}
+
+void setup_action_move(ObAction **a, ObUserAction uact)
+{
+    (*a)->data.moveresize.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.moveresize.move = YES;
+    (*a)->data.moveresize.keyboard =
         (uact == OB_USER_ACTION_NONE ||
          uact == OB_USER_ACTION_KEYBOARD_KEY ||
          uact == OB_USER_ACTION_MENU_SELECTION);
 }
 
-void setup_action_resize(AZAction **a, ObUserAction uact)
+void setup_action_resize(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->moveresize.any.client_action = OB_CLIENT_ACTION_ALWAYS;
-    [(*a) data_pointer]->moveresize.move = NO;
-    [(*a) data_pointer]->moveresize.keyboard =
+    (*a)->data.moveresize.any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.moveresize.move = NO;
+    (*a)->data.moveresize.keyboard =
         (uact == OB_USER_ACTION_NONE ||
          uact == OB_USER_ACTION_KEYBOARD_KEY ||
          uact == OB_USER_ACTION_MENU_SELECTION);
 }
 
-void setup_action_showmenu(AZAction **a, ObUserAction uact)
+void setup_action_showmenu(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->showmenu.any.client_action = OB_CLIENT_ACTION_OPTIONAL;
+    (*a)->data.showmenu.any.client_action = OB_CLIENT_ACTION_OPTIONAL;
     /* you cannot call ShowMenu from inside a menu, cuz the menu code makes
        assumptions that there is only one menu (and submenus) open at
        a time! */
@@ -412,9 +402,9 @@ void setup_action_showmenu(AZAction **a, ObUserAction uact)
     }
 }
 
-void setup_client_action(AZAction **a, ObUserAction uact)
+void setup_client_action(ObAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->any.client_action = OB_CLIENT_ACTION_ALWAYS;
+    (*a)->data.any.client_action = OB_CLIENT_ACTION_ALWAYS;
 }
 
 ActionString actionstrings[] =
@@ -836,11 +826,11 @@ ActionString actionstrings[] =
    read during interactive events, so no dice! >:) */
 #define INTERACTIVE_LIMIT(a, uact) \
     if (uact != OB_USER_ACTION_KEYBOARD_KEY) \
-        [a data_pointer]->any.interactive = NO;
+        a->data.any.interactive = NO;
 
-AZAction *action_from_string(const gchar *name, ObUserAction uact)
+ObAction *action_from_string(const gchar *name, ObUserAction uact)
 {
-    AZAction *a = nil;
+    ObAction *a = NULL;
     BOOL exist = NO;
     int i;
 
@@ -862,75 +852,75 @@ AZAction *action_from_string(const gchar *name, ObUserAction uact)
     return a;
 }
 
-AZAction *action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+ObAction *action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                        ObUserAction uact)
 {
     gchar *actname;
-    AZAction *act = nil;
+    ObAction *act = NULL;
     xmlNodePtr n;
 
     if (parse_attr_string("name", node, &actname)) {
         if ((act = action_from_string(actname, uact))) {
-            if ([act func] == action_execute || [act func] == action_restart) {
+            if (act->func == action_execute || act->func == action_restart) {
                 if ((n = parse_find_node("execute", node->xmlChildrenNode))) {
                     gchar *s = parse_string(doc, n);
-                    [act data_pointer]->execute.path = parse_expand_tilde(s);
+                    act->data.execute.path = parse_expand_tilde(s);
                     g_free(s);
                 }
-            } else if ([act func] == action_showmenu) {
+            } else if (act->func == action_showmenu) {
                 if ((n = parse_find_node("menu", node->xmlChildrenNode)))
-                    [act data_pointer]->showmenu.name = parse_string(doc, n);
-            } else if ([act func] == action_move_relative_horz ||
-                       [act func] == action_move_relative_vert ||
-                       [act func] == action_resize_relative_horz ||
-                       [act func] == action_resize_relative_vert) {
+                    act->data.showmenu.name = parse_string(doc, n);
+            } else if (act->func == action_move_relative_horz ||
+                       act->func == action_move_relative_vert ||
+                       act->func == action_resize_relative_horz ||
+                       act->func == action_resize_relative_vert) {
                 if ((n = parse_find_node("delta", node->xmlChildrenNode)))
-                    [act data_pointer]->relative.delta = parse_int(doc, n);
-            } else if ([act func] == action_desktop) {
+                    act->data.relative.delta = parse_int(doc, n);
+            } else if (act->func == action_desktop) {
                 if ((n = parse_find_node("desktop", node->xmlChildrenNode)))
-                    [act data_pointer]->desktop.desk = parse_int(doc, n);
-                if ([act data].desktop.desk > 0) [act data_pointer]->desktop.desk--;
+                    act->data.desktop.desk = parse_int(doc, n);
+                if (act->data.desktop.desk > 0) act->data.desktop.desk--;
                 if ((n = parse_find_node("dialog", node->xmlChildrenNode)))
-                    [act data_pointer]->desktop.inter.any.interactive =
+                    act->data.desktop.inter.any.interactive =
                         parse_bool(doc, n);
-           } else if ([act func] == action_send_to_desktop) {
+           } else if (act->func == action_send_to_desktop) {
                 if ((n = parse_find_node("desktop", node->xmlChildrenNode)))
-                    [act data_pointer]->sendto.desk = parse_int(doc, n);
-                if ([act data].sendto.desk > 0) [act data_pointer]->sendto.desk--;
+                    act->data.sendto.desk = parse_int(doc, n);
+                if (act->data.sendto.desk > 0) act->data.sendto.desk--;
                 if ((n = parse_find_node("follow", node->xmlChildrenNode)))
-                    [act data_pointer]->sendto.follow = parse_bool(doc, n);
-            } else if ([act func] == action_desktop_dir) {
+                    act->data.sendto.follow = parse_bool(doc, n);
+            } else if (act->func == action_desktop_dir) {
                 if ((n = parse_find_node("wrap", node->xmlChildrenNode)))
-                    [act data_pointer]->desktopdir.wrap = parse_bool(doc, n); 
+                    act->data.desktopdir.wrap = parse_bool(doc, n); 
                 if ((n = parse_find_node("dialog", node->xmlChildrenNode)))
-                    [act data_pointer]->desktopdir.inter.any.interactive =
+                    act->data.desktopdir.inter.any.interactive =
                         parse_bool(doc, n);
-            } else if ([act func] == action_send_to_desktop_dir) {
+            } else if (act->func == action_send_to_desktop_dir) {
                 if ((n = parse_find_node("wrap", node->xmlChildrenNode)))
-                    [act data_pointer]->sendtodir.wrap = parse_bool(doc, n);
+                    act->data.sendtodir.wrap = parse_bool(doc, n);
                 if ((n = parse_find_node("follow", node->xmlChildrenNode)))
-                    [act data_pointer]->sendtodir.follow = parse_bool(doc, n);
+                    act->data.sendtodir.follow = parse_bool(doc, n);
                 if ((n = parse_find_node("dialog", node->xmlChildrenNode)))
-                    [act data_pointer]->sendtodir.inter.any.interactive =
+                    act->data.sendtodir.inter.any.interactive =
                         parse_bool(doc, n);
-            } else if ([act func] == action_activate) {
+            } else if (act->func == action_activate) {
                 if ((n = parse_find_node("here", node->xmlChildrenNode)))
-                    [act data_pointer]->activate.here = parse_bool(doc, n);
-            } else if ([act func] == action_cycle_windows) {
+                    act->data.activate.here = parse_bool(doc, n);
+            } else if (act->func == action_cycle_windows) {
                 if ((n = parse_find_node("linear", node->xmlChildrenNode)))
-                    [act data_pointer]->cycle.linear = parse_bool(doc, n);
+                    act->data.cycle.linear = parse_bool(doc, n);
                 if ((n = parse_find_node("dialog", node->xmlChildrenNode)))
-                    [act data_pointer]->cycle.dialog = parse_bool(doc, n);
-            } else if ([act func] == action_directional_focus) {
+                    act->data.cycle.dialog = parse_bool(doc, n);
+            } else if (act->func == action_directional_focus) {
                 if ((n = parse_find_node("dialog", node->xmlChildrenNode)))
-                    [act data_pointer]->cycle.dialog = parse_bool(doc, n);
-            } else if ([act func] == action_raise ||
-                       [act func] == action_lower ||
-                       [act func] == action_raiselower ||
-                       [act func] == action_shadelower ||
-                       [act func] == action_unshaderaise) {
+                    act->data.cycle.dialog = parse_bool(doc, n);
+            } else if (act->func == action_raise ||
+                       act->func == action_lower ||
+                       act->func == action_raiselower ||
+                       act->func == action_shadelower ||
+                       act->func == action_unshaderaise) {
                 if ((n = parse_find_node("group", node->xmlChildrenNode)))
-                    [act data_pointer]->stacking.group = parse_bool(doc, n);
+                    act->data.stacking.group = parse_bool(doc, n);
             }
             INTERACTIVE_LIMIT(act, uact);
         }
@@ -939,28 +929,27 @@ AZAction *action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     return act;
 }
 
-#if 0
-void action_run_key(NSArray *a, AZClient *c, unsigned int state, int x, int y)
+void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y)
 {
     GSList *a = NULL;
     int i, count = [acts count];
     for (i = 0; i < count; i++) {
-      a = g_slist_append(a, [acts objectAtIndex: i]);
+      a = g_slist_append(a, [[acts objectAtIndex: i] pointerValue]);
     }
     action_run_list(a, c, OB_FRAME_CONTEXT_NONE, state, 0, x, y, FALSE, FALSE);
 }
-#endif
 
 
-void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
+void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
                      unsigned int state, unsigned int button, int x, int y,
                      BOOL cancel, BOOL done)
 {
-    AZAction *a;
+    GSList *it;
+    ObAction *a;
     BOOL inter = NO;
-    int i, count;
 
-    if ((!acts) || ([acts count] == 0))
+    if (!acts)
+        return;
 
     if (x < 0 && y < 0)
     {
@@ -969,16 +958,14 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
 
     if (grab_on_keyboard())
         inter = YES;
-    else {
-	count = [acts count];
-	for (i = 0; i < count; i++) {
-            a = [acts objectAtIndex: i];
-            if ([a data].any.interactive) {
+    else
+        for (it = acts; it; it = g_slist_next(it)) {
+            a = it->data;
+            if (a->data.any.interactive) {
                 inter = YES;
                 break;
             }
         }
-    }
 
     if (!inter) {
         /* sometimes when we execute another app as an action,
@@ -988,26 +975,25 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
         XUngrabKeyboard(ob_display, [[AZEventHandler defaultHandler] eventLastTime]);
     }
 
-    count = [acts count];
-    for (i = 0; i < count; i++) {
-        a = [acts objectAtIndex: i];
+    for (it = acts; it; it = g_slist_next(it)) {
+        a = it->data;
 
-        if (!([a data].any.client_action == OB_CLIENT_ACTION_ALWAYS && !c)) {
-            [a data_pointer]->any.c = [a data].any.client_action ? c : nil;
-            [a data_pointer]->any.context = context;
-            [a data_pointer]->any.x = x;
-            [a data_pointer]->any.y = y;
+        if (!(a->data.any.client_action == OB_CLIENT_ACTION_ALWAYS && !c)) {
+            a->data.any.c = a->data.any.client_action ? c : nil;
+            a->data.any.context = context;
+            a->data.any.x = x;
+            a->data.any.y = y;
 
-            [a data_pointer]->any.button = button;
+            a->data.any.button = button;
 
-            if ([a data].any.interactive) {
-                [a data_pointer]->inter.cancel = cancel;
-                [a data_pointer]->inter.final = done;
+            if (a->data.any.interactive) {
+                a->data.inter.cancel = cancel;
+                a->data.inter.final = done;
                 if (!(cancel || done)) {
 		    AZKeyboardHandler *kHandler = [AZKeyboardHandler defaultHandler];
 
 		    if (![kHandler interactiveGrab: state
-				    client: [a data].any.c
+				    client: a->data.any.c
 				    action: a])
                         continue;
 		}
@@ -1016,9 +1002,9 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
             /* XXX UGLY HACK race with motion event starting a move and the
                button release gettnig processed first. answer: don't queue
                moveresize starts. UGLY HACK XXX */
-            if ([a data].any.interactive || [a func] == action_moveresize) {
+            if (a->data.any.interactive || a->func == action_moveresize) {
                 /* interactive actions are not queued */
-                [a func]([a data_pointer]);
+                a->func(&a->data);
             } else {
                 [[AZMainLoop mainLoop] queueAction: a];
 	    }
@@ -1028,12 +1014,15 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
 
 void action_run_string(const gchar *name, AZClient *c)
 {
-    AZAction *a;
+    ObAction *a;
+    GSList *l;
 
     a = action_from_string(name, OB_USER_ACTION_NONE);
     g_assert(a);
 
-    action_run(([NSArray arrayWithObjects: a, nil]), c, 0);
+    l = g_slist_append(NULL, a);
+
+    action_run(l, c, 0);
 }
 
 void action_execute(union ActionData *data)

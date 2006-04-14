@@ -309,16 +309,15 @@ static Window createWindow(Window parent, unsigned long mask,
     {
         /* grab all this shizzle, cuz when the menu gets hidden, 'self'
            gets freed */
-        NSArray *acts = [(AZNormalMenuEntry *)entry actions];
+        GSList *acts = [(AZNormalMenuEntry *)entry actions];
         AZClient *client = [frame client];
 
         /* release grabs before executing the shit */
         if (!(state & ControlMask))
 	    AZMenuFrameHideAll();
 
-	if ([[frame menu] execute: entry state: state] == NO) {
+	if ([[frame menu] execute: entry state: state] == NO)
             action_run(acts, client, state);
-	}
     }
 }
 

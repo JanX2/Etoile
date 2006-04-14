@@ -21,6 +21,7 @@
 
 #include "misc.h"
 
+#include <glib.h>
 #include <X11/Xlib.h>
 
 void grab_startup(BOOL reconfig);

@@ -29,7 +29,7 @@ void mouse_startup(BOOL reconfig);
 void mouse_shutdown(BOOL reconfig);
 
 BOOL mouse_bind(const gchar *buttonstr, const gchar *contextstr,
-                    ObMouseAction mact, AZAction *action);
+                    ObMouseAction mact, ObAction *action);
 void mouse_unbind_all();
 
 void mouse_event(AZClient *client, XEvent *e);

@@ -94,7 +94,7 @@ static void parse_key(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                       GList *keylist)
 {
     gchar *key;
-    AZAction *action;
+    ObAction *action;
     xmlNodePtr n, nact;
     GList *it;
 
@@ -157,7 +157,7 @@ static void parse_mouse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     gchar *contextstr;
     ObUserAction uact;
     ObMouseAction mact;
-    AZAction *action;
+    ObAction *action;
 
     mouse_unbind_all();
 

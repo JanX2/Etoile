@@ -42,7 +42,7 @@
 - (void) set_key: (unsigned int) key;
 - (void) set_next_sibling: (AZKeyBindingTree *) next_sibling;
 - (void) set_first_child: (AZKeyBindingTree *) first_child;
-- (void) addAction: (AZAction *) action;
+- (void) addAction: (ObAction *) action;
 
 @end
 

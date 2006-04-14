@@ -19,6 +19,7 @@
 
 #import <Foundation/Foundation.h>
 #import "window.h"
+#import <glib.h>
 #import <X11/Xlib.h>
 
 /*! The possible stacking layers a client window can be a part of */

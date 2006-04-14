@@ -1,8 +1,6 @@
 2006-04-13 Yen-Ju Chen <yjchenx at gmail>
 
 	* Use NSMutableArray for focus_order;
-	* port ObAction into AZAction.
-	* remove unused glib declaration.
 
 2006-04-10 Yen-Ju Chen <yjchenx at gmail>
 

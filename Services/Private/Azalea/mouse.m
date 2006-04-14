@@ -169,13 +169,7 @@ static BOOL fire_binding(ObMouseAction a, ObFrameContext context,
     /* if not bound, then nothing to do! */
     if (it == NULL) return NO;
 
-    int i, count = g_slist_length(b->actions[a]);
-    NSMutableArray *array = [[NSMutableArray alloc] init];
-    for (i = 0; i < count; i++) {
-      [array addObject: g_slist_nth_data(b->actions[a], i)];
-    }
-    action_run_mouse(array, c, context, state, button, x, y);
-    DESTROY(array);
+    action_run_mouse(b->actions[a], c, context, state, button, x, y);
     return YES;
 }
 
@@ -304,7 +298,7 @@ void mouse_event(AZClient *client, XEvent *e)
 }
 
 BOOL mouse_bind(const gchar *buttonstr, const gchar *contextstr,
-                    ObMouseAction mact, AZAction *action)
+                    ObMouseAction mact, ObAction *action)
 {
     unsigned int state, button;
     ObFrameContext context;
@@ -332,9 +326,9 @@ BOOL mouse_bind(const gchar *buttonstr, const gchar *contextstr,
 
     /* when there are no modifiers in the binding, then the action cannot
        be interactive */
-    if (!state && [action data].any.interactive) {
-        [action data_pointer]->any.interactive = NO;
-        [action data_pointer]->inter.final = YES;
+    if (!state && action->data.any.interactive) {
+        action->data.any.interactive = NO;
+        action->data.inter.final = YES;
     }
 
     /* add the binding */
