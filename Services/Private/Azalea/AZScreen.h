@@ -52,7 +52,7 @@ typedef struct DesktopLayout {
   DesktopLayout screen_desktop_layout;
 
   /*! An array of gchar*'s which are desktop names in UTF-8 format */
-  char **screen_desktop_names;
+  NSMutableArray *screen_desktop_names;
 
   /* Private */
   Rect  **area; /* array of desktop holding array of xinerama areas */
@@ -127,7 +127,7 @@ typedef struct DesktopLayout {
 
 - (unsigned int) lastDesktop;
 
-- (char *) nameOfDesktopAtIndex: (unsigned int) index;
+- (NSString *) nameOfDesktopAtIndex: (unsigned int) index;
 
 - (Window) supportXWindow;
 

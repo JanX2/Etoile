@@ -45,7 +45,7 @@ typedef enum {
   AZClient *focus_cycle_target;
 
   /*! The recent focus order on each desktop */
-  GList **focus_order; /* these lists are created when screen_startup
+  NSMutableArray *focus_order; /* these lists are created when screen_startup
                           sets the number of desktops */
 
   /* Private */

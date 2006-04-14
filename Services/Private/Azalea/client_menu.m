@@ -162,7 +162,7 @@ enum {
             n = ("All desktops");
         } else {
             desk = i;
-            n = [screen nameOfDesktopAtIndex: i];
+            n = (char*)[[screen nameOfDesktopAtIndex: i] UTF8String];
         }
 
         act = action_from_string("SendToDesktop",

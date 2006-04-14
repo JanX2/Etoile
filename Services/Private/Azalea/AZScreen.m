@@ -192,6 +192,7 @@ static AZScreen *sharedInstance;
 {
     GSList *it;
     unsigned int i;
+    char **_names;
 
     desktop_cycle_popup = [[AZPagerPopUp alloc] initWithIcon: YES];
 
@@ -202,15 +203,17 @@ static AZScreen *sharedInstance;
     }
 
     /* set the names */
-    screen_desktop_names = g_new(gchar*,
-                                 g_slist_length(config_desktops_names) + 1);
-    for (i = 0, it = config_desktops_names; it; ++i, it = g_slist_next(it))
-        screen_desktop_names[i] = it->data; /* dont strdup */
-    screen_desktop_names[i] = NULL;
+    screen_desktop_names = [[NSMutableArray alloc] init];
+    _names = g_new(char*, g_slist_length(config_desktops_names) + 1);
+    for (i = 0, it = config_desktops_names; it; ++i, it = g_slist_next(it)) {
+        [screen_desktop_names addObject: [NSString stringWithUTF8String: it->data]];
+        _names[i] = it->data; /* dont strdup */
+    }
+    _names[i] = NULL;
     PROP_SETSS(RootWindow(ob_display, ob_screen),
-               net_desktop_names, screen_desktop_names);
-    g_free(screen_desktop_names); /* dont free the individual strings */
-    screen_desktop_names = NULL;
+               net_desktop_names, _names);
+    g_free(_names); /* dont free the individual strings */
+    _names = NULL;
 
     if (!reconfig)
         screen_num_desktops = 0;
@@ -247,8 +250,7 @@ static AZScreen *sharedInstance;
         XDestroyWindow(ob_display, screen_support_win);
     }
 
-    g_strfreev(screen_desktop_names);
-    screen_desktop_names = NULL;
+    DESTROY(screen_desktop_names);
     for (r = area; *r; ++r)
         g_free(*r);
     g_free(area);
@@ -586,7 +588,7 @@ done_cycle:
 
 	[desktop_cycle_popup setTextAlign: RR_JUSTIFY_CENTER];
 
-	[desktop_cycle_popup showText: screen_desktop_names[d] desktop: d];
+	[desktop_cycle_popup showText: (char*)[[screen_desktop_names objectAtIndex: d] UTF8String] desktop: d];
     }
 }
 
@@ -744,20 +746,21 @@ done_cycle:
     unsigned int i;
 
     /* empty the array */
-    g_strfreev(screen_desktop_names);
-    screen_desktop_names = NULL;
+    [screen_desktop_names removeAllObjects];
+    char **_names = NULL;
 
     if (PROP_GETSS(RootWindow(ob_display, ob_screen),
-                   net_desktop_names, utf8, &screen_desktop_names))
-        for (i = 0; screen_desktop_names[i] && i <= screen_num_desktops; ++i);
-    else
+                   net_desktop_names, utf8, &_names)) {
+        for (i = 0; _names[i] && i <= screen_num_desktops; ++i) {
+	  [screen_desktop_names addObject: [NSString stringWithUTF8String: _names[i]]];
+	}
+	XFree(_names);
+    } else {
         i = 0;
+    }
     if (i <= screen_num_desktops) {
-        screen_desktop_names = g_renew(gchar*, screen_desktop_names,
-                                       screen_num_desktops + 1);
-        screen_desktop_names[screen_num_desktops] = NULL;
         for (; i < screen_num_desktops; ++i)
-            screen_desktop_names[i] = g_strdup_printf("Desktop %i", i + 1);
+	    [screen_desktop_names addObject: [NSString stringWithFormat: @"Desktop %i", i+1]];
     }
 }
 
@@ -1047,9 +1050,9 @@ done_cycle:
   return screen_last_desktop;
 }
 
-- (char *) nameOfDesktopAtIndex: (unsigned int) index
+- (NSString *) nameOfDesktopAtIndex: (unsigned int) index
 {
-  return screen_desktop_names[index];
+  return [screen_desktop_names objectAtIndex: index];
 }
 
 - (Window) supportXWindow

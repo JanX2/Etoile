@@ -107,7 +107,7 @@ static GSList *desktop_menus;
         act->data.desktop.desk = data;
         acts = g_slist_append(acts, act);
 	e = [menu addNormalMenuEntry: 0 label: @"Go there..." actions: acts];
-        if (data== [[AZScreen defaultScreen] desktop])
+        if (data == [[AZScreen defaultScreen] desktop])
             [e set_enabled: NO];
     }
 }
@@ -150,7 +150,7 @@ static GSList *desktop_menus;
         if (!it) {
             AZDesktopMenu *submenu;
 	    NSString *n = [NSString stringWithFormat: @"%@-%u", MENU_NAME, i];
-	    submenu = [[AZDesktopMenu alloc] initWithName: n title: [NSString stringWithCString: [screen nameOfDesktopAtIndex: i]] desktop: i];
+	    submenu = [[AZDesktopMenu alloc] initWithName: n title: [screen nameOfDesktopAtIndex: i] desktop: i];
 
 	    [menu addSubmenuMenuEntry: i submenu: n];
 	    [[AZMenuManager defaultManager] registerMenu: submenu];
