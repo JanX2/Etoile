@@ -22,7 +22,6 @@
 #include "grab.h"
 #include "openbox.h"
 
-#include <glib.h>
 #include <X11/Xlib.h>
 
 #define GRAB_PTR_MASK (ButtonPressMask | ButtonReleaseMask | PointerMotionMask)
@@ -148,7 +147,10 @@ void grab_startup(BOOL reconfig)
     mask_list[i++] = ScrollLockMask | LockMask;
     mask_list[i++] = ScrollLockMask | NumLockMask;
     mask_list[i++] = ScrollLockMask | LockMask | NumLockMask;
-    g_assert(i == MASK_LIST_SIZE);
+    // FIXME: NSAssert need object first.
+    if (i != MASK_LIST_SIZE)
+      NSLog(@"Internal Error: Over MASK_LIST_SIZE");
+    // NSAssert(i == MASK_LIST_SIZE, @"Over MASK_LIST_SIZE");
 }
 
 void grab_shutdown(BOOL reconfig)
@@ -173,7 +175,7 @@ void grab_button_full(unsigned int button, unsigned int state, Window win, unsig
                     pointer_mode, GrabModeSync, None, ob_cursor(cur));
     AZXErrorSetIgnore(NO);
     if (xerror_occured)
-        g_warning("failed to grab button %d modifiers %d", button, state);
+	NSLog(@"Warning: failed to grab button %d modifiers %d", button, state);
 }
 
 void grab_button(unsigned int button, unsigned int state, Window win, unsigned int mask)
@@ -200,7 +202,7 @@ void grab_key(unsigned int keycode, unsigned int state, Window win, int keyboard
                  GrabModeAsync, keyboard_mode);
     AZXErrorSetIgnore(NO);
     if (xerror_occured)
-        g_warning("failed to grab keycode %d modifiers %d", keycode, state);
+	NSLog(@"Warning: failed to grab keycode %d modifiers %d", keycode, state);
 }
 
 void ungrab_all_keys(Window win)

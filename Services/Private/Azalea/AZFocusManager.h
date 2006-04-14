@@ -19,7 +19,6 @@
 
 #import <Foundation/Foundation.h>
 #import "misc.h"
-#import <glib.h>
 #import "render/render.h"
 
 @class AZClient;

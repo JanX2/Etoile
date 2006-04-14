@@ -65,7 +65,7 @@ static GSList *desktop_menus;
     for (j = 0, i = 0; j < jcount; j++, ++i) {
         AZClient *c = [fManager focusOrder: j inScreen: data];
         if ([c normal] && ![c skip_taskbar]) {
-            GSList *acts = NULL;
+            NSMutableArray *acts = [[NSMutableArray alloc] init];
             AZAction* act;
             AZNormalMenuEntry *e;
             AZClientIcon *icon;
@@ -80,12 +80,13 @@ static GSList *desktop_menus;
             act = action_from_string("Activate",
                                      OB_USER_ACTION_MENU_SELECTION);
             [act data_pointer]->activate.any.c = c;
-            acts = g_slist_append(acts, act);
+	    [acts addObject: act];
             act = action_from_string("Desktop",
                                      OB_USER_ACTION_MENU_SELECTION);
             [act data_pointer]->desktop.desk = data;
-            acts = g_slist_append(acts, act);
+	    [acts addObject: act];
 	    e = [menu addNormalMenuEntry: i label: ([c iconic] ? [c icon_title] : [c title]) actions: acts];
+	    DESTROY(acts);
 
             if (config_menu_client_list_icons && 
 		(icon = [c iconWithWidth: 32 height: 32])) {
@@ -99,14 +100,15 @@ static GSList *desktop_menus;
     if (empty) {
         /* no entries */
 
-        GSList *acts = NULL;
+        NSMutableArray *acts = [[NSMutableArray alloc] init];
         AZAction* act;
         AZNormalMenuEntry *e;
 
         act = action_from_string("Desktop", OB_USER_ACTION_MENU_SELECTION);
         [act data_pointer]->desktop.desk = data;
-        acts = g_slist_append(acts, act);
+	[acts addObject: act];
 	e = [menu addNormalMenuEntry: 0 label: @"Go there..." actions: acts];
+	DESTROY(acts);
         if (data == [[AZScreen defaultScreen] desktop])
             [e set_enabled: NO];
     }
@@ -121,14 +123,8 @@ static GSList *desktop_menus;
     if ([_entry isKindOfClass: [AZNormalMenuEntry class]] &&
 		    [(AZNormalMenuEntry *)_entry actions]) {
 	AZNormalMenuEntry *entry = (AZNormalMenuEntry *)_entry;
-        a = [entry actions]->data;
-	int i, count = g_slist_length([entry actions]);
-	NSMutableArray *array = [[NSMutableArray alloc] init];
-	for(i = 0; i < count; i++) {
-	  [array addObject: g_slist_nth_data([entry actions], i)];
-	}
-        action_run(array, [a data].any.c, state);
-	DESTROY(array);
+        a = [[entry actions] objectAtIndex: 0];
+        action_run([entry actions], [a data].any.c, state);
     }
     return YES;
 }

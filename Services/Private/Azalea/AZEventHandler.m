@@ -41,14 +41,6 @@
 #import <X11/keysym.h>
 #import <X11/Xatom.h>
 
-#if 0
-#include "window.h"
-
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <glib.h>
-#endif
-
 #ifdef HAVE_SYS_SELECT_H
 #  include <sys/select.h>
 #endif

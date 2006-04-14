@@ -309,7 +309,7 @@ static Window createWindow(Window parent, unsigned long mask,
     {
         /* grab all this shizzle, cuz when the menu gets hidden, 'self'
            gets freed */
-        GSList *acts = [(AZNormalMenuEntry *)entry actions];
+        NSArray *acts = [(AZNormalMenuEntry *)entry actions];
         AZClient *client = [frame client];
 
         /* release grabs before executing the shit */
@@ -317,13 +317,7 @@ static Window createWindow(Window parent, unsigned long mask,
 	    AZMenuFrameHideAll();
 
 	if ([[frame menu] execute: entry state: state] == NO) {
-	    int i, count = g_slist_length(acts);
-	    NSMutableArray *array = [[NSMutableArray alloc] init];
-	    for (i = 0; i < count; i++) {
-	      [array addObject: g_slist_nth_data(acts, i)];
-	    }
-            action_run(array, client, state);
-	    DESTROY(array);
+            action_run(acts, client, state);
 	}
     }
 }

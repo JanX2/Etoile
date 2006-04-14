@@ -51,7 +51,7 @@
 - (void) pipeExecute;
 
 /* functions for building menus */
-- (AZNormalMenuEntry *) addNormalMenuEntry: (int) identifier label: (NSString *) label actions: (GSList *) actions;
+- (AZNormalMenuEntry *) addNormalMenuEntry: (int) identifier label: (NSString *) label actions: (NSArray *) actions;
 - (AZSubmenuMenuEntry *) addSubmenuMenuEntry: (int) identifer submenu: (NSString *) submenu;
 - (AZSeparatorMenuEntry *) addSeparatorMenuEntry: (int) identifier;
 - (void) removeEntryWithIdentifier: (int) identifier;
@@ -143,19 +143,19 @@ typedef enum
     BOOL enabled;
 
     /* List of ObActions */
-    GSList *actions;
+    NSArray *actions;
 
 }
 
-- (id) initWithMenu: (AZMenu *) menu identifier: (int) identifier label: (NSString *) label actions: (GSList *) actions;
+- (id) initWithMenu: (AZMenu *) menu identifier: (int) identifier label: (NSString *) label actions: (NSArray *) actions;
          
 /* Accessories */
 - (NSString *)label;
 - (BOOL) enabled;
-- (GSList *) actions;
+- (NSArray *) actions;
 - (void) set_label: (NSString *)label;
 - (void) set_enabled: (BOOL) enabled;
-- (void) set_actions: (GSList *) actions;
+- (void) set_actions: (NSArray *) actions;
 @end
 
 @interface AZSubmenuMenuEntry: AZIconMenuEntry
