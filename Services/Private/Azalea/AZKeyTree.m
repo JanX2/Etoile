@@ -31,9 +31,9 @@
 - (void) set_key: (unsigned int) k { key = k; }
 - (void) set_next_sibling: (AZKeyBindingTree *) n { ASSIGN(next_sibling, n); }
 - (void) set_first_child: (AZKeyBindingTree *) f { ASSIGN(first_child, f); }
-- (void) addAction: (ObAction *) action
+- (void) addAction: (AZAction *) action
 {
-  [actions addObject: [NSValue valueWithPointer: action]];
+  [actions addObject: action];
 }
 
 - (id) init
@@ -63,7 +63,7 @@ void tree_destroy(AZKeyBindingTree *tree)
         if (c == NULL) {
 	    int i, count = [[tree actions] count];
 	    for (i = 0; i < count; i++) {
-		action_unref([[[tree actions] objectAtIndex: i] pointerValue]);
+		action_unref([[tree actions] objectAtIndex: i]);
 	    }
         }
 	DESTROY(tree);

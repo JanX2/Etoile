@@ -72,14 +72,14 @@ static gboolean chain_timeout(gpointer data)
     curpos = nil;
 }
 
-- (BOOL) bind: (GList *) keylist action: (struct _ObAction *) action
+- (BOOL) bind: (GList *) keylist action: (AZAction *) action
 {
     AZKeyBindingTree *tree, *t;
     BOOL conflict;
     BOOL mods = YES;
 
     g_assert(keylist != NULL);
-    g_assert(action != NULL);
+    g_assert(action != nil);
 
     if (!(tree = tree_build(keylist)))
         return NO;
@@ -107,9 +107,9 @@ static gboolean chain_timeout(gpointer data)
 
     /* when there are no modifiers in the binding, then the action cannot
        be interactive */
-    if (!mods && action->data.any.interactive) {
-        action->data.any.interactive = NO;
-        action->data.inter.final = YES;
+    if (!mods && [action data].any.interactive) {
+        [action data_pointer]->any.interactive = NO;
+        [action data_pointer]->inter.final = YES;
     }
 
     /* set the action */
@@ -123,11 +123,11 @@ static gboolean chain_timeout(gpointer data)
 
 - (BOOL) interactiveGrab: (unsigned int) state
                   client: (AZClient *) client
-                  action: (struct _ObAction *) action
+                  action: (AZAction *) action
 {
     ObInteractiveState *s;
 
-    g_assert(action->data.any.interactive);
+    g_assert([action data].any.interactive);
 
     if (!interactive_states) {
         if (!grab_keyboard(YES))
@@ -314,7 +314,13 @@ static gboolean chain_timeout(gpointer data)
                   state: (unsigned int) state
 		  cancel: (BOOL) cancel
 {
-    action_run_interactive(s->actions, s->client, state, cancel, YES);
+    int i, count = g_slist_length(s->actions);
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (i = 0; i < count; i++) {
+      [array addObject: g_slist_nth_data(s->actions, i)];
+    }
+    action_run_interactive(array, s->client, state, cancel, YES);
+    DESTROY(array);
 
     g_slist_free(s->actions);
     g_free(s);

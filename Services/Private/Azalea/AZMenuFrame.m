@@ -316,8 +316,15 @@ static Window createWindow(Window parent, unsigned long mask,
         if (!(state & ControlMask))
 	    AZMenuFrameHideAll();
 
-	if ([[frame menu] execute: entry state: state] == NO)
-            action_run(acts, client, state);
+	if ([[frame menu] execute: entry state: state] == NO) {
+	    int i, count = g_slist_length(acts);
+	    NSMutableArray *array = [[NSMutableArray alloc] init];
+	    for (i = 0; i < count; i++) {
+	      [array addObject: g_slist_nth_data(acts, i)];
+	    }
+            action_run(array, client, state);
+	    DESTROY(array);
+	}
     }
 }
 

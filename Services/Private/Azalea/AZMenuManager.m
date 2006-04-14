@@ -51,14 +51,6 @@ static void parse_menu_separator(ObParseInst *i,
 static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                        gpointer data);
 
-#if 0
-static gboolean menu_pipe_submenu(gpointer key, gpointer val, gpointer data)
-{
-    AZMenu *menu = val;
-    return [menu pipe_creator] == data;
-}
-#endif
-
 void menu_pipe_execute(AZMenu *self)
 {
     xmlDocPtr doc;
@@ -105,7 +97,7 @@ static void parse_menu_item(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
 
             for (node = node->children; node; node = node->next)
                 if (!xmlStrcasecmp(node->name, (const xmlChar*) "action")) {
-                    ObAction *a = action_parse
+                    AZAction *a = action_parse
                         (i, doc, node, OB_USER_ACTION_MENU_SELECTION);
                     if (a)
                         acts = g_slist_append(acts, a);

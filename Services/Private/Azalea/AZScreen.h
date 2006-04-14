@@ -51,7 +51,7 @@ typedef struct DesktopLayout {
 
   DesktopLayout screen_desktop_layout;
 
-  /*! An array of gchar*'s which are desktop names in UTF-8 format */
+  /*! An array of NSString's which are desktop names in UTF-8 format */
   NSMutableArray *screen_desktop_names;
 
   /* Private */
