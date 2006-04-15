@@ -26,7 +26,7 @@
 @interface AZMouseHandler: NSObject
 {
   /* Array of GSList*s of ObMouseBinding*s. */
-  GSList *bound_contexts[OB_FRAME_NUM_CONTEXTS];
+  NSMutableArray *bound_contexts[OB_FRAME_NUM_CONTEXTS];
 }
 + (AZMouseHandler *) defaultHandler;
 - (void) startup: (BOOL) reconfig;

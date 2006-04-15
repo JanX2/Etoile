@@ -27,13 +27,27 @@
 #import "prop.h"
 #import "grab.h"
 #import "translate.h"
-#import <glib.h>
 
-typedef struct {
+@interface AZMouseBinding: NSObject
+{
     unsigned int state;
     unsigned int button;
-    GSList *actions[OB_NUM_MOUSE_ACTIONS]; /* lists of Action pointers */
-} ObMouseBinding;
+    NSMutableArray *actions[OB_NUM_MOUSE_ACTIONS]; /* lists of Action pointers */
+}
+- (unsigned int) state;
+- (unsigned int) button;
+- (void) set_state: (unsigned int) state;
+- (void) set_button: (unsigned int) button;
+- (NSMutableArray **) actions;
+@end
+
+@implementation AZMouseBinding
+- (unsigned int) state { return state; }
+- (unsigned int) button { return button; }
+- (void) set_state: (unsigned int) s { state = s; }
+- (void) set_button: (unsigned int) b { button = b; }
+- (NSMutableArray **) actions { return actions; }
+@end
 
 #define FRAME_CONTEXT(co, cl) ((cl && [cl type] != OB_CLIENT_TYPE_DESKTOP) ? \
                                co == OB_FRAME_CONTEXT_FRAME : NO)
@@ -62,13 +76,13 @@ static AZMouseHandler *sharedInstance = nil;
 - (ObFrameContext) frameContext: (ObFrameContext) context 
                      withButton: (unsigned int) button
 {
-    GSList *it;
     ObFrameContext x = context;
 
-    for (it = bound_contexts[context]; it; it = g_slist_next(it)) {
-        ObMouseBinding *b = it->data;
-
-        if (b->button == button)
+    NSArray *array = bound_contexts[context];
+    int i, count = [array count];
+    for (i = 0; i < count; i++) {
+        AZMouseBinding *b = [array objectAtIndex: i];
+        if ([b button] == button)
             return context;
     }
 
@@ -96,7 +110,7 @@ static AZMouseHandler *sharedInstance = nil;
         x = OB_FRAME_CONTEXT_TITLEBAR;
         break;
     case OB_FRAME_NUM_CONTEXTS:
-        g_assert_not_reached();
+	NSAssert(0, @"Should not reach here");
     }
 
     return x;
@@ -105,12 +119,13 @@ static AZMouseHandler *sharedInstance = nil;
 - (void) grab: (BOOL) grab forClient: (AZClient *) client
 {
     int i;
-    GSList *it;
 
-    for (i = 0; i < OB_FRAME_NUM_CONTEXTS; ++i)
-        for (it = bound_contexts[i]; it; it = g_slist_next(it)) {
+    for (i = 0; i < OB_FRAME_NUM_CONTEXTS; ++i) {
+	NSArray *array = bound_contexts[i];
+        int j, jcount = [array count];
+	for (j = 0; j < jcount; j++) {
             /* grab/ungrab the button */
-            ObMouseBinding *b = it->data;
+            AZMouseBinding *b = [array objectAtIndex: j];
             Window win;
             int mode;
             unsigned int mask;
@@ -128,30 +143,31 @@ static AZMouseHandler *sharedInstance = nil;
             } else continue;
 
             if (grab)
-                grab_button_full(b->button, b->state, win, mask, mode,
+                grab_button_full([b button], [b state], win, mask, mode,
                                  OB_CURSOR_NONE);
             else
-                ungrab_button(b->button, b->state, win);
+                ungrab_button([b button], [b state], win);
         }
+    }
 }
 
 - (void) unbindAll
 {
     int i;
-    GSList *it;
     
     for(i = 0; i < OB_FRAME_NUM_CONTEXTS; ++i) {
-        for (it = bound_contexts[i]; it; it = g_slist_next(it)) {
-            ObMouseBinding *b = it->data;
+	NSArray *array = bound_contexts[i];
+	int k, kcount = [array count];
+	for (k = 0; k < kcount; k++) {
+            AZMouseBinding *b = [array objectAtIndex: k];
             int j;
 
             for (j = 0; j < OB_NUM_MOUSE_ACTIONS; ++j) {
-                g_slist_free(b->actions[j]);
+		DESTROY([b actions][j]);
             }
-            g_free(b);
+	    DESTROY(b);
         }
-        g_slist_free(bound_contexts[i]);
-        bound_contexts[i] = NULL;
+	DESTROY(bound_contexts[i]);
     }
 }
 
@@ -274,7 +290,7 @@ static AZMouseHandler *sharedInstance = nil;
         break;
 
     default:
-        g_assert_not_reached();
+	NSAssert(0, @"Should not reach here");
     }
 }
 
@@ -283,8 +299,7 @@ static AZMouseHandler *sharedInstance = nil;
 {
     unsigned int state, button;
     ObFrameContext context;
-    ObMouseBinding *b;
-    GSList *it;
+    AZMouseBinding *b;
 
     if (!translate_button(buttonstr, &state, &button)) {
         g_warning("invalid button '%s'", buttonstr);
@@ -297,10 +312,15 @@ static AZMouseHandler *sharedInstance = nil;
         return NO;
     }
 
-    for (it = bound_contexts[context]; it; it = g_slist_next(it)) {
-        b = it->data;
-        if (b->state == state && b->button == button) {
-            b->actions[mact] = g_slist_append(b->actions[mact], action);
+    NSArray *array = bound_contexts[context];
+    int i, count = [array count];
+    for (i = 0; i < count; i++) {
+	b = [array objectAtIndex: i];
+        if ([b state] == state && [b button] == button) {
+	    if ([b actions][mact] == nil) {
+	      [b actions][mact] = [[NSMutableArray alloc] init];
+	    }
+            [[b actions][mact] addObject: action];
             return YES;
         }
     }
@@ -313,11 +333,16 @@ static AZMouseHandler *sharedInstance = nil;
     }
 
     /* add the binding */
-    b = g_new0(ObMouseBinding, 1);
-    b->state = state;
-    b->button = button;
-    b->actions[mact] = g_slist_append(NULL, action);
-    bound_contexts[context] = g_slist_append(bound_contexts[context], b);
+    b = [[AZMouseBinding alloc] init];
+    [b set_state: state];
+    [b set_button: button];
+    [b actions][mact] = [[NSMutableArray alloc] init];
+    [[b actions][mact] addObject: action];
+    if (bound_contexts[context] == nil) {
+      bound_contexts[context] = [[NSMutableArray alloc] init];
+    }
+    [bound_contexts[context] addObject: b];
+    /* Release in -unbindAll*/
 
     return YES;
 }
@@ -352,18 +377,22 @@ static AZMouseHandler *sharedInstance = nil;
              client: (AZClient *) c state: (unsigned int) state
 	     button: (unsigned int) button x: (int) x y: (int) y
 {
-    GSList *it;
-    ObMouseBinding *b;
+    AZMouseBinding *b;
+    NSArray *array = bound_contexts[context];
+    int i, count = [array count];
+    BOOL found = NO;
 
-    for (it = bound_contexts[context]; it; it = g_slist_next(it)) {
-        b = it->data;
-        if (b->state == state && b->button == button)
+    for (i = 0; i < count; i++) {
+        b = [array objectAtIndex: i];
+        if ([b state] == state && [b button] == button) {
+	    found = YES;
             break;
+	}
     }
     /* if not bound, then nothing to do! */
-    if (it == NULL) return NO;
+    if (found == NO) return NO;
 
-    action_run_mouse(b->actions[a], c, context, state, button, x, y);
+    action_run_mouse([b actions][a], c, context, state, button, x, y);
     return YES;
 }
 

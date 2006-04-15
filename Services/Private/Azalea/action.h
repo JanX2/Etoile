@@ -206,8 +206,7 @@ void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
                      unsigned int state, unsigned int button, int x, int y,
                      BOOL cancel, BOOL done);
 
-#define action_run_mouse(a, c, n, s, b, x, y) \
-    action_run_list(a, c, n, s, b, x, y, FALSE, FALSE)
+void action_run_mouse(NSArray *acts, AZClient *c, ObFrameContext context, unsigned int state, unsigned int button, int x, int y);
 
 void action_run_interactive(NSArray *acts, AZClient *c, unsigned int state, BOOL cancel, BOOL done);
 

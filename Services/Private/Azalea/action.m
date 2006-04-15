@@ -922,6 +922,16 @@ AZAction *action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     return act;
 }
 
+void action_run_mouse(NSArray *acts, AZClient *c, ObFrameContext n, unsigned int s, unsigned int b, int x, int y)
+{
+    GSList *a = NULL;
+    int i, count = [acts count];
+    for (i = 0; i < count; i++) {
+      a = g_slist_append(a, [acts objectAtIndex: i]);
+    }
+    action_run_list(a, c, n, s, b, x, y, NO, NO);
+}
+
 void action_run_interactive(NSArray *acts, AZClient *c, unsigned int s, BOOL n, BOOL d)
 {
     GSList *a = NULL;
