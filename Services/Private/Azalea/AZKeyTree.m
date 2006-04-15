@@ -72,7 +72,7 @@ AZKeyBindingTree *tree_build(GList *keylist)
 	ret = [[AZKeyBindingTree alloc] init];
         [ret set_first_child: p];
 	unsigned int _state, _key;
-        if (!translate_key(it->data, &_state, &_key)) {
+        if (!translate_key([NSString stringWithCString: it->data], &_state, &_key)) {
             tree_destroy(ret);
             return NULL;
         } else {

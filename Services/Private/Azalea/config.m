@@ -100,7 +100,7 @@ static void parse_key(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
 
     if ((n = parse_find_node("chainQuitKey", node))) {
         key = parse_string(doc, n);
-        translate_key(key, &config_keyboard_reset_state,
+        translate_key([NSString stringWithCString: key], &config_keyboard_reset_state,
                       &config_keyboard_reset_keycode);
         g_free(key);
     }
@@ -398,7 +398,7 @@ static void parse_dock(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     if ((n = parse_find_node("moveButton", node))) {
         gchar *str = parse_string(doc, n);
         unsigned int b, s;
-        if (translate_button(str, &s, &b)) {
+        if (translate_button([NSString stringWithCString: str], &s, &b)) {
             config_dock_app_move_button = b;
             config_dock_app_move_modifiers = s;
         } else {
@@ -600,7 +600,7 @@ void config_startup(ObParseInst *i)
 
     parse_register(i, "dock", parse_dock, NULL);
 
-    translate_key("C-g", &config_keyboard_reset_state,
+    translate_key(@"C-g", &config_keyboard_reset_state,
                   &config_keyboard_reset_keycode);
 
     bind_default_keyboard();

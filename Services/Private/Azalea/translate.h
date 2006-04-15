@@ -17,12 +17,8 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#ifndef ob__translate_h
-#define ob__translate_h
+#import <Foundation/Foundation.h>
 
-#include <glib.h>
+BOOL translate_button(NSString *str, unsigned int *state, unsigned int *keycode);
+BOOL translate_key(NSString *str, unsigned int *state, unsigned int *keycode);
 
-BOOL translate_button(const gchar *str, unsigned int *state, unsigned int *keycode);
-BOOL translate_key(const gchar *str, unsigned int *state, unsigned int *keycode);
-
-#endif

@@ -18,123 +18,116 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#include "openbox.h"
-#include <glib.h>
-#include <string.h>
-#include <stdlib.h>
+#import "translate.h"
+#import "openbox.h"
+#import "stdlib.h"
 
-static unsigned int translate_modifier(gchar *str)
+#define iCompare(a, x) \
+	([a compare: x options: NSCaseInsensitiveSearch] == NSOrderedSame)
+
+static unsigned int translate_modifier(NSString *str)
 {
-    if (!g_ascii_strcasecmp("Mod1", str) ||
-        !g_ascii_strcasecmp("A", str)) return Mod1Mask;
-    else if (!g_ascii_strcasecmp("Mod2", str)) return Mod2Mask;
-    else if (!g_ascii_strcasecmp("Mod3", str) ||
-             !g_ascii_strcasecmp("M", str)) return Mod3Mask;
-    else if (!g_ascii_strcasecmp("Mod4", str) ||
-             !g_ascii_strcasecmp("W", str)) return Mod4Mask;
-    else if (!g_ascii_strcasecmp("Mod5", str)) return Mod5Mask;
-    else if (!g_ascii_strcasecmp("Control", str) ||
-             !g_ascii_strcasecmp("C", str)) return ControlMask;
-    else if (!g_ascii_strcasecmp("Shift", str) ||
-             !g_ascii_strcasecmp("S", str)) return ShiftMask;
-    g_warning("Invalid modifier '%s' in binding.", str);
+    if (iCompare(str, @"Mod1") || iCompare(str, @"A")) return Mod1Mask;
+    else if (iCompare(str, @"Mod2")) return Mod2Mask;
+    else if (iCompare(str, @"Mod3") || iCompare(str, @"M")) return Mod3Mask;
+    else if (iCompare(str, @"Mod4") || iCompare(str, @"W")) return Mod4Mask;
+    else if (iCompare(str, @"Mod5")) return Mod5Mask;
+    else if (iCompare(str, @"Control") || iCompare(str, @"C")) return ControlMask;
+    else if (iCompare(str, @"Shift") || iCompare(str, @"S")) return ControlMask;
+    NSLog(@"Warning: Invalide modifier '%@' in binding.", str);
     return 0;
 }
 
-BOOL translate_button(const gchar *str, unsigned int *state, unsigned int *button)
+BOOL translate_button(NSString *str, unsigned int *state, unsigned int *button)
 {
-    gchar **parsed;
-    gchar *l;
+    NSArray *parsed;
+    NSString *l;
     int i;
     BOOL ret = NO;
 
-    parsed = g_strsplit(str, "-", -1);
+    parsed = [str componentsSeparatedByString: @"-"];
+    if ([parsed count] == 0)
+      goto translation_fail;
     
     /* first, find the button (last token) */
-    l = NULL;
-    for (i = 0; parsed[i] != NULL; ++i)
-        l = parsed[i];
-    if (l == NULL)
-        goto translation_fail;
+    l = [parsed lastObject];
 
     /* figure out the mod mask */
     *state = 0;
-    for (i = 0; parsed[i] != l; ++i) {
-        unsigned int m = translate_modifier(parsed[i]);
+    for (i = 0; i < [parsed count]-1; ++i) {
+        unsigned int m = translate_modifier([parsed objectAtIndex: i]);
         if (!m) goto translation_fail;
         *state |= m;
     }
 
     /* figure out the button */
-    if (!g_ascii_strcasecmp("Left", l)) *button = 1;
-    else if (!g_ascii_strcasecmp("Middle", l)) *button = 2;
-    else if (!g_ascii_strcasecmp("Right", l)) *button = 3;
-    else if (!g_ascii_strcasecmp("Up", l)) *button = 4;
-    else if (!g_ascii_strcasecmp("Down", l)) *button = 5;
-    else if (!g_ascii_strncasecmp("Button", l, 6)) *button = atoi(l+6);
+    if (iCompare(l, @"Left")) *button = 1;
+    else if (iCompare(l, @"Middle")) *button = 2;
+    else if (iCompare(l, @"Right")) *button = 3;
+    else if (iCompare(l, @"Up")) *button = 4;
+    else if (iCompare(l, @"Down")) *button = 5;
+    else if ([@"Button" compare: l options: NSCaseInsensitiveSearch range: NSMakeRange(0, 6)] == NSOrderedSame) {
+      *button = [[l substringFromIndex: 6] intValue];
+    }
     if (!*button) {
-        g_warning("Invalid button '%s' in pointer binding.", l);
+	NSLog(@"Invalid button '%@' in pointer binding.", l);
         goto translation_fail;
     }
 
     ret = YES;
 
 translation_fail:
-    g_strfreev(parsed);
     return ret;
 }
 
-BOOL translate_key(const gchar *str, unsigned int *state, unsigned int *keycode)
+BOOL translate_key(NSString *str, unsigned int *state, unsigned int *keycode)
 {
-    gchar **parsed;
-    gchar *l;
+    NSArray *parsed;
+    NSString *l;
     int i;
     BOOL ret = NO;
     KeySym sym;
 
-    parsed = g_strsplit(str, "-", -1);
+    parsed = [str componentsSeparatedByString: @"-"];
+    if ([parsed count] == 0)
+      goto translation_fail;
     
     /* first, find the key (last token) */
-    l = NULL;
-    for (i = 0; parsed[i] != NULL; ++i)
-        l = parsed[i];
-    if (l == NULL)
-        goto translation_fail;
+    l = [parsed lastObject];
 
     /* figure out the mod mask */
     *state = 0;
-    for (i = 0; parsed[i] != l; ++i) {
-        unsigned int m = translate_modifier(parsed[i]);
+    for (i = 0; i < [parsed count]-1; ++i) {
+        unsigned int m = translate_modifier([parsed objectAtIndex: i]);
         if (!m) goto translation_fail;
         *state |= m;
     }
-
-    if (!g_ascii_strncasecmp("0x", l, 2)) {
-        gchar *end;
+    
+    if ([@"0x" compare: l options: NSCaseInsensitiveSearch range: NSMakeRange(0, 2)] == NSOrderedSame) {
+        char *end;
 
         /* take it directly */
-        *keycode = strtol(l, &end, 16);
-        if (*l == '\0' || *end != '\0') {
-            g_warning("Invalid key code '%s' in key binding.", l);
+        *keycode = strtol([l cString], &end, 16);
+        if (*end != '\0') {
+	    NSLog(@"Warning: Invalid key code '%@' in key binding.", l);
             goto translation_fail;
         }
     } else {
         /* figure out the keycode */
-        sym = XStringToKeysym(l);
+        sym = XStringToKeysym([l cString]);
         if (sym == NoSymbol) {
-            g_warning("Invalid key name '%s' in key binding.", l);
+	    NSLog(@"Warning: Invalid key code '%@' in key binding.", l);
             goto translation_fail;
         }
         *keycode = XKeysymToKeycode(ob_display, sym);
     }
     if (!*keycode) {
-        g_warning("Key '%s' does not exist on the display.", l); 
+        NSLog(@"Key '%@' does not exist on the display.", l); 
         goto translation_fail;
     }
 
     ret = YES;
 
 translation_fail:
-    g_strfreev(parsed);
     return ret;
 }

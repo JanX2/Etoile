@@ -301,7 +301,7 @@ static AZMouseHandler *sharedInstance = nil;
     ObFrameContext context;
     AZMouseBinding *b;
 
-    if (!translate_button(buttonstr, &state, &button)) {
+    if (!translate_button([NSString stringWithCString: buttonstr], &state, &button)) {
         g_warning("invalid button '%s'", buttonstr);
         return NO;
     }
