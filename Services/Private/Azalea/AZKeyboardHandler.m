@@ -30,12 +30,38 @@
 #import "AZKeyboardHandler.h"
 #import "translate.h"
 
-typedef struct {
+@interface AZInteractiveState: NSObject
+{
     unsigned int state;
     AZClient *client;
-    GSList *actions;
+    NSArray *actions;
     ObFrameContext context;
-} ObInteractiveState;
+}
+- (unsigned int) state;
+- (AZClient *) client;
+- (NSArray *) actions;
+- (ObFrameContext) context;
+- (void) set_state: (unsigned int) state;
+- (void) set_client:(AZClient *) client;
+- (void) set_actions: (NSArray *) actions;
+- (void) set_context: (ObFrameContext) context;
+@end
+
+@implementation AZInteractiveState
+- (unsigned int) state { return state; }
+- (AZClient *) client { return client; }
+- (NSArray *) actions { return actions; }
+- (ObFrameContext) context { return context; }
+- (void) set_state: (unsigned int) s { state = s; }
+- (void) set_client:(AZClient *) c { client = c; }
+- (void) set_actions: (NSArray *) a { ASSIGN(actions, a); }
+- (void) set_context: (ObFrameContext) c { context = c; }
+- (void) dealloc
+{
+  DESTROY(actions);
+  [super dealloc];
+}
+@end
 
 static AZKeyboardHandler *sharedInstance;
 
@@ -48,7 +74,7 @@ static gboolean chain_timeout(gpointer data)
 @interface AZKeyboardHandler (AZPrivate)
 - (void) grab: (BOOL) grab forWindow: (Window) win;
 - (void) grabKeys: (BOOL) grab;
-- (void) interactiveEnd: (ObInteractiveState *) s state: (unsigned int) state cancel: (BOOL) cancel;
+- (void) interactiveEnd: (AZInteractiveState *) s state: (unsigned int) state cancel: (BOOL) cancel;
 - (void) clientDestroy: (NSNotification *) not;
 
 @end
@@ -85,8 +111,8 @@ static gboolean chain_timeout(gpointer data)
     BOOL conflict;
     BOOL mods = YES;
 
-    g_assert(keylist != NULL);
-    g_assert(action != nil);
+    NSAssert(keylist != NULL, @"keylist is NULL");
+    NSAssert(action != nil, @"action is NULL");
 
     if (!(tree = tree_build(keylist)))
         return NO;
@@ -99,7 +125,7 @@ static gboolean chain_timeout(gpointer data)
         t = tree;
 
     if (conflict) {
-        g_warning("conflict with binding");
+	NSLog(@"Warning: conflict with binding");
         tree_destroy(tree);
         return NO;
     }
@@ -132,11 +158,11 @@ static gboolean chain_timeout(gpointer data)
                   client: (AZClient *) client
                   action: (AZAction *) action
 {
-    ObInteractiveState *s;
+    AZInteractiveState *s;
 
-    g_assert([action data].any.interactive);
+    NSAssert([action data].any.interactive, @"interactive is NULL");
 
-    if (!interactive_states) {
+    if ([interactive_states count] == 0) {
         if (!grab_keyboard(YES))
             return NO;
         if (!grab_pointer(YES, OB_CURSOR_NONE)) {
@@ -145,13 +171,14 @@ static gboolean chain_timeout(gpointer data)
         }
     }
 
-    s = g_new(ObInteractiveState, 1);
+    s = [[AZInteractiveState alloc] init];
 
-    s->state = state;
-    s->client = client;
-    s->actions = g_slist_append(NULL, action);
+    [s set_state: state];
+    [s set_client: client];
+    [s set_actions: [NSArray arrayWithObjects: action, nil]];
 
-    interactive_states = g_slist_append(interactive_states, s);
+    [interactive_states addObject: s];
+    DESTROY(s);
 
     return YES;
 }
@@ -159,18 +186,16 @@ static gboolean chain_timeout(gpointer data)
 - (BOOL) processInteractiveGrab: (XEvent *) e
                       forClient: (AZClient **) client
 {
-    GSList *it, *next;
     BOOL handled = NO;
     BOOL done = NO;
     BOOL cancel = NO;
+    int i;
 
-    for (it = interactive_states; it; it = next) {
-        ObInteractiveState *s = it->data;
+    for (i = 0; i < [interactive_states count]; i++) {
+        AZInteractiveState *s = [interactive_states objectAtIndex: i];
 
-        next = g_slist_next(it);
-        
         if ((e->type == KeyRelease && 
-             !(s->state & e->xkey.state)))
+             !([s state] & e->xkey.state)))
             done = YES;
         else if (e->type == KeyPress) {
             /*if (e->xkey.keycode == ob_keycode(OB_KEY_RETURN))
@@ -184,8 +209,9 @@ static gboolean chain_timeout(gpointer data)
 		    cancel: cancel];
 
             handled = YES;
+	    i--; /* s is removed */
         } else
-            *client = s->client;
+            *client = [s client];
     }
 
     return handled;
@@ -195,7 +221,7 @@ static gboolean chain_timeout(gpointer data)
 {
     AZKeyBindingTree *p;
 
-    g_assert(e->type == KeyPress);
+    NSAssert(e->type == KeyPress, @"Event type is not KeyPress");
 
     if (e->xkey.keycode == config_keyboard_reset_keycode &&
         e->xkey.state == config_keyboard_reset_state)
@@ -246,20 +272,17 @@ static gboolean chain_timeout(gpointer data)
 		name: AZClientDestroyNotification
 		object: nil];
     }
+
+    interactive_states = [[NSMutableArray alloc] init];
 }
 
 - (void) shutdown: (BOOL) reconfig
 {
-    GSList *it;
-
     if (!reconfig) {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     }
 
-    for (it = interactive_states; it; it = g_slist_next(it))
-        g_free(it->data);
-    g_slist_free(interactive_states);
-    interactive_states = NULL;
+    DESTROY(interactive_states);
 
     [[AZMainLoop mainLoop] removeTimeoutHandler: chain_timeout];
 
@@ -317,18 +340,14 @@ static gboolean chain_timeout(gpointer data)
     }
 }
 
-- (void) interactiveEnd: (ObInteractiveState *) s
+- (void) interactiveEnd: (AZInteractiveState *) s
                   state: (unsigned int) state
 		  cancel: (BOOL) cancel
 {
-    action_run_interactive(s->actions, s->client, state, cancel, YES);
+    action_run_interactive([s actions], [s client], state, cancel, YES);
+    [interactive_states removeObject: s];
 
-    g_slist_free(s->actions);
-    g_free(s);
-
-    interactive_states = g_slist_remove(interactive_states, s);
-
-    if (!interactive_states) {
+    if ([interactive_states count] == 0) {
         grab_keyboard(NO);
         grab_pointer(NO, OB_CURSOR_NONE);
         [self resetChains];
@@ -338,15 +357,12 @@ static gboolean chain_timeout(gpointer data)
 - (void) clientDestroy: (NSNotification *) not
 {
     AZClient *client = [not object];
-    GSList *it, *next;
+    int i, count = [interactive_states count];
 
-    for (it = interactive_states; it; it = next) {
-        ObInteractiveState *s = it->data;
-
-        next = g_slist_next(it);
-
-        if (s->client == client)
-            s->client = nil;
+    for (i = 0; i < count; i++) {
+        AZInteractiveState *s = [interactive_states objectAtIndex: i];
+        if ([s client] == client)
+            [s set_client: nil];
     }
 }
 

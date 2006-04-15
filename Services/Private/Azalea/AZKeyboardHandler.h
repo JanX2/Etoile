@@ -30,7 +30,7 @@
   AZKeyBindingTree *keyboard_firstnode;
 
   /* private */
-  GSList *interactive_states;
+  NSMutableArray *interactive_states;
   AZKeyBindingTree *curpos;
 }
 
