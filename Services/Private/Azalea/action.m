@@ -924,43 +924,33 @@ AZAction *action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
 
 void action_run_mouse(NSArray *acts, AZClient *c, ObFrameContext n, unsigned int s, unsigned int b, int x, int y)
 {
-    GSList *a = NULL;
-    int i, count = [acts count];
-    for (i = 0; i < count; i++) {
-      a = g_slist_append(a, [acts objectAtIndex: i]);
-    }
-    action_run_list(a, c, n, s, b, x, y, NO, NO);
+    action_run_list(acts, c, n, s, b, x, y, NO, NO);
 }
 
 void action_run_interactive(NSArray *acts, AZClient *c, unsigned int s, BOOL n, BOOL d)
 {
-    GSList *a = NULL;
-    int i, count = [acts count];
-    for (i = 0; i < count; i++) {
-      a = g_slist_append(a, [acts objectAtIndex: i]);
-    }
-    action_run_list(a, c, OB_FRAME_CONTEXT_NONE, s, 0, -1, -1, n, d);
+    action_run_list(acts, c, OB_FRAME_CONTEXT_NONE, s, 0, -1, -1, n, d);
 }
 
 void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y)
 {
-    GSList *a = NULL;
-    int i, count = [acts count];
-    for (i = 0; i < count; i++) {
-      a = g_slist_append(a, [acts objectAtIndex: i]);
-    }
-    action_run_list(a, c, OB_FRAME_CONTEXT_NONE, state, 0, x, y, FALSE, FALSE);
+    action_run_list(acts, c, OB_FRAME_CONTEXT_NONE, state, 0, x, y, NO, NO);
 }
 
-void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
+void action_run(NSArray *acts, AZClient *c, unsigned int state)
+{
+    action_run_list(acts, c, OB_FRAME_CONTEXT_NONE, state, 0, -1, -1, NO, NO);
+}
+
+void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
                      unsigned int state, unsigned int button, int x, int y,
                      BOOL cancel, BOOL done)
 {
-    GSList *it;
     AZAction *a;
     BOOL inter = NO;
+    int i, count;
 
-    if (!acts)
+    if ((acts == nil) || ([acts count] == 0))
         return;
 
     if (x < 0 && y < 0)
@@ -968,16 +958,18 @@ void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
 	[[AZScreen defaultScreen] pointerPosAtX: &x y: &y];
     }
 
-    if (grab_on_keyboard())
+    if (grab_on_keyboard()) {
         inter = YES;
-    else
-        for (it = acts; it; it = g_slist_next(it)) {
-            a = it->data;
+    } else {
+	count = [acts count];
+	for (i = 0; i < count; i++) {
+            a = [acts objectAtIndex: i];
             if ([a data].any.interactive) {
                 inter = YES;
                 break;
             }
         }
+    }
 
     if (!inter) {
         /* sometimes when we execute another app as an action,
@@ -987,8 +979,9 @@ void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
         XUngrabKeyboard(ob_display, [[AZEventHandler defaultHandler] eventLastTime]);
     }
 
-    for (it = acts; it; it = g_slist_next(it)) {
-        a = it->data;
+    count = [acts count];
+    for (i = 0; i < count; i++) {
+        a = [acts objectAtIndex: i];
 
         if (!([a data].any.client_action == OB_CLIENT_ACTION_ALWAYS && !c)) {
             [a data_pointer]->any.c = [a data].any.client_action ? c : nil;
@@ -1027,14 +1020,11 @@ void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
 void action_run_string(const gchar *name, AZClient *c)
 {
     AZAction *a;
-    GSList *l;
 
     a = action_from_string(name, OB_USER_ACTION_NONE);
     g_assert(a);
 
-    l = g_slist_append(NULL, a);
-
-    action_run(l, c, 0);
+    action_run([NSArray arrayWithObjects: a, nil], c, 0);
 }
 
 void action_execute(union ActionData *data)

@@ -317,12 +317,7 @@ static Window createWindow(Window parent, unsigned long mask,
 	    AZMenuFrameHideAll();
 
 	if ([[frame menu] execute: entry state: state] == NO) {
-	    GSList *list = NULL;
-	    int i, count = [acts count];
-	    for (i = 0; i < count; i++) {
-	      list = g_slist_append(list, [acts objectAtIndex: i]);
-	    }
-            action_run(list, client, state);
+            action_run(acts, client, state);
 	}
     }
 }

@@ -119,13 +119,9 @@ static GSList *desktop_menus;
 
     if ([entry isKindOfClass: [AZNormalMenuEntry class]] &&
 		    [(AZNormalMenuEntry *)entry actions]) {
-        a = [[(AZNormalMenuEntry *)entry actions] objectAtIndex: 0];
-	GSList *list = NULL;
-	int i, count = [[(AZNormalMenuEntry *)entry actions] count];
-	for (i = 0; i < count; i++) {
-	  list = g_slist_append(list, [[(AZNormalMenuEntry *)entry actions] objectAtIndex: i]);
-	}
-        action_run(list, [a data].any.c, state);
+	AZNormalMenuEntry *e = (AZNormalMenuEntry *) entry;
+        a = [[e actions] objectAtIndex: 0];
+        action_run([e actions], [a data].any.c, state);
     }
     return YES;
 }

@@ -202,7 +202,7 @@ AZAction* action_copy(AZAction *a);
   @param done If the action is completing an interactive action. This only
          affects interactive actions, but should generally always be FALSE.
 */
-void action_run_list(GSList *acts, AZClient *c, ObFrameContext context,
+void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
                      unsigned int state, unsigned int button, int x, int y,
                      BOOL cancel, BOOL done);
 
@@ -212,8 +212,7 @@ void action_run_interactive(NSArray *acts, AZClient *c, unsigned int state, BOOL
 
 void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y);
 
-#define action_run(a, c, s) \
-    action_run_list(a, c, OB_FRAME_CONTEXT_NONE, s, 0, -1, -1, FALSE, FALSE)
+void action_run(NSArray *acts, AZClient *c, unsigned int state);
 
 void action_run_string(const gchar *name, AZClient *c);
 
