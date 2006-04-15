@@ -65,7 +65,8 @@ BOOL parse_bool(xmlDocPtr doc, xmlNodePtr node);
 BOOL parse_contains(const char *val, xmlDocPtr doc, xmlNodePtr node);
 BOOL parse_attr_contains(const char *val, xmlNodePtr node, const char *name);
 
-BOOL parse_attr_string(const char *name, xmlNodePtr node, char **value);
+/* return autoreleased string */
+BOOL parse_attr_string(const char *name, xmlNodePtr node, NSString **value);
 BOOL parse_attr_int(const char *name, xmlNodePtr node, int *value);
 
 /* paths */
@@ -78,9 +79,6 @@ NSString *parse_xdg_data_home_path();
 NSArray *parse_xdg_config_dir_paths();
 NSArray *parse_xdg_data_dir_paths();
 
-/*! Expands the ~ character to the home directory throughout the given
-  string */
-char *parse_expand_tilde(char *f);
 /*! Makes a directory and all its parents */
 BOOL parse_mkdir_path(const gchar *path, int mode);
 

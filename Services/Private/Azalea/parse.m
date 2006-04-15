@@ -246,12 +246,12 @@ BOOL parse_attr_int(const char *name, xmlNodePtr node, int *value)
     return r;
 }
 
-BOOL parse_attr_string(const char *name, xmlNodePtr node, char **value)
+BOOL parse_attr_string(const char *name, xmlNodePtr node, NSString **value)
 {
     xmlChar *c = xmlGetProp(node, (const xmlChar*) name);
     BOOL r = NO;
     if (c) {
-        *value = g_strdup((gchar*)c);
+	*value = [NSString stringWithUTF8String: (char*)c ];
         r = YES;
     }
     xmlFree(c);
@@ -317,14 +317,6 @@ void parse_paths_shutdown()
 
     DESTROY(xdg_config_dir_paths);
     DESTROY(xdg_data_dir_paths);
-}
-
-char *parse_expand_tilde(char *f)
-{
-    if (!f) return NULL;
-    NSString *p = [NSString stringWithCString: f];
-    p = [p stringByExpandingTildeInPath];
-    return g_strdup((char*)[p cString]);
 }
 
 static BOOL parse_mkdir(const gchar *path, int mode)

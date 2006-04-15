@@ -847,12 +847,12 @@ AZAction *action_from_string(const gchar *name, ObUserAction uact)
 
 AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
 {
-    gchar *actname;
+    NSString *actname;
     AZAction *act = nil;
     xmlNodePtr n;
 
     if (parse_attr_string("name", node, &actname)) {
-        if ((act = action_from_string(actname, uact))) {
+        if ((act = action_from_string([actname cString], uact))) {
             if ([act func] == action_execute || [act func] == action_restart) {
                 if ((n = parse_find_node("execute", node->xmlChildrenNode))) {
                     ASSIGN([act data_pointer]->execute.path, ([parse_string(doc, n) stringByExpandingTildeInPath]));
@@ -914,7 +914,6 @@ AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
             }
             INTERACTIVE_LIMIT(act, uact);
         }
-        g_free(actname);
     }
     return act;
 }

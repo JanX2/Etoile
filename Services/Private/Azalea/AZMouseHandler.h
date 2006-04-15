@@ -32,7 +32,7 @@
 - (void) startup: (BOOL) reconfig;
 - (void) shutdown: (BOOL) reconfig;
 
-- (BOOL) bind: (const char *) buttonstr context: (const char *) contextstr
+- (BOOL) bind: (NSString *) buttonstr context: (NSString *) contextstr
            mouseAction: (ObMouseAction) mact action: (AZAction *) action;
 - (void) unbindAll;
 - (void) processEvent: (XEvent *) e forClient: (AZClient *) client;

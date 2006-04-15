@@ -89,7 +89,7 @@ static void parse_menu_item(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                             gpointer data)
 {
     ObMenuParseState *state = data;
-    gchar *label;
+    NSString *label;
     
     if (state->parent) {
         if (parse_attr_string("label", node, &label)) {
@@ -102,9 +102,8 @@ static void parse_menu_item(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                     if (a)
 			[acts addObject: a];
                 }
-	    [state->parent addNormalMenuEntry: -1 label: [NSString stringWithCString: label] actions: acts];
+	    [state->parent addNormalMenuEntry: -1 label: label actions: acts];
 	    DESTROY(acts);
-            g_free(label);
         }
     }
 }
@@ -123,20 +122,20 @@ static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                        gpointer data)
 {
     ObMenuParseState *state = data;
-    gchar *name = NULL, *title = NULL, *script = NULL;
+    NSString *name = nil, *title = nil, *script = nil;
     AZMenu *menu;
 
     if (!parse_attr_string("id", node, &name))
-        goto parse_menu_fail;
+	return;
 
-    if (![[AZMenuManager defaultManager] menuWithName: [NSString stringWithCString: name]]) {
+    if (![[AZMenuManager defaultManager] menuWithName: name]) {
         if (!parse_attr_string("label", node, &title))
-            goto parse_menu_fail;
+	    return;
 
-        if ((menu = [[AZMenu alloc] initWithName: [NSString stringWithCString: name] title: [NSString stringWithCString: title]])) {
+        if ((menu = [[AZMenu alloc] initWithName: name title: title])) {
             [menu set_pipe_creator: state->pipe_creator];
             if (parse_attr_string("execute", node, &script)) {
-                [menu set_execute: [NSString stringWithCString: parse_expand_tilde(script)]];
+                [menu set_execute: [script stringByExpandingTildeInPath]];
             } else {
                 AZMenu *old;
 
@@ -151,12 +150,7 @@ static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
     }
 
     if (state->parent)
-	[state->parent addSubmenuMenuEntry: -1 submenu: [NSString stringWithCString: name]];
-
-parse_menu_fail:
-    g_free(name);
-    g_free(title);
-    g_free(script);
+	[state->parent addSubmenuMenuEntry: -1 submenu: name];
 }
 
 static void menu_destroy_hash_value(AZMenu *self)

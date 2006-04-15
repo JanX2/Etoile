@@ -294,21 +294,21 @@ static AZMouseHandler *sharedInstance = nil;
     }
 }
 
-- (BOOL) bind: (const char *) buttonstr context: (const char *) contextstr
+- (BOOL) bind: (NSString *) buttonstr context: (NSString *) contextstr
            mouseAction: (ObMouseAction) mact action: (AZAction *) action
 {
     unsigned int state, button;
     ObFrameContext context;
     AZMouseBinding *b;
 
-    if (!translate_button([NSString stringWithCString: buttonstr], &state, &button)) {
-        g_warning("invalid button '%s'", buttonstr);
+    if (!translate_button(buttonstr, &state, &button)) {
+        NSLog(@"invalid button '%@'", buttonstr);
         return NO;
     }
 
-    context = frame_context_from_string(contextstr);
+    context = frame_context_from_string([contextstr cString]);
     if (!context) {
-        g_warning("invalid context '%s'", contextstr);
+        NSLog(@"invalid context '%@'", contextstr);
         return NO;
     }
 

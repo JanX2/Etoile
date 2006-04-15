@@ -1068,7 +1068,7 @@ static XrmDatabase loaddb(RrTheme *theme, gchar *name)
 	int i, count = [parse_xdg_data_dir_paths() count];
 	for (i = 0; (db == NULL) && (i < count); i++) 
         {
-	    char *p = (char*)[[parse_xdg_data_dir_paths() objectAtIndex: i] cString];
+	    char *p = (char*)[[parse_xdg_data_dir_paths() objectAtIndex: i] fileSystemRepresentation];
             s = g_build_filename(p, "themes", name,
                                  "openbox-3", "themerc", NULL);
             if ((db = XrmGetFileDatabase(s)))

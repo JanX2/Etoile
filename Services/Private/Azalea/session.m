@@ -471,15 +471,16 @@ static void session_load(gchar *path)
 {
     xmlDocPtr doc;
     xmlNodePtr node, n;
-    gchar *id;
+    NSString *id;
 
     if (!parse_load([NSString stringWithCString: path], "openbox_session", &doc, &node))
         return;
 
     if (!parse_attr_string("id", node, &id))
         return;
+
     g_free(sm_id);
-    sm_id = id;
+    sm_id = g_strdup([id cString]);
 
     node = parse_find_node("window", node->children);
     while (node) {
@@ -487,7 +488,7 @@ static void session_load(gchar *path)
 
         state = g_new0(ObSessionState, 1);
 
-	char *_id;
+	NSString *_id;
         if (!parse_attr_string("id", node, &_id)) {
             goto session_load_bail;
 	} else {
@@ -495,7 +496,7 @@ static void session_load(gchar *path)
 	    [state->id release];
 	    state->id = NULL;
 	  }
-	  state->id = [[NSString stringWithUTF8String: _id] copy];
+	  state->id = [_id copy];
 	}
         if (!(n = parse_find_node("name", node->children)))
             goto session_load_bail;

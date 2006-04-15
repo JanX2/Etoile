@@ -93,22 +93,22 @@ BOOL config_resist_layers_below;
 static void parse_key(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                       GList *keylist)
 {
-    NSString *_key;
+    NSString *key;
     AZAction *action;
     xmlNodePtr n, nact;
     GList *it;
 
     if ((n = parse_find_node("chainQuitKey", node))) {
-        _key = parse_string(doc, n);
-        translate_key(_key, &config_keyboard_reset_state,
+        key = parse_string(doc, n);
+        translate_key(key, &config_keyboard_reset_state,
                       &config_keyboard_reset_keycode);
     }
 
-    char *key;
+    key = nil; /* reset, just in case */
     n = parse_find_node("keybind", node);
     while (n) {
         if (parse_attr_string("key", n, &key)) {
-            keylist = g_list_append(keylist, key);
+            keylist = g_list_append(keylist, g_strdup([key cString]));
 
             parse_key(parser, doc, n->children, keylist);
 
@@ -153,8 +153,8 @@ static void parse_mouse(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                         gpointer d)
 {
     xmlNodePtr n, nbut, nact;
-    gchar *buttonstr;
-    gchar *contextstr;
+    NSString *buttonstr;
+    NSString *contextstr;
     ObUserAction uact;
     ObMouseAction mact;
     AZAction *action;
@@ -201,11 +201,9 @@ static void parse_mouse(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 			    mouseAction: mact action: action];
                 nact = parse_find_node("action", nact->next);
             }
-            g_free(buttonstr);
         next_nbut:
             nbut = parse_find_node("mousebind", nbut->next);
         }
-        g_free(contextstr);
     next_n:
         n = parse_find_node("context", n->next);
     }
@@ -468,8 +466,8 @@ static void bind_default_keyboard()
 
 typedef struct
 {
-    const gchar *button;
-    const gchar *context;
+    NSString *button;
+    NSString *context;
     const ObMouseAction mact;
     const gchar *actname;
 } ObDefMouseBind;
@@ -478,51 +476,51 @@ static void bind_default_mouse()
 {
     ObDefMouseBind *it;
     ObDefMouseBind binds[] = {
-        { "Left", "Client", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Middle", "Client", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Right", "Client", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "Desktop", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Middle", "Desktop", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Right", "Desktop", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "Titlebar", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "Handle", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "BLCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "BRCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "TLCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "TRCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "Close", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "Maximize", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "Iconify", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "Icon", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "AllDesktops", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "Shade", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { "Left", "Client", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "Titlebar", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Middle", "Titlebar", OB_MOUSE_ACTION_CLICK, "Lower" },
-        { "Left", "Handle", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "BLCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "BRCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "TLCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "TRCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "Close", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "Maximize", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "Iconify", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "Icon", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "AllDesktops", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "Shade", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { "Left", "Close", OB_MOUSE_ACTION_CLICK, "Close" },
-        { "Left", "Maximize", OB_MOUSE_ACTION_CLICK, "ToggleMaximizeFull" },
-        { "Left", "Iconify", OB_MOUSE_ACTION_CLICK, "Iconify" },
-        { "Left", "AllDesktops", OB_MOUSE_ACTION_CLICK, "ToggleOmnipresent" },
-        { "Left", "Shade", OB_MOUSE_ACTION_CLICK, "ToggleShade" },
-        { "Left", "TLCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
-        { "Left", "TRCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
-        { "Left", "BLCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
-        { "Left", "BRCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
-        { "Left", "Titlebar", OB_MOUSE_ACTION_MOTION, "Move" },
-        { "A-Left", "Frame", OB_MOUSE_ACTION_MOTION, "Move" },
-        { "A-Middle", "Frame", OB_MOUSE_ACTION_MOTION, "Resize" },
-        { NULL, NULL, 0, NULL }
+        { @"Left", @"Client", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Middle", @"Client", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Right", @"Client", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"Desktop", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Middle", @"Desktop", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Right", @"Desktop", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"Titlebar", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"Handle", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"BLCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"BRCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"TLCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"TRCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"Close", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"Maximize", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"Iconify", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"Icon", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"AllDesktops", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"Shade", OB_MOUSE_ACTION_PRESS, "Focus" },
+        { @"Left", @"Client", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"Titlebar", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Middle", @"Titlebar", OB_MOUSE_ACTION_CLICK, "Lower" },
+        { @"Left", @"Handle", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"BLCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"BRCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"TLCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"TRCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"Close", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"Maximize", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"Iconify", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"Icon", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"AllDesktops", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"Shade", OB_MOUSE_ACTION_CLICK, "Raise" },
+        { @"Left", @"Close", OB_MOUSE_ACTION_CLICK, "Close" },
+        { @"Left", @"Maximize", OB_MOUSE_ACTION_CLICK, "ToggleMaximizeFull" },
+        { @"Left", @"Iconify", OB_MOUSE_ACTION_CLICK, "Iconify" },
+        { @"Left", @"AllDesktops", OB_MOUSE_ACTION_CLICK, "ToggleOmnipresent" },
+        { @"Left", @"Shade", OB_MOUSE_ACTION_CLICK, "ToggleShade" },
+        { @"Left", @"TLCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
+        { @"Left", @"TRCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
+        { @"Left", @"BLCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
+        { @"Left", @"BRCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
+        { @"Left", @"Titlebar", OB_MOUSE_ACTION_MOTION, "Move" },
+        { @"A-Left", @"Frame", OB_MOUSE_ACTION_MOTION, "Move" },
+        { @"A-Middle", @"Frame", OB_MOUSE_ACTION_MOTION, "Resize" },
+        { nil, nil, 0, NULL }
     };
 
     for (it = binds; it->button; ++it) {
