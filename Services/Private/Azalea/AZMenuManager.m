@@ -40,7 +40,7 @@ struct _ObMenuParseState
     AZMenu *pipe_creator;
 };
 
-static ObParseInst *menu_parse_inst;
+static AZParser *menu_parse_inst = nil;
 static ObMenuParseState menu_parse_state;
 
 static void menu_destroy_hash_value(AZMenu *self);
@@ -77,7 +77,7 @@ void menu_pipe_execute(AZMenu *self)
 
         menu_parse_state.pipe_creator = self;
         menu_parse_state.parent = self;
-        parse_tree(menu_parse_inst, doc, node->children);
+        parse_tree([menu_parse_inst obParseInst], doc, node->children);
         xmlFreeDoc(doc);
     } else {
         g_warning("Invalid output from pipe-menu: %s", [self execute]);
@@ -201,26 +201,26 @@ static AZMenuManager *sharedInstance;
     client_list_menu_startup();
     client_menu_startup();
 
-    menu_parse_inst = parse_startup();
+    menu_parse_inst = [[AZParser alloc] init];
 
     menu_parse_state.parent = NULL;
     menu_parse_state.pipe_creator = NULL;
-    parse_register(menu_parse_inst, "menu", parse_menu, &menu_parse_state);
-    parse_register(menu_parse_inst, "item", parse_menu_item,
+    parse_register([menu_parse_inst obParseInst], "menu", parse_menu, &menu_parse_state);
+    parse_register([menu_parse_inst obParseInst], "item", parse_menu_item,
                    &menu_parse_state);
-    parse_register(menu_parse_inst, "separator",
+    parse_register([menu_parse_inst obParseInst], "separator",
                    parse_menu_separator, &menu_parse_state);
 
     for (it = config_menu_files; it; it = g_slist_next(it)) {
         if (parse_load_menu(it->data, &doc, &node)) {
             loaded = YES;
-            parse_tree(menu_parse_inst, doc, node->children);
+            parse_tree([menu_parse_inst obParseInst], doc, node->children);
             xmlFreeDoc(doc);
         }
     }
     if (!loaded) {
         if (parse_load_menu("menu.xml", &doc, &node)) {
-            parse_tree(menu_parse_inst, doc, node->children);
+            parse_tree([menu_parse_inst obParseInst], doc, node->children);
             xmlFreeDoc(doc);
         }
     }
@@ -230,8 +230,7 @@ static AZMenuManager *sharedInstance;
 
 - (void) shutdown: (BOOL) reconfig
 {
-    parse_shutdown(menu_parse_inst);
-    menu_parse_inst = NULL;
+    DESTROY(menu_parse_inst);
 
     AZMenuFrameHideAll();
     DESTROY(menu_hash);

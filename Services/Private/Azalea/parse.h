@@ -22,19 +22,20 @@
 
 #import <Foundation/Foundation.h>
 #import "version.h"
-
 #import <libxml/parser.h>
 #import <glib.h>
-
-G_BEGIN_DECLS
 
 typedef struct _ObParseInst ObParseInst;
 
 typedef void (*ParseCallback)(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                               gpointer data);
 
-ObParseInst* parse_startup();
-void parse_shutdown(ObParseInst *inst);
+@interface AZParser: NSObject
+{
+  struct _ObParseInst *obParseInst;
+}
+- (ObParseInst *) obParseInst;
+@end
 
 /* Loads Openbox's rc, from the normal paths */
 BOOL parse_load_rc(xmlDocPtr *doc, xmlNodePtr *root);
@@ -85,7 +86,5 @@ NSArray *parse_xdg_data_dir_paths();
 char *parse_expand_tilde(char *f);
 /*! Makes a directory and all its parents */
 BOOL parse_mkdir_path(const gchar *path, int mode);
-
-G_END_DECLS
 
 #endif

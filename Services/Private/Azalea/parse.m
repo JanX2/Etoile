@@ -47,21 +47,31 @@ static void destfunc(struct Callback *c)
     g_free(c);
 }
 
-ObParseInst* parse_startup()
+@implementation AZParser
+
+- (struct _ObParseInst *) obParseInst
 {
-    ObParseInst *i = g_new(ObParseInst, 1);
-    i->callbacks = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
-                                         (GDestroyNotify)destfunc);
-    return i;
+  return obParseInst;
 }
 
-void parse_shutdown(ObParseInst *i)
+- (id) init
 {
-    if (i) {
-        g_hash_table_destroy(i->callbacks);
-        g_free(i);
+    self = [super init];
+    obParseInst = g_new(ObParseInst, 1);
+    obParseInst->callbacks = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
+                                         (GDestroyNotify)destfunc);
+    return self;
+}
+
+- (void) dealloc
+{
+    if (obParseInst) {
+        g_hash_table_destroy(obParseInst->callbacks);
+        g_free(obParseInst);
     }
 }
+
+@end
 
 void parse_register(ObParseInst *i, const gchar *tag,
                     ParseCallback func, gpointer data)

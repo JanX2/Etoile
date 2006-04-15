@@ -217,21 +217,21 @@ int main(int argc, gchar **argv)
     if ([defaultScreen screenAnnex]) { /* it will be ours! */
         do {
             {
-                ObParseInst *i;
+		AZParser *i = nil;
                 xmlDocPtr doc;
                 xmlNodePtr node;
 
                 /* startup the parsing so everything can register sections
                    of the rc */
-                i = parse_startup();
+		i = [[AZParser alloc] init];
 
-                config_startup(i);
+                config_startup([i obParseInst]);
                 /* parse/load user options */
                 if (parse_load_rc(&doc, &node))
-                    parse_tree(i, doc, node->xmlChildrenNode);
+                    parse_tree([i obParseInst], doc, node->xmlChildrenNode);
                 /* we're done with parsing now, kill it */
                 parse_close(doc);
-                parse_shutdown(i);
+		DESTROY(i);
             }
 
             /* load the theme specified in the rc file */
