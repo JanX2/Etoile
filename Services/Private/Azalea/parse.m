@@ -37,10 +37,6 @@ struct Callback {
     gpointer data;
 };
 
-struct _ObParseInst {
-    GHashTable *callbacks;
-};
-
 static void destfunc(struct Callback *c)
 {
     g_free(c->tag);
@@ -49,36 +45,28 @@ static void destfunc(struct Callback *c)
 
 @implementation AZParser
 
-- (struct _ObParseInst *) obParseInst
-{
-  return obParseInst;
-}
-
 - (id) init
 {
     self = [super init];
-    obParseInst = g_new(ObParseInst, 1);
-    obParseInst->callbacks = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
+    callbacks = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
                                          (GDestroyNotify)destfunc);
     return self;
 }
 
 - (void) dealloc
 {
-    if (obParseInst) {
-        g_hash_table_destroy(obParseInst->callbacks);
-        g_free(obParseInst);
+    if (callbacks) {
+        g_hash_table_destroy(callbacks);
     }
+    [super dealloc];
 }
 
-@end
-
-void parse_register(ObParseInst *i, const gchar *tag,
-                    ParseCallback func, gpointer data)
+- (void) registerTag: (char *) tag callback: (ParseCallback) func 
+                data: (gpointer) data
 {
     struct Callback *c;
 
-    if ((c = g_hash_table_lookup(i->callbacks, tag))) {
+    if ((c = g_hash_table_lookup(callbacks, tag))) {
         g_warning("tag '%s' already registered", tag);
         return;
     }
@@ -87,59 +75,75 @@ void parse_register(ObParseInst *i, const gchar *tag,
     c->tag = g_strdup(tag);
     c->func = func;
     c->data = data;
-    g_hash_table_insert(i->callbacks, c->tag, c);
+    g_hash_table_insert(callbacks, c->tag, c);
 }
+
+- (void) parseDocument: (xmlDocPtr) doc node: (xmlNodePtr) node;
+{
+    while (node) {
+        struct Callback *c = g_hash_table_lookup(callbacks, node->name);
+
+        if (c)
+            c->func(self , doc, node, c->data);
+        node = node->next;
+    }
+}
+
+@end
 
 BOOL parse_load_rc(xmlDocPtr *doc, xmlNodePtr *root)
 {
-    gchar *path;
+    NSString *path;
     BOOL r = NO;
 
     int i, count = [xdg_config_dir_paths count];
     for (i = 0; !r && (i < count); i++) {
-	path = g_build_filename((char*)[[xdg_config_dir_paths objectAtIndex: i] cString], "openbox", "rc.xml", NULL);
+
+	path = [NSString pathWithComponents: [NSArray arrayWithObjects:
+		[xdg_config_dir_paths objectAtIndex: i],
+		@"openbox", @"rc.xml", nil]];
         r = parse_load(path, "openbox_config", doc, root);
-        g_free(path);
     }
     if (!r)
-        g_warning("unable to find a valid config file, using defaults");
+        NSLog(@"Warning: unable to find a valid config file, using defaults");
     return r;
 }
 
-BOOL parse_load_menu(const gchar *file, xmlDocPtr *doc, xmlNodePtr *root)
+BOOL parse_load_menu(NSString *file, xmlDocPtr *doc, xmlNodePtr *root)
 {
-    gchar *path;
+    NSString *path;
     BOOL r = NO;
 
-    if (file[0] == '/') {
+    if ([file isAbsolutePath]) {
         r = parse_load(file, "openbox_menu", doc, root);
     } else {
         int i, count = [xdg_config_dir_paths count];
         for (i = 0; !r && (i < count); i++) {
-	    path = g_build_filename((char*)[[xdg_config_dir_paths objectAtIndex: i] cString], "openbox", file, NULL);
+	    path = [NSString pathWithComponents: [NSArray arrayWithObjects:
+		[xdg_config_dir_paths objectAtIndex: i],
+		@"openbox", file, nil]];
             r = parse_load(path, "openbox_menu", doc, root);
-            g_free(path);
         }
     }
     if (!r)
-        g_warning("unable to find a valid menu file '%s'", file);
+        NSLog(@"Warning: unable to find a valid menu file '%@'", file);
     return r;
 }
 
-BOOL parse_load(const gchar *path, const gchar *rootname,
+BOOL parse_load(NSString *path, const char *rootname,
                     xmlDocPtr *doc, xmlNodePtr *root)
 {
-    if ((*doc = xmlParseFile(path))) {
+    if ((*doc = xmlParseFile([path fileSystemRepresentation]))) {
         *root = xmlDocGetRootElement(*doc);
         if (!*root) {
             xmlFreeDoc(*doc);
             *doc = NULL;
-            g_warning("%s is an empty document", path);
+            NSLog(@"%@ is an empty document", path);
         } else {
             if (xmlStrcasecmp((*root)->name, (const xmlChar*)rootname)) {
                 xmlFreeDoc(*doc);
                 *doc = NULL;
-                g_warning("document %s is of wrong type. root node is "
+                NSLog(@"document %@ is of wrong type. root node is "
                           "not '%s'", path, rootname);
             }
         }
@@ -149,7 +153,7 @@ BOOL parse_load(const gchar *path, const gchar *rootname,
     return YES;
 }
 
-BOOL parse_load_mem(gpointer data, unsigned int len, const gchar *rootname,
+BOOL parse_load_mem(void *data, unsigned int len, const char *rootname,
                         xmlDocPtr *doc, xmlNodePtr *root)
 {
     if ((*doc = xmlParseMemory(data, len))) {
@@ -157,12 +161,12 @@ BOOL parse_load_mem(gpointer data, unsigned int len, const gchar *rootname,
         if (!*root) {
             xmlFreeDoc(*doc);
             *doc = NULL;
-            g_warning("Given memory is an empty document");
+            NSLog(@"Warning: Given memory is an empty document");
         } else {
             if (xmlStrcasecmp((*root)->name, (const xmlChar*)rootname)) {
                 xmlFreeDoc(*doc);
                 *doc = NULL;
-                g_warning("document in given memory is of wrong type. root "
+                NSLog(@"Warning: document in given memory is of wrong type. root "
                           "node is not '%s'", rootname);
             }
         }
@@ -175,18 +179,6 @@ BOOL parse_load_mem(gpointer data, unsigned int len, const gchar *rootname,
 void parse_close(xmlDocPtr doc)
 {
     xmlFreeDoc(doc);
-}
-
-void parse_tree(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node)
-{
-    while (node) {
-        struct Callback *c = g_hash_table_lookup(i->callbacks, node->name);
-
-        if (c)
-            c->func(i, doc, node, c->data);
-
-        node = node->next;
-    }
 }
 
 gchar *parse_string(xmlDocPtr doc, xmlNodePtr node)
@@ -219,7 +211,7 @@ BOOL parse_bool(xmlDocPtr doc, xmlNodePtr node)
     return b;
 }
 
-BOOL parse_contains(const gchar *val, xmlDocPtr doc, xmlNodePtr node)
+BOOL parse_contains(const char *val, xmlDocPtr doc, xmlNodePtr node)
 {
     xmlChar *c = xmlNodeListGetString(doc, node->children, YES);
     BOOL r;
@@ -228,7 +220,7 @@ BOOL parse_contains(const gchar *val, xmlDocPtr doc, xmlNodePtr node)
     return r;
 }
 
-xmlNodePtr parse_find_node(const gchar *tag, xmlNodePtr node)
+xmlNodePtr parse_find_node(const char *tag, xmlNodePtr node)
 {
     while (node) {
         if (!xmlStrcasecmp(node->name, (const xmlChar*) tag))
@@ -238,7 +230,7 @@ xmlNodePtr parse_find_node(const gchar *tag, xmlNodePtr node)
     return NULL;
 }
 
-BOOL parse_attr_int(const gchar *name, xmlNodePtr node, int *value)
+BOOL parse_attr_int(const char *name, xmlNodePtr node, int *value)
 {
     xmlChar *c = xmlGetProp(node, (const xmlChar*) name);
     BOOL r = NO;
@@ -250,7 +242,7 @@ BOOL parse_attr_int(const gchar *name, xmlNodePtr node, int *value)
     return r;
 }
 
-BOOL parse_attr_string(const gchar *name, xmlNodePtr node, gchar **value)
+BOOL parse_attr_string(const char *name, xmlNodePtr node, char **value)
 {
     xmlChar *c = xmlGetProp(node, (const xmlChar*) name);
     BOOL r = NO;
@@ -262,34 +254,13 @@ BOOL parse_attr_string(const gchar *name, xmlNodePtr node, gchar **value)
     return r;
 }
 
-BOOL parse_attr_contains(const gchar *val, xmlNodePtr node,
-                             const gchar *name)
+BOOL parse_attr_contains(const char *val, xmlNodePtr node, const char *name)
 {
     xmlChar *c = xmlGetProp(node, (const xmlChar*) name);
     BOOL r;
     r = !xmlStrcasecmp(c, (const xmlChar*) val);
     xmlFree(c);
     return r;
-}
-
-static int slist_path_cmp(const gchar *a, const gchar *b)
-{
-    return strcmp(a, b);
-}
-
-typedef GSList* (*GSListFunc) (gpointer list, gconstpointer data);
-
-static GSList* slist_path_add(GSList *list, gpointer data, GSListFunc func)
-{
-    g_assert(func);
-
-    if (!data)
-        return list;
-
-    if (!g_slist_find_custom(list, data, (GCompareFunc) slist_path_cmp))
-        list = func(list, data);
-
-    return list;
 }
 
 void parse_paths_startup()

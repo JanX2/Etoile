@@ -44,12 +44,12 @@ static AZParser *menu_parse_inst = nil;
 static ObMenuParseState menu_parse_state;
 
 static void menu_destroy_hash_value(AZMenu *self);
-static void parse_menu_item(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_menu_item(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                             gpointer data);
-static void parse_menu_separator(ObParseInst *i,
+static void parse_menu_separator(AZParser *parser,
                                  xmlDocPtr doc, xmlNodePtr node,
                                  gpointer data);
-static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                        gpointer data);
 
 void menu_pipe_execute(AZMenu *self)
@@ -72,12 +72,11 @@ void menu_pipe_execute(AZMenu *self)
                        "openbox_pipe_menu", &doc, &node))
     {
 	[[AZMenuManager defaultManager] removePipeMenu: self];
-        //g_hash_table_foreach_remove([[AZMenuManager defaultManager] menu_hash], menu_pipe_submenu, self);
 	[self clearEntries];
 
         menu_parse_state.pipe_creator = self;
         menu_parse_state.parent = self;
-        parse_tree([menu_parse_inst obParseInst], doc, node->children);
+	[menu_parse_inst parseDocument: doc node: node->children];
         xmlFreeDoc(doc);
     } else {
         g_warning("Invalid output from pipe-menu: %s", [self execute]);
@@ -86,7 +85,7 @@ void menu_pipe_execute(AZMenu *self)
     g_free(output);
 }
 
-static void parse_menu_item(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_menu_item(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                             gpointer data)
 {
     ObMenuParseState *state = data;
@@ -99,7 +98,7 @@ static void parse_menu_item(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
             for (node = node->children; node; node = node->next)
                 if (!xmlStrcasecmp(node->name, (const xmlChar*) "action")) {
                     AZAction *a = action_parse
-                        (i, doc, node, OB_USER_ACTION_MENU_SELECTION);
+                        (doc, node, OB_USER_ACTION_MENU_SELECTION);
                     if (a)
 			[acts addObject: a];
                 }
@@ -110,7 +109,7 @@ static void parse_menu_item(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     }
 }
 
-static void parse_menu_separator(ObParseInst *i,
+static void parse_menu_separator(AZParser *parser,
                                  xmlDocPtr doc, xmlNodePtr node,
                                  gpointer data)
 {
@@ -120,7 +119,7 @@ static void parse_menu_separator(ObParseInst *i,
 	[state->parent addSeparatorMenuEntry: -1];
 }
 
-static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                        gpointer data)
 {
     ObMenuParseState *state = data;
@@ -143,7 +142,7 @@ static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
 
                 old = state->parent;
                 state->parent = menu;
-                parse_tree(i, doc, node->children);
+		[parser parseDocument: doc node: node->children];
                 state->parent = old;
             }
 	    [[AZMenuManager defaultManager] registerMenu: menu];
@@ -205,22 +204,23 @@ static AZMenuManager *sharedInstance;
 
     menu_parse_state.parent = NULL;
     menu_parse_state.pipe_creator = NULL;
-    parse_register([menu_parse_inst obParseInst], "menu", parse_menu, &menu_parse_state);
-    parse_register([menu_parse_inst obParseInst], "item", parse_menu_item,
-                   &menu_parse_state);
-    parse_register([menu_parse_inst obParseInst], "separator",
-                   parse_menu_separator, &menu_parse_state);
+    [menu_parse_inst registerTag: "menu" callback: parse_menu 
+	                 data: &menu_parse_state];
+    [menu_parse_inst registerTag: "item" callback: parse_menu_item 
+	                 data: &menu_parse_state];
+    [menu_parse_inst registerTag: "separator" callback: parse_menu_separator
+	                 data: &menu_parse_state];
 
     for (it = config_menu_files; it; it = g_slist_next(it)) {
-        if (parse_load_menu(it->data, &doc, &node)) {
+        if (parse_load_menu([NSString stringWithCString: it->data], &doc, &node)) {
             loaded = YES;
-            parse_tree([menu_parse_inst obParseInst], doc, node->children);
+	    [menu_parse_inst parseDocument: doc node: node->children];
             xmlFreeDoc(doc);
         }
     }
     if (!loaded) {
-        if (parse_load_menu("menu.xml", &doc, &node)) {
-            parse_tree([menu_parse_inst obParseInst], doc, node->children);
+        if (parse_load_menu(@"menu.xml", &doc, &node)) {
+	    [menu_parse_inst parseDocument: doc node: node->children];
             xmlFreeDoc(doc);
         }
     }

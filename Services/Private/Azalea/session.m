@@ -472,7 +472,7 @@ static void session_load(gchar *path)
     xmlNodePtr node, n;
     gchar *id;
 
-    if (!parse_load(path, "openbox_session", &doc, &node))
+    if (!parse_load([NSString stringWithCString: path], "openbox_session", &doc, &node))
         return;
 
     if (!parse_attr_string("id", node, &id))

@@ -845,8 +845,7 @@ AZAction *action_from_string(const gchar *name, ObUserAction uact)
     return AUTORELEASE(a);
 }
 
-AZAction *action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
-                       ObUserAction uact)
+AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
 {
     gchar *actname;
     AZAction *act = nil;

@@ -1,6 +1,7 @@
 2006-04-15 Yen-Ju Chen <yjchenx at gmail>
 
 	* Initial port of parse.
+	* Port ObParseInst into AZParser.
 
 2006-04-14 Yen-Ju Chen <yjchenx at gmail>
 

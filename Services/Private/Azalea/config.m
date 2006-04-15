@@ -90,7 +90,7 @@ BOOL config_resist_layers_below;
 
 */
 
-static void parse_key(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_key(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                       GList *keylist)
 {
     gchar *key;
@@ -110,7 +110,7 @@ static void parse_key(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
         if (parse_attr_string("key", n, &key)) {
             keylist = g_list_append(keylist, key);
 
-            parse_key(i, doc, n->children, keylist);
+            parse_key(parser, doc, n->children, keylist);
 
             it = g_list_last(keylist);
             g_free(it->data);
@@ -121,7 +121,7 @@ static void parse_key(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     if (keylist) {
         nact = parse_find_node("action", node);
         while (nact) {
-            if ((action = action_parse(i, doc, nact,
+            if ((action = action_parse(doc, nact,
                                        OB_USER_ACTION_KEYBOARD_KEY))) {
 		AZKeyboardHandler *kHandler = [AZKeyboardHandler defaultHandler];
 		[kHandler bind: keylist action: action];
@@ -131,12 +131,12 @@ static void parse_key(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     }
 }
 
-static void parse_keyboard(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_keyboard(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                            gpointer d)
 {
     [[AZKeyboardHandler defaultHandler] unbindAll];
 
-    parse_key(i, doc, node->children, NULL);
+    parse_key(parser, doc, node->children, NULL);
 }
 
 /*
@@ -149,7 +149,7 @@ static void parse_keyboard(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
 
 */
 
-static void parse_mouse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_mouse(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                         gpointer d)
 {
     xmlNodePtr n, nbut, nact;
@@ -196,7 +196,7 @@ static void parse_mouse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                 goto next_nbut;
             nact = parse_find_node("action", nbut->children);
             while (nact) {
-                if ((action = action_parse(i, doc, nact, uact)))
+                if ((action = action_parse(doc, nact, uact)))
                     [mouseHandler bind: buttonstr context: contextstr
 			    mouseAction: mact action: action];
                 nact = parse_find_node("action", nact->next);
@@ -211,7 +211,7 @@ static void parse_mouse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     }
 }
 
-static void parse_focus(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_focus(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                         gpointer d)
 {
     xmlNodePtr n;
@@ -230,7 +230,7 @@ static void parse_focus(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
         config_focus_last = parse_bool(doc, n);
 }
 
-static void parse_placement(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_placement(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                             gpointer d)
 {
     xmlNodePtr n;
@@ -242,7 +242,7 @@ static void parse_placement(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
             config_place_policy = OB_PLACE_POLICY_MOUSE;
 }
 
-static void parse_theme(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_theme(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                         gpointer d)
 {
     xmlNodePtr n;
@@ -267,7 +267,7 @@ static void parse_theme(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
         config_theme_hidedisabled = parse_bool(doc, n);
 }
 
-static void parse_desktops(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_desktops(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                            gpointer d)
 {
     xmlNodePtr n;
@@ -302,7 +302,7 @@ static void parse_desktops(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     }
 }
 
-static void parse_resize(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_resize(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                          gpointer d)
 {
     xmlNodePtr n;
@@ -331,7 +331,7 @@ static void parse_resize(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     }
 }
 
-static void parse_dock(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_dock(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                        gpointer d)
 {
     xmlNodePtr n;
@@ -408,7 +408,7 @@ static void parse_dock(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     }
 }
 
-static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                        gpointer d)
 {
     xmlNodePtr n;
@@ -432,7 +432,7 @@ static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     }
 }
    
-static void parse_resistance(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node, 
+static void parse_resistance(AZParser *parser, xmlDocPtr doc, xmlNodePtr node, 
                              gpointer d)
 {
     xmlNodePtr n;
@@ -550,7 +550,7 @@ static void bind_default_mouse()
     }
 }
 
-void config_startup(ObParseInst *i)
+void config_startup(AZParser *parser)
 {
     config_focus_new = YES;
     config_focus_follow = NO;
@@ -558,11 +558,11 @@ void config_startup(ObParseInst *i)
     config_focus_raise = NO;
     config_focus_last = NO;
 
-    parse_register(i, "focus", parse_focus, NULL);
+    [parser registerTag: "focus" callback: parse_focus data: NULL];
 
     config_place_policy = OB_PLACE_POLICY_SMART;
 
-    parse_register(i, "placement", parse_placement, NULL);
+    [parser registerTag: "placement" callback: parse_placement data: NULL];
 
     config_theme = NULL;
 
@@ -570,20 +570,20 @@ void config_startup(ObParseInst *i)
     config_theme_keepborder = YES;
     config_theme_hidedisabled = NO;
 
-    parse_register(i, "theme", parse_theme, NULL);
+    [parser registerTag: "theme" callback: parse_theme data: NULL];
 
     config_desktops_num = 4;
     config_screen_firstdesk = 1;
     config_desktops_names = NULL;
 
-    parse_register(i, "desktops", parse_desktops, NULL);
+    [parser registerTag: "desktops" callback: parse_desktops data: NULL];
 
     config_resize_redraw = YES;
     config_resize_four_corners = NO;
     config_resize_popup_show = 1; /* nonpixel increments */
     config_resize_popup_pos = 0;  /* center of client */
 
-    parse_register(i, "resize", parse_resize, NULL);
+    [parser registerTag: "resize" callback: parse_resize data: NULL];
 
     config_dock_layer = OB_STACKING_LAYER_ABOVE;
     config_dock_pos = OB_DIRECTION_NORTHEAST;
@@ -598,27 +598,27 @@ void config_startup(ObParseInst *i)
     config_dock_app_move_button = 2; /* middle */
     config_dock_app_move_modifiers = 0;
 
-    parse_register(i, "dock", parse_dock, NULL);
+    [parser registerTag: "dock" callback: parse_dock data: NULL];
 
     translate_key(@"C-g", &config_keyboard_reset_state,
                   &config_keyboard_reset_keycode);
 
     bind_default_keyboard();
 
-    parse_register(i, "keyboard", parse_keyboard, NULL);
+    [parser registerTag: "keyboard" callback: parse_keyboard data: NULL];
 
     config_mouse_threshold = 3;
     config_mouse_dclicktime = 200;
 
     bind_default_mouse();
 
-    parse_register(i, "mouse", parse_mouse, NULL);
+    [parser registerTag: "mouse" callback: parse_mouse data: NULL];
 
     config_resist_win = 10;
     config_resist_edge = 20;
     config_resist_layers_below = NO;
 
-    parse_register(i, "resistance", parse_resistance, NULL);
+    [parser registerTag: "resistance" callback: parse_resistance data: NULL];
 
     config_menu_warppointer = YES;
     config_menu_xorstyle = YES;
@@ -626,7 +626,7 @@ void config_startup(ObParseInst *i)
     config_menu_client_list_icons = YES;
     config_menu_files = NULL;
 
-    parse_register(i, "menu", parse_menu, NULL);
+    [parser registerTag: "menu" callback: parse_menu data: NULL];
 }
 
 void config_shutdown()

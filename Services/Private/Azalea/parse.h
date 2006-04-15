@@ -25,51 +25,47 @@
 #import <libxml/parser.h>
 #import <glib.h>
 
-typedef struct _ObParseInst ObParseInst;
+@class AZParser;
 
-typedef void (*ParseCallback)(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+typedef void (*ParseCallback)(AZParser *i, xmlDocPtr doc, xmlNodePtr node,
                               gpointer data);
 
 @interface AZParser: NSObject
 {
-  struct _ObParseInst *obParseInst;
+  GHashTable *callbacks;
 }
-- (ObParseInst *) obParseInst;
-@end
+- (void) registerTag: (char *) tag callback: (ParseCallback) func data: (gpointer) data;
+- (void) parseDocument: (xmlDocPtr) doc node: (xmlNodePtr) node;
+             
+@end 
 
 /* Loads Openbox's rc, from the normal paths */
 BOOL parse_load_rc(xmlDocPtr *doc, xmlNodePtr *root);
 /* Loads an Openbox menu, from the normal paths */
-BOOL parse_load_menu(const gchar *file, xmlDocPtr *doc, xmlNodePtr *root);
-
-void parse_register(ObParseInst *inst, const gchar *tag,
-                    ParseCallback func, gpointer data);
-void parse_tree(ObParseInst *inst, xmlDocPtr doc, xmlNodePtr node);
-
+BOOL parse_load_menu(NSString *file, xmlDocPtr *doc, xmlNodePtr *root);
 
 /* open/close */
 
-BOOL parse_load(const gchar *path, const gchar *rootname,
+BOOL parse_load(NSString *path, const char *rootname,
                     xmlDocPtr *doc, xmlNodePtr *root);
-BOOL parse_load_mem(gpointer data, unsigned int len, const gchar *rootname,
+BOOL parse_load_mem(void *data, unsigned int len, const char *rootname,
                         xmlDocPtr *doc, xmlNodePtr *root);
 void parse_close(xmlDocPtr doc);
 
 
 /* helpers */
 
-xmlNodePtr parse_find_node(const gchar *tag, xmlNodePtr node);
+xmlNodePtr parse_find_node(const char *tag, xmlNodePtr node);
 
 gchar *parse_string(xmlDocPtr doc, xmlNodePtr node);
 int parse_int(xmlDocPtr doc, xmlNodePtr node);
 BOOL parse_bool(xmlDocPtr doc, xmlNodePtr node);
 
-BOOL parse_contains(const gchar *val, xmlDocPtr doc, xmlNodePtr node);
-BOOL parse_attr_contains(const gchar *val, xmlNodePtr node,
-                             const gchar *name);
+BOOL parse_contains(const char *val, xmlDocPtr doc, xmlNodePtr node);
+BOOL parse_attr_contains(const char *val, xmlNodePtr node, const char *name);
 
-BOOL parse_attr_string(const gchar *name, xmlNodePtr node, gchar **value);
-BOOL parse_attr_int(const gchar *name, xmlNodePtr node, int *value);
+BOOL parse_attr_string(const char *name, xmlNodePtr node, char **value);
+BOOL parse_attr_int(const char *name, xmlNodePtr node, int *value);
 
 /* paths */
 

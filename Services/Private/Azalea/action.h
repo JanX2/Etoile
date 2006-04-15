@@ -187,8 +187,7 @@ typedef void (*AZActionFunc)(union ActionData *data);
 */
 
 AZAction* action_from_string(const gchar *name, ObUserAction uact);
-AZAction* action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
-                       ObUserAction uact);
+AZAction* action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact);
 AZAction* action_copy(AZAction *a);
 
 /*! Executes a list of actions.

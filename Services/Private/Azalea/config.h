@@ -26,7 +26,7 @@
 
 #include <glib.h>
 
-struct _ObParseInst;
+@class AZParser;
 
 /*! Should new windows be focused */
 extern BOOL config_focus_new;
@@ -127,7 +127,7 @@ extern BOOL config_menu_client_list_icons;
 /*! User-specified menu files */
 extern GSList *config_menu_files;
 
-void config_startup(struct _ObParseInst *i);
+void config_startup(AZParser *i);
 void config_shutdown();
 
 #endif
