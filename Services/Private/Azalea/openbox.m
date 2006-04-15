@@ -295,6 +295,7 @@ int main(int argc, gchar **argv)
 		[mainLoop mainLoopRun]; /* run once in case reconfigure */
 		[app run];
 #else
+		CREATE_AUTORELEASE_POOL(x);
 		NSRunLoop *loop = [NSRunLoop currentRunLoop];
 		NSDate *past = [NSDate distantPast];
 
@@ -304,6 +305,7 @@ int main(int argc, gchar **argv)
 		  [loop acceptInputForMode: NSDefaultRunLoopMode
 			   beforeDate: past];
 		}
+		DESTROY(x);
 #endif
 		[mainLoop didFinishRunning];
 		[mainLoop setRunning: NO];

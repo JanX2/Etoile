@@ -141,10 +141,6 @@ void mouse_unbind_all()
             int j;
 
             for (j = 0; j < OB_NUM_MOUSE_ACTIONS; ++j) {
-                GSList *it;
-
-                for (it = b->actions[j]; it; it = g_slist_next(it))
-                    action_unref(it->data);
                 g_slist_free(b->actions[j]);
             }
             g_free(b);

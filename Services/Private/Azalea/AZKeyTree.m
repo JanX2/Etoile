@@ -55,20 +55,8 @@
 
 void tree_destroy(AZKeyBindingTree *tree)
 {
-    AZKeyBindingTree *c;
-
-    while (tree) {
-        tree_destroy([tree next_sibling]);
-        c = [tree first_child];
-        if (c == NULL) {
-	    int i, count = [[tree actions] count];
-	    for (i = 0; i < count; i++) {
-		action_unref([[tree actions] objectAtIndex: i]);
-	    }
-        }
-	DESTROY(tree);
-        tree = c;
-    }
+    /* This should propagate into children */
+    DESTROY(tree);
 }
 
 AZKeyBindingTree *tree_build(GList *keylist)

@@ -65,7 +65,7 @@ static GSList *desktop_menus;
     for (j = 0, i = 0; j < jcount; j++, ++i) {
         AZClient *c = [fManager focusOrder: j inScreen: data];
         if ([c normal] && ![c skip_taskbar]) {
-            GSList *acts = NULL;
+	    NSMutableArray *acts = [[NSMutableArray alloc] init];
             AZAction* act;
             AZNormalMenuEntry *e;
             AZClientIcon *icon;
@@ -80,12 +80,13 @@ static GSList *desktop_menus;
             act = action_from_string("Activate",
                                      OB_USER_ACTION_MENU_SELECTION);
             [act data_pointer]->activate.any.c = c;
-            acts = g_slist_append(acts, act);
+	    [acts addObject: act];
             act = action_from_string("Desktop",
                                      OB_USER_ACTION_MENU_SELECTION);
             [act data_pointer]->desktop.desk = data;
-            acts = g_slist_append(acts, act);
+	    [acts addObject: act];
 	    e = [menu addNormalMenuEntry: i label: ([c iconic] ? [c icon_title] : [c title]) actions: acts];
+	    DESTROY(acts);
 
             if (config_menu_client_list_icons && 
 		(icon = [c iconWithWidth: 32 height: 32])) {
@@ -99,14 +100,12 @@ static GSList *desktop_menus;
     if (empty) {
         /* no entries */
 
-        GSList *acts = NULL;
         AZAction* act;
         AZNormalMenuEntry *e;
 
         act = action_from_string("Desktop", OB_USER_ACTION_MENU_SELECTION);
         [act data_pointer]->desktop.desk = data;
-        acts = g_slist_append(acts, act);
-	e = [menu addNormalMenuEntry: 0 label: @"Go there..." actions: acts];
+	e = [menu addNormalMenuEntry: 0 label: @"Go there..." actions: [NSArray arrayWithObjects: act, nil]];
         if (data == [[AZScreen defaultScreen] desktop])
             [e set_enabled: NO];
     }
@@ -120,8 +119,13 @@ static GSList *desktop_menus;
 
     if ([entry isKindOfClass: [AZNormalMenuEntry class]] &&
 		    [(AZNormalMenuEntry *)entry actions]) {
-        a = [(AZNormalMenuEntry *)entry actions]->data;
-        action_run([(AZNormalMenuEntry *)entry actions], [a data].any.c, state);
+        a = [[(AZNormalMenuEntry *)entry actions] objectAtIndex: 0];
+	GSList *list = NULL;
+	int i, count = [[(AZNormalMenuEntry *)entry actions] count];
+	for (i = 0; i < count; i++) {
+	  list = g_slist_append(list, [[(AZNormalMenuEntry *)entry actions] objectAtIndex: i]);
+	}
+        action_run(list, [a data].any.c, state);
     }
     return YES;
 }
@@ -141,7 +145,7 @@ static GSList *desktop_menus;
 - (void) update: (AZMenuFrame *) frame 
 {
     AZMenu *menu = [frame menu];
-    guint i;
+    unsigned int i;
     GSList *it, *next;
     
     it = desktop_menus;

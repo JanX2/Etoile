@@ -159,19 +159,16 @@ typedef void (*AZActionFunc)(union ActionData *data);
 
 @interface AZAction: NSObject
 {
-    unsigned int ref;
-
     /* The func member acts like an enum to tell which one of the structs in
        the data union are valid.
     */
     AZActionFunc func;
     union ActionData data;
 }
-- (unsigned int) ref;
+- (id) initWithFunc: (AZActionFunc) func;
 - (AZActionFunc) func;
 - (union ActionData) data;
 - (union ActionData *) data_pointer;
-- (void) set_ref: (unsigned int) ref;
 - (void) set_func: (AZActionFunc) func;
 - (void) set_data: (union ActionData) data;
 @end
@@ -192,9 +189,6 @@ typedef void (*AZActionFunc)(union ActionData *data);
 AZAction* action_from_string(const gchar *name, ObUserAction uact);
 AZAction* action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                        ObUserAction uact);
-void action_ref(AZAction *a);
-void action_unref(AZAction *a);
-
 AZAction* action_copy(AZAction *a);
 
 /*! Executes a list of actions.

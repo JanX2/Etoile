@@ -69,48 +69,9 @@ typedef struct
     void (*setup)(AZAction **, ObUserAction uact);
 } ActionString;
 
-@implementation AZAction
-- (unsigned int) ref { return ref; }
-- (AZActionFunc) func { return func; }
-- (union ActionData) data { return data; }
-- (union ActionData *) data_pointer { return &data; }
-- (void) set_ref: (unsigned int) r { ref = r; }
-- (void) set_func: (AZActionFunc) f { func = f; }
-- (void) set_data: (union ActionData) d { data = d; }
-@end
-
-AZAction *action_new(AZActionFunc func)
-{
-    AZAction *a = [[AZAction alloc] init];
-    [a set_ref: 1];
-    [a set_func: func];
-    return a;
-}
-
-void action_ref(AZAction *a)
-{
-    [a set_ref: [a ref]+1];
-}
-
-void action_unref(AZAction *a)
-{
-    if (a == nil) return;
-
-    [a set_ref: [a ref]-1];
-    if ([a ref] > 0) return;
-
-    /* deal with pointers */
-    if ([a func] == action_execute || [a func] == action_restart)
-        g_free([a data].execute.path);
-    else if ([a func] == action_showmenu)
-        g_free([a data].showmenu.name);
-
-    DESTROY(a);
-}
-
 AZAction* action_copy(AZAction *src)
 {
-    AZAction *a = action_new([src func]);
+    AZAction *a = [[AZAction alloc] initWithFunc: [src func]];
 
     [a set_data: [src data]];
 
@@ -407,7 +368,6 @@ void setup_action_showmenu(AZAction **a, ObUserAction uact)
        assumptions that there is only one menu (and submenus) open at
        a time! */
     if (uact == OB_USER_ACTION_MENU_SELECTION) {
-        action_unref(*a);
         *a = NULL;
     }
 }
@@ -838,6 +798,29 @@ ActionString actionstrings[] =
     if (uact != OB_USER_ACTION_KEYBOARD_KEY) \
         [a data_pointer]->any.interactive = NO;
 
+@implementation AZAction
+- (AZActionFunc) func { return func; }
+- (union ActionData) data { return data; }
+- (union ActionData *) data_pointer { return &data; }
+- (void) set_func: (AZActionFunc) f { func = f; }
+- (void) set_data: (union ActionData) d { data = d; }
+- (id) initWithFunc: (AZActionFunc) f
+{
+  self = [super init];
+  func = f;
+  return self;
+}
+- (void) dealloc
+{
+    /* deal with pointers */
+    if (func == action_execute || func == action_restart)
+        g_free(data.execute.path);
+    else if (func == action_showmenu)
+        g_free(data.showmenu.name);
+    [super dealloc];
+}
+@end
+
 AZAction *action_from_string(const gchar *name, ObUserAction uact)
 {
     AZAction *a = nil;
@@ -847,7 +830,7 @@ AZAction *action_from_string(const gchar *name, ObUserAction uact)
     for (i = 0; actionstrings[i].name; i++)
         if (!g_ascii_strcasecmp(name, actionstrings[i].name)) {
             exist = YES;
-            a = action_new(actionstrings[i].func);
+            a = [[AZAction alloc] initWithFunc: actionstrings[i].func];
             if (actionstrings[i].setup)
                 actionstrings[i].setup(&a, uact);
             if (a)
@@ -859,7 +842,7 @@ AZAction *action_from_string(const gchar *name, ObUserAction uact)
                   name);
     if (!a)
         g_warning("Invalid use of action '%s'. Action will be ignored.", name);
-    return a;
+    return AUTORELEASE(a);
 }
 
 AZAction *action_parse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,

@@ -352,7 +352,6 @@ static AZMainLoop *sharedInstance;
                     ![act data].any.c)
                 {
 		    [actionQueue removeObjectAtIndex: 0];
-                    action_unref(act);
                     act = nil;
                 }
             } while (!act && [actionQueue count]);
@@ -360,7 +359,6 @@ static AZMainLoop *sharedInstance;
             if  (act) {
                 [act func]([act data_pointer]);
 		[actionQueue removeObjectAtIndex: 0];
-                action_unref(act);
             }
         } else {
             /* this only runs if there were no x events received */
