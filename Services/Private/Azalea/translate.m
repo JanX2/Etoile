@@ -33,7 +33,7 @@ static unsigned int translate_modifier(NSString *str)
     else if (iCompare(str, @"Mod4") || iCompare(str, @"W")) return Mod4Mask;
     else if (iCompare(str, @"Mod5")) return Mod5Mask;
     else if (iCompare(str, @"Control") || iCompare(str, @"C")) return ControlMask;
-    else if (iCompare(str, @"Shift") || iCompare(str, @"S")) return ControlMask;
+    else if (iCompare(str, @"Shift") || iCompare(str, @"S")) return ShiftMask;
     NSLog(@"Warning: Invalide modifier '%@' in binding.", str);
     return 0;
 }
