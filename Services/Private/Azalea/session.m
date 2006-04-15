@@ -429,10 +429,10 @@ static BOOL session_save()
 void session_state_free(ObSessionState *state)
 {
     if (state) {
-        g_free(state->id);
-        g_free(state->name);
-        g_free(state->class);
-        g_free(state->role);
+        DESTROY(state->id);
+        DESTROY(state->name);
+        DESTROY(state->class);
+        DESTROY(state->role);
 
         g_free(state);
     }
@@ -441,10 +441,11 @@ void session_state_free(ObSessionState *state)
 BOOL session_state_cmp(ObSessionState *s, AZClient *c)
 {
     return ([c sm_client_id] &&
-            !strcmp(s->id, (char*)[[c sm_client_id] cString]) &&
-            !strcmp(s->name, (char*)[[c name] cString]) &&
-            !strcmp(s->class, (char*)[[c class] cString]) &&
-            !strcmp(s->role, (char*)[[c role] cString]));
+            [s->id isEqualToString: [c sm_client_id]] &&
+            [s->name isEqualToString: [c name]] &&
+            [s->class isEqualToString: [c class]] &&
+            [s->role isEqualToString: [c role]]);
+    /* Considering nil == nil ? */
 }
 
 GList* session_state_find(AZClient *c)
@@ -486,17 +487,37 @@ static void session_load(gchar *path)
 
         state = g_new0(ObSessionState, 1);
 
-        if (!parse_attr_string("id", node, &state->id))
+	char *_id;
+        if (!parse_attr_string("id", node, &_id)) {
             goto session_load_bail;
+	} else {
+	  if (state->id) {
+	    [state->id release];
+	    state->id = NULL;
+	  }
+	  state->id = [[NSString stringWithUTF8String: _id] copy];
+	}
         if (!(n = parse_find_node("name", node->children)))
             goto session_load_bail;
-        state->name = parse_string(doc, n);
+	if (state->name) {
+	  [state->name release];
+	  state->name = NULL;
+	}
+        state->name = [parse_string(doc, n) copy];
         if (!(n = parse_find_node("class", node->children)))
             goto session_load_bail;
-        state->class = parse_string(doc, n);
+	if (state->class) {
+	  [state->class release];
+	  state->class = NULL;
+	}
+        state->class = [parse_string(doc, n) copy];
         if (!(n = parse_find_node("role", node->children)))
             goto session_load_bail;
-        state->role = parse_string(doc, n);
+	if (state->role) {
+	  [state->role release];
+	  state->role = NULL;
+	}
+        state->role = [parse_string(doc, n) copy];
         if (!(n = parse_find_node("stacking", node->children)))
             goto session_load_bail;
         state->stacking = parse_int(doc, n);

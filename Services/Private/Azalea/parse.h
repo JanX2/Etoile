@@ -57,7 +57,8 @@ void parse_close(xmlDocPtr doc);
 
 xmlNodePtr parse_find_node(const char *tag, xmlNodePtr node);
 
-gchar *parse_string(xmlDocPtr doc, xmlNodePtr node);
+/* Autoreleased string */
+NSString *parse_string(xmlDocPtr doc, xmlNodePtr node);
 int parse_int(xmlDocPtr doc, xmlNodePtr node);
 BOOL parse_bool(xmlDocPtr doc, xmlNodePtr node);
 

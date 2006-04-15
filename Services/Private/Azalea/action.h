@@ -64,7 +64,7 @@ struct DirectionalAction{
 
 struct Execute {
     struct AnyAction any;
-    gchar *path;
+    NSString *path;
 };
 
 struct ClientAction {
@@ -120,7 +120,7 @@ struct MoveResize {
 
 struct ShowMenu {
     struct AnyAction any;
-    gchar *name;
+    NSString *name;
 };
 
 struct CycleWindows {

@@ -93,18 +93,18 @@ BOOL config_resist_layers_below;
 static void parse_key(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                       GList *keylist)
 {
-    gchar *key;
+    NSString *_key;
     AZAction *action;
     xmlNodePtr n, nact;
     GList *it;
 
     if ((n = parse_find_node("chainQuitKey", node))) {
-        key = parse_string(doc, n);
-        translate_key([NSString stringWithCString: key], &config_keyboard_reset_state,
+        _key = parse_string(doc, n);
+        translate_key(_key, &config_keyboard_reset_state,
                       &config_keyboard_reset_keycode);
-        g_free(key);
     }
 
+    char *key;
     n = parse_find_node("keybind", node);
     while (n) {
         if (parse_attr_string("key", n, &key)) {
@@ -250,16 +250,15 @@ static void parse_theme(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
     node = node->children;
 
     if ((n = parse_find_node("name", node))) {
-        gchar *c;
+        NSString *c;
 
         g_free(config_theme);
         c = parse_string(doc, n);
-        config_theme = parse_expand_tilde(c);
-        g_free(c);
+        config_theme = g_strdup([[c stringByExpandingTildeInPath] fileSystemRepresentation]);
     }
     if ((n = parse_find_node("titleLayout", node))) {
         g_free(config_title_layout);
-        config_title_layout = parse_string(doc, n);
+        config_title_layout = g_strdup([parse_string(doc, n) cString]);
     }
     if ((n = parse_find_node("keepBorder", node)))
         config_theme_keepborder = parse_bool(doc, n);
@@ -296,7 +295,7 @@ static void parse_desktops(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
         nname = parse_find_node("name", n->children);
         while (nname) {
             config_desktops_names = g_slist_append(config_desktops_names,
-                                                   parse_string(doc, nname));
+                                                   g_strdup([parse_string(doc, nname) UTF8String]));
             nname = parse_find_node("name", nname->next);
         }
     }
@@ -396,15 +395,14 @@ static void parse_dock(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
     if ((n = parse_find_node("showDelay", node)))
         config_dock_show_delay = parse_int(doc, n) * 1000;
     if ((n = parse_find_node("moveButton", node))) {
-        gchar *str = parse_string(doc, n);
+        NSString *str = parse_string(doc, n);
         unsigned int b, s;
-        if (translate_button([NSString stringWithCString: str], &s, &b)) {
+        if (translate_button(str, &s, &b)) {
             config_dock_app_move_button = b;
             config_dock_app_move_modifiers = s;
         } else {
-            g_warning("invalid button '%s'", str);
+            NSLog(@"Warning: invalid button '%@'", str);
         }
-        g_free(str);
     }
 }
 
@@ -414,12 +412,11 @@ static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
     xmlNodePtr n;
     for (node = node->children; node; node = node->next) {
         if (!xmlStrcasecmp(node->name, (const xmlChar*) "file")) {
-            gchar *c;
+            NSString *c;
 
             c = parse_string(doc, node);
             config_menu_files = g_slist_append(config_menu_files,
-                                               parse_expand_tilde(c));
-            g_free(c);
+                                               g_strdup([[c stringByExpandingTildeInPath] fileSystemRepresentation]));
         }
         if ((n = parse_find_node("warpPointer", node)))
             config_menu_warppointer = parse_bool(doc, n);

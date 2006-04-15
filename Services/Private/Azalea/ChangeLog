@@ -2,6 +2,7 @@
 
 	* Initial port of parse.
 	* Port ObParseInst into AZParser.
+	* Use NSString in parse_string.
 
 2006-04-14 Yen-Ju Chen <yjchenx at gmail>
 

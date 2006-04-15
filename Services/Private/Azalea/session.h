@@ -26,7 +26,7 @@
 typedef struct _ObSessionState ObSessionState;
 
 struct _ObSessionState {
-    gchar *id, *name, *class, *role;
+    NSString *id, *name, *class, *role;
     unsigned int stacking;
     unsigned int desktop;
     int x, y, w, h;

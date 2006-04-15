@@ -77,9 +77,9 @@ AZAction* action_copy(AZAction *src)
 
     /* deal with pointers */
     if ([a func] == action_execute || [a func] == action_restart)
-        [a data_pointer]->execute.path = g_strdup([a data].execute.path);
+        [a data_pointer]->execute.path = [[src data].execute.path copy];
     else if ([a func] == action_showmenu)
-        [a data_pointer]->showmenu.name = g_strdup([a data].showmenu.name);
+        [a data_pointer]->showmenu.name = [[src data].showmenu.name copy];
 
     return a;
 }
@@ -814,9 +814,9 @@ ActionString actionstrings[] =
 {
     /* deal with pointers */
     if (func == action_execute || func == action_restart)
-        g_free(data.execute.path);
+        DESTROY(data.execute.path);
     else if (func == action_showmenu)
-        g_free(data.showmenu.name);
+        DESTROY(data.showmenu.name);
     [super dealloc];
 }
 @end
@@ -855,13 +855,11 @@ AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
         if ((act = action_from_string(actname, uact))) {
             if ([act func] == action_execute || [act func] == action_restart) {
                 if ((n = parse_find_node("execute", node->xmlChildrenNode))) {
-                    gchar *s = parse_string(doc, n);
-                    [act data_pointer]->execute.path = parse_expand_tilde(s);
-                    g_free(s);
+                    ASSIGN([act data_pointer]->execute.path, ([parse_string(doc, n) stringByExpandingTildeInPath]));
                 }
             } else if ([act func] == action_showmenu) {
                 if ((n = parse_find_node("menu", node->xmlChildrenNode)))
-                    [act data_pointer]->showmenu.name = parse_string(doc, n);
+                    ASSIGN([act data_pointer]->showmenu.name, parse_string(doc, n));
             } else if ([act func] == action_move_relative_horz ||
                        [act func] == action_move_relative_vert ||
                        [act func] == action_resize_relative_horz ||
@@ -1031,7 +1029,7 @@ void action_execute(union ActionData *data)
     GError *e = NULL;
     gchar *cmd, **argv = 0;
     if (data->execute.path) {
-        cmd = g_filename_from_utf8(data->execute.path, -1, NULL, NULL, NULL);
+        cmd = g_filename_from_utf8([data->execute.path UTF8String], -1, NULL, NULL, NULL);
         if (cmd) {
             if (!g_shell_parse_argv (cmd, NULL, &argv, &e)) {
                 g_warning("failed to execute '%s': %s",
@@ -1049,7 +1047,7 @@ void action_execute(union ActionData *data)
             }
             g_free(cmd);
         } else {
-            g_warning("failed to convert '%s' from utf8", data->execute.path);
+            g_warning("failed to convert '%s' from utf8", [data->execute.path cString]);
         }
     }
 }
@@ -1498,7 +1496,7 @@ void action_reconfigure(union ActionData *data)
 
 void action_restart(union ActionData *data)
 {
-    ob_restart_other(data->execute.path);
+    ob_restart_other([data->execute.path cString]);
 }
 
 void action_exit(union ActionData *data)
@@ -1509,7 +1507,7 @@ void action_exit(union ActionData *data)
 void action_showmenu(union ActionData *data)
 {
     if (data->showmenu.name) {
-	[[AZMenuManager defaultManager] showMenu: [NSString stringWithCString: data->showmenu.name]
+	[[AZMenuManager defaultManager] showMenu: data->showmenu.name
 		x: data->any.x y: data->any.y
 		client: data->showmenu.any.c];
     }

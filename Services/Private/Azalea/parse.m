@@ -181,10 +181,14 @@ void parse_close(xmlDocPtr doc)
     xmlFreeDoc(doc);
 }
 
-gchar *parse_string(xmlDocPtr doc, xmlNodePtr node)
+NSString *parse_string(xmlDocPtr doc, xmlNodePtr node)
 {
     xmlChar *c = xmlNodeListGetString(doc, node->children, YES);
-    gchar *s = g_strdup(c ? (gchar*)c : "");
+    NSString *s;
+    if (c)
+      s = [NSString stringWithUTF8String: (char*)c]; 
+    else
+      s = [NSString string];
     xmlFree(c);
     return s;
 }
