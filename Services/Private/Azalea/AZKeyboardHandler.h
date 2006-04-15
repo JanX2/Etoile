@@ -25,14 +25,6 @@
 @class AZClient;
 @class AZKeyBindingTree;
 
-typedef struct {
-    unsigned int state;
-    AZClient *client;
-    GSList *actions;
-    ObFrameContext context;
-} ObInteractiveState;
-
-
 @interface AZKeyboardHandler: NSObject
 {
   AZKeyBindingTree *keyboard_firstnode;

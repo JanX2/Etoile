@@ -510,7 +510,6 @@ static AZFocusManager *sharedInstance;
     }
     else
     {
-#if 1
       int c_start = NSNotFound, c_index = NSNotFound;
       int count = [list count];
       int temp = [list indexOfObject: focus_cycle_target];
@@ -559,38 +558,6 @@ static AZFocusManager *sharedInstance;
 	    }
         }
       } while (c_index != c_start);
-#else
-      GList *it, *start;
-      start = it = g_list_find(list, focus_cycle_target);
-      if (!start) /* switched desktops or something? */
-          start = it = forward ? g_list_last(list) : g_list_first(list);
-      if (!start) goto done_cycle;
-
-      do {
-          if (forward) {
-              it = it->next;
-              if (it == NULL) it = g_list_first(list);
-          } else {
-              it = it->prev;
-              if (it == NULL) it = g_list_last(list);
-          }
-          ft = ((AZClient *)(it->data));
-          if ([self validFocusTarget: ft]) {
-              if (interactive) {
-                  if (ft != focus_cycle_target) { /* prevents flicker */
-                      focus_cycle_target = ft;
-		      [self cycleDrawIndicator];
-                  }
-		  [self popupCycle: ft show: dialog];
-                  return;
-              } else if (ft != focus_cycle_target) {
-                  focus_cycle_target = ft;
-                  done = YES;
-                  break;
-              }
-          }
-      } while (it != start);
-#endif
     }
 
 done_cycle:

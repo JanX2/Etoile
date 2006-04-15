@@ -30,6 +30,13 @@
 #import "AZKeyboardHandler.h"
 #import "translate.h"
 
+typedef struct {
+    unsigned int state;
+    AZClient *client;
+    GSList *actions;
+    ObFrameContext context;
+} ObInteractiveState;
+
 static AZKeyboardHandler *sharedInstance;
 
 static gboolean chain_timeout(gpointer data)

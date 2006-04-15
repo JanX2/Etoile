@@ -19,11 +19,9 @@
 #import "AZScreen.h"
 #import "AZEventHandler.h"
 #import "AZDebug.h"
-#include "grab.h"
-#include "openbox.h"
-
-#include <glib.h>
-#include <X11/Xlib.h>
+#import "grab.h"
+#import "openbox.h"
+#import <X11/Xlib.h>
 
 #define GRAB_PTR_MASK (ButtonPressMask | ButtonReleaseMask | PointerMotionMask)
 #define GRAB_KEY_MASK (KeyPressMask | KeyReleaseMask)
@@ -77,14 +75,14 @@ BOOL grab_pointer(BOOL grab, ObCursor cur)
 			       [[AZScreen defaultScreen] supportXWindow],
                                False, GRAB_PTR_MASK, GrabModeAsync,
                                GrabModeAsync, None,
-                               ob_cursor(cur), [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/) == Success;
+                               ob_cursor(cur), [[AZEventHandler defaultHandler] eventLastTime]) == Success;
             if (!ret)
                 --pgrabs;
         } else
             ret = YES;
     } else if (pgrabs > 0) {
         if (--pgrabs == 0) {
-            XUngrabPointer(ob_display, [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
+            XUngrabPointer(ob_display, [[AZEventHandler defaultHandler] eventLastTime]);
         }
         ret = YES;
     }
@@ -100,14 +98,14 @@ BOOL grab_pointer_window(BOOL grab, ObCursor cur, Window win)
             ret = XGrabPointer(ob_display, win, False, GRAB_PTR_MASK,
                                GrabModeAsync, GrabModeAsync, None,
                                ob_cursor(cur),
-                               [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/) == Success;
+                               [[AZEventHandler defaultHandler] eventLastTime]) == Success;
             if (!ret)
                 --pgrabs;
         } else
             ret = YES;
     } else if (pgrabs > 0) {
         if (--pgrabs == 0) {
-            XUngrabPointer(ob_display, [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
+            XUngrabPointer(ob_display, [[AZEventHandler defaultHandler] eventLastTime]);
         }
         ret = YES;
     }
@@ -148,7 +146,8 @@ void grab_startup(BOOL reconfig)
     mask_list[i++] = ScrollLockMask | LockMask;
     mask_list[i++] = ScrollLockMask | NumLockMask;
     mask_list[i++] = ScrollLockMask | LockMask | NumLockMask;
-    g_assert(i == MASK_LIST_SIZE);
+    if (i != MASK_LIST_SIZE)
+      NSLog(@"Internal Error: more than MASK_LIST_SIZE");
 }
 
 void grab_shutdown(BOOL reconfig)
@@ -161,8 +160,7 @@ void grab_shutdown(BOOL reconfig)
     while (grab_server(NO));
 }
 
-void grab_button_full(unsigned int button, unsigned int state, Window win, unsigned int mask,
-                      int pointer_mode, ObCursor cur)
+void grab_button_full(unsigned int button, unsigned int state, Window win, unsigned int mask, int pointer_mode, ObCursor cur)
 {
     unsigned int i;
 
@@ -173,7 +171,7 @@ void grab_button_full(unsigned int button, unsigned int state, Window win, unsig
                     pointer_mode, GrabModeSync, None, ob_cursor(cur));
     AZXErrorSetIgnore(NO);
     if (xerror_occured)
-        g_warning("failed to grab button %d modifiers %d", button, state);
+	NSLog(@"Warning: failed to grab button %d modifiers %d", button, state);
 }
 
 void grab_button(unsigned int button, unsigned int state, Window win, unsigned int mask)
@@ -200,7 +198,7 @@ void grab_key(unsigned int keycode, unsigned int state, Window win, int keyboard
                  GrabModeAsync, keyboard_mode);
     AZXErrorSetIgnore(NO);
     if (xerror_occured)
-        g_warning("failed to grab keycode %d modifiers %d", keycode, state);
+	NSLog(@"Warning: failed to grab keycode %d modifiers %d", keycode, state);
 }
 
 void ungrab_all_keys(Window win)

@@ -25,8 +25,6 @@
 #import "openbox.h"
 #import "action.h"
 
-#include <glib.h>
-
 #define CLIENT_MENU_NAME  @"client-menu"
 #define SEND_TO_MENU_NAME @"client-send-to-menu"
 #define LAYER_MENU_NAME   @"client-layer-menu"
@@ -151,24 +149,24 @@ enum {
     AZScreen *screen = [AZScreen defaultScreen];
     unsigned int num_desktops = [screen numberOfDesktops];
     for (i = 0; i <= num_desktops; ++i) {
-        gchar *n;
-        guint desk;
+        NSString *n;
+        unsigned int desk;
 
         if (i >= num_desktops) {
             [menu addSeparatorMenuEntry: -1];
 
             desk = DESKTOP_ALL;
-            n = ("All desktops");
+            n = @"All desktops";
         } else {
             desk = i;
-            n = (char*)[[screen nameOfDesktopAtIndex: i] UTF8String];
+            n = [screen nameOfDesktopAtIndex: i];
         }
 
         act = action_from_string("SendToDesktop",
                                  OB_USER_ACTION_MENU_SELECTION);
         [act data_pointer]->sendto.desk = desk;
         [act data_pointer]->sendto.follow = FALSE;
-	e = [menu addNormalMenuEntry: desk label: [NSString stringWithCString: n] actions: [NSArray arrayWithObjects: act, nil]];
+	e = [menu addNormalMenuEntry: desk label: n actions: [NSArray arrayWithObjects: act, nil]];
 
         if ([[frame client] desktop] == desk)
             [e set_enabled: NO];

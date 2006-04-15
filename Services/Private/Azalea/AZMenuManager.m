@@ -22,14 +22,15 @@
 #import "AZClient.h"
 #import "AZClientManager.h"
 #import "AZMenuFrame.h"
-#include "openbox.h"
-#include "config.h"
-#include "geom.h"
-#include "misc.h"
-#include "client_menu.h"
-#include "client_list_menu.h"
-#include "parse.h"
+#import "openbox.h"
+#import "config.h"
+#import "geom.h"
+#import "misc.h"
+#import "client_menu.h"
+#import "client_list_menu.h"
+#import "parse.h"
 #import "action.h"
+#import <glib.h>
 
 typedef struct _ObMenuParseState ObMenuParseState;
 

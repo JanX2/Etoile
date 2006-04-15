@@ -61,7 +61,7 @@ static AZStacking *sharedInstance;
     }
 
     PROP_SETA32(RootWindow(ob_display, ob_screen),
-                net_client_list_stacking, window, (gulong*)windows, i);
+                net_client_list_stacking, window, (unsigned long *)windows, i);
 
     g_free(windows);
 }

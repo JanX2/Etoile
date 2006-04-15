@@ -19,10 +19,8 @@
 #ifndef __grab_h
 #define __grab_h
 
-#include "misc.h"
-
-#include <glib.h>
-#include <X11/Xlib.h>
+#import "misc.h"
+#import <X11/Xlib.h>
 
 void grab_startup(BOOL reconfig);
 void grab_shutdown(BOOL reconfig);
@@ -36,8 +34,7 @@ BOOL grab_on_keyboard();
 BOOL grab_on_pointer();
 
 void grab_button(unsigned int button, unsigned int state, Window win, unsigned int mask);
-void grab_button_full(unsigned int button, unsigned int state, Window win, unsigned int mask,
-                      int pointer_mode, ObCursor cursor);
+void grab_button_full(unsigned int button, unsigned int state, Window win, unsigned int mask, int pointer_mode, ObCursor cursor);
 void ungrab_button(unsigned int button, unsigned int state, Window win);
 
 void grab_key(unsigned int keycode, unsigned int state, Window win, int keyboard_mode);
