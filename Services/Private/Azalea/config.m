@@ -20,7 +20,7 @@
 #import "AZDock.h"
 #import "config.h"
 #import "AZKeyboardHandler.h"
-#import "mouse.h"
+#import "AZMouseHandler.h"
 #import "prop.h"
 #import "translate.h"
 #import "parse.h"
@@ -158,8 +158,9 @@ static void parse_mouse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     ObUserAction uact;
     ObMouseAction mact;
     AZAction *action;
+    AZMouseHandler *mouseHandler = [AZMouseHandler defaultHandler];
 
-    mouse_unbind_all();
+    [mouseHandler unbindAll];
 
     node = node->children;
     
@@ -196,7 +197,8 @@ static void parse_mouse(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
             nact = parse_find_node("action", nbut->children);
             while (nact) {
                 if ((action = action_parse(i, doc, nact, uact)))
-                    mouse_bind(buttonstr, contextstr, mact, action);
+                    [mouseHandler bind: buttonstr context: contextstr
+			    mouseAction: mact action: action];
                 nact = parse_find_node("action", nact->next);
             }
             g_free(buttonstr);
@@ -542,8 +544,9 @@ static void bind_default_mouse()
         case OB_NUM_MOUSE_ACTIONS:
             g_assert_not_reached();
         }
-        mouse_bind(it->button, it->context, it->mact,
-                   action_from_string(it->actname, uact));
+	[[AZMouseHandler defaultHandler] bind: it->button
+		context: it->context mouseAction: it->mact
+                   action: action_from_string(it->actname, uact)];
     }
 }
 

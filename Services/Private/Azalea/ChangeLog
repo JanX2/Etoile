@@ -4,6 +4,7 @@
 	  because newer one break the move/resize initialied by menu 
 	  then mouse movement.
 	* Remove ref in AZAction.
+	* Port mouse.
 
 2006-04-13 Yen-Ju Chen <yjchenx at gmail>
 

@@ -31,11 +31,11 @@
 #import "AZFocusManager.h"
 #import "AZMenuFrame.h"
 #import "AZMenu.h"
+#import "AZMouseHandler.h"
 #import "openbox.h"
 #import "config.h"
 #import "prop.h"
 #import "extensions.h"
-#import "mouse.h"
 #import "AZKeyboardHandler.h"
 
 #import <X11/keysym.h>
@@ -394,7 +394,7 @@ static AZEventHandler *sharedInstance;
 
                 if (e->type == ButtonPress || e->type == ButtonRelease ||
                     e->type == MotionNotify) {
-                    mouse_event(client, e);
+                    [[AZMouseHandler defaultHandler] processEvent: e forClient: client];
 		} else if (e->type == KeyPress) {
 		    AZFocusManager *fManager = [AZFocusManager defaultManager];
 		    AZClient *focus_cycle_target = [fManager focus_cycle_target];
@@ -490,7 +490,7 @@ static AZEventHandler *sharedInstance;
            is a waste of resources to go drawing it. */
         if (!(e->xbutton.button == 4 || e->xbutton.button == 5)) {
             con = frame_context(client, e->xbutton.window);
-            con = mouse_button_frame_context(con, e->xbutton.button);
+            con = [[AZMouseHandler defaultHandler] frameContext: con withButton: e->xbutton.button];
             switch (con) {
             case OB_FRAME_CONTEXT_MAXIMIZE:
                 [[client frame] set_max_press: (e->type == ButtonPress)];

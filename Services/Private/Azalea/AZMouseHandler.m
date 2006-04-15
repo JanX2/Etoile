@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    mouse.c for the Openbox window manager
@@ -16,17 +17,17 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
+#import "AZMouseHandler.h"
 #import "AZEventHandler.h"
 #import "AZDebug.h"
 #import "AZClientManager.h"
-#include "openbox.h"
-#include "config.h"
-#include "action.h"
-#include "prop.h"
-#include "grab.h"
-#include "translate.h"
-#include "mouse.h"
-#include <glib.h>
+#import "openbox.h"
+#import "config.h"
+#import "action.h"
+#import "prop.h"
+#import "grab.h"
+#import "translate.h"
+#import <glib.h>
 
 typedef struct {
     unsigned int state;
@@ -40,11 +41,26 @@ typedef struct {
                                 co == OB_FRAME_CONTEXT_DESKTOP : \
                                 co == OB_FRAME_CONTEXT_CLIENT)
 
-/* Array of GSList*s of ObMouseBinding*s. */
-static GSList *bound_contexts[OB_FRAME_NUM_CONTEXTS];
+static AZMouseHandler *sharedInstance = nil;
 
-ObFrameContext mouse_button_frame_context(ObFrameContext context,
-                                          unsigned int button)
+@interface AZMouseHandler (AZPrivate)
+- (void) grabAllClients: (BOOL) grab;
+- (BOOL) fireBinding: (ObMouseAction) a context: (ObFrameContext) context
+             client: (AZClient *) c state: (unsigned int) state
+	     button: (unsigned int) button x: (int) x y: (int) y;
+@end
+
+@implementation AZMouseHandler
+
++ (AZMouseHandler *) defaultHandler
+{
+  if (sharedInstance == nil)
+    sharedInstance = [[AZMouseHandler alloc] init];
+  return sharedInstance;
+}
+
+- (ObFrameContext) frameContext: (ObFrameContext) context 
+                     withButton: (unsigned int) button
 {
     GSList *it;
     ObFrameContext x = context;
@@ -86,7 +102,7 @@ ObFrameContext mouse_button_frame_context(ObFrameContext context,
     return x;
 }
 
-void mouse_grab_for_client(AZClient *client, BOOL grab)
+- (void) grab: (BOOL) grab forClient: (AZClient *) client
 {
     int i;
     GSList *it;
@@ -119,18 +135,7 @@ void mouse_grab_for_client(AZClient *client, BOOL grab)
         }
 }
 
-static void grab_all_clients(BOOL grab)
-{
-  AZClientManager *cManager = [AZClientManager defaultManager];
-  int i, count = [cManager count];
-  for (i = 0; i < count; i++)
-  {
-    AZClient *data = [cManager clientAtIndex: i];
-    mouse_grab_for_client(data, grab);
-  }
-}
-
-void mouse_unbind_all()
+- (void) unbindAll
 {
     int i;
     GSList *it;
@@ -150,26 +155,7 @@ void mouse_unbind_all()
     }
 }
 
-static BOOL fire_binding(ObMouseAction a, ObFrameContext context,
-                             AZClient *c, unsigned int state,
-                             unsigned int button, int x, int y)
-{
-    GSList *it;
-    ObMouseBinding *b;
-
-    for (it = bound_contexts[context]; it; it = g_slist_next(it)) {
-        b = it->data;
-        if (b->state == state && b->button == button)
-            break;
-    }
-    /* if not bound, then nothing to do! */
-    if (it == NULL) return NO;
-
-    action_run_mouse(b->actions[a], c, context, state, button, x, y);
-    return YES;
-}
-
-void mouse_event(AZClient *client, XEvent *e)
+- (void) processEvent: (XEvent *) e forClient: (AZClient *) client
 {
     static Time ltime;
     static unsigned int button = 0, state = 0, lbutton = 0;
@@ -183,17 +169,17 @@ void mouse_event(AZClient *client, XEvent *e)
     switch (e->type) {
     case ButtonPress:
         context = frame_context(client, e->xany.window);
-        context = mouse_button_frame_context(context, e->xbutton.button);
+        context = [self frameContext: context withButton: e->xbutton.button];
 
         px = e->xbutton.x_root;
         py = e->xbutton.y_root;
         button = e->xbutton.button;
         state = e->xbutton.state;
 
-        fire_binding(OB_MOUSE_ACTION_PRESS, context,
-                     client, e->xbutton.state,
-                     e->xbutton.button,
-                     e->xbutton.x_root, e->xbutton.y_root);
+	[self fireBinding: OB_MOUSE_ACTION_PRESS context: context
+                     client: client state: e->xbutton.state
+                     button: e->xbutton.button
+                     x: e->xbutton.x_root y: e->xbutton.y_root];
 
         if (CLIENT_CONTEXT(context, client)) {
             /* Replay the event, so it goes to the client*/
@@ -204,7 +190,7 @@ void mouse_event(AZClient *client, XEvent *e)
 
     case ButtonRelease:
         context = frame_context(client, e->xany.window);
-        context = mouse_button_frame_context(context, e->xbutton.button);
+        context = [self frameContext: context withButton: e->xbutton.button];
 
         if (e->xbutton.button == button) {
             /* clicks are only valid if its released over the window */
@@ -243,28 +229,26 @@ void mouse_event(AZClient *client, XEvent *e)
             state = 0;
             ltime = e->xbutton.time;
         }
-        fire_binding(OB_MOUSE_ACTION_RELEASE, context,
-                     client, e->xbutton.state,
-                     e->xbutton.button,
-                     e->xbutton.x_root, e->xbutton.y_root);
+	[self fireBinding: OB_MOUSE_ACTION_RELEASE context: context
+                     client: client state: e->xbutton.state
+                     button: e->xbutton.button
+                     x: e->xbutton.x_root y: e->xbutton.y_root];
         if (click)
-            fire_binding(OB_MOUSE_ACTION_CLICK, context,
-                         client, e->xbutton.state,
-                         e->xbutton.button,
-                         e->xbutton.x_root,
-                         e->xbutton.y_root);
+            [self fireBinding: OB_MOUSE_ACTION_CLICK context: context
+                         client: client state: e->xbutton.state
+                         button: e->xbutton.button
+                         x: e->xbutton.x_root y: e->xbutton.y_root];
         if (dclick)
-            fire_binding(OB_MOUSE_ACTION_DOUBLE_CLICK, context,
-                         client, e->xbutton.state,
-                         e->xbutton.button,
-                         e->xbutton.x_root,
-                         e->xbutton.y_root);
+            [self fireBinding: OB_MOUSE_ACTION_DOUBLE_CLICK context: context
+                         client: client state: e->xbutton.state
+                         button: e->xbutton.button
+                         x: e->xbutton.x_root y: e->xbutton.y_root];
         break;
 
     case MotionNotify:
         if (button) {
             context = frame_context(client, e->xany.window);
-            context = mouse_button_frame_context(context, button);
+            context = [self frameContext: context withButton: button];
 
             if (ABS(e->xmotion.x_root - px) >=
                 config_mouse_threshold ||
@@ -280,8 +264,9 @@ void mouse_event(AZClient *client, XEvent *e)
                     context == OB_FRAME_CONTEXT_CLOSE)
                     break;
 
-                fire_binding(OB_MOUSE_ACTION_MOTION, context,
-                             client, state, button, px, py);
+                [self fireBinding: OB_MOUSE_ACTION_MOTION context: context
+                             client: client state: state
+			     button: button x: px y: py];
                 button = 0;
                 state = 0;
             }
@@ -293,8 +278,8 @@ void mouse_event(AZClient *client, XEvent *e)
     }
 }
 
-BOOL mouse_bind(const gchar *buttonstr, const gchar *contextstr,
-                    ObMouseAction mact, AZAction *action)
+- (BOOL) bind: (const char *) buttonstr context: (const char *) contextstr
+           mouseAction: (ObMouseAction) mact action: (AZAction *) action
 {
     unsigned int state, button;
     ObFrameContext context;
@@ -337,13 +322,49 @@ BOOL mouse_bind(const gchar *buttonstr, const gchar *contextstr,
     return YES;
 }
 
-void mouse_startup(BOOL reconfig)
+- (void) startup: (BOOL) reconfig
 {
-    grab_all_clients(YES);
+    [self grabAllClients: YES];
 }
 
-void mouse_shutdown(BOOL reconfig)
+- (void) shutdown: (BOOL) reconfig
 {
-    grab_all_clients(NO);
-    mouse_unbind_all();
+    [self grabAllClients: NO];
+    [self unbindAll];
 }
+
+@end
+
+@implementation AZMouseHandler (AZPrivate)
+
+- (void) grabAllClients: (BOOL) grab
+{
+  AZClientManager *cManager = [AZClientManager defaultManager];
+  int i, count = [cManager count];
+  for (i = 0; i < count; i++)
+  {
+    AZClient *data = [cManager clientAtIndex: i];
+    [self grab: grab forClient: data];
+  }
+}
+
+- (BOOL) fireBinding: (ObMouseAction) a context: (ObFrameContext) context
+             client: (AZClient *) c state: (unsigned int) state
+	     button: (unsigned int) button x: (int) x y: (int) y
+{
+    GSList *it;
+    ObMouseBinding *b;
+
+    for (it = bound_contexts[context]; it; it = g_slist_next(it)) {
+        b = it->data;
+        if (b->state == state && b->button == button)
+            break;
+    }
+    /* if not bound, then nothing to do! */
+    if (it == NULL) return NO;
+
+    action_run_mouse(b->actions[a], c, context, state, button, x, y);
+    return YES;
+}
+
+@end

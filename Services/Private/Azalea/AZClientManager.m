@@ -30,11 +30,11 @@
 #import "AZFrame.h"
 #import "AZFocusManager.h"
 #import "AZKeyboardHandler.h"
+#import "AZMouseHandler.h"
 #import "config.h"
 #import "openbox.h"
 #import "grab.h"
 #import "prop.h"
-#import "mouse.h"
 #import "AZMenuFrame.h"
 
 NSString *AZClientDestroyNotification = @"AZClientDestroyNotification";
@@ -255,7 +255,7 @@ static AZClientManager *sharedInstance;
     }
 
     [[AZKeyboardHandler defaultHandler] grab: YES forClient: client];
-    mouse_grab_for_client(client, YES);
+    [[AZMouseHandler defaultHandler] grab: YES forClient: client];
 
     [client showhide];
 
@@ -312,7 +312,7 @@ static AZClientManager *sharedInstance;
     g_assert(client != NULL);
 
     [[AZKeyboardHandler defaultHandler] grab: NO forClient: client];
-    mouse_grab_for_client(client, NO);
+    [[AZMouseHandler defaultHandler] grab: NO forClient: client];
 
     /* potentially fix focusLast */
     if (config_focus_last)

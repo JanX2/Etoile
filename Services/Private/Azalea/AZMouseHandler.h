@@ -17,26 +17,28 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#ifndef ob__mouse_h
-#define ob__mouse_h
-
-#include "action.h"
-#include "misc.h"
+#import <Foundation/Foundation.h>
+#import "action.h"
+#import "misc.h"
 
 #include <X11/Xlib.h>
 
-void mouse_startup(BOOL reconfig);
-void mouse_shutdown(BOOL reconfig);
+@interface AZMouseHandler: NSObject
+{
+  /* Array of GSList*s of ObMouseBinding*s. */
+  GSList *bound_contexts[OB_FRAME_NUM_CONTEXTS];
+}
++ (AZMouseHandler *) defaultHandler;
+- (void) startup: (BOOL) reconfig;
+- (void) shutdown: (BOOL) reconfig;
 
-BOOL mouse_bind(const gchar *buttonstr, const gchar *contextstr,
-                    ObMouseAction mact, AZAction *action);
-void mouse_unbind_all();
+- (BOOL) bind: (const char *) buttonstr context: (const char *) contextstr
+           mouseAction: (ObMouseAction) mact action: (AZAction *) action;
+- (void) unbindAll;
+- (void) processEvent: (XEvent *) e forClient: (AZClient *) client;
 
-void mouse_event(AZClient *client, XEvent *e);
+- (void) grab: (BOOL) grab forClient: (AZClient *) client;
 
-void mouse_grab_for_client(AZClient *client, BOOL grab);
+- (ObFrameContext) frameContext: (ObFrameContext) context withButton: (unsigned int) button;
 
-ObFrameContext mouse_button_frame_context(ObFrameContext context,
-                                          guint button);
-
-#endif
+@end
