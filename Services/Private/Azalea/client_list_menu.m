@@ -27,11 +27,9 @@
 #import "action.h"
 #import "config.h"
 
-#include <glib.h>
-
 #define MENU_NAME @"client-list-menu"
 
-static GSList *desktop_menus;
+static NSMutableArray *desktop_menus;
 
 @interface AZDesktopMenu: AZMenu
 {
@@ -128,7 +126,7 @@ static GSList *desktop_menus;
 
 - (void) dealloc
 {
-  desktop_menus = g_slist_remove(desktop_menus, self);
+  [desktop_menus removeObject: self];
   [super dealloc];
 }
 @end
@@ -141,13 +139,11 @@ static GSList *desktop_menus;
 - (void) update: (AZMenuFrame *) frame 
 {
     AZMenu *menu = [frame menu];
-    unsigned int i;
-    GSList *it, *next;
-    
-    it = desktop_menus;
+    unsigned int i, j;
+
     AZScreen *screen = [AZScreen defaultScreen];
     for (i = 0; i < [screen numberOfDesktops]; ++i) {
-        if (!it) {
+        if (i >= [desktop_menus count]) {
             AZDesktopMenu *submenu;
 	    NSString *n = [NSString stringWithFormat: @"%@-%u", MENU_NAME, i];
 	    submenu = [[AZDesktopMenu alloc] initWithName: n title: [screen nameOfDesktopAtIndex: i] desktop: i];
@@ -156,15 +152,14 @@ static GSList *desktop_menus;
 	    [[AZMenuManager defaultManager] registerMenu: submenu];
 	    RELEASE(submenu);
 
-            desktop_menus = g_slist_append(desktop_menus, submenu);
-        } else
-            it = g_slist_next(it);
+	    [desktop_menus addObject: submenu];
+        } 
     }
-    for (; it; it = next, ++i) {
-        next = g_slist_next(it);
-	[[AZMenuManager defaultManager] removeMenu: it->data];
-        desktop_menus = g_slist_delete_link(desktop_menus, it);
-	[menu removeEntryWithIdentifier: i];
+
+    for (j = [desktop_menus count]-1; j > i-1; j--) {
+	[[AZMenuManager defaultManager] removeMenu: [desktop_menus objectAtIndex: j]];
+	[desktop_menus removeObjectAtIndex: j];
+	[menu removeEntryWithIdentifier: j];
     }
 }
 @end
@@ -172,6 +167,12 @@ static GSList *desktop_menus;
 void client_list_menu_startup()
 {
     AZClientListMenu *menu;
+
+    if (desktop_menus == nil) {
+      desktop_menus = [[NSMutableArray alloc] init];
+    } else {
+      [desktop_menus removeAllObjects];
+    }
 
     menu = [[AZClientListMenu alloc] initWithName: MENU_NAME title: @"Desktops"];
     [[AZMenuManager defaultManager] registerMenu: menu];

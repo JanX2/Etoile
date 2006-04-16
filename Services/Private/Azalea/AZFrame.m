@@ -48,8 +48,6 @@ static Window createWindow(Window parent, unsigned long mask,
                        
 }
 
-static void flash_done(void *data);
-
 @interface AZFrame (AZPrivate)
 - (void) layoutTitle;
 - (void) setThemeStatics;
@@ -57,7 +55,7 @@ static void flash_done(void *data);
 
 /* callback */
 - (BOOL) flashTimeout: (id) data;
-- (void) flashDone;
+- (void) flashDone: (id) data;
 @end
 
 @implementation AZFrame
@@ -546,7 +544,7 @@ static void flash_done(void *data);
 	                     handler: @selector(flashTimeout:)
 	                     microseconds: G_USEC_PER_SEC * 0.6
 			     data: self 
-			     notify: flash_done];
+			     notify: @selector(flashDone:)];
     }
     g_get_current_time(&flash_end);
     g_time_val_add(&flash_end, G_USEC_PER_SEC * 5);
@@ -873,7 +871,7 @@ static void flash_done(void *data);
     RrAppearanceFree(a_icon);
 }
 
-- (void) flashDone
+- (void) flashDone: (id) data
 {
     if (focused != flash_on)
       [self adjustFocusWithHilite: focused];
@@ -980,11 +978,5 @@ ObFrameContext frame_context(AZClient *client, Window win)
     if (win == [[client frame] shade])    return OB_FRAME_CONTEXT_SHADE;
 
     return OB_FRAME_CONTEXT_NONE;
-}
-
-static void flash_done(void *data)
-{
-  AZFrame *frame = (AZFrame *) data;
-  [frame flashDone];
 }
 

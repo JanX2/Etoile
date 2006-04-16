@@ -68,7 +68,6 @@ static AZStartupHandler *sharedInstance;
 
 /* callback */
 static void sn_event_func(SnMonitorEvent *event, void *data);
-static void sn_wait_destroy(void *data);
 
 @interface AZStartupHandler (AZPrivate)
 - (AZWaitData* ) waitDataNew: (SnStartupSequence *)seq;
@@ -78,7 +77,7 @@ static void sn_wait_destroy(void *data);
 /* ObjC version of callback in C */
 - (void) snEventFunc: (SnMonitorEvent *) event data: (void *) data;
 - (BOOL) snWaitTimeout: (id) data;
-- (void) snWaitDestroy: (void *) data;
+- (void) snWaitDestroy: (id) data;
 @end
 
 @implementation AZStartupHandler
@@ -222,7 +221,7 @@ static void sn_wait_destroy(void *data);
     return NO; /* don't repeat */
 }
 
-- (void) snWaitDestroy: (void *) data;
+- (void) snWaitDestroy: (id) data;
 {
     AZWaitData *d = data;
     [sn_waits removeObject: d];
@@ -248,7 +247,7 @@ static void sn_wait_destroy(void *data);
 	[mainLoop addTimeout: self handler: @selector(snWaitTimeout:)
 		        microseconds: 30 & G_USEC_PER_SEC
 			data: d
-			notify: sn_wait_destroy];
+			notify: @selector(snWaitDestroy:)];
         change = YES;
         break;
     case SN_MONITOR_EVENT_CHANGED:
@@ -278,11 +277,6 @@ static void sn_wait_destroy(void *data);
 static void sn_event_func(SnMonitorEvent *event, void *data)
 {
   [[AZStartupHandler defaultHandler] snEventFunc: event data: data];
-}
-
-static void sn_wait_destroy(void *data)
-{
-  [[AZStartupHandler defaultHandler] snWaitDestroy: data];
 }
 
 #endif

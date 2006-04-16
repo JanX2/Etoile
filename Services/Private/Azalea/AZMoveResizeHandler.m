@@ -31,13 +31,11 @@
 #import "render/render.h"
 #import "render/theme.h"
 
-#import <glib.h>
-
 static AZMoveResizeHandler *sharedInstance = nil;
 
 @interface AZMoveResizeHandler (AZPrivate)
 
-- (void) popupFormat: (gchar *) format a: (int) a b: (int) b;
+- (void) popupFormat: (NSString *) format a: (int) a b: (int) b;
 - (void) doMove: (BOOL) resist;
 - (void) doResize: (BOOL) resist;
 - (void) clientDestroy: (NSNotification *) not;
@@ -158,7 +156,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
     else if (corner == prop_atoms.net_wm_moveresize_move_keyboard)
         cur = OB_CURSOR_MOVE;
     else
-        g_assert_not_reached();
+	NSAssert(0, @"Should not reach here");
 
     grab_pointer(TRUE, cur);
     grab_keyboard(TRUE);
@@ -189,7 +187,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
 
 - (void) event: (XEvent *) e
 {
-    g_assert(moveresize_in_progress);
+    NSAssert(moveresize_in_progress, @"Not in moving or resizing");
 
     if (e->type == ButtonPress) {
         if (!button) {
@@ -246,7 +244,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
                 cur_y = start_ch + (e->xmotion.y_root - start_y);
                 lockcorner = OB_CORNER_TOPLEFT;
             } else
-                g_assert_not_reached();
+		NSAssert(0, @"Should not reach here");
 
 	    [self doResize: YES];
         }
@@ -336,12 +334,12 @@ static AZMoveResizeHandler *sharedInstance = nil;
 
 @implementation AZMoveResizeHandler (AZPrivate)
 
-- (void) popupFormat: (gchar *) format a: (int) a b: (int) b;
+- (void) popupFormat: (NSString *) format a: (int) a b: (int) b;
 {
     AZClient *c = moveresize_client;
-    gchar *text;
+    NSString *text;
 
-    text = g_strdup_printf(format, a, b);
+    text = [NSString stringWithFormat: format, a, b];
     if (config_resize_popup_pos == 1) /* == "Top" */
 	[popup positionWithGravity: SouthGravity
 		x: [[c frame] area].x + [[c frame] area].width/2
@@ -352,7 +350,6 @@ static AZMoveResizeHandler *sharedInstance = nil;
 	    y: [[c frame] area].y + [[c frame] size].top + [c area].height / 2];
 
     [popup showText: text];
-    g_free(text);
 }
 
 - (void) doMove: (BOOL) resist
@@ -369,7 +366,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
 	    height: [moveresize_client area].height
 	    user: YES final: NO];
     if (config_resize_popup_show == 2) /* == "Always" */
-	[self popupFormat: "%d x %d"
+	[self popupFormat: @"%d x %d"
                 a: [[moveresize_client frame] area].x
                 b: [[moveresize_client frame] area].y];
 }
@@ -403,7 +400,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
                 ([moveresize_client size_inc].width > 1 ||
                  [moveresize_client size_inc].height > 1))
         )
-	[self popupFormat: "%d x %d"
+	[self popupFormat: @"%d x %d"
               a: [moveresize_client logical_size].width
               b: [moveresize_client logical_size].height];
 }

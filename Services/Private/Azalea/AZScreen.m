@@ -588,7 +588,7 @@ done_cycle:
 
 	[desktop_cycle_popup setTextAlign: RR_JUSTIFY_CENTER];
 
-	[desktop_cycle_popup showText: (char*)[[screen_desktop_names objectAtIndex: d] UTF8String] desktop: d];
+	[desktop_cycle_popup showText: [screen_desktop_names objectAtIndex: d] desktop: d];
     }
 }
 

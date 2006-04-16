@@ -45,7 +45,6 @@ struct _ObMainLoop
 
 typedef struct _ObMainLoop ObMainLoop;
 
-typedef struct _ObMainLoopSignal            ObMainLoopSignal;
 typedef struct _ObMainLoopSignalHandlerType ObMainLoopSignalHandlerType;
 typedef struct _ObMainLoopFdHandlerType     ObMainLoopFdHandlerType;
 
@@ -90,7 +89,7 @@ static void calc_max_fd(ObMainLoop *loop);
     unsigned long delay;
     SEL func;
     id data;
-    GDestroyNotify destroy;
+    SEL destroy;
 
     /* The timer needs to be freed */
     BOOL del_me;
@@ -100,6 +99,7 @@ static void calc_max_fd(ObMainLoop *loop);
     GTimeVal timeout;
 }
 - (BOOL) fire;
+- (void) cleanup; /* Don't confuse -dealloc */
 
 - (void) addTimeout: (unsigned long) delta;
 - (void) addLast: (unsigned long) delta;
@@ -108,7 +108,7 @@ static void calc_max_fd(ObMainLoop *loop);
 - (unsigned long) delay;
 - (SEL) func;
 - (id) data;
-- (GDestroyNotify) destroy;
+- (SEL) destroy;
 - (BOOL) del_me;
 - (GTimeVal) last;
 - (GTimeVal) timeout;
@@ -116,7 +116,7 @@ static void calc_max_fd(ObMainLoop *loop);
 - (void) set_delay: (unsigned long) delay;
 - (void) set_func: (SEL) func;
 - (void) set_data: (id) data;
-- (void) set_destroy: (GDestroyNotify) destroy;
+- (void) set_destroy: (SEL) destroy;
 - (void) set_del_me: (BOOL) del_me;
 - (void) set_last: (GTimeVal) last;
 - (void) set_timeout: (GTimeVal) timeout;
@@ -142,6 +142,20 @@ static void calc_max_fd(ObMainLoop *loop);
   return ret;
 }
 
+- (void) cleanup
+{
+  if ((target == nil) || (destroy== NULL)) return;
+
+  /* fire invocation */
+  NSMethodSignature *ms = [target methodSignatureForSelector: destroy];
+  NSInvocation *inv = [NSInvocation invocationWithMethodSignature: ms];
+  [inv setTarget: target];
+  [inv setSelector: destroy];
+  if (data)
+    [inv setArgument: &data atIndex: 2];
+  [inv invoke];
+}
+
 - (void) addTimeout: (unsigned long) delta
 {
     g_time_val_add(&timeout, delta);
@@ -156,7 +170,7 @@ static void calc_max_fd(ObMainLoop *loop);
 - (unsigned long) delay { return delay; }
 - (SEL) func { return func; }
 - (id) data { return data; }
-- (GDestroyNotify) destroy { return destroy; }
+- (SEL) destroy { return destroy; }
 - (BOOL) del_me { return del_me; }
 - (GTimeVal) last { return last; }
 - (GTimeVal) timeout { return timeout; }
@@ -164,7 +178,7 @@ static void calc_max_fd(ObMainLoop *loop);
 - (void) set_delay: (unsigned long) d { delay = d; }
 - (void) set_func: (SEL) f { func = f; }
 - (void) set_data: (id) d { data = d; }
-- (void) set_destroy: (GDestroyNotify) d { destroy = d; }
+- (void) set_destroy: (SEL) d { destroy = d; }
 - (void) set_del_me: (BOOL) d { del_me = d; }
 - (void) set_last: (GTimeVal) l { last = l; }
 - (void) set_timeout: (GTimeVal) t { timeout = t; }
@@ -236,7 +250,7 @@ static AZMainLoop *sharedInstance;
             handler: (SEL) handler
        microseconds: (unsigned long) microseconds
                data: (id) data
-             notify: (GDestroyNotify) notify
+             notify: (SEL) notify
 {
     AZMainLoopTimer *t = [[AZMainLoopTimer alloc] init];
     [t set_target: target];
@@ -626,8 +640,7 @@ static AZMainLoop *sharedInstance;
       /* delete the top */
       RETAIN(curr);
       [timers removeObjectAtIndex: i];
-      if ([curr destroy])
-        [curr destroy]([curr data]);
+      [curr cleanup];
       RELEASE(curr);
 
       i--; /* because object is deleted, reduce i by 1 */
@@ -651,8 +664,7 @@ static AZMainLoop *sharedInstance;
       [curr addTimeout: [curr delay]];
       [self insertTimer: curr];
     } else {
-      if ([curr destroy])
-        [curr destroy]([curr data]);
+      [curr cleanup];
     }
     RELEASE(curr);
 

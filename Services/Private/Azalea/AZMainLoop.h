@@ -56,7 +56,7 @@ typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
             handler: (SEL) handler
        microseconds: (unsigned long) microseconds
                data: (id) data
-             notify: (GDestroyNotify) notify;
+             notify: (SEL) notify;
 - (void) removeTimeout: (id) target handler: (SEL) handler;
 - (void) removeTimeout: (id) target handler: (SEL) handler
                          data: (id) data;

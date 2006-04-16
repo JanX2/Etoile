@@ -18,7 +18,6 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <glib.h>
 #import "AZMainLoop.h"
 
 #ifdef USE_LIBSN

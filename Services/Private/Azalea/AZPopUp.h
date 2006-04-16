@@ -20,7 +20,6 @@
 #import <Foundation/Foundation.h>
 #import "render/render.h"
 #import "window.h"
-#import <glib.h>
 
 #define POPUP_WIDTH 320
 #define POPUP_HEIGHT 48
@@ -52,9 +51,9 @@
 /*! Set the sizes for the popup. When set to 0, the size will be based on
     the text size. */
 - (void) sizeWithWidth: (int) w height: (int) h;
-- (void) sizeToString: (gchar *) text;
+- (void) sizeToString: (NSString *) text;
 - (void) setTextAlign: (RrJustify) align;
-- (void) showText: (gchar *) text;
+- (void) showText: (NSString *) text;
 - (void) hide;
 
 /* Subclass to implement this one to draw their own icon */
@@ -70,7 +69,7 @@
   RrAppearance *a_icon;
 }
 
-- (void) showText: (gchar *) text icon: (AZClientIcon *) icon;
+- (void) showText: (NSString *) text icon: (AZClientIcon *) icon;
 @end
 
 @interface AZPagerPopUp: AZPopUp
@@ -82,7 +81,7 @@
   RrAppearance *unhilight;
 };
 
-- (void) showText: (gchar *) text desktop: (unsigned int) desk;
+- (void) showText: (NSString *) text desktop: (unsigned int) desk;
 
 @end
 

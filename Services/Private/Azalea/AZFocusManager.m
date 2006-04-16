@@ -835,7 +835,7 @@ done_cycle:
 
         if (p != c && [([c iconic] ? [c icon_title] : [c title]) length] != 0)
 	    ASSIGN(title, ([p iconic] ? [p icon_title] : [p title]));
-	  [focus_cycle_popup showText: (char*)[(title ? title : ([c iconic] ? [c icon_title] : [c title])) UTF8String]
+	  [focus_cycle_popup showText: (title ? title : ([c iconic] ? [c icon_title] : [c title]))
 		                 icon: [p iconWithWidth: 48 height: 48]];
 	DESTROY(title);
     }

@@ -4,6 +4,8 @@
 	* Port ObParseInst into AZParser.
 	* Use NSString in parse_string.
 	* Use Invocation for callback.
+	* Finish up invocation.
+	* Remove glib from client_list_menu.
 
 2006-04-14 Yen-Ju Chen <yjchenx at gmail>
 

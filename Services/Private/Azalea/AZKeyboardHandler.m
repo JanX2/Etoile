@@ -29,7 +29,6 @@
 #import "AZKeyTree.h"
 #import "AZKeyboardHandler.h"
 #import "translate.h"
-#import <glib.h>
 
 @interface AZInteractiveState: NSObject
 {
