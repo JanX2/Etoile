@@ -32,8 +32,7 @@
 #import "AZFocusManager.h"
 #import "AZMenuFrame.h"
 #import "AZMenuManager.h"
-
-#include <glib.h>
+#import <AppKit/AppKit.h>
 
 inline void client_action_start(union ActionData *data)
 {
@@ -64,7 +63,7 @@ inline void client_action_end(union ActionData *data)
 
 typedef struct
 {
-    const gchar *name;
+    NSString *name;
     void (*func)(union ActionData *);
     void (*setup)(AZAction **, ObUserAction uact);
 } ActionString;
@@ -380,412 +379,412 @@ void setup_client_action(AZAction **a, ObUserAction uact)
 ActionString actionstrings[] =
 {
     {
-        "execute", 
+        @"execute", 
         action_execute, 
         NULL
     },
     {
-        "directionalfocusnorth", 
+        @"directionalfocusnorth", 
         action_directional_focus, 
         setup_action_directional_focus_north
     },
     {
-        "directionalfocuseast", 
+        @"directionalfocuseast", 
         action_directional_focus, 
         setup_action_directional_focus_east
     },
     {
-        "directionalfocussouth", 
+        @"directionalfocussouth", 
         action_directional_focus, 
         setup_action_directional_focus_south
     },
     {
-        "directionalfocuswest",
+        @"directionalfocuswest",
         action_directional_focus,
         setup_action_directional_focus_west
     },
     {
-        "directionalfocusnortheast",
+        @"directionalfocusnortheast",
         action_directional_focus,
         setup_action_directional_focus_northeast
     },
     {
-        "directionalfocussoutheast",
+        @"directionalfocussoutheast",
         action_directional_focus,
         setup_action_directional_focus_southeast
     },
     {
-        "directionalfocussouthwest",
+        @"directionalfocussouthwest",
         action_directional_focus,
         setup_action_directional_focus_southwest
     },
     {
-        "directionalfocusnorthwest",
+        @"directionalfocusnorthwest",
         action_directional_focus,
         setup_action_directional_focus_northwest
     },
     {
-        "activate",
+        @"activate",
         action_activate,
         setup_client_action
     },
     {
-        "focus",
+        @"focus",
         action_focus,
         setup_client_action
     },
     {
-        "unfocus",
+        @"unfocus",
         action_unfocus,
         setup_client_action
     },
     {
-        "iconify",
+        @"iconify",
         action_iconify,
         setup_client_action
     },
     {
-        "focustobottom",
+        @"focustobottom",
         action_focus_order_to_bottom,
         setup_client_action
     },
     {
-        "raiselower",
+        @"raiselower",
         action_raiselower,
         setup_client_action
     },
     {
-        "raise",
+        @"raise",
         action_raise,
         setup_client_action
     },
     {
-        "lower",
+        @"lower",
         action_lower,
         setup_client_action
     },
     {
-        "close",
+        @"close",
         action_close,
         setup_client_action
     },
     {
-        "kill",
+        @"kill",
         action_kill,
         setup_client_action
     },
     {
-        "shadelower",
+        @"shadelower",
         action_shadelower,
         setup_client_action
     },
     {
-        "unshaderaise",
+        @"unshaderaise",
         action_unshaderaise,
         setup_client_action
     },
     {
-        "shade",
+        @"shade",
         action_shade,
         setup_client_action
     },
     {
-        "unshade",
+        @"unshade",
         action_unshade,
         setup_client_action
     },
     {
-        "toggleshade",
+        @"toggleshade",
         action_toggle_shade,
         setup_client_action
     },
     {
-        "toggleomnipresent",
+        @"toggleomnipresent",
         action_toggle_omnipresent,
         setup_client_action
     },
     {
-        "moverelativehorz",
+        @"moverelativehorz",
         action_move_relative_horz,
         setup_client_action
     },
     {
-        "moverelativevert",
+        @"moverelativevert",
         action_move_relative_vert,
         setup_client_action
     },
     {
-        "movetocenter",
+        @"movetocenter",
         action_move_to_center,
         setup_client_action
     },
     {
-        "resizerelativehorz",
+        @"resizerelativehorz",
         action_resize_relative_horz,
         setup_client_action
     },
     {
-        "resizerelativevert",
+        @"resizerelativevert",
         action_resize_relative_vert,
         setup_client_action
     },
     {
-        "maximizefull",
+        @"maximizefull",
         action_maximize_full,
         setup_client_action
     },
     {
-        "unmaximizefull",
+        @"unmaximizefull",
         action_unmaximize_full,
         setup_client_action
     },
     {
-        "togglemaximizefull",
+        @"togglemaximizefull",
         action_toggle_maximize_full,
         setup_client_action
     },
     {
-        "maximizehorz",
+        @"maximizehorz",
         action_maximize_horz,
         setup_client_action
     },
     {
-        "unmaximizehorz",
+        @"unmaximizehorz",
         action_unmaximize_horz,
         setup_client_action
     },
     {
-        "togglemaximizehorz",
+        @"togglemaximizehorz",
         action_toggle_maximize_horz,
         setup_client_action
     },
     {
-        "maximizevert",
+        @"maximizevert",
         action_maximize_vert,
         setup_client_action
     },
     {
-        "unmaximizevert",
+        @"unmaximizevert",
         action_unmaximize_vert,
         setup_client_action
     },
     {
-        "togglemaximizevert",
+        @"togglemaximizevert",
         action_toggle_maximize_vert,
         setup_client_action
     },
     {
-        "togglefullscreen",
+        @"togglefullscreen",
         action_toggle_fullscreen,
         setup_client_action
     },
     {
-        "sendtodesktop",
+        @"sendtodesktop",
         action_send_to_desktop,
         setup_action_send_to_desktop
     },
     {
-        "sendtodesktopnext",
+        @"sendtodesktopnext",
         action_send_to_desktop_dir,
         setup_action_send_to_desktop_next
     },
     {
-        "sendtodesktopprevious",
+        @"sendtodesktopprevious",
         action_send_to_desktop_dir,
         setup_action_send_to_desktop_prev
     },
     {
-        "sendtodesktopright",
+        @"sendtodesktopright",
         action_send_to_desktop_dir,
         setup_action_send_to_desktop_right
     },
     {
-        "sendtodesktopleft",
+        @"sendtodesktopleft",
         action_send_to_desktop_dir,
         setup_action_send_to_desktop_left
     },
     {
-        "sendtodesktopup",
+        @"sendtodesktopup",
         action_send_to_desktop_dir,
         setup_action_send_to_desktop_up
     },
     {
-        "sendtodesktopdown",
+        @"sendtodesktopdown",
         action_send_to_desktop_dir,
         setup_action_send_to_desktop_down
     },
     {
-        "desktop",
+        @"desktop",
         action_desktop,
         setup_action_desktop
     },
     {
-        "desktopnext",
+        @"desktopnext",
         action_desktop_dir,
         setup_action_desktop_next
     },
     {
-        "desktopprevious",
+        @"desktopprevious",
         action_desktop_dir,
         setup_action_desktop_prev
     },
     {
-        "desktopright",
+        @"desktopright",
         action_desktop_dir,
         setup_action_desktop_right
     },
     {
-        "desktopleft",
+        @"desktopleft",
         action_desktop_dir,
         setup_action_desktop_left
     },
     {
-        "desktopup",
+        @"desktopup",
         action_desktop_dir,
         setup_action_desktop_up
     },
     {
-        "desktopdown",
+        @"desktopdown",
         action_desktop_dir,
         setup_action_desktop_down
     },
     {
-        "toggledecorations",
+        @"toggledecorations",
         action_toggle_decorations,
         setup_client_action
     },
     {
-        "move",
+        @"move",
         action_moveresize,
         setup_action_move
     },
     {
-        "resize",
+        @"resize",
         action_moveresize,
         setup_action_resize
     },
     {
-        "toggledockautohide",
+        @"toggledockautohide",
         action_toggle_dockautohide,
         NULL
     },
     {
-        "toggleshowdesktop",
+        @"toggleshowdesktop",
         action_toggle_show_desktop,
         NULL
     },
     {
-        "showdesktop",
+        @"showdesktop",
         action_show_desktop,
         NULL
     },
     {
-        "unshowdesktop",
+        @"unshowdesktop",
         action_unshow_desktop,
         NULL
     },
     {
-        "desktoplast",
+        @"desktoplast",
         action_desktop_last,
         NULL
     },
     {
-        "reconfigure",
+        @"reconfigure",
         action_reconfigure,
         NULL
     },
     {
-        "restart",
+        @"restart",
         action_restart,
         NULL
     },
     {
-        "exit",
+        @"exit",
         action_exit,
         NULL
     },
     {
-        "showmenu",
+        @"showmenu",
         action_showmenu,
         setup_action_showmenu
     },
     {
-        "sendtotoplayer",
+        @"sendtotoplayer",
         action_send_to_layer,
         setup_action_top_layer
     },
     {
-        "togglealwaysontop",
+        @"togglealwaysontop",
         action_toggle_layer,
         setup_action_top_layer
     },
     {
-        "sendtonormallayer",
+        @"sendtonormallayer",
         action_send_to_layer,
         setup_action_normal_layer
     },
     {
-        "sendtobottomlayer",
+        @"sendtobottomlayer",
         action_send_to_layer,
         setup_action_bottom_layer
     },
     {
-        "togglealwaysonbottom",
+        @"togglealwaysonbottom",
         action_toggle_layer,
         setup_action_bottom_layer
     },
     {
-        "nextwindow",
+        @"nextwindow",
         action_cycle_windows,
         setup_action_cycle_windows_next
     },
     {
-        "previouswindow",
+        @"previouswindow",
         action_cycle_windows,
         setup_action_cycle_windows_previous
     },
     {
-        "movetoedgenorth",
+        @"movetoedgenorth",
         action_movetoedge,
         setup_action_movetoedge_north
     },
     {
-        "movetoedgesouth",
+        @"movetoedgesouth",
         action_movetoedge,
         setup_action_movetoedge_south
     },
     {
-        "movetoedgewest",
+        @"movetoedgewest",
         action_movetoedge,
         setup_action_movetoedge_west
     },
     {
-        "movetoedgeeast",
+        @"movetoedgeeast",
         action_movetoedge,
         setup_action_movetoedge_east
     },
     {
-        "growtoedgenorth",
+        @"growtoedgenorth",
         action_growtoedge,
         setup_action_growtoedge_north
     },
     {
-        "growtoedgesouth",
+        @"growtoedgesouth",
         action_growtoedge,
         setup_action_growtoedge_south
     },
     {
-        "growtoedgewest",
+        @"growtoedgewest",
         action_growtoedge,
         setup_action_growtoedge_west
     },
     {
-        "growtoedgeeast",
+        @"growtoedgeeast",
         action_growtoedge,
         setup_action_growtoedge_east
     },
     {
-        NULL,
+        nil,
         NULL,
         NULL
     }
@@ -821,15 +820,14 @@ ActionString actionstrings[] =
 }
 @end
 
-AZAction *action_from_string(NSString *_name, ObUserAction uact)
+AZAction *action_from_string(NSString *name, ObUserAction uact)
 {
     AZAction *a = nil;
     BOOL exist = NO;
     int i;
-    const char *name = [_name cString];
 
     for (i = 0; actionstrings[i].name; i++)
-        if (!g_ascii_strcasecmp(name, actionstrings[i].name)) {
+	if ([name compare: actionstrings[i].name options: NSCaseInsensitiveSearch] == NSOrderedSame) {
             exist = YES;
             a = [[AZAction alloc] initWithFunc: actionstrings[i].func];
             if (actionstrings[i].setup)
@@ -839,9 +837,9 @@ AZAction *action_from_string(NSString *_name, ObUserAction uact)
             break;
         }
     if (!exist)
-        NSLog(@"Invalid action '%@' requested. No such action exists.", _name);
+        NSLog(@"Invalid action '%@' requested. No such action exists.", name);
     if (!a)
-        NSLog(@"Invalid use of action '%@'. Action will be ignored.", _name);
+        NSLog(@"Invalid use of action '%@'. Action will be ignored.", name);
     return AUTORELEASE(a);
 }
 
@@ -1015,16 +1013,47 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
 
 void action_run_string(NSString *name, AZClient *c)
 {
-    AZAction *a;
-
-    a = action_from_string(name, OB_USER_ACTION_NONE);
-    g_assert(a);
+    AZAction *a = action_from_string(name, OB_USER_ACTION_NONE);
+    if (a == nil) {
+      NSLog(@"Internal Error: Cannot get action from string: %@", name);
+      return;
+    }
 
     action_run([NSArray arrayWithObjects: a, nil], c, 0);
 }
 
 void action_execute(union ActionData *data)
 {
+#if 1
+    if (data->execute.path) {
+      NSString *p = nil;
+      if ([data->execute.path isAbsolutePath])
+	p = data->execute.path;
+      else {
+	/* Look through paths */
+	NSProcessInfo *pi = [NSProcessInfo processInfo];
+	NSArray *ps = [[[pi environment] objectForKey: @"PATH"] componentsSeparatedByString: @":"];
+	NSFileManager *fm = [NSFileManager defaultManager];
+	int i, count = [ps count];
+	BOOL isDir;
+	NSString *a;
+	for (i = 0; i < count; i++) {
+	  a = [[ps objectAtIndex: i] stringByAppendingPathComponent: data->execute.path];
+	  if ([fm fileExistsAtPath: a isDirectory: &isDir] 
+			  && (isDir == NO)) 
+	  {
+	    p = a;
+	    break;
+	  }
+	}
+      }
+      if (p) {
+        [NSTask launchedTaskWithLaunchPath: p arguments: nil];
+      } else {
+	NSLog(@"Cannot find command %@", data->execute.path);
+      }
+    }
+#else
     GError *e = NULL;
     gchar *cmd, **argv = 0;
     if (data->execute.path) {
@@ -1049,6 +1078,7 @@ void action_execute(union ActionData *data)
             g_warning("failed to convert '%s' from utf8", [data->execute.path cString]);
         }
     }
+#endif
 }
 
 void action_activate(union ActionData *data)
@@ -1418,7 +1448,7 @@ void action_toggle_decorations(union ActionData *data)
     client_action_end(data);
 }
 
-static guint32 pick_corner(int x, int y, int cx, int cy, int cw, int ch)
+static unsigned long pick_corner(int x, int y, int cx, int cy, int cw, int ch)
 {
     if (config_resize_four_corners) {
         if (x - cx > cw / 2) {
@@ -1460,7 +1490,7 @@ static guint32 pick_corner(int x, int y, int cx, int cy, int cw, int ch)
 void action_moveresize(union ActionData *data)
 {
     AZClient *c = data->moveresize.any.c;
-    guint32 corner;
+    unsigned long corner;
 
     if (![c normal]) return;
 
@@ -1564,7 +1594,7 @@ void action_movetoedge(union ActionData *data)
             [[c frame] area].width;
         break;
     default:
-        g_assert_not_reached();
+	NSLog(@"Internal Error: should not reach here");
     }
     [[c frame] frameGravityAtX: &x y: &y];
     client_action_start(data);
@@ -1628,7 +1658,7 @@ void action_growtoedge(union ActionData *data)
         width -= (width - [[c frame] area].width) % [c size_inc].width;
         break;
     default:
-        g_assert_not_reached();
+	NSLog(@"Internal Error: should not reach here");
     }
     [[c frame] frameGravityAtX: &x y: &y];
     width -= [[c frame] size].left + [[c frame] size].right;

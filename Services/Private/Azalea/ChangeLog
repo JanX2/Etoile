@@ -1,6 +1,7 @@
 2006-04-16 Yen-Ju Chen <yjchenx at gmail>
 
 	* Use c type in prop.
+	* Remove glib from action and config.
 
 2006-04-15 Yen-Ju Chen <yjchenx at gmail>
 

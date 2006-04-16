@@ -187,7 +187,7 @@ static AZMenuManager *sharedInstance;
     xmlDocPtr doc;
     xmlNodePtr node;
     BOOL loaded = NO;
-    GSList *it;
+    int i, count;
 
     menu_hash = [[NSMutableDictionary alloc] init];
 
@@ -196,8 +196,8 @@ static AZMenuManager *sharedInstance;
 
     menu_parse_inst = [[AZParser alloc] init];
 
-    menu_parse_state.parent = NULL;
-    menu_parse_state.pipe_creator = NULL;
+    menu_parse_state.parent = nil;
+    menu_parse_state.pipe_creator = nil;
     [menu_parse_inst registerTag: "menu" callback: parse_menu 
 	                 data: &menu_parse_state];
     [menu_parse_inst registerTag: "item" callback: parse_menu_item 
@@ -205,8 +205,11 @@ static AZMenuManager *sharedInstance;
     [menu_parse_inst registerTag: "separator" callback: parse_menu_separator
 	                 data: &menu_parse_state];
 
-    for (it = config_menu_files; it; it = g_slist_next(it)) {
-        if (parse_load_menu([NSString stringWithCString: it->data], &doc, &node)) {
+    count = [config_menu_files count];
+    for (i = 0; i < count; i++) {
+	if (parse_load_menu([config_menu_files objectAtIndex: i],
+				&doc, &node))
+	{
             loaded = YES;
 	    [menu_parse_inst parseDocument: doc node: node->children];
             xmlFreeDoc(doc);
@@ -219,7 +222,7 @@ static AZMenuManager *sharedInstance;
         }
     }
     
-    g_assert(menu_parse_state.parent == NULL);
+    NSAssert(menu_parse_state.parent == nil, @"menu_parse_state.parent is not nil");
 }
 
 - (void) shutdown: (BOOL) reconfig

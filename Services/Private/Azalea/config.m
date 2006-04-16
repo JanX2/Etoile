@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    config.c for the Openbox window manager
@@ -34,14 +35,14 @@ BOOL config_focus_last;
 
 ObPlacePolicy config_place_policy;
 
-gchar   *config_theme;
+NSString *config_theme;
 BOOL config_theme_keepborder;
 BOOL config_theme_hidedisabled;
 
-gchar *config_title_layout;
+NSString *config_title_layout;
 
 int    config_desktops_num;
-GSList *config_desktops_names;
+NSArray *config_desktops_names;
 int    config_screen_firstdesk;
 
 BOOL config_resize_redraw;
@@ -73,7 +74,7 @@ BOOL config_menu_xorstyle;
 unsigned int    config_menu_hide_delay;
 BOOL config_menu_client_list_icons;
 
-GSList *config_menu_files;
+NSArray *config_menu_files;
 
 int config_resist_win;
 int config_resist_edge;
@@ -250,13 +251,11 @@ static void parse_theme(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
     if ((n = parse_find_node("name", node))) {
         NSString *c;
 
-        g_free(config_theme);
         c = parse_string(doc, n);
-        config_theme = g_strdup([[c stringByExpandingTildeInPath] fileSystemRepresentation]);
+	ASSIGN(config_theme, [c stringByExpandingTildeInPath]);
     }
     if ((n = parse_find_node("titleLayout", node))) {
-        g_free(config_title_layout);
-        config_title_layout = g_strdup([parse_string(doc, n) cString]);
+	ASSIGN(config_title_layout, parse_string(doc, n));
     }
     if ((n = parse_find_node("keepBorder", node)))
         config_theme_keepborder = parse_bool(doc, n);
@@ -282,20 +281,17 @@ static void parse_desktops(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
             config_screen_firstdesk = d;
     }
     if ((n = parse_find_node("names", node))) {
-        GSList *it;
         xmlNodePtr nname;
 
-        for (it = config_desktops_names; it; it = it->next)
-            g_free(it->data);
-        g_slist_free(config_desktops_names);
-        config_desktops_names = NULL;
+	NSMutableArray *a = [[NSMutableArray alloc] init];
 
         nname = parse_find_node("name", n->children);
         while (nname) {
-            config_desktops_names = g_slist_append(config_desktops_names,
-                                                   g_strdup([parse_string(doc, nname) UTF8String]));
+	    [a addObject: parse_string(doc, nname)];
             nname = parse_find_node("name", nname->next);
         }
+	ASSIGNCOPY(config_desktops_names, a);
+	DESTROY(a);
     }
 }
 
@@ -408,13 +404,15 @@ static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                        gpointer d)
 {
     xmlNodePtr n;
+    NSMutableArray *a;
+    if (config_menu_files)
+      a = [NSMutableArray arrayWithArray: config_menu_files];
+    else
+      a = AUTORELEASE([[NSMutableArray alloc] init]);
+
     for (node = node->children; node; node = node->next) {
         if (!xmlStrcasecmp(node->name, (const xmlChar*) "file")) {
-            NSString *c;
-
-            c = parse_string(doc, node);
-            config_menu_files = g_slist_append(config_menu_files,
-                                               g_strdup([[c stringByExpandingTildeInPath] fileSystemRepresentation]));
+            [a addObject: parse_string(doc, node)];
         }
         if ((n = parse_find_node("warpPointer", node)))
             config_menu_warppointer = parse_bool(doc, n);
@@ -425,6 +423,7 @@ static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
         if ((n = parse_find_node("desktopMenuIcons", node)))
             config_menu_client_list_icons = parse_bool(doc, n);
     }
+    ASSIGNCOPY(config_menu_files, a);
 }
    
 static void parse_resistance(AZParser *parser, xmlDocPtr doc, xmlNodePtr node, 
@@ -559,9 +558,9 @@ void config_startup(AZParser *parser)
 
     [parser registerTag: "placement" callback: parse_placement data: NULL];
 
-    config_theme = NULL;
+    config_theme = nil;
 
-    config_title_layout = g_strdup("NLIMC");
+    ASSIGN(config_title_layout, ([NSString stringWithCString: "NLIMC"]));
     config_theme_keepborder = YES;
     config_theme_hidedisabled = NO;
 
@@ -569,7 +568,7 @@ void config_startup(AZParser *parser)
 
     config_desktops_num = 4;
     config_screen_firstdesk = 1;
-    config_desktops_names = NULL;
+    config_desktops_names = nil;
 
     [parser registerTag: "desktops" callback: parse_desktops data: NULL];
 
@@ -619,24 +618,15 @@ void config_startup(AZParser *parser)
     config_menu_xorstyle = YES;
     config_menu_hide_delay = 250;
     config_menu_client_list_icons = YES;
-    config_menu_files = NULL;
+    config_menu_files = nil;
 
     [parser registerTag: "menu" callback: parse_menu data: NULL];
 }
 
 void config_shutdown()
 {
-    GSList *it;
-
-    g_free(config_theme);
-
-    g_free(config_title_layout);
-
-    for (it = config_desktops_names; it; it = g_slist_next(it))
-        g_free(it->data);
-    g_slist_free(config_desktops_names);
-
-    for (it = config_menu_files; it; it = g_slist_next(it))
-        g_free(it->data);
-    g_slist_free(config_menu_files);
+    DESTROY(config_theme);
+    DESTROY(config_title_layout);
+    DESTROY(config_desktops_names);
+    DESTROY(config_menu_files);
 }

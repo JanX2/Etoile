@@ -685,7 +685,7 @@ static Window createWindow(Window parent, unsigned long mask,
 @implementation AZFrame (AZPrivate)
 - (void) layoutTitle
 {
-    gchar *lc;
+    char *lc;
     int x;
     BOOL n, d, i, l, m, c, s;
 
@@ -693,7 +693,7 @@ static Window createWindow(Window parent, unsigned long mask,
 
     /* figure out whats being shown, and the width of the label */
     label_width = width - (ob_rr_theme->padding + 1) * 2;
-    for (lc = config_title_layout; *lc != '\0'; ++lc) {
+    for (lc = (char*)[config_title_layout cString]; *lc != '\0'; ++lc) {
         switch (*lc) {
         case 'N':
             if (n) { *lc = ' '; break; } /* rm duplicates */
@@ -758,7 +758,7 @@ static Window createWindow(Window parent, unsigned long mask,
     if (!c) XUnmapWindow(ob_display, close);
 
     x = ob_rr_theme->padding + 1;
-    for (lc = config_title_layout; *lc != '\0'; ++lc) {
+    for (lc = (char*)[config_title_layout cString]; *lc != '\0'; ++lc) {
         switch (*lc) {
         case 'N':
             if (!n) break;

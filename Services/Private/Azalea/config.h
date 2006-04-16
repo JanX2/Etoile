@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    config.h for the Openbox window manager
@@ -23,8 +24,6 @@
 #import "AZStacking.h"
 #import "misc.h"
 #import "AZClient+Place.h"
-
-#include <glib.h>
 
 @class AZParser;
 
@@ -82,21 +81,21 @@ extern unsigned int config_dock_app_move_button;
 extern unsigned int config_dock_app_move_modifiers;
 
 /* The name of the theme */
-extern gchar *config_theme;
+extern NSString *config_theme;
 
 /* Show the onepixel border after toggleDecor */
 extern BOOL config_theme_keepborder;
 /* Hide window frame buttons that the window doesn't allow */
 extern BOOL config_theme_hidedisabled;
 /* Titlebar button layout */
-extern gchar *config_title_layout;
+extern NSString *config_title_layout;
 
 /*! The number of desktops */
 extern int config_desktops_num;
 /*! Desktop to start on, put 5 to start in the center of a 3x3 grid */
 extern int config_screen_firstdesk;
 /*! Names for the desktops */
-extern GSList *config_desktops_names;
+extern NSArray *config_desktops_names;
 
 /*! The keycode of the key combo which resets the keybaord chains */
 extern unsigned int config_keyboard_reset_keycode;
@@ -125,7 +124,7 @@ extern unsigned int    config_menu_hide_delay;
 /*! show icons in client_list_menu */
 extern BOOL config_menu_client_list_icons;
 /*! User-specified menu files */
-extern GSList *config_menu_files;
+extern NSArray *config_menu_files;
 
 void config_startup(AZParser *i);
 void config_shutdown();

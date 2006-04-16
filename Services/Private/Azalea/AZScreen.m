@@ -188,8 +188,7 @@ static AZScreen *sharedInstance;
 
 - (void) startup: (BOOL) reconfig
 {
-    GSList *it;
-    unsigned int i;
+    unsigned int i, count;;
     char **_names;
 
     desktop_cycle_popup = [[AZPagerPopUp alloc] initWithIcon: YES];
@@ -201,11 +200,13 @@ static AZScreen *sharedInstance;
     }
 
     /* set the names */
+    count = [config_desktops_names count];
     screen_desktop_names = [[NSMutableArray alloc] init];
-    _names = calloc(sizeof(char*), g_slist_length(config_desktops_names) + 1);
-    for (i = 0, it = config_desktops_names; it; ++i, it = g_slist_next(it)) {
-        [screen_desktop_names addObject: [NSString stringWithUTF8String: it->data]];
-        _names[i] = it->data; /* dont strdup */
+    _names = calloc(sizeof(char*), count + 1);
+    for (i = 0; i < count; i++) {
+	NSString *_n = [config_desktops_names objectAtIndex: i];
+        [screen_desktop_names addObject: _n];
+        _names[i] = (char*)[_n UTF8String]; /* dont strdup */
     }
     _names[i] = NULL;
     PROP_SETSS(RootWindow(ob_display, ob_screen),
