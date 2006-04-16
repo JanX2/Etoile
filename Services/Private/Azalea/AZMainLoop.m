@@ -99,6 +99,8 @@ static void calc_max_fd(ObMainLoop *loop);
     /* When this timer will next trigger */
     GTimeVal timeout;
 }
+- (BOOL) fire;
+
 - (void) addTimeout: (unsigned long) delta;
 - (void) addLast: (unsigned long) delta;
 
@@ -121,6 +123,25 @@ static void calc_max_fd(ObMainLoop *loop);
 @end
 
 @implementation AZMainLoopTimer
+
+- (BOOL) fire
+{
+  if ((target == nil) || (func == NULL)) return NO;
+
+  /* fire invocation */
+  NSMethodSignature *ms = [target methodSignatureForSelector: func];
+  NSInvocation *inv = [NSInvocation invocationWithMethodSignature: ms];
+  [inv setTarget: target];
+  [inv setSelector: func];
+  if (data)
+    [inv setArgument: &data atIndex: 2];
+
+  [inv invoke];
+  BOOL ret = NO;
+  [inv getReturnValue: &ret];
+  return ret;
+}
+
 - (void) addTimeout: (unsigned long) delta
 {
     g_time_val_add(&timeout, delta);
@@ -625,25 +646,8 @@ static AZMainLoop *sharedInstance;
     RETAIN(curr);
     [timers removeObjectAtIndex: i];
     [curr addLast: [curr delay]];
-    /* fire invocation */
-    NSLog(@"Invocation %@, %@", [curr target], NSStringFromSelector([curr func]));
-    NSMethodSignature *ms = [[curr target] methodSignatureForSelector: [curr func]];
-    NSInvocation *inv = [NSInvocation invocationWithMethodSignature: ms];
-    [inv setTarget: [curr target]];
-    [inv setSelector: [curr func]];
-    id _arg = [curr data];
-    if (_arg) {
-      NSLog(@"_arg %@", _arg);
-      [inv setArgument: &_arg atIndex: 2];
-    }
-    NSLog(@"before invoke");
-    [inv invoke];
-    NSLog(@"after invoke");
-    BOOL ret = NO;
-    [inv getReturnValue: &ret];
-    NSLog(@"done");
 
-    if (ret) {
+    if ([curr fire]) {
       [curr addTimeout: [curr delay]];
       [self insertTimer: curr];
     } else {

@@ -68,7 +68,6 @@ static AZStartupHandler *sharedInstance;
 
 /* callback */
 static void sn_event_func(SnMonitorEvent *event, void *data);
-//static gboolean sn_wait_timeout(void *data);
 static void sn_wait_destroy(void *data);
 
 @interface AZStartupHandler (AZPrivate)
@@ -280,13 +279,6 @@ static void sn_event_func(SnMonitorEvent *event, void *data)
 {
   [[AZStartupHandler defaultHandler] snEventFunc: event data: data];
 }
-
-#if 0
-static gboolean sn_wait_timeout(void *data)
-{
-  [[AZStartupHandler defaultHandler] snWaitTimeout: data];
-}
-#endif
 
 static void sn_wait_destroy(void *data)
 {

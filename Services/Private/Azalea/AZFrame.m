@@ -49,7 +49,6 @@ static Window createWindow(Window parent, unsigned long mask,
 }
 
 static void flash_done(void *data);
-//static BOOL flash_timeout(void *data);
 
 @interface AZFrame (AZPrivate)
 - (void) layoutTitle;
@@ -988,12 +987,4 @@ static void flash_done(void *data)
   AZFrame *frame = (AZFrame *) data;
   [frame flashDone];
 }
-
-#if 0
-static BOOL flash_timeout(void *data)
-{
-  AZFrame *frame = (AZFrame *) data;
-  return [frame flashTimeout];
-}
-#endif
 

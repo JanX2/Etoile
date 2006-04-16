@@ -60,12 +60,6 @@ typedef struct
     BOOL ignored;
 } ObEventData;
 
-/* callback */
-//static void event_client_dest(AZClient *client, void *data);
-//static gboolean focus_delay_func(void *data);
-//static void focus_delay_client_dest(AZClient *client, void *data);
-//static gboolean menu_hide_delay_func(void *data);
-
 #define INVALID_FOCUSIN(e) ((e)->xfocus.detail == NotifyInferior || \
                             (e)->xfocus.detail == NotifyAncestor || \
                             (e)->xfocus.detail > NotifyNonlinearVirtual)
@@ -1420,15 +1414,3 @@ static AZEventHandler *sharedInstance;
 
 @end
 
-#if 0
-/* callback */
-static gboolean focus_delay_func(void *data)
-{
-  [[AZEventHandler defaultHandler] focusDelayFunc: data];
-}
-
-static gboolean menu_hide_delay_func(void *data)
-{
-  [[AZEventHandler defaultHandler] menuHideDelayFunc: data];
-}
-#endif

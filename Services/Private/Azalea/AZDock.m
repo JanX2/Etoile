@@ -32,10 +32,6 @@
 
 static AZDock *sharedInstance;
 
-/* callback */
-static BOOL hide_timeout(void *data);
-static BOOL show_timeout(void *data);
-
 @interface AZDock (AZPrivate)
 - (BOOL) hideTimeout: (id) data;
 - (BOOL) showTimeout: (id) data;
@@ -621,15 +617,3 @@ static BOOL show_timeout(void *data);
 }
 @end
 
-#if 0
-static BOOL hide_timeout(void *data)
-{
-  // data is not set
-  [[AZDock defaultDock] hideTimeout];
-}
-
-static BOOL show_timeout(void *data)
-{
-  [[AZDock defaultDock] showTimeout];
-}
-#endif

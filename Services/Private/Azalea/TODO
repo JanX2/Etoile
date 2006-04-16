@@ -21,10 +21,13 @@ GNUstep window protocol
 
 Bugs
 
+3. Use openbox/test/urgent and close window when it is unfocosed.
+   OpenBox (and Azalea) will crash.
+   It's a memory management problem. Hope to resolve after porting.
 2. While change number of desktop without reconfigure,
    it will crash while trying to switch desktop through menu syste.
    No problem to switch via keyboard.
-   Update: this is a bug from openbox. It crashes in [AZScreen -updateDesktopNames].
+   (This is a bug from openbox. It crashes in [AZScreen -updateDesktopNames]).
 1. While changing dock settings in obconf. Azalea can freeze completely.
    It is probably related to the USR2 signal (reconfigure)
    sending to Azalea from obconf.
