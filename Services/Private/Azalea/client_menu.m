@@ -162,7 +162,7 @@ enum {
             n = [screen nameOfDesktopAtIndex: i];
         }
 
-        act = action_from_string("SendToDesktop",
+        act = action_from_string(@"SendToDesktop",
                                  OB_USER_ACTION_MENU_SELECTION);
         [act data_pointer]->sendto.desk = desk;
         [act data_pointer]->sendto.follow = FALSE;
@@ -182,13 +182,13 @@ void client_menu_startup()
     /* Layer */
     AZLayerMenu *layer_menu = [[AZLayerMenu alloc] initWithName: LAYER_MENU_NAME title: @"Layer"];
 
-    act = action_from_string ("SendToTopLayer", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"SendToTopLayer", OB_USER_ACTION_MENU_SELECTION);
     [layer_menu addNormalMenuEntry: LAYER_TOP label: @"Always on top" actions: [NSArray arrayWithObjects: act, nil]];
 
-    act = action_from_string ("SendToNormalLayer", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"SendToNormalLayer", OB_USER_ACTION_MENU_SELECTION);
     [layer_menu addNormalMenuEntry: LAYER_NORMAL label: @"Normal" actions: [NSArray arrayWithObjects: act, nil]];
 
-    act = action_from_string ("SendToBottomLayer", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"SendToBottomLayer", OB_USER_ACTION_MENU_SELECTION);
     [layer_menu addNormalMenuEntry: LAYER_BOTTOM label: @"Always on bottom" actions: [NSArray arrayWithObjects: act, nil]];
 
     [[AZMenuManager defaultManager] registerMenu: layer_menu];
@@ -210,47 +210,47 @@ void client_menu_startup()
 
     [menu addSubmenuMenuEntry: CLIENT_LAYER submenu: LAYER_MENU_NAME];
 
-    act = action_from_string ("Iconify", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"Iconify", OB_USER_ACTION_MENU_SELECTION);
     e = [menu addNormalMenuEntry: CLIENT_ICONIFY label: @"Iconify" actions: [NSArray arrayWithObjects: act, nil]];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->iconify_mask];
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZNormalMenuEntry *)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
     [(AZNormalMenuEntry *)e set_mask_selected_color: ob_rr_theme->menu_selected_color];
 
-    act = action_from_string ("ToggleMaximizeFull", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"ToggleMaximizeFull", OB_USER_ACTION_MENU_SELECTION);
     e = [menu addNormalMenuEntry: CLIENT_MAXIMIZE label: @"MAXIMIZE" actions: [NSArray arrayWithObjects: act, nil]];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->max_mask]; 
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZNormalMenuEntry *)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
     [(AZNormalMenuEntry *)e set_mask_selected_color: ob_rr_theme->menu_selected_color];
 
-    act = action_from_string ("Raise", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"Raise", OB_USER_ACTION_MENU_SELECTION);
     [menu addNormalMenuEntry: CLIENT_RAISE label: @"Raise to top" actions: [NSArray arrayWithObjects: act, nil]];
 
-    act = action_from_string ("Lower", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"Lower", OB_USER_ACTION_MENU_SELECTION);
     [menu addNormalMenuEntry: CLIENT_LOWER label: @"Lower to bottom" actions: [NSArray arrayWithObjects: act, nil]];
 
-    act = action_from_string ("ToggleShade", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"ToggleShade", OB_USER_ACTION_MENU_SELECTION);
     e = [menu addNormalMenuEntry: CLIENT_SHADE label: @"SHADE" actions: [NSArray arrayWithObjects: act, nil]];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->shade_mask];
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];
     [(AZNormalMenuEntry *)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
     [(AZNormalMenuEntry *)e set_mask_selected_color: ob_rr_theme->menu_selected_color];
 
-    act = action_from_string ("ToggleDecorations", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"ToggleDecorations", OB_USER_ACTION_MENU_SELECTION);
     [menu addNormalMenuEntry: CLIENT_DECORATE label: @"Decorate" actions: [NSArray arrayWithObjects: act, nil]];
 
     [menu addSeparatorMenuEntry: -1];
 
-    act = action_from_string ("Move", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"Move", OB_USER_ACTION_MENU_SELECTION);
     [menu addNormalMenuEntry: CLIENT_MOVE label: @"Move" actions: [NSArray arrayWithObjects: act, nil]];
 
-    act = action_from_string ("Resize", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"Resize", OB_USER_ACTION_MENU_SELECTION);
     [menu addNormalMenuEntry: CLIENT_RESIZE label: @"Resize" actions: [NSArray arrayWithObjects: act, nil]];
 
     [menu addSeparatorMenuEntry: -1];
 
-    act = action_from_string ("Close", OB_USER_ACTION_MENU_SELECTION);
+    act = action_from_string (@"Close", OB_USER_ACTION_MENU_SELECTION);
     e = [menu addNormalMenuEntry: CLIENT_CLOSE label: @"Close" actions: [NSArray arrayWithObjects: act, nil]];
     [(AZNormalMenuEntry *)e set_mask: ob_rr_theme->close_mask];
     [(AZNormalMenuEntry *)e set_mask_normal_color: ob_rr_theme->menu_color];

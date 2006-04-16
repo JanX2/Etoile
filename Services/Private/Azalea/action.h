@@ -186,7 +186,7 @@ typedef void (*AZActionFunc)(union ActionData *data);
    action_resize_relative_vert - the delta
 */
 
-AZAction* action_from_string(const gchar *name, ObUserAction uact);
+AZAction* action_from_string(NSString *name, ObUserAction uact);
 AZAction* action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact);
 AZAction* action_copy(AZAction *a);
 
@@ -213,7 +213,7 @@ void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y
 
 void action_run(NSArray *acts, AZClient *c, unsigned int state);
 
-void action_run_string(const gchar *name, AZClient *c);
+void action_run_string(NSString *name, AZClient *c);
 
 /* Execute */
 void action_execute(union ActionData *data);

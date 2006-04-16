@@ -444,17 +444,17 @@ static void parse_resistance(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 typedef struct
 {
     const gchar *key;
-    const gchar *actname;
+    NSString *actname;
 } ObDefKeyBind;
 
 static void bind_default_keyboard()
 {
     ObDefKeyBind *it;
     ObDefKeyBind binds[] = {
-        { "A-Tab", "NextWindow" },
-        { "S-A-Tab", "PreviousWindow" },
-        { "A-F4", "Close" },
-        { NULL, NULL }
+        { "A-Tab", @"NextWindow" },
+        { "S-A-Tab", @"PreviousWindow" },
+        { "A-F4", @"Close" },
+        { NULL, nil}
     };
 
     for (it = binds; it->key; ++it) {
@@ -469,58 +469,58 @@ typedef struct
     NSString *button;
     NSString *context;
     const ObMouseAction mact;
-    const gchar *actname;
+    NSString *actname;
 } ObDefMouseBind;
 
 static void bind_default_mouse()
 {
     ObDefMouseBind *it;
     ObDefMouseBind binds[] = {
-        { @"Left", @"Client", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Middle", @"Client", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Right", @"Client", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"Desktop", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Middle", @"Desktop", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Right", @"Desktop", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"Titlebar", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"Handle", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"BLCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"BRCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"TLCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"TRCorner", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"Close", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"Maximize", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"Iconify", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"Icon", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"AllDesktops", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"Shade", OB_MOUSE_ACTION_PRESS, "Focus" },
-        { @"Left", @"Client", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"Titlebar", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Middle", @"Titlebar", OB_MOUSE_ACTION_CLICK, "Lower" },
-        { @"Left", @"Handle", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"BLCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"BRCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"TLCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"TRCorner", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"Close", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"Maximize", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"Iconify", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"Icon", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"AllDesktops", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"Shade", OB_MOUSE_ACTION_CLICK, "Raise" },
-        { @"Left", @"Close", OB_MOUSE_ACTION_CLICK, "Close" },
-        { @"Left", @"Maximize", OB_MOUSE_ACTION_CLICK, "ToggleMaximizeFull" },
-        { @"Left", @"Iconify", OB_MOUSE_ACTION_CLICK, "Iconify" },
-        { @"Left", @"AllDesktops", OB_MOUSE_ACTION_CLICK, "ToggleOmnipresent" },
-        { @"Left", @"Shade", OB_MOUSE_ACTION_CLICK, "ToggleShade" },
-        { @"Left", @"TLCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
-        { @"Left", @"TRCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
-        { @"Left", @"BLCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
-        { @"Left", @"BRCorner", OB_MOUSE_ACTION_MOTION, "Resize" },
-        { @"Left", @"Titlebar", OB_MOUSE_ACTION_MOTION, "Move" },
-        { @"A-Left", @"Frame", OB_MOUSE_ACTION_MOTION, "Move" },
-        { @"A-Middle", @"Frame", OB_MOUSE_ACTION_MOTION, "Resize" },
-        { nil, nil, 0, NULL }
+        { @"Left", @"Client", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Middle", @"Client", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Right", @"Client", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"Desktop", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Middle", @"Desktop", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Right", @"Desktop", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"Titlebar", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"Handle", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"BLCorner", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"BRCorner", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"TLCorner", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"TRCorner", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"Close", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"Maximize", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"Iconify", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"Icon", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"AllDesktops", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"Shade", OB_MOUSE_ACTION_PRESS, @"Focus" },
+        { @"Left", @"Client", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"Titlebar", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Middle", @"Titlebar", OB_MOUSE_ACTION_CLICK, @"Lower" },
+        { @"Left", @"Handle", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"BLCorner", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"BRCorner", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"TLCorner", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"TRCorner", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"Close", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"Maximize", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"Iconify", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"Icon", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"AllDesktops", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"Shade", OB_MOUSE_ACTION_CLICK, @"Raise" },
+        { @"Left", @"Close", OB_MOUSE_ACTION_CLICK, @"Close" },
+        { @"Left", @"Maximize", OB_MOUSE_ACTION_CLICK, @"ToggleMaximizeFull" },
+        { @"Left", @"Iconify", OB_MOUSE_ACTION_CLICK, @"Iconify" },
+        { @"Left", @"AllDesktops", OB_MOUSE_ACTION_CLICK, @"ToggleOmnipresent" },
+        { @"Left", @"Shade", OB_MOUSE_ACTION_CLICK, @"ToggleShade" },
+        { @"Left", @"TLCorner", OB_MOUSE_ACTION_MOTION, @"Resize" },
+        { @"Left", @"TRCorner", OB_MOUSE_ACTION_MOTION, @"Resize" },
+        { @"Left", @"BLCorner", OB_MOUSE_ACTION_MOTION, @"Resize" },
+        { @"Left", @"BRCorner", OB_MOUSE_ACTION_MOTION, @"Resize" },
+        { @"Left", @"Titlebar", OB_MOUSE_ACTION_MOTION, @"Move" },
+        { @"A-Left", @"Frame", OB_MOUSE_ACTION_MOTION, @"Move" },
+        { @"A-Middle", @"Frame", OB_MOUSE_ACTION_MOTION, @"Resize" },
+        { nil, nil, 0, nil}
     };
 
     for (it = binds; it->button; ++it) {

@@ -821,11 +821,12 @@ ActionString actionstrings[] =
 }
 @end
 
-AZAction *action_from_string(const gchar *name, ObUserAction uact)
+AZAction *action_from_string(NSString *_name, ObUserAction uact)
 {
     AZAction *a = nil;
     BOOL exist = NO;
     int i;
+    const char *name = [_name cString];
 
     for (i = 0; actionstrings[i].name; i++)
         if (!g_ascii_strcasecmp(name, actionstrings[i].name)) {
@@ -838,10 +839,9 @@ AZAction *action_from_string(const gchar *name, ObUserAction uact)
             break;
         }
     if (!exist)
-        g_warning("Invalid action '%s' requested. No such action exists.",
-                  name);
+        NSLog(@"Invalid action '%@' requested. No such action exists.", _name);
     if (!a)
-        g_warning("Invalid use of action '%s'. Action will be ignored.", name);
+        NSLog(@"Invalid use of action '%@'. Action will be ignored.", _name);
     return AUTORELEASE(a);
 }
 
@@ -852,7 +852,7 @@ AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
     xmlNodePtr n;
 
     if (parse_attr_string("name", node, &actname)) {
-        if ((act = action_from_string([actname cString], uact))) {
+        if ((act = action_from_string(actname, uact))) {
             if ([act func] == action_execute || [act func] == action_restart) {
                 if ((n = parse_find_node("execute", node->xmlChildrenNode))) {
                     ASSIGN([act data_pointer]->execute.path, ([parse_string(doc, n) stringByExpandingTildeInPath]));
@@ -1013,7 +1013,7 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
     }
 }
 
-void action_run_string(const gchar *name, AZClient *c)
+void action_run_string(NSString *name, AZClient *c)
 {
     AZAction *a;
 

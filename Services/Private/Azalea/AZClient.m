@@ -974,12 +974,12 @@
 
 - (void) raise
 {
-    action_run_string("Raise", self);
+    action_run_string(@"Raise", self);
 }
 
 - (void) lower
 {
-    action_run_string("Lower", self);
+    action_run_string(@"Lower", self);
 }
 
 - (void) updateTransientFor

@@ -77,11 +77,11 @@ static GSList *desktop_menus;
 		[menu addSeparatorMenuEntry: -1];
             }
 
-            act = action_from_string("Activate",
+            act = action_from_string(@"Activate",
                                      OB_USER_ACTION_MENU_SELECTION);
             [act data_pointer]->activate.any.c = c;
 	    [acts addObject: act];
-            act = action_from_string("Desktop",
+            act = action_from_string(@"Desktop",
                                      OB_USER_ACTION_MENU_SELECTION);
             [act data_pointer]->desktop.desk = data;
 	    [acts addObject: act];
@@ -103,7 +103,7 @@ static GSList *desktop_menus;
         AZAction* act;
         AZNormalMenuEntry *e;
 
-        act = action_from_string("Desktop", OB_USER_ACTION_MENU_SELECTION);
+        act = action_from_string(@"Desktop", OB_USER_ACTION_MENU_SELECTION);
         [act data_pointer]->desktop.desk = data;
 	e = [menu addNormalMenuEntry: 0 label: @"Go there..." actions: [NSArray arrayWithObjects: act, nil]];
         if (data == [[AZScreen defaultScreen] desktop])
