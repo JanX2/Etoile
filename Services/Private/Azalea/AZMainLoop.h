@@ -52,13 +52,14 @@ typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
 		 data: (void *) data;
 - (void) removeFdHandlerForFd: (int) fd;
              
-- (void) addTimeoutHandler: (GSourceFunc) handler
-              microseconds: (unsigned long) microseconds
-	              data: (void *) data
-	 	    notify: (GDestroyNotify) notify;
-- (void) removeTimeoutHandler: (GSourceFunc) handler;
-- (void) removeTimeoutHandler: (GSourceFunc) handler
-                         data: (void *) data;
+- (void) addTimeout: (id) target
+            handler: (SEL) handler
+       microseconds: (unsigned long) microseconds
+               data: (id) data
+             notify: (GDestroyNotify) notify;
+- (void) removeTimeout: (id) target handler: (SEL) handler;
+- (void) removeTimeout: (id) target handler: (SEL) handler
+                         data: (id) data;
 - (void) addSignalHandler: (ObMainLoopSignalHandler) handler 
                 forSignal: (int) signal;
 - (void) removeSignalHandler: (ObMainLoopSignalHandler) handler;

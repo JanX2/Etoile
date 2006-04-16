@@ -45,7 +45,6 @@ struct _ObMainLoop
 
 typedef struct _ObMainLoop ObMainLoop;
 
-typedef struct _ObMainLoopTimer             ObMainLoopTimer;
 typedef struct _ObMainLoopSignal            ObMainLoopSignal;
 typedef struct _ObMainLoopSignalHandlerType ObMainLoopSignalHandlerType;
 typedef struct _ObMainLoopFdHandlerType     ObMainLoopFdHandlerType;
@@ -85,11 +84,12 @@ static void fd_handle_foreach(void * key,
                               void * data);
 static void calc_max_fd(ObMainLoop *loop);
 
-struct _ObMainLoopTimer
+@interface AZMainLoopTimer: NSObject
 {
+    id target;
     unsigned long delay;
-    GSourceFunc func;
-    void * data;
+    SEL func;
+    id data;
     GDestroyNotify destroy;
 
     /* The timer needs to be freed */
@@ -98,7 +98,56 @@ struct _ObMainLoopTimer
     GTimeVal last;
     /* When this timer will next trigger */
     GTimeVal timeout;
-};
+}
+- (void) addTimeout: (unsigned long) delta;
+- (void) addLast: (unsigned long) delta;
+
+- (id) target;
+- (unsigned long) delay;
+- (SEL) func;
+- (id) data;
+- (GDestroyNotify) destroy;
+- (BOOL) del_me;
+- (GTimeVal) last;
+- (GTimeVal) timeout;
+- (void) set_target: (id) target;
+- (void) set_delay: (unsigned long) delay;
+- (void) set_func: (SEL) func;
+- (void) set_data: (id) data;
+- (void) set_destroy: (GDestroyNotify) destroy;
+- (void) set_del_me: (BOOL) del_me;
+- (void) set_last: (GTimeVal) last;
+- (void) set_timeout: (GTimeVal) timeout;
+@end
+
+@implementation AZMainLoopTimer
+- (void) addTimeout: (unsigned long) delta
+{
+    g_time_val_add(&timeout, delta);
+}
+
+- (void) addLast: (unsigned long) delta
+{
+    g_time_val_add(&last, delta);
+}
+
+- (id) target { return target; }
+- (unsigned long) delay { return delay; }
+- (SEL) func { return func; }
+- (id) data { return data; }
+- (GDestroyNotify) destroy { return destroy; }
+- (BOOL) del_me { return del_me; }
+- (GTimeVal) last { return last; }
+- (GTimeVal) timeout { return timeout; }
+- (void) set_target: (id) t { target = t; }
+- (void) set_delay: (unsigned long) d { delay = d; }
+- (void) set_func: (SEL) f { func = f; }
+- (void) set_data: (id) d { data = d; }
+- (void) set_destroy: (GDestroyNotify) d { destroy = d; }
+- (void) set_del_me: (BOOL) d { del_me = d; }
+- (void) set_last: (GTimeVal) l { last = l; }
+- (void) set_timeout: (GTimeVal) t { timeout = t; }
+@end
 
 struct _ObMainLoopSignalHandlerType
 {
@@ -122,8 +171,8 @@ static AZMainLoop *sharedInstance;
 
 @interface AZMainLoop (AZPrivate)
 - (void) destroyActionForClient: (NSNotification *) not;
-- (long) timeCompare: (GTimeVal *) a to: (GTimeVal *) b;
-- (void) insertTimer: (ObMainLoopTimer *) ins;
+- (long) timeCompare: (GTimeVal) a to: (GTimeVal) b;
+- (void) insertTimer: (AZMainLoopTimer *) ins;
 - (BOOL) nearestTimeoutWait: (GTimeVal *) tm;
 - (void) dispatchTimer: (GTimeVal **) wait;
 @end
@@ -162,44 +211,47 @@ static AZMainLoop *sharedInstance;
   g_hash_table_remove(ob_main_loop->fd_handlers, &fd);
 }
 
-- (void) addTimeoutHandler: (GSourceFunc) handler
-              microseconds: (unsigned long) microseconds
-                      data: (void *) data
-                    notify: (GDestroyNotify) notify
+- (void) addTimeout: (id) target
+            handler: (SEL) handler
+       microseconds: (unsigned long) microseconds
+               data: (id) data
+             notify: (GDestroyNotify) notify
 {
-    ObMainLoopTimer *t = g_new(ObMainLoopTimer, 1);
-    t->delay = microseconds;
-    t->func = handler;
-    t->data = data;
-    t->destroy = notify;
-    t->del_me = NO;
+    AZMainLoopTimer *t = [[AZMainLoopTimer alloc] init];
+    [t set_target: target];
+    [t set_delay: microseconds];
+    [t set_func: handler];
+    [t set_data: data];
+    [t set_destroy: notify];
+    [t set_del_me: NO];
     g_get_current_time(&now);
-    t->last = t->timeout = now;
-    g_time_val_add(&t->timeout, t->delay);
+    [t set_last: now];
+    [t set_timeout: now];
+    [t addTimeout: [t delay]];
 
-    [self insertTimer: t];
+    [self insertTimer: AUTORELEASE(t)];
 }
 
-- (void) removeTimeoutHandler: (GSourceFunc) handler
+- (void) removeTimeout: (id) target handler: (SEL) handler
 {
     int i, count = [timers count];
     for (i = 0; i < count; i++)
     {
-      ObMainLoopTimer *t = (ObMainLoopTimer *)[[timers objectAtIndex: i] pointerValue];
-      if (t->func == handler)
-        t->del_me = YES;
+      AZMainLoopTimer *t = [timers objectAtIndex: i];
+      if (([t target] == target) && ([t func] == handler))
+        [t set_del_me: YES];
     }
 }
 
-- (void) removeTimeoutHandler: (GSourceFunc) handler
-                         data: (void *) data
+- (void) removeTimeout: (id) target handler: (SEL) handler
+                         data: (id) data
 {
   int i, count = [timers count];
   for (i = 0; i < count; i++)
   {
-    ObMainLoopTimer *t = (ObMainLoopTimer *)[[timers objectAtIndex: i] pointerValue];
-    if (t->func == handler && t->data == data)
-      t->del_me = YES;
+    AZMainLoopTimer *t = [timers objectAtIndex: i];
+    if ([t target] == target && [t func] == handler && [t data] == data)
+      [t set_del_me: YES];
   }
 }
 
@@ -485,33 +537,32 @@ static AZMainLoop *sharedInstance;
 /*** TIMEOUTS ***/
 
 #define NEAREST_TIMEOUT \
-    (((ObMainLoopTimer *)[[timers objectAtIndex: 0] pointerValue])->timeout)
+    ([[timers objectAtIndex: 0] timeout])
 
-- (long) timeCompare: (GTimeVal *) a to: (GTimeVal *) b
+- (long) timeCompare: (GTimeVal) a to: (GTimeVal) b
 {
     long r = 0;
 
-    if ((r = b->tv_sec - a->tv_sec)) return r;
-    return b->tv_usec - a->tv_usec;
+    if ((r = b.tv_sec - a.tv_sec)) return r;
+    return b.tv_usec - a.tv_usec;
 }
 
-- (void) insertTimer: (ObMainLoopTimer *) ins
+- (void) insertTimer: (AZMainLoopTimer *) ins
 {
   int i, count = [timers count];
 
   for (i = 0; i < count; i++)
   {
-    ObMainLoopTimer *t = (ObMainLoopTimer *)[[timers objectAtIndex: i] pointerValue];
-    if ([self timeCompare: &ins->timeout to: &t->timeout] >= 0)
+    AZMainLoopTimer *t = [timers objectAtIndex: i];
+    if ([self timeCompare: [ins timeout] to: [t timeout]] >= 0)
     {
-      [timers insertObject: [NSValue valueWithPointer: (void *)ins]
-	           atIndex: i];
+      [timers insertObject: ins atIndex: i];
       return;
     }
   }
   
   /* didn't fit anywhere in the list */
-  [timers addObject: [NSValue valueWithPointer: (void *)ins]];
+  [timers addObject: ins];
 }
 
 /* find the time to wait for the nearest timeout */
@@ -543,42 +594,63 @@ static AZMainLoop *sharedInstance;
   int i;
   for (i = 0; i < [timers count]; i++)
   {
-    ObMainLoopTimer *curr;
+    AZMainLoopTimer *curr;
 
-    curr = (ObMainLoopTimer *)[[timers objectAtIndex: i] pointerValue];
+    curr = [timers objectAtIndex: i];
 
     /* since timer_stop doesn't actually free the timer, we have to do our
        real freeing in here.
      */
-    if (curr->del_me) {
+    if ([curr del_me]) {
       /* delete the top */
+      RETAIN(curr);
       [timers removeObjectAtIndex: i];
-      if (curr->destroy)
-        curr->destroy(curr->data);
-      g_free(curr);
+      if ([curr destroy])
+        [curr destroy]([curr data]);
+      RELEASE(curr);
+
       i--; /* because object is deleted, reduce i by 1 */
       continue;
     }
 
     /* the queue is sorted, so if this timer shouldn't fire,
      * none are ready */
-    if ([self timeCompare: &NEAREST_TIMEOUT to: &now] < 0)
+    if ([self timeCompare: NEAREST_TIMEOUT to: now] < 0)
       break;
 
     /* we set the last fired time to delay msec after the previous firing,
        then re-insert.  timers maintain their order and may trigger more
        than once if they've waited more than one delay's worth of time.
      */
+    RETAIN(curr);
     [timers removeObjectAtIndex: i];
-    g_time_val_add(&curr->last, curr->delay);
-    if (curr->func(curr->data)) {
-      g_time_val_add(&curr->timeout, curr->delay);
+    [curr addLast: [curr delay]];
+    /* fire invocation */
+    NSLog(@"Invocation %@, %@", [curr target], NSStringFromSelector([curr func]));
+    NSMethodSignature *ms = [[curr target] methodSignatureForSelector: [curr func]];
+    NSInvocation *inv = [NSInvocation invocationWithMethodSignature: ms];
+    [inv setTarget: [curr target]];
+    [inv setSelector: [curr func]];
+    id _arg = [curr data];
+    if (_arg) {
+      NSLog(@"_arg %@", _arg);
+      [inv setArgument: &_arg atIndex: 2];
+    }
+    NSLog(@"before invoke");
+    [inv invoke];
+    NSLog(@"after invoke");
+    BOOL ret = NO;
+    [inv getReturnValue: &ret];
+    NSLog(@"done");
+
+    if (ret) {
+      [curr addTimeout: [curr delay]];
       [self insertTimer: curr];
     } else {
-      if (curr->destroy)
-        curr->destroy(curr->data);
-      g_free(curr);
+      if ([curr destroy])
+        [curr destroy]([curr data]);
     }
+    RELEASE(curr);
 
     fired = YES;
   }

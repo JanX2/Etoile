@@ -29,6 +29,7 @@
 #import "AZKeyTree.h"
 #import "AZKeyboardHandler.h"
 #import "translate.h"
+#import <glib.h>
 
 @interface AZInteractiveState: NSObject
 {
@@ -65,17 +66,13 @@
 
 static AZKeyboardHandler *sharedInstance;
 
-static gboolean chain_timeout(gpointer data)
-{
-    [[AZKeyboardHandler defaultHandler] resetChains];
-    return NO; /* don't repeat */
-}
-
 @interface AZKeyboardHandler (AZPrivate)
 - (void) grab: (BOOL) grab forWindow: (Window) win;
 - (void) grabKeys: (BOOL) grab;
 - (void) interactiveEnd: (AZInteractiveState *) s state: (unsigned int) state cancel: (BOOL) cancel;
 - (void) clientDestroy: (NSNotification *) not;
+/* callback */
+- (BOOL) chainTimeout: (id) data;
 
 @end
 
@@ -88,7 +85,8 @@ static gboolean chain_timeout(gpointer data)
 
 - (void) resetChains
 {
-    [[AZMainLoop mainLoop] removeTimeoutHandler: chain_timeout];
+    [[AZMainLoop mainLoop] removeTimeout: self 
+	                         handler: @selector(chainTimeout:)];
 
     if (curpos) {
         [self grabKeys: NO];
@@ -240,12 +238,13 @@ static gboolean chain_timeout(gpointer data)
         {
             if ([p first_child] != nil) { /* part of a chain */
 		AZMainLoop *mainLoop = [AZMainLoop mainLoop];
-		[mainLoop removeTimeoutHandler: chain_timeout];
+		[mainLoop removeTimeout: self 
+			        handler: @selector(chainTimeout:)];
                 /* 5 second timeout for chains */
-		[mainLoop addTimeoutHandler: chain_timeout
+		[mainLoop addTimeout: self 
+			     handler: @selector(chainTimeout:)
 			     microseconds: 5 * G_USEC_PER_SEC
-			     data: NULL
-			     notify: NULL];
+			     data: nil notify: NULL];
 		[self grabKeys: NO];
                 curpos = p;
 		[self grabKeys: YES];
@@ -284,7 +283,8 @@ static gboolean chain_timeout(gpointer data)
 
     DESTROY(interactive_states);
 
-    [[AZMainLoop mainLoop] removeTimeoutHandler: chain_timeout];
+    [[AZMainLoop mainLoop] removeTimeout: self 
+	                         handler: @selector(chainTimeout:)];
 
     [self unbindAll];
 }
@@ -364,6 +364,12 @@ static gboolean chain_timeout(gpointer data)
         if ([s client] == client)
             [s set_client: nil];
     }
+}
+
+- (BOOL) chainTimeout: (id) data
+{
+  [[AZKeyboardHandler defaultHandler] resetChains];
+  return NO; /* don't repeat */
 }
 
 @end

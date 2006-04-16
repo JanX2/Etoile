@@ -48,24 +48,37 @@ static AZStartupHandler *sharedInstance;
 #import "AZMainLoop.h"
 #import "AZScreen.h"
 
-typedef struct {
+@interface AZWaitData: NSObject
+{
     SnStartupSequence *seq;
     BOOL feedback;
-} ObWaitData;
+}
+- (SnStartupSequence *) seq;
+- (BOOL) feedback;
+- (void) set_seq: (SnStartupSequence *) seq;
+- (void) set_feedback: (BOOL) feedback;
+@end
+
+@implementation AZWaitData
+- (SnStartupSequence *) seq { return seq; }
+- (BOOL) feedback { return feedback; }
+- (void) set_seq: (SnStartupSequence *) s { seq = s; }
+- (void) set_feedback: (BOOL) f { feedback = f; }
+@end
 
 /* callback */
 static void sn_event_func(SnMonitorEvent *event, void *data);
-static gboolean sn_wait_timeout(void *data);
+//static gboolean sn_wait_timeout(void *data);
 static void sn_wait_destroy(void *data);
 
 @interface AZStartupHandler (AZPrivate)
-- (ObWaitData* ) waitDataNew: (SnStartupSequence *)seq;
-- (void) waitDataFree: (ObWaitData *) d;
-- (ObWaitData*) waitFind: (const gchar *) iden;
+- (AZWaitData* ) waitDataNew: (SnStartupSequence *)seq;
+- (void) waitDataFree: (AZWaitData *) d;
+- (AZWaitData*) waitFind: (const gchar *) iden;
 
 /* ObjC version of callback in C */
 - (void) snEventFunc: (SnMonitorEvent *) event data: (void *) data;
-- (BOOL) snWaitTimeout: (void *) data;
+- (BOOL) snWaitTimeout: (id) data;
 - (void) snWaitDestroy: (void *) data;
 @end
 
@@ -87,21 +100,22 @@ static void sn_wait_destroy(void *data);
     sn_context = sn_monitor_context_new(sn_display, ob_screen,
                                         sn_event_func, NULL, NULL);
 
+    sn_waits = [[NSMutableArray alloc] init];
+
     [[AZMainLoop mainLoop] addXHandler: self];
 }
 
 - (void) shutdown: (BOOL) reconfig
 {
-    GSList *it;
-
     if (reconfig) return;
 
     [[AZMainLoop mainLoop] removeXHandler: self];
 
-    for (it = sn_waits; it; it = g_slist_next(it))
-        [self waitDataFree: it->data];
-    g_slist_free(sn_waits);
-    sn_waits = NULL;
+    int i, count = [sn_waits count];
+    for (i = 0; i < count; i++) {
+      [self waitDataFree: [sn_waits objectAtIndex: i]];
+    }
+    DESTROY(sn_waits);
 
     [[AZScreen defaultScreen] setRootCursor];
 
@@ -111,11 +125,10 @@ static void sn_wait_destroy(void *data);
 
 - (BOOL) applicationStarting
 {
-    GSList *it;
-
-    for (it = sn_waits; it; it = g_slist_next(it)) {
-        ObWaitData *d = it->data;
-        if (d->feedback)
+    int i, count = [sn_waits count];
+    for (i = 0; i < count; i++) {
+        AZWaitData *d = [sn_waits objectAtIndex: i];;
+        if ([d feedback])
             return YES;
     }
     return NO;
@@ -123,14 +136,13 @@ static void sn_wait_destroy(void *data);
 
 - (void) applicationStarted: (char *) wmclass
 {
-    GSList *it;
-
-    for (it = sn_waits; it; it = g_slist_next(it)) {
-        ObWaitData *d = it->data;
-        if (sn_startup_sequence_get_wmclass(d->seq) &&
-            !strcmp(sn_startup_sequence_get_wmclass(d->seq), wmclass))
+    int i, count = [sn_waits count];
+    for (i = 0; i < count; i++) {
+        AZWaitData *d = [sn_waits objectAtIndex: i];
+        if (sn_startup_sequence_get_wmclass([d seq]) &&
+            !strcmp(sn_startup_sequence_get_wmclass([d seq]), wmclass))
         {
-            sn_startup_sequence_complete(d->seq);
+            sn_startup_sequence_complete([d seq]);
             break;
         }
     }
@@ -138,10 +150,10 @@ static void sn_wait_destroy(void *data);
 
 - (BOOL) getDesktop: (unsigned int *) desktop forIdentifier: (char *) iden
 {
-    ObWaitData *d;
+    AZWaitData *d;
 
     if (iden && (d = [self waitFind: iden])) {
-        int desk = sn_startup_sequence_get_workspace(d->seq);
+        int desk = sn_startup_sequence_get_workspace([d seq]);
         if (desk != -1) {
             *desktop = desk;
             return YES;
@@ -168,34 +180,34 @@ static void sn_wait_destroy(void *data);
 
 @implementation AZStartupHandler (AZPrivate)
 
-- (ObWaitData *) waitDataNew: (SnStartupSequence *) seq
+- (AZWaitData *) waitDataNew: (SnStartupSequence *) seq
 {
-    ObWaitData *d = g_new(ObWaitData, 1);
-    d->seq = seq;
-    d->feedback = YES;
+    AZWaitData *d = [[AZWaitData alloc] init];
+    [d set_seq: seq];
+    [d set_feedback: YES];
 
-    sn_startup_sequence_ref(d->seq);
+    sn_startup_sequence_ref([d seq]);
 
     return d;
 }
 
-- (void) waitDataFree: (ObWaitData *) d;
+- (void) waitDataFree: (AZWaitData *) d;
 {
     if (d) {
-        sn_startup_sequence_unref(d->seq);
+        sn_startup_sequence_unref([d seq]);
 
-        g_free(d);
+	DESTROY(d);
     }
 }
 
-- (ObWaitData*) waitFind: (const gchar *) iden;
+- (AZWaitData*) waitFind: (const gchar *) iden;
 {
-    ObWaitData *ret = NULL;
-    GSList *it;
+    AZWaitData *ret = nil;
+    int i, count = [sn_waits count];
 
-    for (it = sn_waits; it; it = g_slist_next(it)) {
-        ObWaitData *d = it->data;
-        if (!strcmp(iden, sn_startup_sequence_get_id(d->seq))) {
+    for (i = 0; i < count; i++) {
+        AZWaitData *d = [sn_waits objectAtIndex: i];
+        if (!strcmp(iden, sn_startup_sequence_get_id([d seq]))) {
             ret = d;
             break;
         }
@@ -203,18 +215,18 @@ static void sn_wait_destroy(void *data);
     return ret;
 }
 
-- (BOOL) snWaitTimeout: (void *) data;
+- (BOOL) snWaitTimeout: (id) data;
 {
-    ObWaitData *d = data;
-    d->feedback = NO;
+    AZWaitData *d = data;
+    [d set_feedback: NO];
     [[AZScreen defaultScreen] setRootCursor];
     return NO; /* don't repeat */
 }
 
 - (void) snWaitDestroy: (void *) data;
 {
-    ObWaitData *d = data;
-    sn_waits = g_slist_remove(sn_waits, d);
+    AZWaitData *d = data;
+    [sn_waits removeObject: d];
     [self waitDataFree: d];
 }
 
@@ -222,7 +234,7 @@ static void sn_wait_destroy(void *data);
 {
     SnStartupSequence *seq;
     BOOL change = NO;
-    ObWaitData *d;
+    AZWaitData *d;
 
     if (!(seq = sn_monitor_event_get_startup_sequence(ev)))
         return;
@@ -232,9 +244,9 @@ static void sn_wait_destroy(void *data);
     switch (sn_monitor_event_get_type(ev)) {
     case SN_MONITOR_EVENT_INITIATED:
         d = [self waitDataNew: seq];
-        sn_waits = g_slist_prepend(sn_waits, d);
+	[sn_waits insertObject: d atIndex: 0];
         /* 30 second timeout for apps to start */
-	[mainLoop addTimeoutHandler: sn_wait_timeout
+	[mainLoop addTimeout: self handler: @selector(snWaitTimeout:)
 		        microseconds: 30 & G_USEC_PER_SEC
 			data: d
 			notify: sn_wait_destroy];
@@ -247,8 +259,8 @@ static void sn_wait_destroy(void *data);
     case SN_MONITOR_EVENT_COMPLETED:
     case SN_MONITOR_EVENT_CANCELED:
         if ((d = [self waitFind: sn_startup_sequence_get_id(seq)])) {
-            d->feedback = NO;
-	    [mainLoop removeTimeoutHandler: sn_wait_timeout
+            [d set_feedback: NO];
+	    [mainLoop removeTimeout: self handler: @selector(snWaitTimeout:)
 		                      data: d];
             change = YES;
         }
@@ -269,10 +281,12 @@ static void sn_event_func(SnMonitorEvent *event, void *data)
   [[AZStartupHandler defaultHandler] snEventFunc: event data: data];
 }
 
+#if 0
 static gboolean sn_wait_timeout(void *data)
 {
   [[AZStartupHandler defaultHandler] snWaitTimeout: data];
 }
+#endif
 
 static void sn_wait_destroy(void *data)
 {

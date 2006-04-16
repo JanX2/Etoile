@@ -37,8 +37,8 @@ static BOOL hide_timeout(void *data);
 static BOOL show_timeout(void *data);
 
 @interface AZDock (AZPrivate)
-- (BOOL) hideTimeout;
-- (BOOL) showTimeout;
+- (BOOL) hideTimeout: (id) data;
+- (BOOL) showTimeout: (id) data;
 @end
 
 @implementation AZDock
@@ -529,19 +529,19 @@ static BOOL show_timeout(void *data);
   AZMainLoop *mainLoop = [AZMainLoop mainLoop];
     if (!hide) {
         if (hidden && config_dock_hide) {
-	  [mainLoop addTimeoutHandler: (GSourceFunc)show_timeout
-		         microseconds: config_dock_show_delay
-		 	         data: NULL notify: NULL];
+	  [mainLoop addTimeout: self handler: @selector(showTimeout:)
+		  microseconds: config_dock_show_delay
+		 	  data: nil notify: NULL];
         } else if (!hidden && config_dock_hide) {
-	    [mainLoop removeTimeoutHandler: (GSourceFunc)hide_timeout];
+	    [mainLoop removeTimeout: self handler: @selector(hideTimeout:)];
         }
     } else {
         if (!hidden && config_dock_hide) {
-	  [mainLoop addTimeoutHandler: (GSourceFunc)hide_timeout
+	  [mainLoop addTimeout: self handler: @selector(hideTimeout:)
 		         microseconds: config_dock_hide_delay
-		 	         data: NULL notify: NULL];
+		 	         data: nil notify: NULL];
         } else if (hidden && config_dock_hide) {
-	    [mainLoop removeTimeoutHandler: (GSourceFunc)show_timeout];
+	    [mainLoop removeTimeout: self handler: @selector(showTimeout:)];
         }
     }
 }
@@ -602,7 +602,7 @@ static BOOL show_timeout(void *data);
 @end
 
 @implementation AZDock (AZPrivate)
-- (BOOL) hideTimeout
+- (BOOL) hideTimeout: (id) data
 {
     /* hide */
     hidden = YES;
@@ -611,7 +611,7 @@ static BOOL show_timeout(void *data);
     return NO; /* don't repeat */
 }
 
-- (BOOL) showTimeout
+- (BOOL) showTimeout: (id) data
 {
     /* show */
     hidden = NO;
@@ -621,6 +621,7 @@ static BOOL show_timeout(void *data);
 }
 @end
 
+#if 0
 static BOOL hide_timeout(void *data)
 {
   // data is not set
@@ -631,4 +632,4 @@ static BOOL show_timeout(void *data)
 {
   [[AZDock defaultDock] showTimeout];
 }
-
+#endif

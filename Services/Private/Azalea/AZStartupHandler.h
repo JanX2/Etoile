@@ -31,7 +31,7 @@
 #ifdef USE_LIBSN
   SnDisplay *sn_display;
   SnMonitorContext *sn_context;
-  GSList *sn_waits; /* list of ObWaitDatas */
+  NSMutableArray *sn_waits; /* list of ObWaitDatas */
 #endif
 }
 

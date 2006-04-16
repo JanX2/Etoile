@@ -62,9 +62,9 @@ typedef struct
 
 /* callback */
 //static void event_client_dest(AZClient *client, void *data);
-static gboolean focus_delay_func(void *data);
+//static gboolean focus_delay_func(void *data);
 //static void focus_delay_client_dest(AZClient *client, void *data);
-static gboolean menu_hide_delay_func(void *data);
+//static gboolean menu_hide_delay_func(void *data);
 
 #define INVALID_FOCUSIN(e) ((e)->xfocus.detail == NotifyInferior || \
                             (e)->xfocus.detail == NotifyAncestor || \
@@ -126,8 +126,8 @@ static AZEventHandler *sharedInstance;
 /* callback */
 - (void) processEvent: (XEvent *) e data: (void *) data;
 - (void) clientDestroy: (NSNotification *) not;
-- (BOOL) focusDelayFunc: (void *) data;
-- (BOOL) menuHideDelayFunc: (void *) data;
+- (BOOL) focusDelayFunc: (id) data;
+- (BOOL) menuHideDelayFunc: (id) data;
 @end
 
 @implementation AZEventHandler
@@ -207,19 +207,19 @@ static AZEventHandler *sharedInstance;
     if ([client normal] && [client canFocus]) {
         if (config_focus_delay) {
 	  AZMainLoop *mainLoop = [AZMainLoop mainLoop];
-	  [mainLoop removeTimeoutHandler: focus_delay_func];
-	  [mainLoop addTimeoutHandler: focus_delay_func
+	  [mainLoop removeTimeout: self handler: @selector(focusDelayFunc:)];
+	  [mainLoop addTimeout: self handler: @selector(focusDelayFunc:)
 		         microseconds: config_focus_delay
 			 data: client 
 			 notify: NULL];
         } else
-            focus_delay_func(client);
+	    [self focusDelayFunc: client];
     }
 }
 
 - (void) haltFocusDelay
 {
-  [[AZMainLoop mainLoop] removeTimeoutHandler: focus_delay_func];
+  [[AZMainLoop mainLoop] removeTimeout: self handler: @selector(focusDelayFunc:)];
 }
 
 - (void) ignoreQueuedEnters
@@ -380,9 +380,10 @@ static AZEventHandler *sharedInstance;
                 }
 
                 menu_can_hide = NO;
-		[[AZMainLoop mainLoop] addTimeoutHandler: menu_hide_delay_func
+		[[AZMainLoop mainLoop] addTimeout: self 
+			     handler: @selector(menuHideDelayFunc:)
 	                     microseconds: config_menu_hide_delay * 1000
-			     data: NULL notify: NULL];
+			     data: nil notify: NULL];
 
                 if (e->type == ButtonPress || e->type == ButtonRelease ||
                     e->type == MotionNotify) {
@@ -564,7 +565,8 @@ static AZEventHandler *sharedInstance;
         case OB_FRAME_CONTEXT_FRAME:
             if (config_focus_follow && config_focus_delay)
 	    {
-	      [[AZMainLoop mainLoop] removeTimeoutHandler: focus_delay_func
+	      [[AZMainLoop mainLoop] removeTimeout: self 
+		               handler: @selector(focusDelayFunc:)
 		                     data: client];
 	    }
             break;
@@ -1121,13 +1123,13 @@ static AZEventHandler *sharedInstance;
     }
 }
 
-- (BOOL) menuHideDelayFunc: (void *) data
+- (BOOL) menuHideDelayFunc: (id) data
 {
     menu_can_hide = YES;
     return NO; /* no repeat */
 }
 
-- (BOOL) focusDelayFunc: (void *) data
+- (BOOL) focusDelayFunc: (id) data
 {
     AZClient *c = data;
 
@@ -1142,7 +1144,7 @@ static AZEventHandler *sharedInstance;
 - (void) clientDestroy: (NSNotification *) not
 {
   AZClient *client = [not object];
-  [[AZMainLoop mainLoop] removeTimeoutHandler: focus_delay_func
+  [[AZMainLoop mainLoop] removeTimeout: self handler: @selector(focusDelayFunc:)
 	                 data: client];
 
   if (client == [[AZFocusManager defaultManager] focus_hilite])
@@ -1418,6 +1420,7 @@ static AZEventHandler *sharedInstance;
 
 @end
 
+#if 0
 /* callback */
 static gboolean focus_delay_func(void *data)
 {
@@ -1428,4 +1431,4 @@ static gboolean menu_hide_delay_func(void *data)
 {
   [[AZEventHandler defaultHandler] menuHideDelayFunc: data];
 }
-
+#endif

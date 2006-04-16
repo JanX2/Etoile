@@ -49,7 +49,7 @@ static Window createWindow(Window parent, unsigned long mask,
 }
 
 static void flash_done(void *data);
-static BOOL flash_timeout(void *data);
+//static BOOL flash_timeout(void *data);
 
 @interface AZFrame (AZPrivate)
 - (void) layoutTitle;
@@ -57,7 +57,7 @@ static BOOL flash_timeout(void *data);
 - (void) freeThemeStatics;
 
 /* callback */
-- (BOOL) flashTimeout;
+- (BOOL) flashTimeout: (id) data;
 - (void) flashDone;
 @end
 
@@ -158,8 +158,9 @@ static BOOL flash_timeout(void *data);
     [window_map removeObjectForKey: [NSNumber numberWithInt: tlresize]];
     [window_map removeObjectForKey: [NSNumber numberWithInt: trresize]];
 
-    [[AZMainLoop mainLoop] removeTimeoutHandler: (GSourceFunc)flash_timeout
-	                                   data: self];
+    [[AZMainLoop mainLoop] removeTimeout: self 
+	                         handler: @selector(flashTimeout:)
+	                            data: self];
 
     /* These two lines are from frame_free(). 
      * And obFrame is released in dealloc;
@@ -542,7 +543,8 @@ static BOOL flash_timeout(void *data);
 
     if (!flashing)
     {
-      [[AZMainLoop mainLoop] addTimeoutHandler: (GSourceFunc)flash_timeout
+      [[AZMainLoop mainLoop] addTimeout: self 
+	                     handler: @selector(flashTimeout:)
 	                     microseconds: G_USEC_PER_SEC * 0.6
 			     data: self 
 			     notify: flash_done];
@@ -878,7 +880,7 @@ static BOOL flash_timeout(void *data);
       [self adjustFocusWithHilite: focused];
 }
 
-- (BOOL) flashTimeout
+- (BOOL) flashTimeout: (id) data
 {
     GTimeVal now;
 
@@ -987,9 +989,11 @@ static void flash_done(void *data)
   [frame flashDone];
 }
 
+#if 0
 static BOOL flash_timeout(void *data)
 {
   AZFrame *frame = (AZFrame *) data;
   return [frame flashTimeout];
 }
+#endif
 

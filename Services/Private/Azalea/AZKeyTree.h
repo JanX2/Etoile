@@ -20,8 +20,6 @@
 #import <Foundation/Foundation.h>
 #import "action.h"
 
-#import <glib.h>
-
 @interface AZKeyBindingTree: NSObject
 {
     unsigned int state;

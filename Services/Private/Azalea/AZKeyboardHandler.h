@@ -18,7 +18,6 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <glib.h>
 #import <X11/Xlib.h>
 
 @class AZAction;
