@@ -91,12 +91,11 @@ BOOL config_resist_layers_below;
 */
 
 static void parse_key(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                      GList *keylist)
+                      NSMutableArray *keylist)
 {
     NSString *key;
     AZAction *action;
     xmlNodePtr n, nact;
-    GList *it;
 
     if ((n = parse_find_node("chainQuitKey", node))) {
         key = parse_string(doc, n);
@@ -108,17 +107,18 @@ static void parse_key(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
     n = parse_find_node("keybind", node);
     while (n) {
         if (parse_attr_string("key", n, &key)) {
-            keylist = g_list_append(keylist, g_strdup([key cString]));
+	    if (keylist == nil) {
+	      keylist = AUTORELEASE([[NSMutableArray alloc] init]);
+	    }
+	    [keylist addObject: key];
 
             parse_key(parser, doc, n->children, keylist);
 
-            it = g_list_last(keylist);
-            g_free(it->data);
-            keylist = g_list_delete_link(keylist, it);
+	    [keylist removeLastObject];
         }
         n = parse_find_node("keybind", n->next);
     }
-    if (keylist) {
+    if ([keylist count]) {
         nact = parse_find_node("action", node);
         while (nact) {
             if ((action = action_parse(doc, nact,
@@ -443,7 +443,7 @@ static void parse_resistance(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 
 typedef struct
 {
-    const gchar *key;
+    NSString *key;
     NSString *actname;
 } ObDefKeyBind;
 
@@ -451,15 +451,15 @@ static void bind_default_keyboard()
 {
     ObDefKeyBind *it;
     ObDefKeyBind binds[] = {
-        { "A-Tab", @"NextWindow" },
-        { "S-A-Tab", @"PreviousWindow" },
-        { "A-F4", @"Close" },
+        { @"A-Tab", @"NextWindow" },
+        { @"S-A-Tab", @"PreviousWindow" },
+        { @"A-F4", @"Close" },
         { NULL, nil}
     };
 
     for (it = binds; it->key; ++it) {
-        GList *l = g_list_append(NULL, g_strdup(it->key));
-	[[AZKeyboardHandler defaultHandler] bind: l
+	[[AZKeyboardHandler defaultHandler] 
+		bind: [NSArray arrayWithObjects: it->key, nil]
 		action: action_from_string(it->actname, OB_USER_ACTION_KEYBOARD_KEY)];
     }
 }

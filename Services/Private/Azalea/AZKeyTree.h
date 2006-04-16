@@ -47,7 +47,7 @@
 @end
 
 void tree_destroy(AZKeyBindingTree *tree);
-AZKeyBindingTree *tree_build(GList *keylist);
+AZKeyBindingTree *tree_build(NSArray *keylist);
 void tree_assimilate(AZKeyBindingTree *node);
 AZKeyBindingTree *tree_find(AZKeyBindingTree *search, BOOL *conflict);
 

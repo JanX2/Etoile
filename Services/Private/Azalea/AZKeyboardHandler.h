@@ -39,7 +39,7 @@
 - (void) startup: (BOOL) reconfig;
 - (void) shutdown: (BOOL) reconfig;
 
-- (BOOL) bind: (GList *) keylist action: (AZAction *) action;
+- (BOOL) bind: (NSArray *) keylist action: (AZAction *) action;
 - (void) unbindAll;
 
 - (void) processEvent: (XEvent *) e forClient: (AZClient *) client;

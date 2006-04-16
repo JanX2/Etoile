@@ -59,22 +59,22 @@ void tree_destroy(AZKeyBindingTree *tree)
     DESTROY(tree);
 }
 
-AZKeyBindingTree *tree_build(GList *keylist)
+AZKeyBindingTree *tree_build(NSArray *keylist)
 {
-    GList *it;
-    AZKeyBindingTree *ret = NULL, *p;
+    AZKeyBindingTree *ret = nil, *p;
+    int i, count = [keylist count];
 
-    if (g_list_length(keylist) <= 0)
-        return NULL; /* nothing in the list.. */
+    if (count <= 0)
+        return nil; /* nothing in the list.. */
 
-    for (it = g_list_last(keylist); it; it = g_list_previous(it)) {
+    for (i = count-1; i > -1; i--) {
         p = ret;
 	ret = [[AZKeyBindingTree alloc] init];
         [ret set_first_child: p];
 	unsigned int _state, _key;
-        if (!translate_key([NSString stringWithCString: it->data], &_state, &_key)) {
+        if (!translate_key([keylist objectAtIndex: i], &_state, &_key)) {
             tree_destroy(ret);
-            return NULL;
+            return nil;
         } else {
 	  [ret set_state: _state];
 	  [ret set_key: _key];

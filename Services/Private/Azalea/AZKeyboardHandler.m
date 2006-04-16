@@ -105,13 +105,13 @@ static gboolean chain_timeout(gpointer data)
     curpos = nil;
 }
 
-- (BOOL) bind: (GList *) keylist action: (AZAction *) action
+- (BOOL) bind: (NSArray *) keylist action: (AZAction *) action
 {
     AZKeyBindingTree *tree, *t;
     BOOL conflict;
     BOOL mods = YES;
 
-    NSAssert(keylist != NULL, @"keylist is NULL");
+    NSAssert(keylist != nil, @"keylist is nil");
     NSAssert(action != nil, @"action is NULL");
 
     if (!(tree = tree_build(keylist)))
@@ -120,7 +120,7 @@ static gboolean chain_timeout(gpointer data)
     if ((t = tree_find(tree, &conflict)) != NULL) {
         /* already bound to something, use the existing tree */
         tree_destroy(tree);
-        tree = NULL;
+        tree = nil;
     } else
         t = tree;
 
