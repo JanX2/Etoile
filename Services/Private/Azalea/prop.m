@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    prop.c for the Openbox window manager
@@ -158,12 +159,11 @@ void prop_startup()
 }
 
 #include <X11/Xutil.h>
-#include <glib.h>
 #include <string.h>
 
 /* this just isn't used... and it also breaks on 64bit, watch out
 static BOOL get(Window win, Atom prop, Atom type, gint size,
-                    guchar **data, gulong num)
+                    uchar **data, gulong num)
 {
     BOOL ret = FALSE;
     gint res;
@@ -188,112 +188,112 @@ static BOOL get(Window win, Atom prop, Atom type, gint size,
 */
 
 static BOOL get_prealloc(Window win, Atom prop, Atom type, gint size,
-                             guchar *data, gulong num)
+                             unsigned char *data, unsigned long num)
 {
-    BOOL ret = FALSE;
-    gint res;
-    guchar *xdata = NULL;
+    BOOL ret = NO;
+    int res;
+    unsigned char *xdata = NULL;
     Atom ret_type;
-    gint ret_size;
-    gulong ret_items, bytes_left;
-    glong num32 = 32 / size * num; /* num in 32-bit elements */
+    int ret_size;
+    unsigned long ret_items, bytes_left;
+    long num32 = 32 / size * num; /* num in 32-bit elements */
 
     res = XGetWindowProperty(ob_display, win, prop, 0l, num32,
                              FALSE, type, &ret_type, &ret_size,
                              &ret_items, &bytes_left, &xdata);
     if (res == Success && ret_items && xdata) {
         if (ret_size == size && ret_items >= num) {
-            guint i;
+            unsigned int i;
             for (i = 0; i < num; ++i)
                 switch (size) {
                 case 8:
                     data[i] = xdata[i];
                     break;
                 case 16:
-                    ((guint16*)data)[i] = ((gushort*)xdata)[i];
+                    ((unsigned short *)data)[i] = ((unsigned short *)xdata)[i];
                     break;
                 case 32:
-                    ((guint32*)data)[i] = ((gulong*)xdata)[i];
+                    ((unsigned long *)data)[i] = ((unsigned long*)xdata)[i];
                     break;
                 default:
-                    g_assert_not_reached(); /* unhandled size */
+		    NSLog( @"Should not reach here"); /* unhandled size */
                 }
-            ret = TRUE;
+            ret = YES;
         }
         XFree(xdata);
     }
     return ret;
 }
 
-static BOOL get_all(Window win, Atom prop, Atom type, gint size,
-                        guchar **data, guint *num)
+static BOOL get_all(Window win, Atom prop, Atom type, int size,
+                        unsigned char **data, unsigned int *num)
 {
-    BOOL ret = FALSE;
-    gint res;
-    guchar *xdata = NULL;
+    BOOL ret = NO;
+    int res;
+    unsigned char *xdata = NULL;
     Atom ret_type;
-    gint ret_size;
-    gulong ret_items, bytes_left;
+    int ret_size;
+    unsigned long ret_items, bytes_left;
 
     res = XGetWindowProperty(ob_display, win, prop, 0l, G_MAXLONG,
                              FALSE, type, &ret_type, &ret_size,
                              &ret_items, &bytes_left, &xdata);
     if (res == Success) {
         if (ret_size == size && ret_items > 0) {
-            guint i;
+            unsigned int i;
 
-            *data = g_malloc(ret_items * (size / 8));
+            *data = calloc(ret_items,  (size / 8));
             for (i = 0; i < ret_items; ++i)
                 switch (size) {
                 case 8:
                     (*data)[i] = xdata[i];
                     break;
                 case 16:
-                    ((guint16*)*data)[i] = ((gushort*)xdata)[i];
+                    ((unsigned short *)*data)[i] = ((unsigned short *)xdata)[i];
                     break;
                 case 32:
-                    ((guint32*)*data)[i] = ((gulong*)xdata)[i];
+                    ((unsigned long *)*data)[i] = ((unsigned long *)xdata)[i];
                     break;
                 default:
-                    g_assert_not_reached(); /* unhandled size */
+		    NSLog( @"Should not reach here"); /* unhandled size */
                 }
             *num = ret_items;
-            ret = TRUE;
+            ret = YES;
         }
         XFree(xdata);
     }
     return ret;
 }
 
-static BOOL get_stringlist(Window win, Atom prop, gchar ***list, gint *nstr)
+static BOOL get_stringlist(Window win, Atom prop, char ***list, int *nstr)
 {
     XTextProperty tprop;
-    BOOL ret = FALSE;
+    BOOL ret = NO;
 
     if (XGetTextProperty(ob_display, win, &tprop, prop) && tprop.nitems) {
         if (XTextPropertyToStringList(&tprop, list, nstr))
-            ret = TRUE;
+            ret = YES;
         XFree(tprop.value);
     }
     return ret;
 }
 
-BOOL prop_get32(Window win, Atom prop, Atom type, guint32 *ret)
+BOOL prop_get32(Window win, Atom prop, Atom type, unsigned long *ret)
 {
-    return get_prealloc(win, prop, type, 32, (guchar*)ret, 1);
+    return get_prealloc(win, prop, type, 32, (unsigned char*)ret, 1);
 }
 
-BOOL prop_get_array32(Window win, Atom prop, Atom type, guint32 **ret,
-                          guint *nret)
+BOOL prop_get_array32(Window win, Atom prop, Atom type, unsigned long **ret,
+                          unsigned int *nret)
 {
     return get_all(win, prop, type, 32, (guchar**)ret, nret);
 }
 
-BOOL prop_get_string_locale(Window win, Atom prop, gchar **ret)
+BOOL prop_get_string_locale(Window win, Atom prop, char **ret)
 {
-    gchar **list;
-    gint nstr;
-    gchar *s;
+    char **list;
+    int nstr;
+    char *s;
 
     if (get_stringlist(win, prop, &list, &nstr) && nstr) {
         s = g_convert(list[0], strlen(list[0]), "UTF-8", "ISO-8859-1",
@@ -301,19 +301,19 @@ BOOL prop_get_string_locale(Window win, Atom prop, gchar **ret)
         XFreeStringList(list);
         if (s) {
             *ret = s;
-            return TRUE;
+            return YES;
         }
     }
     return FALSE;
 }
 
-BOOL prop_get_strings_locale(Window win, Atom prop, gchar ***ret)
+BOOL prop_get_strings_locale(Window win, Atom prop, char ***ret)
 {
     GSList *strs = NULL, *it;
-    gchar *raw, *p;
-    guint num, i, count = 0;
+    char *raw, *p;
+    unsigned int num, i, count = 0;
 
-    if (get_all(win, prop, prop_atoms.string, 8, (guchar**)&raw, &num)) {
+    if (get_all(win, prop, prop_atoms.string, 8, (unsigned char**)&raw, &num)) {
 
         p = raw;
         while (p < raw + num - 1) {
@@ -334,34 +334,34 @@ BOOL prop_get_strings_locale(Window win, Atom prop, gchar ***ret)
         }
         g_free(raw);
         g_slist_free(strs);
-        return TRUE;
+        return YES;
     }
-    return FALSE;
+    return NO;
 }
 
-BOOL prop_get_string_utf8(Window win, Atom prop, gchar **ret)
+BOOL prop_get_string_utf8(Window win, Atom prop, char **ret)
 {
-    gchar *raw;
-    gchar *str;
-    guint num;
+    char *raw;
+    char *str;
+    unsigned int num;
      
-    if (get_all(win, prop, prop_atoms.utf8, 8, (guchar**)&raw, &num)) {
+    if (get_all(win, prop, prop_atoms.utf8, 8, (unsigned char**)&raw, &num)) {
         str = g_strndup(raw, num); /* grab the first string from the list */
         g_free(raw);
         if (g_utf8_validate(str, -1, NULL)) {
             *ret = str;
-            return TRUE;
+            return YES;
         }
         g_free(str);
     }
-    return FALSE;
+    return NO;
 }
 
-BOOL prop_get_strings_utf8(Window win, Atom prop, gchar ***ret)
+BOOL prop_get_strings_utf8(Window win, Atom prop, char ***ret)
 {
     GSList *strs = NULL, *it;
-    gchar *raw, *p;
-    guint num, i, count = 0;
+    char *raw, *p;
+    unsigned int num, i, count = 0;
 
     if (get_all(win, prop, prop_atoms.utf8, 8, (guchar**)&raw, &num)) {
 
@@ -382,34 +382,34 @@ BOOL prop_get_strings_utf8(Window win, Atom prop, gchar ***ret)
         }
         g_free(raw);
         g_slist_free(strs);
-        return TRUE;
+        return YES;
     }
-    return FALSE;
+    return NO;
 }
 
-void prop_set32(Window win, Atom prop, Atom type, gulong val)
+void prop_set32(Window win, Atom prop, Atom type, unsigned long val)
 {
     XChangeProperty(ob_display, win, prop, type, 32, PropModeReplace,
-                    (guchar*)&val, 1);
+                    (unsigned char*)&val, 1);
 }
 
-void prop_set_array32(Window win, Atom prop, Atom type, gulong *val,
-                      guint num)
+void prop_set_array32(Window win, Atom prop, Atom type, unsigned long *val,
+                      unsigned int num)
 {
     XChangeProperty(ob_display, win, prop, type, 32, PropModeReplace,
-                    (guchar*)val, num);
+                    (unsigned char*)val, num);
 }
 
-void prop_set_string_utf8(Window win, Atom prop, gchar *val)
+void prop_set_string_utf8(Window win, Atom prop, char *val)
 {
     XChangeProperty(ob_display, win, prop, prop_atoms.utf8, 8,
-                    PropModeReplace, (guchar*)val, strlen(val));
+                    PropModeReplace, (unsigned char*)val, strlen(val));
 }
 
-void prop_set_strings_utf8(Window win, Atom prop, gchar **strs)
+void prop_set_strings_utf8(Window win, Atom prop, char **strs)
 {
     GString *str;
-    gchar **s;
+    char **s;
 
     str = g_string_sized_new(0);
     for (s = strs; *s; ++s) {
@@ -417,7 +417,7 @@ void prop_set_strings_utf8(Window win, Atom prop, gchar **strs)
         str = g_string_append_c(str, '\0');
     }
     XChangeProperty(ob_display, win, prop, prop_atoms.utf8, 8,
-                    PropModeReplace, (guchar*)str->str, str->len);
+                    PropModeReplace, (unsigned char*)str->str, str->len);
     g_string_free(str, TRUE);
 }
 
@@ -426,8 +426,8 @@ void prop_erase(Window win, Atom prop)
     XDeleteProperty(ob_display, win, prop);
 }
 
-void prop_message(Window about, Atom messagetype, glong data0, glong data1,
-                  glong data2, glong data3, glong mask)
+void prop_message(Window about, Atom messagetype, long data0, long data1,
+                  long data2, long data3, long mask)
 {
     XEvent ce;
     ce.xclient.type = ClientMessage;

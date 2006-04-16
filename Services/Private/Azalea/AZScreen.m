@@ -97,9 +97,7 @@ static AZScreen *sharedInstance;
                  ROOT_EVENTMASK);
     AZXErrorSetIgnore(NO);
     if (xerror_occured) {
-        g_warning("A window manager is already running on screen %d",
-                  ob_screen);
-
+        NSLog(@"A window manager is already running on screen %d", ob_screen);
         XDestroyWindow(ob_display, screen_support_win);
         return NO;
     }
@@ -124,7 +122,7 @@ static AZScreen *sharedInstance;
     /* set the _NET_SUPPORTED_ATOMS hint */
     num_support = 51;
     i = 0;
-    supported = g_new(unsigned long, num_support);
+    supported = calloc(sizeof(unsigned long), num_support);
     supported[i++] = prop_atoms.net_current_desktop;
     supported[i++] = prop_atoms.net_number_of_desktops;
     supported[i++] = prop_atoms.net_desktop_geometry;
@@ -176,14 +174,14 @@ static AZScreen *sharedInstance;
     supported[i++] = prop_atoms.net_moveresize_window;
     supported[i++] = prop_atoms.net_wm_moveresize;
     supported[i++] = prop_atoms.ob_wm_state_undecorated;
-    g_assert(i == num_support);
+    NSAssert(i == num_support, @"Out of range");
 /*
   supported[] = prop_atoms.net_wm_action_stick;
 */
 
     PROP_SETA32(RootWindow(ob_display, ob_screen),
                 net_supported, atom, supported, num_support);
-    g_free(supported);
+    free(supported);
 
     return YES;
 }
@@ -204,7 +202,7 @@ static AZScreen *sharedInstance;
 
     /* set the names */
     screen_desktop_names = [[NSMutableArray alloc] init];
-    _names = g_new(char*, g_slist_length(config_desktops_names) + 1);
+    _names = calloc(sizeof(char*), g_slist_length(config_desktops_names) + 1);
     for (i = 0, it = config_desktops_names; it; ++i, it = g_slist_next(it)) {
         [screen_desktop_names addObject: [NSString stringWithUTF8String: it->data]];
         _names[i] = it->data; /* dont strdup */
@@ -212,7 +210,7 @@ static AZScreen *sharedInstance;
     _names[i] = NULL;
     PROP_SETSS(RootWindow(ob_display, ob_screen),
                net_desktop_names, _names);
-    g_free(_names); /* dont free the individual strings */
+    free(_names); /* dont free the individual strings */
     _names = NULL;
 
     if (!reconfig)
@@ -261,7 +259,6 @@ static AZScreen *sharedInstance;
 {
     static int oldw = 0, oldh = 0;
     int w, h;
-    GList *it;
     unsigned long geometry[2];
 
     w = WidthOfScreen(ScreenOfDisplay(ob_display, ob_screen));
@@ -297,7 +294,7 @@ static AZScreen *sharedInstance;
     unsigned int i, old;
     unsigned long *viewport;
 
-    g_assert(num > 0);
+    NSAssert(num > 0, @"number of desktops is less than 0");
 
     if (screen_num_desktops == num) return;
 
@@ -307,10 +304,10 @@ static AZScreen *sharedInstance;
                net_number_of_desktops, cardinal, num);
 
     /* set the viewport hint */
-    viewport = g_new0(unsigned long, num * 2);
+    viewport = calloc(sizeof(unsigned long), num * 2);
     PROP_SETA32(RootWindow(ob_display, ob_screen),
                 net_desktop_viewport, cardinal, viewport, num * 2);
-    g_free(viewport);
+    free(viewport);
 
     /* the number of rows/columns will differ */
     [self updateLayout];
@@ -339,15 +336,6 @@ static AZScreen *sharedInstance;
     AZFocusManager *fManager = [AZFocusManager defaultManager];
     /* free our lists for the desktops which have disappeared */
     [fManager setNumberOfScreens: num old: old];
-#if 0
-    for (i = num; i < old; ++i)
-        g_list_free([fManager focus_order][i]);
-    /* realloc the array */
-    [fManager set_focus_order: g_renew(GList*, [fManager focus_order], num)];
-    /* set the new lists to be empty */
-    for (i = old; i < num; ++i)
-        [fManager focus_order][i] = NULL;
-#endif
 }
 
 - (unsigned int) numberOfDesktops
@@ -361,7 +349,7 @@ static AZScreen *sharedInstance;
     unsigned int old;
     AZStacking *stacking = [AZStacking stacking];
      
-    g_assert(num < screen_num_desktops);
+    NSAssert(num < screen_num_desktops, @"Set desktop out of range");
 
     old = screen_desktop;
     screen_desktop = num;
@@ -594,7 +582,6 @@ done_cycle:
 
 - (void) showDesktop: (BOOL) show
 {
-    GList *it;
     int i, count;
     AZStacking *stacking = [AZStacking stacking];
 
@@ -656,7 +643,7 @@ done_cycle:
     ObCorner corner;
     unsigned int rows;
     unsigned int cols;
-    guint32 *data;
+    unsigned long *data;
     unsigned int num;
     BOOL valid = NO;
 
@@ -1143,8 +1130,7 @@ done_cycle:
                        timestamp);
 
     if (XGetSelectionOwner(ob_display, wm_sn_atom) != screen_support_win) {
-        g_warning("Could not acquire window manager selection on screen %d",
-                  ob_screen);
+        NSLog(@"Warning: Could not acquire window manager selection on screen %d", ob_screen);
         return NO;
     }
 
@@ -1164,7 +1150,7 @@ done_cycle:
       }
 
       if (wait >= timeout) {
-          g_warning("Timeout expired while waiting for the current WM to die "
+          NSLog(@"Timeout expired while waiting for the current WM to die "
                     "on screen %d", ob_screen);
           return NO;
       }
@@ -1284,7 +1270,7 @@ done_cycle:
                  r % screen_desktop_layout.rows);
         }
     }
-    g_assert_not_reached();
+    NSAssert(0, @"Should not reach");
     return 0;
 }
 

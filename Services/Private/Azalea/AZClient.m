@@ -1057,7 +1057,7 @@
 
 - (void) updateProtocols
 {
-    guint32 *proto;
+    unsigned long *proto;
     unsigned int num_return, i;
 
     focus_notify = NO;
@@ -1363,7 +1363,7 @@ no_number:
 - (void) updateStrut
 {
     unsigned int num;
-    guint32 *data;
+    unsigned long *data;
     BOOL got = NO;
     StrutPartial _strut;
 
@@ -1418,7 +1418,7 @@ no_number:
 - (void) updateIcons;
 {
     unsigned int num;
-    guint32 *data;
+    unsigned long *data;
     unsigned int w, h, i, j;
 
     [self removeAllIcons];
@@ -1688,7 +1688,7 @@ no_number:
 - (void) getType
 {
     unsigned int num, i;
-    guint32 *val;
+    unsigned long *val;
 
     type = -1;
   
@@ -2878,7 +2878,7 @@ AZClient *AZUnderPointer()
 {
     AZScreen *screen = [AZScreen defaultScreen];
     unsigned int num_desktops = [screen numberOfDesktops];
-    guint32 d = num_desktops; /* an always-invalid value */
+    unsigned long d = num_desktops; /* an always-invalid value */
 
     if (PROP_GET32(window, net_wm_desktop, cardinal, &d)) {
         if (d >= num_desktops && d != DESKTOP_ALL)
@@ -2926,7 +2926,7 @@ AZClient *AZUnderPointer()
 
 - (void) getState
 {
-    guint32 *state;
+    unsigned long *state;
     unsigned int num;
   
     if (PROP_GETA32(window, net_wm_state, atom, &state, &num)) {
@@ -3013,7 +3013,7 @@ AZClient *AZUnderPointer()
 - (void) getMwmHints
 {
     unsigned int num;
-    guint32 *hints;
+    unsigned long *hints;
 
     mwmhints.flags = 0; /* default to none */
 

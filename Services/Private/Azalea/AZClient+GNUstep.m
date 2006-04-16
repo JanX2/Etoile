@@ -19,7 +19,7 @@
   unsigned long *data;
   unsigned int num;
   if (!prop_get_array32(window, prop_atoms.gnustep_wm_attr,
-		  prop_atoms.gnustep_wm_attr, (unsigned int **)&data, &num))
+		  prop_atoms.gnustep_wm_attr, (unsigned long **)&data, &num))
     return;
 
   if (num != 9) {

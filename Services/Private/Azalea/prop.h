@@ -1,3 +1,4 @@
+// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    prop.h for the Openbox window manager
@@ -20,7 +21,6 @@
 #define __atoms_h
 
 #include <X11/Xlib.h>
-#include <glib.h>
 #ifdef HAVE_STRING_H
 #  include <string.h>
 #endif
@@ -172,24 +172,24 @@ Atoms prop_atoms;
 
 void prop_startup();
 
-BOOL prop_get32(Window win, Atom prop, Atom type, guint32 *ret);
-BOOL prop_get_array32(Window win, Atom prop, Atom type, guint32 **ret,
-                          guint *nret);
-BOOL prop_get_string_locale(Window win, Atom prop, gchar **ret);
-BOOL prop_get_string_utf8(Window win, Atom prop, gchar **ret);
-BOOL prop_get_strings_locale(Window win, Atom prop, gchar ***ret);
-BOOL prop_get_strings_utf8(Window win, Atom prop, gchar ***ret);
+BOOL prop_get32(Window win, Atom prop, Atom type, unsigned long *ret);
+BOOL prop_get_array32(Window win, Atom prop, Atom type, unsigned long **ret,
+                          unsigned int *nret);
+BOOL prop_get_string_locale(Window win, Atom prop, char **ret);
+BOOL prop_get_string_utf8(Window win, Atom prop, char **ret);
+BOOL prop_get_strings_locale(Window win, Atom prop, char ***ret);
+BOOL prop_get_strings_utf8(Window win, Atom prop, char ***ret);
 
-void prop_set32(Window win, Atom prop, Atom type, gulong val);
-void prop_set_array32(Window win, Atom prop, Atom type, gulong *val,
-                      guint num);
-void prop_set_string_utf8(Window win, Atom prop, gchar *val);
-void prop_set_strings_utf8(Window win, Atom prop, gchar **strs);
+void prop_set32(Window win, Atom prop, Atom type, unsigned long val);
+void prop_set_array32(Window win, Atom prop, Atom type, unsigned long *val,
+                      unsigned int num);
+void prop_set_string_utf8(Window win, Atom prop, char *val);
+void prop_set_strings_utf8(Window win, Atom prop, char **strs);
 
 void prop_erase(Window win, Atom prop);
 
-void prop_message(Window about, Atom messagetype, glong data0, glong data1,
-                  glong data2, glong data3, glong mask);
+void prop_message(Window about, Atom messagetype, long data0, long data1,
+                  long data2, long data3, long mask);
 
 #define PROP_GET32(win, prop, type, ret) \
     (prop_get32(win, prop_atoms.prop, prop_atoms.type, ret))
