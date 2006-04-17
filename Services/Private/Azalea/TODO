@@ -21,6 +21,8 @@ GNUstep window protocol
 
 Bugs
 
+4. Session doesn't work because when Azalea starts,
+   the environment is not set by GNUstep.sh yet.
 3. Use openbox/test/urgent and close window when it is unfocosed.
    OpenBox (and Azalea) will crash.
    It's a memory management problem. Hope to resolve after porting.
