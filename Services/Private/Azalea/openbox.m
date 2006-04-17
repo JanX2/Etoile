@@ -1,5 +1,8 @@
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
+   openbox.m for the Azalea window manager
+   Copyright (c) 2006        Yen-Ju Chen
+
    openbox.c for the Openbox window manager
    Copyright (c) 2004        Mikael Magnusson
    Copyright (c) 2003        Ben Jansens
@@ -32,15 +35,17 @@
 #import "AZMouseHandler.h"
 #import "AZMenuManager.h"
 
-#include "openbox.h"
-#include "session.h"
-#include "prop.h"
-#include "extensions.h"
-#include "grab.h"
-#include "config.h"
-#include "parse.h"
-#include "render/render.h"
-#include "render/theme.h"
+#import "openbox.h"
+#import "session.h"
+#import "prop.h"
+#import "extensions.h"
+#import "grab.h"
+#import "config.h"
+#import "parse.h"
+#import "render/render.h"
+#import "render/theme.h"
+
+#import <glib.h>
 
 #ifdef HAVE_FCNTL_H
 #  include <fcntl.h>
@@ -88,10 +93,10 @@ static Cursor    cursors[OB_NUM_CURSORS];
 static KeyCode   keys[OB_NUM_KEYS];
 static int      exitcode = 0;
 
-static void signal_handler(int signal, gpointer data);
-static void parse_args(int argc, gchar **argv);
+static void signal_handler(int signal, void *data);
+static void parse_args(int argc, char **argv);
 
-int main(int argc, gchar **argv)
+int main(int argc, char **argv)
 {
 #ifdef DEBUG
     AZDebug_show_output(YES);
@@ -101,12 +106,6 @@ int main(int argc, gchar **argv)
 
     state = OB_STATE_STARTING;
 
-    g_set_prgname(argv[0]);
-
-    if (chdir(g_get_home_dir()) == -1)
-        g_warning("Unable to change to home directory (%s): %s",
-                  g_get_home_dir(), g_strerror(errno));
-     
     parse_paths_startup();
 
     session_startup(&argc, &argv);
@@ -121,8 +120,8 @@ int main(int argc, gchar **argv)
         ob_exit_with_error("Failed to set display as close-on-exec.");
 
     /* Initiate NSApp */
-    NSApplication *app = [NSApplication sharedApplication];
 #if ALTERNATIVE_RUN_LOOP
+    NSApplication *app = [NSApplication sharedApplication];
     AZApplication *AZApp = [AZApplication sharedApplication];
     [app setDelegate: AZApp];
 #endif
@@ -161,16 +160,16 @@ int main(int argc, gchar **argv)
 
     /* check for locale support */
     if (!XSupportsLocale())
-        g_warning("X server does not support locale.");
+        NSLog(@"Warning: X server does not support locale.");
     if (!XSetLocaleModifiers(""))
-        g_warning("Cannot set locale modifiers for the X server.");
+        NSLog(@"Warning: Cannot set locale modifiers for the X server.");
 
     /* set our error handler */
     XSetErrorHandler(AZXErrorHandler);
 
     /* set the DISPLAY environment variable for any lauched children, to the
        display we're using, so they open in the right place. */
-    putenv(g_strdup_printf("DISPLAY=%s", DisplayString(ob_display)));
+    putenv((char*)[[NSString stringWithFormat: @"DISPLAY=%s", DisplayString(ob_display)] cString]);
 
     /* create available cursors */
     cursors[OB_CURSOR_NONE] = None;
@@ -374,7 +373,7 @@ int main(int argc, gchar **argv)
     return exitcode;
 }
 
-static void signal_handler(int signal, gpointer data)
+static void signal_handler(int signal, void *data)
 {
     switch (signal) {
     case SIGUSR1:
@@ -398,36 +397,37 @@ static void signal_handler(int signal, gpointer data)
 
 static void print_version()
 {
-    g_print("Openbox %s\n", PACKAGE_VERSION);
-    g_print("Copyright (c) 2004 Mikael Magnusson\n");
-    g_print("Copyright (c) 2003 Ben Jansens\n\n");
-    g_print("This program comes with ABSOLUTELY NO WARRANTY.\n");
-    g_print("This is free software, and you are welcome to redistribute it\n");
-    g_print("under certain conditions. See the file COPYING for details.\n\n");
+    printf("Openbox %s\n", PACKAGE_VERSION);
+    printf("Copyright (c) 2006 Yen-ju Chen\n");
+    printf("Copyright (c) 2004 Mikael Magnusson\n");
+    printf("Copyright (c) 2003 Ben Jansens\n\n");
+    printf("This program comes with ABSOLUTELY NO WARRANTY.\n");
+    printf("This is free software, and you are welcome to redistribute it\n");
+    printf("under certain conditions. See the file COPYING for details.\n\n");
 }
 
 static void print_help()
 {
-    g_print("Syntax: openbox [options]\n\n");
-    g_print("Options:\n\n");
+    printf("Syntax: openbox [options]\n\n");
+    printf("Options:\n\n");
 #ifdef USE_SM
-    g_print("  --sm-disable        Disable connection to session manager\n");
-    g_print("  --sm-client-id ID   Specify session management ID\n");
-    g_print("  --sm-save-file FILE Specify file to load a saved session"
+    printf("  --sm-disable        Disable connection to session manager\n");
+    printf("  --sm-client-id ID   Specify session management ID\n");
+    printf("  --sm-save-file FILE Specify file to load a saved session"
             "from\n");
 #endif
-    g_print("  --replace           Replace the currently running window "
+    printf("  --replace           Replace the currently running window "
             "manager\n");
-    g_print("  --help              Display this help and exit\n");
-    g_print("  --version           Display the version and exit\n");
-    g_print("  --sync              Run in synchronous mode (this is slow and "
+    printf("  --help              Display this help and exit\n");
+    printf("  --version           Display the version and exit\n");
+    printf("  --sync              Run in synchronous mode (this is slow and "
             "meant for\n"
             "                      debugging X routines)\n");
-    g_print("  --debug             Display debugging output\n");
-    g_print("\nPlease report bugs at %s\n\n", PACKAGE_BUGREPORT);
+    printf("  --debug             Display debugging output\n");
+    printf("\nPlease report bugs at %s\n\n", PACKAGE_BUGREPORT);
 }
 
-static void parse_args(int argc, gchar **argv)
+static void parse_args(int argc, char **argv)
 {
     int i;
 
@@ -454,14 +454,14 @@ static void parse_args(int argc, gchar **argv)
     }
 }
 
-void ob_exit_with_error(gchar *msg)
+void ob_exit_with_error(char *msg)
 {
     g_critical(msg);
     session_shutdown();
     exit(EXIT_FAILURE);
 }
 
-void ob_restart_other(const gchar *path)
+void ob_restart_other(const char *path)
 {
     restart_path = g_strdup(path);
     ob_restart();

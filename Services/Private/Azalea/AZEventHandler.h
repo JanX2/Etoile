@@ -1,5 +1,7 @@
-// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
+
+   AZEventHandler.h for the Azalea window manager
+   Copyright (c) 2006        Yen-Ju Chen
 
    event.h for the Openbox window manager
    Copyright (c) 2003        Ben Jansens

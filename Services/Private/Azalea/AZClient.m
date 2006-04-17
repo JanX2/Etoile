@@ -1,6 +1,8 @@
-
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
    
+   AZClient.m for the Azalea window manager
+   Copyright (c) 2006        Yen-Ju Chen
+
    client.c for the Openbox window manager
    Copyright (c) 2004        Mikael Magnusson
    Copyright (c) 2003        Ben Jansens

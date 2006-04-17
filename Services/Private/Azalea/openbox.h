@@ -1,5 +1,8 @@
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
+   openbox.h for the Azalea window manager
+   Copyright (c) 2006        Yen-Ju Chen
+
    openbox.h for the Openbox window manager
    Copyright (c) 2003        Ben Jansens
 
@@ -25,7 +28,6 @@
 #include "render/render.h"
 #include "render/theme.h"
 
-#include <glib.h>
 #include <X11/Xlib.h>
 
 extern RrInstance *ob_rr_inst;
@@ -37,20 +39,20 @@ extern Display *ob_display;
 /*! The number of the screen on which we're running */
 extern int     ob_screen;
 
-extern gchar   *ob_sm_id;
+extern char   *ob_sm_id;
 extern BOOL ob_sm_use;
 extern BOOL ob_replace_wm;
 
 /* The state of execution of the window manager */
 ObState ob_state();
 
-void ob_restart_other(const gchar *path);
+void ob_restart_other(const char *path);
 void ob_restart();
 void ob_exit(int code);
 
 void ob_reconfigure();
 
-void ob_exit_with_error(gchar *msg);
+void ob_exit_with_error(char *msg);
 
 Cursor ob_cursor(ObCursor cursor);
 

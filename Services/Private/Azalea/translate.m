@@ -1,5 +1,7 @@
-// Modified by Yen-Ju
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
+
+   translate.m for the Azalea window manager
+   Copyright (c) 2006        Yen-Ju Chen
 
    translate.c for the Openbox window manager
    Copyright (c) 2004        Mikael Magnusson

@@ -1,4 +1,7 @@
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
+ 
+   client_list_menu.h for the Azalea window manager
+   Copyright (c) 2006        Yen-Ju Chen
 
    client_list_menu.h for the Openbox window manager
    Copyright (c) 2003        Ben Jansens

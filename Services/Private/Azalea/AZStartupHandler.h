@@ -1,5 +1,7 @@
-// Modified by Yen-Ju Chen
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
+
+   AZStartupHandler.h for the Azalea window manager
+   Copyright (c) 2006        Yen-Ju Chen
 
    startupnotify.h for the Openbox window manager
    Copyright (c) 2003        Ben Jansens

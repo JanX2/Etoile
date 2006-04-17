@@ -2,6 +2,7 @@
 
 	* Use c type in prop.
 	* Remove glib from action and config.
+	* Add missing COPYING.
 
 2006-04-15 Yen-Ju Chen <yjchenx at gmail>
 
