@@ -1,3 +1,8 @@
+2006-04-17  Quentin Mathe <qmathe@club-internet.fr>
+
+    * GNUmakefile: Modified to have EtoileMenuServer installed in 'System' 
+    rather than 'Local'.
+
 2006-03-04  Saso Kiselkov <diablos@manga.sk>
 
     Update based on 2006-03-04 21:03 version.
