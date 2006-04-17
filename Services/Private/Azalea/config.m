@@ -459,7 +459,7 @@ static void bind_default_keyboard()
     for (it = binds; it->key; ++it) {
 	[[AZKeyboardHandler defaultHandler] 
 		bind: [NSArray arrayWithObjects: it->key, nil]
-		action: action_from_string(it->actname, OB_USER_ACTION_KEYBOARD_KEY)];
+		action: [AZAction actionWithName: it->actname userAction: OB_USER_ACTION_KEYBOARD_KEY]];
     }
 }
 
@@ -540,7 +540,7 @@ static void bind_default_mouse()
         }
 	[[AZMouseHandler defaultHandler] bind: it->button
 		context: it->context mouseAction: it->mact
-                   action: action_from_string(it->actname, uact)];
+                   action: [AZAction actionWithName: it->actname userAction: uact]];
     }
 }
 

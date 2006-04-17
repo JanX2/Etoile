@@ -30,6 +30,10 @@
 typedef void (*ObMainLoopFdHandler) (int fd, void * data);
 typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
 
+/* this should be more than the number of possible signals on any
+ *  *    architecture... */
+#define NUM_SIGNALS 99
+
 @interface AZMainLoop: NSObject
 {
   NSMutableArray *timers;
@@ -41,6 +45,11 @@ typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
 
   BOOL run; /* do keep running */
   BOOL running; /* is still running */
+
+  /* Signal */
+  BOOL signal_fired;
+  unsigned int signals_fired[NUM_SIGNALS];
+  NSMutableArray *signal_handlers[NUM_SIGNALS];
 }
 
 - (void) addXHandler: (id <AZXHandler>) handler;

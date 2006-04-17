@@ -75,12 +75,10 @@ static NSMutableArray *desktop_menus;
 		[menu addSeparatorMenuEntry: -1];
             }
 
-            act = action_from_string(@"Activate",
-                                     OB_USER_ACTION_MENU_SELECTION);
+            act = [AZAction actionWithName: @"Activate" userAction: OB_USER_ACTION_MENU_SELECTION];
             [act data_pointer]->activate.any.c = c;
 	    [acts addObject: act];
-            act = action_from_string(@"Desktop",
-                                     OB_USER_ACTION_MENU_SELECTION);
+            act = [AZAction actionWithName: @"Desktop" userAction: OB_USER_ACTION_MENU_SELECTION];
             [act data_pointer]->desktop.desk = data;
 	    [acts addObject: act];
 	    e = [menu addNormalMenuEntry: i label: ([c iconic] ? [c icon_title] : [c title]) actions: acts];
@@ -101,7 +99,7 @@ static NSMutableArray *desktop_menus;
         AZAction* act;
         AZNormalMenuEntry *e;
 
-        act = action_from_string(@"Desktop", OB_USER_ACTION_MENU_SELECTION);
+        act = [AZAction actionWithName: @"Desktop" userAction: OB_USER_ACTION_MENU_SELECTION];
         [act data_pointer]->desktop.desk = data;
 	e = [menu addNormalMenuEntry: 0 label: @"Go there..." actions: [NSArray arrayWithObjects: act, nil]];
         if (data == [[AZScreen defaultScreen] desktop])

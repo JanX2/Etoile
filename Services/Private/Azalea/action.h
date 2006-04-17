@@ -157,7 +157,7 @@ union ActionData {
 
 typedef void (*AZActionFunc)(union ActionData *data);
 
-@interface AZAction: NSObject
+@interface AZAction: NSObject <NSCopying>
 {
     /* The func member acts like an enum to tell which one of the structs in
        the data union are valid.
@@ -165,6 +165,7 @@ typedef void (*AZActionFunc)(union ActionData *data);
     AZActionFunc func;
     union ActionData data;
 }
++ (AZAction *) actionWithName: (NSString *) name userAction: (ObUserAction) uact;
 - (id) initWithFunc: (AZActionFunc) func;
 - (AZActionFunc) func;
 - (union ActionData) data;
@@ -186,9 +187,8 @@ typedef void (*AZActionFunc)(union ActionData *data);
    action_resize_relative_vert - the delta
 */
 
-AZAction* action_from_string(NSString *name, ObUserAction uact);
+/* Autoreleased */
 AZAction* action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact);
-AZAction* action_copy(AZAction *a);
 
 /*! Executes a list of actions.
   @param c The client associated with the action. Can be NULL.

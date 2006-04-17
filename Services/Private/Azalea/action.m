@@ -68,6 +68,7 @@ typedef struct
     void (*setup)(AZAction **, ObUserAction uact);
 } ActionString;
 
+#if 0
 AZAction* action_copy(AZAction *src)
 {
     AZAction *a = [[AZAction alloc] initWithFunc: [src func]];
@@ -82,6 +83,7 @@ AZAction* action_copy(AZAction *src)
 
     return a;
 }
+#endif
 
 void setup_action_directional_focus_north(AZAction **a, ObUserAction uact)
 {
@@ -798,6 +800,29 @@ ActionString actionstrings[] =
         [a data_pointer]->any.interactive = NO;
 
 @implementation AZAction
++ (AZAction *) actionWithName: (NSString *) name userAction: (ObUserAction) uact
+{
+  AZAction *a = nil;
+  BOOL exist = NO;
+  int i;
+
+  for (i = 0; actionstrings[i].name; i++)
+    if ([name compare: actionstrings[i].name options: NSCaseInsensitiveSearch] == NSOrderedSame) {
+      exist = YES;
+      a = [[AZAction alloc] initWithFunc: actionstrings[i].func];
+      if (actionstrings[i].setup)
+        actionstrings[i].setup(&a, uact);
+      if (a)
+        INTERACTIVE_LIMIT(a, uact);
+      break;
+    }
+  if (!exist)
+    NSLog(@"Invalid action '%@' requested. No such action exists.", name);
+  if (!a)
+    NSLog(@"Invalid use of action '%@'. Action will be ignored.", name);
+  return AUTORELEASE(a);
+}
+
 - (AZActionFunc) func { return func; }
 - (union ActionData) data { return data; }
 - (union ActionData *) data_pointer { return &data; }
@@ -809,6 +834,7 @@ ActionString actionstrings[] =
   func = f;
   return self;
 }
+
 - (void) dealloc
 {
     /* deal with pointers */
@@ -818,30 +844,22 @@ ActionString actionstrings[] =
         DESTROY(data.showmenu.name);
     [super dealloc];
 }
-@end
 
-AZAction *action_from_string(NSString *name, ObUserAction uact)
+- (id) copyWithZone: (NSZone *) zone
 {
-    AZAction *a = nil;
-    BOOL exist = NO;
-    int i;
+    AZAction *a = [[AZAction allocWithZone: zone] initWithFunc: func];
 
-    for (i = 0; actionstrings[i].name; i++)
-	if ([name compare: actionstrings[i].name options: NSCaseInsensitiveSearch] == NSOrderedSame) {
-            exist = YES;
-            a = [[AZAction alloc] initWithFunc: actionstrings[i].func];
-            if (actionstrings[i].setup)
-                actionstrings[i].setup(&a, uact);
-            if (a)
-                INTERACTIVE_LIMIT(a, uact);
-            break;
-        }
-    if (!exist)
-        NSLog(@"Invalid action '%@' requested. No such action exists.", name);
-    if (!a)
-        NSLog(@"Invalid use of action '%@'. Action will be ignored.", name);
-    return AUTORELEASE(a);
+    [a set_data: data];
+
+    /* deal with pointers */
+    if ([a func] == action_execute || [a func] == action_restart)
+        [a data_pointer]->execute.path = [data.execute.path copy];
+    else if ([a func] == action_showmenu)
+        [a data_pointer]->showmenu.name = [data.showmenu.name copy];
+
+    return a;
 }
+@end
 
 AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
 {
@@ -850,7 +868,7 @@ AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
     xmlNodePtr n;
 
     if (parse_attr_string("name", node, &actname)) {
-        if ((act = action_from_string(actname, uact))) {
+        if ((act = [AZAction actionWithName: actname userAction: uact])) {
             if ([act func] == action_execute || [act func] == action_restart) {
                 if ((n = parse_find_node("execute", node->xmlChildrenNode))) {
                     ASSIGN([act data_pointer]->execute.path, ([parse_string(doc, n) stringByExpandingTildeInPath]));
@@ -1013,7 +1031,7 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
 
 void action_run_string(NSString *name, AZClient *c)
 {
-    AZAction *a = action_from_string(name, OB_USER_ACTION_NONE);
+    AZAction *a = [AZAction actionWithName: name userAction: OB_USER_ACTION_NONE];
     if (a == nil) {
       NSLog(@"Internal Error: Cannot get action from string: %@", name);
       return;
@@ -1024,7 +1042,6 @@ void action_run_string(NSString *name, AZClient *c)
 
 void action_execute(union ActionData *data)
 {
-#if 1
     if (data->execute.path) {
       NSString *p = nil;
       if ([data->execute.path isAbsolutePath])
@@ -1053,32 +1070,6 @@ void action_execute(union ActionData *data)
 	NSLog(@"Cannot find command %@", data->execute.path);
       }
     }
-#else
-    GError *e = NULL;
-    gchar *cmd, **argv = 0;
-    if (data->execute.path) {
-        cmd = g_filename_from_utf8([data->execute.path UTF8String], -1, NULL, NULL, NULL);
-        if (cmd) {
-            if (!g_shell_parse_argv (cmd, NULL, &argv, &e)) {
-                g_warning("failed to execute '%s': %s",
-                          cmd, e->message);
-                g_error_free(e);
-            } else {
-                if (!g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH |
-                                   G_SPAWN_DO_NOT_REAP_CHILD,
-                                   NULL, NULL, NULL, &e)) {
-                    g_warning("failed to execute '%s': %s",
-                              cmd, e->message);
-                    g_error_free(e);
-                }
-                g_strfreev(argv);
-            }
-            g_free(cmd);
-        } else {
-            g_warning("failed to convert '%s' from utf8", [data->execute.path cString]);
-        }
-    }
-#endif
 }
 
 void action_activate(union ActionData *data)

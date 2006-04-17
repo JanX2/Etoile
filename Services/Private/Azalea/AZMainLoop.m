@@ -27,29 +27,19 @@
 #import <signal.h>
 #import "action.h"
 
-/* this should be more than the number of possible signals on any
- *    architecture... */
-#define NUM_SIGNALS 99
-
 struct _ObMainLoop
 {
   int fd_x; /* The X fd is a special case! */
   int fd_max;
   GHashTable *fd_handlers;
   fd_set fd_set;
-
-  BOOL signal_fired;
-  unsigned int signals_fired[NUM_SIGNALS];
-  GSList *signal_handlers[NUM_SIGNALS];
 };
 
 typedef struct _ObMainLoop ObMainLoop;
-
-typedef struct _ObMainLoopSignalHandlerType ObMainLoopSignalHandlerType;
 typedef struct _ObMainLoopFdHandlerType     ObMainLoopFdHandlerType;
 
 /* all created ObMainLoops. Used by the signal handler to pass along signals */
-static GSList *all_loops;
+static NSMutableArray *all_loops = nil;
 
 /* signals are global to all loops */
 struct {
@@ -184,11 +174,29 @@ static void calc_max_fd(ObMainLoop *loop);
 - (void) set_timeout: (GTimeVal) t { timeout = t; }
 @end
 
-struct _ObMainLoopSignalHandlerType
+@interface AZMainLoopSignalHandler: NSObject
 {
     int signal;
     ObMainLoopSignalHandler func;
-};
+}
+- (void) fire;
+- (int) signal;
+- (ObMainLoopSignalHandler) func;
+- (void) set_signal: (int) signal;
+- (void) set_func: (ObMainLoopSignalHandler) func;
+@end
+
+@implementation AZMainLoopSignalHandler
+- (void) fire
+{
+  func(signal, NULL);
+}
+- (int) signal { return signal; }
+- (ObMainLoopSignalHandler) func { return func; }
+- (void) set_signal: (int) s { signal = s; }
+- (void) set_func: (ObMainLoopSignalHandler) f { func = f; }
+@end
+
 
 struct _ObMainLoopFdHandlerType
 {
@@ -210,6 +218,7 @@ static AZMainLoop *sharedInstance;
 - (void) insertTimer: (AZMainLoopTimer *) ins;
 - (BOOL) nearestTimeoutWait: (GTimeVal *) tm;
 - (void) dispatchTimer: (GTimeVal **) wait;
+- (void) handleSignal: (int) signal;
 @end
 
 @implementation AZMainLoop
@@ -293,15 +302,18 @@ static AZMainLoop *sharedInstance;
 - (void) addSignalHandler: (ObMainLoopSignalHandler) handler
                 forSignal: (int) signal
 {
-    ObMainLoopSignalHandlerType *h;
+    if (signal >= NUM_SIGNALS) return;
 
-    g_return_if_fail(signal < NUM_SIGNALS);
+    AZMainLoopSignalHandler *h = [[AZMainLoopSignalHandler alloc] init];
+    [h set_signal: signal];
+    [h set_func: handler];
 
-    h = g_new(ObMainLoopSignalHandlerType, 1);
-    h->signal = signal;
-    h->func = handler;
-    ob_main_loop->signal_handlers[h->signal] =
-        g_slist_prepend(ob_main_loop->signal_handlers[h->signal], h);
+    if (signal_handlers[signal]== nil)
+      signal_handlers[signal] = [[NSMutableArray alloc] init];
+
+    NSMutableArray *handlers = signal_handlers[signal];
+    [handlers insertObject: h atIndex: 0];
+    DESTROY(h);
 
     if (!all_signals[signal].installed) {
         struct sigaction action;
@@ -319,27 +331,26 @@ static AZMainLoop *sharedInstance;
 
 - (void) removeSignalHandler: (ObMainLoopSignalHandler) handler
 {
-    unsigned int i;
+    unsigned int i, j;
     GSList *it, *next;
 
     for (i = 0; i < NUM_SIGNALS; ++i) {
-        for (it = ob_main_loop->signal_handlers[i]; it; it = next) {
-            ObMainLoopSignalHandlerType *h = it->data;
+	NSMutableArray *handlers = signal_handlers[i];
+	if ((handlers == nil) || ([handlers count] == 0))
+          continue;
+	for (j = 0; j < [handlers count]; j++) {
+            AZMainLoopSignalHandler *h = [handlers objectAtIndex: j];
 
-            next = g_slist_next(it);
+            if ([h func] == handler) {
+		NSAssert(all_signals[[h signal]].installed > 0, @"Signal is not installed");
 
-            if (h->func == handler) {
-                g_assert(all_signals[h->signal].installed > 0);
-
-                all_signals[h->signal].installed--;
-                if (!all_signals[h->signal].installed) {
-                    sigaction(h->signal, &all_signals[h->signal].oldact, NULL);
+                all_signals[[h signal]].installed--;
+                if (!all_signals[[h signal]].installed) {
+                    sigaction([h signal], &all_signals[[h signal]].oldact, NULL);
                 }
 
-                ob_main_loop->signal_handlers[i] =
-                    g_slist_delete_link(ob_main_loop->signal_handlers[i], it);
-
-                g_free(h);
+		[handlers removeObject: h];
+		j--;
             }
         }
     }
@@ -349,7 +360,7 @@ static AZMainLoop *sharedInstance;
   to process */
 - (void) queueAction: (AZAction *) act
 {
-  [actionQueue addObject: action_copy(act)];
+  [actionQueue addObject: AUTORELEASE([act copy])];
 }
 
 - (void) willStartRunning
@@ -390,15 +401,14 @@ static AZMainLoop *sharedInstance;
     XEvent e;
     struct timeval *wait;
     fd_set selset;
-    GSList *it;
     AZAction *act;
 
     ObMainLoop *loop = ob_main_loop;
 
     while (run)
     {
-        if (loop->signal_fired) {
-            unsigned int i;
+        if (signal_fired) {
+            unsigned int i, j;
             sigset_t oldset;
 
             /* block signals so that we can do this without the data changing
@@ -406,16 +416,16 @@ static AZMainLoop *sharedInstance;
             sigprocmask(SIG_SETMASK, &all_signals_set, &oldset);
 
             for (i = 0; i < NUM_SIGNALS; ++i) {
-                while (loop->signals_fired[i]) {
-                    for (it = loop->signal_handlers[i];
-                            it; it = g_slist_next(it)) {
-                        ObMainLoopSignalHandlerType *h = it->data;
-                        h->func(i, NULL);
+                while (signals_fired[i]) {
+		    NSArray *handlers = signal_handlers[i];
+		    for (j = 0; j < [handlers count]; j++) {
+		        AZMainLoopSignalHandler *h = [handlers objectAtIndex: j];
+			[h fire];
                     }
-                    loop->signals_fired[i]--;
+                    signals_fired[i]--;
                 }
             }
-            loop->signal_fired = NO;
+            signal_fired = NO;
 
             sigprocmask(SIG_SETMASK, &oldset, NULL);
         } else if (XPending(ob_display)) {
@@ -458,7 +468,7 @@ static AZMainLoop *sharedInstance;
                the signal until 'wait' expires. possible solutions include
                using GStaticMutex, and having the signal handler set 'wait'
                to 0 */
-            if (!loop->signal_fired)
+            if (!signal_fired)
                 select(loop->fd_max + 1, &selset, NULL, NULL, wait);
 
             /* handle the X events with highest prioirity */
@@ -502,6 +512,8 @@ static AZMainLoop *sharedInstance;
 
     /* only do this if we're the first loop created */
     if (!all_loops) {
+        all_loops = [[NSMutableArray alloc] init];
+
         unsigned int i;
         struct sigaction action;
         sigset_t sigset;
@@ -528,7 +540,7 @@ static AZMainLoop *sharedInstance;
         }
     }
 
-  all_loops = g_slist_prepend(all_loops, loop);
+  [all_loops insertObject: self atIndex: 0];
 
   ob_main_loop = loop;
 
@@ -684,6 +696,25 @@ static AZMainLoop *sharedInstance;
   }
 }
 
+- (void) handleSignal: (int) sig
+{
+    unsigned int i;
+
+    for (i = 0; i < NUM_CORE_SIGNALS; ++i)
+        if (sig == core_signals[i]) {
+            /* XXX special case for signals that default to core dump.
+               but throw some helpful output here... */
+
+            fprintf(stderr, "Fuck yah. Core dump. (Signal=%d)\n", sig);
+
+            /* die with a core dump */
+            abort();
+        }
+
+    signal_fired = YES;
+    signals_fired[sig]++;
+}
+
 @end
 
 static void fd_handle_foreach(void * key,
@@ -701,26 +732,12 @@ static void fd_handle_foreach(void * key,
 
 static void sighandler(int sig)
 {
-    GSList *it;
-    unsigned int i;
+    if (sig >= NUM_SIGNALS) return;
 
-    g_return_if_fail(sig < NUM_SIGNALS);
-
-    for (i = 0; i < NUM_CORE_SIGNALS; ++i)
-        if (sig == core_signals[i]) {
-            /* XXX special case for signals that default to core dump.
-               but throw some helpful output here... */
-
-            fprintf(stderr, "Fuck yah. Core dump. (Signal=%d)\n", sig);
-
-            /* die with a core dump */
-            abort();
-        }
-
-    for (it = all_loops; it; it = g_slist_next(it)) {
-        ObMainLoop *loop = it->data;
-        loop->signal_fired = YES;
-        loop->signals_fired[sig]++;
+    int i, count = [all_loops count];
+    for (i = 0; i < count; i++) {
+        AZMainLoop *loop = [all_loops objectAtIndex: i];
+	[loop handleSignal: sig]; 
     }
 }
 
