@@ -15,7 +15,7 @@ ifeq ($(etoile), no)
 
 endif
 
-ifeq ($(etoile), no)
+ifeq ($(etoile), yes)
 
     export desktop-base ?= yes
     export etoile-extensions ?= yes
@@ -38,7 +38,8 @@ ifeq ($(etoile-extensions), yes)
     export servicesbarkit ?= yes
     export extendedworkspacekit ?= yes 
     export trackerkit ?= yes
-
+    export rsskit ?= yes
+    
 endif
 
 export developer-base ?= yes
@@ -101,6 +102,10 @@ endif
 
 ifeq ($(trackerkit), yes)
    #SUBPROJECTS += TrackerKit
+endif
+
+ifeq ($(rsskit), yes)
+   SUBPROJECTS += RSSKit
 endif
 
 #
