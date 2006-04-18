@@ -25,20 +25,48 @@
 #import "AZClient.h"
 #import "AZClientManager.h"
 #import <X11/Xlib.h>
-#import <glib.h>
 #import <signal.h>
 #import "action.h"
 
-struct _ObMainLoop
-{
-  int fd_x; /* The X fd is a special case! */
-  int fd_max;
-  GHashTable *fd_handlers;
-  fd_set fd_set;
-};
+/* Taken from glib */
 
-typedef struct _ObMainLoop ObMainLoop;
-typedef struct _ObMainLoopFdHandlerType     ObMainLoopFdHandlerType;
+#define USEC_PER_SEC 1000000 /* Replace G_USEC_PER_SEC */
+
+/* g_time_val_add:
+ * @time_: a #GTimeVal
+ * @microseconds: number of microseconds to add to @time
+ *
+ * Adds the given number of microseconds to @time_. @microseconds can
+ * also be negative to decrease the value of @time_.
+ **/
+void time_val_add (struct timeval *time_, long microseconds)
+{
+  if (!(time_->tv_usec >= 0 && time_->tv_usec < USEC_PER_SEC)) {
+    return;
+  }
+
+  if (microseconds >= 0)
+  {
+    time_->tv_usec += microseconds % USEC_PER_SEC;
+    time_->tv_sec += microseconds / USEC_PER_SEC;
+    if (time_->tv_usec >= USEC_PER_SEC)
+    {
+      time_->tv_usec -= USEC_PER_SEC;
+      time_->tv_sec++;
+    }
+  }
+  else
+  {
+    microseconds *= -1;
+    time_->tv_usec -= microseconds % USEC_PER_SEC;
+    time_->tv_sec -= microseconds / USEC_PER_SEC;
+    if (time_->tv_usec < 0)
+    {
+      time_->tv_usec += USEC_PER_SEC;
+      time_->tv_sec--;
+    }      
+  }
+}
 
 /* all created ObMainLoops. Used by the signal handler to pass along signals */
 static NSMutableArray *all_loops = nil;
@@ -69,11 +97,6 @@ static int core_signals[] =
 #define NUM_CORE_SIGNALS (sizeof(core_signals) / sizeof(core_signals[0]))
 
 static void sighandler(int sig);
-static void fd_handler_destroy(void * data);
-static void fd_handle_foreach(void * key,
-                              void * value,
-                              void * data);
-static void calc_max_fd(ObMainLoop *loop);
 
 @interface AZMainLoopTimer: NSObject
 {
@@ -86,9 +109,9 @@ static void calc_max_fd(ObMainLoop *loop);
     /* The timer needs to be freed */
     BOOL del_me;
     /* The time the last fire should've been at */
-    GTimeVal last;
+    struct timeval last;
     /* When this timer will next trigger */
-    GTimeVal timeout;
+    struct timeval timeout;
 }
 - (BOOL) fire;
 - (void) cleanup; /* Don't confuse -dealloc */
@@ -102,16 +125,16 @@ static void calc_max_fd(ObMainLoop *loop);
 - (id) data;
 - (SEL) destroy;
 - (BOOL) del_me;
-- (GTimeVal) last;
-- (GTimeVal) timeout;
+- (struct timeval) last;
+- (struct timeval) timeout;
 - (void) set_target: (id) target;
 - (void) set_delay: (unsigned long) delay;
 - (void) set_func: (SEL) func;
 - (void) set_data: (id) data;
 - (void) set_destroy: (SEL) destroy;
 - (void) set_del_me: (BOOL) del_me;
-- (void) set_last: (GTimeVal) last;
-- (void) set_timeout: (GTimeVal) timeout;
+- (void) set_last: (struct timeval) last;
+- (void) set_timeout: (struct timeval) timeout;
 @end
 
 @implementation AZMainLoopTimer
@@ -150,12 +173,12 @@ static void calc_max_fd(ObMainLoop *loop);
 
 - (void) addTimeout: (unsigned long) delta
 {
-    g_time_val_add(&timeout, delta);
+    time_val_add(&timeout, delta);
 }
 
 - (void) addLast: (unsigned long) delta
 {
-    g_time_val_add(&last, delta);
+    time_val_add(&last, delta);
 }
 
 - (id) target { return target; }
@@ -164,16 +187,16 @@ static void calc_max_fd(ObMainLoop *loop);
 - (id) data { return data; }
 - (SEL) destroy { return destroy; }
 - (BOOL) del_me { return del_me; }
-- (GTimeVal) last { return last; }
-- (GTimeVal) timeout { return timeout; }
+- (struct timeval) last { return last; }
+- (struct timeval) timeout { return timeout; }
 - (void) set_target: (id) t { target = t; }
 - (void) set_delay: (unsigned long) d { delay = d; }
 - (void) set_func: (SEL) f { func = f; }
 - (void) set_data: (id) d { data = d; }
 - (void) set_destroy: (SEL) d { destroy = d; }
 - (void) set_del_me: (BOOL) d { del_me = d; }
-- (void) set_last: (GTimeVal) l { last = l; }
-- (void) set_timeout: (GTimeVal) t { timeout = t; }
+- (void) set_last: (struct timeval) l { last = l; }
+- (void) set_timeout: (struct timeval) t { timeout = t; }
 @end
 
 @interface AZMainLoopSignalHandler: NSObject
@@ -199,28 +222,88 @@ static void calc_max_fd(ObMainLoop *loop);
 - (void) set_func: (ObMainLoopSignalHandler) f { func = f; }
 @end
 
-
-struct _ObMainLoopFdHandlerType
+@interface AZMainLoopFdHandler: NSObject
 {
+    fd_set *_set; /* from AZMainLoop */
     int fd;
     void * data;
     ObMainLoopFdHandler func;
     GDestroyNotify destroy;
-};
+}
+- (id) initWithFdSet: (fd_set *) fs;
+- (void) fire;
+- (void) cleanup;
+
+- (void) fd_clear;
+- (void) fd_set;
+- (BOOL) fd_is_set: (fd_set *) set;
+
+- (int) fd;
+- (void *) data;
+- (ObMainLoopFdHandler) func;
+- (GDestroyNotify) destroy;
+- (void) set_fd: (int) fd;
+- (void) set_data: (void *) data;
+- (void) set_func: (ObMainLoopFdHandler) func;
+- (void) set_destroy: (GDestroyNotify) destroy;
+@end
+
+@implementation AZMainLoopFdHandler
+- (void) fd_clear
+{
+  FD_CLR(fd, _set);
+}
+
+- (void) fd_set
+{
+  FD_SET(fd, _set);
+}
+
+- (BOOL) fd_is_set: (fd_set *) set
+{
+  return FD_ISSET(fd, set);
+}
+
+- (void) fire
+{
+  func(fd, data);
+}
+
+- (void) cleanup
+{
+  if (destroy)
+    destroy(data);
+}
+
+- (id) initWithFdSet: (fd_set *) fs
+{
+  self = [super init];
+  _set = fs;
+  return self;
+}
+
+- (int) fd { return fd; }
+- (void *) data { return data; }
+- (ObMainLoopFdHandler) func { return func; }
+- (GDestroyNotify) destroy { return destroy; }
+- (void) set_fd: (int) f { fd = f; }
+- (void) set_data: (void *) d { data = d; }
+- (void) set_func: (ObMainLoopFdHandler) f { func = f; }
+- (void) set_destroy: (GDestroyNotify) d { destroy = d; }
+@end
 
 extern Display *ob_display;
-
-struct _ObMainLoop *ob_main_loop;
 
 static AZMainLoop *sharedInstance;
 
 @interface AZMainLoop (AZPrivate)
 - (void) destroyActionForClient: (NSNotification *) not;
-- (long) timeCompare: (GTimeVal) a to: (GTimeVal) b;
+- (long) timeCompare: (struct timeval) a to: (struct timeval) b;
 - (void) insertTimer: (AZMainLoopTimer *) ins;
-- (BOOL) nearestTimeoutWait: (GTimeVal *) tm;
-- (void) dispatchTimer: (GTimeVal **) wait;
+- (BOOL) nearestTimeoutWait: (struct timeval *) tm;
+- (void) dispatchTimer: (struct timeval **) wait;
 - (void) handleSignal: (int) signal;
+- (void) calcMaxFd;
 @end
 
 @implementation AZMainLoop
@@ -240,21 +323,32 @@ static AZMainLoop *sharedInstance;
                 forFd: (int) fd
                  data: (void *) data
 {
-    ObMainLoopFdHandlerType *h;
+    AZMainLoopFdHandler *h;
 
-    h = g_new(ObMainLoopFdHandlerType, 1);
-    h->fd = fd;
-    h->func = handler;
-    h->data = data;
+    h = [[AZMainLoopFdHandler alloc] initWithFdSet: &_fd_set];
+    [h set_fd: fd];
+    [h set_func: handler];
+    [h set_data: data];
 
-    g_hash_table_replace(ob_main_loop->fd_handlers, &h->fd, h);
-    FD_SET(h->fd, &ob_main_loop->fd_set);
-    calc_max_fd(ob_main_loop);
+    /* remove old one */
+    [self removeFdHandlerForFd: fd];
+
+    [fd_handlers setObject: h forKey: [NSNumber numberWithInt: fd]];
+    [h fd_set];
+    [self calcMaxFd];
 }
 
 - (void) removeFdHandlerForFd: (int) fd
 {
-  g_hash_table_remove(ob_main_loop->fd_handlers, &fd);
+  AZMainLoopFdHandler *temp = nil;
+  NSNumber *key = [NSNumber numberWithInt: fd];
+  temp = [fd_handlers objectForKey: key];
+  if (temp) {
+    /* Cannot wait until the object is autoreleased. */
+    [temp fd_clear];
+    [temp cleanup];
+    [fd_handlers removeObjectForKey: key];
+  }
 }
 
 - (void) addTimeout: (id) target
@@ -270,7 +364,7 @@ static AZMainLoop *sharedInstance;
     [t set_data: data];
     [t set_destroy: notify];
     [t set_del_me: NO];
-    g_get_current_time(&now);
+    gettimeofday(&now, NULL);
     [t set_last: now];
     [t set_timeout: now];
     [t addTimeout: [t delay]];
@@ -405,8 +499,6 @@ static AZMainLoop *sharedInstance;
     fd_set selset;
     AZAction *act;
 
-    ObMainLoop *loop = ob_main_loop;
-
     while (run)
     {
         if (signal_fired) {
@@ -462,26 +554,34 @@ static AZMainLoop *sharedInstance;
         } else {
             /* this only runs if there were no x events received */
 
-	    [self dispatchTimer: (GTimeVal**)&wait];
+	    [self dispatchTimer: &wait];
 
-            selset = loop->fd_set;
+            selset = _fd_set;
             /* there is a small race condition here. if a signal occurs
                between this if() and the select() then we will not process
                the signal until 'wait' expires. possible solutions include
                using GStaticMutex, and having the signal handler set 'wait'
                to 0 */
             if (!signal_fired)
-                select(loop->fd_max + 1, &selset, NULL, NULL, wait);
+                select(fd_max + 1, &selset, NULL, NULL, wait);
 
             /* handle the X events with highest prioirity */
-            if (FD_ISSET(loop->fd_x, &selset))
+            if (FD_ISSET(fd_x, &selset))
 	    {
 	       return;
                //continue;
 	    }
 
-            g_hash_table_foreach(loop->fd_handlers,
-                                 fd_handle_foreach, &selset);
+	    NSArray *allKeys = [fd_handlers allKeys];
+	    NSEnumerator *e = [allKeys objectEnumerator];
+	    NSNumber *key = nil;
+	    AZMainLoopFdHandler *h = nil;
+	    while ((key = [e nextObject])) {
+              h = [fd_handlers objectForKey: key];
+              if ([h fd_is_set: &selset])
+	        [h fire];
+	    }
+
         }
     }
 }
@@ -499,21 +599,17 @@ static AZMainLoop *sharedInstance;
   actionQueue = [[NSMutableArray alloc] init];
   timers = [[NSMutableArray alloc] init];
 
-    ObMainLoop *loop;
+  fd_x = ConnectionNumber(ob_display);
+  FD_ZERO(&_fd_set);
+  FD_SET(fd_x, &_fd_set);
+  fd_max = fd_x;
 
-    loop = g_new0(ObMainLoop, 1);
-    loop->fd_x = ConnectionNumber(ob_display);
-    FD_ZERO(&loop->fd_set);
-    FD_SET(loop->fd_x, &loop->fd_set);
-    loop->fd_max = loop->fd_x;
+  fd_handlers = [[NSMutableDictionary alloc] init];
 
-    loop->fd_handlers = g_hash_table_new_full(g_int_hash, g_int_equal,
-                                              NULL, fd_handler_destroy);
+  gettimeofday(&now, NULL);
 
-    g_get_current_time(&now);
-
-    /* only do this if we're the first loop created */
-    if (!all_loops) {
+  /* only do this if we're the first loop created */
+  if (!all_loops) {
         all_loops = [[NSMutableArray alloc] init];
 
         unsigned int i;
@@ -544,8 +640,6 @@ static AZMainLoop *sharedInstance;
 
   [all_loops insertObject: self atIndex: 0];
 
-  ob_main_loop = loop;
-
   return self;
 }
 
@@ -554,6 +648,7 @@ static AZMainLoop *sharedInstance;
   DESTROY(xHandlers);
   DESTROY(actionQueue);
   DESTROY(timers);
+  DESTROY(fd_handlers);
   [super dealloc];
 }
 
@@ -588,7 +683,7 @@ static AZMainLoop *sharedInstance;
 #define NEAREST_TIMEOUT \
     ([[timers objectAtIndex: 0] timeout])
 
-- (long) timeCompare: (GTimeVal) a to: (GTimeVal) b
+- (long) timeCompare: (struct timeval) a to: (struct timeval) b
 {
     long r = 0;
 
@@ -615,7 +710,7 @@ static AZMainLoop *sharedInstance;
 }
 
 /* find the time to wait for the nearest timeout */
-- (BOOL) nearestTimeoutWait: (GTimeVal *) tm
+- (BOOL) nearestTimeoutWait: (struct timeval*) tm
 {
   if ([timers count] == 0)
     return NO;
@@ -624,21 +719,21 @@ static AZMainLoop *sharedInstance;
   tm->tv_usec = NEAREST_TIMEOUT.tv_usec - now.tv_usec;
 
   while (tm->tv_usec < 0) {
-    tm->tv_usec += G_USEC_PER_SEC;
+    tm->tv_usec += USEC_PER_SEC;
     tm->tv_sec--;
   }
-  tm->tv_sec += tm->tv_usec / G_USEC_PER_SEC;
-  tm->tv_usec %= G_USEC_PER_SEC;
+  tm->tv_sec += tm->tv_usec / USEC_PER_SEC;
+  tm->tv_usec %= USEC_PER_SEC;
   if (tm->tv_sec < 0)
     tm->tv_sec = 0;
 
   return YES;
 }
 
-- (void) dispatchTimer: (GTimeVal **) wait
+- (void) dispatchTimer: (struct timeval **) wait
 {
   BOOL fired = NO;
-  g_get_current_time(&now);
+  gettimeofday(&now, NULL);
 
   int i;
   for (i = 0; i < [timers count]; i++)
@@ -717,18 +812,21 @@ static AZMainLoop *sharedInstance;
     signals_fired[sig]++;
 }
 
-@end
-
-static void fd_handle_foreach(void * key,
-                              void * value,
-                              void * data)
+- (void) calcMaxFd
 {
-    ObMainLoopFdHandlerType *h = value;
-    fd_set *set = data;
+  fd_max = fd_x;
 
-    if (FD_ISSET(h->fd, set))
-        h->func(h->fd, h->data);
+  NSArray *allKeys = [fd_handlers allKeys];
+  NSEnumerator *e = [allKeys objectEnumerator];
+  NSNumber *key = nil;
+  AZMainLoopFdHandler *h = nil;
+  while ((key = [e nextObject])) {
+    h = [fd_handlers objectForKey: key];
+    fd_max = MAX(fd_max, [h fd]);
+  }
 }
+
+@end
 
 /*** SIGNAL WATCHERS ***/
 
@@ -741,32 +839,5 @@ static void sighandler(int sig)
         AZMainLoop *loop = [all_loops objectAtIndex: i];
 	[loop handleSignal: sig]; 
     }
-}
-
-/*** FILE DESCRIPTOR WATCHERS ***/
-
-static void max_fd_func(void * key, void * value, void * data)
-{
-    ObMainLoop *loop = data;
-
-    /* key is the fd */
-    loop->fd_max = MAX(loop->fd_max, *(int*)key);
-}
-
-static void calc_max_fd(ObMainLoop *loop)
-{
-    loop->fd_max = loop->fd_x;
-
-    g_hash_table_foreach(loop->fd_handlers, max_fd_func, loop);
-}
-
-static void fd_handler_destroy(void * data)
-{
-    ObMainLoopFdHandlerType *h = data;
-
-    FD_CLR(h->fd, &ob_main_loop->fd_set);
-
-    if (h->destroy)
-        h->destroy(h->data);
 }
 

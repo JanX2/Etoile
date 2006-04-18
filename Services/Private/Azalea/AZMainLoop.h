@@ -21,7 +21,6 @@
 
 #import <Foundation/Foundation.h>
 #import <X11/Xlib.h>
-#import <glib.h>
 
 @protocol AZXHandler <NSObject>
 - (void) processXEvent: (XEvent *) e;
@@ -39,8 +38,8 @@ typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
 @interface AZMainLoop: NSObject
 {
   NSMutableArray *timers;
-  GTimeVal now;
-  GTimeVal ret_wait;
+  struct timeval now;
+  struct timeval ret_wait;
 
   NSMutableArray *xHandlers;
   NSMutableArray *actionQueue;
@@ -52,6 +51,12 @@ typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
   BOOL signal_fired;
   unsigned int signals_fired[NUM_SIGNALS];
   NSMutableArray *signal_handlers[NUM_SIGNALS];
+
+  /* fd */
+  int fd_x; /* The X fd is a special case! */
+  int fd_max;
+  NSMutableDictionary *fd_handlers;
+  fd_set _fd_set;
 }
 
 - (void) addXHandler: (id <AZXHandler>) handler;
