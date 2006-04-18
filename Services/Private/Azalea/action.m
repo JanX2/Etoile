@@ -71,23 +71,6 @@ typedef struct
     void (*setup)(AZAction **, ObUserAction uact);
 } ActionString;
 
-#if 0
-AZAction* action_copy(AZAction *src)
-{
-    AZAction *a = [[AZAction alloc] initWithFunc: [src func]];
-
-    [a set_data: [src data]];
-
-    /* deal with pointers */
-    if ([a func] == action_execute || [a func] == action_restart)
-        [a data_pointer]->execute.path = [[src data].execute.path copy];
-    else if ([a func] == action_showmenu)
-        [a data_pointer]->showmenu.name = [[src data].showmenu.name copy];
-
-    return a;
-}
-#endif
-
 void setup_action_directional_focus_north(AZAction **a, ObUserAction uact)
 {
     [(*a) data_pointer]->inter.any.interactive = YES;

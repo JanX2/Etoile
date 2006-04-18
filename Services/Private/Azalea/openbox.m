@@ -45,8 +45,6 @@
 #import "render/render.h"
 #import "render/theme.h"
 
-#import <glib.h>
-
 #ifdef HAVE_FCNTL_H
 #  include <fcntl.h>
 #endif
@@ -88,7 +86,7 @@ static ObState   state;
 static BOOL  xsync;
 static BOOL  reconfigure;
 static BOOL  restart;
-static gchar    *restart_path;
+static NSString *restart_path = nil;
 static Cursor    cursors[OB_NUM_CURSORS];
 static KeyCode   keys[OB_NUM_KEYS];
 static int      exitcode = 0;
@@ -346,7 +344,13 @@ int main(int argc, char **argv)
     parse_paths_shutdown();
 
     if (restart) {
-        if (restart_path != NULL) {
+        if (restart_path != nil) {
+#if 1
+	    // This is a simplied version
+	    int error = execlp([restart_path cString], NULL);
+	    if (error == -1)
+	      NSLog(@"Failed to execute '%@'", restart);
+#else
             int argcp;
             gchar **argvp;
             GError *err = NULL;
@@ -360,6 +364,7 @@ int main(int argc, char **argv)
                           err->message);
                 g_error_free(err);
             }
+#endif
         }
 
         /* re-run me */
@@ -438,8 +443,6 @@ static void parse_args(int argc, char **argv)
         } else if (!strcmp(argv[i], "--help")) {
             print_help();
             exit(0);
-        } else if (!strcmp(argv[i], "--g-fatal-warnings")) {
-            g_log_set_always_fatal(G_LOG_LEVEL_CRITICAL);
         } else if (!strcmp(argv[i], "--replace")) {
             ob_replace_wm = YES;
         } else if (!strcmp(argv[i], "--sync")) {
@@ -447,7 +450,7 @@ static void parse_args(int argc, char **argv)
         } else if (!strcmp(argv[i], "--debug")) {
             AZDebugShowOutput(YES);
         } else {
-            g_printerr("Invalid option: '%s'\n\n", argv[i]);
+            printf("Invalid option: '%s'\n\n", argv[i]);
             print_help();
             exit(1);
         }
@@ -456,14 +459,18 @@ static void parse_args(int argc, char **argv)
 
 void ob_exit_with_error(char *msg)
 {
-    g_critical(msg);
+    NSLog(@"Critical: %s", msg);
     session_shutdown();
     exit(EXIT_FAILURE);
 }
 
 void ob_restart_other(const char *path)
 {
-    restart_path = g_strdup(path);
+    if (path) {
+      ASSIGN(restart_path, ([NSString stringWithCString: path]));
+    } else {
+      DESTROY(restart_path);
+    }
     ob_restart();
 }
 
@@ -487,13 +494,15 @@ void ob_exit(int code)
 
 Cursor ob_cursor(ObCursor cursor)
 {
-    g_assert(cursor < OB_NUM_CURSORS);
+    if (cursor >= OB_NUM_CURSORS)
+      NSLog(@"Warning: cursor out of range");
     return cursors[cursor];
 }
 
 KeyCode ob_keycode(ObKey key)
 {
-    g_assert(key < OB_NUM_KEYS);
+    if (key >= OB_NUM_KEYS)
+      NSLog(@"Warning: key out of range");
     return keys[key];
 }
 
