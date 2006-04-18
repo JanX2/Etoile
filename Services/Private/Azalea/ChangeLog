@@ -1,7 +1,8 @@
 2006-04-17 Yen-Ju Chen <yjchenx at gmail>
 
   	* Remove glib from openbox.m.
-  	* Remove glib from AZMainLoop.*.
+  	* Remove glib from AZMainLoop.
+  	* Remove glib from AZMenuManager.
 
 2006-04-16 Yen-Ju Chen <yjchenx at gmail>
 

@@ -32,7 +32,6 @@
 #import "client_list_menu.h"
 #import "parse.h"
 #import "action.h"
-#import <glib.h>
 
 typedef struct _ObMenuParseState ObMenuParseState;
 
@@ -58,19 +57,46 @@ void menu_pipe_execute(AZMenu *self)
 {
     xmlDocPtr doc;
     xmlNodePtr node;
-    gchar *output;
-    GError *err = NULL;
+    const char *output;
 
     if (![self execute])
         return;
 
+#if 1
+    NSString *command;
+    NSArray *com = [[self execute] componentsSeparatedByString: @" "];
+    NSArray *args = nil;
+    if ([com count] > 1) {
+      args = [com subarrayWithRange: NSMakeRange(1, [com count]-1)];
+      command = [com objectAtIndex: 0];
+
+    }
+    else
+    {
+      command = [self execute];
+    }
+    NSPipe *pipe = [NSPipe pipe];
+    NSTask *task = [[NSTask alloc] init];
+    [task setStandardOutput: pipe];
+    [task setLaunchPath: command];
+    if (args)
+      [task setArguments: args];
+    [task launch];
+    NSFileHandle *f_output = [pipe fileHandleForReading];
+    NSData *data = [f_output readDataToEndOfFile];
+    NSString *s = [[NSString alloc] initWithData: data encoding: [NSString defaultCStringEncoding]];
+    output = [s UTF8String];
+    AUTORELEASE(task);
+#else
+    GError *err = NULL;
     if (!g_spawn_command_line_sync((char*)[[self execute] cString], &output, NULL, NULL, &err)) {
         g_warning("Failed to execute command for pipe-menu: %s", err->message);
         g_error_free(err);
         return;
     }
+#endif
 
-    if (parse_load_mem(output, strlen(output),
+    if (parse_load_mem((char*)output, strlen(output),
                        "openbox_pipe_menu", &doc, &node))
     {
 	[[AZMenuManager defaultManager] removePipeMenu: self];
@@ -81,10 +107,10 @@ void menu_pipe_execute(AZMenu *self)
 	[menu_parse_inst parseDocument: doc node: node->children];
         xmlFreeDoc(doc);
     } else {
-        g_warning("Invalid output from pipe-menu: %s", [self execute]);
+        NSLog(@"Warning: Invalid output from pipe-menu: %@", [self execute]);
     }
 
-    g_free(output);
+//    g_free(output);
 }
 
 static void parse_menu_item(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
