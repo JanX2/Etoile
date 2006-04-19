@@ -1,4 +1,4 @@
-1. remove glib (AZMenuManager.m, parse.h, parse.m, session.h, render/font.m, render/instance.h, render/render.h, render/render.m, render/theme.m)
+1. remove glib (parse.h, parse.m, session.h, render/font.m, render/instance.h, render/render.h, render/render.m, render/theme.m)
 2. remove USE_PANGO in render/
 3. it might be tricky to support arbitrary window levels.
 4. decide which way to use run loop (See ALTERNATIVE_RUN_LOOP in openbox.m).

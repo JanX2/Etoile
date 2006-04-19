@@ -270,8 +270,8 @@
         h += base_size.height;
     }
 
-    g_assert(w > 0);
-    g_assert(h > 0);
+    NSAssert(w > 0, @"Width less than 0");
+    NSAssert(h > 0, @"Height less than 0");
 
     switch (anchor) {
     case OB_CORNER_TOPLEFT:
@@ -480,7 +480,7 @@
 {
     int x, y, w, h;
      
-    g_assert(dir == 0 || dir == 1 || dir == 2);
+    NSAssert((dir == 0 || dir == 1 || dir == 2), @"Wrong direction");
     if (!(functions & OB_CLIENT_FUNC_MAXIMIZE)) return; /* can't */
 
     /* check if already done */
@@ -994,7 +994,7 @@
         if (t != window) { /* cant be transient to itoself! */
 	    target = (AZClient *)[window_map objectForKey: [NSNumber numberWithInt: t]];
             /* if this happens then we need to check for it*/
-            g_assert(target != self);
+            NSAssert((target != self), @"target is self");
             if (target && !WINDOW_IS_CLIENT(target)) {
                 /* this can happen when a dialog is a child of
                    a dockapp, for example */
@@ -1075,7 +1075,7 @@
                    notified whenever we want it to receive focus */
 		focus_notify = YES;
         }
-        g_free(proto);
+        free(proto);
     }
 }
 
@@ -1378,7 +1378,7 @@ no_number:
                               data[4], data[5], data[8], data[9],
                               data[6], data[7], data[10], data[11]);
         }
-        g_free(data);
+        free(data);
     }
 
     if (!got &&
@@ -1398,7 +1398,7 @@ no_number:
                               a->y, a->y + a->height - 1,
                               a->x, a->x + a->width - 1);
         }
-        g_free(data);
+        free(data);
     }
 
     if (!got)
@@ -1462,12 +1462,12 @@ no_number:
                     (((data[i] >> 8) & 0xff) << RrDefaultGreenOffset) +
                     (((data[i] >> 0) & 0xff) << RrDefaultBlueOffset);
             }
-            g_assert(i <= num);
+            NSAssert(i <= num, @"Out of range");
 	    [icon setData: temp];
 	    [self addIcon: icon];
         }
 
-        g_free(data);
+        free(data);
     } else if (PROP_GETA32(window, kwm_win_icon,
                            kwm_win_icon, &data, &num)) {
         if (num == 2) {
@@ -1488,7 +1488,7 @@ no_number:
 	    }
 	    AZXErrorSetIgnore(NO);
         }
-        g_free(data);
+        free(data);
     } else {
         XWMHints *hints;
 
@@ -1724,7 +1724,7 @@ no_number:
             if (type != (ObClientType) -1)
                 break; /* grab the first legit type */
         }
-        g_free(val);
+        free(val);
     }
     
     if (type == (ObClientType) -1) {
@@ -1843,7 +1843,7 @@ no_number:
         if (transient_for != OB_TRAN_GROUP) {
 	    return [transient_for searchTopTransient];
         } else {
-            g_assert(group);
+            NSAssert(group, @"Group does not exist");
 	    BOOL found = NO;
 	    AZClient *c = nil;
             int i, count = [[group members] count];
@@ -2223,7 +2223,7 @@ no_number:
     case OB_DIRECTION_SOUTHWEST:
         /* not implemented */
     default:
-        g_assert_not_reached();
+	NSAssert(0, @"Should not reach here");
         dest = 0; /* suppress warning */
     }
     return dest;
@@ -2828,7 +2828,7 @@ AZClient *AZUnderPointer()
 - (void) dealloc
 {
   if (data) {
-    g_free(data);
+    free(data);
     data = NULL;
   }
   [super dealloc];
@@ -2870,7 +2870,7 @@ AZClient *AZUnderPointer()
     Status ret;
   
     ret = XGetWindowAttributes(ob_display, window, &wattrib);
-    g_assert(ret != BadWindow);
+    NSAssert(ret != BadWindow, @"Bad Window");
 
     RECT_SET(area, wattrib.x, wattrib.y, wattrib.width, wattrib.height);
     border_width =  wattrib.border_width;
@@ -2958,7 +2958,7 @@ AZClient *AZUnderPointer()
                 undecorated = YES;
         }
 
-        g_free(state);
+        free(state);
     }
 
     if (!(above || below)) {
@@ -2986,7 +2986,7 @@ AZClient *AZUnderPointer()
                 above = YES;
                 break;
             default:
-                g_assert_not_reached();
+		NSAssert(0, @"Should not reach here");
                 break;
             }
         }
@@ -3026,7 +3026,7 @@ AZClient *AZUnderPointer()
             mwmhints.functions = hints[1];
             mwmhints.decorations = hints[2];
         }
-        g_free(hints);
+        free(hints);
     }
 }
 
@@ -3036,7 +3036,7 @@ AZClient *AZUnderPointer()
     Status ret;
 
     ret = XGetWindowAttributes(ob_display, window, &wattrib);
-    g_assert(ret != BadWindow);
+    NSAssert((ret != BadWindow), @"Bad window");
     gravity = wattrib.win_gravity;
 }
 
@@ -3174,7 +3174,7 @@ AZClient *AZUnderPointer()
 
         AZDebug("Setting desktop %u\n", target+1);
 
-        g_assert(target < [[AZScreen defaultScreen] numberOfDesktops] || target == DESKTOP_ALL);
+        NSAssert((target < [[AZScreen defaultScreen] numberOfDesktops] || target == DESKTOP_ALL), @"Desktop out of range");
 
         /* remove from the old desktop(s) */
 	[fManager focusOrderRemove: self];

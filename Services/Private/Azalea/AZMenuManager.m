@@ -62,7 +62,6 @@ void menu_pipe_execute(AZMenu *self)
     if (![self execute])
         return;
 
-#if 1
     NSString *command;
     NSArray *com = [[self execute] componentsSeparatedByString: @" "];
     NSArray *args = nil;
@@ -87,14 +86,6 @@ void menu_pipe_execute(AZMenu *self)
     NSString *s = [[NSString alloc] initWithData: data encoding: [NSString defaultCStringEncoding]];
     output = [s UTF8String];
     AUTORELEASE(task);
-#else
-    GError *err = NULL;
-    if (!g_spawn_command_line_sync((char*)[[self execute] cString], &output, NULL, NULL, &err)) {
-        g_warning("Failed to execute command for pipe-menu: %s", err->message);
-        g_error_free(err);
-        return;
-    }
-#endif
 
     if (parse_load_mem((char*)output, strlen(output),
                        "openbox_pipe_menu", &doc, &node))
@@ -109,8 +100,6 @@ void menu_pipe_execute(AZMenu *self)
     } else {
         NSLog(@"Warning: Invalid output from pipe-menu: %@", [self execute]);
     }
-
-//    g_free(output);
 }
 
 static void parse_menu_item(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
