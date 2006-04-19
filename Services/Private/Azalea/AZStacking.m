@@ -52,7 +52,7 @@ static AZStacking *sharedInstance;
     /* create an array of the window ids (from bottom to top,
        reverse order!) */
     if ([self count]) {
-        windows = g_new(Window, [self count]);
+        windows = calloc(sizeof(Window), [self count]);
 	int j, jcount = [self count];
 	for (j = jcount-1; j > -1; j--) {
 	  id <AZWindow> temp = [self windowAtIndex: j];
@@ -65,7 +65,7 @@ static AZStacking *sharedInstance;
     PROP_SETA32(RootWindow(ob_display, ob_screen),
                 net_client_list_stacking, window, (unsigned long *)windows, i);
 
-    g_free(windows);
+    free(windows);
 }
 
 - (void) raiseWindow: (id <AZWindow>) window group: (BOOL) group
@@ -200,7 +200,7 @@ static AZStacking *sharedInstance;
 	g_assert ([((id <AZWindow>)(it->data)) windowLayer] == [((id <AZWindow>)(before->data)) windowLayer]);
 #endif
 
-    win = g_new(Window, [wins count] + 1);
+    win = calloc(sizeof(Window), [wins count] + 1);
 
     if (before == ([self count] ? [self windowAtIndex: 0] : nil)) {
         win[0] = [[AZScreen defaultScreen] supportXWindow];
@@ -244,7 +244,7 @@ static AZStacking *sharedInstance;
 #endif
 
     XRestackWindows(ob_display, win, i);
-    g_free(win);
+    free(win);
 
     [self setList];
 }

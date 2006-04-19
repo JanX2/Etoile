@@ -1450,7 +1450,7 @@ no_number:
 
             if (w*h == 0) continue;
 
-	    RrPixel32 *temp = g_new(RrPixel32, w * h);
+	    RrPixel32 *temp = calloc(sizeof(RrPixel32), w * h);
             for (x = 0, y = 0, t = 0; t < w * h; ++t, ++x, ++i) {
                 if (x >= w) {
                     x = 0;

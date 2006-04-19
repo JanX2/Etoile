@@ -80,7 +80,7 @@ void extensions_xinerama_screens(Rect **xin_areas, unsigned int *nxin)
         int n;
         XineramaScreenInfo *info = XineramaQueryScreens(ob_display, &n);
         *nxin = n;
-        *xin_areas = g_new(Rect, *nxin + 1);
+        *xin_areas = calloc(sizeof(Rect), *nxin + 1);
         for (i = 0; i < *nxin; ++i)
             RECT_SET((*xin_areas)[i], info[i].x_org, info[i].y_org,
                      info[i].width, info[i].height);
@@ -88,7 +88,7 @@ void extensions_xinerama_screens(Rect **xin_areas, unsigned int *nxin)
 #endif
     {
         *nxin = 1;
-        *xin_areas = g_new(Rect, *nxin + 1);
+        *xin_areas = calloc(sizeof(Rect), *nxin + 1);
         RECT_SET((*xin_areas)[0], 0, 0,
                  WidthOfScreen(ScreenOfDisplay(ob_display, ob_screen)),
                  HeightOfScreen(ScreenOfDisplay(ob_display, ob_screen)));

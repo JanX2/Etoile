@@ -80,14 +80,14 @@ static void save_commands()
     SmProp prop_res = { SmRestartCommand, SmLISTofARRAY8, };
     int i;
 
-    prop_cmd.vals = g_new(SmPropValue, sm_argc);
+    prop_cmd.vals = calloc(sizeof(SmPropValue), sm_argc);
     prop_cmd.num_vals = sm_argc;
     for (i = 0; i < sm_argc; ++i) {
         prop_cmd.vals[i].value = sm_argv[i];
         prop_cmd.vals[i].length = strlen(sm_argv[i]);
     }
 
-    prop_res.vals = g_new(SmPropValue, sm_argc + 2);
+    prop_res.vals = calloc(sizeof(SmPropValue), sm_argc + 2);
     prop_res.num_vals = sm_argc + 2;
     for (i = 0; i < sm_argc; ++i) { 
         prop_res.vals[i].value = sm_argv[i];
@@ -103,8 +103,8 @@ static void save_commands()
     props[1] = &prop_cmd;
     SmcSetProperties(sm_conn, 2, props);
 
-    g_free(prop_res.vals);
-    g_free(prop_cmd.vals);
+    free(prop_res.vals);
+    free(prop_cmd.vals);
 }
 
 static void remove_args(int *argc, gchar ***argv, int index, int num)
@@ -173,7 +173,7 @@ void session_startup(int *argc, gchar ***argv)
                                    (int) getpid(),
                                    g_random_int());
         save_file = g_build_filename(sm_sessions_path, filename, NULL);
-        g_free(filename);
+        free(filename);
     }
 
     sm_argc = *argc;
@@ -248,7 +248,7 @@ void session_startup(int *argc, gchar ***argv)
 
         SmcSetProperties(sm_conn, 5, props);
 
-        g_free(val_uid.value);
+        free(val_uid.value);
 
         save_commands();
     }
@@ -256,9 +256,9 @@ void session_startup(int *argc, gchar ***argv)
 
 void session_shutdown()
 {
-    g_free(sm_sessions_path);
-    g_free(save_file);
-    g_free(sm_id);
+    free(sm_sessions_path);
+    free(save_file);
+    free(sm_id);
 
     if (sm_conn) {
         SmPropValue val_hint;
@@ -377,15 +377,15 @@ static BOOL session_save()
 
             t = g_markup_escape_text((char*)[[c name] cString], -1);
             fprintf(f, "\t<name>%s</name>\n", t);
-            g_free(t);
+            free(t);
 
             t = g_markup_escape_text((char*)[[c class] cString], -1);
             fprintf(f, "\t<class>%s</class>\n", t);
-            g_free(t);
+            free(t);
 
             t = g_markup_escape_text((char*)[[c role] cString], -1);
             fprintf(f, "\t<role>%s</role>\n", t);
-            g_free(t);
+            free(t);
 
             fprintf(f, "\t<desktop>%d</desktop>\n", [c desktop]);
             fprintf(f, "\t<stacking>%d</stacking>\n", stack_pos);
@@ -437,7 +437,7 @@ void session_state_free(ObSessionState *state)
         DESTROY(state->class);
         DESTROY(state->role);
 
-        g_free(state);
+        free(state);
     }
 }
 
@@ -482,14 +482,14 @@ static void session_load(gchar *path)
     if (!parse_attr_string("id", node, &id))
         return;
 
-    g_free(sm_id);
+    free(sm_id);
     sm_id = g_strdup([id cString]);
 
     node = parse_find_node("window", node->children);
     while (node) {
         ObSessionState *state;
 
-        state = g_new0(ObSessionState, 1);
+        state = calloc(sizeof(ObSessionState), 1);
 
 	NSString *_id;
         if (!parse_attr_string("id", node, &_id)) {

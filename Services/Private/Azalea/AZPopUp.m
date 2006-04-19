@@ -423,7 +423,7 @@
   self = [super initWithIcon: hasIcon];
 
   desks = 0;
-  wins = g_new(Window, desks);
+  wins = calloc(sizeof(Window), desks);
   hilight = RrAppearanceCopy(ob_rr_theme->app_hilite_fg);
   unhilight = RrAppearanceCopy(ob_rr_theme->app_unhilite_fg);
 
@@ -436,7 +436,7 @@
 
   for (i = 0; i < desks; ++i)
     XDestroyWindow(ob_display, wins[i]);
-  g_free(wins);
+  free(wins);
   RrAppearanceFree(hilight);
   RrAppearanceFree(unhilight);
   [super dealloc];

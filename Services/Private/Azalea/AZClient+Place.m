@@ -93,7 +93,7 @@ static BOOL place_random(AZClient *client, int *x, int *y)
 
 static GSList* area_add(GSList *list, Rect *a)
 {
-    Rect *r = g_new(Rect, 1);
+    Rect *r = calloc(sizeof(Rect), 1);
     *r = *a;
     return g_slist_prepend(list, r);
 }
@@ -145,7 +145,7 @@ static GSList* area_remove(GSList *list, Rect *a)
             }
         }
 
-        g_free(r);
+        free(r);
     }
     g_slist_free(list);
     return result;
@@ -178,7 +178,7 @@ static int area_cmp(gconstpointer p1, gconstpointer p2, gpointer data)
 
         /* find how many clients in the group are on each monitor, use the
            monitor with the most in it */
-        num = g_new0(unsigned int, [screen numberOfMonitors]);
+        num = calloc(sizeof(unsigned int), [screen numberOfMonitors]);
         int i, count = [[[c group] members] count];
 	for (i = 0; i < count; i++) {
 	  AZClient *data = [[c group] memberAtIndex: i];
@@ -301,8 +301,9 @@ static BOOL place_smart(AZClient *client, int *x, int *y,
 		    [[c frame] setArea: temp];
 	      }
             }
-        } else
-            g_assert_not_reached();
+        } else {
+	    NSLog(@"Internal Error: should not reach here");
+	}
     }
 
     spaces = g_slist_sort_with_data(spaces, area_cmp, client);
@@ -326,7 +327,7 @@ static BOOL place_smart(AZClient *client, int *x, int *y,
             }
         }
 
-        g_free(r);
+        free(r);
     }
     g_slist_free(spaces);
 
@@ -425,7 +426,7 @@ static BOOL place_transient(AZClient *client, int *x, int *y)
         /* get where the client should be */
 	[[self frame] frameGravityAtX: x y: y];
     } else
-        g_assert_not_reached(); /* the last one better succeed */
+        NSAssert(0, @"Should not reach here"); /* the last one better succeed */
 }
 
 @end

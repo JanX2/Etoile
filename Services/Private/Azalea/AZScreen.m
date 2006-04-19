@@ -253,8 +253,8 @@ static AZScreen *sharedInstance;
 
     DESTROY(screen_desktop_names);
     for (r = area; *r; ++r)
-        g_free(*r);
-    g_free(area);
+        free(*r);
+    free(area);
     area = NULL;
 }
 
@@ -714,7 +714,7 @@ done_cycle:
             valid = YES;
         }
     screen_update_layout_bail:
-        g_free(data);
+        free(data);
     }
 
     if (!valid) {
@@ -783,28 +783,28 @@ done_cycle:
     unsigned long *dims;
     int o;
 
-    g_free(monitor_area);
+    free(monitor_area);
     extensions_xinerama_screens(&monitor_area, &screen_num_monitors);
 
     if (area) {
         for (i = 0; area[i]; ++i)
-            g_free(area[i]);
-        g_free(area);
+            free(area[i]);
+        free(area);
     }
 
-    area = g_new(Rect*, screen_num_desktops + 2);
+    area = calloc(sizeof(Rect*), screen_num_desktops + 2);
     for (i = 0; i < screen_num_desktops + 1; ++i)
-        area[i] = g_new0(Rect, screen_num_monitors + 1);
+        area[i] = calloc(sizeof(Rect), screen_num_monitors + 1);
     area[i] = NULL;
      
-    dims = g_new(unsigned long, 4 * screen_num_desktops);
+    dims = calloc(sizeof(unsigned long), 4 * screen_num_desktops);
 
     for (i = 0; i < screen_num_desktops + 1; ++i) {
         Strut *struts;
         int l, r, t, b;
 	StrutPartial dock_strut = [[AZDock defaultDock] strut];
 
-        struts = g_new0(Strut, screen_num_monitors);
+        struts = calloc(sizeof(Strut), screen_num_monitors);
 
         /* calc the xinerama areas */
         for (x = 0; x < screen_num_monitors; ++x) {
@@ -975,13 +975,13 @@ done_cycle:
             dims[(i * 4) + 3] = area[i][screen_num_monitors].height;
         }
 
-        g_free(struts);
+        free(struts);
     }
 
     PROP_SETA32(RootWindow(ob_display, ob_screen), net_workarea, cardinal,
                 dims, 4 * screen_num_desktops);
 
-    g_free(dims);
+    free(dims);
 }
 
 - (Rect *) physicalArea
@@ -1082,21 +1082,18 @@ done_cycle:
 
 - (BOOL) replaceWM
 {
-    gchar *wm_sn;
     Atom wm_sn_atom;
     Window current_wm_sn_owner;
     Time timestamp;
 
-    wm_sn = g_strdup_printf("WM_S%d", ob_screen);
-    wm_sn_atom = XInternAtom(ob_display, wm_sn, NO);
-    g_free(wm_sn);
+    wm_sn_atom = XInternAtom(ob_display, (char*)[[NSString stringWithFormat: @"WM_S%d", ob_screen] cString], NO);
 
     current_wm_sn_owner = XGetSelectionOwner(ob_display, wm_sn_atom);
     if (current_wm_sn_owner == screen_support_win)
         current_wm_sn_owner = None;
     if (current_wm_sn_owner) {
         if (!ob_replace_wm) {
-            g_warning("A window manager is already running on screen %d",
+            NSLog(@"Warning: A window manager is already running on screen %d",
                       ob_screen);
             return NO;
         }
