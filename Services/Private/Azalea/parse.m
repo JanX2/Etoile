@@ -33,60 +33,74 @@ static NSString *xdg_data_home_path;
 static NSMutableArray *xdg_config_dir_paths;
 static NSMutableArray *xdg_data_dir_paths;
 
-struct Callback {
-    gchar *tag;
-    ParseCallback func;
-    gpointer data;
-};
-
-static void destfunc(struct Callback *c)
+@interface AZCallback: NSObject
 {
-    g_free(c->tag);
-    g_free(c);
+    NSString *tag;
+    ParseCallback func;
+    void *data;
 }
+- (NSString *) tag;
+- (ParseCallback) func;
+- (void *) data;
+- (void) set_tag: (NSString *) tag;
+- (void) set_func: (ParseCallback) func;
+- (void) set_data: (void *) data;
+@end
+
+@implementation AZCallback
+- (NSString *) tag { return tag; }
+- (ParseCallback) func { return func; }
+- (void *) data { return data; }
+- (void) set_tag: (NSString *) t { ASSIGNCOPY(tag, t); }
+- (void) set_func: (ParseCallback) f { func = f; }
+- (void) set_data: (void *) d { data = d; }
+- (void) dealloc
+{
+  DESTROY(tag);
+  [super dealloc];
+}
+@end
 
 @implementation AZParser
 
 - (id) init
 {
     self = [super init];
-    callbacks = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
-                                         (GDestroyNotify)destfunc);
+    callbacks = [[NSMutableDictionary alloc] init];
     return self;
 }
 
 - (void) dealloc
 {
-    if (callbacks) {
-        g_hash_table_destroy(callbacks);
-    }
+    DESTROY(callbacks);
     [super dealloc];
 }
 
-- (void) registerTag: (char *) tag callback: (ParseCallback) func 
-                data: (gpointer) data
+- (void) registerTag: (NSString *) tag callback: (ParseCallback) func 
+                data: (void *) data
 {
-    struct Callback *c;
+    AZCallback *c;
 
-    if ((c = g_hash_table_lookup(callbacks, tag))) {
-        g_warning("tag '%s' already registered", tag);
+    if ((c = [callbacks objectForKey: tag])) {
+        NSLog(@"Warning: tag '%@' already registered", tag);
         return;
     }
 
-    c = g_new(struct Callback, 1);
-    c->tag = g_strdup(tag);
-    c->func = func;
-    c->data = data;
-    g_hash_table_insert(callbacks, c->tag, c);
+    c = [[AZCallback alloc] init];
+    [c set_tag: tag];
+    [c set_func: func];
+    [c set_data: data];
+    [callbacks setObject: c forKey: tag];
+    DESTROY(c);
 }
 
 - (void) parseDocument: (xmlDocPtr) doc node: (xmlNodePtr) node;
 {
     while (node) {
-        struct Callback *c = g_hash_table_lookup(callbacks, node->name);
+        AZCallback *c = [callbacks objectForKey: [NSString stringWithCString: (char*)(node->name)]];
 
         if (c)
-            c->func(self , doc, node, c->data);
+            [c func](self , doc, node, [c data]);
         node = node->next;
     }
 }

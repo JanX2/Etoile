@@ -215,11 +215,11 @@ static AZMenuManager *sharedInstance;
 
     menu_parse_state.parent = nil;
     menu_parse_state.pipe_creator = nil;
-    [menu_parse_inst registerTag: "menu" callback: parse_menu 
+    [menu_parse_inst registerTag: @"menu" callback: parse_menu 
 	                 data: &menu_parse_state];
-    [menu_parse_inst registerTag: "item" callback: parse_menu_item 
+    [menu_parse_inst registerTag: @"item" callback: parse_menu_item 
 	                 data: &menu_parse_state];
-    [menu_parse_inst registerTag: "separator" callback: parse_menu_separator
+    [menu_parse_inst registerTag: @"separator" callback: parse_menu_separator
 	                 data: &menu_parse_state];
 
     count = [config_menu_files count];

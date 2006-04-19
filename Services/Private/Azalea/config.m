@@ -554,11 +554,11 @@ void config_startup(AZParser *parser)
     config_focus_raise = NO;
     config_focus_last = NO;
 
-    [parser registerTag: "focus" callback: parse_focus data: NULL];
+    [parser registerTag: @"focus" callback: parse_focus data: NULL];
 
     config_place_policy = OB_PLACE_POLICY_SMART;
 
-    [parser registerTag: "placement" callback: parse_placement data: NULL];
+    [parser registerTag: @"placement" callback: parse_placement data: NULL];
 
     config_theme = nil;
 
@@ -566,20 +566,20 @@ void config_startup(AZParser *parser)
     config_theme_keepborder = YES;
     config_theme_hidedisabled = NO;
 
-    [parser registerTag: "theme" callback: parse_theme data: NULL];
+    [parser registerTag: @"theme" callback: parse_theme data: NULL];
 
     config_desktops_num = 4;
     config_screen_firstdesk = 1;
     config_desktops_names = nil;
 
-    [parser registerTag: "desktops" callback: parse_desktops data: NULL];
+    [parser registerTag: @"desktops" callback: parse_desktops data: NULL];
 
     config_resize_redraw = YES;
     config_resize_four_corners = NO;
     config_resize_popup_show = 1; /* nonpixel increments */
     config_resize_popup_pos = 0;  /* center of client */
 
-    [parser registerTag: "resize" callback: parse_resize data: NULL];
+    [parser registerTag: @"resize" callback: parse_resize data: NULL];
 
     config_dock_layer = OB_STACKING_LAYER_ABOVE;
     config_dock_pos = OB_DIRECTION_NORTHEAST;
@@ -594,27 +594,27 @@ void config_startup(AZParser *parser)
     config_dock_app_move_button = 2; /* middle */
     config_dock_app_move_modifiers = 0;
 
-    [parser registerTag: "dock" callback: parse_dock data: NULL];
+    [parser registerTag: @"dock" callback: parse_dock data: NULL];
 
     translate_key(@"C-g", &config_keyboard_reset_state,
                   &config_keyboard_reset_keycode);
 
     bind_default_keyboard();
 
-    [parser registerTag: "keyboard" callback: parse_keyboard data: NULL];
+    [parser registerTag: @"keyboard" callback: parse_keyboard data: NULL];
 
     config_mouse_threshold = 3;
     config_mouse_dclicktime = 200;
 
     bind_default_mouse();
 
-    [parser registerTag: "mouse" callback: parse_mouse data: NULL];
+    [parser registerTag: @"mouse" callback: parse_mouse data: NULL];
 
     config_resist_win = 10;
     config_resist_edge = 20;
     config_resist_layers_below = NO;
 
-    [parser registerTag: "resistance" callback: parse_resistance data: NULL];
+    [parser registerTag: @"resistance" callback: parse_resistance data: NULL];
 
     config_menu_warppointer = YES;
     config_menu_xorstyle = YES;
@@ -622,7 +622,7 @@ void config_startup(AZParser *parser)
     config_menu_client_list_icons = YES;
     config_menu_files = nil;
 
-    [parser registerTag: "menu" callback: parse_menu data: NULL];
+    [parser registerTag: @"menu" callback: parse_menu data: NULL];
 }
 
 void config_shutdown()

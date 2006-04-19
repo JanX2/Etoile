@@ -25,18 +25,17 @@
 #import <Foundation/Foundation.h>
 #import "version.h"
 #import <libxml/parser.h>
-#import <glib.h>
 
 @class AZParser;
 
 typedef void (*ParseCallback)(AZParser *i, xmlDocPtr doc, xmlNodePtr node,
-                              gpointer data);
+                              void *data);
 
 @interface AZParser: NSObject
 {
-  GHashTable *callbacks;
+  NSMutableDictionary *callbacks;
 }
-- (void) registerTag: (char *) tag callback: (ParseCallback) func data: (gpointer) data;
+- (void) registerTag: (NSString *) tag callback: (ParseCallback) func data: (void *) data;
 - (void) parseDocument: (xmlDocPtr) doc node: (xmlNodePtr) node;
              
 @end 
@@ -82,6 +81,6 @@ NSArray *parse_xdg_config_dir_paths();
 NSArray *parse_xdg_data_dir_paths();
 
 /*! Makes a directory and all its parents */
-BOOL parse_mkdir_path(const gchar *path, int mode);
+BOOL parse_mkdir_path(const char *path, int mode);
 
 #endif
