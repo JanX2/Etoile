@@ -40,7 +40,8 @@ RrColor *RrColorParse(const RrInstance *inst, gchar *colorname)
 {
     XColor xcol;
 
-    g_assert(colorname != NULL);
+    if (colorname == NULL) 
+	    NSLog(@"Internal Error: no colorname");
     /* get rgb values from colorname */
 
     xcol.red = 0;
@@ -48,7 +49,7 @@ RrColor *RrColorParse(const RrInstance *inst, gchar *colorname)
     xcol.blue = 0;
     xcol.pixel = 0;
     if (!XParseColor(RrDisplay(inst), RrColormap(inst), colorname, &xcol)) {
-        g_warning("unable to parse color '%s'", colorname);
+        NSLog(@"Warning: unable to parse color '%s'", colorname);
         return NULL;
     }
     return RrColorNew(inst, xcol.red >> 8, xcol.green >> 8, xcol.blue >> 8);
@@ -267,7 +268,7 @@ void RrIncreaseDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
         }
         break;
     case 8:
-        g_warning("this image bit depth is currently unhandled");
+        NSLog(@"Warning: this image bit depth is currently unhandled");
         break;
     case 1:
         for (y = 0; y < im->height; y++) {

@@ -21,9 +21,6 @@
 #define __font_h
 #include "render.h"
 #include "geom.h"
-#ifdef USE_PANGO
-#include <pango/pango.h>
-#endif /* USE_PANGO */
 
 struct _RrFont {
     const RrInstance *inst;
@@ -32,11 +29,6 @@ struct _RrFont {
     int shadow;
     gchar tint;
     int offset;
-#ifdef USE_PANGO
-    PangoFontDescription *pango_font_description;
-    int pango_ascent;
-    int pango_descent;
-#endif /* USE_PANGO */
 };
 
 RrFont *RrFontOpen(const RrInstance *inst, gchar *fontstring);
