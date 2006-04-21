@@ -1585,7 +1585,7 @@ no_number:
                    (mwmhints.decorations & OB_MWM_DECOR_TITLE)))
                 /* if the mwm hints request no handle or title, then all
                    decorations are disabled */
-                decorations = 0;
+                decorations = config_theme_keepborder ? OB_FRAME_DECOR_BORDER : 0;
         }
     }
 

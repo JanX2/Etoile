@@ -328,6 +328,8 @@ static AZMenuManager *sharedInstance;
     }
     if (![frame showWithParent: nil])
 	DESTROY(frame);
+    else if ([[frame entries] count])
+	[frame selectNext];
 }
 
 - (void) registerMenu: (AZMenu *) menu

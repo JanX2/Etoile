@@ -4,6 +4,7 @@
 	* Remove glib from render.h to expose hidden usages of glib 
 	  in many places.
 	* Fix compilation.
+	* Update to OpenBox3 CVS.
 
 2006-04-19 Yen-Ju Chen <yjchenx at gmail>
 
