@@ -117,19 +117,19 @@ static AZFocusManager *sharedInstance;
 
         color_white = RrColorNew(ob_rr_inst, 0xff, 0xff, 0xff);
 
-        a_focus_indicator = RrAppearanceNew(ob_rr_inst, 4);
-        a_focus_indicator->surface.grad = RR_SURFACE_SOLID;
-        a_focus_indicator->surface.relief = RR_RELIEF_FLAT;
-        a_focus_indicator->surface.primary = RrColorNew(ob_rr_inst,
+        a_focus_indicator = [[AZAppearance alloc] initWithInstance: ob_rr_inst numberOfTextures: 4];
+        [a_focus_indicator surfacePointer]->grad = RR_SURFACE_SOLID;
+        [a_focus_indicator surfacePointer]->relief = RR_RELIEF_FLAT;
+        [a_focus_indicator surfacePointer]->primary = RrColorNew(ob_rr_inst,
                                                         0, 0, 0);
-        a_focus_indicator->texture[0].type = RR_TEXTURE_LINE_ART;
-        a_focus_indicator->texture[0].data.lineart.color = color_white;
-        a_focus_indicator->texture[1].type = RR_TEXTURE_LINE_ART;
-        a_focus_indicator->texture[1].data.lineart.color = color_white;
-        a_focus_indicator->texture[2].type = RR_TEXTURE_LINE_ART;
-        a_focus_indicator->texture[2].data.lineart.color = color_white;
-        a_focus_indicator->texture[3].type = RR_TEXTURE_LINE_ART;
-        a_focus_indicator->texture[3].data.lineart.color = color_white;
+        [a_focus_indicator texture][0].type = RR_TEXTURE_LINE_ART;
+        [a_focus_indicator texture][0].data.lineart.color = color_white;
+        [a_focus_indicator texture][1].type = RR_TEXTURE_LINE_ART;
+        [a_focus_indicator texture][1].data.lineart.color = color_white;
+        [a_focus_indicator texture][2].type = RR_TEXTURE_LINE_ART;
+        [a_focus_indicator texture][2].data.lineart.color = color_white;
+        [a_focus_indicator texture][3].type = RR_TEXTURE_LINE_ART;
+        [a_focus_indicator texture][3].data.lineart.color = color_white;
     }
 }
 
@@ -152,7 +152,7 @@ static AZFocusManager *sharedInstance;
 
         RrColorFree(color_white);
 
-        RrAppearanceFree(a_focus_indicator);
+        DESTROY(a_focus_indicator);
 
         XDestroyWindow(ob_display, [focus_indicator.top window]);
         XDestroyWindow(ob_display, [focus_indicator.left window]);
@@ -311,24 +311,23 @@ static AZFocusManager *sharedInstance;
 
         XMoveResizeWindow(ob_display, [focus_indicator.top window],
                           x, y, w, h);
-        a_focus_indicator->texture[0].data.lineart.x1 = 0;
-        a_focus_indicator->texture[0].data.lineart.y1 = h-1;
-        a_focus_indicator->texture[0].data.lineart.x2 = 0;
-        a_focus_indicator->texture[0].data.lineart.y2 = 0;
-        a_focus_indicator->texture[1].data.lineart.x1 = 0;
-        a_focus_indicator->texture[1].data.lineart.y1 = 0;
-        a_focus_indicator->texture[1].data.lineart.x2 = w-1;
-        a_focus_indicator->texture[1].data.lineart.y2 = 0;
-        a_focus_indicator->texture[2].data.lineart.x1 = w-1;
-        a_focus_indicator->texture[2].data.lineart.y1 = 0;
-        a_focus_indicator->texture[2].data.lineart.x2 = w-1;
-        a_focus_indicator->texture[2].data.lineart.y2 = h-1;
-        a_focus_indicator->texture[3].data.lineart.x1 = (wl-1);
-        a_focus_indicator->texture[3].data.lineart.y1 = h-1;
-        a_focus_indicator->texture[3].data.lineart.x2 = w - wr;
-        a_focus_indicator->texture[3].data.lineart.y2 = h-1;
-        RrPaint(a_focus_indicator, [focus_indicator.top window],
-                w, h);
+        [a_focus_indicator texture][0].data.lineart.x1 = 0;
+        [a_focus_indicator texture][0].data.lineart.y1 = h-1;
+        [a_focus_indicator texture][0].data.lineart.x2 = 0;
+        [a_focus_indicator texture][0].data.lineart.y2 = 0;
+        [a_focus_indicator texture][1].data.lineart.x1 = 0;
+        [a_focus_indicator texture][1].data.lineart.y1 = 0;
+        [a_focus_indicator texture][1].data.lineart.x2 = w-1;
+        [a_focus_indicator texture][1].data.lineart.y2 = 0;
+        [a_focus_indicator texture][2].data.lineart.x1 = w-1;
+        [a_focus_indicator texture][2].data.lineart.y1 = 0;
+        [a_focus_indicator texture][2].data.lineart.x2 = w-1;
+        [a_focus_indicator texture][2].data.lineart.y2 = h-1;
+        [a_focus_indicator texture][3].data.lineart.x1 = (wl-1);
+        [a_focus_indicator texture][3].data.lineart.y1 = h-1;
+        [a_focus_indicator texture][3].data.lineart.x2 = w - wr;
+        [a_focus_indicator texture][3].data.lineart.y2 = h-1;
+        [a_focus_indicator paint: [focus_indicator.top window] width: w height: h];
 
         x = [[focus_cycle_target frame] area].x;
         y = [[focus_cycle_target frame] area].y;
@@ -337,25 +336,23 @@ static AZFocusManager *sharedInstance;
 
         XMoveResizeWindow(ob_display, [focus_indicator.left window],
                           x, y, w, h);
-        a_focus_indicator->texture[0].data.lineart.x1 = w-1;
-        a_focus_indicator->texture[0].data.lineart.y1 = 0;
-        a_focus_indicator->texture[0].data.lineart.x2 = 0;
-        a_focus_indicator->texture[0].data.lineart.y2 = 0;
-        a_focus_indicator->texture[1].data.lineart.x1 = 0;
-        a_focus_indicator->texture[1].data.lineart.y1 = 0;
-        a_focus_indicator->texture[1].data.lineart.x2 = 0;
-        a_focus_indicator->texture[1].data.lineart.y2 = h-1;
-        a_focus_indicator->texture[2].data.lineart.x1 = 0;
-        a_focus_indicator->texture[2].data.lineart.y1 = h-1;
-        a_focus_indicator->texture[2].data.lineart.x2 = w-1;
-        a_focus_indicator->texture[2].data.lineart.y2 = h-1;
-        a_focus_indicator->texture[3].data.lineart.x1 = w-1;
-        a_focus_indicator->texture[3].data.lineart.y1 = wt-1;
-        a_focus_indicator->texture[3].data.lineart.x2 = w-1;
-        a_focus_indicator->texture[3].data.lineart.y2 = h - wb;
-        RrPaint(a_focus_indicator, [focus_indicator.left window],
-                w, h);
-
+        [a_focus_indicator texture][0].data.lineart.x1 = w-1;
+        [a_focus_indicator texture][0].data.lineart.y1 = 0;
+        [a_focus_indicator texture][0].data.lineart.x2 = 0;
+        [a_focus_indicator texture][0].data.lineart.y2 = 0;
+        [a_focus_indicator texture][1].data.lineart.x1 = 0;
+        [a_focus_indicator texture][1].data.lineart.y1 = 0;
+        [a_focus_indicator texture][1].data.lineart.x2 = 0;
+        [a_focus_indicator texture][1].data.lineart.y2 = h-1;
+        [a_focus_indicator texture][2].data.lineart.x1 = 0;
+        [a_focus_indicator texture][2].data.lineart.y1 = h-1;
+        [a_focus_indicator texture][2].data.lineart.x2 = w-1;
+        [a_focus_indicator texture][2].data.lineart.y2 = h-1;
+        [a_focus_indicator texture][3].data.lineart.x1 = w-1;
+        [a_focus_indicator texture][3].data.lineart.y1 = wt-1;
+        [a_focus_indicator texture][3].data.lineart.x2 = w-1;
+        [a_focus_indicator texture][3].data.lineart.y2 = h - wb;
+        [a_focus_indicator paint: [focus_indicator.left window] width: w height:  h];
         x = [[focus_cycle_target frame] area].x +
             [[focus_cycle_target frame] area].width - wr;
         y = [[focus_cycle_target frame] area].y;
@@ -364,24 +361,23 @@ static AZFocusManager *sharedInstance;
 
         XMoveResizeWindow(ob_display, [focus_indicator.right window],
                           x, y, w, h);
-        a_focus_indicator->texture[0].data.lineart.x1 = 0;
-        a_focus_indicator->texture[0].data.lineart.y1 = 0;
-        a_focus_indicator->texture[0].data.lineart.x2 = w-1;
-        a_focus_indicator->texture[0].data.lineart.y2 = 0;
-        a_focus_indicator->texture[1].data.lineart.x1 = w-1;
-        a_focus_indicator->texture[1].data.lineart.y1 = 0;
-        a_focus_indicator->texture[1].data.lineart.x2 = w-1;
-        a_focus_indicator->texture[1].data.lineart.y2 = h-1;
-        a_focus_indicator->texture[2].data.lineart.x1 = w-1;
-        a_focus_indicator->texture[2].data.lineart.y1 = h-1;
-        a_focus_indicator->texture[2].data.lineart.x2 = 0;
-        a_focus_indicator->texture[2].data.lineart.y2 = h-1;
-        a_focus_indicator->texture[3].data.lineart.x1 = 0;
-        a_focus_indicator->texture[3].data.lineart.y1 = wt-1;
-        a_focus_indicator->texture[3].data.lineart.x2 = 0;
-        a_focus_indicator->texture[3].data.lineart.y2 = h - wb;
-        RrPaint(a_focus_indicator, [focus_indicator.right window],
-                w, h);
+        [a_focus_indicator texture][0].data.lineart.x1 = 0;
+        [a_focus_indicator texture][0].data.lineart.y1 = 0;
+        [a_focus_indicator texture][0].data.lineart.x2 = w-1;
+        [a_focus_indicator texture][0].data.lineart.y2 = 0;
+        [a_focus_indicator texture][1].data.lineart.x1 = w-1;
+        [a_focus_indicator texture][1].data.lineart.y1 = 0;
+        [a_focus_indicator texture][1].data.lineart.x2 = w-1;
+        [a_focus_indicator texture][1].data.lineart.y2 = h-1;
+        [a_focus_indicator texture][2].data.lineart.x1 = w-1;
+        [a_focus_indicator texture][2].data.lineart.y1 = h-1;
+        [a_focus_indicator texture][2].data.lineart.x2 = 0;
+        [a_focus_indicator texture][2].data.lineart.y2 = h-1;
+        [a_focus_indicator texture][3].data.lineart.x1 = 0;
+        [a_focus_indicator texture][3].data.lineart.y1 = wt-1;
+        [a_focus_indicator texture][3].data.lineart.x2 = 0;
+        [a_focus_indicator texture][3].data.lineart.y2 = h - wb;
+        [a_focus_indicator paint: [focus_indicator.right window] width: w height: h];
 
         x = [[focus_cycle_target frame] area].x;
         y = [[focus_cycle_target frame] area].y +
@@ -391,24 +387,23 @@ static AZFocusManager *sharedInstance;
 
         XMoveResizeWindow(ob_display, [focus_indicator.bottom window],
                           x, y, w, h);
-        a_focus_indicator->texture[0].data.lineart.x1 = 0;
-        a_focus_indicator->texture[0].data.lineart.y1 = 0;
-        a_focus_indicator->texture[0].data.lineart.x2 = 0;
-        a_focus_indicator->texture[0].data.lineart.y2 = h-1;
-        a_focus_indicator->texture[1].data.lineart.x1 = 0;
-        a_focus_indicator->texture[1].data.lineart.y1 = h-1;
-        a_focus_indicator->texture[1].data.lineart.x2 = w-1;
-        a_focus_indicator->texture[1].data.lineart.y2 = h-1;
-        a_focus_indicator->texture[2].data.lineart.x1 = w-1;
-        a_focus_indicator->texture[2].data.lineart.y1 = h-1;
-        a_focus_indicator->texture[2].data.lineart.x2 = w-1;
-        a_focus_indicator->texture[2].data.lineart.y2 = 0;
-        a_focus_indicator->texture[3].data.lineart.x1 = wl-1;
-        a_focus_indicator->texture[3].data.lineart.y1 = 0;
-        a_focus_indicator->texture[3].data.lineart.x2 = w - wr;
-        a_focus_indicator->texture[3].data.lineart.y2 = 0;
-        RrPaint(a_focus_indicator, [focus_indicator.bottom window],
-                w, h);
+        [a_focus_indicator texture][0].data.lineart.x1 = 0;
+        [a_focus_indicator texture][0].data.lineart.y1 = 0;
+        [a_focus_indicator texture][0].data.lineart.x2 = 0;
+        [a_focus_indicator texture][0].data.lineart.y2 = h-1;
+        [a_focus_indicator texture][1].data.lineart.x1 = 0;
+        [a_focus_indicator texture][1].data.lineart.y1 = h-1;
+        [a_focus_indicator texture][1].data.lineart.x2 = w-1;
+        [a_focus_indicator texture][1].data.lineart.y2 = h-1;
+        [a_focus_indicator texture][2].data.lineart.x1 = w-1;
+        [a_focus_indicator texture][2].data.lineart.y1 = h-1;
+        [a_focus_indicator texture][2].data.lineart.x2 = w-1;
+        [a_focus_indicator texture][2].data.lineart.y2 = 0;
+        [a_focus_indicator texture][3].data.lineart.x1 = wl-1;
+        [a_focus_indicator texture][3].data.lineart.y1 = 0;
+        [a_focus_indicator texture][3].data.lineart.x2 = w - wr;
+        [a_focus_indicator texture][3].data.lineart.y2 = 0;
+        [a_focus_indicator paint: [focus_indicator.bottom window] width: w height: h];
 
         XMapWindow(ob_display, [focus_indicator.top window]);
         XMapWindow(ob_display, [focus_indicator.left window]);

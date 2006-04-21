@@ -51,8 +51,8 @@ static AZDock *sharedInstance;
                          RrColorPixel(ob_rr_theme->b_color));
         XSetWindowBorderWidth(ob_display, frame, ob_rr_theme->bwidth);
 
-        RrAppearanceFree(a_frame);
-        a_frame = RrAppearanceCopy(ob_rr_theme->a_unfocused_title);
+        DESTROY(a_frame);
+        a_frame = [ob_rr_theme->a_unfocused_title copy];
 
         [[AZStacking stacking] addWindow: self];
 
@@ -80,7 +80,7 @@ static AZDock *sharedInstance;
                                 RrVisual(ob_rr_inst),
                                 CWOverrideRedirect | CWEventMask,
                                 &attrib);
-    a_frame = RrAppearanceCopy(ob_rr_theme->a_unfocused_title);
+    a_frame = [ob_rr_theme->a_unfocused_title copy];
     XSetWindowBorder(ob_display, frame,
                      RrColorPixel(ob_rr_theme->b_color));
     XSetWindowBorderWidth(ob_display, frame, ob_rr_theme->bwidth);
@@ -105,7 +105,7 @@ static AZDock *sharedInstance;
     }
 
     XDestroyWindow(ob_display, frame);
-    RrAppearanceFree(a_frame);
+    DESTROY(a_frame);
     [[AZStacking stacking] removeWindow: self];
     [window_map removeObjectForKey: [NSNumber numberWithInt: frame]];
 }
@@ -219,7 +219,7 @@ static AZDock *sharedInstance;
     int strw, strh;
     Rect *a;
 
-    RrMinsize(a_frame, &minw, &minh);
+    [a_frame minimalSizeWithWidth: &minw height: &minh];
 
     w = h = 0;
 
@@ -510,7 +510,7 @@ static AZDock *sharedInstance;
         XMoveResizeWindow(ob_display, frame,
                           x, y, w, h);
 
-        RrPaint(a_frame, frame, w, h);
+        [a_frame paint: frame width: w height: h];
         XMapWindow(ob_display, frame);
     } else
         XUnmapWindow(ob_display, frame);

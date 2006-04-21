@@ -73,27 +73,25 @@ static Window createWindow(Window parent, unsigned long mask,
   XMapWindow(ob_display, window);
   XMapWindow(ob_display, text);
 
-  a_normal = RrAppearanceCopy(ob_rr_theme->a_menu_normal);
-  a_disabled = RrAppearanceCopy(ob_rr_theme->a_menu_disabled);
-  a_selected = RrAppearanceCopy(ob_rr_theme->a_menu_selected);
+  a_normal = [ob_rr_theme->a_menu_normal copy];
+  a_disabled = [ob_rr_theme->a_menu_disabled copy];
+  a_selected = [ob_rr_theme->a_menu_selected copy];
 
   if ([entry type] == OB_MENU_ENTRY_TYPE_SEPARATOR) {
-    a_separator = RrAppearanceCopy(ob_rr_theme->a_clear_tex);
-    a_separator->texture[0].type = RR_TEXTURE_LINE_ART;
+    a_separator = [ob_rr_theme->a_clear_tex copy];
+    [a_separator texture][0].type = RR_TEXTURE_LINE_ART;
   } else {
-    a_icon = RrAppearanceCopy(ob_rr_theme->a_clear_tex);
-    a_icon->texture[0].type = RR_TEXTURE_RGBA;
-    a_mask = RrAppearanceCopy(ob_rr_theme->a_clear_tex);
-    a_mask->texture[0].type = RR_TEXTURE_MASK;
-    a_bullet_normal =
-    RrAppearanceCopy(ob_rr_theme->a_menu_bullet_normal);
-    a_bullet_selected =
-      RrAppearanceCopy(ob_rr_theme->a_menu_bullet_selected);
+    a_icon = [ob_rr_theme->a_clear_tex copy];
+    [a_icon texture][0].type = RR_TEXTURE_RGBA;
+    a_mask = [ob_rr_theme->a_clear_tex copy];
+    [a_mask texture][0].type = RR_TEXTURE_MASK;
+    a_bullet_normal = [ob_rr_theme->a_menu_bullet_normal copy];
+    a_bullet_selected = [ob_rr_theme->a_menu_bullet_selected copy];
   }
 
-  a_text_normal = RrAppearanceCopy(ob_rr_theme->a_menu_text_normal);
-  a_text_disabled = RrAppearanceCopy(ob_rr_theme->a_menu_text_disabled);
-  a_text_selected = RrAppearanceCopy(ob_rr_theme->a_menu_text_selected);
+  a_text_normal = [ob_rr_theme->a_menu_text_normal copy];
+  a_text_disabled = [ob_rr_theme->a_menu_text_disabled copy];
+  a_text_selected = [ob_rr_theme->a_menu_text_selected copy];
 
 
   return self;
@@ -108,25 +106,25 @@ static Window createWindow(Window parent, unsigned long mask,
             XDestroyWindow(ob_display, bullet);
         }
 
-        RrAppearanceFree(a_normal);
-        RrAppearanceFree(a_disabled);
-        RrAppearanceFree(a_selected);
+        DESTROY(a_normal);
+        DESTROY(a_disabled);
+        DESTROY(a_selected);
 
-        RrAppearanceFree(a_separator);
-        RrAppearanceFree(a_icon);
-        RrAppearanceFree(a_mask);
-        RrAppearanceFree(a_text_normal);
-        RrAppearanceFree(a_text_disabled);
-        RrAppearanceFree(a_text_selected);
-        RrAppearanceFree(a_bullet_normal);
-        RrAppearanceFree(a_bullet_selected);
+        DESTROY(a_separator);
+        DESTROY(a_icon);
+        DESTROY(a_mask);
+        DESTROY(a_text_normal);
+        DESTROY(a_text_disabled);
+        DESTROY(a_text_selected);
+        DESTROY(a_bullet_normal);
+        DESTROY(a_bullet_selected);
 
 	[super dealloc];
 }
 
 - (void) render
 {
-    RrAppearance *item_a, *text_a;
+    AZAppearance *item_a, *text_a;
     int th; /* temp */
     AZMenu *sub;
 
@@ -147,10 +145,10 @@ static Window createWindow(Window parent, unsigned long mask,
     }
     RECT_SET_SIZE(area, [frame inner_w], th);
     XResizeWindow(ob_display, window, area.width, area.height);
-    item_a->surface.parent = [frame a_items];
-    item_a->surface.parentx = area.x;
-    item_a->surface.parenty = area.y;
-    RrPaint(item_a, window, area.width, area.height);
+    [item_a surfacePointer]->parent = [frame a_items];
+    [item_a surfacePointer]->parentx = area.x;
+    [item_a surfacePointer]->parenty = area.y;
+    [item_a paint: window width: area.width height: area.height];
 
     RECT_SET_SIZE(area, [frame inner_w], th);
     text_a = (([entry type] == OB_MENU_ENTRY_TYPE_NORMAL &&
@@ -159,11 +157,11 @@ static Window createWindow(Window parent, unsigned long mask,
               (self == [frame selected] ?  a_text_selected : a_text_normal));
     switch ([entry type]) {
     case OB_MENU_ENTRY_TYPE_NORMAL:
-        text_a->texture[0].data.text.string = (char*)[[(AZNormalMenuEntry *)entry label] cString];
+        [text_a texture][0].data.text.string = (char*)[[(AZNormalMenuEntry *)entry label] cString];
         break;
     case OB_MENU_ENTRY_TYPE_SUBMENU:
         sub = [(AZSubmenuMenuEntry *)entry submenu];
-        text_a->texture[0].data.text.string = sub ? (char*)[[sub title] cString]: "";
+        [text_a texture][0].data.text.string = sub ? (char*)[[sub title] cString]: "";
         break;
     case OB_MENU_ENTRY_TYPE_SEPARATOR:
         break;
@@ -174,37 +172,37 @@ static Window createWindow(Window parent, unsigned long mask,
         XMoveResizeWindow(ob_display, text,
                           [frame text_x], PADDING,
                           [frame text_w], [frame item_h] - 2*PADDING);
-        text_a->surface.parent = item_a;
-        text_a->surface.parentx = [frame text_x];
-        text_a->surface.parenty = PADDING;
-        RrPaint(text_a, text, [frame text_w], [frame item_h] - 2*PADDING);
+        [text_a surfacePointer]->parent = item_a;
+        [text_a surfacePointer]->parentx = [frame text_x];
+        [text_a surfacePointer]->parenty = PADDING;
+        [text_a paint: text width: [frame text_w] height: [frame item_h] - 2*PADDING];
         break;
     case OB_MENU_ENTRY_TYPE_SUBMENU:
         XMoveResizeWindow(ob_display, text,
                           [frame text_x], PADDING,
                           [frame text_w] - [frame item_h],
                           [frame item_h] - 2*PADDING);
-        text_a->surface.parent = item_a;
-        text_a->surface.parentx = [frame text_x];
-        text_a->surface.parenty = PADDING;
-        RrPaint(text_a, text, [frame text_w] - [frame item_h],
-                [frame item_h] - 2*PADDING);
+        [text_a surfacePointer]->parent = item_a;
+        [text_a surfacePointer]->parentx = [frame text_x];
+        [text_a surfacePointer]->parenty = PADDING;
+        [text_a paint: text width: [frame text_w] - [frame item_h]
+                height: [frame item_h] - 2*PADDING];
         break;
     case OB_MENU_ENTRY_TYPE_SEPARATOR:
         XMoveResizeWindow(ob_display, text, PADDING, PADDING,
                           area.width - 2*PADDING, SEPARATOR_HEIGHT);
-        a_separator->surface.parent = item_a;
-        a_separator->surface.parentx = PADDING;
-        a_separator->surface.parenty = PADDING;
-        a_separator->texture[0].data.lineart.color =
-            text_a->texture[0].data.text.color;
-        a_separator->texture[0].data.lineart.x1 = 2*PADDING;
-        a_separator->texture[0].data.lineart.y1 = SEPARATOR_HEIGHT / 2;
-        a_separator->texture[0].data.lineart.x2 =
+        [a_separator surfacePointer]->parent = item_a;
+        [a_separator surfacePointer]->parentx = PADDING;
+        [a_separator surfacePointer]->parenty = PADDING;
+        [a_separator texture][0].data.lineart.color =
+            [text_a texture][0].data.text.color;
+        [a_separator texture][0].data.lineart.x1 = 2*PADDING;
+        [a_separator texture][0].data.lineart.y1 = SEPARATOR_HEIGHT / 2;
+        [a_separator texture][0].data.lineart.x2 =
             area.width - 4*PADDING;
-        a_separator->texture[0].data.lineart.y2 = SEPARATOR_HEIGHT / 2;
-        RrPaint(a_separator, text,
-                area.width - 2*PADDING, SEPARATOR_HEIGHT);
+        [a_separator texture][0].data.lineart.y2 = SEPARATOR_HEIGHT / 2;
+        [a_separator paint: text
+                width: area.width - 2*PADDING height: SEPARATOR_HEIGHT];
         break;
     }
 
@@ -217,20 +215,20 @@ static Window createWindow(Window parent, unsigned long mask,
                           - [frame item_margin].bottom,
                           [frame item_h] - [frame item_margin].top
                           - [frame item_margin].bottom);
-        a_icon->texture[0].data.rgba.width =
+        [a_icon texture][0].data.rgba.width =
             [(AZIconMenuEntry *)entry icon_width];
-        a_icon->texture[0].data.rgba.height =
+        [a_icon texture][0].data.rgba.height =
             [(AZIconMenuEntry *)entry icon_height];
-        a_icon->texture[0].data.rgba.data =
+        [a_icon texture][0].data.rgba.data =
             [(AZIconMenuEntry *)entry icon_data];
-        a_icon->surface.parent = item_a;
-        a_icon->surface.parentx = PADDING;
-        a_icon->surface.parenty = [frame item_margin].top;
-        RrPaint(a_icon, icon,
-                [frame item_h] - [frame item_margin].top
-                - [frame item_margin].bottom,
-                [frame item_h] - [frame item_margin].top
-                - [frame item_margin].bottom);
+        [a_icon surfacePointer]->parent = item_a;
+        [a_icon surfacePointer]->parentx = PADDING;
+        [a_icon surfacePointer]->parenty = [frame item_margin].top;
+        [a_icon paint: icon
+                width: [frame item_h] - [frame item_margin].top
+                - [frame item_margin].bottom
+                height: [frame item_h] - [frame item_margin].top
+                - [frame item_margin].bottom];
         XMapWindow(ob_display, icon);
     } else if ([entry type] != OB_MENU_ENTRY_TYPE_SEPARATOR &&
                [(AZIconMenuEntry *)entry mask])
@@ -243,7 +241,7 @@ static Window createWindow(Window parent, unsigned long mask,
                           - [frame item_margin].bottom,
                           [frame item_h] - [frame item_margin].top
                           - [frame item_margin].bottom);
-        a_mask->texture[0].data.mask.mask = [(AZIconMenuEntry *)entry mask];
+        [a_mask texture][0].data.mask.mask = [(AZIconMenuEntry *)entry mask];
 
         c = (([entry type] == OB_MENU_ENTRY_TYPE_NORMAL &&
               ![(AZNormalMenuEntry *)entry enabled]) ?
@@ -251,22 +249,22 @@ static Window createWindow(Window parent, unsigned long mask,
              (self == [frame selected] ?
               [(AZNormalMenuEntry *)entry mask_selected_color] :
               [(AZNormalMenuEntry *)entry mask_normal_color]));
-        a_mask->texture[0].data.mask.color = c;
+        [a_mask texture][0].data.mask.color = c;
 
-        a_mask->surface.parent = item_a;
-        a_mask->surface.parentx = PADDING;
-        a_mask->surface.parenty = [frame item_margin].top;
-        RrPaint(a_mask, icon,
-                [frame item_h] - [frame item_margin].top
-                - [frame item_margin].bottom,
-                [frame item_h] - [frame item_margin].top
-                - [frame item_margin].bottom);
+        [a_mask surfacePointer]->parent = item_a;
+        [a_mask surfacePointer]->parentx = PADDING;
+        [a_mask surfacePointer]->parenty = [frame item_margin].top;
+        [a_mask paint: icon
+                width: [frame item_h] - [frame item_margin].top
+                - [frame item_margin].bottom
+                height: [frame item_h] - [frame item_margin].top
+                - [frame item_margin].bottom];
         XMapWindow(ob_display, icon);
     } else
         XUnmapWindow(ob_display, icon);
 
     if ([entry type] == OB_MENU_ENTRY_TYPE_SUBMENU) {
-        RrAppearance *bullet_a;
+        AZAppearance *bullet_a;
         XMoveResizeWindow(ob_display, bullet,
                           [frame text_x] + [frame text_w]
                           - [frame item_h] + PADDING, PADDING,
@@ -274,13 +272,13 @@ static Window createWindow(Window parent, unsigned long mask,
                           [frame item_h] - 2*PADDING);
         bullet_a = (self == [frame selected] ?
                     a_bullet_selected : a_bullet_normal);
-        bullet_a->surface.parent = item_a;
-        bullet_a->surface.parentx =
+        [bullet_a surfacePointer]->parent = item_a;
+        [bullet_a surfacePointer]->parentx =
             [frame text_x] + [frame text_w] - [frame item_h] + PADDING;
-        bullet_a->surface.parenty = PADDING;
-        RrPaint(bullet_a, bullet,
-                [frame item_h] - 2*PADDING,
-                [frame item_h] - 2*PADDING);
+        [bullet_a surfacePointer]->parenty = PADDING;
+        [bullet_a paint: bullet
+                width: [frame item_h] - 2*PADDING
+                height: [frame item_h] - 2*PADDING];
         XMapWindow(ob_display, bullet);
     } else
         XUnmapWindow(ob_display, bullet);
@@ -326,12 +324,12 @@ static Window createWindow(Window parent, unsigned long mask,
 
 - (Rect) area { return area; }
 - (void) set_area: (Rect) a { area = a; }
-- (RrAppearance *) a_text_normal { return a_text_normal; }
-- (RrAppearance *) a_text_disabled { return a_text_disabled; }
-- (RrAppearance *) a_text_selected { return a_text_selected; }
-- (RrAppearance *) a_normal { return a_normal; }
-- (RrAppearance *) a_selected { return a_selected; }
-- (RrAppearance *) a_disabled { return a_disabled; }
+- (AZAppearance *) a_text_normal { return a_text_normal; }
+- (AZAppearance *) a_text_disabled { return a_text_disabled; }
+- (AZAppearance *) a_text_selected { return a_text_selected; }
+- (AZAppearance *) a_normal { return a_normal; }
+- (AZAppearance *) a_selected { return a_selected; }
+- (AZAppearance *) a_disabled { return a_disabled; }
 - (Window) window { return window; }
 - (AZMenuEntry *) entry { return entry; }
 - (void) set_entry: (AZMenuEntry *) e { entry = e; }
@@ -390,8 +388,8 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     XMapWindow(ob_display, items);
 
-    a_title = RrAppearanceCopy(ob_rr_theme->a_menu_title);
-    a_items = RrAppearanceCopy(ob_rr_theme->a_menu);
+    a_title = [ob_rr_theme->a_menu_title copy];
+    a_items = [ob_rr_theme->a_menu copy];
 
     [[AZStacking stacking] addWindow: self];
 
@@ -410,8 +408,8 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
         XDestroyWindow(ob_display, title);
         XDestroyWindow(ob_display, window);
 
-        RrAppearanceFree(a_items);
-        RrAppearanceFree(a_title);
+        DESTROY(a_items);
+        DESTROY(a_title);
 
 	[super dealloc];
 }
@@ -481,8 +479,8 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
         XMoveWindow(ob_display, title, 
                     -ob_rr_theme->bwidth, h - ob_rr_theme->bwidth);
 
-        a_title->texture[0].data.text.string = (char*)[[menu title] cString];
-        RrMinsize(a_title, &tw, &th);
+        [a_title texture][0].data.text.string = (char*)[[menu title] cString];
+        [a_title minimalSizeWithWidth: &tw height: &th];
         tw = MIN(tw, MAX_MENU_WIDTH) + ob_rr_theme->padding * 2;
         w = MAX(w, tw);
 
@@ -501,25 +499,25 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
         AZMenuEntryFrame *e = [entries objectAtIndex: 0];
         int l, t, r, b;
 
-        [e a_text_normal]->texture[0].data.text.string = "";
-        RrMinsize([e a_text_normal], &tw, &th);
+        [[e a_text_normal] texture][0].data.text.string = "";
+        [[e a_text_normal] minimalSizeWithWidth: &tw height: &th];
         tw += 2*PADDING;
         th += 2*PADDING;
         item_h = th;
 
-        RrMargins([e a_normal], &l, &t, &r, &b);
+        [[e a_normal] marginsWithLeft: &l top: &t right: &r bottom: &b];
         STRUT_SET(item_margin,
                   MAX(item_margin.left, l),
                   MAX(item_margin.top, t),
                   MAX(item_margin.right, r),
                   MAX(item_margin.bottom, b));
-        RrMargins([e a_selected], &l, &t, &r, &b);
+        [[e a_selected] marginsWithLeft: &l top: &t right: &r bottom: &b];
         STRUT_SET(item_margin,
                   MAX(item_margin.left, l),
                   MAX(item_margin.top, t),
                   MAX(item_margin.right, r),
                   MAX(item_margin.bottom, b));
-        RrMargins([e a_disabled], &l, &t, &r, &b);
+        [[e a_disabled] marginsWithLeft: &l top: &t right: &r bottom: &b];
         STRUT_SET(item_margin,
                   MAX(item_margin.left, l),
                   MAX(item_margin.top, t),
@@ -530,7 +528,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     int i, count = [entries count];
     for (i = 0; i < count; i++) {
-        RrAppearance *text_a;
+        AZAppearance *text_a;
         AZMenuEntryFrame *e = [entries objectAtIndex: i];
 
 	Rect _area = [e area];
@@ -546,8 +544,8 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
                    [e a_text_normal]));
         switch ([[e entry] type]) {
         case OB_MENU_ENTRY_TYPE_NORMAL:
-            text_a->texture[0].data.text.string = (char*)[[(AZNormalMenuEntry *)[e entry] label] cString];
-            RrMinsize(text_a, &tw, &th);
+            [text_a texture][0].data.text.string = (char*)[[(AZNormalMenuEntry *)[e entry] label] cString];
+            [text_a minimalSizeWithWidth: &tw height: &th];
             tw = MIN(tw, MAX_MENU_WIDTH);
 
             if ([(AZIconMenuEntry *)[e entry] icon_data] ||
@@ -556,8 +554,8 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
             break;
         case OB_MENU_ENTRY_TYPE_SUBMENU:
             sub = [(AZSubmenuMenuEntry *)[e entry] submenu];
-            text_a->texture[0].data.text.string = sub ? (char*)[[sub title] cString]: "";
-            RrMinsize(text_a, &tw, &th);
+            [text_a texture][0].data.text.string = sub ? (char*)[[sub title] cString]: "";
+            [text_a minimalSizeWithWidth: &tw height: &th];
             tw = MIN(tw, MAX_MENU_WIDTH);
 
             if ([(AZIconMenuEntry *)[e entry] icon_data] ||
@@ -601,12 +599,12 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     if (!parent && show_title) {
         XResizeWindow(ob_display, title, w, title_h - ob_rr_theme->bwidth);
-        RrPaint(a_title, title, w, title_h - ob_rr_theme->bwidth);
+        [a_title paint: title width: w height: title_h - ob_rr_theme->bwidth];
         XMapWindow(ob_display, title);
     } else
         XUnmapWindow(ob_display, title);
 
-    RrPaint(a_items, items, w, allitems_h);
+    [a_items paint: items width: w height: allitems_h];
 
     count = [entries count];
     for (i = 0; i < count; i++) {
@@ -830,7 +828,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 - (int) item_h { return item_h; }
 - (int) title_h { return title_h; }
 - (int) inner_w { return inner_w; }
-- (RrAppearance *) a_items { return a_items; }
+- (AZAppearance *) a_items { return a_items; }
 - (int) text_x { return text_x; }
 - (int) text_w { return text_w; }
 - (Strut) item_margin { return item_margin; }

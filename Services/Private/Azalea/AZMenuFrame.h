@@ -62,8 +62,8 @@
   Window title;
   Window items;
 
-  RrAppearance *a_title;
-  RrAppearance *a_items;
+  AZAppearance *a_title;
+  AZAppearance *a_items;
 }
 
 + (NSMutableArray *) visibleFrames;
@@ -93,7 +93,7 @@
 - (int) item_h;
 - (int) title_h;
 - (int) inner_w;
-- (RrAppearance *) a_items;
+- (AZAppearance *) a_items;
 - (int) text_x;
 - (int) text_w;
 - (Strut) item_margin;
@@ -120,18 +120,18 @@
     Window text;
     Window bullet;
 
-    RrAppearance *a_normal;
-    RrAppearance *a_disabled;
-    RrAppearance *a_selected;
+    AZAppearance *a_normal;
+    AZAppearance *a_disabled;
+    AZAppearance *a_selected;
 
-    RrAppearance *a_icon;
-    RrAppearance *a_mask;
-    RrAppearance *a_bullet_normal;
-    RrAppearance *a_bullet_selected;
-    RrAppearance *a_separator;
-    RrAppearance *a_text_normal;
-    RrAppearance *a_text_disabled;
-    RrAppearance *a_text_selected;
+    AZAppearance *a_icon;
+    AZAppearance *a_mask;
+    AZAppearance *a_bullet_normal;
+    AZAppearance *a_bullet_selected;
+    AZAppearance *a_separator;
+    AZAppearance *a_text_normal;
+    AZAppearance *a_text_disabled;
+    AZAppearance *a_text_selected;
 }
 
 - (id) initWithMenuEntry: (AZMenuEntry *) entry 
@@ -143,12 +143,12 @@
 /* accessories */
 - (Rect) area;
 - (void) set_area: (Rect) area;
-- (RrAppearance *) a_text_normal;
-- (RrAppearance *) a_text_disabled;
-- (RrAppearance *) a_text_selected;
-- (RrAppearance *) a_normal;
-- (RrAppearance *) a_selected;
-- (RrAppearance *) a_disabled;
+- (AZAppearance *) a_text_normal;
+- (AZAppearance *) a_text_disabled;
+- (AZAppearance *) a_text_selected;
+- (AZAppearance *) a_normal;
+- (AZAppearance *) a_selected;
+- (AZAppearance *) a_disabled;
 - (Window) window;
 - (AZMenuEntry *) entry;
 - (void) set_entry: (AZMenuEntry *) entry;

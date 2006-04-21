@@ -98,13 +98,13 @@ typedef enum {
   Window    tlresize;
   Window    trresize;
 
-  RrAppearance *a_unfocused_title;
-  RrAppearance *a_focused_title;
-  RrAppearance *a_unfocused_label;
-  RrAppearance *a_focused_label;
-  RrAppearance *a_icon;
-  RrAppearance *a_unfocused_handle;
-  RrAppearance *a_focused_handle;
+  AZAppearance *a_unfocused_title;
+  AZAppearance *a_focused_title;
+  AZAppearance *a_unfocused_label;
+  AZAppearance *a_focused_label;
+  AZAppearance *a_icon;
+  AZAppearance *a_unfocused_handle;
+  AZAppearance *a_focused_handle;
 
   int      width;         /* title and handle */
   int      label_width;

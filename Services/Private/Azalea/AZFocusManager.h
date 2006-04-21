@@ -50,7 +50,7 @@ typedef enum {
                           sets the number of desktops */
 
   /* Private */
-  RrAppearance *a_focus_indicator;
+  AZAppearance *a_focus_indicator;
   RrColor *color_white;
   AZIconPopUp *focus_cycle_popup;
 }

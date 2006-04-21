@@ -25,13 +25,13 @@
 
 @interface AZFrame (AZRenderPrivate)
 
-- (void) renderLabel: (RrAppearance *) a;
-- (void) renderIcon: (RrAppearance *) a;
-- (void) renderMax: (RrAppearance *) a;
-- (void) renderIconify: (RrAppearance *) a;
-- (void) renderDesk: (RrAppearance *) a;
-- (void) renderShade: (RrAppearance *) a;
-- (void) renderClose: (RrAppearance *) a;
+- (void) renderLabel: (AZAppearance *) a;
+- (void) renderIcon: (AZAppearance *) a;
+- (void) renderMax: (AZAppearance *) a;
+- (void) renderIconify: (AZAppearance *) a;
+- (void) renderDesk: (AZAppearance *) a;
+- (void) renderShade: (AZAppearance *) a;
+- (void) renderClose: (AZAppearance *) a;
 
 @end
 
@@ -50,7 +50,7 @@
     }
 
     if (decorations & OB_FRAME_DECOR_TITLEBAR) {
-        RrAppearance *t, *l, *m, *n, *i, *d, *s, *c;
+        AZAppearance *t, *l, *m, *n, *i, *d, *s, *c;
         if ([self focused]) {
 
           t = a_focused_title;
@@ -145,50 +145,51 @@
                 ob_rr_theme->a_unfocused_unpressed_close)));
         }
 
-        RrPaint(t, [self title], width, ob_rr_theme->title_height);
+        [t paint: [self title] width: width height: ob_rr_theme->title_height];
 
-        ob_rr_theme->a_clear->surface.parent = t;
-        ob_rr_theme->a_clear->surface.parentx = 0;
-        ob_rr_theme->a_clear->surface.parenty = 0;
+        [ob_rr_theme->a_clear surfacePointer]->parent = t;
+        [ob_rr_theme->a_clear surfacePointer]->parentx = 0;
+        [ob_rr_theme->a_clear surfacePointer]->parenty = 0;
 
-        RrPaint(ob_rr_theme->a_clear, [self tlresize],
-                ob_rr_theme->grip_width, ob_rr_theme->handle_height);
+        [ob_rr_theme->a_clear paint: [self tlresize]
+                width: ob_rr_theme->grip_width height: ob_rr_theme->handle_height];
 
-        ob_rr_theme->a_clear->surface.parentx =
+        [ob_rr_theme->a_clear surfacePointer]->parentx =
             width - ob_rr_theme->grip_width;
 
-        RrPaint(ob_rr_theme->a_clear, [self trresize],
-                ob_rr_theme->grip_width, ob_rr_theme->handle_height);
+        [ob_rr_theme->a_clear paint: [self trresize]
+                width: ob_rr_theme->grip_width 
+		height: ob_rr_theme->handle_height];
 
 
         /* set parents for any parent relative guys */
-        l->surface.parent = t;
-        l->surface.parentx = label_x;
-        l->surface.parenty = ob_rr_theme->padding;
+        [l surfacePointer]->parent = t;
+        [l surfacePointer]->parentx = label_x;
+        [l surfacePointer]->parenty = ob_rr_theme->padding;
 
-        m->surface.parent = t;
-        m->surface.parentx = max_x;
-        m->surface.parenty = ob_rr_theme->padding + 1;
+        [m surfacePointer]->parent = t;
+        [m surfacePointer]->parentx = max_x;
+        [m surfacePointer]->parenty = ob_rr_theme->padding + 1;
 
-        n->surface.parent = t;
-        n->surface.parentx = icon_x;
-        n->surface.parenty = ob_rr_theme->padding;
+        [n surfacePointer]->parent = t;
+        [n surfacePointer]->parentx = icon_x;
+        [n surfacePointer]->parenty = ob_rr_theme->padding;
 
-        i->surface.parent = t;
-        i->surface.parentx = iconify_x;
-        i->surface.parenty = ob_rr_theme->padding + 1;
+        [i surfacePointer]->parent = t;
+        [i surfacePointer]->parentx = iconify_x;
+        [i surfacePointer]->parenty = ob_rr_theme->padding + 1;
 
-        d->surface.parent = t;
-        d->surface.parentx = desk_x;
-        d->surface.parenty = ob_rr_theme->padding + 1;
+        [d surfacePointer]->parent = t;
+        [d surfacePointer]->parentx = desk_x;
+        [d surfacePointer]->parenty = ob_rr_theme->padding + 1;
 
-        s->surface.parent = t;
-        s->surface.parentx = shade_x;
-        s->surface.parenty = ob_rr_theme->padding + 1;
+        [s surfacePointer]->parent = t;
+        [s surfacePointer]->parentx = shade_x;
+        [s surfacePointer]->parenty = ob_rr_theme->padding + 1;
 
-        c->surface.parent = t;
-        c->surface.parentx = close_x;
-        c->surface.parenty = ob_rr_theme->padding + 1;
+        [c surfacePointer]->parent = t;
+        [c surfacePointer]->parentx = close_x;
+        [c surfacePointer]->parenty = ob_rr_theme->padding + 1;
 
 	[self renderLabel: l];
 	[self renderMax: m];
@@ -200,31 +201,33 @@
     }
 
     if (decorations & OB_FRAME_DECOR_HANDLE) {
-        RrAppearance *h, *g;
+        AZAppearance *h, *g;
 
         h = ([self focused] ?
              a_focused_handle : a_unfocused_handle);
 
-        RrPaint(h, [self handle], width, ob_rr_theme->handle_height);
+        [h paint: [self handle] width: width height: ob_rr_theme->handle_height];
 
         if (decorations & OB_FRAME_DECOR_GRIPS) {
             g = ([self focused] ?
                  ob_rr_theme->a_focused_grip : ob_rr_theme->a_unfocused_grip);
 
-            if (g->surface.grad == RR_SURFACE_PARENTREL)
-                g->surface.parent = h;
+            if ([g surface].grad == RR_SURFACE_PARENTREL)
+                [g surfacePointer]->parent = h;
 
-            g->surface.parentx = 0;
-            g->surface.parenty = 0;
+            [g surfacePointer]->parentx = 0;
+            [g surfacePointer]->parenty = 0;
 
-            RrPaint(g, [self lgrip],
-                    ob_rr_theme->grip_width, ob_rr_theme->handle_height);
+            [g paint: [self lgrip]
+                    width: ob_rr_theme->grip_width
+		    height: ob_rr_theme->handle_height];
 
-            g->surface.parentx = width - ob_rr_theme->grip_width;
-            g->surface.parenty = 0;
+            [g surfacePointer]->parentx = width - ob_rr_theme->grip_width;
+            [g surfacePointer]->parenty = 0;
 
-            RrPaint(g, [self rgrip],
-                    ob_rr_theme->grip_width, ob_rr_theme->handle_height);
+            [g paint: [self rgrip]
+                    width: ob_rr_theme->grip_width
+		    height: ob_rr_theme->handle_height];
         }
     }
 
@@ -234,15 +237,15 @@
 @end
 
 @implementation AZFrame (AZRenderPrivate)
-- (void) renderLabel: (RrAppearance *) a;
+- (void) renderLabel: (AZAppearance *) a;
 {
     if (label_x < 0) return;
     /* set the texture's text! */
-    a->texture[0].data.text.string = (char*)[[[self client] title] UTF8String];
-    RrPaint(a, [self label], label_width, ob_rr_theme->label_height);
+    [a texture][0].data.text.string = (char*)[[[self client] title] UTF8String];
+    [a paint: [self label] width: label_width height: ob_rr_theme->label_height];
 }
 
-- (void) renderIcon: (RrAppearance *) a;
+- (void) renderIcon: (AZAppearance *) a;
 {
     AZClientIcon *_icon;
 
@@ -256,48 +259,56 @@
                        ob_rr_theme->button_size + 2);
 #endif
     if (_icon) {
-        a->texture[0].type = RR_TEXTURE_RGBA;
-        a->texture[0].data.rgba.width = [_icon width] /*_icon->width*/;
-        a->texture[0].data.rgba.height = [_icon height] /*_icon->height*/;
-        a->texture[0].data.rgba.data = [_icon data] /*_icon->data*/;
+        [a texture][0].type = RR_TEXTURE_RGBA;
+        [a texture][0].data.rgba.width = [_icon width] /*_icon->width*/;
+        [a texture][0].data.rgba.height = [_icon height] /*_icon->height*/;
+        [a texture][0].data.rgba.data = [_icon data] /*_icon->data*/;
     } else
-        a->texture[0].type = RR_TEXTURE_NONE;
+        [a texture][0].type = RR_TEXTURE_NONE;
 
-    RrPaint(a, [self icon],
-            ob_rr_theme->button_size + 2, ob_rr_theme->button_size + 2);
+    [a paint: [self icon]
+            width: ob_rr_theme->button_size + 2
+	    height: ob_rr_theme->button_size + 2];
 }
 
-- (void) renderMax: (RrAppearance *) a;
+- (void) renderMax: (AZAppearance *) a;
 {
     if (max_x < 0) return;
-    RrPaint(a, [self max], ob_rr_theme->button_size, ob_rr_theme->button_size);
+    [a paint: [self max]
+	    width: ob_rr_theme->button_size
+	    height: ob_rr_theme->button_size];
 }
 
-- (void) renderIconify: (RrAppearance *) a;
+- (void) renderIconify: (AZAppearance *) a;
 {
     if (iconify_x < 0) return;
-    RrPaint(a, [self iconify],
-            ob_rr_theme->button_size, ob_rr_theme->button_size);
+    [a paint: [self iconify]
+            width: ob_rr_theme->button_size
+	    height: ob_rr_theme->button_size];
 }
 
-- (void) renderDesk: (RrAppearance *) a;
+- (void) renderDesk: (AZAppearance *) a;
 {
     if (desk_x < 0) return;
-    RrPaint(a, [self desk], ob_rr_theme->button_size, ob_rr_theme->button_size);
+    [a paint: [self desk]
+	    width: ob_rr_theme->button_size
+	    height: ob_rr_theme->button_size];
 }
 
-- (void) renderShade: (RrAppearance *) a;
+- (void) renderShade: (AZAppearance *) a;
 {
     if (shade_x < 0) return;
-    RrPaint(a, [self shade],
-            ob_rr_theme->button_size, ob_rr_theme->button_size);
+    [a paint: [self shade]
+            width: ob_rr_theme->button_size
+	    height: ob_rr_theme->button_size];
 }
 
-- (void) renderClose: (RrAppearance *) a;
+- (void) renderClose: (AZAppearance *) a;
 {
     if (close_x < 0) return;
-    RrPaint(a, [self close],
-            ob_rr_theme->button_size, ob_rr_theme->button_size);
+    [a paint: [self close]
+            width: ob_rr_theme->button_size
+	    height: ob_rr_theme->button_size];
 }
 
 @end

@@ -31,8 +31,8 @@
 
 G_BEGIN_DECLS
 
+@class AZAppearance;
 typedef union  _RrTextureData      RrTextureData;
-typedef struct _RrAppearance       RrAppearance;
 typedef struct _RrSurface          RrSurface;
 typedef struct _RrFont             RrFont;
 typedef struct _RrTexture          RrTexture;
@@ -95,7 +95,7 @@ struct _RrSurface {
     RrColor *interlace_color;
     BOOL interlaced;
     BOOL border;
-    RrAppearance *parent;
+    AZAppearance *parent;
     int parentx;
     int parenty;
     RrPixel32 *pixel_data;
@@ -151,7 +151,8 @@ struct _RrTexture {
     RrTextureData data;
 };
 
-struct _RrAppearance {
+@interface AZAppearance: NSObject <NSCopying>
+{
     const RrInstance *inst;
 
     RrSurface surface;
@@ -162,7 +163,30 @@ struct _RrAppearance {
 
     /* cached for internal use */
     int w, h;
-};
+}
+- (id) initWithInstance: (const RrInstance *) inst numberOfTextures: (int) numtex;
+
+- (const RrInstance *) inst;
+- (RrSurface) surface;
+- (RrSurface *) surfacePointer;
+- (int) textures;
+- (RrTexture *) texture;
+- (Pixmap) pixmap;
+- (XftDraw *) xftdraw;
+- (int) w;
+- (int) h;
+
+- (void) set_texture: (RrTexture *) texture;
+- (void) set_pixmap: (Pixmap) pixmap;
+- (void) set_xftdraw: (XftDraw *) xftdraw;
+- (void) set_w: (int) w;
+- (void) set_h: (int) h;
+
+- (void) paint: (Window) win width: (int) w height: (int) h;
+- (void) minimalSizeWithWidth: (int *) w height: (int *) h;
+- (void) marginsWithLeft: (int *) l top: (int *) t right: (int *) r bottom: (int *) b;
+
+@end
 
 /* these are the same on all endian machines because it seems to be dependant
    on the endianness of the gfx card, not the cpu. */
@@ -200,17 +224,10 @@ int     RrColorBlue  (const RrColor *c);
 gulong   RrColorPixel (const RrColor *c);
 GC       RrColorGC    (RrColor *c);
 
-RrAppearance *RrAppearanceNew  (const RrInstance *inst, int numtex);
-RrAppearance *RrAppearanceCopy (RrAppearance *a);
-void          RrAppearanceFree (RrAppearance *a);
 
 RrSize *RrFontMeasureString (const RrFont *f, const gchar *str);
 int RrFontHeight        (const RrFont *f);
 int RrFontMaxCharWidth  (const RrFont *f);
-
-void RrPaint   (RrAppearance *a, Window win, int w, int h);
-void RrMinsize (RrAppearance *a, int *w, int *h);
-void RrMargins (RrAppearance *a, int *l, int *t, int *r, int *b);
 
 BOOL RrPixmapToRGBA(const RrInstance *inst,
                         Pixmap pmap, Pixmap mask,

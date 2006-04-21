@@ -22,6 +22,6 @@
 
 #include "render.h"
 
-void RrRender(RrAppearance *a, int w, int h);
+void RrRender(AZAppearance *a, int w, int h);
 
 #endif /* __gradient_h */

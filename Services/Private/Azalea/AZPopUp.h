@@ -33,8 +33,8 @@
   Window text;
 
   BOOL hasicon;
-  RrAppearance *a_bg;
-  RrAppearance *a_text;
+  AZAppearance *a_bg;
+  AZAppearance *a_text;
   int gravity;
   int x;
   int y;
@@ -68,7 +68,7 @@
 @interface AZIconPopUp: AZPopUp
 {
   Window icon;
-  RrAppearance *a_icon;
+  AZAppearance *a_icon;
 }
 
 - (void) showText: (NSString *) text icon: (AZClientIcon *) icon;
@@ -79,8 +79,8 @@
   unsigned int desks;
   unsigned int curdesk;
   Window *wins;
-  RrAppearance *hilight;
-  RrAppearance *unhilight;
+  AZAppearance *hilight;
+  AZAppearance *unhilight;
 };
 
 - (void) showText: (NSString *) text desktop: (unsigned int) desk;

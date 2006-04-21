@@ -849,26 +849,25 @@ static Window createWindow(Window parent, unsigned long mask,
                   ob_rr_theme->grip_width, ob_rr_theme->handle_height);
 
     /* set up the dynamic appearances */
-    a_unfocused_title = RrAppearanceCopy(ob_rr_theme->a_unfocused_title);
-    a_focused_title = RrAppearanceCopy(ob_rr_theme->a_focused_title);
-    a_unfocused_label = RrAppearanceCopy(ob_rr_theme->a_unfocused_label);
-    a_focused_label = RrAppearanceCopy(ob_rr_theme->a_focused_label);
-    a_unfocused_handle =
-        RrAppearanceCopy(ob_rr_theme->a_unfocused_handle);
-    a_focused_handle = RrAppearanceCopy(ob_rr_theme->a_focused_handle);
-    a_icon = RrAppearanceCopy(ob_rr_theme->a_icon);
+    a_unfocused_title = [ob_rr_theme->a_unfocused_title copy];
+    a_focused_title = [ob_rr_theme->a_focused_title copy];
+    a_unfocused_label = [ob_rr_theme->a_unfocused_label copy];
+    a_focused_label = [ob_rr_theme->a_focused_label copy];
+    a_unfocused_handle = [ob_rr_theme->a_unfocused_handle copy];
+    a_focused_handle = [ob_rr_theme->a_focused_handle copy];
+    a_icon = [ob_rr_theme->a_icon copy];
 }
 
 - (void) freeThemeStatics
 {
-    RrAppearanceFree(a_unfocused_title); 
-    RrAppearanceFree(a_focused_title);
-    RrAppearanceFree(a_unfocused_label);
+    DESTROY(a_unfocused_title); 
+    DESTROY(a_focused_title);
+    DESTROY(a_unfocused_label);
 
-    RrAppearanceFree(a_focused_label);
-    RrAppearanceFree(a_unfocused_handle);
-    RrAppearanceFree(a_focused_handle);
-    RrAppearanceFree(a_icon);
+    DESTROY(a_focused_label);
+    DESTROY(a_unfocused_handle);
+    DESTROY(a_focused_handle);
+    DESTROY(a_icon);
 }
 
 - (void) flashDone: (id) data

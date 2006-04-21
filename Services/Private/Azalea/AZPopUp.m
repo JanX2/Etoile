@@ -45,8 +45,8 @@
   int textw, texth;
   int iconw;
 
-  a_text->texture[0].data.text.string = (char*)[_text UTF8String];
-  RrMinsize(a_text, &textw, &texth);
+  [a_text texture][0].data.text.string = (char*)[_text UTF8String];
+  [a_text minimalSizeWithWidth: &textw height: &texth];
   /*XXX textw += ob_rr_theme->bevel * 2;*/
   texth += ob_rr_theme->padding * 2;
 
@@ -57,7 +57,7 @@
 
 - (void) setTextAlign: (RrJustify) align
 {
-  a_text->texture[0].data.text.justify = align;
+  [a_text texture][0].data.text.justify = align;
 }
 
 - (void) showText: (NSString *) _text
@@ -75,16 +75,16 @@
                                                and different resolutions on
                                                screens? */
 
-    RrMargins(a_bg, &l, &t, &r, &b);
+    [a_bg marginsWithLeft: &l top: &t right: &r bottom: &b];
 
     XSetWindowBorderWidth(ob_display, bg, ob_rr_theme->bwidth);
     XSetWindowBorder(ob_display, bg, ob_rr_theme->b_color->pixel);
 
     /* set up the textures */
-    a_text->texture[0].data.text.string = (char*)[_text UTF8String];
+    [a_text texture][0].data.text.string = (char*)[_text UTF8String];
 
     /* measure the shit out */
-    RrMinsize(a_text, &textw, &texth);
+    [a_text minimalSizeWithWidth: &textw height: &texth];
     /*XXX textw += ob_rr_theme->padding * 2;*/
     texth += ob_rr_theme->padding * 2;
 
@@ -145,17 +145,17 @@
     /* set the windows/appearances up */
     XMoveResizeWindow(ob_display, bg, _x, _y, _w, _h);
 
-    a_text->surface.parent = a_bg;
-    a_text->surface.parentx = l + iconw +
+    [a_text surfacePointer]->parent = a_bg;
+    [a_text surfacePointer]->parentx = l + iconw +
         ob_rr_theme->padding * (hasicon ? 2 : 1);
-    a_text->surface.parenty = t + ob_rr_theme->padding;
+    [a_text surfacePointer]->parenty = t + ob_rr_theme->padding;
     XMoveResizeWindow(ob_display, text,
                       l + iconw + ob_rr_theme->padding *
                       (hasicon ? 2 : 1),
                       t + ob_rr_theme->padding, textw, texth);
 
-    RrPaint(a_bg, bg, _w, _h);
-    RrPaint(a_text, text, textw, texth);
+    [a_bg paint: bg width: _w height: _h];
+    [a_text paint: text width: textw height: texth];
 
     if (hasicon) {
         if (iconw < 1) iconw = 1; /* sanity check for crashes */
@@ -188,8 +188,8 @@
   hasicon = hasIcon;
   gravity = NorthWestGravity;
   x = y = w = h = 0;
-  a_bg = RrAppearanceCopy(ob_rr_theme->app_hilite_bg);
-  a_text = RrAppearanceCopy(ob_rr_theme->app_hilite_label);
+  a_bg = [ob_rr_theme->app_hilite_bg copy];
+  a_text = [ob_rr_theme->app_hilite_label copy];
 
   attrib.override_redirect = True;
   bg = XCreateWindow(ob_display, RootWindow(ob_display, ob_screen),
@@ -212,8 +212,8 @@
 {
   XDestroyWindow(ob_display, bg);
   XDestroyWindow(ob_display, text);
-  RrAppearanceFree(a_bg);
-  RrAppearanceFree(a_text);
+  DESTROY(a_bg);
+  DESTROY(a_text);
   [[AZStacking stacking] removeWindow: self];
   [super dealloc];
 }
@@ -234,22 +234,22 @@
 
 - (void) drawIconAtX: (int) px y: (int) py width: (int) pw height: (int) ph
 {
-  a_icon->surface.parent = a_bg;
-  a_icon->surface.parentx = px;
-  a_icon->surface.parenty = py;
+  [a_icon surfacePointer]->parent = a_bg;
+  [a_icon surfacePointer]->parentx = px;
+  [a_icon surfacePointer]->parenty = py;
   XMoveResizeWindow(ob_display, icon, px, py, pw, ph);
-  RrPaint(a_icon, icon, pw, ph);
+  [a_icon paint: icon width: pw height: ph];
 }
 
 - (void) showText: (NSString *) _text icon: (AZClientIcon *) _icon
 {
   if (_icon) {
-    a_icon->texture[0].type = RR_TEXTURE_RGBA;
-    a_icon->texture[0].data.rgba.width = [_icon width];
-    a_icon->texture[0].data.rgba.height = [_icon height];
-    a_icon->texture[0].data.rgba.data = [_icon data];
+    [a_icon texture][0].type = RR_TEXTURE_RGBA;
+    [a_icon texture][0].data.rgba.width = [_icon width];
+    [a_icon texture][0].data.rgba.height = [_icon height];
+    [a_icon texture][0].data.rgba.data = [_icon data];
   } else {
-    a_icon->texture[0].type = RR_TEXTURE_NONE;
+    [a_icon texture][0].type = RR_TEXTURE_NONE;
   }
   [super showText: _text];
 }
@@ -257,7 +257,7 @@
 - (id) initWithIcon: (BOOL) hasIcon;
 {
   self = [super initWithIcon: hasIcon];
-  a_icon = RrAppearanceCopy(ob_rr_theme->a_clear_tex);
+  a_icon = [ob_rr_theme->a_clear_tex copy];
   icon = XCreateWindow(ob_display, bg, 0, 0, 1, 1, 0,
                        RrDepth(ob_rr_inst), InputOutput,
                        RrVisual(ob_rr_inst), 0, NULL);
@@ -268,7 +268,7 @@
 - (void) dealloc
 {
   XDestroyWindow(ob_display, icon);
-  RrAppearanceFree(a_icon);
+  DESTROY(a_icon);
   [super dealloc];
 }
 
@@ -369,17 +369,17 @@
         for (c = 0, _x = 0; c < desktop_layout.columns;
              ++c, _x += eachw + ob_rr_theme->bwidth)
         {
-            RrAppearance *a;
+            AZAppearance *a;
 
             if (n < desks) {
                 a = (n == curdesk ? hilight : unhilight);
 
-                a->surface.parent = a_bg;
-                a->surface.parentx = _x + px;
-                a->surface.parenty = _y + py;
+                [a surfacePointer]->parent = a_bg;
+                [a surfacePointer]->parentx = _x + px;
+                [a surfacePointer]->parenty = _y + py;
                 XMoveResizeWindow(ob_display, wins[n],
                                   _x + px, _y + py, eachw, eachh);
-                RrPaint(a, wins[n], eachw, eachh);
+                [a paint: wins[n] width: eachw height: eachh];
             }
             n += horz_inc;
         }
@@ -424,8 +424,8 @@
 
   desks = 0;
   wins = calloc(sizeof(Window), desks);
-  hilight = RrAppearanceCopy(ob_rr_theme->app_hilite_fg);
-  unhilight = RrAppearanceCopy(ob_rr_theme->app_unhilite_fg);
+  hilight = [ob_rr_theme->app_hilite_fg copy];
+  unhilight = [ob_rr_theme->app_unhilite_fg copy];
 
   return self;
 }
@@ -437,8 +437,8 @@
   for (i = 0; i < desks; ++i)
     XDestroyWindow(ob_display, wins[i]);
   free(wins);
-  RrAppearanceFree(hilight);
-  RrAppearanceFree(unhilight);
+  DESTROY(hilight);
+  DESTROY(unhilight);
   [super dealloc];
 }
 

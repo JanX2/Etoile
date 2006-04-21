@@ -32,7 +32,7 @@
 @interface AZDock: NSObject <AZWindow>
 {
     Window frame;
-    RrAppearance *a_frame;
+    AZAppearance *a_frame;
 
     /* actual position (when not auto-hidden) */
     int x;

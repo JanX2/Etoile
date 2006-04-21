@@ -23,51 +23,51 @@
 #import <Foundation/Foundation.h>
 
 static void highlight(RrPixel32 *x, RrPixel32 *y, BOOL raised);
-static void gradient_solid(RrAppearance *l, int w, int h);
+static void gradient_solid(AZAppearance *l, int w, int h);
 static void gradient_vertical(RrSurface *sf, int w, int h);
 static void gradient_horizontal(RrSurface *sf, int w, int h);
 static void gradient_diagonal(RrSurface *sf, int w, int h);
 static void gradient_crossdiagonal(RrSurface *sf, int w, int h);
 static void gradient_pyramid(RrSurface *sf, int inw, int inh);
 
-void RrRender(RrAppearance *a, int w, int h)
+void RrRender(AZAppearance *a, int w, int h)
 {
-    RrPixel32 *data = a->surface.pixel_data;
+    RrPixel32 *data = [a surface].pixel_data;
     RrPixel32 current;
     unsigned int r,g,b;
     int off, x;
 
-    switch (a->surface.grad) {
+    switch ([a surface].grad) {
     case RR_SURFACE_SOLID:
         gradient_solid(a, w, h);
         break;
     case RR_SURFACE_VERTICAL:
-        gradient_vertical(&a->surface, w, h);
+        gradient_vertical([a surfacePointer], w, h);
         break;
     case RR_SURFACE_HORIZONTAL:
-        gradient_horizontal(&a->surface, w, h);
+        gradient_horizontal([a surfacePointer], w, h);
         break;
     case RR_SURFACE_DIAGONAL:
-        gradient_diagonal(&a->surface, w, h);
+        gradient_diagonal([a surfacePointer], w, h);
         break;
     case RR_SURFACE_CROSS_DIAGONAL:
-        gradient_crossdiagonal(&a->surface, w, h);
+        gradient_crossdiagonal([a surfacePointer], w, h);
         break;
     case RR_SURFACE_PYRAMID:
-        gradient_pyramid(&a->surface, w, h);
+        gradient_pyramid([a surfacePointer], w, h);
         break;
     default:
         g_assert_not_reached(); /* unhandled gradient */
         return;
     }
   
-    if (a->surface.interlaced) {
+    if ([a surface].interlaced) {
         int i;
         RrPixel32 *p;
 
-        r = a->surface.interlace_color->r;
-        g = a->surface.interlace_color->g;
-        b = a->surface.interlace_color->b;
+        r = [a surface].interlace_color->r;
+        g = [a surface].interlace_color->g;
+        b = [a surface].interlace_color->b;
         current = (r << RrDefaultRedOffset)
             + (g << RrDefaultGreenOffset)
             + (b << RrDefaultBlueOffset);
@@ -77,10 +77,10 @@ void RrRender(RrAppearance *a, int w, int h)
                 *p = current;
     }
 
-    if (a->surface.relief == RR_RELIEF_FLAT && a->surface.border) {
-        r = a->surface.border_color->r;
-        g = a->surface.border_color->g;
-        b = a->surface.border_color->b;
+    if ([a surface].relief == RR_RELIEF_FLAT && [a surface].border) {
+        r = [a surface].border_color->r;
+        g = [a surface].border_color->g;
+        b = [a surface].border_color->b;
         current = (r << RrDefaultRedOffset)
             + (g << RrDefaultGreenOffset)
             + (b << RrDefaultBlueOffset);
@@ -94,27 +94,27 @@ void RrRender(RrAppearance *a, int w, int h)
         }
     }
 
-    if (a->surface.relief != RR_RELIEF_FLAT) {
-        if (a->surface.bevel == RR_BEVEL_1) {
+    if ([a surface].relief != RR_RELIEF_FLAT) {
+        if ([a surface].bevel == RR_BEVEL_1) {
             for (off = 1, x = 1; x < w - 1; ++x, off++)
                 highlight(data + off,
                           data + off + (h-1) * w,
-                          a->surface.relief==RR_RELIEF_RAISED);
+                          [a surface].relief==RR_RELIEF_RAISED);
             for (off = 0, x = 0; x < h; ++x, off++)
                 highlight(data + off * w,
                           data + off * w + w - 1,
-                          a->surface.relief==RR_RELIEF_RAISED);
+                          [a surface].relief==RR_RELIEF_RAISED);
         }
 
-        if (a->surface.bevel == RR_BEVEL_2) {
+        if ([a surface].bevel == RR_BEVEL_2) {
             for (off = 2, x = 2; x < w - 2; ++x, off++)
                 highlight(data + off + w,
                           data + off + (h-2) * w,
-                          a->surface.relief==RR_RELIEF_RAISED);
+                          [a surface].relief==RR_RELIEF_RAISED);
             for (off = 1, x = 1; x < h-1; ++x, off++)
                 highlight(data + off * w + 1,
                           data + off * w + w - 2,
-                          a->surface.relief==RR_RELIEF_RAISED);
+                          [a surface].relief==RR_RELIEF_RAISED);
         }
     }
 }
@@ -153,39 +153,39 @@ static void highlight(RrPixel32 *x, RrPixel32 *y, BOOL raised)
         + (b << RrDefaultBlueOffset);
 }
 
-static void create_bevel_colors(RrAppearance *l)
+static void create_bevel_colors(AZAppearance *l)
 {
     int r, g, b;
 
     /* light color */
-    r = l->surface.primary->r;
+    r = [l surface].primary->r;
     r += r >> 1;
-    g = l->surface.primary->g;
+    g = [l surface].primary->g;
     g += g >> 1;
-    b = l->surface.primary->b;
+    b = [l surface].primary->b;
     b += b >> 1;
     if (r > 0xFF) r = 0xFF;
     if (g > 0xFF) g = 0xFF;
     if (b > 0xFF) b = 0xFF;
-    g_assert(!l->surface.bevel_light);
-    l->surface.bevel_light = RrColorNew(l->inst, r, g, b);
+    g_assert(![l surface].bevel_light);
+    [l surfacePointer]->bevel_light = RrColorNew([l inst], r, g, b);
 
     /* dark color */
-    r = l->surface.primary->r;
+    r = [l surface].primary->r;
     r = (r >> 1) + (r >> 2);
-    g = l->surface.primary->g;
+    g = [l surface].primary->g;
     g = (g >> 1) + (g >> 2);
-    b = l->surface.primary->b;
+    b = [l surface].primary->b;
     b = (b >> 1) + (b >> 2);
-    g_assert(!l->surface.bevel_dark);
-    l->surface.bevel_dark = RrColorNew(l->inst, r, g, b);
+    g_assert(![l surface].bevel_dark);
+    [l surfacePointer]->bevel_dark = RrColorNew([l inst], r, g, b);
 }
 
-static void gradient_solid(RrAppearance *l, int w, int h) 
+static void gradient_solid(AZAppearance *l, int w, int h) 
 {
     RrPixel32 pix;
     int i, a, b;
-    RrSurface *sp = &l->surface;
+    RrSurface *sp = [l surfacePointer];
     int left = 0, top = 0, right = w - 1, bottom = h - 1;
 
     pix = (sp->primary->r << RrDefaultRedOffset)
@@ -196,12 +196,12 @@ static void gradient_solid(RrAppearance *l, int w, int h)
         for (b = 0; b < h; b++)
             sp->pixel_data[a + b * w] = pix;
 
-    XFillRectangle(RrDisplay(l->inst), l->pixmap, RrColorGC(sp->primary),
+    XFillRectangle(RrDisplay([l inst]), [l pixmap], RrColorGC(sp->primary),
                    0, 0, w, h);
 
     if (sp->interlaced) {
         for (i = 0; i < h; i += 2)
-            XDrawLine(RrDisplay(l->inst), l->pixmap,
+            XDrawLine(RrDisplay([l inst]), [l pixmap],
                       RrColorGC(sp->interlace_color),
                       0, i, w, i);
     }
@@ -213,25 +213,25 @@ static void gradient_solid(RrAppearance *l, int w, int h)
 
         switch (sp->bevel) {
         case RR_BEVEL_1:
-            XDrawLine(RrDisplay(l->inst), l->pixmap, RrColorGC(sp->bevel_dark),
+            XDrawLine(RrDisplay([l inst]), [l pixmap], RrColorGC(sp->bevel_dark),
                       left, bottom, right, bottom);
-            XDrawLine(RrDisplay(l->inst), l->pixmap, RrColorGC(sp->bevel_dark),
+            XDrawLine(RrDisplay([l inst]), [l pixmap], RrColorGC(sp->bevel_dark),
                       right, bottom, right, top);
                 
-            XDrawLine(RrDisplay(l->inst), l->pixmap,RrColorGC(sp->bevel_light),
+            XDrawLine(RrDisplay([l inst]), [l pixmap],RrColorGC(sp->bevel_light),
                       left, top, right, top);
-            XDrawLine(RrDisplay(l->inst), l->pixmap,RrColorGC(sp->bevel_light),
+            XDrawLine(RrDisplay([l inst]), [l pixmap],RrColorGC(sp->bevel_light),
                       left, bottom, left, top);
             break;
         case RR_BEVEL_2:
-            XDrawLine(RrDisplay(l->inst), l->pixmap, RrColorGC(sp->bevel_dark),
+            XDrawLine(RrDisplay([l inst]), [l pixmap], RrColorGC(sp->bevel_dark),
                       left + 1, bottom - 2, right - 2, bottom - 2);
-            XDrawLine(RrDisplay(l->inst), l->pixmap, RrColorGC(sp->bevel_dark),
+            XDrawLine(RrDisplay([l inst]), [l pixmap], RrColorGC(sp->bevel_dark),
                       right - 2, bottom - 2, right - 2, top + 1);
 
-            XDrawLine(RrDisplay(l->inst), l->pixmap,RrColorGC(sp->bevel_light),
+            XDrawLine(RrDisplay([l inst]), [l pixmap],RrColorGC(sp->bevel_light),
                       left + 1, top + 1, right - 2, top + 1);
-            XDrawLine(RrDisplay(l->inst), l->pixmap,RrColorGC(sp->bevel_light),
+            XDrawLine(RrDisplay([l inst]), [l pixmap],RrColorGC(sp->bevel_light),
                       left + 1, bottom - 2, left + 1, top + 1);
             break;
         default:
@@ -244,25 +244,25 @@ static void gradient_solid(RrAppearance *l, int w, int h)
 
         switch (sp->bevel) {
         case RR_BEVEL_1:
-            XDrawLine(RrDisplay(l->inst), l->pixmap,RrColorGC(sp->bevel_light),
+            XDrawLine(RrDisplay([l inst]), [l pixmap],RrColorGC(sp->bevel_light),
                       left, bottom, right, bottom);
-            XDrawLine(RrDisplay(l->inst), l->pixmap,RrColorGC(sp->bevel_light),
+            XDrawLine(RrDisplay([l inst]), [l pixmap],RrColorGC(sp->bevel_light),
                       right, bottom, right, top);
       
-            XDrawLine(RrDisplay(l->inst), l->pixmap, RrColorGC(sp->bevel_dark),
+            XDrawLine(RrDisplay([l inst]), [l pixmap], RrColorGC(sp->bevel_dark),
                       left, top, right, top);
-            XDrawLine(RrDisplay(l->inst), l->pixmap, RrColorGC(sp->bevel_dark),
+            XDrawLine(RrDisplay([l inst]), [l pixmap], RrColorGC(sp->bevel_dark),
                       left, bottom, left, top);
             break;
         case RR_BEVEL_2:
-            XDrawLine(RrDisplay(l->inst), l->pixmap,RrColorGC(sp->bevel_light),
+            XDrawLine(RrDisplay([l inst]), [l pixmap],RrColorGC(sp->bevel_light),
                       left + 1, bottom - 2, right - 2, bottom - 2);
-            XDrawLine(RrDisplay(l->inst), l->pixmap,RrColorGC(sp->bevel_light),
+            XDrawLine(RrDisplay([l inst]), [l pixmap],RrColorGC(sp->bevel_light),
                       right - 2, bottom - 2, right - 2, top + 1);
       
-            XDrawLine(RrDisplay(l->inst), l->pixmap, RrColorGC(sp->bevel_dark),
+            XDrawLine(RrDisplay([l inst]), [l pixmap], RrColorGC(sp->bevel_dark),
                       left + 1, top + 1, right - 2, top + 1);
-            XDrawLine(RrDisplay(l->inst), l->pixmap, RrColorGC(sp->bevel_dark),
+            XDrawLine(RrDisplay([l inst]), [l pixmap], RrColorGC(sp->bevel_dark),
                       left + 1, bottom - 2, left + 1, top + 1);
 
             break;
@@ -272,7 +272,7 @@ static void gradient_solid(RrAppearance *l, int w, int h)
         break;
     case RR_RELIEF_FLAT:
         if (sp->border) {
-            XDrawRectangle(RrDisplay(l->inst), l->pixmap,
+            XDrawRectangle(RrDisplay([l inst]), [l pixmap],
                            RrColorGC(sp->border_color),
                            left, top, right, bottom);
         }

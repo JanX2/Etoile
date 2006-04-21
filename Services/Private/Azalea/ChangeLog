@@ -1,3 +1,7 @@
+2006-04-20 Yen-Ju Chen <yjchenx at gmail>
+
+	* Port RrAppearance int AZAppearance (so far so good).
+
 2006-04-19 Yen-Ju Chen <yjchenx at gmail>
 
 	* Removeo pango from render/font.

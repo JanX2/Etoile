@@ -107,81 +107,81 @@ struct _RrTheme {
     RrPixmapMask *menu_toggle_mask; /* menu boolean */
 
     /* global appearances */
-    RrAppearance *a_disabled_focused_max;
-    RrAppearance *a_disabled_unfocused_max;
-    RrAppearance *a_hover_focused_max;
-    RrAppearance *a_hover_unfocused_max;
-    RrAppearance *a_toggled_focused_max;
-    RrAppearance *a_toggled_unfocused_max;
-    RrAppearance *a_focused_unpressed_max;
-    RrAppearance *a_focused_pressed_max;
-    RrAppearance *a_unfocused_unpressed_max;
-    RrAppearance *a_unfocused_pressed_max;
-    RrAppearance *a_disabled_focused_close;
-    RrAppearance *a_disabled_unfocused_close;
-    RrAppearance *a_hover_focused_close;
-    RrAppearance *a_hover_unfocused_close;
-    RrAppearance *a_focused_unpressed_close;
-    RrAppearance *a_focused_pressed_close;
-    RrAppearance *a_unfocused_unpressed_close;
-    RrAppearance *a_unfocused_pressed_close;
-    RrAppearance *a_disabled_focused_desk;
-    RrAppearance *a_disabled_unfocused_desk;
-    RrAppearance *a_hover_focused_desk;
-    RrAppearance *a_hover_unfocused_desk;
-    RrAppearance *a_toggled_focused_desk;
-    RrAppearance *a_toggled_unfocused_desk;
-    RrAppearance *a_focused_unpressed_desk;
-    RrAppearance *a_focused_pressed_desk;
-    RrAppearance *a_unfocused_unpressed_desk;
-    RrAppearance *a_unfocused_pressed_desk;
-    RrAppearance *a_disabled_focused_shade;
-    RrAppearance *a_disabled_unfocused_shade;
-    RrAppearance *a_hover_focused_shade;
-    RrAppearance *a_hover_unfocused_shade;
-    RrAppearance *a_toggled_focused_shade;
-    RrAppearance *a_toggled_unfocused_shade;
-    RrAppearance *a_focused_unpressed_shade;
-    RrAppearance *a_focused_pressed_shade;
-    RrAppearance *a_unfocused_unpressed_shade;
-    RrAppearance *a_unfocused_pressed_shade;
-    RrAppearance *a_disabled_focused_iconify;
-    RrAppearance *a_disabled_unfocused_iconify;
-    RrAppearance *a_hover_focused_iconify;
-    RrAppearance *a_hover_unfocused_iconify;
-    RrAppearance *a_focused_unpressed_iconify;
-    RrAppearance *a_focused_pressed_iconify;
-    RrAppearance *a_unfocused_unpressed_iconify;
-    RrAppearance *a_unfocused_pressed_iconify;
-    RrAppearance *a_focused_grip;
-    RrAppearance *a_unfocused_grip;
-    RrAppearance *a_focused_title;
-    RrAppearance *a_unfocused_title;
-    RrAppearance *a_focused_label;
-    RrAppearance *a_unfocused_label;
+    AZAppearance *a_disabled_focused_max;
+    AZAppearance *a_disabled_unfocused_max;
+    AZAppearance *a_hover_focused_max;
+    AZAppearance *a_hover_unfocused_max;
+    AZAppearance *a_toggled_focused_max;
+    AZAppearance *a_toggled_unfocused_max;
+    AZAppearance *a_focused_unpressed_max;
+    AZAppearance *a_focused_pressed_max;
+    AZAppearance *a_unfocused_unpressed_max;
+    AZAppearance *a_unfocused_pressed_max;
+    AZAppearance *a_disabled_focused_close;
+    AZAppearance *a_disabled_unfocused_close;
+    AZAppearance *a_hover_focused_close;
+    AZAppearance *a_hover_unfocused_close;
+    AZAppearance *a_focused_unpressed_close;
+    AZAppearance *a_focused_pressed_close;
+    AZAppearance *a_unfocused_unpressed_close;
+    AZAppearance *a_unfocused_pressed_close;
+    AZAppearance *a_disabled_focused_desk;
+    AZAppearance *a_disabled_unfocused_desk;
+    AZAppearance *a_hover_focused_desk;
+    AZAppearance *a_hover_unfocused_desk;
+    AZAppearance *a_toggled_focused_desk;
+    AZAppearance *a_toggled_unfocused_desk;
+    AZAppearance *a_focused_unpressed_desk;
+    AZAppearance *a_focused_pressed_desk;
+    AZAppearance *a_unfocused_unpressed_desk;
+    AZAppearance *a_unfocused_pressed_desk;
+    AZAppearance *a_disabled_focused_shade;
+    AZAppearance *a_disabled_unfocused_shade;
+    AZAppearance *a_hover_focused_shade;
+    AZAppearance *a_hover_unfocused_shade;
+    AZAppearance *a_toggled_focused_shade;
+    AZAppearance *a_toggled_unfocused_shade;
+    AZAppearance *a_focused_unpressed_shade;
+    AZAppearance *a_focused_pressed_shade;
+    AZAppearance *a_unfocused_unpressed_shade;
+    AZAppearance *a_unfocused_pressed_shade;
+    AZAppearance *a_disabled_focused_iconify;
+    AZAppearance *a_disabled_unfocused_iconify;
+    AZAppearance *a_hover_focused_iconify;
+    AZAppearance *a_hover_unfocused_iconify;
+    AZAppearance *a_focused_unpressed_iconify;
+    AZAppearance *a_focused_pressed_iconify;
+    AZAppearance *a_unfocused_unpressed_iconify;
+    AZAppearance *a_unfocused_pressed_iconify;
+    AZAppearance *a_focused_grip;
+    AZAppearance *a_unfocused_grip;
+    AZAppearance *a_focused_title;
+    AZAppearance *a_unfocused_title;
+    AZAppearance *a_focused_label;
+    AZAppearance *a_unfocused_label;
     /* always parentrelative, so no focused/unfocused */
-    RrAppearance *a_icon;
-    RrAppearance *a_focused_handle;
-    RrAppearance *a_unfocused_handle;
-    RrAppearance *a_menu_title;
-    RrAppearance *a_menu;
-    RrAppearance *a_menu_normal;
-    RrAppearance *a_menu_disabled;
-    RrAppearance *a_menu_selected;
-    RrAppearance *a_menu_text_normal;
-    RrAppearance *a_menu_text_disabled;
-    RrAppearance *a_menu_text_selected;
-    RrAppearance *a_menu_bullet_normal;
-    RrAppearance *a_menu_bullet_selected;
-    RrAppearance *a_clear;     /* clear with no texture */
-    RrAppearance *a_clear_tex; /* clear with a texture */
+    AZAppearance *a_icon;
+    AZAppearance *a_focused_handle;
+    AZAppearance *a_unfocused_handle;
+    AZAppearance *a_menu_title;
+    AZAppearance *a_menu;
+    AZAppearance *a_menu_normal;
+    AZAppearance *a_menu_disabled;
+    AZAppearance *a_menu_selected;
+    AZAppearance *a_menu_text_normal;
+    AZAppearance *a_menu_text_disabled;
+    AZAppearance *a_menu_text_selected;
+    AZAppearance *a_menu_bullet_normal;
+    AZAppearance *a_menu_bullet_selected;
+    AZAppearance *a_clear;     /* clear with no texture */
+    AZAppearance *a_clear_tex; /* clear with a texture */
 
-    RrAppearance *app_hilite_bg;
-    RrAppearance *app_unhilite_bg;
-    RrAppearance *app_hilite_fg; /* never parent relative */
-    RrAppearance *app_unhilite_fg; /* never parent relative */
-    RrAppearance *app_hilite_label; /* can be parent relative */
-    RrAppearance *app_unhilite_label; /* can be parent relative */
+    AZAppearance *app_hilite_bg;
+    AZAppearance *app_unhilite_bg;
+    AZAppearance *app_hilite_fg; /* never parent relative */
+    AZAppearance *app_unhilite_fg; /* never parent relative */
+    AZAppearance *app_hilite_label; /* can be parent relative */
+    AZAppearance *app_unhilite_label; /* can be parent relative */
 
 };
 
