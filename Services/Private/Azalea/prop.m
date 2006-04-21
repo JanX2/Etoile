@@ -213,10 +213,10 @@ static BOOL get_prealloc(Window win, Atom prop, Atom type, gint size,
                     data[i] = xdata[i];
                     break;
                 case 16:
-                    ((unsigned short *)data)[i] = ((unsigned short *)xdata)[i];
+                    ((gsu16 *)data)[i] = ((unsigned short *)xdata)[i];
                     break;
                 case 32:
-                    ((unsigned long *)data)[i] = ((unsigned long*)xdata)[i];
+                    ((gsu32 *)data)[i] = ((unsigned long*)xdata)[i];
                     break;
                 default:
 		    NSLog( @"Should not reach here"); /* unhandled size */
@@ -252,10 +252,10 @@ static BOOL get_all(Window win, Atom prop, Atom type, int size,
                     (*data)[i] = xdata[i];
                     break;
                 case 16:
-                    ((unsigned short *)*data)[i] = ((unsigned short *)xdata)[i];
+                    ((gsu16 *)*data)[i] = ((unsigned short *)xdata)[i];
                     break;
                 case 32:
-                    ((unsigned long *)*data)[i] = ((unsigned long *)xdata)[i];
+                    ((gsu32 *)*data)[i] = ((unsigned long *)xdata)[i];
                     break;
                 default:
 		    NSLog( @"Should not reach here"); /* unhandled size */

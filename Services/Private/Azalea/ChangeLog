@@ -5,6 +5,8 @@
 	  in many places.
 	* Fix compilation.
 	* Update to OpenBox3 CVS.
+	* Use fix-size type just in case.
+	(never tests on 64-bit machine because I don't have one :).
 
 2006-04-19 Yen-Ju Chen <yjchenx at gmail>
 
