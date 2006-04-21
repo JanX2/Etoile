@@ -74,7 +74,7 @@ static void sn_event_func(SnMonitorEvent *event, void *data);
 @interface AZStartupHandler (AZPrivate)
 - (AZWaitData* ) waitDataNew: (SnStartupSequence *)seq;
 - (void) waitDataFree: (AZWaitData *) d;
-- (AZWaitData*) waitFind: (const gchar *) iden;
+- (AZWaitData*) waitFind: (const char *) iden;
 
 /* ObjC version of callback in C */
 - (void) snEventFunc: (SnMonitorEvent *) event data: (void *) data;
@@ -200,7 +200,7 @@ static void sn_event_func(SnMonitorEvent *event, void *data);
     }
 }
 
-- (AZWaitData*) waitFind: (const gchar *) iden;
+- (AZWaitData*) waitFind: (const char *) iden;
 {
     AZWaitData *ret = nil;
     int i, count = [sn_waits count];
@@ -247,7 +247,7 @@ static void sn_event_func(SnMonitorEvent *event, void *data);
 	[sn_waits insertObject: d atIndex: 0];
         /* 30 second timeout for apps to start */
 	[mainLoop addTimeout: self handler: @selector(snWaitTimeout:)
-		        microseconds: 30 & G_USEC_PER_SEC
+		        microseconds: 30 & USEC_PER_SEC
 			data: d
 			notify: @selector(snWaitDestroy:)];
         change = YES;

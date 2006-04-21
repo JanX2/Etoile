@@ -39,6 +39,7 @@
 #import "prop.h"
 #import "extensions.h"
 #import "AZKeyboardHandler.h"
+#import "glib.h"
 
 #import <X11/keysym.h>
 #import <X11/Xatom.h>

@@ -133,7 +133,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
         cur_y = start_ch;
     }
 
-    moveresize_in_progress = TRUE;
+    moveresize_in_progress = YES;
 
     if (corner == prop_atoms.net_wm_moveresize_size_topleft)
         cur = OB_CURSOR_NORTHWEST;
@@ -160,14 +160,14 @@ static AZMoveResizeHandler *sharedInstance = nil;
     else
 	NSAssert(0, @"Should not reach here");
 
-    grab_pointer(TRUE, cur);
-    grab_keyboard(TRUE);
+    grab_pointer(YES, cur);
+    grab_keyboard(YES);
 }
 
 - (void) end: (BOOL) cancel
 {
-    grab_keyboard(FALSE);
-    grab_pointer(FALSE, OB_CURSOR_NONE);
+    grab_keyboard(NO);
+    grab_pointer(NO, OB_CURSOR_NONE);
 
     [popup hide];
 
@@ -183,7 +183,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
 		user: YES final: YES];
     }
 
-    moveresize_in_progress = FALSE;
+    moveresize_in_progress = NO;
     moveresize_client = nil;
 }
 
@@ -274,7 +274,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
                 cur_y += dy;
                 XWarpPointer(ob_display, None, None, 0, 0, 0, 0, dx, dy);
                 /* steal the motion events this causes */
-                XSync(ob_display, FALSE);
+                XSync(ob_display, NO);
                 {
                     XEvent ce;
                     while (XCheckTypedEvent(ob_display, MotionNotify, &ce));
@@ -309,7 +309,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
 		[screen pointerPosAtX: &opx y: &opy];
                 XWarpPointer(ob_display, None, None, 0, 0, 0, 0, dx, dy);
                 /* steal the motion events this causes */
-                XSync(ob_display, FALSE);
+                XSync(ob_display, NO);
                 {
                     XEvent ce;
                     while (XCheckTypedEvent(ob_display, MotionNotify, &ce));

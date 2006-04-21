@@ -311,7 +311,7 @@ static AZClientManager *sharedInstance;
 
     AZDebug("Unmanaging window: %lx (%s)\n", [client window], [client class]);
 
-    g_assert(client != NULL);
+    NSAssert(client != NULL, @"Client cannot be nil");
 
     [[AZKeyboardHandler defaultHandler] grab: NO forClient: client];
     [[AZMouseHandler defaultHandler] grab: NO forClient: client];

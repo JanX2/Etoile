@@ -135,7 +135,7 @@ static void parse_key(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 }
 
 static void parse_keyboard(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                           gpointer d)
+                           void * d)
 {
     [[AZKeyboardHandler defaultHandler] unbindAll];
 
@@ -153,7 +153,7 @@ static void parse_keyboard(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 */
 
 static void parse_mouse(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                        gpointer d)
+                        void * d)
 {
     xmlNodePtr n, nbut, nact;
     NSString *buttonstr;
@@ -213,7 +213,7 @@ static void parse_mouse(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 }
 
 static void parse_focus(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                        gpointer d)
+                        void * d)
 {
     xmlNodePtr n;
 
@@ -232,7 +232,7 @@ static void parse_focus(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 }
 
 static void parse_placement(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                            gpointer d)
+                            void * d)
 {
     xmlNodePtr n;
 
@@ -244,7 +244,7 @@ static void parse_placement(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 }
 
 static void parse_theme(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                        gpointer d)
+                        void * d)
 {
     xmlNodePtr n;
 
@@ -266,7 +266,7 @@ static void parse_theme(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 }
 
 static void parse_desktops(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                           gpointer d)
+                           void * d)
 {
     xmlNodePtr n;
 
@@ -298,7 +298,7 @@ static void parse_desktops(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 }
 
 static void parse_resize(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                         gpointer d)
+                         void * d)
 {
     xmlNodePtr n;
 
@@ -327,7 +327,7 @@ static void parse_resize(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 }
 
 static void parse_dock(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                       gpointer d)
+                       void * d)
 {
     xmlNodePtr n;
 
@@ -403,7 +403,7 @@ static void parse_dock(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 }
 
 static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                       gpointer d)
+                       void * d)
 {
     xmlNodePtr n;
     NSMutableArray *a;
@@ -429,7 +429,7 @@ static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 }
    
 static void parse_resistance(AZParser *parser, xmlDocPtr doc, xmlNodePtr node, 
-                             gpointer d)
+                             void * d)
 {
     xmlNodePtr n;
 
@@ -538,7 +538,7 @@ static void bind_default_mouse()
         case OB_MOUSE_ACTION_MOTION:
             uact = OB_USER_ACTION_MOUSE_MOTION; break;
         case OB_NUM_MOUSE_ACTIONS:
-            g_assert_not_reached();
+            NSLog(@"Internal Error: should reach here");
         }
 	[[AZMouseHandler defaultHandler] bind: it->button
 		context: it->context mouseAction: it->mact

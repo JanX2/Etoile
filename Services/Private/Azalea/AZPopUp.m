@@ -25,6 +25,7 @@
 #import "AZScreen.h"
 #import "AZStacking.h"
 #import "openbox.h"
+#import "glib.h"
 
 @implementation AZPopUp
 - (void) positionWithGravity: (int) _gravity x: (int) _x y: (int) _y
@@ -168,7 +169,7 @@
     if (!mapped) {
         XMapWindow(ob_display, bg);
 	[[AZStacking stacking] raiseWindow: self group: NO];
-        mapped = TRUE;
+        mapped = YES;
     }
 }
 
@@ -176,7 +177,7 @@
 {
   if (mapped) {
     XUnmapWindow(ob_display, bg);
-    mapped = FALSE;
+    mapped = NO;
   }
 }
 

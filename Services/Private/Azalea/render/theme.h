@@ -20,14 +20,13 @@
 #define __theme_h
 
 #include "render.h"
-#include "glib.h"
 #import <Foundation/Foundation.h>
 
 typedef struct _RrTheme RrTheme;
 
 struct _RrTheme {
-    gchar *path;
-    gchar *name;
+    char *path;
+    char *name;
 
     const RrInstance *inst;
 
@@ -186,7 +185,7 @@ struct _RrTheme {
 
 };
 
-RrTheme* RrThemeNew(const RrInstance *inst, gchar *theme);
+RrTheme* RrThemeNew(const RrInstance *inst, char *theme);
 void RrThemeFree(RrTheme *theme);
 
 #endif

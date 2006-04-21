@@ -167,7 +167,7 @@ enum {
 	act = [AZAction actionWithName: @"SendToDesktop"
                         userAction: OB_USER_ACTION_MENU_SELECTION];
         [act data_pointer]->sendto.desk = desk;
-        [act data_pointer]->sendto.follow = FALSE;
+        [act data_pointer]->sendto.follow = NO;
 	e = [menu addNormalMenuEntry: desk label: n actions: [NSArray arrayWithObjects: act, nil]];
 
         if ([[frame client] desktop] == desk)

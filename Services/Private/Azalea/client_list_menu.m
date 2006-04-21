@@ -70,10 +70,10 @@ static NSMutableArray *desktop_menus;
             AZNormalMenuEntry *e;
             AZClientIcon *icon;
 
-            empty = FALSE;
+            empty = NO;
 
             if (!icons && [c iconic]) {
-                icons = TRUE;
+                icons = YES;
 		[menu addSeparatorMenuEntry: -1];
             }
 

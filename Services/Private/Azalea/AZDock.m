@@ -504,8 +504,8 @@ static AZDock *sharedInstance;
     h -= ob_rr_theme->bwidth * 2;
 
     if ([dock_apps count]) {
-        g_assert(w > 0);
-        g_assert(h > 0);
+        NSAssert(w > 0, @"Width is less than 0");
+        NSAssert(h > 0, @"Height is less than 0");
 
         XMoveResizeWindow(ob_display, frame,
                           x, y, w, h);

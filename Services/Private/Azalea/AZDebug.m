@@ -72,7 +72,7 @@ int AZXErrorHandler(Display *d, XErrorEvent *e)
 
 void AZXErrorSetIgnore(BOOL ignore)
 {
-    XSync(ob_display, FALSE);
+    XSync(ob_display, NO);
     xerror_ignore = ignore;
 }
 

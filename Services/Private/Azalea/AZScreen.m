@@ -1138,15 +1138,15 @@ done_cycle:
     if (current_wm_sn_owner) {
       XEvent event;
       unsigned long wait = 0;
-      const unsigned long timeout = G_USEC_PER_SEC * 15; /* wait for 15s max */
+      const unsigned long timeout = USEC_PER_SEC * 15; /* wait for 15s max */
 
       while (wait < timeout) {
           if (XCheckWindowEvent(ob_display, current_wm_sn_owner,
                                 StructureNotifyMask, &event) &&
               event.type == DestroyNotify)
               break;
-          g_usleep(G_USEC_PER_SEC / 10);
-          wait += G_USEC_PER_SEC / 10;
+          g_usleep(USEC_PER_SEC / 10);
+          wait += USEC_PER_SEC / 10;
       }
 
       if (wait >= timeout) {

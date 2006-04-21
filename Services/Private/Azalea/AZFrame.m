@@ -28,6 +28,7 @@
 #import "prop.h"
 #import "config.h"
 #import "extensions.h"
+#import "glib.h"
 
 #define PLATE_EVENTMASK (SubstructureRedirectMask | ButtonPressMask)
 #define FRAME_EVENTMASK (EnterWindowMask | LeaveWindowMask | \
@@ -542,7 +543,7 @@ static Window createWindow(Window parent, unsigned long mask,
     {
       [[AZMainLoop mainLoop] addTimeout: self 
 	                     handler: @selector(flashTimeout:)
-	                     microseconds: G_USEC_PER_SEC * 0.6
+	                     microseconds: USEC_PER_SEC * 0.6
 			     data: self 
 			     notify: @selector(flashDone:)];
     }
@@ -878,9 +879,9 @@ static Window createWindow(Window parent, unsigned long mask,
 
 - (BOOL) flashTimeout: (id) data
 {
-    GTimeVal now;
+    struct timeval now;
 
-    g_get_current_time(&now);
+    gettimeofday(&now, NULL);
     if (now.tv_sec > flash_end.tv_sec ||
         (now.tv_sec == flash_end.tv_sec &&
          now.tv_usec >= flash_end.tv_usec))
@@ -899,7 +900,7 @@ static Window createWindow(Window parent, unsigned long mask,
 }
 @end
 
-ObFrameContext frame_context_from_string(const gchar *name)
+ObFrameContext frame_context_from_string(const char *name)
 {
     if (!g_ascii_strcasecmp("Desktop", name))
         return OB_FRAME_CONTEXT_DESKTOP;

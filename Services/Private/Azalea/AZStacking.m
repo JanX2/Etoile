@@ -132,8 +132,7 @@ static AZStacking *sharedInstance;
     ObStackingLayer l;
 
     AZScreen *screen = [AZScreen defaultScreen];
-    g_assert([screen supportXWindow] != None); /* make sure I dont break this in the
-                                             future */
+    NSAssert([screen supportXWindow] != None, @"SupportXWindow cannot be None"); /* make sure I dont break this in the future */
 
     l = [win windowLayer];
 
@@ -218,8 +217,7 @@ static AZStacking *sharedInstance;
     for (i = 1, j = 0; j < jcount; ++i, j++) {
 	data = [wins objectAtIndex: j];
         win[i] = [data windowTop];
-        g_assert(win[i] != None); /* better not call stacking shit before
-                                     setting your top level window value */
+        NSAssert(win[i] != None, @"Window cannot be NONE"); /* better not call stacking shit before setting your top level window value */
 	if (before == nil) {
 	  [stacking_list addObject: data];
 	} else {

@@ -244,7 +244,7 @@ static AZKeyboardHandler *sharedInstance;
                 /* 5 second timeout for chains */
 		[mainLoop addTimeout: self 
 			     handler: @selector(chainTimeout:)
-			     microseconds: 5 * G_USEC_PER_SEC
+			     microseconds: 5 * USEC_PER_SEC
 			     data: nil notify: NULL];
 		[self grabKeys: NO];
                 curpos = p;

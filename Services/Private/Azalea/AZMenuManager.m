@@ -46,12 +46,12 @@ static ObMenuParseState menu_parse_state;
 
 static void menu_destroy_hash_value(AZMenu *self);
 static void parse_menu_item(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                            gpointer data);
+                            void * data);
 static void parse_menu_separator(AZParser *parser,
                                  xmlDocPtr doc, xmlNodePtr node,
-                                 gpointer data);
+                                 void * data);
 static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                       gpointer data);
+                       void *data);
 
 void menu_pipe_execute(AZMenu *self)
 {
@@ -103,7 +103,7 @@ void menu_pipe_execute(AZMenu *self)
 }
 
 static void parse_menu_item(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                            gpointer data)
+                            void * data)
 {
     ObMenuParseState *state = data;
     NSString *label;
@@ -127,7 +127,7 @@ static void parse_menu_item(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 
 static void parse_menu_separator(AZParser *parser,
                                  xmlDocPtr doc, xmlNodePtr node,
-                                 gpointer data)
+                                 void * data)
 {
     ObMenuParseState *state = data;
 
@@ -136,7 +136,7 @@ static void parse_menu_separator(AZParser *parser,
 }
 
 static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                       gpointer data)
+                       void * data)
 {
     ObMenuParseState *state = data;
     NSString *name = nil, *title = nil, *script = nil;

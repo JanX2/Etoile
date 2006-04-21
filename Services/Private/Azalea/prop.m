@@ -23,6 +23,7 @@
 #include "prop.h"
 #include "openbox.h"
 #include "gnustep.h"
+#import <glib.h>
 
 #include <X11/Xatom.h>
 
