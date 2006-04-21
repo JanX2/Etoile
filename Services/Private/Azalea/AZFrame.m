@@ -546,8 +546,8 @@ static Window createWindow(Window parent, unsigned long mask,
 			     data: self 
 			     notify: @selector(flashDone:)];
     }
-    g_get_current_time(&flash_end);
-    g_time_val_add(&flash_end, G_USEC_PER_SEC * 5);
+    gettimeofday(&flash_end, NULL);
+    time_val_add(&flash_end, USEC_PER_SEC * 5);
     
     flashing = YES;
 }

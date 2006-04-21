@@ -25,6 +25,7 @@
 #import "AZClient+Place.h"
 #import "AZFocusManager.h"
 #import "config.h"
+#import "glib.h"
 
 static Rect* pick_head(AZClient *c)
 {

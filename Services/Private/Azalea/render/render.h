@@ -27,9 +27,6 @@
 #include <X11/Xlib.h> /* some platforms dont include this as needed for Xft */
 #define _XFT_NO_COMPAT_ /* no Xft 1 API */
 #include <X11/Xft/Xft.h>
-#include <glib.h>
-
-G_BEGIN_DECLS
 
 @class AZAppearance;
 typedef union  _RrTextureData      RrTextureData;
@@ -44,8 +41,8 @@ typedef struct _RrPixmapMask       RrPixmapMask;
 typedef struct _RrInstance         RrInstance;
 typedef struct _RrColor            RrColor;
 
-typedef guint32 RrPixel32;
-typedef guint16 RrPixel16;
+typedef gsu32 RrPixel32;
+typedef gsu16 RrPixel16;
 
 typedef enum {
     RR_RELIEF_FLAT,
@@ -105,7 +102,7 @@ struct _RrTextureText {
     RrFont *font;
     RrJustify justify;
     RrColor *color;
-    gchar *string;
+    NSString *string;
 };
 
 struct _RrPixmapMask {
@@ -113,7 +110,7 @@ struct _RrPixmapMask {
     Pixmap mask;
     int width;
     int height;
-    gchar *data;
+    char *data;
 };
 
 struct _RrTextureMask {
@@ -215,24 +212,22 @@ int     RrGreenMask    (const RrInstance *inst);
 int     RrBlueMask     (const RrInstance *inst);
 
 RrColor *RrColorNew   (const RrInstance *inst, int r, int g, int b);
-RrColor *RrColorParse (const RrInstance *inst, gchar *colorname);
+RrColor *RrColorParse (const RrInstance *inst, char *colorname);
 void     RrColorFree  (RrColor *in);
 
 int     RrColorRed   (const RrColor *c);
 int     RrColorGreen (const RrColor *c);
 int     RrColorBlue  (const RrColor *c);
-gulong   RrColorPixel (const RrColor *c);
+unsigned long   RrColorPixel (const RrColor *c);
 GC       RrColorGC    (RrColor *c);
 
 
-RrSize *RrFontMeasureString (const RrFont *f, const gchar *str);
+RrSize *RrFontMeasureString (const RrFont *f, const char *str);
 int RrFontHeight        (const RrFont *f);
 int RrFontMaxCharWidth  (const RrFont *f);
 
 BOOL RrPixmapToRGBA(const RrInstance *inst,
                         Pixmap pmap, Pixmap mask,
                         int *w, int *h, RrPixel32 **data);
-
-G_END_DECLS
 
 #endif /*__render_h*/

@@ -1,6 +1,8 @@
 2006-04-20 Yen-Ju Chen <yjchenx at gmail>
 
 	* Port RrAppearance int AZAppearance (so far so good).
+	* Remove glib from render.h to expose hidden usages of glib 
+	  in many places.
 
 2006-04-19 Yen-Ju Chen <yjchenx at gmail>
 

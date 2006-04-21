@@ -45,7 +45,7 @@
   int textw, texth;
   int iconw;
 
-  [a_text texture][0].data.text.string = (char*)[_text UTF8String];
+  [a_text texture][0].data.text.string = _text;
   [a_text minimalSizeWithWidth: &textw height: &texth];
   /*XXX textw += ob_rr_theme->bevel * 2;*/
   texth += ob_rr_theme->padding * 2;
@@ -81,7 +81,7 @@
     XSetWindowBorder(ob_display, bg, ob_rr_theme->b_color->pixel);
 
     /* set up the textures */
-    [a_text texture][0].data.text.string = (char*)[_text UTF8String];
+    [a_text texture][0].data.text.string = _text;
 
     /* measure the shit out */
     [a_text minimalSizeWithWidth: &textw height: &texth];

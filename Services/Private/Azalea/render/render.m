@@ -298,7 +298,7 @@
             break;
         case RR_TEXTURE_TEXT:
             m = RrFontMeasureString(texture[i].data.text.font,
-                                    texture[i].data.text.string);
+                                    [texture[i].data.text.string UTF8String]);
             *width = MAX(*width, m->width + 4);
             m->height = RrFontHeight(texture[i].data.text.font);
             *height += MAX(*height, m->height);

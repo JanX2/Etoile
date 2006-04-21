@@ -22,6 +22,10 @@
 #import <Foundation/Foundation.h>
 #import <X11/Xlib.h>
 
+/* taken from glib */
+#define USEC_PER_SEC 1000000 /* Replace G_USEC_PER_SEC */
+void time_val_add (struct timeval *time_, long microseconds);
+
 @protocol AZXHandler <NSObject>
 - (void) processXEvent: (XEvent *) e;
 @end

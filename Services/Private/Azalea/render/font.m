@@ -208,7 +208,7 @@ void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
     w = area->width - 4;
     h = area->height;
 
-    text = g_string_new(t->string);
+    text = g_string_new([t->string cString]);
     l = g_utf8_strlen(text->str, -1);
     font_measure_full(t->font, text->str, &mw, &mh);
     while (l && mw > area->width) {

@@ -135,7 +135,7 @@ typedef enum {
 
   BOOL flashing;
   BOOL flash_on;
-  GTimeVal flash_end;
+  struct timeval flash_end;
 }
 
 - (void) grabClient: (AZClient *) client;
@@ -223,6 +223,6 @@ typedef enum {
 
 @end
 
-ObFrameContext frame_context_from_string(const gchar *name);
+ObFrameContext frame_context_from_string(const char *name);
 ObFrameContext frame_context(AZClient *self, Window win);
 

@@ -20,6 +20,7 @@
 #include "render.h"
 #include "gradient.h"
 #include "color.h"
+#include "glib.h"
 #import <Foundation/Foundation.h>
 
 static void highlight(RrPixel32 *x, RrPixel32 *y, BOOL raised);

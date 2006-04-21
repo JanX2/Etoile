@@ -21,6 +21,7 @@
 #define __font_h
 #include "render.h"
 #include "geom.h"
+#include "glib.h"
 
 struct _RrFont {
     const RrInstance *inst;

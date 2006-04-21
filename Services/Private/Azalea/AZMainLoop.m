@@ -27,10 +27,9 @@
 #import <X11/Xlib.h>
 #import <signal.h>
 #import "action.h"
+#import "glib.h"
 
 /* Taken from glib */
-
-#define USEC_PER_SEC 1000000 /* Replace G_USEC_PER_SEC */
 
 /* g_time_val_add:
  * @time_: a #GTimeVal

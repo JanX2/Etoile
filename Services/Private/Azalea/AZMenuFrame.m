@@ -157,11 +157,11 @@ static Window createWindow(Window parent, unsigned long mask,
               (self == [frame selected] ?  a_text_selected : a_text_normal));
     switch ([entry type]) {
     case OB_MENU_ENTRY_TYPE_NORMAL:
-        [text_a texture][0].data.text.string = (char*)[[(AZNormalMenuEntry *)entry label] cString];
+        [text_a texture][0].data.text.string = [(AZNormalMenuEntry *)entry label];
         break;
     case OB_MENU_ENTRY_TYPE_SUBMENU:
         sub = [(AZSubmenuMenuEntry *)entry submenu];
-        [text_a texture][0].data.text.string = sub ? (char*)[[sub title] cString]: "";
+        [text_a texture][0].data.text.string = sub ? [sub title] : @"";
         break;
     case OB_MENU_ENTRY_TYPE_SEPARATOR:
         break;
@@ -479,7 +479,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
         XMoveWindow(ob_display, title, 
                     -ob_rr_theme->bwidth, h - ob_rr_theme->bwidth);
 
-        [a_title texture][0].data.text.string = (char*)[[menu title] cString];
+        [a_title texture][0].data.text.string = [menu title];
         [a_title minimalSizeWithWidth: &tw height: &th];
         tw = MIN(tw, MAX_MENU_WIDTH) + ob_rr_theme->padding * 2;
         w = MAX(w, tw);
@@ -499,7 +499,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
         AZMenuEntryFrame *e = [entries objectAtIndex: 0];
         int l, t, r, b;
 
-        [[e a_text_normal] texture][0].data.text.string = "";
+        [[e a_text_normal] texture][0].data.text.string = @"";
         [[e a_text_normal] minimalSizeWithWidth: &tw height: &th];
         tw += 2*PADDING;
         th += 2*PADDING;
@@ -544,7 +544,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
                    [e a_text_normal]));
         switch ([[e entry] type]) {
         case OB_MENU_ENTRY_TYPE_NORMAL:
-            [text_a texture][0].data.text.string = (char*)[[(AZNormalMenuEntry *)[e entry] label] cString];
+            [text_a texture][0].data.text.string = [(AZNormalMenuEntry *)[e entry] label];
             [text_a minimalSizeWithWidth: &tw height: &th];
             tw = MIN(tw, MAX_MENU_WIDTH);
 
@@ -554,7 +554,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
             break;
         case OB_MENU_ENTRY_TYPE_SUBMENU:
             sub = [(AZSubmenuMenuEntry *)[e entry] submenu];
-            [text_a texture][0].data.text.string = sub ? (char*)[[sub title] cString]: "";
+            [text_a texture][0].data.text.string = sub ? [sub title] : @"";
             [text_a minimalSizeWithWidth: &tw height: &th];
             tw = MIN(tw, MAX_MENU_WIDTH);
 

@@ -22,6 +22,7 @@
 
 #include "render.h"
 #include "geom.h"
+#include "glib.h"
 
 RrPixmapMask *RrPixmapMaskNew(const RrInstance *inst,
                               int w, int h, const gchar *data);

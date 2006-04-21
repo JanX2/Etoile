@@ -141,8 +141,8 @@
 
 /* AZWindow protocol */
 - (Window_InternalType) windowType { return Window_DockApp; }
-- (int) windowLayer { g_assert_not_reached(); return 0; }
-- (Window) windowTop { g_assert_not_reached(); return 0; }
+- (int) windowLayer { NSAssert(0, @"Should not reach here"); return 0; }
+- (Window) windowTop { NSAssert(0, @"Should not reach here"); return 0; }
 
 
 @end

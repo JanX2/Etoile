@@ -241,7 +241,7 @@
 {
     if (label_x < 0) return;
     /* set the texture's text! */
-    [a texture][0].data.text.string = (char*)[[[self client] title] UTF8String];
+    [a texture][0].data.text.string = [[self client] title];
     [a paint: [self label] width: label_width height: ob_rr_theme->label_height];
 }
 

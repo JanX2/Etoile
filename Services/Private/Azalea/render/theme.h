@@ -20,6 +20,7 @@
 #define __theme_h
 
 #include "render.h"
+#include "glib.h"
 #import <Foundation/Foundation.h>
 
 typedef struct _RrTheme RrTheme;
