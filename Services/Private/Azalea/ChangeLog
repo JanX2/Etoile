@@ -2,6 +2,7 @@
 
 	* Port render/instance.
 	* Remove glib from render/
+	* Port ObSessionState into AZSessionState.
 
 2006-04-20 Yen-Ju Chen <yjchenx at gmail>
 

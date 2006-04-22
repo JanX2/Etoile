@@ -29,6 +29,7 @@
 #import "misc.h"
 #import "gnustep.h"
 
+
 /*! Holds an icon in ARGB format */
 @interface AZClientIcon: NSObject
 {
@@ -46,6 +47,7 @@
 @end
 
 @class AZClient;
+@class AZSessionState;
 
 /* The value in client.transient_for indicating it is a transient for its
    group instead of for a single window */
@@ -90,7 +92,7 @@ typedef enum
     AZGroup *group;
 
     /*! Saved session data to apply to this client */
-    struct _ObSessionState *session;
+    AZSessionState *session;
 
     /*! Whether or not the client is a transient window. This is guaranteed to 
       be TRUE if transient_for != NULL, but not guaranteed to be FALSE if
@@ -563,8 +565,8 @@ typedef enum
 - (AZGroup *) group;
 - (void) set_group: (AZGroup *) group;
 
-- (struct _ObSessionState *) session;
-- (void) set_session: (struct _ObSessionState *) session;
+- (AZSessionState *) session;
+- (void) set_session: (AZSessionState *) session;
 
 - (BOOL) transient;
 - (void) set_transient: (BOOL) transient;

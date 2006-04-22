@@ -21,17 +21,67 @@
 
 /* This session code is largely inspired by metacity code. */
 
-#ifndef USE_SM
-
 #import "session.h"
-
 GList *session_saved_state;
+
+@implementation AZSessionState
+- (NSString *) identifier { return iden; }
+- (NSString *) name { return name; }
+- (NSString *) class { return class; }
+- (NSString *) role { return role; }
+- (unsigned int) stacking { return stacking; }
+- (unsigned int) desktop { return desktop; }
+- (int) x { return x; }
+- (int) y { return y; }
+- (int) w { return w; }
+- (int )h { return h; }
+- (BOOL) shaded { return shaded; }
+- (BOOL) iconic { return iconic; }
+- (BOOL) skip_pager { return skip_pager; }
+- (BOOL) skip_taskbar { return skip_taskbar; }
+- (BOOL) fullscreen { return fullscreen; }
+- (BOOL) above { return above; }
+- (BOOL) below { return below; }
+- (BOOL) max_horz { return max_horz; }
+- (BOOL) max_vert { return max_vert; }
+- (BOOL) matched { return matched; }
+- (void) set_identifier: (NSString *) i { ASSIGNCOPY(iden, i); }
+- (void) set_name: (NSString *) n { ASSIGNCOPY(name, n); }
+- (void) set_class: (NSString *) c { ASSIGNCOPY(class, c); }
+- (void) set_role: (NSString *) r { ASSIGNCOPY(role, r); }
+- (void) set_stacking: (unsigned int) s { stacking = s; }
+- (void) set_desktop: (unsigned int) d { desktop = d; }
+- (void) set_x: (int) _x { x = _x; }
+- (void) set_y: (int) _y { y = _y; }
+- (void) set_w: (int) _w { w = _w; }
+- (void) set_h: (int) _h { h = _h; }
+- (void) set_shaded: (BOOL) s { shaded = s; }
+- (void) set_iconic: (BOOL) i { iconic = i; }
+- (void) set_skip_pager: (BOOL) s { skip_pager = s; }
+- (void) set_skip_taskbar: (BOOL) s { skip_taskbar = s; }
+- (void) set_fullscreen: (BOOL) f { fullscreen = f; }
+- (void) set_above: (BOOL) a { above = a; }
+- (void) set_below: (BOOL) b { below = b; }
+- (void) set_max_horz: (BOOL) m { max_horz = m; }
+- (void) set_max_vert: (BOOL) m { max_vert = m; }
+- (void) set_matched: (BOOL) m { matched = m; }
+- (void) dealloc
+{
+  DESTROY(iden);
+  DESTROY(name);
+  DESTROY(class);
+  DESTROY(role);
+  [super dealloc];
+}
+
+@end
+
+#ifndef USE_SM
 
 void session_startup(int *argc, gchar ***argv) {}
 void session_shutdown() {}
 GList* session_state_find(AZClient *c) { return NULL; }
-BOOL session_state_cmp(ObSessionState *s, AZClient *c) { return NO; }
-void session_state_free(ObSessionState *state) {}
+BOOL session_state_cmp(AZSessionState *s, AZClient *c) { return NO; }
 
 #else
 
@@ -39,7 +89,6 @@ void session_state_free(ObSessionState *state) {}
 #import "AZDebug.h"
 #import "AZClient.h"
 #include "openbox.h"
-#include "session.h"
 #include "prop.h"
 #include "parse.h"
 
@@ -53,8 +102,6 @@ void session_state_free(ObSessionState *state) {}
 #endif
 
 #include <X11/SM/SMlib.h>
-
-GList *session_saved_state;
 
 static BOOL    sm_disable;
 static SmcConn     sm_conn;
@@ -280,7 +327,7 @@ void session_shutdown()
         SmcCloseConnection(sm_conn, 0, NULL);
 
         while (session_saved_state) {
-            session_state_free(session_saved_state->data);
+            DESTROY(session_saved_state->data);
             session_saved_state = g_list_delete_link(session_saved_state,
                                                      session_saved_state);
         }
@@ -429,25 +476,13 @@ static BOOL session_save()
     return success;
 }
 
-void session_state_free(ObSessionState *state)
-{
-    if (state) {
-        DESTROY(state->id);
-        DESTROY(state->name);
-        DESTROY(state->class);
-        DESTROY(state->role);
-
-        free(state);
-    }
-}
-
-BOOL session_state_cmp(ObSessionState *s, AZClient *c)
+BOOL session_state_cmp(AZSessionState *s, AZClient *c)
 {
     return ([c sm_client_id] &&
-            [s->id isEqualToString: [c sm_client_id]] &&
-            [s->name isEqualToString: [c name]] &&
-            [s->class isEqualToString: [c class]] &&
-            [s->role isEqualToString: [c role]]);
+            [[s identifier] isEqualToString: [c sm_client_id]] &&
+            [[s name] isEqualToString: [c name]] &&
+            [[s class] isEqualToString: [c class]] &&
+            [[s role] isEqualToString: [c role]]);
     /* Considering nil == nil ? */
 }
 
@@ -456,18 +491,18 @@ GList* session_state_find(AZClient *c)
     GList *it;
 
     for (it = session_saved_state; it; it = g_list_next(it)) {
-        ObSessionState *s = it->data;
-        if (!s->matched && session_state_cmp(s, c)) {
-            s->matched = YES;
+        AZSessionState *s = it->data;
+        if (![s matched] && session_state_cmp(s, c)) {
+            [s set_matched: YES];
             break;
         }
     }
     return it;
 }
 
-static int stack_sort(const ObSessionState *s1, const ObSessionState *s2)
+static int stack_sort(const AZSessionState *s1, const AZSessionState *s2)
 {
-    return s1->stacking - s2->stacking;
+    return [s1 stacking] - [s2 stacking];
 }
 
 static void session_load(gchar *path)
@@ -487,85 +522,77 @@ static void session_load(gchar *path)
 
     node = parse_find_node("window", node->children);
     while (node) {
-        ObSessionState *state;
-
-        state = calloc(sizeof(ObSessionState), 1);
+        AZSessionState *state = [[AZSessionState alloc] init];
 
 	NSString *_id;
         if (!parse_attr_string("id", node, &_id)) {
             goto session_load_bail;
 	} else {
-	  if (state->id) {
-	    [state->id release];
-	    state->id = NULL;
-	  }
-	  state->id = [_id copy];
+	  [state set_identifier: _id];
 	}
+
         if (!(n = parse_find_node("name", node->children)))
             goto session_load_bail;
-	if (state->name) {
-	  [state->name release];
-	  state->name = NULL;
-	}
-        state->name = [parse_string(doc, n) copy];
+        [state set_name: parse_string(doc, n)];
+
         if (!(n = parse_find_node("class", node->children)))
             goto session_load_bail;
-	if (state->class) {
-	  [state->class release];
-	  state->class = NULL;
-	}
-        state->class = [parse_string(doc, n) copy];
+        [state set_class: parse_string(doc, n)];
+
         if (!(n = parse_find_node("role", node->children)))
             goto session_load_bail;
-	if (state->role) {
-	  [state->role release];
-	  state->role = NULL;
-	}
-        state->role = [parse_string(doc, n) copy];
+        [state set_role: parse_string(doc, n)];
+
         if (!(n = parse_find_node("stacking", node->children)))
             goto session_load_bail;
-        state->stacking = parse_int(doc, n);
+        [state set_stacking: parse_int(doc, n)];
+
         if (!(n = parse_find_node("desktop", node->children)))
             goto session_load_bail;
-        state->desktop = parse_int(doc, n);
+        [state set_desktop: parse_int(doc, n)];
+
         if (!(n = parse_find_node("x", node->children)))
             goto session_load_bail;
-        state->x = parse_int(doc, n);
+        [state set_x: parse_int(doc, n)];
+
         if (!(n = parse_find_node("y", node->children)))
             goto session_load_bail;
-        state->y = parse_int(doc, n);
+        [state set_y: parse_int(doc, n)];
+
         if (!(n = parse_find_node("width", node->children)))
             goto session_load_bail;
-        state->w = parse_int(doc, n);
+        [state set_w: parse_int(doc, n)];
+
         if (!(n = parse_find_node("height", node->children)))
             goto session_load_bail;
-        state->h = parse_int(doc, n);
+        [state set_h: parse_int(doc, n)];
 
-        state->shaded =
-            parse_find_node("shaded", node->children) != NULL;
-        state->iconic =
-            parse_find_node("iconic", node->children) != NULL;
-        state->skip_pager =
-            parse_find_node("skip_pager", node->children) != NULL;
-        state->skip_taskbar =
-            parse_find_node("skip_taskbar", node->children) != NULL;
-        state->fullscreen =
-            parse_find_node("fullscreen", node->children) != NULL;
-        state->above =
-            parse_find_node("above", node->children) != NULL;
-        state->below =
-            parse_find_node("below", node->children) != NULL;
-        state->max_horz =
-            parse_find_node("max_horz", node->children) != NULL;
-        state->max_vert =
-            parse_find_node("max_vert", node->children) != NULL;
+        [state set_shaded: 
+            parse_find_node("shaded", node->children) != NULL];
+        [state set_iconic:
+            parse_find_node("iconic", node->children) != NULL];
+        [state set_skip_pager:
+            parse_find_node("skip_pager", node->children) != NULL];
+        [state set_skip_taskbar:
+            parse_find_node("skip_taskbar", node->children) != NULL];
+        [state set_fullscreen:
+            parse_find_node("fullscreen", node->children) != NULL];
+        [state set_above:
+            parse_find_node("above", node->children) != NULL];
+        [state set_below:
+            parse_find_node("below", node->children) != NULL];
+        [state set_max_horz:
+            parse_find_node("max_horz", node->children) != NULL];
+        [state set_max_vert:
+            parse_find_node("max_vert", node->children) != NULL];
         
         /* save this */
         session_saved_state = g_list_prepend(session_saved_state, state);
         goto session_load_ok;
 
     session_load_bail:
-        session_state_free(state);
+        [state dealloc];
+	state = NULL;
 
     session_load_ok:
 

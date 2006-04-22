@@ -2369,29 +2369,29 @@ no_number:
 
     session = it->data;
 
-    RECT_SET_POINT(area, session->x, session->y);
+    RECT_SET_POINT(area, [session x], [session y]);
     positioned = PPosition;
-    if (session->w > 0)
-	area.width = session->w;
-    if (session->h > 0)
-	area.height = session->h;
+    if ([session w] > 0)
+	area.width = [session w];
+    if ([session h] > 0)
+	area.height = [session h];
     XResizeWindow(ob_display, window,
                   area.width, area.height);
 
-    desktop = (session->desktop == DESKTOP_ALL ?
-                     session->desktop :
-                     MIN([[AZScreen defaultScreen] numberOfDesktops] - 1, session->desktop));
+    desktop = ([session desktop] == DESKTOP_ALL ?
+                     [session desktop] :
+                     MIN([[AZScreen defaultScreen] numberOfDesktops] - 1, [session desktop]));
     PROP_SET32(window, net_wm_desktop, cardinal, desktop);
 
-    shaded = session->shaded;
-    iconic = session->iconic;
-    skip_pager = session->skip_pager;
-    skip_taskbar = session->skip_taskbar;
-    fullscreen = session->fullscreen;
-    above = session->above;
-    below = session->below;
-    max_horz = session->max_horz;
-    max_vert = session->max_vert;
+    shaded = [session shaded];
+    iconic = [session iconic];
+    skip_pager = [session skip_pager];
+    skip_taskbar = [session skip_taskbar];
+    fullscreen = [session fullscreen];
+    above = [session above];
+    below = [session below];
+    max_horz = [session max_horz];
+    max_vert = [session max_vert];
 }
 
 - (void) changeState
@@ -2594,8 +2594,8 @@ no_number:
 - (AZGroup *) group { return group; }
 - (void) set_group: (AZGroup *) g { group = g; }
 
-- (struct _ObSessionState *) session { return session; }
-- (void) set_session: (struct _ObSessionState *) s { session = s; }
+- (AZSessionState *) session { return session; }
+- (void) set_session: (AZSessionState *) s { session = s; }
 
 - (BOOL) transient { return transient; }
 - (AZClient *) transient_for { return transient_for; }

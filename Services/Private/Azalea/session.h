@@ -23,13 +23,13 @@
 #define __ob__session_h
 
 #include <glib.h>
+#import <Foundation/Foundation.h>
 
 @class AZClient;
 
-typedef struct _ObSessionState ObSessionState;
-
-struct _ObSessionState {
-    NSString *id, *name, *class, *role;
+@interface AZSessionState: NSObject
+{
+    NSString *iden, *name, *class, *role;
     unsigned int stacking;
     unsigned int desktop;
     int x, y, w, h;
@@ -37,7 +37,48 @@ struct _ObSessionState {
     BOOL above, below, max_horz, max_vert;
 
     BOOL matched;
-};
+}
+- (NSString *) identifier;
+- (NSString *) name;
+- (NSString *) class;
+- (NSString *) role;
+- (unsigned int) stacking;
+- (unsigned int) desktop;
+- (int) x;
+- (int) y;
+- (int) w;
+- (int )h;
+- (BOOL) shaded;
+- (BOOL) iconic;
+- (BOOL) skip_pager;
+- (BOOL) skip_taskbar;
+- (BOOL) fullscreen;
+- (BOOL) above;
+- (BOOL) below;
+- (BOOL) max_horz;
+- (BOOL) max_vert;
+- (BOOL) matched;
+- (void) set_identifier: (NSString *) iden;
+- (void) set_name: (NSString *) name;
+- (void) set_class: (NSString *) class;
+- (void) set_role: (NSString *) role;
+- (void) set_stacking: (unsigned int) stacking;
+- (void) set_desktop: (unsigned int) desktop;
+- (void) set_x: (int) x;
+- (void) set_y: (int) y;
+- (void) set_w: (int) w;
+- (void) set_h: (int )h;
+- (void) set_shaded: (BOOL) shaded;
+- (void) set_iconic: (BOOL) iconic;
+- (void) set_skip_pager: (BOOL) skip_pager;
+- (void) set_skip_taskbar: (BOOL) skip_taskbar;
+- (void) set_fullscreen: (BOOL) fullscreen;
+- (void) set_above: (BOOL) above;
+- (void) set_below: (BOOL) below;
+- (void) set_max_horz: (BOOL) max_horz;
+- (void) set_max_vert: (BOOL) max_vert;
+- (void) set_matched: (BOOL) matched;
+@end
 
 extern GList *session_saved_state;
 
@@ -45,7 +86,6 @@ void session_startup(int *argc, gchar ***argv);
 void session_shutdown();
 
 GList* session_state_find(AZClient *c);
-BOOL session_state_cmp(ObSessionState *s, AZClient *c);
-void session_state_free(ObSessionState *state);
+BOOL session_state_cmp(AZSessionState *s, AZClient *c);
 
 #endif
