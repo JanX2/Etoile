@@ -387,32 +387,32 @@ BOOL RrPixmapToRGBA(const AZInstance *inst,
 {
     Window xr;
     int xx, xy;
-    guint pw, ph, mw, mh, xb, xd, i, x, y, di;
+    unsigned int pw, ph, mw, mh, xb, xd, i, x, y, di;
     XImage *xi, *xm = NULL;
 
     if (!XGetGeometry([inst display], pmap,
                       &xr, &xx, &xy, &pw, &ph, &xb, &xd))
-        return FALSE;
+        return NO;
 
     if (mask) {
         if (!XGetGeometry([inst display], mask,
                           &xr, &xx, &xy, &mw, &mh, &xb, &xd))
-            return FALSE;
+            return NO;
         if (pw != mw || ph != mh || xd != 1)
-            return FALSE;
+            return NO;
     }
 
     xi = XGetImage([inst display], pmap,
                    0, 0, pw, ph, 0xffffffff, ZPixmap);
     if (!xi)
-        return FALSE;
+        return NO;
 
     if (mask) {
         xm = XGetImage([inst display], mask,
                        0, 0, mw, mh, 0xffffffff, ZPixmap);
         if (!xm) {
             XDestroyImage(xi);
-            return FALSE;
+            return NO;
         }
         if ((xm->bits_per_pixel == 1) && (xm->bitmap_bit_order != LSBFirst))
             reverse_bits(xm->data, xm->bytes_per_line * xm->height);
@@ -443,5 +443,5 @@ BOOL RrPixmapToRGBA(const AZInstance *inst,
     if (mask)
         XDestroyImage(xm);
 
-    return TRUE;
+    return YES;
 }

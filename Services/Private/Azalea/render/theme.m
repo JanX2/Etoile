@@ -33,7 +33,7 @@
 
 #define DEFAULT_THEME "TheBear"
 
-static XrmDatabase loaddb(RrTheme *theme, char *name);
+static XrmDatabase loaddb(RrTheme *theme, NSString *name);
 static BOOL read_int(XrmDatabase db, char *rname, int *value);
 static BOOL read_string(XrmDatabase db, char *rname, char **value);
 static BOOL read_color(XrmDatabase db, const AZInstance *inst,
@@ -44,10 +44,10 @@ static BOOL read_mask(const AZInstance *inst,
 static BOOL read_appearance(XrmDatabase db, const AZInstance *inst,
                                 char *rname, AZAppearance *value,
                                 BOOL allow_trans);
-static RrPixel32* read_c_image(int width, int height, const guint8 *data);
+static RrPixel32* read_c_image(int width, int height, const unsigned char *data);
 static void set_default_appearance(AZAppearance *a);
 
-RrTheme* RrThemeNew(const AZInstance *inst, char *name)
+RrTheme* RrThemeNew(const AZInstance *inst, NSString *name)
 {
     XrmDatabase db = NULL;
     RrJustify winjust, mtitlejust;
@@ -55,7 +55,7 @@ RrTheme* RrThemeNew(const AZInstance *inst, char *name)
     char *font_str;
     RrTheme *theme;
 
-    theme = g_new0(RrTheme, 1);
+    theme = calloc(sizeof(RrTheme), 1);
 
     theme->inst = inst;
 
@@ -96,19 +96,19 @@ RrTheme* RrThemeNew(const AZInstance *inst, char *name)
     if (name) {
         db = loaddb(theme, name);
         if (db == NULL) {
-            g_warning("Failed to load the theme '%s'\n"
+            NSLog(@"Warning: Failed to load the theme '%@'\n"
                       "Falling back to the default: '%s'",
                       name, DEFAULT_THEME);
         } else
-            theme->name = g_path_get_basename(name);
+            ASSIGN(theme->name, [name lastPathComponent]);
     }
     if (db == NULL) {
-        db = loaddb(theme, DEFAULT_THEME);
+        db = loaddb(theme, [NSString stringWithCString: DEFAULT_THEME]);
         if (db == NULL) {
-            g_warning("Failed to load the theme '%s'.", DEFAULT_THEME);
+            NSLog(@"Warning: Failed to load the theme '%s'.", DEFAULT_THEME);
             return NULL;
         } else
-            theme->name = g_path_get_basename(DEFAULT_THEME);
+            ASSIGN(theme->name, [[NSString stringWithCString: DEFAULT_THEME] lastPathComponent]);
     }
 
     /* load the font stuff */
@@ -133,9 +133,9 @@ RrTheme* RrThemeNew(const AZInstance *inst, char *name)
 
     winjust = RR_JUSTIFY_LEFT;
     if (read_string(db, "window.label.text.justify", &str)) {
-        if (!g_ascii_strcasecmp(str, "right"))
+        if (!strcasecmp(str, "right"))
             winjust = RR_JUSTIFY_RIGHT;
-        else if (!g_ascii_strcasecmp(str, "center"))
+        else if (!strcasecmp(str, "center"))
             winjust = RR_JUSTIFY_CENTER;
     }
 
@@ -150,9 +150,9 @@ RrTheme* RrThemeNew(const AZInstance *inst, char *name)
 
     mtitlejust = RR_JUSTIFY_LEFT;
     if (read_string(db, "menu.title.text.justify", &str)) {
-        if (!g_ascii_strcasecmp(str, "right"))
+        if (!strcasecmp(str, "right"))
             mtitlejust = RR_JUSTIFY_RIGHT;
-        else if (!g_ascii_strcasecmp(str, "center"))
+        else if (!strcasecmp(str, "center"))
             mtitlejust = RR_JUSTIFY_CENTER;
     }
 
@@ -305,11 +305,11 @@ RrTheme* RrThemeNew(const AZInstance *inst, char *name)
         }
     } else {
         {
-            guchar data[] = { 0x7f, 0x7f, 0x7f, 0x41, 0x41, 0x41, 0x7f };
+            unsigned char data[] = { 0x7f, 0x7f, 0x7f, 0x41, 0x41, 0x41, 0x7f };
             theme->max_mask = RrPixmapMaskNew(inst, 7, 7, (char*)data);
         }
         {
-            guchar data[] = { 0x7c, 0x44, 0x47, 0x47, 0x7f, 0x1f, 0x1f };
+            unsigned char data[] = { 0x7c, 0x44, 0x47, 0x47, 0x7f, 0x1f, 0x1f };
             theme->max_toggled_mask = RrPixmapMaskNew(inst, 7, 7, (char*)data);
         }
         theme->max_pressed_mask = RrPixmapMaskCopy(theme->max_mask);
@@ -334,7 +334,7 @@ RrTheme* RrThemeNew(const AZInstance *inst, char *name)
         }
     } else {
         {
-            guchar data[] = { 0x00, 0x00, 0x00, 0x00, 0x7f, 0x7f, 0x7f };
+            unsigned char data[] = { 0x00, 0x00, 0x00, 0x00, 0x7f, 0x7f, 0x7f };
             theme->iconify_mask = RrPixmapMaskNew(inst, 7, 7, (char*)data);
         }
         theme->iconify_pressed_mask = RrPixmapMaskCopy(theme->iconify_mask);
@@ -366,11 +366,11 @@ RrTheme* RrThemeNew(const AZInstance *inst, char *name)
         }
     } else {
         {
-            guchar data[] = { 0x63, 0x63, 0x00, 0x00, 0x00, 0x63, 0x63 };
+            unsigned char data[] = { 0x63, 0x63, 0x00, 0x00, 0x00, 0x63, 0x63 };
             theme->desk_mask = RrPixmapMaskNew(inst, 7, 7, (char*)data);
         }
         {
-            guchar data[] = { 0x00, 0x36, 0x36, 0x08, 0x36, 0x36, 0x00 };
+            unsigned char data[] = { 0x00, 0x36, 0x36, 0x08, 0x36, 0x36, 0x00 };
             theme->desk_toggled_mask = RrPixmapMaskNew(inst, 7, 7,
                                                        (char*)data);
         }
@@ -399,11 +399,11 @@ RrTheme* RrThemeNew(const AZInstance *inst, char *name)
         }
     } else {
         {
-            guchar data[] = { 0x7f, 0x7f, 0x7f, 0x00, 0x00, 0x00, 0x00 };
+            unsigned char data[] = { 0x7f, 0x7f, 0x7f, 0x00, 0x00, 0x00, 0x00 };
             theme->shade_mask = RrPixmapMaskNew(inst, 7, 7, (char*)data);
         }
         {
-            guchar data[] = { 0x7f, 0x7f, 0x7f, 0x00, 0x00, 0x00, 0x7f };
+            unsigned char data[] = { 0x7f, 0x7f, 0x7f, 0x00, 0x00, 0x00, 0x7f };
             theme->shade_toggled_mask = RrPixmapMaskNew(inst, 7, 7,
                                                         (char*)data);
         }
@@ -427,7 +427,7 @@ RrTheme* RrThemeNew(const AZInstance *inst, char *name)
         }
     } else {
         {
-            guchar data[] = { 0x63, 0x77, 0x3e, 0x1c, 0x3e, 0x77, 0x63 };
+            unsigned char data[] = { 0x63, 0x77, 0x3e, 0x1c, 0x3e, 0x77, 0x63 };
             theme->close_mask = RrPixmapMaskNew(inst, 7, 7, (char*)data);
         }
         theme->close_pressed_mask = RrPixmapMaskCopy(theme->close_mask);
@@ -436,7 +436,7 @@ RrTheme* RrThemeNew(const AZInstance *inst, char *name)
     }
 
     if (!read_mask(inst, "bullet.xbm", theme, &theme->menu_bullet_mask)) {
-        guchar data[] = { 0x01, 0x03, 0x07, 0x0f, 0x07, 0x03, 0x01 };
+        unsigned char data[] = { 0x01, 0x03, 0x07, 0x0f, 0x07, 0x03, 0x01 };
         theme->menu_bullet_mask = RrPixmapMaskNew(inst, 4, 7, (char*)data);
     }
 
@@ -915,8 +915,8 @@ RrTheme* RrThemeNew(const AZInstance *inst, char *name)
 void RrThemeFree(RrTheme *theme)
 {
     if (theme) {
-        g_free(theme->path);
-        g_free(theme->name);
+        DESTROY(theme->path);
+        DESTROY(theme->name);
 
         RrColorFree(theme->b_color);
         RrColorFree(theme->cb_unfocused_color);
@@ -938,7 +938,7 @@ void RrThemeFree(RrTheme *theme)
         RrColorFree(theme->menu_disabled_color);
         RrColorFree(theme->menu_selected_color);
 
-        g_free(theme->def_win_icon);
+        free(theme->def_win_icon);
 
         RrPixmapMaskFree(theme->max_mask);
         RrPixmapMaskFree(theme->max_toggled_mask);
@@ -1044,45 +1044,34 @@ void RrThemeFree(RrTheme *theme)
         DESTROY(theme->app_hilite_label);
         DESTROY(theme->app_unhilite_label);
 
-        g_free(theme);
+        free(theme);
     }
 }
 
-static XrmDatabase loaddb(RrTheme *theme, char *name)
+static XrmDatabase loaddb(RrTheme *theme, NSString *name)
 {
     XrmDatabase db = NULL;
-    char *s;
+    NSString *s;
 
-    if (name[0] == '/') {
-        s = g_build_filename(name, "openbox-3", "themerc", NULL);
-        if ((db = XrmGetFileDatabase(s)))
-            theme->path = g_path_get_dirname(s);
-        g_free(s);
+    if ([name isAbsolutePath]) {
+	s = [NSString pathWithComponents: [NSArray arrayWithObjects: name, @"openbox-3", @"themerc", nil]];
+        if ((db = XrmGetFileDatabase((char*)[s fileSystemRepresentation])))
+            ASSIGN(theme->path, [s stringByDeletingLastPathComponent]);
     } else {
-        /* XXX backwards compatibility, remove me sometime later */
-        s = g_build_filename(g_get_home_dir(), ".themes", name,
-                             "openbox-3", "themerc", NULL);
-        if ((db = XrmGetFileDatabase(s)))
-            theme->path = g_path_get_dirname(s);
-        g_free(s);
-
 	int i, count = [parse_xdg_data_dir_paths() count];
 	for (i = 0; (db == NULL) && (i < count); i++) 
         {
-	    char *p = (char*)[[parse_xdg_data_dir_paths() objectAtIndex: i] fileSystemRepresentation];
-            s = g_build_filename(p, "themes", name,
-                                 "openbox-3", "themerc", NULL);
-            if ((db = XrmGetFileDatabase(s)))
-                theme->path = g_path_get_dirname(s);
-            g_free(s);
+	    NSString *p = [parse_xdg_data_dir_paths() objectAtIndex: i];
+	    s = [NSString pathWithComponents: [NSArray arrayWithObjects: p, @"themes", name, @"openbox-3", @"themerc", nil]];
+            if ((db = XrmGetFileDatabase((char*)[s fileSystemRepresentation])))
+                ASSIGN(theme->path, [s stringByDeletingLastPathComponent]);
         }
     }
 
     if (db == NULL) {
-        s = g_build_filename(name, "themerc", NULL);
-        if ((db = XrmGetFileDatabase(s)))
-            theme->path = g_path_get_dirname(s);
-        g_free(s);
+	s = [NSString pathWithComponents: [NSArray arrayWithObjects: name, @"themerc", nil]];
+        if ((db = XrmGetFileDatabase((char*)[s fileSystemRepresentation])))
+           ASSIGN(theme->path, [s stringByDeletingLastPathComponent]);
     }
 
     return db;
@@ -1090,7 +1079,7 @@ static XrmDatabase loaddb(RrTheme *theme, char *name)
 
 static char *create_class_name(char *rname)
 {
-    char *rclass = g_strdup(rname);
+    char *rclass = strdup(rname);
     char *p = rclass;
 
     while (YES) {
@@ -1117,7 +1106,7 @@ static BOOL read_int(XrmDatabase db, char *rname, int *value)
             ret = YES;
     }
 
-    g_free(rclass);
+    free(rclass);
     return ret;
 }
 
@@ -1134,7 +1123,7 @@ static BOOL read_string(XrmDatabase db, char *rname, char **value)
         ret = YES;
     }
 
-    g_free(rclass);
+    free(rclass);
     return ret;
 }
 
@@ -1155,7 +1144,7 @@ static BOOL read_color(XrmDatabase db, const AZInstance *inst,
         }
     }
 
-    g_free(rclass);
+    free(rclass);
     return ret;
 }
 
@@ -1164,18 +1153,17 @@ static BOOL read_mask(const AZInstance *inst,
                           RrPixmapMask **value)
 {
     BOOL ret = NO;
-    char *s;
+    NSString *s;
     int hx, hy; /* ignored */
-    guint w, h;
-    guchar *b;
+    unsigned int w, h;
+    unsigned char *b;
 
-    s = g_build_filename(theme->path, maskname, NULL);
-    if (XReadBitmapFileData(s, &w, &h, &b, &hx, &hy) == BitmapSuccess) {
+    s = [NSString pathWithComponents: [NSArray arrayWithObjects: theme->path, [NSString stringWithCString: maskname], nil]];
+    if (XReadBitmapFileData((char*)[s fileSystemRepresentation], &w, &h, &b, &hx, &hy) == BitmapSuccess) {
         ret = YES;
         *value = RrPixmapMaskNew(inst, w, h, (char*)b);
         XFree(b);
     }
-    g_free(s);
 
     return ret;
 }
@@ -1188,8 +1176,11 @@ static void parse_appearance(char *tex, RrSurfaceColorType *grad,
     char *t;
 
     /* convert to all lowercase */
+    t = (char*)[[[NSString stringWithCString: tex] lowercaseString] cString];
+#if 0
     for (t = tex; *t != '\0'; ++t)
         *t = g_ascii_tolower(*t);
+#endif
 
     if (allow_trans && strstr(tex, "parentrelative") != NULL) {
         *grad = RR_SURFACE_PARENTREL;
@@ -1245,10 +1236,16 @@ static BOOL read_appearance(XrmDatabase db, const AZInstance *inst,
     char *rettype;
     XrmValue retvalue;
 
+    cname = (char*)[[NSString stringWithFormat: @"%s.color", rname] cString];
+    ctoname = (char*)[[NSString stringWithFormat: @"%s.colorTo", rname] cString];
+    bcname = (char*)[[NSString stringWithFormat: @"%s.border.color", rname] cString];
+    icname = (char*)[[NSString stringWithFormat: @"%s.interlace.color", rname] cString];
+#if 0
     cname = g_strconcat(rname, ".color", NULL);
     ctoname = g_strconcat(rname, ".colorTo", NULL);
     bcname = g_strconcat(rname, ".border.color", NULL);
     icname = g_strconcat(rname, ".interlace.color", NULL);
+#endif
 
     if (XrmGetResource(db, rname, rclass, &rettype, &retvalue) &&
         retvalue.addr != NULL) {
@@ -1274,11 +1271,13 @@ static BOOL read_appearance(XrmDatabase db, const AZInstance *inst,
         ret = YES;
     }
 
-    g_free(icname);
-    g_free(bcname);
-    g_free(ctoname);
-    g_free(cname);
-    g_free(rclass);
+#if 0
+    free(icname);
+    free(bcname);
+    free(ctoname);
+    free(cname);
+#endif
+    free(rclass);
     return ret;
 }
 
@@ -1295,18 +1294,21 @@ static void set_default_appearance(AZAppearance *a)
 
 /* Reads the output from gimp's C-Source file format into valid RGBA data for
    an RrTextureRGBA. */
-static RrPixel32* read_c_image(int width, int height, const guint8 *data)
+static RrPixel32* read_c_image(int width, int height, const unsigned char *data)
 {
     RrPixel32 *im, *p;
     int i;
 
-    p = im = g_memdup(data, width * height * sizeof(RrPixel32));
+    RrPixel32 *_temp = calloc(sizeof(RrPixel32), width*height);
+    memcpy(_temp, data, width*height*sizeof(RrPixel32));
+    p = im = _temp;
+//    p = im = g_memdup(data, width * height * sizeof(RrPixel32));
 
     for (i = 0; i < width * height; ++i) {
-        guchar a = ((*p >> 24) & 0xff);
-        guchar b = ((*p >> 16) & 0xff);
-        guchar g = ((*p >>  8) & 0xff);
-        guchar r = ((*p >>  0) & 0xff);
+        unsigned char a = ((*p >> 24) & 0xff);
+        unsigned char b = ((*p >> 16) & 0xff);
+        unsigned char g = ((*p >>  8) & 0xff);
+        unsigned char r = ((*p >>  0) & 0xff);
 
         *p = ((r << RrDefaultRedOffset) +
               (g << RrDefaultGreenOffset) +

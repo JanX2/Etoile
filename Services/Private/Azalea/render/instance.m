@@ -19,23 +19,6 @@
 #include "render.h"
 #include "instance.h"
 
-//static AZInstance *definst = NULL;
-#ifdef DEBUG
-#include "color.h"
-#endif
-static void
-dest(gpointer data)
-{
-#ifdef DEBUG
-    RrColor *c = data;
-    if (c->refcount > 0)
-        g_error("color %d (%d,%d,%d) in hash table with %d "
-                "leftover references",
-                c->id, RrColorRed(c), RrColorGreen(c), RrColorBlue(c),
-                c->refcount);
-#endif
-}
-
 @interface AZInstance (AZPrivate)
 - (void) trueColorSetup;
 - (void) pseudoColorSetup;
@@ -55,8 +38,7 @@ dest(gpointer data)
 
   pseudo_colors = NULL;
 
-  color_hash = g_hash_table_new_full(g_int_hash, g_int_equal,
-                                                NULL, dest);
+  color_hash = [[NSMutableDictionary alloc] init];
 
   switch (visual->class) {
     case TrueColor:
@@ -79,7 +61,7 @@ dest(gpointer data)
 - (void) dealloc
 {
   free(pseudo_colors);
-  g_hash_table_destroy(color_hash);
+  DESTROY(color_hash);
   [super dealloc];
 }
 
@@ -100,7 +82,7 @@ dest(gpointer data)
 - (int) blueMask { return blue_mask; }
 - (unsigned int) pseudoBPC { return pseudo_bpc; }
 - (XColor *) pseudoColors { return pseudo_colors; }
-- (GHashTable *) colorHash { return color_hash; }
+- (NSMutableDictionary *) colorHash { return color_hash; }
 @end
 
 @implementation AZInstance (AZPrivate)

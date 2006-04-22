@@ -67,7 +67,7 @@ static void measure_font(RrFont *f)
     f->elipses_length = (signed) info.xOff;
 }
 
-static RrFont *openfont(const AZInstance *inst, gchar *fontstring)
+static RrFont *openfont(const AZInstance *inst, char *fontstring)
 {
     /* This function is called for each font in the theme file. */
     /* It returns a pointer to a RrFont struct after filling it. */
@@ -114,7 +114,7 @@ static RrFont *openfont(const AZInstance *inst, gchar *fontstring)
     return out;
 }
 
-RrFont *RrFontOpen(const AZInstance *inst, gchar *fontstring)
+RrFont *RrFontOpen(const AZInstance *inst, char *fontstring)
 {
     RrFont *out;
 

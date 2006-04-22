@@ -144,10 +144,10 @@ void RrImageDraw(RrPixel32 *target, RrTextureRGBA *rgba,
 
     /* keep the ratio */
     dw = area->width;
-    dh = (int)(dw * ((gdouble)sh / sw));
+    dh = (int)(dw * ((double)sh / sw));
     if (dh > area->height) {
         dh = area->height;
-        dw = (int)(dh * ((gdouble)sw / sh));
+        dw = (int)(dh * ((double)sw / sh));
     }
 
     if (!(dw && dh))
@@ -171,7 +171,7 @@ void RrImageDraw(RrPixel32 *target, RrTextureRGBA *rgba,
     num_pixels = dw * dh;
     dest = target + area->x + target_w * area->y;
     while (num_pixels-- > 0) {
-        guchar alpha, r, g, b, bgr, bgg, bgb;
+        unsigned char alpha, r, g, b, bgr, bgg, bgb;
 
         alpha = *source >> RrDefaultAlphaOffset;
         r = *source >> RrDefaultRedOffset;

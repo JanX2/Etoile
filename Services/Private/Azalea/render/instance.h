@@ -21,7 +21,6 @@
 
 #import <Foundation/Foundation.h>
 #include <X11/Xlib.h>
-#include <glib.h>
 
 /* these are the same on all endian machines because it seems to be dependant
    on the endianness of the gfx card, not the cpu. */
@@ -54,7 +53,7 @@
     int pseudo_bpc;
     XColor *pseudo_colors;
 
-    GHashTable *color_hash;
+    NSMutableDictionary *color_hash;
 }
 
 - (id) initWithDisplay: (Display *) display screen: (int) screen;
@@ -77,7 +76,7 @@
 
 - (unsigned int) pseudoBPC;
 - (XColor *) pseudoColors;
-- (GHashTable *) colorHash;
+- (NSMutableDictionary *) colorHash;
 @end
 
 #if 0

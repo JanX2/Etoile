@@ -25,8 +25,8 @@
 typedef struct _RrTheme RrTheme;
 
 struct _RrTheme {
-    char *path;
-    char *name;
+    NSString *path;
+    NSString *name;
 
     const AZInstance *inst;
 
@@ -185,7 +185,7 @@ struct _RrTheme {
 
 };
 
-RrTheme* RrThemeNew(const AZInstance *inst, char *theme);
+RrTheme* RrThemeNew(const AZInstance *inst, NSString *theme);
 void RrThemeFree(RrTheme *theme);
 
 #endif

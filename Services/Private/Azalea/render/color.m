@@ -35,7 +35,7 @@ void RrColorAllocateGC(RrColor *in)
                        GCForeground | GCCapStyle, &gcv);
 }
 
-RrColor *RrColorParse(const AZInstance *inst, gchar *colorname)
+RrColor *RrColorParse(const AZInstance *inst, char *colorname)
 {
     XColor xcol;
 
@@ -68,7 +68,7 @@ RrColor *RrColorNew(const AZInstance *inst, int r, int g, int b)
 
     key = (r << 24) + (g << 16) + (b << 8);
 #ifndef NO_COLOR_CACHE
-    if ((out = g_hash_table_lookup([inst colorHash], &key))) {
+    if ((out = [[[inst colorHash] objectForKey: [NSNumber numberWithInt: key]] pointerValue])) {
         out->refcount++;
     } else {
 #endif
@@ -76,7 +76,7 @@ RrColor *RrColorNew(const AZInstance *inst, int r, int g, int b)
         xcol.green = (g << 8) | g;
         xcol.blue = (b << 8) | b;
         if (XAllocColor([inst display], [inst colormap], &xcol)) {
-            out = g_new(RrColor, 1);
+            out = calloc(sizeof(RrColor), 1);
             out->inst = inst;
             out->r = xcol.red >> 8;
             out->g = xcol.green >> 8;
@@ -89,7 +89,8 @@ RrColor *RrColorNew(const AZInstance *inst, int r, int g, int b)
             out->id = id++;
 #endif
 #ifndef NO_COLOR_CACHE
-            g_hash_table_insert([inst colorHash], &out->key, out);
+	    [[inst colorHash] setObject: [NSValue valueWithPointer: out]
+		              forKey: [NSNumber numberWithInt: out->key]];
         }
 #endif
     }
@@ -101,13 +102,13 @@ void RrColorFree(RrColor *c)
     if (c) {
         if (--c->refcount < 1) {
 #ifndef NO_COLOR_CACHE
-            g_assert(g_hash_table_lookup([c->inst colorHash], &c->key));
-            g_hash_table_remove([c->inst colorHash], &c->key);
+            //g_assert(g_hash_table_lookup([c->inst colorHash], &c->key));
+	    [[c->inst colorHash] removeObjectForKey: [NSNumber numberWithInt: c->key]];
 #endif
             if (c->pixel) XFreeColors([c->inst display], [c->inst colormap],
                                       &c->pixel, 1, 0);
             if (c->gc) XFreeGC([c->inst display], c->gc);
-            g_free(c);
+            free(c);
         }
     }
 }
@@ -118,7 +119,7 @@ void RrReduceDepth(const AZInstance *inst, RrPixel32 *data, XImage *im)
     int x,y;
     RrPixel32 *p32 = (RrPixel32 *) im->data;
     RrPixel16 *p16 = (RrPixel16 *) im->data;
-    guchar *p8 = (guchar *)im->data;
+    unsigned char *p8 = (unsigned char *)im->data;
     switch (im->bits_per_pixel) {
     case 32:
         if (([inst redOffset] != RrDefaultRedOffset) ||
@@ -136,7 +137,7 @@ void RrReduceDepth(const AZInstance *inst, RrPixel32 *data, XImage *im)
                 data += im->width;
                 p32 += im->width;
             } 
-        } else im->data = (gchar*) data;
+        } else im->data = (char*) data;
         break;
     case 16:
         for (y = 0; y < im->height; y++) {
@@ -156,7 +157,7 @@ void RrReduceDepth(const AZInstance *inst, RrPixel32 *data, XImage *im)
         }
         break;
     case 8:
-        g_assert([inst visual]->class != TrueColor);
+        if([inst visual]->class == TrueColor) NSLog(@"Wrong depth");
         for (y = 0; y < im->height; y++) {
             for (x = 0; x < im->width; x++) {
                 p8[x] = RrPickColor(inst,
@@ -169,7 +170,7 @@ void RrReduceDepth(const AZInstance *inst, RrPixel32 *data, XImage *im)
         }
         break;
     default:
-        g_warning("your bit depth is currently unhandled\n");
+        NSLog(@"Warning: your bit depth is currently unhandled\n");
     }
 }
 
@@ -190,8 +191,8 @@ static void swap_byte_order(XImage *im)
     di = 0;
     for (y = 0; y < im->height; ++y) {
         for (x = 0; x < im->height; ++x) {
-            gchar *c = &im->data[di + x * im->bits_per_pixel / 8];
-            gchar t;
+            char *c = &im->data[di + x * im->bits_per_pixel / 8];
+            char t;
 
             switch (im->bits_per_pixel) {
             case 32:
@@ -206,7 +207,7 @@ static void swap_byte_order(XImage *im)
             case 1:
                 break;
             default:
-                g_warning("Your bit depth is currently unhandled");
+                NSLog(@"Warning: Your bit depth is currently unhandled");
             }
         }
         di += im->bytes_per_line;
@@ -224,7 +225,7 @@ void RrIncreaseDepth(const AZInstance *inst, RrPixel32 *data, XImage *im)
     int x,y;
     RrPixel32 *p32 = (RrPixel32 *) im->data;
     RrPixel16 *p16 = (RrPixel16 *) im->data;
-    guchar *p8 = (guchar *)im->data;
+    unsigned char *p8 = (unsigned char *)im->data;
 
     if (im->byte_order != LSBFirst)
         swap_byte_order(im);
@@ -279,7 +280,7 @@ void RrIncreaseDepth(const AZInstance *inst, RrPixel32 *data, XImage *im)
         }
         break;
     default:
-        g_warning("this image bit depth is currently unhandled");
+        NSLog(@"Warning: this image bit depth is currently unhandled");
     }
 }
 

@@ -234,7 +234,7 @@ int main(int argc, char **argv)
             /* load the theme specified in the rc file */
             {
                 RrTheme *theme;
-                if ((theme = RrThemeNew(ob_rr_inst, (char*)[config_theme fileSystemRepresentation]))) {
+                if ((theme = RrThemeNew(ob_rr_inst, config_theme))) {
                     RrThemeFree(ob_rr_theme);
                     ob_rr_theme = theme;
                 }
