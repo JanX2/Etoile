@@ -29,8 +29,6 @@
 #include "theme.h"
 #import "instance.h"
 
-#include <glib.h>
-
 #ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
 #endif
@@ -43,7 +41,7 @@
 
 - (void) paint: (Window) win width: (int) width height: (int) height
 {
-    gint i, transferred = 0, sw;
+    int i, transferred = 0, sw;
     RrPixel32 *source, *dest;
     Pixmap oldp;
     RrRect tarea; /* area in which to draw textures */
@@ -57,7 +55,7 @@
     pixmap = XCreatePixmap([inst display], [inst rootWindow],
                               width, height, [inst depth]);
 
-    g_assert(pixmap != None);
+    NSAssert(pixmap != None, @"Internal Error: pixmap is None");
     w = width;
     h = height;
 
@@ -65,14 +63,14 @@
         XftDrawDestroy(xftdraw);
     xftdraw = XftDrawCreate([inst display], pixmap,
                                [inst visual], [inst colormap]);
-    g_assert(xftdraw != NULL);
+    NSAssert(xftdraw != NULL, @"No xftdraw is available");
 
-    g_free(surface.pixel_data);
-    surface.pixel_data = g_new(RrPixel32, width * height);
+    free(surface.pixel_data);
+    surface.pixel_data = calloc(sizeof(RrPixel32), width * height);
 
     if (surface.grad == RR_SURFACE_PARENTREL) {
-        g_assert (surface.parent);
-        g_assert ([surface.parent w]);
+        NSAssert(surface.parent, @"No parent");
+        NSAssert([surface.parent w], @"Width of parent is 0");
 
         sw = [surface.parent w];
         source = ([surface.parent surface].pixel_data +
@@ -85,7 +83,7 @@
 	RrRender(self, width, height);
 
     {
-        gint l, t, r, b;
+        int l, t, r, b;
 	[self marginsWithLeft: &l top: &t right: &r bottom: &b];
         RECT_SET(tarea, l, t, w - l - r, h - t - b); 
     }       
@@ -128,7 +126,7 @@
             RrPixmapMaskDraw(pixmap, &(texture[i].data.mask), &tarea);
             break;
         case RR_TEXTURE_RGBA:
-            g_assert(!transferred);
+            NSAssert(!transferred, @"Internal Error: transferred");
             RrImageDraw(surface.pixel_data,
                         &(texture[i].data.rgba),
                         width, height,
@@ -154,7 +152,7 @@
   inst = _inst;
   textures = numtex;
   if (numtex) 
-    texture = g_new0(RrTexture, numtex);
+    texture = calloc(sizeof(RrTexture), numtex);
 
   return self;
 }
@@ -164,7 +162,7 @@
     AZAppearance *copy = [[AZAppearance allocWithZone: zone] initWithInstance: inst numberOfTextures: textures];
 
     RrSurface *spo, *spc;
-    gint i;
+    int i;
 
     spo = &surface;
     spc = [copy surfacePointer];
@@ -219,7 +217,10 @@
     spc->parentx = spc->parenty = 0;
     spc->pixel_data = NULL;
 
-    [copy set_texture: g_memdup(texture, textures * sizeof(RrTexture))];
+    RrTexture *_temp = calloc(sizeof(RrTexture), textures);
+    memcpy(_temp, texture, textures*sizeof(RrTexture));
+    [copy set_texture: _temp];
+//    [copy set_texture: g_memdup(texture, textures * sizeof(RrTexture))];
     for (i = 0; i < [copy textures]; ++i)
         if ([copy texture][i].type == RR_TEXTURE_RGBA) {
             [copy texture][i].data.rgba.cache = NULL;
@@ -233,7 +234,7 @@
 
 - (void) dealloc
 {
-    gint i;
+    int i;
 
     {
         RrSurface *p;
@@ -241,11 +242,11 @@
         if (xftdraw != NULL) XftDrawDestroy(xftdraw);
         for (i = 0; i < textures; ++i)
             if (texture[i].type == RR_TEXTURE_RGBA) {
-                g_free(texture[i].data.rgba.cache);
+                free(texture[i].data.rgba.cache);
                 texture[i].data.rgba.cache = NULL;
             }
         if (textures)
-            g_free(texture);
+            free(texture);
         p = &surface;
         RrColorFree(p->primary);
         RrColorFree(p->secondary);
@@ -253,7 +254,7 @@
         RrColorFree(p->interlace_color);
         RrColorFree(p->bevel_dark);
         RrColorFree(p->bevel_light);
-        g_free(p->pixel_data);
+        free(p->pixel_data);
 
 	[super dealloc];
     }
@@ -282,9 +283,9 @@
 
 - (void) minimalSizeWithWidth: (int *) width height: (int *) height;
 {
-    gint i;
+    int i;
     RrSize *m;
-    gint l, t, r, b;
+    int l, t, r, b;
     *width = *height = 0;
 
     for (i = 0; i < textures; ++i) {
@@ -351,7 +352,7 @@
     XImage *im = NULL;
     im = XCreateImage([inst display], [inst visual], [inst depth],
                       ZPixmap, 0, NULL, width, height, 32, 0);
-    g_assert(im != NULL);
+    NSAssert(im != NULL, @"No XImage");
 
     in = surface.pixel_data;
     out = pixmap;
@@ -359,22 +360,22 @@
 /* this malloc is a complete waste of time on normal 32bpp
    as reduce_depth just sets im->data = data and returns
 */
-    scratch = g_new(RrPixel32, im->width * im->height);
-    im->data = (gchar*) scratch;
+    scratch = calloc(sizeof(RrPixel32), im->width * im->height);
+    im->data = (char*) scratch;
     RrReduceDepth(inst, in, im);
     XPutImage([inst display], out,
               DefaultGC([inst display], [inst screen]),
               im, 0, 0, x, y, width, height);
     im->data = NULL;
     XDestroyImage(im);
-    g_free(scratch);
+    free(scratch);
 }
 @end
 
 
-static void reverse_bits(gchar *c, gint n)
+static void reverse_bits(char *c, int n)
 {
-    gint i;
+    int i;
     for (i = 0; i < n; i++)
         *c++ = (((*c * 0x0802UL & 0x22110UL) |
                  (*c * 0x8020UL & 0x88440UL)) * 0x10101UL) >> 16;
@@ -382,10 +383,10 @@ static void reverse_bits(gchar *c, gint n)
 
 BOOL RrPixmapToRGBA(const AZInstance *inst,
                         Pixmap pmap, Pixmap mask,
-                        gint *w, gint *h, RrPixel32 **data)
+                        int *w, int *h, RrPixel32 **data)
 {
     Window xr;
-    gint xx, xy;
+    int xx, xy;
     guint pw, ph, mw, mh, xb, xd, i, x, y, di;
     XImage *xi, *xm = NULL;
 
@@ -420,7 +421,7 @@ BOOL RrPixmapToRGBA(const AZInstance *inst,
     if ((xi->bits_per_pixel == 1) && (xi->bitmap_bit_order != LSBFirst))
         reverse_bits(xi->data, xi->bytes_per_line * xi->height);
 
-    *data = g_new(RrPixel32, pw * ph);
+    *data = calloc(sizeof(RrPixel32), pw * ph);
     RrIncreaseDepth(inst, *data, xi);
 
     if (mask) {

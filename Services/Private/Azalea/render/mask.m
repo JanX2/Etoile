@@ -23,14 +23,16 @@
 #import "instance.h"
 
 RrPixmapMask *RrPixmapMaskNew(const AZInstance *inst,
-                              int w, int h, const gchar *data)
+                              int w, int h, const char *data)
 {
-    RrPixmapMask *m = g_new(RrPixmapMask, 1);
+    RrPixmapMask *m = calloc(sizeof(RrPixmapMask), 1);
     m->inst = inst;
     m->width = w;
     m->height = h;
     /* round up to nearest byte */
-    m->data = g_memdup(data, (w + 7) / 8 * h);
+    m->data = calloc(sizeof(char), (w + 7) / 8 * h);
+    memcpy(m->data, data, (w + 7) / 8 * h);
+//    m->data = g_memdup(data, (w + 7) / 8 * h);
     m->mask = XCreateBitmapFromData([inst display], [inst rootWindow],
                                     data, w, h);
     return m;
@@ -40,8 +42,8 @@ void RrPixmapMaskFree(RrPixmapMask *m)
 {
     if (m) {
         XFreePixmap([m->inst display], m->mask);
-        g_free(m->data);
-        g_free(m);
+        free(m->data);
+        free(m);
     }
 }
 
@@ -71,12 +73,14 @@ void RrPixmapMaskDraw(Pixmap p, const RrTextureMask *m, const RrRect *area)
 
 RrPixmapMask *RrPixmapMaskCopy(const RrPixmapMask *src)
 {
-    RrPixmapMask *m = g_new(RrPixmapMask, 1);
+    RrPixmapMask *m = calloc(sizeof(RrPixmapMask), 1);
     m->inst = src->inst;
     m->width = src->width;
     m->height = src->height;
     /* round up to nearest byte */
-    m->data = g_memdup(src->data, (src->width + 7) / 8 * src->height);
+    m->data = calloc(sizeof(char), (src->width + 7) / 8 * src->height);
+    memcpy(m->data, src->data, (src->width + 7) / 8 * src->height);
+//    m->data = g_memdup(src->data, (src->width + 7) / 8 * src->height);
     m->mask = XCreateBitmapFromData([m->inst display], [m->inst rootWindow],
                                     m->data, m->width, m->height);
     return m;

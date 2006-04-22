@@ -20,7 +20,6 @@
 #include "render.h"
 #include "gradient.h"
 #include "color.h"
-#include "glib.h"
 #import "instance.h"
 #import <Foundation/Foundation.h>
 
@@ -59,7 +58,7 @@ void RrRender(AZAppearance *a, int w, int h)
         gradient_pyramid([a surfacePointer], w, h);
         break;
     default:
-        g_assert_not_reached(); /* unhandled gradient */
+	NSLog(@"Internall Error: Should not reach here"); /* unhandled gradient */
         return;
     }
   
@@ -169,7 +168,7 @@ static void create_bevel_colors(AZAppearance *l)
     if (r > 0xFF) r = 0xFF;
     if (g > 0xFF) g = 0xFF;
     if (b > 0xFF) b = 0xFF;
-    g_assert(![l surface].bevel_light);
+    if ([l surface].bevel_light) NSLog(@"Internal Error, bevel_light exist");
     [l surfacePointer]->bevel_light = RrColorNew([l inst], r, g, b);
 
     /* dark color */
@@ -179,7 +178,7 @@ static void create_bevel_colors(AZAppearance *l)
     g = (g >> 1) + (g >> 2);
     b = [l surface].primary->b;
     b = (b >> 1) + (b >> 2);
-    g_assert(![l surface].bevel_dark);
+    if ([l surface].bevel_dark) NSLog(@"Internal Error, bevel_dark exist");
     [l surfacePointer]->bevel_dark = RrColorNew([l inst], r, g, b);
 }
 
@@ -237,7 +236,7 @@ static void gradient_solid(AZAppearance *l, int w, int h)
                       left + 1, bottom - 2, left + 1, top + 1);
             break;
         default:
-            g_assert_not_reached(); /* unhandled BevelType */
+	    NSLog(@"Internal Error: should not reach here"); /* unhandled BevelType */
         }
         break;
     case RR_RELIEF_SUNKEN:
@@ -269,7 +268,7 @@ static void gradient_solid(AZAppearance *l, int w, int h)
 
             break;
         default:
-            g_assert_not_reached(); /* unhandled BevelType */
+	    NSLog(@"Internal Error: should not reach here"); /* unhandled BevelType */
         }
         break;
     case RR_RELIEF_FLAT:
@@ -280,7 +279,7 @@ static void gradient_solid(AZAppearance *l, int w, int h)
         }
         break;
     default:  
-        g_assert_not_reached(); /* unhandled ReliefType */
+         NSLog(@"Internal Error: should not reach here");  /* unhandled ReliefType */
     }
 }
 

@@ -19,7 +19,6 @@
 #include "geom.h"
 #include "image.h"
 #include "color.h"
-#include "glib.h"
 #import "instance.h"
 
 #define FRACTION        12
@@ -37,7 +36,7 @@ static RrPixel32* scale_half(RrPixel32 *source, int w, int h)
     dw = w >> 1;
     dh = h >> 1;
 
-    out = dest = g_new(RrPixel32, dw * dh);
+    out = dest = calloc(sizeof(RrPixel32), dw * dh);
 
     for (y = 0; y < dh; ++y) {
         RrPixel32 *s, *s2;
@@ -117,7 +116,7 @@ static void ImageCopyResampled(RrPixel32 *dst, RrPixel32 *src,
                 }
             }
             
-            g_assert(sumXY != 0);
+            if (sumXY == 0) NSLog(@"Internal Error: sumXY is 0");
             red   /= sumXY;
             green /= sumXY;
             blue  /= sumXY;
@@ -156,8 +155,8 @@ void RrImageDraw(RrPixel32 *target, RrTextureRGBA *rgba,
 
     if (sw != dw || sh != dh) {
         /*if (!(rgba->cache && dw == rgba->cwidth && dh == rgba->cheight))*/ {
-            g_free(rgba->cache);
-            rgba->cache = g_new(RrPixel32, dw * dh);
+            free(rgba->cache);
+            rgba->cache = calloc(sizeof(RrPixel32), dw * dh);
             ImageCopyResampled(rgba->cache, rgba->data, dw, dh, sw, sh);
             rgba->cwidth = dw;
             rgba->cheight = dh;

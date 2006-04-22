@@ -21,18 +21,17 @@
 #define __font_h
 #include "render.h"
 #include "geom.h"
-#include "glib.h"
 
 struct _RrFont {
     const AZInstance *inst;
     XftFont *xftfont;
     int elipses_length;
     int shadow;
-    gchar tint;
+    char tint;
     int offset;
 };
 
-RrFont *RrFontOpen(const AZInstance *inst, gchar *fontstring);
+RrFont *RrFontOpen(const AZInstance *inst, char *fontstring);
 void RrFontClose(RrFont *f);
 void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *position);
 #endif /* __font_h */

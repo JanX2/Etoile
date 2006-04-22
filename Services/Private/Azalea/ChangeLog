@@ -1,6 +1,7 @@
 2006-04-21 Yen-Ju Chen <yjchenx at gmail>
 
 	* Port render/instance.
+	* Remove most glib from render/
 
 2006-04-20 Yen-Ju Chen <yjchenx at gmail>
 

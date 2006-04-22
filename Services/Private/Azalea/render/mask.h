@@ -22,10 +22,9 @@
 
 #include "render.h"
 #include "geom.h"
-#include "glib.h"
 
 RrPixmapMask *RrPixmapMaskNew(const AZInstance *inst,
-                              int w, int h, const gchar *data);
+                              int w, int h, const char *data);
 void RrPixmapMaskFree(RrPixmapMask *m);
 RrPixmapMask *RrPixmapMaskCopy(const RrPixmapMask *src);
 void RrPixmapMaskDraw(Pixmap p, const RrTextureMask *m, const RrRect *area);

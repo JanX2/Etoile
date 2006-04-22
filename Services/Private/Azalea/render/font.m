@@ -26,7 +26,6 @@
 #import "instance.h"
 
 #include <X11/Xft/Xft.h>
-#include <glib.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -49,7 +48,7 @@ static BOOL started = NO;
 static void font_startup(void)
 {
     if (!XftInit(0)) {
-        g_warning(("Couldn't initialize Xft."));
+        NSLog(@"Couldn't initialize Xft.");
         exit(EXIT_FAILURE);
     }
 
@@ -86,7 +85,7 @@ static RrFont *openfont(const AZInstance *inst, gchar *fontstring)
     if (!match)
         return NULL;
 
-    out = g_new(RrFont, 1);
+    out = calloc(sizeof(RrFont), 1);
     out->inst = inst;
 
     if (FcPatternGetBool(match, OB_SHADOW, 0, &out->shadow) != FcResultMatch)
@@ -105,7 +104,7 @@ static RrFont *openfont(const AZInstance *inst, gchar *fontstring)
     font = XftFontOpenPattern([inst display], match);
     if (!font) {
         FcPatternDestroy(match);
-        g_free(out);
+        free(out);
         return NULL;
     } else
         out->xftfont = font;
@@ -126,12 +125,12 @@ RrFont *RrFontOpen(const AZInstance *inst, gchar *fontstring)
 
     if ((out = openfont(inst, fontstring)))
         return out;
-    g_warning(("Unable to load font: %s\n"), fontstring);
-    g_warning(("Trying fallback font: %s\n"), "sans");
+    NSLog(@"Warning: Unable to load font: %s\n", fontstring);
+    NSLog(@"Warning: Trying fallback font: %s\n", "sans");
 
     if ((out = openfont(inst, "sans")))
         return out;
-    g_warning(("Unable to load font: %s\n"), "sans");
+    NSLog(@"Warning: Unable to load font: %s\n", "sans");
 
     return NULL;
 }
@@ -140,11 +139,11 @@ void RrFontClose(RrFont *f)
 {
     if (f) {
         XftFontClose([f->inst display], f->xftfont);
-        g_free(f);
+        free(f);
     }
 }
 
-static void font_measure_full(const RrFont *f, const gchar *str,
+static void font_measure_full(const RrFont *f, const char *str,
                               int *x, int *y)
 {
     XGlyphInfo info;
@@ -156,10 +155,10 @@ static void font_measure_full(const RrFont *f, const gchar *str,
     *y = info.height + (f->shadow ? ABS(f->offset) : 0);
 }
 
-RrSize *RrFontMeasureString(const RrFont *f, const gchar *str)
+RrSize *RrFontMeasureString(const RrFont *f, const char *str)
 {
     RrSize *size;
-    size = g_new(RrSize, 1);
+    size = calloc(sizeof(RrSize), 1);
     font_measure_full (f, str, &size->width, &size->height);
     return size;
 }
@@ -195,7 +194,7 @@ void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
 {
     int x,y,w,h;
     XftColor c;
-    GString *text;
+    NSMutableString *text;
     int mw, mh;
     size_t l;
     BOOL shortened = NO;
@@ -209,26 +208,27 @@ void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
     w = area->width - 4;
     h = area->height;
 
-    text = g_string_new([t->string cString]);
-    l = g_utf8_strlen(text->str, -1);
-    font_measure_full(t->font, text->str, &mw, &mh);
+    text = [NSMutableString stringWithString: t->string];
+    l = [text length];
+    font_measure_full(t->font, [text UTF8String], &mw, &mh);
     while (l && mw > area->width) {
         shortened = YES;
         /* remove a character from the middle */
-        text = g_string_erase(text, l-- / 2, 1);
+	[text deleteCharactersInRange: NSMakeRange(l--/2, 1)];
         /* if the elipses are too large, don't show them at all */
         if (ELIPSES_LENGTH(t->font) > area->width)
             shortened = NO;
-        font_measure_full(t->font, text->str, &mw, &mh);
+        font_measure_full(t->font, [text UTF8String], &mw, &mh);
         mw += ELIPSES_LENGTH(t->font);
     }
     if (shortened) {
-        text = g_string_insert(text, (l + 1) / 2, ELIPSES);
+	[text insertString: [NSString stringWithCString: ELIPSES]
+		atIndex: (l+1)/2];
         l += 3;
     }
     if (!l) return;
 
-    l = strlen(text->str); /* number of bytes */
+    l = strlen([text UTF8String]); /* number of bytes */
 
     switch (t->justify) {
     case RR_JUSTIFY_LEFT:
@@ -259,7 +259,7 @@ void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
         }
         XftDrawStringUtf8(d, &c, t->font->xftfont, x + t->font->offset,
                           t->font->xftfont->ascent + y + t->font->offset,
-                          (FcChar8*)text->str, l);
+                          (FcChar8*)[text UTF8String], l);
     }
     c.color.red = t->color->r | t->color->r << 8;
     c.color.green = t->color->g | t->color->g << 8;
@@ -269,8 +269,7 @@ void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
 
     XftDrawStringUtf8(d, &c, t->font->xftfont, x,
                       t->font->xftfont->ascent + y,
-                      (FcChar8*)text->str, l);
+                      (FcChar8*)[text UTF8String], l);
 
-    g_string_free(text, YES);
     return;
 }
