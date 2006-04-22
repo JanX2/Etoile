@@ -78,7 +78,7 @@
 {
   unsigned int desks;
   unsigned int curdesk;
-  Window *wins;
+  NSMutableArray *wins;
   AZAppearance *hilight;
   AZAppearance *unhilight;
 };

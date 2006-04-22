@@ -504,10 +504,10 @@ AZSessionState *session_state_find(AZClient *c)
         s = [session_saved_state objectAtIndex: i];
         if (![s matched] && session_state_cmp(s, c)) {
             [s set_matched: YES];
-            break;
+	    return s;
         }
     }
-    return s;
+    return nil;
 }
 
 static void session_load(char *path)

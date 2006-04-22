@@ -25,7 +25,6 @@
 #import "AZScreen.h"
 #import "AZStacking.h"
 #import "openbox.h"
-#import "glib.h"
 
 @implementation AZPopUp
 - (void) positionWithGravity: (int) _gravity x: (int) _x y: (int) _y
@@ -330,7 +329,7 @@
             vert_inc = -desktop_layout.columns;
             break;
         default:
-            g_assert_not_reached();
+	    NSAssert(0, @"Should not reach here");
         }
         break;
     case OB_ORIENTATION_VERT:
@@ -356,11 +355,11 @@
             vert_inc = -1;
             break;
         default:
-            g_assert_not_reached();
+	    NSAssert(0, @"Should not reach here");
         }
         break;
     default:
-        g_assert_not_reached();
+	NSAssert(0, @"Should not reach here");
     }
 
     rown = n;
@@ -378,9 +377,11 @@
                 [a surfacePointer]->parent = a_bg;
                 [a surfacePointer]->parentx = _x + px;
                 [a surfacePointer]->parenty = _y + py;
-                XMoveResizeWindow(ob_display, wins[n],
+                XMoveResizeWindow(ob_display, 
+				  [[wins objectAtIndex: n] intValue],
                                   _x + px, _y + py, eachw, eachh);
-                [a paint: wins[n] width: eachw height: eachh];
+                [a paint: [[wins objectAtIndex: n] intValue]
+			width: eachw height: eachh];
             }
             n += horz_inc;
         }
@@ -393,24 +394,24 @@
     unsigned int i;
     unsigned int num_desktops = [[AZScreen defaultScreen] numberOfDesktops];
 
-    if (num_desktops < desks)
-        for (i = num_desktops; i < desks; ++i)
-            XDestroyWindow(ob_display, wins[i]);
-
-    if (num_desktops != desks)
-        wins = g_renew(Window, wins, num_desktops);
+    if (num_desktops < desks) {
+        for (i = desks-1; i >= num_desktops; i--) {
+            XDestroyWindow(ob_display, [[wins objectAtIndex: i] intValue]);
+	    [wins removeObjectAtIndex: i];
+	}
+    }
 
     if (num_desktops > desks)
         for (i = desks; i < num_desktops; ++i) {
             XSetWindowAttributes attr;
 
             attr.border_pixel = RrColorPixel(ob_rr_theme->b_color);
-            wins[i] = XCreateWindow(ob_display, bg,
+            [wins addObject: [NSNumber numberWithInt:XCreateWindow(ob_display, bg,
                                           0, 0, 1, 1, ob_rr_theme->bwidth,
                                           [ob_rr_inst depth], InputOutput,
                                           [ob_rr_inst visual], CWBorderPixel,
-                                          &attr);
-            XMapWindow(ob_display, wins[i]);
+                                          &attr)]];
+            XMapWindow(ob_display, [[wins objectAtIndex: i] intValue]);
         }
 
     desks = num_desktops;
@@ -424,7 +425,7 @@
   self = [super initWithIcon: hasIcon];
 
   desks = 0;
-  wins = calloc(sizeof(Window), desks);
+  wins = [[NSMutableArray alloc] init];
   hilight = [ob_rr_theme->app_hilite_fg copy];
   unhilight = [ob_rr_theme->app_unhilite_fg copy];
 
@@ -436,8 +437,8 @@
   unsigned int i;
 
   for (i = 0; i < desks; ++i)
-    XDestroyWindow(ob_display, wins[i]);
-  free(wins);
+    XDestroyWindow(ob_display, [[wins objectAtIndex: i] intValue]);
+  DESTROY(wins);
   DESTROY(hilight);
   DESTROY(unhilight);
   [super dealloc];

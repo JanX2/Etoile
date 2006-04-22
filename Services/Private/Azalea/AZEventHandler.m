@@ -39,7 +39,6 @@
 #import "prop.h"
 #import "extensions.h"
 #import "AZKeyboardHandler.h"
-#import "glib.h"
 
 #import <X11/keysym.h>
 #import <X11/Xatom.h>
@@ -79,7 +78,7 @@ static const int mask_table[] = {
 
 
 #ifdef USE_SM
-static void ice_handler(int fd, gpointer conn)
+static void ice_handler(int fd, void *conn)
 {
     Bool b;
     IceProcessMessages(conn, NULL, &b);

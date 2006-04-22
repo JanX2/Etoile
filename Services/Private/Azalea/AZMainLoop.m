@@ -27,7 +27,6 @@
 #import <X11/Xlib.h>
 #import <signal.h>
 #import "action.h"
-#import "glib.h"
 
 /* Taken from glib */
 
@@ -227,11 +226,9 @@ static void sighandler(int sig);
     int fd;
     void * data;
     ObMainLoopFdHandler func;
-    GDestroyNotify destroy;
 }
 - (id) initWithFdSet: (fd_set *) fs;
 - (void) fire;
-- (void) cleanup;
 
 - (void) fd_clear;
 - (void) fd_set;
@@ -240,11 +237,9 @@ static void sighandler(int sig);
 - (int) fd;
 - (void *) data;
 - (ObMainLoopFdHandler) func;
-- (GDestroyNotify) destroy;
 - (void) set_fd: (int) fd;
 - (void) set_data: (void *) data;
 - (void) set_func: (ObMainLoopFdHandler) func;
-- (void) set_destroy: (GDestroyNotify) destroy;
 @end
 
 @implementation AZMainLoopFdHandler
@@ -268,12 +263,6 @@ static void sighandler(int sig);
   func(fd, data);
 }
 
-- (void) cleanup
-{
-  if (destroy)
-    destroy(data);
-}
-
 - (id) initWithFdSet: (fd_set *) fs
 {
   self = [super init];
@@ -284,11 +273,9 @@ static void sighandler(int sig);
 - (int) fd { return fd; }
 - (void *) data { return data; }
 - (ObMainLoopFdHandler) func { return func; }
-- (GDestroyNotify) destroy { return destroy; }
 - (void) set_fd: (int) f { fd = f; }
 - (void) set_data: (void *) d { data = d; }
 - (void) set_func: (ObMainLoopFdHandler) f { func = f; }
-- (void) set_destroy: (GDestroyNotify) d { destroy = d; }
 @end
 
 extern Display *ob_display;
@@ -345,7 +332,6 @@ static AZMainLoop *sharedInstance;
   if (temp) {
     /* Cannot wait until the object is autoreleased. */
     [temp fd_clear];
-    [temp cleanup];
     [fd_handlers removeObjectForKey: key];
   }
 }
@@ -427,7 +413,6 @@ static AZMainLoop *sharedInstance;
 - (void) removeSignalHandler: (ObMainLoopSignalHandler) handler
 {
     unsigned int i, j;
-    GSList *it, *next;
 
     for (i = 0; i < NUM_SIGNALS; ++i) {
 	NSMutableArray *handlers = signal_handlers[i];

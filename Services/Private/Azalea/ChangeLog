@@ -1,6 +1,7 @@
 2006-04-22 Yen-Ju Chen <yjchenx at gmail>
 
 	* use NSArray for session.
+	* remove more glib.
 
 2006-04-21 Yen-Ju Chen <yjchenx at gmail>
 

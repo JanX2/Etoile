@@ -28,7 +28,6 @@
 #import "prop.h"
 #import "config.h"
 #import "extensions.h"
-#import "glib.h"
 
 #define PLATE_EVENTMASK (SubstructureRedirectMask | ButtonPressMask)
 #define FRAME_EVENTMASK (EnterWindowMask | LeaveWindowMask | \
@@ -110,7 +109,7 @@ static Window createWindow(Window parent, unsigned long mask,
     XEvent ev;
     BOOL reparent = YES;
 
-    g_assert(_client == client);
+    NSAssert(_client == client, @"Release wrong client");
 
     /* check if the app has already reparented its window away */
     while (XCheckTypedWindowEvent(ob_display, [client window],
@@ -902,37 +901,37 @@ static Window createWindow(Window parent, unsigned long mask,
 
 ObFrameContext frame_context_from_string(const char *name)
 {
-    if (!g_ascii_strcasecmp("Desktop", name))
+    if (!strcasecmp("Desktop", name))
         return OB_FRAME_CONTEXT_DESKTOP;
-    else if (!g_ascii_strcasecmp("Client", name))
+    else if (!strcasecmp("Client", name))
         return OB_FRAME_CONTEXT_CLIENT;
-    else if (!g_ascii_strcasecmp("Titlebar", name))
+    else if (!strcasecmp("Titlebar", name))
         return OB_FRAME_CONTEXT_TITLEBAR;
-    else if (!g_ascii_strcasecmp("Handle", name))
+    else if (!strcasecmp("Handle", name))
         return OB_FRAME_CONTEXT_HANDLE;
-    else if (!g_ascii_strcasecmp("Frame", name))
+    else if (!strcasecmp("Frame", name))
         return OB_FRAME_CONTEXT_FRAME;
-    else if (!g_ascii_strcasecmp("TLCorner", name))
+    else if (!strcasecmp("TLCorner", name))
         return OB_FRAME_CONTEXT_TLCORNER;
-    else if (!g_ascii_strcasecmp("TRCorner", name))
+    else if (!strcasecmp("TRCorner", name))
         return OB_FRAME_CONTEXT_TRCORNER;
-    else if (!g_ascii_strcasecmp("BLCorner", name))
+    else if (!strcasecmp("BLCorner", name))
         return OB_FRAME_CONTEXT_BLCORNER;
-    else if (!g_ascii_strcasecmp("BRCorner", name))
+    else if (!strcasecmp("BRCorner", name))
         return OB_FRAME_CONTEXT_BRCORNER;
-    else if (!g_ascii_strcasecmp("Maximize", name))
+    else if (!strcasecmp("Maximize", name))
         return OB_FRAME_CONTEXT_MAXIMIZE;
-    else if (!g_ascii_strcasecmp("AllDesktops", name))
+    else if (!strcasecmp("AllDesktops", name))
         return OB_FRAME_CONTEXT_ALLDESKTOPS;
-    else if (!g_ascii_strcasecmp("Shade", name))
+    else if (!strcasecmp("Shade", name))
         return OB_FRAME_CONTEXT_SHADE;
-    else if (!g_ascii_strcasecmp("Iconify", name))
+    else if (!strcasecmp("Iconify", name))
         return OB_FRAME_CONTEXT_ICONIFY;
-    else if (!g_ascii_strcasecmp("Icon", name))
+    else if (!strcasecmp("Icon", name))
         return OB_FRAME_CONTEXT_ICON;
-    else if (!g_ascii_strcasecmp("Close", name))
+    else if (!strcasecmp("Close", name))
         return OB_FRAME_CONTEXT_CLOSE;
-    else if (!g_ascii_strcasecmp("MoveResize", name))
+    else if (!strcasecmp("MoveResize", name))
         return OB_FRAME_CONTEXT_MOVE_RESIZE;
     return OB_FRAME_CONTEXT_NONE;
 }
