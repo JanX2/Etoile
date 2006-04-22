@@ -1091,7 +1091,7 @@
     SIZE_SET(size_inc, 1, 1);
     SIZE_SET(base_size, 0, 0);
     SIZE_SET(min_size, 0, 0);
-    SIZE_SET(max_size, G_MAXINT, G_MAXINT);
+    SIZE_SET(max_size, INT_MAX, INT_MAX);
 
     /* get the hints from the window */
     if (XGetWMNormalHints(ob_display, window, &size, &ret)) {
@@ -1117,10 +1117,10 @@
         if (size.flags & PAspect) {
             if (size.min_aspect.y)
                 min_ratio =
-                    (gfloat) size.min_aspect.x / size.min_aspect.y;
+                    (float) size.min_aspect.x / size.min_aspect.y;
             if (size.max_aspect.y)
                 max_ratio =
-                    (gfloat) size.max_aspect.x / size.max_aspect.y;
+                    (float) size.max_aspect.x / size.max_aspect.y;
         }
 
         if (size.flags & PMinSize)
@@ -1149,7 +1149,6 @@
 {
     XWMHints *hints;
     BOOL ur = NO;
-    GSList *it;
 
     /* assume a window takes input if it doesnt specify */
     can_focus = YES;
@@ -1238,7 +1237,7 @@
 
 - (void) updateTitle
 {
-    gint32 nums;
+    long nums;
     unsigned int i;
     char *data = NULL;
     BOOL read_title;
@@ -2362,12 +2361,11 @@ no_number:
 
 - (void) restoreSessionState
 {
-    GList *it;
-
-    if (!(it = session_state_find(self)))
+    AZSessionState *s = nil;
+    if (!(s = session_state_find(self)))
         return;
 
-    session = it->data;
+    session = s;
 
     RECT_SET_POINT(area, [session x], [session y]);
     positioned = PPosition;
@@ -2546,12 +2544,11 @@ no_number:
 
 - (void) restoreSessionStacking
 {
-    GList *it;
-
     if (!session) return;
 
-    it = g_list_find(session_saved_state, session);
-    for (it = g_list_previous(it); it; it = g_list_previous(it)) {
+    int i, index = [session_saved_state indexOfObject: session];
+    for (i = index-1; i > -1; i--) {
+        AZSessionState *s = [session_saved_state objectAtIndex: i];
         AZClientManager *cManager = [AZClientManager defaultManager];
         int i, count = [cManager count];
 	BOOL found = NO;
@@ -2559,7 +2556,7 @@ no_number:
 	for (i = 0; i < count; i++)
 	{
 	    data = [cManager clientAtIndex: i];
-            if (session_state_cmp(it->data, data))
+            if (session_state_cmp(s, data))
 	    {
 		found = YES;
                 break;

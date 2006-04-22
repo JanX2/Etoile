@@ -22,7 +22,6 @@
 #ifndef __ob__session_h
 #define __ob__session_h
 
-#include <glib.h>
 #import <Foundation/Foundation.h>
 
 @class AZClient;
@@ -80,12 +79,12 @@
 - (void) set_matched: (BOOL) matched;
 @end
 
-extern GList *session_saved_state;
+extern NSMutableArray *session_saved_state;
 
-void session_startup(int *argc, gchar ***argv);
+void session_startup(int *argc, char ***argv);
 void session_shutdown();
 
-GList* session_state_find(AZClient *c);
+AZSessionState* session_state_find(AZClient *c);
 BOOL session_state_cmp(AZSessionState *s, AZClient *c);
 
 #endif

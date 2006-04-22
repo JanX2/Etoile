@@ -368,9 +368,9 @@ int main(int argc, char **argv)
         }
 
         /* re-run me */
+	// FIXME: should use openapp
         execvp(argv[0], argv); /* try how we were run */
-        execlp(argv[0], g_path_get_basename(argv[0]),
-               (char *)NULL); /* last resort */
+        execlp(argv[0], (char*)[[[NSString stringWithCString: argv[0]] lastPathComponent] cString]); /* last resort */
     }
 
     DESTROY(x);

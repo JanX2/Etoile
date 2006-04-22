@@ -22,9 +22,20 @@
 /* This session code is largely inspired by metacity code. */
 
 #import "session.h"
-GList *session_saved_state;
+NSMutableArray *session_saved_state;
 
 @implementation AZSessionState
+
+- (NSComparisonResult) compareStacking: (AZSessionState *) other
+{
+  if ([self stacking] < [other stacking])
+    return NSOrderedAscending;
+  else if ([self stacking] == [other stacking])
+    return NSOrderedSame;
+  else
+    return NSOrderedDescending;
+}
+
 - (NSString *) identifier { return iden; }
 - (NSString *) name { return name; }
 - (NSString *) class { return class; }
@@ -78,7 +89,7 @@ GList *session_saved_state;
 
 #ifndef USE_SM
 
-void session_startup(int *argc, gchar ***argv) {}
+void session_startup(int *argc, char ***argv) {}
 void session_shutdown() {}
 GList* session_state_find(AZClient *c) { return NULL; }
 BOOL session_state_cmp(AZSessionState *s, AZClient *c) { return NO; }
@@ -88,7 +99,8 @@ BOOL session_state_cmp(AZSessionState *s, AZClient *c) { return NO; }
 #import "AZDock.h"
 #import "AZDebug.h"
 #import "AZClient.h"
-#include "openbox.h"
+#import "openbox.h"
+#import <glib.h>
 #include "prop.h"
 #include "parse.h"
 
@@ -105,13 +117,13 @@ BOOL session_state_cmp(AZSessionState *s, AZClient *c) { return NO; }
 
 static BOOL    sm_disable;
 static SmcConn     sm_conn;
-static gchar      *save_file;
-static gchar      *sm_id;
+static char      *save_file;
+static char      *sm_id;
 static int        sm_argc;
-static gchar     **sm_argv;
-static gchar      *sm_sessions_path;
+static char     **sm_argv;
+static char      *sm_sessions_path;
 
-static void session_load(gchar *path);
+static void session_load(char *path);
 static BOOL session_save();
 
 static void sm_save_yourself(SmcConn conn, SmPointer data, int save_type,
@@ -154,7 +166,7 @@ static void save_commands()
     free(prop_cmd.vals);
 }
 
-static void remove_args(int *argc, gchar ***argv, int index, int num)
+static void remove_args(int *argc, char ***argv, int index, int num)
 {
     int i;
 
@@ -163,14 +175,14 @@ static void remove_args(int *argc, gchar ***argv, int index, int num)
     *argc -= num;
 }
 
-static void parse_args(int *argc, gchar ***argv)
+static void parse_args(int *argc, char ***argv)
 {
     int i;
 
     for (i = 1; i < *argc; ++i) {
         if (!strcmp((*argv)[i], "--sm-client-id")) {
             if (i == *argc - 1) /* no args left */
-                g_printerr(("--sm-client-id requires an argument\n"));
+                NSLog(@"Error: --sm-client-id requires an argument\n");
             else {
                 sm_id = g_strdup((*argv)[i+1]);
                 remove_args(argc, argv, i, 2);
@@ -178,7 +190,7 @@ static void parse_args(int *argc, gchar ***argv)
             }
         } else if (!strcmp((*argv)[i], "--sm-save-file")) {
             if (i == *argc - 1) /* no args left */
-                g_printerr(("--sm-save-file requires an argument\n"));
+                NSLog(@"Error: --sm-save-file requires an argument\n");
             else {
                 save_file = g_strdup((*argv)[i+1]);
                 remove_args(argc, argv, i, 2);
@@ -191,12 +203,12 @@ static void parse_args(int *argc, gchar ***argv)
     }
 }
 
-void session_startup(int *argc, gchar ***argv)
+void session_startup(int *argc, char ***argv)
 {
 #define SM_ERR_LEN 1024
 
     SmcCallbacks cb;
-    gchar sm_err[SM_ERR_LEN];
+    char sm_err[SM_ERR_LEN];
 
     parse_args(argc, argv);
 
@@ -206,13 +218,15 @@ void session_startup(int *argc, gchar ***argv)
     sm_sessions_path = g_build_filename((char*)[parse_xdg_data_home_path() cString],
                                         "openbox", "sessions", NULL);
     if (!parse_mkdir_path(sm_sessions_path, 0700))
-        g_warning(("Unable to make directory '%s': %s"),
+        NSLog(@"Warning: Unable to make directory '%s': %s",
                   sm_sessions_path, g_strerror(errno));
+
+    session_saved_state = [[NSMutableArray alloc] init];
 
     if (save_file)
         session_load(save_file);
     else {
-        gchar *filename;
+        char *filename;
 
         /* this algo is from metacity */
         filename = g_strdup_printf("%d-%d-%u.obs",
@@ -259,8 +273,8 @@ void session_startup(int *argc, gchar ***argv)
         SmProp prop_pid = { SmProcessID, SmARRAY8, 1, };
         SmProp prop_pri = { "_GSM_Priority", SmCARD8, 1, };
         SmProp *props[6];
-        gchar hint, pri;
-        gchar pid[32];
+        char hint, pri;
+        char pid[32];
 
         val_prog.value = sm_argv[0];
         val_prog.length = strlen(sm_argv[0]);
@@ -326,11 +340,7 @@ void session_shutdown()
 
         SmcCloseConnection(sm_conn, 0, NULL);
 
-        while (session_saved_state) {
-            DESTROY(session_saved_state->data);
-            session_saved_state = g_list_delete_link(session_saved_state,
-                                                     session_saved_state);
-        }
+	DESTROY(session_saved_state);
     }
 }
 
@@ -376,7 +386,7 @@ static BOOL session_save()
     f = fopen(save_file, "w");
     if (!f) {
         success = NO;
-        g_warning("unable to save the session to %s: %s",
+        NSLog(@"Warning: unable to save the session to %s: %s",
                   save_file, g_strerror(errno));
     } else {
         unsigned int stack_pos = 0;
@@ -388,7 +398,7 @@ static BOOL session_save()
 	    id <AZWindow> temp = [[AZStacking stacking] windowAtIndex: i];
             int prex, prey, prew, preh;
             AZClient *c;
-            gchar *t;
+            char *t;
 
             if (WINDOW_IS_CLIENT(temp))
                 c = (AZClient *)temp;
@@ -467,7 +477,7 @@ static BOOL session_save()
 
         if (fflush(f)) {
             success = NO;
-            g_warning("error while saving the session to %s: %s",
+            NSLog(@"Warning: error while saving the session to %s: %s",
                       save_file, g_strerror(errno));
         }
         fclose(f);
@@ -486,26 +496,21 @@ BOOL session_state_cmp(AZSessionState *s, AZClient *c)
     /* Considering nil == nil ? */
 }
 
-GList* session_state_find(AZClient *c)
+AZSessionState *session_state_find(AZClient *c)
 {
-    GList *it;
-
-    for (it = session_saved_state; it; it = g_list_next(it)) {
-        AZSessionState *s = it->data;
+    int i, count = [session_saved_state count];
+    AZSessionState *s = nil;
+    for (i = 0; i < count; i++) {
+        s = [session_saved_state objectAtIndex: i];
         if (![s matched] && session_state_cmp(s, c)) {
             [s set_matched: YES];
             break;
         }
     }
-    return it;
+    return s;
 }
 
-static int stack_sort(const AZSessionState *s1, const AZSessionState *s2)
-{
-    return [s1 stacking] - [s2 stacking];
-}
-
-static void session_load(gchar *path)
+static void session_load(char *path)
 {
     xmlDocPtr doc;
     xmlNodePtr node, n;
@@ -587,7 +592,9 @@ static void session_load(gchar *path)
             parse_find_node("max_vert", node->children) != NULL];
         
         /* save this */
-        session_saved_state = g_list_prepend(session_saved_state, state);
+	[session_saved_state addObject: state];
+	[state release];
+	state = NULL;
         goto session_load_ok;
 
     session_load_bail:
@@ -600,9 +607,7 @@ static void session_load(gchar *path)
     }
 
     /* sort them by their stacking order */
-    session_saved_state = g_list_sort(session_saved_state,
-                                      (GCompareFunc)stack_sort);
-
+    [session_saved_state sortUsingSelector: @selector(compareStacking:)];
     xmlFreeDoc(doc);
 }
 
