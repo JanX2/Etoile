@@ -117,13 +117,13 @@ BOOL session_state_cmp(AZSessionState *s, AZClient *c) { return NO; }
 
 static BOOL    sm_disable;
 static SmcConn     sm_conn;
-static char      *save_file;
-static char      *sm_id;
+static NSString      *save_file;
+static NSString      *sm_id;
 static int        sm_argc;
 static char     **sm_argv;
-static char      *sm_sessions_path;
+static NSString      *sm_sessions_path;
 
-static void session_load(char *path);
+static void session_load(NSString *path);
 static BOOL session_save();
 
 static void sm_save_yourself(SmcConn conn, SmPointer data, int save_type,
@@ -155,8 +155,8 @@ static void save_commands()
 
     prop_res.vals[i].value = "--sm-save-file";
     prop_res.vals[i++].length = strlen("--sm-save-file");
-    prop_res.vals[i].value = save_file;
-    prop_res.vals[i++].length = strlen(save_file);
+    prop_res.vals[i].value = (char*)[save_file fileSystemRepresentation];
+    prop_res.vals[i++].length = strlen([save_file fileSystemRepresentation]);
 
     props[0] = &prop_res;
     props[1] = &prop_cmd;
@@ -184,7 +184,7 @@ static void parse_args(int *argc, char ***argv)
             if (i == *argc - 1) /* no args left */
                 NSLog(@"Error: --sm-client-id requires an argument\n");
             else {
-                sm_id = g_strdup((*argv)[i+1]);
+		ASSIGN(sm_id, ([NSString stringWithCString: (*argv)[i+1]]));
                 remove_args(argc, argv, i, 2);
                 ++i;
             }
@@ -192,7 +192,7 @@ static void parse_args(int *argc, char ***argv)
             if (i == *argc - 1) /* no args left */
                 NSLog(@"Error: --sm-save-file requires an argument\n");
             else {
-                save_file = g_strdup((*argv)[i+1]);
+                ASSIGN(save_file, ([NSString stringWithCString: (*argv)[i+1]]));
                 remove_args(argc, argv, i, 2);
                 ++i;
             }
@@ -215,10 +215,9 @@ void session_startup(int *argc, char ***argv)
     if (sm_disable)
         return;
 
-    sm_sessions_path = g_build_filename((char*)[parse_xdg_data_home_path() cString],
-                                        "openbox", "sessions", NULL);
-    if (!parse_mkdir_path(sm_sessions_path, 0700))
-        NSLog(@"Warning: Unable to make directory '%s': %s",
+    ASSIGN(sm_sessions_path, ([NSString pathWithComponents: [NSArray arrayWithObjects: parse_xdg_data_home_path(), @"openbox", @"sessions", nil]]));
+    if (!parse_mkdir_path([sm_sessions_path fileSystemRepresentation], 0700))
+        NSLog(@"Warning: Unable to make directory '%@': %s",
                   sm_sessions_path, g_strerror(errno));
 
     session_saved_state = [[NSMutableArray alloc] init];
@@ -226,15 +225,11 @@ void session_startup(int *argc, char ***argv)
     if (save_file)
         session_load(save_file);
     else {
-        char *filename;
+        NSString *filename;
 
         /* this algo is from metacity */
-        filename = g_strdup_printf("%d-%d-%u.obs",
-                                   (int) time(NULL),
-                                   (int) getpid(),
-                                   g_random_int());
-        save_file = g_build_filename(sm_sessions_path, filename, NULL);
-        free(filename);
+	filename = [NSString stringWithFormat: @"%d-%d-%u.obs", (int)time(NULL), (int)getpid(), g_random_int()];
+	ASSIGN(save_file, [sm_sessions_path stringByAppendingPathComponent: filename]);
     }
 
     sm_argc = *argc;
@@ -252,12 +247,13 @@ void session_startup(int *argc, char ***argv)
     cb.shutdown_cancelled.callback = sm_shutdown_cancelled;
     cb.shutdown_cancelled.client_data = NULL;
 
+    char *_sm_id = (char*)[sm_id cString];
     sm_conn = SmcOpenConnection(NULL, NULL, 1, 0,
                                 SmcSaveYourselfProcMask |
                                 SmcDieProcMask |
                                 SmcSaveCompleteProcMask |
                                 SmcShutdownCancelledProcMask,
-                                &cb, sm_id, &sm_id,
+                                &cb, _sm_id, &_sm_id,
                                 SM_ERR_LEN, sm_err);
     if (sm_conn == NULL)
         AZDebug("Failed to connect to session manager: %s\n", sm_err);
@@ -317,15 +313,15 @@ void session_startup(int *argc, char ***argv)
 
 void session_shutdown()
 {
-    free(sm_sessions_path);
-    free(save_file);
-    free(sm_id);
+    DESTROY(sm_sessions_path);
+    DESTROY(save_file);
+    DESTROY(sm_id);
 
     if (sm_conn) {
         SmPropValue val_hint;
         SmProp prop_hint = { SmRestartStyleHint, SmCARD8, 1, };
         SmProp *props[1];
-        gulong hint;
+        unsigned long hint;
 
         /* when we exit, we want to reset this to a more friendly state */
         hint = SmRestartIfRunning;
@@ -383,16 +379,16 @@ static BOOL session_save()
     BOOL success = YES;
     int i, count = [[AZStacking stacking] count];
 
-    f = fopen(save_file, "w");
+    f = fopen([save_file fileSystemRepresentation], "w");
     if (!f) {
         success = NO;
-        NSLog(@"Warning: unable to save the session to %s: %s",
+        NSLog(@"Warning: unable to save the session to %@: %s",
                   save_file, g_strerror(errno));
     } else {
         unsigned int stack_pos = 0;
 
         fprintf(f, "<?xml version=\"1.0\"?>\n\n");
-        fprintf(f, "<openbox_session id=\"%s\">\n\n", sm_id);
+        fprintf(f, "<openbox_session id=\"%s\">\n\n", [sm_id cString]);
 
 	for (i = 0; i < count; i++) {
 	    id <AZWindow> temp = [[AZStacking stacking] windowAtIndex: i];
@@ -477,7 +473,7 @@ static BOOL session_save()
 
         if (fflush(f)) {
             success = NO;
-            NSLog(@"Warning: error while saving the session to %s: %s",
+            NSLog(@"Warning: error while saving the session to %@: %s",
                       save_file, g_strerror(errno));
         }
         fclose(f);
@@ -510,20 +506,20 @@ AZSessionState *session_state_find(AZClient *c)
     return nil;
 }
 
-static void session_load(char *path)
+static void session_load(NSString *path)
 {
     xmlDocPtr doc;
     xmlNodePtr node, n;
     NSString *id;
 
-    if (!parse_load([NSString stringWithCString: path], "openbox_session", &doc, &node))
+    if (!parse_load(path, "openbox_session", &doc, &node))
         return;
 
     if (!parse_attr_string("id", node, &id))
         return;
 
-    free(sm_id);
-    sm_id = g_strdup([id cString]);
+    [sm_id release];
+    sm_id = [id copy];
 
     node = parse_find_node("window", node->children);
     while (node) {
