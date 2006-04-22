@@ -27,6 +27,7 @@
 #include "color.h"
 #include "image.h"
 #include "theme.h"
+#import "instance.h"
 
 #include <glib.h>
 
@@ -53,9 +54,8 @@
     resized = (w != width || h != height);
 
     oldp = pixmap; /* save to free after changing the visible pixmap */
-    pixmap = XCreatePixmap(RrDisplay(inst),
-                              RrRootWindow(inst),
-                              width, height, RrDepth(inst));
+    pixmap = XCreatePixmap([inst display], [inst rootWindow],
+                              width, height, [inst depth]);
 
     g_assert(pixmap != None);
     w = width;
@@ -63,8 +63,8 @@
 
     if (xftdraw != NULL)
         XftDrawDestroy(xftdraw);
-    xftdraw = XftDrawCreate(RrDisplay(inst), pixmap,
-                               RrVisual(inst), RrColormap(inst));
+    xftdraw = XftDrawCreate([inst display], pixmap,
+                               [inst visual], [inst colormap]);
     g_assert(xftdraw != NULL);
 
     g_free(surface.pixel_data);
@@ -101,9 +101,8 @@
 		  [self pixelDataToPixmapWithX: 0 y: 0 width: width height: height];
             }
             if (xftdraw == NULL) {
-                xftdraw = XftDrawCreate(RrDisplay(inst), pixmap, 
-                                           RrVisual(inst),
-                                           RrColormap(inst));
+                xftdraw = XftDrawCreate([inst display], pixmap, 
+                                           [inst visual], [inst colormap]);
             }
             RrFontDraw(xftdraw, &(texture[i].data.text), &tarea);
             break;
@@ -113,7 +112,7 @@
                 if (surface.grad != RR_SURFACE_SOLID)
 		  [self pixelDataToPixmapWithX: 0 y: 0 width: width height: height];
             }
-            XDrawLine(RrDisplay(inst), pixmap,
+            XDrawLine([inst display], pixmap,
                       RrColorGC(texture[i].data.lineart.color),
                       texture[i].data.lineart.x1,
                       texture[i].data.lineart.y1,
@@ -144,12 +143,12 @@
 	  [self pixelDataToPixmapWithX: 0 y: 0 width: width height: height];
     }
 
-    XSetWindowBackgroundPixmap(RrDisplay(inst), win, pixmap);
-    XClearWindow(RrDisplay(inst), win);
-    if (oldp) XFreePixmap(RrDisplay(inst), oldp);
+    XSetWindowBackgroundPixmap([inst display], win, pixmap);
+    XClearWindow([inst display], win);
+    if (oldp) XFreePixmap([inst display], oldp);
 }
 
-- (id) initWithInstance: (const RrInstance *) _inst numberOfTextures: (int) numtex
+- (id) initWithInstance: (const AZInstance *) _inst numberOfTextures: (int) numtex
 {
   self = [super init];
   inst = _inst;
@@ -238,7 +237,7 @@
 
     {
         RrSurface *p;
-        if (pixmap != None) XFreePixmap(RrDisplay(inst), pixmap);
+        if (pixmap != None) XFreePixmap([inst display], pixmap);
         if (xftdraw != NULL) XftDrawDestroy(xftdraw);
         for (i = 0; i < textures; ++i)
             if (texture[i].type == RR_TEXTURE_RGBA) {
@@ -325,7 +324,7 @@
     if (*height < 1) *height = 1;
 }
 
-- (const RrInstance *) inst { return inst; }
+- (const AZInstance *) inst { return inst; }
 - (RrSurface) surface { return surface; }
 - (RrSurface *) surfacePointer { return &surface; }
 - (int) textures { return textures; }
@@ -350,7 +349,7 @@
     RrPixel32 *in, *scratch;
     Pixmap out;
     XImage *im = NULL;
-    im = XCreateImage(RrDisplay(inst), RrVisual(inst), RrDepth(inst),
+    im = XCreateImage([inst display], [inst visual], [inst depth],
                       ZPixmap, 0, NULL, width, height, 32, 0);
     g_assert(im != NULL);
 
@@ -363,8 +362,8 @@
     scratch = g_new(RrPixel32, im->width * im->height);
     im->data = (gchar*) scratch;
     RrReduceDepth(inst, in, im);
-    XPutImage(RrDisplay(inst), out,
-              DefaultGC(RrDisplay(inst), RrScreen(inst)),
+    XPutImage([inst display], out,
+              DefaultGC([inst display], [inst screen]),
               im, 0, 0, x, y, width, height);
     im->data = NULL;
     XDestroyImage(im);
@@ -381,7 +380,7 @@ static void reverse_bits(gchar *c, gint n)
                  (*c * 0x8020UL & 0x88440UL)) * 0x10101UL) >> 16;
 }
 
-BOOL RrPixmapToRGBA(const RrInstance *inst,
+BOOL RrPixmapToRGBA(const AZInstance *inst,
                         Pixmap pmap, Pixmap mask,
                         gint *w, gint *h, RrPixel32 **data)
 {
@@ -390,25 +389,25 @@ BOOL RrPixmapToRGBA(const RrInstance *inst,
     guint pw, ph, mw, mh, xb, xd, i, x, y, di;
     XImage *xi, *xm = NULL;
 
-    if (!XGetGeometry(RrDisplay(inst), pmap,
+    if (!XGetGeometry([inst display], pmap,
                       &xr, &xx, &xy, &pw, &ph, &xb, &xd))
         return FALSE;
 
     if (mask) {
-        if (!XGetGeometry(RrDisplay(inst), mask,
+        if (!XGetGeometry([inst display], mask,
                           &xr, &xx, &xy, &mw, &mh, &xb, &xd))
             return FALSE;
         if (pw != mw || ph != mh || xd != 1)
             return FALSE;
     }
 
-    xi = XGetImage(RrDisplay(inst), pmap,
+    xi = XGetImage([inst display], pmap,
                    0, 0, pw, ph, 0xffffffff, ZPixmap);
     if (!xi)
         return FALSE;
 
     if (mask) {
-        xm = XGetImage(RrDisplay(inst), mask,
+        xm = XGetImage([inst display], mask,
                        0, 0, mw, mh, 0xffffffff, ZPixmap);
         if (!xm) {
             XDestroyImage(xi);

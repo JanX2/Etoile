@@ -19,10 +19,19 @@
 #ifndef __render_instance_h
 #define __render_instance_h
 
+#import <Foundation/Foundation.h>
 #include <X11/Xlib.h>
 #include <glib.h>
 
-struct _RrInstance {
+/* these are the same on all endian machines because it seems to be dependant
+   on the endianness of the gfx card, not the cpu. */
+#define RrDefaultAlphaOffset 24
+#define RrDefaultRedOffset 16
+#define RrDefaultGreenOffset 8
+#define RrDefaultBlueOffset 0
+
+@interface AZInstance: NSObject
+{
     Display *display;
     int screen;
 
@@ -46,10 +55,35 @@ struct _RrInstance {
     XColor *pseudo_colors;
 
     GHashTable *color_hash;
-};
+}
 
+- (id) initWithDisplay: (Display *) display screen: (int) screen;
+
+- (Display *) display;
+- (int) screen;
+- (Window) rootWindow;
+- (Visual *) visual;
+- (int) depth;
+- (Colormap) colormap;
+- (int) redOffset;
+- (int) greenOffset;
+- (int) blueOffset;
+- (int) redShift;
+- (int) greenShift;
+- (int) blueShift;
+- (int) redMask;
+- (int) greenMask;
+- (int) blueMask;
+
+- (unsigned int) pseudoBPC;
+- (XColor *) pseudoColors;
+- (GHashTable *) colorHash;
+@end
+
+#if 0
 unsigned int       RrPseudoBPC    (const RrInstance *inst);
 XColor*     RrPseudoColors (const RrInstance *inst);
 GHashTable* RrColorHash    (const RrInstance *inst);
+#endif
 
 #endif

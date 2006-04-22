@@ -44,8 +44,8 @@ static Window createWindow(Window parent, unsigned long mask,
                            XSetWindowAttributes *attrib)
 {
     return XCreateWindow(ob_display, parent, 0, 0, 1, 1, 0,
-                         RrDepth(ob_rr_inst), InputOutput,
-                         RrVisual(ob_rr_inst), mask, attrib);
+                         [ob_rr_inst depth], InputOutput,
+                         [ob_rr_inst visual], mask, attrib);
                        
 }
 

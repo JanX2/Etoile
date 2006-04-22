@@ -19,11 +19,7 @@
 #include "render.h"
 #include "instance.h"
 
-static RrInstance *definst = NULL;
-
-static void RrTrueColorSetup (RrInstance *inst);
-static void RrPseudoColorSetup (RrInstance *inst);
-
+//static AZInstance *definst = NULL;
 #ifdef DEBUG
 #include "color.h"
 #endif
@@ -40,143 +36,165 @@ dest(gpointer data)
 #endif
 }
 
-#if 0
-static void f(gpointer key, gpointer value, gpointer n)
+@interface AZInstance (AZPrivate)
+- (void) trueColorSetup;
+- (void) pseudoColorSetup;
+@end
+
+@implementation AZInstance
+
+- (id) initWithDisplay: (Display *) _display screen: (int) _screen
 {
-    RrColor *c = value;
-    if (c->id == *(int*)n)
-        g_message("color %d has %d references", c->id, c->refcount);
-}
+  self = [super init];
+  display = _display;
+  screen = _screen;
 
-void print_refs(int id)
-{
-    g_hash_table_foreach(RrColorHash(definst), f, &id);
-}
-#endif
+  depth = DefaultDepth(display, screen);
+  visual = DefaultVisual(display, screen);
+  colormap = DefaultColormap(display, screen);
 
-RrInstance* RrInstanceNew (Display *display, int screen)
-{
-    definst = g_new (RrInstance, 1);
-    definst->display = display;
-    definst->screen = screen;
+  pseudo_colors = NULL;
 
-    definst->depth = DefaultDepth(display, screen);
-    definst->visual = DefaultVisual(display, screen);
-    definst->colormap = DefaultColormap(display, screen);
-
-    definst->pseudo_colors = NULL;
-
-    definst->color_hash = g_hash_table_new_full(g_int_hash, g_int_equal,
+  color_hash = g_hash_table_new_full(g_int_hash, g_int_equal,
                                                 NULL, dest);
 
-    switch (definst->visual->class) {
+  switch (visual->class) {
     case TrueColor:
-        RrTrueColorSetup(definst);
+        [self trueColorSetup];
         break;
     case PseudoColor:
     case StaticColor:
     case GrayScale:
     case StaticGray:
-        RrPseudoColorSetup(definst);
+        [self pseudoColorSetup];
         break;
     default:
-        g_critical("Unsupported visual class");
-        g_free (definst);
-        return definst = NULL;
+        NSLog(@"Critical: Unsupported visual class");
+	RELEASE(self);
+        return nil;
     }
-    return definst;
+  return self;
 }
 
-void RrTrueColorSetup (RrInstance *inst)
+- (void) dealloc
 {
-  gulong red_mask, green_mask, blue_mask;
+  free(pseudo_colors);
+  g_hash_table_destroy(color_hash);
+  [super dealloc];
+}
+
+- (Display *) display { return display; }
+- (int) screen { return screen; }
+- (Window) rootWindow { return RootWindow(display, screen); }
+- (Visual *) visual { return visual; }
+- (int) depth { return depth; }
+- (Colormap) colormap { return colormap; }
+- (int) redOffset { return red_offset; }
+- (int) greenOffset { return green_offset; }
+- (int) blueOffset { return blue_offset; }
+- (int) redShift { return red_shift; }
+- (int) greenShift { return green_shift; }
+- (int) blueShift { return blue_shift; }
+- (int) redMask { return red_mask; }
+- (int) greenMask { return green_mask; }
+- (int) blueMask { return blue_mask; }
+- (unsigned int) pseudoBPC { return pseudo_bpc; }
+- (XColor *) pseudoColors { return pseudo_colors; }
+- (GHashTable *) colorHash { return color_hash; }
+@end
+
+@implementation AZInstance (AZPrivate)
+
+- (void) trueColorSetup
+{
+  unsigned long r_mask, g_mask, b_mask;
   XImage *timage = NULL;
 
-  timage = XCreateImage(inst->display, inst->visual, inst->depth,
+  timage = XCreateImage(display, visual, depth,
                         ZPixmap, 0, NULL, 1, 1, 32, 0);
-  g_assert(timage != NULL);
+  NSAssert(timage != NULL, @"Cannot create image");
   /* find the offsets for each color in the visual's masks */
-  inst->red_mask = red_mask = timage->red_mask;
-  inst->green_mask = green_mask = timage->green_mask;
-  inst->blue_mask = blue_mask = timage->blue_mask;
+  red_mask = r_mask = timage->red_mask;
+  green_mask = g_mask = timage->green_mask;
+  blue_mask = b_mask = timage->blue_mask;
 
-  inst->red_offset = 0;
-  inst->green_offset = 0;
-  inst->blue_offset = 0;
+  red_offset = 0;
+  green_offset = 0;
+  blue_offset = 0;
 
-  while (! (red_mask & 1))   { inst->red_offset++;   red_mask   >>= 1; }
-  while (! (green_mask & 1)) { inst->green_offset++; green_mask >>= 1; }
-  while (! (blue_mask & 1))  { inst->blue_offset++;  blue_mask  >>= 1; }
+  while (! (r_mask & 1))   { red_offset++;   r_mask   >>= 1; }
+  while (! (g_mask & 1)) { green_offset++; g_mask >>= 1; }
+  while (! (b_mask & 1))  { blue_offset++;  b_mask  >>= 1; }
 
-  inst->red_shift = inst->green_shift = inst->blue_shift = 8;
-  while (red_mask)   { red_mask   >>= 1; inst->red_shift--;   }
-  while (green_mask) { green_mask >>= 1; inst->green_shift--; }
-  while (blue_mask)  { blue_mask  >>= 1; inst->blue_shift--;  }
+  red_shift = green_shift = blue_shift = 8;
+  while (r_mask)   { r_mask   >>= 1; red_shift--;   }
+  while (g_mask) { g_mask >>= 1; green_shift--; }
+  while (b_mask)  { b_mask  >>= 1; blue_shift--;  }
   XFree(timage);
 }
 
-#define RrPseudoNcolors(inst) (1 << (inst->pseudo_bpc * 3))
+#define RrPseudoNcolors() (1 << (pseudo_bpc * 3))
 
-void RrPseudoColorSetup (RrInstance *inst)
+- (void) pseudoColorSetup
 {
     XColor icolors[256];
     int tr, tg, tb, n, r, g, b, i, incolors, ii;
-    gulong dev;
+    unsigned long dev;
     int cpc, _ncolors;
 
     /* determine the number of colors and the bits-per-color */
-    inst->pseudo_bpc = 2; /* XXX THIS SHOULD BE A USER OPTION */
-    g_assert(inst->pseudo_bpc >= 1);
-    _ncolors = RrPseudoNcolors(inst);
+    pseudo_bpc = 2; /* XXX THIS SHOULD BE A USER OPTION */
+    NSAssert(pseudo_bpc >= 1, @"PseudoBPC must larger than 0");
+    _ncolors = RrPseudoNcolors();
 
-    if (_ncolors > 1 << inst->depth) {
-        g_warning("PseudoRenderControl: Invalid colormap size. Resizing.\n");
-        inst->pseudo_bpc = 1 << (inst->depth/3) >> 3;
-        _ncolors = 1 << (inst->pseudo_bpc * 3);
+    if (_ncolors > 1 << depth) {
+        NSLog(@"Warning: PseudoRenderControl: Invalid colormap size. Resizing.\n");
+        pseudo_bpc = 1 << (depth/3) >> 3;
+        _ncolors = 1 << (pseudo_bpc * 3);
     }
 
     /* build a color cube */
-    inst->pseudo_colors = g_new(XColor, _ncolors);
-    cpc = 1 << inst->pseudo_bpc; /* colors per channel */
+    pseudo_colors = calloc(sizeof(XColor), _ncolors);
+    cpc = 1 << pseudo_bpc; /* colors per channel */
 
     for (n = 0, r = 0; r < cpc; r++)
         for (g = 0; g < cpc; g++)
             for (b = 0; b < cpc; b++, n++) {
-                tr = (int)(((gfloat)(r)/(gfloat)(cpc-1)) * 0xFF);
-                tg = (int)(((gfloat)(g)/(gfloat)(cpc-1)) * 0xFF);
-                tb = (int)(((gfloat)(b)/(gfloat)(cpc-1)) * 0xFF);
-                inst->pseudo_colors[n].red = tr | tr << 8;
-                inst->pseudo_colors[n].green = tg | tg << 8;
-                inst->pseudo_colors[n].blue = tb | tb << 8;
+                tr = (int)(((float)(r)/(float)(cpc-1)) * 0xFF);
+                tg = (int)(((float)(g)/(float)(cpc-1)) * 0xFF);
+                tb = (int)(((float)(b)/(float)(cpc-1)) * 0xFF);
+                pseudo_colors[n].red = tr | tr << 8;
+                pseudo_colors[n].green = tg | tg << 8;
+                pseudo_colors[n].blue = tb | tb << 8;
                 /* used to track allocation */
-                inst->pseudo_colors[n].flags = DoRed|DoGreen|DoBlue;
+                pseudo_colors[n].flags = DoRed|DoGreen|DoBlue;
             }
 
     /* allocate the colors */
     for (i = 0; i < _ncolors; i++)
-        if (!XAllocColor(inst->display, inst->colormap,
-                         &inst->pseudo_colors[i]))
-            inst->pseudo_colors[i].flags = 0; /* mark it as unallocated */
+        if (!XAllocColor(display, colormap,
+                         &pseudo_colors[i]))
+            pseudo_colors[i].flags = 0; /* mark it as unallocated */
 
     /* try allocate any colors that failed allocation above */
 
     /* get the allocated values from the X server
        (only the first 256 XXX why!?)
      */
-    incolors = (((1 << inst->depth) > 256) ? 256 : (1 << inst->depth));
+    incolors = (((1 << depth) > 256) ? 256 : (1 << depth));
     for (i = 0; i < incolors; i++)
         icolors[i].pixel = i;
-    XQueryColors(inst->display, inst->colormap, icolors, incolors);
+    XQueryColors(display, colormap, icolors, incolors);
 
     /* try match unallocated ones */
     for (i = 0; i < _ncolors; i++) {
-        if (!inst->pseudo_colors[i].flags) { /* if it wasn't allocated... */
-            gulong closest = 0xffffffff, close = 0;
+        if (!pseudo_colors[i].flags) { /* if it wasn't allocated... */
+            unsigned long closest = 0xffffffff, close = 0;
             for (ii = 0; ii < incolors; ii++) {
                 /* find deviations */
-                r = (inst->pseudo_colors[i].red - icolors[ii].red) & 0xff;
-                g = (inst->pseudo_colors[i].green - icolors[ii].green) & 0xff;
-                b = (inst->pseudo_colors[i].blue - icolors[ii].blue) & 0xff;
+                r = (pseudo_colors[i].red - icolors[ii].red) & 0xff;
+                g = (pseudo_colors[i].green - icolors[ii].green) & 0xff;
+                b = (pseudo_colors[i].blue - icolors[ii].blue) & 0xff;
                 /* find a weighted absolute deviation */
                 dev = (r * r) + (g * g) + (b * b);
 
@@ -186,118 +204,21 @@ void RrPseudoColorSetup (RrInstance *inst)
                 }
             }
 
-            inst->pseudo_colors[i].red = icolors[close].red;
-            inst->pseudo_colors[i].green = icolors[close].green;
-            inst->pseudo_colors[i].blue = icolors[close].blue;
-            inst->pseudo_colors[i].pixel = icolors[close].pixel;
+            pseudo_colors[i].red = icolors[close].red;
+            pseudo_colors[i].green = icolors[close].green;
+            pseudo_colors[i].blue = icolors[close].blue;
+            pseudo_colors[i].pixel = icolors[close].pixel;
 
             /* try alloc this closest color, it had better succeed! */
-            if (XAllocColor(inst->display, inst->colormap,
-                            &inst->pseudo_colors[i]))
+            if (XAllocColor(display, colormap,
+                            &pseudo_colors[i]))
                 /* mark as alloced */
-                inst->pseudo_colors[i].flags = DoRed|DoGreen|DoBlue;
+                pseudo_colors[i].flags = DoRed|DoGreen|DoBlue;
             else
                 /* wtf has gone wrong, its already alloced for chissake! */
-                g_assert_not_reached();
+                NSAssert(0, @"Should not reach here");
         }
     }
 }
 
-void RrInstanceFree (RrInstance *inst)
-{
-    if (inst) {
-        if (inst == definst) definst = NULL;
-        g_free(inst->pseudo_colors);
-        g_hash_table_destroy(inst->color_hash);
-    }
-}
-
-Display* RrDisplay (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->display;
-}
-
-int RrScreen (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->screen;
-}
-
-Window RrRootWindow (const RrInstance *inst)
-{
-    return RootWindow (RrDisplay (inst), RrScreen (inst));
-}
-
-Visual *RrVisual (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->visual;
-}
-
-int RrDepth (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->depth;
-}
-
-Colormap RrColormap (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->colormap;
-}
-
-int RrRedOffset (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->red_offset;
-}
-
-int RrGreenOffset (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->green_offset;
-}
-
-int RrBlueOffset (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->blue_offset;
-}
-
-int RrRedShift (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->red_shift;
-}
-
-int RrGreenShift (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->green_shift;
-}
-
-int RrBlueShift (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->blue_shift;
-}
-
-int RrRedMask (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->red_mask;
-}
-
-int RrGreenMask (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->green_mask;
-}
-
-int RrBlueMask (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->blue_mask;
-}
-
-unsigned int RrPseudoBPC (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->pseudo_bpc;
-}
-
-XColor *RrPseudoColors (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->pseudo_colors;
-}
-
-GHashTable* RrColorHash (const RrInstance *inst)
-{
-    return (inst ? inst : definst)->color_hash;
-}
+@end

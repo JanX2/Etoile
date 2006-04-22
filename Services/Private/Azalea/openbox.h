@@ -25,12 +25,13 @@
 #import <Foundation/Foundation.h>
 #include "misc.h"
 
+#import "render/instance.h"
 #include "render/render.h"
 #include "render/theme.h"
 
 #include <X11/Xlib.h>
 
-extern RrInstance *ob_rr_inst;
+extern AZInstance *ob_rr_inst;
 extern RrTheme    *ob_rr_theme;
 
 /*! The X display */

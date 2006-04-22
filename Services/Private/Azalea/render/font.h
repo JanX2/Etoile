@@ -24,7 +24,7 @@
 #include "glib.h"
 
 struct _RrFont {
-    const RrInstance *inst;
+    const AZInstance *inst;
     XftFont *xftfont;
     int elipses_length;
     int shadow;
@@ -32,7 +32,7 @@ struct _RrFont {
     int offset;
 };
 
-RrFont *RrFontOpen(const RrInstance *inst, gchar *fontstring);
+RrFont *RrFontOpen(const AZInstance *inst, gchar *fontstring);
 void RrFontClose(RrFont *f);
 void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *position);
 #endif /* __font_h */

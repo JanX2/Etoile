@@ -23,6 +23,7 @@
 #include "mask.h"
 #include "theme.h"
 #include "geom.h"
+#import "instance.h"
 
 #include <X11/Xft/Xft.h>
 #include <glib.h>
@@ -62,12 +63,12 @@ static void measure_font(RrFont *f)
     XGlyphInfo info;
 
     /* measure an elipses */
-    XftTextExtentsUtf8(RrDisplay(f->inst), f->xftfont,
+    XftTextExtentsUtf8([f->inst display], f->xftfont,
                        (FcChar8*)ELIPSES, strlen(ELIPSES), &info);
     f->elipses_length = (signed) info.xOff;
 }
 
-static RrFont *openfont(const RrInstance *inst, gchar *fontstring)
+static RrFont *openfont(const AZInstance *inst, gchar *fontstring)
 {
     /* This function is called for each font in the theme file. */
     /* It returns a pointer to a RrFont struct after filling it. */
@@ -80,7 +81,7 @@ static RrFont *openfont(const RrInstance *inst, gchar *fontstring)
     if (!(pat = XftNameParse(fontstring)))
         return NULL;
 
-    match = XftFontMatch(RrDisplay(inst), RrScreen(inst), pat, &res);
+    match = XftFontMatch([inst display], [inst screen], pat, &res);
     FcPatternDestroy(pat);
     if (!match)
         return NULL;
@@ -101,7 +102,7 @@ static RrFont *openfont(const RrInstance *inst, gchar *fontstring)
     else if (tint < -100) tint = -100;
     out->tint = tint;
 
-    font = XftFontOpenPattern(RrDisplay(inst), match);
+    font = XftFontOpenPattern([inst display], match);
     if (!font) {
         FcPatternDestroy(match);
         g_free(out);
@@ -114,7 +115,7 @@ static RrFont *openfont(const RrInstance *inst, gchar *fontstring)
     return out;
 }
 
-RrFont *RrFontOpen(const RrInstance *inst, gchar *fontstring)
+RrFont *RrFontOpen(const AZInstance *inst, gchar *fontstring)
 {
     RrFont *out;
 
@@ -138,7 +139,7 @@ RrFont *RrFontOpen(const RrInstance *inst, gchar *fontstring)
 void RrFontClose(RrFont *f)
 {
     if (f) {
-        XftFontClose(RrDisplay(f->inst), f->xftfont);
+        XftFontClose([f->inst display], f->xftfont);
         g_free(f);
     }
 }
@@ -148,7 +149,7 @@ static void font_measure_full(const RrFont *f, const gchar *str,
 {
     XGlyphInfo info;
 
-    XftTextExtentsUtf8(RrDisplay(f->inst), f->xftfont,
+    XftTextExtentsUtf8([f->inst display], f->xftfont,
                        (const FcChar8*)str, strlen(str), &info);
 
     *x = (signed) info.xOff + (f->shadow ? ABS(f->offset) : 0);
@@ -246,15 +247,15 @@ void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
             c.color.green = 0;
             c.color.blue = 0;
             c.color.alpha = 0xffff * t->font->tint / 100;
-            c.pixel = BlackPixel(RrDisplay(t->font->inst),
-                                 RrScreen(t->font->inst));
+            c.pixel = BlackPixel([t->font->inst display],
+                                 [t->font->inst screen]);
         } else {
             c.color.red = 0xffff;
             c.color.green = 0xffff;
             c.color.blue = 0xffff;
             c.color.alpha = 0xffff * -t->font->tint / 100;
-            c.pixel = WhitePixel(RrDisplay(t->font->inst),
-                                 RrScreen(t->font->inst));
+            c.pixel = WhitePixel([t->font->inst display],
+                                 [t->font->inst screen]);
         }
         XftDrawStringUtf8(d, &c, t->font->xftfont, x + t->font->offset,
                           t->font->xftfont->ascent + y + t->font->offset,

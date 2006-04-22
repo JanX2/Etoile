@@ -26,7 +26,7 @@
 #include <X11/Xutil.h>
 
 struct _RrColor {
-    const RrInstance *inst;
+    const AZInstance *inst;
 
     int r;
     int g;
@@ -43,8 +43,8 @@ struct _RrColor {
 };
 
 void RrColorAllocateGC(RrColor *in);
-XColor *RrPickColor(const RrInstance *inst, int r, int g, int b);
-void RrReduceDepth(const RrInstance *inst, RrPixel32 *data, XImage *im);
-void RrIncreaseDepth(const RrInstance *inst, RrPixel32 *data, XImage *im);
+XColor *RrPickColor(const AZInstance *inst, int r, int g, int b);
+void RrReduceDepth(const AZInstance *inst, RrPixel32 *data, XImage *im);
+void RrIncreaseDepth(const AZInstance *inst, RrPixel32 *data, XImage *im);
 
 #endif /* __color_h */

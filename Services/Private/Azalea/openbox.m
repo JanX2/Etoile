@@ -76,7 +76,7 @@
 
 AZMainLoop *mainLoop = nil;
 
-RrInstance *ob_rr_inst;
+AZInstance *ob_rr_inst;
 RrTheme    *ob_rr_theme;
 Display    *ob_display;
 int        ob_screen;
@@ -150,8 +150,8 @@ int main(int argc, char **argv)
 
     ob_screen = DefaultScreen(ob_display);
 
-    ob_rr_inst = RrInstanceNew(ob_display, ob_screen);
-    if (ob_rr_inst == NULL)
+    ob_rr_inst = [[AZInstance alloc] initWithDisplay: ob_display screen: ob_screen];
+    if (ob_rr_inst == nil)
         ob_exit_with_error("Failed to initialize the render library.");
 
     XSynchronize(ob_display, xsync);
@@ -335,7 +335,7 @@ int main(int argc, char **argv)
     XSync(ob_display, NO);
 
     RrThemeFree(ob_rr_theme);
-    RrInstanceFree(ob_rr_inst);
+    DESTROY(ob_rr_inst);
 
     session_shutdown();
 

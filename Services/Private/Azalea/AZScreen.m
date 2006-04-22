@@ -761,17 +761,17 @@ done_cycle:
 
     if (client == nil) {
         if (install)
-            XInstallColormap(RrDisplay(ob_rr_inst), RrColormap(ob_rr_inst));
+            XInstallColormap([ob_rr_inst display], [ob_rr_inst colormap]);
         else
-            XUninstallColormap(RrDisplay(ob_rr_inst), RrColormap(ob_rr_inst));
+            XUninstallColormap([ob_rr_inst display], [ob_rr_inst colormap]);
     } else {
         if (XGetWindowAttributes(ob_display, [client window], &wa) &&
             wa.colormap != None) {
 	    AZXErrorSetIgnore(YES);
             if (install)
-                XInstallColormap(RrDisplay(ob_rr_inst), wa.colormap);
+                XInstallColormap([ob_rr_inst display], wa.colormap);
             else
-                XUninstallColormap(RrDisplay(ob_rr_inst), wa.colormap);
+                XUninstallColormap([ob_rr_inst display], wa.colormap);
 	    AZXErrorSetIgnore(NO);
         }
     }

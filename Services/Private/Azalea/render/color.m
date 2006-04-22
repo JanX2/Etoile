@@ -31,12 +31,11 @@ void RrColorAllocateGC(RrColor *in)
 
     gcv.foreground = in->pixel;
     gcv.cap_style = CapProjecting;
-    in->gc = XCreateGC(RrDisplay(in->inst),
-                       RrRootWindow(in->inst),
+    in->gc = XCreateGC([in->inst display], [in->inst rootWindow],
                        GCForeground | GCCapStyle, &gcv);
 }
 
-RrColor *RrColorParse(const RrInstance *inst, gchar *colorname)
+RrColor *RrColorParse(const AZInstance *inst, gchar *colorname)
 {
     XColor xcol;
 
@@ -48,7 +47,7 @@ RrColor *RrColorParse(const RrInstance *inst, gchar *colorname)
     xcol.green = 0;
     xcol.blue = 0;
     xcol.pixel = 0;
-    if (!XParseColor(RrDisplay(inst), RrColormap(inst), colorname, &xcol)) {
+    if (!XParseColor([inst display], [inst colormap], colorname, &xcol)) {
         NSLog(@"Warning: unable to parse color '%s'", colorname);
         return NULL;
     }
@@ -60,7 +59,7 @@ RrColor *RrColorParse(const RrInstance *inst, gchar *colorname)
 int id;
 #endif
 
-RrColor *RrColorNew(const RrInstance *inst, int r, int g, int b)
+RrColor *RrColorNew(const AZInstance *inst, int r, int g, int b)
 {
     /* this should be replaced with something far cooler */
     RrColor *out = NULL;
@@ -69,14 +68,14 @@ RrColor *RrColorNew(const RrInstance *inst, int r, int g, int b)
 
     key = (r << 24) + (g << 16) + (b << 8);
 #ifndef NO_COLOR_CACHE
-    if ((out = g_hash_table_lookup(RrColorHash(inst), &key))) {
+    if ((out = g_hash_table_lookup([inst colorHash], &key))) {
         out->refcount++;
     } else {
 #endif
         xcol.red = (r << 8) | r;
         xcol.green = (g << 8) | g;
         xcol.blue = (b << 8) | b;
-        if (XAllocColor(RrDisplay(inst), RrColormap(inst), &xcol)) {
+        if (XAllocColor([inst display], [inst colormap], &xcol)) {
             out = g_new(RrColor, 1);
             out->inst = inst;
             out->r = xcol.red >> 8;
@@ -90,7 +89,7 @@ RrColor *RrColorNew(const RrInstance *inst, int r, int g, int b)
             out->id = id++;
 #endif
 #ifndef NO_COLOR_CACHE
-            g_hash_table_insert(RrColorHash(inst), &out->key, out);
+            g_hash_table_insert([inst colorHash], &out->key, out);
         }
 #endif
     }
@@ -102,18 +101,18 @@ void RrColorFree(RrColor *c)
     if (c) {
         if (--c->refcount < 1) {
 #ifndef NO_COLOR_CACHE
-            g_assert(g_hash_table_lookup(RrColorHash(c->inst), &c->key));
-            g_hash_table_remove(RrColorHash(c->inst), &c->key);
+            g_assert(g_hash_table_lookup([c->inst colorHash], &c->key));
+            g_hash_table_remove([c->inst colorHash], &c->key);
 #endif
-            if (c->pixel) XFreeColors(RrDisplay(c->inst), RrColormap(c->inst),
+            if (c->pixel) XFreeColors([c->inst display], [c->inst colormap],
                                       &c->pixel, 1, 0);
-            if (c->gc) XFreeGC(RrDisplay(c->inst), c->gc);
+            if (c->gc) XFreeGC([c->inst display], c->gc);
             g_free(c);
         }
     }
 }
 
-void RrReduceDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
+void RrReduceDepth(const AZInstance *inst, RrPixel32 *data, XImage *im)
 {
     int r, g, b;
     int x,y;
@@ -122,17 +121,17 @@ void RrReduceDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
     guchar *p8 = (guchar *)im->data;
     switch (im->bits_per_pixel) {
     case 32:
-        if ((RrRedOffset(inst) != RrDefaultRedOffset) ||
-            (RrBlueOffset(inst) != RrDefaultBlueOffset) ||
-            (RrGreenOffset(inst) != RrDefaultGreenOffset)) {
+        if (([inst redOffset] != RrDefaultRedOffset) ||
+            ([inst blueOffset] != RrDefaultBlueOffset) ||
+            ([inst greenOffset] != RrDefaultGreenOffset)) {
             for (y = 0; y < im->height; y++) {
                 for (x = 0; x < im->width; x++) {
                     r = (data[x] >> RrDefaultRedOffset) & 0xFF;
                     g = (data[x] >> RrDefaultGreenOffset) & 0xFF;
                     b = (data[x] >> RrDefaultBlueOffset) & 0xFF;
-                    p32[x] = (r << RrRedOffset(inst))
-                           + (g << RrGreenOffset(inst))
-                           + (b << RrBlueOffset(inst));
+                    p32[x] = (r << [inst redOffset])
+                           + (g << [inst greenOffset])
+                           + (b << [inst blueOffset]);
                 }
                 data += im->width;
                 p32 += im->width;
@@ -143,21 +142,21 @@ void RrReduceDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
         for (y = 0; y < im->height; y++) {
             for (x = 0; x < im->width; x++) {
                 r = (data[x] >> RrDefaultRedOffset) & 0xFF;
-                r = r >> RrRedShift(inst);
+                r = r >> [inst redShift];
                 g = (data[x] >> RrDefaultGreenOffset) & 0xFF;
-                g = g >> RrGreenShift(inst);
+                g = g >> [inst greenShift];
                 b = (data[x] >> RrDefaultBlueOffset) & 0xFF;
-                b = b >> RrBlueShift(inst);
-                p16[x] = (r << RrRedOffset(inst))
-                       + (g << RrGreenOffset(inst))
-                       + (b << RrBlueOffset(inst));
+                b = b >> [inst blueShift];
+                p16[x] = (r << [inst redOffset])
+                       + (g << [inst greenOffset])
+                       + (b << [inst blueOffset]);
             }
             data += im->width;
             p16 += im->bytes_per_line/2;
         }
         break;
     case 8:
-        g_assert(RrVisual(inst)->class != TrueColor);
+        g_assert([inst visual]->class != TrueColor);
         for (y = 0; y < im->height; y++) {
             for (x = 0; x < im->width; x++) {
                 p8[x] = RrPickColor(inst,
@@ -174,13 +173,13 @@ void RrReduceDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
     }
 }
 
-XColor *RrPickColor(const RrInstance *inst, int r, int g, int b) 
+XColor *RrPickColor(const AZInstance *inst, int r, int g, int b) 
 {
-  r = (r & 0xff) >> (8-RrPseudoBPC(inst));
-  g = (g & 0xff) >> (8-RrPseudoBPC(inst));
-  b = (b & 0xff) >> (8-RrPseudoBPC(inst));
-  return &RrPseudoColors(inst)[(r << (2*RrPseudoBPC(inst))) +
-                               (g << (1*RrPseudoBPC(inst))) +
+  r = (r & 0xff) >> (8-[inst pseudoBPC]);
+  g = (g & 0xff) >> (8-[inst pseudoBPC]);
+  b = (b & 0xff) >> (8-[inst pseudoBPC]);
+  return &[inst pseudoColors][(r << (2*[inst pseudoBPC])) +
+                               (g << (1*[inst pseudoBPC])) +
                                b];
 }
 
@@ -219,7 +218,7 @@ static void swap_byte_order(XImage *im)
         im->byte_order = LSBFirst;
 }
 
-void RrIncreaseDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
+void RrIncreaseDepth(const AZInstance *inst, RrPixel32 *data, XImage *im)
 {
     int r, g, b;
     int x,y;
@@ -234,9 +233,9 @@ void RrIncreaseDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
     case 32:
         for (y = 0; y < im->height; y++) {
             for (x = 0; x < im->width; x++) {
-                r = (p32[x] >> RrRedOffset(inst)) & 0xff;
-                g = (p32[x] >> RrGreenOffset(inst)) & 0xff;
-                b = (p32[x] >> RrBlueOffset(inst)) & 0xff;
+                r = (p32[x] >> [inst redOffset]) & 0xff;
+                g = (p32[x] >> [inst greenOffset]) & 0xff;
+                b = (p32[x] >> [inst blueOffset]) & 0xff;
                 data[x] = (r << RrDefaultRedOffset)
                     + (g << RrDefaultGreenOffset)
                     + (b << RrDefaultBlueOffset)
@@ -249,15 +248,12 @@ void RrIncreaseDepth(const RrInstance *inst, RrPixel32 *data, XImage *im)
     case 16:
         for (y = 0; y < im->height; y++) {
             for (x = 0; x < im->width; x++) {
-                r = (p16[x] & RrRedMask(inst)) >>
-                    RrRedOffset(inst) <<
-                    RrRedShift(inst);
-                g = (p16[x] & RrGreenMask(inst)) >>
-                    RrGreenOffset(inst) <<
-                    RrGreenShift(inst);
-                b = (p16[x] & RrBlueMask(inst)) >>
-                    RrBlueOffset(inst) <<
-                    RrBlueShift(inst);
+                r = (p16[x] & [inst redMask]) >>
+                    [inst redOffset] << [inst redShift];
+                g = (p16[x] & [inst greenMask]) >>
+                    [inst greenOffset] << [inst greenShift];
+                b = (p16[x] & [inst blueMask]) >>
+                    [inst blueOffset] << [inst blueShift];
                 data[x] = (r << RrDefaultRedOffset)
                     + (g << RrDefaultGreenOffset)
                     + (b << RrDefaultBlueOffset)

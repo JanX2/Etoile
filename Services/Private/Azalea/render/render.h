@@ -29,6 +29,7 @@
 #include <X11/Xft/Xft.h>
 
 @class AZAppearance;
+@class AZInstance;
 typedef union  _RrTextureData      RrTextureData;
 typedef struct _RrSurface          RrSurface;
 typedef struct _RrFont             RrFont;
@@ -38,7 +39,6 @@ typedef struct _RrTextureRGBA      RrTextureRGBA;
 typedef struct _RrTextureText      RrTextureText;
 typedef struct _RrTextureLineArt   RrTextureLineArt;
 typedef struct _RrPixmapMask       RrPixmapMask;
-typedef struct _RrInstance         RrInstance;
 typedef struct _RrColor            RrColor;
 
 typedef gsu32 RrPixel32;
@@ -106,7 +106,7 @@ struct _RrTextureText {
 };
 
 struct _RrPixmapMask {
-    const RrInstance *inst;
+    const AZInstance *inst;
     Pixmap mask;
     int width;
     int height;
@@ -150,7 +150,7 @@ struct _RrTexture {
 
 @interface AZAppearance: NSObject <NSCopying>
 {
-    const RrInstance *inst;
+    const AZInstance *inst;
 
     RrSurface surface;
     int textures;
@@ -161,9 +161,9 @@ struct _RrTexture {
     /* cached for internal use */
     int w, h;
 }
-- (id) initWithInstance: (const RrInstance *) inst numberOfTextures: (int) numtex;
+- (id) initWithInstance: (const AZInstance *) inst numberOfTextures: (int) numtex;
 
-- (const RrInstance *) inst;
+- (const AZInstance *) inst;
 - (RrSurface) surface;
 - (RrSurface *) surfacePointer;
 - (int) textures;
@@ -185,34 +185,8 @@ struct _RrTexture {
 
 @end
 
-/* these are the same on all endian machines because it seems to be dependant
-   on the endianness of the gfx card, not the cpu. */
-#define RrDefaultAlphaOffset 24
-#define RrDefaultRedOffset 16
-#define RrDefaultGreenOffset 8
-#define RrDefaultBlueOffset 0
-
-RrInstance* RrInstanceNew (Display *display, int screen);
-void        RrInstanceFree (RrInstance *inst);
-
-Display* RrDisplay      (const RrInstance *inst);
-int     RrScreen       (const RrInstance *inst);
-Window   RrRootWindow   (const RrInstance *inst);
-Visual*  RrVisual       (const RrInstance *inst);
-int     RrDepth        (const RrInstance *inst);
-Colormap RrColormap     (const RrInstance *inst);
-int     RrRedOffset    (const RrInstance *inst);
-int     RrGreenOffset  (const RrInstance *inst);
-int     RrBlueOffset   (const RrInstance *inst);
-int     RrRedShift     (const RrInstance *inst);
-int     RrGreenShift   (const RrInstance *inst);
-int     RrBlueShift    (const RrInstance *inst);
-int     RrRedMask      (const RrInstance *inst);
-int     RrGreenMask    (const RrInstance *inst);
-int     RrBlueMask     (const RrInstance *inst);
-
-RrColor *RrColorNew   (const RrInstance *inst, int r, int g, int b);
-RrColor *RrColorParse (const RrInstance *inst, char *colorname);
+RrColor *RrColorNew   (const AZInstance *inst, int r, int g, int b);
+RrColor *RrColorParse (const AZInstance *inst, char *colorname);
 void     RrColorFree  (RrColor *in);
 
 int     RrColorRed   (const RrColor *c);
@@ -226,7 +200,7 @@ RrSize *RrFontMeasureString (const RrFont *f, const char *str);
 int RrFontHeight        (const RrFont *f);
 int RrFontMaxCharWidth  (const RrFont *f);
 
-BOOL RrPixmapToRGBA(const RrInstance *inst,
+BOOL RrPixmapToRGBA(const AZInstance *inst,
                         Pixmap pmap, Pixmap mask,
                         int *w, int *h, RrPixel32 **data);
 

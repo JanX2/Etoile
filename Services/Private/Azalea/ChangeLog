@@ -1,3 +1,7 @@
+2006-04-21 Yen-Ju Chen <yjchenx at gmail>
+
+	* Port render/instance.
+
 2006-04-20 Yen-Ju Chen <yjchenx at gmail>
 
 	* Port RrAppearance int AZAppearance (so far so good).

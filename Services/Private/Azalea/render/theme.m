@@ -23,6 +23,7 @@
 #include "theme.h"
 #include "icon.h"
 #include "parse.h"
+#import "instance.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xresource.h>
@@ -35,18 +36,18 @@
 static XrmDatabase loaddb(RrTheme *theme, char *name);
 static BOOL read_int(XrmDatabase db, char *rname, int *value);
 static BOOL read_string(XrmDatabase db, char *rname, char **value);
-static BOOL read_color(XrmDatabase db, const RrInstance *inst,
+static BOOL read_color(XrmDatabase db, const AZInstance *inst,
                            char *rname, RrColor **value);
-static BOOL read_mask(const RrInstance *inst,
+static BOOL read_mask(const AZInstance *inst,
                           char *maskname, RrTheme *theme,
                           RrPixmapMask **value);
-static BOOL read_appearance(XrmDatabase db, const RrInstance *inst,
+static BOOL read_appearance(XrmDatabase db, const AZInstance *inst,
                                 char *rname, AZAppearance *value,
                                 BOOL allow_trans);
 static RrPixel32* read_c_image(int width, int height, const guint8 *data);
 static void set_default_appearance(AZAppearance *a);
 
-RrTheme* RrThemeNew(const RrInstance *inst, char *name)
+RrTheme* RrThemeNew(const AZInstance *inst, char *name)
 {
     XrmDatabase db = NULL;
     RrJustify winjust, mtitlejust;
@@ -1137,7 +1138,7 @@ static BOOL read_string(XrmDatabase db, char *rname, char **value)
     return ret;
 }
 
-static BOOL read_color(XrmDatabase db, const RrInstance *inst,
+static BOOL read_color(XrmDatabase db, const AZInstance *inst,
                            char *rname, RrColor **value)
 {
     BOOL ret = NO;
@@ -1158,7 +1159,7 @@ static BOOL read_color(XrmDatabase db, const RrInstance *inst,
     return ret;
 }
 
-static BOOL read_mask(const RrInstance *inst,
+static BOOL read_mask(const AZInstance *inst,
                           char *maskname, RrTheme *theme,
                           RrPixmapMask **value)
 {
@@ -1234,7 +1235,7 @@ static void parse_appearance(char *tex, RrSurfaceColorType *grad,
 }
 
 
-static BOOL read_appearance(XrmDatabase db, const RrInstance *inst,
+static BOOL read_appearance(XrmDatabase db, const AZInstance *inst,
                                 char *rname, AZAppearance *value,
                                 BOOL allow_trans)
 {

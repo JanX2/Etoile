@@ -76,8 +76,8 @@ static AZDock *sharedInstance;
     attrib.override_redirect = True;
     frame = XCreateWindow(ob_display, RootWindow(ob_display, ob_screen),
                                 0, 0, 1, 1, 0,
-                                RrDepth(ob_rr_inst), InputOutput,
-                                RrVisual(ob_rr_inst),
+                                [ob_rr_inst depth], InputOutput,
+                                [ob_rr_inst visual],
                                 CWOverrideRedirect | CWEventMask,
                                 &attrib);
     a_frame = [ob_rr_theme->a_unfocused_title copy];

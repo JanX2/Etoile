@@ -24,7 +24,7 @@
 #include "geom.h"
 #include "glib.h"
 
-RrPixmapMask *RrPixmapMaskNew(const RrInstance *inst,
+RrPixmapMask *RrPixmapMaskNew(const AZInstance *inst,
                               int w, int h, const gchar *data);
 void RrPixmapMaskFree(RrPixmapMask *m);
 RrPixmapMask *RrPixmapMaskCopy(const RrPixmapMask *src);

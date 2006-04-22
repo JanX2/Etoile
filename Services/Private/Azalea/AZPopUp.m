@@ -194,13 +194,13 @@
 
   attrib.override_redirect = True;
   bg = XCreateWindow(ob_display, RootWindow(ob_display, ob_screen),
-                     0, 0, 1, 1, 0, RrDepth(ob_rr_inst),
-                     InputOutput, RrVisual(ob_rr_inst),
+                     0, 0, 1, 1, 0, [ob_rr_inst depth],
+                     InputOutput, [ob_rr_inst visual],
                      CWOverrideRedirect, &attrib);
 
   text = XCreateWindow(ob_display, bg,
-                       0, 0, 1, 1, 0, RrDepth(ob_rr_inst),
-                       InputOutput, RrVisual(ob_rr_inst), 0, NULL);
+                       0, 0, 1, 1, 0, [ob_rr_inst depth],
+                       InputOutput, [ob_rr_inst visual], 0, NULL);
 
   XMapWindow(ob_display, text);
 
@@ -260,8 +260,8 @@
   self = [super initWithIcon: hasIcon];
   a_icon = [ob_rr_theme->a_clear_tex copy];
   icon = XCreateWindow(ob_display, bg, 0, 0, 1, 1, 0,
-                       RrDepth(ob_rr_inst), InputOutput,
-                       RrVisual(ob_rr_inst), 0, NULL);
+                       [ob_rr_inst depth], InputOutput,
+                       [ob_rr_inst visual], 0, NULL);
   XMapWindow(ob_display, icon);
   return self;
 }
@@ -407,8 +407,8 @@
             attr.border_pixel = RrColorPixel(ob_rr_theme->b_color);
             wins[i] = XCreateWindow(ob_display, bg,
                                           0, 0, 1, 1, ob_rr_theme->bwidth,
-                                          RrDepth(ob_rr_inst), InputOutput,
-                                          RrVisual(ob_rr_inst), CWBorderPixel,
+                                          [ob_rr_inst depth], InputOutput,
+                                          [ob_rr_inst visual], CWBorderPixel,
                                           &attr);
             XMapWindow(ob_display, wins[i]);
         }

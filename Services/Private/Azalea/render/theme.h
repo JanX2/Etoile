@@ -28,7 +28,7 @@ struct _RrTheme {
     char *path;
     char *name;
 
-    const RrInstance *inst;
+    const AZInstance *inst;
 
     /* style settings - optional decor */
     BOOL show_handle;
@@ -185,7 +185,7 @@ struct _RrTheme {
 
 };
 
-RrTheme* RrThemeNew(const RrInstance *inst, char *theme);
+RrTheme* RrThemeNew(const AZInstance *inst, char *theme);
 void RrThemeFree(RrTheme *theme);
 
 #endif

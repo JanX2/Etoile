@@ -20,6 +20,7 @@
 #include "image.h"
 #include "color.h"
 #include "glib.h"
+#import "instance.h"
 
 #define FRACTION        12
 #define FLOOR(i)        ((i) & (~0UL << FRACTION))
