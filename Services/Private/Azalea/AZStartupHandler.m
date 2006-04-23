@@ -33,6 +33,11 @@ static AZStartupHandler *sharedInstance;
 - (void) applicationStarted: (char *) wmclass {}
 - (BOOL) getDesktop: (unsigned int *) desktop forIdentifier: (char *) iden { return NO; }
 
+- (id) copyWithZone: (NSZone *) zone
+{
+  return RETAIN(self);
+}
+
 + (AZStartupHandler *) defaultHandler
 {
   if (sharedInstance == nil)

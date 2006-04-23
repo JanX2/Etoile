@@ -1,6 +1,3 @@
-1. remove glib (AZClient+Place.m, prop.m)
-2. remove USE_PANGO in render/
-3. it might be tricky to support arbitrary window levels.
 4. decide which way to use run loop (See ALTERNATIVE_RUN_LOOP in openbox.m).
 
 GNUstep window protocol
@@ -17,7 +14,6 @@ GNUstep window protocol
 10. ("_NET_WM_PID") - XChangeProperty() - APP_ROOT.
 11. ("_NET_WM_ICON") - XChangeProperty() - window
 12. - XSetWindowBackground() - window
-
 
 Bugs
 

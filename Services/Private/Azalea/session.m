@@ -92,7 +92,7 @@ NSMutableArray *session_saved_state;
 
 void session_startup(int *argc, char ***argv) {}
 void session_shutdown() {}
-GList* session_state_find(AZClient *c) { return NULL; }
+AZSessionState *session_state_find(AZClient *c) { return nil; }
 BOOL session_state_cmp(AZSessionState *s, AZClient *c) { return NO; }
 
 #else

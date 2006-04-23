@@ -56,20 +56,24 @@ ADDITIONAL_INCLUDE_DIRS += -DPACKAGE_VERSION=\"3.3-rc2\" -DPACKAGE_BUGREPORT=\"h
 ADDITIONAL_LIB_DIRS += `pkg-config --libs freetype2` `pkg-config --libs libxml-2.0` `pkg-config --libs fontconfig` 
 
 # Xwindow
-ADDITIONAL_INCLUDE_DIRS += -DHAVE_LIBX11=1 -DXKB=1 -DXRANDR=1 -DSHAPE=1
-ADDITIONAL_LIB_DIRS += -lXext -lX11 -lXrender -lXrandr -lXft
+ADDITIONAL_INCLUDE_DIRS += -DHAVE_LIBX11=1
+ADDITIONAL_LIB_DIRS += -lX11 -lXft
+
+# Xwindow extra
+#ADDITIONAL_INCLUDE_DIRS += -DXKB=1 -DXRANDR=1 -DSHAPE=1
+#ADDITIONAL_LIB_DIRS += -lXext -lXrender -lXrandr
 
 # Session Manager
-ADDITIONAL_INCLUDE_DIRS += -DHAVE_X11_SM_SMLIB_H=1 -DUSE_SM=1
-ADDITIONAL_LIB_DIRS += -lSM -lICE
+#ADDITIONAL_INCLUDE_DIRS += -DHAVE_X11_SM_SMLIB_H=1 -DUSE_SM=1
+#ADDITIONAL_LIB_DIRS += -lSM -lICE
 
 # Xinerama
-ADDITIONAL_INCLUDE_DIRS += -DXINERAMA=1 
-ADDITIONAL_LIB_DIRS += -lXinerama
+#ADDITIONAL_INCLUDE_DIRS += -DXINERAMA=1 
+#ADDITIONAL_LIB_DIRS += -lXinerama
 
 # Startup Notification
-ADDITIONAL_INCLUDE_DIRS += -DUSE_LIBSN=1 `pkg-config --cflags libstartup-notification-1.0`
-ADDITIONAL_LIB_DIRS += `pkg-config --libs libstartup-notification-1.0`
+#ADDITIONAL_INCLUDE_DIRS += -DUSE_LIBSN=1 `pkg-config --cflags libstartup-notification-1.0`
+#ADDITIONAL_LIB_DIRS += `pkg-config --libs libstartup-notification-1.0`
 
 include $(GNUSTEP_MAKEFILES)/application.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make

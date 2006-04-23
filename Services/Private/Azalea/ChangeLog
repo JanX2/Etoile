@@ -4,6 +4,7 @@
 	* remove more glib.
 	* fix missing sm_id.
 	* Complete remove glib.
+	* Make sure it compiles with minimal requirement.
 
 2006-04-21 Yen-Ju Chen <yjchenx at gmail>
 
