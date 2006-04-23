@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://openbox.org/
                 file:///usr/share/openbox/menu.xsd">
 
-<menu id="root-menu" label="Openbox 3">
+<menu id="root-menu" label="Azalea">
   <item label="Terminal emulator">
     <action name="Execute"><execute>xterm</execute></action>
   </item>
