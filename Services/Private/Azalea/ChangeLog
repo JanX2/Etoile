@@ -1,3 +1,7 @@
+2006-04-23 Yen-Ju Chen <yjchenx at gmail>
+
+	* patched by Cris Vetter for FreeBSD 6.
+
 2006-04-22 Yen-Ju Chen <yjchenx at gmail>
 
 	* use NSArray for session.

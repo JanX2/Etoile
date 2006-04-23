@@ -60,7 +60,7 @@ ADDITIONAL_INCLUDE_DIRS += -DPACKAGE_VERSION=\"3.3-rc2\" -DPACKAGE_BUGREPORT=\"h
 ADDITIONAL_LIB_DIRS += `pkg-config --libs freetype2` `pkg-config --libs libxml-2.0` `pkg-config --libs fontconfig` 
 
 # Xwindow
-ADDITIONAL_INCLUDE_DIRS += -DHAVE_LIBX11=1
+ADDITIONAL_INCLUDE_DIRS += -DHAVE_LIBX11=1 -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -lX11 -lXft
 
 # Xwindow extra
