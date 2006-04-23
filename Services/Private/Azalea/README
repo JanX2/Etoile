@@ -8,8 +8,9 @@ Azalea is released under GPL 2.0 by following OpenBox3.
 *** INSTALL ***
 Azalea is based on the configuration of my system.
 It may not work on others.
-If so, modify GNUmakefile for dependencies (glib, libxml, freetype, fontconfig).
-Resource files (rc.xml and menu.xml) should be under $HOME/.config/openbox/.
+If so, modify GNUmakefile for dependencies (libxml, freetype, fontconfig).
+Custom resource files (rc.xml and menu.xml) should be under 
+$HOME/.config/openbox/.
 (See OpenBox3 website for more details).  
 It may help by installing openbox3 first to get all the resources,
 especially themes and xml-related files.

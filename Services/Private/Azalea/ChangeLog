@@ -5,6 +5,7 @@
 	* fix missing sm_id.
 	* Complete remove glib.
 	* Make sure it compiles with minimal requirement.
+	* Add default rc.xml, menu.xml and theme.
 
 2006-04-21 Yen-Ju Chen <yjchenx at gmail>
 

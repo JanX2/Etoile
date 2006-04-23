@@ -307,6 +307,7 @@ void parse_paths_startup()
     p = [env objectForKey: @"XDG_CONFIG_DIRS"];
     xdg_config_dir_paths = [[NSMutableArray alloc] init];
     [xdg_config_dir_paths addObject: xdg_config_home_path];
+    [xdg_config_dir_paths addObject: [[NSBundle mainBundle] resourcePath]];
     if (p && [p length] > 0) /* not unset or empty */
         [xdg_config_dir_paths addObjectsFromArray: [p componentsSeparatedByString: @":"]];
     else {
@@ -316,6 +317,7 @@ void parse_paths_startup()
     p = [env objectForKey: @"XDG_DATA_DIRS"];
     xdg_data_dir_paths = [[NSMutableArray alloc] init];
     [xdg_data_dir_paths addObject: xdg_data_home_path];
+    [xdg_data_dir_paths addObject: [[NSBundle mainBundle] resourcePath]];
     if (p && [p length] > 0) /* not unset or empty */
         [xdg_data_dir_paths addObjectsFromArray: [p componentsSeparatedByString: @":"]];
     else {

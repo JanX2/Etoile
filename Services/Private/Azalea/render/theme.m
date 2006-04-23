@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define DEFAULT_THEME "TheBear"
+#define DEFAULT_THEME "Azalea"
 
 static XrmDatabase loaddb(RrTheme *theme, NSString *name);
 static BOOL read_int(XrmDatabase db, char *rname, int *value);
