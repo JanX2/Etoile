@@ -20,17 +20,15 @@
 */
 
 #import <Foundation/Foundation.h>
-#include "prop.h"
-#include "openbox.h"
-#include "gnustep.h"
-#import <glib.h>
-
-#include <X11/Xatom.h>
+#import "prop.h"
+#import "openbox.h"
+#import "gnustep.h"
+#import <X11/Xatom.h>
 
 Atoms prop_atoms;
 
 #define CREATE(var, name) (prop_atoms.var = \
-                           XInternAtom(ob_display, name, FALSE))
+                           XInternAtom(ob_display, name, NO))
 
 void prop_startup()
 {
@@ -164,33 +162,7 @@ void prop_startup()
 #include <X11/Xutil.h>
 #include <string.h>
 
-/* this just isn't used... and it also breaks on 64bit, watch out
-static BOOL get(Window win, Atom prop, Atom type, gint size,
-                    uchar **data, gulong num)
-{
-    BOOL ret = FALSE;
-    gint res;
-    guchar *xdata = NULL;
-    Atom ret_type;
-    gint ret_size;
-    gulong ret_items, bytes_left;
-    glong num32 = 32 / size * num; /\* num in 32-bit elements *\/
-
-    res = XGetWindowProperty(display, win, prop, 0l, num32,
-                             FALSE, type, &ret_type, &ret_size,
-                             &ret_items, &bytes_left, &xdata);
-    if (res == Success && ret_items && xdata) {
-        if (ret_size == size && ret_items >= num) {
-            *data = g_memdup(xdata, num * (size / 8));
-            ret = TRUE;
-        }
-        XFree(xdata);
-    }
-    return ret;
-}
-*/
-
-static BOOL get_prealloc(Window win, Atom prop, Atom type, gint size,
+static BOOL get_prealloc(Window win, Atom prop, Atom type, int size,
                              unsigned char *data, unsigned long num)
 {
     BOOL ret = NO;
@@ -202,7 +174,7 @@ static BOOL get_prealloc(Window win, Atom prop, Atom type, gint size,
     long num32 = 32 / size * num; /* num in 32-bit elements */
 
     res = XGetWindowProperty(ob_display, win, prop, 0l, num32,
-                             FALSE, type, &ret_type, &ret_size,
+                             NO, type, &ret_type, &ret_size,
                              &ret_items, &bytes_left, &xdata);
     if (res == Success && ret_items && xdata) {
         if (ret_size == size && ret_items >= num) {
@@ -238,8 +210,8 @@ static BOOL get_all(Window win, Atom prop, Atom type, int size,
     int ret_size;
     unsigned long ret_items, bytes_left;
 
-    res = XGetWindowProperty(ob_display, win, prop, 0l, G_MAXLONG,
-                             FALSE, type, &ret_type, &ret_size,
+    res = XGetWindowProperty(ob_display, win, prop, 0l, LONG_MAX,
+                             NO, type, &ret_type, &ret_size,
                              &ret_items, &bytes_left, &xdata);
     if (res == Success) {
         if (ret_size == size && ret_items > 0) {
@@ -289,102 +261,88 @@ BOOL prop_get32(Window win, Atom prop, Atom type, unsigned long *ret)
 BOOL prop_get_array32(Window win, Atom prop, Atom type, unsigned long **ret,
                           unsigned int *nret)
 {
-    return get_all(win, prop, type, 32, (guchar**)ret, nret);
+    return get_all(win, prop, type, 32, (unsigned char**)ret, nret);
 }
 
-BOOL prop_get_string_locale(Window win, Atom prop, char **ret)
+/* Autoreleased */
+BOOL prop_get_string_locale(Window win, Atom prop, NSString **ret)
 {
     char **list;
     int nstr;
-    char *s;
+    NSString *s;
 
     if (get_stringlist(win, prop, &list, &nstr) && nstr) {
-        s = g_convert(list[0], strlen(list[0]), "UTF-8", "ISO-8859-1",
-                      NULL, NULL, NULL);
+	s = [NSString stringWithCString: list[0]];
         XFreeStringList(list);
         if (s) {
             *ret = s;
             return YES;
         }
     }
-    return FALSE;
+    return NO;
 }
 
-BOOL prop_get_strings_locale(Window win, Atom prop, char ***ret)
+BOOL prop_get_strings_locale(Window win, Atom prop, NSArray **ret)
 {
-    GSList *strs = NULL, *it;
     char *raw, *p;
     unsigned int num, i, count = 0;
+    NSMutableArray *ma = AUTORELEASE([[NSMutableArray alloc] init]);
 
     if (get_all(win, prop, prop_atoms.string, 8, (unsigned char**)&raw, &num)) {
 
         p = raw;
         while (p < raw + num - 1) {
             ++count;
-            strs = g_slist_append(strs, p);
+	    [ma addObject: [NSString stringWithCString: p]];
             p += strlen(p) + 1; /* next string */
         }
 
-        *ret = g_new0(gchar*, count + 1);
-        (*ret)[count] = NULL; /* null terminated list */
-
-        for (i = 0, it = strs; it; ++i, it = g_slist_next(it)) {
-            (*ret)[i] = g_convert(it->data, -1, "UTF-8", "ISO-8859-1",
-                                  NULL, NULL, NULL);
-            /* make sure translation did not fail */
-            if (!(*ret)[i])
-                (*ret)[i] = g_strdup("");
-        }
-        g_free(raw);
-        g_slist_free(strs);
+	*ret = AUTORELEASE([ma copy]);
+	XFree(raw);
         return YES;
     }
     return NO;
 }
 
-BOOL prop_get_string_utf8(Window win, Atom prop, char **ret)
+BOOL prop_get_string_utf8(Window win, Atom prop, NSString **ret)
 {
     char *raw;
-    char *str;
+    NSString *str = nil;
     unsigned int num;
      
     if (get_all(win, prop, prop_atoms.utf8, 8, (unsigned char**)&raw, &num)) {
-        str = g_strndup(raw, num); /* grab the first string from the list */
-        g_free(raw);
-        if (g_utf8_validate(str, -1, NULL)) {
+	str = [NSString stringWithUTF8String: raw]; /* grab the first string from the list */
+        XFree(raw);
+	if (str) {
             *ret = str;
             return YES;
         }
-        g_free(str);
     }
     return NO;
 }
 
-BOOL prop_get_strings_utf8(Window win, Atom prop, char ***ret)
+BOOL prop_get_strings_utf8(Window win, Atom prop, NSArray **ret)
 {
-    GSList *strs = NULL, *it;
     char *raw, *p;
     unsigned int num, i, count = 0;
+    NSMutableArray *ma = AUTORELEASE([[NSMutableArray alloc] init]);
+    NSString *s;
 
-    if (get_all(win, prop, prop_atoms.utf8, 8, (guchar**)&raw, &num)) {
+    if (get_all(win, prop, prop_atoms.utf8, 8, (unsigned char**)&raw, &num)) {
 
         p = raw;
         while (p < raw + num - 1) {
             ++count;
-            strs = g_slist_append(strs, p);
+	    s = [NSString stringWithUTF8String: p];
+	    if (s)
+	      [ma addObject: s];
+	    else /* invalid UTF8 */
+              [ma addObject: [NSString string]];
             p += strlen(p) + 1; /* next string */
         }
 
-        *ret = g_new0(gchar*, count + 1);
-
-        for (i = 0, it = strs; it; ++i, it = g_slist_next(it)) {
-            if (g_utf8_validate(it->data, -1, NULL))
-                (*ret)[i] = g_strdup(it->data);
-            else
-                (*ret)[i] = g_strdup("");
-        }
-        g_free(raw);
-        g_slist_free(strs);
+	*ret = AUTORELEASE([ma copy]);
+        XFree(raw);
         return YES;
     }
     return NO;
@@ -409,19 +367,19 @@ void prop_set_string_utf8(Window win, Atom prop, char *val)
                     PropModeReplace, (unsigned char*)val, strlen(val));
 }
 
-void prop_set_strings_utf8(Window win, Atom prop, char **strs)
+void prop_set_strings_utf8(Window win, Atom prop, NSArray *strs)
 {
-    GString *str;
-    char **s;
+    NSMutableData *data = AUTORELEASE([[NSMutableData alloc] init]);
+    int i, count = [strs count];
+    char empty = '\0';
 
-    str = g_string_sized_new(0);
-    for (s = strs; *s; ++s) {
-        str = g_string_append(str, *s);
-        str = g_string_append_c(str, '\0');
+    for (i = 0; i < count; i++) {
+	[data appendData: [[strs objectAtIndex: i] dataUsingEncoding: NSUTF8StringEncoding]];
+	[data appendBytes: &empty length: 1];
+
     }
     XChangeProperty(ob_display, win, prop, prop_atoms.utf8, 8,
-                    PropModeReplace, (unsigned char*)str->str, str->len);
-    g_string_free(str, TRUE);
+                    PropModeReplace, (unsigned char*)[data bytes], [data length]);
 }
 
 void prop_erase(Window win, Atom prop)
@@ -442,6 +400,6 @@ void prop_message(Window about, Atom messagetype, long data0, long data1,
     ce.xclient.data.l[1] = data1;
     ce.xclient.data.l[2] = data2;
     ce.xclient.data.l[3] = data3;
-    XSendEvent(ob_display, RootWindow(ob_display, ob_screen), FALSE,
+    XSendEvent(ob_display, RootWindow(ob_display, ob_screen), NO,
                mask, &ce);
 }

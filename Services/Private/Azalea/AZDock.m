@@ -114,7 +114,7 @@ static AZDock *sharedInstance;
 {
     AZDockApp *app;
     XWindowAttributes attrib;
-    char **data = NULL;
+    NSArray *data = nil;
 
     app = [[AZDockApp alloc] init];
     [app setWindow: win];
@@ -122,13 +122,11 @@ static AZDock *sharedInstance;
         wmhints->icon_window : win];
 
     if (PROP_GETSS([app window], wm_class, locale, &data)) {
-        if (data[0]) {
-	    [app setName: [NSString stringWithCString: data[0]]];
-            if (data[1])
-	      [app setClass: [NSString stringWithCString: data[1]]];
+        if ([data count] > 0) {
+	    [app setName: [data objectAtIndex: 0]];
+            if ([data count] > 1)
+	      [app setClass: [data objectAtIndex: 1]];
         }
-	XFree(data);
-	data = NULL;
     }
 
     if ([app name] == nil) [app setName: [NSString string]];

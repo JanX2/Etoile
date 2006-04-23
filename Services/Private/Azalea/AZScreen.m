@@ -191,7 +191,6 @@ static AZScreen *sharedInstance;
 - (void) startup: (BOOL) reconfig
 {
     unsigned int i, count;;
-    char **_names;
 
     desktop_cycle_popup = [[AZPagerPopUp alloc] initWithIcon: YES];
 
@@ -204,17 +203,12 @@ static AZScreen *sharedInstance;
     /* set the names */
     count = [config_desktops_names count];
     screen_desktop_names = [[NSMutableArray alloc] init];
-    _names = calloc(sizeof(char*), count + 1);
     for (i = 0; i < count; i++) {
 	NSString *_n = [config_desktops_names objectAtIndex: i];
         [screen_desktop_names addObject: _n];
-        _names[i] = (char*)[_n UTF8String]; /* dont strdup */
     }
-    _names[i] = NULL;
     PROP_SETSS(RootWindow(ob_display, ob_screen),
-               net_desktop_names, _names);
-    free(_names); /* dont free the individual strings */
-    _names = NULL;
+               net_desktop_names, screen_desktop_names);
 
     if (!reconfig)
         screen_num_desktops = 0;
@@ -734,17 +728,16 @@ done_cycle:
 - (void) updateDesktopNames
 {
     unsigned int i;
+    NSArray *_names = nil;
 
     /* empty the array */
     [screen_desktop_names removeAllObjects];
-    char **_names = NULL;
 
     if (PROP_GETSS(RootWindow(ob_display, ob_screen),
                    net_desktop_names, utf8, &_names)) {
-        for (i = 0; _names[i] && i <= screen_num_desktops; ++i) {
-	  [screen_desktop_names addObject: [NSString stringWithUTF8String: _names[i]]];
+        for (i = 0; i < [_names count] && i <= screen_num_desktops; ++i) {
+	  [screen_desktop_names addObject: [_names objectAtIndex: i]];
 	}
-	XFree(_names);
     } else {
         i = 0;
     }

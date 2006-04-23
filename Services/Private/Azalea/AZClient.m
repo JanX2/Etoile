@@ -1239,27 +1239,21 @@
 {
     long nums;
     unsigned int i;
-    char *data = NULL;
+    NSString *s = nil;
     BOOL read_title;
     NSString *old_title = nil;
 
     ASSIGN(old_title, title);
      
     /* try netwm */
-    if (PROP_GETS(window, net_wm_name, utf8, &data)) {
-      ASSIGN(title, [NSString stringWithUTF8String: data]);
-      XFree(data);
-      data = NULL;
-    } else if (PROP_GETS(window, wm_name, utf8, &data)) {
+    if (PROP_GETS(window, net_wm_name, utf8, &s)) {
+      ASSIGNCOPY(title, s);
+    } else if (PROP_GETS(window, wm_name, utf8, &s)) {
       /* try old x with utf */
-      ASSIGN(title, [NSString stringWithUTF8String: data]);
-      XFree(data);
-      data = NULL;
-    } else if (PROP_GETS(window, wm_name, locale, &data)) {
+      ASSIGNCOPY(title, s);
+    } else if (PROP_GETS(window, wm_name, locale, &s)) {
       /* try old x stuff */
-      ASSIGN(title, [NSString stringWithCString: data]);
-      XFree(data);
-      data = NULL;
+      ASSIGNCOPY(title, s);
     } else {
           // http://developer.gnome.org/projects/gup/hig/draft_hig_new/windows-alert.html
               if (transient) {
@@ -1306,20 +1300,16 @@ no_number:
     DESTROY(old_title);
 
     /* update the icon title */
-    data = NULL;
+    s = nil;
     DESTROY(icon_title);
 
     read_title = YES;
     /* try netwm */
-    if (PROP_GETS(window, net_wm_icon_name, utf8, &data)) {
-      ASSIGN(icon_title, [NSString stringWithUTF8String: data]);
-      XFree(data);
-      data = NULL;
-    } else if (PROP_GETS(window, wm_icon_name, locale, &data)) {
+    if (PROP_GETS(window, net_wm_icon_name, utf8, &s)) {
+      ASSIGNCOPY(icon_title, s);
+    } else if (PROP_GETS(window, wm_icon_name, locale, &s)) {
       /* try old x stuff */
-      ASSIGN(icon_title, [NSString stringWithCString: data]);
-      XFree(data);
-      data = NULL;
+      ASSIGNCOPY(icon_title, s);
     } else {
       ASSIGNCOPY(icon_title, title);
       read_title = NO;
@@ -1335,25 +1325,23 @@ no_number:
 
 - (void) updateClass
 {
-    char **data;
-    char *s;
+    NSArray *data;
+    NSString *s = nil;
 
     DESTROY(name);
     DESTROY(class);
     DESTROY(role);
 
     if (PROP_GETSS(window, wm_class, locale, &data)) {
-        if (data[0]) {
-	    ASSIGN(name, [NSString stringWithCString: data[0]]);
-            if (data[1])
-		ASSIGN(class, [NSString stringWithCString: data[1]]);
+        if ([data count] > 0) {
+	    ASSIGNCOPY(name, [data objectAtIndex: 0]);
+            if ([data count] > 1)
+		ASSIGNCOPY(class, [data objectAtIndex: 1]);
         }
-	XFree(data);
     }
 
     if (PROP_GETS(window, wm_window_role, locale, &s)) {
-	ASSIGN(role, [NSString stringWithCString: s]);
-	XFree(s);
+	ASSIGNCOPY(role, s);
     }
 
     if (name == nil) ASSIGN(name, [NSString string]);
@@ -2292,7 +2280,7 @@ no_number:
 - (void) updateSmClientId;
 {
     DESTROY(sm_client_id);
-    char *data = NULL;
+    NSString *data = nil;
 
     if ((!PROP_GETS(window, sm_client_id, locale, &data)) && (group))
     {
@@ -2300,9 +2288,7 @@ no_number:
     }
 
     if (data) {
-        ASSIGN(sm_client_id, [NSString stringWithCString: data]);
-	XFree(data);
-	data = NULL;
+        ASSIGNCOPY(sm_client_id, data);
     }
 }
 
@@ -2844,7 +2830,7 @@ AZClient *AZUnderPointer()
 
 - (void) getStartupId
 {
-    char *data = NULL;
+    NSString *data = nil;
     DESTROY(startup_id);
 
     if (!(PROP_GETS(window, net_startup_id, utf8, &data)))
@@ -2855,9 +2841,7 @@ AZClient *AZUnderPointer()
 	}
     }
     if (data) {
-      ASSIGN(startup_id, [NSString stringWithUTF8String: data]);
-      XFree(data);
-      data = NULL;
+      ASSIGNCOPY(startup_id, data);
     }
 }
 

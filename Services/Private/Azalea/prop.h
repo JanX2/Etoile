@@ -19,10 +19,7 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#ifndef __atoms_h
-#define __atoms_h
-
-#include <X11/Xlib.h>
+#import <X11/Xlib.h>
 #ifdef HAVE_STRING_H
 #  include <string.h>
 #endif
@@ -177,16 +174,16 @@ void prop_startup();
 BOOL prop_get32(Window win, Atom prop, Atom type, unsigned long *ret);
 BOOL prop_get_array32(Window win, Atom prop, Atom type, unsigned long **ret,
                           unsigned int *nret);
-BOOL prop_get_string_locale(Window win, Atom prop, char **ret);
-BOOL prop_get_string_utf8(Window win, Atom prop, char **ret);
-BOOL prop_get_strings_locale(Window win, Atom prop, char ***ret);
-BOOL prop_get_strings_utf8(Window win, Atom prop, char ***ret);
+BOOL prop_get_string_locale(Window win, Atom prop, NSString **ret);
+BOOL prop_get_string_utf8(Window win, Atom prop, NSString **ret);
+BOOL prop_get_strings_locale(Window win, Atom prop, NSArray **ret);
+BOOL prop_get_strings_utf8(Window win, Atom prop, NSArray **ret);
 
 void prop_set32(Window win, Atom prop, Atom type, unsigned long val);
 void prop_set_array32(Window win, Atom prop, Atom type, unsigned long *val,
                       unsigned int num);
 void prop_set_string_utf8(Window win, Atom prop, char *val);
-void prop_set_strings_utf8(Window win, Atom prop, char **strs);
+void prop_set_strings_utf8(Window win, Atom prop, NSArray *strs);
 
 void prop_erase(Window win, Atom prop);
 
@@ -218,4 +215,3 @@ void prop_message(Window about, Atom messagetype, long data0, long data1,
   (prop_message(about, prop_atoms.msgtype, data0, data1, data2, data3, \
                 SubstructureNotifyMask | SubstructureRedirectMask))
 
-#endif

@@ -123,8 +123,8 @@
 - (int) ignoreUnmaps { return ignore_unmaps; }
 - (void) setWindow: (Window) window { win = window; }
 - (void) setIconWindow: (Window) window { icon_win = window; }
-- (void) setName: (NSString *) n { ASSIGN(name, n); }
-- (void) setClass: (NSString *) c { ASSIGN(class, c); }
+- (void) setName: (NSString *) n { ASSIGNCOPY(name, n); }
+- (void) setClass: (NSString *) c { ASSIGNCOPY(class, c); }
 - (void) setIgnoreUnmaps: (int) value { ignore_unmaps = value; }
 
 - (void) dealloc
