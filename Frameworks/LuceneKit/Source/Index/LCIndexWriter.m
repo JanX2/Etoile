@@ -454,7 +454,7 @@ for search. */
 	while ([segmentInfos numberOfSegments] > start + mergeFactor)
 	{
 		int base, end;
-		for (base = start + 1; base < [segmentInfos numberOfSegments]; base++)
+		for (base = start; base < [segmentInfos numberOfSegments]; base++)
 		{
 			end = ([segmentInfos numberOfSegments] < (base+mergeFactor)) ? [segmentInfos numberOfSegments] : (base+mergeFactor);
 			if ((end - base) > 1)
@@ -610,11 +610,12 @@ and pushes the merged index onto the top of the segmentInfos stack. */
 	}
 	int mergedDocCount = [merger merge];
 	
-	NSRange r = NSMakeRange(minSegment, end-minSegment);
+	NSRange r = NSMakeRange(minSegment+1, end-minSegment-1);
 	[segmentInfos removeSegmentsInRange: r]; // pop old infos & add new
 
-	[segmentInfos addSegmentInfo: AUTORELEASE([[LCSegmentInfo alloc] initWithName: mergedName
-																numberOfDocuments: mergedDocCount directory: directory])];
+	[segmentInfos setSegmentInfo: AUTORELEASE([[LCSegmentInfo alloc] initWithName: mergedName
+																numberOfDocuments: mergedDocCount directory: directory])
+		      atIndex: minSegment];
     // close readers before we attempt to delete now-obsolete segments
 	[merger closeReaders];
 #if 0

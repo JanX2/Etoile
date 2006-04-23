@@ -19,6 +19,7 @@
 - (void) removeSegmentsInRange: (NSRange) range;
 + (long) currentVersion: (id <LCDirectory>) directory;
 - (void) addSegmentInfo: (id) object;
+- (void) setSegmentInfo: (id) object atIndex: (int) index;
 - (int) counter;
 - (int) increaseCounter; // counter++
 

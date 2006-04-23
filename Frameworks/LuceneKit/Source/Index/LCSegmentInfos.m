@@ -143,6 +143,11 @@
 	[segments addObject: object];
 }
 
+- (void) setSegmentInfo: (id) object atIndex: (int) index
+{
+	[segments replaceObjectAtIndex: index withObject: object];
+}
+
 - (int) counter
 {
 	return counter;

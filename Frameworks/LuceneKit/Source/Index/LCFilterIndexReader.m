@@ -4,6 +4,8 @@
 
 @implementation LCFilterTermDocuments
 
+// FIXME: Should implementation getVersion and isCurrent (see latest version)
+
 /** Base class for filtering {@link TermDocs} implementations. */
 - (id) initWithTermDocuments: (id <LCTermDocuments>) docs
 {

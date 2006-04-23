@@ -126,7 +126,8 @@
 		return NO;
 	}
 	if (target <= currentDoc) {
-		target = currentDoc + 1;
+		//target = currentDoc + 1;
+		return YES;
 	}
 	do {
 		LCScorer *top = [scorerQueue top];

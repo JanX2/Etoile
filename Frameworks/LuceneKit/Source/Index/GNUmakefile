@@ -52,6 +52,7 @@ LuceneKit_Index_OBJC_FILES += \
 	TestTermVectorsWriter.m \
 	TestSegmentMerger.m \
 	TestIndexWriter.m \
+	TestIndexWriterMerging.m \
 	TestSegmentReader.m \
 	TestMultiReader.m \
 	TestFilterIndexReader.m \
