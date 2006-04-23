@@ -49,11 +49,11 @@ Azalea_OBJC_FILES = \
 
 #ADDITIONAL_=-DDEBUG=1
 
-ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags glib-2.0` `pkg-config --cflags freetype2` `pkg-config --cflags libxml-2.0` `pkg-config --cflags fontconfig` -I..
+ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags freetype2` `pkg-config --cflags libxml-2.0` `pkg-config --cflags fontconfig` -I..
 
 ADDITIONAL_INCLUDE_DIRS += -DPACKAGE_VERSION=\"3.3-rc2\" -DPACKAGE_BUGREPORT=\"http://bugzilla.icculus.org\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_CTYPE_H=1 -DHAVE_FCNTL_H=1 -DHAVE_LOCALE_H=1 -DHAVE_SIGNAL_H=1 -DHAVE_STRING_H=1 -DHAVE_STDIO_H=1 -DHAVE_STDLIB_H=1 -DHAVE_UNISTD_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_SYS_SELECT_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_WAIT_H=1 
 
-ADDITIONAL_LIB_DIRS += `pkg-config --libs glib-2.0` `pkg-config --libs freetype2` `pkg-config --libs libxml-2.0` `pkg-config --libs fontconfig` 
+ADDITIONAL_LIB_DIRS += `pkg-config --libs freetype2` `pkg-config --libs libxml-2.0` `pkg-config --libs fontconfig` 
 
 # Xwindow
 ADDITIONAL_INCLUDE_DIRS += -DHAVE_LIBX11=1 -DXKB=1 -DXRANDR=1 -DSHAPE=1

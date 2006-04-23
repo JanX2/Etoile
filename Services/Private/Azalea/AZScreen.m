@@ -1138,7 +1138,7 @@ done_cycle:
                                 StructureNotifyMask, &event) &&
               event.type == DestroyNotify)
               break;
-          g_usleep(USEC_PER_SEC / 10);
+          usleep(USEC_PER_SEC / 10);
           wait += USEC_PER_SEC / 10;
       }
 

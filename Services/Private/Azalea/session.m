@@ -227,7 +227,7 @@ void session_startup(int *argc, char ***argv)
         NSString *filename;
 
         /* this algo is from metacity */
-	filename = [NSString stringWithFormat: @"%d-%d-%u.obs", (int)time(NULL), (int)getpid(), g_random_int()];
+	filename = [NSString stringWithFormat: @"%d-%d-%u.obs", (int)time(NULL), (int)getpid(), random()];
 	ASSIGN(save_file, [sm_sessions_path stringByAppendingPathComponent: filename]);
     }
 

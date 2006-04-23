@@ -25,7 +25,6 @@
 #import "AZClient+Place.h"
 #import "AZFocusManager.h"
 #import "config.h"
-#import "glib.h"
 
 static Rect* pick_head(AZClient *c)
 {
@@ -92,72 +91,29 @@ static BOOL place_random(AZClient *client, int *x, int *y)
     return YES;
 }
 
-static GSList* area_add(GSList *list, Rect *a)
+/* FIXME: it is only used by smart placement 
+ * and is designed to work-around Rect struct */
+@interface AZFakeRect: NSObject
 {
-    Rect *r = calloc(sizeof(Rect), 1);
-    *r = *a;
-    return g_slist_prepend(list, r);
+  Rect *r;
+  AZClient *client;
 }
++ (AZFakeRect *) fakeRectWithR: (Rect *) r; /* client is nil */
+- (Rect *) r;
+- (AZClient *) client;
+- (void) set_r: (Rect *) r;
+- (void) set_client: (AZClient *) c;
 
-static GSList* area_remove(GSList *list, Rect *a)
+- (NSComparisonResult) compareFakeRect: (AZFakeRect *) other;
+@end
+
+@implementation AZFakeRect
+- (NSComparisonResult) compareFakeRect: (AZFakeRect *) other
 {
-    GSList *sit;
-    GSList *result = NULL;
-
-    for (sit = list; sit; sit = g_slist_next(sit)) {
-        Rect *r = sit->data;
-
-        if (!RECT_INTERSECTS_RECT(*r, *a)) {
-            result = g_slist_prepend(result, r);
-            r = NULL; /* dont free it */
-        } else {
-            Rect isect, extra;
-
-            /* Use an intersection of a and r to determine the space
-               around r that we can use.
-
-               NOTE: the spaces calculated can overlap.
-            */
-
-            RECT_SET_INTERSECTION(isect, *r, *a);
-
-            if (RECT_LEFT(isect) > RECT_LEFT(*r)) {
-                RECT_SET(extra, r->x, r->y,
-                         RECT_LEFT(isect) - r->x, r->height);
-                result = area_add(result, &extra);
-            }
-
-            if (RECT_TOP(isect) > RECT_TOP(*r)) {
-                RECT_SET(extra, r->x, r->y,
-                         r->width, RECT_TOP(isect) - r->y + 1);
-                result = area_add(result, &extra);
-            }
-
-            if (RECT_RIGHT(isect) < RECT_RIGHT(*r)) {
-                RECT_SET(extra, RECT_RIGHT(isect) + 1, r->y,
-                         RECT_RIGHT(*r) - RECT_RIGHT(isect), r->height);
-                result = area_add(result, &extra);
-            }
-
-            if (RECT_BOTTOM(isect) < RECT_BOTTOM(*r)) {
-                RECT_SET(extra, r->x, RECT_BOTTOM(isect) + 1,
-                         r->width, RECT_BOTTOM(*r) - RECT_BOTTOM(isect));
-                result = area_add(result, &extra);
-            }
-        }
-
-        free(r);
-    }
-    g_slist_free(list);
-    return result;
-}
-
-static int area_cmp(gconstpointer p1, gconstpointer p2, gpointer data)
-{
-    AZClient *c = data;
+    AZClient *c = client;
     Rect temp = [[c frame] area];
     Rect *carea = &temp;
-    const Rect *a1 = p1, *a2 = p2;
+    const Rect *a1 = r, *a2 = [other r];
     BOOL diffhead = NO;
     unsigned int i;
     Rect *a;
@@ -198,8 +154,93 @@ static int area_cmp(gconstpointer p1, gconstpointer p2, gpointer data)
             return 1;
     }
 
-    return MIN((a1->width - carea->width), (a1->height - carea->height)) -
+    int diff = MIN((a1->width - carea->width), (a1->height - carea->height)) -
         MIN((a2->width - carea->width), (a2->height - carea->height));
+
+    if (diff < 0) return NSOrderedAscending;
+    else if (diff > 0) return NSOrderedDescending;
+    else return NSOrderedSame;
+}
+
++ (AZFakeRect *) fakeRectWithR: (Rect *) r
+{
+  AZFakeRect *fr = [[AZFakeRect alloc] init];
+  [fr set_r: r];
+  return AUTORELEASE(fr);
+}
+- (Rect *) r { return r; }
+- (AZClient *) client { return client; }
+- (void) set_r: (Rect *) _r { r = _r; }
+- (void) set_client: (AZClient *) _c { client = _c; }
+@end
+
+NSArray *area_add(NSArray *list, Rect *a)
+{
+    NSMutableArray *array;
+    if (list)
+      array = [NSMutableArray arrayWithArray: list];
+    else
+      array = AUTORELEASE([[NSMutableArray alloc] init]);
+
+    Rect *r = calloc(sizeof(Rect), 1);
+    *r = *a;
+    AZFakeRect *fr = AUTORELEASE([[AZFakeRect alloc] init]);
+    [fr set_r: r];
+    [array addObject: fr];
+    return array;
+}
+
+NSArray* area_remove(NSArray *list, Rect *a)
+{
+    NSMutableArray *result = AUTORELEASE([[NSMutableArray alloc] init]);
+    int i, count = [list count];
+    AZFakeRect* fr = nil;
+
+    for (i = 0; i < count; i++) {
+        Rect *r = [[list objectAtIndex: i] r];
+
+        if (!RECT_INTERSECTS_RECT(*r, *a)) {
+	    [result addObject: [AZFakeRect fakeRectWithR: r]];
+            r = NULL; /* dont free it */
+        } else {
+            Rect isect, extra;
+
+            /* Use an intersection of a and r to determine the space
+               around r that we can use.
+
+               NOTE: the spaces calculated can overlap.
+            */
+
+            RECT_SET_INTERSECTION(isect, *r, *a);
+
+            if (RECT_LEFT(isect) > RECT_LEFT(*r)) {
+                RECT_SET(extra, r->x, r->y,
+                         RECT_LEFT(isect) - r->x, r->height);
+                result = [NSMutableArray arrayWithArray: area_add(result, &extra)];
+            }
+
+            if (RECT_TOP(isect) > RECT_TOP(*r)) {
+                RECT_SET(extra, r->x, r->y,
+                         r->width, RECT_TOP(isect) - r->y + 1);
+                result = [NSMutableArray arrayWithArray: area_add(result, &extra)];
+            }
+
+            if (RECT_RIGHT(isect) < RECT_RIGHT(*r)) {
+                RECT_SET(extra, RECT_RIGHT(isect) + 1, r->y,
+                         RECT_RIGHT(*r) - RECT_RIGHT(isect), r->height);
+                result = [NSMutableArray arrayWithArray: area_add(result, &extra)];
+            }
+
+            if (RECT_BOTTOM(isect) < RECT_BOTTOM(*r)) {
+                RECT_SET(extra, r->x, RECT_BOTTOM(isect) + 1,
+                         r->width, RECT_BOTTOM(*r) - RECT_BOTTOM(isect));
+                result = [NSMutableArray arrayWithArray: area_add(result, &extra)];
+            }
+        }
+
+        free(r);
+    }
+    return result;
 }
 
 typedef enum
@@ -220,10 +261,11 @@ static BOOL place_smart(AZClient *client, int *x, int *y,
 {
     unsigned int i;
     BOOL ret = NO;
-    GSList *spaces = NULL, *sit;
+    NSArray *spaces = nil;
     AZScreen *screen = [AZScreen defaultScreen];
     AZStacking *stacking = [AZStacking stacking];
     int j, index = NSNotFound, count = [stacking count];
+    int k, kcount;
     id <AZWindow> temp;
 
     for (i = 0; i < [screen numberOfMonitors]; ++i)
@@ -307,10 +349,14 @@ static BOOL place_smart(AZClient *client, int *x, int *y,
 	}
     }
 
-    spaces = g_slist_sort_with_data(spaces, area_cmp, client);
-
-    for (sit = spaces; sit; sit = g_slist_next(sit)) {
-        Rect *r = sit->data;
+    kcount = [spaces count];
+    for (k = 0; k < kcount; k++) {
+      [[spaces objectAtIndex: k] set_client: client];
+    }
+    spaces = [spaces sortedArrayUsingSelector: @selector(compareFakeRect:)];
+    kcount = [spaces count];
+    for (k = 0; k < kcount; k++) {
+        Rect *r = [[spaces objectAtIndex: k] r];
 
         if (!ret) {
             if (r->width >= [[client frame] area].width &&
@@ -330,7 +376,6 @@ static BOOL place_smart(AZClient *client, int *x, int *y,
 
         free(r);
     }
-    g_slist_free(spaces);
 
     return ret;
 }
