@@ -27,8 +27,10 @@
 
 Atoms prop_atoms;
 
+/* Weird bug */
+#define FALSE NO
 #define CREATE(var, name) (prop_atoms.var = \
-                           XInternAtom(ob_display, name, NO))
+                           XInternAtom(ob_display, name, FALSE))
 
 void prop_startup()
 {
@@ -174,7 +176,7 @@ static BOOL get_prealloc(Window win, Atom prop, Atom type, int size,
     long num32 = 32 / size * num; /* num in 32-bit elements */
 
     res = XGetWindowProperty(ob_display, win, prop, 0l, num32,
-                             NO, type, &ret_type, &ret_size,
+                             FALSE, type, &ret_type, &ret_size,
                              &ret_items, &bytes_left, &xdata);
     if (res == Success && ret_items && xdata) {
         if (ret_size == size && ret_items >= num) {
@@ -211,7 +213,7 @@ static BOOL get_all(Window win, Atom prop, Atom type, int size,
     unsigned long ret_items, bytes_left;
 
     res = XGetWindowProperty(ob_display, win, prop, 0l, LONG_MAX,
-                             NO, type, &ret_type, &ret_size,
+                             FALSE, type, &ret_type, &ret_size,
                              &ret_items, &bytes_left, &xdata);
     if (res == Success) {
         if (ret_size == size && ret_items > 0) {
@@ -400,6 +402,6 @@ void prop_message(Window about, Atom messagetype, long data0, long data1,
     ce.xclient.data.l[1] = data1;
     ce.xclient.data.l[2] = data2;
     ce.xclient.data.l[3] = data3;
-    XSendEvent(ob_display, RootWindow(ob_display, ob_screen), NO,
+    XSendEvent(ob_display, RootWindow(ob_display, ob_screen), FALSE,
                mask, &ce);
 }

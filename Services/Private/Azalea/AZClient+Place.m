@@ -76,7 +76,7 @@ static BOOL place_random(AZClient *client, int *x, int *y)
     {
 	AZScreen *screen = [AZScreen defaultScreen];
 	area = [screen areaOfDesktop: [client desktop]
-		       monitor: g_random_int_range(0, [screen numberOfMonitors])];
+		       monitor: (random() % [screen numberOfMonitors])];
     }
 
     l = area->x;
@@ -84,9 +84,9 @@ static BOOL place_random(AZClient *client, int *x, int *y)
     r = area->x + area->width - [[client frame] area].width;
     b = area->y + area->height - [[client frame] area].height;
 
-    if (r > l) *x = g_random_int_range(l, r + 1);
+    if (r > l) *x = (random() % (r-l+1)) + l;
     else       *x = 0;
-    if (b > t) *y = g_random_int_range(t, b + 1);
+    if (b > t) *y = (random() % (b-t+1)) + t;
     else       *y = 0;
 
     return YES;
