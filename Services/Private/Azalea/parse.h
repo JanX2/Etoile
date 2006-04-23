@@ -81,6 +81,6 @@ NSArray *parse_xdg_config_dir_paths();
 NSArray *parse_xdg_data_dir_paths();
 
 /*! Makes a directory and all its parents */
-BOOL parse_mkdir_path(const char *path, int mode);
+BOOL parse_mkdir_path(NSString *path, int mode);
 
 #endif

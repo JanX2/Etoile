@@ -21,7 +21,6 @@
 
 #import <Foundation/Foundation.h>
 #import "parse.h"
-#import <glib.h>
 #import <string.h>
 #import <errno.h>
 #import <sys/stat.h>
@@ -212,7 +211,7 @@ NSString *parse_string(xmlDocPtr doc, xmlNodePtr node)
 int parse_int(xmlDocPtr doc, xmlNodePtr node)
 {
     xmlChar *c = xmlNodeListGetString(doc, node->children, YES);
-    int i = atoi((gchar*)c);
+    int i = atoi((char*)c);
     xmlFree(c);
     return i;
 }
@@ -255,7 +254,7 @@ BOOL parse_attr_int(const char *name, xmlNodePtr node, int *value)
     xmlChar *c = xmlGetProp(node, (const xmlChar*) name);
     BOOL r = NO;
     if (c) {
-        *value = atoi((gchar*)c);
+        *value = atoi((char*)c);
         r = YES;
     }
     xmlFree(c);
@@ -335,45 +334,37 @@ void parse_paths_shutdown()
     DESTROY(xdg_data_dir_paths);
 }
 
-static BOOL parse_mkdir(const gchar *path, int mode)
+BOOL parse_mkdir_path(NSString *path, int mode)
 {
-    BOOL ret = YES;
+    if ((path == nil) || ([path isAbsolutePath] == NO)) 
+      return NO;
 
-    g_return_val_if_fail(path != NULL, NO);
-    g_return_val_if_fail(path[0] != '\0', NO);
+    BOOL isDir;
+    NSFileManager *fm = [NSFileManager defaultManager];
 
-    if (!g_file_test(path, G_FILE_TEST_IS_DIR))
-        if (mkdir(path, mode) == -1)
-            ret = NO;
+    if ([fm fileExistsAtPath: path isDirectory: &isDir] && (isDir == YES))
+      return YES;
 
-    return ret;
-}
-
-BOOL parse_mkdir_path(const gchar *path, int mode)
-{
-    BOOL ret = YES;
-
-    g_return_val_if_fail(path != NULL, NO);
-    g_return_val_if_fail(path[0] == '/', NO);
-
-    if (!g_file_test(path, G_FILE_TEST_IS_DIR)) {
-        gchar *c, *e;
-
-        c = g_strdup(path);
-        e = c;
-        while ((e = strchr(e + 1, '/'))) {
-            *e = '\0';
-            if (!(ret = parse_mkdir(c, mode)))
-                goto parse_mkdir_path_end;
-            *e = '/';
-        }
-        ret = parse_mkdir(c, mode);
-
-    parse_mkdir_path_end:
-        g_free(c);
+    /* Make each subdirectory */
+    NSEnumerator *e = [[path pathComponents] objectEnumerator];
+    NSString *p, *test_path = @"";
+    while ((p = [e nextObject])) {
+      test_path = [test_path stringByAppendingPathComponent: p];
+      if ([fm fileExistsAtPath: test_path isDirectory: &isDir] == NO) {
+	/* Create new */
+	[fm createDirectoryAtPath: test_path
+		attributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithInt: mode] forKey: NSFilePosixPermissions]];
+      } else {
+	if (isDir == NO) {
+          /* file exists, but not a directory: failed */
+	  return NO;
+	} else {
+	  /* directory exists */
+          continue;
+	}
+      }
     }
-
-    return ret;
+    return YES;
 }
 
 NSString* parse_xdg_config_home_path()

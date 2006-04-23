@@ -1,4 +1,4 @@
-1. remove glib (AZClient+Place.m, parse.m, prop.m, session.m)
+1. remove glib (AZClient+Place.m, prop.m)
 2. remove USE_PANGO in render/
 3. it might be tricky to support arbitrary window levels.
 4. decide which way to use run loop (See ALTERNATIVE_RUN_LOOP in openbox.m).
@@ -21,6 +21,14 @@ GNUstep window protocol
 
 Bugs
 
+5. For application which cannot save itself (like xterm),
+   openbox save the state for them.
+   If state is saved before, then application is closed,
+   then logout without save state, openbox will still try to save state.
+   And because the application is closed, no state is actually saved.
+   But session manager still remember these applications are saved
+   for the first time and try to open it when login.
+   So they will be opened without state from openbox.
 4. Session doesn't work because when Azalea starts,
    the environment is not set by GNUstep.sh yet.
 3. Use openbox/test/urgent and close window when it is unfocosed.

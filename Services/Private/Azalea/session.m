@@ -22,6 +22,7 @@
 /* This session code is largely inspired by metacity code. */
 
 #import "session.h"
+#import <GNUstepBase/GSXML.h>
 NSMutableArray *session_saved_state;
 
 @implementation AZSessionState
@@ -100,7 +101,6 @@ BOOL session_state_cmp(AZSessionState *s, AZClient *c) { return NO; }
 #import "AZDebug.h"
 #import "AZClient.h"
 #import "openbox.h"
-#import <glib.h>
 #include "prop.h"
 #include "parse.h"
 
@@ -216,9 +216,8 @@ void session_startup(int *argc, char ***argv)
         return;
 
     ASSIGN(sm_sessions_path, ([NSString pathWithComponents: [NSArray arrayWithObjects: parse_xdg_data_home_path(), @"openbox", @"sessions", nil]]));
-    if (!parse_mkdir_path([sm_sessions_path fileSystemRepresentation], 0700))
-        NSLog(@"Warning: Unable to make directory '%@': %s",
-                  sm_sessions_path, g_strerror(errno));
+    if (!parse_mkdir_path(sm_sessions_path, 0700))
+        NSLog(@"Warning: Unable to make directory '%@'", sm_sessions_path);
 
     session_saved_state = [[NSMutableArray alloc] init];
 
@@ -270,19 +269,19 @@ void session_startup(int *argc, char ***argv)
         SmProp prop_pri = { "_GSM_Priority", SmCARD8, 1, };
         SmProp *props[6];
         char hint, pri;
-        char pid[32];
+        char *pid;
 
         val_prog.value = sm_argv[0];
         val_prog.length = strlen(sm_argv[0]);
 
-        val_uid.value = g_strdup(g_get_user_name());
+        val_uid.value = (char*)[NSUserName() cString];
         val_uid.length = strlen(val_uid.value);
 
         hint = SmRestartImmediately;
         val_hint.value = &hint;
         val_hint.length = 1;
 
-        g_snprintf(pid, sizeof(pid), "%ld", (glong) getpid());
+	pid = (char*)[[NSString stringWithFormat: @"%ld", (long)getpid()] cString];
         val_pid.value = pid;
         val_pid.length = strlen(pid);
 
@@ -382,8 +381,7 @@ static BOOL session_save()
     f = fopen([save_file fileSystemRepresentation], "w");
     if (!f) {
         success = NO;
-        NSLog(@"Warning: unable to save the session to %@: %s",
-                  save_file, g_strerror(errno));
+        NSLog(@"Warning: unable to save the session to %@", save_file);
     } else {
         unsigned int stack_pos = 0;
 
@@ -428,15 +426,15 @@ static BOOL session_save()
 
             fprintf(f, "<window id=\"%s\">\n", (char*)[[c sm_client_id] cString]);
 
-            t = g_markup_escape_text((char*)[[c name] cString], -1);
+	    t = (char*)[[[c name] stringByEscapingXML] cString];
             fprintf(f, "\t<name>%s</name>\n", t);
             free(t);
 
-            t = g_markup_escape_text((char*)[[c class] cString], -1);
+	    t = (char*)[[[c class] stringByEscapingXML] cString];
             fprintf(f, "\t<class>%s</class>\n", t);
             free(t);
 
-            t = g_markup_escape_text((char*)[[c role] cString], -1);
+	    t = (char*)[[[c role] stringByEscapingXML] cString];
             fprintf(f, "\t<role>%s</role>\n", t);
             free(t);
 
@@ -473,8 +471,7 @@ static BOOL session_save()
 
         if (fflush(f)) {
             success = NO;
-            NSLog(@"Warning: error while saving the session to %@: %s",
-                      save_file, g_strerror(errno));
+            NSLog(@"Warning: error while saving the session to %@", save_file);
         }
         fclose(f);
     }
