@@ -6,6 +6,7 @@
 	* Complete remove glib.
 	* Make sure it compiles with minimal requirement.
 	* Add default rc.xml, menu.xml and theme.
+	* Update-to-date.
 
 2006-04-21 Yen-Ju Chen <yjchenx at gmail>
 

@@ -328,8 +328,18 @@ static AZMenuManager *sharedInstance;
     }
     if (![frame showWithParent: nil])
 	DESTROY(frame);
-    else if ([[frame entries] count])
+#if 0 
+    /* I don't think it is a good idea to select the first non-submenu 
+     * automatically because it is not a consistent user interface behavior.
+     */
+    else if ([[frame entries] count]) {
+      AZMenuEntryFrame *e = [[frame entries] objectAtIndex: 0];
+      if ([[e entry] type] == OB_MENU_ENTRY_TYPE_NORMAL &&
+	   [(AZNormalMenuEntry*)[e entry] enabled]) {
 	[frame selectNext];
+      }
+    }
+#endif
 }
 
 - (void) registerMenu: (AZMenu *) menu
