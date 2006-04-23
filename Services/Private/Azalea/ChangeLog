@@ -2,6 +2,7 @@
 
 	* use NSArray for session.
 	* remove more glib.
+	* fix missing sm_id.
 
 2006-04-21 Yen-Ju Chen <yjchenx at gmail>
 

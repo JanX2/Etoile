@@ -254,6 +254,13 @@ void session_startup(int *argc, char ***argv)
                                 SmcShutdownCancelledProcMask,
                                 &cb, _sm_id, &_sm_id,
                                 SM_ERR_LEN, sm_err);
+    if (_sm_id)
+      ASSIGN(sm_id, ([NSString stringWithCString: _sm_id]));
+    else {
+      [sm_id release];
+      sm_id = nil;
+    }
+
     if (sm_conn == NULL)
         AZDebug("Failed to connect to session manager: %s\n", sm_err);
     else {
@@ -303,8 +310,6 @@ void session_startup(int *argc, char ***argv)
         props[4] = &prop_pri;
 
         SmcSetProperties(sm_conn, 5, props);
-
-        free(val_uid.value);
 
         save_commands();
     }
@@ -374,7 +379,6 @@ static void sm_shutdown_cancelled(SmcConn conn, SmPointer data)
 static BOOL session_save()
 {
     FILE *f;
-    //GList *it;
     BOOL success = YES;
     int i, count = [[AZStacking stacking] count];
 
@@ -428,15 +432,12 @@ static BOOL session_save()
 
 	    t = (char*)[[[c name] stringByEscapingXML] cString];
             fprintf(f, "\t<name>%s</name>\n", t);
-            free(t);
 
 	    t = (char*)[[[c class] stringByEscapingXML] cString];
             fprintf(f, "\t<class>%s</class>\n", t);
-            free(t);
 
 	    t = (char*)[[[c role] stringByEscapingXML] cString];
             fprintf(f, "\t<role>%s</role>\n", t);
-            free(t);
 
             fprintf(f, "\t<desktop>%d</desktop>\n", [c desktop]);
             fprintf(f, "\t<stacking>%d</stacking>\n", stack_pos);
