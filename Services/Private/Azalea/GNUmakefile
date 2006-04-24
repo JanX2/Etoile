@@ -65,21 +65,21 @@ ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -lX11 -lXft
 
 # Xwindow extra
-ADDITIONAL_CPPFLAGS += -DXKB=1 -DXRANDR=1 -DSHAPE=1
-ADDITIONAL_LIB_DIRS += -lXext -lXrender -lXrandr
+#ADDITIONAL_CPPFLAGS += -DXKB=1 -DXRANDR=1 -DSHAPE=1
+#ADDITIONAL_LIB_DIRS += -lXext -lXrender -lXrandr
 
 # Session Manager
-ADDITIONAL_CPPFLAGS += -DHAVE_X11_SM_SMLIB_H=1 -DUSE_SM=1
-ADDITIONAL_LIB_DIRS += -lSM -lICE
+#ADDITIONAL_CPPFLAGS += -DHAVE_X11_SM_SMLIB_H=1 -DUSE_SM=1
+#ADDITIONAL_LIB_DIRS += -lSM -lICE
 
 # Xinerama
-ADDITIONAL_CPPFLAGS += -DXINERAMA=1 
-ADDITIONAL_LIB_DIRS += -lXinerama
+#ADDITIONAL_CPPFLAGS += -DXINERAMA=1 
+#ADDITIONAL_LIB_DIRS += -lXinerama
 
 # Startup Notification
-ADDITIONAL_CPPFLAGS += -DUSE_LIBSN=1
-ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags libstartup-notification-1.0`
-ADDITIONAL_LIB_DIRS += `pkg-config --libs libstartup-notification-1.0`
+#ADDITIONAL_CPPFLAGS += -DUSE_LIBSN=1
+#ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags libstartup-notification-1.0`
+#ADDITIONAL_LIB_DIRS += `pkg-config --libs libstartup-notification-1.0`
 
 include $(GNUSTEP_MAKEFILES)/application.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
