@@ -1,6 +1,7 @@
 2006-04-23 Yen-Ju Chen <yjchenx at gmail>
 
 	* patched by Cris Vetter for FreeBSD 6.
+	* use ADDITIONAL_CPPFLAGS.
 
 2006-04-22 Yen-Ju Chen <yjchenx at gmail>
 
