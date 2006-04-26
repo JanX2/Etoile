@@ -52,6 +52,7 @@ static Window createWindow(Window parent, unsigned long mask,
 - (void) layoutTitle;
 - (void) setThemeStatics;
 - (void) freeThemeStatics;
+- (void) setFrameExtents; /* Set _NET_FRAME_EXTENTS */
 
 /* callback */
 - (BOOL) flashTimeout: (id) data;
@@ -85,6 +86,7 @@ static Window createWindow(Window parent, unsigned long mask,
     XMapWindow(ob_display, [client window]);
 
     [self adjustAreaWithMoved: YES resized: YES fake: NO];
+    [self setFrameExtents];
 
     /* set all the windows for the frame in the window_map */
     [window_map setObject: client forKey: [NSNumber numberWithInt: window]];
@@ -430,7 +432,6 @@ static Window createWindow(Window parent, unsigned long mask,
 
 - (void) clientGravityAtX: (int *) x y: (int *) y
 {
-	//NSLog(@"clientGravity");
     /* horizontal */
     switch ([_client gravity]) {
     default:
@@ -486,7 +487,6 @@ static Window createWindow(Window parent, unsigned long mask,
 
 - (void) frameGravityAtX: (int *) x y: (int *) y
 {
-	//NSLog(@"frameGravity");
     /* horizontal */
     switch ([_client gravity]) {
     default:
@@ -856,6 +856,17 @@ static Window createWindow(Window parent, unsigned long mask,
     a_unfocused_handle = [ob_rr_theme->a_unfocused_handle copy];
     a_focused_handle = [ob_rr_theme->a_focused_handle copy];
     a_icon = [ob_rr_theme->a_icon copy];
+}
+
+- (void) setFrameExtents /* Set _NET_FRAME_EXTENTS */
+{
+  unsigned long *extents = calloc(sizeof(unsigned long), 4);
+  extents[0] = innersize.left+bwidth;
+  extents[1] = innersize.right+bwidth;
+  extents[2] = innersize.top+bwidth;
+  extents[3] = innersize.bottom+bwidth;
+  PROP_SETA32([_client window], net_frame_extents, cardinal, extents, 4);
+  free(extents);
 }
 
 - (void) freeThemeStatics
