@@ -982,7 +982,7 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
         a = [acts objectAtIndex: i];
 
         if (!([a data].any.client_action == OB_CLIENT_ACTION_ALWAYS && !c)) {
-            [a data_pointer]->any.c = [a data].any.client_action ? c : nil;
+            [a data_pointer]->any.c = [a data].any.client_action ? c : NULL;
             [a data_pointer]->any.context = context;
             [a data_pointer]->any.x = x;
             [a data_pointer]->any.y = y;

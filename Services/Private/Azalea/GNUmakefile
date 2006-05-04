@@ -62,7 +62,7 @@ ADDITIONAL_LIB_DIRS += `pkg-config --libs freetype2` `pkg-config --libs libxml-2
 # Xwindow
 ADDITIONAL_CPPFLAGS += -DHAVE_LIBX11=1
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
-ADDITIONAL_LIB_DIRS += -lX11 -lXft
+ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lX11 -lXft
 
 # Xwindow extra
 #ADDITIONAL_CPPFLAGS += -DXKB=1 -DXRANDR=1 -DSHAPE=1

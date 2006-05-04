@@ -168,7 +168,7 @@ typedef struct Atoms {
     /* GNUstep specific atoms */
     Atom gnustep_wm_attr;
 } Atoms;
-Atoms prop_atoms;
+extern Atoms prop_atoms;
 
 void prop_startup();
 
