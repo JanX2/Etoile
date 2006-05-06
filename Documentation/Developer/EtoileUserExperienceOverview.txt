@@ -1,0 +1,295 @@
+Étoilé User Environment Presentation
+====================================
+
+
+Introduction
+------------
+
+This document summarizes Étoilé User Interface choices, design, tradeoffs and implementation. It constitutes the introductory part to Étoilé User Interface Guidelines currently here in a very rough shape: <http://www.etoile-project.org/etoile/mediawiki/index.php?title=User_Interface_Implementation>
+Finally it plays the role of a specification and a roadmap for developers working on Étoilé project itself.
+
+
+Why Étoilé is a User Environment?
+---------------------------------
+
+And not a Desktop Environment.
+
+- Possibility to run it without GUI to benefit from services like
+	- object server
+	- talk shell (TalkCenter backend tool)
+	- security server
+
+- In Future, hardware scalability:
+	- desktop computer
+	- PDA
+	- etc.
+	
+
+Bird View of Tradeoffs Driving the Environment 
+----------------------------------------------
+
+1. Use a normal Window Manager, albeit it wouldn't hurt to integrate things like Exposé, docking windows, etc.
+2. Rely on a normal File Manager, inspired by the OpenStep one, but with a couple of additions:
+    - update it to deal with any kinds of objects and not only files
+    - integrate filtering (instead of search) in the window
+    - have bundles display the content (list, icons, luminous table, 3D etc.)
+3. Rework open/close documents, open panel being replaced by File Manager and save panel by a proxy panel (eg get rid of NSOpenPanel/NSSavePanel)
+4. Introduce a Tabbed Shelf, which will provide a place to organize and move commonly accessed objects (documents, programs, data..)
+	
+Note: Make this list more exhaustive.
+
+
+Bird View of Envisionned Evolutions in a More Distant Future
+------------------------------------------------------------
+
+1. 
+    - Flexible Components Archicture taking in account both User and Developer needs
+Once Étoilé in its current trend will be usable, the next big step will the introduction of a new component architecture with both user and developer in mind.
+
+2. Sharing Architecture
+
+3. Pure Components/Services Architecture
+Initial vision for Étoilé was to have this "display" filter include any applications that can be used in the current context (folder or document)… then any application would be an application server that exports a service to manipulate stuff in the front workspace process or document process.
+In that sense, applications are really disappearing and only services remain from the user point of view
+
+
+Main Elements of Étoilé User Interface
+--------------------------------------
+
+1. From a Technical Viewpoint:
+- Display System:
+    - Display Server (aka Window Server; role usually played by X11)
+    - Window Manager (Azalea)
+- Menu Server
+- Shelf
+    
+2. From User point of view:
+- Menu Bar:
+    - Main Menu
+    - Status Menu made of key menulets:
+        - Search
+        - Projects switcher
+        - Tasks switcher
+- Shelf
+- Object Manager (more generic implementation of File Manager concept)
+
+Note: For conveniency reason, the term File Manager will be preferred to Object Manager across the overview. Moreover the Object Manager will be probably named Openspace in the end.
+
+
+Shelf
+-----
+
+Shelf is an area located at the bottom of the screen where you can store any objects. When you put an object on the Shelf, the Object is moved to a special folder in your home directory named 'Shelf'. Objects represented on the Shelf are 'real', not links or references to the 'real' object.
+
+
+Two types of tabs would be possible:
+- User wide
+- Project specific
+
+Note: they should be easy to differentiate either by color, label style or icons.
+
+To understand the logic behind Shelf, this is important to understand it is just another form of File Manager. As it is demonstrated in the following paragraph, it is a place which consists of File Manager windows in order to keep their content right at hand.
+
+To create a new tab, you just create a new folder in Workspace and drag its window to the Shelf where it's going to appear in an icon form when the mouse will be over the Shelf area. If you created the folder within a project, the corresponding Shelf tab is going to be project specific. Finally if you created it outside of any projects, it's going to appear/behave like a user-wide Shelf tab.
+
+Note: Technically speaking, the tab view in a Shelf is a File Manager view provided through a bundle and only available when the matching File Manager window is docked in the Shelf.
+
+
+More on Shelf
+-------------
+
+When application or document icons are visible in a Shelf tab, it is possible to state whether they are in use at this time by looking at the icon badge. Shelf tab view is logically displaying the same icon badges than File Manager.
+
+Note: Even if we indicate with a special icon badge that an application is a running in the Shelf, that doesn't provide the user with a list of running applications (that's not really a problem in document-centric environment, but could be one in an application-centric one as Étoilé is going to be in its early iterations). We may choose to just show running applications only with a window overlay triggered by Command + Tab. We could integrate a Window switcher within this application switcher. It's important to note that Window objects are Window Server side effects, they are just time to time a visual representation for user documents, this means they haven't their place in the Shelf. Merging apps and windows switcher together basically mean a custom Exposé version taking in account running applications.
+
+Note: OpenStep 4 is integrating Applications switcher in the Shelf with a custom icon similar introducing a paradigm similar to Apple menu.
+
+Note: We could eventually include the possibility to resize Shelf vertically. The other complementary option would be to support projects ordering, then by moving a window against a border, you travel across projects/workspaces.
+
+
+Shelf Interaction Rules
+-----------------------
+
+Usual File Manager interaction rules are valid in Shelf context too.
+
+- Adding an element
+    Pick the object anywhere and drop it within a Shelf tab, elements already present are going to move dynamically to let an empty slot always available under the cursor.
+
+- Removing an element
+    Pick the object in Shelf tab and drop it in the Trash at the far right of the Shelf, surrounding elements are going to move dynamically to fill the resulting empty slot.
+
+- Opening an element
+    Double click the object. When the element isn't already open in the current project. By displaying a dialog, the environment will offer the opportunity to bring it to the front and into the current project, if it currently belongs to another one. Take note, that's going to bring up any other documents bound to the application in use within the other project.
+    
+Note: The last point should be discussed.
+
+
+Terminology Discussion Shelf vs Dock
+------------------------------------
+
+Take note Shelf is for first-class user objects, unlike Dock or Taskbar wich would be for implementation artifacts (like windows, running applications)
+
+
+Tasks Ribbon
+------------
+
+Tasks ruban is divided into three parts :
+- Applications running in current project (32 * 32 icons view)
+- Windows thumbnails in current project (256 * 256, 128 * 128 thumbnails, with auto decrease/increase eventually)
+    When you mouse over an application of the first part, an Exposé or highlight is triggered for the windows in the second part which belong to the application beneath the cursor.
+- Any windows in a user session
+
+Tasks ruban is divided into two parts :
+First a check box "Active/Current Project Only" to switch between project specific view and a bird view of the whole user session.
+- Applications running (32 * 32 icons view)
+- Windows thumbnails (256 * 256, 128 * 128 thumbnails, with auto decrease/increase eventually)
+    When you mouse over an application of the first part, an Exposé or highlight is triggered for the windows in the second part which belong to the application beneath the cursor.
+
+
+Window
+------
+
+No window iconification, only window shading, but still a window can put in an iconfied form on the Shelf by dragging it.
+
+Not, it's a different; Every tab is more like a File Manager window morphed in a tab with a special way to display its content.
+
+
+Project Orientation
+-------------------
+
+In Étoilé, every users is always working within a project session. When a user logs in for the first time, a new project is created automatically. It is called 'Everyday' and will be restored each time the user logs unless it decides to change the project he wants to log into usually.
+
+You can switch between projects in two ways:
+- by clicking in 'Project' menulet in the top right part of the menu bar
+- by dragging a window against a border of the screen
+
+In a project Window, you have a small bar under the window title bar with a button "Activate this Project". When you click this button (or when the project has been selected in the Projects menu), the project is launched and the content of its window/folder is pinned on the desktop of the project sessions once it's running.
+
+- projects are simply normal directory with some specific contents and the hability to restore a previously saved state. See existing session managements, OS/2 "work" option
+- a directory could perhaps be "pushed" to the desktop (eg see the directory's content on the desktop rather than in the window), possibly also associated to a virtual desk
+
+
+Project Interaction
+-------------------
+
+when you open a 'project, the environment takes care of switching to another 'workspace' automatically
+Yen-Ju C.	
+O.K. Then in XWindow term, it is called Session.
+
+In Shelf when you deal with user objects like documents, people, snippets etc. In menu bar, when it provides feedback or actions/services to interact with the environment
+Don't forget the Shelf would be a tabbed Shelf
+That means you can have project related tabs and 'global' tabs shared between every projects.
+
+
+the difference will be that 1) applications will be warned, so it should work better -- eg not only the windows positions are saved, but also the content 2) you'll have more than one session/project, and you'll be able to manage them easily, as they'll be in fact folders containing the needed information (windows position, etc)
+
+For project sessions, we could just introduce our own NSWorkspace class to handle it with a well chosen set of notifications. It would be called NSProject or similar… NSSession might be more general
+
+I'd say that for switching.. we could simply do that (at first) by selecting the currently opened projects in a list (probably a menulet). And double-clicking on a project in the filemanager will open it.
+
+
+Shelf Use in the Context of Project
+-----------------------------------
+
+
+
+Applications Use in the Context of Project
+------------------------------------------
+
+When you launch in a project an application already running in another one, a new instance of the application is created.
+
+
+Document Use in the Context of Project
+--------------------------------------
+
+
+Menu Bar
+
+- Main Menu on the left
+    - Services (System menu)
+    - Document
+    - Edit
+    - etc.
+
+- Status Menu on the right
+    - Projects
+    - Search
+    - Tasks
+    - others like Sound, Network status, Clock etc.
+    
+    
+
+User Object Referential Integrity and Stability
+-----------------------------------------------
+
+More on: <http://www.etoile-project.org/etoile/mediawiki/index.php?title=Core_concepts>
+
+
+Menus
+-----
+
+More on: <http://www.etoile-project.org/etoile/mediawiki/index.php?title=Menus>
+
+
+Persistency from User Interace Viewpoint
+----------------------------------------
+
+More: <http://www.etoile-project.org/etoile/mediawiki/index.php?title=Dialogs>
+
+
+File/Object Manager
+-------------------
+
+1. Objects based interaction
+CoreObject enabled.
+
+2. Referential Integrity and Stability 
+You cannot have two views of the same User Object simultaneously unless you explicitly request it.
+
+3. Transparent Shelf Integration
+
+4. New views support through bundles
+That way you could have specific display bundle to eg manage images (think Aperture luminous table) in your File Manager. With a popup to filter, reshape or reorganize the content displayed in the window, you choose which "display" you want. Eg you can thus easily switch to a "luminous table" view to a normal list-view, etc
+
+5. New Inspectors support through bundles
+User or Developer oriented inspectors to customize object properties and behavior directly in the File Manager.
+
+6. Integrated Object Browser (Browsing mode)
+When you keep the mouse clicked on an item, a column browser appears in overlay to allow browsing the content of the item without breaking referential integrity. Accessory view support. In future we could let the user choose between a column browser and a nodal browser. The browser triggered by the long click can depend on the type of the object, to take an exmaple with an image an image browser can be activated.
+
+7. Annotations
+In first Étoilé iteration, they should be supported only within File Manager but in a more long term they should be available in a pervasive way thorough the environment.
+
+More on Annotations: <http://www.etoile-project.org/etoile/mediawiki/index.php?title=Annotations_in_Workspace>
+
+
+Pasteboard with Pick and Drop
+-----------------------------
+
+The Pasteboard viewer in the Shelf is a special folder with a special action script attached to it. This script is taking to handle Pasteboard history (usually limited to 25 items). When you copy or cut something, the item is inserted at the beginning of the Pasteboard viewer icon row. The first item in the icon row is always the one which is going to be pasted.
+
+Nicolas: yes in the Shelf, but we should keep the possibility to display it in the center of the screen (like a basket where you would like to pick something to drop)
+
+the pasteboard viewer, could it be like Dashboard, almost, where you start to drag, hit a special key, and it appears for you to drop into
+then disappears when you release
+
+More on Pick and Drop: <http://www.etoile-project.org/etoile/mediawiki/index.php?title=Pick_and_drop>
+
+
+Routing through Proxy User Interface Objects
+--------------------------------------------
+
+Introducing a better use of the system Services, particulary we could have more high-level/specific "services" (which really are DO calls) to do things like "route" a content to some destination, etc.
+
+
+Synchronization Facility
+------------------------
+
+At later point, Étoilé will provide easy synchronization between a folder or file locally and remotely and having that built into the File Manager.
+
+
+User Interface Elements Glossary
+--------------------------------
+
+Link: <http://www.etoile-project.org/etoile/mediawiki/index.php?title=User_Interface_Overview>
+

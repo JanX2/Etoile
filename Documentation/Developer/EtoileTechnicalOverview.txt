@@ -1,0 +1,384 @@
+====================
+Étoilé Technical Overview
+====================
+
+Étoilé System Presentation
+=====================
+
+What we want?
+--------------------
+
+Apart everything… :-)
+
+We already have:
+- Stability
+- Security
+- Performance
+
+But we would like also:
+- Flexibility that would allow
+	- Transparent Distribution
+	- Components
+
+Most of OSes widely distributed these days have ridiculous support for such evolutions. They basically don't do the deal (when you aren't considering only performance and stability at a lesser extent), that means they don't provide interesting abstractions to build a user environment… The two most importants points:
+- no reflexivity
+- no unified domain/object space support or similar interaction model support (everything is sandboxed like in a jail in the hell)
+
+
+Let's write yet another OS
+----------------------------------
+
+Hmm… No.
+
+Writing OSes is a pain that involves a huge amount of problems:
+- hardware support (drivers etc.)
+- software support
+- stability
+- performance
+
+
+The world has been Linuxed
+---------------------------------------
+
+Solutions:
+- Hurd or similar
+- Squeak
+Well, no…
+
+Let's start being realistic:
+- That's impossible to fix 
+- What are the solutions?
+
+The world has been linuxed, we have to deal with this fact until the splashy comeback of Hurd & Smalltalk happens one day or never. We have to look for an intermediate approach.
+
+
+Very rough system classifications
+---------------------------------------------
+
+- Virtual Machine (Squeak is THE example ;-)
+- Monolithic system or kernel (that uses a two layers approach between kernel space and user space)
+- Composite or aggregated systems (that includes microkernels, exokernels, programming languages as kernel or system etc.)
+
+
+Étoilé Middle Way
+------------------------
+
+Put a "virtual" microkernel on top of the host system.
+
+Microkernel looks to be what we want, but they are usually put under the main system (Linux on Mach or L4 are common examples) whether it is monolithic or not. By doing the reverse, we obtain most of microkernels benefits we need to build a really advanced desktop environment, without its main downside performance.
+
+A virtual microkernel would be a microkernel stripped down to the following facilities:
+- name service
+- messaging support
+- task/thread API
+Optionally we could include:
+- persistency support (though storage is delegated to the host system)
+
+
+Early Conclusion
+-----------------------
+
+If we build a light and relatively thin system layer which is easily portable to many OSes and circumvents their most drastic limitations, it is basically a win-win situation. A major problem will remain though: OS integration. That's one of the point Linux Desktop has failed to fix for many years, it's done yet, but it seems possible to achieve now (look at FreeDesktop and Ubuntu, Mandriva distributions for example, they are on this path).
+
+
+Étoilé VOS
+---------------
+
+In what sense Étoilé is a system?
+
+- Virtual Operating System
+
+- Virtual Object System
+	- Everything is an object (Spring philosophy)
+
+May be it's better to replace Virtual by Viral ;-)
+
+
+Étoilé VOS inspiration
+------------------------------
+
+A bit of history:
+- UNIX -> Most of things are files (or mapped to)
+	- Plan 9 -> Everything is really file a this time (finally)!…
+- Mach
+	- Hurd
+	- Vanguard -> Every servers is an object
+		- Spring -> Everything is an object (or mapped to)
+
+
+Étoilé System Layers
+----------------------------
+
+- We take care of:
+	- name server
+	- system messaging (IPC)
+	- daemons (start, restart, stop, monitor etc.)
+	- persistent data semantic (FS)
+	- host system interaction
+
+- We delegate to host system:
+	- memory primitives
+	- task/thread primitives
+	- scheduling
+	- memory allocation
+	- drivers
+
+
+Why uses GNUstep and not… ?
+-------------------------------------------
+
+- Squeak
+
+- Io environment (desktop + server)
+
+
+Overriden GNUstep stuff (1)
+-------------------------------------
+
+Deprecated API in Foundation
+	- NSFileManager
+	- NSPipe
+	- NSFileHandle
+	- Parts of DO
+	- Services API
+
+Compatibility will be kept with these APIs, but GNUstep software relying won't be considered Étoilé native (and may not benefit from all Étoilé features and transparent integration with native programs).
+
+Migration path:
+	- NSFileManager -> CoreObject or WorkspaceKit (more featured API for AppKit based applications)
+	- NSPipe, NSFileHandle, DO -> CoreObject
+ 	- Services API -> CoreObject and PickDropKit
+
+Here is a memento about DO classes:
+* NSDistantObject
+* NSDistantObjectRequest
+* NSDistributedLock
+* NSDistributedNotificationCenter
+* NSSocketPort
+* NSSocketPortNameServer
+* NSPort
+* NSPortCoder
+* NSPortMessage
+* NSPortNameServer
+* NSMessagePort
+* NSMessagePortNameServer
+
+
+Overriden GNUstep stuff (2)
+-------------------------------------
+
+Possibly deprecated API in Foundation:
+	- NSTask
+	- NSThread 
+Well, that's still to be considered.
+
+Deprecated API in AppKit
+	- NSWorkspace
+	- Few more to come like Pasteboard related stuff:
+		- NSServicesRequests
+		- NSInputServiceProvider
+		- NSEditor
+		- NSEditorRegistration
+		- NSDraggingDestination
+		- NSDraggingInfo
+		- NSDraggingSource
+
+Migration path:
+	- NSWorkspace -> WorkspaceKit
+	- Pasteboard related API -> PickDropKit
+
+Étoilé 
+Middle approach :
+- Virtual Machine (Squeak is THE example ;-)
+- Monolithic kernel or system (that uses a two layers approach between kernel space and user space)
+- Composite or aggregated systems (that includes microkernels, exokernels, programming languages as kernel or system etc.)
+
+The particularity of these systems is when you run one on top of another one, the hosted system is always running in a sandbox. Most of time, there is a one-to-one mapping between host system 'task' (taken in a very large sense) and the client system (relying on the capacity of the host system to directly or not present itself as virtual system). I say most of time because that wouldn't be true for recent JVM (at a lesser extent, we could have similar objections with dynamic language VM/Interpreters)
+To summarize in the shortest manner, we could state the host system is always acting like a virtual machine.
+
+Étoilé system is quite different on this matter, because it takes a middle approach where Étoilé system is multiplexed with its host system, most of tasks when they are run are mapped to host system tasks and parts of Étoilé system components are mapped to host system primitives. Because Étoilé are components are provided in separate modules and relying on objects model, you can easily use inheritance to tune performance of a basic Étoilé system, by adding support for more host system primitives.
+
+To take two examples :
+- ObjectServer could be replaced at system init by HurdObjectServer (then Étoilé would use rather highly tuned Hurd name server for its own purpose)
+- InteractionDispatcher when Étoilé is run on DragonFlyBSD, could use DragonFlyBSD messaging primitives with an object InteractionIPIDispatcher
+
+Étoilé Virtual System is a very simple microkernel-like system oriented with high-level features in mind rather than low-level integration with hardware. It is written to be run on top of other kernels or systems, unlike usual microkernels (which are able to host monolithic kernels or systems as sandboxed servers).
+
+It is combined with a Virtual Object System (basically similar to Spring domains, VFS in Plan9 and Hurd or SoFS in SOPE), it is powered by an object server ('name server' referencing, routing and returning only objects).
+
+CoreObject and its object server provides two fundamental features :
+- host system and Étoilé system interaction through a merged representation (in term of domains)
+- distribution support (based on our beloved Objective-C DO) between
+	- processes
+	- hosts
+	- languages
+At a later point may be:
+- orthogonal persistency in some cases
+
+What's happen when Étoilé System starts up?
+-------------------------------------------------------------
+
+Here is the sequence…
+
+- Host system boots
+
+Then either manually or automatically:
+	- Étoilé system server (aka etoile_systemd) is started
+Note 'root' privileges will be mandatory, at least initially. This process is similar to Darwin launchd (by being both a kernel-like init process and a daemonizer)
+
+Any other servers is now started by etoile_systemd itself. At this time, other Étoilé core servers are started in the following order:
+		- Security Server (aka etoile_securityd)
+		- gdomap
+		- gdnc
+		- Object Server (aka etoile_objectd)
+		- talk (main shell)
+
+gdomap will probably have to be integrated in etoile_objectd for performance and code simplicity reason.
+
+When the user wants a GUI environment, few other servers are started:
+		- Window Server (X11 I suppose ;-)
+		- Azalea (Window Manager)
+		- Étoile System UI Server (aka etoile_systemUId), it manages the login window
+Next servers or services are now started with user privileges:
+		- gpbs
+		- Security UI Server (aka etoile_securityUId), the process that handles various System UI panels, especially authentication panel for GUI processes when they need special authorizations without raising their privileges
+		- Shelf (aka etoile_shelfUId)
+		- Menu Server (aka etoile_menuUId)
+		- Workspace (User File/Object Manager)
+
+Time to play now!
+
+
+TalkCenter shell
+----------------------
+
+TalkCenter is nothing more than a shell directly interfaced with CoreObject and bundled with a set of tools to manipulate objects referenced by the objects server or within TalkCenter child processes. By default, it relies on Io language but would support in fact any languages registered in the object server (that suppose the corresponding CoreObject language bundle is installed on the system, such bundle would provide a bridge specific to one language)
+
+When you start Étoilé system without UI servers, the virtual system starts and supposing your are in a Unix shell, you are immediately offered TalkCenter prompt (the Étoilé shell). You won't quit this shell until you exit Étoilé system itself.
+That's in part why Étoilé is not a desktop environment but a user environment. It uses would scale from text console to full GUI support.
+
+That means TalkCenter application is mostly a GUI wrapper around talkcenter tool (as it is already the case with usual Unix and GUI-based terminal application).
+
+
+Étoilé User Environment Presentation
+=============================
+
+Why Étoilé is a User Environment?
+-----------------------------------------------
+
+… And not a Desktop Environment.
+
+- Possibility to run it without GUI to benefit from services like
+	- object server
+	- talk shell (TalkCenter backend tool)
+	- security server
+
+- In Future, hardware scalability:
+	- desktop computer
+	- PDA
+	- etc.
+
+
+Étoilé CoreObject Presentation
+========================
+
+Why not rethink DO?
+---------------------------
+
+Pro:
+- Very straightforward to use
+- Flexible and powerful
+- Not verbose
+- 15 years later, Microsoft is providing a nice .Net API under WCF name which provides both DO and NeXT Services features to Windows :-) Note: WCF stands for Windows Communication Foundation
+
+
+Why rethink DO in Étoilé perspective?
+---------------------------------------------------
+
+Cons:
+- Poor name server (in part because it follows Mach model weak on some points)
+	 - No default naming scheme
+	 - No security policy or model
+	 - Poor replication, synchronisation distribution features across name servers
+	 - No lookup chains
+- Abstract and very concise API that makes it difficult to understand until you really grasp it.
+- Language support limited to Objective-C
+- No integration with modern stuff like XML-RPC, Web services etc.
+
+
+Introducing CoreObject
+--------------------------------
+
+CoreObject has been thought to fix these issues, it introduces initially:
+- New name server (branded as 'object server')
+- Security model
+- Lookup chains
+- Actor semantic (based on StepTalk) with very basic XML format for serialization
+It delegates to StepTalk :
+	- programming languages support
+	- scripting support
+
+
+Apple has the solution : Uniform Type Identifier (UTI)
+
+Will become default File types mechanism in Étoilé and will be extended to become Default objec type mechanism in CoreObject
+
+- File UTI are mandatory
+- File type extensions are optional
+
+Will allow to build Roles logic very easily.
+
+CoreObject
+
+in Future :
+- Transactional support with HOM (through a trampoline) like Vanguard microkernel message chains
+
+An actor is an aggregate of services/messages from other objects or programs, presented with its own object interface and logic. It can be described as proxy mapped to several objects (or often parts of them) and not not only one.
+
+
+It implements lookup chains, that could be roughly compared to Hurd translators.
+Lookup chains have many uses like to take an example, know what role and program is related to an UTI.
+A lookup chain happens when a lookup on a domain returns another domain (referenced in the object server), then the latter evaluates the returned domain and repeats the process until the returned object isn't a domain object anymore.
+
+The security model is planned to be a simplified version of what has already been implemented for Spring or Hurd name servers.
+
+
+At a later point, transactions support  may be implemented at CoreObject level (both object server and Objective-C would be concerned by the extensions) to have transactional support built-in and improve performance (as introduced by Vanguard message chains).
+
+
+
+What's a lookup chain ?
+
+Web server  example :
+
+[objectServer objectForURL: @("http://www.etoile-project.org/cool.html");
+
+UTI/roles lookup happens inside the object server and triggers a request/result interaction with HTTP server.
+
+Finally CoreObject server returns :
+
+string object which contains html/txt content of the requested page.
+
+What's a lookup chain ? 
+
+Web server example in detail :
+
+What's a lookup chain ? 
+
+Open document example :
+
+What's a lookup chain ? 
+
+Open document example in detail :
+
+Writing such a server is pretty hard when you consider concurrency issues.
+
+To simplify such development, the solution is to rely on a language which makes easier concurrency support with stuff like :
+- coroutines
+- auto-deadlock detections
+- futures/continuations
+
+Io provides all these features, that's why it is a probably a good choice to write the object server itself in CoreObject 
+
+
+
