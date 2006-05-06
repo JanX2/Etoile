@@ -89,22 +89,6 @@ static NSTimer *timer;
   [[_main_menu window] setTitle: [[NSProcessInfo processInfo] processName]];
   [[_main_menu window] setLevel: NSMainMenuWindowLevel];
   [_main_menu setGeometry];
-
-  {
-      if(timer)
-      {
-          [timer invalidate];
-          [timer release];
-      }
-
-      timer = [NSTimer scheduledTimerWithTimeInterval:60 
-                                target:_main_menu 
-                                selector:@selector(updateClock:) 
-                                userInfo:nil 
-                                repeats:YES];
-      [timer retain];
-  }
 }
 
 @end
-

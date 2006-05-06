@@ -7,118 +7,133 @@
 #import <AppKit/NSImage.h>
 #import <AppKit/NSParagraphStyle.h>
 
+#import "EtoileSeparatorMenuItem.h"
+
 @implementation NSMenuItemCell (EtoileMenusHackery)
 
 - (void) drawInteriorWithFrame: (NSRect) cellFrame
                         inView: (NSView*) controlView
 {
-  unsigned  mask;
-
-  // Transparent buttons never draw
-  if (_buttoncell_is_transparent)
-    return;
-
-  cellFrame = [self drawingRectForBounds: cellFrame];
-
-  if (_cell.is_highlighted)
+  if ([_menuItem isKindOfClass: [EtoileSeparatorMenuItem class]])
     {
-      mask = _highlightsByMask;
+      [self drawSeparatorItemWithFrame: cellFrame inView: controlView];
+    }
+  else
+    {
+      unsigned  mask;
 
-      if (_cell.state)
+      // Transparent buttons never draw
+      if (_buttoncell_is_transparent)
+        return;
+
+      cellFrame = [self drawingRectForBounds: cellFrame];
+
+      if (_cell.is_highlighted)
         {
-          mask &= ~_showAltStateMask;
+          mask = _highlightsByMask;
+
+          if (_cell.state)
+            {
+              mask &= ~_showAltStateMask;
+            }
         }
-    }
-  else if (_cell.state)
-    {
-      mask = _showAltStateMask;
-    }
-  else
-    {
-      mask = NSNoCellMask;
-    }
+      else if (_cell.state)
+        {
+          mask = _showAltStateMask;
+        }
+      else
+        {
+          mask = NSNoCellMask;
+        }
 
-  // pushed in buttons contents are displaced to the bottom right 1px
-  if (_cell.is_bordered && (mask & NSPushInCellMask))
-    {
-      cellFrame = NSOffsetRect(cellFrame, 1,
-                               [controlView isFlipped] ? 1 : -1);
-    }
+      {
+        NSColor * backgroundColor = [NSColor colorWithCalibratedWhite: 0.9
+                                                                alpha: 1.0];
 
-  /*
-   * Determine the background color and cache it in an ivar so that the
-   * low-level drawing methods don't need to do it again.
-   */
-  if (mask & (NSChangeGrayCellMask | NSChangeBackgroundCellMask))
-    {
-      NSColor * backgroundColor;
+        [backgroundColor set];
+        NSRectFill(cellFrame);
+      }
 
-      backgroundColor = [NSColor colorWithCalibratedRed: 0.0
-                                                  green: 0.0
-                                                   blue: 1
-                                                  alpha: 0.3];
+      // pushed in buttons contents are displaced to the bottom right 1px
+      if (_cell.is_bordered && (mask & NSPushInCellMask))
+        {
+          cellFrame = NSOffsetRect(cellFrame, 1,
+                                   [controlView isFlipped] ? 1 : -1);
+        }
 
-      [backgroundColor set];
-      NSRectFill(cellFrame);
-    }
-  else
+      /*
+       * Determine the background color and cache it in an ivar so that the
+       * low-level drawing methods don't need to do it again.
+       */
+      if (mask & (NSChangeGrayCellMask | NSChangeBackgroundCellMask))
+        {
+          NSColor * backgroundColor;
 
-  /*
-   * Determine the image and the title that will be
-   * displayed. If the NSContentsCellMask is set the
-   * image and title are swapped only if state is 1 or
-   * if highlighting is set (when a button is pushed it's
-   * content is changed to the face of reversed state).
-   * The results are saved in two ivars for use in other
-   * drawing methods.
-   */
-  if (mask & NSContentsCellMask)
-    {
-      _imageToDisplay = _altImage;
-      if (!_imageToDisplay)
+          backgroundColor = [NSColor colorWithCalibratedRed: 0.0
+                                                      green: 0.0
+                                                       blue: 1
+                                                      alpha: 0.3];
+
+          [backgroundColor set];
+          NSRectFill(cellFrame);
+        }
+      /*
+       * Determine the image and the title that will be
+       * displayed. If the NSContentsCellMask is set the
+       * image and title are swapped only if state is 1 or
+       * if highlighting is set (when a button is pushed it's
+       * content is changed to the face of reversed state).
+       * The results are saved in two ivars for use in other
+       * drawing methods.
+       */
+      else if (mask & NSContentsCellMask)
+        {
+          _imageToDisplay = _altImage;
+          if (!_imageToDisplay)
+            {
+              _imageToDisplay = [_menuItem image];
+            }
+          _titleToDisplay = _altContents;
+
+          if (_titleToDisplay == nil || [_titleToDisplay isEqual: @""])
+            {
+              _titleToDisplay = [_menuItem title];
+            }
+        }
+      else
         {
           _imageToDisplay = [_menuItem image];
-        }
-      _titleToDisplay = _altContents;
-
-      if (_titleToDisplay == nil || [_titleToDisplay isEqual: @""])
-        {
           _titleToDisplay = [_menuItem title];
         }
-    }
-  else
-    {
-      _imageToDisplay = [_menuItem image];
-      _titleToDisplay = [_menuItem title];
-    }
 
-  if (_imageToDisplay)
-    {
-      _imageWidth = [_imageToDisplay size].width;
-    }
+      if (_imageToDisplay)
+        {
+          _imageWidth = [_imageToDisplay size].width;
+        }
 
-  // Draw the state image
-  if (_stateImageWidth > 0)
-    {
-      [self drawStateImageWithFrame: cellFrame inView: controlView];
-    }
+      // Draw the state image
+      if (_stateImageWidth > 0)
+        {
+          [self drawStateImageWithFrame: cellFrame inView: controlView];
+        }
 
-  // Draw the image
-  if (_imageWidth > 0)
-    {
-      [self drawImageWithFrame: cellFrame inView: controlView];
-    }
+      // Draw the image
+      if (_imageWidth > 0)
+        {
+          [self drawImageWithFrame: cellFrame inView: controlView];
+        }
 
-  // Draw the title
-  if (_titleWidth > 0)
-    {
-      [self drawTitleWithFrame: cellFrame inView: controlView];
-    }
+      // Draw the title
+      if (_titleWidth > 0)
+        {
+          [self drawTitleWithFrame: cellFrame inView: controlView];
+        }
 
-  // Draw the key equivalent
-  if (_keyEquivalentWidth > 0)
-    {
-      [self drawKeyEquivalentWithFrame: cellFrame inView: controlView];
+      // Draw the key equivalent
+      if (_keyEquivalentWidth > 0)
+        {
+          [self drawKeyEquivalentWithFrame: cellFrame inView: controlView];
+        }
     }
 }
 /*

@@ -1,5 +1,5 @@
 
 enum {
-  MenuBarHeight = 21,
+  MenuBarHeight = 22,
   MenuTitleHeight = 16
 };

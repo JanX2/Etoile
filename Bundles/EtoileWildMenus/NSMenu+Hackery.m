@@ -31,11 +31,6 @@
 
 #import "MenuBarHeight.h"
 
-static inline int my_round(float x)
-{
-  return (float) (x + 0.5);
-}
-
 @implementation NSMenu (HorizontalHackery)
 
 #define SHIFT_DELTA 18.0
@@ -97,37 +92,59 @@ static inline int my_round(float x)
 
 - (void) _rightMouseDisplay: (NSEvent*)theEvent 
 {
-  NSLog(@"Right menu click disabled for the moment.");
+  // enable context menus to function
+  if (_horizontal == NO && [(NSMenuView *) _view isHorizontal] == NO)
+    {
+      [self displayTransient];
+      [_view mouseDown: theEvent];
+      [self closeTransient];
+    }
 }
 
 - (void)setGeometry
 {
   NSPoint origin;
-  origin = NSMakePoint (my_round(1.5 * MenuBarHeight),
+  origin = NSMakePoint (1.5 * MenuBarHeight,
     [[NSScreen mainScreen] frame].size.height - [_aWindow frame].size.height);
   [_aWindow setFrameOrigin: origin];
   [_bWindow setFrameOrigin: origin];
 }
 
--(void)updateClock:(NSTimer *)timer;
-{
-    [_view setNeedsDisplay:YES];
-}
-
--(void) _updateUserDefaults:(id)notification
-{
+//-(void) _updateUserDefaults:(id)notification
+//{
+  
   /*
-    NSLog(@"not going to update because we don't use this and might mess something up for other menu layouts since they seem to draw from the bottom up and our bottom is really close to the top");
+    NSLog(@"not going to update because we don't use this and might mess
+    something up for other menu layouts since they seem to draw from the
+    bottom up and our bottom is really close to the top");
   */
-}
+//}
 
 - (void) _organizeMenu
 {
-  NSMenu * appMenu = [[self itemWithTitle: [[NSProcessInfo processInfo]
-    processName]] submenu];
+  static NSString * appName = nil;
+  NSMenu * appMenu;
+
+  if (appName == nil)
+    {
+      ASSIGN(appName, [[[NSBundle mainBundle] infoDictionary]
+        objectForKey: @"ApplicationName"]);
+      if (appName == nil)
+        {
+          ASSIGN(appName, [[NSApp mainMenu] title]);
+        }
+    }
+
+  appMenu = [[self itemWithTitle: appName] submenu];
 
   if (![self isEqual: [NSApp mainMenu]])
     return;
+
+  [[NSNotificationCenter defaultCenter]
+    addObserver: self
+       selector: @selector(setGeometry)
+           name: NSWindowDidMoveNotification
+         object: [self window]];
 
   if (appMenu == nil)
     {
@@ -151,8 +168,7 @@ static inline int my_round(float x)
 	      [itemsToMove addObject: anItem];
 	    }
 
-          if ([title isEqual: NSLocalizedString (@"Info",
-                                           @"Info")])
+          if ([title isEqual: _(@"Info")])
 	    {
 	      [itemsToMove addObject: anItem];
 	    }
@@ -164,11 +180,11 @@ static inline int my_round(float x)
           [appMenu addItem: [itemsToMove objectAtIndex: i]];
         }
 
-      [self insertItemWithTitle: [[NSProcessInfo processInfo] processName]
+      [self insertItemWithTitle: appName
 		         action: NULL
 	          keyEquivalent: @"" 
                         atIndex: 0];
-      appItem = (NSMenuItem *)[self itemWithTitle: [[NSProcessInfo processInfo] processName]];
+      appItem = (NSMenuItem *)[self itemWithTitle: appName];
 
       [self setSubmenu: appMenu forItem: appItem];
 
@@ -178,7 +194,7 @@ static inline int my_round(float x)
     {
       int i, n;
       NSMutableArray *itemsToMove = [NSMutableArray new];
-      NSMenuItem *appItem = [self itemWithTitle: [[NSProcessInfo processInfo] processName]];
+      NSMenuItem *appItem = [self itemWithTitle: appName];
       int index = [self indexOfItem: appItem];
 
       NSUserDefaults *defs=[NSUserDefaults standardUserDefaults];
@@ -203,8 +219,7 @@ static inline int my_round(float x)
 	      [itemsToMove addObject: anItem];
 	    }
 
-          if ([title isEqual: NSLocalizedString (@"Info",
-                                           @"Info")])
+          if ([title isEqual: _(@"Info")])
 	    {
 	      [itemsToMove addObject: anItem];
 	    }

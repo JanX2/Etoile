@@ -20,6 +20,8 @@
    59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#import "GSHorizontalMenuItemCell.h"
+
 #import <AppKit/NSGraphics.h>
 #import <AppKit/NSImage.h>
 #import <AppKit/NSParagraphStyle.h>
@@ -27,7 +29,7 @@
 #import <AppKit/PSOperators.h>
 #import <AppKit/NSColor.h>
 
-#import "GSHorizontalMenuItemCell.h"
+#import "MenuBarHeight.h"
 
 @implementation GSHorizontalMenuItemCell
 
@@ -99,38 +101,8 @@ static NSImage * arrowImage = nil;
 
 - (NSRect) titleRectForBounds:(NSRect)cellFrame
 {
-  /* This adjust will center us within the menubar. */
-
-  cellFrame.size.height -= 2;
-
-  switch (_cell.image_position)
-    {
-      case NSNoImage:
-      case NSImageOverlaps:
-        break;
-  
-      case NSImageOnly:
-        cellFrame = NSZeroRect;
-        break;
-    
-      case NSImageLeft:
-        cellFrame.origin.x  += _imageWidth + GSCellTextImageXDist;
-        cellFrame.size.width = _titleWidth;
-        break;
-        
-      case NSImageRight:
-        cellFrame.size.width = _titleWidth;
-        break;
-                 
-      case NSImageBelow:
-        cellFrame.size.height /= 2;
-        cellFrame.origin.y += cellFrame.size.height;
-        break;
-
-      case NSImageAbove:
-        cellFrame.size.height /= 2;
-        break;
-    }
+  cellFrame.size.height = [[self font] defaultLineHeightForFont];
+  cellFrame.origin.y = (MenuBarHeight - NSHeight(cellFrame)) / 2;
 
   return cellFrame;
 }
@@ -217,12 +189,12 @@ static NSImage * arrowImage = nil;
 
   // draw the borders of the menu item
 
-  [[NSColor colorWithCalibratedWhite: 1.0 alpha: 0.4] set];
+  [[NSColor colorWithCalibratedWhite: 1.0 alpha: 0.35] set];
   PSmoveto(NSMinX(cellFrame), NSMinY(cellFrame));
   PSrlineto(0, cellFrame.size.height);
   PSstroke();
 
-  [[NSColor colorWithCalibratedWhite: 0.67 alpha: 0.35] set];
+  [[NSColor colorWithCalibratedWhite: 0.67 alpha: 0.3] set];
   PSmoveto(NSMaxX(cellFrame) - 1, NSMinY(cellFrame));
   PSrlineto(0, cellFrame.size.height);
   PSstroke();

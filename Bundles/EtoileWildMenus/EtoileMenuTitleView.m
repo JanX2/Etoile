@@ -7,6 +7,7 @@
 #import <AppKit/NSColor.h>
 #import <AppKit/NSGraphics.h>
 #import <AppKit/NSButton.h>
+#import <AppKit/NSWindow.h>
 
 #import <Foundation/NSBundle.h>
 
@@ -31,6 +32,25 @@ static float MenuTitleFillerWidth = 0;
           MenuTitleFillerWidth = 100;
         }
     }
+}
+
++ (float) height
+{
+  static float height = 0.0;
+
+  if (height == 0.0)
+    {
+      NSFont *font = [NSFont boldSystemFontOfSize: [NSFont smallSystemFontSize]];
+
+      /* Minimum title height is 16 */
+      height = ([font boundingRectForFont].size.height) + 4;
+      if (height < 16)
+        {
+          height = 16;
+        }
+    }
+
+  return height;
 }
 
 - init
@@ -61,21 +81,26 @@ static float MenuTitleFillerWidth = 0;
 - (void) drawRect: (NSRect) r
 {
   float x;
+  NSFont * font;
+  float height;
   NSRect myFrame = [self frame];
   NSRect rect;
 
   // paint the tiled background
-  for (x = 0; x < NSMaxX(r); x += MenuTitleFillerWidth)
+  for (x = NSMinX(r); x < NSMaxX(r); x += MenuTitleFillerWidth)
     {
       [MenuTitleFiller compositeToPoint: NSMakePoint(x, 0)
                               operation: NSCompositeCopy];
     }
 
-  rect = NSMakeRect(3, ((NSHeight(myFrame) - fontHeight)) / 2 - 1,
-                    NSWidth(myFrame), fontHeight);
+  font = [titleDrawingAttributes objectForKey: NSFontAttributeName];
+  height = [font defaultLineHeightForFont];
+  rect = NSMakeRect(4, (NSHeight(myFrame) - height) / 2,
+                    NSWidth(myFrame), height);
   [[[self owner] title] drawInRect: rect
                     withAttributes: titleDrawingAttributes];
 
+  myFrame.origin = NSZeroPoint;
   [[NSColor blackColor] set];
   NSFrameRect(myFrame);
 }

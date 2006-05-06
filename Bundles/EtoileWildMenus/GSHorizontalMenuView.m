@@ -21,11 +21,12 @@
 */
 
 #include "GSHorizontalMenuView.h"
-#import "NSBezierPath+Hackery.h"
 #include <Foundation/Foundation.h>
 
 #import <AppKit/NSParagraphStyle.h>
 #import <AppKit/NSImage.h>
+#import <AppKit/NSColor.h>
+#import <AppKit/PSOperators.h>
 
 #import "GSHorizontalMenuItemCell.h"
 #import "EtoileMenuUtilities.h"
@@ -174,6 +175,7 @@ typedef struct _GSCellRect {
 	}
 
       scRect.size.width = currentX;
+      scRect.size.width += 2;
       [self setFrameSize: scRect.size];
     }
 }
@@ -189,7 +191,7 @@ typedef struct _GSCellRect {
 
   aRect = GSIArrayItemAtIndex(_cellRects, index).ext;
 
-  /* FIXME: handle vertical case? */
+  aRect.rect.origin.x += 1;
 
   return aRect.rect;
 }
@@ -271,6 +273,18 @@ typedef struct _GSCellRect {
           [aCell drawWithFrame: aRect inView: self];
         }
     }
+
+  NSRect myFrame = [self frame];
+
+  [[NSColor colorWithCalibratedWhite: 0.67 alpha: 0.3] set];
+  PSmoveto(0, 1);
+  PSrlineto(0, NSHeight(myFrame));
+  PSstroke();
+
+  [[NSColor colorWithCalibratedWhite: 1.0 alpha: 0.35] set];
+  PSmoveto(NSMaxX(myFrame) - 1, 1);
+  PSrlineto(0, NSHeight(myFrame));
+  PSstroke();
 }
 
 - (void) update
