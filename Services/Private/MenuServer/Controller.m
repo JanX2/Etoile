@@ -38,14 +38,15 @@
 #import <AppKit/NSScreen.h>
 #import <AppKit/NSWorkspace.h>
 
-#import <WorkspaceCommKit/WorkspaceCommKit.h>
+//#import <WorkspaceCommKit/WorkspaceCommKit.h>
 
 #import "MenuBarHeight.h"
 #import "MenuBarView.h"
 #import "MenuBarWindow.h"
 #import "MenuletLoader.h"
 
-static inline int my_round(float x)
+static inline int
+my_round (float x)
 {
   return (int) (x + 0.5);
 }
@@ -119,6 +120,12 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 // a log out operation
 - (void) logOut: sender
 {
+  /*
+   * No idea how to implement this, now that WorkspaceCommKit is not
+   * available and no consistent solution is in sight. Ask Quentin on
+   * Core Object, he could know.
+   */
+#if 0
   int reply;
 
   reply = NSRunAlertPanel (_(@"Really log out?"),
@@ -130,8 +137,7 @@ MenuBarWindow * ServerMenuBarWindow = nil;
       NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
       id workspaceApp;
 
-      workspaceApp = [[NSWorkspace sharedWorkspace]
-        connectToWorkspaceApplicationLaunch: NO];
+      workspaceApp = [self workspaceApp];
 
       if (workspaceApp != nil)
         {
@@ -150,6 +156,11 @@ MenuBarWindow * ServerMenuBarWindow = nil;
             nil, nil, nil);
         }
     }
+#else
+  NSRunAlertPanel (_(@"Not implemented"),
+    _(@"Currently, this feature has been disabled, sorry."),
+    nil, nil, nil);
+#endif
 }
 
 @end
