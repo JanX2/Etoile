@@ -1,0 +1,19 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    AboutEtoileEntry = {
+	Actions = (
+	);
+	Outlets = (
+	    window,
+	    cpu,
+	    cpuFreq,
+	    etoileVersion,
+	    hostName,
+	    kernelVersion,
+	    machine,
+	    memory,
+	    operatingSystem
+	);
+	Super = NSObject;
+    };
+}

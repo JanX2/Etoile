@@ -1,0 +1,28 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    ApplicationsEntry = {
+	Actions = (
+	    "showApplication:",
+	    "kill:"
+	);
+	Outlets = (
+	    window,
+	    appTable,
+	    appIcon,
+	    appNameField,
+	    appPathField,
+	    appPIDField,
+	    killButton
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "kill:",
+	    "newAction:",
+	    "showApp:",
+	    "showApplication:"
+	);
+	Super = NSObject;
+    };
+}

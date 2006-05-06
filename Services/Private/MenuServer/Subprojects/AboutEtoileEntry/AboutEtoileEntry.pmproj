@@ -1,0 +1,104 @@
+{
+    ProjectModulesData = {
+	FileManager = {
+	    Files = (
+		{
+		    Contents = (
+			{
+			    Name = AboutEtoileEntry.m;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Class Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = AboutEtoileEntry.h;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Header Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Other Source Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Contents = (
+				{
+				    Name = AboutEtoileEntry.gorm;
+				    Type = Plain;
+				}
+			    );
+			    Name = English;
+			    Type = Category;
+			}
+		    );
+		    Name = Interfaces;
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Resource Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Localized Resource Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = GNUmakefile.preamble;
+			    Type = Plain;
+			},
+			{
+			    Name = GNUmakefile.postamble;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Supporting Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = Frameworks;
+		    Type = Category;
+		}
+	    );
+	};
+	MakeBuilder = {
+	    AllWarnings = <*BY>
+;
+	    BuildArguments = (
+	    );
+	    VerboseBuild = <*BN>
+;
+	    Warnings = <*BY>
+;
+	};
+	SubprojectsManager = {
+	    Subprojects = (
+	    );
+	};
+    };
+    ProjectName = AboutEtoileEntry;
+    ProjectType = Bundle;
+    ProjectTypeData = {
+	Authors = (
+	);
+	MakefileHash = <*I1821165468>;
+    };
+    Version = 0.2;
+}

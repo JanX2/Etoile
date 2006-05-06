@@ -1,0 +1,97 @@
+{
+    ProjectModulesData = {
+	FileManager = {
+	    Files = (
+		{
+		    Contents = (
+			{
+			    Name = ClockMenulet.m;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Class Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = ClockMenulet.h;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Header Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Other Source Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = Interfaces;
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Resource Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Localized Resource Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = GNUmakefile.preamble;
+			    Type = Plain;
+			},
+			{
+			    Name = GNUmakefile.postamble;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Supporting Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = Frameworks;
+		    Type = Category;
+		}
+	    );
+	};
+	MakeBuilder = {
+	    AllWarnings = <*BY>
+;
+	    BuildArguments = (
+	    );
+	    VerboseBuild = <*BN>
+;
+	    Warnings = <*BY>
+;
+	};
+	SubprojectsManager = {
+	    Subprojects = (
+	    );
+	};
+    };
+    ProjectName = ClockMenulet;
+    ProjectType = Bundle;
+    ProjectTypeData = {
+	Authors = (
+	    "Sa\U0161o Kiselkov"
+	);
+	Copyright = "Copyright (C) 2006 by Sa\U0161o Kiselkov";
+	CopyrightDescription = "Released under the terms of the GNU General Public License v2, or any later.";
+	MakefileHash = <*I89410369>;
+    };
+    Version = 0.2;
+}

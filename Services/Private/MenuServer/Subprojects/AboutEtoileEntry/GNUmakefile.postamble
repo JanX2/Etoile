@@ -1,0 +1,10 @@
+# Postamble Definitions
+
+before-all :: OSType.h
+
+OSType.h :
+	echo "#define `uname | tr [:lower:] [:upper:]`" > OSType.h
+
+after-clean::
+	rm -f OSType.h
+

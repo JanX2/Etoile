@@ -1,0 +1,8 @@
+{
+    Authors = (
+	"Sa\U0161o Kiselkov"
+    );
+    BundleName = ClockMenulet;
+    Copyright = "Copyright (C) 2006 by Sa\U0161o Kiselkov";
+    CopyrightDescription = "Released under the terms of the GNU General Public License v2, or any later.";
+}
