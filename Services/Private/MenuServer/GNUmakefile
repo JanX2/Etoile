@@ -1,22 +1,47 @@
+# AUTOMATICALLY GENERATED. DO NOT EDIT - YOUR CHANGES WILL BE OVERWRITTEN
+
 include $(GNUSTEP_MAKEFILES)/common.make
 
-GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
+ifeq ($(warnings), yes)
+ADDITIONAL_OBJCFLAGS += -W
+ADDITIONAL_OBJCPPFLAGS += -W
+ADDITIONAL_CFLAGS += -W
+ADDITIONAL_CPPFLAGS += -W
+endif
+ifeq ($(allwarnings), yes)
+ADDITIONAL_OBJCFLAGS += -Wall
+ADDITIONAL_OBJCPPFLAGS += -Wall
+ADDITIONAL_CFLAGS += -Wall
+ADDITIONAL_CPPFLAGS += -Wall
+endif
 
-SUBPROJECTS= \
-$(wildcard Menulets/*) \
-$(wildcard SystemBarEntries/*)
+APP_NAME = EtoileMenuServer
 
-APP_NAME=EtoileMenuServer
+EtoileMenuServer_OBJC_FILES = BundleExtensionLoader.m \
+MenuletLoader.m \
+Controller.m \
+MenuBarView.m \
+MenuBarWindow.m \
+main.m \
 
-$(APP_NAME)_OBJC_FILES=$(wildcard *.m)
+EtoileMenuServer_OBJCC_FILES = 
+EtoileMenuServer_C_FILES = 
+EtoileMenuServer_RESOURCE_FILES = Resources/Etoile.tiff \
+Resources/EtoileLogo.tiff \
+Resources/MenuBarFiller.tiff \
+Resources/EtoileLogoH.tiff \
+Resources/MenuBarRightEdge.tiff \
+Resources/MenuBarLeftEdge.tiff \
 
-$(APP_NAME)_RESOURCE_FILES=\
-$(filter-out Resources/CVS, $(wildcard Resources/*)) \
-$(filter-out Images/CVS, $(wildcard Images/*.tiff)) \
-$(filter-out SyntaxDefinitions/CVS, $(wildcard SyntaxDefinitions/*.syntax))
+EtoileMenuServer_LANGUAGES = 
+EtoileMenuServer_LOCALIZED_RESOURCE_FILES = 
+EtoileMenuServer_APPLICATION_ICON = Etoile.tiff
 
-$(APP_NAME)_LANGUAGES=$(basename $(wildcard *.lproj))
-$(APP_NAME)_LOCALIZED_RESOURCE_FILES=$(sort $(notdir $(wildcard *.lproj/*)))
+ADDITIONAL_GUI_LIBS = 
+SUBPROJECTS = Subprojects/ClockMenulet \
+Subprojects/AboutEtoileEntry \
+Subprojects/ApplicationsEntry \
+Subprojects/SystemPreferencesEntry \
 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/application.make

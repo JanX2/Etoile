@@ -1,0 +1,236 @@
+{
+    ProjectModulesData = {
+	FileManager = {
+	    Files = (
+		{
+		    Contents = (
+			{
+			    Name = BundleExtensionLoader.m;
+			    Type = Plain;
+			},
+			{
+			    Name = MenuletLoader.m;
+			    Type = Plain;
+			},
+			{
+			    Name = Controller.m;
+			    Type = Plain;
+			},
+			{
+			    Name = MenuBarView.m;
+			    Type = Plain;
+			},
+			{
+			    Name = MenuBarWindow.m;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Class Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = MenuBarView.h;
+			    Type = Plain;
+			},
+			{
+			    Name = Controller.h;
+			    Type = Plain;
+			},
+			{
+			    Name = MenuBarWindow.h;
+			    Type = Plain;
+			},
+			{
+			    Name = MenuBarHeight.h;
+			    Type = Plain;
+			},
+			{
+			    Name = MenuletLoader.h;
+			    Type = Plain;
+			},
+			{
+			    Name = BundleExtensionLoader.h;
+			    Type = Plain;
+			},
+			{
+			    Contents = (
+				{
+				    Name = EtoileMenulet.h;
+				    Type = Plain;
+				},
+				{
+				    Name = EtoileSystemBarEntry.h;
+				    Type = Plain;
+				}
+			    );
+			    Name = "Module Protocols";
+			    Type = Category;
+			}
+		    );
+		    Name = "Header Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = main.m;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Other Source Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = Interfaces;
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Contents = (
+				{
+				    Name = Etoile.tiff;
+				    Type = Plain;
+				},
+				{
+				    Name = EtoileLogo.tiff;
+				    Type = Plain;
+				},
+				{
+				    Name = MenuBarFiller.tiff;
+				    Type = Plain;
+				},
+				{
+				    Name = EtoileLogoH.tiff;
+				    Type = Plain;
+				},
+				{
+				    Name = MenuBarRightEdge.tiff;
+				    Type = Plain;
+				},
+				{
+				    Name = MenuBarLeftEdge.tiff;
+				    Type = Plain;
+				}
+			    );
+			    Name = Images;
+			    Type = Category;
+			}
+		    );
+		    Name = "Resource Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Localized Resource Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = GNUmakefile.preamble;
+			    Type = Plain;
+			},
+			{
+			    Name = GNUmakefile.postamble;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Supporting Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Contents = (
+				{
+				    Name = EtoileLogoH.xcf;
+				    Type = Plain;
+				},
+				{
+				    Name = MenuBar.xcf;
+				    Type = Plain;
+				},
+				{
+				    Name = EtoileLogo.xcf;
+				    Type = Plain;
+				}
+			    );
+			    Name = "Image Source Files";
+			    Type = Category;
+			}
+		    );
+		    Name = "Non-Project Files";
+		    Type = Category;
+		}
+	    );
+	};
+	MakeBuilder = {
+	    AllWarnings = <*BN>
+;
+	    BuildArguments = (
+	    );
+	    VerboseBuild = <*BN>
+;
+	    Warnings = <*BN>
+;
+	};
+	SubprojectsManager = {
+	    Subprojects = (
+		{
+		    Contents = (
+			{
+			    Name = ClockMenulet;
+			    ProjectFile = ClockMenulet.pmproj;
+			    Type = Subproject;
+			}
+		    );
+		    Name = Menulets;
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = AboutEtoileEntry;
+			    ProjectFile = AboutEtoileEntry.pmproj;
+			    Type = Subproject;
+			},
+			{
+			    Name = ApplicationsEntry;
+			    ProjectFile = ApplicationsEntry.pmproj;
+			    Type = Subproject;
+			},
+			{
+			    Name = SystemPreferencesEntry;
+			    ProjectFile = SystemPreferencesEntry.pmproj;
+			    Type = Subproject;
+			}
+		    );
+		    Name = "System Bar Entries";
+		    Type = Category;
+		}
+	    );
+	};
+    };
+    ProjectName = EtoileMenuServer;
+    ProjectType = Application;
+    ProjectTypeData = {
+	ApplicationDescription = "A server for menu-items for horizontal Etoile menus.";
+	ApplicationRelease = 0.1;
+	Authors = (
+	    "Sa\U0161o Kiselkov"
+	);
+	Copyright = "Copyright (C) 2006 by Sa\U0161o Kiselkov";
+	CopyrightDescription = "Released under the terms of the GNU General Public License v2, or any later.";
+	FileTypes = (
+	);
+	IconName = Etoile.tiff;
+	MakefileHash = <*I"-24281296">;
+    };
+    Version = 0.2;
+}

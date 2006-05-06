@@ -1,3 +1,25 @@
+/*
+    MenuBarView.m
+
+    Implementation of the MenuBarView class for the EtoileMenuServer
+    application.
+
+    Copyright (C) 2005  Saso Kiselkov
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
 
 #import "MenuBarView.h"
 
@@ -37,6 +59,7 @@
   NSEnumerator * e;
   NSBundle * bundle;
   NSString * group;
+  NSMutableArray * ungrouped;
 
   // load all the system bar entry menus
   bundles = [[BundleExtensionLoader shared]
@@ -47,6 +70,7 @@
        domainDetectionByKey: @"SystemBarEntries"];
 
   groups = [NSMutableDictionary dictionary];
+  ungrouped = [NSMutableArray array];
 
   // now load all system bar entries and put them into the `groups'
   // dictionary where they are each placed in an array keyed to their
@@ -60,15 +84,23 @@
       if (entry != nil)
         {
           NSString * group = [entry menuGroup];
-          NSMutableArray * groupArray = [groups objectForKey: group];
 
-          if (groupArray == nil)
+          if (group != nil)
             {
-              groupArray = [NSMutableArray array];
-              [groups setObject: groupArray forKey: group];
-            }
+              NSMutableArray * groupArray = [groups objectForKey: group];
 
-          [groupArray addObject: entry];
+              if (groupArray == nil)
+                {
+                  groupArray = [NSMutableArray array];
+                  [groups setObject: groupArray forKey: group];
+                }
+
+              [groupArray addObject: entry];
+            }
+          else
+            {
+              [ungrouped addObject: entry];
+            }
         }
       else
         {
@@ -93,6 +125,19 @@
 
       [systemMenu addItem: [NSMenuItem separatorItem]];
     }
+
+  if ([ungrouped count] > 0)
+    {
+      id <EtoileSystemBarEntry> entry;
+
+      e = [ungrouped objectEnumerator];
+      while ((entry = [e nextObject]) != nil)
+        {
+          [systemMenu addItem: [entry menuItem]];
+        }
+
+      [systemMenu addItem: [NSMenuItem separatorItem]];
+    }
 }
 
 @end
@@ -109,6 +154,8 @@ static NSImage * filler = nil,
 {
   if (self == [MenuBarView class])
     {
+      // load all menubar images
+
       ASSIGN(filler, [NSImage imageNamed: @"MenuBarFiller"]);
       ASSIGN(leftEdge, [NSImage imageNamed: @"MenuBarLeftEdge"]);
       ASSIGN(rightEdge, [NSImage imageNamed: @"MenuBarRightEdge"]);
@@ -140,7 +187,7 @@ static NSImage * filler = nil,
 
       // last, add the Log Out entry
       [systemMenu addItemWithTitle: @"Log Out"
-                            action: @selector(terminate:)
+                            action: @selector(logOut:)
                      keyEquivalent: nil];
       [systemMenu sizeToFit];
 
@@ -170,6 +217,8 @@ static NSImage * filler = nil,
       [filler compositeToPoint: NSMakePoint(offset, 0)
                      operation: NSCompositeCopy];
     }
+
+  // now the edges
   size = [leftEdge size];
   if (NSMinX(r) <= size.width)
     {
