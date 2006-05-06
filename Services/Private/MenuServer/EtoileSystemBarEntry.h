@@ -1,5 +1,5 @@
 /*
-    BundleExtensionLoader.h
+    EtoileSystemBarEntry.h
 
     Declaration of the EtoileSystemBarEntry protocol for the
     EtoileMenuServer application.

@@ -2,7 +2,7 @@
     BundleExtensionLoader.m
 
     Implementation of the BundleExtensionLoader class for the
-    ProjectManager application.
+    EtoileMenuServer application.
 
     Copyright (C) 2005  Saso Kiselkov
 
