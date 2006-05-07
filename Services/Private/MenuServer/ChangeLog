@@ -1,3 +1,9 @@
+2006-05-07  Nicolas Roard <nicolas@roard.com>
+
+    * AboutEtoileEntry/AboutEtoileEntry.m: Applied a patch from Chris Vetter 
+    <chris.vettere@gmail.com> to display the missing entries for 
+    CPU, CPU Frequency, and memory on FreeBSD
+
 2006-04-17  Quentin Mathe <qmathe@club-internet.fr>
 
     * GNUmakefile: Modified to have EtoileMenuServer installed in 'System' 

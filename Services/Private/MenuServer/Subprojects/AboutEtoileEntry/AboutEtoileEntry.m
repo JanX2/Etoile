@@ -39,7 +39,16 @@
 
 #import "OSType.h"
 
+#if defined( FREEBSD )
+#  include <sys/types.h>
+#  include <sys/sysctl.h>	// sysctl(3)
+#endif // FREEBSD
+
 static NSString * const EtoileVersion = @"0.1";
+
+#define ONE_KB	1024.
+#define ONE_MB	(ONE_KB * ONE_KB)	//     1,048,576
+#define ONE_GB	(ONE_KB * ONE_MB)	// 1,073,741,824
 
 @interface AboutEtoileEntry (Private)
 
@@ -49,6 +58,44 @@ static NSString * const EtoileVersion = @"0.1";
 @end
 
 @implementation AboutEtoileEntry (Private)
+
+// Returns memory, file, or whatever _size_ in a more human readable form
+NSString *sizeDescription(double aSize)
+{
+  double value = aSize;
+  char sign = 0;
+  
+  if( 0. > value )
+  {
+    value *= -1;
+  }
+  
+  if( (0. == value) || (1. == value) )
+  {
+    return [NSString stringWithFormat: @"%#3.2f byte", aSize];
+  }
+  else if( (10. * ONE_KB) > value )
+  {
+    return [NSString stringWithFormat:@"%#3.2f B", aSize];
+  }
+  else if( (100. * ONE_KB) > value )
+  {
+    sign = 'K';
+    value = (aSize / ONE_KB);
+  }
+  else if( (1000. * ONE_MB) > value )
+  {
+    sign = 'M';
+    value = (aSize / ONE_MB);
+  }
+  else
+  {
+    sign = 'G';
+    value = (aSize / (ONE_GB));
+  }
+  
+  return [NSString stringWithFormat: @"%#3.2f %cB", value, sign];
+}
 
 - (void) fillInfoPanelWithSystemInfo
 {
@@ -150,7 +197,72 @@ static NSString * const EtoileVersion = @"0.1";
           break;
         }
     }
-#endif // LINUX
+#elif defined( FREEBSD )
+
+  int mib[2];
+  size_t len;
+  char *p;
+  
+  // machine architecture, eg: i386
+  {
+    mib[0] = CTL_HW;
+    mib[1] = HW_MODEL;
+    
+    if( sysctl(mib, 2, NULL, &len, NULL, 0) ) perror("sysctl");
+    p = malloc(len);
+    if( sysctl(mib, 2, p, &len, NULL, 0) ) perror("sysctl");
+    
+    [machine setStringValue: [NSString stringWithCString: p]];
+  }
+  free(p);
+  
+  // machine model, eg. "Intel(R) Celeron(R) CPU"
+  {
+    mib[0] = CTL_HW;
+    mib[1] = HW_MACHINE_ARCH;
+    
+    if( sysctl(mib, 2, NULL, &len, NULL, 0) ) perror("sysctl");
+    p = malloc(len);
+    if( sysctl(mib, 2, p, &len, NULL, 0) ) perror("sysctl");
+    
+    [cpu setStringValue: [NSString stringWithCString: p]];
+  }
+  free(p);
+  
+  // cpu frequency
+  {
+    long mhz;
+    
+    len = sizeof(mhz);
+    
+    mhz = 1;
+    if( sysctlbyname("hw.clockrate", NULL, &len, NULL, 0) ) perror("sysctl");
+    if( sysctlbyname("hw.clockrate", &mhz, &len, NULL, 0) ) perror("sysctl");
+    
+    [cpuFreq setStringValue: [NSString stringWithFormat:	// I'm lazy...
+      ( ( mhz > 1000 ) ? @"%.2f GHz" : @"%d MHz" ), 		//   format
+      ( ( mhz > 1000 ) ? (float) mhz / 1000 : mhz )]];		//   value
+  }
+  
+  // total memory
+  {
+    unsigned int mem = 0;
+    
+    len = sizeof mem;
+    
+    mib[0] = CTL_HW;
+    mib[1] = HW_REALMEM;
+    
+    mem = 1;
+    if( 0 != sysctl(mib, 2, NULL, &len, NULL, 0) ) perror("sysctl");
+    if( 0 != sysctl(mib, 2, &mem, &len, NULL, 0) ) perror("sysctl");
+    
+    [memory setStringValue: sizeDescription((double)mem)];
+  }
+#else // ! Linux && ! FreeBSD
+#  warning System not yet supported!
+#endif
+
 }
 
 @end
