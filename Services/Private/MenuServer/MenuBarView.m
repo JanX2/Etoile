@@ -24,13 +24,14 @@
 #import "MenuBarView.h"
 
 #import <Foundation/NSBundle.h>
+#import <Foundation/NSSortDescriptor.h>
 
-#import <AppKit/NSImage.h>
 #import <AppKit/NSEvent.h>
+#import <AppKit/NSImage.h>
 #import <AppKit/NSMenu.h>
 #import <AppKit/NSMenuItem.h>
-#import <AppKit/NSWindow.h>
 #import <AppKit/NSScreen.h>
+#import <AppKit/NSWindow.h>
 
 #import "MenuBarHeight.h"
 #import "EtoileSystemBarEntry.h"
@@ -60,6 +61,7 @@
   NSBundle * bundle;
   NSString * group;
   NSMutableArray * ungrouped;
+  NSSortDescriptor * sortDesc;
 
   // load all the system bar entry menus
   bundles = [[BundleExtensionLoader shared]
@@ -108,6 +110,12 @@
         }
     }
 
+  sortDesc = [[[NSSortDescriptor alloc]
+    initWithKey: @"menuItem.title"
+      ascending: YES
+       selector: @selector (caseInsensitiveCompare:)]
+    autorelease];
+
   // now sort the groups, and start adding the menu items into the
   // system bar for the individual entries
   e = [[[groups allKeys]
@@ -115,8 +123,14 @@
     objectEnumerator];
   while ((group = [e nextObject]) != nil)
     {
-      NSEnumerator * ee = [[groups objectForKey: group] objectEnumerator];
+      // also sort the entries within a group based on the title of
+      // their menu item
+      NSMutableArray * groupEntries = [groups objectForKey: group];
+      NSEnumerator * ee;
       id <EtoileSystemBarEntry> entry;
+
+      [groupEntries sortUsingDescriptors: [NSArray arrayWithObject: sortDesc]];
+      ee = [groupEntries objectEnumerator];
 
       while ((entry = [ee nextObject]) != nil)
         {
