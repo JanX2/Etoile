@@ -70,7 +70,7 @@
           @"isn't your system preferences application, please set the proper\n"
           @"application's name in the user defaults under the key "
           @"\"GSSystemPreferencesApplication\"."),
-        nil, nil, nil);
+        nil, nil, nil, prefsAppName);
     }
 }
 
