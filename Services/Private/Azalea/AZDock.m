@@ -47,9 +47,9 @@ static AZDock *sharedInstance;
 
     if (reconfig) {
 
-        XSetWindowBorder(ob_display, frame,
+        XSetWindowBorder(ob_display, x_frame,
                          RrColorPixel(ob_rr_theme->b_color));
-        XSetWindowBorderWidth(ob_display, frame, ob_rr_theme->bwidth);
+        XSetWindowBorderWidth(ob_display, x_frame, ob_rr_theme->bwidth);
 
         DESTROY(a_frame);
         a_frame = [ob_rr_theme->a_unfocused_title copy];
@@ -74,18 +74,18 @@ static AZDock *sharedInstance;
 
     attrib.event_mask = DOCK_EVENT_MASK;
     attrib.override_redirect = True;
-    frame = XCreateWindow(ob_display, RootWindow(ob_display, ob_screen),
+    x_frame = XCreateWindow(ob_display, RootWindow(ob_display, ob_screen),
                                 0, 0, 1, 1, 0,
                                 [ob_rr_inst depth], InputOutput,
                                 [ob_rr_inst visual],
                                 CWOverrideRedirect | CWEventMask,
                                 &attrib);
     a_frame = [ob_rr_theme->a_unfocused_title copy];
-    XSetWindowBorder(ob_display, frame,
+    XSetWindowBorder(ob_display, x_frame,
                      RrColorPixel(ob_rr_theme->b_color));
-    XSetWindowBorderWidth(ob_display, frame, ob_rr_theme->bwidth);
+    XSetWindowBorderWidth(ob_display, x_frame, ob_rr_theme->bwidth);
 
-    [window_map setObject: self forKey: [NSNumber numberWithInt: frame]];
+    [window_map setObject: self forKey: [NSNumber numberWithInt: x_frame]];
     [[AZStacking stacking] addWindow: self];
 }
 
@@ -104,10 +104,10 @@ static AZDock *sharedInstance;
         return;
     }
 
-    XDestroyWindow(ob_display, frame);
+    XDestroyWindow(ob_display, x_frame);
     DESTROY(a_frame);
     [[AZStacking stacking] removeWindow: self];
-    [window_map removeObjectForKey: [NSNumber numberWithInt: frame]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: x_frame]];
 }
 
 - (void) addWindow: (Window) win hints: (XWMHints *) wmhints
@@ -143,7 +143,7 @@ static AZDock *sharedInstance;
     [dock_apps addObject: app];
     [self configure];
 
-    XReparentWindow(ob_display, [app iconWindow], frame, [app x], [app y]);
+    XReparentWindow(ob_display, [app iconWindow], x_frame, [app x], [app y]);
     /*
       This is the same case as in frame.c for client windows. When Openbox is
       starting, the window is already mapped so we see unmap events occur for
@@ -505,13 +505,13 @@ static AZDock *sharedInstance;
         NSAssert(w > 0, @"Width is less than 0");
         NSAssert(h > 0, @"Height is less than 0");
 
-        XMoveResizeWindow(ob_display, frame,
+        XMoveResizeWindow(ob_display, x_frame,
                           x, y, w, h);
 
-        [a_frame paint: frame width: w height: h];
-        XMapWindow(ob_display, frame);
+        [a_frame paint: x_frame width: w height: h];
+        XMapWindow(ob_display, x_frame);
     } else
-        XUnmapWindow(ob_display, frame);
+        XUnmapWindow(ob_display, x_frame);
 
     /* but they are useful outside of this function! */
     w += ob_rr_theme->bwidth * 2;
@@ -547,7 +547,7 @@ static AZDock *sharedInstance;
 - (int) w { return w; }
 - (int) h { return h; }
 - (StrutPartial) strut { return dock_strut; }
-- (Window) frame { return frame; }
+- (Window) frame { return x_frame; }
 
 - (NSArray *) dockApplications
 {
@@ -593,7 +593,7 @@ static AZDock *sharedInstance;
 /* AZWindow protocol */
 - (Window_InternalType) windowType { return Window_Dock; }
 - (int) windowLayer { config_dock_layer; }
-- (Window) windowTop { return frame; }
+- (Window) windowTop { return x_frame; }
 
 @end
 

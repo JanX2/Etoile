@@ -17,6 +17,7 @@
 <theme>
   <name>Azalea</name>
   <titlelayout>NLIMC</titlelayout>
+  <keepborder>NO</keepborder>
 </theme>
 
 <placement>

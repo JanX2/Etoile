@@ -1596,33 +1596,37 @@ no_number:
 
     if ([self isGNUstep]) {
         /* Override the decoration */
-	    decorations = functions = 0;
+	decorations = functions = 0;
 	if (gnustep_attr.flags & GSWindowStyleAttr) {
-	  if (gnustep_attr.window_style & NSBorderlessWindowMask) {
-	  } else {
-	    decorations |= OB_FRAME_DECOR_BORDER;
-	  }
-	  if (gnustep_attr.window_style & NSTitledWindowMask) {
-	    decorations |= OB_FRAME_DECOR_TITLEBAR |
-	                   OB_FRAME_DECOR_SHADE;
-	    functions |= OB_CLIENT_FUNC_MOVE |
-	                 OB_CLIENT_FUNC_SHADE;
-	  }
-	  if (gnustep_attr.window_style & NSClosableWindowMask) {
-	    decorations |= OB_FRAME_DECOR_CLOSE;
-	      functions |= OB_CLIENT_FUNC_CLOSE;
-	  }
-	  if (gnustep_attr.window_style & NSMiniaturizableWindowMask) {
-	    decorations |= OB_FRAME_DECOR_ICONIFY;
-	    functions |= OB_CLIENT_FUNC_ICONIFY;
-	  }
-	  if (gnustep_attr.window_style & NSResizableWindowMask) {
-	    decorations |= OB_FRAME_DECOR_HANDLE |
-	                   OB_FRAME_DECOR_GRIPS |
-	                   OB_FRAME_DECOR_MAXIMIZE;
-	    functions |= OB_CLIENT_FUNC_RESIZE |
-	                 OB_CLIENT_FUNC_MAXIMIZE;
-	 }
+	  if (gnustep_attr.window_style == NSBorderlessWindowMask) {
+            /* Borderless */
+            if (config_theme_keepborder)
+              decorations |= OB_FRAME_DECOR_BORDER;
+          } else {
+            decorations |= OB_FRAME_DECOR_BORDER;
+	  
+	    if (gnustep_attr.window_style & NSTitledWindowMask) {
+	      decorations |= OB_FRAME_DECOR_TITLEBAR |
+	                     OB_FRAME_DECOR_SHADE;
+	      functions |= OB_CLIENT_FUNC_MOVE |
+	                   OB_CLIENT_FUNC_SHADE;
+	    }
+	    if (gnustep_attr.window_style & NSClosableWindowMask) {
+	      decorations |= OB_FRAME_DECOR_CLOSE;
+	        functions |= OB_CLIENT_FUNC_CLOSE;
+	    }
+	    if (gnustep_attr.window_style & NSMiniaturizableWindowMask) {
+	      decorations |= OB_FRAME_DECOR_ICONIFY;
+	      functions |= OB_CLIENT_FUNC_ICONIFY;
+	    }
+	    if (gnustep_attr.window_style & NSResizableWindowMask) {
+	      decorations |= OB_FRAME_DECOR_HANDLE |
+	                     OB_FRAME_DECOR_GRIPS |
+	                     OB_FRAME_DECOR_MAXIMIZE;
+	      functions |= OB_CLIENT_FUNC_RESIZE |
+	                   OB_CLIENT_FUNC_MAXIMIZE;
+	    }
+	  } 
 	}
     }
 
