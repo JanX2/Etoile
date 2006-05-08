@@ -23,13 +23,13 @@
 
 #import "SystemPreferencesEntry.h"
 
+#import <Foundation/NSBundle.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSUserDefaults.h>
-#import <Foundation/NSBundle.h>
 
-#import <AppKit/NSWorkspace.h>
-#import <AppKit/NSPanel.h>
 #import <AppKit/NSMenuItem.h>
+#import <AppKit/NSPanel.h>
+#import <AppKit/NSWorkspace.h>
 
 @implementation SystemPreferencesEntry
 
