@@ -1,5 +1,9 @@
 2006-05-03 Yen-Ju Chen <yjchenx at gmail>
 
+	* AZClient.m: fix borderless.
+
+2006-05-03 Yen-Ju Chen <yjchenx at gmail>
+
 	* Work on GNUstep/MaxOSX
 
 2006-04-26 Yen-Ju Chen <yjchenx at gmail>
