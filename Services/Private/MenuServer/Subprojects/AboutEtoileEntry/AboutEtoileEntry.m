@@ -27,15 +27,19 @@
 #import <errno.h>
 #import <string.h>
 
+#import <Foundation/NSData.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSBundle.h>
 #import <Foundation/NSHost.h>
 
+#import <AppKit/NSImage.h>
 #import <AppKit/NSNibLoading.h>
 #import <AppKit/NSMenuItem.h>
 #import <AppKit/NSWindow.h>
 #import <AppKit/NSTextField.h>
 #import <AppKit/NSPanel.h>
+
+#import "ScrollingImageView.h"
 
 #import "OSType.h"
 
@@ -286,8 +290,20 @@ NSString *sizeDescription(double aSize)
 
 - (void) awakeFromNib
 {
+  NSBundle * bundle;
+  NSData * rtfData;
+
   [self fillInfoPanelWithSystemInfo];
   [self fillInfoPanelWithMachineInfo];
+
+  bundle = [NSBundle bundleForClass: [self class]];
+  [image setScrolledImage: [[[NSImage alloc]
+    initByReferencingFile: [bundle pathForResource: @"Credits" ofType: @"tiff"]]
+    autorelease]];
+
+  rtfData = [NSData dataWithContentsOfFile:
+    [bundle pathForResource: @"Credits" ofType: @"rtf"]];
+  [image setScrolledRTF: rtfData];
 }
 
 - (NSString *) menuGroup

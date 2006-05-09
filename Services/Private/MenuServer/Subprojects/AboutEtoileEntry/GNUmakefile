@@ -18,10 +18,13 @@ endif
 BUNDLE_NAME = AboutEtoileEntry
 
 AboutEtoileEntry_OBJC_FILES = AboutEtoileEntry.m \
+ScrollingImageView.m \
 
 AboutEtoileEntry_OBJCC_FILES = 
 AboutEtoileEntry_C_FILES = 
-AboutEtoileEntry_RESOURCE_FILES = 
+AboutEtoileEntry_RESOURCE_FILES = Resources/Credits.tiff \
+Resources/Credits.rtf \
+
 AboutEtoileEntry_LANGUAGES = English \
 
 AboutEtoileEntry_LOCALIZED_RESOURCE_FILES = AboutEtoileEntry.gorm \

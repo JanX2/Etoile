@@ -39,6 +39,8 @@
      cpu,
      cpuFreq,
      memory;
+
+  id image;
 }
 
 - (void) activate;

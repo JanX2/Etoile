@@ -7,6 +7,10 @@
 			{
 			    Name = AboutEtoileEntry.m;
 			    Type = Plain;
+			},
+			{
+			    Name = ScrollingImageView.m;
+			    Type = Plain;
 			}
 		    );
 		    Name = "Class Files";
@@ -16,6 +20,10 @@
 		    Contents = (
 			{
 			    Name = AboutEtoileEntry.h;
+			    Type = Plain;
+			},
+			{
+			    Name = ScrollingImageView.h;
 			    Type = Plain;
 			}
 		    );
@@ -46,6 +54,20 @@
 		},
 		{
 		    Contents = (
+			{
+			    Contents = (
+				{
+				    Name = Credits.tiff;
+				    Type = Plain;
+				}
+			    );
+			    Name = Images;
+			    Type = Category;
+			},
+			{
+			    Name = Credits.rtf;
+			    Type = Plain;
+			}
 		    );
 		    Name = "Resource Files";
 		    Type = Category;
@@ -75,17 +97,41 @@
 		    );
 		    Name = Frameworks;
 		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Contents = (
+				{
+				    Name = AboutBackground.tiff;
+				    Type = Plain;
+				},
+				{
+				    Name = DropShadow.tiff;
+				    Type = Plain;
+				},
+				{
+				    Name = Credits.xcf;
+				    Type = Plain;
+				}
+			    );
+			    Name = "Source Images";
+			    Type = Category;
+			}
+		    );
+		    Name = "Non-Project Files";
+		    Type = Category;
 		}
 	    );
 	};
 	MakeBuilder = {
-	    AllWarnings = <*BY>
+	    AllWarnings = <*BN>
 ;
 	    BuildArguments = (
 	    );
 	    VerboseBuild = <*BN>
 ;
-	    Warnings = <*BY>
+	    Warnings = <*BN>
 ;
 	};
 	SubprojectsManager = {
@@ -98,7 +144,7 @@
     ProjectTypeData = {
 	Authors = (
 	);
-	MakefileHash = <*I1821165468>;
+	MakefileHash = <*I239710532>;
     };
     Version = 0.2;
 }

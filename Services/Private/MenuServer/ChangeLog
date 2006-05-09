@@ -1,3 +1,9 @@
+2006-05-09  Saso Kiselkov <skiselkov@gmail.com>
+
+    * Did some initial refinements on the About Etoile window, however
+      further significant cleanups, fixes and speed improvements will
+      be needed.
+
 2006-05-07  Nicolas Roard <nicolas@roard.com>
 
     * AboutEtoileEntry/AboutEtoileEntry.m: Applied a patch from Chris Vetter 

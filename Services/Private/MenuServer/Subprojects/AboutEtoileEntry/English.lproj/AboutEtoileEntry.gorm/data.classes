@@ -12,8 +12,16 @@
 	    kernelVersion,
 	    machine,
 	    memory,
-	    operatingSystem
+	    operatingSystem,
+	    image
 	);
 	Super = NSObject;
+    };
+    ScrollingImageView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSImageView;
     };
 }
