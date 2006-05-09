@@ -1,4 +1,8 @@
 2006-05-09  Saso Kiselkov <skiselkov@gmail.com>
+    * Subprojects/AboutEtoileEntry/ScrollingImageView.m: Fixed
+      incorrect text height computation.
+
+2006-05-09  Saso Kiselkov <skiselkov@gmail.com>
     * Subprojects/AboutEtoileEntry/ScrollingImageView.h:
     * Subprojects/AboutEtoileEntry/ScrollingImageView.m: Fixed
       NSInvocation bugs and added further refinements. Performace

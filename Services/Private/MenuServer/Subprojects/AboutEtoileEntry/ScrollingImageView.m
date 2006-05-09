@@ -47,6 +47,7 @@
   [textView setDrawsBackground: NO];
   [textView setEditable: NO];
   [textView setSelectable: NO];
+  [textView setVerticallyResizable: YES];
 
   [self addSubview: textView];
 }
@@ -59,6 +60,12 @@
 {
   TEST_RELEASE (scrolledImage);
   TEST_RELEASE (textView);
+
+  if (animationTimer != nil)
+    {
+      [animationTimer invalidate];
+      animationTimer = nil;
+    }
   
   [super dealloc];
 }
@@ -101,8 +108,6 @@
   frame.origin.y = -NSHeight (frame);
 
   [textView setFrame: frame];
-
-  NSLog (@"new text view frame is %@", NSStringFromRect (frame));
 }
 
 - (void) awakeFromNib
@@ -115,44 +120,41 @@
 
 - (void) drawRect: (NSRect) r
 {
-/*  NSImage * backImage = [self image];
+  NSImage * backImage = [self image];
 
   if (backImage != nil)
     {
       [backImage compositeToPoint: r.origin
                          fromRect: r
                         operation: NSCompositeCopy];
-    }*/
-  [super drawRect: r];
+    }
 
   if (scrolledImage != nil)
     {
       NSRect frame = [self frame];
       NSSize imgSize = [scrolledImage size];
       NSPoint compositingPoint;
+      NSRect drawingRect;
 
-      // if we've scrolled off the image and text view, we'll need to composite
-      // the image at the bottom
-/*      if (currentOffset + NSHeight (frame) >= imgSize.height +
-        NSHeight ([textView frame]))
-        {
-        }
-      else*/
-        {
-          compositingPoint =
-            NSMakePoint ((NSWidth (frame) - imgSize.width) / 2,
-                         ((NSHeight (frame) - imgSize.height) / 2) +
-                         currentOffset);
+      compositingPoint =
+        NSMakePoint ((NSWidth (frame) - imgSize.width) / 2,
+                     ((NSHeight (frame) - imgSize.height) / 2) +
+                     currentOffset);
 
-          if (!NSIsEmptyRect (NSIntersectionRect (NSMakeRect (compositingPoint.x,
-                                                  compositingPoint.y,
-                                                  imgSize.width,
-                                                  imgSize.height),
-                              r)))
-            {
-              [scrolledImage compositeToPoint: compositingPoint
-                                    operation: NSCompositeSourceOver];
-            }
+      drawingRect = NSMakeRect (compositingPoint.x,
+                                compositingPoint.y,
+                                imgSize.width,
+                                imgSize.height);
+      drawingRect = NSIntersectionRect (drawingRect, r);
+
+      // draw only if necessary
+      if (!NSIsEmptyRect (drawingRect))
+        {
+          drawingRect.origin = NSZeroPoint;
+
+          [scrolledImage compositeToPoint: compositingPoint
+                                 fromRect: drawingRect
+                                operation: NSCompositeSourceOver];
         }
     }
 }
@@ -228,7 +230,6 @@
   NSRect frame = [self frame];
   NSSize imgSize = [scrolledImage size];
   NSRect r;
-
   enum {
     AnimationStep = 2
   };
