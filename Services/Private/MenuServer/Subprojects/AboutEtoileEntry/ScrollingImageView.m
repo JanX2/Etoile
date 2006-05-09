@@ -16,6 +16,21 @@
 #import <AppKit/NSTextStorage.h>
 #import <AppKit/NSTextView.h>
 
+// a special subclass to make mouse-down events drop through
+// the receiver and hit it's superview
+@interface _ScrollingImageViewTextView : NSTextView
+
+@end
+
+@implementation _ScrollingImageViewTextView
+
+- (void) mouseDown: (NSEvent *) ev
+{
+  [[self superview] mouseDown: ev];
+}
+
+@end
+
 @interface ScrollingImageView (Private)
 
 - (void) buildTextView;
@@ -26,7 +41,7 @@
 
 - (void) buildTextView
 {
-  textView = [[NSTextView alloc]
+  textView = [[_ScrollingImageViewTextView alloc]
     initWithFrame: NSMakeRect(0, -250, NSWidth ([self frame]), 250)];
 
   [textView setDrawsBackground: NO];
@@ -135,8 +150,8 @@
                                                   imgSize.height),
                               r)))
             {
-//              [scrolledImage compositeToPoint: compositingPoint
-//                                    operation: NSCompositeSourceOver];
+              [scrolledImage compositeToPoint: compositingPoint
+                                    operation: NSCompositeSourceOver];
             }
         }
     }
@@ -174,9 +189,10 @@
               return;
             }
 
-          inv = NS_MESSAGE (self, progressAnimation);
-          [inv setTarget: self];
+          inv = [NSInvocation invocationWithMethodSignature: [self
+            methodSignatureForSelector: @selector (progressAnimation)]];
           [inv setSelector: @selector (progressAnimation)];
+          [inv setTarget: self];
 
            // animate at 20 fps
           animationTimer = [NSTimer scheduledTimerWithTimeInterval: 0.05
@@ -190,6 +206,7 @@
           // stop the animation
           [animationTimer invalidate];
           animationTimer = nil;
+          scrollBackPhase = NO;
 
           currentOffset = 0;
           [self setNeedsDisplay: YES];
@@ -210,31 +227,55 @@
 {
   NSRect frame = [self frame];
   NSSize imgSize = [scrolledImage size];
+  NSRect r;
+
   enum {
     AnimationStep = 2
   };
 
-  currentOffset += AnimationStep;
-
-  // stop if we've scrolled enough, or our window isn't visible anymore
-  if (NSMinY ([textView frame]) > NSHeight (frame) ||
-    [[self window] isVisible] == NO)
+  if (NSMinY ([textView frame]) > NSHeight (frame) || scrollBackPhase == YES)
     {
-      [self stopAnimation: self];
+      if (scrollBackPhase == NO)
+        {
+          scrollBackPhase = YES;
+          currentOffset = NSHeight (frame) -
+            ((NSHeight (frame) - imgSize.height) / 2);
+          
+          r = [textView frame];
+          r.origin.y = -NSHeight (r);
+          [textView setFrame: r];
+          [textView setNeedsDisplay: YES];
+        }
+
+      r = NSMakeRect ((NSWidth (frame) - imgSize.width) / 2,
+                      (NSHeight (frame) - imgSize.height) / 2 + currentOffset,
+                      imgSize.width,
+                      imgSize.height + AnimationStep);
+      [self setNeedsDisplayInRect: r];
+
+      currentOffset -= AnimationStep;
+      
+      if (currentOffset < 0)
+        {
+          [self stopAnimation: self];
+        }
     }
   else
     {
-      NSRect r =
-        NSMakeRect ((NSWidth (frame) - imgSize.width) / 2,
-                    (NSHeight (frame) - imgSize.height) / 2 + currentOffset -
-                    AnimationStep,
-                    imgSize.width, imgSize.height + AnimationStep);
+      r = NSMakeRect ((NSWidth (frame) - imgSize.width) / 2,
+                      (NSHeight (frame) - imgSize.height) / 2 + currentOffset,
+                      imgSize.width,
+                      imgSize.height + AnimationStep);
+      r = NSIntersectionRect (r,
+        NSMakeRect (0, 0, NSWidth (frame), NSHeight (frame)));
 
-      if (NSMinY (r) < NSHeight (frame))
+      if (!NSIsEmptyRect (r))
         {
-//          [self setNeedsDisplayInRect: r];
+          [self setNeedsDisplayInRect: r];
         }
-      
+    
+      currentOffset += AnimationStep;
+
       r = [textView frame];
       r.origin.y = currentOffset - NSHeight (r);
       [textView setFrame: r];

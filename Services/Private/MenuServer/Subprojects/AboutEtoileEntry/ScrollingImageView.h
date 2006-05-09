@@ -22,6 +22,7 @@
 
   double currentOffset;
   BOOL isAnimationRunning;
+  BOOL scrollBackPhase;
 }
 
 - (void) setScrolledImage: (NSImage *) anImage;

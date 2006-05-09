@@ -1,4 +1,10 @@
 2006-05-09  Saso Kiselkov <skiselkov@gmail.com>
+    * Subprojects/AboutEtoileEntry/ScrollingImageView.h:
+    * Subprojects/AboutEtoileEntry/ScrollingImageView.m: Fixed
+      NSInvocation bugs and added further refinements. Performace
+      remains an issue though...
+
+2006-05-09  Saso Kiselkov <skiselkov@gmail.com>
 
     * Did some initial refinements on the About Etoile window, however
       further significant cleanups, fixes and speed improvements will
