@@ -41,13 +41,18 @@
 
 - (void) buildTextView
 {
+  NSRect myFrame = [self frame];
+
   textView = [[_ScrollingImageViewTextView alloc]
-    initWithFrame: NSMakeRect(0, -250, NSWidth ([self frame]), 250)];
+    initWithFrame: NSMakeRect(0, -10e6, NSWidth (myFrame), 10e6)];
 
   [textView setDrawsBackground: NO];
   [textView setEditable: NO];
   [textView setSelectable: NO];
   [textView setVerticallyResizable: YES];
+  [textView setHorizontallyResizable: YES];
+  [textView setMaxSize: NSMakeSize (NSWidth (myFrame), 10e5)];
+  [textView setMinSize: NSMakeSize (NSWidth (myFrame), 0)];
 
   [self addSubview: textView];
 }
@@ -101,10 +106,10 @@
   [textView replaceCharactersInRange: r withRTF: rtfData];
   [textView sizeToFit];
 
-  // widen the text view and position it below the visible area
+  // position the text view below the visible area
   frame = [textView frame];
+
   frame.origin.x = 0;
-  frame.size.width = NSWidth ([self frame]);
   frame.origin.y = -NSHeight (frame);
 
   [textView setFrame: frame];
@@ -124,8 +129,14 @@
 
   if (backImage != nil)
     {
+      // don't know why, but the drawing rect is actually taller by
+      // one point above where we are actually supposed to draw, so
+      // we manually increment the Y coordinate by one point
       [backImage compositeToPoint: r.origin
-                         fromRect: r
+                         fromRect: NSMakeRect (r.origin.x,
+                                               r.origin.y,
+                                               r.size.width,
+                                               r.size.height + 1)
                         operation: NSCompositeCopy];
     }
 
@@ -248,13 +259,13 @@
           [textView setNeedsDisplay: YES];
         }
 
+      currentOffset -= AnimationStep;
+
       r = NSMakeRect ((NSWidth (frame) - imgSize.width) / 2,
                       (NSHeight (frame) - imgSize.height) / 2 + currentOffset,
                       imgSize.width,
                       imgSize.height + AnimationStep);
       [self setNeedsDisplayInRect: r];
-
-      currentOffset -= AnimationStep;
       
       if (currentOffset < 0)
         {
