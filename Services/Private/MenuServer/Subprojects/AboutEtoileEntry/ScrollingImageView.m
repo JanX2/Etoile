@@ -14,6 +14,7 @@
 #import <AppKit/NSImage.h>
 #import <AppKit/NSWindow.h>
 #import <AppKit/NSTextStorage.h>
+#import <AppKit/NSTextContainer.h>
 #import <AppKit/NSTextView.h>
 
 #import <AppKit/PSOperators.h>
@@ -29,20 +30,6 @@
 - (void) mouseDown: (NSEvent *) ev
 {
   [[self superview] mouseDown: ev];
-}
-
-- (void) drawRect: (NSRect )r
-{
-  [super drawRect: r];
-
-  PSsetrgbcolor (1, 0, 0);
-  PSmoveto (0, 0);
-  PSrlineto (0, NSHeight ([self frame]));
-  PSstroke ();
-
-  PSmoveto (NSWidth ([self frame]), 0);
-  PSrlineto (0, NSHeight ([self frame]));
-  PSstroke ();
 }
 
 @end
@@ -69,6 +56,7 @@
   [textView setHorizontallyResizable: YES];
   [textView setMaxSize: NSMakeSize (NSWidth (myFrame), 10e5)];
   [textView setMinSize: NSMakeSize (0, 0)];
+  [[textView textContainer] setWidthTracksTextView: YES];
 
   [self addSubview: textView];
 }
@@ -128,9 +116,6 @@
   frame.origin.x = (NSWidth ([self frame]) - NSWidth (frame)) / 2;
   frame.origin.y = -NSHeight (frame);
 
-  NSLog (@"my frame: %@", NSStringFromRect ([self frame]));
-  NSLog (@"new frame: %@", NSStringFromRect (frame));
-
   [textView setFrame: frame];
 }
 
@@ -148,9 +133,6 @@
 
   if (backImage != nil)
     {
-      // don't know why, but the drawing rect is actually taller by
-      // one point above where we are actually supposed to draw, so
-      // we manually increment the Y coordinate by one point
       [backImage compositeToPoint: r.origin
                          fromRect: NSMakeRect (r.origin.x,
                                                r.origin.y,
@@ -263,13 +245,6 @@
   enum {
     AnimationStep = 2
   };
-
-  // stop animating if we're not visible
-  if ([[self window] isVisible] == NO)
-    {
-      [self stopAnimation: self];
-      return;
-    }
 
   if (NSMinY ([textView frame]) > NSHeight (frame) || scrollBackPhase == YES)
     {
