@@ -2,6 +2,8 @@
 
     * Subprojects/AboutEtoileEntry/AboutEtoileEntry.m: Stripped
       (R) and (tm) words from displayed CPU model names on Linux.
+      Also added patch by Chris B. Vetter to do the same for
+      FreeBSD.
 
 2006-05-09  Saso Kiselkov <skiselkov@gmail.com>
     * Subprojects/AboutEtoileEntry/ScrollingImageView.m: Fixed
