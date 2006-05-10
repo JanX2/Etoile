@@ -16,6 +16,8 @@
 #import <AppKit/NSTextStorage.h>
 #import <AppKit/NSTextView.h>
 
+#import <AppKit/PSOperators.h>
+
 // a special subclass to make mouse-down events drop through
 // the receiver and hit it's superview
 @interface _ScrollingImageViewTextView : NSTextView
@@ -27,6 +29,20 @@
 - (void) mouseDown: (NSEvent *) ev
 {
   [[self superview] mouseDown: ev];
+}
+
+- (void) drawRect: (NSRect )r
+{
+  [super drawRect: r];
+
+  PSsetrgbcolor (1, 0, 0);
+  PSmoveto (0, 0);
+  PSrlineto (0, NSHeight ([self frame]));
+  PSstroke ();
+
+  PSmoveto (NSWidth ([self frame]), 0);
+  PSrlineto (0, NSHeight ([self frame]));
+  PSstroke ();
 }
 
 @end
@@ -52,7 +68,7 @@
   [textView setVerticallyResizable: YES];
   [textView setHorizontallyResizable: YES];
   [textView setMaxSize: NSMakeSize (NSWidth (myFrame), 10e5)];
-  [textView setMinSize: NSMakeSize (NSWidth (myFrame), 0)];
+  [textView setMinSize: NSMakeSize (0, 0)];
 
   [self addSubview: textView];
 }
@@ -109,8 +125,11 @@
   // position the text view below the visible area
   frame = [textView frame];
 
-  frame.origin.x = 0;
+  frame.origin.x = (NSWidth ([self frame]) - NSWidth (frame)) / 2;
   frame.origin.y = -NSHeight (frame);
+
+  NSLog (@"my frame: %@", NSStringFromRect ([self frame]));
+  NSLog (@"new frame: %@", NSStringFromRect (frame));
 
   [textView setFrame: frame];
 }
@@ -135,7 +154,7 @@
       [backImage compositeToPoint: r.origin
                          fromRect: NSMakeRect (r.origin.x,
                                                r.origin.y,
-                                               r.size.width,
+                                               r.size.width + 1,
                                                r.size.height + 1)
                         operation: NSCompositeCopy];
     }
@@ -245,6 +264,13 @@
     AnimationStep = 2
   };
 
+  // stop animating if we're not visible
+  if ([[self window] isVisible] == NO)
+    {
+      [self stopAnimation: self];
+      return;
+    }
+
   if (NSMinY ([textView frame]) > NSHeight (frame) || scrollBackPhase == YES)
     {
       if (scrollBackPhase == NO)
@@ -274,6 +300,8 @@
     }
   else
     {
+      NSRect baseRect;
+
       r = NSMakeRect ((NSWidth (frame) - imgSize.width) / 2,
                       (NSHeight (frame) - imgSize.height) / 2 + currentOffset,
                       imgSize.width,
@@ -291,7 +319,10 @@
       r = [textView frame];
       r.origin.y = currentOffset - NSHeight (r);
       [textView setFrame: r];
-      [textView setNeedsDisplay: YES];
+
+      baseRect = NSMakeRect (0, 0, NSWidth (frame), NSHeight (frame));
+      r = NSIntersectionRect (r, baseRect);
+      [self setNeedsDisplayInRect: r];
     }
 }
 

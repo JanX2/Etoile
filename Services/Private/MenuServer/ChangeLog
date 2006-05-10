@@ -2,6 +2,8 @@
 
     * Subprojects/AboutEtoileEntry/AboutEtoileEntry.m: Fixed bug
       preventing the CPU frequency to be displayed on FreeBSD.
+    * Subprojects/AboutEtoileEntry/ScrollingImageView.m: Implemented
+      some experimental slight performance improvements.
 
 2006-05-09  Saso Kiselkov <skiselkov@gmail.com>
 
