@@ -59,6 +59,8 @@ static NSString * const EtoileVersion = @"0.1";
 - (void) fillInfoPanelWithSystemInfo;
 - (void) fillInfoPanelWithMachineInfo;
 
+- (NSString *) findHostName;
+
 @end
 
 @implementation AboutEtoileEntry (Private)
@@ -115,7 +117,7 @@ NSString *sizeDescription(double aSize)
         return;
     }
 
-  [hostName setStringValue: [[NSHost currentHost] name]];
+  [hostName setStringValue: [self findHostName]];
   [operatingSystem setStringValue: [NSString stringWithCString:
     systemInfo.sysname]];
   [kernelVersion setStringValue: [NSString stringWithCString:
@@ -267,6 +269,36 @@ NSString *sizeDescription(double aSize)
 #  warning System not yet supported!
 #endif
 
+}
+
+/**
+ * Finds the local hosts's name. This name is meaningfuly chosen
+ * from the local host's names, in that it attempts to not return
+ * names like 'localhost'. Also, if the host name is formatted
+ * like 'foo.bar.com' then only 'foo' is returned. If no such name
+ * exists, it defaults to whatever -[NSHost name] returns.
+ */
+- (NSString *) findHostName
+{
+  NSHost * host = [NSHost currentHost];
+  NSEnumerator * e;
+  NSString * name;
+
+  e = [[host names] objectEnumerator];
+  while ((name = [e nextObject]) != nil)
+    {
+      // skip local names
+      if (![name isEqualToString: @"localhost"] &&
+          ![name isEqualToString: @"localhost.localdomain"])
+        {
+          // return the first component of the name
+          return [[name componentsSeparatedByString: @"."]
+            objectAtIndex: 0];
+        }
+    }
+
+  // otherwise return whatever NSHost thinks is the name
+  return [host name];
 }
 
 @end
