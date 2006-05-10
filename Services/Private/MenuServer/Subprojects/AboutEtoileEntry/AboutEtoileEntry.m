@@ -139,14 +139,21 @@ NSString *sizeDescription(double aSize)
       if ([line rangeOfString: @"model name"].location != NSNotFound)
         {
           NSArray * comps = [line componentsSeparatedByString: @":"];
+          NSString * modelName = [[comps objectAtIndex: 1]
+            stringByTrimmingSpaces];
+
+          // strip the legal mumbo-jumbo
+          modelName = [modelName stringByReplacingString: @"(R)"
+                                              withString: @""];
+          modelName = [modelName stringByReplacingString: @"(tm)"
+                                              withString: @""];
 
           if ([comps count] != 2)
             {
               continue;
             }
 
-          [cpu setStringValue: [[comps objectAtIndex: 1]
-            stringByTrimmingSpaces]];
+          [cpu setStringValue: modelName];
         }
       else if ([line rangeOfString: @"cpu MHz"].location != NSNotFound)
         {
