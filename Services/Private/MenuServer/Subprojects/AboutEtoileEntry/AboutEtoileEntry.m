@@ -54,6 +54,36 @@ static NSString * const EtoileVersion = @"0.1";
 #define ONE_MB	(ONE_KB * ONE_KB)	//     1,048,576
 #define ONE_GB	(ONE_KB * ONE_MB)	// 1,073,741,824
 
+/**
+ * Reformats a CPU model name to a shorter and more readable
+ * name. Name it:
+ *
+ * - removes occurences of "(R)"
+ * - removes occurences of "(tm)"
+ * - removes occurences of the word "Processor"
+ * - removes the word "CPU" and everything that follows it
+ * - trims any leading or trailing whitespace
+ *
+ * @return The shortened name.
+ */
+static NSString *
+ReformatCPUModelName (NSString * string)
+{
+  NSRange r;
+
+  string = [string stringByReplacingString: @"(R)" withString: @""];
+  string = [string stringByReplacingString: @"(tm)" withString: @""];
+  string = [string stringByReplacingString: @" Processor" withString: @""];
+
+  r = [string rangeOfString: @"CPU"];
+  if (r.location != NSNotFound)
+    {
+      string = [string substringToIndex: r.location];
+    }
+
+  return [string stringByTrimmingSpaces];
+}
+
 @interface AboutEtoileEntry (Private)
 
 - (void) fillInfoPanelWithSystemInfo;
@@ -128,6 +158,7 @@ NSString *sizeDescription(double aSize)
 - (void) fillInfoPanelWithMachineInfo
 {
 #ifdef LINUX
+
   // read /proc/cpuinfo for the processor type
   NSEnumerator * e = [[[NSString stringWithContentsOfFile:
     @"/proc/cpuinfo"] componentsSeparatedByString: @"\n"]
@@ -136,26 +167,20 @@ NSString *sizeDescription(double aSize)
 
   while ((line = [e nextObject]) != nil)
     {
-      if ([line rangeOfString: @"model name"].location != NSNotFound)
+      if ([line hasPrefix: @"model name"])
         {
           NSArray * comps = [line componentsSeparatedByString: @":"];
           NSString * modelName = [[comps objectAtIndex: 1]
             stringByTrimmingSpaces];
-
-          // strip the legal mumbo-jumbo
-          modelName = [modelName stringByReplacingString: @"(R)"
-                                              withString: @""];
-          modelName = [modelName stringByReplacingString: @"(tm)"
-                                              withString: @""];
 
           if ([comps count] != 2)
             {
               continue;
             }
 
-          [cpu setStringValue: modelName];
+          [cpu setStringValue: ReformatCPUModelName (modelName)];
         }
-      else if ([line rangeOfString: @"cpu MHz"].location != NSNotFound)
+      else if ([line hasPrefix: @"cpu MHz"])
         {
            NSArray * comps = [line componentsSeparatedByString: @":"];
            unsigned speed;
@@ -210,72 +235,136 @@ NSString *sizeDescription(double aSize)
           break;
         }
     }
-#elif defined( FREEBSD )
+  
+#elif defined (FREEBSD)
 
   int mib[2];
   size_t len;
   char *p;
   
-  // machine architecture, eg: i386
-  {
+  // machine architecture, eg: "Intel Pentium III Mobile"
+  do {
+    NSString *str;
+    NSRange range;
+    
     mib[0] = CTL_HW;
     mib[1] = HW_MODEL;
     
-    if( sysctl(mib, 2, NULL, &len, NULL, 0) ) perror("sysctl");
-    p = malloc(len);
-    if( sysctl(mib, 2, p, &len, NULL, 0) ) perror("sysctl");
+    if (sysctl(mib, 2, NULL, &len, NULL, 0))
+      {
+        perror ("sysctl: can't get HW_MODEL");
+
+        break;
+      }
     
-    [machine setStringValue: [NSString stringWithCString: p]];
-  }
-  free(p);
+    p = (char *) malloc (len);
+    
+    if (sysctl (mib, 2, p, &len, NULL, 0))
+      {
+        perror ("sysctl: can't get HW_MODEL");
+        free (p);
+
+        break;
+      }
+    
+    str = ReformatCPUModelName ([NSString stringWithCString: p]);
+    
+    free (p);
+
+    [cpu setStringValue: str];
+
+  } while (0);
   
-  // machine model, eg. "Intel(R) Celeron(R) CPU"
-  {
+  // machine model, eg. "i386"
+  do {
     mib[0] = CTL_HW;
     mib[1] = HW_MACHINE_ARCH;
     
-    if( sysctl(mib, 2, NULL, &len, NULL, 0) ) perror("sysctl");
-    p = malloc(len);
-    if( sysctl(mib, 2, p, &len, NULL, 0) ) perror("sysctl");
+    if (sysctl (mib, 2, NULL, &len, NULL, 0))
+      {
+        perror ("sysctl: can't get HW_MACHINE_ARCH");
+
+        break;
+      }
     
-    [cpu setStringValue: [NSString stringWithCString: p]];
-  }
-  free(p);
+    p = (char *) malloc (len);
+    
+    if (sysctl (mib, 2, p, &len, NULL, 0))
+      {
+        perror ("sysctl: can't get HW_MACHINE_ARCH");
+        free (p);
+
+        break;
+      }
+    
+    [machine setStringValue: [NSString stringWithCString: p]];
+    
+    free (p);
+  } while (0);
   
   // cpu frequency
-  {
+  do {
     long mhz;
+    NSString * string;
     
-    len = sizeof(mhz);
+    len = sizeof (mhz);
     
     mhz = 1;
-    if( sysctlbyname("hw.clockrate", NULL, &len, NULL, 0) ) perror("sysctl");
-    if( sysctlbyname("hw.clockrate", &mhz, &len, NULL, 0) ) perror("sysctl");
+    if (sysctlbyname ("hw.clockrate", NULL, &len, NULL, 0))
+      {
+        perror ("sysctl: can't get HW_CLOCKRATE");
+
+        break;
+      }
     
-    [cpuFreq setStringValue: [NSString stringWithFormat:	// I'm lazy...
-      ( ( mhz > 1000 ) ? @"%.2f GHz" : @"%d MHz" ), 		//   format
-      ( ( mhz > 1000 ) ? (float) mhz / 1000 : mhz )]];		//   value
-  }
+    if (sysctlbyname ("hw.clockrate", &mhz, &len, NULL, 0))
+      {
+        perror ("sysctl: can't get HW_CLOCKRATE");
+
+        break;
+      }
+    
+    mhz++;
+    
+    if (mhz >= 1000)
+      {
+        string = [NSString stringWithFormat: @"%.2f GHz", (float) mhz / 1000];
+      }
+    else
+      {
+        string = [NSString stringWithFormat: @"%d MHz", mhz];
+      }
+  } while( 0 );
   
   // total memory
-  {
+  do {
     unsigned int mem = 0;
     
-    len = sizeof mem;
+    len = sizeof (mem);
     
     mib[0] = CTL_HW;
     mib[1] = HW_REALMEM;
     
     mem = 1;
-    if( 0 != sysctl(mib, 2, NULL, &len, NULL, 0) ) perror("sysctl");
-    if( 0 != sysctl(mib, 2, &mem, &len, NULL, 0) ) perror("sysctl");
     
-    [memory setStringValue: sizeDescription((double)mem)];
-  }
-#else // ! Linux && ! FreeBSD
-#  warning System not yet supported!
-#endif
+    if (sysctl (mib, 2, NULL, &len, NULL, 0) != 0)
+      {
+        perror ("sysctl: can't get HW_REALMEM");
+        break;
+      }
+    
+    if (sysctl (mib, 2, &mem, &len, NULL, 0) != 0)
+      {
+        perror ("sysctl: can't get HW_REALMEM");
+        break;
+      }
+    
+    [memory setStringValue: sizeDescription (mem)];
+  } while( 0 );
 
+#else // ! Linux && ! FreeBSD
+#  warning "Your system is not yet supported"
+#endif
 }
 
 /**
