@@ -2,6 +2,10 @@
 DictionaryReader Changelog
 ==========================
 
+May 10 2006 Guenther Noack
+	* Applied patch by Chris B. Vetter that provides a Service
+	  to look up words with DictionaryReader
+ 
 Mar 30 2006 Yen-Ju
 	* Use GNUstep-make to compile on Cocoa.
 	* Make link work.

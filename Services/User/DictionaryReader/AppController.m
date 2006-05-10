@@ -365,4 +365,41 @@ NSDictionary* normalAttributes;
   NS_ENDHANDLER;
 }
 
+- (void) applicationDidFinishLaunching: (NSNotification *) theNotification
+{
+  [NSApp setServicesProvider: self];
+}
+
+
+/**
+ * The Dictionary Lookup service:
+ * Takes a string from the calling application and looks it up.
+ * Written by Chris B. Vetter
+ */
+- (void) lookupInDictionary: (NSPasteboard *) pboard
+                   userData: (NSString *) userData
+                      error: (NSString **) error
+{
+  NSString *aString = nil;
+  NSArray *allTypes = nil;
+  
+  allTypes = [pboard types];
+  
+  if ( ![allTypes containsObject: NSStringPboardType] )
+  {
+    *error = @"No string type supplied on pasteboard";
+    return;
+  }
+  
+  aString = [pboard stringForType: NSStringPboardType];
+  
+  if (aString == nil)
+  {
+    *error = @"No string value supplied on pasteboard";
+    return;
+  }
+  
+  [self defineWord: aString];
+}
+
 @end // AppController
