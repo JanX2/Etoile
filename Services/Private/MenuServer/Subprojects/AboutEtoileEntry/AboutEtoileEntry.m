@@ -334,6 +334,8 @@ NSString *sizeDescription(double aSize)
       {
         string = [NSString stringWithFormat: @"%d MHz", mhz];
       }
+
+    [cpuFreq setStringValue: string];
   } while( 0 );
   
   // total memory

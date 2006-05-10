@@ -1,3 +1,8 @@
+2006-05-10  Saso Kiselkov <skiselkov@gmail.com>
+
+    * Subprojects/AboutEtoileEntry/AboutEtoileEntry.m: Fixed bug
+      preventing the CPU frequency to be displayed on FreeBSD.
+
 2006-05-09  Saso Kiselkov <skiselkov@gmail.com>
 
     * Subprojects/AboutEtoileEntry/AboutEtoileEntry.m: Stripped
