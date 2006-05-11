@@ -1,0 +1,9 @@
+{
+	ThemeDescription = "Nesedah"
+	ThemeName = "Nesedah";
+	ThemeRelease = "0.3";
+	Authors = (
+			"Jesse Ross <jesse@jesseross.com>", 
+			"Nicolas Roard <nicolas@roard.com> (Camaelon port)"
+		  );
+}
