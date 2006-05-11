@@ -64,9 +64,9 @@ theme bundle, so write :
 	defaults write NSGlobalDomain  GSAppKitUserBundles '( "YourLocationTo/Camaelon.themeEngine" )'
 
 Then, you need to indicate to Camaelon which pixmap theme you want to use:
-	defaults write Camaelon Theme SimpleUI
+	defaults write Camaelon Theme Nesedah
 
--- here the theme SimpleUI, available on http://www.roard.com/SimpleUI.theme.tgz
+-- here using the theme Nesedah, available on the etoile repository in Themes/
 
 Camaelon looks for themes in ~/GNUstep/Library/Themes/ -- so you will perhaps
 need to create this directory if it's not present, before copying your themes inside.
