@@ -350,6 +350,10 @@ NSDictionary* normalAttributes;
       [historyManager browser: self
 		      didBrowseTo: aWord];
       [self updateGUI];
+      
+      // FIXME: Why won't that work?
+      NSWindow* mainWindow = [NSApp mainWindow];
+      [mainWindow oqrderFront: self];
     }
   NS_HANDLER
     {
