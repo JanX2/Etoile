@@ -78,6 +78,10 @@ static MenuletLoader * shared = nil;
       NSRect frame;
 
       menulet = [[bundle principalClass] new];
+      if (menulet == nil)
+        {
+          continue;
+        }
 
       [array addObject: menulet];
       view = [menulet menuletView];

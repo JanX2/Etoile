@@ -1,3 +1,8 @@
+2006-05-13  Saso Kiselkov <skiselkov@gmail.com>
+
+    * MenuletLoader.m: Fixed a bug, pointed out by Chris B. Vetter, which
+      was causing exceptions when a menulet failed to initialize properly.
+
 2006-05-10  Saso Kiselkov <skiselkov@gmail.com>
 
     * Subprojects/AboutEtoileEntry/ScrollingImageView.m: Fixed
