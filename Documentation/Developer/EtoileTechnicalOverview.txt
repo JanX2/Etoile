@@ -1,12 +1,12 @@
-====================
+=========================
 Étoilé Technical Overview
-====================
+=========================
 
 Étoilé System Presentation
-=====================
+==========================
 
 What we want?
---------------------
+-------------
 
 Apart everything… :-)
 
@@ -26,7 +26,7 @@ Most of OSes widely distributed these days have ridiculous support for such evol
 
 
 Let's write yet another OS
-----------------------------------
+--------------------------
 
 Hmm… No.
 
@@ -38,7 +38,7 @@ Writing OSes is a pain that involves a huge amount of problems:
 
 
 The world has been Linuxed
----------------------------------------
+--------------------------
 
 Solutions:
 - Hurd or similar
@@ -53,7 +53,7 @@ The world has been linuxed, we have to deal with this fact until the splashy com
 
 
 Very rough system classifications
----------------------------------------------
+---------------------------------
 
 - Virtual Machine (Squeak is THE example ;-)
 - Monolithic system or kernel (that uses a two layers approach between kernel space and user space)
@@ -61,7 +61,7 @@ Very rough system classifications
 
 
 Étoilé Middle Way
-------------------------
+-----------------
 
 Put a "virtual" microkernel on top of the host system.
 
@@ -76,13 +76,13 @@ Optionally we could include:
 
 
 Early Conclusion
------------------------
+----------------
 
 If we build a light and relatively thin system layer which is easily portable to many OSes and circumvents their most drastic limitations, it is basically a win-win situation. A major problem will remain though: OS integration. That's one of the point Linux Desktop has failed to fix for many years, it's done yet, but it seems possible to achieve now (look at FreeDesktop and Ubuntu, Mandriva distributions for example, they are on this path).
 
 
 Étoilé VOS
----------------
+----------
 
 In what sense Étoilé is a system?
 
@@ -95,7 +95,7 @@ May be it's better to replace Virtual by Viral ;-)
 
 
 Étoilé VOS inspiration
-------------------------------
+----------------------
 
 A bit of history:
 - UNIX -> Most of things are files (or mapped to)
@@ -107,7 +107,7 @@ A bit of history:
 
 
 Étoilé System Layers
-----------------------------
+--------------------
 
 - We take care of:
 	- name server
@@ -125,7 +125,7 @@ A bit of history:
 
 
 Why uses GNUstep and not… ?
--------------------------------------------
+---------------------------
 
 - Squeak
 
@@ -133,7 +133,7 @@ Why uses GNUstep and not… ?
 
 
 Overriden GNUstep stuff (1)
--------------------------------------
+---------------------------
 
 Deprecated API in Foundation
 	- NSFileManager
@@ -165,7 +165,7 @@ Here is a memento about DO classes:
 
 
 Overriden GNUstep stuff (2)
--------------------------------------
+---------------------------
 
 Possibly deprecated API in Foundation:
 	- NSTask
@@ -215,8 +215,9 @@ CoreObject and its object server provides two fundamental features :
 At a later point may be:
 - orthogonal persistency in some cases
 
+
 What's happen when Étoilé System starts up?
--------------------------------------------------------------
+-------------------------------------------
 
 Here is the sequence…
 
@@ -250,7 +251,7 @@ Time to play now!
 
 
 TalkCenter shell
-----------------------
+----------------
 
 TalkCenter is nothing more than a shell directly interfaced with CoreObject and bundled with a set of tools to manipulate objects referenced by the objects server or within TalkCenter child processes. By default, it relies on Io language but would support in fact any languages registered in the object server (that suppose the corresponding CoreObject language bundle is installed on the system, such bundle would provide a bridge specific to one language)
 
@@ -261,10 +262,10 @@ That means TalkCenter application is mostly a GUI wrapper around talkcenter tool
 
 
 Étoilé User Environment Presentation
-=============================
+====================================
 
 Why Étoilé is a User Environment?
------------------------------------------------
+---------------------------------
 
 … And not a Desktop Environment.
 
@@ -280,10 +281,10 @@ Why Étoilé is a User Environment?
 
 
 Étoilé CoreObject Presentation
-========================
+==============================
 
 Why not rethink DO?
----------------------------
+-------------------
 
 Pro:
 - Very straightforward to use
@@ -293,7 +294,7 @@ Pro:
 
 
 Why rethink DO in Étoilé perspective?
----------------------------------------------------
+-------------------------------------
 
 Cons:
 - Poor name server (in part because it follows Mach model weak on some points)
@@ -307,7 +308,7 @@ Cons:
 
 
 Introducing CoreObject
---------------------------------
+----------------------
 
 CoreObject has been thought to fix these issues, it introduces initially:
 - New name server (branded as 'object server')
