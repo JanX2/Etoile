@@ -1,3 +1,20 @@
+2006-05-16  Saso Kiselkov <skiselkov@gmail.com>
+
+    * Subprojects/AboutEtoileEntry/AboutEtoileEntry.pmproj:
+    * Subprojects/AboutEtoileEntry/GNUmakefile:
+    * Subprojects/AboutEtoileEntry/GNUmakefile.preamble:
+    * Subprojects/AboutEtoileEntry/GNUmakefile.postamble:
+    * Subprojects/AboutEtoileEntry/AboutEtoileEntry.m:
+    * Subprojects/AboutEtoileEntry/ETMachineInfo.h:
+    * Subprojects/AboutEtoileEntry/ETMachineInfo.m:
+    * Subprojects/AboutEtoileEntry/ETMachineInfo_Darwin.m:
+    * Subprojects/AboutEtoileEntry/ETMachineInfo_FreeBSD.m:
+    * Subprojects/AboutEtoileEntry/ETMachineInfo_Linux.m:
+    * Subprojects/AboutEtoileEntry/ETMachineInfo_OpenBSD.m:
+    * Subprojects/AboutEtoileEntry/TRSysctl.h:
+    * Subprojects/AboutEtoileEntry/TRSysctlByName.h: Implemented changes
+      to machine-info determining written by David Chrisnall.
+
 2006-05-13  Saso Kiselkov <skiselkov@gmail.com>
 
     * MenuletLoader.m: Fixed a bug, pointed out by Chris B. Vetter, which

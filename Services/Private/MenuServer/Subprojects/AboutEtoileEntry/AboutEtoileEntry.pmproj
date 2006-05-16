@@ -11,6 +11,50 @@
 			{
 			    Name = ScrollingImageView.m;
 			    Type = Plain;
+			},
+			{
+			    Contents = (
+				{
+				    Name = ETMachineInfo_Linux.m;
+				    Type = Plain;
+				}
+			    );
+			    Name = Linux;
+			    Type = Category;
+			},
+			{
+			    Contents = (
+				{
+				    Name = ETMachineInfo_FreeBSD.m;
+				    Type = Plain;
+				}
+			    );
+			    Name = FreeBSD;
+			    Type = Category;
+			},
+			{
+			    Contents = (
+				{
+				    Name = ETMachineInfo_Darwin.m;
+				    Type = Plain;
+				}
+			    );
+			    Name = Darwin;
+			    Type = Category;
+			},
+			{
+			    Contents = (
+				{
+				    Name = ETMachineInfo_OpenBSD.m;
+				    Type = Plain;
+				}
+			    );
+			    Name = OpenBSD;
+			    Type = Category;
+			},
+			{
+			    Name = ETMachineInfo.m;
+			    Type = Plain;
 			}
 		    );
 		    Name = "Class Files";
@@ -25,6 +69,24 @@
 			{
 			    Name = ScrollingImageView.h;
 			    Type = Plain;
+			},
+			{
+			    Name = ETMachineInfo.h;
+			    Type = Plain;
+			},
+			{
+			    Contents = (
+				{
+				    Name = TRSysctl.h;
+				    Type = Plain;
+				},
+				{
+				    Name = TRSysctlByName.h;
+				    Type = Plain;
+				}
+			    );
+			    Name = "Sysctl Wrappers";
+			    Type = Category;
 			}
 		    );
 		    Name = "Header Files";
@@ -125,14 +187,11 @@
 	    );
 	};
 	MakeBuilder = {
-	    AllWarnings = <*BN>
-;
+	    AllWarnings = <*BN>;
 	    BuildArguments = (
 	    );
-	    VerboseBuild = <*BN>
-;
-	    Warnings = <*BN>
-;
+	    VerboseBuild = <*BN>;
+	    Warnings = <*BN>;
 	};
 	SubprojectsManager = {
 	    Subprojects = (
@@ -143,8 +202,10 @@
     ProjectType = Bundle;
     ProjectTypeData = {
 	Authors = (
+	    "Saso Kiselkov",
+	    "David Chrisnall"
 	);
-	MakefileHash = <*I239710532>;
+	MakefileHash = <*I1620194944>;
     };
     Version = 0.2;
 }

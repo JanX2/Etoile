@@ -1,5 +1,7 @@
 {
     Authors = (
+	"Saso Kiselkov",
+	"David Chrisnall"
     );
     BundleName = AboutEtoileEntry;
 }

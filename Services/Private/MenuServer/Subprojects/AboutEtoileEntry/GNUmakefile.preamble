@@ -4,4 +4,22 @@ BUNDLE_EXTENSION=.sysbarentry
 
 $(BUNDLE_NAME)_STANDARD_INSTALL=no
 
-ADDITIONAL_OBJCFLAGS += -W -Wall -Wno-unused
+ADDITIONAL_OBJCFLAGS += -W -Wall -Wno-unused -Wno-import
+
+# defines the proper macro based on the target OS
+
+ifeq ($(findstring freebsd, $(GNUSTEP_TARGET_OS)), freebsd)
+  ADDITIONAL_OBJCFLAGS += -DFREEBSD
+endif
+
+ifeq ($(findstring openbsd, $(GNUSTEP_TARGET_OS)), openbsd)
+  ADDITIONAL_OBJCFLAGS += -DOPENBSD
+endif
+
+ifeq ($(findstring dawrin, $(GNUSTEP_TARGET_OS)), darwin)
+  ADDITIONAL_OBJCFLAGS += -DDARWIN
+endif
+
+ifeq ($(findstring gnu, $(GNUSTEP_TARGET_OS)), gnu)
+  ADDITIONAL_OBJCFLAGS += -DLINUX
+endif
