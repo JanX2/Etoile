@@ -224,28 +224,33 @@ Here is the sequence…
 - Host system boots
 
 Then either manually or automatically:
-	- Étoilé system server (aka etoile_systemd) is started
+	- Étoilé system server (aka etoile_system, init process taking care of daemons/servers à la launchd) is started
 Note 'root' privileges will be mandatory, at least initially. This process is similar to Darwin launchd (by being both a kernel-like init process and a daemonizer)
 
-Any other servers is now started by etoile_systemd itself. At this time, other Étoilé core servers are started in the following order:
-		- Security Server (aka etoile_securityd)
+Any other servers is now started by etoile_system itself. At this time, other Étoilé core servers are started in the following order:
+		- Security Server (aka etoile_securityServer)
 		- gdomap
 		- gdnc
-		- Object Server (aka etoile_objectd)
-		- talk (main shell)
+		- Object Server (aka etoile_objectServer)
+		- talk (aka etoile_talk, tailored command line playing the role of the shell for the Object Server)
 
-gdomap will probably have to be integrated in etoile_objectd for performance and code simplicity reason.
+gdomap will probably have to be integrated in etoile_objectServer for performance and code simplicity reason.
 
 When the user wants a GUI environment, few other servers are started:
-		- Window Server (X11 I suppose ;-)
-		- Azalea (Window Manager)
-		- Étoile System UI Server (aka etoile_systemUId), it manages the login window
+		- Window Server (aka etoile_windowServer, which will be initially nothing more than an X11 launcher)
+		- Azalea (X11 related WM, may evolve in future)
+		- Étoilé Identity UI Server (aka etoile_identityUIServer, security helper in charge of the login window)
+		- Étoile System UI Server (aka etoile_systemUIServer, helper providing various System UI panels not specific to a particular service/application)
+		
 Next servers or services are now started with user privileges:
 		- gpbs
-		- Security UI Server (aka etoile_securityUId), the process that handles various System UI panels, especially authentication panel for GUI processes when they need special authorizations without raising their privileges
-		- Shelf (aka etoile_shelfUId)
-		- Menu Server (aka etoile_menuUId)
-		- Workspace (User File/Object Manager)
+		- Security UI Server (aka etoile_securityUIServer, helper that handles various System UI panels, specially authentication panel for AppKit processes when they need special authorizations without raising their privileges)
+		- Shelf (aka etoile_shelf)
+		- Menu Server (aka etoile_menuServer)
+		- Workspace (aka Workspace or Openspace, playing the role of the User File/Object Manager)
+		
+		- User Session, surely ?
+		- Project Session, probably ?
 
 Time to play now!
 
@@ -311,42 +316,64 @@ Introducing CoreObject
 ----------------------
 
 CoreObject has been thought to fix these issues, it introduces initially:
-- New name server (branded as 'object server')
-- Security model
-- Lookup chains
-- Actor semantic (based on StepTalk) with very basic XML format for serialization
-It delegates to StepTalk :
-	- programming languages support
-	- scripting support
+    - New name server (branded as 'object server')
+    - Lookup chains
+    - Translators (aka Virtual Objects System support)
+
+Next step would be:
+    - Security model
+
+Ultimately it may include:
+    - Actor semantic (based on StepTalk) with very basic XML format for serialization
+    By delegating to StepTalk:
+	   - programming languages support
+	   - scripting support
 
 
-Apple has the solution : Uniform Type Identifier (UTI)
+Flexible Object Type Support
+----------------------------
 
-Will become default File types mechanism in Étoilé and will be extended to become Default objec type mechanism in CoreObject
+Apple has the solution: Uniform Type Identifier (UTI).
 
-- File UTI are mandatory
-- File type extensions are optional
+Will become default File types mechanism in Étoilé and will be extended to become Default object type mechanism in CoreObject.
 
-Will allow to build Roles logic very easily.
+Étoilé rules:
+    - File UTI are mandatory
+    - File type extensions are optional
+
+Will allow to build Roles logic very easily when combined with the nameserver lookup chains possibility.
 
 CoreObject
 
-in Future :
-- Transactional support with HOM (through a trampoline) like Vanguard microkernel message chains
 
-An actor is an aggregate of services/messages from other objects or programs, presented with its own object interface and logic. It can be described as proxy mapped to several objects (or often parts of them) and not not only one.
+Future Features Evaluated
+-------------------------
 
+In future, CoreObject performance or flexibility could be enhanced by:
+    - Transactional support (would rely on an HOM model through a trampoline), the implementation would be inspired by Vanguard micro-kernel message chains
+    - Actor semantic
+    
+Note: An actor is an aggregate of services/messages from other objects or programs, presented with its own object interface and logic. It can be described as proxy potentially mapped to several objects (or often parts of them) and not not only one.
+
+At a later point, transactions support  may be implemented at CoreObject level (both object server and Objective-C would be concerned by the extensions) to have transactional support built-in and improve performance (as introduced by Vanguard message chains).
+
+
+Unified ACL Security Model
+--------------------------
+
+The security model is planned to be a simplified version of what has already been implemented for Spring or Hurd name servers. That means an ACL based Security Model, set per published object. This model which would allow policy oriented security rules by using the nameserver as a policy store.
+
+
+Looking up my lookup chain
+--------------------------
 
 It implements lookup chains, that could be roughly compared to Hurd translators.
 Lookup chains have many uses like to take an example, know what role and program is related to an UTI.
 A lookup chain happens when a lookup on a domain returns another domain (referenced in the object server), then the latter evaluates the returned domain and repeats the process until the returned object isn't a domain object anymore.
 
-The security model is planned to be a simplified version of what has already been implemented for Spring or Hurd name servers.
 
-
-At a later point, transactions support  may be implemented at CoreObject level (both object server and Objective-C would be concerned by the extensions) to have transactional support built-in and improve performance (as introduced by Vanguard message chains).
-
-
+Lookup Chain By Example
+-----------------------
 
 What's a lookup chain ?
 
@@ -371,6 +398,9 @@ Open document example :
 What's a lookup chain ? 
 
 Open document example in detail :
+
+
+--- blabla
 
 Writing such a server is pretty hard when you consider concurrency issues.
 
