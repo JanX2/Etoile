@@ -75,9 +75,6 @@ Make a Wish
 Étoilé system should be quite different on this matter, because it is focused on a middle approach where Étoilé system should  multiplexed with its host system, most of tasks when they are run are mapped to host system tasks and parts of Étoilé system components are mapped to host system primitives. Because Étoilé are components are provided in separate modules and relying on objects model, you can easily use inheritance to tune performance of a basic Étoilé system, by adding support for more host system primitives.
 
 
-Étoilé system should be quite different on this matter, because it takes a middle approach where Étoilé system is multiplexed with its host system, most of tasks when they are run are mapped to host system tasks and parts of Étoilé system components are mapped to host system primitives. Because Étoilé are components are provided in separate modules and relying on objects model, you can easily use inheritance to tune performance of a basic Étoilé system, by adding support for more host system primitives.
-
-
 Étoilé Middle Way
 -----------------
 
@@ -162,16 +159,16 @@ Why uses GNUstep and not… ?
     - Not matching Objective-C in term of facility with OS integration
     - No development environment (especially thinking about Gorm or Interface Builder)
 
-It's important to note Étoilé hasn't been thought to provide GNUstep project a desktop environment. The underlying foundations doesn't matter when you consider the goal. The decision to set on GNUstep is a question of opportunity. That led us to the decision itself, Étoilé should be rely on GNUstep (nothing really better is available), but we know this can change rapidly with Io disruption.
+Note that Etoile was not created with the aim of "being a GNUstep desktop" but rather, after looking to underlying solutions to implement it, GNUstep looked like an obvious choice to start with. The decision to base Étoilé on top of GNUstep is a question of opportunity: GNUstep gives us excellent frameworks for dealing with graphical and non graphical components, as well as distributed objects. As such, Étoilé is for the moment mainly done in Objective-C, but we expect in the future to work on even higher level environment based on languages such as Io, Smalltalk, or Ruby.
 
 Ultimately they are really strong points in favor of Io:
-    - Language itself (Ruby done the right way and more)
+    - Language itself
     - Pure OpenGL backend for graphics
     - Run on many platforms like Linux, Mac OS X, Windows etc. (yes, Flux included)
-    - Moving forward really fast
+    - Moving forward quickly
     - Growing community
     
-Because of these points, Io is going to be strongly supported and installed by default on Étoilé. It should be treated almost on parity with Objective-C.
+Because of these points, Io will be supported and installed by default on Étoilé.
     
 
 Overriden GNUstep stuff (1)
@@ -209,10 +206,10 @@ Here is a memento about DO classes:
 Overriden GNUstep stuff (2)
 ---------------------------
 
-Possibly deprecated API in Foundation:
+Possibly deprecated or rather reworked API in Foundation:
 	- NSTask
 	- NSThread 
-Well, that's still to be considered.
+Well, that's still to be considered. It would be to introduce a more object oriented feeling (less Unix influenced).
 
 Deprecated API in AppKit
 	- NSWorkspace (not initially ?)
@@ -301,4 +298,4 @@ TalkCenter is nothing more than a shell directly interfaced with CoreObject and 
 When you start Étoilé system without UI servers, the virtual system starts and supposing your are in a Unix shell, you are immediately offered TalkCenter prompt (the Étoilé shell). You won't quit this shell until you exit Étoilé system itself.
 That's in part why Étoilé is not a desktop environment but a user environment. It uses would scale from text console to full GUI support.
 
-That means TalkCenter application is mostly a GUI wrapper around talkcenter tool (as it is already the case with usual Unix and GUI-based terminal application).
+That means TalkCenter application is mostly a GUI wrapper around 'talk' tool (as it is already the case with usual Unix and GUI-based terminal application).
