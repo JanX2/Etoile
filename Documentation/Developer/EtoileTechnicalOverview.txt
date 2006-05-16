@@ -5,7 +5,7 @@
 Étoilé System Presentation
 ==========================
 
-What we want?
+What We Want?
 -------------
 
 Apart everything… :-)
@@ -20,12 +20,12 @@ But we would like also:
 	- Transparent Distribution
 	- Components
 
-Most of OSes widely distributed these days have ridiculous support for such evolutions. They basically don't do the deal (when you aren't considering only performance and stability at a lesser extent), that means they don't provide interesting abstractions to build a user environment… The two most importants points:
+Most of OSes widely distributed these days have ridiculous support for such evolutions. They basically don't do the deal (when you aren't considering only performance and stability at a lesser extent), that means they don't provide interesting abstractions to build a user environment… The two most important points:
 - no reflexivity
-- no unified domain/object space support or similar interaction model support (everything is sandboxed like in a jail in the hell)
+- no unified domain/object space support or similar interaction model support (everything is a black box)
 
 
-Let's write yet another OS
+Let's Write Yet Another OS
 --------------------------
 
 Hmm… No.
@@ -37,7 +37,7 @@ Writing OSes is a pain that involves a huge amount of problems:
 - performance
 
 
-The world has been Linuxed
+The World Has Been Linuxed
 --------------------------
 
 Solutions:
@@ -49,23 +49,41 @@ Let's start being realistic:
 - That's impossible to fix 
 - What are the solutions?
 
-The world has been linuxed, we have to deal with this fact until the splashy comeback of Hurd & Smalltalk happens one day or never. We have to look for an intermediate approach.
+The world has been linuxed, we have to deal with this fact until the splashy comeback of Hurd & Smalltalk happens one day or never. We must investigate an intermediate approach.
 
 
-Very rough system classifications
+Very Rough System Classifications
 ---------------------------------
 
-- Virtual Machine (Squeak is THE example ;-)
+- Virtual Machine (Squeak is THE example)
 - Monolithic system or kernel (that uses a two layers approach between kernel space and user space)
 - Composite or aggregated systems (that includes microkernels, exokernels, programming languages as kernel or system etc.)
+
+
+Return of the Black Box
+-----------------------
+
+VM, Kernel and Interpreter, when run in a layered manner, result most of time in the same black box syndrom we encounter with other applications.
+
+The particularity of these systems is when you run one on top of another one, the hosted system is always running in a black box. Most of time, there is a one-to-one mapping between host system 'task' (taken in a very large sense) and the client system (relying on the capacity of the host system to directly or not present itself as virtual system). I say most of time because that wouldn't be true for recent JVM (at a lesser extent, we could have similar objections with dynamic language VM/Interpreters)
+To summarize in the shortest manner, we could state the host system is always acting like a virtual machine.
+
+
+Make a Wish
+-----------
+
+Étoilé system should be quite different on this matter, because it is focused on a middle approach where Étoilé system should  multiplexed with its host system, most of tasks when they are run are mapped to host system tasks and parts of Étoilé system components are mapped to host system primitives. Because Étoilé are components are provided in separate modules and relying on objects model, you can easily use inheritance to tune performance of a basic Étoilé system, by adding support for more host system primitives.
+
+
+Étoilé system should be quite different on this matter, because it takes a middle approach where Étoilé system is multiplexed with its host system, most of tasks when they are run are mapped to host system tasks and parts of Étoilé system components are mapped to host system primitives. Because Étoilé are components are provided in separate modules and relying on objects model, you can easily use inheritance to tune performance of a basic Étoilé system, by adding support for more host system primitives.
 
 
 Étoilé Middle Way
 -----------------
 
-Put a "virtual" microkernel on top of the host system.
+Eureka: Put a "virtual" microkernel on top of the host system.
 
-Microkernel looks to be what we want, but they are usually put under the main system (Linux on Mach or L4 are common examples) whether it is monolithic or not. By doing the reverse, we obtain most of microkernels benefits we need to build a really advanced desktop environment, without its main downside performance.
+Microkernel looks to be what we want, but they are usually put under the main system (Linux on Mach or L4 are common examples) whether it is monolithic or not. By doing the reverse, we obtain most of microkernels benefits we need to build a really advanced desktop environment, without its main downsides performance and hardware support.
 
 A virtual microkernel would be a microkernel stripped down to the following facilities:
 - name service
@@ -81,21 +99,23 @@ Early Conclusion
 If we build a light and relatively thin system layer which is easily portable to many OSes and circumvents their most drastic limitations, it is basically a win-win situation. A major problem will remain though: OS integration. That's one of the point Linux Desktop has failed to fix for many years, it's done yet, but it seems possible to achieve now (look at FreeDesktop and Ubuntu, Mandriva distributions for example, they are on this path).
 
 
-Étoilé VOS
-----------
+Diving in the Virtual System
+----------------------------
 
 In what sense Étoilé is a system?
 
-- Virtual Operating System
+1. Virtual Operating System
 
-- Virtual Object System
+Étoilé Virtual System is a very simple microkernel-like system oriented with high-level features in mind rather than low-level integration with hardware. It is written to be run on top of other kernels or systems, unlike usual microkernels (which are able to host monolithic kernels or systems as sandboxed servers).
+
+2. Virtual Object System
 	- Everything is an object (Spring philosophy)
+	
+It is combined with a Virtual Object System (basically similar to Spring domains, VFS in Plan 9 and Hurd or SoFS in SOPE), it is powered by an object server ('name server' referencing, routing and returning only objects).
 
-May be it's better to replace Virtual by Viral ;-)
 
-
-Étoilé VOS inspiration
-----------------------
+Virtual Object System Inspiration
+---------------------------------
 
 A bit of history:
 - UNIX -> Most of things are files (or mapped to)
@@ -127,10 +147,32 @@ A bit of history:
 Why uses GNUstep and not… ?
 ---------------------------
 
-- Squeak
+- Squeak (Smalltalk environment)
+    - No solid framework to develop applications with a graphical UI
+    - Probably one of the worst UI you can think of
+    - No roadmap or vision (the development process looks messy)
+    - Run in a complete black box (specially when you consider VM relationship to the OS)
+    - Io (looks more promising than Smalltalk right now)
 
 - Io environment (desktop + server)
+    - Flux (previously named Ion), Io AppKit inspired framework is still quite limited and not in a really good shape right now
+    - API very unstable (though 1.0 release is approaching, things should improve)
+    - No environment ecosystem with features like bundles, gpbs, gdomap etc.
+    - Community smaller than GNUstep/Cocoa
+    - Not matching Objective-C in term of facility with OS integration
+    - No development environment (especially thinking about Gorm or Interface Builder)
 
+It's important to note Étoilé hasn't been thought to provide GNUstep project a desktop environment. The underlying foundations doesn't matter when you consider the goal. The decision to set on GNUstep is a question of opportunity. That led us to the decision itself, Étoilé should be rely on GNUstep (nothing really better is available), but we know this can change rapidly with Io disruption.
+
+Ultimately they are really strong points in favor of Io:
+    - Language itself (Ruby done the right way and more)
+    - Pure OpenGL backend for graphics
+    - Run on many platforms like Linux, Mac OS X, Windows etc. (yes, Flux included)
+    - Moving forward really fast
+    - Growing community
+    
+Because of these points, Io is going to be strongly supported and installed by default on Étoilé. It should be treated almost on parity with Objective-C.
+    
 
 Overriden GNUstep stuff (1)
 ---------------------------
@@ -173,7 +215,7 @@ Possibly deprecated API in Foundation:
 Well, that's still to be considered.
 
 Deprecated API in AppKit
-	- NSWorkspace
+	- NSWorkspace (not initially ?)
 	- Few more to come like Pasteboard related stuff:
 		- NSServicesRequests
 		- NSInputServiceProvider
@@ -187,33 +229,29 @@ Migration path:
 	- NSWorkspace -> WorkspaceKit
 	- Pasteboard related API -> PickDropKit
 
-Étoilé 
-Middle approach :
-- Virtual Machine (Squeak is THE example ;-)
-- Monolithic kernel or system (that uses a two layers approach between kernel space and user space)
-- Composite or aggregated systems (that includes microkernels, exokernels, programming languages as kernel or system etc.)
 
-The particularity of these systems is when you run one on top of another one, the hosted system is always running in a sandbox. Most of time, there is a one-to-one mapping between host system 'task' (taken in a very large sense) and the client system (relying on the capacity of the host system to directly or not present itself as virtual system). I say most of time because that wouldn't be true for recent JVM (at a lesser extent, we could have similar objections with dynamic language VM/Interpreters)
-To summarize in the shortest manner, we could state the host system is always acting like a virtual machine.
+Examples of Eventual CoreObject Tuning
+--------------------------------------
 
-Étoilé system is quite different on this matter, because it takes a middle approach where Étoilé system is multiplexed with its host system, most of tasks when they are run are mapped to host system tasks and parts of Étoilé system components are mapped to host system primitives. Because Étoilé are components are provided in separate modules and relying on objects model, you can easily use inheritance to tune performance of a basic Étoilé system, by adding support for more host system primitives.
-
-To take two examples :
+To take two examples:
 - ObjectServer could be replaced at system init by HurdObjectServer (then Étoilé would use rather highly tuned Hurd name server for its own purpose)
 - InteractionDispatcher when Étoilé is run on DragonFlyBSD, could use DragonFlyBSD messaging primitives with an object InteractionIPIDispatcher
 
-Étoilé Virtual System is a very simple microkernel-like system oriented with high-level features in mind rather than low-level integration with hardware. It is written to be run on top of other kernels or systems, unlike usual microkernels (which are able to host monolithic kernels or systems as sandboxed servers).
 
-It is combined with a Virtual Object System (basically similar to Spring domains, VFS in Plan9 and Hurd or SoFS in SOPE), it is powered by an object server ('name server' referencing, routing and returning only objects).
+Quick Birdview of CoreObject
+----------------------------
 
-CoreObject and its object server provides two fundamental features :
+CoreObject and its object server should provide two fundamental features:
 - host system and Étoilé system interaction through a merged representation (in term of domains)
 - distribution support (based on our beloved Objective-C DO) between
 	- processes
 	- hosts
 	- languages
+	
 At a later point may be:
 - orthogonal persistency in some cases
+
+Note: Read CoreObject Presentation to learn more about it.
 
 
 What's happen when Étoilé System starts up?
@@ -279,7 +317,7 @@ Why Étoilé is a User Environment?
 	- talk shell (TalkCenter backend tool)
 	- security server
 
-- In Future, hardware scalability:
+- In future, hardware scalability:
 	- desktop computer
 	- PDA
 	- etc.
@@ -413,3 +451,8 @@ Io provides all these features, that's why it is a probably a good choice to wri
 
 
 
+
+
+Resulting From Layered VM, Kernel, Interpreter
+
+Squeak, Io, Java, etc. have all been thought to act like Virtual Machine.
