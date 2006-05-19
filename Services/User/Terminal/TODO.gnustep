@@ -1,0 +1,7 @@
+=====================
+Terminal (iTerm) TODO
+=====================
+
+    * Test with new Gorm nib compatibility (eventually convert some nib files gorm ones, in case it is helpful because of current Gorm limitations)
+    * Try to launch to know whether the nibs are loading properly
+    * Test basic interaction (probably means debugging what is choking)
