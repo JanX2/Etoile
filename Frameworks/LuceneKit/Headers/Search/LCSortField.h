@@ -34,7 +34,7 @@ typedef enum _LCSortFieldType {
 {
 	NSString *field;
 	LCSortFieldType type;  // defaults to determining type dynamically
-						   //    private Locale locale;    // defaults to "natural order" (no Locale)
+        id locale;    // defaults to "natural order" (no Locale)
 	BOOL reverse;  // defaults to natural order
 	id factory;
 }
@@ -48,10 +48,9 @@ typedef enum _LCSortFieldType {
 - (id) initWithField: (NSString *) field type: (LCSortFieldType) type;
 - (id) initWithField: (NSString *) field type: (LCSortFieldType) type
 			 reverse: (BOOL) reverse;
-#if 0
-	public SortField (String field, Locale locale)
-	public SortField (String field, Locale locale, boolean reverse)
-#endif
+- (id) initWithField: (NSString *) field locale: (id) locale;
+- (id) initWithField: (NSString *) field locale: (id) locale 
+             reverse: (BOOL) reverse;
 
 - (id) initWithField: (NSString *) field
 		  comparator: (id) comparator;
@@ -60,7 +59,7 @@ typedef enum _LCSortFieldType {
 			 reverse: (BOOL) reverse;
 - (NSString *) field;
 - (LCSortFieldType) type;
-	//  public Locale getLocale()
+- (id) locale;
 - (BOOL) reverse;
 - (id) factory;
 @end

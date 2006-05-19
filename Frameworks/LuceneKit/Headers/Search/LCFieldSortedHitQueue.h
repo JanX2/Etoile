@@ -36,19 +36,20 @@
 }
 + (LCComparatorCache *) sharedComparatorCache;
 - (id <LCScoreDocComparator>) lookup: (LCIndexReader *) reader 
-							   field: (NSString *) field type: (int) type 
-							 factory: (id) factory;
+			   field: (NSString *) field type: (int) type 
+			locale: (id) locale factory: (id) factory;
 - (id) store: (LCIndexReader *) reader field: (NSString *) field 
-		type: (int) type factory: (id) factory value: (id) value;
+		type: (int) type locale: (id) locale
+		factory: (id) factory value: (id) value;
 - (id <LCScoreDocComparator>) cachedComparator: (LCIndexReader *) reader
-										 field: (NSString *) fieldname
-										  type: (int) type
-									  //locale: (LCLocale *) locale
-									   factory: (id <LCSortComparatorSource>) factory;
+				 field: (NSString *) fieldname
+				  type: (int) type
+				  locale: (id) locale
+			   factory: (id <LCSortComparatorSource>) factory;
 - (id <LCScoreDocComparator>) comparatorInt: (LCIndexReader *) reader 
-									  field: (NSString *) fieldname;
+				  field: (NSString *) fieldname;
 - (id <LCScoreDocComparator>) comparatorFloat: (LCIndexReader *) 
-								 reader field: (NSString *) fieldname;
+			 reader field: (NSString *) fieldname;
 - (id <LCScoreDocComparator>) comparatorString: (LCIndexReader *) reader 
 										 field: (NSString *) fieldname;
 #if 0

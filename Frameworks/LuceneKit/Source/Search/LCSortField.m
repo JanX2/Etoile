@@ -91,27 +91,28 @@
 * @param field  Name of field to sort by, cannot be <code>null</code>.
 * @param locale Locale of values in the field.
 */
-#if 0
-public SortField (String field, Locale locale) {
-    this.field = field.intern();
-    this.type = STRING;
-    this.locale = locale;
+- (id) initWithField: (NSString *) f locale: (id) l
+{
+	self = [self initWithField: f];
+	ASSIGN(locale, l);
+	type = LCSortField_STRING;
+	return self;
 }
-#endif
 
 /** Creates a sort, possibly in reverse, by terms in the given field sorted
 * according to the given locale.
 * @param field  Name of field to sort by, cannot be <code>null</code>.
 * @param locale Locale of values in the field.
 */
-#if 0
-public SortField (String field, Locale locale, boolean reverse) {
-    this.field = field.intern();
-    this.type = STRING;
-    this.locale = locale;
-    this.reverse = reverse;
+- (id) initWithField: (NSString *) f locale: (id) l
+			 reverse: (BOOL) r
+{
+	self = [self initWithField: f];
+	ASSIGN(locale, l);
+	type = LCSortField_STRING;
+	reverse = r;
+	return self;
 }
-#endif
 
 /** Creates a sort with a custom comparison function.
 * @param field Name of field to sort by; cannot be <code>null</code>.
@@ -143,6 +144,7 @@ public SortField (String field, Locale locale, boolean reverse) {
 {
 	DESTROY(field);
 	DESTROY(factory);
+	DESTROY(locale);
 	[super dealloc];
 }
 
@@ -167,11 +169,10 @@ public SortField (String field, Locale locale, boolean reverse) {
 * May return <code>null</code> if no Locale was specified.
 * @return Locale, or <code>null</code>.
 */
-#if 0
-public Locale getLocale() {
+- (id) locale
+{
     return locale;
 }
-#endif
 
 /** Returns whether the sort should be reversed.
 * @return  True if natural order should be reversed.
@@ -205,7 +206,7 @@ public Locale getLocale() {
 			break;
 	}
 	
-	//  if (locale != null) buffer.append ("("+locale+")");
+	if (locale != nil) [s appendFormat: @"(%@)", locale];
 	if (reverse) [s appendString: @"!"];
 	
 	return AUTORELEASE(s);

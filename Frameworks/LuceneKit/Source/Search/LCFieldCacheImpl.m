@@ -20,19 +20,21 @@
 /** Expert: Every key in the internal cache is of this type. */
 @implementation LCEntry
 - (id) initWithField: (NSString *) f
-				type: (LCSortFieldType) t
+		type: (LCSortFieldType) t
+ 	      locale: (id) l
 {
 	self = [super init];
 	ASSIGN(field, f);
 	type = t;
 	custom = nil;
+	locale = l;
 	return self;
 }
 
 - (id) initWithField: (NSString *) f
 			  custom: (id) c
 {
-	self = [self initWithField: f type: LCSortField_CUSTOM];
+	self = [self initWithField: f type: LCSortField_CUSTOM locale: nil];
 	ASSIGN(custom, c);
 	return self;
 }
@@ -40,10 +42,11 @@
 - (NSString *) field { return field; }
 - (LCSortFieldType) type { return type; }
 - (id) custom { return custom; }
+- (id) locale { return locale; }
 - (void) setField: (NSString *) f { ASSIGN(field, f); }
 - (void) setType: (LCSortFieldType) t { type = t; }
 - (void) setCustom: (id) c { ASSIGN(custom, c); }
-
+- (void) setLocale: (id) l { ASSIGN(locale, l); }
 
 - (BOOL) isEqual: (id) o
 {
@@ -52,6 +55,7 @@
 		LCEntry *other = (LCEntry *) o;
 		if ([[other field] isEqualToString: field] && ([other type] == type))
 		{
+			if (([other locale] == nil) ? (locale == nil) : [[other locale] isEqual: locale]) {
 			if (([other custom] == nil) && (custom == nil))
 			{
 				return YES;
@@ -60,6 +64,7 @@
 			{
 				return YES;
 			}
+			}
 		}
 	}
 	return NO;
@@ -67,12 +72,12 @@
 
 - (unsigned) hash
 {
-	return [field hash] ^ type ^ ((custom == nil) ? 0 : [custom hash]);
+	return [field hash] ^ type ^ ((custom == nil) ? 0 : [custom hash]) ^ ((locale == nil) ? 0 : [locale hash]);
 }
 
 - (id) copyWithZone: (NSZone *) zone
 {
-	LCEntry *entry = [[LCEntry allocWithZone: zone] initWithField: AUTORELEASE([[self field] copy]) type: [self type]];
+	LCEntry *entry = [[LCEntry allocWithZone: zone] initWithField: AUTORELEASE([[self field] copy]) type: [self type] locale: [self locale]];
 	[entry setCustom: [self custom]];
 	return entry;
 }
@@ -103,8 +108,9 @@ static int LCFieldCache_STRING_INDEX = -1;
 /** See if an object is in the cache. */
 - (id) lookup: (LCIndexReader *) reader field: (NSString *) field
 		 type: (LCSortFieldType) type
+	locale: (id) locale
 {
-	LCEntry *entry = [[LCEntry alloc] initWithField: field type: type];
+	LCEntry *entry = [[LCEntry alloc] initWithField: field type: type locale: locale];
 	//    synchronized (this) {
 	NSDictionary *readerCache = [cache objectForKey: reader];
 	if (readerCache == nil) return nil;
@@ -128,9 +134,10 @@ static int LCFieldCache_STRING_INDEX = -1;
 
 /** Put an object into the cache. */
 - (id) store: (LCIndexReader *) reader field: (NSString *) field
-		type: (LCSortFieldType) type custom: (id) value
+		type: (LCSortFieldType) type locale: (id) locale
+		custom: (id) value
 {
-	LCEntry *entry = [[LCEntry alloc] initWithField: field type: type];
+	LCEntry *entry = [[LCEntry alloc] initWithField: field type: type locale: locale];
 	//    synchronized (this) {
 	NSMutableDictionary *readerCache = [cache objectForKey: reader];
 	if (readerCache == nil)
@@ -231,7 +238,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 
 - (NSDictionary *) strings: (LCIndexReader *) reader field: (NSString *) field
 {
-	id ret = [self lookup: reader field: field type: LCSortField_STRING];
+	id ret = [self lookup: reader field: field type: LCSortField_STRING locale: nil];
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
 		id <LCTermDocuments> termDocs = [reader termDocuments];
@@ -250,7 +257,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 		} while ([termEnum hasNextTerm]);
 		[termDocs close];
 		[termEnum close];
-		[self store: reader field: field type: LCSortField_STRING custom: retDic];
+		[self store: reader field: field type: LCSortField_STRING locale: nil custom: retDic];
 		return retDic;
 	}
 	return ret;
@@ -259,7 +266,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 - (LCStringIndex *) stringIndex: (LCIndexReader *) reader
 						  field: (NSString *) field
 {
-	id ret = [self lookup: reader field: field type: LCFieldCache_STRING_INDEX];
+	id ret = [self lookup: reader field: field type: LCFieldCache_STRING_INDEX locale: nil];
 	if (ret == nil) {
 		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
 		NSMutableArray *mterms = [[NSMutableArray alloc] init];
@@ -319,7 +326,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 		LCStringIndex *value = [[LCStringIndex alloc] initWithOrder: retDic
 															 lookup: mterms];
 		[self store: reader field: field type: LCFieldCache_STRING_INDEX
-			 custom: value];
+			 locale: nil custom: value];
 		return AUTORELEASE(value);
 	}
 	return ret;
@@ -338,7 +345,7 @@ protected static final Pattern pIntegers = Pattern.compile ("[0-9\\-]+");
 
 - (id) objects: (LCIndexReader *) reader field: (NSString *) field
 {
-	id ret = [self lookup: reader field: field type: LCSortField_AUTO];
+	id ret = [self lookup: reader field: field type: LCSortField_AUTO locale: nil];
 	if (ret == nil) {
 		LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
 		LCTermEnumerator *enumerator = [reader termEnumeratorWithTerm: t];
@@ -382,7 +389,7 @@ protected static final Pattern pIntegers = Pattern.compile ("[0-9\\-]+");
 				}
 			}
 			if (ret != nil) {
-				[self store: reader field: field type: LCSortField_AUTO custom: ret];
+				[self store: reader field: field type: LCSortField_AUTO locale: nil custom: ret];
 			}
 		} else {
 			NSLog(@"field \"%@\" does not apper to be indexed", field);
@@ -416,7 +423,7 @@ protected static final Pattern pIntegers = Pattern.compile ("[0-9\\-]+");
 		} while ([termEnum hasNextTerm]);
 		[termDocs close];
 		[termEnum close];
-		[self store: reader field: field type: LCSortField_CUSTOM custom: retDic];
+		[self store: reader field: field comparer: comparator custom: retDic];
 		return retDic;
 	}
 	return ret;

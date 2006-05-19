@@ -6,7 +6,7 @@
 
 // FIXME: Would be better to use HAVE_FLOAT_H inspired macro (but that implies
 // to add a config file).
-#ifndef __APPLE__
+#ifdef __APPLE__
 #include <float.h>
 #endif
 
@@ -44,10 +44,13 @@
 	for (i=0; i<n; ++i) {
 		LCSortField *field = [f objectAtIndex: i];
 		NSString *fieldname = [field field];
-		[comparators addObject: [cache cachedComparator: reader field: fieldname 
-												   type: [field type] factory: [field factory]]];
-		[fields addObject: [[LCSortField alloc] initWithField: fieldname 
+		[comparators addObject: [cache cachedComparator: reader field: fieldname type: [field type] locale: [field locale] factory: [field factory]]];
+		if ([[comparators objectAtIndex: i] sortType] == LCSortField_STRING) {
+		  [fields addObject: [[LCSortField alloc] initWithField: fieldname locale: [field locale] reverse: [field reverse]]];
+		} else {
+		  [fields addObject: [[LCSortField alloc] initWithField: fieldname 
 														 type: [[comparators objectAtIndex: i] sortType] reverse: [field reverse]]];
+		}
 	}
 	maxscore = FLT_MIN;
 	return self;
@@ -187,8 +190,8 @@ static LCComparatorCache *sharedInstance;
 
 /** Returns a comparator if it is in the cache. */
 - (id <LCScoreDocComparator>) lookup: (LCIndexReader *) reader
-							   field: (NSString *) field type: (int) type
-							 factory: (id) factory
+			   field: (NSString *) field type: (int) type
+		locale: (id) locale factory: (id) factory
 {
 	LCEntry *entry;
 	if (factory != nil)
@@ -197,7 +200,7 @@ static LCComparatorCache *sharedInstance;
 	}
 	else
 	{
-		entry = [[LCEntry alloc] initWithField: field type: type];
+		entry = [[LCEntry alloc] initWithField: field type: type locale: locale];
 	}
 	
 	NSDictionary *readerCache = [comparators objectForKey: reader];
@@ -207,7 +210,8 @@ static LCComparatorCache *sharedInstance;
 
 /** Stores a comparator into the cache. */
 - (id) store: (LCIndexReader *) reader field: (NSString *) field 
-		type: (int) type factory: (id) factory value: (id) value
+		type: (int) type locale: (id) locale
+		factory: (id) factory value: (id) value
 {
 	LCEntry *entry;
 	if (factory != nil)
@@ -216,7 +220,7 @@ static LCComparatorCache *sharedInstance;
 	}
 	else
 	{
-		entry = [[LCEntry alloc] initWithField: field type: type];
+		entry = [[LCEntry alloc] initWithField: field type: type locale: locale];
 	}
 	NSMutableDictionary *readerCache = [comparators objectForKey: reader];
 	if (readerCache == nil) 
@@ -231,16 +235,16 @@ static LCComparatorCache *sharedInstance;
 }
 
 - (id <LCScoreDocComparator>) cachedComparator: (LCIndexReader *) reader
-										 field: (NSString *) fieldname
-										  type: (int) type
-									  //locale: (LCLocale *) locale
-									   factory: (id) factory
+			 field: (NSString *) fieldname
+			  type: (int) type
+			  locale: (id) locale
+			   factory: (id) factory
 {
 	if (type == LCSortField_DOC) 
 		return AUTORELEASE([[LCIndexOrderScoreDocComparator alloc] init]);
 	if (type == LCSortField_SCORE) 
 		return AUTORELEASE([[LCRelevanceScoreDocComparator alloc] init]);
-	id <LCScoreDocComparator> comparator = [self lookup: reader field: fieldname type: type factory: factory];
+	id <LCScoreDocComparator> comparator = [self lookup: reader field: fieldname type: type locale: locale factory: factory];
     if (comparator == nil) {
 		switch (type) {
 			case LCSortField_AUTO:
@@ -266,7 +270,7 @@ static LCComparatorCache *sharedInstance;
 				NSLog(@"unknown field type %d", type);
 				return nil;
 		}
-		[self store: reader field: fieldname type: type factory: factory value: comparator];
+		[self store: reader field: fieldname type: type locale: locale factory: factory value: comparator];
     }
     return comparator;
 }
