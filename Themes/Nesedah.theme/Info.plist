@@ -6,4 +6,5 @@
 			"Jesse Ross <jesse@jesseross.com>", 
 			"Nicolas Roard <nicolas@roard.com> (Camaelon port)"
 		  );
+	Licence = "BSD revised licence";
 }
