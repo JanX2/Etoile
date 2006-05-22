@@ -62,7 +62,7 @@ static MenuletLoader * shared = nil;
   NSArray * bundles = [[BundleExtensionLoader shared]
     extensionsForBundleType: @"menulet"
      principalClassProtocol: @protocol(EtoileMenulet)
-         bundleSubdirectory: @"EtoileMenuServer"
+         bundleSubdirectory: nil /* @"EtoileMenuServer" */
                   inDomains: 0
        domainDetectionByKey: @"MenuMenulets"];
   NSEnumerator * e;
