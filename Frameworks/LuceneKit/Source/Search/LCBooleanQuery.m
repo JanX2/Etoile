@@ -154,7 +154,7 @@ static int maxClauseCount = 1024;
 	}
 }
 
-- (LCQuery *) copyWithZone: (NSZone *) zone
+- (id) copyWithZone: (NSZone *) zone
 {
 	LCBooleanQuery *clone = [super copyWithZone: zone];
 	[clone setClauses: AUTORELEASE([[self clauses] copy])];

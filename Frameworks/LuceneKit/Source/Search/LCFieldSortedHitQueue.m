@@ -6,9 +6,9 @@
 
 // FIXME: Would be better to use HAVE_FLOAT_H inspired macro (but that implies
 // to add a config file).
-#ifdef __APPLE__
+//#ifdef __APPLE__
 #include <float.h>
-#endif
+//#endif
 
 @implementation LCFieldSortedHitQueue
 

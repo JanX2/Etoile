@@ -1,6 +1,7 @@
-2006-05-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+2006-05-21 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
-    * Update to r391895 (Not test with UnitKit yet).
+    * Update to r391895.
+    Result: 55 classes, 137 methods, 651969 tests, 0 failed
 
 2006-04-23 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
