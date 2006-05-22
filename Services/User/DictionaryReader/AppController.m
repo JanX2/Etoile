@@ -351,8 +351,7 @@ NSDictionary* normalAttributes;
 		      didBrowseTo: aWord];
       [self updateGUI];
       
-      NSWindow* mainWindow = [NSApp mainWindow];
-      [mainWindow orderFront: self];
+      [dictionaryContentWindow orderFront: self];
     }
   NS_HANDLER
     {

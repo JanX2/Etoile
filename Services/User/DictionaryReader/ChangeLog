@@ -2,8 +2,11 @@
 DictionaryReader Changelog
 ==========================
 
-Mar 21 2006 Yen-Ju
-
+May 22 2006 Guenther Noack
+	* Fixed the bug that made the window stay hidden even when a new
+	  lookup was invoked.
+	
+May 21 2006 Yen-Ju
 	* Fix a typo.
 
 May 10 2006 Guenther Noack

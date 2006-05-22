@@ -28,6 +28,7 @@
   NSTextView* searchResultView;
   NSButton* browseBackButton;
   NSButton* browseForwardButton;
+  NSWindow* dictionaryContentWindow;
   
   DictConnection* dict;
   HistoryManager* historyManager;
