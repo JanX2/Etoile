@@ -2,6 +2,10 @@
 DictionaryReader Changelog
 ==========================
 
+Mar 21 2006 Yen-Ju
+
+	* Fix a typo.
+
 May 10 2006 Guenther Noack
 	* Applied patch by Chris B. Vetter that provides a Service
 	  to look up words with DictionaryReader
