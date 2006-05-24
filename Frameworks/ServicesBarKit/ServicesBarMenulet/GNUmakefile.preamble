@@ -1,0 +1,7 @@
+# Preamble Definitions
+
+#ADDITIONAL_OBJCFLAGS += -Wno-unused
+
+ADDITIONAL_INCLUDE_DIRS += -I../
+
+ADDITIONAL_LIB_DIRS += -L../$(GNUSTEP_OBJ_DIR)

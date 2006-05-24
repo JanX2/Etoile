@@ -1,0 +1,8 @@
+{
+    Authors = (
+	"Quentin Mathé"
+    );
+    BundleName = ServicesBarMenulet;
+    Copyright = "Copyright (C) 2006 by Quentin Mathé";
+    CopyrightDescription = "Released under the terms of the GNU Library Public License v2, or any later.";
+}
