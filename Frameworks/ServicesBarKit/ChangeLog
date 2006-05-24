@@ -1,3 +1,15 @@
+2006-05-24  Quentin Mathe <qmathe@club-internet.fr>
+    
+    Warning! Not yet usable.
+    First part of the MenuServer support related update.
+    Export the services bar in a menulet loaded by the MenuServer.
+    * ServicesBarMenulet/GNUmakefile:
+    * ServicesBarMenulet/GNUmakefile.preamble:
+    * ServicesBarMenulet/ServicesBarMenulet.h:
+    * ServicesBarMenulet/ServicesBarMenulet.m:
+    * ServicesBarMenulet/ServicesBarMenuletInfo.plist:
+    Added.
+
 2006-01-23  Quentin Mathe <qmathe@club-internet.fr>
     
     * SBServicesBarItem.m:
