@@ -105,6 +105,9 @@ enum RSSFeedStatus
 }
 
 
++feed;
++feedWithURL: (NSURL*) aURL;
+
 -init;
 
 /**

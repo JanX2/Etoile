@@ -126,6 +126,16 @@
 @implementation RSSFeed
 
 
++feed
+{
+  return AUTORELEASE([[self alloc] init]);
+}
+
++feedWithURL: (NSURL*) aURL
+{
+  return AUTORELEASE([[self alloc] initWithURL: aURL]);
+}
+
 -init
 {
   return [self initWithURL: nil];
