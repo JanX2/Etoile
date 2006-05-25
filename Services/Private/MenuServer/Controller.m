@@ -82,11 +82,14 @@ MenuBarWindow * ServerMenuBarWindow = nil;
         initWithContentRect: [self menuBarWindowFrame]
                   styleMask: NSBorderlessWindowMask
                     backing: NSBackingStoreRetained
-                      defer: YES];
+                      defer: NO];
 
       [ServerMenuBarWindow setTitle: _(@"EtoileMenuServer")];
       [ServerMenuBarWindow setCanHide: NO];
       [ServerMenuBarWindow setHidesOnDeactivate: NO];
+#ifdef XWindowServerKit
+      [ServerMenuBarWindow setDesktop: 0xFFFFFFFF];
+#endif
 
       menuBarView = [[[MenuBarView alloc]
         initWithFrame: NSZeroRect]

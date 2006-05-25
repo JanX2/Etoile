@@ -23,6 +23,11 @@
 
 #import <AppKit/NSWindow.h>
 
+#ifdef XWindowServerKit
+#import <XWindowServerKit/XWindow.h>
+@interface MenuBarWindow : XWindow
+#else
 @interface MenuBarWindow : NSWindow
+#endif
 
 @end

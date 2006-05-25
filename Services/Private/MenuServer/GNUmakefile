@@ -37,7 +37,11 @@ EtoileMenuServer_LANGUAGES =
 EtoileMenuServer_LOCALIZED_RESOURCE_FILES = 
 EtoileMenuServer_APPLICATION_ICON = Etoile.tiff
 
-ADDITIONAL_GUI_LIBS = 
+ifeq ($(x11), yes)
+	ADDITIONAL_GUI_LIBS = -lXWindowServerKit
+	ADDITIONAL_CPPFLAGS += -DXWindowServerKit
+endif
+
 SUBPROJECTS = Subprojects/ClockMenulet \
 Subprojects/AboutEtoileEntry \
 Subprojects/ApplicationsEntry \
