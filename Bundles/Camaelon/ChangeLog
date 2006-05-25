@@ -1,3 +1,7 @@
+2006-05-19 Nicolas Roard <nicolas@roard.com>
+
+	* CLImage.m: modified the path to properly access the images used by the Windows. Thanks for Chris Vetter perseverance in re-re-re-submitting a patch for it ;-)
+
 2006-03-19 Nicolas Roard <nicolas@roard.com>
 
 	* committed a patch in NSPopupMenu by matt rice

@@ -33,11 +33,11 @@ Class theNSImageClass;
 	{
 		if ([aName isEqualToString: @"common_Close"])
 		{
-			ret = [NSImage imageNamed: @"Window-titlebar-closebutton-unselected.tiff"];
+			ret = [NSImage imageNamed: @"Window/Window-titlebar-closebutton-unselected.tiff"];
 		}
 		else if ([aName isEqualToString: @"common_CloseH"])
 		{
-			ret = [NSImage imageNamed: @"Window-titlebar-closebutton.tiff"];
+			ret = [NSImage imageNamed: @"Window/Window-titlebar-closebutton.tiff"];
 		}
 		else if (([aName isEqualToString: @"common_3DArrowRightH"])
 			|| ([aName isEqualToString: @"NSMenuArrowH"]))
@@ -60,11 +60,11 @@ Class theNSImageClass;
 		}
 		else if ([aName isEqualToString: @"common_Miniaturize"])
 		{
-			ret = [NSImage imageNamed: @"Window-titlebar-minimizebutton-unselected.tiff"];
+			ret = [NSImage imageNamed: @"Window/Window-titlebar-minimizebutton-unselected.tiff"];
 		}
 		else if ([aName isEqualToString: @"common_MiniaturizeH"])
 		{
-			ret = [NSImage imageNamed: @"Window-titlebar-minimizebutton.tiff"];
+			ret = [NSImage imageNamed: @"Window/Window-titlebar-minimizebutton.tiff"];
 		}
 		else if ([aName isEqualToString: @"NSSwitch"]
 			|| [aName isEqualToString: @"common_SwitchOff"])
