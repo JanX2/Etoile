@@ -1,10 +1,11 @@
-2006-05-25  Saso Kiselkov <skiselkov@gmail.com>
+2006-05-25  Yen-Ju Chen <yjchenx at gmail>
 
     * GNUmakefile:
     * Controller.m:
     * MenuBarWindow.m:
     Use XWindowServerKit when compiling with 'make x11=yes'.
     It will keep menubar staying in every desktkop.
+    * Avoid showing up in taskbar and pager.
 
 2006-05-21  Saso Kiselkov <skiselkov@gmail.com>
 

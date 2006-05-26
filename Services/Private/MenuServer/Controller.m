@@ -89,6 +89,7 @@ MenuBarWindow * ServerMenuBarWindow = nil;
       [ServerMenuBarWindow setHidesOnDeactivate: NO];
 #ifdef XWindowServerKit
       [ServerMenuBarWindow setDesktop: 0xFFFFFFFF];
+      [ServerMenuBarWindow skipTaskbarAndPager];
 #endif
 
       menuBarView = [[[MenuBarView alloc]
