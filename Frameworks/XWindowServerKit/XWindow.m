@@ -90,13 +90,12 @@
 
 - (void) skipTaskbarAndPager
 {
-/*
-  Atom *state = calloc(sizeof(Atom), 2);
-  state[0] = prop_atoms.net_wm_state_skip_pager;
-  state[1] = prop_atoms.net_wm_state_skip_taskbar;
-  PROP_SETA32([self xwindow], net_wm_state, atom, state, 2);
-  free(state);
-*/
+  Atom *state = calloc(2, sizeof(Atom));
+  state[0] = X_NET_WM_STATE_SKIP_PAGER;
+  state[1] = X_NET_WM_STATE_SKIP_TASKBAR;
+  XChangeProperty(dpy, [self xwindow], X_NET_WM_STATE, XA_ATOM, 32,
+		  PropModeReplace, (unsigned char *) state, 2);
+  XFree(state);
 }
 
 @end
