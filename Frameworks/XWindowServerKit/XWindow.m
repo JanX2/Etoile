@@ -1,22 +1,35 @@
 /*
-   XWindow.m for the Azalea window manager
+   XWindow.m for XWindowServerKit
    Copyright (c) 2006        Yen-Ju Chen
- 
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+   All rights reserved.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions are met:
 
-   See the COPYING file for a copy of the GNU General Public License.
+   * Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+   * Neither the name of the Etoile project nor the names of its contributors
+     may be used to endorse or promote products derived from this software
+     without specific prior written permission.
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+   THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #import "XWindow.h"
-#import "prop.h"
+#import <X11/Xatom.h>
 
 @implementation XWindow
 - (id) initWithContentRect: (NSRect)contentRect
@@ -35,7 +48,11 @@
   dpy = (Display*)[GSCurrentServer() serverDevice];
   screen = [[NSScreen mainScreen] screenNumber];
   root_win = RootWindow(dpy, screen);
-  prop_startup(dpy);
+
+  X_NET_WM_DESKTOP = XInternAtom(dpy, "_NET_WM_DESKTOP", False);
+  X_NET_WM_STATE = XInternAtom(dpy, "_NET_WM_STATE", False);
+  X_NET_WM_STATE_SKIP_PAGER = XInternAtom(dpy, "_NET_WM_STATE_SKIP_PAGER", False);
+  X_NET_WM_STATE_SKIP_TASKBAR = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);;
 
   return self;
 }
@@ -52,15 +69,23 @@
 - (void) setDesktop: (int) desktop
 {
   /* stay in all desktops */
-  prop_message(dpy, screen, [self xwindow], prop_atoms.net_wm_desktop, 
-		  desktop, 0, 0, 0, 
-		  SubstructureNotifyMask | SubstructureRedirectMask);
-  //PROP_MSG([self xwindow], net_wm_desktop, desktop, 0, 0, 0);
+  XClientMessageEvent *xev = calloc(1, sizeof(XClientMessageEvent));
+  xev->type = ClientMessage;
+  xev->window = [self xwindow];
+  xev->message_type = X_NET_WM_DESKTOP;
+  xev->format = 32;
+  xev->data.l[0] = desktop;
+  xev->data.l[1] = 0; // just in case
+  xev->data.l[2] = 0;
+  xev->data.l[3] = 0;
+  XSendEvent(dpy, root_win, False, 
+	     (SubstructureNotifyMask|SubstructureRedirectMask), (XEvent *)xev);
+  XFree(xev);
 
   /* and in case window manager is not running */
-  prop_set32(dpy, [self xwindow], prop_atoms.net_wm_desktop,
-		  prop_atoms.cardinal, desktop);
-//  PROP_SET32([self xwindow], net_wm_desktop, cardinal, desktop);
+  XChangeProperty(dpy, [self xwindow], X_NET_WM_DESKTOP, XA_CARDINAL, 32,
+		  PropModeReplace, (unsigned char*)&desktop, 1);
+
 }
 
 - (void) skipTaskbarAndPager
