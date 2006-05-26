@@ -90,6 +90,9 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 #ifdef XWindowServerKit
       [ServerMenuBarWindow setDesktop: 0xFFFFFFFF];
       [ServerMenuBarWindow skipTaskbarAndPager];
+      [ServerMenuBarWindow reserveScreenAreaOn: XScreenTopSide
+	               width: MenuBarHeight start: 0 end: [self menuBarWindowFrame].size.width];
+
 #endif
 
       menuBarView = [[[MenuBarView alloc]

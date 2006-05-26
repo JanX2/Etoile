@@ -6,6 +6,7 @@
     Use XWindowServerKit when compiling with 'make x11=yes'.
     It will keep menubar staying in every desktkop.
     * Avoid showing up in taskbar and pager.
+    * Reserve the top area to avoid being covered by windows while maximized.
 
 2006-05-21  Saso Kiselkov <skiselkov@gmail.com>
 
