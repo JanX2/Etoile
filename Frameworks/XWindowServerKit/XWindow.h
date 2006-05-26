@@ -34,6 +34,13 @@
 
 #define ALL_DESKTOP (0xFFFFFFFF)
 
+typedef enum _XScreenSide {
+  XScreenLeftSide,
+  XScreenRightSide,
+  XScreenTopSide,
+  XScreenBottomSide
+} XScreenSide;
+
 /* allow accessing xwindow system */
 @interface XWindow: NSWindow
 {
@@ -47,6 +54,7 @@
   Atom X_NET_WM_STATE;
   Atom X_NET_WM_STATE_SKIP_PAGER;
   Atom X_NET_WM_STATE_SKIP_TASKBAR;
+  Atom X_NET_WM_STRUT_PARTIAL;
 }
 
 /* If defer is NO when window is created. 
@@ -59,5 +67,11 @@
 
 /* Skip taskbar and pager */
 - (void) skipTaskbarAndPager;
+
+/* Reserve an area on screen, mostly used by dock and menubar 
+ * It uses _NET_WM_STRUT_PARTIAL.
+ */ 
+- (void) reserveScreenAreaOn: (XScreenSide) side 
+         width: (int) width start: (int) start end: (int) end;
 
 @end

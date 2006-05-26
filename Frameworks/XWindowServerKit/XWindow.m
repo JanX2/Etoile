@@ -52,7 +52,8 @@
   X_NET_WM_DESKTOP = XInternAtom(dpy, "_NET_WM_DESKTOP", False);
   X_NET_WM_STATE = XInternAtom(dpy, "_NET_WM_STATE", False);
   X_NET_WM_STATE_SKIP_PAGER = XInternAtom(dpy, "_NET_WM_STATE_SKIP_PAGER", False);
-  X_NET_WM_STATE_SKIP_TASKBAR = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);;
+  X_NET_WM_STATE_SKIP_TASKBAR = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);
+  X_NET_WM_STRUT_PARTIAL = XInternAtom(dpy, "_NET_WM_STRUT_PARTIAL", False);
 
   return self;
 }
@@ -96,6 +97,49 @@
   XChangeProperty(dpy, [self xwindow], X_NET_WM_STATE, XA_ATOM, 32,
 		  PropModeReplace, (unsigned char *) state, 2);
   XFree(state);
+}
+
+- (void) reserveScreenAreaOn: (XScreenSide) side          
+                       width: (int) width start: (int) start end: (int) end
+{
+  Atom *strut = calloc(12, sizeof(Atom));
+  strut[0] = 0;
+  strut[1] = 0;
+  strut[2] = 0;
+  strut[3] = 0;
+  strut[4] = 0;
+  strut[5] = 0;
+  strut[6] = 0;
+  strut[7] = 0;
+  strut[8] = 0;
+  strut[9] = 0;
+  strut[10] = 0;
+  strut[11] = 0;
+  switch(side) {
+    case XScreenLeftSide:
+      strut[0] = width;
+      strut[4] = start;
+      strut[5] = end;
+      break;
+    case XScreenRightSide:
+      strut[1] = width;
+      strut[6] = start;
+      strut[7] = end;
+      break;
+    case XScreenTopSide:
+      strut[2] = width;
+      strut[8] = start;
+      strut[9] = end;
+      break;
+    case XScreenBottomSide:
+      strut[3] = width;
+      strut[10] = start;
+      strut[11] = end;
+      break;
+  }
+  XChangeProperty(dpy, [self xwindow], X_NET_WM_STRUT_PARTIAL, XA_CARDINAL, 32,
+		  PropModeReplace, (unsigned char *)strut, 12);
+  XFree(strut);
 }
 
 @end
