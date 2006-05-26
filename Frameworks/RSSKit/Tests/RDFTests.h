@@ -7,21 +7,23 @@
 #import <UnitKit/UnitKit.h>
 #import <RSSKit/RSSKit.h>
 
+#import "RSSKitTests.h"
+
 @interface RDFTests : NSObject <UKTest> {
   
 }
 
--testChannelDesc;
--testChannelLink;
--testChannelTitle;
--testItemDesc;
--testItemLink;
--testItemRDFAbout;
--testItemTitle;
--testRSS090ChannelTitle;
--testRSS090ItemTitle;
--testRSSV10;
--testRSSV10NotDefaultNS;
+-(void)testChannelDesc;
+-(void)testChannelLink;
+-(void)testChannelTitle;
+-(void)testItemDesc;
+-(void)testItemLink;
+-(void)testItemRDFAbout;
+-(void)testItemTitle;
+-(void)testRSS090ChannelTitle;
+-(void)testRSS090ItemTitle;
+-(void)testRSSV10;
+-(void)testRSSV10NotDefaultNS;
 
 @end
 
