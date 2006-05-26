@@ -1,5 +1,10 @@
-May-26-2006 Yen-Ju Chen
 
+May-26-2006 Guenther Noack
+	* Tests run now. I built tests for RDF (RSS 1.0) files. Others
+	  still need to be built. It's a pity that the UnitKit GUI's Nib
+	  is b0rken. :-/
+	
+May-26-2006 Yen-Ju Chen
 	* Fix Tests.
 
 Mar-30-2006 Guenther Noack

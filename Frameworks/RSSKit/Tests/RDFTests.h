@@ -20,10 +20,14 @@
 -(void)testItemLink;
 -(void)testItemRDFAbout;
 -(void)testItemTitle;
+
+/*
 -(void)testRSS090ChannelTitle;
 -(void)testRSS090ItemTitle;
 -(void)testRSSV10;
 -(void)testRSSV10NotDefaultNS;
+
+*/
 
 @end
 

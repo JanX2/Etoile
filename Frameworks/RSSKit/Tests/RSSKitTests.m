@@ -13,9 +13,11 @@
 {
   NSBundle* testsBundle = [NSBundle bundleForClass: [RSSKitTests class]];
   NSString* res = [testsBundle pathForResource: aResourceName ofType: @"xml"];
+  NSLog(@"init with file path: %@", res);
+  
   NSURL* url = [NSURL fileURLWithPath: res];
   
-  NSLog(@"init with URL:");
+  NSLog(@"init with URL: %@", url);
   return [self initWithURL: url];
 }
 @end
