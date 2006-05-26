@@ -1,3 +1,10 @@
+2006-05-26  Saso Kiselkov <skiselkov@gmail.com>
+
+    * main.m: Added signal catching routines to handle case when
+    the app is quit from the keyboard. This makes profiling easier.
+    * GNUmakefile.postamble: Added if clause to handle when building
+    a profiling version of the app.
+
 2006-05-26  Yen-Ju Chen <yjchenx at gmail>
 
     * GNUmakefile:

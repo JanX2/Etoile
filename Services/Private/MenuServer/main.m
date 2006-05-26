@@ -23,14 +23,27 @@
 #import <AppKit/NSApplication.h>
 
 #import <Foundation/NSAutoreleasePool.h>
+#import <Foundation/NSBundle.h>
 #import <Foundation/NSUserDefaults.h>
 #import <Foundation/NSValue.h>
 
 #import "Controller.h"
 
+#import <signal.h>
+
+void handle_signal (int signum)
+{
+  NSLog (_(@"Caught signal %i, exiting"), signum);
+  exit (1);
+}
+
 int main(int argc, const char * argv[])
 {
   Controller * delegate;
+
+  // set up a signal handler for graceful exiting when killed
+  // from the keyboard
+  signal (SIGINT, handle_signal);
 
   CREATE_AUTORELEASE_POOL (pool);
 

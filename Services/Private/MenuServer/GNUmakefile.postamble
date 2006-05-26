@@ -21,7 +21,11 @@
 ifeq ($(debug), yes)
         APP=$(APP_NAME).debug
 else
+ ifeq ($(profile), yes)
+        APP=$(APP_NAME).profile
+ else
         APP=$(APP_NAME).app
+ endif
 endif
 
 after-all::
