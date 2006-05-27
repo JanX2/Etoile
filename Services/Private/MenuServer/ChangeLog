@@ -1,3 +1,8 @@
+2006-05-26  Yen-Ju Chen <yjchenx at gmail>
+
+    * Controller.m: Use ALL_DESKTOP instead 0xFFFFFFFF.
+    * GNUmakefile: Use CPPFLAGS for -I.
+
 2006-05-26  Saso Kiselkov <skiselkov@gmail.com>
 
     * main.m: Added signal catching routines to handle case when

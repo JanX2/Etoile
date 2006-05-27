@@ -39,8 +39,7 @@ EtoileMenuServer_APPLICATION_ICON = Etoile.tiff
 
 ifeq ($(x11), yes)
 	ADDITIONAL_GUI_LIBS = -lXWindowServerKit
-	ADDITIONAL_CPPFLAGS += -DXWindowServerKit
-	ADDITIONAL_OBJCFLAGS += -I/usr/X11R6/include
+	ADDITIONAL_CPPFLAGS += -DXWindowServerKit -I/usr/X11R6/include
 endif
 
 SUBPROJECTS = Subprojects/ClockMenulet \
