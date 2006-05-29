@@ -90,8 +90,11 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 #ifdef XWindowServerKit
       [ServerMenuBarWindow setDesktop: ALL_DESKTOP];
       [ServerMenuBarWindow skipTaskbarAndPager];
-      [ServerMenuBarWindow reserveScreenAreaOn: XScreenTopSide
-	               width: MenuBarHeight start: 0 end: [self menuBarWindowFrame].size.width];
+      [ServerMenuBarWindow
+        reserveScreenAreaOn: XScreenTopSide
+                      width: MenuBarHeight
+                      start: 0
+                        end: [self menuBarWindowFrame].size.width];
 
 #endif
 
@@ -119,8 +122,20 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 
 - (void) windowDidMove: (NSNotification *) notif
 {
-  // get the menu bar back in place in case the user somehow moved it
-  [ServerMenuBarWindow setFrame: [Controller menuBarWindowFrame] display: YES];
+  NSRect windowFrame = [ServerMenuBarWindow frame],
+         correctFrame = [Controller menuBarWindowFrame];
+
+  // convert to make sure we display correctly even with a buggy
+  // window manager which doesn't honour our settings to not display
+  // any window decorations
+  correctFrame = [NSWindow frameRectFromContentRect: correctFrame
+                                          styleMask: NSBorderlessWindowMask];
+
+  if (!NSEqualRects (windowFrame, correctFrame))
+    {
+      // get the menu bar back in place in case the user somehow moved it
+      [ServerMenuBarWindow setFrame: correctFrame display: YES];
+    }
 }
 
 // action which contacts the workspace app and asks it to initiate

@@ -1,3 +1,9 @@
+2006-05-29  Saso Kiselkov <skiselkov@gmail.com>
+
+    * Controller.m: Fixed CPU consumption issue when moving
+    the server window around. Also reformatted a line of code
+    to not exceed 80 characters in width.
+
 2006-05-26  Yen-Ju Chen <yjchenx at gmail>
 
     * Controller.m: Use ALL_DESKTOP instead 0xFFFFFFFF.
