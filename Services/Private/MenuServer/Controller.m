@@ -36,6 +36,7 @@
 #import <AppKit/NSMenu.h>
 #import <AppKit/NSPanel.h>
 #import <AppKit/NSScreen.h>
+#import <AppKit/NSWindow.h>
 #import <AppKit/NSWorkspace.h>
 
 //#import <WorkspaceCommKit/WorkspaceCommKit.h>
@@ -128,8 +129,8 @@ MenuBarWindow * ServerMenuBarWindow = nil;
   // convert to make sure we display correctly even with a buggy
   // window manager which doesn't honour our settings to not display
   // any window decorations
-  correctFrame = [NSWindow frameRectFromContentRect: correctFrame
-                                          styleMask: NSBorderlessWindowMask];
+  correctFrame = [NSWindow frameRectForContentRect: correctFrame
+                                         styleMask: NSBorderlessWindowMask];
 
   if (!NSEqualRects (windowFrame, correctFrame))
     {
