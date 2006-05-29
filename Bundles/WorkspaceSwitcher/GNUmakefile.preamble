@@ -1,0 +1,6 @@
+# Preamble Definitions
+
+BUNDLE_EXTENSION=.menulet
+
+#$(BUNDLE_NAME)_STANDARD_INSTALL=no
+#ADDITIONAL_OBJCFLAGS += -Wno-unused

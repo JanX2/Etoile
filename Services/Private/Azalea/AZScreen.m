@@ -33,6 +33,8 @@
 #import "prop.h"
 #import "config.h"
 
+#import <XWindowServerKit/XScreen.h>
+
 /*! The event mask to grab on the root window */
 #define ROOT_EVENTMASK (StructureNotifyMask | PropertyChangeMask | \
                         EnterWindowMask | LeaveWindowMask | \
@@ -357,6 +359,9 @@ static AZScreen *sharedInstance;
 
     screen_last_desktop = old;
 
+    [[NSDistributedNotificationCenter defaultCenter]
+	    postNotificationName: XCurrentWorkspaceDidChangeNotification
+	    object: nil];
     AZDebug("Moving to desktop %d\n", num+1);
 
     AZMoveResizeHandler *mrHandler = [AZMoveResizeHandler defaultHandler];

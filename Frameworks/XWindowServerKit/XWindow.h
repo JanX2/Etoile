@@ -28,18 +28,7 @@
    THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <AppKit/AppKit.h>
-#import <GNUstepGUI/GSDisplayServer.h>
-#import <X11/Xlib.h>
-
-#define ALL_DESKTOP (0xFFFFFFFF)
-
-typedef enum _XScreenSide {
-  XScreenLeftSide,
-  XScreenRightSide,
-  XScreenTopSide,
-  XScreenBottomSide
-} XScreenSide;
+#import "XScreen.h"
 
 /* allow accessing xwindow system */
 @interface XWindow: NSWindow
