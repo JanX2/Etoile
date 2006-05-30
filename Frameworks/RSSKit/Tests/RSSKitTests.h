@@ -17,6 +17,14 @@
 @end
 
 
+#define FETCH(x) \
+  RSSFeed* feed = \
+    [RSSFeed feedWithResource: (x)]; \
+  \
+  [feed fetch]; \
+
+
+
 @interface RSSKitTests : NSObject <UKTest> {
 }
 

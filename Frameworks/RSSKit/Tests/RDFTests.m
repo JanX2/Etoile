@@ -3,13 +3,6 @@
 
 #import "RDFTests.h"
 
-#define FETCH(x) \
-  RSSFeed* feed = \
-    [RSSFeed feedWithResource: (x)]; \
-  \
-  [feed fetch]; \
-
-
 
 /**
  * Runs simple tests for RDF (RSS 1.0) files.
