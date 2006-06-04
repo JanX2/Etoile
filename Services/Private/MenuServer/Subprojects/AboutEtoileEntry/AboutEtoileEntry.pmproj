@@ -55,6 +55,16 @@
 			{
 			    Name = ETMachineInfo.m;
 			    Type = Plain;
+			},
+			{
+			    Contents = (
+				{
+				    Name = ETMachineInfo_Solaris.m;
+				    Type = Plain;
+				}
+			    );
+			    Name = Solaris;
+			    Type = Category;
 			}
 		    );
 		    Name = "Class Files";
@@ -179,6 +189,11 @@
 			    );
 			    Name = "Source Images";
 			    Type = Category;
+			},
+			{
+			    Name = ChangeLog;
+			    Target = "/Users/diablos/etoile/Etoile/Services/Private/MenuServer/ChangeLog";
+			    Type = Link;
 			}
 		    );
 		    Name = "Non-Project Files";
@@ -205,7 +220,7 @@
 	    "Saso Kiselkov",
 	    "David Chrisnall"
 	);
-	MakefileHash = <*I1620194944>;
+	MakefileHash = <*I1442228840>;
     };
     Version = 0.2;
 }

@@ -1,3 +1,14 @@
+2006-06-04  Saso Kiselkov <skiselkov@gmail.com>
+
+    * Subprojects/AboutEtoileEntry/GNUmakefile:
+    * Subprojects/AboutEtoileEntry/GNUmakefile.preamble:
+    * Subprojects/AboutEtoileEntry/ETMachineInfo_Solaris.m: Integrated
+    changes from David Chrisnall to incorporate Solaris OS support for
+    machine detection.
+    * Subprojects/AboutEtoileEntry/AboutEtoileEntry.pmproj: Added link
+    from the "Non-Project Files" project category the top-level ChangeLog
+    of the EtoileMenuServer project.
+
 2006-05-29  Saso Kiselkov <skiselkov@gmail.com>
 
     * Controller.m: Fixed CPU consumption issue when moving

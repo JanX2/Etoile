@@ -16,8 +16,13 @@ ifeq ($(findstring openbsd, $(GNUSTEP_TARGET_OS)), openbsd)
   ADDITIONAL_OBJCFLAGS += -DOPENBSD
 endif
 
-ifeq ($(findstring dawrin, $(GNUSTEP_TARGET_OS)), darwin)
+ifeq ($(findstring darwin, $(GNUSTEP_TARGET_OS)), darwin)
   ADDITIONAL_OBJCFLAGS += -DDARWIN
+endif
+
+ifeq ($(findstring solaris, $(GNUSTEP_TARGET_OS)), solaris)
+  ADDITIONAL_OBJCFLAGS += -DSOLARIS
+  ADDITIONAL_LDFLAGS += -lkstat
 endif
 
 ifeq ($(findstring gnu, $(GNUSTEP_TARGET_OS)), gnu)

@@ -24,6 +24,7 @@ ETMachineInfo_FreeBSD.m \
 ETMachineInfo_Darwin.m \
 ETMachineInfo_OpenBSD.m \
 ETMachineInfo.m \
+ETMachineInfo_Solaris.m \
 
 AboutEtoileEntry_OBJCC_FILES = 
 AboutEtoileEntry_C_FILES = 
