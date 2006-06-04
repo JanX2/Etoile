@@ -2,6 +2,8 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS += -Wno-import
 
+SUBPROJECTS = ServicesBarMenulet StatusItemExample
+
 #
 # Main application
 #
@@ -11,7 +13,8 @@ GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 PACKAGE_NAME = ServicesBarKit	
 ifeq ($(test), yes)
 BUNDLE_NAME = libServicesBarKit
-ADDITIONAL_LDFLAGS = -lUnitKit -lgnustep-gui -lgnustep-base
+ADDITIONAL_CPPFLAGS += -DHAVE_UKTEST
+ADDITIONAL_LDFLAGS += -lUnitKit -lgnustep-gui -lgnustep-base
 else
 LIBRARY_NAME = libServicesBarKit
 endif
@@ -40,7 +43,7 @@ libServicesBarKit_HEADERS = \
 	SBServicesBarItem.h \
 	SBServicesBar.h
 	
-ifeq ($(test), no)
+ifneq ($(test), yes)
 libServicesBarKit_HEADER_FILES_INSTALL_DIR = /ServicesBarKit
 endif
 
@@ -62,6 +65,7 @@ libServicesBarKit_C_FILES =
 ifeq ($(test), yes)
 include $(GNUSTEP_MAKEFILES)/bundle.make
 else
+include $(GNUSTEP_MAKEFILES)/aggregate.make
 include $(GNUSTEP_MAKEFILES)/library.make
 endif
 

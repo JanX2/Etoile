@@ -12,11 +12,13 @@ BUNDLE_NAME = ServicesBarMenulet
 VERSION = 0.1
 BUNDLE_EXTENSION = .menulet
 
+$(BUNDLE_NAME)_LDFLAGS += -lServicesBarKit
+
 #
 # Resource files
 #
 $(BUNDLE_NAME)_MAIN_MODEL_FILE =
-$(BUNDLE_NAME)_RESOURCE_FILES =
+$(BUNDLE_NAME)_RESOURCE_FILES = #ServicesBarMenuletInfo.plist
 
 $(BUNDLE_NAME)_LOCALIZED_RESOURCE_FILES =
 

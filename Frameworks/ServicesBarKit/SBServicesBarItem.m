@@ -34,8 +34,63 @@
 #import <UnitKit/UnitKit.h>
 #endif
 
+static id proxyInstance = nil;
+
+@interface SBServicesBar (ServicesBarKitPackage)
++ (SBServicesBar *) serverInstance;
++ (BOOL) setUpServerInstance: (SBServicesBar *)bar;
+@end
+
+@protocol SBServicesBarItem
++ (id) systemServicesBarItemWithTitle: (NSString *)title;
+
+- (SBServicesBar *) servicesBar;
+
+- (NSString *) title;
+- (void) setTitle: (NSString *)title;
+- (float) length;
+- (void) setLength: (float)length;
+- (NSView *) view;
+- (void) setView: (NSView *)view;
+@end
+
+@interface SBServicesBarItem (ServicesBarKitPackage)
+- (id) owner;
+@end
+
+/*
+ * SBServicesBar proxy extension to handle services bar item creation on server 
+ * side
+ */
+
+@interface SBServicesBar (SBServicesBarItem)
+- (id) setUpServicesBarItemWithTitle: (NSString *)title;
+@end
+
+@implementation SBServicesBar (SBServicesBarItem)
+
+- (id) setUpServicesBarItemWithTitle: (NSString *)title
+{
+	SBServicesBarItem *item = [[SBServicesBarItem alloc] initWithTitle: title];
+
+	NSLog(@"Server side creation of services bar item %@", self);
+
+	// FIXME: We should retain the item properly in an array instead of 
+	// inserting it directly in the services bar.
+	[self addServicesBarItem: item];
+	RELEASE(item);
+
+	return item;
+}
+
+@end
 
 @implementation SBServicesBarItem
+
+- (id) owner
+{
+	return _ownerBar;
+}
 
 #ifdef HAVE_UKTEST
 - (void) testInitWithTitle
@@ -45,25 +100,69 @@
 	
 	UKNotNil([self title]);
 	UKStringsNotEqual([self title], @"");
+	UKNotNil(_toolbarItem);
 	UKNotNil([_toolbarItem itemIdentifier]);
 	UKStringsNotEqual([_toolbarItem itemIdentifier], @"");
+	UKStringsEqual([_toolbarItem label], [self title]);
 	
 	if ([self length] < 0)
 		UKFail();
 }
 #endif
 
+/** We use a factory method because the instance is created on the server side
+    and we only return a proxy. Then to rely on -initWithTitle: would make the 
+	instanciation. */
+//+ (id) servicesBarItemWithTitle: (NSString *)title inServicesBar: (id)bar
++ (id) systemServicesBarItemWithTitle: (NSString *)title
+{
+	if ([SBServicesBar serverInstance] == nil) /* Client side */
+	{
+		id servicesBarProxy;
+		id itemProxy;
+
+		/* Now the normal remote set up */
+	
+		NSLog(@"Client side set up by retrieving the proxy of services bar item \
+			%@", self);
+
+		servicesBarProxy = [NSConnection 
+			rootProxyForConnectionWithRegisteredName: @"servicesbarkit/servicesbar"
+			host:nil];
+
+		itemProxy = [servicesBarProxy setUpServicesBarItemWithTitle: title];
+		[itemProxy setProtocolForProxy: @protocol(SBServicesBarItem)];
+
+		return itemProxy; 
+	}
+	else /* Server side */
+	{
+		return [[SBServicesBar serverInstance] 
+			setUpServicesBarItemWithTitle: title];
+	}
+
+	return nil;
+}
+
 - (id) initWithTitle: (NSString *)title
 {
-	if ((self = [super init]) != nil)
-	{
-		[self setTitle: title];
+	self = [super init];
+
+	if (self != nil)
+	{	
+		// FIXME: Use a real unique identifier and not just the title alone.
 		_toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: _title];
-		
-		return self;
+
+		// NOTE: Accessors suppose the related toolbar item has already been created.
+		[self setTitle: title];
+
+		/* Useful to know when a services bar item is inserted in a services
+			bar it doesn't belong to (in other words, in a process different
+			from the one where the item instance is located. */
+		ASSIGN(_ownerBar, [SBServicesBar serverInstance]);
 	}
-	
-	return nil;
+
+	return self;
 }
 
 #ifdef HAVE_UKTEST
@@ -86,6 +185,13 @@
 	[super dealloc];
 }
 
+- (NSString *) description
+{
+	NSString *desc = [super description];
+	
+	return [NSString stringWithFormat: @"%@ with title %@\n", desc, [self title]];
+}
+
 #ifdef HAVE_UKTEST
 - (void) testServicesBar
 {
@@ -98,7 +204,7 @@
 
 - (SBServicesBar *) servicesBar
 {
-	return [SBServicesBar sharedServicesBar];
+	return [SBServicesBar systemServicesBar];
 }
 
 - (float) length
@@ -142,6 +248,7 @@
 - (void) setTitle: (NSString *)title
 {
 	ASSIGN(_title, title);
+	[_toolbarItem setLabel: _title];
 }
 
 @end
@@ -159,7 +266,7 @@
 
 - (void) popUpMenu: (NSMenu *)menu
 {
-	[SBServicesBar sharedServicesBar];
+	//[SBServicesBar sharedServicesBar];
 }
 
 /*

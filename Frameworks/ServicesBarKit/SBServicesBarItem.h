@@ -38,21 +38,23 @@
 
 @interface SBServicesBarItem : NSObject <UKTest>
 {
-	float _itemLength;
-    NSView *_itemView;
-	NSString *_title;
-	NSAttributedString *_attTitle;
+	NSView *_itemView;
 	NSImage *_image;
 	NSImage *_altImage;
 	NSMenu *_menu;
-	BOOL _highlightMode;
+	NSString *_title;
+	NSAttributedString *_attTitle;
 	NSString *_toolTip;
-	
+
+	BOOL _highlightMode;
+	float _itemLength;
+
 	@public
+	SBServicesBar *_ownerBar;
 	NSToolbarItem *_toolbarItem;
 }
 
-- (id) initWithTitle: (NSString *)title;
++ (id) systemServicesBarItemWithTitle: (NSString *)title;
 
 - (SBServicesBar *) servicesBar;
 
@@ -74,9 +76,7 @@
 - (void) sendActionOn: (int)mask;
 - (void) popUpMenu: (NSMenu *)menu;
 
-/*
- * Accessors
- */
+/* Accessors */
 
 - (SEL) action;
 - (void) setAction: (SEL)action;

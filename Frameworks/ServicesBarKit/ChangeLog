@@ -1,3 +1,48 @@
+2006-06-04  Quentin Mathe <qmathe@club-internet.fr>
+
+	ServicesBarKit should now be partially usable, but it's still uncomplete and
+	any remote use outside of the MenuServer is untested. Take note that 
+	ServicesBarMenulet bundle has to be copied in MenuServer.app/Resources.
+	Major and second part of the MenuServer related update.
+	* ServicesBarMenulet/GNUmakefile: Updated.
+	* ServicesBarMenulet/ServicesBarMenulet.m: Fixed license to be LGPL and not
+	GPL.
+	(-init): Updated to handle the whole set up.
+	(-publishServerInstance:): Removed.
+	(-test): Added a test method the MenuServer will try to call.
+	(-displayClickMePanel:): New action method to show a dummy dialog.
+	* SBServicesBar.h: Reorganized ivars more clearly, by the way renamed
+	properly ivar _itemsToobar to _itemToolbar. Renamed the method
+	+sharedServicesBar to +systemServicesBar.
+	* SBServicesBar.m: Added a SBServicesBar protocol to be used when the 
+	instance is manipulated through a proxy.
+	(+serverInstance):
+	(+setUpServerInstance:):
+	(-toolbar):
+	New non public methods. The server instance is now the default shared 
+	instance exported by -systemServicesBar: which returns a proxy when called 
+	outside of the MenuServer.
+	(-insertServicesBarItem:atIndex:): Improved to be more cautious about new 
+	items to be inserted, by checking item instance is in the bar instance 
+	process and ensuring the item hasn't been already inserted. 
+	Updated tests.
+	* SBServicesBarItem.h: Reorganized ivars more clearly and replaced 
+	-initWithTitle: by +systemServicesBarItemWithTitle:. Added ivar _ownerBar
+	referencing the bar instance, therefore the related process where the bar 
+	instance is located.
+	* SBServicesBarItem.m:  Added a SBServicesBarItem protocol to be used when the 
+	instance is manipulated through a proxy.
+	(+setUpServicesBarItemWithTitle:):
+	(-owner):
+	New non public methods.
+	(-initWithTitle:): Updated.
+	(-description): Added.
+	(-setTitle:): Fixed to properly set the related toolbar item label.
+	Updated tests.
+	* GNUmakefile: Updated.
+
+	Test result (on Linux ppc): 2 classes, 4 methods, 12 tests, 1 failed
+
 2006-05-24  Quentin Mathe <qmathe@club-internet.fr>
     
     Warning! Not yet usable.

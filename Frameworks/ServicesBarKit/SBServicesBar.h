@@ -34,19 +34,25 @@
 
 @interface SBServicesBar : NSObject <UKTest>
 {
+	NSMutableArray *_items;
+	GSToolbar *_itemToolbar;
+	GSToolbarView *_toolbarView;
 	BOOL _vertical;
 	float _thickness;
-	NSMutableArray *_items;
-	GSToolbar *_itemsToolbar;
-	id _toolbarView;
-	
+
+#ifdef HAVE_UKTEST
 	@public
-	id _window;
+	NSWindow *_window;
+#endif
 }
 
-+ (SBServicesBar *) sharedServicesBar;
++ (id) systemServicesBar;
 
+// FIXME: the next method to be used needs to be passed a serialized item 
+// entirely built on the client side (that means to support NSCoding protocol 
+// with NSServicesBarItem)
 - (void) addServicesBarItem: (SBServicesBarItem *)item;
+
 - (void) insertServicesBarItem: (SBServicesBarItem *)item atIndex: (int)index;
 - (void) removeServicesBarItem: (SBServicesBarItem *)item;
 
