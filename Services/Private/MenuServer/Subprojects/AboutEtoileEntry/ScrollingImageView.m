@@ -297,6 +297,14 @@
 
       baseRect = NSMakeRect (0, 0, NSWidth (frame), NSHeight (frame));
       r = NSIntersectionRect (r, baseRect);
+       // grow the rectange downwards, because we want to redraw not
+       // only where the text view is now, but also where it has been
+       // before, otherwise we'll see leftover drawing there
+      if (NSMinY (r) > 0)
+        {
+          r.origin.y -= AnimationStep;
+          r.size.height += AnimationStep;
+        }
       [self setNeedsDisplayInRect: r];
     }
 }

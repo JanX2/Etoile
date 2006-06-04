@@ -21,6 +21,15 @@
     maintained by ProjectManager and regenerated automatically from
     the project file.
 
+    * Subprojects/AboutEtoileEntry/ETMachineInfo.m: Made CPU speeds
+    rounded to MHz.
+    * Subprojects/AboutEtoileEntry/ETMachineInfo.m: Changed CPU speed
+    reading algorithm to first round the value to the nearest MHz value
+    before returning it.
+
+    * Subprojects/AboutEtoileEntry/ScrollingImageView.m: Fixed bug causing
+    leftover drawing below the credits text area.
+
 2006-05-29  Saso Kiselkov <skiselkov@gmail.com>
 
     * Controller.m: Fixed CPU consumption issue when moving

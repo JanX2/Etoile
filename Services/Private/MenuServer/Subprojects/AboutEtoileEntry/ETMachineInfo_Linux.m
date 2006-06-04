@@ -30,6 +30,12 @@
 #import <Foundation/NSFileManager.h>
 #import <Foundation/NSString.h>
 
+static inline int
+my_round (float x)
+{
+  return (int) (x + 0.5);
+}
+
 @implementation ETMachineInfo (Linux)
 
 + (unsigned long long) realMemory
@@ -56,7 +62,7 @@
 
            if ([comps count] > 1)
              {
-               return [[comps objectAtIndex: 1] intValue];
+               return my_round ([[comps objectAtIndex: 1] floatValue]);
              }
         }
     }
