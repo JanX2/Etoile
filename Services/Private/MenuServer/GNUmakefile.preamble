@@ -23,3 +23,8 @@ ADDITIONAL_OBJCFLAGS+= -W -Wall -Wno-unused -Wno-import
 ifeq ($(debug), yes)
   ADDITIONAL_OBJCFLAGS += -O0 -ggdb3
 endif
+
+ifeq ($(x11), yes)
+  ADDITIONAL_GUI_LIBS = -lXWindowServerKit
+  ADDITIONAL_CPPFLAGS += -DXWindowServerKit -I/usr/X11R6/include
+endif

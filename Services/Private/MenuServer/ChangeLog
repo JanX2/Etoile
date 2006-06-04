@@ -9,6 +9,18 @@
     from the "Non-Project Files" project category the top-level ChangeLog
     of the EtoileMenuServer project.
 
+    * Subprojects/ApplicationsEntry/ApplicationsEntry.pmproj:
+    * Subprojects/ClockMenulet/ClockMenulet.pmproj:
+    * Subprojects/SystemPreferencesEntry/SystemPreferencesEntry.pmproj:
+    * EtoileMenuServer.pmproj: Added link from the "Non-Project Files" category
+    to the top level ChangeLog.
+
+    * GNUmakefile:
+    * GNUmakefile.preamble: Moved XWindowServerKit detection code to
+    preamble makefile, instead of the master makefile, which is
+    maintained by ProjectManager and regenerated automatically from
+    the project file.
+
 2006-05-29  Saso Kiselkov <skiselkov@gmail.com>
 
     * Controller.m: Fixed CPU consumption issue when moving

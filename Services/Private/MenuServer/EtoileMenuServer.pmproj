@@ -163,6 +163,11 @@
 			    );
 			    Name = "Image Source Files";
 			    Type = Category;
+			},
+			{
+			    Name = ChangeLog;
+			    Target = "/Users/diablos/etoile/Etoile/Services/Private/MenuServer/ChangeLog";
+			    Type = Link;
 			}
 		    );
 		    Name = "Non-Project Files";
@@ -171,14 +176,11 @@
 	    );
 	};
 	MakeBuilder = {
-	    AllWarnings = <*BN>
-;
+	    AllWarnings = <*BY>;
 	    BuildArguments = (
 	    );
-	    VerboseBuild = <*BN>
-;
-	    Warnings = <*BN>
-;
+	    VerboseBuild = <*BN>;
+	    Warnings = <*BY>;
 	};
 	SubprojectsManager = {
 	    Subprojects = (

@@ -75,18 +75,26 @@
 		    );
 		    Name = Frameworks;
 		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = ChangeLog;
+			    Target = "/Users/diablos/etoile/Etoile/Services/Private/MenuServer/ChangeLog";
+			    Type = Link;
+			}
+		    );
+		    Name = "Non-Project Files";
+		    Type = Category;
 		}
 	    );
 	};
 	MakeBuilder = {
-	    AllWarnings = <*BY>
-;
+	    AllWarnings = <*BN>;
 	    BuildArguments = (
 	    );
-	    VerboseBuild = <*BN>
-;
-	    Warnings = <*BY>
-;
+	    VerboseBuild = <*BN>;
+	    Warnings = <*BN>;
 	};
 	SubprojectsManager = {
 	    Subprojects = (
