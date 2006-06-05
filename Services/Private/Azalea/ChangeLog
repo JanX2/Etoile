@@ -1,3 +1,12 @@
+2006-06-05 Quentin Mathe <qmathe@club-internet.fr>
+
+	Fixed the repository compilation broken since XWindowServerKit 
+	dependency was introduced.
+	* GNUmakefile.preamble:
+	* GNUmakefile.postamble:
+	Added.
+	* GNUmafile: Updated to include the two new files.
+
 2006-05-27 Yen-Ju Chen <yjchenx at gmail>
 
 	* Link to XWindowServerKit.

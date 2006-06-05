@@ -1,0 +1,36 @@
+#
+# Makefile for Azalea
+#
+
+ifeq ($(debug), yes)
+	extension = debug
+else
+	extension = app
+endif
+
+before-all::
+	$(ECHO_NOTHING) \
+	echo "Build Project: $(PROJECT_DIR)"; \
+	echo ""; \
+	rm -f $(PROJECT_DIR)/XWindowServerKit; \
+	$(LN_S) $(PROJECT_DIR)/../../../Frameworks/XWindowServerKit $(PROJECT_DIR)/XWindowServerKit; \
+	echo " Imported XWindowServerKit dependency"; \
+	echo ""; \
+	$(END_ECHO)
+
+after-all::
+
+after-clean::
+	$(ECHO_NOTHING) \
+	echo ""; \
+	rm -f $(PROJECT_DIR)/XWindowServerKit; \
+	echo " Removed XWindowServerKit dependency import"; \
+	$(END_ECHO)
+
+after-distclean::
+	$(ECHO_NOTHING) \
+	echo ""; \
+	rm -f $(PROJECT_DIR)/XWindowServerKit; \
+	echo " Removed XWindowServerKit dependency import"; \
+	$(END_ECHO)
+	

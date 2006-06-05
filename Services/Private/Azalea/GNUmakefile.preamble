@@ -1,0 +1,9 @@
+#
+# Makefile for Azalea
+#
+
+export PROJECT_DIR ?= $(CURDIR)
+
+ADDITIONAL_INCLUDE_DIRS += -I$(PROJECT_DIR)
+
+ADDITIONAL_LIB_DIRS += -L$(PROJECT_DIR)/../../../Frameworks/XWindowServerKit/$(GNUSTEP_OBJ_DIR)

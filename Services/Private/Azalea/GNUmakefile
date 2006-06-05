@@ -83,6 +83,9 @@ ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lX11 -lXft
 #ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags libstartup-notification-1.0`
 #ADDITIONAL_LIB_DIRS += `pkg-config --libs libstartup-notification-1.0`
 
+-include GNUmakefile.preamble
+
 include $(GNUSTEP_MAKEFILES)/application.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 
+-include GNUmakefile.postamble

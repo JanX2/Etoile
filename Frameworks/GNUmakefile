@@ -39,6 +39,7 @@ ifeq ($(etoile-extensions), yes)
     export extendedworkspacekit ?= yes 
     export trackerkit ?= yes
     export rsskit ?= yes
+    export xwindowserverkit ?= yes
     
 endif
 
@@ -106,6 +107,10 @@ endif
 
 ifeq ($(rsskit), yes)
    SUBPROJECTS += RSSKit
+endif
+
+ifeq ($(xwindowserverkit), yes)
+   SUBPROJECTS += XWindowServerKit
 endif
 
 #

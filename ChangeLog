@@ -1,6 +1,11 @@
+2006-06-05  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Frameworks/GNUmakefile: Updated to include XWindowServerKit in the build
+    process.
+
 2006-05-11  Nicolas Roard <nicolas@roard.com>
 
-    * Themes/Nesedah: created the Themes directory and imported
+    * Themes/Nesedah: Created the Themes directory and imported
     the last version of the Nesedah theme.
 
 2006-02-16  Yen-Ju <yjchenx at gmail>
