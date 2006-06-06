@@ -1,3 +1,9 @@
+2006-06-06  Saso Kiselkov <skiselkov@gmail.com>
+
+    * Subprojects/AboutEtoileEntry/GNUmakefile:
+    * Subprojects/AboutEtoileEntry/ETMachineInfo_Solaris.m: Added
+    forgotten Solaris OS-specific files.
+
 2006-06-06 Quentin Mathe <qmathe@club-internet.fr>
 
     * MenuletLoader.m: Added logging statements to aid solving menulet loading
