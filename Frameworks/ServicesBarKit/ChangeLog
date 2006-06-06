@@ -1,3 +1,8 @@
+2006-06-06  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Fixed compilation by disabling currently non existent 
+	StatusItemExample subproject.
+
 2006-06-04  Quentin Mathe <qmathe@club-internet.fr>
 
 	ServicesBarKit should now be partially usable, but it's still uncomplete and

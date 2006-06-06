@@ -2,7 +2,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS += -Wno-import
 
-SUBPROJECTS = ServicesBarMenulet StatusItemExample
+SUBPROJECTS = ServicesBarMenulet #StatusItemExample
 
 #
 # Main application
