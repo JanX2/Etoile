@@ -25,6 +25,7 @@
 
 #import <Foundation/NSString.h>
 #import <Foundation/NSBundle.h>
+#import <Foundation/NSDebug.h>
 
 #import <AppKit/NSView.h>
 
@@ -33,6 +34,12 @@
 #import "MenuBarWindow.h"
 #import "Controller.h"
 #import "EtoileMenulet.h"
+
+/* Informal protocol to test Menulet set up */
+@interface NSObject (MenuletTest)
+- (void) test;
+@end
+
 
 @implementation MenuletLoader
 
@@ -70,6 +77,8 @@ static MenuletLoader * shared = nil;
   NSMutableArray * array;
 
   array = [NSMutableArray arrayWithCapacity: [bundles count]];
+  NSDebugLLog(@"MenuServer", @"Loading menulet bundles %@", bundles);
+
   e = [bundles objectEnumerator];
   for (offset = windowFrame.size.width; (bundle = [e nextObject]) != nil;)
     {
@@ -80,19 +89,29 @@ static MenuletLoader * shared = nil;
       menulet = [[bundle principalClass] new];
       if (menulet == nil)
         {
+          NSWarnLog(@"Unable to instantiate principal class %@ in bundle %@", 
+            [bundle principalClass], bundle);
           continue;
         }
 
       [array addObject: menulet];
       view = [menulet menuletView];
-      frame = [view frame];
+      NSDebugLLog(@"MenuServer", @"Retrieved menulet view %@", view);
 
+      frame = [view frame];
       offset -= (frame.size.width + 2);
       frame.origin.x = offset;
       frame.origin.y = windowFrame.size.height / 2 - frame.size.height / 2;
       [view setFrame: frame];
 
+      NSDebugLLog(@"MenuServer", @"Inserting menulet view with the frame \
+        %@", NSStringFromRect([view frame]));
       [[ServerMenuBarWindow contentView] addSubview: view];
+
+      /* The -test method below is useful when a menulet want to test whether
+         it is properly set up or not. */
+      if ([(id)menulet respondsToSelector: @selector(test)])
+        [(id)menulet test];
     }
 
   ASSIGNCOPY(menulets, array);

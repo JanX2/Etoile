@@ -1,3 +1,10 @@
+2006-06-06 Quentin Mathe <qmathe@club-internet.fr>
+
+    * MenuletLoader.m: Added logging statements to aid solving menulet loading
+    issues. Included code trying to call -test method on menulets.
+    * Subprojects/AboutEtoileEntry/GNUmakefile: Worked around missing 
+    ETMachineInfo_Solaris.m file by commenting it out.
+
 2006-06-04  Saso Kiselkov <skiselkov@gmail.com>
 
     * Subprojects/AboutEtoileEntry/GNUmakefile:
