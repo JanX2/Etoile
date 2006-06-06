@@ -19,7 +19,7 @@
     * Subprojects/AboutEtoileEntry/GNUmakefile:
     * Subprojects/AboutEtoileEntry/GNUmakefile.preamble:
     * Subprojects/AboutEtoileEntry/ETMachineInfo_Solaris.m: Integrated
-    changes from David Chrisnall to incorporate Solaris OS support for
+    changes from Chris B. Vetter to incorporate Solaris OS support for
     machine detection.
     * Subprojects/AboutEtoileEntry/AboutEtoileEntry.pmproj: Added link
     from the "Non-Project Files" project category the top-level ChangeLog
@@ -99,7 +99,7 @@
     * Subprojects/AboutEtoileEntry/ETMachineInfo_OpenBSD.m:
     * Subprojects/AboutEtoileEntry/TRSysctl.h:
     * Subprojects/AboutEtoileEntry/TRSysctlByName.h: Implemented changes
-      to machine-info determining written by David Chrisnall.
+      to machine-info determining written by David Chisnall.
 
 2006-05-13  Saso Kiselkov <skiselkov@gmail.com>
 
@@ -144,7 +144,7 @@
 2006-05-07  Nicolas Roard <nicolas@roard.com>
 
     * AboutEtoileEntry/AboutEtoileEntry.m: Applied a patch from Chris Vetter 
-    <chris.vettere@gmail.com> to display the missing entries for 
+    <chris.vetter@gmail.com> to display the missing entries for 
     CPU, CPU Frequency, and memory on FreeBSD
 
 2006-04-17  Quentin Mathe <qmathe@club-internet.fr>
