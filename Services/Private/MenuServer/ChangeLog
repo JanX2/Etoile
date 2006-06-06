@@ -3,6 +3,9 @@
     * Subprojects/AboutEtoileEntry/GNUmakefile:
     * Subprojects/AboutEtoileEntry/ETMachineInfo_Solaris.m: Added
     forgotten Solaris OS-specific files.
+    * GNUmakefile.postamble: Added special .svn directory removal 
+    code for Solaris' find(1) and xargs(1) which don't understand
+    -print0 and -0.
 
 2006-06-06 Quentin Mathe <qmathe@club-internet.fr>
 

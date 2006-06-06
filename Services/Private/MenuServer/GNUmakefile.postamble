@@ -28,10 +28,21 @@ else
  endif
 endif
 
+ifeq ($(findstring solaris, $(GNUSTEP_TARGET_OS)), solaris)
+# Solaris' find(1) doesn't understand -print0 and its xargs(1)
+# doesn't understand -0 either, so use the more fragile newline
+# splitter method
+  FIND_ARGS=
+  XARGS_ARGS=-d '\n'
+else
+  FIND_ARGS=-print0
+  XARGS_ARGS=-0
+endif
+
 after-all::
 	@ echo "Copying menulets into app wrapper..." && \
           find Subprojects -name '*.menulet' -exec cp -r '{}' '$(APP)/Resources' ';' && \
           echo "Copying system bar entries into app wrapper..." && \
           find Subprojects -name '*.sysbarentry' -exec cp -r '{}' '$(APP)/Resources' ';' && \
           echo "Purging bogus SVN entries from app..." && \
-          find "$(APP)" -type d -name '.svn' -print0 | xargs -0 /bin/rm -rf
+          find "$(APP)" -type d -name '.svn' $(FIND_ARGS) | xargs $(XARGS_ARGS) /bin/rm -rf
