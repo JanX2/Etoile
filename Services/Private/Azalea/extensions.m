@@ -31,8 +31,6 @@ BOOL extensions_xinerama  = NO;
 int     extensions_xinerama_event_basep;
 BOOL extensions_randr     = NO;
 int     extensions_randr_event_basep;
-BOOL extensions_vidmode   = NO;
-int     extensions_vidmode_event_basep;
 
 void extensions_query_all()
 {
@@ -61,12 +59,6 @@ void extensions_query_all()
     extensions_randr =
         XRRQueryExtension(ob_display, &extensions_randr_event_basep,
                           &junk);
-#endif
-
-#ifdef VIDMODE
-    extensions_vidmode =
-        XF86VidModeQueryExtension(ob_display, &extensions_vidmode_event_basep,
-                                  &junk);
 #endif
 }
 

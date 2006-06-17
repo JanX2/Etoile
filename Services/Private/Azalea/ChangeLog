@@ -1,3 +1,15 @@
+2006-06-17 Yen-Ju Chen <yjchenx at gmail>
+
+	Sync with OpenBox3.
+	* extension.h:
+	* extension.m:
+	* AZEventHandler.m:
+	* AZClient.m:
+	Remove VODMODE
+	* AZPopup.m:
+	* AZMenuFrame.m:
+	SaveUnder xwindow.
+
 2006-06-05 Quentin Mathe <qmathe@club-internet.fr>
 
 	Fixed the repository compilation broken since XWindowServerKit 

@@ -445,11 +445,6 @@ static AZEventHandler *sharedInstance;
         break;
     default:
         ;
-#ifdef VIDMODE
-        if (extensions_vidmode && e->type == extensions_vidmode_event_basep) {
-            AZDebug("VIDMODE EVENT\n");
-        }
-#endif
     }
 }
 

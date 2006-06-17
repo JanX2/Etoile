@@ -381,7 +381,9 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     client = _client;
 
     attr.event_mask = FRAME_EVENTMASK;
-    window = createWindow(RootWindow(ob_display, ob_screen), CWEventMask, &attr);
+    attr.save_under = True;
+    window = createWindow(RootWindow(ob_display, ob_screen), 
+			CWEventMask|CWSaveUnder, &attr);
     attr.event_mask = TITLE_EVENTMASK;
     title = createWindow(window, CWEventMask, &attr);
     items = createWindow(window, 0, NULL);

@@ -192,10 +192,11 @@
   a_text = [ob_rr_theme->app_hilite_label copy];
 
   attrib.override_redirect = True;
+  attrib.save_under = True;
   bg = XCreateWindow(ob_display, RootWindow(ob_display, ob_screen),
                      0, 0, 1, 1, 0, [ob_rr_inst depth],
                      InputOutput, [ob_rr_inst visual],
-                     CWOverrideRedirect, &attrib);
+                     CWOverrideRedirect|CWSaveUnder, &attrib);
 
   text = XCreateWindow(ob_display, bg,
                        0, 0, 1, 1, 0, [ob_rr_inst depth],

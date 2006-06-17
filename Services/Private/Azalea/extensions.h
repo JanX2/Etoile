@@ -36,9 +36,6 @@
 #ifdef    XRANDR
 #include <X11/extensions/Xrandr.h>
 #endif
-#ifdef    VIDMODE
-#include <X11/extensions/xf86vmode.h>
-#endif
 
 /*! Does the display have the XKB extension? */
 extern BOOL extensions_xkb;
@@ -59,11 +56,6 @@ extern int extensions_xinerama_event_basep;
 extern BOOL extensions_randr;
 /*! Base for events for the Randr extension */
 extern int extensions_randr_event_basep;
-
-/*! Does the display have the VidMode extension? */
-extern BOOL extensions_vidmode;
-/*! Base for events for the VidMode extension */
-extern int extensions_vidmode_event_basep;
 
 void extensions_query_all();
 
