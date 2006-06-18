@@ -23,6 +23,7 @@ DictConnection.m \
 HistoryManager.m \
 NSString+Convenience.m \
 NSString+Clickable.m \
+NSString+DictLineParsing.m \
 main.m \
 
 DictionaryReader_OBJCC_FILES = 

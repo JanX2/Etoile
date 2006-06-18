@@ -20,6 +20,7 @@
 #import "GNUstep.h"
 
 #import "NSString+Clickable.h"
+#import "NSString+DictLineParsing.h"
 
 // easier logging
 #define LOG(format, args...) \
@@ -127,8 +128,13 @@
     do {
       answer = [reader readLineAndRetry];
       if ([answer startsWith: @"151"]) {
+	[defWriter writeHeadline:
+		     [NSString stringWithFormat: @"From %@:",
+			       [answer dictLineComponent: 3]]
+	 ];
+	
 	// TODO: Extract database information here!
-	[defWriter writeHeadline: [answer substringFromIndex: 4]];
+	//[defWriter writeHeadline: [answer substringFromIndex: 4]];
 	
 	BOOL lastLine = NO;
 	do {

@@ -2,6 +2,10 @@
 DictionaryReader Changelog
 ==========================
 
+Jun 18 2006 Guenther Noack
+	* Added code which is intended to fix the 'bad dictionary names'
+	  bug listed in the TODO list.
+	
 May 22 2006 Guenther Noack
 	* Fixed the bug that made the window stay hidden even when a new
 	  lookup was invoked.
