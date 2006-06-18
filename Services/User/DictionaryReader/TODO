@@ -1,10 +1,5 @@
 
-* Extract the dictionary names correctly from the "code 151 messages"
-  that come back when retrieving word definitions. This is to parse:
-
-  The 'code 151 lines' is: "151 " + word + " " + word + " " + word
-  where each word is either a string without spaces or a string with
-  or without spaces that's surrounded with '"'.
+* Local Dictionaries (NSBundles?)
  
 * Add a preferences dialog:
 	* Let users set their dict server.

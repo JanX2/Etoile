@@ -3,6 +3,10 @@ DictionaryReader Changelog
 ==========================
 
 Jun 18 2006 Guenther Noack
+	* Fixed the 'bad dictionary names' bug. The dictionary name
+	  display in the text view looks much better now. :-)
+	  
+Jun 18 2006 Guenther Noack
 	* Added code which is intended to fix the 'bad dictionary names'
 	  bug listed in the TODO list.
 	
