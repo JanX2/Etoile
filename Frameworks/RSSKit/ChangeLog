@@ -1,4 +1,16 @@
 
+Jun-30-2006 Guenther Noack
+	* I started to build classes for the different RSS types. Should
+	  have done that long ago; RSSFeed+Fetching just got much too big. ;-)
+
+	  Besides the size of the 'Fetching' category file, I also want to
+	  decouple the existence of a RSSFeed object from the ability to
+	  parse RSS files. In the long run, the RSSFeed class will play a
+	  minor role in the Grr application, too.
+
+	  Sidenote: This version is completely b0rken! It may compile
+	  but will not parse any feeds.
+	
 May-26-2006 Guenther Noack
 	* Tests run now. I built tests for RDF (RSS 1.0) files. Others
 	  still need to be built. It's a pity that the UnitKit GUI's Nib

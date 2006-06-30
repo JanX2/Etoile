@@ -151,7 +151,9 @@
     }
   
   // submit article
+  #ifdef DEBUG
   NSLog(@"Commit, links is %@", links);
+  #endif
   [currentArticleList addObject: article];
   
   RELEASE(date);
@@ -166,7 +168,9 @@
  */
 -(void) finished
 {
+  #ifdef DEBUG
   NSLog(@"%@ finished, rc=%d", self, [self retainCount]);
+  #endif
   [currentFeed _submitArticles: currentArticleList];
 }
 
@@ -176,12 +180,15 @@
  */
 -(void) startArticle
 {
+  #ifdef DEBUG
   NSLog(@"start article");
   
   NSLog(@"retain counts in start article: %d %d %d",
 	[headline retainCount],
 	[links retainCount],
 	[date retainCount]);
+  #endif
+  
   // Free all old stuff
   RELEASE(headline);
   RELEASE(url);
@@ -205,7 +212,10 @@
 // and startArticle directly instead!
 -(void) nextArticle
 {
+  #ifdef DEBUG
   NSLog(@"Warning: nextArticle should not be called.");
+  #endif
+  
   [self commitArticle];
   [self startArticle];
 }
@@ -263,8 +273,10 @@
 {
   NSURL* actualURL;
   
+  #ifdef DEBUG
   NSLog(@"addLinkWithURL: %@ andRel: %@ andType: %@",
 	anURL, aRelation, aType);
+  #endif
   
   actualURL = [[NSURL alloc] initWithString: anURL];
   
@@ -289,7 +301,9 @@
   [links addObject: actualURL];
   RELEASE(actualURL);
   
+  #ifdef DEBUG
   NSLog(@"links is now %@", links);
+  #endif
 }
 
 -(void) setContent: (NSString*) aContent
@@ -342,350 +356,29 @@
 // parse ATOM 1.0
 -(enum RSSFeedError) parseATOM10WithRootNode: (XMLNode*) root
 {
-  RSSArticleCreationListener* creator;
-  XMLNode* toplevelnode;
-  XMLNode* secondlevelnode;
-  
-  creator = AUTORELEASE([[RSSArticleCreationListener alloc]
-			  initWithFeed: self]);
-  
-  for ( toplevelnode = [root firstChildElement];
-	toplevelnode != nil;
-	toplevelnode = [toplevelnode nextElement] )
-    {
-      if ([[toplevelnode name]
-	    isEqualToString: @"title"])
-	{
-	  RELEASE(feedName);
-	  feedName = RETAIN([toplevelnode content]);
-	}
-      else if ([[toplevelnode name]
-		 isEqualToString: @"entry"])
-	{
-	  [creator startArticle];
-	  
-	  for (secondlevelnode = [toplevelnode firstChildElement];
-	       secondlevelnode != nil;
-	       secondlevelnode = [secondlevelnode nextElement] )
-	    {
-	      if ([[secondlevelnode name]
-		    isEqualToString: @"title"])
-		{
-		  [creator setHeadline: [secondlevelnode content]];
-		}
-	      // FIXME: ATOM 0.3 specifies different storage
-	      // modes like Base64, plain ASCII etc. Implement these!
-	      // 1.0, too?
-	      else if ([[secondlevelnode name]
-			 isEqualToString: @"summary"])
-		{
-		  [creator setSummary: [secondlevelnode content]];
-		}
-	      else if ([[secondlevelnode name]
-			 isEqualToString: @"content"])
-		{
-		  register NSString* tmp =
-		    (NSString*)
-		    [[secondlevelnode attributes]
-		      objectForKey: @"type"];
-		  
-		  if (tmp == nil ||
-		      [tmp isEqualToString: @"text"] ||
-		      [tmp isEqualToString: @"html"])
-		    [creator setContent: [secondlevelnode content]];
-		  else
-		    {
-		      if ([tmp isEqualToString: @"application/xhtml+xml"] ||
-			  [tmp isEqualToString: @"xhtml"])
-			{
-			  [creator setContent: [self stringFromHTMLAtNode: secondlevelnode]];
-			}
-		    }
-		}
-	      else if ([[secondlevelnode name]
-			 isEqualToString: @"issued"] ||
-		       [[secondlevelnode name]
-			 isEqualToString: @"updated"])
-		{
-		  [creator setDate: parseDublinCoreDate( [secondlevelnode content]) ];
-		}
-	      else if ([[secondlevelnode name]
-			 isEqualToString: @"link"])
-		{
-		  [creator
-		    addLinkWithURL: [[secondlevelnode attributes]
-				      objectForKey: @"href"]
-		    andRel: [[secondlevelnode attributes]
-				  objectForKey: @"rel"]
-		    andType: [[secondlevelnode attributes]
-				  objectForKey: @"type"]
-		   ];
-		}
-	    }
-	  [creator commitArticle];
-	}
-    }
-  
-  [creator finished];
-  return RSSFeedErrorNoError;
+  FeedParser* parser = [Atom10Parser parserWithDelegate: self];
+  return [parser parseWithRootNode: root];
 }
-
-
 
 // parse ATOM 0.3
 -(enum RSSFeedError) parseATOM03WithRootNode: (XMLNode*) root
 {
-  RSSArticleCreationListener* creator;
-  XMLNode* toplevelnode;
-  XMLNode* secondlevelnode;
-  
-  creator = AUTORELEASE([[RSSArticleCreationListener alloc]
-			  initWithFeed: self]);
-  
-  for ( toplevelnode = [root firstChildElement];
-	toplevelnode != nil;
-	toplevelnode = [toplevelnode nextElement] )
-    {
-      if ([[toplevelnode name]
-	    isEqualToString: @"title"])
-	{
-	  RELEASE(feedName);
-	  feedName = RETAIN([toplevelnode content]);
-	}
-      else if ([[toplevelnode name]
-		 isEqualToString: @"entry"])
-	{
-	  [creator startArticle];
-	  
-	  for (secondlevelnode = [toplevelnode firstChildElement];
-	       secondlevelnode != nil;
-	       secondlevelnode = [secondlevelnode nextElement] )
-	    {
-	      if ([[secondlevelnode name]
-		    isEqualToString: @"title"])
-		{
-		  [creator setHeadline: [secondlevelnode content]];
-		}
-	      // FIXME: ATOM 0.3 specifies different storage
-	      // modes like Base64, plain ASCII etc. Implement these!
-	      else if ([[secondlevelnode name]
-			 isEqualToString: @"summary"])
-		{
-		  [creator setSummary: [secondlevelnode content]];
-		}
-	      else if ([[secondlevelnode name]
-			 isEqualToString: @"content"])
-		{
-		  register NSString* tmp =
-		    (NSString*)
-		    [[secondlevelnode attributes]
-		      objectForKey: @"type"];
-		  
-		  if (tmp == nil ||
-		      [tmp isEqualToString: @"text"] ||
-		      [tmp isEqualToString: @"html"])
-		    [creator setContent: [secondlevelnode content]];
-		  else
-		    {
-		      if ([tmp isEqualToString: @"application/xhtml+xml"] ||
-			  [tmp isEqualToString: @"xhtml"])
-			{
-			  [creator setContent: [self stringFromHTMLAtNode: secondlevelnode]];
-			}
-		    }
-		}
-	      /*
-	       * FIXME: is 'updated' instead of 'issued'
-	       * also included in ATOM 0.3? (it is in 1.0)
-	       */
-	      else if ([[secondlevelnode name]
-			 isEqualToString: @"issued"])
-		{
-		  [creator setDate: parseDublinCoreDate( [secondlevelnode content] )];
-		}
-	      else if ([[secondlevelnode name]
-			 isEqualToString: @"link"])
-		{
-		  [creator
-		    addLinkWithURL: [[secondlevelnode attributes]
-				      objectForKey: @"href"]
-		    andRel: [[secondlevelnode attributes]
-				  objectForKey: @"rel"]
-		    andType: [[secondlevelnode attributes]
-				  objectForKey: @"type"]
-		   ];
-		}
-	    }
-	  [creator commitArticle];
-	}
-    }
-  [creator finished];
-  return RSSFeedErrorNoError;
+  FeedParser* parser = [Atom03Parser parserWithDelegate: self];
+  return [parser parseWithRootNode: root];
 }
 
 // parse RSS 2.0
 -(enum RSSFeedError) parseRSS20WithRootNode: (XMLNode*) root
 {
-  RSSArticleCreationListener* creator;
-  XMLNode* toplevelnode;
-  XMLNode* secondlevelnode;
-  XMLNode* thirdlevelnode;
-  
-  creator = AUTORELEASE([[RSSArticleCreationListener alloc]
-			  initWithFeed: self]);
-  
-  for ( toplevelnode = [root firstChildElement];
-	toplevelnode != nil;
-	toplevelnode = [toplevelnode nextElement] )
-    {
-      if ([[toplevelnode name]
-	    isEqualToString: @"channel"])
-	{
-	  for (secondlevelnode = [toplevelnode firstChildElement];
-	       secondlevelnode != nil;
-	       secondlevelnode = [secondlevelnode nextElement] )
-	    {
-	      if ([[secondlevelnode name]
-		    isEqualToString: @"title"])
-		{
-		  RELEASE(feedName);
-		  feedName = RETAIN([secondlevelnode content]);
-		}
-	      // FIXME: Add support for tags: link,description,
-	      // language,managingEditor,webMaster
-	      else if ([[secondlevelnode name]
-		    isEqualToString: @"item"])
-		{
-		  [creator startArticle];
-		  
-		  for (thirdlevelnode =[secondlevelnode firstChildElement];
-		       thirdlevelnode != nil;
-		       thirdlevelnode =[thirdlevelnode nextElement])
-		    {
-		      if ([[thirdlevelnode name]
-			    isEqualToString: @"title"])
-			{
-			  [creator setHeadline: [thirdlevelnode content]];
-			}
-		      else if ([[thirdlevelnode name]
-				 isEqualToString: @"link"])
-			{
-			  [creator addLinkWithURL: [thirdlevelnode content]];
-			}
-		      else if ([[thirdlevelnode name]
-				 isEqualToString: @"description"])
-			{
-			  [creator setSummary: [thirdlevelnode content]];
-			}
-		      else if ([[thirdlevelnode name]
-				 isEqualToString: @"enclosure"])
-			{
-			  [creator
-			    addLinkWithURL: [[thirdlevelnode attributes]
-					      objectForKey: @"url"]
-			    andRel: @"enclosure"
-			    andType: [[thirdlevelnode attributes]
-				       objectForKey: @"type"]
-			   ];
-			}
-		      else if ([[thirdlevelnode name]
-				 isEqualToString: @"encoded"])
-			{
-			  if ([[thirdlevelnode namespace]
-				isEqualToString: URI_PURL_CONTENT])
-			    {
-			      [creator setContent: [thirdlevelnode content]];
-			      //NSLog(@"Content:Encoded: %@", description);
-			    }
-			}
-		      else if ([[thirdlevelnode name]
-				 isEqualToString: @"date"] &&
-			       [[thirdlevelnode namespace]
-				 isEqualToString: URI_PURL_DUBLINCORE])
-			{
-			  [creator setDate: parseDublinCoreDate([thirdlevelnode content])];
-			}
-		    }
-		  
-		  [creator commitArticle];
-		}
-	    }
-	}
-    }
-  [creator finished];
-  return RSSFeedErrorNoError;
+  FeedParser* parser = [RSS20Parser parserWithDelegate: self];
+  return [parser parseWithRootNode: root];
 }
 
 // parse RSS 1.0
 -(enum RSSFeedError) parseRSS10WithRootNode: (XMLNode*) root
 {
-  RSSArticleCreationListener* creator;
-  XMLNode* toplevelnode;
-  XMLNode* secondlevelnode;
-  
-  creator = AUTORELEASE([[RSSArticleCreationListener alloc] initWithFeed: self]);
-  
-  for ( toplevelnode = [root firstChildElement];
-	toplevelnode != nil;
-	toplevelnode = [toplevelnode nextElement] )
-    {
-      if ([[toplevelnode name] isEqualToString: @"channel"])
-	{
-	  for (secondlevelnode = [toplevelnode firstChildElement];
-	       secondlevelnode != nil;
-	       secondlevelnode = [secondlevelnode nextElement] )
-	    {
-	      if ([[secondlevelnode name]
-		    isEqualToString: @"title"])
-		{
-		  RELEASE(feedName);
-		  feedName = RETAIN([secondlevelnode content]);
-		}
-	      /* you could add here: link, description, image,
-	       * items, textinput
-	       */
-	    }
-	}
-      else
-	if ([[toplevelnode name]
-	      isEqualToString: @"item"])
-	  {
-	    [creator startArticle];
-	    
-	    for (secondlevelnode = [toplevelnode firstChildElement];
-		 secondlevelnode != nil;
-		 secondlevelnode = [secondlevelnode nextElement] )
-	      {
-		if ([[secondlevelnode name]
-		      isEqualToString: @"title"])
-		  {
-		    [creator setHeadline: [secondlevelnode content]];
-		  }
-		else if ([[secondlevelnode name]
-			   isEqualToString: @"description"])
-		  {
-		    [creator setSummary: [secondlevelnode content]];
-		  }
-		else if ([[secondlevelnode name]
-			   isEqualToString: @"link"])
-		  {
-		    [creator addLinkWithURL: [secondlevelnode content]
-			     andRel: @"alternate"];
-		  }
-		else if ([[secondlevelnode name]
-			   isEqualToString: @"date"] &&
-			 [[secondlevelnode namespace]
-			   isEqualToString: URI_PURL_DUBLINCORE])
-		  {
-		    [creator setDate: parseDublinCoreDate( [secondlevelnode content] )];
-		  }
-	      }
-	    [creator commitArticle];
-	  }
-    }
-  
-  [creator finished];
-  return RSSFeedErrorNoError;
+  FeedParser* parser = [RSS10Parser parserWithDelegate: self];
+  return [parser parseWithRootNode: root];
 }
 
 // fetches the feed

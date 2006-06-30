@@ -187,7 +187,9 @@
 - (void) appendTextOrNode: (id<XMLTextOrNode>) aThing
 	       fromParser: (NSXMLParser*) aParser
 {
+  #ifdef DEBUG
   NSLog(@"appendTextOrNode: %@ at: %@", aThing, [self name]);
+  #endif
   
   if (_child == nil) {
     _child = RETAIN(aThing);

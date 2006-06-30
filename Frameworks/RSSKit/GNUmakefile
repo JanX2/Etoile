@@ -44,6 +44,12 @@ RSSFeed.m \
 RSSFeed+Fetching.m \
 DublinCore.m \
 DOMParser.m \
+FeedParser.m \
+RSS10Parser.m \
+RSS20Parser.m \
+Atom03Parser.m \
+Atom10Parser.m \
+
 
 libRSSKit_HEADER_FILES = \
 RSSArticle.h \
@@ -52,6 +58,12 @@ RSSFeed+Fetching.h \
 DublinCore.h \
 RSSKit.h \
 DOMParser.h \
+FeedParser.h \
+RSS10Parser.h \
+RSS20Parser.h \
+Atom03Parser.h \
+Atom10Parser.h \
+
 
 libRSSKit_HEADER_FILES_DIR = .
 libRSSKit_HEADER_FILES_INSTALL_DIR=/RSSKit
