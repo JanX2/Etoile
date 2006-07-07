@@ -1,17 +1,36 @@
+/*  -*-objc-*-
+ *
+ *  GNUstep RSS Kit
+ *  Copyright (C) 2006 Guenther Noack
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 #import "RSS20Parser.h"
+#import "DublinCore.h"
+
+#define URI_PURL_CONTENT    @"http://purl.org/rss/1.0/modules/content/"
+#define URI_PODCAST         @"http://www.itunes.com/dtds/podcast-1.0.dtd"
+#define URI_PURL_DUBLINCORE @"http://purl.org/dc/elements/1.1/"
 
 @implementation RSS20Parser
 
 - (void) parseWithRootNode: (XMLNode*) root
 {
-  RSSArticleCreationListener* creator;
   XMLNode* toplevelnode;
   XMLNode* secondlevelnode;
   XMLNode* thirdlevelnode;
-  
-  creator = AUTORELEASE([[RSSArticleCreationListener alloc]
-			  initWithFeed: self]);
   
   for ( toplevelnode = [root firstChildElement];
 	toplevelnode != nil;
@@ -27,15 +46,16 @@
 	      if ([[secondlevelnode name]
 		    isEqualToString: @"title"])
 		{
-		  RELEASE(feedName);
-		  feedName = RETAIN([secondlevelnode content]);
+		  // TODO: set feed name!
+		  //RELEASE(feedName);
+		  //feedName = RETAIN([secondlevelnode content]);
 		}
 	      // FIXME: Add support for tags: link,description,
 	      // language,managingEditor,webMaster
 	      else if ([[secondlevelnode name]
 		    isEqualToString: @"item"])
 		{
-		  [creator startArticle];
+		  [self startArticle];
 		  
 		  for (thirdlevelnode =[secondlevelnode firstChildElement];
 		       thirdlevelnode != nil;
@@ -44,22 +64,22 @@
 		      if ([[thirdlevelnode name]
 			    isEqualToString: @"title"])
 			{
-			  [creator setHeadline: [thirdlevelnode content]];
+			  [self setHeadline: [thirdlevelnode content]];
 			}
 		      else if ([[thirdlevelnode name]
 				 isEqualToString: @"link"])
 			{
-			  [creator addLinkWithURL: [thirdlevelnode content]];
+			  [self addLinkWithURL: [thirdlevelnode content]];
 			}
 		      else if ([[thirdlevelnode name]
 				 isEqualToString: @"description"])
 			{
-			  [creator setSummary: [thirdlevelnode content]];
+			  [self setSummary: [thirdlevelnode content]];
 			}
 		      else if ([[thirdlevelnode name]
 				 isEqualToString: @"enclosure"])
 			{
-			  [creator
+			  [self
 			    addLinkWithURL: [[thirdlevelnode attributes]
 					      objectForKey: @"url"]
 			    andRel: @"enclosure"
@@ -73,7 +93,7 @@
 			  if ([[thirdlevelnode namespace]
 				isEqualToString: URI_PURL_CONTENT])
 			    {
-			      [creator setContent: [thirdlevelnode content]];
+			      [self setContent: [thirdlevelnode content]];
 			      //NSLog(@"Content:Encoded: %@", description);
 			    }
 			}
@@ -82,16 +102,15 @@
 			       [[thirdlevelnode namespace]
 				 isEqualToString: URI_PURL_DUBLINCORE])
 			{
-			  [creator setDate: parseDublinCoreDate([thirdlevelnode content])];
+			  [self setDate: parseDublinCoreDate([thirdlevelnode content])];
 			}
 		    }
 		  
-		  [creator commitArticle];
+		  [self commitArticle];
 		}
 	    }
 	}
     }
-  [creator finished];
-  return RSSFeedErrorNoError;
+  [self finished];
 }
 @end

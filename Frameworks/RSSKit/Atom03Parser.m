@@ -1,16 +1,31 @@
+/*  -*-objc-*-
+ *
+ *  GNUstep RSS Kit
+ *  Copyright (C) 2006 Guenther Noack
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
-#import "AtomParser.h"
+#import "Atom03Parser.h"
+#import "DublinCore.h"
 
 @implementation Atom03Parser
 
 -(void)parseWithRootNode: (XMLNode*)root
 {
-  RSSArticleCreationListener* creator;
   XMLNode* toplevelnode;
   XMLNode* secondlevelnode;
-  
-  creator = AUTORELEASE([[RSSArticleCreationListener alloc]
-			  initWithFeed: self]);
   
   for ( toplevelnode = [root firstChildElement];
 	toplevelnode != nil;
@@ -19,13 +34,14 @@
       if ([[toplevelnode name]
 	    isEqualToString: @"title"])
 	{
-	  RELEASE(feedName);
-	  feedName = RETAIN([toplevelnode content]);
+	  // TODO: Set feed name
+	  //RELEASE(feedName);
+	  //feedName = RETAIN([toplevelnode content]);
 	}
       else if ([[toplevelnode name]
 		 isEqualToString: @"entry"])
 	{
-	  [creator startArticle];
+	  [self startArticle];
 	  
 	  for (secondlevelnode = [toplevelnode firstChildElement];
 	       secondlevelnode != nil;
@@ -34,14 +50,14 @@
 	      if ([[secondlevelnode name]
 		    isEqualToString: @"title"])
 		{
-		  [creator setHeadline: [secondlevelnode content]];
+		  [self setHeadline: [secondlevelnode content]];
 		}
 	      // FIXME: ATOM 0.3 specifies different storage
 	      // modes like Base64, plain ASCII etc. Implement these!
 	      else if ([[secondlevelnode name]
 			 isEqualToString: @"summary"])
 		{
-		  [creator setSummary: [secondlevelnode content]];
+		  [self setSummary: [secondlevelnode content]];
 		}
 	      else if ([[secondlevelnode name]
 			 isEqualToString: @"content"])
@@ -54,13 +70,13 @@
 		  if (tmp == nil ||
 		      [tmp isEqualToString: @"text"] ||
 		      [tmp isEqualToString: @"html"])
-		    [creator setContent: [secondlevelnode content]];
+		    [self setContent: [secondlevelnode content]];
 		  else
 		    {
 		      if ([tmp isEqualToString: @"application/xhtml+xml"] ||
 			  [tmp isEqualToString: @"xhtml"])
 			{
-			  [creator setContent: [self stringFromHTMLAtNode: secondlevelnode]];
+			  [self setContent: [self stringFromHTMLAtNode: secondlevelnode]];
 			}
 		    }
 		}
@@ -71,12 +87,12 @@
 	      else if ([[secondlevelnode name]
 			 isEqualToString: @"issued"])
 		{
-		  [creator setDate: parseDublinCoreDate( [secondlevelnode content] )];
+		  [self setDate: parseDublinCoreDate( [secondlevelnode content] )];
 		}
 	      else if ([[secondlevelnode name]
 			 isEqualToString: @"link"])
 		{
-		  [creator
+		  [self
 		    addLinkWithURL: [[secondlevelnode attributes]
 				      objectForKey: @"href"]
 		    andRel: [[secondlevelnode attributes]
@@ -86,11 +102,10 @@
 		   ];
 		}
 	    }
-	  [creator commitArticle];
+	  [self commitArticle];
 	}
     }
-  [creator finished];
-  return RSSFeedErrorNoError;
+  [self finished];
 }
 
 @end
