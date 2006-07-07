@@ -1,4 +1,4 @@
-/* -*-objc-*-
+/*  -*-objc-*-
  *
  *  Dictionary Reader - A Dict client for GNUstep
  *  Copyright (C) 2006 Guenther Noack
@@ -17,9 +17,18 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <AppKit/NSApplication.h>
 
-int main(int argc, const char * argv[])
-{
-  return NSApplicationMain(argc, argv);
-}
+@protocol DefinitionWriter
+
+-(void) beginWriting;
+-(void) endWriting;
+
+-(void) clearResults;
+-(void) writeBigHeadline: (NSString*) aString;
+-(void) writeHeadline: (NSString*) aString;
+-(void) writeLine: (NSString*) aString;
+-(void) writeString: (NSString*) aString
+	       link: (id) aClickable;
+
+@end
+

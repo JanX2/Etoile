@@ -26,6 +26,19 @@ NSString+Clickable.m \
 NSString+DictLineParsing.m \
 main.m \
 
+
+DictionaryReader_HEADER_FILES = AppController.h \
+StreamLineWriter.h \
+StreamLineReader.h \
+DictConnection.h \
+HistoryManager.h \
+NSString+Convenience.h \
+NSString+Clickable.h \
+NSString+DictLineParsing.h \
+DefintionWriter.h \
+DictionaryHandle.h \
+
+
 DictionaryReader_OBJCC_FILES = 
 DictionaryReader_C_FILES = 
 DictionaryReader_RESOURCE_FILES = Resources/dict.png \

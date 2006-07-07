@@ -1,4 +1,5 @@
-/*
+/* -*-objc-*-
+ *
  *  Dictionary Reader - A Dict client for GNUstep
  *  Copyright (C) 2006 Guenther Noack
  *

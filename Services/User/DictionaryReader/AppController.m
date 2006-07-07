@@ -44,6 +44,16 @@ NSDictionary* normalAttributes;
 
 @implementation AppController (DefinitionWriter)
 
+-(void) beginWriting
+{
+  // TODO: For multithreaded dictionary entry fetching, lock access here!
+}
+
+-(void) endWriting
+{
+  // TODO: For multithreaded dictionary entry fetching, unlock access here!
+}
+
 -(void) clearResults
 {
   NSAttributedString* emptyAttrStr = [[NSAttributedString alloc] init];

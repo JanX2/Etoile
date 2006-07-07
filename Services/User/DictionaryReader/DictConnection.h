@@ -24,18 +24,13 @@
 #import "StreamLineReader.h"
 #import "StreamLineWriter.h"
 #import "NSString+Convenience.h"
+#import "DefinitionWriter.h"
 
-@protocol DefinitionWriter
 
--(void) clearResults;
--(void) writeBigHeadline: (NSString*) aString;
--(void) writeHeadline: (NSString*) aString;
--(void) writeLine: (NSString*) aString;
--(void) writeString: (NSString*) aString
-	       link: (id) aClickable;
-
-@end
-
+/**
+ * Instances of this class enable a connection to a dict protocol server.
+ * You can look up words using the @see(definitionFor:) method.
+ */
 @interface DictConnection : NSObject
 {
   // Instance variables
@@ -73,10 +68,15 @@
 -(void)open;
 -(void)close;
 
+-(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter;
+
+@end
+
+
+@interface DictConnection (Private)
+
 -(void) log: (NSString*) aLogMsg;
 -(void) showError: (NSString*) aString;
-
--(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter;
 
 @end
 
