@@ -49,7 +49,7 @@
     RSSArticle* art = [feed articleAtIndex: 0];
     UKNotNil(art);
     
-    UKStringsEqual([art url], @"http://example.com/1");
+    UKStringsEqual(@"http://example.com/1", [art url]);
   }
 
 -(void)testItemRDFAbout
@@ -61,7 +61,7 @@
     UKNotNil(art);
     
     // XXX: The semantics of rdf:about? Can we use this as URL?
-    UKStringsEqual([art url], @"http://example.org/1");
+    UKStringsEqual(@"http://example.org/1", [art url]);
   }
 
 -(void)testItemTitle

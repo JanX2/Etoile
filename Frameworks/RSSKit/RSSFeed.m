@@ -29,53 +29,6 @@
 //#undef DEBUG
 
 @implementation RSSFeed (Private)
-/**
- * NOT SYNCHRONIZED!
- * @deprecated
- */
--(BOOL) _submitArticle: (RSSArticle*) anArticle
-{
-  NSMutableArray* result;
-  BOOL success = YES;
-  
-  NSLog(@"_submitArticle: is deprecated");
-  
-  
-  if (anArticle == nil)
-    return NO;
-  
-  if (articles == nil)
-    {
-      articles = [[NSArray alloc] init];
-    }
-  
-  [lock lock];
-  
-  result = [[NSMutableArray alloc] initWithArray: articles];
-  
-  
-  if ([result containsObject: anArticle] == NO)
-    {
-      [result addObject: anArticle];
-      RELEASE(articles);
-      articles = [[NSArray alloc] initWithArray: result];
-      success = YES;
-      
-      [_delegate feed: self
-		 addedArticle: anArticle];
-    }
-  else
-    {
-      // XXX: Aren't we successful in this case?
-      success = NO;
-    }
-  
-  [lock unlock];
-  
-  RELEASE(result);
-  
-  return success;
-}
 
 
 
@@ -307,6 +260,7 @@
 }
 
 
+
 -(void)setDelegate: (id<RSSFeedDelegate>)aDelegate
 {
   ASSIGN(_delegate, aDelegate);
@@ -317,6 +271,16 @@
   return AUTORELEASE(RETAIN(_delegate));
 }
 
+
+
+/**
+ * Implementation of the NewRSSArticleListener interface.
+ */
+-(void) newArticleFound: (RSSArticle*) anArticle
+{
+  // XXX: inefficient solution!
+  [self _submitArticles:[NSArray arrayWithObjects: anArticle, NULL]];
+}
 
 
 
@@ -466,8 +430,9 @@
 }
 
 /**
- * Returns the class of the article objects. This will be a subtype
- * of RSSArticle.
+ * Returns the class of the article objects. This needs to be a subclass
+ * of RSSArticle. (Also needed to implement the NewRSSArticleListener
+ * class)
  *
  * @return the article class
  */

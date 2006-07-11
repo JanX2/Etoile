@@ -291,6 +291,12 @@ enum RSSFeedStatus
  */
 -(NSDate*) lastRetrieval;
 
+
+/**
+ * RSSFeed also implements the NewRSSArticleListener informal protocol.
+ */
+-(void) newArticleFound: (RSSArticle*) anArticle;
+
 @end
 
 
@@ -301,16 +307,6 @@ enum RSSFeedStatus
  */
 
 @interface RSSFeed (Private)
-/**
- * Submits an article to a feed. Was once
- * used by the article creator class. Now
- * deprecated.
- *
- * @deprecated
- *
- * @return YES on success, NO on failure.
- */
--(BOOL) _submitArticle: (RSSArticle*) anArticle;
 
 /**
  * Submits multiple articles to a feed. Is

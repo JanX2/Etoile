@@ -52,18 +52,6 @@
 }
 
 
-//delegate
-
--(void) setDelegate: (id)aDelegate
-{
-  ASSIGN(delegate, aDelegate);
-}
-
--(id) delegate
-{
-  return AUTORELEASE(RETAIN(delegate));
-}
-
 
 // helper methods
 

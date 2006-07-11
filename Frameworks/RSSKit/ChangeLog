@@ -1,5 +1,41 @@
 
-Jun-30-2006 Guenther Noack
+Jul-7-2006 to Jul-11-2006  Guenther Noack
+	Fixed compile error submitted by YunSong Hwang (Thank you!)
+
+	For everybody who knows the RSSKit code, here are the changes I
+	did in restructuring:
+
+	In the old version anything related to parsing was in the
+	RSSFeed+Fetching category. The file for this category also
+	included the class RSSArticleCreationListener which accepts
+	the different article components (Title, Content, Links etc.)
+	and puts them together after that. When the parser (in RSSFeed)
+	told the instance of RSSArticleCreationListener to '-finish',
+	it submitted the collected articles back to the feed.
+
+	The new version is more taken apart now:
+	* RSSArticleCreationListener now has its own .m and .h files.
+	  The class was also renamed to RSSArticleConstructor to avoid
+	  naming confusion with the planned protocol that accepts newly
+	  created articles from it.
+	* The parsers are now located in their own classes. Here's the
+	  class hierarchy:
+	  
+	  - RSSArticleConstructor
+	    - FeedParser
+	      - AtomParser
+	        - Atom03Parser
+		- Atom10Parser
+	      - RSS10Parser
+	      - RSS20Parser
+	  
+	  Note that the feed parser classes inherit from the Article-
+	  Constructor, so that they don't have to do an extra instantiation
+	  for it. (There was a 1:1 relation between the parser and the
+	  constructor anyway.)  
+	  
+
+Jun-30-2006  Guenther Noack
 	* I started to build classes for the different RSS types. Should
 	  have done that long ago; RSSFeed+Fetching just got much too big. ;-)
 

@@ -41,8 +41,6 @@
 #define URI_PODCAST             @"http://www.itunes.com/dtds/podcast-1.0.dtd"
 #define URI_PURL_DUBLINCORE     @"http://purl.org/dc/elements/1.1/"
 
-#define REL_KEY @"rel"
-#define TYPE_KEY @"type"
 
 
 

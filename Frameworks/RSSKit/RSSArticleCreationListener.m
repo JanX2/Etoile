@@ -17,32 +17,22 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#import "NewRSSArticleListener.h"
 #import "RSSArticleCreationListener.h"
 
+#define REL_KEY @"rel"
+#define TYPE_KEY @"type"
 
-@implementation RSSArticleCreationListener
 
--(id) initWithFeed: (RSSFeed*) aFeed
-{
-  self = [super init];
-  if (self != nil)
-    {
-      [self setFeed: aFeed];
-    }
-  
-  currentArticleList = [[NSMutableArray alloc] initWithCapacity: 10];
-  
-  return self;
-}
+@implementation RSSArticleComposer
 
 -(id) init
 {
-  return [self initWithFeed: nil];
+  return [super init];
 }
 
 -(void) dealloc
 {
-  DESTROY(currentFeed);
   DESTROY(headline);
   DESTROY(url);
   DESTROY(summary);
@@ -50,10 +40,24 @@
   DESTROY(date);
   
   DESTROY(links);
-  DESTROY(currentArticleList);
   
   [super dealloc];
 }
+
+
+//delegate accessor methods
+
+-(void) setDelegate: (id)aDelegate
+{
+  ASSIGN(delegate, aDelegate);
+}
+
+-(id) delegate
+{
+  return AUTORELEASE(RETAIN(delegate));
+}
+
+
 
 /**
  * Adds the article to the feed
@@ -89,14 +93,11 @@
     }
   
   // create
-  article = [[[currentFeed articleClass] alloc]
+  article = [[[delegate articleClass] alloc]
 	      initWithHeadline: headline
 	      url: url
 	      description: desc
 	      date: articleDate];
-  
-  // add information to which feed it belongs
-  [article feed: currentFeed];
   
   // add links
   if ([links count] > 0)
@@ -108,7 +109,9 @@
   #ifdef DEBUG
   NSLog(@"Commit, links is %@", links);
   #endif
-  [currentArticleList addObject: article];
+  
+  if (delegate != nil)
+    [delegate newArticleFound: article];
   
   RELEASE(date);
   
@@ -118,14 +121,15 @@
 
 /**
  * Gets called whenever a feed has been parsed completely.
- * Finally submits all fetched articles to the feed.
  */
 -(void) finished
 {
   #ifdef DEBUG
   NSLog(@"%@ finished, rc=%d", self, [self retainCount]);
   #endif
-  [currentFeed _submitArticles: currentArticleList];
+  
+  // empty at the moment, may be useful for things like thread locking
+  // in the future.
 }
 
 
@@ -172,12 +176,6 @@
   
   [self commitArticle];
   [self startArticle];
-}
-
--(void) setFeed: (RSSFeed*) aFeed
-{
-  RELEASE(currentFeed);
-  currentFeed = RETAIN(aFeed);
 }
 
 

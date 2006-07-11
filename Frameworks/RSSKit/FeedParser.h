@@ -20,9 +20,8 @@
 #import "DOMParser.h"
 #import "RSSArticleCreationListener.h"
 
-@interface FeedParser : RSSArticleCreationListener
+@interface FeedParser : RSSArticleComposer
 {
-  id delegate;
 }
 
 // instantiation
@@ -36,10 +35,6 @@
 -(void) parseWithRootNode: (XMLNode*) root;
 
 
-//delegate
-
--(void) setDelegate: (id)aDelegate;
--(id) delegate;
 
 
 // helper methods

@@ -26,10 +26,10 @@
  * It does what otherwise every individual RSS-style parser had to do
  * for itself.
  */
-
-@interface RSSArticleCreationListener : NSObject
+@interface RSSArticleComposer : NSObject
 {
-  RSSFeed* currentFeed;
+  //RSSFeed* currentFeed;
+  id delegate;
   
   NSString* headline;
   NSString* url;
@@ -39,20 +39,25 @@
   
   NSMutableArray* links;
   
-  NSMutableArray* currentArticleList;
+  //NSMutableArray* currentArticleList;
 }
 
 // Initializers & Deallocation
--(id) initWithFeed: (RSSFeed*) aFeed;
+//-(id) initWithFeed: (RSSFeed*) aFeed;
 -(id) init;
 -(void) dealloc;
+
+// delegate accessors
+-(void) setDelegate: (id)aDelegate;
+-(id) delegate;
 
 // Basic control
 -(void) nextArticle;
 -(void) startArticle;
 -(void) commitArticle;
 -(void) finished;
--(void) setFeed: (RSSFeed*) aFeed;
+
+//-(void) setFeed: (RSSFeed*) aFeed;
 
 // Collecting of article content
 -(void) setHeadline: (NSString*) aHeadline;

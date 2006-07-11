@@ -21,6 +21,7 @@
 
 @implementation AtomParser
 
+/*
 -(void)parseWithRootNode: (XMLNode*)root
 {
   RSSArticleCreationListener* creator;
@@ -82,13 +83,13 @@
 			}
 		    }
 		}
-	      /*
+	      / *
 	       * FIXME: is 'updated' instead of 'issued'
 	       * also included in ATOM 0.3? (it is in 1.0)
-	       */
+	       * /
 	      else if ([[secondlevelnode name]
-			 isEqualToString: @"issued"])
-		{
+	      isEqualToString: @"issued"])
+	      {
 		  [creator setDate: parseDublinCoreDate( [secondlevelnode content] )];
 		}
 	      else if ([[secondlevelnode name]
@@ -110,5 +111,7 @@
   [creator finished];
   return RSSFeedErrorNoError;
 }
+
+*/
 
 @end
