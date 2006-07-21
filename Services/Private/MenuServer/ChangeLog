@@ -1,3 +1,7 @@
+2006-07-21  Saso Kiselkov <skiselkov@gmail.com>
+
+    * main.m: Updated default name GSDontShowAppIcon to GSSuppressAppIcon.
+
 2006-06-06  Saso Kiselkov <skiselkov@gmail.com>
 
     * Subprojects/AboutEtoileEntry/GNUmakefile:

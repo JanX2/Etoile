@@ -49,7 +49,7 @@ int main(int argc, const char * argv[])
 
   // we never show the app icon
   [[NSUserDefaults standardUserDefaults]
-    setObject: [NSNumber numberWithBool: YES] forKey: @"GSDontShowAppIcon"];
+    setObject: [NSNumber numberWithBool: YES] forKey: @"GSSuppressAppIcon"];
 
   delegate = [Controller new];
   [NSApplication sharedApplication];
