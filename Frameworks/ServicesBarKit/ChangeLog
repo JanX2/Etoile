@@ -1,3 +1,20 @@
+2006-07-30  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Headers/SBServicesBar.h: 
+	* Headers/SBServicesBarItem.h:
+	* Source/SBServicesBar.h: 
+	* Source/SBServicesBarItem.h:
+	Moved framework headers and source files in two new directories in 
+	order to workaround gnustep-make limitation. ServicesBarMenulet depends
+	on the framework itself, but we cannot specify subprojects to be built 
+	after the project itself (only before). By moving the framework source
+	in a subproject we can control its build order among other subprojects.
+	* Source/GNUmakefile: Copied, then updated to reference the moved 
+	headers as needed.
+	* GNUmakefile: 
+	* ServicesBarMenulet/GNUmakefile.preamble: 
+	Updated.
+
 2006-06-06  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Fixed compilation by disabling currently non existent 
