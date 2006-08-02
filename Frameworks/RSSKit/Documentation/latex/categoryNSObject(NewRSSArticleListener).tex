@@ -1,0 +1,38 @@
+\section{NSObject(New\-RSSArticle\-Listener) Category Reference}
+\label{categoryNSObject(NewRSSArticleListener)}\index{NSObject(NewRSSArticleListener)@{NSObject(NewRSSArticleListener)}}
+{\tt \#import $<$New\-RSSArticle\-Listener.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+(void) - {\bf new\-Article\-Found:}
+\item 
+(Class) - {\bf article\-Class}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+This protocol is intended to be implemented by classes which want to be notified of articles found when parsing RSS feeds. 
+
+
+
+\subsection{Member Function Documentation}
+\index{NSObject(NewRSSArticleListener)@{NSObject(New\-RSSArticle\-Listener)}!articleClass@{articleClass}}
+\index{articleClass@{articleClass}!NSObject(NewRSSArticleListener)@{NSObject(New\-RSSArticle\-Listener)}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (Class) article\-Class }\label{categoryNSObject(NewRSSArticleListener)_cc03170efe1b023fcd88165ecfe7f1f4}
+
+
+Returns the class of the article objects. This needs to be a subclass of {\bf RSSArticle}{\rm (p.\,\pageref{interfaceRSSArticle})}.
+
+\begin{Desc}
+\item[Returns:]the article class \end{Desc}
+\index{NSObject(NewRSSArticleListener)@{NSObject(New\-RSSArticle\-Listener)}!newArticleFound:@{newArticleFound:}}
+\index{newArticleFound:@{newArticleFound:}!NSObject(NewRSSArticleListener)@{NSObject(New\-RSSArticle\-Listener)}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (void) new\-Article\-Found: ({\bf RSSArticle} $\ast$) {\em an\-Article}}\label{categoryNSObject(NewRSSArticleListener)_1f93b7d179e71239abb907c5bff99983}
+
+
+This method gets called when a new article has been found. 
+
+The documentation for this category was generated from the following file:\begin{CompactItemize}
+\item 
+New\-RSSArticle\-Listener.h\end{CompactItemize}

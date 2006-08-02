@@ -43,26 +43,42 @@
 
 
 
+@interface RSSFeed (PrivateFetching)
+-(NSData*) fetchData;
+-(enum RSSFeedError) fetchWithData: (NSData*)data;
 
-@implementation RSSFeed (Fetching)
+-(enum RSSFeedError) parseATOM03WithRootNode: (XMLNode*) root;
+-(enum RSSFeedError) parseATOM10WithRootNode: (XMLNode*) root;
+-(enum RSSFeedError) parseRSS10WithRootNode: (XMLNode*) root;
+-(enum RSSFeedError) parseRSS20WithRootNode: (XMLNode*) root;
+@end
 
 
 
+
+@implementation RSSFeed (PrivateFetching)
 /**
- * Returns the last error.
- * Guaranteed to return the last fetching result.
+ * Fetches the feed from its URL, which is stored in the feedURL
+ * instance variable.
  */
--(enum RSSFeedError) lastError
+-(NSData*) fetchData
 {
-  return lastError;
+   NSData* data;
+   
+   if (feedURL == nil) {
+       [self setError: RSSFeedErrorMalformedURL];
+   }
+   
+   data = [feedURL resourceDataUsingCache: NO];
+   
+   if (data == nil) {
+       [self setError: RSSFeedErrorServerNotReachable];
+   }
+   
+   return [[data retain] autorelease];
 }
 
-// sets the error for the feed (see RSSFeed.h)
--(enum RSSFeedError) setError: (enum RSSFeedError) err
-{
-  lastError = err;
-  return err;
-}
+
 
 
 // parse ATOM 1.0
@@ -97,32 +113,19 @@
   return RSSFeedErrorNoError;
 }
 
-// fetches the feed
--(enum RSSFeedError) fetch
+
+
+/**
+ * @private
+ * Uses the feed contained in data instead of the URL.
+ */
+-(enum RSSFeedError) fetchWithData: (NSData*)data
 { 
   NSString* rssVersion;
   
   NSXMLParser* parser;
   XMLNode* root;
   XMLNode* document;
-  NSData* data;
-  
-  // mark as fetching
-  status = RSSFeedIsFetching;
-  
-  if (feedURL == nil)
-    {
-      status = RSSFeedIsIdle;
-      return [self setError: RSSFeedErrorMalformedURL];
-    }
-  
-  data = [feedURL resourceDataUsingCache: NO];
-  
-  if (data == nil)
-    {
-      status = RSSFeedIsIdle;
-      return [self setError: RSSFeedErrorServerNotReachable];
-    }
   
   parser = AUTORELEASE([[NSXMLParser alloc] initWithData: data]);
   
@@ -137,7 +140,6 @@
   
   if ([parser parse] == NO)
     {
-      status = RSSFeedIsIdle;
       return [self setError: RSSFeedErrorMalformedRSS];
     }
   
@@ -190,12 +192,59 @@
   else
     {
       rssVersion = @"Malformed RSS?";
-      status = RSSFeedIsIdle;
       return [self setError: RSSFeedErrorMalformedRSS];
     }
   
-  status = RSSFeedIsIdle;
   return [self setError: RSSFeedErrorNoError];
 }
 
+
 @end
+
+
+
+
+@implementation RSSFeed (Fetching)
+
+
+
+/**
+ * Returns the last error.
+ * Guaranteed to return the last fetching result.
+ */
+-(enum RSSFeedError) lastError
+{
+  return lastError;
+}
+
+// sets the error for the feed (see RSSFeed.h)
+-(enum RSSFeedError) setError: (enum RSSFeedError) err
+{
+  lastError = err;
+  return err;
+}
+
+/**
+ * Fetches the feed from its feed URL, parses it and adds the found
+ * articles to the list of articles contained in this feed (if they
+ * are new).
+ */
+-(enum RSSFeedError) fetch
+{
+   NSData* data;
+   
+   status = RSSFeedIsFetching;
+   
+   // no errors at first :-)
+   [self setError: RSSFeedErrorNoError];
+   
+   data = [self fetchData];
+   
+   status = RSSFeedIsIdle;
+   
+   return [self fetchWithData: data];
+}
+
+@end
+
+
