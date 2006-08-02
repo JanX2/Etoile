@@ -2,6 +2,9 @@
 Grr Changelog
 =============
 
+Aug-3-2006 Guenther Noack
+	* Multithreading problems are hopefully all fixed now! w00t! :-)
+
 Mar-19-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Remove .gwdir, created by GWorkspace.app.
 	* Remove PC.project.backup, created by ProjectCenter.app.
