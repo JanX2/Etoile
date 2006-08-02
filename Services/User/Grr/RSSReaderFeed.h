@@ -30,6 +30,7 @@
 
 @interface RSSReaderFeed : RSSFeed
 {
+@private
   NSTimeInterval minUpdateInterval;
 }
 

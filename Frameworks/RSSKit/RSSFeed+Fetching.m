@@ -44,7 +44,7 @@
 
 
 @interface RSSFeed (PrivateFetching)
--(NSData*) fetchData;
+-(NSData*) fetchDataFromURL: (NSURL*) myURL;
 -(enum RSSFeedError) fetchWithData: (NSData*)data;
 
 -(enum RSSFeedError) parseATOM03WithRootNode: (XMLNode*) root;
@@ -58,18 +58,18 @@
 
 @implementation RSSFeed (PrivateFetching)
 /**
- * Fetches the feed from its URL, which is stored in the feedURL
- * instance variable.
+ * Fetches the feed from the URL which is stored in the myURL
+ * argument
  */
--(NSData*) fetchData
+-(NSData*) fetchDataFromURL: (NSURL*) myURL
 {
    NSData* data;
    
-   if (feedURL == nil) {
+   if (myURL == nil) {
        [self setError: RSSFeedErrorMalformedURL];
    }
    
-   data = [feedURL resourceDataUsingCache: NO];
+   data = [myURL resourceDataUsingCache: NO];
    
    if (data == nil) {
        [self setError: RSSFeedErrorServerNotReachable];
@@ -151,6 +151,7 @@
   
   if (clearFeedBeforeFetching == YES)
     {
+      status = RSSFeedIsIdle;
       [self clearArticles];
     }
   
@@ -192,9 +193,15 @@
   else
     {
       rssVersion = @"Malformed RSS?";
+      status = RSSFeedIsIdle;
       return [self setError: RSSFeedErrorMalformedRSS];
     }
   
+  [[NSNotificationCenter defaultCenter]
+          postNotificationName: @"FeedFetchedNotification"
+                        object: self];
+  
+  status = RSSFeedIsIdle;
   return [self setError: RSSFeedErrorNoError];
 }
 
@@ -238,7 +245,7 @@
    // no errors at first :-)
    [self setError: RSSFeedErrorNoError];
    
-   data = [self fetchData];
+   data = [self fetchDataFromURL: feedURL];
    
    status = RSSFeedIsIdle;
    

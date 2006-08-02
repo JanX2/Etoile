@@ -13,8 +13,8 @@
 #import "FeedList.h"
 
 #define NO_MULTITHREADING YES
-#undef NO_MULTITHREADING
-#define DEBUG YES
+//#undef NO_MULTITHREADING
+//#define DEBUG YES
 
 
 //* The number of currently fetched feeds

@@ -138,4 +138,36 @@
   return YES;
 }
 
+
+/**
+ * Override the fetch method from the RSSFeed class to let
+ * Grr do the HTTP request in a separate thread. :-)
+ */
+-(enum RSSFeedError) fetch
+{
+    status = RSSFeedIsFetching;
+    [NSThread detachNewThreadSelector: @selector(threadedFetch:)
+                             toTarget: self
+                           withObject: feedURL];
+}
+
+/**
+ * Runs in a worker thread only
+ */
+-(void) threadedFetch: (NSURL*) myURL
+{
+    NSAutoreleasePool* threadAutoreleasePool =
+        [[NSAutoreleasePool alloc] init];
+    
+    NSData* data = [self fetchDataFromURL: myURL];
+    
+    [self performSelectorOnMainThread: @selector(fetchWithData:)
+                           withObject: data
+                        waitUntilDone: NO];
+    
+    [threadAutoreleasePool release];
+    [NSThread exit];
+}
+
 @end
+

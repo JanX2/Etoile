@@ -21,6 +21,7 @@
 
 - (id) articleView;
 
+- (void) refreshMainTable: (id)sender;
 - (void) refreshMainTable;
 
 - (void) goThereButton: (id)sender;

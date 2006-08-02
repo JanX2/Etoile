@@ -27,6 +27,12 @@ MainController* getMainController()
       return singleton;
     }
   
+  // Register refreshing of main table for feed changed notifs
+  [[NSNotificationCenter defaultCenter] addObserver: self
+                      selector: @selector(refreshMainTable:)
+                      name: @"FeedFetchedNotification"
+                      object: nil];
+  
   // real init here
   fetchingProgressManager = nil;
   
@@ -51,6 +57,11 @@ MainController* getMainController()
     openURL: [NSURL URLWithString: [[RSSArticle currentlyViewed] url]]];
 }
 
+
+- (void) refreshMainTable: (id) sender
+{
+    [self refreshMainTable];
+}
 
 - (void) refreshMainTable
 {
