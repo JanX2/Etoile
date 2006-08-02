@@ -11,12 +11,12 @@
 \item 
 (id) - {\bf init\-With\-Headline:url:description:time:}
 \item 
-(id) - {\bf init\-With\-Coder:}\label{interfaceRSSArticle_a4}
+(id) - {\bf init\-With\-Coder:}\label{interfaceRSSArticle_6984252682d7e137046486ffff11dd49}
 
-\begin{CompactList}\small\item\em Deserializes a RSSArticle object from a NSCoder. \item\end{CompactList}\item 
-(void) - {\bf encode\-With\-Coder:}\label{interfaceRSSArticle_a5}
+\begin{CompactList}\small\item\em Deserializes a {\bf RSSArticle}{\rm (p.\,\pageref{interfaceRSSArticle})} object from a NSCoder. \item\end{CompactList}\item 
+(void) - {\bf encode\-With\-Coder:}\label{interfaceRSSArticle_f3209eed527bf05309bcc99c54908d4d}
 
-\begin{CompactList}\small\item\em Serializes a RSSArticle object to a NSCoder. \item\end{CompactList}\item 
+\begin{CompactList}\small\item\em Serializes a {\bf RSSArticle}{\rm (p.\,\pageref{interfaceRSSArticle})} object to a NSCoder. \item\end{CompactList}\item 
 (NSString $\ast$) - {\bf headline}
 \item 
 (NSString $\ast$) - {\bf url}
@@ -32,39 +32,41 @@
 (NSDate $\ast$) - {\bf date}
 \item 
 ({\bf RSSFeed} $\ast$) - {\bf feed}
+\item 
+(BOOL) - {\bf is\-Equal:}
 \end{CompactItemize}
 
 
 \subsection{Detailed Description}
-An object of this class represents an article in an RSS Feed.
+An object of this class represents an article in an RSS Feed. 
 
 
 
 \subsection{Member Function Documentation}
 \index{RSSArticle@{RSSArticle}!addLink:@{addLink:}}
 \index{addLink:@{addLink:}!RSSArticle@{RSSArticle}}
-\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (void) add\-Link: (NSURL $\ast$) {\em an\-URL}}\label{interfaceRSSArticle_a9}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (void) add\-Link: (NSURL $\ast$) {\em an\-URL}}\label{interfaceRSSArticle_739a84b52475f06f053778bebf925fb7}
 
 
-Adds a new link to this article. This is a NSURL object, which usually has the \char`\"{}type\char`\"{} property set to an NSString which represents the resource's MIME type. You may also specify the \char`\"{}rel\char`\"{} property, which should be one of \char`\"{}enclosure\char`\"{}, \char`\"{}related\char`\"{}, \char`\"{}alternate\char`\"{}, \char`\"{}via\char`\"{}.\index{RSSArticle@{RSSArticle}!date@{date}}
+Adds a new link to this article. This is a NSURL object, which usually has the \char`\"{}type\char`\"{} property set to an NSString which represents the resource's MIME type. You may also specify the \char`\"{}rel\char`\"{} property, which should be one of \char`\"{}enclosure\char`\"{}, \char`\"{}related\char`\"{}, \char`\"{}alternate\char`\"{}, \char`\"{}via\char`\"{}. \index{RSSArticle@{RSSArticle}!date@{date}}
 \index{date@{date}!RSSArticle@{RSSArticle}}
-\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSDate$\ast$) date }\label{interfaceRSSArticle_a12}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSDate$\ast$) date }\label{interfaceRSSArticle_4b4aae899bd76df47234b07f3add2095}
 
 
 Returns the date of the publication of the article. If the source feed of this article didn't contain information about this date, the fetching date is usually returned.
 
 \begin{Desc}
-\item[Returns:]The date of the publication of the article\end{Desc}
+\item[Returns:]The date of the publication of the article \end{Desc}
 \index{RSSArticle@{RSSArticle}!description@{description}}
 \index{description@{description}!RSSArticle@{RSSArticle}}
-\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSString$\ast$) description }\label{interfaceRSSArticle_a8}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSString$\ast$) description }\label{interfaceRSSArticle_4288085868ea28184f9cfc6851d2c67a}
 
 
 \begin{Desc}
 \item[Returns:]The full text, an excerpt or a summary from the article \end{Desc}
 \index{RSSArticle@{RSSArticle}!feed@{feed}}
 \index{feed@{feed}!RSSArticle@{RSSArticle}}
-\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- ({\bf RSSFeed}$\ast$) feed }\label{interfaceRSSArticle_a14}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- ({\bf RSSFeed}$\ast$) feed }\label{interfaceRSSArticle_bf64eba4838704987e6afa3d2e2c967f}
 
 
 Returns the source feed of this article.
@@ -78,31 +80,31 @@ If you want to make sure the object exists, you have to follow these rules:
 
 
 \begin{Desc}
-\item[Returns:]The source feed of this article\end{Desc}
+\item[Returns:]The source feed of this article \end{Desc}
 \index{RSSArticle@{RSSArticle}!headline@{headline}}
 \index{headline@{headline}!RSSArticle@{RSSArticle}}
-\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSString$\ast$) headline }\label{interfaceRSSArticle_a6}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSString$\ast$) headline }\label{interfaceRSSArticle_5c0896c6f2ae76e658dccd0a7e9d37db}
 
 
 \begin{Desc}
 \item[Returns:]The headline of the article \end{Desc}
 \index{RSSArticle@{RSSArticle}!init@{init}}
 \index{init@{init}!RSSArticle@{RSSArticle}}
-\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (id) init }\label{interfaceRSSArticle_a0}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (id) init }\label{interfaceRSSArticle_8223fd4f05616bcd99f7bbbbcb281896}
 
 
 Standard initializer. You shouldn't use this. Better use init\-With\-Headline:url:description:date:
 
 \begin{Desc}
-\item[See also:]{\bf - init\-With\-Headline:url:description:date:}{\rm (p.\,\pageref{interfaceRSSArticle_a1})}\end{Desc}
+\item[See also:]{\bf - init\-With\-Headline:url:description:date:}{\rm (p.\,\pageref{interfaceRSSArticle_72252074ba9b2edc3d4b21a9e67d5492})} \end{Desc}
 \index{RSSArticle@{RSSArticle}!initWithHeadline:url:description:date:@{initWithHeadline:url:description:date:}}
 \index{initWithHeadline:url:description:date:@{initWithHeadline:url:description:date:}!RSSArticle@{RSSArticle}}
-\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (id) init\-With\-Headline: (NSString $\ast$) {\em my\-Headline}(NSString $\ast$) {\em my\-Url}(NSString $\ast$) {\em my\-Description}(NSDate $\ast$) {\em my\-Date}}\label{interfaceRSSArticle_a1}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (id) init\-With\-Headline: (NSString $\ast$) {\em my\-Headline}(NSString $\ast$) {\em my\-Url}(NSString $\ast$) {\em my\-Description}(NSDate $\ast$) {\em my\-Date}}\label{interfaceRSSArticle_72252074ba9b2edc3d4b21a9e67d5492}
 
 
-Designated initializer for the RSSArticle class.
+Designated initializer for the {\bf RSSArticle}{\rm (p.\,\pageref{interfaceRSSArticle})} class.
 
-Don't create RSSArticle objects yourself. Create a {\bf RSSFeed}{\rm (p.\,\pageref{interfaceRSSFeed})} object and let it fetch the articles for you!
+Don't create {\bf RSSArticle}{\rm (p.\,\pageref{interfaceRSSArticle})} objects yourself. Create a {\bf RSSFeed}{\rm (p.\,\pageref{classRSSFeed})} object and let it fetch the articles for you!
 
 \begin{Desc}
 \item[Parameters:]
@@ -110,42 +112,48 @@ Don't create RSSArticle objects yourself. Create a {\bf RSSFeed}{\rm (p.\,\pager
 \item[{\em my\-Headline}]A NSString containing the headline of the article. \item[{\em my\-Url}]A NSString containing the URL of the full version of the article. \item[{\em my\-Description}]An excerpt of the article text or the full text. \item[{\em my\-Date}]The date as NSDate object on which this article was posted. \end{description}
 \end{Desc}
 \begin{Desc}
-\item[See also:]{\bf RSSFeed}{\rm (p.\,\pageref{interfaceRSSFeed})}\end{Desc}
+\item[See also:]{\bf RSSFeed}{\rm (p.\,\pageref{classRSSFeed})} \end{Desc}
 \index{RSSArticle@{RSSArticle}!initWithHeadline:url:description:time:@{initWithHeadline:url:description:time:}}
 \index{initWithHeadline:url:description:time:@{initWithHeadline:url:description:time:}!RSSArticle@{RSSArticle}}
-\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (id) init\-With\-Headline: (NSString $\ast$) {\em my\-Headline}(NSString $\ast$) {\em my\-Url}(NSString $\ast$) {\em my\-Description}(unsigned int) {\em my\-Time}}\label{interfaceRSSArticle_a2}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (id) init\-With\-Headline: (NSString $\ast$) {\em my\-Headline}(NSString $\ast$) {\em my\-Url}(NSString $\ast$) {\em my\-Description}(unsigned int) {\em my\-Time}}\label{interfaceRSSArticle_2bec46ce7a4c7520d9d2b353f30c13d8}
 
 
-Old designated initializer for the RSSArticle class. Only here for compatibility reasons. This method is likely to be dropped in future versions. \begin{Desc}
+Old designated initializer for the {\bf RSSArticle}{\rm (p.\,\pageref{interfaceRSSArticle})} class. Only here for compatibility reasons. This method is likely to be dropped in future versions. \begin{Desc}
 \item[{\bf Deprecated}]\end{Desc}
 \begin{Desc}
 \item[Parameters:]
 \begin{description}
-\item[{\em my\-Headline}]A NSString containing the headline of the article. \item[{\em my\-Url}]A NSString containing the URL of the full version of the article. \item[{\em my\-Description}]An excerpt of the article text or the full text. \item[{\em my\-Time}]The date (in seconds since 1970) on which this article was posted.\end{description}
+\item[{\em my\-Headline}]A NSString containing the headline of the article. \item[{\em my\-Url}]A NSString containing the URL of the full version of the article. \item[{\em my\-Description}]An excerpt of the article text or the full text. \item[{\em my\-Time}]The date (in seconds since 1970) on which this article was posted. \end{description}
 \end{Desc}
-\index{RSSArticle@{RSSArticle}!links@{links}}
+\index{RSSArticle@{RSSArticle}!isEqual:@{isEqual:}}
+\index{isEqual:@{isEqual:}!RSSArticle@{RSSArticle}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (BOOL) is\-Equal: (id) {\em an\-Object}}\label{interfaceRSSArticle_508fd131595c1ae980cf9e2024641ad1}
+
+
+RSS Articles are equal if both the article headlines and the article URLs are equal. If they are equal is tested by calling the is\-Equal: method on those. \index{RSSArticle@{RSSArticle}!links@{links}}
 \index{links@{links}!RSSArticle@{RSSArticle}}
-\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSArray$\ast$) links }\label{interfaceRSSArticle_a11}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSArray$\ast$) links }\label{interfaceRSSArticle_6f458ddf4bceb58db46ac1c6c723b337}
 
 
 Returns an NSArray containing NSURL objects or nil, if there are none. The contained NSURL objects often have the \char`\"{}type\char`\"{} and \char`\"{}rel\char`\"{} properties set. See the documentation for add\-Link: for details.
 
 \begin{Desc}
-\item[Returns:]The links of the article.\end{Desc}
+\item[Returns:]The links of the article. \end{Desc}
 \index{RSSArticle@{RSSArticle}!setLinks:@{setLinks:}}
 \index{setLinks:@{setLinks:}!RSSArticle@{RSSArticle}}
-\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (void) set\-Links: (NSMutable\-Array $\ast$) {\em some\-Links}}\label{interfaceRSSArticle_a10}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (void) set\-Links: (NSMutable\-Array $\ast$) {\em some\-Links}}\label{interfaceRSSArticle_ca5aede67d6dab975c7457e3af06fc6c}
 
 
-Replaces the list of links with a new one. See the documentation for add\-Link: for details. Hint: The parameter may also be nil.\index{RSSArticle@{RSSArticle}!url@{url}}
+Replaces the list of links with a new one. See the documentation for add\-Link: for details. Hint: The parameter may also be nil. \index{RSSArticle@{RSSArticle}!url@{url}}
 \index{url@{url}!RSSArticle@{RSSArticle}}
-\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSString$\ast$) url }\label{interfaceRSSArticle_a7}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}- (NSString$\ast$) url }\label{interfaceRSSArticle_e6488ed33911d3717c256058d902c477}
 
 
 \begin{Desc}
 \item[Returns:]Te URL of the full version of the article (as NSString$\ast$) \end{Desc}
 
 
-The documentation for this class was generated from the following file:\begin{CompactItemize}
+The documentation for this class was generated from the following files:\begin{CompactItemize}
 \item 
-RSSArticle.h\end{CompactItemize}
+RSSArticle.h\item 
+RSSArticle.m\end{CompactItemize}
