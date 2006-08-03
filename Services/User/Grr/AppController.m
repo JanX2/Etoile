@@ -1,7 +1,7 @@
 /* 
    Project: RSSReader
 
-   Copyright (C) 2005 Free Software Foundation
+   Copyright (C) 2005-2006 Guenther Noack
 
    Author: Guenther Noack,,,
 
@@ -73,7 +73,7 @@
   [NSBundle loadNibNamed: @"Preferences" owner: self];
   [NSBundle loadNibNamed: @"ErrorLogPanel" owner: self];
   NSLog(@"%@", prefPanel);
-
+  
   /* Register service... */
   [NSApp setServicesProvider: [[RSSReaderService alloc] init]];
   
@@ -119,6 +119,13 @@
   
   [mainTable reloadData];
   [mainTable setNeedsDisplay: YES];
+}
+
+-(void)bringUpPreferences: (id)sender
+{
+  [[NSNotificationCenter defaultCenter]
+    postNotificationName: @"PreferencesToBeOpenedNotification"
+    object: self];
 }
 
 @end

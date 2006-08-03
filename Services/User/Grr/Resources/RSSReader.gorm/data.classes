@@ -2,7 +2,8 @@
     "## Comment" = "Do NOT change this file, Gorm maintains it";
     AppController = {
 	Actions = (
-	    "update:"
+	    "update:",
+	    "bringUpPreferences:"
 	);
 	Outlets = (
 	    feedTable,
@@ -92,10 +93,11 @@
 	    "deleteFeed:",
 	    "goThereButton:",
 	    "minUpdateIntervalUpdated:",
-	    "openFeedManagementWindow:",
+	    "bringUpPreferences:",
 	    "newFeedURL:",
 	    "openCleanUpFeedWindow:",
 	    "openFeedAddingWindow:",
+	    "openFeedManagementWindow:",
 	    "openFeedPreferencesWindow:",
 	    "refilter:",
 	    "reloadButton:",

@@ -5,6 +5,19 @@
 
 @implementation PreferencesController
 
+-(id) init
+{
+  if ((self = [super init]) != nil) {
+    [[NSNotificationCenter defaultCenter]
+      addObserver: self
+      selector: @selector(bringUpWindow:)
+      name: @"PreferencesToBeOpenedNotification"
+      object: nil];
+  }
+  
+  return self;
+}
+
 - (void) bringUpWindow: (id)sender
 {
   [webBrowserField
