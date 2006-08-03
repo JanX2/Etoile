@@ -46,9 +46,7 @@
 	      if ([[secondlevelnode name]
 		    isEqualToString: @"title"])
 		{
-		  // TODO: set feed name!
-		  //RELEASE(feedName);
-		  //feedName = RETAIN([secondlevelnode content]);
+             [self foundFeedName: [secondlevelnode content]];
 		}
 	      // FIXME: Add support for tags: link,description,
 	      // language,managingEditor,webMaster

@@ -38,4 +38,9 @@
  */
 -(Class) articleClass;
 
+/**
+ * Gets called when a feed title has been found in a feed.
+ */
+-(void) feedTitleFound: (NSString*) aTitle;
+
 @end

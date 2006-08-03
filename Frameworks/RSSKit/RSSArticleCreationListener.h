@@ -70,5 +70,7 @@
 -(void) setContent: (NSString*) aContent;
 -(void) setSummary: (NSString*) aSummary;
 -(void) setDate: (NSDate*) aDate;
+
+
 @end
 

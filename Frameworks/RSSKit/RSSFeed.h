@@ -211,6 +211,11 @@ enum RSSFeedStatus
 // ----------------------------------------------------------------------
 
 /**
+ * Sets the feed name
+ */
+- (void) setFeedName: (NSString*) aFeedName;
+
+/**
  * @return The name of the feed
  */
 - (NSString*) feedName;

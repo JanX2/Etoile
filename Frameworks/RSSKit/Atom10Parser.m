@@ -35,9 +35,7 @@
       if ([[toplevelnode name]
 	    isEqualToString: @"title"])
 	{
-	  // TODO: Set feed name!
-	  //RELEASE(feedName);
-	  //feedName = RETAIN([toplevelnode content]);
+         [self foundFeedName: [toplevelnode content]];
 	}
       else if ([[toplevelnode name]
 		 isEqualToString: @"entry"])

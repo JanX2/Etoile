@@ -59,6 +59,7 @@
       RSSArticle* art;
       
       art = [articles objectAtIndex: i];
+      [art feed: self];
       
       if ([result containsObject: art] == YES)
 	{
@@ -350,6 +351,16 @@
 
 
 // preferences
+
+/**
+ * Sets the feed name
+ */
+- (void) setFeedName: (NSString*) aFeedName
+{
+    ASSIGN(feedName, aFeedName);
+}
+
+
 - (NSString*) feedName
 {
 #ifdef DEBUG

@@ -62,4 +62,16 @@
   return AUTORELEASE(RETAIN([root content]));
 }
 
+
+/**
+ * Gets called when a feed title has been found in the feed.
+ */
+-(void) foundFeedName: (NSString*) feedName
+{
+  if ([delegate respondsToSelector: @selector(setFeedName:)]) {
+      [delegate setFeedName: feedName];
+  }
+}
+
+
 @end

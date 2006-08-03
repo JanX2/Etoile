@@ -42,9 +42,7 @@
 	      if ([[secondlevelnode name]
 		    isEqualToString: @"title"])
 		{
-		  // TODO: Set feed name!
-		  //RELEASE(feedName);
-		  //feedName = RETAIN([secondlevelnode content]);
+              [self foundFeedName: [secondlevelnode content]];
 		}
 	      /* you could add here: link, description, image,
 	       * items, textinput

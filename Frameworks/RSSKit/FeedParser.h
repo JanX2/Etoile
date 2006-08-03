@@ -41,4 +41,9 @@
 
 -(NSString*) stringFromHTMLAtNode: (XMLNode*) root;
 
+/**
+ * Gets called when a feed title has been found in the feed.
+ */
+-(void) foundFeedName: (NSString*) feedName;
+
 @end
