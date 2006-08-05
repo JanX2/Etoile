@@ -27,6 +27,7 @@ MonitorPrefPane_MAIN_MODEL_FILE = \
 
 MonitorPrefPane_RESOURCE_FILES = \
 	Monitor.gorm \
+	Monitor.png \
 	MonitorPrefPaneInfo.plist
 
 MonitorPrefPane_LOCALIZED_RESOURCE_FILES =
