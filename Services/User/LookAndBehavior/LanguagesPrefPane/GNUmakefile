@@ -27,7 +27,7 @@ LanguagesPrefPane_MAIN_MODEL_FILE = \
 
 LanguagesPrefPane_RESOURCE_FILES = \
 	Languages.gorm \
-	LanguagesPrefPaneIcon.tiff \
+	Languages.png \
 	LanguagesPrefPaneInfo.plist
 
 LanguagesPrefPane_LOCALIZED_RESOURCE_FILES =
