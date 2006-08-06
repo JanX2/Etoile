@@ -1,3 +1,10 @@
+2006-08-06  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * setup.sh: New postinstall script which links or copies some stuff at the 
+    right locations to make Etoile first use a straightforward experience and 
+    not a nightmare anymore :-).
+    * setdown.sh: New uninstall script to reverse the effect of setup.sh.
+
 2006-06-05  Quentin Mathe <qmathe@club-internet.fr>
 
     * Frameworks/GNUmakefile: Updated to include XWindowServerKit in the build
