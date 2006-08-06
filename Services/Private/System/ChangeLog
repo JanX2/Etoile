@@ -1,5 +1,11 @@
 2006-08-06  Quentin Mathe <qmathe@club-internet.fr>
 
+    * etoile.desktop: Added xsessions file following Freedesktop 'Desktop Entry' 
+    spec and to be used with GDM, KDM etc. Trying Etoile should be enjoyable 
+    now :-)
+
+2006-08-06  Quentin Mathe <qmathe@club-internet.fr>
+
     * EtoileSystem.h: Documented Task/Process Info Dictionary Schema (used for 
     config files stored in plist form). Removed superfluous SCEtoileSystem
     protocol.
