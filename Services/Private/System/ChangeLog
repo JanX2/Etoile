@@ -1,3 +1,44 @@
+2006-08-06  Quentin Mathe <qmathe@club-internet.fr>
+
+    * EtoileSystem.h: Documented Task/Process Info Dictionary Schema (used for 
+    config files stored in plist form). Removed superfluous SCEtoileSystem
+    protocol.
+    (-loadConfigList):
+    (-saveConfigList):
+    (+serverInstance):
+    (+setUpServerInstance:):
+    Declared new methods.
+    * EtoileSystem.m: Documented Main System Process List. Morphed NSTask
+    category in a new SCTask class and replaced dot separator in domains by the 
+    usual slash.
+    (+[SCTask taskWithLaunchPath:]): Updated.
+    (+[SCTask taskWithLaunchPath:onDemand:withUserName]):
+    (-[SCTask launchForDomain:]): Replaced dot separator in domains by the 
+    usual slash.
+    (-[SCTask launchOnDemand]):
+    (+[SCSystem initialize]):
+    (+[SCSystem serverInstance]):
+    (+[SCSystem setUpServerInstance:]):
+    New methods.
+    (+[SCSystem sharedInstance]): Fixed to return a singleton (or precisely a
+    proxy for the singleton located on the server side), was wrongly returning
+    a simple instance.
+    (-[SCSystem init]): Updated to use SCTask now and replaced dot separator in
+    domains by the usual slash.
+    (-[SCSystem run]): Modified to launch only tasks not used on demand.
+    (-[SCSystem startProcessWithDomain:]): Removed a bunch of error logging 
+    code that isn't useful. Replaced 'NSTask' references by 'SCTask'.
+    (-[SCSystem restartProcessWithDomain:): Introduced a new boolean 'stopped'
+    to make the code more readable.
+    (-[SCSystem registerProcessForDomain:): 
+    (-[SCSystem unregisterProcessForDomain:
+    Removed SCEtoileSytem protocol.
+    * main.m: Modified to properly set up a server instance for SCSystem and 
+    a run loop that avoids the daemon exits immediately.
+    * GNUmakefile: Minor update to disable direct install in /usr/local/bin, we
+    rather let the setup script (to be committed in trunk/Etoile) creating a 
+    link in /usr/local/bin or elsewhere.
+
 2006-03-05  Quentin Mathe <qmathe@club-internet.fr>
 
     * ChangeLog:

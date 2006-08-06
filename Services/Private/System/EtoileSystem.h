@@ -33,15 +33,23 @@
    have to be registered under this namespace.
    Finally it is logically in charge to start the CoreObject server. */
 
-@protocol SCEtoileSystem
+/** Task/Process Info Dictionary Schema
+    
+    option                      object type
 
-- (BOOL) registerProcessForDomain: (NSString *)domain;
-- (BOOL) unregisterProcessForDomain: (NSString *)domain;
+    LaunchPath                  NSString
+    Arguments                   NSString
+    UserName (or Identity)      NSString
+    OnDemand                    NSNumber/BOOL (0 is NO and 1 is YES)
+    Persistent                  NSNumber/BOOL (0 is NO and 1 is YES)   
 
-@end
+    A 'Persistent' process is a task which is restarted on system boot if it
+    was already running during the previous session. It is usually bound to 
+    tasks running in background.
+  */
 
 
-@interface SCSystem : NSObject <SCEtoileSystem>
+@interface SCSystem : NSObject
 {
     NSMutableDictionary *_processes;
 }
@@ -56,5 +64,13 @@
 - (BOOL) suspendProcessWithDomain: (NSString *)domain;
 
 - (void) run;
+
+- (void) loadConfigList;
+- (void) saveConfigList;
+
+/* SCSystem server daemon set up methods */
+
++ (id) serverInstance;
++ (BOOL) setUpServerInstance: (id)instance;
 
 @end

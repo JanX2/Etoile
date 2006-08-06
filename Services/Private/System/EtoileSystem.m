@@ -30,24 +30,83 @@
 #import <UnitKit/UnitKit.h>
 #endif
 
-/* The current domain scheme 'etoilesystem.tool' and 'etoilesystem.application'
+/* The current domain scheme '/etoilesystem/tool' and '/etoilesystem/application'
    is work ins progress and doesn't reflect the final scheme to be used when 
    CoreObject will be ready. */
 
+/** Main System Process List
+    
+    name                        owner
+    
+    etoile_system               root
+    etoile_objectServer         root or user
+    
+    etoile_userSession          user
+    etoile_projectSession       user
+    
+    etoile_windowServer         root
+    Azalea                      root or user
+    etoile_menuServer           user
+    
+    etoile_identityUI           user
+    etoile_securityUIServer     user
+    etoile_systemUIServer       user 
+  */
 
-@interface NSTask (EtoileSystem)
-+ (NSTask *) taskWithLaunchPath: (NSString *)path;
+
+static id serverInstance = nil;
+static id proxyInstance = nil;
+static NSString *SCSystemNamespace = nil;
+
+/** SCTask represents a task/process unit which could be running or not. Their 
+    instances are stored in _processes ivar of SCSystem singleton. */
+
+// FIXME: @class NSConcreteTask; this triggers a GCC segmentation fault when 
+// used in tandem with SCTask : NSConcreteTask. It arises with 
+// NSConcreteUnixTask directly too.
+@interface NSConcreteUnixTask : NSTask /* Extracted from NSTask.m */
+{
+  char	slave_name[32];
+  BOOL	_usePseudoTerminal;
+}
+@end
+
+// HACK: We subclass NSConcreteTask which is a macro corresponding to 
+// NSConcreteUnixTask on Unix systems, because NSTask is a class cluster which
+// doesn't implement -launch method.
+
+@interface SCTask : NSConcreteUnixTask // NSConcreteTask
+{
+    NSString *launchIdentity;
+    BOOL launchOnDemand;
+}
+
++ (SCTask *) taskWithLaunchPath: (NSString *)path;
++ (SCTask *) taskWithLaunchPath: (NSString *)path onDemand: (BOOL)lazily withUserName: (NSString *)user;
+
 - (void) launchWithOpentoolUtility;
 - (void) launchWithOpenappUtility;
 - (void) launchForDomain: (NSString *)domain;
+
+- (BOOL) launchOnDemand;
+
 @end
 
-@implementation NSTask (EtoileSystem)
+@implementation SCTask
 
-+ (NSTask *) taskWithLaunchPath: (NSString *)path
++ (SCTask *) taskWithLaunchPath: (NSString *)path
 {
-    NSTask *newTask = [[NSTask alloc] init];
+    return [self taskWithLaunchPath: path onDemand: NO withUserName: nil];
+}
+
++ (SCTask *) taskWithLaunchPath: (NSString *)path onDemand: (BOOL)lazily 
+    withUserName: (NSString *)identity
+{
+    SCTask *newTask = [[SCTask alloc] init];
+    
     [newTask setLaunchPath: path];
+    ASSIGN(newTask->launchIdentity, identity);
+    newTask->launchOnDemand = lazily;
     
     return [newTask autorelease];
 }
@@ -77,11 +136,11 @@
     /* At later point, we should check the domain to take in account security.
        Domains having usually an associated permissions level. */
 
-    if ([domain hasPrefix: @"etoilesystem.tool"])
+    if ([domain hasPrefix: @"/etoilesystem/tool"])
     {
         [self launchWithOpentoolUtility];
     }
-    else if ([domain hasPrefix: @"etoilesystem.application"])
+    else if ([domain hasPrefix: @"/etoilesystem/application"])
     {
         [self launchWithOpenappUtility];
     }
@@ -91,9 +150,68 @@
     }
 }
 
+- (BOOL) launchOnDemand
+{
+    return launchOnDemand;
+}
+
 @end
 
+/*
+ * Main class SCSystem implementation
+ */
+
 @implementation SCSystem
+
++ (void) initialize
+{
+	if (self == [SCSystem class])
+	{
+		// FIXME: For now, that's a dummy namespace.
+		SCSystemNamespace = @"/etoilesystem";
+	}
+}
+
++ (id) serverInstance
+{
+	return serverInstance;
+}
+
++ (BOOL) setUpServerInstance: (id)instance
+{
+	ASSIGN(serverInstance, instance);
+
+	/* Finish set up by exporting server instance through DO */
+	NSConnection *theConnection = [NSConnection defaultConnection];
+
+	[theConnection setRootObject: instance];
+
+	if ([theConnection registerName: SCSystemNamespace] == NO) 
+	{
+		// FIXME: Take in account errors here.
+		NSLog(@"Unable to register the services bar namespace %@ with DO", 
+			SCSystemNamespace);
+
+		return NO;
+	}
+
+	return YES;
+}
+
+/** Reserved for client side. It's mandatory to have call -setUpServerInstance: 
+    before usually in the server process itself. */
++ (SCSystem *) sharedInstance
+{
+	proxyInstance = [NSConnection 
+		rootProxyForConnectionWithRegisteredName: SCSystemNamespace
+		host: nil];
+
+	// FIXME: Use Runtime introspection to create the proxy protocol on the fly.
+	//[proxyInstance setProtocolForProxy: @protocol(blabla)];
+
+	/* We probably don't need to release it, it's just a singleton. */
+	return RETAIN(proxyInstance); 
+}
 
 - (id) init
 {
@@ -107,26 +225,28 @@
         _processes = [[NSMutableDictionary alloc] initWithCapacity: 20];
          
         /* We register the core processes */
-        [_processes setObject: [NSTask taskWithLaunchPath: @"gdomap"] 
-            forKey: @"etoilesystem.tool.gdomap"];
-        [_processes setObject: [NSTask taskWithLaunchPath: @"gpbs"] 
-            forKey: @"etoilesystem.tool.gpbs"];
-        [_processes setObject: [NSTask taskWithLaunchPath: @"gdnc"] 
-            forKey: @"etoilesystem.tool.gdnc"];
-        [_processes setObject: [NSTask taskWithLaunchPath: @"Azalea"] 
-            forKey: @"etoilesystem.application.azalea"];
-        [_processes setObject: [NSTask taskWithLaunchPath: @"EtoileMenuServer"] 
-            forKey: @"etoilesystem.application.menuserver"];
+        // FIXME: Takes care to standardize Etoile core processes naming scheme.
+        [_processes setObject: [SCTask taskWithLaunchPath: @"gdomap"] 
+            forKey: @"/etoilesystem/tool/gdomap"];
+        [_processes setObject: [SCTask taskWithLaunchPath: @"gpbs"] 
+            forKey: @"/etoilesystem/tool/gpbs"];
+        [_processes setObject: [SCTask taskWithLaunchPath: @"gdnc"] 
+            forKey: @"/etoilesystem/tool/gdnc"];
+        [_processes setObject: [SCTask taskWithLaunchPath: @"Azalea"] 
+            forKey: @"/etoilesystem/application/azalea"];
+        [_processes setObject: [SCTask taskWithLaunchPath: @"etoile_objectServer"] 
+            forKey: @"/etoilesystem/application/menuserver"];
+        [_processes setObject: [SCTask taskWithLaunchPath: @"etoile_userSession"] 
+            forKey: @"/etoilesystem/application/menuserver"];
+        [_processes setObject: [SCTask taskWithLaunchPath: @"etoile_windowServer"] 
+            forKey: @"/etoilesystem/application/menuserver"];
+        [_processes setObject: [SCTask taskWithLaunchPath: @"EtoileMenuServer"] 
+            forKey: @"/etoilesystem/application/menuserver"];  
         
         return self;
     }
     
     return nil;
-}
-
-+ (SCSystem *) sharedInstance
-{
-    return [[SCSystem alloc] init];
 }
 
 - (void) dealloc
@@ -145,7 +265,10 @@
     e = [[_processes allKeys] objectEnumerator];
     while ((domain = [e nextObject]) != nil)
     {
-        [self startProcessWithDomain: domain];
+        SCTask *process = [_processes objectForKey: domain];
+        
+        if ([process launchOnDemand] == NO)
+            [self startProcessWithDomain: domain];
     }
 }
 
@@ -154,7 +277,7 @@
 
 - (BOOL) startProcessWithDomain: (NSString *)domain
 {
-    NSTask *process = [_processes objectForKey: domain];
+    SCTask *process = [_processes objectForKey: domain];
     /* We should pass process specific flags obtained in arguments (and the
        ones from main function probably too) */
     NSArray *args = [NSArray arrayWithObjects: nil];
@@ -165,40 +288,23 @@
        have to identify the process in one way or another (partially to not
        compromise the security). */
     
-    /*
-    NSPipe *pipe = [NSPipe pipe];
-    NSFileHandle *err = [pipe fileHandleForReading];
-    NSMutableData *result = [NSMutableData dataWithCapacity: 200];
-    NSData *resultPart;
-    
-    [process setStandardError: err]; */
     [process setArguments: args];
     [process launchForDomain: domain];
-
-    /* FIXME: Not really interesting, the errors are already logged by 
-       subprocessses in EtoileSystem error ouput.
-    
-    while ((resultPart = [err availableData]) != nil)
-    {
-        [result appendData: resultPart];
-    } 
-
-    NSLog([[[NSString alloc] 
-        initWithData: result encoding: NSUTF8StringEncoding] autorelease]);
-     */
     
     return YES;
 }
 
 - (BOOL) restartProcessWithDomain: (NSString *)domain
 {
-    BOOL restarted;
+    BOOL stopped = NO;
+    BOOL restarted = NO;
     
-    restarted = [self stopProcessWithDomain: domain];
+    stopped = [self stopProcessWithDomain: domain];
     
-    if (restarted)
+    /* The process has been properly stopped or was already, then we restart it now. */
+    if (stopped)
         restarted = [self restartProcessWithDomain: domain];
-        
+
     return restarted;
 }
 
@@ -209,7 +315,8 @@
     if ([process isRunning])
     {
         [process terminate];
-        
+
+        /* We check the process has been really terminated before saying so. */
         if ([process isRunning] == NO)
             return YES;
     }
@@ -229,14 +336,24 @@
     return NO;
 }
 
-- (BOOL) registerProcessForDomain: (NSString *)domain
+- (void) loadConfigList
 {
-    return NO;
+
 }
 
-- (BOOL) unregisterProcessForDomain: (NSString *)domain
+- (void) saveConfigList
 {
-    return NO;
+
 }
+
+@end
+
+/*
+ * Helper methods for handling process list and monitoring their config files
+ */
+
+@implementation SCSystem (HelperMethodsPrivate)
+
+// FIXME: Insert modified methods from WorkspaceProcessManager by Saso Kiselkov here.
 
 @end

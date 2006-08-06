@@ -2,12 +2,13 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS = -Wno-import
 
-# GNUSTEP_INSTALL_DIR = $(GNUSTEP_SYSTEM_ROOT)
+GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
+
 # That's not the perfect solution, have to improve this when no admin access is 
 # possible. Finally we should install on /usr/bin when a package dependency
 # system is used for the deployment.
 # From tool.make: FINAL_TOOL_INSTALL_DIR = $(TOOL_INSTALL_DIR)/$(GNUSTEP_TARGET_LDIR)
-FINAL_TOOL_INSTALL_DIR = /usr/local/bin
+# FINAL_TOOL_INSTALL_DIR = /usr/local/bin
 
 #
 # Main application

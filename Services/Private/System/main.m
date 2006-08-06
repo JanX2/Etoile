@@ -28,14 +28,26 @@
 
 int main(int argc, const char * argv[])
 {
+    NSRunLoop *runLoop = [[NSRunLoop alloc] init];
+    NSPort *dummyPort;
     SCSystem *etoileSystem;
 
     CREATE_AUTORELEASE_POOL (pool);
 
-    etoileSystem = [SCSystem sharedInstance];
+    etoileSystem = [[SCSystem alloc] init];
+	[SCSystem setUpServerInstance: etoileSystem];
     [etoileSystem run];
 
-    DESTROY (pool);
+    /* Adding a dummy port avoids the run loop exits immediately */
+    dummyPort = [NSPort port];
+    [runLoop addPort: dummyPort forMode: NSDefaultRunLoopMode];
+    NSLog(@"Starting Etoile system server run loop");
+    [runLoop run];
+    NSLog(@"Exiting Etoile system server run loop");
+
+	DESTROY(runLoop);
+	DESTROY(etoileSystem);
+    DESTROY(pool);
 
     return 0;
 }
