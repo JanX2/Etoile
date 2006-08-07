@@ -2,8 +2,7 @@
     "## Comment" = "Do NOT change this file, Gorm maintains it";
     FirstResponder = {
 	Actions = (
-	    "switchPreferencePaneView:",
-	    "switchView:"
+	    "switchPreferencePaneView:"
 	);
 	Super = NSObject;
     };
