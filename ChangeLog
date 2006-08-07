@@ -1,3 +1,17 @@
+2006-08-07  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * setup.sh:
+    * setdown.sh:
+    Major update to setup related scripts, setup.sh now includes the 
+    possibility to choose between a user deployment (without any privileges) 
+    and a system deployment (with sudo access or root).
+    Futhermore it takes now care to set the necessary defaults for bundles like
+    Camaelon and EtoileWildMenus (the update occurs in the defaults of the user
+    account which runs the script). By the way, the script handles Nesedah theme
+    deployment too.
+    setdown.sh has been updated in a symetric way allowing to revert from 
+    setup.sh effect.
+
 2006-08-06  Quentin Mathe <qmathe@club-internet.fr>
     
     * setup.sh: New postinstall script which links or copies some stuff at the 
