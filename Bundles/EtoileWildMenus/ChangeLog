@@ -1,3 +1,8 @@
+2006-08-07  Quentin Mathe <qmathe@club-internet.fr>
+
+    * GNUmakefile: Added GNUSTEP_INSTALLATION_DIR to have the bundle installed 
+    in System/Library rather than Local/Library.
+
 2006-03-04  Saso Kiselkov <diablos@manga.sk>
 
     Update based on 2006-03-04 21:03 version.
