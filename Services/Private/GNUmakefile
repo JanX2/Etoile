@@ -12,6 +12,7 @@ export etoile-extensions ?= yes
 ifeq ($(etoile), yes)
     
     export workspace ?= yes
+    export system ?= yes
 
 endif
 
@@ -38,6 +39,10 @@ endif
 
 ifeq ($(menuserver),yes)
     SUBPROJECTS += MenuServer
+endif
+
+ifeq ($(system),yes)
+    SUBPROJECTS += System
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
