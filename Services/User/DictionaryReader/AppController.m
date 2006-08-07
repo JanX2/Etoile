@@ -22,6 +22,7 @@
 #import "GNUstep.h"
 
 #import "DictConnection.h"
+#import "LocalDictionary.h"
 #import "NSString+Clickable.h"
 
 NSDictionary* bigHeadlineAttributes;
@@ -203,9 +204,24 @@ NSDictionary* normalAttributes;
 -(id)init
 {
   if (self = [super init]) {
+    id dict;
+    
+    // create mutable dictionaries array
+    dictionaries = [[NSMutableArray alloc] initWithCapacity: 2];
+    
+    // create local dictionary object
+    dict = [[LocalDictionary alloc] initWithResourceName: @"jargon"];
+    [dict setDefinitionWriter: self];
+    [dictionaries addObject: dict];
+    [dict release];
+    
+    // create remote dictionary object
     dict = [[DictConnection alloc] init];
     [dict setDefinitionWriter: self];
+    [dictionaries addObject: dict];
+    [dict release];
     
+    // create history manager
     historyManager = [[HistoryManager alloc] init];
     [historyManager setDelegate: self];
   }
@@ -350,31 +366,42 @@ NSDictionary* normalAttributes;
     [searchStringControl setStringValue: aWord];
   }
   
-  NS_DURING
-    {
-      [dict open];
-      [dict sendClientString: @"GNUstep DictionaryReader.app"];
-      [dict definitionFor: aWord];
-      // [dict close]; // FIXME: That crashes!
-      
-      [historyManager browser: self
-		      didBrowseTo: aWord];
-      [self updateGUI];
-      
-      [dictionaryContentWindow orderFront: self];
-    }
-  NS_HANDLER
-    {
-      NSRunAlertPanel
-	(
-	 @"Word definition failed.",
-	 [NSString
-	   stringWithFormat:
-	     @"The definition of %@ failed because of this exception:\n%@",
-	   aWord, [localException reason]],
-	 @"Argh", nil, nil);
-    }
-  NS_ENDHANDLER;
+  // We need space for new content
+  [self clearResults];
+  
+  // Iterate over all dictionaries, query them!
+  int i;
+  
+  for (i=0; i<[dictionaries count]; i++) {
+    id dict = [dictionaries objectAtIndex: i];
+    
+    NS_DURING
+      {
+	[dict open];
+	[dict sendClientString: @"GNUstep DictionaryReader.app"];
+	[dict definitionFor: aWord];
+	// [dict close]; // FIXME: That crashes!
+      }
+    NS_HANDLER
+      {
+	NSRunAlertPanel
+	  (
+	   @"Word definition failed.",
+	   [NSString
+	     stringWithFormat:
+	       @"The definition of %@ failed because of this exception:\n%@",
+	     aWord, [localException reason]],
+	   @"Argh", nil, nil);
+      }
+    NS_ENDHANDLER;
+  }
+  
+  [historyManager browser: self
+		  didBrowseTo: aWord];
+  
+  [self updateGUI];
+  
+  [dictionaryContentWindow orderFront: self];
 }
 
 - (void) applicationDidFinishLaunching: (NSNotification *) theNotification

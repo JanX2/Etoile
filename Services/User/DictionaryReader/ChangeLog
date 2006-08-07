@@ -2,6 +2,13 @@
 DictionaryReader Changelog
 ==========================
 
+Aug 8 2006 Guenther Noack
+	* Local dictionary support written (currently, the jargon file
+	  is bundled with the application). Still needs to be made
+	  configurable.
+	* GUI width increased so avoid automatic line breaks.
+	* Edit menu added to GUI (has a 'copy' and a 'select all' entry)
+
 Jun 18 2006 Guenther Noack
 	* Fixed the 'bad dictionary names' bug. The dictionary name
 	  display in the text view looks much better now. :-)

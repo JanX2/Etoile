@@ -118,13 +118,12 @@
   NSString* answer = [reader readLineAndRetry];
   
   if ([answer startsWith: @"552"]) { // word not found
-    [defWriter clearResults];
-    [defWriter writeHeadline: @"No results"];
+    [defWriter writeHeadline:
+		 [NSString stringWithFormat: @"No results from %@", self]];
   } else if ([answer startsWith: @"550"]) {
     [self
       showError: [NSString stringWithFormat: @"Invalid database: %@", aDict]];
   } else if ([answer startsWith: @"150"]) { // got results
-    [defWriter clearResults];
     BOOL lastDefinition = NO;
     do {
       answer = [reader readLineAndRetry];
@@ -224,14 +223,18 @@
 
 -(void) showError: (NSString*) aString
 {
-  [defWriter clearResults];
-  [defWriter writeBigHeadline: @"Error"];
+  [defWriter writeBigHeadline: [NSString stringWithFormat: @"%@ Error", self]];
   [defWriter writeLine: aString];
 }
 
 -(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter
 {
   ASSIGN(defWriter, aDefinitionWriter);
+}
+
+-(NSString*) description
+{
+  return [NSString stringWithFormat: @"Dictionary at %@", host];
 }
 
 @end

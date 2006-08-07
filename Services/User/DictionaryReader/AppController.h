@@ -31,7 +31,7 @@
   NSButton* browseForwardButton;
   NSWindow* dictionaryContentWindow;
   
-  DictConnection* dict;
+  NSMutableArray* dictionaries;
   HistoryManager* historyManager;
 }
 

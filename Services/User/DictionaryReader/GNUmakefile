@@ -24,6 +24,8 @@ HistoryManager.m \
 NSString+Convenience.m \
 NSString+Clickable.m \
 NSString+DictLineParsing.m \
+NSScanner+Base64Encoding.m \
+LocalDictionary.m \
 main.m \
 
 
@@ -37,11 +39,17 @@ NSString+Clickable.h \
 NSString+DictLineParsing.h \
 DefintionWriter.h \
 DictionaryHandle.h \
+NSScanner+Base64Encoding.h \
+LocalDictionary.h \
+
 
 
 DictionaryReader_OBJCC_FILES = 
 DictionaryReader_C_FILES = 
 DictionaryReader_RESOURCE_FILES = Resources/dict.png \
+Resources/Dictionaries/jargon/jargon.index \
+Resources/Dictionaries/jargon/jargon.dict \
+
 
 DictionaryReader_LANGUAGES = English \
 
