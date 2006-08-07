@@ -1,5 +1,15 @@
 2006-08-07  Quentin Mathe <qmathe@club-internet.fr>
     
+    * setup.sh: Replaced incorrect reference EtoileWildMenus by 
+    EtoileMenus.bundle in GSAppKitUserBundles, this allows EtoileWildMenus 
+    bundle to be loaded now. Added code to remove repeated slash in 'bundledir'
+    path, 'defaults' command was stumbling on it. 
+    Improved to take in account when the bundles have been installed in the 
+    user Library (well, logically when setup.sh is run without sudo or root 
+    permissions).
+
+2006-08-07  Quentin Mathe <qmathe@club-internet.fr>
+    
     * setup.sh:
     * setdown.sh:
     Major update to setup related scripts, setup.sh now includes the 
