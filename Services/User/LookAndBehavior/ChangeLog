@@ -1,3 +1,9 @@
+2006-08-08  Quentin Mathe <qmathe@club-internet.fr>
+
+    * MainMenu.gorm: Recreated "corrupted" gorm file to have the window title 
+    bar displayed. For example, the title bar was invisible with Azalea. This 
+    issue is surely related to the perfectible bug fix r453.
+
 2006-01-20  Quentin Mathe <qmathe@club-internet.fr>
     
     Fixed complete repository scratch build (bug reported by Henri Orlando
