@@ -1,3 +1,6 @@
+2006-08-13  Guenther Noack <guenther@unix-ag.uni-kl.de>
+    * collect-fix-me.pl: Changed this to scan .m files instead .cs.
+
 2005-03-19  Quentin Mathe <qmathe@club-internet.fr>
     
     * collect-fix-me.pl: Perl script from Mono Develop to collect FIXMEs and 
