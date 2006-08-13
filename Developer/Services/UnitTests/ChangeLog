@@ -1,3 +1,7 @@
+
+2006-08-13  Guenther Noack <guenther@unix-ag.uni-kl.de>
+    * UnitTests.gorm: Fixed size properties for separator line
+
 2006-08-13  Quentin Mathe <qmathe@club-internet.fr>
     
     * UnitTests.gorm: Recommitted gorm file corrupted during the cvs2svn import.
