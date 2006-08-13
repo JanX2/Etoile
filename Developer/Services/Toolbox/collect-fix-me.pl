@@ -11,7 +11,8 @@ system "rm $results";
 
 print "Autogenerating list of TODO's and FIXME's\n";
 
-my $cmd = 'find . -name \'*.cs\' > tmp.list';
+# I think we're using ObjC here ;-) Changed ".cs" to ".m". -guenther
+my $cmd = 'find . -name \'*.m\' > tmp.list';
 system $cmd;
 
 open LIST, "tmp.list";
