@@ -1,3 +1,7 @@
+2006-08-13  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * UnitTests.gorm: Recommitted gorm file corrupted during the cvs2svn import.
+
 2005-03-19  Quentin Mathe <qmathe@club-internet.fr>
     
     * AppController.m (-scanOutput:): Finished fixing code to parse correctly 
