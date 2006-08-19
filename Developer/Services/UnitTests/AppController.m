@@ -380,7 +380,7 @@ static NSNotificationCenter *nc = nil;
 
 - (void) runTests: (id)sender
 {
-	NSTask *ukrun = [NSTask new];
+	NSTask *ukrun;
 	NSArray *variousTests = [[ud objectForKey: TestsSetsDefault] 
 		objectForKey: [ud objectForKey: ActiveTestsSetDefault]];
 	NSArray *args = [variousTests valueForKey: @"path"];
@@ -402,7 +402,20 @@ static NSNotificationCenter *nc = nil;
 	}
 	
 	NSLog (@"ukrun path : %@", path);
-	
+	if (path == nil) {
+         [self showPreferencesPanel: self];
+         
+         NSRunAlertPanel(
+             @"ukrun not found",
+             @"The needed ukrun tool to run UnitKit tests has not been found.\n"
+             @"Please make sure it is installed and adjust its location in the preferences.",
+             @"Okay", nil, nil
+         );
+         
+         return;
+    }
+    
+    ukrun = [NSTask new];
 	[ukrun setLaunchPath: path];
 	[ukrun setArguments: args];
 	
@@ -415,43 +428,60 @@ static NSNotificationCenter *nc = nil;
 	
 	[ukrun setStandardOutput: pipe];	
 	[ukrun setStandardError: pipe];	
-
-	[ukrun launch];
-
-	while ((inData = [readHandle availableData]) && [inData length])
-	{
-		NSString* str = [[NSString alloc] initWithData: inData encoding: NSISOLatin1StringEncoding];
-		
-		resultsTests = [self scanOutput: str];
-		
-		[list reloadData];
-		
-		int i;
-		for (i=0; i< [resultsTests count]; i++)
-		{
-			NSDictionary* test = [resultsTests objectAtIndex: i];
-			
-			if ([[test objectForKey: @"file"] isEqualToString: @"Result"])
-			{
-				int nbfailures = [[test objectForKey: @"nbfailures"] 
-							intValue];
+    
+    NS_DURING
+    {
+    	[ukrun launch];
+    
+	    while ((inData = [readHandle availableData]) && [inData length])
+	    {
+		    NSString* str = [[NSString alloc] initWithData: inData encoding: NSISOLatin1StringEncoding];
+		    
+		    resultsTests = [self scanOutput: str];
+		    
+		    [list reloadData];
+		    
+		    int i;
+		    for (i=0; i< [resultsTests count]; i++)
+		    {
+			    NSDictionary* test = [resultsTests objectAtIndex: i];
+			    
+			    if ([[test objectForKey: @"file"] isEqualToString: @"Result"])
+			    {
+				    int nbfailures = [[test objectForKey: @"nbfailures"] 
+					    		intValue];
 							
-				nbfailures > 0 ? [self redLight] : [self greenLight];
-				
-				NSString* sum = [NSString stringWithFormat: 
-					@"%@ classes, %@ methods, %@ tests, %@ failed", 
-					[test objectForKey: @"nbclasses"],
-					[test objectForKey: @"nbmethods"],
-					[test objectForKey: @"nbtests"],
-					[test objectForKey: @"nbfailures"]
-					];
-				 
-				[summary setStringValue: sum];
-			}
-		}	
+				    nbfailures > 0 ? [self redLight] : [self greenLight];
+				    
+				    NSString* sum = [NSString stringWithFormat: 
+					    @"%@ classes, %@ methods, %@ tests, %@ failed", 
+					    [test objectForKey: @"nbclasses"],
+					    [test objectForKey: @"nbmethods"],
+					    [test objectForKey: @"nbtests"],
+					    [test objectForKey: @"nbfailures"]
+					    ];
+				     
+				    [summary setStringValue: sum];
+			    }
+		    }	
+	    }
 	}
-	
-	[ukrun release];
+    NS_HANDLER
+    {
+        [self showPreferencesPanel: self];
+        
+        NSRunAlertPanel(
+            @"Running the tests failed.", //title
+            [NSString stringWithFormat:
+                        @"Running the ukrun tool from %@ failed:\n%@\n"
+                        @"Please make sure the path is correct!",
+                        path, [localException reason]],
+            @"Okay", nil, nil
+        );
+    }
+    NS_ENDHANDLER
+    
+    [ukrun release];
 }
 
 - (id) tableView: (NSTableView*) tv objectValueForTableColumn: (NSTableColumn*) tc

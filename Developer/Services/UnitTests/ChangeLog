@@ -1,4 +1,7 @@
 
+2006-08-19  Guenther Noack <guenther@unix-ag.uni-kl.de>
+	* AppController.m: Exceptions when running ukrun are now caught.
+
 2006-08-13  Guenther Noack <guenther@unix-ag.uni-kl.de>
     * UnitTests.gorm: Fixed size properties for separator line
 
