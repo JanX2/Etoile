@@ -1,3 +1,8 @@
+2006-08-21  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * setup.sh: Added more comments about /usr/share/xsessions path variations
+    depending on the host system and the display manager.
+
 2006-08-07  Quentin Mathe <qmathe@club-internet.fr>
     
     * setup.sh: Replaced incorrect reference EtoileWildMenus by 
