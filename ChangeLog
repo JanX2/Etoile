@@ -1,5 +1,10 @@
 2006-08-22  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Bundles/GNUmakefile: Updated build process to include WorkspaceSwitcher
+    by default. 
+
+2006-08-22  Quentin Mathe <qmathe@club-internet.fr>
+
     * etoile.make: Added new makefile to provide various extensions specific to 
     Etoile. When used, it currently enables smoother build process by taking of
     care of including and linking internal dependencies automatically. It's not

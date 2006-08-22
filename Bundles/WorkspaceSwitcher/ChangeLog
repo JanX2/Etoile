@@ -1,3 +1,9 @@
+2006-08-22  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Updated to handle XWindowServerKit dependency with the 
+	facility provided by etoile.make, this allows to have WorkspaceSwitcher 
+	now included in Etoile build process.
+
 2006-05-27  Yen-Ju Chen <yjchenx at gmail>
 
 	* Initial import.

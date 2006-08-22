@@ -1,10 +1,12 @@
 include $(GNUSTEP_MAKEFILES)/common.make
+include ../../etoile.make
+
+DEPENDENCIES = XWindowServerKit
 
 BUNDLE_NAME = WorkspaceSwitcher
 
 WorkspaceSwitcher_OBJC_FILES = WorkspaceSwitcher.m 
 
-ADDITIONAL_LDFLAGS = -lXWindowServerKit
 ADDITIONAL_CPPFLAGS += -DXWindowServerKit -I/usr/X11R6/include
 
 

@@ -28,6 +28,7 @@ ifeq ($(desktop-base), yes)
 
     export camaelon ?= yes
     export etoilewildmenus ?= yes
+    export workspaceswitcher ?= yes
 
 endif
 
@@ -59,5 +60,10 @@ endif
 ifeq ($(etoilewildmenus), yes)
     SUBPROJECTS += EtoileWildMenus
 endif
+
+ifeq ($(workspaceswitcher), yes)
+    SUBPROJECTS += WorkspaceSwitcher
+endif
+
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
