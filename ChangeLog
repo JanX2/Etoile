@@ -1,3 +1,11 @@
+2006-08-22  Quentin Mathe <qmathe@club-internet.fr>
+
+    * etoile.make: Added new makefile to provide various extensions specific to 
+    Etoile. When used, it currently enables smoother build process by taking of
+    care of including and linking internal dependencies automatically. It's not
+    necessary anymore to have a bunch of boilerplate code in each project to
+    handle each dependency.
+
 2006-08-21  Quentin Mathe <qmathe@club-internet.fr>
     
     * setup.sh: Added more comments about /usr/share/xsessions path variations
