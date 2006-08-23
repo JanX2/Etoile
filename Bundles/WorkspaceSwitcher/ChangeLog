@@ -1,3 +1,9 @@
+2006-08-23  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Fixed compilation by moving etoile.make include at the
+	end. When etoile.make is put at the top, application.make is bizarrely
+	ignored.
+
 2006-08-22  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Updated to handle XWindowServerKit dependency with the 

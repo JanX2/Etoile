@@ -1,5 +1,4 @@
 include $(GNUSTEP_MAKEFILES)/common.make
-include ../../etoile.make
 
 DEPENDENCIES = XWindowServerKit
 
@@ -13,5 +12,6 @@ ADDITIONAL_CPPFLAGS += -DXWindowServerKit -I/usr/X11R6/include
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/bundle.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
+include ../../etoile.make
 -include GNUmakefile.postamble
 
