@@ -1,3 +1,13 @@
+2006-08-23  Quentin Mathe <qmathe@club-internet.fr>
+
+    * etoile.make: Fixed the library related flag in ADDITIONAL_LIB_DIRS to 
+    safely reference shared_obj directory. Updated to include several
+    checks that test path related variables are set and won't translate into 
+    bad suprises with 'rm'. Removed $(DEPENDENCIES) from target prerequisites
+    since this variable isn't a target that results in an error (unless a 
+    file with the same name exists); now, we just check the variable is set
+    before trying to run dependency related code.
+
 2006-08-22  Quentin Mathe <qmathe@club-internet.fr>
 
     * Bundles/GNUmakefile: Updated build process to include WorkspaceSwitcher
