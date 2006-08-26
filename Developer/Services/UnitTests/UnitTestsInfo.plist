@@ -3,6 +3,7 @@
     ApplicationDescription = "Unit Tests GUI";
     ApplicationName = "UnitTests";
     ApplicationRelease = 0.1;
+    ApplicationIcon = "UnitTests.png";
     Authors = ("Nicolas Roard <nicolas@roard.com>");
     Copyright = "Copyright (C) 2004";
     CopyrightDescription = "Released under GPL";

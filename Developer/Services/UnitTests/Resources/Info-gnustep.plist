@@ -1,0 +1,17 @@
+{
+    ApplicationDescription = "Unit Test GUI";
+    ApplicationIcon = UnitTests.png;
+    ApplicationName = UnitTests;
+    ApplicationRelease = 0.1;
+    Authors = (
+	"Nicolas Roard <nicolas@roard.com>"
+    );
+    Copyright = "Copyright (C) 2004";
+    CopyrightDescription = "Released under GPL";
+    FullVersionID = 0.1;
+    NSExecutable = UnitTests;
+    NSIcon = UnitTests.png;
+    NSMainNibFile = UnitTests.gorm;
+    NSPrincipalClass = NSApplication;
+    NSRole = Application;
+}
