@@ -907,7 +907,8 @@ RrTheme* RrThemeNew(const AZInstance *inst, NSString *name)
             theme->padding * 2;
     }
     theme->button_size = theme->label_height - 2;
-    theme->grip_width = theme->title_height * 1.5;
+    //theme->grip_width = theme->title_height * 1.5;
+    theme->grip_width = 25;
 
     return theme;
 }

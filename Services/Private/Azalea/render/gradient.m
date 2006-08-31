@@ -184,8 +184,9 @@ static void create_bevel_colors(AZAppearance *l)
 
 static void gradient_solid(AZAppearance *l, int w, int h) 
 {
+    int i;
     RrPixel32 pix;
-    int i, a, b;
+    RrPixel32 *data = [l surface].pixel_data;
     RrSurface *sp = [l surfacePointer];
     int left = 0, top = 0, right = w - 1, bottom = h - 1;
 
@@ -193,19 +194,28 @@ static void gradient_solid(AZAppearance *l, int w, int h)
         + (sp->primary->g << RrDefaultGreenOffset)
         + (sp->primary->b << RrDefaultBlueOffset);
 
+#if 1
+    for (i = 0; i < w * h; i++)
+      *data++ = pix;
+    if (sp->interlaced)
+      return;
+#else
     for (a = 0; a < w; a++)
         for (b = 0; b < h; b++)
             sp->pixel_data[a + b * w] = pix;
+#endif
 
     XFillRectangle([[l inst] display], [l pixmap], RrColorGC(sp->primary),
                    0, 0, w, h);
 
+#if 0
     if (sp->interlaced) {
         for (i = 0; i < h; i += 2)
             XDrawLine([[l inst] display], [l pixmap],
                       RrColorGC(sp->interlace_color),
                       0, i, w, i);
     }
+#endif
 
     switch (sp->relief) {
     case RR_RELIEF_RAISED:
@@ -226,14 +236,14 @@ static void gradient_solid(AZAppearance *l, int w, int h)
             break;
         case RR_BEVEL_2:
             XDrawLine([[l inst] display], [l pixmap], RrColorGC(sp->bevel_dark),
-                      left + 1, bottom - 2, right - 2, bottom - 2);
+                      left + 2, bottom - 1, right - 2, bottom - 1);
             XDrawLine([[l inst] display], [l pixmap], RrColorGC(sp->bevel_dark),
-                      right - 2, bottom - 2, right - 2, top + 1);
+                      right - 1, bottom - 1, right - 1, top + 1);
 
             XDrawLine([[l inst] display], [l pixmap],RrColorGC(sp->bevel_light),
-                      left + 1, top + 1, right - 2, top + 1);
+                      left + 2, top + 1, right - 2, top + 1);
             XDrawLine([[l inst] display], [l pixmap],RrColorGC(sp->bevel_light),
-                      left + 1, bottom - 2, left + 1, top + 1);
+                      left + 1, bottom - 1, left + 1, top + 1);
             break;
         default:
 	    NSLog(@"Internal Error: should not reach here"); /* unhandled BevelType */
@@ -257,14 +267,14 @@ static void gradient_solid(AZAppearance *l, int w, int h)
             break;
         case RR_BEVEL_2:
             XDrawLine([[l inst] display], [l pixmap],RrColorGC(sp->bevel_light),
-                      left + 1, bottom - 2, right - 2, bottom - 2);
+                      left + 2, bottom - 1, right - 2, bottom - 1);
             XDrawLine([[l inst] display], [l pixmap],RrColorGC(sp->bevel_light),
-                      right - 2, bottom - 2, right - 2, top + 1);
+                      right - 1, bottom - 1, right - 1, top + 1);
       
             XDrawLine([[l inst] display], [l pixmap], RrColorGC(sp->bevel_dark),
-                      left + 1, top + 1, right - 2, top + 1);
+                      left + 2, top + 1, right - 2, top + 1);
             XDrawLine([[l inst] display], [l pixmap], RrColorGC(sp->bevel_dark),
-                      left + 1, bottom - 2, left + 1, top + 1);
+                      left + 1, bottom - 1, left + 1, top + 1);
 
             break;
         default:

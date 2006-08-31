@@ -41,13 +41,18 @@
 
 - (void) paint: (Window) win width: (int) width height: (int) height
 {
-    int i, transferred = 0, sw;
+    int i, transferred = 0, sw, sh, partial_w, partial_h;
     RrPixel32 *source, *dest;
     Pixmap oldp;
     RrRect tarea; /* area in which to draw textures */
     BOOL resized;
 
     if (width <= 0 || height <= 0) return;
+
+    if (surface.parentx < 0 || surface.parenty < 0) {
+      // Invalid parent co-ordinates
+      return;
+    }
 
     resized = (w != width || h != height);
 
@@ -73,12 +78,32 @@
         NSAssert([surface.parent w], @"Width of parent is 0");
 
         sw = [surface.parent w];
+	sh = [surface.parent h];
+	if (surface.parentx >= sw || surface.parenty >= sh) {
+	  return;
+	}
         source = ([surface.parent surface].pixel_data +
                   surface.parentx + sw * surface.parenty);
         dest = surface.pixel_data;
+#if 1
+	if (surface.parentx + width > sw) {
+	  partial_w = sw - surface.parentx;
+	} else {
+	  partial_w = width;
+	}
+	if (surface.parenty + height > sh ) {
+	  partial_h = sh - surface.parenty;
+	} else {
+	  partial_h = height;
+	}
+	for (i = 0; i < partial_h; i++, source += sw, dest += width) {
+	  memcpy(dest, source, partial_w*sizeof(RrPixel32));
+	}
+#else
         for (i = 0; i < h; i++, source += sw, dest += width) {
             memcpy(dest, source, width * sizeof(RrPixel32));
         }
+#endif
     } else
 	RrRender(self, width, height);
 
@@ -95,7 +120,7 @@
         case RR_TEXTURE_TEXT:
             if (!transferred) {
                 transferred = 1;
-                if (surface.grad != RR_SURFACE_SOLID)
+                if ((surface.grad != RR_SURFACE_SOLID) || surface.interlaced)
 		  [self pixelDataToPixmapWithX: 0 y: 0 width: width height: height];
             }
             if (xftdraw == NULL) {
@@ -107,7 +132,7 @@
         case RR_TEXTURE_LINE_ART:
             if (!transferred) {
                 transferred = 1;
-                if (surface.grad != RR_SURFACE_SOLID)
+                if ((surface.grad != RR_SURFACE_SOLID) || surface.interlaced)
 		  [self pixelDataToPixmapWithX: 0 y: 0 width: width height: height];
             }
             XDrawLine([inst display], pixmap,
@@ -120,7 +145,7 @@
         case RR_TEXTURE_MASK:
             if (!transferred) {
                 transferred = 1;
-                if (surface.grad != RR_SURFACE_SOLID)
+                if ((surface.grad != RR_SURFACE_SOLID) || surface.interlaced)
 		  [self pixelDataToPixmapWithX: 0 y: 0 width: width height: height];
             }
             RrPixmapMaskDraw(pixmap, &(texture[i].data.mask), &tarea);
@@ -137,7 +162,7 @@
 
     if (!transferred) {
         transferred = 1;
-        if (surface.grad != RR_SURFACE_SOLID)
+        if ((surface.grad != RR_SURFACE_SOLID) || surface.interlaced)
 	  [self pixelDataToPixmapWithX: 0 y: 0 width: width height: height];
     }
 
@@ -255,7 +280,7 @@
         RrColorFree(p->bevel_dark);
         RrColorFree(p->bevel_light);
         free(p->pixel_data);
-
+	p->pixel_data = NULL;
 	[super dealloc];
     }
 }
@@ -376,8 +401,8 @@
 static void reverse_bits(char *c, int n)
 {
     int i;
-    for (i = 0; i < n; i++)
-        *c++ = (((*c * 0x0802UL & 0x22110UL) |
+    for (i = 0; i < n; i++, c++)
+        *c = (((*c * 0x0802UL & 0x22110UL) |
                  (*c * 0x8020UL & 0x88440UL)) * 0x10101UL) >> 16;
 }
 
