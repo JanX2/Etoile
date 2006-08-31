@@ -2,6 +2,12 @@
 Grr Changelog
 =============
 
+Aug-31-2006 Quentin Mathe <qmathe@club-internet.fr>
+	* GNUmakefile: Updated to include etoile.make, this allows to have 
+	RSSKit dependency properly handled even when RSSKit hasn't already been 
+	installed. By the way, Grr is now included by default in Etoile build
+	process.
+
 Aug-3-2006 Guenther Noack
 	* Multithreading problems are hopefully all fixed now! w00t! :-)
 

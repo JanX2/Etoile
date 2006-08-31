@@ -15,6 +15,7 @@ ifeq ($(user-base), yes)
     export look-and-behavior ?= yes
     export hardware ?= yes
     export dictionary ?= yes
+    export grr ?= yes
 
 endif
 
@@ -24,6 +25,7 @@ ifeq ($(user-base), no)
     export look-and-behavior ?= no
     export hardware ?= no
     export dictionary ?= no
+    export grr ?= no
 
 endif
 
@@ -45,6 +47,10 @@ endif
 
 ifeq ($(dictionary), yes)
 	SUBPROJECTS += DictionaryReader
+endif
+
+ifeq ($(grr), yes)
+	SUBPROJECTS += Grr
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
