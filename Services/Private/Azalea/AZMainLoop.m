@@ -369,7 +369,7 @@ static AZMainLoop *sharedInstance;
 }
 
 - (void) removeTimeout: (id) target handler: (SEL) handler
-                         data: (id) data
+                         data: (id) data cancel: (BOOL) cancel_dest
 {
   int i, count = [timers count];
   for (i = 0; i < count; i++)
@@ -377,6 +377,8 @@ static AZMainLoop *sharedInstance;
     AZMainLoopTimer *t = [timers objectAtIndex: i];
     if ([t target] == target && [t func] == handler && [t data] == data)
       [t set_del_me: YES];
+      if (cancel_dest)
+	[t set_destroy: NULL];
   }
 }
 

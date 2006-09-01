@@ -52,7 +52,7 @@ static AZDock *sharedInstance;
         XSetWindowBorderWidth(ob_display, x_frame, ob_rr_theme->bwidth);
 
         DESTROY(a_frame);
-        a_frame = [ob_rr_theme->a_unfocused_title copy];
+        a_frame = [ob_rr_theme->a_focused_title copy];
 
         [[AZStacking stacking] addWindow: self];
 
@@ -80,7 +80,7 @@ static AZDock *sharedInstance;
                                 [ob_rr_inst visual],
                                 CWOverrideRedirect | CWEventMask,
                                 &attrib);
-    a_frame = [ob_rr_theme->a_unfocused_title copy];
+    a_frame = [ob_rr_theme->a_focused_title copy];
     XSetWindowBorder(ob_display, x_frame,
                      RrColorPixel(ob_rr_theme->b_color));
     XSetWindowBorderWidth(ob_display, x_frame, ob_rr_theme->bwidth);

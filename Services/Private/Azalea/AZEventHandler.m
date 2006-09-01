@@ -558,7 +558,7 @@ static AZEventHandler *sharedInstance;
 	    {
 	      [[AZMainLoop mainLoop] removeTimeout: self 
 		               handler: @selector(focusDelayFunc:)
-		                     data: client];
+		                     data: client cancel: YES];
 	    }
             break;
         default:
@@ -1136,7 +1136,7 @@ static AZEventHandler *sharedInstance;
 {
   AZClient *client = [not object];
   [[AZMainLoop mainLoop] removeTimeout: self handler: @selector(focusDelayFunc:)
-	                 data: client];
+	                 data: client cancel: YES];
 
   if (client == [[AZFocusManager defaultManager] focus_hilite])
     [[AZFocusManager defaultManager] set_focus_hilite: nil];

@@ -29,6 +29,7 @@
 typedef enum {
     OB_FOCUS_FALLBACK_UNFOCUSING, /*!< forcefully remove focus from the
                                     current window */
+    OB_FOCUS_FALLBACK_CLOSED,     /*!< closed the window with focus */
     OB_FOCUS_FALLBACK_NOFOCUS     /*!< nothing has focus for some reason */
 } ObFocusFallbackType;
 

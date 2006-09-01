@@ -79,7 +79,7 @@ typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
              notify: (SEL) notify;
 - (void) removeTimeout: (id) target handler: (SEL) handler;
 - (void) removeTimeout: (id) target handler: (SEL) handler
-                         data: (id) data;
+                         data: (id) data cancel: (BOOL) cancel_dest;
 - (void) addSignalHandler: (ObMainLoopSignalHandler) handler 
                 forSignal: (int) signal;
 - (void) removeSignalHandler: (ObMainLoopSignalHandler) handler;

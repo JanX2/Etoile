@@ -262,6 +262,11 @@ static AZKeyboardHandler *sharedInstance;
     }
 }
 
+- (BOOL) interactivelyGrabbed
+{
+    return ([interactive_states count] > 0);
+}
+
 - (void) startup: (BOOL) reconfig
 {
     [self grabKeys: YES];

@@ -218,7 +218,8 @@ static AZFocusManager *sharedInstance;
 
     old = focus_client;
 
-    if (type == OB_FOCUS_FALLBACK_UNFOCUSING && old) {
+    if ((type == OB_FOCUS_FALLBACK_UNFOCUSING ||
+	 type == OB_FOCUS_FALLBACK_CLOSED) && old) {
         if ([old transient_for]) {
             BOOL trans = NO;
 
@@ -257,7 +258,8 @@ static AZFocusManager *sharedInstance;
         }
     }
 
-    if (config_focus_follow && !config_focus_last) {
+    if (config_focus_follow && 
+	(type == OB_FOCUS_FALLBACK_UNFOCUSING || !config_focus_last)) {
         if ((target = AZUnderPointer()))
             if ([target normal] && [target canFocus])
                 return target;

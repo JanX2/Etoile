@@ -159,7 +159,7 @@ static Window createWindow(Window parent, unsigned long mask,
 
     [[AZMainLoop mainLoop] removeTimeout: self 
 	                         handler: @selector(flashTimeout:)
-	                            data: self];
+	                            data: self cancel: YES];
 
     /* These two lines are from frame_free(). 
      * And obFrame is released in dealloc;

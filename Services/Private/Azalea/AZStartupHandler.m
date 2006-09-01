@@ -266,7 +266,7 @@ static void sn_event_func(SnMonitorEvent *event, void *data);
         if ((d = [self waitFind: sn_startup_sequence_get_id(seq)])) {
             [d set_feedback: NO];
 	    [mainLoop removeTimeout: self handler: @selector(snWaitTimeout:)
-		                      data: d];
+		                      data: d cancel: NO];
             change = YES;
         }
         break;

@@ -51,6 +51,7 @@
 		    action: (AZAction *) action;
 - (BOOL) processInteractiveGrab: (XEvent *) e
                       forClient: (AZClient **) client;
+- (BOOL) interactivelyGrabbed;
 - (void) grab: (BOOL) grab forClient: (AZClient *) client;
 
 - (AZKeyBindingTree *) firstnode;

@@ -129,12 +129,8 @@ static AZStacking *sharedInstance;
 
 - (void) addWindow: (id <AZWindow>) win
 {
-    ObStackingLayer l;
-
     AZScreen *screen = [AZScreen defaultScreen];
     NSAssert([screen supportXWindow] != None, @"SupportXWindow cannot be None"); /* make sure I dont break this in the future */
-
-    l = [win windowLayer];
 
     [stacking_list addObject: win];
     [self raiseWindow: win group: NO];

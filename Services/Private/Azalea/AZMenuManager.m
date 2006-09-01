@@ -24,6 +24,7 @@
 #import "AZClient.h"
 #import "AZClientManager.h"
 #import "AZMenuFrame.h"
+#import "AZKeyboardHandler.h"
 #import "openbox.h"
 #import "config.h"
 #import "geom.h"
@@ -298,7 +299,8 @@ static AZMenuManager *sharedInstance;
     AZMenuFrame *frame;
     unsigned int i;
 
-    if (!(menu = [self menuWithName: name])) return;
+    if (!(menu = [self menuWithName: name])
+	|| [[AZKeyboardHandler defaultHandler] interactivelyGrabbed]) return;
 
     /* if the requested menu is already the top visible menu, then don't
        bother */

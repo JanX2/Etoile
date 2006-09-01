@@ -28,6 +28,6 @@ typedef enum
 } ObPlacePolicy;
 
 @interface AZClient (AZPlace)
-- (void) placeAtX: (int *) x y: (int *) y;
+- (BOOL) placeAtX: (int *) x y: (int *) y;
 @end
 

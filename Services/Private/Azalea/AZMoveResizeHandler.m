@@ -356,9 +356,10 @@ static AZMoveResizeHandler *sharedInstance = nil;
 
 - (void) doMove: (BOOL) resist
 {
-    if (resist)
+    if (resist) {
 	[moveresize_client resistMoveWindowsAtX: &cur_x y: &cur_y];
-    [moveresize_client resistMoveMonitorsAtX: &cur_x y: &cur_y];
+    	[moveresize_client resistMoveMonitorsAtX: &cur_x y: &cur_y];
+    }
 
     /* get where the client should be */
     [[moveresize_client frame] frameGravityAtX: &cur_x y: &cur_y];
@@ -381,9 +382,10 @@ static AZMoveResizeHandler *sharedInstance = nil;
     cur_y += [[moveresize_client frame] size].top +
         [[moveresize_client frame] size].bottom;
 
-    if (resist)
+    if (resist) {
 	[moveresize_client resistSizeWindowsWithWidth: &cur_x height: &cur_y corner: lockcorner];
-    [moveresize_client resistSizeMonitorsWithWidth: &cur_x height: &cur_y corner: lockcorner];
+    	[moveresize_client resistSizeMonitorsWithWidth: &cur_x height: &cur_y corner: lockcorner];
+    }
 
     cur_x -= [[moveresize_client frame] size].left +
         [[moveresize_client frame] size].right;

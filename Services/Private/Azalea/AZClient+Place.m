@@ -457,22 +457,27 @@ static BOOL place_transient(AZClient *client, int *x, int *y)
 
 @implementation AZClient (AZPlace)
 
-- (void) placeAtX: (int *) x y: (int *) y
+/* Return TRUE if we want client.c to enforce on-screen-keeping */
+- (BOOL) placeAtX: (int *) x y: (int *) y
 {
+    BOOL ret = NO;
     if ([self positioned])
-        return;
-    if (place_transient(self , x, y)             ||
+        return NO;
+    if (place_transient(self , x, y))
+        ret = YES;
+    else if (!(
         ((config_place_policy == OB_PLACE_POLICY_MOUSE) ?
          place_under_mouse(self , x, y) :
          place_smart(self , x, y, SMART_FULL)    ||
          place_smart(self , x, y, SMART_GROUP)   ||
          place_smart(self , x, y, SMART_FOCUSED) ||
-         place_random(self, x, y)))
+         place_random(self, x, y))))
     {
-        /* get where the client should be */
-	[[self frame] frameGravityAtX: x y: y];
-    } else
         NSAssert(0, @"Should not reach here"); /* the last one better succeed */
+    }
+    /* get where the client should be */
+    [[self frame] frameGravityAtX: x y: y];
+    return ret;
 }
 
 @end

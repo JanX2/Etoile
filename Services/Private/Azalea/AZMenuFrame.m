@@ -425,7 +425,6 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 - (void) moveOnScreen
 {
     Rect *a = NULL;
-    unsigned int i;
     int dx = 0, dy = 0;
     int pos, half;
 
