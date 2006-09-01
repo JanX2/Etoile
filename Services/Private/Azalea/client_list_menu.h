@@ -22,6 +22,7 @@
 #ifndef ob__client_list_menu_h
 #define ob__client_list_menu_h
 
-void client_list_menu_startup();
+void client_list_menu_startup(BOOL reconfig);
+void client_list_menu_shutdown(BOOL reconfig);
 
 #endif

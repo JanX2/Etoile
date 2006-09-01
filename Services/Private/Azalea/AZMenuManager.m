@@ -209,7 +209,7 @@ static AZMenuManager *sharedInstance;
 
     menu_hash = [[NSMutableDictionary alloc] init];
 
-    client_list_menu_startup();
+    client_list_menu_startup(reconfig);
     client_menu_startup();
 
     menu_parse_inst = [[AZParser alloc] init];
@@ -246,6 +246,8 @@ static AZMenuManager *sharedInstance;
 - (void) shutdown: (BOOL) reconfig
 {
     DESTROY(menu_parse_inst);
+    
+    client_list_menu_shutdown(reconfig);
 
     AZMenuFrameHideAll();
     DESTROY(menu_hash);

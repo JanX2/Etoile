@@ -2,6 +2,10 @@
 
 	* render: Update to 3.3-release.
 	* update to 3.3-release (part I).
+	* client_list_menu.h:
+	* client_list_menu.m:
+	* AZMenu.m:
+	update to 3.3-release (part II).
 
 2006-07-06 Yen-Ju Chen <yjchenx at gmail>
 

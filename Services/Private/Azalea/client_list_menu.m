@@ -24,6 +24,7 @@
 #import "AZFocusManager.h"
 #import "AZMenuFrame.h"
 #import "AZMenuManager.h"
+#import "AZClientManager.h"
 #import "openbox.h"
 #import "AZMenu.h"
 #import "action.h"
@@ -32,6 +33,7 @@
 #define MENU_NAME @"client-list-menu"
 
 static NSMutableArray *desktop_menus;
+static AZMenu *client_list_menu;
 
 @interface AZDesktopMenu: AZMenu
 {
@@ -162,20 +164,53 @@ static NSMutableArray *desktop_menus;
 	[menu removeEntryWithIdentifier: j];
     }
 }
+
+- (void) clientDestroy: (NSNotification *) not
+{
+    /* This concise function removes all references to a closed
+     * client in the client_list_menu, so we don't have to check
+     * in client.c */
+     int i, j;
+     for (i = 0; i < [desktop_menus count]; i++) {
+	AZMenu *mit = [desktop_menus objectAtIndex: i];
+	NSArray *mentries = [mit entries];
+	for (j = 0; j < [mentries count]; j++) {
+	    AZMenuEntry *meit = [mentries objectAtIndex: i];
+	    if ([meit type] == OB_MENU_ENTRY_TYPE_NORMAL) {
+	      AZAction *a = [[(AZNormalMenuEntry *)meit actions] objectAtIndex: 0];
+	      AZClient *c = [a data].any.c;
+	      if (c == [not object])
+	        [a data_pointer]->any.c = NULL;
+	    }
+	}
+     }
+}
+
 @end
 
-void client_list_menu_startup()
+void client_list_menu_startup(BOOL reconfig)
 {
-    AZClientListMenu *menu;
-
     if (desktop_menus == nil) {
       desktop_menus = [[NSMutableArray alloc] init];
     } else {
       [desktop_menus removeAllObjects];
     }
 
-    menu = [[AZClientListMenu alloc] initWithName: MENU_NAME title: @"Desktops"];
-    [[AZMenuManager defaultManager] registerMenu: menu];
-    DESTROY(menu);
+    client_list_menu = [[AZClientListMenu alloc] initWithName: MENU_NAME 
+	                                                title: @"Desktops"];
+    [[AZMenuManager defaultManager] registerMenu: client_list_menu];
+    if (!reconfig) {
+      [[NSNotificationCenter defaultCenter] addObserver: client_list_menu
+		            selector: @selector(clientDestroy:)
+			    name: AZClientDestroyNotification
+			    object: nil];
+    }
 }
 
+void client_list_menu_shutdown(BOOL reconfig)
+{
+    if (!reconfig) {
+      [[NSNotificationCenter defaultCenter] removeObserver: client_list_menu];
+    }
+    DESTROY(client_list_menu);
+}
