@@ -1,3 +1,14 @@
+2006-09-03  Quentin Mathe <qmathe@club-internet.fr>
+
+    * README: Updated url in Contribute section and added new authors.
+    * INSTALL: Updated GNUstep libraries requirements to match latest releases,
+    this choice avoids the pain to support older versions for now. Added a tip 
+    about OniGuruma now available in the repository. Modified Install section
+    to discuss new setup.sh script. Added Uninstall section, discussing 
+    setdown.sh script too. Added a warning in Custom Build and Install section 
+    to outline the important bug that prevents to a build a single module as 
+    documented.
+
 2006-08-31  Quentin Mathe <qmathe@club-internet.fr>
 
     * Services/User/GNUmakefile: Included Grr in Etoile build process by 
