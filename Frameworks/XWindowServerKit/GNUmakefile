@@ -3,12 +3,14 @@ include $(GNUSTEP_MAKEFILES)/common.make
 LIBRARY_NAME = XWindowServerKit
 
 XWindowServerKit_OBJC_FILES = \
+	XFunctions.m \
 	XScreen.m \
 	XWindow.m 
 
 XWindowServerKit_LIBRARIES_DEPEND_UPON = -lX11 
 XWindowServerKit_HEADER_FILES_INSTALL_DIR = XWindowServerKit
 XWindowServerKit_HEADER_FILES = \
+	XFunctions.h \
 	XScreen.h \
 	XWindow.h \
 	gnustep.h

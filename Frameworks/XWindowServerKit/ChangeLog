@@ -1,3 +1,9 @@
+2006-09-03 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* XFunctions.h:
+	* XFunctions.m:
+	Acess basic x window properties.
+
 2006-05-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Add XScreen category.
