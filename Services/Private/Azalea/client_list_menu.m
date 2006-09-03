@@ -175,12 +175,14 @@ static AZMenu *client_list_menu;
 	AZMenu *mit = [desktop_menus objectAtIndex: i];
 	NSArray *mentries = [mit entries];
 	for (j = 0; j < [mentries count]; j++) {
-	    AZMenuEntry *meit = [mentries objectAtIndex: i];
+	    AZMenuEntry *meit = [mentries objectAtIndex: j];
 	    if ([meit type] == OB_MENU_ENTRY_TYPE_NORMAL) {
 	      AZAction *a = [[(AZNormalMenuEntry *)meit actions] objectAtIndex: 0];
 	      AZClient *c = [a data].any.c;
-	      if (c == [not object])
+	      if (c == [not object]) {
+		NSLog(@"c %@, not %@", c, [not object]);
 	        [a data_pointer]->any.c = NULL;
+	      }
 	    }
 	}
      }
@@ -199,7 +201,8 @@ void client_list_menu_startup(BOOL reconfig)
     client_list_menu = [[AZClientListMenu alloc] initWithName: MENU_NAME 
 	                                                title: @"Desktops"];
     [[AZMenuManager defaultManager] registerMenu: client_list_menu];
-    if (!reconfig) {
+//    if (!reconfig) 
+    {
       [[NSNotificationCenter defaultCenter] addObserver: client_list_menu
 		            selector: @selector(clientDestroy:)
 			    name: AZClientDestroyNotification
@@ -209,7 +212,8 @@ void client_list_menu_startup(BOOL reconfig)
 
 void client_list_menu_shutdown(BOOL reconfig)
 {
-    if (!reconfig) {
+//    if (!reconfig) 
+    {
       [[NSNotificationCenter defaultCenter] removeObserver: client_list_menu];
     }
     DESTROY(client_list_menu);
