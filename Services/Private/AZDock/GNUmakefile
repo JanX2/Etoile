@@ -12,9 +12,11 @@ AZDock_OBJC_FILES = \
 	AZDock.m \
 	main.m 
 
-ADDITIONAL_INCLUDE_DIRS += -I/usr/include 
+AZDock_RESOURCE_FILES = Unknown.tiff
 
-ADDITIONAL_LIB_DIRS += -L/usr/lib -lX11 -lXWindowServerKit
+ADDITIONAL_INCLUDE_DIRS += -I/usr/include -I/usr/X11R6/include
+
+ADDITIONAL_LIB_DIRS += -L/usr/lib -L/usr/X11R6/lib -lX11 -lXWindowServerKit
 
 ADDITIONAL_GUI_LIBS += 
 

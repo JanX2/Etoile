@@ -56,10 +56,6 @@
   [window skipTaskbarAndPager];
   [window setContentView: view];
 
-  /* Try to get the icon */
-  icon = XWindowIcon(w);
-  if (icon)
-    [view setImage: icon];
 
   /* Get class and instance */
   if (XWindowClassHint(w, &wm_class, &wm_instance)) {
@@ -72,6 +68,32 @@
   } else {
     type = AZDockXWindowApplication;
   }
+
+  /* Try to get the icon */
+  if (type == AZDockGNUstepApplication)
+  {
+	/* we try to get the application path */
+	NSString* appPath = [[NSWorkspace sharedWorkspace]
+		fullPathForApplication: wm_instance];
+	if (appPath)
+	{
+		icon = [[NSWorkspace sharedWorkspace]
+			iconForFile: appPath];
+	}
+  }
+  else
+  {
+  	icon = XWindowIcon(w);
+  }
+
+  if (!icon)
+  {
+	/* use default icon */
+	icon = [NSImage imageNamed: @"Unknown.tiff"];
+  }
+ if (icon)
+    [view setImage: icon];
+
 
   [window orderFront: self];
 
