@@ -52,6 +52,7 @@
                             styleMask: NSBorderlessWindowMask
 			    backing: NSBackingStoreRetained
 			    defer: NO];
+  [window setDesktop: ALL_DESKTOP];
   [window skipTaskbarAndPager];
   [window setContentView: view];
 

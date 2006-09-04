@@ -11,6 +11,13 @@
 
 static AZDock *sharedInstance;
 
+/* To display on AZDock's icon window*/
+@interface GNUstepIconView: NSView
+{
+  NSImage *GNUstepIcon;
+}
+@end
+
 @implementation AZDock
 
 /** Private **/
@@ -30,22 +37,21 @@ static AZDock *sharedInstance;
 
 - (void) organizeApplications
 {
-  NSWindow *win = [NSApp iconWindow];
-  NSRect rect = [win frame];
+  NSWindow *win;
   int i, x, y, w;
 
   /* Calculate the position */
   NSSize size = [[NSScreen mainScreen] frame].size;
-  w = [win frame].size.width;
+  w = [iconWindow frame].size.width;
   for (i = 0; i < [apps count]; i++)
   {
     w += [[(AZDockApp *)[apps objectAtIndex: i] window] frame].size.width;
   }
   x = (size.width-w)/2;
-  y = rect.origin.y;
-  [win setFrameOrigin: NSMakePoint(x, y)];
+  y = 0;
+  [iconWindow setFrameOrigin: NSMakePoint(x, y)];
 
-  rect = [win frame];
+  NSRect rect = [iconWindow frame];
   x = rect.origin.x+rect.size.width;
   y = rect.origin.y;
 
@@ -307,9 +313,20 @@ static AZDock *sharedInstance;
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+  NSRect rect = NSMakeRect(0, 0, 64, 64);
+  iconWindow = [[XWindow alloc] initWithContentRect: rect
+	                              styleMask: NSBorderlessWindowMask
+				        backing: NSBackingStoreRetained
+				          defer: NO];
+  [iconWindow setDesktop: ALL_DESKTOP];
+  [iconWindow skipTaskbarAndPager];
+
+  GNUstepIconView *view = [[GNUstepIconView alloc] initWithFrame: [[iconWindow contentView] bounds]];
+  [iconWindow setContentView: view];
+  DESTROY(view);
+
+  [iconWindow orderFront: self];
 #if 0
-  NSWindow *iconWindow = [NSApp iconWindow];
-  Window iconXWindow = *(Window *)[server windowDevice: [iconWindow windowNumber]];
   NSString *c, *i;
   BOOL result = XWindowClassHint(iconXWindow, &c, &i);
   if (result)
@@ -361,3 +378,34 @@ static AZDock *sharedInstance;
 
 @end
 
+@implementation GNUstepIconView
+- (id) initWithFrame: (NSRect) rect
+{
+  self = [super initWithFrame: rect];
+  ASSIGN(GNUstepIcon, [NSImage imageNamed: @"GNUstep.tiff"]);
+  return self;
+}
+
+- (void) drawRect: (NSRect) rect
+{
+  [super drawRect: rect];
+  if (GNUstepIcon) {
+    NSRect source = NSMakeRect(0, 0, 64, 64);
+    NSRect dest = NSMakeRect(8, 8, 48, 48);
+    source.size = [GNUstepIcon size];
+    [self lockFocus];
+    [GNUstepIcon drawInRect: dest
+	     fromRect: source
+	    operation: NSCompositeSourceAtop
+	     fraction: 1];
+    [self unlockFocus];
+  }
+}
+
+- (void) dealloc
+{
+  DESTROY(GNUstepIcon);
+  [super dealloc];
+}
+
+@end
