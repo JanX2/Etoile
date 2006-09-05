@@ -27,6 +27,35 @@ static AZDock *sharedInstance;
   }
   return NO;
 }
+
+- (void) removeApplicationWithoutWindow
+{
+  /* Remove emtpy dock app */
+  int m;
+  BOOL remove;
+  for (m = [apps count]-1; m > -1; m--) {
+    remove = NO;
+    AZDockApp *app = [apps objectAtIndex: m];
+    if ([app numberOfXWindows] == 0) {
+      if ([app type] == AZDockGNUstepApplication) {
+        /* Check for GNUstep. Only remove when group window is 0
+	 * because it can be hiden, in which case, it has no windows
+	 * but group window. */
+	if ([app groupWindow] == 0) {
+	  remove = YES;
+	}
+      } else {
+	/* For any other application, remove it when it has no windows */
+	remove = YES;
+      }
+      if (remove)  {
+        /* Do not use -close because it trigger another _net_client_list event */
+        [[app window] orderOut: self];
+        [apps removeObjectAtIndex: m];
+      }
+    }
+  }
+}
 /** End of private */
 
 - (void) organizeApplications
@@ -125,6 +154,35 @@ static AZDock *sharedInstance;
     return;
   }
 
+#if 0
+  {
+    /* Query window */
+    Window root_return;
+    Window parent_return;
+    Window *children_return;
+    unsigned int nchildren_return;
+    NSString *y, *z;
+    XQueryTree(dpy, root_win, &root_return, &parent_return, &children_return, &nchildren_return);
+    {
+      NSLog(@"Total windows = %d", nchildren_return);
+      int x;
+      XWMHints *wmHints;
+      for (x = 0; x < nchildren_return; x++) 
+      {
+	if (XWindowClassHint(children_return[x], &y, &z)) {
+	  NSLog(@"%d %@.%@", children_return[x], z, y);
+	  wmHints = XGetWMHints(dpy, children_return[x]);
+	  if (wmHints) {
+	    NSLog(@"group %d, state %d", wmHints->window_group, wmHints->initial_state);
+	    XFree(wmHints);
+	  }
+	}
+      }
+    }
+  }
+#endif
+
+
   /* Remove destroyed windows */
   for (m = 0; m < count; m++) {
     for (k = 0; k < [lastClientList count]; k++) {
@@ -142,14 +200,7 @@ static AZDock *sharedInstance;
       }
     }
   }
-  /* Remove emtpy dock app */
-  for (m = [apps count]-1; m > -1; m--) {
-    if ([[apps objectAtIndex: m] numberOfXWindows] == 0) {
-      /* Do not use -close because it trigger another _net_client_list event */
-      [[(AZDockApp *)[apps objectAtIndex: m] window] orderOut: self];
-      [apps removeObjectAtIndex: m];
-    }
-  }
+  [self removeApplicationWithoutWindow];
 
   [lastClientList removeAllObjects];
 
@@ -240,18 +291,16 @@ static AZDock *sharedInstance;
 
 - (void) handleDestroyNotify: (XEvent *) event
 {
-#if 0
-  NSLog(@"%d", event->xany.window);
-  NSLog(@"%d", event->xdestroywindow.event);
   int i;
   for (i = 0; i < [apps count]; i++) {
     if ([[apps objectAtIndex: i] removeXWindow: event->xdestroywindow.window]) {
       break; /* Save time */
     }
   }
-  NSLog(@"Destroy: %d", event->xdestroywindow.window);
+  /* Need to remove empty application here because it will not trigger
+   * an event for readClientList */
+  [self removeApplicationWithoutWindow];
   [self organizeApplications];
-#endif
 }
 
 - (void) handlePropertyNotify: (XEvent *) event
@@ -310,10 +359,16 @@ static AZDock *sharedInstance;
       case CreateNotify:
 	[self handleCreateNotify: &event];
 	break;
+#endif
       case DestroyNotify:
+	/* We need to track the destroy notify only for GNUstep application
+	 * because if GNUstep application is hiden, all windows is unmaped
+	 * and will not show up in client_list by window manager.
+	 * In that case, AZDock will not remove it from the dock.
+	 * Only when the group window is destroyed, the GNUstep application
+	 * will be removed from the dock */
 	[self handleDestroyNotify: &event];
 	break;
-#endif
       case PropertyNotify:
 	[self handlePropertyNotify: &event];
 	break;

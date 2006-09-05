@@ -43,7 +43,6 @@
   self = [super init];
   xwindows = [[NSMutableArray alloc] init];
   [xwindows addObject: [NSNumber numberWithUnsignedLong: w]];
-  mainXWindow = w;
 
   NSRect rect = NSMakeRect(0, 0, 64, 64);
   view = [[AZDockView alloc] initWithFrame: rect];
@@ -56,6 +55,8 @@
   [window skipTaskbarAndPager];
   [window setContentView: view];
 
+  /* Get group leader if any */
+  groupWindow = XWindowGroupWindow(w);
 
   /* Get class and instance */
   if (XWindowClassHint(w, &wm_class, &wm_instance)) {
@@ -105,6 +106,7 @@
   int i;
   unsigned long w;
   NSString *_class, *_instance;
+  Window temp;
   for (i = 0; i < [xwindows count]; i++)
   {
     w = [[xwindows objectAtIndex: i] unsignedLongValue];
@@ -116,6 +118,9 @@
 	[_instance isEqualToString: wm_instance])
       {
         [xwindows addObject: [NSNumber numberWithUnsignedLong: win]];
+	temp = XWindowGroupWindow(win);
+	if (temp)
+          groupWindow = temp;
 	return YES;
       }
   }
@@ -133,6 +138,12 @@
       [xwindows removeObjectAtIndex: i];
       return YES;
     }
+  }
+  /* Note: sometimes group_window is the same as client window */
+  if (win == groupWindow)
+  {
+    groupWindow = 0;
+    [xwindows removeAllObjects];
   }
   return NO;
 }
@@ -167,6 +178,11 @@
 - (AZDockType) type
 {
   return type;
+}
+
+- (Window) groupWindow
+{
+  return groupWindow;
 }
 
 @end

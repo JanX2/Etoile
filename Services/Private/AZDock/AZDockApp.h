@@ -15,7 +15,7 @@ typedef enum _AZDockType {
  * or a file on harddisk */
 @interface AZDockApp: NSObject
 {
-  Window mainXWindow;
+  Window groupWindow; /* Keep a record of group leader, especially for GNUstep. */
   AZDockType type;
   NSMutableArray *xwindows;
   XWindow *window;
@@ -28,11 +28,14 @@ typedef enum _AZDockType {
 - (id) initWithXWindow: (Window) win;
 
 - (AZDockType) type;
+- (Window) groupWindow;
 
 /* Return NO is the win does not belong to this view */
 - (BOOL) acceptXWindow: (Window) win;
 
-/* Return YES if it has win and remove it successfully */
+/* Return YES if it has win and remove it successfully.
+ * If win is the group window, all x windows in this application 
+ * will be remove */
 - (BOOL) removeXWindow: (Window) win;
 
 /* Return number of XWindows */
