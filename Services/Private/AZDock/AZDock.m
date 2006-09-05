@@ -1,5 +1,6 @@
 #import "AZDock.h"
 #import "AZDockApp.h"
+#import "AZWorkspaceView.h"
 #import <GNUstepGUI/GSDisplayServer.h>
 #import <X11/Xatom.h>
 #import <X11/Xutil.h>
@@ -10,13 +11,6 @@
 @end
 
 static AZDock *sharedInstance;
-
-/* To display on AZDock's icon window*/
-@interface GNUstepIconView: NSView
-{
-  NSImage *GNUstepIcon;
-}
-@end
 
 @implementation AZDock
 
@@ -38,30 +32,73 @@ static AZDock *sharedInstance;
 - (void) organizeApplications
 {
   NSWindow *win;
-  int i, x, y, w;
+  int i, x, y, w, h;
 
   /* Calculate the position */
   NSSize size = [[NSScreen mainScreen] frame].size;
   w = [iconWindow frame].size.width;
-  for (i = 0; i < [apps count]; i++)
+  h = 0;
+
+  switch (position) 
   {
-    w += [[(AZDockApp *)[apps objectAtIndex: i] window] frame].size.width;
+    case AZDockBottomPosition:
+      for (i = 0; i < [apps count]; i++)
+      {
+        w += [[(AZDockApp *)[apps objectAtIndex: i] window] frame].size.width;
+      }
+      x = (size.width-w)/2;
+      y = 0;
+      break;
+    case AZDockRightPosition:
+      for (i = 0; i < [apps count]; i++)
+      {
+        h += [[(AZDockApp *)[apps objectAtIndex: i] window] frame].size.height;
+      }
+      x = size.width-w;
+      y = (size.height+h)/2;
+      break;
+    case AZDockLeftPosition:
+    default:
+      for (i = 0; i < [apps count]; i++)
+      {
+        h += [[(AZDockApp *)[apps objectAtIndex: i] window] frame].size.height;
+      }
+      x = 0;
+      y = (size.height+h)/2;
+      break;
   }
-  x = (size.width-w)/2;
-  y = 0;
+
   [iconWindow setFrameOrigin: NSMakePoint(x, y)];
-
   NSRect rect = [iconWindow frame];
-  x = rect.origin.x+rect.size.width;
-  y = rect.origin.y;
 
-  for (i = 0; i < [apps count]; i++)
+  switch (position)
   {
-    /* Only do it horizontallly */
-    win = [(AZDockApp *)[apps objectAtIndex: i] window];
-    [win setFrameOrigin: NSMakePoint(x, y)];
-    rect = [win frame];
-    x += rect.size.width;
+    case AZDockBottomPosition:
+      x = rect.origin.x+rect.size.width;
+      y = rect.origin.y;
+
+      for (i = 0; i < [apps count]; i++)
+      {
+        win = [(AZDockApp *)[apps objectAtIndex: i] window];
+        [win setFrameOrigin: NSMakePoint(x, y)];
+        rect = [win frame];
+        x += rect.size.width;
+      }
+      break;
+    case AZDockRightPosition:
+    case AZDockLeftPosition:
+    default:
+      x = rect.origin.x;
+      y = rect.origin.y-rect.size.height;
+
+      for (i = 0; i < [apps count]; i++)
+      {
+        win = [(AZDockApp *)[apps objectAtIndex: i] window];
+        [win setFrameOrigin: NSMakePoint(x, y)];
+        rect = [win frame];
+        y -= rect.size.height;
+      }
+      break;
   }
 }
 
@@ -309,6 +346,10 @@ static AZDock *sharedInstance;
 
   /* Listen to window closing and opening */
   XSelectInput(dpy, root_win, PropertyChangeMask|StructureNotifyMask|SubstructureNotifyMask);
+
+  /* Decide position */
+  position = [[NSUserDefaults standardUserDefaults] integerForKey: @"DockPosition"];
+
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -321,43 +362,22 @@ static AZDock *sharedInstance;
   [iconWindow setDesktop: ALL_DESKTOP];
   [iconWindow skipTaskbarAndPager];
 
-  GNUstepIconView *view = [[GNUstepIconView alloc] initWithFrame: [[iconWindow contentView] bounds]];
+  //GNUstepIconView *view = [[GNUstepIconView alloc] initWithFrame: [[iconWindow contentView] bounds]];
+  AZWorkspaceView *view = [[AZWorkspaceView alloc] initWithFrame: [[iconWindow contentView] bounds]];
   [iconWindow setContentView: view];
+
+#if 0 /* Contextual menu */
+  NSMenu *menu = [[NSMenu alloc] initWithTitle: @"Test"];
+  [menu addItemWithTitle: @"Menu11" action: NULL keyEquivalent: nil];
+  [menu addItemWithTitle: @"Menu12" action: NULL keyEquivalent: nil];
+  [menu addItemWithTitle: @"Menu13" action: NULL keyEquivalent: nil];
+  [menu addItemWithTitle: @"Menu14" action: NULL keyEquivalent: nil];
+  [view setMenu: menu];
   DESTROY(view);
+#endif
 
   [iconWindow orderFront: self];
-#if 0
-  NSString *c, *i;
-  BOOL result = XWindowClassHint(iconXWindow, &c, &i);
-  if (result)
-    NSLog(@"%@ %@", c, i);
-#endif
-  /* Setup user interface */
-#if 0
-  NSRect rect = NSMakeRect(0, 0, 500, 50);
-  panelView = [[AZTaskbarView alloc] initWithFrame: rect];
-  panelWindow = [[AZTaskbarWindow alloc] initWithContentRect: rect
-	                     styleMask: NSTitledWindowMask|NSClosableWindowMask
-		             backing: NSBackingStoreBuffered
-			     defer: YES];
-  [panelWindow setContentView: panelView];
-  [panelWindow setTitle: @"AZTaskbar"];
-  [panelWindow orderFront: self];
 
-  /* Cache main window because if it is closed (destroyed),
-   * any attempt to get xwindow from main window (NSWindow) 
-   * causes segment fault.
-   */
-  mainXWindow = [panelWindow xwindow];
-  if (mainXWindow == 0)
-  {
-    NSLog(@"Internal Error: cannot get mainXWindow");
-  }
-
-  /* stay in all desktops */
-  [panelWindow becomeSticky];
-
-#endif
   [self readClientList];
   [self organizeApplications];
 }
@@ -378,34 +398,3 @@ static AZDock *sharedInstance;
 
 @end
 
-@implementation GNUstepIconView
-- (id) initWithFrame: (NSRect) rect
-{
-  self = [super initWithFrame: rect];
-  ASSIGN(GNUstepIcon, [NSImage imageNamed: @"GNUstep.tiff"]);
-  return self;
-}
-
-- (void) drawRect: (NSRect) rect
-{
-  [super drawRect: rect];
-  if (GNUstepIcon) {
-    NSRect source = NSMakeRect(0, 0, 64, 64);
-    NSRect dest = NSMakeRect(8, 8, 48, 48);
-    source.size = [GNUstepIcon size];
-    [self lockFocus];
-    [GNUstepIcon drawInRect: dest
-	     fromRect: source
-	    operation: NSCompositeSourceAtop
-	     fraction: 1];
-    [self unlockFocus];
-  }
-}
-
-- (void) dealloc
-{
-  DESTROY(GNUstepIcon);
-  [super dealloc];
-}
-
-@end

@@ -7,6 +7,7 @@ DEPENDENCIES = XWindowServerKit
 APP_NAME = AZDock
 
 AZDock_OBJC_FILES = \
+	AZWorkspaceView.m \
 	AZDockView.m \
 	AZDockApp.m \
 	AZDock.m \

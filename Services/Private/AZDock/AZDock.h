@@ -4,6 +4,12 @@
 
 @class XWindow;
 
+typedef enum _AZDockPosition {
+  AZDockRightPosition = 0,
+  AZDockLeftPosition = 1,
+  AZDockBottomPosition = 2
+} AZDockPosition;
+
 @interface AZDock: NSObject
 {
   GSDisplayServer *server;
@@ -15,6 +21,7 @@
 
   /* Replace default gnustep icon window */
   XWindow *iconWindow;
+  AZDockPosition position;
 }
 
 + (AZDock *) sharedDock;

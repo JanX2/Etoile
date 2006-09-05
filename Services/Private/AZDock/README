@@ -4,3 +4,7 @@ AZDock
 AZDock is a dock for Etoile
 It depends on XWindowServerKit.
 
+User Defaults
+-------------
+Key: DockPosition
+Value: 0 (Right side), 1 (Left side), 2 (Bottom side)
