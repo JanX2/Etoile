@@ -1,6 +1,7 @@
 2006-09-05 Yen-Ju Chen <yjchenx at gmail>
 
 	* Make icon diplay even when application icon is suppressed.
+	* In case the icon image is not available from NSWorkspace.
 
 2006-09-04 Yen-Ju Chen <yjchenx at gmail>
 

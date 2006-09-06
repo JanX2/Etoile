@@ -82,7 +82,7 @@
 			iconForFile: appPath];
 	}
   }
-  else
+  if (!icon)
   {
   	icon = XWindowIcon(w);
   }
