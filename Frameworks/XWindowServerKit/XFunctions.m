@@ -161,6 +161,18 @@ Atom *XWindowNetStates(Window win, unsigned long *count)
   return data;
 }
 
+Window XWindowGroupWindow(Window win)
+{
+  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  XWMHints *wmHints = XGetWMHints(dpy, win);
+  if (wmHints) {
+    Window group_leader = wmHints->window_group;
+    XFree(wmHints);
+    return group_leader;
+  }
+  return 0;
+}
+
 NSString* XWindowCommandPath(Window win)
 {
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
