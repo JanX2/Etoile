@@ -36,6 +36,17 @@
 - (id <NSMenuItem>) menuItem
 {
   id <NSMenuItem> item;
+  NSString * prefsAppName = [[NSUserDefaults standardUserDefaults]
+    objectForKey: @"GSSystemPreferencesApplication"];
+
+  /* We don't display this entry with Etoile environment, unless a value is 
+     set and the value isn't 'Etoile'. Usually we assume the user want to use 
+     Etoile preferences related applications (aka Hardware, Look & Behavior 
+     etc.). */
+  if (prefsAppName == nil 
+    || [prefsAppName isEqualToString: @""]
+    || [prefsAppName isEqualToString: @"Etoile"])
+    return nil;
 
   item = [[[NSMenuItem alloc]
     initWithTitle: _(@"System Preferences...")
@@ -50,7 +61,7 @@
 
 - (NSString *) menuGroup
 {
-  return @"Etoile";
+  return @"Preferences";
 }
 
 - (void) showPreferences

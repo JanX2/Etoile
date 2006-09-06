@@ -1,0 +1,102 @@
+{
+    ProjectModulesData = {
+	FileManager = {
+	    Files = (
+		{
+		    Contents = (
+			{
+			    Name = HardwareEntry.m;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Class Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = HardwareEntry.h;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Header Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Other Source Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = Interfaces;
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Resource Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Localized Resource Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = GNUmakefile.preamble;
+			    Type = Plain;
+			},
+			{
+			    Name = GNUmakefile.postamble;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Supporting Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = Frameworks;
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = ChangeLog;
+			    Target = "/Users/diablos/etoile/Etoile/Services/Private/MenuServer/ChangeLog";
+			    Type = Link;
+			}
+		    );
+		    Name = "Non-Project Files";
+		    Type = Category;
+		}
+	    );
+	};
+	MakeBuilder = {
+	    AllWarnings = <*BN>;
+	    BuildArguments = (
+	    );
+	    VerboseBuild = <*BN>;
+	    Warnings = <*BN>;
+	};
+	SubprojectsManager = {
+	    Subprojects = (
+	    );
+	};
+    };
+    ProjectName = HardwareEntry;
+    ProjectType = Bundle;
+    ProjectTypeData = {
+	Authors = (
+	);
+	MakefileHash = <*I"-31957325">;
+    };
+    Version = 0.2;
+}

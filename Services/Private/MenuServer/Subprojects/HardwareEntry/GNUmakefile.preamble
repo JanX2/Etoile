@@ -1,0 +1,7 @@
+# Preamble Definitions
+
+BUNDLE_EXTENSION=.sysbarentry
+
+$(BUNDLE_NAME)_STANDARD_INSTALL=no
+
+ADDITIONAL_OBJCFLAGS += -Wno-unused

@@ -41,6 +41,8 @@ ADDITIONAL_GUI_LIBS =
 SUBPROJECTS = Subprojects/ClockMenulet \
 Subprojects/AboutEtoileEntry \
 Subprojects/ApplicationsEntry \
+Subprojects/HardwareEntry \
+Subprojects/LookAndBehaviorEntry \
 Subprojects/SystemPreferencesEntry \
 
 -include GNUmakefile.preamble

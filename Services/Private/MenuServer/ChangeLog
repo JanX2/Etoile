@@ -1,3 +1,19 @@
+2006-09-06  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Subprojects/HardwareEntry:
+    * Subprojects/LookAndBehaviorEntry:
+    Added new system bar entries, they allow to launch preferences related
+    applications.
+    * Subprojects/SystemPreferencesEntry/SystemPreferencesEntry.m:
+    Made the entry invisible in the menu by default, unless the user requests
+    it by setting GSSystemPreferencesApplication.
+
+    * GNUmakefile:
+    * EtoileMenuServer.pmproj: Modified to include the new subprojects.
+    * GNUmakefile.preamble: Turned on XWindowServerKit use by default, this
+    eliminates window position issues with Azalea. It's still possible to build
+    EtoileMenuServer without X11 dependency by passing the flag 'x11=no'.
+
 2006-07-21  Saso Kiselkov <skiselkov@gmail.com>
 
     * main.m: Updated default name GSDontShowAppIcon to GSSuppressAppIcon.

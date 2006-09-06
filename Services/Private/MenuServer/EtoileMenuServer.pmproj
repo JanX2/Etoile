@@ -176,11 +176,11 @@
 	    );
 	};
 	MakeBuilder = {
-	    AllWarnings = <*BY>;
+	    AllWarnings = <*BN>;
 	    BuildArguments = (
 	    );
 	    VerboseBuild = <*BN>;
-	    Warnings = <*BY>;
+	    Warnings = <*BN>;
 	};
 	SubprojectsManager = {
 	    Subprojects = (
@@ -208,6 +208,16 @@
 			    Type = Subproject;
 			},
 			{
+			    Name = HardwareEntry;
+			    ProjectFile = HardwareEntry.pmproj;
+			    Type = Subproject;
+			},
+			{
+			    Name = LookAndBehaviorEntry;
+			    ProjectFile = LookAndBehaviorEntry.pmproj;
+			    Type = Subproject;
+			},
+			{
 			    Name = SystemPreferencesEntry;
 			    ProjectFile = SystemPreferencesEntry.pmproj;
 			    Type = Subproject;
@@ -232,7 +242,7 @@
 	FileTypes = (
 	);
 	IconName = Etoile.tiff;
-	MakefileHash = <*I"-24281296">;
+	MakefileHash = <*I"-168248622">;
     };
     Version = 0.2;
 }
