@@ -45,3 +45,8 @@ unsigned long XWindowState(Window win);
 /* Get _NET_WM_STATE, return count as number of properties */
 Atom *XWindowNetStates(Window win, unsigned long *count);
 
+/* Get the command path */
+NSString* XWindowCommandPath(Window win);
+
+/* Returns if the window is an icon window */
+BOOL XWindowIsIcon(Window win);

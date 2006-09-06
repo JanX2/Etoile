@@ -161,3 +161,43 @@ Atom *XWindowNetStates(Window win, unsigned long *count)
   return data;
 }
 
+NSString* XWindowCommandPath(Window win)
+{
+  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+
+  unsigned char *data;
+  unsigned long count;
+  Atom prop = XInternAtom(dpy, "WM_COMMAND", False);
+  Atom type_ret;
+  int format_ret;
+  unsigned long after_ret;
+  int result = XGetWindowProperty(dpy, win, prop,
+                                  0, 0x7FFFFFFF, False, XA_STRING,
+                                  &type_ret, &format_ret, &count,
+                                  &after_ret, (unsigned char **)&data);
+  if ((result != Success)) {
+    NSLog(@"Error: cannot get client state");
+    return nil;
+  }
+
+  return [NSString stringWithCString: data];
+}
+
+BOOL XWindowIsIcon(Window win)
+{
+  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+
+  XWMHints* hints = XGetWMHints (dpy, win);
+
+  if (hints != NULL)
+  {
+	long flags = hints->flags;
+	if (flags | IconWindowHint)
+	{
+		//NSLog (@"ICON WINDOW");
+		return YES;
+	}
+	XFree (hints);
+  }
+  return NO;
+}
