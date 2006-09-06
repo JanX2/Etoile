@@ -173,6 +173,7 @@ Window XWindowGroupWindow(Window win)
   return 0;
 }
 
+/* FIXME: would it be better to use XGetCommand() ? */
 NSString* XWindowCommandPath(Window win)
 {
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
