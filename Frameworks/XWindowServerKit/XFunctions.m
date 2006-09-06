@@ -204,8 +204,7 @@ BOOL XWindowIsIcon(Window win)
 
   if (hints != NULL)
   {
-	long flags = hints->flags;
-	if (flags | IconWindowHint)
+	if (hints->flags & IconWindowHint)
 	{
 		//NSLog (@"ICON WINDOW");
 		return YES;
