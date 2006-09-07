@@ -98,7 +98,7 @@ ifeq ($(servicesbarkit), yes)
 endif
 
 ifeq ($(extendedworkspacekit), yes)
-   SUBPROJECTS += ExtendedWorkspaceKit
+   #SUBPROJECTS += ExtendedWorkspaceKit
 endif
 
 ifeq ($(trackerkit), yes)
@@ -118,11 +118,11 @@ endif
 #
 
 ifeq ($(bookmarkkit), yes)
-   SUBPROJECTS += BookmarkKit
+   #SUBPROJECTS += BookmarkKit
 endif
 
 ifeq ($(iconkit), yes)
-   SUBPROJECTS += IconKit
+   #SUBPROJECTS += IconKit
 endif
 
 ifeq ($(preferenceskit), yes)
