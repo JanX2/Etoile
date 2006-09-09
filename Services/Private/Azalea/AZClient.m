@@ -889,23 +889,21 @@
     return YES;
 }
 
+/* Used when the current client is closed, focus_last will then prevent
+ * focus from going to the mouse pointer */
 - (void) unfocus;
 {
     if ([[AZFocusManager defaultManager] focus_client] == self) {
 #ifdef DEBUG_FOCUS
         AZDebug("client_unfocus for %lx\n", oself->window);
 #endif
-	[[AZFocusManager defaultManager] fallback: OB_FOCUS_FALLBACK_UNFOCUSING];
+	[[AZFocusManager defaultManager] fallback: OB_FOCUS_FALLBACK_CLOSED];
     }
 }
 
 - (void) activateHere: (BOOL) here
 {
-    /* This check is for the client_list_menu trying to activate
-     * a closed client. */
     AZScreen *screen = [AZScreen defaultScreen];
-    int index = [[AZClientManager defaultManager] indexOfClient: self];
-    if (index == NSNotFound) return;
     if ([self normal] && [screen showingDesktop])
     {
 	[screen showDesktop: NO];
@@ -1119,7 +1117,7 @@
             SIZE_SET(base_size, size.base_width, size.base_height);
 	}
     
-        if (size.flags & PResizeInc)
+        if (size.flags & PResizeInc && size.width_inc && size.height_inc)
 	{
             SIZE_SET(size_inc, size.width_inc, size.height_inc);
 	}
@@ -1272,8 +1270,8 @@
 	ASSIGN(title, ([NSString stringWithFormat: @"%@ - [%u]", title, title_count]));
     }
 
-    PROP_SETS(window, net_wm_visible_name, (char*)[title UTF8String]);
 no_number:
+    PROP_SETS(window, net_wm_visible_name, (char*)[title UTF8String]);
 
     if (frame)
 	[frame adjustTitle];
@@ -1288,6 +1286,9 @@ no_number:
     /* try netwm */
     if (PROP_GETS(window, net_wm_icon_name, utf8, &s)) {
       ASSIGNCOPY(icon_title, s);
+    } else if (PROP_GETS(window, wm_icon_name, utf8, &s)) {
+      /* try old x stuff with utf8*/
+      ASSIGNCOPY(icon_title, s);
     } else if (PROP_GETS(window, wm_icon_name, locale, &s)) {
       /* try old x stuff */
       ASSIGNCOPY(icon_title, s);
@@ -1296,7 +1297,7 @@ no_number:
       read_title = NO;
     }
 
-    /* append the title count, dont display the number for the first window */
+    /* append the title count, dont display the number for the first window. */
     if (read_title && title_count > 1) {
 	ASSIGN(icon_title, ([NSString stringWithFormat: @"%@ - [%u]", icon_title, title_count]));
     }
@@ -1496,7 +1497,7 @@ no_number:
     /* start with everything (cept fullscreen) */
     decorations = 
         (OB_FRAME_DECOR_TITLEBAR |
-         (ob_rr_theme->show_handle ? OB_FRAME_DECOR_HANDLE : 0) |
+         OB_FRAME_DECOR_HANDLE |
          OB_FRAME_DECOR_GRIPS |
          OB_FRAME_DECOR_BORDER |
          OB_FRAME_DECOR_ICON |
@@ -1553,7 +1554,7 @@ no_number:
                    (mwmhints.decorations & OB_MWM_DECOR_TITLE)))
                 /* if the mwm hints request no handle or title, then all
                    decorations are disabled */
-                decorations = config_theme_keepborder ? OB_FRAME_DECOR_BORDER : 0;
+		decorations = config_theme_keepborder ? decorations & OB_FRAME_DECOR_BORDER : 0;
         }
     }
 

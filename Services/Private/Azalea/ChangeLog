@@ -3,6 +3,9 @@
 	* action.h:
 	* action.m:
 	update to 3.3-release (part III).
+	* AZClientManager.m:
+	* AZClient.m:
+	update to 3.3-release (final part). So far so good.
 
 2006-09-02 Yen-Ju Chen <yjchenx at gmail>
 

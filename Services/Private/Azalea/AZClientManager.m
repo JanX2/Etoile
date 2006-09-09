@@ -231,8 +231,7 @@ static AZClientManager *sharedInstance;
     if (ob_state() == OB_STATE_RUNNING) {
         int x = [client area].x, ox = x;
         int y = [client area].y, oy = y;
-
-	[client placeAtX: &x y: &y];
+	BOOL transient = [client placeAtX: &x y: &y];
 
         /* make sure the window is visible. */
 	[client findOnScreenAtX: &x y: &y
@@ -248,10 +247,11 @@ static AZClientManager *sharedInstance;
                                 off-screen and on xinerama divides (ie,
                                 it is up to the placement routines to avoid
                                 the xinerama divides) */
-                        rude: (([client positioned] & PPosition) &&
+                        rude: transient ||
+			     ((([client positioned] & PPosition) &&
                               !([client positioned] & USPosition)) &&
                              [client normal] &&
-                             ![client session]];
+                             ![client session])];
         if (x != ox || y != oy) 	 
 	    [client moveToX: x y: y];
     }
