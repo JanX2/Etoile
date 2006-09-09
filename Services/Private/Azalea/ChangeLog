@@ -1,3 +1,9 @@
+2006-09-09 Yen-Ju Chen <yjchenx at gmail>
+
+	* action.h:
+	* action.m:
+	update to 3.3-release (part III).
+
 2006-09-02 Yen-Ju Chen <yjchenx at gmail>
 
 	* client_list_menu: Fix typo.

@@ -81,7 +81,10 @@ struct Activate {
 
 struct MoveResizeRelative {
     struct AnyAction any;
-    int delta;
+    int deltax;
+    int deltay;
+    int deltaxl;
+    int deltayu;
 };
 
 struct SendToDesktop {
@@ -188,6 +191,8 @@ typedef void (*AZActionFunc)(union ActionData *data);
    action_move_relative_vert - the delta
    action_resize_relative_horz - the delta
    action_resize_relative_vert - the delta
+   action_move_relative - the deltas
+   action_resize_relative - the deltas
 */
 
 /* Autoreleased */
@@ -256,6 +261,10 @@ void action_toggle_omnipresent(union ActionData *data);
 void action_move_relative_horz(union ActionData *data);
 /* MoveResizeRelative */
 void action_move_relative_vert(union ActionData *data);
+/* MoveResizeRelative */
+void action_move_relative(union ActionData *data);
+/* MoveResizeRelative */
+void action_resize_relative(union ActionData *data);
 /* ClientAction */
 void action_move_to_center(union ActionData *data);
 /* MoveResizeRelative */
