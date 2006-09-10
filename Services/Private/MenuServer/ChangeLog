@@ -1,3 +1,10 @@
+2006-09-10  Quentin Mathe <qmathe@club-internet.fr>
+
+    * GNUmakefile.postamble: Added include etoile.make and declared 
+    variable DEPENDENCIES to fix the Etoile repository build. The build was
+    broken by passing 'x11=yes' without importing XWindowServerKit 
+    dependency (library and headers).
+
 2006-09-06  Quentin Mathe <qmathe@club-internet.fr>
 
     * Subprojects/HardwareEntry:

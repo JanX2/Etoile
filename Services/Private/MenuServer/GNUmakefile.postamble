@@ -18,6 +18,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+# The following include isn't put in the main GNUmakefile directly because PM
+# manages it. However it must follow any gnustep-make makefiles included, 
+# that's why we do the include in this GNUmakefile.postamble.
+include ../../../etoile.make
+
+DEPENDENCIES = XWindowServerKit
+
 ifeq ($(debug), yes)
         APP=$(APP_NAME).debug
 else
