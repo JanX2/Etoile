@@ -417,7 +417,6 @@ static AZDock *sharedInstance;
   [iconWindow setDesktop: ALL_DESKTOP];
   [iconWindow skipTaskbarAndPager];
 
-  //GNUstepIconView *view = [[GNUstepIconView alloc] initWithFrame: [[iconWindow contentView] bounds]];
   AZWorkspaceView *view = [[AZWorkspaceView alloc] initWithFrame: [[iconWindow contentView] bounds]];
   [iconWindow setContentView: view];
 

@@ -8,10 +8,36 @@
   NSLog(@"%@", not);
 }
 
+- (void) mouseDown: (NSEvent *) event
+{
+  if ([event type] == NSLeftMouseDown) {
+    BOOL success = NO;
+    /* Open the GSWorkspaceApplication */
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *application = [defaults stringForKey: @"GSWorkspaceApplication"];
+    if (application == nil) {
+      /* Get from NSGlobalDomain */
+      application = [[defaults persistentDomainForName: @"NSGlobalDomainName"] objectForKey: @"GSWorkspaceApplication"];
+      if (application == nil) {
+        application = @"GWorkspace";
+      }
+    }
+    if (application) {
+      success = [[NSWorkspace sharedWorkspace] launchApplication: application];
+    } 
+    if (success == NO) {
+      /* Open xterm by default */
+      [NSTask launchedTaskWithLaunchPath: @"xterm" arguments: nil];
+    }
+  } else {
+    [super mouseDown: event];
+  }
+}
+
 - (id) initWithFrame: (NSRect) rect
 {
   self = [super initWithFrame: rect];
-  ASSIGN(GNUstepIcon, [NSImage imageNamed: @"GNUstep.tiff"]);
+  ASSIGN(image, [NSImage imageNamed: @"GNUstep.tiff"]);
 
   [[NSDistributedNotificationCenter defaultCenter] 
 	  addObserver: self
@@ -22,25 +48,8 @@
   return self;
 }
 
-- (void) drawRect: (NSRect) rect
-{
-  [super drawRect: rect];
-  if (GNUstepIcon) {
-    NSRect source = NSMakeRect(0, 0, 64, 64);
-    NSRect dest = NSMakeRect(8, 8, 48, 48);
-    source.size = [GNUstepIcon size];
-    [self lockFocus];
-    [GNUstepIcon drawInRect: dest
-	     fromRect: source
-	    operation: NSCompositeSourceAtop
-	     fraction: 1];
-    [self unlockFocus];
-  }
-}
-
 - (void) dealloc
 {
-  DESTROY(GNUstepIcon);
   [super dealloc];
 }
 
