@@ -64,7 +64,7 @@ static AZDock *sharedInstance;
   int i, x, y, w, h;
 
   /* Calculate the position */
-  NSSize size = [[NSScreen mainScreen] frame].size;
+  NSSize size = [[iconWindow screen] frame].size;
   w = [iconWindow frame].size.width;
   h = 0;
 
@@ -150,6 +150,8 @@ static AZDock *sharedInstance;
     NSLog(@"Error: cannot get client list");
     return;
   }
+
+//  NSLog(@"%@", [[NSWorkspace sharedWorkspace] launchedApplications]);
 
 #if 0
   {
@@ -304,9 +306,7 @@ static AZDock *sharedInstance;
 {
   Atom atom = event->xclient.message_type;
   if (atom == X_NET_NUMBER_OF_DESKTOPS) {
-    //NSLog(@"number of desktop");
-  } else if (atom == X_NET_DESKTOP_NAMES) {
-    //NSLog(@"desktop names");
+    [workspaceView setNumberOfWorkspaces: event->xclient.data.l[0]];
   }
 }
 
@@ -320,8 +320,10 @@ static AZDock *sharedInstance;
     if (atom == X_NET_CLIENT_LIST) {
       [self readClientList];
       [self organizeApplications];
-    } else if (atom = X_NET_CURRENT_DESKTOP) {
-      //NSLog(@"Property: Current desktop");
+    } else if (atom == X_NET_CURRENT_DESKTOP) {
+      [workspaceView setCurrentWorkspace: [[iconWindow screen] currentWorkspace]];
+    } else if (atom == X_NET_DESKTOP_NAMES) {
+      [workspaceView setWorkspaceNames: [[iconWindow screen] namesOfWorkspaces]];
     }
     return;
   }
@@ -368,7 +370,6 @@ static AZDock *sharedInstance;
 	break;
 #endif
       case ClientMessage:
-	NSLog(@"Here");
 	[self handleClientMessage: &event];
 	break;
       case DestroyNotify:
@@ -435,20 +436,14 @@ static AZDock *sharedInstance;
   [iconWindow setDesktop: ALL_DESKTOP];
   [iconWindow skipTaskbarAndPager];
 
-  AZWorkspaceView *view = [[AZWorkspaceView alloc] initWithFrame: [[iconWindow contentView] bounds]];
-  [iconWindow setContentView: view];
-
-#if 0 /* Contextual menu */
-  NSMenu *menu = [[NSMenu alloc] initWithTitle: @"Test"];
-  [menu addItemWithTitle: @"Menu11" action: NULL keyEquivalent: nil];
-  [menu addItemWithTitle: @"Menu12" action: NULL keyEquivalent: nil];
-  [menu addItemWithTitle: @"Menu13" action: NULL keyEquivalent: nil];
-  [menu addItemWithTitle: @"Menu14" action: NULL keyEquivalent: nil];
-  [view setMenu: menu];
-  DESTROY(view);
-#endif
-
+  workspaceView = [[AZWorkspaceView alloc] initWithFrame: [[iconWindow contentView] bounds]];
+  [iconWindow setContentView: workspaceView];
   [iconWindow orderFront: self];
+
+  /* Update workspace */
+  [workspaceView setWorkspaceNames: [[iconWindow screen] namesOfWorkspaces]];
+  [workspaceView setNumberOfWorkspaces: [[iconWindow screen] numberOfWorkspaces]];
+  [workspaceView setCurrentWorkspace: [[iconWindow screen] currentWorkspace]];
 
   [self readClientList];
   [self organizeApplications];
@@ -458,6 +453,7 @@ static AZDock *sharedInstance;
 {
   DESTROY(apps);
   DESTROY(lastClientList);
+  DESTROY(workspaceView);
   [super dealloc];
 }
 

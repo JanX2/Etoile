@@ -3,6 +3,7 @@
 #import <X11/Xlib.h>
 
 @class XWindow;
+@class AZWorkspaceView;
 
 typedef enum _AZDockPosition {
   AZDockRightPosition = 0,
@@ -21,6 +22,7 @@ typedef enum _AZDockPosition {
 
   /* Replace default gnustep icon window */
   XWindow *iconWindow;
+  AZWorkspaceView *workspaceView;
   AZDockPosition position;
 
   Atom X_NET_CURRENT_DESKTOP;

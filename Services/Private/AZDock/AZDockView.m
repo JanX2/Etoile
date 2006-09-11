@@ -44,11 +44,24 @@
   return delegate;
 }
 
+- (NSMenu *) contextualMenu
+{
+  return contextualMenu;
+}
+
+- (id) initWithFrame: (NSRect) frame
+{
+  self = [super initWithFrame: frame];
+  contextualMenu = [[NSMenu alloc] init];
+  [self setMenu: contextualMenu];
+  return self;
+}
 
 - (void) dealloc
 {
   DESTROY(image);
   DESTROY(delegate);
+  DESTROY(contextualMenu);
   [super dealloc];
 }
 
