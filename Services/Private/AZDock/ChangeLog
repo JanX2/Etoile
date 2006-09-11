@@ -3,6 +3,9 @@
 	* AZWorkspaceView: 
 	make it a subclass of AZDockView.
 	launch GSWorkspaceApplication or xterm with left click.
+	* AZDock:
+	centralize atoms declaration.
+	check change of workspace.
 
 2006-09-05 Yen-Ju Chen <yjchenx at gmail>
 

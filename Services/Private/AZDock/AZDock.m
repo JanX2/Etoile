@@ -139,13 +139,10 @@ static AZDock *sharedInstance;
   int i, j, k, m;
   AZDockApp *app;
 
-  Atom prop = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
-  Atom skip_pager = XInternAtom(dpy, "_NET_WM_STATE_SKIP_PAGER", False);
-  Atom skip_taskbar = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);
   Atom type_ret;
   int format_ret;
   unsigned long after_ret;
-  int result = XGetWindowProperty(dpy, root_win, prop,
+  int result = XGetWindowProperty(dpy, root_win, X_NET_CLIENT_LIST,
 	                        0, 0x7FFFFFFF, False, XA_WINDOW,
 			        &type_ret, &format_ret, &count,
 			        &after_ret, (unsigned char **)&win);
@@ -218,8 +215,8 @@ static AZDock *sharedInstance;
       unsigned long k, kcount;
       Atom *states = XWindowNetStates(win[i], &kcount);
       for (k = 0; k < kcount; k++) {
-        if ((states[k] == skip_pager) ||
-	    (states[k] == skip_taskbar)) {
+        if ((states[k] == X_NET_WM_STATE_SKIP_PAGER) ||
+	    (states[k] == X_NET_WM_STATE_SKIP_TASKBAR)) {
 	  skip = YES;
 	  break;
         }
@@ -303,18 +300,28 @@ static AZDock *sharedInstance;
   [self organizeApplications];
 }
 
+- (void) handleClientMessage: (XEvent *) event
+{
+  Atom atom = event->xclient.message_type;
+  if (atom == X_NET_NUMBER_OF_DESKTOPS) {
+    //NSLog(@"number of desktop");
+  } else if (atom == X_NET_DESKTOP_NAMES) {
+    //NSLog(@"desktop names");
+  }
+}
+
 - (void) handlePropertyNotify: (XEvent *) event
 {
   Window win = event->xproperty.window;  
   Atom atom = event->xproperty.atom;
-  Atom client_list = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
 
   if (win == root_win)
   {
-    if ((atom == client_list)/* || (atom == AZ_NET_CURRENT_DESKTOP)*/)
-    {
+    if (atom == X_NET_CLIENT_LIST) {
       [self readClientList];
       [self organizeApplications];
+    } else if (atom = X_NET_CURRENT_DESKTOP) {
+      //NSLog(@"Property: Current desktop");
     }
     return;
   }
@@ -360,6 +367,10 @@ static AZDock *sharedInstance;
 	[self handleCreateNotify: &event];
 	break;
 #endif
+      case ClientMessage:
+	NSLog(@"Here");
+	[self handleClientMessage: &event];
+	break;
       case DestroyNotify:
 	/* We need to track the destroy notify only for GNUstep application
 	 * because if GNUstep application is hiden, all windows is unmaped
@@ -405,6 +416,13 @@ static AZDock *sharedInstance;
   /* Decide position */
   position = [[NSUserDefaults standardUserDefaults] integerForKey: @"DockPosition"];
 
+  /* Setup Atom */
+  X_NET_CURRENT_DESKTOP = XInternAtom(dpy, "_NET_CURRENT_DESKTOP", False);
+  X_NET_NUMBER_OF_DESKTOPS = XInternAtom(dpy, "_NET_NUMBER_OF_DESKTOPS", False);
+  X_NET_DESKTOP_NAMES = XInternAtom(dpy, "_NET_DESKTOP_NAMES", False);
+  X_NET_CLIENT_LIST = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
+  X_NET_WM_STATE_SKIP_PAGER = XInternAtom(dpy, "_NET_WM_STATE_SKIP_PAGER", False);
+  X_NET_WM_STATE_SKIP_TASKBAR = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification

@@ -39,11 +39,13 @@
   self = [super initWithFrame: rect];
   ASSIGN(image, [NSImage imageNamed: @"GNUstep.tiff"]);
 
+#if 0
   [[NSDistributedNotificationCenter defaultCenter] 
 	  addObserver: self
 	  selector: @selector(workspaceDidChanged:)
 	  name: XCurrentWorkspaceDidChangeNotification
 	  object: nil];
+#endif
 
   return self;
 }
