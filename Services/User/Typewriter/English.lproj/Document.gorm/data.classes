@@ -1,0 +1,19 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    TWDocument = {
+	Actions = (
+	);
+	Outlets = (
+	    textView,
+	    scrollView
+	);
+	Super = NSDocument;
+    };
+    TWTextView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSTextView;
+    };
+}

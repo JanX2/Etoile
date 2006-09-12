@@ -1,0 +1,35 @@
+{
+   ApplicationDescription = "Typewriter";
+   ApplicationIcon = "";
+   ApplicationName = Typewriter;
+   ApplicationRelease = 0.1;
+   Authors = "Yen-Ju Chen";
+   Copyright = "Copyright (C) 200x by Yen-Ju Chen";
+   CopyrightDescription = "Released under BSD Licence";
+   FullVersionID = 0.1;
+   URL = "";
+   NSTypes = (
+      {
+         NSName = "TWPlainTextType";
+         NSHumanReadableName = "Plain Text Document";
+         NSUnixExtensions = ("txt");
+         NSRole = Editor;
+         NSDocumentClass = TWDocument;
+      },
+      {
+         NSName = "TWRTFTextType";
+         NSHumanReadableName = "Rich Text Format Document";
+         NSUnixExtensions = ("rtf");
+         NSRole = Editor;
+         NSDocumentClass = TWDocument;
+      },
+      {
+         NSName = "TWRTFDTextType";
+         NSHumanReadableName = "Rich Text Format Document";
+         NSUnixExtensions = ("rtfd");
+         NSRole = Editor;
+         NSDocumentClass = TWDocument;
+      }
+   );
+}
+
