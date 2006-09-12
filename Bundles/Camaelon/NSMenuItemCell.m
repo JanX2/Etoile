@@ -289,20 +289,27 @@ static NSImage  *arrowImageCurrent = nil;
 
   if ([_menuItem hasSubmenu])
     {
-      NSSize    size;
-      NSPoint   position;
+      if (arrowImageCurrent == nil)
+        {
+          NSWarnMLog(@"Missing arrow image to draw menu item with submenu");
+        }
+      else
+        {
+          NSSize    size;
+          NSPoint   position;
 
-      size = [arrowImageCurrent size];
-      position.x = cellFrame.origin.x + cellFrame.size.width - size.width;
-      position.y = MAX(NSMidY(cellFrame) - (size.height/2.), 0.);
-      /*
- *        * Images are always drawn with their bottom-left corner at the origin
- *               * so we must adjust the position to take account of a flipped view.
- *                      */
-      if ([controlView isFlipped])
-        position.y += size.height;
-
-      [arrowImageCurrent compositeToPoint: position operation: NSCompositeSourceOver];
+          size = [arrowImageCurrent size];
+          position.x = cellFrame.origin.x + cellFrame.size.width - size.width;
+          position.y = MAX(NSMidY(cellFrame) - (size.height/2.), 0.);
+          /*
+      *        * Images are always drawn with their bottom-left corner at the origin
+      *               * so we must adjust the position to take account of a flipped view.
+      *                      */
+          if ([controlView isFlipped])
+              position.y += size.height;
+        
+          [arrowImageCurrent compositeToPoint: position operation: NSCompositeSourceOver];
+        }
     }
   /* FIXME/TODO here - decide a consistent policy for images.
  *    *

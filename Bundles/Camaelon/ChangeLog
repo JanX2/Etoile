@@ -1,6 +1,15 @@
+2006-09-12 Quentin Mathe <qmathe@club-internet.fr>
+
+	* NSMenuItemCell.m: Applied a patch submitted by Andreas Hoschler that
+	corrects a crash on Solaris. Improved the patch a bit to log the error
+	since we probably need a better image handling to eliminate such
+	potential issue. 
+	
 2006-05-19 Nicolas Roard <nicolas@roard.com>
 
-	* CLImage.m: modified the path to properly access the images used by the Windows. Thanks for Chris Vetter perseverance in re-re-re-submitting a patch for it ;-)
+	* CLImage.m: modified the path to properly access the images used by 
+	the Windows. Thanks for Chris Vetter perseverance in 
+	re-re-re-submitting a patch for it ;-)
 
 2006-03-19 Nicolas Roard <nicolas@roard.com>
 
