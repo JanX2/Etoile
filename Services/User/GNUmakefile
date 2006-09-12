@@ -16,6 +16,7 @@ ifeq ($(user-base), yes)
     export hardware ?= yes
     export dictionary ?= yes
     export grr ?= yes
+    export typewriter ?= yes
 
 endif
 
@@ -26,6 +27,7 @@ ifeq ($(user-base), no)
     export hardware ?= no
     export dictionary ?= no
     export grr ?= no
+    export typewriter ?= no
 
 endif
 
@@ -51,6 +53,10 @@ endif
 
 ifeq ($(grr), yes)
 	SUBPROJECTS += Grr
+endif
+
+ifeq ($(typewriter), yes)
+	SUBPROJECTS += Typewriter
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
