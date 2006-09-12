@@ -1,5 +1,14 @@
 2006-09-12 Quentin Mathe <qmathe@club-internet.fr>
 
+	* NSBrowserCell.m (-highlightColorInView:) 
+	(-drawInteriorWithFrame:inView:): Added a new method 
+	-highlightColorInView: in the 'theme' category. This overrides the 
+	method currently used by the class itself and allows to remove a 
+	dubious line in the other method. Inspired by an Andreas Hoschler 
+	patch.
+
+2006-09-12 Quentin Mathe <qmathe@club-internet.fr>
+
 	* NSMenuItemCell.m: Applied a patch submitted by Andreas Hoschler that
 	corrects a crash on Solaris. Improved the patch a bit to log the error
 	since we probably need a better image handling to eliminate such

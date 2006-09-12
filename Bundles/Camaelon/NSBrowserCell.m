@@ -6,6 +6,11 @@
 
 @implementation NSBrowserCell (theme)
 
+- (NSColor *) highlightColorInView: (NSView *)controlView
+{
+  return [NSColor selectedRowBackgroundColor];
+}
+
 - (void) drawInteriorWithFrame: (NSRect)cellFrame inView: (NSView *)controlView
 {     
   NSRect        title_rect = cellFrame;
@@ -20,7 +25,7 @@
   if (_cell.is_highlighted || _cell.state)
     {
       backColor = [self highlightColorInView: controlView];
-	  backColor = [NSColor selectedRowBackgroundColor];
+
       [backColor set];
       if (!_browsercell_is_leaf)
         image = [isa highlightedBranchImage];
