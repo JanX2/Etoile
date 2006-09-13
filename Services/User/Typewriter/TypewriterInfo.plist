@@ -18,14 +18,14 @@
       },
       {
          NSName = "TWRTFTextType";
-         NSHumanReadableName = "Rich Text Format Document";
+         NSHumanReadableName = "RTF Document";
          NSUnixExtensions = ("rtf");
          NSRole = Editor;
          NSDocumentClass = TWDocument;
       },
       {
          NSName = "TWRTFDTextType";
-         NSHumanReadableName = "Rich Text Format Document";
+         NSHumanReadableName = "RTFD Document";
          NSUnixExtensions = ("rtfd");
          NSRole = Editor;
          NSDocumentClass = TWDocument;

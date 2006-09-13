@@ -41,10 +41,25 @@
 
 - (NSData *) dataRepresentationOfType: (NSString *) type
 {
+  NSTextStorage *ts = [textView textStorage];
+  if ([type isEqualToString: @"TWRTFTextType"]) {
+    return [ts RTFFromRange: NSMakeRange(0, [ts length]) documentAttributes: nil];
+  } else if ([type isEqualToString: @"TWPlainTextType"]) {
+    return [[ts string] dataUsingEncoding: [NSString defaultCStringEncoding]];
+  } else {
+    return nil;
+  }
 }
 
 - (NSFileWrapper *)fileWrapperRepresentationOfType:(NSString *)type
 {
+  if ([type isEqualToString: @"TWRTFDTextType"]) {
+    NSTextStorage *ts = [textView textStorage];
+    return [ts RTFDFileWrapperFromRange: NSMakeRange(0, [ts length])
+	       documentAttributes: nil];
+  } else {
+    return [super fileWrapperRepresentationOfType: type];
+  }
 }
 
 - (BOOL)loadFileWrapperRepresentation:(NSFileWrapper *)wrapper
