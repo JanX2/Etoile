@@ -66,6 +66,8 @@ static float MenuTitleFillerWidth = 0;
         f, NSFontAttributeName,
         [NSColor blackColor], NSForegroundColorAttributeName,
         nil];
+
+        titleVisible = NO;
     }
 
   return self;
@@ -93,12 +95,15 @@ static float MenuTitleFillerWidth = 0;
                               operation: NSCompositeCopy];
     }
 
-  font = [titleDrawingAttributes objectForKey: NSFontAttributeName];
-  height = [font defaultLineHeightForFont];
-  rect = NSMakeRect(4, (NSHeight(myFrame) - height) / 2,
-                    NSWidth(myFrame), height);
-  [[[self owner] title] drawInRect: rect
-                    withAttributes: titleDrawingAttributes];
+  if (titleVisible)
+  {
+    font = [titleDrawingAttributes objectForKey: NSFontAttributeName];
+    height = [font defaultLineHeightForFont];
+    rect = NSMakeRect(4, (NSHeight(myFrame) - height) / 2,
+                        NSWidth(myFrame), height);
+    [[[self owner] title] drawInRect: rect
+                      withAttributes: titleDrawingAttributes];
+  }
 
   myFrame.origin = NSZeroPoint;
   [[NSColor blackColor] set];
@@ -145,6 +150,16 @@ static float MenuTitleFillerWidth = 0;
       RELEASE (closeButton);
       [self setNeedsDisplay: YES];
     }
+}
+
+- (BOOL) isTitleVisible;
+{
+  return titleVisible;
+}
+
+- (void) setTitleVisible: (BOOL)visible
+{
+  titleVisible = visible;
 }
 
 @end

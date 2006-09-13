@@ -355,10 +355,12 @@ enum {
             {
               [_titleView
                 addCloseButtonWithAction: @selector(_performMenuClose:)];
+              [_titleView setTitleVisible: YES];
             }
           else
             {
               [_titleView removeCloseButton];
+              [_titleView setTitleVisible: NO];
             }
         }
     }

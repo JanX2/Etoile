@@ -1,3 +1,13 @@
+2006-09-13  Quentin Mathe <qmathe@club-internet.fr>
+
+    * EtoileMenuTitleView.h
+    * EtoileMenuTitleView.m
+    (-isTitleVisible) (-setTitleVisible:): New methods.
+    (-init): Modified to init titleVisible variable.
+    (-drawRect:): Modified to draw the title only when titleVisible is YES.
+    * NSMenuView+Hackery.m (-update): Modified to make the title visible only 
+    when the menu is torn off.
+
 2006-08-07  Quentin Mathe <qmathe@club-internet.fr>
 
     * GNUmakefile: Added GNUSTEP_INSTALLATION_DIR to have the bundle installed 
