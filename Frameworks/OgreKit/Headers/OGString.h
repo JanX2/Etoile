@@ -25,4 +25,3 @@ extern NSString	* const OgreStringException;
 
 - (Class)mutableClass;
 @end
-

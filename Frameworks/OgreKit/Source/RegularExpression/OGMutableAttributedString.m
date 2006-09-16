@@ -11,7 +11,7 @@
  * Tabsize: 4
  */
 
-#import "OGMutableAttributedString.h"
+#import <OgreKit/OGMutableAttributedString.h>
 #import <AppKit/AppKit.h>
 
 @implementation OGMutableAttributedString

@@ -1,16 +1,66 @@
-#Install Public Headers
 
-OgreKit_HEADER_FILES_DIR = ./Headers
+OgreKit_HEADER_FILES_DIR = ./OgreKit
 OgreKit_HEADER_FILES_INSTALL_DIR = OgreKit
+# Regular Expression
 OgreKit_HEADER_FILES = \
 	NSString_OgreKitAdditions.h \
+	OGAttributedString.h \
+	OGMutableAttributedString.h \
+	OGMutablePlainString.h \
 	OGMutableString.h \
+	OGPlainString.h \
+	OGRegularExpression.h \
 	OGRegularExpressionCapture.h \
 	OGRegularExpressionEnumerator.h \
 	OGRegularExpressionFormatter.h \
-	OGRegularExpression.h \
 	OGRegularExpressionMatch.h \
 	OGReplaceExpression.h \
-	OGString.h \
-	OgreKit.h
+	OGString.h 
+
+# Text Finder
+OgreKit_HEADER_FILES += \
+	OgreFindAllThread.h \
+	OgreFindThread.h \
+	OgreHighlightThread.h \
+	OgreReplaceAllThread.h \
+	OgreReplaceAndFindThread.h \
+	OgreTextFindBranch.h \
+	OgreTextFindComponent.h \
+	OgreTextFindComponentEnumerator.h \
+	OgreTextFindLeaf.h \
+	OgreTextFindReverseComponentEnumerator.h \
+	OgreTextFindRoot.h \
+	OgreTextFindThread.h \
+	OgreTextFinder.h 
+
+# Result 
+OgreKit_HEADER_FILES += \
+	OgreFindResultBranch.h \
+	OgreFindResultLeaf.h \
+	OgreFindResultRoot.h \
+	OgreTextFindResult.h 
+
+# Control and view
+OgreKit_HEADER_FILES += \
+	OgreFindPanelController.h \
+	OgreFindResultWindowController.h \
+	OgreKit.h \
+	OgreOutlineColumn.h \
+	OgreOutlineView.h \
+	OgreTableColumn.h \
+	OgreTableView.h \
+	OgreTextFindProgressSheet.h \
+	OgreView.h
+
+# NSTextView adaptor
+OgreKit_HEADER_FILES += \
+	OgreTextView.h \
+	OgreTextViewAdapter.h \
+	OgreTextViewFindResult.h \
+	OgreTextViewGraphicAllowedAdapter.h \
+	OgreTextViewMatchFindResult.h \
+	OgreTextViewPlainAdapter.h \
+	OgreTextViewRichAdapter.h \
+	OgreTextViewUndoer.h \
+	OgreUnhighlightThread.h 
 

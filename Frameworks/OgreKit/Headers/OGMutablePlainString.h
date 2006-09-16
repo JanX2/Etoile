@@ -12,7 +12,7 @@
  */
 
 #import <OgreKit/OGMutableString.h>
-#import "OGPlainString.h"
+#import <OgreKit/OGPlainString.h>
 
 @interface OGMutablePlainString : OGPlainString <OGMutableStringProtocol>
 {

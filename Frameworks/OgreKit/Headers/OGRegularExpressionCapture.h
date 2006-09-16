@@ -19,7 +19,6 @@
 #	define HAVE_CONFIG_H
 #endif
 #import <oniguruma.h>
-//#include <OgreKit/oniguruma.h>
 
 
 // constants
@@ -54,36 +53,36 @@ static NSString *const calcRegex = @"\\g<e>(?<e>\\g<t>(?:(?@<e1>\\+\\g<t>)|(?@<e
 @interface OGRegularExpressionCapture : NSObject <NSCopying, NSCoding>
 {
 	OnigCaptureTreeNode         *_captureNode;      // Oniguruma capture tree node
-	unsigned                    _index,             // order of capture
-                                _level;             // level
-	OGRegularExpressionMatch	*_match;            // OGRegularExpressionMatch where capture comes from
-	OGRegularExpressionCapture	*_parent;           // parent
+	unsigned                    _index,             // マッチした順番
+                                _level;             // 深さ
+	OGRegularExpressionMatch	*_match;            // 生成主のOGRegularExpressionMatchオブジェクト
+	OGRegularExpressionCapture	*_parent;           // 親
 }
 
 /*********
- * Information *
+ * 諸情報 *
  *********/
-// index of capture
+// グループ番号
 - (unsigned)groupIndex;
 
-// name of capture
+// グループ名
 - (NSString*)groupName;
 
-// index of children 0,1,2,...
+// 何番目の子要素であるか 0,1,2,...
 - (unsigned)index;
 
-// level
+// 深さ
 // 0: root
 - (unsigned)level;
 
-// number of children
+// 子要素の数
 - (unsigned)numberOfChildren;
 
-// children
+// 子要素たち
 // return nil in the case of numberOfChildren == 0
 - (NSArray*)children;
 
-// children at index
+// index番目の子要素
 - (OGRegularExpressionCapture*)childAtIndex:(unsigned)index;
 
 // match
@@ -93,20 +92,20 @@ static NSString *const calcRegex = @"\\g<e>(?<e>\\g<t>(?:(?@<e1>\\+\\g<t>)|(?@<e
 - (NSString*)description;
 
 /*********
- * string *
+ * 文字列 *
  *********/
-// target string
+// マッチの対象になった文字列
 - (NSString*)targetString;
 - (NSAttributedString*)targetAttributedString;
 
-// matched string
+// マッチした文字列
 - (NSString*)string;
 - (NSAttributedString*)attributedString;
 
 /*******
- * range *
+ * 範囲 *
  *******/
-// range of matched string
+// マッチした文字列の範囲
 - (NSRange)range;
 
 /************************
@@ -115,4 +114,3 @@ static NSString *const calcRegex = @"\\g<e>(?<e>\\g<t>(?:(?@<e1>\\+\\g<t>)|(?@<e
 - (void)acceptVisitor:(id <OGRegularExpressionCaptureVisitor>)aVisitor;
 
 @end
-

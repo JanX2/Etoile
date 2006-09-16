@@ -27,24 +27,24 @@ extern NSString	* const OgreReplaceException;
 }
 
 /*********
- * Initiation *
+ * 初期化 *
  *********/
 /*
- special characters used in expressionString (replaceString ?)
-  \&, \0		string of match
-  \1 ... \9		substrings of match
-  \+			last substring of match
-  \`			string before match (prematchString)
-  \'			string after match (postmatchString)
-  \-			string between this match and previous match (stringBetweenLastMatchAndLastButOneMatch)
-  \g<name>  	(?<name>...) substring of match (usable while OgreCaptureGroupOption is specified)
-  \g<index> 	index of substring of match (?<name>...) (usable while OgreCaptureGroupOption is specified)
-  \\			backslash "\"
-  \t			tab (0x09)
-  \n			newline (0x0A)
-  \r			return (0x0D)
+ expressionString中では次の特殊文字が使用できる。
+  \&, \0		マッチした文字列
+  \1 ... \9		n番目の括弧の内容
+  \+			最後の括弧に対応する文字列
+  \`			マッチした部分より前の文字列 (prematchString)
+  \'			マッチした部分より後ろの文字列 (postmatchString)
+  \-			最後にマッチした部分と、一つ前にマッチした部分の間の文字列 (stringBetweenLastMatchAndLastButOneMatch)
+  \g<name>  	(?<name>...)にマッチした部分文字列 (OgreCaptureGroupOptionを指定した場合に使用可能)
+  \g<index> 	index番目に(...)か(?<name>...)にマッチした部分文字列 (OgreCaptureGroupOptionを指定した場合に使用可能)
+  \\			バックスラッシュ "\"
+  \t			水平タブ (0x09)
+  \n			改行 (0x0A)
+  \r			復帰 (0x0D)
   \x{HHHH}		16-bit Unicode character U+HHHH
-  \OtherCharacter	\Other character
+  \その他の文字	\その他の文字
  */
 - (id)initWithString:(NSString*)replaceString 
 	syntax:(OgreSyntax)syntax 
@@ -90,11 +90,10 @@ extern NSString	* const OgreReplaceException;
 	escapeCharacter:(NSString*)character;
 
 /*******
- * replace *
+ * 置換 *
  *******/
 - (NSObject<OGStringProtocol>*)replaceMatchedOGStringOf:(OGRegularExpressionMatch*)match;
 - (NSString*)replaceMatchedStringOf:(OGRegularExpressionMatch*)match;
 - (NSAttributedString*)replaceMatchedAttributedStringOf:(OGRegularExpressionMatch*)match;
 
 @end
-

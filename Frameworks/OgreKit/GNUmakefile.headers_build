@@ -9,3 +9,4 @@ after-clean::
 	if [ -h "OgreKit" ]; then \
 	  rm OgreKit; \
 	fi;
+

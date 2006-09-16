@@ -20,26 +20,25 @@ extern NSString	* const OgreEnumeratorException;
 
 @interface OGRegularExpressionEnumerator : NSEnumerator <NSCopying, NSCoding>
 {
-	OGRegularExpression	*_regex;				// Regular expression
-	NSObject<OGStringProtocol>			*_targetString;			// target string
-	unichar             *_UTF16TargetString;	// target string in UTF16
+	OGRegularExpression	*_regex;				// 正規表現オブジェクト
+	NSObject<OGStringProtocol>			*_targetString;			// 検索対象文字列
+	unichar             *_UTF16TargetString;	// UTF16での検索対象文字列
 	unsigned			_lengthOfTargetString;	// [_targetString length]
-	NSRange				_searchRange;			// search range
-	unsigned			_searchOptions;			// search options
-	int					_terminalOfLastMatch;	// position of previous match  (_region->end[0] / sizeof(unichar))
-	unsigned			_startLocation;			// start location to search
-	BOOL				_isLastMatchEmpty;		// whether previous match is empty (not exist ?)
+	NSRange				_searchRange;			// 検索範囲
+	unsigned			_searchOptions;			// 検索オプション
+	int					_terminalOfLastMatch;	// 前回にマッチした文字列の終端位置  (_region->end[0] / sizeof(unichar))
+	unsigned			_startLocation;			// マッチ開始位置
+	BOOL				_isLastMatchEmpty;		// 前回のマッチが空文字列だったかどうか
 	
-	unsigned			_numberOfMatches;		// number of matches
+	unsigned			_numberOfMatches;		// マッチした数
 }
 
-// All matches in order
+// 全マッチ結果を配列で返す。
 - (NSArray*)allObjects;
-// next match
+// 次のマッチ結果を返す。
 - (id)nextObject;
 
 // description
 - (NSString*)description;
 
 @end
-

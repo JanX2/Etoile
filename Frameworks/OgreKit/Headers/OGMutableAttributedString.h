@@ -12,7 +12,7 @@
  */
 
 #import <OgreKit/OGMutableString.h>
-#import "OGAttributedString.h"
+#import <OgreKit/OGAttributedString.h>
 #import <AppKit/AppKit.h>
 
 @interface OGMutableAttributedString : OGAttributedString <OGMutableStringProtocol>

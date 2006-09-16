@@ -1,6 +1,3 @@
-#ifndef __OgreKit_OgreKit__
-#define __OgreKit_OgreKit__
-
 /*
  * Name: OgreKit.h
  * Project: OgreKit
@@ -14,7 +11,7 @@
  * Tabsize: 4
  */
 
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
 #ifndef NOT_RUBY
 #	define NOT_RUBY
@@ -22,16 +19,37 @@
 #ifndef HAVE_CONFIG_H
 #	define HAVE_CONFIG_H
 #endif
+#import <oniguruma.h>
 
-// Regular Expressions
-#include <OgreKit/OGRegularExpression.h>
-#include <OgreKit/OGRegularExpressionEnumerator.h>
-#include <OgreKit/OGRegularExpressionMatch.h>
-#include <OgreKit/OGRegularExpressionCapture.h>
-#include <OgreKit/OGRegularExpressionFormatter.h>
-#include <OgreKit/OGReplaceExpression.h>
-#include <OgreKit/NSString_OgreKitAdditions.h>
-#include <OgreKit/OGString.h>
-#include <OgreKit/OGMutableString.h>
-
-#endif /* __OgreKit_OgreKit__ */
+/* Regular Expressions */
+#import <OgreKit/OGRegularExpression.h>
+#import <OgreKit/OGRegularExpressionEnumerator.h>
+#import <OgreKit/OGRegularExpressionMatch.h>
+#import <OgreKit/OGRegularExpressionCapture.h>
+#import <OgreKit/OGRegularExpressionFormatter.h>
+#import <OgreKit/OGReplaceExpression.h>
+#import <OgreKit/NSString_OgreKitAdditions.h>
+#import <OgreKit/OGString.h>
+#import <OgreKit/OGMutableString.h>
+/* Find Panel */
+// Models
+#import <OgreKit/OgreTextFinder.h>
+#import <OgreKit/OgreTextFindThread.h>
+#import <OgreKit/OgreTextFindComponent.h>
+#import <OgreKit/OgreTextFindLeaf.h>
+#import <OgreKit/OgreTextFindBranch.h>
+#import <OgreKit/OgreTextFindComponentEnumerator.h>
+#import <OgreKit/OgreTextFindReverseComponentEnumerator.h>
+#import <OgreKit/OgreTextFindResult.h>
+#import <OgreKit/OgreFindResultLeaf.h>
+#import <OgreKit/OgreFindResultBranch.h>
+// Views
+#import <OgreKit/OgreTextView.h>
+#import <OgreKit/OgreTableView.h>
+#import <OgreKit/OgreTableColumn.h>
+#import <OgreKit/OgreOutlineView.h>
+#import <OgreKit/OgreOutlineColumn.h>
+// Controllers
+#import <OgreKit/OgreTextFindProgressSheet.h>
+#import <OgreKit/OgreFindResultWindowController.h>
+#import <OgreKit/OgreFindPanelController.h>

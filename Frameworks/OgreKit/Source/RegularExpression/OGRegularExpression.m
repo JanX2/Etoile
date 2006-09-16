@@ -19,15 +19,14 @@
 #endif
 #import <oniguruma.h>
 
-#import <OgreKit/OGRegularExpression.h>
 #import "OGRegularExpressionPrivate.h"
 #import "OGRegularExpressionMatchPrivate.h"
 #import "OGRegularExpressionEnumeratorPrivate.h"
 #import <OgreKit/OGReplaceExpression.h>
 #import <OgreKit/OGString.h>
 #import <OgreKit/OGMutableString.h>
-#import "OGPlainString.h"
-#import "OGAttributedString.h"
+#import <OgreKit/OGPlainString.h>
+#import <OgreKit/OGAttributedString.h>
 
 /* constants */
 // compile time options:
@@ -75,6 +74,8 @@ static NSCharacterSet	*OgrePrivateNewlineCharacterSet = nil;
 // Unicode改行文字
 static NSString			*OgrePrivateUnicodeLineSeparator = nil;
 static NSString			*OgrePrivateUnicodeParagraphSeparator = nil;
+
+
 
 /* onig_foreach_namesのcallback関数 */
 static int namedGroupCallback(const unsigned char *name, const unsigned char *name_end, int numberOfGroups, int* listOfGroupNumbers, regex_t* reg, void* nameDict)
@@ -129,22 +130,6 @@ static int namedGroupCallback(const unsigned char *name, const unsigned char *na
 	OgrePrivateJavaSyntax.op2			|= ONIG_SYN_OP2_ATMARK_CAPTURE_HISTORY; 
 	OgrePrivatePerlSyntax.op2			|= ONIG_SYN_OP2_ATMARK_CAPTURE_HISTORY; 
 	OgrePrivateRubySyntax.op2			|= ONIG_SYN_OP2_ATMARK_CAPTURE_HISTORY; 
-}
-
-+ (OnigSyntaxType*)_onigSyntaxTypeForSyntax:(OgreSyntax)syntax
-{
-	if(syntax == OgreSimpleMatchingSyntax)	return &OgrePrivateRubySyntax;
-	if(syntax == OgrePOSIXBasicSyntax)		return &OgrePrivatePOSIXBasicSyntax;
-	if(syntax == OgrePOSIXExtendedSyntax)	return &OgrePrivatePOSIXExtendedSyntax;
-	if(syntax == OgreEmacsSyntax)			return &OgrePrivateEmacsSyntax;
-	if(syntax == OgreGrepSyntax)			return &OgrePrivateGrepSyntax;
-	if(syntax == OgreGNURegexSyntax)		return &OgrePrivateGNURegexSyntax;
-	if(syntax == OgreJavaSyntax)			return &OgrePrivateJavaSyntax;
-	if(syntax == OgrePerlSyntax)			return &OgrePrivatePerlSyntax;
-	if(syntax == OgreRubySyntax)			return &OgrePrivateRubySyntax;
-	
-	[NSException raise:OgreException format:@"unknown syntax."];
-	return NULL;	// dummy
 }
 
 + (id)regularExpressionWithString:(NSString*)expressionString
@@ -284,8 +269,8 @@ static int namedGroupCallback(const unsigned char *name, const unsigned char *na
 	// 正規表現オブジェクトの作成
     OnigCompileInfo ci;
     ci.num_of_elements = 5;
-
-    // Next seven lines by MATSUMOTO Satoshi, Sep 31 2005
+	
+	// Next seven lines by MATSUMOTO Satoshi, Sep 31 2005
 #if defined( __BIG_ENDIAN__ )
     ci.pattern_enc = ONIG_ENCODING_UTF16_BE;
     ci.target_enc  = ONIG_ENCODING_UTF16_BE;
@@ -293,11 +278,8 @@ static int namedGroupCallback(const unsigned char *name, const unsigned char *na
     ci.pattern_enc = ONIG_ENCODING_UTF16_LE;
     ci.target_enc  = ONIG_ENCODING_UTF16_LE;
 #endif
-#if 0 // OgreKit (GNUstep): FIXME
+
     ci.syntax      = [[self class] onigSyntaxTypeForSyntax:_syntax];
-#else
-	ci.syntax      = [[self class] _onigSyntaxTypeForSyntax:_syntax];
-#endif
     ci.option      = compileTimeOptions;
     ci.ambig_flag  = ONIGENC_AMBIGUOUS_MATCH_DEFAULT;
     
@@ -482,16 +464,17 @@ static int namedGroupCallback(const unsigned char *name, const unsigned char *na
 
 	// Next 11 lines by MATSUMOTO Satoshi, Sep 31 2005
 #if defined( __BIG_ENDIAN__ )
-	r = onig_new(&regexBuffer, (unsigned char*)UTF16Str, (unsigned char*)(UTF16Str + length),
+ 	r = onig_new(&regexBuffer, (unsigned char*)UTF16Str, (unsigned char*)(UTF16Str + length),
 		compileTimeOptions, ONIG_ENCODING_UTF16_BE, 
 			[[self class] onigSyntaxTypeForSyntax:syntax] 
 		, &einfo);
 #else
 	r = onig_new(&regexBuffer, (unsigned char*)UTF16Str, (unsigned char*)(UTF16Str + length),
-				 compileTimeOptions, ONIG_ENCODING_UTF16_LE, 
-				 [[self class] _onigSyntaxTypeForSyntax:syntax] 
-				 , &einfo);
-#endif	
+		compileTimeOptions, ONIG_ENCODING_UTF16_LE, 
+			[[self class] onigSyntaxTypeForSyntax:syntax] 
+		, &einfo);
+#endif
+
 	onig_free(regexBuffer);
     NSZoneFree([self zone], UTF16Str);
     
@@ -1461,11 +1444,7 @@ static int namedGroupCallback(const unsigned char *name, const unsigned char *na
 // 変更前に作成されたインスタンスには影響を与えない。
 + (void)setDefaultSyntax:(OgreSyntax)syntax
 {
-#if 0
 	onig_set_default_syntax([[self class] onigSyntaxTypeForSyntax:syntax]);
-#else
-	onig_set_default_syntax([[self class] _onigSyntaxTypeForSyntax:syntax]);
-#endif
 	
 	OgrePrivateDefaultSyntax = syntax;
 }

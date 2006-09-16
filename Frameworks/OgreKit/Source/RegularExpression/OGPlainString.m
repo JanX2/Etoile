@@ -1,5 +1,5 @@
 /*
- * Name: OGAttributedString.h
+ * Name: OGPlainString.h
  * Project: OgreKit
  *
  * Creation Date: Sep 22 2004
@@ -11,14 +11,13 @@
  * Tabsize: 4
  */
 
-#import <AppKit/AppKit.h>
-#import "OGAttributedString.h"
-#import "OGMutableAttributedString.h"
+#import <OgreKit/OGPlainString.h>
+#import <OgreKit/OGMutablePlainString.h>
 
 // 自身をencoding/decodingするためのkey
-static NSString * const	OgreAttributedStringKey = @"OgreAttributedString";
+static NSString * const	OgrePlainStringKey = @"OgrePlainString";
 
-@implementation OGAttributedString
+@implementation OGPlainString
 
 - (id)initWithString:(NSString*)string
 {
@@ -29,34 +28,20 @@ static NSString * const	OgreAttributedStringKey = @"OgreAttributedString";
 	
 	self = [super init];
 	if (self != nil) {
-		_attrString = [[NSAttributedString alloc] initWithString:string];
+		_string = [string retain];
 	}
 	return self;
 }
 
 - (id)initWithAttributedString:(NSAttributedString*)attributedString
 {
-	if (attributedString == nil) {
-		[super release];
-		[NSException raise:NSInvalidArgumentException format: @"nil string argument"];
-	}
-	
-	self = [super init];
-	if (self != nil) {
-		_attrString = [attributedString retain];
-	}
-	return self;
+	return [self initWithString:[attributedString string]];
 }
+
 
 - (id)initWithString:(NSString*)string hasAttributesOfOGString:(NSObject<OGStringProtocol>*)ogString
 {
-	if (string == nil || ogString == nil) {
-		[super release];
-		[NSException raise:NSInvalidArgumentException format: @"nil string argument"];
-	}
-	
-	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:string 
-		attributes:[[ogString attributedString] attributesAtIndex:0 effectiveRange:NULL]] autorelease]];
+	return [self initWithString:string];
 }
 
 + (id)stringWithString:(NSString*)string
@@ -76,45 +61,45 @@ static NSString * const	OgreAttributedStringKey = @"OgreAttributedString";
 
 - (void)dealloc
 {
-	[_attrString release];
+	[_string release];
 	[super dealloc];
 }
 
-- (NSAttributedString*)_attributedString
+- (NSString*)_string
 {
-	return _attrString;
+	return _string;
 }
 
-- (void)_setAttributedString:(NSAttributedString*)attributedString
+- (void)_setString:(NSString*)string
 {
-	[_attrString autorelease];
-	_attrString = [attributedString retain];
+	[_string autorelease];
+	_string = [string retain];
 }
 
 /* OGString interface */
 - (NSString*)string
 {
-	return [_attrString string];
+	return (NSString*)_string;
 }
 
 - (NSAttributedString*)attributedString
 {
-	return _attrString;
+	return [[[NSAttributedString alloc] initWithString:(NSString*)_string] autorelease];
 }
 
 - (unsigned)length
 {
-	return [_attrString length];
+	return [_string length];
 }
 
 - (NSObject<OGStringProtocol>*)substringWithRange:(NSRange)aRange
 {
-	return [[self class] stringWithAttributedString:[_attrString attributedSubstringFromRange:aRange]];
+	return [[self class] stringWithString:[(NSString*)_string substringWithRange:aRange]];
 }
 
 - (Class)mutableClass
 {
-	return [OGMutableAttributedString class];
+	return [OGMutablePlainString class];
 }
 
 /* NSCopying protocol */
@@ -123,9 +108,9 @@ static NSString * const	OgreAttributedStringKey = @"OgreAttributedString";
 #ifdef DEBUG_OGRE
 	NSLog(@"-copyWithZone: of %@", [self className]);
 #endif
-	NSAttributedString	*attrString = [(NSAttributedString*)_attrString copy];	// deep copy
-	id	copy = [[[self class] allocWithZone:zone] initWithAttributedString:attrString];
-	[attrString release];
+	NSString	*string = [(NSString*)_string copy];
+	id	copy = [[[self class] allocWithZone:zone] initWithString:string];
+	[string release];
 	
 	return copy;
 }
@@ -137,9 +122,9 @@ static NSString * const	OgreAttributedStringKey = @"OgreAttributedString";
 	NSLog(@"-encodeWithCoder: of %@", [self className]);
 #endif
     if ([encoder allowsKeyedCoding]) {
-		[encoder encodeObject:_attrString forKey:OgreAttributedStringKey];
+		[encoder encodeObject:_string forKey:OgrePlainStringKey];
 	} else {
-		[encoder encodeObject:_attrString];
+		[encoder encodeObject:_string];
 	}
 }
 
@@ -155,11 +140,11 @@ static NSString * const	OgreAttributedStringKey = @"OgreAttributedString";
 	BOOL			allowsKeyedCoding = [decoder allowsKeyedCoding];
 	// NSString		*_string;
     if (allowsKeyedCoding) {
-		_attrString = [[decoder decodeObjectForKey:OgreAttributedStringKey] retain];
+		_string = [[decoder decodeObjectForKey:OgrePlainStringKey] retain];
 	} else {
-		_attrString = [[decoder decodeObject] retain];
+		_string = [[decoder decodeObject] retain];
 	}
-	if(_attrString == nil) {
+	if(_string == nil) {
 		// エラー。例外を発生させる。
 		[NSException raise:NSInvalidUnarchiveOperationException format:@"fail to decode"];
 	}
@@ -170,8 +155,7 @@ static NSString * const	OgreAttributedStringKey = @"OgreAttributedString";
 /* description */
 - (NSString*)description
 {
-	return [_attrString description];
+	return (NSString*)_string;
 }
-
 
 @end

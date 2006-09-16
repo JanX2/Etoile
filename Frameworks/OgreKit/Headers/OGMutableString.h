@@ -34,4 +34,3 @@
 - (void)setAttributesOfOGString:(NSObject<OGStringProtocol>*)string 
 	atIndex:(unsigned)index;
 @end
-

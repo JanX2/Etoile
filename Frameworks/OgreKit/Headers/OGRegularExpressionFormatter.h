@@ -20,18 +20,18 @@ extern NSString	* const OgreFormatterException;
 
 @interface OGRegularExpressionFormatter : NSFormatter <NSCopying, NSCoding>
 {
-	NSString			*_escapeCharacter;		// escape character (\)
-	unsigned			_options;				// options
-	OgreSyntax			_syntax;				// synax
+	NSString			*_escapeCharacter;		// \の代替文字
+	unsigned			_options;				// コンパイルオプション
+	OgreSyntax			_syntax;				// 正規表現の構文
 }
 
-// essential methods
+// 必須メソッド
 - (NSString*)stringForObjectValue:(id)anObject;
 - (NSAttributedString*)attributedStringForObjectValue:(id)anObject 
 	withDefaultAttributes:(NSDictionary*)attributes;
 - (NSString*)editingStringForObjectValue:(id)anObject;
 
-// error handle
+// エラー判定
 - (BOOL)getObjectValue:(id*)obj forString:(NSString*)string 
 	errorDescription:(NSString**)error;
 
@@ -50,4 +50,3 @@ extern NSString	* const OgreFormatterException;
 - (void)setSyntax:(OgreSyntax)syntax;
 
 @end
-

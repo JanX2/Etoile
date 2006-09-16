@@ -12,8 +12,8 @@
  */
 
 #import <OgreKit/OGString.h>
-#import "OGPlainString.h"
-#import "OGAttributedString.h"
+#import <OgreKit/OGPlainString.h>
+#import <OgreKit/OGAttributedString.h>
 
 // exception name
 NSString * const	OgreStringException = @"OGStringException";

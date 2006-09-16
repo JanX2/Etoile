@@ -20,8 +20,8 @@
 #import "OGReplaceExpressionPrivate.h"
 #import <OgreKit/OGString.h>
 #import <OgreKit/OGMutableString.h>
-#import "OGPlainString.h"
-#import "OGAttributedString.h"
+#import <OgreKit/OGPlainString.h>
+#import <OgreKit/OGAttributedString.h>
 #import <stdlib.h>
 #import <limits.h>
 
