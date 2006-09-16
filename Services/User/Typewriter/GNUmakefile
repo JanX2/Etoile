@@ -1,11 +1,15 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
+DEPENDENCIES = OgreKit
+
 APP_NAME = Typewriter
 
 Typewriter_OBJC_FILES = \
 	main.m \
 	TWTextView.m \
 	TWDocument.m
+
+Typewriter_GUI_LIBS += -lOgreKit
 
 Typewriter_LANGUAGES = \
 	English
@@ -17,3 +21,4 @@ Typewriter_LOCALIZED_RESOURCE_FILES = \
 Typewriter_MAIN_MODEL_FILE = MainMenu.gorm
 
 include $(GNUSTEP_MAKEFILES)/application.make
+include ../../../etoile.make

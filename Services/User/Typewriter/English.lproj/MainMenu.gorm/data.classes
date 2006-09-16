@@ -1,3 +1,18 @@
 {
     "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "newAction:",
+	    "showFindPanel:"
+	);
+	Super = NSObject;
+    };
+    OgreTextFinder = {
+	Actions = (
+	    "showFindPanel:"
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
 }

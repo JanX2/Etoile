@@ -3,6 +3,7 @@
 #include <AppKit/AppKit.h>
 #include "TWDocument.h"
 #include "TWTextView.h"
+#include <OgreKit/OgreTextFinder.h>
 
 @implementation TWDocument
 
@@ -10,6 +11,8 @@
 {
   /* It is difficult to connect to textView in scroll view with Gorm */
   textView = [scrollView documentView];
+  textFinder = [OgreTextFinder sharedTextFinder];
+  [textFinder setTargetToFindIn: textView];
 }
 
 - (void) windowControllerDidLoadNib: (NSWindowController *) windowController
@@ -75,5 +78,12 @@
   }
   return NO;
 }
+
+/* Find panel */
+- (void) showFindPanel: (id) sender
+{
+  [textFinder showFindPanel: sender]; 
+}
+
 
 @end
