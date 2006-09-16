@@ -1,0 +1,19 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    Delegate = {
+	Actions = (
+	    "findPanelAction:"
+	);
+	Outlets = (
+	    scrollView,
+	    textView
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "findPanelAction:"
+	);
+	Super = NSObject;
+    };
+}
