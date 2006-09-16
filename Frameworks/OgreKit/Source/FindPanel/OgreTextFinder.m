@@ -347,7 +347,12 @@ static NSString	*OgreTextFinderEscapeCharacterKey = @"Escape Character";
 {
 	id	target = [self targetToFindIn];
 	if ((target == nil) || [self isBusyTarget:target]) {
-		NSLog(@"No target or busy target");
+	  if (target == nil) {
+	    NSLog(@"No target");
+	  } else {
+	    NSLog(@"Busy target");
+	  }
+	//	NSLog(@"No target or busy target");
 		return [OgreTextFindResult textFindResultWithTarget:target thread:nil];
 	}
 	[self makeTargetBusy:target];

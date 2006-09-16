@@ -45,7 +45,6 @@
 {
 //  if (![self alertIfInvalidRegex]) return;
 
-  [[self textFinder] setSyntax: OgreSimpleMatchingSyntax];
   NSString *_findHistory = [[findPanel findTextField] stringValue];
   OgreTextFindResult *result = [[self textFinder] find: _findHistory
 	        options: [self options]
@@ -59,7 +58,15 @@
 
 - (void) findPrevious: (id) sender
 {
-	NSLog(@"findPrevious %@", sender);
+  NSString *_findHistory = [[findPanel findTextField] stringValue];
+  OgreTextFindResult *result = [[self textFinder] find: _findHistory
+	        options: [self options]
+		fromTop: NO
+		forward: NO
+		wrap: YES];
+  if (![result isSuccess]) {
+    NSLog(@"find previous failed");
+  }
 }
 
 - (OgreTextFinder*)textFinder
@@ -98,6 +105,22 @@
 - (unsigned int) options
 {
   return options;
+}
+
+- (void) setOptions: (unsigned int) o
+{
+  options = o;
+}
+
+- (OgreSyntax) syntax
+{
+  return syntax;
+}
+
+- (void) setSyntax: (OgreSyntax) o
+{
+  [[self textFinder] setSyntax: o];
+  syntax = o;
 }
 
 // NSCoding protocols

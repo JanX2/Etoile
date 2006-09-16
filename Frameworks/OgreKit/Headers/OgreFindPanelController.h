@@ -11,7 +11,8 @@
  * Tabsize: 4
  */
 
-#import <Cocoa/Cocoa.h>
+#import <AppKit/AppKit.h>
+#import <OgreKit/OGRegularExpression.h>
 
 @class OgreTextFinder, OgreFindResult, OgreFindPanel;
 
@@ -21,6 +22,7 @@
 	IBOutlet OgreFindPanel		*findPanel;
 
 	unsigned int options;
+	OgreSyntax syntax;
 }
 
 - (IBAction)showFindPanel:(id)sender;
@@ -33,7 +35,12 @@
 - (void)setFindPanel:(NSPanel*)aPanel;
 
 - (NSDictionary*)history;
+
 - (unsigned int) options;
+- (void) setOptions: (unsigned int) options;
+
+- (OgreSyntax) syntax;
+- (void) setSyntax: (OgreSyntax) syntax;
 
 /* Simple action for find panel  */
 - (void) findNext: (id) sender;

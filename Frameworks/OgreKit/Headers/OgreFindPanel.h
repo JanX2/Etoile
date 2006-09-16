@@ -11,6 +11,11 @@
 {
   NSTextField *findTextLabel;
   NSTextField *findTextField;
+  NSTextField *replaceTextLabel;
+  NSTextField *replaceTextField;
+
+  NSButton *regexButton;
+  NSButton *caseSensitiveButton;
   NSButton *findNextButton;
   NSButton *findPreviousButton;
   
@@ -20,6 +25,8 @@
 + (OgreFindPanel *) sharedFindPanel;
 
 - (NSTextField *) findTextField;
+- (NSTextField *) replaceTextField;
+
 - (void) setFindPanelController: (OgreFindPanelController *) controller;
 - (OgreFindPanelController *) findPanelController;
 
