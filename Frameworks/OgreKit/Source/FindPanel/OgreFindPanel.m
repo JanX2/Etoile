@@ -13,7 +13,7 @@ static OgreFindPanel *sharedInstance;
 + (OgreFindPanel *) sharedFindPanel
 {
   if (sharedInstance == nil) {
-    sharedInstance = [[OgreFindPanel alloc] initWithContentRect: NSMakeRect(400, 400, 400, 200) 
+    sharedInstance = [[OgreFindPanel alloc] initWithContentRect: NSMakeRect(400, 400, 450, 150) 
                      styleMask: NSTitledWindowMask|NSClosableWindowMask
 		     backing: NSBackingStoreRetained 
 		     defer: NO];
@@ -28,7 +28,6 @@ static OgreFindPanel *sharedInstance;
       [findPanelController setSyntax: OgreRubySyntax];
     } else {
       [findPanelController setSyntax: OgreSimpleMatchingSyntax];
-      //[findPanelController setSyntax: OgreRubySyntax];
     }
   } else { // case sensitive button
     if ([caseSensitiveButton state] == NSOnState) {
@@ -72,14 +71,6 @@ static OgreFindPanel *sharedInstance;
 	[[self contentView] addSubview: replaceTextField];
 
 	rect = NSMakeRect(10, rect.origin.y-10-25, 160, 25);
-	regexButton = [[NSButton alloc] initWithFrame: rect];
-	[regexButton setButtonType: NSSwitchButton];
-	[regexButton setTitle: _(@"Regular Expression")];
-	[regexButton setTarget: self];
-	[regexButton setAction: @selector(switchButtonAction:)];
-	[[self contentView] addSubview: regexButton];
-
-	rect = NSMakeRect(NSMaxX(rect)+5, rect.origin.y, 160, 25);
 	caseSensitiveButton = [[NSButton alloc] initWithFrame: rect];
 	[caseSensitiveButton setButtonType: NSSwitchButton];
 	[caseSensitiveButton setTitle: _(@"Case Sensitive")];
@@ -87,17 +78,32 @@ static OgreFindPanel *sharedInstance;
 	[caseSensitiveButton setAction: @selector(switchButtonAction:)];
 	[[self contentView] addSubview: caseSensitiveButton];
 
-	rect = NSMakeRect(frame.size.width-80, 5, 70, 25);
+	rect = NSMakeRect(NSMaxX(rect)+5, rect.origin.y, 160, 25);
+	regexButton = [[NSButton alloc] initWithFrame: rect];
+	[regexButton setButtonType: NSSwitchButton];
+	[regexButton setTitle: _(@"Regular Expression")];
+	[regexButton setTarget: self];
+	[regexButton setAction: @selector(switchButtonAction:)];
+	[[self contentView] addSubview: regexButton];
+
+	rect = NSMakeRect(frame.size.width-10-120, 5, 120, 25);
 	findNextButton = [[NSButton alloc] initWithFrame: rect];
-	[findNextButton setTitle: _(@"Next")];
+	[findNextButton setTitle: _(@"Find Next")];
 	[findNextButton setAction: @selector(findNext:)];
 	[[self contentView] addSubview: findNextButton];
 	
 	rect = NSMakeRect(NSMinX(rect)-5-rect.size.width, rect.origin.y, rect.size.width, rect.size.height);
 	findPreviousButton = [[NSButton alloc] initWithFrame: rect];
-	[findPreviousButton setTitle: _(@"Previous")];
+	[findPreviousButton setTitle: _(@"Find Previous")];
 	[findPreviousButton setAction: @selector(findPrevious:)];
 	[[self contentView] addSubview: findPreviousButton];
+
+	rect = NSMakeRect(NSMinX(rect)-5-70, rect.origin.y, 70, rect.size.height);
+	replaceButton = [[NSButton alloc] initWithFrame: rect];
+	[replaceButton setTitle: _(@"Replace")];
+	[replaceButton setAction: @selector(replace:)];
+	[[self contentView] addSubview: replaceButton];
+	
 	
 	return self;
 }
@@ -118,6 +124,7 @@ static OgreFindPanel *sharedInstance;
 	/* Assign target */
 	[findNextButton setTarget: controller];
 	[findPreviousButton setTarget: controller];
+	[replaceButton setTarget: controller];
 	[self switchButtonAction: regexButton];
 	[self switchButtonAction: caseSensitiveButton];
 }
@@ -126,6 +133,5 @@ static OgreFindPanel *sharedInstance;
 {
 	return findPanelController;
 }
-
 
 @end

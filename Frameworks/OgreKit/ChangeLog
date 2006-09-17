@@ -3,6 +3,7 @@
     * Update to OgreKit 2.1.2 and start to support GUI.
     * Does not break LuceneKit SVN.
     * Add options for regex and cse sensitive.
+    * Add replace and fix a nasty bug.
 
 2006-02-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

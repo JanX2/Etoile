@@ -45,5 +45,6 @@
 /* Simple action for find panel  */
 - (void) findNext: (id) sender;
 - (void) findPrevious: (id) sender;
+- (void) replace: (id) sender;
 
 @end

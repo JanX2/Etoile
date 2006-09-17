@@ -18,12 +18,11 @@
 #import "GNUstep.h"
 
 @implementation OgreFindPanelController
-#if 0
 // 適切な正規表現かどうか調べる
 - (BOOL)alertIfInvalidRegex
 {
   NS_DURING
-   [OGRegularExpression regularExpressionWithString: [findTextField stringValue]
+   [OGRegularExpression regularExpressionWithString: [[findPanel findTextField] stringValue]
                                            options: [self options]
                                             syntax: [self syntax]
                                    escapeCharacter: OgreBackslashCharacter];
@@ -39,14 +38,13 @@
 
   return YES;
 }
-#endif
 
 - (void) findNext: (id) sender
 {
-//  if (![self alertIfInvalidRegex]) return;
+  if (![self alertIfInvalidRegex]) return;
 
-  NSString *_findHistory = [[findPanel findTextField] stringValue];
-  OgreTextFindResult *result = [[self textFinder] find: _findHistory
+  OgreTextFindResult *result = [[self textFinder] 
+	           find: [[findPanel findTextField] stringValue]
 	        options: [self options]
 		fromTop: NO
 		forward: YES
@@ -58,14 +56,30 @@
 
 - (void) findPrevious: (id) sender
 {
-  NSString *_findHistory = [[findPanel findTextField] stringValue];
-  OgreTextFindResult *result = [[self textFinder] find: _findHistory
+  if (![self alertIfInvalidRegex]) return;
+
+  OgreTextFindResult *result = [[self textFinder] 
+	           find: [[findPanel findTextField] stringValue]
 	        options: [self options]
 		fromTop: NO
 		forward: NO
 		wrap: YES];
   if (![result isSuccess]) {
     NSLog(@"find previous failed");
+  }
+}
+
+- (void) replace: (id) sender
+{
+  if (![self alertIfInvalidRegex]) return;
+
+  OgreTextFindResult *result = [[self textFinder] 
+	replace: [[findPanel findTextField] stringValue]
+	withString: [[findPanel replaceTextField] stringValue]
+        options: [self options]];
+
+  if (![result isSuccess]) {
+    NSLog(@"replace failed");
   }
 }
 
