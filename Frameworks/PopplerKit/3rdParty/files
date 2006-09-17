@@ -1,0 +1,19 @@
+
+FILES="expat pkgconfig libpixman poppler"
+
+expat_PACKAGE=expat-1.95.8.tar.gz
+expat_DIR=expat-1.95.8
+expat_SYSTEMS="Darwin"
+
+pkgconfig_PACKAGE=pkgconfig-0.17.2.tar.gz
+pkgconfig_DIR=pkgconfig-0.17.2
+pkgconfig_SYSTEMS="Darwin"
+
+libpixman_PACKAGE=libpixman-0.1.5.tar.gz
+libpixman_DIR=libpixman-0.1.5
+libpixman_SYSTEMS="All"
+
+poppler_PACKAGE=poppler-0.3.3.tar.gz
+poppler_DIR=poppler-0.3.3
+poppler_SYSTEMS="All"
+

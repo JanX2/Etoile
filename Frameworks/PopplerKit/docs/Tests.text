@@ -1,0 +1,29 @@
+@Name: Tests
+@Category: PopplerKit
+@Author: Stefan Kleine Stegemann
+@Format: Markdown
+
+# PopplerKit Unit Tests
+
+PopplerKit contains some unit tests inside the "tests" subdirectory. Running these tests verfies that PopplerKit works as expected.
+
+*Note that there is no need to run the PopplerKit tests if you are a "normal" user. The tests are mainly intended for developers to ensure that everything still works after a modification or extension. However, if you are not sure that PopplerKit works on your platform, it is a good idea to run the tests and see whether they succeed or not.*
+
+The tests are implemented using the great [UnitKit framework](http://www.unitkit.org). For Mac OS X, you can download a binary distribution from the [UnitKit homepage](http://www.unitkit.org). You need to get the 1.1 version. UnitKit has also been ported to the GNUstep environment as part of the [Etoile project](http://dromasoftware.com/etoile/mediawiki/). You can checkout a copy of UnitKit from [their repository](https://gna.org/cvs/?group=etoile) or grab an [archive containting the sources](http://download.gna.org/gsimageapps/UnitKit-1.1.tar.gz) from the ImageApps download side.
+
+Once you have installed the UnitKit framework, you can compile the tests. The tests compile as a Bundle which can be "executed" using the ukrun program (part of UnitKit).
+
+## Compiling and running the tests with GNUstep
+
+PopplerKit must have been compiled and installed (see Installation for instructions). Change to the PopplerKit/tests directory and do a "make" (gmake for BSD-systems). This will give you a PopplerKitTests bundle in the "tests" directory. *Do not install this bundle.* To run the tests, you have to change to the PopplerKit root directory and type "ukrun tests/PopplerKitTests.bundle". You will see a couple of messages flushing through the screen. See the "Did the tests succeed?" section below for how to interpret the test results.
+
+## Compiling and running the tests with Mac OS X
+
+Running the tests on Mac OS X is simple. Just open the PopplerKit project in XCode and open the detailed build results view (Window->Tools->Build Results). Select the PopplerKitTests as active target and build it. XCode will now build and run the tests. You can open the build transcript to see the output. Finally, XCode will either display "Build succeed" or "Build failed" together with the failed tests (hopefully the first one).
+
+## Did the tests succeed?
+
+The last line of the output will state how many tests have been executed and how many of the failed. If you don't have cairo support in PopplerKit you will encouter 3 failed tests. This is nothing to worry about. It's simply that the cairo rendering tests failed. If you have cairo support, you should not encounter any failed tests.
+
+Some of the tests test the buffered renderers. The results are written as TIFF images to the "tests/rendered" directory. It is difficult to check whether the result of the rendering process is as expected without looking at the results. Thus, this part is not automated and you have to look at the produced images at your own and decide whether they are looking good or not.
+

@@ -1,0 +1,5 @@
+MissingKit is a collection of common classes I missed in the standard Cocoa/GNUstep
+framework. The sources from MissingKit are not released under any particular license.
+I simply copy them from project to project. I also maintain a standalone version of
+MissingKit but more to keep things in synch than to use it as a framework on it's
+own. If you need more info, drop me a mail: stefankst@gmail.com

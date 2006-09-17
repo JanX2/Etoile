@@ -1,0 +1,6 @@
+
+expat_SOURCE=http://mesh.dl.sourceforge.net/sourceforge/expat
+pkgconfig_SOURCE=http://pkg-config.freedesktop.org/releases
+libpixman_SOURCE=http://cairographics.org/snapshots
+cairo_SOURCE=http://cairographics.org/snapshots
+poppler_SOURCE=http://poppler.freedesktop.org/

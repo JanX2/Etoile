@@ -1,0 +1,45 @@
+@Name: Installation
+@Category: PopplerKit
+@Author: Stefan Kleine Stegemann
+@Format: Markdown
+
+# Installation of PopplerKit
+
+This documents describes the installation procedure of PopplerKit on GNUstep and Mac OS X.
+
+## GNUstep
+
+### Requirements
+PopplerKit has some requirements that have to be fullfilled before it can be compiled and installed.
+
+#### GNUstep
+You need to have a recent version of the [GNUstep environment](http://www.gnustep.org/) installed and working.
+
+#### pkg-config
+PopplerKit uses pkg-config at compile time to detect the required libraries. Thus, make sure you have pkg-config installed. Most systems already come with pkg-config so there is usually nothing to worry about. *Hint: if you install the required libraries to /usr/local and pkg-config is configured to get it's configuration from /usr/lib/pkgconfig, make sure you adjust your PKG_CONFIG_PATH to include /usr/local/lib/pkgconfig.*
+
+#### freetype library
+You need to have a recent version of the [freetype library](http://www.freetype.org/) installed. Most systems come with freetype installed. You normally won't have to install it by hand.
+
+#### cairographics
+If you want cairo support in PopplerKit, you first need to install the [cairographics library](http://cairographics.org/download). Be sure to get the latest available snapshot. The poppler library (see below) will then detect cairo and compile with with the cairo rendering devices enabled. PopplerKit will enable cairo support only if the installed poppler library has cairo support turned on. *If you dont' want cairo support, you don't need to have cairo installed.*
+
+#### poppler library
+Download and install the [poppler library, v. 0.3.3](http://poppler.freedesktop.org/poppler-0.3.3.tar.gz). Although PopplerKit will work with poppler-0.3.2, it is strongly recommended to use poppler-0.3.3 since it fixes some issues with pkg-config integration (see below). If you already have the poppler-library installed, you can check it's version by executing "pkg-config --modversion poppler" from the command line.
+
+**Important for users of poppler-0.3.2: There is a pkg-config problem with this version. When the poppler library installs it also puts the files for pkg-config (poppler.pc, poppler-splash.pc, ...) int /usr/local/lib/pkgconfig (or /usr/lib/pkgconfig). However, poppler-splash.pc has a dependency to poppler-0.3.2.pc which does not exist. Thus, you may get an error when compiling PopplerKit stating that poppler-splash is not installed. To solve this, manually create a link "poppler-0.3.2.pc" to "poppler.pc" in /usr/local/lib/pkgconfig (or /usr/lib/pkgconfig).**
+
+### Compile and install PopplerKit
+Compilation and installation of PopplerKit is straightforward. First [download](http://download.gna.org/gsimageapps/PopplerKit) a recent version of PopplerKit or checkout the sources from the [subversion repository](https://gna.org/svn/?group=gsimageapps). Change to PopplerKit and type "make" and "make install" at the command line (on BSD-systems you may have to use "gmake").
+
+**Important: if your configuration changes (eg. poppler-library re-installed with cairo support) you need to either remove the file PopplerKit/config.make by hand or do a "make distclean". Otherwise, config.sh (see below) won't be run again and your configuration changes are not detected. Same applies after an update if you've got PopplerKit from the sources repository. You can also create config.make by hand. To do this, execute "sh ./config.sh" inside the PopplerKit directory.**
+
+PopplerKit uses a shell-script "config.sh" to detect the required libraries. This script writes a file called "config.make" which is included from GNUmakefile. It's a simpler approach than the usual autgen/automake based approach with the "configure" script. PoppleKit does not use configure because the GNUstep build process is nice, clean and simple and I didn't wanted to "pollute" it by adding a configure script. The shell-script is the simplest approach that works and it also works on all Unix platforms (even on Windows, if you have a Unix-shell installed).
+
+
+## Mac OS X
+
+It is strongly recommended to get the [prebuild PopplerKit Framework](http://download.gna.org/gsimageapps/PopplerKit). Since this version is linked statically against all required libraries (poppler, cairo, freetype) you don't need to care about external dependencies. Installation is as simple as dropping the unpacked Framework in a location where the system can find it. Usually, this is /Library/Framworks or /Users/foo/Library/Frameworks). 
+
+### Compiling from source
+The process of compiling the Mac OS X version from source is a little bit tricky since you first need to compile static versions of the required libraries and install them a temporary location inside the 3rdParty directory. I'm working on scripts to do this but they are not finished. If you really want to build from source, wait for the scripts or drop me an email.
