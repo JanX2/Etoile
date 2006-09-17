@@ -1,0 +1,15 @@
+{
+ApplicationDescription = "An Address Book.";
+ApplicationName = "AddressManager";
+ApplicationRelease = "0.4.5";
+ApplicationURL = "http://giesler.biz/bjoern/English/Software.html#Addresses";
+NSIcon = "AddressManager.tiff";
+Authors = ("Bj\u00f6rn Giesler <bjoern@giesler.de>");
+Copyright = "Copyright (C) 2003 Bj\u00f6rn Giesler.\nDistributed under the terms of the LGPL.";
+NSTypes = (
+	{
+		NSUnixExtensions = ( "vcf", "vcard" );
+		NSIcon = "VCFFile.tiff";
+	}
+);
+}
