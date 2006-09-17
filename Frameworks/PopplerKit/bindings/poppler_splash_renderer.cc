@@ -35,8 +35,17 @@ void* poppler_splash_device_create(int bg_red, int bg_green, int bg_blue)
 {  
    BEGIN_SYNCHRONIZED;
       SplashColor white;
+#ifdef POPPLER_0_4
       white.rgb8 = splashMakeRGB8(bg_red, bg_green, bg_blue);
       void* splashDevice = new SplashOutputDev(splashModeRGB8, gFalse, white);
+#endif
+#ifdef POPPLER_0_5
+      white[0] = bg_red;
+      white[1] = bg_green;
+      white[2] = bg_blue;
+      // I'm not sure what bitmapRowPad should be, 1 is just a guess.
+      void* splashDevice = new SplashOutputDev(splashModeRGB8, 1, gFalse, white);
+#endif
    END_SYNCHRONIZED;
    
    return splashDevice;
@@ -77,6 +86,9 @@ int poppler_splash_device_display_slice(void* output_dev, void* poppler_page,
    SYNCHRONIZED(PAGE(poppler_page)->displaySlice(SPLASH_DEV(output_dev),
                                                  (double)hDPI, (double)vDPI,
                                                  rotate,
+#ifdef POPPLER_0_5
+						 gTrue, // useMediaBox
+#endif
                                                  gTrue, // Crop
                                                  (int)sliceX, (int)sliceY,
                                                  (int)sliceW, (int)sliceH,
@@ -109,20 +121,38 @@ int poppler_splash_device_get_rgb(void* bitmap, unsigned char** data)
       return 0;
    }
 
+#ifdef POPPLER_0_4
    SplashRGB8*     rgb8;
+#endif
+#ifdef POPPLER_0_5
+   SplashColorPtr  color;
+#endif
    unsigned char*  dataPtr;
 
+#ifdef POPPLER_0_4
    rgb8 = SPLASH_BITMAP(bitmap)->getDataPtr().rgb8;
+#endif
+#ifdef POPPLER_0_5
+   color = SPLASH_BITMAP(bitmap)->getDataPtr();
+#endif
 
    dataPtr = *data;
    for (int row = 0; row < SPLASH_BITMAP(bitmap)->getHeight(); row++)
    {
       for (int col = 0; col < SPLASH_BITMAP(bitmap)->getWidth(); col++)
       {
+#ifdef POPPLER_0_4
          *dataPtr++ = splashRGB8R(*rgb8);
          *dataPtr++ = splashRGB8G(*rgb8);
          *dataPtr++ = splashRGB8B(*rgb8);
          ++rgb8;
+#endif
+#ifdef POPPLER_0_5
+	 *dataPtr++ = splashRGB8R(color);
+	 *dataPtr++ = splashRGB8G(++color);
+	 *dataPtr++ = splashRGB8B(++color);
+	 ++color;
+#endif
       }
    }
    

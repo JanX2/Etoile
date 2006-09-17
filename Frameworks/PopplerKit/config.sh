@@ -35,6 +35,20 @@ else
    POPPLER_LIBS="${POPPLER_LDFLAGS} `${PKG_CONFIG} --libs poppler-cairo`"
 fi
 
+# check poppler version
+${PKG_CONFIG} --atleast-version=0.4 poppler
+if [ $? -eq 0 ]; then
+  POPPLER_VERSION="POPPLER_0_4"
+else
+  echo "PopplerKit does not support this version of poppler"
+  exit 1
+fi
+
+${PKG_CONFIG} --atleast-version=0.5 poppler
+if [ $? -eq 0 ]; then
+  POPPLER_VERSION="POPPLER_0_5"
+fi
+
 # include freetype, just to be sure
 ${PKG_CONFIG} --exists freetype2
 if [ $? -eq 0 ]; then
@@ -54,6 +68,7 @@ fi
 echo "# config.make, generated at `date`" >config.make
 echo "POPPLER_CFLAGS=${POPPLER_CFLAGS}" >>config.make
 echo "POPPLER_LIBS=${POPPLER_LIBS}" >>config.make
+echo "${POPPLER_VERSION}=YES" >> config.make
 echo "FT_CFLAGS=${FT_CFLAGS}" >> config.make
 echo "FT_LIBS=${FT_LIBS}" >> config.make
 echo "ADDITIONAL_CFLAGS=\$(POPPLER_CFLAGS) \$(FT_CFLAGS)" >> config.make

@@ -66,7 +66,14 @@ double poppler_page_get_width(void* poppler_page)
       return -1;
    }
    
+
+#ifdef POPPLER_0_4
    return PAGE(poppler_page)->getWidth();
+#endif
+#ifdef POPPLER_0_5
+   return PAGE(poppler_page)->getMediaWidth();
+#endif
+
 }
 
 double poppler_page_get_height(void* poppler_page)
@@ -76,5 +83,11 @@ double poppler_page_get_height(void* poppler_page)
       return -1;
    }
    
+#ifdef POPPLER_0_4
    return PAGE(poppler_page)->getHeight();
+#endif
+#ifdef POPPLER_0_5
+   return PAGE(poppler_page)->getMediaHeight();
+#endif
+
 }
