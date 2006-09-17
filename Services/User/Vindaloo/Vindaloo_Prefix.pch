@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'Vindaloo' target in the 'Vindaloo' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif

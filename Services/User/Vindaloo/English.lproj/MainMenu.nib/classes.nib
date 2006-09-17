@@ -1,0 +1,60 @@
+{
+    IBClasses = (
+        {CLASS = AppDelegate; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                close = id; 
+                enterPageNumber = id; 
+                firstPage = id; 
+                goSinglePage = id; 
+                lastPage = id; 
+                nextPage = id; 
+                previousPage = id; 
+                scrollLineDown = id; 
+                scrollLineLeft = id; 
+                scrollLineRight = id; 
+                scrollLineUp = id; 
+                scrollPageDown = id; 
+                scrollPageUp = id; 
+                scrollToBottom = id; 
+                scrollToLeftEdge = id; 
+                scrollToRightEdge = id; 
+                scrollToTop = id; 
+                takePageFrom = id; 
+                takeZoomFrom = id; 
+                toggleFitHeight = id; 
+                toggleFitPage = id; 
+                toggleFitWidth = id; 
+                zoomActualSize = id; 
+                zoomIn = id; 
+                zoomOut = id; 
+                zoomToFit = id; 
+            }; 
+            CLASS = Controller; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {scrollView = NSScrollView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {
+                enterPageNumber = id; 
+                findText = id; 
+                firstPage = id; 
+                lastPage = id; 
+                nextPage = id; 
+                previousPage = id; 
+                toggleFitHeight = id; 
+                toggleFitPage = id; 
+                toggleFitWidth = id; 
+                zoomActualSize = id; 
+                zoomIn = id; 
+                zoomOut = id; 
+                zoomToFit = id; 
+            }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

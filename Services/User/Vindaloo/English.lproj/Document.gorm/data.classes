@@ -1,0 +1,42 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    Controller = {
+	Actions = (
+	);
+	Outlets = (
+	    scrollView,
+	    searchController
+	);
+	Super = NSWindowController;
+    };
+    DocumentWindow = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSWindow;
+    };
+    ExtendedScrollView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSScrollView;
+    };
+    FirstResponder = {
+	Actions = (
+	    "findText:"
+	);
+	Super = NSObject;
+    };
+    SearchController = {
+	Actions = (
+	);
+	Outlets = (
+	    scrollView,
+	    searchView,
+	    window
+	);
+	Super = NSObject;
+    };
+}

@@ -1,0 +1,790 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		F82F1FA00856587C00929369 /* Disk Image */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = F8815F5F08A41AE1007F65F9 /* Build configuration list for PBXAggregateTarget "Disk Image" */;
+			buildPhases = (
+				F82F1F9F0856587C00929369 /* ShellScript */,
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "Disk Image";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			comments = "Create a disk image (dmg) with Vindaloo.app";
+			dependencies = (
+			);
+			name = "Disk Image";
+			productName = "Disk Image";
+		};
+		F82F200008565CC100929369 /* Release */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = F8815F6308A41AE1007F65F9 /* Build configuration list for PBXAggregateTarget "Release" */;
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Release;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			dependencies = (
+				F82F200208565CCB00929369 /* PBXTargetDependency */,
+				F82F200408565CD000929369 /* PBXTargetDependency */,
+			);
+			name = Release;
+			productName = Release;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
+		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		F80EA11D08C461B600ADC024 /* SearchView.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F80EA11B08C461B600ADC024 /* SearchView.h */; };
+		F80EA11E08C461B600ADC024 /* SearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = F80EA11C08C461B600ADC024 /* SearchView.m */; };
+		F80EA1E208C46BD200ADC024 /* SearchController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F80EA1E008C46BD200ADC024 /* SearchController.h */; };
+		F80EA1E308C46BD200ADC024 /* SearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = F80EA1E108C46BD200ADC024 /* SearchController.m */; };
+		F816D5D1087C746E0023CD6D /* FitPage.png in Resources */ = {isa = PBXBuildFile; fileRef = F816D5D0087C746E0023CD6D /* FitPage.png */; };
+		F8267F71083D4480001F8F22 /* PDFContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = F8267F70083D4480001F8F22 /* PDFContentView.m */; };
+		F828B4A308316600006A2E5C /* Document.nib in Resources */ = {isa = PBXBuildFile; fileRef = F828B4A108316600006A2E5C /* Document.nib */; };
+		F831C063084C8020009BD5DA /* ZoomFactor.h in Resources */ = {isa = PBXBuildFile; fileRef = F831C061084C8020009BD5DA /* ZoomFactor.h */; };
+		F831C064084C8020009BD5DA /* ZoomFactor.m in Sources */ = {isa = PBXBuildFile; fileRef = F831C062084C8020009BD5DA /* ZoomFactor.m */; };
+		F831C070084CC85D009BD5DA /* DocumentWindow.h in Resources */ = {isa = PBXBuildFile; fileRef = F831C06E084CC85D009BD5DA /* DocumentWindow.h */; };
+		F831C071084CC85E009BD5DA /* DocumentWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = F831C06F084CC85D009BD5DA /* DocumentWindow.m */; };
+		F831C074084D0063009BD5DA /* NSView+Scrolling.h in Resources */ = {isa = PBXBuildFile; fileRef = F831C072084D0063009BD5DA /* NSView+Scrolling.h */; };
+		F831C075084D0063009BD5DA /* NSView+Scrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = F831C073084D0063009BD5DA /* NSView+Scrolling.m */; };
+		F84A23B8083261BB00C74C2F /* Next.png in Resources */ = {isa = PBXBuildFile; fileRef = F84A23B6083261BB00C74C2F /* Next.png */; };
+		F84A23B9083261BB00C74C2F /* Previous.png in Resources */ = {isa = PBXBuildFile; fileRef = F84A23B7083261BB00C74C2F /* Previous.png */; };
+		F855965E0832301B0080599C /* DocumentTools.h in Resources */ = {isa = PBXBuildFile; fileRef = F855965C0832301B0080599C /* DocumentTools.h */; };
+		F855965F0832301B0080599C /* DocumentTools.m in Sources */ = {isa = PBXBuildFile; fileRef = F855965D0832301B0080599C /* DocumentTools.m */; };
+		F857F62108845CFB0033CA82 /* MenuState.h in Resources */ = {isa = PBXBuildFile; fileRef = F857F62008845CFB0033CA82 /* MenuState.h */; };
+		F857F624088467530033CA82 /* MenuState.m in Sources */ = {isa = PBXBuildFile; fileRef = F857F623088467530033CA82 /* MenuState.m */; };
+		F85D799208844D0000B59A04 /* FitHeight.png in Resources */ = {isa = PBXBuildFile; fileRef = F85D799008844D0000B59A04 /* FitHeight.png */; };
+		F85D799308844D0000B59A04 /* FitWidth.png in Resources */ = {isa = PBXBuildFile; fileRef = F85D799108844D0000B59A04 /* FitWidth.png */; };
+		F864DB47087478BD0065A111 /* ExtendedScrollView.h in Resources */ = {isa = PBXBuildFile; fileRef = F864DB45087478BD0065A111 /* ExtendedScrollView.h */; };
+		F864DB48087478BD0065A111 /* ExtendedScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F864DB46087478BD0065A111 /* ExtendedScrollView.m */; };
+		F873FB210884531E00290239 /* FitHeightOn.png in Resources */ = {isa = PBXBuildFile; fileRef = F873FB1F0884531E00290239 /* FitHeightOn.png */; };
+		F873FB220884531E00290239 /* FitWidthOn.png in Resources */ = {isa = PBXBuildFile; fileRef = F873FB200884531E00290239 /* FitWidthOn.png */; };
+		F8783D0B08D49C9500E611FF /* DocumentSelection.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F8783D0908D49C9500E611FF /* DocumentSelection.h */; };
+		F8783D0C08D49C9500E611FF /* DocumentSelection.m in Sources */ = {isa = PBXBuildFile; fileRef = F8783D0A08D49C9500E611FF /* DocumentSelection.m */; };
+		F8815F7C08A41BB7007F65F9 /* PopplerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8815F7B08A41BB7007F65F9 /* PopplerKit.framework */; };
+		F8815F9608A41CAB007F65F9 /* PopplerKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F8815F7B08A41BB7007F65F9 /* PopplerKit.framework */; };
+		F8A1E33A083D414100EF7DFA /* ZoomIn.png in Resources */ = {isa = PBXBuildFile; fileRef = F8A1E338083D414100EF7DFA /* ZoomIn.png */; };
+		F8A1E33B083D414100EF7DFA /* ZoomOut.png in Resources */ = {isa = PBXBuildFile; fileRef = F8A1E339083D414100EF7DFA /* ZoomOut.png */; };
+		F8A773AA0884513C00C8E059 /* FitPageOn.png in Resources */ = {isa = PBXBuildFile; fileRef = F8A773A90884513C00C8E059 /* FitPageOn.png */; };
+		F8AB42B20868BB4D00266E5E /* Preferences.h in Resources */ = {isa = PBXBuildFile; fileRef = F8AB42B00868BB4D00266E5E /* Preferences.h */; };
+		F8AB42B30868BB4D00266E5E /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = F8AB42B10868BB4D00266E5E /* Preferences.m */; };
+		F8C4D45008322C0C00DA869B /* ToolViewBuilder.h in Resources */ = {isa = PBXBuildFile; fileRef = F8C4D44E08322C0C00DA869B /* ToolViewBuilder.h */; };
+		F8C4D45108322C0C00DA869B /* ToolViewBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C4D44F08322C0C00DA869B /* ToolViewBuilder.m */; };
+		F8C4EF9408315C0500351D9E /* AppDelegate.h in Resources */ = {isa = PBXBuildFile; fileRef = F8C4EF8908315C0500351D9E /* AppDelegate.h */; };
+		F8C4EF9508315C0500351D9E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C4EF8A08315C0500351D9E /* AppDelegate.m */; };
+		F8C4EF9608315C0500351D9E /* Controller.h in Resources */ = {isa = PBXBuildFile; fileRef = F8C4EF8B08315C0500351D9E /* Controller.h */; };
+		F8C4EF9708315C0500351D9E /* Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C4EF8C08315C0500351D9E /* Controller.m */; };
+		F8C4EF9808315C0500351D9E /* Document.h in Resources */ = {isa = PBXBuildFile; fileRef = F8C4EF8D08315C0500351D9E /* Document.h */; };
+		F8C4EF9908315C0500351D9E /* Document.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C4EF8E08315C0500351D9E /* Document.m */; };
+		F8C4EF9C08315C0500351D9E /* PDFContentView.h in Resources */ = {isa = PBXBuildFile; fileRef = F8C4EF9108315C0500351D9E /* PDFContentView.h */; };
+		F8C4EF9D08315C0500351D9E /* SinglePageView.h in Resources */ = {isa = PBXBuildFile; fileRef = F8C4EF9208315C0500351D9E /* SinglePageView.h */; };
+		F8C4EF9E08315C0500351D9E /* SinglePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C4EF9308315C0500351D9E /* SinglePageView.m */; };
+		F8CA9B88083D24BE007F8786 /* First.png in Resources */ = {isa = PBXBuildFile; fileRef = F8CA9B86083D24BE007F8786 /* First.png */; };
+		F8CA9B89083D24BE007F8786 /* Last.png in Resources */ = {isa = PBXBuildFile; fileRef = F8CA9B87083D24BE007F8786 /* Last.png */; };
+		F8D2BF0408696226009E1A02 /* CenteringClipView.h in Resources */ = {isa = PBXBuildFile; fileRef = F8D2BF0208696226009E1A02 /* CenteringClipView.h */; };
+		F8D2BF0508696226009E1A02 /* CenteringClipView.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D2BF0308696226009E1A02 /* CenteringClipView.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		4A9504CCFFE6A4B311CA0CBA /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		4A9504CDFFE6A4B311CA0CBA /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXContainerItemProxy section */
+		F82F200108565CCB00929369 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090;
+			remoteInfo = Vindaloo;
+		};
+		F82F200308565CD000929369 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F82F1FA00856587C00929369;
+			remoteInfo = "Disk Image";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F8815F8108A41C26007F65F9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F8815F9608A41CAB007F65F9 /* PopplerKit.framework in CopyFiles */,
+				F80EA11D08C461B600ADC024 /* SearchView.h in CopyFiles */,
+				F80EA1E208C46BD200ADC024 /* SearchController.h in CopyFiles */,
+				F8783D0B08D49C9500E611FF /* DocumentSelection.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32CA4F630368D1EE00C91783 /* Vindaloo_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vindaloo_Prefix.pch; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* Vindaloo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vindaloo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F80EA11B08C461B600ADC024 /* SearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchView.h; sourceTree = "<group>"; };
+		F80EA11C08C461B600ADC024 /* SearchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchView.m; sourceTree = "<group>"; };
+		F80EA1E008C46BD200ADC024 /* SearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchController.h; sourceTree = "<group>"; };
+		F80EA1E108C46BD200ADC024 /* SearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchController.m; sourceTree = "<group>"; };
+		F816D5D0087C746E0023CD6D /* FitPage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FitPage.png; path = Images/FitPage.png; sourceTree = "<group>"; };
+		F8267F70083D4480001F8F22 /* PDFContentView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PDFContentView.m; sourceTree = "<group>"; };
+		F828B4A208316600006A2E5C /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Document.nib; sourceTree = "<group>"; };
+		F831C061084C8020009BD5DA /* ZoomFactor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ZoomFactor.h; sourceTree = "<group>"; };
+		F831C062084C8020009BD5DA /* ZoomFactor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ZoomFactor.m; sourceTree = "<group>"; };
+		F831C06E084CC85D009BD5DA /* DocumentWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DocumentWindow.h; sourceTree = "<group>"; };
+		F831C06F084CC85D009BD5DA /* DocumentWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DocumentWindow.m; sourceTree = "<group>"; };
+		F831C072084D0063009BD5DA /* NSView+Scrolling.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSView+Scrolling.h"; sourceTree = "<group>"; };
+		F831C073084D0063009BD5DA /* NSView+Scrolling.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSView+Scrolling.m"; sourceTree = "<group>"; };
+		F84A23B6083261BB00C74C2F /* Next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Next.png; path = Images/Next.png; sourceTree = "<group>"; };
+		F84A23B7083261BB00C74C2F /* Previous.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Previous.png; path = Images/Previous.png; sourceTree = "<group>"; };
+		F855965C0832301B0080599C /* DocumentTools.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DocumentTools.h; sourceTree = "<group>"; };
+		F855965D0832301B0080599C /* DocumentTools.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DocumentTools.m; sourceTree = "<group>"; };
+		F857F62008845CFB0033CA82 /* MenuState.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MenuState.h; sourceTree = "<group>"; };
+		F857F623088467530033CA82 /* MenuState.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MenuState.m; sourceTree = "<group>"; };
+		F85D799008844D0000B59A04 /* FitHeight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FitHeight.png; path = Images/FitHeight.png; sourceTree = "<group>"; };
+		F85D799108844D0000B59A04 /* FitWidth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FitWidth.png; path = Images/FitWidth.png; sourceTree = "<group>"; };
+		F864DB45087478BD0065A111 /* ExtendedScrollView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ExtendedScrollView.h; sourceTree = "<group>"; };
+		F864DB46087478BD0065A111 /* ExtendedScrollView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ExtendedScrollView.m; sourceTree = "<group>"; };
+		F873FB1F0884531E00290239 /* FitHeightOn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FitHeightOn.png; path = Images/FitHeightOn.png; sourceTree = "<group>"; };
+		F873FB200884531E00290239 /* FitWidthOn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FitWidthOn.png; path = Images/FitWidthOn.png; sourceTree = "<group>"; };
+		F8783D0908D49C9500E611FF /* DocumentSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocumentSelection.h; sourceTree = "<group>"; };
+		F8783D0A08D49C9500E611FF /* DocumentSelection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocumentSelection.m; sourceTree = "<group>"; };
+		F8815F7B08A41BB7007F65F9 /* PopplerKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PopplerKit.framework; path = ../../Frameworks/PopplerKit/build/Development/PopplerKit.framework; sourceTree = SOURCE_ROOT; };
+		F8A1E338083D414100EF7DFA /* ZoomIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZoomIn.png; path = Images/ZoomIn.png; sourceTree = "<group>"; };
+		F8A1E339083D414100EF7DFA /* ZoomOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZoomOut.png; path = Images/ZoomOut.png; sourceTree = "<group>"; };
+		F8A773A90884513C00C8E059 /* FitPageOn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FitPageOn.png; path = Images/FitPageOn.png; sourceTree = "<group>"; };
+		F8AB42B00868BB4D00266E5E /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = "<group>"; };
+		F8AB42B10868BB4D00266E5E /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Preferences.m; sourceTree = "<group>"; };
+		F8C4D44E08322C0C00DA869B /* ToolViewBuilder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ToolViewBuilder.h; sourceTree = "<group>"; };
+		F8C4D44F08322C0C00DA869B /* ToolViewBuilder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ToolViewBuilder.m; sourceTree = "<group>"; };
+		F8C4EF8908315C0500351D9E /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		F8C4EF8A08315C0500351D9E /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		F8C4EF8B08315C0500351D9E /* Controller.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Controller.h; sourceTree = "<group>"; };
+		F8C4EF8C08315C0500351D9E /* Controller.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Controller.m; sourceTree = "<group>"; };
+		F8C4EF8D08315C0500351D9E /* Document.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Document.h; sourceTree = "<group>"; };
+		F8C4EF8E08315C0500351D9E /* Document.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Document.m; sourceTree = "<group>"; };
+		F8C4EF9108315C0500351D9E /* PDFContentView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PDFContentView.h; sourceTree = "<group>"; };
+		F8C4EF9208315C0500351D9E /* SinglePageView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SinglePageView.h; sourceTree = "<group>"; };
+		F8C4EF9308315C0500351D9E /* SinglePageView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SinglePageView.m; sourceTree = "<group>"; };
+		F8CA9B86083D24BE007F8786 /* First.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = First.png; path = Images/First.png; sourceTree = "<group>"; };
+		F8CA9B87083D24BE007F8786 /* Last.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Last.png; path = Images/Last.png; sourceTree = "<group>"; };
+		F8D2BF0208696226009E1A02 /* CenteringClipView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CenteringClipView.h; sourceTree = "<group>"; };
+		F8D2BF0308696226009E1A02 /* CenteringClipView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CenteringClipView.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				F8815F7C08A41BB7007F65F9 /* PopplerKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				F857F623088467530033CA82 /* MenuState.m */,
+				F857F62008845CFB0033CA82 /* MenuState.h */,
+				F864DB45087478BD0065A111 /* ExtendedScrollView.h */,
+				F864DB46087478BD0065A111 /* ExtendedScrollView.m */,
+				F8D2BF0208696226009E1A02 /* CenteringClipView.h */,
+				F8D2BF0308696226009E1A02 /* CenteringClipView.m */,
+				F8AB42B00868BB4D00266E5E /* Preferences.h */,
+				F8AB42B10868BB4D00266E5E /* Preferences.m */,
+				F831C072084D0063009BD5DA /* NSView+Scrolling.h */,
+				F831C073084D0063009BD5DA /* NSView+Scrolling.m */,
+				F831C06E084CC85D009BD5DA /* DocumentWindow.h */,
+				F831C06F084CC85D009BD5DA /* DocumentWindow.m */,
+				F831C061084C8020009BD5DA /* ZoomFactor.h */,
+				F831C062084C8020009BD5DA /* ZoomFactor.m */,
+				F855965C0832301B0080599C /* DocumentTools.h */,
+				F855965D0832301B0080599C /* DocumentTools.m */,
+				F8C4D44E08322C0C00DA869B /* ToolViewBuilder.h */,
+				F8C4D44F08322C0C00DA869B /* ToolViewBuilder.m */,
+				F8C4EF8908315C0500351D9E /* AppDelegate.h */,
+				F8C4EF8A08315C0500351D9E /* AppDelegate.m */,
+				F8C4EF8B08315C0500351D9E /* Controller.h */,
+				F8C4EF8C08315C0500351D9E /* Controller.m */,
+				F8C4EF8D08315C0500351D9E /* Document.h */,
+				F8C4EF8E08315C0500351D9E /* Document.m */,
+				F8C4EF9108315C0500351D9E /* PDFContentView.h */,
+				F8267F70083D4480001F8F22 /* PDFContentView.m */,
+				F8C4EF9208315C0500351D9E /* SinglePageView.h */,
+				F8C4EF9308315C0500351D9E /* SinglePageView.m */,
+				F80EA11B08C461B600ADC024 /* SearchView.h */,
+				F80EA11C08C461B600ADC024 /* SearchView.m */,
+				F80EA1E008C46BD200ADC024 /* SearchController.h */,
+				F80EA1E108C46BD200ADC024 /* SearchController.m */,
+				F8783D0908D49C9500E611FF /* DocumentSelection.h */,
+				F8783D0A08D49C9500E611FF /* DocumentSelection.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F8815F7B08A41BB7007F65F9 /* PopplerKit.framework */,
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* Vindaloo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* Vindaloo */ = {
+			isa = PBXGroup;
+			children = (
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = Vindaloo;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32CA4F630368D1EE00C91783 /* Vindaloo_Prefix.pch */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F873FB1F0884531E00290239 /* FitHeightOn.png */,
+				F873FB200884531E00290239 /* FitWidthOn.png */,
+				F8A773A90884513C00C8E059 /* FitPageOn.png */,
+				F85D799008844D0000B59A04 /* FitHeight.png */,
+				F85D799108844D0000B59A04 /* FitWidth.png */,
+				F816D5D0087C746E0023CD6D /* FitPage.png */,
+				F8A1E338083D414100EF7DFA /* ZoomIn.png */,
+				F8A1E339083D414100EF7DFA /* ZoomOut.png */,
+				F8CA9B86083D24BE007F8786 /* First.png */,
+				F8CA9B87083D24BE007F8786 /* Last.png */,
+				F84A23B6083261BB00C74C2F /* Next.png */,
+				F84A23B7083261BB00C74C2F /* Previous.png */,
+				8D1107310486CEB800E47090 /* Info.plist */,
+				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
+				F828B4A108316600006A2E5C /* Document.nib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* Vindaloo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8815F5B08A41AE1007F65F9 /* Build configuration list for PBXNativeTarget "Vindaloo" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+				F8815F8108A41C26007F65F9 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = /Users/stefan/swe/gsimageapps/Frameworks/PopplerKit/build;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Vindaloo_Prefix.pch;
+				GCC_WARN_PEDANTIC = NO;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = Vindaloo;
+				WARNING_CFLAGS = "-Wall";
+				WRAPPER_EXTENSION = app;
+			};
+			dependencies = (
+			);
+			name = Vindaloo;
+			productInstallPath = "$(HOME)/Applications";
+			productName = Vindaloo;
+			productReference = 8D1107320486CEB800E47090 /* Vindaloo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = F8815F6708A41AE1007F65F9 /* Build configuration list for PBXProject "Vindaloo" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				4A9504CCFFE6A4B311CA0CBA /* Development */,
+				4A9504CDFFE6A4B311CA0CBA /* Deployment */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Vindaloo */;
+			projectDirPath = "";
+			targets = (
+				8D1107260486CEB800E47090 /* Vindaloo */,
+				F82F1FA00856587C00929369 /* Disk Image */,
+				F82F200008565CC100929369 /* Release */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
+				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				F8C4EF9408315C0500351D9E /* AppDelegate.h in Resources */,
+				F8C4EF9608315C0500351D9E /* Controller.h in Resources */,
+				F8C4EF9808315C0500351D9E /* Document.h in Resources */,
+				F8C4EF9C08315C0500351D9E /* PDFContentView.h in Resources */,
+				F8C4EF9D08315C0500351D9E /* SinglePageView.h in Resources */,
+				F828B4A308316600006A2E5C /* Document.nib in Resources */,
+				F8C4D45008322C0C00DA869B /* ToolViewBuilder.h in Resources */,
+				F855965E0832301B0080599C /* DocumentTools.h in Resources */,
+				F84A23B8083261BB00C74C2F /* Next.png in Resources */,
+				F84A23B9083261BB00C74C2F /* Previous.png in Resources */,
+				F8CA9B88083D24BE007F8786 /* First.png in Resources */,
+				F8CA9B89083D24BE007F8786 /* Last.png in Resources */,
+				F8A1E33A083D414100EF7DFA /* ZoomIn.png in Resources */,
+				F8A1E33B083D414100EF7DFA /* ZoomOut.png in Resources */,
+				F831C063084C8020009BD5DA /* ZoomFactor.h in Resources */,
+				F831C070084CC85D009BD5DA /* DocumentWindow.h in Resources */,
+				F831C074084D0063009BD5DA /* NSView+Scrolling.h in Resources */,
+				F8AB42B20868BB4D00266E5E /* Preferences.h in Resources */,
+				F8D2BF0408696226009E1A02 /* CenteringClipView.h in Resources */,
+				F864DB47087478BD0065A111 /* ExtendedScrollView.h in Resources */,
+				F816D5D1087C746E0023CD6D /* FitPage.png in Resources */,
+				F85D799208844D0000B59A04 /* FitHeight.png in Resources */,
+				F85D799308844D0000B59A04 /* FitWidth.png in Resources */,
+				F8A773AA0884513C00C8E059 /* FitPageOn.png in Resources */,
+				F873FB210884531E00290239 /* FitHeightOn.png in Resources */,
+				F873FB220884531E00290239 /* FitWidthOn.png in Resources */,
+				F857F62108845CFB0033CA82 /* MenuState.h in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F82F1F9F0856587C00929369 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# shell script goes here\ncd ${BUILD_DIR}\n../../../build_tools/mkdmg.pl Vindaloo.dmg.gz Vindaloo.app";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				F8C4EF9508315C0500351D9E /* AppDelegate.m in Sources */,
+				F8C4EF9708315C0500351D9E /* Controller.m in Sources */,
+				F8C4EF9908315C0500351D9E /* Document.m in Sources */,
+				F8C4EF9E08315C0500351D9E /* SinglePageView.m in Sources */,
+				F8C4D45108322C0C00DA869B /* ToolViewBuilder.m in Sources */,
+				F855965F0832301B0080599C /* DocumentTools.m in Sources */,
+				F8267F71083D4480001F8F22 /* PDFContentView.m in Sources */,
+				F831C064084C8020009BD5DA /* ZoomFactor.m in Sources */,
+				F831C071084CC85E009BD5DA /* DocumentWindow.m in Sources */,
+				F831C075084D0063009BD5DA /* NSView+Scrolling.m in Sources */,
+				F8AB42B30868BB4D00266E5E /* Preferences.m in Sources */,
+				F8D2BF0508696226009E1A02 /* CenteringClipView.m in Sources */,
+				F864DB48087478BD0065A111 /* ExtendedScrollView.m in Sources */,
+				F857F624088467530033CA82 /* MenuState.m in Sources */,
+				F80EA11E08C461B600ADC024 /* SearchView.m in Sources */,
+				F80EA1E308C46BD200ADC024 /* SearchController.m in Sources */,
+				F8783D0C08D49C9500E611FF /* DocumentSelection.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F82F200208565CCB00929369 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D1107260486CEB800E47090 /* Vindaloo */;
+			targetProxy = F82F200108565CCB00929369 /* PBXContainerItemProxy */;
+		};
+		F82F200408565CD000929369 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F82F1FA00856587C00929369 /* Disk Image */;
+			targetProxy = F82F200308565CD000929369 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C165DFE840E0CC02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				29B97319FDCFA39411CA2CEA /* English */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+		F828B4A108316600006A2E5C /* Document.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F828B4A208316600006A2E5C /* English */,
+			);
+			name = Document.nib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F8815F5C08A41AE1007F65F9 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Users/stefan/swe/gsimageapps/Frameworks/PopplerKit/build,
+					"$(SRCROOT)/../../Frameworks/PopplerKit/build/Development",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Vindaloo_Prefix.pch;
+				GCC_WARN_PEDANTIC = NO;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = Vindaloo;
+				WARNING_CFLAGS = "-Wall";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		F8815F5D08A41AE1007F65F9 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Users/stefan/swe/gsimageapps/Frameworks/PopplerKit/build,
+					"$(SRCROOT)/../../Frameworks/PopplerKit/build/Development",
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Vindaloo_Prefix.pch;
+				GCC_WARN_PEDANTIC = NO;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = Vindaloo;
+				WARNING_CFLAGS = "-Wall";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		F8815F5E08A41AE1007F65F9 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					/Users/stefan/swe/gsimageapps/Frameworks/PopplerKit/build,
+					"$(SRCROOT)/../../Frameworks/PopplerKit/build/Development",
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Vindaloo_Prefix.pch;
+				GCC_WARN_PEDANTIC = NO;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = Vindaloo;
+				WARNING_CFLAGS = "-Wall";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Default;
+		};
+		F8815F6008A41AE1007F65F9 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "Disk Image";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		F8815F6108A41AE1007F65F9 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "Disk Image";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		F8815F6208A41AE1007F65F9 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "Disk Image";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		F8815F6408A41AE1007F65F9 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Release;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		F8815F6508A41AE1007F65F9 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Release;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		F8815F6608A41AE1007F65F9 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Release;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		F8815F6808A41AE1007F65F9 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Development;
+		};
+		F8815F6908A41AE1007F65F9 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+		F8815F6A08A41AE1007F65F9 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F8815F5B08A41AE1007F65F9 /* Build configuration list for PBXNativeTarget "Vindaloo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8815F5C08A41AE1007F65F9 /* Development */,
+				F8815F5D08A41AE1007F65F9 /* Deployment */,
+				F8815F5E08A41AE1007F65F9 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		F8815F5F08A41AE1007F65F9 /* Build configuration list for PBXAggregateTarget "Disk Image" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8815F6008A41AE1007F65F9 /* Development */,
+				F8815F6108A41AE1007F65F9 /* Deployment */,
+				F8815F6208A41AE1007F65F9 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		F8815F6308A41AE1007F65F9 /* Build configuration list for PBXAggregateTarget "Release" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8815F6408A41AE1007F65F9 /* Development */,
+				F8815F6508A41AE1007F65F9 /* Deployment */,
+				F8815F6608A41AE1007F65F9 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		F8815F6708A41AE1007F65F9 /* Build configuration list for PBXProject "Vindaloo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8815F6808A41AE1007F65F9 /* Development */,
+				F8815F6908A41AE1007F65F9 /* Deployment */,
+				F8815F6A08A41AE1007F65F9 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

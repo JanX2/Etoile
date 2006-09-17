@@ -1,0 +1,21 @@
+{
+    ApplicationDescription = "A spicy PDF Reader.";
+    ApplicationIcon = Vindaloo;
+    ApplicationName = Vindaloo;
+    ApplicationRelease = "0.2";
+    ApplicationURL = "http://home.gna.org/gsimageapps/";
+    Authors = ("Stefan Kleine Stegemann<stefankst@gmail.com>");
+    Copyright = "Copyright \U00a9 2005 Stefan Kleine Stegemann";
+    CopyrightDescription = "Released under the GNU GPL.";
+    FullVersionID = "1.0";
+    NSTypes = (
+    {
+       NSName = "pdf";
+       NSHumanReadableName = "PDF Document";
+       NSUnixExtensions = (pdf,PDF);
+       NSDOSExtensions = (pdf);
+       NSMIMETypes = ("application/pdf");
+       NSRole = Editor;
+       NSDocumentClass = Document;
+    });
+}

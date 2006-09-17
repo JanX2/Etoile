@@ -1,0 +1,59 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                close = id; 
+                enterPageNumber = id; 
+                firstPage = id; 
+                goSinglePage = id; 
+                lastPage = id; 
+                nextPage = id; 
+                previousPage = id; 
+                scrollLineDown = id; 
+                scrollLineLeft = id; 
+                scrollLineRight = id; 
+                scrollLineUp = id; 
+                scrollPageDown = id; 
+                scrollPageUp = id; 
+                scrollToBottom = id; 
+                scrollToLeftEdge = id; 
+                scrollToRightEdge = id; 
+                scrollToTop = id; 
+                takePageFrom = id; 
+                takeZoomFrom = id; 
+                toggleFitHeight = id; 
+                toggleFitPage = id; 
+                toggleFitWidth = id; 
+                zoomActualSize = id; 
+                zoomIn = id; 
+                zoomOut = id; 
+                zoomToFit = id; 
+            }; 
+            CLASS = Controller; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                multiPageView = MultiPageView; 
+                scrollView = NSScrollView; 
+                searchController = SearchController; 
+                singlePageView = SinglePageView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = DocumentWindow; LANGUAGE = Java; SUPERCLASS = NSWindow; }, 
+        {CLASS = ExtendedScrollView; LANGUAGE = ObjC; SUPERCLASS = NSScrollView; }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = SearchController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {scrollView = NSScrollView; searchView = SearchView; window = NSWindow; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = SearchView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {controller = id; }; 
+            SUPERCLASS = NSView; 
+        }
+    ); 
+    IBVersion = 1; 
+}
