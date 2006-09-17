@@ -1553,8 +1553,13 @@ no_number:
             if (! ((mwmhints.decorations & OB_MWM_DECOR_HANDLE) ||
                    (mwmhints.decorations & OB_MWM_DECOR_TITLE)))
                 /* if the mwm hints request no handle or title, then all
-                   decorations are disabled */
-		decorations = config_theme_keepborder ? decorations & OB_FRAME_DECOR_BORDER : 0;
+                   decorations are disabled, but keep the border if that's
+		   specified */
+		if (mwmhints.decorations & OB_MWM_DECOR_BORDER) {
+		  decorations = OB_FRAME_DECOR_BORDER;
+		} else {
+		  decorations = 0;
+		}
         }
     }
 
