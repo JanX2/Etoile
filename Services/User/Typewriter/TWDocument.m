@@ -3,9 +3,16 @@
 #include <AppKit/AppKit.h>
 #include "TWDocument.h"
 #include "TWTextView.h"
+#include "TWCharacterPanel.h"
 #include <OgreKit/OgreTextFinder.h>
 
 @implementation TWDocument
+
+- (void) characterSelectedInPanel: (id) sender
+{
+  NSString *character = [[[(TWCharacterPanel *)sender matrix] selectedCell] stringValue];
+  [textView insertText: character];
+}
 
 - (void) awakeFromNib
 {
@@ -85,5 +92,9 @@
   [textFinder showFindPanel: sender]; 
 }
 
+- (void) showCharacterPanel: (id) sender
+{
+  [[TWCharacterPanel sharedCharacterPanel] orderFront: self];
+}
 
 @end

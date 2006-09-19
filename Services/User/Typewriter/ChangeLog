@@ -1,3 +1,7 @@
+2006-09-19 Yen-Ju Chen <yjchenx at gmail>
+
+	* Add character panel (need patch from GNUstep bug #17787).
+
 2006-09-16 Yen-Ju Chen <yjchenx at gmail>
 
 	* use OgreKit.

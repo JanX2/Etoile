@@ -7,7 +7,8 @@ APP_NAME = Typewriter
 Typewriter_OBJC_FILES = \
 	main.m \
 	TWTextView.m \
-	TWDocument.m
+	TWDocument.m \
+	TWCharacterPanel.m
 
 Typewriter_GUI_LIBS += -lOgreKit
 
@@ -16,7 +17,8 @@ Typewriter_LANGUAGES = \
 
 Typewriter_LOCALIZED_RESOURCE_FILES = \
 	MainMenu.gorm \
-	Document.gorm
+	Document.gorm \
+	CharacterPanel.gorm
 
 Typewriter_MAIN_MODEL_FILE = MainMenu.gorm
 

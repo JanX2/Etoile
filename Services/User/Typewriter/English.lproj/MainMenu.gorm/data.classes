@@ -2,7 +2,7 @@
     "## Comment" = "Do NOT change this file, Gorm maintains it";
     FirstResponder = {
 	Actions = (
-	    "newAction:",
+	    "showCharacterPanel:",
 	    "showFindPanel:"
 	);
 	Super = NSObject;
@@ -10,6 +10,14 @@
     OgreTextFinder = {
 	Actions = (
 	    "showFindPanel:"
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+    TWController = {
+	Actions = (
+	    "showCharacterPanel:"
 	);
 	Outlets = (
 	);

@@ -1,0 +1,23 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "buttonAction:",
+	    "matrixAction:"
+	);
+	Super = NSObject;
+    };
+    TWCharacterPanel = {
+	Actions = (
+	    "buttonAction:",
+	    "matrixAction:"
+	);
+	Outlets = (
+	    matrix,
+	    button,
+	    panel,
+	    scrollView
+	);
+	Super = NSObject;
+    };
+}
