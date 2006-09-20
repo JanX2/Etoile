@@ -55,8 +55,6 @@
   [window skipTaskbarAndPager];
   [window setContentView: view];
 
-  /* Get group leader if any */
-  groupWindow = XWindowGroupWindow(w);
 
   /* Get class and instance */
   if (XWindowClassHint(w, &wm_class, &wm_instance)) {
@@ -66,8 +64,11 @@
 
   if ([wm_class isEqualToString: @"GNUstep"]) {
     type = AZDockGNUstepApplication;
+    /* Get group leader if any */
+    groupWindow = XWindowGroupWindow(w);
   } else {
     type = AZDockXWindowApplication;
+    groupWindow = 0;
   }
 
   /* Try to get the icon */
@@ -106,7 +107,6 @@
   int i;
   unsigned long w;
   NSString *_class, *_instance;
-  Window temp;
   for (i = 0; i < [xwindows count]; i++)
   {
     w = [[xwindows objectAtIndex: i] unsignedLongValue];
@@ -118,9 +118,9 @@
 	[_instance isEqualToString: wm_instance])
       {
         [xwindows addObject: [NSNumber numberWithUnsignedLong: win]];
-	temp = XWindowGroupWindow(win);
-	if (temp)
-          groupWindow = temp;
+        if ([self type] == AZDockGNUstepApplication) {
+	  groupWindow = XWindowGroupWindow(win);
+	}
 	return YES;
       }
   }

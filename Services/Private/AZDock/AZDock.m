@@ -151,37 +151,6 @@ static AZDock *sharedInstance;
     return;
   }
 
-//  NSLog(@"%@", [[NSWorkspace sharedWorkspace] launchedApplications]);
-
-#if 0
-  {
-    /* Query window */
-    Window root_return;
-    Window parent_return;
-    Window *children_return;
-    unsigned int nchildren_return;
-    NSString *y, *z;
-    XQueryTree(dpy, root_win, &root_return, &parent_return, &children_return, &nchildren_return);
-    {
-      NSLog(@"Total windows = %d", nchildren_return);
-      int x;
-      XWMHints *wmHints;
-      for (x = 0; x < nchildren_return; x++) 
-      {
-	if (XWindowClassHint(children_return[x], &y, &z)) {
-	  NSLog(@"%d %@.%@", children_return[x], z, y);
-	  wmHints = XGetWMHints(dpy, children_return[x]);
-	  if (wmHints) {
-	    NSLog(@"group %d, state %d", wmHints->window_group, wmHints->initial_state);
-	    XFree(wmHints);
-	  }
-	}
-      }
-    }
-  }
-#endif
-
-
   /* Remove destroyed windows */
   for (m = 0; m < count; m++) {
     for (k = 0; k < [lastClientList count]; k++) {

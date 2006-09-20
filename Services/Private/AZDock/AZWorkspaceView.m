@@ -1,6 +1,10 @@
 #import "AZWorkspaceView.h"
 #import <XWindowServerKit/XScreen.h>
 
+@interface AZWorkspaceView (AZPrivate)
+- (void) updateContextualMenu;
+@end
+
 @implementation AZWorkspaceView
 
 /** Private **/
@@ -8,6 +12,15 @@
 {
   int index = [contextualMenu indexOfItem: sender];
   [[[self window] screen] setCurrentWorkspace: index];
+  /* Update state */
+  int i, menu_count = [contextualMenu numberOfItems];
+  for (i = 0; i < number_workspace; i++) {
+    if (i == index) {
+      [[contextualMenu itemAtIndex: i] setState: NSOnState];
+    } else {
+      [[contextualMenu itemAtIndex: i] setState: NSOffState];
+    }
+  }
 }
 
 - (void) updateContextualMenu
