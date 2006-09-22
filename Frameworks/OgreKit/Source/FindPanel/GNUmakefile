@@ -2,7 +2,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 SUBPROJECT_NAME = FindPanel
 
-ADDITIONAL_INCLUDE_DIRS += -I../..
+ADDITIONAL_INCLUDE_DIRS += -I../.. `onig-config --cflags`
 ADDITIONAL_CFLAGS += `onig-config --cflags`
 ADDITIONAL_LIB_DIRS += `onig-config --libs`
 

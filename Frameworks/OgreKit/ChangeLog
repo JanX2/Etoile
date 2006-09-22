@@ -1,3 +1,7 @@
+2006-09-21 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Compile on mac.
+
 2006-09-16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Update to OgreKit 2.1.2 and start to support GUI.
