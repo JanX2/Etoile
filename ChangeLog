@@ -1,5 +1,10 @@
 2006-09-23  Quentin Mathe <qmathe@club-internet.fr>
 
+    * INSTALL.Ubuntu: New file listing dependencies to install on Ubuntu in
+    order to build both GNUstep and Etoile "manually".
+
+2006-09-23  Quentin Mathe <qmathe@club-internet.fr>
+
     * Frameworks/GNUmakefile: Included new PopplerKit and AddressesKit 
     frameworks by default in Etoile build process.
 
