@@ -20,7 +20,7 @@
 #ifdef GNUSTEP
 #define OgreTextFinderLocalizedString(key) _(key)
 #else
-#define OgreTextFinderLocalizedString(key)	[[OgreTextFinder ogreKitBundle] localizedStringForKey:(key) value:(key) table:@"OgreTextFinderLocalizable"]
+#define OgreTextFinderLocalizedString(key) (key)
 #endif
 
 @class OgreTextFinder, OgreFindPanelController, OgreTextFindResult, OgreTextFindThread, OgreTextFindProgressSheet;

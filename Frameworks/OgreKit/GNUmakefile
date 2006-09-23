@@ -20,6 +20,7 @@ ADDITIONAL_INCLUDE_DIRS +=
 ADDITIONAL_CFLAGS += `onig-config --cflags`
 ADDITIONAL_LIB_DIRS += `onig-config --libs`
 
+-include GNUmakefile.preamble
 ifeq ($(test), yes)
 include $(GNUSTEP_MAKEFILES)/bundle.make
 else
@@ -28,4 +29,5 @@ endif
 
 -include GNUmakefile.headers_build
 include $(GNUSTEP_MAKEFILES)/aggregate.make
+-include GNUmakefile.postamble
 
