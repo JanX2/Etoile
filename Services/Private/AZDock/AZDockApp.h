@@ -15,7 +15,7 @@ typedef enum _AZDockType {
  * or a file on harddisk */
 @interface AZDockApp: NSObject
 {
-  Window groupWindow; /* Keep a record of group leader, especially for GNUstep. */
+  Window groupWindow; /* Keep a record of group leader for GNUstep. */
   AZDockType type;
   NSMutableArray *xwindows;
   XWindow *window;
@@ -23,6 +23,8 @@ typedef enum _AZDockType {
   NSImage *icon;
   NSString *wm_class;
   NSString *wm_instance;
+
+  NSString *command; /* AppName for GNUstep or XGetCommand() for the rest */
 }
 
 - (id) initWithXWindow: (Window) win;

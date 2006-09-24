@@ -174,7 +174,6 @@ static AZDock *sharedInstance;
 
   for (i = 0; i < count; i++)
   {
-    //NSLog(@"%d", win[i]);
     BOOL skip = NO;
 
     /* Do not manage my own window (AZDock.GNUstep) */

@@ -5,14 +5,21 @@
 
 @implementation AZDockApp 
 
-- (void) mouseDown: (NSEvent *) event
+/** Private **/
+
+/* Action from AZDockView */
+- (void) keepInDockAction: (id) sender
+{
+  NSLog(@"Keep in dock");
+}
+
+- (void) showAction: (id) sender
 {
   switch(type) {
     case AZDockGNUstepApplication:
       {
         [[NSWorkspace sharedWorkspace] launchApplication: wm_instance];
-	    NSLog(@"GNUstep %@", wm_instance);
-	    break;
+	break;
       }
     case AZDockXWindowApplication:
       {
@@ -36,6 +43,47 @@
       }
       break;
   }
+}
+
+- (void) quitAction: (id) sender
+{
+  switch(type) {
+    case AZDockGNUstepApplication:
+      {
+        // FIXME: do not know how to quite GNUstep application gracefully
+        //[[NSWorkspace sharedWorkspace] launchApplication: wm_instance];
+	break;
+      }
+    case AZDockXWindowApplication:
+      {
+	int i;
+	for (i = [xwindows count]-1; i > -1; i--) {
+	  XWindowCloseWindow([[xwindows objectAtIndex: i] unsignedLongValue], NO);
+	}
+      }
+  }
+}
+
+- (void) updateCommand: (Window) w
+{
+  /* Get command */
+  if (type == AZDockGNUstepApplication) {
+    ASSIGNCOPY(command, wm_instance); 
+  } else {
+    ASSIGN(command, XWindowCommandPath(w));
+    if ((command == nil) || ([command length] == 0)) {
+      /* WM_COMMAND is not used by many modern applications.
+       * Try lowercase of wm_class */
+      ASSIGN(command, [wm_class lowercaseString]);
+    }
+  }
+}
+
+/** End of Private **/
+
+- (void) mouseDown: (NSEvent *) event
+{
+  [self showAction: self];
 }
 
 - (id) initWithXWindow: (Window) w
@@ -93,9 +141,10 @@
 	/* use default icon */
 	icon = [NSImage imageNamed: @"Unknown.tiff"];
   }
- if (icon)
+  if (icon)
     [view setImage: icon];
 
+  [self updateCommand: w];
 
   [window orderFront: self];
 
@@ -110,7 +159,7 @@
   for (i = 0; i < [xwindows count]; i++)
   {
     w = [[xwindows objectAtIndex: i] unsignedLongValue];
-    if (w == win)
+    if (w == win) 
       return YES;
   }
   if (XWindowClassHint(win, &_class, &_instance)) {
@@ -118,6 +167,11 @@
 	[_instance isEqualToString: wm_instance])
       {
         [xwindows addObject: [NSNumber numberWithUnsignedLong: win]];
+
+	if ((command == nil) || ([command length] == 0)) {
+	  [self updateCommand: win];
+	}
+
         if ([self type] == AZDockGNUstepApplication) {
 	  groupWindow = XWindowGroupWindow(win);
 	}

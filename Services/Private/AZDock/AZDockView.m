@@ -37,6 +37,13 @@
 - (void) setDelegate: (id) d
 {
   ASSIGN(delegate, d);
+
+  int i, count = [contextualMenu numberOfItems];
+  id <NSMenuItem> item;
+  for (i = 0; i < count; i++) {
+    item = [contextualMenu itemAtIndex: i];
+    [item setTarget: delegate];
+  }
 }
 
 - (id) delegate
@@ -51,8 +58,18 @@
 
 - (id) initWithFrame: (NSRect) frame
 {
+  id <NSMenuItem> item;
   self = [super initWithFrame: frame];
   contextualMenu = [[NSMenu alloc] init];
+  [contextualMenu addItemWithTitle: _(@"Keep in dock")
+	          action: @selector(keepInDockAction:)
+		  keyEquivalent: nil];
+  [contextualMenu addItemWithTitle: _(@"Show")
+	          action: @selector(showAction:)
+		  keyEquivalent: nil];
+  [contextualMenu addItemWithTitle: _(@"Quit")
+	          action: @selector(quitAction:)
+		  keyEquivalent: nil];
   [self setMenu: contextualMenu];
   return self;
 }
