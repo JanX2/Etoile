@@ -1,3 +1,7 @@
+2006-09-24 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Use XGetCommand to get WM_COMMAND property.
+
 2006-09-03 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* XFunctions.h:

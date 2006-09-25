@@ -173,27 +173,21 @@ Window XWindowGroupWindow(Window win)
   return 0;
 }
 
-/* FIXME: would it be better to use XGetCommand() ? */
 NSString* XWindowCommandPath(Window win)
 {
+  /* WM_COMMAND is not used by many modern applications */
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
-
-  unsigned char *data;
-  unsigned long count;
-  Atom prop = XInternAtom(dpy, "WM_COMMAND", False);
-  Atom type_ret;
-  int format_ret;
-  unsigned long after_ret;
-  int result = XGetWindowProperty(dpy, win, prop,
-                                  0, 0x7FFFFFFF, False, XA_STRING,
-                                  &type_ret, &format_ret, &count,
-                                  &after_ret, (unsigned char **)&data);
-  if ((result != Success)) {
-    NSLog(@"Error: cannot get client state");
+  int argc_return;
+  char **argv_return;
+  
+  int result = XGetCommand(dpy, win, &argv_return, &argc_return);
+  if ((result == 0) || (argc_return == 0)) {
+    //NSLog(@"No command available");
     return nil;
   }
 
-  return [NSString stringWithCString: data];
+  // FIXME: should process string list to get all arguments
+  return [NSString stringWithCString: argv_return[0]];
 }
 
 BOOL XWindowIsIcon(Window win)
@@ -213,3 +207,50 @@ BOOL XWindowIsIcon(Window win)
   }
   return NO;
 }
+
+void XWindowCloseWindow(Window win, BOOL forcefully)
+{
+  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+
+  if (forcefully) {
+    XKillClient(dpy, win);
+  } 
+
+  Atom *data;
+  Atom prop = XInternAtom(dpy, "WM_PROTOCOLS", False);
+  Atom delete_window = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
+  Atom type_ret;
+  int format_ret;
+  unsigned long after_ret, count;
+  int result = XGetWindowProperty(dpy, win, prop,
+                                  0, 0x7FFFFFFF, False, XA_ATOM,
+                                  &type_ret, &format_ret, &count,
+                                  &after_ret, (unsigned char **)&data);
+  if ((result != Success)) {
+    NSLog(@"Cannot get wm_protocols of client. Quit forcefully.");
+    // Do not support quit gracefully. Must be forcefully.
+    XKillClient(dpy, win);
+  } else {
+    int i;
+    for (i = 0; i < count; i++) {
+      if (data[i] == delete_window) {
+	//NSLog(@"Support WM_DELETE_WINDOW");
+	/* Send message to quit */
+	XClientMessageEvent *xev = calloc(1, sizeof(XClientMessageEvent));
+	xev->type = ClientMessage;
+	xev->display = dpy;
+	xev->window = win;
+	xev->message_type = prop;
+	xev->format = 32;
+	xev->data.l[0] = delete_window;
+	xev->data.l[1] = 0; // just in case
+	xev->data.l[2] = 0;
+	xev->data.l[3] = 0;
+	XSendEvent(dpy, win, False,
+		                 NoEventMask, (XEvent *)xev);
+	XFree(xev);
+      }
+    }
+  }
+}
+

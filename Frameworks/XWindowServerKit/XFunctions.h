@@ -54,3 +54,6 @@ NSString* XWindowCommandPath(Window win);
 /* Returns if the window is an icon window */
 BOOL XWindowIsIcon(Window win);
 
+/* Close a window (forcefully) */
+void XWindowCloseWindow(Window win, BOOL forcefully);
+
