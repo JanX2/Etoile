@@ -50,8 +50,16 @@
   switch(type) {
     case AZDockGNUstepApplication:
       {
-        // FIXME: do not know how to quite GNUstep application gracefully
-        //[[NSWorkspace sharedWorkspace] launchApplication: wm_instance];
+        /* Connect to application */
+        id appProxy = [NSConnection rootProxyForConnectionWithRegisteredName: wm_instance host: @""];
+	if (appProxy) {
+	  NS_DURING
+	    [appProxy terminate: nil];
+	  NS_HANDLER
+	    /* Error occurs because application is terminated
+	     * and connection dies. */
+	  NS_ENDHANDLER
+	}
 	break;
       }
     case AZDockXWindowApplication:
@@ -146,6 +154,7 @@
 
   [self updateCommand: w];
 
+
   [window orderFront: self];
 
   return self;
@@ -237,6 +246,11 @@
 - (Window) groupWindow
 {
   return groupWindow;
+}
+
+- (NSString *) command
+{
+  return command;
 }
 
 @end

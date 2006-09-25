@@ -30,6 +30,7 @@ typedef enum _AZDockType {
 - (id) initWithXWindow: (Window) win;
 
 - (AZDockType) type;
+- (NSString *) command;
 - (Window) groupWindow;
 
 /* Return NO is the win does not belong to this view */

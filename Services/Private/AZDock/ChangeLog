@@ -1,3 +1,7 @@
+2006-09-24 Yen-Ju Chen <yjchenx at gmail>
+
+	* Terminate GNUstep application through NSConnection.
+
 2006-09-23 Yen-Ju Chen <yjchenx at gmail>
 
 	* Start to implement show and quit in contextual menu.

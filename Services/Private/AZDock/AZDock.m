@@ -15,6 +15,7 @@ static AZDock *sharedInstance;
 @implementation AZDock
 
 /** Private **/
+
 - (BOOL) isMyWindow: (Window) win
 {
   if (win == 0) return NO;
@@ -56,6 +57,7 @@ static AZDock *sharedInstance;
     }
   }
 }
+
 /** End of private */
 
 - (void) organizeApplications
@@ -130,6 +132,32 @@ static AZDock *sharedInstance;
       break;
   }
 }
+
+- (void) connectionDidDie: (NSNotification *) not
+{
+  /* An application terminates. Try to find out which one */
+  NSArray *array = [[NSWorkspace sharedWorkspace] launchedApplications];
+  NSMutableArray *ma = [[NSMutableArray alloc] init];
+  int i;
+  for (i = 0; i < [array count]; i++) {
+    [ma addObject: [[array objectAtIndex: i] objectForKey: @"NSApplicationName"]];
+  }
+
+  AZDockApp *app;
+  for (i = 0; i < [apps count]; i++) {
+    app = [apps objectAtIndex: i];
+    if ([app type] == AZDockGNUstepApplication) {
+      if ([ma containsObject: [app command]] == NO) {
+	[[app window] orderOut: self];
+	[apps removeObjectAtIndex: i];
+	break;
+      }
+    } 
+  }
+  [self organizeApplications];
+  DESTROY(ma);
+}
+
 
 - (void) readClientList
 {
@@ -415,6 +443,14 @@ static AZDock *sharedInstance;
 
   [self readClientList];
   [self organizeApplications];
+
+  /* Listen to NSConnectionDidDieNotification when AZDock terminate
+   * applications */
+  [[NSNotificationCenter defaultCenter]
+                    addObserver: self
+                    selector: @selector(connectionDidDie:)
+                    name: NSConnectionDidDieNotification
+	            object: nil];
 }
 
 - (void) dealloc
