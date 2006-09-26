@@ -183,7 +183,7 @@ static AZStacking *sharedInstance;
     Window *win;
     int i, j, jcount = [wins count];
 
-#ifdef DEBUG
+#ifdef DEBUG_AZALEA
     GList *next;
     /* pls only restack stuff in the same layer at a time */
     for (it = wins; it; it = next) {
@@ -228,7 +228,7 @@ static AZStacking *sharedInstance;
 	}
     }
 
-#ifdef DEBUG
+#ifdef DEBUG_AZALEA
     /* some debug checking of the stacking list's order */
     for (it = stacking_list; ; it = next) {
         next = g_list_next(it);

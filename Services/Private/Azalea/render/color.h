@@ -37,8 +37,8 @@ struct _RrColor {
     int key;
     int refcount;
 
-#ifdef DEBUG
-    int id;
+#ifdef DEBUG_AZALEA
+    int iden;
 #endif
 };
 

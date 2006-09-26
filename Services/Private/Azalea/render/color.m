@@ -55,8 +55,8 @@ RrColor *RrColorParse(const AZInstance *inst, char *colorname)
 }
 
 /*#define NO_COLOR_CACHE*/
-#ifdef DEBUG
-int id;
+#ifdef DEBUG_AZALEA
+int iden;
 #endif
 
 RrColor *RrColorNew(const AZInstance *inst, int r, int g, int b)
@@ -85,8 +85,8 @@ RrColor *RrColorNew(const AZInstance *inst, int r, int g, int b)
             out->pixel = xcol.pixel;
             out->key = key;
             out->refcount = 1;
-#ifdef DEBUG
-            out->id = id++;
+#ifdef DEBUG_AZALEA
+            out->iden = iden++;
 #endif
 #ifndef NO_COLOR_CACHE
 	    [[inst colorHash] setObject: [NSValue valueWithPointer: out]

@@ -1,3 +1,7 @@
+2006-09-25 Yen-Ju Chen <yjchenx at gmail>
+
+	* remove conflict with DEBUG.
+
 2006-09-16 Yen-Ju Chen <yjchenx at gmail>
 
 	* AZClient.m:

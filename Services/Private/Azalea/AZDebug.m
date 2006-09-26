@@ -51,7 +51,7 @@ BOOL xerror_occured = NO;
 int AZXErrorHandler(Display *d, XErrorEvent *e)
 {
     xerror_occured = YES;
-#ifdef DEBUG
+#ifdef DEBUG_AZALEA
     if (!xerror_ignore) {
         char errtxt[128];
 

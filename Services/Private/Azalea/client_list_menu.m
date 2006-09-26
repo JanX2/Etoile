@@ -180,7 +180,6 @@ static AZMenu *client_list_menu;
 	      AZAction *a = [[(AZNormalMenuEntry *)meit actions] objectAtIndex: 0];
 	      AZClient *c = [a data].any.c;
 	      if (c == [not object]) {
-		NSLog(@"c %@, not %@", c, [not object]);
 	        [a data_pointer]->any.c = NULL;
 	      }
 	    }

@@ -96,7 +96,7 @@ static void parse_args(int argc, char **argv);
 
 int main(int argc, char **argv)
 {
-#ifdef DEBUG
+#ifdef DEBUG_AZALEA
     AZDebug_show_output(YES);
 #endif
 
