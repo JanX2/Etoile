@@ -4,8 +4,6 @@
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
-DEPENDENCIES = RSSKit
-
 #
 # Main Application
 #

@@ -2,6 +2,9 @@
 Grr Changelog
 =============
 
+Sep-26-2006 Quentin Mathe <qmathe@club-internet.fr>
+	* GNUmakefile: Modified to match latest etoile.make evolution.
+
 Aug-31-2006 Quentin Mathe <qmathe@club-internet.fr>
 	* GNUmakefile: Updated to include etoile.make, this allows to have 
 	RSSKit dependency properly handled even when RSSKit hasn't already been 

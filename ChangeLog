@@ -1,3 +1,13 @@
+2006-09-26  Quentin Mathe <qmathe@club-internet.fr>
+
+    * etoile.make: Simplified the dependency handling furthermore by getting
+    rid of DEPENDENCIES variable. No need to declare anymore dependencies with
+    this variable on per module basis. By including 'etoile.make' the result 
+    of the module compilation is automatically exported in common directory 
+    named 'Build'. Moreover this directory is searched for libraries, 
+    frameworks, headers, bundles etc. when etoile.make is included in a module, 
+    this allows to handle related dependencies transparently.
+
 2006-09-23  Quentin Mathe <qmathe@club-internet.fr>
 
     * INSTALL.Ubuntu: New file listing dependencies to install on Ubuntu in

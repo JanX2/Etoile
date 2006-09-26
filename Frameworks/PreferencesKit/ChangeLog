@@ -1,3 +1,7 @@
+2006-09-26  Quentin Mathe <qmathe@club-internet.fr>
+
+    * GNUmakefile: Modified to include 'etoile.make'.
+
 2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
 
     * Headers/PKPreferencesController.h: Made class summary in notice more 

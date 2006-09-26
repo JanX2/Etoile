@@ -1,3 +1,7 @@
+2006-09-26  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Modified to match latest etoile.make evolution.
+
 2006-08-23  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Fixed compilation by moving etoile.make include at the

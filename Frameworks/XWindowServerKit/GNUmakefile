@@ -19,4 +19,5 @@ ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lX11
 
 include $(GNUSTEP_MAKEFILES)/library.make
+include ../../etoile.make
 
