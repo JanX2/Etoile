@@ -1,5 +1,10 @@
 2006-09-27  Quentin Mathe <qmathe@club-internet.fr>
 
+    * etoile.make: Improved to export library made available in Source/obj too 
+    (was only exporting library put in the immediate 'obj' subdirectory).
+
+2006-09-27  Quentin Mathe <qmathe@club-internet.fr>
+
     * etoile.make: Updated to properly link frameworks in Build directory.
     The framework resulting of a project compilation is located in the project 
     directory itself and not in the 'obj' subdirectory.
