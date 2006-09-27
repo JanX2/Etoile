@@ -1,4 +1,4 @@
-#Make a temporary directory in order to have library/bundle complied
+#Make a temporary directory in order to have library/bundle compiled
 
 before-all:: 
 	if [ ! -h "OgreKit" ]; then \
