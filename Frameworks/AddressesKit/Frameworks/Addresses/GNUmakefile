@@ -46,6 +46,7 @@ Addresses_LANGUAGES=Dutch English French German Spanish
 -include GNUmakefile.preamble
 -include GNUmakefile.local
 include $(GNUSTEP_MAKEFILES)/framework.make
+include ../../../../etoile.make
 -include GNUmakefile.postamble
 
 after-Addresses-install::

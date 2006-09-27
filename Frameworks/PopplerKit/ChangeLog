@@ -1,9 +1,14 @@
-2006-09-17 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+2006-09-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Updated to include etoile.make in order to export the 
+	framework as a dependency.
+
+2006-09-17  Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Add patch for Poppler 0.5 by Rob Burns <rburns _AT paiges net>
 	* Tested on poppler 0.4.5 and 0.5.1
 
-2006-09-16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+2006-09-16  Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Import from ImageApps.
 

@@ -77,6 +77,7 @@ CC=${CXX}
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 include $(GNUSTEP_MAKEFILES)/framework.make
+include ../../etoile.make
 
 -include GNUmakefile.postamble
 

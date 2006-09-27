@@ -34,5 +34,6 @@ AddressView_LDFLAGS=-L..
 -include GNUmakefile.preamble
 -include GNUmakefile.local
 include $(GNUSTEP_MAKEFILES)/framework.make
+include ../../../../etoile.make
 -include GNUmakefile.postamble
 

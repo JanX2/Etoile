@@ -1,4 +1,10 @@
-2006-09-16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+2006-09-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Frameworks/Addresses/GNUmakefile:
+	* Frameworks/AddressView/GNUmakefile:
+	Updated to include etoile.make in order to export both frameworks as dependencies.
+
+2006-09-16  Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Initial import from Addresses 0.4.6.
 
