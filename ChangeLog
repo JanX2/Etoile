@@ -1,3 +1,9 @@
+2006-09-27  Quentin Mathe <qmathe@club-internet.fr>
+
+    * etoile.make: Updated to properly link frameworks in Build directory.
+    The framework resulting of a project compilation is located in the project 
+    directory itself and not in the 'obj' subdirectory.
+    
 2006-09-26  Quentin Mathe <qmathe@club-internet.fr>
 
     * etoile.make: Simplified the dependency handling furthermore by getting
