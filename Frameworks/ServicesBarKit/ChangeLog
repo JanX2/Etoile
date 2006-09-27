@@ -1,3 +1,7 @@
+2006-09-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Updated to include etoile.make.
+
 2006-07-30  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Headers/SBServicesBar.h: 
