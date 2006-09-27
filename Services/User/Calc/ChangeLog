@@ -1,0 +1,8 @@
+2006-09-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	Initial import of Calc.app part, taken from Io release 2006-09-20 and 
+	located in addons/ObjcBridge/samples/.
+	* Calc.app/Calc: Modified the '#!' line to use ioobjc (our own Io version) 
+	instead of the usual 'io' tool.
+	* COPYING: Added BSD license (this Io license, then it applies to the
+	whole Io repository).
