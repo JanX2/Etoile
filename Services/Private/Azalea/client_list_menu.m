@@ -66,7 +66,7 @@ static AZMenu *client_list_menu;
     jcount = [fManager numberOfFocusOrderInScreen: data];
     for (j = 0, i = 0; j < jcount; j++, ++i) {
         AZClient *c = [fManager focusOrder: j inScreen: data];
-        if ([c normal] && ![c skip_taskbar]) {
+        if ([c normal] && (![c skip_taskbar] || [c iconic])) {
 	    NSMutableArray *acts = [[NSMutableArray alloc] init];
             AZAction* act;
             AZNormalMenuEntry *e;
