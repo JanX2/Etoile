@@ -190,6 +190,8 @@ NSString* XWindowCommandPath(Window win)
   return [NSString stringWithCString: argv_return[0]];
 }
 
+/* This one does not work because GNUstep 
+ * only set IconWindowHint for WindowMaker */
 BOOL XWindowIsIcon(Window win)
 {
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
