@@ -1,4 +1,5 @@
-2006-09-27  Yen-Ju Chen <yjchen at gmail>
+2006-10-03  Yen-Ju Chen <yjchen at gmail>
 
 	* Initial import.
+	* Put GNUstep event into GLib main loop.
 

@@ -9,6 +9,7 @@
   GSDisplayServer *server;
   Display *dpy;
   GMainLoop *gloop;
+  GMainContext *gcontext;
 }
 
 @end

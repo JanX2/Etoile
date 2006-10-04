@@ -149,7 +149,8 @@
   gtk_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   if (gtk_window == NULL) {
     NSLog(@"window is null");
-    return;
+    [self dealloc];
+    return nil;
   }
   /* Start small so the scrollbar will display correctly */
   gtk_widget_set_size_request(gtk_window, 200, 200);
@@ -157,7 +158,8 @@
   mozembed = gtk_moz_embed_new();
   if (mozembed == NULL) {
     NSLog(@"mozembed is null");
-    return;
+    [self dealloc];
+    return nil;
   }
 
   gtk_moz_embed_load_url(GTK_MOZ_EMBED(mozembed), "http://www.google.com");
