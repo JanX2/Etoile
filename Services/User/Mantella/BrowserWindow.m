@@ -20,7 +20,7 @@
                            untilDate: [NSDate distantPast]
                               inMode: NSDefaultRunLoopMode
                              dequeue: YES];
-    }
+  }
 }
 
 @end
@@ -34,8 +34,6 @@
   gtk_window_resize(GTK_WINDOW(gtk_window), frame.size.width, frame.size.height-max_y-min_y);
 //  gtk_widget_set_size_request(mozembed, frame.size.width, frame.size.height);
   XMoveWindow(dpy, gtkwin, 0, max_y);
-  XFlush(dpy);
-  [NSApp runOnce];
 }
 
 /** end of private **/
@@ -117,7 +115,6 @@
 
   /** NSWindow **/
   NSRect frame = contentRect;
-  Window nswin = [self xwindow];
 
   frame = NSMakeRect(5, frame.size.height-20-5, 70, 20);
   back = [[NSButton alloc] initWithFrame: frame];
@@ -165,18 +162,16 @@
   [go setTarget: self];
   [go setAction: @selector(go:)];
   [[self contentView] addSubview: go];
-  
-  XFlush(dpy);
-  [NSApp runOnce];
 
+  gdk_flush();
   /** GtkMozEmbed **/
-
   gtk_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   if (gtk_window == NULL) {
     NSLog(@"window is null");
     [self dealloc];
     return nil;
   }
+  gtk_window_set_decorated(GTK_WINDOW(gtk_window), FALSE);
   /* Start small so the scrollbar will display correctly */
   gtk_widget_set_size_request(gtk_window, 200, 200);
 
@@ -196,10 +191,12 @@
   max_y = 30;
   min_y = 20;
 
+  XFlush(dpy);
   gtkwin = GDK_WINDOW_XWINDOW(GTK_WIDGET(gtk_window)->window);
+  Window nswin = [self xwindow];
+//  NSLog(@"nswin %d, gtkwin %d", nswin, gtkwin);
   XReparentWindow(dpy, gtkwin, nswin, 0, max_y);
   XFlush(dpy); // We need to flush it to have reparent correctly
-  [NSApp runOnce];
 
   [self resizeEmbed];
 
