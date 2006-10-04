@@ -2,19 +2,11 @@
 #import "BrowserWindow.h"
 #import <gdk/gdkx.h>
 
+gboolean gs_event_func(gpointer data);
+
 @interface GSDisplayServer (Private)
 - (void) processEvent: (XEvent *) event;
 @end
-
-@interface Controller (Private)
-- (void) runOnce;
-@end
-
-gboolean gs_event_func(gpointer data)
-{
-  [(Controller *)data runOnce];
-  return TRUE;
-}
 
 @implementation Controller
 
@@ -41,83 +33,12 @@ gboolean gs_event_func(gpointer data)
 }
 #endif
 
-- (void) runOnce
-{
-  NSEvent *e = [NSApp nextEventMatchingMask: NSAnyEventMask
-			     untilDate: [NSDate distantPast]
-		                inMode: NSDefaultRunLoopMode
-		               dequeue: YES];
-
-  while(e) 
-  {
-    [NSApp sendEvent: e];
-    e = [NSApp nextEventMatchingMask: NSAnyEventMask
-			     untilDate: [NSDate distantPast]
-		                inMode: NSDefaultRunLoopMode
-		               dequeue: YES];
-  }
-}
-
-- (void) startGMainLoopThread
-{
-  g_main_loop_run(gloop);
-  return;
-
-  while (g_main_loop_is_running(gloop))
-  {
-//    if (g_main_context_pending(gcontext)) 
-    {
-      g_main_context_iteration(gcontext, TRUE);
-    }
-#if 0
-    {
-      NSEvent *e = [NSApp nextEventMatchingMask: NSAnyEventMask
-			     untilDate: [NSDate distantPast]
-		                inMode: NSDefaultRunLoopMode
-		               dequeue: YES];
-
-      if (e != nil /*&&  e != null_event*/)
-      {
-         [NSApp sendEvent: e];
-      }
-    }
-#endif
-  }
-}
-
-- (void)receivedEvent:(void *)data
-                 type:(RunLoopEventType)type
-                extra:(void *)extra
-              forMode:(NSString *)mode
-{
-  XEvent event;
-
-  while (XPending(dpy))
-  {
-    XNextEvent (dpy, &event);
-    [server processEvent: &event];
-  }
-}
-
-
 - (void) applicationWillFinishLaunching: (NSNotification *) not
 {
   gloop = g_main_loop_new(NULL, TRUE);
   gcontext = g_main_loop_get_context(gloop);
-//  g_idle_add(gs_event_func, self); /* Called when gmainloop idle */
-  g_timeout_add(100, gs_event_func, self); /* Called when gmainloop idle */
+  g_timeout_add(100, gs_event_func, self); /* Call every 0.1 second */
   GDK_THREADS_LEAVE();
-  server = GSCurrentServer();
-  dpy = (Display *)[server serverDevice];
-
-  /* Listen event */
-  NSRunLoop *loop = [NSRunLoop currentRunLoop];
-  int xEventQueueFd = XConnectionNumber(dpy);
-
-  [loop addEvent: (void*)(gsaddr)xEventQueueFd
-            type: ET_RDESC
-         watcher: (id<RunLoopEvents>)self
-         forMode: NSDefaultRunLoopMode];
 
   gtk_moz_embed_set_profile_path(".", "mozembed");
   gtk_moz_embed_push_startup();
@@ -149,7 +70,7 @@ gboolean gs_event_func(gpointer data)
       backing: NSBackingStoreRetained
       defer: NO];
   [bwin makeKeyAndOrderFront: self];
-  [self startGMainLoopThread];
+  g_main_loop_run(gloop);
 }
 
 - (void) applicationWillTerminate: (NSNotification *) not
@@ -159,4 +80,10 @@ gboolean gs_event_func(gpointer data)
 }
 
 @end
+
+gboolean gs_event_func(gpointer data)
+{
+  [NSApp runOnce];
+  return TRUE;
+}
 

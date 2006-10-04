@@ -2,6 +2,29 @@
 #import <gdk/gdkx.h>
 #import <XWindowServerKit/XWindow.h>
 
+@implementation NSApplication (GMainLoop)
+
+/* Better to call XFlush(dpy) before this */
+- (void) runOnce
+{
+  NSEvent *e = [NSApp nextEventMatchingMask: NSAnyEventMask
+	                          untilDate: [NSDate distantPast]
+	                             inMode: NSDefaultRunLoopMode
+	                            dequeue: YES];
+
+  /* FIXME: should also check null event (see [NSApplication -run]) */
+  while(e)
+  {
+    [NSApp sendEvent: e];
+    e = [NSApp nextEventMatchingMask: NSAnyEventMask
+                           untilDate: [NSDate distantPast]
+                              inMode: NSDefaultRunLoopMode
+                             dequeue: YES];
+    }
+}
+
+@end
+
 @implementation BrowserWindow
 
 /** private **/
@@ -11,7 +34,8 @@
   gtk_window_resize(GTK_WINDOW(gtk_window), frame.size.width, frame.size.height-max_y-min_y);
 //  gtk_widget_set_size_request(mozembed, frame.size.width, frame.size.height);
   XMoveWindow(dpy, gtkwin, 0, max_y);
-//  XFlush(dpy);
+  XFlush(dpy);
+  [NSApp runOnce];
 }
 
 /** end of private **/
@@ -23,7 +47,6 @@
 
 - (void) windowWillClose: (NSNotification *) not
 {
-//  NSLog(@"close");
   gtk_widget_destroy(GTK_WIDGET(gtk_window));
 }
 
@@ -95,7 +118,6 @@
   /** NSWindow **/
   NSRect frame = contentRect;
   Window nswin = [self xwindow];
-//  [self makeKeyAndOrderFront: self];
 
   frame = NSMakeRect(5, frame.size.height-20-5, 70, 20);
   back = [[NSButton alloc] initWithFrame: frame];
@@ -143,6 +165,9 @@
   [go setTarget: self];
   [go setAction: @selector(go:)];
   [[self contentView] addSubview: go];
+  
+  XFlush(dpy);
+  [NSApp runOnce];
 
   /** GtkMozEmbed **/
 
@@ -174,6 +199,7 @@
   gtkwin = GDK_WINDOW_XWINDOW(GTK_WIDGET(gtk_window)->window);
   XReparentWindow(dpy, gtkwin, nswin, 0, max_y);
   XFlush(dpy); // We need to flush it to have reparent correctly
+  [NSApp runOnce];
 
   [self resizeEmbed];
 

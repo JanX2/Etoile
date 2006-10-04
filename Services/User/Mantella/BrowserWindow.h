@@ -3,6 +3,13 @@
 #import <gtkmozembed.h>
 #import <XWindowServerKit/XWindow.h>
 
+/* Run all queued NSEvent once.
+ * It is better to run XFlush(dpy) before call this.
+ * Otherwise, not all XEvent go into queue yet. */
+@interface NSApplication (GMainLoop)
+- (void) runOnce;
+@end
+
 @interface BrowserWindow: XWindow
 {
   GtkWidget *mozembed;

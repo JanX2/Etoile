@@ -2,4 +2,5 @@
 
 	* Initial import.
 	* Put GNUstep event into GLib main loop.
+	* Clean up.
 
