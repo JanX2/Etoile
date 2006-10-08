@@ -1,0 +1,10 @@
+Babbler 0.0.1
+-------------
+
+Babbler is a simple media player based on GStreamer.
+It is designed to play single multimedia stream at a time.
+It is more like QuickTime player than iTunes.
+If you have trouble playing audio or video with Babbler,
+try "gst-launch playbin uri=file:///path_to_your_file" first.
+If GStreamer cannot play it, Babbler cannot play it.
+
