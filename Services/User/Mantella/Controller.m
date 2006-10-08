@@ -9,6 +9,12 @@ gboolean gs_event_func(gpointer data);
 @end
 
 @implementation Controller
+/** Private **/
+- (void) runGMainLoop: (id) sender
+{
+  g_main_loop_run(gloop);
+}
+/** End of Private **/
 
 - (void) newWindowAction: (id) sender
 {
@@ -20,18 +26,35 @@ gboolean gs_event_func(gpointer data);
   [bwin makeKeyAndOrderFront: self];
 }
 
-#if 0 // Modal doesn't work
 - (void) openFileAction: (id) sender
 {
+  /* Must quit the gloop before modal.
+   * And must use timer to restart gloop after modal.
+   */
+  g_main_loop_quit(gloop);
+
   NSOpenPanel *panel = [NSOpenPanel openPanel];
   int result = [panel runModalForTypes: [NSArray arrayWithObjects: @"html", nil]];
   if (result == NSOKButton) {
-    [NSApp stopModal];
     NSArray *urls = [panel URLs];
-    NSLog(@"%@", urls);
+    if ([urls count]) {
+      NSRect frame = NSMakeRect(100, 100, 600, 500);
+      BrowserWindow *bwin = [[BrowserWindow alloc] initWithContentRect: frame
+        styleMask: NSTitledWindowMask|NSClosableWindowMask|NSResizableWindowMask
+        backing: NSBackingStoreRetained
+        defer: NO];
+      [[bwin urlLocation] setStringValue: [[urls objectAtIndex: 0] path]];
+      [bwin go: self];
+//      NSLog(@"%@", urls);
+      [bwin makeKeyAndOrderFront: self];
+    }
   }
+  [NSTimer scheduledTimerWithTimeInterval: 0.2
+           target: self
+           selector: @selector(runGMainLoop:)
+           userInfo: nil
+	   repeats: NO];
 }
-#endif
 
 - (void) applicationWillFinishLaunching: (NSNotification *) not
 {
@@ -48,11 +71,9 @@ gboolean gs_event_func(gpointer data);
   [menu addItemWithTitle: @"New Window"
 	  action: @selector(newWindowAction:)
 	  keyEquivalent: @"n"];
-#if 0 // Modal doesn't work
   [menu addItemWithTitle: @"Open File..."
 	  action: @selector(openFileAction:)
 	  keyEquivalent: @"o"];
-#endif
   [menu addItemWithTitle: @"Hide"
 	  action: @selector(hide:)
 	  keyEquivalent: @"h"];
