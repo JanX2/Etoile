@@ -41,6 +41,7 @@
 // Some methods called by the GUI
 -(void) browseBackClicked: (id)sender;
 -(void) browseForwardClicked: (id)sender;
+-(void) orderFrontPreferencesPanel: (id)sender;
 
 
 // TextView delegate stuff
@@ -50,16 +51,27 @@
 
 -(void)updateGUI;
 
+
+
+// The file to store the dictionary list to
+-(NSString*) dictionaryStoreFile;
+
+
+
 // Listen for actions...
 
 // ...from the GUI
--(void)searchAction: (id)sender;
+-(void) searchAction: (id)sender;
 
 // ...from the Links in the text field
--(void)clickSearchNotification: (NSNotification*)aNotification;
+-(void) clickSearchNotification: (NSNotification*)aNotification;
+
+// ..from the system
+-(void) applicationWillTerminate: (NSNotification*) theNotification;
+-(void) applicationDidFinishLaunching: (NSNotification*) theNotification;
 
 
--(void)defineWord: (NSString*)aWord;
+-(void) defineWord: (NSString*)aWord;
 
 @end
 
@@ -78,7 +90,6 @@
 	 attributes: (NSDictionary*) attributes;
 
 @end
-
 
 @interface AppController (HistoryManagerDelegate) <HistoryManagerDelegate>
 -(BOOL) historyManager: (HistoryManager*) aHistoryManager

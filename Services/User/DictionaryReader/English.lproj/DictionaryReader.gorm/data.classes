@@ -4,7 +4,8 @@
 	Actions = (
 	    "searchAction:",
 	    "browseBackClicked:",
-	    "browseForwardClicked:"
+	    "browseForwardClicked:",
+	    "orderFrontPreferencesPanel:"
 	);
 	Outlets = (
 	    searchStringControl,
@@ -19,6 +20,7 @@
 	Actions = (
 	    "browseBackClicked:",
 	    "browseForwardClicked:",
+	    "orderFrontPreferencesPanel:",
 	    "searchAction:"
 	);
 	Super = NSObject;

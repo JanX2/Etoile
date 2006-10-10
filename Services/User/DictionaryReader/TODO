@@ -1,7 +1,10 @@
 
-* Local Dictionaries (NSBundles?)
- 
-* Add a preferences dialog:
-	* Let users set their dict server.
+* preferences dialog:
+	* Let users add dict servers.
 	* Let users choose their preferred fonts and colors.
+	* Allow users to drop their own dictionaries there
 
+* Test if dictionaries disappeared on refresh and startup!
+
+* Check where the delay on using compressed dictionaries comes from.
+ 

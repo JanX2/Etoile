@@ -24,8 +24,10 @@ HistoryManager.m \
 NSString+Convenience.m \
 NSString+Clickable.m \
 NSString+DictLineParsing.m \
+DictionaryHandle.m \
 NSScanner+Base64Encoding.m \
 LocalDictionary.m \
+Preferences.m \
 main.m \
 
 
@@ -41,6 +43,7 @@ DefintionWriter.h \
 DictionaryHandle.h \
 NSScanner+Base64Encoding.h \
 LocalDictionary.h \
+Preferences.h \
 
 
 
@@ -54,12 +57,17 @@ Resources/Dictionaries/jargon/jargon.dict \
 DictionaryReader_LANGUAGES = English \
 
 DictionaryReader_LOCALIZED_RESOURCE_FILES = DictionaryReader.gorm \
+Preferences.gorm \
+DictionaryReader.nib \
+Preferences.nib
+
 
 DictionaryReader_MAIN_MODEL_FILE = DictionaryReader.gorm
 
 DictionaryReader_PRINCIPAL_CLASS = 
 
-ADDITIONAL_GUI_LIBS = 
+ADDITIONAL_GUI_LIBS = -lEtoileExtensions
+
 SUBPROJECTS = 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/application.make

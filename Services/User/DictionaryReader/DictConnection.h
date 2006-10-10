@@ -25,13 +25,13 @@
 #import "StreamLineWriter.h"
 #import "NSString+Convenience.h"
 #import "DefinitionWriter.h"
-
+#import "DictionaryHandle.h"
 
 /**
  * Instances of this class enable a connection to a dict protocol server.
  * You can look up words using the @see(definitionFor:) method.
  */
-@interface DictConnection : NSObject
+@interface DictConnection : DictionaryHandle
 {
   // Instance variables
   NSInputStream* inputStream;
@@ -59,7 +59,7 @@
 -(void)dealloc;
 
 -(void) sendClientString: (NSString*) clientName;
--(void) serverDescription;
+-(void) handleDescription;
 -(void) descriptionForDatabase: (NSString*) aDatabase;
 -(void) definitionFor: (NSString*) aWord;
 -(void) definitionFor: (NSString*) aWord

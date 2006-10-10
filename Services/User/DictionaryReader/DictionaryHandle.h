@@ -20,6 +20,9 @@
 #ifndef _DICTIONARY_H_
 #define _DICTIONARY_H_
 
+#import <Foundation/Foundation.h>
+#import "DefinitionWriter.h"
+
 /**
  * The Dictionary handle protocol.
  */
@@ -35,9 +38,8 @@
 
 /**
  * Lets the dictionary handle show handle information in the main window.
- * TODO: Rename to handleDescription!
  */
--(void) serverDescription;
+-(void) handleDescription;
 
 /**
  * Lets the dictionary handle describe a specific database.
@@ -81,7 +83,46 @@
 -(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter;
 
 
+/**
+ * Returns a NSDictionary instance that shortly describes the dictionary so
+ * that it can be restored again using the initFromPropertyList: method. The
+ * key @"class" must be present and the corresponding object must be the class
+ * name of the DictionaryHandle class.
+ */
+-(NSDictionary*) shortPropertyList;
+
+/**
+ * Initialises the DictionaryHandle from the property list aPropertyList.
+ */
+-(id) initFromPropertyList: (NSDictionary*) aPropertyList;
+
+/**
+ * Returns YES if and only if the dictionary is active
+ */
+-(BOOL) isActive;
+
+/**
+ * Sets if the dictionary is active
+ */
+-(void) setActive: (BOOL) isActive;
 @end
 
+
+
+
+/**
+ * The dictionary handle class
+ */
+@interface DictionaryHandle : NSObject
+{
+    BOOL _active;
+}
+
++(id) dictionaryFromPropertyList: (NSDictionary*) aPropertyList;
+-(id) initFromPropertyList: (NSDictionary*) aPropertyList;
+-(NSDictionary*) shortPropertyList;
+-(BOOL) isActive;
+-(void) setActive: (BOOL) isActive;
+@end
 
 #endif // _DICTIONARY_H_

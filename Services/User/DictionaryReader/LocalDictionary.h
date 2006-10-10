@@ -19,8 +19,9 @@
 
 #import <Foundation/Foundation.h>
 #import "DefinitionWriter.h"
+#import "DictionaryHandle.h"
 
-@interface LocalDictionary : NSObject
+@interface LocalDictionary : DictionaryHandle
 {
 @private
   
@@ -55,6 +56,15 @@
 	 dictionaryAtPath: (NSString*) dbFile;
 
 
+/**
+ * Returns a dictionary with the specifiled Dict-server-style index and
+ * dictionary database files.
+ */
++(id) dictionaryWithIndexAtPath: indexFileName
+               dictionaryAtPath: fileName;
+
+
+
 // MAIN FUNCTIONALITY
 
 /**
@@ -64,9 +74,8 @@
 
 /**
  * Lets the dictionary handle show handle information in the main window.
- * TODO: Rename to handleDescription!
  */
--(void) serverDescription;
+-(void) handleDescription;
 
 /**
  * Lets the dictionary handle describe a specific database.

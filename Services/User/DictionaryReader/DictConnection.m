@@ -30,10 +30,34 @@
 
 @implementation DictConnection
 
+
+/**
+ * Initialises the DictionaryHandle from the property list aPropertyList.
+ */
+-(id) initFromPropertyList: (NSDictionary*) aPropertyList
+{
+    NSAssert1([aPropertyList objectForKey: @"host"] != nil,
+              @"No entry for 'host' key in NSDictionary %@", aPropertyList);
+    NSAssert1([aPropertyList objectForKey: @"port"] != nil,
+              @"No entry for 'host' key in NSDictionary %@", aPropertyList);
+    
+    if ((self = [super initFromPropertyList: aPropertyList]) != nil) {
+        self = [self initWithHost: [aPropertyList objectForKey: @"host"]
+                             port: [[aPropertyList objectForKey: @"port"] intValue]];
+    }
+    
+    return self;
+}
+
 -(id)initWithHost: (NSHost*) aHost
 	     port: (int) aPort
 {
   if (self = [super init]) {
+    if (aHost == nil) {
+        [self release];
+        return nil;
+    }
+    
     ASSIGN(host, aHost);
     port = aPort;
     
@@ -90,12 +114,12 @@
   
   NSString* answer = [reader readLineAndRetry];
   
-  if (![answer startsWith: @"250"]) {
+  if (![answer hasPrefix: @"250"]) {
     LOG(@"Answer not accepted?: %@", answer);
   }
 }
 
--(void) serverDescription
+-(void) handleDescription
 {
   [self showError: @"Retrieval of server descriptions not implemented yet."];
 }
@@ -106,7 +130,7 @@
 }
 
 -(void) definitionFor: (NSString*) aWord
-	 inDictionary: (NSString*) aDict
+         inDictionary: (NSString*) aDict
 {
   NSMutableString* result = [NSMutableString stringWithCapacity: 100];
   
@@ -117,17 +141,17 @@
   
   NSString* answer = [reader readLineAndRetry];
   
-  if ([answer startsWith: @"552"]) { // word not found
+  if ([answer hasPrefix: @"552"]) { // word not found
     [defWriter writeHeadline:
 		 [NSString stringWithFormat: @"No results from %@", self]];
-  } else if ([answer startsWith: @"550"]) {
+  } else if ([answer hasPrefix: @"550"]) {
     [self
       showError: [NSString stringWithFormat: @"Invalid database: %@", aDict]];
-  } else if ([answer startsWith: @"150"]) { // got results
+  } else if ([answer hasPrefix: @"150"]) { // got results
     BOOL lastDefinition = NO;
     do {
       answer = [reader readLineAndRetry];
-      if ([answer startsWith: @"151"]) {
+      if ([answer hasPrefix: @"151"]) {
 	[defWriter writeHeadline:
 		     [NSString stringWithFormat: @"From %@:",
 			       [answer dictLineComponent: 3]]
@@ -147,7 +171,7 @@
 	} while (lastLine == NO);
       } else {
 	lastDefinition = YES;
-	if (![answer startsWith: @"250"]) {
+	if (![answer hasPrefix: @"250"]) {
 	  [self showError: answer];
 	}
       }
@@ -189,14 +213,14 @@
   
   
   // interprete server banner
-  if ([banner startsWith: @"220"]) {
+  if ([banner hasPrefix: @"220"]) {
     LOG(@"Server banner: %@", banner);
   } else {
-    if ([banner startsWith: @"530"]) {
+    if ([banner hasPrefix: @"530"]) {
       [self showError: @"Access to server denied."];
-    } else if ([banner startsWith: @"420"]) {
+    } else if ([banner hasPrefix: @"420"]) {
       [self showError: @"Temporarily unavailable."];
-    } else if ([banner startsWith: @"421"]) {
+    } else if ([banner hasPrefix: @"421"]) {
       [self showError: @"Server shutting down at operator request."];
     } else {
       LOG(@"Bad banner: %@", banner);
@@ -230,6 +254,16 @@
 -(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter
 {
   ASSIGN(defWriter, aDefinitionWriter);
+}
+
+-(NSDictionary*) shortPropertyList
+{
+    NSMutableDictionary* result = [super shortPropertyList];
+    
+    [result setObject: host forKey: @"host"];
+    [result setObject: [NSNumber numberWithBool: port] forKey: @"port"];
+    
+    return result;
 }
 
 -(NSString*) description

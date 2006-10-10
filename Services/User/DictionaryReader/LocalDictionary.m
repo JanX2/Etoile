@@ -73,10 +73,54 @@
 
 // -----------------------------------
 
-// FIXME: dealloc is missing
+
+/**
+ * This hash map contains all allocated local dictionaries.
+ *
+ *   - Keys: The names of the dictionary files (NSString*)
+ *   - Objects: corresponding LocalDictionary instances
+ */
+#warning TODO Check for memory leaks in this dictionary.
+static NSMutableDictionary* existingDictionaries;
+
+
+#warning FIXME: dealloc is missing
 @implementation LocalDictionary
 
+
+// CLASS INITIALISATION
++(void)initialize
+{
+    [super initialize];
+    
+    existingDictionaries = [[NSMutableDictionary alloc] init];
+}
+
+
 // INITIALISATION
+
+/**
+ * Initialises the DictionaryHandle from the property list aPropertyList.
+ */
+-(id) initFromPropertyList: (NSDictionary*) aPropertyList
+{
+    NSAssert1([aPropertyList objectForKey: @"index file"] != nil,
+              @"Property list %@ lacking 'index file' key.", aPropertyList);
+    NSAssert1([aPropertyList objectForKey: @"dict file"] != nil,
+              @"Property list %@ lacking 'index file' key.", aPropertyList);
+    
+    if ((self = [super initFromPropertyList: aPropertyList]) != nil) {
+        self = [self initWithIndexAtPath: [aPropertyList objectForKey: @"index file"]
+                     dictionaryAtPath: [aPropertyList objectForKey: @"dict file"]];
+        
+        NSString* fname = [aPropertyList objectForKey: @"full name"];
+        if (fname != nil) {
+            ASSIGN(fullName, fname);
+        }
+    }
+    
+    return self;
+}
 
 /**
  * Initialises the instance by expanding the given base name using
@@ -90,6 +134,7 @@
   
   anIndexFile = [mainBundle pathForResource: baseName ofType: @"index"];
   aDictFile = [mainBundle pathForResource: baseName ofType: @"dict"];
+#warning TODO Add support for gz compressed files here
   
   NSAssert1(anIndexFile != nil,
 	    @"Index resource %@ not found",
@@ -110,14 +155,64 @@
 -(id) initWithIndexAtPath: (NSString*) anIndexFile
 	 dictionaryAtPath: (NSString*) aDictFile
 {
+  LocalDictionary* localDict =
+      [existingDictionaries objectForKey: aDictFile];
+  
+  // In case this object is already allocated, just return
+  // the known instance, discarding the allocated object.
+  if (localDict != nil) {
+      [self release];
+      return [[localDict retain] autorelease];
+  }
+  
+  NSAssert1([anIndexFile hasSuffix: @".index"],
+            @"Index file \"%@\" has no .index suffix.",
+            anIndexFile
+  );
+  
+  NSAssert1([aDictFile hasSuffix: @".dict"]
+#ifdef GNUSTEP
+            // only GNUstep supports on-the-fly gunzipping right now
+            || [aDictFile hasSuffix: @".dz"]
+#endif // GNUSTEP
+            , @"Dict file \"%@\" has a bad suffix (must be .dict"
+#ifdef GNUSTEP
+              @" or .dz"
+#endif // GNUSTEP
+              @").",
+              aDictFile
+  );
+  
   if ((self = [super init]) != nil) {
     ASSIGN(indexFile, anIndexFile);
     ASSIGN(dictFile, aDictFile);
     opened = NO;
+    
+    [existingDictionaries setObject: self forKey: aDictFile];
   }
   
   return self;
 }
+
+/**
+ * Returns a dictionary with the specifiled Dict-server-style index and
+ * dictionary database files.
+ */
++(id) dictionaryWithIndexAtPath: indexFileName
+               dictionaryAtPath: fileName
+{
+  LocalDictionary* localDict =
+      [existingDictionaries objectForKey: fileName];
+  
+  if (localDict != nil) {
+    return localDict;
+  } else {
+    return [[self alloc] initWithIndexAtPath: indexFileName
+                            dictionaryAtPath: fileName];
+  }
+}
+
+
 
 // MAIN FUNCTIONALITY
 
@@ -131,9 +226,8 @@
 
 /**
  * Lets the dictionary handle show handle information in the main window.
- * TODO: Rename to handleDescription!
  */
--(void) serverDescription;
+-(void) handleDescription;
 {
   [NSString stringWithFormat: @"Local dictionary %@", dictFile];
 }
@@ -282,6 +376,14 @@
   ASSIGN(dictHandle, [NSFileHandle fileHandleForReadingAtPath: dictFile]);
   NSAssert1(dictHandle != nil,
 	    @"Couldn't open the file handle for %@", dictFile);
+#ifdef GNUSTEP
+  // Enable on-the-fly Gunzipping if needed
+  if ([dictFile hasSuffix: @".dz"]) {
+      NSAssert([dictHandle useCompression] == YES,
+          @"Using compression failed, please enable zlib support when compiling GNUstep!"
+      );
+  }
+#endif // GNUSTEP
   
   // Retrieve full name of database! ------------
   NSString* name = [self _getEntryFor: @"00-database-short"];
@@ -318,6 +420,7 @@
   [dictHandle closeFile];
   DESTROY(dictHandle);
   DESTROY(ranges);
+  opened = NO;
 }
 
 /**
@@ -329,11 +432,28 @@
   ASSIGN(defWriter, aDefinitionWriter);
 }
 
+/**
+ * Returns a short property list used for storing short information about this
+ * dictionary handle.
+ */
+-(NSDictionary*) shortPropertyList
+{
+    NSMutableDictionary* result = [super shortPropertyList];
+    
+    [result setObject: indexFile forKey: @"index file"];
+    [result setObject: dictFile forKey: @"dict file"];
+    
+    if (fullName != nil) {
+        [result setObject: fullName forKey: @"full name"];
+    }
+    
+    return result;
+}
 
 -(NSString*) description
 {
   if (fullName == nil) {
-    return [NSString stringWithFormat: @"Local dictionary at %@", dictFile];
+    return [dictFile lastPathComponent]; // e.g. jargon.dict
   } else {
     return fullName;
   }

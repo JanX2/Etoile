@@ -24,8 +24,6 @@
  */
 @interface NSString (Convenience)
 
--(BOOL)startsWith: (NSString*)aString;
-
 -(int)firstIndexOf: (unichar)aCharacter;
 
 -(int)firstIndexOf: (unichar)aCharacter

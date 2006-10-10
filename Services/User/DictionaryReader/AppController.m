@@ -17,6 +17,7 @@
  */
 
 #import <AppKit/AppKit.h>
+#import <Foundation/Foundation.h>
 
 #import "AppController.h"
 #import "GNUstep.h"
@@ -24,6 +25,7 @@
 #import "DictConnection.h"
 #import "LocalDictionary.h"
 #import "NSString+Clickable.h"
+#import "Preferences.h"
 
 NSDictionary* bigHeadlineAttributes;
 NSDictionary* headlineAttributes;
@@ -63,7 +65,7 @@ NSDictionary* normalAttributes;
 }
 
 -(void) writeString: (NSString*) aString
-	 attributes: (NSDictionary*) attributes
+        attributes: (NSDictionary*) attributes
 {
   NSAttributedString* attrStr =
     [[NSAttributedString alloc]
@@ -196,6 +198,8 @@ NSDictionary* normalAttributes;
 @end // AppController (DefinitionWriter)
 
 
+
+
 // FIXME: Just for clean programming style: dealloc is missing,
 //        but I think it's not needed.
 
@@ -209,27 +213,48 @@ NSDictionary* normalAttributes;
     // create mutable dictionaries array
     dictionaries = [[NSMutableArray alloc] initWithCapacity: 2];
     
-    // create local dictionary object
-    dict = [[LocalDictionary alloc] initWithResourceName: @"jargon"];
-    [dict setDefinitionWriter: self];
-    [dictionaries addObject: dict];
-    [dict release];
+    NSString* dictStoreFile = [self dictionaryStoreFile];
     
-    // create remote dictionary object
-    dict = [[DictConnection alloc] init];
-    [dict setDefinitionWriter: self];
-    [dictionaries addObject: dict];
-    [dict release];
+    if ([[NSFileManager defaultManager] fileExistsAtPath: dictStoreFile]) {
+        NSArray* plist = [NSArray arrayWithContentsOfFile: [self dictionaryStoreFile]];
+        int i;
+        for (i=0; i<[plist count]; i++) {
+            DictionaryHandle* dict =
+                [DictionaryHandle dictionaryFromPropertyList: [plist objectAtIndex: i]];
+            [dict setDefinitionWriter: self];
+            [dictionaries addObject: dict];
+            NSLog(@" *** Added %@", dict);
+        }
+        NSLog(@" *** result: %@", dictionaries);
+    } else {
+#ifdef PREDEFINED_DICTIONARIES // predefined dictionaries
+        // create local dictionary object
+        dict = [[LocalDictionary alloc] initWithResourceName: @"jargon"];
+        [dict setDefinitionWriter: self];
+        [dictionaries addObject: dict];
+        [dict release];
+#ifdef REMOTE_DICTIONARIES // remote dictionaries
+        // create remote dictionary object
+        dict = [[DictConnection alloc] init];
+        [dict setDefinitionWriter: self];
+        [dictionaries addObject: dict];
+        [dict release];
+#endif // end remote dictionaries block
+#endif // end predefined dictionaries
+    }
+    
     
     // create history manager
     historyManager = [[HistoryManager alloc] init];
     [historyManager setDelegate: self];
   }
   
+  
+  // create fonts
   if (bigHeadlineAttributes == nil) {
     bigHeadlineAttributes = 
       [[NSDictionary alloc]
-	initWithObjectsAndKeys:
+	  initWithObjectsAndKeys:
 	  [NSFont titleBarFontOfSize: 16], NSFontAttributeName,
 	nil
        ];
@@ -253,8 +278,11 @@ NSDictionary* normalAttributes;
        ];
   }
   
+  // Notifications --------------
+  NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
+  
   // Register in the default notification center to receive link clicked events
-  [[NSNotificationCenter defaultCenter]
+  [defaultCenter
     addObserver: self
     selector: @selector(clickSearchNotification:)
     name: WordClickedNotificationType
@@ -264,6 +292,9 @@ NSDictionary* normalAttributes;
 }
 
 
+
+
+
 // ---- Some methods called by the GUI
 -(void) browseBackClicked: (id)sender {
   [historyManager browseBack];
@@ -271,6 +302,11 @@ NSDictionary* normalAttributes;
 
 -(void) browseForwardClicked: (id)sender {
   [historyManager browseForward];
+}
+
+-(void) orderFrontPreferencesPanel: (id)sender {
+    [[Preferences shared] setDictionaries: dictionaries];
+    [[Preferences shared] show];
 }
 
 -(void)updateGUI {
@@ -353,6 +389,8 @@ NSDictionary* normalAttributes;
   }
 }
 
+
+
 /**
  * Searches for definitions of the word given in the aWord
  * parameter and shows the results in the text view.
@@ -375,25 +413,27 @@ NSDictionary* normalAttributes;
   for (i=0; i<[dictionaries count]; i++) {
     id dict = [dictionaries objectAtIndex: i];
     
-    NS_DURING
-      {
-	[dict open];
-	[dict sendClientString: @"GNUstep DictionaryReader.app"];
-	[dict definitionFor: aWord];
-	// [dict close]; // FIXME: That crashes!
-      }
-    NS_HANDLER
-      {
-	NSRunAlertPanel
-	  (
-	   @"Word definition failed.",
-	   [NSString
-	     stringWithFormat:
-	       @"The definition of %@ failed because of this exception:\n%@",
-	     aWord, [localException reason]],
-	   @"Argh", nil, nil);
-      }
-    NS_ENDHANDLER;
+    if ([dict isActive]) {
+        NS_DURING
+          {
+	    [dict open];
+	    [dict sendClientString: @"GNUstep DictionaryReader.app"];
+	    [dict definitionFor: aWord];
+	    [dict close]; // FIXME: That crashes!
+          }
+        NS_HANDLER
+          {
+	    NSRunAlertPanel
+	      (
+	       @"Word definition failed.",
+	       [NSString
+	         stringWithFormat:
+	           @"The definition of %@ failed because of this exception:\n%@",
+	         aWord, [localException reason]],
+	       @"Argh", nil, nil);
+          }
+        NS_ENDHANDLER;
+    }
   }
   
   [historyManager browser: self
@@ -404,9 +444,29 @@ NSDictionary* normalAttributes;
   [dictionaryContentWindow orderFront: self];
 }
 
-- (void) applicationDidFinishLaunching: (NSNotification *) theNotification
+
+-(NSString*) dictionaryStoreFile
 {
-  [NSApp setServicesProvider: self];
+#warning FIXME: Ensure that directory exists!
+    return [@"~/GNUstep/Library/DictionaryReader/dictionaries.plist"
+                stringByExpandingTildeInPath];
+}
+
+-(void) applicationWillTerminate: (NSNotification*) theNotification
+{
+    int i;
+    NSMutableArray* mut = [NSMutableArray arrayWithCapacity: [dictionaries count]];
+    
+    for (i=0; i<[dictionaries count]; i++) {
+        [mut addObject: [[dictionaries objectAtIndex: i] shortPropertyList]];
+    }
+    
+    [mut writeToFile: [self dictionaryStoreFile] atomically: YES];
+}
+
+-(void) applicationDidFinishLaunching: (NSNotification*) theNotification
+{
+    [NSApp setServicesProvider: self];
 }
 
 

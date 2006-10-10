@@ -2,6 +2,15 @@
 DictionaryReader Changelog
 ==========================
 
+Oct 9 2006  Guenther Noack
+	* Preference panel works now
+	* Support for GZipped (.dz extension) dictionaries (GNUstep only!)
+
+Oct ? 2006  Guenther Noack
+	* Preference panel for choosing dictionaries
+	* Removed my NSString startsWith: helper method in favor of hasPrefix:
+	  which already existed. :->
+
 Aug 8 2006 Guenther Noack
 	* Local dictionary support written (currently, the jargon file
 	  is bundled with the application). Still needs to be made

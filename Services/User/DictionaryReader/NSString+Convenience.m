@@ -20,16 +20,7 @@
 
 @implementation NSString (Convenience)
 
-/**
- * Returns YES if - and only if - the string starts
- * with the string given by the aString parameter.
- */
--(BOOL)startsWith: (NSString*)aString
-{
-  return ([self length] >= [aString length] &&
-	  [[self substringToIndex: [aString length]]
-	    isEqualToString: aString]) ? YES : NO;
-}
+// Note: startsWith: method was obsolete because of the existing hasPrefix: method.
 
 /**
  * Returns the first index in the string where the
