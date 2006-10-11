@@ -1,0 +1,14 @@
+# Install headers
+
+CollectionKit_HEADER_FILES_DIR = ./CollectionKit
+CollectionKit_HEADER_FILES_INSTALL_DIR = CollectionKit
+CollectionKit_HEADER_FILES = \
+	CollectionKit.h \
+	CKCollection.h \
+	CKGroup.h \
+	CKItem.h \
+	CKTypedefs.h \
+	CKMultiValue.h \
+	CKRecord.h \
+	CKGlobals.h
+
