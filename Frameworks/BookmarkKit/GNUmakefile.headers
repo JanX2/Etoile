@@ -1,0 +1,8 @@
+BookmarkKit_HEADER_FILES_DIR = ./BookmarkKit
+BookmarkKit_HEADER_FILES_INSTALL_DIR = /BookmarkKit
+BookmarkKit_HEADER_FILES = \
+    BKBookmark.h \
+    BKBookmarkQuery.h \
+    BKBookmarkSearchResult.h \
+    BKBookmarkStore.h
+

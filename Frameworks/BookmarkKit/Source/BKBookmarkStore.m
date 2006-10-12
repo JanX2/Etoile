@@ -3,10 +3,13 @@
 
 	BKBookmarkStore is the core BookmarkKit class to interact with the bookmarks
 
-	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>	                   
+	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
+	Copyright (C) 2006 Yen-Ju Chen <yjchenx @ gmail >
 
 	Author:  Quentin Mathe <qmathe@club-internet.fr>
 	Date:  April 2004
+	Author:  Yen-Ju Chen <yjchenx @ gmail>
+	Date:  October 2006
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -25,25 +28,47 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import "BKBookmark.h"
-#import "BKBookmarkQuery.h"
-#import "BKBookmarkSearchResult.h"
-#import "BKBookmarkStore.h"
+#import <BookmarkKit/BKBookmark.h>
+#import <BookmarkKit/BKBookmarkQuery.h>
+#import <BookmarkKit/BKBookmarkSearchResult.h>
+#import <BookmarkKit/BKBookmarkStore.h>
+
+NSString *const BKDefaultBookmarkStore = @"BKDefaultBookmarkStore";
+NSString *const BKRecentFilesBookmarkStore = @"BKRecentFilesBookmarkStore";
+NSString *const BKWebBrowserBookmarkStore = @"BKWebBrowserBookmarkStore";
+NSString *const BKRSSBookmarkStore = @"BKRSSBookmarkStore";
+
+NSString *const BKBookmarkDirectory = @"Bookmark";
+NSString *const BKBookmarkExtension = @"bookmark";
 
 @implementation BKBookmarkStore
 
-+ (BKBookmarkStore *) sharedInstanceForDefaultPath
++ (BKBookmarkStore *) sharedBookmarkStore
 {
-	return nil;
+  return [BKBookmarkStore sharedBookmarkWithDomain: BKDefaultBookmarkStore]; 
 }
 
-+ (BKBookmarkStore *) sharedInstanceForPath: (NSString *)path 
-// support native format or XBEL format
++ (BKBookmarkStore *) sharedBookmarkWithDomain: (NSString *) domain
 {
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,  NSUserDomainMask, YES);
+  if ([paths count] == 0)
     return nil;
+
+  NSString *path = [paths objectAtIndex: 0];
+  path = [path stringByAppendingPathComponent: BKBookmarkDirectory];
+  path = [path stringByAppendingPathComponent: domain];
+  path = [path stringByAppendingPathExtension: BKBookmarkExtension];
+  
+  return [BKBookmarkStore sharedBookmarkAtPath: path];
 }
 
-+ (BKBookmarkStore *) sharedInstanceForURL: (NSURL *)url
+// support native format or XBEL format
++ (BKBookmarkStore *) sharedBookmarkAtPath: (NSString *)path 
+{
+  return AUTORELEASE([[BKBookmarkStore alloc] initWithLocation: path]);
+}
+
++ (BKBookmarkStore *) sharedBookmarkAtURL: (NSURL *)url
 // support native format or XBEL format
 {
     return nil;
@@ -51,7 +76,7 @@
 
 - (NSString *) path
 {
-    return nil;
+  return [self location];
 }
 
 // FIXME: roles idea must be used here to have a better method interface and
@@ -72,37 +97,37 @@
 
 - (void) addBookmark: (BKBookmark *)bookmark
 {
-
+  [self addRecord: bookmark];
 }
 
 - (void) removeBookmark: (BKBookmark *)bookmark
 {
-
+  [self removeRecord: bookmark];
 }
 
 - (BKBookmarkSearchResult *) searchWithQuery: (BKBookmarkQuery *)query
 {
-    return nil;
+  return nil;
 }
 
 - (void) save
 {
-
+  [super save];
 }
 
-- (void) hasUnsavedChanges
+- (BOOL) hasUnsavedChanges
 {
-
+  return [super hasUnsavedChanges];
 }
 
 - (NSString *) transformToXBEL // aspect
 {
-    return nil;
+  return nil;
 }
 
 - (NSString *) transformToXMLNativeFormat // aspect
 {
-    return nil;
+  return nil;
 }
 
 @end

@@ -1,12 +1,12 @@
 /*
 	BKBookmark.h
-
 	BKBookmark is the BookmarkKit class which is used to represent a bookmark
-
-	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>	                   
-
+	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
+	Copyright (C) 2006 Yen-Ju Chen <yjchen @ gmail>>	                   
 	Author:  Quentin Mathe <qmathe@club-internet.fr>
 	Date:  April 2004
+	Author:  Yen-Ju Chen <yjchen @ gmail>
+	Date:  October 2006
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -23,6 +23,9 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#import <CollectionKit/CollectionKit.h>
+#import <AppKit/AppKit.h>
+
 // FIXME: Rewrite bookmark protocols model with roles idea
 typedef enum _BKBookmarkProtocol
 {
@@ -32,13 +35,12 @@ typedef enum _BKBookmarkProtocol
   BKBookmarkLocalProtocol
 } BKBookmarkProtocol;
 
-@interface BKBookmark : NSObject
+@interface BKBookmark : CKItem
 {
-
 }
 
-+ bookmarkWithURL: (NSURL *)url;
-+ bookmarkWithXBEL: (NSString *)xbel;
++ (BKBookmark *) bookmarkWithURL: (NSURL *)url;
++ (BKBookmark *) bookmarkWithXBEL: (NSString *)xbel;
 
 - (id) initWithURL: (NSURL *)url;
 - (id) initWithXBEL: (NSString *)xbel;

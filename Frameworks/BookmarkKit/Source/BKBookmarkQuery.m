@@ -26,8 +26,8 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 //#import <TrackerKit/TKQuery.h>
-#import "BKBookmark.h"
-#import "BKBookmarkQuery.h"
+#import <BookmarkKit/BKBookmark.h>
+#import <BookmarkKit/BKBookmarkQuery.h>
 
 @implementation BKBookmarkQuery
 

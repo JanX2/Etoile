@@ -1,3 +1,7 @@
+2006-10-10  Yen-Ju Chen <yjchen at gmail>
+
+    * Basic implementation based on CollectionKit.
+
 2005-05-05  Quentin Mathe <qmathe@club-internet.fr>
     
     * Source/GNUmakefile: Removed unneeded GNUSTEP_MAKEFILES definition which

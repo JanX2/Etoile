@@ -25,23 +25,41 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import "BKBookmark.h"
+#import <BookmarkKit/BKBookmark.h>
+
+NSString *const kBKBookmarkURLProperty = @"kBKBookmarkURLProperty";
 
 @implementation BKBookmark
 
-+ bookmarkWithURL: (NSURL *)url
++ (void) initialize
 {
-    return nil;
+  /* subclass of CKRecord must implement this one.
+   * Otherwise, it will not work properly. */
+  NSDictionary *_propTypes = [[NSDictionary alloc] initWithObjectsAndKeys:
+          [NSNumber numberWithInt: CKStringProperty], kCKUIDProperty,
+          [NSNumber numberWithInt: CKDateProperty], kCKCreationDateProperty,
+          [NSNumber numberWithInt: CKDateProperty], kCKModificationDateProperty,
+	  [NSNumber numberWithInt: CKStringProperty], kBKBookmarkURLProperty,
+			                   nil];
+    [CKItem addPropertiesAndTypes: _propTypes];
+
 }
 
-+ bookmarkWithXBEL: (NSString *)xbel
++ (BKBookmark *) bookmarkWithURL: (NSURL *)url
 {
-    return nil;
+  return AUTORELEASE([[BKBookmark alloc] initWithURL: url]);
+}
+
++ (BKBookmark *) bookmarkWithXBEL: (NSString *)xbel
+{
+  return AUTORELEASE([[BKBookmark alloc] initWithXBEL: xbel]);
 }
 
 - (id) initWithURL: (NSURL *)url
 {
-    return nil;
+  self = [super init];
+  [self setValue: [url absoluteString] forProperty: kBKBookmarkURLProperty];
+  return self;
 }
 
 - (id) initWithXBEL: (NSString *)xbel
@@ -51,7 +69,7 @@
 
 - (NSURL *) URL
 {
-    return nil;
+  return [NSURL URLWithString: [self valueForProperty: kBKBookmarkURLProperty]];
 }
 
 - (NSDate *) creationDate

@@ -3,10 +3,12 @@
 
 	BKBookmarkStore is the core BookmarkKit class to interact with the bookmarks
 
-	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>	                   
-
+	Copyright (C) 2004 Quentin Mathe <qmathe@club-internet.fr>
+	Copyright (C) 2006 Yen-Ju Chen <yjchenx @ gmail>>	                   
 	Author:  Quentin Mathe <qmathe@club-internet.fr>
 	Date:  April 2004
+	Author:  Yen-Ju Chen <yjchenx @ gmail>
+	Date:  October 2006
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -23,15 +25,27 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-@interface BKBookmarkStore : NSObject
+#import <CollectionKit/CollectionKit.h>
+#import <BookmarkKit/BKBookmark.h>
+#import <BookmarkKit/BKBookmarkSearchResult.h>
+#import <BookmarkKit/BKBookmarkQuery.h>
+
+/* Commonly used domains for bookmark store */
+extern NSString *const BKDefaultBookmarkStore;
+extern NSString *const BKRecentFilesBookmarkStore;
+extern NSString *const BKWebBrowserBookmarkStore;
+extern NSString *const BKRSSBookmarkStore;
+
+@interface BKBookmarkStore: CKCollection 
 {
   NSMutableArray *_bookmarksSoupStore;
 }
 
-+ (BKBookmarkStore *) sharedInstanceForDefaultPath;
-+ (BKBookmarkStore *) sharedInstanceForPath: (NSString *)path; 
++ (BKBookmarkStore *) sharedBookmarkStore;
++ (BKBookmarkStore *) sharedBookmarkWithDomain: (NSString *) domain;
++ (BKBookmarkStore *) sharedBookmarkAtPath: (NSString *)path; 
 // support native format or XBEL format
-+ (BKBookmarkStore *) sharedInstanceForURL: (NSURL *)url; 
++ (BKBookmarkStore *) sharedBookmarkAtURL: (NSURL *)url; 
 // support native format or XBEL format
 
 - (NSString *) path;
@@ -50,10 +64,9 @@
 - (BKBookmarkSearchResult *) searchWithQuery: (BKBookmarkQuery *)query;
 
 - (void) save;
-- (void) hasUnsavedChanges;
+- (BOOL) hasUnsavedChanges;
 
 - (NSString *) transformToXBEL; // aspect
-
 - (NSString *) transformToXMLNativeFormat; // aspect
 
 @end

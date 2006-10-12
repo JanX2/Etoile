@@ -27,7 +27,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 //#import <TrackerKit/TKSearchResult.h>
-#import "BKBookmarkSearchResult.h"
+#import <BookmarkKit/BKBookmarkSearchResult.h>
 
 @implementation BKBookmarkSearchResult
 

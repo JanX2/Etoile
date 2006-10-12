@@ -1,1 +1,12 @@
-BookmarkKit README
+BookmarkKit 
+-----------
+
+It provides a basic storage for shared bookmarks.
+It can be used for web browser bookmark, recently opened documents, etc.
+It is based on CollectionKit.
+
+BookmarkKit has a basic assumption: it has a hierarchical structure.
+In another word, a bookmark or a group can only exist under a group.
+Therefore, bookmark can be displayed in NSOutlineView.
+
+
