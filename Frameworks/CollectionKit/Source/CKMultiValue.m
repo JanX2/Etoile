@@ -76,7 +76,6 @@ static CKPropertyType _propTypeFromDict(NSDictionary *dict)
 - (id) initWithType: (CKPropertyType) type contentArray: (NSArray *) array
 {
   self = [self initWithType: type];
-  int i;
   ASSIGNCOPY(_arr, array);
   return self;
 }
@@ -102,19 +101,19 @@ static CKPropertyType _propTypeFromDict(NSDictionary *dict)
 - (id) valueAtIndex: (int) index
 {
   if (index >= [_arr count]) return nil;
-  return [[_arr objectAtIndex: index] objectForKey: CKMultiValue_ValueKey];
+  return [(NSDictionary *)[_arr objectAtIndex: index] objectForKey: CKMultiValue_ValueKey];
 }
 
 - (NSString*) labelAtIndex: (int) index
 {
   if (index >= [_arr count]) return nil;
-  return [[_arr objectAtIndex: index] objectForKey: CKMultiValue_LabelKey];
+  return [(NSDictionary *)[_arr objectAtIndex: index] objectForKey: CKMultiValue_LabelKey];
 }
 
 - (NSString*) identifierAtIndex: (int) index
 {
   if (index >= [_arr count]) return nil;
-  return [[_arr objectAtIndex: index] objectForKey: CKMultiValue_IDKey];
+  return [(NSDictionary *)[_arr objectAtIndex: index] objectForKey: CKMultiValue_IDKey];
 }
 
 - (int) indexForIdentifier: (NSString*) identifier
@@ -122,7 +121,7 @@ static CKPropertyType _propTypeFromDict(NSDictionary *dict)
   int i;
 
   for(i=0; i<[_arr count]; i++)
-    if([[[_arr objectAtIndex: i] objectForKey: CKMultiValue_IDKey]
+    if([[(NSDictionary *)[_arr objectAtIndex: i] objectForKey: CKMultiValue_IDKey]
 	 isEqualToString: identifier])
       return i;
   return NSNotFound;

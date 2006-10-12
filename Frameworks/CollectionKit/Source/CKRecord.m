@@ -303,7 +303,6 @@ static NSMutableDictionary *pDict;
       if(t & CKMultiValueMask)
         {
           CKMutableMultiValue *mv;
-          int i;
 
           if([val isKindOfClass: [NSString class]])
             {
