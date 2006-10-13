@@ -2,6 +2,7 @@
 
     * Fix missing header.
     * Make sure a record can have only one parent.
+    * Add save test (disable by default).
 
 2006-10-10  Yen-Ju Chen <yjchen at gmail>
 
