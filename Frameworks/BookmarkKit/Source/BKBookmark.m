@@ -41,8 +41,7 @@ NSString *const kBKBookmarkURLProperty = @"kBKBookmarkURLProperty";
           [NSNumber numberWithInt: CKDateProperty], kCKModificationDateProperty,
 	  [NSNumber numberWithInt: CKStringProperty], kBKBookmarkURLProperty,
 			                   nil];
-    [CKItem addPropertiesAndTypes: _propTypes];
-
+  [BKBookmark addPropertiesAndTypes: _propTypes];
 }
 
 + (BKBookmark *) bookmarkWithURL: (NSURL *)url
@@ -57,8 +56,9 @@ NSString *const kBKBookmarkURLProperty = @"kBKBookmarkURLProperty";
 
 - (id) initWithURL: (NSURL *)url
 {
-  self = [super init];
+  self = [self init];
   [self setValue: [url absoluteString] forProperty: kBKBookmarkURLProperty];
+  topLevel = BKTopLevel;
   return self;
 }
 
@@ -115,6 +115,24 @@ NSString *const kBKBookmarkURLProperty = @"kBKBookmarkURLProperty";
 - (void) setImageProperty: (NSImage *)image forKey: (NSString *)key
 {
 
+}
+
+// BKTopLevel protocol
+- (void) setTopLevel: (BKTopLevelType) type
+{
+  topLevel = type;
+}
+
+- (BKTopLevelType) isTopLevel
+{
+  if (topLevel == BKUndecidedTopLevel)
+  {
+    if ([self parentGroups])
+      topLevel = BKNotTopLevel;
+    else
+      topLevel = BKTopLevel;
+  }
+  return topLevel;
 }
 
 @end

@@ -3,6 +3,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME = BookmarkKit_Source
 
 BookmarkKit_Source_OBJC_FILES = \
+	BKGroup.m \
 	BKBookmarkStore.m \
 	BKBookmark.m \
 	BKBookmarkQuery.m \
@@ -11,6 +12,7 @@ BookmarkKit_Source_OBJC_FILES = \
 ifeq ($(test), yes)
 BookmarkKit_Source_OBJC_FILES +=  \
 	TestBookmarkStore.m \
+	TestGroup.m \
 	TestBookmark.m 
 endif
 

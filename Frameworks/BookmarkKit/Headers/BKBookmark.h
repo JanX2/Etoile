@@ -25,6 +25,7 @@
 
 #import <CollectionKit/CollectionKit.h>
 #import <AppKit/AppKit.h>
+#import <BookmarkKit/BKGlobals.h>
 
 // FIXME: Rewrite bookmark protocols model with roles idea
 typedef enum _BKBookmarkProtocol
@@ -35,8 +36,9 @@ typedef enum _BKBookmarkProtocol
   BKBookmarkLocalProtocol
 } BKBookmarkProtocol;
 
-@interface BKBookmark : CKItem
+@interface BKBookmark : CKItem <BKTopLevel> 
 {
+  BKTopLevelType topLevel;
 }
 
 + (BKBookmark *) bookmarkWithURL: (NSURL *)url;

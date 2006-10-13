@@ -6,7 +6,8 @@ It can be used for web browser bookmark, recently opened documents, etc.
 It is based on CollectionKit.
 
 BookmarkKit has a basic assumption: it has a hierarchical structure.
-In another word, a bookmark or a group can only exist under a group.
+A bookmark or a group can only exist under a group.
+In another word, an item or a group can has a parent or none.
 Therefore, bookmark can be displayed in NSOutlineView.
 
 

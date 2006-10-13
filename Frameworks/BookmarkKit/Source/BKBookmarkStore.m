@@ -29,6 +29,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import <BookmarkKit/BKBookmark.h>
+#import <BookmarkKit/BKGroup.h>
 #import <BookmarkKit/BKBookmarkQuery.h>
 #import <BookmarkKit/BKBookmarkSearchResult.h>
 #import <BookmarkKit/BKBookmarkStore.h>
@@ -128,6 +129,69 @@ NSString *const BKBookmarkExtension = @"bookmark";
 - (NSString *) transformToXMLNativeFormat // aspect
 {
   return nil;
+}
+
+/** override super class */
+- (BOOL) addItem: (CKItem *) it forGroup: (CKGroup*) group
+{
+  BKBookmark *item = (BKBookmark *) it;
+  if ([item isTopLevel] == BKNotTopLevel) {
+    /* Has parent already. */
+    return NO;
+  }
+
+  if ([super addItem: item forGroup: group] == YES) {
+    [item setTopLevel: BKNotTopLevel];
+    return YES;
+  } else {
+    [item setTopLevel: BKUndecidedTopLevel];
+    return NO;
+  }
+}
+
+- (BOOL) removeItem: (CKItem *) it forGroup: (CKGroup*) group
+{
+  BKBookmark *item = (BKBookmark *) it;
+  if ([super removeItem: item forGroup: group] == YES) {
+    /* In BookmarkKit, an item can have only one parent.
+     * If it is remove from a group, it should be at top level. */
+    [item setTopLevel: BKTopLevel];
+    return YES;
+  } else {
+    [item setTopLevel: BKUndecidedTopLevel];
+    return NO;
+  }
+}
+
+- (BOOL) addSubgroup: (CKGroup*) g forGroup: (CKGroup*) g2
+{
+  BKGroup *g1 = (BKGroup *) g;
+  if ([g1 isTopLevel] == BKNotTopLevel) {
+    /* Has parent already. */
+    return NO;
+  }
+
+  if ([super addSubgroup: g1 forGroup: g2] == YES) {
+    [g1 setTopLevel: BKNotTopLevel];
+    return YES;
+  } else {
+    [g1 setTopLevel: BKUndecidedTopLevel];
+    return NO;
+  }
+}
+
+- (BOOL) removeSubgroup: (CKGroup*) g forGroup: (CKGroup*) g2
+{
+  BKGroup *g1 = (BKGroup *) g;
+  if ([super removeSubgroup: g1 forGroup: g2] == YES) {
+    /* In BookmarkKit, an item can have only one parent.
+     * If it is remove from a group, it should be at top level. */
+    [g1 setTopLevel: BKTopLevel];
+    return YES;
+  } else {
+    [g1 setTopLevel: BKUndecidedTopLevel];
+    return NO;
+  }
 }
 
 @end
