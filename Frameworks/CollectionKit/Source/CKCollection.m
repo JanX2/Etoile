@@ -348,7 +348,7 @@
 
   /* Save groups */
   e = [groupKeys objectEnumerator];
-  while ((r = [e nextObject])) {
+  while ((key = [e nextObject])) {
     r = [_groups objectForKey: key];
     [group_store setObject: [r contentDictionary] forKey: [r uniqueID]];
   }
