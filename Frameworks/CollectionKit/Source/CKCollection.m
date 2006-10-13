@@ -354,17 +354,19 @@
   }
   
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: item_store, CKItemsKey, group_store, CKGroupsKey, nil];
-  [dict writeToFile: _loc atomically: YES];
-#if 0
-  pidStr = [NSString stringWithFormat: @"%d",
+  if ([self _makeDirectory: [_loc stringByDeletingLastPathComponent]]) {
+    [dict writeToFile: _loc atomically: YES];
+  } else {
+    // Should we raise an alert or exception
+  }
+  NSString *pidStr = [NSString stringWithFormat: @"%d",
 		     [[NSProcessInfo processInfo] processIdentifier]];
   [[NSDistributedNotificationCenter defaultCenter]
-    postNotificationName: ADDatabaseChangedExternallyNotification
+    postNotificationName: CKCollectionChangedExternallyNotification
     object: [self className]
-    userInfo: [NSDictionary dictionaryWithObjectsAndKeys:
+    userInfo: nil /*[NSDictionary dictionaryWithObjectsAndKeys:
 			      _loc, @"Location",
-			    pidStr, @"IDOfChangingProcess", nil]];
-#endif
+			    pidStr, @"IDOfChangingProcess", nil]*/];
   hasUnsavedChanges = NO;
   return YES;
 }

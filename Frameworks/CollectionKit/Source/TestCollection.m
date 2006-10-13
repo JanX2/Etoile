@@ -24,7 +24,7 @@
 
 static NSString *kName = @"Name";
 static NSString *kEMails = @"E-Mails";
-static NSString *path = @"/tmp/testCollection";
+static NSString *path = @"/tmp/subdir/testCollection";
 
 @interface TestCollection: NSObject <UKTest>
 {
@@ -82,6 +82,7 @@ static NSString *path = @"/tmp/testCollection";
 {
   [collection save];
   CKCollection *ck = [[CKCollection alloc] initWithLocation: path];
+  UKTrue([[collection items] count] > 0);
   UKIntsEqual([[collection items] count], [[ck items] count]);
   [[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
 }
