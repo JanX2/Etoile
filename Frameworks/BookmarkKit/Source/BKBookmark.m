@@ -28,6 +28,7 @@
 #import <BookmarkKit/BKBookmark.h>
 
 NSString *const kBKBookmarkURLProperty = @"kBKBookmarkURLProperty";
+NSString *const kBKBookmarkTitleProperty = @"kBKBookmarkTitleProperty";
 
 @implementation BKBookmark
 
@@ -76,6 +77,16 @@ NSString *const kBKBookmarkURLProperty = @"kBKBookmarkURLProperty";
 - (NSURL *) URL
 {
   return [NSURL URLWithString: [self valueForProperty: kBKBookmarkURLProperty]];
+}
+
+- (NSString *) title
+{
+  return [self valueForProperty: kBKBookmarkTitleProperty];
+}
+
+- (void) setTitle: (NSString *) t
+{
+  [self setValue: t forProperty: kBKBookmarkTitleProperty];
 }
 
 - (NSDate *) creationDate
@@ -133,7 +144,6 @@ NSString *const kBKBookmarkURLProperty = @"kBKBookmarkURLProperty";
 {
   if (topLevel == BKUndecidedTopLevel)
   {
-    NSLog(@"BKBoolmark: Decide top level");
     if ([[self parentGroups] count]) {
       topLevel = BKNotTopLevel;
     } else {

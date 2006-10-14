@@ -1,5 +1,8 @@
 #import <Foundation/Foundation.h>
 
+extern NSString *const kBKBookmarkURLProperty;
+extern NSString *const kBKBookmarkTitleProperty;
+
 /* Top level is used to cache items without parent.
  * It is equivalent to -parentGroups.
  */

@@ -18,10 +18,13 @@
   NSString *path = @"/tmp/subdir/bookmark_test.bookmark";
   BKBookmarkStore *store = [BKBookmarkStore sharedBookmarkAtPath: path];
   BKBookmark *bk = [BKBookmark bookmarkWithURL: [NSURL URLWithString: @"http://www.gnustep.org"]];
+  [bk setTitle: @"GNUstep"];
   [store addRecord: bk];
   BKBookmark *bk1 = [BKBookmark bookmarkWithURL: [NSURL URLWithString: @"http://www.etoile-project.org"]];
+  [bk1 setTitle: @"Etoile"];
   [store addRecord: bk1];
   BKBookmark *bk2 = [BKBookmark bookmarkWithURL: [NSURL URLWithString: @"http://www.google.org"]];
+  [bk2 setTitle: @"Google"];
   [store addRecord: bk2];
 
   BKGroup *gp = [[BKGroup alloc] init];

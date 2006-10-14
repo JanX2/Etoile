@@ -49,6 +49,8 @@ typedef enum _BKBookmarkProtocol
 
 - (NSURL *) URL;
 
+- (NSString *) title;
+- (void) setTitle: (NSString *) title;
 - (NSDate *) creationDate;
 - (void) setCreationDate: (NSDate *)date;
 - (NSDate *) lastVisitDate;
