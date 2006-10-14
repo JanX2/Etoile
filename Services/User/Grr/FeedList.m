@@ -95,9 +95,9 @@ int articleSortByDate( id articleA, id articleB, void* context )
 	   stringByExpandingTildeInPath];
 }
 
--init
+-(id)init
 {
-  if (self = [super init])
+  if ((self = [super init]))
     {
       list = [[NSMutableArray alloc] init];
       
@@ -111,7 +111,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
 
 -(id)initWithCoder: (NSCoder*)coder
 {
-  if (self = [super init])
+  if ((self = [super init]))
     {
       list = RETAIN([coder decodeObject]);
       
@@ -140,8 +140,8 @@ int articleSortByDate( id articleA, id articleB, void* context )
 
 -(void) buildArticleList
 {
-  int feedNo, articleNo;
-  int feedCount, articleCount;
+  int feedNo;
+  int feedCount;
   NSMutableArray* newArticleList;
   FilterManager* filterManager;
   
@@ -165,7 +165,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
 	  
 	  enumerator = [feed articleEnumerator];
 	  
-	  while( article = [enumerator nextObject] )
+	  while((article = [enumerator nextObject]))
 	    {
 	      if ([filterManager allowsArticle: article])
 		{

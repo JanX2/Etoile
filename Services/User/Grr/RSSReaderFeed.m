@@ -22,9 +22,8 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 */
 
-@class RSSReaderArticle;
-
 #import "RSSReaderFeed.h"
+#import "RSSReaderArticle.h"
 
 @implementation RSSFeed (Subclassing)
 
@@ -52,7 +51,7 @@
 
 -(id)initWithURL: (NSURL*) aURL
 {
-  if (self = [super initWithURL: aURL])
+  if ((self = [super initWithURL: aURL]))
     {
       // half an hour
       [self setMinimumUpdateInterval: (NSTimeInterval)(1800.0)];
@@ -64,7 +63,7 @@
 
 -(id)initWithCoder: (NSCoder*)coder
 {
-  if (self = [super initWithCoder: coder])
+  if ((self = [super initWithCoder: coder]))
     {
       int encodingVersion;
       

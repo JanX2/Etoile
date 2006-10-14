@@ -100,7 +100,7 @@
 }
 
 
-- setRead: (BOOL) value
+- (void) setRead: (BOOL) value
 {
   isRead = value;
 }

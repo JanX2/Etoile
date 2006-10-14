@@ -254,7 +254,7 @@ BOOL addFeedsFromPasteboard( NSPasteboard* pasteboard )
 -(id) initWithFrame: (NSRect) frame
 {
   
-  if (self = [super initWithFrame: frame])
+  if ((self = [super initWithFrame: frame]))
     {
       NSLog(@"registering");
       [self registerForDraggedTypes:

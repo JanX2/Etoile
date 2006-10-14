@@ -39,7 +39,7 @@
 -(void)encodeWithCoder: (NSCoder*)coder;
 
 - (BOOL) isRead;
-- setRead: (BOOL) value;
+- (void) setRead: (BOOL) value;
 
 
 @end

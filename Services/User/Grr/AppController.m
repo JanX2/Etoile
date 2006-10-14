@@ -105,6 +105,7 @@
   NSURL* fileURL = [[NSURL alloc] initFileURLWithPath: fileName];
   [getFeedList() addFeedWithURL: fileURL];
   RELEASE(fileURL);
+  return YES;
 }
 
 - (void)showPrefPanel:(id)sender

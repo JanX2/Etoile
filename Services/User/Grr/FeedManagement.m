@@ -28,7 +28,7 @@ FeedManagement* feedManagementSingleton;
 
 -(id) init
 {
-  if (self = [super init])
+  if ((self = [super init]))
     {
       feedManagementSingleton = self;
     }
@@ -105,7 +105,6 @@ FeedManagement* feedManagementSingleton;
   RSSArticle* article;
   RSSFeed* feed;
   NSDate* date;
-  int i;
   BOOL dirty;
   
   NSLog(@"FIXME: rewrite cleanUpFeed: in FeedManagement.m!");
@@ -123,7 +122,7 @@ FeedManagement* feedManagementSingleton;
   dirty = NO;
   
   enumerator = [feed articleEnumerator];
-  while (article = [enumerator nextObject])
+  while ((article = [enumerator nextObject]))
     {
       if ([[article date] compare: date] == NSOrderedAscending)
 	{

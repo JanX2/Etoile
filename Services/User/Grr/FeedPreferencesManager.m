@@ -67,7 +67,7 @@ static FeedPreferencesManager* instance = nil;
       return instance;
     }
   
-  if (self = [super init])
+  if ((self = [super init]))
     {
       instance = self;
     }
@@ -116,7 +116,6 @@ static FeedPreferencesManager* instance = nil;
     {
       double minVal;
       double maxVal;
-      double actualValue;
       
       RSSReaderFeed* rFeed;
       
@@ -168,9 +167,6 @@ static FeedPreferencesManager* instance = nil;
 {
   double doubleValue;
   NSTimeInterval interval;
-  
-  NSString* description;
-  int intInterval;
   
   RSSFeed* selectedFeed;
   

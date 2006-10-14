@@ -2,6 +2,10 @@
 Grr Changelog
 =============
 
+Oct-14-2006 Yen-Ju Chen <yjchenx at gmail>
+
+	* Fix various compilation warnings.
+
 Sep-26-2006 Quentin Mathe <qmathe@club-internet.fr>
 	* GNUmakefile: Modified to match latest etoile.make evolution.
 

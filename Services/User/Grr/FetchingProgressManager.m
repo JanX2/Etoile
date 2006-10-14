@@ -53,9 +53,9 @@ FetchingProgressManager* instance;
   return instance;
 }
 
--init
+-(id)init
 {
-  if (self = [super init])
+  if ((self = [super init]))
     {
       [getMainController() fetchingProgressManager: self];
       instance = self;
