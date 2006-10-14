@@ -1,0 +1,36 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    BookmarkManager = {
+	Actions = (
+	    "addBookmark:",
+	    "addGroup:",
+	    "removeGroup:",
+	    "openBookmark:",
+	    "removeBookmark:",
+	    "saveBookmark:"
+	);
+	Outlets = (
+	    bookmarkManagerView,
+	    window
+	);
+	Super = NSObject;
+    };
+    BookmarkManagerView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSView;
+    };
+    FirstResponder = {
+	Actions = (
+	    "addBookmark:",
+	    "addGroup:",
+	    "removeGroup:",
+	    "openBookmark:",
+	    "removeBookmark:",
+	    "saveBookmark:"
+	);
+	Super = NSObject;
+    };
+}

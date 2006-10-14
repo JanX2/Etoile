@@ -1,0 +1,6 @@
+This is an example of using BookmarkKit.
+It is under BSD License and is designed to be used in other applications.
+BookmarkManagerView and BookmarkManagerModel are the main components.
+An bookmark file, Example.bookmark, is provided.
+
+Yen-Ju

@@ -1,0 +1,38 @@
+{
+    CKFormatKey = CKCollectionFormat_0_1;
+    CKGroupsKey = {
+	182542716.068928.0663223170 = {
+	    kCKCreationDateProperty = <*D2006-10-14 18:18:36 +0000>;
+	    kCKGroupNameProperty = GNUstep;
+	    kCKItemsProperty = (
+		182542716.067722.2117857468,
+		182542716.068256.0731849667
+	    );
+	    kCKModificationDateProperty = <*D2006-10-14 18:18:36 +0000>;
+	    kCKUIDProperty = 182542716.068928.0663223170;
+	};
+    };
+    CKItemsKey = {
+	182542716.067722.2117857468 = {
+	    kBKBookmarkTitleProperty = GNUstep;
+	    kBKBookmarkURLProperty = "http://www.gnustep.org";
+	    kCKCreationDateProperty = <*D2006-10-14 18:18:36 +0000>;
+	    kCKModificationDateProperty = <*D2006-10-14 18:18:36 +0000>;
+	    kCKUIDProperty = 182542716.067722.2117857468;
+	};
+	182542716.068256.0731849667 = {
+	    kBKBookmarkTitleProperty = Etoile;
+	    kBKBookmarkURLProperty = "http://www.etoile-project.org";
+	    kCKCreationDateProperty = <*D2006-10-14 18:18:36 +0000>;
+	    kCKModificationDateProperty = <*D2006-10-14 18:18:36 +0000>;
+	    kCKUIDProperty = 182542716.068256.0731849667;
+	};
+	182542716.068586.2076700251 = {
+	    kBKBookmarkTitleProperty = Google;
+	    kBKBookmarkURLProperty = "http://www.google.org";
+	    kCKCreationDateProperty = <*D2006-10-14 18:18:36 +0000>;
+	    kCKModificationDateProperty = <*D2006-10-14 18:18:36 +0000>;
+	    kCKUIDProperty = 182542716.068586.2076700251;
+	};
+    };
+}
