@@ -26,6 +26,8 @@
 /* Used to store items and groups in property list (NSDictionary) */
 extern NSString *const CKItemsKey;
 extern NSString *const CKGroupsKey;
+extern NSString *const CKFormatKey; // version of property list
+extern NSString *const CKCollectionFormat_0_1;
 
 /* Properties common to all Records */
 extern NSString *const kCKUIDProperty; 			// string

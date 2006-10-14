@@ -38,7 +38,14 @@
   BOOL hasUnsavedChanges;
 }
 
+/* Load collection from file */
 - (id) initWithLocation: (NSString*) location;
+/* Specify the classes for item and group.
+ * This methid is for subclass of CKCollection */
+- (id) initWithLocation: (NSString*) location
+              itemClass: (Class) itemClass
+             groupClass: (Class) groupClass;
+
 - (NSString*) location;
 
 //- (NSArray*) recordsMatchingSearchElement: (CKSearchElement*) search;

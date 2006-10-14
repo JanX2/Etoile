@@ -25,6 +25,10 @@
 #import "GNUstep.h"
 
 @interface CKCollection (CKPrivate)
+/* Load format with version 0.1 */
+- (void) _loadFormat_0_1: (NSDictionary *) dict 
+               itemClass: (Class) itemClass
+	      groupClass: (Class) groupClass;
 - (BOOL) _makeDirectory: (NSString*) path;
 - (void) _handleRecordChanged: (NSNotification*) note;
 - (void) _handleDBChangedExternally: (NSNotification*) note;
@@ -36,6 +40,39 @@
 @end
 
 @implementation CKCollection (CKPrivate)
+- (void) _loadFormat_0_1: (NSDictionary *) dict 
+               itemClass: (Class) itemClass
+	      groupClass: (Class) groupClass
+{
+  NSDictionary *temp;
+  NSEnumerator *e;
+  NSString *uid;
+  CKItem *item;
+  CKGroup *group;
+
+  /* Load group */
+  temp = [dict objectForKey: CKGroupsKey];
+  e = [[temp allKeys] objectEnumerator];;
+  while ((uid = [e nextObject]))
+  {
+    group = [[groupClass alloc] initWithContentDictionary: [temp objectForKey: uid]];
+    [group setCollection: self];
+    [_groups setObject: group forKey: uid];
+    DESTROY(group);
+  }
+
+  /* Load item */
+  temp = [dict objectForKey: CKItemsKey];
+  e = [[temp allKeys] objectEnumerator];
+  while ((uid = [e nextObject]))
+  { 
+    item = [[itemClass alloc] initWithContentDictionary: [temp objectForKey: uid]];
+    [item setCollection: self];
+    [_items setObject: item forKey: uid];
+    DESTROY(item);
+  }
+}
+
 - (BOOL) _makeDirectory: (NSString*) location
 {
   int i;
@@ -253,8 +290,16 @@
 }
 #endif
 
+- (id) initWithLocation: (NSString*) location 
+{
+  return [self initWithLocation: location 
+	              itemClass: [CKItem class]
+	             groupClass: [CKGroup class]];
+}
 
-- (id) initWithLocation: (NSString*) location
+- (id) initWithLocation: (NSString*) location 
+              itemClass: (Class) itemClass
+	     groupClass: (Class) groupClass
 {
   BOOL dir;
   NSAssert(location, @"Location cannot be nil");
@@ -279,6 +324,12 @@
 		   format: @"Couldn't open local collection at %@",
 		   _loc];
     }
+    /* Check version */
+    NSString *version = [dict objectForKey: CKFormatKey];
+    if ([version isEqualToString: CKCollectionFormat_0_1]) {
+      [self _loadFormat_0_1: dict itemClass: itemClass groupClass: groupClass];
+    }
+#if 0
     NSDictionary *temp = [dict objectForKey: CKItemsKey];
     NSEnumerator *e = [[temp allKeys] objectEnumerator];
     NSString *uid;
@@ -286,7 +337,7 @@
     CKGroup *group;
     while ((uid = [e nextObject]))
     { 
-      item = [[CKRecord alloc] initWithContentDictionary: [temp objectForKey: uid]];
+      item = [[itemClass alloc] initWithContentDictionary: [temp objectForKey: uid]];
       [_items setObject: item forKey: uid];
       DESTROY(item);
     }
@@ -294,10 +345,11 @@
     e = [[temp allKeys] objectEnumerator];;
     while ((uid = [e nextObject]))
     {
-      group = [[CKGroup alloc] initWithContentDictionary: [temp objectForKey: uid]];
+      group = [[groupClass alloc] initWithContentDictionary: [temp objectForKey: uid]];
       [_groups setObject: group forKey: uid];
       DESTROY(group);
     }
+#endif
   }
 
   [[NSNotificationCenter defaultCenter]
@@ -353,7 +405,7 @@
     [group_store setObject: [r contentDictionary] forKey: [r uniqueID]];
   }
   
-  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: item_store, CKItemsKey, group_store, CKGroupsKey, nil];
+  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: item_store, CKItemsKey, group_store, CKGroupsKey, CKCollectionFormat_0_1, CKFormatKey, nil];
   if ([self _makeDirectory: [_loc stringByDeletingLastPathComponent]]) {
     [dict writeToFile: _loc atomically: YES];
   } else {
@@ -710,6 +762,7 @@
   m = [NSMutableArray array];
   while((g = [e nextObject]))
     {
+      NSLog(@"g %@", g);
       NSArray *a = [self _groupOrSubgroups: g containingRecord: record];
       if([a count])
 	[m addObjectsFromArray: a];
