@@ -167,7 +167,10 @@
 - (id) initWithContentDictionary: (NSDictionary *) dict
 {
   NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary: dict];
+  self = [super initWithContentDictionary: d];
+
   NSArray *members = [dict objectForKey: kCKItemsProperty];
+#if 0
   if (members)
   {
     [self setValue: members forProperty: kCKItemsProperty];
@@ -177,7 +180,12 @@
   {
     [self setValue: [NSArray array] forProperty: kCKItemsProperty];
   }
-  self = [super initWithContentDictionary: d];
+#else
+  if (members == nil)
+  {
+    [self setValue: [NSArray array] forProperty: kCKItemsProperty];
+  }
+#endif
   return self;
 }
 @end

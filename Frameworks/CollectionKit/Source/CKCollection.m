@@ -329,27 +329,6 @@
     if ([version isEqualToString: CKCollectionFormat_0_1]) {
       [self _loadFormat_0_1: dict itemClass: itemClass groupClass: groupClass];
     }
-#if 0
-    NSDictionary *temp = [dict objectForKey: CKItemsKey];
-    NSEnumerator *e = [[temp allKeys] objectEnumerator];
-    NSString *uid;
-    CKItem *item;
-    CKGroup *group;
-    while ((uid = [e nextObject]))
-    { 
-      item = [[itemClass alloc] initWithContentDictionary: [temp objectForKey: uid]];
-      [_items setObject: item forKey: uid];
-      DESTROY(item);
-    }
-    temp = [dict objectForKey: CKGroupsKey];
-    e = [[temp allKeys] objectEnumerator];;
-    while ((uid = [e nextObject]))
-    {
-      group = [[groupClass alloc] initWithContentDictionary: [temp objectForKey: uid]];
-      [_groups setObject: group forKey: uid];
-      DESTROY(group);
-    }
-#endif
   }
 
   [[NSNotificationCenter defaultCenter]
@@ -706,13 +685,12 @@
 	      containingRecord: (CKRecord*) record
 {
   NSMutableArray *retval;
-  NSArray *s;
   int i;
 
   retval = [NSMutableArray array];
-  s = [g subgroups];
 
   // is it a group?
+  NSArray *s = [g subgroups];
   if([record isKindOfClass: [CKGroup class]])
     {
       for(i=0; i<[s count]; i++)
@@ -726,9 +704,7 @@
   else
     {
       // no? then it's a person 
-      NSArray *m;
-
-      m = [g items];
+      NSArray *m = [g items];
       for(i=0; i<[m count]; i++) {
 	if([[[m objectAtIndex: i] uniqueID]
 	     isEqualToString: [record uniqueID]])
@@ -762,7 +738,6 @@
   m = [NSMutableArray array];
   while((g = [e nextObject]))
     {
-      NSLog(@"g %@", g);
       NSArray *a = [self _groupOrSubgroups: g containingRecord: record];
       if([a count])
 	[m addObjectsFromArray: a];
