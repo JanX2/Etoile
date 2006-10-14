@@ -45,7 +45,7 @@
 - (id) init
 {
   self = [super init];
-  topLevel = BKTopLevel;
+  topLevel = BKUndecidedTopLevel; // Can be grouped or not while saving
   return self;
 }
 
@@ -59,7 +59,7 @@
 {
   if (topLevel == BKUndecidedTopLevel)
   {
-    if ([self parentGroups])
+    if ([[self parentGroups] count])
       topLevel = BKNotTopLevel;
     else
       topLevel = BKTopLevel;

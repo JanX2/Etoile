@@ -10,14 +10,14 @@
 {
   BKBookmarkStore *store = [BKBookmarkStore sharedBookmarkStore];
   BKBookmark *bk = [BKBookmark bookmarkWithURL: [NSURL URLWithString: @"http://www.gnustep.org"]];
-  UKIntsEqual([bk isTopLevel], BKTopLevel);
   UKTrue([store addRecord: bk]);
+  UKIntsEqual([bk isTopLevel], BKTopLevel);
   BKGroup *gp = [[BKGroup alloc] init];
-  UKIntsEqual([gp isTopLevel], BKTopLevel);
   UKTrue([store addRecord: gp]);
+  UKIntsEqual([gp isTopLevel], BKTopLevel);
   BKGroup *gp1 = [[BKGroup alloc] init];
-  UKIntsEqual([gp1 isTopLevel], BKTopLevel);
   UKTrue([store addRecord: gp1]);
+  UKIntsEqual([gp1 isTopLevel], BKTopLevel);
 
   UKTrue([gp addItem: bk]);
   UKFalse([gp1 addItem: bk]);

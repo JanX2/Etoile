@@ -31,7 +31,7 @@
   [gp addItem: bk1];
 
   [store save];
-  [[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
+//  [[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
 }
 #endif
 @end

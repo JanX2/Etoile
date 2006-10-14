@@ -54,11 +54,17 @@ NSString *const kBKBookmarkURLProperty = @"kBKBookmarkURLProperty";
   return AUTORELEASE([[BKBookmark alloc] initWithXBEL: xbel]);
 }
 
+- (id) init
+{
+  self = [super init];
+  topLevel = BKUndecidedTopLevel; // Can be grouped or not while saving
+  return self;
+}
+
 - (id) initWithURL: (NSURL *)url
 {
   self = [self init];
   [self setValue: [url absoluteString] forProperty: kBKBookmarkURLProperty];
-  topLevel = BKTopLevel;
   return self;
 }
 
@@ -127,10 +133,12 @@ NSString *const kBKBookmarkURLProperty = @"kBKBookmarkURLProperty";
 {
   if (topLevel == BKUndecidedTopLevel)
   {
-    if ([self parentGroups])
+    NSLog(@"BKBoolmark: Decide top level");
+    if ([[self parentGroups] count]) {
       topLevel = BKNotTopLevel;
-    else
+    } else {
       topLevel = BKTopLevel;
+    }
   }
   return topLevel;
 }

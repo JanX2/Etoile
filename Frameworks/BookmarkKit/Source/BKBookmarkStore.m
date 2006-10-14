@@ -66,7 +66,7 @@ NSString *const BKBookmarkExtension = @"bookmark";
 // support native format or XBEL format
 + (BKBookmarkStore *) sharedBookmarkAtPath: (NSString *)path 
 {
-  return AUTORELEASE([[BKBookmarkStore alloc] initWithLocation: path]);
+  return AUTORELEASE([[BKBookmarkStore alloc] initWithLocation: path itemClass: [BKBookmark class] groupClass: [BKGroup class]]);
 }
 
 + (BKBookmarkStore *) sharedBookmarkAtURL: (NSURL *)url
@@ -192,6 +192,11 @@ NSString *const BKBookmarkExtension = @"bookmark";
     [g1 setTopLevel: BKUndecidedTopLevel];
     return NO;
   }
+}
+
+- (id) initWithLocation: (NSString *) location
+{
+  return [self initWithLocation: location itemClass: [BKBookmark class] groupClass: [BKGroup class]];
 }
 
 @end
