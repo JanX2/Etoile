@@ -166,26 +166,11 @@
 @implementation CKGroup (CKExtensions)
 - (id) initWithContentDictionary: (NSDictionary *) dict
 {
-  NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary: dict];
-  self = [super initWithContentDictionary: d];
-
-  NSArray *members = [dict objectForKey: kCKItemsProperty];
-#if 0
-  if (members)
-  {
-    [self setValue: members forProperty: kCKItemsProperty];
-    [d removeObjectForKey: kCKItemsProperty];
-  }
-  else
+  self = [super initWithContentDictionary: dict];
+  if ([dict objectForKey: kCKItemsProperty] == nil)
   {
     [self setValue: [NSArray array] forProperty: kCKItemsProperty];
   }
-#else
-  if (members == nil)
-  {
-    [self setValue: [NSArray array] forProperty: kCKItemsProperty];
-  }
-#endif
   return self;
 }
 @end
