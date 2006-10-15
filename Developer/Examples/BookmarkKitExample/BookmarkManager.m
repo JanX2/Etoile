@@ -9,22 +9,23 @@
 
 - (void) addBookmark: (id)sender
 {
+  [model addBookmark: sender];
 }
 
 - (void) removeBookmark: (id)sender
 {
+  [model removeBookmark: sender];
 }
-
 
 - (void) addGroup: (id)sender
 {
+  [model addGroup: sender];
 }
-
 
 - (void) removeGroup: (id)sender
 {
+  [model removeGroup: sender];
 }
-
 
 - (void) openBookmark: (id)sender
 {

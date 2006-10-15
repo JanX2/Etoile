@@ -86,7 +86,7 @@
   [self addSubview: leftSplitView];
   RELEASE(leftSplitView);
 
-  [self setEditable: NO];
+  [self setEditable: YES];
   [model setTableView: tableView];
   [model setOutlineView: outlineView];
   return self;
@@ -126,7 +126,10 @@
       [tc setMinWidth: 100];
       [tc setResizable: YES];
       [outlineView addTableColumn: tc];
-      DESTROY(tc);
+      RELEASE(tc);
+    }
+    if (i == 0) {
+      [outlineView setOutlineTableColumn: tc];
     }
   }
   [outlineView sizeToFit];
