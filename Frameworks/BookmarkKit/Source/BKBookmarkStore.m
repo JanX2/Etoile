@@ -33,6 +33,7 @@
 #import <BookmarkKit/BKBookmarkQuery.h>
 #import <BookmarkKit/BKBookmarkSearchResult.h>
 #import <BookmarkKit/BKBookmarkStore.h>
+#import "GNUstep.h"
 
 NSString *const BKDefaultBookmarkStore = @"BKDefaultBookmarkStore";
 NSString *const BKRecentFilesBookmarkStore = @"BKRecentFilesBookmarkStore";

@@ -26,6 +26,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import <BookmarkKit/BKBookmark.h>
+#import "GNUstep.h"
 
 NSString *const kBKBookmarkURLProperty = @"kBKBookmarkURLProperty";
 NSString *const kBKBookmarkTitleProperty = @"kBKBookmarkTitleProperty";
