@@ -2,6 +2,7 @@
 #import "BookmarkManagerModel.h"
 #import "BookmarkManagerView.h"
 #import <BookmarkKit/BookmarkKit.h>
+#import "GNUstep.h"
 
 @implementation BookmarkManager
 

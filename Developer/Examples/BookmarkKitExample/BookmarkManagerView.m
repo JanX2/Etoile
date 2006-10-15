@@ -1,6 +1,7 @@
 #import <AppKit/AppKit.h>
 #import "BookmarkManagerView.h"
 #import <CollectionKit/CollectionKit.h>
+#import "GNUstep.h"
 
 @implementation BookmarkManagerView
 

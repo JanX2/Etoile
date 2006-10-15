@@ -1,0 +1,21 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                addBookmark = id; 
+                addGroup = id; 
+                openBookmark = id; 
+                removeBookmark = id; 
+                removeGroup = id; 
+                saveBookmark = id; 
+            }; 
+            CLASS = BookmarkManager; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {bookmarkManagerView = id; window = id; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = BookmarkManagerView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}
