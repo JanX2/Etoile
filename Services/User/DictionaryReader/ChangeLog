@@ -2,6 +2,12 @@
 DictionaryReader Changelog
 ==========================
 
+Oct 15 2006  Guenther Noack
+	* Bug #7379 hopefully fixed. Forgot to "svn add" some files... :-/
+	* Thanks for the bugreport to YunSong Hwang :-)
+	* Commented out the [dict close] line in AppController (that slowed
+	  down the lookup times and it's still consistent now)
+
 Oct 9 2006  Guenther Noack
 	* Preference panel works now
 	* Support for GZipped (.dz extension) dictionaries (GNUstep only!)

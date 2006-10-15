@@ -419,7 +419,7 @@ NSDictionary* normalAttributes;
 	    [dict open];
 	    [dict sendClientString: @"GNUstep DictionaryReader.app"];
 	    [dict definitionFor: aWord];
-	    [dict close]; // FIXME: That crashes!
+	    // [dict close];
           }
         NS_HANDLER
           {

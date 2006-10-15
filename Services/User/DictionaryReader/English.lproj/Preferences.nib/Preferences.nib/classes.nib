@@ -1,0 +1,23 @@
+{
+    IBClasses = (
+	{
+	    CLASS = UKNibOwner;
+	    LANGUAGE = ObjC;
+	    SUPERCLASS = NSObject;
+	},
+	{
+	    CLASS = Preferences;
+	    LANGUAGE = ObjC;
+	    OUTLETS = {
+		_prefPanel = id;
+	    };
+	    SUPERCLASS = UKNibOwner;
+	},
+	{
+	    CLASS = FirstResponder;
+	    LANGUAGE = ObjC;
+	    SUPERCLASS = NSObject;
+	}
+    );
+    IBVersion = 1;
+}

@@ -228,6 +228,7 @@
   } 
 }
 
+#warning FIXME: Crashes sometimes?
 -(void)close
 {
   [inputStream close];
