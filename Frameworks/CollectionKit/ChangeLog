@@ -1,3 +1,8 @@
+2006-10-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Remove kCKGroupNameProperty considering it is not necessary
+          for CollectionKit.
+
 2006-10-13 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Add version control of format.

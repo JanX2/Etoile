@@ -2,6 +2,7 @@
 
 extern NSString *const kBKBookmarkURLProperty;
 extern NSString *const kBKBookmarkTitleProperty;
+extern NSString *const kBKGroupNameProperty;
 
 /* Top level is used to cache items without parent.
  * It is equivalent to -parentGroups.

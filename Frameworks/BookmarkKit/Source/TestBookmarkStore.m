@@ -28,13 +28,13 @@
   [store addRecord: bk2];
 
   BKGroup *gp = [[BKGroup alloc] init];
-  [gp setValue: @"GNUstep" forProperty: kCKGroupNameProperty];
+  [gp setValue: @"GNUstep" forProperty: kBKGroupNameProperty];
   [store addRecord: gp];
   [gp addItem: bk];
   [gp addItem: bk1];
 
   [store save];
-//  [[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
+  [[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
 }
 #endif
 @end

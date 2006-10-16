@@ -29,7 +29,6 @@ NSString *const kCKUIDProperty = @"kCKUIDProperty";
 NSString *const kCKCreationDateProperty = @"kCKCreationDateProperty";
 NSString *const kCKModificationDateProperty = @"kCKModificationDateProperty";
 
-NSString *const kCKGroupNameProperty = @"kCKGroupNameProperty";
 NSString *const kCKItemsProperty = @"kCKItemsProperty";
 
 NSString *const CKCollectionChangedNotification = @"CKCollectionChangedNotification";

@@ -35,7 +35,6 @@ extern NSString *const kCKCreationDateProperty;		// date
 extern NSString *const kCKModificationDateProperty;	// date
 
 /* Group-specific */
-extern NSString *const kCKGroupNameProperty;     // string
 extern NSString *const kCKItemsProperty;         // array; NON-APPLE EXTENSION
 
 /* Notificaiton: (kABDatabaseChangedNotification) */

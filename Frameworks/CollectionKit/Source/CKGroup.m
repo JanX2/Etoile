@@ -34,7 +34,6 @@
 {
   NSDictionary *_propTypes = [[NSDictionary alloc] initWithObjectsAndKeys:
 	 [NSNumber numberWithInt: CKStringProperty], kCKUIDProperty,
-	 [NSNumber numberWithInt: CKStringProperty], kCKGroupNameProperty,
 	 [NSNumber numberWithInt: CKArrayProperty], kCKItemsProperty,
 	 [NSNumber numberWithInt: CKDateProperty], kCKCreationDateProperty,
 	 [NSNumber numberWithInt: CKDateProperty], kCKModificationDateProperty,

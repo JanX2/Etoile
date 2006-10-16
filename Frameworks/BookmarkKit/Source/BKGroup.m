@@ -26,6 +26,8 @@
 #import <AppKit/AppKit.h>
 #import <BookmarkKit/BKGroup.h>
 
+NSString *const kBKGroupNameProperty = @"kBKGroupNameProperty";
+
 @implementation BKGroup
 
 + (void) initialize
@@ -34,7 +36,7 @@
    * Otherwise, it will not work properly. */
   NSDictionary *_propTypes = [[NSDictionary alloc] initWithObjectsAndKeys:
          [NSNumber numberWithInt: CKStringProperty], kCKUIDProperty,
-         [NSNumber numberWithInt: CKStringProperty], kCKGroupNameProperty,
+         [NSNumber numberWithInt: CKStringProperty], kBKGroupNameProperty,
          [NSNumber numberWithInt: CKArrayProperty], kCKItemsProperty,
          [NSNumber numberWithInt: CKDateProperty], kCKCreationDateProperty,
          [NSNumber numberWithInt: CKDateProperty], kCKModificationDateProperty,
