@@ -12,19 +12,14 @@
   [model addBookmark: sender];
 }
 
-- (void) removeBookmark: (id)sender
-{
-  [model removeBookmark: sender];
-}
-
 - (void) addGroup: (id)sender
 {
   [model addGroup: sender];
 }
 
-- (void) removeGroup: (id)sender
+- (void) deleteItem: (id)sender
 {
-  [model removeGroup: sender];
+  [model deleteItem: sender];
 }
 
 - (void) openBookmark: (id)sender

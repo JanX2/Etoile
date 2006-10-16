@@ -21,7 +21,6 @@
 - (void) setBookmarkView: (BKBookmarkView *) bookmarkView; // not retained
 
 - (void) addGroup: (id) sender;
-- (void) removeGroup: (id) sender;
 - (void) addBookmark: (id) sender;
-- (void) removeBookmark: (id) sender;
+- (void) deleteItem: (id) sender;
 @end

@@ -207,7 +207,12 @@
     [group setValue: object forProperty: kBKGroupNameProperty];
   } else if ([item isKindOfClass: [BKBookmark class]]) {
     BKBookmark *bk = (BKBookmark *) item;
-    [bk setValue: object forProperty: [tc identifier]];
+    if ([[tc identifier] isEqualToString: kBKBookmarkURLProperty]) {
+      /* Handle url */
+      [bk setURL: [NSURL URLWithString: object]];
+    } else {
+      [bk setValue: object forProperty: [tc identifier]];
+    }
   }
 }
 

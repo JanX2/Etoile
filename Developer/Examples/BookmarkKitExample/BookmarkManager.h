@@ -12,11 +12,10 @@
   BKBookmarkStore *bookmarkStore;
   BookmarkManagerModel *model;
 }
-- (void) addBookmark: (id)sender;
 - (void) addGroup: (id)sender;
-- (void) removeGroup: (id)sender;
+- (void) addBookmark: (id)sender;
+- (void) deleteItem: (id)sender;
 - (void) openBookmark: (id)sender;
-- (void) removeBookmark: (id)sender;
 - (void) saveBookmark: (id)sender;
 @end
 

@@ -42,13 +42,15 @@
 }
 
 /** Controller */
-- (void) addGroup: (id) sender
+
+/* Private 
+ * This method decide which group a new bookmark or group should be.
+ * Return nil if no group is found.
+ */
+- (BKGroup *) parentGroupOfSelectedItem
 {
   BKOutlineView *ov = [bookmarkView outlineView];
   int selectedRow = [ov selectedRow];
-  BKGroup *group = [[BKGroup alloc] init];
-  [group setValue: @"New Group" forProperty: kBKGroupNameProperty];
-  [bookmarkStore addRecord: group];
   BKGroup *parent = nil;
   if (selectedRow != NSNotFound) {
     id item = [ov itemAtRow: selectedRow];
@@ -60,6 +62,37 @@
       }
     }
   }
+  return parent;
+}
+
+- (void) removeGroupRecursive: (BKGroup *) g
+{
+  NSEnumerator *e = nil;
+  BKBookmark *bk = nil;
+  BKGroup *subg = nil;
+  e = [[g subgroups] objectEnumerator];
+  while ((subg = [e nextObject])) {
+    [self removeGroupRecursive: subg];
+  }
+  e = [[g items] objectEnumerator];
+  while((bk = [e nextObject])) {
+    [bookmarkStore removeBookmark: bk];
+  }
+  if ([bookmarkStore removeRecord: g] == NO) {
+    NSLog(@"remove %@(%@)", g, [g valueForProperty: kBKGroupNameProperty]);
+  }
+}
+/* End of Private */
+
+- (void) addGroup: (id) sender
+{
+  BKGroup *group = [[BKGroup alloc] init];
+  [group setValue: @"New Group" forProperty: kBKGroupNameProperty];
+  [bookmarkStore addRecord: group];
+
+  BKOutlineView *ov = [bookmarkView outlineView];
+  BKGroup *parent = nil;
+  parent = [self parentGroupOfSelectedItem];
   if (parent) {
     [parent addSubgroup: group];
   } 
@@ -69,42 +102,38 @@
   }
 }
 
-- (void) removeGroup: (id) sender
-{
-}
-
 - (void) addBookmark: (id) sender
 {
-#if 0
-  NSView *activeView = [self activeView];
-  if (activeView == tableView) {
-  } else if (activeView == outlineView) {
-    int index = [outlineView selectedRow];
-    if (index == NSNotFound)
-      return;
-    id item = [outlineView itemAtRow: index];
-    BKGroup *parent;
-    if (item == nil) {
-      parent = [self selectedGroupInTableView];
-    } else if ([item isKindOfClass: [BKBookmark class]]) {
-      parent = [self selectedGroupInTableView];
-    } else if ([item isKindOfClass: [BKGroup class]]) {
-      parent = (BKGroup *) item;
-    }
-    if (parent) {
-      BKBookmark *bk = [BKBookmark bookmarkWithURL: [NSURL URLWithString: @"http://www.unknown.com"]];
-      [bk setTitle: @"New Bookmark"];
-      [bookmarkStore addRecord: bk];
-      [parent addItem: bk];
-      [outlineView reloadData];
-      [outlineView reloadItem: parent reloadChildren: YES];
-    }
+  BKBookmark *bk = [BKBookmark bookmarkWithURL: [NSURL URLWithString: @"http://www.unknown.com"]];
+  [bk setTitle: @"New Bookmark"];
+  [bookmarkStore addRecord: bk];
+
+  BKOutlineView *ov = [bookmarkView outlineView];
+  BKGroup *parent = nil;
+  parent = [self parentGroupOfSelectedItem];
+  if (parent) {
+    [parent addItem: bk];
+  } 
+  [bookmarkView reloadData];
+  if (parent) {
+    [ov expandItem: parent];
   }
-#endif
 }
 
-- (void) removeBookmark: (id) sender
+- (void) deleteItem: (id) sender
 {
+  BKOutlineView *ov = [bookmarkView outlineView];
+  int selectedRow = [ov selectedRow];
+  if (selectedRow != NSNotFound) {
+    id item = [ov itemAtRow: selectedRow];
+    if ([item isKindOfClass: [BKBookmark class]]) {
+      [bookmarkStore removeBookmark: (BKBookmark *)item];
+    } else if ([item isKindOfClass: [BKGroup class]]) {
+      /* Must remove all subgroups and all items */
+      [self removeGroupRecursive: (BKGroup *)item];
+    }
+  }
+  [bookmarkView reloadData];
 }
 
 /** Delegate **/

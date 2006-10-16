@@ -4,9 +4,8 @@
             ACTIONS = {
                 addBookmark = id; 
                 addGroup = id; 
+                deleteItem = id; 
                 openBookmark = id; 
-                removeBookmark = id; 
-                removeGroup = id; 
                 saveBookmark = id; 
             }; 
             CLASS = BookmarkManager; 
