@@ -66,7 +66,7 @@ NSString *const kBKBookmarkTitleProperty = @"kBKBookmarkTitleProperty";
 - (id) initWithURL: (NSURL *)url
 {
   self = [self init];
-  [self setValue: [url absoluteString] forProperty: kBKBookmarkURLProperty];
+  [self setURL: url];
   return self;
 }
 
@@ -78,6 +78,11 @@ NSString *const kBKBookmarkTitleProperty = @"kBKBookmarkTitleProperty";
 - (NSURL *) URL
 {
   return [NSURL URLWithString: [self valueForProperty: kBKBookmarkURLProperty]];
+}
+
+- (void) setURL: (NSURL *) url
+{
+  [self setValue: [url absoluteString] forProperty: kBKBookmarkURLProperty];
 }
 
 - (NSString *) title

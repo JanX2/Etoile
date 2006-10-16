@@ -48,7 +48,7 @@ typedef enum _BKBookmarkProtocol
 - (id) initWithXBEL: (NSString *)xbel;
 
 - (NSURL *) URL;
-
+- (void) setURL: (NSURL *)url;
 - (NSString *) title;
 - (void) setTitle: (NSString *) title;
 - (NSDate *) creationDate;
