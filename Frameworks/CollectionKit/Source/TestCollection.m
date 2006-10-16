@@ -119,6 +119,13 @@ static NSString *path = @"/tmp/subdir/testCollection";
   UKNotNil(pGroups);
   UKTrue([pGroups count] > 0);
   UKStringsEqual([group uniqueID], [[[record parentGroups] objectAtIndex: 0] uniqueID]);
+
+#if 0
+  [collection removeRecord: record];
+  group = [[collection groups] objectAtIndex: 0]; 
+  UKIntsEqual([[group items] count], 0);
+#endif
+  [collection removeRecord: group];
 }
 
 @end

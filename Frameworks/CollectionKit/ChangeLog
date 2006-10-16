@@ -2,6 +2,8 @@
 
 	* Remove kCKGroupNameProperty considering it is not necessary
           for CollectionKit.
+	* Fix memory leak.
+	* Fix bug in recursively removal.
 
 2006-10-13 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

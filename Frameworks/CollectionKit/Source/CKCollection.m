@@ -199,7 +199,8 @@
   NSString *guid;
   NSString *muid;
   NSMutableArray *memberIds;
-  int i; BOOL doneAnything;
+  int i; 
+  BOOL doneAnything;
 
   guid = [group uniqueID];
   if(!guid || [group collection] != self)
@@ -219,9 +220,7 @@
   
   for(i=0; i<[memberIds count]; i++)
     {
-      NSString *ruid;
-
-      ruid = [memberIds objectAtIndex: i];
+      NSString *ruid = [memberIds objectAtIndex: i];
       if([ruid isEqualToString: muid])
 	{
 	  [memberIds removeObjectAtIndex: i--];
@@ -235,12 +234,12 @@
 
   if(recursive)
     {
-      NSEnumerator *e;
-      CKGroup *subgroup;
+      NSEnumerator *e = nil;
+      CKGroup *subgroup = nil;
 
       e = [[group subgroups] objectEnumerator];
       while((subgroup = [e nextObject]))
-	[self removeRecord: record forGroup: group recursive: YES];
+	[self removeRecord: record forGroup: subgroup recursive: YES];
     }
       
   return YES;
@@ -463,12 +462,13 @@
 
 - (BOOL) removeRecord: (CKRecord*) record
 {
-  NSString *uid;
-  NSEnumerator *e; 
-  CKGroup *g;
+  RETAIN(record); // Must retain. Otherwise, memory leak.
 
-  uid = [record uniqueID];
-  if(!uid)
+  NSString *uid = [record uniqueID];
+  NSEnumerator *e = nil; 
+  CKGroup *g = nil;
+
+  if(uid == nil)
     {
       NSLog(@"Record does not contain an UID\n");
       return NO;
@@ -489,6 +489,7 @@
       g = (CKGroup*)record;
       while([[g subgroups] count])
 	[g removeSubgroup: [[g subgroups] objectAtIndex: 0]];
+      [_groups removeObjectForKey: uid];
     }
   else 
     {
@@ -498,8 +499,9 @@
     }
 
   e = [[self groups] objectEnumerator];
-  while((g = [e nextObject]))
+  while((g = [e nextObject])) {
     [self removeRecord: record forGroup: g recursive: YES];
+  }
 
   [[NSNotificationCenter defaultCenter]
     postNotificationName: CKCollectionChangedNotification
@@ -509,6 +511,7 @@
 			    self, CKCollectionNotificationKey,
 			    nil]];
   hasUnsavedChanges = YES;
+  RELEASE(record);
   return YES;
 }
 
