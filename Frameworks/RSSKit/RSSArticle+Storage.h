@@ -18,8 +18,40 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <RSSKit/RSSFeed.h>
-#import <RSSKit/RSSFeed+Fetching.h>
-#import <RSSKit/RSSArticle.h>
-#import <RSSKit/RSSArticle+Storage.h>
+#import "RSSArticle.h"
+
+@interface RSSArticle (Storage)
+
+
+/**
+ * Initialises the article with the URL anURL from the storage.
+ */
+-(id)initFromStorageWithURL: (NSString*) anURL;
+
+/**
+ * Initialises the article instance with the contents of the aDictionary variable.
+ */
+-(id)initWithDictionary: (NSDictionary*) aDictionary;
+
+/**
+ * Stores the article (usually as a file in the Reader folder).
+ */
+-(BOOL) store;
+
+/**
+ * Returns the file path where an article with the anURL URL would be stored to.
+ */
++(NSString*) storagePathForURL: (NSString*) anURL;
+
+/**
+ * Returns the file path where the article would be (is) stored to.
+ */
+-(NSString*) storagePath;
+
+/**
+ * Returns the dictionary that stores the information for this article object.
+ */
+-(NSDictionary*) plistDictionary;
+
+@end
 

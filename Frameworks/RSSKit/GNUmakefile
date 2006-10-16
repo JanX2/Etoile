@@ -40,6 +40,7 @@ libRSSKit_LIBRARIES_DEPEND_UPON += $(FND_LIBS)
 # The Objective-C source files to be compiled
 libRSSKit_OBJC_FILES = \
 RSSArticle.m \
+RSSArticle+Storage.m \
 RSSFeed.m \
 RSSFeed+Fetching.m \
 DublinCore.m \
@@ -55,6 +56,7 @@ RSSArticleCreationListener.m \
 
 libRSSKit_HEADER_FILES = \
 RSSArticle.h \
+RSSArticle+Storage.h \
 RSSFeed.h \
 RSSFeed+Fetching.h \
 DublinCore.h \

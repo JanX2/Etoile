@@ -1,6 +1,13 @@
-Sep-26-2006  Quentin Mathe <qmathe@club-internet.fr>
 
+
+Oct-9-2006  Guenther Noack
+	Added code to store articles as property lists
+
+Sep-26-2006  Quentin Mathe <qmathe@club-internet.fr>
 	* GNUmakefile: Modified to include 'etoile.make'.
+
+Sep-25-2006  Guenther Noack
+	Relicensed to LGPL
 
 Jul-7-2006 to Jul-11-2006  Guenther Noack
 	Fixed compile error submitted by YunSong Hwang (Thank you!)

@@ -7,7 +7,7 @@ RSSKit is a simple library for reading the different types of
 RSS file formats. It is mainly used by RSSReader.app and will
 hopefully soon be used by PlopFolio by Ludovic Marcotte.
 
-This framework is released under GPL license (see COPYING document).
+This framework is released under LGPL license (see COPYING document).
 
 Author: Guenther Noack
 
