@@ -4,10 +4,9 @@
 	Actions = (
 	    "addBookmark:",
 	    "addGroup:",
-	    "removeGroup:",
 	    "openBookmark:",
-	    "removeBookmark:",
-	    "saveBookmark:"
+	    "saveBookmark:",
+	    "deleteItem:"
 	);
 	Outlets = (
 	    bookmarkManagerView,
@@ -26,9 +25,8 @@
 	Actions = (
 	    "addBookmark:",
 	    "addGroup:",
-	    "removeGroup:",
+	    "deleteItem:",
 	    "openBookmark:",
-	    "removeBookmark:",
 	    "saveBookmark:"
 	);
 	Super = NSObject;

@@ -56,6 +56,7 @@
 
   rect.size = [outlineScrollView contentSize];
   outlineView = [[BKOutlineView alloc] initWithFrame: rect];
+  [outlineView setIndentationPerLevel: 10];
   [outlineView setDataSource: self];
   [outlineView setDelegate: self];
   [outlineView addTableColumn: ovc];

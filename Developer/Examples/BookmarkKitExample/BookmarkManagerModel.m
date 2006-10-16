@@ -52,7 +52,7 @@
   BKOutlineView *ov = [bookmarkView outlineView];
   int selectedRow = [ov selectedRow];
   BKGroup *parent = nil;
-  if (selectedRow != NSNotFound) {
+  if (selectedRow > -1) {
     id item = [ov itemAtRow: selectedRow];
     if ([item isKindOfClass: [BKGroup class]]) {
       parent = (BKGroup *)item;
@@ -79,7 +79,7 @@
     [bookmarkStore removeBookmark: bk];
   }
   if ([bookmarkStore removeRecord: g] == NO) {
-    NSLog(@"remove %@(%@)", g, [g valueForProperty: kBKGroupNameProperty]);
+    NSLog(@"Fail to remove %@(%@)", g, [g valueForProperty: kBKGroupNameProperty]);
   }
 }
 /* End of Private */
