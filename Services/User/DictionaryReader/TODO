@@ -6,5 +6,5 @@
 
 * Test if dictionaries disappeared on refresh and startup!
 
-* Check where the delay on using compressed dictionaries comes from.
- 
+* Make a non-etoile compilation possible
+
