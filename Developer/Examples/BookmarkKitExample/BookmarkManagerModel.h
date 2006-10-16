@@ -2,16 +2,14 @@
 
 @class BKBookmarkStore;
 @class BKTableView;
-@class BKOutlineView;
+@class BKBookmarkView;
 
 @interface BookmarkManagerModel: NSObject
 {
   BKBookmarkStore *bookmarkStore;
-  NSMutableArray *topLevelGroups; 
-  int selectedGroup;
 
   BKTableView *tableView;
-  BKOutlineView *outlineView;
+  BKBookmarkView *bookmarkView;
 }
 
 /* Model */
@@ -20,7 +18,7 @@
 
 /* Controller */
 - (void) setTableView: (BKTableView *) tableView; // not retained
-- (void) setOutlineView : (BKOutlineView *) outlineView; // not retained
+- (void) setBookmarkView: (BKBookmarkView *) bookmarkView; // not retained
 
 - (void) addGroup: (id) sender;
 - (void) removeGroup: (id) sender;

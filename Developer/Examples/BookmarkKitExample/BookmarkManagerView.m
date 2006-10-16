@@ -8,6 +8,7 @@
 - (void) reloadData
 {
   [tableView reloadData];
+  [[bookmarkView outlineView] reloadData];
 }
 
 - (BookmarkManagerModel *) model
@@ -22,12 +23,12 @@
 
   model = [[BookmarkManagerModel alloc] init];
 
-  leftSplitView = [[NSSplitView alloc] initWithFrame: [self bounds]];
-  [leftSplitView setVertical: YES];
-  [leftSplitView setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
+  splitView = [[NSSplitView alloc] initWithFrame: [self bounds]];
+  [splitView setVertical: YES];
+  [splitView setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
 
-  NSTableColumn *tvc = [(NSTableColumn *)[NSTableColumn alloc] initWithIdentifier: kCKGroupNameProperty];
-  [[tvc headerCell] setStringValue: _(kCKGroupNameProperty)];
+  NSTableColumn *tvc = [(NSTableColumn *)[NSTableColumn alloc] initWithIdentifier: kBKGroupNameProperty];
+  [[tvc headerCell] setStringValue: _(kBKGroupNameProperty)];
   [tvc setWidth: 300];
   [tvc setMinWidth: 100];
 
@@ -44,101 +45,35 @@
   [tableView addTableColumn: tvc];
   [tableView setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
   [tableScrollView setDocumentView: tableView];
-  [leftSplitView addSubview: tableScrollView];
-
-  NSTableColumn *ovc = [(NSTableColumn *)[NSTableColumn alloc] initWithIdentifier: kCKUIDProperty];
-  [[ovc headerCell] setStringValue: _(kCKUIDProperty)];
-  [ovc setWidth: 200];
-  [ovc setMinWidth: 100];
+  [splitView addSubview: tableScrollView];
 
   rect = NSMakeRect(0, 0, frame.size.width-150, frame.size.height);
-  outlineScrollView = [[NSScrollView alloc] initWithFrame: rect];
-  [outlineScrollView setBorderType: NSBezelBorder];
-  [outlineScrollView setHasVerticalScroller: YES];
-  [outlineScrollView setHasHorizontalScroller: YES];
-  [outlineScrollView setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
-
-  rect.size = [outlineScrollView contentSize];
-  outlineView = [[BKOutlineView alloc] initWithFrame: rect];
-  [outlineView setDataSource: model];
-  [outlineView setDelegate: model];
-  [outlineView addTableColumn: ovc];
-  [outlineView setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
-  [outlineScrollView setDocumentView: outlineView];
-  [leftSplitView addSubview: outlineScrollView];
+  bookmarkView = [[BKBookmarkView alloc] initWithFrame: rect];
+  [splitView addSubview: bookmarkView];
 
   [tvc sizeToFit];
-  [ovc sizeToFit];
   [tvc setResizable: YES];
-  [ovc setResizable: YES];
   [tableView setAutoresizesAllColumnsToFit: YES];
-  [outlineView setAutoresizesAllColumnsToFit: YES];
   [tableView sizeLastColumnToFit];
-  [outlineView sizeLastColumnToFit];
 
   RELEASE(tableScrollView);
   RELEASE(tableView);
   RELEASE(tvc);
-  RELEASE(outlineScrollView);
-  RELEASE(outlineView);
-  RELEASE(ovc);
+  RELEASE(bookmarkView);
 
-  [self addSubview: leftSplitView];
-  RELEASE(leftSplitView);
+  [self addSubview: splitView];
+  RELEASE(splitView);
 
   [self setEditable: YES];
   [model setTableView: tableView];
-  [model setOutlineView: outlineView];
+  [model setBookmarkView: bookmarkView];
   return self;
 }
 
 - (void) dealloc
 {
   DESTROY(model);
-  DESTROY(displayProperties);
   [super dealloc];
-}
-
-- (void) setDisplayProperties: (NSArray *) keys
-{
-  // array of property keys
-  ASSIGNCOPY(displayProperties, keys);
-  /* remove extra */
-  while ([[outlineView tableColumns] count] > [displayProperties count]) {
-      [outlineView removeTableColumn: [[outlineView tableColumns] lastObject]];
-  }
-  /* reset identifier and add extra */
-  int i;
-  NSTableColumn *tc;
-  NSString *key;
-  for (i = 0; i < [displayProperties count]; i++) {
-    NSArray *tcs = [outlineView tableColumns];
-    key = [displayProperties objectAtIndex: i];
-    if (i < [tcs count]) {
-      tc = [tcs objectAtIndex: i];
-      [tc setIdentifier: key];
-      [[tc headerCell] setStringValue: _(key)];
-    } else {
-      /* Create new one */
-      tc = [(NSTableColumn *)[NSTableColumn alloc] initWithIdentifier: key];
-      [[tc headerCell] setStringValue: _(key)];
-      [tc setWidth: 200];
-      [tc setMinWidth: 100];
-      [tc setResizable: YES];
-      [outlineView addTableColumn: tc];
-      RELEASE(tc);
-    }
-    if (i == 0) {
-      [outlineView setOutlineTableColumn: tc];
-    }
-  }
-  [outlineView sizeToFit];
-  [outlineView sizeLastColumnToFit];
-}
-
-- (NSArray *) diplayProperties
-{
-  return displayProperties;
 }
 
 - (void) setEditable: (BOOL) editable
@@ -151,7 +86,7 @@
     [(NSTableColumn *)[array objectAtIndex: i] setEditable: isEditable];
   }
 
-  array = [outlineView tableColumns];
+  array = [[bookmarkView outlineView] tableColumns];
   count = [array count];
   for (i = 0; i < count; i++) {
     [(NSTableColumn *)[array objectAtIndex: i] setEditable: isEditable];
@@ -173,34 +108,19 @@
   ASSIGN(tableView, view);
 }
 
-- (BKOutlineView *) outlineView
+- (BKBookmarkView *) bookmarkView
 {
-  return outlineView;
+  return bookmarkView;
 }
 
-- (void) setOutlineView: (BKOutlineView *) view
+- (void) setBookmarkView: (BKBookmarkView *) view
 {
-  ASSIGN(outlineView, view);
+  ASSIGN(bookmarkView, view);
 }
 
-- (NSView *) contentView
+- (NSSplitView *) splitView
 {
-  return contentView;
-}
-
-- (void) setContentView: (NSView *) view
-{
-  ASSIGN(contentView, view);
-}
-
-- (NSSplitView *) leftSplitView
-{
-  return leftSplitView;
-}
-
-- (NSSplitView *) rightSplitView
-{
-  return rightSplitView;
+  return splitView;
 }
 
 @end

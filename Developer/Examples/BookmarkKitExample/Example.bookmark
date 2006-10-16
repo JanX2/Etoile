@@ -3,7 +3,7 @@
     CKGroupsKey = {
 	182542716.068928.0663223170 = {
 	    kCKCreationDateProperty = <*D2006-10-14 18:18:36 +0000>;
-	    kCKGroupNameProperty = GNUstep;
+	    kBKGroupNameProperty = GNUstep;
 	    kCKItemsProperty = (
 		182542716.067722.2117857468,
 		182542716.068256.0731849667

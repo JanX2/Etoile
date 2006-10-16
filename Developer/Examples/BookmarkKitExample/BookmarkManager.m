@@ -50,7 +50,6 @@
 
 - (void) awakeFromNib
 {
-  [bookmarkManagerView setDisplayProperties: [NSArray arrayWithObjects: kBKBookmarkTitleProperty, kBKBookmarkURLProperty, nil]];
   [bookmarkManagerView reloadData];
   ASSIGN(model, [bookmarkManagerView model]);
 }

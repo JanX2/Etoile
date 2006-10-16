@@ -6,63 +6,63 @@
 	<string>CKCollectionFormat_0_1</string>
 	<key>CKGroupsKey</key>
 	<dict>
-		<key>182578488.377108.0770001190</key>
+		<key>182652871.921077.0879893915</key>
 		<dict>
-			<key>kCKCreationDateProperty</key>
-			<date>2006-10-15T04:14:48Z</date>
-			<key>kCKGroupNameProperty</key>
+			<key>kBKGroupNameProperty</key>
 			<string>GNUstep</string>
+			<key>kCKCreationDateProperty</key>
+			<date>2006-10-16T00:54:31Z</date>
 			<key>kCKItemsProperty</key>
 			<array>
-				<string>182578488.376177.2129447301</string>
-				<string>182578488.376668.2064005015</string>
+				<string>182652871.920126.0663417679</string>
+				<string>182652871.920615.0023519820</string>
 			</array>
 			<key>kCKModificationDateProperty</key>
-			<date>2006-10-15T04:14:48Z</date>
+			<date>2006-10-16T00:54:31Z</date>
 			<key>kCKUIDProperty</key>
-			<string>182578488.377108.0770001190</string>
+			<string>182652871.921077.0879893915</string>
 		</dict>
 	</dict>
 	<key>CKItemsKey</key>
 	<dict>
-		<key>182578488.376177.2129447301</key>
+		<key>182652871.920126.0663417679</key>
 		<dict>
 			<key>kBKBookmarkTitleProperty</key>
 			<string>GNUstep</string>
 			<key>kBKBookmarkURLProperty</key>
 			<string>http://www.gnustep.org</string>
 			<key>kCKCreationDateProperty</key>
-			<date>2006-10-15T04:14:48Z</date>
+			<date>2006-10-16T00:54:31Z</date>
 			<key>kCKModificationDateProperty</key>
-			<date>2006-10-15T04:14:48Z</date>
+			<date>2006-10-16T00:54:31Z</date>
 			<key>kCKUIDProperty</key>
-			<string>182578488.376177.2129447301</string>
+			<string>182652871.920126.0663417679</string>
 		</dict>
-		<key>182578488.376668.2064005015</key>
+		<key>182652871.920615.0023519820</key>
 		<dict>
 			<key>kBKBookmarkTitleProperty</key>
 			<string>Etoile</string>
 			<key>kBKBookmarkURLProperty</key>
 			<string>http://www.etoile-project.org</string>
 			<key>kCKCreationDateProperty</key>
-			<date>2006-10-15T04:14:48Z</date>
+			<date>2006-10-16T00:54:31Z</date>
 			<key>kCKModificationDateProperty</key>
-			<date>2006-10-15T04:14:48Z</date>
+			<date>2006-10-16T00:54:31Z</date>
 			<key>kCKUIDProperty</key>
-			<string>182578488.376668.2064005015</string>
+			<string>182652871.920615.0023519820</string>
 		</dict>
-		<key>182578488.376892.0497595509</key>
+		<key>182652871.920852.1997946026</key>
 		<dict>
 			<key>kBKBookmarkTitleProperty</key>
 			<string>Google</string>
 			<key>kBKBookmarkURLProperty</key>
 			<string>http://www.google.org</string>
 			<key>kCKCreationDateProperty</key>
-			<date>2006-10-15T04:14:48Z</date>
+			<date>2006-10-16T00:54:31Z</date>
 			<key>kCKModificationDateProperty</key>
-			<date>2006-10-15T04:14:48Z</date>
+			<date>2006-10-16T00:54:31Z</date>
 			<key>kCKUIDProperty</key>
-			<string>182578488.376892.0497595509</string>
+			<string>182652871.920852.1997946026</string>
 		</dict>
 	</dict>
 </dict>
