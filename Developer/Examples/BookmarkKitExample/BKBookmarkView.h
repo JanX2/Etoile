@@ -13,9 +13,6 @@
   BKBookmarkStore *store;
   BKGroup *rootGroup;
   NSArray *displayProperties;
-
-  NSMutableArray *topLevelGroups;
-  NSMutableArray *topLevelItems;
 }
 
 - (void) setBookmarkStore: (BKBookmarkStore *) store;

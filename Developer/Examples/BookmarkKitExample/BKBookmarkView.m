@@ -3,34 +3,10 @@
 #import <CollectionKit/CollectionKit.h>
 #import "GNUstep.h"
 
+NSString *const BKBookmarkUIDDataType = @"BKBookmarkUIDDataType";
+
 @implementation BKBookmarkView
 /** Private **/
-- (void) cacheBookmarkStore
-{
-  /* cache top level groups */
-  [topLevelGroups removeAllObjects];
-  NSArray *records = [store groups];
-  int i, count = [records count];
-  BKGroup *group;
-  for (i = 0; i < count; i++) {
-    group = [records objectAtIndex: i];
-    if ([group isTopLevel] == BKTopLevel) {
-      [topLevelGroups addObject: group];
-    }
-  }
-  /* cache top level items */
-  [topLevelItems removeAllObjects];
-  records = [store items];
-  count = [records count];
-  BKBookmark *bk;
-  for (i = 0; i < count; i++) {
-    bk = [records objectAtIndex: i];
-    if ([bk isTopLevel] == BKTopLevel) {
-      [topLevelItems addObject: bk];
-    }
-  }
-}
-
 - (void) handleCollectionChanged: (NSNotification *) not
 {
   // Do nothing
@@ -74,14 +50,14 @@
   RELEASE(outlineView);
   RELEASE(ovc);
 
-  topLevelGroups = [[NSMutableArray alloc] init];
-  topLevelItems = [[NSMutableArray alloc] init];
-
-  /* Listen to record change */
+  /* Listen to collection change */
   [[NSNotificationCenter defaultCenter] addObserver: self
                           selector: @selector(handleCollectionChanged:)
                           name: CKCollectionChangedNotification
                           object: nil];
+  /* Register drag and drop */
+  [outlineView registerForDraggedTypes:
+               [NSArray arrayWithObject: BKBookmarkUIDDataType]];
 
   return self;
 }
@@ -90,8 +66,6 @@
 {
   DESTROY(store);
   DESTROY(rootGroup);
-  DESTROY(topLevelGroups);
-  DESTROY(topLevelItems);
   [super dealloc];
 }
 
@@ -112,7 +86,7 @@
   if (item == nil) {
     if (rootGroup == nil) {
       /* Top level */
-      return [topLevelGroups count]+[topLevelItems count];
+      return [[store topLevelRecords] count];
     } else {
       group = rootGroup;
     }
@@ -153,11 +127,7 @@
   if (item == nil) {
     if (rootGroup == nil) {
       /* Top level */
-      gcount = [topLevelGroups count];
-      if (index < gcount)
-        return [topLevelGroups objectAtIndex: index];
-      else 
-        return  [topLevelItems objectAtIndex: index - gcount];
+      return [[store topLevelRecords] objectAtIndex: index];
     } else {
       group = rootGroup;
     }
@@ -217,6 +187,126 @@
   }
 }
 
+/* Drag and drop */
+
+- (BOOL) outlineView: (NSOutlineView *) ov
+         writeItems: (NSArray *) items
+         toPasteboard: (NSPasteboard *) pboard
+{
+  NSMutableArray *array = AUTORELEASE([[NSMutableArray alloc] init]);
+  NSEnumerator *e = [items objectEnumerator];
+  CKRecord *r;
+  while ((r = [e nextObject])) {
+    [array addObject: [r uniqueID]];
+    [pboard declareTypes: [NSArray arrayWithObject: BKBookmarkUIDDataType] owner: self];
+    [pboard setPropertyList: array forType: BKBookmarkUIDDataType];
+    return YES;
+  }
+  return NO;
+}
+
+- (NSDragOperation) outlineView: (NSOutlineView *) ov
+                    validateDrop: (id <NSDraggingInfo>) info
+                    proposedItem: (id) item
+                    proposedChildIndex: (int) index
+{
+  if ([info draggingSource] == outlineView) 
+  {
+    /* Drag inside outline view. Reorganization */
+    if (index == -1) {
+      /* On an item */
+      if ([item isKindOfClass: [BKBookmark class]]) {
+        return NSDragOperationNone;
+      }
+    }
+    return NSDragOperationMove;
+  }
+  return NSDragOperationNone;
+}
+
+- (BOOL) outlineView: (NSOutlineView *) ov 
+         acceptDrop: (id <NSDraggingInfo>) info
+         item: (id) item childIndex: (int) index
+{
+  int insertIndex, origIndex;
+  NSEnumerator *e;
+  NSString *uid;
+  CKRecord <BKTopLevel> *r;
+  BKGroup *parent;
+  if ([info draggingSource] == outlineView) {
+    /* Drag inside outline view. */
+    NSPasteboard *pboard = [info draggingPasteboard]; 
+    NSArray *array = [pboard propertyListForType: BKBookmarkUIDDataType];
+    if (item == nil) {
+      /* Top level records */
+      if (index == -1) {
+        /* Open space below all items */
+        insertIndex = [[store topLevelRecords] count];
+      } else {
+        insertIndex = index;
+      }
+      e = [array objectEnumerator];
+      while ((uid = [e nextObject])) {
+        /* For any non-top level record. remove from its group
+         * and it will become a top level.
+         * Then insert it on the right place on top level.
+         * For top level record, remove from top level record and insert at
+         * right place.
+         */
+        r = [store recordForUniqueID: uid];
+        if ([r isTopLevel] == BKNotTopLevel) {
+          parent = [[(BKBookmark *)r parentGroups] objectAtIndex: 0];
+          if ([r isKindOfClass: [BKGroup class]]) {
+            [parent removeSubgroup: (BKGroup *)r];
+          } else if ([r isKindOfClass: [BKBookmark class]]) {
+            [parent removeItem: (BKBookmark *)r];
+          } 
+        }
+        RETAIN(r);
+        origIndex = [[store topLevelRecords] indexOfObject: r];
+        [[store topLevelRecords] removeObjectAtIndex: origIndex];
+        if (origIndex < insertIndex) {
+          insertIndex--;
+        }
+        [[store topLevelRecords] insertObject: r atIndex: insertIndex];
+        insertIndex++;
+        RELEASE(r);
+      }
+    } else {
+      if (index == -1) {
+        /* Add into a group.
+         * Remove everything from its parent, then added into it. */
+         e = [array objectEnumerator];
+         while ((uid = [e nextObject])) {
+           r = [store recordForUniqueID: uid];
+           if ([r isTopLevel] == BKNotTopLevel) {
+             parent = [[(BKBookmark *)r parentGroups] objectAtIndex: 0];
+             if ([r isKindOfClass: [BKGroup class]]) {
+               [parent removeSubgroup: (BKGroup *)r];
+             } else if ([r isKindOfClass: [BKBookmark class]]) {
+               [parent removeItem: (BKBookmark *)r];
+             }
+           }
+         }
+         e = [array objectEnumerator];
+         while ((uid = [e nextObject])) {
+           r = [store recordForUniqueID: uid];
+           if ([r isKindOfClass: [BKGroup class]]) {
+             [(BKGroup *)item addSubgroup: (BKGroup *)r];
+           } else if ([r isKindOfClass: [BKBookmark class]]) {
+             [(BKGroup *)item addItem: (BKBookmark *)r];
+           }
+         }
+      } else {
+      }
+    }
+    [self reloadData];
+    return YES;
+  }
+  return NO;
+}
+
+
 /* Accessories */
 - (void) setDisplayProperties: (NSArray *) keys
 {
@@ -262,14 +352,14 @@
 
 - (void) reloadData
 {
-  [self cacheBookmarkStore];
+//  [self cacheBookmarkStore];
   [outlineView reloadData];
 }
 
 - (void) setBookmarkStore: (BKBookmarkStore *) s
 {
   ASSIGN(store, s);
-  [self cacheBookmarkStore];
+//  [self cacheBookmarkStore];
 }
 
 - (BKBookmarkStore *) bookmarkStore
