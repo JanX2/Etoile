@@ -40,6 +40,7 @@ NSString *const kBKGroupNameProperty = @"kBKGroupNameProperty";
          [NSNumber numberWithInt: CKArrayProperty], kCKItemsProperty,
          [NSNumber numberWithInt: CKDateProperty], kCKCreationDateProperty,
          [NSNumber numberWithInt: CKDateProperty], kCKModificationDateProperty,
+         [NSNumber numberWithInt: CKIntegerProperty], kBKTopLevelOrderProperty,
                 nil];
   [BKGroup addPropertiesAndTypes: _propTypes];
 }
@@ -67,6 +68,18 @@ NSString *const kBKGroupNameProperty = @"kBKGroupNameProperty";
       topLevel = BKTopLevel;
   }
   return topLevel;
+}
+
+- (NSComparisonResult) compareTopLevelOrder: (CKRecord <BKTopLevel> *) another
+{ 
+  int a = [[self valueForProperty: kBKTopLevelOrderProperty] intValue];  
+  int b = [[another valueForProperty: kBKTopLevelOrderProperty] intValue];  
+  if (a < b)
+    return NSOrderedAscending;
+  else if (a > b)
+    return NSOrderedDescending;
+  else 
+    return NSOrderedSame;
 }
 
 @end

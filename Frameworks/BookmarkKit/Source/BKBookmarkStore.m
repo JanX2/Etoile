@@ -43,6 +43,8 @@ NSString *const BKRSSBookmarkStore = @"BKRSSBookmarkStore";
 NSString *const BKBookmarkDirectory = @"Bookmark";
 NSString *const BKBookmarkExtension = @"bookmark";
 
+NSString *const kBKTopLevelOrderProperty = @"kBKTopLevelOrderProperty";
+
 @implementation BKBookmarkStore
 
 + (BKBookmarkStore *) sharedBookmarkStore
@@ -67,7 +69,7 @@ NSString *const BKBookmarkExtension = @"bookmark";
 // support native format or XBEL format
 + (BKBookmarkStore *) sharedBookmarkAtPath: (NSString *)path 
 {
-  return AUTORELEASE([[BKBookmarkStore alloc] initWithLocation: path itemClass: [BKBookmark class] groupClass: [BKGroup class]]);
+  return AUTORELEASE([[BKBookmarkStore alloc] initWithLocation: path]);
 }
 
 + (BKBookmarkStore *) sharedBookmarkAtURL: (NSURL *)url
@@ -114,12 +116,25 @@ NSString *const BKBookmarkExtension = @"bookmark";
 
 - (void) save
 {
+  /* Go through all top level records and put an order number of it */
+  NSEnumerator *e = [_topLevelRecords objectEnumerator];
+  CKRecord *r;
+  int i = 0;
+  while ((r = [e nextObject])) {
+    [r setValue: [NSString stringWithFormat: @"%d", i++] 
+       forProperty: kBKTopLevelOrderProperty];
+  }
   [super save];
 }
 
 - (BOOL) hasUnsavedChanges
 {
   return [super hasUnsavedChanges];
+}
+
+- (NSMutableArray *) topLevelRecords
+{
+  return _topLevelRecords;
 }
 
 - (NSString *) transformToXBEL // aspect
@@ -133,6 +148,24 @@ NSString *const BKBookmarkExtension = @"bookmark";
 }
 
 /** override super class */
+- (BOOL) addRecord: (CKRecord *) record
+{
+  if ([super addRecord: record]) {
+    [_topLevelRecords addObject: record];
+    return YES;
+  }
+  return NO;
+}
+
+- (BOOL) removeRecord: (CKRecord *) record
+{
+  if ([super removeRecord: record]) {
+    [_topLevelRecords removeObject: record];
+    return YES;
+  }
+  return NO;
+}
+
 - (BOOL) addItem: (CKItem *) it forGroup: (CKGroup*) group
 {
   BKBookmark *item = (BKBookmark *) it;
@@ -143,6 +176,7 @@ NSString *const BKBookmarkExtension = @"bookmark";
 
   if ([super addItem: item forGroup: group] == YES) {
     [item setTopLevel: BKNotTopLevel];
+    [_topLevelRecords removeObject: item];
     return YES;
   } else {
     [item setTopLevel: BKUndecidedTopLevel];
@@ -157,6 +191,7 @@ NSString *const BKBookmarkExtension = @"bookmark";
     /* In BookmarkKit, an item can have only one parent.
      * If it is remove from a group, it should be at top level. */
     [item setTopLevel: BKTopLevel];
+    [_topLevelRecords addObject: item];
     return YES;
   } else {
     [item setTopLevel: BKUndecidedTopLevel];
@@ -174,6 +209,7 @@ NSString *const BKBookmarkExtension = @"bookmark";
 
   if ([super addSubgroup: g1 forGroup: g2] == YES) {
     [g1 setTopLevel: BKNotTopLevel];
+    [_topLevelRecords removeObject: g1];
     return YES;
   } else {
     [g1 setTopLevel: BKUndecidedTopLevel];
@@ -188,6 +224,7 @@ NSString *const BKBookmarkExtension = @"bookmark";
     /* In BookmarkKit, an item can have only one parent.
      * If it is remove from a group, it should be at top level. */
     [g1 setTopLevel: BKTopLevel];
+    [_topLevelRecords addObject: g1];
     return YES;
   } else {
     [g1 setTopLevel: BKUndecidedTopLevel];
@@ -197,7 +234,40 @@ NSString *const BKBookmarkExtension = @"bookmark";
 
 - (id) initWithLocation: (NSString *) location
 {
-  return [self initWithLocation: location itemClass: [BKBookmark class] groupClass: [BKGroup class]];
+  self = [self initWithLocation: location itemClass: [BKBookmark class] groupClass: [BKGroup class]];
+
+  /* Found all top level records */
+  _topLevelRecords = [[NSMutableArray alloc] init];
+
+  NSEnumerator *e = [[self items] objectEnumerator];
+  CKRecord *r;
+  NSNumber *n;
+  while ((r = [e nextObject])) {
+    n = [r valueForProperty: kBKTopLevelOrderProperty];
+    if (n) {
+      [_topLevelRecords addObject: r];
+    }
+  }
+  e = [[self groups] objectEnumerator];
+  while ((r = [e nextObject])) {
+    n = [r valueForProperty: kBKTopLevelOrderProperty];
+    if (n) {
+      [_topLevelRecords addObject: r];
+    }
+  }
+  [_topLevelRecords sortUsingSelector: @selector(compareTopLevelOrder:)];
+  e = [_topLevelRecords objectEnumerator];
+  while ((r = [e nextObject])) {
+    [r removeValueForProperty: kBKTopLevelOrderProperty];
+  }
+  
+  return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(_topLevelRecords);
+  [super dealloc];
 }
 
 @end

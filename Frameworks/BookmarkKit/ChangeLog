@@ -1,3 +1,7 @@
+2006-10-16  Yen-Ju Chen <yjchen at gmail>
+
+    * Support ordered top-level records.
+
 2006-10-15  Yen-Ju Chen <yjchen at gmail>
 
     * Add kBKGroupNameProperty.

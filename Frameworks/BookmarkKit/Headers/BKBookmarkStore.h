@@ -39,6 +39,7 @@ extern NSString *const BKRSSBookmarkStore;
 @interface BKBookmarkStore: CKCollection 
 {
   NSMutableArray *_bookmarksSoupStore;
+  NSMutableArray *_topLevelRecords;
 }
 
 + (BKBookmarkStore *) sharedBookmarkStore;
@@ -65,6 +66,16 @@ extern NSString *const BKRSSBookmarkStore;
 
 - (void) save;
 - (BOOL) hasUnsavedChanges;
+
+/* Internally, records are stored as dictionary.
+ * Therefore, the order of records is not conserved.
+ * When a record is added into a group, it is stored as array.
+ * So the group keep track of the order of its subgroup or items.
+ * But for records without parent group, it is not tracked.
+ * This method provide all the records without parent in order.
+ * It returns mutable array so that the order can be changed.
+ */
+- (NSMutableArray *) topLevelRecords;
 
 - (NSString *) transformToXBEL; // aspect
 - (NSString *) transformToXMLNativeFormat; // aspect

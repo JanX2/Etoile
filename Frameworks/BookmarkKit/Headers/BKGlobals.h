@@ -3,6 +3,7 @@
 extern NSString *const kBKBookmarkURLProperty;
 extern NSString *const kBKBookmarkTitleProperty;
 extern NSString *const kBKGroupNameProperty;
+extern NSString *const kBKTopLevelOrderProperty; /* order of top level record */
 
 /* Top level is used to cache items without parent.
  * It is equivalent to -parentGroups.
@@ -17,5 +18,6 @@ typedef enum _BKTopLevelType
 @protocol BKTopLevel <NSObject>
 - (BKTopLevelType) isTopLevel;
 - (void) setTopLevel: (BKTopLevelType) level;
+- (NSComparisonResult) compareTopLevelOrder: (CKRecord <BKTopLevel> *) another;
 @end
 

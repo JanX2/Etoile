@@ -42,6 +42,7 @@ NSString *const kBKBookmarkTitleProperty = @"kBKBookmarkTitleProperty";
           [NSNumber numberWithInt: CKDateProperty], kCKCreationDateProperty,
           [NSNumber numberWithInt: CKDateProperty], kCKModificationDateProperty,
 	  [NSNumber numberWithInt: CKStringProperty], kBKBookmarkURLProperty,
+	  [NSNumber numberWithInt: CKIntegerProperty], kBKTopLevelOrderProperty,
 			                   nil];
   [BKBookmark addPropertiesAndTypes: _propTypes];
 }
@@ -158,5 +159,17 @@ NSString *const kBKBookmarkTitleProperty = @"kBKBookmarkTitleProperty";
   }
   return topLevel;
 }
+
+- (NSComparisonResult) compareTopLevelOrder: (CKRecord <BKTopLevel> *) another
+{
+  int a = [[self valueForProperty: kBKTopLevelOrderProperty] intValue];
+  int b = [[another valueForProperty: kBKTopLevelOrderProperty] intValue];
+  if (a < b) 
+    return NSOrderedAscending;
+  else if (a > b)
+    return NSOrderedDescending;
+  else 
+    return NSOrderedSame;
+} 
 
 @end
