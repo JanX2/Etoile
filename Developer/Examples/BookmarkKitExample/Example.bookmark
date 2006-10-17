@@ -2,13 +2,14 @@
     CKFormatKey = CKCollectionFormat_0_1;
     CKGroupsKey = {
 	182542716.068928.0663223170 = {
-	    kCKCreationDateProperty = <*D2006-10-14 18:18:36 +0000>;
 	    kBKGroupNameProperty = GNUstep;
+	    kBKTopLevelOrderProperty = 0;
+	    kCKCreationDateProperty = <*D2006-10-14 18:18:36 +0000>;
 	    kCKItemsProperty = (
 		182542716.067722.2117857468,
 		182542716.068256.0731849667
 	    );
-	    kCKModificationDateProperty = <*D2006-10-14 18:18:36 +0000>;
+	    kCKModificationDateProperty = <*D2006-10-17 05:04:09 +0000>;
 	    kCKUIDProperty = 182542716.068928.0663223170;
 	};
     };
@@ -30,8 +31,9 @@
 	182542716.068586.2076700251 = {
 	    kBKBookmarkTitleProperty = Google;
 	    kBKBookmarkURLProperty = "http://www.google.org";
+	    kBKTopLevelOrderProperty = 1;
 	    kCKCreationDateProperty = <*D2006-10-14 18:18:36 +0000>;
-	    kCKModificationDateProperty = <*D2006-10-14 18:18:36 +0000>;
+	    kCKModificationDateProperty = <*D2006-10-17 05:04:09 +0000>;
 	    kCKUIDProperty = 182542716.068586.2076700251;
 	};
     };
