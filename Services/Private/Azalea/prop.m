@@ -288,7 +288,7 @@ BOOL prop_get_string_locale(Window win, Atom prop, NSString **ret)
 BOOL prop_get_strings_locale(Window win, Atom prop, NSArray **ret)
 {
     char *raw, *p;
-    unsigned int num, i, count = 0;
+    unsigned int num, count = 0;
     NSMutableArray *ma = AUTORELEASE([[NSMutableArray alloc] init]);
 
     if (get_all(win, prop, prop_atoms.string, 8, (unsigned char**)&raw, &num)) {
@@ -327,7 +327,7 @@ BOOL prop_get_string_utf8(Window win, Atom prop, NSString **ret)
 BOOL prop_get_strings_utf8(Window win, Atom prop, NSArray **ret)
 {
     char *raw, *p;
-    unsigned int num, i, count = 0;
+    unsigned int num, count = 0;
     NSMutableArray *ma = AUTORELEASE([[NSMutableArray alloc] init]);
     NSString *s;
 

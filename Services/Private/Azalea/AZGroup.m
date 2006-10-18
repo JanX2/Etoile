@@ -140,5 +140,6 @@ static AZGroupManager *sharedInstance;
 - (id) copyWithZone: (NSZone *) zone
 {
   RETAIN(self);
+  return self;
 }
 @end

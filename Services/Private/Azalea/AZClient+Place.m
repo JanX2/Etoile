@@ -194,7 +194,7 @@ NSArray* area_remove(NSArray *list, Rect *a)
 {
     NSMutableArray *result = AUTORELEASE([[NSMutableArray alloc] init]);
     int i, count = [list count];
-    AZFakeRect* fr = nil;
+//    AZFakeRect* fr = nil;
 
     for (i = 0; i < count; i++) {
         Rect *r = [[list objectAtIndex: i] r];

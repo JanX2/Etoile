@@ -592,7 +592,7 @@ static AZDock *sharedInstance;
 
 /* AZWindow protocol */
 - (Window_InternalType) windowType { return Window_Dock; }
-- (int) windowLayer { config_dock_layer; }
+- (int) windowLayer { return config_dock_layer; }
 - (Window) windowTop { return x_frame; }
 
 @end

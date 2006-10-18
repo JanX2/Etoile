@@ -6,6 +6,18 @@
 
 @implementation AZClient (GNUstep)
 
+- (BOOL) isGNUstepMenuWindowLevel
+{
+  if (gnustep_attr.flags & GSWindowLevelAttr) {
+    if ((gnustep_attr.window_level == NSMainMenuWindowLevel) || 
+        (gnustep_attr.window_level == NSPopUpMenuWindowLevel)) 
+    {
+      return YES;
+    }
+  }
+  return NO;
+}
+
 - (BOOL) isGNUstep
 {
   if ([class isEqualToString: @"GNUstep"] == YES)

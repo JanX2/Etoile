@@ -45,7 +45,7 @@ struct _ObMenuParseState
 static AZParser *menu_parse_inst = nil;
 static ObMenuParseState menu_parse_state;
 
-static void menu_destroy_hash_value(AZMenu *self);
+//static void menu_destroy_hash_value(AZMenu *self);
 static void parse_menu_item(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                             void * data);
 static void parse_menu_separator(AZParser *parser,
@@ -171,6 +171,7 @@ static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 	[state->parent addSubmenuMenuEntry: -1 submenu: name];
 }
 
+#if 0
 static void menu_destroy_hash_value(AZMenu *self)
 {
     /* make sure its not visible */
@@ -188,6 +189,7 @@ static void menu_destroy_hash_value(AZMenu *self)
 
     DESTROY(self);
 }
+#endif
 
 static AZMenuManager *sharedInstance;
 

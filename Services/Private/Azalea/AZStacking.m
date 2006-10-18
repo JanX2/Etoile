@@ -144,7 +144,7 @@ static AZStacking *sharedInstance;
 /* Accessories */
 - (int) count
 {
-  [stacking_list count];
+  return [stacking_list count];
 }
 
 - (id <AZWindow>) windowAtIndex: (int) index

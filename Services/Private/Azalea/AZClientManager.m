@@ -307,7 +307,7 @@ static AZClientManager *sharedInstance;
 
 - (void) unmanageClient: (AZClient *) client
 {
-    unsigned int j;
+//    unsigned int j;
 
     AZDebug("Unmanaging window: %lx (%s)\n", [client window], [client class]);
 

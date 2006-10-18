@@ -370,6 +370,14 @@
         if (!strut.top && *y + [frame area].height - 1 < a->y)
             *y = a->y;
     }
+    /* Azalea: for GNUstep menu, it will reposition itself to be inside the
+       screen. If we force it here, it will not display properly. 
+       So we avoid reposition GNUstep menu here. Although it may not be
+       the best solution and may have some side effect.
+       FIXME: this is a temporary fix, though. */
+    if ([self isGNUstepMenuWindowLevel]) {
+      rude = NO;
+    }
 
     /* This here doesn't let windows even a pixel outside the screen,
      * when called from client_manage, programs placing themselves are
@@ -1551,7 +1559,7 @@ no_number:
     if (mwmhints.flags & OB_MWM_FLAG_DECORATIONS) {
         if (! (mwmhints.decorations & OB_MWM_DECOR_ALL)) {
             if (! ((mwmhints.decorations & OB_MWM_DECOR_HANDLE) ||
-                   (mwmhints.decorations & OB_MWM_DECOR_TITLE)))
+                   (mwmhints.decorations & OB_MWM_DECOR_TITLE))) {
                 /* if the mwm hints request no handle or title, then all
                    decorations are disabled, but keep the border if that's
 		   specified */
@@ -1560,6 +1568,7 @@ no_number:
 		} else {
 		  decorations = 0;
 		}
+	    }
         }
     }
 

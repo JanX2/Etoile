@@ -290,7 +290,7 @@ static AZScreen *sharedInstance;
 
 - (void) setNumberOfDesktops: (unsigned int) num
 {
-    unsigned int i, old;
+    unsigned int old;
     unsigned long *viewport;
 
     NSAssert(num > 0, @"number of desktops is less than 0");

@@ -225,7 +225,7 @@
 
 /* AZWindow protocol */
 - (Window_InternalType) windowType { return Window_Internal; }
-- (int) windowLayer { OB_STACKING_LAYER_INTERNAL; }
+- (int) windowLayer { return OB_STACKING_LAYER_INTERNAL; }
 - (Window) windowTop { return bg; }
 
 @end
