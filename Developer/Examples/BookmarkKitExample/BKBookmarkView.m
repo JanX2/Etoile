@@ -134,6 +134,11 @@ NSString *const BKBookmarkUIDDataType = @"BKBookmarkUIDDataType";
   } else {
     group = (BKGroup *)item;
   }
+#if 1
+  NSArray *a = [group valueForProperty: kCKItemsProperty];
+  CKRecord *r = [store recordForUniqueID: [a objectAtIndex: index]];
+  return r;
+#else
   gcount = [[group subgroups] count];
   if (index < gcount) {
     /* Group first */
@@ -141,6 +146,7 @@ NSString *const BKBookmarkUIDDataType = @"BKBookmarkUIDDataType";
   } else {
     return [[group items] objectAtIndex: index - gcount];
   }
+#endif
 }
 
 - (id) outlineView: (NSOutlineView *) ov
@@ -272,9 +278,15 @@ NSString *const BKBookmarkUIDDataType = @"BKBookmarkUIDDataType";
         insertIndex++;
         RELEASE(r);
       }
-    } else {
+    } else if ([item isKindOfClass: [BKBookmark class]]) { 
+      /* Add into bookmark.
+       * This shouldn't happen because it is not validated.
+       * See -outlineView:validateDrop:proposedItem:proposedChildIndex:
+       */
+      return NO;
+    } else if ([item isKindOfClass: [BKGroup class]]) {
       if (index == -1) {
-        /* Add into a group.
+        /* Add into a group with group collapsed..
          * Remove everything from its parent, then added into it. */
          e = [array objectEnumerator];
          while ((uid = [e nextObject])) {
@@ -298,7 +310,41 @@ NSString *const BKBookmarkUIDDataType = @"BKBookmarkUIDDataType";
            }
          }
       } else {
+        /* Add into a group with group collapsed..
+         * Remove everything from its parent, then added into it.
+         * Because records can be within the target group,
+         * the insertIndex has to be offsets to count for the remove of 
+         * records. */
+        insertIndex = index;
+        NSMutableArray *ma = [NSMutableArray arrayWithArray: [(BKGroup *)item valueForProperty: kCKItemsProperty]];
+        e = [array objectEnumerator];
+        while ((uid = [e nextObject])) {
+          r = [store recordForUniqueID: uid];
+          if ([r isTopLevel] == BKNotTopLevel) {
+            parent = [[(BKBookmark *)r parentGroups] objectAtIndex: 0];
+            if (parent == item) {
+              origIndex = [ma indexOfObject: uid];
+              if (origIndex < insertIndex) {
+                insertIndex--;
+              }
+              [ma removeObject: uid];
+            } else {
+              if ([r isKindOfClass: [BKGroup class]]) {
+                [parent removeSubgroup: (BKGroup *)r];
+              } else if ([r isKindOfClass: [BKBookmark class]]) {
+                [parent removeItem: (BKBookmark *)r];
+              }
+            } 
+          } 
+          [[store topLevelRecords] removeObject: r];
+          [r setTopLevel: BKNotTopLevel];
+          [ma insertObject: uid atIndex: insertIndex];;
+          insertIndex++;
+        }
+        [item setValue: ma forProperty: kCKItemsProperty];
       }
+    } else {
+      return NO;
     }
     [self reloadData];
     return YES;
