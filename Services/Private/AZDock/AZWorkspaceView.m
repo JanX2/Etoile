@@ -2,7 +2,7 @@
 #import <XWindowServerKit/XScreen.h>
 
 @interface AZWorkspaceView (AZPrivate)
-- (void) updateContextualMenu;
+- (void) updateWorkspaceMenu;
 @end
 
 @implementation AZWorkspaceView
@@ -10,22 +10,22 @@
 /** Private **/
 - (void) workspaceAction: (id) sender
 {
-  int index = [contextualMenu indexOfItem: sender];
+  int index = [workspaceMenu indexOfItem: sender];
   [[[self window] screen] setCurrentWorkspace: index];
   /* Update state */
-  int i, menu_count = [contextualMenu numberOfItems];
+  int i;
   for (i = 0; i < number_workspace; i++) {
     if (i == index) {
-      [[contextualMenu itemAtIndex: i] setState: NSOnState];
+      [[workspaceMenu itemAtIndex: i] setState: NSOnState];
     } else {
-      [[contextualMenu itemAtIndex: i] setState: NSOffState];
+      [[workspaceMenu itemAtIndex: i] setState: NSOffState];
     }
   }
 }
 
-- (void) updateContextualMenu
+- (void) updateWorkspaceMenu
 {
-  int i, menu_count = [contextualMenu numberOfItems];
+  int i, menu_count = [workspaceMenu numberOfItems];
   NSString *title;
   for (i = 0; i < number_workspace; i++) {
     if (i < [names count]) {
@@ -35,21 +35,21 @@
     }
 
     if (i < menu_count) {
-      [[contextualMenu itemAtIndex: i] setTitle: title];
+      [[workspaceMenu itemAtIndex: i] setTitle: title];
     } else {
-      [contextualMenu addItemWithTitle: title
+      [workspaceMenu addItemWithTitle: title
 	             action: @selector(workspaceAction:)
 		     keyEquivalent: nil];
     }
-    [[contextualMenu itemAtIndex: i] setTarget: self];
+    [[workspaceMenu itemAtIndex: i] setTarget: self];
     if (i == current_workspace) {
-      [[contextualMenu itemAtIndex: i] setState: NSOnState];
+      [[workspaceMenu itemAtIndex: i] setState: NSOnState];
     } else {
-      [[contextualMenu itemAtIndex: i] setState: NSOffState];
+      [[workspaceMenu itemAtIndex: i] setState: NSOffState];
     }
   }
   for (i = menu_count-1; i >= number_workspace; i--) {
-    [contextualMenu removeItemAtIndex: i];
+    [workspaceMenu removeItemAtIndex: i];
   }
 }
 
@@ -58,19 +58,19 @@
 - (void) setCurrentWorkspace: (int) workspace
 {
   current_workspace = workspace;
-  [self updateContextualMenu];
+  [self updateWorkspaceMenu];
 }
 
 - (void) setNumberOfWorkspaces: (int) number
 {
   number_workspace = number;
-  [self updateContextualMenu];
+  [self updateWorkspaceMenu];
 }
 
 - (void) setWorkspaceNames: (NSArray *) n
 {
   ASSIGN(names, n);
-  [self updateContextualMenu];
+  [self updateWorkspaceMenu];
 }
 
 
@@ -104,6 +104,17 @@
 {
   self = [super initWithFrame: rect];
   ASSIGN(image, [NSImage imageNamed: @"GNUstep.tiff"]);
+  /* Remove all default menu */
+  while (([contextualMenu numberOfItems])) {
+    [contextualMenu removeItemAtIndex: 0];
+  }
+  NSMenuItem *item = [contextualMenu addItemWithTitle: @"Workspace"
+	                                       action: NULL
+		                       keyEquivalent: NULL];
+  workspaceMenu = [[NSMenu alloc] initWithTitle: @"Workspace"];
+  [contextualMenu setSubmenu: workspaceMenu forItem: item];
+  RELEASE(workspaceMenu);
+
   return self;
 }
 

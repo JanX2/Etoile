@@ -58,7 +58,6 @@
 
 - (id) initWithFrame: (NSRect) frame
 {
-  id <NSMenuItem> item;
   self = [super initWithFrame: frame];
   contextualMenu = [[NSMenu alloc] init];
   [contextualMenu addItemWithTitle: _(@"Keep in dock")

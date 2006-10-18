@@ -42,6 +42,8 @@
         XSetInputFocus(dpy, w, RevertToNone, CurrentTime);
       }
       break;
+    default:
+      break;
   }
 }
 
@@ -69,6 +71,8 @@
 	  XWindowCloseWindow([[xwindows objectAtIndex: i] unsignedLongValue], NO);
 	}
       }
+    default:
+      break;
   }
 }
 

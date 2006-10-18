@@ -140,7 +140,7 @@ static AZDock *sharedInstance;
   NSMutableArray *ma = [[NSMutableArray alloc] init];
   int i;
   for (i = 0; i < [array count]; i++) {
-    [ma addObject: [[array objectAtIndex: i] objectForKey: @"NSApplicationName"]];
+    [ma addObject: [(NSDictionary *)[array objectAtIndex: i] objectForKey: @"NSApplicationName"]];
   }
 
   AZDockApp *app;
@@ -331,8 +331,8 @@ static AZDock *sharedInstance;
               forMode:(NSString *)mode
 {
   XEvent event;
-  NSString *wm_class, *wm_instance;
-  BOOL result;
+//  NSString *wm_class, *wm_instance;
+//  BOOL result;
 
   while (XPending(dpy)) 
   {

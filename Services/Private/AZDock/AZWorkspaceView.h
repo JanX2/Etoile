@@ -7,6 +7,8 @@
   /* Cache */
   NSArray *names;
   int number_workspace, current_workspace;
+
+  NSMenu *workspaceMenu;
 }
 
 - (void) setCurrentWorkspace: (int) workspace;
