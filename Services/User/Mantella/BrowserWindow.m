@@ -2,9 +2,33 @@
 #import <gdk/gdkx.h>
 #import <XWindowServerKit/XWindow.h>
 
+/* GTK callback */
+static gboolean mozembed_title_callback(GtkMozEmbed *embed, gpointer data)
+{
+  [(BrowserWindow *)data titleCallback];
+  return TRUE;
+}
+
+static gboolean mozembed_location_callback(GtkMozEmbed *embed, gpointer data)
+{
+  [(BrowserWindow *)data locationCallback];
+  return TRUE;
+}
+
+static gboolean mozembed_js_status_callback(GtkMozEmbed *embed, gpointer data)
+{
+  [(BrowserWindow *)data JavaScriptStatusCallback];
+  return TRUE;
+}
+
+static gboolean mozembed_link_message_callback(GtkMozEmbed *embed, gpointer data)
+{
+  [(BrowserWindow *)data linkMessageCallback];
+  return TRUE;
+}
+
 @implementation NSApplication (GMainLoop)
 
-/* Better to call XFlush(dpy) before this */
 - (void) runOnce
 {
   NSEvent *e = [NSApp nextEventMatchingMask: NSAnyEventMask
@@ -27,7 +51,37 @@
 
 @implementation BrowserWindow
 
+/* Callback from GtkMozEmbed */
+- (void) titleCallback
+{
+  char *s = gtk_moz_embed_get_title(GTK_MOZ_EMBED(mozembed));
+  [self setTitle: [NSString stringWithUTF8String: s]]; 
+}
+
+- (void) locationCallback
+{
+  char *s = gtk_moz_embed_get_location(GTK_MOZ_EMBED(mozembed));
+  [urlLocation setStringValue: [NSString stringWithUTF8String: s]];
+}
+
+- (void) JavaScriptStatusCallback
+{
+#if 0
+  char *s = gtk_moz_embed_get_js_status(GTK_MOZ_EMBED(mozembed));
+  NSLog(@"js_status %s", s);
+#endif
+}
+
+- (void) linkMessageCallback
+{
+  char *s = gtk_moz_embed_get_link_message(GTK_MOZ_EMBED(mozembed));
+  if (s) {
+    [statusBar setStringValue: [NSString stringWithUTF8String: s]];
+  }
+}
+
 /** private **/
+/* Better to call XFlush(dpy) before this */
 - (void) resizeEmbed
 {
   NSRect frame = [[self contentView] bounds];
@@ -106,6 +160,9 @@
                      defer: (BOOL) flag
                     screen: (NSScreen*) aScreen
 {
+  max_y = 30;
+  min_y = 20;
+
   self = [super initWithContentRect: contentRect
 	        styleMask: aStyle
 		backing: bufferingType
@@ -163,6 +220,17 @@
   [go setAction: @selector(go:)];
   [[self contentView] addSubview: go];
 
+  frame = NSMakeRect(0, 0, contentRect.size.width, min_y);
+  statusBar = [[NSTextField alloc] initWithFrame: frame];
+  [statusBar setAutoresizingMask: NSViewWidthSizable|NSViewMaxYMargin];
+  [statusBar setEditable: NO];
+  [statusBar setSelectable: NO];
+  [statusBar setBezeled: NO];
+  [statusBar setBordered: NO];
+  [statusBar setDrawsBackground: NO];
+  [statusBar setStringValue: @"Status"];
+  [[self contentView] addSubview: statusBar];
+
   gdk_flush();
   /** GtkMozEmbed **/
   gtk_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -182,14 +250,32 @@
     return nil;
   }
 
+  g_signal_connect(G_OBJECT(mozembed),
+		   "title",
+		   G_CALLBACK(mozembed_title_callback),
+		   self);
+
+  g_signal_connect(G_OBJECT(mozembed),
+		   "location",
+		   G_CALLBACK(mozembed_location_callback),
+		   self);
+
+  g_signal_connect(G_OBJECT(mozembed),
+		   "js_status",
+		   G_CALLBACK(mozembed_js_status_callback),
+		   self);
+
+  g_signal_connect(G_OBJECT(mozembed),
+		   "link_message",
+		   G_CALLBACK(mozembed_link_message_callback),
+		   self);
+
   gtk_moz_embed_load_url(GTK_MOZ_EMBED(mozembed), "http://www.google.com");
 
   gtk_container_add(GTK_CONTAINER(gtk_window), mozembed);
   gtk_widget_show(mozembed);
   gtk_widget_show(gtk_window);
 
-  max_y = 30;
-  min_y = 20;
 
   XFlush(dpy);
   gtkwin = GDK_WINDOW_XWINDOW(GTK_WIDGET(gtk_window)->window);

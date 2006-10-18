@@ -23,6 +23,7 @@
   NSButton *stop;
   NSButton *go;
   NSTextField *urlLocation;
+  NSTextField *statusBar;
 }
 
 - (void) setMaxYMargin: (int) height; // top margin between title and mozilla
@@ -34,6 +35,12 @@
 - (void) stop: (id) sender;
 - (void) go: (id) sender;
 - (NSTextField *) urlLocation;
+
+/** Deal with callback from GtkMozEmbed **/
+- (void) titleCallback;
+- (void) locationCallback;
+- (void) JavaScriptStatusCallback;
+- (void) linkMessageCallback;
 
 @end
 
