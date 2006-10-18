@@ -30,6 +30,7 @@
 
 NSString *const kBKBookmarkURLProperty = @"kBKBookmarkURLProperty";
 NSString *const kBKBookmarkTitleProperty = @"kBKBookmarkTitleProperty";
+NSString *const kBKBookmarkLastVisitedDateProperty = @"kBKBookmarkLastVisitedDateProperty";
 
 @implementation BKBookmark
 
@@ -106,14 +107,14 @@ NSString *const kBKBookmarkTitleProperty = @"kBKBookmarkTitleProperty";
 
 }
 
-- (NSDate *) lastVisitDate
+- (NSDate *) lastVisitedDate
 {
-    return nil;
+  return [self valueForProperty: kBKBookmarkLastVisitedDateProperty];
 }
 
-- (void) setLastVisitDate: (NSDate *)date
+- (void) setLastVisitedDate: (NSDate *)date
 {
-
+  [self setValue: date forProperty: kBKBookmarkLastVisitedDateProperty];
 }
 
 - (NSImage *) favIcon

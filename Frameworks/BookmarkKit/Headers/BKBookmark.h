@@ -53,8 +53,8 @@ typedef enum _BKBookmarkProtocol
 - (void) setTitle: (NSString *) title;
 - (NSDate *) creationDate;
 - (void) setCreationDate: (NSDate *)date;
-- (NSDate *) lastVisitDate;
-- (void) setLastVisitDate: (NSDate *)date;
+- (NSDate *) lastVisitedDate;
+- (void) setLastVisitedDate: (NSDate *)date;
 - (NSImage *) favIcon;
 - (void) setFavIcon: (NSImage *)icon;
 

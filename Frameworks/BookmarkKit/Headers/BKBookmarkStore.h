@@ -33,6 +33,7 @@
 /* Commonly used domains for bookmark store */
 extern NSString *const BKDefaultBookmarkStore;
 extern NSString *const BKRecentFilesBookmarkStore;
+extern NSString *const BKRecentApplicationsBookmarkStore;
 extern NSString *const BKWebBrowserBookmarkStore;
 extern NSString *const BKRSSBookmarkStore;
 

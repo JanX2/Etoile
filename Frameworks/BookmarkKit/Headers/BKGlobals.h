@@ -2,6 +2,7 @@
 
 extern NSString *const kBKBookmarkURLProperty;
 extern NSString *const kBKBookmarkTitleProperty;
+extern NSString *const kBKBookmarkLastVisitedDateProperty;
 extern NSString *const kBKGroupNameProperty;
 extern NSString *const kBKTopLevelOrderProperty; /* order of top level record */
 
