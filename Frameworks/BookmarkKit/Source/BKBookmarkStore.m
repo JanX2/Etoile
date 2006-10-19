@@ -37,6 +37,7 @@
 
 NSString *const BKDefaultBookmarkStore = @"BKDefaultBookmarkStore";
 NSString *const BKRecentFilesBookmarkStore = @"BKRecentFilesBookmarkStore";
+NSString *const BKRecentApplicationsBookmarkStore = @"BKRecentApplicationsBookmarkStore";
 NSString *const BKWebBrowserBookmarkStore = @"BKWebBrowserBookmarkStore";
 NSString *const BKRSSBookmarkStore = @"BKRSSBookmarkStore";
 
