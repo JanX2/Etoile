@@ -141,7 +141,7 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 
 // action which contacts the workspace app and asks it to initiate
 // a log out operation
-/*- (void) logOut: sender
+- (void) logOut: sender
 {
   int reply;
 
@@ -178,6 +178,6 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 - (id) workspaceApp
 {
   return [[NSWorkspace sharedWorkspace] connectToWorkspaceApplicationLaunch: NO];
-}*/
+}
 
 @end
