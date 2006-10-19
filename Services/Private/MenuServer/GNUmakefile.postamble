@@ -25,16 +25,6 @@ include ../../../etoile.make
 
 DEPENDENCIES = XWindowServerKit
 
-ifeq ($(debug), yes)
-        APP=$(APP_NAME).debug
-else
- ifeq ($(profile), yes)
-        APP=$(APP_NAME).profile
- else
-        APP=$(APP_NAME).app
- endif
-endif
-
 ifeq ($(findstring solaris, $(GNUSTEP_TARGET_OS)), solaris)
 # Solaris' find(1) doesn't understand -print0 and its xargs(1)
 # doesn't understand -0 either, so use the more fragile newline
@@ -48,8 +38,8 @@ endif
 
 after-all::
 	@ echo "Copying menulets into app wrapper..." && \
-          find Subprojects -name '*.menulet' -exec cp -r '{}' '$(APP)/Resources' ';' && \
-          echo "Copying system bar entries into app wrapper..." && \
-          find Subprojects -name '*.sysbarentry' -exec cp -r '{}' '$(APP)/Resources' ';' && \
-          echo "Purging bogus SVN entries from app..." && \
-          find "$(APP)" -type d -name '.svn' $(FIND_ARGS) | xargs $(XARGS_ARGS) /bin/rm -rf
+	find Subprojects -name '*.menulet' -exec cp -r '{}' '$(APP_NAME).app/Resources' ';' && \
+	echo "Copying system bar entries into app wrapper..." && \
+	find Subprojects -name '*.sysbarentry' -exec cp -r '{}' '$(APP_NAME).app/Resources' ';' && \
+	echo "Purging bogus SVN entries from app..." && \
+	find "$(APP_NAME)" -type d -name '.svn' $(FIND_ARGS) | xargs $(XARGS_ARGS) /bin/rm -rf

@@ -39,7 +39,7 @@
 #import <AppKit/NSWindow.h>
 #import <AppKit/NSWorkspace.h>
 
-//#import <WorkspaceCommKit/WorkspaceCommKit.h>
+#import <WorkspaceCommKit/NSWorkspace+Communication.h>
 
 #import "MenuBarHeight.h"
 #import "MenuBarView.h"
@@ -141,14 +141,8 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 
 // action which contacts the workspace app and asks it to initiate
 // a log out operation
-- (void) logOut: sender
+/*- (void) logOut: sender
 {
-  /*
-   * No idea how to implement this, now that WorkspaceCommKit is not
-   * available and no consistent solution is in sight. Ask Quentin on
-   * Core Object, he could know.
-   */
-#if 0
   int reply;
 
   reply = NSRunAlertPanel (_(@"Really log out?"),
@@ -165,7 +159,7 @@ MenuBarWindow * ServerMenuBarWindow = nil;
       if (workspaceApp != nil)
         {
           NS_DURING
-            [workspaceApp logOutAndPowerOff: reply == NSAlertAlternateReturn];
+            [workspaceApp logOutAndPowerOff: reply];
           NS_HANDLER
             NSRunAlertPanel (_(@"Failed to log out"),
               _(@"Failed to initiate log out operation: %@"),
@@ -179,11 +173,11 @@ MenuBarWindow * ServerMenuBarWindow = nil;
             nil, nil, nil);
         }
     }
-#else
-  NSRunAlertPanel (_(@"Not implemented"),
-    _(@"Currently, this feature has been disabled, sorry."),
-    nil, nil, nil);
-#endif
 }
+
+- (id) workspaceApp
+{
+  return [[NSWorkspace sharedWorkspace] connectToWorkspaceApplicationLaunch: NO];
+}*/
 
 @end

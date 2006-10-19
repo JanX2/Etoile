@@ -39,4 +39,6 @@ extern MenuBarWindow * ServerMenuBarWindow;
 
 - (void) logOut: sender;
 
+- (id) workspaceApp;
+
 @end

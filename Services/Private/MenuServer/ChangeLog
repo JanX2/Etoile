@@ -1,3 +1,14 @@
+2006-10-19  Quentin Mathe <qmathe@club-internet.fr>
+
+    * GNUmakefile.postamble: Modified to take in account .debug and .profile
+    application extensions are not used anymore by gnustep-make.
+    * GNUmakefile.preamble: Modified to link WorkspaceCommKit.
+    * Controller.h:
+    * Controller.m:
+    Turned on 'log out' by implementing new method -workspaceApp returning an
+    instance of SCSystem server class part etoile_system daemon. This code 
+    relies on WorkspaceCommKit a private framework part of System.
+
 2006-09-10  Quentin Mathe <qmathe@club-internet.fr>
 
     * GNUmakefile.postamble: Added include etoile.make and declared 
