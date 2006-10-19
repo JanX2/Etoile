@@ -1,3 +1,10 @@
+2006-10-19  Quentin Mathe <qmathe@club-internet.fr>
+
+    * setup.sh:
+    * setdown.sh:
+    Updated to link libgnustep-gui.so in /usr/lib as a temporary solution since
+    etoile_system relies on AppKit currently.
+    
 2006-10-01  Quentin Mathe <qmathe@club-internet.fr>
 
     * GNUmakefile: Modified to build Languages subproject.
