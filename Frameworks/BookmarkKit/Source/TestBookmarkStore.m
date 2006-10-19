@@ -12,7 +12,7 @@
   UKNotNil(path);
 }
 
-#if 0
+#if 1
 - (void) testSave
 {
   NSString *path = @"/tmp/subdir/bookmark_test.bookmark";
@@ -34,6 +34,11 @@
   [gp addItem: bk1];
 
   [store save];
+
+  BKBookmarkStore *other = [BKBookmarkStore sharedBookmarkAtPath: path];
+  UKIntsEqual(3, [[other items] count]);
+  UKIntsEqual(1, [[other groups] count]);
+
   [[NSFileManager defaultManager] removeFileAtPath: path handler: nil];
 }
 #endif

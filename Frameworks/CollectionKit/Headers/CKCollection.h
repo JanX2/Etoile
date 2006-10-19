@@ -36,6 +36,8 @@
   NSMutableDictionary *_items;
   NSMutableDictionary *_groups;
   BOOL hasUnsavedChanges;
+  Class itemClass;
+  Class groupClass;
 }
 
 /* Load collection from file */
@@ -50,6 +52,8 @@
 
 //- (NSArray*) recordsMatchingSearchElement: (CKSearchElement*) search;
 
+/** Reload from saved database. Used when database is externally modified **/
+- (BOOL) reload; 
 - (BOOL) save;
 - (BOOL) hasUnsavedChanges;
 

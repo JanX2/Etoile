@@ -26,9 +26,7 @@
 
 @interface CKCollection (CKPrivate)
 /* Load format with version 0.1 */
-- (void) _loadFormat_0_1: (NSDictionary *) dict 
-               itemClass: (Class) itemClass
-	      groupClass: (Class) groupClass;
+- (void) _loadFormat_0_1: (NSDictionary *) dict;
 - (BOOL) _makeDirectory: (NSString*) path;
 - (void) _handleRecordChanged: (NSNotification*) note;
 - (void) _handleDBChangedExternally: (NSNotification*) note;
@@ -41,8 +39,6 @@
 
 @implementation CKCollection (CKPrivate)
 - (void) _loadFormat_0_1: (NSDictionary *) dict 
-               itemClass: (Class) itemClass
-	      groupClass: (Class) groupClass
 {
   NSDictionary *temp;
   NSEnumerator *e;
@@ -297,17 +293,26 @@
 }
 
 - (id) initWithLocation: (NSString*) location 
-              itemClass: (Class) itemClass
-	     groupClass: (Class) groupClass
+              itemClass: (Class) ic
+	     groupClass: (Class) gc
 {
-  BOOL dir;
   NSAssert(location, @"Location cannot be nil");
 
   self = [super init];
 
+  itemClass = ic;
+  groupClass = gc;
+
   ASSIGN(_loc, [location stringByExpandingTildeInPath]);
+  if ([self reload] == NO) {
+      [NSException raise: CKInternalError
+		   format: @"Couldn't open local collection at %@",
+		   _loc];
+  }
+#if 0
   ASSIGN(_items, AUTORELEASE([[NSMutableDictionary alloc] init]));
   ASSIGN(_groups, AUTORELEASE([[NSMutableDictionary alloc] init]));
+  BOOL dir;
   if([[NSFileManager defaultManager] fileExistsAtPath: _loc 
                                           isDirectory: &dir] == NO) 
   {
@@ -326,9 +331,10 @@
     /* Check version */
     NSString *version = [dict objectForKey: CKFormatKey];
     if ([version isEqualToString: CKCollectionFormat_0_1]) {
-      [self _loadFormat_0_1: dict itemClass: itemClass groupClass: groupClass];
+      [self _loadFormat_0_1: dict];
     }
   }
+#endif
 
   [[NSNotificationCenter defaultCenter]
     addObserver: self
@@ -357,6 +363,33 @@
 - (NSString*) location
 {
   return _loc;
+}
+
+- (BOOL) reload
+{
+  BOOL dir;
+  ASSIGN(_items, AUTORELEASE([[NSMutableDictionary alloc] init]));
+  ASSIGN(_groups, AUTORELEASE([[NSMutableDictionary alloc] init]));
+  if([[NSFileManager defaultManager] fileExistsAtPath: _loc 
+                                          isDirectory: &dir] == NO) 
+  {
+    /* No collection */
+  }
+  else
+  {
+    /* Open existing collection */
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: _loc];
+    
+    if (dict == nil) {
+      return NO;
+    }
+    /* Check version */
+    NSString *version = [dict objectForKey: CKFormatKey];
+    if ([version isEqualToString: CKCollectionFormat_0_1]) {
+      [self _loadFormat_0_1: dict];
+    }
+  }
+  return YES;
 }
 
 - (BOOL) save
