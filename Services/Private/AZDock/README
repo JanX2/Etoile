@@ -7,4 +7,4 @@ It depends on XWindowServerKit.
 User Defaults
 -------------
 Key: DockPosition
-Value: 0 (Right side), 1 (Left side), 2 (Bottom side)
+Value: 0 (Left side), 1 (Right side), 2 (Bottom side)

@@ -5,12 +5,30 @@
 #import <X11/Xatom.h>
 #import <X11/Xutil.h>
 #import <XWindowServerKit/XFunctions.h>
+#import <BookmarkKit/BookmarkKit.h>
 
 @interface GSDisplayServer (AZPrivate)
 - (void) processEvent: (XEvent *) event;
 @end
 
 static AZDock *sharedInstance;
+
+@interface BKBookmark (AZDockSorting)
+@end
+
+@implementation BKBookmark (AZDockSorting)
+- (NSComparisonResult) isLaterThan: (BKBookmark *) other
+{
+  NSDate *thisDate = [self lastVisitedDate];
+  NSDate *thatDate = [other lastVisitedDate];
+  if ([thisDate timeIntervalSinceDate: thatDate] > 0)
+    return NSOrderedAscending;
+  else if ([thisDate timeIntervalSinceDate: thatDate] < 0)
+    return NSOrderedDescending;
+  else
+    return NSOrderedSame;
+}	
+@end
 
 @implementation AZDock
 
@@ -55,6 +73,50 @@ static AZDock *sharedInstance;
         [apps removeObjectAtIndex: m];
       }
     }
+  }
+}
+
+- (void) addBookmark: (AZDockApp *) app
+{
+  /* Add application into bookmark.
+   * First, make sure we don't have the same application.
+   * If so, just update the recent visited data.
+   * Only 10 applications are keeped in the bookmark
+   * and are ordered by recent visit date (from latest to older). */
+  NSString *command = [app command];
+  BKBookmark *bk;
+  NSEnumerator *e;
+  if (command){
+    e = [[store items] objectEnumerator];
+    NSURL *url;
+    NSURL *app_url = [NSURL URLWithString: [NSString stringWithFormat: @"file://%@", command]];
+    BOOL found = NO;
+    while ((bk = [e nextObject])) {
+      url = [bk URL];
+      if ([url isEqual: app_url]) {
+        /* Command exist. Update recent visited date */
+	[bk setLastVisitedDate: [NSDate date]];
+	found = YES;
+	break;
+      }
+    }
+    if (found == NO) {
+      bk = [BKBookmark bookmarkWithURL: app_url];
+      [bk setLastVisitedDate: [NSDate date]];
+      [store addBookmark: bk];
+    }
+    [[store topLevelRecords] sortUsingSelector: @selector(isLaterThan:)];
+    /* Only keep the lastest 10 records */
+    unsigned int count = [[store topLevelRecords] count];
+    unsigned int limit = 10; 
+    if (count > limit) {
+      NSArray *subarray = [[store topLevelRecords] subarrayWithRange: NSMakeRange(limit, count-limit)];
+      e = [subarray objectEnumerator];
+      while ((bk = [e nextObject])) {
+        [store removeBookmark: bk];
+      }
+    }
+    [store save];
   }
 }
 
@@ -236,6 +298,7 @@ static AZDock *sharedInstance;
       if ([app acceptXWindow: win[i]]) {
 	/* Cache xwindow */
 	[lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
+	//[self addBookmark: app];
 	skip = YES;
 	break;
       }
@@ -249,6 +312,7 @@ static AZDock *sharedInstance;
     [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
     app = [[AZDockApp alloc] initWithXWindow: win[i]];
     [apps addObject: app];
+    [self addBookmark: app];
     DESTROY(app);
 
     /* Listen to change on client */
@@ -441,6 +505,9 @@ static AZDock *sharedInstance;
   [workspaceView setNumberOfWorkspaces: [[iconWindow screen] numberOfWorkspaces]];
   [workspaceView setCurrentWorkspace: [[iconWindow screen] currentWorkspace]];
 
+  ASSIGN(store, [BKBookmarkStore sharedBookmarkWithDomain: BKRecentApplicationsBookmarkStore]);
+  [workspaceView setApplicationBookmarkStore: store];
+
   [self readClientList];
   [self organizeApplications];
 
@@ -458,6 +525,7 @@ static AZDock *sharedInstance;
   DESTROY(apps);
   DESTROY(lastClientList);
   DESTROY(workspaceView);
+  DESTROY(store);
   [super dealloc];
 }
 

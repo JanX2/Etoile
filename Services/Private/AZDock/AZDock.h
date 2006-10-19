@@ -4,10 +4,11 @@
 
 @class XWindow;
 @class AZWorkspaceView;
+@class BKBookmarkStore;
 
 typedef enum _AZDockPosition {
-  AZDockRightPosition = 0,
-  AZDockLeftPosition = 1,
+  AZDockLeftPosition = 0,
+  AZDockRightPosition = 1,
   AZDockBottomPosition = 2
 } AZDockPosition;
 
@@ -19,6 +20,7 @@ typedef enum _AZDockPosition {
   Window root_win;
   NSMutableArray *apps;
   NSMutableArray *lastClientList; /* Cache last client list */
+  BKBookmarkStore *store;
 
   /* Replace default gnustep icon window */
   XWindow *iconWindow;

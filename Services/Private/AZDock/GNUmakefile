@@ -2,7 +2,9 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 
-DEPENDENCIES = XWindowServerKit
+DEPENDENCIES = \
+	XWindowServerKit \
+	BookmarkKit
 
 APP_NAME = AZDock
 
@@ -17,7 +19,10 @@ AZDock_RESOURCE_FILES = Unknown.tiff
 
 ADDITIONAL_INCLUDE_DIRS += -I/usr/include -I/usr/X11R6/include
 
-ADDITIONAL_LIB_DIRS += -L/usr/lib -L/usr/X11R6/lib -lX11 -lXWindowServerKit
+ADDITIONAL_LIB_DIRS += \
+	-L/usr/lib -L/usr/X11R6/lib -lX11 \
+	-lXWindowServerKit \
+	-lBookmarkKit
 
 ADDITIONAL_GUI_LIBS += 
 

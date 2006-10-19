@@ -76,17 +76,46 @@
   }
 }
 
+/* This command is used to launch application.
+ * For GNUstep, it use NSWorkspace. Therefore, the name of application is
+ * sufficient. For other xwindow applications, we need to find the 
+ * absolute path to do so.
+ */
 - (void) updateCommand: (Window) w
 {
   /* Get command */
+  NSArray *array;
   if (type == AZDockGNUstepApplication) {
-    ASSIGNCOPY(command, wm_instance); 
+    ASSIGN(command, [wm_instance stringByAppendingPathExtension: @"app"]); 
+    array = NSStandardApplicationPaths();
   } else {
     ASSIGN(command, XWindowCommandPath(w));
     if ((command == nil) || ([command length] == 0)) {
       /* WM_COMMAND is not used by many modern applications.
        * Try lowercase of wm_class */
       ASSIGN(command, [wm_class lowercaseString]);
+    }
+    /* Make sure the command exists */
+    NSProcessInfo *pi = [NSProcessInfo processInfo];
+    array = [[[pi environment] objectForKey: @"PATH"] componentsSeparatedByString: @":"];
+  }
+  BOOL isDir;
+  NSFileManager *fm = [NSFileManager defaultManager];
+  if ([fm fileExistsAtPath: command isDirectory: &isDir] == NO) {
+    int i, count = [array count];
+    BOOL found = NO;
+    NSString *a;
+    for (i = 0; i < count; i++) {
+      a = [[array objectAtIndex: i] stringByAppendingPathComponent: command];
+      if ([fm fileExistsAtPath: a isDirectory: &isDir])
+      {
+        ASSIGN(command, a);
+        found = YES;
+        break;
+      }
+    }
+    if (found == NO) {
+      DESTROY(command);
     }
   }
 }

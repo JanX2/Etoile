@@ -1,6 +1,7 @@
 2006-10-18 Yen-Ju Chen <yjchenx at gmail>
 
 	* Move workspace switcher into its own submenu.
+	* Implement recent applications.
 
 2006-09-24 Yen-Ju Chen <yjchenx at gmail>
 

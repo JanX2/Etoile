@@ -1,5 +1,6 @@
 #import "AZWorkspaceView.h"
 #import <XWindowServerKit/XScreen.h>
+#import <BookmarkKit/BookmarkKit.h>
 
 @interface AZWorkspaceView (AZPrivate)
 - (void) updateWorkspaceMenu;
@@ -53,6 +54,50 @@
   }
 }
 
+- (void) applicationAction: (id) sender
+{
+  int index = [applicationMenu indexOfItem: sender];
+  NSArray *items = [appStore topLevelRecords];
+  if ((index > -1) && (index < [items count])) {
+    NSString *path = [[[items objectAtIndex: index] URL] path];
+    BOOL success = [[NSWorkspace sharedWorkspace] launchApplication: path];
+    if (success == NO) {
+      /* Try regular execute */
+      [NSTask launchedTaskWithLaunchPath: path arguments: nil];
+    }
+  }
+}
+
+- (void) updateApplicationMenu
+{
+  int i, menu_count = [applicationMenu numberOfItems];
+  NSArray *items = [appStore topLevelRecords];
+  int numberOfItems = [items count];
+  NSString *title, *path;
+  for (i = 0; i < numberOfItems; i++) {
+    title = [[[[items objectAtIndex: i] URL] path] lastPathComponent];
+
+    if (i < menu_count) {
+      [[applicationMenu itemAtIndex: i] setTitle: title];
+    } else {
+      [applicationMenu addItemWithTitle: title
+	             action: @selector(applicationAction:)
+		     keyEquivalent: nil];
+    }
+    [[applicationMenu itemAtIndex: i] setTarget: self];
+  }
+  for (i = menu_count-1; i >= numberOfItems; i--) {
+    [applicationMenu removeItemAtIndex: i];
+  }
+}
+
+- (void) bookmarkChanged: (NSNotification *) not
+{
+  if ([[not userInfo] objectForKey: CKCollectionNotificationKey] == appStore) {
+    [self updateApplicationMenu];
+  }
+}
+
 /** End of private **/
 
 - (void) setCurrentWorkspace: (int) workspace
@@ -73,6 +118,10 @@
   [self updateWorkspaceMenu];
 }
 
+- (void) setApplicationBookmarkStore: (BKBookmarkStore *) store
+{
+  appStore = store;
+}
 
 - (void) mouseDown: (NSEvent *) event
 {
@@ -108,12 +157,27 @@
   while (([contextualMenu numberOfItems])) {
     [contextualMenu removeItemAtIndex: 0];
   }
-  NSMenuItem *item = [contextualMenu addItemWithTitle: @"Workspace"
+  id <NSMenuItem> item = [contextualMenu addItemWithTitle: _(@"Workspace")
 	                                       action: NULL
 		                       keyEquivalent: NULL];
-  workspaceMenu = [[NSMenu alloc] initWithTitle: @"Workspace"];
+  workspaceMenu = [[NSMenu alloc] initWithTitle: _(@"Workspace")];
   [contextualMenu setSubmenu: workspaceMenu forItem: item];
   RELEASE(workspaceMenu);
+
+  item = [contextualMenu addItemWithTitle: _(@"Recent Applications")
+	                        action: NULL
+				keyEquivalent: NULL];
+
+  applicationMenu = [[NSMenu alloc] initWithTitle: _(@"Recent Applications")];
+  [contextualMenu setSubmenu: applicationMenu forItem: item];
+  RELEASE(applicationMenu);
+
+  /* Listen to recent applications change */
+  [[NSNotificationCenter defaultCenter]
+	  addObserver: self
+	  selector: @selector(bookmarkChanged:)
+	  name: CKCollectionChangedNotification
+	  object: nil];
 
   return self;
 }
