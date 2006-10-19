@@ -1,3 +1,68 @@
+2006-10-19  Quentin Mathe <qmathe@club-internet.fr>
+
+    Update to provide basic session management. At this time only 'log out' is
+    supported in an unclean way (just by telling etoile_system to exit without
+    asking running applications to quit), yet the implementation for such
+    features is already here. This commit also introduces far more evolved 
+    process handling, system related tasks can now be controlled at run time 
+    with a config plist file.
+    * Controller.h:
+    * Controller.m:
+    * ApplicationManager.h:
+    * ApplicationManager.m:
+    * EtoileWorkspaceServerInfo.plist:
+    * NSArrayAdditions.h:
+    * NSArrayAdditions.m:
+    * NSDictionaryAdditions.h:
+    * NSDictionaryAdditions.m:
+    * NSSetAdditions.h:
+    * NSSetAdditions.m:
+    Added code written by Saso Kiselkov modified to fit into System.
+    * WorkspaceCommKit:
+    Added a private framework to allow communication between MenuServer and 
+    System. Should be replaced/merged into CoreObject once available. This 
+    small framework was written by Saso Kiselkov too.
+    * main.m: Modified to use the default run loop rather than a new one.
+    * GNUmakefile: Updated to take care of WorkspaceCommKit as a subproject and
+    to link gnustep-gui as a temporary solution (giving access to NSWorkspace
+    and applications related stuff).
+    * EtoileSystem.h:
+    * EtoileSystem.m:
+    Massive update including new ivars and a bunch of new methods taken from
+    Saso code.
+    (SetNonNullError()): New helper function to report error.
+    (-[SCTask  isHidden]):
+    (-[SCTask isStopped]):
+    New methods with related ivars.
+    (+[SCTask taskWithLaunchPath:onDemand:withUserName:): Updated to init new 
+    ivars.
+    (-[SCTask terminate]): Overriden NSTask method to set 'stopped' ivar value
+    properly on termination request.
+    (+setUpServerInstance:): Modified to set the connection delegate.
+    (-initWithArguments:): Modified to call 
+    -findConfigFileAndStartUpdateMonitoring and 
+    -synchronizeProcessesWithConfigFile. Removed gdomap from launched processes
+    since it needs to be run as root and this isn't true for etoile_system at
+    this time.
+    (-startProcessWithDomain:)
+    (-restartProcessWithDomain:)
+    (-stopProcessWithDomain:)
+    (-suspendProcessWithDomain:):
+    Modified the methods to take an error paramater in the form of an extra
+    'error: (NSError **)error' part at the end of the signature.
+    (-startProcessWithDomain:): Don't start a process already running and 
+    add notifications observing to have feedback when the process will die.
+    (-loadConfigList): Updated to call -checkConfigFileUpdate.
+    (-hiddenProcess)
+    (-gracefullyTerminateAllProcessesOnOperation:)
+    (-logOutAndPowerOff:):
+    (-startProcessWithUserFeedbackForDomain:)
+    (-findConfigFileAndStartUpdateMonitoring)
+    (-checkConfigFileUpdate)
+    (-synchronizeProcessesWithConfigFile)
+    (-processTerminated:):
+    New methods.
+    
 2006-08-06  Quentin Mathe <qmathe@club-internet.fr>
 
     * etoile.desktop: Added xsessions file following Freedesktop 'Desktop Entry' 

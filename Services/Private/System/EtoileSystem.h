@@ -41,7 +41,8 @@
     Arguments                   NSString
     UserName (or Identity)      NSString
     OnDemand                    NSNumber/BOOL (0 is NO and 1 is YES)
-    Persistent                  NSNumber/BOOL (0 is NO and 1 is YES)   
+    Persistent                  NSNumber/BOOL (0 is NO and 1 is YES)
+    Hidden                      NSNumber/BOOL (0 is NO and 1 is YES)
 
     A 'Persistent' process is a task which is restarted on system boot if it
     was already running during the previous session. It is usually bound to 
@@ -52,21 +53,31 @@
 @interface SCSystem : NSObject
 {
     NSMutableDictionary *_processes;
+
+    /* Config file handling related ivars */
+    NSTimer *monitoringTimer;
+    NSString *configFilePath;
+    NSDate *modificationDate;
 }
 
 + (SCSystem *) sharedInstance;
 
 - (id) initWithArguments: (NSArray *)args;
 
-- (BOOL) startProcessWithDomain: (NSString *)domain;
-- (BOOL) restartProcessWithDomain: (NSString *)domain;
-- (BOOL) stopProcessWithDomain: (NSString *)domain;
-- (BOOL) suspendProcessWithDomain: (NSString *)domain;
+- (BOOL) startProcessWithDomain: (NSString *)domain error: (NSError **)error;
+- (BOOL) restartProcessWithDomain: (NSString *)domain error: (NSError **)error;
+- (BOOL) stopProcessWithDomain: (NSString *)domain error: (NSError **)error;
+- (BOOL) suspendProcessWithDomain: (NSString *)domain error: (NSError **)error;
 
 - (void) run;
 
 - (void) loadConfigList;
 - (void) saveConfigList;
+
+- (NSArray *) hiddenProcesses;
+- (BOOL) gracefullyTerminateAllProcessesOnOperation: (NSString *)op;
+
+- (oneway void) logOutAndPowerOff: (BOOL) powerOff;
 
 /* SCSystem server daemon set up methods */
 

@@ -1,0 +1,2 @@
+
+ADDITIONAL_OBJCFLAGS += -W -Wall -Wno-unused -Wno-import

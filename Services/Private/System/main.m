@@ -28,19 +28,22 @@
 
 int main(int argc, const char * argv[])
 {
-    NSRunLoop *runLoop = [[NSRunLoop alloc] init];
-    NSPort *dummyPort;
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
     SCSystem *etoileSystem;
 
     CREATE_AUTORELEASE_POOL (pool);
 
     etoileSystem = [[SCSystem alloc] init];
-	[SCSystem setUpServerInstance: etoileSystem];
+
+    /* Adding a dummy port avoids the run loop exits immediately. For example:
+      dummyPort = [NSPort port];
+      [runLoop addPort: dummyPort forMode: NSDefaultRunLoopMode];
+      We don't do this because the default connection reuses in this way the 
+      runloop created by default with any GNUstep program. */
+    if ([SCSystem setUpServerInstance: etoileSystem] == NO)
+	    exit(1);
     [etoileSystem run];
 
-    /* Adding a dummy port avoids the run loop exits immediately */
-    dummyPort = [NSPort port];
-    [runLoop addPort: dummyPort forMode: NSDefaultRunLoopMode];
     NSLog(@"Starting Etoile system server run loop");
     [runLoop run];
     NSLog(@"Exiting Etoile system server run loop");

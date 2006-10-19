@@ -29,6 +29,15 @@
 #ifdef HAVE_UKTEST
 #import <UnitKit/UnitKit.h>
 #endif
+#import "NSArrayAdditions.h"
+#import "ApplicationManager.h"
+
+// FIXME: When you take in account System can be use without any graphical UI 
+// loaded, linking AppKit by default is bad,thne  put this stuff in a bundle 
+// and load it only when necessary. Or may be put this stuff in another daemon.
+// In the present case, we use it to display alert panels, in fact that should
+// be handled with a separate UI server (aka systemUIServer)
+#import <AppKit/AppKit.h>
 
 /* The current domain scheme '/etoilesystem/tool' and '/etoilesystem/application'
    is work ins progress and doesn't reflect the final scheme to be used when 
@@ -58,6 +67,56 @@ static id serverInstance = nil;
 static id proxyInstance = nil;
 static NSString *SCSystemNamespace = nil;
 
+/* NSError related extensions */
+
+NSString * const EtoileSystemErrorDomain =
+  @"EtoileSystemErrorDomain";
+const int EtoileSystemTaskLaunchingError = 1;
+
+/**
+ * A shorthand function for setting NSError pointers.
+ *
+ * This function sets a non-NULL error pointer to an NSError
+ * instance created from it's arguments. The error's error domain
+ * is always set to WorkspaceProcessManagerErrorDomain.
+ *
+ * @param error The pointer which, if not set to NULL, will be
+ *      filled with the error description.
+ * @param code The error code which to set in the NSError instance.
+ * @param reasonFormat A format string describing the reason for
+ *      the error. Following it is a variable number of arguments,
+ *      all of which are arguments to this format string.
+ */
+static void
+SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
+{
+  if (error != NULL)
+    {
+      NSDictionary * userInfo;
+      NSString * reason;
+      va_list arglist;
+
+      va_start (arglist, reasonFormat);
+      reason = [NSString stringWithFormat: reasonFormat arguments: arglist];
+      va_end (arglist);
+
+      userInfo = [NSDictionary
+        dictionaryWithObject: reason forKey: NSLocalizedDescriptionKey];
+      *error = [NSError errorWithDomain: EtoileSystemErrorDomain
+                                   code: code
+                               userInfo: userInfo];
+    }
+}
+
+@interface SCSystem (HelperMethodsPrivate)
+- (void) checkConfigFileUpdate;
+- (void) findConfigFileAndStartUpdateMonitoring;
+
+- (void) synchronizeProcessesWithConfigFile;
+
+- (void) startProcessWithUserFeedbackForDomain: (NSString *)domain;
+@end
+
 /** SCTask represents a task/process unit which could be running or not. Their 
     instances are stored in _processes ivar of SCSystem singleton. */
 
@@ -79,6 +138,8 @@ static NSString *SCSystemNamespace = nil;
 {
     NSString *launchIdentity;
     BOOL launchOnDemand;
+    BOOL hidden;
+    BOOL stopped;
 }
 
 + (SCTask *) taskWithLaunchPath: (NSString *)path;
@@ -89,6 +150,9 @@ static NSString *SCSystemNamespace = nil;
 - (void) launchForDomain: (NSString *)domain;
 
 - (BOOL) launchOnDemand;
+- (BOOL) isHidden;
+
+- (BOOL) isStopped;
 
 @end
 
@@ -106,7 +170,10 @@ static NSString *SCSystemNamespace = nil;
     
     [newTask setLaunchPath: path];
     ASSIGN(newTask->launchIdentity, identity);
+    
     newTask->launchOnDemand = lazily;
+    newTask->hidden = NO;
+    newTask->stopped = NO;
     
     return [newTask autorelease];
 }
@@ -148,11 +215,40 @@ static NSString *SCSystemNamespace = nil;
     {
         [self launch]; // NOTE: Not sure we should do it
     }
+
+    stopped = NO;
+
+    /*  appBinary = [ws locateApplicationBinary: appPath];
+
+      if (appBinary == nil)
+        {
+          SetNonNullError (error, WorkspaceProcessManagerProcessLaunchingError,
+            _(@"Unable to locate application binary of application %@"),
+            appName);
+
+          return NO;
+        } */
 }
 
 - (BOOL) launchOnDemand
 {
     return launchOnDemand;
+}
+
+- (BOOL) isHidden
+{
+    return hidden;
+}
+
+- (BOOL) isStopped
+{
+    return stopped;
+}
+
+- (void) terminate
+{
+    stopped = YES;
+    [super terminate];
 }
 
 @end
@@ -161,6 +257,13 @@ static NSString *SCSystemNamespace = nil;
  * Main class SCSystem implementation
  */
 
+/**
+ * Instances of this class manage Etoile system processes. A system
+ * process is a process (either an application or a plain UNIX command)
+ * which are to be re-run every time they finish. Therefore it is possible
+ * to e.g. kill the menu server and this object will restart it again
+ * automatically, thus forcing a reload of the menu server's menulets.
+ */
 @implementation SCSystem
 
 + (void) initialize
@@ -183,18 +286,20 @@ static NSString *SCSystemNamespace = nil;
 
 	/* Finish set up by exporting server instance through DO */
 	NSConnection *theConnection = [NSConnection defaultConnection];
-
+	
 	[theConnection setRootObject: instance];
-
 	if ([theConnection registerName: SCSystemNamespace] == NO) 
 	{
 		// FIXME: Take in account errors here.
-		NSLog(@"Unable to register the services bar namespace %@ with DO", 
+		NSLog(@"Unable to register the system namespace %@ with DO", 
 			SCSystemNamespace);
 
 		return NO;
 	}
-
+	[theConnection setDelegate: self];
+	
+	NSLog(@"Setting up SCSystem server instance");
+	
 	return YES;
 }
 
@@ -223,11 +328,19 @@ static NSString *SCSystemNamespace = nil;
     if ((self = [super init]) != nil)
     {
         _processes = [[NSMutableDictionary alloc] initWithCapacity: 20];
+
+        [self findConfigFileAndStartUpdateMonitoring];
+        if (configFilePath != nil)
+        {
+            [self synchronizeProcessesWithConfigFile];
+        }
          
         /* We register the core processes */
-        // FIXME: Takes care to standardize Etoile core processes naming scheme.
-        [_processes setObject: [SCTask taskWithLaunchPath: @"gdomap"] 
-            forKey: @"/etoilesystem/tool/gdomap"];
+        // FIXME: Takes care to standardize Etoile core processes naming scheme
+        // and probably handle this stuff by declaring the processes in the 
+        // config file.
+        /* [_processes setObject: [SCTask taskWithLaunchPath: @"gdomap" onDemand: NO withUserName: @"root"] 
+            forKey: @"/etoilesystem/tool/gdomap"]; */
         [_processes setObject: [SCTask taskWithLaunchPath: @"gpbs"] 
             forKey: @"/etoilesystem/tool/gpbs"];
         [_processes setObject: [SCTask taskWithLaunchPath: @"gdnc"] 
@@ -241,7 +354,7 @@ static NSString *SCSystemNamespace = nil;
         [_processes setObject: [SCTask taskWithLaunchPath: @"etoile_windowServer"] 
             forKey: @"/etoilesystem/application/menuserver"];
         [_processes setObject: [SCTask taskWithLaunchPath: @"EtoileMenuServer"] 
-            forKey: @"/etoilesystem/application/menuserver"];  
+            forKey: @"/etoilesystem/application/menuserver"]; 
         
         return self;
     }
@@ -252,6 +365,10 @@ static NSString *SCSystemNamespace = nil;
 - (void) dealloc
 {
     DESTROY(_processes);
+
+    TEST_RELEASE(monitoringTimer);
+    TEST_RELEASE(configFilePath);
+    TEST_RELEASE(modificationDate);
     
     [super dealloc];
 }
@@ -259,7 +376,7 @@ static NSString *SCSystemNamespace = nil;
 - (void) run
 {
     NSEnumerator *e;
-    NSString *domain;
+    NSString *domain = nil;
     
     /* We start core processes */
     e = [[_processes allKeys] objectEnumerator];
@@ -268,14 +385,24 @@ static NSString *SCSystemNamespace = nil;
         SCTask *process = [_processes objectForKey: domain];
         
         if ([process launchOnDemand] == NO)
-            [self startProcessWithDomain: domain];
+            [self startProcessWithDomain: domain error: NULL]; //FIXME: Handles error properly.
     }
 }
 
 // - (BOOL) startProcessWithDomain: (NSString *)domain 
 //     arguments: (NSArray *)args;
 
-- (BOOL) startProcessWithDomain: (NSString *)domain
+/**
+ * Launches a workspace process.
+ *
+ * @param processDescription The description of the process which to launch.
+ * @param error A pointer to an NSError variable which will be filled with
+ *      an NSError instance in case of a launch error.
+ *
+ * @return YES if the launch succeeds, NO if it doesn't and indicates the
+ *      reason in the ``error'' argument.
+ */
+- (BOOL) startProcessWithDomain: (NSString *)domain error: (NSError **)error
 {
     SCTask *process = [_processes objectForKey: domain];
     /* We should pass process specific flags obtained in arguments (and the
@@ -286,29 +413,56 @@ static NSString *SCSystemNamespace = nil;
            Look for an already running process with the same name.
        Well, I'm not sure we should do this, but it could be nice, we would 
        have to identify the process in one way or another (partially to not
-       compromise the security). */
+       compromise the security). 
+
+  oldTask = [processDescription objectForKey: @"Task"];
+  if (oldTask != nil)
+    {
+      [[NSNotificationCenter defaultCenter] removeObserver: self
+                                                      name: nil
+                                                    object: oldTask];
+    }
+
+  [processDescription setObject: task forKey: @"Task"];
+    */
     
-    [process setArguments: args];
-    [process launchForDomain: domain];
+    // NOTE: the next line triggers an invalid argument exception, although the
+    // array isn't nil.
+    // [process setArguments: args];
+
+    NS_DURING
+        [process launchForDomain: domain];
+    NS_HANDLER
+        SetNonNullError (error, EtoileSystemTaskLaunchingError,
+            _(@"Error launching program at %@: %@"), [process launchPath],
+            [localException reason]);
+
+        return NO;
+    NS_ENDHANDLER
+
+    [[NSNotificationCenter defaultCenter] addObserver: self
+        selector: @selector(processTerminated:) 
+            name: NSTaskDidTerminateNotification
+          object: process];
     
     return YES;
 }
 
-- (BOOL) restartProcessWithDomain: (NSString *)domain
+- (BOOL) restartProcessWithDomain: (NSString *)domain error: (NSError **)error
 {
     BOOL stopped = NO;
     BOOL restarted = NO;
     
-    stopped = [self stopProcessWithDomain: domain];
+    stopped = [self stopProcessWithDomain: domain error: NULL];
     
     /* The process has been properly stopped or was already, then we restart it now. */
     if (stopped)
-        restarted = [self restartProcessWithDomain: domain];
+        restarted = [self restartProcessWithDomain: domain error: NULL];
 
     return restarted;
 }
 
-- (BOOL) stopProcessWithDomain: (NSString *)domain
+- (BOOL) stopProcessWithDomain: (NSString *)domain error: (NSError **)error
 {
     NSTask *process = [_processes objectForKey: domain];
     
@@ -324,7 +478,7 @@ static NSString *SCSystemNamespace = nil;
     return NO;
 }
 
-- (BOOL) suspendProcessWithDomain: (NSString *)domain
+- (BOOL) suspendProcessWithDomain: (NSString *)domain error: (NSError **)error
 {
     NSTask *process = [_processes objectForKey: domain];
     
@@ -338,12 +492,84 @@ static NSString *SCSystemNamespace = nil;
 
 - (void) loadConfigList
 {
-
+    [self checkConfigFileUpdate];
 }
 
 - (void) saveConfigList
 {
+    // TODO: Write the code to sync the _processes ivar and the config file
+}
 
+/**
+ * Returns a list of Etoile system processes invisible to the user.
+ *
+ * This list is used by the application manager to determine which
+ * apps it should ommit from its output and from terminating when
+ * shutting down gracefully.
+ *
+ * @return An array of process names of processes to be hidden.
+ */
+- (NSArray *) hiddenProcesses
+{
+    NSMutableArray *array = 
+            [NSMutableArray arrayWithCapacity: [_processes count]];
+    NSEnumerator *e = [_processes objectEnumerator];
+    SCTask *processesEntry;
+    
+    while ((processesEntry = [e nextObject]) != nil)
+    {
+        if ([processesEntry isHidden])
+        {
+            // NOTE: we could a Name key to the Task config file schema rather
+            // than always extracting the name from the task/executable path.
+            [array addObject: [[processesEntry launchPath] lastPathComponent]];
+        }
+    }
+    
+    return [[array copy] autorelease];
+}
+
+/**
+ * Gracefully terminates all workspace processes at log out or power
+ * off time.
+ *
+ * @return YES if the log out/power off operation can proceed, NO
+ *      if an app requested the operation to be halted.
+ */
+- (BOOL) gracefullyTerminateAllProcessesOnOperation: (NSString *)op
+{
+  // TODO
+
+  return YES;
+}
+
+- (oneway void) logOutAndPowerOff: (BOOL) powerOff
+{
+  NSString * operation;
+
+  if (powerOff == NO)
+    {
+      operation = _(@"Log Out");
+    }
+  else
+    {
+      operation = _(@"Power Off");
+    }
+
+  // close all apps and aftewards workspace processes gracefully
+    if ([[ApplicationManager sharedInstance]
+      gracefullyTerminateAllApplicationsOnOperation: operation] &&
+      [self gracefullyTerminateAllProcessesOnOperation: operation])
+    {
+      if (powerOff)
+        {
+          // TODO - initiate the power off process here
+        }
+
+      // and go away
+      //[NSApp terminate: self];
+      exit(0);
+    }
 }
 
 @end
@@ -354,6 +580,240 @@ static NSString *SCSystemNamespace = nil;
 
 @implementation SCSystem (HelperMethodsPrivate)
 
-// FIXME: Insert modified methods from WorkspaceProcessManager by Saso Kiselkov here.
+/**
+ * Launches a workspace process. This method is special in that if launching
+ * the process fails, it queries the user whether to log out (fatal failure),
+ * retry launching it or ignore it.
+ *
+ * @param processDescription A description dictionary of the process
+ *      which to launch.
+ */
+- (void) startProcessWithUserFeedbackForDomain: (NSString *)domain
+{
+    NSError *error;
+    
+    relaunchProcess:
+    if (![self startProcessWithDomain: domain error: &error])
+    {
+        int result;
+    
+        result = NSRunAlertPanel(_(@"Failed to launch the process"),
+            _(@"Failed to launch the process \"%@\"\n"
+            @"Reason: %@.\n"),
+            _(@"Log Out"), _(@"Retry"), _(@"Ignore"),
+            [[_processes objectForKey: domain] launchPath],
+            [[error userInfo] objectForKey: NSLocalizedDescriptionKey]);
+    
+        switch (result)
+        {
+            case NSAlertDefaultReturn:
+                [NSApp terminate: self];
+            case NSAlertAlternateReturn:
+                goto relaunchProcess;
+            default:
+                break;
+        }
+    }
+}
+
+/*
+ * Config file private methods
+ */
+
+/**
+ * Finds the Etoile system config file for the receiver and starts the file's
+ * monitoring (watching for changes to the file).
+ *
+ * The config file is located in the following order:
+ *
+ * - first the user defaults database is searched for a key named
+ *      "EtoileSystemTaskListFile". The path may contain a '~'
+ *      abbreviation - this will be expanded according to standard
+ *      shell expansion rules.
+ * - next, the code looks for the file in
+ *      $GNUSTEP_USER_ROOT/Etoile/SystemTaskList.plist
+ * - next, the code tries all other domains' Library subdirectory
+ *      "Etoile/SystemTaskList.plist"
+ * - if even that fails, the file "SystemTaskList.plist" is looked
+ *      for inside the app bundle's resources files.
+ *
+ * If everything fails, no process set is loaded and a warning message
+ * is printed.
+ */
+- (void) findConfigFileAndStartUpdateMonitoring
+{
+    NSString *tmp;
+    NSString *configPath;
+    NSEnumerator *e;
+    NSMutableArray *searchPaths = [NSMutableArray array];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    
+    // try looking in the user defaults
+    tmp = [[NSUserDefaults standardUserDefaults]
+        objectForKey: @"EtoileSystemTaskListFile"];
+    if (tmp != nil)
+    {
+        [searchPaths addObject: [tmp stringByExpandingTildeInPath]];
+    }
+    
+    #define SUFFIX_PROC_SET_PATH(__X) [[(__X) \
+    stringByAppendingPathComponent: @"Etoile"] \
+    stringByAppendingPathComponent: @"SystemTaskList.plist"]
+    // if that fails, try
+    // $GNUSTEP_USER_ROOT/Library/EtoileWorkspace/WorkspaceProcessSet.plist
+    tmp = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
+        NSUserDomainMask, YES) objectAtIndex: 0];
+    [searchPaths addObject: SUFFIX_PROC_SET_PATH(tmp)];
+    
+    // and if that fails, try all domains
+    e = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
+        NSLocalDomainMask | NSNetworkDomainMask | NSSystemDomainMask, YES)
+        objectEnumerator];
+    while ((tmp = [e nextObject]) != nil)
+    {
+        [searchPaths addObject: SUFFIX_PROC_SET_PATH(tmp)];
+    }
+    #undef SUFFIX_PROC_SET_PATH
+    
+    // finally, try the application bundle's WorkspaceProcessSet.plist resource
+    tmp = [[NSBundle mainBundle] pathForResource: @"SystemTaskList"
+                                            ofType: @"plist"];
+    if (tmp != nil)
+    {
+        [searchPaths addObject: tmp];
+    }
+    
+    e = [searchPaths objectEnumerator];
+    while ((configPath = [e nextObject]) != nil)
+    {
+        if ([fm isReadableFileAtPath: configPath])
+        {
+            break;
+        }
+    }
+    
+    if (configPath != nil)
+    {
+        NSInvocation * inv;
+    
+        ASSIGN(configFilePath, configPath);
+    
+        inv = NS_MESSAGE(self, checkConfigFileUpdate);
+        ASSIGN(monitoringTimer, [NSTimer scheduledTimerWithTimeInterval: 2.0
+                                                             invocation: inv
+                                                                repeats: YES]);
+    }
+    else
+    {
+        NSLog(_(@"WARNING: no usable workspace process set file found. "
+                @"I'm not going to do workspace process management."));
+    }
+}
+
+/** This method is called by -loadConfigFile. The parsing of the config file 
+    and the update of the running processes is let to -synchronizeProcessesWithConfigFile 
+    method. */
+- (void) checkConfigFileUpdate
+{
+    NSDate *latestModificationDate = [[[NSFileManager defaultManager]
+        fileAttributesAtPath: configFilePath traverseLink: YES]
+        fileModificationDate];
+    
+    if ([latestModificationDate compare: modificationDate] ==
+        NSOrderedDescending)
+    {
+        NSDebugLLog(@"Etoile System",
+            @"Config file %@ changed, reloading...", configFilePath);
+    
+        [self synchronizeProcessesWithConfigFile];
+     }
+}
+
+/**
+ * Refreshes the processes list from the config file and modifies the
+ * running processes accordingly - kills those which are not supposed
+ * to be there and starts the new ones.
+ */
+- (void) synchronizeProcessesWithConfigFile
+{
+    NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
+    NSDictionary *newProcessTable;
+    NSDictionary *fileAttributes = [[NSFileManager defaultManager]
+            fileAttributesAtPath: configFilePath traverseLink: YES];
+
+    newProcessTable = [NSDictionary dictionaryWithContentsOfFile: configFilePath];
+    if (newProcessTable != nil)
+    {
+        NSEnumerator *e;
+        NSString *domain;
+
+      // kill any old, left-over processes or changed processes.
+      // N.B. we can't use -keyEnumerator here, because it isn't guaranteed
+      // that the array over which the enumerator enumerates won't change
+      // as we remove left-over process entries from the underlying dict.
+        e = [[_processes allKeys] objectEnumerator];
+        while ((domain = [e nextObject]) != nil)
+        {
+            SCTask *oldEntry = [_processes objectForKey: domain],
+            *newEntry = [newProcessTable objectForKey: domain];
+
+            /* If this entry isn't defined in the config file now, we must stop it. */
+            if (newEntry == nil)
+            {
+                [[NSNotificationCenter defaultCenter] removeObserver: self
+                    name: nil object: oldEntry];
+                // NOTE: The next line is equivalent to [oldEntry terminate]; 
+                // with extra checks.
+                [self stopProcessWithDomain: domain error: NULL];
+                [_processes removeObjectForKey: domain];
+            }
+        }
+
+      // and bring in new processes
+        e = [newProcessTable keyEnumerator];
+        while ((domain = [e nextObject]) != nil)
+        {
+            if ([_processes objectForKey: domain] == nil)
+            {
+                NSDictionary *processInfo = [newProcessTable objectForKey: domain]; 
+            
+                // FIXME: Add support for Argument and Persistent keys as 
+                // described in Task config file schema (see EtoileSystem.h).
+                SCTask *entry = [SCTask taskWithLaunchPath: [processInfo objectForKey: @"LaunchPath"] 
+                    onDemand: [[processInfo objectForKey: @"OnDemand"] boolValue]
+                    withUserName: [processInfo objectForKey: @"UserName"]];
+
+                [_processes setObject: entry forKey: domain];
+                [self startProcessWithDomain: domain error: NULL];
+            }
+        }
+    }
+    else
+    {
+        NSLog(_(@"WARNING: unable to read SystemTaskTable file."));
+    }
+
+    ASSIGN(modificationDate, [fileAttributes fileModificationDate]);
+}
+
+/**
+ * Notification method invoked when a workspace process terminates. This method
+ * causes the given process to be relaunched again. Note the process isn't
+ * relaunched when it is stopped by calling -stopProcessForDomain:.
+ */
+- (void) processTerminated: (NSNotification *)notif
+{
+    SCTask *task = [notif object];
+    NSString *domain = [[_processes allKeysForObject: task] objectAtIndex: 0];
+
+    /* We relaunch every processes that exit and still referenced by the 
+        process table, unless they are special daemons launched on demand 
+        (in other words, not always running). */
+    // FIXME: Checks the process isn't stopped by -stopProcessForDomain:.
+    if (domain != nil && [task launchOnDemand] == NO)
+    {
+        [self startProcessWithDomain: domain error: NULL];
+    }
+}
 
 @end

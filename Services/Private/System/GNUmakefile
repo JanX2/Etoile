@@ -4,6 +4,8 @@ ADDITIONAL_OBJCFLAGS = -Wno-import
 
 GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 
+SUBPROJECTS = WorkspaceCommKit
+
 # That's not the perfect solution, have to improve this when no admin access is 
 # possible. Finally we should install on /usr/bin when a package dependency
 # system is used for the deployment.
@@ -16,6 +18,10 @@ GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 # TOOL_NAME = EtoileSystem
 TOOL_NAME = etoile_system
 VERSION = 0.1
+
+# FIXME: When you take in account System can be use without any graphical UI 
+# loaded, linking AppKit by default is bad.
+$(TOOL_NAME)_TOOL_LIBS = -lgnustep-gui
 
 #
 # Class files
@@ -42,5 +48,7 @@ $(TOOL_NAME)_LOCALIZED_RESOURCE_FILES = $(sort $(notdir $(wildcard *.lproj/*)))
 $(TOOL_NAME)_C_FILES =
 
 -include GNUmakefile.preamble
+include $(GNUSTEP_MAKEFILES)/aggregate.make
+include ../../../etoile.make
 include $(GNUSTEP_MAKEFILES)/tool.make
 -include GNUmakefile.postamble
