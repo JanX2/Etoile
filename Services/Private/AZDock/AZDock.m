@@ -366,7 +366,9 @@ static AZDock *sharedInstance;
 {
   Atom atom = event->xclient.message_type;
   if (atom == X_NET_NUMBER_OF_DESKTOPS) {
+    /* For some reason, this never happens */
     [workspaceView setNumberOfWorkspaces: event->xclient.data.l[0]];
+    //[workspaceView setNumberOfWorkspaces: [[NSScreen mainScreen] numberOfWorkspaces]];
   }
 }
 
@@ -384,6 +386,8 @@ static AZDock *sharedInstance;
       [workspaceView setCurrentWorkspace: [[iconWindow screen] currentWorkspace]];
     } else if (atom == X_NET_DESKTOP_NAMES) {
       [workspaceView setWorkspaceNames: [[iconWindow screen] namesOfWorkspaces]];
+    } else if (atom == X_NET_NUMBER_OF_DESKTOPS) {
+      [workspaceView setNumberOfWorkspaces: [[iconWindow screen] numberOfWorkspaces]];
     }
     return;
   }

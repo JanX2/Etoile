@@ -121,6 +121,7 @@
 - (void) setApplicationBookmarkStore: (BKBookmarkStore *) store
 {
   appStore = store;
+  [self updateApplicationMenu];
 }
 
 - (void) mouseDown: (NSEvent *) event

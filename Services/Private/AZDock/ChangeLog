@@ -1,3 +1,7 @@
+2006-10-20 Yen-Ju Chen <yjchenx at gmail>
+
+	* Properly handle workspaces if it starts before window manager.
+
 2006-10-18 Yen-Ju Chen <yjchenx at gmail>
 
 	* Move workspace switcher into its own submenu.
