@@ -37,22 +37,19 @@
   [CKItem addPropertiesAndTypes: _propTypes];
 }
 
-#if 0
 + (CKSearchElement*) searchElementForProperty: (NSString*) property 
-				       label: (NSString*) label 
-					 key: (NSString*) key 
-				       value: (id) value 
-				  comparison: (CKSearchComparison) comparison
+				        label: (NSString*) label 
+				 	  key: (NSString*) key 
+				        value: (id) value 
+				   comparison: (CKSearchComparison) comparison
 {
-  return [[[CKRecordSearchElement alloc]
-	    initWithProperty: property
-	    label: label
-	    key: key
-	    value: value
-	    comparison: comparison]
-	   autorelease];
+  return AUTORELEASE([[CKRecordSearchElement alloc]
+	                       initWithProperty: property
+	                       label: label
+	                       key: key
+	                       value: value
+	                       comparison: comparison]);
 }
-#endif
 
 - (id) valueForProperty: (NSString*) property
 {

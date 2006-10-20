@@ -22,6 +22,7 @@
 #import <CollectionKit/CKRecord.h>
 #import <CollectionKit/CKItem.h>
 #import <CollectionKit/CKGroup.h>
+#import <CollectionKit/CKSearchElement.h>
 #import "GNUstep.h"
 
 @interface CKCollection (CKPrivate)
@@ -243,18 +244,18 @@
 @end
   
 @implementation CKCollection
-#if 0
 - (NSArray*) subgroupsOfGroup: (CKGroup*) group
 	matchingSearchElement: (CKSearchElement*) search
 {
   NSMutableArray *arr;
-  NSEnumerator *e; CKGroup *g;
+  NSEnumerator *e; 
+  CKGroup *g;
 
   arr = [NSMutableArray array];
   e = [[group subgroups] objectEnumerator];
   while((g = [e nextObject]))
     {
-      if([search matchesRecord: g])
+      if ([search matchesRecord: g])
 	[arr addObject: g];
       [arr addObjectsFromArray: [self subgroupsOfGroup: g
 				      matchingSearchElement: search]];
@@ -265,10 +266,12 @@
 - (NSArray*) recordsMatchingSearchElement: (CKSearchElement*) search
 {
   NSMutableArray *arr;
-  NSEnumerator *e; ADPerson *p; ADGroup *g;
+  NSEnumerator *e;
+  CKItem *p;
+  CKGroup *g;
 
   arr = [NSMutableArray array];
-  e = [[self people] objectEnumerator];
+  e = [[self items] objectEnumerator];
   while((p = [e nextObject]))
     if([search matchesRecord: p])
       [arr addObject: p];
@@ -283,7 +286,6 @@
     }
   return [NSArray arrayWithArray: arr];
 }
-#endif
 
 - (id) initWithLocation: (NSString*) location 
 {
@@ -422,8 +424,10 @@
   } else {
     // Should we raise an alert or exception
   }
+#if 0
   NSString *pidStr = [NSString stringWithFormat: @"%d",
 		     [[NSProcessInfo processInfo] processIdentifier]];
+#endif
   [[NSDistributedNotificationCenter defaultCenter]
     postNotificationName: CKCollectionChangedExternallyNotification
     object: [self className]

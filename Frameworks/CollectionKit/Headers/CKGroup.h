@@ -21,6 +21,7 @@
 #import <CollectionKit/CKRecord.h>
 #import <CollectionKit/CKItem.h>
 #import <CollectionKit/CKTypedefs.h>
+#import <CollectionKit/CKSearchElement.h>
 
 @interface CKGroup: CKRecord
 
@@ -39,12 +40,10 @@
 - (NSString*) distributionIdentifierForProperty: (NSString *) property
 					   item: (CKItem *) item;
 
-#if 0
 + (CKSearchElement*) searchElementForProperty: (NSString*) property
-				       label: (NSString*) label
-					 key: (NSString*) key
-				       value: (id) value
-				  comparison: (CKSearchComparison) comparison;
-#endif
+				        label: (NSString*) label
+				 	  key: (NSString*) key
+				        value: (id) value
+				   comparison: (CKSearchComparison) comparison;
 @end
 

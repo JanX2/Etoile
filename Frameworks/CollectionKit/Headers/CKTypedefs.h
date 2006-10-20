@@ -41,36 +41,27 @@ typedef enum {
   CKMultiDataProperty         = CKMultiValueMask | CKDataProperty
 } CKPropertyType;
 
-#if 0
 // ================================================================
 //      Search APIs
 // ================================================================
 
 typedef enum {
-  ADEqual,
-  ADNotEqual,
-  ADLessThan,
-  ADLessThanOrEqual,
-  ADGreaterThan,
-  ADGreaterThanOrEqual,
-  ADEqualCaseInsensitive,
-  ADContainsSubString,
-  ADContainsSubStringCaseInsensitive,
-  ADPrefixMatch,
-  ADPrefixMatchCaseInsensitive
-} ADSearchComparison;
+  CKEqual,
+  CKNotEqual,
+  CKLessThan,
+  CKLessThanOrEqual,
+  CKGreaterThan,
+  CKGreaterThanOrEqual,
+  CKEqualCaseInsensitive,
+  CKContainsSubString,
+  CKContainsSubStringCaseInsensitive,
+  CKPrefixMatch,
+  CKPrefixMatchCaseInsensitive
+} CKSearchComparison;
 
 typedef enum {
-  ADSearchAnd,
-  ADSearchOr
-} ADSearchConjunction;
-
-typedef int ADImageTag;
-
-typedef enum {
-  ADScreenNameLastNameFirst = 0,
-  ADScreenNameFirstNameFirst = 1
-} ADScreenNameFormat; // EXTENSION
-#endif
+  CKSearchAnd,
+  CKSearchOr
+} CKSearchConjunction;
 
 #endif /* _CollectionKit_Typedefs_ */

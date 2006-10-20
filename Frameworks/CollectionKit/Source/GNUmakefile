@@ -3,6 +3,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME = CollectionKit_Source
 
 CollectionKit_Source_OBJC_FILES = \
+	CKSearchElement.m \
 	CKCollection.m \
 	CKGroup.m \
 	CKItem.m \
@@ -12,6 +13,7 @@ CollectionKit_Source_OBJC_FILES = \
 
 ifeq ($(test), yes)
 CollectionKit_Source_OBJC_FILES +=  \
+	TestSearchElement.m \
 	TestCollection.m \
 	TestRecord.m \
 	TestMultiValue.m 

@@ -124,22 +124,19 @@
   return nil;
 }
 
-#if 0
 + (CKSearchElement*) searchElementForProperty: (NSString*) property 
 					label: (NSString*) label 
 					  key: (NSString*) key 
 					value: (id) value 
 				   comparison: (CKSearchComparison) comparison
 {
-  return [[[CKRecordSearchElement alloc]
+  return AUTORELEASE([[CKRecordSearchElement alloc]
 	    initWithProperty: property
 	    label: label
 	    key: key
 	    value: value
-	    comparison: comparison]
-	   autorelease];
+	    comparison: comparison]);
 }
-#endif
 
 - (BOOL) setValue: (id) value
       forProperty: (NSString *) property

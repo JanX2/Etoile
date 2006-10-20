@@ -25,6 +25,7 @@
 @class CKRecord;
 @class CKItem;
 @class CKGroup;
+@class CKSearchElement;
 
 /* Collection is saved as property list of NSDictionary.
  * Keys are UID of records, which can be item or group.
@@ -49,8 +50,7 @@
              groupClass: (Class) groupClass;
 
 - (NSString*) location;
-
-//- (NSArray*) recordsMatchingSearchElement: (CKSearchElement*) search;
+- (NSArray*) recordsMatchingSearchElement: (CKSearchElement*) search;
 
 /** Reload from saved database. Used when database is externally modified **/
 - (BOOL) reload; 
