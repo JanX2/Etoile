@@ -1,3 +1,9 @@
+2006-10-20 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+    * Put a note that it does not work with OniGuruma 5 yet.
+      If OgreKit does not update for OniGuruma,
+      we have to do it ourselves.
+
 2006-09-27 Quentin Mathe <qmathe@club-internet.fr>
 
     * GNUmakefile: Updated to include etoile.make. This allows applications
