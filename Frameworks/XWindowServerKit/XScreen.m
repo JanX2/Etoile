@@ -92,7 +92,13 @@ NSString *XCurrentWorkspaceDidChangeNotification = @"XCurrentWorkspaceDidChangeN
 
 - (int) numberOfWorkspaces
 {
-  return [self intValueOfProperty: "_NET_NUMBER_OF_DESKTOPS"];
+  int num = [self intValueOfProperty: "_NET_NUMBER_OF_DESKTOPS"];
+  if (num < 0) {
+    /* Failed to get number of desktop.
+     * Return 0 instead of -1 so that it is less confusing. */
+    num = 0;
+  }
+  return num;
 }
 
 - (NSArray *) namesOfWorkspaces;
