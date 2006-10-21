@@ -1,6 +1,7 @@
 2006-10-20 Yen-Ju Chen <yjchenx at gmail>
 
 	* Properly handle workspaces if it starts before window manager.
+	* Fix adding directories but not .app into recent applications.
 
 2006-10-18 Yen-Ju Chen <yjchenx at gmail>
 

@@ -109,6 +109,12 @@
       a = [[array objectAtIndex: i] stringByAppendingPathComponent: command];
       if ([fm fileExistsAtPath: a isDirectory: &isDir])
       {
+	if ((isDir == YES) && 
+	    ([[command pathExtension] isEqualToString: @"app"] == NO))
+	{
+	  /* A directory but not .app */
+	  continue;
+	}
         ASSIGN(command, a);
         found = YES;
         break;
