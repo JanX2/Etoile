@@ -1,8 +1,6 @@
-#include <AppKit/AppKit.h>
-#include <X11/Xlib.h>
-#include <XWindowServerKit/XWindow.h>
-
-@class AZDockView;
+#import <AppKit/AppKit.h>
+#import <XWindowServerKit/XWindow.h>
+#import "AZDockView.h"
 
 typedef enum _AZDockType {
   AZDockGNUstepApplication,
@@ -11,40 +9,22 @@ typedef enum _AZDockType {
   AZDockFile
 } AZDockType;
 
-/* Dock app can be a x window application, a gnustep application 
- * or a file on harddisk */
+/* Post when this dock application terminates and should be remove from dock.
+ * Object is terminated application. */
+extern NSString *const AZApplicationDidTerminateNotification;
+
 @interface AZDockApp: NSObject
 {
-  Window groupWindow; /* Keep a record of group leader for GNUstep. */
   AZDockType type;
-  NSMutableArray *xwindows;
-  XWindow *window;
   AZDockView *view;
+  XWindow *window;
   NSImage *icon;
-  NSString *wm_class;
-  NSString *wm_instance;
 
-  NSString *command; /* AppName for GNUstep or XGetCommand() for the rest */
+  NSString *command; /* Command to launch this application */
 }
-
-- (id) initWithXWindow: (Window) win;
 
 - (AZDockType) type;
 - (NSString *) command;
-- (Window) groupWindow;
-
-/* Return NO is the win does not belong to this view */
-- (BOOL) acceptXWindow: (Window) win;
-
-/* Return YES if it has win and remove it successfully.
- * If win is the group window, all x windows in this application 
- * will be remove */
-- (BOOL) removeXWindow: (Window) win;
-
-/* Return number of XWindows */
-- (unsigned int) numberOfXWindows;
-
-/* return window for this application */
 - (XWindow *) window;
 
 @end

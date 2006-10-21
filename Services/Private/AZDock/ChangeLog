@@ -1,3 +1,7 @@
+2006-10-21 Yen-Ju Chen <yjchenx at gmail>
+
+	* Split AZDockApp into AZXWindowApp and AZGNUstepApp.
+
 2006-10-20 Yen-Ju Chen <yjchenx at gmail>
 
 	* Properly handle workspaces if it starts before window manager.

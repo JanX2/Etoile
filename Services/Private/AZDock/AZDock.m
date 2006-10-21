@@ -1,5 +1,6 @@
 #import "AZDock.h"
-#import "AZDockApp.h"
+#import "AZXWindowApp.h"
+#import "AZGNUstepApp.h"
 #import "AZWorkspaceView.h"
 #import <GNUstepGUI/GSDisplayServer.h>
 #import <X11/Xatom.h>
@@ -47,35 +48,6 @@ static AZDock *sharedInstance;
   return NO;
 }
 
-- (void) removeApplicationWithoutWindow
-{
-  /* Remove emtpy dock app */
-  int m;
-  BOOL remove;
-  for (m = [apps count]-1; m > -1; m--) {
-    remove = NO;
-    AZDockApp *app = [apps objectAtIndex: m];
-    if ([app numberOfXWindows] == 0) {
-      if ([app type] == AZDockGNUstepApplication) {
-        /* Check for GNUstep. Only remove when group window is 0
-	 * because it can be hiden, in which case, it has no windows
-	 * but group window. */
-	if ([app groupWindow] == 0) {
-	  remove = YES;
-	}
-      } else {
-	/* For any other application, remove it when it has no windows */
-	remove = YES;
-      }
-      if (remove)  {
-        /* Do not use -close because it trigger another _net_client_list event */
-        [[app window] orderOut: self];
-        [apps removeObjectAtIndex: m];
-      }
-    }
-  }
-}
-
 - (void) addBookmark: (AZDockApp *) app
 {
   /* Add application into bookmark.
@@ -118,6 +90,35 @@ static AZDock *sharedInstance;
     }
     [store save];
   }
+}
+
+- (void) removeMissingGNUstepApplication
+{
+  AZDockApp *app;
+  int k;
+  NSArray *allApps = [[NSWorkspace sharedWorkspace] launchedApplications];
+  NSMutableArray *allNames = [[NSMutableArray alloc] init];
+  NSString *name;
+  for (k = 0; k < [allApps count]; k++) {
+    [allNames addObject: [[(NSDictionary *)[allApps objectAtIndex: k] objectForKey: @"NSApplicationName"] stringByDeletingPathExtension]];
+  }
+
+  /* Figure out which one is destroyed */
+  for (k = 0; k < [apps count]; k++) {
+    app = [apps objectAtIndex: k];
+    if ([app type] == AZDockGNUstepApplication) {
+      name = [(AZGNUstepApp *)app applicationName];
+      if ([allNames containsObject: name] == NO)
+      {
+        [[app window] orderOut: self];
+        [apps removeObject: app];
+        [gnusteps removeObject: name];
+        k--;
+      }
+    }
+  }
+  DESTROY(allNames);
+  [self organizeApplications];
 }
 
 /** End of private */
@@ -198,31 +199,20 @@ static AZDock *sharedInstance;
 - (void) connectionDidDie: (NSNotification *) not
 {
   /* An application terminates. Try to find out which one */
-  NSArray *array = [[NSWorkspace sharedWorkspace] launchedApplications];
-  NSMutableArray *ma = [[NSMutableArray alloc] init];
-  int i;
-  for (i = 0; i < [array count]; i++) {
-    [ma addObject: [(NSDictionary *)[array objectAtIndex: i] objectForKey: @"NSApplicationName"]];
-  }
-
-  AZDockApp *app;
-  for (i = 0; i < [apps count]; i++) {
-    app = [apps objectAtIndex: i];
-    if ([app type] == AZDockGNUstepApplication) {
-      if ([ma containsObject: [app command]] == NO) {
-	[[app window] orderOut: self];
-	[apps removeObjectAtIndex: i];
-	break;
-      }
-    } 
-  }
-  [self organizeApplications];
-  DESTROY(ma);
+  [self removeMissingGNUstepApplication];
 }
 
+- (void) applicationDidTerminate: (NSNotification *) not
+{
+  AZDockApp *app = [not object];
+  [[app window] orderOut: self];
+  [apps removeObject: app];
+}
 
 - (void) readClientList
 {
+//  [self readGNUstepApplications];
+
   CREATE_AUTORELEASE_POOL(x);
   Window *win = NULL;
   unsigned long count;
@@ -233,11 +223,10 @@ static AZDock *sharedInstance;
   int format_ret;
   unsigned long after_ret;
   int result = XGetWindowProperty(dpy, root_win, X_NET_CLIENT_LIST,
-	                        0, 0x7FFFFFFF, False, XA_WINDOW,
-			        &type_ret, &format_ret, &count,
-			        &after_ret, (unsigned char **)&win);
+                                  0, 0x7FFFFFFF, False, XA_WINDOW,
+                                  &type_ret, &format_ret, &count,
+                                  &after_ret, (unsigned char **)&win);
   if ((result != Success) || (count < 1) || (win == NULL)) {
-    NSLog(@"Error: cannot get client list");
     return;
   }
 
@@ -245,20 +234,22 @@ static AZDock *sharedInstance;
   for (m = 0; m < count; m++) {
     for (k = 0; k < [lastClientList count]; k++) {
       if (win[m] == [[lastClientList objectAtIndex: k] unsignedLongValue]) {
-	[lastClientList removeObjectAtIndex: k];
-	k--;
+        [lastClientList removeObjectAtIndex: k];
+        k--;
       }
     }
   }
   for (m = 0; m < [lastClientList count]; m++) {
     for (k = 0; k < [apps count]; k++) {
-      if ([[apps objectAtIndex: k] removeXWindow: [[lastClientList objectAtIndex: m] unsignedLongValue]])
-      {
-        break;
+      app = [apps objectAtIndex: k];
+      if ([app type] == AZDockXWindowApplication) {
+        if ([(AZXWindowApp *)app removeXWindow: [[lastClientList objectAtIndex: m] unsignedLongValue]])
+          {
+            break;
+	  }
       }
     }
   }
-  [self removeApplicationWithoutWindow];
 
   [lastClientList removeAllObjects];
 
@@ -276,10 +267,11 @@ static AZDock *sharedInstance;
       Atom *states = XWindowNetStates(win[i], &kcount);
       for (k = 0; k < kcount; k++) {
         if ((states[k] == X_NET_WM_STATE_SKIP_PAGER) ||
-	    (states[k] == X_NET_WM_STATE_SKIP_TASKBAR)) {
+            (states[k] == X_NET_WM_STATE_SKIP_TASKBAR)) 
+	{
 	  skip = YES;
 	  break;
-        }
+	}
       }
     }
 
@@ -287,7 +279,18 @@ static AZDock *sharedInstance;
     {
       Window tr = None;
       if (XGetTransientForHint(dpy, win[i], &tr)) {
-	skip = YES;
+        skip = YES;
+      }
+    }
+
+    NSString *wm_class, *wm_instance;
+    BOOL result = XWindowClassHint(win[i], &wm_class, &wm_instance);
+    if (result) {
+      if ([wm_class isEqualToString: @"GNUstep"]) {
+	if ([gnusteps containsObject: wm_instance]) {
+          [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
+          skip = YES;
+	}
       }
     }
 
@@ -295,30 +298,38 @@ static AZDock *sharedInstance;
     for (j = 0; j < [apps count]; j++)
     {
       app = [apps objectAtIndex: j];
-      if ([app acceptXWindow: win[i]]) {
-	/* Cache xwindow */
-	[lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
-	//[self addBookmark: app];
-	skip = YES;
-	break;
+      if ([app type] == AZDockXWindowApplication) {
+        if ([(AZXWindowApp *)app acceptXWindow: win[i]]) {
+          /* Cache xwindow */
+          [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
+          //[self addBookmark: app];
+	  skip = YES;
+          break;
+        }
       }
     }
-
+   
     if (skip)
       continue;
 
     /* No one takes it. Create new dock apps */
     /* Cache xwindow */
-    [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
-    app = [[AZDockApp alloc] initWithXWindow: win[i]];
+    if (result && [wm_class isEqualToString: @"GNUstep"]) {
+      app = [[AZGNUstepApp alloc] initWithApplicationName: wm_instance];
+      [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
+      [gnusteps addObject: wm_instance];
+    } else {
+      app = [[AZXWindowApp alloc] initWithXWindow: win[i]];
+      [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
+    }
     [apps addObject: app];
     [self addBookmark: app];
+    [[app window] orderFront: self];
     DESTROY(app);
 
     /* Listen to change on client */
 #if 0
-    XSelectInput(dpy, win[i], 
-		 (PropertyChangeMask|StructureNotifyMask));
+    XSelectInput(dpy, win[i], (PropertyChangeMask|StructureNotifyMask));
 #endif
   }
   DESTROY(x);
@@ -350,16 +361,7 @@ static AZDock *sharedInstance;
 
 - (void) handleDestroyNotify: (XEvent *) event
 {
-  int i;
-  for (i = 0; i < [apps count]; i++) {
-    if ([[apps objectAtIndex: i] removeXWindow: event->xdestroywindow.window]) {
-      break; /* Save time */
-    }
-  }
-  /* Need to remove empty application here because it will not trigger
-   * an event for readClientList */
-  [self removeApplicationWithoutWindow];
-  [self organizeApplications];
+  [self removeMissingGNUstepApplication];
 }
 
 - (void) handleClientMessage: (XEvent *) event
@@ -415,10 +417,7 @@ static AZDock *sharedInstance;
     switch (event.type) {
 #if 0
       case Expose:
-	/* This is only for AZTaskbar.
-	 * Make sure main window is focused (appicon may has the focus).
-	 */
-	[server processEvent: &event];
+	[self handleExpose: &event];
         break;
       case ReparentNotify:
 	[self handleReparentNotify: &event];
@@ -439,10 +438,7 @@ static AZDock *sharedInstance;
       case DestroyNotify:
 	/* We need to track the destroy notify only for GNUstep application
 	 * because if GNUstep application is hiden, all windows is unmaped
-	 * and will not show up in client_list by window manager.
-	 * In that case, AZDock will not remove it from the dock.
-	 * Only when the group window is destroyed, the GNUstep application
-	 * will be removed from the dock */
+	 * and will not show up in client_list by window manager. */
 	[self handleDestroyNotify: &event];
 	break;
       case PropertyNotify:
@@ -460,6 +456,7 @@ static AZDock *sharedInstance;
 {
   apps = [[NSMutableArray alloc] init];
   lastClientList = [[NSMutableArray alloc] init];
+  gnusteps = [[NSMutableArray alloc] init];
 
   server = GSCurrentServer();
   dpy = (Display *)[server serverDevice];
@@ -522,6 +519,11 @@ static AZDock *sharedInstance;
                     selector: @selector(connectionDidDie:)
                     name: NSConnectionDidDieNotification
 	            object: nil];
+  [[NSNotificationCenter defaultCenter]
+                    addObserver: self
+                    selector: @selector(applicationDidTerminate:)
+                    name: AZApplicationDidTerminateNotification 
+	            object: nil];
 }
 
 - (void) dealloc
@@ -530,6 +532,7 @@ static AZDock *sharedInstance;
   DESTROY(lastClientList);
   DESTROY(workspaceView);
   DESTROY(store);
+  DESTROY(gnusteps);
   [super dealloc];
 }
 

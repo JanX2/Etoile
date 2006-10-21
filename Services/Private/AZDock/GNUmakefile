@@ -9,6 +9,8 @@ DEPENDENCIES = \
 APP_NAME = AZDock
 
 AZDock_OBJC_FILES = \
+	AZGNUstepApp.m \
+	AZXWindowApp.m \
 	AZWorkspaceView.m \
 	AZDockView.m \
 	AZDockApp.m \
