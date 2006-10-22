@@ -49,6 +49,7 @@
     tasks running in background.
   */
 
+extern NSString * const EtoileSystemServerName;
 
 @interface SCSystem : NSObject
 {
@@ -74,7 +75,7 @@
 - (void) loadConfigList;
 - (void) saveConfigList;
 
-- (NSArray *) hiddenProcesses;
+- (NSArray *) maskedProcesses;
 - (BOOL) gracefullyTerminateAllProcessesOnOperation: (NSString *)op;
 
 - (oneway void) logOutAndPowerOff: (BOOL) powerOff;

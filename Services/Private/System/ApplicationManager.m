@@ -1,3 +1,31 @@
+/*
+	ApplicationManager.h
+ 
+	ApplicationManager class allows to monitor usual user applications (based 
+	on AppKit) to know which ones are running and be able to terminate them 
+	properly on request (log out, power off etc.).
+ 
+	Copyright (C) 2006 Saso Kiselkov
+ 
+	Author:  Saso Kiselkov 
+	         Quentin Mathe <qmathe@club-internet.fr>
+	Date:  March 2006
+ 
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
+ 
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	Lesser General Public License for more details.
+ 
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 // FIXME: When you take in account System can be use without any graphical UI 
 // loaded, linking AppKit by default is bad,thne  put this stuff in a bundle 
 // and load it only when necessary. Or may be put this stuff in another daemon.
@@ -12,9 +40,6 @@
 
 //#import "OSType.h"
 #import "EtoileSystem.h"
-
-// FIXME: Remove this import.
-#import "Controller.h"
 
 @interface NSApplication (GracefulAppTermination)
 
@@ -84,14 +109,14 @@ static ApplicationManager * shared = nil;
     [launchedApplications count]];
   NSEnumerator * e = [launchedApplications objectEnumerator];
   NSDictionary * entry;
-  NSArray * hiddenApps = [[SCSystem sharedInstance] hiddenProcesses];
+  NSArray * maskedApps = [[SCSystem serverInstance] maskedProcesses];
 
   while ((entry = [e nextObject]) != nil)
     {
       NSString * appName = [entry objectForKey: @"NSApplicationName"];
 
-      if (![hiddenApps containsObject: appName] &&
-          ![appName isEqualToString: EtoileWorkspaceServerAppName])
+      if (![maskedApps containsObject: appName] &&
+          ![appName isEqualToString: EtoileSystemServerName])
         {
           [array addObject: entry];
         }
@@ -194,7 +219,7 @@ static ApplicationManager * shared = nil;
  */
 - (BOOL) gracefullyTerminateAllApplicationsOnOperation: (NSString *) operation
 {
-  NSArray * ommitedApps = [[SCSystem sharedInstance] hiddenProcesses];
+  NSArray * ommitedApps = [[SCSystem serverInstance] maskedProcesses];
   NSEnumerator * e = [launchedApplications objectEnumerator];
   NSDictionary * appEntry;
   NSWorkspace * ws = [NSWorkspace sharedWorkspace];
@@ -210,8 +235,11 @@ static ApplicationManager * shared = nil;
         {
           continue;
         }
-
-      app = [ws connectToApplication: appName launch: NO];
+	// FIXME: -connectToApplication:launch: from WorkspaceCommKit doesn't work,
+	// wrongly triggering an NSConnection method something like 
+	// _services:forwardToProxy:. Therefore we use a private NSWorkspace method
+	// for now.
+      app = [ws _connectApplication: appName];
       if (app == nil)
         {
           NSLog(_(@"Warning: couldn't connect to application %@ at "

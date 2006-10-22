@@ -1,3 +1,38 @@
+2006-10-22  Quentin Mathe <qmathe@club-internet.fr>
+
+	This update enables requesting running applications the possibility to
+	log out, if they don't reply, they get killed. Very experimental!
+	* Controller.h:
+	* Controller.m:
+	Deleted.
+	* ApplicationManager.h:
+	* ApplicationManager.m:
+	Added LGPL license notices.
+	(-applicationShouldTerminateOnOperation:)
+	(-gracefullyTerminateAllApplicationsOnOperation:): 
+	Updated to match SCSystem changes. Now retrieve SCSystem instance directly
+	by calling -serverInstance instead of -sharedInstance which doesn't work
+	locally at this time.
+	(-gracefullyTerminateAllApplicationsOnOperation:): Modified to use private
+	NSWorkspace method -_connectApplication: instead of WorkspaceCommKit 
+	similarly named method.
+	* EtoileSystem.h:
+	* EtoileSystem.m:
+	Added some debugging logs. New 'path' ivar in SCTask. New constant 
+	EtoileSystemServerName, was EtoileWorkspaceServerAppName previously in
+	Controller.m.
+	(-[SCTask dealloc]):
+	(-[SCTask path]):
+	(-[SCTask name]):
+	New methods.
+	(-[SCSystem startProcessWithDomain:error:]): Improved to avoid starting 
+	several processes per domain.
+	(-[SCSystem maskedProcesses]): Renamed -hiddenProcesses method since such
+	tasks could be visible to the user (like MenuServer), they should just be
+	invisible to ApplicationManager.
+	(-[SCSystem gracefullyTerminateAllProcessesOnOperation:): Added early code 
+	skeleton.
+
 2006-10-19  Quentin Mathe <qmathe@club-internet.fr>
 
     Update to provide basic session management. At this time only 'log out' is

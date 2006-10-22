@@ -66,6 +66,7 @@
 static id serverInstance = nil;
 static id proxyInstance = nil;
 static NSString *SCSystemNamespace = nil;
+NSString * const EtoileSystemServerName = @"etoile_system";
 
 /* NSError related extensions */
 
@@ -136,6 +137,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
 @interface SCTask : NSConcreteUnixTask // NSConcreteTask
 {
+	NSString *path; /* The real path of the task, not the one of the launch 
+	                   wrapper like opentool. */
     NSString *launchIdentity;
     BOOL launchOnDemand;
     BOOL hidden;
@@ -148,6 +151,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 - (void) launchWithOpentoolUtility;
 - (void) launchWithOpenappUtility;
 - (void) launchForDomain: (NSString *)domain;
+
+- (NSString *) name;
 
 - (BOOL) launchOnDemand;
 - (BOOL) isHidden;
@@ -169,13 +174,22 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     SCTask *newTask = [[SCTask alloc] init];
     
     [newTask setLaunchPath: path];
+    ASSIGN(newTask->path, path);
     ASSIGN(newTask->launchIdentity, identity);
     
     newTask->launchOnDemand = lazily;
-    newTask->hidden = NO;
+    newTask->hidden = YES;
     newTask->stopped = NO;
     
     return [newTask autorelease];
+}
+
+- (void) dealloc
+{
+	TEST_RELEASE(path);
+	TEST_RELEASE(launchIdentity);
+	
+	[super dealloc];
 }
 
 // - (void) launchWithOpenUtility
@@ -228,6 +242,23 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
           return NO;
         } */
+}
+
+/** Returns the real path of the task, not the modified launch path which 
+    includes opentool/openapp launch wrapper. This allows to get the true task 
+    name without hurdles. */
+- (NSString *) path
+{
+	return [[path copy] autorelease];
+}
+
+/** Returns the name of the task executable based on -path value. */
+- (NSString *) name
+{
+	NSString *name = 
+		[[NSFileManager defaultManager] displayNameAtPath: [self path]];
+
+	return name;
 }
 
 - (BOOL) launchOnDemand
@@ -341,7 +372,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
         // config file.
         /* [_processes setObject: [SCTask taskWithLaunchPath: @"gdomap" onDemand: NO withUserName: @"root"] 
             forKey: @"/etoilesystem/tool/gdomap"]; */
-        [_processes setObject: [SCTask taskWithLaunchPath: @"gpbs"] 
+        /*[_processes setObject: [SCTask taskWithLaunchPath: @"gpbs"] 
             forKey: @"/etoilesystem/tool/gpbs"];
         [_processes setObject: [SCTask taskWithLaunchPath: @"gdnc"] 
             forKey: @"/etoilesystem/tool/gdnc"];
@@ -352,9 +383,9 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
         [_processes setObject: [SCTask taskWithLaunchPath: @"etoile_userSession"] 
             forKey: @"/etoilesystem/application/menuserver"];
         [_processes setObject: [SCTask taskWithLaunchPath: @"etoile_windowServer"] 
-            forKey: @"/etoilesystem/application/menuserver"];
+            forKey: @"/etoilesystem/application/menuserver"];*/
         [_processes setObject: [SCTask taskWithLaunchPath: @"EtoileMenuServer"] 
-            forKey: @"/etoilesystem/application/menuserver"]; 
+            forKey: @"/etoilesystem/application/menuserver"];
         
         return self;
     }
@@ -387,6 +418,10 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
         if ([process launchOnDemand] == NO)
             [self startProcessWithDomain: domain error: NULL]; //FIXME: Handles error properly.
     }
+    
+    /* We trigger the ApplicationManager singleton creation in order it 
+       starts to monitor user applications. The return value is ignored. */
+    [ApplicationManager sharedInstance];
 }
 
 // - (BOOL) startProcessWithDomain: (NSString *)domain 
@@ -409,23 +444,31 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
        ones from main function probably too) */
     NSArray *args = [NSArray arrayWithObjects: nil];
     
-    /* if ([process isRunning] == NO)
-           Look for an already running process with the same name.
-       Well, I'm not sure we should do this, but it could be nice, we would 
-       have to identify the process in one way or another (partially to not
-       compromise the security). 
+	/* Look for an already running process with the same domain.
+	   Well, I'm not sure we should do this, but it could be nice, we would 
+	   have to identify the process in one way or another (partially to not
+	   compromise the security). */
+	if (process == nil)
+	{
+		// FIXME: Set up an error explaing no process has been bound to this
+		// domain.
+		return NO;
+	}
 
-  oldTask = [processDescription objectForKey: @"Task"];
-  if (oldTask != nil)
-    {
-      [[NSNotificationCenter defaultCenter] removeObserver: self
-                                                      name: nil
-                                                    object: oldTask];
-    }
+	NSDebugLLog(@"SCSystem", @"Trying to start process %@ associated with domain %@", 
+		[process launchPath], domain);
+		
+    if ([process isRunning])
+	{
+		// FIXME: Set up an error explaing a process is already running for
+		//  this domain.
+		return NO;
+	}
+	else
+	{
+		NSDebugLLog(@"SCSystem", @"Will try to restart this process that already exited");
+	}
 
-  [processDescription setObject: task forKey: @"Task"];
-    */
-    
     // NOTE: the next line triggers an invalid argument exception, although the
     // array isn't nil.
     // [process setArguments: args];
@@ -507,9 +550,9 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
  * apps it should ommit from its output and from terminating when
  * shutting down gracefully.
  *
- * @return An array of process names of processes to be hidden.
+ * @return An array of process names of processes to be kept masked
  */
-- (NSArray *) hiddenProcesses
+- (NSArray *) maskedProcesses
 {
     NSMutableArray *array = 
             [NSMutableArray arrayWithCapacity: [_processes count]];
@@ -522,7 +565,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
         {
             // NOTE: we could a Name key to the Task config file schema rather
             // than always extracting the name from the task/executable path.
-            [array addObject: [[processesEntry launchPath] lastPathComponent]];
+            [array addObject: [processesEntry name]];
         }
     }
     
@@ -538,14 +581,31 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
  */
 - (BOOL) gracefullyTerminateAllProcessesOnOperation: (NSString *)op
 {
-  // TODO
-
+	SCTask *processToEnd = nil;
+	
+	while ((processToEnd = [[_processes allValues] lastObject]) != nil)
+	{
+		NSDebugLLog(@"SCSystem", @"Terminating process %@ associated with domain %@", [processToEnd launchPath], @"");
+		
+		NS_DURING
+			[processToEnd terminate];
+    	NS_HANDLER
+			/* SetNonNullError (error, EtoileSystemTaskTerminatingError,
+				 _(@"Error terminating program at %@: %@"), [process launchPath],
+					[localException reason]); */
+		NS_ENDHANDLER
+		
+		/* Now check termination status. If the process is still alive, we kill it. */
+	}
+	
   return YES;
 }
 
 - (oneway void) logOutAndPowerOff: (BOOL) powerOff
 {
   NSString * operation;
+  
+  NSDebugLLog(@"SCSystem", @"Log out requested");
 
   if (powerOff == NO)
     {
@@ -556,7 +616,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
       operation = _(@"Power Off");
     }
 
-  // close all apps and aftewards workspace processes gracefully
+  // close all apps and afterwards workspace processes gracefully
     if ([[ApplicationManager sharedInstance]
       gracefullyTerminateAllApplicationsOnOperation: operation] &&
       [self gracefullyTerminateAllProcessesOnOperation: operation])
