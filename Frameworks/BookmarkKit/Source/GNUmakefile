@@ -3,6 +3,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME = BookmarkKit_Source
 
 BookmarkKit_Source_OBJC_FILES = \
+	BKBookmarkView.m \
 	BKGroup.m \
 	BKBookmarkStore.m \
 	BKBookmark.m \

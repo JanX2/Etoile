@@ -5,6 +5,7 @@ BookmarkKit_HEADER_FILES = \
 	BKGlobals.h \
 	BKGroup.h \
 	BKBookmark.h \
+	BKBookmarkView.h \
 	BKBookmarkQuery.h \
 	BKBookmarkSearchResult.h \
 	BKBookmarkStore.h
