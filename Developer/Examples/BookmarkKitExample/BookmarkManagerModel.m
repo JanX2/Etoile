@@ -2,7 +2,6 @@
 #import "BookmarkManagerModel.h"
 #import <BookmarkKit/BookmarkKit.h>
 #import "BKTableView.h"
-#import "BKBookmarkView.h"
 #import "GNUstep.h"
 
 @implementation BookmarkManagerModel

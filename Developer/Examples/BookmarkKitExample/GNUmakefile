@@ -5,7 +5,6 @@ DEPENDENCIES = BookmarkKit
 APP_NAME = BookmarkManager
 
 BookmarkManager_OBJC_FILES = \
-	BKBookmarkView.m \
 	BKTableView.m \
 	BookmarkManagerModel.m \
 	BookmarkManagerView.m \

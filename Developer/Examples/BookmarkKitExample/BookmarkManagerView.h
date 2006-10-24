@@ -1,6 +1,6 @@
 #import <AppKit/AppKit.h>
+#import <BookmarkKit/BookmarkKit.h>
 #import "BKTableView.h"
-#import "BKBookmarkView.h"
 #import "BookmarkManagerModel.h"
 
 @interface BookmarkManagerView : NSView
