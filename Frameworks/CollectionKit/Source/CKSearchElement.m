@@ -22,6 +22,7 @@
 
 #import <CollectionKit/CKSearchElement.h>
 #import <CollectionKit/CKMultiValue.h>
+#import "GNUstep.h"
 
 @interface CKEnvelopeSearchElement: CKSearchElement
 {
@@ -101,15 +102,17 @@
 
   ASSIGNCOPY(_property, property);
 
-  if (label)
+  if (label) {
     ASSIGNCOPY(_label, label);
-  else 
+  } else {
     _label = nil;
+  }
 
-  if (key)
+  if (key) {
     ASSIGNCOPY(_key, key);
-  else
+  } else {
     _key = nil;
+  }
 
   ASSIGN(_val, value); 
   _comp = comparison;
@@ -284,7 +287,7 @@
 
 - (BOOL) matchesRecord: (CKRecord *) record
 {
-  [self subclassResponsibility: _cmd];
+//  [self subclassResponsibility: _cmd];
   return NO;
 }
 @end
