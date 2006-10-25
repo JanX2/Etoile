@@ -35,6 +35,7 @@
 	[NSNumber numberWithInt: CKDateProperty], kCKModificationDateProperty,
 		 nil];
   [CKItem addPropertiesAndTypes: _propTypes];
+  DESTROY(_propTypes);
 }
 
 + (CKSearchElement*) searchElementForProperty: (NSString*) property 

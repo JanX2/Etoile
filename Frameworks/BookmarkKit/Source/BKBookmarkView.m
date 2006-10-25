@@ -66,6 +66,7 @@ NSString *const BKBookmarkUIDDataType = @"BKBookmarkUIDDataType";
 {
   DESTROY(store);
   DESTROY(rootGroup);
+  DESTROY(displayProperties);
   [super dealloc];
 }
 

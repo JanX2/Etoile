@@ -2,6 +2,12 @@
 #import <BookmarkKit/BKBookmarkStore.h>
 #import <BookmarkKit/BKGroup.h>
 
+/** 
+ * BKBookmarkView implement an outline view with a scroll view
+ * to display a BKBookmarkStore, which serves as data source.
+ * The delegate of outline view can be used to control its behavior.
+ */
+
 @interface BKOutlineView: NSOutlineView
 @end
 
