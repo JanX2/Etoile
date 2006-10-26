@@ -24,6 +24,7 @@
 
 static NSString *kName = @"Name";
 static NSString *kEMails = @"E-Mails";
+static NSString *kNumber= @"Number";
 static NSString *path = @"/tmp/subdir/testCollection";
 
 @interface TestCollection: NSObject <UKTest>
@@ -37,7 +38,11 @@ static NSString *path = @"/tmp/subdir/testCollection";
 {
   self = [super init];
   collection = [[CKCollection alloc] initWithLocation: path];
-  [CKItem addPropertiesAndTypes: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: CKStringProperty], kName, [NSNumber numberWithInt: CKMultiStringProperty], kEMails, nil]];
+  [CKItem addPropertiesAndTypes: [NSDictionary dictionaryWithObjectsAndKeys: 
+          [NSNumber numberWithInt: CKStringProperty], kName, 
+          [NSNumber numberWithInt: CKMultiStringProperty], kEMails, 
+          [NSNumber numberWithInt: CKIntegerProperty], kNumber, 
+                 nil]];
 
   CKMutableMultiValue *mv = [[CKMutableMultiValue alloc] initWithType: CKMultiStringProperty];
   NSString *iden = [mv addValue: @"boss@office" withLabel: @"Work"];
@@ -47,6 +52,7 @@ static NSString *path = @"/tmp/subdir/testCollection";
   CKItem *item = [[CKItem alloc] init];
   [item setValue: @"Boss" forProperty: kName];
   [item setValue: AUTORELEASE(mv) forProperty: kEMails];
+  [item setValue: [NSNumber numberWithInt: 0] forProperty: kNumber];
   [collection addRecord: item];
 
   mv = [[CKMutableMultiValue alloc] initWithType: CKMultiStringProperty];
@@ -56,6 +62,7 @@ static NSString *path = @"/tmp/subdir/testCollection";
   item = [[CKItem alloc] init];
   [item setValue: @"Friend" forProperty: kName];
   [item setValue: AUTORELEASE(mv) forProperty: kEMails];
+  [item setValue: [NSNumber numberWithInt: 1] forProperty: kNumber];
   [collection addRecord: item];
  
   return self;
@@ -118,7 +125,7 @@ static NSString *path = @"/tmp/subdir/testCollection";
   NSArray *pGroups = [record parentGroups];
   UKNotNil(pGroups);
   UKTrue([pGroups count] > 0);
-  UKStringsEqual([group uniqueID], [[[record parentGroups] objectAtIndex: 0] uniqueID]);
+  UKStringsEqual([group uniqueID], [(CKRecord *)[[record parentGroups] objectAtIndex: 0] uniqueID]);
 
 #if 0
   [collection removeRecord: record];

@@ -359,6 +359,7 @@ static NSMutableDictionary *pDict;
               [obj isKindOfClass: [NSData class]] ||
               [obj isKindOfClass: [NSDate class]] ||
               [obj isKindOfClass: [NSArray class]] ||
+              [obj isKindOfClass: [NSNumber class]] ||
               [obj isKindOfClass: [NSDictionary class]])
         [dict setObject: obj forKey: key];
       else

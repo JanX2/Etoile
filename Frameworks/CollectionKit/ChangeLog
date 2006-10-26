@@ -1,6 +1,7 @@
 2006-10-25 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Add CKCollectionView.
+	* Support NSNumber for value.
 
 2006-10-24 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

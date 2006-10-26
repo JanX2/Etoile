@@ -122,7 +122,7 @@ NSString *const kBKTopLevelOrderProperty = @"kBKTopLevelOrderProperty";
   CKRecord *r;
   int i = 0;
   while ((r = [e nextObject])) {
-    [r setValue: [NSString stringWithFormat: @"%d", i++] 
+    [r setValue: [NSNumber numberWithInt: i++] 
        forProperty: kBKTopLevelOrderProperty];
   }
   [super save];
