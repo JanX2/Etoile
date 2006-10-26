@@ -20,6 +20,7 @@
 
 #import "NewRSSArticleListener.h"
 #import "RSSArticleCreationListener.h"
+#import "GNUstep.h"
 
 #define REL_KEY @"rel"
 #define TYPE_KEY @"type"

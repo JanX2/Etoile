@@ -140,6 +140,12 @@
   return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(cacheData);
+  [super dealloc];
+}
+
 
 -(NSString*) description
 {

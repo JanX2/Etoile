@@ -118,6 +118,8 @@ enum RSSFeedStatus
   
   enum RSSFeedStatus status;
   NSRecursiveLock*  lock;
+
+  NSMutableData *cacheData; // Used only when load in background.
   
   id<RSSFeedDelegate> _delegate;
 }

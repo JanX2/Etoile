@@ -34,6 +34,7 @@
 #import "RSS10Parser.h"
 #import "RSS20Parser.h"
 
+NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
 
 #define URI_ATOM10              @"http://www.w3.org/2005/Atom"
 #define URI_PURL_CONTENT        @"http://purl.org/rss/1.0/modules/content/"
@@ -58,6 +59,38 @@
 
 
 @implementation RSSFeed (PrivateFetching)
+/**
+ * URL client 
+ */
+- (void) URL: (NSURL *) sender 
+         resourceDidFailedLoadingWithReason: (NSString *) reason
+{
+  NSLog(@"URL %@ failed loading because of %@", sender, reason);
+  [self setError: RSSFeedErrorMalformedURL];
+  status = RSSFeedIsIdle;
+  // FIXME: post an failed notification ? 
+}
+
+- (void) URL: (NSURL *) sender
+         resourceDataDidBecomeAvailable: (NSData *) newBytes
+{
+  if (cacheData == nil) {
+    ASSIGN(cacheData, [NSMutableData data]);
+  }
+  [cacheData appendData: newBytes];
+}
+
+- (void) URLResourceDidFinishLoading: (NSURL *) sender
+{
+  NSLog(@"URL %@ did finish loading", sender);
+   
+  [self fetchWithData: cacheData];
+  status = RSSFeedIsIdle;
+  
+  /* Clean up cache */
+  [cacheData setLength: 0];
+}
+
 /**
  * Fetches the feed from the URL which is stored in the myURL
  * argument
@@ -199,7 +232,7 @@
     }
   
   [[NSNotificationCenter defaultCenter]
-          postNotificationName: @"FeedFetchedNotification"
+          postNotificationName: RSSFeedFetchedNotification
                         object: self];
   
   status = RSSFeedIsIdle;
@@ -251,6 +284,25 @@
    status = RSSFeedIsIdle;
    
    return [self fetchWithData: data];
+}
+
+- (void) fetchInBackground
+{
+  if (feedURL == nil) 
+  {
+    [self setError: RSSFeedErrorMalformedURL];
+    return;
+  }
+  if (status == RSSFeedIsFetching)
+  {
+    // FIXME: need an error for repeated loading.
+    return;
+  }
+
+  status = RSSFeedIsFetching;
+  // no errors at first :-)
+  [self setError: RSSFeedErrorNoError];
+  [feedURL loadResourceDataNotifyingClient: self usingCache: NO];
 }
 
 @end

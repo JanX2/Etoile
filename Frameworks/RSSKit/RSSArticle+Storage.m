@@ -19,9 +19,8 @@
  */
 
 #import "RSSArticle+Storage.h"
-
 #import <Foundation/Foundation.h>
-
+#import "GNUstep.h"
 
 NSString* RSSArticleStorageDirectory = nil;
 

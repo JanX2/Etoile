@@ -1,4 +1,15 @@
+Oct-25-2006  Yen-Ju Chen
 
+	* Merge back from branch.
+
+Oct-22-2006  Yen-Ju Chen
+
+	* Support loading feed in background.
+
+Oct-21-2006  Yen-Ju Chen
+
+	* Initial branch.
+	* Compile on Cocoa.
 
 Oct-9-2006  Guenther Noack
 	Added code to store articles as property lists

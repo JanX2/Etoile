@@ -21,6 +21,12 @@
 
 #import "RSSFeed.h"
 
+/** 
+ * When feed finishes parsing, it posts this notification
+ * with itself as object and nil for userInfo.
+ **/
+extern NSString *const RSSFeedFetchedNotification;
+
 /**
  * The ,,Fetching'' category of RSSFeed contains methods
  * for the RSSFeed class, which are responsible for fetching
@@ -32,10 +38,10 @@
  * Returns the last error.
  * Guaranteed to return the last fetching result.
  */
--(enum RSSFeedError) lastError;
+- (enum RSSFeedError) lastError;
 
 // get the document from the http server
--(enum RSSFeedError) setError: (enum RSSFeedError) err;
+- (enum RSSFeedError) setError: (enum RSSFeedError) err;
 
 /**
  * Fetches the feed from the web (using NSURL).
@@ -44,6 +50,11 @@
  * @see NSURL
  * @see RSSFeedError
  */
--(enum RSSFeedError) fetch;
+- (enum RSSFeedError) fetch;
+
+/** 
+ * When it is done, it will post a RSSFeedFetchedNotification 
+ **/
+- (void) fetchInBackground;
 
 @end

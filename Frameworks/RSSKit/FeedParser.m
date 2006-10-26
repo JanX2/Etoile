@@ -19,6 +19,7 @@
  */
 
 #import "FeedParser.h"
+#import "GNUstep.h"
 
 @implementation FeedParser
 
