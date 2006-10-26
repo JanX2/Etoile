@@ -19,6 +19,7 @@
 */
 
 #import <CollectionKit/CKCollection.h>
+#import <CollectionKit/CKCollectionView.h>
 #import <CollectionKit/CKSearchElement.h>
 #import <CollectionKit/CKItem.h>
 #import <CollectionKit/CKGroup.h>

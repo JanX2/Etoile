@@ -3,6 +3,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME = CollectionKit_Source
 
 CollectionKit_Source_OBJC_FILES = \
+	CKCollectionView.m \
 	CKSearchElement.m \
 	CKCollection.m \
 	CKGroup.m \

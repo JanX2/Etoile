@@ -4,6 +4,7 @@ CollectionKit_HEADER_FILES_DIR = ./CollectionKit
 CollectionKit_HEADER_FILES_INSTALL_DIR = CollectionKit
 CollectionKit_HEADER_FILES = \
 	CollectionKit.h \
+	CKCollectionView.h \
 	CKSearchElement.h \
 	CKCollection.h \
 	CKGroup.h \
