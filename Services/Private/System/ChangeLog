@@ -1,3 +1,9 @@
+2006-10-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	* WorkspaceCommKit/GNUmakefile.preamble: Modified to redefine PROJECT_DIR 
+	properly, so WorkspaceCommKit is exported by etoile.make (patch by Frederic
+	Point). Services/Private/GNUmakefile modified too.
+
 2006-10-22  Quentin Mathe <qmathe@club-internet.fr>
 
 	This update enables requesting running applications the possibility to

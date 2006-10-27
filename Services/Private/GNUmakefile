@@ -37,12 +37,14 @@ ifeq ($(azalea), yes)
     SUBPROJECTS += Azalea
 endif
 
-ifeq ($(menuserver),yes)
-    SUBPROJECTS += MenuServer
-endif
-
 ifeq ($(system),yes)
     SUBPROJECTS += System
+endif
+
+# MenuServer depends on WorkspaceCommKit part of System, so it has to be built
+# afterwards.
+ifeq ($(menuserver),yes)
+    SUBPROJECTS += MenuServer
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

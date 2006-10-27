@@ -1,2 +1,5 @@
+# We reset PROJECT_DIR provided by etoile.make to match the subproject since 
+# etoile.make doesn't detect and handle such embedded project
+PROJECT_DIR = $(CURDIR)
 
 ADDITIONAL_OBJCFLAGS += -W -Wall -Wno-unused -Wno-import
