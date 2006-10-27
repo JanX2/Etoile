@@ -1,3 +1,7 @@
+2006-10-26 Yen-Ju Chen <yjchenx at gmail>
+
+	* Fix some warnings for GCC-4.1
+
 2006-10-18 Yen-Ju Chen <yjchenx at gmail>
 
 	* Temperory fix for GNUstep menu out of screen.

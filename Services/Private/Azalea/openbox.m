@@ -347,7 +347,7 @@ int main(int argc, char **argv)
         if (restart_path != nil) {
 #if 1
 	    // This is a simplied version
-	    int error = execlp([restart_path cString], NULL);
+	    int error = execlp([restart_path cString], NULL, NULL);
 	    if (error == -1)
 	      NSLog(@"Failed to execute '%@'", restart);
 #else
@@ -370,7 +370,7 @@ int main(int argc, char **argv)
         /* re-run me */
 	// FIXME: should use openapp
         execvp(argv[0], argv); /* try how we were run */
-        execlp(argv[0], (char*)[[[NSString stringWithCString: argv[0]] lastPathComponent] cString]); /* last resort */
+        execlp(argv[0], (char*)[[[NSString stringWithCString: argv[0]] lastPathComponent] cString], NULL); /* last resort */
     }
 
     DESTROY(x);

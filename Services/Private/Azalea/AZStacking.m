@@ -374,7 +374,7 @@ static AZStacking *sharedInstance;
 
     int prev_index;
     int j;
-    for (j = 0; i < n, j < [self count];/*j++ in the end */ ) {
+    for (j = 0; ((i < n) && (j < [self count]));/*j++ in the end */ ) {
 	data = [self windowAtIndex: j];
 	prev_index = j - 1;
 
@@ -447,7 +447,7 @@ static AZStacking *sharedInstance;
 	n = [[[top group] members] count]-1;
 	int prev_index;
 	int j;
-	for (j = 0; i < n, j < [self count]; /* j++ later */) {
+	for (j = 0; ((i < n) && (j < [self count])); /* j++ later */) {
 	    data = [self windowAtIndex: j];
 	    prev_index = j - 1;
 

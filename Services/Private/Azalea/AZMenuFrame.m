@@ -632,7 +632,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     fcount = [entries count];
     mcount = [[menu entries] count];
-    for (mit = 0, fit = 0; mit < mcount, fit < fcount; mit++, fit++)
+    for (mit = 0, fit = 0; ((mit < mcount) && (fit < fcount)); mit++, fit++)
     {
         AZMenuEntryFrame *f = [entries objectAtIndex: fit];
         [f set_entry: [[menu entries] objectAtIndex: mit]];
