@@ -11,7 +11,11 @@ endif
 BookmarkKit_SUBPROJECTS = Source
 
 ifeq ($(test), yes)
+ifeq ($(FOUNDATION_LIB), apple)
 	BookmarkKit_OBJC_LIBS += -framework UnitKit
+else
+	BookmarkKit_OBJC_LIBS += -lUnitKit
+endif
 endif
 
 BookmarkKit_LIBRARIES_DEPEND_UPON = -lCollectionKit

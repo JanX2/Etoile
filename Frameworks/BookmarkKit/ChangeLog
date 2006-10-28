@@ -1,3 +1,7 @@
+2006-10-27  Yen-Ju Chen <yjchen at gmail>
+
+    * Make unit test work on GNUstep.
+
 2006-10-25  Yen-Ju Chen <yjchen at gmail>
 
     * Use NSNumber for number value.

@@ -11,7 +11,11 @@ endif
 CollectionKit_SUBPROJECTS = Source
 
 ifeq ($(test), yes)
+ifeq ($(FOUNDATION_LIB), apple)
 	CollectionKit_OBJC_LIBS += -framework UnitKit
+else
+	CollectionKit_OBJC_LIBS += -lUnitKit
+endif
 endif
 
 ADDITIONAL_INCLUDE_DIRS += 
