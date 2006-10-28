@@ -494,6 +494,16 @@
       return NO;
     }
 
+  /* We need to remove all references to this record from groups first,
+   * then remove it from collection.
+   * Otherwise, if we remove it from collection first,
+   * group will complain that the record is missing before they can remove it.
+   */
+  e = [[self groups] objectEnumerator];
+  while((g = [e nextObject])) {
+    [self removeRecord: record forGroup: g recursive: YES];
+  }
+
   if ([record isKindOfClass: [CKItem class]])
     {
       [_items removeObjectForKey: uid];
@@ -511,11 +521,6 @@
  		  format: @"Record %@ is not CKItem nor CKGroup", record];
       return NO;
     }
-
-  e = [[self groups] objectEnumerator];
-  while((g = [e nextObject])) {
-    [self removeRecord: record forGroup: g recursive: YES];
-  }
 
   [[NSNotificationCenter defaultCenter]
     postNotificationName: CKCollectionChangedNotification
@@ -561,7 +566,7 @@
   for(i=0; i<[memberIds count]; i++)
     {
       CKRecord *r = [self recordForUniqueID: [memberIds objectAtIndex: i]];
-      if(!r)
+      if(r == nil)
 	{
 	  NSLog(@"Error: Member %@ still in group, but doesn't exist\n",
 		[memberIds objectAtIndex: i]);

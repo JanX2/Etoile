@@ -164,6 +164,11 @@ static NSString *path = @"/tmp/subdir/testCollection";
   UKIntsEqual(1, [[group2 items] count]);
   UKIntsEqual(2, [[collection itemsUnderGroup: group1] count]);
   UKIntsEqual(1, [[collection itemsUnderGroup: group2] count]);
+
+  [collection removeRecord: item2];
+  UKIntsEqual(0, [[group2 items] count]);
+  UKIntsEqual(1, [[collection itemsUnderGroup: group1] count]);
+  UKIntsEqual(0, [[collection itemsUnderGroup: group2] count]);
 }
 
 @end

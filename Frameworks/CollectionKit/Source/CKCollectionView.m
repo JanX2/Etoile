@@ -8,11 +8,6 @@
 
 @implementation CKCollectionView
 /** Private **/
-- (void) handleCollectionChanged: (NSNotification *) not
-{
-  // Do nothing
-}
-
 - (void) buildInternalCache
 {
   [internalCache removeAllObjects];
@@ -28,6 +23,11 @@
       [internalCache addObjectsFromArray: [collection itemsUnderGroup: group]];
     }
   }
+}
+
+- (void) handleCollectionChanged: (NSNotification *) not
+{
+  [self buildInternalCache];
 }
 
 /** End of private **/
@@ -92,27 +92,6 @@
 - (id) itemAtIndex: (int) index
 {
   return [internalCache objectAtIndex: index];
-#if 0
-  if (root == nil) {
-    return [[collection items] objectAtIndex: index];
-  } else if ([root isKindOfClass: [CKGroup class]]) {
-    CKGroup *group = (CKGroup *)root;
-    if (displaySubgroup == YES) {
-      int gcount = [[group subgroups] count];
-      if (index< gcount) {
-        return [[group subgroups] objectAtIndex: index];
-      } else {
-        return [[group items] objectAtIndex: index-gcount];
-      }
-    } else {
-      return [[group items] objectAtIndex: index];
-    }
-  } else if ([root isKindOfClass: [CKSearchElement class]]) {
-    /* No implementation */
-    return nil;
-  }
-  return nil;
-#endif
 }
 
 /* Data source */
@@ -124,22 +103,6 @@
   }
 
   return [internalCache count];
-#if 0
-  if (root == nil) {
-    return [[collection items] count];
-  } else if ([root isKindOfClass: [CKGroup class]]) {
-    CKGroup *group = (CKGroup *)root;
-    if (displaySubgroup == YES) {
-      return ([[group items] count] +  [[group subgroups] count]);
-    } else {
-      return [[group items] count];
-    }
-  } else if ([root isKindOfClass: [CKSearchElement class]]) {
-    /* No implementation */
-    return 0;
-  }
-  return 0;
-#endif
 }
 
 - (id) tableView: (NSTableView *) tv
