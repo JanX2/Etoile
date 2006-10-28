@@ -22,6 +22,20 @@
     while ((group = [e nextObject])) {
       [internalCache addObjectsFromArray: [collection itemsUnderGroup: group]];
     }
+  } else {
+    NSLog(@"Error: unknown root %@", root);
+  }
+
+  if (searchElement != nil) {
+    /* Remove unmatched item */
+    int i;
+    for (i = 0; i < [internalCache count]; i++) {
+      CKRecord *record = [internalCache objectAtIndex: i];
+      if ([searchElement matchesRecord: record] == NO) {
+        [internalCache removeObjectAtIndex: i];
+        i--;
+      }
+    }
   }
 }
 

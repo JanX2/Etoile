@@ -1,3 +1,7 @@
+2006-10-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Add search in CKCollectionView.
+
 2006-10-27 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Implement [CKCollection -itemsUnderGroup:] and test unit.
