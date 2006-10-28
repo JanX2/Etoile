@@ -13,6 +13,23 @@
   // Do nothing
 }
 
+- (void) buildInternalCache
+{
+  [internalCache removeAllObjects];
+  if (root == nil) {
+    [internalCache setArray: [collection items]];
+  } else if ([root isKindOfClass: [CKGroup class]]) {
+    CKGroup *group = (CKGroup *) root;
+    [internalCache addObjectsFromArray: [group items]];
+  } else if ([root isKindOfClass: [NSArray class]]) {
+    NSEnumerator *e = [(NSArray *) root objectEnumerator];
+    CKGroup *group;
+    while ((group = [e nextObject])) {
+      [internalCache addObjectsFromArray: [collection itemsUnderGroup: group]];
+    }
+  }
+}
+
 /** End of private **/
 
 - (id) initWithFrame: (NSRect) frame
@@ -20,6 +37,9 @@
   self = [super initWithFrame: frame];
 
   displaySubgroup = NO;
+  displayItemsInSubgroup = NO;
+
+  internalCache = [[NSMutableArray alloc] init];
 
   NSTableColumn *tvc = [(NSTableColumn *)[NSTableColumn alloc] initWithIdentifier: kCKUIDProperty];
   [[tvc headerCell] setStringValue: _(kCKUIDProperty)];
@@ -65,11 +85,14 @@
   DESTROY(root);
   DESTROY(displayProperties);
   DESTROY(displaySubgroupProperty);
+  DESTROY(internalCache);
   [super dealloc];
 }
 
 - (id) itemAtIndex: (int) index
 {
+  return [internalCache objectAtIndex: index];
+#if 0
   if (root == nil) {
     return [[collection items] objectAtIndex: index];
   } else if ([root isKindOfClass: [CKGroup class]]) {
@@ -89,6 +112,7 @@
     return nil;
   }
   return nil;
+#endif
 }
 
 /* Data source */
@@ -99,6 +123,8 @@
     return 0;
   }
 
+  return [internalCache count];
+#if 0
   if (root == nil) {
     return [[collection items] count];
   } else if ([root isKindOfClass: [CKGroup class]]) {
@@ -113,6 +139,7 @@
     return 0;
   }
   return 0;
+#endif
 }
 
 - (id) tableView: (NSTableView *) tv
@@ -181,6 +208,7 @@
 - (void) setCollection: (CKCollection *) s
 {
   ASSIGN(collection, s);
+  [self buildInternalCache];
 }
 
 - (CKCollection *) collection
@@ -196,6 +224,7 @@
 - (void) setRoot: (id) r
 {
   ASSIGN(root, r);
+  [self buildInternalCache];
 }
 
 - (id) root
@@ -203,14 +232,37 @@
   return root;
 }
 
+- (void) setSearchElement: (CKSearchElement *) element
+{
+  ASSIGN(searchElement, element);
+  [self buildInternalCache];
+}
+
+- (CKSearchElement *) searchElement
+{
+  return searchElement;
+}
+
 - (void) setDisplaySubgroup: (BOOL) b
 {
   displaySubgroup = b;
+  [self buildInternalCache];
 }
 
 - (BOOL) isDisplaySubgroup
 {
   return displaySubgroup;
+}
+
+- (void) setDisplayItemsInSubgroup: (BOOL) b
+{
+  displayItemsInSubgroup = b;
+  [self buildInternalCache];
+}
+
+- (BOOL) isDisplayItemsInSubgroup
+{
+  return displayItemsInSubgroup;
 }
 
 - (void) setDisplaySubgroupProperty: (id) p

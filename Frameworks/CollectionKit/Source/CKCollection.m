@@ -31,11 +31,13 @@
 - (BOOL) _makeDirectory: (NSString*) path;
 - (void) _handleRecordChanged: (NSNotification*) note;
 - (void) _handleDBChangedExternally: (NSNotification*) note;
-- (NSArray*) _allGroupsEverywhere;
 - (NSArray*) _allSubgroupsBelowGroup: (CKGroup*) group;
 - (BOOL) removeRecord: (CKRecord*) record
 	     forGroup: (CKGroup*) group
 	    recursive: (BOOL) recursive;
+/* Put all subgroup into set. */
+- (void) collectSubgroup: (CKGroup *) group
+                 withSet: (NSMutableSet *) set;
 @end
 
 @implementation CKCollection (CKPrivate)
@@ -155,23 +157,6 @@
 #endif
 }
 
-- (NSArray*) _allGroupsEverywhere
-{
-  NSMutableArray *arr;
-  NSEnumerator *e;
-  CKGroup *group;
-
-  arr = [NSMutableArray array];
-  e = [[self groups] objectEnumerator];
-  while((group = [e nextObject]))
-    {
-      NSArray *subgroups = [self _allSubgroupsBelowGroup: group];
-      [arr addObject: group];
-      [arr addObjectsFromArray: subgroups];
-    }
-  return arr;
-}
-
 - (NSArray*) _allSubgroupsBelowGroup: (CKGroup*) group
 {
   NSMutableArray *arr;
@@ -241,6 +226,24 @@
       
   return YES;
 }
+
+/* Put all subgroup into set. */
+- (void) collectSubgroup: (CKGroup *) group
+                 withSet: (NSMutableSet *) set
+{
+  NSArray *groups = [group subgroups];
+  int i, count = [groups count];
+  for (i = 0; i < count; i++) {
+    CKGroup *g = [groups objectAtIndex: i];
+    if ([set containsObject: g] == YES) {
+      continue;
+    } else {
+      [set addObject: g];
+      [self collectSubgroup: g withSet: set];
+    }
+  }
+}
+
 @end
   
 @implementation CKCollection
@@ -311,32 +314,6 @@
 		   format: @"Couldn't open local collection at %@",
 		   _loc];
   }
-#if 0
-  ASSIGN(_items, AUTORELEASE([[NSMutableDictionary alloc] init]));
-  ASSIGN(_groups, AUTORELEASE([[NSMutableDictionary alloc] init]));
-  BOOL dir;
-  if([[NSFileManager defaultManager] fileExistsAtPath: _loc 
-                                          isDirectory: &dir] == NO) 
-  {
-    /* No collection */
-  }
-  else
-  {
-    /* Open existing collection */
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: _loc];
-    
-    if (dict == nil) {
-      [NSException raise: CKInternalError
-		   format: @"Couldn't open local collection at %@",
-		   _loc];
-    }
-    /* Check version */
-    NSString *version = [dict objectForKey: CKFormatKey];
-    if ([version isEqualToString: CKCollectionFormat_0_1]) {
-      [self _loadFormat_0_1: dict];
-    }
-  }
-#endif
 
   [[NSNotificationCenter defaultCenter]
     addObserver: self
@@ -601,6 +578,24 @@
   return [self recordsInGroup: group withClass: [CKItem class]];
 }
 
+- (NSArray *) itemsUnderGroup: (CKGroup *) group
+{
+  NSMutableSet *set = AUTORELEASE([[NSMutableSet alloc] init]);
+  [self collectSubgroup: group withSet: set];
+
+  NSArray *groups = [set allObjects];
+  NSMutableSet *items = AUTORELEASE([[NSMutableSet alloc] init]);
+  int i, count = [groups count];
+  CKGroup *g = nil;
+  for (i = 0; i < count; i++) {
+    g = [groups objectAtIndex: i];
+    [items addObjectsFromArray: [g items]];
+  } 
+  [items addObjectsFromArray: [group items]];
+  return [items allObjects];
+}
+
+
 - (BOOL) addRecord: (CKRecord*) record forGroup: (CKGroup*) group
 {
   NSString *guid;
@@ -712,7 +707,7 @@
     }
 
   arr = [NSMutableArray array];
-  e = [[self _allGroupsEverywhere] objectEnumerator];
+  e = [[_groups allValues] objectEnumerator];
   while((g = [e nextObject]))
     if([[g valueForProperty: kCKItemsProperty] containsObject: guid])
       [arr addObject: g];

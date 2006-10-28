@@ -67,9 +67,11 @@
 @end
 
 @interface CKCollection (CKGroupAccess)
-- (NSArray*) itemsForGroup: (CKGroup *) group;
+- (NSArray *) itemsForGroup: (CKGroup *) group;
 - (BOOL) addItem: (CKItem *) item forGroup: (CKGroup*) group;
 - (BOOL) removeItem: (CKItem *) item forGroup: (CKGroup*) group;
+/* All items under group or its subgroup */
+- (NSArray *) itemsUnderGroup: (CKGroup *) group;
 
 - (NSArray*) subgroupsForGroup: (CKGroup*) group;
 - (BOOL) addSubgroup: (CKGroup*) g1 forGroup: (CKGroup*) g2;

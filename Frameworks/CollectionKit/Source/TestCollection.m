@@ -135,4 +135,35 @@ static NSString *path = @"/tmp/subdir/testCollection";
   [collection removeRecord: group];
 }
 
+- (void) testSubgroup
+{
+  CKMutableMultiValue *mv;
+  CKItem *item;
+  CKItem *item1;
+  CKItem *item2;
+
+  ADD_RECORD(@"email@isp1", @"email@isp2", @"NetUser");
+  item1 = item;
+
+  ADD_RECORD(@"box@isp1", @"box2@isp2", @"BoxUser");
+  item2 = item;
+  
+  CKGroup *group1 = [[CKGroup alloc] init];
+  [collection addRecord: group1];
+  [group1 addItem: item1];
+  CKGroup *group2 = [[CKGroup alloc] init];
+  [collection addRecord: group2];
+  [group1 addSubgroup: group2];
+  [group2 addItem: item2];
+
+  UKIntsEqual(4, [[collection items] count]);
+  UKIntsEqual(2, [[collection groups] count]);
+  UKIntsEqual(1, [[group1 subgroups] count]);
+  UKIntsEqual(1, [[group1 items] count]);
+  UKIntsEqual(0, [[group2 subgroups] count]);
+  UKIntsEqual(1, [[group2 items] count]);
+  UKIntsEqual(2, [[collection itemsUnderGroup: group1] count]);
+  UKIntsEqual(1, [[collection itemsUnderGroup: group2] count]);
+}
+
 @end

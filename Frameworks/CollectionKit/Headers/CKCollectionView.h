@@ -24,21 +24,38 @@
   id root;
   NSArray *displayProperties;
   BOOL displaySubgroup;
+  BOOL displayItemsInSubgroup;
   id displaySubgroupProperty;
+  CKSearchElement *searchElement;
+
+  /* Internal cache for items */
+  NSMutableArray *internalCache;
 }
 
 - (void) setCollection: (CKCollection *) collection;
 - (CKCollection *) collection;
 - (CKTableView *) tableView; // expose table view for easy access
 
+/* These are the possible options for root:
+ * nil: display all items.
+ * CKGroup: display all items in the given group.
+ * NSArray of CKGroups: display all items in the given groups.
+ */
 - (void) setRoot: (id) root;
 - (id) root;
+
+/* Display items matching search element.
+ * If nil, display all.
+ */
+- (void) setSearchElement: (CKSearchElement *) element;
+- (CKSearchElement *) searchElement;
+
 /* Item at index of table view. 
  * Could be CKGroup if subgroup is allowed for display
  */
 - (id) itemAtIndex: (int) row; 
 
-/* Properties to displayed in outline view.
+/* Properties to displayed in table view.
  * Each property corresponds to a table column. */
 - (void) setDisplayProperties: (NSArray *) keys; // array of property keys
 - (NSArray *) displayProperties;
@@ -47,6 +64,15 @@
  * It is only useful when root is CKGroup */
 - (void) setDisplaySubgroup: (BOOL) b;
 - (BOOL) isDisplaySubgroup;
+
+/* Display items under subgroup.
+ * If YES, isDisplaySubgroup is ignored.
+ */
+- (void) setDisplayItemsInSubgroup: (BOOL) b;
+- (BOOL) isDisplayItemsInSubgroup;
+
+/* Since CKGroup have different properties than CKItem.
+ * Select which property to display */
 - (void) setDisplaySubgroupProperty: (id) property;
 - (id) displaySubgroupProperty;
 
