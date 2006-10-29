@@ -28,6 +28,9 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS = -Wno-import
 ADDITIONAL_INCLUDE_DIRS = -I../Headers
+# If we decide to move away from truncf as a GCC builtin function, it will be
+# mandatory to link C math lib.
+# ADDITIONAL_LDFLAGS = -lm 
 
 #
 # Main application
@@ -38,7 +41,7 @@ GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 PACKAGE_NAME = IconKit
 ifeq ($(test), yes)
 BUNDLE_NAME = libIconKit
-ADDITIONAL_LDFLAGS = -lUnitKit -lgnustep-gui -lgnustep-base
+ADDITIONAL_LDFLAGS += -lUnitKit -lgnustep-gui -lgnustep-base
 else
 LIBRARY_NAME = libIconKit	
 endif

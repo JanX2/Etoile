@@ -25,7 +25,12 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "IKIcon.h"
+#import "IKIcon.h"
+/* For truncf on Linux and other platforms probably...
+   #import <math.h> doesn't work on many Linux systems since truncf is often 
+   not part of this header currently. That's why we rely on GCC equivalent builtin 
+   function. */
+#define truncf(x)  __builtin_truncf(x)
 
 // The values of the following should probably be the file names of the icon files:
 //  However, the names I've chosen so far are the ones that
@@ -422,6 +427,10 @@ NSString *          IKIconChangedNotification = @"IKIconChangedNotification";  /
             case IKBadgePositionStandardPluginSubIcon:      // There is no standard plugin sub-icon yet.
                 pos = IKBadgePositionRight;
                 break;
+			
+			// NOTE: this avoids compiler warning about non handled enumeration values
+			default:
+				break;
           }
       }
     

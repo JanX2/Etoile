@@ -25,12 +25,9 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef ICONKIT_IKICON_H
-#define ICONKIT_IKICON_H 1
-
-#include <AppKit/AppKit.h>
-#include "IKIconIdentifier.h"
-#include "IKIconPositions.h"
+#import <AppKit/AppKit.h>
+#import "IKIconIdentifier.h"
+#import "IKIconPositions.h"
 
 // Notifications:
 extern NSString *IKIconChangedNotification;  // Sent with the IKIcon as the object whenever update is called.
@@ -87,5 +84,3 @@ NSStringFromIconIdentifier(IKIconIdentifier ident);
 
 IKIconIdentifier
 IKIconIdentifierFromString(NSString *str);
-
-#endif /*ICONKIT_IKICON_H*/

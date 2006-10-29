@@ -58,7 +58,7 @@
 	}
 	else
 	{
-		if ((self = [super initWithSize: [image size]]) != nil)
+		if ((self = [self initWithSize: [image size]]) != nil)
 		{
 			IKCompositorOperation* initialOperation = [[IKCompositorOperation alloc] 
 				initWithImage: image
@@ -93,7 +93,7 @@
 		
 	if (dict != nil)
 	{
-		float x, y, width, height;
+		float width, height;
 
 		number = [dict objectForKey: @"width"];
 		if (number != nil) width = [number floatValue];		
@@ -104,14 +104,14 @@
 		size = NSMakeSize (width, height);
 	}
 	
-	if ((self = [super initWithSize: size]) != nil)
+	if ((self = [self initWithSize: size]) != nil)
 	{
 
 		dict = [propertyList objectForKey: @"compositingSize"];
 
 		if (dict != nil)
 		{
-			float x, y, width, height;
+			float width, height;
 
 			number = [dict objectForKey: @"width"];
 		 	if (number != nil) width = [number floatValue];		

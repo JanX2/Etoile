@@ -26,9 +26,6 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef ICONKIT_IKICONPOSITIONS_H
-#define ICONKIT_IKICONPOSITIONS_H 1
-
 #include <Foundation/Foundation.h>
 
 // Flags from which IKBadgePositions are made up. Don't use these, use IKBadgePosition:
@@ -77,5 +74,3 @@ typedef enum _IKBadgePosition
     IKBadgePositionRight            = (IKBadgePositionFlagRight | IKBadgePositionFlagCenter),
     IKBadgePositionCenter           = (IKBadgePositionFlagCenter)
 } IKBadgePosition;
-
-#endif /*ICONKIT_IKICONPOSITIONS_H*/
