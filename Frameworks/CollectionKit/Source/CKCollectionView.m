@@ -6,6 +6,27 @@
 #import <CollectionKit/CKCollectionView.h>
 #import "GNUstep.h"
 
+NSComparisonResult sortingWithProperty(id record1, id record2, void *context)
+{
+  NSString *property = (NSString *) context;
+  id value1 = [(CKRecord *) record1 valueForProperty: property];
+  id value2 = [(CKRecord *) record2 valueForProperty: property];
+  return [value1 compare: value2];
+}
+
+NSComparisonResult reverseSortingWithProperty(id record1, id record2, void *context)
+{
+  NSComparisonResult result = sortingWithProperty(record1, record2, context);
+  switch(result) {
+    case NSOrderedAscending:
+      return NSOrderedDescending;
+    case NSOrderedDescending:
+      return NSOrderedAscending;
+    default:
+      return NSOrderedSame;
+  }
+}
+
 @implementation CKCollectionView
 /** Private **/
 - (void) buildInternalCache
@@ -36,6 +57,11 @@
         i--;
       }
     }
+  }
+ 
+  if (sortingProperty) {
+    /* Always keep sorted */
+    [self sortWithProperty: sortingProperty reverse: reverseSorting];
   }
 }
 
@@ -100,6 +126,7 @@
   DESTROY(displayProperties);
   DESTROY(displaySubgroupProperty);
   DESTROY(internalCache);
+  DESTROY(sortingProperty);
   [super dealloc];
 }
 
@@ -255,6 +282,22 @@
 - (id) displaySubgroupProperty
 {
   return displaySubgroupProperty;
+}
+
+- (void) sortWithProperty: (NSString *) property reverse: (BOOL) reverse
+{
+  if (reverse == NO)
+    [internalCache sortUsingFunction: sortingWithProperty 
+                             context: property];
+  else
+    [internalCache sortUsingFunction: reverseSortingWithProperty 
+                                    context: property];
+}
+
+- (void) setSortingProperty: (NSString *) property reverse: (BOOL) reverse
+{
+  reverseSorting = reverse;
+  ASSIGN(sortingProperty, property);
 }
 
 @end

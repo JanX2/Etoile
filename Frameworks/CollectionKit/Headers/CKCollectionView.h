@@ -30,6 +30,8 @@
 
   /* Internal cache for items */
   NSMutableArray *internalCache;
+  BOOL reverseSorting;
+  NSString *sortingProperty;
 }
 
 - (void) setCollection: (CKCollection *) collection;
@@ -76,6 +78,15 @@
  * Select which property to display */
 - (void) setDisplaySubgroupProperty: (id) property;
 - (id) displaySubgroupProperty;
+
+/* Sort item in table view based on property.
+ * It use -compare:
+ */
+- (void) sortWithProperty: (NSString *) property reverse: (BOOL) reverse;
+/* If this property is set, the table view is always sorted.
+ * Set nil to remove sorting.
+ */
+- (void) setSortingProperty: (NSString *) property reverse: (BOOL) reverse;
 
 /* Recreate cache. Use when collection is changed */
 - (void) reloadData;
