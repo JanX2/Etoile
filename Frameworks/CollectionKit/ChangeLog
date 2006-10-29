@@ -2,6 +2,7 @@
 
 	* Add search in CKCollectionView.
 	* Add -numberOfItems in CKCollectionView.
+	* Handle group is nil for -itemsUnderGroup:
 
 2006-10-27 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

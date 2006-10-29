@@ -585,6 +585,10 @@
 
 - (NSArray *) itemsUnderGroup: (CKGroup *) group
 {
+  if (group == nil) {
+    return [self items];
+  }
+
   NSMutableSet *set = AUTORELEASE([[NSMutableSet alloc] init]);
   [self collectSubgroup: group withSet: set];
 
