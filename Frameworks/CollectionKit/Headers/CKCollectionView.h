@@ -54,6 +54,7 @@
  * Could be CKGroup if subgroup is allowed for display
  */
 - (id) itemAtIndex: (int) row; 
+- (int) numberOfItems; /* the ones display on table view, not in collection */
 
 /* Properties to displayed in table view.
  * Each property corresponds to a table column. */

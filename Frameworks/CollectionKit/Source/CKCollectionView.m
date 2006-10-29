@@ -108,6 +108,11 @@
   return [internalCache objectAtIndex: index];
 }
 
+- (int) numberOfItems
+{
+  return [internalCache count];
+}
+
 /* Data source */
 - (int) numberOfRowsInTableView: (NSTableView *) tv
 {
