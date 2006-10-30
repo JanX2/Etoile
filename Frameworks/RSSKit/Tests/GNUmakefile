@@ -7,9 +7,11 @@ BUNDLE_NAME = RSSKitTests
 RSSKitTests_OBJC_FILES= RSSKitTests.m RDFTests.m RSSTests.m
 RSSKitTests_HEADER_FILES = RSSKitTests.h RDFTests.h RSSTests.h
 
-#RSSKitTests_LIBRARIES_DEPEND_UPON = -lRSSKit
-RSSKitTests_OBJC_LIBS = -lUnitKit -lRSSKit
-RSSKitTests_LDFLAGS = -lUnitKit -lRSSKit
+ifeq ($(FOUNDATION_LIB), apple)
+	RSSKitTests_OBJC_LIBS += -framework UnitKit -lRSSKit
+else
+	RSSKitTests_OBJC_LIBS = -lUnitKit -lRSSKit
+endif
 
 RSSKitTests_RESOURCE_FILES = \
 Resources/tests/wellformed/rdf/rdf_channel_description.xml \

@@ -1,5 +1,5 @@
-
 #import "RSSTests.h"
+#import "GNUstep.h"
 
 @implementation RSSTests
 

@@ -126,7 +126,7 @@
  * See the documentation for addLink: for details.
  * Hint: The parameter may also be nil.
  */
--(void)setLinks:(NSMutableArray*) someLinks;
+-(void)setLinks: (NSArray*) someLinks;
 
 /** 
  * Returns an NSArray containing NSURL objects or nil,

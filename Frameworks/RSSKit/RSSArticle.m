@@ -18,9 +18,6 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
-// #define DEBUG 1
-
 #import "RSSArticle.h"
 #import "GNUstep.h"
 
@@ -28,7 +25,7 @@
 
 
 // methods to come... FIXME
--init
+- (id) init
 {
   return [self initWithHeadline: @"no headline"
 	       url: @"no URL"
@@ -37,25 +34,24 @@
 }
 
 
--initWithHeadline: (NSString*) myHeadline
+- (id) initWithHeadline: (NSString*) myHeadline
 	      url: (NSString*) myUrl
       description: (NSString*) myDescription
 	     date: (NSDate*)   myDate
 {
   [super init];
   
-  headline =      RETAIN(myHeadline);
-  url =           RETAIN(myUrl);
-  description =   RETAIN(myDescription);
-  date =          RETAIN(myDate);
-  feed =          nil; // non-retained, too.
-  links =         nil;
+  ASSIGN(headline, myHeadline);
+  ASSIGN(url, myUrl);
+  ASSIGN(description, myDescription);
+  ASSIGN(date, myDate);
+  ASSIGN(links, AUTORELEASE([[NSMutableArray alloc] init]));
   
   return self;
 }
 
 
--initWithHeadline: (NSString*) myHeadline
+- (id) initWithHeadline: (NSString*) myHeadline
 	      url: (NSString*) myUrl
       description: (NSString*) myDescription
 	     time: (unsigned int) myTime
@@ -69,31 +65,12 @@
 }
 
 
--(void) dealloc
+- (void) dealloc
 {
-#ifdef DEBUG
-  NSLog(@"RSSArticle dealloc started");
-#endif
-#ifdef DEBUG
-  NSLog(@"RSSArticle dealloc headline has %i", [headline retainCount]);
-#endif
   RELEASE(headline);
-#ifdef DEBUG
-  NSLog(@"RSSArticle dealloc url has %i", [url retainCount]);
-#endif
   RELEASE(url);
-#ifdef DEBUG
-  NSLog(@"RSSArticle dealloc desc has %i", [description retainCount]);
-#endif
   RELEASE(description);
-#ifdef DEBUG
-  NSLog(@"RSSArticle dealloc date has %i", [date retainCount]);
-#endif
   RELEASE(date);
-#ifdef DEBUG
-  NSLog(@"RSSArticle dealloc finished");
-#endif
-  
   RELEASE(links);
   
   [super dealloc];
@@ -102,12 +79,8 @@
 
 #define ENCODING_VERSION 1
 
--(id)initWithCoder: (NSCoder*)coder
+- (id) initWithCoder: (NSCoder*)coder
 {
-#ifdef DEBUG
-  NSLog(@"started decoding RSSArticle");
-#endif
-  
   if ((self = [super init]))
   {
     unsigned int version = 0;
@@ -117,19 +90,18 @@
     switch (version)
       {
       case 0:
-	date =          RETAIN([coder decodeObject]);
-	headline =      RETAIN([coder decodeObject]);
-	url =           RETAIN([coder decodeObject]);
-	description =   RETAIN([coder decodeObject]);
-	links =         nil;
+	ASSIGN(date, [coder decodeObject]);
+	ASSIGN(headline, [coder decodeObject]);
+	ASSIGN(url, [coder decodeObject]);
+	ASSIGN(description, [coder decodeObject]);
 	break;
 	
       case 1:
-	date =          RETAIN([coder decodeObject]);
-	headline =      RETAIN([coder decodeObject]);
-	url =           RETAIN([coder decodeObject]);
-	description =   RETAIN([coder decodeObject]);
-	links =         RETAIN([coder decodeObject]);
+	ASSIGN(date, [coder decodeObject]);
+	ASSIGN(headline, [coder decodeObject]);
+	ASSIGN(url, [coder decodeObject]);
+	ASSIGN(description, [coder decodeObject]);
+	ASSIGN(links, [coder decodeObject]);
 	break;
 	
       default:
@@ -139,18 +111,11 @@
       }
   }
   
-#ifdef DEBUG
-  if (self != nil)
-    NSLog(@"finished decoding RSSArticle (rc=%i)", [self retainCount]);
-  else
-    NSLog(@"finished decoding RSSArticle (self is nil!)");
-#endif
-  
   return self;
 }
 
 
--(void)encodeWithCoder: (NSCoder*)coder
+- (void) encodeWithCoder: (NSCoder*)coder
 {
   unsigned int version = ENCODING_VERSION;
   
@@ -164,75 +129,62 @@
 
 
 
--(NSString*)headline
+- (NSString *) headline
 {
-  return AUTORELEASE(RETAIN(headline));
+  return headline;
 }
 
--(NSString*)url
+- (NSString *) url
 {
-  return AUTORELEASE(RETAIN(url));
+  return url;
 }
 
--(NSString*)description
+- (NSString *) description
 {
-  return AUTORELEASE(RETAIN(description));
+  return description;
 }
 
--(NSDate*) date
+- (NSDate*) date
 {
-  return AUTORELEASE(RETAIN(date));
+  return date;
 }
 
--(void)feed:(RSSFeed*)aFeed
+- (void) feed: (RSSFeed *) aFeed
 {
   // Feed is NON-RETAINED!
   feed = aFeed;
 }
 
--(RSSFeed*)feed
+- (RSSFeed *) feed
 {
   // Feed is NON-RETAINED!
   return feed;
 }
 
 
--(void)setLinks:(NSMutableArray*) someLinks
+- (void) setLinks: (NSArray *) someLinks
 {
-  RELEASE(links);
-  links = RETAIN(someLinks);
+  [links setArray: someLinks];
 }
 
-
--(void)addLink:(NSURL*) anURL
+- (void) addLink: (NSURL *) anURL
 {
   if (anURL == nil)
     return;
   
-  if (links == nil)
-    {
-      links = [NSMutableArray arrayWithObject: anURL];
-    }
-  else
-    {
-      [links addObject: anURL];
-    }
+  [links addObject: anURL];
 }
 
-
--(NSArray*)links
+- (NSArray *) links
 {
-  return AUTORELEASE(RETAIN(links));
+  return links;
 }
-
-
 
 // Equality and hash codes
 - (unsigned) hash
 {
   return [headline hash] ^ [url hash];
 }
-
 
 /**
  * RSS Articles are equal if both the article headlines

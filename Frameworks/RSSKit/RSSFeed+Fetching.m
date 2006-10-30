@@ -177,10 +177,6 @@ NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
       return [self setError: RSSFeedErrorMalformedRSS];
     }
   
-#ifdef DEBUG
-  NSLog(@"document was:\n%@", [document content]);
-#endif // DEBUG
-  
   root = [document firstChildElement]; // finds the root node
   
   if (clearFeedBeforeFetching == YES)
@@ -226,6 +222,7 @@ NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
     }
   else
     {
+      NSLog(@"Failed to decide RSS version");
       rssVersion = @"Malformed RSS?";
       status = RSSFeedIsIdle;
       return [self setError: RSSFeedErrorMalformedRSS];

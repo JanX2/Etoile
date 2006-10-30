@@ -1,8 +1,5 @@
-/** -*-objc-*-
- */
-
 #import "RDFTests.h"
-
+#import "GNUstep.h"
 
 /**
  * Runs simple tests for RDF (RSS 1.0) files.

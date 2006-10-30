@@ -49,12 +49,12 @@
 
 //delegate accessor methods
 
--(void) setDelegate: (id)aDelegate
+- (void) setDelegate: (id)aDelegate
 {
   ASSIGN(delegate, aDelegate);
 }
 
--(id) delegate
+- (id) delegate
 {
   return AUTORELEASE(RETAIN(delegate));
 }
@@ -64,34 +64,34 @@
 /**
  * Adds the article to the feed
  */
--(void) commitArticle
+- (void) commitArticle
 {
-  RSSArticle* article;
-  NSDate* articleDate;
-  NSString* desc;
+  RSSArticle* article = nil;
+  NSDate* articleDate = nil;
+  NSString* desc = nil;
   
   // date
   if( date == nil )
     {
-      articleDate = [[NSDate alloc] init];
+      ASSIGN(articleDate, [NSDate date]);
     }
   else
     {
-      articleDate = RETAIN(date);
+      ASSIGN(articleDate, date);
     }
   
   // description
   if (content != nil)
     {
-      desc = content;
+      ASSIGN(desc, content);
     }
   else if (summary != nil)
     {
-      desc = summary;
+      ASSIGN(desc, summary);
     }
   else
     {
-      desc = @"No content.";
+      ASSIGN(desc, @"No content.");
     }
   
   // create
@@ -107,17 +107,11 @@
       [article setLinks: links];
     }
   
-  // submit article
-  #ifdef DEBUG
-  NSLog(@"Commit, links is %@", links);
-  #endif
-  
   if (delegate != nil)
     [delegate newArticleFound: article];
   
-  RELEASE(date);
-  
-  // desc needs NOT to be released or retained (only tmp ptr!)
+  DESTROY(articleDate);
+  DESTROY(desc);
 }
 
 
