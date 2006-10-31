@@ -1,5 +1,10 @@
-Oct-29-2006  Yen-Ju Chen
 
+Oct-30-2006  Guenther Noack
+	* Fixed URL loading bug for the storage
+	* Added RSSLink class and subclasses (see RSSLinks.h). These classes
+	  replace NSURL for the storage of links from articles.	
+
+Oct-29-2006  Yen-Ju Chen
 	* Tidy up a little.
 
 Oct-25-2006  Yen-Ju Chen

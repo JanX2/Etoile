@@ -18,6 +18,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#import "RSSLinks.h"
 #import "RSSArticle+Storage.h"
 #import <Foundation/Foundation.h>
 #import "GNUstep.h"
@@ -55,43 +56,37 @@ NSString* stringToFSString( NSString* aString )
 
 
 /*
- * ---------------------------------------------------
- * NSURL helper methods to serialize this into a Plist
- * ---------------------------------------------------
+ * -----------------------------------------------------
+ * RSSLink helper methods to serialize this into a Plist
+ * -----------------------------------------------------
  */
 
-@interface NSURL (Storage)
+@interface RSSLink (Storage)
 -(NSDictionary*) plistDictionary;
 +(id) urlFromPlistDictionary: (NSDictionary*) aDict;
 @end
 
-@implementation NSURL (Storage)
+@implementation RSSLink (Storage)
 -(NSDictionary*) plistDictionary
 {
     NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity: 3];
     
     NSString* desc = [self description];
-    NSString* type = [self propertyForKey: @"type"];
-    NSString* rel  = [self propertyForKey: @"rel"];
+    NSString* type = [self fileType];
+    NSString* rel  = [self relationType];
     
-    if (desc) [dict setObject: desc forKey: @"value"];
-    if (type) [dict setObject: type forKey: @"type"];
-    if (rel)  [dict setObject: rel  forKey: @"rel"];
+    if (desc != nil) [dict setObject: desc forKey: @"value"];
+    if (type != nil) [dict setObject: type forKey: @"type"];
+    if (rel  != nil) [dict setObject: rel  forKey: @"rel"];
     
     return dict;
 }
 
 +(id) urlFromPlistDictionary: (NSDictionary*) aDict
 {
-    NSURL* result = [NSURL URLWithString: [aDict objectForKey: @"value"]];
-    
-    NSString* type = [aDict objectForKey: @"type"];
-    NSString* rel  = [aDict objectForKey: @"rel"];
-    
-    if (type != nil) [result setProperty: type forKey: @"type"];
-    if (rel  != nil) [result setProperty: rel  forKey: @"rel"];
-    
-    return result;
+  return [RSSLink linkWithString: [aDict objectForKey: @"value"]
+		  andRel: [aDict objectForKey: @"rel"]
+		  andType: [aDict objectForKey: @"type"] ];
 }
 @end
 
@@ -129,7 +124,14 @@ NSString* stringToFSString( NSString* aString )
         ASSIGN( url,          [aDictionary objectForKey: @"article URL"] );
         ASSIGN( description,  [aDictionary objectForKey: @"article content"] );
         ASSIGN( date,         [aDictionary objectForKey: @"date"] );
-        ASSIGN( links,        [aDictionary objectForKey: @"links"] );
+	
+	NSArray* arr = [aDictionary objectForKey: @"links"];
+	links = [[NSMutableArray alloc] init];
+	
+	int i;
+	for (i=0; i<[arr count]; i++) {
+	  [links addObject: [RSSLink urlFromPlistDictionary: [arr objectAtIndex: i]]];
+	}
     }
     
     return self;
@@ -196,7 +198,7 @@ NSString* stringToFSString( NSString* aString )
     // the article's link list (an array of NSURL instances)
     linksArray = [NSMutableArray arrayWithCapacity: [links count]];
     for (i=0;i<[links count]; i++) {
-        NSURL* thisURL = [links objectAtIndex: i];
+        RSSLink* thisURL = [links objectAtIndex: i];
         [linksArray addObject: [thisURL plistDictionary]];
     }
     

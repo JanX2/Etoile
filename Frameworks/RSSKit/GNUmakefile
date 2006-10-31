@@ -52,6 +52,7 @@ AtomParser.m \
 Atom03Parser.m \
 Atom10Parser.m \
 RSSArticleCreationListener.m \
+RSSLinks.m \
 
 
 libRSSKit_HEADER_FILES = \
@@ -70,6 +71,7 @@ Atom03Parser.h \
 Atom10Parser.h \
 RSSArticleCreationListener.h \
 NewRSSArticleListener.h \
+RSSLinks.h \
 
 
 libRSSKit_HEADER_FILES_DIR = .

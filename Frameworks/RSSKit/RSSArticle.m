@@ -18,8 +18,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#import "RSSLinks.h"
 #import "RSSArticle.h"
 #import "GNUstep.h"
+
+
+
 
 @implementation RSSArticle
 
@@ -101,7 +105,7 @@
 	ASSIGN(headline, [coder decodeObject]);
 	ASSIGN(url, [coder decodeObject]);
 	ASSIGN(description, [coder decodeObject]);
-	ASSIGN(links, [coder decodeObject]);
+	[self setLinks: [coder decodeObject]];
 	break;
 	
       default:
@@ -144,12 +148,17 @@
   return description;
 }
 
+- (NSString*) content
+{
+  return AUTORELEASE(RETAIN(description));
+}
+
 - (NSDate*) date
 {
   return date;
 }
 
-- (void) feed: (RSSFeed *) aFeed
+- (void) setFeed:(RSSFeed*)aFeed
 {
   // Feed is NON-RETAINED!
   feed = aFeed;
@@ -162,9 +171,33 @@
 }
 
 
+- (NSURL*) enclosure
+{
+    return [[enclosure retain] autorelease];
+}
+
+/*
+ * This method checks if the specified link is a enclosure. If it is, it is
+ * stored in the article's enclosure field so that it can be easily returned
+ * using the -enclosure method.
+ */
+-(void)_checkLinkForEnclosure: (NSURL*)link
+{
+    if ([link isKindOfClass: [RSSEnclosureLink class]]) {
+        ASSIGN(enclosure, link);
+    }
+}
+
 - (void) setLinks: (NSArray *) someLinks
 {
+  DESTROY(enclosure);
+  
   [links setArray: someLinks];
+  
+  int i;
+  for (i=0; i<[links count]; i++) {
+      [self _checkLinkForEnclosure: [links objectAtIndex: i]];
+  }
 }
 
 - (void) addLink: (NSURL *) anURL
@@ -173,6 +206,8 @@
     return;
   
   [links addObject: anURL];
+  
+  [self _checkLinkForEnclosure: anURL];
 }
 
 - (NSArray *) links

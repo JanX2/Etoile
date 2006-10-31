@@ -60,7 +60,7 @@
       RSSArticle* art;
       
       art = [articles objectAtIndex: i];
-      [art feed: self];
+      [art setFeed: self];
       
       if ([result containsObject: art] == YES)
 	{
@@ -222,7 +222,7 @@
 	  
 	  article = [articles objectAtIndex: i];
 	  
-	  [article feed: self];
+	  [article setFeed: self];
 	}
     }
   

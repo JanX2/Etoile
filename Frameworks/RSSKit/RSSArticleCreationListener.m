@@ -18,9 +18,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#import "RSSLinks.h"
+
 #import "NewRSSArticleListener.h"
 #import "RSSArticleCreationListener.h"
 #import "GNUstep.h"
+
+#define DEBUG 1
 
 #define REL_KEY @"rel"
 #define TYPE_KEY @"type"
@@ -210,6 +214,8 @@
  *  <li>"via":       The source of the information provided in the entry.</li>
  * </ul>
  *
+ * The <tt>nil</tt> relation type defaults to "related".
+ * 
  * These relation types are compatible with the ones of the ATOM
  * specification. For details, see
  * <a href="http://www.atomenabled.org/developers/syndication/#link">
@@ -219,39 +225,18 @@
 		andRel: (NSString*) aRelation
 	       andType: (NSString*) aType
 {
-  NSURL* actualURL;
-  
-  #ifdef DEBUG
+#ifdef DEBUG
   NSLog(@"addLinkWithURL: %@ andRel: %@ andType: %@",
 	anURL, aRelation, aType);
-  #endif
+#endif
   
-  actualURL = [[NSURL alloc] initWithString: anURL];
+  [links addObject: [RSSLink linkWithString: anURL
+			     andRel: aRelation
+			     andType: aType]];
   
-  if (aType != nil)
-    {
-      [actualURL setProperty: aType
-		 forKey: TYPE_KEY];
-    }
-  
-  if (aRelation != nil)
-    {
-      [actualURL setProperty: aRelation
-		 forKey: REL_KEY];
-      
-      if ([aRelation isEqualToString: @"alternate"])
-	{
-	  RELEASE(url);
-	  url = RETAIN(anURL); // anURL, the String version!
-	}
-    }
-  
-  [links addObject: actualURL];
-  RELEASE(actualURL);
-  
-  #ifdef DEBUG
+#ifdef DEBUG
   NSLog(@"links is now %@", links);
-  #endif
+#endif
 }
 
 -(void) setContent: (NSString*) aContent

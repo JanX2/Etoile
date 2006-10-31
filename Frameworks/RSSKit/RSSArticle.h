@@ -36,6 +36,7 @@
   NSString*  url;
   NSString*  description;
   NSDate*    date;
+  NSURL*     enclosure;
   
   /// Links and multimedia content
   NSMutableArray* links;
@@ -108,6 +109,8 @@
 -(NSString*)url;
 
 /// @return The full text, an excerpt or a summary from the article
+-(NSString*)content;
+
 -(NSString*)description;
 
 /**
@@ -147,7 +150,15 @@
  */
 -(NSDate*) date;
 
--(void)feed:(RSSFeed*)aFeed;
+-(void)setFeed:(RSSFeed*)aFeed;
+
+/**
+ * Returns the Enclosure object of this article as URL.
+ * If there is no enclosure object, nil is returned.
+ * 
+ * @return the URL of this article's enclosure object
+ */
+-(NSURL*)enclosure;
 
 /**
  * Returns the source feed of this article.
