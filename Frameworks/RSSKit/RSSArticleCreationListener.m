@@ -24,8 +24,6 @@
 #import "RSSArticleCreationListener.h"
 #import "GNUstep.h"
 
-#define DEBUG 1
-
 #define REL_KEY @"rel"
 #define TYPE_KEY @"type"
 
