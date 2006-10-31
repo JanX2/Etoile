@@ -34,6 +34,9 @@ endif
 ifeq ($(etoile-extensions), yes)
     
     export etoileextensionskit ?= yes
+    export etoilefoundation ?= yes
+    export etoileui ?= yes
+    export distributedview ?= yes
     export ogrekit ?= yes
     export lucenekit ?= yes
     export servicesbarkit ?= yes
@@ -81,6 +84,20 @@ endif
 # ExtendedWorkspaceKit, PreferencesKit depends on it.
 ifeq ($(etoileextensionskit), yes)
     SUBPROJECTS += EtoileExtensionsKit
+endif
+
+ifeq ($(etoilefoundation), yes)
+    SUBPROJECTS += EtoileFoundation
+endif
+
+ifeq ($(etoileui), yes)
+    SUBPROJECTS += EtoileUI
+endif
+
+# Takes care to build EtoileUI before DistributedView, because DistributedView 
+# depends on it.
+ifeq ($(distributedview), yes)
+    SUBPROJECTS += DistributedView
 endif
 
 # We need to build OgreKit before LuceneKit, because LuceneKit depends on it.

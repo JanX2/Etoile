@@ -1,3 +1,8 @@
+2006-10-31  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Frameworks/GNUmakefile: Included EtoileFoundation, EtoileUI and 
+    DistributedView in Etoile build process by default.
+
 2006-10-19  Quentin Mathe <qmathe@club-internet.fr>
 
     * setup.sh:
