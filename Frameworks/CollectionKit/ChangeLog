@@ -1,3 +1,7 @@
+2006-10-30 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Fix compare: to nil.
+
 2006-10-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Add search in CKCollectionView.

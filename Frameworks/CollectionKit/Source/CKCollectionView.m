@@ -11,7 +11,15 @@ NSComparisonResult sortingWithProperty(id record1, id record2, void *context)
   NSString *property = (NSString *) context;
   id value1 = [(CKRecord *) record1 valueForProperty: property];
   id value2 = [(CKRecord *) record2 valueForProperty: property];
-  return [value1 compare: value2];
+  if ((value1) && (value2)) {
+    return [value1 compare: value2];
+  } else if ((value1 == nil) && (value2)) {
+    return NSOrderedDescending;
+  } else if ((value1) && (value2 == nil)) {
+    return NSOrderedAscending;
+  } else {
+    return NSOrderedSame;
+  }
 }
 
 NSComparisonResult reverseSortingWithProperty(id record1, id record2, void *context)
