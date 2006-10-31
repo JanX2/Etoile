@@ -1,0 +1,15 @@
+2006-10-31  Quentin Mathe <qmathe@club-internet.fr>
+
+	* UKDistributedView.h:
+	* UKDistributedView.m:
+	* UKFinderIconCell.h:
+	* UKFinderIconCell.m:
+	* EtoileCompatibility.h:
+	* Cocoa/Cocoa.h:
+	* GNUmakefile:
+	* GNUmakefile.postamble: 
+	* COPYING:
+	* README:
+	* INSTALL:
+	Imported this new framework resulting from the split of EtoileExtensionsKit
+	in three modules (EtoileUI, EtoileFoundation, DistributedView).
