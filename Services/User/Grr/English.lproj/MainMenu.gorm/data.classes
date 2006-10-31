@@ -1,0 +1,71 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    BKBookmarkView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSView;
+    };
+    CKCollectionView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSView;
+    };
+    ContentTextView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSTextView;
+    };
+    Controller = {
+	Actions = (
+	    "delete:",
+	    "addGroup:",
+	    "reload:",
+	    "reloadAll:",
+	    "subscribe:",
+	    "markAllRead:",
+	    "markAllUnread:",
+	    "markRead:",
+	    "markUnread:"
+	);
+	Outlets = (
+	    articleCollectionView,
+	    feedBookmarkView,
+	    mainWindow,
+	    contentTextView
+	);
+	Super = NSObject;
+    };
+    FeedBookmarkView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = BKBookmarkView;
+    };
+    FirstResponder = {
+	Actions = (
+	    "addGroup:",
+	    "markAllRead:",
+	    "markAllUnread:",
+	    "markRead:",
+	    "markUnread:",
+	    "reload:",
+	    "reloadAll:",
+	    "subscribe:"
+	);
+	Super = NSObject;
+    };
+    MainWindow = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSWindow;
+    };
+}

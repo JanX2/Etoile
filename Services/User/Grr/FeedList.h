@@ -2,8 +2,10 @@
    
    Project: RSSReader
 
-   Copyright (C) 2005 Free Software Foundation
+   Copyright (C) 2006 Yen-Ju Chen
+   Copyright (C) 2005 Guenther Noack
 
+   Author: Yen-Ju Chen
    Author: Guenther Noack,,,
 
    Created: 2005-03-25 21:07:58 +0100 by guenther
@@ -23,54 +25,45 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 */
 
-#ifndef _FEEDLIST_H_
-#define _FEEDLIST_H_
-
 #import <Foundation/Foundation.h>
 #import <RSSKit/RSSKit.h>
+#import <BookmarkKit/BookmarkKit.h>
+#import <CollectionKit/CollectionKit.h>
 
-#import "MainController.h"
-
-
-@interface FeedList : NSObject <NSCoding>
+@interface FeedList : NSObject
 {
-  // list containing RSSFeed objects
-  NSMutableArray* list;
-  
-  // article list dirty?
-  BOOL articleListDirty;
-  
-  // the RSSArticle list which is actually viewed in the main window
-  NSArray* articleList;
+  BKBookmarkStore *feedStore;
+  CKCollection *articleCollection;
+
+  /* list containing RSSFeed objects
+   * Key is NSURL from BKBookmark of feedStore.
+   * Value is the RSSFeed.
+   */
+  NSMutableDictionary *list; 
 }
 
-+(NSString*)storeDir;
-+(NSString*)storeFile;
++ (FeedList *) feedList;
 
--(id)init;
--(id)initWithCoder: (NSCoder*)coder;
--(void) dealloc;
++ (NSString*) articleCacheLocation;
 
--(void)encodeWithCoder: (NSCoder*) coder;
+/* Rebuild feed from bookmark.
+ * It does not fetch new articles. */
+- (void) buildFeeds;
 
--(void) buildArticleList;
--(NSArray*) feedList;
--(NSArray*) articleList;
+- (BKBookmarkStore *) feedStore;
+- (CKCollection *) articleCollection;
+- (NSArray*) feedList; /* array of RSSReaderFeed */
+- (RSSFeed *) feedForURL: (NSURL *) url; 
+- (BKBookmark *) feedBookmarkForURL: (NSURL *) url;
+- (CKGroup *) articleGroupForURL: (NSURL *) url; 
 
--(void)removeFeed: (RSSFeed*) feed;
--(void)addFeedWithURL: (NSURL*) url;
--(void)addFeedsWithURLs: (NSArray*) urls;
--(void)addFeed: (RSSFeed*) feed;
--(void)addFeeds: (NSArray*) feeds;
+- (void) removeFeed: (RSSFeed*) feed;
+- (void) addFeedWithURL: (NSURL*) url;
+- (void) addFeedsWithURLs: (NSArray*) urls;
+- (void) addFeed: (RSSFeed*) feed;
+- (void) addFeeds: (NSArray*) feeds;
 
--(BOOL) articleListDirty;
--(void) setArticleListDirty: (BOOL) isDirty;
+- (void) save;
 
 @end
-
-
-FeedList* getFeedList();
-
-
-#endif // _FEEDLIST_H_
 

@@ -21,12 +21,20 @@ Dependency
 ----------
 
 RSSKit
+BookmarKit (and CollectionKit).
 
 
 Contribute
 ----------
 
 Read TODO document.
+
+---
+MVC 
+---
+M: FeedList
+V: MainWindow
+C: Controller
 
 
 ------------------------------------------------------------

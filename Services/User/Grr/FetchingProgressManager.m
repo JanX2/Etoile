@@ -1,20 +1,10 @@
-/* -*-objc-*-
- * All Rights reserved
- */
-
-#import <AppKit/AppKit.h>
 #import <RSSKit/RSSKit.h>
-
-
 #import "FetchingProgressManager.h"
-#import "FeedManagement.h"
-#import "MainController.h"
+//#import "FeedManagement.h"
+//#import "MainController.h"
 #import "RSSReaderFeed.h"
 #import "FeedList.h"
-
-#define NO_MULTITHREADING YES
-//#undef NO_MULTITHREADING
-//#define DEBUG YES
+#import "GNUstep.h"
 
 
 //* The number of currently fetched feeds
@@ -25,8 +15,6 @@ int currentlyFetchedFeeds = 0;
  * Get this lock by calling getCurrentlyFetchedFeedsLock().
  */
 NSLock* currentlyFetchedFeedsLock = nil;
-
-
 
 NSLock* getCurrentlyFetchedFeedsLock()
 {
@@ -47,9 +35,8 @@ FetchingProgressManager* instance;
 +(FetchingProgressManager*) instance
 {
   if (instance == nil) {
-    [[FetchingProgressManager alloc] init];
+    instance = [[FetchingProgressManager alloc] init];
   }
-  
   return instance;
 }
 
@@ -57,7 +44,6 @@ FetchingProgressManager* instance;
 {
   if ((self = [super init]))
     {
-      [getMainController() fetchingProgressManager: self];
       instance = self;
     }
   
@@ -104,34 +90,17 @@ FetchingProgressManager* instance;
     }
 }
 
-
-
--(void) fetchFeedThreaded: (RSSFeed*) feed
-{
-#ifdef NO_MULTITHREADING
-  [self fetchFeed: feed];
-#else
-  [NSThread detachNewThreadSelector: @selector(fetchFeed:)
-	    toTarget: self
-	    withObject: feed];
-#endif
-}
-
 /**
  * fetch a specific feed. Used for threading
  */
 -(void)fetchFeed: (RSSFeed*) feed
 {
-  NSAutoreleasePool* threadAutoreleasePool;
+  CREATE_AUTORELEASE_POOL(x);
+
   NSLock* lock;
   enum RSSFeedError feedError;
   
-  threadAutoreleasePool = [[NSAutoreleasePool alloc] init];
-  
-  
   lock = getCurrentlyFetchedFeedsLock();
-  
-  NSLog(@"thread fetching %@ just started", feed);
   
   [lock lock];
   currentlyFetchedFeeds++;
@@ -145,28 +114,31 @@ FetchingProgressManager* instance;
   [lock unlock];
   
   NS_DURING {
-    [feed fetch];
+    [feed fetchInBackground];
     feedError = [feed lastError];
     
     if (feedError != RSSFeedErrorNoError)
       {
+        NSLog(@"%@", [FetchingProgressManager stringForError: feedError]);
+#if 0 // FIXME
 	[[ErrorLogController instance]
 	  logString:
 	    [NSString stringWithFormat:
 			@"%@ fetching failed: %@\n", [feed description],
 		      [FetchingProgressManager stringForError: feedError]]];
+#endif
       }
   }
   NS_HANDLER {
+       NSLog(@"exception %@", [localException reason]);
+#if 0 // FIXME
     [[ErrorLogController instance]
       logString:
 	[NSString stringWithFormat: @"%@ fetching failed: %@\n",
 		  [feed description], [localException reason]]];
+#endif
   }
   NS_ENDHANDLER;
-  
-  [[FeedManagement instance] refreshFeedTable];
-  [getFeedList() setArticleListDirty: YES];
   
   [lock lock];
   currentlyFetchedFeeds--;
@@ -180,20 +152,7 @@ FetchingProgressManager* instance;
     }
   [lock unlock];
   
-    
-  RELEASE(threadAutoreleasePool);
-  NSLog(@"tap exit release");
-  
-#ifdef NO_MULTITHREADING
-#ifdef DEBUG
-  NSLog(@"NO Multithreading");
-#endif // DEBUG
-#else  // NO_MULTITHREADING
-#ifdef DEBUG
-  NSLog(@"Multithreading: fetching %@ thread just exited", feed);
-#endif // DEBUG
-  [NSThread exit];
-#endif // NO_MULTITHREADING
+  DESTROY(x);  
 }
 
 
@@ -214,19 +173,19 @@ FetchingProgressManager* instance;
       
       feed = [array objectAtIndex: feedNo];
       
-      if ([feed isSubclassedFeed])
+      if ([feed isKindOfClass: [RSSReaderFeed class]])
 	{
 	  register RSSReaderFeed* rFeed;
 	  
 	  rFeed = (RSSReaderFeed*) feed;
 	  if ([rFeed needsRefresh])
 	    {
-	      [self fetchFeedThreaded: feed];
+	      [self fetchFeed: feed];
 	    }
 	}
       else
 	{
-	  [self fetchFeedThreaded: feed];
+	  [self fetchFeed: feed];
 	}
     }
 }

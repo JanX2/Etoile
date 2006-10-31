@@ -2,6 +2,58 @@
 Grr Changelog
 =============
 
+Oct-30-2006 Yen-Ju Chen <yjchenx at gmail>
+
+	* Merge back from branch.
+
+Oct-28-2006 Yen-Ju Chen <yjchenx at gmail>
+
+	* Fix bug when window is closed before application terminates.
+	* Support searching.
+	* Use Gorm file for main user interface again.
+	* Use Nib file on Cocoa.
+	* Implement article marking.
+	* Display number of unread articles.
+	* Update Gorm file for article marking.
+	* Sort article by date.
+	* Save window frame.
+
+Oct-27-2006 Yen-Ju Chen <yjchenx at gmail>
+
+	* Prepare toolbar.
+	* Initial implementation of feed group.
+
+Oct-25-2006 Yen-Ju Chen <yjchenx at gmail>
+
+	* Use CollectionKit to store articles.
+	* Work on GNUstep.
+
+Oct-23-200 Yen-Ju Chen <yjchenx at gmail>
+
+	* Work on Cocoa.
+	* Adapt BookmarkKit.
+
+Oct-22-2006 Yen-Ju Chen <yjchenx at gmail>
+
+	* Implement -subscribe: (works basically).
+	* Use gorm for subscription panel.
+	* Tidy up.
+	* Fetch feed in background.
+	* Implement -reload:
+
+Oct-21-2006 Yen-Ju Chen <yjchenx at gmail>
+
+	* Merge AppController and MainController into Controller.
+	* Move FeedTableDelegate and MainTableDelegate into FeedList.
+	* MainWindow: main user interface.
+	* Reorganize as M (FeedList), V (MainWindow), C (Controller).
+	* Move ArticleViewing into ContentTextView.
+	* Compile on Cocoa.
+
+Oct-20-2006 Yen-Ju Chen <yjchenx at gmail>
+
+	* Initial branch.
+
 Oct-14-2006 Yen-Ju Chen <yjchenx at gmail>
 
 	* Fix various compilation warnings.

@@ -1,8 +1,10 @@
 /*
    Project: RSSReader
 
-   Copyright (C) 2005 Free Software Foundation
+   Copyright (C) 2006 Yen-Ju Chen
+   Copyright (C) 2005 Guenther Noack
 
+   Author: Yen-Ju Chen
    Author: Guenther Noack
 
    Created: 2005-03-25 21:07:58 +0100 by guenther
@@ -23,30 +25,14 @@
 */
 
 
+#import <AppKit/AppKit.h>
 #import "FeedList.h"
-#import "FeedManagement.h"
-#import "FilterManager.h"
+#import "FetchingProgressManager.h"
 #import "RSSReaderFeed.h"
-#import "RSSReaderArticle.h"
+#import "Global.h"
+#import "GNUstep.h"
 
-FeedList* feedList = nil;
-
-FeedList* getFeedList()
-{
-  if (feedList == nil)
-    {
-      feedList =
-	RETAIN([NSUnarchiver unarchiveObjectWithFile: [FeedList storeFile]]);
-      
-      if (feedList == nil)
-	{
-	  feedList = [[FeedList alloc] init];
-	}
-    }
-  
-  return feedList;
-}
-
+static FeedList *feedList = nil;
 
 int articleSortByDate( id articleA, id articleB, void* context )
 {
@@ -83,139 +69,149 @@ int articleSortByDate( id articleA, id articleB, void* context )
 
 @implementation FeedList
 
-+(NSString*)storeDir
++ (void) initialize
 {
-  return [@"~/GNUstep/Library/RSSReader"
-	   stringByExpandingTildeInPath];
+  /* Make sure CKItem has right property */
+  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+      [NSNumber numberWithInt: CKStringProperty], kArticleHeadlineProperty,
+      [NSNumber numberWithInt: CKStringProperty], kArticleURLProperty,
+      [NSNumber numberWithInt: CKStringProperty], kArticleDescriptionProperty,
+      [NSNumber numberWithInt: CKDateProperty], kArticleDateProperty,
+      [NSNumber numberWithInt: CKIntegerProperty], kArticleReadProperty,
+                 nil];
+  [CKItem addPropertiesAndTypes: dict];
+
+  dict = [NSDictionary dictionaryWithObjectsAndKeys:
+      [NSNumber numberWithInt: CKStringProperty], kArticleGroupURLProperty,
+                nil];
+  [CKGroup addPropertiesAndTypes: dict];
 }
 
-+(NSString*)storeFile
++ (FeedList *) feedList;
 {
-  return [@"~/GNUstep/Library/RSSReader/Serialized"
-	   stringByExpandingTildeInPath];
+  if (feedList == nil)
+    {
+      feedList = [[FeedList alloc] init];
+    }
+  return feedList;
 }
 
--(id)init
++ (NSString *) articleCacheLocation
+{
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+  if ([paths count] == 0)
+    return nil;
+
+  return [[[paths objectAtIndex: 0] stringByAppendingPathComponent: @"RSSReader"] stringByAppendingPathComponent: @"ArticleCache"];
+}
+
+- (id) init
 {
   if ((self = [super init]))
     {
-      list = [[NSMutableArray alloc] init];
+      list = [[NSMutableDictionary alloc] init];
+
+      ASSIGN(feedStore, [BKBookmarkStore sharedBookmarkWithDomain: BKRSSBookmarkStore]);
+      ASSIGN(articleCollection, AUTORELEASE([[CKCollection alloc] initWithLocation: [FeedList articleCacheLocation]]));
       
-      articleListDirty = YES;
-      articleList = nil;
-      [self buildArticleList];
+      /* Listen to RSSFeedFetchedNotification for loading in backgroun */
+      [[NSNotificationCenter defaultCenter]
+          addObserver: self
+          selector: @selector(feedFetched:)
+          name: RSSFeedFetchedNotification
+          object: nil];
+
+      [self buildFeeds];
     }
   
   return self;
 }
 
--(id)initWithCoder: (NSCoder*)coder
+- (void) dealloc
 {
-  if ((self = [super init]))
-    {
-      list = RETAIN([coder decodeObject]);
-      
-      articleListDirty = YES;
-      articleList = nil;
-      [self buildArticleList];
-    }
-  
-  return self;
-}
-
-
--(void) dealloc
-{
-  RELEASE(articleList);
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
   RELEASE(list);
+  RELEASE(feedStore);
+  RELEASE(articleCollection);
   
   [super dealloc];
 }
 
--(void)encodeWithCoder: (NSCoder*) coder
+- (void) buildFeeds
 {
-  [coder encodeObject: list];
+  /* Build feeds based on feedStore */
+  NSEnumerator *e = [[feedStore items] objectEnumerator];
+  BKBookmark *bk;
+  while ((bk = [e nextObject])) {
+    RSSReaderFeed *feed = [RSSReaderFeed feedWithURL: [bk URL]];
+    [list setObject: feed forKey: [bk URL]];
+  }
 }
 
-
--(void) buildArticleList
+- (BKBookmarkStore *) feedStore
 {
-  int feedNo;
-  int feedCount;
-  NSMutableArray* newArticleList;
-  FilterManager* filterManager;
-  
-  // only proceed if article list is dirty
-  if (articleListDirty == NO)
-    return;
-  
-  filterManager = [FilterManager filterManager];
-  
-  newArticleList = [NSMutableArray array];
-  
-  feedCount = [list count];
-  for (feedNo=0; feedNo<feedCount; feedNo++)
-    {
-      RSSFeed* feed = [list objectAtIndex: feedNo];
-      
-      if ([filterManager allowsFeed: feed])
-	{
-	  NSEnumerator* enumerator;
-	  RSSArticle* article;
-	  
-	  enumerator = [feed articleEnumerator];
-	  
-	  while((article = [enumerator nextObject]))
-	    {
-	      if ([filterManager allowsArticle: article])
-		{
-		  [newArticleList addObject: article];
-		}
-	    }
-	}
-    }
-  
-  
-  // articles are sorted here
-  RELEASE(articleList);
-  articleList =
-    [newArticleList sortedArrayUsingFunction: articleSortByDate
-	     context: NULL];
-  RETAIN(articleList);
-  
-  
-  articleListDirty = NO;
+  return feedStore;
 }
 
+- (CKCollection *) articleCollection
+{
+  return articleCollection;
+}
 
 // returns a NSArray, please do *not* change the array, this is
 // an internal structure of the class!
--(NSArray*) feedList
+- (NSArray*) feedList
 {
-  return AUTORELEASE(RETAIN(list));
+  return [list allValues];
 }
 
--(NSArray*) articleList
+- (RSSFeed *) feedForURL: (NSURL *) url
 {
-  if (articleListDirty)
-    [self buildArticleList];
-  
-  return AUTORELEASE(RETAIN(articleList));
+  return [list objectForKey: url];
 }
 
-
--(void)removeFeed: (RSSFeed*) feed
+- (BKBookmark *) feedBookmarkForURL: (NSURL *) url
 {
-  [list removeObject: feed];
-  articleListDirty = YES;
+  NSEnumerator *e = [[feedStore items] objectEnumerator];
+  BKBookmark *bk;
+  while ((bk = [e nextObject])) {
+    if ([[bk URL] isEqual: url]) {
+      return bk;
+    }
+  }
+  return nil;
 }
 
--(void)addFeedWithURL: (NSURL*) url
+- (CKGroup *) articleGroupForURL: (NSURL *) url
+{
+  /* Find the right feed */
+  NSEnumerator *e = [[articleCollection groups] objectEnumerator];
+  CKGroup *group = nil;
+  while ((group = [e nextObject])) {
+    if ([[group valueForProperty: kArticleGroupURLProperty] isEqualToString: [url absoluteString]])
+    {
+      return group;
+    }
+  }
+  return nil;
+}
+
+- (void) removeFeed: (RSSFeed*) feed
+{
+  NSLog(@"removeFeed %@", feed);
+  BKBookmark *bk = [self feedBookmarkForURL: [feed feedURL]];
+  if (bk) {
+    [feedStore removeBookmark: bk];
+  }
+  [list removeObjectForKey: [feed feedURL]];
+}
+
+- (void) addFeedWithURL: (NSURL*) url
 {
   [self addFeedsWithURLs: [NSArray arrayWithObject: url]];
 }
 
--(void)addFeedsWithURLs: (NSArray*) urls
+- (void) addFeedsWithURLs: (NSArray*) urls
 {
   NSMutableArray* feedArray;
   int i;
@@ -234,12 +230,12 @@ int articleSortByDate( id articleA, id articleB, void* context )
   [self addFeeds: feedArray];
 }
 
--(void)addFeed: (RSSFeed*) feed
+- (void) addFeed: (RSSFeed*) feed
 {
   [self addFeeds: [NSArray arrayWithObject: feed]];
 }
 
--(void)addFeeds: (NSArray*) feeds
+- (void) addFeeds: (NSArray*) feeds
 {
   int i;
   BOOL hadErrors;
@@ -252,26 +248,94 @@ int articleSortByDate( id articleA, id articleB, void* context )
   
   for (i=0; i<[feeds count]; i++) {
     RSSFeed* feed = (RSSFeed*) [feeds objectAtIndex: i];
-    [list addObject: feed];
+    BKBookmark *bk = [BKBookmark bookmarkWithURL: [feed feedURL]];
+    [list setObject: feed forKey: [feed feedURL]];
+    [feedStore addBookmark: bk];
   }
   
-  [self buildArticleList];
-  
-  // redraw and reread the feed table
-  [[FeedManagement instance] refreshFeedTable];
-  
-  // redraw and reread the main (article) table
-  [getMainController() refreshMainTable];
+  // [self buildArticleList];
 }
 
--(BOOL) articleListDirty
+- (void) save
 {
-  return articleListDirty;
+  [feedStore save];
+  [articleCollection save];
 }
 
--(void) setArticleListDirty: (BOOL) isDirty
+/** Private **/
+- (void) feedFetched: (NSNotification *) not
 {
-  articleListDirty = isDirty;
+  RSSFeed *feed = [not object];
+  /* Need to update name on feedStore */
+  BKBookmark *bk = [self feedBookmarkForURL: [feed feedURL]];
+  [bk setTitle: [feed feedName]];
+  /* Update articleCollection.
+   * Remove old articles under this group and add new.
+   */
+  NSEnumerator *e = [[articleCollection groups] objectEnumerator];
+  CKGroup *group = nil;
+  CKItem *item = nil;
+  BOOL found = NO;
+  NSString *URLString = [[feed feedURL] absoluteString];
+  while ((group = [e nextObject])) {
+    if ([[group valueForProperty: kArticleGroupURLProperty] isEqualToString: URLString])
+    {
+      found = YES;
+      break;
+    }
+  }
+
+  if (found == NO) {
+    /* Feed exist, but no group. Make one */
+    group = AUTORELEASE([[CKGroup alloc] init]);
+    [articleCollection addRecord: group];
+    [group setValue: URLString forProperty: kArticleGroupURLProperty];
+  }
+  
+#if 0
+  e = [[group items] objectEnumerator];
+  while ((item = [e nextObject])) {
+    /* Remove all old article */
+    [articleCollection removeRecord: item];
+  }
+#endif
+ 
+  e = [feed articleEnumerator];
+  RSSArticle *article = nil;
+  while ((article = [e nextObject])) {
+    /* Find existing one */
+    BOOL found = NO;
+    NSEnumerator *e1 = [[group items] objectEnumerator];
+    while ((item = [e1 nextObject])) {
+      NSString *headline = [item valueForProperty: kArticleHeadlineProperty];
+      NSString *url = [item valueForProperty: kArticleURLProperty];
+      if (([headline isEqualToString: [article headline]]) &&
+          ([url isEqualToString: [article url]])) 
+      {
+        found = YES;
+      }
+    } 
+    if (found == NO) {
+      /* Add new article */
+      item = AUTORELEASE([[CKItem alloc] init]);
+      [item setValue: [NSNumber numberWithInt: 0]  /* Unread for new article */
+            forProperty: kArticleReadProperty];
+      [articleCollection addRecord: item];
+      [group addItem: item];
+    }
+    [item setValue: [article headline] 
+          forProperty: kArticleHeadlineProperty];
+    [item setValue: [article url] 
+          forProperty: kArticleURLProperty];
+    [item setValue: [article description] 
+          forProperty: kArticleDescriptionProperty];
+    [item setValue: [article date] 
+          forProperty: kArticleDateProperty];
+  }
+  [[NSNotificationCenter defaultCenter]
+        postNotificationName: RSSReaderFeedListChangedNotification
+        object: feed];
 }
+/** Private **/
 
 @end

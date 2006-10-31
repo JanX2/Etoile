@@ -1,8 +1,10 @@
 /* -*-objc-*-
    Project: RSSReader
 
-   Copyright (C) 2005 Free Software Foundation
+   Copyright (C) 2006 Yen-Ju Chen
+   Copyright (C) 2005 Guenther Noack
 
+   Author: Yen-Ju Chen
    Author: Guenther Noack,,,
 
    Created: 2005-05-27 20:15:06 +0000 by guenther
@@ -22,9 +24,6 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 */
 
-#ifndef _RSSREADERFEED_H_
-#define _RSSREADERFEED_H_
-
 #import <RSSKit/RSSFeed.h>
 #import <Foundation/Foundation.h>
 
@@ -42,39 +41,27 @@
  * minimum update interval, so that it is ensured
  * feeds aren't fetched too often.
  */
--(void) setMinimumUpdateInterval: (NSTimeInterval) aTimeInterval;
+- (void) setMinimumUpdateInterval: (NSTimeInterval) aTimeInterval;
 
 /**
  * Returns the minimal update interval.
  * @return Minimal update interval as NSTimeInterval
  */
--(NSTimeInterval) minimumUpdateInterval;
+- (NSTimeInterval) minimumUpdateInterval;
 
 /**
  * Returns YES if and only if the feed needs a refresh.
  * This is the case when the minimum feed fetching time interval
  * is smaller than the time interval since the last fetch.
  */
--(BOOL) needsRefresh;
+- (BOOL) needsRefresh;
 
 /**
  * Sets the URL of the feed to a new value.
  * @param aUrlString a String, which represents the URL.
  * @return YES if and only if the string was a valid URL and could be used
  */
--(BOOL) setURLString: (NSString*) aUrlString;
+- (BOOL) setURLString: (NSString*) aUrlString;
 
 @end
-
-
-@interface RSSFeed (Subclassing)
--(BOOL) isSubclassedFeed;
-@end
-
-@interface RSSReaderFeed (Subclassing)
--(BOOL) isSubclassedFeed;
-@end
-
-
-#endif // _RSSREADERFEED_H_
 

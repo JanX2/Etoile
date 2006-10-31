@@ -1,3 +1,25 @@
+branche/yjchen/Grr
+==================
+
+1. Rewrite main user interface in source code, not in gorm.
+   Reason: table view and outline view are needed to be subclass
+           in the long run. In that case, it may be easier to do
+           everything in source code. And it has the potential to port to
+           Cocoa. It is easer to fix problem with text editor than opening
+           Gorm to do that. The minor user interface can still be gorm file.
+
+2. 3-pane user interface.
+   Reason: most RSS reader uses 3-pane user interface and it is indeed
+           easier to use.
+
+3. Load URL asynchronosely.
+   Reason: avoiding thread.
+
+4. Use BookmarkKit for feeds.
+   Reason: reuse existing components for less maintaince.
+
+5. Use CollectionKit or BookmarkKit for articles (optional).
+   Reason: resue existing components for less maintaince.
 
 TODO
 ++++

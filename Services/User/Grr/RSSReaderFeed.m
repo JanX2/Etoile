@@ -1,8 +1,10 @@
 /*
    Project: RSSReader
 
-   Copyright (C) 2005 Free Software Foundation
+   Copyright (C) 2006 Yen-Ju Chen
+   Copyright (C) 2005 Guenther Noack
 
+   Author: Yen-Ju Chen
    Author: Guenther Noack,
 
    Created: 2005-05-27 20:15:06 +0000 by guenther
@@ -23,33 +25,11 @@
 */
 
 #import "RSSReaderFeed.h"
-#import "RSSReaderArticle.h"
-
-@implementation RSSFeed (Subclassing)
-
--(BOOL) isSubclassedFeed
-{
-  return NO;
-}
-
-@end
-
-// --------------------------------------------
-
-@implementation RSSReaderFeed (Subclassing)
-
--(BOOL) isSubclassedFeed
-{
-  return YES;
-}
-
-@end
-
-// --------------------------------------------
+#import "GNUstep.h"
 
 @implementation RSSReaderFeed
 
--(id)initWithURL: (NSURL*) aURL
+- (id) initWithURL: (NSURL*) aURL
 {
   if ((self = [super initWithURL: aURL]))
     {
@@ -57,11 +37,11 @@
       [self setMinimumUpdateInterval: (NSTimeInterval)(1800.0)];
     }
   
-  [self setArticleClass: [RSSReaderArticle class]];
+  [self setArticleClass: [RSSArticle class]];
   return self;
 }
 
--(id)initWithCoder: (NSCoder*)coder
+- (id) initWithCoder: (NSCoder*)coder
 {
   if ((self = [super initWithCoder: coder]))
     {
@@ -83,11 +63,11 @@
 	}
     }
   
-  [self setArticleClass: [RSSReaderArticle class]];
+  [self setArticleClass: [RSSArticle class]];
   return self;
 }
 
--(void)encodeWithCoder: (NSCoder*)coder
+- (void) encodeWithCoder: (NSCoder*)coder
 {
   int encodingVersion = 1;
   
@@ -98,17 +78,17 @@
 	 at: &minUpdateInterval];
 }
 
--(void) setMinimumUpdateInterval: (NSTimeInterval) aTimeInterval
+- (void) setMinimumUpdateInterval: (NSTimeInterval) aTimeInterval
 {
   minUpdateInterval = aTimeInterval;
 }
 
--(NSTimeInterval) minimumUpdateInterval
+- (NSTimeInterval) minimumUpdateInterval
 {
   return minUpdateInterval;
 }
 
--(BOOL) needsRefresh
+- (BOOL) needsRefresh
 {
   // .oO( [lastRetrieval timeIntervalSinceNow] returns a negative value )
   if (-[[self lastRetrieval] timeIntervalSinceNow] > minUpdateInterval)
@@ -121,19 +101,16 @@
     }
 }
 
--(BOOL) setURLString: (NSString*) aUrlString
+- (BOOL) setURLString: (NSString*) aUrlString
 {
-  NSURL* url;
-  
-  url = [NSURL URLWithString: aUrlString];
+  NSURL *url = [NSURL URLWithString: aUrlString];
   
   if (url == nil)
     {
       return NO;
     }
   
-  RELEASE(feedURL);
-  feedURL = RETAIN(url);
+  ASSIGN(feedURL, url);
   return YES;
 }
 
@@ -144,28 +121,12 @@
  */
 -(enum RSSFeedError) fetch
 {
-    status = RSSFeedIsFetching;
-    [NSThread detachNewThreadSelector: @selector(threadedFetch:)
-                             toTarget: self
-                           withObject: feedURL];
-}
-
-/**
- * Runs in a worker thread only
- */
--(void) threadedFetch: (NSURL*) myURL
-{
-    NSAutoreleasePool* threadAutoreleasePool =
-        [[NSAutoreleasePool alloc] init];
-    
-    NSData* data = [self fetchDataFromURL: myURL];
-    
-    [self performSelectorOnMainThread: @selector(fetchWithData:)
-                           withObject: data
-                        waitUntilDone: NO];
-    
-    [threadAutoreleasePool release];
-    [NSThread exit];
+  CREATE_AUTORELEASE_POOL(x);
+  status = RSSFeedIsFetching;
+  NSData* data = [self fetchDataFromURL: feedURL];
+  [self fetchWithData: data];
+  return RSSFeedErrorNoError;
+  DESTROY(x);
 }
 
 @end

@@ -12,7 +12,6 @@
     FullVersionID = 0.6;
     NSExecutable = Grr;
     NSIcon = rssreader.png;
-    NSMainNibFile = RSSReader.gorm;
     NSPrincipalClass = NSApplication;
     NSRole = Application;
     NSServices = (
