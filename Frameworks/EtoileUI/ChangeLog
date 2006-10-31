@@ -1,0 +1,16 @@
+2006-10-31  Quentin Mathe <qmathe@club-internet.fr>
+	
+	* Headers/Cocoa/Cocoa.h:
+	* Headers/NSBezierPathCappedBoxes.h:
+	* Headers/NSImage+NiceScaling.h:
+	* Source/NSBezierPathCappedBoxes.h:
+	* Source/NSImage+NiceScaling.h:
+    * Source/GNUmakefile:
+    * Source/GNUmakefile.postamble:
+	* README:
+	* INSTALL:
+	* GNUmakefile:
+	Imported this new framework resulting from the split of EtoileExtensionsKit
+	in three modules (EtoileUI, EtoileFoundation, DistributedView).
+	The framework has been created with svn cp on EtoileExtensionsKit to keep 
+	files history.
