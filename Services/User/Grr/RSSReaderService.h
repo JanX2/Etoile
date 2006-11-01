@@ -1,7 +1,7 @@
 /* -*-objc-*-
    Project: RSSReader
 
-   Copyright (C) 2005 Free Software Foundation
+   Copyright (C) 2005 Guenther Noack 
 
    Author: Guenther Noack,,,
 

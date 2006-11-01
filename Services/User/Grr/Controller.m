@@ -2,7 +2,7 @@
    Project: RSSReader
 
    Copyright (C) 2006 Yen-Ju Chen
-   Copyright (C) 2005-2006 Guenther Noack
+   Copyright (C) 2005, 2006 Guenther Noack
 
    Author: Yen-Ju Chen
    Author: Guenther Noack,,,
