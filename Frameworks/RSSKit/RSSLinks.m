@@ -19,6 +19,7 @@
  */
 
 #import "RSSLinks.h"
+#import "GNUstep.h"
 
 @implementation RSSLink
 +(id) linkWithString: (NSString*) aURLString

@@ -1,3 +1,5 @@
+Nov-01-2006  Yen-Ju Chen
+	* Compile on Cocoa.
 
 Oct-30-2006  Guenther Noack
 	* Fixed URL loading bug for the storage
