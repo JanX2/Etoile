@@ -58,7 +58,7 @@
 
 - (id) delegate
 {
-  return AUTORELEASE(RETAIN(delegate));
+  return delegate;
 }
 
 
@@ -146,20 +146,16 @@
   #endif
   
   // Free all old stuff
-  RELEASE(headline);
-  RELEASE(url);
-  RELEASE(summary);
-  RELEASE(content);
-  RELEASE(date);
+  DESTROY(headline);
+  DESTROY(url);
+  DESTROY(summary);
+  DESTROY(content);
+  DESTROY(date);
   
-  RELEASE(links);
+  DESTROY(links);
   
   // Set default values
-  headline = @"No headline";
-  url = nil;
-  summary = nil;
-  content = nil;
-  date = nil;
+  [self setHeadline: @"No headline"];
   
   links = [[NSMutableArray alloc] initWithCapacity: 1];
 }
@@ -179,8 +175,7 @@
 
 -(void)setHeadline: (NSString*) aHeadline
 {
-  RELEASE(headline);
-  headline = RETAIN(aHeadline);
+  ASSIGN(headline, aHeadline);
 }
 
 -(void) addLinkWithURL: (NSString*) anURL
@@ -231,6 +226,11 @@
   [links addObject: [RSSLink linkWithString: anURL
 			     andRel: aRelation
 			     andType: aType]];
+  /* Keep the default URL */
+  if ([aRelation isEqualToString: @"alternate"])
+  {
+    ASSIGN(url, anURL);
+  }
   
 #ifdef DEBUG
   NSLog(@"links is now %@", links);
@@ -239,20 +239,17 @@
 
 -(void) setContent: (NSString*) aContent
 {
-  RELEASE(content);
-  content = RETAIN(aContent);
+  ASSIGN(content, aContent);
 }
 
 -(void) setSummary: (NSString*) aSummary
 {
-  RELEASE(summary);
-  summary = RETAIN(aSummary);
+  ASSIGN(summary, aSummary);
 }
 
 -(void) setDate: (NSDate*) aDate
 {
-  RELEASE(date);
-  date = RETAIN(aDate);
+  ASSIGN(date, aDate);
 }
 
 @end
