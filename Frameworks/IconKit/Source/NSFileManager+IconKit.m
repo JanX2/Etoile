@@ -67,8 +67,7 @@
         [path lastPathComponent], [path stringByDeletingLastPathComponent]); 
       result = NO;
     }
-  else if (isDir = YES) 
-  // A directory exists already for this path, then nothing to do
+  else if (isDir) // A directory exists already for this path, then nothing to do
     {
       result = YES;
     }

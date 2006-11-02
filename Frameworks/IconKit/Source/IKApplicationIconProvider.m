@@ -33,8 +33,12 @@
 #import "NSFileManager+IconKit.h"
 #import "IKApplicationIconProvider.h"
 
+#ifdef HAVE_UKTEST
+#import <UnitKit/UnitKit.h>
+
 /* For tests object initialization with UnitKit */
 #define TEST_APPLICATION_PACKAGE @"~/GNUstep/Applications/UnitTests"
+#endif
 
 #define DOCUMENT_PATH_COMPONENT @"Document"
 #define PLUGIN_PATH_COMPONENT @"Plugin"
@@ -75,7 +79,7 @@ static NSFileManager *fileManager = nil;
 
 + (void) initialize
 {
-  if (self = [IKApplicationIconProvider class])
+	if (self == [IKApplicationIconProvider class])
     {
       workspace = [NSWorkspace sharedWorkspace];
       fileManager = [NSFileManager defaultManager];
@@ -85,7 +89,8 @@ static NSFileManager *fileManager = nil;
 /*
  * Init methods
  */
- 
+
+#ifdef HAVE_UKTEST
 - (id) initForTest
 {
   return [self initWithBundlePath: TEST_APPLICATION_PACKAGE];
@@ -96,6 +101,7 @@ static NSFileManager *fileManager = nil;
   UKNotNil(workspace);
   UKNotNil(fileManager);
 }
+#endif
 
 - (id) initWithBundlePath: (NSString *)path
 {
@@ -149,11 +155,13 @@ static NSFileManager *fileManager = nil;
 
 // ---
 
+#ifdef HAVE_UKTEST
 - (void) testApplicationIcon
 {
   UKTrue([workspace isFilePackageAtPath: _path]);
   UKNotNil([self applicationIcon]);
 }
+#endif
 
 - (NSImage *) applicationIcon
 {
@@ -170,11 +178,13 @@ static NSFileManager *fileManager = nil;
  * improved implementation in Etoile with ExtendedWorkspaceKit
  */
  
+#ifdef HAVE_UKTEST
 - (void) test_documentIconForExtension
 {
   UKNotNil(_path);
   UKNotNil([workspace infoForExtension: @"tiff"]);
 }
+#endif
 
 - (NSImage *) documentIconForExtension: (NSString *)extension
 {
@@ -250,7 +260,6 @@ static NSFileManager *fileManager = nil;
   NSString *subpath;
   NSString *pathComponent = [_path md5Hash];
   BOOL result;
-  BOOL isDir;
   
   pathComponent = [pathComponent stringByAppendingPathExtension: @"tiff"];
   
@@ -282,7 +291,6 @@ static NSFileManager *fileManager = nil;
 - (void) invalidateCacheAll
 {
   NSString *path = [self _compositedIconsPath];
-  BOOL isDir;
   BOOL result = NO;
   
   result = [fileManager removeFileAtPath: path handler: nil];
@@ -308,10 +316,12 @@ static NSFileManager *fileManager = nil;
     [self _cacheIcon: icon forVariant: IKIconVariantPlugin];
 }
 
+#ifdef HAVE_UKTEST
 - (void) test_compositeIconForVariant
 {
   UKNotNil([self _compositeIconForVariant: IKIconVariantDocument]);
 }
+#endif
 
 - (NSImage *) _compositeIconForVariant: (IKIconVariant)variant
 {
@@ -339,11 +349,13 @@ static NSFileManager *fileManager = nil;
   return [compositor render]; 
 }
 
+#ifdef HAVE_UKTEST
 - (void) test_compositedIconsPath
 {
   UKNotNil([self _compositedIconsPath]);
   UKNotNil([NSBundle bundleWithPath: _path]);
 }
+#endif
 
 - (NSString *) _compositedIconsPath
 {
@@ -362,6 +374,7 @@ static NSFileManager *fileManager = nil;
   return [path stringByAppendingPathComponent: @"Composited icons"];
 }
 
+#ifdef HAVE_UKTEST
 - (void) test_cachedIconForVariant
 {
   NSString *path = [self _compositedIconsPath];
@@ -378,6 +391,7 @@ static NSFileManager *fileManager = nil;
   UKNotNil(appBundle);
   UKNotNil([[appBundle infoDictionary] objectForKey: @"ApplicationName"]);
 }
+#endif
 
 - (NSImage *) _cachedIconForVariant: (IKIconVariant)variant
 {
@@ -400,7 +414,7 @@ static NSFileManager *fileManager = nil;
     
       default:
         // Pathological case
-        return;
+        return nil;
     }
   
   if (_identifier == nil)
@@ -432,6 +446,7 @@ static NSFileManager *fileManager = nil;
   return nil;
 }
 
+#ifdef HAVE_UKTEST
 - (void) test_cacheIconForVariant
 {
   NSString *path = [self _compositedIconsPath];
@@ -457,12 +472,12 @@ static NSFileManager *fileManager = nil;
   
   // FIXME: Think to remove the cached file just created in -releaseForTest
 }
+#endif
 
 - (void) _cacheIcon: (NSImage *)icon forVariant: (IKIconVariant)variant
 {
   NSString *path;
   NSString *pathComponent;
-  NSBitmapImageRep *rep;
   NSData *data;
   BOOL isDir;
   NSBundle *appBundle;
@@ -522,6 +537,7 @@ static NSFileManager *fileManager = nil;
   [data writeToFile: path atomically: YES];
 }
 
+#ifdef HAVE_UKTEST
 - (void) test_buildDirectoryStructureForCompositedIconsCache
 {
   NSString *path = [self _compositedIconsPath];
@@ -534,6 +550,7 @@ static NSFileManager *fileManager = nil;
   
   UKTrue([self _buildDirectoryStructureForCompositedIconsCache]);
 }
+#endif
 
 // FIXME: Rename _buildFoldersForCache
 - (BOOL) _buildDirectoryStructureForCompositedIconsCache
@@ -576,21 +593,24 @@ static NSFileManager *fileManager = nil;
     }
    */
 }
-
+#ifdef HAVE_UKTEST
 - (void) test_blankDocumentIcon
 {
   UKNotNil([self _blankDocumentIcon]);
 }
+#endif
 
 - (NSImage *) _blankDocumentIcon
 {
   return [NSImage imageNamed: @"common_Unknown"];
 }
 
+#ifdef HAVE_UKTEST
 - (void) test_blankPluginIcon
 {
   //UKNotNil([self _blankPluginIcon]);
 }
+#endif
 
 - (NSImage *) _blankPluginIcon
 {

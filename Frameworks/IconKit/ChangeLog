@@ -1,3 +1,12 @@
+2006-11-02  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Source/IKIconProvider.m:
+	* Source/NSFileManager+IconKit.m:
+	* Source/IKApplicationIconProvider.m:
+	* Source/GNUmakefile:
+	Got of rid of all the remaining warnings except two. Declared HAVE_UKTEST 
+	to put test methods between conditional directives based on this define.
+
 2006-10-29  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Source/GNUmakefile:

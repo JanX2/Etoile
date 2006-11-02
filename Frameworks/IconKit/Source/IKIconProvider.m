@@ -106,7 +106,6 @@ static NSWorkspace *workspace = nil;
 {
   NSImage *icon;
   IKThumbnailProvider *thumbnailProvider = [IKThumbnailProvider sharedInstance];
-  NSString *appPath;
   
   icon = [self _cachedIconForURL: url];
   // If the file has a custom icon, the icon is cached because custom icons are
@@ -115,7 +114,7 @@ static NSWorkspace *workspace = nil;
   if (icon != nil)
     return icon;
   
-  isFilePackageAtPath: 
+  //FIXME: Add code to handle file packages with isFilePackageAtPath: 
   
   if (_usesThumbnails)
     {
@@ -228,7 +227,6 @@ static NSWorkspace *workspace = nil;
 
 - (NSString *) _iconsPath
 {
-  NSFileManager *fileManager = [NSFileManager defaultManager];
   NSArray *locations = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSLocalDomainMask, YES);
   NSString *path;
   
@@ -237,7 +235,7 @@ static NSWorkspace *workspace = nil;
       // Raise exception
     }
   
-  path = [locations objectAtIndex: 0];    
+  path = [locations objectAtIndex: 0];
   path = [path stringByAppendingPathComponent: @"Caches"];
   path = [path stringByAppendingPathComponent: @"IconKit"];
   return [path stringByAppendingPathComponent: @"Icons"];
@@ -274,7 +272,8 @@ static NSWorkspace *workspace = nil;
   NSString *path;
   NSString *pathComponent;
   NSData *data;
-  BOOL isDir;
+  // FIXME: Checks the file exists
+  // BOOL isDir;
 
   path = [self _iconsPath];
   
