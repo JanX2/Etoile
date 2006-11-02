@@ -95,6 +95,14 @@
     {
       ASSIGN(desc, @"No content.");
     }
+ 
+  // url
+  if (url == nil) {
+      NSAssert1([links count] > 0, @"Article %@ has no links!", headline);
+      
+      // better use a bad (="random") link as article URL than none
+      ASSIGN(url, [[links objectAtIndex: 0] description]);
+  } 
   
   // create
   article = [[[delegate articleClass] alloc]
