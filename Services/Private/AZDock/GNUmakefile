@@ -24,7 +24,8 @@ ADDITIONAL_INCLUDE_DIRS += -I/usr/include -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += \
 	-L/usr/lib -L/usr/X11R6/lib -lX11 \
 	-lXWindowServerKit \
-	-lBookmarkKit
+	-lBookmarkKit \
+	-lCollectionKit
 
 ADDITIONAL_GUI_LIBS += 
 
