@@ -100,6 +100,14 @@ NSString* stringToFSString( NSString* aString )
 @implementation RSSArticle (Storage)
 
 /**
+ * Returns the article with the URL anURL from the storage
+ */
++(RSSArticle*)articleFromStorageWithURL: (NSString*) anURL
+{
+    return [[[self alloc] initFromStorageWithURL: anURL] autorelease];
+}
+
+/**
  * Initialises the article with the URL anURL from the storage.
  */
 -(id) initFromStorageWithURL: (NSString*) anURL

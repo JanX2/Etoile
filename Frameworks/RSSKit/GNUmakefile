@@ -21,6 +21,7 @@ RSSArticle.m \
 RSSArticle+Storage.m \
 RSSFeed.m \
 RSSFeed+Fetching.m \
+RSSFeed+Storage.m \
 DublinCore.m \
 DOMParser.m \
 FeedParser.m \
@@ -38,6 +39,7 @@ RSSArticle.h \
 RSSArticle+Storage.h \
 RSSFeed.h \
 RSSFeed+Fetching.h \
+RSSFeed+Storage.h \
 DublinCore.h \
 RSSKit.h \
 DOMParser.h \

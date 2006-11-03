@@ -230,15 +230,16 @@
   NSLog(@"addLinkWithURL: %@ andRel: %@ andType: %@",
 	anURL, aRelation, aType);
 #endif
-  
-  [links addObject: [RSSLink linkWithString: anURL
+  RSSLink* link = [RSSLink linkWithString: anURL
 			     andRel: aRelation
-			     andType: aType]];
+			     andType: aType];
   /* Keep the default URL */
-  if ([aRelation isEqualToString: @"alternate"])
-  {
-    ASSIGN(url, anURL);
+  if (url == nil && [aRelation isEqualToString: @"alternate"]) {
+      ASSIGN(url, anURL);
   }
+  
+  [links addObject: link];
+  
   
 #ifdef DEBUG
   NSLog(@"links is now %@", links);

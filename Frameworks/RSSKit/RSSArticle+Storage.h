@@ -24,6 +24,11 @@
 
 
 /**
+ * Returns the article with the URL anURL from the storage
+ */
++(RSSArticle*)articleFromStorageWithURL: (NSString*) anURL;
+
+/**
  * Initialises the article with the URL anURL from the storage.
  */
 -(id)initFromStorageWithURL: (NSString*) anURL;

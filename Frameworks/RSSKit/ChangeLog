@@ -1,4 +1,7 @@
 
+Nov-02-2006  Guenther Noack
+	* Added code for RSSFeed storage
+
 Nov-01-2006  Guenther Noack
 	* Fixed creation of articles without proper 'alternate' link.
 

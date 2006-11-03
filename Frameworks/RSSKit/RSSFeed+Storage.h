@@ -18,10 +18,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <RSSKit/RSSFeed.h>
-#import <RSSKit/RSSFeed+Fetching.h>
-#import <RSSKit/RSSFeed+Storage.h>
-#import <RSSKit/RSSArticle.h>
-#import <RSSKit/RSSArticle+Storage.h>
-#import <RSSKit/RSSLinks.h>
+#import "RSSFeed.h"
+
+@interface RSSFeed (Storage)
+-(NSDictionary*) plistDictionary;
++(id)feedFromPlistDictionary: (NSDictionary*) plistDictionary;
+-(id)initFromPlistDictionary: (NSDictionary*) plistDictionary;
+@end
 
