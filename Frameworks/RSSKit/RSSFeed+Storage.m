@@ -21,8 +21,8 @@
 #import <Foundation/Foundation.h>
 
 #import "RSSFeed+Storage.h"
-
 #import "RSSArticle+Storage.h"
+#import "GNUstep.h"
 
 
 
