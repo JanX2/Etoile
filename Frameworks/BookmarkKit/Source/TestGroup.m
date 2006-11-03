@@ -13,11 +13,15 @@
   UKTrue([store addRecord: bk]);
   UKIntsEqual([bk isTopLevel], BKTopLevel);
   BKGroup *gp = [[BKGroup alloc] init];
+  [gp setName: @"Group"];
   UKTrue([store addRecord: gp]);
   UKIntsEqual([gp isTopLevel], BKTopLevel);
   BKGroup *gp1 = [[BKGroup alloc] init];
+  [gp1 setName: @"Group1"];
   UKTrue([store addRecord: gp1]);
   UKIntsEqual([gp1 isTopLevel], BKTopLevel);
+  UKStringsEqual(@"Group", [gp name]);
+  UKStringsEqual(@"Group1", [gp1 name]);
 
   UKTrue([gp addItem: bk]);
   UKFalse([gp1 addItem: bk]);

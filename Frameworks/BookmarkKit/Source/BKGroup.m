@@ -82,4 +82,16 @@ NSString *const kBKGroupNameProperty = @"kBKGroupNameProperty";
     return NSOrderedSame;
 }
 
+- (void) setName: (NSString *) name
+{
+  if (name) {
+    [self setValue: name forProperty: kBKGroupNameProperty];
+  }
+}
+
+- (NSString *) name
+{
+  return [self valueForProperty: kBKGroupNameProperty];
+}
+
 @end

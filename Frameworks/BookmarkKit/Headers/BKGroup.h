@@ -29,5 +29,8 @@
   BKTopLevelType topLevel;
 }
 
+- (void) setName: (NSString *) name;
+- (NSString *) name;
+
 @end
 
