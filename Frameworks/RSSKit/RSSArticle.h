@@ -26,10 +26,106 @@
 
 #import "RSSFeed.h"
 
+
+/**
+ * Classes implementing this protocol can be used as RSSArticles.
+ */
+@protocol RSSArticle <NSObject>
+/// @return The headline of the article
+-(NSString*)headline;
+
+/// @return The URL of the full version of the article (as NSString*)
+-(NSString*)url;
+
+/// @return The full text, an excerpt or a summary from the article
+-(NSString*)content;
+
+/** 
+ * Returns an NSArray containing NSURL objects or nil,
+ * if there are none. The contained NSURL objects often
+ * have the "type" and "rel" properties set. See the
+ * documentation for addLink: for details.
+ *
+ * @return The links of the article.
+ */
+-(NSArray*) links;
+
+/**
+ * Returns the date of the publication of the article.
+ * If the source feed of this article didn't contain information
+ * about this date, the fetching date is usually returned.
+ *
+ * @return The date of the publication of the article
+ */
+-(NSDate*) date;
+
+/**
+ * Returns the Enclosure object of this article as URL.
+ * If there is no enclosure object, nil is returned.
+ * 
+ * @return the URL of this article's enclosure object
+ */
+-(NSURL*)enclosure;
+
+/**
+ * Returns the source feed of this article.
+ *
+ * @warning It's not guaranteed that this object actually exists.
+ *          Be aware of segmentation faults!
+ *
+ * If you want to make sure the object exists, you have to follow
+ * these rules:
+ *
+ * <ul>
+ *  <li>Don't retain any article!</li>
+ *  <li>Don't call the (undocumented) <code>setFeed:</code> (Colon!) method.</li>
+ * </ul>
+ * 
+ * @return The source feed of this article
+ */
+-(RSSFeed*)feed;
+
+@end
+
+/**
+ * Instances conforming to this protocol can be modified. Applications
+ * usually don't want to modify articles, as they are already created by the
+ * feeds, so handing around articles as id<RSSArticle> is a good way to ensure
+ * nobody (without malicious intentions) is going to change them.
+ */
+@protocol RSSMutableArticle <RSSArticle>
+
+/**
+ * Adds a new link to this article.
+ * This is a RSSLink object, which usually has
+ * the "type" property set to an NSString which
+ * represents the resource's MIME type. You may
+ * also specify the "rel" property, which should
+ * be one of "enclosure", "related", "alternate",
+ * "via".
+ */
+-(void)addLink:(NSURL*) anURL;
+
+/**
+ * Replaces the list of links with a new one.
+ * See the documentation for addLink: for details.
+ * Hint: The parameter may also be nil.
+ */
+-(void)setLinks: (NSArray*) someLinks;
+
+/**
+ * Only internally used to set the feed for the receiver. (Non-retained!)
+ */
+-(void)setFeed:(RSSFeed*)aFeed;
+
+@end
+
+
+
 /**
  * An object of this class represents an article in an RSS Feed.
  */
-@interface RSSArticle : NSObject <NSCoding>
+@interface RSSArticle : NSObject <NSCoding,RSSMutableArticle>
 {
 @private
   NSString*  headline;
@@ -92,92 +188,23 @@
 -(void) dealloc;
 
 
-// NSCoding methods
-
-/// Deserializes a RSSArticle object from a NSCoder
+// NSCoding methods for serialization
 -(id)initWithCoder: (NSCoder*)coder;
-
-/// Serializes a RSSArticle object to a NSCoder
 -(void)encodeWithCoder: (NSCoder*)coder;
 
-// end of NSCoding methods
-
-/// @return The headline of the article
+// Accessor methods (conformance to RSSArticle protocol)
 -(NSString*)headline;
-
-/// @return Te URL of the full version of the article (as NSString*)
 -(NSString*)url;
-
-/// @return The full text, an excerpt or a summary from the article
 -(NSString*)content;
-
 -(NSString*)description;
-
-/**
- * Adds a new link to this article.
- * This is a NSURL object, which usually has
- * the "type" property set to an NSString which
- * represents the resource's MIME type. You may
- * also specify the "rel" property, which should
- * be one of "enclosure", "related", "alternate",
- * "via".
- */
--(void)addLink:(NSURL*) anURL;
-
-/**
- * Replaces the list of links with a new one.
- * See the documentation for addLink: for details.
- * Hint: The parameter may also be nil.
- */
--(void)setLinks: (NSArray*) someLinks;
-
-/** 
- * Returns an NSArray containing NSURL objects or nil,
- * if there are none. The contained NSURL objects often
- * have the "type" and "rel" properties set. See the
- * documentation for addLink: for details.
- *
- * @return The links of the article.
- */
 -(NSArray*) links;
-
-/**
- * Returns the date of the publication of the article.
- * If the source feed of this article didn't contain information
- * about this date, the fetching date is usually returned.
- *
- * @return The date of the publication of the article
- */
 -(NSDate*) date;
-
--(void)setFeed:(RSSFeed*)aFeed;
-
-/**
- * Returns the Enclosure object of this article as URL.
- * If there is no enclosure object, nil is returned.
- * 
- * @return the URL of this article's enclosure object
- */
 -(NSURL*)enclosure;
 
-/**
- * Returns the source feed of this article.
- *
- * @warning It's not guaranteed that this object actually exists.
- *          Be aware of segmentation faults!
- *
- * If you want to make sure the object exists, you have to follow
- * these rules:
- *
- * <ul>
- *  <li>Don't retain any article!</li>
- *  <li>Don't call the (undocumented) <code>feed:</code> (Colon!) method.</li>
- * </ul>
- * 
- * @return The source feed of this article
- */
--(RSSFeed*)feed;
-
+// Mutability methods (conformance to RSSMutableArticle protocol)
+-(void)addLink:(NSURL*) anURL;
+-(void)setLinks: (NSArray*) someLinks;
+-(void)setFeed:(RSSFeed*)aFeed;
 
 // Equality and hash codes
 - (unsigned) hash;

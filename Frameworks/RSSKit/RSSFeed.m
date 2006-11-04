@@ -268,6 +268,11 @@
 }
 
 
+- (BOOL) isFetching
+{
+    return (status == RSSFeedIsFetching) ? YES : NO;
+}
+
 
 -(void)setDelegate: (id<RSSFeedDelegate>)aDelegate
 {

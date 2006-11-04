@@ -48,7 +48,14 @@
     NSMutableArray* articleIndex = [NSMutableArray new];
     
     for (i=0; i<[articles count]; i++) {
-        [articleIndex addObject: [[articles objectAtIndex: i] url]];
+        NSMutableDictionary* articleDict = [NSMutableDictionary new];
+        id<RSSArticle> article = [articles objectAtIndex: i];
+        
+        [articleDict setValue: [article headline] forKey: @"headline"];
+        [articleDict setValue: [[article url] description] forKey: @"URL"];
+        [articleDict setValue: [article date] forKey: @"date"];
+        
+        [articleIndex addObject: articleDict];
     }
     [dict setObject: articleIndex forKey: @"articleIndex"];
     
@@ -83,8 +90,10 @@
         NSMutableArray* mutArticles = [NSMutableArray new];
         int i;
         for (i=0; i<[articleIndex count]; i++) {
-            [mutArticles addObject:
-                [articleClass articleFromStorageWithURL: [articleIndex objectAtIndex: i]]];
+            NSString* articleURL = [[articleIndex objectAtIndex: i] objectForKey: @"URL"];
+            id<RSSMutableArticle> article = [articleClass articleFromStorageWithURL: articleURL];
+            [article setFeed: self]; // non-retained
+            [mutArticles addObject: article];
         }
         
         ASSIGN(articles, [NSArray arrayWithArray: mutArticles]);

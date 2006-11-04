@@ -54,6 +54,59 @@ enum RSSFeedStatus
  */
 @protocol RSSFeedDelegate;
 
+
+#warning FIXME: RSSFeed protocol is unfinished
+/**
+ * The RSS feed protocol defines the way users are supposed to talk to
+ * a feed.
+ */
+@protocol RSSFeed <NSObject>
+// ----------------------------------------------------------------------
+// The RSSFeed's delegate
+// ----------------------------------------------------------------------
+
+-(void)setDelegate: (id<RSSFeedDelegate>)aDelegate;
+-(id<RSSFeedDelegate>)delegate;
+
+/**
+ * @return an enumerator for the articles in this feed
+ */
+- (NSEnumerator*) articleEnumerator;
+
+/**
+ * Returns YES if and only if this feed is currently being fetched.
+ */
+- (BOOL)isFetching;
+
+/**
+ * @return The name of the feed
+ */
+- (NSString*) feedName;
+
+/**
+ * @return the URL where the feed can be downloaded from (as NSURL object)
+ * @see NSURL
+ */
+- (NSURL*) feedURL;
+
+@end
+
+@protocol RSSMutableFeed <RSSFeed>
+/**
+ * Deletes an article from the feed.
+ *
+ * @param article The index of the article to delete.
+ */
+- (void) removeArticle: (RSSArticle*) article;
+
+
+/**
+ * Sets the feed name
+ */
+- (void) setFeedName: (NSString*) aFeedName;
+
+@end
+
 /**
  * Objects of this class represent a RSS/ATOM feed, which is basically
  * just a source for new articles. When creating a RSSFeed object, you'll
@@ -166,11 +219,18 @@ enum RSSFeedStatus
  * Accessor for the status of the feed.
  * This can be used by a multithreaded GUI to indicate if a feed
  * is currently fetching...
- *
+ * 
+ * @deprecated in favor of -isFetching
+ * @see isFetching
+ * 
  * @return either RSSFeedIsFetching or RSSFeedIsIdle
  */
 - (enum RSSFeedStatus) status;
 
+/**
+ * Returns YES if and only if this feed is currently being fetched.
+ */
+- (BOOL)isFetching;
 
 // ----------------------------------------------------------------------
 // Access to the articles

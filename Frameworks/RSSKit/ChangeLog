@@ -1,6 +1,14 @@
+
 Nov-03-2006  Yen-Ju Chen
 	* Compile on Cocoa.
 
+Nov-03-2006  Guenther Noack
+	* Protocols (interfaces) for RSSFeed and RSSArticle
+	* Fixed RSSFeed storage, so that restored articles have the
+	  correct parent feed.
+	* Deprecated -status method in feed in favor of -isFetching,
+	  which is much more suitable for a boolean return value. (There
+	  was only RSSFeedIsFetching and RSSFeedIsIdle.)
 
 Nov-02-2006  Guenther Noack
 	* Added code for RSSFeed storage
