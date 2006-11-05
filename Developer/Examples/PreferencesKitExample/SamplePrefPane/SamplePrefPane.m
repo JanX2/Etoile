@@ -7,7 +7,7 @@
 //
 
 #import "SamplePrefPane.h"
-
+#import <PreferencesKit/PKPreferencesController.h>
 
 @implementation SamplePrefPane
 
@@ -29,13 +29,13 @@
     switch ([sender selectedRow])
     {
         case 0:
-            [pc setPresentationMode: PKToolbarPresentationMode];
+            [pc setPresentationMode: (NSString *) PKToolbarPresentationMode];
             break;
         case 1:
-            [pc setPresentationMode: PKTablePresentationMode];
+            [pc setPresentationMode: (NSString *) PKTablePresentationMode];
             break;
         case 2:
-            [pc setPresentationMode: PKMatrixPresentationMode];
+            [pc setPresentationMode: (NSString *) PKMatrixPresentationMode];
             break;
     }
 }
