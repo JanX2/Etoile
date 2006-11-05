@@ -56,11 +56,9 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 
 - (void) loadUI
 {
-  PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-  NSView *mainViewContainer = [pc preferencesView];
-  NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
+  NSView *mainViewContainer = [preferencesController preferencesView];
 
-  int count = [plugins count];
+  int count = [allLoadedPlugins count];
   NSRect rect = [mainViewContainer bounds];  
     
   matrixView = [[PKMatrixView alloc] initWithFrame: rect 
@@ -73,7 +71,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
   [mainViewContainer addSubview: matrixView];
   [mainViewContainer setAutoresizesSubviews: YES];
 
-  ASSIGN(identifiers, [plugins valueForKey: @"identifier"]);
+  ASSIGN(identifiers, [allLoadedPlugins valueForKey: @"identifier"]);
     
   NSEnumerator *e = [identifiers objectEnumerator];
   id identifier;
@@ -81,7 +79,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
     
   while ((identifier = [e nextObject]))
   {
-    NSDictionary *plugin = [plugins objectWithValue: identifier 
+    NSDictionary *plugin = [allLoadedPlugins objectWithValue: identifier 
                                              forKey: @"identifier"];
     NSButtonCell *button = [[NSButtonCell alloc] init];
         
@@ -129,7 +127,6 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
    
   [super layoutPreferencesViewWithPaneView: paneView];
    
-//    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
   NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];
   NSRect rect = NSMakeRect(0, 0, size.width, size.height);
     
@@ -155,15 +152,18 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
   int delta = oldHeight - windowFrame.size.height;
   windowFrame.origin.y += delta;
     
-  [[matrixView window] setFrame: windowFrame display: YES];
+  #ifndef GNUSTEP
+    [[matrixView window] setFrame: windowFrame display: YES animate: YES];
+  #else 
+    [[matrixView window] setFrame: windowFrame display: YES animate: NO];
+  #endif
 }
 
 - (IBAction) switchPreferencePaneView: (id)sender
 {
-  PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
   int tag = [[matrixView selectedButtonCell] tag];
     
-  [pc selectPreferencePaneWithIdentifier: [identifiers objectAtIndex: tag]];
+  [preferencesController selectPreferencePaneWithIdentifier: [identifiers objectAtIndex: tag]];
 }
 
 @end

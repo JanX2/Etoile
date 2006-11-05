@@ -65,45 +65,42 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
 
 - (void) loadUI
 {
-    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    id owner = [pc owner];
+  id owner = [preferencesController owner];
     
-    preferencesToolbar = 
-        [[NSToolbar alloc] initWithIdentifier: @"PrefsWindowToolbar"];
+  preferencesToolbar = 
+      [[NSToolbar alloc] initWithIdentifier: @"PrefsWindowToolbar"];
 
-	[preferencesToolbar setDelegate: self];
-	[preferencesToolbar setAllowsUserCustomization: NO];
+  [preferencesToolbar setDelegate: self];
+  [preferencesToolbar setAllowsUserCustomization: NO];
     
-    if ([owner isKindOfClass: [NSWindow class]])
-    {
-        [(NSWindow *)owner setToolbar: preferencesToolbar];
-
-    }
-    else
-    {
-        NSLog(@"Preferences panes cannot be listed in a toolbar when owner is \
+  if ([owner isKindOfClass: [NSWindow class]])
+  {
+    [(NSWindow *)owner setToolbar: preferencesToolbar];
+  }
+  else
+  {
+    NSLog(@"Preferences panes cannot be listed in a toolbar when owner is \
             not an NSWindow instance.");
-        [preferencesToolbar release];
-    }
+    [preferencesToolbar release];
+  }
     
-    [super loadUI];
+  [super loadUI];
 }
 
 - (void) unloadUI
 {
-    id owner = 
-        [[PKPreferencesController sharedPreferencesController] owner];
+  id owner = [preferencesController owner];
     
-    // FIXME: this line is not needed, but we keep it because it outlines a bug
-    // in GSToolbar; toolbar view is not removed properly from the views
-    // hierarchy when the window toolbar is set to nil consecutively to the
-    // method call on the next line.
-    //[preferencesToolbar setVisible: NO];
-    
-    // NOTE: -[toolbar release] shouldn't be used because it doesn't clean
-    // everything (like validation objects). We should document this point in
-    // GSToolbar.
-    [(NSWindow *)owner setToolbar: nil];
+  // FIXME: this line is not needed, but we keep it because it outlines a bug
+  // in GSToolbar; toolbar view is not removed properly from the views
+  // hierarchy when the window toolbar is set to nil consecutively to the
+  // method call on the next line.
+  //[preferencesToolbar setVisible: NO];
+ 
+  // NOTE: -[toolbar release] shouldn't be used because it doesn't clean
+  // everything (like validation objects). We should document this point in
+  // GSToolbar.
+  [(NSWindow *)owner setToolbar: nil];
 }
 
 - (NSString *) presentationMode
@@ -118,68 +115,63 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
 
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
- 	PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    NSView *mainView = [pc preferencesView];
-    NSRect paneViewFrame = [paneView frame];
-	NSRect windowFrame = [[mainView window] frame];
+  NSView *mainView = [preferencesController preferencesView];
+  NSRect paneViewFrame = [paneView frame];
+  NSRect windowFrame = [[mainView window] frame];
     
-    [super layoutPreferencesViewWithPaneView: paneView];
+  [super layoutPreferencesViewWithPaneView: paneView];
 
-    #ifndef GNUSTEP
+  #ifndef GNUSTEP
+  // FIXME: Implement -frameRectForContentRect: in GNUstep 
+  windowFrame.size = [[mainView window] frameRectForContentRect: paneViewFrame].size;
+    
+  // NOTE: We have to check carefully the view is not undersized to avoid
+  // limiting switch possibilities in listed panes.
+  if (windowFrame.size.height < 150)
+    windowFrame.size.height = 150;
+  if (windowFrame.size.width < 400)
+    windowFrame.size.width = 400;
+   
+  /* We take in account the fact the origin is located at bottom left corner. */
+    
+  [[mainView window] setFrame: windowFrame display: YES animate: YES];
 
-    // FIXME: Implement -frameRectForContentRect: in GNUstep 
-    windowFrame.size = [[mainView window] frameRectForContentRect: paneViewFrame].size;
+  #else
     
-    // NOTE: We have to check carefully the view is not undersized to avoid
-    // limiting switch possibilities in listed panes.
-    if (windowFrame.size.height < 150)
-        windowFrame.size.height = 150;
-    if (windowFrame.size.width < 400)
-        windowFrame.size.width = 400;
+  NSRect mainViewFrame = [mainView frame];
     
-    /* We take in account the fact the origin is located at bottom left corner. */
-    
-    [[mainView window] setFrame: windowFrame display: YES animate: YES];
-
-    #else
-    
-    NSRect mainViewFrame = [mainView frame];
-    
-    /* Resize window so content area is large enough for prefs: */
-    mainViewFrame.size = paneViewFrame.size;
-    mainViewFrame.size.height += 
+  /* Resize window so content area is large enough for prefs: */
+  mainViewFrame.size = paneViewFrame.size;
+  mainViewFrame.size.height += 
         [[preferencesToolbar _toolbarView] frame].size.height;
-    mainViewFrame.origin = [[mainView window] frame].origin;
-    windowFrame = [NSWindow frameRectForContentRect: mainViewFrame 
-        styleMask: [[mainView window] styleMask]];
+  mainViewFrame.origin = [[mainView window] frame].origin;
+  windowFrame = [NSWindow frameRectForContentRect: mainViewFrame 
+      styleMask: [[mainView window] styleMask]];
     
-    // NOTE: We have to check carefully the view is not undersized to avoid
-    // limiting switch possibilities in listed panes.
-    if (windowFrame.size.height < 150)
-        windowFrame.size.height = 150;
-    if (windowFrame.size.width < 400)
-        windowFrame.size.width = 400;
+  // NOTE: We have to check carefully the view is not undersized to avoid
+  // limiting switch possibilities in listed panes.
+  if (windowFrame.size.height < 150)
+      windowFrame.size.height = 150;
+  if (windowFrame.size.width < 400)
+      windowFrame.size.width = 400;
 
-    // FIXME: It looks like animate option is not working well on GNUstep.
-    [[mainView window] setFrame: windowFrame display: YES animate: NO];
+  // FIXME: It looks like animate option is not working well on GNUstep.
+  [[mainView window] setFrame: windowFrame display: YES animate: NO];
     
-    #endif
-	
+  #endif
 }
 
 - (IBAction) switchPreferencePaneView: (id)sender
 {
-    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
+  // NOTE: When -selectPreferencePaneWithIdentifier: is not the result of a
+  // user click/action in toolbar, we have to update toolbar selection ourself
+  // in -didSelectPreferencePaneWithIdentifier, so we set this flag.
+  switchActionTriggered = YES;
     
-    // NOTE: When -selectPreferencePaneWithIdentifier: is not the result of a
-    // user click/action in toolbar, we have to update toolbar selection ourself
-    // in -didSelectPreferencePaneWithIdentifier, so we set this flag.
-    switchActionTriggered = YES;
+  if ([sender isKindOfClass: [NSToolbarItem class]])
+      [preferencesController selectPreferencePaneWithIdentifier: [sender itemIdentifier]];
     
-    if ([sender isKindOfClass: [NSToolbarItem class]])
-        [pc selectPreferencePaneWithIdentifier: [sender itemIdentifier]];
-    
-    switchActionTriggered = NO;
+  switchActionTriggered = NO;
 }
 
 /*
@@ -202,9 +194,8 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
 {
     NSToolbarItem *toolbarItem = 
         [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
-    NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
     NSDictionary *plugin = 
-        [plugins objectWithValue: identifier forKey: @"identifier"];
+        [allLoadedPlugins objectWithValue: identifier forKey: @"identifier"];
 
 	[toolbarItem setLabel: [plugin objectForKey: @"name"]];
     
@@ -220,20 +211,17 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar 
 {
-    return [self toolbarAllowedItemIdentifiers: toolbar];
+  return [self toolbarAllowedItemIdentifiers: toolbar];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar 
 {
-    NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-    NSArray *identifiers = [plugins valueForKey: @"identifier"];
-    
-    return identifiers;
+  return [allLoadedPlugins valueForKey: @"identifier"];
 }
 
 - (NSArray *) toolbarSelectableItemIdentifiers: (NSToolbar *)toolbar 
 {
-	return [self toolbarAllowedItemIdentifiers: toolbar];
+  return [self toolbarAllowedItemIdentifiers: toolbar];
 }
 
 @end

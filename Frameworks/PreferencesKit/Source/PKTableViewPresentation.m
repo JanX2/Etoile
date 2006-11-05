@@ -49,8 +49,7 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 
 - (void) loadUI
 {
-    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    NSView *mainViewContainer = [pc preferencesView];
+  NSView *mainViewContainer = [preferencesController preferencesView];
     
 #if 0
     /* We use a completely prebuilt table view we retrieve in a dedicated gorm file
@@ -69,51 +68,53 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 
     [prebuiltTableView removeFromSuperview];
 #else
-    NSRect rect = NSMakeRect(0, 0, 180, [mainViewContainer frame].size.height);
-    prebuiltTableView = [[NSScrollView alloc] initWithFrame: rect];
+  NSRect rect = NSMakeRect(0, 0, 180, [mainViewContainer frame].size.height);
+  prebuiltTableView = [[NSScrollView alloc] initWithFrame: rect];
+  [prebuiltTableView setAutoresizingMask: NSViewHeightSizable];
 
-    NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier: @"name"];
-    [column setWidth: 180];
-    [column setEditable: NO];
+  NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier: @"name"];
+  [column setWidth: 180];
+  [column setEditable: NO];
 
-    rect = [[prebuiltTableView documentView] bounds];
-    preferencesTableView = [[NSTableView alloc] initWithFrame: rect];
-    [preferencesTableView addTableColumn: column];
-    [prebuiltTableView setDocumentView: preferencesTableView];
-    DESTROY(column);
-    RELEASE(preferencesTableView);
-    AUTORELEASE(prebuiltTableView);
+  rect = [[prebuiltTableView documentView] bounds];
+  preferencesTableView = [[NSTableView alloc] initWithFrame: rect];
+  [preferencesTableView setAutoresizingMask: NSViewHeightSizable];
+  [preferencesTableView addTableColumn: column];
+  [prebuiltTableView setDocumentView: preferencesTableView];
+  DESTROY(column);
+  RELEASE(preferencesTableView);
+  AUTORELEASE(prebuiltTableView);
 #endif
     
-    [prebuiltTableView setFrameSize: NSMakeSize(180, [mainViewContainer frame].size.height)];
-    [prebuiltTableView setFrameOrigin: NSMakePoint(0, 0)];
-    [mainViewContainer addSubview: prebuiltTableView];
+  [prebuiltTableView setFrameSize: NSMakeSize(180, [mainViewContainer frame].size.height)];
+  [prebuiltTableView setFrameOrigin: NSMakePoint(0, 0)];
+  [mainViewContainer addSubview: prebuiltTableView];
     
-    /* Finish table view specific set up. */
-    // NOTE: the next two lines are needed only with Gorm because it doesn't
-    // support to disable column headers.
-    [preferencesTableView setCornerView: nil];
-    [preferencesTableView setHeaderView: nil];
-    [preferencesTableView setDataSource: self];
-    [preferencesTableView setDelegate: self];
-    [preferencesTableView reloadData];
+  /* Finish table view specific set up. */
+  // NOTE: the next two lines are needed only with Gorm because it doesn't
+  // support to disable column headers.
+  [preferencesTableView setCornerView: nil];
+  [preferencesTableView setHeaderView: nil];
+  [preferencesTableView setDataSource: self];
+  [preferencesTableView setDelegate: self];
+  [preferencesTableView reloadData];
     
-    [super loadUI];
+  [super loadUI];
 }
 
 - (void) unloadUI
 {
-    [prebuiltTableView removeFromSuperview];
+  [prebuiltTableView removeFromSuperview];
 }
 
 - (NSString *) presentationMode
 {
-    return (NSString *)PKTablePresentationMode;
+  return (NSString *)PKTablePresentationMode;
 }
 
 - (NSView *) presentationView
 {
-    return prebuiltTableView;
+  return prebuiltTableView;
 }
 
 // FIXME: Actual code in this method have to be improved to work when
@@ -121,60 +122,58 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 // common with other presentation classes in PKPresentationBuilder superclass.
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
- 	PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    NSView *mainView = [pc preferencesView];
-    NSRect paneFrame = [paneView frame];
-    NSRect tableFrame = [prebuiltTableView frame];
-	NSRect windowFrame = [[mainView window] frame];
-    NSRect contentFrame = NSZeroRect;
-    int previousHeight = windowFrame.size.height;
-    int heightDelta;
+  NSView *mainView = [preferencesController preferencesView];
+  NSRect paneFrame = [paneView frame];
+  NSRect tableFrame = [prebuiltTableView frame];
+  NSRect windowFrame = [[mainView window] frame];
+  NSRect contentFrame = NSZeroRect;
+  int previousHeight = windowFrame.size.height;
+  int heightDelta;
     
-    [super layoutPreferencesViewWithPaneView: paneView];
+  [super layoutPreferencesViewWithPaneView: paneView];
     
-    /* Resize window so content area is large enough for prefs. */
+  /* Resize window so content area is large enough for prefs. */
     
-    tableFrame.size.height = paneFrame.size.height;
-    paneFrame.origin.x = tableFrame.size.width;
-    paneFrame.origin.y = 0;
-    [prebuiltTableView setFrame: tableFrame];
-    [paneView setFrame: paneFrame];
+  tableFrame.size.height = paneFrame.size.height;
+  paneFrame.origin.x = tableFrame.size.width;
+  paneFrame.origin.y = 0;
+
+  // Do not resize table view because it is autoresizable.
+  [paneView setFrame: paneFrame];
+  
+  contentFrame.size.width = tableFrame.size.width + paneFrame.size.width;
+  contentFrame.size.height = paneFrame.size.height;
+   
+  // FIXME: Implement -frameRectForContentRect: in GNUstep 
+  windowFrame.size = [NSWindow frameRectForContentRect: contentFrame
+      styleMask: [[mainView window] styleMask]].size;
     
-    contentFrame.size.width = tableFrame.size.width + paneFrame.size.width;
-    contentFrame.size.height = paneFrame.size.height;
+  // NOTE: We have to check carefully the view is not undersized to avoid
+  // limiting switch possibilities in listed panes.
+  if (windowFrame.size.height < 150)
+      windowFrame.size.height = 150;
+  if (windowFrame.size.width < 400)
+      windowFrame.size.width = 400;
     
-    // FIXME: Implement -frameRectForContentRect: in GNUstep 
-    windowFrame.size = [NSWindow frameRectForContentRect: contentFrame
-        styleMask: [[mainView window] styleMask]].size;
+  /* We take in account the fact the origin is located at bottom left corner. */
+  heightDelta = previousHeight - windowFrame.size.height;
+  windowFrame.origin.y += heightDelta;
     
-    // NOTE: We have to check carefully the view is not undersized to avoid
-    // limiting switch possibilities in listed panes.
-    if (windowFrame.size.height < 150)
-        windowFrame.size.height = 150;
-    if (windowFrame.size.width < 400)
-        windowFrame.size.width = 400;
-    
-    /* We take in account the fact the origin is located at bottom left corner. */
-    heightDelta = previousHeight - windowFrame.size.height;
-    windowFrame.origin.y += heightDelta;
-    
-    // FIXME: Animated resizing is buggy on GNUstep (exception thrown about
-    // periodic events already generated for the current thread)
-    #ifndef GNUSTEP
-	[[mainView window] setFrame: windowFrame display: YES animate: YES];
-    #else
+  // FIXME: Animated resizing is buggy on GNUstep (exception thrown about
+  // periodic events already generated for the current thread)
+  #ifndef GNUSTEP
+    [[mainView window] setFrame: windowFrame display: YES animate: YES];
+  #else
     [[mainView window] setFrame: windowFrame display: YES animate: NO];
-    #endif
+  #endif
 }
 
 - (IBAction) switchPreferencePaneView: (id)sender
 {
-    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    int row = [preferencesTableView selectedRow];
-	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-    NSString *path = [[plugins objectAtIndex: row] identifier];
+  int row = [preferencesTableView selectedRow];
+  NSString *path = [[allLoadedPlugins objectAtIndex: row] identifier];
     
-    [pc selectPreferencePaneWithIdentifier: path];
+  [preferencesController selectPreferencePaneWithIdentifier: path];
 }
 
 /*
@@ -183,10 +182,9 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 
 - (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier
 {    
-  NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-  NSDictionary *info = [plugins objectWithValue: identifier 
+  NSDictionary *info = [allLoadedPlugins objectWithValue: identifier 
                                          forKey: @"identifier"];
-  int row = [plugins indexOfObject: info];
+  int row = [allLoadedPlugins indexOfObject: info];
     
   [preferencesTableView selectRow: row byExtendingSelection: NO];
 }
@@ -197,29 +195,25 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 
 - (int) numberOfRowsInTableView: (NSTableView *)tableView
 {
-	int count = [[[PKPrefPanesRegistry sharedRegistry] loadedPlugins] count];
-    
-    return count;
+  return [allLoadedPlugins count];
 }
 
 
-- (id) tableView: (NSTableView*)tableView objectValueForTableColumn: (NSTableColumn *)tableColumn row: (int)row
+- (id) tableView: (NSTableView*)tableView 
+       objectValueForTableColumn: (NSTableColumn *) tableColumn 
+       row: (int)row
 {
-	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins]; 
-    NSDictionary *info = [plugins objectAtIndex: row];
-	
-	return [info objectForKey: @"name"];
+  NSDictionary *info = [allLoadedPlugins objectAtIndex: row];
+  return [info objectForKey: @"name"];
 }
 
 
 - (void) tableViewSelectionDidChange: (NSNotification *)notification
 {
-	PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    int row = [preferencesTableView selectedRow];
-	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-    NSString *path = (NSString *)[[plugins objectAtIndex: row] objectForKey: @"path"];
+  int row = [preferencesTableView selectedRow];
+  NSString *path = (NSString *)[[allLoadedPlugins objectAtIndex: row] objectForKey: @"path"];
 	
-	[pc updateUIForPreferencePane: [[PKPrefPanesRegistry sharedRegistry] preferencePaneAtPath: path]];
+  [preferencesController updateUIForPreferencePane: [[PKPrefPanesRegistry sharedRegistry] preferencePaneAtPath: path]];
 }
 
 @end

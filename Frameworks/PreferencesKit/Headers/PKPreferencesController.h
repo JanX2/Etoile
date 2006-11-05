@@ -42,12 +42,12 @@ extern const NSString *PKOtherPresentationMode;
 
 @interface PKPreferencesController: NSObject <PKPreferencePaneOwner, UKTest>
 {
-	IBOutlet id	owner; /* PKPreferencesView or NSWindow */
-    IBOutlet NSView *preferencesView; /* Necessary only when owner is not PKPreferencesView */
-    IBOutlet NSView *mainViewWaitSign;	/* View we show while next main view is being loaded. */
-    PKPreferencePane *currentPane; /* Currently showing pane. */
-    PKPreferencePane *nextPane; /* Pane to show in response to the next replyToShouldUnselect: YES. */
-    PKPresentationBuilder *presentation;
+  IBOutlet id	owner; /* PKPreferencesView or NSWindow */
+  IBOutlet NSView *preferencesView; /* Necessary only when owner is not PKPreferencesView */
+  IBOutlet NSView *mainViewWaitSign;	/* View we show while next main view is being loaded. */
+  PKPreferencePane *currentPane; /* Currently showing pane. */
+  PKPreferencePane *nextPane; /* Pane to show in response to the next replyToShouldUnselect: YES. */
+  PKPresentationBuilder *presentation;
 }
 
 + (PKPreferencesController *) sharedPreferencesController;

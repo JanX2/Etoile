@@ -32,13 +32,16 @@
 
 @protocol PKPreferencePaneOwner;
 @class PKPreferencePane;
+@class PKPreferencesController;
 
 extern const NSString *PKNoPresentationMode;
 extern const NSString *PKOtherPresentationMode;
 
-
-@interface PKPresentationBuilder : NSObject {
-
+@interface PKPresentationBuilder : NSObject 
+{
+  /* For convenience */
+  PKPreferencesController *preferencesController;
+  NSArray *allLoadedPlugins;
 }
 
 + (id) builderForPresentationMode: (NSString *)presentationMode;

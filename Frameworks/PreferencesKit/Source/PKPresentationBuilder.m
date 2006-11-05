@@ -52,7 +52,6 @@ static NSMutableDictionary *injectedObjects = nil;
 + (void) load
 {
   injectedObjects = [[NSMutableDictionary alloc] initWithCapacity: 10];
-  [injectedObjects retain];
 }
 
 /** <p>Dependency injection relying on +load method being sent to superclass    
@@ -60,9 +59,8 @@ static NSMutableDictionary *injectedObjects = nil;
     already loaded by runtime, when each subclass receives this message.</p> */
 + (BOOL) inject: (id)obj forKey: (id)key
 {
-    [injectedObjects setObject: obj forKey: key];
-    
-    return YES;
+  [injectedObjects setObject: obj forKey: key];
+  return YES;
 }
 
 /** <p>Factory method that returns the right presentation instance when 
@@ -71,13 +69,28 @@ static NSMutableDictionary *injectedObjects = nil;
     <var>presentationMode</var> could be found.</p> */
 + (id) builderForPresentationMode: (NSString *)presentationMode
 {
-    id presentationUnit = [injectedObjects objectForKey: presentationMode];
+  id presentationUnit = [injectedObjects objectForKey: presentationMode];
     
-    // NOTE: [myClass class] == myClass (and [myObject class] == myClass)
-    if ([presentationUnit isEqual: [presentationUnit class]])
-      presentationUnit = [[[presentationUnit alloc] init] autorelease];
+  // NOTE: [myClass class] == myClass (and [myObject class] == myClass)
+  if ([presentationUnit isEqual: [presentationUnit class]])
+    presentationUnit = AUTORELEASE([[presentationUnit alloc] init]);
       
-    return presentationUnit;
+  return presentationUnit;
+}
+
+- (id) init
+{
+  self = [super init];
+  ASSIGN(preferencesController, [PKPreferencesController sharedPreferencesController]);
+  ASSIGN(allLoadedPlugins, [[PKPrefPanesRegistry sharedRegistry] loadedPlugins]);
+  return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(preferencesController);
+  DESTROY(allLoadedPlugins);
+  [super dealloc];
 }
 
 /*
@@ -89,10 +102,8 @@ static NSMutableDictionary *injectedObjects = nil;
     have to do and usually done in -awakeFromNib.</p> */
 - (void) loadUI
 {
-    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    
-    [self layoutPreferencesViewWithPaneView: [[pc selectedPreferencePane] mainView]];
-    [self didSelectPreferencePaneWithIdentifier: [pc selectedPreferencePaneIdentifier]];
+  [self layoutPreferencesViewWithPaneView: [[preferencesController selectedPreferencePane] mainView]];
+  [self didSelectPreferencePaneWithIdentifier: [preferencesController selectedPreferencePaneIdentifier]];
 }
 
 /** <override-subclass />
@@ -101,17 +112,23 @@ static NSMutableDictionary *injectedObjects = nil;
     to change.</p> */
 - (void) unloadUI
 {
-//    [self subclassResponsibility: _cmd];
+#ifdef GNUSTEP
+  [self subclassResponsibility: _cmd];
+#endif
 }
 
 - (void) willSelectPreferencePaneWithIdentifier: (NSString *) identifier;
 {
-//    [self subclassResponsibility: _cmd];
+#ifdef GNUSTEP
+ [self subclassResponsibility: _cmd];
+#endif
 }
 
 - (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier
 {
-//    [self subclassResponsibility: _cmd];
+#ifdef GNUSTEP
+  [self subclassResponsibility: _cmd];
+#endif
 }
 
 
@@ -134,20 +151,19 @@ static NSMutableDictionary *injectedObjects = nil;
     preferences view, otherwise it would be overlapped by the former.</p> */
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
-    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    NSView *prefsView = [pc preferencesView];
+  NSView *prefsView = [preferencesController preferencesView];
     
-    /* We give up here when no paneView is provided and let our subclasses 
-       finishing their custom layout. */
-    if (paneView == nil)
-        return;
+  /* We give up here when no paneView is provided and let our subclasses 
+     finishing their custom layout. */
+  if (paneView == nil)
+      return;
     
-    if ([[paneView superview] isEqual: prefsView] == NO)
-        [prefsView addSubview: paneView];
+  if ([[paneView superview] isEqual: prefsView] == NO)
+    [prefsView addSubview: paneView];
     
-    /* Presentation switches might modify pane view default position, so we reset
-       it. */
-    [paneView setFrameOrigin: NSZeroPoint];
+  /* Presentation switches might modify pane view default position, so we reset
+     it. */
+  [paneView setFrameOrigin: NSZeroPoint];
 }
 
 /*
@@ -164,7 +180,9 @@ static NSMutableDictionary *injectedObjects = nil;
     <var>sender</var>.</strong></p> */
 - (IBAction) switchPreferencePaneView: (id)sender
 {
-//    [self subclassResponsibility: _cmd];
+#ifdef GNUSTEP
+  [self subclassResponsibility: _cmd];
+#endif
 }
 
 /*
@@ -178,7 +196,7 @@ panes should be listed.</p>
 view</em> like toolbar, table view, popup menu, tab view etc.</strong></p> */
 - (NSView *) presentationView
 {
-    return nil;
+  return nil;
 }
 
 /** <override-subclass />
@@ -189,7 +207,7 @@ view</em> like toolbar, table view, popup menu, tab view etc.</strong></p> */
     <em>presentation identifier</em> related to your subclass.</strong></p> */
 - (NSString *) presentationMode
 {
-    return (NSString *)PKNoPresentationMode;
+  return (NSString *)PKNoPresentationMode;
 }
 
 @end
