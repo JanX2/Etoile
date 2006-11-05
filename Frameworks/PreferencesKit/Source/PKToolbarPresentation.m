@@ -108,11 +108,6 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
     return (NSString *)PKToolbarPresentationMode;
 }
 
-- (NSView *) presentationView
-{
-    return nil;
-}
-
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
   NSView *mainView = [preferencesController preferencesView];
@@ -122,6 +117,7 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
   [super layoutPreferencesViewWithPaneView: paneView];
 
   #ifndef GNUSTEP
+  NSRect oldFrame = [[mainView window] frame];
   // FIXME: Implement -frameRectForContentRect: in GNUstep 
   windowFrame.size = [[mainView window] frameRectForContentRect: paneViewFrame].size;
     
@@ -131,6 +127,8 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
     windowFrame.size.height = 150;
   if (windowFrame.size.width < 400)
     windowFrame.size.width = 400;
+  
+  windowFrame.origin.y -= (windowFrame.size.height-oldFrame.size.height);
    
   /* We take in account the fact the origin is located at bottom left corner. */
     

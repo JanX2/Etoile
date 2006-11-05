@@ -112,16 +112,14 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
   return (NSString *)PKTablePresentationMode;
 }
 
-- (NSView *) presentationView
-{
-  return prebuiltTableView;
-}
-
-// FIXME: Actual code in this method have to be improved to work when
-// preferencesView is not equal to contentView and we should move some portions
-// common with other presentation classes in PKPresentationBuilder superclass.
+/* It is too complicated to call super because each presentation has
+   different architecture. So we need to add paneView ourselves.
+   And over-use -setFrame causes view to flick. */
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
+  if (paneView == nil)
+    return;
+
   NSView *mainView = [preferencesController preferencesView];
   NSRect paneFrame = [paneView frame];
   NSRect tableFrame = [prebuiltTableView frame];
@@ -129,17 +127,12 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
   NSRect contentFrame = NSZeroRect;
   int previousHeight = windowFrame.size.height;
   int heightDelta;
-    
-  [super layoutPreferencesViewWithPaneView: paneView];
-    
+
   /* Resize window so content area is large enough for prefs. */
     
   tableFrame.size.height = paneFrame.size.height;
   paneFrame.origin.x = tableFrame.size.width;
   paneFrame.origin.y = 0;
-
-  // Do not resize table view because it is autoresizable.
-  [paneView setFrame: paneFrame];
   
   contentFrame.size.width = tableFrame.size.width + paneFrame.size.width;
   contentFrame.size.height = paneFrame.size.height;
@@ -166,6 +159,14 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
   #else
     [[mainView window] setFrame: windowFrame display: YES animate: NO];
   #endif
+
+  /* Do not resize table view because it is autoresizable.
+   * Resize paneView before adding it into window to reduce flick.
+   * It is also the reason that adding it after window is resized.
+   */
+  [paneView setFrame: paneFrame];
+  if ([[paneView superview] isEqual: mainView] == NO)
+    [mainView addSubview: paneView];
 }
 
 - (IBAction) switchPreferencePaneView: (id)sender

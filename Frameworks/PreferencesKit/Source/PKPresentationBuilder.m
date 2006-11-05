@@ -81,6 +81,8 @@ static NSMutableDictionary *injectedObjects = nil;
 - (id) init
 {
   self = [super init];
+ 
+  /* Cache these two objects for subclass */
   ASSIGN(preferencesController, [PKPreferencesController sharedPreferencesController]);
   ASSIGN(allLoadedPlugins, [[PKPrefPanesRegistry sharedRegistry] loadedPlugins]);
   return self;
@@ -188,16 +190,6 @@ static NSMutableDictionary *injectedObjects = nil;
 /*
  * Accessors
  */
-
-/** <override-subclass />
-<p>Returns the <em>presentation view</em> where every preference 
-panes should be listed.</p>
-<p><strong>Overrides this abstract method to return your custom <em>presentation 
-view</em> like toolbar, table view, popup menu, tab view etc.</strong></p> */
-- (NSView *) presentationView
-{
-  return nil;
-}
 
 /** <override-subclass />
     <p>Returns the <em>presentation mode</em> which is used to identify

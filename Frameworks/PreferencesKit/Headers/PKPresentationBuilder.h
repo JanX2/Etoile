@@ -58,9 +58,6 @@ extern const NSString *PKOtherPresentationMode;
 - (IBAction) switchPreferencePaneView: (id)sender;
 
 /* Abstract accessors methods */
-// NOTE: In subclass, should return a view where loaded preference panes 
-// are listed and the related presentation name.
-- (NSView *) presentationView;
 - (NSString *) presentationMode;
 
 - (void) willSelectPreferencePaneWithIdentifier: (NSString *) identifier;

@@ -112,11 +112,6 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
   return (NSString *)PKMatrixPresentationMode;
 }
 
-- (NSView *) presentationView
-{
-  return [matrixView contentView];
-}
-
 // FIXME: Actual code in this method have to be improved to work when
 // preferencesView is not equal to contentView and we should move some portions
 // common with other presentation classes in PKPresentationBuilder superclass.
