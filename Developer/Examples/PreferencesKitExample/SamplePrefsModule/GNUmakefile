@@ -26,6 +26,16 @@ SamplePrefsModule_GUI_LIBS = -lPreferencesKit
 #
 # Resource files
 #
+ifeq ($(FOUNDATION_LIB), apple)
+SamplePrefsModule_MAIN_MODEL_FILE = \
+	SamplePrefsModule.nib
+
+SamplePrefsModule_LOCALIZED_RESOURCE_FILES = \
+	SamplePrefsModule.nib
+
+SamplePrefsModule_RESOURCE_FILES = \
+	Preferences.tiff 
+else
 SamplePrefsModule_MAIN_MODEL_FILE = \
 	SamplePrefsModule.gorm
 
@@ -33,8 +43,9 @@ SamplePrefsModule_RESOURCE_FILES = \
 	SamplePrefsModule.gorm \
 	Preferences.tiff \
 	SamplePrefsModuleInfo.plist
+endif
 
-SamplePrefsModule_LOCALIZED_RESOURCE_FILES =
+SamplePrefsModule_LOCALIZED_RESOURCE_FILES +=
 
 #
 # Languages we're localized for

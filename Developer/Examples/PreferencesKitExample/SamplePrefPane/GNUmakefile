@@ -24,6 +24,16 @@ SamplePrefPane_GUI_LIBS = -lPreferencesKit
 #
 # Resource files
 #
+ifeq ($(FOUNDATION_LIB), apple)
+SamplePrefPane_MAIN_MODEL_FILE = \
+	SamplePrefPane.nib
+
+SamplePrefPane_LOCALIZED_RESOURCE_FILES += \
+	SamplePrefPane.nib 
+
+SamplePrefPane_RESOURCE_FILES = \
+	SamplePrefPaneIcon.tiff 
+else
 SamplePrefPane_MAIN_MODEL_FILE = \
 	SamplePrefPane.gorm
 
@@ -31,8 +41,9 @@ SamplePrefPane_RESOURCE_FILES = \
 	SamplePrefPane.gorm \
 	SamplePrefPaneIcon.tiff \
 	SamplePrefPaneInfo.plist
+endif
 
-SamplePrefPane_LOCALIZED_RESOURCE_FILES =
+SamplePrefPane_LOCALIZED_RESOURCE_FILES +=
 
 #
 # Languages we're localized for

@@ -8,10 +8,19 @@ before-all::
 	$(PROJECT_DIR)/PreferencesKit; \
 	
 after-all::
+ifeq ($(FOUNDATION_LIB), apple)
+	cp -Rfp $(PROJECT_DIR)/PreferencesKitExampleInfo_Cocoa.plist \
+	$(PROJECT_DIR)/PreferencesKitExample.app/Contents/Info.plist; \
+	mkdir -p $(PROJECT_DIR)/PreferencesKitExample.app/Contents/PlugIns; \
+	cp -Rfp $(PROJECT_DIR)/SamplePrefPane/SamplePrefPane.prefPane \
+	$(PROJECT_DIR)/SamplePrefsModule/SamplePrefsModule.prefsModule \
+	$(PROJECT_DIR)/PreferencesKitExample.app/Contents/PlugIns/; 
+else
 	mkdir -p $(PROJECT_DIR)/PreferencesKitExample.app/PlugIns; \
 	cp -Rfp $(PROJECT_DIR)/SamplePrefPane/SamplePrefPane.prefPane \
 	$(PROJECT_DIR)/SamplePrefsModule/SamplePrefsModule.prefsModule \
-	$(PROJECT_DIR)/PreferencesKitExample.app/PlugIns/; \
+	$(PROJECT_DIR)/PreferencesKitExample.app/PlugIns/; 
+endif
 
 after-clean::
 	rm -f $(PROJECT_DIR)/PreferencesKit; \

@@ -16,8 +16,8 @@
 
 @implementation SamplePrefsModule
 
-static SamplePrefsModule		*sharedInstance = nil;
-static id <PrefsApplication>	owner = nil;
+static SamplePrefsModule *sharedInstance = nil;
+static id <PrefsApplication> owner = nil;
 
 - (id) initWithOwner: (id <PrefsApplication>) anOwner
 {

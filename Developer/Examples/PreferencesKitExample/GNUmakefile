@@ -25,9 +25,12 @@ PreferencesKitExample_APPLICATION_ICON =
 
 PreferencesKitExample_GUI_LIBS = -lPreferencesKit
 
-#
-# Resource files
-#
+ifeq ($(FOUNDATION_LIB), apple)
+PreferencesKitExample_LOCALIZED_RESOURCE_FILES = \
+	MainMenu.nib
+PreferencesKitExample_MAIN_MODEL_FILE = \
+	MainMenu.nib
+else
 PreferencesKitExample_MAIN_MODEL_FILE = \
 	MainMenu.gorm
 
@@ -36,27 +39,16 @@ PreferencesKitExample_RESOURCE_FILES = \
 	MainMenu.gorm
 
 PreferencesKitExample_LOCALIZED_RESOURCE_FILES =
+endif
 
-#
-# Languages we're localized for
-#
 PreferencesKitExample_LANGUAGES = \
 	English
 	
-#
-# Class files
-#
 PreferencesKitExample_OBJC_FILES = \
 	main.m
 
-#
-# Header files
-#
 PreferencesKitExample_HEADER_FILES =
 
-#
-# C files
-#
 PreferencesKitExample_C_FILES =
 
 

@@ -1,0 +1,16 @@
+#
+#    Makefile for Etoile PreferencesKitExample
+#
+
+before-all::
+	
+after-all::
+ifeq ($(FOUNDATION_LIB), apple)
+	cp -Rfp SamplePrefPaneInfo_Cocoa.plist \
+	SamplePrefPane.prefPane/Contents/Info.plist; 
+endif
+
+after-clean::
+
+after-distclean::
+
