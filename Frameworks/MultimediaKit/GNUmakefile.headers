@@ -1,0 +1,8 @@
+# Install headers
+
+MultimediaKit_HEADER_FILES_DIR = ./MultimediaKit
+MultimediaKit_HEADER_FILES_INSTALL_DIR = MultimediaKit
+MultimediaKit_HEADER_FILES = \
+	MMPlayer.h \
+	MPlayerInterface.h 
+
