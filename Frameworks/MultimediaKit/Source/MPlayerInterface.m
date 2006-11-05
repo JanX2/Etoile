@@ -1235,7 +1235,9 @@
 			{
 				*valString = '\0';					// replace it with null char
 				valString++;						// and the value starts by next char
-				[myInfo setObject:[NSString stringWithCString:valString] forKey:[NSString stringWithCString:stringPtr]];
+				NSString *temp = [NSString stringWithCString: valString];
+				if (temp)
+				[myInfo setObject:temp forKey:[NSString stringWithCString:stringPtr]];
 			}
 			continue; 							// continue on next line	
 		}
@@ -1334,7 +1336,7 @@
   } 
 
   NSDictionary *dict = [self info];
-  int w, h;
+  int w = 0, h = 0;
   id object;
   
   object = [dict objectForKey: @"ID_VIDEO_WIDTH"];

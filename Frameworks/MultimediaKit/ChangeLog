@@ -1,4 +1,5 @@
 2006-11-04  Yen-Ju Chen <yjchen at gmail>
 
 	* Initial import.
+	* Fix nil property.
 
