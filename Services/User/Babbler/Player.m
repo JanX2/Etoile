@@ -12,8 +12,16 @@
   NSSize c = [[self contentView] bounds].size;
   c.width += delta_x;
   c.height += delta_y;
+  if (c.width < 200) {
+    c.width = 200;
+  }
   [self setContentSize: c];
-  XResizeWindow(dpy, contentView, size.width, size.height);
+  if (size.height > 0) {
+    XResizeWindow(dpy, contentView, size.width, size.height);
+  } else {
+    /* XWindow cannot be smaller than 1x1 */
+    XResizeWindow(dpy, contentView, 1, 1);
+  }
 }
 
 - (void) windowWillClose: (NSNotification *) not
@@ -31,14 +39,15 @@
 - (void) playAction: (id) sender
 {
   if (isPlaying == NO) {
-    NSLog(@"playAction");
+    NSLog(@"play");
     isPlaying = YES;
     [mmPlayer play: self];
     [playButton setImage: [NSImage imageNamed: @"pause.tiff"]];
   } else {
+    NSLog(@"pause");
     isPlaying = NO;
     [mmPlayer pause: self];
-    [playButton setTitle: [NSImage imageNamed: @"play.tiff"]];
+    [playButton setImage: [NSImage imageNamed: @"play.tiff"]];
   }
 }
 
