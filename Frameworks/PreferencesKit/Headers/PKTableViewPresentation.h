@@ -31,7 +31,7 @@ extern const NSString *PKTablePresentationMode;
 @interface PKTableViewPresentation : PKPresentationBuilder
 {
     IBOutlet NSTableView *preferencesTableView;
-    IBOutlet NSView *prebuiltTableView;
+    IBOutlet NSScrollView *prebuiltTableView;
 }
 
 @end

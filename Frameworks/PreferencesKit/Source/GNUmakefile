@@ -15,8 +15,7 @@ VERSION = 0.1
 #
 # Resource files
 #
-PreferencesKit_RESOURCE_FILES = \
-	../PrebuiltTableView.gorm
+PreferencesKit_RESOURCE_FILES = 
 
 PreferencesKit_LOCALIZED_RESOURCE_FILES =
 

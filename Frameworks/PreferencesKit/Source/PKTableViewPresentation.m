@@ -51,6 +51,7 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
     PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     NSView *mainViewContainer = [pc preferencesView];
     
+#if 0
     /* We use a completely prebuilt table view we retrieve in a dedicated gorm file
        to avoid the nightmare to set up it manually in code with every elements it
        includes like corner view, scroll view etc. */
@@ -66,6 +67,22 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
             format: @"PrebuiltTableView is nil"];
 
     [prebuiltTableView removeFromSuperview];
+#else
+    NSRect rect = NSMakeRect(0, 0, 180, [mainViewContainer frame].size.height);
+    prebuiltTableView = [[NSScrollView alloc] initWithFrame: rect];
+
+    NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier: @"name"];
+    [column setWidth: 180];
+    [column setEditable: NO];
+
+    rect = [[prebuiltTableView documentView] bounds];
+    preferencesTableView = [[NSTableView alloc] initWithFrame: rect];
+    [preferencesTableView addTableColumn: column];
+    [prebuiltTableView setDocumentView: preferencesTableView];
+    DESTROY(column);
+    RELEASE(preferencesTableView);
+    AUTORELEASE(prebuiltTableView);
+#endif
     
     [prebuiltTableView setFrameSize: NSMakeSize(180, [mainViewContainer frame].size.height)];
     [prebuiltTableView setFrameOrigin: NSMakePoint(0, 0)];
@@ -165,11 +182,12 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 
 - (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier
 {    
-	NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
-    NSDictionary *info = [plugins objectWithValue: identifier forKey: @"identifier"];
-    int row = [plugins indexOfObject: info];
+  NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
+  NSDictionary *info = [plugins objectWithValue: identifier 
+                                         forKey: @"identifier"];
+  int row = [plugins indexOfObject: info];
     
-   [preferencesTableView selectRow: row byExtendingSelection: NO];
+  [preferencesTableView selectRow: row byExtendingSelection: NO];
 }
 
 /*
