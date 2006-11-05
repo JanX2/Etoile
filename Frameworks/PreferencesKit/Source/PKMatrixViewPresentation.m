@@ -30,6 +30,7 @@
 #import "PKPrefPanesRegistry.h"
 #import "PKMatrixViewPresentation.h"
 #import "PKMatrixView.h"
+#import "GNUstep.h"
 
 const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 
@@ -41,7 +42,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
    by runtime, when each subclass receives this message. */
 + (void) load
 {
-    [super inject: self forKey: PKMatrixPresentationMode];
+  [super inject: self forKey: PKMatrixPresentationMode];
 }
 
 /*
@@ -50,71 +51,72 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 
 - (void) buttonAction: (id) sender
 {
-	[self switchPreferencePaneView: self];
+  [self switchPreferencePaneView: self];
 }
 
 - (void) loadUI
 {
-    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    NSView *mainViewContainer = [pc preferencesView];
-    NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
+  PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
+  NSView *mainViewContainer = [pc preferencesView];
+  NSArray *plugins = [[PKPrefPanesRegistry sharedRegistry] loadedPlugins];
 
-    int count = [plugins count];
-    NSRect rect = [mainViewContainer bounds];  
+  int count = [plugins count];
+  NSRect rect = [mainViewContainer bounds];  
     
-    matrixView = [[PKMatrixView alloc] initWithFrame: rect numberOfButtons: count];
-    [matrixView setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
-    [matrixView setAutoresizesSubviews: YES];
-    [matrixView setTarget: self];
-    [matrixView setAction: @selector(buttonAction:)];
+  matrixView = [[PKMatrixView alloc] initWithFrame: rect 
+                                   numberOfButtons: count];
+  [matrixView setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
+  [matrixView setAutoresizesSubviews: YES];
+  [matrixView setTarget: self];
+  [matrixView setAction: @selector(buttonAction:)];
     
-    [mainViewContainer addSubview: matrixView];
-    [mainViewContainer setAutoresizesSubviews: YES];
+  [mainViewContainer addSubview: matrixView];
+  [mainViewContainer setAutoresizesSubviews: YES];
 
-    [identifiers autorelease];
-    identifiers = [plugins valueForKey: @"identifier"];
+  ASSIGN(identifiers, [plugins valueForKey: @"identifier"]);
     
-    NSEnumerator *e = [identifiers objectEnumerator];
-    id identifier;
-    int tag = 0;
+  NSEnumerator *e = [identifiers objectEnumerator];
+  id identifier;
+  int tag = 0;
     
-    while ((identifier = [e nextObject]))
-    {
-        NSDictionary *plugin = [plugins objectWithValue: identifier forKey: @"identifier"];
-        NSButtonCell *button = [[NSButtonCell alloc] init];
+  while ((identifier = [e nextObject]))
+  {
+    NSDictionary *plugin = [plugins objectWithValue: identifier 
+                                             forKey: @"identifier"];
+    NSButtonCell *button = [[NSButtonCell alloc] init];
         
-        [button setTitle: [plugin objectForKey: @"name"]];
+    [button setTitle: [plugin objectForKey: @"name"]];
         
-        NSImage *image = [plugin objectForKey: @"image"];
-        [image setSize: NSMakeSize(48, 48)];
+    NSImage *image = [plugin objectForKey: @"image"];
+    [image setSize: NSMakeSize(48, 48)];
         
-        [button setImage: image];
-        [button setImagePosition: NSImageAbove];
-        [button setBordered: NO];
-        [button setTag: tag++];
-        [button setTarget: self];
-        [button setAction: @selector(buttonAction:)];
+    [button setImage: image];
+    [button setImagePosition: NSImageAbove];
+    [button setBordered: NO];
+    [button setTag: tag++];
+    [button setTarget: self];
+    [button setAction: @selector(buttonAction:)];
         
-        [matrixView addButtonCell: button];
-        [button release];
-    }
+    [matrixView addButtonCell: button];
+    DESTROY(button);
+  }
     
-    [super loadUI];
+  [super loadUI];
 }
 
 - (void) unloadUI
 {
-    [matrixView removeFromSuperview];
+  [matrixView removeFromSuperview];
 }
 
 - (NSString *) presentationMode
 {
-    return (NSString *)PKMatrixPresentationMode;
+  return (NSString *)PKMatrixPresentationMode;
 }
 
 - (NSView *) presentationView
 {
-    return [matrixView contentView];
+  return [matrixView contentView];
 }
 
 // FIXME: Actual code in this method have to be improved to work when
@@ -122,23 +124,23 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 // common with other presentation classes in PKPresentationBuilder superclass.
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
-    if (paneView == nil) 
-        return;
-    
-    [super layoutPreferencesViewWithPaneView: paneView];
-    
+  if (paneView == nil) 
+    return;
+   
+  [super layoutPreferencesViewWithPaneView: paneView];
+   
 //    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];
-    NSRect rect = NSMakeRect(0, 0, size.width, size.height);
+  NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];
+  NSRect rect = NSMakeRect(0, 0, size.width, size.height);
     
-    [matrixView setFrame: rect];
+  [matrixView setFrame: rect];
 
-    NSRect windowFrame = [[matrixView window] frame];
-    int oldHeight = windowFrame.size.height;
+  NSRect windowFrame = [[matrixView window] frame];
+  int oldHeight = windowFrame.size.height;
     
-    // FIXME: Implement -frameRectForContentRect: in GNUstep 
-    windowFrame.size = [NSWindow frameRectForContentRect: [matrixView frame]
-        styleMask: [[matrixView window] styleMask]].size;
+  // FIXME: Implement -frameRectForContentRect: in GNUstep 
+  windowFrame.size = [NSWindow frameRectForContentRect: [matrixView frame]
+      styleMask: [[matrixView window] styleMask]].size;
     
 #if 0 // Not sure we want to do that 
     // NOTE: We have to check carefully the view is not undersized to avoid
@@ -148,20 +150,20 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
     if (windowFrame.size.width < 400)
         windowFrame.size.width = 400;
 #endif
+   
+  /* We take in account the fact the origin is located at bottom left corner. */
+  int delta = oldHeight - windowFrame.size.height;
+  windowFrame.origin.y += delta;
     
-    /* We take in account the fact the origin is located at bottom left corner. */
-    int delta = oldHeight - windowFrame.size.height;
-    windowFrame.origin.y += delta;
-    
-    [[matrixView window] setFrame: windowFrame display: YES];
+  [[matrixView window] setFrame: windowFrame display: YES];
 }
 
 - (IBAction) switchPreferencePaneView: (id)sender
 {
-    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
-    int tag = [[matrixView selectedButtonCell] tag];
+  PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
+  int tag = [[matrixView selectedButtonCell] tag];
     
-    [pc selectPreferencePaneWithIdentifier: [identifiers objectAtIndex: tag]];
+  [pc selectPreferencePaneWithIdentifier: [identifiers objectAtIndex: tag]];
 }
 
 @end

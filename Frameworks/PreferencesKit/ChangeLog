@@ -2,6 +2,7 @@
 
     * Write table view in code.
     * Remove all compilation warnings (GNUstep and Cocoa with GNUstep-make).
+    * Fix memory leak on matrix presentation.
 
 2006-09-26  Quentin Mathe <qmathe@club-internet.fr>
 

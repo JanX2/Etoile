@@ -38,7 +38,7 @@
 #import "PKPreferencePane.h"
 #import "PKPresentationBuilder.h"
 #import "PKPreferencesController.h"
-#import "math.h"
+#import "GNUstep.h"
 
 @interface PKPreferencesController (Private)
 - (void) windowWillClose: (NSNotification *)aNotification;
@@ -377,24 +377,21 @@ static BOOL inited = NO;
     preferences pane list and identified by <var>presentationMode</var>.</p> */
 - (void) setPresentationMode: (NSString *)presentationMode
 {
-    if ([presentationMode isEqual: [presentation presentationMode]])
-        return;
+  if ([presentationMode isEqual: [presentation presentationMode]])
+    return;
     
-    id presentationToCheck = [PKPresentationBuilder builderForPresentationMode: presentationMode];
+  id presentationToCheck = [PKPresentationBuilder builderForPresentationMode: presentationMode];
     
-    if (presentationToCheck == nil)
-    {
-        // FIXME: We may throw an exception here.
-    }
-    else
-    {
-        [presentation unloadUI];
-    
-        [presentation release];
-        presentation = [presentationToCheck retain];
-    
-        [presentation loadUI];
-    }
+  if (presentationToCheck == nil)
+  {
+    // FIXME: We may throw an exception here.
+  }
+  else
+  {
+    [presentation unloadUI];
+    ASSIGN(presentation, presentationToCheck);
+    [presentation loadUI];
+  }
 }
 
 /*
