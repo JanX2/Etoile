@@ -65,8 +65,10 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
                                    numberOfButtons: count];
   [matrixView setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
   [matrixView setAutoresizesSubviews: YES];
+#ifndef GNUSTEP // Doesn't work on GNUstep.
   [matrixView setTarget: self];
   [matrixView setAction: @selector(buttonAction:)];
+#endif
     
   [mainViewContainer addSubview: matrixView];
   [mainViewContainer setAutoresizesSubviews: YES];

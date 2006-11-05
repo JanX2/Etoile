@@ -48,6 +48,7 @@
                             hasHorizontalScroller: YES
                             hasVerticalScroller: NO
                             borderType: NSBezelBorder];
+  rect.size.width = frame.size.width;
   scrollView = [[NSScrollView alloc] initWithFrame: rect];
   [scrollView setDocumentView: matrix];
   [scrollView setHasHorizontalScroller: YES];

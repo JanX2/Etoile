@@ -114,23 +114,17 @@ static NSMutableDictionary *injectedObjects = nil;
     to change.</p> */
 - (void) unloadUI
 {
-#ifdef GNUSTEP
-  [self subclassResponsibility: _cmd];
-#endif
+//  [self subclassResponsibility: _cmd];
 }
 
 - (void) willSelectPreferencePaneWithIdentifier: (NSString *) identifier;
 {
-#ifdef GNUSTEP
- [self subclassResponsibility: _cmd];
-#endif
+//  [self subclassResponsibility: _cmd];
 }
 
 - (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier
 {
-#ifdef GNUSTEP
-  [self subclassResponsibility: _cmd];
-#endif
+//  [self subclassResponsibility: _cmd];
 }
 
 
@@ -182,9 +176,7 @@ static NSMutableDictionary *injectedObjects = nil;
     <var>sender</var>.</strong></p> */
 - (IBAction) switchPreferencePaneView: (id)sender
 {
-#ifdef GNUSTEP
-  [self subclassResponsibility: _cmd];
-#endif
+//  [self subclassResponsibility: _cmd];
 }
 
 /*
