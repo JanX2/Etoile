@@ -100,8 +100,19 @@ static NSMutableDictionary *injectedObjects = nil;
     to change.</p> */
 - (void) unloadUI
 {
-    [self subclassResponsability: _cmd];
+    [self subclassResponsibility: _cmd];
 }
+
+- (void) willSelectPreferencePaneWithIdentifier: (NSString *) identifier;
+{
+//    [self subclassResponsibility: _cmd];
+}
+
+- (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier
+{
+//    [self subclassResponsibility: _cmd];
+}
+
 
 /** <override-subclass />
     <p>Computes and assigns the right size to <em>preferences view</em> 
@@ -152,7 +163,7 @@ static NSMutableDictionary *injectedObjects = nil;
     <var>sender</var>.</strong></p> */
 - (IBAction) switchPreferencePaneView: (id)sender
 {
-    [self subclassResponsability: _cmd];
+    [self subclassResponsibility: _cmd];
 }
 
 /*

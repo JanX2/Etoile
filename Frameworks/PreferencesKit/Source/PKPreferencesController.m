@@ -38,7 +38,7 @@
 #import "PKPreferencePane.h"
 #import "PKPresentationBuilder.h"
 #import "PKPreferencesController.h"
-
+#import "math.h"
 
 @interface PKPreferencesController (Private)
 - (void) windowWillClose: (NSNotification *)aNotification;
@@ -54,7 +54,10 @@ static BOOL inited = NO;
 /** <p>Factory method which returns a singleton instance.</p> */
 + (PKPreferencesController *) sharedPreferencesController
 {
-	return (sharedInstance ? sharedInstance : [[self alloc] init]);
+  if (sharedInstance == nil) {
+    sharedInstance = [[PKPreferencesController alloc] init];
+  }
+  return sharedInstance;
 }
 
 - (id) init
@@ -183,8 +186,8 @@ static BOOL inited = NO;
     {
         NSRect box = [mainViewWaitSign frame];
         NSRect wBox = [prefsView frame];
-        box.origin.x = truncf(abs(wBox.size.width -box.size.width) /2);
-        box.origin.y = truncf(abs(wBox.size.height -box.size.height) /2);
+        box.origin.x = (int)(abs(wBox.size.width -box.size.width) /2);
+        box.origin.y = (int)(abs(wBox.size.height -box.size.height) /2);
         [mainViewWaitSign setFrameOrigin: box.origin];
         [prefsView addSubview: mainViewWaitSign];
         [prefsView setNeedsDisplay: YES];

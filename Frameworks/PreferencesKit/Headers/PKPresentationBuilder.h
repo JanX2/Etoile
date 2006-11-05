@@ -60,4 +60,7 @@ extern const NSString *PKOtherPresentationMode;
 - (NSView *) presentationView;
 - (NSString *) presentationMode;
 
+- (void) willSelectPreferencePaneWithIdentifier: (NSString *) identifier;
+- (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier;
+
 @end

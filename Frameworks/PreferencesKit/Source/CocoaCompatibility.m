@@ -26,11 +26,9 @@
 #import "CocoaCompatibility.h"
 
 
-@implementation NSArray (ObjectsWithValueForKey)
+@implementation NSArray (PKObjectsWithValueForKey)
 
-#ifndef GNUSTEP
-
-// NOTE: In GNUstep, this method is located in AppKit within GSToolbar.
+// NOTE: In GNUstep, this method is also located in AppKit within GSToolbar.
 - (NSArray *) objectsWithValue: (id)value forKey: (NSString *)key 
 {
     NSMutableArray *result = [NSMutableArray array];
@@ -55,8 +53,6 @@
     
     return result;
 }
-
-#endif
 
 // FIXME: This method have to be added to GNUstep
 - (id) objectWithValue: (id)value forKey: (NSString *)key

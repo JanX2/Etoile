@@ -1,6 +1,7 @@
 2006-11-04  Quentin Mathe <qmathe@club-internet.fr>
 
     * Write table view in code.
+    * Remove all compilation warnings.
 
 2006-09-26  Quentin Mathe <qmathe@club-internet.fr>
 

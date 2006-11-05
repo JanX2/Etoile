@@ -33,6 +33,7 @@
 #import "PKPrefsModulePrefPane.h"
 #import "PKPreferencePane.h"
 #import "PKPrefPanesRegistry.h"
+#import "CocoaCompatibility.h"
 
 static PKPrefPanesRegistry *sharedPrefPanesRegistry;
 

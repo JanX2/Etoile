@@ -127,7 +127,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
     
     [super layoutPreferencesViewWithPaneView: paneView];
     
-    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
+//    PKPreferencesController *pc = [PKPreferencesController sharedPreferencesController];
     NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];
     NSRect rect = NSMakeRect(0, 0, size.width, size.height);
     

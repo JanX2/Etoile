@@ -121,8 +121,6 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
     NSView *mainView = [pc preferencesView];
     NSRect paneViewFrame = [paneView frame];
 	NSRect windowFrame = [[mainView window] frame];
-    int previousHeight = windowFrame.size.height;
-    int heightDelta;
     
     [super layoutPreferencesViewWithPaneView: paneView];
 
@@ -139,8 +137,6 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
         windowFrame.size.width = 400;
     
     /* We take in account the fact the origin is located at bottom left corner. */
-    heightDelta = previousHeight - windowFrame.size.height;
-    windowFrame.origin.y += heightDelta;
     
     [[mainView window] setFrame: windowFrame display: YES animate: YES];
 
