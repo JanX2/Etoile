@@ -120,21 +120,19 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
   if (paneView == nil) 
     return;
    
-  [super layoutPreferencesViewWithPaneView: paneView];
+  NSView *prefsView = [preferencesController preferencesView];
    
   NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];
   NSRect rect = NSMakeRect(0, 0, size.width, size.height);
     
-  [matrixView setFrame: rect];
-
   NSRect windowFrame = [[matrixView window] frame];
   int oldHeight = windowFrame.size.height;
     
   // FIXME: Implement -frameRectForContentRect: in GNUstep 
-  windowFrame.size = [NSWindow frameRectForContentRect: [matrixView frame]
+  windowFrame.size = [NSWindow frameRectForContentRect: rect 
       styleMask: [[matrixView window] styleMask]].size;
     
-#if 0 // Not sure we want to do that 
+#if 1 // Not sure we want to do that 
     // NOTE: We have to check carefully the view is not undersized to avoid
     // limiting switch possibilities in listed panes.
     if (windowFrame.size.height < 150)
@@ -152,6 +150,11 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
   #else 
     [[matrixView window] setFrame: windowFrame display: YES animate: NO];
   #endif
+
+  [matrixView setFrame: rect];
+  [paneView setFrameOrigin: NSZeroPoint];
+  if ([[paneView superview] isEqual: [matrixView contentView]] == NO)
+    [[matrixView contentView] addSubview: paneView];
 }
 
 - (IBAction) switchPreferencePaneView: (id)sender

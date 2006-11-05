@@ -89,17 +89,6 @@
   return contentView;
 }
 
-- (void) resizeWithOldSuperviewSize: (NSSize) oldBoundsSize
-{
-  NSRect rect = [scrollView frame];
-    
-  rect.size.width = [self bounds].size.width;
-  rect.origin.y = rect.size.height;
-  rect.size.height = [self bounds].size.height-rect.origin.y;
-    
-  [contentView setFrame: rect];
-}
-
 - (BOOL) isFlipped
 {
   return YES;

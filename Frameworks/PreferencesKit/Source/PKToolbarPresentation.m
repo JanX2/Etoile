@@ -91,11 +91,15 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
 {
   id owner = [preferencesController owner];
     
+#ifdef GNUSTEP
   // FIXME: this line is not needed, but we keep it because it outlines a bug
   // in GSToolbar; toolbar view is not removed properly from the views
   // hierarchy when the window toolbar is set to nil consecutively to the
   // method call on the next line.
   //[preferencesToolbar setVisible: NO];
+#else
+  [preferencesToolbar setVisible: NO];
+#endif
  
   // NOTE: -[toolbar release] shouldn't be used because it doesn't clean
   // everything (like validation objects). We should document this point in
@@ -110,11 +114,19 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
 
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
+  if (paneView == nil)
+      return;
+
   NSView *mainView = [preferencesController preferencesView];
   NSRect paneViewFrame = [paneView frame];
   NSRect windowFrame = [[mainView window] frame];
     
-  [super layoutPreferencesViewWithPaneView: paneView];
+  if ([[paneView superview] isEqual: mainView] == NO)
+    [mainView addSubview: paneView];
+   
+  /* Presentation switches might modify pane view default position, so we reset
+     it. */
+  [paneView setFrameOrigin: NSZeroPoint];
 
   #ifndef GNUSTEP
   NSRect oldFrame = [[mainView window] frame];

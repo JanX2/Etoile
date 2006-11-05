@@ -86,8 +86,10 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
   AUTORELEASE(prebuiltTableView);
 #endif
     
+#if 0 
   [prebuiltTableView setFrameSize: NSMakeSize(180, [mainViewContainer frame].size.height)];
   [prebuiltTableView setFrameOrigin: NSMakePoint(0, 0)];
+#endif
   [mainViewContainer addSubview: prebuiltTableView];
     
   /* Finish table view specific set up. */
