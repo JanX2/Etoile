@@ -27,6 +27,7 @@
 
 #import "PKPreferencePane.h"
 #import <AppKit/AppKit.h>
+#import "GNUstep.h"
 
 NSString *NSPreferencePaneDoUnselectNotification = @"NSPreferencePaneDoUnselect";
 NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelUnselect";

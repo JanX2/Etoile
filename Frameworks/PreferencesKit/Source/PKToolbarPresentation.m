@@ -31,6 +31,7 @@
 #import "PKPreferencesController.h"
 #import "PKPrefPanesRegistry.h"
 #import "PKToolbarPresentation.h"
+#import "GNUstep.h"
 
 const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
 

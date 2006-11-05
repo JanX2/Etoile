@@ -1,7 +1,7 @@
 2006-11-04  Quentin Mathe <qmathe@club-internet.fr>
 
     * Write table view in code.
-    * Remove all compilation warnings.
+    * Remove all compilation warnings (GNUstep and Cocoa with GNUstep-make).
 
 2006-09-26  Quentin Mathe <qmathe@club-internet.fr>
 

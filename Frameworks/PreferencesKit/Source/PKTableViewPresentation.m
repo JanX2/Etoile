@@ -28,6 +28,7 @@
 #import "PKPreferencesController.h"
 #import "PKPrefPanesRegistry.h"
 #import "PKTableViewPresentation.h"
+#import "GNUstep.h"
 
 const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 

@@ -39,6 +39,7 @@
 #import "PKPrefPanesRegistry.h"
 #import "PKPreferencePane.h"
 #import "PKPresentationBuilder.h"
+#import "GNUstep.h"
 
 const NSString *PKNoPresentationMode = @"PKNoPresentationMode";
 const NSString *PKOtherPresentationMode = @"PKOtherPresentationMode";
@@ -100,7 +101,7 @@ static NSMutableDictionary *injectedObjects = nil;
     to change.</p> */
 - (void) unloadUI
 {
-    [self subclassResponsibility: _cmd];
+//    [self subclassResponsibility: _cmd];
 }
 
 - (void) willSelectPreferencePaneWithIdentifier: (NSString *) identifier;
@@ -163,7 +164,7 @@ static NSMutableDictionary *injectedObjects = nil;
     <var>sender</var>.</strong></p> */
 - (IBAction) switchPreferencePaneView: (id)sender
 {
-    [self subclassResponsibility: _cmd];
+//    [self subclassResponsibility: _cmd];
 }
 
 /*
