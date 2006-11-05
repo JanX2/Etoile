@@ -2,22 +2,16 @@
 #    Makefile for Etoile PreferencesKitExample
 #
 
-ifeq ($(debug), yes)
-	extension = debug
-else
-	extension = app
-endif
-
 before-all::
 	rm -f $(PROJECT_DIR)/PreferencesKit; \
 	$(LN_S) $(PROJECT_DIR)/../../../Frameworks/PreferencesKit/Headers \
 	$(PROJECT_DIR)/PreferencesKit; \
 	
 after-all::
-	mkdir -p $(PROJECT_DIR)/PreferencesKitExample.$(extension)/PlugIns; \
+	mkdir -p $(PROJECT_DIR)/PreferencesKitExample.app/PlugIns; \
 	cp -Rfp $(PROJECT_DIR)/SamplePrefPane/SamplePrefPane.prefPane \
 	$(PROJECT_DIR)/SamplePrefsModule/SamplePrefsModule.prefsModule \
-	$(PROJECT_DIR)/PreferencesKitExample.$(extension)/PlugIns/; \
+	$(PROJECT_DIR)/PreferencesKitExample.app/PlugIns/; \
 
 after-clean::
 	rm -f $(PROJECT_DIR)/PreferencesKit; \
