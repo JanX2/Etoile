@@ -7,13 +7,13 @@ Babbler_OBJC_FILES = \
 	Controller.m \
 	Player.m
 
-ADDITIONAL_OBJCFLAGS += `pkg-config --cflags gstreamer-plugins-base-0.10`
-ADDITIONAL_OBJCFLAGS += `pkg-config --cflags libgnomeui-2.0`
-ADDITIONAL_LDFLAGS += `pkg-config --libs gstreamer-plugins-base-0.10`
-ADDITIONAL_LDFLAGS += `pkg-config --libs libgnomeui-2.0`
-ADDITIONAL_LDFLAGS += -lgstaudio-0.10
+Babbler_RESOURCE_FILES = \
+	Resources/pause.tiff \
+	Resources/play.tiff \
+	Resources/seek_back.tiff \
+	Resources/seek_fwd.tiff
 
-ADDITIONAL_LIB_DIRS += -lXWindowServerKit
+ADDITIONAL_LIB_DIRS += -lXWindowServerKit -lMultimediaKit
 
 include $(GNUSTEP_MAKEFILES)/application.make
 

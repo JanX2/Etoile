@@ -1,20 +1,21 @@
 #import <AppKit/AppKit.h>
-#import <gst/gst.h>
 #import <XWindowServerKit/XWindow.h>
+#import <MultimediaKit/MMPlayer.h>
 
 @interface Player: XWindow
 {
-  NSURL *url;
-  NSButton *reverseButton;
+  NSButton *backwardButton;
   NSButton *forwardButton;
   NSButton *playButton;
   BOOL isPlaying;
 
-  GstElement *play;
-  GstBus *bus;
+  id <MMPlayer> mmPlayer;
+  Window contentView;
+  NSSize contentSize;
 }
 
-- (void) setURL: (NSURL *) url;
-- (NSURL*) url;
+/* Retained */
+- (void) setPlayer: (id <MMPlayer>) player;
+- (id <MMPlayer>) player;
 
 @end
