@@ -37,6 +37,9 @@
         case 2:
             [pc setPresentationMode: (NSString *) PKMatrixPresentationMode];
             break;
+        case 3:
+            [pc setPresentationMode: (NSString *) PKPlainPresentationMode];
+            break;
     }
 }
 

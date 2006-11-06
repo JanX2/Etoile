@@ -45,6 +45,7 @@ PreferencesKitExample_LANGUAGES = \
 	English
 	
 PreferencesKitExample_OBJC_FILES = \
+	PreferencePane.m \
 	main.m
 
 PreferencesKitExample_HEADER_FILES =
