@@ -56,27 +56,9 @@ static Controller *sharedInstance;
   return sharedInstance;
 }
 
-+ (void)initialize
-{
-  NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
-
-  /*
-   * Register your app's defaults here by adding objects to the
-   * dictionary, eg
-   *
-   * [defaults setObject:anObject forKey:keyForThatObject];
-   *
-   */
-  [defaults setObject: @"/usr/bin/dillo" forKey: @"WebBrowser"];
-
-  [[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
 - (id) init
 {
   self = [super init];
-
   return self;
 }
 
