@@ -48,6 +48,17 @@
 - (BOOL) instantiate;
 - (void) setInstantiate: (BOOL)n;
 
+/* Add plugin programmingly. 
+   'bundle' can be ignored since it is added programmingly.
+   'identifier' is necessary (NSString).
+   'image' is either a NSImage or NSNULL
+   'name' is necessary (NSString)
+   'path' can be the same as identifier (NSString)
+   'class' is necessary and wrapped in NSValue for pointer.
+   'instance' is an instance (id).
+ */
+- (void) addPlugin: (NSDictionary *) dict;
+
 @end
 
 /*

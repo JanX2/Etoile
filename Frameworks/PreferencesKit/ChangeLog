@@ -2,6 +2,8 @@
 
     * Fix flick of matrix view.
     * Work on GNUstep.
+    * New PKPlainPresentation for single preference pane.
+    * Support adding preference pane programmingly.
 
 2006-11-04  Quentin Mathe <qmathe@club-internet.fr>
 

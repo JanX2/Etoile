@@ -66,75 +66,78 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
     <p>Normally you only need to call this method to load a preference pane.</p> */
 - (void) loadAllPlugins
 {
-	[self loadPluginsOfType: @"prefPane"];
-	[self loadPluginsOfType: @"prefsModule"];
+  [self loadPluginsOfType: @"prefPane"];
+  [self loadPluginsOfType: @"prefsModule"];
 }
 
 - (NSMutableDictionary *) loadPluginForPath: (NSString *)path
 {
-	NSMutableDictionary *info = [super loadPluginForPath: path];
+  NSMutableDictionary *info = [super loadPluginForPath: path];
 	
-    /* Plugin key pieces haven't been loaded, we give up */
-	if (info == nil)
-        return nil;
+  /* Plugin key pieces haven't been loaded, we give up */
+  if (info == nil)
+    return nil;
     
-    NSString *type = [[info objectForKey: @"path"] pathExtension];
-    NSBundle *bundle = [NSBundle bundleWithPath: path];
-    id name;
-    id iconFileName;
+  NSString *type = [[info objectForKey: @"path"] pathExtension];
+  NSBundle *bundle = [NSBundle bundleWithPath: path];
+  id name;
+  id iconFileName;
 	
-	/* Retrieve pane specific informations we need to display the preference 
-       pane in presentation list, without loading the related nib file and the
-       whole plugin/pane code. */
-    if ([type isEqualToString: @"prefPane"]) /* System Preferences pane. */
+  /* Retrieve pane specific informations we need to display the preference 
+     pane in presentation list, without loading the related nib file and the
+     whole plugin/pane code. */
+  if ([type isEqualToString: @"prefPane"]) /* System Preferences pane. */
+  {
+    name = [[bundle infoDictionary] objectForKey: @"NSPrefPaneIconLabel"];
+    if (name != nil && [name isEqual: [NSNull null]] == NO && 
+       [name length] != 0) 
     {
-        name = [[bundle infoDictionary] objectForKey: @"NSPrefPaneIconLabel"];
-        if (name != nil && [name isEqual: [NSNull null]] == NO && [name length] != 0)
-            [info setObject: name forKey: @"name"];
-        
-        iconFileName = [[bundle infoDictionary] objectForKey: @"NSPrefPaneIconFile"];
-        if (iconFileName != nil && [iconFileName isEqual: [NSNull null]] == NO)
-        {
-            NSString *iconPath = [bundle pathForImageResource: iconFileName];
-            NSImage *image = nil;
-            
-            if (iconPath != nil)
-                image = [[[NSImage alloc] initWithContentsOfFile: iconPath] autorelease];
-            
-            if (image != nil)
-                [info setObject: image forKey: @"image"]; 
-        }
+      [info setObject: name forKey: @"name"];
     }
-    else if ([type isEqualToString: @"prefsModule"]) /* Backbone Preferences.app PrefsModules are wrapped in a special GSPreferencePane subclass. */
+        
+    iconFileName = [[bundle infoDictionary] objectForKey: @"NSPrefPaneIconFile"];
+    if (iconFileName != nil && [iconFileName isEqual: [NSNull null]] == NO)
     {
-        // NOTE: For prefs module, we cannot use lazy class instanciation 
-        // because pane label and icon are provided with module object methods 
-        // -buttonCaption and -buttonImage. That's why we call 
-        // -preferencePaneAtPath to force module class allocation, otherwise
-        // label and icon displayed in presentation list would be empty (or match
-        // other plist entries like NSApplicationIcon, CFBundleName).
+      NSString *iconPath = [bundle pathForImageResource: iconFileName];
+      NSImage *image = nil;
+            
+      if (iconPath != nil)
+        image = [[[NSImage alloc] initWithContentsOfFile: iconPath] autorelease];
+            
+      if (image != nil)
+        [info setObject: image forKey: @"image"]; 
+    }
+  }
+  else if ([type isEqualToString: @"prefsModule"]) /* Backbone Preferences.app PrefsModules are wrapped in a special GSPreferencePane subclass. */
+  {
+    // NOTE: For prefs module, we cannot use lazy class instanciation 
+    // because pane label and icon are provided with module object methods 
+    // -buttonCaption and -buttonImage. That's why we call 
+    // -preferencePaneAtPath to force module class allocation, otherwise
+    // label and icon displayed in presentation list would be empty (or match
+    // other plist entries like NSApplicationIcon, CFBundleName).
         
-        Class mainClass = [[info objectForKey: @"class"] pointerValue];
-        id pane;
-        id module;
-        NSImage *image;
-        NSString *name;
+    Class mainClass = [[info objectForKey: @"class"] pointerValue];
+    id pane;
+    id module;
+    NSImage *image;
+    NSString *name;
         
-        pane = [[[PKPrefsModulePrefPane alloc] initWithBundle: [info objectForKey: @"bundle"]] autorelease];
-        [info setObject: pane forKey: @"instance"];
+    pane = [[[PKPrefsModulePrefPane alloc] initWithBundle: [info objectForKey: @"bundle"]] autorelease];
+    [info setObject: pane forKey: @"instance"];
         
-        module = [[[mainClass alloc] initWithOwner: (PKPrefsModulePrefPane *)pane] autorelease];	/* Pane takes over ownership of the module. */
+    module = [[[mainClass alloc] initWithOwner: (PKPrefsModulePrefPane *)pane] autorelease];	/* Pane takes over ownership of the module. */
         
-        image = [module buttonImage];
-        if (image != nil)
-            [info setObject: image forKey: @"image"];
+    image = [module buttonImage];
+    if (image != nil)
+      [info setObject: image forKey: @"image"];
                 
-        name = [module buttonCaption];
-        if (name != nil && [name length] != 0)
-            [info setObject: name forKey: @"name"];
-    }
+    name = [module buttonCaption];
+    if (name != nil && [name length] != 0)
+      [info setObject: name forKey: @"name"];
+  }
     
-    return info;
+  return info;
 }
 
 #ifdef HAVE_UKTEST
@@ -152,50 +155,51 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
     returned by -infoDictionary.</p> */
 - (PKPreferencePane *) preferencePaneAtPath: (NSString *)path
 {
-    NSMutableDictionary *info = [pluginPaths objectForKey: path];
+  NSMutableDictionary *info = [pluginPaths objectForKey: path];
     
-    /* We check whether the plugin is already loaded. When it isn't, we try
-       to load it. */
-    // NOTE: We may check plugin conforms to preference pane schema. In case of
-    // invalidity, it would be reloaded. For now, we only check the plugin 
-    // availability.
-    if (info == nil)
-        info = [self loadPluginForPath: path];
+  /* We check whether the plugin is already loaded. When it isn't, we try
+     to load it. */
+  // NOTE: We may check plugin conforms to preference pane schema. In case of
+  // invalidity, it would be reloaded. For now, we only check the plugin 
+  // availability.
+  if (info == nil)
+    info = [self loadPluginForPath: path];
     
-	PKPreferencePane *pane = [info objectForKey: @"instance"];
+  PKPreferencePane *pane = [info objectForKey: @"instance"];
 	
-	if (pane == nil)
-	{
-		NSString *type = [[info objectForKey: @"path"] pathExtension];
+  if (pane == nil)
+  {
+    NSString *type = [[info objectForKey: @"path"] pathExtension];
 		
-		if ([type isEqualToString: @"prefPane"]) /* System Preferences pane. */
-		{
-			Class mainClass = [[info objectForKey: @"class"] pointerValue];
-			pane = [[[mainClass alloc] initWithBundle: [info objectForKey: @"bundle"]] autorelease];
-		}
-		else if ([type isEqualToString: @"prefsModule"]) /* Backbone Preferences.app PrefsModules are wrapped in a special GSPreferencePane subclass. */
-		{
-            // NOTE: Instanciation is done in -loadPluginForPath: for prefs 
-            // module. More explanations in -loadPluginForPath.
-		}
+    if ([type isEqualToString: @"prefPane"]) /* System Preferences pane. */
+    {
+      Class mainClass = [[info objectForKey: @"class"] pointerValue];
+      pane = [[[mainClass alloc] initWithBundle: [info objectForKey: @"bundle"]] autorelease];
+    }
+    else if ([type isEqualToString: @"prefsModule"]) /* Backbone Preferences.app PrefsModules are wrapped in a special GSPreferencePane subclass. */
+    {
+      // NOTE: Instanciation is done in -loadPluginForPath: for prefs 
+      // module. More explanations in -loadPluginForPath.
+    }
 		
-		[info setObject: pane forKey: @"instance"];
-	}
+    [info setObject: pane forKey: @"instance"];
+  }
     
-    if ([pane mainView] == nil)
-        [pane loadMainView];
+  if ([pane mainView] == nil)
+    [pane loadMainView];
 	
-	return pane;
+  return pane;
 }
 
 - (PKPreferencePane *) preferencePaneWithIdentifier: (NSString *)identifier
 {
-    NSDictionary *plugin = [[self loadedPlugins] objectWithValue: identifier forKey: @"identifier"];
-    PKPreferencePane *pane;
+  NSDictionary *plugin = [[self loadedPlugins] objectWithValue: identifier forKey: @"identifier"];
+  PKPreferencePane *pane;
     
-    pane = [self preferencePaneAtPath: [plugin objectForKey: @"path"]];
-    
-    return pane;
+  pane = [self preferencePaneAtPath: [plugin objectForKey: @"path"]];
+  
+  return pane;
 }
 
 @end
+

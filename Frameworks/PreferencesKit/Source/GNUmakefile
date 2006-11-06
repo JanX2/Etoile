@@ -41,6 +41,7 @@ PreferencesKit_OBJC_FILES = \
 	PKMatrixViewPresentation.m \
 	PKMatrixView.m \
 	PKToolbarPresentation.m \
+	PKPlainPresentation.m \
 	PKPrefPanesRegistry.m \
 	UKPluginsRegistry.m \
 	PKPrefsModulePrefPane.m
@@ -56,7 +57,7 @@ PreferencesKit_HEADER_FILES = \
 	../Headers/PKPresentationBuilder.h \
 	../Headers/PKTableViewPresentation.h \
 	../Headers/PKMatrixViewPresentation.h \
-	../Headers/PKToolbarPresentation.h \
+	../Headers/PKPlainPresentation.h \
 	../Headers/PKPrefPanesRegistry.h \
 	../Headers/UKPluginsRegistry.h \
 	../Headers/PrefsModule.h \

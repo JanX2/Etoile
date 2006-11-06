@@ -37,54 +37,55 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 @implementation PKPreferencePane
 
 /** <init /> */
--(id)	initWithBundle: (NSBundle*) bundle
+- (id) initWithBundle: (NSBundle*) bundle
 {
-	self = [super init];
-	
-	_bundle = [bundle retain];
-	
-	return self;
+  self = [self init];
+  ASSIGN(_bundle, bundle);
+  return self;
 }
 
--(void)	dealloc
+- (void) dealloc
 {
-	[_bundle release];
-	[_topLevelObjects makeObjectsPerformSelector: @selector(release)];
-	[_topLevelObjects release];
+  DESTROY(_bundle);
+  [_topLevelObjects makeObjectsPerformSelector: @selector(release)];
+  [_topLevelObjects release];
 	
-	[super dealloc];
+  [super dealloc];
 }
 
 /** <p>Returns the <em>bundle instance</em> which the preference pane 
     stored.</p> */
--(NSBundle*) bundle
+- (NSBundle *) bundle
 {
-	return _bundle;
+  return _bundle;
 }
 
 /** <p>Loads preference pane's view by loading the nib file which contains it.
     </p>
     <p>Related nib file is known by -mainNibName.</p> */
--(NSView*) loadMainView
+- (NSView *) loadMainView
 {
-	// NOTE: Paranoid check which eliminates the possibility to reload the nib
-    // when the mainView is possibly still in use.
-    if ([self mainView] != nil)
-        return nil;
+  // NOTE: Paranoid check which eliminates the possibility to reload the nib
+  // when the mainView is possibly still in use.
+  if ([self mainView] != nil)
+    return nil;
     
-    _topLevelObjects = [[NSMutableArray alloc] init];
-	NSDictionary*	ent = [NSDictionary dictionaryWithObjectsAndKeys:
-							self, @"NSOwner",
-							_topLevelObjects, @"NSTopLevelObjects",
-							nil];
+  _topLevelObjects = [[NSMutableArray alloc] init];
+  NSDictionary* ent = [NSDictionary dictionaryWithObjectsAndKeys:
+			self, @"NSOwner",
+			_topLevelObjects, @"NSTopLevelObjects",
+			nil];
 
-	if( ![_bundle loadNibFile: [self mainNibName] externalNameTable: ent withZone: [self zone]] )
-		return nil;
+  if ( ![_bundle loadNibFile: [self mainNibName] externalNameTable: ent 
+                   withZone: [self zone]] )
+  {
+    return nil;
+  }
 	
-	[self assignMainView];
-	[self mainViewDidLoad];
+  [self assignMainView];
+  [self mainViewDidLoad];
 	
-	return _mainView;
+  return _mainView;
 }
 
 /** <p>Assigns the main view loaded with -loadMainView.</p>
@@ -96,34 +97,34 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
     assignement is done, <code>_window</code> is released and sets to 
     nil. Finally this method returns -mainView if no 
     errors occured, otherwise nil.</p> */
--(NSView *)	assignMainView
+- (NSView *) assignMainView
 {
-	[self setMainView: [_window contentView]];
-	[_window release];
-	_window = nil;
+  [self setMainView: [_window contentView]];
+  [_window release];
+  _window = nil;
 	
-	return [self mainView];
+  return [self mainView];
 }
 
 /** <p>Returns the nib name advertised as <em>main</em> in enclosing bundle's 
     property list.</p>
     <p>Related nib file is known by mainNibName.</p> */
--(NSString*)	mainNibName
+- (NSString *) mainNibName
 {
-	return [[_bundle infoDictionary] objectForKey: @"NSMainNibFile"];
+  return [[_bundle infoDictionary] objectForKey: @"NSMainNibFile"];
 }
 
 /** <override-subclass /> */
--(void)	willSelect		{}
+- (void) willSelect {}
 
 /** <override-subclass /> */
--(void)	didSelect		{}
+- (void) didSelect {}
 
 /** <override-subclass /> */
--(void)	willUnselect	{}
+- (void) willUnselect {}
 
 /** <override-subclass /> */
--(void)	didUnselect		{}
+- (void) didUnselect {}
 
 /** <override-subclass />
     <p>Notifies the preference pane that everything is set up and ready to be 
@@ -132,7 +133,7 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
     view is correctly set. <em>By default this method does nothing.</em></p>
     <p><em>Override this method to have extra preference pane view set up according to 
     its stored settings.</em></p> */
--(void)	mainViewDidLoad	{}
+- (void) mainViewDidLoad {}
 
 /** <override-dummy />
     <p>Returns a value to state if the preference pane accepts to be 
@@ -142,9 +143,9 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
     request, but take note that you will have to call -replyToShouldUnselect: 
     later (when deselection is processed) if you return 
     <code>NSUnselectLater</code>.</p> */
--(NSPreferencePaneUnselectReply) shouldUnselect
+- (NSPreferencePaneUnselectReply) shouldUnselect
 {
-	return NSUnselectNow;
+  return NSUnselectNow;
 }
 
 /** <override-never />
@@ -152,72 +153,68 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
     <p>Take care to invoke this method yourself when you have overriden 
     -shouldUnselect to return <code>NSUnselectLater</code> (it
     implies you know when the preference should be unselected).</p> */
--(void)	replyToShouldUnselect: (BOOL)shouldUnselect
+- (void) replyToShouldUnselect: (BOOL) shouldUnselect
 {
-	if( shouldUnselect )
-		[_owner updateUIForPreferencePane: nil];
+  if ( shouldUnselect )
+    [_owner updateUIForPreferencePane: nil];
 }
 
 /** <p>Sets the <em>preference pane view</em> which is presented to the user.</p>
     <p>Take note, you should avoid to call this method in your code unless you
     have already overriden -loadMainView and 
     -assignMainView.</p> */
--(void) setMainView: (NSView*)view
+-(void) setMainView: (NSView *) view
 {
-	[_mainView autorelease];
-	_mainView = [view retain];
+  ASSIGN(_mainView, view);
 }
 
 /** <p>Returns the <em>preference pane view</em> which is presented to the 
     user.</p> */
--(NSView*) mainView
+- (NSView *) mainView
 {
-	return _mainView;
+  return _mainView;
 }
 
 /** <p>Returns the view which initially owns the focus in the responder chain 
     when the preference pane view is loaded.</p> */
--(NSView*) initialKeyView
+- (NSView *) initialKeyView
 {
-	return _initialKeyView;
+  return _initialKeyView;
 }
 
 /** <p>Sets the view which initially owns the focus in the responder chain when 
     the preference pane view is loaded.</p> */
--(void) setInitialKeyView: (NSView*)view
+- (void) setInitialKeyView: (NSView *) view
 {
-	[_initialKeyView autorelease];
-	_initialKeyView = [view retain];
+  ASSIGN(_initialKeyView, view);
 }
 
-/** <p>Returns the view which starts the responder chain bound to the preference 
-    pane view.</p> */
--(NSView*) firstKeyView
+/** <p>Returns the view which starts the responder chain bound to the 
+    preference pane view.</p> */
+- (NSView *) firstKeyView
 {
-	return _firstKeyView;
+  return _firstKeyView;
 }
 
 /** <p>Sets the view which starts the responder chain bound to the preference 
     pane view.</p> */
--(void) setFirstKeyView: (NSView*)view
+- (void) setFirstKeyView: (NSView *) view
 {
-	[_firstKeyView autorelease];
-	_firstKeyView = [view retain];
+  ASSIGN(_firstKeyView, view);
 }
 
 /** <p>Returns the view which ends the responder chain bound to the preference 
     pane view.</p> */
--(NSView*) lastKeyView
+- (NSView *) lastKeyView
 {
-	return _lastKeyView;
+  return _lastKeyView;
 }
 
 /** <p>Sets the view which ends the responder chain bound to the preference pane
     view.</p> */
--(void) setLastKeyView: (NSView*)view
+- (void) setLastKeyView: (NSView *) view
 {
-	[_lastKeyView autorelease];
-	_lastKeyView = [view retain];
+  ASSIGN(_lastKeyView, view);
 }
 
 /** <p>Returns YES when text fields are asked to resign their responder status
@@ -226,28 +223,28 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
     status (to have their content saved).</p> 
     <p>By default this method returns YES, but it is possible
     to override it to alter the returned value.</p> */
--(BOOL) autoSaveTextFields
+- (BOOL) autoSaveTextFields
 {
-	return YES;
+  return YES;
 }
 
 /** <p>Returns YES when the receiver is the currently selected
     preference pane, otherwise returns NO.</p> */
--(BOOL) isSelected
+- (BOOL) isSelected
 {
-	return( [_owner selectedPreferencePane] == self );
+  return( [_owner selectedPreferencePane] == self );
 }
 
 /** <p><em>Not implemented.</em></p> */
 -(void) updateHelpMenuWithArray:(NSArray *)inArrayOfMenuItems
 {
-	NSLog(@"PKPreferencePane: updateHelpMenuWithArray: not yet implemented.");
+  NSLog(@"PKPreferencePane: updateHelpMenuWithArray: not yet implemented.");
 }
 
 /* Private */
 -(void)	setOwner: (id <PKPreferencePaneOwner>)owner
 {
-	_owner = owner;
+  _owner = owner;
 }
 
 @end
