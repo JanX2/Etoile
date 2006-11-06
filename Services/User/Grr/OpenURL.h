@@ -1,8 +1,10 @@
 /*
    Project: RSSReader
 
+   Copyright (C) 2006 Yen-Ju Chen 
    Copyright (C) 2005, 2006 Guenther Noack 
 
+   Author: Yen-Ju Chen
    Author: Guenther Noack,,,
 
    Created: 2005-03-26 08:52:28 +0100 by guenther
@@ -22,12 +24,6 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 */
 
-// -*-objc-*-
-
-#ifndef _OPENURL_H_
-#define _OPENURL_H_
-
-#import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 
 @interface NSWorkspace (OpenURL)
@@ -35,6 +31,4 @@
 -(BOOL) openURL: (NSURL*) url;
 
 @end
-
-#endif // _OPENURL_H_
 

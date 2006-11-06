@@ -397,6 +397,21 @@ static Controller *sharedInstance;
   } 
 }
 
+- (void) enterKeyDownInTableView: (NSTableView *) tableView
+{
+  int index = [tableView selectedRow];
+  if (index > -1) {
+    id item = [articleCollectionView itemAtIndex: index];
+    if ([item isKindOfClass: [CKItem class]]) {
+      NSString *urlString = [item valueForProperty: kArticleURLProperty];
+      if (urlString) {
+        NSURL *url = [NSURL URLWithString: urlString];
+        [[NSWorkspace sharedWorkspace] openURL: url];
+      }
+    }
+  }
+}
+
 @end
 
 @implementation Controller (Private)

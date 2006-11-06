@@ -1,8 +1,10 @@
 /*
    Project: RSSReader
 
+   Copyright (C) 2006 Yen-Ju Chen 
    Copyright (C) 2005 Guenther Noack 
 
+   Author: Yen-Ju Chen
    Author: Guenther Noack,,,
 
    Created: 2005-03-26 08:52:28 +0100 by guenther
@@ -23,7 +25,7 @@
 */
 
 #import "OpenURL.h"
-#import "ErrorLogController.h"
+//#import "ErrorLogController.h"
 
 @implementation NSWorkspace (OpenURL)
 
@@ -68,10 +70,12 @@
     }
   NS_HANDLER
     {
+#if 0
       [[ErrorLogController instance]
 	logString: [NSString stringWithFormat: @"Cannot execute browser %@, "
 			     @"please check the preferences!\n", url]];
       
+#endif
       result = NO;
     }
   NS_ENDHANDLER;
@@ -80,3 +84,4 @@
 }
 
 @end
+

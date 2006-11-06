@@ -27,6 +27,8 @@
 #import "ContentTextView.h"
 #import "Global.h"
 #import "GNUstep.h"
+#import "CodeParser.h"
+#import "RenderHandler.h"
 
 @implementation ContentTextView
 
@@ -47,8 +49,15 @@
   NSString *url = [item valueForProperty: kArticleURLProperty];
   NSString *description = [item valueForProperty: kArticleDescriptionProperty];
   
-  NSString *content = [NSString stringWithFormat: @"%@\n%@\n\n%@",
-              headline, url, description];
+  NSString *content = [NSString stringWithFormat: @"%@\n%@\n\n",
+              headline, url];
+//  NSLog(@"%@", description);
+
+  RenderHandler *handler = [[RenderHandler alloc] init];
+  CodeParser *parser = [[CodeParser alloc] initWithCodeHandler: handler
+                                           withString: description];
+  [parser parse];
+  NSAttributedString *as = [handler renderedString];
   
   headlineStartPos = 0;
   headlineLength = [headline length];
@@ -65,6 +74,8 @@
   
   [self setFont: [NSFont boldSystemFontOfSize: [NSFont smallSystemFontSize]]
           range: NSMakeRange(urlStartPos, urlLength)];
+
+  [[self textStorage] appendAttributedString: as];
   
   [self setNeedsDisplay: YES];
 }

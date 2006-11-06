@@ -7,6 +7,10 @@ Grr_APPLICATION_ICON = rssreader.png
 Grr_STANDARD_INSTALL = yes
 
 Grr_OBJC_FILES = \
+	CKTableView.m \
+	TagHandler.m \
+	CodeParser.m \
+	RenderHandler.m \
 	FeedBookmarkView.m \
 	Global.m \
 	FetchingProgressManager.m \
@@ -18,6 +22,11 @@ Grr_OBJC_FILES = \
 	PreferenceController.m \
 	Controller.m \
 	main.m 
+
+ifeq ($(FOUNDATION_LIB), apple)
+else
+Grr_OBJC_FILES += OpenURL.m
+endif
 
 Grr_GUI_LIBS += -lBookmarkKit
 
