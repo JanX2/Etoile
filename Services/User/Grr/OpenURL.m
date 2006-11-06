@@ -27,6 +27,9 @@
 #import "OpenURL.h"
 //#import "ErrorLogController.h"
 
+/* Cache browser */
+static NSString *browserPath;
+
 @implementation NSWorkspace (OpenURL)
 
 /*
@@ -37,61 +40,60 @@
   BOOL result;
   
   NS_DURING
+  {
+    if ([url isFileURL])
     {
-      if ([url isFileURL])
-	{
-	  result = [self openFile: [url path]];
-	}
-      else if ([[url scheme] isEqualToString: @"http"] ||
-	       [[url scheme] isEqualToString: @"https"])
-	{
-	  NSString* browserPath;
-	  
-	  browserPath =
-	    [[NSUserDefaults standardUserDefaults] stringForKey: @"WebBrowser"];
-
-          if (browserPath == nil) {
-            /* Try firefox */
-            NSFileManager *fm = [NSFileManager defaultManager];
-            NSProcessInfo *pi = [NSProcessInfo processInfo];
-            NSEnumerator *e = [[[[pi environment] objectForKey: @"PATH"] componentsSeparatedByString: @":"] objectEnumerator];
-            NSString *p;
-            while ((p = [e nextObject])) {
-              p = [p stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
-              p = [p stringByAppendingPathComponent: @"firefox"];
-              if ([fm fileExistsAtPath: p]) {
-                browserPath = p;
-                break;
-              }
-            }
-          }
-	  
-	  if (browserPath != nil)
-	  {
-            [NSTask launchedTaskWithLaunchPath: browserPath
-		arguments: [NSArray arrayWithObject: [url absoluteString]]];
-            result = YES;
-          }
-	  else
-	    {
-	      result = NO;
-	    }
-	}
-      else
-	{
-	  result = NO;
-	}
+      result = [self openFile: [url path]];
     }
-  NS_HANDLER
+    else if ([[url scheme] isEqualToString: @"http"] ||
+             [[url scheme] isEqualToString: @"https"])
     {
+      if (browserPath == nil) {
+         ASSIGN(browserPath,
+          [[NSUserDefaults standardUserDefaults] stringForKey: @"WebBrowser"]);
+      }
+
+      if (browserPath == nil) {
+        /* Try firefox */
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSProcessInfo *pi = [NSProcessInfo processInfo];
+        NSEnumerator *e = [[[[pi environment] objectForKey: @"PATH"] 
+                     componentsSeparatedByString: @":"] objectEnumerator];
+        NSString *p;
+        while ((p = [e nextObject])) {
+          p = [p stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
+          p = [p stringByAppendingPathComponent: @"firefox"];
+          if ([fm fileExistsAtPath: p]) {
+            ASSIGN(browserPath, p);
+            NSLog(@"Found browser %@", browserPath);
+            break;
+          }
+        }
+      }
+	  
+      if (browserPath != nil) {
+        [NSTask launchedTaskWithLaunchPath: browserPath
+		arguments: [NSArray arrayWithObject: [url absoluteString]]];
+        result = YES;
+      } else {
+	result = NO;
+      }
+    }
+    else
+    {
+      result = NO;
+    }
+  }
+  NS_HANDLER
+  {
 #if 0
       [[ErrorLogController instance]
 	logString: [NSString stringWithFormat: @"Cannot execute browser %@, "
 			     @"please check the preferences!\n", url]];
       
 #endif
-      result = NO;
-    }
+    result = NO;
+  }
   NS_ENDHANDLER;
   
   return result;
