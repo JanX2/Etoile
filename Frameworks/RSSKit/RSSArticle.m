@@ -20,21 +20,25 @@
 
 #import "RSSLinks.h"
 #import "RSSArticle.h"
+#import "RSSArticle+Storage.h"
+
 #import "GNUstep.h"
 
+
+// change notification
+NSString* RSSArticleChangedNotification = @"RSSArticleChangedNotification";
 
 
 
 @implementation RSSArticle
 
 
-// methods to come... FIXME
 - (id) init
 {
   return [self initWithHeadline: @"no headline"
 	       url: @"no URL"
 	       description: @"no description"
-	       time: 0 ];
+	       date: [NSDate new] ];
 }
 
 
@@ -55,20 +59,6 @@
 }
 
 
-- (id) initWithHeadline: (NSString*) myHeadline
-	      url: (NSString*) myUrl
-      description: (NSString*) myDescription
-	     time: (unsigned int) myTime
-{
-  return
-    [self initWithHeadline: myHeadline
-	  url: myUrl
-	  description: myDescription
-	  date: [NSDate dateWithTimeIntervalSince1970: ((double)myTime)]
-     ];
-}
-
-
 - (void) dealloc
 {
   RELEASE(headline);
@@ -79,59 +69,6 @@
   
   [super dealloc];
 }
-
-
-#define ENCODING_VERSION 1
-
-- (id) initWithCoder: (NSCoder*)coder
-{
-  if ((self = [super init]))
-  {
-    unsigned int version = 0;
-    
-    [coder decodeValueOfObjCType: @encode(unsigned int) at: &version];
-    
-    switch (version)
-      {
-      case 0:
-	ASSIGN(date, [coder decodeObject]);
-	ASSIGN(headline, [coder decodeObject]);
-	ASSIGN(url, [coder decodeObject]);
-	ASSIGN(description, [coder decodeObject]);
-	break;
-	
-      case 1:
-	ASSIGN(date, [coder decodeObject]);
-	ASSIGN(headline, [coder decodeObject]);
-	ASSIGN(url, [coder decodeObject]);
-	ASSIGN(description, [coder decodeObject]);
-	[self setLinks: [coder decodeObject]];
-	break;
-	
-      default:
-	NSLog(@"FATAL: Unknown RSSArticle version %d, please upgrade!",
-	      version);
-	break;
-      }
-  }
-  
-  return self;
-}
-
-
-- (void) encodeWithCoder: (NSCoder*)coder
-{
-  unsigned int version = ENCODING_VERSION;
-  
-  [coder encodeValueOfObjCType: @encode(unsigned int) at: &version];
-  [coder encodeObject: date];
-  [coder encodeObject: headline];
-  [coder encodeObject: url];
-  [coder encodeObject: description];
-  [coder encodeObject: links];
-}
-
-
 
 - (NSString *) headline
 {
@@ -158,13 +95,20 @@
   return date;
 }
 
-- (void) setFeed:(RSSFeed*)aFeed
+- (void) setFeed:(id<RSSMutableFeed>)aFeed
 {
   // Feed is NON-RETAINED!
   feed = aFeed;
+  [self notifyChange];
 }
 
-- (RSSFeed *) feed
+-(void)notifyChange
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName: RSSArticleChangedNotification
+                                                        object: self];
+}
+
+- (id<RSSFeed>) feed
 {
   // Feed is NON-RETAINED!
   return feed;
@@ -198,6 +142,8 @@
   for (i=0; i<[links count]; i++) {
       [self _checkLinkForEnclosure: [links objectAtIndex: i]];
   }
+  
+  [self notifyChange];
 }
 
 - (void) addLink: (NSURL *) anURL
@@ -208,6 +154,8 @@
   [links addObject: anURL];
   
   [self _checkLinkForEnclosure: anURL];
+  
+  [self notifyChange];
 }
 
 - (NSArray *) links

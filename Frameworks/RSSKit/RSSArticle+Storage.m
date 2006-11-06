@@ -19,40 +19,11 @@
  */
 
 #import "RSSLinks.h"
+#import "RSSFactory.h"
 #import "RSSArticle+Storage.h"
 #import <Foundation/Foundation.h>
 #import "GNUstep.h"
 
-NSString* RSSArticleStorageDirectory = nil;
-
-/**
- * Converts a string to a string that's usable as a file system name. This is done
- * by removing several forbidden characters, only leaving the allowed ones. (A helper method)
- */
-NSString* stringToFSString( NSString* aString )
-{
-    NSScanner* scanner = [NSScanner scannerWithString: aString];
-    NSMutableString* string = [NSMutableString new];
-    NSCharacterSet* allowedSet = [NSCharacterSet alphanumericCharacterSet];
-    
-    do {
-        // discard any unknown characters
-        if ([scanner scanUpToCharactersFromSet: allowedSet intoString: NULL] == YES) {
-            [string appendString: @"_"];
-        }
-        
-        // scan known characters...
-        NSString* nextPart;
-        BOOL success = [scanner scanCharactersFromSet: allowedSet intoString: &nextPart];
-        
-        // ...and add them to the string
-        if (success == YES) {
-            [string appendString: nextPart];
-        }
-    } while ([scanner isAtEnd] == NO);
-    
-    return [NSString stringWithString: string];
-}
 
 
 /*
@@ -102,19 +73,29 @@ NSString* stringToFSString( NSString* aString )
 /**
  * Returns the article with the URL anURL from the storage
  */
-+(RSSArticle*)articleFromStorageWithURL: (NSString*) anURL
++(id<RSSArticle>)articleFromStorageWithURL: (NSString*) anURL
 {
-    return [[[self alloc] initFromStorageWithURL: anURL] autorelease];
+    return [[RSSFactory sharedFactory] articleFromDictionary:
+                [NSDictionary dictionaryWithContentsOfFile:
+                       [[RSSFactory sharedFactory] storagePathForURL: anURL]]];
 }
 
 /**
  * Initialises the article with the URL anURL from the storage.
+ * 
+ * @deprecated
+ * 
+ * Calling this method is generally a bad idea, since
+ * it doesn't allow you to decide on load-time which
+ * article is going to be created. Better use one of the
+ * RSSFactory methods for article unarchiving.
  */
 -(id) initFromStorageWithURL: (NSString*) anURL
 {
+    NSDebugLog(@"Calling -initFromStorageWithURL on a concrete RSSArticle class instance");
     return [self initWithDictionary:
              [NSDictionary dictionaryWithContentsOfFile:
-               [RSSArticle storagePathForURL: anURL]]];
+               [[RSSFactory sharedFactory] storagePathForURL: anURL]]];
 }
 
 /**
@@ -145,52 +126,17 @@ NSString* stringToFSString( NSString* aString )
     return self;
 }
 
+-(NSString*) storagePath
+{
+    return [[RSSFactory sharedFactory] storagePathForURL: url];
+}
+
 /**
  * Stores the article (usually as a file in the Reader folder).
  */
 -(BOOL) store
 {
     return [[self plistDictionary] writeToFile: [self storagePath] atomically: YES];
-}
-
-/**
- * Returns the file path where an article with the anURL URL would be stored to.
- */
-+(NSString*) storagePathForURL: (NSString*) anURL
-{
-    if (RSSArticleStorageDirectory == nil) {
-        ASSIGN(RSSArticleStorageDirectory, [@"~/GNUstep/Library/RSSArticles" stringByExpandingTildeInPath]);
-        
-        NSFileManager* manager = [NSFileManager defaultManager];
-        
-        BOOL isDir, exists;
-        exists = [manager fileExistsAtPath: RSSArticleStorageDirectory isDirectory: &isDir];
-        
-        if (exists) {
-            if (isDir == NO) {
-                [[NSException exceptionWithName: @"RSSArticleStorageDirectoryIsNotADirectory"
-                                         reason: @"The storage directory for RSS articles is not a directory."
-                                       userInfo: nil] raise];
-            }
-        } else {
-            if ([manager createDirectoryAtPath: RSSArticleStorageDirectory
-                                    attributes: nil] == NO) {
-                [[NSException exceptionWithName: @"RSSArticleStorageDirectoryCreationFailed"
-                                         reason: @"Creation of the storage directory for RSS Articles failed."
-                                       userInfo: nil] raise];
-            }
-        }
-    }
-    
-    return [NSString stringWithFormat: @"%@/%@.rssarticle", RSSArticleStorageDirectory, stringToFSString(anURL)];
-}
-
-/**
- * Returns the file path where the article would be (is) stored to.
- */
--(NSString*) storagePath
-{
-    return [RSSArticle storagePathForURL: url];
 }
 
 /**

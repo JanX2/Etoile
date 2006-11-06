@@ -20,6 +20,7 @@
 
 
 #import "RSSFeed+Fetching.h"
+#import "RSSFeedProtocol.h"
 #import "DublinCore.h"
 #import "GNUstep.h"
 
@@ -35,6 +36,7 @@
 #import "RSS20Parser.h"
 
 NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
+NSString *const RSSFeedWillFetchNotification = @"RSSFeedWillFetchNotification";
 
 #define URI_ATOM10              @"http://www.w3.org/2005/Atom"
 #define URI_PURL_CONTENT        @"http://purl.org/rss/1.0/modules/content/"
@@ -53,6 +55,8 @@ NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
 -(enum RSSFeedError) parseATOM10WithRootNode: (XMLNode*) root;
 -(enum RSSFeedError) parseRSS10WithRootNode: (XMLNode*) root;
 -(enum RSSFeedError) parseRSS20WithRootNode: (XMLNode*) root;
+
+- (enum RSSFeedError) setError: (enum RSSFeedError) err;
 @end
 
 
@@ -82,8 +86,6 @@ NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
 
 - (void) URLResourceDidFinishLoading: (NSURL *) sender
 {
-  NSLog(@"URL %@ did finish loading", sender);
-   
   [self fetchWithData: cacheData];
   status = RSSFeedIsIdle;
   
@@ -237,6 +239,14 @@ NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
 }
 
 
+
+// sets the error for the feed (see RSSFeed.h)
+-(enum RSSFeedError) setError: (enum RSSFeedError) err
+{
+  lastError = err;
+  return err;
+}
+
 @end
 
 
@@ -255,13 +265,6 @@ NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
   return lastError;
 }
 
-// sets the error for the feed (see RSSFeed.h)
--(enum RSSFeedError) setError: (enum RSSFeedError) err
-{
-  lastError = err;
-  return err;
-}
-
 /**
  * Fetches the feed from its feed URL, parses it and adds the found
  * articles to the list of articles contained in this feed (if they
@@ -275,6 +278,8 @@ NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
    
    // no errors at first :-)
    [self setError: RSSFeedErrorNoError];
+   [[NSNotificationCenter defaultCenter] postNotificationName: RSSFeedWillFetchNotification
+                                                       object: self];
    
    data = [self fetchDataFromURL: feedURL];
    
@@ -283,6 +288,7 @@ NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
    return [self fetchWithData: data];
 }
 
+
 - (void) fetchInBackground
 {
   if (feedURL == nil) 
@@ -290,15 +296,23 @@ NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
     [self setError: RSSFeedErrorMalformedURL];
     return;
   }
+  
   if (status == RSSFeedIsFetching)
   {
     // FIXME: need an error for repeated loading.
+    // GN: Be careful. When you assign an error to that feed while it
+    //     is actually already being fetched in the background, the
+    //     thread that fetches the data in the background will probably
+    //     set the feed's error code, too. You will never know which
+    //     fetching process set the error message.
     return;
   }
-
+  
   status = RSSFeedIsFetching;
-  // no errors at first :-)
   [self setError: RSSFeedErrorNoError];
+  [[NSNotificationCenter defaultCenter] postNotificationName: RSSFeedWillFetchNotification
+                                                      object: self];
+  
   [feedURL loadResourceDataNotifyingClient: self usingCache: NO];
 }
 

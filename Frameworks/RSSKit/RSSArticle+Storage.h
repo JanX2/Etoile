@@ -26,7 +26,7 @@
 /**
  * Returns the article with the URL anURL from the storage
  */
-+(RSSArticle*)articleFromStorageWithURL: (NSString*) anURL;
++(id<RSSArticle>)articleFromStorageWithURL: (NSString*) anURL;
 
 /**
  * Initialises the article with the URL anURL from the storage.
@@ -42,16 +42,6 @@
  * Stores the article (usually as a file in the Reader folder).
  */
 -(BOOL) store;
-
-/**
- * Returns the file path where an article with the anURL URL would be stored to.
- */
-+(NSString*) storagePathForURL: (NSString*) anURL;
-
-/**
- * Returns the file path where the article would be (is) stored to.
- */
--(NSString*) storagePath;
 
 /**
  * Returns the dictionary that stores the information for this article object.

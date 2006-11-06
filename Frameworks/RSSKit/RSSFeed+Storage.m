@@ -84,13 +84,12 @@
         
         lastError = RSSFeedErrorNoError;
         status = RSSFeedIsIdle;
-        ASSIGN(lock, [NSRecursiveLock new]);
         
         NSArray* articleIndex = [dict objectForKey: @"articleIndex"];
         NSMutableArray* mutArticles = [NSMutableArray new];
         int i;
         for (i=0; i<[articleIndex count]; i++) {
-            NSString* articleURL = [[articleIndex objectAtIndex: i] objectForKey: @"URL"];
+            NSString* articleURL = [(NSDictionary*)[articleIndex objectAtIndex: i] objectForKey: @"URL"];
             id<RSSMutableArticle> article = [articleClass articleFromStorageWithURL: articleURL];
             [article setFeed: self]; // non-retained
             [mutArticles addObject: article];

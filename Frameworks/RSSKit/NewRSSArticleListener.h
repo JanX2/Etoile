@@ -28,7 +28,7 @@
 /**
  * This method gets called when a new article has been found.
  */
--(void) newArticleFound: (RSSArticle*) anArticle;
+-(void) newArticleFound: (id<RSSArticle>) anArticle;
 
 /**
  * Returns the class of the article objects. This needs to be a subclass

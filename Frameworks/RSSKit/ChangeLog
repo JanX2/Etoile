@@ -1,4 +1,18 @@
 
+Nov-05-2006  Guenther Noack
+	* Removed some deprecated methods
+	* Dropped NSCoding serialization methods (not used by anyone
+	  at the moment and they were broken anyway since the intro-
+	  duction of the RSSLink class). Please use the methods in
+	  the Storage categories instead. 
+	* Added Factory class
+
+Nov-04-2006  Guenther Noack
+	* Removed lock from RSSFeed class. (The lock is left from
+	  a first try with multithreading and never really did what
+	  it was supposed to do.)
+	* Put RSSFeed and RSSArticle protocols in seperate files.
+ 
 Nov-03-2006  Yen-Ju Chen
 	* Compile on Cocoa.
 

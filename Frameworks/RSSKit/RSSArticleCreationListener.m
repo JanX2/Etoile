@@ -23,6 +23,7 @@
 #import "NewRSSArticleListener.h"
 #import "RSSArticleCreationListener.h"
 #import "GNUstep.h"
+#import "RSSFactory.h"
 
 #define REL_KEY @"rel"
 #define TYPE_KEY @"type"
@@ -68,7 +69,7 @@
  */
 - (void) commitArticle
 {
-  RSSArticle* article = nil;
+  id<RSSArticle> article = nil;
   NSDate* articleDate = nil;
   NSString* desc = nil;
   
@@ -105,16 +106,23 @@
   } 
   
   // create
-  article = [[[delegate articleClass] alloc]
-	      initWithHeadline: headline
-	      url: url
-	      description: desc
-	      date: articleDate];
+  article = [[RSSFactory sharedFactory] articleWithHeadline: headline
+	                                                  URL: url
+	                                              content: desc
+	                                                 date: articleDate];
+  // FIXME: This article creation was retained before, but it seems okay like that?
+  // Was it a memory leak or am I having memory management problems now?
   
+  NSAssert1(
+      [article conformsToProtocol: @protocol(RSSMutableArticle)],
+      @"Article %@ must be mutable for proper creation!", article
+  );
+  
+  id<RSSMutableArticle> mutArt = (id<RSSMutableArticle>) article;
   // add links
   if ([links count] > 0)
     {
-      [article setLinks: links];
+      [mutArt setLinks: links];
     }
   
   if (delegate != nil)

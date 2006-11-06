@@ -31,13 +31,16 @@ AtomParser.m \
 Atom03Parser.m \
 Atom10Parser.m \
 RSSArticleCreationListener.m \
+RSSFactory.m \
 RSSLinks.m 
 
 
 libRSSKit_HEADER_FILES = \
 RSSArticle.h \
 RSSArticle+Storage.h \
+RSSArticleProtocol.h \
 RSSFeed.h \
+RSSFeedProtocol.h \
 RSSFeed+Fetching.h \
 RSSFeed+Storage.h \
 DublinCore.h \
@@ -51,6 +54,7 @@ Atom03Parser.h \
 Atom10Parser.h \
 RSSArticleCreationListener.h \
 NewRSSArticleListener.h \
+RSSFactory.h \
 RSSLinks.h 
 
 

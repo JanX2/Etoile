@@ -31,19 +31,14 @@
 
 @implementation RSSFeed (Private)
 
-
-
 -(BOOL) _submitArticles: (NSArray*) newArticles
 {
   NSMutableArray* result;
   NSArray* immutableResult;
   int i;
   
-  [lock lock];
-  
   if (newArticles == nil)
     {
-      [lock unlock];
       return NO;
     }
   
@@ -90,14 +85,11 @@
   RELEASE(articles);
   articles = immutableResult; // retain count is already 1
   
-  [lock unlock];
-  
   return YES;
 }
 @end
 
 @implementation RSSFeed
-
 
 +feed
 {
@@ -134,7 +126,6 @@
   feedName = nil;
   articleClass = [RSSArticle class];
   
-  lock = [[NSRecursiveLock alloc] init];
   status = RSSFeedIsIdle;
   
   return self;
@@ -152,113 +143,6 @@
   return [self feedName];
 }
 
-
-
-
-// New encoding numbers start with 50, every value below
-// 50 must be in the old encoding format and thus represent
-// the error number. (I didn't think of those versions yet,
-// at that time... :-/)
-
-#define NEW_ENCODING_NUMBER    50
-#define OLD_ENCODING(encoding) ((encoding)<NEW_ENCODING_NUMBER)
-
-#define ENCODING_VERSION_05DEVEL NEW_ENCODING_NUMBER
-
-
-
--(id)initWithCoder: (NSCoder*)coder
-{
-  int i;
-  int encodingVersion;
-  
-#ifdef DEBUG
-  NSLog(@"started decoding RSSFeed");
-#endif
-  
-  if ((self = [self init]))
-    {
-      RELEASE(articles);
-      RELEASE(feedName);
-      
-      // It's really ugly to have this standing here, but there's
-      // no other way to do it without breaking backwards compatibility.
-      // The format will definitely always begin with a article array.
-      articles = RETAIN([coder decodeObject]);
-      
-      [coder decodeValueOfObjCType:@encode(int) at:&encodingVersion];
-      
-      switch (encodingVersion)
-	{
-	case ENCODING_VERSION_05DEVEL:
-	  // This is the format introduced with the 0.5 development
-	  // version on May 27, 2005.
-	  [coder decodeValueOfObjCType:@encode(int) at:&lastError];
-	  [coder decodeValueOfObjCType:@encode(BOOL)
-		 at:&clearFeedBeforeFetching];
-	  feedName = RETAIN([coder decodeObject]);
-	  feedURL = RETAIN([coder decodeObject]);
-	  lastRetrieval = RETAIN([coder decodeObject]);
-	  break;
-	  
-	default:
-	  // This is the original format. I didn't think of using version
-	  // numbers back then. Then it had the last Error value at that
-	  // place. Now we already have read this value.
-	  // It's in encodingVersion. :-/
-	  // [coder decodeValueOfObjCType:@encode(int) at:&lastError];
-	  lastError = encodingVersion;
-	  [coder decodeValueOfObjCType:@encode(BOOL)
-		 at:&clearFeedBeforeFetching];
-	  feedName = RETAIN([coder decodeObject]);
-	  feedURL = RETAIN([coder decodeObject]);
-	  break;
-	}
-      
-      // finally, set the feed attribute of the articles to 'self'
-      for (i=0; i<[articles count]; i++)
-	{
-	  RSSArticle* article;
-	  
-	  article = [articles objectAtIndex: i];
-	  
-	  [article setFeed: self];
-	}
-    }
-  
-  lock = [[NSRecursiveLock alloc] init];
-  status = RSSFeedIsIdle;
-  
-#ifdef DEBUG
-  NSLog(@"finished decoding RSSFeed (rc=%d)", [self retainCount]);
-#endif
-  
-  return self;
-}
-
--(void)encodeWithCoder: (NSCoder*)coder
-{
-  int encodingVersion = ENCODING_VERSION_05DEVEL;
-  
-#ifdef DEBUG
-  NSLog(@"started encoding RSSFeed");
-#endif
-  
-  // This is the format introduced with the 0.5 development version
-  // on May 27, 2005.
-  [coder encodeObject: articles];
-  [coder encodeValueOfObjCType: @encode(int) at:&encodingVersion];
-  [coder encodeValueOfObjCType: @encode(int) at:&lastError];
-  [coder encodeValueOfObjCType: @encode(BOOL)
-	 at:&clearFeedBeforeFetching];
-  [coder encodeObject: feedName];
-  [coder encodeObject: feedURL];
-  [coder encodeObject: lastRetrieval];
-  
-#ifdef DEBUG
-  NSLog(@"finished encoding RSSFeed");
-#endif
-}
 
 
 // access to the status
@@ -289,7 +173,7 @@
 /**
  * Implementation of the NewRSSArticleListener interface.
  */
--(void) newArticleFound: (RSSArticle*) anArticle
+-(void) newArticleFound: (id<RSSArticle>) anArticle
 {
   // XXX: inefficient solution!
   [self _submitArticles:[NSArray arrayWithObjects: anArticle, NULL]];
@@ -308,9 +192,7 @@
   NSLog(@"%@ -articleEnumerator", self);
 #endif
   
-  [lock lock];
   result = AUTORELEASE(RETAIN([articles objectEnumerator]));
-  [lock unlock];
   return result;
 }
 
@@ -347,8 +229,6 @@
   NSLog(@"%@ -removeArticle: %@", self, article);
 #endif
   
-  [lock lock];
-  
   result = [[NSMutableArray alloc] initWithArray: articles];
   [result removeObject: article];
   immutableResult = [[NSArray alloc] initWithArray: result];
@@ -356,8 +236,6 @@
   RELEASE(result);
   articles = immutableResult;
   // immutableResult has a retain count of 1
-  
-  [lock unlock];
 }
 
 

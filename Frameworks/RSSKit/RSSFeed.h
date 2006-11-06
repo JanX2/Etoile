@@ -21,24 +21,12 @@
 #import <objc/objc.h>
 #import <Foundation/Foundation.h>
 
+#import "RSSFeedProtocol.h"
+
 @class RSSFeed;
 
 
 #import "RSSArticle.h"
-
-/**
- * The errors that can occur when fetching a feed.
- */
-enum RSSFeedError
-  {
-    RSSFeedErrorNoError = 0,         ///< No error occured
-    RSSFeedErrorNoFetcherError,      ///< @deprecated
-    RSSFeedErrorMalformedURL,        ///< Malformed URL
-    RSSFeedErrorDomainNotKnown,      ///< Domain not known
-    RSSFeedErrorServerNotReachable,  ///< Server not reachable
-    RSSFeedErrorDocumentNotPresent,  ///< Document not present on server
-    RSSFeedErrorMalformedRSS         ///< Malformed RSS / Parsing error
-  };
 
 /**
  * The states that the RSS feed can have.
@@ -54,58 +42,6 @@ enum RSSFeedStatus
  */
 @protocol RSSFeedDelegate;
 
-
-#warning FIXME: RSSFeed protocol is unfinished
-/**
- * The RSS feed protocol defines the way users are supposed to talk to
- * a feed.
- */
-@protocol RSSFeed <NSObject>
-// ----------------------------------------------------------------------
-// The RSSFeed's delegate
-// ----------------------------------------------------------------------
-
--(void)setDelegate: (id<RSSFeedDelegate>)aDelegate;
--(id<RSSFeedDelegate>)delegate;
-
-/**
- * @return an enumerator for the articles in this feed
- */
-- (NSEnumerator*) articleEnumerator;
-
-/**
- * Returns YES if and only if this feed is currently being fetched.
- */
-- (BOOL)isFetching;
-
-/**
- * @return The name of the feed
- */
-- (NSString*) feedName;
-
-/**
- * @return the URL where the feed can be downloaded from (as NSURL object)
- * @see NSURL
- */
-- (NSURL*) feedURL;
-
-@end
-
-@protocol RSSMutableFeed <RSSFeed>
-/**
- * Deletes an article from the feed.
- *
- * @param article The index of the article to delete.
- */
-- (void) removeArticle: (RSSArticle*) article;
-
-
-/**
- * Sets the feed name
- */
-- (void) setFeedName: (NSString*) aFeedName;
-
-@end
 
 /**
  * Objects of this class represent a RSS/ATOM feed, which is basically
@@ -158,7 +94,7 @@ enum RSSFeedStatus
  * @see RSSArticle
  * @see NSURL
  */
-@interface RSSFeed : NSObject <NSCoding>
+@interface RSSFeed : NSObject <RSSMutableFeed>
 {
 @protected
   NSDate*           lastRetrieval;
@@ -170,7 +106,6 @@ enum RSSFeedStatus
   Class             articleClass;
   
   enum RSSFeedStatus status;
-  NSRecursiveLock*  lock;
 
   NSMutableData *cacheData; // Used only when load in background.
   
@@ -202,13 +137,6 @@ enum RSSFeedStatus
 
 -(void)setDelegate: (id<RSSFeedDelegate>)aDelegate;
 -(id<RSSFeedDelegate>)delegate;
-
-// ----------------------------------------------------------------------
-// NSCoding methods
-// ----------------------------------------------------------------------
-
--(id)initWithCoder: (NSCoder*)coder;
--(void)encodeWithCoder: (NSCoder*)coder;
 
 
 // ----------------------------------------------------------------------
@@ -363,7 +291,7 @@ enum RSSFeedStatus
 /**
  * RSSFeed also implements the NewRSSArticleListener informal protocol.
  */
--(void) newArticleFound: (RSSArticle*) anArticle;
+-(void) newArticleFound: (id<RSSArticle>) anArticle;
 
 @end
 

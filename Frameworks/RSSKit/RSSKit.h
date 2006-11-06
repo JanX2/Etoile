@@ -24,4 +24,5 @@
 #import <RSSKit/RSSArticle.h>
 #import <RSSKit/RSSArticle+Storage.h>
 #import <RSSKit/RSSLinks.h>
+#import <RSSKit/RSSFactory.h>
 
