@@ -20,6 +20,7 @@
 
 #import "RSSFactory.h"
 #import "RSSArticle+Storage.h"
+#import "GNUstep.h"
 
 static id<RSSFactory> sharedFactory = nil;
 static NSString* RSSArticleStorageDirectory = nil;

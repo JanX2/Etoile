@@ -92,7 +92,9 @@
  */
 -(id) initFromStorageWithURL: (NSString*) anURL
 {
+#ifdef GNUSTEP
     NSDebugLog(@"Calling -initFromStorageWithURL on a concrete RSSArticle class instance");
+#endif
     return [self initWithDictionary:
              [NSDictionary dictionaryWithContentsOfFile:
                [[RSSFactory sharedFactory] storagePathForURL: anURL]]];

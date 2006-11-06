@@ -75,7 +75,9 @@
 
 -(NSString*) relationType
 {
+#ifdef GNUSTEP
   [self subclassResponsibility: _cmd];
+#endif
   return nil;
 }
 
