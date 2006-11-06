@@ -4,11 +4,17 @@ Grr Changelog
 
 Nov-05-2006 Yen-Ju Chen <yjchenx at gmail>
 
-	* Open link with entery key.
+	* Open link with enter key.
 	* Remove HTML tag (temporary fix).
 	* Open link with firefox as default.
 	* Cache browser.
 
+Nov-4-2006  Guenther Noack <guenther at unix-ag.uni-kl.de>
+
+	* Fixed compile issue on FreeBSD (link using -lCollectionKit)
+	* Removed NSCoding methods from RSSReaderFeed (I took that out
+	  of RSSKit, too) 
+ 
 Oct-30-2006 Yen-Ju Chen <yjchenx at gmail>
 
 	* Merge back from branch.

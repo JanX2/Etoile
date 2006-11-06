@@ -41,43 +41,6 @@
   return self;
 }
 
-- (id) initWithCoder: (NSCoder*)coder
-{
-  if ((self = [super initWithCoder: coder]))
-    {
-      int encodingVersion;
-      
-      [coder decodeValueOfObjCType: @encode(int)
-	     at: &encodingVersion];
-      
-      switch (encodingVersion)
-	{
-	case 1: // version 0.5pre2 (1)
-	  [coder decodeValueOfObjCType: @encode(NSTimeInterval)
-		 at: &minUpdateInterval];
-	  break;
-	  
-	default:
-	  NSLog(@"Fatal: no encoding version for RSSReaderFeed");
-	  break;
-	}
-    }
-  
-  [self setArticleClass: [RSSArticle class]];
-  return self;
-}
-
-- (void) encodeWithCoder: (NSCoder*)coder
-{
-  int encodingVersion = 1;
-  
-  [super encodeWithCoder: coder];
-  
-  [coder encodeValueOfObjCType: @encode(int) at: &encodingVersion];
-  [coder encodeValueOfObjCType: @encode(NSTimeInterval)
-	 at: &minUpdateInterval];
-}
-
 - (void) setMinimumUpdateInterval: (NSTimeInterval) aTimeInterval
 {
   minUpdateInterval = aTimeInterval;

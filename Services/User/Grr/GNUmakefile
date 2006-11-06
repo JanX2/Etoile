@@ -28,7 +28,7 @@ else
 Grr_OBJC_FILES += OpenURL.m
 endif
 
-Grr_GUI_LIBS += -lBookmarkKit
+Grr_GUI_LIBS += -lCollectionKit -lBookmarkKit
 
 Grr_LANGUAGES = \
 	English
@@ -49,7 +49,6 @@ Grr_LOCALIZED_RESOURCE_FILES += \
 	MainMenu.nib\
 	AddFeedPanel.nib 
 Grr_MAIN_MODEL_FILE = MainMenu.nib
-Grr_GUI_LIBS += -lCollectionKit
 else
 Grr_LOCALIZED_RESOURCE_FILES += \
 	MainMenu.gorm \
