@@ -51,7 +51,6 @@
   
   NSString *content = [NSString stringWithFormat: @"%@\n%@\n\n",
               headline, url];
-//  NSLog(@"%@", description);
 
   RenderHandler *handler = [[RenderHandler alloc] init];
   CodeParser *parser = [[CodeParser alloc] initWithCodeHandler: handler

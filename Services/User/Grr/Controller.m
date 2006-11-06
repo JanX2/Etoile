@@ -82,12 +82,13 @@ static Controller *sharedInstance;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotif
 {
-  [mainWindow setFrameAutosaveName: RSSReaderMainWindowFrameName];
   /* Toolbar */
   NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier: RSSReaderToolbarIdentifier];
   [toolbar setDelegate: mainWindow];
   [mainWindow setToolbar: toolbar];
   RELEASE(toolbar);
+
+  [mainWindow setFrameAutosaveName: RSSReaderMainWindowFrameName];
 
   [feedBookmarkView setDisplayProperties: [NSArray arrayWithObject: kBKBookmarkTitleProperty]];
   [[feedBookmarkView outlineView] setDelegate: self];
