@@ -24,9 +24,11 @@
 @implementation HistoryManager : NSObject
 
 -(id)init {
+  self = [super init];
   listenMode = YES;
   currentLocationIndex = -1;
   ASSIGN(history, [NSMutableArray arrayWithCapacity: 20]);
+  return self;
 }
 
 -(void)setDelegate: (id<HistoryManagerDelegate>)aDelegate {

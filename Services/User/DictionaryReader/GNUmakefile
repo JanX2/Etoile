@@ -66,7 +66,7 @@ DictionaryReader_MAIN_MODEL_FILE = DictionaryReader.gorm
 
 DictionaryReader_PRINCIPAL_CLASS = 
 
-ADDITIONAL_GUI_LIBS = -lEtoileExtensions
+ADDITIONAL_GUI_LIBS = -lEtoileFoundation
 
 SUBPROJECTS = 
 -include GNUmakefile.preamble

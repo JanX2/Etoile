@@ -2,6 +2,11 @@
 DictionaryReader Changelog
 ==========================
 
+Nov 07 2006  Yen-Ju Chen
+	* GNUmakefile, Preferences.h: Use EtoileFoundation instead 
+          deprecated EtoileExtension.
+        * HistoryManager.m: return self in -init to avoid memory leak.
+
 Oct 15 2006  Guenther Noack
 	* Bug #7379 hopefully fixed. Forgot to "svn add" some files... :-/
 	* Thanks for the bugreport to YunSong Hwang :-)

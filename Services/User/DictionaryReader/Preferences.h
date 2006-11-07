@@ -17,8 +17,7 @@
  */
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-
-#import <EtoileExtensions/UKNibOwner.h>
+#import <EtoileFoundation/UKNibOwner.h>
 
 
 /**
