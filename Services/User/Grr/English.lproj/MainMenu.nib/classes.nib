@@ -13,6 +13,7 @@
                 markUnread = id; 
                 reload = id; 
                 reloadAll = id; 
+                showMainWindow = id; 
                 subscribe = id; 
             }; 
             CLASS = Controller; 
@@ -22,6 +23,7 @@
                 contentTextView = id; 
                 feedBookmarkView = id; 
                 mainWindow = id; 
+                progressBar = id; 
             }; 
             SUPERCLASS = NSObject; 
         }, 

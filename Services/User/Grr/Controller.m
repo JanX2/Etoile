@@ -116,6 +116,11 @@ static Controller *sharedInstance;
           selector: @selector(feedListChanged:)
           name: RSSReaderFeedListChangedNotification
           object: nil];
+  [[NSNotificationCenter defaultCenter]
+          addObserver: self
+          selector: @selector(feedFetchFailed:)
+          name: RSSFeedFetchFailedNotification
+          object: nil];
 }
 
 - (BOOL)applicationShouldTerminate:(id)sender
@@ -152,6 +157,8 @@ static Controller *sharedInstance;
     // create the feed
     RSSFeed *feed = AUTORELEASE([[RSSReaderFeed alloc] initWithURL: url]);
     [feed setAutoClear: NO];
+    /* Set temparory name */
+    [feed setFeedName: [url absoluteString]];
 
     // actually add the feed
     [feedList addFeed: feed];
@@ -208,6 +215,11 @@ static Controller *sharedInstance;
 {
   int index = [[feedBookmarkView outlineView] selectedRow];
   if (index > -1) {
+    /* Setup progress bar */
+    [progressBar setMinValue: 0];
+    [progressBar setMaxValue: 1];
+    [progressBar startAnimation: self];
+
     BKBookmark *bk = [[feedBookmarkView outlineView] itemAtRow: index];
     RSSFeed *feed = [feedList feedForURL: [bk URL]];
     [[FetchingProgressManager instance] fetchFeed: feed];
@@ -216,6 +228,10 @@ static Controller *sharedInstance;
 
 - (void) reloadAll: (id) sender
 {
+  [progressBar setMinValue: 0];
+  [progressBar setMaxValue: [[feedList feedList] count]];
+  [progressBar startAnimation: self];
+
   [[FetchingProgressManager instance] fetchFeeds: [feedList feedList]];
 }
 
@@ -230,6 +246,7 @@ static Controller *sharedInstance;
 
 - (void) markAllRead: (id) sender
 {
+  [articleCollectionView beginEditing];
   int i;
   for (i = 0; i < [articleCollectionView numberOfItems]; i++) {
     id item = [articleCollectionView itemAtIndex: i];
@@ -238,6 +255,7 @@ static Controller *sharedInstance;
                    forProperty: kArticleReadProperty];
     }
   }
+  [articleCollectionView endEditing];
   /* This change unread number. Therefore, reload bookmark view */
   [feedBookmarkView reloadData];
   [articleCollectionView reloadData];
@@ -245,6 +263,7 @@ static Controller *sharedInstance;
 
 - (void) markAllUnread: (id) sender
 {
+  [articleCollectionView beginEditing];
   int i;
   for (i = 0; i < [articleCollectionView numberOfItems]; i++) {
     id item = [articleCollectionView itemAtIndex: i];
@@ -253,6 +272,7 @@ static Controller *sharedInstance;
                    forProperty: kArticleReadProperty];
     }
   }
+  [articleCollectionView endEditing];
   [feedBookmarkView reloadData];
   [articleCollectionView reloadData];
 }
@@ -283,6 +303,11 @@ static Controller *sharedInstance;
       [articleCollectionView reloadData];
     }
   }
+}
+
+- (void) showMainWindow: (id) sender
+{
+  [mainWindow makeKeyAndOrderFront: sender];
 }
 
 - (void) search: (id) sender
@@ -399,10 +424,25 @@ static Controller *sharedInstance;
 
 @implementation Controller (Private)
 
+- (void) updateProgressBar
+{
+  /* Increase one and stop if full */
+  [progressBar incrementBy: 1];
+  if ([progressBar doubleValue] == [progressBar maxValue]) {
+    [progressBar stopAnimation: self];
+  }
+}
+
 - (void) feedListChanged: (NSNotification *) not
 {
+  [self updateProgressBar];
   [feedBookmarkView reloadData];
   [articleCollectionView reloadData];
+}
+
+- (void) feedFetchFailed: (NSNotification *) not
+{
+  [self updateProgressBar];
 }
 
 @end

@@ -42,10 +42,10 @@
   CKCollectionView *articleCollectionView;
   ContentTextView *contentTextView;
   NSSearchField *searchField;
+  NSProgressIndicator *progressBar;
 #if 0
   NSPanel* logPanel;
 #endif
-
   FeedList *feedList;
 }
 
@@ -63,6 +63,8 @@
 - (void) markAllUnread: (id) sender;
 - (void) markRead: (id) sender;
 - (void) markUnread: (id) sender;
+
+- (void) showMainWindow: (id) sender;
 
 - (void) search: (id) sender;
 
