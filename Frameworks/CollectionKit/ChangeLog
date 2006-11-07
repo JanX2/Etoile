@@ -1,3 +1,7 @@
+2006-11-06 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* -beginEditing and -endEditing for changing large quantity of records.
+
 2006-10-30 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Fix compare: to nil.

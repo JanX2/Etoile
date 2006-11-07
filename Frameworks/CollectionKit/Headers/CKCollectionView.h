@@ -30,6 +30,9 @@
 
   /* Internal cache for items */
   NSMutableArray *internalCache;
+  BOOL isEditing;
+
+  /* Sorting */
   BOOL reverseSorting;
   NSString *sortingProperty;
 }
@@ -90,5 +93,10 @@
 
 /* Recreate cache. Use when collection is changed */
 - (void) reloadData;
+
+/* This delay rebuild cache until -endEditing is called.
+ * It is suitable when large number of records is changed.  */
+- (void) beginEditing;
+- (void) endEditing;
 
 @end

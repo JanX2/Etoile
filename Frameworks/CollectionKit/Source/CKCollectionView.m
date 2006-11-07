@@ -39,6 +39,10 @@ NSComparisonResult reverseSortingWithProperty(id record1, id record2, void *cont
 /** Private **/
 - (void) buildInternalCache
 {
+  /* Do not rebuild if it is editing */
+  if (isEditing == YES)
+    return;
+
   [internalCache removeAllObjects];
   if (root == nil) {
     [internalCache setArray: [collection items]];
@@ -86,6 +90,7 @@ NSComparisonResult reverseSortingWithProperty(id record1, id record2, void *cont
 
   displaySubgroup = NO;
   displayItemsInSubgroup = NO;
+  isEditing = NO;
 
   internalCache = [[NSMutableArray alloc] init];
 
@@ -220,6 +225,17 @@ NSComparisonResult reverseSortingWithProperty(id record1, id record2, void *cont
 - (void) reloadData
 {
   [tableView reloadData];
+}
+
+- (void) beginEditing
+{
+  isEditing = YES;
+}
+
+- (void) endEditing
+{
+  isEditing = NO;
+  [self buildInternalCache];
 }
 
 - (void) setCollection: (CKCollection *) s
