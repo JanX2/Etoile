@@ -20,7 +20,7 @@ VERSION = 0.1
 DistributedViewExample_PRINCIPAL_CLASS = NSApplication
 DistributedViewExample_APPLICATION_ICON =
 
-DistributedViewExample_GUI_LIBS = -lEtoileExtensions
+DistributedViewExample_GUI_LIBS = -lEtoileUI -lDistributedView
 
 #
 # Resource files

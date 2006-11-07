@@ -13,7 +13,7 @@
 
 -(id)	initWithTitle: (NSString*)theTitle andImage: (NSImage*)img
 {
-	if( self = [super init] )
+	if((self = [super init]))
 	{
 		title = [theTitle retain];
 		image = [img retain];

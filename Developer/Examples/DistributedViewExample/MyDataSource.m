@@ -7,15 +7,15 @@
 //
 
 #ifdef GNUSTEP
-#import <EtoileExtensions/EtoileCompatibility.h>
+#import <EtoileUI/EtoileCompatibility.h>
 #endif
 
 #ifndef __ETOILE__
 #import "UKDistributedView.h"
 #import "UKFinderIconCell.h"
 #else
-#import <EtoileExtensions/UKDistributedView.h>
-#import <EtoileExtensions/UKFinderIconCell.h>
+#import <DistributedView/UKDistributedView.h>
+#import <DistributedView/UKFinderIconCell.h>
 #endif
 #import "MyDataSource.h"
 #import "MyDistViewItem.h"
@@ -38,7 +38,8 @@
 
 -(void)	dealloc
 {
-	[subCells release];
+  [subCells release];
+  [super dealloc];
 }
 
 
