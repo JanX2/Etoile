@@ -77,7 +77,11 @@ const NSString *PKPlainPresentationMode = @"PKPlainPresentationMode";
   [paneView setFrameOrigin: NSZeroPoint];
 
   NSRect oldFrame = [[mainView window] frame];
-  windowFrame.size = [[mainView window] frameRectForContentRect: paneViewFrame].size;
+//  windowFrame.size = [[mainView window] frameRectForContentRect: paneViewFrame].size;
+  // FIXME: Implement -frameRectForContentRect: in GNUstep
+  windowFrame.size = [NSWindow frameRectForContentRect: paneViewFrame
+      styleMask: [[mainView window] styleMask]].size;
+
     
   // NOTE: We have to check carefully the view is not undersized to avoid
   // limiting switch possibilities in listed panes.
