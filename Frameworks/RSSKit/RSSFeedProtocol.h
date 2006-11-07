@@ -28,6 +28,13 @@
  * with itself as object and nil for userInfo.
  **/
 extern NSString *const RSSFeedFetchedNotification;
+/**
+ * When feed fetching in background failed or feed fails to process data,
+ * it posts this notification
+ * with itself as object.
+ * userInfo: @"Reason" for a string of failed reason. It could be nil.
+ **/
+extern NSString *const RSSFeedFetchFailedNotification;
 
 /**
  * When a feed is about to fetch, it first posts this notification

@@ -1,5 +1,6 @@
 Nov-06-2006  Yen-Ju Chen
 	* Compile on Cocoa.
+	* Post notification if fatching failed.
 
 Nov-05-2006  Guenther Noack
 	* Removed some deprecated methods

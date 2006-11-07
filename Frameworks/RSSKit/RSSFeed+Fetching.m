@@ -37,6 +37,7 @@
 
 NSString *const RSSFeedFetchedNotification = @"RSSFeedFetchedNotification";
 NSString *const RSSFeedWillFetchNotification = @"RSSFeedWillFetchNotification";
+NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotification";
 
 #define URI_ATOM10              @"http://www.w3.org/2005/Atom"
 #define URI_PURL_CONTENT        @"http://purl.org/rss/1.0/modules/content/"
@@ -72,7 +73,10 @@ NSString *const RSSFeedWillFetchNotification = @"RSSFeedWillFetchNotification";
   NSLog(@"URL %@ failed loading because of %@", sender, reason);
   [self setError: RSSFeedErrorMalformedURL];
   status = RSSFeedIsIdle;
-  // FIXME: post an failed notification ? 
+  [[NSNotificationCenter defaultCenter]
+       postNotificationName: RSSFeedFetchFailedNotification
+       object: self
+       userInfo: [NSDictionary dictionaryWithObject: reason forKey: @"Reason"]];
 }
 
 - (void) URL: (NSURL *) sender
@@ -227,6 +231,11 @@ NSString *const RSSFeedWillFetchNotification = @"RSSFeedWillFetchNotification";
       NSLog(@"Failed to decide RSS version");
       rssVersion = @"Malformed RSS?";
       status = RSSFeedIsIdle;
+      [[NSNotificationCenter defaultCenter]
+          postNotificationName: RSSFeedFetchFailedNotification
+                        object: self
+       userInfo: [NSDictionary dictionaryWithObject: @"Malformed RSS"
+                                             forKey: @"Reason"]];
       return [self setError: RSSFeedErrorMalformedRSS];
     }
   
