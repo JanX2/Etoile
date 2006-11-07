@@ -6,6 +6,7 @@ Nov-06-2006 Yen-Ju Chen <yjchenx at gmail>
  	* "Main Window" menu item.
 	* Display progress of fetching.
 	* Spped up -markAllRead: and -markAllUnread:.
+	* Work on GNUstep.
 
 Nov-05-2006 Yen-Ju Chen <yjchenx at gmail>
 

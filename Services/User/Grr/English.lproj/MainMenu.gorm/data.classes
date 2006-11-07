@@ -31,13 +31,15 @@
 	    "markAllRead:",
 	    "markAllUnread:",
 	    "markRead:",
-	    "markUnread:"
+	    "markUnread:",
+	    "showMainWindow:"
 	);
 	Outlets = (
 	    articleCollectionView,
 	    feedBookmarkView,
 	    mainWindow,
-	    contentTextView
+	    contentTextView,
+	    progressBar
 	);
 	Super = NSObject;
     };
@@ -55,6 +57,7 @@
 	    "markAllUnread:",
 	    "markRead:",
 	    "markUnread:",
+	    "showMainWindow:",
 	    "reload:",
 	    "reloadAll:",
 	    "subscribe:"

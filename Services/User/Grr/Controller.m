@@ -88,6 +88,12 @@ static Controller *sharedInstance;
   [mainWindow setToolbar: toolbar];
   RELEASE(toolbar);
 
+  /* Progress Bar */
+#ifdef GNUSTEP
+  [progressBar setHidden: YES];
+  [progressBar setIndeterminate: NO];
+#endif
+
   [mainWindow setFrameAutosaveName: RSSReaderMainWindowFrameName];
 
   [feedBookmarkView setDisplayProperties: [NSArray arrayWithObject: kBKBookmarkTitleProperty]];
@@ -216,8 +222,12 @@ static Controller *sharedInstance;
   int index = [[feedBookmarkView outlineView] selectedRow];
   if (index > -1) {
     /* Setup progress bar */
+#ifdef GNUSTEP
+    [progressBar setHidden: NO];
+#endif
     [progressBar setMinValue: 0];
     [progressBar setMaxValue: 1];
+    [progressBar setDoubleValue: 0.5];
     [progressBar startAnimation: self];
 
     BKBookmark *bk = [[feedBookmarkView outlineView] itemAtRow: index];
@@ -228,8 +238,12 @@ static Controller *sharedInstance;
 
 - (void) reloadAll: (id) sender
 {
+#ifdef GNUSTEP
+  [progressBar setHidden: NO];
+#endif
   [progressBar setMinValue: 0];
   [progressBar setMaxValue: [[feedList feedList] count]];
+  [progressBar setDoubleValue: 0];
   [progressBar startAnimation: self];
 
   [[FetchingProgressManager instance] fetchFeeds: [feedList feedList]];
@@ -429,6 +443,9 @@ static Controller *sharedInstance;
   /* Increase one and stop if full */
   [progressBar incrementBy: 1];
   if ([progressBar doubleValue] == [progressBar maxValue]) {
+#ifdef GNUSTEP
+    [progressBar setHidden: YES];
+#endif
     [progressBar stopAnimation: self];
   }
 }
