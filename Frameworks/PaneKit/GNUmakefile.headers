@@ -12,6 +12,6 @@ PaneKit_HEADER_FILES = \
 	PKMatrixViewPresentation.h \
 	PKPlainPresentation.h \
 	PKPrefPanesRegistry.h \
-	UKPluginsRegistry.h \
+	PKPaneRegistry.h \
 	PaneKit.h
 

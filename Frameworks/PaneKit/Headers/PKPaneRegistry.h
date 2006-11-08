@@ -1,11 +1,13 @@
 /*
-	UKPluginsRegistry.h
+	PKPaneRegistry.h
  
-	Plugins manager class used to register new plugins and obtain already
-    registered plugins
+	Plugins manager class used to register new plugins and 
+        obtain already registered plugins
  
+	Copyright (C) 2006 Yen-Ju Chen
 	Copyright (C) 2004 Uli Kusterer
  
+	Author:  Yen-Ju Chen
 	Author:  Uli Kusterer
              Quentin Mathe <qmathe@club-internet.fr>
 	Date:  August 2004
@@ -29,8 +31,7 @@
 
 @protocol UKTest;
 
-
-@interface UKPluginsRegistry : NSObject <UKTest>
+@interface PKPaneRegistry : NSObject <UKTest>
 {
   NSMutableArray *plugins; /* List of available plugins, with dictionaries for each. */
   BOOL instantiate; /* Instantiate the principal class of each plugin. */

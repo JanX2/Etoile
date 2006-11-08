@@ -32,7 +32,7 @@
 @protocol PKPreferencePaneOwner;
 @class PKPreferencePane;
 @class PKPresentationBuilder;
-@class UKPluginsRegistry;
+@class PKPaneRegistry;
 
 extern const NSString *PKNoPresentationMode;
 extern const NSString *PKToolbarPresentationMode;
@@ -49,19 +49,19 @@ extern const NSString *PKOtherPresentationMode;
   PKPreferencePane *currentPane; /* Currently showing pane. */
   PKPreferencePane *nextPane; /* Pane to show in response to the next replyToShouldUnselect: YES. */
   PKPresentationBuilder *presentation;
-  UKPluginsRegistry *registry;
+  PKPaneRegistry *registry;
 }
 
 /* Initial programmingly with registry, mode and owner.
  * If it is load with Nib or Gorm, owner and registry must be connected.
  * The mode will be PKToolbarPresentationMode by default. */
-- (id) initWithRegistry: (UKPluginsRegistry *) registry
+- (id) initWithRegistry: (PKPaneRegistry *) registry
        presentationMode: (NSString *) presentationMode
                   owner: (id) owner;
 
 /* Since most owner is just an empty window. 
    This method automatically create an empty window */
-- (id) initWithRegistry: (UKPluginsRegistry *) registry
+- (id) initWithRegistry: (PKPaneRegistry *) registry
        presentationMode: (NSString *) presentationMode;
 
 /* Preferences UI related stuff */
@@ -75,7 +75,7 @@ extern const NSString *PKOtherPresentationMode;
 /* Accessors */
 - (id) owner;
 - (NSView *) view;
-- (UKPluginsRegistry *) registry;
+- (PKPaneRegistry *) registry;
 
 - (NSString *) selectedPreferencePaneIdentifier;
 - (PKPreferencePane *) selectedPreferencePane;

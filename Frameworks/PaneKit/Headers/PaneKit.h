@@ -29,4 +29,4 @@
 #import <PaneKit/PKPresentationBuilder.h>
 
 #import <PaneKit/PKPrefPanesRegistry.h>
-#import <PaneKit/UKPluginsRegistry.h>
+#import <PaneKit/PKPaneRegistry.h>

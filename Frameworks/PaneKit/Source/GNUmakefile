@@ -15,7 +15,7 @@ PaneKit_Source_OBJC_FILES = \
         PKToolbarPresentation.m \
         PKPlainPresentation.m \
         PKPrefPanesRegistry.m \
-        UKPluginsRegistry.m 
+        PKPaneRegistry.m 
 
 PaneKit_Source_INCLUDE_DIRS += -I..
 

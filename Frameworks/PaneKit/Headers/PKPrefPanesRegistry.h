@@ -26,14 +26,14 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <PaneKit/UKPluginsRegistry.h>
+#import <PaneKit/PKPaneRegistry.h>
 
 @protocol UKTest;
 
 @class PKPreferencePane;
 
 
-@interface PKPrefPanesRegistry : UKPluginsRegistry <UKTest>
+@interface PKPrefPanesRegistry : PKPaneRegistry <UKTest>
 {
 
 }

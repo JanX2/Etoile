@@ -1,12 +1,14 @@
 /** <title>UKPluginsRegistry</title>
 
-	UKPluginsRegistry.m
+	PKPaneRegistry.m
  
 	<abstract>Plugins manager class used to register new plugins and obtain 
     already registered plugins</abstract>
  
+	Copyright (C) 2004 Yen-Ju Chen
 	Copyright (C) 2004 Uli Kusterer
  
+	Author: Yen-Ju Chen
 	Author: Uli Kusterer
             Quentin Mathe <qmathe@club-internet.fr>
 	Date:   August 2004
@@ -27,7 +29,7 @@
  */
 
 #import <AppKit/AppKit.h>
-#import <PaneKit/UKPluginsRegistry.h>
+#import <PaneKit/PKPaneRegistry.h>
 #import <PaneKit/PKPreferencePane.h>
 #import <PaneKit/CocoaCompatibility.h>
 #import "GNUstep.h"
@@ -44,10 +46,10 @@
 
 static NSFileManager *fm = nil;
 
-/** UKPluginRegistry Description
+/** PKPaneRegistry Description
 
     <p>Each plugin is represented by an NSMutableDictionary to which you can 
-    add your own entries as needed. The keys UKPluginRegistry adds to this 
+    add your own entries as needed. The keys PKPaneRegistry adds to this 
     dictionary are:</p>
     <deflist>
     <term>bundle</term><desc>NSBundle instance for this plugin.</desc>
@@ -65,15 +67,15 @@ static NSFileManager *fm = nil;
     </deflist>
  */
 
-static UKPluginsRegistry *sharedPluginRegistry = nil;
+static PKPaneRegistry *sharedPluginRegistry = nil;
 
-@implementation UKPluginsRegistry
+@implementation PKPaneRegistry
 
-/** <p>Returns UKPluginsRegistry shared instance (singleton).</p> */
+/** <p>Returns PKPaneRegistry shared instance (singleton).</p> */
 + (id) sharedRegistry
 {
   if (sharedPluginRegistry == nil) {
-    sharedPluginRegistry = [[UKPluginsRegistry alloc] init];
+    sharedPluginRegistry = [[PKPaneRegistry alloc] init];
   }
 	
   return sharedPluginRegistry;

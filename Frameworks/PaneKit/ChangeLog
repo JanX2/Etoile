@@ -16,6 +16,11 @@
       Fix drifting of toolbar presentation.
     * Source/PKTableViewPresentation.m:
       Initialize table view in -init and reuse it.
+    * Headers/UKPluginsRegistry.h:
+    * Headers/PKPaneRegistry.h:
+    * Source/UKPluginsRegistry.h:
+    * Source/PKPaneRegistry.h:
+      Rename UKPluginsRegistry to PKPaneRegistry.
 
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 

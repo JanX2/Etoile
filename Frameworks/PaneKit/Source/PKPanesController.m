@@ -31,7 +31,7 @@
 #import <AppKit/AppKit.h>
 
 #import <PaneKit/CocoaCompatibility.h>
-#import <PaneKit/UKPluginsRegistry.h>
+#import <PaneKit/PKPaneRegistry.h>
 #import <PaneKit/PKPreferencePane.h>
 #import <PaneKit/PKPresentationBuilder.h>
 #import <PaneKit/PKPanesController.h>
@@ -56,7 +56,7 @@
   return self;
 }
 
-- (id) initWithRegistry: (UKPluginsRegistry *) r
+- (id) initWithRegistry: (PKPaneRegistry *) r
        presentationMode: (NSString *) mode
 {
   self = [super init];
@@ -73,7 +73,7 @@
 
 /* This is usually called programmingly.
    So we call awakeFromNib explicitly */
-- (id) initWithRegistry: (UKPluginsRegistry *) r
+- (id) initWithRegistry: (PKPaneRegistry *) r
        presentationMode: (NSString *) mode
        owner: (id) o
 {
@@ -320,7 +320,7 @@
   return owner;
 }
 
-- (UKPluginsRegistry *) registry
+- (PKPaneRegistry *) registry
 {
   return registry;
 }
