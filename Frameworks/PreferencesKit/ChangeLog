@@ -5,6 +5,7 @@
     Unified the singleton handling to allow multiple registries
     in an application.
     * Rename as PaneKit.
+    * Remove Backbone compability.
 
 2006-11-06  Quentin Mathe <qmathe@club-internet.fr>
 
