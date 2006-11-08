@@ -104,7 +104,7 @@
 
 -(NSString*) relationType
 {
-  return @"alternative";
+  return @"alternate";
 }
 @end
 

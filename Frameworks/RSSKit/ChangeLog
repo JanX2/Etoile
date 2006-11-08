@@ -1,3 +1,7 @@
+
+Nov-08-2006  Guenther Noack
+	* Fixed enclosure-link bug
+
 Nov-06-2006  Yen-Ju Chen
 	* Compile on Cocoa.
 	* Post notification if fatching failed.
