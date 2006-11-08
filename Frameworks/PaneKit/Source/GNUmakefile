@@ -5,6 +5,7 @@ SUBPROJECT_NAME = PaneKit_Source
 PaneKit_Source_OBJC_FILES = \
         CocoaCompatibility.m \
         NSPreferencePane.m \
+	PKPanesController.m \
         PKPreferencesController.m \
         PKPreferencePane.m \
         PKPresentationBuilder.m \

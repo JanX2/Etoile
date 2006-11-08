@@ -76,9 +76,11 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 			_topLevelObjects, @"NSTopLevelObjects",
 			nil];
 
+  NSLog(@"Load %@", [self mainNibName]);
   if ( ![_bundle loadNibFile: [self mainNibName] externalNameTable: ent 
                    withZone: [self zone]] )
   {
+    NSLog(@"Failed to load main view bundle");
     return nil;
   }
 	
@@ -100,8 +102,7 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 - (NSView *) assignMainView
 {
   [self setMainView: [_window contentView]];
-  [_window release];
-  _window = nil;
+  DESTROY(_window);
 	
   return [self mainView];
 }

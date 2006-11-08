@@ -28,6 +28,8 @@
 
 #import <AppKit/AppKit.h>
 #import <PaneKit/UKPluginsRegistry.h>
+#import <PaneKit/PKPreferencePane.h>
+#import <PaneKit/CocoaCompatibility.h>
 #import "GNUstep.h"
 
 #ifdef HAVE_UKTEST
@@ -95,7 +97,6 @@ static UKPluginsRegistry *sharedPluginRegistry = nil;
     return nil;
 	
   plugins = [[NSMutableArray alloc] init];
-  pluginPaths = [[NSMutableDictionary alloc] init];
   fm = [NSFileManager defaultManager];
   instantiate = YES;
     
@@ -105,8 +106,6 @@ static UKPluginsRegistry *sharedPluginRegistry = nil;
 - (void) dealloc
 {
   DESTROY(plugins);
-  DESTROY(pluginPaths);
-	
   [super dealloc];
 }
 
@@ -214,6 +213,7 @@ static UKPluginsRegistry *sharedPluginRegistry = nil;
     UKTrue(instantiate);
     UKIntsEqual([plugins count], lastCount + 1);
     
+#if 0
     UKTrue([[pluginPaths allKeys] containsObject: path]);
         
     info = [pluginPaths objectForKey: path];
@@ -223,6 +223,7 @@ static UKPluginsRegistry *sharedPluginRegistry = nil;
     UKTrue([[info allKeys] containsObject: @"name"]);
     UKTrue([[info allKeys] containsObject: @"path"]);
     UKTrue([[info allKeys] containsObject: @"class"]);
+#endif
 }
 #endif
 
@@ -235,94 +236,81 @@ static UKPluginsRegistry *sharedPluginRegistry = nil;
     returned by -infoDictionary.</p> */
 - (NSMutableDictionary *) loadPluginForPath: (NSString *)path
 {
-  NSMutableDictionary *info = [pluginPaths objectForKey: path];
+  /* Find existed one */
+  NSMutableDictionary *info = [[self loadedPlugins] objectWithValue: path forKey: @"path"];;
 	
-  // NOTE: We may refactor plugin schema conformance test in a dedicated
-  // method. We would be able to call it in subclasses to validate plugins
-  // in a specific method. For example -validatePreferencePane could be
-  // used by -preferencePaneForPath: to know when the preference pane has to
-  // be reloaded because it is invalid.
-  /* 
-  if (isInvalid)
+  /* Not found */
+  NSBundle *bundle = [NSBundle bundleWithPath: path];
+  NSString *identifier;
+  NSImage *image;
+  NSString *name;
+        
+  /* We retrieve plugin's name */
+        
+  name = [[bundle infoDictionary] objectForKey: @"CFBundleName"];
+        
+  if (name == nil)
+    name = [[bundle infoDictionary] objectForKey: @"ApplicationName"];
+  if (name == nil)
+    name = [[bundle infoDictionary] objectForKey: @"NSExecutable"];
+  if (name == nil)
+    name = @"Unknown";
+        
+  /* We retrieve plugin's identifier */
+        
+  identifier = [bundle bundleIdentifier];
+        
+  if (identifier == nil)
   {
-    [pluginsPath removeObjectForKey: path];
-    [plugins removeObject: info];
-    info = nil
-  } */
-    
-  if (info == nil)
-  {
-    NSBundle *bundle = [NSBundle bundleWithPath: path];
-    NSString *identifier;
-    NSImage *image;
-    NSString *name;
-        
-    /* We retrieve plugin's name */
-        
-    name = [[bundle infoDictionary] objectForKey: @"CFBundleName"];
-        
-    if (name == nil)
-      name = [[bundle infoDictionary] objectForKey: @"ApplicationName"];
-    if (name == nil)
-      name = [[bundle infoDictionary] objectForKey: @"NSExecutable"];
-    if (name == nil)
-      name = @"Unknown";
-        
-    /* We retrieve plugin's identifier */
-        
-    identifier = [bundle bundleIdentifier];
-        
-    if (identifier == nil)
-    {
-      NSLog(@"Plugin %@ is missing an identifier, it may be impossible to use it.", name);
+    NSLog(@"Plugin %@ is missing an identifier, it may be impossible to use it.", name);
 
-      identifier = path; /* When no identifier is available, falling back on path otherwise. */
-    }
-        
-    /* Get icon, falling back on file icon when needed, or in worst case using our app icon: */
-    NSString *iconFileName = [[bundle infoDictionary] objectForKey: @"NSPrefPaneIconFile"];
-    NSString *iconPath = nil;
+    identifier = path; /* When no identifier is available, falling back on path otherwise. */
+  }
+       
+  /* Get icon, falling back on file icon when needed, or in worst case using our app icon: */
+  NSString *iconFileName = [[bundle infoDictionary] objectForKey: @"NSPrefPaneIconFile"];
+  NSString *iconPath = nil;
 		
-    if(iconFileName == nil)
-      iconFileName = [[bundle infoDictionary] objectForKey: @"NSIcon"];
-    if(iconFileName == nil)
-      iconFileName = [[bundle infoDictionary] objectForKey: @"ApplicationIcon"];
-    if(iconFileName == nil)
-      iconFileName = [[bundle infoDictionary] objectForKey: @"CFBundleIcon"];
+  if(iconFileName == nil)
+    iconFileName = [[bundle infoDictionary] objectForKey: @"NSIcon"];
+  if(iconFileName == nil)
+    iconFileName = [[bundle infoDictionary] objectForKey: @"ApplicationIcon"];
+  if(iconFileName == nil)
+    iconFileName = [[bundle infoDictionary] objectForKey: @"CFBundleIcon"];
 
-    if (iconFileName != nil) 
-      iconPath = [bundle pathForImageResource: iconFileName];
+  if (iconFileName != nil) 
+    iconPath = [bundle pathForImageResource: iconFileName];
             
-    if (iconPath == nil)
-    {
-      image = [NSImage imageNamed: @"NSApplicationIcon"];
-    }
-    else
-    {
-      image = [[[NSImage alloc] initWithContentsOfFile: iconPath] autorelease];
-    }
+  if (iconPath == nil)
+  {
+    image = [NSImage imageNamed: @"NSApplicationIcon"];
+  }
+  else
+  {
+    image = [[[NSImage alloc] initWithContentsOfFile: iconPath] autorelease];
+  }
         
-    /* When image loading has failed, we set its value to null object in
-       in order to be able to create info dictionary without glitches a
-       'nil' value would produce (like subsequent elements being ignored). */
-    /* Add a new entry for this pane to our list: */
+  /* When image loading has failed, we skip image. */
+  /* Add a new entry for this pane to our list: */
     info = [NSMutableDictionary dictionaryWithObjectsAndKeys: 
 			bundle, @"bundle", 
             		identifier, @"identifier", 
-			((image) ? (id)image : (id)[NSNull null]), @"image", 
 			name, @"name", 
-			path, @"path", 
-    [NSValue valueWithPointer: [bundle principalClass]], @"class", nil];
+			path, @"path",
+  [NSValue valueWithPointer: [bundle principalClass]], @"class", 
+                        nil];
 
-    if (instantiate)
-    {
-      id obj = [[[[bundle principalClass] alloc] init] autorelease];
-            
-      [info setObject: obj forKey: @"instance"];
-    }
-    [plugins addObject: info];
-    [pluginPaths setObject: info forKey: path];
+  if (image) {
+    [info setObject: image forKey: @"image"];
   }
+
+  if (instantiate)
+  {
+    id obj = [[[bundle principalClass] alloc] init];
+            
+    [info setObject: AUTORELEASE(obj) forKey: @"instance"];
+  }
+  [plugins addObject: info];
 	
   return info;
 }
@@ -362,16 +350,67 @@ static UKPluginsRegistry *sharedPluginRegistry = nil;
   instantiate = n;
 }
 
+/** <p>Loads the plugin bundle located at <var>path</var>, 
+    checks it conforms to
+    <em>Plugin schema</em> stored in the related bundle property list.</p>
+    <p>Every property list values associated to <em>Plugin schema</em> 
+    are put in a
+    dictionary to be used as plugin object, eventual validity errors
+    are reported each time a value is read in NSBundle description values
+    returned by -infoDictionary.</p> */
+- (id) paneAtPath: (NSString *) path
+{
+  NSMutableDictionary *info = [[self loadedPlugins] objectWithValue: path forKey
+: @"path"];
+    
+  /* We check whether the plugin is already loaded. When it isn't, we try
+     to load it. */
+  // NOTE: We may check plugin conforms to preference pane schema. In case of
+  // invalidity, it would be reloaded. For now, we only check the plugin 
+  // availability.
+  if (info == nil)
+    info = [self loadPluginForPath: path];
+    
+  id pane = [info objectForKey: @"instance"];
+        
+  if (pane == nil)
+  {
+    NSString *type = [[info objectForKey: @"path"] pathExtension];
+                
+    Class mainClass = [[info objectForKey: @"class"] pointerValue];
+    pane = [[[mainClass alloc] initWithBundle: [info objectForKey: @"bundle"]]
+ autorelease];
+                
+    [info setObject: pane forKey: @"instance"];
+  }
+
+   /* Make sure the main view is loaded */
+  if ([pane mainView] == nil)
+    [pane loadMainView];
+    
+  return pane;
+}
+
+- (id) paneWithIdentifier: (NSString *) identifier
+{
+  NSMutableDictionary *plugin = [[self loadedPlugins] objectWithValue: identifier forKey: @"identifier"];
+  id instance = [plugin objectForKey: @"instance"];
+  if (instance) {
+    return instance;
+  }
+
+  return [self paneAtPath: [plugin objectForKey: @"path"]];
+}
+
 - (void) addPlugin: (NSDictionary *) dict
 {
   // FIXME: Should we check each value to be valid ?
   if ([dict objectForKey: @"identifier"] == nil)
     return;
 
-  NSString *path = [dict objectForKey: @"path"];
-  if (path) {
+  NSString *identifier = [dict objectForKey: @"identifier"];
+  if (identifier) {
     [plugins addObject: dict];
-    [pluginPaths setObject: dict forKey: path];
   }
 }
 

@@ -1,3 +1,18 @@
+2006-11-08  Yen-Ju Chen <yjchex gmail>
+
+    * Headers/PKPanesController.h:
+    * Source/PKPanesController.m:
+      Generic panes controller.
+      Allow multiple instances.
+      Still use PKPreferencesPane as pane.
+    * Headers/PKPreferencesController.h:
+    * Source/PKPreferencesController.m:
+      Subclass of PKPanesController for .prefPane.
+    * Source/UKPluginsRegistry.m:
+      Main registry for PKPanesController.
+    * Source/PKPrefPanesRegistry.m:
+      Main registry for PKPreferencesController.
+
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 
     * Source/UKPluginsRegistry.m:

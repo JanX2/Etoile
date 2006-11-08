@@ -49,7 +49,7 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 
 - (void) loadUI
 {
-  NSView *mainViewContainer = [preferencesController preferencesView];
+  NSView *mainViewContainer = [preferencesController view];
     
 #if 0
     /* We use a completely prebuilt table view we retrieve in a dedicated gorm file
@@ -122,7 +122,7 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
   if (paneView == nil)
     return;
 
-  NSView *mainView = [preferencesController preferencesView];
+  NSView *mainView = [preferencesController view];
   NSRect paneFrame = [paneView frame];
   NSRect tableFrame = [prebuiltTableView frame];
   NSRect windowFrame = [[mainView window] frame];

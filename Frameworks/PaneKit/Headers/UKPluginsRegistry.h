@@ -32,9 +32,8 @@
 
 @interface UKPluginsRegistry : NSObject <UKTest>
 {
-	NSMutableArray          *plugins;		/* List of available plugins, with dictionaries for each. */
-	NSMutableDictionary     *pluginPaths;	/* Key is file path, value is entry in plugins. */
-    BOOL                    instantiate;    /* Instantiate the principal class of each plugin. */
+  NSMutableArray *plugins; /* List of available plugins, with dictionaries for each. */
+  BOOL instantiate; /* Instantiate the principal class of each plugin. */
 }
 
 + (id) sharedRegistry;
@@ -47,6 +46,9 @@
 
 - (BOOL) instantiate;
 - (void) setInstantiate: (BOOL)n;
+
+- (id) paneAtPath: (NSString *) path;
+- (id) paneWithIdentifier: (NSString *) identifier;
 
 /* Add plugin programmingly. 
    'bundle' can be ignored since it is added programmingly.

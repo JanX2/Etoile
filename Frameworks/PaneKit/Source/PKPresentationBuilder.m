@@ -34,8 +34,8 @@
 #endif
 
 #import <PaneKit/CocoaCompatibility.h>
-#import <PaneKit/PKPreferencesController.h>
-#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKPanesController.h>
+#import <PaneKit/UKPluginsRegistry.h>
 #import <PaneKit/PKPreferencePane.h>
 #import <PaneKit/PKPresentationBuilder.h>
 #import "GNUstep.h"
@@ -71,8 +71,9 @@ static NSMutableDictionary *injectedObjects = nil;
   id presentationUnit = [injectedObjects objectForKey: presentationMode];
     
   // NOTE: [myClass class] == myClass (and [myObject class] == myClass)
-  if ([presentationUnit isEqual: [presentationUnit class]])
+  if ([presentationUnit isEqual: [presentationUnit class]]) {
     presentationUnit = AUTORELEASE([[presentationUnit alloc] init]);
+  }
       
   return presentationUnit;
 }
@@ -81,9 +82,6 @@ static NSMutableDictionary *injectedObjects = nil;
 {
   self = [super init];
  
-  /* Cache these two objects for subclass */
-  ASSIGN(preferencesController, [PKPreferencesController sharedPreferencesController]);
-  ASSIGN(allLoadedPlugins, [[PKPrefPanesRegistry sharedRegistry] loadedPlugins]);
   return self;
 }
 
@@ -97,6 +95,13 @@ static NSMutableDictionary *injectedObjects = nil;
 /*
  * Preferences UI stuff (mostly abstract methods)
  */
+
+- (void) setPanesController: (PKPanesController *) controller
+{
+  /* Cache these two objects for subclass */
+  ASSIGN(preferencesController, controller);
+  ASSIGN(allLoadedPlugins, [[controller registry] loadedPlugins]);
+}
 
 /** <override-subclass />
     <p>Uses this method to do preferences window related UI set up you may
@@ -146,7 +151,7 @@ static NSMutableDictionary *injectedObjects = nil;
     preferences view, otherwise it would be overlapped by the former.</p> */
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
-  NSView *prefsView = [preferencesController preferencesView];
+  NSView *prefsView = [preferencesController view];
     
   /* We give up here when no paneView is provided and let our subclasses 
      finishing their custom layout. */

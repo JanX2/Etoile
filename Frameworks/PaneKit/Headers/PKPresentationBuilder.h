@@ -32,7 +32,7 @@
 
 @protocol PKPreferencePaneOwner;
 @class PKPreferencePane;
-@class PKPreferencesController;
+@class PKPanesController;
 
 extern const NSString *PKNoPresentationMode;
 extern const NSString *PKOtherPresentationMode;
@@ -40,7 +40,7 @@ extern const NSString *PKOtherPresentationMode;
 @interface PKPresentationBuilder : NSObject 
 {
   /* For convenience */
-  PKPreferencesController *preferencesController;
+  PKPanesController *preferencesController;
   NSArray *allLoadedPlugins;
 }
 
@@ -50,6 +50,7 @@ extern const NSString *PKOtherPresentationMode;
 + (BOOL) inject: (id)obj forKey: (id)key;
 
 /* Preferences UI related stuff */
+- (void) setPanesController: (PKPanesController *) controller;
 - (void) loadUI;
 - (void) unloadUI;
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView;

@@ -117,7 +117,7 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
   if (paneView == nil)
       return;
 
-  NSView *mainView = [preferencesController preferencesView];
+  NSView *mainView = [preferencesController view];
   NSRect paneViewFrame = [paneView frame];
   NSRect windowFrame = [[mainView window] frame];
     

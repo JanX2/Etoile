@@ -56,7 +56,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 
 - (void) loadUI
 {
-  NSView *mainViewContainer = [preferencesController preferencesView];
+  NSView *mainViewContainer = [preferencesController view];
 
   int count = [allLoadedPlugins count];
   NSRect rect = [mainViewContainer bounds];  
@@ -124,7 +124,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
   if (paneView == nil) 
     return;
    
-  NSView *prefsView = [preferencesController preferencesView];
+  NSView *prefsView = [preferencesController view];
    
   NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];
   NSRect rect = NSMakeRect(0, 0, size.width, size.height);

@@ -119,45 +119,12 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
     returned by -infoDictionary.</p> */
 - (PKPreferencePane *) preferencePaneAtPath: (NSString *)path
 {
-  NSMutableDictionary *info = [pluginPaths objectForKey: path];
-    
-  /* We check whether the plugin is already loaded. When it isn't, we try
-     to load it. */
-  // NOTE: We may check plugin conforms to preference pane schema. In case of
-  // invalidity, it would be reloaded. For now, we only check the plugin 
-  // availability.
-  if (info == nil)
-    info = [self loadPluginForPath: path];
-    
-  PKPreferencePane *pane = [info objectForKey: @"instance"];
-	
-  if (pane == nil)
-  {
-    NSString *type = [[info objectForKey: @"path"] pathExtension];
-		
-    if ([type isEqualToString: @"prefPane"]) /* System Preferences pane. */
-    {
-      Class mainClass = [[info objectForKey: @"class"] pointerValue];
-      pane = [[[mainClass alloc] initWithBundle: [info objectForKey: @"bundle"]] autorelease];
-    }
-		
-    [info setObject: pane forKey: @"instance"];
-  }
-    
-  if ([pane mainView] == nil)
-    [pane loadMainView];
-	
-  return pane;
+  return [self paneAtPath: path];
 }
 
 - (PKPreferencePane *) preferencePaneWithIdentifier: (NSString *)identifier
 {
-  NSDictionary *plugin = [[self loadedPlugins] objectWithValue: identifier forKey: @"identifier"];
-  PKPreferencePane *pane;
-    
-  pane = [self preferencePaneAtPath: [plugin objectForKey: @"path"]];
-  
-  return pane;
+  return [self paneWithIdentifier: identifier];
 }
 
 @end
