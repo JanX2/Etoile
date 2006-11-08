@@ -7,7 +7,7 @@
 //
 
 #import "SamplePrefPane.h"
-#import <PreferencesKit/PKPreferencesController.h>
+#import <PaneKit/PKPreferencesController.h>
 
 @implementation SamplePrefPane
 

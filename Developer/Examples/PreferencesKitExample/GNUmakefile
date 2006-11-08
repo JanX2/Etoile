@@ -6,7 +6,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 PACKAGE_NAME = PreferencesKitExample
 
-SUBPROJECTS = SamplePrefPane SamplePrefsModule
+SUBPROJECTS = SamplePrefPane 
 
 ADDITIONAL_OBJCFLAGS = -Wno-import
 
@@ -23,7 +23,7 @@ VERSION = 0.1
 PreferencesKitExample_PRINCIPAL_CLASS = NSApplication
 PreferencesKitExample_APPLICATION_ICON =
 
-PreferencesKitExample_GUI_LIBS = -lPreferencesKit
+PreferencesKitExample_GUI_LIBS = -lPaneKit
 
 ifeq ($(FOUNDATION_LIB), apple)
 PreferencesKitExample_LOCALIZED_RESOURCE_FILES = \

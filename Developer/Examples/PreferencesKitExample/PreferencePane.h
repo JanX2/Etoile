@@ -1,4 +1,4 @@
-#import <PreferencesKit/PreferencesKit.h>
+#import <Panekit/PaneKit.h>
 
 @interface PreferencePane : NSPreferencePane 
 {

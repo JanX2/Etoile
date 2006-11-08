@@ -6,7 +6,7 @@
 //  Copyright (c) 2004 M. Uli Kusterer. All rights reserved.
 //
 
-#import <PreferencesKit/PreferencesKit.h>
+#import <PaneKit/PaneKit.h>
 
 
 @interface SamplePrefPane : NSPreferencePane 

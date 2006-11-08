@@ -19,7 +19,7 @@ BUNDLE_INSTALL_DIR =
 SamplePrefPane_PRINCIPAL_CLASS = SamplePrefPane
 SamplePrefPane_APPLICATION_ICON =
 
-SamplePrefPane_GUI_LIBS = -lPreferencesKit
+SamplePrefPane_GUI_LIBS = -lPaneKit
 
 #
 # Resource files

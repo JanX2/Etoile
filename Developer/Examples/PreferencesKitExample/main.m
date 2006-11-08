@@ -22,8 +22,6 @@
 #import <Cocoa/Cocoa.h>
 #endif
 
-#import <PreferencesKit/PreferencesKit.h>
-
 int main(int argc, char *argv[])
 {
     return NSApplicationMain(argc,  (const char **) argv);
