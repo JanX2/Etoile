@@ -13,6 +13,10 @@
     * Source/PKTableViewPresentation.m:
     Decrease minimal window size for smaller pane.
 
+    * Info.plist:
+    * version.plist:
+    remove unnecessary files.
+
 2006-11-06  Quentin Mathe <qmathe@club-internet.fr>
 
     * Fix compilation on GNUstep.
