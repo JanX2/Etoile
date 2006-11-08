@@ -12,6 +12,8 @@
       Main registry for PKPanesController.
     * Source/PKPrefPanesRegistry.m:
       Main registry for PKPreferencesController.
+    * Source/PKToolbarPresentation.m:
+      Fix drifting of toolbar presentation.
 
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 

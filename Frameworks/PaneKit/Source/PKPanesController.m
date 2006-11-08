@@ -52,8 +52,6 @@
    * connected in Nib. */
 
   self = [super init];
-  ASSIGN(presentation, [PKPresentationBuilder builderForPresentationMode: (NSString *)PKToolbarPresentationMode]);
-  [presentation setPanesController: self];
 
   return self;
 }
@@ -86,7 +84,6 @@
   /* Request a builder which matches presentationMode to 
    * presentation backend. */
   ASSIGN(presentation, [PKPresentationBuilder builderForPresentationMode: mode]);
-  [presentation setPanesController: self];
 
   [self awakeFromNib];
 
@@ -96,7 +93,11 @@
 /* Initialize stuff that can't be set in the nib/gorm file. */
 - (void) awakeFromNib
 {
-//  [registry loadAllPlugins];
+  if (presentation == nil) {
+    /* Use toolbar as default */ 
+    ASSIGN(presentation, [PKPresentationBuilder builderForPresentationMode: (NSString *)PKToolbarPresentationMode]);
+  }
+  [presentation setPanesController: self];
     
   /* In subclasses, we set up our list view where preference panes will be
      listed. */

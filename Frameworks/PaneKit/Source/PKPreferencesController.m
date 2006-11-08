@@ -49,8 +49,9 @@ static PKPreferencesController	*sharedInstance = nil;
 
 - (id) init
 {
-  ASSIGN(registry, [PKPrefPanesRegistry sharedRegistry]);
   self = [super init];
+  ASSIGN(registry, [PKPrefPanesRegistry sharedRegistry]);
+  [(PKPrefPanesRegistry *)registry loadAllPlugins];
   sharedInstance = self;
   return self;
 }
@@ -58,8 +59,6 @@ static PKPreferencesController	*sharedInstance = nil;
 /* Initialize stuff that can't be set in the nib/gorm file. */
 - (void) awakeFromNib
 {
-  [(PKPrefPanesRegistry *)registry loadAllPlugins];
-    
   if ([owner isKindOfClass: [NSWindow class]])
   {
     /* Let the system keep track of where it belongs */
