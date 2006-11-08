@@ -1,0 +1,906 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		600B9C63087296CE0024A432 /* PKPrefPanesRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D12FE23072C1E190091A574 /* PKPrefPanesRegistry.m */; };
+		600B9C66087296EA0024A432 /* UKPluginsRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D12FDA9072C14500091A574 /* UKPluginsRegistry.m */; };
+		600B9C68087296F70024A432 /* PKPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = 600B9BBC08721F5B0024A432 /* PKPreferencePane.m */; };
+		600B9C6B087297090024A432 /* PKPrefsModulePrefPane.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DB0B49A072C8E930012721E /* PKPrefsModulePrefPane.m */; };
+		600B9D5B0872A1EB0024A432 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
+		600B9DD80872A1EF0024A432 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97324FDCFA39411CA2CEA /* AppKit.framework */; };
+		600B9E9C0872A46F0024A432 /* UnitKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 600B9E9B0872A46F0024A432 /* UnitKit.framework */; };
+		600B9FAF0872BAE50024A432 /* PKPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = 600B9BBB08721F5B0024A432 /* PKPreferencePane.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		600B9FB00872BAE50024A432 /* PKPreferencesController.h in Headers */ = {isa = PBXBuildFile; fileRef = 600B9BE7087222120024A432 /* PKPreferencesController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		600B9FB10872BAE50024A432 /* PKPrefPanesRegistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D12FE22072C1E190091A574 /* PKPrefPanesRegistry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		600B9FB20872BAE50024A432 /* PKPrefsModulePrefPane.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DB0B499072C8E930012721E /* PKPrefsModulePrefPane.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		600B9FB30872BAE50024A432 /* PKTableViewPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 600B9BE9087222120024A432 /* PKTableViewPresentation.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		600B9FB40872BAE50024A432 /* PKToolbarPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 600B9BE8087222120024A432 /* PKToolbarPresentation.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		600B9FB50872BAE50024A432 /* PrefsModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DB0B4EA072C98450012721E /* PrefsModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		600B9FB60872BAE50024A432 /* UKPluginsRegistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D12FDA8072C14500091A574 /* UKPluginsRegistry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		600B9FB70872BAF80024A432 /* PKPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = 600B9BBC08721F5B0024A432 /* PKPreferencePane.m */; };
+		600B9FB80872BAF80024A432 /* PKPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 600B9BE5087222120024A432 /* PKPreferencesController.m */; };
+		600B9FB90872BAF80024A432 /* PKPrefPanesRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D12FE23072C1E190091A574 /* PKPrefPanesRegistry.m */; };
+		600B9FBA0872BAF80024A432 /* PKPrefsModulePrefPane.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DB0B49A072C8E930012721E /* PKPrefsModulePrefPane.m */; };
+		600B9FBB0872BAF80024A432 /* PKTableViewPresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 600B9BE4087222120024A432 /* PKTableViewPresentation.m */; };
+		600B9FBD0872BAF80024A432 /* UKPluginsRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D12FDA9072C14500091A574 /* UKPluginsRegistry.m */; };
+		600B9FC20872BB230024A432 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		604A3877099A099B0082342D /* PKTableViewPresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 600B9BE4087222120024A432 /* PKTableViewPresentation.m */; };
+		604A387A099A09C20082342D /* PKPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 600B9BE5087222120024A432 /* PKPreferencesController.m */; };
+		606766A8096EBD1100AF2C8A /* PKToolbarPresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766A7096EBD1100AF2C8A /* PKToolbarPresentation.m */; };
+		606766A9096EBD1100AF2C8A /* PKToolbarPresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766A7096EBD1100AF2C8A /* PKToolbarPresentation.m */; };
+		606766CB096EBDAE00AF2C8A /* PKMatrixViewPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 606766CA096EBDAE00AF2C8A /* PKMatrixViewPresentation.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		606766CE096EBDCB00AF2C8A /* PKMatrixViewPresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766CD096EBDCB00AF2C8A /* PKMatrixViewPresentation.m */; };
+		606766CF096EBDCB00AF2C8A /* PKMatrixViewPresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766CD096EBDCB00AF2C8A /* PKMatrixViewPresentation.m */; };
+		606766D1096EBDE300AF2C8A /* PKMatrixView.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766D0096EBDE300AF2C8A /* PKMatrixView.m */; };
+		606766D2096EBDE300AF2C8A /* PKMatrixView.m in Sources */ = {isa = PBXBuildFile; fileRef = 606766D0096EBDE300AF2C8A /* PKMatrixView.m */; };
+		606766D4096EBE1000AF2C8A /* PKMatrixView.h in Headers */ = {isa = PBXBuildFile; fileRef = 606766D3096EBE1000AF2C8A /* PKMatrixView.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		60676757096EC28100AF2C8A /* NSPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = 60676756096EC28100AF2C8A /* NSPreferencePane.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6067677C096EC2B700AF2C8A /* NSPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = 6067677B096EC2B700AF2C8A /* NSPreferencePane.m */; };
+		6067677D096EC2B700AF2C8A /* NSPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = 6067677B096EC2B700AF2C8A /* NSPreferencePane.m */; };
+		608A97A909291261009145A7 /* PKPresentationBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 608A97A709291261009145A7 /* PKPresentationBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		608A97AA09291261009145A7 /* PKPresentationBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 608A97A809291261009145A7 /* PKPresentationBuilder.m */; };
+		608A97AC09291261009145A7 /* PKPresentationBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 608A97A809291261009145A7 /* PKPresentationBuilder.m */; };
+		608A97BC092A0D1B009145A7 /* CocoaCompatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 608A97BA092A0D1A009145A7 /* CocoaCompatibility.h */; };
+		60EE1ECF089D69F800D4629C /* PreferencesKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 60EE1ECE089D69F800D4629C /* PreferencesKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		60F5FAF2092FCBBA00683FCF /* PrebuiltTableView.nib in Resources */ = {isa = PBXBuildFile; fileRef = 60F5FAF0092FCBBA00683FCF /* PrebuiltTableView.nib */; };
+		60F5FC1D092FEF4400683FCF /* CocoaCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */; };
+		60F5FC1E092FEF4400683FCF /* CocoaCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		4A9504CCFFE6A4B311CA0CBA /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		4A9504CDFFE6A4B311CA0CBA /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXFileReference section */
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		3D0038130729B98500702518 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /Users/witness/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
+		3D12FDA8072C14500091A574 /* UKPluginsRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = UKPluginsRegistry.h; path = Headers/UKPluginsRegistry.h; sourceTree = "<group>"; };
+		3D12FDA9072C14500091A574 /* UKPluginsRegistry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = UKPluginsRegistry.m; path = Source/UKPluginsRegistry.m; sourceTree = "<group>"; };
+		3D12FE22072C1E190091A574 /* PKPrefPanesRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PKPrefPanesRegistry.h; path = Headers/PKPrefPanesRegistry.h; sourceTree = "<group>"; };
+		3D12FE23072C1E190091A574 /* PKPrefPanesRegistry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = PKPrefPanesRegistry.m; path = Source/PKPrefPanesRegistry.m; sourceTree = "<group>"; };
+		3DB0B499072C8E930012721E /* PKPrefsModulePrefPane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PKPrefsModulePrefPane.h; path = Headers/BackboneCompatibility/PKPrefsModulePrefPane.h; sourceTree = "<group>"; usesTabs = 0; };
+		3DB0B49A072C8E930012721E /* PKPrefsModulePrefPane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = PKPrefsModulePrefPane.m; path = Source/BackboneCompatibility/PKPrefsModulePrefPane.m; sourceTree = "<group>"; };
+		3DB0B4EA072C98450012721E /* PrefsModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PrefsModule.h; path = Headers/BackboneCompatibility/PrefsModule.h; sourceTree = "<group>"; usesTabs = 0; };
+		600B9BBB08721F5B0024A432 /* PKPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PKPreferencePane.h; path = Headers/PKPreferencePane.h; sourceTree = "<group>"; };
+		600B9BBC08721F5B0024A432 /* PKPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = PKPreferencePane.m; path = Source/PKPreferencePane.m; sourceTree = "<group>"; };
+		600B9BE4087222120024A432 /* PKTableViewPresentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = PKTableViewPresentation.m; path = Source/PKTableViewPresentation.m; sourceTree = "<group>"; };
+		600B9BE5087222120024A432 /* PKPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = PKPreferencesController.m; path = Source/PKPreferencesController.m; sourceTree = "<group>"; };
+		600B9BE7087222120024A432 /* PKPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PKPreferencesController.h; path = Headers/PKPreferencesController.h; sourceTree = "<group>"; };
+		600B9BE8087222120024A432 /* PKToolbarPresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PKToolbarPresentation.h; path = Headers/PKToolbarPresentation.h; sourceTree = "<group>"; };
+		600B9BE9087222120024A432 /* PKTableViewPresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PKTableViewPresentation.h; path = Headers/PKTableViewPresentation.h; sourceTree = "<group>"; };
+		600B9BFF0872293E0024A432 /* LuceneKitTest.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LuceneKitTest.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		600B9E9B0872A46F0024A432 /* UnitKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnitKit.framework; path = /Library/Frameworks/UnitKit.framework; sourceTree = "<absolute>"; };
+		600B9F8F0872BA230024A432 /* PreferencesKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PreferencesKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		604B431D0924BCA300127256 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
+		604B431F0924BDC400127256 /* PreferencesKit.xcclassmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcclassmodel; path = PreferencesKit.xcclassmodel; sourceTree = "<group>"; };
+		606766A7096EBD1100AF2C8A /* PKToolbarPresentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PKToolbarPresentation.m; path = Source/PKToolbarPresentation.m; sourceTree = "<group>"; };
+		606766CA096EBDAE00AF2C8A /* PKMatrixViewPresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PKMatrixViewPresentation.h; path = Headers/PKMatrixViewPresentation.h; sourceTree = "<group>"; };
+		606766CD096EBDCB00AF2C8A /* PKMatrixViewPresentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PKMatrixViewPresentation.m; path = Source/PKMatrixViewPresentation.m; sourceTree = "<group>"; };
+		606766D0096EBDE300AF2C8A /* PKMatrixView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PKMatrixView.m; path = Source/PKMatrixView.m; sourceTree = "<group>"; };
+		606766D3096EBE1000AF2C8A /* PKMatrixView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PKMatrixView.h; path = Source/PKMatrixView.h; sourceTree = "<group>"; };
+		60676756096EC28100AF2C8A /* NSPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSPreferencePane.h; path = Headers/NSPreferencePane.h; sourceTree = "<group>"; };
+		6067677B096EC2B700AF2C8A /* NSPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSPreferencePane.m; path = Source/NSPreferencePane.m; sourceTree = "<group>"; };
+		608A97A709291261009145A7 /* PKPresentationBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PKPresentationBuilder.h; path = Headers/PKPresentationBuilder.h; sourceTree = "<group>"; };
+		608A97A809291261009145A7 /* PKPresentationBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PKPresentationBuilder.m; path = Source/PKPresentationBuilder.m; sourceTree = "<group>"; };
+		608A97BA092A0D1A009145A7 /* CocoaCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaCompatibility.h; path = Headers/CocoaCompatibility.h; sourceTree = "<group>"; };
+		609F1209092E690F00EBD7F7 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		60EE1ECE089D69F800D4629C /* PreferencesKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferencesKit.h; path = Headers/PreferencesKit.h; sourceTree = "<group>"; };
+		60F5FAF1092FCBBA00683FCF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PrebuiltTableView.nib; sourceTree = "<group>"; };
+		60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaCompatibility.m; path = Source/CocoaCompatibility.m; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; lineEnding = 0; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		600B9BFC0872293E0024A432 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				600B9DD80872A1EF0024A432 /* AppKit.framework in Frameworks */,
+				600B9D5B0872A1EB0024A432 /* Foundation.framework in Frameworks */,
+				600B9E9C0872A46F0024A432 /* UnitKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		600B9F8D0872BA230024A432 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				600B9FC20872BB230024A432 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */,
+				6067677B096EC2B700AF2C8A /* NSPreferencePane.m */,
+				600B9BBC08721F5B0024A432 /* PKPreferencePane.m */,
+				600B9BE5087222120024A432 /* PKPreferencesController.m */,
+				608A97A809291261009145A7 /* PKPresentationBuilder.m */,
+				606766A7096EBD1100AF2C8A /* PKToolbarPresentation.m */,
+				606766CD096EBDCB00AF2C8A /* PKMatrixViewPresentation.m */,
+				606766D0096EBDE300AF2C8A /* PKMatrixView.m */,
+				600B9BE4087222120024A432 /* PKTableViewPresentation.m */,
+				3D12FDA9072C14500091A574 /* UKPluginsRegistry.m */,
+				3D12FE23072C1E190091A574 /* PKPrefPanesRegistry.m */,
+				600B9FA00872BAB50024A432 /* Backbone compatibility */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				600B9E9B0872A46F0024A432 /* UnitKit.framework */,
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+				3D0038130729B98500702518 /* PreferencePanes.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				600B9BFF0872293E0024A432 /* LuceneKitTest.bundle */,
+				600B9F8F0872BA230024A432 /* PreferencesKit.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* GSSystemPreferences */ = {
+			isa = PBXGroup;
+			children = (
+				604B431D0924BCA300127256 /* ChangeLog */,
+				604B431F0924BDC400127256 /* PreferencesKit.xcclassmodel */,
+				600B9F980872BA330024A432 /* Headers */,
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+				60F5FAF0092FCBBA00683FCF /* PrebuiltTableView.nib */,
+			);
+			name = GSSystemPreferences;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107310486CEB800E47090 /* Info.plist */,
+				609F1208092E690F00EBD7F7 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		600B9F980872BA330024A432 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				608A97BA092A0D1A009145A7 /* CocoaCompatibility.h */,
+				60676756096EC28100AF2C8A /* NSPreferencePane.h */,
+				60EE1ECE089D69F800D4629C /* PreferencesKit.h */,
+				600B9BBB08721F5B0024A432 /* PKPreferencePane.h */,
+				600B9BE7087222120024A432 /* PKPreferencesController.h */,
+				608A97A709291261009145A7 /* PKPresentationBuilder.h */,
+				600B9BE8087222120024A432 /* PKToolbarPresentation.h */,
+				606766CA096EBDAE00AF2C8A /* PKMatrixViewPresentation.h */,
+				606766D3096EBE1000AF2C8A /* PKMatrixView.h */,
+				600B9BE9087222120024A432 /* PKTableViewPresentation.h */,
+				3D12FDA8072C14500091A574 /* UKPluginsRegistry.h */,
+				3D12FE22072C1E190091A574 /* PKPrefPanesRegistry.h */,
+				600B9F990872BA720024A432 /* Backbone compatibility */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		600B9F990872BA720024A432 /* Backbone compatibility */ = {
+			isa = PBXGroup;
+			children = (
+				3DB0B4EA072C98450012721E /* PrefsModule.h */,
+				3DB0B499072C8E930012721E /* PKPrefsModulePrefPane.h */,
+			);
+			name = "Backbone compatibility";
+			sourceTree = "<group>";
+		};
+		600B9FA00872BAB50024A432 /* Backbone compatibility */ = {
+			isa = PBXGroup;
+			children = (
+				3DB0B49A072C8E930012721E /* PKPrefsModulePrefPane.m */,
+			);
+			name = "Backbone compatibility";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		600B9BF90872293E0024A432 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		600B9F8A0872BA230024A432 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				600B9FAF0872BAE50024A432 /* PKPreferencePane.h in Headers */,
+				600B9FB00872BAE50024A432 /* PKPreferencesController.h in Headers */,
+				600B9FB10872BAE50024A432 /* PKPrefPanesRegistry.h in Headers */,
+				600B9FB20872BAE50024A432 /* PKPrefsModulePrefPane.h in Headers */,
+				600B9FB30872BAE50024A432 /* PKTableViewPresentation.h in Headers */,
+				600B9FB40872BAE50024A432 /* PKToolbarPresentation.h in Headers */,
+				600B9FB50872BAE50024A432 /* PrefsModule.h in Headers */,
+				600B9FB60872BAE50024A432 /* UKPluginsRegistry.h in Headers */,
+				60EE1ECF089D69F800D4629C /* PreferencesKit.h in Headers */,
+				608A97A909291261009145A7 /* PKPresentationBuilder.h in Headers */,
+				608A97BC092A0D1B009145A7 /* CocoaCompatibility.h in Headers */,
+				606766CB096EBDAE00AF2C8A /* PKMatrixViewPresentation.h in Headers */,
+				606766D4096EBE1000AF2C8A /* PKMatrixView.h in Headers */,
+				60676757096EC28100AF2C8A /* NSPreferencePane.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		600B9BFE0872293E0024A432 /* PreferencesKitTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 600B9C010872293F0024A432 /* Build configuration list for PBXNativeTarget "PreferencesKitTest" */;
+			buildPhases = (
+				600B9BF90872293E0024A432 /* Headers */,
+				600B9BFA0872293E0024A432 /* Resources */,
+				600B9BFB0872293E0024A432 /* Sources */,
+				600B9BFC0872293E0024A432 /* Frameworks */,
+				600B9BFD0872293E0024A432 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "UnitKit-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = UnitKit;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			dependencies = (
+			);
+			name = PreferencesKitTest;
+			productName = UnitKit;
+			productReference = 600B9BFF0872293E0024A432 /* LuceneKitTest.bundle */;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>UnitKit</string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string>com.MySoftwareCompany.UnitKit</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string></string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0d1</string>
+</dict>
+</plist>
+";
+			productType = "com.apple.product-type.bundle";
+		};
+		600B9F8E0872BA230024A432 /* PreferencesKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 600B9F910872BA250024A432 /* Build configuration list for PBXNativeTarget "PreferencesKit" */;
+			buildPhases = (
+				600B9F8A0872BA230024A432 /* Headers */,
+				600B9F8B0872BA230024A432 /* Resources */,
+				600B9F8C0872BA230024A432 /* Sources */,
+				600B9F8D0872BA230024A432 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "PreferencesKit-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = PreferencesKit;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			dependencies = (
+			);
+			name = PreferencesKit;
+			productName = PreferencesKit;
+			productReference = 600B9F8F0872BA230024A432 /* PreferencesKit.framework */;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>PreferencesKit</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.yourcompany.PreferencesKit</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>FMWK</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+</dict>
+</plist>
+";
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 600B9B95087213F90024A432 /* Build configuration list for PBXProject "PreferencesKit" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				4A9504CCFFE6A4B311CA0CBA /* Development */,
+				4A9504CDFFE6A4B311CA0CBA /* Deployment */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* GSSystemPreferences */;
+			projectDirPath = "";
+			targets = (
+				600B9BFE0872293E0024A432 /* PreferencesKitTest */,
+				600B9F8E0872BA230024A432 /* PreferencesKit */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		600B9BFA0872293E0024A432 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		600B9F8B0872BA230024A432 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				60F5FAF2092FCBBA00683FCF /* PrebuiltTableView.nib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		600B9BFD0872293E0024A432 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "/usr/local/bin/ukrun \"$TARGET_BUILD_DIR/$PRODUCT_NAME.$WRAPPER_EXTENSION\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		600B9BFB0872293E0024A432 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				604A387A099A09C20082342D /* PKPreferencesController.m in Sources */,
+				600B9C68087296F70024A432 /* PKPreferencePane.m in Sources */,
+				600B9C6B087297090024A432 /* PKPrefsModulePrefPane.m in Sources */,
+				600B9C63087296CE0024A432 /* PKPrefPanesRegistry.m in Sources */,
+				600B9C66087296EA0024A432 /* UKPluginsRegistry.m in Sources */,
+				608A97AC09291261009145A7 /* PKPresentationBuilder.m in Sources */,
+				60F5FC1E092FEF4400683FCF /* CocoaCompatibility.m in Sources */,
+				606766A9096EBD1100AF2C8A /* PKToolbarPresentation.m in Sources */,
+				606766CF096EBDCB00AF2C8A /* PKMatrixViewPresentation.m in Sources */,
+				606766D2096EBDE300AF2C8A /* PKMatrixView.m in Sources */,
+				604A3877099A099B0082342D /* PKTableViewPresentation.m in Sources */,
+				6067677D096EC2B700AF2C8A /* NSPreferencePane.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		600B9F8C0872BA230024A432 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				600B9FB70872BAF80024A432 /* PKPreferencePane.m in Sources */,
+				600B9FB80872BAF80024A432 /* PKPreferencesController.m in Sources */,
+				600B9FB90872BAF80024A432 /* PKPrefPanesRegistry.m in Sources */,
+				600B9FBA0872BAF80024A432 /* PKPrefsModulePrefPane.m in Sources */,
+				600B9FBB0872BAF80024A432 /* PKTableViewPresentation.m in Sources */,
+				600B9FBD0872BAF80024A432 /* UKPluginsRegistry.m in Sources */,
+				608A97AA09291261009145A7 /* PKPresentationBuilder.m in Sources */,
+				60F5FC1D092FEF4400683FCF /* CocoaCompatibility.m in Sources */,
+				606766A8096EBD1100AF2C8A /* PKToolbarPresentation.m in Sources */,
+				606766CE096EBDCB00AF2C8A /* PKMatrixViewPresentation.m in Sources */,
+				606766D1096EBDE300AF2C8A /* PKMatrixView.m in Sources */,
+				6067677C096EC2B700AF2C8A /* NSPreferencePane.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		609F1208092E690F00EBD7F7 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				609F1209092E690F00EBD7F7 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		60F5FAF0092FCBBA00683FCF /* PrebuiltTableView.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				60F5FAF1092FCBBA00683FCF /* English */,
+			);
+			name = PrebuiltTableView.nib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		600B9B96087213F90024A432 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_MODEL_TUNING = G4;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				INFOPLIST_FILE = Info.plist;
+				LIBRARY_STYLE = DYNAMIC;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		600B9B97087213F90024A432 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEPLOYMENT_LOCATION = YES;
+				DEPLOYMENT_POSTPROCESSING = NO;
+				DSTROOT = /;
+				GCC_MODEL_TUNING = G4;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LIBRARY_STYLE = DYNAMIC;
+				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
+				PRODUCT_NAME = PreferencesKit;
+				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
+			};
+			name = Deployment;
+		};
+		600B9B98087213F90024A432 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_MODEL_TUNING = G4;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				INFOPLIST_FILE = Info.plist;
+				LIBRARY_STYLE = DYNAMIC;
+			};
+			name = Default;
+		};
+		600B9C020872293F0024A432 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_UKTEST;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = LuceneKitTest;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Development;
+		};
+		600B9C030872293F0024A432 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_UKTEST;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = LuceneKitTest;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Deployment;
+		};
+		600B9C040872293F0024A432 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_UKTEST;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = LuceneKitTest;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
+		600B9F920872BA250024A432 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEPLOYMENT_POSTPROCESSING = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_MODE_FLAG = "a+rwX";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
+				PRODUCT_NAME = PreferencesKit;
+				SECTORDER_FLAGS = "";
+				STRIP_INSTALLED_PRODUCT = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Development;
+		};
+		600B9F930872BA250024A432 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DSTROOT = /;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G4;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_MODE_FLAG = "a+rwX";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
+				PRODUCT_NAME = PreferencesKit;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Deployment;
+		};
+		600B9F940872BA250024A432 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G4;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_MODE_FLAG = "a+rwX";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
+				PRODUCT_NAME = PreferencesKit;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Default;
+		};
+		604D6EE0089D7D23002CA3F7 /* Development Installed */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_UKTEST;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = LuceneKitTest;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = "Development Installed";
+		};
+		604D6EE1089D7D23002CA3F7 /* Development Installed */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_MODE_FLAG = "a+rwX";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
+				PRODUCT_NAME = PreferencesKit;
+				SECTORDER_FLAGS = "";
+				STRIP_INSTALLED_PRODUCT = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = "Development Installed";
+		};
+		604D6EE2089D7D23002CA3F7 /* Development Installed */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = /;
+				GCC_MODEL_TUNING = G4;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LIBRARY_STYLE = DYNAMIC;
+				PREBINDING = YES;
+				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
+				PRODUCT_NAME = PreferencesKit;
+				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
+				ZERO_LINK = YES;
+			};
+			name = "Development Installed";
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		600B9B95087213F90024A432 /* Build configuration list for PBXProject "PreferencesKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				600B9B96087213F90024A432 /* Development */,
+				604D6EE2089D7D23002CA3F7 /* Development Installed */,
+				600B9B97087213F90024A432 /* Deployment */,
+				600B9B98087213F90024A432 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		600B9C010872293F0024A432 /* Build configuration list for PBXNativeTarget "PreferencesKitTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				600B9C020872293F0024A432 /* Development */,
+				604D6EE0089D7D23002CA3F7 /* Development Installed */,
+				600B9C030872293F0024A432 /* Deployment */,
+				600B9C040872293F0024A432 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		600B9F910872BA250024A432 /* Build configuration list for PBXNativeTarget "PreferencesKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				600B9F920872BA250024A432 /* Development */,
+				604D6EE1089D7D23002CA3F7 /* Development Installed */,
+				600B9F930872BA250024A432 /* Deployment */,
+				600B9F940872BA250024A432 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

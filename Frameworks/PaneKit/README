@@ -1,0 +1,59 @@
+=========================
+PaneKit 0.2 README
+=========================
+
+PaneKit is a framework which provides various features to build 
+flexible pane window in any GNUstep or Cocoa applications. 
+It includes an NSPreferencePane implementation (following Cocoa API).
+
+It is based on GSSystemPreferences code written by Uli Kusterer.
+
+This framework is released under LGPL license (see COPYING document).
+Original licence of GSSystemPreferences is LGPL License too.
+
+Maintainer: Quentin Mathe <qmathe@club-internet.fr>
+Author: Uli Kusterer, Quentin Mathe, Yen-Ju Chen
+
+To know more about PaneKit: 
+<http://www.dromasoftware.com/etoile/mediawiki/index.php?title=PreferencesKit>
+
+
+Build and Install
+-----------------
+
+Read INSTALL document.
+
+
+Mac OS X support
+----------------
+
+PaneKit is compatible with Cocoa.
+Currently only GNUste-make compilation is supported.
+
+
+Developer notes
+===============
+
+Tests suite
+-----------
+
+UnitKit (bundled with Etoile) is required.
+
+    Steps to produce a test bundle and run tests suite:
+
+    * make test=yes 
+
+    * ukrun PaneKit.bundle
+
+
+Dependency
+---------
+
+None.
+
+
+Contribute 
+----------
+
+Read TODO document.
+

@@ -1,0 +1,689 @@
+2006-11-07  Yen-Ju Chen <yjchex gmail>
+
+    * Source/UKPluginsRegistry.m:
+    * Source/PKPrefPanesRegistry.m:
+    Unified the singleton handling to allow multiple registries
+    in an application.
+    * Rename as PaneKit.
+    * Remove Backbone compability.
+
+2006-11-06  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Fix compilation on GNUstep.
+
+2006-11-05  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Fix flick of matrix view.
+    * Work on GNUstep.
+    * New PKPlainPresentation for single preference pane.
+    * Support adding preference pane programmingly.
+
+2006-11-04  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Write table view in code.
+    * Remove all compilation warnings (GNUstep and Cocoa with GNUstep-make).
+    * Fix memory leak on matrix presentation.
+    * Cache preferences controller and loaded plugins in presentation.
+    * Remove unused -presentationView (it is problematic).
+    * Fix flick of table view and shift of toolbar view.
+
+2006-09-26  Quentin Mathe <qmathe@club-internet.fr>
+
+    * GNUmakefile: Modified to include 'etoile.make'.
+
+2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Headers/PKPreferencesController.h: Made class summary in notice more 
+    accurate.
+    * Source/PKPreferencesController.m: Fixed documentation markup and removed 
+    some constants not needed (enclosed in a conditional directive).
+    * Headers/PKPresentationBuilder.h: Replaced class summary to describe this 
+    class and not PKPreferencesController. Fixed mismatched paramater name in 
+    method -layoutPreferencesViewWithPaneView: between interface and 
+    implementation.
+    * Source/PKPresentationBuilder.m: Fixed documentation markup and replaced 
+    class summary to describe this class and not PKPreferencesController.
+    * Source/UKPluginsRegistry.m:
+    * Source/PKPreferencePane.m:
+    * Source/PKPrefPanesRegistry.m: 
+    Fixed documentation markup.
+
+2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Headers/PKMatrixViewPresentation.h:
+    * Source/PKMatrixViewPresentation.m:
+    * Headers/PKMatrixView.h:
+    * Source/PKMatrixView.m:
+    Reindented and reformated a bit. Included correct license notices.
+    * Source/PKPreferencePane.m: Minor update.
+
+2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Headers/NSPreferencePane.h:
+    * Source/PKPreferencePane.m:
+    Updated documentation markup (to work well with autogsdoc).
+
+2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPluginsRegistry.m:
+    * Source/PKPrefPanesRegistry.m:
+    * Source/PKPrefsModulePrefPane.m:
+    Updated documentation markup (to work well with autogsdoc).
+
+2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKMatrixViewPresentation.m: Fixed wrong commit (this file was wrongly replaced by PKTableViewPresentation).
+
+2006-02-14  Quentin Mathe <qmathe@club-internet.fr>
+
+    Fixed broken GNUstep version and updated with a new dependency 
+    injection model (it permits to register for use any 
+    PKPresentationBuilder subclasses automatically when they are loaded 
+    by the runtime).
+    * Headers/PKMatrixViewPresentation.h:
+    * Source/PKMatrixViewPresentation.m:
+    * Headers/PKToolbarPresentation.h:
+    * Source/PKToolbarPresentation.m:
+    * Headers/PKTableViewPresentation.h:
+    * Source/PKTableViewPresentation.m:
+    Fixed constant declaration/definition.
+    (+load): New overriden method to handle dependency injection.
+    * Headers/PKPresentationBuilder.h:
+    * Source/PKPresentationBuilder.m:
+    Fixed constant declaration/definition.
+    (+load): New overriden method to set up dependency injection support.
+    (+inject:forKey:): New method to handle dependency injection.
+    (+builderForPresentationMode:): Rewritten with depency injection  
+    model.
+    (-layoutPreferencesViewWithPaneView:): Fixed 'paneView' being 
+    potentially 'nil' on initial -loadUI call (was resulting in yet 
+    another GNUstep crash by trying to add a 'nil' subview).
+    Updated documentation to be properly generated and more 
+    comprehensive.
+    * Headers/PKPreferencesController.h (-updateUIForPreferencePane:): 
+    Eliminated a warning on mismatched implementation parameter name.
+    * Source/PKPreferencesController.m: Updated documentation to be 
+    properly generated and more comprehensive.
+    * Source/PKPrefPanesRegistry.m (-loadPluginForPath:): Fixed incorrect
+    compound test to avoid any -setObject:forKey: calls with 'nil' 
+    values (that eliminates crash with GNUstep). It now matches previous
+    similar test statement used with prefPane plugin above in the method.
+
+2006-02-10  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Headers/PKPresentationBuilder.h:
+    * Source/PKPresentationBuilder.m: 
+    (-layoutPreferencesViewWithPaneView:): Renamed method 
+    -resizePreferencesViewForView: and incorporated few lines of 
+    PKPreferencesController code. Updated documentation too.
+    (-presentationMode): Updated documentation.
+    * Source/PKPreferencesController.m:
+    (-updateUIForPreferencePane:): Moved the code to add pane view to 
+    preferences view in -[PKPresentationBuilder layoutPreferencesViewWithPaneView:],
+    reshuffled related code a bit and renamed -resizePreferencesViewForView: call
+    in accordance with the new terminology. Updated documentation too.
+    (-owner):
+    (-preferencesView):
+    (-presentationMode):
+    (-setPresentationMode:):
+    Updated documentation.
+    * Source/PKToolbarPresentation.m:
+    * Source/PKMatrixViewPresentation.m:
+    * Source/PKTableViewPresentation.m:
+    (-layoutPreferencesViewWithPaneView:): Renamed method 
+    -resizePreferencesViewForView:.
+
+2006-02-08  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/UKPluginsRegistry.m: Disabled some unit tests which ought to be 
+    reformulated (to pass without hassles).
+    * PreferencesKit.xcodeproj: Fixed broken test bundle compilation and 
+    updated build settings.
+    Xcode Test Result: 3 classes, 5 methods, 13 tests, 0 failed
+
+2006-02-06  Quentin Mathe <qmathe@club-internet.fr>
+
+    * README: Updated.
+    * INSTALL: Fixed contact mailing list.
+
+2006-01-19  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Headers/PKApplicationController.h:
+    * Source/PKApplicationController.m:
+    Removed (not used at all for a bunch of time).
+
+2006-01-19  Quentin Mathe <qmathe@club-internet.fr>
+
+    * COPYING: Added.
+
+2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPresentationBuilder.m (-loadUI): Updated to notify itself about
+    the need to reflect the currently selected pane in presentation view.
+
+2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPreferencesController.m (-updateUIForPreferencePane:):
+    Added a security check to disable autoresizing with pane views (it corrects 
+    the bug you can observe with table presentation in PreferencesKitExample
+    when you switch back to SamplePrefPane from SamplePrefsModule).
+
+2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKTablePresentation.m
+    (-loadUI): Updated to hide column headers on GNUstep too.
+    (-resizePreferencesViewForView:): Disabled buggy animated window resize.
+    * PrebuiltTableView.gorm: Added (I have forgotten to commit it until then).
+
+2006-01-16  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKToolbarPresentation.m (-unloadUI): Fixed switching from toolbar
+    presentation to other ones, which has been broken on GNUstep until then.
+    This bug was triggered by -setToolbarVisibility: call which is not needed
+    in fact. That means table presentation is now usable
+    in PreferencesKitExample.
+
+2006-01-15  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKToolbarPresentation.m (-unloadUI): Fixed toolbar release which
+    was leaking validation objects in activity (that resulted in segmentation
+    fault).
+
+2006-01-15  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPreferencesController.m (-updateUIForPreferencePaneWithPath:): 
+    Added a hack to avoid resigning first responder status with table 
+    presentation when pane is switched (it eliminates flickering between
+    blue and gray of the selection in table view).
+    
+2006-01-13  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/UKPluginsRegistry.m (-loadPluginForPath:): More comments. 
+    Removed a possible condition for plugin reloading, which may be replaced 
+    later by a schema conformance test.
+    * Source/PKPrefPanesRegistry.m 
+    (-loadPluginForPath:): New method extending its superclass counterpart. It
+    includes code to retrieve NSPrefPaneLabelIcon and NSPrefPaneIconFile which
+    are specific to preference pane plugins. Fixed prefs module missing label 
+    and icon bug, they weren't loaded until the module has been selected; 
+    it was related to the fact prefs modules have to be instantied to retrieve 
+    them (their icon and label being not defined in a plist). Now prefs module
+    is instantiated on loading.
+    (-preferencePaneAtPath:): Moved most of its code in -loadPluginForPath: and
+    moved again -loadMainView call to allow nib loading for prefs module (their 
+    pane instance is never nil in this method now) but added a condition to 
+    avoid the overlapping views bug fixed on 2006-01-09 (r423).
+
+2006-01-13  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKTableViewPresentation.m (-didSelectPreferencePaneWithIdentifier:): 
+    Minor fix.
+
+2006-01-13  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPreferencePane.m (-loadMainView): 
+    Added a security check to prevent new mainView instanciation when it isn't 
+    advised.
+
+2006-01-09  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPreferencesController.m (-selectPreferencePaneWithIdentifier:): 
+    Done with the previous commit... Yen-Ju has been faster than me on this 
+    one :-) 
+    Here is my own ChangeLog entry (more detailed)...
+    Included a test to return when the currently selected preference pane is 
+    identical to the one to select. It prevents -updateUIForPreferencePane to 
+    be called, which would reload the preference pane when it isn't needed.
+    Moreover -[PKPrefPanesRegistry preferencePaneWithIdentifier:] 
+    code triggers the bug discussed below, which means 
+    -updateUIForPreferencePane code would introduce the new pane view instance
+    ignoring the current one.
+    * Source/PKPrefPanesRegistry.m (-preferencePaneAtPath:): Moved 
+    -loadMainView, because it must not be called when the preference pane has 
+    already been loaded. -loadMainView creates a new pane view instance 
+    when called, it takes care in theory to dealloc the one in use... but it 
+    doesn't happen when the latter is retained. Usually it is retained by its 
+    superview, therefore it remains stuck in the view hierarchy (being 
+    overlapped by the new one).
+
+2006-01-09  Yen-Ju Chen <yjchenx At__ gmail>
+
+    * Source/PKPreferencesController.m
+    Prevent loading the same pane unnecessarily.
+
+2006-01-09  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKTableViewPresentation.m 
+    (tableView:objectValueForTableColumn:row:): Fixed table view presentation 
+    to have pane names shown (not just empty rows).
+
+2006-01-08  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPresentationBuilder.m (-resizePreferencesViewForView:): Modified
+    to reset pane view position to zero (was purely abstract until then).
+    * Source/PKToolbarPresentation.m:
+    * Source/PKTableViewPresentation.m:
+    * Source/PKMatrixViewPresentation.m:
+    (-resizePreferencesViewForView:): Updated to include a call to the 
+    corresponding super class method (in PKPresentationBuilder). For 
+    PKToolbarPresentation, fixed the receiver of -preferencesView message
+    to be preferences controller and not self anymore (bug introduced with 
+    incomplete previous commit).
+    The incorrectly positioned pane view when you switch back from table view
+    to toolbar presentation is corrected.
+
+2006-01-07  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKToolbarPresentation.m (-preferencesView): Removed, because 
+    it is never called (unlike the identical PKPreferencesController method).
+
+2006-01-06  Yen-Ju Chen <yjchenx At__ gmail>
+
+    * Source/GNUmakefile:
+    add right paths of headers in order to compile with GNUstep-make and Cocoa.
+
+2006-01-06  Quentin Mathe <qmathe@club-internet.fr>
+
+    * PreferencesKit.xclassmodel: Added.
+    
+2006-01-06  Quentin Mathe <qmathe@club-internet.fr>
+    
+    Xcode compilation restored (on Mac OS X, PreferencesKitExample was broken 
+    since 2005-11-22, it is fixed now).
+    * PreferencesKit.xcodeproj: Updated to include files renamed with previous
+    commit and new files related to MatrixView presentation and NSPreferencePane.
+
+2006-01-06  Quentin Mathe <qmathe@club-internet.fr>
+    
+    WARNING: this commit breaks Xcode project.
+    Finished major refactoring started on 2005-11-20.
+    * Headers/PKToolbarPresentation.h:
+    * Headers/PKMatrixViewPresentation.h:
+    * Headers/PKTableViewPresentation.h:
+    Renamed (was PKxxxPreferencesController.h).
+    * Source/PKToolbarPresentation.m:
+    * Source/PKMatrixViewPresentation.m:
+    * Source/PKTableViewPresentation.m: Renamed (was
+    PKxxxPreferencesController.m) and updated to take in account the new
+    related header names.
+    * Source/GNUmakefile: Updated.
+
+2006-01-06  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Source/PKTableViewPreferencesController.m (-loadUI): Added checks
+    to test whether prebuiltTableView nib is correctly loaded, exceptions are
+    now thrown otherwise.
+
+2006-01-05  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Source/GNUmakefile: Modified to build PreferencesKit as a framework (was
+    a library) in order to allow resource files like PrebuiltTableView.gorm
+    to be easily deployed. Removed superfluous license notice too.
+    * Source/GNUmakefile.postamble: 
+    * GNUmakefile:
+    Removed superfluous license notice.
+
+2006-01-04  Yen-Ju Chen <yjchenx At__ gmail>
+
+   * Source/PKMatrixViewPresentation.m:
+   * Source/PKMatrixView.h:
+   * Source/PKMatrixView.m:
+   * Headers/PKMatrixViewPresentation.h:
+   New matrix-style presentation.
+
+2006-01-03  Yen-Ju Chen <yjchenx At__ gmail>
+
+   * Source/PKPreferencesController:
+   Remove declaration on mac in order to build successfully.
+
+2005-12-26  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Source/UKPluginsRegistry.m: Added 'APPLICATION_SUPPORT' macro
+    wrapped in a conditional directive to take in account folder name variations
+    between GNUstep and Cocoa (bug reported by Rob Burns) 
+
+2005-12-20  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Source/PKPreferencesController.m (-preferencesView): Really fixed
+    this time, in our last commit the conditional directive wrongly
+    referenced 'GNUstep' and not 'GNUSTEP' (-contentViewWithoutToolbar was
+    thus not called).
+
+2005-11-28  Quentin Mathe <qmathe@club-internet.fr>
+   
+    * Source/PKPreferencesController.m (-preferencesView): Fixed to return the
+    right view when 'preferencesView' outlet is nil (was returning nil).
+    
+2005-11-22  Quentin Mathe <qmathe@club-internet.fr>
+    
+    PreferencesKit compilation restored on GNUstep (breaks Cocoa compilation).
+    * Source/GNUmakefile: Included CocoaCompatibility files to fix compilation
+    on GNUstep.
+    * Headers/CocoaCompatibility.h:
+    * Source/CocoaCompatibility.m:
+    Updated to be usable on GNUstep side.
+    * Source/PKTableViewPreferencesController.h:
+    (-resizePreferencesViewForView:): Minor fix in order it works on GNUstep.
+    * Headers/PKPreferencePane.h:
+    * Source/PKPreferencePane.m:
+    Moved NSPreferencePane related code in NSPreferencePane new files.
+    * Headers/NSPreferencePane.h:
+    * Source/NSPreferencePane.m:
+    Added.
+
+2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKTableViewPreferencesController.m (-resizePreferencesViewForView:): 
+    Removed old commented out code and corrected resizing issues by reusing
+    code written in equivalent method within PKToolbarPresentation class.
+    
+2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPreferencePane.m: Declared NSPreferencePane implementation, this
+    hack allows NSPreferencePane reference in PreferencesKit based 
+    applications.
+
+2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * PrebuiltTableView.nib: Added.
+    * Headers/PKTableViewPreferencesController.h: Minor outlet tweak.
+    * Source/PKTableViewPreferencesController.m (-loadUI): Extended with 
+    missing code to set outlets value by loading PrebuiltTableView nib.
+    
+2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
+    
+    Major refactoring.
+    * Headers/CocoaCompatibility.h:
+    * Headers/CocoaCompatibility.m:
+    New files to put together various GNUstep extensions we depend on.
+    * Headers/PreferencesKit.h: Updated.
+    * Headers/PKPresentationBuilder.h:
+    * Source/PKPresentationBuilder.m:
+    Added.
+    * Headers/PKPreferencesController.h:
+    * Source/PKPreferencesController.m:
+    Moved NSArray categories to CocoaCompatibility header and source files.
+    Refactored by splitting preference panes handling logic in current class and 
+    presentational logic in a separate class hierarchy based on new 
+    PresentationBuilder abstract class. This new objects model closely relates
+    to Builder pattern.  
+    Added a new 'presentation' ivar to store the current presentation
+    manager we have to interact with.
+    (-initWithPresentationMode:): New method to obtain a controller inited with 
+    a custom presentation (provided through presentation builder class cluster).
+    (-initExtra): Inlined in previous method.
+    (-preferencesListView:) Moved to PresentationBuilder under new name
+    -presentationView.
+    (-initUI): Moved to PresentationBuilder.
+    (-selectPreferencePaneWithIdentifier:): Tailored with two delegate inspired
+    messages sent to presentation side, allowing it to react to preference pane 
+    changes; the two involved methods are -willSelectPreferencePaneWithIdentifier: 
+    and -didSelectPreferencePaneWithIdentifier:.
+    (-repondsToSelector:):
+    (-forwardInvocation:):
+    Extended to include presentation objects in forwarding.
+    (-selectedPreferencePaneIdentifier): Added conveniency method.
+    (-setPresentationMode:): New method to allow switching between presentation
+    like toolbar, table view etc. on the fly.
+    (-presentationMode): Added getter related to previous method.
+    (-switchPreferencePaneView:): Renamed -switchView: to 
+    -switchPreferencePaneView:.
+    * Headers/PKPreferencesToolbarController.h:
+    * Source/PKPreferencesToolbarController.m:
+    Refactored existing class into a new class PKToolbarPresentation. Added an
+    ivar 'switchActionTriggered'
+    (-loadUI): Renamed -initUI to -loadUI.
+    (-unloadUI): Added.
+    (-presentationMode): Added.
+    (-presentationView): Renamed -preferencesListView to -presentationView to
+    follow current trend.
+    (-resizePreferencesViewForView:): Fixed bug in Cocoa code which 
+    wrongly reset window origin to 0 and added a minimum window frame size.
+    (-switchPreferencePaneView:): Added.
+    (-didSelectPreferencePaneWithIdentifier:): Added.
+    (-selectPreferencePaneWithIdentifier:): Removed (logic moved to the two 
+    previous methods).
+    (-toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:): Added a check
+    to avoid -setImage: call when plugin image is a null object (otherwise we
+    we would get an error) and corrected the action selector to match 
+    -switchPreferencePaneView:. 
+    * Headers/PKTableViewPreferencesController.h:
+    * Source/PKTableViewPreferencesController.m:
+    Refactored existing class into a new class PKTableViewPresentation.
+    (-loadUI): Renamed -initUI to -loadUI and added implementation code.
+    (-unloadUI): Added.
+    (-presentationMode): Added.
+    (-presentationView): Renamed -preferencesListView to -presentationView to
+    follow current trend.
+    (-resizePreferencesViewForView:): Rewritten from scratch (commented out old 
+    code).
+    (-switchPreferencePaneView:): Added.
+    (-didSelectPreferencePaneWithIdentifier:): Added.
+    * PreferencesKit.xcodeproj: Tuned build options to have project correctly
+    compiled with Xcode 2.2 for debugging and framework installed with the right 
+    permissions.
+    
+2005-11-20  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Source/UKPluginsRegistry.m (-loadPluginForPath:): Taken in account when 
+    the icon cannot be loaded by setting 'image' to null object what 
+    still allows to build plugin dictionary gracefully.
+
+2005-11-11  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * Headers/PKPreferencePane.h:
+    * Source/PKPreferencePane.m: Documented completely except methods 
+    -didSelect, -willSelect, -didUnselect, -willUnselect.
+    (-assignView:): Now returns NSView and not void to match Cocoa API.
+    * PreferencesKit.xcodeproj: Included ChangeLog.
+
+2005-10-15  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/PKPreferencesController.m:
+    * Source/PKPrefPanesRegistry.m:
+    * Source/UKPluginsRegistry.m:
+    Written PreferencesKit documentation first part.
+    * PreferencesKit.xcodeproj: Tuned a bit build target options.
+
+2005-08-17  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Headers/PKPreferencesController.h (-selectPreferencePaneWithIdentifier:):
+    Added (forgotten to declare it in previous commit).
+
+2005-08-17  Quentin Mathe <qmathe@club-internet.fr>
+
+    PreferencesKit is now usable on GNUstep.
+    * Source/PKPreferencesController.m:
+    (-awakeFromNib): Moved -initUI call before code to load initial preference
+    pane because this code needs preferences list view to be set up. Replaced
+    -updateUIForPreferencePaneWithPath: call by new method
+    -selectPreferencePaneWithIdentifier:.
+    (-updateForPreferencePaneWithPath:): Renamed variables 'mainContainerView'
+    to 'prefsView' and'theView' to 'paneView'. Removed unused commented code.
+    (-selectPreferencePaneWithIdentifier:): New method to change current
+    preference pane (equivalent to -switchView: action).
+    * Source/PKToolbarPreferencesController.m:
+    (-initUI): Moved code to select toolbar item related to current preference
+    pane in -selectPreferencePaneWithIdentifier:.
+    (-selectPreferencePaneWithIdentifier:): New overriden method.
+    (-switchView:): Modified to use -selectPreferencePaneWithIdentifier:.
+    (-preferencesView): Added overriden accessor in order to return contentView
+    or contentViewWithoutToolbar (on GNUstep) when preferencesView has not been
+    set (especially useful because in Gorm we cannot connect outlets to NSWindow
+    related content view)
+    -(resizePreferencesViewForView:): Rewritten completely to be simpler and
+    easier to understand (side effect, it works well now :-).
+
+2005-08-14  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/GNUmakefile.postamble: Added symbolic link creation in order to
+    have BackboneCompatibility headers installed and BackboneCompatibility
+    sources virtually put together with other sources when compilation occurs.
+
+2005-08-07  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Source/GNUmakefile: Fixed issue which prevented to have headers installed.
+
+2005-08-05  Quentin Mathe <qmathe@club-internet.fr>
+
+    PreferencesKit now compiles with GNUstep.
+    * Source/GNUmakefile: Fixed in order compilation works on GNUstep.
+    * Source/GNUmakefile.postamble: Added to allow PKPrefsModulePrefPane.m 
+    compilation.
+    * Source/PKPreferencesController.m: 
+    Included NSArray(ObjectsWithValueForKey) declaration only with Cocoa.
+    (-respondsToSelector:): Fixed test equality for selector (use NULL and not
+    nil).
+    * Source/PKToolbarPreferencesController.m: 
+    Added NSArray (ObjectWithValueForKey) declaration to shut down warning.
+    (-resizePreferencesViewForView:): Hacked to workaround 
+    -[NSWindow frameRectForContentRect:] not implemented on GNUstep.
+    * Source/PKPrefPanesRegistry.m: Added NSArray (ObjectWithValueForKey) 
+    declaration to shut down warning.
+
+2005-08-05  Quentin Mathe <qmathe@club-internet.fr>
+
+	WARNING: doesn't compile with GNUstep.
+	* Headers/PreferencesKit.h: Removed PKApplicationController.h import directive.
+	
+2005-08-05  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile with GNUstep.
+	PreferencesKit is now usable on Mac OS X.
+	* PreferencesKit.xcodeproj: Updated
+    * Headers/UKPluginsRegistry.h: Declared new documented plugin dictionary keys.
+    * Source/UKPluginsRegistry.m:
+    (-loadPluginsOfType:): Took in account 'CFBundleExecutable' variant and not 
+    only 'NSExecutable'.
+    (-loadPluginForPath:): Improved a lot (we take in account more 'identifier',
+    'image' and 'name' related plugin dictionary possible values).
+    (-loadedPlugins): Added a check to return nil when plugins array is empty.
+    * Headers/PKPrefPanesRegistry.h: Declared UnitKit protocol UKTest.
+	* Source/PKPrefPanesRegistry.m: 
+	Tweaked a bit shared instance creation, 
+	(-preferencePaneAtPath:): Took in account new 'image' and 'name' plugin 
+	dictionary values have to support for 'prefsModule' type.
+	(-testPreferencePaneAtPath:): Added.
+	(-preferencePaneWithIdentifier:): Added.
+	* Source/PKTableViewPreferencesController.m (-resizePreferencesViewForView:): Added.
+    * Source/PKToolbarPreferencesController.m:
+    (-initUI): Modified to set up toolbar more completely.
+    (-resizePreferencesViewForView:): Added.
+    (-switchView:): Added.
+    (-toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:): Fixed plugin 
+    identifier retrieve code and renamed 'info' dictionary variable to 'plugin'.
+	* Headers/PKPreferencesController.h:
+    * Source/PKPreferencesController.m:
+    Added a complete tests set.
+    (-awakeFromNib): Added a check to load pane safely.
+    (-[NSArray objectsWithValue:forKey:]): Added NSArray method with a category 
+    for Cocoa compatibility. 
+    (-[NSArray objectWithValue:forKey:]): Added NSArray method with a category.
+    (-resizePreferencesViewForView:): Added (abstract).
+    (-updateUIForPreferencePane:): Refactored with the previous method.
+    (-mainViewWaitSign): Added.
+    
+2005-07-01  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile with GNUstep.
+	PreferencesKit compilation now works (with Xcode).
+	* PreferencesKit.xcode:
+	* PreferencesKit_Prefix.pch:
+	Removed.
+	* PreferencesKit.xcodeproj: Added (Xcode 2.1 project format update)
+	* Info.plist:
+	* version.plist:
+	Minor update.
+	* Source/PKPreferencesController.m
+    * Source/PKTableViewPreferencesController.m
+    * Source/PKToolbarPreferencesController.m
+    * Source/UKPluginsRegistry.m:
+    Fixed UKPluginsRegistry or PKPrefPanesRegistry references to be correct, 
+    which means not UKPluginRegistry (without 's') to take an example.
+
+2005-06-30  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile.
+	* Headers/PKBundleController.h:
+	* Source/PKBundleController.m: 
+	* Headers/PreferencePane.h:
+	Removed.
+	* Headers/PKPreferencesController.h:
+	* Headers/PKPreferencePane.h:
+	* Headers/PKToolbarPreferencesController.h:
+	* Source/PKPreferencesController.m:
+	* Source/PKPreferencePane.m:
+	* Source/PKToolbarPreferencesController.m:
+	Rewritten with Uli Kusterer's GSSystemPreferences code and removed
+	Preferences.app code. Now licensed under LGPL.
+	* Headers/PKTableViewPreferencesController.h: Updated to match 
+	implementation. Now licensed under LGPL.
+	* Source/PKTableViewPreferencesController.m:
+	Implemented. Now licensed under LGPL.
+	* Headers/UKPluginsRegistry.h:
+	* Source/UKPluginsRegistry.m:
+	* Headers/PKPrefPanesRegistry.h:
+	* Source/PKPrefPanesRegistry.m:
+	Added. Derived from Uli Kusterer's GSSystemPreferences code and
+	extended with unit tests, used to replace PKBundleController.
+	* Headers/BackboneCompatibility/PKPrefsModulePrefPane.h:
+	* Source/BackboneCompatibility/PKPrefsModulePrefPane.m:
+	Added. Derived from Uli Kusterer's GSSystemPreferences code (PKPreferencePane
+    adaptor class for Backbone Prefs module support).
+	* Headers/PreferencesKit.h: Added (new umbrella header).
+
+2005-04-06  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile.
+	* Headers/PKApplicationController.h:
+	* Headers/PKBundleController.h:
+	* Headers/PKPreferencesController.h:
+	* Headers/PKPreferencePane.h:
+	* Headers/PKTableViewPreferencesController.h:
+	* Headers/PKToolbarPreferencesController.h:
+	* Headers/PreferencePane.h:
+	* Source/PKApplicationController.m:
+	* Source/PKBundleController.m:
+	* Source/PKPreferencesController.m:
+	* Source/PKPreferencePane.m:
+	* Source/PKTableViewPreferencesController.m:
+	* Source/PKToolbarPreferencesController.m:
+	Improved code to be cleaner and tweaked formatting.
+	* PreferencesKit.xcode:
+	* PreferencesKit_Prefix.pch:
+	* English.lproj/InfoPlist.strings:
+	* English.lproj/locversion.plist:
+	* Info.plist:
+	* version.plist:
+	Added Xcode project.
+	* .cvsignore: Updated to ignore Xcode build folder.
+
+2005-03-10  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile.
+	* INSTALL: Updated to talk about PreferencesKit and not Gorm.
+	* Source/GNUmakefile: Improved formatting.
+
+2005-01-02  Quentin Mathe <qmathe@club-internet.fr>
+	
+	WARNING: doesn't compile.
+	* Headers/BackboneCompatibility/PrefsModule.h:
+	* Headers/PreferencePane.h:
+	* Headers/PKApplicationController.h:
+	* Headers/PKBundleController.h:
+	* Headers/PKPreferencePane.h:
+	* Headers/PKPreferencesController.h:
+	* Headers/PKTableViewController.h:
+	* Headers/PKToolbarPreferencesController.h:
+	* Source/PKApplicationController.m:
+	* Source/PKBundleController.m:
+	* Source/PKPreferencePane.m:
+	* Source/PKPreferencesController.m:
+	* Source/PKTableViewController.m:
+	* Source/PKToolbarPreferencesController.m:
+	* Source/GNUmakefile:
+	* README:
+	* INSTALL:
+	* GNUmakefile:
+	Initial import.
+		
