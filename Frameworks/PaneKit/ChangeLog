@@ -23,6 +23,7 @@
       Rename UKPluginsRegistry to PKPaneRegistry.
     * Rename PKPrefPanesRegistry to PKPreferencePaneRegistry.
       Clean up all the warning due to name change.
+    * README: Add description for panes and preference panes.
 
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 
