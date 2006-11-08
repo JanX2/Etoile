@@ -18,4 +18,11 @@
 	);
 	Super = NSObject;
     };
+    PreferencePane = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
 }

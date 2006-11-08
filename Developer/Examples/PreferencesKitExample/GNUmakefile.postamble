@@ -3,9 +3,9 @@
 #
 
 before-all::
-	rm -f $(PROJECT_DIR)/PreferencesKit; \
-	$(LN_S) $(PROJECT_DIR)/../../../Frameworks/PreferencesKit/Headers \
-	$(PROJECT_DIR)/PreferencesKit; \
+	rm -f $(PROJECT_DIR)/PaneKit; \
+	$(LN_S) $(PROJECT_DIR)/../../../Frameworks/PaneKit/Headers \
+	$(PROJECT_DIR)/PaneKit; \
 	
 after-all::
 ifeq ($(FOUNDATION_LIB), apple)
@@ -21,8 +21,8 @@ else
 endif
 
 after-clean::
-	rm -f $(PROJECT_DIR)/PreferencesKit; \
+	rm -f $(PROJECT_DIR)/PaneKit; \
 
 after-distclean::
-	rm -f $(PROJECT_DIR)/PreferencesKit; \
+	rm -f $(PROJECT_DIR)/PaneKit; \
 

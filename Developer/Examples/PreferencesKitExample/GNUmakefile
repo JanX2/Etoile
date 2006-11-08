@@ -9,9 +9,7 @@ PACKAGE_NAME = PreferencesKitExample
 SUBPROJECTS = SamplePrefPane 
 
 ADDITIONAL_OBJCFLAGS = -Wno-import
-
-ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
-
+ADDITIONAL_INCLUDE_DIRS += -I$(GNUSTEP_LOCAL_ROOT)/Library/Headers/
 ADDITIONAL_INSTALL_DIRS = PlugIns
 
 #
@@ -23,7 +21,7 @@ VERSION = 0.1
 PreferencesKitExample_PRINCIPAL_CLASS = NSApplication
 PreferencesKitExample_APPLICATION_ICON =
 
-PreferencesKitExample_GUI_LIBS = -lPaneKit
+PreferencesKitExample_GUI_LIBS += -lPaneKit
 
 ifeq ($(FOUNDATION_LIB), apple)
 PreferencesKitExample_LOCALIZED_RESOURCE_FILES = \
