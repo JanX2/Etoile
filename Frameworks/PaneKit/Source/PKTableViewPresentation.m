@@ -47,28 +47,12 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
  * Overriden methods
  */
 
-- (void) loadUI
+- (id) init
 {
-  NSView *mainViewContainer = [preferencesController view];
-    
-#if 0
-    /* We use a completely prebuilt table view we retrieve in a dedicated gorm file
-       to avoid the nightmare to set up it manually in code with every elements it
-       includes like corner view, scroll view etc. */
-    
-    BOOL nibLoaded = [NSBundle loadNibNamed: @"PrebuiltTableView" owner: self];
-    
-    if (nibLoaded == NO)
-        [NSException raise: @"PKTableViewPresentationException"
-            format: @"Impossible to load PrebuiltTableView nib"];
-    
-    if (prebuiltTableView == nil)
-        [NSException raise: @"PKTableViewPresentationException"
-            format: @"PrebuiltTableView is nil"];
+  self = [super init];
 
-    [prebuiltTableView removeFromSuperview];
-#else
-  NSRect rect = NSMakeRect(0, 0, 180, [mainViewContainer frame].size.height);
+  /* We build the table here and reuse it */
+  NSRect rect = NSMakeRect(0, 0, 180, 100);
   prebuiltTableView = [[NSScrollView alloc] initWithFrame: rect];
   [prebuiltTableView setAutoresizingMask: NSViewHeightSizable];
 
@@ -84,21 +68,22 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
   DESTROY(column);
   RELEASE(preferencesTableView);
   AUTORELEASE(prebuiltTableView);
-#endif
-    
-#if 0 
-  [prebuiltTableView setFrameSize: NSMakeSize(180, [mainViewContainer frame].size.height)];
-  [prebuiltTableView setFrameOrigin: NSMakePoint(0, 0)];
-#endif
-  [mainViewContainer addSubview: prebuiltTableView];
-    
-  /* Finish table view specific set up. */
-  // NOTE: the next two lines are needed only with Gorm because it doesn't
-  // support to disable column headers.
+
   [preferencesTableView setCornerView: nil];
   [preferencesTableView setHeaderView: nil];
   [preferencesTableView setDataSource: self];
   [preferencesTableView setDelegate: self];
+
+  return self;
+}
+
+- (void) loadUI
+{
+  NSView *mainViewContainer = [preferencesController view];
+    
+  [prebuiltTableView setFrame: NSMakeRect(0, 0, 180, [mainViewContainer frame].size.height)];
+    
+  [mainViewContainer addSubview: prebuiltTableView];
   [preferencesTableView reloadData];
     
   [super loadUI];

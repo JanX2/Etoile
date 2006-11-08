@@ -14,6 +14,8 @@
       Main registry for PKPreferencesController.
     * Source/PKToolbarPresentation.m:
       Fix drifting of toolbar presentation.
+    * Source/PKTableViewPresentation.m:
+      Initialize table view in -init and reuse it.
 
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 
