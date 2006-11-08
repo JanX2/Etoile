@@ -1,0 +1,18 @@
+2006-11-08  Quentin Mathe <qmathe@club-internet.fr>
+
+	* COPYING:
+	* INSTALL:
+	* README:
+	* GNUmakefile:
+	* Headers/SCConfig.h:
+	* Headers/SCKeyboard.h:
+	* Headers/SCMonitor.h:
+	* Headers/SCMouse.h:
+	* Headers/SCSound.h:
+	* Source/SCConfig.m:
+	* Source/SCKeyboard.m:
+	* Source/SCMonitor.m:
+	* Source/SCMouse.m:
+	* Source/SCSound.m:
+	* Source/GNUmakefile:
+	Initial import (API draft without implementation code).
