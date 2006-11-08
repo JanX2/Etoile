@@ -14,7 +14,7 @@ PaneKit_Source_OBJC_FILES = \
         PKMatrixView.m \
         PKToolbarPresentation.m \
         PKPlainPresentation.m \
-        PKPrefPanesRegistry.m \
+        PKPreferencePaneRegistry.m \
         PKPaneRegistry.m 
 
 PaneKit_Source_INCLUDE_DIRS += -I..

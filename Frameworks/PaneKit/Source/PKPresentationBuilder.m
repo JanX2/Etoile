@@ -35,7 +35,7 @@
 
 #import <PaneKit/CocoaCompatibility.h>
 #import <PaneKit/PKPanesController.h>
-#import <PaneKit/UKPluginsRegistry.h>
+#import <PaneKit/PKPaneRegistry.h>
 #import <PaneKit/PKPreferencePane.h>
 #import <PaneKit/PKPresentationBuilder.h>
 #import "GNUstep.h"

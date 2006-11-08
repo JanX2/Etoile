@@ -1,11 +1,13 @@
 /*
-	PKPrefPanesRegistry.h
+	PKPreferencePaneRegistry.h
  
 	PrefPanes manager class used to register new preference panes and obtain 
     already registered preference panes
  
+	Copyright (C) 2006 Yen-Ju Chen
 	Copyright (C) 2004 Uli Kusterer
  
+	Author:  Yen-Ju Chen
 	Author:  Uli Kusterer
              Quentin Mathe <qmathe@club-internet.fr>
 	Date:  August 2004
@@ -33,7 +35,7 @@
 @class PKPreferencePane;
 
 
-@interface PKPrefPanesRegistry : PKPaneRegistry <UKTest>
+@interface PKPreferencePaneRegistry : PKPaneRegistry <UKTest>
 {
 
 }

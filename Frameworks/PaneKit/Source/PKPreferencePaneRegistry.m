@@ -1,12 +1,14 @@
-/** <title>PKPrefPanesRegistry</title>
+/** <title>PKPreferencePaneRegistry</title>
 
-	PKPrefPanesRegistry.m
+	PKPreferencePaneRegistry.m
  
-	<abstract>PrefPanes manager class used to register new preference panes and 
+	<abstract>Prefeference pane manager class used to register new preference panes and 
     obtain already registered preference panes</abstract>
  
+	Copyright (C) 2006 Yen-Ju Chen
 	Copyright (C) 2004 Uli Kusterer
  
+	Author:  Yen-Ju Chen
 	Author:  Uli Kusterer
              Quentin Mathe <qmathe@club-internet.fr>
 	Date:  August 2004
@@ -31,19 +33,19 @@
 #endif
 
 #import <PaneKit/PKPreferencePane.h>
-#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKPreferencePaneRegistry.h>
 #import <PaneKit/CocoaCompatibility.h>
 
-static PKPrefPanesRegistry *sharedPrefPanesRegistry;
+static PKPreferencePaneRegistry *sharedPrefPanesRegistry;
 
 /** <p>PKPrefPanesRegistry Description</p> */
-@implementation PKPrefPanesRegistry
+@implementation PKPreferencePaneRegistry
 
 /** <p>Returns PKPrefPanesRegistry shared instance (singleton).</p> */
 + (id) sharedRegistry
 {	    
   if (sharedPrefPanesRegistry == nil) {
-    sharedPrefPanesRegistry = [[PKPrefPanesRegistry alloc] init];
+    sharedPrefPanesRegistry = [[PKPreferencePaneRegistry alloc] init];
   }
   return sharedPrefPanesRegistry;
 }

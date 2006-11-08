@@ -28,5 +28,5 @@
 #import <PaneKit/PKPreferencesController.h>
 #import <PaneKit/PKPresentationBuilder.h>
 
-#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKPreferencePaneRegistry.h>
 #import <PaneKit/PKPaneRegistry.h>

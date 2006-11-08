@@ -21,6 +21,8 @@
     * Source/UKPluginsRegistry.h:
     * Source/PKPaneRegistry.h:
       Rename UKPluginsRegistry to PKPaneRegistry.
+    * Rename PKPrefPanesRegistry to PKPreferencePaneRegistry.
+      Clean up all the warning due to name change.
 
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 

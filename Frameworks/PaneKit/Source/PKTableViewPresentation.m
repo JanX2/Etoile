@@ -25,8 +25,8 @@
 
 #import <AppKit/AppKit.h>
 #import <PaneKit/CocoaCompatibility.h>
-#import <PaneKit/PKPreferencesController.h>
-#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKPanesController.h>
+#import <PaneKit/PKPaneRegistry.h>
 #import <PaneKit/PKTableViewPresentation.h>
 #import "GNUstep.h"
 
@@ -201,7 +201,8 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
   int row = [preferencesTableView selectedRow];
   NSString *path = (NSString *)[[allLoadedPlugins objectAtIndex: row] objectForKey: @"path"];
 	
-  [preferencesController updateUIForPreferencePane: [[PKPrefPanesRegistry sharedRegistry] preferencePaneAtPath: path]];
+//  [preferencesController updateUIForPreferencePane: [[PKPreferencePaneRegistry sharedRegistry] preferencePaneAtPath: path]];
+  [preferencesController updateUIForPreferencePane: [[preferencesController registry] paneAtPath: path]];
 }
 
 @end

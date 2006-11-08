@@ -30,7 +30,7 @@
 
 #import <AppKit/AppKit.h>
 #import <PaneKit/PKPreferencesController.h>
-#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKPreferencePaneRegistry.h>
 #import "GNUstep.h"
 
 /** <p>PKPreferencesController Description</p> */
@@ -50,8 +50,8 @@ static PKPreferencesController	*sharedInstance = nil;
 - (id) init
 {
   self = [super init];
-  ASSIGN(registry, [PKPrefPanesRegistry sharedRegistry]);
-  [(PKPrefPanesRegistry *)registry loadAllPlugins];
+  ASSIGN(registry, [PKPreferencePaneRegistry sharedRegistry]);
+  [(PKPreferencePaneRegistry *)registry loadAllPlugins];
   sharedInstance = self;
   return self;
 }

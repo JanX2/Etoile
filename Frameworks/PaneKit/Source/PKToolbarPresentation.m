@@ -28,8 +28,8 @@
 #import <GNUstepGUI/GSToolbarView.h>
 #endif
 #import <PaneKit/CocoaCompatibility.h>
-#import <PaneKit/PKPreferencesController.h>
-#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKPanesController.h>
+#import <PaneKit/PKPaneRegistry.h>
 #import <PaneKit/PKToolbarPresentation.h>
 #import "GNUstep.h"
 

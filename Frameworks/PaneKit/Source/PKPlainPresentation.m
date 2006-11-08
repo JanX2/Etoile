@@ -25,8 +25,7 @@
 
 #import <AppKit/AppKit.h>
 #import <PaneKit/CocoaCompatibility.h>
-#import <PaneKit/PKPreferencesController.h>
-#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKPanesController.h>
 #import <PaneKit/PKPlainPresentation.h>
 #import "GNUstep.h"
 
