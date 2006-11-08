@@ -1,7 +1,7 @@
 /*
-	PreferencesKit.h
+	PaneKit.h
 
-	PreferencesKit umbrella header
+	PaneKit umbrella header
 
 	Copyright (C) 2005 Quentin Mathe
 
@@ -22,11 +22,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <PreferencesKit/NSPreferencePane.h>
-#import <PreferencesKit/PKPreferencePane.h>
+#import <PaneKit/NSPreferencePane.h>
+#import <PaneKit/PKPreferencePane.h>
 
-#import <PreferencesKit/PKPreferencesController.h>
-#import <PreferencesKit/PKPresentationBuilder.h>
+#import <PaneKit/PKPreferencesController.h>
+#import <PaneKit/PKPresentationBuilder.h>
 
-#import <PreferencesKit/PKPrefPanesRegistry.h>
-#import <PreferencesKit/UKPluginsRegistry.h>
+#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/UKPluginsRegistry.h>

@@ -33,12 +33,11 @@
 #import <UnitKit/UnitKit.h>
 #endif
 
-#import "CocoaCompatibility.h"
-#import "PrefsModule.h"
-#import "PKPreferencesController.h"
-#import "PKPrefPanesRegistry.h"
-#import "PKPreferencePane.h"
-#import "PKPresentationBuilder.h"
+#import <PaneKit/CocoaCompatibility.h>
+#import <PaneKit/PKPreferencesController.h>
+#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKPreferencePane.h>
+#import <PaneKit/PKPresentationBuilder.h>
 #import "GNUstep.h"
 
 const NSString *PKNoPresentationMode = @"PKNoPresentationMode";

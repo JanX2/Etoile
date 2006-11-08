@@ -25,10 +25,10 @@
  */
 
 #import <AppKit/AppKit.h>
-#import "CocoaCompatibility.h"
-#import "PKPreferencesController.h"
-#import "PKPrefPanesRegistry.h"
-#import "PKMatrixViewPresentation.h"
+#import <PaneKit/CocoaCompatibility.h>
+#import <PaneKit/PKPreferencesController.h>
+#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKMatrixViewPresentation.h>
 #import "PKMatrixView.h"
 #import "GNUstep.h"
 

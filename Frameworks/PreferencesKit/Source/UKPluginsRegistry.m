@@ -27,7 +27,8 @@
  */
 
 #import <AppKit/AppKit.h>
-#import "UKPluginsRegistry.h"
+#import <PaneKit/UKPluginsRegistry.h>
+#import "GNUstep.h"
 
 #ifdef HAVE_UKTEST
 #import <UnitKit/UnitKit.h>
@@ -62,15 +63,16 @@ static NSFileManager *fm = nil;
     </deflist>
  */
 
+static UKPluginsRegistry *sharedPluginRegistry = nil;
+
 @implementation UKPluginsRegistry
 
 /** <p>Returns UKPluginsRegistry shared instance (singleton).</p> */
 + (id) sharedRegistry
 {
-  static UKPluginsRegistry *sharedPluginRegistry = nil;
-	
-  if (sharedPluginRegistry == nil)
+  if (sharedPluginRegistry == nil) {
     sharedPluginRegistry = [[UKPluginsRegistry alloc] init];
+  }
 	
   return sharedPluginRegistry;
 }
@@ -102,8 +104,8 @@ static NSFileManager *fm = nil;
 
 - (void) dealloc
 {
-  [plugins release];
-  [pluginPaths release];
+  DESTROY(plugins);
+  DESTROY(pluginPaths);
 	
   [super dealloc];
 }

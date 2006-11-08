@@ -27,10 +27,10 @@
 #ifdef GNUSTEP
 #import <GNUstepGUI/GSToolbarView.h>
 #endif
-#import "CocoaCompatibility.h"
-#import "PKPreferencesController.h"
-#import "PKPrefPanesRegistry.h"
-#import "PKToolbarPresentation.h"
+#import <PaneKit/CocoaCompatibility.h>
+#import <PaneKit/PKPreferencesController.h>
+#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKToolbarPresentation.h>
 #import "GNUstep.h"
 
 const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";

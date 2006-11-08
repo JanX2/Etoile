@@ -23,7 +23,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-#import "NSPreferencePane.h"
+#import <PaneKit/NSPreferencePane.h>
 
 
 // HACK: We need a blank implementation for NSPreferencePane to eliminate

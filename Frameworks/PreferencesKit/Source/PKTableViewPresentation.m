@@ -24,10 +24,10 @@
  */
 
 #import <AppKit/AppKit.h>
-#import "CocoaCompatibility.h"
-#import "PKPreferencesController.h"
-#import "PKPrefPanesRegistry.h"
-#import "PKTableViewPresentation.h"
+#import <PaneKit/CocoaCompatibility.h>
+#import <PaneKit/PKPreferencesController.h>
+#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKTableViewPresentation.h>
 #import "GNUstep.h"
 
 const NSString *PKTablePresentationMode = @"PKTablePresentationMode";

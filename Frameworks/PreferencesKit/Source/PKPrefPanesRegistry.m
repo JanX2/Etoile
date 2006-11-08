@@ -30,36 +30,29 @@
 #import <UnitKit/UnitKit.h>
 #endif
 
-#import "PKPrefsModulePrefPane.h"
-#import "PKPreferencePane.h"
-#import "PKPrefPanesRegistry.h"
-#import "CocoaCompatibility.h"
+#import <PaneKit/PKPreferencePane.h>
+#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/CocoaCompatibility.h>
 
 static PKPrefPanesRegistry *sharedPrefPanesRegistry;
 
 /** <p>PKPrefPanesRegistry Description</p> */
 @implementation PKPrefPanesRegistry
 
-+ (void) initialize
-{
-    if (self == [PKPrefPanesRegistry class])
-    {
-        sharedPrefPanesRegistry = [[PKPrefPanesRegistry alloc] init];
-    }
-}
-
 /** <p>Returns PKPrefPanesRegistry shared instance (singleton).</p> */
 + (id) sharedRegistry
 {	    
-    return sharedPrefPanesRegistry;
+  if (sharedPrefPanesRegistry == nil) {
+    sharedPrefPanesRegistry = [[PKPrefPanesRegistry alloc] init];
+  }
+  return sharedPrefPanesRegistry;
 }
 
 - (id) init
 {
-    self = [super init];
-    [self setInstantiate: NO];
-
-    return self;
+  self = [super init];
+  [self setInstantiate: NO];
+  return self;
 }
 
 /** <p>Locates and loads <em>preference pane</em> bundles.</p>
@@ -67,7 +60,6 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
 - (void) loadAllPlugins
 {
   [self loadPluginsOfType: @"prefPane"];
-  [self loadPluginsOfType: @"prefsModule"];
 }
 
 - (NSMutableDictionary *) loadPluginForPath: (NSString *)path
@@ -108,34 +100,6 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
         [info setObject: image forKey: @"image"]; 
     }
   }
-  else if ([type isEqualToString: @"prefsModule"]) /* Backbone Preferences.app PrefsModules are wrapped in a special GSPreferencePane subclass. */
-  {
-    // NOTE: For prefs module, we cannot use lazy class instanciation 
-    // because pane label and icon are provided with module object methods 
-    // -buttonCaption and -buttonImage. That's why we call 
-    // -preferencePaneAtPath to force module class allocation, otherwise
-    // label and icon displayed in presentation list would be empty (or match
-    // other plist entries like NSApplicationIcon, CFBundleName).
-        
-    Class mainClass = [[info objectForKey: @"class"] pointerValue];
-    id pane;
-    id module;
-    NSImage *image;
-    NSString *name;
-        
-    pane = [[[PKPrefsModulePrefPane alloc] initWithBundle: [info objectForKey: @"bundle"]] autorelease];
-    [info setObject: pane forKey: @"instance"];
-        
-    module = [[[mainClass alloc] initWithOwner: (PKPrefsModulePrefPane *)pane] autorelease];	/* Pane takes over ownership of the module. */
-        
-    image = [module buttonImage];
-    if (image != nil)
-      [info setObject: image forKey: @"image"];
-                
-    name = [module buttonCaption];
-    if (name != nil && [name length] != 0)
-      [info setObject: name forKey: @"name"];
-  }
     
   return info;
 }
@@ -175,11 +139,6 @@ static PKPrefPanesRegistry *sharedPrefPanesRegistry;
     {
       Class mainClass = [[info objectForKey: @"class"] pointerValue];
       pane = [[[mainClass alloc] initWithBundle: [info objectForKey: @"bundle"]] autorelease];
-    }
-    else if ([type isEqualToString: @"prefsModule"]) /* Backbone Preferences.app PrefsModules are wrapped in a special GSPreferencePane subclass. */
-    {
-      // NOTE: Instanciation is done in -loadPluginForPath: for prefs 
-      // module. More explanations in -loadPluginForPath.
     }
 		
     [info setObject: pane forKey: @"instance"];

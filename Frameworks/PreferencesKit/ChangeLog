@@ -1,3 +1,11 @@
+2006-11-07  Yen-Ju Chen <yjchex gmail>
+
+    * Source/UKPluginsRegistry.m:
+    * Source/PKPrefPanesRegistry.m:
+    Unified the singleton handling to allow multiple registries
+    in an application.
+    * Rename as PaneKit.
+
 2006-11-06  Quentin Mathe <qmathe@club-internet.fr>
 
     * Fix compilation on GNUstep.

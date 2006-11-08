@@ -1,82 +1,28 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-ADDITIONAL_OBJCFLAGS = -Wno-import
+SUBPROJECT_NAME = PaneKit_Source
 
-ADDITIONAL_INCLUDE_DIRS = -I../Headers -I../Headers/BackboneCompatibility
+PaneKit_Source_OBJC_FILES = \
+        CocoaCompatibility.m \
+        NSPreferencePane.m \
+        PKPreferencesController.m \
+        PKPreferencePane.m \
+        PKPresentationBuilder.m \
+        PKTableViewPresentation.m \
+        PKMatrixViewPresentation.m \
+        PKMatrixView.m \
+        PKToolbarPresentation.m \
+        PKPlainPresentation.m \
+        PKPrefPanesRegistry.m \
+        UKPluginsRegistry.m 
 
-GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
+PaneKit_Source_INCLUDE_DIRS += -I..
 
-#
-# Main application
-#
-FRAMEWORK_NAME = PreferencesKit
-VERSION = 0.1
-
-#
-# Resource files
-#
-PreferencesKit_RESOURCE_FILES = 
-
-PreferencesKit_LOCALIZED_RESOURCE_FILES =
-
-# FIXME: xxx_RESOURCE_DIRS doesn't seem to be take in account at least with ..
-PreferencesKit_RESOURCE_DIRS = ../
-
-#
-# Languages we're localized for
-#
-PreferencesKit_LANGUAGES = \
-	English
-	
-#
-# Class files
-#
-PreferencesKit_OBJC_FILES = \
-	CocoaCompatibility.m \
-	NSPreferencePane.m \
-	PKPreferencesController.m \
-	PKPreferencePane.m \
-	PKPresentationBuilder.m \
-	PKTableViewPresentation.m \
-	PKMatrixViewPresentation.m \
-	PKMatrixView.m \
-	PKToolbarPresentation.m \
-	PKPlainPresentation.m \
-	PKPrefPanesRegistry.m \
-	UKPluginsRegistry.m \
-	PKPrefsModulePrefPane.m
-
-#
-# Header files (to install)
-#
-PreferencesKit_HEADER_FILES = \
-	../Headers/CocoaCompatibility.h \
-	../Headers/NSPreferencePane.h \
-	../Headers/PKPreferencesController.h \
-	../Headers/PKPreferencePane.h \
-	../Headers/PKPresentationBuilder.h \
-	../Headers/PKTableViewPresentation.h \
-	../Headers/PKMatrixViewPresentation.h \
-	../Headers/PKPlainPresentation.h \
-	../Headers/PKPrefPanesRegistry.h \
-	../Headers/UKPluginsRegistry.h \
-	../Headers/PrefsModule.h \
-	../Headers/PreferencesKit.h
-
-PreferencesKit_HEADER_FILES_DIR = ../Headers
-
-# NOTE: We are not a library anymore, by the way next line is not needed.
-#libPreferencesKit_HEADER_FILES_INSTALL_DIR = /PreferencesKit
-
-#
-# C files
-#
-PreferencesKit_C_FILES =
+ADDITIONAL_CFLAGS +=
+ADDITIONAL_INCLUDE_DIRS += 
+ADDITIONAL_LIB_DIRS += 
 
 -include GNUmakefile.preamble
+include $(GNUSTEP_MAKEFILES)/subproject.make
 -include GNUmakefile.postamble
-include $(GNUSTEP_MAKEFILES)/framework.make
 
-# FIXME: GNUmakefile.postamble wasn't called with framework.make until I move
-# its declaration above the latter.
-#-include GNUmakefile.postamble

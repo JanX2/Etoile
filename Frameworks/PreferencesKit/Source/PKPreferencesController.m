@@ -32,12 +32,11 @@
 #import <UnitKit/UnitKit.h>
 #endif
 
-#import "PrefsModule.h"
-#import "CocoaCompatibility.h"
-#import "PKPrefPanesRegistry.h"
-#import "PKPreferencePane.h"
-#import "PKPresentationBuilder.h"
-#import "PKPreferencesController.h"
+#import <PaneKit/CocoaCompatibility.h>
+#import <PaneKit/PKPrefPanesRegistry.h>
+#import <PaneKit/PKPreferencePane.h>
+#import <PaneKit/PKPresentationBuilder.h>
+#import <PaneKit/PKPreferencesController.h>
 #import "GNUstep.h"
 
 @interface PKPreferencesController (Private)

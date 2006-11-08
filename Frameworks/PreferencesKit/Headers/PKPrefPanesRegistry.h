@@ -26,7 +26,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "UKPluginsRegistry.h"
+#import <PaneKit/UKPluginsRegistry.h>
 
 @protocol UKTest;
 

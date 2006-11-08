@@ -26,7 +26,7 @@
 
 /** The class name you should actually use most often in place of [PKPreferencePane]. **/
 
-#import "PKPreferencePane.h"
+#import <PaneKit/PKPreferencePane.h>
 
 @interface NSPreferencePane : PKPreferencePane 
 {
