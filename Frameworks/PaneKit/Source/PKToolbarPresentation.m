@@ -135,10 +135,10 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
     
   // NOTE: We have to check carefully the view is not undersized to avoid
   // limiting switch possibilities in listed panes.
-  if (windowFrame.size.height < 150)
-    windowFrame.size.height = 150;
-  if (windowFrame.size.width < 400)
-    windowFrame.size.width = 400;
+  if (windowFrame.size.height < 100)
+    windowFrame.size.height = 100;
+  if (windowFrame.size.width < 100)
+    windowFrame.size.width = 100;
   
   windowFrame.origin.y -= (windowFrame.size.height-oldFrame.size.height);
    
@@ -160,10 +160,10 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
     
   // NOTE: We have to check carefully the view is not undersized to avoid
   // limiting switch possibilities in listed panes.
-  if (windowFrame.size.height < 150)
-      windowFrame.size.height = 150;
-  if (windowFrame.size.width < 400)
-      windowFrame.size.width = 400;
+  if (windowFrame.size.height < 100)
+      windowFrame.size.height = 100;
+  if (windowFrame.size.width < 100)
+      windowFrame.size.width = 100;
 
   // FIXME: It looks like animate option is not working well on GNUstep.
   [[mainView window] setFrame: windowFrame display: YES animate: NO];

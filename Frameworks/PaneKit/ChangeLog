@@ -7,6 +7,12 @@
     * Rename as PaneKit.
     * Remove Backbone compability.
 
+    * Source/PKToolbarPresentation.m:
+    * Source/PKPlainPresentation.m:
+    * Source/PKMatrixPresentation.m:
+    * Source/PKTableViewPresentation.m:
+    Decrease minimal window size for smaller pane.
+
 2006-11-06  Quentin Mathe <qmathe@club-internet.fr>
 
     * Fix compilation on GNUstep.

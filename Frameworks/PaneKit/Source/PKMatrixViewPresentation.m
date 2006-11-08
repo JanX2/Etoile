@@ -139,10 +139,10 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 #if 1 // Not sure we want to do that 
     // NOTE: We have to check carefully the view is not undersized to avoid
     // limiting switch possibilities in listed panes.
-    if (windowFrame.size.height < 150)
-        windowFrame.size.height = 150;
-    if (windowFrame.size.width < 400)
-        windowFrame.size.width = 400;
+    if (windowFrame.size.height < 100)
+        windowFrame.size.height = 100;
+    if (windowFrame.size.width < 100)
+        windowFrame.size.width = 100;
 #endif
    
   /* We take in account the fact the origin is located at bottom left corner. */
