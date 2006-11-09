@@ -12,7 +12,6 @@
   PKPreferencePaneRegistry *registry = [PKPreferencePaneRegistry sharedRegistry];
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
         @"PreferenceIdentifier", @"identifier",
-	[NSNull null], @"image",
 	@"Preference", @"name",
 	@"PreferenceIdentifier", @"path",
 	[NSValue valueWithPointer: [self class]], @"class",
