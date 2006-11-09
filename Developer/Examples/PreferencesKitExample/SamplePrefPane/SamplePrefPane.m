@@ -29,16 +29,16 @@
     switch ([sender selectedRow])
     {
         case 0:
-            [pc setPresentationMode: (NSString *) PKToolbarPresentationMode];
+            [pc setPresentationMode: PKToolbarPresentationMode];
             break;
         case 1:
-            [pc setPresentationMode: (NSString *) PKTablePresentationMode];
+            [pc setPresentationMode: PKTablePresentationMode];
             break;
         case 2:
-            [pc setPresentationMode: (NSString *) PKMatrixPresentationMode];
+            [pc setPresentationMode: PKMatrixPresentationMode];
             break;
         case 3:
-            [pc setPresentationMode: (NSString *) PKPlainPresentationMode];
+            [pc setPresentationMode: PKPlainPresentationMode];
             break;
     }
 }
