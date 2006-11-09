@@ -87,7 +87,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
     [button setTitle: [plugin objectForKey: @"name"]];
         
     NSImage *image = [plugin objectForKey: @"image"];
-    if ([image isKindOfClass: [NSImage class]]) {
+    if ((image) && [image isKindOfClass: [NSImage class]]) {
       [image setSize: NSMakeSize(48, 48)];
       [button setImage: image];
     }
