@@ -9,7 +9,7 @@
   _mainView = [[NSTextField alloc] initWithFrame: NSMakeRect(0, 0, 300, 200)];
   [(NSTextField *)_mainView setStringValue: @"This is a simple preference panel"];
 
-  PKPrefPanesRegistry *registry = [PKPrefPanesRegistry sharedRegistry];
+  PKPreferencePaneRegistry *registry = [PKPreferencePaneRegistry sharedRegistry];
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
         @"PreferenceIdentifier", @"identifier",
 	[NSNull null], @"image",
