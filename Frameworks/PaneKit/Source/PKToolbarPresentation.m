@@ -205,21 +205,23 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
       itemForItemIdentifier:(NSString*)identifier
   willBeInsertedIntoToolbar:(BOOL)willBeInserted 
 {
-    NSToolbarItem *toolbarItem = 
-        [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
-    NSDictionary *plugin = 
-        [allLoadedPlugins objectWithValue: identifier forKey: @"identifier"];
+  NSToolbarItem *toolbarItem = 
+      [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
+  NSDictionary *plugin = 
+      [allLoadedPlugins objectWithValue: identifier forKey: @"identifier"];
 
-	[toolbarItem setLabel: [plugin objectForKey: @"name"]];
+  [toolbarItem setLabel: [plugin objectForKey: @"name"]];
     
-    /* We need to check if 'image' is not null because it can unlike 'name'. */
-    if ([[plugin objectForKey: @"image"] isEqual: [NSNull null]] == NO)
-        [toolbarItem setImage: [plugin objectForKey: @"image"]];
+  /* We need to check if 'image' is not null because it can unlike 'name'. */
+  NSImage *image = [plugin objectForKey: @"image"];
+  if ((image) && [image isKindOfClass: [NSImage class]]) {
+    [toolbarItem setImage: image];
+  }
 	
-    [toolbarItem setTarget: self];
-    [toolbarItem setAction: @selector(switchPaneView:)];
+  [toolbarItem setTarget: self];
+  [toolbarItem setAction: @selector(switchPaneView:)];
     
-	return [toolbarItem autorelease];
+  return [toolbarItem autorelease];
 }
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar 
