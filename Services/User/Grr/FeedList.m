@@ -273,7 +273,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
     if (d) {
       if ([d compare: date] == NSOrderedAscending) {
         RETAIN(item);
-//        [articleCollection removeRecord: item];
+        [articleCollection removeRecord: item];
         [[NSNotificationCenter defaultCenter] 
                  postNotificationName: RSSReaderLogNotification
                  object: item];

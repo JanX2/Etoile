@@ -77,7 +77,7 @@ static Controller *sharedInstance;
 
 - (void)applicationWillFinishLaunching: (NSNotification *) not
 {
-  /* Create pane as early as possible for loggin */
+  /* Create pane as early as possible for logging */
   paneController = [[PaneController alloc] initWithRegistry: AUTORELEASE([[PKPaneRegistry alloc] init])
                        presentationMode: PKMatrixPresentationMode
                        owner: nil];
