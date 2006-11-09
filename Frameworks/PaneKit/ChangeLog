@@ -28,6 +28,9 @@
     * Headers/PKPane.h:
     Move implementation of pane into PKPane
     and have PKPreferencePane and NSPreferencePane subclass of it.
+    * Info.plist:
+    * version.plist:
+    Add back for xcode.
 
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 
