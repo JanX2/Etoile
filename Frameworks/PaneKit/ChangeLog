@@ -31,6 +31,8 @@
     * Info.plist:
     * version.plist:
     Add back for xcode.
+    * PreferencesKit.xcodeproj
+    Work again.
 
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 
