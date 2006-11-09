@@ -65,5 +65,7 @@
 
 - (void) save;
 
+- (void) removeArticlesOlderThanDay: (int) number;
+
 @end
 

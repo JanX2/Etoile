@@ -262,6 +262,27 @@ int articleSortByDate( id articleA, id articleB, void* context )
   [articleCollection save];
 }
 
+- (void) removeArticlesOlderThanDay: (int) number
+{
+  NSCalendarDate *date = [[NSCalendarDate date] dateByAddingYears: 0 
+           months: 0 days: -number hours: 0 minutes: 0 seconds: 0];
+  NSEnumerator *e = [[articleCollection items] objectEnumerator];
+  CKItem *item;
+  while ((item = [e nextObject])) {
+    NSDate *d = [item valueForProperty: kArticleDateProperty];
+    if (d) {
+      if ([d compare: date] == NSOrderedAscending) {
+        RETAIN(item);
+//        [articleCollection removeRecord: item];
+        [[NSNotificationCenter defaultCenter] 
+                 postNotificationName: RSSReaderLogNotification
+                 object: item];
+        DESTROY(item);
+      }
+    }
+  }
+}
+
 /** Private **/
 - (void) feedFetched: (NSNotification *) not
 {
@@ -292,14 +313,6 @@ int articleSortByDate( id articleA, id articleB, void* context )
     [group setValue: URLString forProperty: kArticleGroupURLProperty];
   }
   
-#if 0
-  e = [[group items] objectEnumerator];
-  while ((item = [e nextObject])) {
-    /* Remove all old article */
-    [articleCollection removeRecord: item];
-  }
-#endif
- 
   e = [feed articleEnumerator];
   RSSArticle *article = nil;
   while ((article = [e nextObject])) {

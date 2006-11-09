@@ -1,11 +1,9 @@
 #import <RSSKit/RSSKit.h>
 #import "FetchingProgressManager.h"
-//#import "FeedManagement.h"
-//#import "MainController.h"
 #import "RSSReaderFeed.h"
 #import "FeedList.h"
 #import "GNUstep.h"
-
+#import "Global.h"
 
 //* The number of currently fetched feeds
 int currentlyFetchedFeeds = 0;
@@ -119,24 +117,20 @@ FetchingProgressManager* instance;
     
     if (feedError != RSSFeedErrorNoError)
       {
-        NSLog(@"%@", [FetchingProgressManager stringForError: feedError]);
-#if 0 // FIXME
-	[[ErrorLogController instance]
-	  logString:
-	    [NSString stringWithFormat:
+        NSString *s = [NSString stringWithFormat:
 			@"%@ fetching failed: %@\n", [feed description],
-		      [FetchingProgressManager stringForError: feedError]]];
-#endif
+		      [FetchingProgressManager stringForError: feedError]];
+        [[NSNotificationCenter defaultCenter]
+                 postNotificationName: RSSReaderLogNotification
+                 object: s]; 
       }
   }
   NS_HANDLER {
-       NSLog(@"exception %@", [localException reason]);
-#if 0 // FIXME
-    [[ErrorLogController instance]
-      logString:
-	[NSString stringWithFormat: @"%@ fetching failed: %@\n",
-		  [feed description], [localException reason]]];
-#endif
+       NSString *s = [NSString stringWithFormat: @"%@ fetching failed: %@\n",
+		  [feed description], [localException reason]];
+        [[NSNotificationCenter defaultCenter]
+                 postNotificationName: RSSReaderLogNotification
+                 object: s]; 
   }
   NS_ENDHANDLER;
   

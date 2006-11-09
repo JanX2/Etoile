@@ -13,6 +13,7 @@
                 markUnread = id; 
                 reload = id; 
                 reloadAll = id; 
+                showLog = id; 
                 showMainWindow = id; 
                 showPreferences = id; 
                 subscribe = id; 

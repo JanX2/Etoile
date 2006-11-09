@@ -13,6 +13,9 @@ extern NSString *const kArticleGroupURLProperty;
  * Object is the changed feed. */
 extern NSString *const RSSReaderFeedListChangedNotification;
 
+/* Use this to send any information to log panel */
+extern NSString *const RSSReaderLogNotification;
+
 /* Toolbar */
 extern NSString *const RSSReaderToolbarIdentifier;
 extern NSString *const RSSReaderSubscribeToolbarItemIdentifier;
@@ -21,3 +24,6 @@ extern NSString *const RSSReaderSearchToolbarItemIdentifier;
 
 /* Frame name for saving */
 extern NSString *const RSSReaderMainWindowFrameName;
+
+/* User Defaults */
+extern NSString *const RSSReaderRemoveArticlesAfterDefaults;

@@ -35,6 +35,7 @@
 @class MainWindow;
 @class FeedList;
 @class ContentTextView;
+@class PaneController;
 
 @interface Controller : NSObject
 {
@@ -50,6 +51,7 @@
   FeedList *feedList;
 
   PKPreferencesController *preferencesController;
+  PaneController *paneController;
 }
 
 + (Controller *) mainController;
@@ -68,6 +70,7 @@
 - (void) markUnread: (id) sender;
 
 - (void) showMainWindow: (id) sender;
+- (void) showLog: (id) sender;
 
 - (void) search: (id) sender;
 

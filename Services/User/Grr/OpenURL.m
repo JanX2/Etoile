@@ -25,7 +25,6 @@
 */
 
 #import "OpenURL.h"
-//#import "ErrorLogController.h"
 
 /* Cache browser */
 static NSString *browserPath;
@@ -86,12 +85,13 @@ static NSString *browserPath;
   }
   NS_HANDLER
   {
-#if 0
-      [[ErrorLogController instance]
-	logString: [NSString stringWithFormat: @"Cannot execute browser %@, "
-			     @"please check the preferences!\n", url]];
+     NSString *s =  [NSString stringWithFormat: @"Cannot execute browser %@, "
+			     @"please check the preferences!\n", url];
       
-#endif
+    [[NSNotificationCenter defaultCenter]
+               postNotificationName: RSSReaderLogNotification
+               object: s]; 
+
     result = NO;
   }
   NS_ENDHANDLER;

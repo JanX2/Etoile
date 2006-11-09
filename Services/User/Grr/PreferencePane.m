@@ -4,7 +4,7 @@
 
 - (void) removeDateAction: (id) sender
 {
-  NSLog(@"%@ (%d)", sender, [sender tag]);
+  NSLog(@"%@ (%d)", sender, [[sender selectedItem] tag]);
 }
 
 - (id) init 

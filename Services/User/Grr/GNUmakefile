@@ -7,6 +7,8 @@ Grr_APPLICATION_ICON = rssreader.png
 Grr_STANDARD_INSTALL = yes
 
 Grr_OBJC_FILES = \
+	PaneController.m \
+	LogPane.m \
 	PreferencePane.m \
 	CKTableView.m \
 	TagHandler.m \

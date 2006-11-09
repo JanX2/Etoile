@@ -77,11 +77,31 @@ static Controller *sharedInstance;
 
 - (void)applicationWillFinishLaunching: (NSNotification *) not
 {
+  /* Create pane as early as possible for loggin */
+  paneController = [[PaneController alloc] initWithRegistry: AUTORELEASE([[PKPaneRegistry alloc] init])
+                       presentationMode: PKMatrixPresentationMode
+                       owner: nil];
+
   ASSIGN(feedList, [FeedList feedList]);
+
+  /* Make sure defaults are properly set */
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  int number = [defaults integerForKey: RSSReaderRemoveArticlesAfterDefaults];
+  if (number == 0) {
+    /* Not set */
+    [defaults setInteger: 7 forKey: RSSReaderRemoveArticlesAfterDefaults];
+  }
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotif
 {
+  /* Remove old articles */
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  int number = [defaults integerForKey: RSSReaderRemoveArticlesAfterDefaults];
+  if (number > 0) {
+    [feedList removeArticlesOlderThanDay: number];
+  }
+
   /* Toolbar */
   NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier: RSSReaderToolbarIdentifier];
   [toolbar setDelegate: mainWindow];
@@ -107,8 +127,6 @@ static Controller *sharedInstance;
 
   searchField = [mainWindow searchField];
 #if 0
-  [NSBundle loadNibNamed: @"ErrorLogPanel" owner: self];
-  
   /* Register service... */
   [NSApp setServicesProvider: [[RSSReaderService alloc] init]];
   
@@ -137,6 +155,7 @@ static Controller *sharedInstance;
 
 - (void)applicationWillTerminate:(NSNotification *)aNotif
 {
+  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (BOOL)application:(NSApplication *)application openFile:(NSString *)fileName
@@ -330,6 +349,11 @@ static Controller *sharedInstance;
 - (void) showMainWindow: (id) sender
 {
   [mainWindow makeKeyAndOrderFront: sender];
+}
+
+- (void) showLog: (id) sender
+{
+  [[paneController owner] makeKeyAndOrderFront: sender];
 }
 
 - (void) search: (id) sender
