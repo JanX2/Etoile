@@ -44,6 +44,10 @@
     * Source/PKPresentation.m:
     Use const NSString* for presentation mode everywhere
     to avoid warning of discarding qualifiers.
+    * GNUstep.headers:
+    * Headers/PaneKit.h:
+    Do not instsall presenation implementation except PKPresentation.
+    They should be private.
 
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 

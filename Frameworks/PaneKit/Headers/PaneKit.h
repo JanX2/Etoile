@@ -24,9 +24,12 @@
 
 #import <PaneKit/NSPreferencePane.h>
 #import <PaneKit/PKPreferencePane.h>
+#import <PaneKit/PKPane.h>
 
 #import <PaneKit/PKPreferencesController.h>
-#import <PaneKit/PKPresentationBuilder.h>
+#import <PaneKit/PKPanesController.h>
 
 #import <PaneKit/PKPreferencePaneRegistry.h>
 #import <PaneKit/PKPaneRegistry.h>
+
+#import <PaneKit/PKPresentationBuilder.h>
