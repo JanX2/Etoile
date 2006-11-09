@@ -64,7 +64,7 @@ const NSString *PKPlainPresentationMode = @"PKPlainPresentationMode";
   if (paneView == nil)
       return;
 
-  NSView *mainView = [preferencesController view];
+  NSView *mainView = [controller view];
   NSRect paneViewFrame = [paneView frame];
   NSRect windowFrame = [[mainView window] frame];
     

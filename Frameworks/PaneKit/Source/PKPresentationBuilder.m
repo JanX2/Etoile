@@ -36,7 +36,7 @@
 #import <PaneKit/CocoaCompatibility.h>
 #import <PaneKit/PKPanesController.h>
 #import <PaneKit/PKPaneRegistry.h>
-#import <PaneKit/PKPreferencePane.h>
+#import <PaneKit/PKPane.h>
 #import <PaneKit/PKPresentationBuilder.h>
 #import "GNUstep.h"
 
@@ -87,7 +87,7 @@ static NSMutableDictionary *injectedObjects = nil;
 
 - (void) dealloc
 {
-  DESTROY(preferencesController);
+  DESTROY(controller);
   DESTROY(allLoadedPlugins);
   [super dealloc];
 }
@@ -96,10 +96,10 @@ static NSMutableDictionary *injectedObjects = nil;
  * Preferences UI stuff (mostly abstract methods)
  */
 
-- (void) setPanesController: (PKPanesController *) controller
+- (void) setPanesController: (PKPanesController *) c
 {
   /* Cache these two objects for subclass */
-  ASSIGN(preferencesController, controller);
+  ASSIGN(controller, c);
   ASSIGN(allLoadedPlugins, [[controller registry] loadedPlugins]);
 }
 
@@ -108,8 +108,8 @@ static NSMutableDictionary *injectedObjects = nil;
     have to do and usually done in -awakeFromNib.</p> */
 - (void) loadUI
 {
-  [self layoutPreferencesViewWithPaneView: [[preferencesController selectedPreferencePane] mainView]];
-  [self didSelectPreferencePaneWithIdentifier: [preferencesController selectedPreferencePaneIdentifier]];
+  [self layoutPreferencesViewWithPaneView: [[controller selectedPane] mainView]];
+  [self didSelectPaneWithIdentifier: [controller selectedPaneIdentifier]];
 }
 
 /** <override-subclass />
@@ -121,12 +121,12 @@ static NSMutableDictionary *injectedObjects = nil;
 //  [self subclassResponsibility: _cmd];
 }
 
-- (void) willSelectPreferencePaneWithIdentifier: (NSString *) identifier;
+- (void) willSelectPaneWithIdentifier: (NSString *) identifier;
 {
 //  [self subclassResponsibility: _cmd];
 }
 
-- (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier
+- (void) didSelectPaneWithIdentifier: (NSString *)identifier
 {
 //  [self subclassResponsibility: _cmd];
 }
@@ -151,7 +151,7 @@ static NSMutableDictionary *injectedObjects = nil;
     preferences view, otherwise it would be overlapped by the former.</p> */
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView
 {
-  NSView *prefsView = [preferencesController view];
+  NSView *prefsView = [controller view];
     
   /* We give up here when no paneView is provided and let our subclasses 
      finishing their custom layout. */
@@ -175,10 +175,10 @@ static NSMutableDictionary *injectedObjects = nil;
     <var>sender</var>.</p>
     <p><strong>Overrides this abstract method in your subclass in order to 
     implement this behavior by calling 
-    [PKPreferencesController -selectPreferencePaneWithIdentifier:]; you have to 
+    [PKPreferencesController -selectPaneWithIdentifier:]; you have to 
     be able to retrieve the preference pane through your custom
     <var>sender</var>.</strong></p> */
-- (IBAction) switchPreferencePaneView: (id)sender
+- (void) switchPaneView: (id)sender
 {
 //  [self subclassResponsibility: _cmd];
 }

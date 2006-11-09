@@ -65,7 +65,7 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
 
 - (void) loadUI
 {
-  id owner = [preferencesController owner];
+  id owner = [controller owner];
     
   preferencesToolbar = 
       [[NSToolbar alloc] initWithIdentifier: @"PrefsWindowToolbar"];
@@ -89,7 +89,7 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
 
 - (void) unloadUI
 {
-  id owner = [preferencesController owner];
+  id owner = [controller owner];
     
 #ifdef GNUSTEP
   // FIXME: this line is not needed, but we keep it because it outlines a bug
@@ -117,7 +117,7 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
   if (paneView == nil)
       return;
 
-  NSView *mainView = [preferencesController view];
+  NSView *mainView = [controller view];
   NSRect paneViewFrame = [paneView frame];
   NSRect windowFrame = [[mainView window] frame];
     
@@ -174,15 +174,15 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
   #endif
 }
 
-- (IBAction) switchPreferencePaneView: (id)sender
+- (void) switchPaneView: (id)sender
 {
-  // NOTE: When -selectPreferencePaneWithIdentifier: is not the result of a
+  // NOTE: When -selectPaneWithIdentifier: is not the result of a
   // user click/action in toolbar, we have to update toolbar selection ourself
-  // in -didSelectPreferencePaneWithIdentifier, so we set this flag.
+  // in -didSelectPaneWithIdentifier, so we set this flag.
   switchActionTriggered = YES;
     
   if ([sender isKindOfClass: [NSToolbarItem class]])
-      [preferencesController selectPreferencePaneWithIdentifier: [sender itemIdentifier]];
+      [controller selectPaneWithIdentifier: [sender itemIdentifier]];
     
   switchActionTriggered = NO;
 }
@@ -191,7 +191,7 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
  * Preferences controller delegate methods
  */
 
-- (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier
+- (void) didSelectPaneWithIdentifier: (NSString *)identifier
 {    
     if (switchActionTriggered == NO)
         [preferencesToolbar setSelectedItemIdentifier: identifier];
@@ -217,7 +217,7 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
         [toolbarItem setImage: [plugin objectForKey: @"image"]];
 	
     [toolbarItem setTarget: self];
-    [toolbarItem setAction: @selector(switchPreferencePaneView:)];
+    [toolbarItem setAction: @selector(switchPaneView:)];
     
 	return [toolbarItem autorelease];
 }

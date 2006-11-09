@@ -30,7 +30,7 @@
 
 #import <AppKit/AppKit.h>
 #import <PaneKit/PKPaneRegistry.h>
-#import <PaneKit/PKPreferencePane.h>
+#import <PaneKit/PKPane.h>
 #import <PaneKit/CocoaCompatibility.h>
 #import "GNUstep.h"
 

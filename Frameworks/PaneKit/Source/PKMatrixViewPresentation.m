@@ -50,12 +50,12 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
 
 - (void) buttonAction: (id) sender
 {
-  [self switchPreferencePaneView: self];
+  [self switchPaneView: self];
 }
 
 - (void) loadUI
 {
-  NSView *mainViewContainer = [preferencesController view];
+  NSView *mainViewContainer = [controller view];
 
   int count = [allLoadedPlugins count];
   NSRect rect = [mainViewContainer bounds];  
@@ -123,7 +123,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
   if (paneView == nil) 
     return;
    
-  NSView *prefsView = [preferencesController view];
+  NSView *prefsView = [controller view];
    
   NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];
   NSRect rect = NSMakeRect(0, 0, size.width, size.height);
@@ -160,11 +160,11 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
     [[matrixView contentView] addSubview: paneView];
 }
 
-- (IBAction) switchPreferencePaneView: (id)sender
+- (void) switchPaneView: (id) sender
 {
   int tag = [[matrixView selectedButtonCell] tag];
     
-  [preferencesController selectPreferencePaneWithIdentifier: [identifiers objectAtIndex: tag]];
+  [controller selectPaneWithIdentifier: [identifiers objectAtIndex: tag]];
 }
 
 @end

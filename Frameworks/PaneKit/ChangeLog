@@ -24,6 +24,10 @@
     * Rename PKPrefPanesRegistry to PKPreferencePaneRegistry.
       Clean up all the warning due to name change.
     * README: Add description for panes and preference panes.
+    * Source/PKPane.m:
+    * Headers/PKPane.h:
+    Move implementation of pane into PKPane
+    and have PKPreferencePane and NSPreferencePane subclass of it.
 
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 

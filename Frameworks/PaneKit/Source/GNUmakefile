@@ -8,6 +8,7 @@ PaneKit_Source_OBJC_FILES = \
 	PKPanesController.m \
         PKPreferencesController.m \
         PKPreferencePane.m \
+        PKPane.m \
         PKPresentationBuilder.m \
         PKTableViewPresentation.m \
         PKMatrixViewPresentation.m \

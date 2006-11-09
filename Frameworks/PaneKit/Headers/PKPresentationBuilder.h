@@ -30,8 +30,8 @@
 
 @protocol UKTest;
 
-@protocol PKPreferencePaneOwner;
-@class PKPreferencePane;
+@protocol PKPaneOwner;
+@class PKPane;
 @class PKPanesController;
 
 extern const NSString *PKNoPresentationMode;
@@ -40,7 +40,7 @@ extern const NSString *PKOtherPresentationMode;
 @interface PKPresentationBuilder : NSObject 
 {
   /* For convenience */
-  PKPanesController *preferencesController;
+  PKPanesController *controller;
   NSArray *allLoadedPlugins;
 }
 
@@ -56,12 +56,12 @@ extern const NSString *PKOtherPresentationMode;
 - (void) layoutPreferencesViewWithPaneView: (NSView *)paneView;
 
 /* Method from PKPreferencesController which needs to be customized in subclass */
-- (IBAction) switchPreferencePaneView: (id)sender;
+- (void) switchPaneView: (id)sender;
 
 /* Abstract accessors methods */
 - (NSString *) presentationMode;
 
-- (void) willSelectPreferencePaneWithIdentifier: (NSString *) identifier;
-- (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier;
+- (void) willSelectPaneWithIdentifier: (NSString *) identifier;
+- (void) didSelectPaneWithIdentifier: (NSString *)identifier;
 
 @end

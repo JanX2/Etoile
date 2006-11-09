@@ -32,7 +32,7 @@
 
 #import <PaneKit/CocoaCompatibility.h>
 #import <PaneKit/PKPaneRegistry.h>
-#import <PaneKit/PKPreferencePane.h>
+#import <PaneKit/PKPane.h>
 #import <PaneKit/PKPresentationBuilder.h>
 #import <PaneKit/PKPanesController.h>
 #import "GNUstep.h"
@@ -111,11 +111,11 @@
         [[prefPanes objectAtIndex: 0] objectForKey: @"identifier"];
 	
     /* Load a first pane. */
-    [self selectPreferencePaneWithIdentifier: identifier];
+    [self selectPaneWithIdentifier: identifier];
   }
   else
   {
-    NSLog(@"No PreferencePane loaded are available.");
+    NSLog(@"No Pane loaded are available.");
   }
 }
 
@@ -127,8 +127,8 @@
    pane</em> UI.</p>
    <p><strong>By being the main bottleneck for switching preference panes, this 
    method must be called each time a new preference pane is selected like with
-   -selectPreferencePaneWithIdentifier: method.</strong></p> */
-- (BOOL) updateUIForPreferencePane: (PKPreferencePane *)requestedPane
+   -selectPaneWithIdentifier: method.</strong></p> */
+- (BOOL) updateUIForPane: (PKPane *)requestedPane
 {
   NSView *prefsView = [self view];
     
@@ -216,24 +216,24 @@
 /** <p>Switches to <em>preference pane</em> with the given 
     identifier.</p> 
     <p><strong>This method needs to be called in 
-    -switchPreferencePaneView:.</strong></p> */
-- (void) selectPreferencePaneWithIdentifier: (NSString *)identifier
+    -switchPaneView:.</strong></p> */
+- (void) selectPaneWithIdentifier: (NSString *)identifier
 {
   /* If the preference pane is already selected, we don't take in account the
      request, especially because it we reloads another instance of the pane 
      view on top of the current one. */
-  if ([[self selectedPreferencePaneIdentifier] isEqualToString: identifier])
+  if ([[self selectedPaneIdentifier] isEqualToString: identifier])
     return;
 
-  PKPreferencePane *pane = [registry paneWithIdentifier: identifier];
+  PKPane *pane = [registry paneWithIdentifier: identifier];
     
-  if ([presentation respondsToSelector: @selector(willSelectPreferencePaneWithIdentifier:)])
-    [presentation willSelectPreferencePaneWithIdentifier: identifier];
+  if ([presentation respondsToSelector: @selector(willSelectPaneWithIdentifier:)])
+    [presentation willSelectPaneWithIdentifier: identifier];
     
-  [self updateUIForPreferencePane: pane];
+  [self updateUIForPane: pane];
     
-  if ([presentation respondsToSelector: @selector(didSelectPreferencePaneWithIdentifier:)])
-    [presentation didSelectPreferencePaneWithIdentifier: identifier];
+  if ([presentation respondsToSelector: @selector(didSelectPaneWithIdentifier:)])
+    [presentation didSelectPaneWithIdentifier: identifier];
 }
 
 /*
@@ -326,7 +326,7 @@
 }
 
 /** Returns identifier of the currently selected <em>preference pane</em>. */
-- (NSString *) selectedPreferencePaneIdentifier
+- (NSString *) selectedPaneIdentifier
 {
   NSArray *plugins = [registry loadedPlugins]; 
   NSDictionary *plugin = [plugins objectWithValue: currentPane forKey: @"instance"];
@@ -335,7 +335,7 @@
 }
 
 /** Returns the currently selected <em>preference pane</em>. */
-- (PKPreferencePane *) selectedPreferencePane
+- (PKPane *) selectedPane
 {
   return currentPane;
 }
@@ -403,12 +403,12 @@
 
 /** <p>Switches the current preference pane viewed to another one provided by
     <var>sender</var>.</p> */
-- (IBAction) switchPreferencePaneView: (id)sender
+- (IBAction) switchPaneView: (id)sender
 {
   // NOTE: It could be better to have a method like 
   // -preferencePaneIdentifierForSender: on presentation builder side than
   // propagating the action method.
-  [presentation switchPreferencePaneView: sender];
+  [presentation switchPaneView: sender];
 }
 
 @end

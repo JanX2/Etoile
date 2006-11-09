@@ -29,8 +29,8 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol PKPreferencePaneOwner;
-@class PKPreferencePane;
+@protocol PKPaneOwner;
+@class PKPane;
 @class PKPresentationBuilder;
 @class PKPaneRegistry;
 
@@ -41,13 +41,13 @@ extern const NSString *PKMatrixPresentationMode;
 extern const NSString *PKPlainPresentationMode;
 extern const NSString *PKOtherPresentationMode;
 
-@interface PKPanesController: NSObject <PKPreferencePaneOwner>
+@interface PKPanesController: NSObject <PKPaneOwner>
 {
   IBOutlet id owner; /* PKPreferencesView or NSWindow */
   IBOutlet NSView *view; /* Necessary only when owner is not PKPreferencesView */
   IBOutlet NSView *mainViewWaitSign;	/* View we show while next main view is being loaded. */
-  PKPreferencePane *currentPane; /* Currently showing pane. */
-  PKPreferencePane *nextPane; /* Pane to show in response to the next replyToShouldUnselect: YES. */
+  PKPane *currentPane; /* Currently showing pane. */
+  PKPane *nextPane; /* Pane to show in response to the next replyToShouldUnselect: YES. */
   PKPresentationBuilder *presentation;
   PKPaneRegistry *registry;
 }
@@ -65,20 +65,20 @@ extern const NSString *PKOtherPresentationMode;
        presentationMode: (NSString *) presentationMode;
 
 /* Preferences UI related stuff */
-- (BOOL) updateUIForPreferencePane: (PKPreferencePane *)requestedPane;
+- (BOOL) updateUIForPane: (PKPane *)requestedPane;
 
-- (void) selectPreferencePaneWithIdentifier: (NSString *)identifier;
+- (void) selectPaneWithIdentifier: (NSString *)identifier;
 
 /* Action methods */
-- (IBAction) switchPreferencePaneView: (id)sender;
+- (IBAction) switchPaneView: (id)sender;
 
 /* Accessors */
 - (id) owner;
 - (NSView *) view;
 - (PKPaneRegistry *) registry;
 
-- (NSString *) selectedPreferencePaneIdentifier;
-- (PKPreferencePane *) selectedPreferencePane;
+- (NSString *) selectedPaneIdentifier;
+- (PKPane *) selectedPane;
 
 - (NSString *) presentationMode;
 - (void) setPresentationMode: (NSString *)presentationMode;

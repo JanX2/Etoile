@@ -7,6 +7,7 @@ PaneKit_HEADER_FILES = \
 	PKPanesController.h \
 	PKPreferencesController.h \
 	PKPreferencePane.h \
+	PKPane.h \
 	PKPresentationBuilder.h \
 	PKTableViewPresentation.h \
 	PKMatrixViewPresentation.h \

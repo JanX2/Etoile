@@ -79,7 +79,7 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 
 - (void) loadUI
 {
-  NSView *mainViewContainer = [preferencesController view];
+  NSView *mainViewContainer = [controller view];
     
   [prebuiltTableView setFrame: NSMakeRect(0, 0, 180, [mainViewContainer frame].size.height)];
     
@@ -107,7 +107,7 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
   if (paneView == nil)
     return;
 
-  NSView *mainView = [preferencesController view];
+  NSView *mainView = [controller view];
   NSRect paneFrame = [paneView frame];
   NSRect tableFrame = [prebuiltTableView frame];
   NSRect windowFrame = [[mainView window] frame];
@@ -156,19 +156,19 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
     [mainView addSubview: paneView];
 }
 
-- (IBAction) switchPreferencePaneView: (id)sender
+- (void) switchPaneView: (id)sender
 {
   int row = [preferencesTableView selectedRow];
   NSString *path = [[allLoadedPlugins objectAtIndex: row] identifier];
     
-  [preferencesController selectPreferencePaneWithIdentifier: path];
+  [controller selectPaneWithIdentifier: path];
 }
 
 /*
  * Preferences controller delegate methods
  */
 
-- (void) didSelectPreferencePaneWithIdentifier: (NSString *)identifier
+- (void) didSelectPaneWithIdentifier: (NSString *)identifier
 {    
   NSDictionary *info = [allLoadedPlugins objectWithValue: identifier 
                                          forKey: @"identifier"];
@@ -201,8 +201,7 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
   int row = [preferencesTableView selectedRow];
   NSString *path = (NSString *)[[allLoadedPlugins objectAtIndex: row] objectForKey: @"path"];
 	
-//  [preferencesController updateUIForPreferencePane: [[PKPreferencePaneRegistry sharedRegistry] preferencePaneAtPath: path]];
-  [preferencesController updateUIForPreferencePane: [[preferencesController registry] paneAtPath: path]];
+  [controller updateUIForPane: [[controller registry] paneAtPath: path]];
 }
 
 @end
