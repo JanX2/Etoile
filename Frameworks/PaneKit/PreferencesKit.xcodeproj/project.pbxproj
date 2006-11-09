@@ -68,7 +68,6 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		3D0038130729B98500702518 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /Users/witness/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		600B9BBB08721F5B0024A432 /* PKPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PKPreferencePane.h; path = Headers/PKPreferencePane.h; sourceTree = "<group>"; };
 		600B9BBC08721F5B0024A432 /* PKPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = PKPreferencePane.m; path = Source/PKPreferencePane.m; sourceTree = "<group>"; };
 		600B9BE4087222120024A432 /* PKTableViewPresentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = PKTableViewPresentation.m; path = Source/PKTableViewPresentation.m; sourceTree = "<group>"; };
@@ -77,7 +76,7 @@
 		600B9BE8087222120024A432 /* PKToolbarPresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PKToolbarPresentation.h; path = Headers/PKToolbarPresentation.h; sourceTree = "<group>"; };
 		600B9BE9087222120024A432 /* PKTableViewPresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PKTableViewPresentation.h; path = Headers/PKTableViewPresentation.h; sourceTree = "<group>"; };
 		600B9E9B0872A46F0024A432 /* UnitKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnitKit.framework; path = /Library/Frameworks/UnitKit.framework; sourceTree = "<absolute>"; };
-		600B9F8F0872BA230024A432 /* PaneKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PaneKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		600B9F8F0872BA230024A432 /* PreferencesKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = PreferencesKit.framework; path = /Users/yjchen/Etoile/Frameworks/PaneKit/build/Development/PreferencesKit.framework; sourceTree = "<absolute>"; };
 		604B431D0924BCA300127256 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
 		604B431F0924BDC400127256 /* PreferencesKit.xcclassmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcclassmodel; path = PreferencesKit.xcclassmodel; sourceTree = "<group>"; };
 		606766A7096EBD1100AF2C8A /* PKToolbarPresentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PKToolbarPresentation.m; path = Source/PKToolbarPresentation.m; sourceTree = "<group>"; };
@@ -90,7 +89,6 @@
 		608A97A709291261009145A7 /* PKPresentationBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PKPresentationBuilder.h; path = Headers/PKPresentationBuilder.h; sourceTree = "<group>"; };
 		608A97A809291261009145A7 /* PKPresentationBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PKPresentationBuilder.m; path = Source/PKPresentationBuilder.m; sourceTree = "<group>"; };
 		608A97BA092A0D1A009145A7 /* CocoaCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaCompatibility.h; path = Headers/CocoaCompatibility.h; sourceTree = "<group>"; };
-		609F1209092E690F00EBD7F7 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaCompatibility.m; path = Source/CocoaCompatibility.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; lineEnding = 0; path = Info.plist; sourceTree = "<group>"; };
 		E81D60ED0B02D52000811C3D /* PaneKit.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PaneKit.h; path = Headers/PaneKit.h; sourceTree = "<group>"; };
@@ -105,7 +103,7 @@
 		E81D61020B02D53D00811C3D /* PKPanesController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = PKPanesController.m; path = Source/PKPanesController.m; sourceTree = "<group>"; };
 		E81D61030B02D53D00811C3D /* PKPlainPresentation.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = PKPlainPresentation.m; path = Source/PKPlainPresentation.m; sourceTree = "<group>"; };
 		E81D61040B02D53D00811C3D /* PKPreferencePaneRegistry.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = PKPreferencePaneRegistry.m; path = Source/PKPreferencePaneRegistry.m; sourceTree = "<group>"; };
-		E8E0463A0B02D66C001ACFF7 /* LuceneKitTest.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LuceneKitTest.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8E0463A0B02D66C001ACFF7 /* LuceneKitTest.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = LuceneKitTest.bundle; path = /Users/yjchen/Etoile/Frameworks/PaneKit/build/Development/LuceneKitTest.bundle; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,7 +156,6 @@
 			children = (
 				600B9E9B0872A46F0024A432 /* UnitKit.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-				3D0038130729B98500702518 /* PreferencePanes.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -175,8 +172,6 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				600B9F8F0872BA230024A432 /* PaneKit.framework */,
-				E8E0463A0B02D66C001ACFF7 /* LuceneKitTest.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -206,7 +201,6 @@
 			isa = PBXGroup;
 			children = (
 				8D1107310486CEB800E47090 /* Info.plist */,
-				609F1208092E690F00EBD7F7 /* InfoPlist.strings */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -313,6 +307,7 @@
 				600B9F8B0872BA230024A432 /* Resources */,
 				600B9F8C0872BA230024A432 /* Sources */,
 				600B9F8D0872BA230024A432 /* Frameworks */,
+				E80441CA0B02DC8800A3DA4F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -320,7 +315,7 @@
 			);
 			name = PaneKit;
 			productName = PreferencesKit;
-			productReference = 600B9F8F0872BA230024A432 /* PaneKit.framework */;
+			productReference = 600B9F8F0872BA230024A432 /* PreferencesKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -333,8 +328,8 @@
 			mainGroup = 29B97314FDCFA39411CA2CEA /* GSSystemPreferences */;
 			projectDirPath = "";
 			targets = (
-				600B9BFE0872293E0024A432 /* PreferencesKitTest */,
 				600B9F8E0872BA230024A432 /* PaneKit */,
+				600B9BFE0872293E0024A432 /* PreferencesKitTest */,
 			);
 		};
 /* End PBXProject section */
@@ -370,6 +365,19 @@
 			shellPath = /bin/bash;
 			shellScript = "/usr/local/bin/ukrun \"$TARGET_BUILD_DIR/$PRODUCT_NAME.$WRAPPER_EXTENSION\"";
 		};
+		E80441CA0B02DC8800A3DA4F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "rm $SRCROOT/PaneKit";
+		};
 		E8E046690B02DA59001ACFF7 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -381,7 +389,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "ln -s $SRCROOT/Headers $SRCROOT/PaneKit";
+			shellScript = "ln -fs $SRCROOT/Headers $SRCROOT/PaneKit";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -429,17 +437,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		609F1208092E690F00EBD7F7 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				609F1209092E690F00EBD7F7 /* English */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		600B9B96087213F90024A432 /* Development */ = {

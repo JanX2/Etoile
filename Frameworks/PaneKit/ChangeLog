@@ -31,8 +31,10 @@
     * Info.plist:
     * version.plist:
     Add back for xcode.
-    * PreferencesKit.xcodeproj
+    * PreferencesKit.xcodeproj:
     Work again.
+    * PreferencesKit.xcodeproj:
+    Remove symbolic link for compilation.
 
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 
