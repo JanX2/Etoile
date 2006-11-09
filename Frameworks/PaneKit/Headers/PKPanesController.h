@@ -56,7 +56,7 @@ extern const NSString *PKOtherPresentationMode;
  * If it is load with Nib or Gorm, owner and registry must be connected.
  * The mode will be PKToolbarPresentationMode by default. */
 - (id) initWithRegistry: (PKPaneRegistry *) registry
-       presentationMode: (NSString *) presentationMode
+       presentationMode: (const NSString *) presentationMode
                   owner: (id) owner;
 
 /* Preferences UI related stuff */
