@@ -59,11 +59,6 @@ extern const NSString *PKOtherPresentationMode;
        presentationMode: (NSString *) presentationMode
                   owner: (id) owner;
 
-/* Since most owner is just an empty window. 
-   This method automatically create an empty window */
-- (id) initWithRegistry: (PKPaneRegistry *) registry
-       presentationMode: (NSString *) presentationMode;
-
 /* Preferences UI related stuff */
 - (BOOL) updateUIForPane: (PKPane *)requestedPane;
 
@@ -80,7 +75,7 @@ extern const NSString *PKOtherPresentationMode;
 - (NSString *) selectedPaneIdentifier;
 - (PKPane *) selectedPane;
 
-- (NSString *) presentationMode;
-- (void) setPresentationMode: (NSString *)presentationMode;
+- (const NSString *) presentationMode;
+- (void) setPresentationMode: (const NSString *)presentationMode;
 
 @end

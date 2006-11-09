@@ -35,6 +35,15 @@
     Work again.
     * PreferencesKit.xcodeproj:
     Remove symbolic link for compilation.
+    * Headers/PKPanesController.h:
+    * Source/PKPanesController.m:
+    Remove unnecessary -initWithRegistry:presentationMode:
+    and check owner in -awakeFromNib. 
+    If not, create an empty window as owner.
+    * Source/PKPanesController.m:
+    * Source/PKPresentation.m:
+    Use const NSString* for presentation mode everywhere
+    to avoid warning of discarding qualifiers.
 
 2006-11-07  Yen-Ju Chen <yjchex gmail>
 

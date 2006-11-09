@@ -56,25 +56,10 @@
   return self;
 }
 
-- (id) initWithRegistry: (PKPaneRegistry *) r
-       presentationMode: (NSString *) mode
-{
-  self = [super init];
-  /* Create an empty window as owner */
-  NSWindow *window = [[NSWindow alloc] initWithContentRect: NSMakeRect(400, 400, 300, 150)
-                           styleMask: NSTitledWindowMask|NSClosableWindowMask
-                             backing: NSBackingStoreBuffered 
-                               defer: YES];
-  [self initWithRegistry: r
-        presentationMode: mode
-        owner: AUTORELEASE(window)];
-  return self;
-}
-
 /* This is usually called programmingly.
    So we call awakeFromNib explicitly */
 - (id) initWithRegistry: (PKPaneRegistry *) r
-       presentationMode: (NSString *) mode
+       presentationMode: (const NSString *) mode
        owner: (id) o
 {
   self = [super init];
@@ -93,6 +78,16 @@
 /* Initialize stuff that can't be set in the nib/gorm file. */
 - (void) awakeFromNib
 {
+  if (owner == nil) {
+    /* Create an empty window as owner */
+    owner = [[NSWindow alloc] initWithContentRect: NSMakeRect(400, 400, 300, 150)
+                           styleMask: NSTitledWindowMask|NSClosableWindowMask
+                             backing: NSBackingStoreBuffered 
+                               defer: YES];
+    [owner setReleasedWhenClosed: NO];
+    
+  }
+
   if (presentation == nil) {
     /* Use toolbar as default */ 
     ASSIGN(presentation, [PKPresentationBuilder builderForPresentationMode: (NSString *)PKToolbarPresentationMode]);
@@ -317,6 +312,13 @@
     -[PKPresentationBuilder layoutPreferencesViewWithPaneView:] method.</p> */
 - (id) owner
 {
+  if (owner == nil) {
+    /* owner cannot be nil. 
+     * It must be initialized programmingly.
+     * Call -awakeFromNib to initialize everything.
+     */
+    [self awakeFromNib];
+  }
   return owner;
 }
 
@@ -360,14 +362,14 @@
 
 /** <p>Returns the <em>presentation mode</em> which is used to identify
     the current presentation style.</p> */
-- (NSString *) presentationMode
+- (const NSString *) presentationMode
 {
   return [presentation presentationMode];
 }
 
 /** <p>Sets the <em>presentation</em> style used to display the 
     preferences pane list and identified by <var>presentationMode</var>.</p> */
-- (void) setPresentationMode: (NSString *)presentationMode
+- (void) setPresentationMode: (const NSString *) presentationMode
 {
   if ([presentationMode isEqual: [presentation presentationMode]])
     return;

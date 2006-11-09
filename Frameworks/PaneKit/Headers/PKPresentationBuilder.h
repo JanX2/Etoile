@@ -44,7 +44,7 @@ extern const NSString *PKOtherPresentationMode;
   NSArray *allLoadedPlugins;
 }
 
-+ (id) builderForPresentationMode: (NSString *)presentationMode;
++ (id) builderForPresentationMode: (const NSString *)presentationMode;
 
 /* Method to inject custom Presentation */
 + (BOOL) inject: (id)obj forKey: (id)key;
@@ -59,7 +59,7 @@ extern const NSString *PKOtherPresentationMode;
 - (void) switchPaneView: (id)sender;
 
 /* Abstract accessors methods */
-- (NSString *) presentationMode;
+- (const NSString *) presentationMode;
 
 - (void) willSelectPaneWithIdentifier: (NSString *) identifier;
 - (void) didSelectPaneWithIdentifier: (NSString *)identifier;

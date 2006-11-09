@@ -66,7 +66,7 @@ static NSMutableDictionary *injectedObjects = nil;
     possible.</p>
     <p>It returns nil when no presentation subclass registered against 
     <var>presentationMode</var> could be found.</p> */
-+ (id) builderForPresentationMode: (NSString *)presentationMode
++ (id) builderForPresentationMode: (const NSString *)presentationMode
 {
   id presentationUnit = [injectedObjects objectForKey: presentationMode];
     
@@ -193,7 +193,7 @@ static NSMutableDictionary *injectedObjects = nil;
     <p>By default, this methods returns <code>PKNoPresentationMode</code>.</p>
     <p><strong>Overrides this abstract method to return the specific 
     <em>presentation identifier</em> related to your subclass.</strong></p> */
-- (NSString *) presentationMode
+- (const NSString *) presentationMode
 {
   return (NSString *)PKNoPresentationMode;
 }
