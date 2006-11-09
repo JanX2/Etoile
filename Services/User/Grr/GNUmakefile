@@ -7,6 +7,7 @@ Grr_APPLICATION_ICON = rssreader.png
 Grr_STANDARD_INSTALL = yes
 
 Grr_OBJC_FILES = \
+	PreferencePane.m \
 	CKTableView.m \
 	TagHandler.m \
 	CodeParser.m \
@@ -28,7 +29,7 @@ else
 Grr_OBJC_FILES += OpenURL.m
 endif
 
-Grr_GUI_LIBS += -lCollectionKit -lBookmarkKit
+Grr_GUI_LIBS += -lCollectionKit -lBookmarkKit -lPaneKit
 
 Grr_LANGUAGES = \
 	English
@@ -46,7 +47,8 @@ Grr_RESOURCES_FILES = \
 
 ifeq ($(FOUNDATION_LIB), apple)
 Grr_LOCALIZED_RESOURCE_FILES += \
-	MainMenu.nib\
+	PreferencePane.nib \
+	MainMenu.nib \
 	AddFeedPanel.nib 
 Grr_MAIN_MODEL_FILE = MainMenu.nib
 else

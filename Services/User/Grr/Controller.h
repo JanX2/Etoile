@@ -30,6 +30,7 @@
 #import <AppKit/AppKit.h>
 #import <BookmarkKit/BookmarkKit.h>
 #import <CollectionKit/CollectionKit.h>
+#import <PaneKit/PaneKit.h>
 
 @class MainWindow;
 @class FeedList;
@@ -47,11 +48,13 @@
   NSPanel* logPanel;
 #endif
   FeedList *feedList;
+
+  PKPreferencesController *preferencesController;
 }
 
 + (Controller *) mainController;
 
-- (void) showPreferencePanel: (id) sender;
+- (void) showPreferences: (id) sender;
 
 - (void) subscribe: (id) sender;
 - (void) addGroup: (id) sender;

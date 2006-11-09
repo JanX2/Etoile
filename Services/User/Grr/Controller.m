@@ -27,7 +27,6 @@
 */
 
 #import "Controller.h"
-#import "PreferenceController.h"
 #import "MainWindow.h"
 #import "FeedList.h"
 #import "RSSReaderFeed.h"
@@ -39,6 +38,7 @@
 #import "Global.h"
 #import "GNUstep.h"
 #import "ContentTextView.h"
+#import "PreferencePane.h"
 
 static Controller *sharedInstance;
 
@@ -145,9 +145,17 @@ static Controller *sharedInstance;
   return YES;
 }
 
-- (void) showPreferencePanel: (id) sender
+- (void) showPreferences: (id) sender
 {
-  [[PreferenceController preferenceController] showPreferencePanel: sender];
+  if (preferencesController == nil) {
+    /* Initialize here */
+    /* Automatically register into PKPreferencePaneRegistry */
+    AUTORELEASE([[PreferencePane alloc] init]);
+    ASSIGN(preferencesController, [PKPreferencesController sharedPreferencesController]);
+    [preferencesController setPresentationMode: PKPlainPresentationMode];
+  }
+  NSLog(@"owner %@", [preferencesController owner]);
+  [(NSWindow *)[preferencesController owner] makeKeyAndOrderFront: self];
 }
 
 - (void) subscribe: (id) sender

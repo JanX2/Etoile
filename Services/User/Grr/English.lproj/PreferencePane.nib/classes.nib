@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {removeDateAction = id; }; 
+            CLASS = PreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_mainView" = id; "_window" = id; removeDateButton = id; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
