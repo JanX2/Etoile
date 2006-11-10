@@ -19,6 +19,8 @@
                 presentationMode: mode
                 owner: o];
 
+  [[self owner] setTitle: @"Log"];
+
   return self;
 }
 

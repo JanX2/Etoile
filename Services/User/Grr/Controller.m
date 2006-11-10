@@ -178,7 +178,7 @@ static Controller *sharedInstance;
     ASSIGN(preferencesController, [PKPreferencesController sharedPreferencesController]);
     [preferencesController setPresentationMode: PKPlainPresentationMode];
   }
-  NSLog(@"owner %@", [preferencesController owner]);
+  [(NSWindow *)[preferencesController owner] setTitle: @"Preferences"];
   [(NSWindow *)[preferencesController owner] makeKeyAndOrderFront: self];
 }
 
