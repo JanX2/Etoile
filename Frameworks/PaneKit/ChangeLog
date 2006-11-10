@@ -2,6 +2,8 @@
 
     * Headers/PKPanesController.h:
     Fix missing 'const' for presentation mode.
+    * Source/PKPanesController.m:
+    Use NSPanel instead of NSWindow if owner is not assigned.
 
 2006-11-08  Yen-Ju Chen <yjchex gmail>
 

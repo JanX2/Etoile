@@ -80,7 +80,7 @@
 {
   if (owner == nil) {
     /* Create an empty window as owner */
-    owner = [[NSWindow alloc] initWithContentRect: NSMakeRect(400, 400, 300, 150)
+    owner = [[NSPanel alloc] initWithContentRect: NSMakeRect(400, 400, 300, 150)
                            styleMask: NSTitledWindowMask|NSClosableWindowMask
                              backing: NSBackingStoreBuffered 
                                defer: YES];
