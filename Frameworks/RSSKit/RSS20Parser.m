@@ -49,7 +49,7 @@
 		{
              [self foundFeedName: [secondlevelnode content]];
 		}
-	      // FIXME: Add support for tags: link,description,
+	      // FIXME: Add support for tags: link,
 	      // language,managingEditor,webMaster
 	      else if ([[secondlevelnode name]
 		    isEqualToString: @"item"])
@@ -60,6 +60,7 @@
 		       thirdlevelnode != nil;
 		       thirdlevelnode =[thirdlevelnode nextElement])
 		    {
+                 //NSLog(@"3rdlvlnode %@ %@", [thirdlevelnode name], [thirdlevelnode namespace]);
 		      if ([[thirdlevelnode name]
 			    isEqualToString: @"title"])
 			{
@@ -86,6 +87,12 @@
 				       objectForKey: @"type"]
 			   ];
 			}
+                 // FIXME: [3rdlevelnode namespace] is always nil! Why?!
+                 else if ([[thirdlevelnode name] isEqualToString: @"summary"] /* &&
+                          [[thirdlevelnode namespace] isEqualToString: URI_PODCAST] */)
+                 {
+                   [self setContent: [thirdlevelnode content]];
+                 }
 		      else if ([[thirdlevelnode name]
 				 isEqualToString: @"encoded"])
 			{

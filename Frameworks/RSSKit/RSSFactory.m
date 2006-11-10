@@ -81,6 +81,16 @@ NSString* stringToFSString( NSString* aString )
 
 
 /**
+ * The default implementation of this method returns a new feed of
+ * the RSSFeed class.
+ */
+- (id<RSSFeed>) feedWithURL: (NSURL*) aURL
+{
+    return [RSSFeed feedWithURL: aURL];
+}
+
+
+/**
  * The default implementation of this method returns a new article
  * of the RSSArticle class.
  */

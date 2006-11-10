@@ -22,6 +22,12 @@
 #import "RSSArticleProtocol.h"
 
 @protocol RSSFactory <NSObject>
+
+/**
+ * Creates a feed with the given URL.
+ */
+- (id<RSSFeed>) feedWithURL: (NSURL*) aURL;
+
 /**
  * Creates and returns an article with the given properties.
  *

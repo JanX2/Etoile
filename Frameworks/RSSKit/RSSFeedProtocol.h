@@ -28,6 +28,7 @@
  * with itself as object and nil for userInfo.
  **/
 extern NSString *const RSSFeedFetchedNotification;
+
 /**
  * When feed fetching in background failed or feed fails to process data,
  * it posts this notification
@@ -68,10 +69,23 @@ enum RSSFeedError
  * a feed.
  */
 @protocol RSSFeed
+
+// Article access
+
 /**
  * @return an enumerator for the articles in this feed
  */
 - (NSEnumerator*) articleEnumerator;
+
+/**
+ * @return a set that contains this feed's articles
+ */
+- (NSSet*) articleSet;
+
+/**
+ * @return the number of articles in this feed
+ */
+- (int) articleCount;
 
 /**
  * Returns YES if and only if this feed is currently being fetched.

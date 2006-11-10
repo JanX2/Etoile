@@ -1,4 +1,11 @@
 
+Nov-09-2006  Guenther Noack
+	* Removed some deprecated methods from RSSFeed class
+	* Added -articleSet and -articleCount method to RSSFeed
+	  protocol and class
+	* Added support for some more itunes-Namespace (=Podcast)
+	  features. (Why doesn't the namespace work any more?)
+
 Nov-08-2006  Guenther Noack
 	* Fixed enclosure-link bug
 

@@ -145,7 +145,7 @@
 
 
 
-// access to the status
+// access to the status, deprecated
 - (enum RSSFeedStatus) status
 {
   return status;
@@ -197,6 +197,26 @@
 }
 
 
+/**
+ * @return a set that contains this feed's articles
+ */
+- (NSSet*) articleSet
+{
+    return [NSSet setWithArray: articles];
+}
+
+/**
+ * @return the number of articles in this feed
+ */
+- (int) articleCount
+{
+    return [articles count];
+}
+
+
+/* Deprecated. Uncomment if problems occur.
+   Commented out on 11-9-2006
+
 - (RSSArticle*) articleAtIndex: (int) index
 {
   RSSArticle* a;
@@ -215,10 +235,11 @@
 
 - (unsigned int) count
 {
-  NSLog(@"FIXME: -count is deprecated on RSSFeed objects");
+  NSLog(@"FIXME: -count is deprecated on RSSFeed objects (use -articleCount instead!)");
   return [articles count];
 }
 
+*/
 
 - (void) removeArticle: (RSSArticle*) article
 {

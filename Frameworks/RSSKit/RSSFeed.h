@@ -65,7 +65,7 @@ enum RSSFeedStatus
  *  </li>
  *  <li>Fetch the contents of the feed:<br>
  *    <code>
- *      enum RSSFeedError err = [feed fetch];
+ *      [feed fetch]; // alternatively [feed fetchInBackground];
  *    </code>
  *  </li>
  *  <li>Optionally tell the RSSFeed to keep old articles.<br>
@@ -73,16 +73,10 @@ enum RSSFeedStatus
  *      [feed setAutoClear: NO];
  *    </code>
  *  </li>
- *  <li>Iterate over the articles contained in the feed.
- *      This is analogous to the iteration over a NSArray.
- *    <pre>
- *      int i;
- *      for (i=0; i<[feed count]; i++)
- *        {
- *          RSSArticle* myArticle = [feed articleAtIndex: i];
- *          // [...] more code here
- *        }
- *    </pre>
+ *  <li>Retrieve the set of articles.
+ *    <code>
+ *      NSSet* articles = [feed articleSet];
+ *    </code>
  *  </li>
  * </ul>
  *
@@ -164,24 +158,7 @@ enum RSSFeedStatus
 // Access to the articles
 // ----------------------------------------------------------------------
 
-/**
- * Lets you access the individual articles in the feed.
- * Often used in conjunction with the count method. Also
- * take a look at the example in the description of this
- * class. (RSSFeed)
- * 
- * @param index of the article to get
- * @return Article number index
- * @see RSSArticle
- * @see count
- * @see RSSFeed
- */
-- (RSSArticle*) articleAtIndex: (int) index;
-
-/**
- * @return the number of articles in this feed.
- */
-- (unsigned int) count;
+// Note: please refer to RSSFeed protocol instead.
 
 /**
  * @return an enumerator for the articles in this feed
