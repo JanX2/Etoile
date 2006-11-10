@@ -1,3 +1,4 @@
+
 include $(GNUSTEP_MAKEFILES)/common.make
 
 APP_NAME = Babbler
@@ -13,6 +14,7 @@ Babbler_RESOURCE_FILES = \
 	Resources/seek_back.tiff \
 	Resources/seek_fwd.tiff
 
+ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -lXWindowServerKit -lMultimediaKit
 
 include $(GNUSTEP_MAKEFILES)/application.make

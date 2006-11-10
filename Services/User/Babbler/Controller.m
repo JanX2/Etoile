@@ -32,6 +32,16 @@
   }
 }
 
+/**
+ * Gets called when a file is dropped on the application icon.
+ * The file is opened then.
+ */
+- (void) application: (NSApplication*) application
+            openFile: (NSString*) fileName
+{
+    [self newPlayer: [NSURL fileURLWithPath: fileName]];
+}
+
 - (void) applicationWillFinishLaunching: (NSNotification *) not
 {
   /* Make menu */
