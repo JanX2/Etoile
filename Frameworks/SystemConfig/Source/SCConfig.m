@@ -41,4 +41,19 @@
 	return AUTORELEASE(instance);
 }
 
+/** Returns the delegate usually used for error reporting on preference 
+    modification. */
+- (id) delegate
+{
+	return delegate;
+}
+
+/** Sets the delegate. If no delegate is set, any errors occurring on a 
+    preference  modification will not be reported. */
+- (void) setDelegate: (id)aDelegate
+{
+	delegate = aDelegate;
+}
+
+
 @end

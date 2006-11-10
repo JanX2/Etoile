@@ -29,9 +29,19 @@
 
 @interface SCConfigElement : NSObject
 {
-
+	id delegate;
 }
 
 + (SCConfigElement *) sharedInstance;
 
+- (id) delegate;
+- (void) setDelegate: (id)aDelegate;
+
+@end
+
+/* Delegate methods */
+
+@interface SCConfigElement (Delegate)
+- (void) configElement: (SCConfigElement *)element 
+	preferenceModificationErrorOccured: (NSError *)error;
 @end
