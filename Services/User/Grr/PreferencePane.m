@@ -1,5 +1,6 @@
 #import "PreferencePane.h"
 #import "Global.h"
+#import "GNUstep.h"
 
 @implementation PreferencePane
 
