@@ -5,6 +5,8 @@ Grr Changelog
 Nov-08-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Use PKPane for Log.
 	* Automatically clean up articles older than user defaults.
+	* Work on GNUstep.
+	* Let user assign which web browser to use (only on GNUstep).
 
 Nov-08-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Adapt PaneKit for preferences.

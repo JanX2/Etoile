@@ -25,9 +25,10 @@
 */
 
 #import "OpenURL.h"
+#import "Global.h"
 
 /* Cache browser */
-static NSString *browserPath;
+static NSString *backupBrowserPath;
 
 @implementation NSWorkspace (OpenURL)
 
@@ -37,6 +38,7 @@ static NSString *browserPath;
 -(BOOL) openURL: (NSURL*) url
 {
   BOOL result;
+  NSString *browserPath = nil;
   
   NS_DURING
   {
@@ -47,27 +49,28 @@ static NSString *browserPath;
     else if ([[url scheme] isEqualToString: @"http"] ||
              [[url scheme] isEqualToString: @"https"])
     {
-      if (browserPath == nil) {
-         ASSIGN(browserPath,
-          [[NSUserDefaults standardUserDefaults] stringForKey: @"WebBrowser"]);
-      }
+      ASSIGN(browserPath,
+          [[NSUserDefaults standardUserDefaults] stringForKey: RSSReaderWebBrowserDefaults]);
 
       if (browserPath == nil) {
-        /* Try firefox */
-        NSFileManager *fm = [NSFileManager defaultManager];
-        NSProcessInfo *pi = [NSProcessInfo processInfo];
-        NSEnumerator *e = [[[[pi environment] objectForKey: @"PATH"] 
+        if (backupBrowserPath == nil) {
+          /* Try firefox */
+          NSFileManager *fm = [NSFileManager defaultManager];
+          NSProcessInfo *pi = [NSProcessInfo processInfo];
+          NSEnumerator *e = [[[[pi environment] objectForKey: @"PATH"] 
                      componentsSeparatedByString: @":"] objectEnumerator];
-        NSString *p;
-        while ((p = [e nextObject])) {
-          p = [p stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
-          p = [p stringByAppendingPathComponent: @"firefox"];
-          if ([fm fileExistsAtPath: p]) {
-            ASSIGN(browserPath, p);
-            NSLog(@"Found browser %@", browserPath);
-            break;
+          NSString *p;
+          while ((p = [e nextObject])) {
+            p = [p stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
+            p = [p stringByAppendingPathComponent: @"firefox"];
+            if ([fm fileExistsAtPath: p]) {
+              ASSIGN(backupBrowserPath, p);
+              NSLog(@"Found browser %@", backupBrowserPath);
+              break;
+            }
           }
         }
+        ASSIGN(browserPath, backupBrowserPath);
       }
 	  
       if (browserPath != nil) {

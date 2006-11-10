@@ -3,12 +3,23 @@
 
 @implementation PreferencePane
 
+- (void) webBrowserAction: (id) sender
+{
+  [defaults setObject: [webBrowserField stringValue] 
+                  forKey: RSSReaderWebBrowserDefaults];
+}
+
+- (void) testWebBrowserAction: (id) sender
+{
+  [[NSWorkspace sharedWorkspace] openURL:
+      [NSURL URLWithString: @"http://www.unix-ag.uni-kl.de/~guenther/"]];
+}
+
 - (void) removeDateAction: (id) sender
 {
   int number = [[sender selectedItem] tag];
-  [[NSUserDefaults standardUserDefaults] 
-                   setInteger: number
-                       forKey: RSSReaderRemoveArticlesAfterDefaults];
+  [defaults  setInteger: number
+                 forKey: RSSReaderRemoveArticlesAfterDefaults];
   NSString *s = [NSString stringWithFormat: @"Remove article older than %d days", number];
   [[NSNotificationCenter defaultCenter]
                postNotificationName: RSSReaderLogNotification
@@ -23,6 +34,7 @@
     [self dealloc];
     return nil;
   }
+  _mainView = [_window contentView];
 
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
          @"01General", @"identifier",
@@ -31,18 +43,25 @@
          [NSValue valueWithPointer: [self class]], @"class",
          self, @"instance", nil];
   [[PKPreferencePaneRegistry sharedRegistry] addPlugin: dict];
+
+  ASSIGN(defaults, [NSUserDefaults standardUserDefaults]);
   
   return self;
 }
 
 - (void) dealloc
 {
+  DESTROY(defaults);
   [super dealloc];
 }
 
 - (void) willSelect
 {
-  int number = [[NSUserDefaults standardUserDefaults] integerForKey: RSSReaderRemoveArticlesAfterDefaults];
+  /* Set web browser */
+  [webBrowserField setStringValue: [defaults stringForKey: RSSReaderWebBrowserDefaults]];
+
+  /* Set remove older article */
+  int number = [defaults integerForKey: RSSReaderRemoveArticlesAfterDefaults];
   /* Find the item with the right tag */
   BOOL found = NO;
   int i, count = [removeDateButton numberOfItems];

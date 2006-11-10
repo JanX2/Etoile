@@ -1,0 +1,25 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "webBrowserAction:",
+	    "removeDateAction:",
+	    "testWebBrowserAction:"
+	);
+	Super = NSObject;
+    };
+    PreferencePane = {
+	Actions = (
+	    "removeDateAction:",
+	    "webBrowserAction:",
+	    "testWebBrowserAction:"
+	);
+	Outlets = (
+	    _window,
+	    _mainView,
+	    removeDateButton,
+	    webBrowserField
+	);
+	Super = NSObject;
+    };
+}

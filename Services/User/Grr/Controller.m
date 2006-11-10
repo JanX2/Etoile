@@ -86,6 +86,11 @@ static Controller *sharedInstance;
 
   /* Make sure defaults are properly set */
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  if ([defaults objectForKey: RSSReaderWebBrowserDefaults] == nil) {
+    [defaults setObject: @"/usr/bin/firefox"
+              forKey: RSSReaderWebBrowserDefaults];
+  }
+
   int number = [defaults integerForKey: RSSReaderRemoveArticlesAfterDefaults];
   if (number == 0) {
     /* Not set */

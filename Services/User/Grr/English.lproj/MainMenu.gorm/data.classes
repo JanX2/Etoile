@@ -32,7 +32,9 @@
 	    "markAllUnread:",
 	    "markRead:",
 	    "markUnread:",
-	    "showMainWindow:"
+	    "showMainWindow:",
+	    "showLog:",
+	    "showPreferences:"
 	);
 	Outlets = (
 	    articleCollectionView,
@@ -57,9 +59,11 @@
 	    "markAllUnread:",
 	    "markRead:",
 	    "markUnread:",
-	    "showMainWindow:",
+	    "showLog:",
 	    "reload:",
 	    "reloadAll:",
+	    "showMainWindow:",
+	    "showPreferences:",
 	    "subscribe:"
 	);
 	Super = NSObject;
