@@ -20,4 +20,5 @@ NSString *const RSSReaderMainWindowFrameName = @"RSSReaderMainWindowFrameName";
 
 NSString *const RSSReaderRemoveArticlesAfterDefaults = @"RSSReaderRemoveArticlesAfterDefaults";
 NSString *const RSSReaderWebBrowserDefaults = @"WebBrowser";
+NSString *const RSSReaderBookmarkViewFrameDefaults = @"RSSReaderBookmarkViewFrameDefaults";
 

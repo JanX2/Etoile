@@ -28,3 +28,4 @@ extern NSString *const RSSReaderMainWindowFrameName;
 /* User Defaults */
 extern NSString *const RSSReaderRemoveArticlesAfterDefaults;
 extern NSString *const RSSReaderWebBrowserDefaults;
+extern NSString *const RSSReaderBookmarkViewFrameDefaults;

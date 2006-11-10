@@ -114,10 +114,8 @@ static Controller *sharedInstance;
   RELEASE(toolbar);
 
   /* Progress Bar */
-#ifdef GNUSTEP
   [progressBar setHidden: YES];
   [progressBar setIndeterminate: NO];
-#endif
 
   [mainWindow setFrameAutosaveName: RSSReaderMainWindowFrameName];
 
@@ -134,11 +132,19 @@ static Controller *sharedInstance;
 #if 0
   /* Register service... */
   [NSApp setServicesProvider: [[RSSReaderService alloc] init]];
-  
-  [logPanel setFrameAutosaveName: @"logPanel"];
 #endif
   [feedBookmarkView reloadData];
   [articleCollectionView reloadData];
+
+  /* Resize bookmark view from saved size */
+  NSString *s = [defaults stringForKey: RSSReaderBookmarkViewFrameDefaults];
+  if (s) {
+    NSRect rect = NSRectFromString(s);
+    [feedBookmarkView setFrameSize: rect.size];
+    NSView *view = [[[feedBookmarkView superview] subviews] objectAtIndex: 1];
+    rect.size.width = [[feedBookmarkView superview] bounds].size.width - rect.size.width;
+    [view setFrameSize: rect.size];
+  }
 
   [[NSNotificationCenter defaultCenter]
           addObserver: self
@@ -160,7 +166,12 @@ static Controller *sharedInstance;
 
 - (void)applicationWillTerminate:(NSNotification *)aNotif
 {
-  [[NSUserDefaults standardUserDefaults] synchronize];
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  /* Save bookmar view size */
+  NSRect rect = [feedBookmarkView frame];
+  [defaults setObject: NSStringFromRect(rect)
+            forKey: RSSReaderBookmarkViewFrameDefaults];
+  [defaults synchronize];
 }
 
 - (BOOL)application:(NSApplication *)application openFile:(NSString *)fileName
@@ -254,9 +265,7 @@ static Controller *sharedInstance;
   int index = [[feedBookmarkView outlineView] selectedRow];
   if (index > -1) {
     /* Setup progress bar */
-#ifdef GNUSTEP
     [progressBar setHidden: NO];
-#endif
     [progressBar setMinValue: 0];
     [progressBar setMaxValue: 1];
     [progressBar setDoubleValue: 0.5];
@@ -270,9 +279,7 @@ static Controller *sharedInstance;
 
 - (void) reloadAll: (id) sender
 {
-#ifdef GNUSTEP
   [progressBar setHidden: NO];
-#endif
   [progressBar setMinValue: 0];
   [progressBar setMaxValue: [[feedList feedList] count]];
   [progressBar setDoubleValue: 0];
@@ -480,9 +487,7 @@ static Controller *sharedInstance;
   /* Increase one and stop if full */
   [progressBar incrementBy: 1];
   if ([progressBar doubleValue] == [progressBar maxValue]) {
-#ifdef GNUSTEP
     [progressBar setHidden: YES];
-#endif
     [progressBar stopAnimation: self];
   }
 }

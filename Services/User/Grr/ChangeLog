@@ -2,7 +2,10 @@
 Grr Changelog
 =============
 
-Nov-08-2006 Yen-Ju Chen <yjchenx at gmail>
+Nov-10-2006 Yen-Ju Chen <yjchenx at gmail>
+	* Save frames.
+
+Nov-09-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Use PKPane for Log.
 	* Automatically clean up articles older than user defaults.
 	* Work on GNUstep.
