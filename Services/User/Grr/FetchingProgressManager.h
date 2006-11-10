@@ -4,13 +4,10 @@
 {
 }
 
-+ (FetchingProgressManager *) instance;
-
-// get an error string for an error message
-+ (NSString*) stringForError: (int) error;
++ (FetchingProgressManager *) defaultManager;
 
 /**
- * fetch a specific feed. Used for threading
+ * fetch a specific feed in background
  */
 - (void) fetchFeed: (RSSFeed*) feed;
 

@@ -4,6 +4,8 @@ Grr Changelog
 
 Nov-10-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Save frames.
+	* Clean up FetchProgressManager in prepare for improvement.
+	* Deselect articles when feed changes.
 
 Nov-09-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Use PKPane for Log.

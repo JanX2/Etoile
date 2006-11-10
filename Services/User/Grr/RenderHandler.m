@@ -112,7 +112,7 @@
     }
   else if ([element hasPrefix: @"a "])
     {
-      NSLog(@"%@", element);
+//      NSLog(@"%@", element);
     }
   else
     {

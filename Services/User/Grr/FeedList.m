@@ -244,7 +244,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
   hadErrors = NO;
   
   // first fetch them
-  [[FetchingProgressManager instance] fetchFeeds: feeds];
+  [[FetchingProgressManager defaultManager] fetchFeeds: feeds];
   
   for (i=0; i<[feeds count]; i++) {
     RSSFeed* feed = (RSSFeed*) [feeds objectAtIndex: i];

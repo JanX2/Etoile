@@ -273,7 +273,7 @@ static Controller *sharedInstance;
 
     BKBookmark *bk = [[feedBookmarkView outlineView] itemAtRow: index];
     RSSFeed *feed = [feedList feedForURL: [bk URL]];
-    [[FetchingProgressManager instance] fetchFeed: feed];
+    [[FetchingProgressManager defaultManager] fetchFeed: feed];
   }
 }
 
@@ -285,7 +285,7 @@ static Controller *sharedInstance;
   [progressBar setDoubleValue: 0];
   [progressBar startAnimation: self];
 
-  [[FetchingProgressManager instance] fetchFeeds: [feedList feedList]];
+  [[FetchingProgressManager defaultManager] fetchFeeds: [feedList feedList]];
 }
 
 - (void) addGroup: (id) sender
@@ -415,6 +415,13 @@ static Controller *sharedInstance;
     [articleCollectionView setRoot: array];
     [articleCollectionView reloadData];
   }
+  /* When feed view is selected, unselect in article view.
+   * Otherwise, the selection in article view will not match
+   * the content of content view.
+   * And when user select the same row in article view,
+   * because of the row doesn't change, it will not trigger a refresh
+   * of content view. */
+  [[articleCollectionView tableView] deselectAll: self];
   return YES;
 }
 
