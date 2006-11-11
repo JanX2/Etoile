@@ -25,6 +25,7 @@
 
 #import <AppKit/AppKit.h>
 #import <BookmarkKit/BKGroup.h>
+#import "GNUstep.h"
 
 NSString *const kBKGroupNameProperty = @"kBKGroupNameProperty";
 
