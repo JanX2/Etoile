@@ -2,6 +2,9 @@
 Grr Changelog
 =============
 
+Nov-11-2006 Yen-Ju Chen <yjchenx at gmail>
+	* Speed up starting by avoid rebuild internal cache frequently.
+
 Nov-10-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Save frames.
 	* Clean up FetchProgressManager in prepare for improvement.

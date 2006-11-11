@@ -96,15 +96,6 @@ static Controller *sharedInstance;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotif
 {
-  /* Remove old articles */
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  int number = [defaults integerForKey: RSSReaderRemoveArticlesAfterDefaults];
-  if (number > 0) {
-    [articleCollectionView beginEditing];
-    [feedList removeArticlesOlderThanDay: number];
-    [articleCollectionView endEditing];
-  }
-
   /* Toolbar */
   NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier: RSSReaderToolbarIdentifier];
   [toolbar setDelegate: mainWindow];
@@ -117,6 +108,18 @@ static Controller *sharedInstance;
 
   [mainWindow setFrameAutosaveName: RSSReaderMainWindowFrameName];
 
+  searchField = [mainWindow searchField];
+
+  /* Start build article view */
+  [articleCollectionView beginEditing];
+
+  /* Remove old articles */
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  int number = [defaults integerForKey: RSSReaderRemoveArticlesAfterDefaults];
+  if (number > 0) {
+    [feedList removeArticlesOlderThanDay: number];
+  }
+
   [feedBookmarkView setDisplayProperties: [NSArray arrayWithObject: kBKBookmarkTitleProperty]];
   [[feedBookmarkView outlineView] setDelegate: self];
   [feedBookmarkView setBookmarkStore: [feedList feedStore]];
@@ -126,7 +129,9 @@ static Controller *sharedInstance;
   [articleCollectionView setSortingProperty: kArticleDateProperty reverse: YES];
   [articleCollectionView setCollection: [feedList articleCollection]];
 
-  searchField = [mainWindow searchField];
+  /* finish build article view */
+  [articleCollectionView endEditing];
+
 #if 0
   /* Register service... */
   [NSApp setServicesProvider: [[RSSReaderService alloc] init]];
