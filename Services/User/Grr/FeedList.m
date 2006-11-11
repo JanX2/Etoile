@@ -271,6 +271,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
 
 - (void) updateFeed: (RSSFeed *) feed
 {
+  NSLog(@"updateFeed");
   /* Need to update name on feedStore */
   BKBookmark *bk = [self feedBookmarkForURL: [feed feedURL]];
   [bk setTitle: [feed feedName]];
@@ -329,6 +330,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
     [item setValue: [article date] 
           forProperty: kArticleDateProperty];
   }
+  NSLog(@"updateFeed done");
 }
 
 @end

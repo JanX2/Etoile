@@ -78,14 +78,12 @@ static FetchingProgressManager* instance;
       
     if ([feed isKindOfClass: [RSSReaderFeed class]])
     {
-      RSSReaderFeed *rFeed = (RSSReaderFeed*) feed;
-      if ([rFeed needsRefresh])
+      if ([(RSSReaderFeed *)feed needsRefresh] == NO)
       {
-        [masterQueue addObject: feed];
+        continue;
       }
     }
-    else
-    {
+    if ([masterQueue containsObject: feed] == NO) {
       [masterQueue addObject: feed];
     }
   }

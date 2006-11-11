@@ -79,8 +79,10 @@
 
 -(enum RSSFeedError) fetchWithData: (NSData*)data
 {
+  CREATE_AUTORELEASE_POOL(x);
 //  [data writeToFile: @"/tmp/grr_data" atomically: YES];
   int result = [super fetchWithData: data];
+  DESTROY(x);
   return result;
 }
 

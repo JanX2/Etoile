@@ -499,6 +499,8 @@ static Controller *sharedInstance;
 
 - (void) feedFetched: (NSNotification *) not
 {
+  NSLog(@"feedFetched");
+  CREATE_AUTORELEASE_POOL(x);
   /* This update article collection for each feed. */
   [articleCollectionView beginEditing];
   [feedList updateFeed: [not object]];
@@ -507,6 +509,8 @@ static Controller *sharedInstance;
   [self updateProgressBar];
   [feedBookmarkView reloadData];
   [articleCollectionView reloadData];
+  DESTROY(x);
+  NSLog(@"feedFetched done");
 }
 
 - (void) feedFetchFailed: (NSNotification *) not
