@@ -32,19 +32,19 @@ endif
 
 Grr_GUI_LIBS += -lCollectionKit -lBookmarkKit -lPaneKit
 
-Grr_LANGUAGES = \
-	English
-
-Grr_LOCALIZED_RESOURCE_FILES += \
-	Localizable.strings
-
-Grr_RESOURCES_FILES = \
+Grr_RESOURCE_FILES += \
 	Resources/rssreader.png \
 	Resources/rssreader-working.png \
 	Resources/rdf.tiff \
 	Resources/xml.tiff \
 	Resources/rss.tiff\
 	Resources/Info-gnustep.plist
+
+Grr_LANGUAGES = \
+	English
+
+Grr_LOCALIZED_RESOURCE_FILES += \
+	Localizable.strings
 
 ifeq ($(FOUNDATION_LIB), apple)
 Grr_LOCALIZED_RESOURCE_FILES += \

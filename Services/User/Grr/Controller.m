@@ -273,7 +273,7 @@ static Controller *sharedInstance;
 
     BKBookmark *bk = [[feedBookmarkView outlineView] itemAtRow: index];
     RSSFeed *feed = [feedList feedForURL: [bk URL]];
-    [[FetchingProgressManager defaultManager] fetchFeed: feed];
+    [[FetchingProgressManager defaultManager] fetchFeeds: [NSArray arrayWithObject: feed]];
   }
 }
 

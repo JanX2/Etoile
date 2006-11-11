@@ -9,6 +9,24 @@ static FetchingProgressManager* instance;
 
 @implementation FetchingProgressManager
 
+/** Private **/
+- (void) scheduledFetchFeed: (NSTimer *) timer
+{
+  /* Fetch */
+  if ([masterQueue count] > 0) {
+    RSSFeed *feed = [masterQueue objectAtIndex: 0];
+    [feed fetchInBackground];
+    [masterQueue removeObject: feed];
+  } else {
+    /* Nothing in queue. Destroy timer */
+    [masterTimer invalidate];
+    DESTROY(masterTimer);
+    [NSApp setApplicationIconImage: [NSImage imageNamed: @"rssreader.png"]];
+  }
+}
+
+/** End of Private **/
+
 + (FetchingProgressManager *) defaultManager
 {
   if (instance == nil) {
@@ -26,38 +44,25 @@ static FetchingProgressManager* instance;
   
   if ((self = [super init])) {
     instance = self;
+
+    masterQueue = [[NSMutableArray alloc] init];
+
+    return self;
   }
   
-  return self;
+  [self dealloc];
+  return nil;
 }
 
-/**
- * fetch a specific feed in background.
- */
-- (void) fetchFeed: (RSSFeed *) feed
+- (void) dealloc
 {
-#if 0
-  if (currentlyFetchedFeeds == 1)
-  {
-    [NSApp setApplicationIconImage: [NSImage imageNamed: @"rssreader-working.png"]];
-  }
-#endif
-
-  [feed fetchInBackground];
-  
-#if 0
-  currentlyFetchedFeeds--;
-  if (currentlyFetchedFeeds == 0)
-  {
-    [NSApp setApplicationIconImage: [NSImage imageNamed: @"rssreader.png"]];
-  }
-#endif
+  DESTROY(masterQueue);
+  DESTROY(masterTimer);
+  [super dealloc];
 }
-
 
 /**
  * Fetches all RSSFeed objects in the given array.
- * Returns <em>nothing</em>!
  */
 - (void) fetchFeeds: (NSArray *) array
 {
@@ -76,13 +81,24 @@ static FetchingProgressManager* instance;
       RSSReaderFeed *rFeed = (RSSReaderFeed*) feed;
       if ([rFeed needsRefresh])
       {
-        [self fetchFeed: feed];
+        [masterQueue addObject: feed];
       }
     }
     else
     {
-      [self fetchFeed: feed];
+      [masterQueue addObject: feed];
     }
+  }
+  if ((feedCount > 0) && (masterTimer == nil)) {
+    /* Initial master timer. 
+     * Currently, we call it every second 
+     * until every feed in queue is fetched. */
+    ASSIGN(masterTimer, [NSTimer scheduledTimerWithTimeInterval: 1
+                                 target: self
+                                 selector: @selector(scheduledFetchFeed:)
+                                 userInfo: nil
+                                 repeats: YES]);
+    [NSApp setApplicationIconImage: [NSImage imageNamed: @"rssreader-working.png"]];
   }
 }
 @end
