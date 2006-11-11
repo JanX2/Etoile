@@ -10,6 +10,7 @@ Nov-10-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Work on GNUstep.
 	* Improve speed by reducing updating internal articles cache.
 	* Use autorelease pool on heavy process to reduce memory usage.
+	* Speed up deleting old articles.
 
 Nov-09-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Use PKPane for Log.

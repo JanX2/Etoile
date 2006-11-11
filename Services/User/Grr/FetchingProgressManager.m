@@ -15,6 +15,7 @@ static FetchingProgressManager* instance;
   /* Fetch */
   if ([masterQueue count] > 0) {
     RSSFeed *feed = [masterQueue objectAtIndex: 0];
+    NSLog(@"Fetching %@", [feed feedURL]);
     [feed fetchInBackground];
     [masterQueue removeObject: feed];
   } else {
@@ -87,6 +88,7 @@ static FetchingProgressManager* instance;
       [masterQueue addObject: feed];
     }
   }
+  NSLog(@"queue %d", [masterQueue count]);
   if ((feedCount > 0) && (masterTimer == nil)) {
     /* Initial master timer. 
      * Currently, we call it every second 

@@ -100,7 +100,9 @@ static Controller *sharedInstance;
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   int number = [defaults integerForKey: RSSReaderRemoveArticlesAfterDefaults];
   if (number > 0) {
+    [articleCollectionView beginEditing];
     [feedList removeArticlesOlderThanDay: number];
+    [articleCollectionView endEditing];
   }
 
   /* Toolbar */
