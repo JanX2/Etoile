@@ -39,8 +39,9 @@ static NSMutableDictionary *pDict;
 
   _propTypes = [pDict objectForKey: NSStringFromClass([self class])];
   if (_propTypes == nil) {
-    _propTypes = [[NSMutableDictionary alloc] init];
-    [pDict setObject: _propTypes forKey: NSStringFromClass([self class])];
+    _propTypes = AUTORELEASE([[NSMutableDictionary alloc] init]);
+    [pDict setObject: _propTypes 
+              forKey: NSStringFromClass([self class])];
   }
 
   int retval = 0;
@@ -289,7 +290,7 @@ static NSMutableDictionary *pDict;
   NSMutableArray *keys;
   NSString *key;
   NSEnumerator *e;
-  NSMutableDictionary *md = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary *md = AUTORELEASE([[NSMutableDictionary alloc] init]);
 
   keys = [NSMutableArray arrayWithArray: [dict allKeys]];
   e = [keys objectEnumerator];
@@ -327,7 +328,7 @@ static NSMutableDictionary *pDict;
                                              calendarFormat: @"%Y-%m-%d"]
                    forKey: key];
               else if([val isKindOfClass: [NSDate class]])
-                [md setObject: [val copy] forKey: key];
+                [md setObject: AUTORELEASE([val copy]) forKey: key];
               else
                 NSLog(@"Unknown date class %@\n", [val className]);
               break;

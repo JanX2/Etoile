@@ -67,8 +67,7 @@
       val = [[[CKMultiValue alloc] initWithType: type] autorelease];
       newDict = [NSMutableDictionary dictionaryWithDictionary: _dict];
       [newDict setObject: val forKey: property];
-      [_dict release];
-      _dict = [[NSDictionary alloc] initWithDictionary: newDict];
+      ASSIGN(_dict, AUTORELEASE([[NSDictionary alloc] initWithDictionary: newDict]));
     }
 
   return val;

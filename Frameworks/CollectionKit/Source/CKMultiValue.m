@@ -58,7 +58,7 @@ static CKPropertyType _propTypeFromDict(NSDictionary *dict)
 - (id)initWithMultiValue: (CKMultiValue*) mv
 {
   self = [self init];
-  _arr = [[mv array] mutableCopy]; // Should I retain it ? Probably not.
+  ASSIGN(_arr, AUTORELEASE([[mv array] mutableCopy])); 
   ASSIGNCOPY(_primaryId, [mv primaryIdentifier]);
   _type = [mv type];
   return self;
@@ -67,7 +67,7 @@ static CKPropertyType _propTypeFromDict(NSDictionary *dict)
 - (id) initWithType: (CKPropertyType) type
 {
   self = [self init];
-  _arr = [[NSMutableArray alloc] initWithCapacity: 5];
+  ASSIGN(_arr, AUTORELEASE([[NSMutableArray alloc] initWithCapacity: 5]));
   _primaryId = nil;
   _type = type;
   return self;
@@ -76,7 +76,7 @@ static CKPropertyType _propTypeFromDict(NSDictionary *dict)
 - (id) initWithType: (CKPropertyType) type contentArray: (NSArray *) array
 {
   self = [self initWithType: type];
-  ASSIGNCOPY(_arr, array);
+  ASSIGN(_arr, AUTORELEASE([array mutableCopy]));
   return self;
 }
 

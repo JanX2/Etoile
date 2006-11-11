@@ -39,6 +39,7 @@
 	 [NSNumber numberWithInt: CKDateProperty], kCKModificationDateProperty,
 		 nil];
   [CKGroup addPropertiesAndTypes: _propTypes];
+  DESTROY(_propTypes);
 }
 
 - (NSArray*) items

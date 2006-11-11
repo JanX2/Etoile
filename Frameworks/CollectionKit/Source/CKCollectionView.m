@@ -43,6 +43,8 @@ NSComparisonResult reverseSortingWithProperty(id record1, id record2, void *cont
   if (isEditing == YES)
     return;
 
+  CREATE_AUTORELEASE_POOL(x);
+
   [internalCache removeAllObjects];
   if (root == nil) {
     [internalCache setArray: [collection items]];
@@ -75,6 +77,7 @@ NSComparisonResult reverseSortingWithProperty(id record1, id record2, void *cont
     /* Always keep sorted */
     [self sortWithProperty: sortingProperty reverse: reverseSorting];
   }
+  DESTROY(x);
 }
 
 - (void) handleCollectionChanged: (NSNotification *) not
