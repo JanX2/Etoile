@@ -8,7 +8,6 @@ NSString *const kArticleReadProperty = @"kArticleReadProperty";
 
 NSString *const kArticleGroupURLProperty = @"kArticleGroupURLProperty";
 
-NSString *const RSSReaderFeedListChangedNotification = @"RSSReaderFeedListChangedNotification";
 NSString *const RSSReaderLogNotification = @"RSSReaderLogNotification";
 
 NSString *const RSSReaderToolbarIdentifier = @"RSSReaderToolbarIdentifier";

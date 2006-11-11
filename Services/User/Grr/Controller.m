@@ -42,10 +42,6 @@
 
 static Controller *sharedInstance;
 
-@interface Controller (Private)
-- (void) feedListChanged: (NSNotification *) not;
-@end
-
 @implementation Controller
 
 + (Controller *) mainController
@@ -146,16 +142,18 @@ static Controller *sharedInstance;
     [view setFrameSize: rect.size];
   }
 
+  /* Listen to RSSFeedFetchedNotification for loading in backgroun */
   [[NSNotificationCenter defaultCenter]
-          addObserver: self
-          selector: @selector(feedListChanged:)
-          name: RSSReaderFeedListChangedNotification
+          addObserver: self 
+          selector: @selector(feedFetched:)
+          name: RSSFeedFetchedNotification
           object: nil];
   [[NSNotificationCenter defaultCenter]
           addObserver: self
           selector: @selector(feedFetchFailed:)
           name: RSSFeedFetchFailedNotification
           object: nil];
+
 }
 
 - (BOOL)applicationShouldTerminate:(id)sender
@@ -499,8 +497,13 @@ static Controller *sharedInstance;
   }
 }
 
-- (void) feedListChanged: (NSNotification *) not
+- (void) feedFetched: (NSNotification *) not
 {
+  /* This update article collection for each feed. */
+  [articleCollectionView beginEditing];
+  [feedList updateFeed: [not object]];
+  [articleCollectionView endEditing];
+
   [self updateProgressBar];
   [feedBookmarkView reloadData];
   [articleCollectionView reloadData];

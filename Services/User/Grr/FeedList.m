@@ -113,13 +113,6 @@ int articleSortByDate( id articleA, id articleB, void* context )
 
       ASSIGN(feedStore, [BKBookmarkStore sharedBookmarkWithDomain: BKRSSBookmarkStore]);
       ASSIGN(articleCollection, AUTORELEASE([[CKCollection alloc] initWithLocation: [FeedList articleCacheLocation]]));
-      
-      /* Listen to RSSFeedFetchedNotification for loading in backgroun */
-      [[NSNotificationCenter defaultCenter]
-          addObserver: self
-          selector: @selector(feedFetched:)
-          name: RSSFeedFetchedNotification
-          object: nil];
 
       [self buildFeeds];
     }
@@ -198,7 +191,6 @@ int articleSortByDate( id articleA, id articleB, void* context )
 
 - (void) removeFeed: (RSSFeed*) feed
 {
-  NSLog(@"removeFeed %@", feed);
   BKBookmark *bk = [self feedBookmarkForURL: [feed feedURL]];
   if (bk) {
     [feedStore removeBookmark: bk];
@@ -238,10 +230,6 @@ int articleSortByDate( id articleA, id articleB, void* context )
 - (void) addFeeds: (NSArray*) feeds
 {
   int i;
-  BOOL hadErrors;
-  
-  // we didn't have errors yet.
-  hadErrors = NO;
   
   // first fetch them
   [[FetchingProgressManager defaultManager] fetchFeeds: feeds];
@@ -252,8 +240,6 @@ int articleSortByDate( id articleA, id articleB, void* context )
     [list setObject: feed forKey: [feed feedURL]];
     [feedStore addBookmark: bk];
   }
-  
-  // [self buildArticleList];
 }
 
 - (void) save
@@ -283,10 +269,8 @@ int articleSortByDate( id articleA, id articleB, void* context )
   }
 }
 
-/** Private **/
-- (void) feedFetched: (NSNotification *) not
+- (void) updateFeed: (RSSFeed *) feed
 {
-  RSSFeed *feed = [not object];
   /* Need to update name on feedStore */
   BKBookmark *bk = [self feedBookmarkForURL: [feed feedURL]];
   [bk setTitle: [feed feedName]];
@@ -345,10 +329,6 @@ int articleSortByDate( id articleA, id articleB, void* context )
     [item setValue: [article date] 
           forProperty: kArticleDateProperty];
   }
-  [[NSNotificationCenter defaultCenter]
-        postNotificationName: RSSReaderFeedListChangedNotification
-        object: feed];
 }
-/** Private **/
 
 @end

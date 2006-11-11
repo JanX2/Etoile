@@ -9,10 +9,6 @@ extern NSString *const kArticleReadProperty;
 /* This property matches url of feed in feedStore */
 extern NSString *const kArticleGroupURLProperty;
 
-/* When feed list changed, mostly due to a fetch of rss.
- * Object is the changed feed. */
-extern NSString *const RSSReaderFeedListChangedNotification;
-
 /* Use this to send any information to log panel */
 extern NSString *const RSSReaderLogNotification;
 

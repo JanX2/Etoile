@@ -50,6 +50,7 @@
  * It does not fetch new articles. */
 - (void) buildFeeds;
 
+/* Accessories */
 - (BKBookmarkStore *) feedStore;
 - (CKCollection *) articleCollection;
 - (NSArray*) feedList; /* array of RSSReaderFeed */
@@ -57,14 +58,22 @@
 - (BKBookmark *) feedBookmarkForURL: (NSURL *) url;
 - (CKGroup *) articleGroupForURL: (NSURL *) url; 
 
-- (void) removeFeed: (RSSFeed*) feed;
-- (void) addFeedWithURL: (NSURL*) url;
-- (void) addFeedsWithURLs: (NSArray*) urls;
-- (void) addFeed: (RSSFeed*) feed;
-- (void) addFeeds: (NSArray*) feeds;
+/* Add new feed and remove old feed. 
+ * If feed is added, it will automatically fetch.
+ */
+- (void) removeFeed: (RSSFeed *) feed;
+- (void) addFeedWithURL: (NSURL *) url;
+- (void) addFeedsWithURLs: (NSArray *) urls;
+- (void) addFeed: (RSSFeed *) feed;
+- (void) addFeeds: (NSArray *) feeds;
+
+/* Update existing feed.
+ * This is generally used when feed is fetching in background
+ * and return through notification.
+ * By updating feed, the article view will be update. */
+- (void) updateFeed: (RSSFeed *) feed;
 
 - (void) save;
-
 - (void) removeArticlesOlderThanDay: (int) number;
 
 @end
