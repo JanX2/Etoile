@@ -7,6 +7,7 @@ Nov-10-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Clean up FetchProgressManager in prepare for improvement.
 	* Deselect articles when feed changes.
 	* Use timer and queue to schedule feed fetching.
+	* Work on GNUstep.
 
 Nov-09-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Use PKPane for Log.

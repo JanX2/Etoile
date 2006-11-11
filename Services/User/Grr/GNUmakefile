@@ -37,8 +37,7 @@ Grr_RESOURCE_FILES += \
 	Resources/rssreader-working.png \
 	Resources/rdf.tiff \
 	Resources/xml.tiff \
-	Resources/rss.tiff\
-	Resources/Info-gnustep.plist
+	Resources/rss.tiff
 
 Grr_LANGUAGES = \
 	English

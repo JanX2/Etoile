@@ -77,19 +77,11 @@
   return YES;
 }
 
-
-/**
- * Override the fetch method from the RSSFeed class to let
- * Grr do the HTTP request in a separate thread. :-)
- */
--(enum RSSFeedError) fetch
+-(enum RSSFeedError) fetchWithData: (NSData*)data
 {
-  CREATE_AUTORELEASE_POOL(x);
-  status = RSSFeedIsFetching;
-  NSData* data = [self fetchDataFromURL: feedURL];
-  [self fetchWithData: data];
-  return RSSFeedErrorNoError;
-  DESTROY(x);
+//  [data writeToFile: @"/tmp/grr_data" atomically: YES];
+  int result = [super fetchWithData: data];
+  return result;
 }
 
 @end
