@@ -108,7 +108,7 @@
     if ((self = [super init]) != nil) {
         if (aDictionary == nil) {
             DESTROY(self);
-            return self;
+            return nil;
         }
         
         ASSIGN( headline,     [aDictionary objectForKey: @"headline"] );
@@ -117,7 +117,7 @@
         ASSIGN( date,         [aDictionary objectForKey: @"date"] );
 	
 	NSArray* arr = [aDictionary objectForKey: @"links"];
-	links = [[NSMutableArray alloc] init];
+	ASSIGN(links, AUTORELEASE([[NSMutableArray alloc] init]));
 	
 	int i;
 	for (i=0; i<[arr count]; i++) {

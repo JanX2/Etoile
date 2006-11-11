@@ -98,8 +98,8 @@
 +(id) alternativeLinkWithString: (NSString*) aURLString
 			andType: (NSString*) aType
 {
-  return [[self alloc] initWithString: aURLString
-		       andType: aType];
+  return AUTORELEASE([[self alloc] initWithString: aURLString
+		       andType: aType]);
 }
 
 -(NSString*) relationType
@@ -118,8 +118,8 @@
 +(id) enclosureLinkWithString: (NSString*) aURLString
 		      andType: (NSString*) aType;
 {
-  return [[self alloc] initWithString: aURLString
-		       andType: aType];
+  return AUTORELEASE([[self alloc] initWithString: aURLString
+		       andType: aType]);
 }
 
 -(NSString*) relationType
@@ -138,8 +138,8 @@
 +(id) relatedLinkWithString: (NSString*) aURLString
 		    andType: (NSString*) aType
 {
-  return [[self alloc] initWithString: aURLString
-		       andType: aType];
+  return AUTORELEASE([[self alloc] initWithString: aURLString
+		       andType: aType]);
 }
 
 -(NSString*) relationType
@@ -158,8 +158,8 @@
 +(id) viaLinkWithString: (NSString*) aURLString
 		andType: (NSString*) aType
 {
-  return [[self alloc] initWithString: aURLString
-		       andType: aType];
+  return AUTORELEASE([[self alloc] initWithString: aURLString
+		       andType: aType]);
 }
 
 -(NSString*) relationType

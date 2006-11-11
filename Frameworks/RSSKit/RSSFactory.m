@@ -34,7 +34,7 @@ static NSString* RSSArticleStorageDirectory = nil;
 NSString* stringToFSString( NSString* aString )
 {
     NSScanner* scanner = [NSScanner scannerWithString: aString];
-    NSMutableString* string = [NSMutableString new];
+    NSMutableString* string = AUTORELEASE([[NSMutableString alloc] init]);
     NSCharacterSet* allowedSet = [NSCharacterSet alphanumericCharacterSet];
     
     do {
@@ -65,7 +65,7 @@ NSString* stringToFSString( NSString* aString )
 + (id<RSSFactory>) sharedFactory
 {
     if (sharedFactory == nil) {
-        ASSIGN(sharedFactory, [[RSSFactory alloc] init]);
+        ASSIGN(sharedFactory, AUTORELEASE([[RSSFactory alloc] init]));
     }
     
     return sharedFactory;
@@ -103,7 +103,7 @@ NSString* stringToFSString( NSString* aString )
                                                                url: aURL
                                                        description: aContent
                                                               date: aDate];
-    return [article autorelease];
+    return AUTORELEASE(article);
 }
 
 /**
@@ -125,7 +125,7 @@ NSString* stringToFSString( NSString* aString )
  */
 - (id<RSSArticle>) articleFromDictionary: (NSDictionary*) aDictionary
 {
-    return [[[RSSArticle alloc] initWithDictionary: aDictionary] autorelease];
+    return AUTORELEASE([[RSSArticle alloc] initWithDictionary: aDictionary]);
 }
 
 /**

@@ -35,7 +35,7 @@
  */
 -(NSDictionary*) plistDictionary
 {
-    NSMutableDictionary* dict = [NSMutableDictionary new];
+    NSMutableDictionary* dict = AUTORELEASE([[NSMutableDictionary alloc] init]);
     
     [dict setObject: lastRetrieval forKey: @"lastRetrievalDate"];
     [dict setObject: [NSNumber numberWithBool: clearFeedBeforeFetching]
@@ -45,10 +45,10 @@
     [dict setObject: [articleClass description] forKey: @"articleClass"];
     
     int i;
-    NSMutableArray* articleIndex = [NSMutableArray new];
+    NSMutableArray* articleIndex = AUTORELEASE([[NSMutableArray alloc] init]);
     
     for (i=0; i<[articles count]; i++) {
-        NSMutableDictionary* articleDict = [NSMutableDictionary new];
+        NSMutableDictionary* articleDict = AUTORELEASE([[NSMutableDictionary alloc] init]);
         id<RSSArticle> article = [articles objectAtIndex: i];
         
         [articleDict setValue: [article headline] forKey: @"headline"];
@@ -86,7 +86,7 @@
         status = RSSFeedIsIdle;
         
         NSArray* articleIndex = [dict objectForKey: @"articleIndex"];
-        NSMutableArray* mutArticles = [NSMutableArray new];
+        NSMutableArray* mutArticles = AUTORELEASE([[NSMutableArray alloc] init]);
         int i;
         for (i=0; i<[articleIndex count]; i++) {
             NSString* articleURL = [(NSDictionary*)[articleIndex objectAtIndex: i] objectForKey: @"URL"];

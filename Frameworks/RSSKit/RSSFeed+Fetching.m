@@ -287,8 +287,9 @@ NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotificatio
    
    // no errors at first :-)
    [self setError: RSSFeedErrorNoError];
-   [[NSNotificationCenter defaultCenter] postNotificationName: RSSFeedWillFetchNotification
-                                                       object: self];
+   [[NSNotificationCenter defaultCenter] 
+                      postNotificationName: RSSFeedWillFetchNotification
+                      object: self];
    
    data = [self fetchDataFromURL: feedURL];
    
@@ -319,8 +320,9 @@ NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotificatio
   
   status = RSSFeedIsFetching;
   [self setError: RSSFeedErrorNoError];
-  [[NSNotificationCenter defaultCenter] postNotificationName: RSSFeedWillFetchNotification
-                                                      object: self];
+  [[NSNotificationCenter defaultCenter] 
+                       postNotificationName: RSSFeedWillFetchNotification
+                       object: self];
   
   [feedURL loadResourceDataNotifyingClient: self usingCache: NO];
 }

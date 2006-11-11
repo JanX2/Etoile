@@ -33,8 +33,7 @@
 
 -(BOOL) _submitArticles: (NSArray*) newArticles
 {
-  NSMutableArray* result;
-  NSArray* immutableResult;
+  NSMutableArray* result = nil;
   int i;
   
   if (newArticles == nil)
@@ -44,7 +43,7 @@
   
   if (articles == nil)
     {
-      articles = [[NSArray alloc] init];
+      ASSIGN(articles, AUTORELEASE([[NSArray alloc] init]));
     }
   
   // The result is first the list of new articles
@@ -79,11 +78,8 @@
 	}
     }
   
-  immutableResult = [[NSArray alloc] initWithArray: result];
-  
-  RELEASE(result);
-  RELEASE(articles);
-  articles = immutableResult; // retain count is already 1
+  ASSIGN(articles, AUTORELEASE([[NSArray alloc] initWithArray: result]));
+  DESTROY(result);
   
   return YES;
 }
@@ -91,17 +87,17 @@
 
 @implementation RSSFeed
 
-+feed
++ (RSSFeed *) feed
 {
   return AUTORELEASE([[self alloc] init]);
 }
 
-+feedWithURL: (NSURL*) aURL
++ (RSSFeed *) feedWithURL: (NSURL*) aURL
 {
   return AUTORELEASE([[self alloc] initWithURL: aURL]);
 }
 
--init
+- (id) init
 {
   return [self initWithURL: nil];
 }
@@ -110,7 +106,7 @@
 /**
  * Designated initializer
  */
--initWithURL: (NSURL*) aURL
+- (id) initWithURL: (NSURL*) aURL
 {
   [super init];
   
@@ -118,9 +114,9 @@
   NSLog(@"(newFeed) initWithURL: %@", aURL);
 #endif
   
-  feedURL = RETAIN(aURL);
-  articles = [[NSArray alloc] init];
-  lastRetrieval = RETAIN([NSDate dateWithTimeIntervalSince1970: 0.0]);
+  ASSIGN(feedURL, aURL);
+  ASSIGN(articles, AUTORELEASE([[NSArray alloc] init]));
+  ASSIGN(lastRetrieval, [NSDate dateWithTimeIntervalSince1970: 0.0]);
   clearFeedBeforeFetching = YES;
   lastError = RSSFeedErrorNoError;
   feedName = nil;
@@ -133,6 +129,9 @@
 
 - (void) dealloc
 {
+  DESTROY(feedURL);
+  DESTROY(articles);
+  DESTROY(lastRetrieval);
   DESTROY(cacheData);
   [super dealloc];
 }
@@ -154,7 +153,7 @@
 
 - (BOOL) isFetching
 {
-    return (status == RSSFeedIsFetching) ? YES : NO;
+  return (status == RSSFeedIsFetching) ? YES : NO;
 }
 
 
@@ -186,14 +185,11 @@
 
 - (NSEnumerator*) articleEnumerator
 {
-  NSEnumerator* result;
-  
 #ifdef DEBUG
   NSLog(@"%@ -articleEnumerator", self);
 #endif
   
-  result = AUTORELEASE(RETAIN([articles objectEnumerator]));
-  return result;
+  return AUTORELEASE(RETAIN([articles objectEnumerator]));
 }
 
 
@@ -202,7 +198,7 @@
  */
 - (NSSet*) articleSet
 {
-    return [NSSet setWithArray: articles];
+  return [NSSet setWithArray: articles];
 }
 
 /**
@@ -210,7 +206,7 @@
  */
 - (int) articleCount
 {
-    return [articles count];
+  return [articles count];
 }
 
 
@@ -219,8 +215,6 @@
 
 - (RSSArticle*) articleAtIndex: (int) index
 {
-  RSSArticle* a;
-  
   NSLog(@"articleAtIndex: is deprecated!");
   
   if (index >= [articles count])
@@ -228,9 +222,7 @@
       return nil;
     }
   
-  a = [articles objectAtIndex: index];
-  
-  return a;
+  return [articles objectAtIndex: index];
 }
 
 - (unsigned int) count
@@ -243,8 +235,7 @@
 
 - (void) removeArticle: (RSSArticle*) article
 {
-  NSMutableArray* result;
-  NSArray* immutableResult;
+  NSMutableArray* result = nil;
   
 #ifdef DEBUG
   NSLog(@"%@ -removeArticle: %@", self, article);
@@ -252,11 +243,8 @@
   
   result = [[NSMutableArray alloc] initWithArray: articles];
   [result removeObject: article];
-  immutableResult = [[NSArray alloc] initWithArray: result];
-  RELEASE(articles);
-  RELEASE(result);
-  articles = immutableResult;
-  // immutableResult has a retain count of 1
+  ASSIGN(articles, AUTORELEASE([[NSArray alloc] initWithArray: result]));
+  DESTROY(result);
 }
 
 
@@ -268,7 +256,7 @@
  */
 - (void) setFeedName: (NSString*) aFeedName
 {
-    ASSIGN(feedName, aFeedName);
+  ASSIGN(feedName, aFeedName);
 }
 
 
@@ -333,9 +321,8 @@
 - (void) clearArticles
 {
   // Delete and recreate the list of articles.
-  RELEASE(articles);
-  articles = [[NSArray alloc] init];
-  lastRetrieval = RETAIN([NSDate dateWithTimeIntervalSince1970: 0.0]);
+  ASSIGN(articles, AUTORELEASE([[NSArray alloc] init]));
+  ASSIGN(lastRetrieval, [NSDate dateWithTimeIntervalSince1970: 0.0]);
 }
 
 

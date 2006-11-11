@@ -107,17 +107,17 @@ enum RSSFeedStatus
 }
 
 
-+feed;
-+feedWithURL: (NSURL*) aURL;
++ (RSSFeed *) feed;
++ (RSSFeed *) feedWithURL: (NSURL*) aURL;
 
--init;
+- (id) init;
 
 /**
  * Designated initializer.
  * 
  * @param aURL The URL where the feed can be downloaded from.
  */
--initWithURL: (NSURL*) aURL;
+- (id) initWithURL: (NSURL*) aURL;
 
 
 /**

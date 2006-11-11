@@ -173,7 +173,7 @@
   // Set default values
   [self setHeadline: @"No headline"];
   
-  links = [[NSMutableArray alloc] initWithCapacity: 1];
+  ASSIGN(links, AUTORELEASE([[NSMutableArray alloc] initWithCapacity: 1]));
 }
 
 // don't use this, use commitArticle

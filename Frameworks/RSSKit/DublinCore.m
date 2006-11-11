@@ -218,6 +218,9 @@ NSDate* parseDublinCoreDate( NSString* dateStr )
       
       timeZone = [NSTimeZone timeZoneWithAbbreviation: subStr];
     }
+
+  /* Process is done. It should be safe to free str */
+  free(str);
   
   return successReturnValue;
 }

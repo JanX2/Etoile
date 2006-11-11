@@ -79,8 +79,8 @@
 
 -(void)dealloc
 {
-  RELEASE(_next);
-  RELEASE(_content);
+  DESTROY(_next);
+  DESTROY(_content);
   [super dealloc];
 }
 
@@ -172,10 +172,10 @@
   self = [super init];
   
   if (self != nil) {
-    _name = RETAIN(name);
-    _namespace = RETAIN(namespace);
-    _parent = RETAIN(parent);
-    _attributes = RETAIN(attributes);
+    ASSIGN(_name, name);
+    ASSIGN(_namespace, namespace);
+    ASSIGN(_parent, parent);
+    ASSIGN(_attributes, attributes);
   }
   
   return self;
@@ -183,12 +183,13 @@
 
 -(void) dealloc
 {
-  RELEASE(_child);
-  RELEASE(_next);
-  RELEASE(_namespace);
-  RELEASE(_name);
-  RELEASE(_current);
-  RELEASE(_parent);
+  DESTROY(_child);
+  DESTROY(_next);
+  DESTROY(_namespace);
+  DESTROY(_name);
+  DESTROY(_current);
+  DESTROY(_parent);
+  DESTROY(_attributes);
   [super dealloc];
 }
 
@@ -210,11 +211,11 @@
   #endif
   
   if (_child == nil) {
-    _child = RETAIN(aThing);
+    ASSIGN(_child, aThing);
   }
   
   if (_current == nil) {
-    _current = RETAIN(aThing);
+    ASSIGN(_current, aThing);
   } else {
     [_current _setNext: aThing];
     
@@ -244,8 +245,7 @@
   
   if (_parent != nil) {
     [aParser setDelegate: _parent];
-    RELEASE(_parent);
-    _parent = nil;
+    DESTROY(_parent);
   }
 }
 
@@ -255,9 +255,7 @@ didStartElement: (NSString*)anElementName
   qualifiedName: (NSString*)aQualifierName
      attributes: (NSDictionary*)anAttributeDict
 {
-  XMLNode* item;
-  
-  item = [[XMLNode alloc]
+  XMLNode *item = [[XMLNode alloc]
 	   initWithName: anElementName
 	   namespace: aNamespaceURI
 	   attributes: anAttributeDict
@@ -270,7 +268,7 @@ didStartElement: (NSString*)anElementName
   [self appendTextOrNode: item
 	fromParser: aParser];
   
-  RELEASE(item);
+  DESTROY(item);
 }
 
 - (void)    parser: (NSXMLParser*)aParser
@@ -284,13 +282,12 @@ didStartElement: (NSString*)anElementName
 - (void) parser: (NSXMLParser*)aParser
 foundCharacters: (NSString*)aString
 {
-  XMLText* text;
-  text = [[XMLText alloc] initWithString: aString];
+  XMLText *text = [[XMLText alloc] initWithString: aString];
   
   [self appendTextOrNode: text
 	fromParser: aParser];
   
-  RELEASE(text);
+  DESTROY(text);
 }
 
 @end
