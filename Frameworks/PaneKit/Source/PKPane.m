@@ -50,7 +50,7 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
 {
   DESTROY(_bundle);
   [_topLevelObjects makeObjectsPerformSelector: @selector(release)];
-  [_topLevelObjects release];
+  DESTROY(_topLevelObjects);
 	
   [super dealloc];
 }
@@ -72,7 +72,7 @@ NSString *NSPreferencePaneCancelUnselectNotification = @"NSPreferencePaneCancelU
   if ([self mainView] != nil)
     return nil;
     
-  _topLevelObjects = [[NSMutableArray alloc] init];
+  ASSIGN(_topLevelObjects, AUTORELEASE([[NSMutableArray alloc] init]));
   NSDictionary* ent = [NSDictionary dictionaryWithObjectsAndKeys:
 			self, @"NSOwner",
 			_topLevelObjects, @"NSTopLevelObjects",

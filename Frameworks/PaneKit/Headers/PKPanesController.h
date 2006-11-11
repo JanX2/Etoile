@@ -47,7 +47,6 @@ extern const NSString *PKOtherPresentationMode;
   IBOutlet NSView *view; /* Necessary only when owner is not PKPreferencesView */
   IBOutlet NSView *mainViewWaitSign;	/* View we show while next main view is being loaded. */
   PKPane *currentPane; /* Currently showing pane. */
-  PKPane *nextPane; /* Pane to show in response to the next replyToShouldUnselect: YES. */
   PKPresentationBuilder *presentation;
   PKPaneRegistry *registry;
 }

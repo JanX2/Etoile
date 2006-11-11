@@ -123,9 +123,15 @@
    <p><strong>By being the main bottleneck for switching preference panes, this 
    method must be called each time a new preference pane is selected like with
    -selectPaneWithIdentifier: method.</strong></p> */
-- (BOOL) updateUIForPane: (PKPane *)requestedPane
+- (BOOL) updateUIForPane: (PKPane *) pane
 {
   NSView *prefsView = [self view];
+  PKPane *nextPane = nil;
+  PKPane *requestedPane = nil;
+  ASSIGN(requestedPane, pane);
+  if (currentPane == pane) {
+    return YES;
+  }
     
   if (currentPane != nil)  /* Have a previous pane that needs unloading? */
   {
@@ -138,31 +144,27 @@
       switch ([currentPane shouldUnselect]) /* Ask old one to unselect. */
       {
         case NSUnselectCancel:
-          nextPane = nil;
+          DESTROY(nextPane);
           return NO;
-          break;
         case NSUnselectLater:
-          nextPane = requestedPane; /* Remember next pane for later. */
+          ASSIGN(nextPane, requestedPane); /* Remember next pane for later. */
           return NO;
-          break;
         case NSUnselectNow:
-          nextPane = nil;
+          DESTROY(nextPane);
           break;
       }
     }
     else 
     {
-      /* Nil in currentPane. Called in response to replyToUnselect: to
-         signal 'ok': */
-      requestedPane = nextPane; /* Continue where we left off. */
-      nextPane = nil;
+      NSLog(@"Weird, no current pane andn no requested pane");
+      return NO;
     }
 		
     /* Unload the old pane: */
     [currentPane willUnselect];
     [[currentPane mainView] removeFromSuperview];
     [currentPane didUnselect];
-    currentPane = nil;
+    DESTROY(currentPane);
   }
 	
   /* Display "please wait" message in middle of content area: */
@@ -194,7 +196,7 @@
   [presentation layoutPreferencesViewWithPaneView: paneView];
 	
   /* Finish up by setting up key views and remembering new current pane: */
-  currentPane = requestedPane;
+  ASSIGN(currentPane, requestedPane);
   // FIXME: The hack below will have to be decently reimplemented in order we
   // we can support not resigning first responder for other presentation
   // views when a new pane gets selected.

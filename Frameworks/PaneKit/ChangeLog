@@ -4,6 +4,8 @@
     Fix missing 'const' for presentation mode.
     * Source/PKPanesController.m:
     Use NSPanel instead of NSWindow if owner is not assigned.
+    * Source/PKPanesController.m:
+    Try to fix a weird memory problem. (Not sure it is in PaneKit).
 
 2006-11-08  Yen-Ju Chen <yjchex gmail>
 
