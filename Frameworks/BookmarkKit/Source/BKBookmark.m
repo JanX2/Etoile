@@ -46,6 +46,7 @@ NSString *const kBKBookmarkLastVisitedDateProperty = @"kBKBookmarkLastVisitedDat
 	  [NSNumber numberWithInt: CKIntegerProperty], kBKTopLevelOrderProperty,
 			                   nil];
   [BKBookmark addPropertiesAndTypes: _propTypes];
+  DESTROY(_propTypes);
 }
 
 + (BKBookmark *) bookmarkWithURL: (NSURL *)url

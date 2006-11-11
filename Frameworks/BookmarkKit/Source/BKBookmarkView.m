@@ -124,7 +124,6 @@ NSString *const BKBookmarkUIDDataType = @"BKBookmarkUIDDataType";
   }
 
   BKGroup *group;
-  int gcount;
   if (item == nil) {
     if (rootGroup == nil) {
       /* Top level */
@@ -135,19 +134,9 @@ NSString *const BKBookmarkUIDDataType = @"BKBookmarkUIDDataType";
   } else {
     group = (BKGroup *)item;
   }
-#if 1
   NSArray *a = [group valueForProperty: kCKItemsProperty];
   CKRecord *r = [store recordForUniqueID: [a objectAtIndex: index]];
   return r;
-#else
-  gcount = [[group subgroups] count];
-  if (index < gcount) {
-    /* Group first */
-    return [[group subgroups] objectAtIndex: index];
-  } else {
-    return [[group items] objectAtIndex: index - gcount];
-  }
-#endif
 }
 
 - (id) outlineView: (NSOutlineView *) ov
@@ -399,14 +388,12 @@ NSString *const BKBookmarkUIDDataType = @"BKBookmarkUIDDataType";
 
 - (void) reloadData
 {
-//  [self cacheBookmarkStore];
   [outlineView reloadData];
 }
 
 - (void) setBookmarkStore: (BKBookmarkStore *) s
 {
   ASSIGN(store, s);
-//  [self cacheBookmarkStore];
 }
 
 - (BKBookmarkStore *) bookmarkStore

@@ -43,6 +43,7 @@ NSString *const kBKGroupNameProperty = @"kBKGroupNameProperty";
          [NSNumber numberWithInt: CKIntegerProperty], kBKTopLevelOrderProperty,
                 nil];
   [BKGroup addPropertiesAndTypes: _propTypes];
+  DESTROY(_propTypes);
 }
 
 - (id) init
