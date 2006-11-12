@@ -399,6 +399,10 @@
 
 - (void) windowWillClose: (NSNotification *) aNotification
 {
+  /* the window may be modal. */
+  if ([NSApp modalWindow] == owner) {
+    [NSApp stopModal];
+  }
   [currentPane willUnselect];
   [currentPane didUnselect];
 }
