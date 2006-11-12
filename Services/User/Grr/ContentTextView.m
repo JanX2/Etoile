@@ -32,11 +32,11 @@
 
 @implementation ContentTextView
 
-- (void) setItem: (CKItem *) a
+- (void) render
 {
-  // Set the currently viewed article to this article
-  ASSIGN(item, a);
-
+  if (item == nil) return;
+  if (font == nil) return;
+  NSFontManager *fontManager = [NSFontManager sharedFontManager];
   int headlineStartPos;
   int headlineLength;
   int urlStartPos;
@@ -53,6 +53,7 @@
               headline, url];
 
   RenderHandler *handler = [[RenderHandler alloc] init];
+  [handler setBaseFont: font];
   CodeParser *parser = [[CodeParser alloc] initWithCodeHandler: handler
                                            withString: description];
   [parser parse];
@@ -67,11 +68,12 @@
   endPos = [content length];
   
   [self setString: content];
-  [self setFont: [NSFont systemFontOfSize: [NSFont systemFontSize]]];
-  [self setFont: [NSFont boldSystemFontOfSize:18]
+  [self setFont: font];
+  [self setFont: [fontManager convertFont: font toHaveTrait: NSBoldFontMask]
 	  range: NSMakeRange(headlineStartPos, headlineLength)];
   
-  [self setFont: [NSFont boldSystemFontOfSize: [NSFont smallSystemFontSize]]
+  int size = [font pointSize];
+  [self setFont: [fontManager convertFont: font toSize: size-4]
           range: NSMakeRange(urlStartPos, urlLength)];
 
   [[self textStorage] appendAttributedString: as];
@@ -79,14 +81,28 @@
   [self setNeedsDisplay: YES];
 }
 
+- (void) setItem: (CKItem *) a
+{
+  // Set the currently viewed article to this article
+  ASSIGN(item, a);
+  [self render];
+}
+
 - (CKItem *) item
 {
   return item;
 }
 
+- (void) setBaseFont: (NSFont *) f
+{
+  ASSIGN(font, f);
+  [self render];
+}
+
 - (void) dealloc
 {
   DESTROY(item);
+  DESTROY(font);
   [super dealloc];
 }
 

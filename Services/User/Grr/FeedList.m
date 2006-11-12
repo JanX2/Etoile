@@ -136,7 +136,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
   NSEnumerator *e = [[feedStore items] objectEnumerator];
   BKBookmark *bk;
   while ((bk = [e nextObject])) {
-    RSSReaderFeed *feed = [RSSReaderFeed feedWithURL: [bk URL]];
+    RSSFeed *feed = [RSSReaderFeed feedWithURL: [bk URL]];
     [list setObject: feed forKey: [bk URL]];
   }
 }

@@ -10,6 +10,7 @@ Grr_OBJC_FILES = \
 	PaneController.m \
 	LogPane.m \
 	PreferencePane.m \
+	FontPreferencePane.m \
 	CKTableView.m \
 	TagHandler.m \
 	CodeParser.m \
@@ -47,6 +48,7 @@ Grr_LOCALIZED_RESOURCE_FILES += \
 
 ifeq ($(FOUNDATION_LIB), apple)
 Grr_LOCALIZED_RESOURCE_FILES += \
+	FontPreferencePane.nib \
 	PreferencePane.nib \
 	MainMenu.nib \
 	AddFeedPanel.nib 

@@ -35,7 +35,9 @@
     [self dealloc];
     return nil;
   }
-  _mainView = [_window contentView];
+  /* For some reason, _mainView has to be retained !! */
+  ASSIGN(_mainView, [_window contentView]);
+  RETAIN(_mainView);
 
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
          @"01General", @"identifier",

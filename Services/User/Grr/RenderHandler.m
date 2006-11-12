@@ -26,27 +26,6 @@
 
 @implementation RenderHandler
 
-#if 0
-- (void) addNote: (NSAttributedString *) string
-       withImage: (NSImage *) img
-       withColor: (NSColor *) color
-{
-  NSTextAttachment *at = [[NSTextAttachment alloc] init];
-  NoteCell *attachCell = [[NoteCell alloc] init];
-  [attachCell setImage: img];
-  [attachCell setColor: color];
-  [attachCell setText: string];
-
-  [at setAttachmentCell: attachCell];
-  NSAttributedString *as = [NSAttributedString attributedStringWithAttachment: at];
-  //NSAttributedString *astring = [[NSAttributedString alloc] initWithString: @"\n"];
-  //[_result appendAttributedString: astring];
-  [_result appendAttributedString: as];
-  RELEASE(attachCell);
-  RELEASE(at);
-}
-#endif
-
 - (void) addString: (NSString *) element
 {
   {
@@ -58,13 +37,13 @@
     if (fontType & FixedPitchFontType)
       {
         font = [[NSFontManager sharedFontManager] 
-   	          convertFont: [NSFont userFixedPitchFontOfSize: 12]
+   	          convertFont: baseFont
 		  toHaveTrait: fontMask];
       }
     else
       {
         font = [[NSFontManager sharedFontManager]
-	          convertFont: [NSFont userFontOfSize: 12]
+	          convertFont: baseFont
 		  toHaveTrait: fontMask];
       }
     [attributes setValue: font forKey: NSFontAttributeName];
@@ -135,13 +114,15 @@
 
   _result = [[NSMutableAttributedString alloc] init];
   attributes = [[NSMutableDictionary alloc] init];
-  [attributes setValue: [NSFont userFontOfSize: 12]
-	        forKey: NSFontAttributeName];
-  [attributes setValue: [NSColor blackColor]
-	        forKey: NSForegroundColorAttributeName];
   value = [[NSMutableString alloc] init];
 
   fontType = NormalFontType;;
+  ASSIGN(baseFont, [NSFont systemFontOfSize: [NSFont systemFontSize]]);
+
+  [self setBaseFont: baseFont];
+  [attributes setValue: [NSColor blackColor]
+	        forKey: NSForegroundColorAttributeName];
+
 
   rangeOfTag = NSMakeRange(NSNotFound,0);
   contentOfTag = [[NSMutableString alloc] init];
@@ -155,7 +136,15 @@
   RELEASE(attributes);
   RELEASE(value);
   RELEASE(contentOfTag);
+  DESTROY(baseFont);
   [super dealloc];
+}
+
+- (void) setBaseFont: (NSFont *) f
+{
+  ASSIGN(baseFont, f);
+  [attributes setValue: baseFont
+	        forKey: NSFontAttributeName];
 }
 
 - (NSAttributedString *) renderedString

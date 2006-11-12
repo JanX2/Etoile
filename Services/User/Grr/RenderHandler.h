@@ -21,6 +21,7 @@
 */
 
 #import "TagHandler.h"
+#import <AppKit/AppKit.h>
 
 /* Exception name */
 static NSString *RenderTextExceptionName = @"RenderTextExceptionName";
@@ -41,6 +42,7 @@ typedef enum _FontType {
   NSMutableDictionary *attributes;
 
   FontType fontType;
+  NSFont *baseFont;
 
   NSMutableString *value;
 
@@ -50,5 +52,6 @@ typedef enum _FontType {
 }
 
 - (NSAttributedString *) renderedString;
+- (void) setBaseFont: (NSFont *) font;
 @end
 

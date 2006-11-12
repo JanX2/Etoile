@@ -1,0 +1,26 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {fontAndSizeAction = id; useSystemAction = id; }; 
+            CLASS = FontPreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_mainView" = id; 
+                "_window" = id; 
+                articleContentFontButton = id; 
+                articleContentSizeButton = id; 
+                articleListFontButton = id; 
+                articleListSizeButton = id; 
+                feedListFontButton = id; 
+                feedListSizeButton = id; 
+                systemFontField = id; 
+                systemFontSizeField = id; 
+                useSystemFontButton = id; 
+                useSystemFontSizeButton = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

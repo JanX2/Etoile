@@ -39,8 +39,21 @@
 #import "GNUstep.h"
 #import "ContentTextView.h"
 #import "PreferencePane.h"
+#import "FontPreferencePane.h"
 
 static Controller *sharedInstance;
+
+@interface Controller (Private)
+/* Listen from notification */
+- (void) feedFetchFailed: (NSNotification *) not;
+- (void) fontChanged: (NSNotification *) not;
+- (void) feedFetched: (NSNotification *) not;
+
+/* Change fonts on feed list, article list and article content
+ * based on user defatuls or system font.
+ */
+- (void) changeFont;
+@end
 
 @implementation Controller
 
@@ -85,6 +98,19 @@ static Controller *sharedInstance;
   if ([defaults objectForKey: RSSReaderWebBrowserDefaults] == nil) {
     [defaults setObject: @"/usr/bin/firefox"
               forKey: RSSReaderWebBrowserDefaults];
+  }
+  if ([defaults objectForKey: RSSReaderUseSystemFontDefaults] == nil) {
+    NSLog(@"font nil");
+    [defaults setBool: YES
+              forKey: RSSReaderUseSystemFontDefaults];
+  }
+  if ([defaults objectForKey: RSSReaderUseSystemSizeDefaults] == nil) {
+    NSLog(@"size nil");
+    [defaults setBool: YES
+              forKey: RSSReaderUseSystemSizeDefaults];
+  } else {
+    /* This builds fonts based on user defatuls */
+    [self fontChanged: nil];
   }
 
   int number = [defaults integerForKey: RSSReaderRemoveArticlesAfterDefaults];
@@ -160,6 +186,13 @@ static Controller *sharedInstance;
           selector: @selector(feedFetchFailed:)
           name: RSSFeedFetchFailedNotification
           object: nil];
+  [[NSNotificationCenter defaultCenter]
+          addObserver: self
+          selector: @selector(fontChanged:)
+          name: RSSReaderFontChangeNotification
+          object: nil];
+
+  [mainWindow makeKeyAndOrderFront: self];
 
 }
 
@@ -191,8 +224,9 @@ static Controller *sharedInstance;
     /* Initialize here */
     /* Automatically register into PKPreferencePaneRegistry */
     AUTORELEASE([[PreferencePane alloc] init]);
+    AUTORELEASE([[FontPreferencePane alloc] init]);
     ASSIGN(preferencesController, [PKPreferencesController sharedPreferencesController]);
-    [preferencesController setPresentationMode: PKPlainPresentationMode];
+    [preferencesController setPresentationMode: PKMatrixPresentationMode];
   }
   [(NSWindow *)[preferencesController owner] setTitle: @"Preferences"];
   [(NSWindow *)[preferencesController owner] makeKeyAndOrderFront: self];
@@ -468,9 +502,9 @@ static Controller *sharedInstance;
   id item = [articleCollectionView itemAtIndex: rowIndex];
   if ([item isKindOfClass: [CKItem class]]) {
     if ([[item valueForProperty: kArticleReadProperty] intValue] == 0) {
-      [cell setFont: [NSFont boldSystemFontOfSize: [NSFont systemFontSize]]];
+      [cell setFont: articleListBoldFont];
     } else {
-      [cell setFont: [NSFont systemFontOfSize: [NSFont systemFontSize]]];
+      [cell setFont: articleListFont];
     }
   } 
 }
@@ -523,6 +557,74 @@ static Controller *sharedInstance;
 - (void) feedFetchFailed: (NSNotification *) not
 {
   [self updateProgressBar];
+}
+
+- (void) fontChanged: (NSNotification *) not
+{
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  int feedListSize, articleListSize, articleContentSize;
+  NSString *feedListFontName, *articleListFontName, *articleContentFontName;
+  BOOL b = [defaults boolForKey: RSSReaderUseSystemSizeDefaults];
+  if (b == YES) {
+    feedListSize = articleListSize = articleContentSize = [NSFont systemFontSize];
+  } else {
+    feedListSize = [defaults integerForKey: RSSReaderFeedListSizeDefaults];
+    articleListSize = [defaults integerForKey: RSSReaderArticleListSizeDefaults];
+    articleContentSize = [defaults integerForKey: RSSReaderArticleContentSizeDefaults];
+  }
+  b = [defaults boolForKey: RSSReaderUseSystemFontDefaults];
+  if (b == YES) {
+    ASSIGN(feedListFont, [NSFont systemFontOfSize: feedListSize]);
+    ASSIGN(articleListFont, [NSFont systemFontOfSize: articleListSize]);
+    ASSIGN(articleContentFont, [NSFont systemFontOfSize: articleContentSize]);
+  } else {
+    ASSIGN(feedListFont, [NSFont fontWithName: [defaults stringForKey: RSSReaderFeedListFontDefaults]
+                           size: feedListSize]);
+    ASSIGN(articleListFont, [NSFont fontWithName: [defaults stringForKey: RSSReaderArticleListFontDefaults]
+                           size: articleListSize]);
+    ASSIGN(articleContentFont, [NSFont fontWithName: [defaults stringForKey: RSSReaderArticleContentFontDefaults]
+                           size: articleContentSize]);
+  }
+  [self changeFont];
+}
+
+- (void) changeFont
+{
+  /* Safe guard */
+  int defaultSize = [NSFont systemFontSize];
+  if (feedListFont == nil) {
+    ASSIGN(feedListFont, [NSFont systemFontOfSize: defaultSize]);
+  }
+  if (articleListFont == nil) {
+    ASSIGN(articleListFont, [NSFont systemFontOfSize: defaultSize]);
+  }
+  if (articleContentFont == nil) {
+    ASSIGN(articleContentFont, [NSFont systemFontOfSize: defaultSize]);
+  }
+
+  NSFontManager *fm = [NSFontManager sharedFontManager];
+  ASSIGN(articleListBoldFont, [fm convertFont: articleListFont toHaveTrait: NSBoldFontMask]);
+
+#if 0
+  NSLog(@"feed list %@", feedListFont);
+  NSLog(@"article list %@", articleListFont);
+  NSLog(@"article content %@", articleContentFont);
+#endif
+
+  /* Feed List */
+  NSEnumerator *e = [[[feedBookmarkView outlineView] tableColumns] objectEnumerator];
+  NSTableColumn *column;
+  while ((column = [e nextObject])) {
+    [[column dataCell] setFont: feedListFont];
+  }
+
+  /* Article list */
+  e = [[[articleCollectionView tableView] tableColumns] objectEnumerator];
+  while ((column = [e nextObject])) {
+    [[column dataCell] setFont: articleListFont];
+  }
+
+  [contentTextView setBaseFont: articleContentFont];
 }
 
 @end

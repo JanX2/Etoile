@@ -52,6 +52,11 @@
 
   PKPreferencesController *preferencesController;
   PaneController *paneController;
+
+  NSFont *feedListFont;
+  NSFont *articleListFont;
+  NSFont *articleListBoldFont;
+  NSFont *articleContentFont;
 }
 
 + (Controller *) mainController;
