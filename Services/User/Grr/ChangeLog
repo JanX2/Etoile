@@ -10,6 +10,7 @@ Nov-11-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Since we don't use RSSFeed to keep articles,
           always use [RSSFeed -setAutoClear:YES].
 	* Remove unnecessary Info-gnustep files.
+	* Use GrrInfo.plist.
 
 Nov-10-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Save frames.

@@ -38,7 +38,8 @@ Grr_RESOURCE_FILES += \
 	Resources/rssreader-working.png \
 	Resources/rdf.tiff \
 	Resources/xml.tiff \
-	Resources/rss.tiff
+	Resources/rss.tiff \
+	GrrInfo.plist
 
 Grr_LANGUAGES = \
 	English
