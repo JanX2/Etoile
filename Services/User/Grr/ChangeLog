@@ -9,6 +9,7 @@ Nov-11-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Automatically get feed from pasteboard.
 	* Since we don't use RSSFeed to keep articles,
           always use [RSSFeed -setAutoClear:YES].
+	* Remove unnecessary Info-gnustep files.
 
 Nov-10-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Save frames.
