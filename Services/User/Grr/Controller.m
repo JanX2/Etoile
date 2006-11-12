@@ -580,7 +580,6 @@ static Controller *sharedInstance;
 {
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   int feedListSize, articleListSize, articleContentSize;
-  NSString *feedListFontName, *articleListFontName, *articleContentFontName;
   BOOL b = [defaults boolForKey: RSSReaderUseSystemSizeDefaults];
   if (b == YES) {
     feedListSize = articleListSize = articleContentSize = [NSFont systemFontSize];
@@ -642,6 +641,12 @@ static Controller *sharedInstance;
   }
 
   [contentTextView setBaseFont: articleContentFont];
+
+#ifdef GNUSTEP
+  /* GNUstep need a reload to use new font */
+  [feedBookmarkView reloadData];
+  [articleCollectionView reloadData];
+#endif
 }
 
 @end

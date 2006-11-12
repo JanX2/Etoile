@@ -55,6 +55,7 @@ Grr_LOCALIZED_RESOURCE_FILES += \
 Grr_MAIN_MODEL_FILE = MainMenu.nib
 else
 Grr_LOCALIZED_RESOURCE_FILES += \
+	FontPreferencePane.gorm \
 	PreferencePane.gorm\
 	MainMenu.gorm \
 	AddFeedPanel.gorm 

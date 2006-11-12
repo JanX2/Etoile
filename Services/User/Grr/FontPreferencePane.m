@@ -6,7 +6,6 @@
 
 - (void) fontAndSizeAction: (id) sender
 {
-  NSLog(@"font %@", sender);
   anythingChanged = YES;
 }
 
@@ -68,6 +67,7 @@
     }
   }
   ASSIGN(displayFontNamesCache, [NSArray arrayWithArray: ma]);
+  NSLog(@"displayFontNamesCache %@", displayFontNamesCache);
   DESTROY(ma);
 
   /* Set font */
@@ -98,9 +98,23 @@
     [feedListSizeButton selectItemWithTitle: s];
     [articleListSizeButton selectItemWithTitle: s];
     [articleContentSizeButton selectItemWithTitle: s];
-    [feedListFontButton selectItemWithTitle: [f fontName]];
-    [articleListFontButton selectItemWithTitle: [f fontName]];
-    [articleContentFontButton selectItemWithTitle: [f fontName]];
+    s = [f fontName];
+#ifdef GNUSTEP
+    NSEnumerator *e = [displayFontNamesCache objectEnumerator];
+    s = nil;
+    while ((s = [e nextObject])) {
+      if ([s hasPrefix: [f fontName]]) {
+        break;
+      }
+    }
+    if (s == nil) {
+      /* Cannot find the right name */
+      s = [displayFontNamesCache objectAtIndex: 0];
+    }
+#endif
+    [feedListFontButton selectItemWithTitle: s];
+    [articleListFontButton selectItemWithTitle: s];
+    [articleContentFontButton selectItemWithTitle: s];
 
     [systemFontField setStringValue: [NSString stringWithFormat: @"( %@ )", [f fontName]]];
     [systemFontSizeField setStringValue: [NSString stringWithFormat: @"( %d )", size]];
