@@ -5,7 +5,7 @@
     ApplicationName = Grr;
     ApplicationRelease = 0.7;
     Authors = (
-	"G\U00FCnther Noack <guenther@unix-ag.uni-kl.de>"
+	"G\U00FCnther Noack <guenther@unix-ag.uni-kl.de>",
 	"Yen-Ju Chen <yjchenx gmail>"
     );
     Copyright = "Copyright (C) 2004-2005";
