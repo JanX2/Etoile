@@ -35,6 +35,7 @@ Grr_GUI_LIBS += -lCollectionKit -lBookmarkKit -lPaneKit
 
 Grr_RESOURCE_FILES += \
 	Resources/rssreader.png \
+	Resources/rssreader.icns \
 	Resources/rssreader-working.png \
 	Resources/rdf.tiff \
 	Resources/xml.tiff \

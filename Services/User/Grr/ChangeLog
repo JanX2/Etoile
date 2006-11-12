@@ -11,6 +11,7 @@ Nov-11-2006 Yen-Ju Chen <yjchenx at gmail>
           always use [RSSFeed -setAutoClear:YES].
 	* Remove unnecessary Info-gnustep files.
 	* Use GrrInfo.plist.
+	* Add Info.plist and rssreader.icns for Cocoa.
 
 Nov-10-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Save frames.
