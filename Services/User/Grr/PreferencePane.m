@@ -4,6 +4,11 @@
 
 @implementation PreferencePane
 
+- (void) intervalAction: (id) sender
+{
+  NSLog(@"%@", sender);
+}
+
 - (void) webBrowserAction: (id) sender
 {
   [defaults setObject: [webBrowserField stringValue] 

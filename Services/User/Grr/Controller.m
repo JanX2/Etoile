@@ -227,7 +227,8 @@ static Controller *sharedInstance;
     [preferencesController setPresentationMode: PKMatrixPresentationMode];
   }
   [(NSWindow *)[preferencesController owner] setTitle: @"Preferences"];
-  [(NSWindow *)[preferencesController owner] makeKeyAndOrderFront: self];
+//  [(NSWindow *)[preferencesController owner] makeKeyAndOrderFront: self];
+  [NSApp runModalForWindow: (NSPanel *)[preferencesController owner]];
 }
 
 - (void) subscribe: (id) sender
