@@ -399,7 +399,6 @@
 
 - (void) windowWillClose: (NSNotification *) aNotification
 {
-  NSLog(@"windowWillClose");
   [currentPane willUnselect];
   [currentPane didUnselect];
 }
