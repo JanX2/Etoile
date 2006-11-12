@@ -7,6 +7,7 @@ Grr_APPLICATION_ICON = rssreader.png
 Grr_STANDARD_INSTALL = yes
 
 Grr_OBJC_FILES = \
+	RSSReaderService.m \
 	PaneController.m \
 	LogPane.m \
 	PreferencePane.m \

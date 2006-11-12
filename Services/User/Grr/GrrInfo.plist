@@ -26,6 +26,7 @@
 	    NSPortName = RSSReaderService;
 	    NSSendTypes = (
 		NSURLPboardType,
+		NSStringPboardType,
 		NSFilenamesPboardType
 	    );
 	}

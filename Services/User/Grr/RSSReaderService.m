@@ -23,8 +23,6 @@
 */
 
 #import "RSSReaderService.h"
-#import "RSSDropZone.h"
-
 
 @implementation RSSReaderService
 
@@ -33,10 +31,12 @@
 		 error: (NSString**) error
 {
   NSLog(@"RSSReaderService invoked.");
+#if 0
   if ( addFeedsFromPasteboard(pboard) == NO )
     {
       *error = @"Service invocation failed.";
     }
+#endif
 }
 
 @end

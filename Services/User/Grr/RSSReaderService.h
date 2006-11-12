@@ -1,8 +1,10 @@
 /* -*-objc-*-
    Project: RSSReader
 
+   Copyright (C) 2006 Yen-Ju Chen 
    Copyright (C) 2005 Guenther Noack 
 
+   Author: Yen-Ju Chen
    Author: Guenther Noack,,,
 
    Created: 2005-05-31 21:21:50 +0000 by guenther
@@ -22,11 +24,7 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 */
 
-#ifndef _RSSREADERSERVICE_H_
-#define _RSSREADERSERVICE_H_
-
 #import <AppKit/AppKit.h>
-#import <Foundation/Foundation.h>
 
 @interface RSSReaderService : NSObject
 {
@@ -38,5 +36,4 @@
 
 @end
 
-#endif // _RSSREADERSERVICE_H_
 

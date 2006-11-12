@@ -2,6 +2,9 @@
 Grr Changelog
 =============
 
+Nov-12-2006 Yen-Ju Chen <yjchenx at gmail>
+	* Try to add services back.
+
 Nov-11-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Speed up starting by avoid rebuild internal cache frequently.
 	* Display main window after everything is properly set up.
