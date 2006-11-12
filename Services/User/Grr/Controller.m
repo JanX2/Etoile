@@ -100,12 +100,10 @@ static Controller *sharedInstance;
               forKey: RSSReaderWebBrowserDefaults];
   }
   if ([defaults objectForKey: RSSReaderUseSystemFontDefaults] == nil) {
-    NSLog(@"font nil");
     [defaults setBool: YES
               forKey: RSSReaderUseSystemFontDefaults];
   }
   if ([defaults objectForKey: RSSReaderUseSystemSizeDefaults] == nil) {
-    NSLog(@"size nil");
     [defaults setBool: YES
               forKey: RSSReaderUseSystemSizeDefaults];
   } else {

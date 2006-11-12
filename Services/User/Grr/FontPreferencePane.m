@@ -67,7 +67,6 @@
     }
   }
   ASSIGN(displayFontNamesCache, [NSArray arrayWithArray: ma]);
-  NSLog(@"displayFontNamesCache %@", displayFontNamesCache);
   DESTROY(ma);
 
   /* Set font */
