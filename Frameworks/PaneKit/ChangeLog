@@ -1,3 +1,9 @@
+2006-11-11  Yen-Ju Chen <yjchex gmail>
+
+    * Source/PKPanesController.m:
+      Set self as delegate of owner if owner is a NSWindow.
+      Otherwise, it will not receive -windowWillClose notification.
+ 
 2006-11-09  Yen-Ju Chen <yjchex gmail>
 
     * Headers/PKPanesController.h:

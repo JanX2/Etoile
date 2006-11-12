@@ -85,7 +85,9 @@
                              backing: NSBackingStoreBuffered 
                                defer: YES];
     [owner setReleasedWhenClosed: NO];
-    
+  }
+  if ([owner isKindOfClass: [NSWindow class]]) {
+    [owner setDelegate: self];
   }
 
   if (presentation == nil) {
@@ -397,6 +399,7 @@
 
 - (void) windowWillClose: (NSNotification *) aNotification
 {
+  NSLog(@"windowWillClose");
   [currentPane willUnselect];
   [currentPane didUnselect];
 }
