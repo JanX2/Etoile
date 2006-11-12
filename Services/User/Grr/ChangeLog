@@ -7,6 +7,8 @@ Nov-11-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Display main window after everything is properly set up.
 	* Font preferences (on Cocoa only for now).
 	* Automatically get feed from pasteboard.
+	* Since we don't use RSSFeed to keep articles,
+          always use [RSSFeed -setAutoClear:YES].
 
 Nov-10-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Save frames.

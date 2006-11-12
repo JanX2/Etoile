@@ -259,7 +259,7 @@ static Controller *sharedInstance;
 
     // create the feed
     RSSFeed *feed = AUTORELEASE([[RSSReaderFeed alloc] initWithURL: url]);
-    [feed setAutoClear: NO];
+    [feed setAutoClear: YES];
     /* Set temparory name */
     [feed setFeedName: [url absoluteString]];
 

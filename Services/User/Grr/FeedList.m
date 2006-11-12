@@ -137,6 +137,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
   BKBookmark *bk;
   while ((bk = [e nextObject])) {
     RSSFeed *feed = [RSSReaderFeed feedWithURL: [bk URL]];
+    [feed setAutoClear: YES];
     [list setObject: feed forKey: [bk URL]];
   }
 }
