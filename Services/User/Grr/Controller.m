@@ -237,6 +237,21 @@ static Controller *sharedInstance;
   SubscriptionPanelController *controller = 
 	  [SubscriptionPanelController subscriptionPanelController];
 
+  /* See whether there is anything in pasteboard */
+  NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+  NSString *type = [pboard availableTypeFromArray: [NSArray arrayWithObjects: NSURLPboardType, NSStringPboardType, nil]];
+  if (type) {
+    NSString *s = [pboard stringForType: type];
+    if ([s hasPrefix: @"http"] ||
+        [s hasPrefix: @"https"] ||
+        [s hasPrefix: @"rss"])
+    {
+      [controller setURL: [NSURL URLWithString: s]];
+    }
+  } else {
+    [controller setURL: nil];
+  }
+
   int result = [controller runPanelInModal];
   if (result == NSOKButton) {
 
@@ -253,6 +268,8 @@ static Controller *sharedInstance;
 
     [feedBookmarkView reloadData];
     [articleCollectionView reloadData];
+
+    [controller setURL: nil];
   }
 }
 

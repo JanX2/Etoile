@@ -9,5 +9,6 @@
 
 + (SubscriptionPanelController *) subscriptionPanelController;
 - (int) runPanelInModal;
+- (void) setURL: (NSURL *) url;
 - (NSURL *) url;
 @end

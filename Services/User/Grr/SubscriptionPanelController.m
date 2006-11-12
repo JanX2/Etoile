@@ -31,7 +31,17 @@ static SubscriptionPanelController *sharedInstance;
   if (panel == nil) {
     [NSBundle loadNibNamed: @"AddFeedPanel" owner: self];
   }
+  if (url) {
+    [URLTextField setStringValue: [url absoluteString]];
+  } else {
+    [URLTextField setStringValue: @""];
+  }
   return [NSApp runModalForWindow: panel];
+}
+
+- (void) setURL: (NSURL *) u
+{
+  ASSIGN(url, u);
 }
 
 - (NSURL *) url
