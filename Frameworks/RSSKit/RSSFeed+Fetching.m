@@ -70,8 +70,13 @@ NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotificatio
 - (void) URL: (NSURL *) sender 
          resourceDidFailedLoadingWithReason: (NSString *) reason
 {
+  /* Make sure it is ours */
+  if (sender != feedURL) 
+    return;
+
   NSLog(@"URL %@ failed loading because of %@", sender, reason);
   [self setError: RSSFeedErrorMalformedURL];
+  [cacheData setLength: 0]; /* Clean up cache */
   status = RSSFeedIsIdle;
   [[NSNotificationCenter defaultCenter]
        postNotificationName: RSSFeedFetchFailedNotification
@@ -82,6 +87,10 @@ NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotificatio
 - (void) URL: (NSURL *) sender
          resourceDataDidBecomeAvailable: (NSData *) newBytes
 {
+  /* Make sure it is ours */
+  if (sender != feedURL) 
+    return;
+
   if (cacheData == nil) {
     ASSIGN(cacheData, [NSMutableData data]);
   }
@@ -90,11 +99,21 @@ NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotificatio
 
 - (void) URLResourceDidFinishLoading: (NSURL *) sender
 {
+  /* Make sure it is ours */
+  if (sender != feedURL) 
+    return;
+
+  NSLog(@"%@ finish loading %@", self, sender);
+//  [cacheData writeToFile: @"/tmp/grr_data" atomically:YES];
+  if ((cacheData == nil) && [cacheData length] == 0) {
+    NSLog(@"No Data");
+  }
   [self fetchWithData: cacheData];
   status = RSSFeedIsIdle;
   
   /* Clean up cache */
   [cacheData setLength: 0];
+  NSLog(@"Process Done");
 }
 
 /**
