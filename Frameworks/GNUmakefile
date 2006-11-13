@@ -82,10 +82,6 @@ endif
 
 # We need to build EtoileExtensionsKit first because other frameworks like 
 # ExtendedWorkspaceKit, PreferencesKit depends on it.
-ifeq ($(etoileextensionskit), yes)
-    SUBPROJECTS += EtoileExtensionsKit
-endif
-
 ifeq ($(etoilefoundation), yes)
     SUBPROJECTS += EtoileFoundation
 endif
