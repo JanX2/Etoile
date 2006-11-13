@@ -1,3 +1,7 @@
+Nov-12-2006  Yen-Ju Chen
+	* Process namespace for XMLParser.
+          It is essential for atom 1.0.
+
 Nov-11-2006  Yen-Ju Chen
         * Try to fix random failed fetching issue by more safe guard.
 
