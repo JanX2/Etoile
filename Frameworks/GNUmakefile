@@ -33,7 +33,6 @@ endif
 
 ifeq ($(etoile-extensions), yes)
     
-    export etoileextensionskit ?= yes
     export etoilefoundation ?= yes
     export etoileui ?= yes
     export distributedview ?= yes
