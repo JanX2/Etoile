@@ -9,6 +9,7 @@ Nov-12-2006 Yen-Ju Chen <yjchenx at gmail>
           user defaults (on Cocoa and GNUstep). 
         * Open main window if dock is clicked.
 	* Handle refresh on group.
+	* Do not add articles older than user defaults.
 
 Nov-11-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Speed up starting by avoid rebuild internal cache frequently.

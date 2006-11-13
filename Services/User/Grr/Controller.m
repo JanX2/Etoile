@@ -32,9 +32,7 @@
 #import "RSSReaderFeed.h"
 #import "SubscriptionPanelController.h"
 #import "FetchingProgressManager.h"
-#if 0
 #import "RSSReaderService.h"
-#endif
 #import "Global.h"
 #import "GNUstep.h"
 #import "ContentTextView.h"
@@ -149,13 +147,6 @@ static Controller *sharedInstance;
   /* Start build article view */
   [articleCollectionView beginEditing];
 
-  /* Remove old articles */
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  int number = [defaults integerForKey: RSSReaderRemoveArticlesAfterDefaults];
-  if (number > 0) {
-    [feedList removeArticlesOlderThanDay: number];
-  }
-
   [feedBookmarkView setDisplayProperties: [NSArray arrayWithObject: kBKBookmarkTitleProperty]];
   [[feedBookmarkView outlineView] setDelegate: self];
   [feedBookmarkView setBookmarkStore: [feedList feedStore]];
@@ -168,13 +159,12 @@ static Controller *sharedInstance;
   /* finish build article view */
   [articleCollectionView endEditing];
 
-#if 0
   /* Register service... */
   [NSApp setServicesProvider: [[RSSReaderService alloc] init]];
-#endif
   [feedBookmarkView reloadData];
   [articleCollectionView reloadData];
 
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   /* Resize bookmark view from saved size */
   NSString *s = [defaults stringForKey: RSSReaderBookmarkViewFrameDefaults];
   if (s) {
@@ -679,12 +669,6 @@ static Controller *sharedInstance;
 
   NSFontManager *fm = [NSFontManager sharedFontManager];
   ASSIGN(articleListBoldFont, [fm convertFont: articleListFont toHaveTrait: NSBoldFontMask]);
-
-#if 0
-  NSLog(@"feed list %@", feedListFont);
-  NSLog(@"article list %@", articleListFont);
-  NSLog(@"article content %@", articleContentFont);
-#endif
 
   /* Feed List */
   NSEnumerator *e = [[[feedBookmarkView outlineView] tableColumns] objectEnumerator];

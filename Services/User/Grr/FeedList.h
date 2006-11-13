@@ -34,6 +34,8 @@
 {
   BKBookmarkStore *feedStore;
   CKCollection *articleCollection;
+  NSDate *keepDate; // Only fetch and keep articles newer than this date. Can be nil.
+
 
   /* list containing RSSFeed objects
    * Key is NSURL from BKBookmark of feedStore.
@@ -74,7 +76,7 @@
 - (void) updateFeed: (RSSFeed *) feed;
 
 - (void) save;
-- (void) removeArticlesOlderThanDay: (int) number;
+- (void) removeArticlesOlderThanDay: (NSDate *) date;
 
 @end
 

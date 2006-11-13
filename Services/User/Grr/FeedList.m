@@ -114,6 +114,15 @@ int articleSortByDate( id articleA, id articleB, void* context )
       ASSIGN(feedStore, [BKBookmarkStore sharedBookmarkWithDomain: BKRSSBookmarkStore]);
       ASSIGN(articleCollection, AUTORELEASE([[CKCollection alloc] initWithLocation: [FeedList articleCacheLocation]]));
 
+      /* Remove old articles */ 
+      NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+      int number = [defaults integerForKey: RSSReaderRemoveArticlesAfterDefaults];
+      if (number > 0) {
+        ASSIGN(keepDate, [[NSCalendarDate date] dateByAddingYears: 0 
+                   months: 0 days: -number hours: 0 minutes: 0 seconds: 0]);
+        [self removeArticlesOlderThanDay: keepDate];  
+      }
+
       [self buildFeeds];
     }
   
@@ -250,10 +259,8 @@ int articleSortByDate( id articleA, id articleB, void* context )
   [articleCollection save];
 }
 
-- (void) removeArticlesOlderThanDay: (int) number
+- (void) removeArticlesOlderThanDay: (NSDate *) date
 {
-  NSCalendarDate *date = [[NSCalendarDate date] dateByAddingYears: 0 
-           months: 0 days: -number hours: 0 minutes: 0 seconds: 0];
   NSEnumerator *e = [[articleCollection items] objectEnumerator];
   CKItem *item;
   while ((item = [e nextObject])) {
@@ -302,6 +309,11 @@ int articleSortByDate( id articleA, id articleB, void* context )
   e = [feed articleEnumerator];
   RSSArticle *article = nil;
   while ((article = [e nextObject])) {
+    /* If older then keepDate, skip it */
+    if ([[article date] compare: keepDate] == NSOrderedAscending) {
+      continue;
+    }
+
     /* Find existing one */
     BOOL found = NO;
     NSEnumerator *e1 = [[group items] objectEnumerator];
