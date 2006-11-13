@@ -187,7 +187,6 @@ NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotificatio
   XMLNode* document;
   
   parser = AUTORELEASE([[NSXMLParser alloc] initWithData: data]);
-  [parser setShouldProcessNamespaces: YES];
   
   document = AUTORELEASE([[XMLNode alloc]
 			   initWithName: nil
