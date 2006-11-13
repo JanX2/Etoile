@@ -246,7 +246,11 @@
       ASSIGN(url, anURL);
   }
   
-  [links addObject: link];
+  if (link) {
+    [links addObject: link];
+  } else {
+    NSLog(@"Link is nil: href: %@; rel: %@; type: %@", anURL, aRelation, aType);
+  }
   
   
 #ifdef DEBUG
