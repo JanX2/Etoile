@@ -91,7 +91,7 @@
 	      else if ([[secondlevelnode name]
 	      isEqualToString: @"issued"])
 	      {
-		  [creator setDate: parseDublinCoreDate( [secondlevelnode content] )];
+		  [creator setDateFromString: [secondlevelnode content]];
 		}
 	      else if ([[secondlevelnode name]
 			 isEqualToString: @"link"])

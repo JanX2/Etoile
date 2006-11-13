@@ -86,7 +86,7 @@
 		       [[secondlevelnode name]
 			 isEqualToString: @"updated"])
 		{
-		  [self setDate: parseDublinCoreDate( [secondlevelnode content]) ];
+		  [self setDateFromString: [secondlevelnode content]];
 		}
 	      else if ([[secondlevelnode name]
 			 isEqualToString: @"link"])

@@ -196,7 +196,7 @@ NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotificatio
 			   parent: nil]);
   
   [parser setDelegate: document];
-  
+  [parser setShouldProcessNamespaces: YES]; 
   
   if ([parser parse] == NO)
     {

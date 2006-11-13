@@ -40,7 +40,11 @@
     [dict setObject: lastRetrieval forKey: @"lastRetrievalDate"];
     [dict setObject: [NSNumber numberWithBool: clearFeedBeforeFetching]
           forKey: @"clearFeedBeforeFetchingFlag"];
-    [dict setObject: feedName forKey: @"feedName"];
+    
+    if (feedName != nil) {
+        [dict setObject: feedName forKey: @"feedName"];
+    }
+    
     [dict setObject: [feedURL description] forKey: @"feedURL"];
     [dict setObject: [articleClass description] forKey: @"articleClass"];
     
@@ -78,7 +82,7 @@
         
         ASSIGN(lastRetrieval, [dict objectForKey: @"lastRetrievalDate"]);
         clearFeedBeforeFetching = [[dict objectForKey: @"clearFeedBeforeFetchingFlag"] boolValue];
-        ASSIGN(feedName, [dict objectForKey: @"feedName"]);
+        ASSIGN(feedName, [dict objectForKey: @"feedName"]); // may be nil
         ASSIGN(feedURL, [NSURL URLWithString: [dict objectForKey: @"feedURL"]]);
         ASSIGN(articleClass, NSClassFromString([dict objectForKey: @"articleClass"]));
         

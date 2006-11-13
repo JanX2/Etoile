@@ -1,7 +1,12 @@
+
 Nov-12-2006  Yen-Ju Chen
 	* Process namespace for XMLParser.
           It is essential for atom 1.0.
 	* Avoid add nil RSSLink into array.
+
+Nov-11-2006  Guenther Noack
+	* Fixed namespace bug (namespaces were accidentally ignored before)
+	* Improved date parsing
 
 Nov-11-2006  Yen-Ju Chen
         * Try to fix random failed fetching issue by more safe guard.

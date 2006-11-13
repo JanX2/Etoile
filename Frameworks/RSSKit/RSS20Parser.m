@@ -60,7 +60,6 @@
 		       thirdlevelnode != nil;
 		       thirdlevelnode =[thirdlevelnode nextElement])
 		    {
-                 //NSLog(@"3rdlvlnode %@ %@", [thirdlevelnode name], [thirdlevelnode namespace]);
 		      if ([[thirdlevelnode name]
 			    isEqualToString: @"title"])
 			{
@@ -76,6 +75,10 @@
 			{
 			  [self setSummary: [thirdlevelnode content]];
 			}
+                 else if ([[thirdlevelnode name] isEqualToString: @"pubDate"])
+                 {
+                     [self setDateFromString: [thirdlevelnode content]];
+                 }
 		      else if ([[thirdlevelnode name]
 				 isEqualToString: @"enclosure"])
 			{
@@ -87,9 +90,8 @@
 				       objectForKey: @"type"]
 			   ];
 			}
-                 // FIXME: [3rdlevelnode namespace] is always nil! Why?!
-                 else if ([[thirdlevelnode name] isEqualToString: @"summary"] /* &&
-                          [[thirdlevelnode namespace] isEqualToString: URI_PODCAST] */)
+                 else if ([[thirdlevelnode name] isEqualToString: @"summary"] &&
+                          [[thirdlevelnode namespace] isEqualToString: URI_PODCAST])
                  {
                    [self setContent: [thirdlevelnode content]];
                  }
@@ -100,7 +102,6 @@
 				isEqualToString: URI_PURL_CONTENT])
 			    {
 			      [self setContent: [thirdlevelnode content]];
-			      //NSLog(@"Content:Encoded: %@", description);
 			    }
 			}
 		      else if ([[thirdlevelnode name]
@@ -108,7 +109,7 @@
 			       [[thirdlevelnode namespace]
 				 isEqualToString: URI_PURL_DUBLINCORE])
 			{
-			  [self setDate: parseDublinCoreDate([thirdlevelnode content])];
+			  [self setDateFromString: [thirdlevelnode content]];
 			}
 		    }
 		  

@@ -81,7 +81,7 @@
 			 [[secondlevelnode namespace]
 			   isEqualToString: URI_PURL_DUBLINCORE])
 		  {
-		    [self setDate: parseDublinCoreDate( [secondlevelnode content] )];
+		    [self setDateFromString: [secondlevelnode content]];
 		  }
 	      }
 	    [self commitArticle];

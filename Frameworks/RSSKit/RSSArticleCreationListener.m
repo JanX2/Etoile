@@ -22,8 +22,10 @@
 
 #import "NewRSSArticleListener.h"
 #import "RSSArticleCreationListener.h"
-#import "GNUstep.h"
+#import "DublinCore.h"
 #import "RSSFactory.h"
+
+#import "GNUstep.h"
 
 #define REL_KEY @"rel"
 #define TYPE_KEY @"type"
@@ -271,6 +273,49 @@
 -(void) setDate: (NSDate*) aDate
 {
   ASSIGN(date, aDate);
+}
+
+-(void) setDateFromString: (NSString*) str
+{
+    NSDate* d = nil;
+    static NSArray* timeformats = nil;
+    
+    
+    
+    if (timeformats == nil) {
+        // Everything that can be found in the wild is considered 'verified'.
+        timeformats = [[NSArray alloc] initWithObjects:
+            @"%a, %d %b %Y %T %Z", // found in thedailywtf, RFC822?
+            @"%a, %d %B %Y %T %Z", // same with full month name, verified by example
+            @"%a, %d %b %Y %T %z", // verified by example (symlink RSS0.9 feed, channel's lastBuildDate)
+            @"%a, %d %B %Y %T %z", // not verified
+            @"%B %d, %Y", 
+            @"%b %d, %Y", // verified by example
+            // Dublin Core
+            @"%Y-%m-%dT%H:%M:%S%Z",
+            @"%Y-%m-%dT%H:%M:%S",
+            @"%Y-%m-%dT%H:%M", 
+            @"%Y-%m-%d", 
+            @"%Y-%m", 
+            @"%Y", 
+            nil
+        ];
+    }
+    
+    int i;
+    for (i=0; i<[timeformats count] && d == nil; i++) {
+        d = [NSCalendarDate dateWithString: str
+                            calendarFormat: [timeformats objectAtIndex: i]];
+	//if (d!=nil) NSLog(@"Date=%@, calc'd from %@, which matched to %@", d, str, [timeformats objectAtIndex: i]); 
+    }
+   
+    if (d==nil) {
+        d = parseDublinCoreDate(str); // resistance is futile, nasty timezone definition!
+    }
+    
+    if (d != nil) {
+        [self setDate: d];
+    }
 }
 
 @end

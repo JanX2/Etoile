@@ -72,6 +72,9 @@
 -(void) setSummary: (NSString*) aSummary;
 -(void) setDate: (NSDate*) aDate;
 
+// setDate:, but also converts date.
+-(void) setDateFromString: (NSString*) str;
+
 
 @end
 

@@ -21,7 +21,7 @@
 #import "DOMParser.h"
 #import "GNUstep.h"
 
-// #define DEBUG 1
+//#define DEBUG 1
 
 @implementation XMLText
 
@@ -262,7 +262,7 @@ didStartElement: (NSString*)anElementName
 	   parent: self ];
   
   #ifdef DEBUG
-  NSLog(@"starting XML node %@", anElementName);
+  NSLog(@"starting XML node %@ (NS=%@)", anElementName, aNamespaceURI);
   #endif
   
   [self appendTextOrNode: item
