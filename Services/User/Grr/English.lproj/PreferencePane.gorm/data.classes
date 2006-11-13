@@ -2,9 +2,11 @@
     "## Comment" = "Do NOT change this file, Gorm maintains it";
     FirstResponder = {
 	Actions = (
-	    "webBrowserAction:",
+	    "intervalAction:",
+	    "fetchAtStartupAction:",
 	    "removeDateAction:",
-	    "testWebBrowserAction:"
+	    "testWebBrowserAction:",
+	    "webBrowserAction:"
 	);
 	Super = NSObject;
     };
@@ -12,13 +14,18 @@
 	Actions = (
 	    "removeDateAction:",
 	    "webBrowserAction:",
-	    "testWebBrowserAction:"
+	    "testWebBrowserAction:",
+	    "intervalAction:",
+	    "fetchAtStartupAction:"
 	);
 	Outlets = (
 	    _window,
 	    _mainView,
 	    removeDateButton,
-	    webBrowserField
+	    webBrowserField,
+	    intervalField,
+	    intervalSlider,
+	    fetchAtStartupButton
 	);
 	Super = NSObject;
     };

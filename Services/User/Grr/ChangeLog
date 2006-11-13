@@ -6,7 +6,7 @@ Nov-12-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Try to add services back.
 	* Run preferences as modal.
 	* Support fetching at startup and scheduled fetching based on 
-          user defaults (on Cocoa only so far). 
+          user defaults (on Cocoa and GNUstep). 
         * Open main window if dock is clicked.
 	* Handle refresh on group.
 

@@ -211,6 +211,20 @@ static Controller *sharedInstance;
 
 }
 
+/* Try to handle the case when user click on the dock.
+ * On Cocoa, it calls -applicationShouldHandleReopen:hasVisibleWindows:.
+ * GNUstep misses the implementation. So we compensate with
+ * -applicationDidBecomeActive:, which only works when application
+ * is not on focus before dock is clicked.
+ */
+#ifdef GNUSTEP
+- (void) applicationDidBecomeActive: (NSNotification *) not
+{
+  if ([mainWindow isVisible] == NO) {
+    [mainWindow makeKeyAndOrderFront: self];
+  }
+}
+#else
 - (BOOL) applicationShouldHandleReopen: (NSApplication *) app
                      hasVisibleWindows: (BOOL) flag
 {
@@ -219,6 +233,7 @@ static Controller *sharedInstance;
   }
   return YES;
 }
+#endif
 
 - (BOOL)applicationShouldTerminate:(id)sender
 {
@@ -351,7 +366,7 @@ static Controller *sharedInstance;
     [progressBar setDoubleValue: 0.5];
     [progressBar startAnimation: self];
 
-    NSArray *allItems = nil;
+    NSMutableArray *allItems = nil;
     RSSFeed *feed;
     BKBookmark *bk;
     id object = [[feedBookmarkView outlineView] itemAtRow: index];
