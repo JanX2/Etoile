@@ -50,18 +50,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 -(BOOL)isDraggingEventType;
 @end
 @implementation NSEvent (DraggingHelper)
-#ifdef GNUSTEP
--(float)deltaX
-{
-    return event_data.mouse.deltaX;
-}
--(float)deltaY
-{
-    return event_data.mouse.deltaY;
-}
-#endif
 -(BOOL)isDraggingEventType {
-#ifdef GNUSTEPX
+#ifdef GNUSTEP
     NSEventType type = [self type];
     return (type == NSScrollWheel || (type >= NSMouseMoved && type <= NSRightMouseDragged))
         ? YES : NO;
