@@ -238,6 +238,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
   for (i=0; i<[feeds count]; i++) {
     RSSFeed* feed = (RSSFeed*) [feeds objectAtIndex: i];
     BKBookmark *bk = [BKBookmark bookmarkWithURL: [feed feedURL]];
+    [bk setTitle: [[feed feedURL] absoluteString]];
     [list setObject: feed forKey: [feed feedURL]];
     [feedStore addBookmark: bk];
   }
@@ -272,7 +273,6 @@ int articleSortByDate( id articleA, id articleB, void* context )
 
 - (void) updateFeed: (RSSFeed *) feed
 {
-  NSLog(@"updateFeed");
   /* Need to update name on feedStore */
   BKBookmark *bk = [self feedBookmarkForURL: [feed feedURL]];
   [bk setTitle: [feed feedName]];
@@ -331,7 +331,6 @@ int articleSortByDate( id articleA, id articleB, void* context )
     [item setValue: [article date] 
           forProperty: kArticleDateProperty];
   }
-  NSLog(@"updateFeed done");
 }
 
 @end

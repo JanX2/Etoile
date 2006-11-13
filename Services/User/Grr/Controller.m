@@ -286,8 +286,6 @@ static Controller *sharedInstance;
     // create the feed
     RSSFeed *feed = AUTORELEASE([[RSSReaderFeed alloc] initWithURL: url]);
     [feed setAutoClear: YES];
-    /* Set temparory name */
-    [feed setFeedName: [url absoluteString]];
 
     // actually add the feed
     [feedList addFeed: feed];
@@ -353,9 +351,29 @@ static Controller *sharedInstance;
     [progressBar setDoubleValue: 0.5];
     [progressBar startAnimation: self];
 
-    BKBookmark *bk = [[feedBookmarkView outlineView] itemAtRow: index];
-    RSSFeed *feed = [feedList feedForURL: [bk URL]];
-    [[FetchingProgressManager defaultManager] fetchFeeds: [NSArray arrayWithObject: feed]];
+    NSArray *allItems = nil;
+    RSSFeed *feed;
+    BKBookmark *bk;
+    id object = [[feedBookmarkView outlineView] itemAtRow: index];
+    if ([object isKindOfClass: [BKBookmark class]]) {
+      bk = (BKBookmark *) object;
+      feed = [feedList feedForURL: [bk URL]];
+      allItems = [NSArray arrayWithObject: feed];
+    } else if ([object isKindOfClass: [BKGroup class]]) {
+      BKGroup *group = (BKGroup *) object;
+      NSEnumerator *e = [[[feedList feedStore] itemsUnderGroup: group] objectEnumerator];
+      allItems = AUTORELEASE([[NSMutableArray alloc] init]);
+      while ((bk = [e nextObject])) {
+        feed = [feedList feedForURL: [bk URL]];
+        [allItems addObject: feed];
+      }
+    } else {
+      NSLog(@"Internal Error: unknown object in FeedBookmarkView");
+      return;
+    }
+    if (allItems) {
+      [[FetchingProgressManager defaultManager] fetchFeeds: allItems];
+    }
   }
 }
 

@@ -8,6 +8,7 @@ Nov-12-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Support fetching at startup and scheduled fetching based on 
           user defaults (on Cocoa only so far). 
         * Open main window if dock is clicked.
+	* Handle refresh on group.
 
 Nov-11-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Speed up starting by avoid rebuild internal cache frequently.
