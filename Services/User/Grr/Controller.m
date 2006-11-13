@@ -111,8 +111,8 @@ static Controller *sharedInstance;
 
   int number = [defaults integerForKey: RSSReaderRemoveArticlesAfterDefaults];
   if (number == 0) {
-    /* Not set */
-    [defaults setInteger: 7 forKey: RSSReaderRemoveArticlesAfterDefaults];
+    /* Not set, use Never as default */
+    [defaults setInteger: -1 forKey: RSSReaderRemoveArticlesAfterDefaults];
   }
 
   if ([defaults objectForKey: RSSReaderAutomaticRefreshIntervalDefaults] == nil)

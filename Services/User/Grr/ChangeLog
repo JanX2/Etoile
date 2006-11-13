@@ -2,6 +2,11 @@
 Grr Changelog
 =============
 
+Nov-13-2006 Yen-Ju Chen <yjchenx at gmail>
+	* Use "Never" by default for removing articles older than 
+          certain date. Otherwise, Users may get confused about
+          not receive articles for the first time use.
+
 Nov-12-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Try to add services back.
 	* Run preferences as modal.

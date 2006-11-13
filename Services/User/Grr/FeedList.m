@@ -310,7 +310,8 @@ int articleSortByDate( id articleA, id articleB, void* context )
   RSSArticle *article = nil;
   while ((article = [e nextObject])) {
     /* If older then keepDate, skip it */
-    if ([[article date] compare: keepDate] == NSOrderedAscending) {
+    if ((keepDate != nil) && 
+        ([[article date] compare: keepDate] == NSOrderedAscending)) {
       continue;
     }
 
