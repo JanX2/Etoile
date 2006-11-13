@@ -34,6 +34,7 @@
    -------------------------------------------------------------------------- */
 
 #import "UKDistributedView.h"
+#import <AppKit/NSEvent.h>
 #import <limits.h>
 
 /* -----------------------------------------------------------------------------
@@ -42,6 +43,33 @@
 
 NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedViewSelectionDidChange";
 
+
+// Helper category to find out if an event supports deltaX and deltaY messages
+// Written by Guenther Noack
+@interface NSEvent (DraggingHelper)
+-(BOOL)isDraggingEventType;
+@end
+@implementation NSEvent (DraggingHelper)
+#ifdef GNUSTEP
+-(float)deltaX
+{
+    return event_data.mouse.deltaX;
+}
+-(float)deltaY
+{
+    return event_data.mouse.deltaY;
+}
+#endif
+-(BOOL)isDraggingEventType {
+#ifdef GNUSTEPX
+    NSEventType type = [self type];
+    return (type == NSScrollWheel || (type >= NSMouseMoved && type <= NSRightMouseDragged))
+        ? YES : NO;
+#else // not GNUSTEP, probably MacOS (I hope it works on OpenStep, too?)
+    return ([self deltaX] != 0 || [self deltaY] != 0) ? YES : NO;
+#endif
+}
+@end
 
 /* -----------------------------------------------------------------------------
 	UKDistributedView:
@@ -2015,7 +2043,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		lastPos = eventLocation;
 		mouseItem = -1;
 		
-		if( flags.dragMovesItems && ([event deltaX] != 0 || [event deltaY] != 0))	// Item hit? Drag the item, if we're set up that way:
+		if( flags.dragMovesItems && [event isDraggingEventType] )	// Item hit? Drag the item, if we're set up that way:
 		{
 			NSEnumerator*		enummy = [selectionSet objectEnumerator];
 			NSNumber*			currentItemNum;
