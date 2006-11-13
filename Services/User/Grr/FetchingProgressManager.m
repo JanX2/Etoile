@@ -7,12 +7,16 @@
 
 static FetchingProgressManager* instance;
 
+@interface FetchingProgressManager (Private)
+- (void) automaticRefreshIntervalChanged: (NSNotification *) not;
+@end
+
 @implementation FetchingProgressManager
 
 /** Private **/
 - (void) scheduledFetchFeed: (NSTimer *) timer
 {
-  /* Fetch */
+  /* Fetch based on master timer */
   if ([masterQueue count] > 0) {
     RSSFeed *feed = [masterQueue objectAtIndex: 0];
     NSLog(@"Fetching %@", [feed feedURL]);
@@ -24,6 +28,13 @@ static FetchingProgressManager* instance;
     DESTROY(masterTimer);
     [NSApp setApplicationIconImage: [NSImage imageNamed: @"rssreader.png"]];
   }
+}
+
+- (void) globalTimerAction: (NSTimer *) timer
+{
+  NSLog(@"globalTimerAction %@", timer);
+  /* Put everything in queue */
+  [self fetchFeeds: [[FeedList feedList] feeds]];
 }
 
 /** End of Private **/
@@ -47,6 +58,14 @@ static FetchingProgressManager* instance;
     instance = self;
 
     masterQueue = [[NSMutableArray alloc] init];
+
+    [[NSNotificationCenter defaultCenter]
+          addObserver: self
+          selector: @selector(automaticRefreshIntervalChanged:)
+          name: RSSReaderAutomaticRefreshIntervalChangeNotification
+          object: nil];
+  
+    [self automaticRefreshIntervalChanged: nil];
 
     return self;
   }
@@ -101,4 +120,25 @@ static FetchingProgressManager* instance;
     [NSApp setApplicationIconImage: [NSImage imageNamed: @"rssreader-working.png"]];
   }
 }
+
+- (void) automaticRefreshIntervalChanged: (NSNotification *) not
+{
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  float f = [defaults floatForKey: RSSReaderAutomaticRefreshIntervalDefaults];
+  /* Stop current global timer */
+  if (globalTimer) {
+    [globalTimer invalidate];
+    DESTROY(globalTimer);
+  }
+  if (f > 0) {
+    /* Fire again with different schedule */
+    ASSIGN(globalTimer, [NSTimer scheduledTimerWithTimeInterval: (f * 3600)
+                                 target: self
+                                 selector: @selector(globalTimerAction:)
+                                 userInfo: nil
+                                 repeats: YES]);
+    NSLog(@"Fire every %f hour", f);
+  }
+}
+
 @end

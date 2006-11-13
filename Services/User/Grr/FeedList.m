@@ -154,7 +154,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
 
 // returns a NSArray, please do *not* change the array, this is
 // an internal structure of the class!
-- (NSArray*) feedList
+- (NSArray*) feeds
 {
   return [list allValues];
 }

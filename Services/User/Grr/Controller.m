@@ -116,10 +116,22 @@ static Controller *sharedInstance;
     /* Not set */
     [defaults setInteger: 7 forKey: RSSReaderRemoveArticlesAfterDefaults];
   }
+
+  if ([defaults objectForKey: RSSReaderAutomaticRefreshIntervalDefaults] == nil)
+  {
+    /* Not set. use Never as default */
+    [defaults setFloat: -1
+              forKey: RSSReaderAutomaticRefreshIntervalDefaults];
+  }
+  
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotif
 {
+  /* We initialize FetchingManager here so that it can start
+   * fetching automatically based on user defaults */
+  [FetchingProgressManager defaultManager];
+
   /* Toolbar */
   NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier: RSSReaderToolbarIdentifier];
   [toolbar setDelegate: mainWindow];
@@ -192,6 +204,20 @@ static Controller *sharedInstance;
 
   [mainWindow makeKeyAndOrderFront: self];
 
+  /* Start fetch if user set the defaults */
+  if ([defaults boolForKey: RSSReaderFetchAtStartupDefaults]) {
+    [self reloadAll: self];
+  }
+
+}
+
+- (BOOL) applicationShouldHandleReopen: (NSApplication *) app
+                     hasVisibleWindows: (BOOL) flag
+{
+  if ([mainWindow isVisible] == NO) {
+    [mainWindow makeKeyAndOrderFront: self];
+  }
+  return YES;
 }
 
 - (BOOL)applicationShouldTerminate:(id)sender
@@ -208,6 +234,7 @@ static Controller *sharedInstance;
   [defaults setObject: NSStringFromRect(rect)
             forKey: RSSReaderBookmarkViewFrameDefaults];
   [defaults synchronize];
+
 }
 
 - (BOOL)application:(NSApplication *)application openFile:(NSString *)fileName
@@ -336,11 +363,11 @@ static Controller *sharedInstance;
 {
   [progressBar setHidden: NO];
   [progressBar setMinValue: 0];
-  [progressBar setMaxValue: [[feedList feedList] count]];
+  [progressBar setMaxValue: [[feedList feeds] count]];
   [progressBar setDoubleValue: 0];
   [progressBar startAnimation: self];
 
-  [[FetchingProgressManager defaultManager] fetchFeeds: [feedList feedList]];
+  [[FetchingProgressManager defaultManager] fetchFeeds: [feedList feeds]];
 }
 
 - (void) addGroup: (id) sender

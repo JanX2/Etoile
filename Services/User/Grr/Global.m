@@ -10,6 +10,7 @@ NSString *const kArticleGroupURLProperty = @"kArticleGroupURLProperty";
 
 NSString *const RSSReaderLogNotification = @"RSSReaderLogNotification";
 NSString *const RSSReaderFontChangeNotification = @"RSSReaderFontChangeNotification";;
+NSString *const RSSReaderAutomaticRefreshIntervalChangeNotification= @"RSSReaderAutomaticRefreshIntervalChangeNotification";
 
 NSString *const RSSReaderToolbarIdentifier = @"RSSReaderToolbarIdentifier";
 NSString *const RSSReaderSubscribeToolbarItemIdentifier = @"RSSReaderSubscribeToolbarItemIdentifier";
@@ -29,4 +30,6 @@ NSString *const RSSReaderArticleListSizeDefaults = @"ArticleListSizeDefaults";
 NSString *const RSSReaderArticleContentSizeDefaults = @"ArticleContentSizeDefaults";
 NSString *const RSSReaderUseSystemFontDefaults = @"RSSReaderUseSystemFontDefaults";
 NSString *const RSSReaderUseSystemSizeDefaults = @"RSSReaderUseSystemSizeDefaults";
+NSString *const RSSReaderAutomaticRefreshIntervalDefaults = @"RSSReaderAutomaticRefreshIntervalDefaults";
+NSString *const RSSReaderFetchAtStartupDefaults = @"RSSReaderFetchAtStartupDefaults";
 

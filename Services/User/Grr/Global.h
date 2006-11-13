@@ -16,6 +16,9 @@ extern NSString *const RSSReaderLogNotification;
  * The new font should be read from user defaults */
 extern NSString *const RSSReaderFontChangeNotification;
 
+/* Notify when user change the automatic refresh interval */
+extern NSString *const RSSReaderAutomaticRefreshIntervalChangeNotification;
+
 /* Toolbar */
 extern NSString *const RSSReaderToolbarIdentifier;
 extern NSString *const RSSReaderSubscribeToolbarItemIdentifier;
@@ -37,4 +40,6 @@ extern NSString *const RSSReaderArticleListSizeDefaults;
 extern NSString *const RSSReaderArticleContentSizeDefaults;
 extern NSString *const RSSReaderUseSystemFontDefaults;
 extern NSString *const RSSReaderUseSystemSizeDefaults;
+extern NSString *const RSSReaderAutomaticRefreshIntervalDefaults;
+extern NSString *const RSSReaderFetchAtStartupDefaults;
 

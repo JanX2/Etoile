@@ -53,7 +53,7 @@
 /* Accessories */
 - (BKBookmarkStore *) feedStore;
 - (CKCollection *) articleCollection;
-- (NSArray*) feedList; /* array of RSSReaderFeed */
+- (NSArray*) feeds; /* array of RSSReaderFeed */
 - (RSSFeed *) feedForURL: (NSURL *) url; 
 - (BKBookmark *) feedBookmarkForURL: (NSURL *) url;
 - (CKGroup *) articleGroupForURL: (NSURL *) url; 

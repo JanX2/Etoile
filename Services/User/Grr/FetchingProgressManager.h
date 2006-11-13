@@ -19,6 +19,12 @@
    */ 
   NSTimer *masterTimer;
   NSMutableArray *masterQueue;
+
+  /* Global timer is the one who puts the feed into queue automatically
+   * based on user defaults.
+   * It is the one user can control in preference.
+   */
+  NSTimer *globalTimer;
 }
 
 + (FetchingProgressManager *) defaultManager;

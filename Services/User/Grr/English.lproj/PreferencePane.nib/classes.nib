@@ -2,12 +2,13 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {intervalAction = id; removeDateAction = id; }; 
+            ACTIONS = {fetchAtStartupAction = id; intervalAction = id; removeDateAction = id; }; 
             CLASS = PreferencePane; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 "_mainView" = id; 
                 "_window" = id; 
+                fetchAtStartupButton = id; 
                 intervalField = id; 
                 intervalSlider = id; 
                 removeDateButton = id; 
