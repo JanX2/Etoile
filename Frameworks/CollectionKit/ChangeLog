@@ -1,8 +1,6 @@
 2006-11-16 Quentin Mathe <qmathe@club-internet.fr>
 
-	* Source/GNUmakefile:
-	* GNUmakefile: Updated to include etoile.make in this makefile and not the
-	previous one (makes the build output more readable).
+	* GNUmakefile: Updated to include etoile.make.
 
 2006-11-10 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

@@ -1,9 +1,8 @@
 2005-11-16  Quentin Mathe <qmathe@club-internet.fr>
     
-    * Source/GNUmakefile: 
-    * GNUmakefile:
-    Moved etoile.make include in the second makefile (this allows proper 
-    BookmarKit export in Build directory, then should help Grr compilation).
+    * GNUmakefile: Added etoile.make include in this makefile (this allows 
+    proper BookmarKit export in Build directory, then should help Grr 
+    compilation).
 
 2006-11-11  Yen-Ju Chen <yjchen at gmail>
 
