@@ -1,3 +1,8 @@
+2006-11-15  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Frameworks/GNUmakefile: Updated to build PaneKit and not PreferencesKit
+    anymore. This fixes repository compilation by the way.
+
 2006-10-31  Quentin Mathe <qmathe@club-internet.fr>
 
     * Frameworks/GNUmakefile: Included EtoileFoundation, EtoileUI and 
