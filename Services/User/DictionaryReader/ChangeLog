@@ -2,10 +2,14 @@
 DictionaryReader Changelog
 ==========================
 
+Nov 15 2006  Quentin Mathe
+	* GNUmakefile: Updated to include etoile.make, this allows the project
+	to compile without installing EtoileFoundation first.
+
 Nov 07 2006  Yen-Ju Chen
-	* GNUmakefile, Preferences.h: Use EtoileFoundation instead 
-          deprecated EtoileExtension.
-        * HistoryManager.m: return self in -init to avoid memory leak.
+	* GNUmakefile, Preferences.h: Use EtoileFoundation instead deprecated 
+	EtoileExtension.
+	* HistoryManager.m: return self in -init to avoid memory leak.
 
 Oct 15 2006  Guenther Noack
 	* Bug #7379 hopefully fixed. Forgot to "svn add" some files... :-/
