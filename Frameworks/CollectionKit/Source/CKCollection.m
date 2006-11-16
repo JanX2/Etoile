@@ -43,6 +43,7 @@
 @implementation CKCollection (CKPrivate)
 - (void) _loadFormat_0_1: (NSDictionary *) dict 
 {
+  id object;
   NSDictionary *temp;
   NSEnumerator *e;
   NSString *uid;
@@ -69,6 +70,12 @@
     [item setCollection: self];
     [_items setObject: item forKey: uid];
     DESTROY(item);
+  }
+
+  /* Load config */
+  object = [dict objectForKey: CKConfigKey];
+  if (object) {
+    ASSIGN(config, object);
   }
 }
 
@@ -344,6 +351,16 @@
   return _loc;
 }
 
+- (void) setConfig: (id) c
+{
+  ASSIGN(config, c);
+}
+
+- (id) config
+{
+  return config;
+}
+
 - (BOOL) reload
 {
   BOOL dir;
@@ -395,7 +412,17 @@
     [group_store setObject: [r contentDictionary] forKey: [r uniqueID]];
   }
   
-  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: item_store, CKItemsKey, group_store, CKGroupsKey, CKCollectionFormat_0_1, CKFormatKey, nil];
+  NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                          item_store, CKItemsKey, 
+                         group_store, CKGroupsKey, 
+      [itemClass propertiesAndTypes], CKItemPropertiesKey,
+     [groupClass propertiesAndTypes], CKGroupPropertiesKey,
+              CKCollectionFormat_0_1, CKFormatKey, 
+                      nil];
+  if (config) {
+    [dict setObject: config forKey: CKConfigKey];
+  }
+
   if ([self _makeDirectory: [_loc stringByDeletingLastPathComponent]]) {
     [dict writeToFile: _loc atomically: YES];
   } else {

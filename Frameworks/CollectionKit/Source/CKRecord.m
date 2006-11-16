@@ -59,6 +59,21 @@ static NSMutableDictionary *pDict;
   return retval;
 }
 
++ (NSDictionary *) propertiesAndTypes
+{
+  if (pDict == nil) {
+    return nil;
+  }
+
+  NSDictionary *_propTypes = [pDict objectForKey: NSStringFromClass([self class])];
+  if (_propTypes == nil) {
+    return nil;
+  } else {
+    return AUTORELEASE([_propTypes copy]);
+  }
+}
+
+
 + (int) removeProperties: (NSArray*) properties
 {
   NSMutableDictionary *_propTypes;

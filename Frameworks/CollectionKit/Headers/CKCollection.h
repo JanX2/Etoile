@@ -36,6 +36,7 @@
   NSString *_loc;
   NSMutableDictionary *_items;
   NSMutableDictionary *_groups;
+  id config;
   BOOL hasUnsavedChanges;
   Class itemClass;
   Class groupClass;
@@ -51,6 +52,11 @@
 
 - (NSString*) location;
 - (NSArray*) recordsMatchingSearchElement: (CKSearchElement*) search;
+
+/* To store any configuration in the collection
+ * without subclass. It can be anything and must be property list. */
+- (void) setConfig: (id) config;
+- (id) config; 
 
 /** Reload from saved database. Used when database is externally modified **/
 - (BOOL) reload; 

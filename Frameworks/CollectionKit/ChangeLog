@@ -1,3 +1,11 @@
+2006-11-15 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+	
+	* Expose properties and types dictionary for saving.
+	* Save properties of records and optional config
+          so that it can be accessed from other application
+          without go through the library.
+          It may be useful for indexing and searching.
+
 2006-11-16 Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Updated to include etoile.make.

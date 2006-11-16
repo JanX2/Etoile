@@ -24,6 +24,9 @@ NSString *const CKItemsKey = @"CKItemsKey";
 NSString *const CKGroupsKey = @"CKGroupsKey";
 NSString *const CKFormatKey = @"CKFormatKey";
 NSString *const CKCollectionFormat_0_1 = @"CKCollectionFormat_0_1";
+NSString *const CKItemPropertiesKey = @"CKItemPropertiesKey";
+NSString *const CKGroupPropertiesKey = @"CKGroupPropertiesKey";
+NSString *const CKConfigKey = @"CKConfigKey";
 
 NSString *const kCKUIDProperty = @"kCKUIDProperty";
 NSString *const kCKCreationDateProperty = @"kCKCreationDateProperty";

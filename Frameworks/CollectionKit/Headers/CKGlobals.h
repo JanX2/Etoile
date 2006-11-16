@@ -28,6 +28,9 @@ extern NSString *const CKItemsKey;
 extern NSString *const CKGroupsKey;
 extern NSString *const CKFormatKey; // version of property list
 extern NSString *const CKCollectionFormat_0_1;
+extern NSString *const CKItemPropertiesKey; /* Types for items class */
+extern NSString *const CKGroupPropertiesKey; /* Types for group class */
+extern NSString *const CKConfigKey; /* For saving config */
 
 /* Properties common to all Records */
 extern NSString *const kCKUIDProperty; 			// string

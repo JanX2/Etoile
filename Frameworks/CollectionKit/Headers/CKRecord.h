@@ -38,6 +38,7 @@
     properties successfully added.
  */
 + (int) addPropertiesAndTypes: (NSDictionary*) properties;
++ (NSDictionary *) propertiesAndTypes;
 
 /** Remove properties from all people records
     Returns the number of properties successfully removed
