@@ -19,4 +19,4 @@ ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -lXWindowServerKit -lMultimediaKit
 
 include $(GNUSTEP_MAKEFILES)/application.make
-
+-include ../../../etoile.make

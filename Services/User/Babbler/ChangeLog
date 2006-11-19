@@ -1,3 +1,7 @@
+2006-11-19  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Updated to include etoile.make. 
+
 2006-11-18  Guenther Noack <guenther@unix-ag.uni-kl.de>
 
 	* Add volume slider to volume control.
