@@ -1,3 +1,7 @@
+2006-11-19  Quentin Mathe <qmathe@club-internet.fr>
+
+    * pmkfile: Removed this deprecated file.
+
 2006-11-15  Quentin Mathe <qmathe@club-internet.fr>
 
     * Frameworks/GNUmakefile: Updated to build PaneKit and not PreferencesKit
