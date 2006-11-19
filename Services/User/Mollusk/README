@@ -1,14 +1,13 @@
 
-==========
-Grr README
-==========
+==============
+Mollusk README
+==============
 
-Grr is a RSS Reader application which is based on RSSKit.
-This application is released under GPLv2 license (see COPYING document).
+Mollusk evolves from Grr. It is a RSS reader in general.
+The main perpose of Mollusk is to demonstrate the usage of CollectionKit
+and BookmarkKit.
 
-Author: Guenther Noack <guenther@unix-ag.uni-kl.de>
-
-Grr was formerly named RSSReader.app
+Author: Yen-Ju Chen <yjchenx gmail>
 
 
 Build and Install

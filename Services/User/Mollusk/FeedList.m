@@ -102,7 +102,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
   if ([paths count] == 0)
     return nil;
 
-  return [[[paths objectAtIndex: 0] stringByAppendingPathComponent: @"RSSReader"] stringByAppendingPathComponent: @"ArticleCache"];
+  return [[[paths objectAtIndex: 0] stringByAppendingPathComponent: @"RSSReader"] stringByAppendingPathComponent: @"ArticleCache.mollusk"];
 }
 
 - (id) init

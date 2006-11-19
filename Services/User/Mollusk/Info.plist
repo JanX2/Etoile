@@ -5,17 +5,17 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>Grr</string>
+	<string>Mollusk</string>
 	<key>CFBundleIconFile</key>
 	<string>rssreader</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.etoile-project.grr</string>
+	<string>org.etoile-project.mollusk</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
-	<string>GRR </string>
+	<string>MLSK</string>
 	<key>CFBundleVersion</key>
 	<string>0.6</string>
 	<key>NSMainNibFile</key>
