@@ -1,5 +1,10 @@
 2006-11-19  Quentin Mathe <qmathe@club-internet.fr>
 
+    * Deprecated/Workspace: Moved Services/Private/Workspace here to deprecate
+    it.
+
+2006-11-19  Quentin Mathe <qmathe@club-internet.fr>
+
     * Deprecated: Added a new directory to store deprecated modules in a 
     temporary manner.
 
