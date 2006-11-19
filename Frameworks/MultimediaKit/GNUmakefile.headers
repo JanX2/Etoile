@@ -3,6 +3,11 @@
 MultimediaKit_HEADER_FILES_DIR = ./MultimediaKit
 MultimediaKit_HEADER_FILES_INSTALL_DIR = MultimediaKit
 MultimediaKit_HEADER_FILES = \
+	MixerView.h \
+	MixerChannelView.h \
+	MixerChannel.h \
+	Mixer.h \
 	MMPlayer.h \
-	MPlayerInterface.h 
+	MPlayerInterface.h \
+	MultimediaKit.h
 

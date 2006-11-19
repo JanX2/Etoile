@@ -3,6 +3,10 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME = MultimediaKit_Source
 
 MultimediaKit_Source_OBJC_FILES = \
+	MixerView.m \
+	MixerChannelView.m \
+	MixerChannel.m \
+	Mixer.m \
 	MPlayerInterface.m
 
 MultimediaKit_Source_INCLUDE_DIRS += -I..
