@@ -17,5 +17,6 @@ include $(GNUSTEP_MAKEFILES)/library.make
 
 -include GNUmakefile.headers_build
 include $(GNUSTEP_MAKEFILES)/aggregate.make
+-include ../../etoile.make
 -include GNUmakefile.postamble
 

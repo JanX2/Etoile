@@ -1,3 +1,7 @@
+2006-11-19  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Updated to include etoile.make. 
+
 2006-11-18  Yen-Ju Chen <yjchen at gmail>
 
 	* Add mixer.
