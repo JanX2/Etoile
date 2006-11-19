@@ -12,8 +12,8 @@
   NSSize c = [[self contentView] bounds].size;
   c.width += delta_x;
   c.height += delta_y;
-  if (c.width < 200) {
-    c.width = 200;
+  if (c.width < 350) {
+    c.width = 350;
   }
   [self setContentSize: c];
   if (size.height > 0) {
@@ -44,12 +44,12 @@
 - (void) playAction: (id) sender
 {
   if (isPlaying == NO) {
-    NSLog(@"play");
+//    NSLog(@"play");
     isPlaying = YES;
     [mmPlayer play: self];
     [playButton setImage: [NSImage imageNamed: @"pause.tiff"]];
   } else {
-    NSLog(@"pause");
+//    NSLog(@"pause");
     isPlaying = NO;
     [mmPlayer pause: self];
     [playButton setImage: [NSImage imageNamed: @"play.tiff"]];

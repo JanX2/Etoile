@@ -6,6 +6,7 @@ APP_NAME = Babbler
 Babbler_OBJC_FILES = \
 	main.m \
 	Controller.m \
+	StreamPanel.m \
 	Player.m
 
 Babbler_RESOURCE_FILES = \

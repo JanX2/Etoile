@@ -19,4 +19,8 @@
 - (void) setPlayer: (id <MMPlayer>) player;
 - (id <MMPlayer>) player;
 
+/* Toggle play/pause */
+- (void) playAction: (id) sender;
+
+
 @end

@@ -1,5 +1,6 @@
 #import "Controller.h"
 #import "Player.h"
+#import "StreamPanel.h"
 #import <MultimediaKit/MPlayerInterface.h>
 
 @implementation Controller
@@ -10,7 +11,7 @@
   MPlayerInterface *mPlayer = [[MPlayerInterface alloc] init];
   [mPlayer setURL: url];
 
-  NSRect frame = NSMakeRect(300, 500, 400, 100);
+  NSRect frame = NSMakeRect(300, 500, 600, 100);
   Player *player = [[Player alloc] initWithContentRect: frame
       styleMask: NSTitledWindowMask|NSClosableWindowMask|NSResizableWindowMask
 		            backing: NSBackingStoreRetained
@@ -22,13 +23,28 @@
 
 /** End of Private **/
 
-- (void) openAction: (id) sender
+- (void) openFileAction: (id) sender
 {
   NSOpenPanel *panel = [NSOpenPanel openPanel];
   int result = [panel runModalForTypes: nil];
   if (result == NSOKButton) {
     NSArray *urls = [panel URLs];
     [self newPlayer: [urls objectAtIndex: 0]];
+  }
+}
+
+- (void) openStreamAction: (id) sender
+{
+  StreamPanel *panel = [StreamPanel streamPanel];
+  int result = [panel runModal];
+  if (result == NSOKButton) {
+    /* Check the validation of url */
+    NSURL *url = [panel URL];
+    if ([url scheme] == nil) {
+      NSLog(@"Invalid URL: %@", url);
+      return;
+    }
+    [self newPlayer: url];
   }
 }
 
@@ -39,22 +55,37 @@
 - (void) application: (NSApplication*) application
             openFile: (NSString*) fileName
 {
-    [self newPlayer: [NSURL fileURLWithPath: fileName]];
+  [self newPlayer: [NSURL fileURLWithPath: fileName]];
 }
 
 - (void) applicationWillFinishLaunching: (NSNotification *) not
 {
   /* Make menu */
-  NSMenu *menu = [[NSMenu alloc] init];
-  [menu addItemWithTitle: @"Open file..."
-	  action: @selector(openAction:)
-	  keyEquivalent: @"o"];
-  [menu addItemWithTitle: @"Hide"
+  NSMenu *submenu, *menu = [[NSMenu alloc] initWithTitle: _(@"Babbler")];
+  id <NSMenuItem> item;
+
+  /* File */
+  submenu = [[NSMenu alloc] initWithTitle: _(@"File")];
+  [submenu addItemWithTitle: _(@"Open file...")
+	   action: @selector(openFileAction:)
+	   keyEquivalent: @"o"];
+  [submenu addItemWithTitle: _(@"Open stream...")
+	   action: @selector(openStreamAction:)
+	   keyEquivalent: @"l"];
+  item = [menu addItemWithTitle: _(@"File")
+	       action: NULL
+	       keyEquivalent: NULL];
+  [menu setSubmenu: submenu forItem: item];
+  DESTROY(submenu);
+  
+  /* Other */
+  [menu addItemWithTitle: _(@"Hide")
 	  action: @selector(hide:)
 	  keyEquivalent: @"h"];
-  [menu addItemWithTitle: @"Quit"
+  [menu addItemWithTitle: _(@"Quit")
 	  action: @selector(terminate:)
 	  keyEquivalent: @"q"];
+
   [NSApp setMainMenu: AUTORELEASE(menu)];
 }
 
