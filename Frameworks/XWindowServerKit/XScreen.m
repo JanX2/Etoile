@@ -39,7 +39,6 @@ NSString *XCurrentWorkspaceDidChangeNotification = @"XCurrentWorkspaceDidChangeN
 /* return -1 if failed. */
 - (int) intValueOfProperty: (char *) property
 {
-  GSDisplayServer *server = GSCurrentServer();
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
   Window root_win = RootWindow(dpy, [self screenNumber]);
 
@@ -66,7 +65,6 @@ NSString *XCurrentWorkspaceDidChangeNotification = @"XCurrentWorkspaceDidChangeN
 
 - (void) setCurrentWorkspace: (int) workspace
 {
-  GSDisplayServer *server = GSCurrentServer();
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
   Window root_win = RootWindow(dpy, [self screenNumber]);
   Atom X_NET_CURRENT_DESKTOP = XInternAtom(dpy, "_NET_CURRENT_DESKTOP", False);
@@ -103,7 +101,6 @@ NSString *XCurrentWorkspaceDidChangeNotification = @"XCurrentWorkspaceDidChangeN
 
 - (NSArray *) namesOfWorkspaces;
 {
-  GSDisplayServer *server = GSCurrentServer();
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
   Window root_win = RootWindow(dpy, [self screenNumber]);
 

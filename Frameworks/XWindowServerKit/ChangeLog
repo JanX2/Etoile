@@ -1,3 +1,7 @@
+2006-11-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Remove warnings for GCC-4.1.
+
 2006-10-20 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Return 0 if number of desktops is not available.
