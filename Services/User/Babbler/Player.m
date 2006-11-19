@@ -31,6 +31,11 @@
   }
 }
 
+- (void) volumeAction: (id) sender
+{
+  [mmPlayer setVolumeInPercentage: [volumeSlider intValue]];
+}
+
 - (void) backwardAction: (id) sender
 {
   NSLog(@"Backward");
@@ -97,6 +102,15 @@
   [forwardButton  setAction: @selector(forwardAction:)];
   [[self contentView] addSubview: forwardButton];
 
+  frame = NSMakeRect(contentRect.size.width-80, NSMinY(frame), 75, 20);
+  volumeSlider = [[NSSlider alloc] initWithFrame: frame];
+  [volumeSlider setAutoresizingMask: NSViewMinXMargin|NSViewMaxYMargin];
+  [volumeSlider setMaxValue: 100];
+  [volumeSlider setMinValue: 0];
+  [volumeSlider setTarget: self];
+  [volumeSlider setAction: @selector(volumeAction:)];
+  [[self contentView] addSubview: volumeSlider];
+
   /* Calculate frame for xwindow.
    * Note. In X window, origin is at top-left corner. */
   int x, y, w, h;
@@ -119,6 +133,7 @@
   ASSIGN(mmPlayer, player);
   [mmPlayer setXWindow: contentView];
   [self resizeVideo: [mmPlayer size]];
+  [volumeSlider setIntValue: [mmPlayer volumeInPercentage]];
 }
 
 - (id <MMPlayer>) player

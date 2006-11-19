@@ -7,6 +7,7 @@
   NSButton *backwardButton;
   NSButton *forwardButton;
   NSButton *playButton;
+  NSSlider *volumeSlider;
   BOOL isPlaying;
 
   id <MMPlayer> mmPlayer;
