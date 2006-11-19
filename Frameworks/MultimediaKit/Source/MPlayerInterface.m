@@ -40,7 +40,7 @@
     }
   }
   if (found == YES) {
-    NSLog(@"Use MPlayer at %@", path);
+    //NSLog(@"Use MPlayer at %@", path);
     [self initWithPathToPlayer: path];
   } else {
     NSLog(@"Cannot find mplayer");
@@ -114,7 +114,6 @@
  ************************************************************************************/
 - (void) play
 {
-  NSLog(@"play");
   NSMutableArray *params = [NSMutableArray array];
 
   // add movie file
@@ -1349,6 +1348,17 @@
     h = [object intValue];
   }
   return NSMakeSize(w, h);
+}
+
+- (void) setVolumeInPercentage: (unsigned int) volume
+{
+  [self setVolume: volume];
+  [self applySettingsWithRestart: NO];
+}
+
+- (unsigned int) volumeInPercentage
+{
+  return myVolume;
 }
 
 @end

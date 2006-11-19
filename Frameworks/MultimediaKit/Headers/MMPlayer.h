@@ -25,4 +25,12 @@
  */
 - (NSSize) size;
 
+/* Volume.
+ * This is the software volume, not the hardward volume.
+ * It ranges from 0 - 100, or in percentage.
+ * Each backend has to convert this range into what in its system.
+ */
+- (void) setVolumeInPercentage: (unsigned int) volume;
+- (unsigned int) volumeInPercentage;
+
 @end

@@ -2,6 +2,8 @@
 
 	* Add mixer.
 	* Add COPYING for MPlayerInterface and COPYING.LIB for the rest.
+	* Add -setVolumeInPercentage: and -volumeInPercentage 
+          in MMPlayer protocol and add implementation in MPlayerInterface.
 
 2006-11-04  Yen-Ju Chen <yjchen at gmail>
 
