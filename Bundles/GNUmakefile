@@ -64,7 +64,8 @@ ifeq ($(etoilewildmenus), yes)
 endif
 
 ifeq ($(workspaceswitcher), yes)
-    SUBPROJECTS += WorkspaceSwitcher
+    # In prepare to be removed in favor of using AZDock for workspace switching.
+    #SUBPROJECTS += WorkspaceSwitcher
 endif
 
 
