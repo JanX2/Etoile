@@ -50,7 +50,9 @@ endif
 #
 
 ifeq ($(camaelon), yes)
-    SUBPROJECTS += Camaelon
+    # Turned off Camaelon since it doesn't compile with gnustep-gui repository 
+    # version. The version under development with theme support.
+    #SUBPROJECTS += Camaelon
 endif
 
 ifeq ($(sqliteclient), yes)
