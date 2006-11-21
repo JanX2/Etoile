@@ -76,7 +76,11 @@ static void my_poppler_cairo_prepare_dev(CairoImageDev* output_dev, Page* page,
 
    cairo_surface_t* surface = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_ARGB32, width, height, rowstride);
 
+#ifdef POPPLER_0_5
+   output_dev->device->setCairo(cairo_create(surface));
+#else
    output_dev->device->setSurface(surface);
+#endif
    output_dev->surface = surface;
    output_dev->data = data;
 }

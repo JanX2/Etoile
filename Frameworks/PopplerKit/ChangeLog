@@ -1,3 +1,7 @@
+2006-11-21  Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Apply patch for cairo on poppler-0.5 from Jason Clouse <jhclouse _at chartet . net>.
+
 2006-09-27  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Updated to include etoile.make in order to export the 
