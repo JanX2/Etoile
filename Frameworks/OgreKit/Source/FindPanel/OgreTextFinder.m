@@ -128,7 +128,10 @@ static NSString	*OgreTextFinderEscapeCharacterKey = @"Escape Character";
 				name: NSApplicationDidFinishLaunchingNotification
 				object: NSApp];
 		
-		if ([NSBundle loadNibNamed:[self findPanelNibName] owner:self] == NO)
+		if ([self findPanelNibName]) {
+		  [NSBundle loadNibNamed:[self findPanelNibName] owner:self];
+		} 
+		else 
 		{
 			/* Load default find panel */
 			findPanelController = [[OgreFindPanelController alloc] init];

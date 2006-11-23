@@ -15,7 +15,7 @@ static OgreFindPanel *sharedInstance;
   if (sharedInstance == nil) {
     sharedInstance = [[OgreFindPanel alloc] initWithContentRect: NSMakeRect(400, 400, 450, 150) 
                      styleMask: NSTitledWindowMask|NSClosableWindowMask
-		     backing: NSBackingStoreRetained 
+		     backing: NSBackingStoreBuffered
 		     defer: NO];
   }
   return sharedInstance;
@@ -39,12 +39,15 @@ static OgreFindPanel *sharedInstance;
 }
 
 - (id) initWithContentRect: (NSRect) frame
-				 styleMask: (unsigned int) mask
-				   backing: (NSBackingStoreType) type
-					 defer: (BOOL) defer
+		 styleMask: (unsigned int) mask
+		   backing: (NSBackingStoreType) type
+		     defer: (BOOL) defer
 {
 	NSRect rect;
-	self = [super initWithContentRect: frame styleMask: mask backing: type defer: defer];
+	self = [super initWithContentRect: frame 
+                                styleMask: mask 
+                                  backing: type 
+                                    defer: defer];
 	
 	rect = NSMakeRect(10, frame.size.height-10-25, 80, 25);
 	findTextLabel = [[NSTextField alloc] initWithFrame: rect];
@@ -52,6 +55,7 @@ static OgreFindPanel *sharedInstance;
 	[findTextLabel setBezeled: NO];
 	[findTextLabel setBordered: NO];
 	[findTextLabel setDrawsBackground: NO];
+        [findTextLabel setSelectable: NO];
 	[[self contentView] addSubview: findTextLabel];
 	
 	rect = NSMakeRect(NSMaxX(rect)+5, rect.origin.y, frame.size.width - NSMaxX(rect) - 10, rect.size.height);
@@ -63,6 +67,7 @@ static OgreFindPanel *sharedInstance;
 	[replaceTextLabel setStringValue: _(@"Replace")];
 	[replaceTextLabel setBezeled: NO];
 	[replaceTextLabel setBordered: NO];
+        [replaceTextLabel setSelectable: NO];
 	[replaceTextLabel setDrawsBackground: NO];
 	[[self contentView] addSubview: replaceTextLabel];
 	
@@ -88,22 +93,39 @@ static OgreFindPanel *sharedInstance;
 
 	rect = NSMakeRect(frame.size.width-10-120, 5, 120, 25);
 	findNextButton = [[NSButton alloc] initWithFrame: rect];
+        [findNextButton setButtonType: NSMomentaryLightButton];
+        [findNextButton setBezelStyle: NSRoundedBezelStyle];
 	[findNextButton setTitle: _(@"Find Next")];
 	[findNextButton setAction: @selector(findNext:)];
+        [findNextButton sizeToFit];
+        rect.size = [findNextButton bounds].size;
+        rect.origin.x = frame.size.width-10-rect.size.width;
+        [findNextButton setFrame: rect];
 	[[self contentView] addSubview: findNextButton];
 	
 	rect = NSMakeRect(NSMinX(rect)-5-rect.size.width, rect.origin.y, rect.size.width, rect.size.height);
 	findPreviousButton = [[NSButton alloc] initWithFrame: rect];
+        [findPreviousButton setButtonType: NSMomentaryLightButton];
+        [findPreviousButton setBezelStyle: NSRoundedBezelStyle];
 	[findPreviousButton setTitle: _(@"Find Previous")];
 	[findPreviousButton setAction: @selector(findPrevious:)];
+        [findPreviousButton sizeToFit];
+        rect.size = [findPreviousButton bounds].size;
+        rect.origin.x = NSMinX([findNextButton frame])-5-rect.size.width;
+        [findPreviousButton setFrame: rect];
 	[[self contentView] addSubview: findPreviousButton];
 
-	rect = NSMakeRect(NSMinX(rect)-5-70, rect.origin.y, 70, rect.size.height);
+	rect = NSMakeRect(NSMinX(rect)-5-rect.size.width, rect.origin.y, rect.size.width, rect.size.height);
 	replaceButton = [[NSButton alloc] initWithFrame: rect];
+        [replaceButton setButtonType: NSMomentaryLightButton];
+        [replaceButton setBezelStyle: NSRoundedBezelStyle];
 	[replaceButton setTitle: _(@"Replace")];
 	[replaceButton setAction: @selector(replace:)];
+        [replaceButton sizeToFit];
+        rect.size = [replaceButton bounds].size;
+        rect.origin.x = NSMinX([findPreviousButton frame])-5-rect.size.width;
+        [replaceButton setFrame: rect];
 	[[self contentView] addSubview: replaceButton];
-	
 	
 	return self;
 }
