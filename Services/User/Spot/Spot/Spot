@@ -208,7 +208,17 @@ PictureDocument do(
 		toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar: := method(toolbar, itemIdentifier, inserted,
 		toolbarItem := NSToolbarItem alloc initWithItemIdentifier:(itemIdentifier)
 		
-		toolbarItem setLabel:(itemIdentifier)
+		label := itemIdentifier asMutable
+		spaceNumber := 0
+		for(i, 0, label size - 1,
+			char := label at(i + spaceNumber)
+			if(char isUppercase and(i != 0),
+ 				label atInsertSeq(i, " ")
+ 				spaceNumber = spaceNumber + 1
+			)
+		)
+			
+		toolbarItem setLabel:(label)
 		
 		if(itemIdentifier beginsWithSeq("Zoom")) then(
 			toolbarItem setTarget:(self)

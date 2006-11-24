@@ -1,5 +1,9 @@
 2006-11-24  Quentin Mathe <qmathe@club-internet.fr>
 
+	* Spot/Spot: Fixed missing spaces in toolbar item labels.
+
+2006-11-24  Quentin Mathe <qmathe@club-internet.fr>
+
 	* Spot/Spot: Implemented zoom in and zoom out with a new 'zoom:' method.
 
 2006-11-24  Quentin Mathe <qmathe@club-internet.fr>
