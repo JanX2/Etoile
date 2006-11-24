@@ -1,0 +1,20 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "fontAndSizeAction:"
+	);
+	Super = NSObject;
+    };
+    FontPreferencePane = {
+	Actions = (
+	    "fontAndSizeAction:"
+	);
+	Outlets = (
+	    _window,
+	    fontNameButton,
+	    fontSizeButton
+	);
+	Super = NSObject;
+    };
+}

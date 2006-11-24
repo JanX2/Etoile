@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {fontAndSizeAction = id; }; 
+            CLASS = FontPreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_window" = id; fontNameButton = id; fontSizeButton = id; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

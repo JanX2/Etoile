@@ -1,0 +1,19 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "showLineNumberAction:"
+	);
+	Super = NSObject;
+    };
+    ViewPreferencePane = {
+	Actions = (
+	    "showLineNumberAction:"
+	);
+	Outlets = (
+	    _window,
+	    showLineNumberButton
+	);
+	Super = NSObject;
+    };
+}

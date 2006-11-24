@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {showLineNumberAction = id; }; 
+            CLASS = ViewPreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_window" = id; showLineNumberButton = id; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

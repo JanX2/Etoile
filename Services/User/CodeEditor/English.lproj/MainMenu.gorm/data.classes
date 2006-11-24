@@ -1,0 +1,57 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    CETextView = {
+	Actions = (
+	    "showFindPanel:",
+	    "save:",
+	    "saveAs:",
+	    "saveTo:",
+	    "showLineNumber:"
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+    CEWindow = {
+	Actions = (
+	    "nextTab:",
+	    "previousTab:"
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+    Controller = {
+	Actions = (
+	    "closeTab:",
+	    "closeWindow:",
+	    "showPreferences:",
+	    "newInTab:",
+	    "newInWindow:",
+	    "openInTab:",
+	    "openInWindow:"
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "closeTab:",
+	    "closeWindow:",
+	    "nextTab:",
+	    "newInTab:",
+	    "newInWindow:",
+	    "openInTab:",
+	    "openInWindow:",
+	    "previousTab:",
+	    "save:",
+	    "saveAs:",
+	    "saveTo:",
+	    "showFindPanel:",
+	    "showLineNumber:",
+	    "showPreferences:"
+	);
+	Super = NSObject;
+    };
+}

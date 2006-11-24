@@ -1,0 +1,33 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                closeTab = id; 
+                closeWindow = id; 
+                newInTab = id; 
+                newInWindow = id; 
+                openInTab = id; 
+                openInWindow = id; 
+                showPreferences = id; 
+            }; 
+            CLASS = Controller; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                nextTab = id; 
+                previousTab = id; 
+                save = id; 
+                saveAs = id; 
+                saveTo = id; 
+                showFindPanel = id; 
+                showLineNumber = id; 
+            }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

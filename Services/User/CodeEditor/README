@@ -1,0 +1,31 @@
+CodeEditor
+==========
+
+CodeEditor is a rewritten version of CodeEditor 0.4.x 
+(http://savannah.nongnu.org/projects/codeeditor). 
+While it uses the same name, it is completely written from scratch.
+It may also borrow from Smultron (http://smultron.sourceforge.net/).
+The reason not to port Smultron is because Smultron used classes
+which are not available in GNUstep in the near future.
+CodeEditor differs from Typewriter is that Typewriter is a rich-text editor
+while CodeEditor is a plain-text editor.
+
+It is released under LGPL in case some classes will be used by 
+other application or frameworks in the future.
+
+Developer's Note
+----------------
+CodeEditor does not use built-in document system from GNUstep or Cocoa
+because it assumes one document with one or more windows.
+But when tab view is involved, many document may be in a single window.
+We do not subclass NSDocument and NSDocumentController 
+because of the same reason.
+
+CodeEditor treates each document independently. 
+There is no "project" concept in CodeEditor.
+It may offers to run command or script in the future. 
+But it is simply a way to execute commands without switching 
+to another application.
+
+Yen-Ju
+
