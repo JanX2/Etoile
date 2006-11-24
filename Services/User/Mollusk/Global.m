@@ -5,6 +5,7 @@ NSString *const kArticleURLProperty = @"kArticleURLProperty";
 NSString *const kArticleDescriptionProperty = @"kArticleDescriptionProperty";
 NSString *const kArticleDateProperty = @"kArticleDateProperty";
 NSString *const kArticleReadProperty = @"kArticleReadProperty";
+NSString *const kArticleGroupProperty = @"kArticleGroupProperty";
 
 NSString *const kArticleGroupURLProperty = @"kArticleGroupURLProperty";
 

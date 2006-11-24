@@ -506,6 +506,7 @@ static Controller *sharedInstance;
   if ([item isKindOfClass: [BKBookmark class]]) {
     RSSFeed *feed = [feedList feedForURL: [(BKBookmark *)item URL]];
     CKGroup *group = [feedList articleGroupForURL: [feed feedURL]];
+    [articleCollectionView setDisplayProperties: [NSArray arrayWithObject: kArticleHeadlineProperty]];
     [articleCollectionView setRoot: group];
     [articleCollectionView reloadData];
   } else if ([item isKindOfClass: [BKGroup class]]) {
@@ -514,9 +515,14 @@ static Controller *sharedInstance;
     NSURL *url = nil;
     NSMutableArray *array = AUTORELEASE([[NSMutableArray alloc] init]);
     while ((bk = [e nextObject])) {
-      url = [bk URL];
-      [array addObject: [feedList articleGroupForURL: url]];
+      CKGroup *group = [feedList articleGroupForURL: [bk URL]];
+      if (group) {
+        [array addObject: group];
+      } else {
+        NSLog(@"Weird. Has no group for feed, %@", bk);
+      }
     }
+    [articleCollectionView setDisplayProperties: [NSArray arrayWithObjects: kArticleHeadlineProperty, kArticleGroupProperty, nil]];
     [articleCollectionView setRoot: array];
     [articleCollectionView reloadData];
   }

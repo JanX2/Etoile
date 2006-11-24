@@ -5,6 +5,7 @@ extern NSString *const kArticleURLProperty;
 extern NSString *const kArticleDescriptionProperty;
 extern NSString *const kArticleDateProperty;
 extern NSString *const kArticleReadProperty;
+extern NSString *const kArticleGroupProperty;
 
 /* This property matches url of feed in feedStore */
 extern NSString *const kArticleGroupURLProperty;

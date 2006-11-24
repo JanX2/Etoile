@@ -78,6 +78,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
       [NSNumber numberWithInt: CKStringProperty], kArticleDescriptionProperty,
       [NSNumber numberWithInt: CKDateProperty], kArticleDateProperty,
       [NSNumber numberWithInt: CKIntegerProperty], kArticleReadProperty,
+      [NSNumber numberWithInt: CKStringProperty], kArticleGroupProperty,
                  nil];
   [CKItem addPropertiesAndTypes: dict];
 
@@ -343,6 +344,8 @@ int articleSortByDate( id articleA, id articleB, void* context )
           forProperty: kArticleDescriptionProperty];
     [item setValue: [article date] 
           forProperty: kArticleDateProperty];
+    [item setValue: [feed feedName]
+          forProperty: kArticleGroupProperty];
   }
 }
 
