@@ -8,6 +8,7 @@ MultimediaKit_HEADER_FILES = \
 	MixerChannel.h \
 	Mixer.h \
 	MMPlayer.h \
+	MPlayer.h \
 	MPlayerInterface.h \
 	MultimediaKit.h
 

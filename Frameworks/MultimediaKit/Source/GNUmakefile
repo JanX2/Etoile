@@ -7,6 +7,7 @@ MultimediaKit_Source_OBJC_FILES = \
 	MixerChannelView.m \
 	MixerChannel.m \
 	Mixer.m \
+	MPlayer.m \
 	MPlayerInterface.m
 
 MultimediaKit_Source_INCLUDE_DIRS += -I..

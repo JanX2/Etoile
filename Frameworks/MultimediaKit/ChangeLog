@@ -1,3 +1,7 @@
+2006-11-23  Yen-Ju Chen <yjchen at gmail>
+
+	* MPlayer: subclass MPlayerInterface to avoid polluting original code.
+
 2006-11-19  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Updated to include etoile.make. 

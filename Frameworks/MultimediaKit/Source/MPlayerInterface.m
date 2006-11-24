@@ -1,5 +1,6 @@
+// Modified by Yen-Ju
 /*
- *  MPlayerInterface.m
+ *  MplayerInterface.m
  *  MPlayer OS X
  *
  *  Created by Jan Volf
@@ -21,92 +22,90 @@
 
 #define MI_REFRESH_LIMIT			10
 
-@implementation MPlayerInterface
+@implementation MplayerInterface
 /************************************************************************************
  INIT & UNINIT
  ************************************************************************************/
-- (id) init;
+- (id)init;
 {
-  /* Try to find the mplayer */
-  NSEnumerator *e = [[[[[NSProcessInfo processInfo] environment] objectForKey: @"PATH"] componentsSeparatedByString: @":"] objectEnumerator];
-  NSString *path;
-  NSFileManager *fm = [NSFileManager defaultManager];
-  BOOL isDir, found = NO;
-  while ((path = [[e nextObject] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]])) {
-    path = [path stringByAppendingPathComponent: @"mplayer"];
-    if ([fm fileExistsAtPath: path isDirectory: &isDir] && (isDir == NO)) {
-      found = YES;
-      break;
-    }
-  }
-  if (found == YES) {
-    //NSLog(@"Use MPlayer at %@", path);
-    [self initWithPathToPlayer: path];
-  } else {
-    NSLog(@"Cannot find mplayer");
-    [self dealloc];
-    return nil;
-  }
-  return self;
+	[self initWithPathToPlayer:@"/usr/local/bin/mplayer"];
+	return self;
 }
 /************************************************************************************/
 - (id)initWithPathToPlayer:(NSString *)aPath
 {
-  if (![super init])
-    return  nil;
+	if (![super init])
+		return  nil;
 	
-  ASSIGN(myPathToPlayer, aPath);
+	myPathToPlayer = [aPath retain];
 
-  ASSIGN(myInfo, [NSMutableDictionary dictionary]);
-  ASSIGN(myCommandsBuffer, [NSMutableArray array]);
-  mySeconds = 0;
-  myVolume = 100;
-  myDropFrames = NO;
-  myRebuildIndex = NO;
-  myFullscreen = NO;
+	myInfo = [[NSMutableDictionary dictionary] retain];
+	myCommandsBuffer = [[NSMutableArray array] retain];
+	mySeconds = 0;
+	myVolume = 100;
+	myDropFrames = NO;
+	myRebuildIndex = NO;
+	myFullscreen = NO;
+#ifndef GNUSTEP
+	myVOModule = 0;
+#endif
 	
-  //beta new
-  myRootwin = NO;
-  myTile = NO;
-//  myadvolume = 30;
-  myPostprocesing = NO;
-  mynosound = NO;
-  mySecondMonitor = NO;
+	//beta new
+	myRootwin = NO;
+	myTile = NO;
+//	myadvolume = 30;
+	myPostprocesing = NO;
+	mynosound = NO;
+	mySecondMonitor = NO;
 	
-  myMovieSize = NSMakeSize(0,0);
-  myAspectRatio = 0;
-  myMonitorAspect = 0;
-  myCacheSize = 0;
-  myState = 0;
-  myLastUpdate = [NSDate timeIntervalSinceReferenceDate];
-  settingsChanged = NO;
-  restartingPlayer = NO;
-  pausedOnRestart = NO;
-  isRunning = NO;
-  takeEffectImediately = NO;
-  useIdentifyForPlayback = NO;
-  myOutputReadMode = 0;
-  myUpdateStatistics = NO;
+	myMovieSize = NSMakeSize(0,0);
+	myAspectRatio = 0;
+	myMonitorAspect = 0;
+	myCacheSize = 0;
+	myState = 0;
+	myLastUpdate = [NSDate timeIntervalSinceReferenceDate];
+	settingsChanged = NO;
+	restartingPlayer = NO;
+	pausedOnRestart = NO;
+	isRunning = NO;
+	takeEffectImediately = NO;
+	useIdentifyForPlayback = NO;
+	myOutputReadMode = 0;
+	myUpdateStatistics = NO;
 	
-  windowedVO = NO;
+	windowedVO = NO;
 	
-  return self;
+	return self;
 }
 
+/************************************************************************************/
+// release any retained objects
 - (void) dealloc
 {
-  DESTROY(myMPlayerTask);
-  DESTROY(myPathToPlayer);
-  DESTROY(myMovieFile);
-  DESTROY(mySubtitlesFile);
-  DESTROY(myAudioExportFile);
-  DESTROY(myAudioFile);
-  DESTROY(myFontFile);
-  DESTROY(mySubEncoding);
-  DESTROY(myAddParams);
-  DESTROY(myCommandsBuffer);
-  DESTROY(myInfo);
-  [super dealloc];
+	if (myMplayerTask)
+		[myMplayerTask release];
+	if (myPathToPlayer)
+		[myPathToPlayer release];
+	if (myMovieFile)
+		[myMovieFile release];
+	if (mySubtitlesFile)
+		[mySubtitlesFile release];
+	if (myAudioExportFile)
+		[myAudioExportFile release];
+	if (myAudioFile)
+		[myAudioFile release];
+	if (myFontFile)
+		[myFontFile release];
+	if (mySubEncoding)
+		[mySubEncoding release];
+	if (myAddParams)
+		[myAddParams release];
+	if (myCommandsBuffer)
+		[myCommandsBuffer release];
+	if (myInfo)
+		[myInfo release];
+	
+	[super dealloc];
 }
 
 /************************************************************************************
@@ -114,210 +113,253 @@
  ************************************************************************************/
 - (void) play
 {
-  NSMutableArray *params = [NSMutableArray array];
+	NSMutableArray *params = [NSMutableArray array];
 
-  // add movie file
-  if (myMovieFile) {
-    if ([[myMovieFile lastPathComponent] isEqualToString:@"VIDEO_TS"]) {
-      [params addObject:@"dvd://"];
-      [params addObject:@"-dvd-device"];
-    }
-    [params addObject:myMovieFile];
-  } else {
-    return;
-  }
+	// add movie file
+	if (myMovieFile) {
+		if ([[myMovieFile lastPathComponent] isEqualToString:@"VIDEO_TS"]) {
+			[params addObject:@"dvd://"];
+			[params addObject:@"-dvd-device"];
+		}
+		[params addObject:myMovieFile];
+	}
+	else
+		return;
 	
-  // add subtitles file
-  if (mySubtitlesFile) {
-    [params addObject:@"-sub"];
-    [params addObject:mySubtitlesFile];
-  } else {
-    //[params addObject:@"-noautosub"];
-  }
+	// add subtitles file
+	if (mySubtitlesFile) {
+		[params addObject:@"-sub"];
+		[params addObject:mySubtitlesFile];
+	}
+	else {
+		//[params addObject:@"-noautosub"];
+	}
 	
-  // add audioexport file
-  if (myAudioExportFile) {
-    [params addObject:@"-ao"];
-    [params addObject:@"pcm"];
-    [params addObject:@"-aofile"];
-    [params addObject:myAudioExportFile];
-  }
+	// add audioexport file
+	if (myAudioExportFile) {
+		[params addObject:@"-ao"];
+		[params addObject:@"pcm"];
+		[params addObject:@"-aofile"];
+		[params addObject:myAudioExportFile];
+	}
+
 	
-  //add audio file
-  if (myAudioFile) {
-    [params addObject:@"-ao"];
-    [params addObject:@"pcm"];
-    [params addObject:@"-audiofile"];
-    [params addObject:myAudioFile];
-  }
-
-  // add font file
-  if (myFontFile) {
-    [params addObject:@"-font"];
-    [params addObject:myFontFile];
-  }
-
-  // movie size
-  if (myMovieSize.width != 0) {
-    if (myMovieSize.height != 0) {
-      [params addObject:@"-x"];
-      [params addObject:[NSString stringWithFormat:@"%1.1f",myMovieSize.width]];
-      [params addObject:@"-y"];
-      [params addObject:[NSString stringWithFormat:@"%1.1f",myMovieSize.height]];
-    } else {
-      [params addObject:@"-xy"];
-      [params addObject:[NSString stringWithFormat:@"%1.1f",myMovieSize.width]];
-    }
-  }
-
-  // aspect ratio
-  if (myAspectRatio > 0) {
-    [params addObject:@"-aspect"];
-    [params addObject:[NSString stringWithFormat:@"%1.4f", myAspectRatio]];
-  }
-  if (myMonitorAspect > 0) {
-    [params addObject:@"-monitoraspect"];
-    [params addObject:[NSString stringWithFormat:@"%1.4f", myMonitorAspect]];
-  }
-
-  // frame dropping
-  if (myDropFrames) {
-    [params addObject:@"-framedrop"];
-  }
-
-  // rebuilding index
-  if (myRebuildIndex) {
-    [params addObject:@"-forceidx"];
-  }
-
-  // fullscreen
-  if (myFullscreen) {
-    [params addObject:@"-fs"];
-  }
+	//add audio file
+	if (myAudioFile) {
+		[params addObject:@"-ao"];
+		[params addObject:@"pcm"];
+		[params addObject:@"-audiofile"];
+		[params addObject:myAudioFile];
+	}
 	
-  //BETA rootwin
-  if (myRootwin) {
-    [params addObject:@"-rootwin"];
-  }
-
-  //BETA TILE
-  if (myTile) {
-    [params addObject:@"-vf"];
-    [params addObject:@"tile"];
-  }
-
-  //nosound
-  if (mynosound) {
-    [params addObject:@"-nosound"];
-//  [params addObject:@"-af"];
-//  [params addObject:@"volume=40"];
-  }
 	
-  if (myPostprocesing) {
-    [params addObject:@"-vf-add"];
-    [params addObject:@"pp"];
-  }
+	// add font file
+	if (myFontFile) {
+		[params addObject:@"-font"];
+		[params addObject:myFontFile];
+	}
+	// movie size
+	if (myMovieSize.width != 0) {
+		if (myMovieSize.height != 0) {
+			[params addObject:@"-x"];
+			[params addObject:[NSString stringWithFormat:@"%1.1f",myMovieSize.width]];
+			[params addObject:@"-y"];
+			[params addObject:[NSString stringWithFormat:@"%1.1f",myMovieSize.height]];
+		}
+		else {
+			[params addObject:@"-xy"];
+			[params addObject:[NSString stringWithFormat:@"%1.1f",myMovieSize.width]];
+		}
+	}
+	// aspect ratio
+	if (myAspectRatio > 0) {
+		[params addObject:@"-aspect"];
+		[params addObject:[NSString stringWithFormat:@"%1.4f", myAspectRatio]];
+	}
+	if (myMonitorAspect > 0) {
+		[params addObject:@"-monitoraspect"];
+		[params addObject:[NSString stringWithFormat:@"%1.4f", myMonitorAspect]];
+	}
+
+
+	// frame dropping
+	if (myDropFrames)
+		[params addObject:@"-framedrop"];
+	// rebuilding index
+	if (myRebuildIndex)
+		[params addObject:@"-forceidx"];
+	// fullscreen
+	if (myFullscreen)
+		[params addObject:@"-fs"];
 	
-  // subtitles encoding
-  if (mySubEncoding) {
-    [params addObject:@"-subcp"];
-    [params addObject:mySubEncoding];
-  }
 
-  // subtitles scale
-  if (mySubScale != 0) {
-    [params addObject:@"-subfont-text-scale"];
-    [params addObject:[NSString stringWithFormat:@"%d",mySubScale]];
-  }
+	//BETA rootwin
+	if (myRootwin) 
+		[params addObject:@"-rootwin"];
 	
-  // cache settings
-  if (myCacheSize != 0) {
-    [params addObject:@"-cache"];
-    [params addObject:[NSString stringWithFormat:@"%d",myCacheSize]];
-  }
-
-  // position from which to play
-  if (mySeconds != 0) {
-    [params addObject:@"-ss"];
-    [params addObject:[NSString stringWithFormat:@"%1.1f",mySeconds]];
-  }
-
-  // set volume
-/*  [params addObject:@"-aop"];
-    [params addObject:[NSString stringWithFormat:@"list=volume:volume=%d", myVolume]];
-*/
-
-  // append additional params
-  if (myAddParams) {
-    if ([myAddParams count] > 0) {
-      [params addObjectsFromArray:myAddParams];
-    }
-  }
-
-  // x window to play on it 
-  if (xwin) {
-    [params addObject: @"-wid"];
-    [params addObject: [NSString stringWithFormat: @"%d", xwin]];
-  }
-
-  [params addObject:@"-slave"];
-
-  if (useIdentifyForPlayback) {
-    [params addObject:@"-identify"];
-  }
-
-  [myInfo removeAllObjects];// prepare it for getting new values
-  [myCommandsBuffer removeAllObjects]; // empty buffer before launch
-  settingsChanged = NO; // every startup settings has been made
-
-  [self runMPlayerWithParams:params];
+		
+	
+	//BETA TILE
+	if (myTile) {
+		[params addObject:@"-vf"];
+		[params addObject:@"tile"];
+	}
+		//nosound
+	if (mynosound) {
+		[params addObject:@"-nosound"];
+	//	[params addObject:@"-af"];
+	//	[params addObject:@"volume=40"];
+	}
+	
+#ifdef GNUSTEP
+	// x window to play on it 
+	if (xwin) {
+		[params addObject: @"-wid"];
+		[params addObject: [NSString stringWithFormat: @"%d", xwin]];
+	}
+#else
+	if(myVOModule == 0) //quartz/quicktime
+	{
+		if (mySecondMonitor)
+		{
+			[params addObject:@"-vo"];
+			[params addObject:@"quartz:device_id=1"];
+		}
+		else
+		{
+			[params addObject:@"-vo"];
+			[params addObject:@"quartz"];
+		}
+		windowedVO = YES;
+	}
+	else if(myVOModule == 1) //core video
+	{
+		if (mySecondMonitor)
+		{
+			[params addObject:@"-vo"];
+			[params addObject:@"macosx:device_id=1"];
+		}
+		else
+		{
+			[params addObject:@"-vo"];
+			[params addObject:@"macosx"];
+		}
+		windowedVO = YES;
+	}
+	else if(myVOModule == 2) //mplayer osx
+	{
+		[params addObject:@"-vo"];
+		[params addObject:@"macosx:shared_buffer"];
+		windowedVO = NO;
+	}
+	else
+	{
+		if (mySecondMonitor)
+		{
+			[params addObject:@"-vo"];
+			[params addObject:@"quartz:device_id=1"];
+		}
+		else
+		{
+			[params addObject:@"-vo"];
+			[params addObject:@"quartz"];
+		}
+		windowedVO = YES;
+	}
+#endif
+	
+	if (myPostprocesing) {
+		[params addObject:@"-vf-add"];
+		[params addObject:@"pp"];
+	}
+	
+	// subtitles encoding
+	if (mySubEncoding) {
+		[params addObject:@"-subcp"];
+		[params addObject:mySubEncoding];
+	}
+	// subtitles scale
+	if (mySubScale != 0) {
+		[params addObject:@"-subfont-text-scale"];
+		[params addObject:[NSString stringWithFormat:@"%d",mySubScale]];
+	}
+	
+	// cache settings
+	if (myCacheSize != 0) {
+		[params addObject:@"-cache"];
+		[params addObject:[NSString stringWithFormat:@"%d",myCacheSize]];
+	}
+	// position from which to play
+	if (mySeconds != 0) {
+		[params addObject:@"-ss"];
+		[params addObject:[NSString stringWithFormat:@"%1.1f",mySeconds]];
+	}
+	// set volume
+/*	[params addObject:@"-aop"];
+	[params addObject:[NSString stringWithFormat:@"list=volume:volume=%d", myVolume]];
+*/	// append additional params
+	if (myAddParams) {
+		if ([myAddParams count] > 0)
+			[params addObjectsFromArray:myAddParams];
+	}
+	
+	[params addObject:@"-slave"];
+	
+	if (useIdentifyForPlayback)
+		[params addObject:@"-identify"];
+	
+	[myInfo removeAllObjects];				// prepare it for getting new values
+	[myCommandsBuffer removeAllObjects];	// empty buffer before launch
+	settingsChanged = NO;					// every startup settings has been made
+	
+	[self runMplayerWithParams:params];
 }
 /************************************************************************************/
 - (void) stop
 {
-  if (myMPlayerTask) {
-    switch (myState) {
-      case kPlaying :
-//      [myMPlayerTask terminate];
-	[self sendCommand:@"quit"];
-	break;
-      case kPaused :
-        [myCommandsBuffer addObject:@"quit"];
-	[self sendCommand:@"pause"];
-//	[self sendCommand:@"quit"];
-	break;
-      case kStopped:
-	break;
-      case kFinished:
-	break;
-      default :
-	[myCommandsBuffer addObject:@"quit"];
-	break;
-    }
-    [self waitUntilExit];
-  }
+	if (myMplayerTask) {
+		switch (myState) {
+		case kPlaying :
+//			[myMplayerTask terminate];
+			[self sendCommand:@"quit"];
+			break;
+		case kPaused :
+			[myCommandsBuffer addObject:@"quit"];
+			[self sendCommand:@"pause"];
+//			[self sendCommand:@"quit"];
+			break;
+		case kStopped:
+			break;
+		case kFinished:
+			break;
+		default :
+			[myCommandsBuffer addObject:@"quit"];
+			break;
+		}
+		[self waitUntilExit];
+	}
 }
 /************************************************************************************/
 - (void) pause
 {
-  if (myMPlayerTask) {
-    switch (myState) {
-      case kPlaying: // mplayer is just playing then pause it
-	[self sendCommand:@"pause"];
-//	myState = kPaused;
-	break;
-      case kPaused: // mplayer is paused then unpause it
-	[self sendCommand:@"pause"];
-	break;
-      case kStopped: // if stopped do nothing
-	break;
-      case kFinished: // if stopped do nothing
-	break;
-      default: // otherwise save command to the buffer
-	[myCommandsBuffer addObject:@"pause"];
-	break;
-    }
-  }
+	if (myMplayerTask) {
+		switch (myState) {
+		case kPlaying:					// mplayer is just playing then pause it
+			[self sendCommand:@"pause"];
+//			myState = kPaused;
+			break;
+		case kPaused:					// mplayer is paused then unpause it
+			[self sendCommand:@"pause"];
+			break;
+		case kStopped:					// if stopped do nothing
+			break;
+		case kFinished:					// if stopped do nothing
+			break;
+		default:						// otherwise save command to the buffer
+			[myCommandsBuffer addObject:@"pause"];
+			break;
+		}
+	}
 }
 /************************************************************************************/
 - (void) seek:(float)seconds mode:(int)aMode
@@ -336,7 +378,7 @@
 		break;
 	}
 	
-	if (myMPlayerTask) {
+	if (myMplayerTask) {
 		switch (myState) {
 		case kPlaying:
 			if(!myFullscreen) [self sendCommand:@"osd 0"];
@@ -377,13 +419,14 @@
 {
 	if (aFile) {
 		if (![aFile isEqualToString:myMovieFile]) {
-			ASSIGN(myMovieFile, aFile);
+			[myMovieFile autorelease];
+			myMovieFile = [aFile retain];
 			settingsChanged = YES;
 		}
 	}
 	else {
 		if (myMovieFile) {
-			DESTROY(myMovieFile);
+			[myMovieFile release];
 			settingsChanged = YES;
 		}
 		myMovieFile = nil;
@@ -394,13 +437,14 @@
 {
 	if (aFile) {
 		if (![aFile isEqualToString:mySubtitlesFile]) {
-			ASSIGN(mySubtitlesFile, aFile);
+			[mySubtitlesFile autorelease];
+			mySubtitlesFile = [aFile retain];
 			settingsChanged = YES;
 		}
 	}
 	else {
 		if (mySubtitlesFile) {
-			DESTROY(mySubtitlesFile);
+			[mySubtitlesFile release];
 			settingsChanged = YES;
 		}
 		mySubtitlesFile = nil;
@@ -413,13 +457,14 @@
 {
 	if (aFile) {
 		if (![aFile isEqualToString:myAudioExportFile]) {
-			ASSIGN(myAudioExportFile, aFile);
+			[myAudioExportFile autorelease];
+			myAudioExportFile = [aFile retain];
 			settingsChanged = YES;
 		}
 	}
 	else {
 		if (myAudioExportFile) {
-			DESTROY(myAudioExportFile);
+			[myAudioExportFile release];
 			settingsChanged = YES;
 		}
 		myAudioExportFile = nil;
@@ -432,13 +477,14 @@
 {
 	if (aFile) {
 		if (![aFile isEqualToString:myAudioFile]) {
-			ASSIGN(myAudioFile, aFile);
+			[myAudioFile autorelease];
+			myAudioFile = [aFile retain];
 			settingsChanged = YES;
 		}
 	}
 	else {
 		if (myAudioFile) {
-			DESTROY(myAudioFile);
+			[myAudioFile release];
 			settingsChanged = YES;
 		}
 		myAudioFile = nil;
@@ -451,13 +497,14 @@
 {
 	if (aFile) {
 		if (![aFile isEqualToString:myFontFile]) {
-			ASSIGN(myFontFile, aFile);
+			[myFontFile autorelease];
+			myFontFile = [aFile retain];
 			settingsChanged = YES;
 		}
 	}
 	else {
 		if (myFontFile) {
-			DESTROY(myFontFile);
+			[myFontFile release];
 			settingsChanged = YES;
 		}
 		myFontFile = nil;
@@ -544,7 +591,17 @@
 		settingsChanged = YES;
 	}
 }
-
+//Video Out
+- (void) setVideoOutModule:(int)module
+{
+#ifndef GNUSTEP
+	if (myVOModule != module)
+	{
+		myVOModule = module;
+		settingsChanged = YES;
+	}
+#endif
+}
 //postprocesing
 - (void) setPostprocesing:(BOOL)aBool
 {
@@ -585,7 +642,8 @@
 {
 	if (aEncoding) {
 		if (![aEncoding isEqualToString:mySubEncoding]) {
-			ASSIGN(mySubEncoding, aEncoding);
+			[mySubEncoding release];
+			mySubEncoding = [aEncoding retain];
 			settingsChanged = YES;
 		}
 	}
@@ -638,12 +696,12 @@
 - (void) setAdditionalParams:(NSArray *)params
 {
 	if (myAddParams && params) {
-		if (![myAddParams isEqual:params]) {
+		if (![myAddParams isEqualTo:params]) {
 			if (myAddParams)
-				DESTROY(myAddParams);
+				[myAddParams release];
 			
 			if (params)
-				ASSIGN(myAddParams, [NSArray arrayWithArray:params]);
+				myAddParams = [[NSArray arrayWithArray:params] retain];
 			else
 				myAddParams = nil;
 			
@@ -652,12 +710,13 @@
 		return;
 	}
 	if (myAddParams == nil && params) {
-		ASSIGN(myAddParams, [NSArray arrayWithArray:params]);
+		myAddParams = [[NSArray arrayWithArray:params] retain];
 		settingsChanged = YES;
 		return;
 	}
 	if (myAddParams && params == nil) {
-		DESTROY(myAddParams);
+		[myAddParams release];
+		myAddParams = nil;
 		settingsChanged = YES;
 		return;
 	}
@@ -670,7 +729,7 @@
 		if (settingsChanged && restartIt) {
 			// all settings will be applied by restarting player
 			restartingPlayer = YES;		// set it not to send termination notification
-			[self play: self]; // restart playback if player is running
+			[self play];				// restart playback if player is running
 			takeEffectImediately = NO;
 		}
 		else {
@@ -707,7 +766,7 @@
 - (void) waitUntilExit
 {
 	if (isRunning) {
-		[myMPlayerTask waitUntilExit];
+		[myMplayerTask waitUntilExit];
 //		[self mplayerTerminated];		// remove observers to not recieve notif.
 	}
 }
@@ -726,7 +785,7 @@
 	
 	// run mplayer for identify
 	if (myMovieFile)
-		[self runMPlayerWithParams:[NSArray arrayWithObjects:myMovieFile, @"-identify", @"-frames",@"0", @"-ao", @"null", @"-vo", @"null", nil]];
+		[self runMplayerWithParams:[NSArray arrayWithObjects:myMovieFile, @"-identify", @"-frames",@"0", @"-ao", @"null", @"-vo", @"null", nil]];
 	
 	// wait until it exits
 	[self waitUntilExit];
@@ -805,30 +864,30 @@
  ************************************************************************************/
 - (void)sendCommand:(NSString *)aCommand
 {
-	[self sendToMPlayersInput:[aCommand stringByAppendingString:@"\n"]];
+	[self sendToMplayersInput:[aCommand stringByAppendingString:@"\n"]];
 }
 /************************************************************************************/
 - (void)sendCommands:(NSArray *)aCommands
 {
 	int i;
 	for (i=0; i < [aCommands count]; i++) {
-		[self sendToMPlayersInput:[[aCommands objectAtIndex:i]
+		[self sendToMplayersInput:[[aCommands objectAtIndex:i]
 				stringByAppendingString:@"\n"]];
 	}
 }
 /************************************************************************************/
-- (void)runMPlayerWithParams:(NSArray *)aParams
+- (void)runMplayerWithParams:(NSArray *)aParams
 {
 	NSMutableDictionary *env;
 
 	// terminate mplayer if it is running
-	if (myMPlayerTask) {
+	if (myMplayerTask) {
 		if (myState == kPaused && restartingPlayer)
 			pausedOnRestart = YES;
 		else
 			pausedOnRestart = NO;
-		[self stop: self];
-                DESTROY(myMPlayerTask);
+		[self stop];
+		[myMplayerTask release];
 	}
 	
 	// if no path or movie file specified the return
@@ -836,34 +895,35 @@
 		return;
 	
 	// initialize  mplayer task object
-	myMPlayerTask=[[NSTask alloc] init];
+	myMplayerTask=[[NSTask alloc] init];
 	
 	// create standard input and output for application
-	[myMPlayerTask setStandardInput: [NSPipe pipe]];
-	[myMPlayerTask setStandardOutput: [NSPipe pipe]];
+	[myMplayerTask setStandardInput: [NSPipe pipe]];
+	[myMplayerTask setStandardOutput: [NSPipe pipe]];
 	
 	// add observer for termination of mplayer
 	[[NSNotificationCenter defaultCenter] addObserver: self
 			selector: @selector(mplayerTerminated) 
 			name:NSTaskDidTerminateNotification
-			object:myMPlayerTask];
+			object:myMplayerTask];
 	// add observer for available data at mplayers output 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 			selector:@selector(readOutputC:)
 			name:NSFileHandleReadCompletionNotification
-			object:[[myMPlayerTask standardOutput] fileHandleForReading]];
+			object:[[myMplayerTask standardOutput] fileHandleForReading]];
 
 	// set launch path and params
-	[myMPlayerTask setLaunchPath:myPathToPlayer];
+	[myMplayerTask setLaunchPath:myPathToPlayer];
 	// set launch arguments
 	
-	[myMPlayerTask setArguments:aParams];
+	[myMplayerTask setArguments:aParams];
 	
 	// get current environment and make appropriate changes
-	env = AUTORELEASE([[[NSProcessInfo processInfo] environment] mutableCopy]);
+	env = [[[NSProcessInfo processInfo] environment] mutableCopy];
+	[env autorelease];
 	// enable bind-at-launch behavior for dyld to use DLL codecs
     [env setObject:@"1" forKey:@"DYLD_BIND_AT_LAUNCH"];
-    [myMPlayerTask setEnvironment:env];
+    [myMplayerTask setEnvironment:env];
 
 	//Print Command line to console
 	NSLog(@"Path to MPlayer: %s", [myPathToPlayer UTF8String] );
@@ -873,32 +933,32 @@
 		NSLog(@"Arg: %s", [[aParams objectAtIndex:count] UTF8String] );
 
 	// activate notification for available data at output
-	[[[myMPlayerTask standardOutput] fileHandleForReading]
+	[[[myMplayerTask standardOutput] fileHandleForReading]
 			readInBackgroundAndNotify];
 	// reset output read mode
 	myOutputReadMode = 0;
 	// launch mplayer task
-	[myMPlayerTask launch];
+	[myMplayerTask launch];
 	isRunning = YES;
 }
 /************************************************************************************/
-- (void)sendToMPlayersInput:(NSString *)aCommand
+- (void)sendToMplayersInput:(NSString *)aCommand
 {
-    if (myMPlayerTask) {
-		if ([myMPlayerTask isRunning]) {
-			NSFileHandle *thePipe = [[myMPlayerTask standardInput] fileHandleForWriting];
+    if (myMplayerTask) {
+		if ([myMplayerTask isRunning]) {
+			NSFileHandle *thePipe = [[myMplayerTask standardInput] fileHandleForWriting];
 			[thePipe writeData:[aCommand dataUsingEncoding:NSASCIIStringEncoding]];
 		}
 	}
 }
 /************************************************************************************/
 // should be removed!
-- (void)terminateMPlayer
+- (void)terminateMplayer
 {
-	if (myMPlayerTask) {
+	if (myMplayerTask) {
 		if (isRunning) {
-			[myMPlayerTask terminate];
-			[myMPlayerTask waitUntilExit];
+			[myMplayerTask terminate];
+			[myMplayerTask waitUntilExit];
 			[self mplayerTerminated];
 		}
 	}
@@ -910,51 +970,51 @@
  ************************************************************************************/
 - (void)mplayerTerminated
 {
-  int returnCode, bReadLog;
+	int returnCode, bReadLog;
 	
-  // remove observers
-  if (isRunning) {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-           name: NSTaskDidTerminateNotification object:myMPlayerTask];
+	// remove observers
+	if (isRunning) {
+		[[NSNotificationCenter defaultCenter] removeObserver:self
+				name: NSTaskDidTerminateNotification object:myMplayerTask];
 		
-    if (!restartingPlayer && myState > 0) {
-      NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+		if (!restartingPlayer && myState > 0) {
+			NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
 			
-      myState = kStopped;
-      // save value to userInfo
-      [userInfo setObject:[NSNumber numberWithInt:myState] forKey:@"PlayerStatus"];
-      // post notification
-      [[NSNotificationCenter defaultCenter]
-                postNotificationName:@"MIStateUpdatedNotification"
-                object:self
-		userInfo:[NSDictionary dictionaryWithDictionary:userInfo]];
-    }
-    restartingPlayer = NO;
-    isRunning = NO;
-  }
+			myState = kStopped;
+			// save value to userInfo
+			[userInfo setObject:[NSNumber numberWithInt:myState] forKey:@"PlayerStatus"];
+			// post notification
+			[[NSNotificationCenter defaultCenter]
+					postNotificationName:@"MIStateUpdatedNotification"
+					object:self
+					userInfo:[NSDictionary dictionaryWithDictionary:userInfo]];
+		}
+		restartingPlayer = NO;
+		isRunning = NO;
+	}
 	
-  returnCode = [myMPlayerTask terminationStatus];
+	returnCode = [myMplayerTask terminationStatus];
 	
-  //abnormal mplayer task termination
-  if (returnCode != 0)
-  {
-    NSLog(@"Abnormal playback error. mplayer returned error code: %d", returnCode);
-    bReadLog = NSRunAlertPanel(@"Playback Error", @"Abnormal playback termination. Check log file for more information.", @"Open Log", @"Continue", nil);
+	//abnormal mplayer task termination
+	if (returnCode != 0)
+	{
+		NSLog(@"Abnormal playback error. mplayer returned error code: %d", returnCode);
+		bReadLog = NSRunAlertPanel(@"Playback Error", @"Abnormal playback termination. Check log file for more information.", @"Open Log", @"Continue", nil);
 		
-    //Open Log file
-    if(bReadLog)
-    {
-      NSTask *finderOpenTask;
-      NSArray *finderOpenArg;
-      NSString *logPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Logs/MPlayerOSX.log"];
+		//Open Log file
+		if(bReadLog)
+		{
+			NSTask *finderOpenTask;
+			NSArray *finderOpenArg;
+			NSString *logPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Logs/MPlayerOSX.log"];
 
-      finderOpenArg = [NSArray arrayWithObject:logPath];
-      finderOpenTask = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/open" arguments:finderOpenArg];
+			finderOpenArg = [NSArray arrayWithObject:logPath];
+			finderOpenTask = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/open" arguments:finderOpenArg];
 			
-      if (!finderOpenTask)
-        NSLog(@"Failed to launch the console.app");
-    }
-  }
+			if (!finderOpenTask)
+				NSLog(@"Failed to launch the console.app");
+		}
+	}
 }
 /************************************************************************************/
 - (void)readOutputC:(NSNotification *)notification
@@ -971,7 +1031,7 @@
 	*(dataPtr+dataLength) = '\0';
 	
 	// register for another read
-	[[[myMPlayerTask standardOutput] fileHandleForReading]
+	[[[myMplayerTask standardOutput] fileHandleForReading]
 			readInBackgroundAndNotify];	
 	
 	while (1) {
@@ -1152,7 +1212,7 @@
 				// as it is supposed to do
 			[[NSNotificationCenter defaultCenter] removeObserver:self
 					name: NSFileHandleReadCompletionNotification
-					object:[[myMPlayerTask standardOutput] fileHandleForReading]];
+					object:[[myMplayerTask standardOutput] fileHandleForReading]];
 
 			// when player is not restarting
 			if (!restartingPlayer) {
@@ -1234,9 +1294,7 @@
 			{
 				*valString = '\0';					// replace it with null char
 				valString++;						// and the value starts by next char
-				NSString *temp = [NSString stringWithCString: valString];
-				if (temp)
-				[myInfo setObject:temp forKey:[NSString stringWithCString:stringPtr]];
+				[myInfo setObject:[NSString stringWithCString:valString] forKey:[NSString stringWithCString:stringPtr]];
 			}
 			continue; 							// continue on next line	
 		}
@@ -1280,85 +1338,6 @@
 	}
 
 	free((char *)dataPtr);
-}
-
-/** MMPlayer protocol **/
-- (void) play: (id) sender
-{
-  if (myState == kPaused) {
-    // mplayer is paused then unpause it
-    [self pause];
-  } else {
-    [self play];
-  }
-}
-
-- (void) stop: (id) sender
-{
-  [self stop];
-}
-
-- (void) pause: (id) sender
-{
-  if (myState == kPlaying) {
-      [self pause];
-  }
-}
-
-- (void) setURL: (NSURL *) u
-{
-  ASSIGN(url, u);
-  if ([url isFileURL]) {
-    [self setMovieFile: [url path]];
-  } else {
-    [self setMovieFile: [url absoluteString]];
-  }
-  [self loadInfoBeforePlayback: YES];
-}
-
-- (NSURL *) url
-{
-  return url;
-}
-
-- (void) setXWindow: (Window) w
-{
-  xwin = w;
-}
-
-- (NSSize) size
-{
-  if (myMPlayerTask == nil) {
-    /* It is never played. Need to load the information */
-    NSLog(@"load info");
-    [self loadInfo];
-  } 
-
-  NSDictionary *dict = [self info];
-  int w = 0, h = 0;
-  id object;
-  
-  object = [dict objectForKey: @"ID_VIDEO_WIDTH"];
-  if (object) {
-    w = [object intValue];
-  }
-
-  object = [dict objectForKey: @"ID_VIDEO_HEIGHT"];
-  if (object) {
-    h = [object intValue];
-  }
-  return NSMakeSize(w, h);
-}
-
-- (void) setVolumeInPercentage: (unsigned int) volume
-{
-  [self setVolume: volume];
-  [self applySettingsWithRestart: NO];
-}
-
-- (unsigned int) volumeInPercentage
-{
-  return myVolume;
 }
 
 @end

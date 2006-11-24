@@ -1,4 +1,4 @@
-// Modified by Yen-Ju Chen <yjchenx gmail>
+// Modified by Yen-Ju Chen
 /*
  *  MplayerInterface.h
  *  MPlayer OS X
@@ -16,7 +16,7 @@
  *  Copyright (c) 2003 Jan Volf. All rights reserved.
  */
 
-#import <MultimediaKit/MMPlayer.h>
+
 #import <AppKit/AppKit.h>
  
 // Notifications posted by MplayerInterface
@@ -66,13 +66,9 @@
 // default constants
 #define kDefaultMovieSize 			NSMakeSize(0,0)
 
-@interface MPlayerInterface : NSObject <MMPlayer>
+@interface MplayerInterface : NSObject
 {
 // Properties
-  NSURL *url;
-  Window xwin; /* The x window to play on it */
-  NSSize size; /* Cache size */
-
 	// file paths
 	NSString *myPathToPlayer;
 	NSString *myMovieFile;
@@ -93,6 +89,12 @@
 	BOOL mynosound;
 	BOOL mySecondMonitor;
 	BOOL myPostprocesing;
+#ifdef GNUSTEP
+	int xwin;
+#else
+	int myVOModule;
+#endif
+
 	
 	// subtitles properties
 	NSString *mySubEncoding;
@@ -102,6 +104,7 @@
 	
 	// misc properties
 	unsigned int myCacheSize;
+	
 
 	NSArray *myAddParams;
 	
@@ -122,7 +125,7 @@
 	int myPostProcLevel;		// actual level of postprocessing
 	
 	// internal use
-	NSTask *myMPlayerTask;
+	NSTask *myMplayerTask;
 	double myLastUpdate;			// date when last update notificationa was sent
 	BOOL settingsChanged;			// changed settings that requires player restart
 	BOOL takeEffectImediately;		// changes have to take effect even in paused mode
@@ -135,25 +138,15 @@
 	NSMutableArray *myCommandsBuffer;	// store cmds that cannot be send immediatelly
 	NSMutableDictionary *myInfo;	// dict filled by -identify command
 }
-
-/** MMPlayer protocol **/
-- (void) play: (id) sender;
-- (void) pause: (id) sender;
-- (void) stop: (id) sender;
-- (void) setURL: (NSURL *) url;
-- (NSURL *) url;
-- (void) setXWindow: (Window) xwin;
-- (NSSize) size;
-
 // interface
 // init and uninit
-- (id) init;  // init
-- (id) initWithPathToPlayer:(NSString *)aPath;	// init with movie file path
+- (id) init;										// init
+- (id) initWithPathToPlayer:(NSString *)aPath;		// init with movie file path
 
 // playback controls (take effect imediately)
-- (void) play;
-- (void) pause;
-- (void) stop;
+- (void) play;										// play item from saved time
+- (void) stop;										// stops playback
+- (void) pause;										// pause / unpause playback
 - (void) seek:(float)seconds mode:(int)aMode;		// seek in movie
 - (void) performCommand:(NSString *)aCommand;
 
@@ -168,36 +161,38 @@
 - (void) setFontFile:(NSString *)aFile;
 
 // setting visuals
-- (void) setMovieSize:(NSSize)aSize;  // set height to 0 to keep aspect ratio)
+- (void) setMovieSize:(NSSize)aSize;				// set height to 0 to keep aspect ratio)
 - (NSSize) movieSize;
 - (void) setAspectRatio:(double)ratio;
 
+
 - (void) setMonitorAspectRatio:(double)ratio;
-- (void) setDropFrames:(BOOL)aBool;  // sets frame dropping
+- (void) setDropFrames:(BOOL)aBool;					// sets frame dropping
 //
-- (void) setRootwin:(BOOL)aBool;  // video on background
-- (void) setTile:(BOOL)aBool;  // video as small screenshots
-- (void) setnosound:(BOOL)aBool;  // disable audio output
-- (void) setSecondMonitor:(BOOL)aBool; // use second monitor -vo quartz:device_id=1
-- (void) setPostprocesing:(BOOL)aBool;	// -vf pp
-//- (void) setVIDEO_TS:(BOOL)aBool;  // dvd folder
+- (void) setRootwin:(BOOL)aBool;					// video on background
+- (void) setTile:(BOOL)aBool;					// video as small screenshots
+- (void) setnosound:(BOOL)aBool;					// disable audio output
+- (void) setSecondMonitor:(BOOL)aBool;					// use second monitor -vo quartz:device_id=1
+- (void) setPostprocesing:(BOOL)aBool;					// -vf pp
+//- (void) setVIDEO_TS:(BOOL)aBool;					// dvd folder
 
 
 
-- (void) setRebuildIndex:(BOOL)aBool;  // take effect after restarting playback
-- (void) setFullscreen:(BOOL)aBool;  // set deafault playback mode to fullscreen
+- (void) setRebuildIndex:(BOOL)aBool;				// take effect after restarting playback
+- (void) setFullscreen:(BOOL)aBool;					// set deafault playback mode to fullscreen
 - (BOOL) fullscreen;
+- (void) setVideoOutModule:(int)module;
 
 // subtitles settings (don't work during playback)
 - (void) setSubtitlesEncoding:(NSString *)aEncoding;// sets subtitles file encoding
-- (void) setSubtitlesScaleMode:(unsigned int)aMode;  // sets subtitle scale mode (see man mplayer)
-- (void) setSubtitlesScale:(unsigned int)aScale;  // sets subtitle scale in % (see man mplayer)
+- (void) setSubtitlesScaleMode:(unsigned int)aMode;	// sets subtitle scale mode (see man mplayer)
+- (void) setSubtitlesScale:(unsigned int)aScale;	// sets subtitle scale in % (see man mplayer)
 - (void) setSubtitlesOutline:(unsigned int)aOutline;// font outline in points
 
 // misc settings (don't work during playback)
-- (void) setVolume:(unsigned int)percents;  // set audio volume
-- (void) setCacheSize:(unsigned int)kilobytes;	// set to 0 to disable it
-- (void) setAdditionalParams:(NSArray *)params;	// allow to send it additional parameters
+- (void) setVolume:(unsigned int)percents;			// set audio volume
+- (void) setCacheSize:(unsigned int)kilobytes;		// set to 0 to disable it
+- (void) setAdditionalParams:(NSArray *)params;		// allow to send it additional parameters
 
 // other methods
 - (void) applySettingsWithRestart:(BOOL)restartIt;	// applyes settings that require restart
@@ -224,9 +219,9 @@
 // advenced
 - (void)sendCommand:(NSString *)aCommand;
 - (void)sendCommands:(NSArray *)aCommands;
-- (void)runMPlayerWithParams:(NSArray *)aParams;
-- (void)sendToMPlayersInput:(NSString *)aCommand;
-- (void)terminateMPlayer;
+- (void)runMplayerWithParams:(NSArray *)aParams;
+- (void)sendToMplayersInput:(NSString *)aCommand;
+- (void)terminateMplayer;
 
 // notification handlers
 - (void) mplayerTerminated;
