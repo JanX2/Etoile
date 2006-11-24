@@ -1,0 +1,18 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    PictureDocument = {
+	Actions = (
+	);
+	Outlets = (
+	    pictureView
+	);
+	Super = NSDocument;
+    };
+    PictureView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSView;
+    };
+}

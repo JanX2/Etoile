@@ -1,0 +1,270 @@
+#! /usr/bin/env ioobjc
+
+/* First we load some frameworks we rely on 
+*/
+DynLib open("libEtoileUI.so")
+
+ObjcBridge autoLookupClassNamesOn
+
+// This is part of ObjcBridge now
+
+addVariableNamed: := method(name,
+	self setSlot(name, doString("method(?_" .. name .. ")"))
+	self setSlot("set" .. name asCapitalized .. ":", doString("method(value, self _" .. name .. " := value ; self)"))
+	nil
+)
+
+NSMakePoint := method(x, y, Point clone set(x, y))
+NSMakeSize := method(w, h, Point clone set(w, h))
+NSMakeRect := method(x, y, w, h, Box clone set(NSMakePoint(x, y), NSMakeSize(w, h)))
+
+//NSToolbarDisplayMode
+NSToolbarDisplayModeDefault      := 0
+NSToolbarDisplayModeIconAndLabel := 1
+NSToolbarDisplayModeIconOnly     := 2
+NSToolbarDisplayModeLabelOnly    := 3
+
+//NSToolbarSizeMode
+NSToolbarSizeModeDefault := 0
+NSToolbarSizeModeRegular := 1
+NSToolbarSizeModeSmall   := 2
+
+// End of ObjcBridge update
+
+NSZeroPoint := NSMakePoint(0, 0)
+
+NSImageAbove := 5
+
+NSImageAlignLeft := 0
+NSImageAlignRight := 1
+NSImageAlignCenter := 2
+/* 
+NSImageAlignTop
+NSImageAlignBottom
+NSImageAlignTopLeft
+NSImageAlignTopRight
+NSImageAlignBottomLeft
+NSImageAlignBottomRight 
+ */
+
+NSScaleProportionally := 0
+NSScaleToFit := 1
+NSScaleNone := 2
+
+NSCompositeClear := 0
+NSCompositeCopy := 1
+/*  NSCompositeSourceOver,
+  NSCompositeSourceIn,
+  NSCompositeSourceOut,
+  NSCompositeSourceAtop,
+  NSCompositeDestinationOver,
+  NSCompositeDestinationIn,
+  NSCompositeDestinationOut,
+  NSCompositeDestinationAtop,
+  NSCompositeXOR,
+  NSCompositePlusDarker,
+  NSCompositeHighlight,
+  NSCompositePlusLighter */
+
+CustomView := NSView newSubclassNamed:("CustomView")
+
+//Importer execute_io(launchPath, "UserObject", "io")
+
+Coroutine setMessageDebugging
+
+PictureView := NSView newSubclassNamed:("PictureView") do(
+
+	addVariableNamed:("pictureProvider")
+	
+	init := method(
+		self = self super(init)
+		self _pictureProvider := nil
+		return self
+	)
+	
+	drawRect: := method(rect,
+		p := self pictureProvider picture
+		//writeln("Draw picture: ", p)
+		
+		p ifNil(return)
+		
+		srcRect := NSMakeRect(0, 0, p size width, p size height)
+		p drawAtPoint:fromRect:operation:fraction:(NSZeroPoint, srcRect, NSCompositeCopy, 1.0)
+	)
+)
+
+PictureDocument := NSDocument newSubclassNamed:("PictureDocument") do(
+	addVariableNamed:("picture")
+	addVariableNamed:("pictureView")
+	addVariableNamed:("pictureSize")
+	//addVariableNamed:("toolbar")
+
+		
+)
+
+writeln("Here is PictureDocument: ", PictureDocument)
+
+PictureDocument do(
+
+	init := method(
+		self = self super(init)
+		self _picture := nil
+		self _pictureSize := nil
+		self _pictureView := nil
+		//self _toolbar := nil
+		return self
+	)
+	
+	dealloc := method(
+		
+		super dealloc
+	)
+	
+	setPicture: := method(image,
+		self _picture := image 
+		//self _picture := _picture scaledImageToFitSize:(self pictureView frame size)
+		self _picture setScalesWhenResized:(true)
+		writeln("Document setPicture: ", _picture)
+		// We have to keep the original size of the image somewhere in case
+		// the image is resized by scaling.
+		self setPictureSize:(image size)
+	)
+
+	awakeFromNib := method(
+		"Awaking from PictureDocument nib" println
+		writeln("picture view in awakeFromNib: ", self pictureView description)
+		
+		/*self pictureView setImageAlignment:(NSImageAlignCenter)
+		self pictureView do(
+			setEditable:(true) // Allows to drag a new picture into the frame
+			setImageAlignment:(NSImageAlignCenter)
+			setImageScaling:(NSScaleProportionally)
+			//setAllowsCutCopyPaste:(true)
+		)*/
+	)
+
+	windowControllerDidLoadNib: := method(windowController,
+		"Did load PictureDocument nib" println
+		self super(windowControllerDidLoadNib:)
+		
+		toolbar := NSToolbar alloc initWithIdentifier:("PictureToolbar") autorelease
+		toolbar setDisplayMode:(NSToolbarDisplayModeIconAndLabel)
+		toolbar setDelegate:(self)
+		windowController window setToolbar:(toolbar)
+		
+		/*parentView := self pictureView superview
+		newView := PictureView alloc initWithFrame:(self pictureView frame)
+		newView setPictureProvider:(self)
+		parentView replaceSubview:with:(self pictureView, newView)
+		self setPictureView:(newView)*/
+		self pictureView setPictureProvider:(self)
+		
+		/* Now we can create the scroll view here since it doesn't work well with Gorm */
+		scrollView := NSScrollView alloc initWithFrame:(self pictureView frame)
+		scrollView setHasVerticalScroller:(true)
+		scrollView setHasHorizontalScroller:(true)
+		//scrollView setBorderType:(NSNoBorder)
+		scrollView setAutoresizingMask:(self pictureView autoresizingMask)
+		window := self pictureView window
+		self pictureView removeFromSuperview
+		scrollView setDocumentView:(self pictureView)
+		window setContentViewWithoutToolbar:(scrollView)
+		scrollView release
+
+		writeln("Going to set ", self picture ?description, " to ", self pictureView ?description)
+		//ifNonNil(self picture, self pictureView setImage:(self picture))
+		//self pictureView setImage:(self picture)
+	)
+
+	windowNibName := method(
+		"Called windowNibName" println
+		return "PictureDocument"
+	)
+	
+)
+
+PictureDocument do(
+
+	loadDataRepresentation:ofType: := method(data, type,
+		writeln("Load data ", data, " representation of type ", type)
+		self setPicture:(NSImage alloc initWithData:(data))
+		writeln("Loaded picture representation: ", self picture ?description)
+		self println
+		
+		self picture ifNonNil(return true, return false)
+		//return true
+	)
+
+	dataRepresentationOfType: := method(type,
+		return nil
+	)
+
+)
+
+PictureDocument do(
+
+		toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar: := method(toolbar, itemIdentifier, inserted,
+		toolbarItem := NSToolbarItem alloc initWithItemIdentifier:(itemIdentifier)
+		
+		toolbarItem setLabel:(itemIdentifier)
+		
+		if(itemIdentifier beginsWithSeq("Zoom")) then(
+			toolbarItem setTarget:(self)
+			toolbarItem setAction:("zoom:")
+		) elseif(itemIdentifier beginsWithSeq("Rotate")) then(
+			toolbarItem setTarget:(self)
+			toolbarItem setAction:("rotate:")
+		) elseif(itemIdentifier == "Crop") then(
+			toolbarItem setTarget:(self)
+			toolbarItem setAction:("crop:")
+		) elseif(itemIdentifier == "FullScreen") then(
+			toolbarItem setTarget:(self)
+			toolbarItem setAction:("switchToFullScreen:")
+		) elseif(itemIdentifier == "SlideShow") then(
+			toolbarItem setTarget:(self)
+			toolbarItem setAction:("switchToSlideShow:")
+		) elseif(itemIdentifier == "LightTable") then(
+			toolbarItem setTarget:(self)
+			toolbarItem setAction:("showLightTable:")
+		) elseif(itemIdentifier == "Scale") then(
+			scaleField := NSTextField alloc initWithFrame:(NSMakeRect(0, 0, 60, 22)) autorelease
+			
+			scaleField setTarget:(self)
+			scaleField setAction:("scale:")
+			toolbarItem setView:(scaleField)
+		)
+		
+		return toolbarItem
+)
+	
+	toolbarAllowedItemIdentifiers: := method(toolbar,
+		return list("ZoomIn", "ZoomOut", "Scale", "RotateLeft", "RotateRight", "Crop", "Print", "LightTable", "FullScreen", "SlideShow")
+	)
+	
+	toolbarDefaultItemIdentifiers: := method(toolbar,
+		return list("ZoomIn", "ZoomOut", "Scale", "RotateLeft", "Crop", "Print", "LightTable")
+	)
+	
+	scale: := method(sender,
+		percentage := sender intValue
+		psize := self pictureSize
+		if(percentage != 100, 
+			writeln("Size before scale: ", psize)
+			psize := psize * percentage / 100
+			writeln("Size after scale: ", psize)
+		)
+		
+		self picture setSize:(psize)
+		self pictureView setFrameSize:(psize)
+		self pictureView setNeedsDisplay:(true)
+	)
+)
+
+e := try(
+ObjcBridge main
+)
+
+e catch(Exception,
+	e showStack
+	e coroutine backTraceString println
+)

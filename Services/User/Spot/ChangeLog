@@ -1,0 +1,7 @@
+2006-11-24  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Spot/Spot:
+	* Spot/Resources/Info-gnustep.plist:
+	* Spot/Resources/MainMenu.gorm:
+	* Spot/Resources/PictureDocument.gorm:
+	Initial import for Spot, an image viewer for Etoile written in Io.

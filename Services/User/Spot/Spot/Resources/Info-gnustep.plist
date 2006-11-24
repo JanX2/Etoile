@@ -1,0 +1,39 @@
+{
+	ApplicationName = Spot;
+	ApplicationRelease = 0.1;
+	Authors = ("Quentin Mathe <qmathe@club-internet.fr>");
+	Copyright = "Copyright (C) 2006 Quentin Mathe";
+	CopyrightDescription = "This program is released under the modified BSD license";
+	NSMainNibFile = MainMenu;
+	NSPrincipalClass = NSApplication;
+	NSTypes = (
+      {
+         NSName = "public.tiff";
+         NSHumanReadableName = "TIFF Image Format";
+         NSUnixExtensions = ("tiff", "tif");
+         NSRole = Editor;
+         NSDocumentClass = PictureDocument;
+      },
+      {
+         NSName = "public.png";
+         NSHumanReadableName = "PNG Image Format";
+         NSUnixExtensions = ("png");
+         NSRole = Editor;
+         NSDocumentClass = PictureDocument;
+      },
+      {
+         NSName = "public.jpeg";
+         NSHumanReadableName = "JPEG Image Format";
+         NSUnixExtensions = ("jpg", "jpeg");
+         NSRole = Editor;
+         NSDocumentClass = PictureDocument;
+      },
+      {
+         NSName = "com.compuserve.gif";
+         NSHumanReadableName = "GIF Image Format";
+         NSUnixExtensions = ("gif");
+         NSRole = Editor;
+         NSDocumentClass = PictureDocument;
+      }
+   );
+}
