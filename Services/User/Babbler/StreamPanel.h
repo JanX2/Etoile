@@ -2,6 +2,7 @@
 
 @interface StreamPanel: NSPanel
 {
+  NSWindow *window;
   NSTextField *urlField;
 }
 
@@ -9,6 +10,8 @@
 - (int) runModal;
 
 - (NSURL *) URL;
+- (void) okAction: (id) sender;
+- (void) cancelAction: (id) sender;
 
 @end
 

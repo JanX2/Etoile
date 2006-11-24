@@ -1,0 +1,21 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "cancelAction:",
+	    "okAction:"
+	);
+	Super = NSObject;
+    };
+    StreamPanel = {
+	Actions = (
+	    "cancelAction:",
+	    "okAction:"
+	);
+	Outlets = (
+	    window,
+	    urlField
+	);
+	Super = NSObject;
+    };
+}
