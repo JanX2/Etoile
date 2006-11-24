@@ -23,7 +23,7 @@
 
 /** End of Private **/
 
-- (void) openFileAction: (id) sender
+- (void) openFile: (id) sender
 {
   NSOpenPanel *panel = [NSOpenPanel openPanel];
   int result = [panel runModalForTypes: nil];
@@ -33,7 +33,7 @@
   }
 }
 
-- (void) openStreamAction: (id) sender
+- (void) openStream: (id) sender
 {
   StreamPanel *panel = [StreamPanel streamPanel];
   int result = [panel runModal];
@@ -60,33 +60,6 @@
 
 - (void) applicationWillFinishLaunching: (NSNotification *) not
 {
-  /* Make menu */
-  NSMenu *submenu, *menu = [[NSMenu alloc] initWithTitle: _(@"Babbler")];
-  id <NSMenuItem> item;
-
-  /* File */
-  submenu = [[NSMenu alloc] initWithTitle: _(@"File")];
-  [submenu addItemWithTitle: _(@"Open file...")
-	   action: @selector(openFileAction:)
-	   keyEquivalent: @"o"];
-  [submenu addItemWithTitle: _(@"Open stream...")
-	   action: @selector(openStreamAction:)
-	   keyEquivalent: @"l"];
-  item = [menu addItemWithTitle: _(@"File")
-	       action: NULL
-	       keyEquivalent: NULL];
-  [menu setSubmenu: submenu forItem: item];
-  DESTROY(submenu);
-  
-  /* Other */
-  [menu addItemWithTitle: _(@"Hide")
-	  action: @selector(hide:)
-	  keyEquivalent: @"h"];
-  [menu addItemWithTitle: _(@"Quit")
-	  action: @selector(terminate:)
-	  keyEquivalent: @"q"];
-
-  [NSApp setMainMenu: AUTORELEASE(menu)];
 }
 
 - (void) applicationDidFinishLaunching: (NSNotification *) not

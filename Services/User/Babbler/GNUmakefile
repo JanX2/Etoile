@@ -22,9 +22,10 @@ Babbler_LANGUAGES = \
 #        Localizable.strings
 
 Babbler_LOCALIZED_RESOURCE_FILES += \
-        StreamPanel.gorm
+        StreamPanel.gorm \
+        MainMenu.gorm
 
-#Babbler_MAIN_MODEL_FILE = MainMenu.gorm
+Babbler_MAIN_MODEL_FILE = MainMenu.gorm
 
 
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include

@@ -14,13 +14,15 @@ static StreamPanel *sharedInstance;
 - (id) init
 {
   self = [super init];
-  [NSBundle loadNibNamed: @"StreamPanel" owner: self];
+  if ([NSBundle loadNibNamed: @"StreamPanel" owner: self] == NO) {
+    [self dealloc];
+    return nil;
+  }
   return self;
 }
 
 - (void) awakeFromNib
 {
-  NSLog(@"Awake %@", NSStringFromRect([window frame]));
 }
 
 - (int) runModal
