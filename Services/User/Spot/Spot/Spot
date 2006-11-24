@@ -72,6 +72,8 @@ CustomView := NSView newSubclassNamed:("CustomView")
 
 Coroutine setMessageDebugging
 
+zoomFactor := 25
+
 PictureView := NSView newSubclassNamed:("PictureView") do(
 
 	addVariableNamed:("pictureProvider")
@@ -98,8 +100,7 @@ PictureDocument := NSDocument newSubclassNamed:("PictureDocument") do(
 	addVariableNamed:("pictureView")
 	addVariableNamed:("pictureSize")
 	//addVariableNamed:("toolbar")
-
-		
+	addVariableNamed:("scaleField")
 )
 
 writeln("Here is PictureDocument: ", PictureDocument)
@@ -112,6 +113,7 @@ PictureDocument do(
 		self _pictureSize := nil
 		self _pictureView := nil
 		//self _toolbar := nil
+		self _scaleField := nil
 		return self
 	)
 	
@@ -229,9 +231,11 @@ PictureDocument do(
 		) elseif(itemIdentifier == "Scale") then(
 			scaleField := NSTextField alloc initWithFrame:(NSMakeRect(0, 0, 60, 22)) autorelease
 			
+			scaleField setIntValue:(100)
 			scaleField setTarget:(self)
 			scaleField setAction:("scale:")
 			toolbarItem setView:(scaleField)
+			self setScaleField:(scaleField)
 		)
 		
 		return toolbarItem
@@ -257,6 +261,19 @@ PictureDocument do(
 		self picture setSize:(psize)
 		self pictureView setFrameSize:(psize)
 		self pictureView setNeedsDisplay:(true)
+	)
+	
+	zoom: := method(sender,
+		percentage := self scaleField intValue
+		
+		if(sender itemIdentifier == "ZoomIn") then(
+			percentage = percentage + zoomFactor
+		) elseif(sender itemIdentifier == "ZoomOut") then( 
+			percentage = percentage - zoomFactor
+		)
+		
+		self scaleField setIntValue:(percentage)
+		self scaleField sendAction:to:("scale:", self)
 	)
 )
 
