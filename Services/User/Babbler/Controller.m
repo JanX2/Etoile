@@ -1,14 +1,14 @@
 #import "Controller.h"
 #import "Player.h"
 #import "StreamPanel.h"
-#import <MultimediaKit/MPlayerInterface.h>
+#import <MultimediaKit/MPlayer.h>
 
 @implementation Controller
 /** Private **/
 - (void) newPlayer: (NSURL *) url
 {
   /** Setup backend **/
-  MPlayerInterface *mPlayer = [[MPlayerInterface alloc] init];
+  MPlayer *mPlayer = [[MPlayer alloc] init];
   [mPlayer setURL: url];
 
   NSRect frame = NSMakeRect(300, 500, 600, 100);
