@@ -93,6 +93,29 @@
     {
 //      NSLog(@"%@", element);
     }
+  else if ([element hasPrefix: @"img "])
+    {
+      NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString: @"'\""];
+      NSScanner *scanner = [NSScanner scannerWithString: element];
+      NSString *src = nil;
+      if ([scanner scanUpToString: @"src" intoString: NULL]) {
+        [scanner scanUpToCharactersFromSet: set intoString: NULL];
+        [scanner setScanLocation: [scanner scanLocation]+1];
+        if ([scanner scanUpToCharactersFromSet: set intoString: &src]) {
+          NSURL *url = [NSURL URLWithString: src];   
+          if ([url scheme]) {
+            NSData *data = [url resourceDataUsingCache: YES];
+            NSImage *image = AUTORELEASE([[NSImage alloc] initWithData: data]);
+            NSTextAttachment *at = AUTORELEASE([[NSTextAttachment alloc] init]);
+            [[at attachmentCell] setImage: image];
+            NSAttributedString *as = [NSAttributedString attributedStringWithAttachment: at];
+            [_result appendAttributedString: as];
+          } else {
+            NSLog(@"Relative URL. Need more information");
+          }
+        }
+      }
+    }
   else
     {
       // Digest tag to get value of attributes

@@ -45,9 +45,6 @@
   ContentTextView *contentTextView;
   NSSearchField *searchField;
   NSProgressIndicator *progressBar;
-#if 0
-  NSPanel* logPanel;
-#endif
   FeedList *feedList;
 
   PKPreferencesController *preferencesController;

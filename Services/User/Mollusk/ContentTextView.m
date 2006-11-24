@@ -99,6 +99,15 @@
   [self render];
 }
 
+- (id) initWithFrame: (NSRect) frame
+{
+  self = [super initWithFrame: frame];
+
+  [self setEditable: NO];
+
+  return self;
+}
+
 - (void) dealloc
 {
   DESTROY(item);

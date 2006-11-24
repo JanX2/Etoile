@@ -4,6 +4,8 @@ Mollusk Changelog
 
 Nov-23-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Display feed name if group is selected.
+	* Fix missing Info.plist.
+	* Support images (sort of).
 
 Nov-18-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Rename to Mollusk.
