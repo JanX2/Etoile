@@ -7,6 +7,10 @@ APP_NAME = CodeEditor
 CodeEditor_OBJC_FILES = \
 	ViewPreferencePane.m \
 	FontPreferencePane.m \
+	SyntaxHandler.m \
+	CommentHandler.m \
+	CodeParser.m \
+	SyntaxManager.m \
 	CETabView.m \
 	CEWindow.m \
 	CELineNumberView.m \
@@ -16,6 +20,9 @@ CodeEditor_OBJC_FILES = \
 
 CodeEditor_INCLUDE_DIRS += `onig-config --cflags`
 CodeEditor_GUI_LIBS += -lOgreKit -lPaneKit
+CodeEditor_RESOURCE_FILES = \
+	Syntax/*.plist
+
 CodeEditor_LANGUAGES = \
 	English
 

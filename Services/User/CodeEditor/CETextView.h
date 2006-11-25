@@ -31,6 +31,7 @@ extern NSString *const CETextViewFileChangedNotification;
 - (void) saveAs: (id) sender;
 - (void) saveTo: (id) sender;
 - (void) showFindPanel: (id) sender;
+- (void) highlightSyntax: (id) sender;
 
 @end
 

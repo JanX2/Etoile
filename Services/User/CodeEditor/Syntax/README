@@ -1,0 +1,4 @@
+Taken from Smultron and modified.
+The autocompleteWords is removed to reduce the use of memory
+because we are not going to support it anytime soon.
+

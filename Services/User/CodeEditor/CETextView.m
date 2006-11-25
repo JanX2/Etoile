@@ -1,5 +1,8 @@
 #import "CETextView.h"
 #import "CELineNumberView.h"
+#import "SyntaxManager.h"
+#import "CodeParser.h"
+#import "SyntaxHandler.h"
 #import "FontPreferencePane.h"
 #import "ViewPreferencePane.h"
 #import "GNUstep.h"
@@ -12,6 +15,20 @@ static int untitled_count = 0;
 @end
 
 @implementation CETextView
+
+- (void) highlightSyntax: (id) sender
+{
+  if (path) {
+    SyntaxHandler *handler = [[SyntaxManager syntaxManager] syntaxHandlerForFile: path];
+    NSLog(@"handler %@", handler);
+    CodeParser *parser = [[CodeParser alloc] initWithHandler: handler
+                                                      string: [self string]];
+    [handler setString: [self textStorage]];
+    [[self textStorage] beginEditing];
+    [parser parse];
+    [[self textStorage] endEditing];
+  }
+}
 
 - (void) showLineNumber: (id) sender
 {
