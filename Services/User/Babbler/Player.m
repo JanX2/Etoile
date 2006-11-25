@@ -102,6 +102,12 @@
   [mmPlayer setXWindow: contentView];
   [self resizeVideo: [mmPlayer size]];
   [volumeSlider setIntValue: [mmPlayer volumeInPercentage]];
+
+  [[NSNotificationCenter defaultCenter]
+                addObserver: self
+                selector: @selector(informationAvailable:)
+                name: MMPlayerInformationAvailableNotification
+                object: mmPlayer];
 }
 
 - (id <MMPlayer>) player
@@ -112,6 +118,12 @@
 - (XWindow *) window
 {
   return window;
+}
+
+/* Notification */
+- (void) informationAvailable: (NSNotification *) not
+{
+  [self resizeVideo: [mmPlayer size]];
 }
 
 @end

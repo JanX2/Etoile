@@ -2,6 +2,7 @@
 	
 	* Use MPlayer instead of MPlayerInterface.
 	* Use gorm for stream panel, main menu and player.
+	* Change window size only when movie information is ready.
 
 2006-11-19  Quentin Mathe <qmathe@club-internet.fr>
 
