@@ -84,6 +84,13 @@ PictureView := NSView newSubclassNamed:("PictureView") do(
 		return self
 	)
 	
+	setPictureProvider: := method(provider,
+		self _pictureProvider := provider
+		
+		// The picture has surely changed, so we refresh the view
+		self setNeedsDisplay:(true)
+	)
+	
 	drawRect: := method(rect,
 		p := self pictureProvider picture
 		//writeln("Draw picture: ", p)
@@ -98,6 +105,7 @@ PictureView := NSView newSubclassNamed:("PictureView") do(
 PictureDocument := NSDocument newSubclassNamed:("PictureDocument") do(
 	addVariableNamed:("picture")
 	addVariableNamed:("pictureView")
+	addVariableNamed:("scrollView")
 	addVariableNamed:("pictureSize")
 	//addVariableNamed:("toolbar")
 	addVariableNamed:("scaleField")
@@ -110,7 +118,7 @@ PictureDocument do(
 	init := method(
 		self = self super(init)
 		self _picture := nil
-		self _pictureSize := nil
+		self _pictureSize := NSMakeSize(0, 0)
 		self _pictureView := nil
 		//self _toolbar := nil
 		self _scaleField := nil
@@ -124,7 +132,7 @@ PictureDocument do(
 	
 	setPicture: := method(image,
 		self _picture := image 
-		//self _picture := _picture scaledImageToFitSize:(self pictureView frame size)
+
 		self _picture setScalesWhenResized:(true)
 		writeln("Document setPicture: ", _picture)
 		// We have to keep the original size of the image somewhere in case
@@ -153,14 +161,7 @@ PictureDocument do(
 		toolbar setDisplayMode:(NSToolbarDisplayModeIconAndLabel)
 		toolbar setDelegate:(self)
 		windowController window setToolbar:(toolbar)
-		
-		/*parentView := self pictureView superview
-		newView := PictureView alloc initWithFrame:(self pictureView frame)
-		newView setPictureProvider:(self)
-		parentView replaceSubview:with:(self pictureView, newView)
-		self setPictureView:(newView)*/
-		self pictureView setPictureProvider:(self)
-		
+
 		/* Now we can create the scroll view here since it doesn't work well with Gorm */
 		scrollView := NSScrollView alloc initWithFrame:(self pictureView frame)
 		scrollView setHasVerticalScroller:(true)
@@ -171,11 +172,13 @@ PictureDocument do(
 		self pictureView removeFromSuperview
 		scrollView setDocumentView:(self pictureView)
 		window setContentViewWithoutToolbar:(scrollView)
+		self setScrollView:(scrollView)
 		scrollView release
+		
+		self scaleToFit:(nil)
+		self pictureView setPictureProvider:(self)
 
 		writeln("Going to set ", self picture ?description, " to ", self pictureView ?description)
-		//ifNonNil(self picture, self pictureView setImage:(self picture))
-		//self pictureView setImage:(self picture)
 	)
 
 	windowNibName := method(
@@ -205,7 +208,7 @@ PictureDocument do(
 
 PictureDocument do(
 
-		toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar: := method(toolbar, itemIdentifier, inserted,
+	toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar: := method(toolbar, itemIdentifier, inserted,
 		toolbarItem := NSToolbarItem alloc initWithItemIdentifier:(itemIdentifier)
 		
 		label := itemIdentifier asMutable
@@ -249,14 +252,14 @@ PictureDocument do(
 		)
 		
 		return toolbarItem
-)
+	)
 	
 	toolbarAllowedItemIdentifiers: := method(toolbar,
-		return list("ZoomIn", "ZoomOut", "Scale", "RotateLeft", "RotateRight", "Crop", "Print", "LightTable", "FullScreen", "SlideShow")
+		return list("ZoomIn", "ZoomOut", "Scale", "RotateLeft", "RotateRight", "Crop", "LightTable", "FullScreen", "SlideShow", "NSToolbarSpaceItemIdentifier", "NSToolbarFlexibleSpaceItemIdentifier", "NSToolbarSeparatorItemIdentifier", "NSToolbarPrintItemIdentifier")
 	)
 	
 	toolbarDefaultItemIdentifiers: := method(toolbar,
-		return list("ZoomIn", "ZoomOut", "Scale", "RotateLeft", "Crop", "Print", "LightTable")
+		return list("ZoomIn", "ZoomOut", "Scale", "NSToolbarSeparatorItemIdentifier", "RotateLeft", "Crop", "NSToolbarSpaceItemIdentifier", "NSToolbarPrintItemIdentifier", "NSToolbarFlexibleSpaceItemIdentifier", "LightTable")
 	)
 	
 	scale: := method(sender,
@@ -268,9 +271,10 @@ PictureDocument do(
 			writeln("Size after scale: ", psize)
 		)
 		
-		self picture setSize:(psize)
-		self pictureView setFrameSize:(psize)
-		self pictureView setNeedsDisplay:(true)
+		self picture ifNonNil(
+			self picture setSize:(psize)
+			self pictureUpdated
+		)
 	)
 	
 	zoom: := method(sender,
@@ -285,7 +289,59 @@ PictureDocument do(
 		self scaleField setIntValue:(percentage)
 		self scaleField sendAction:to:("scale:", self)
 	)
-)
+	
+	scaleToFit: := method(sender,
+		p := self picture
+		
+		p ifNonNil(
+			psize := p scaledSizeToFitSize:(self scrollView contentSize)
+			scalePercent := psize /(self pictureSize) * 100
+			//writeln("Scale percent width and height: ", scalePercent width, scalePercent height)
+			
+			self scaleField setIntValue:(scalePercent width)
+			self picture setSize:(psize)
+			
+			self pictureUpdated
+		)
+	)
+	
+	scaleToCover: := method(sender,
+		p := self picture
+		
+		p ifNonNil(
+			psize := p scaledSizeToCoverSize:(self scrollView contentSize)
+			scalePercent := psize /(self pictureSize) * 100
+			
+			self scaleField setIntValue:(scalePercent width)
+			self picture setSize:(psize)
+			
+			self pictureUpdated
+		)
+	)
+	
+	scaleToFullSize: := method(sender,
+		// Scale to original size
+		self scaleField setIntValue:(100)
+		self scaleField sendAction:to:("scale:", self)
+	)
+	
+	showLightTable: := method(sender,
+		/*alert := NSAlert alertWithMessageText:defaultButton:alternateButton:otherButton:informativeTextWithFormat:("This feature is not yet implemented.", nil, nil, nil, "")
+		alert runModal*/
+		nil
+	)
+	
+	crop: := method(sender,
+		nil
+	)
+	
+	pictureUpdated := method(
+		self picture ifNonNil(
+			self pictureView setFrameSize:(self picture size)
+			self pictureView setNeedsDisplay:(true)
+		)
+	)
+) 
 
 e := try(
 ObjcBridge main
