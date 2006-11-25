@@ -23,18 +23,41 @@
     [self dealloc];
     return nil;
   }
+
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  [nc addObserver: self
+         selector: @selector(playStateChanged:)
+             name: @"MIStateUpdatedNotification"
+           object: self];
+  [nc addObserver: self
+         selector: @selector(playStateChanged:)
+             name: @"MIPlayerTerminatedNotification"
+           object: self];
+  [nc addObserver: self
+         selector: @selector(infoReady:)
+             name: @"MIInfoReadyNotification"
+           object: self];
+
+  firstTimePlay = YES;
+
   return self;
 }
 
 /** MMPlayer protocol **/
 - (void) play: (id) sender
 {
+  if (firstTimePlay == YES) {
+    [self loadInfoBeforePlayback: YES];
+  } else {
+    [self loadInfoBeforePlayback: NO];
+  }
   if (myState == kPaused) {
     // mplayer is paused then unpause it
     [self pause];
   } else {
     [self play];
   }
+  firstTimePlay = NO;
 }
 
 - (void) stop: (id) sender
@@ -73,9 +96,7 @@
 - (NSSize) size
 {
   if (myMplayerTask == nil) {
-    /* It is never played. Need to load the information */
-    NSLog(@"load info");
-    [self loadInfo];
+    return NSMakeSize(0, 0);
   } 
 
   NSDictionary *dict = [self info];
@@ -103,6 +124,41 @@
 - (unsigned int) volumeInPercentage
 {
   return myVolume;
+}
+
+/* Notification */
+- (void) playStateChanged: (NSNotification *) not
+{
+  NSString *name;
+  if ([[not name] isEqualToString: @"MIPlayerTerminatedNotification"]) {
+    name = @"MMPlayerStopNotification";
+  } else {
+    int status = [[[not userInfo] objectForKey: @"PlayerStatus"] intValue];
+    //NSLog(@"status %d", status);
+    switch (status) {
+      case kFinished:  // terminated by reaching end-of-file
+        break;
+      case kStopped:  // terminated by not reaching EOF
+        break;
+      case kPlaying:
+        break;
+      case kPaused:
+        break;
+      case kOpening:
+        break;
+      case kBuffering:
+        break;
+      case kIndexing:
+        break;
+    }
+  }
+}
+
+- (void) infoReady: (NSNotification *) not
+{
+  [[NSNotificationCenter defaultCenter]
+              postNotificationName: MMPlayerInformationAvailableNotification
+              object: self];
 }
 
 @end

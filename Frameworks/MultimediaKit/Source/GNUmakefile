@@ -8,7 +8,8 @@ MultimediaKit_Source_OBJC_FILES = \
 	MixerChannel.m \
 	Mixer.m \
 	MPlayer.m \
-	MPlayerInterface.m
+	MPlayerInterface.m \
+	MMPlayer.m 
 
 MultimediaKit_Source_INCLUDE_DIRS += -I..
 ADDITIONAL_CFLAGS +=

@@ -6,6 +6,7 @@
 {
   NSURL *url;
   NSSize size; /* Cache size */
+  BOOL firstTimePlay;
 }
 
 /** MMPlayer protocol **/

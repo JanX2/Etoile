@@ -1,6 +1,11 @@
 #import <AppKit/AppKit.h>
 #import <X11/Xlib.h>
 
+extern NSString *const MMPlayerStartPlayingNotification;
+extern NSString *const MMPlayerPausedNotification;
+extern NSString *const MMPlayerStopNotification;
+extern NSString *const MMPlayerInformationAvailableNotification;
+
 @protocol MMPlayer <NSObject>
 
 /* Play and pause. Applications are responsible to keep tracking
