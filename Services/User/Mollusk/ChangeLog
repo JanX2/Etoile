@@ -2,6 +2,9 @@
 Mollusk Changelog
 =============
 
+Nov-24-2006 Yen-Ju Chen <yjchenx at gmail>
+	* Use arrow key to switch between feed and article.
+
 Nov-23-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Display feed name if group is selected.
 	* Fix missing Info.plist.

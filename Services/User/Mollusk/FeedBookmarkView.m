@@ -2,7 +2,24 @@
 #import "FeedList.h"
 #import "Global.h"
 
+@implementation BKOutlineView (FeedBookmarkView)
+- (void) keyDown: (NSEvent *) event
+{
+  NSString *characters = [event characters];
+  if ([characters length]) {
+    if ([characters characterAtIndex: 0] == NSRightArrowFunctionKey) {
+      [[self window] makeFirstResponder: [self nextKeyView]];
+      return;
+    }
+  } 
+
+  [super keyDown: event];
+}
+
+@end
+
 @implementation FeedBookmarkView
+
 /** Private **/
 - (int) numberOfUnreadArticlesInFeed: (RSSFeed *) feed
 {

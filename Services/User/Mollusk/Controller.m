@@ -77,9 +77,7 @@ static Controller *sharedInstance;
 
 - (void)awakeFromNib
 {
-  /* This will be called multiple times because interfaces are loaded
-   * multiple times 
-   */
+  NSLog(@"awakeFromNib");
 }
 
 - (void)applicationWillFinishLaunching: (NSNotification *) not
@@ -143,15 +141,18 @@ static Controller *sharedInstance;
   [mainWindow setFrameAutosaveName: RSSReaderMainWindowFrameName];
 
   searchField = [mainWindow searchField];
+  [mainWindow makeFirstResponder: [feedBookmarkView outlineView]];
 
   /* Start build article view */
   [articleCollectionView beginEditing];
 
   [feedBookmarkView setDisplayProperties: [NSArray arrayWithObject: kBKBookmarkTitleProperty]];
   [[feedBookmarkView outlineView] setDelegate: self];
+  [[feedBookmarkView outlineView] setNextKeyView: [articleCollectionView tableView]];
   [feedBookmarkView setBookmarkStore: [feedList feedStore]];
 
   [[articleCollectionView tableView] setDelegate: self];
+  [[articleCollectionView tableView] setNextKeyView: [feedBookmarkView outlineView]];
   [articleCollectionView setDisplayProperties: [NSArray arrayWithObject: kArticleHeadlineProperty]];
   [articleCollectionView setSortingProperty: kArticleDateProperty reverse: YES];
   [articleCollectionView setCollection: [feedList articleCollection]];

@@ -9,7 +9,14 @@
       (key == NSNewlineCharacter))
   {
     [[self delegate] enterKeyDownInTableView: self];
+    return;
   } 
+  else if (key == NSLeftArrowFunctionKey)
+  {
+    [[self window] makeFirstResponder: [self nextKeyView]];
+    return;
+  } 
+
   [super keyDown: event];
 }
 @end
