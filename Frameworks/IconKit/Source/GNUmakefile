@@ -72,6 +72,7 @@ libIconKit_OBJC_FILES= \
 	IKIcon.m \
 	IKIconProvider.m \
 	IKApplicationIconProvider.m \
+	IKThumbnailProvider.m \
 	IKWorkspaceAdditions.m \
 	NSFileManager+IconKit.m \
 	NSString+MD5Hash.m
@@ -94,6 +95,7 @@ libIconKit_HEADERS = \
 	IKIconPositions.h \
 	IKIconProvider.h \
 	IKApplicationIconProvider.h \
+	IKThumbnailProvider.h \
 	IKWorkspaceAdditions.h \
 	NSFileManager+IconKit.h \
 	NSString+MD5Hash.h
@@ -109,6 +111,7 @@ libIconKit_HEADER_FILES = \
 	IKIconIdentifier.h \
 	IKIconPositions.h \
 	IKIconProvider.h \
+	IKThumbnailProvider.h \
 	IKApplicationIconProvider.h \
 	IKWorkspaceAdditions.h	
 endif
