@@ -23,6 +23,7 @@ Babbler_LANGUAGES = \
 
 Babbler_LOCALIZED_RESOURCE_FILES += \
         StreamPanel.gorm \
+	Player.gorm \
         MainMenu.gorm
 
 Babbler_MAIN_MODEL_FILE = MainMenu.gorm

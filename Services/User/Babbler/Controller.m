@@ -11,13 +11,8 @@
   MPlayer *mPlayer = [[MPlayer alloc] init];
   [mPlayer setURL: url];
 
-  NSRect frame = NSMakeRect(300, 500, 600, 100);
-  Player *player = [[Player alloc] initWithContentRect: frame
-      styleMask: NSTitledWindowMask|NSClosableWindowMask|NSResizableWindowMask
-		            backing: NSBackingStoreRetained
-			          defer: NO];
+  Player *player = [[Player alloc] init];
   [player setPlayer: mPlayer];
-  [player makeKeyAndOrderFront: self];
   [players addObject: player];
 }
 
@@ -79,7 +74,7 @@
   NSEnumerator *e = [players objectEnumerator];
   Player *p = nil;
   while ((p = [e nextObject])) {
-    [p performClose: self];
+    [[p window] performClose: self];
   }
 
   DESTROY(players);

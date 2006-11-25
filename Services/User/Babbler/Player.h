@@ -2,8 +2,10 @@
 #import <XWindowServerKit/XWindow.h>
 #import <MultimediaKit/MMPlayer.h>
 
-@interface Player: XWindow
+@interface Player: NSObject
 {
+  Display *dpy;
+  XWindow *window;
   NSButton *backwardButton;
   NSButton *forwardButton;
   NSButton *playButton;
@@ -18,9 +20,11 @@
 /* Retained */
 - (void) setPlayer: (id <MMPlayer>) player;
 - (id <MMPlayer>) player;
+- (XWindow *) window;
 
 /* Toggle play/pause */
-- (void) playAction: (id) sender;
+- (void) play: (id) sender;
+- (void) volume: (id) sender;
 
 
 @end
