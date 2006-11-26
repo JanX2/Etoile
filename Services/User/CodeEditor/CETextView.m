@@ -28,6 +28,7 @@ static int untitled_count = 0;
     [parser parse];
     [[self textStorage] endEditing];
     DESTROY(parser);
+    NSLog(@"Done");
   }
 }
 

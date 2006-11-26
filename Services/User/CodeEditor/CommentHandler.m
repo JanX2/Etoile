@@ -78,7 +78,6 @@
          
   if (_commentType == NoComment)
     {
-#if 1
       e = [stringToken objectEnumerator];
       while ((token = [e nextObject])) {
         NSRange r = [element rangeOfString: token];
@@ -106,52 +105,6 @@
           return;
         }
       }
-#else
-      NSRange r = [element rangeOfString: @"\""];
-      if (r.location != NSNotFound) 
-        {
-          /* Make sure it is not an escape */
-          if (r.location-1 > 0) {
-            if ([element characterAtIndex: r.location-1] == '\\') {
-              /* Escape */
-              return;
-            }
-          }
-          if ((_stringBegin) && (_stringSymbol == '\"'))
-            {
-              _stringBegin = NO;
-              _stringSymbol = 0;
-            }
-          else if (!_stringBegin)
-            {
-              _stringBegin = YES;
-              _stringSymbol = [element characterAtIndex: r.location];;
-            }
-          return;
-        }
-      r = [element rangeOfString: @"\'"];
-      if (r.location != NSNotFound) 
-        {
-          /* Make sure it is not an escape */
-          if (r.location-1 > 0) {
-            if ([element characterAtIndex: r.location-1] == '\\') {
-              /* Escape */
-              return;
-            }
-          }
-          if ((_stringBegin) && (_stringSymbol == '\''))
-            {
-              _stringBegin = NO;
-              _stringSymbol = 0;
-            }
-          else if (!_stringBegin)
-            {
-              _stringBegin = YES;
-              _stringSymbol = [element characterAtIndex: r.location];;
-            }
-          return;
-        }
-#endif
     }
 }
 
@@ -164,9 +117,6 @@
   self = [super init];
   _commentType = NoComment;
   _stringBegin = NO;
-#if 0
-  _stringSymbol = 0;
-#endif
   _symbols = [[NSMutableString alloc] init];
   return self;
 }

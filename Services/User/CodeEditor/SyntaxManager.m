@@ -16,49 +16,54 @@ static SyntaxManager *sharedInstance;
   NSDictionary *definition = [NSDictionary dictionaryWithContentsOfFile: path];
   SyntaxHandler *handler = [[SyntaxHandler alloc] init];
   NSString *s, *s1;
-  NSMutableArray *ma;
-  NSMutableDictionary *md;
+  id object;
 
   /* Single line comment */
-  ma = [[NSMutableArray alloc] init];
+  object = [[NSMutableArray alloc] init];
   s = [definition objectForKey: @"firstSingleLineComment"];
   if ([s length]) {
-    [ma addObject: s];
+    [object addObject: s];
   }
   s = [definition objectForKey: @"secondSingleLineComment"];
   if ([s length]) {
-    [ma addObject: s];
+    [object addObject: s];
   }
-  [handler setSingleLineCommentToken: AUTORELEASE([ma copy])];
-  DESTROY(ma);
+  [handler setSingleLineCommentToken: AUTORELEASE([object copy])];
+  DESTROY(object);
 
   /* Multiple line comment */
-  md = [[NSMutableDictionary alloc] init];
+  object = [[NSMutableDictionary alloc] init];
   s = [definition objectForKey: @"beginFirstMultiLineComment"];
   s1 = [definition objectForKey: @"endFirstMultiLineComment"];
   if ([s length]) {
-    [md setObject: s1 forKey: s];
+    [object setObject: s1 forKey: s];
   }
   s = [definition objectForKey: @"beginSecondMultiLineComment"];
   s1 = [definition objectForKey: @"endSecondMultiLineComment"];
   if ([s length]) {
-    [md setObject: s1 forKey: s];
+    [object setObject: s1 forKey: s];
   }
-  [handler setMultipleLinesCommentToken: AUTORELEASE([md copy])];
-  DESTROY(md);
+  [handler setMultipleLinesCommentToken: AUTORELEASE([object copy])];
+  DESTROY(object);
 
   /* String */
-  ma = [[NSMutableArray alloc] init];
+  object = [[NSMutableArray alloc] init];
   s = [definition objectForKey: @"firstString"];
   if ([s length]) {
-    [ma addObject: s];
+    [object addObject: s];
   }
   s = [definition objectForKey: @"secondString"];
   if ([s length]) {
-    [ma addObject: s];
+    [object addObject: s];
   }
-  [handler setStringToken: AUTORELEASE([ma copy])];
-  DESTROY(ma);
+  [handler setStringToken: AUTORELEASE([object copy])];
+  DESTROY(object);
+
+  /* Keywords */
+  object = [definition objectForKey: @"keywords"];
+  if ([object count]) {
+    [handler setKeywordToken: AUTORELEASE([object copy])];
+  }
 
   return AUTORELEASE(handler);
 }

@@ -49,6 +49,27 @@
       changeAttribute = YES;
       attr = stringAttr;
     }
+#if 1
+  else 
+    {
+      /* We try to match with symbol in front */
+      NSString *s = [_symbols stringByAppendingString: element];
+      NSEnumerator *e = [keywords objectEnumerator];
+      NSString *token;
+      NSRange r;
+      while ((token = [e nextObject])) {
+        r = [s rangeOfString: token];
+        if ((r.location != NSNotFound) &&
+            (r.length >= [element length])) /* Avoid match partial word */
+        {
+           int x = [element length]-r.length;
+           attributeRange = NSMakeRange(position+x, r.length);
+           changeAttribute = YES;
+           attr = keywordAttr;
+        }
+      }
+    }
+#else
   else if ( (*cstr > 0x40) && (*cstr < 0x58) ) /* Capital */
     {
       /* KnownType */
@@ -140,6 +161,7 @@
        changeAttribute = YES;
        attr = keywordAttr;
     }
+#endif
 
   position += len;
   [_symbols setString: @""];
@@ -170,9 +192,30 @@
 {
   NSRange attributeRange;
   NSDictionary *attr;
+  NSEnumerator *e, *e1;
+  NSString *token;
+  NSRange r;
+  id object;
 
   [super symbol: element];
 
+#if 1
+  e1 = [[NSArray arrayWithObjects: sCommentToken, [mCommentToken allKeys], [mCommentToken allValues], nil] objectEnumerator];
+  while ((object = [e1 nextObject])) {
+    e = [object objectEnumerator];
+    while ((token = [e nextObject])) {
+      r = [element rangeOfString: token];
+      if (r.location != NSNotFound) {
+        attr = commentAttr;
+//        attributeRange = NSMakeRange(position, [element length]);
+        attributeRange = r;
+        attributeRange.location += _startRange.location;
+        [_origin addAttributes: attr
+                         range: attributeRange];
+      }
+    }
+  }
+#else
   if (([element rangeOfString: @"/*"].location != NSNotFound) ||
       ([element rangeOfString: @"//"].location != NSNotFound) ||
       ([element rangeOfString: @"*/"].location != NSNotFound)) 
@@ -184,6 +227,7 @@
                        range: attributeRange];
     }
   else
+#endif
     {
       if (_commentType != NoComment)
         {
@@ -252,6 +296,11 @@
   DESTROY(normalAttr);
 
   [super dealloc];
+}
+
+- (void) setKeywordToken: (NSArray *) key
+{
+  ASSIGN(keywords, key);
 }
 
 @end

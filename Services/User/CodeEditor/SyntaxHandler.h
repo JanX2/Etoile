@@ -29,6 +29,7 @@
   NSMutableAttributedString *_origin;
   NSRange _startRange;
   unsigned int position;
+  NSArray *keywords;
   
   /* cache */
   NSDictionary *keywordAttr, *stringAttr, *commentAttr, *normalAttr;
@@ -36,6 +37,8 @@
 
 - (void) setString: (NSMutableAttributedString *) s; // all length by default
 - (void) setRange: (NSRange) range;
+
+- (void) setKeywordToken: (NSArray *) keywords;
 
 @end
 
