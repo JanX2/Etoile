@@ -1,6 +1,6 @@
 #include <Foundation/Foundation.h>
 #include <AppKit/AppKit.h>
-#include "GNUstepGUI/GSDrawFunctions.h"
+#include "GNUstepGUI/GSTheme.h"
 #include "GSDrawFunctions.h"
 
 @interface NSTableView (theme) // declare some private methods used by gnustep..

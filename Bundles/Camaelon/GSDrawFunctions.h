@@ -3,7 +3,7 @@
 
 #include <AppKit/AppKit.h>
 #include <Foundation/Foundation.h>
-#include <GNUstepGUI/GSDrawFunctions.h>
+#include <GNUstepGUI/GSTheme.h>
 
 #include "NSBezierPath+round.h"
 #include "GraphicToolbox.h"
@@ -14,9 +14,9 @@
 #include "CLBoxCompositor.h"
 #include "NSColor.h"
 
-#define THEME [GSDrawFunctions theme]
+#define THEME [GSTheme theme]
 
-@interface GSDrawFunctions (theme)
+@interface GSTheme (theme)
 - (NSRect) drawGrayBezelRound: (NSRect)border : (NSRect)clip;
 - (NSRect) drawGrayBezel: (NSRect)border : (NSRect)clip;
 - (NSRect) drawGroove: (NSRect)border : (NSRect)clip;

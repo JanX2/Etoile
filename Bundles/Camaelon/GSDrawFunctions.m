@@ -1,6 +1,6 @@
 #include "GSDrawFunctions.h"
 
-@implementation GSDrawFunctions (theme)
+@implementation GSTheme (theme)
 
 /*
 + (NSRect) drawButton: (NSRect)border : (NSRect)clip
@@ -193,15 +193,17 @@ static CLCompositor* myBrowserHeader;
 {
         NSAffineTransform *transform;
 	NSDictionary* shader;
+	NSAffineTransformStruct matrix;
+
 
 	transform=[[NSAffineTransform alloc] init];
-	transform->matrix.m11=border.size.width;
-	transform->matrix.m12=0.0;
-	transform->matrix.m21=0.0;
-	transform->matrix.m22=border.size.height;
-	transform->matrix.tX=border.origin.x;
-	transform->matrix.tY=border.origin.y;
-
+	matrix.m11=border.size.width;
+	matrix.m12=0.0;
+	matrix.m21=0.0;
+	matrix.m22=border.size.height;
+	matrix.tX=border.origin.x;
+	matrix.tY=border.origin.y;
+	[transform setTransformStruct:matrix];
 	shader = [[NSDictionary alloc] initWithObjectsAndKeys:
 			[NSNumber numberWithInt: 1], @"ShadingType",
 			[NSArray arrayWithObjects:

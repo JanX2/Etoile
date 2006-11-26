@@ -1,3 +1,13 @@
+2006-11-25 Nicolas Roard <nicolas@roard.com>
+
+	* GSDrawFunctions.h:
+	* GSDrawFunctions.m:
+	* CamaelonDrawFunctions.h:
+	* CamaelonDrawFunctions.m:
+	* NSTableView.m:
+	Patched to compile (and work) with current gnustep svn. 
+	Based on a patch from Matt Rice <ratmice@gmail.com>
+	 
 2006-09-12 Quentin Mathe <qmathe@club-internet.fr>
 
 	* NSBrowserCell.m (-highlightColorInView:) 

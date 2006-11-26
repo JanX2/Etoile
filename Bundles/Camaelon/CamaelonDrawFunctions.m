@@ -76,7 +76,7 @@
 }
 - (NSRect) drawGroove: (NSRect)border : (NSRect)clip
 { 
-//  	[GSDrawFunctions drawBox: border on: self];
+//  	[GSTheme drawBox: border on: self];
 	NSBezierPath* path = [NSBezierPath bezierPath];
 	NSBezierPath* path2 = [NSBezierPath bezierPath];
 	NSRect r = NSMakeRect (border.origin.x + 1, border.origin.y +3, border.size.width -4, border.size.height -4);
@@ -191,15 +191,17 @@ static CLCompositor* myBrowserHeader;
 {
         NSAffineTransform *transform;
 	NSDictionary* shader;
+	NSAffineTransformStruct matrix;
+
 
 	transform=[[NSAffineTransform alloc] init];
-	transform->matrix.m11=border.size.width;
-	transform->matrix.m12=0.0;
-	transform->matrix.m21=0.0;
-	transform->matrix.m22=border.size.height;
-	transform->matrix.tX=border.origin.x;
-	transform->matrix.tY=border.origin.y;
-
+	matrix.m11=border.size.width;
+	matrix.m12=0.0;
+	matrix.m21=0.0;
+	matrix.m22=border.size.height;
+	matrix.tX=border.origin.x;
+	matrix.tY=border.origin.y;
+	[transform setTransformStruct:matrix];
 	shader = [[NSDictionary alloc] initWithObjectsAndKeys:
 			[NSNumber numberWithInt: 1], @"ShadingType",
 			[NSArray arrayWithObjects:
@@ -253,7 +255,7 @@ static CLCompositor* myBrowserHeader;
 
 	NSData* gradient = [NSData dataWithBytesNoCopy: data length: datasize];
 	NSArray* size = [NSArray arrayWithObjects: [NSNumber numberWithInt: 2], [NSNumber numberWithInt: 1], nil];
-	[GSDrawFunctions drawGradient: gradient withSize: size border: frame];
+	[GSTheme drawGradient: gradient withSize: size border: frame];
 	free (data);
 }
 
@@ -273,7 +275,7 @@ static CLCompositor* myBrowserHeader;
 
 	NSData* gradient = [NSData dataWithBytesNoCopy: data length: datasize];
 	NSArray* size = [NSArray arrayWithObjects: [NSNumber numberWithInt: 1], [NSNumber numberWithInt: 2], nil];
-	[GSDrawFunctions drawGradient: gradient withSize: size border: frame];
+	[GSTheme drawGradient: gradient withSize: size border: frame];
 	free (data);
 }
 
@@ -343,7 +345,7 @@ static CLCompositor* myBrowserHeader;
 
 	NSData* gradient = [NSData dataWithBytesNoCopy: data length: datasize];
 	NSArray* size = [NSArray arrayWithObjects: [NSNumber numberWithInt: 2], [NSNumber numberWithInt: 2], nil];
-	[GSDrawFunctions drawGradient: gradient withSize: size border: frame];
+	[GSTheme drawGradient: gradient withSize: size border: frame];
 	free (data);
 }
 
@@ -359,7 +361,7 @@ static CLCompositor* myBrowserHeader;
 	NSGraphicsContext *ctxt = GSCurrentContext();
 	//DPSgsave (ctxt);
 	//[path addClip];
-	[GSDrawFunctions drawVerticalGradient: start to: end frame: border];
+	[GSTheme drawVerticalGradient: start to: end frame: border];
 	//DPSgrestore (ctxt);
 	[[NSColor blackColor] set];
 	[path setLineWidth: 1.5];
@@ -386,7 +388,7 @@ static CLCompositor* myBrowserHeader;
 	NSColor* start = [NSColor colorWithCalibratedRed: 0.8 green: 0.8 blue: 0.8 alpha: 1.0];
 	NSColor* end   = [NSColor colorWithCalibratedRed: 1.0 green: 1.0 blue: 1.0 alpha: 1.0];
 
-	[GSDrawFunctions drawHorizontalGradient: end to: start frame: border];
+	[GSTheme drawHorizontalGradient: end to: start frame: border];
 
 	[[NSColor blackColor] set];
 	[path setLineWidth: 1.5];

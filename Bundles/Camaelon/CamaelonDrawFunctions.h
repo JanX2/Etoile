@@ -5,7 +5,7 @@
 #include <Foundation/Foundation.h>
 #include "GSDrawFunctions.h"
 
-@interface CamaelonDrawFunctions : GSDrawFunctions
+@interface CamaelonDrawFunctions : GSTheme 
 @end
 
 #endif 
