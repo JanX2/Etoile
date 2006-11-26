@@ -80,15 +80,22 @@
     {
       e = [stringToken objectEnumerator];
       while ((token = [e nextObject])) {
-        NSRange r = [element rangeOfString: token];
-        if (r.location != NSNotFound) 
+        /* Because all symbol is put into a single element.
+         * There is a good change that two string symbol
+         * is in single element. We need to walk through it one by one */
+        NSString *substring = element;
+        NSRange r = NSMakeRange(0, 0);;
+        do {
+          substring = [substring substringFromIndex: NSMaxRange(r)];
+          r = [substring rangeOfString: token];
+          if (r.location != NSNotFound) 
           {
             /* Make sure it is not an escape */
             x = r.location-[token length];
             if (x > 0) {
-              if ([element characterAtIndex: x] == '\\') {
+              if ([substring characterAtIndex: x] == '\\') {
                 /* Escape */
-                return;
+                continue;
               }
             }
             if ((_stringBegin == YES) && 
@@ -97,13 +104,14 @@
               _stringBegin = NO;
               ASSIGN(_stringSymbol, token);
             }
-          else if (_stringBegin == NO)
+            else if (_stringBegin == NO)
             {
               _stringBegin = YES;
               ASSIGN(_stringSymbol, token);
             }
-          return;
-        }
+            continue;
+          }
+        } while ((r.location != NSNotFound) && (0 < [substring length]));
       }
     }
 }
