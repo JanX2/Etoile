@@ -31,8 +31,19 @@
 {
   CodeCommentType _commentType;
   BOOL _stringBegin;
-  unichar _preChar;
+  NSMutableString *_symbols;
   unichar _stringSymbol;
+  NSString *_commentSymbol;
+
+  /* Token */
+  NSArray *sCommentToken;
+  NSDictionary *mCommentToken;
+  NSArray *stringToken;
 }
+
+/* Set symbol */
+- (void) setSingleLineCommentToken: (NSArray *) array;
+- (void) setMultipleLinesCommentToken: (NSDictionary *) dict; /* Key is the start, object is the value */
+- (void) setStringToken: (NSArray *) array;
 @end
 

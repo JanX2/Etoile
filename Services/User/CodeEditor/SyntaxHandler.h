@@ -36,5 +36,6 @@
 
 - (void) setString: (NSMutableAttributedString *) s; // all length by default
 - (void) setRange: (NSRange) range;
+
 @end
 

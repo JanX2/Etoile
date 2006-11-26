@@ -35,13 +35,8 @@ typedef enum _CodeCommentType {
 - (void) string: (NSString *) element;
 - (void) number: (NSString *) element;
 - (void) spaceAndNewLine: (unichar) element;
-- (void) symbol: (unichar) element;
-- (void) invisible: (unichar) element;
-/*
-- (void) spaceAndNewLine: (NSString *) element;
 - (void) symbol: (NSString *) element;
-- (void) invisible: (NSString *) element;
-*/
+- (void) invisible: (unichar) element;
 
 @end
 

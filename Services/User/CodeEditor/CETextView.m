@@ -27,6 +27,7 @@ static int untitled_count = 0;
     [[self textStorage] beginEditing];
     [parser parse];
     [[self textStorage] endEditing];
+    DESTROY(parser);
   }
 }
 

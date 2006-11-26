@@ -1,4 +1,5 @@
 #import "SyntaxManager.h"
+#import "SyntaxHandler.h"
 #import "GNUstep.h"
 
 static SyntaxManager *sharedInstance;
@@ -6,13 +7,60 @@ static SyntaxManager *sharedInstance;
 @implementation SyntaxManager
 
 /* Private */
-- (SyntaxHandler *) syntaxHandler: (NSString *) definition
+- (SyntaxHandler *) syntaxHandler: (NSString *) def
 {
-  NSLog(@"definition %@", definition);
-  NSString *path = [[NSBundle mainBundle] pathForResource: definition
+  NSLog(@"definition %@", def);
+  NSString *path = [[NSBundle mainBundle] pathForResource: def
                                               ofType: @"plist"];
   NSLog(@"%@", path);
-  return [[SyntaxHandler alloc] init];
+  NSDictionary *definition = [NSDictionary dictionaryWithContentsOfFile: path];
+  SyntaxHandler *handler = [[SyntaxHandler alloc] init];
+  NSString *s, *s1;
+  NSMutableArray *ma;
+  NSMutableDictionary *md;
+
+  /* Single line comment */
+  ma = [[NSMutableArray alloc] init];
+  s = [definition objectForKey: @"firstSingleLineComment"];
+  if ([s length]) {
+    [ma addObject: s];
+  }
+  s = [definition objectForKey: @"secondSingleLineComment"];
+  if ([s length]) {
+    [ma addObject: s];
+  }
+  [handler setSingleLineCommentToken: AUTORELEASE([ma copy])];
+  DESTROY(ma);
+
+  /* Multiple line comment */
+  md = [[NSMutableDictionary alloc] init];
+  s = [definition objectForKey: @"beginFirstMultiLineComment"];
+  s1 = [definition objectForKey: @"endFirstMultiLineComment"];
+  if ([s length]) {
+    [md setObject: s1 forKey: s];
+  }
+  s = [definition objectForKey: @"beginSecondMultiLineComment"];
+  s1 = [definition objectForKey: @"endSecondMultiLineComment"];
+  if ([s length]) {
+    [md setObject: s1 forKey: s];
+  }
+  [handler setMultipleLinesCommentToken: AUTORELEASE([md copy])];
+  DESTROY(md);
+
+  /* String */
+  ma = [[NSMutableArray alloc] init];
+  s = [definition objectForKey: @"firstString"];
+  if ([s length]) {
+    [ma addObject: s];
+  }
+  s = [definition objectForKey: @"secondString"];
+  if ([s length]) {
+    [ma addObject: s];
+  }
+  [handler setStringToken: AUTORELEASE([ma copy])];
+  DESTROY(ma);
+
+  return AUTORELEASE(handler);
 }
 /* End of private */
 

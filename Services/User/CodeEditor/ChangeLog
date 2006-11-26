@@ -1,3 +1,7 @@
+2006-11-25 Yen-Ju Chen <yjchenx at gmail>
+
+	* Use syntax definition for comment.
+
 2006-11-24 Yen-Ju Chen <yjchenx at gmail>
 
 	* Add syntax highlighting from CodeEditor which still works.

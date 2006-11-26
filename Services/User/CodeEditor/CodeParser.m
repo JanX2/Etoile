@@ -127,14 +127,8 @@ CodeType codeType(unichar *ch)
             }
           else if (startType == SymbolCodeType)
             {
-              unsigned int j, jlen = end-start/*[out length]*/;
-              for (j = 0; j < jlen; j++)
-                {
-                  //[_handler symbol: [out substringWithRange: NSMakeRange(j, 1)]];
-                  //(*impSymbol)(_handler, selSymbol, [out substringWithRange: NSMakeRange(j, 1)]);
-                  //(*impSymbol)(_handler, selSymbol, _uchar[start+j]);
-                  [_handler symbol: _uchar[start+j]];
-                }
+              out = [_string substringWithRange: NSMakeRange(start, end-start)];
+              [_handler symbol: out];
             }
           else if (startType == InvisibleCodeType)
             {

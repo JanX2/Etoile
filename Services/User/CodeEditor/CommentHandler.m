@@ -21,7 +21,8 @@
 */
 
 #import "CommentHandler.h"
-#import <Foundation/Foundation.h>
+#import "GNUstep.h"
+#import <AppKit/AppKit.h>
 
 @implementation CommentHandler
 
@@ -37,33 +38,70 @@
 {
   if (_commentType == SingleLineComment)
     {
-      if ((element == 0x0A) || (element == 0x0D))
+      if ((element == NSNewlineCharacter) || 
+          (element == NSCarriageReturnCharacter))
         {
           _commentType = NoComment;
         }
     }
 }
 
-- (void) symbol: (unichar) element 
+- (void) symbol: (NSString *) element 
 {
-  if (_preChar == '/')
-    {
-      if (element == '*')
-        _commentType = MultipleLineComment;
-      else if (element == '/')
-        _commentType = SingleLineComment;
-         
+  /* Try single comment */
+  NSEnumerator *e;
+  NSString *token;
+#if 1
+  e = [sCommentToken objectEnumerator];
+  while ((token = [e nextObject])) {
+    if ([element rangeOfString: token].location != NSNotFound) {
+      _commentType = SingleLineComment;
     }
-  else if ((element == '/') && (_preChar == '*'))
+  }
+
+  e = [[mCommentToken allKeys] objectEnumerator];
+  while ((token = [e nextObject])) {
+    if ([element rangeOfString: token].location != NSNotFound) {
+      _commentType = MultipleLineComment;
+      ASSIGN(_commentSymbol, token);
+    }
+  }
+
+  if (_commentSymbol) {
+    token = [mCommentToken objectForKey: _commentSymbol];
+    if ([element rangeOfString: token].location != NSNotFound) {
+      _commentType = NoComment;
+      DESTROY(_commentSymbol);
+    }
+  }
+#else
+  if ([element rangeOfString: @"/*"].location != NSNotFound) 
+    {
+      _commentType = MultipleLineComment;
+    }
+  else if ([element rangeOfString: @"//"].location != NSNotFound) 
+    {
+      _commentType = SingleLineComment;
+    }
+  else if ([element rangeOfString: @"*/"].location != NSNotFound) 
     {
       _commentType = NoComment;
     }
-
+#endif
+         
   if (_commentType == NoComment)
     {
-      if ((element == '\"') && (_preChar != '\\'))
+      NSRange r = [element rangeOfString: @"\""];
+      if (r.location != NSNotFound) 
         {
-          if ((_stringBegin) && (_stringSymbol == '\"')) 
+          /* Make sure it is not an escape */
+          if (r.location-1 > 0) {
+            if ([element characterAtIndex: r.location-1] == '\\') {
+              /* Escape */
+              return;
+            }
+          }
+          if ((_stringBegin) && (_stringSymbol == '\"'))
             {
               _stringBegin = NO;
               _stringSymbol = 0;
@@ -71,21 +109,31 @@
           else if (!_stringBegin)
             {
               _stringBegin = YES;
-              _stringSymbol = element;
+              _stringSymbol = [element characterAtIndex: r.location];;
             }
+          return;
         }
-      else if ((element == '\'') && (_preChar != '\\'))
+      r = [element rangeOfString: @"\'"];
+      if (r.location != NSNotFound) 
         {
-          if ((_stringBegin) && (_stringSymbol == '\''))  
+          /* Make sure it is not an escape */
+          if (r.location-1 > 0) {
+            if ([element characterAtIndex: r.location-1] == '\\') {
+              /* Escape */
+              return;
+            }
+          }
+          if ((_stringBegin) && (_stringSymbol == '\''))
             {
               _stringBegin = NO;
               _stringSymbol = 0;
             }
-          else if (!_stringBegin)  
+          else if (!_stringBegin)
             {
               _stringBegin = YES;
-              _stringSymbol = element;
+              _stringSymbol = [element characterAtIndex: r.location];;
             }
+          return;
         }
     }
 }
@@ -100,7 +148,33 @@
   _commentType = NoComment;
   _stringBegin = NO;
   _stringSymbol = 0;
+  _symbols = [[NSMutableString alloc] init];
   return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(_symbols);
+  DESTROY(_commentSymbol);
+  [super dealloc];
+}
+
+- (void) setSingleLineCommentToken: (NSArray *) array
+{
+  ASSIGN(sCommentToken, array);
+  NSLog(@"sComment %@", array);
+}
+
+- (void) setMultipleLinesCommentToken: (NSDictionary *) dict
+{
+  ASSIGN(mCommentToken, dict);
+  NSLog(@"mComment %@", dict);
+}
+
+- (void) setStringToken: (NSArray *) array
+{
+  ASSIGN(stringToken, array);
+  NSLog(@"string %@", array);
 }
 
 @end

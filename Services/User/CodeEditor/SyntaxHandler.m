@@ -79,33 +79,27 @@
   else if (len < 10)
     {
       /* Preprocessor */
-      if (_preChar == '#')
+      if (
+           STRCMP("#import") || STRCMP("#include") || STRCMP("#ifdef") ||
+           STRCMP("#ifndef") || /*STRCMP("#if defined") ||*/
+           STRCMP("#else") ||
+           STRCMP("#endif") || STRCMP("#pragma") || STRCMP("#define") ||
+           STRCMP("#warning") || STRCMP("#error")
+         )
         {
-          if (
-               STRCMP("import") || STRCMP("include") || STRCMP("ifdef") ||
-               STRCMP("ifndef") || /*STRCMP("if defined") ||*/
-               STRCMP("else") ||
-               STRCMP("endif") || STRCMP("pragma") || STRCMP("define") ||
-               STRCMP("warning") || STRCMP("error")
-             )
-           {
-             attributeRange = NSMakeRange(position-1, len+1);
-             changeAttribute = YES;
-             attr = keywordAttr;
-           }
+           attributeRange = NSMakeRange(position-1, len+1);
+           changeAttribute = YES;
+           attr = keywordAttr;
         }
-      else if (_preChar == '@')
-        {
-          if (
-               STRCMP("class") || STRCMP("selector") ||
-               STRCMP("interface") ||
-               STRCMP("end") || STRCMP("encode") ||
-               STRCMP("private") || STRCMP("protected")
+      else if (
+               STRCMP("@class") || STRCMP("@selector") ||
+               STRCMP("@interface") ||
+               STRCMP("@end") || STRCMP("@encode") ||
+               STRCMP("@private") || STRCMP("@protected")
              )
-           {
-             changeAttribute = YES;
-             attr = keywordAttr;
-           }
+        {
+           changeAttribute = YES;
+           attr = keywordAttr;
         }
       /* Keyword */
       else if ( 
@@ -141,17 +135,14 @@
           attr = keywordAttr;
         }
     }
-  else if ((len == 14) && (_preChar == '@'))
+  else if ( STRCMP("@implementation") )
     {
-      if ( STRCMP("implementation") )
-        {
-           changeAttribute = YES;
-           attr = keywordAttr;
-        }
+       changeAttribute = YES;
+       attr = keywordAttr;
     }
 
   position += len;
-  _preChar = 0;
+  [_symbols setString: @""];
 
   if (changeAttribute)
     {
@@ -165,29 +156,29 @@
 {
   [super number: element];
   position += [element length];
-  _preChar = 0;
+  [_symbols setString: @""];
 }
 
 - (void) spaceAndNewLine: (unichar) element 
 {
   [super spaceAndNewLine: element];
   position++;
-  _preChar = element;
+  [_symbols appendString: [NSString stringWithCharacters: &element length: 1]];
 }
 
-- (void) symbol: (unichar) element 
+- (void) symbol: (NSString *) element 
 {
   NSRange attributeRange;
   NSDictionary *attr;
 
   [super symbol: element];
 
-  if ( ((_preChar == '/') && ((element == '*') || (element == '/'))) ||
-       ((_preChar == '*') && (element == '/'))
-     )
+  if (([element rangeOfString: @"/*"].location != NSNotFound) ||
+      ([element rangeOfString: @"//"].location != NSNotFound) ||
+      ([element rangeOfString: @"*/"].location != NSNotFound)) 
     {
       attr = commentAttr;
-      attributeRange = NSMakeRange(position-1, 2);
+      attributeRange = NSMakeRange(position, [element length]);
       attributeRange.location += _startRange.location;
       [_origin addAttributes: attr
                        range: attributeRange];
@@ -203,15 +194,15 @@
                            range: attributeRange];
         }
     }
-  position++;
-  _preChar = element;
+  position += [element length];
+  [_symbols appendString: element];
 }
 
 - (void) invisible: (unichar) element
 {
   [super invisible: element];
   position ++;
-  _preChar = element;
+  [_symbols appendString: [NSString stringWithCharacters: &element length: 1]];
 }
 
 - (void) setString: (NSMutableAttributedString *) string
@@ -238,14 +229,6 @@
   commentColor = [NSColor grayColor];
   stringColor = [NSColor blueColor];
   normalColor = [NSColor blackColor];
-#if 0
-  preprocessorColor = [_rulesetManager colorForType: @"Preprocessor"];
-  keywordsColor = [_rulesetManager colorForType: @"Keywords"];
-  commentsColor = [_rulesetManager colorForType: @"Comments"];
-  stringsColor = [_rulesetManager colorForType: @"Strings"];
-  knowntypesColor = [_rulesetManager colorForType: @"KnownTypes"];
-  normalColor = [_rulesetManager colorForType: @"Normal"];
-#endif
 
 #define MAKE_ATTRIBUTES(color) \
 	[[NSDictionary alloc] initWithObjectsAndKeys: \
