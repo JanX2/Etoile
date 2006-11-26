@@ -49,7 +49,6 @@
       changeAttribute = YES;
       attr = stringAttr;
     }
-#if 1
   else 
     {
       /* We try to match with symbol in front */
@@ -69,99 +68,6 @@
         }
       }
     }
-#else
-  else if ( (*cstr > 0x40) && (*cstr < 0x58) ) /* Capital */
-    {
-      /* KnownType */
-      if (  STRCMP("SEL") || STRCMP("BOOL") ||
-            STRCMP("Class") || STRCMP("Nil") || STRCMP("IBAction") ||
-            STRCMP("IBOutlet")
-         )
-
-       {
-         changeAttribute = YES;
-         attr = keywordAttr;
-       }
-     /* Strings */
-     else if ( 
-               STRCMP("FALSE") || STRCMP("NO") || STRCMP("TRUE") ||
-               STRCMP("YES")
-             )
-       {
-         changeAttribute = YES;
-         attr = keywordAttr;
-       }
-     else if ( (*cstr == 'N') && (*(cstr+1) == 'S') )
-       {
-         changeAttribute = YES;
-         attr = keywordAttr;
-       }
-    }
-  else if (len < 10)
-    {
-      /* Preprocessor */
-      if (
-           STRCMP("#import") || STRCMP("#include") || STRCMP("#ifdef") ||
-           STRCMP("#ifndef") || /*STRCMP("#if defined") ||*/
-           STRCMP("#else") ||
-           STRCMP("#endif") || STRCMP("#pragma") || STRCMP("#define") ||
-           STRCMP("#warning") || STRCMP("#error")
-         )
-        {
-           attributeRange = NSMakeRange(position-1, len+1);
-           changeAttribute = YES;
-           attr = keywordAttr;
-        }
-      else if (
-               STRCMP("@class") || STRCMP("@selector") ||
-               STRCMP("@interface") ||
-               STRCMP("@end") || STRCMP("@encode") ||
-               STRCMP("@private") || STRCMP("@protected")
-             )
-        {
-           changeAttribute = YES;
-           attr = keywordAttr;
-        }
-      /* Keyword */
-      else if ( 
-           STRCMP("break") || STRCMP("extern") || STRCMP("continue") || 
-           STRCMP("_cmd") || STRCMP("self") || STRCMP("super") || 
-           STRCMP("return") || STRCMP("sizeof") || STRCMP("break") || 
-           STRCMP("case") || STRCMP("default") || STRCMP("goto") || 
-           STRCMP("switch") || STRCMP("if") || STRCMP("else") ||
-           STRCMP("do") || STRCMP("shile") || STRCMP("for") || 
-           STRCMP("while")
-         )
-       {
-          changeAttribute = YES;
-          attr = keywordAttr;
-        }
-      /* KnownType */
-      else if ( 
-                STRCMP("int") || STRCMP("long") || STRCMP("short") ||
-                STRCMP("char") || STRCMP("float") || STRCMP("double") ||
-                STRCMP("void") || STRCMP("union") || STRCMP("unichar") ||
-                STRCMP("const") || STRCMP("signed") || STRCMP("unsigned") ||
-                STRCMP("static") || STRCMP("volatile") ||
-                STRCMP("enum") || STRCMP("id")
-               )
-        {
-          changeAttribute = YES;
-          attr = keywordAttr;
-        }
-      /* Strings */
-      else if ( STRCMP("nil") )
-        {
-          changeAttribute = YES;
-          attr = keywordAttr;
-        }
-    }
-  else if ( STRCMP("@implementation") )
-    {
-       changeAttribute = YES;
-       attr = keywordAttr;
-    }
-#endif
 
   position += len;
   [_symbols setString: @""];
@@ -199,26 +105,7 @@
 
   [super symbol: element];
 
-#if 1
-  e1 = [[NSArray arrayWithObjects: sCommentToken, [mCommentToken allKeys], [mCommentToken allValues], nil] objectEnumerator];
-  while ((object = [e1 nextObject])) {
-    e = [object objectEnumerator];
-    while ((token = [e nextObject])) {
-      r = [element rangeOfString: token];
-      if (r.location != NSNotFound) {
-        attr = commentAttr;
-//        attributeRange = NSMakeRange(position, [element length]);
-        attributeRange = r;
-        attributeRange.location += _startRange.location;
-        [_origin addAttributes: attr
-                         range: attributeRange];
-      }
-    }
-  }
-#else
-  if (([element rangeOfString: @"/*"].location != NSNotFound) ||
-      ([element rangeOfString: @"//"].location != NSNotFound) ||
-      ([element rangeOfString: @"*/"].location != NSNotFound)) 
+  if (_commentType != NoComment)
     {
       attr = commentAttr;
       attributeRange = NSMakeRange(position, [element length]);
@@ -226,18 +113,24 @@
       [_origin addAttributes: attr
                        range: attributeRange];
     }
-  else
-#endif
+  else 
     {
-      if (_commentType != NoComment)
-        {
+      /* We compensate the end of multiple line comment 
+       * before after [super symbol: element], the _commentType 
+       * become NoComment */
+      e = [[mCommentToken allValues] objectEnumerator];
+      while ((token = [e nextObject])) {
+        r = [element rangeOfString: token];
+        if (r.location != NSNotFound) {
           attr = commentAttr;
-          attributeRange = NSMakeRange(position, 1);
+          attributeRange = NSMakeRange(position+r.location, [element length]-r.location);
           attributeRange.location += _startRange.location;
           [_origin addAttributes: attr
                            range: attributeRange];
         }
+      }
     }
+
   position += [element length];
   [_symbols appendString: element];
 }
