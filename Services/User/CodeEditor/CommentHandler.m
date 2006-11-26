@@ -51,7 +51,8 @@
   /* Try single comment */
   NSEnumerator *e;
   NSString *token;
-#if 1
+  int x;
+
   e = [sCommentToken objectEnumerator];
   while ((token = [e nextObject])) {
     if ([element rangeOfString: token].location != NSNotFound) {
@@ -74,23 +75,38 @@
       DESTROY(_commentSymbol);
     }
   }
-#else
-  if ([element rangeOfString: @"/*"].location != NSNotFound) 
-    {
-      _commentType = MultipleLineComment;
-    }
-  else if ([element rangeOfString: @"//"].location != NSNotFound) 
-    {
-      _commentType = SingleLineComment;
-    }
-  else if ([element rangeOfString: @"*/"].location != NSNotFound) 
-    {
-      _commentType = NoComment;
-    }
-#endif
          
   if (_commentType == NoComment)
     {
+#if 1
+      e = [stringToken objectEnumerator];
+      while ((token = [e nextObject])) {
+        NSRange r = [element rangeOfString: token];
+        if (r.location != NSNotFound) 
+          {
+            /* Make sure it is not an escape */
+            x = r.location-[token length];
+            if (x > 0) {
+              if ([element characterAtIndex: x] == '\\') {
+                /* Escape */
+                return;
+              }
+            }
+            if ((_stringBegin == YES) && 
+                [_stringSymbol isEqualToString: token]) 
+            {
+              _stringBegin = NO;
+              ASSIGN(_stringSymbol, token);
+            }
+          else if (_stringBegin == NO)
+            {
+              _stringBegin = YES;
+              ASSIGN(_stringSymbol, token);
+            }
+          return;
+        }
+      }
+#else
       NSRange r = [element rangeOfString: @"\""];
       if (r.location != NSNotFound) 
         {
@@ -135,6 +151,7 @@
             }
           return;
         }
+#endif
     }
 }
 
@@ -147,7 +164,9 @@
   self = [super init];
   _commentType = NoComment;
   _stringBegin = NO;
+#if 0
   _stringSymbol = 0;
+#endif
   _symbols = [[NSMutableString alloc] init];
   return self;
 }
@@ -156,6 +175,7 @@
 {
   DESTROY(_symbols);
   DESTROY(_commentSymbol);
+  DESTROY(_stringSymbol);
   [super dealloc];
 }
 

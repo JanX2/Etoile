@@ -32,7 +32,11 @@
   CodeCommentType _commentType;
   BOOL _stringBegin;
   NSMutableString *_symbols;
+#if 1
+  NSString *_stringSymbol;
+#else
   unichar _stringSymbol;
+#endif
   NSString *_commentSymbol;
 
   /* Token */
