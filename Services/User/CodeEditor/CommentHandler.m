@@ -140,19 +140,16 @@
 - (void) setSingleLineCommentToken: (NSArray *) array
 {
   ASSIGN(sCommentToken, array);
-  NSLog(@"sComment %@", array);
 }
 
 - (void) setMultipleLinesCommentToken: (NSDictionary *) dict
 {
   ASSIGN(mCommentToken, dict);
-  NSLog(@"mComment %@", dict);
 }
 
 - (void) setStringToken: (NSArray *) array
 {
   ASSIGN(stringToken, array);
-  NSLog(@"string %@", array);
 }
 
 @end

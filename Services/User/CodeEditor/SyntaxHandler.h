@@ -20,6 +20,16 @@
 **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/* SyntaxHandler should be able to deal with arbitrary number of 
+ * keyword, comment and string tokens.
+ * It can render syntax with single pass.
+ * It follows these assumptions below:
+ * + Keywords start with letter or symbol, not number ('@class', not '2class').
+ * + Keywords ends with letter, not symbol or number ('int', not 'int32').
+ * + Escape for string symbol in string is '\'.
+ * + Single line comment ends with '0x0A' or '0x0D'..
+ */
+
 #import "CommentHandler.h"
 
 @class NSMutableAttributedString;
