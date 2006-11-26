@@ -9,9 +9,22 @@ The reason not to port Smultron is because Smultron used classes
 which are not available in GNUstep in the near future.
 CodeEditor differs from Typewriter is that Typewriter is a rich-text editor
 while CodeEditor is a plain-text editor.
+CodeEditor is not designed only for programming. Therefore, it will lack
+some specialized features seen in other code editor.
 
 It is released under LGPL in case some classes will be used by 
 other application or frameworks in the future.
+
+Features (and not)
+------------------
+* Syntax highlighting
+* Encodings (Not yet).
+* Snippet (Not sure).
+* Execute external command (Not sure, probably will).
+* List all functions/methods (Not sure).
+* Auto-indentation (Not sure).
+* Auto-completion (Not supported).
+* Projects (Not supported).
 
 Developer's Note
 ----------------
