@@ -1,3 +1,8 @@
+2006-11-26  Yen-Ju Chen <yjchen at gmail>
+
+	* Post notification for playback status change.
+	* Handle replay same movie better.
+
 2006-11-23  Yen-Ju Chen <yjchen at gmail>
 
 	* MPlayer: subclass MPlayerInterface to avoid polluting original code.

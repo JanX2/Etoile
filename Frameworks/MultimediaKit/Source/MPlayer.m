@@ -39,6 +39,7 @@
            object: self];
 
   firstTimePlay = YES;
+  size = NSMakeSize(0, 0);
 
   return self;
 }
@@ -55,6 +56,8 @@
     // mplayer is paused then unpause it
     [self pause];
   } else {
+    /* Always start from beginning */
+    [self seek: 0 mode: MIAbsoluteSeekingMode];
     [self play];
   }
   firstTimePlay = NO;
@@ -99,20 +102,24 @@
     return NSMakeSize(0, 0);
   } 
 
-  NSDictionary *dict = [self info];
-  int w = 0, h = 0;
-  id object;
+  if (size.width == 0) {
+    NSDictionary *dict = [self info];
+    int w = 0, h = 0;
+    id object;
   
-  object = [dict objectForKey: @"ID_VIDEO_WIDTH"];
-  if (object) {
-    w = [object intValue];
-  }
+    object = [dict objectForKey: @"ID_VIDEO_WIDTH"];
+    if (object) {
+      w = [object intValue];
+    }
 
-  object = [dict objectForKey: @"ID_VIDEO_HEIGHT"];
-  if (object) {
-    h = [object intValue];
-  }
-  return NSMakeSize(w, h);
+    object = [dict objectForKey: @"ID_VIDEO_HEIGHT"];
+    if (object) {
+      h = [object intValue];
+    }
+  
+    size = NSMakeSize(w, h);
+  } 
+  return size;
 }
 
 - (void) setVolumeInPercentage: (unsigned int) volume
@@ -129,20 +136,26 @@
 /* Notification */
 - (void) playStateChanged: (NSNotification *) not
 {
-  NSString *name;
+  NSString *name = nil;
   if ([[not name] isEqualToString: @"MIPlayerTerminatedNotification"]) {
-    name = @"MMPlayerStopNotification";
+    name = MMPlayerStopNotification;
   } else {
-    int status = [[[not userInfo] objectForKey: @"PlayerStatus"] intValue];
+    id object = [[not userInfo] objectForKey: @"PlayerStatus"];
+    if (object == nil) return;
+    int status = [object intValue];
     //NSLog(@"status %d", status);
     switch (status) {
       case kFinished:  // terminated by reaching end-of-file
+        name = MMPlayerStopNotification;
         break;
       case kStopped:  // terminated by not reaching EOF
+        name = MMPlayerStopNotification;
         break;
       case kPlaying:
+        name = MMPlayerStartPlayingNotification;
         break;
       case kPaused:
+        name = MMPlayerPausedNotification;
         break;
       case kOpening:
         break;
@@ -151,6 +164,11 @@
       case kIndexing:
         break;
     }
+  }
+  if (name) {
+    [[NSNotificationCenter defaultCenter]
+              postNotificationName: name 
+              object: self];
   }
 }
 
