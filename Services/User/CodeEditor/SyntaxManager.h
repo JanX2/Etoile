@@ -9,6 +9,7 @@
 
 + (SyntaxManager *) syntaxManager;
 
+/* filename and language can be nil for default syntax */
 - (SyntaxHandler *) syntaxHandlerForFile: (NSString *) filename;
 - (SyntaxHandler *) syntaxHandlerForLanguage: (NSString *) lauguage;
 

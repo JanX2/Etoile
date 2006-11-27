@@ -18,18 +18,17 @@ static int untitled_count = 0;
 
 - (void) highlightSyntax: (id) sender
 {
-  if (path) {
-    SyntaxHandler *handler = [[SyntaxManager syntaxManager] syntaxHandlerForFile: path];
-    NSLog(@"handler %@", handler);
-    CodeParser *parser = [[CodeParser alloc] initWithHandler: handler
+  /* Path might be nil. It will use the standard syntax definition */
+  SyntaxHandler *handler = [[SyntaxManager syntaxManager] syntaxHandlerForFile: path];
+  NSLog(@"handler %@", handler);
+  CodeParser *parser = [[CodeParser alloc] initWithHandler: handler
                                                       string: [self string]];
-    [handler setString: [self textStorage]];
-    [[self textStorage] beginEditing];
-    [parser parse];
-    [[self textStorage] endEditing];
-    DESTROY(parser);
-    NSLog(@"Done");
-  }
+  [handler setString: [self textStorage]];
+  [[self textStorage] beginEditing];
+  [parser parse];
+  [[self textStorage] endEditing];
+  DESTROY(parser);
+  NSLog(@"Done");
 }
 
 - (void) showLineNumber: (id) sender

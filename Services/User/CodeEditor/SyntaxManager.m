@@ -71,28 +71,36 @@ static SyntaxManager *sharedInstance;
 
 - (SyntaxHandler *) syntaxHandlerForFile: (NSString *) filename
 {
-  NSString *extension = [[filename pathExtension] lowercaseString];
-  NSArray *extensions;
-  NSEnumerator *e = [syntax objectEnumerator];
-  NSDictionary *dict;
-  while ((dict = [e nextObject])) {
-    extensions = [[dict objectForKey: @"extensions"] componentsSeparatedByString: @" "];
-    if ([extensions containsObject: extension]) {
-      NSLog(@"Found %@", [dict objectForKey: @"name"]);
-      return [self syntaxHandler: [dict objectForKey: @"file"]];
+  if (filename) {
+    NSString *extension = [[filename pathExtension] lowercaseString];
+    NSArray *extensions;
+    NSEnumerator *e = [syntax objectEnumerator];
+    NSDictionary *dict;
+    while ((dict = [e nextObject])) {
+      extensions = [[dict objectForKey: @"extensions"] componentsSeparatedByString: @" "];
+      if ([extensions containsObject: extension]) {
+        NSLog(@"Found %@", [dict objectForKey: @"name"]);
+        return [self syntaxHandler: [dict objectForKey: @"file"]];
+      }
     }
   }
+  /* If not found or nil, return standard.plist */
+  return [self syntaxHandler: @"standard"];
 }
 
-- (SyntaxHandler *) syntaxHandlerForLanguage: (NSString *) lauguage
+- (SyntaxHandler *) syntaxHandlerForLanguage: (NSString *) language
 {
-  NSEnumerator *e = [syntax objectEnumerator];
-  NSDictionary *dict;
-  while ((dict = [e nextObject])) {
-    if ([[dict objectForKey: @"name"] isEqualToString: [lauguage lowercaseString]]) {
-      return [self syntaxHandler: [dict objectForKey: @"file"]];
+  if (language) {
+    NSEnumerator *e = [syntax objectEnumerator];
+    NSDictionary *dict;
+    while ((dict = [e nextObject])) {
+      if ([[dict objectForKey: @"name"] isEqualToString: [language lowercaseString]]) {
+        return [self syntaxHandler: [dict objectForKey: @"file"]];
+      }
     }
   }
+  /* If not found or nil, return standard.plist */
+  return [self syntaxHandler: @"standard"];
 }
 
 - (id) init

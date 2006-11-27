@@ -1,3 +1,8 @@
+2006-11-26 Yen-Ju Chen <yjchenx at gmail>
+
+	* Make sure it works on GNUstep.
+	* Use standard.plist if no syntax is defined.
+
 2006-11-25 Yen-Ju Chen <yjchenx at gmail>
 
 	* Use syntax definition for comment.

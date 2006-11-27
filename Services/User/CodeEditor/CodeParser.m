@@ -36,8 +36,8 @@ typedef enum _CodeType {
 - (CodeParser *) initWithHandler: (id <CodeHandler>) handler
                           string: (NSString *) text
 {
-  if (handler == nil) return;
-  if (text == nil) return;
+  if (handler == nil) return nil;
+  if (text == nil) return nil;
 
   self = [self init];
 

@@ -26,11 +26,8 @@
 
 @implementation SyntaxHandler
 
-#define STRCMP(str) (!strcmp(cstr, str))
-
 - (void) string: (NSString *) element
 {
-  const char *cstr = [element cString];
   unsigned int len = [element length];
   NSRange attributeRange = NSMakeRange(position, len);
   BOOL changeAttribute = NO;
@@ -98,10 +95,9 @@
 {
   NSRange attributeRange;
   NSDictionary *attr;
-  NSEnumerator *e, *e1;
+  NSEnumerator *e;
   NSString *token;
   NSRange r;
-  id object;
 
   [super symbol: element];
 

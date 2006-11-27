@@ -6,7 +6,8 @@
 	    "save:",
 	    "saveAs:",
 	    "saveTo:",
-	    "showLineNumber:"
+	    "showLineNumber:",
+	    "highlightSyntax:"
 	);
 	Outlets = (
 	);
@@ -39,9 +40,10 @@
 	Actions = (
 	    "closeTab:",
 	    "closeWindow:",
-	    "nextTab:",
+	    "highlightSyntax:",
 	    "newInTab:",
 	    "newInWindow:",
+	    "nextTab:",
 	    "openInTab:",
 	    "openInWindow:",
 	    "previousTab:",
