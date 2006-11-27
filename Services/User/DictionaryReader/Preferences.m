@@ -39,8 +39,7 @@
 
 -(void)setDictionaries: (NSMutableArray*) dicts
 {
-  NSAssert(dicts != nil,
-           @"You can't set \"nil\" as a dictionary handle list for preferences.");
+  NSParameterAssert(dicts != nil);
   NSAssert(_dictionaries == nil || _dictionaries == dicts,
            @"You can't set the dictionary handle array twice and to different"
            @" values for the preferences panel.");
@@ -73,8 +72,6 @@
   [dict release];
   
   NSLog(@"recanned: %@", _dictionaries);
-  // TODO: Don't forget to check that everything in _active... needs
-  // to be in _dictionaries too, to avoid memory leaks!
   
   [_tableView reloadData];
   //[_tableView setNeedsDisplay: YES];
@@ -190,10 +187,10 @@
 {
   if ([[aTableColumn identifier] isEqualToString: @"active"]) {
       [[_dictionaries objectAtIndex: rowIndex] setActive: [anObj intValue]];
+      
+      [[NSNotificationCenter defaultCenter] postNotificationName: DRActiveDictsChangedNotification
+                                                          object: _dictionaries];
   }
-  
-  [[NSNotificationCenter defaultCenter] postNotificationName: DRActiveDictsChangedNotification
-                                                      object: _dictionaries];
 }
 
 /**
@@ -205,31 +202,26 @@ objectValueForTableColumn: (NSTableColumn *)aTableColumn
 {
     if ([[aTableColumn identifier] isEqualToString: @"active"]) {
       return [NSNumber numberWithBool: [[_dictionaries objectAtIndex: rowIndex] isActive]];
-    } else if ([[aTableColumn identifier] isEqualToString: @"name"]) {
-      return [[_dictionaries objectAtIndex: rowIndex] description];
     } else {
-      NSLog(@"Unknown column!");
-      return @"*error*";
+      NSAssert1(
+          [[aTableColumn identifier] isEqualToString: @"name"],
+          @"Unknown column identifier '%@'",
+          [aTableColumn identifier]
+      );
+      
+      return [[_dictionaries objectAtIndex: rowIndex] description];
     }
 }
 
-/**
- * Called before displaying a cell.
- */
-#warning TODO: put the button cell changing code into awakeFromNib:!
-- (void) tableView: (NSTableView *)aTableView
-   willDisplayCell: (id)aCell
-    forTableColumn: (NSTableColumn *)aTableColumn
-               row: (int)rowIndex {
-    if ([[aTableColumn identifier] isEqualToString: @"active"]) {
-      NSButtonCell* cell = aCell; // aCell is a button cell
-      [cell setEditable: YES];
-      [cell setEnabled: YES];
-      [cell setSelectable: YES];
-      [cell setTitle: @""];
-      
-      [cell setButtonType: NSSwitchButton];
-    }
+- (void) awakeFromNib
+{
+    NSButtonCell* cell = [[_tableView tableColumnWithIdentifier: @"active"] dataCell];
+    [cell setEditable: YES];
+    [cell setEnabled: YES];
+    [cell setSelectable: YES];
+    [cell setTitle: @""];
+    
+    [cell setButtonType: NSSwitchButton];
 }
 
 @end

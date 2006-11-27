@@ -376,12 +376,15 @@ NSDictionary* normalAttributes;
  */
 -(void)clickSearchNotification: (NSNotification*)aNotification
 {
-  assert(aNotification != nil);
+  NSParameterAssert(aNotification != nil);
   
   // fetch string from notification
   NSString* searchString = [aNotification object];
   
-  assert(searchString != nil);
+  NSAssert1(
+      searchString != nil,
+      @"Search string encapsuled in %@ notification was nil", aNotification
+  );
   
   if ( ![[searchStringControl stringValue] isEqualToString: searchString] ) {
     // invoke search

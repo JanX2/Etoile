@@ -114,7 +114,7 @@
     strBuf = realloc(strBuf, strBufSize);
   }
   
-  assert(strBufPos < strBufSize);
+  NSAssert(strBufPos < strBufSize, @"strBufPos >= strBufSize");
   
   //NSLog(@"getMoreChars: now reading from %@", inputStream);
   
@@ -142,8 +142,8 @@
   
   //NSLog(@"buf@0x%08x, resLen=%d, delSize=%d, strBufPos=%d",
   //      strBuf, resultLength, delimSize, strBufPos);
-  assert(resultLength < strBufPos);
-  assert(resultLength >= 0);
+  NSAssert(resultLength < strBufPos, @"resultLength >= strBufPos");
+  NSAssert(resultLength >= 0, @"resultLength < 0");
   
   if (resultLength < 0)
     return nil;

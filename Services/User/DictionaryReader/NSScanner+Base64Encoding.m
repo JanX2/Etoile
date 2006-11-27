@@ -36,12 +36,13 @@ int indexInB64( unichar unicharacter )
     return character-'0'+52;
   } else if (character == '+') {
     return 62;
-  } else if (character == '/') {
-    return 63;
   } else {
-    NSLog(@"FATAL: B64 Character %c (%d) could not be converted!!!",
-	  character, character);
-    return 0;
+    NSCAssert2(
+        character == '/',
+        @"Character %c (%d) is not a valid Base64 character",
+        character, character
+    );
+    return 63;
   }
 }
 

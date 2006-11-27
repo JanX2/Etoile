@@ -2,6 +2,17 @@
 DictionaryReader Changelog
 ==========================
 
+Nov 26 2006  Guenther Noack
+	* everywhere: Better assertions, wrote awakeFromNib in preferences
+	  controller.
+	* UKNibOwner.[mh]: Copied UKNibOwner over to DictionaryReader to make
+	  a compilation without Etoile possible. When compiling on Etoile,
+	  the application will still be linked to EtoileFoundation instead.
+
+Nov 24 2006  Guenther Noack
+	* GNUmakefile: Made the inclusion of etoile.make 'weak' (it doesn't
+	  fail any more when it's not present)
+
 Nov 15 2006  Quentin Mathe
 	* GNUmakefile: Updated to include etoile.make, this allows the project
 	to compile without installing EtoileFoundation first.

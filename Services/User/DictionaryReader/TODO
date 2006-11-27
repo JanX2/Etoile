@@ -3,8 +3,7 @@
 	* Let users add dict servers.
 	* Let users choose their preferred fonts and colors.
 	* Allow users to drop their own dictionaries there
+	* Redo preferences dialog in Gorm (colors are broken)
 
 * Test if dictionaries disappeared on refresh and startup!
-
-* Make a non-etoile compilation possible
 

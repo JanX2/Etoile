@@ -17,7 +17,13 @@
  */
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+
+
+#ifdef ETOILE
 #import <EtoileFoundation/UKNibOwner.h>
+#else
+#import "UKNibOwner.h"
+#endif
 
 
 /**
