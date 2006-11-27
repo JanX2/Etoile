@@ -2,6 +2,7 @@
 
 	* Post notification for playback status change.
 	* Handle replay same movie better.
+	* Make sure properties of movie is not nil.
 
 2006-11-23  Yen-Ju Chen <yjchen at gmail>
 

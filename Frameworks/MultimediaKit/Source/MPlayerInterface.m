@@ -1294,7 +1294,14 @@
 			{
 				*valString = '\0';					// replace it with null char
 				valString++;						// and the value starts by next char
-				[myInfo setObject:[NSString stringWithCString:valString] forKey:[NSString stringWithCString:stringPtr]];
+				/* Make sure the value exists.
+				 * It will be nil if the encoding is not right.
+				 */
+				NSString *value, *key;
+				value = [NSString stringWithCString: valString];
+				key = [NSString stringWithCString: stringPtr];
+				if ((value != nil) && (key != nil))
+				[myInfo setObject: value forKey: key];
 			}
 			continue; 							// continue on next line	
 		}
