@@ -1,3 +1,7 @@
+2006-11-26  Yen-Ju Chen <yjchen at gmail>
+
+	* make sure the window size is right (hopefully).
+
 2006-11-23  Yen-Ju Chen <yjchen at gmail>
 	
 	* Use MPlayer instead of MPlayerInterface.

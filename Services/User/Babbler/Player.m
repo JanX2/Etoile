@@ -6,12 +6,11 @@
 
 - (void) resizeVideo: (NSSize) size
 {
+  NSLog(@"resizeVideo %@", NSStringFromSize(size));
   int delta_x, delta_y;
-  delta_x = size.width-contentSize.width;
-  delta_y = size.height-contentSize.height;
   NSSize c = [[window contentView] bounds].size;
-  c.width += delta_x;
-  c.height += delta_y;
+  c.width = size.width+10;
+  c.height = size.height+60;
   if (c.width < 350) {
     c.width = 350;
   }
@@ -44,15 +43,11 @@
 - (void) play: (id) sender
 {
   if (isPlaying == NO) {
-//    NSLog(@"play");
-    isPlaying = YES;
+//    isPlaying = YES; // We set isPlaying only after receiving notification
     [mmPlayer play: self];
-    [playButton setImage: [NSImage imageNamed: @"pause.tiff"]];
   } else {
-//    NSLog(@"pause");
-    isPlaying = NO;
+//    isPlaying = NO;
     [mmPlayer pause: self];
-    [playButton setImage: [NSImage imageNamed: @"play.tiff"]];
   }
 }
 
@@ -108,6 +103,21 @@
                 selector: @selector(informationAvailable:)
                 name: MMPlayerInformationAvailableNotification
                 object: mmPlayer];
+  [[NSNotificationCenter defaultCenter]
+                addObserver: self
+                selector: @selector(playStatusChanged:)
+                name: MMPlayerStartPlayingNotification
+                object: mmPlayer];
+  [[NSNotificationCenter defaultCenter]
+                addObserver: self
+                selector: @selector(playStatusChanged:)
+                name: MMPlayerPausedNotification
+                object: mmPlayer];
+  [[NSNotificationCenter defaultCenter]
+                addObserver: self
+                selector: @selector(playStatusChanged:)
+                name: MMPlayerStopNotification
+                object: mmPlayer];
 }
 
 - (id <MMPlayer>) player
@@ -123,8 +133,23 @@
 /* Notification */
 - (void) informationAvailable: (NSNotification *) not
 {
-  [self resizeVideo: [mmPlayer size]];
+//  [self resizeVideo: [mmPlayer size]];
 }
 
+- (void) playStatusChanged: (NSNotification *) not
+{
+  NSLog(@"%@", not);
+  if ([[not name] isEqualToString: MMPlayerStartPlayingNotification]) {
+    isPlaying = YES;
+    [playButton setImage: [NSImage imageNamed: @"pause.tiff"]];
+    [self resizeVideo: [mmPlayer size]];
+  } else if ([[not name] isEqualToString: MMPlayerPausedNotification]) {
+    isPlaying = NO;
+    [playButton setImage: [NSImage imageNamed: @"play.tiff"]];
+  } else if ([[not name] isEqualToString: MMPlayerStopNotification]) {
+    isPlaying = NO;
+    [playButton setImage: [NSImage imageNamed: @"play.tiff"]];
+  }
+}
 @end
 
