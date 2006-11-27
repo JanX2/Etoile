@@ -340,7 +340,7 @@ int articleSortByDate( id articleA, id articleB, void* context )
           forProperty: kArticleHeadlineProperty];
     [item setValue: [article url] 
           forProperty: kArticleURLProperty];
-    [item setValue: [article description] 
+    [item setValue: [article content] 
           forProperty: kArticleDescriptionProperty];
     [item setValue: [article date] 
           forProperty: kArticleDateProperty];

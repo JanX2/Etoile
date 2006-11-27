@@ -1,6 +1,10 @@
-=============
+=================
 Mollusk Changelog
-=============
+=================
+
+Nov-26-2006 Guenther Noack <guenther@unix-ag.uni-kl.de>
+	* Small one-line change to get it working with the
+	  current version of RSSKit.
 
 Nov-24-2006 Yen-Ju Chen <yjchenx at gmail>
 	* Use arrow key to switch between feed and article.
