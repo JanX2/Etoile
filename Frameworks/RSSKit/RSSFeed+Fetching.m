@@ -103,8 +103,8 @@ NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotificatio
   if (sender != feedURL) 
     return;
 
-  NSLog(@"%@ finish loading %@", self, sender);
-//  [cacheData writeToFile: @"/tmp/grr_data" atomically:YES];
+  NSLog(@"%@ finished loading %@", self, sender);
+  
   if ((cacheData == nil) && [cacheData length] == 0) {
     NSLog(@"No Data");
   }

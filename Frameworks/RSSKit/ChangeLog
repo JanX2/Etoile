@@ -1,3 +1,14 @@
+================
+RSSKit Changelog
+================
+
+Nov-26-2006  Guenther Noack
+	* RSSArticle: -description method now returns the headline. Please
+	  use the -content method to retrieve the article content now. This
+	  breaks compatibility with old Grr versions but makes more sense.
+	* RSSFeed delegate: Removed (not used by Mollusk nor Grr)
+	* RSSFeed: performance improvements when autoclear is off
+	* RSSFeed protocol: Added autoclear accessor methods
 
 Nov-12-2006  Yen-Ju Chen
 	* Process namespace for XMLParser.

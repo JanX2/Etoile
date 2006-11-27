@@ -18,72 +18,16 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// This needs to have a value to prevent compiler errors on OSX
-// #define DEBUG 1
-// #define DEBUGX
 
 #import "RSSFeed.h"
 #import "RSSFeed+Fetching.h"
 #import "GNUstep.h"
 
-//#define DEBUG YES
-//#undef DEBUG
 
-@implementation RSSFeed (Private)
 
--(BOOL) _submitArticles: (NSArray*) newArticles
-{
-  NSMutableArray* result = nil;
-  int i;
-  
-  if (newArticles == nil)
-    {
-      return NO;
-    }
-  
-  if (articles == nil)
-    {
-      ASSIGN(articles, AUTORELEASE([[NSArray alloc] init]));
-    }
-  
-  // The result is first the list of new articles
-  result = [[NSMutableArray alloc] initWithArray: newArticles];
-  
-  for ( i=0; i<[articles count]; i++ )
-    {
-      RSSArticle* art;
-      
-      art = [articles objectAtIndex: i];
-      [art setFeed: self];
-      
-      if ([result containsObject: art] == YES)
-	{
-	  // We need to remove the *new* version of the article
-	  // and replace it with the *old* version, since we
-	  // want to keep user provided information. (e.g. read/unread)
-	  // TODO: In the future, we could use the *new* version
-	  //       while merging the user provided info into the new
-	  //       article. This would bring us newer versions of
-	  //       article texts etc when the feeds are badly
-	  //       administrated. (which is usually the case)
-	  [result
-	    replaceObjectAtIndex: [result indexOfObject: art]
-	    withObject: art];
-	}
-      else
-	{
-	  [result addObject: art];
-	  [_delegate feed: self
-		     addedArticle: art];
-	}
-    }
-  
-  ASSIGN(articles, AUTORELEASE([[NSArray alloc] initWithArray: result]));
-  DESTROY(result);
-  
-  return YES;
-}
-@end
+// --------------------------------------------------------
+//    the main part of the RSSFeed class
+// --------------------------------------------------------
 
 @implementation RSSFeed
 
@@ -115,7 +59,7 @@
 #endif
   
   ASSIGN(feedURL, aURL);
-  ASSIGN(articles, AUTORELEASE([[NSArray alloc] init]));
+  ASSIGN(articles, [NSMutableArray new]);
   ASSIGN(lastRetrieval, [NSDate dateWithTimeIntervalSince1970: 0.0]);
   clearFeedBeforeFetching = YES;
   lastError = RSSFeedErrorNoError;
@@ -157,25 +101,31 @@
 }
 
 
--(void)setDelegate: (id<RSSFeedDelegate>)aDelegate
-{
-  ASSIGN(_delegate, aDelegate);
-}
-
--(id<RSSFeedDelegate>)delegate
-{
-  return AUTORELEASE(RETAIN(_delegate));
-}
-
-
 
 /**
- * Implementation of the NewRSSArticleListener interface.
+ * Implementation of the NewRSSArticleListener protocol.
  */
--(void) newArticleFound: (id<RSSArticle>) anArticle
+-(void) newArticleFound: (id<RSSMutableArticle>) anArticle
 {
-  // XXX: inefficient solution!
-  [self _submitArticles:[NSArray arrayWithObjects: anArticle, NULL]];
+  NSAssert([articles isKindOfClass: [NSMutableArray class]], @"articles not mutable!");
+  
+  int oldArticleIdx = [articles indexOfObject: anArticle];
+  if (oldArticleIdx != NSNotFound) {
+      // replace the found older version with the new one, but first
+      // make sure local changes to the old version get transferred to
+      // the new version. (This is why this method is passed a mutable
+      // article.)
+      id<RSSArticle> oldArticle = [articles objectAtIndex: oldArticleIdx];
+      
+      // lets oldArticle transfer some of its preferences to anArticle.
+      [oldArticle willBeReplacedByArticle: anArticle];
+      
+      [articles replaceObjectAtIndex: oldArticleIdx
+                          withObject: anArticle];
+  } else {
+      // article was not known yet - so we can just add it.
+      [articles addObject: anArticle];
+  }
 }
 
 
@@ -184,11 +134,7 @@
 
 
 - (NSEnumerator*) articleEnumerator
-{
-#ifdef DEBUG
-  NSLog(@"%@ -articleEnumerator", self);
-#endif
-  
+{  
   return AUTORELEASE(RETAIN([articles objectEnumerator]));
 }
 
@@ -210,41 +156,9 @@
 }
 
 
-/* Deprecated. Uncomment if problems occur.
-   Commented out on 11-9-2006
-
-- (RSSArticle*) articleAtIndex: (int) index
-{
-  NSLog(@"articleAtIndex: is deprecated!");
-  
-  if (index >= [articles count])
-    {
-      return nil;
-    }
-  
-  return [articles objectAtIndex: index];
-}
-
-- (unsigned int) count
-{
-  NSLog(@"FIXME: -count is deprecated on RSSFeed objects (use -articleCount instead!)");
-  return [articles count];
-}
-
-*/
-
 - (void) removeArticle: (RSSArticle*) article
 {
-  NSMutableArray* result = nil;
-  
-#ifdef DEBUG
-  NSLog(@"%@ -removeArticle: %@", self, article);
-#endif
-  
-  result = [[NSMutableArray alloc] initWithArray: articles];
-  [result removeObject: article];
-  ASSIGN(articles, AUTORELEASE([[NSArray alloc] initWithArray: result]));
-  DESTROY(result);
+  [articles removeObject: article];
 }
 
 
@@ -262,9 +176,6 @@
 
 - (NSString*) feedName
 {
-#ifdef DEBUG
-  NSLog(@"<feed instance> -feedName", self);
-#endif
   if (feedName == nil)
     {
       return @"Unnamed feed";
@@ -277,10 +188,6 @@
 
 - (NSURL*) feedURL
 {
-#ifdef DEBUG
-  NSLog(@"%@ -feedURL", self);
-#endif
-  
   if (feedURL == nil)
     {
       return nil;
@@ -321,17 +228,15 @@
 - (void) clearArticles
 {
   // Delete and recreate the list of articles.
-  ASSIGN(articles, AUTORELEASE([[NSArray alloc] init]));
+  ASSIGN(articles, [NSMutableArray new]);
+  
+  // FIXME: Find out why I did this! -GN
   ASSIGN(lastRetrieval, [NSDate dateWithTimeIntervalSince1970: 0.0]);
 }
 
 
 -(void) setArticleClass:(Class)aClass
 {
-#ifdef DEBUG
-  NSLog(@"%@ -setArticleClass: %@", self, aClass);
-#endif
-  
   if ([aClass isSubclassOfClass: [RSSArticle class]])
     {
       articleClass = aClass;

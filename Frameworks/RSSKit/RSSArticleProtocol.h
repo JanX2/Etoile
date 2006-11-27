@@ -29,6 +29,10 @@
 extern NSString* RSSArticleChangedNotification;
 
 
+// This protocol can be found at the bottom of this file.
+@protocol RSSMutableArticle;
+
+
 /**
  * Classes implementing this protocol can be used as RSSArticles.
  */
@@ -70,6 +74,21 @@ extern NSString* RSSArticleChangedNotification;
 - (NSURL*) enclosure;
 
 /**
+ * Sets the feed's autoclear flag. This flag determines if
+ * the feed's articles are removed before fetching new articles.
+ */
+-(void) setAutoClear: (BOOL) autoClear;
+
+/**
+ * Returns the feed's autoclear flag. This flag determines if
+ * the feed's articles are removed before fetching new articles.
+ *
+ * @return the feed's autoclear flag
+ */
+-(BOOL) autoClear;
+
+
+/**
  * Returns the source feed of this article.
  *
  * @warning It's not guaranteed that this object actually exists.
@@ -96,7 +115,16 @@ extern NSString* RSSArticleChangedNotification;
 /**
  * Saves the article to the URL that's calculated by the RSSFactory.
  */
- - (BOOL) store;
+- (BOOL) store;
+ 
+/**
+ * This method is intended to make sure that the replacing article keeps
+ * some fields from the old (this) article. Subclasses will probably want
+ * to override this, but shouldn't forget calling the super implementation,
+ * first.
+ */
+- (void) willBeReplacedByArticle: (id<RSSMutableArticle>) newArticle;
+
 @end
 
 /**
@@ -127,6 +155,11 @@ extern NSString* RSSArticleChangedNotification;
 
 // only used internally
 - (void) setFeed: (id<RSSMutableFeed>) aFeed;
+
+/**
+ * Sets the article's date.
+ */
+- (void) setDate: (NSDate*) aDate;
 
 @end
 

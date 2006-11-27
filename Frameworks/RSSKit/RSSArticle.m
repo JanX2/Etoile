@@ -1,3 +1,4 @@
+
 /*  -*-objc-*-
  *
  *  GNUstep RSS Kit
@@ -82,7 +83,7 @@ NSString* RSSArticleChangedNotification = @"RSSArticleChangedNotification";
 
 - (NSString *) description
 {
-  return description;
+  return headline;
 }
 
 - (NSString*) content
@@ -93,6 +94,11 @@ NSString* RSSArticleChangedNotification = @"RSSArticleChangedNotification";
 - (NSDate*) date
 {
   return date;
+}
+
+- (void) setDate: (NSDate*) aDate
+{
+    ASSIGN(date, aDate);
 }
 
 - (void) setFeed:(id<RSSMutableFeed>)aFeed
@@ -112,6 +118,23 @@ NSString* RSSArticleChangedNotification = @"RSSArticleChangedNotification";
 {
   // Feed is NON-RETAINED!
   return feed;
+}
+
+
+/**
+ * This method is intended to make sure that the replacing article keeps
+ * some fields from the old (this) article. Subclasses will probably want
+ * to override this, but shouldn't forget calling the super implementation,
+ * first.
+ */
+-(void) willBeReplacedByArticle: (id<RSSMutableArticle>) newArticle
+{
+    NSParameterAssert(newArticle != nil);
+    NSParameterAssert(self != newArticle);
+    NSParameterAssert([self isEqual: newArticle] == YES);
+    
+    // Date stays the same. For everything else, the newer version is better.
+    [newArticle setDate: date];
 }
 
 

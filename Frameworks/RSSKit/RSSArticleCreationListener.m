@@ -306,7 +306,7 @@
     for (i=0; i<[timeformats count] && d == nil; i++) {
         d = [NSCalendarDate dateWithString: str
                             calendarFormat: [timeformats objectAtIndex: i]];
-	//if (d!=nil) NSLog(@"Date=%@, calc'd from %@, which matched to %@", d, str, [timeformats objectAtIndex: i]); 
+	  if (d!=nil) NSLog(@"Date=%@, calc'd from %@, which matched to %@ (%dth try)", d, str, [timeformats objectAtIndex: i], i); 
     }
    
     if (d==nil) {

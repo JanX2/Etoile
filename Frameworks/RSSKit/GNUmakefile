@@ -1,6 +1,12 @@
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
+# Compile with gmake coverage=yes, if you want to have coverage analysis output
+ifeq ($(coverage), yes)
+ADDITIONAL_FLAGS += -fprofile-arcs -ftest-coverage
+ADDITIONAL_OBJC_LIBS += -lgcov
+endif
+
 
 srcdir = .
 PACKAGE_NAME = RSSKit

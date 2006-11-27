@@ -77,6 +77,9 @@
 
 -(void) dealloc;
 
+// Autoclear flag
+-(void) setAutoClear: (BOOL) autoClear;
+-(BOOL) autoClear;
 
 // Accessor methods (conformance to RSSArticle protocol)
 -(NSString*)headline;
@@ -91,6 +94,7 @@
 -(void)addLink:(NSURL*) anURL;
 -(void)setLinks: (NSArray*) someLinks;
 -(void)setFeed: (id<RSSMutableFeed>) aFeed;
+-(void)setDate: (NSDate*) aDate;
 
 /**
  * Sends a change notification to the notification center.
@@ -102,5 +106,13 @@
 // Equality and hash codes
 - (unsigned) hash;
 - (BOOL) isEqual: (id)anObject;
+
+/**
+ * This method is intended to make sure that the replacing article keeps
+ * some fields from the old (this) article. Subclasses will probably want
+ * to override this, but shouldn't forget calling the super implementation,
+ * first.
+ */
+-(void)willBeReplacedByArticle: (id<RSSMutableArticle>) newArticle;
 
 @end

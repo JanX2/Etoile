@@ -23,8 +23,6 @@
 
 #import "RSSFeedProtocol.h"
 
-@class RSSFeed;
-
 
 #import "RSSArticle.h"
 
@@ -36,11 +34,6 @@ enum RSSFeedStatus
     RSSFeedIsFetching,
     RSSFeedIsIdle
   };
-
-/**
- * The protocol for RSSFeed delegate objects.
- */
-@protocol RSSFeedDelegate;
 
 
 /**
@@ -93,7 +86,7 @@ enum RSSFeedStatus
 @protected
   NSDate*           lastRetrieval;
   BOOL              clearFeedBeforeFetching;
-  NSArray*          articles;
+  NSMutableArray*   articles;
   enum RSSFeedError lastError;
   NSString*         feedName;
   NSURL*            feedURL;
@@ -102,8 +95,6 @@ enum RSSFeedStatus
   enum RSSFeedStatus status;
 
   NSMutableData *cacheData; // Used only when load in background.
-  
-  id<RSSFeedDelegate> _delegate;
 }
 
 
@@ -124,13 +115,6 @@ enum RSSFeedStatus
  * @return Description of the Feed (the feed name)
  */
 -(NSString*) description;
-
-// ----------------------------------------------------------------------
-// The RSSFeed's delegate
-// ----------------------------------------------------------------------
-
--(void)setDelegate: (id<RSSFeedDelegate>)aDelegate;
--(id<RSSFeedDelegate>)delegate;
 
 
 // ----------------------------------------------------------------------
@@ -273,36 +257,3 @@ enum RSSFeedStatus
 @end
 
 
-
-/*
- * FIXME: Hide this interface in some other header file
- * so that programmers don't get confused.
- */
-
-@interface RSSFeed (Private)
-
-/**
- * Submits multiple articles to a feed. Is
- * used by the article creator class.
- *
- * @return YES on success, NO on failure.
- */
--(BOOL) _submitArticles: (NSArray*) newArticles;
-
-@end
-
-
-/**
- * The protocol for RSSFeed delegates.
- * TODO: Maybe an informal protocol could be more appropriate here if
- *       this protocol is about to grow.
- */
-@protocol RSSFeedDelegate <NSObject>
-
-/**
- * Inidcates that a new article has just been added to this feed.
- */
-- (void) feed: (RSSFeed*) aFeed
- addedArticle: (RSSArticle*) anArticle;
-
-@end
