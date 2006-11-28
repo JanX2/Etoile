@@ -1,5 +1,16 @@
 2006-11-28  Quentin Mathe <qmathe@club-internet.fr>
 
+	* Source/IKIconProvider.m: Fixed icons path by creating the cache 
+	in User domain rather than Local.
+	* Source/IKApplicationIconProvider.m: Added logs statement to aid debugging. 
+	Fixed composited icons path by creating the cache in User domain rather than 
+	Local.
+	* Source/NSFileManager+IconKit.m: Fixed file manager related calls by
+	referencing the singleton object rather than 'self' (NSFileManager is 
+	probably a class cluster).
+
+2006-11-28  Quentin Mathe <qmathe@club-internet.fr>
+
 	* Headers/IKIcon.h:
 	* Headers/IKCompositor.h:
 	* Headers/IconKit.h:

@@ -6,7 +6,7 @@
 	generator
 
 	Copyright (C) 2004 Nicolas Roard <nicolas@roard.com>
-	                   Quentin Mathe <qmathe@club-internet.fr>	                   
+	                   Quentin Mathe <qmathe@club-internet.fr> 
 
 	Author:   Nicolas Roard <nicolas@roard.com>
 	          Quentin Mathe <qmathe@club-internet.fr>
@@ -30,6 +30,7 @@
 #import "IKThumbnailProvider.h"
 #import "NSString+MD5Hash.h"
 #import "IKIconProvider.h"
+#import "IKApplicationIconProvider.h"
 
 static IKIconProvider *iconProvider = nil;
 static NSFileManager *fileManager = nil;
@@ -39,6 +40,10 @@ static NSWorkspace *workspace = nil;
 
 @interface NSWorkspace (Private)
 - (NSImage*) _extIconForApp: (NSString*)appName info: (NSDictionary*)extInfo;
+@end
+
+@interface IKApplicationIconProvider (Private)
+- (BOOL) _buildDirectoryStructureForCompositedIconsCache;
 @end
 
 // Private methods
@@ -70,12 +75,12 @@ static NSWorkspace *workspace = nil;
   if (iconProvider == nil)
     {
       iconProvider = [IKIconProvider alloc];
-    }     
+    }
   
   iconProvider = [iconProvider init];
   
   return iconProvider;
-}   
+}
 
 /*
  * Init methods
@@ -154,10 +159,6 @@ static NSWorkspace *workspace = nil;
   
   if (icon != nil)
     return icon;
-    
-  
-  
-  return icon;
 }
 
 - (NSImage *) defaultIconForPath: (NSString *)path
@@ -227,7 +228,9 @@ static NSWorkspace *workspace = nil;
 
 - (NSString *) _iconsPath
 {
-  NSArray *locations = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSLocalDomainMask, YES);
+  NSArray *locations = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+  // NOTE: We cannot use NSLocalDomainMask without authorization, then we stick
+  // to User domain now.
   NSString *path;
   
   if ([locations count] == 0)
@@ -238,6 +241,7 @@ static NSWorkspace *workspace = nil;
   path = [locations objectAtIndex: 0];
   path = [path stringByAppendingPathComponent: @"Caches"];
   path = [path stringByAppendingPathComponent: @"IconKit"];
+  
   return [path stringByAppendingPathComponent: @"Icons"];
 }
 

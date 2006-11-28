@@ -54,10 +54,11 @@
 {
   BOOL isDir;
   BOOL result; 
+  NSFileManager *fm = [NSFileManager defaultManager];
   
-  if ([self fileExistsAtPath: path isDirectory: &isDir] == NO)
+  if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
     {
-      result = [self createDirectoryAtPath: path attributes: nil] ;
+      result = [fm createDirectoryAtPath: path attributes: nil] ;
       // May be shouldn't be nil
     }
   else if (isDir == NO) // A file exists for this path

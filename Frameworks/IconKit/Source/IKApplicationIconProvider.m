@@ -6,7 +6,7 @@
 	cache mechanism)
 
 	Copyright (C) 2004 Nicolas Roard <nicolas@roard.com>
-	                   Quentin Mathe <qmathe@club-internet.fr>	                   
+	                   Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Nicolas Roard <nicolas@roard.com>
 	          Quentin Mathe <qmathe@club-internet.fr>
@@ -108,7 +108,7 @@ static NSFileManager *fileManager = nil;
   if ((self = [super init]) != nil)
     {
       BOOL dir;
-                
+      
       if (path == nil)
         {  
           [NSException raise: NSInvalidArgumentException format: 
@@ -122,7 +122,7 @@ static NSFileManager *fileManager = nil;
             @"IKApplicationIconProvider object needs a valid path to be \
             instantiated.", nil];
         }
-              
+      
       ASSIGN(_path, path);
       
       return self;
@@ -143,9 +143,10 @@ static NSFileManager *fileManager = nil;
         }
       
       // FIXME: Raise exception if identifier is unknown.
-        
-      ASSIGN(_identifier, identifier);
       
+      ASSIGN(_identifier, identifier);
+      // NOTE: the path of the application package for this identifier will be
+      // retrieved lazily with -_obtainBundlePathIfNeeded
       
       return self;
     }
@@ -188,7 +189,7 @@ static NSFileManager *fileManager = nil;
 
 - (NSImage *) documentIconForExtension: (NSString *)extension
 {
-  // We do not use -_iconForExtension: or -iconFoFileType because we don't want
+  // We do not use -_iconForExtension: or -iconForFileType because we don't want
   // the workspace behavior, we want a custom behavior
   
   NSDictionary *extensionInfo;
@@ -198,6 +199,7 @@ static NSFileManager *fileManager = nil;
   
   if (_path == nil)
     {
+      NSLog(@"No path available for the application package.");
       return nil;
       // Pathological case, should never happen
     }
@@ -207,6 +209,7 @@ static NSFileManager *fileManager = nil;
   extensionInfo = [workspace infoForExtension: extension];
   if (extensionInfo != nil)
     {
+      NSLog(@"For extension %@, NSWorkspace returns info: %@", extension, extensionInfo);
       icon = [workspace _extIconForApp: _path info: extensionInfo];
     }
   
@@ -219,11 +222,12 @@ static NSFileManager *fileManager = nil;
   if (icon != nil)
     return icon;
   
-  // Check the cache for composited icons
+  // If we found no icon, check the cache for composited icons
   icon = [self _cachedIconForVariant: IKIconVariantDocument];
   if (icon != nil)
     return icon;
-    
+  
+  // If we still found no icon, composite and cache the icon
   icon = [self _compositeIconForVariant: IKIconVariantDocument];
   if (icon != nil)
     [self _cacheIcon: icon forVariant: IKIconVariantDocument];
@@ -241,7 +245,7 @@ static NSFileManager *fileManager = nil;
 - (NSImage *) pluginIcon
 {
   NSImage *icon;
-    
+  
   // Check the cache for composited icons
   icon = [self _cachedIconForVariant: IKIconVariantPlugin];
   if (icon != nil)
@@ -250,7 +254,7 @@ static NSFileManager *fileManager = nil;
   icon = [self _compositeIconForVariant: IKIconVariantPlugin];
   if (icon != nil)
     [self _cacheIcon: icon forVariant: IKIconVariantPlugin];
-    
+  
   return icon;
 }
 
@@ -333,7 +337,7 @@ static NSFileManager *fileManager = nil;
         compositor = 
           [[IKCompositor alloc] initWithImage: [self _blankDocumentIcon]];
         break;
-        
+      
       case IKIconVariantPlugin:
         compositor = 
           [[IKCompositor alloc] initWithImage: [self _blankPluginIcon]];
@@ -345,7 +349,7 @@ static NSFileManager *fileManager = nil;
     }
   
   [compositor compositeImage: [self applicationIcon] 
-                withPosition: IKCompositedImagePositionBottomRight];   
+                withPosition: IKCompositedImagePositionBottomRight];
   return [compositor render]; 
 }
 
@@ -360,17 +364,21 @@ static NSFileManager *fileManager = nil;
 - (NSString *) _compositedIconsPath
 {
   NSArray *locations = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, 
-    NSLocalDomainMask, YES);
+    NSUserDomainMask, YES); 
+  // NOTE: We cannot use NSLocalDomainMask without authorization, then we stick
+  // to User domain now.
   NSString *path;
   
   if ([locations count] == 0)
     {
+      NSLog(@"No location found to put composited icons path");
       // Raise exception
     }
   
-  path = [locations objectAtIndex: 0];    
+  path = [locations objectAtIndex: 0];
   path = [path stringByAppendingPathComponent: @"Caches"];
   path = [path stringByAppendingPathComponent: @"IconKit"];
+  
   return [path stringByAppendingPathComponent: @"Composited icons"];
 }
 
@@ -440,9 +448,11 @@ static NSFileManager *fileManager = nil;
   pathComponent = [[_identifier md5Hash] stringByAppendingPathExtension: @"tiff"];
   path = [path stringByAppendingPathComponent: pathComponent];
   
+  NSLog(@"Try to retrieve cached icon at path: %@", path);
   if ([fileManager fileExistsAtPath: path isDirectory: &isDir] && !isDir)
     return AUTORELEASE([[NSImage alloc] initWithContentsOfFile: path]);
-    
+  
+  NSLog(@"Unable to retrieve or instantiate the icon cached at path: %@", path);
   return nil;
 }
 
@@ -534,6 +544,8 @@ static NSFileManager *fileManager = nil;
   pathComponent = [[_identifier md5Hash] stringByAppendingPathExtension: @"tiff"]; 
   path = [path stringByAppendingPathComponent: pathComponent];
   data = [icon TIFFRepresentation];
+  
+  NSLog(@"Cache icon at path: %@", path);
   [data writeToFile: path atomically: YES];
 }
 
@@ -559,17 +571,19 @@ static NSFileManager *fileManager = nil;
   NSString *subpath;
   
   path = [self _compositedIconsPath];
+  NSLog(@"Trying to create directory structure for cache at path: %@", path);
   
   if ([fileManager buildDirectoryStructureForPath: path] == NO)
     return NO;
-    
+  
   subpath = [path stringByAppendingPathComponent: DOCUMENT_PATH_COMPONENT];
   if ([fileManager checkWithEventuallyCreatingDirectoryAtPath: subpath] == NO)
     return NO;
   subpath = [path stringByAppendingPathComponent: PLUGIN_PATH_COMPONENT];
   if ([fileManager checkWithEventuallyCreatingDirectoryAtPath: subpath] == NO)
     return NO;
-    
+  
+  NSLog(@"Successfully created directory structure for cache");
   return YES;
 }
 

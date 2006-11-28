@@ -5,7 +5,7 @@
 	and applied with the Icon Kit compositor
 
 	Copyright (C) 2004 Nicolas Roard <nicolas@roard.com>
-	                   Quentin Mathe <qmathe@club-internet.fr>	                   
+	                   Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Nicolas Roard <nicolas@roard.com>
 	          Quentin Mathe <qmathe@club-internet.fr>
