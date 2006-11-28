@@ -1,3 +1,9 @@
+2006-11-28  Quentin Mathe <qmathe@club-internet.fr>
+
+    * etoile.make: Modified to include better support for library/framework 
+    build. Now creates automatically a temporary header directory matching the 
+    project name.
+    
 2006-11-19  Quentin Mathe <qmathe@club-internet.fr>
 
     * Deprecated/Workspace: Moved Services/Private/Workspace here to deprecate
@@ -17,6 +23,7 @@
     * Frameworks/GNUmakefile: Updated to build PaneKit and not PreferencesKit
     anymore. This fixes repository compilation by the way.
 
+>>>>>>> .r1306
 2006-10-31  Quentin Mathe <qmathe@club-internet.fr>
 
     * Frameworks/GNUmakefile: Included EtoileFoundation, EtoileUI and 
