@@ -28,8 +28,14 @@
 #ifndef ICONKIT_ICONKIT_H
 #define ICONKIT_ICONKIT_H 1
 
-#include "IKIcon.h"
-#include "IKIconIdentifier.h"
-#include "IKWorkspaceAdditions.h"
+#include <IconKit/IKIcon.h>
+#include <IconKit/IKIconIdentifier.h>
+#include <IconKit/IKIconPositions.h>
+#include <IconKit/IKIconProvider.h>
+#include <IconKit/IKApplicationIconProvider.h>
+#include <IconKit/IKThumbnailProvider.h>
+#include <IconKit/IKCompositor.h>
+#include <IconKit/IKCompositorOperation.h>
+#include <IconKit/IKWorkspaceAdditions.h>
 
 #endif /*ICONKIT_IKICON_H*/

@@ -27,7 +27,10 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS += -Wno-import
-ADDITIONAL_INCLUDE_DIRS += -I../Headers
+# The last flag is to include the headers directory named IconKit and created 
+# by etoile.make
+ADDITIONAL_INCLUDE_DIRS += -I../Headers -I..
+
 # If we decide to move away from truncf as a GCC builtin function, it will be
 # mandatory to link C math lib.
 # ADDITIONAL_LDFLAGS = -lm 
@@ -87,21 +90,8 @@ libIconKit_C_FILES =
 #
 libIconKit_HEADER_FILES_DIR = ../Headers
 
-libIconKit_HEADERS = \
-	IKIcon.h \
-	IKCompositorOperation.h \
-	IKCompositor.h \
-	IKIconIdentifier.h \
-	IKIconPositions.h \
-	IKIconProvider.h \
-	IKApplicationIconProvider.h \
-	IKThumbnailProvider.h \
-	IKWorkspaceAdditions.h \
-	NSFileManager+IconKit.h \
-	NSString+MD5Hash.h
-
-ifeq ($(test), no)
-libIconKit_HEADER_FILES_INSTALL_DIR = /IconKit
+ifneq ($(test), yes)
+libIconKit_HEADER_FILES_INSTALL_DIR = IconKit
 
 libIconKit_HEADER_FILES = \
 	IconKit.h \

@@ -1,8 +1,13 @@
-2006-11-25  Quentin Mathe <qmathe@club-internet.fr>
+2006-11-28  Quentin Mathe <qmathe@club-internet.fr>
 
-	* Source/IKThumbnailProvider.m: Removed all PNG writing code since similar 
-	code is now part of gnustep-gui. Shut down every warnings.
-	* Source/GNUmakefile: Updated to include IKThumbnailProvider in the build.
+	* Headers/IKIcon.h:
+	* Headers/IKCompositor.h:
+	* Headers/IconKit.h:
+	Fixed headers import within the library and updated the umbrella header to 
+	include more headers. This allows to use the library now (previously project
+	compilation would have failed on header import).
+	* Source/GNUmakefile: Updated to install headers even if 'test' isn't set to 
+	'no'. Removed headers related lines which serve no purpose.
 
 2006-11-02  Quentin Mathe <qmathe@club-internet.fr>
 

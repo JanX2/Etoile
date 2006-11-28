@@ -26,8 +26,8 @@
 */
 
 #import <AppKit/AppKit.h>
-#import "IKIconIdentifier.h"
-#import "IKIconPositions.h"
+#import <IconKit/IKIconIdentifier.h>
+#import <IconKit/IKIconPositions.h>
 
 // Notifications:
 extern NSString *IKIconChangedNotification;  // Sent with the IKIcon as the object whenever update is called.

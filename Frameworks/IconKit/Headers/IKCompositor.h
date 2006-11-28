@@ -28,7 +28,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import "IKCompositorOperation.h"
+#import <IconKit/IKCompositorOperation.h>
 
 @interface IKCompositor : NSObject
 {
