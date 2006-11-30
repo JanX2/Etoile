@@ -1,3 +1,14 @@
+2005-11-30  Quentin Mathe <qmathe@club-internet.fr>
+    
+    * GNUmakefile.headers: 
+    * GNUmakefile.headers_build:
+    Removed.
+    * GNUmakefile:
+    * Source/GNUmakefile:
+    Streamlined GNUmakefiles to be simpler and match usual framework build 
+    support. As a side effect, the repository compilation is fixed (at least
+    at BookmarkKit level). Also a bug fix for #7889.
+
 2005-11-16  Quentin Mathe <qmathe@club-internet.fr>
     
     * GNUmakefile: Added etoile.make include in this makefile (this allows 
