@@ -1,5 +1,10 @@
 2006-11-30  Quentin Mathe <qmathe@club-internet.fr>
 
+    * etoile.make: Added automatic export of common variable values, so they 
+    are not repeated over and over in each module.
+
+2006-11-30  Quentin Mathe <qmathe@club-internet.fr>
+
     * etoile.make: Fixed /bin/sh complaining about a missing argument on line 
     7. This has been corrected by quoting $LIBRARY_NAME and $FRAMEWORK_NAME in
     the elif test which follows. This means an undefined variable results in an
