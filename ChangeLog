@@ -1,3 +1,11 @@
+2006-11-30  Quentin Mathe <qmathe@club-internet.fr>
+
+    * etoile.make: Fixed /bin/sh complaining about a missing argument on line 
+    7. This has been corrected by quoting $LIBRARY_NAME and $FRAMEWORK_NAME in
+    the elif test which follows. This means an undefined variable results in an
+    empty string and not anymore in 'no value at all' (the root of the issue).
+    Commented out debug logging.
+
 2006-11-28  Quentin Mathe <qmathe@club-internet.fr>
 
     * etoile.make: Modified to include better support for library/framework 
@@ -23,7 +31,6 @@
     * Frameworks/GNUmakefile: Updated to build PaneKit and not PreferencesKit
     anymore. This fixes repository compilation by the way.
 
->>>>>>> .r1306
 2006-10-31  Quentin Mathe <qmathe@club-internet.fr>
 
     * Frameworks/GNUmakefile: Included EtoileFoundation, EtoileUI and 
