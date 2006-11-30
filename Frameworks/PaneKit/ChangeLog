@@ -1,3 +1,13 @@
+2005-11-30  Quentin Mathe <qmathe@club-internet.fr>
+
+    * GNUmakefile.headers: 
+    * GNUmakefile.headers_build:
+    Removed.
+    * GNUmakefile:
+    * Source/GNUmakefile:
+    Streamlined GNUmakefiles to be simpler and match usual framework build 
+    support.
+
 2006-11-12  Yen-Ju Chen <yjchex gmail>
 
     * Source/PKPanesController.m: 
