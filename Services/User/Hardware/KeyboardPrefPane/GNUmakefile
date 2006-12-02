@@ -1,9 +1,5 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-ADDITIONAL_OBJCFLAGS = -Wno-import
-
-ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
-
 #
 # Main application
 #
@@ -16,8 +12,6 @@ KeyboardPrefPane_INSTALL_DIR =
 
 KeyboardPrefPane_PRINCIPAL_CLASS = KeyboardPrefPane
 KeyboardPrefPane_APPLICATION_ICON =
-
-KeyboardPrefPane_GUI_LIBS = -lPreferencesKit
 
 #
 # Resource files

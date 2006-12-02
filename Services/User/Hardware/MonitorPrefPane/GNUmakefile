@@ -1,9 +1,5 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-ADDITIONAL_OBJCFLAGS = -Wno-import
-
-ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
-
 #
 # Main application
 #
@@ -16,8 +12,6 @@ MonitorPrefPane_INSTALL_DIR =
 
 MonitorPrefPane_PRINCIPAL_CLASS = MonitorPrefPane
 MonitorPrefPane_APPLICATION_ICON =
-
-MonitorPrefPane_GUI_LIBS = -lPreferencesKit
 
 #
 # Resource files

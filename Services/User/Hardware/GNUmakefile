@@ -10,10 +10,6 @@ SUBPROJECTS = \
 	SoundPrefPane \
 	StartupPrefPane
 
-ADDITIONAL_OBJCFLAGS = -Wno-import
-
-ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
-
 ADDITIONAL_INSTALL_DIRS = PlugIns
 
 #
@@ -24,8 +20,6 @@ VERSION = 0.1
 
 Hardware_PRINCIPAL_CLASS = NSApplication
 Hardware_APPLICATION_ICON =
-
-Hardware_GUI_LIBS = -lPreferencesKit
 
 #
 # Resource files
@@ -66,5 +60,6 @@ Hardware_C_FILES =
 
 include $(GNUSTEP_MAKEFILES)/application.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
+-include ../../../etoile.make
 
 -include GNUmakefile.postamble

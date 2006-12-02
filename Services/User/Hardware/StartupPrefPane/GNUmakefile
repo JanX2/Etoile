@@ -1,9 +1,5 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-ADDITIONAL_OBJCFLAGS = -Wno-import
-
-ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
-
 #
 # Main application
 #
@@ -16,8 +12,6 @@ StartupPrefPane_INSTALL_DIR =
 
 StartupPrefPane_PRINCIPAL_CLASS = StartupPrefPane
 StartupPrefPane_APPLICATION_ICON =
-
-StartupPrefPane_GUI_LIBS = -lPreferencesKit
 
 #
 # Resource files

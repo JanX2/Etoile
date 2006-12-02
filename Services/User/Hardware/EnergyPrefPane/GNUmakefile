@@ -1,9 +1,5 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-ADDITIONAL_OBJCFLAGS = -Wno-import
-
-ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
-
 #
 # Main application
 #
@@ -16,8 +12,6 @@ EnergyPrefPane_INSTALL_DIR =
 
 EnergyPrefPane_PRINCIPAL_CLASS = EnergyPrefPane
 EnergyPrefPane_APPLICATION_ICON =
-
-EnergyPrefPane_GUI_LIBS = -lPreferencesKit
 
 #
 # Resource files

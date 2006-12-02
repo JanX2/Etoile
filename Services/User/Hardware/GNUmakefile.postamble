@@ -2,21 +2,8 @@
 # Makefile for Hardware
 #
 
-ifeq ($(debug), yes)
-	extension = debug
-else
-	extension = app
-endif
-
 before-all::
-	$(ECHO_NOTHING) \
-	echo "Build Project: $(PROJECT_DIR)"; \
-	echo ""; \
-	rm -f $(PROJECT_DIR)/PreferencesKit; \
-	$(LN_S) $(PROJECT_DIR)/../../../Frameworks/PreferencesKit/Headers $(PROJECT_DIR)/PreferencesKit; \
-	echo " Imported PreferencesKit dependency"; \
-	echo ""; \
-	$(END_ECHO)
+
 
 after-all::
 	mkdir -p $(CURDIR)/Hardware.$(extension)/PlugIns; \
@@ -29,16 +16,6 @@ after-all::
 	$(CURDIR)/Hardware.$(extension)/PlugIns/; \
 
 after-clean::
-	$(ECHO_NOTHING) \
-	echo ""; \
-	rm -f $(PROJECT_DIR)/PreferencesKit; \
-	echo " Removed PreferencesKit dependency import"; \
-	$(END_ECHO)
 
 after-distclean::
-	$(ECHO_NOTHING) \
-	echo ""; \
-	rm -f $(PROJECT_DIR)/PreferencesKit; \
-	echo " Removed PreferencesKit dependency import"; \
-	$(END_ECHO)
-	
+

@@ -1,9 +1,5 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-ADDITIONAL_OBJCFLAGS = -Wno-import
-
-ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
-
 #
 # Main application
 #
@@ -16,8 +12,6 @@ MousePrefPane_INSTALL_DIR =
 
 MousePrefPane_PRINCIPAL_CLASS = MousePrefPane
 MousePrefPane_APPLICATION_ICON =
-
-MousePrefPane_GUI_LIBS = -lPreferencesKit
 
 #
 # Resource files

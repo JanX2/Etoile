@@ -1,9 +1,5 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-ADDITIONAL_OBJCFLAGS = -Wno-import
-
-ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
-
 #
 # Main application
 #
@@ -16,8 +12,6 @@ SoundPrefPane_INSTALL_DIR =
 
 SoundPrefPane_PRINCIPAL_CLASS = SoundPrefPane
 SoundPrefPane_APPLICATION_ICON =
-
-SoundPrefPane_GUI_LIBS = -lPreferencesKit
 
 #
 # Resource files
