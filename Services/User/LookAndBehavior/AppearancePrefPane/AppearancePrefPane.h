@@ -24,7 +24,7 @@ Pane</abstract>
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#import <PreferencesKit/PreferencesKit.h>
+#import <PaneKit/PaneKit.h>
 
 
 @interface AppearancePrefPane : NSPreferencePane 

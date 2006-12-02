@@ -4,10 +4,6 @@ PACKAGE_NAME = LookAndBehavior
 
 SUBPROJECTS = AppearancePrefPane LanguagesPrefPane
 
-ADDITIONAL_OBJCFLAGS = -Wno-import
-
-ADDITIONAL_INCLUDE_DIRS = -I$(GNUSTEP_SYSTEM_ROOT)/Library/Headers/
-
 ADDITIONAL_INSTALL_DIRS = PlugIns
 
 #
@@ -18,8 +14,6 @@ VERSION = 0.1
 
 LookAndBehavior_PRINCIPAL_CLASS = NSApplication
 LookAndBehavior_APPLICATION_ICON =
-
-LookAndBehavior_GUI_LIBS = -lPreferencesKit
 
 #
 # Resource files
@@ -60,5 +54,6 @@ LookAndBehavior_C_FILES =
 
 include $(GNUSTEP_MAKEFILES)/application.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
+-include ../../../etoile.make
 
 -include GNUmakefile.postamble

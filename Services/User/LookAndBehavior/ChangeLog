@@ -1,3 +1,15 @@
+2006-12-02  Quentin Mathe <qmathe@club-internet.fr>
+
+    * GNUmakefile:
+    * GNUmakefile.preamble:
+    * GNUmakefile.postamble:
+    * LanguagesPrefPane/GNUmakefile:
+    * AppearancePrefPane/GNUmakefile:
+    Fixed compilation by taking in account PreferencesKit has been replaced by 
+    PaneKit. Included etoile.make, then removed various variables or rules not 
+    needed anymore since they are now handled directly by it. Put PaneKit
+    link directive in the shared GNUmakefile.preamble.
+
 2006-08-08  Quentin Mathe <qmathe@club-internet.fr>
 
     * MainMenu.gorm: Recreated "corrupted" gorm file to have the window title 
