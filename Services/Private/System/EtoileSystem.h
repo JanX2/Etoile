@@ -40,9 +40,9 @@
     LaunchPath                  NSString
     Arguments                   NSString
     UserName (or Identity)      NSString
-    OnDemand                    NSNumber/BOOL (0 is NO and 1 is YES)
-    Persistent                  NSNumber/BOOL (0 is NO and 1 is YES)
-    Hidden                      NSNumber/BOOL (0 is NO and 1 is YES)
+    OnDemand                    NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
+    Persistent                  NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
+    Hidden                      NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
 
     A 'Persistent' process is a task which is restarted on system boot if it
     was already running during the previous session. It is usually bound to 

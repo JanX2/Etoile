@@ -363,30 +363,11 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
         [self findConfigFileAndStartUpdateMonitoring];
         if (configFilePath != nil)
         {
+            /* We register the core processes */
+            // FIXME: Takes care to standardize Etoile core processes naming scheme.
             [self synchronizeProcessesWithConfigFile];
         }
-         
-        /* We register the core processes */
-        // FIXME: Takes care to standardize Etoile core processes naming scheme
-        // and probably handle this stuff by declaring the processes in the 
-        // config file.
-        /* [_processes setObject: [SCTask taskWithLaunchPath: @"gdomap" onDemand: NO withUserName: @"root"] 
-            forKey: @"/etoilesystem/tool/gdomap"]; */
-        /*[_processes setObject: [SCTask taskWithLaunchPath: @"gpbs"] 
-            forKey: @"/etoilesystem/tool/gpbs"];
-        [_processes setObject: [SCTask taskWithLaunchPath: @"gdnc"] 
-            forKey: @"/etoilesystem/tool/gdnc"];
-        [_processes setObject: [SCTask taskWithLaunchPath: @"Azalea"] 
-            forKey: @"/etoilesystem/application/azalea"];
-        [_processes setObject: [SCTask taskWithLaunchPath: @"etoile_objectServer"] 
-            forKey: @"/etoilesystem/application/menuserver"];
-        [_processes setObject: [SCTask taskWithLaunchPath: @"etoile_userSession"] 
-            forKey: @"/etoilesystem/application/menuserver"];
-        [_processes setObject: [SCTask taskWithLaunchPath: @"etoile_windowServer"] 
-            forKey: @"/etoilesystem/application/menuserver"];*/
-        [_processes setObject: [SCTask taskWithLaunchPath: @"EtoileMenuServer"] 
-            forKey: @"/etoilesystem/application/menuserver"];
-        
+
         return self;
     }
     
@@ -704,6 +685,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 {
     NSString *tmp;
     NSString *configPath;
+	NSString *suffix;
     NSEnumerator *e;
     NSMutableArray *searchPaths = [NSMutableArray array];
     NSFileManager *fm = [NSFileManager defaultManager];
@@ -716,14 +698,12 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
         [searchPaths addObject: [tmp stringByExpandingTildeInPath]];
     }
     
-    #define SUFFIX_PROC_SET_PATH(__X) [[(__X) \
-    stringByAppendingPathComponent: @"Etoile"] \
-    stringByAppendingPathComponent: @"SystemTaskList.plist"]
+	suffix = [@"Etoile" stringByAppendingPathComponent: @"SystemTaskList.plist"];
     // if that fails, try
     // $GNUSTEP_USER_ROOT/Library/EtoileWorkspace/WorkspaceProcessSet.plist
     tmp = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
         NSUserDomainMask, YES) objectAtIndex: 0];
-    [searchPaths addObject: SUFFIX_PROC_SET_PATH(tmp)];
+	[searchPaths addObject: [tmp stringByAppendingPathComponent: suffix]];
     
     // and if that fails, try all domains
     e = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
@@ -731,9 +711,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
         objectEnumerator];
     while ((tmp = [e nextObject]) != nil)
     {
-        [searchPaths addObject: SUFFIX_PROC_SET_PATH(tmp)];
+		[searchPaths addObject: [tmp stringByAppendingPathComponent: suffix]];
     }
-    #undef SUFFIX_PROC_SET_PATH
     
     // finally, try the application bundle's WorkspaceProcessSet.plist resource
     tmp = [[NSBundle mainBundle] pathForResource: @"SystemTaskList"
@@ -850,7 +829,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     }
     else
     {
-        NSLog(_(@"WARNING: unable to read SystemTaskTable file."));
+        NSLog(_(@"WARNING: unable to read SystemTaskList file."));
     }
 
     ASSIGN(modificationDate, [fileAttributes fileModificationDate]);

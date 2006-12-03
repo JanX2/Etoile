@@ -1,0 +1,38 @@
+{
+	/etoilesystem/tool/gpbs = 
+	{
+		LaunchPath = "gpbs";
+		Arguments = ();
+		UserName = "";
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/tool/gdnc = 
+	{
+		LaunchPath = "gdnc";
+		Arguments = ();
+		UserName = "";
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+    /etoilesystem/application/menuserver =
+	{
+		LaunchPath = "EtoileMenuServer";
+		Arguments = ();
+		UserName = "";
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/application/azalea =
+	{
+		LaunchPath = "Azalea";
+		Arguments = ();
+		UserName = "";
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+}

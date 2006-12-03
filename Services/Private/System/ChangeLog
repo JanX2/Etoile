@@ -1,3 +1,12 @@
+2006-12-03  Quentin Mathe <qmathe@club-internet.fr>
+
+	* EtoileWorkspaceServerInfo.plist: Removed.
+	* SystemTaskList.plist: Added.
+	* EtoileSystem.h:
+	* EtoileSystem.m: 
+	Updated to use SystemTaskList (the system tasks aren't harcoded anymore in 
+	SCSystem).
+
 2006-10-27  Quentin Mathe <qmathe@club-internet.fr>
 
 	* WorkspaceCommKit/GNUmakefile.preamble: Modified to redefine PROJECT_DIR 
