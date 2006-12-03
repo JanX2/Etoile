@@ -1,3 +1,10 @@
+2006-12-03  Quentin Mathe <qmathe@club-internet.fr>
+
+    * setup.sh:
+    * setdown.sh:
+    Updated both scripts to support System/SystemTaskList.plist deployment. 
+    This is important, otherwise etoile_system won't launch any processes.
+    
 2006-11-30  Quentin Mathe <qmathe@club-internet.fr>
 
     * etoile.make: Added automatic export of common variable values, so they 
