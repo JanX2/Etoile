@@ -27,6 +27,14 @@
 
 @interface NSMenu (HorizontalHackery)
 - (void) _organizeMenu;
+
+- (void) setGeometry;
+
+// invokes -setGeometry - the '_setGeometry' method is used by newer
+// GNUstep editions to adjust the menu window's position, so we need
+// to override that decision
+- (void) _setGeometry;
+
 @end
 
 #endif

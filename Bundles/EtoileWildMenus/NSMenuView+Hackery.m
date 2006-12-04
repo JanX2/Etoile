@@ -416,6 +416,11 @@ enum {
   PSstroke();
 }
 
+- (void) setFrame: (NSRect) r
+{
+  [super setFrame: r];
+}
+
 - (void) mouseDown: (NSEvent*)theEvent
 {
   NSRect	currentFrame;
@@ -428,7 +433,6 @@ enum {
    * to remember the position.
    */ 
   restorePosition = ![_attachedMenu isTransient];
-
   if (restorePosition)
     { // store old position;
       originalFrame = [_window frame];

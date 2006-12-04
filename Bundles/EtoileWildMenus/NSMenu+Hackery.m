@@ -101,6 +101,11 @@
     }
 }
 
+- (void) _setGeometry
+{
+  [self setGeometry];
+}
+
 - (void)setGeometry
 {
   NSPoint origin;
@@ -234,4 +239,5 @@
       [itemsToMove release];
     }
 }
+
 @end

@@ -67,26 +67,6 @@ typedef struct _GSCellRect {
   [super dealloc];
 }
 
-- (void) setMenu: (NSMenu*)menu
-{
-  [super setMenu: menu];
-
-  {
-    /* regenerate all the necessary cells */
-    int i, n;
-    for (i = 0, n = [[[self menu] itemArray] count]; i < n; i++)
-      {
-  	NSDictionary *d = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt: i]
-          forKey: @"NSMenuItemIndex"];
-
-        [self itemAdded: [NSNotification
-                 notificationWithName: NSMenuDidAddItemNotification
-                 object: self
-                 userInfo: d]];
-      }
-  }
-}
-
 - (void) itemAdded: (NSNotification*)notification
 {
   int         index  = [[[notification userInfo] 
@@ -129,6 +109,11 @@ typedef struct _GSCellRect {
 
   // Mark the menu view as needing to be resized.
   [self setNeedsSizing: YES];
+}
+
+- (void) setFrame: (NSRect) r
+{
+  [super setFrame: r];
 }
 
 - (void) sizeToFit
