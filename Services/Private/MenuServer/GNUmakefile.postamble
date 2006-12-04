@@ -42,4 +42,4 @@ after-all::
 	echo "Copying system bar entries into app wrapper..." && \
 	find Subprojects -name '*.sysbarentry' -exec cp -r '{}' '$(APP_NAME).app/Resources' ';' && \
 	echo "Purging bogus SVN entries from app..." && \
-	find "$(APP_NAME)" -type d -name '.svn' $(FIND_ARGS) | xargs $(XARGS_ARGS) /bin/rm -rf
+	find "$(APP_NAME)".app -type d -name '.svn' $(FIND_ARGS) | xargs $(XARGS_ARGS) /bin/rm -rf
