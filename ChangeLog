@@ -1,3 +1,13 @@
+2006-12-06  Quentin Mathe <qmathe@club-internet.fr>
+
+    * setup.sh:
+    * setdown.sh:
+    Updated both scripts to link libXWindowServerKit.so and 
+    libWorkspaceCommKit.so in /usr/lib. This is rather ugly but necessary
+    for my next System update. This commit also includes the draft code based
+    on ldconfig (as suggested by Richard Frith-Macdonald). This commented out 
+    code should ultimately replace my ugly hack.
+
 2006-12-03  Quentin Mathe <qmathe@club-internet.fr>
 
     * setup.sh:
