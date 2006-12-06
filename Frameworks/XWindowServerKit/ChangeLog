@@ -1,3 +1,9 @@
+2006-12-06  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Install by default in SYSTEM domain (done with 
+	GNUSTEP_SYSTEM_DOMAIN extension recently added to gnustep-make and not 
+	yet released).
+
 2006-11-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Remove warnings for GCC-4.1.
