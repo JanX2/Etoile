@@ -1,3 +1,39 @@
+2006-12-06  Quentin Mathe <qmathe@club-internet.fr>
+
+	* ApplicationManager.h:
+	* ApplicationManager.m:
+	New ivars waitedApplications, terminateLaterTimers, terminateAllLock.
+	(-dealloc):
+	(-init:):
+	ivars related update.
+	(-checkTerminatingLaterApplicationWithName:): New method to check delayed
+	replies and triggered by a timer bound to each application requesting later
+	termination.
+	(-gracefullyTerminateAllApplicationsOnOperation:): Renamed
+	-terminateAllApplicationsOnOperation:. Lot of work to have a proper log out
+	support with a delay when an application doesn't reply, before cancelling 
+	the log out. Still work in progress and not yet enabled.
+	* EtoileSystem.h:
+	* EtoileSystem.m: 
+	Major SCTask rewrite to avoid opentool and openapp for launching. Now smart
+	enough to find the executable even with a simple app or tool name.
+	(-[SCTask launchWithOpentoolUtility]):
+	(-[SCTask launchWithOpenappUtility]):
+	Removed.
+	(-[SCTask launchForDomain:]): Cleant to match the changes.
+	(-[SCTask pathForName:): New method.
+	(-[SCTask taskWithLaunchPath:onDemand:withUserName:]): Made smarter :-)...
+	specially by looking for executable in application bundle. 
+	(-stopProcessWithDomain:error:): Modified to terminate tasks more carefully
+	and added log statements for debugging purpose.
+	(-gracefullyTerminateAllProcessesOnOperation:): Renamed
+	-terminateAllProcessesOnOperation: and fixed broken behavior by simply 
+	using -stopProcessWithDomain:error:.
+	(-logOutAndPowerOff:): Fixed limited log out support currently available. 
+	Modified to support asynchronous replies needed by ApplicationManager.
+	(-replyToLogOutOrPowerOff:): New method called asynchronously by 
+	ApplicationManager to let System knows it should finish or cancel log out.
+
 2006-12-03  Quentin Mathe <qmathe@club-internet.fr>
 
 	* EtoileWorkspaceServerInfo.plist: Removed.

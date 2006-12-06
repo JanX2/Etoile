@@ -45,6 +45,7 @@
 
 - (BOOL) applicationShouldTerminateOnOperation: (NSString *) operation;
 - (oneway void) reallyTerminateApplication;
+- (void) checkTerminatingLaterApplicationWithName: (NSString *)appName;
 
 @end
 
@@ -67,6 +68,9 @@ static ApplicationManager * shared = nil;
   [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver: self];
 
   TEST_RELEASE (launchedApplications);
+  TEST_RELEASE (waitedApplications);
+  TEST_RELEASE (terminateLaterTimers);
+  TEST_RELEASE (terminateAllLock);
 
   [super dealloc];
 }
@@ -79,6 +83,9 @@ static ApplicationManager * shared = nil;
       NSInvocation * inv;
 
       launchedApplications = [NSMutableDictionary new];
+      waitedApplications = [NSMutableDictionary new];
+      terminateLaterTimers = [NSMutableDictionary new];
+      terminateAllLock = [NSLock new];
 
       nc = [[NSWorkspace sharedWorkspace] notificationCenter];
       [nc addObserver: self
@@ -217,12 +224,22 @@ static ApplicationManager * shared = nil;
  * @return YES if the workspace can power off, NO if it can't (some
  * application requested to stop the poweroff operation).
  */
-- (BOOL) gracefullyTerminateAllApplicationsOnOperation: (NSString *) operation
+- (void) terminateAllApplicationsOnOperation: (NSString *) operation
 {
+	if([terminateAllLock tryLock] == NO)
+		return;
+
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   NSArray * ommitedApps = [[SCSystem serverInstance] maskedProcesses];
   NSEnumerator * e = [launchedApplications objectEnumerator];
   NSDictionary * appEntry;
   NSWorkspace * ws = [NSWorkspace sharedWorkspace];
+  SCSystem *system = [SCSystem serverInstance];
+  NSInvocation *inv = nil;
+
+  /* We clean waited applications list to be sure it's really empty */
+  [waitedApplications removeAllObjects];
+  [terminateLaterTimers removeAllObjects];
 
   while ((appEntry = [e nextObject]) != nil)
     {
@@ -230,7 +247,7 @@ static ApplicationManager * shared = nil;
       NSApplicationTerminateReply reply;
       id app;
 
-      // skip workspace process apps
+      // Skip System tasks
       if ([ommitedApps containsObject: appName])
         {
           continue;
@@ -249,35 +266,86 @@ static ApplicationManager * shared = nil;
         }
 
       NS_DURING
-        NSLog(@"TTT Sending -applicationShouldTerminateOnOperation: to app: %@",
+        NSLog(@"Sending -applicationShouldTerminate to app: %@",
           appName);
-        reply = [app applicationShouldTerminateOnOperation: operation];
-        NSLog(@"TTT app %@ replied %i", appName, reply);
+        //reply = [app applicationShouldTerminateOnOperation: operation];
+        reply = [[app delegate] applicationShouldTerminate: nil];
+        NSLog(@"App %@ replied %i", appName, reply);
       NS_HANDLER
-        NSLog(_(@"Error gracefully terminating application %@: %@. "
+        /* NSLog(_(@"Error gracefully terminating application %@: %@. "
                 @"I'm killing it."), appName, [localException reason]);
         kill ([[appEntry objectForKey: @"NSApplicationProcessIdentifier"]
-          intValue], SIGKILL);
+          intValue], SIGKILL); */
+        reply = NSTerminateNow;
 
         continue;
       NS_ENDHANDLER
 
       switch (reply)
         {
-          // TODO - implement NSTerminateLater
         case NSTerminateLater:
+          [waitedApplications setObject: app forKey: appName];
+          //inv = NS_MESSAGE(self, checkTerminatingLaterApplicationWithName:, appName, nil);
+          inv = [[NSInvocation alloc] initWithTarget: self selector: 
+            @selector(checkTerminatingLaterApplicationWithName:), appName, nil];
+          [inv autorelease];
+          [inv setArgument: appName atIndex: 2];
+          [terminateLaterTimers setObject: [NSTimer 
+            scheduledTimerWithTimeInterval: 30.0 invocation: inv repeats: NO]
+            forKey: appName];
+          break;
         case NSTerminateCancel:
-          NSLog(@"TTT cancelling operation");
-          return NO;
+          NSLog(@"Cancelling terminate operation");
+          [system replyToLogOutOrPowerOff: appName];
+          break;
         case NSTerminateNow:
-          NSLog(@"TTT proceeding with shut down of app %@", appName);
-          [app reallyTerminateApplication];
-          NSLog(@"TTT app %@ shut down", appName);
+          NSLog(@"Proceeding with termination of app %@", appName);
+          //[app reallyTerminateApplication];
+          [app terminate: nil];
+          NSLog(@"App %@ terminates", appName);
           break;
         }
     }
+  
+  // FIXME: We should wait each application has fully exited before proceding furthermore.
 
-  return YES;
+  // Every applications have been gracefully terminated, we can log out or 
+  // power off without worries.
+  [system performSelectorOnMainThread: @selector(replyToLogOutOrPowerOff:)
+    withObject: nil waitUntilDone: NO];
+  [pool release];
+  [terminateAllLock unlock];
+}
+
+- (void) checkTerminatingLaterApplicationWithName: (NSString *)appName
+{
+	id app = [waitedApplications objectForKey: appName];
+	NSApplicationTerminateReply reply;
+
+	[terminateLaterTimers removeObjectForKey: appName];
+
+	NS_DURING
+		NSLog(@"Sending -applicationShouldTerminate to app terminating later: %@",
+			appName);
+		//reply = [app applicationShouldTerminateOnOperation: operation];
+		reply = [[app delegate] applicationShouldTerminate: nil];
+		NSLog(@"App terminating later %@ replied %i", appName, reply);
+	NS_HANDLER
+		reply = NSTerminateNow;
+	NS_ENDHANDLER
+
+	[waitedApplications removeObjectForKey: appName];
+
+	if (reply == NSTerminateNow)
+	{
+		[app terminate];
+	}
+	else /* NSTerminateCancel or NSTerminateLater */
+	{
+		[[SCSystem serverInstance] performSelectorOnMainThread: 
+			@selector(replyToLogOutOrPowerOff:) withObject: appName 
+			waitUntilDone: NO];
+	}
 }
 
 @end

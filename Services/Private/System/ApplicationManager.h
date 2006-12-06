@@ -63,6 +63,10 @@
    * which died and could do it.
    */
   NSTimer * autocheckTimer;
+  
+  NSMutableDictionary *waitedApplications;
+  NSMutableDictionary *terminateLaterTimers;
+  NSLock *terminateAllLock;
 }
 
 + sharedInstance;
@@ -73,6 +77,6 @@
 - (void) noteApplicationTerminated: (NSNotification *) notif;
 - (void) checkLiveApplications;
 
-- (BOOL) gracefullyTerminateAllApplicationsOnOperation: (NSString *) operation;
+- (void) terminateAllApplicationsOnOperation: (NSString *) operation;
 
 @end

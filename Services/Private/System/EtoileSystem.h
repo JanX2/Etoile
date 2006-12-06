@@ -76,9 +76,10 @@ extern NSString * const EtoileSystemServerName;
 - (void) saveConfigList;
 
 - (NSArray *) maskedProcesses;
-- (BOOL) gracefullyTerminateAllProcessesOnOperation: (NSString *)op;
+- (BOOL) terminateAllProcessesOnOperation: (NSString *)op;
 
 - (oneway void) logOutAndPowerOff: (BOOL) powerOff;
+- (void) replyToLogOutOrPowerOff: (NSString *)appName;
 
 /* SCSystem server daemon set up methods */
 

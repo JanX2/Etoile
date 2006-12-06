@@ -68,6 +68,8 @@ static id proxyInstance = nil;
 static NSString *SCSystemNamespace = nil;
 NSString * const EtoileSystemServerName = @"etoile_system";
 
+static BOOL powerOffRequested = NO;
+
 /* NSError related extensions */
 
 NSString * const EtoileSystemErrorDomain =
@@ -137,8 +139,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
 @interface SCTask : NSConcreteUnixTask // NSConcreteTask
 {
-	NSString *path; /* The real path of the task, not the one of the launch 
-	                   wrapper like opentool. */
+    NSString *path; /* The path initially given to the task (or deduced when a 
+                       name was passed) */
     NSString *launchIdentity;
     BOOL launchOnDemand;
     BOOL hidden;
@@ -148,11 +150,10 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 + (SCTask *) taskWithLaunchPath: (NSString *)path;
 + (SCTask *) taskWithLaunchPath: (NSString *)path onDemand: (BOOL)lazily withUserName: (NSString *)user;
 
-- (void) launchWithOpentoolUtility;
-- (void) launchWithOpenappUtility;
 - (void) launchForDomain: (NSString *)domain;
 
 - (NSString *) name;
+- (NSString *) path;
 
 - (BOOL) launchOnDemand;
 - (BOOL) isHidden;
@@ -163,6 +164,49 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
 @implementation SCTask
 
++ (NSString *) pathForName: (NSString *)name
+{
+    NSMutableArray *searchPaths = [NSMutableArray array];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSEnumerator *e;
+    NSString *path = nil;
+    BOOL isDir;
+
+    [searchPaths addObjectsFromArray: 
+        NSSearchPathForDirectoriesInDomains(NSApplicationDirectory, 
+        NSAllDomainsMask, YES)];
+
+    [searchPaths addObjectsFromArray: 
+        NSSearchPathForDirectoriesInDomains(GSToolsDirectory, 
+        NSAllDomainsMask, YES)];
+
+    NSLog(@"Searching for tool or application inside paths: %@", searchPaths);
+
+    e = [searchPaths objectEnumerator];
+    while ((path = [e nextObject]) != nil)
+    {
+        /* -stringByStandardizingPath removes double-slash, they occurs when 
+           GNUSTEP_SYSTEM_ROOT is equal to '/' */
+        path = [[path stringByAppendingPathComponent: name] stringByStandardizingPath];
+        
+        if ([fm fileExistsAtPath: path isDirectory: &isDir])
+        {
+            NSLog(@"Found tool or application at path: %@", path);
+            return path;
+        }
+
+        path = [path stringByAppendingPathExtension: @"app"];
+
+        if ([fm fileExistsAtPath: path isDirectory: &isDir])
+        {
+            NSLog(@"Found tool or application at path: %@", path);
+            return path;
+        }
+    }
+
+    return nil;
+}
+
 + (SCTask *) taskWithLaunchPath: (NSString *)path
 {
     return [self taskWithLaunchPath: path onDemand: NO withUserName: nil];
@@ -172,9 +216,49 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     withUserName: (NSString *)identity
 {
     SCTask *newTask = [[SCTask alloc] init];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    BOOL isDir;
     
-    [newTask setLaunchPath: path];
-    ASSIGN(newTask->path, path);
+    /* If a name has been given as the launch path, we try to convert it to a 
+       path. */
+    if ([[path pathComponents] count] == 1)
+    {
+        NSString *pathFound = [SCTask pathForName: path];
+
+        if (pathFound != nil)
+        {
+            ASSIGN(newTask->path, pathFound);
+        }
+        else
+        {
+            NSLog(@"SCTask does not found a path for tool or application name: %@", path);
+        }
+    }
+    else
+    {
+        ASSIGN(newTask->path, path);
+    }
+    /* We check whether the launch path references an executable path or just
+       a directory which could be a potential application bundle. */
+    if ([fm fileExistsAtPath: [newTask path] isDirectory: &isDir] && isDir)
+    {
+        NSBundle *bundle = [NSBundle bundleWithPath: [newTask path]];
+        
+        if (bundle != nil)
+        {
+            [newTask setLaunchPath: [bundle executablePath]];
+        }
+        else
+        {
+            NSLog(@"Failed to create an SCTask with launch path %@ because it \
+                does not reference an application bundle.");
+        }
+    }
+    else
+    {
+        [newTask setLaunchPath: [newTask path]];
+    }
+
     ASSIGN(newTask->launchIdentity, identity);
     
     newTask->launchOnDemand = lazily;
@@ -192,43 +276,12 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	[super dealloc];
 }
 
-// - (void) launchWithOpenUtility
-
-- (void) launchWithOpentoolUtility
-{
-    NSArray *args = [NSArray arrayWithObjects: [self launchPath], nil];
-    
-    [self setLaunchPath: @"opentool"];
-    [self setArguments: args];
-    [self launch];
-}
-
-- (void) launchWithOpenappUtility
-{
-    NSArray *args = [NSArray arrayWithObjects: [self launchPath], nil];
-    
-    [self setLaunchPath: @"openapp"];
-    [self setArguments: args];
-    [self launch];
-}
-
 - (void) launchForDomain: (NSString *)domain
 {
     /* At later point, we should check the domain to take in account security.
        Domains having usually an associated permissions level. */
 
-    if ([domain hasPrefix: @"/etoilesystem/tool"])
-    {
-        [self launchWithOpentoolUtility];
-    }
-    else if ([domain hasPrefix: @"/etoilesystem/application"])
-    {
-        [self launchWithOpenappUtility];
-    }
-    else
-    {
-        [self launch]; // NOTE: Not sure we should do it
-    }
+    [self launch];
 
     stopped = NO;
 
@@ -244,9 +297,9 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
         } */
 }
 
-/** Returns the real path of the task, not the modified launch path which 
-    includes opentool/openapp launch wrapper. This allows to get the true task 
-    name without hurdles. */
+/** Returns the path used to create the task, it is identical to launch 
+    path most of time, unless the path given initially references an 
+    application bundle and not an executable path directly. */
 - (NSString *) path
 {
 	return [[path copy] autorelease];
@@ -437,7 +490,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	}
 
 	NSDebugLLog(@"SCSystem", @"Trying to start process %@ associated with domain %@", 
-		[process launchPath], domain);
+		[process path], domain);
 		
     if ([process isRunning])
 	{
@@ -458,7 +511,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
         [process launchForDomain: domain];
     NS_HANDLER
         SetNonNullError (error, EtoileSystemTaskLaunchingError,
-            _(@"Error launching program at %@: %@"), [process launchPath],
+            _(@"Error launching program at %@: %@"), [process path],
             [localException reason]);
 
         return NO;
@@ -490,9 +543,24 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 {
     NSTask *process = [_processes objectForKey: domain];
     
+	NSDebugLLog(@"SCSystem", @"Trying to terminate process %@ with domain %@", 
+		[process launchPath], domain);
+
     if ([process isRunning])
     {
-        [process terminate];
+		NSDebugLLog(@"SCSystem", @"Terminating process now");
+
+		NS_DURING
+			[process terminate];
+    	NS_HANDLER
+			NSLog(@"Failed to terminate process %@ with domain %@", 
+				[process launchPath], domain);
+			/* SetNonNullError (error, EtoileSystemTaskTerminatingError,
+				 _(@"Error terminating program at %@: %@"), [process path],
+					[localException reason]); */
+		NS_ENDHANDLER
+		
+		/* Now check termination status. If the process is still alive, we kill it. */
 
         /* We check the process has been really terminated before saying so. */
         if ([process isRunning] == NO)
@@ -560,57 +628,64 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
  * @return YES if the log out/power off operation can proceed, NO
  *      if an app requested the operation to be halted.
  */
-- (BOOL) gracefullyTerminateAllProcessesOnOperation: (NSString *)op
+- (BOOL) terminateAllProcessesOnOperation: (NSString *)op
 {
-	SCTask *processToEnd = nil;
+	NSEnumerator *e = [[_processes allKeys] objectEnumerator];
+	NSString *domain = nil;
+	BOOL stoppedAll = NO;
 	
-	while ((processToEnd = [[_processes allValues] lastObject]) != nil)
+	while ((domain = [e nextObject]) != nil)
 	{
-		NSDebugLLog(@"SCSystem", @"Terminating process %@ associated with domain %@", [processToEnd launchPath], @"");
-		
-		NS_DURING
-			[processToEnd terminate];
-    	NS_HANDLER
-			/* SetNonNullError (error, EtoileSystemTaskTerminatingError,
-				 _(@"Error terminating program at %@: %@"), [process launchPath],
-					[localException reason]); */
-		NS_ENDHANDLER
-		
-		/* Now check termination status. If the process is still alive, we kill it. */
+		stoppedAll = [self stopProcessWithDomain: domain error: NULL];
 	}
 	
-  return YES;
+  return stoppedAll;
 }
 
 - (oneway void) logOutAndPowerOff: (BOOL) powerOff
 {
-  NSString * operation;
-  
-  NSDebugLLog(@"SCSystem", @"Log out requested");
+	NSString * operation;
 
-  if (powerOff == NO)
-    {
-      operation = _(@"Log Out");
-    }
-  else
-    {
-      operation = _(@"Power Off");
-    }
+	NSDebugLLog(@"SCSystem", @"Log out requested");
 
-  // close all apps and afterwards workspace processes gracefully
-    if ([[ApplicationManager sharedInstance]
-      gracefullyTerminateAllApplicationsOnOperation: operation] &&
-      [self gracefullyTerminateAllProcessesOnOperation: operation])
-    {
-      if (powerOff)
-        {
-          // TODO - initiate the power off process here
-        }
+	if (powerOff == NO)
+	{
+		operation = _(@"Log Out");
+	}
+	else
+	{
+		operation = _(@"Power Off");
+		powerOffRequested = YES;
+	}
 
-      // and go away
-      //[NSApp terminate: self];
-      exit(0);
-    }
+	// Ask to close all applications gracefully and wait for a reply
+	/*[NSThread detachNewThreadSelector: @selector(terminateAllApplicationsOnOperation:) 
+		toTarget: [ApplicationManager sharedInstance] withObject: operation];*/
+	[self replyToLogOutOrPowerOff: nil];
+}
+
+- (void) replyToLogOutOrPowerOff: (NSString *)appName
+{
+	if (appName == nil)
+	{
+		// All applications have been terminated, time to terminate our own tasks
+		BOOL end = [self terminateAllProcessesOnOperation: nil];
+		
+		if (powerOffRequested)
+		{
+          // TODO: initiate the power off process here
+		}
+
+		// Time to put an end to our own life.
+		exit(0);
+	}
+	else
+	{
+		NSRunAlertPanel (_(@"Log out or shut down cancelled"),
+			_(@"Service %@ does not reply or quit in the 1 minute delay available \
+				after asking to do so."),
+              nil, nil, nil, appName);
+	}
 }
 
 @end
@@ -642,7 +717,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
             _(@"Failed to launch the process \"%@\"\n"
             @"Reason: %@.\n"),
             _(@"Log Out"), _(@"Retry"), _(@"Ignore"),
-            [[_processes objectForKey: domain] launchPath],
+            [[_processes objectForKey: domain] path],
             [[error userInfo] objectForKey: NSLocalizedDescriptionKey]);
     
         switch (result)
