@@ -1,57 +1,77 @@
 #! /usr/bin/env ioobjc
 
+
 ObjcBridge autoLookupClassNamesOn
 
 buffer := ""
 memory := 0.0
 operator := ""
 
-Controller := NSObject newSubclassNamed:("Controller")
-Controller setOutput: := method(sender, self output := sender)
-Controller add: := method(sender,
-  self compute:(sender)
-  operator = "+"
+[NSObject newSubclassNamed:"Controller"] do(
+	[addVariableNamed:"output"]
+	setSlot("add:",
+		method(sender,
+			[self compute:sender]
+			operator = "+"
+		)
+	)
+	setSlot("compute:",
+		method(sender,
+			if(operator == "", memory = self output doubleValue)
+			if(operator == "+", memory = memory + self output doubleValue)
+			if(operator == "-", memory = memory - self output doubleValue)
+			if(operator == "*", memory = memory * self output doubleValue)
+			if(operator == "/", memory = memory / self output doubleValue)
+			if(operator == "sqrt", memory = self output doubleValue sqrt)
+			[self output setFloatValue:memory]
+			operator = ""
+			buffer = ""
+		)
+	)
+	setSlot("clear:",
+		method(sender,
+			[self output setFloatValue:0.0]
+			buffer = ""
+			memory = 0
+		)
+	)
+	setSlot("digit:",
+		method(sender,
+			buffer = buffer .. sender tag
+			[self output setStringValue:buffer]
+		)
+	)
+	setSlot("div:",
+		method(sender,
+			[self compute:sender]
+			operator = "/"
+		)
+	)
+	setSlot("dot:",
+		method(sender,
+			buffer = buffer .. "."
+			[self output setStringValue:buffer]
+		)
+	)
+	setSlot("mul:",
+		method(sender,
+			[self compute:sender]
+			operator = "*"
+		)
+	)
+	setSlot("sub:",
+		method(sender,
+			[self compute:sender]
+			operator = "-"
+		)
+	)
+	setSlot("sqrt:",
+		method(sender,
+			operator = "sqrt"
+			[self compute:sender]
+		)
+	)
+	setSlot("windowWillClose:", method(notification, [NSApplication sharedApplication stop:notification]))
 )
-Controller compute: := method(sender,
-  if(operator == "", memory = self output doubleValue)
-  if(operator == "+", memory = memory + self output doubleValue)
-  if(operator == "-", memory = memory - self output doubleValue)
-  if(operator == "*", memory = memory * self output doubleValue)
-  if(operator == "/", memory = memory / self output doubleValue)
-  if(operator == "sqrt", memory = self output doubleValue sqrt)
-  self output setFloatValue:(memory)
-  operator = ""
-  buffer = ""
-)
-Controller clear: := method(sender,
-  self output setFloatValue:(0.0)
-  buffer = ""
-  memory = 0
-)
-Controller digit: := method(sender,
-  buffer = buffer .. sender tag
-  self output setStringValue:(buffer)
-)
-Controller div: := method(sender,
-  self compute:(sender)
-  operator = "/"
-)
-Controller dot: := method(sender,
-  buffer = buffer .. "."
-  self output setStringValue:(buffer)
-)
-Controller mul: := method(sender,
-  self compute:(sender)
-  operator = "*"
-)
-Controller sub: := method(sender,
-  self compute:(sender)
-  operator = "-"
-)
-Controller sqrt: := method(sender,
-  operator = "sqrt"
-  self compute:(sender)
-)
-Controller windowWillClose: := method(notification, NSApplication sharedApplication stop:(notification))
 
 ObjcBridge main
