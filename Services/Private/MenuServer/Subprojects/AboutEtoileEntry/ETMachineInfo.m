@@ -177,7 +177,9 @@ humanReadableNumber (double value, unsigned int unitScale, NSString *unit,
  * - '(R)' sequences are removed
  * - '(TM)' sequences are removed
  * - 'processor' sequences are removed
+ * - converts a tab character to a single space
  * - if a 'CPU' word is found, it is stripped and anything that follows it.
+ * - sequences of spaces are reduced to a single space
  *
  * @return The cleaned CPU name.
  */
@@ -201,6 +203,7 @@ humanReadableNumber (double value, unsigned int unitScale, NSString *unit,
                             withString: @""
                                options: NSCaseInsensitiveSearch
                                  range: NSMakeRange (0, [name length])];
+      [name replaceString: @"\t" withString: @" "];
 
       cpuStringRange = [name rangeOfString: @"CPU"];
       if (cpuStringRange.location != NSNotFound)
@@ -208,6 +211,20 @@ humanReadableNumber (double value, unsigned int unitScale, NSString *unit,
           [name deleteCharactersInRange:
             NSMakeRange (cpuStringRange.location,
                          [name length] - cpuStringRange.location)];
+        }
+      
+      int i, n;
+      
+      for (i = 0, n = [name length]; i < n; i++)
+        {
+          unichar c = [name characterAtIndex: i];
+          
+          if (c == ' ' && i < n - 1 && [name characterAtIndex: i + 1] == ' ')
+            {
+              [name deleteCharactersInRange: NSMakeRange (i, 1)];
+              i--;
+              n--;
+            }
         }
 
       return name;
