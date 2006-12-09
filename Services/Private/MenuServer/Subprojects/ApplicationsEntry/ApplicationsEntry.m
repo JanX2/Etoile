@@ -28,9 +28,11 @@
 #import <Foundation/NSDebug.h>
 #import <Foundation/NSException.h>
 #import <Foundation/NSHost.h>
+#import <Foundation/NSInvocation.h>
 #import <Foundation/NSNotification.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSUserDefaults.h>
+#import <Foundation/NSValue.h>
 
 #import <AppKit/NSApplication.h>
 #import <AppKit/NSButton.h>
@@ -49,6 +51,8 @@
 #import <errno.h>
 #import <string.h>
 
+#import "CheckProcessExists.h"
+
 //#import <WorkspaceCommKit/WorkspaceCommKit.h>
 
 @implementation ApplicationsEntry
@@ -57,10 +61,14 @@
 {
   [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver: self];
 
-  TEST_RELEASE(launchedApplications);
+  TEST_RELEASE (launchedApplications);
+  TEST_RELEASE (sortedAppNames);
 
-  TEST_RELEASE(menuItem);
-  TEST_RELEASE(menu);
+  TEST_RELEASE (menuItem);
+  TEST_RELEASE (menu);
+
+  [autocheckTimer invalidate];
+  TEST_RELEASE (autocheckTimer);
 
   [super dealloc];
 }
@@ -71,15 +79,28 @@
     {
       NSNotificationCenter * nc = [[NSWorkspace sharedWorkspace]
         notificationCenter];
+      NSInvocation * inv;
+
+      launchedApplications = [NSMutableArray new];
+      sortedAppNames = [NSMutableArray new];
 
       [nc addObserver: self
-             selector: @selector(noteAppListChanged:)
+             selector: @selector(noteAppLaunched:)
                  name: NSWorkspaceDidLaunchApplicationNotification
                object: nil];
       [nc addObserver: self
-             selector: @selector(noteAppListChanged:)
+             selector: @selector(noteAppTerminated:)
                  name: NSWorkspaceDidTerminateApplicationNotification
                object: nil];
+
+      inv = [NSInvocation invocationWithMethodSignature: [self
+        methodSignatureForSelector: @selector (checkRunningApps)]];
+      [inv setTarget: self];
+      [inv setSelector: @selector (checkRunningApps)];
+      
+      ASSIGN (autocheckTimer, [NSTimer scheduledTimerWithTimeInterval: 1.0
+                                                           invocation: inv
+                                                              repeats: YES]);
     }
 
   return self;
@@ -88,6 +109,13 @@
 - (id <NSMenuItem>) menuItem
 {
   NSMenuItem * item;
+  NSEnumerator * e;
+  NSDictionary * appInfo;
+
+  if (menuItem != nil)
+    {
+      return menuItem;
+    }
 
   // build the Applications -> Applications menu item and submenu
   menuItem = [[NSMenuItem alloc]
@@ -111,89 +139,56 @@
 
 //  [menu addItem: [NSMenuItem separatorItem]];
 
-  // synthetize the first app change so that we load the initial list
-  [self noteAppListChanged: nil];
+  e = [[[NSWorkspace sharedWorkspace] launchedApplications] objectEnumerator];
+  while ((appInfo = [e nextObject]) != nil)
+    {
+      [self noteAppLaunched: [NSNotification
+        notificationWithName: NSWorkspaceDidLaunchApplicationNotification
+                      object: self
+                    userInfo: appInfo]];
+    }
+//  [self noteAppListChanged: nil];
 
   return menuItem;
 }
 
-- (void) noteAppListChanged: (NSNotification *) notif
+- (void) noteAppLaunched: (NSNotification *) notif
 {
-  NSWorkspace * ws = [NSWorkspace sharedWorkspace];
-  NSArray * newAppList = [ws launchedApplications];
-  NSArray * oldAppNames, * newAppNames;
-  int oldAppCount, newAppCount;
-
-  oldAppNames = [launchedApplications valueForKey: @"NSApplicationName"];
-  oldAppCount = [oldAppNames count];
-
-  newAppNames = [newAppList valueForKey: @"NSApplicationName"];
-  newAppCount = [newAppNames count];
-
-  NSDebugLLog(@"ApplicationsEntry", @"Running apps list changed to: %@",
-    newAppNames);
-
-  // apps have been launched
-  if (newAppCount > oldAppCount)
+  NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+  NSDictionary * appInfo = [notif userInfo];
+  NSString * appName = [appInfo objectForKey: @"NSApplicationName"];
+  NSString * appPath = [appInfo objectForKey: @"NSApplicationPath"];
+  NSImage * icon = [[[ws iconForFile: appPath] copy] autorelease];
+  NSNumber * pid = [appInfo objectForKey: @"NSApplicationProcessIdentifier"];
+  NSMenuItem * appMenuItem;
+  int index;
+  
+  // don't accept duplicate entries
+  if ([[launchedApplications valueForKey: @"NSApplicationProcessIdentifier"]
+    indexOfObject: pid] != NSNotFound)
     {
-      int i, n;
-
-      if (oldAppCount == 0)
-        {
-          [menu insertItem: [NSMenuItem separatorItem] atIndex: 0];
-        }
-
-      for (i = 0, n = [newAppNames count]; i < n; i++)
-        {
-          NSString * appName = [newAppNames objectAtIndex: i];
-
-          if (![oldAppNames containsObject: appName])
-            {
-              NSString * appPath = [[newAppList objectAtIndex: i]
-                objectForKey: @"NSApplicationPath"];
-              NSImage * icon = [[[ws iconForFile: appPath] copy] autorelease];
-              NSMenuItem * appMenuItem;
-
-              [icon setScalesWhenResized: YES];
-              [icon setSize: NSMakeSize(18, 18)];
-
-              appMenuItem = [[[NSMenuItem alloc]
-                initWithTitle: appName
-                       action: @selector(activateApplication:)
-                keyEquivalent: nil]
-                autorelease];
-              [appMenuItem setTarget: self];
-              [appMenuItem setImage: icon];
-
-              [menu insertItem: appMenuItem atIndex: i];
-            }
-        }
-    }
-  // apps have been terminated
-  else if (newAppCount < oldAppCount)
-    {
-      int i, n;
-
-      for (i = 0, n = [oldAppNames count]; i < n; i++)
-        {
-          NSString * appName = [oldAppNames objectAtIndex: i];
-
-          if (![newAppNames containsObject: appName])
-            {
-              [menu removeItemAtIndex: i];
-            }
-        }
-
-      // remove the unneeded menu item separator
-      if (newAppCount == 0)
-        {
-          [menu removeItemAtIndex: 0];
-        }
+      return;
     }
 
+  [icon setScalesWhenResized: YES];
+  [icon setSize: NSMakeSize(18, 18)];
+
+  appMenuItem = [[[NSMenuItem alloc]
+    initWithTitle: appName
+           action: @selector(activateApplication:)
+    keyEquivalent: nil]
+    autorelease];
+  [appMenuItem setTarget: self];
+  [appMenuItem setImage: icon];
+
+  [sortedAppNames addObject: appName];
+  [sortedAppNames sortUsingSelector: @selector (caseInsensitiveCompare:)];
+  index = [sortedAppNames indexOfObject: appName];
+
+  [launchedApplications insertObject: [notif userInfo] atIndex: index];
+
+  [menu insertItem: appMenuItem atIndex: index];
   [menu sizeToFit];
-
-  ASSIGN(launchedApplications, newAppList);
 
   if (window != nil)
     {
@@ -201,6 +196,51 @@
 
       [appTable reloadData];
       [self showApplication: self];
+    }
+}
+
+- (void) noteAppTerminated: (NSNotification *) notif
+{
+  NSDictionary * appInfo = [notif userInfo];
+  int index = [launchedApplications indexOfObject: appInfo],
+      index2 = [sortedAppNames indexOfObject: [appInfo objectForKey:
+        @"NSApplicationName"]];
+
+  if (index != NSNotFound)
+    {
+      [launchedApplications removeObjectAtIndex: index];
+      [sortedAppNames removeObjectAtIndex: index2];
+      [menu removeItemAtIndex: index2];
+    }
+
+  if (window != nil)
+    {
+      // refresh the interface if necessary
+
+      [appTable reloadData];
+      [self showApplication: self];
+    }
+}
+
+- (void) checkRunningApps
+{
+  int i, n;
+  
+  for (i = 0, n = [launchedApplications count]; i < n; i++)
+    {
+      NSDictionary * appInfo = [launchedApplications objectAtIndex: i];
+      int pid = [[appInfo objectForKey: @"NSApplicationProcessIdentifier"]
+        intValue];
+      
+      if (!CheckProcessExists (pid))
+        {
+          [self noteAppTerminated: [NSNotification
+            notificationWithName: NSWorkspaceDidTerminateApplicationNotification
+                          object: self
+                        userInfo: appInfo]];
+          i--;
+          n--;
+        }
     }
 }
 
@@ -333,8 +373,7 @@
 objectValueForTableColumn: (NSTableColumn *)aTableColumn
              row: (int)rowIndex
 {
-  return [[launchedApplications objectAtIndex: rowIndex]
-    objectForKey: @"NSApplicationName"];
+  return [sortedAppNames objectAtIndex: rowIndex];
 }
 
 @end

@@ -1,5 +1,11 @@
 2006-12-09  Saso Kiselkov <skiselkov@gmail.com>
 
+    * Subprojects/ApplicationsEntry/ApplicationsEntry.h:
+    * Subprojects/ApplicationsEntry/ApplicationsEntry.m:
+    * Subprojects/ApplicationsEntry/GNUmakefile:
+    * Subprojects/ApplicationsEntry/GNUmakefile.preamble:
+    * Subprojects/ApplicationsEntry/ApplicationsEntry.pmproj: Implemented
+      fixes to make application tracking work again.
     * Subprojects/AboutEtoileEntry/ETMachineInfo.m: Added CPU name formatting
       rules to strip unneeded whitespace.
 

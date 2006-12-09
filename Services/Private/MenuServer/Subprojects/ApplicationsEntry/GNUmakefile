@@ -18,6 +18,7 @@ endif
 BUNDLE_NAME = ApplicationsEntry
 
 ApplicationsEntry_OBJC_FILES = ApplicationsEntry.m \
+CheckProcessExists.m \
 
 ApplicationsEntry_OBJCC_FILES = 
 ApplicationsEntry_C_FILES = 

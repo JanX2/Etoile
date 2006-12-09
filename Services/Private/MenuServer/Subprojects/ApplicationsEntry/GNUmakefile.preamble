@@ -5,3 +5,24 @@ BUNDLE_EXTENSION=.sysbarentry
 $(BUNDLE_NAME)_STANDARD_INSTALL=no
 
 ADDITIONAL_OBJCFLAGS += -Wno-unused
+
+ifeq ($(findstring freebsd, $(GNUSTEP_TARGET_OS)), freebsd)
+  ADDITIONAL_OBJCFLAGS += -DFREEBSD
+endif
+
+ifeq ($(findstring openbsd, $(GNUSTEP_TARGET_OS)), openbsd)
+  ADDITIONAL_OBJCFLAGS += -DOPENBSD
+endif
+
+ifeq ($(findstring darwin, $(GNUSTEP_TARGET_OS)), darwin)
+  ADDITIONAL_OBJCFLAGS += -DDARWIN
+endif
+
+ifeq ($(findstring solaris, $(GNUSTEP_TARGET_OS)), solaris)
+  ADDITIONAL_OBJCFLAGS += -DSOLARIS
+#  ADDITIONAL_LDFLAGS += -lkstat
+endif
+
+ifeq ($(findstring gnu, $(GNUSTEP_TARGET_OS)), gnu)
+  ADDITIONAL_OBJCFLAGS += -DLINUX
+endif

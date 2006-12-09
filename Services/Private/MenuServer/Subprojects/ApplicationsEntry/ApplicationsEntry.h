@@ -33,13 +33,17 @@
        NSTableColumn,
        NSImageView,
        NSTextField,
-       NSButton;
+       NSButton,
+       NSMutableArray,
+       NSTimer;
 
 @class NSNotification;
 
 @interface ApplicationsEntry : NSObject <EtoileSystemBarEntry>
 {
-  NSArray * launchedApplications;
+  NSMutableArray * launchedApplications;
+  NSMutableArray * sortedAppNames;
+  NSTimer * autocheckTimer;
 
   NSMenuItem * menuItem;
   NSMenu * menu;
@@ -55,7 +59,10 @@
   IBOutlet NSButton * killButton;
 }
 
-- (void) noteAppListChanged: (NSNotification *) notif;
+- (void) noteAppLaunched: (NSNotification *) notif;
+- (void) noteAppTerminated: (NSNotification *) notif;
+
+- (void) checkRunningApps;
 
 - (void) showApplicationsPanel: sender;
 

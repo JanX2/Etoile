@@ -17,6 +17,10 @@
 			{
 			    Name = ApplicationsEntry.h;
 			    Type = Plain;
+			},
+			{
+			    Name = CheckProcessExists.h;
+			    Type = Plain;
 			}
 		    );
 		    Name = "Header Files";
@@ -24,6 +28,10 @@
 		},
 		{
 		    Contents = (
+			{
+			    Name = CheckProcessExists.m;
+			    Type = Plain;
+			}
 		    );
 		    Name = "Other Source Files";
 		    Type = Category;
@@ -106,7 +114,8 @@
     ProjectTypeData = {
 	Authors = (
 	);
-	MakefileHash = <*I"-329690070">;
+	MakefileHash = <*I1540306489>;
     };
+    ProjectWindowFrame = "{x = 102; y = 158; width = 671; height = 564}";
     Version = 0.2;
 }
