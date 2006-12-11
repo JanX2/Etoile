@@ -1,3 +1,9 @@
+2006-12-11  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Bundles/GNUmakefile: Updated to include EtoileBehavior in the build 
+    process.
+    * setup.sh: Modified to set EtoileBehavior as an AppKit bundle with defaults.
+
 2006-12-06  Quentin Mathe <qmathe@club-internet.fr>
 
     * setup.sh:
