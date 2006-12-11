@@ -28,7 +28,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ApplicationManager : NSObject
+@protocol SCSession
+- (oneway void) replyToTerminate: (int)reply info: (NSDictionary *)info;
+@end
+
+
+@interface ApplicationManager : NSObject <SCSession>
 {
   /**
    * This dictionary holds information about all launched applications.
@@ -64,19 +69,24 @@
    */
   NSTimer * autocheckTimer;
   
+  /* Log out related ivars */
   NSMutableDictionary *waitedApplications;
-  NSMutableDictionary *terminateLaterTimers;
-  NSLock *terminateAllLock;
+  NSMutableArray *terminateLaterTimers;
+  NSLock *replyLock;
+  BOOL logOut;
 }
 
 + sharedInstance;
 
 - (NSArray *) launchedApplications;
+- (NSArray *) userApplications;
 
 - (void) noteApplicationLaunched: (NSNotification *) notif;
 - (void) noteApplicationTerminated: (NSNotification *) notif;
 - (void) checkLiveApplications;
 
 - (void) terminateAllApplicationsOnOperation: (NSString *) operation;
+
++ (BOOL) setUpServerInstance: (id)instance;
 
 @end

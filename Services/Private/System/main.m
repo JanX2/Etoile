@@ -45,7 +45,7 @@ int main(int argc, const char * argv[])
     [etoileSystem run];
 
     NSLog(@"Starting Etoile system server run loop");
-    [runLoop run];
+    //[runLoop run];
     NSLog(@"Exiting Etoile system server run loop");
 
 	DESTROY(runLoop);

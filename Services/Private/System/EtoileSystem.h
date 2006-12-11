@@ -59,6 +59,10 @@ extern NSString * const EtoileSystemServerName;
     NSTimer *monitoringTimer;
     NSString *configFilePath;
     NSDate *modificationDate;
+	
+	/* DO support */
+	//NSConnection *serverConnection;
+	NSConnection *clientConnection;
 }
 
 + (SCSystem *) sharedInstance;
@@ -79,7 +83,7 @@ extern NSString * const EtoileSystemServerName;
 - (BOOL) terminateAllProcessesOnOperation: (NSString *)op;
 
 - (oneway void) logOutAndPowerOff: (BOOL) powerOff;
-- (void) replyToLogOutOrPowerOff: (NSString *)appName;
+- (void) replyToLogOutOrPowerOff: (NSDictionary *)info;
 
 /* SCSystem server daemon set up methods */
 

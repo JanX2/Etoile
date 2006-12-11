@@ -64,6 +64,7 @@
 
 
 static id serverInstance = nil;
+static NSConnection *serverConnection = nil;
 static id proxyInstance = nil;
 static NSString *SCSystemNamespace = nil;
 NSString * const EtoileSystemServerName = @"etoile_system";
@@ -308,8 +309,21 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 /** Returns the name of the task executable based on -path value. */
 - (NSString *) name
 {
-	NSString *name = 
-		[[NSFileManager defaultManager] displayNameAtPath: [self path]];
+	NSString *name = nil;
+	NSBundle *bundle = [NSBundle bundleWithPath: [self path]];
+	NSDictionary *info = [bundle infoDictionary];
+
+	name = [info objectForKey: @"ApplicationName"];
+	
+	if (name == nil)
+		name = [info objectForKey: @"CFBundleName"];
+
+	if (name == nil)
+		name = [[NSFileManager defaultManager] displayNameAtPath: [bundle executablePath]];
+
+	/* A last fallback that should always work */
+	if (name == nil)
+		name = [[NSFileManager defaultManager] displayNameAtPath: [self path]];
 
 	return name;
 }
@@ -369,10 +383,11 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	ASSIGN(serverInstance, instance);
 
 	/* Finish set up by exporting server instance through DO */
-	NSConnection *theConnection = [NSConnection defaultConnection];
+	serverConnection = [[NSConnection alloc] 
+		initWithReceivePort: [NSPort port] sendPort: [NSPort port]];
 	
-	[theConnection setRootObject: instance];
-	if ([theConnection registerName: SCSystemNamespace] == NO) 
+	[serverConnection setRootObject: instance];
+	if ([serverConnection registerName: SCSystemNamespace] == NO) 
 	{
 		// FIXME: Take in account errors here.
 		NSLog(@"Unable to register the system namespace %@ with DO", 
@@ -380,7 +395,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
 		return NO;
 	}
-	[theConnection setDelegate: self];
+	[serverConnection setDelegate: self];
 	
 	NSLog(@"Setting up SCSystem server instance");
 	
@@ -456,6 +471,9 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     /* We trigger the ApplicationManager singleton creation in order it 
        starts to monitor user applications. The return value is ignored. */
     [ApplicationManager sharedInstance];
+    /* We trigger the NSApplication singleton creation in order we can use
+       UI stuff like window, panel etc. The return value is ignored. */
+    [[NSApplication sharedApplication] run];
 }
 
 // - (BOOL) startProcessWithDomain: (NSString *)domain 
@@ -607,6 +625,10 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
             [NSMutableArray arrayWithCapacity: [_processes count]];
     NSEnumerator *e = [_processes objectEnumerator];
     SCTask *processesEntry;
+
+	/* Don't forget to add myself else ApplicationManager will kill us on log 
+	   out or shut down. */
+	[array addObject: @"etoile_system"];
     
     while ((processesEntry = [e nextObject]) != nil)
     {
@@ -659,13 +681,18 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	}
 
 	// Ask to close all applications gracefully and wait for a reply
-	/*[NSThread detachNewThreadSelector: @selector(terminateAllApplicationsOnOperation:) 
-		toTarget: [ApplicationManager sharedInstance] withObject: operation];*/
-	[self replyToLogOutOrPowerOff: nil];
+	//[NSThread detachNewThreadSelector: @selector(terminateAllApplicationsOnOperation:) 
+	//	toTarget: [ApplicationManager sharedInstance] withObject: operation];
+	[[ApplicationManager sharedInstance] terminateAllApplicationsOnOperation: operation];
 }
 
-- (void) replyToLogOutOrPowerOff: (NSString *)appName
+- (void) replyToLogOutOrPowerOff: (NSDictionary *)info
 {
+	NSString *appName = [info objectForKey: @"NSApplicationName"];
+	NSString *replyText = [info objectForKey: @"Reply"];
+
+	NSDebugLLog(@"SCSystem", @"Log out reply info: %@", info);
+
 	if (appName == nil)
 	{
 		// All applications have been terminated, time to terminate our own tasks
@@ -681,10 +708,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	}
 	else
 	{
-		NSRunAlertPanel (_(@"Log out or shut down cancelled"),
-			_(@"Service %@ does not reply or quit in the 1 minute delay available \
-				after asking to do so."),
-              nil, nil, nil, appName);
+		NSRunAlertPanel(_(@"Log out or shut down cancelled"),
+			replyText, nil, nil, nil);
 	}
 }
 
