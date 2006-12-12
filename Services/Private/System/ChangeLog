@@ -1,3 +1,45 @@
+2006-12-11  Quentin Mathe <qmathe@club-internet.fr>
+
+	The commit r1334 introduces full log out support.
+	* ApplicationManager.h:
+	* ApplicationManager.m:
+	New SCSession protocol.
+	Removed terminateAllLock ivar. Added replyLock and logOut ivars.
+	Extended NSApplication informal protocol with Etoile category, it now
+	includes methods defined in EtoileBehavior.
+	(-dealloc):
+	(-init:):
+	ivars related update.
+	(+sharedIntance): Now returns instance created by +setUpServerInstance:.
+	This is temporary.
+	(+setUpServerInstance:):
+	(-userApplications): 
+	New methods.
+	(-noteApplicationTerminated:): Added code to finish the log out when the 
+	last running user application exits.
+	(-checkTerminatingLaterApplicationWithName:): Fixed and included clean up
+	code on log out cancellation.
+	(-terminateAllApplicationsOnOperation:): Finished the method that initiates
+	the log out. Reworked to act in a purely asynchronous way and match SCSession 
+	protocol implemented in EtoileBehavior.
+	(-replyToTerminate:info:): New method to let user applications reply to log
+	out request.
+	* EtoileSystem.h:
+	* EtoileSystem.m:
+	New ivars clientConnection and serverConnection (not yet used).
+	(-[SCTask name]): Updated to return application name with extension 
+	stripped out (this fixes applications tracking).
+	(+setUpServerInstance:): Modified to use our own connection rather than the
+	default one, this avoids any conflicts if we open more connections.
+	(-run): Modified to start NSApplication run loop, this is needed to display
+	alert panels.
+	(-maskedProcesses): Put ourself in masked processes.
+	(-logOutAndPowerOff:) Removed immediate call to -replyToLogOutOrPowerOff: 
+	in order to trigger the full log out procedure.
+	(-replyToLogOutOrPowerOff:): Now takes a dictionary as a parameter rather 
+	than a string. Error description is now picked in info parameter.
+	* main.m: Disabled our own run loop since we now use NSApplication one.
+
 2006-12-06  Quentin Mathe <qmathe@club-internet.fr>
 
 	* ApplicationManager.h:
