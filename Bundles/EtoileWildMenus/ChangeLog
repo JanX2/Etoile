@@ -1,3 +1,9 @@
+2006-12-15  Quentin Mathe <qmathe@club-internet.fr>
+
+    * GNUmakefile: Replaced GNUSTEP_INSTALLATION_DIR by recently added 
+     GNUSTEP_INSTALLATION_DOMAIN variable (will be available in next 
+     gnustep-make release).
+
 2006-12-04  Saso Kiselkov <skiselkov@gmail.com>
 
     * NSMenu+Hackery.m:
