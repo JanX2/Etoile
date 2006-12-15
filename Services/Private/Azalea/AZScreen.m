@@ -359,10 +359,12 @@ static AZScreen *sharedInstance;
 
     screen_last_desktop = old;
 
+#if 0
     [[NSDistributedNotificationCenter defaultCenter]
 	    postNotificationName: XCurrentWorkspaceDidChangeNotification
 	    object: nil];
     AZDebug("Moving to desktop %d\n", num+1);
+#endif
 
     AZMoveResizeHandler *mrHandler = [AZMoveResizeHandler defaultHandler];
     if ([mrHandler moveresize_client])
