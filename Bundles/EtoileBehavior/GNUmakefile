@@ -1,8 +1,8 @@
+GNUSTEP_INSTALLATION_DOMAIN = SYSTEM
+
 include $(GNUSTEP_MAKEFILES)/common.make
 
-GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
-
-BUNDLE_NAME=EtoileMenus
+BUNDLE_NAME = EtoileBehavior
 
 $(BUNDLE_NAME)_OBJC_FILES=$(wildcard *.m)
 
@@ -16,4 +16,5 @@ $(BUNDLE_NAME)_LOCALIZED_RESOURCE_FILES=$(sort $(notdir $(wildcard *.lproj/*)))
 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/bundle.make
+-include ../../etoile.make
 -include GNUmakefile.postamble
