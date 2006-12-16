@@ -1,3 +1,9 @@
+2006-12-16  Quentin Mathe <qmathe@club-internet.fr>
+
+	* SCTask.h:
+	* SCTask.m:
+	New files. Moved SCTask code out of EtoileSystem.m.
+
 2006-12-11  Quentin Mathe <qmathe@club-internet.fr>
 
 	The commit r1334 introduces full log out support.
