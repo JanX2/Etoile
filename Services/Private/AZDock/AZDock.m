@@ -258,8 +258,9 @@ static AZDock *sharedInstance;
     BOOL skip = NO;
 
     /* Do not manage my own window (AZDock.GNUstep) */
-    if ([self isMyWindow: win[i]] == YES)
-      skip = YES;
+    if ([self isMyWindow: win[i]] == YES) {
+      continue;
+    }
 
     /* Avoid _NET_WM_STATE_SKIP_PAGER and _NET_WM_STATE_SKIP_TASKBAR */
     if (win[i]) {
@@ -275,11 +276,14 @@ static AZDock *sharedInstance;
       }
     }
 
+    if (skip)
+      continue;
+
     /* Avoid transcient window */
     {
       Window tr = None;
       if (XGetTransientForHint(dpy, win[i], &tr)) {
-        skip = YES;
+        continue;
       }
     }
 
@@ -287,9 +291,37 @@ static AZDock *sharedInstance;
     BOOL result = XWindowClassHint(win[i], &wm_class, &wm_instance);
     if (result) {
       if ([wm_class isEqualToString: @"GNUstep"]) {
+        /* Check windown level */
+        int level;
+        if (XGNUstepWindowLevel(win[i], &level)) {
+          if (level == NSDesktopWindowLevel) {
+            continue;
+          } else if (level == NSFloatingWindowLevel) {
+            continue;
+          } else if (level == NSSubmenuWindowLevel) {
+            continue;
+          } else if (level == NSTornOffMenuWindowLevel) {
+            continue;
+#if 0 // Keep main menu for now
+          } else if (level == NSMainMenuWindowLevel) {
+            continue;
+#endif
+#if 0 // The same as NSDockWindowLevel. Keep it.
+          } else if (level == NSStatusWindowLevel) {
+            continue;
+#endif
+          } else if (level == NSModalPanelWindowLevel) {
+            continue;
+          } else if (level == NSPopUpMenuWindowLevel) {
+            continue;
+          } else if (level == NSScreenSaverWindowLevel) {
+            continue;
+          }
+        } 
+
 	if ([gnusteps containsObject: wm_instance]) {
           [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
-          skip = YES;
+          continue;
 	}
       }
     }

@@ -57,7 +57,7 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
     [window close];
     DESTROY(window);
   }
-  [self dealloc];
+  [super dealloc];
 }
 
 - (XWindow *) window

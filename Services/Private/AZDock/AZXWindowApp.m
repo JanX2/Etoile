@@ -159,7 +159,7 @@
   DESTROY(xwindows);
   DESTROY(wm_class);
   DESTROY(wm_instance);
-  [self dealloc];
+  [super dealloc];
 }
 
 - (unsigned int) numberOfXWindows
