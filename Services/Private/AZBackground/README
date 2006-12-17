@@ -1,0 +1,6 @@
+AZBackground
+============
+
+AZBackground allows drawing on root window.
+It treats root window as a NSWindow.
+
