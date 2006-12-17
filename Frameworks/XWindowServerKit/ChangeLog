@@ -1,3 +1,7 @@
+2006-12-16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+        * XFuncation: add XGNUstepWindowLevel() for gnustep window level;
+
 2006-12-06  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Install by default in SYSTEM domain (done with 

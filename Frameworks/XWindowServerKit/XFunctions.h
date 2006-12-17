@@ -57,3 +57,7 @@ BOOL XWindowIsIcon(Window win);
 /* Close a window (forcefully) */
 void XWindowCloseWindow(Window win, BOOL forcefully);
 
+/* Get GNUstep window level through x window system.
+ * Return NO if it is not a GNUstep window. */
+BOOL XGNUstepWindowLevel(Window win, int *level); 
+

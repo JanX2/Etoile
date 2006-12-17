@@ -29,6 +29,7 @@
 */
 
 #import "XFunctions.h"
+#import "gnustep.h"
 #import <X11/Xatom.h>
 #import <X11/Xutil.h>
 
@@ -254,5 +255,28 @@ void XWindowCloseWindow(Window win, BOOL forcefully)
       }
     }
   }
+}
+
+BOOL XGNUstepWindowLevel(Window win, int *level)
+{
+  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+
+  unsigned long *data;
+  Atom prop = XInternAtom(dpy, _GNUSTEP_WM_ATTR, False);
+  Atom type_ret;
+  int format_ret;
+  unsigned long after_ret, count;;
+  int result = XGetWindowProperty(dpy, win, prop,
+                                  0, 0x7FFFFFFF, False, prop,
+                                  &type_ret, &format_ret, &count,
+                                  &after_ret, (unsigned char **)&data);
+  if ((result == Success)) {
+    if (data[0] & GSWindowLevelAttr) {
+      *level = data[2];
+      
+      return YES;
+    }
+  }
+  return NO;
 }
 
