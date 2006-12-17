@@ -63,7 +63,7 @@ NSImage *XWindowIcon(Window window)
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
 
   unsigned long num;
-  unsigned long *data;
+  unsigned long *data = NULL;
   Atom prop = XInternAtom(dpy, "_NET_WM_ICON", False);
   Atom type_ret;
   int format_ret;
@@ -74,6 +74,9 @@ NSImage *XWindowIcon(Window window)
                                   &after_ret, (unsigned char **)&data);
   if ((result != Success)) {
     NSLog(@"Error: cannot get client icon");
+    if (data != NULL) {
+      XFree(data);
+    }
     return nil;
   }
 
@@ -83,6 +86,9 @@ NSImage *XWindowIcon(Window window)
     int size = width * height;
     if (2+size > num) {
       NSLog(@"Internal Error: icon size larger than return data.");
+      if (data != NULL) {
+        XFree(data);
+      }
       return nil;
     }
     /* Try to make a bitmap representation */
@@ -117,6 +123,9 @@ NSImage *XWindowIcon(Window window)
     DESTROY(rep);
     /* Should free buf */
   }
+  if (data != NULL) {
+    XFree(data);
+  }
   return icon;
 }
 
@@ -124,7 +133,7 @@ unsigned long XWindowState(Window win)
 {
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
 
-  unsigned long *data;
+  unsigned long *data = NULL;
   unsigned long count;
   Atom prop = XInternAtom(dpy, "WM_STATE", False);
   Atom type_ret;
@@ -136,8 +145,12 @@ unsigned long XWindowState(Window win)
                                   &after_ret, (unsigned char **)&data);
   if ((result != Success)) {
     NSLog(@"Error: cannot get client state");
+    if (data != NULL) {
+      XFree(data);
+    }
     return -1;
   }
+  // Free data ?
   return data[0];
 }
 
@@ -145,7 +158,7 @@ Atom *XWindowNetStates(Window win, unsigned long *count)
 {
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
 
-  Atom *data;
+  Atom *data = NULL;
   Atom prop = XInternAtom(dpy, "_NET_WM_STATE", False);
   Atom type_ret;
   int format_ret;
@@ -157,6 +170,9 @@ Atom *XWindowNetStates(Window win, unsigned long *count)
   if ((result != Success)) {
     NSLog(@"Error: cannot get net state of client");
     *count = 0;
+    if (data != NULL) {
+      XFree(data);
+    }
     return NULL;
   }
   return data;
@@ -219,7 +235,7 @@ void XWindowCloseWindow(Window win, BOOL forcefully)
     XKillClient(dpy, win);
   } 
 
-  Atom *data;
+  Atom *data = NULL;
   Atom prop = XInternAtom(dpy, "WM_PROTOCOLS", False);
   Atom delete_window = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
   Atom type_ret;
@@ -232,6 +248,9 @@ void XWindowCloseWindow(Window win, BOOL forcefully)
   if ((result != Success)) {
     NSLog(@"Cannot get wm_protocols of client. Quit forcefully.");
     // Do not support quit gracefully. Must be forcefully.
+    if (data != NULL) {
+      XFree(data);
+    }
     XKillClient(dpy, win);
   } else {
     int i;
@@ -255,13 +274,16 @@ void XWindowCloseWindow(Window win, BOOL forcefully)
       }
     }
   }
+  if (data != NULL) {
+    XFree(data);
+  }
 }
 
 BOOL XGNUstepWindowLevel(Window win, int *level)
 {
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
 
-  unsigned long *data;
+  unsigned long *data = NULL;
   Atom prop = XInternAtom(dpy, _GNUSTEP_WM_ATTR, False);
   Atom type_ret;
   int format_ret;
@@ -273,9 +295,14 @@ BOOL XGNUstepWindowLevel(Window win, int *level)
   if ((result == Success)) {
     if (data[0] & GSWindowLevelAttr) {
       *level = data[2];
-      
+      if (data != NULL) {
+        XFree(data);
+      }
       return YES;
     }
+  }
+  if (data != NULL) {
+    XFree(data);
   }
   return NO;
 }
