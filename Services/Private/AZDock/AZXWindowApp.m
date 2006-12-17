@@ -39,7 +39,9 @@
     XSetInputFocus(dpy, w, RevertToNone, CurrentTime);
   } else {
     /* Application is not running. Execute it */
-    [NSTask launchedTaskWithLaunchPath: command arguments: nil];
+    if (command) {
+      [NSTask launchedTaskWithLaunchPath: command arguments: nil];
+    }
   }
 }
 
