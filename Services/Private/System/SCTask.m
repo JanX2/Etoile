@@ -24,6 +24,11 @@
  */
 
 #import "SCTask.h"
+#import <math.h>
+
+@interface SCTask (Private)
+- (void) taskTerminated: (NSNotification *)notif;
+@end
 
 
 @implementation SCTask
@@ -128,16 +133,51 @@
     newTask->launchOnDemand = lazily;
     newTask->hidden = YES;
     newTask->stopped = NO;
+
+    [[NSNotificationCenter defaultCenter] addObserver: newTask
+        selector: @selector(taskTerminated:) 
+            name: NSTaskDidTerminateNotification
+          object: nil];
     
     return [newTask autorelease];
 }
 
+/** Returns a new task you can always launch and identical to aTask. The 
+    returned task can be launched even if aTask has already been launched. 
+    This is useful since SCTask as NSTask can be run only one time. */
++ (SCTask *) taskWithTask: (SCTask *)aTask
+{
+	SCTask *newTask = [SCTask taskWithLaunchPath: [aTask launchPath] 
+										onDemand: [aTask launchOnDemand] 
+									withUserName: nil];
+
+	[newTask setArguments: [aTask arguments]];
+	[newTask setCurrentDirectoryPath: [aTask currentDirectoryPath]];
+	[newTask setEnvironment: [aTask environment]];
+	[newTask setStandardError: [aTask standardError]];
+	[newTask setStandardInput: [aTask standardInput]];
+	[newTask setStandardOutput: [aTask standardOutput]];
+
+	newTask->launchFailureCount = aTask->launchFailureCount;
+
+	return newTask;
+}
+
 - (void) dealloc
 {
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
+
 	TEST_RELEASE(path);
 	TEST_RELEASE(launchIdentity);
+	TEST_RELEASE(launchDate);
 	
 	[super dealloc];
+}
+
+- (void) launch
+{
+	launchDate = [[NSDate alloc] init];
+	[super launch];
 }
 
 - (void) launchForDomain: (NSString *)domain
@@ -206,10 +246,43 @@
     return stopped;
 }
 
-- (void) terminate
+- (void) taskTerminated: (NSNotification *)notif
 {
-    stopped = YES;
-    [super terminate];
+	stopped = YES; 
+
+	/* We convert launch time to run duration */
+	// NOTE: -timeIntervalSinceNow returns a negative value in our case, 
+	// therefore we take the absolute value.
+	runTime = fabs([launchDate timeIntervalSinceNow]);
+	NSDebugLLog(@"SCTask", @"Task %@ terminated with run interval: %f", 
+		[self name], runTime);
+
+	/* We update recent launch failure count */
+	(runTime < 10) ? launchFailureCount++ : (launchFailureCount = 0);
+}
+
+/** Returns the time that elapsed since the launch. If the task is not running
+   anymore, it returns the run duration (the interval betwen launch and 
+   termination). */
+- (NSTimeInterval) runInterval;
+{
+	if ([self isRunning])
+	{
+		NSTimeInterval interval = fabs([launchDate timeIntervalSinceNow]);
+
+		NSDebugLLog(@"SCTask", @"-runInterval will return: %f", interval);
+		
+		return interval;
+	}
+	else
+	{
+		return runTime;
+	}
+}
+
+- (int) launchFailureCount
+{
+	return launchFailureCount;
 }
 
 @end

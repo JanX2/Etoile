@@ -67,10 +67,16 @@
     BOOL launchOnDemand;
     BOOL hidden;
     BOOL stopped;
+
+	NSDate *launchDate;
+	NSTimeInterval runTime;
+	int launchFailureCount;
 }
 
 + (SCTask *) taskWithLaunchPath: (NSString *)path;
 + (SCTask *) taskWithLaunchPath: (NSString *)path onDemand: (BOOL)lazily withUserName: (NSString *)user;
+
++ (SCTask *) taskWithTask: (SCTask *)aTask;
 
 - (void) launchForDomain: (NSString *)domain;
 
@@ -81,5 +87,8 @@
 - (BOOL) isHidden;
 
 - (BOOL) isStopped;
+
+- (NSTimeInterval) runInterval;
+- (int) launchFailureCount;
 
 @end

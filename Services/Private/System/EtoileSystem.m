@@ -266,8 +266,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     SCTask *process = [_processes objectForKey: domain];
     /* We should pass process specific flags obtained in arguments (and the
        ones from main function probably too) */
-    NSArray *args = [NSArray arrayWithObjects: nil];
-    
+    //NSArray *args = [NSArray arrayWithObjects: nil];
+
 	/* Look for an already running process with the same domain.
 	   Well, I'm not sure we should do this, but it could be nice, we would 
 	   have to identify the process in one way or another (partially to not
@@ -288,9 +288,14 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 		//  this domain.
 		return NO;
 	}
-	else
+	else if ([process isStopped])
 	{
 		NSDebugLLog(@"SCSystem", @"Will try to restart this process that already exited");
+		
+		/* We create a fresh task instance since we cannot run a task more than
+		  one time. */
+		process = [SCTask taskWithTask: process];;
+		[_processes setObject: process forKey: domain];
 	}
 
     // NOTE: the next line triggers an invalid argument exception, although the
@@ -298,7 +303,10 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     // [process setArguments: args];
 
     NS_DURING
-        [process launchForDomain: domain];
+        /* We don't relaunch any processes that already failed to launch three 
+           times */
+        if ([process launchFailureCount] < 3)
+            [process launchForDomain: domain];
     NS_HANDLER
         SetNonNullError (error, EtoileSystemTaskLaunchingError,
             _(@"Error launching program at %@: %@"), [process path],
@@ -633,7 +641,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     if ([latestModificationDate compare: modificationDate] ==
         NSOrderedDescending)
     {
-        NSDebugLLog(@"Etoile System",
+        NSDebugLLog(@"SCystem",
             @"Config file %@ changed, reloading...", configFilePath);
     
         [self synchronizeProcessesWithConfigFile];
@@ -647,7 +655,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
  */
 - (void) synchronizeProcessesWithConfigFile
 {
-    NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
+    //NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
     NSDictionary *newProcessTable;
     NSDictionary *fileAttributes = [[NSFileManager defaultManager]
             fileAttributesAtPath: configFilePath traverseLink: YES];
@@ -716,6 +724,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 {
     SCTask *task = [notif object];
     NSString *domain = [[_processes allKeysForObject: task] objectAtIndex: 0];
+
+    NSDebugLLog(@"SCSystem", @"Process %@ terminated", task);
 
     /* We relaunch every processes that exit and still referenced by the 
         process table, unless they are special daemons launched on demand 
