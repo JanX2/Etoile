@@ -21,10 +21,23 @@ extern NSString *const AZApplicationDidTerminateNotification;
   NSImage *icon;
 
   NSString *command; /* Command to launch this application */
+  BOOL keepInDock;
+  BOOL isRunning;
 }
 
 - (AZDockType) type;
 - (NSString *) command;
 - (XWindow *) window;
+
+- (void) keepInDockAction: (id) sender;
+- (void) removeFromDockAction: (id) sender;
+- (void) showAction: (id) sender;
+- (void) quitAction: (id) sender;
+
+- (void) setKeptInDock: (BOOL) b;
+- (BOOL) isKeptInDock;
+
+- (void) setRunning: (BOOL) b;
+- (BOOL) isRunning;
 
 @end

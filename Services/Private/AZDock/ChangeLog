@@ -1,3 +1,7 @@
+2006-12-17 Yen-Ju Chen <yjchenx at gmail>
+
+	* Initial support for keeping application in dock.
+
 2006-12-16 Yen-Ju Chen <yjchenx at gmail>
 
 	* Avoid gnustep windows other than regular window, main menu and doc.

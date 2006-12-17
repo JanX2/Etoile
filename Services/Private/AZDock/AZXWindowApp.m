@@ -7,25 +7,40 @@
 /** Private **/
 
 /* Action from AZDockView */
+- (void) removeFromDockAction: (id) sender
+{
+  [super removeFromDockAction: sender];
+  if ([xwindows count] == 0) {
+    [[NSNotificationCenter defaultCenter] 
+	postNotificationName: AZApplicationDidTerminateNotification
+	object: self];
+  }
+}
+
 - (void) showAction: (id) sender
 {
-  /* Go through all windows and raise them */
-  Display *dpy = (Display *)[GSCurrentServer() serverDevice];
-  int i;
-  Window w;
-  for (i = 0; i < [xwindows count]; i++) {
-    w = [[xwindows objectAtIndex: i] unsignedLongValue];
-    unsigned long state = XWindowState(w);
-    if (state == -1) {
-    } else if (state == IconicState) {
-      /* Iconified */
-      XMapWindow(dpy, w);
-    } else {
-      XRaiseWindow(dpy, w);
+  if (isRunning) {
+    /* Go through all windows and raise them */
+    Display *dpy = (Display *)[GSCurrentServer() serverDevice];
+    int i;
+    Window w;
+    for (i = 0; i < [xwindows count]; i++) {
+      w = [[xwindows objectAtIndex: i] unsignedLongValue];
+      unsigned long state = XWindowState(w);
+      if (state == -1) {
+      } else if (state == IconicState) {
+        /* Iconified */
+        XMapWindow(dpy, w);
+      } else {
+        XRaiseWindow(dpy, w);
+      }
     }
+    /* Focus on the last one */
+    XSetInputFocus(dpy, w, RevertToNone, CurrentTime);
+  } else {
+    /* Application is not running. Execute it */
+    [NSTask launchedTaskWithLaunchPath: command arguments: nil];
   }
-  /* Focus on the last one */
-  XSetInputFocus(dpy, w, RevertToNone, CurrentTime);
 }
 
 - (void) quitAction: (id) sender
@@ -144,6 +159,7 @@
     if (w == win) {
       [xwindows removeObjectAtIndex: i];
       if ([xwindows count] == 0) {
+        [self setRunning: NO];
         [[NSNotificationCenter defaultCenter] 
 		postNotificationName: AZApplicationDidTerminateNotification
 		object: self];

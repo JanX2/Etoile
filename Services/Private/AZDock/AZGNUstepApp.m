@@ -5,15 +5,29 @@
 /** Private **/
 
 /* Action from AZDockView */
-- (void) keepInDockAction: (id) sender
+
+- (void) removeFromDockAction: (id) sender
 {
-  NSLog(@"Keep in dock");
+  [super removeFromDockAction: sender];
+  /* Am I dead ? */
+  int k;
+  NSArray *allApps = [[NSWorkspace sharedWorkspace] launchedApplications];
+  NSMutableArray *allNames = AUTORELEASE([[NSMutableArray alloc] init]);
+  for (k = 0; k < [allApps count]; k++) {
+    [allNames addObject: [[(NSDictionary *)[allApps objectAtIndex: k] objectForKey: @"NSApplicationName"] stringByDeletingPathExtension]];
+  }
+  if ([allNames containsObject: [self applicationName]] == NO) {
+    [[NSNotificationCenter defaultCenter]
+        postNotificationName: AZApplicationDidTerminateNotification
+        object: self];
+  }
 }
 
 - (void) showAction: (id) sender
 {
   NSLog(@"show %@", appName);
   [[NSWorkspace sharedWorkspace] launchApplication: appName];
+  [self setRunning: YES];
 }
 
 - (void) quitAction: (id) sender
@@ -25,6 +39,7 @@
   if (appProxy) {
     NS_DURING
       [appProxy terminate: nil];
+      [self setRunning: NO];
     NS_HANDLER
       /* Error occurs because application is terminated
        * and connection dies. */

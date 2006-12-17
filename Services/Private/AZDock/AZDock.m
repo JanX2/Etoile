@@ -110,6 +110,10 @@ static AZDock *sharedInstance;
       name = [(AZGNUstepApp *)app applicationName];
       if ([allNames containsObject: name] == NO)
       {
+        if ([app isKeptInDock] == YES) {
+          [app setRunning: NO];
+          continue;
+        }
         [[app window] orderOut: self];
         [apps removeObject: app];
         [gnusteps removeObject: name];
@@ -205,6 +209,9 @@ static AZDock *sharedInstance;
 - (void) applicationDidTerminate: (NSNotification *) not
 {
   AZDockApp *app = [not object];
+  if ([app isKeptInDock] == YES) {
+    return;
+  }
   [[app window] orderOut: self];
   [apps removeObject: app];
 }
@@ -330,6 +337,7 @@ static AZDock *sharedInstance;
       app = [apps objectAtIndex: j];
       if ([app type] == AZDockXWindowApplication) {
         if ([(AZXWindowApp *)app acceptXWindow: win[i]]) {
+          [app setRunning: YES];
           /* Cache xwindow */
           [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
           //[self addBookmark: app];
@@ -352,6 +360,7 @@ static AZDock *sharedInstance;
       app = [[AZXWindowApp alloc] initWithXWindow: win[i]];
       [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
     }
+    [app setRunning: YES];
     [apps addObject: app];
     [self addBookmark: app];
     [[app window] orderFront: self];
