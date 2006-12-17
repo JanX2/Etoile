@@ -33,6 +33,10 @@ int main(int argc, const char * argv[])
 
     CREATE_AUTORELEASE_POOL (pool);
 
+    // we never show the app icon
+    [[NSUserDefaults standardUserDefaults]
+      setObject: [NSNumber numberWithBool: YES] forKey: @"GSSuppressAppIcon"];
+
     etoileSystem = [[SCSystem alloc] init];
 
     /* Adding a dummy port avoids the run loop exits immediately. For example:
