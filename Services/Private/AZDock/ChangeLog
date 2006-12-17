@@ -1,6 +1,7 @@
 2006-12-16 Yen-Ju Chen <yjchenx at gmail>
 
 	* Avoid gnustep windows other than regular window, main menu and doc.
+	* AZDock: Remove as much memory as possible.
 
 2006-11-02 Yen-Ju Chen <yjchenx at gmail>
 

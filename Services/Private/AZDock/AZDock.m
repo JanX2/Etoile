@@ -211,8 +211,6 @@ static AZDock *sharedInstance;
 
 - (void) readClientList
 {
-//  [self readGNUstepApplications];
-
   CREATE_AUTORELEASE_POOL(x);
   Window *win = NULL;
   unsigned long count;
@@ -364,6 +362,7 @@ static AZDock *sharedInstance;
     XSelectInput(dpy, win[i], (PropertyChangeMask|StructureNotifyMask));
 #endif
   }
+  free(win);
   DESTROY(x);
 }
 
