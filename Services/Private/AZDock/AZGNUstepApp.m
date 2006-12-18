@@ -25,8 +25,12 @@
 
 - (void) showAction: (id) sender
 {
-  NSLog(@"show %@", appName);
-  [[NSWorkspace sharedWorkspace] launchApplication: appName];
+  NSString *path = [self command];
+  BOOL success = [[NSWorkspace sharedWorkspace] launchApplication: path];
+  if (success == NO) {
+    /* Try regular execute */
+    [NSTask launchedTaskWithLaunchPath: path arguments: nil];
+  }
   [self setRunning: YES];
 }
 
