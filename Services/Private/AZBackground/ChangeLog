@@ -2,4 +2,5 @@
 
 	* Initial import.
 	* Read image file from command line.
+	* Read image file from user default "File".
 

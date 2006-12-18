@@ -1,6 +1,8 @@
 #import <XWindowServerKit/XWindow.h>
 #import "AZBackground.h"
 
+NSString *const FileUserDefaults = @"File";
+
 static AZBackground *sharedInstance;
 
 @interface AZView: NSView
@@ -66,8 +68,18 @@ static AZBackground *sharedInstance;
   NSFileManager *fm = [NSFileManager defaultManager];
   NSProcessInfo *pi = [NSProcessInfo processInfo];
   NSArray *args = [pi arguments];
+  NSString *path = nil;
+
   if ([args count] > 1) {
-    NSString *path = [args objectAtIndex: 1];
+    /* Check command line */
+    path = [args objectAtIndex: 1];
+  } else {
+    /* Check user defaults */
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    path = [defaults stringForKey: FileUserDefaults];
+  }
+
+  if (path) {
     if ([fm fileExistsAtPath: [path stringByStandardizingPath]]) {
       NSImage *im = [[NSImage alloc] initWithContentsOfFile: path];
       [view setImage: AUTORELEASE(im)];
