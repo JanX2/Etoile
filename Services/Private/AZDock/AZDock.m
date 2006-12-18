@@ -262,11 +262,6 @@ static AZDock *sharedInstance;
   {
     BOOL skip = NO;
 
-    /* Do not manage my own window (AZDock.GNUstep) */
-    if ([self isMyWindow: win[i]] == YES) {
-      continue;
-    }
-
     /* Avoid _NET_WM_STATE_SKIP_PAGER and _NET_WM_STATE_SKIP_TASKBAR */
     if (win[i]) {
       unsigned long k, kcount;
@@ -506,6 +501,7 @@ static AZDock *sharedInstance;
 
   /* Hard-coded blacklist for now */
   [blacklist addObject: @"EtoileMenuServer.GNUstep"];
+  [blacklist addObject: @"AZDock.GNUstep"];
   [blacklist addObject: @"AZBackground.GNUstep"];
   [blacklist addObject: @"etoile_system.GNUstep"];
 
