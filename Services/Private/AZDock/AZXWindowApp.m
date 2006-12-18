@@ -113,12 +113,12 @@
 
   /* Try to get the icon */
   if (!icon) {
-    icon = XWindowIcon(w);
+    ASSIGN(icon, XWindowIcon(w));
   }
 
   if (!icon) {
     /* use default icon */
-    icon = [NSImage imageNamed: @"Unknown.tiff"];
+    ASSIGN(icon, [NSImage imageNamed: @"Unknown.tiff"]);
   }
   if (icon) {
     [view setImage: icon];

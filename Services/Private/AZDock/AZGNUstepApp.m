@@ -82,11 +82,11 @@
 
   /* Try to get the icon */
   if (command) {
-    icon = [[NSWorkspace sharedWorkspace] iconForFile: command];
+    ASSIGN(icon, [[NSWorkspace sharedWorkspace] iconForFile: command]);
   }
   if (!icon) {
     /* use default icon */
-    icon = [NSImage imageNamed: @"Unknown.tiff"];
+    ASSIGN(icon, [NSImage imageNamed: @"Unknown.tiff"]);
   }
   if (icon)
     [view setImage: icon];

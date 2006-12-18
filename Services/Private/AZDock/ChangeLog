@@ -4,6 +4,7 @@
 	* Avoid crash if command is not found.
 	* Fix firefox because it is under special directory.
 	* Put etoile_system, EtoileMenuServer and AZBackground in blacklist.
+	* Make sure icon is properly retained.
 
 2006-12-16 Yen-Ju Chen <yjchenx at gmail>
 
