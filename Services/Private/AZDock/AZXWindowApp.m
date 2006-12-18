@@ -67,6 +67,10 @@
      * Try lowercase of wm_class */
     ASSIGN(command, [wm_class lowercaseString]);
   }
+  if ([command isEqualToString: @"firefox-bin"]) {
+    // firefox has a weird class
+    ASSIGN(command, @"firefox");
+  }
   /* Make sure the command exists */
   NSProcessInfo *pi = [NSProcessInfo processInfo];
   NSArray *array = [[[pi environment] objectForKey: @"PATH"] componentsSeparatedByString: @":"];

@@ -21,6 +21,7 @@ typedef enum _AZDockPosition {
   NSMutableArray *apps;
   NSMutableArray *lastClientList; /* Cache last client list */
   NSMutableArray *gnusteps; /* Cache gnustep applications */
+  NSMutableArray *blacklist;
   BKBookmarkStore *store;
 
   /* Replace default gnustep icon window */

@@ -295,6 +295,11 @@ static AZDock *sharedInstance;
     NSString *wm_class, *wm_instance;
     BOOL result = XWindowClassHint(win[i], &wm_class, &wm_instance);
     if (result) {
+      /* Avoid anything in blacklist */
+      if ([blacklist containsObject: [NSString stringWithFormat: @"%@.%@", wm_instance, wm_class]] == YES) {
+        continue;
+      }
+
       if ([wm_class isEqualToString: @"GNUstep"]) {
         /* Check windown level */
         int level;
@@ -497,6 +502,12 @@ static AZDock *sharedInstance;
   apps = [[NSMutableArray alloc] init];
   lastClientList = [[NSMutableArray alloc] init];
   gnusteps = [[NSMutableArray alloc] init];
+  blacklist = [[NSMutableArray alloc] init];
+
+  /* Hard-coded blacklist for now */
+  [blacklist addObject: @"EtoileMenuServer.GNUstep"];
+  [blacklist addObject: @"AZBackground.GNUstep"];
+  [blacklist addObject: @"etoile_system.GNUstep"];
 
   server = GSCurrentServer();
   dpy = (Display *)[server serverDevice];
@@ -573,6 +584,7 @@ static AZDock *sharedInstance;
   DESTROY(workspaceView);
   DESTROY(store);
   DESTROY(gnusteps);
+  DESTROY(blacklist);
   [super dealloc];
 }
 
