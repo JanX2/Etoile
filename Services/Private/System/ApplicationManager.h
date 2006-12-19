@@ -27,9 +27,17 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 
+/* Server part of the session protocol */
 @protocol SCSession
 - (oneway void) replyToTerminate: (int)reply info: (NSDictionary *)info;
+@end
+
+/* Client part of the session protocol */
+@interface NSApplication (Etoile)
+- (int) shouldTerminateOnOperation: (NSString *)op;
+- (oneway void) terminateOnOperation: (NSString *)op inSession: (id)session;
 @end
 
 
@@ -76,7 +84,7 @@
   BOOL logOut;
 }
 
-+ sharedInstance;
++ (id) sharedInstance;
 
 - (NSArray *) launchedApplications;
 - (NSArray *) userApplications;

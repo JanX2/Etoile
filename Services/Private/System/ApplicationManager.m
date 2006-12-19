@@ -27,32 +27,27 @@
  */
 
 // FIXME: When you take in account System can be use without any graphical UI 
-// loaded, linking AppKit by default is bad,thne  put this stuff in a bundle 
+// loaded, linking AppKit by default is bad, then put this stuff in a bundle 
 // and load it only when necessary. Or may be put this stuff in another daemon.
 
 #import "ApplicationManager.h"
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
-#import <WorkspaceCommKit/NSWorkspace+Communication.h>
 
 #import <sys/types.h>
 #import <signal.h>
-
+// FIXME: Not sure the following line is needed on some platforms or never?
 //#import "OSType.h"
+
 #import "EtoileSystem.h"
 
+/* Strings with log out result description. They are used in informative alerts
+   that give feedback to the user about his log out choice. */
 static NSString *cancelReplyText = nil;
 static NSString *noReplyText = nil;
 static NSString *hasQuitReplyText = nil;
 
-@interface NSApplication (Etoile)
-
-- (int) shouldTerminateOnOperation: (NSString *)op;
-- (oneway void) terminateOnOperation: (NSString *)op inSession: (id)session;
-
+@interface ApplicationManager (Private)
 - (void) setUpTerminateLaterTimerWith: (NSString *)appName;
 - (void) checkTerminatingLaterApplicationWithName: (NSString *)appName;
-
 @end
 
 
@@ -61,7 +56,7 @@ static NSString *hasQuitReplyText = nil;
 static ApplicationManager *serverInstance = nil;
 static NSConnection *serverConnection = nil;
 
-+ sharedInstance
++ (id) sharedInstance
 {
   /*if (shared == nil)
     {
@@ -117,7 +112,7 @@ static NSConnection *serverConnection = nil;
   [super dealloc];
 }
 
-- init
+- (id) init
 {
   if ((self = [super init]) != nil)
     {
@@ -182,6 +177,11 @@ static NSConnection *serverConnection = nil;
   return [[array copy] autorelease];
 }
 
+/**
+ * Returns a list of applications launched by the user, this excludes the ones
+ * launched by the system (known with -[SCSystem maskedProcesses]). The list is 
+ * a subset of the list returned by -launchedApplications.
+ */
 - (NSArray *) userApplications
 {
 	NSArray *maskedApps = [[SCSystem serverInstance] maskedProcesses];
@@ -193,8 +193,8 @@ static NSConnection *serverConnection = nil;
 	return userApps;
 }
 
-// notification invoked when an NSWorkspaceDidLaunchApplicationNotification
-// is received
+/* Notification invoked when an NSWorkspaceDidLaunchApplicationNotification
+   is received */
 - (void) noteApplicationLaunched: (NSNotification *) notif
 {
   NSDictionary * appInfo = [notif userInfo];
@@ -208,8 +208,8 @@ static NSConnection *serverConnection = nil;
     }
 }
 
-// notification invoked when an NSWorkspaceDidTerminateApplicationNotification
-// is received.
+/* Notification invoked when an NSWorkspaceDidTerminateApplicationNotification
+   is received */
 - (void) noteApplicationTerminated: (NSNotification *) notif
 {
   NSDictionary * userInfo = [notif userInfo];
@@ -247,6 +247,11 @@ static NSConnection *serverConnection = nil;
   }
 }
 
+/** This method checks all applications returned by -launchedApplications are
+    still running. For each application which exited since the last check, it
+    posts NSWorkspaceDidTerminateApplicationNotification. Usually this should
+    not arise unless application exist abruptly since they are in charge of 
+    posting this notification themselves. */
 - (void) checkLiveApplications
 {
   NSEnumerator * e;
@@ -296,16 +301,14 @@ static NSConnection *serverConnection = nil;
     }
 }
 
-/**
- * Terminates all running applications by contacting each and
- * asking it to terminate itself gracefully. This method is used
- * when powering the workspace off.
- *
- * Only non-hidden apps (non-workspace processes) are terminated.
- *
- * @return YES if the workspace can power off, NO if it can't (some
- * application requested to stop the poweroff operation).
- */
+/** <p>Terminates all running applications by contacting each and asking it to 
+    terminate itself gracefully. The dialog established with applications 
+    follows the session protocol This method is used on log out or power off.
+    </p>
+    <p>Only applications returned by -userApplications are asked to terminate.
+    The sessions protocol is made of SCSession protocol and an informal 
+    protocol part of NSApplication(Etoile).</p>
+    <p>This method triggers an asynchronous reply.</p> */
 - (void) terminateAllApplicationsOnOperation: (NSString *) operation
 {
   /* If we are already in a log out procedure we discard any other log out
@@ -426,6 +429,7 @@ static NSConnection *serverConnection = nil;
 	[terminateLaterTimers addObject: timer];
 }
 
+/* This is the method called by timers created in -setUpTerminaterLaterWith: */
 - (void) checkTerminatingLaterApplicationWithName: (NSString *)appName
 {
 	id app = [waitedApplications objectForKey: appName];
@@ -479,6 +483,20 @@ static NSConnection *serverConnection = nil;
 // in the distant application which could exit immediately after calling this 
 // method. This means info would be a proxy with a dead connection, this can
 // translate in bad side effects. 
+/** <p>Handles reply sent by running application on log out request. If the
+    application replies by <code>NSTerminateCancel</code> for <var>reply</var>
+    parameter, the log ou cancellation is propagated back to SCSystem, 
+    otherwise nothing happens. In the former case, -replyToLogOutOrPowerOff 
+    gets called back with cancellation details in <var>info</var> dictionary 
+    (the format is detailed in -[SCSystem replyToLogOutOrPowerOff:] 
+    documentation).</p>
+    <p>This method is called asynchronously by each application. It can be called 
+    only if EtoileBehavior bundle is loaded in the application playing the 
+    client role as described by the session protocol.</p>
+    <p>If the application replies by <code>NSTerminateNow</code>, 
+    ApplicationManager will wait to be notified of this termination before doing 
+    anything. Such notification is processed by -noteApplicationTerminated:
+    </p> */
 - (oneway void) replyToTerminate: (int)reply info: (bycopy NSDictionary *)info
 {
 	[replyLock lock];

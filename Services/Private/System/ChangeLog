@@ -1,6 +1,14 @@
+2006-12-19  Quentin Mathe <qmathe@club-internet.fr>
+
+	* ApplicationManager.h:
+	* ApplicationManager.m:
+	Minor code cleaning (better coding style conformance). Added or improved 
+	most of method documentation (involved some markup changes to use gsdoc 
+	format).
+
 2006-12-17  Yen-Ju Chen <yjchenx gmail>
 
-	* Avoid app icon.
+	* main.m: Avoid app icon.
 
 2006-12-17  Quentin Mathe <qmathe@club-internet.fr>
 
