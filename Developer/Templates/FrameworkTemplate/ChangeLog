@@ -1,0 +1,13 @@
+2006-12-17  Quentin Mathe <qmathe@club-internet.fr>
+
+	* ChangeLog:
+	* README:
+	* INSTALL:
+	* GNUmakefile:
+	* GNUmakefile.postamble:
+	* GNUmakefile.preamble:
+	* Headers/DummyKit.h:
+	* Headers/PartOfDummy.h:
+	* Source/PartOfDummy.m:
+	* Source/GNUmakefile:
+	Initial import of DummyKit.

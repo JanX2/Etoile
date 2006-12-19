@@ -30,7 +30,8 @@ endif
 # 
 
 ifeq ($(examples), yes)	
-	SUBPROJECTS = DistributedViewExample LuceneKitExample PreferencesKitExample
+	SUBPROJECTS = DistributedViewExample LuceneKitExample \
+PreferencesKitExample OgreKitExample IoExample BookmarkKitExample
 
 ifeq ($sqlliteclient, yes)
     SUBPROJECTS += SQLLiteClientExample

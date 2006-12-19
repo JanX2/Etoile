@@ -1,0 +1,52 @@
+===================
+DummyKit 0.1 README
+===================
+
+This framework is used to attract developers. It helps demonstrating dummy
+development methodology.
+
+Maintainers: John Doe <john@doe.eu>
+Authors: You, John Doe, Nobody
+
+To know more about DummyKit:
+<http://www.etoile-project.com/etoile/mediawiki/index.php?title=DummyKit>
+
+
+Build and Install
+-----------------
+
+Read INSTALL document.
+
+
+Mac OS X support
+----------------
+
+DummyKit is not yet supported on Mac OS X.
+An Xcode project could be created to build it.
+
+
+Developer Notes
+===============
+
+Example
+-------
+
+1) Create a dummy:
+
+	dummy = [[PartOfDummy alloc] init];
+
+2) Destroy dummies:
+
+	RELEASE([dummies collect]);
+
+
+Tests suite
+-----------
+
+UnitKit (bundled with Etoile) is required.
+
+    Steps to produce a test bundle and run tests suite:
+
+    * make test=yes 
+
+    * ukrun DummyKit.bundle
