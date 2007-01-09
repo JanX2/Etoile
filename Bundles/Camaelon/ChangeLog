@@ -1,3 +1,10 @@
+2007-01-09  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GSDrawFunctions.h:
+	* GSDrawFunctions.m:
+	(-drawDarkBezel::): Added. This missing method was used by NSBox.m, it
+	resulted in a crash on the display of Gorm size inspector.
+
 2006-11-25 Nicolas Roard <nicolas@roard.com>
 
 	* GSDrawFunctions.h:

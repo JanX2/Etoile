@@ -25,6 +25,12 @@
 }
 */
 
+- (NSRect) drawDarkBezel: (NSRect)border : (NSRect)clip
+{
+	/* We call GSTheme implementation */
+	[self drawDarkBezel: border withClip: clip];
+}
+
 - (NSRect) drawGrayBezelRound: (NSRect)border : (NSRect)clip
 { 
 	NSBezierPath* path = [NSBezierPath bezierPath];

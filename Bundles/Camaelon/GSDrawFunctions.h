@@ -17,6 +17,7 @@
 #define THEME [GSTheme theme]
 
 @interface GSTheme (theme)
+- (NSRect) drawDarkBezel: (NSRect)border : (NSRect)clip;
 - (NSRect) drawGrayBezelRound: (NSRect)border : (NSRect)clip;
 - (NSRect) drawGrayBezel: (NSRect)border : (NSRect)clip;
 - (NSRect) drawGroove: (NSRect)border : (NSRect)clip;
