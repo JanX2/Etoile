@@ -1,0 +1,13 @@
+ETThread Library
+================
+
+This directory contains a set of classes which provide a better interface to POSIX threading routines than the standard NSThread.  The GNUmakefile will, on GNUstep platforms, compile the example tool and the documentation.  The Makefile will compile the example tool (but not the documentation) on Mac OS X.
+
+Limitations
+-----------
+
+At some point, these classes should be built into a library, or incorporated into a larger Étoilé framework.  Currently, however, they are experimental.
+
+The ETThreadedObject class uses an NSMutableArray for a message queue.  This is horribly inefficient, and should be replaced with a static C array of, perhaps, 100 elements, blocking the caller if the queue is full.
+
+Due to the overhead imposed by thread locking, these classes are not ideal in all situations.  For methods that return quickly, they are likely to not provide a net gain.  They are best suited to situations in which an entire object graph can be split off from the rest and communicated with asynchronously.
