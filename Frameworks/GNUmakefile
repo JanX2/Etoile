@@ -40,8 +40,6 @@ ifeq ($(etoile-extensions), yes)
     export ogrekit ?= yes
     export lucenekit ?= yes
     export servicesbarkit ?= yes
-    export extendedworkspacekit ?= yes 
-    export trackerkit ?= yes
     export rsskit ?= yes
     export xwindowserverkit ?= yes
     export popplerkit ?= yes
@@ -110,14 +108,6 @@ ifeq ($(servicesbarkit), yes)
     # do not compile for apple
     SUBPROJECTS += ServicesBarKit
   endif
-endif
-
-ifeq ($(extendedworkspacekit), yes)
-   #SUBPROJECTS += ExtendedWorkspaceKit
-endif
-
-ifeq ($(trackerkit), yes)
-   #SUBPROJECTS += TrackerKit
 endif
 
 ifeq ($(rsskit), yes)
