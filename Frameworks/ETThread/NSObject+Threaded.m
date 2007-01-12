@@ -1,17 +1,17 @@
 #import "NSObject+Threaded.h"
-#import "ETThread.h"
-#import "ETThreadedObject.h"
-#import "ETThreadProxyReturn.h"
+#import "EtoileThread.h"
+#import "EtoileThreadedObject.h"
+#import "EtoileThreadProxyReturn.h"
 
-struct ETThreadedInvocationInitialiser
+struct EtoileThreadedInvocationInitialiser
 {
 	NSInvocation * invocation;
-	ETThreadProxyReturn * retVal;
+	EtoileThreadProxyReturn * retVal;
 };
 
 void * threadedInvocationTrampoline(void* initialiser)
 {
-	struct ETThreadedInvocationInitialiser * init = initialiser;
+	struct EtoileThreadedInvocationInitialiser * init = initialiser;
 	id pool = [[NSAutoreleasePool alloc] init];
 	[init->invocation invoke];
 	id retVal;
@@ -27,25 +27,15 @@ void * threadedInvocationTrampoline(void* initialiser)
 @implementation NSObject (Threaded)
 + (id) threadedNew
 {
-    id proxy = [[ETThreadedObject alloc] initWithClass:[self class]];
-    [ETThread detatchNewThreadSelector:@selector(runloop:)
+    id proxy = [[EtoileThreadedObject alloc] initWithClass:[self class]];
+    [EtoileThread detatchNewThreadSelector:@selector(runloop:)
 							  toTarget:proxy
 							withObject:nil];
     return proxy;
 }
 
-- (id) invokeInNewThread:(NSInvocation*)anInvocation
+- (id) inNewThread
 {
-	[anInvocation retain];
-	[anInvocation retainArguments];
-	[anInvocation setTarget:self];
-	struct ETThreadedInvocationInitialiser * init = 
-		malloc(sizeof(struct ETThreadedInvocationInitialiser));
-	init->invocation = anInvocation;
-	init->retVal = [[[[ETThreadProxyReturn alloc] init] retain] autorelease];
-	pthread_t thread;
-	pthread_create(&thread, NULL, threadedInvocationTrampoline, init);
-	pthread_detach(thread);
-	return init->retVal;
+		return [[[EtoileThreadedObject alloc] initWithObject:self] autorelease];
 }
 @end

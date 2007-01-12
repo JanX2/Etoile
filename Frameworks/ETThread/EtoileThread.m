@@ -1,19 +1,19 @@
-#import "ETThread.h"
+#import "EtoileThread.h"
 
-struct ETThreadInitialiser
+struct EtoileThreadInitialiser
 {
 	id object;
 	SEL selector;
 	id target;
 	NSAutoreleasePool * pool;
-	ETThread * thread;
+	EtoileThread * thread;
 };
 
 static pthread_key_t threadObjectKey;
 
 void cleanup(void * initialiser)
 {
-	struct ETThreadInitialiser * init = initialiser;
+	struct EtoileThreadInitialiser * init = initialiser;
 	[init->thread release];
 	[init->pool release];
 	free(init);
@@ -23,7 +23,7 @@ void cleanup(void * initialiser)
 void * threadStart(void* initialiser)
 {
 	[NSAutoreleasePool new];
-	struct ETThreadInitialiser * init = initialiser;
+	struct EtoileThreadInitialiser * init = initialiser;
 	pthread_setspecific(threadObjectKey, init->thread);
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	init->pool = pool;
@@ -49,7 +49,7 @@ void * threadStart(void* initialiser)
 	return result;
 }
 
-@implementation ETThread
+@implementation EtoileThread
 
 + (void) initialize
 {
@@ -58,13 +58,13 @@ void * threadStart(void* initialiser)
 
 + (id) detatchNewThreadSelector:(SEL)aSelector toTarget:(id)aTarget withObject:(id)anArgument
 {
-	ETThread * thread = [[ETThread alloc] init];
+	EtoileThread * thread = [[EtoileThread alloc] init];
 	if(thread == nil)
 	{
 		return nil;
 	}
-	struct ETThreadInitialiser * threadArgs = 
-		malloc(sizeof(struct ETThreadInitialiser));
+	struct EtoileThreadInitialiser * threadArgs = 
+		malloc(sizeof(struct EtoileThreadInitialiser));
 	threadArgs->object = anArgument;
 	threadArgs->selector = aSelector;
 	threadArgs->thread = thread;
@@ -73,9 +73,9 @@ void * threadStart(void* initialiser)
 	return thread;
 }
 
-+ (ETThread*) currentThread
++ (EtoileThread*) currentThread
 {
-	return (ETThread*)pthread_getspecific(threadObjectKey);
+	return (EtoileThread*)pthread_getspecific(threadObjectKey);
 }
 
 - (id) waitForTermination

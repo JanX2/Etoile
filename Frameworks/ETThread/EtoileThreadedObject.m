@@ -1,7 +1,7 @@
-#import "ETThreadedObject.h"
-#import "ETThreadProxyReturn.h"
+#import "EtoileThreadedObject.h"
+#import "EtoileThreadProxyReturn.h"
 
-@implementation ETThreadedObject
+@implementation EtoileThreadedObject
 - (id) init
 {
 	pthread_cond_init(&conditionVariable, NULL);
@@ -55,7 +55,7 @@
 
 - (void) runloop:(id)sender
 {
-	thread = [[ETThread currentThread] retain];
+	thread = [[EtoileThread currentThread] retain];
 	while (object)
 	{
 		pthread_mutex_lock(&mutex);
@@ -76,7 +76,7 @@
 		/* Now that we've got the message, unlock the queue */
 		pthread_mutex_unlock(&mutex);
 		
-		ETThreadProxyReturn * retVal = nil;
+		EtoileThreadProxyReturn * retVal = nil;
 		if([[anInvocation methodSignature] methodReturnType][0] == '@')
 		{
 			retVal = [returns objectAtIndex:0];
@@ -119,7 +119,7 @@
 	}
 	if([[anInvocation methodSignature] methodReturnType][0] == '@')
 	{
-		ETThreadProxyReturn * retVal = [[[ETThreadProxyReturn alloc] init] autorelease];
+		EtoileThreadProxyReturn * retVal = [[[EtoileThreadProxyReturn alloc] init] autorelease];
 		[returns addObject:retVal];
 		proxy = retVal;
 		/*

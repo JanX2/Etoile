@@ -1,6 +1,6 @@
-#import "ETThreadProxyReturn.h"
+#import "EtoileThreadProxyReturn.h"
 
-@implementation ETThreadProxyReturn
+@implementation EtoileThreadProxyReturn
 - (id) init
 {
 	object = nil;
@@ -57,5 +57,9 @@
 	}
 	pthread_mutex_unlock(&mutex);
 	[anInvocation invokeWithTarget:object];
+}
+- (BOOL) isFuture
+{
+	return YES;
 }
 @end

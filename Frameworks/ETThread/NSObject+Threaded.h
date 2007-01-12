@@ -11,8 +11,8 @@
  */
 + (id) threadedNew;
 /**
- * Executes the specified invocation in a new thread.
- * Returns a proxy object and completes asynchronously.
+ * Returns a trampoline object that can be used to 
+ * execute a method on the called object in a new thread.
  */
-- (id) invokeInNewThread:(NSInvocation*)anInvocation;
+- (id) inNewThread;
 @end

@@ -1,13 +1,13 @@
 #import <Foundation/Foundation.h>
-#import "ETThread.h"
+#import "EtoileThread.h"
 #include <pthread.h>
 
 /**
- * The ETThreadedObject class represents an object which has its
+ * The EtoileThreadedObject class represents an object which has its
  * own thread and run loop.  Messages that return either an object
  * or void will, when sent to this object, return asynchronously.
  *
- * For methods returning an object, an [ETThreadProxyReturn] will
+ * For methods returning an object, an [EtoileThreadProxyReturn] will
  * be returned immediately.  Messages passed to this object will
  * block until the real return value is ready.
  *
@@ -15,7 +15,7 @@
  * Instead, the [NSObject(Threaded)+threadedNew] method should be 
  * used.
  */
-@interface ETThreadedObject : NSProxy{
+@interface EtoileThreadedObject : NSProxy{
 	id object;
 	pthread_cond_t conditionVariable;
 	pthread_mutex_t mutex;
@@ -23,7 +23,7 @@
 	NSMutableArray * returns;
 	id proxy;
 	BOOL terminate;
-	ETThread * thread;
+	EtoileThread * thread;
 }
 /**
  * Create a threaded instance of aClass

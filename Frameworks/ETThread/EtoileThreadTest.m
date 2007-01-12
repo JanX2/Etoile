@@ -1,5 +1,6 @@
+#import "NSObject+Futures.h"
 #import "NSObject+Threaded.h"
-#import "ETThreadProxyReturn.h"
+#import "EtoileThreadProxyReturn.h"
 #include <unistd.h>
 
 @interface ThreadTest : NSObject {
@@ -17,7 +18,6 @@
 }
 - (id) getFoo
 {
-	NSLog(@"Returning foo in 2 seconds...");
 	sleep(2);
 	return @"foo";
 }
@@ -33,7 +33,7 @@ int main(void)
 	/* 
 	 * Test a method that doesn't return a value
 	 */
-	[proxy log:@"Logging in another thread"];
+	[proxy log:@"1) Logging in another thread"];
 	/*
 	 * Try a mthod that returns a value
 	 */
@@ -42,20 +42,23 @@ int main(void)
 	 * Log something to show that we are continuing and not waiting for
 	 * the method to return
 	 */
-	NSLog(@"[proxy getFoo] called.  Attempting to capitalize the return...");
+	NSLog(@"2) [proxy getFoo] called.  Attempting to capitalize the return...");
 
 	/* This line will block until [proxy getFoo] actually returns.
 	 * Note that we can interact with wibble as though it were the real
 	 * string value.
 	 */
-	NSLog(@"[proxy getFoo] returned %@", [foo capitalizedString]);
+	NSLog(@"3) [proxy getFoo] is capitalized as %@", [foo capitalizedString]);
 
 	/*
 	 * If we know what we are doing, we can get the real object and get rid of 
 	 * the layer of indirection.
 	 */
-	NSLog(@"%@ = [proxy value]", [(ETThreadProxyReturn*)foo value]);
-
+	if([foo isFuture])
+	{
+		NSLog(@"4) Real object returned by future: %@", 
+				[(EtoileThreadProxyReturn*)foo value]);
+	}
 	/*
 	 * Clean up
 	 */

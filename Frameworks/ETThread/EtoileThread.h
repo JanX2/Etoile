@@ -2,11 +2,11 @@
 #include <pthread.h>
 
 /**
- * The ETThread class provides a wrapper around basic POSIX threading 
+ * The EtoileThread class provides a wrapper around basic POSIX threading 
  * functionality.  This extends NSThread by allowing a thread to wait
  * for another to terminate, and for an exit value to be returned.
  */
-@interface ETThread : NSObject {
+@interface EtoileThread : NSObject {
 	pthread_t thread;
 }
 /**
@@ -18,10 +18,10 @@
  */
 + (id) detatchNewThreadSelector:(SEL)aSelector toTarget:(id)aTarget withObject:(id)anArgument;
 /**
- * Returns an ETThread representing the current thread.  The behaviour for this
- * method is undefined if called from a thread not created by an ETThread.
+ * Returns an EtoileThread representing the current thread.  The behaviour for this
+ * method is undefined if called from a thread not created by an EtoileThread.
  */
-+ (ETThread*) currentThread;
++ (EtoileThread*) currentThread;
 /**
  * Blocks execution in the caller until the thread exits.  If the method used 
  * to create the thread returns a value, or the thread is terminated with
