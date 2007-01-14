@@ -70,7 +70,9 @@
 		  
 		  if (tmp == nil ||
 		      [tmp isEqualToString: @"text"] ||
-		      [tmp isEqualToString: @"html"])
+		      [tmp isEqualToString: @"html"] ||
+                 [tmp isEqualToString: @"text/html"] ||
+                 [tmp isEqualToString: @"text/plain"])
 		    [self setContent: [secondlevelnode content]];
 		  else
 		    {

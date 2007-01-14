@@ -107,4 +107,6 @@ didStartElement: (NSString*)anElementName
 - (void) parser: (NSXMLParser*)aParser
 foundCharacters: (NSString*)aString;
 
+- (void) parser: (NSXMLParser*)aParser
+     foundCDATA: (NSData*)CDATABlock;
 @end

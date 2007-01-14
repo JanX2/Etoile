@@ -291,6 +291,9 @@
             @"%a, %d %B %Y %T %z", // not verified
             @"%B %d, %Y", 
             @"%b %d, %Y", // verified by example
+            @"%d %b %Y %H:%M:%S %Z", // verified by example (Joel on Software)
+            @"%d %b %Y %H:%M:%S",    // not verified, derived from the upper
+            @"%d %b %Y",             // not verified, derived from the upper
             // Dublin Core
             @"%Y-%m-%dT%H:%M:%S%Z",
             @"%Y-%m-%dT%H:%M:%S",

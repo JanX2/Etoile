@@ -48,7 +48,7 @@
   // XXX: Write a macro
   
   // we only return *XML elements* here, *not* contents!
-  if ([[_next class] isSubclassOfClass: [XMLText class]]) {
+  if ([_next isKindOfClass: [XMLText class]]) {
     return [_next nextElement];
   } else {				    
     return AUTORELEASE(RETAIN(_next));
@@ -107,7 +107,7 @@
   // XXX: Write a macro
   
   // we only return *XML elements* here, *not* contents!
-  if ([[_next class] isSubclassOfClass: [XMLText class]]) {
+  if ([_next isKindOfClass: [XMLText class]]) {
     return [_next nextElement];
   } else {				    
     return AUTORELEASE(RETAIN(_next));
@@ -288,6 +288,20 @@ foundCharacters: (NSString*)aString
 	fromParser: aParser];
   
   DESTROY(text);
+}
+
+- (void) parser: (NSXMLParser*)aParser
+     foundCDATA: (NSData*)CDATABlock
+{
+    // FIXME: Find out how to retieve the XML file's encoding from here!
+    //   At the moment, I'm just using UTF8 here, as it's the most commonly
+    //   used encoding in RSS feeds (and XML in general).
+    NSString* blockContents = [[NSString alloc] initWithData: CDATABlock
+                                                    encoding: NSUTF8StringEncoding];
+    [blockContents autorelease];
+    
+    // delegate to the foundCharacters method.
+    [self parser: aParser foundCharacters: blockContents];
 }
 
 @end

@@ -77,7 +77,7 @@ libRSSKit_HEADER_FILES_INSTALL_DIR=/RSSKit
 
 include $(GNUSTEP_MAKEFILES)/library.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
-include ../../etoile.make
+-include ../../etoile.make
 
 -include GNUmakefile.preamble
 -include GNUmakefile.local
