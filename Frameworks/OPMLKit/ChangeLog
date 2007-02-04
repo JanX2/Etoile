@@ -1,0 +1,27 @@
+
+Jan-14-2007  Guenther Noack
+	* Added TODO file
+
+Jan-14-2007  Guenther Noack
+	* Added support for owner name and email address
+
+Jan-14-2007  Guenther Noack
+	* Starting from prototype was a good idea, half-working solution
+	  running
+
+Jan-14-2007  Guenther Noack
+	* Trying to start from prototype, imported it.
+
+Jan-14-2007  Guenther Noack
+	* Small OPMLParser sketch
+
+Jan-13-2007  Guenther Noack
+	* OPMLOutline: Added parent field to class. Made outlines
+	  propagate change events up the document tree.
+
+Jan-13-2007  Guenther Noack
+	* Filled out some methods
+
+Jan-13-2007  Guenther Noack
+	* Rough sketch
+
