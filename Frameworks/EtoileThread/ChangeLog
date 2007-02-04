@@ -2,6 +2,7 @@
 	
 	* added a changelog file.. 
 	* fixed a typo (detatcht->detach) for detachNewThreadSelector
+	* modified the GNUmakefile to create a framework 
 
 2007-01-12 David Chisnall <theraven@sucs.org>
 
