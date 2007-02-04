@@ -32,9 +32,13 @@ void * threadStart(void* initialiser)
 	   ever implements a version of pthread_cleanup_push that actually conforms
 	   to the specification (i.e. does something useful, instead of requiring
 	   cleanup functions to be popped as soon as they are pushed).
+		
+	   NRO: apparently this does not compile on gnustep either ?
 	*/
 #ifndef __APPLE__
+#ifndef GNUSTEP
 	pthread_cleanup_push(cleanup, initialiser);
+#endif
 #endif
 	id result = [init->target performSelector:init->selector 
 								   withObject:init->object];
@@ -44,7 +48,9 @@ void * threadStart(void* initialiser)
 	  -exitWithValue will leak memory on OS X.
 	*/
 #ifdef __APPLE__
+#ifdef GNUSTEP
 	cleanup(init);
+#endif
 #endif
 	return result;
 }
