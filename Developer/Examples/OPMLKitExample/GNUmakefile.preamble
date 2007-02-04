@@ -1,0 +1,4 @@
+# Preamble Definitions
+
+ADDITIONAL_GUI_LIBS += -lOPMLKit
+

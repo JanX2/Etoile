@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<opml version="2.0">
+<head>
+	<title>Test OPML file</title>
+	<ownerName>Günther Noack</ownerName>
+	<ownerEmail>guenther@unix-ag.uni-kl.de</ownerEmail>
+</head>
+<body>
+	<outline text="Terminal">
+		<outline text="Info">
+			<outline text="Info" xmlUrl="http://www.example.org/"/>
+			<outline text="Preferences..." xmlUrl="http://www.example.org/"/>
+			<outline text="Benchmark" xmlUrl="http://www.example.org/"/>
+		</outline>
+		<outline text="New Terminal" xmlUrl="http://www.example.org/"/>
+		<outline text="Hide" xmlUrl="http://www.example.org/"/>
+		<outline text="Quit" xmlUrl="http://www.example.org/"/>
+	</outline>
+	<outline text="Edit">
+		<outline text="Cut" xmlUrl="http://www.example.org/"/>
+		<outline text="Copy" xmlUrl="http://www.example.org/"/>
+		<outline text="Paste" xmlUrl="http://www.example.org/"/>
+	</outline>
+	<outline text="Windows">
+		<outline text="Close" xmlUrl="http://www.example.org/"/>
+		<outline text="Miniaturize all" xmlUrl="http://www.example.org/"/>
+	</outline>
+	<outline text="Services">
+		<outline text="Look up in dictionary..." xmlUrl="http://www.example.org/"/>
+	</outline>
+</body>
+
+</opml>
+

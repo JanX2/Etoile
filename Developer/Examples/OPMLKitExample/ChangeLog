@@ -1,0 +1,11 @@
+
+30-Jan-2007  Guenther Noack
+	* Played around with drag & drop in the outline view
+
+14-Jan-2007  Guenther Noack
+	* Tried to add label outlet to document window, but the label
+	  doesn't seem to be connected to the Document instance.
+
+14-Jan-2007  Guenther Noack
+	* OPMLKitTest imported (a OPMLKit demo application, document based)
+

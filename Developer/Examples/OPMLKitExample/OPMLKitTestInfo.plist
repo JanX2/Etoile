@@ -1,0 +1,16 @@
+{
+    ApplicationName = OPMLKitTest;
+    Authors = (
+    );
+    NSTypes = (
+	{
+	    NSDocumentClass = Document;
+	    NSHumanReadableName = "OPML outline";
+	    NSName = "OPML files";
+	    NSUnixExtensions = (
+		opml,
+		xml
+	    );
+	}
+    );
+}

@@ -1,0 +1,137 @@
+{
+    ProjectModulesData = {
+	FileManager = {
+	    Files = (
+		{
+		    Contents = (
+			{
+			    Name = AppController.m;
+			    Type = Plain;
+			},
+			{
+			    Name = Document.m;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Class Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = AppController.h;
+			    Type = Plain;
+			},
+			{
+			    Name = Document.h;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Header Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = AppKit.framework;
+			    Type = Virtual;
+			},
+			{
+			    Name = Foundation.framework;
+			    Type = Virtual;
+			}
+		    );
+		    Name = Frameworks;
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = OPMLKitTest_main.m;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Other Source Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Contents = (
+				{
+				    Name = OPMLKitTest_MainMenu.gorm;
+				    Type = Plain;
+				},
+				{
+				    Name = Document.gorm;
+				    Type = Plain;
+				}
+			    );
+			    Name = English;
+			    Type = Category;
+			}
+		    );
+		    Name = Interfaces;
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Resource Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+		    );
+		    Name = "Localized Resource Files";
+		    Type = Category;
+		},
+		{
+		    Contents = (
+			{
+			    Name = GNUmakefile.preamble;
+			    Type = Plain;
+			},
+			{
+			    Name = GNUmakefile.postamble;
+			    Type = Plain;
+			}
+		    );
+		    Name = "Supporting Files";
+		    Type = Category;
+		}
+	    );
+	};
+	MakeBuilder = {
+	    AllWarnings = <*BN>;
+	    BuildArguments = (
+	    );
+	    VerboseBuild = <*BN>;
+	    Warnings = <*BN>;
+	};
+	SubprojectsManager = {
+	    Subprojects = (
+	    );
+	};
+    };
+    ProjectName = OPMLKitTest;
+    ProjectType = Application;
+    ProjectTypeData = {
+	Authors = (
+	);
+	FileTypes = (
+	    {
+		NSDocumentClass = Document;
+		NSHumanReadableName = "OPML outline";
+		NSName = "OPML files";
+		NSUnixExtensions = (
+		    opml,
+		    xml
+		);
+	    }
+	);
+	MainNibFile = OPMLKitTest_MainMenu.gorm;
+	MakefileHash = <*I1118276989>;
+    };
+    Version = 0.2;
+}
