@@ -56,7 +56,7 @@ void * threadStart(void* initialiser)
 	pthread_key_create(&threadObjectKey, NULL);
 }
 
-+ (id) detatchNewThreadSelector:(SEL)aSelector toTarget:(id)aTarget withObject:(id)anArgument
++ (id) detachNewThreadSelector:(SEL)aSelector toTarget:(id)aTarget withObject:(id)anArgument
 {
 	EtoileThread * thread = [[EtoileThread alloc] init];
 	if(thread == nil)

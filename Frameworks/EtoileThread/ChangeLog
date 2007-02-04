@@ -1,0 +1,8 @@
+2007-02-04 Nicolas Roard <nicolas@roard.com>
+	
+	* added a changelog file.. 
+	* fixed a typo (detatcht->detach) for detachNewThreadSelector
+
+2007-01-12 David Chisnall <theraven@sucs.org>
+
+	* initial import

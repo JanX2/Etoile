@@ -28,7 +28,7 @@ void * threadedInvocationTrampoline(void* initialiser)
 + (id) threadedNew
 {
     id proxy = [[EtoileThreadedObject alloc] initWithClass:[self class]];
-    [EtoileThread detatchNewThreadSelector:@selector(runloop:)
+    [EtoileThread detachNewThreadSelector:@selector(runloop:)
 							  toTarget:proxy
 							withObject:nil];
     return proxy;

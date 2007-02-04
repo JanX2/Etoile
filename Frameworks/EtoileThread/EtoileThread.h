@@ -16,7 +16,7 @@
  * frees it afterwards.  This method can thus be used on any side-effect-free
  * method, without modification.
  */
-+ (id) detatchNewThreadSelector:(SEL)aSelector toTarget:(id)aTarget withObject:(id)anArgument;
++ (id) detachNewThreadSelector:(SEL)aSelector toTarget:(id)aTarget withObject:(id)anArgument;
 /**
  * Returns an EtoileThread representing the current thread.  The behaviour for this
  * method is undefined if called from a thread not created by an EtoileThread.
