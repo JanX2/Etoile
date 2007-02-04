@@ -2,6 +2,15 @@
 RSSKit Changelog
 ================
 
+Jan-30-2007  Guenther Noack
+	* RSSFeed.m: Fixed bug that feeds couldn't be compared for equality
+	  with non-feed objects.
+
+Jan-21-2007  Guenther Noack
+	* RSSFeed+Fetching.m: Fixed bug where freshly created articles
+	  didn't know their parent feed.
+	* FeedParser.m: Updated a FIXME
+
 Jan-13-2007  Guenther Noack
 	* INTRO: Added a small note concerning the way how to obtain the
           Grr development version as a programming example for RSSKit.

@@ -57,8 +57,8 @@
 
 // helper methods
 
-// FIXME: Do some HTML parsing here...
-// Just a stub...
+// FIXME: Delete this method and find a good way to remove any HTML parsing ideas from RSSKit.
+// It's better to do that in the application.
 -(NSString*) stringFromHTMLAtNode: (XMLNode*) root
 {
   return AUTORELEASE(RETAIN([root content]));

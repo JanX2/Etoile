@@ -258,6 +258,13 @@ NSString *const RSSFeedFetchFailedNotification = @"RSSFeedFetchFailedNotificatio
       return [self setError: RSSFeedErrorMalformedRSS];
     }
   
+  // make sure all articles know their parent feed
+  int i;
+  for (i=0; i<[articles count]; i++) {
+      // We're in a RSSFeed, so we can assume this is a RSSArticle object.
+      [(RSSArticle*)[articles objectAtIndex: i] setFeed: self];
+  }
+  
   [[NSNotificationCenter defaultCenter]
           postNotificationName: RSSFeedFetchedNotification
                         object: self];

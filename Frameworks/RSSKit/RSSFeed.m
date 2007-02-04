@@ -206,6 +206,10 @@
 
 - (BOOL) isEqual: (id)anObject
 {
+  if ([self class] != [anObject class]) {
+    return NO;
+  }
+  
   return [feedURL isEqual: [anObject feedURL]];
 }
 
