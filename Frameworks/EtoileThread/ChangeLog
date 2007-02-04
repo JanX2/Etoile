@@ -4,6 +4,7 @@
 	* fixed a typo (detatcht->detach) for detachNewThreadSelector
 	* modified the GNUmakefile to create a framework 
 	* fixed EtoileThread.m to compile on gnustep.
+	* modified EtoileThreadedObject.m to work with concrete types.
 
 2007-01-12 David Chisnall <theraven@sucs.org>
 
