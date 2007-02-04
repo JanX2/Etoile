@@ -22,6 +22,9 @@ void cleanup(void * initialiser)
 /* Thread creation trampoline */
 void * threadStart(void* initialiser)
 {
+#ifdef GNUSTEP
+	GSRegisterCurrentThread ();
+#endif
 	[NSAutoreleasePool new];
 	struct EtoileThreadInitialiser * init = initialiser;
 	pthread_setspecific(threadObjectKey, init->thread);
