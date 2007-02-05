@@ -1,0 +1,14 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = ResizingOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
+        {
+            ACTIONS = {changePresence = id; click = id; }; 
+            CLASS = RosterController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {column = NSTableColumn; presenceBox = NSPopUpButton; view = NSOutlineView; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

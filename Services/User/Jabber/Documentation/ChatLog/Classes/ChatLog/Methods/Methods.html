@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+    "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html><head>
+    <title>Methods</title>
+	<meta name="generator" content="HeaderDoc">
+</head><body bgcolor="#ffffff"><h1><font face="Geneva,Arial,Helvtica">Methods</font></h1><hr><br>
+<a name="//apple_ref/occ/clm/ChatLog/chatLogWithPerson:withJid:"></a>
+<h3><a name="chatLogWithPerson:withJid:">chatLogWithPerson:withJid:</a></h3>
+<b>Abstract:</b> Returns a ChatLog for the specified person.
+
+<blockquote><pre><tt>+ (id)<B>chatLogWithPerson:</B>(NSString*)<I>_name</I> <B>withJid:</B>(JID*)<I>_jid;</I> </tt><br>
+</pre></blockquote>
+<p></p>
+<h4>Parameters</h4>
+<blockquote>
+<table border="1"  width="90%">
+<thead><tr><th>Name</th><th>Description</th></tr></thead>
+<tr><td align="center"><tt>_name</tt></td><td>The roster name of the remote entity.</td></tr>
+<tr><td align="center"><tt>_jid</tt></td><td>The JID of the remote entity.</td></tr>
+</table>
+</blockquote>
+<hr>
+<a name="//apple_ref/occ/clm/ChatLog/setDefaultPath:"></a>
+<h3><a name="setDefaultPath:">setDefaultPath:</a></h3>
+<b>Abstract:</b> Sets the base path in which log files are created.  
+
+<blockquote><pre><tt>+ (void)<B>setDefaultPath:</B>(NSString*)<I>_path;</I> </tt><br>
+</pre></blockquote>
+<p>This method should not be called after the creation of any ChatLog objects.  The behaviour in this case is undefined.  
+</p>
+<h4>Parameters</h4>
+<blockquote>
+<table border="1"  width="90%">
+<thead><tr><th>Name</th><th>Description</th></tr></thead>
+<tr><td align="center"><tt>_path</tt></td><td>The path in which log files are stored.</td></tr>
+</table>
+</blockquote>
+<hr>
+<p>(Last Updated 11/26/2004)
+</p></body></html>

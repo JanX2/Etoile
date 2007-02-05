@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+    "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html><style type="text/css"><!--a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}body {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10pt;}--></style><head>
+    <title>Functions</title>
+	 <meta name="generator" content="HeaderDoc">
+</head><body bgcolor="#ffffff">
+<h1><font face="Geneva,Arial,Helvtica">Functions</font></h1><br>
+<a name="HeaderDoc_functions"></a>
+<dl>
+<dt><tt><a href="Functions.html#//apple_ref/c/func/setDefaultPath%58" target="doc">setDefaultPath:</a></tt></dt>
+<dd>Sets the base path in which log files are created.  
+</dd>
+<dt><tt><a href="Functions.html#//apple_ref/c/func/chatLogWithPerson%58withJid%58" target="doc">chatLogWithPerson:withJid:</a></tt></dt>
+<dd>Returns a ChatLog for the specified person.
+</dd>
+</dl>
+<hr><!-- headerDoc=func; uid=//apple_ref/c/func/chatLogWithPerson%58withJid%58; name=chatLogWithPerson:withJid: -->
+<a name="//apple_ref/c/func/chatLogWithPerson%58withJid%58"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h2><a name="chatLogWithPerson%58withJid%58">chatLogWithPerson:withJid:</a></h2>
+</td></tr></table><dl>Returns a ChatLog for the specified person.
+
+</dl><blockquote><pre>+ ( id ) chatLogWithPerson:
+        (NSString *) _name withJid:
+        (JID *) _jid;
+</pre></blockquote>
+<h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
+<blockquote>
+<dl>
+<dt><tt><em>_name</em></tt></dt><dd>The roster name of the remote entity.</dd>
+<dt><tt><em>_jid</em></tt></dt><dd>The JID of the remote entity.</dd>
+</dl>
+</blockquote>
+<dl></dl>
+<hr><!-- headerDoc=func; uid=//apple_ref/c/func/setDefaultPath%58; name=setDefaultPath: -->
+<a name="//apple_ref/c/func/setDefaultPath%58"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h2><a name="setDefaultPath%58">setDefaultPath:</a></h2>
+</td></tr></table><dl>Sets the base path in which log files are created.  
+
+</dl><blockquote><pre>+ ( void ) setDefaultPath:
+        (NSString *) _path;
+</pre></blockquote>
+<p>This method should not be called after the creation of any ChatLog objects.  The behaviour in this case is undefined.  
+</p>
+<h5><font face="Lucida Grande,Helvetica,Arial">Parameter Descriptions</font></h5>
+<blockquote>
+<dl>
+<dt><tt><em>_path</em></tt></dt><dd>The path in which log files are stored.</dd>
+</dl>
+</blockquote>
+<dl></dl>
+<p>(Last Updated 11/26/2004)
+</p></body></html>

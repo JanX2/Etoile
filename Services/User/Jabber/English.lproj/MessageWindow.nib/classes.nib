@@ -1,0 +1,20 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {changeRemoteJid = id; }; 
+            CLASS = MessageWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                editingBox = NSTextView; 
+                editingBoxBox = NSScrollView; 
+                messageBox = NSTextView; 
+                messageBoxBox = NSScrollView; 
+                presenceBox = NSTextField; 
+                recipientBox = NSPopUpButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

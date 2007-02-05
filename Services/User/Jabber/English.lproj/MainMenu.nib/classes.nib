@@ -1,0 +1,93 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {addPerson = id; cancel = id; }; 
+            CLASS = AddContactWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {group = NSTextField; jid = NSTextField; name = NSTextField; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {openChatLog = id; }; 
+            CLASS = ChatLogMenuController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {cancel = id; okay = id; }; 
+            CLASS = CustomPresenceWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {message = NSTextView; name = NSComboBox; presence = NSComboBox; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {away = id; dnd = id; none = id; offline = id; xa = id; }; 
+            CLASS = HideMenuController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {current = id; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {setCustomPresence = id; showRosterWindow = id; }; 
+            CLASS = JabberApp; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                customPresenceWindow = CustomPresenceWindowController; 
+                debugMenu = NSMenuItem; 
+                xmlLogBox = NSTextView; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {
+            ACTIONS = {
+                playMessageSound = id; 
+                playOfflineSound = id; 
+                playOnlineSound = id; 
+                selectMessageSound = id; 
+                selectOfflineSound = id; 
+                selectOnlineSound = id; 
+            }; 
+            CLASS = PreferenceWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                awayColour = NSColorWell; 
+                chatColour = NSColorWell; 
+                dndColour = NSColorWell; 
+                messageSoundBox = NSComboBox; 
+                offlineColour = NSColorWell; 
+                offlineSoundBox = NSComboBox; 
+                onlineColour = NSColorWell; 
+                onlineSoundBox = NSComboBox; 
+                unknownColour = NSColorWell; 
+                xaColour = NSColorWell; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {
+                away = id; 
+                chat = id; 
+                custom = id; 
+                dnd = id; 
+                offline = id; 
+                online = id; 
+                xa = id; 
+            }; 
+            CLASS = PresenceMenuController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {current = id; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = Roster; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = RosterController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = XMLLog; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {textView = NSTextView; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
