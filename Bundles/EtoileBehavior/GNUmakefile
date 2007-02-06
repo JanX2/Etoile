@@ -1,4 +1,4 @@
-GNUSTEP_INSTALLATION_DOMAIN = SYSTEM
+ETOILE_CORE_MODULE = YES
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
@@ -18,3 +18,4 @@ $(BUNDLE_NAME)_LOCALIZED_RESOURCE_FILES=$(sort $(notdir $(wildcard *.lproj/*)))
 include $(GNUSTEP_MAKEFILES)/bundle.make
 -include ../../etoile.make
 -include GNUmakefile.postamble
+
