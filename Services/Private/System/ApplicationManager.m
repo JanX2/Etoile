@@ -139,7 +139,11 @@ static NSConnection *serverConnection = nil;
                  name: NSWorkspaceDidTerminateApplicationNotification
                object: nil];
 
-      inv = NS_MESSAGE(self, checkLiveApplications);
+ 	//FIXME: Stack frame related crash in -invoke with...
+	//inv = NS_MESSAGE(self, checkLiveApplications);
+	inv = [[NSInvocation alloc] initWithTarget: self selector: 
+		@selector(checkLiveApplications)];
+	AUTORELEASE(inv);
       ASSIGN(autocheckTimer, [NSTimer scheduledTimerWithTimeInterval: 1.0
                                                           invocation: inv
                                                              repeats: YES]);

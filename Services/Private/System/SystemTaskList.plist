@@ -35,4 +35,13 @@
 		Persistent = <*BN>;
 		Hidden = <*BY>;
 	};
+	/etoilesystem/application/background =
+	{
+		LaunchPath = "AZBackground";
+		Arguments = ();
+		UserName = "";
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
 }
