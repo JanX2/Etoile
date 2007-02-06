@@ -1,3 +1,9 @@
+2007-02-06  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Replaced GNUSTEP_INSTALLATION_DOMAIN by 
+	ETOILE_CORE_MODULE flag (will be documented and implemented in 
+	etoile.make). Also included etoile.make.
+
 2007-01-09  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GSDrawFunctions.h:

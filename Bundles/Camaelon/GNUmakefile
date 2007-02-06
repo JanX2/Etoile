@@ -1,3 +1,5 @@
+ETOILE_CORE_MODULE = YES
+
 include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS = -Wno-import #-g -Wall -O2
@@ -84,5 +86,6 @@ Camaelon_OBJC_FILES += \
 -include GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/bundle.make
+-include ../../etoile.make
 
 -include GNUmakefile.postamble
