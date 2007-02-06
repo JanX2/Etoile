@@ -1,5 +1,14 @@
 2007-02-06  Quentin Mathe <qmathe@club-internet.fr>
 
+	* setup.sh: Modified to look for AppKit bundles in Local by default 
+	(temporary fix).
+	* setdown.sh: Removed a line with no purpose.
+	* GNUmakefile: Swapped Languages and Frameworks compile order because 
+	Io now depends on DistributedView (the last fix to restore repository 
+	build).
+
+2007-02-06  Quentin Mathe <qmathe@club-internet.fr>
+
     * INSTALL.Ubuntu: Major update to take in account Edgy Eft and refreshed formatting.
 
 2007-01-11  Quentin Mathe <qmathe@club-internet.fr>
