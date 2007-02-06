@@ -19,6 +19,7 @@ endif
 ifeq ($(etoile-extensions), yes)
 
     export azalea ?= yes
+    export background ?= yes
 
     # Was servicesbar
     export menuserver ?= yes
@@ -35,6 +36,10 @@ endif
 
 ifeq ($(azalea), yes)
     SUBPROJECTS += Azalea
+endif
+
+ifeq ($(background), yes)
+    SUBPROJECTS += AZBackground
 endif
 
 ifeq ($(system),yes)
