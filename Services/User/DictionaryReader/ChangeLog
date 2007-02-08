@@ -2,6 +2,11 @@
 DictionaryReader Changelog
 ==========================
 
+Feb 08 2007  Quentin Mathe
+	* AppController.m: Added toolbar code (not yet enabled) to replace the 
+	actual top bar. This represents early work to streamline UI in relation to 
+	other Etoile applications.
+
 Nov 26 2006  Guenther Noack
 	* everywhere: Better assertions, wrote awakeFromNib in preferences
 	  controller.

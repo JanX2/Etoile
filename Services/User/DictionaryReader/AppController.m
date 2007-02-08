@@ -207,7 +207,7 @@ NSDictionary* normalAttributes;
 
 -(id)init
 {
-  if (self = [super init]) {
+  if ((self = [super init]) != nil) {
     id dict;
     
     // create mutable dictionaries array
@@ -291,9 +291,66 @@ NSDictionary* normalAttributes;
   return self;
 }
 
+- (void) awakeFromNib 
+{
+  NSToolbar *toolbar = 
+    [[NSToolbar alloc] initWithIdentifier: @"DictionaryContentToolbar"];
+  id dict;
+  
+  // create toolbar
+  [toolbar setDelegate:self];
+  // NOTE: Toolbar is turned off currently
+  //[dictionaryContentWindow setToolbar:toolbar];
+  RELEASE(toolbar);
+}
 
+// ---- Toolbar delegate methods
 
+- (NSToolbarItem *) toolbar:(NSToolbar *)toolbar
+		itemForItemIdentifier:(NSString*)identifier
+		willBeInsertedIntoToolbar:(BOOL)willBeInserted 
+{
+	NSToolbarItem *toolbarItem = 
+		[[NSToolbarItem alloc] initWithItemIdentifier:identifier];
 
+	[toolbarItem setLabel: [toolbarItem itemIdentifier]];
+	if ([[toolbarItem itemIdentifier] isEqual: @"Back"])
+	{
+		[toolbarItem setImage: [NSImage imageNamed: @"common_ArrowLeftH"]];
+		[toolbarItem setAction: @selector(browseBackClicked:)];
+	}
+	else if ([[toolbarItem itemIdentifier] isEqual: @"Forward"])
+	{
+		[toolbarItem setImage: [NSImage imageNamed: @"common_ArrowRightH"]];
+		[toolbarItem setAction: @selector(browseForwardClicked:)];
+	}
+	else if ([[toolbarItem itemIdentifier] isEqual: @"Search"])
+	{
+		NSSearchField *searchField = 
+			[[NSSearchField alloc] initWithFrame: NSMakeRect(0, 0, 150, 22)];
+
+		[searchField setAction: @selector(searchAction:)];
+		[toolbarItem setView: searchField];
+		RELEASE(searchField);
+	}
+
+	[toolbarItem setTarget: self];
+
+	return [toolbarItem autorelease];
+}
+
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar 
+{
+	return [self toolbarAllowedItemIdentifiers: toolbar];
+}
+
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar 
+{
+	NSArray *identifiers = [NSArray arrayWithObjects: @"Back", @"Forward", 
+		NSToolbarFlexibleSpaceItemIdentifier, @"Search", nil];
+
+	return identifiers;
+}
 
 // ---- Some methods called by the GUI
 -(void) browseBackClicked: (id)sender {
