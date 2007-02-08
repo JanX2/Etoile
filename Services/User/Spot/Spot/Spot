@@ -335,6 +335,39 @@ PictureDocument do(
 		nil
 	)
 	
+	rotate: := method(sender,
+		newSize := self picture size
+		rotatedImage := NSImage alloc initWithSize:(newSize) autorelease
+		transform := NSAffineTransform transform
+		center := NSMakePoint(newSize width / 2, newSize height / 2)
+		degrees := 90
+		
+		rotateImage lockFocus
+		
+    /**
+     * By default, all operations start at (0,0), which is the
+     * lower left corner.  We want rotation to be around the centre
+     * of the image, so first we'll apply a transform to move
+     * to the centre of the image.
+     *
+     * Then, we'll rotate the image by the appropriate number of
+     * degrees, and then move everything back down to (0,0) with a
+     * third and final transform.
+	*/
+
+		transform translateXBy:yBy:(center x, center y)
+		transform rotateByDegrees:(degrees)
+		transform translateXBy:yBy:(- centerPoint y,- centerPoint x)
+		transform concat
+
+    	self picture drawAtPoint:fromRect:operation:fraction:(NSZeroPoint, NSMakeRect(0, 0, newSize width, newSize height), NSCompositeSourceOver, 1.0)
+
+		rotatedImage unlockFocus
+
+		self setPicture:(rotatedImage)
+		self pictureUpdated
+	)
+	
 	pictureUpdated := method(
 		self picture ifNonNil(
 			self pictureView setFrameSize:(self picture size)
