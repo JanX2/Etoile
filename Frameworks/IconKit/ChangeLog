@@ -1,3 +1,9 @@
+2007-02-28  Quentin Mathe <qmathe@club-internet.fr>
+
+	* QuickTest.io: Added Io script to test basic IconKit features by enabling 
+	to interact quickly and directly. Script interest and code quality is 
+	really low for now...
+
 2006-11-28  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Source/IKIconProvider.m: Fixed icons path by creating the cache 
