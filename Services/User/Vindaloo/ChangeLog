@@ -1,4 +1,9 @@
-2006-09-16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+2007-02-08  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Udpated to include etoile.make, this should allow 
+	Vindaloo to find its PopplerKit dependency within Build directory at
+	the root of the repository.
+
+2006-09-16  Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Import from ImageApps.
-

@@ -73,4 +73,5 @@ Vindaloo_C_FILES =
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 include $(GNUSTEP_MAKEFILES)/application.make
+-include ../../../etoile.make
 -include GNUmakefile.postamble
