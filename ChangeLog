@@ -1,3 +1,18 @@
+2007-02-08  Quentin Mathe <qmathe@club-internet.fr>
+
+	Warning: 
+	1) Run ./setdown.sh on your system before updating or remove all 
+	gnustep lib links in /usr/lib, ditto for gnustep  tools in 
+	/usr/local/bin
+	2) Now the environment should be launched with /usr/local/bin/etoile 
+	or ~/etoile and not path/etoile_system anymore.
+	* setup.sh: Replaced linking libs into /usr/lib by new script 'etoile' 
+	which takes care of sourcing GNUstep.h as an equivalent yet better
+	solution. The script is generated on the fly and finally installed in 
+	/usr/local/bin or ~/bin.
+	* setdown.sh: Symetrical update to match the aforementioned 
+	modifications.
+
 2007-02-06  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Services/Private/GNUmakefile: Included AZBackground in the build 
