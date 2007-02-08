@@ -1,3 +1,16 @@
+2007-02-08  Quentin Mathe <qmathe@club-internet.fr>
+
+	* EtoileSystem.m 
+	(-run): Modified to set NSApp delegate.
+	(-applicationDidFinishLaunching:): New method for debugging purpose 
+	currently.
+	(-findConfigFileAndStartUpdateMonitoring): NS_MESSAGE fix yet another
+	time. This corrects bizarre crash happening every time System tries to
+	display an alert panel.
+	* etoile.desktop: Modified to reference etoile script rather than 
+	etoile_system itself. (More to come about this in a next commit)
+
+
 2007-02-06  Quentin Mathe <qmathe@club-internet.fr>
 
 	* ApplicationManager.m (-init):

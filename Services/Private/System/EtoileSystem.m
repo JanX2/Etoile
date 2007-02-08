@@ -239,13 +239,20 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
         if ([process launchOnDemand] == NO)
             [self startProcessWithDomain: domain error: NULL]; //FIXME: Handles error properly.
     }
-    
+   
     /* We trigger the ApplicationManager singleton creation in order it 
        starts to monitor user applications. The return value is ignored. */
     [ApplicationManager sharedInstance];
     /* We trigger the NSApplication singleton creation in order we can use
        UI stuff like window, panel etc. The return value is ignored. */
+    [[NSApplication sharedApplication] setDelegate: self];
     [[NSApplication sharedApplication] run];
+}
+
+- (void) applicationDidFinishLaunching: (NSNotification *)not
+{
+	NSDebugLLog(@"SCSystem", @"Did finish launching");
+	//NSRunAlertPanel(_(@"Test Alert Panel"), nil, nil, nil, nil);
 }
 
 // - (BOOL) startProcessWithDomain: (NSString *)domain 
@@ -617,7 +624,13 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     
         ASSIGN(configFilePath, configPath);
     
-        inv = NS_MESSAGE(self, checkConfigFileUpdate);
+        // NOTE: The next line corrupts the stack frame and leads to really 
+	// strange segfaults related to gnustep lock objects or thread 
+	// dictionary.
+	// inv = NS_MESSAGE(self, checkConfigFileUpdate);
+	inv = [[NSInvocation alloc] initWithTarget: self selector: 
+		@selector(checkConfigFileUpdate)];
+	AUTORELEASE(inv);
         ASSIGN(monitoringTimer, [NSTimer scheduledTimerWithTimeInterval: 2.0
                                                              invocation: inv
                                                                 repeats: YES]);

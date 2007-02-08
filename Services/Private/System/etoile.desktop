@@ -6,7 +6,7 @@ Comment=Use this session to log in Étoilé environment
 Comment[fr]=Utilisez cette session pour vous logguez dans
 l'environnement Étoilé
 
-Exec=/usr/local/bin/etoile_system
+Exec=/usr/local/bin/etoile
 
 # No icon for now
 Icon=
