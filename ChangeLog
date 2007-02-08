@@ -1,5 +1,10 @@
 2007-02-08  Quentin Mathe <qmathe@club-internet.fr>
 
+	* Services/User/GNUmakefile: Included Vindaloo by default in Etoile build 
+	process.
+
+2007-02-08  Quentin Mathe <qmathe@club-internet.fr>
+
 	Warning: 
 	1) Run ./setdown.sh on your system before updating or remove all 
 	gnustep lib links in /usr/lib, ditto for gnustep  tools in 
@@ -326,4 +331,3 @@
 	* pmkfile: Added a pmkfile (pmk 0.8.2 needed) in order to check installation 
 	environment and control Etoile build options. To know more about pmk and 
 	install it : http://pmk.sourceforge.net/
-        

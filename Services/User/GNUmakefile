@@ -18,6 +18,7 @@ ifeq ($(user-base), yes)
     export grr ?= yes
     export mollusk ?= yes
     export typewriter ?= yes
+    export vindaloo ?= yes
 
 endif
 
@@ -30,6 +31,7 @@ ifeq ($(user-base), no)
     export grr ?= no
     export mollusk ?= no
     export typewriter ?= no
+    export vindaloo ?= no
 
 endif
 
@@ -63,6 +65,10 @@ endif
 
 ifeq ($(typewriter), yes)
 	SUBPROJECTS += Typewriter
+endif
+
+ifeq ($(vindaloo), yes)
+	SUBPROJECTS += Vindaloo
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
