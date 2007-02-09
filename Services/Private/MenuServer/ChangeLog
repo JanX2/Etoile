@@ -1,6 +1,12 @@
 2007-02-08  Quentin Mathe <qmathe@club-internet.fr>
 
-    * BundleExtensionLoader.m: Shifted left MainBundleDomainMask value (was 
+    * BundleExtensionLoader.m: Fixed NSearchPathDomainMask use, now properly 
+    matching latest gnustep implementation (visible in NSPathUtilities.h 
+    r24203). -determineDomainsMaskWithDefaultsKey: should behave well now.
+
+2007-02-08  Quentin Mathe <qmathe@club-internet.fr>
+
+    * BundleExtensionLoader.h: Shifted left MainBundleDomainMask value (was 
     overlapping NSSystemDomainMask). As a side effect, it seems to correct 
     sybarentry bundles not loading at all. In fact, that's the issue I try to 
     fix. 

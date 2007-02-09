@@ -46,7 +46,13 @@
   defaultsKey
 {
   NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-  NSSearchPathDomainMask mask = NSAllDomainsMask;
+  NSSearchPathDomainMask allMask = NSSystemDomainMask | NSLocalDomainMask 
+    | NSNetworkDomainMask | NSUserDomainMask | MainBundleDomainMask;
+  NSSearchPathDomainMask mask = allMask;
+
+  // NOTE: mask = NSAllDomainsMask doesn't mean NSSystemDomainMask, 
+  // NSLocalDomainMask, NSNetworkDomainMask, NSUserDomainMask and 
+  // MainBundleDomainMask are set in 'mask'.
 
   if (defaultsKey == nil)
     {
@@ -78,6 +84,9 @@
     {
       mask ^= MainBundleDomainMask;
     }
+
+  if (mask == allMask)
+    mask |= NSAllDomainsMask;
 
   return mask;
 }
@@ -244,7 +253,7 @@ static BundleExtensionLoader * shared = nil;
     }
 #endif
 
-  if (domainMask & MainBundleDomainMask)
+  if ((domainMask & MainBundleDomainMask) || (domainMask & NSAllDomainsMask))
     {
       NSString * resource;
 
