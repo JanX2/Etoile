@@ -1,3 +1,10 @@
+2007-02-08  Quentin Mathe <qmathe@club-internet.fr>
+
+    * BundleExtensionLoader.m: Shifted left MainBundleDomainMask value (was 
+    overlapping NSSystemDomainMask). As a side effect, it seems to correct 
+    sybarentry bundles not loading at all. In fact, that's the issue I try to 
+    fix. 
+
 2006-12-09  Saso Kiselkov <skiselkov@gmail.com>
 
     * Subprojects/ApplicationsEntry/ApplicationsEntry.h:

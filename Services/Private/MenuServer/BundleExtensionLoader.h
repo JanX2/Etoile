@@ -35,7 +35,17 @@ bundles with the means of NSBundle's `-pathsForResourcesOfType...'
 method.
 */
 enum {
-  MainBundleDomainMask = 0x00010000
+/* This enum may be broken if the following one in gnustep is modified...
+   Last update with r24203.
+   typedef enum
+     {
+       NSUserDomainMask = 1,
+       NSLocalDomainMask = 2,
+       NSNetworkDomainMask = 4,
+       NSSystemDomainMask = 8,
+       NSAllDomainsMask = 0x0ffff,
+     } NSSearchPathDomainMask; */
+  MainBundleDomainMask = 16 // 0x0000100
 };
 
 /** @class BundleExtensionLoader
