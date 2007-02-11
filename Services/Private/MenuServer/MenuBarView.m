@@ -24,6 +24,7 @@
 #import "MenuBarView.h"
 
 #import <Foundation/NSBundle.h>
+#import <Foundation/NSDebug.h>
 #import <Foundation/NSSortDescriptor.h>
 
 #import <AppKit/NSEvent.h>
@@ -129,28 +130,46 @@
       NSEnumerator * ee;
       id <EtoileSystemBarEntry> entry;
 
+      NSDebugLLog(@"MenuServer", @"Inserting items: %@ part of group %@", groupEntries, group);
+
       [groupEntries sortUsingDescriptors: [NSArray arrayWithObject: sortDesc]];
       ee = [groupEntries objectEnumerator];
 
       while ((entry = [ee nextObject]) != nil)
         {
-          [systemMenu addItem: [entry menuItem]];
+          NSMenuItem *menuItem = [entry menuItem];
+
+          if (menuItem != nil)
+            [systemMenu addItem: menuItem];
         }
 
-      [systemMenu addItem: [NSMenuItem separatorItem]];
+      // insert a new separator if non nil items were just inserted
+      if (![[[systemMenu itemArray] lastObject] isSeparatorItem])
+      {
+        [systemMenu addItem: [NSMenuItem separatorItem]];
+      }
     }
 
   if ([ungrouped count] > 0)
     {
       id <EtoileSystemBarEntry> entry;
 
+      NSDebugLLog(@"MenuServer", @"Inserting ungrouped items: %@", ungrouped);
+
       e = [ungrouped objectEnumerator];
       while ((entry = [e nextObject]) != nil)
         {
-          [systemMenu addItem: [entry menuItem]];
+          NSMenuItem *menuItem = [entry menuItem];
+
+          if (menuItem != nil)
+            [systemMenu addItem: menuItem];
         }
 
-      [systemMenu addItem: [NSMenuItem separatorItem]];
+      // insert a new separator if non nil items were just inserted
+      if (![[[systemMenu itemArray] lastObject] isSeparatorItem])
+      {
+        [systemMenu addItem: [NSMenuItem separatorItem]];
+      }
     }
 }
 
@@ -195,13 +214,23 @@ static NSImage * filler = nil,
 
       // create the system bar menu (the menu shown when the user pushes
       // the Etoile logo on the menubar)
-      systemMenu = [[NSMenu alloc] initWithTitle: @"Étoilé"];
+      systemMenu = [[NSMenu alloc] initWithTitle: @"ï¿½oilï¿½"];
 
       [self loadSystemBarEntries];
 
-      // last, add the Log Out entry
-      [systemMenu addItemWithTitle: @"Log Out"
+      // last, add the Sleep, Log Out, Reboot, Shut down entry
+      [systemMenu addItemWithTitle: _(@"Sleep")
+                            action: @selector(sleep:)
+                     keyEquivalent: nil];
+      [systemMenu addItem: [NSMenuItem separatorItem]];
+      [systemMenu addItemWithTitle: _(@"Log Out")
                             action: @selector(logOut:)
+                     keyEquivalent: nil];
+      [systemMenu addItemWithTitle: _(@"Reboot")
+                            action: @selector(reboot:)
+                     keyEquivalent: nil];
+      [systemMenu addItemWithTitle: _(@"Shut Down")
+                            action: @selector(shutDown:)
                      keyEquivalent: nil];
       [systemMenu sizeToFit];
 

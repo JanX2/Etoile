@@ -175,6 +175,21 @@ MenuBarWindow * ServerMenuBarWindow = nil;
     }
 }
 
+- (void) sleep: sender
+{
+
+}
+
+- (void) reboot: sender
+{
+
+}
+
+- (void) shutDown: sender
+{
+
+}
+
 - (id) workspaceApp
 {
   return [[NSWorkspace sharedWorkspace] connectToWorkspaceApplicationLaunch: NO];

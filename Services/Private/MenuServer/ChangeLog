@@ -1,3 +1,16 @@
+2007-02-11  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Controller.h
+    * Controller.m
+    (-sleep:, -shutDown:, -reboot:): New placeholder action methods to be 
+    filled later.
+    * MenuBarView.m
+    (-loadSystemBarEntries): Updated method to handle the special case of 
+    adding nil menu items. This corrects the double separator item issue 
+    reported by Nicolas.
+    (-initWithFrame:): Modified to add new menu entries sleep, reboot and shut
+    down.
+
 2007-02-08  Quentin Mathe <qmathe@club-internet.fr>
 
     * BundleExtensionLoader.m: Fixed NSearchPathDomainMask use, now properly 

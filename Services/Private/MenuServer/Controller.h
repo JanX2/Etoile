@@ -38,6 +38,9 @@ extern MenuBarWindow * ServerMenuBarWindow;
 - (void) windowDidMove: (NSNotification *) notif;
 
 - (void) logOut: sender;
+- (void) sleep: sender;
+- (void) reboot: sender;
+- (void) shutDown: sender;
 
 - (id) workspaceApp;
 
