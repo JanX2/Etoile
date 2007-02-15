@@ -39,7 +39,7 @@ NSString* RSSArticleChangedNotification = @"RSSArticleChangedNotification";
   return [self initWithHeadline: @"no headline"
 	       url: @"no URL"
 	       description: @"no description"
-	       date: [NSDate new] ];
+	       date: AUTORELEASE([NSDate new]) ];
 }
 
 

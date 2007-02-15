@@ -49,7 +49,7 @@
     [dict setObject: [articleClass description] forKey: @"articleClass"];
     
     int i;
-    NSMutableArray* articleIndex = [NSMutableArray new];
+    NSMutableArray* articleIndex = AUTORELEASE([NSMutableArray new]);
     
     for (i=0; i<[articles count]; i++) {
         NSMutableDictionary* articleDict = AUTORELEASE([[NSMutableDictionary alloc] init]);

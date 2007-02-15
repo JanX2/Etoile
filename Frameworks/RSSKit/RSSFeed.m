@@ -59,7 +59,7 @@
 #endif
   
   ASSIGN(feedURL, aURL);
-  ASSIGN(articles, [NSMutableArray new]);
+  ASSIGN(articles, AUTORELEASE([NSMutableArray new]));
   ASSIGN(lastRetrieval, [NSDate dateWithTimeIntervalSince1970: 0.0]);
   clearFeedBeforeFetching = YES;
   lastError = RSSFeedErrorNoError;
@@ -232,7 +232,7 @@
 - (void) clearArticles
 {
   // Delete and recreate the list of articles.
-  ASSIGN(articles, [NSMutableArray new]);
+  ASSIGN(articles, AUTORELEASE([NSMutableArray new]));
   
   // FIXME: Find out why I did this! -GN
   ASSIGN(lastRetrieval, [NSDate dateWithTimeIntervalSince1970: 0.0]);
