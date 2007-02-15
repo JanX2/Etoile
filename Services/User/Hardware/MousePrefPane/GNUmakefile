@@ -13,6 +13,8 @@ MousePrefPane_INSTALL_DIR =
 MousePrefPane_PRINCIPAL_CLASS = MousePrefPane
 MousePrefPane_APPLICATION_ICON =
 
+MousePrefPane_GUI_LIBS = -lSystemConfig
+
 #
 # Resource files
 #

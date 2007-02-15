@@ -1,5 +1,20 @@
 {
     "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "accelerationUpdated:"
+	);
+	Super = NSObject;
+    };
+    MousePrefPane = {
+	Actions = (
+	    "accelerationUpdated:"
+	);
+	Outlets = (
+	    accelerationSlider
+	);
+	Super = NSPreferencePane;
+    };
     NSPreferencePane = {
 	Actions = (
 	);

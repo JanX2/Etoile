@@ -24,11 +24,15 @@
  */
 
 #import <PaneKit/PaneKit.h>
-
+#import <SystemConfig/SCMouse.h>
 
 @interface MousePrefPane : NSPreferencePane
 {
-
+    @private
+	IBOutlet NSSlider* accelerationSlider;
+    	SCMouse* mouseConfig;
 }
+
+-(IBAction) accelerationUpdated: (id)sender;
 
 @end

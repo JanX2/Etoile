@@ -28,4 +28,28 @@
 
 @implementation MousePrefPane
 
+-(IBAction) accelerationUpdated: (id)sender
+{
+	// try to set mouse accel
+	[mouseConfig setAcceleration: [accelerationSlider floatValue]];
+	
+	// "snap back"
+	[accelerationSlider setFloatValue: [mouseConfig acceleration]];
+}
+
+-(void) willSelect
+{
+	if (mouseConfig == nil) {
+		ASSIGN( mouseConfig, [SCMouse sharedInstance] );
+	}
+	
+	[accelerationSlider setFloatValue: [mouseConfig acceleration]];
+}
+
+-(void) willUnselect;
+{
+	// Nothing.
+}
+
 @end
+

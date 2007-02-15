@@ -20,6 +20,7 @@ VERSION = 0.1
 
 Hardware_PRINCIPAL_CLASS = NSApplication
 Hardware_APPLICATION_ICON =
+Hardware_GUI_LIBS = -lSystemConfig
 
 #
 # Resource files
@@ -61,5 +62,8 @@ Hardware_C_FILES =
 include $(GNUSTEP_MAKEFILES)/application.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 -include ../../../etoile.make
+
+# HACK
+extension = app
 
 -include GNUmakefile.postamble
