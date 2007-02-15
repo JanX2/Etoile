@@ -1,3 +1,8 @@
+
+2007-02-13  Guenther Noack <guenther@unix-ag.uni-kl.de>
+
+	* GNUmakefile: Added include path /usr/X11R6/include
+
 2007-02-06  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Replaced GNUSTEP_INSTALL_DOMAIN by ETOILE_CORE_MODULE.

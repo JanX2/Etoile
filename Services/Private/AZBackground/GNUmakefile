@@ -8,7 +8,7 @@ AZBackground_OBJC_FILES = \
 	AZBackground.m \
 	main.m 
 
-ADDITIONAL_INCLUDE_DIRS += -I/usr/include 
+ADDITIONAL_INCLUDE_DIRS += -I/usr/include -I/usr/X11R6/include 
 
 ADDITIONAL_LIB_DIRS += -L/usr/lib -L/usr/X11R6/lib -lX11 -lXWindowServerKit
 

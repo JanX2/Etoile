@@ -177,17 +177,17 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 
 - (void) sleep: sender
 {
-
+	// TODO
 }
 
 - (void) reboot: sender
 {
-
+	// TODO
 }
 
 - (void) shutDown: sender
 {
-
+	// TODO
 }
 
 - (id) workspaceApp
