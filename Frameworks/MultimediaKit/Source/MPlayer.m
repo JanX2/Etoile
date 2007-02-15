@@ -122,6 +122,16 @@
   return size;
 }
 
+- (float) position
+{
+  return mySeconds;
+}
+
+- (void) setPosition: (float) aPosition
+{
+  NSLog(@"%@ supposed to set position to %f sec", self, aPosition);
+}
+
 - (void) setVolumeInPercentage: (unsigned int) volume
 {
   [self setVolume: volume];

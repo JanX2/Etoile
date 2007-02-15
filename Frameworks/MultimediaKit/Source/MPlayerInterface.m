@@ -326,7 +326,6 @@
 		case kPaused :
 			[myCommandsBuffer addObject:@"quit"];
 			[self sendCommand:@"pause"];
-//			[self sendCommand:@"quit"];
 			break;
 		case kStopped:
 			break;
@@ -352,8 +351,7 @@
 			[self sendCommand:@"pause"];
 			break;
 		case kStopped:					// if stopped do nothing
-			break;
-		case kFinished:					// if stopped do nothing
+		case kFinished:					// if finished do nothing
 			break;
 		default:						// otherwise save command to the buffer
 			[myCommandsBuffer addObject:@"pause"];
@@ -1017,12 +1015,19 @@
 	}
 }
 /************************************************************************************/
+
+/**
+ * This method is notified whenever the Mplayer-task's file handle for reading has data.
+ * The notification object has its data in the userInfo dictionary saved using the
+ * NSFileHandleNotificationDataItem key.
+ */
 - (void)readOutputC:(NSNotification *)notification
 {
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
 	unsigned dataLength = [(NSData *)[[notification userInfo]
 			objectForKey:@"NSFileHandleNotificationDataItem"] length] / sizeof(char);
-	char *stringPtr = NULL, *dataPtr = malloc([(NSData *)[[notification userInfo]
+	char *stringPtr = NULL;
+	char *dataPtr = malloc([(NSData *)[[notification userInfo]
 			objectForKey:@"NSFileHandleNotificationDataItem"] length] + sizeof(char));
 	
 	// load data and terminate it with null character

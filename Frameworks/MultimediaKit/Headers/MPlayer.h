@@ -1,7 +1,7 @@
 #import <MultimediaKit/MMPlayer.h>
 #import <MultimediaKit/MPlayerInterface.h>
 
-/* Subclass MplayerInterface to prevent polluting MPlyaerInterface */
+/* Subclass MplayerInterface to prevent polluting MPlayer */
 @interface MPlayer: MplayerInterface <MMPlayer>
 {
   NSURL *url;

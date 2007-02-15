@@ -1,4 +1,8 @@
-2005-11-30  Quentin Mathe <qmathe@club-internet.fr>
+2007-01-21  Guenther Noack <guenther@unix-ag.uni-kl.de>
+	
+	* Minor code cleanups (mostly comments)
+
+2006-11-30  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile.headers: 
 	* GNUmakefile.headers_build:
