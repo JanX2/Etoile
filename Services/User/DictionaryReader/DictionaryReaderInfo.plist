@@ -5,9 +5,11 @@
     ApplicationRelease = 0.2;
     Authors = (
 	"Guenther Noack <guenther@unix-ag.uni-kl.de>",
+	"With help from:",
+	"Quentin Mathe",
 	"Chris B. Vetter"
     );
-    Copyright = "Copyright (C) 2006 Guenther Noack";
+    Copyright = "Copyright (C) 2006, 2007 Guenther Noack";
     CopyrightDescription = "Released under the terms of the GNU General Public Licence.";
     NSIcon = dict.png;
     NSTypes = (
@@ -17,6 +19,9 @@
         NSPortName = DictionaryReader;
         NSMessage = lookupInDictionary;
         NSSendTypes = (NSStringPboardType);
+	NSKeyEquivalent = {
+	  default = "=";
+	 };
         NSMenuItem = {
           default = "Look Up in Dictionary";
          };

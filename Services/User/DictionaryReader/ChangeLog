@@ -2,10 +2,22 @@
 DictionaryReader Changelog
 ==========================
 
+Feb 12 2007  Guenther Noack
+	* AppController.[mh]:
+	* */DictionaryReader.gorm, */DictionaryReader.nib:
+	* Resources/etoile_[forward|back].tiff:
+	Finished Quentin's toolbar code.
+	
+Feb 11 2007  Guenther Noack
+	* AppController.m: Made service method non-blocking
+	* DictionaryReaderInfo.plist: "=" keyboard shortcut for service
+	* AppController.[mh]: Auto-show the window when the application
+	  icon is clicked.
+
 Feb 08 2007  Quentin Mathe
 	* AppController.m: Added toolbar code (not yet enabled) to replace the 
-	actual top bar. This represents early work to streamline UI in relation to 
-	other Etoile applications.
+	actual top bar. This represents early work to streamline UI in relation 
+	to other Etoile applications.
 
 Nov 26 2006  Guenther Noack
 	* everywhere: Better assertions, wrote awakeFromNib in preferences
@@ -20,11 +32,11 @@ Nov 24 2006  Guenther Noack
 
 Nov 15 2006  Quentin Mathe
 	* GNUmakefile: Updated to include etoile.make, this allows the project
-	to compile without installing EtoileFoundation first.
+	  to compile without installing EtoileFoundation first.
 
 Nov 07 2006  Yen-Ju Chen
 	* GNUmakefile, Preferences.h: Use EtoileFoundation instead deprecated 
-	EtoileExtension.
+	  EtoileExtension.
 	* HistoryManager.m: return self in -init to avoid memory leak.
 
 Oct 15 2006  Guenther Noack

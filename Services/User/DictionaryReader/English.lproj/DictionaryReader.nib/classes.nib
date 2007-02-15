@@ -1,13 +1,25 @@
 {
     IBClasses = (
-        {
-            ACTIONS = {searchAction = id; }; 
-            CLASS = AppController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {searchResultView = id; searchStringControl = id; }; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
-    ); 
-    IBVersion = 1; 
+	{
+	    ACTIONS = {
+		searchAction = id;
+	    };
+	    CLASS = AppController;
+	    LANGUAGE = ObjC;
+	    OUTLETS = {
+		dictionaryContentWindow = id;
+		searchResultView = id;
+	    };
+	    SUPERCLASS = NSObject;
+	},
+	{
+	    ACTIONS = {
+		searchAction = id;
+	    };
+	    CLASS = FirstResponder;
+	    LANGUAGE = ObjC;
+	    SUPERCLASS = NSObject;
+	}
+    );
+    IBVersion = 1;
 }

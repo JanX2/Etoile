@@ -58,7 +58,8 @@ DictionaryReader_RESOURCE_FILES = \
 Resources/dict.png \
 Resources/Dictionaries/jargon/jargon.index \
 Resources/Dictionaries/jargon/jargon.dict \
-
+Resources/etoile_back.tiff \
+Resources/etoile_forward.tiff \
 
 DictionaryReader_LANGUAGES = English
 
@@ -82,6 +83,12 @@ else
 	DictionaryReader_OBJC_FILES += UKNibOwner.m
 	DictionaryReader_HEADER_FILES += UKNibOwner.h
 endif
+
+ifeq ($(debug), yes)
+	ADDITIONAL_FLAGS += -fprofile-arcs -ftest-coverage
+	ADDITIONAL_OBJC_LIBS += -lgcov
+endif
+
 
 SUBPROJECTS = 
 -include GNUmakefile.preamble

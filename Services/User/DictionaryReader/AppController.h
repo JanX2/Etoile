@@ -24,15 +24,20 @@
 
 @interface AppController : NSObject
 {
-  @private
-  NSTextField* searchStringControl;
-  NSTextView* searchResultView;
-  NSButton* browseBackButton;
-  NSButton* browseForwardButton;
-  NSWindow* dictionaryContentWindow;
-  
-  NSMutableArray* dictionaries;
-  HistoryManager* historyManager;
+	@private
+	IBOutlet NSTextField* searchStringControl;
+	IBOutlet NSTextView* searchResultView;
+	IBOutlet NSButton* browseBackButton;
+	IBOutlet NSButton* browseForwardButton;
+	IBOutlet NSWindow* dictionaryContentWindow;
+	
+	NSMutableArray* dictionaries;
+	HistoryManager* historyManager;
+	
+	NSToolbarItem* backItem;
+	NSToolbarItem* forwardItem;
+	NSToolbarItem* searchItem;
+	NSSearchField* searchField;
 }
 
 -(id)init;

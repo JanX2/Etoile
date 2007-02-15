@@ -1,6 +1,6 @@
 /*
  *  Dictionary Reader - A Dict client for GNUstep
- *  Copyright (C) 2006 Guenther Noack
+ *  Copyright (C) 2006, 2007 Guenther Noack
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License version 2 as
@@ -207,101 +207,116 @@ NSDictionary* normalAttributes;
 
 -(id)init
 {
-  if ((self = [super init]) != nil) {
-    id dict;
-    
-    // create mutable dictionaries array
-    dictionaries = [[NSMutableArray alloc] initWithCapacity: 2];
-    
-    NSString* dictStoreFile = [self dictionaryStoreFile];
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath: dictStoreFile]) {
-        NSArray* plist = [NSArray arrayWithContentsOfFile: [self dictionaryStoreFile]];
-        int i;
-        for (i=0; i<[plist count]; i++) {
-            DictionaryHandle* dict =
-                [DictionaryHandle dictionaryFromPropertyList: [plist objectAtIndex: i]];
-            [dict setDefinitionWriter: self];
-            [dictionaries addObject: dict];
-            NSLog(@" *** Added %@", dict);
-        }
-        NSLog(@" *** result: %@", dictionaries);
-    } else {
+    if ((self = [super init]) != nil) {
+	id dict;
+
+	// create toolbar items
+	forwardItem = [[NSToolbarItem alloc] initWithItemIdentifier: @"Forward"];
+	[forwardItem setImage: [NSImage imageNamed: @"etoile_forward"]];
+	[forwardItem setAction: @selector(browseForwardClicked:)];
+	[forwardItem setLabel: @"Forward"];
+	[forwardItem setTarget: self];
+	[forwardItem setEnabled: NO];
+	
+	backItem = [[NSToolbarItem alloc] initWithItemIdentifier: @"Back"];
+	[backItem setImage: [NSImage imageNamed: @"etoile_back"]];
+	[backItem setAction: @selector(browseBackClicked:)];
+	[backItem setLabel: @"Back"];
+	[backItem setTarget: self];
+	[backItem setEnabled: NO];
+
+	searchItem = [[NSToolbarItem alloc] initWithItemIdentifier: @"Search"];
+	searchField = [[NSSearchField alloc] initWithFrame: NSMakeRect(0, 0, 150, 22)];
+	[searchField setRecentsAutosaveName: @"recentDictionaryLookups"];
+	[searchItem setView: searchField];
+	[searchField setAction: @selector(searchAction:)];
+	[searchItem setLabel: @"Search"];
+
+	// create mutable dictionaries array
+	dictionaries = [[NSMutableArray alloc] initWithCapacity: 2];
+
+	NSString* dictStoreFile = [self dictionaryStoreFile];
+
+	if ([[NSFileManager defaultManager] fileExistsAtPath: dictStoreFile]) {
+	   NSArray* plist = [NSArray arrayWithContentsOfFile: [self dictionaryStoreFile]];
+	   int i;
+	   for (i=0; i<[plist count]; i++) {
+	       DictionaryHandle* dict =
+		   [DictionaryHandle dictionaryFromPropertyList: [plist objectAtIndex: i]];
+	       [dict setDefinitionWriter: self];
+	       [dictionaries addObject: dict];
+	       NSLog(@" *** Added %@", dict);
+	   }
+	   NSLog(@" *** result: %@", dictionaries);
+	} else {
 #ifdef PREDEFINED_DICTIONARIES // predefined dictionaries
-        // create local dictionary object
-        dict = [[LocalDictionary alloc] initWithResourceName: @"jargon"];
-        [dict setDefinitionWriter: self];
-        [dictionaries addObject: dict];
-        [dict release];
+	    // create local dictionary object
+	    dict = [[LocalDictionary alloc] initWithResourceName: @"jargon"];
+	    [dict setDefinitionWriter: self];
+	    [dictionaries addObject: dict];
+	    [dict release];
 #ifdef REMOTE_DICTIONARIES // remote dictionaries
-        // create remote dictionary object
-        dict = [[DictConnection alloc] init];
-        [dict setDefinitionWriter: self];
-        [dictionaries addObject: dict];
-        [dict release];
+	    // create remote dictionary object
+	    dict = [[DictConnection alloc] init];
+	    [dict setDefinitionWriter: self];
+	    [dictionaries addObject: dict];
+	    [dict release];
 #endif // end remote dictionaries block
 #endif // end predefined dictionaries
+	}
+
+
+	// create history manager
+	historyManager = [[HistoryManager alloc] init];
+	[historyManager setDelegate: self];
     }
-    
-    
-    // create history manager
-    historyManager = [[HistoryManager alloc] init];
-    [historyManager setDelegate: self];
-  }
-  
-  
-  // create fonts
-  if (bigHeadlineAttributes == nil) {
-    bigHeadlineAttributes = 
-      [[NSDictionary alloc]
-	  initWithObjectsAndKeys:
-	  [NSFont titleBarFontOfSize: 16], NSFontAttributeName,
-	nil
-       ];
-  }
-  
-  if (headlineAttributes == nil) {
-    headlineAttributes = 
-      [[NSDictionary alloc]
-	initWithObjectsAndKeys:
-	  [NSFont boldSystemFontOfSize: 12], NSFontAttributeName,
-	nil
-       ];
-  }
-  
-  if (normalAttributes == nil) {
-    normalAttributes = 
-      [[NSDictionary alloc]
-	initWithObjectsAndKeys:
-	  [NSFont userFixedPitchFontOfSize: 10], NSFontAttributeName,
-	nil
-       ];
-  }
-  
-  // Notifications --------------
-  NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
-  
-  // Register in the default notification center to receive link clicked events
-  [defaultCenter
-    addObserver: self
-    selector: @selector(clickSearchNotification:)
-    name: WordClickedNotificationType
-    object: nil];
-  
-  return self;
+
+
+    // create fonts
+    if (bigHeadlineAttributes == nil) {
+	bigHeadlineAttributes = 
+	    [[NSDictionary alloc]
+	    initWithObjectsAndKeys:
+	[NSFont titleBarFontOfSize: 16], NSFontAttributeName, nil];
+    }
+
+    if (headlineAttributes == nil) {
+	headlineAttributes = 
+	    [[NSDictionary alloc]
+	    initWithObjectsAndKeys:
+      	[NSFont boldSystemFontOfSize: 12], NSFontAttributeName, nil];
+    }
+
+    if (normalAttributes == nil) {
+	normalAttributes = 
+	    [[NSDictionary alloc]
+	    initWithObjectsAndKeys:
+  	[NSFont userFixedPitchFontOfSize: 10], NSFontAttributeName, nil];
+    }
+
+    // Notifications --------------
+    NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
+
+    // Register in the default notification center to receive link clicked events
+    [defaultCenter
+	addObserver: self
+	   selector: @selector(clickSearchNotification:)
+	       name: WordClickedNotificationType
+	     object: nil];
+
+    return self;
 }
 
 - (void) awakeFromNib 
 {
-  NSToolbar *toolbar = 
-    [[NSToolbar alloc] initWithIdentifier: @"DictionaryContentToolbar"];
-  id dict;
-  
-  // create toolbar
-  [toolbar setDelegate:self];
-  // NOTE: Toolbar is turned off currently
-  //[dictionaryContentWindow setToolbar:toolbar];
-  RELEASE(toolbar);
+	NSToolbar *toolbar = 
+	  [[NSToolbar alloc] initWithIdentifier: @"DictionaryContentToolbar"];
+	
+	// create toolbar
+	[toolbar setDelegate:self];
+	
+	[dictionaryContentWindow setToolbar:toolbar];
+	RELEASE(toolbar);
 }
 
 // ---- Toolbar delegate methods
@@ -310,33 +325,27 @@ NSDictionary* normalAttributes;
 		itemForItemIdentifier:(NSString*)identifier
 		willBeInsertedIntoToolbar:(BOOL)willBeInserted 
 {
-	NSToolbarItem *toolbarItem = 
-		[[NSToolbarItem alloc] initWithItemIdentifier:identifier];
-
-	[toolbarItem setLabel: [toolbarItem itemIdentifier]];
-	if ([[toolbarItem itemIdentifier] isEqual: @"Back"])
-	{
-		[toolbarItem setImage: [NSImage imageNamed: @"common_ArrowLeftH"]];
-		[toolbarItem setAction: @selector(browseBackClicked:)];
+	NSToolbarItem* toolbarItem;
+	if ([identifier isEqual: @"Back"]) {
+		toolbarItem = backItem;
+	} else if ([identifier isEqual: @"Forward"]) {
+		toolbarItem = forwardItem;
+	} else {
+		NSAssert1(
+		  [identifier isEqual: @"Search"],
+		  @"Bad toolbar item requested: %@", identifier
+		);
+		
+		toolbarItem = searchItem;
 	}
-	else if ([[toolbarItem itemIdentifier] isEqual: @"Forward"])
-	{
-		[toolbarItem setImage: [NSImage imageNamed: @"common_ArrowRightH"]];
-		[toolbarItem setAction: @selector(browseForwardClicked:)];
-	}
-	else if ([[toolbarItem itemIdentifier] isEqual: @"Search"])
-	{
-		NSSearchField *searchField = 
-			[[NSSearchField alloc] initWithFrame: NSMakeRect(0, 0, 150, 22)];
+	
+	NSAssert1(
+		toolbarItem != nil,
+		@"nil toolbar item returned for %@ identifier",
+		identifier
+	);
 
-		[searchField setAction: @selector(searchAction:)];
-		[toolbarItem setView: searchField];
-		RELEASE(searchField);
-	}
-
-	[toolbarItem setTarget: self];
-
-	return [toolbarItem autorelease];
+	return toolbarItem;
 }
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar 
@@ -367,23 +376,8 @@ NSDictionary* normalAttributes;
 }
 
 -(void)updateGUI {
-  if ([historyManager canBrowseBack]) {
-    [browseBackButton setEnabled: YES];
-    [browseBackButton setImage: [NSImage imageNamed: @"common_ArrowLeft"]];
-  } else { // cannot browse back
-    [browseBackButton setEnabled: NO];
-    [browseBackButton setImage: [NSImage imageNamed: @"common_ArrowLeftH"]];
-  }
-  [browseBackButton setNeedsDisplay: YES];
-  
-  if ([historyManager canBrowseForward]) {
-    [browseForwardButton setEnabled: YES];
-    [browseForwardButton setImage: [NSImage imageNamed: @"common_ArrowRight"]];
-  } else { // cannot browse forward
-    [browseForwardButton setEnabled: NO];
-    [browseForwardButton setImage: [NSImage imageNamed: @"common_ArrowRightH"]];
-  }
-  [browseForwardButton setNeedsDisplay: YES];
+    [backItem setEnabled: [historyManager canBrowseBack]];
+    [forwardItem setEnabled: [historyManager canBrowseForward]];
 }
 
 
@@ -424,7 +418,7 @@ NSDictionary* normalAttributes;
 -(void)searchAction: (id)sender
 {
   // define the word that's written in the search field
-  [self defineWord: [searchStringControl stringValue]];
+  [self defineWord: [searchField stringValue]];
 }
 
 /**
@@ -443,7 +437,7 @@ NSDictionary* normalAttributes;
       @"Search string encapsuled in %@ notification was nil", aNotification
   );
   
-  if ( ![[searchStringControl stringValue] isEqualToString: searchString] ) {
+  if ( ![[searchField stringValue] isEqualToString: searchString] ) {
     // invoke search
     [self defineWord: searchString];
   }
@@ -459,9 +453,9 @@ NSDictionary* normalAttributes;
  */ 
 -(void)defineWord: (NSString*)aWord
 {
-  if ( ![[searchStringControl stringValue] isEqualToString: aWord] ) {
+  if ( ![[searchField stringValue] isEqualToString: aWord] ) {
     // set string in search field
-    [searchStringControl setStringValue: aWord];
+    [searchField setStringValue: aWord];
   }
   
   // We need space for new content
@@ -529,6 +523,11 @@ NSDictionary* normalAttributes;
     [NSApp setServicesProvider: self];
 }
 
+-(void) applicationDidBecomeActive: (NSNotification*) aNotification
+{
+    // show dictionary window when clicking the app icon
+    [dictionaryContentWindow makeKeyAndOrderFront: self];
+}
 
 /**
  * The Dictionary Lookup service:
@@ -558,7 +557,13 @@ NSDictionary* normalAttributes;
     return;
   }
   
-  [self defineWord: aString];
+  NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
+  [runLoop performSelector: @selector(defineWord:)
+      target: self
+      argument: aString
+      order: 1 //whatever
+      modes: [NSArray arrayWithObject: [runLoop currentMode]]];
 }
 
 @end // AppController
+

@@ -8,10 +8,7 @@
 	    "orderFrontPreferencesPanel:"
 	);
 	Outlets = (
-	    searchStringControl,
 	    searchResultView,
-	    browseBackButton,
-	    browseForwardButton,
 	    dictionaryContentWindow
 	);
 	Super = NSObject;
