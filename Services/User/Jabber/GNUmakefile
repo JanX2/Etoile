@@ -39,7 +39,6 @@ JabberPerson.h \
 JID.h \
 Message.h \
 MessageWindowController.h \
-MutableJID.h \
 PasswordWindowController.h \
 PreferenceWindowController.h \
 Presence.h \
@@ -75,7 +74,6 @@ JabberPerson.m \
 JID.m \
 Message.m \
 MessageWindowController.m \
-MutableJID.m \
 PreferenceWindowController.m \
 Presence.m \
 PresenceMenuController.m \
@@ -100,7 +98,7 @@ StepChat_C_FILES =
 StepChat_OBJC_FILES += \
 main.m 
 
-ADDITIONAL_OBJCFLAGS = -DGNUSTEP -std=c99 -Wno-import
+ADDITIONAL_OBJCFLAGS = -DGNUSTEP -std=c99 -Wno-import -ITRXML
 
 #
 # Makefiles
