@@ -251,7 +251,7 @@
 @end
 
 @implementation Gpkg
-- int 
+- init 
 {
   [super init];
   //  totalSteps = [NSString new];

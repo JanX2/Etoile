@@ -26,9 +26,15 @@
 #include "PackageManager.h"
 
 @implementation PackageManager
-- (id)initWithFile: filename withExtension: docType;
 
-//- init
+/*
+ * This is bad copy&paste code and can't be considered stable.
+ * After reverse engineering how the Gorm files were supposed to look,
+ * I didn't have the nerve to fix this. -Guenther
+ * 
+ * FIXME: Needs to be rewritten before the application can be considered stable.
+ */
+- (id)initWithFile: filename withExtension: docType;
 {
   [super init];
   NSLog (@"PM init");
@@ -38,7 +44,7 @@
   NSArray				*temp;
   NSMutableArray		*modified = [[NSMutableArray alloc] initWithCapacity: 10];
   NSEnumerator		*counter;
-  id					obj;
+  NSString* bundlePath;
   
 
   //    First, load and init all bundles in the app resource path
@@ -47,9 +53,9 @@
   
   counter = [[self bundlesWithExtension: @"installer" inPath: [[NSBundle mainBundle] resourcePath]] objectEnumerator];
   
-  while ((obj = [counter nextObject])) {
-    NSLog (@"Found local bundle %@", obj);
-    NSEnumerator *enum2 = [[self bundlesWithExtension: @"installer" inPath: obj] objectEnumerator];
+  while ((bundlePath = [counter nextObject])) {
+    NSLog (@"Found local bundle %@", bundlePath);
+    NSEnumerator *enum2 = [[self bundlesWithExtension: @"installer" inPath: bundlePath] objectEnumerator];
     NSString *str;
     
     //    while ((str = [enum2 nextObject])) {
@@ -68,24 +74,16 @@
       
       if (aBundle)
 	{
-	  //  NSLog (@"Bundle %@ loaded and being instanciated", aString);
+	  NSLog (@"Bundle %@ loaded and being instanciated", obj);
 	  Class aClass;
 	  aClass = [aBundle principalClass];
-	  //	      _bundle = aClass;
 	  pm = [aClass new];
 	  if ([pm handlesPackage: filename] == YES)
 	    {
-	      //  NSLog (@"Bundle %@ claimed the package", aString);
+	      NSLog (@"Bundle %@ claimed the package", aString);
 	      return pm;
 	    }
-	  else
-	    {
-	      //     return nil;
-	    }
 	}
-      
-      //      }  
-    
   }
   
   /*

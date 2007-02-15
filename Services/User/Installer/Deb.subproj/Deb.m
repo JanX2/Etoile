@@ -27,18 +27,18 @@
 @implementation Deb
 - init
 {
-  [super init];
+  if ((self = [super init]) != nil) {
+      pkgName = [NSString new];
+      pkgVersion = [NSString new];
+      pkgName = [NSString new];
+      pkgAuthor = [NSString new];
+      pkgSizes = [NSString new];
+  }
   
-  //packagePath = [NSString new];
-  //  pkgContents = [NSString new];
-  pkgName = [NSString new];
-  pkgVersion = [NSString new];
-  pkgName = [NSString new];
-  pkgAuthor = [NSString new];
-  pkgSizes = [NSString new];
-
   return self;
 }
+
+
 - (BOOL) handlesPackage: (NSString *)pkgPath
 {
   if ([[pkgPath pathExtension] isEqualToString: @"deb"])
@@ -49,46 +49,66 @@
     }  
   return NO;
 }
+
+
 - (NSImage *) packageIcon
 {
   NSImage *icon = [NSImage new];
   [icon  initWithContentsOfFile: @"./Resources/Deb.tiff"];
   return icon;
 }
+
+
 - (NSString *) packageName
 {
   //  NSLog (@"Entered Deb packageName %@", pkgName);
   //return @"My Package Name from Deb.m";
   return pkgName;
 }
+
+
 - (NSString *) packageVersion
 {
   return pkgVersion;
 }
+
+
 - (NSString *) packageLocation
 {
   return packagePath;
 }
+
+
 - (NSString *) packageLicence
 {
   return pkgLicence;
 }
+
+
 - (NSString *) packageAuthor
 {
   return pkgAuthor;
 }
+
+
 - (NSString *) packageSizes
 {
   return pkgSizes;
 }
+
+
 - (NSString *) packagePlatform
 {
   return pkgPlatform;
 }
+
+
 - (BOOL) isInstalled
 {
   return isInstalled;
 }
+
+
 - (NSString *) packageDescription
 {
   //  NSLog (@"Testing access of instance variable packagePath : %@", packagePath);
@@ -96,14 +116,18 @@
   return pkgDescription;
 }
 
+
 - (NSString *) packageContents
 {
   return pkgContents;
 }
+
+
 - (BOOL) installPackage: (id) sender
 {
   return YES;
 }
+
 
 - _getAllInfo
 {

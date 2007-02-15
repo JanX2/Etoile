@@ -25,14 +25,13 @@
 #include <AppKit/AppKit.h>
 #include "MyDocument.h"
 
-
+/**
+ * Manages the document window of a package.
+ * 
+ */ 
 @implementation MyDocument
-- init
-{
-  [super init];
-  //  NSLog(@"MyDocument init");
-  return self;
-}
+
+
 - (void)windowControllerDidLoadNib: (NSWindowController *) aController
 {
   [super windowControllerDidLoadNib: aController];    

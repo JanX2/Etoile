@@ -6,18 +6,4 @@
 	);
 	Super = NSObject;
     };
-    MyController = {
-	Actions = (
-	);
-	Outlets = (
-	);
-	Super = NSObject;
-    };
-    MyDocument = {
-	Actions = (
-	);
-	Outlets = (
-	);
-	Super = NSObject;
-    };
 }

@@ -26,35 +26,66 @@
 #include "PackageManager.h"
 //#include "MyWindowController.h"
 
+/*
+ * The document window has a popup menu that allows the user to switch
+ * between different panels. When something is selected in it, switchView:
+ * is called.
+ *
+ * The available panels are: "Info", "Files", "Licence", "Progress"
+ */
 @interface MyDocument : NSDocument
 {
-  id packageBundle;
-  id packageName;
-  id packageStatus;
-  id packageSizes;
-  id packagePlatforms;
-  id packageVersion;
-  id packageLocation;
-  id packageDescription;
-  id packageLicence;
-  id packageFiles;
-  id packageIcon;
-  id packageManager;
-  id _delegate;
-  id progressPanel;
-  //  id progressIndicator;
-  IBOutlet NSProgressIndicator *progressIndicator;
-  IBOutlet NSTextField *installStep;
+  PackageManager* packageManager;
+
+  // ----------- wherever ----------
+  
+  // a text field showing the currently selected target install location
   IBOutlet NSTextField *installLocation;
+  // a button that allows to change the desired install location for the package
   IBOutlet NSButton *locationSelectButton;
-  //  NSString *test;
+  
+  
+  // ----------- Info Panel ------------- 
+  IBOutlet NSImageView* packageIcon;
+  IBOutlet NSTextField* packageName;
+  IBOutlet NSTextField* packageStatus; // Installed / Not installed
+  IBOutlet NSTextField* packageSizes;  // XXX: Size_s_?
+  IBOutlet NSTextField* packagePlatforms;
+  IBOutlet NSTextField* packageVersion;
+  IBOutlet NSTextField* packageLocation;
+  IBOutlet NSTextView* packageDescription;
+
+  // ------------ Licence Panel --------------
+  IBOutlet NSTextView* packageLicence;
+
+  // ------------- Files Panel -------------
+  IBOutlet NSTextView* packageFiles;
+
+  // ------------- Progress Panel ---------------
+  IBOutlet NSProgressIndicator *progressIndicator;
+
+  
+  // ------------- Unidentified fields -------------
+  // XXX: Likely to be a NSPanel, but what is it good for?
+  IBOutlet id progressPanel;
+  
+  // XXX: What's this?
+  IBOutlet NSTextField *installStep;
+  
+  
   NSString *filename;
-  //  MyWindowController *windowController;
+
+  
+  // the view on which setContentView: is called when the panel switches
   IBOutlet id holderView;
-  IBOutlet id infoView;
-  IBOutlet id licenceView;
-  IBOutlet id filesView;
-  IBOutlet id progressView;
+
+  // the different panels themselves
+  IBOutlet NSView* infoView;
+  IBOutlet NSView* licenceView;
+  IBOutlet NSView* filesView;
+  IBOutlet NSView* progressView;
+
+  // The popup button that needs to be used in order to select a panel
   IBOutlet id viewSelector;
 }
 - (BOOL) installPackage: (id) sender;

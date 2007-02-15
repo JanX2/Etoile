@@ -1,3 +1,11 @@
+
+2007-02-01  Guenther Noack <guenther@unix-ag.uni-kl.de>
+
+	* Gorm files: In an attempt to revive the Installer application,
+	  I reverse engineered how the Gorm files must have looked and
+	  rebuilt them.
+	* *.[mh]: Tried to comment the code here and there. Very incomplete.
+
 2005-04-05  Frederico Muñoz  <fsmunoz@gesal.org>
 
 	* Gpkg.subproj/Gpkg.m ([Gpkg

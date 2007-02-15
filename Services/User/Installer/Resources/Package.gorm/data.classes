@@ -1,14 +1,5 @@
 {
     "## Comment" = "Do NOT change this file, Gorm maintains it";
-    FirstResponder = {
-	Actions = (
-	    "chooseInstallationPath:",
-	    "showLicence:",
-	    "showFiles:",
-	    "switchView:"
-	);
-	Super = NSObject;
-    };
     MyDocument = {
 	Actions = (
 	    "installPackage:",
@@ -43,26 +34,5 @@
 	    viewSelector
 	);
 	Super = NSDocument;
-    };
-    MyWindowController = {
-	Actions = (
-	);
-	Outlets = (
-	);
-	Super = NSWindowController;
-    };
-    PackageManager = {
-	Actions = (
-	);
-	Outlets = (
-	);
-	Super = NSObject;
-    };
-    ProgressController = {
-	Actions = (
-	);
-	Outlets = (
-	);
-	Super = NSObject;
     };
 }

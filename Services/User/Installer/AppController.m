@@ -26,6 +26,7 @@
 
 #include "AppController.h"
 
+
 @implementation MyController
 
 + (void)initialize
@@ -59,7 +60,6 @@
 
 - (void)awakeFromNib
 {
-  //  [[NSApp mainMenu] setTitle:@"Installeraaa"];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotif
