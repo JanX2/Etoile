@@ -2,12 +2,15 @@
 
 	SCMonitor.m
 
-	<abstract></abstract>
+	<abstract>Screen configuration class</abstract>
 
 	Copyright (C) 2006 Quentin Mathe
 
 	Author:  Quentin Mathe <qmathe@club-internet.fr>
-    Date:  November 2006
+	Date:  November 2006
+
+	Author:  Guenther Noack <guenther@unix-ag.uni-kl.de>
+	Date:  February 2007
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -25,6 +28,7 @@
  */
 
 #import "SCMonitor.h"
+#import "SCConfig+Private.h"
 
 
 /* Main implementation */
@@ -38,7 +42,8 @@
 
 - (void) setResolution: (NSSize)size
 {
-
+	[self notifyErrorCode: SCScreenResolutionChangeFailure
+		description: @"Change of screen resolution not supported."];
 }
 
 - (int) colorDepth
@@ -48,7 +53,8 @@
 
 - (void) setColorDepth: (int)colorDepth
 {
-
+	[self notifyErrorCode: SCScreenColorDepthChangeFailure
+		description: @"Change of screen color depth not supported."];
 }
 
 - (int) contrast
@@ -56,9 +62,10 @@
 	return -1;
 }
 
-- (void) setContrast
+- (void) setContrast: (int)contrast
 {
-
+	[self notifyErrorCode: SCScreenContrastChangeFailure
+		description: @"Change of screen color depth not supported."];
 }
 
 - (int) brightness
@@ -68,7 +75,8 @@
 
 - (void) setBrightness: (int)brightness
 {
-
+	[self notifyErrorCode: SCScreenBrightnessChangeFailure
+		description: @"Change of screen color depth not supported."];
 }
 
 - (SCRefreshRate) refreshRate
@@ -80,7 +88,8 @@
 
 - (void) setRefreshRate: (SCRefreshRate)rate
 {
-
+	[self notifyErrorCode: SCScreenRefreshRateChangeFailure
+		description: @"Change of screen color depth not supported."];
 }
 
 @end

@@ -1,3 +1,21 @@
+
+2007-02-12  Guenther Noack <guenther@unix-ag.uni-kl.de>
+
+	* Headers/X11Mouse.h:
+	* Source/X11Mouse.m:
+	X11 mouse configuration code (untested)
+	
+	* Headers/SCConfig.h:
+	* Headers/SCConfig+Private.h:
+	* Source/SCConfig.m:
+	Added helper method for implementing classes
+	
+	* Headers/SCMonitor.h:
+	* Headers/SCMouse.h:
+	* Source/SCMonitor.m:
+	* Source/SCMouse.m:
+	Documented methods and implemented default methods
+
 2006-11-10  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Headers/SCConfig.h:

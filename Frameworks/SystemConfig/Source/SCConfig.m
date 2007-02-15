@@ -26,12 +26,13 @@
 
 #import <Foundation/Foundation.h>
 #import "SCConfig.h"
-
+#import "SCConfig+Private.h"
 
 @implementation SCConfigElement
 
 // FIXME: Implement proxy/server instance mechanism to match documentation 
 // below.
+
 /** Returns a proxy of the desired class, any messages sent to it are handled
     by etoile_configServer daemon. */
 + (SCConfigElement *) sharedInstance
@@ -52,8 +53,32 @@
     preference  modification will not be reported. */
 - (void) setDelegate: (id)aDelegate
 {
-	delegate = aDelegate;
+	ASSIGN(delegate, aDelegate);
 }
 
 
 @end
+
+
+@implementation SCConfigElement (Private)
+
+-(void) notifyErrorCode: (int) errorCode
+            description: (NSString*) description
+{
+	if ([delegate respondsToSelector:
+	    @selector(configElement:preferenceModificationErrorOccured:)]) {
+		NSDictionary* userInfo;
+		
+		userInfo = [NSDictionary dictionaryWithObject: description
+			forKey: NSLocalizedDescriptionKey];
+		
+		[delegate configElement: self
+			preferenceModificationErrorOccured:
+				[NSError errorWithDomain: @"SCConfigError"
+					code: errorCode
+					userInfo: userInfo]];
+	}
+}
+
+@end
+

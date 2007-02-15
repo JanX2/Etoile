@@ -6,10 +6,18 @@ ADDITIONAL_INCLUDE_DIRS = -I../Headers
 
 #GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 
+
+####################################################
+#             WHAT MODULES TO COMPILE              #
+####################################################
+
+export X11 ?= yes
+
+
 #
 # Main application
 #
-LIBRARY_NAME = libSystemConfig
+LIBRARY_NAME = SystemConfig
 VERSION = 0.1
 
 #
@@ -44,13 +52,21 @@ $(LIBRARY_NAME)_OBJC_FILES = \
 $(LIBRARY_NAME)_HEADER_FILES_DIR = ../Headers
 
 $(LIBRARY_NAME)_HEADER_FILES = \
-	SConfig.h \
+	SCConfig.h \
 	SCKeyboard.h \
 	SCMonitor.h \
 	SCMouse.h \
 	SCSound.h
 
 $(LIBRARY_NAME)_HEADER_FILES_INSTALL_DIR = /$(LIBRARY_NAME)
+
+
+ifeq ($(X11), yes)
+$(LIBRARY_NAME)_OBJC_FILES += X11Mouse.m
+$(LIBRARY_NAME)_LIBRARIES_DEPEND_UPON += -lX11
+ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
+ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib
+endif
 
 #
 # C files
@@ -66,3 +82,5 @@ include $(GNUSTEP_MAKEFILES)/library.make
 endif
 
 -include GNUmakefile.postamble
+
+

@@ -26,6 +26,28 @@
 
 #import <Foundation/Foundation.h>
 
+// --------------------------------------------------
+//    Error codes sent to the delegate
+// --------------------------------------------------
+
+#define SCREEN_ERROR ((int)0x4000)
+#define MOUSE_ERROR ((int)0x2000)
+
+enum {
+	SCScreenResolutionChangeFailure =  SCREEN_ERROR | 1,
+	SCScreenColorDepthChangeFailure =  SCREEN_ERROR | 2,
+	SCScreenContrastChangeFailure =    SCREEN_ERROR | 3,
+	SCScreenBrightnessChangeFailure =  SCREEN_ERROR | 4,
+	SCScreenRefreshRateChangeFailure = SCREEN_ERROR | 5,
+	
+	SCMouseAccelerationChangeFailure =         MOUSE_ERROR | 1,
+	SCMouseThresholdChangeFailure =            MOUSE_ERROR | 2,
+	SCMouseDoubleClickIntervalChangeFailure =  MOUSE_ERROR | 3
+};
+
+// --------------------------------------------------
+//    The SCConfigElement class
+// --------------------------------------------------
 
 @interface SCConfigElement : NSObject
 {

@@ -4,10 +4,14 @@
 	SCMouse class to handle cursor device related preferences.
  
 	Copyright (C) 2006 Quentin Mathe
+	Copyright (C) 2007 Guenther Noack
  
 	Author:  Quentin Mathe <qmathe@club-internet.fr>
-    Date:  November 2006
+	Date:  November 2006
  
+	Author:  Guenther Noack <guenther@unix-ag.uni-kl.de>
+	Date:  February 2007
+	
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
 	License as published by the Free Software Foundation; either
@@ -25,28 +29,59 @@
 
 #import <Foundation/Foundation.h>
 #import "SCMouse.h"
+#import "SCConfig+Private.h"
 
-
+/*
+ * This class contains default implementations for all SCMouse
+ * methods. Override this class to provide your own implementation.
+ */
 @implementation SCMouse
 
-- (int) motionVelocity
+- (float) acceleration
+{
+	// Factor of 1.0 => no acceleration
+	return 1.0;
+}
+
+- (void) setAcceleration: (float)acceleration
+{
+	if (acceleration != 1.0) {
+		[self notifyErrorCode: SCMouseAccelerationChangeFailure
+		      description: @"Changing the mouse acceleration is "
+		                   @"not supported."];
+	}
+}
+
+
+
+- (int) threshold
 {
 	return -1;
 }
 
-- (void) setMotionVelocity: (int)velocity
+- (void) setThreshold: (int)threshold
 {
-
+	if (threshold > 0) {
+		[self notifyErrorCode: SCMouseThresholdChangeFailure
+		      description: @"Changing the mouse threshold is not "
+		                   @"supported."];
+	}
 }
+
+
 
 - (int) doubleClickInterval
 {
 	return -1;
 }
 
-- (void) setDoubleClickInterval: (int)time
+- (void) setDoubleClickInterval: (int)milliseconds
 {
-
+	NSParameterAssert(milliseconds > 0);
+	
+	[self notifyErrorCode: SCMouseDoubleClickIntervalChangeFailure
+	      description: @"Changing the mouse double click interval "
+	                   @"is not supported."];	
 }
 
 @end
@@ -55,3 +90,4 @@
 @implementation SCMouse (SCTrackpad)
 // FIXME: Proper methods should be added here.
 @end
+
