@@ -1,3 +1,10 @@
+2007-02-12  Guenther Noack <guenther@unix-ag.uni-kl.de>
+	
+	* config.sh: Fix missing fontconfig dependency check
+	  and compiler flag addition
+	* bindings/poppler_splash_renderer.cc: Fix "distorted colors" bug
+	  in the 'Splash' renderer. (The renderer used when *not* using Cairo.)
+
 2006-11-21  Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Apply patch for cairo on poppler-0.5 from Jason Clouse <jhclouse _at chartet . net>.

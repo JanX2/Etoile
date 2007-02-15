@@ -149,12 +149,11 @@ int poppler_splash_device_get_rgb(void* bitmap, unsigned char** data)
 #endif
 #ifdef POPPLER_0_5
 	 *dataPtr++ = splashRGB8R(color);
-	 *dataPtr++ = splashRGB8G(++color);
-	 *dataPtr++ = splashRGB8B(++color);
-	 ++color;
+	 *dataPtr++ = splashRGB8G(color);
+	 *dataPtr++ = splashRGB8B(color);
+	 color = color + 3;
 #endif
       }
    }
-   
    return 1;
 }

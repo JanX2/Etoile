@@ -15,6 +15,15 @@ fi
 POPPLER_CFLAGS=`${PKG_CONFIG} --cflags poppler`
 POPPLER_LIBS="${POPPLER_LDFLAGS} `${PKG_CONFIG} --libs poppler`"
 
+# fontconfig
+${PKG_CONFIG} --exists fontconfig
+if [ $? -ne 0 ]; then
+    echo "fontconfig library required but not found!"
+    exit 1
+fi
+POPPLER_CFLAGS="${POPPLER_CFLAGS} `${PKG_CONFIG} --cflags fontconfig`"
+POPPLER_LIBS="${POPPLER_LDFLAGS} `${PKG_CONFIG} --libs fontconfig`"
+
 # poppler splash device
 ${PKG_CONFIG} --exists poppler-splash
 if [ $? -ne 0 ]; then
