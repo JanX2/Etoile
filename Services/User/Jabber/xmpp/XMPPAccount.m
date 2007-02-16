@@ -26,10 +26,10 @@
 //TODO: Remove this:
 #import "../JabberApp.h"
 
-NSString * passwordForJID(NSString * aJID)
+NSString * passwordForJID(JID * aJID)
 {
 #ifdef GNUSTEP
-	return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"XMPPPasswords"] objectForKey:aJID];
+	return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"XMPPPasswords"] objectForKey:[aJID jidString]];
 #else
 	UInt32 passwordLength;
 	char * passwordData;
@@ -57,6 +57,7 @@ NSString * passwordForJID(NSString * aJID)
 		SecKeychainItemFreeContent(NULL,passwordData);
 		return password;
 	}
+	return nil;
 #endif
 }
 
@@ -79,7 +80,7 @@ NSString * passwordForJID(NSString * aJID)
 	myJID = [JID jidWithString:[jids valueAtIndex:0]];
 
 		
-	NSString * password = passwordForJID([myJID jidString]);
+	NSString * password = passwordForJID(myJID);
 
 	if(password != nil)
 	{	

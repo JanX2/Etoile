@@ -262,8 +262,8 @@
 		2821C5B40701BF1F0044C298 /* PasswordWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordWindowController.h; sourceTree = "<group>"; };
 		2821C5B50701BF1F0044C298 /* PasswordWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordWindowController.m; sourceTree = "<group>"; };
 		2821C5C40701C0480044C298 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PasswordBox.nib; sourceTree = "<group>"; };
-		2835827D063C1605008F21EA /* presence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; name = presence.h; path = xmpp/presence.h; sourceTree = "<group>"; };
-		2835827E063C1605008F21EA /* presence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; name = presence.m; path = xmpp/presence.m; sourceTree = "<group>"; };
+		2835827D063C1605008F21EA /* presence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = presence.h; path = xmpp/presence.h; sourceTree = "<group>"; };
+		2835827E063C1605008F21EA /* presence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = presence.m; path = xmpp/presence.m; sourceTree = "<group>"; };
 		283584B4063C4516008F21EA /* Roster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Roster.h; path = xmpp/Roster.h; sourceTree = "<group>"; };
 		283584B5063C4516008F21EA /* Roster.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Roster.m; path = xmpp/Roster.m; sourceTree = "<group>"; };
 		283584CC063C4642008F21EA /* JabberPerson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JabberPerson.h; path = xmpp/JabberPerson.h; sourceTree = "<group>"; };
