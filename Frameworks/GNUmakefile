@@ -43,6 +43,7 @@ ifeq ($(etoile-extensions), yes)
     export rsskit ?= yes
     export xwindowserverkit ?= yes
     export popplerkit ?= yes
+    export systemconfig ?= yes
     
 endif
 
@@ -144,6 +145,10 @@ endif
 
 ifeq ($(addresseskit), yes)
    SUBPROJECTS += AddressesKit
+endif
+
+ifeq ($(systemconfig), yes)
+   SUBPROJECTS += SystemConfig
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
