@@ -7,7 +7,7 @@
 //
 
 #import "TRXMLNullHandler.h"
-#import "Macros.h"
+#import "../Macros.h"
 
 @implementation TRXMLNullHandler
 - (id) initWithXMLParser:(id)aParser parent:(id<NSObject,TRXMLParserDelegate>)aParent key:(id)aKey

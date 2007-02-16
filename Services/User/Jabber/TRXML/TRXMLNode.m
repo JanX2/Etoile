@@ -7,7 +7,7 @@
 //
 
 #import "TRXMLNode.h"
-#import "Macros.h"
+#import "../Macros.h"
 #include <stdio.h>
 
 static inline NSString* escapeXMLCData(NSString* _XMLString)

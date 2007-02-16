@@ -7,7 +7,7 @@
 //
 
 #import "TRXMLString.h"
-#import "Macros.h"
+#import "../Macros.h"
 static inline NSString* escapeXMLCData(NSString* _XMLString)
 {
 	NSMutableString * XMLString = [NSMutableString stringWithString:_XMLString];
