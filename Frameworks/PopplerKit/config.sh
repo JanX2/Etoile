@@ -39,9 +39,11 @@ if [ $? -ne 0 ]; then
    echo "poppler-cairo not found, building without cairo rendering"
    HAVE_CAIRO="NO"
 else
-   HAVE_CAIRO="YES"
-   POPPLER_CFLAGS="${POPPLER_CFLAGS} `${PKG_CONFIG} --cflags poppler-cairo`"
-   POPPLER_LIBS="${POPPLER_LDFLAGS} `${PKG_CONFIG} --libs poppler-cairo`"
+#   Disable Cairo support for now to avoid most of problem
+#   HAVE_CAIRO="YES"
+#   POPPLER_CFLAGS="${POPPLER_CFLAGS} `${PKG_CONFIG} --cflags poppler-cairo`"
+#   POPPLER_LIBS="${POPPLER_LDFLAGS} `${PKG_CONFIG} --libs poppler-cairo`"
+   HAVE_CAIRO="NO"
 fi
 
 # check poppler version
