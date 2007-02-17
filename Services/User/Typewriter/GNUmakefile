@@ -20,6 +20,11 @@ Typewriter_LOCALIZED_RESOURCE_FILES = \
 	Document.gorm \
 	CharacterPanel.gorm
 
+Typewriter_RESOURCE_FILES = \
+	Resources/Document-Text.tiff \
+	Resources/Document-RichText.tiff \
+	Resources/Typewriter.tiff
+
 Typewriter_MAIN_MODEL_FILE = MainMenu.gorm
 
 include $(GNUSTEP_MAKEFILES)/application.make

@@ -20,6 +20,9 @@
   textView = [scrollView documentView];
   textFinder = [OgreTextFinder sharedTextFinder];
   [textFinder setTargetToFindIn: textView];
+
+  // I agree on that. It's also difficult to connect from a textView.
+  [textView setDelegate: self];
 }
 
 - (void) windowControllerDidLoadNib: (NSWindowController *) windowController
@@ -84,6 +87,23 @@
     return [super loadFileWrapperRepresentation: wrapper ofType: type];
   }
   return NO;
+}
+
+/* Printing */
+- (void) printShowingPrintPanel: (BOOL)flag
+{
+	NSPrintOperation* po;
+
+	po = [NSPrintOperation printOperationWithView: textView
+	                                    printInfo: [self printInfo]];
+	
+	[po setShowPanels: flag];
+	[po runOperation];
+}
+
+- (void) textDidChange: (NSNotification*) textObject
+{
+  [self updateChangeCount: NSChangeDone];
 }
 
 /* Find panel */

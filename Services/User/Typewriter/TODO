@@ -1,0 +1,8 @@
+
+TODO
+
+- Draw application icon (Jesse is working on it)
+- Convert document icons from PNG again (Lacking Gimp,
+  I did it using ImageMagick, which has problems with
+  PNG transparency.)
+

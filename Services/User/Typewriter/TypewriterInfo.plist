@@ -1,10 +1,11 @@
 {
-   ApplicationDescription = "Typewriter";
-   ApplicationIcon = "";
+   ApplicationDescription = "Étoilé text editor";
+   ApplicationIcon = "Typewriter.tiff";
+   NSIcon = "Typewriter.tiff";
    ApplicationName = Typewriter;
    ApplicationRelease = 0.1;
-   Authors = "Yen-Ju Chen";
-   Copyright = "Copyright (C) 200x by Yen-Ju Chen";
+   Authors = ("Yen-Ju Chen");
+   Copyright = "Copyright (C) 2006 by Yen-Ju Chen";
    CopyrightDescription = "Released under BSD Licence";
    FullVersionID = 0.1;
    URL = "";
@@ -14,6 +15,7 @@
          NSHumanReadableName = "Plain Text Document";
          NSUnixExtensions = ("txt");
          NSRole = Editor;
+	 NSIcon = Document-Text.tiff;
          NSDocumentClass = TWDocument;
       },
       {
@@ -21,6 +23,7 @@
          NSHumanReadableName = "RTF Document";
          NSUnixExtensions = ("rtf");
          NSRole = Editor;
+	 NSIcon = Document-RichText.tiff;
          NSDocumentClass = TWDocument;
       },
       {
@@ -28,6 +31,7 @@
          NSHumanReadableName = "RTFD Document";
          NSUnixExtensions = ("rtfd");
          NSRole = Editor;
+	 NSIcon = Document-RichText.tiff;
          NSDocumentClass = TWDocument;
       }
    );

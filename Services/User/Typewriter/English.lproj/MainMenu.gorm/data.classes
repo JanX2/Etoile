@@ -2,6 +2,7 @@
     "## Comment" = "Do NOT change this file, Gorm maintains it";
     FirstResponder = {
 	Actions = (
+	    "printDocument:",
 	    "showCharacterPanel:",
 	    "showFindPanel:"
 	);
