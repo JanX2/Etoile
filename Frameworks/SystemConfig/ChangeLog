@@ -1,4 +1,9 @@
 
+2007-02-16  Guenther Noack <guenther@unix-ag.uni-kl.de>
+
+	* Source/X11Mouse.m:
+	Fixed error checking. (Does not apply to these functions.)
+
 2007-02-12  Guenther Noack <guenther@unix-ag.uni-kl.de>
 
 	* Headers/X11Mouse.h:

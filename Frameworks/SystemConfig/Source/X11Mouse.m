@@ -79,11 +79,7 @@
 
 -(void) readX11AccelAndThreshold
 {
-	int result = XGetPointerControl( display, &accel_numerator, &accel_denominator, &threshold );
-	
-	if (result != Success) {
-		NSLog(@"XGetPointerControl failed!");
-	}
+	XGetPointerControl( display, &accel_numerator, &accel_denominator, &threshold );
 	
 	if (accel_numerator == accel_denominator && accel_denominator != 0) {
 		do_accel = do_threshold = True;
@@ -94,18 +90,14 @@
 
 -(BOOL) writeX11AccelAndThreshold
 {
-	int result = XChangePointerControl (
+	XChangePointerControl (
 		display,
 		do_accel, do_threshold,
 		accel_numerator, accel_denominator,
 		threshold
 	);
 	
-	if (result == Success) {
-		return YES;
-	} else {
-		return NO;
-	}
+	return YES;
 }
 
 // ----------------------------------------------------------
