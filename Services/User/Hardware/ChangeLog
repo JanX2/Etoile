@@ -1,3 +1,7 @@
+
+2007-02-16  Guenther Noack <guenther@unix-ag.uni-kl.de>
+	* MainMenu.gorm: Fixed broken window background color
+
 2007-02-14  Guenther Noack <guenther@unix-ag.uni-kl.de>
 	* MousePrefPane/*:
 	Tried to make use of SystemConfig's mouse acceleration stuff
