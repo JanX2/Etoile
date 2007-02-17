@@ -85,17 +85,40 @@
 
 - (void) replaceAndFind: (id) sender
 {
+  if (![self alertIfInvalidRegex]) return;
+
+  // FIXME: not sure what replacingOnly means.
+  OgreTextFindResult *result = [[self textFinder] 
+	replaceAndFind: [[findPanel findTextField] stringValue]
+	withString: [[findPanel replaceTextField] stringValue]
+        options: [self options]
+        replacingOnly: NO
+        wrap: NO];
+
+  if (![result isSuccess]) {
+   NSLog(@"replace and find failed");
+  }
+#if 0
   [self replace: self];
   [self findNext: self];
+#endif
 }
 
-/*
- * FIXME: Only replaces everything from the current cursor position. Please fix!
- */
 - (void) replaceAll: (id) sender
 {
   if (![self alertIfInvalidRegex]) return;
   
+  // FIXME: it replace everything in the document, not only selected text
+  OgreTextFindResult *result = [[self textFinder] 
+	replaceAll: [[findPanel findTextField] stringValue]
+	withString: [[findPanel replaceTextField] stringValue]
+        options: [self options]
+        inSelection: NO];
+
+  if (![result isSuccess]) {
+    NSLog(@"replace all failed");
+  }
+#if 0
   OgreTextFindResult* result = nil;
   NSString* findString = [[findPanel findTextField] stringValue];
   NSString* replaceString = [[findPanel replaceTextField] stringValue];
@@ -111,6 +134,7 @@
       withString: replaceString
       options: [self options]];
   } while ([result isSuccess]);
+#endif
 }
 
 - (OgreTextFinder*)textFinder

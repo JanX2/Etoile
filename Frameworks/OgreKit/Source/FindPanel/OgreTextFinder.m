@@ -873,7 +873,8 @@ static NSString	*OgreTextFinderEscapeCharacterKey = @"Escape Character";
 	
 	BOOL	shouldCloseProgressSheet = NO;
 	SEL		didEndSelector = [aTextFindThread didEndSelectorForFindPanelController];
-	id		result = [aTextFindThread result];
+        if ([findPanelController respondsToSelector: didEndSelector]) {
+		id		result = [aTextFindThread result];
 	shouldCloseProgressSheet = (BOOL)(!![findPanelController performSelector:didEndSelector withObject:result]);
 	
 	id		sheet = [aTextFindThread progressDelegate];
@@ -884,6 +885,7 @@ static NSString	*OgreTextFinderEscapeCharacterKey = @"Escape Character";
 		[sheet performSelector:@selector(close:) withObject:self];
 	}
 	[sheet release];
+	}
 }
 
 /* alert sheet */

@@ -125,6 +125,7 @@
 }
 
 /* delegate method of OgreFindResultWindow */
+#if 0
 - (void)windowWillMove:(NSNotification *)notification
 {
 //	[_attachedWindowMediator windowWillMove:notification];
@@ -139,6 +140,7 @@
 {
 //	return [_attachedWindowMediator windowWillResize:sender toSize:proposedFrameSize];
 }
+#endif
 
 /* NSOutlineViewDataSource methods */
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
