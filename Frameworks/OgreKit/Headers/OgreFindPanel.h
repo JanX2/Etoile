@@ -18,7 +18,9 @@
   NSButton *caseSensitiveButton;
   NSButton *findNextButton;
   NSButton *findPreviousButton;
+  NSButton *replaceAndFindButton;
   NSButton *replaceButton;
+  NSButton *replaceAllButton;
   
   OgreFindPanelController *findPanelController;
 }

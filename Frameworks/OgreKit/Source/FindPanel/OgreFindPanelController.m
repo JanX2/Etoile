@@ -83,6 +83,36 @@
   }
 }
 
+- (void) replaceAndFind: (id) sender
+{
+  [self replace: self];
+  [self findNext: self];
+}
+
+/*
+ * FIXME: Only replaces everything from the current cursor position. Please fix!
+ */
+- (void) replaceAll: (id) sender
+{
+  if (![self alertIfInvalidRegex]) return;
+  
+  OgreTextFindResult* result = nil;
+  NSString* findString = [[findPanel findTextField] stringValue];
+  NSString* replaceString = [[findPanel replaceTextField] stringValue];
+  
+  // FIXME: In this loop I assume that isSuccess only returns NO
+  // if all occurences of the pattern have been replaced. Is that
+  // a safe assumption? Yen-Ju? :)
+  do {
+    [self findNext: self];
+    
+    result = [[self textFinder]
+      replace: findString
+      withString: replaceString
+      options: [self options]];
+  } while ([result isSuccess]);
+}
+
 - (OgreTextFinder*)textFinder
 {
 	return textFinder;
@@ -96,7 +126,13 @@
 
 - (IBAction)showFindPanel:(id)sender
 {
-	[findPanel makeKeyAndOrderFront:self];
+	if ([findPanel isKeyWindow]) {
+		[findPanel orderFront:self];
+	} else {
+		[findPanel makeKeyAndOrderFront:self];
+		[[findPanel findTextField] selectText: self];
+	}
+	
 	// WindowsメニューにFind Panelを追加
 	[NSApp addWindowsItem:findPanel title:[findPanel title] filename:NO];
 }
