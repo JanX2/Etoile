@@ -1,4 +1,9 @@
 
+2007-02-17  Guenther Noack <guenther@unix-ag.uni-kl.de>
+	
+	* Replaced document icons with better versions
+	  (Thanks, Jesse!)
+
 2007-02-16  Guenther Noack <guenther@unix-ag.uni-kl.de>
 	
 	* Let documents be marked 'dirty'
