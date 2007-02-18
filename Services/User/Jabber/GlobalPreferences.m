@@ -265,3 +265,4 @@ static GlobalPreferences * sharedPreferenceObject = nil;
 	[self save];
 }
 @end
+

@@ -9,8 +9,40 @@
 #import "PasswordWindowController.h"
 #import "JabberApp.h"
 //Keychain OS X only at the moment
-#ifndef GNUSTEP
+//TODO: Move this into the framework in a nice PasswordManager class
+//TODO: Change this to a NOKEYCHAIN macro not GNUSTEP.
+#ifdef GNUSTEP
+void setPasswordForAccount(NSString * password, JID * account)
+{
+	NSMutableDictionary * passwords = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"XMPPPasswords"]];
+	if(passwords == nil)
+	{
+		passwords = [NSMutableDictionary dictionary];
+	}
+	[passwords setObject:password forKey:[account jidString]];
+	[[NSUserDefaults standardUserDefaults] setObject:passwords
+	                                          forKey:@"XMPPPasswords"];
+}
+#else
 #include <Security/Security.h>
+void setPasswordForAccount(NSString * password, JID * account)
+{
+	SecKeychainAddInternetPassword(NULL, 
+								   [[account domain] length],
+								   [[account domain] UTF8String],
+								   0,
+								   NULL,
+								   [[account node] length],
+								   [[account node] UTF8String],
+								   0,
+								   NULL,
+								   5222,
+								   kSecProtocolTypeTelnet, //This is wrong, but there seems to be no correct answer.
+								   kSecAuthenticationTypeDefault,
+								   [password length],
+								   [password UTF8String],
+								   NULL);
+}
 #endif
 
 @implementation PasswordWindowController
@@ -36,21 +68,6 @@
 - (void) yes
 {
 	NSString * password = [passwordBox stringValue];
-	SecKeychainAddInternetPassword(NULL, 
-								   [[myJID domain] length],
-								   [[myJID domain] UTF8String],
-								   0,
-								   NULL,
-								   [[myJID node] length],
-								   [[myJID node] UTF8String],
-								   0,
-								   NULL,
-								   5222,
-								   kSecProtocolTypeTelnet, //This is wrong, but there seems to be no correct answer.
-								   kSecAuthenticationTypeDefault,
-								   [password length],
-								   [password UTF8String],
-								   NULL);
 	[[self window] close];
 	[NSApp stopModalWithCode:0];
 }

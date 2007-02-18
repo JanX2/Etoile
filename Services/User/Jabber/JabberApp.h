@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "XMPPAccount.h"
+#import "xmpp/XMPPAccount.h"
 #import "PreferenceWindowController.h"
 #import "RosterController.h"
 #import "CustomPresenceWindowController.h"

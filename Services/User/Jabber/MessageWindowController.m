@@ -10,6 +10,12 @@
 #import "Presence.h"
 #import "TRUserDefaults.h"
 
+#ifdef NO_ATTRIBUTED_TITLES
+#define setAttributedTitle(x) setTitle:[x string]
+#else
+#define setAttributedTitle(x) setAttributedTitle:x
+#endif
+
 NSMutableArray * messageWindowControllers = nil;
 
 @implementation MessageWindowController
@@ -229,7 +235,7 @@ NSMutableArray * messageWindowControllers = nil;
 		[colouredTitle initWithString:title
 						   attributes:colour];
 		[recipientBox addItemWithTitle:title];
-		[[[recipientBox menu] itemWithTitle:title] setAttributedTitle:colouredTitle];
+		[[[recipientBox menu] itemWithTitle:title] setAttributedTitle(colouredTitle)];
 		[colouredTitle release];
 	}
 	[recipientBox selectItemWithTitle:currentJID];

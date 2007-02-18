@@ -16,6 +16,11 @@
 #import "TRUserDefaults.h"
 #import "MessageWindowController.h"
 
+#ifdef NO_ATTRIBUTED_TITLES
+#define setAttributedTitle(x) setTitle:[x string]
+#else
+#define setAttributedTitle(x) setAttributedTitle:x
+#endif
 
 NSMutableArray * rosterControllers = nil;
 
@@ -44,7 +49,7 @@ NSMutableArray * rosterControllers = nil;
 														forKey:NSForegroundColorAttributeName];
 	colouredTitle = [[NSMutableAttributedString alloc] initWithString:title
 														   attributes:colour];
-	[[[presenceBox menu] itemAtIndex:0] setAttributedTitle:colouredTitle];
+	[[[presenceBox menu] itemAtIndex:0] setAttributedTitle(colouredTitle)];
 	[colouredTitle release];
 
 	title = [[[presenceBox menu] itemAtIndex:1] title];
@@ -52,7 +57,7 @@ NSMutableArray * rosterControllers = nil;
 										 forKey:NSForegroundColorAttributeName];
 	colouredTitle = [[NSMutableAttributedString alloc] initWithString:title
 														   attributes:colour];
-	[[[presenceBox menu] itemAtIndex:1] setAttributedTitle:colouredTitle];
+	[[[presenceBox menu] itemAtIndex:1] setAttributedTitle(colouredTitle)];
 	[colouredTitle release];
 	
 	title = [[[presenceBox menu] itemAtIndex:2] title];
@@ -60,7 +65,7 @@ NSMutableArray * rosterControllers = nil;
 										 forKey:NSForegroundColorAttributeName];
 	colouredTitle = [[NSMutableAttributedString alloc] initWithString:title
 														   attributes:colour];
-	[[[presenceBox menu] itemAtIndex:2] setAttributedTitle:colouredTitle];
+	[[[presenceBox menu] itemAtIndex:2] setAttributedTitle(colouredTitle)];
 	[colouredTitle release];
 	
 	title = [[[presenceBox menu] itemAtIndex:3] title];
@@ -68,7 +73,7 @@ NSMutableArray * rosterControllers = nil;
 										 forKey:NSForegroundColorAttributeName];
 	colouredTitle = [[NSMutableAttributedString alloc] initWithString:title
 														   attributes:colour];
-	[[[presenceBox menu] itemAtIndex:3] setAttributedTitle:colouredTitle];
+	[[[presenceBox menu] itemAtIndex:3] setAttributedTitle(colouredTitle)];
 	[colouredTitle release];
 	
 	title = [[[presenceBox menu] itemAtIndex:4] title];
@@ -76,7 +81,7 @@ NSMutableArray * rosterControllers = nil;
 										 forKey:NSForegroundColorAttributeName];
 	colouredTitle = [[NSMutableAttributedString alloc] initWithString:title
 														   attributes:colour];
-	[[[presenceBox menu] itemAtIndex:4] setAttributedTitle:colouredTitle];
+	[[[presenceBox menu] itemAtIndex:4] setAttributedTitle(colouredTitle)];
 	[colouredTitle release];
 	
 	title = [[[presenceBox menu] itemAtIndex:6] title];
@@ -84,7 +89,7 @@ NSMutableArray * rosterControllers = nil;
 										 forKey:NSForegroundColorAttributeName];
 	colouredTitle = [[NSMutableAttributedString alloc] initWithString:title
 														   attributes:colour];
-	[[[presenceBox menu] itemAtIndex:6] setAttributedTitle:colouredTitle];
+	[[[presenceBox menu] itemAtIndex:6] setAttributedTitle(colouredTitle)];
 	[colouredTitle release];
 }
 
@@ -312,7 +317,7 @@ NSMutableArray * rosterControllers = nil;
 	{
 		selectedPresence = [(JabberIdentity*)item presence];
 	}
-	if(presence != nil)
+	if(selectedPresence != nil)
 	{
 		toolTipMessage = [selectedPresence status];
 		if(toolTipMessage == nil)
