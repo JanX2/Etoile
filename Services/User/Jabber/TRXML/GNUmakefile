@@ -1,7 +1,7 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
 OBJCFLAGS += -g -std=c99
-FRAMEWORK_NAME = TRXML
+LIBRARY_NAME = TRXML
 
 TRXML_OBJC_FILES = TRXMLNode.m\
                    TRXMLNullHandler.m\
@@ -14,4 +14,4 @@ TRXML_HEADER_FILES = TRXMLNode.h\
                      TRXMLNullHandler.h\
                      TRXMLParserDelegate.h
 
-include $(GNUSTEP_MAKEFILES)/framework.make
+include $(GNUSTEP_MAKEFILES)/library.make

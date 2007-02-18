@@ -7,16 +7,19 @@ VERSION = 0.1
 PACKAGE_NAME = StepChat
 APP_NAME = StepChat
 StepChat_APPLICATION_ICON = 
-StepChat_SUBPROJECTS = TRXML xmpp
-ADDITIONAL_LDFLAGS += -lTRXML -lxmpp
+SUBPROJECTS = TRXML xmpp
+ADDITIONAL_LDFLAGS += -lTRXML -lXMPP -lssl -lcrypto -lAddresses
+ADDITIONAL_LIB_DIRS += -LTRXML/$(GNUSTEP_OBJ_DIR) -Lxmpp/$(GNUSTEP_OBJ_DIR)
 
 
 #
 # Resource files
 #
 StepChat_RESOURCE_FILES = \
-GNUstep/MainMenu.gorm\
-GNUstep/Info-gnustep.plist
+						  English.lproj/MainMenu.nib\
+						  English.lproj/MessageWindow.nib\
+						  English.lproj/PasswordBox.nib\
+						  English.lproj/RosterWindow.nib
 
 #
 # Header files

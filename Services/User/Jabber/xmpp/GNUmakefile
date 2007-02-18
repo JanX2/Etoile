@@ -1,6 +1,6 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-FRAMEWORK_NAME = XMPP
+LIBRARY_NAME = XMPP
 XMPP_OBJCFLAGS += -g -std=c99 -DGNUSTEP 
 
 ADDITIONAL_INCLUDE_DIRS += -I../TRXML/
@@ -23,6 +23,7 @@ XMPP_OBJC_FILES = \
 					MessageStanzaFactory.m\
 					NSData+Base64.m\
 					PresenceStanzaFactory.m\
+					Presence.m\
 					Query_jabber_iq_roster.m\
 					Roster.m\
 					RosterGroup.m\
@@ -57,6 +58,7 @@ XMPP_HEADER_FILES = \
 					MessageStanzaFactory.h\
 					NSData+Base64.h\
 					PresenceStanzaFactory.h\
+					Presence.h\
 					Query_jabber_iq_roster.h\
 					Roster.h\
 					RosterGroup.h\
@@ -70,4 +72,4 @@ XMPP_HEADER_FILES = \
 					jabber_iq_roster.h\
 					query_jabber_iq_auth.h\
 
-include $(GNUSTEP_MAKEFILES)/framework.make
+include $(GNUSTEP_MAKEFILES)/library.make
