@@ -57,7 +57,6 @@ CATEGORIES foreach (category,
 final_content := Sequence clone
 
 final_content appendSeq(".. contents::\n\n")
-final_content appendSeq(".. container:: docs\n\n")
 
 /* Go through all introduction */
 all_projects foreach (project,
