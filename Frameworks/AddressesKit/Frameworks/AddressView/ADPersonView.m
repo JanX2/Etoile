@@ -211,6 +211,7 @@ static NSString *__defaultCountryCode = nil;
 			ADEmailProperty,
 			ADAddressProperty,
 			ADAIMInstantProperty,
+			ADJabberInstantProperty,
 			nil];
 
   if(_person)
