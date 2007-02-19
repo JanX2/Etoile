@@ -1,1 +1,10 @@
-EtoileBehavior README
+==============
+EtoileBehavior 
+==============
+
+EtoileBehavior is registered as an AppKit bundle when you run 
+setup.sh script, then it is automatically injected in any 
+AppKit-based applications when they are launched. EtoileBehavior 
+includes currently the client part of the protocol that makes 
+log out possible since GNUstep doesn't include anything by default to do this.
+
