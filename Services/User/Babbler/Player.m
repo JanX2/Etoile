@@ -68,28 +68,123 @@
 
 - (void) awakeFromNib
 {
-  dpy = [GSCurrentServer() serverDevice];
+	NSToolbar *toolbar = AUTORELEASE([[NSToolbar alloc] 
+		initWithIdentifier: @"PlayerControls"]);
+	int x, y, w, h;
+	Window xwin = [window xwindow];
+ 
+	dpy = [GSCurrentServer() serverDevice];
 
-  /* Calculate frame for xwindow.
-   * Note. In X window, origin is at top-left corner. */
-  int x, y, w, h;
-  x = 5;
-  y = 5;
-  w = [[window contentView] bounds].size.width-10;
-  h = 1;
-  Window xwin = [window xwindow];
-  contentView = XCreateSimpleWindow(dpy, xwin, x, y, w, h, 0, 0, 0);
-  contentSize = NSMakeSize(w, h);
-  XMapWindow(dpy, contentView);
+	/* Calculate frame for xwindow.
+	   NOTE: In X window, origin is at top-left corner. */
+	x = 0;
+	y = [[window contentViewWithoutToolbar] frame].size.height + 17;
+	w = [[window contentViewWithoutToolbar] frame].size.width;
+	h = [[window contentViewWithoutToolbar] frame].size.height;
 
-  isPlaying = NO;
+	contentView = XCreateSimpleWindow(dpy, xwin, x, y, w, h, 0, 0, 0);
+	contentSize = NSMakeSize(w, h);
+	
+	XMapWindow(dpy, contentView);
 
-  [playButton setImage: [NSImage imageNamed: @"play.tiff"]];
-  [volumeSlider setMaxValue: 100];
-  [volumeSlider setMinValue: 0];
+	isPlaying = NO;
 
-  [window makeKeyAndOrderFront: self];
+	[toolbar setDelegate: self];
+	[window setToolbar: toolbar];
+
+	[window makeKeyAndOrderFront: self];
 }
+
+/* Toolbar delegate methods */
+
+- (NSToolbarItem *) toolbar:(NSToolbar *)toolbar
+		itemForItemIdentifier:(NSString*)identifier
+		willBeInsertedIntoToolbar:(BOOL)willBeInserted 
+{
+	NSToolbarItem* toolbarItem = [[NSToolbarItem alloc] 
+		initWithItemIdentifier: identifier];
+
+	[toolbarItem setLabel: _(identifier)];
+	[toolbarItem setTarget: self];
+	[toolbarItem setEnabled: NO];
+
+	if ([identifier isEqual: @"Play"]) 
+	{
+		[toolbarItem setImage: [NSImage imageNamed: @"play.tiff"]];
+		[toolbarItem setAction: @selector(play:)];
+	} 
+	else if ([identifier isEqual: @"Back"]) 
+	{
+		[toolbarItem setImage: [NSImage imageNamed: @"bla"]];
+		[toolbarItem setAction: @selector(back:)];
+	} 
+	else if ([identifier isEqual: @"Backward"]) 
+	{
+		[toolbarItem setImage: [NSImage imageNamed: @"bla"]];
+		[toolbarItem setAction: @selector(backward:)];
+	} 
+	else if ([identifier isEqual: @"Forward"]) 
+	{
+		[toolbarItem setImage: [NSImage imageNamed: @"bla"]];
+		[toolbarItem setAction: @selector(forward:)];
+	} 
+	else if ([identifier isEqual: @"Volume"]) 
+	{
+		[toolbarItem setTarget: nil];
+		[toolbarItem setEnabled: YES];
+
+		[volumeSlider removeFromSuperview];
+		[volumeSlider setMaxValue: 100];
+		[volumeSlider setMinValue: 0];
+		[volumeSlider setAction: @selector(volume:)];
+		[volumeSlider setTarget: self];
+		[toolbarItem setView: volumeSlider];
+	} 
+	else if ([identifier isEqual: @"Fullscreen"]) 
+	{
+		[toolbarItem setImage: [NSImage imageNamed: @"etoile_back"]];
+		[toolbarItem setAction: @selector(toggleFullscreen:)];
+	} 
+	else if ([identifier isEqual: @"Playlist"]) 
+	{
+		[toolbarItem setImage: [NSImage imageNamed: @"etoile_back"]];
+		[toolbarItem setAction: @selector(togglePlaylistView:)];
+	} 
+	else 
+	{
+		NSAssert(@"Bad toolbar item requested: %@", identifier);
+		DESTROY(toolbarItem);
+	}
+	
+	NSAssert1(
+		toolbarItem != nil,
+		@"nil toolbar item returned for %@ identifier",
+		identifier
+	);
+
+	return toolbarItem;
+}
+
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar 
+{
+	NSArray *identifiers = [NSArray arrayWithObjects: @"Volume", 
+		NSToolbarFlexibleSpaceItemIdentifier, @"Back", @"Play",
+		NSToolbarFlexibleSpaceItemIdentifier, @"Playlist", nil];
+
+	return identifiers;
+}
+
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar 
+{
+	NSArray *identifiers = [NSArray arrayWithObjects: @"Play", @"Back", 
+		@"Backward", @"Forward",  @"Volume", @"Fullscreen", 
+		@"Playlist", NSToolbarSeparatorItemIdentifier, 
+		NSToolbarSpaceItemIdentifier, 
+		NSToolbarFlexibleSpaceItemIdentifier, nil];
+
+	return identifiers;
+}
+
 
 - (void) setPlayer: (id <MMPlayer>) player
 {
