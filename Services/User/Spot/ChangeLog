@@ -1,3 +1,7 @@
+2006-02-19  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Spot.app: Renamed Spot directory to Spot.app.
+
 2006-02-08  Quentin Mathe <qmathe@club-internet.fr>
 
 	Warning: This commit could break Spot... Will be able to test it only later 
