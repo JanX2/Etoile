@@ -18,8 +18,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import "RSSLinks.h"
+#import <Foundation/Foundation.h>
 
+#import "RSSLinks.h"
 #import "NewRSSArticleListener.h"
 #import "RSSArticleCreationListener.h"
 #import "DublinCore.h"
@@ -280,7 +281,14 @@
     NSDate* d = nil;
     static NSArray* timeformats = nil;
     
+#ifdef GNUSTEP
+    // FIXME: Create directory yourself and remove #ifdef, so that it will work on OSX, too.
+    static NSDictionary* unlocalizedDefaults = nil;
     
+    if (unlocalizedDefaults == nil) {
+        unlocalizedDefaults = [NSUserDefaults _unlocalizedDefaults]; // private NSDictionary method.
+    }
+#endif
     
     if (timeformats == nil) {
         // Everything that can be found in the wild is considered 'verified'.
@@ -308,7 +316,11 @@
     int i;
     for (i=0; i<[timeformats count] && d == nil; i++) {
         d = [NSCalendarDate dateWithString: str
-                            calendarFormat: [timeformats objectAtIndex: i]];
+                            calendarFormat: [timeformats objectAtIndex: i]
+#ifdef GNUSTEP
+                            locale: unlocalizedDefaults
+#endif
+        ];
 	  if (d!=nil) NSLog(@"Date=%@, calc'd from %@, which matched to %@ (%dth try)", d, str, [timeformats objectAtIndex: i], i); 
     }
    

@@ -2,6 +2,10 @@
 RSSKit Changelog
 ================
 
+Feb-17-2007  Guenther Noack
+	* RSSArticleCreationListener.m:
+	  Parse english dates, even in other locales
+
 Feb-12-2007  Guenther Noack
 	* RSSFeed.m:
 	* RSSFeed+Storage.m:
