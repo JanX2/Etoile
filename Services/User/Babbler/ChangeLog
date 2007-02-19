@@ -1,5 +1,11 @@
 2007-02-19  Quentin Mathe <qmathe@club-internet.fr>
 
+	* Player.h:
+	* Player.m: 
+	Reindented to match code guidelines.
+
+2007-02-19  Quentin Mathe <qmathe@club-internet.fr>
+
 	* Player.m (toolbarAllowedItemIdentifiers:, toolbarDefaultItemIdentifiers:,
 	toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:): Updated UI
 	to feel more in phase with Etoile by implementing a toolbar. Toolbar
