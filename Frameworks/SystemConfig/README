@@ -1,23 +1,25 @@
-=======================
-SystemConfig 0.1 README
-=======================
+============
+SystemConfig
+============
+
+:Maintainer: Quentin Mathe <qmathe@club-internet.fr>
+:Author: Quentin Mathe
+:License: LGPL license (see COPYING document)
+:Version: 0.1
 
 SystemConfig is a framework which provides various a common way to set system 
 specific preferences by interfacing with the host system. Host system means the 
 following combo:
+
 	* operating sytem
 	* additional abstraction support (sound, network etc.)
 	* display/window server
+
 Versatile and flexible devices support is often done through an extra 
 abstraction layer/library on top of the kernel. This is what 'additional 
 abstraction support' means. GNOME System tools backend is an example of such
 library that allows to set various settings (like network related ones) without
 having to pay attention on which operating system Etoile is used.
-
-This framework is released under LGPL license (see COPYING document).
-
-Maintainer: Quentin Mathe <qmathe@club-internet.fr>
-Author: Quentin Mathe
 
 To know more about SystemConfig: 
 <http://www.etoile-project.com/etoile/mediawiki/index.php?title=SystemConfig>
