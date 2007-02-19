@@ -50,18 +50,39 @@
 	UKFinderIconCell*		bCell = [[[UKFinderIconCell alloc] autorelease] init];
 	[bCell setImagePosition: NSImageAbove];
 	[bCell setEditable: YES];
-
+	
+	[scrollView setHasHorizontalScroller: YES];
+	[scrollView setHasVerticalScroller: YES];
+	
+	distView = [[UKDistributedView alloc] init];
+	[distView setDelegate: self];
+	[distView setDataSource: self];
+	[scrollView setDocumentView: distView];
+	
 	[distView setPrototype: bCell];
 	[distView setCellSize: NSMakeSize(100.0,80.0)];
 
 	// Add a few items:
+ 	/*
 	[self addCellWithTitle: @"Lady Jaye" andImage:[NSImage imageNamed: @"LadyJayeIcon"]];
 	[self addCellWithTitle: @"Mimi Rogers" andImage:[NSImage imageNamed: @"MimiRogersIcon"]];
 	[self addCellWithTitle: @"Mediator File" andImage:[NSImage imageNamed: @"MediDoc"]];
+	*/
+	
+	NSArray* files = [[NSFileManager defaultManager] directoryContentsAtPath:
+		[@"~" stringByExpandingTildeInPath]];
+	int i;
+	NSWorkspace* ws = [NSWorkspace sharedWorkspace];
+	for (i=0; i<[files count]; i++) {
+		NSString* file = [files objectAtIndex: i];
+		[self addCellWithTitle: file
+		              andImage: [ws iconForFile: file]];
+	}
 	
 	// Make items draggable and initially position them neatly:
 	[distView positionAllItems:self];	// Instead of this you'd probably load the positions from wherever you get your items from.
 	[distView setDragMovesItems:YES];	// Allow dragging around items in the view.
+	[distView setDragLocally: YES];
 }
 
 -(void)	addCellWithTitle: (NSString*)title andImage: (NSImage*)img
