@@ -1,7 +1,10 @@
+================
 XWindowServerKit
 ================
+
+:Author: Yen-Ju Chen
+:Copyright: BSD License
 
 XWindowServerKit provides access to x window system.
 It allows GNUstep to integrate better with x window system.
 
-Yen-Ju
