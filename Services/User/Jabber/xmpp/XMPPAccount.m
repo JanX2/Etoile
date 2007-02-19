@@ -12,8 +12,7 @@
 #import <AddressBook/ADPerson.h>
 #define ABMultiValue ADMultiValue
 #define ABAddressBook ADAddressBook
-//TODO: Find out why this is needed when it wasn't previously
-#define kABJabberInstantProperty @"JabberAddress"
+#define kABJabberInstantProperty ADJabberInstantProperty
 #else
 #import <AddressBook/ABAddressBook.h>
 #import <AddressBook/ABMultiValue.h>
