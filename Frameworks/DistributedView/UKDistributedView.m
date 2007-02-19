@@ -1983,7 +1983,11 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 				
 				pos = [[self dataSource] distributedView:self positionForCell:nil atItemIndex: x];
 				pos.x += [event deltaX];
+#ifdef GNUSTEP // XXX: Hack. -GN
+				pos.y -= [event deltaY];
+#else
 				pos.y += [event deltaY];
+#endif
 							
 				[self itemNeedsDisplay: x]; // Invalidate old position.
 				[[self dataSource] distributedView:self setPosition:pos forItemIndex: x];
