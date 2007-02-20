@@ -3,11 +3,11 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 BUNDLE_NAME = VCFViewer
 BUNDLE_EXTENSION = .inspector
-BUNDLE_INSTALL_DIR = $(GNUSTEP_INSTALLATION_DIR)/Library/GWorkspace
+BUNDLE_INSTALL_DIR = $(GNUSTEP_USER_DIR)/Library/GWorkspace
 
 # hack -- GWorkspace won't find bundles if they weren't installed in
 #   ~/GNUstep/Library/GWorkspace 
-GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_USER_ROOT)
+GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_USER_DIR)
 
 VCFViewer_HAS_RESOURCE_BUNDLE = yes
 

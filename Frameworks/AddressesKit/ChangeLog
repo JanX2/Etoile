@@ -1,3 +1,9 @@
+2007-02-19  Yen-Ju Chen <yjchenx at gmail>
+
+	* Format README in reStructuredText.
+	* Use GNUSTEP_HEADERS to target installed headers
+          and GNUSTEP_USER_DIR for user root.
+
 2006-09-27  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Frameworks/Addresses/GNUmakefile:
