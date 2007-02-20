@@ -62,6 +62,9 @@
 {
   NSAssert(_dictionaries != nil,
            @"The preference panel must be given a dictionary handle list!");
+
+  /* Remove all dictionaries before rescan */
+  [_dictionaries removeAllObjects];
   
   [self searchInUsualPlaces];
   

@@ -5,6 +5,7 @@ DictionaryReader Changelog
 Feb 19 2007  Guenther Noack
 	* Create ~/GNUstep/Library/DictionaryReader/ if it does not exist.
 	* Use host name for property list since NSHost is not a property list.
+	* Remove all dictionaries before rescanning.
 
 Feb 12 2007  Guenther Noack
 	* AppController.[mh]:
