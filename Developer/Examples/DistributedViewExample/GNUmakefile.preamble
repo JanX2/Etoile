@@ -2,7 +2,7 @@
 #    Makefile for Etoile DistributedViewExample
 #
 
-ADDITIONAL_INCLUDE_DIRS +=-IEtoileExtensions
+ADDITIONAL_INCLUDE_DIRS +=-IDistributedView -IEtoileUI
 
-ADDITIONAL_LIB_DIRS += -L../../../Frameworks/EtoileExtensionsKit/Source/$(GNUSTEP_OBJ_DIR)
+ADDITIONAL_LIB_DIRS += -L../../../Frameworks/DistributedView/$(GNUSTEP_OBJ_DIR) -L../../../Frameworks/EtoileUI/$(GNUSTEP_OBJ_DIR)
 

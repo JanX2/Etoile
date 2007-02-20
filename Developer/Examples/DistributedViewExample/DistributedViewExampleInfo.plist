@@ -1,11 +1,11 @@
 {
-    ApplicationDescription = "Étoilé UKDistributedView example"; 
+    ApplicationDescription = "Ã‰toilÃ© UKDistributedView example"; 
     ApplicationIcon = ""; 
     ApplicationName = DistributedViewExample; 
     ApplicationRelease = "0.2"; 
     Authors = (
         "Uli Kusterer <witness.of.teachtext@gmx.net>", 
-        "Quentin Mathé <qmathe@club-internet.fr>"
+        "Quentin MathÃ© <qmathe@club-internet.fr>"
     ); 
     Copyright = "Uli Kusterer"; 
     CopyrightDescription = "Copyright 2004 M. Uli Kusterer."; 

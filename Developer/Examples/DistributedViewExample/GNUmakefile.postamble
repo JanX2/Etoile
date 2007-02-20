@@ -3,13 +3,16 @@
 #
 
 before-all::
-	rm -f $(CURDIR)/EtoileExtensions
-	$(LN_S) $(CURDIR)/../../../Frameworks/EtoileExtensionsKit/Headers $(CURDIR)/EtoileExtensions
+	rm -f $(CURDIR)/DistributedView
+	$(LN_S) $(CURDIR)/../../../Frameworks/DistributedView $(CURDIR)/
+	rm -f $(CURDIR)/EtoileUI
+	$(LN_S) $(CURDIR)/../../../Frameworks/EtoileUI/Headers $(CURDIR)/EtoileUI
 
 after-all::
 
 after-clean::
-	rm -f $(CURDIR)/EtoileExtensions
+	rm -f $(CURDIR)/DistributedView
+	rm -f $(CURDIR)/EtoileUI
 
 after-distclean::
 
