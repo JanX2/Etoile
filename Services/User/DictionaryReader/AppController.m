@@ -501,9 +501,28 @@ NSDictionary* normalAttributes;
 
 -(NSString*) dictionaryStoreFile
 {
-#warning FIXME: Ensure that directory exists!
-    return [@"~/GNUstep/Library/DictionaryReader/dictionaries.plist"
-                stringByExpandingTildeInPath];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *path = [@"~/GNUstep/Library/DictionaryReader" stringByExpandingTildeInPath];
+    BOOL isDir = NO;
+    if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
+    {
+      /* Directory does not exist, create it */
+      if ([fm createDirectoryAtPath: path attributes: nil] == NO)
+      {
+        /* Cannot create path */
+        NSLog(@"Error: cannot create ~/GNUstep/Library/DictionaryReader/");
+        return nil;
+      }
+    }
+    else if (isDir == NO)
+    {
+      /* path exist, but not a directory */
+      NSLog(@"Error: ~/GNUstep/Library/DictionaryReader is not a directory");
+      return nil;
+    }
+    /* path exists, and is a directory. do nothing */
+
+    return [path stringByAppendingPathComponent: @"dictionaries.plist"];
 }
 
 -(void) applicationWillTerminate: (NSNotification*) theNotification

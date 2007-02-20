@@ -36,17 +36,18 @@
  */
 -(id) initFromPropertyList: (NSDictionary*) aPropertyList
 {
-    NSAssert1([aPropertyList objectForKey: @"host"] != nil,
-              @"No entry for 'host' key in NSDictionary %@", aPropertyList);
-    NSAssert1([aPropertyList objectForKey: @"port"] != nil,
-              @"No entry for 'host' key in NSDictionary %@", aPropertyList);
+  NSAssert1([aPropertyList objectForKey: @"host"] != nil,
+            @"No entry for 'host' key in NSDictionary %@", aPropertyList);
+  NSAssert1([aPropertyList objectForKey: @"port"] != nil,
+            @"No entry for 'host' key in NSDictionary %@", aPropertyList);
     
-    if ((self = [super initFromPropertyList: aPropertyList]) != nil) {
-        self = [self initWithHost: [aPropertyList objectForKey: @"host"]
-                             port: [[aPropertyList objectForKey: @"port"] intValue]];
-    }
+  if ((self = [super initFromPropertyList: aPropertyList]) != nil) {
+    NSHost *ahost = [NSHost hostWithName: [aPropertyList objectForKey: @"host"]];
+    self = [self initWithHost: ahost
+                         port: [[aPropertyList objectForKey: @"port"] intValue]];
+  }
     
-    return self;
+  return self;
 }
 
 -(id)initWithHost: (NSHost*) aHost
@@ -71,16 +72,14 @@
   return self;
 }
 
--(id)initWithHost: (NSHost*) aHost
+- (id) initWithHost: (NSHost*) aHost
 {
-  return [self initWithHost: aHost
-	       port: 2628];
+  return [self initWithHost: aHost port: 2628];
 }
 
--(id)init
+- (id) init
 {
-  NSString
-    *hostname = nil;
+  NSString *hostname = nil;
   
   hostname = [[NSUserDefaults standardUserDefaults] objectForKey: @"Dict Server"];
   
@@ -261,8 +260,8 @@
 {
     NSMutableDictionary* result = [super shortPropertyList];
     
-    [result setObject: host forKey: @"host"];
-    [result setObject: [NSNumber numberWithBool: port] forKey: @"port"];
+    [result setObject: [host name] forKey: @"host"];
+    [result setObject: [NSNumber numberWithInt: port] forKey: @"port"];
     
     return result;
 }
