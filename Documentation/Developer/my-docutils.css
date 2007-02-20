@@ -1,0 +1,50 @@
+/*
+:Author: Jesse Ross
+:Contact: jesse [at] jesseross [dot] com
+:Copyright: This stylesheet has been placed in the public domain.
+
+Stylesheet for use with Docutils.
+*/
+
+@import url(html4css1.css);
+
+body {
+  color: #3D3B4C;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 80%; }
+  
+a:link {
+  color: #6267AD; }
+
+a:visited {
+  color: #3D3B4C; }
+
+a:hover {
+  color: #693; }
+
+a:active {
+  color: #8B2A25;
+  text-decoration: none; }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: #3D3B4C }
+
+div.contents {
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  width: 200px; }
+
+div.section {
+  border-bottom: 1px dotted black;
+  margin-bottom: 1.5em;
+  margin-left: 250px;
+  padding-bottom: .9em;
+  width: 42em; }
+  
+div.section h1 {
+  font-size: 150%; }
+  
+hr.docutils {
+  display: none; }
