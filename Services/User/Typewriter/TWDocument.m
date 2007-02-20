@@ -27,7 +27,19 @@
 
 - (void) windowControllerDidLoadNib: (NSWindowController *) windowController
 {
+  NSFont *font = [textView font];
   [[textView textStorage] setAttributedString: aString];
+  /* Make sure the font is monospace for plain text */
+  /* FIXME: there are a couple issues I met:
+   * 1. font may be nil from NSTextView at some point.
+   * 2. not every font can be converted into monospace.
+   * Therefore, font need to be get before setAttributedString:
+   * and always use userFixedPitchFontOfSize:
+   */
+  if ([[self fileType] isEqualToString: @"TWPlainTextType"]) {
+    font = [NSFont userFixedPitchFontOfSize: [font pointSize]];
+    [textView setFont: font];
+  }
 }
 
 - (NSString *) windowNibName
