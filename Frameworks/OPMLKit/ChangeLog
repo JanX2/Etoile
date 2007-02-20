@@ -1,3 +1,7 @@
+Feb-19-2007 Yen-Ju Chen <yjchenx at gmail>
+
+        * Format README in reStructuedText
+	* Put real BSD license as the original COPYING states.
 
 Jan-14-2007  Guenther Noack
 	* Added TODO file
