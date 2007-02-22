@@ -1,0 +1,48 @@
+/***
+English.lproj/Localizable.strings
+updated by make_strings 2007-02-17 10:47:10 +0000
+add comments above this one
+***/
+
+
+/*** Keys found in multiple places ***/
+
+/* File: DatabaseOperations.m:26 */
+/* Flag: untranslated */
+/* File: DatabaseOperations.m:64 */
+/* Flag: untranslated */
+"Fetch feed" = "Fetch feed";
+
+/* File: DatabaseOperations.m:32 */
+/* Flag: untranslated */
+/* File: DatabaseOperations.m:69 */
+/* Flag: untranslated */
+"Fetch all" = "Fetch all";
+
+
+/*** Unmatched/untranslated keys ***/
+
+/* File: DatabaseOperations.m:39 */
+/* Flag: untranslated */
+"Subscribe" = "Subscribe";
+
+/* File: DatabaseOperations.m:46 */
+/* Flag: untranslated */
+"New category" = "New category";
+
+/* File: DatabaseOperations.m:53 */
+/* Flag: untranslated */
+"Delete" = "Delete";
+
+/* File: DatabaseOperations.m:75 */
+/* Flag: untranslated */
+"Subscribe to URL..." = "Subscribe to URL...";
+
+/* File: DatabaseOperations.m:81 */
+/* Flag: untranslated */
+"Delete feed" = "Delete feed";
+
+/* File: DatabaseOperations.m:100 */
+/* Comment: The name of the Feed menu entry. It's important that this is the same name as in the Gorm file, otherwise the menu will not be filled. */
+/* Flag: untranslated */
+"Feed" = "Feed";

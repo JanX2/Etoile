@@ -1,0 +1,29 @@
+/***
+English.lproj/Localizable.strings
+updated by make_strings 2007-02-17 10:47:10 +0000
+add comments above this one
+***/
+
+
+/*** Unmatched/untranslated keys ***/
+
+/* File: NSWorkspace+URLOpening.m:32 */
+/* Comment: header of the failure alert message */
+/* Flag: unmatched */
+"Browsing failed" = "Browsing failed";
+
+/* File: NSWorkspace+URLOpening.m:37 */
+/* Comment: The failure alert message text when a URL can't be opened. */
+/* Flag: unmatched */
+"Unable to open this URL:\n%@\n\nPlease check your Grr web browser preferences."
+= "Unable to open this URL:\n%@\n\nPlease check your Grr web browser preferences.";
+
+/* File: NSWorkspace+URLOpening.m:38 */
+/* Flag: unmatched */
+"Ok" = "Ok";
+
+
+/*** Strings from URLOpeningComponent.m ***/
+/* File: URLOpeningComponent.m:60 */
+/* Comment: title of the open dialog */
+"Choose Web Browser application" = "Choose Web Browser application";

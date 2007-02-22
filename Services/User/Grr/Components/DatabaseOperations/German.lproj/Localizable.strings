@@ -1,0 +1,67 @@
+/***
+German.lproj/Localizable.strings
+updated by make_strings 2007-02-17 10:47:10 +0000
+add comments above this one
+***/
+
+
+/*** Keys found in multiple places ***/
+
+/* File: DatabaseOperations.m:26 */
+/* Flag: untranslated */
+/* File: DatabaseOperations.m:64 */
+/* Flag: untranslated */
+/* File: FeedOperations.m:24 */
+/* Flag: unmatched */
+/* File: FeedOperations.m:54 */
+/* Flag: unmatched */
+"Fetch feed" = "Lade alle";
+
+/* File: DatabaseOperations.m:32 */
+/* Flag: untranslated */
+/* File: DatabaseOperations.m:69 */
+/* Flag: untranslated */
+/* File: FeedOperations.m:30 */
+/* Flag: unmatched */
+/* File: FeedOperations.m:59 */
+/* Flag: unmatched */
+"Fetch all" = "Lade Feed";
+
+/* File: DatabaseOperations.m:81 */
+/* Flag: untranslated */
+/* File: FeedOperations.m:44 */
+/* Flag: unmatched */
+/* File: FeedOperations.m:71 */
+/* Flag: unmatched */
+"Delete feed" = "Lösche Feed";
+
+/* File: DatabaseOperations.m:39 */
+/* Flag: untranslated */
+/* File: FeedOperations.m:37 */
+/* Flag: unmatched */
+"Subscribe" = "Abonnieren";
+
+/* File: DatabaseOperations.m:75 */
+/* Flag: untranslated */
+/* File: FeedOperations.m:65 */
+/* Flag: unmatched */
+"Subscribe to URL..." = "URL abonnieren...";
+
+/* File: DatabaseOperations.m:100 */
+/* Comment: The name of the Feed menu entry. It's important that this is the same name as in the Gorm file, otherwise the menu will not be filled. */
+/* Flag: untranslated */
+/* File: FeedOperations.m:89 */
+/* Comment: The name of the Feed menu entry. It's important that this is the same name as in the Gorm file, otherwise the menu will not be filled. */
+/* Flag: unmatched */
+"Feed" = "Feed";
+
+
+/*** Unmatched/untranslated keys ***/
+
+/* File: DatabaseOperations.m:46 */
+/* Flag: untranslated */
+"New category" = "New category";
+
+/* File: DatabaseOperations.m:53 */
+/* Flag: untranslated */
+"Delete" = "Delete";

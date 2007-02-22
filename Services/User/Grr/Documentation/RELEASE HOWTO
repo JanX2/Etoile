@@ -1,0 +1,63 @@
+
+=============
+Release HOWTO
+=============
+
+==Before Release
+
+	- Call out feature freeze
+	  If you're clever, branch SVN tagging the branch something
+	  like Grr-$VERSIONNUMBER-pre.
+	
+	- Test if interface does everything:
+	  See Manual Testing documentation.
+
+	- Test compilation with and without Etoile
+		
+	- Make sure translations are complete
+	  make_strings -L "English German" *.[mh]
+	  then investigate Localizable.strings files in *.lproj
+	  subdirectories
+	
+	- Make sure localized Nib files are updated
+	  Check if file dates of localized Nib files are newer than
+	  reference Nib files
+	
+	- Make sure the name "Grr" is used throughout the application
+	  instead of "Grrr", which is the development version.
+	
+	- Test localized interfaces by setting NSLanguages default
+
+	- Collect feature list and changes from ChangeLog file and
+	  prepare announcements for:
+	    - codevelopers
+	    - mailing lists
+	    - official weblog
+
+==Releasing
+
+	- Clean up directory
+	  gmake clean
+
+	- Search for unneccessary files and remove them
+
+	- Create a branch named Grr-$VERSIONNUMBER
+
+	- Create tarballs from SVN, removing all .svn directories
+
+	- If application is already ported to Mac, create .dmg file
+	  Refer to Apple documentation on how to do this
+
+	- Put tarballs and dmg to download directory
+
+==After Release
+	
+	- Announce Release (in this order):
+	  - Send mail to all codevelopers
+	    Codevelopers are your most valuable help, treat them good!
+	  - Send mail to etoile-discuss
+	  - Send mail to gnustep-apps
+	  - Post announcement on Etoile weblog
+	  - Post small note on own weblog
+
+

@@ -1,0 +1,15 @@
+
+Feb-01-2007  Guenther Noack
+	* NSWorkspace+URLOpening.[mh]: Moved back to main project.
+	  (Otherwise, URL opening was only available if the preferences
+	  panel had been called before. This is weird behaviour.)
+
+Jan-30-2007  Guenther Noack
+	* New icon
+
+Jan-16-2007  Guenther Noack
+	* Links are now actually clickable.
+
+Jan-16-2007  Guenther Noack
+	* Initial creation and import
+

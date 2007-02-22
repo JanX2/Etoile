@@ -1,0 +1,18 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FeedTablePlugin = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = PluginController;
+    };
+    PluginController = {
+	Actions = (
+	);
+	Outlets = (
+	    _view
+	);
+	Super = NSObject;
+    };
+}

@@ -1,0 +1,14 @@
+
+==============
+MANUAL TESTING
+==============
+
+- Check if the number beneath feeds reflects the number of unread
+  articles that are displayed on the right.
+
+- Test if the browser is correctly called.
+
+- Test if searches work
+
+- Test if Proxy support works
+

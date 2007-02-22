@@ -1,0 +1,34 @@
+{
+    ApplicationDescription = "G\U00FCnthers reliable RSS Reader";
+    ApplicationName = Grr;
+    ApplicationRelease = 0.8-Beta;
+    ApplicationIcon = Grr-Icon;
+    NSIcon = Grr-Icon;
+    Authors = (
+	"G\U00FCnther Noack <guenther@unix-ag.uni-kl.de>"
+    );
+    Copyright = "Copyright \U00A9 2006,2007 G\U00FCnther Noack";
+    CopyrightDescription = "Released under the terms of the GNU General Public License";
+    NSTypes = (
+	{
+		NSDocumentClass = NSDocumentClass;
+		NSHumanReadableName = "Web feed";
+		NSIcon = FeedFile;
+		NSName = "WebFeed";
+		NSRole = "";
+		NSUnixExtensions = (
+			rdf, RDF, xml, XML, rss, RSS, atom, ATOM
+		);
+	},
+	{
+		NSDocumentClass = NSDocumentClass;
+		NSHumanReadableName = "Stores Grr article";
+		NSIcon = ArticleFile;
+		NSName = "WebFeed article";
+		NSRole = "";
+		NSUnixExtensions = (
+			rssarticle
+		);
+	}
+    );
+}
