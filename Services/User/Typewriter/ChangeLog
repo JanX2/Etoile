@@ -1,8 +1,14 @@
-2006-02-19  Yen-Ju Chen <yjchenx at gmail>
 
+2007-02-20  Guenther Noack <guenther@unix-ag.uni-kl.de>
+
+	* Made the text layout automatically break when a
+	  line is too long for the text view.
+
+2006-02-19  Yen-Ju Chen <yjchenx at gmail>
 	* Use monospace for plain text.
 	* Fix encoding in TypewriterInfo.plist
 
+>>>>>>> .r1474
 2007-02-17  Guenther Noack <guenther@unix-ag.uni-kl.de>
 	
 	* Replaced document icons with better versions

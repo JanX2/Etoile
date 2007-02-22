@@ -23,7 +23,13 @@
 
   // I agree on that. It's also difficult to connect from a textView.
   [textView setDelegate: self];
-}
+
+  [scrollView setHasHorizontalScroller: NO];
+  [scrollView setHasVerticalScroller: YES];
+  [textView setHorizontallyResizable: NO];
+  [textView setVerticallyResizable: YES];
+  [textView setFrameSize: [scrollView contentSize]];
+}}
 
 - (void) windowControllerDidLoadNib: (NSWindowController *) windowController
 {

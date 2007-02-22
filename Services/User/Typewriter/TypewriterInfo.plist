@@ -4,7 +4,7 @@
    NSIcon = "Typewriter.tiff";
    ApplicationName = Typewriter;
    ApplicationRelease = 0.1;
-   Authors = ("Yen-Ju Chen");
+   Authors = ("Yen-Ju Chen", "Günther Noack <guenther@unix-ag.uni-kl.de>");
    Copyright = "Copyright (C) 2006 by Yen-Ju Chen";
    CopyrightDescription = "Released under BSD Licence";
    FullVersionID = 0.1;
