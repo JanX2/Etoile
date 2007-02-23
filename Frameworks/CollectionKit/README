@@ -1,6 +1,11 @@
-===================
-CollectionKit 0.0.1
-===================
+=============
+CollectionKit
+=============
+
+
+:Maintainer: Yen-Ju Chen <yjchenx at gmail dot com>
+:License: LGPL as Addresses for GNUstep.
+:Version: 0.1
 
 CollectionKit provides a common storage facility for records with properties,
 such as contact information, playlist, bookmark, etc.
@@ -21,8 +26,6 @@ if the information is intended to be shared by many applications.
 CollectionKit is based on Addresses for GNUStep 
 made by Bjoern Giesler <bjoern@giesler.de>.
 Therefore, it uses LGPL as Addresses for GNUstep.
-
-Maintainer: Yen-Ju Chen <yjchenx at_ gmail __dot com>
 
 Developer
 ---------

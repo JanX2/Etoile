@@ -1,6 +1,11 @@
-============================
-OgreKit (GNUstep) 1.2 README
-============================
+=================
+OgreKit (GNUstep)
+=================
+
+:Maintainer: Yen-Ju Chen <yjchenx at gmail dot com>
+:Author: Yen-Ju Chen
+:License: BSD License (see COPYING document). 
+:Version: 1.2
 
 OgreKit is a regular expression library written in Objective-C in Cocoa. It 
 uses OniGuruma as regular expression engine.
@@ -8,12 +13,6 @@ uses OniGuruma as regular expression engine.
 This is a GNUstep fork of OgreKit 2.1.2 
 <http://www8.ocn.ne.jp/~sonoisa/OgreKit/>.
 Since it is a fork, the API may differ in the future.
-
-Original licence of OgreKit is BSD License. 
-This fork uses also BSD license (see COPYING document).
-
-Maintainer: Yen-Ju Chen <yjchenx at_ gmail __dot com>
-Author: Yen-Ju Chen
 
 To know more about OgreKit: 
 <http://www.dromasoftware.com/etoile/mediawiki/index.php?title=OgreKit>

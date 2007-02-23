@@ -1,15 +1,13 @@
+=============
 MultimediaKit
 =============
+
+:Author: Yen-Ju Chen <yjchenx gmail>
+:License: MPlayerInterface is under GPL.  The rest is under LGPL.
 
 MultimediaKit provides common backend engine to play multimedia stream.
 Currently, it supports mplayer backend based on MPlayerOSX.
 
 MPlayer and MPlyaerOSX: http://www.sonappart.net/gnustep/mplayer/
 MPlyaerPort: http://www.sonappart.net/gnustep/mplayer/
-
-MPlayerInterface is under GPL.
-The rest is under LGPL.
-
-Yen-Ju Chen <yjchenx gmail>
-
 

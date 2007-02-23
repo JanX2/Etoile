@@ -1,17 +1,16 @@
-====================
-LuceneKit 0.1 README
-====================
+=========
+LuceneKit
+=========
+
+:Maintainer: Yen-Ju Chen <yjchenx at gmail dot com>
+:Authors: Yen-Ju Chen, Quentin Mathe
+:License: Apache License 2.0
+:Version: 0.1
 
 Lucene is a high-performance, full-featured text search engine library. It is a 
 technology suitable for nearly any application that requires full-text search.
 
 This is a GNUstep port of Lucene <http://lucene.apache.org/>.
-
-Original licence of Lucene is Apache License 2.0. This port use BSD license 
-whenever it is applicable. (see LICENSE document)
-
-Maintainer: Yen-Ju Chen <yjchenx at gmail dot com>
-Authors: Yen-Ju Chen, Quentin Mathe
 
 To know more about LuceneKit: 
 <http://www.dromasoftware.com/etoile/mediawiki/index.php?title=LuceneKit>

@@ -1,12 +1,15 @@
-==================
-IconKit 0.1 README
-==================
+=======
+IconKit
+=======
 
-This framework is used to create icons using different elements. It helps keeping consistency accross a set of icons
-(for example, using the same background..) and permit to easily create icons "families".
+:Maintainers: Quentin Mathe <qmathe@club-internet.fr>, Uli Kusterer
+:Authors: Uli Kusterer, Nicolas Roard, Quentin Mathe
+:Version: 0.1
 
-Maintainers: Quentin Mathe <qmathe@club-internet.fr>, Uli Kusterer
-Authors: Uli Kusterer, Nicolas Roard, Quentin Mathe
+This framework is used to create icons using different elements. 
+It helps keeping consistency accross a set of icons
+(for example, using the same background..) and 
+permit to easily create icons "families".
 
 To know more about IconKit:
 <http://www.dromasoftware.com/etoile/mediawiki/index.php?title=IconKit>

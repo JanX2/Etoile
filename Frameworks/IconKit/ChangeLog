@@ -1,3 +1,7 @@
+2007-02-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+        * Format README in reStructuedText
+
 2007-02-28  Quentin Mathe <qmathe@club-internet.fr>
 
 	* QuickTest.io: Added Io script to test basic IconKit features by enabling 
