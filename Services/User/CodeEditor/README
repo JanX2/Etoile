@@ -1,5 +1,8 @@
+==========
 CodeEditor
 ==========
+
+:License: LGPL
 
 CodeEditor is a rewritten version of CodeEditor 0.4.x 
 (http://savannah.nongnu.org/projects/codeeditor). 
@@ -11,9 +14,6 @@ CodeEditor differs from Typewriter is that Typewriter is a rich-text editor
 while CodeEditor is a plain-text editor.
 CodeEditor is not designed only for programming. Therefore, it will lack
 some specialized features seen in other code editor.
-
-It is released under LGPL in case some classes will be used by 
-other application or frameworks in the future.
 
 Features (and not)
 ------------------
