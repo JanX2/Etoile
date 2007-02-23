@@ -1,6 +1,12 @@
-=========================
-PaneKit 0.2 README
-=========================
+=======
+PaneKit
+=======
+
+:Maintainer: Quentin Mathe <qmathe@club-internet.fr>
+:Author: Uli Kusterer, Quentin Mathe, Yen-Ju Chen
+:License: LGPL license (see COPYING document).
+:License: Original licence of GSSystemPreferences is LGPL License too.
+:Version: 0.2
 
 PaneKit is a framework which provides various features to build 
 flexible pane window in any GNUstep or Cocoa applications. 
@@ -15,11 +21,6 @@ It includes an NSPreferencePane implementation (following Cocoa API).
 
 It is based on GSSystemPreferences code written by Uli Kusterer.
 
-This framework is released under LGPL license (see COPYING document).
-Original licence of GSSystemPreferences is LGPL License too.
-
-Maintainer: Quentin Mathe <qmathe@club-internet.fr>
-Author: Uli Kusterer, Quentin Mathe, Yen-Ju Chen
 
 To know more about PaneKit: 
 <http://www.dromasoftware.com/etoile/mediawiki/index.php?title=PreferencesKit>

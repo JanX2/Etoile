@@ -1,1 +1,9 @@
-ServicesBarKit README
+==============
+ServicesBarKit
+==============
+
+ServicesBarKit intends to provide an area where various menu applets 
+are directly available, they may be added or removed by the user. 
+Finally this place where menu applets would be embedded, has the 
+possibility to host WildMenus Macintosh menu bar.
+
