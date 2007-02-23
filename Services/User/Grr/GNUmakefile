@@ -1,8 +1,9 @@
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
-# Include etoile.make if present
--include ../../../etoile.make
+SUBPROJECTS = \
+	Components \
+
 
 ifeq ($(warnings), yes)
 ADDITIONAL_OBJCFLAGS += -W
@@ -106,14 +107,12 @@ else
 	Grr_HEADER_FILES += UKNibOwner.h
 endif
 
- 
-SUBPROJECTS = \
-	Components \
 
-
+# The usual makefile inclusion code
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/application.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
+-include ../../../etoile.make
 -include GNUmakefile.postamble
 
 
