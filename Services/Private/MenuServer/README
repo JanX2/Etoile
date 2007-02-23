@@ -1,13 +1,8 @@
- Usage:
+================
+EtoileMenuServer
+================
 
-  EtoileMenuServer - the server app which provides the menubar's
-   background. Compile, no need to install, just "openapp" it. The clock
-   menulet is included.
+The server app which provides the menubar's
+background. Compile, no need to install, just "openapp" it. The clock
+menulet is included.
 
-  EtoileWildMenus - a fork of WildMenus engine to provide apps with menu
-   display which plugs into the EtoileMenuServer looks. Compile, no
-   need to install, just put it into the GSAppKitUserBundles defaults
-   array (or run with -GSAppKitUserBundles argument, you know the story...).
-
- The code really alpha, so please don't get mad about weird behavior - I'm
- working on it.

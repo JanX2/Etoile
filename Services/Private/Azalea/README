@@ -1,11 +1,15 @@
-*** Azalea ***
+======
+Azalea
+======
+
+:License:  GPL 2.0 by following OpenBox3
 
 Azalea is a GNUstep window mamager, 
 based on OpenBox3 (http://icculus.org/openbox/).
 
-Azalea is released under GPL 2.0 by following OpenBox3.
+INSTALL
+-------
 
-*** INSTALL ***
 Azalea is based on the configuration of my system.
 It may not work on others.
 If so, modify GNUmakefile for dependencies (libxml, freetype, fontconfig).

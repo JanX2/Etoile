@@ -1,0 +1,8 @@
+======
+System
+======
+
+Étoilé main system process, which plays the role of an init process 
+and a main server process (taking care of starting/stopping 
+and monitor Étoilé core processes, possibly restarting them if they die)
+
