@@ -2,6 +2,9 @@
 RSSKit Changelog
 ================
 
+Feb-19-2007  Yen-Ju Chen
+	* Format README in reStructuedText
+
 Feb-17-2007  Guenther Noack
 	* RSSArticleCreationListener.m:
 	  Parse english dates, even in other locales
