@@ -8,7 +8,7 @@
 
 //ETOILE_DIR := "/Users/yjchen/Etoile"
 ETOILE_DIR := "/home/yjchen/etoile/trunk/Etoile"
-CATEGORIES := list("Bundles", "Languages");
+CATEGORIES := list("Bundles", "Languages", "Frameworks", "Services/Private", "Services/User");
 
 all_projects := List clone
 
