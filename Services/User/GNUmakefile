@@ -16,7 +16,6 @@ ifeq ($(user-base), yes)
     export hardware ?= yes
     export dictionary ?= yes
     export grr ?= yes
-    export mollusk ?= yes
     export typewriter ?= yes
     export vindaloo ?= yes
 
@@ -29,7 +28,6 @@ ifeq ($(user-base), no)
     export hardware ?= no
     export dictionary ?= no
     export grr ?= no
-    export mollusk ?= no
     export typewriter ?= no
     export vindaloo ?= no
 
@@ -57,10 +55,6 @@ endif
 
 ifeq ($(grr), yes)
 	#SUBPROJECTS += Grr
-endif
-
-ifeq ($(mollusk), yes)
-	SUBPROJECTS += Mollusk
 endif
 
 ifeq ($(typewriter), yes)
