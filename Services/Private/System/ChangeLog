@@ -1,3 +1,20 @@
+2007-02-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	First part of an update to support both sequential and parallel launch of
+	tasks.
+	* SCTask.h:
+	* SCTask.m: 
+	New ivars launchPriority, launchOnStart and isNSApplication.
+	(+taskWithLaunchPath:): Updated to take in account name change of the 
+	designated factory method.
+	(+taskWithLaunchPath:priority:onStart:onDemand:withUserName:): Renamed and
+	updated +taskWithLaunchPath:onDemand:withUserName: to take two additional
+	parameters.
+	(-launch): Modified to synthetize a fake 
+	NSWorkspaceApplicationDidLaunchNotification for tool tasks.
+	(-launchPriority, -launchOnStart): Added accessors to match new ivars.
+	(-description, -taskLaunched:, -copyWithZone:): New methods.
+
 2007-02-08  Quentin Mathe <qmathe@club-internet.fr>
 
 	* EtoileSystem.m 

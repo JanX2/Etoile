@@ -33,6 +33,7 @@
     LaunchPath                  NSString
     Arguments                   NSString
     UserName (or Identity)      NSString
+    OnStart                     NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
     OnDemand                    NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
     Persistent                  NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
     Hidden                      NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
@@ -64,9 +65,13 @@
     NSString *path; /* The path initially given to the task (or deduced when a 
                        name was passed) */
     NSString *launchIdentity;
+	int launchPriority;
+	BOOL launchOnStart;
     BOOL launchOnDemand;
     BOOL hidden;
     BOOL stopped;
+
+	BOOL isNSApplication;
 
 	NSDate *launchDate;
 	NSTimeInterval runTime;
@@ -74,7 +79,9 @@
 }
 
 + (SCTask *) taskWithLaunchPath: (NSString *)path;
-+ (SCTask *) taskWithLaunchPath: (NSString *)path onDemand: (BOOL)lazily withUserName: (NSString *)user;
++ (SCTask *) taskWithLaunchPath: (NSString *)path priority: (int)level
+	onStart: (BOOL)now onDemand: (BOOL)lazily withUserName: (NSString *)user;
+
 
 + (SCTask *) taskWithTask: (SCTask *)aTask;
 
@@ -83,6 +90,8 @@
 - (NSString *) name;
 - (NSString *) path;
 
+- (int) launchPriority;
+- (BOOL) launchOnStart;
 - (BOOL) launchOnDemand;
 - (BOOL) isHidden;
 

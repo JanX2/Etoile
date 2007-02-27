@@ -24,6 +24,7 @@
  */
 
 #import "SCTask.h"
+#import <AppKit/AppKit.h> // For NSWorkspaceDidLaunchNotification
 #import <math.h>
 
 @interface SCTask (Private)
@@ -78,16 +79,17 @@
 
 + (SCTask *) taskWithLaunchPath: (NSString *)path
 {
-    return [self taskWithLaunchPath: path onDemand: NO withUserName: nil];
+	return [self taskWithLaunchPath: path priority: 0 onStart: YES onDemand: NO
+		withUserName: nil];
 }
 
-+ (SCTask *) taskWithLaunchPath: (NSString *)path onDemand: (BOOL)lazily 
-    withUserName: (NSString *)identity
++ (SCTask *) taskWithLaunchPath: (NSString *)path priority: (int)level 
+	onStart: (BOOL)now onDemand: (BOOL)lazily withUserName: (NSString *)identity
 {
     SCTask *newTask = [[SCTask alloc] init];
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL isDir;
-    
+
     /* If a name has been given as the launch path, we try to convert it to a 
        path. */
     if ([[path pathComponents] count] == 1)
@@ -129,10 +131,23 @@
     }
 
     ASSIGN(newTask->launchIdentity, identity);
-    
+
+	newTask->launchPriority = level;
     newTask->launchOnDemand = lazily;
+    newTask->launchOnStart = now;
     newTask->hidden = YES;
     newTask->stopped = NO;
+
+	// NOTE: We could use a better test than just checking whether an 'app'
+	// extension is present or not...
+	// pathForApp = [[NSWorkspace sharedWorkspace] fullPathForApplication: [newTask name]];
+	if ([[[newTask path] pathExtension] isEqual: @"app"])
+		newTask->isNSApplication = YES;
+	
+	[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: newTask
+		selector: @selector(taskLaunched:) 
+			name: NSWorkspaceDidLaunchApplicationNotification
+			object: nil];
 
     [[NSNotificationCenter defaultCenter] addObserver: newTask
         selector: @selector(taskTerminated:) 
@@ -174,6 +189,16 @@
 	[super dealloc];
 }
 
+- (NSString *) description
+{
+	NSString *desc = [self name];
+
+	desc = [desc stringByAppendingFormat: @" %d %@", [self launchPriority], 
+		[super description]];
+
+	return desc;
+}
+
 - (void) launch
 {
 	launchDate = [[NSDate alloc] init];
@@ -188,6 +213,24 @@
     [self launch];
 
     stopped = NO;
+
+	/* For tools, we need to simulate NSWorkspaceDidLaunchNotification */
+	if (isNSApplication == NO)
+	{
+		// NOTE: Incompletely filled userInfo dictionary
+		NSDictionary *userInfo = [NSDictionary 
+			dictionaryWithObjectsAndKeys: [self path], @"NSApplicationPath", 
+			[self name], @"NSApplicationName", nil]; 
+		NSNotification *notif = [NSNotification
+			notificationWithName: NSWorkspaceDidLaunchApplicationNotification
+			              object: self
+			            userInfo: userInfo];
+
+		NSDebugLLog(@"SCTask", @"Synthetize launch notification for task %@", self);
+
+		[[[NSWorkspace sharedWorkspace] notificationCenter] 
+			postNotification: notif];
+	}
 
     /*  appBinary = [ws locateApplicationBinary: appPath];
 
@@ -231,6 +274,16 @@
 	return name;
 }
 
+- (int) launchPriority
+{
+	return launchPriority;
+}
+
+- (BOOL) launchOnStart
+{
+    return launchOnStart;
+}
+
 - (BOOL) launchOnDemand
 {
     return launchOnDemand;
@@ -244,6 +297,12 @@
 - (BOOL) isStopped
 {
     return stopped;
+}
+
+/** Do nothing except logging. Useful for debugging purpose. */
+- (void) taskLaunched: (NSNotification *)notif
+{
+	NSDebugLLog(@"SCTask", @"Task %@ launched", [self name]);
 }
 
 - (void) taskTerminated: (NSNotification *)notif
@@ -283,6 +342,16 @@
 - (int) launchFailureCount
 {
 	return launchFailureCount;
+}
+
+/** Returns self but with retain count incremented by one. NSDictionary keys 
+	must conform to NSCopying protocol. This method is implemented to allow 
+	task instances to be used in this role. */
+- (id) copyWithZone: (NSZone)zone
+{
+	NSDebugLLog(@"SCTask", @"Copying SCTask %@", self);
+
+	return RETAIN(self);
 }
 
 @end
