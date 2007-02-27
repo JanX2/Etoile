@@ -29,7 +29,7 @@
   [textView setHorizontallyResizable: NO];
   [textView setVerticallyResizable: YES];
   [textView setFrameSize: [scrollView contentSize]];
-}}
+}
 
 - (void) windowControllerDidLoadNib: (NSWindowController *) windowController
 {
