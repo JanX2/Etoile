@@ -5,6 +5,8 @@
           Fix bug #8592.
 	* Move "Spelling" submenu under "Edit".
           Fix bug #8591.
+	* Draw color background for selected cell.
+          Fix bug #8587.
 
 2007-02-28  Quentin Mathe <qmathe@club-internet.fr>
 

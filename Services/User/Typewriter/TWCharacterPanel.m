@@ -2,6 +2,35 @@
 
 static TWCharacterPanel *sharedInstance;
 
+@interface TWCharacterCell: NSTextFieldCell
+@end
+
+/* Based on my observation with NSMatrix's default mode (NSRadioMatrixMode),
+ * -setState: is reliable to decide whether a cell is selected
+ * while -setHighlighted: is not. */
+@implementation TWCharacterCell
+- (void) setState: (int) state
+{
+//  NSLog(@"%@ setState: %d", [self stringValue], state);
+  [super setState: state];
+  if (state == NSOnState)
+  {
+    [self setBackgroundColor: [NSColor yellowColor]];
+  }
+  else
+  {
+    [self setBackgroundColor: [NSColor whiteColor]];
+  }
+}
+
+- (void) setHighlighted: (BOOL) flag
+{
+//  NSLog(@"%@ setHighlighted: %d", [self stringValue], flag);
+  [super setHighlighted: flag];
+}
+
+@end
+
 @implementation TWCharacterPanel
 
 /** Private **/
@@ -13,19 +42,21 @@ static TWCharacterPanel *sharedInstance;
   int j, c, r;
   unichar i;
   NSRect rect = [matrix bounds];
-  NSTextFieldCell *cell;
+  TWCharacterCell *cell;
   NSCharacterSet *cSet = [font coveredCharacterSet];
   NSString *s;
 
   numberOfGlyphs = [font numberOfGlyphs];
   columns = (rect.size.width / width) - 1;
   rows = (numberOfGlyphs / columns) + 1;
-  cell = [[NSTextFieldCell alloc] initTextCell: nil];
+  cell = [[TWCharacterCell alloc] initTextCell: nil];
   [cell setAlignment: NSCenterTextAlignment];
   [cell setTarget: self];
   [cell setAction: @selector(matrixAction:)];
+  [cell setDrawsBackground: YES];
   [matrix setPrototype: cell];
   [matrix setCellSize: NSMakeSize(width, width)];
+  [matrix setDrawsCellBackground: NO];
   [matrix renewRows: rows columns: columns];
   DESTROY(cell);
 
