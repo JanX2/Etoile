@@ -3,6 +3,8 @@
 	* Fix encoding in TypewriterInfo.plist.
 	* Change "Spell checking..." to "Spell checking" in main menu.
           Fix bug #8592.
+	* Move "Spelling" submenu under "Edit".
+          Fix bug #8591.
 
 2007-02-28  Quentin Mathe <qmathe@club-internet.fr>
 

@@ -24,7 +24,6 @@ static TWCharacterPanel *sharedInstance;
   [cell setAlignment: NSCenterTextAlignment];
   [cell setTarget: self];
   [cell setAction: @selector(matrixAction:)];
-  [matrix setCellClass: [NSTextFieldCell class]];
   [matrix setPrototype: cell];
   [matrix setCellSize: NSMakeSize(width, width)];
   [matrix renewRows: rows columns: columns];
