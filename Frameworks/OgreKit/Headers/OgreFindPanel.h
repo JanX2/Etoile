@@ -16,6 +16,7 @@
 
   NSButton *regexButton;
   NSButton *caseSensitiveButton;
+  NSButton *inSelectionButton;
   NSButton *findNextButton;
   NSButton *findPreviousButton;
   NSButton *replaceAndFindButton;

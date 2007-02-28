@@ -98,10 +98,6 @@
   if (![result isSuccess]) {
    NSLog(@"replace and find failed");
   }
-#if 0
-  [self replace: self];
-  [self findNext: self];
-#endif
 }
 
 - (void) replaceAll: (id) sender
@@ -113,28 +109,11 @@
 	replaceAll: [[findPanel findTextField] stringValue]
 	withString: [[findPanel replaceTextField] stringValue]
         options: [self options]
-        inSelection: NO];
+        inSelection: inSelection];
 
   if (![result isSuccess]) {
     NSLog(@"replace all failed");
   }
-#if 0
-  OgreTextFindResult* result = nil;
-  NSString* findString = [[findPanel findTextField] stringValue];
-  NSString* replaceString = [[findPanel replaceTextField] stringValue];
-  
-  // FIXME: In this loop I assume that isSuccess only returns NO
-  // if all occurences of the pattern have been replaced. Is that
-  // a safe assumption? Yen-Ju? :)
-  do {
-    [self findNext: self];
-    
-    result = [[self textFinder]
-      replace: findString
-      withString: replaceString
-      options: [self options]];
-  } while ([result isSuccess]);
-#endif
 }
 
 - (OgreTextFinder*)textFinder
@@ -195,6 +174,16 @@
 {
   [[self textFinder] setSyntax: o];
   syntax = o;
+}
+
+- (BOOL) inSelection
+{
+  return inSelection;
+}
+
+- (void) setInSelection: (BOOL) flag
+{
+  inSelection = flag;
 }
 
 // NSCoding protocols

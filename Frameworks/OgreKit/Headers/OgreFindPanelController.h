@@ -23,6 +23,7 @@
 
 	unsigned int options;
 	OgreSyntax syntax;
+	BOOL inSelection; // Only find and replace in selected text
 }
 
 - (IBAction)showFindPanel:(id)sender;
@@ -41,6 +42,9 @@
 
 - (OgreSyntax) syntax;
 - (void) setSyntax: (OgreSyntax) syntax;
+
+- (BOOL) inSelection;
+- (void) setInSelection: (BOOL) flag;
 
 /* Simple action for find panel  */
 - (void) findNext: (id) sender;
