@@ -11,6 +11,7 @@
   </item>
   <separator />
   <menu id="client-list-menu" />
+  <menu id="client-list-combined-menu" />
   <item label="Toggle Show Desktop">
     <action name="ToggleShowDesktop"/>
   </item>
