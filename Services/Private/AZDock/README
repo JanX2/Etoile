@@ -2,8 +2,12 @@
 AZDock
 ======
 
+:Author: Yen-Ju Chen <yjchenx at gmail>
+:License: BSD license
+
 AZDock is a dock for Etoile
-It depends on XWindowServerKit.
+It depends on XWindowServerKit 
+and requires Azalea for tracking xwindow windows
 
 User Defaults
 -------------

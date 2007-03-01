@@ -5,6 +5,7 @@
 @class XWindow;
 @class AZWorkspaceView;
 @class BKBookmarkStore;
+@class AZDockApp;
 
 typedef enum _AZDockPosition {
   AZDockLeftPosition = 0,
@@ -18,20 +19,26 @@ typedef enum _AZDockPosition {
   Display *dpy;
   int screen;
   Window root_win;
-  NSMutableArray *apps;
-  NSMutableArray *lastClientList; /* Cache last client list */
-  NSMutableArray *gnusteps; /* Cache gnustep applications */
-  NSMutableArray *blacklist;
-  BKBookmarkStore *store;
+
+  NSMutableArray *apps; // application to display;
+  NSMutableArray *backup; // application NOT to display; 
+  NSMutableArray *blacklist; // application to ignore.
 
   /* Replace default gnustep icon window */
   XWindow *iconWindow;
   AZWorkspaceView *workspaceView;
   AZDockPosition position;
 
+  BKBookmarkStore *store;
+  NSWorkspace *workspace;
+#if 0
+  NSMutableArray *lastClientList; /* Cache last client list */
+  NSMutableArray *gnusteps; /* Cache gnustep applications */
+
   Atom X_NET_CURRENT_DESKTOP;
   Atom X_NET_NUMBER_OF_DESKTOPS;
   Atom X_NET_DESKTOP_NAMES;
+#endif
   Atom X_NET_CLIENT_LIST;
   Atom X_NET_WM_STATE_SKIP_PAGER;
   Atom X_NET_WM_STATE_SKIP_TASKBAR;
@@ -39,6 +46,7 @@ typedef enum _AZDockPosition {
 
 + (AZDock *) sharedDock;
 
+- (void) addBookmark: (AZDockApp *) app;
 - (void) organizeApplications;
 
 @end

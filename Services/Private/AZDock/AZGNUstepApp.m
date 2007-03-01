@@ -6,6 +6,7 @@
 
 /* Action from AZDockView */
 
+#if 0
 - (void) removeFromDockAction: (id) sender
 {
   [super removeFromDockAction: sender];
@@ -22,6 +23,7 @@
         object: self];
   }
 }
+#endif
 
 - (void) showAction: (id) sender
 {

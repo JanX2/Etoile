@@ -10,11 +10,13 @@
 - (void) removeFromDockAction: (id) sender
 {
   [super removeFromDockAction: sender];
+#if 0
   if ([xwindows count] == 0) {
     [[NSNotificationCenter defaultCenter] 
 	postNotificationName: AZApplicationDidTerminateNotification
 	object: self];
   }
+#endif
 }
 
 - (void) showAction: (id) sender

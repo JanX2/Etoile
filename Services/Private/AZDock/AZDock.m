@@ -2,15 +2,10 @@
 #import "AZXWindowApp.h"
 #import "AZGNUstepApp.h"
 #import "AZWorkspaceView.h"
-#import <GNUstepGUI/GSDisplayServer.h>
 #import <X11/Xatom.h>
 #import <X11/Xutil.h>
 #import <XWindowServerKit/XFunctions.h>
 #import <BookmarkKit/BookmarkKit.h>
-
-@interface GSDisplayServer (AZPrivate)
-- (void) processEvent: (XEvent *) event;
-@end
 
 static AZDock *sharedInstance;
 
@@ -34,7 +29,194 @@ static AZDock *sharedInstance;
 @implementation AZDock
 
 /** Private **/
+- (void) addGNUstepAppNamed: (NSString *) name
+{
+  if ([blacklist containsObject: name])
+    return;
 
+  AZGNUstepApp *app = [[AZGNUstepApp alloc] initWithApplicationName: name];
+  [app setRunning: YES];
+  [apps addObject: app];
+  [self addBookmark: app];
+  [[app window] orderFront: self];
+  DESTROY(app);
+  /* Do not organize applications here 
+     because it will be called multiple times from other method. */
+}
+
+- (void) removeGNUstepAppNamed: (NSString *) name
+{
+  AZGNUstepApp *app = nil;
+  int i, count = [apps count];
+  for (i = 0; i < count; i++) 
+  {
+    app = [apps objectAtIndex: i];
+    if ([app type] == AZDockGNUstepApplication)
+    {
+      if ([[app applicationName] isEqualToString: name])
+      {
+        if ([app isKeptInDock] == YES) {
+          [app setRunning: NO];
+          return;
+        }
+        [[app window] orderOut: self];
+        [apps removeObject: app];
+      }
+    }
+  }
+  /* Do not organize applications here 
+     because it will be called multiple times from other method. */
+}
+
+- (void) addXWindowWithID: (int) wid
+{
+  /* Avoid _NET_WM_STATE_SKIP_PAGER and _NET_WM_STATE_SKIP_TASKBAR */
+  if (wid) 
+  {
+    unsigned long k, kcount;
+    Atom *states = XWindowNetStates(wid, &kcount);
+    for (k = 0; k < kcount; k++) 
+    {
+      if ((states[k] == X_NET_WM_STATE_SKIP_PAGER) ||
+          (states[k] == X_NET_WM_STATE_SKIP_TASKBAR)) 
+      {
+        return;
+      }
+    }
+  }
+
+  /* Avoid transcient window */
+  {
+    Window tr = None;
+    if (XGetTransientForHint(dpy, wid, &tr)) 
+    {
+      return;
+    }
+  }
+
+  NSString *wm_class, *wm_instance;
+  BOOL result = XWindowClassHint(wid, &wm_class, &wm_instance);
+  if (result) 
+  {
+    /* Avoid anything in blacklist */
+    if ([blacklist containsObject: wm_instance] == YES) {
+      return;
+    }
+
+    /* GNUstep application is managed through NSWorkspace,
+       not here */
+    if ([wm_class isEqualToString: @"GNUstep"]) {
+      return;
+    }
+  }
+
+  /* Go through all apps to see which one want to accept it */
+  AZXWindowApp *app = nil;
+  int j;
+  for (j = 0; j < [apps count]; j++)
+  {
+    app = [apps objectAtIndex: j];
+    if ([app type] == AZDockXWindowApplication) 
+    {
+      if ([(AZXWindowApp *)app acceptXWindow: wid]) 
+      {
+        [app setRunning: YES];
+        return;
+      }
+    }
+  }
+   
+  /* No one takes it. Create new dock apps */
+  app = [[AZXWindowApp alloc] initWithXWindow: wid];
+  [app setRunning: YES];
+  [apps addObject: app];
+  [self addBookmark: app];
+  [[app window] orderFront: self];
+  DESTROY(app);
+}
+
+- (void) removeXWindowWithID: (int) wid 
+{
+  AZXWindowApp *app = nil;
+  int k;
+  for (k = 0; k < [apps count]; k++) 
+  {
+    app = [apps objectAtIndex: k];
+    if ([app type] == AZDockXWindowApplication) 
+    {
+      if ([app removeXWindow: wid])
+      {
+        if ([app numberOfXWindows] == 0)
+        {
+          if ([app isKeptInDock] == YES) 
+          {
+            [app setRunning: NO];
+          }
+          else
+          {
+            [[app window] orderOut: self];
+            [apps removeObject: app];
+          }
+        }
+        return;
+      }
+    }
+  }
+}
+
+- (void) gnustepAppWillLaunch: (NSNotification *) not
+{
+//  Not working ?
+//  NSLog(@"will launch %@", not);
+}
+
+- (void) gnustepAppDidLaunch: (NSNotification *) not
+{
+  NSString *name = [[not userInfo] objectForKey: @"NSApplicationName"];
+  AZGNUstepApp *app = nil;
+  int i, count = [apps count];
+  for (i = 0; i < count; i++) 
+  {
+    app = [apps objectAtIndex: i];
+    if ([app type] == AZDockGNUstepApplication)
+    {
+      if ([[app applicationName] isEqualToString: name])
+      {
+        /* Application exists in dock. */
+        [app setRunning: YES];
+        return;
+      }
+    }
+  }
+  [self addGNUstepAppNamed: name];
+  [self organizeApplications];
+}
+
+- (void) gnustepAppDidTerminate: (NSNotification *) not
+{
+//  NSLog(@"did terminate %@", not);
+  NSString *name = [[not userInfo] objectForKey: @"NSApplicationName"];
+  [self removeGNUstepAppNamed: name];
+  [self organizeApplications];
+}
+
+- (void) xwindowAppDidLaunch: (NSNotification *) not
+{
+//  NSLog(@"xwindow launch %@", not);
+  [self addXWindowWithID: 
+           [[[not userInfo] objectForKey: @"AZXWindowID"] intValue]];
+  [self organizeApplications];
+}
+
+- (void) xwindowAppDidTerminate: (NSNotification *) not
+{
+//  NSLog(@"xwindow terminate %@", not);
+  [self removeXWindowWithID:
+           [[[not userInfo] objectForKey: @"AZXWindowID"] intValue]];
+  [self organizeApplications];
+}
+
+#if 0
 - (BOOL) isMyWindow: (Window) win
 {
   if (win == 0) return NO;
@@ -47,6 +229,7 @@ static AZDock *sharedInstance;
   }
   return NO;
 }
+#endif
 
 - (void) addBookmark: (AZDockApp *) app
 {
@@ -92,41 +275,7 @@ static AZDock *sharedInstance;
   }
 }
 
-- (void) removeMissingGNUstepApplication
-{
-  AZDockApp *app;
-  int k;
-  NSArray *allApps = [[NSWorkspace sharedWorkspace] launchedApplications];
-  NSMutableArray *allNames = [[NSMutableArray alloc] init];
-  NSString *name;
-  for (k = 0; k < [allApps count]; k++) {
-    [allNames addObject: [[(NSDictionary *)[allApps objectAtIndex: k] objectForKey: @"NSApplicationName"] stringByDeletingPathExtension]];
-  }
-
-  /* Figure out which one is destroyed */
-  for (k = 0; k < [apps count]; k++) {
-    app = [apps objectAtIndex: k];
-    if ([app type] == AZDockGNUstepApplication) {
-      name = [(AZGNUstepApp *)app applicationName];
-      if ([allNames containsObject: name] == NO)
-      {
-        if ([app isKeptInDock] == YES) {
-          [app setRunning: NO];
-          continue;
-        }
-        [[app window] orderOut: self];
-        [apps removeObject: app];
-        [gnusteps removeObject: name];
-        k--;
-      }
-    }
-  }
-  DESTROY(allNames);
-  [self organizeApplications];
-}
-
 /** End of private */
-
 - (void) organizeApplications
 {
   NSWindow *win;
@@ -200,12 +349,7 @@ static AZDock *sharedInstance;
   }
 }
 
-- (void) connectionDidDie: (NSNotification *) not
-{
-  /* An application terminates. Try to find out which one */
-  [self removeMissingGNUstepApplication];
-}
-
+#if 0
 - (void) applicationDidTerminate: (NSNotification *) not
 {
   AZDockApp *app = [not object];
@@ -215,7 +359,9 @@ static AZDock *sharedInstance;
   [[app window] orderOut: self];
   [apps removeObject: app];
 }
+#endif
 
+#if 0
 - (void) readClientList
 {
   CREATE_AUTORELEASE_POOL(x);
@@ -374,12 +520,16 @@ static AZDock *sharedInstance;
   free(win);
   DESTROY(x);
 }
+#endif
 
+#if 0
 - (void) handleReparentNotify: (XEvent *) event
 {
   NSLog(@"Window %d, Parent %d", event->xreparent.window, event->xreparent.parent);
 }
+#endif
 
+#if 0
 - (void) handleCreateNotify: (XEvent *) event
 {
   NSString *c, *i;
@@ -388,22 +538,30 @@ static AZDock *sharedInstance;
   }
   NSLog(@"Create: %d", event->xcreatewindow.window);
 }
+#endif
 
+#if 0
 - (void) handleMapNotify: (XEvent *) event
 {
   NSLog(@"Map: %d", event->xmap.window);
 }
+#endif
 
+#if 0
 - (void) handleUnmapNotify: (XEvent *) event
 {
   NSLog(@"Unmap: %d", event->xunmap.window);
 }
+#endif
 
+#if 0
 - (void) handleDestroyNotify: (XEvent *) event
 {
   [self removeMissingGNUstepApplication];
 }
+#endif
 
+#if 0
 - (void) handleClientMessage: (XEvent *) event
 {
   Atom atom = event->xclient.message_type;
@@ -413,7 +571,9 @@ static AZDock *sharedInstance;
     //[workspaceView setNumberOfWorkspaces: [[NSScreen mainScreen] numberOfWorkspaces]];
   }
 }
+#endif
 
+#if 0
 - (void) handlePropertyNotify: (XEvent *) event
 {
   Window win = event->xproperty.window;  
@@ -434,7 +594,9 @@ static AZDock *sharedInstance;
     return;
   }
 }
+#endif
 
+#if 0
 - (void)receivedEvent:(void *)data
                  type:(RunLoopEventType)type
                 extra:(void *)extra
@@ -491,24 +653,29 @@ static AZDock *sharedInstance;
     }
   }
 }
+#endif
 
-- (void) applicationWillFinishLaunching:(NSNotification *)aNotification
+- (void) applicationWillFinishLaunching: (NSNotification *) not
 {
   apps = [[NSMutableArray alloc] init];
-  lastClientList = [[NSMutableArray alloc] init];
-  gnusteps = [[NSMutableArray alloc] init];
   blacklist = [[NSMutableArray alloc] init];
-
-  /* Hard-coded blacklist for now */
-  [blacklist addObject: @"EtoileMenuServer.GNUstep"];
-  [blacklist addObject: @"AZDock.GNUstep"];
-  [blacklist addObject: @"AZBackground.GNUstep"];
-  [blacklist addObject: @"etoile_system.GNUstep"];
+  backup = [[NSMutableArray alloc] init];
 
   server = GSCurrentServer();
   dpy = (Display *)[server serverDevice];
   screen = [[NSScreen mainScreen] screenNumber];
   root_win = RootWindow(dpy, screen);
+  workspace = [NSWorkspace sharedWorkspace];
+
+  /* Hard-coded blacklist for now */
+  [blacklist addObject: @"EtoileMenuServer"];
+  [blacklist addObject: @"AZDock"];
+  [blacklist addObject: @"AZBackground"];
+  [blacklist addObject: @"etoile_system"];
+
+#if 0
+  lastClientList = [[NSMutableArray alloc] init];
+  gnusteps = [[NSMutableArray alloc] init];
 
   /* Listen event */
   NSRunLoop     *loop = [NSRunLoop currentRunLoop];
@@ -529,12 +696,13 @@ static AZDock *sharedInstance;
   X_NET_CURRENT_DESKTOP = XInternAtom(dpy, "_NET_CURRENT_DESKTOP", False);
   X_NET_NUMBER_OF_DESKTOPS = XInternAtom(dpy, "_NET_NUMBER_OF_DESKTOPS", False);
   X_NET_DESKTOP_NAMES = XInternAtom(dpy, "_NET_DESKTOP_NAMES", False);
+#endif
   X_NET_CLIENT_LIST = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
   X_NET_WM_STATE_SKIP_PAGER = XInternAtom(dpy, "_NET_WM_STATE_SKIP_PAGER", False);
   X_NET_WM_STATE_SKIP_TASKBAR = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);
 }
 
-- (void) applicationDidFinishLaunching:(NSNotification *)aNotification
+- (void) applicationDidFinishLaunching: (NSNotification *) not
 {
   NSRect rect = NSMakeRect(0, 0, 64, 64);
   iconWindow = [[XWindow alloc] initWithContentRect: rect
@@ -556,8 +724,34 @@ static AZDock *sharedInstance;
   ASSIGN(store, [BKBookmarkStore sharedBookmarkWithDomain: BKRecentApplicationsBookmarkStore]);
   [workspaceView setApplicationBookmarkStore: store];
 
+  /* Build up launched GNUstep application */
+  NSArray *a = [workspace launchedApplications];
+  int i, count = [a count];
+  for (i = 0; i < count; i++)
+  {
+    [self addGNUstepAppNamed: [[a objectAtIndex: i] objectForKey: @"NSApplicationName"]];
+  }
+
+  /* Build up launched XWindow application */
+  Window *win = NULL;
+  Atom type_ret;
+  int format_ret;
+  unsigned long after_ret, ret_count;
+  int result = XGetWindowProperty(dpy, root_win, X_NET_CLIENT_LIST,
+                                  0, 0x7FFFFFFF, False, XA_WINDOW,
+                                  &type_ret, &format_ret, &ret_count,
+                                  &after_ret, (unsigned char **)&win);
+  if ((result == Success) && (ret_count> 0) && (win != NULL)) 
+  {
+    NSLog(@"Got client list");
+    for (i = 0; i < ret_count; i++)
+    {
+      [self addXWindowWithID: win[i]];
+    }
+  }
+
+#if 0
   [self readClientList];
-  [self organizeApplications];
 
   /* Listen to NSConnectionDidDieNotification when AZDock terminate
    * applications */
@@ -571,16 +765,49 @@ static AZDock *sharedInstance;
                     selector: @selector(applicationDidTerminate:)
                     name: AZApplicationDidTerminateNotification 
 	            object: nil];
+#endif
+  [self organizeApplications];
+
+  /* Listen to NSWorkspace for application launch and termination. */
+  [[workspace notificationCenter]
+                     addObserver: self
+                     selector: @selector(gnustepAppWillLaunch:)
+                     name: NSWorkspaceWillLaunchApplicationNotification
+                     object: nil];
+  [[workspace notificationCenter]
+                     addObserver: self
+                     selector: @selector(gnustepAppDidLaunch:)
+                     name: NSWorkspaceDidLaunchApplicationNotification
+                     object: nil];
+  [[workspace notificationCenter]
+                     addObserver: self
+                     selector: @selector(gnustepAppDidTerminate:)
+                     name: NSWorkspaceDidTerminateApplicationNotification
+                     object: nil];
+  /* From Azalea */
+  [[workspace notificationCenter]
+                     addObserver: self
+                     selector: @selector(xwindowAppDidLaunch:)
+                     name: @"AZXWindowDidLaunchNotification"
+                     object: nil];
+  [[workspace notificationCenter]
+                     addObserver: self
+                     selector: @selector(xwindowAppDidTerminate:)
+                     name: @"AZXWindowDidTerminateNotification"
+                     object: nil];
 }
 
 - (void) dealloc
 {
   DESTROY(apps);
-  DESTROY(lastClientList);
+  DESTROY(blacklist);
+  DESTROY(backup);
   DESTROY(workspaceView);
   DESTROY(store);
+#if 0
+  DESTROY(lastClientList);
   DESTROY(gnusteps);
-  DESTROY(blacklist);
+#endif
   [super dealloc];
 }
 

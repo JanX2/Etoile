@@ -1,6 +1,4 @@
-
 include $(GNUSTEP_MAKEFILES)/common.make
-GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 
 DEPENDENCIES = \
 	XWindowServerKit \
@@ -9,11 +7,11 @@ DEPENDENCIES = \
 APP_NAME = AZDock
 
 AZDock_OBJC_FILES = \
-	AZGNUstepApp.m \
 	AZXWindowApp.m \
+	AZGNUstepApp.m \
+	AZDockApp.m \
 	AZWorkspaceView.m \
 	AZDockView.m \
-	AZDockApp.m \
 	AZDock.m \
 	main.m 
 
