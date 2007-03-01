@@ -5,25 +5,10 @@
 /** Private **/
 
 /* Action from AZDockView */
-
-#if 0
 - (void) removeFromDockAction: (id) sender
 {
   [super removeFromDockAction: sender];
-  /* Am I dead ? */
-  int k;
-  NSArray *allApps = [[NSWorkspace sharedWorkspace] launchedApplications];
-  NSMutableArray *allNames = AUTORELEASE([[NSMutableArray alloc] init]);
-  for (k = 0; k < [allApps count]; k++) {
-    [allNames addObject: [[(NSDictionary *)[allApps objectAtIndex: k] objectForKey: @"NSApplicationName"] stringByDeletingPathExtension]];
-  }
-  if ([allNames containsObject: [self applicationName]] == NO) {
-    [[NSNotificationCenter defaultCenter]
-        postNotificationName: AZApplicationDidTerminateNotification
-        object: self];
-  }
 }
-#endif
 
 - (void) showAction: (id) sender
 {

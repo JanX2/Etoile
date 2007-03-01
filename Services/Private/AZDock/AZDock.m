@@ -9,6 +9,10 @@
 
 static AZDock *sharedInstance;
 
+@interface GSDisplayServer (AZPrivate) 	 
+ - (void) processEvent: (XEvent *) event; 	 
+@end
+
 @interface BKBookmark (AZDockSorting)
 @end
 
@@ -216,21 +220,6 @@ static AZDock *sharedInstance;
   [self organizeApplications];
 }
 
-#if 0
-- (BOOL) isMyWindow: (Window) win
-{
-  if (win == 0) return NO;
-  NSString *wm_instance;
-  BOOL result = XWindowClassHint(win, NULL, &wm_instance);
-  if (result) {
-    if ([wm_instance isEqualToString: [[NSProcessInfo processInfo] processName]]) {
-      return YES;
-    }
-  }
-  return NO;
-}
-#endif
-
 - (void) addBookmark: (AZDockApp *) app
 {
   /* Add application into bookmark.
@@ -362,206 +351,6 @@ static AZDock *sharedInstance;
 #endif
 
 #if 0
-- (void) readClientList
-{
-  CREATE_AUTORELEASE_POOL(x);
-  Window *win = NULL;
-  unsigned long count;
-  int i, j, k, m;
-  AZDockApp *app;
-
-  Atom type_ret;
-  int format_ret;
-  unsigned long after_ret;
-  int result = XGetWindowProperty(dpy, root_win, X_NET_CLIENT_LIST,
-                                  0, 0x7FFFFFFF, False, XA_WINDOW,
-                                  &type_ret, &format_ret, &count,
-                                  &after_ret, (unsigned char **)&win);
-  if ((result != Success) || (count < 1) || (win == NULL)) {
-    return;
-  }
-
-  /* Remove destroyed windows */
-  for (m = 0; m < count; m++) {
-    for (k = 0; k < [lastClientList count]; k++) {
-      if (win[m] == [[lastClientList objectAtIndex: k] unsignedLongValue]) {
-        [lastClientList removeObjectAtIndex: k];
-        k--;
-      }
-    }
-  }
-  for (m = 0; m < [lastClientList count]; m++) {
-    for (k = 0; k < [apps count]; k++) {
-      app = [apps objectAtIndex: k];
-      if ([app type] == AZDockXWindowApplication) {
-        if ([(AZXWindowApp *)app removeXWindow: [[lastClientList objectAtIndex: m] unsignedLongValue]])
-          {
-            break;
-	  }
-      }
-    }
-  }
-
-  [lastClientList removeAllObjects];
-
-  for (i = 0; i < count; i++)
-  {
-    BOOL skip = NO;
-
-    /* Avoid _NET_WM_STATE_SKIP_PAGER and _NET_WM_STATE_SKIP_TASKBAR */
-    if (win[i]) {
-      unsigned long k, kcount;
-      Atom *states = XWindowNetStates(win[i], &kcount);
-      for (k = 0; k < kcount; k++) {
-        if ((states[k] == X_NET_WM_STATE_SKIP_PAGER) ||
-            (states[k] == X_NET_WM_STATE_SKIP_TASKBAR)) 
-	{
-	  skip = YES;
-	  break;
-	}
-      }
-    }
-
-    if (skip)
-      continue;
-
-    /* Avoid transcient window */
-    {
-      Window tr = None;
-      if (XGetTransientForHint(dpy, win[i], &tr)) {
-        continue;
-      }
-    }
-
-    NSString *wm_class, *wm_instance;
-    BOOL result = XWindowClassHint(win[i], &wm_class, &wm_instance);
-    if (result) {
-      /* Avoid anything in blacklist */
-      if ([blacklist containsObject: [NSString stringWithFormat: @"%@.%@", wm_instance, wm_class]] == YES) {
-        continue;
-      }
-
-      if ([wm_class isEqualToString: @"GNUstep"]) {
-        /* Check windown level */
-        int level;
-        if (XGNUstepWindowLevel(win[i], &level)) {
-          if (level == NSDesktopWindowLevel) {
-            continue;
-          } else if (level == NSFloatingWindowLevel) {
-            continue;
-          } else if (level == NSSubmenuWindowLevel) {
-            continue;
-          } else if (level == NSTornOffMenuWindowLevel) {
-            continue;
-#if 0 // Keep main menu for now
-          } else if (level == NSMainMenuWindowLevel) {
-            continue;
-#endif
-#if 0 // The same as NSDockWindowLevel. Keep it.
-          } else if (level == NSStatusWindowLevel) {
-            continue;
-#endif
-          } else if (level == NSModalPanelWindowLevel) {
-            continue;
-          } else if (level == NSPopUpMenuWindowLevel) {
-            continue;
-          } else if (level == NSScreenSaverWindowLevel) {
-            continue;
-          }
-        } 
-
-	if ([gnusteps containsObject: wm_instance]) {
-          [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
-          continue;
-	}
-      }
-    }
-
-    /* Go through all apps to see which one want to accept it */
-    for (j = 0; j < [apps count]; j++)
-    {
-      app = [apps objectAtIndex: j];
-      if ([app type] == AZDockXWindowApplication) {
-        if ([(AZXWindowApp *)app acceptXWindow: win[i]]) {
-          [app setRunning: YES];
-          /* Cache xwindow */
-          [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
-          //[self addBookmark: app];
-	  skip = YES;
-          break;
-        }
-      }
-    }
-   
-    if (skip)
-      continue;
-
-    /* No one takes it. Create new dock apps */
-    /* Cache xwindow */
-    if (result && [wm_class isEqualToString: @"GNUstep"]) {
-      app = [[AZGNUstepApp alloc] initWithApplicationName: wm_instance];
-      [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
-      [gnusteps addObject: wm_instance];
-    } else {
-      app = [[AZXWindowApp alloc] initWithXWindow: win[i]];
-      [lastClientList addObject: [NSNumber numberWithUnsignedLong: win[i]]];
-    }
-    [app setRunning: YES];
-    [apps addObject: app];
-    [self addBookmark: app];
-    [[app window] orderFront: self];
-    DESTROY(app);
-
-    /* Listen to change on client */
-#if 0
-    XSelectInput(dpy, win[i], (PropertyChangeMask|StructureNotifyMask));
-#endif
-  }
-  free(win);
-  DESTROY(x);
-}
-#endif
-
-#if 0
-- (void) handleReparentNotify: (XEvent *) event
-{
-  NSLog(@"Window %d, Parent %d", event->xreparent.window, event->xreparent.parent);
-}
-#endif
-
-#if 0
-- (void) handleCreateNotify: (XEvent *) event
-{
-  NSString *c, *i;
-  if (XWindowClassHint(event->xcreatewindow.window, &c, &i)) {
-    NSLog(@"%@, %@", c, i);
-  }
-  NSLog(@"Create: %d", event->xcreatewindow.window);
-}
-#endif
-
-#if 0
-- (void) handleMapNotify: (XEvent *) event
-{
-  NSLog(@"Map: %d", event->xmap.window);
-}
-#endif
-
-#if 0
-- (void) handleUnmapNotify: (XEvent *) event
-{
-  NSLog(@"Unmap: %d", event->xunmap.window);
-}
-#endif
-
-#if 0
-- (void) handleDestroyNotify: (XEvent *) event
-{
-  [self removeMissingGNUstepApplication];
-}
-#endif
-
-#if 0
 - (void) handleClientMessage: (XEvent *) event
 {
   Atom atom = event->xclient.message_type;
@@ -573,7 +362,6 @@ static AZDock *sharedInstance;
 }
 #endif
 
-#if 0
 - (void) handlePropertyNotify: (XEvent *) event
 {
   Window win = event->xproperty.window;  
@@ -581,10 +369,7 @@ static AZDock *sharedInstance;
 
   if (win == root_win)
   {
-    if (atom == X_NET_CLIENT_LIST) {
-      [self readClientList];
-      [self organizeApplications];
-    } else if (atom == X_NET_CURRENT_DESKTOP) {
+    if (atom == X_NET_CURRENT_DESKTOP) {
       [workspaceView setCurrentWorkspace: [[iconWindow screen] currentWorkspace]];
     } else if (atom == X_NET_DESKTOP_NAMES) {
       [workspaceView setWorkspaceNames: [[iconWindow screen] namesOfWorkspaces]];
@@ -594,27 +379,25 @@ static AZDock *sharedInstance;
     return;
   }
 }
-#endif
 
-#if 0
 - (void)receivedEvent:(void *)data
                  type:(RunLoopEventType)type
                 extra:(void *)extra
               forMode:(NSString *)mode
 {
   XEvent event;
-//  NSString *wm_class, *wm_instance;
-//  BOOL result;
 
   while (XPending(dpy)) 
   {
     XNextEvent (dpy, &event);
 
+#if 0
     if ([self isMyWindow: event.xany.window])
     {
       [server processEvent: &event];
       continue;
     }
+#endif
 
     switch (event.type) {
 #if 0
@@ -633,7 +416,6 @@ static AZDock *sharedInstance;
       case CreateNotify:
 	[self handleCreateNotify: &event];
 	break;
-#endif
       case ClientMessage:
 	[self handleClientMessage: &event];
 	break;
@@ -643,17 +425,20 @@ static AZDock *sharedInstance;
 	 * and will not show up in client_list by window manager. */
 	[self handleDestroyNotify: &event];
 	break;
+#endif
       case PropertyNotify:
 	[self handlePropertyNotify: &event];
 	break;
-#if 0
       default:
-	[server processEvent: &event];
-#endif
+        if (event.xany.window != root_win)
+        {
+          /* We only listen to root window.  So if it is not for root window,
+             it must for us */
+ 	  [server processEvent: &event];
+        }
     }
   }
 }
-#endif
 
 - (void) applicationWillFinishLaunching: (NSNotification *) not
 {
@@ -672,10 +457,6 @@ static AZDock *sharedInstance;
   [blacklist addObject: @"AZDock"];
   [blacklist addObject: @"AZBackground"];
   [blacklist addObject: @"etoile_system"];
-
-#if 0
-  lastClientList = [[NSMutableArray alloc] init];
-  gnusteps = [[NSMutableArray alloc] init];
 
   /* Listen event */
   NSRunLoop     *loop = [NSRunLoop currentRunLoop];
@@ -696,7 +477,6 @@ static AZDock *sharedInstance;
   X_NET_CURRENT_DESKTOP = XInternAtom(dpy, "_NET_CURRENT_DESKTOP", False);
   X_NET_NUMBER_OF_DESKTOPS = XInternAtom(dpy, "_NET_NUMBER_OF_DESKTOPS", False);
   X_NET_DESKTOP_NAMES = XInternAtom(dpy, "_NET_DESKTOP_NAMES", False);
-#endif
   X_NET_CLIENT_LIST = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
   X_NET_WM_STATE_SKIP_PAGER = XInternAtom(dpy, "_NET_WM_STATE_SKIP_PAGER", False);
   X_NET_WM_STATE_SKIP_TASKBAR = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);
@@ -743,29 +523,12 @@ static AZDock *sharedInstance;
                                   &after_ret, (unsigned char **)&win);
   if ((result == Success) && (ret_count> 0) && (win != NULL)) 
   {
-    NSLog(@"Got client list");
     for (i = 0; i < ret_count; i++)
     {
       [self addXWindowWithID: win[i]];
     }
   }
 
-#if 0
-  [self readClientList];
-
-  /* Listen to NSConnectionDidDieNotification when AZDock terminate
-   * applications */
-  [[NSNotificationCenter defaultCenter]
-                    addObserver: self
-                    selector: @selector(connectionDidDie:)
-                    name: NSConnectionDidDieNotification
-	            object: nil];
-  [[NSNotificationCenter defaultCenter]
-                    addObserver: self
-                    selector: @selector(applicationDidTerminate:)
-                    name: AZApplicationDidTerminateNotification 
-	            object: nil];
-#endif
   [self organizeApplications];
 
   /* Listen to NSWorkspace for application launch and termination. */
@@ -804,10 +567,6 @@ static AZDock *sharedInstance;
   DESTROY(backup);
   DESTROY(workspaceView);
   DESTROY(store);
-#if 0
-  DESTROY(lastClientList);
-  DESTROY(gnusteps);
-#endif
   [super dealloc];
 }
 

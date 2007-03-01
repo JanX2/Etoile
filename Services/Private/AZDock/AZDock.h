@@ -31,14 +31,10 @@ typedef enum _AZDockPosition {
 
   BKBookmarkStore *store;
   NSWorkspace *workspace;
-#if 0
-  NSMutableArray *lastClientList; /* Cache last client list */
-  NSMutableArray *gnusteps; /* Cache gnustep applications */
 
   Atom X_NET_CURRENT_DESKTOP;
   Atom X_NET_NUMBER_OF_DESKTOPS;
   Atom X_NET_DESKTOP_NAMES;
-#endif
   Atom X_NET_CLIENT_LIST;
   Atom X_NET_WM_STATE_SKIP_PAGER;
   Atom X_NET_WM_STATE_SKIP_TASKBAR;

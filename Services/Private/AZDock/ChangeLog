@@ -3,6 +3,7 @@
 	* Use NSWorkspace to track GNUstep applications
           and Azalea to track XWindow windows.
           Hope to make it more simple and stable.
+	* Clean up and recover workspace switcher.
 
 2006-12-17 Yen-Ju Chen <yjchenx at gmail>
 
