@@ -14,16 +14,16 @@
 
 - (void) showAction: (id) sender
 {
-  if (isRunning) {
+  if (state == AZDockAppRunning) {
     /* Go through all windows and raise them */
     Display *dpy = (Display *)[GSCurrentServer() serverDevice];
     int i;
     Window w;
     for (i = 0; i < [xwindows count]; i++) {
       w = [[xwindows objectAtIndex: i] unsignedLongValue];
-      unsigned long state = XWindowState(w);
-      if (state == -1) {
-      } else if (state == IconicState) {
+      unsigned long s = XWindowState(w);
+      if (s == -1) {
+      } else if (s == IconicState) {
         /* Iconified */
         XMapWindow(dpy, w);
       } else {
@@ -36,6 +36,7 @@
     /* Application is not running. Execute it */
     if (command) {
       [NSTask launchedTaskWithLaunchPath: command arguments: nil];
+      [self setState: AZDockAppLaunching];
     }
   }
 }
@@ -160,7 +161,7 @@
     if (w == win) {
       [xwindows removeObjectAtIndex: i];
       if ([xwindows count] == 0) {
-        [self setRunning: NO];
+        [self setState: AZDockAppNotRunning];
         [[NSNotificationCenter defaultCenter] 
 		postNotificationName: AZApplicationDidTerminateNotification
 		object: self];

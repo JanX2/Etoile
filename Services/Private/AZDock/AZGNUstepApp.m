@@ -18,7 +18,10 @@
     /* Try regular execute */
     [NSTask launchedTaskWithLaunchPath: path arguments: nil];
   }
-  [self setRunning: YES];
+  if (state == AZDockAppNotRunning) {
+    [self setState: AZDockAppLaunching];
+  }
+//  [self setState: AZDockAppRunning];
 }
 
 - (void) quitAction: (id) sender
@@ -30,7 +33,7 @@
   if (appProxy) {
     NS_DURING
       [appProxy terminate: nil];
-      [self setRunning: NO];
+      [self setState: AZDockAppNotRunning];
     NS_HANDLER
       /* Error occurs because application is terminated
        * and connection dies. */

@@ -54,7 +54,7 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
   [window setBackgroundColor: [NSColor windowBackgroundColor]];
 
   keepInDock = NO;
-  isRunning = NO;
+  state = AZDockAppNotRunning;
 
   return self;
 }
@@ -96,20 +96,22 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
   return keepInDock;
 }
 
-- (void) setRunning: (BOOL) b
+- (void) setState: (AZDockAppState) b
 {
-  isRunning = b;
-  if (isRunning == YES) {
+  state = b;
+  if (state == AZDockAppRunning) {
 //    [window setBackgroundColor: [NSColor controlHighlightColor]];
     [window setBackgroundColor: [NSColor redColor]];
+  } else if (state == AZDockAppLaunching) {
+    [window setBackgroundColor: [NSColor yellowColor]];
   } else {
     [window setBackgroundColor: [NSColor windowBackgroundColor]];
   }
 }
 
-- (BOOL) isRunning
+- (AZDockAppState) state
 {
-  return isRunning;
+  return state;
 }
 
 @end

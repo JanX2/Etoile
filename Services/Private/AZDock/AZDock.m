@@ -39,7 +39,7 @@ static AZDock *sharedInstance;
     return;
 
   AZGNUstepApp *app = [[AZGNUstepApp alloc] initWithApplicationName: name];
-  [app setRunning: YES];
+  [app setState: AZDockAppRunning];
   [apps addObject: app];
   [self addBookmark: app];
   [[app window] orderFront: self];
@@ -60,7 +60,7 @@ static AZDock *sharedInstance;
       if ([[app applicationName] isEqualToString: name])
       {
         if ([app isKeptInDock] == YES) {
-          [app setRunning: NO];
+          [app setState: AZDockAppNotRunning];
           return;
         }
         [[app window] orderOut: self];
@@ -124,7 +124,7 @@ static AZDock *sharedInstance;
     {
       if ([(AZXWindowApp *)app acceptXWindow: wid]) 
       {
-        [app setRunning: YES];
+        [app setState: AZDockAppRunning];
         return;
       }
     }
@@ -132,7 +132,7 @@ static AZDock *sharedInstance;
    
   /* No one takes it. Create new dock apps */
   app = [[AZXWindowApp alloc] initWithXWindow: wid];
-  [app setRunning: YES];
+  [app setState: AZDockAppRunning];
   [apps addObject: app];
   [self addBookmark: app];
   [[app window] orderFront: self];
@@ -154,7 +154,7 @@ static AZDock *sharedInstance;
         {
           if ([app isKeptInDock] == YES) 
           {
-            [app setRunning: NO];
+            [app setState: AZDockAppNotRunning];
           }
           else
           {
@@ -187,7 +187,7 @@ static AZDock *sharedInstance;
       if ([[app applicationName] isEqualToString: name])
       {
         /* Application exists in dock. */
-        [app setRunning: YES];
+        [app setState: AZDockAppRunning];
         return;
       }
     }
