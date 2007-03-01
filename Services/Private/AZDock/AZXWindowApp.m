@@ -116,6 +116,7 @@
   }
 
   [self updateCommand: w];
+  [[view menu] setTitle: wm_instance];
 
   return self;
 }

@@ -173,6 +173,10 @@
   [contextualMenu setSubmenu: applicationMenu forItem: item];
   RELEASE(applicationMenu);
 
+  [contextualMenu addItemWithTitle: _(@"Quit")
+                            action: @selector(terminate:)
+                     keyEquivalent: NULL];
+
   /* Listen to recent applications change */
   [[NSNotificationCenter defaultCenter]
 	  addObserver: self

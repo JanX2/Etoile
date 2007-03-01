@@ -80,6 +80,8 @@
   if (icon)
     [view setImage: icon];
 
+  [[view menu] setTitle: appName];
+
   return self;
 }
 

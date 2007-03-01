@@ -7,6 +7,11 @@
 #import <XWindowServerKit/XFunctions.h>
 #import <BookmarkKit/BookmarkKit.h>
 
+static NSString *AZUserDefaultDockType = @"Type";
+static NSString *AZUserDefaultDockCommand = @"Command";
+static NSString *AZUserDefaultDockedApp = @"DockedApplications";
+static NSString *AZUserDefaultDockPosition= @"DockPosition";
+
 static AZDock *sharedInstance;
 
 @interface GSDisplayServer (AZPrivate) 	 
@@ -33,17 +38,17 @@ static AZDock *sharedInstance;
 @implementation AZDock
 
 /** Private **/
-- (void) addGNUstepAppNamed: (NSString *) name
+- (AZGNUstepApp *) addGNUstepAppNamed: (NSString *) name 
 {
   if ([blacklist containsObject: name])
-    return;
+    return nil;
 
   AZGNUstepApp *app = [[AZGNUstepApp alloc] initWithApplicationName: name];
-  [app setState: AZDockAppRunning];
+  [app setState: AZDockAppNotRunning]; 
   [apps addObject: app];
   [self addBookmark: app];
   [[app window] orderFront: self];
-  DESTROY(app);
+  return AUTORELEASE(app);
   /* Do not organize applications here 
      because it will be called multiple times from other method. */
 }
@@ -179,7 +184,8 @@ static AZDock *sharedInstance;
       }
     }
   }
-  [self addGNUstepAppNamed: name];
+  app = [self addGNUstepAppNamed: name];
+  [app setState: AZDockAppRunning];
   [self organizeApplications];
 }
 
@@ -471,8 +477,6 @@ static AZDock *sharedInstance;
   /* Listen to window closing and opening */
   XSelectInput(dpy, root_win, PropertyChangeMask|StructureNotifyMask|SubstructureNotifyMask);
 
-  /* Decide position */
-  position = [[NSUserDefaults standardUserDefaults] integerForKey: @"DockPosition"];
 
   /* Setup Atom */
   X_NET_CURRENT_DESKTOP = XInternAtom(dpy, "_NET_CURRENT_DESKTOP", False);
@@ -481,6 +485,29 @@ static AZDock *sharedInstance;
   X_NET_CLIENT_LIST = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
   X_NET_WM_STATE_SKIP_PAGER = XInternAtom(dpy, "_NET_WM_STATE_SKIP_PAGER", False);
   X_NET_WM_STATE_SKIP_TASKBAR = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);
+
+  /* Decide position */
+  position = [[NSUserDefaults standardUserDefaults] integerForKey: AZUserDefaultDockPosition];
+
+  /* Put up docked application */
+  NSArray *array = [[NSUserDefaults standardUserDefaults] objectForKey: AZUserDefaultDockedApp];
+  int i, count = [array count];
+  AZDockType type;
+  NSString *cmd;
+  NSDictionary *dict;
+  AZDockApp *app = nil;
+  for (i = 0; i < count; i++) 
+  {
+    dict = [array objectAtIndex: i];
+    type = [[dict objectForKey: AZUserDefaultDockType] intValue];
+    if (type == AZDockGNUstepApplication)
+    {
+      cmd = [dict objectForKey: AZUserDefaultDockCommand];
+      app = [self addGNUstepAppNamed: cmd];
+      [app setState: AZDockAppNotRunning];
+      [app setKeptInDock: YES];
+    }
+  }
 }
 
 - (void) applicationDidFinishLaunching: (NSNotification *) not
@@ -506,11 +533,13 @@ static AZDock *sharedInstance;
   [workspaceView setApplicationBookmarkStore: store];
 
   /* Build up launched GNUstep application */
+  AZDockApp *app;
   NSArray *a = [workspace launchedApplications];
   int i, count = [a count];
   for (i = 0; i < count; i++)
   {
-    [self addGNUstepAppNamed: [[a objectAtIndex: i] objectForKey: @"NSApplicationName"]];
+    app = [self addGNUstepAppNamed: [[a objectAtIndex: i] objectForKey: @"NSApplicationName"]];
+    [app setState: AZDockAppRunning];
   }
 
   /* Build up launched XWindow application */
@@ -559,6 +588,38 @@ static AZDock *sharedInstance;
                      selector: @selector(xwindowAppDidTerminate:)
                      name: @"AZXWindowDidTerminateNotification"
                      object: nil];
+}
+
+- (void) applicationWillTerminate: (NSNotification *) not
+{
+  [[workspace notificationCenter] removeObserver: self];
+  /* Remember the application on dock */
+  NSMutableArray *array = [[NSMutableArray alloc] init];
+  NSDictionary *dict;
+  int i, count = [apps count];
+  AZDockApp *app;
+  for (i = 0; i < count; i++) 
+  {
+    app = [apps objectAtIndex: i];
+    if ([app isKeptInDock]) 
+    {
+      if ([app type] == AZDockXWindowApplication) {
+        dict = [NSDictionary dictionaryWithObjectsAndKeys:
+         [NSString stringWithFormat: @"%d", [app type]], AZUserDefaultDockType,
+         [(AZXWindowApp *)app command], AZUserDefaultDockCommand,
+         nil];
+      
+      } else if ([app type] == AZDockGNUstepApplication) {
+        dict = [NSDictionary dictionaryWithObjectsAndKeys:
+         [NSString stringWithFormat: @"%d", [app type]], AZUserDefaultDockType,
+         [(AZGNUstepApp *)app applicationName], AZUserDefaultDockCommand,
+         nil];
+      }
+      [array addObject: dict];
+    }
+  }
+  [[NSUserDefaults standardUserDefaults] setObject: array
+                                            forKey: AZUserDefaultDockedApp];
 }
 
 - (void) dealloc
