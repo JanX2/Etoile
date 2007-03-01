@@ -4,6 +4,7 @@
         * client_list_combined_menu.m:
         * AZMenuManager.m: 
         Add combined window list.  It serves as a simple taskbar.
+	* Post notification for managing and unmanaging client.
 
 2006-12-15 Yen-Ju Chen <yjchenx at gmail>
 

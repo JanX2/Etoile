@@ -293,6 +293,13 @@ static AZClientManager *sharedInstance;
     /* update the list hints */
     [self setList];
 
+    [[workspace notificationCenter]
+                       postNotificationName: @"AZXWindowDidLaunchNotification"
+                       object: workspace
+                       userInfo: [NSDictionary dictionaryWithObjectsAndKeys:
+           [NSString stringWithFormat: @"%d", window], @"AZXWindowID",
+                                 nil]
+                       ];
     AZDebug("Managed window 0x%lx (%s)\n", window, [client class]);
 }
 
@@ -416,6 +423,14 @@ static AZClientManager *sharedInstance;
 
     AZDebug("Unmanaged window 0x%lx\n", [client window]);
 
+    [[workspace notificationCenter]
+                   postNotificationName: @"AZXWindowDidTerminateNotification"
+                   object: workspace
+                   userInfo: [NSDictionary dictionaryWithObjectsAndKeys:
+           [NSString stringWithFormat: @"%d", [client window]], @"AZXWindowID",
+                                 nil]
+                       ];
+
     /* free all data allocated in the client struct */
     [client removeAllTransients];
     [client removeAllIcons];
@@ -426,6 +441,7 @@ static AZClientManager *sharedInstance;
 
     if (config_focus_last)
         grab_pointer(NO, OB_CURSOR_NONE);
+
 }
 
 - (AZClient *) clientAtIndex: (int) index
@@ -447,6 +463,7 @@ static AZClientManager *sharedInstance;
 {
   self = [super init];
   clist = [[NSMutableArray alloc] init];
+  workspace = [NSWorkspace sharedWorkspace];
   return self;
 }
 

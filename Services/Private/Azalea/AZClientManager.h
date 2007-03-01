@@ -19,7 +19,7 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 #import <X11/Xlib.h>
 #import "AZClient.h"
 
@@ -28,6 +28,7 @@ extern NSString *AZClientDestroyNotification;
 @interface AZClientManager: NSObject
 {
   NSMutableArray *clist;
+  NSWorkspace *workspace;
 }
 + (AZClientManager *) defaultManager;
 - (void) startup: (BOOL) reconfig;
