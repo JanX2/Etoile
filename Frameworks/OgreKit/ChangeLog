@@ -2,6 +2,7 @@
 
 	* Implement replace all in selection.
 	* Use Find panel title to show search result failed or successed.
+	* Use NSFindPboard to shared string in find text field.
 
 2007-02-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 

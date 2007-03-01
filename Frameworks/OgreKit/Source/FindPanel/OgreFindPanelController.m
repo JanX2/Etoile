@@ -39,6 +39,18 @@
   return YES;
 }
 
+- (void) _copyToFindPboard
+{
+  NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSFindPboard];
+  if (pboard)
+  {
+    [pboard declareTypes: [NSArray arrayWithObject: NSStringPboardType]
+                   owner: self];
+    [pboard setString: [[findPanel findTextField] stringValue]
+              forType: NSStringPboardType];
+  }
+}
+
 - (void) findNext: (id) sender
 {
   if (![self alertIfInvalidRegex]) return;
@@ -57,6 +69,7 @@
   {
     [findPanel setTitle: @"Find Panel: find next successed"];
   }
+  [self _copyToFindPboard];
 }
 
 - (void) findPrevious: (id) sender
@@ -77,6 +90,7 @@
   {
     [findPanel setTitle: @"Find Panel: find previous successed"];
   }
+  [self _copyToFindPboard];
 }
 
 - (void) replace: (id) sender
@@ -96,6 +110,7 @@
   {
     [findPanel setTitle: @"Find Panel: replace successed"];
   }
+  [self _copyToFindPboard];
 }
 
 - (void) replaceAndFind: (id) sender
@@ -118,6 +133,7 @@
   {
     [findPanel setTitle: @"Find Panel: replace and find successed"];
   }
+  [self _copyToFindPboard];
 }
 
 - (void) replaceAll: (id) sender
@@ -138,6 +154,7 @@
   {
     [findPanel setTitle: @"Find Panel: replace all successed"];
   }
+  [self _copyToFindPboard];
 }
 
 - (OgreTextFinder*)textFinder
@@ -153,15 +170,38 @@
 
 - (IBAction)showFindPanel:(id)sender
 {
-	if ([findPanel isKeyWindow]) {
-		[findPanel orderFront:self];
-	} else {
-		[findPanel makeKeyAndOrderFront:self];
-		[[findPanel findTextField] selectText: self];
-	}
+  /* If there is no text in find field. 
+     Try to put the string from NSFindPboard */
+  if (([[findPanel findTextField] stringValue] == nil) ||
+      ([[[findPanel findTextField] stringValue] length] == 0))
+  {
+    NSPasteboard *pb = [NSPasteboard pasteboardWithName: NSFindPboard];
+    if (pb) 
+    {
+      NSString *type = [pb availableTypeFromArray: [NSArray arrayWithObject: NSStringPboardType]];
+      if (type) 
+      {
+        NSString *s = [pb stringForType: NSStringPboardType];
+        if (s) 
+        {
+          [[findPanel findTextField] setStringValue: s];
+        }
+      }
+    }
+  }
+
+  if ([findPanel isKeyWindow]) 
+  {
+    [findPanel orderFront:self];
+  } 
+  else 
+  {
+    [findPanel makeKeyAndOrderFront:self];
+    [[findPanel findTextField] selectText: self];
+  }
 	
-	// WindowsメニューにFind Panelを追加
-	[NSApp addWindowsItem:findPanel title:[findPanel title] filename:NO];
+  // WindowsメニューにFind Panelを追加
+  [NSApp addWindowsItem:findPanel title:[findPanel title] filename:NO];
 }
 
 - (void)close
