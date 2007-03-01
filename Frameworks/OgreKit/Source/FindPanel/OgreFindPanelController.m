@@ -49,8 +49,13 @@
 		fromTop: NO
 		forward: YES
 		wrap: YES];
-  if (![result isSuccess]) {
-    NSLog(@"find next failed");
+  if (![result isSuccess]) 
+  {
+    [findPanel setTitle: @"Find Panel: find next failed"];
+  }
+  else
+  {
+    [findPanel setTitle: @"Find Panel: find next successed"];
   }
 }
 
@@ -64,8 +69,13 @@
 		fromTop: NO
 		forward: NO
 		wrap: YES];
-  if (![result isSuccess]) {
-    NSLog(@"find previous failed");
+  if (![result isSuccess]) 
+  {
+    [findPanel setTitle: @"Find Panel: find previous failed"];
+  }
+  else
+  {
+    [findPanel setTitle: @"Find Panel: find previous successed"];
   }
 }
 
@@ -78,8 +88,13 @@
 	withString: [[findPanel replaceTextField] stringValue]
         options: [self options]];
 
-  if (![result isSuccess]) {
-    NSLog(@"replace failed");
+  if (![result isSuccess]) 
+  {
+    [findPanel setTitle: @"Find Panel: replace failed"];
+  }
+  else
+  {
+    [findPanel setTitle: @"Find Panel: replace successed"];
   }
 }
 
@@ -95,8 +110,13 @@
         replacingOnly: NO
         wrap: NO];
 
-  if (![result isSuccess]) {
-   NSLog(@"replace and find failed");
+  if (![result isSuccess]) 
+  {
+    [findPanel setTitle: @"Find Panel: replace and find failed"];
+  }
+  else
+  {
+    [findPanel setTitle: @"Find Panel: replace and find successed"];
   }
 }
 
@@ -112,7 +132,11 @@
         inSelection: inSelection];
 
   if (![result isSuccess]) {
-    NSLog(@"replace all failed");
+    [findPanel setTitle: @"Find Panel: replace all failed"];
+  }
+  else
+  {
+    [findPanel setTitle: @"Find Panel: replace all successed"];
   }
 }
 
