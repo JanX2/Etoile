@@ -44,6 +44,7 @@ typedef enum _AZDockPosition {
 
 - (void) addBookmark: (AZDockApp *) app;
 - (void) organizeApplications;
+- (void) removeDockApp: (AZDockApp *) app;
 
 @end
 

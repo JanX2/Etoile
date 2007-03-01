@@ -7,11 +7,6 @@
 /** Private **/
 
 /* Action from AZDockView */
-- (void) removeFromDockAction: (id) sender
-{
-  [super removeFromDockAction: sender];
-}
-
 - (void) showAction: (id) sender
 {
   if (state == AZDockAppRunning) {

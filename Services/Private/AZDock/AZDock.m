@@ -59,12 +59,7 @@ static AZDock *sharedInstance;
     {
       if ([[app applicationName] isEqualToString: name])
       {
-        if ([app isKeptInDock] == YES) {
-          [app setState: AZDockAppNotRunning];
-          return;
-        }
-        [[app window] orderOut: self];
-        [apps removeObject: app];
+        [self removeDockApp: app];
       }
     }
   }
@@ -152,15 +147,7 @@ static AZDock *sharedInstance;
       {
         if ([app numberOfXWindows] == 0)
         {
-          if ([app isKeptInDock] == YES) 
-          {
-            [app setState: AZDockAppNotRunning];
-          }
-          else
-          {
-            [[app window] orderOut: self];
-            [apps removeObject: app];
-          }
+          [self removeDockApp: app];
         }
         return;
       }
@@ -265,6 +252,20 @@ static AZDock *sharedInstance;
 }
 
 /** End of private */
+- (void) removeDockApp: (AZDockApp *) app
+{
+  if ([app isKeptInDock] == YES) 
+  {
+    [app setState: AZDockAppNotRunning];
+  }
+  else
+  {
+    [[app window] orderOut: self];
+    [apps removeObject: app];
+    /* Do not organize applications here */
+  }
+}
+
 - (void) organizeApplications
 {
   NSWindow *win;

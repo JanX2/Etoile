@@ -1,5 +1,6 @@
 #include "AZDockApp.h"
 #include "AZDockView.h"
+#include "AZDock.h"
 
 NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTerminateNotification";
 
@@ -10,14 +11,16 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 /* Action from AZDockView */
 - (void) keepInDockAction: (id) sender
 {
-  NSLog(@"Keep in dock");
+//  NSLog(@"Keep in dock");
   [self setKeptInDock: YES];
 }
 
 - (void) removeFromDockAction: (id) sender
 {
-  NSLog(@"remove from dock");
+//  NSLog(@"remove from dock");
   [self setKeptInDock: NO];
+  [[AZDock sharedDock] removeDockApp: self];
+  [[AZDock sharedDock] organizeApplications];
 }
 
 - (void) showAction: (id) sender

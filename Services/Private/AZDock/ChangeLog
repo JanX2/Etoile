@@ -1,6 +1,7 @@
 2007-03-01 Yen-Ju Chen <yjchenx at gmail>
 
 	* Implement launching state with yellow backgroud.
+	* Implement 'remove from dock' function.
 
 2007-02-28 Yen-Ju Chen <yjchenx at gmail>
 
