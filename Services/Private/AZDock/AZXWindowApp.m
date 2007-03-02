@@ -27,6 +27,8 @@
     }
     /* Focus on the last one */
     XSetInputFocus(dpy, w, RevertToNone, CurrentTime);
+  } else if (state == AZDockAppLaunching) {
+    /* Do nothing during launching */
   } else {
     /* Application is not running. Execute it */
     if (command) {

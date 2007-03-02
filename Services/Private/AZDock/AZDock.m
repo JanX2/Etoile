@@ -509,6 +509,13 @@ static AZDock *sharedInstance;
   NSString *cmd;
   NSDictionary *dict;
   AZDockApp *app = nil;
+  /* Path to cached icon */
+  NSString *path = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+  if (path)
+  {
+    path = [path stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]];
+  }
+
   for (i = 0; i < count; i++) 
   {
     dict = [array objectAtIndex: i];
@@ -523,6 +530,20 @@ static AZDock *sharedInstance;
       NSString *inst = [dict objectForKey: AZUserDefaultDockWMInstance];
       NSString *clas = [dict objectForKey: AZUserDefaultDockWMClass];
       app = [self addXWindowWithCommand: cmd instance: inst class: clas];
+      /* See whether we have icon cached */
+      NSFileManager *fm = [NSFileManager defaultManager];
+      if ([fm fileExistsAtPath: path])
+      {
+        NSString *p = [NSString stringWithFormat: @"%@_%@.tiff", inst, clas];
+        p = [path stringByAppendingPathComponent: p];
+        //NSLog(@"load from %@", p);
+        NSImage *image = [[NSImage alloc] initWithContentsOfFile: p];
+        if (image) {
+          [app setIcon: AUTORELEASE(image)];
+        } else {
+          NSLog(@"No image");
+        }
+      }
     }
     else
     {
@@ -615,6 +636,31 @@ static AZDock *sharedInstance;
 - (void) applicationWillTerminate: (NSNotification *) not
 {
   [[workspace notificationCenter] removeObserver: self];
+
+  /* We need to cache icon for xwindow applications.
+     Prepare the directory first */
+  NSString *path = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+  if (path) 
+  {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    BOOL isDir = NO;
+    if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
+    {
+      [fm createDirectoryAtPath: path attributes: nil];
+    }
+
+    path = [path stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]];
+    if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
+    {
+      //NSLog(@"create path %@", path);
+      if([fm createDirectoryAtPath: path attributes: nil] == NO)
+      {
+        //NSLog(@"Internal Erro: cannot create path at %@", path);
+        path = nil;
+      }
+    }
+  }
+
   /* Remember the application on dock */
   NSMutableArray *array = [[NSMutableArray alloc] init];
   NSDictionary *dict;
@@ -626,13 +672,24 @@ static AZDock *sharedInstance;
     if ([app isKeptInDock]) 
     {
       if ([app type] == AZDockXWindowApplication) {
+        AZXWindowApp *xapp = (AZXWindowApp *) app;
         dict = [NSDictionary dictionaryWithObjectsAndKeys:
          [NSString stringWithFormat: @"%d", [app type]], AZUserDefaultDockType,
-         [(AZXWindowApp *)app command], AZUserDefaultDockCommand,
-         [(AZXWindowApp *)app wmInstance], AZUserDefaultDockWMInstance,
-         [(AZXWindowApp *)app wmClass], AZUserDefaultDockWMClass,
+         [xapp command], AZUserDefaultDockCommand,
+         [xapp wmInstance], AZUserDefaultDockWMInstance,
+         [xapp wmClass], AZUserDefaultDockWMClass,
          nil];
-      
+        /* We also need to cache the icon because we cannot get icon
+           without a window running */
+        if (path)
+        {
+          NSImage *icon = [xapp icon];
+          NSData *data = [icon TIFFRepresentation];
+          NSString *p = [NSString stringWithFormat: @"%@_%@.tiff", [xapp wmInstance], [xapp wmClass]];
+          p = [path stringByAppendingPathComponent: p];
+          //NSLog(@"Write to %@", p);
+          [data writeToFile: p atomically: YES];
+        }
       } else if ([app type] == AZDockGNUstepApplication) {
         dict = [NSDictionary dictionaryWithObjectsAndKeys:
          [NSString stringWithFormat: @"%d", [app type]], AZUserDefaultDockType,

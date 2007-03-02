@@ -35,6 +35,8 @@ extern NSString *const AZApplicationDidTerminateNotification;
 - (AZDockType) type;
 - (NSString *) command;
 - (XWindow *) window;
+- (NSImage *) icon;
+- (void) setIcon: (NSImage *) icon;
 
 - (void) keepInDockAction: (id) sender;
 - (void) removeFromDockAction: (id) sender;

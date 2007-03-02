@@ -7,6 +7,11 @@
 /* Action from AZDockView */
 - (void) showAction: (id) sender
 {
+  if (state == AZDockAppLaunching) {
+    /* Do nothing during launching */
+    return;
+  }
+
   NSString *path = [self command];
   BOOL success = [[NSWorkspace sharedWorkspace] launchApplication: path];
   if (success == NO) {
@@ -16,7 +21,6 @@
   if (state == AZDockAppNotRunning) {
     [self setState: AZDockAppLaunching];
   }
-//  [self setState: AZDockAppRunning];
 }
 
 - (void) quitAction: (id) sender

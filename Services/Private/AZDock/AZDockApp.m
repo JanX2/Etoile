@@ -93,6 +93,17 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
   return command;
 }
 
+- (NSImage *) icon
+{
+  return icon;
+}
+
+- (void) setIcon: (NSImage *) i
+{
+  ASSIGN(icon, i);
+  [view setImage: icon];
+}
+
 - (void) setKeptInDock: (BOOL) b
 {
   keepInDock = b;
@@ -129,14 +140,27 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 - (void) setState: (AZDockAppState) b
 {
   state = b;
+  int i, count = [[view menu] numberOfItems];
+  id <NSMenuItem> item = nil;
+  NSColor *color;
+  BOOL enabled = YES;
   if (state == AZDockAppRunning) {
-//    [window setBackgroundColor: [NSColor controlHighlightColor]];
-    [window setBackgroundColor: [NSColor redColor]];
+    color = [NSColor redColor];
+    enabled = YES; /* enable all menu before launching */
   } else if (state == AZDockAppLaunching) {
-    [window setBackgroundColor: [NSColor yellowColor]];
+    color = [NSColor yellowColor];
+    enabled = NO; /* Disable all menu during launching */
   } else {
-    [window setBackgroundColor: [NSColor windowBackgroundColor]];
+    color = [NSColor windowBackgroundColor];
+    enabled = YES; /* enable all menu after launching */
   }
+
+  [window setBackgroundColor: color];
+  for (i = 0; i < count; i++) {
+    item = [[view menu] itemAtIndex: i];
+    [item setEnabled: enabled]; // FIXME: not really work.
+  }
+  [[view menu] update];
 }
 
 - (AZDockAppState) state
