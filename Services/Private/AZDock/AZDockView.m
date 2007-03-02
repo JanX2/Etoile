@@ -63,9 +63,6 @@
   [contextualMenu addItemWithTitle: _(@"Keep in dock")
 	          action: @selector(keepInDockAction:)
 		  keyEquivalent: nil];
-  [contextualMenu addItemWithTitle: _(@"Remove from dock")
-	          action: @selector(removeFromDockAction:)
-		  keyEquivalent: nil];
   [contextualMenu addItemWithTitle: _(@"Show")
 	          action: @selector(showAction:)
 		  keyEquivalent: nil];

@@ -19,8 +19,12 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 {
 //  NSLog(@"remove from dock");
   [self setKeptInDock: NO];
-  [[AZDock sharedDock] removeDockApp: self];
-  [[AZDock sharedDock] organizeApplications];
+  
+  if ([self state] == AZDockAppNotRunning) 
+  {
+    [[AZDock sharedDock] removeDockApp: self];
+    [[AZDock sharedDock] organizeApplications];
+  }
 }
 
 - (void) showAction: (id) sender
@@ -92,6 +96,29 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 - (void) setKeptInDock: (BOOL) b
 {
   keepInDock = b;
+  id <NSMenuItem> item = nil;
+  if (keepInDock == NO)
+  {
+    /* Change menu to keep in dock */
+    item = [[view menu] itemWithTitle: _(@"Remove from dock")];
+    if (item) {
+      [item setTitle: _(@"Keep in dock")];
+      [item setAction: @selector(keepInDockAction:)];
+    } else {
+      NSLog(@"Internal Error: cannot find menu item 'Remove from dock'");
+    }
+  } 
+  else
+  {
+    /* Change menu to remove from dock */
+    item = [[view menu] itemWithTitle: _(@"Keep in dock")];
+    if (item) {
+      [item setTitle: _(@"Remove from dock")];
+      [item setAction: @selector(removeFromDockAction:)];
+    } else {
+      NSLog(@"Internal Error: cannot find menu item 'Keep in dock'");
+    }
+  }
 }
 
 - (BOOL) isKeptInDock
