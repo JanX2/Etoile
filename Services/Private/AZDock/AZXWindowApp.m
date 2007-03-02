@@ -86,12 +86,50 @@
   }
 }
 
-/** End of Private **/
+- (void) updateIcon: (Window) w
+{
+  /* Try to get the icon */
+  if (icon == nil)
+    ASSIGN(icon, XWindowIcon(w));
 
-- (id) initWithXWindow: (Window) w
+  if (icon == nil) {
+    /* use default icon */
+    ASSIGN(icon, [NSImage imageNamed: @"Unknown.tiff"]);
+  }
+
+  if (icon) {
+    [view setImage: icon];
+  }
+}
+
+/** End of Private **/
+- (id) init
 {
   self = [super init];
   xwindows = [[NSMutableArray alloc] init];
+  type = AZDockXWindowApplication;
+  return self;
+}
+
+- (id) initWithCommand: (NSString *) cmd
+       instance: (NSString *) instance class: (NSString *) class;
+
+{
+  self = [self init];
+
+  /* use default icon */
+  ASSIGN(icon, [NSImage imageNamed: @"Unknown.tiff"]);
+  ASSIGN(command, cmd);
+  ASSIGN(wm_instance, instance);
+  ASSIGN(wm_class, class);
+  [[view menu] setTitle: wm_instance];
+
+  return self;
+}
+
+- (id) initWithXWindow: (Window) w
+{
+  self = [self init];
   [xwindows addObject: [NSNumber numberWithUnsignedLong: w]];
 
   /* Get class and instance */
@@ -100,21 +138,7 @@
     RETAIN(wm_instance);
   } 
 
-  type = AZDockXWindowApplication;
-
-  /* Try to get the icon */
-  if (!icon) {
-    ASSIGN(icon, XWindowIcon(w));
-  }
-
-  if (!icon) {
-    /* use default icon */
-    ASSIGN(icon, [NSImage imageNamed: @"Unknown.tiff"]);
-  }
-  if (icon) {
-    [view setImage: icon];
-  }
-
+  [self updateIcon: w];
   [self updateCommand: w];
   [[view menu] setTitle: wm_instance];
 
@@ -176,9 +200,34 @@
   [super dealloc];
 }
 
+/* Override */
+- (void) setState: (AZDockAppState) s
+{
+  AZDockAppState old = [self state];
+  [super setState: s];
+  /* When xwindow go from Launching to Running, we update the icon. */
+  if ((s != AZDockAppNotRunning) && (old != s) && [xwindows count])
+  {
+    DESTROY(icon);
+    [self updateIcon: [[xwindows lastObject] unsignedLongValue]];
+  }
+}
+
+/* Accessories */
+
 - (unsigned int) numberOfXWindows
 {
   return [xwindows count];
+}
+
+- (NSString *) wmClass
+{
+  return wm_class;
+}
+
+- (NSString *) wmInstance
+{
+  return wm_instance;
 }
 
 @end

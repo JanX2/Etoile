@@ -9,6 +9,8 @@
 
 static NSString *AZUserDefaultDockType = @"Type";
 static NSString *AZUserDefaultDockCommand = @"Command";
+static NSString *AZUserDefaultDockWMInstance = @"WMInstance"; // For xwindow
+static NSString *AZUserDefaultDockWMClass = @"WMClass"; // For xwindow
 static NSString *AZUserDefaultDockedApp = @"DockedApplications";
 static NSString *AZUserDefaultDockPosition= @"DockPosition";
 
@@ -70,6 +72,17 @@ static AZDock *sharedInstance;
   }
   /* Do not organize applications here 
      because it will be called multiple times from other method. */
+}
+
+- (AZXWindowApp *) addXWindowWithCommand: (NSString *) cmd
+                   instance: (NSString *) instance class: (NSString *) class
+{
+  AZXWindowApp *app = [[AZXWindowApp alloc] initWithCommand: cmd 
+                                            instance: instance class: class];
+  [apps addObject: app];
+  [self addBookmark: app];
+  [[app window] orderFront: self];
+  return AUTORELEASE(app);
 }
 
 - (void) addXWindowWithID: (int) wid
@@ -500,13 +513,22 @@ static AZDock *sharedInstance;
   {
     dict = [array objectAtIndex: i];
     type = [[dict objectForKey: AZUserDefaultDockType] intValue];
+    cmd = [dict objectForKey: AZUserDefaultDockCommand];
     if (type == AZDockGNUstepApplication)
     {
-      cmd = [dict objectForKey: AZUserDefaultDockCommand];
       app = [self addGNUstepAppNamed: cmd];
-      [app setState: AZDockAppNotRunning];
-      [app setKeptInDock: YES];
     }
+    else if (type == AZDockXWindowApplication)
+    {
+      NSString *inst = [dict objectForKey: AZUserDefaultDockWMInstance];
+      NSString *clas = [dict objectForKey: AZUserDefaultDockWMClass];
+      app = [self addXWindowWithCommand: cmd instance: inst class: clas];
+    }
+    else
+    {
+    }
+    [app setState: AZDockAppNotRunning];
+    [app setKeptInDock: YES];
   }
 }
 
@@ -607,6 +629,8 @@ static AZDock *sharedInstance;
         dict = [NSDictionary dictionaryWithObjectsAndKeys:
          [NSString stringWithFormat: @"%d", [app type]], AZUserDefaultDockType,
          [(AZXWindowApp *)app command], AZUserDefaultDockCommand,
+         [(AZXWindowApp *)app wmInstance], AZUserDefaultDockWMInstance,
+         [(AZXWindowApp *)app wmClass], AZUserDefaultDockWMClass,
          nil];
       
       } else if ([app type] == AZDockGNUstepApplication) {

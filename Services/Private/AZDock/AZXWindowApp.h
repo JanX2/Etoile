@@ -10,6 +10,8 @@
   NSString *wm_instance;
 }
 
+- (id) initWithCommand: (NSString *) cmd
+       instance: (NSString *) instance class: (NSString *) class;
 - (id) initWithXWindow: (Window) win;
 
 /* Return NO is the win does not belong to this view */
@@ -22,5 +24,8 @@
 
 /* Return number of XWindows */
 - (unsigned int) numberOfXWindows;
+
+- (NSString *) wmClass;
+- (NSString *) wmInstance;
 
 @end
