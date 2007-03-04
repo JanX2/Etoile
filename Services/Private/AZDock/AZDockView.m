@@ -25,7 +25,6 @@
 	    operation: NSCompositeSourceAtop
             fraction: 1];
     [self unlockFocus];
-		
   }
 }
 

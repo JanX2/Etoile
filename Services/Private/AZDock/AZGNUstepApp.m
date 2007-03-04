@@ -132,7 +132,7 @@
         /* FIXME: This does not work at all,
            probably because GNUstep draw on top of the icon. */
         //XReparentWindow(dpy, icon_win, [window xwindow], 0, 0);
-        /* FIXME: we miove GNUstep's app icon out of sight
+        /* FIXME: we move GNUstep's app icon out of sight
                   so that there is only one icon show. 
                   If we unmap it, some applications will complain. */
         //XUnmapWindow(dpy, icon_win);
@@ -142,6 +142,19 @@
            There is not menu item to keep the icon on the dock */
         /*[window orderOut: self];
          * and move GNUstep's icon to where it is supposed to be */
+        /* FIXME: the fourth option is to copy the out-of-sight icon
+           to our icon. It is doable. But we need a notification to know
+           when to copy. And we need to block AZDockApp and AZDockView
+           from drawing if that happens. */
+#if 0
+        {
+	  GC gc = XCreateGC(dpy, icon_win, 0, 0);
+	  if (gc < 0) {
+            NSLog(@"XCreateGC failed");
+          }
+          XCopyArea(dpy, icon_win, [window xwindow], gc, 0, 0, 48, 48, 0, 0);
+        }
+#endif
       }
       XFree(rootHints);
     }
