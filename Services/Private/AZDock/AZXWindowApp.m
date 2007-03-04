@@ -108,7 +108,6 @@
 - (id) init
 {
   self = [super init];
-  xwindows = [[NSMutableArray alloc] init];
   type = AZDockXWindowApplication;
   return self;
 }
@@ -149,15 +148,11 @@
 
 - (BOOL) acceptXWindow: (Window) win
 {
-  int i;
-  unsigned long w;
   NSString *_class, *_instance;
-  for (i = 0; i < [xwindows count]; i++)
-  {
-    w = [[xwindows objectAtIndex: i] unsignedLongValue];
-    if (w == win) 
-      return YES;
-  }
+  BOOL result = [super acceptXWindow: win];
+  if (result == YES) /* xwindow already exists */
+    return YES;
+
   if (XWindowClassHint(win, &_class, &_instance)) {
     if ([_class isEqualToString: wm_class] &&
 	[_instance isEqualToString: wm_instance])
@@ -175,28 +170,20 @@
 
 - (BOOL) removeXWindow: (Window) win
 {
-  int i;
-  unsigned long w;
-  for (i = 0; i < [xwindows count]; i++)
-  {
-    w = [[xwindows objectAtIndex: i] unsignedLongValue];
-    if (w == win) {
-      [xwindows removeObjectAtIndex: i];
-      if ([xwindows count] == 0) {
-        [self setState: AZDockAppNotRunning];
-        [[NSNotificationCenter defaultCenter] 
-		postNotificationName: AZApplicationDidTerminateNotification
+  BOOL result = [super removeXWindow: win];
+  if (result == YES) {
+    if ([xwindows count] == 0) {
+      [self setState: AZDockAppNotRunning];
+      [[NSNotificationCenter defaultCenter] 
+	        postNotificationName: AZApplicationDidTerminateNotification
 		object: self];
-      }
-      return YES;
     }
   }
-  return NO;
+  return result;
 }
 
 - (void) dealloc
 {
-  DESTROY(xwindows);
   DESTROY(wm_class);
   DESTROY(wm_instance);
   [super dealloc];

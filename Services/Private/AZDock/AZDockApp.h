@@ -26,6 +26,7 @@ extern NSString *const AZApplicationDidTerminateNotification;
   AZDockView *view;
   XWindow *window;
   NSImage *icon;
+  NSMutableArray *xwindows;
 
   NSString *command; /* Command to launch this application */
   BOOL keepInDock;
@@ -48,5 +49,10 @@ extern NSString *const AZApplicationDidTerminateNotification;
 
 - (void) setState: (AZDockAppState) b;
 - (AZDockAppState) state;
+
+/* return YES if it has win already */
+- (BOOL) acceptXWindow: (Window) win;
+/* return YES if it has win already and remove it */
+- (BOOL) removeXWindow: (Window) win;
 
 @end

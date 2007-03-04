@@ -7,9 +7,9 @@
   return YES;
 }
 
-- (void) mouseDown: (NSEvent *) event
+- (void) mouseUp: (NSEvent *) event
 {
-  [delegate mouseDown: event];
+  [delegate mouseUp: event];
 }
 
 - (void) drawRect: (NSRect) rect

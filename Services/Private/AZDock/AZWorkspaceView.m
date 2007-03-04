@@ -73,7 +73,7 @@
   int i, menu_count = [applicationMenu numberOfItems];
   NSArray *items = [appStore topLevelRecords];
   int numberOfItems = [items count];
-  NSString *title, *path;
+  NSString *title;
   for (i = 0; i < numberOfItems; i++) {
     title = [[[[items objectAtIndex: i] URL] path] lastPathComponent];
 

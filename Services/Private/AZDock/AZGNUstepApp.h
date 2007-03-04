@@ -1,8 +1,11 @@
 #import "AZDockApp.h"
+#include <X11/Xlib.h>
 
 @interface AZGNUstepApp: AZDockApp
 {
   NSString *appName;
+  Window group_leader;
+  Window icon_win;
 }
 
 - (id) initWithApplicationName: (NSString *) appName;

@@ -1,4 +1,5 @@
 #import "AZGNUstepApp.h"
+#import <X11/Xutil.h>
 
 @implementation AZGNUstepApp 
 
@@ -41,13 +42,20 @@
 }
 
 /** End of Private **/
+- (id) init
+{
+  self = [super init];
+  type = AZDockGNUstepApplication;
+  group_leader = 0;
+  icon_win = 0;
+  return self;
+}
 
 - (id) initWithApplicationName: (NSString *) ap
 {
-  self = [super init];
+  self = [self init];
 
   ASSIGN(appName, [ap stringByDeletingPathExtension]);
-  type = AZDockGNUstepApplication;
 
   /* Get command */
   ASSIGN(command, [appName stringByAppendingPathExtension: @"app"]);
@@ -98,6 +106,71 @@
 - (NSString *) applicationName
 {
   return appName;
+}
+
+/* Override */
+
+/* return YES if it has win already */
+- (BOOL) acceptXWindow: (Window) win
+{
+  BOOL result = [super acceptXWindow: win];
+
+  Display *dpy = (Display *)[GSCurrentServer() serverDevice];
+  XWMHints *wmHints = XGetWMHints(dpy, win);
+  if (wmHints->flags & WindowGroupHint) {
+    if (group_leader == 0) {
+      group_leader = wmHints->window_group;
+      //NSLog(@"Got group leader %d", wmHints->window_group);
+      XWMHints *rootHints = XGetWMHints(dpy, group_leader);
+      if (rootHints->flags & IconWindowHint) {
+        //NSLog(@"Got app icon %d", rootHints->icon_window);
+        icon_win = rootHints->icon_window;
+        /* Now, it becomes ugly. 
+           We have to reparent app icon on top of our window. 
+           Then we probably have to use XWindow for mouse actions.
+           And remember to remove it when app terminates. */
+        /* FIXME: This does not work at all,
+           probably because GNUstep draw on top of the icon. */
+        //XReparentWindow(dpy, icon_win, [window xwindow], 0, 0);
+        /* FIXME: we miove GNUstep's app icon out of sight
+                  so that there is only one icon show. 
+                  If we unmap it, some applications will complain. */
+        //XUnmapWindow(dpy, icon_win);
+        XMoveWindow(dpy, icon_win, -1000, -1000);
+        /* FIXME: the third option is to move GNUstep's app icon to where
+           the icon suppose be. But one problem is that we cannto control it.
+           There is not menu item to keep the icon on the dock */
+        /*[window orderOut: self];
+         * and move GNUstep's icon to where it is supposed to be */
+      }
+      XFree(rootHints);
+    }
+    if (group_leader != wmHints->window_group) {
+      NSLog(@"Internal Error: this GNUstep window has different group leader than others");
+    }
+  }
+  XFree(wmHints);
+
+  return result;
+}
+
+/* return YES if it has win already and remove it */
+- (BOOL) removeXWindow: (Window) win
+{
+  BOOL result = [super removeXWindow: win];
+
+  return result;
+}
+
+- (void) setState: (AZDockAppState) b
+{
+  [super setState: b];
+  if (b == AZDockAppNotRunning) {
+    /* GNUstep application terminate.
+       Release group_leader and icon_win. */
+    group_leader = 0;
+    icon_win = 0;
+  }
 }
 
 @end

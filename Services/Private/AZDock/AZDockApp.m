@@ -39,7 +39,7 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 
 /** End of Private **/
 
-- (void) mouseDown: (NSEvent *) event
+- (void) mouseUp: (NSEvent *) event
 {
   [self showAction: self];
 }
@@ -60,6 +60,8 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
   [window setContentView: view];
   [window setBackgroundColor: [NSColor windowBackgroundColor]];
 
+  xwindows = [[NSMutableArray alloc] init];
+
   keepInDock = NO;
   state = AZDockAppNotRunning;
 
@@ -68,6 +70,7 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 
 - (void) dealloc
 {
+  DESTROY(xwindows);
   DESTROY(command);
   DESTROY(view);
   DESTROY(icon);
@@ -140,6 +143,7 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 - (void) setState: (AZDockAppState) b
 {
   state = b;
+
   int i, count = [[view menu] numberOfItems];
   id <NSMenuItem> item = nil;
   NSColor *color;
@@ -166,6 +170,35 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 - (AZDockAppState) state
 {
   return state;
+}
+
+/* return YES if it has win already */
+- (BOOL) acceptXWindow: (Window) win
+{
+  int i;
+  unsigned long w;
+  for (i = 0; i < [xwindows count]; i++) {
+    w = [[xwindows objectAtIndex: i] unsignedLongValue];
+    if (w == win) {
+      return YES;
+    }
+  }
+  return NO;
+}
+
+/* return YES if it has win already and remove it */
+- (BOOL) removeXWindow: (Window) win
+{
+  int i;
+  unsigned long w;
+  for (i = 0; i < [xwindows count]; i++) {
+    w = [[xwindows objectAtIndex: i] unsignedLongValue];
+    if (w == win) {
+      [xwindows removeObjectAtIndex: i];
+      return YES;
+    }
+  }
+  return NO;
 }
 
 @end

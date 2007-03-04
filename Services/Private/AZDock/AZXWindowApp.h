@@ -5,7 +5,6 @@
  * or a file on harddisk */
 @interface AZXWindowApp: AZDockApp
 {
-  NSMutableArray *xwindows;
   NSString *wm_class;
   NSString *wm_instance;
 }

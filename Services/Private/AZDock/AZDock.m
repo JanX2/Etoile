@@ -40,12 +40,30 @@ static AZDock *sharedInstance;
 @implementation AZDock
 
 /** Private **/
+
 - (AZGNUstepApp *) addGNUstepAppNamed: (NSString *) name 
 {
   if ([blacklist containsObject: name])
     return nil;
 
-  AZGNUstepApp *app = [[AZGNUstepApp alloc] initWithApplicationName: name];
+  /* Check existence of GNUstep application */
+  AZGNUstepApp *app = nil;
+  int i, count = [apps count];
+  for (i = 0; i < count; i++) 
+  {
+    app = [apps objectAtIndex: i];
+    if ([app type] == AZDockGNUstepApplication)
+    {
+      if ([[app applicationName] isEqualToString: name])
+      {
+        /* Application exists in dock. */
+        return app;
+      }
+    }
+  }
+
+  /* New GNUstep application */
+  app = [[AZGNUstepApp alloc] initWithApplicationName: name];
   [app setState: AZDockAppNotRunning]; 
   [apps addObject: app];
   [self addBookmark: app];
@@ -74,6 +92,26 @@ static AZDock *sharedInstance;
      because it will be called multiple times from other method. */
 }
 
+- (void) addGNUstepAppWithXWindowID: (Window) wid 
+                           instance: (NSString *) wm_inst 
+{
+  /* We have a xwindow for GNUstep.
+     If it comes before GNUstep application launched,
+     create a dock for GNUstep and mark as launching.
+     If it comes after GNUstep application lauched,
+     add the xwindow. */
+  AZGNUstepApp *app = [self addGNUstepAppNamed: wm_inst];
+  if ([app state] == AZDockAppNotRunning) {
+    [app setState: AZDockAppLaunching];
+  } else {
+    /* Do nothing if launching or running.
+       We do not change the state from launching to running here.
+       Only notification from NSWorkspace can do that. */
+  } 
+  /* We keep a record of xwindow here. */
+  [app acceptXWindow: wid];
+}
+
 - (AZXWindowApp *) addXWindowWithCommand: (NSString *) cmd
                    instance: (NSString *) instance class: (NSString *) class
 {
@@ -87,6 +125,33 @@ static AZDock *sharedInstance;
 
 - (void) addXWindowWithID: (int) wid
 {
+  /* Avoid transcient window */
+  {
+    Window tr = None;
+    if (XGetTransientForHint(dpy, wid, &tr)) 
+    {
+      return;
+    }
+  }
+
+  /* We check GNUstep application early because main menu
+     and app icon has SKIP_PAGER and SKIP_TASKBAR hints. */
+  NSString *wm_class, *wm_instance;
+  BOOL result = XWindowClassHint(wid, &wm_class, &wm_instance);
+  if (result) 
+  {
+    /* Avoid anything in blacklist */
+    if ([blacklist containsObject: wm_instance] == YES) {
+      return;
+    }
+
+    if ([wm_class isEqualToString: @"GNUstep"]) {
+      /* We let GNUstep app to hanel it */
+      [self addGNUstepAppWithXWindowID: wid instance: wm_instance];
+      return;
+    }
+  }
+
   /* Avoid _NET_WM_STATE_SKIP_PAGER and _NET_WM_STATE_SKIP_TASKBAR */
   if (wid) 
   {
@@ -99,31 +164,6 @@ static AZDock *sharedInstance;
       {
         return;
       }
-    }
-  }
-
-  /* Avoid transcient window */
-  {
-    Window tr = None;
-    if (XGetTransientForHint(dpy, wid, &tr)) 
-    {
-      return;
-    }
-  }
-
-  NSString *wm_class, *wm_instance;
-  BOOL result = XWindowClassHint(wid, &wm_class, &wm_instance);
-  if (result) 
-  {
-    /* Avoid anything in blacklist */
-    if ([blacklist containsObject: wm_instance] == YES) {
-      return;
-    }
-
-    /* GNUstep application is managed through NSWorkspace,
-       not here */
-    if ([wm_class isEqualToString: @"GNUstep"]) {
-      return;
     }
   }
 
@@ -182,22 +222,7 @@ static AZDock *sharedInstance;
 - (void) gnustepAppDidLaunch: (NSNotification *) not
 {
   NSString *name = [[not userInfo] objectForKey: @"NSApplicationName"];
-  AZGNUstepApp *app = nil;
-  int i, count = [apps count];
-  for (i = 0; i < count; i++) 
-  {
-    app = [apps objectAtIndex: i];
-    if ([app type] == AZDockGNUstepApplication)
-    {
-      if ([[app applicationName] isEqualToString: name])
-      {
-        /* Application exists in dock. */
-        [app setState: AZDockAppRunning];
-        return;
-      }
-    }
-  }
-  app = [self addGNUstepAppNamed: name];
+  AZGNUstepApp *app = [self addGNUstepAppNamed: name];
   [app setState: AZDockAppRunning];
   [self organizeApplications];
 }
