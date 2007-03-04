@@ -288,6 +288,22 @@ int main(int argc, char **argv)
 		[mainLoop setRun: YES];
 		[mainLoop setRunning: YES];
 		[mainLoop willStartRunning];
+
+		// NOTE: We have to simulate NSWorkspaceDidLaunchApplicationNotification
+		// in order to be properly tracked by System. This is necessary because
+		// Azalea doesn't use NSApplication at this time.
+		NSString *path = [[NSBundle mainBundle] executablePath];
+		NSString *name = [[NSProcessInfo processInfo] processName];
+		NSDictionary *userInfo = [NSDictionary 
+			dictionaryWithObjectsAndKeys: path, @"NSApplicationPath", 
+			name, @"NSApplicationName", nil]; 
+		NSNotification *notif = [NSNotification
+			notificationWithName: NSWorkspaceDidLaunchApplicationNotification
+			              object: nil
+			            userInfo: userInfo];
+		[[[NSWorkspace sharedWorkspace] notificationCenter] 
+			postNotification: notif];
+
 #if ALTERNATIVE_RUN_LOOP
 		NSLog(@"ALTERNATIVE_RUN_LOOP");
 		[mainLoop mainLoopRun]; /* run once in case reconfigure */

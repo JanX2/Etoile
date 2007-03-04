@@ -1,3 +1,8 @@
+2007-03-03  Quentin Mathé <qmathe@club-internet.fr>
+
+	* openbox.m: Post NSWorkspaceApplicationDidLaunchNotification to let 
+	System monitor Azalea.
+
 2007-02-28 Yen-Ju Chen <yjchenx at gmail>
 
 	* client_list_combined_menu.h:
