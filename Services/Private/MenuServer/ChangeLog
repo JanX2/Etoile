@@ -2,6 +2,7 @@
 
     * Do not compile subproject "Hardware" and "LookAndBehavior"
       since they are not usable.
+    * Use unicode to make sure the acute is right.
 
 2007-02-11  Quentin Mathe <qmathe@club-internet.fr>
 
