@@ -1,3 +1,8 @@
+2007-03-04  Yen-Ju Chen <yjchenx gmail>
+
+    * Do not compile subproject "Hardware" and "LookAndBehavior"
+      since they are not usable.
+
 2007-02-11  Quentin Mathe <qmathe@club-internet.fr>
 
     * Controller.h
