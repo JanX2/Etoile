@@ -126,6 +126,8 @@ MenuBarWindow * ServerMenuBarWindow = nil;
   NSRect windowFrame = [ServerMenuBarWindow frame],
          correctFrame = [Controller menuBarWindowFrame];
 
+  NSDebugLLog(@"MenuServer", @"Menu window did move: %@", notif);
+
   // convert to make sure we display correctly even with a buggy
   // window manager which doesn't honour our settings to not display
   // any window decorations
@@ -135,7 +137,12 @@ MenuBarWindow * ServerMenuBarWindow = nil;
   if (!NSEqualRects (windowFrame, correctFrame))
     {
       // get the menu bar back in place in case the user somehow moved it
-      [ServerMenuBarWindow setFrame: correctFrame display: YES];
+
+      // FIXME: We should reset the frame only when it is possible (no other 
+      // top menu present like in GNOME or KDE environment). Turned off in the 
+      // meantime else it quickly takes over CPU by constantly calling this
+      // notification.
+      //[ServerMenuBarWindow setFrame: correctFrame display: YES];
     }
 }
 

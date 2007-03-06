@@ -1,3 +1,9 @@
+2007-03-06  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Controller.m (-windowDidMove:): Commented out code to reset frame if the
+	menu window has moved. Temporary solution to make possible the use of 
+	MenuServer in GNOME or KDE context (useful for debugging).
+
 2007-03-04  Yen-Ju Chen <yjchenx gmail>
 
     * Do not compile subproject "Hardware" and "LookAndBehavior"
