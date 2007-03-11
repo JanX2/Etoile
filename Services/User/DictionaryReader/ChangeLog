@@ -2,6 +2,10 @@
 DictionaryReader Changelog
 ==========================
 
+Mar 11 2007  Yen-Ju Chen
+	* Use EtoileUI for UKNibOwner instead of EtoileFoundation.
+          Patched by Frédéric Point (Bug #8712).
+
 Feb 19 2007  Yen-Ju Chen
 	* Create ~/GNUstep/Library/DictionaryReader/ if it does not exist.
 	* Use host name for property list since NSHost is not a property list.

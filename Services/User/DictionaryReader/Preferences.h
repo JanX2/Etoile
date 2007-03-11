@@ -20,7 +20,7 @@
 
 
 #ifdef ETOILE
-#import <EtoileFoundation/UKNibOwner.h>
+#import <EtoileUI/UKNibOwner.h>
 #else
 #import "UKNibOwner.h"
 #endif

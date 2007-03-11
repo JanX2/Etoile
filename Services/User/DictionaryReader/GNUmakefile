@@ -74,11 +74,11 @@ DictionaryReader_MAIN_MODEL_FILE = DictionaryReader.gorm
 
 DictionaryReader_PRINCIPAL_CLASS = 
 
-# If we're compiling on Etoile, we'll link to EtoileFoundation
+# If we're compiling on Etoile, we'll link to EtoileUI
 # to not duplicate UKNibOwner in the code.
 ifeq ($(etoile), yes)
-	ADDITIONAL_GUI_LIBS += -lEtoileFoundation
-	ADDITIONAL_OBJC_FLAGS += -DETOILE
+	ADDITIONAL_GUI_LIBS += -lEtoileUI
+	ADDITIONAL_OBJCFLAGS += -DETOILE
 else
 	DictionaryReader_OBJC_FILES += UKNibOwner.m
 	DictionaryReader_HEADER_FILES += UKNibOwner.h
