@@ -59,6 +59,8 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
   [window skipTaskbarAndPager];
   [window setContentView: view];
   [window setBackgroundColor: [NSColor windowBackgroundColor]];
+  [window setLevel: NSNormalWindowLevel+1];
+  [window skipTaskbarAndPager]; // We need this because window level changed
 
   xwindows = [[NSMutableArray alloc] init];
 
@@ -142,34 +144,12 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 
 - (void) setState: (AZDockAppState) b
 {
-  state = b;
-
-  int i, count = [[view menu] numberOfItems];
-  id <NSMenuItem> item = nil;
-  NSColor *color;
-  BOOL enabled = YES;
-  if (state == AZDockAppRunning) {
-    color = [NSColor redColor];
-    enabled = YES; /* enable all menu before launching */
-  } else if (state == AZDockAppLaunching) {
-    color = [NSColor yellowColor];
-    enabled = NO; /* Disable all menu during launching */
-  } else {
-    color = [NSColor windowBackgroundColor];
-    enabled = YES; /* enable all menu after launching */
-  }
-
-  [window setBackgroundColor: color];
-  for (i = 0; i < count; i++) {
-    item = [[view menu] itemAtIndex: i];
-    [item setEnabled: enabled]; // FIXME: not really work.
-  }
-  [[view menu] update];
+  [view setState: b];
 }
 
 - (AZDockAppState) state
 {
-  return state;
+  return [view state];
 }
 
 /* return YES if it has win already */

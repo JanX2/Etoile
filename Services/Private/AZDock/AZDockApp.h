@@ -9,13 +9,6 @@ typedef enum _AZDockType {
   AZDockFile
 } AZDockType;
 
-typedef enum _AZDockAppState {
-  AZDockAppNotRunning,
-  AZDockAppLaunching,
-  AZDockAppRunning,
-} AZDockAppState;
-
-
 /* Post when this dock application terminates and should be remove from dock.
  * Object is terminated application. */
 extern NSString *const AZApplicationDidTerminateNotification;

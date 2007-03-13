@@ -1,3 +1,9 @@
+2007-03-12 Yen-Ju Chen <yjchenx at gmail>
+
+	* Make sure the icon is on top of normal window.
+	* Use small triangle to indicate running application.
+	* Make sure the mouse is released inside the dock.
+
 2007-03-03 Yen-Ju Chen <yjchenx at gmail>
 
 	* Check GNUstep app icon and move it out of sight.

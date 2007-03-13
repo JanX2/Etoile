@@ -12,7 +12,6 @@ static NSString *AZUserDefaultDockCommand = @"Command";
 static NSString *AZUserDefaultDockWMInstance = @"WMInstance"; // For xwindow
 static NSString *AZUserDefaultDockWMClass = @"WMClass"; // For xwindow
 static NSString *AZUserDefaultDockedApp = @"DockedApplications";
-static NSString *AZUserDefaultDockPosition= @"DockPosition";
 
 static AZDock *sharedInstance;
 
@@ -489,7 +488,6 @@ static AZDock *sharedInstance;
 {
   apps = [[NSMutableArray alloc] init];
   blacklist = [[NSMutableArray alloc] init];
-  backup = [[NSMutableArray alloc] init];
 
   server = GSCurrentServer();
   dpy = (Display *)[server serverDevice];
@@ -587,6 +585,7 @@ static AZDock *sharedInstance;
 				          defer: NO];
   [iconWindow setDesktop: ALL_DESKTOP];
   [iconWindow skipTaskbarAndPager];
+  [iconWindow setLevel: NSNormalWindowLevel+1];
 
   workspaceView = [[AZWorkspaceView alloc] initWithFrame: [[iconWindow contentView] bounds]];
   [iconWindow setContentView: workspaceView];
@@ -656,11 +655,23 @@ static AZDock *sharedInstance;
                      selector: @selector(xwindowAppDidTerminate:)
                      name: @"AZXWindowDidTerminateNotification"
                      object: nil];
+
+#if 0 // Not working
+  ASSIGN(timer, [NSTimer scheduledTimerWithTimeInterval: 5
+                                     target: self
+                                   selector: @selector(timerAction:)
+                                   userInfo: nil
+                                    repeats: YES]);
+#endif
 }
 
 - (void) applicationWillTerminate: (NSNotification *) not
 {
   [[workspace notificationCenter] removeObserver: self];
+
+  /* Stop timer */
+  [timer invalidate];
+  DESTROY(timer);
 
   /* We need to cache icon for xwindow applications.
      Prepare the directory first */
@@ -732,7 +743,6 @@ static AZDock *sharedInstance;
 {
   DESTROY(apps);
   DESTROY(blacklist);
-  DESTROY(backup);
   DESTROY(workspaceView);
   DESTROY(store);
   [super dealloc];
@@ -743,6 +753,52 @@ static AZDock *sharedInstance;
   if (sharedInstance == nil)
     sharedInstance = [[AZDock alloc] init];
   return sharedInstance;
+}
+
+- (void) timerAction: (id) sender
+{
+  /* There is a situation that a GNUstep may abnormally terminate.
+     In this case, no notification will be sent from NSWorkspace or Azalea.
+     We check it periodically. 
+     XWindow application has no such problem because if it terminates 
+     abnormally, its window will disappear and Azalea will send out a
+     notification of closing window.
+     GNUstep may exist without any window (iconized).
+     Azalea cannot track the existance of GNUstep application 
+     by tracking its window.
+   */
+//  NSLog(@"Timer");
+  BOOL refreshNeeded = NO;
+  int i;
+  NSArray *a = [workspace launchedApplications];
+  NSMutableArray *launched = [[NSMutableArray alloc] init];
+  for (i = 0; i < [a count]; i++) {
+    [launched addObject: [[a objectAtIndex: i] objectForKey: @"NSApplicationName"]];
+  }
+  NSLog(@"%@", launched);
+  
+  NSEnumerator *e = [apps objectEnumerator];
+  AZDockApp *app = nil;
+  while ((app = [e nextObject])) 
+  {
+    if (([app type] == AZDockGNUstepApplication) &&
+         [app state] == AZDockAppRunning)
+    {
+      NSString *name = [(AZGNUstepApp *)app applicationName];
+      if ([launched containsObject: name] == NO) 
+      {
+        /* An GNUstep terminates abnormally. */
+        [self removeGNUstepAppNamed: name];
+        refreshNeeded = YES;
+
+      }
+    }
+  }
+  DESTROY(launched);
+
+  if (refreshNeeded == YES) {
+    [self organizeApplications];
+  }
 }
 
 @end

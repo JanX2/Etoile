@@ -124,9 +124,15 @@
   [self updateApplicationMenu];
 }
 
-- (void) mouseDown: (NSEvent *) event
+- (void) mouseUp: (NSEvent *) event
 {
-  if ([event type] == NSLeftMouseDown) {
+  if ([event type] == NSLeftMouseUp) {
+    /* Make sure the mouse is released inside the window */
+    NSPoint p = [event locationInWindow];
+    if (NSPointInRect(p, [self bounds]) == NO) {
+      return;
+    }
+
     BOOL success = NO;
     /* Open the GSWorkspaceApplication */
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -146,7 +152,7 @@
       [NSTask launchedTaskWithLaunchPath: @"xterm" arguments: nil];
     }
   } else {
-    [super mouseDown: event];
+    [super mouseUp: event];
   }
 }
 

@@ -1,17 +1,11 @@
 #import <AppKit/AppKit.h>
 #import <GNUstepGUI/GSDisplayServer.h>
 #import <X11/Xlib.h>
+#import <AZDockApp.h>
 
 @class XWindow;
 @class AZWorkspaceView;
 @class BKBookmarkStore;
-@class AZDockApp;
-
-typedef enum _AZDockPosition {
-  AZDockLeftPosition = 0,
-  AZDockRightPosition = 1,
-  AZDockBottomPosition = 2
-} AZDockPosition;
 
 @interface AZDock: NSObject
 {
@@ -21,7 +15,6 @@ typedef enum _AZDockPosition {
   Window root_win;
 
   NSMutableArray *apps; // application to display;
-  NSMutableArray *backup; // application NOT to display; 
   NSMutableArray *blacklist; // application to ignore.
 
   /* Replace default gnustep icon window */
@@ -31,6 +24,7 @@ typedef enum _AZDockPosition {
 
   BKBookmarkStore *store;
   NSWorkspace *workspace;
+  NSTimer *timer; 
 
   Atom X_NET_CURRENT_DESKTOP;
   Atom X_NET_NUMBER_OF_DESKTOPS;
