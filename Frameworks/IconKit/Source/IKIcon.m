@@ -26,6 +26,8 @@
 */
 
 #import "IKIcon.h"
+#import "IKIconTheme.h"
+
 /* For truncf on Linux and other platforms probably...
    #import <math.h> doesn't work on many Linux systems since truncf is often 
    not part of this header currently. That's why we rely on GCC equivalent builtin 
@@ -166,11 +168,21 @@ NSString *          IKIconChangedNotification = @"IKIconChangedNotification";  /
 
 -(id)       initWithIdentifier: (IKIconIdentifier)ident
 {
+  NSString *iconPath = nil;
+
     self = [super init];
     if( !self )
         return nil;
     
-    _image = [[NSImage imageNamed: ident] retain];
+  iconPath = [[IKIconTheme theme] iconPathForIdentifier: ident];
+  if (iconPath != nil)
+    {
+      _image = [[NSImage alloc] initWithContentsOfFile: iconPath];
+    }
+  else
+    {
+      _image = [[NSImage imageNamed: ident] retain];
+    }
     _identifier = [ident retain];
     _lock = [[NSRecursiveLock alloc] init];
     
@@ -468,8 +480,18 @@ NSString *          IKIconChangedNotification = @"IKIconChangedNotification";  /
     [_lock lock];
         if( _identifier )
           {
+            NSString *iconPath = [[IKIconTheme theme] 
+              iconPathForIdentifier: _identifier];
+
             [_image autorelease];            // In case image stays the same, we don't want it to be unloaded/reloaded unnecessarily.
-            _image = [[NSImage imageNamed: _identifier] retain];
+            if (iconPath != nil)
+              {
+                _image = [[NSImage alloc] initWithContentsOfFile: iconPath];
+              }
+            else
+              {
+                _image = [[NSImage imageNamed: _identifier] retain];
+              }
             
             [[NSNotificationCenter defaultCenter] postNotificationName: IKIconChangedNotification object: self];
           }

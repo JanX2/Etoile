@@ -1,5 +1,10 @@
 2007-03-13  Quentin Mathe <qmathe@club-internet.fr>
 
+	* Source/IKIcon.m (-initWithIdentifier:, -update): Updated to use 
+	IKIconTheme and -[NSImage imageNamed:] only as a fallback.
+
+2007-03-13  Quentin Mathe <qmathe@club-internet.fr>
+
 	* GNUmakefile.preamble:
 	* GNUmakefile.postamble:
 	Deleted old content not needed at all now we use etoile.make.
