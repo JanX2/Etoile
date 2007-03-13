@@ -498,6 +498,7 @@ static AZDock *sharedInstance;
   /* Hard-coded blacklist for now */
   [blacklist addObject: @"EtoileMenuServer"];
   [blacklist addObject: @"AZDock"];
+  [blacklist addObject: @"Azalea"];
   [blacklist addObject: @"AZBackground"];
   [blacklist addObject: @"etoile_system"];
 
