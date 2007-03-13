@@ -73,6 +73,7 @@ libIconKit_OBJC_FILES= \
 	IKCompositorOperation.m \
 	IKCompositor.m \
 	IKIcon.m \
+	IKIconTheme.m \
 	IKIconProvider.m \
 	IKApplicationIconProvider.m \
 	IKThumbnailProvider.m \
@@ -98,6 +99,7 @@ libIconKit_HEADER_FILES = \
 	IKCompositorOperation.h \
 	IKCompositor.h \
 	IKIcon.h \
+	IKIconTheme.h \
 	IKIconIdentifier.h \
 	IKIconPositions.h \
 	IKIconProvider.h \

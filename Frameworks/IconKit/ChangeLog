@@ -1,6 +1,17 @@
+2007-03-13  Quentin Mathe <qmathe@club-internet.fr>
+
+	New icon theme support (not yet used by IKIcon)
+	* Headers/IKIconTheme.h:
+	* Source/IKIconTheme.m:
+	Added.
+	* Source/GNUmakefile: Updated.
+	* test.icontheme: Theme bundle used to test icon theme support. Also useful
+	as a template. 
+	Works and pass all unit tests.
+
 2007-02-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
-        * Format README in reStructuedText
+	* Format README in reStructuedText
 
 2007-02-28  Quentin Mathe <qmathe@club-internet.fr>
 
