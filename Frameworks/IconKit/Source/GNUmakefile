@@ -24,6 +24,8 @@
 #		Boston, MA  02111-1307, USA
 #
 
+ETOILE_CORE_MODULE = YES
+
 include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_OBJCFLAGS += -Wno-import
@@ -36,10 +38,8 @@ ADDITIONAL_INCLUDE_DIRS += -I../Headers -I..
 # ADDITIONAL_LDFLAGS = -lm 
 
 #
-# Main application
+# Main library
 #
-
-GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 
 PACKAGE_NAME = IconKit
 ifeq ($(test), yes)
@@ -107,7 +107,7 @@ libIconKit_HEADER_FILES = \
 	IKApplicationIconProvider.h \
 	IKWorkspaceAdditions.h	
 endif
-	
+
 -include ../GNUmakefile.preamble
 
 ifeq ($(test), yes)

@@ -25,18 +25,10 @@
 #
 
 before-all::
-	@echo "Project: $(PROJECT_DIR)"
-	if [ "$(test)" = "yes" ]; then \
-	rm -f $(PROJECT_DIR)/UnitKit; \
-	$(LN_S) $(PROJECT_DIR)/../UnitKit/Source/FrameworkSource $(PROJECT_DIR)/UnitKit; \
-	fi;
 
 after-all::
 
 after-clean::
-	if [ "$(test)" = "yes" ]; then \
-	rm -f $(PROJECT_DIR)/UnitKit; \
-	fi;
 
 after-distclean::
 

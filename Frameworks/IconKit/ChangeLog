@@ -1,5 +1,13 @@
 2007-03-13  Quentin Mathe <qmathe@club-internet.fr>
 
+	* GNUmakefile.preamble:
+	* GNUmakefile.postamble:
+	Deleted old content not needed at all now we use etoile.make.
+	* Source/GNUmakefile: Replaced GNUSTEP_INSTALLATION_DIR by 
+	ETOILE_CORE_MODULE.
+
+2007-03-13  Quentin Mathe <qmathe@club-internet.fr>
+
 	New icon theme support (not yet used by IKIcon)
 	* Headers/IKIconTheme.h:
 	* Source/IKIconTheme.m:

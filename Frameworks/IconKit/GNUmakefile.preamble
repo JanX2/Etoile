@@ -23,11 +23,3 @@
 #		59 Temple Place - Suite 330
 #		Boston, MA  02111-1307, USA
 #
-
-export PROJECT_DIR ?= $(CURDIR)
-
-ifeq ($(test), yes)
-ADDITIONAL_INCLUDE_DIRS += -I$(PROJECT_DIR)/UnitKit 
-
-ADDITIONAL_LIB_DIRS += -L$(PROJECT_DIR)/UnitKit/$(GNUSTEP_OBJ_DIR)
-endif
