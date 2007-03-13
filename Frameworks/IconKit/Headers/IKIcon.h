@@ -4,7 +4,7 @@
 	IKIcon is IconKit main class to represent icons.
 
 	Copyright (C) 2004 Uli Kusterer <contact@zathras.de>
-	                   Quentin Mathe <qmathe@club-internet.fr>	                   
+	                   Quentin Mathe <qmathe@club-internet.fr>
 
 	Author:   Uli Kusterer <contact@zathras.de>
 	          Quentin Mathe <qmathe@club-internet.fr>
@@ -29,58 +29,57 @@
 #import <IconKit/IKIconIdentifier.h>
 #import <IconKit/IKIconPositions.h>
 
-// Notifications:
-extern NSString *IKIconChangedNotification;  // Sent with the IKIcon as the object whenever update is called.
+/* Notifications */
+/** Sent with the IKIcon as the object whenever -update is called. */
+extern NSString *IKIconChangedNotification;
+
 
 @interface IKIcon : NSObject
 {
-    NSImage *			_image;      // The actual icon image to display.
-    IKIconIdentifier	_identifier; // If this is a standard icon, this is its identifier so we can re-load it on theme changes.
-    NSRecursiveLock *	_lock;       // Thread lock to make sure IKIcons can be used from several threads.
+  NSImage *_image; /* The actual icon image to display. */
+  /* If this is a standard icon, this is its identifier so we can reload it on
+     theme changes. */
+  IKIconIdentifier _identifier; 
+  /* Thread lock to make sure IKIcons can be used from several threads. */
+  NSRecursiveLock *_lock; 
 }
 
-// Convenience methods for alloc/init/autorelease:
+/* Convenience methods for alloc/init/autorelease */
 + (id) iconForFile: (NSString *)path;
 + (id) iconForURL: (NSURL *)path;
 + (id) iconWithIdentifier: (IKIconIdentifier)identifier;
-+ (id) iconWithExtension: (NSString *)suffix mimeType: (NSString*)mime
-	attributes: (NSDictionary *)dict; /* any param may be NIL */
++ (id) iconWithExtension: (NSString *)suffix mimeType: (NSString *)mime
+  attributes: (NSDictionary *)dict; /* any param may be NIL */
 + (id) iconWithSize: (NSSize)size;
 + (id) iconWithImage: (NSImage *)image;
 
-// Constructors:
+/* Constructors */
 - (id) initForFile: (NSString *)path;
 - (id) initForURL: (NSURL *)path;
 - (id) initWithIdentifier: (IKIconIdentifier)identifier;
 - (id) initWithExtension: (NSString *)suffix mimeType: (NSString *)mime
-	attributes: (NSDictionary *)dict; /* any param may be NIL */
+  attributes: (NSDictionary *)dict; /* any param may be NIL */
 - (id) initWithSize: (NSSize)size;
-- (id) initWithImage: (NSImage *)image; // sets baseImage.
+- (id) initWithImage: (NSImage *)image; /* sets baseImage */
 - (id) initWithDictionary: (NSDictionary *)plist;
 
+/* Accessors */
 - (NSSize) size;
 - (NSImage *) image;
+/* For passing to initWithDictionary: */
+- (NSDictionary *) dictionaryRepresentation;
 
-- (NSDictionary *) dictionaryRepresentation; // For passing to initWithDictionary:.
-
-// Compositing:
+/* Compositing */
 - (IKIcon *) iconByAddingIcon: (IKIcon *)src toRect: (NSRect)pos;
 - (IKIcon *) iconByAddingIcon: (IKIcon *)src toRect: (NSRect)pos
-	operation: (NSCompositingOperation)op fraction: (float)delta;
-
+  operation: (NSCompositingOperation)op fraction: (float)delta;
 - (NSRect) badgeRectForPosition: (IKBadgePosition)pos;
 
-// For theme-switching:
-- (void) update; // Reloads the icon, possibly from the new theme.
+/* Theme-switching */
+- (void) update; /* Reloads the icon, possibly from the new theme. */
 
 @end
 
-/*
- * Prototypes
- */
-
-NSString *
-NSStringFromIconIdentifier(IKIconIdentifier ident);
-
-IKIconIdentifier
-IKIconIdentifierFromString(NSString *str);
+/* Prototypes */
+NSString * NSStringFromIconIdentifier(IKIconIdentifier ident);
+IKIconIdentifier IKIconIdentifierFromString(NSString *str);
