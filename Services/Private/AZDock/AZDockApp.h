@@ -23,7 +23,6 @@ extern NSString *const AZApplicationDidTerminateNotification;
 
   NSString *command; /* Command to launch this application */
   BOOL keepInDock;
-  AZDockAppState state;
 }
 
 - (AZDockType) type;

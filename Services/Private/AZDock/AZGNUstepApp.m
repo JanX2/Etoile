@@ -8,7 +8,7 @@
 /* Action from AZDockView */
 - (void) showAction: (id) sender
 {
-  if (state == AZDockAppLaunching) {
+  if ([self state] == AZDockAppLaunching) {
     /* Do nothing during launching */
     return;
   }
@@ -19,7 +19,7 @@
     /* Try regular execute */
     [NSTask launchedTaskWithLaunchPath: path arguments: nil];
   }
-  if (state == AZDockAppNotRunning) {
+  if ([self state] == AZDockAppNotRunning) {
     [self setState: AZDockAppLaunching];
   }
 }

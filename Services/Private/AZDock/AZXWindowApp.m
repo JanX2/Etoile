@@ -9,7 +9,7 @@
 /* Action from AZDockView */
 - (void) showAction: (id) sender
 {
-  if (state == AZDockAppRunning) {
+  if ([self state] == AZDockAppRunning) {
     /* Go through all windows and raise them */
     Display *dpy = (Display *)[GSCurrentServer() serverDevice];
     int i;
@@ -27,7 +27,7 @@
     }
     /* Focus on the last one */
     XSetInputFocus(dpy, w, RevertToNone, CurrentTime);
-  } else if (state == AZDockAppLaunching) {
+  } else if ([self state] == AZDockAppLaunching) {
     /* Do nothing during launching */
   } else {
     /* Application is not running. Execute it */

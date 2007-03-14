@@ -65,7 +65,7 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
   xwindows = [[NSMutableArray alloc] init];
 
   keepInDock = NO;
-  state = AZDockAppNotRunning;
+  [self setState: AZDockAppNotRunning];
 
   return self;
 }
