@@ -22,9 +22,11 @@
 */
 
 #import "ClockMenulet.h"
+#import "CalendarView.h"
 
-#import <AppKit/NSTextField.h>
+#import <AppKit/NSButton.h>
 #import <AppKit/NSFont.h>
+#import <AppKit/NSWindow.h>
 
 #import <Foundation/NSTimer.h>
 #import <Foundation/NSInvocation.h>
@@ -59,31 +61,57 @@ AMPMStringForHour(int hour)
 
 @implementation ClockMenulet
 
+- (void) buttonAction: (id) sender
+{
+  if (calendarWindow == nil) {
+    CalendarView *cView = [[CalendarView alloc] initWithFrame: [[calendarWindow contentView] bounds]];
+    [cView setDate: [NSCalendarDate calendarDate]];
+
+    /* Try to get right position */
+    int w = [CalendarView size].width;
+    int h = [CalendarView size].height;
+    int y = NSMinY([[view window] frame])-h;
+    int x = NSMinX([view frame]);
+    /* Make sure the window is inside the screen */
+    x = (x+w > NSMaxX([[view window] frame])) ? NSMaxX([[view window] frame])-w : x;
+    NSRect rect = NSMakeRect(x, y, w, h);
+    calendarWindow = [[NSWindow alloc] initWithContentRect: rect
+                                      styleMask: NSBorderlessWindowMask
+                                        backing: NSBackingStoreRetained
+                                          defer: NO];
+    [calendarWindow setContentView: cView];
+    DESTROY(cView);
+  }
+  if ([calendarWindow isVisible]) {
+    [calendarWindow orderOut: self];
+  } else {
+    [calendarWindow makeKeyAndOrderFront: self];
+  }
+}
+
 - (void) dealloc
 {
   [timer invalidate];
   TEST_RELEASE(view);
+  DESTROY(calendarWindow);
 
   [super dealloc];
 }
 
-- init
+- (id) init
 {
   if ((self = [super init]) != nil)
     {
       NSInvocation * inv;
       NSFont * font = [NSFont systemFontOfSize: 0];
 
-      view = [[NSTextField alloc] initWithFrame:
+      view = [[NSButton alloc] initWithFrame:
         NSMakeRect(0, 0, [font widthOfString: @"Mon XX:XX PM"] + 5, 20)];
 
       [view setFont: font];
-      [view setDrawsBackground: NO];
       [view setBordered: NO];
-      [view setBezeled: NO];
-      [view setSelectable: NO];
-      [view setEditable: NO];
-      [view setAlignment: NSCenterTextAlignment];
+      [view setTarget: self];
+      [view setAction: @selector(buttonAction:)];
 
       inv = [NSInvocation invocationWithMethodSignature: [self
         methodSignatureForSelector: @selector(updateClock)]];
@@ -132,13 +160,13 @@ AMPMStringForHour(int hour)
               h -= 12;
             }
 
-          [view setStringValue: [NSString stringWithFormat:
+          [view setTitle: [NSString stringWithFormat:
             _(@"%@ %d:%02d %@"), ShortNameOfDay(day), h, minute,
             AMPMStringForHour(hour)]];
         }
       else
         {
-          [view setStringValue: [NSString stringWithFormat: _(@"%@ %d:%02d"),
+          [view setTitle: [NSString stringWithFormat: _(@"%@ %d:%02d"),
             ShortNameOfDay(day), hour, minute]];
         }
     }
@@ -146,7 +174,7 @@ AMPMStringForHour(int hour)
 
 - (NSView *) menuletView
 {
-  return view;
+  return (NSView *)view;
 }
 
 @end

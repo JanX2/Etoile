@@ -17,7 +17,10 @@ endif
 
 BUNDLE_NAME = ClockMenulet
 
-ClockMenulet_OBJC_FILES = ClockMenulet.m \
+ClockMenulet_OBJC_FILES = \
+	ClockMenulet.m \
+	CalendarView.m
+
 
 ClockMenulet_OBJCC_FILES = 
 ClockMenulet_C_FILES = 

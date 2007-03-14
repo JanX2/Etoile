@@ -24,12 +24,13 @@
 #import <Foundation/NSObject.h>
 #import "../../EtoileMenulet.h"
 
-@class NSTextField, NSTimer;
+@class NSButton, NSTimer, NSWindow;
 
 @interface ClockMenulet : NSObject <EtoileMenulet>
 {
-  NSTimer * timer;
-  NSTextField * view;
+  NSTimer *timer;
+  NSButton *view;
+  NSWindow *calendarWindow;
 
   int hour, minute, day;
 }
