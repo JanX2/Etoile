@@ -68,6 +68,7 @@ void setPasswordForAccount(NSString * password, JID * account)
 - (void) yes
 {
 	NSString * password = [passwordBox stringValue];
+	setPasswordForAccount(password, myJID);
 	[[self window] close];
 	[NSApp stopModalWithCode:0];
 }
