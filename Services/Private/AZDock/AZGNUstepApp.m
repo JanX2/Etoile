@@ -1,4 +1,5 @@
 #import "AZGNUstepApp.h"
+#import "AZDock.h"
 #import <X11/Xutil.h>
 
 @implementation AZGNUstepApp 
@@ -100,6 +101,11 @@
 - (void) dealloc
 {
   DESTROY(appName);
+  if (timer) {
+    [timer invalidate];
+  }
+  DESTROY(timer);
+
   [super dealloc];
 }
 
@@ -114,6 +120,12 @@
 - (BOOL) acceptXWindow: (Window) win
 {
   BOOL result = [super acceptXWindow: win];
+
+  /* If it comes here, it must be our window. AZDock check it already */
+  if (result == NO) {
+    [xwindows addObject: [NSNumber numberWithUnsignedLong: win]];
+    result = YES;
+  }
 
   Display *dpy = (Display *)[GSCurrentServer() serverDevice];
   XWMHints *wmHints = XGetWMHints(dpy, win);
@@ -171,7 +183,26 @@
 - (BOOL) removeXWindow: (Window) win
 {
   BOOL result = [super removeXWindow: win];
+  if (result == YES) {
+    //NSLog(@"%d removed %d", win, result);
+    if ([xwindows count] == 0) {
+      // NSLog(@"empty");
+      /* There is a corner case. 
+         A GNUstep application may terminate abnormally.
+         We can only use NSConnection to check that. */
+      if (timer) {
+        [timer invalidate];  
+      }
+      DESTROY(timer);
+      /* We give it a few seconds to terminate */
+      ASSIGN(timer, [NSTimer scheduledTimerWithTimeInterval: 3
+                                     target: [AZDock sharedDock]
+                                   selector: @selector(checkAlive:)
+                                   userInfo: self
+                                    repeats: NO]);
 
+    }
+  }
   return result;
 }
 
@@ -183,6 +214,11 @@
        Release group_leader and icon_win. */
     group_leader = 0;
     icon_win = 0;
+    /* Remove timer */
+    if (timer) {
+      [timer invalidate];
+    }
+    DESTROY(timer);
   }
 }
 

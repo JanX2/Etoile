@@ -1,6 +1,8 @@
 2007-03-14 Yen-Ju Chen <yjchenx at gmail>
 
 	* Fix ghost state after moving it to AZDockView.
+	* Since NSWorkspace is not reliable, check the existance of 
+          application through NSConnection.
 
 2007-03-12 Yen-Ju Chen <yjchenx at gmail>
 

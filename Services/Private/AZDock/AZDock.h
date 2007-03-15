@@ -24,7 +24,6 @@
 
   BKBookmarkStore *store;
   NSWorkspace *workspace;
-  NSTimer *timer; 
 
   Atom X_NET_CURRENT_DESKTOP;
   Atom X_NET_NUMBER_OF_DESKTOPS;

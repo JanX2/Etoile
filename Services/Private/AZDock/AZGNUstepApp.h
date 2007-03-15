@@ -6,6 +6,7 @@
   NSString *appName;
   Window group_leader;
   Window icon_win;
+  NSTimer *timer;
 }
 
 - (id) initWithApplicationName: (NSString *) appName;

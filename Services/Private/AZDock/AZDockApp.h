@@ -10,7 +10,7 @@ typedef enum _AZDockType {
 } AZDockType;
 
 /* Post when this dock application terminates and should be remove from dock.
- * Object is terminated application. */
+ * Object is terminated application. Not used now. */
 extern NSString *const AZApplicationDidTerminateNotification;
 
 @interface AZDockApp: NSObject

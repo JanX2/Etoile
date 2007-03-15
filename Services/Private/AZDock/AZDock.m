@@ -39,6 +39,36 @@ static AZDock *sharedInstance;
 @implementation AZDock
 
 /** Private **/
+- (BOOL) isGNUstepAppAlive: (NSString *) name
+{
+  NSConnection *conn = 
+             [NSConnection connectionWithRegisteredName: name host: @""];
+  if (conn) {
+    [conn invalidate];
+    return YES;
+  } else {
+    return NO;
+  }
+}
+
+- (void) checkAlive: (id) sender
+{
+  //NSLog(@"checkAlive %@", sender);
+  if ([[sender userInfo] isKindOfClass: [AZGNUstepApp class]])
+  {
+    /* Connect to application */
+    AZGNUstepApp *app = (AZGNUstepApp *)[sender userInfo];
+    if ([self isGNUstepAppAlive: [app applicationName]]) {
+    } else {
+      [app setState: AZDockAppNotRunning];
+      if ([app isKeptInDock] == YES) {
+        return;
+      }
+      [[app window] orderOut: self];
+      [apps removeObject: app];
+    }
+  } 
+}
 
 - (AZGNUstepApp *) addGNUstepAppNamed: (NSString *) name 
 {
@@ -83,6 +113,9 @@ static AZDock *sharedInstance;
     {
       if ([[app applicationName] isEqualToString: name])
       {
+        /* We have to change their state to 'not running'
+           so that we can correctly detect abnormal termination */
+        [app setState: AZDockAppNotRunning];
         [self removeDockApp: app];
       }
     }
@@ -198,15 +231,28 @@ static AZDock *sharedInstance;
   for (k = 0; k < [apps count]; k++) 
   {
     app = [apps objectAtIndex: k];
-    if ([app type] == AZDockXWindowApplication) 
+    if ([app removeXWindow: wid])
     {
-      if ([app removeXWindow: wid])
+      if ([app type] == AZDockXWindowApplication) 
       {
+        if ([app numberOfXWindows] == 0)
+        {
+          /* Change state just in case */
+          [app setState: AZDockAppNotRunning];
+          [self removeDockApp: app];
+        }
+        return;
+      }
+      else if ([app type] == AZDockGNUstepApplication) 
+      {
+//        NSLog(@"here");
+#if 0
         if ([app numberOfXWindows] == 0)
         {
           [self removeDockApp: app];
         }
         return;
+#endif
       }
     }
   }
@@ -244,7 +290,6 @@ static AZDock *sharedInstance;
 
 - (void) xwindowAppDidTerminate: (NSNotification *) not
 {
-//  NSLog(@"xwindow terminate %@", not);
   [self removeXWindowWithID:
            [[[not userInfo] objectForKey: @"AZXWindowID"] intValue]];
   [self organizeApplications];
@@ -385,7 +430,9 @@ static AZDock *sharedInstance;
 #if 0
 - (void) applicationDidTerminate: (NSNotification *) not
 {
+  NSLog(@"applicationDidTerminate");
   AZDockApp *app = [not object];
+  [app setState: AZDockAppNotRunning];
   if ([app isKeptInDock] == YES) {
     return;
   }
@@ -606,8 +653,13 @@ static AZDock *sharedInstance;
   int i, count = [a count];
   for (i = 0; i < count; i++)
   {
-    app = [self addGNUstepAppNamed: [[a objectAtIndex: i] objectForKey: @"NSApplicationName"]];
-    [app setState: AZDockAppRunning];
+    NSString *name = [[a objectAtIndex: i] objectForKey: @"NSApplicationName"];
+    /* We need to check the existance of application with NSConnection
+       because NSWorkspace is not realiable */
+    if ([self isGNUstepAppAlive: name]) {
+      app = [self addGNUstepAppNamed: name];
+      [app setState: AZDockAppRunning];
+    }
   }
 
   /* Build up launched XWindow application */
@@ -656,23 +708,11 @@ static AZDock *sharedInstance;
                      selector: @selector(xwindowAppDidTerminate:)
                      name: @"AZXWindowDidTerminateNotification"
                      object: nil];
-
-#if 0 // Not working
-  ASSIGN(timer, [NSTimer scheduledTimerWithTimeInterval: 5
-                                     target: self
-                                   selector: @selector(timerAction:)
-                                   userInfo: nil
-                                    repeats: YES]);
-#endif
 }
 
 - (void) applicationWillTerminate: (NSNotification *) not
 {
   [[workspace notificationCenter] removeObserver: self];
-
-  /* Stop timer */
-  [timer invalidate];
-  DESTROY(timer);
 
   /* We need to cache icon for xwindow applications.
      Prepare the directory first */
@@ -754,52 +794,6 @@ static AZDock *sharedInstance;
   if (sharedInstance == nil)
     sharedInstance = [[AZDock alloc] init];
   return sharedInstance;
-}
-
-- (void) timerAction: (id) sender
-{
-  /* There is a situation that a GNUstep may abnormally terminate.
-     In this case, no notification will be sent from NSWorkspace or Azalea.
-     We check it periodically. 
-     XWindow application has no such problem because if it terminates 
-     abnormally, its window will disappear and Azalea will send out a
-     notification of closing window.
-     GNUstep may exist without any window (iconized).
-     Azalea cannot track the existance of GNUstep application 
-     by tracking its window.
-   */
-//  NSLog(@"Timer");
-  BOOL refreshNeeded = NO;
-  int i;
-  NSArray *a = [workspace launchedApplications];
-  NSMutableArray *launched = [[NSMutableArray alloc] init];
-  for (i = 0; i < [a count]; i++) {
-    [launched addObject: [[a objectAtIndex: i] objectForKey: @"NSApplicationName"]];
-  }
-  NSLog(@"%@", launched);
-  
-  NSEnumerator *e = [apps objectEnumerator];
-  AZDockApp *app = nil;
-  while ((app = [e nextObject])) 
-  {
-    if (([app type] == AZDockGNUstepApplication) &&
-         [app state] == AZDockAppRunning)
-    {
-      NSString *name = [(AZGNUstepApp *)app applicationName];
-      if ([launched containsObject: name] == NO) 
-      {
-        /* An GNUstep terminates abnormally. */
-        [self removeGNUstepAppNamed: name];
-        refreshNeeded = YES;
-
-      }
-    }
-  }
-  DESTROY(launched);
-
-  if (refreshNeeded == YES) {
-    [self organizeApplications];
-  }
 }
 
 @end
