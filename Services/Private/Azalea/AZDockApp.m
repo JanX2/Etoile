@@ -137,6 +137,7 @@
 - (id) copyWithZone: (NSZone *) zone
 {
   RETAIN(self);
+  return self;
 }
 
 /* AZWindow protocol */

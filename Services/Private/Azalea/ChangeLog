@@ -1,3 +1,7 @@
+2007-03-16  Yen-Ju Chen <yjchenx at gmail>
+
+	* Use XWindowServerKit for freedesktop.org base directories.
+
 2007-03-03  Quentin Mathé <qmathe@club-internet.fr>
 
 	* openbox.m: Post NSWorkspaceApplicationDidLaunchNotification to let 

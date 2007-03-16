@@ -100,6 +100,7 @@ BOOL session_state_cmp(AZSessionState *s, AZClient *c) { return NO; }
 #import "AZDock.h"
 #import "AZDebug.h"
 #import "AZClient.h"
+#import <XWindowServerKit/XFunctions.h>
 #import "openbox.h"
 #include "prop.h"
 #include "parse.h"
@@ -215,7 +216,7 @@ void session_startup(int *argc, char ***argv)
     if (sm_disable)
         return;
 
-    ASSIGN(sm_sessions_path, ([NSString pathWithComponents: [NSArray arrayWithObjects: parse_xdg_data_home_path(), @"openbox", @"sessions", nil]]));
+    ASSIGN(sm_sessions_path, ([NSString pathWithComponents: [NSArray arrayWithObjects: XDGDataHomePath(), @"openbox", @"sessions", nil]]));
     if (!parse_mkdir_path(sm_sessions_path, 0700))
         NSLog(@"Warning: Unable to make directory '%@'", sm_sessions_path);
 

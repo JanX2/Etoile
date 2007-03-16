@@ -75,8 +75,6 @@ BOOL parse_attr_int(const char *name, xmlNodePtr node, int *value);
 void parse_paths_startup();
 void parse_paths_shutdown();
 
-NSString *parse_xdg_config_home_path();
-NSString *parse_xdg_data_home_path();
 NSArray *parse_xdg_config_dir_paths();
 NSArray *parse_xdg_data_dir_paths();
 

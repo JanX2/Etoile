@@ -20,6 +20,7 @@
 */
 
 #import <Foundation/Foundation.h>
+#import <XWindowServerKit/XFunctions.h>
 #import "parse.h"
 #import <string.h>
 #import <errno.h>
@@ -27,8 +28,6 @@
 #import <sys/types.h>
 
 static BOOL xdg_start;
-static NSString *xdg_config_home_path;
-static NSString *xdg_data_home_path;
 static NSMutableArray *xdg_config_dir_paths;
 static NSMutableArray *xdg_data_dir_paths;
 
@@ -284,46 +283,19 @@ BOOL parse_attr_contains(const char *val, xmlNodePtr node, const char *name)
 
 void parse_paths_startup()
 {
-    NSString *p;
-    NSProcessInfo *processInfo = [NSProcessInfo processInfo];
-    NSDictionary *env = [processInfo environment];
-
     if (xdg_start)
         return;
     xdg_start = YES;
 
-    p = [env objectForKey: @"XDG_CONFIG_HOME"];
-    if (p && [p length] > 0) /* not unset or empty */
-	ASSIGNCOPY(xdg_config_home_path, p);
-    else
-	ASSIGN(xdg_config_home_path, [NSHomeDirectory() stringByAppendingPathComponent: @".config"]);
-
-    p = [env objectForKey: @"XDG_DATA_HOME"];
-    if (p && [p length] > 0) /* not unset or empty */
-	ASSIGNCOPY(xdg_data_home_path, p);
-    else
-	ASSIGN(xdg_data_home_path, [[NSHomeDirectory() stringByAppendingPathComponent: @".local"] stringByAppendingPathComponent: @"share"]);
-
-    p = [env objectForKey: @"XDG_CONFIG_DIRS"];
-    xdg_config_dir_paths = [[NSMutableArray alloc] init];
-    [xdg_config_dir_paths addObject: xdg_config_home_path];
+    /* We add resource path in the end so that 
+       it can find the default setting */
+    xdg_config_dir_paths = [NSMutableArray arrayWithArray: XDGConfigDirectories()];
     [xdg_config_dir_paths addObject: [[NSBundle mainBundle] resourcePath]];
-    if (p && [p length] > 0) /* not unset or empty */
-        [xdg_config_dir_paths addObjectsFromArray: [p componentsSeparatedByString: @":"]];
-    else {
-	[xdg_config_dir_paths addObject: [NSString pathWithComponents: [NSArray arrayWithObjects: @"/", @"etc", @"xdg", nil]]];
-    }
-    
-    p = [env objectForKey: @"XDG_DATA_DIRS"];
-    xdg_data_dir_paths = [[NSMutableArray alloc] init];
-    [xdg_data_dir_paths addObject: xdg_data_home_path];
+    RETAIN(xdg_config_dir_paths);
+
+    xdg_data_dir_paths = [NSMutableArray arrayWithArray: XDGDataDirectories()];
     [xdg_data_dir_paths addObject: [[NSBundle mainBundle] resourcePath]];
-    if (p && [p length] > 0) /* not unset or empty */
-        [xdg_data_dir_paths addObjectsFromArray: [p componentsSeparatedByString: @":"]];
-    else {
-	[xdg_data_dir_paths addObject: [NSString pathWithComponents: [NSArray arrayWithObjects: @"/", @"usr", @"local", @"share", nil]]];
-	[xdg_data_dir_paths addObject: [NSString pathWithComponents: [NSArray arrayWithObjects: @"/", @"usr", @"share", nil]]];
-    }
+    RETAIN(xdg_data_dir_paths);
 }
 
 void parse_paths_shutdown()
@@ -367,16 +339,6 @@ BOOL parse_mkdir_path(NSString *path, int mode)
       }
     }
     return YES;
-}
-
-NSString* parse_xdg_config_home_path()
-{
-    return xdg_config_home_path;
-}
-
-NSString* parse_xdg_data_home_path()
-{
-    return xdg_data_home_path;
 }
 
 NSArray* parse_xdg_config_dir_paths()
