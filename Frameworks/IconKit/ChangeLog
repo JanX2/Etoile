@@ -1,5 +1,9 @@
 2007-03-16  Quentin Mathe <qmathe@club-internet.fr>
 
+	* Headers/IconKit.h: Includes IKIconTheme.h now.
+
+2007-03-16  Quentin Mathe <qmathe@club-internet.fr>
+
 	* Source/IKIcon.m: Updated formatting and indentation to be cleaner and
 	match GNUstep coding style rules.
 

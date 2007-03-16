@@ -31,6 +31,7 @@
 #include <IconKit/IKIcon.h>
 #include <IconKit/IKIconIdentifier.h>
 #include <IconKit/IKIconPositions.h>
+#include <IconKit/IKIconTheme.h>
 #include <IconKit/IKIconProvider.h>
 #include <IconKit/IKApplicationIconProvider.h>
 #include <IconKit/IKThumbnailProvider.h>
