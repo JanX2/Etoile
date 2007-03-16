@@ -1,3 +1,7 @@
+2007-03-15 Yen-Ju Chen <yjchenx at gmail>
+
+	* Add TODO in README.
+
 2007-03-14 Yen-Ju Chen <yjchenx at gmail>
 
 	* Fix ghost state after moving it to AZDockView.
