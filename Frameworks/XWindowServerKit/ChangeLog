@@ -1,3 +1,7 @@
+2007 03 16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Add support for freedesktop.org base directories.
+
 2007 02 17 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Format README in reStructuredText.

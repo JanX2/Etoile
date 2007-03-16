@@ -33,6 +33,11 @@
 #import <X11/Xatom.h>
 #import <X11/Xutil.h>
 
+static NSString *_XDGConfigHomePath;
+static NSString *_XDGDataHomePath;
+static NSArray *_XDGConfigDirectories;
+static NSArray *_XDGDataDirectories;
+
 BOOL XWindowClassHint(Window window, NSString **wm_class, NSString **wm_instance)
 {
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
@@ -305,5 +310,67 @@ BOOL XGNUstepWindowLevel(Window win, int *level)
     XFree(data);
   }
   return NO;
+}
+
+/* Freedesktop.org stuff */
+NSString *XDGConfigHomePath()
+{
+  if (_XDGConfigHomePath == nil) {
+    NSString *p = [[[NSProcessInfo processInfo] environment] objectForKey: @"XDG_CONFIG_HOME"];
+    if (p && [p length] > 0) {
+      ASSIGN(_XDGConfigHomePath, p);
+    } else {
+      ASSIGN(_XDGConfigHomePath, [NSHomeDirectory() stringByAppendingPathComponent: @".config"]);
+    }
+  }
+  return _XDGConfigHomePath;
+}
+
+NSString *XDGDataHomePath()
+{
+  if (_XDGDataHomePath == nil) {
+    NSString *p = [[[NSProcessInfo processInfo] environment] objectForKey: @"XDG_DATA_HOME"];
+    if (p && [p length] > 0) {
+      ASSIGN(_XDGDataHomePath, p);
+    } else {
+      ASSIGN(_XDGDataHomePath, [[NSHomeDirectory() stringByAppendingPathComponent: @".local"] stringByAppendingPathComponent: @"share"]);
+    }
+  }
+  return _XDGDataHomePath;
+}
+
+NSArray *XDGConfigDirectories()
+{
+  if (_XDGConfigDirectories == nil) {
+    NSString *p = [[[NSProcessInfo processInfo] environment] objectForKey: @"XDG_CONFIG_DIRS"];
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    [array addObject: XDGConfigHomePath()];
+    if (p && [p length] > 0) { /* not unset or empty */
+      [array addObjectsFromArray: [p componentsSeparatedByString: @":"]];
+    } else {
+      [array addObject: [NSString pathWithComponents: [NSArray arrayWithObjects: @"/", @"etc", @"xdg", nil]]];
+    }
+    ASSIGNCOPY(_XDGConfigDirectories, array);
+    DESTROY(array);
+  }
+  return _XDGConfigDirectories;
+}
+
+NSArray *XDGDataDirectories()
+{
+  if (_XDGDataDirectories == nil) {
+    NSString *p = [[[NSProcessInfo processInfo] environment] objectForKey: @"XDG_DATA_DIRS"];
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    [array addObject: XDGDataHomePath()];
+    if (p && [p length] > 0) {/* not unset or empty */
+        [array addObjectsFromArray: [p componentsSeparatedByString: @":"]];
+    } else {
+        [array addObject: [NSString pathWithComponents: [NSArray arrayWithObjects: @"/", @"usr", @"local", @"share", nil]]];
+        [array addObject: [NSString pathWithComponents: [NSArray arrayWithObjects: @"/", @"usr", @"share", nil]]];
+    }
+    ASSIGNCOPY(_XDGDataDirectories, array);
+    DESTROY(array);
+  }
+  return _XDGDataDirectories;
 }
 
