@@ -14,6 +14,13 @@ User Defaults
 Key: DockPosition
 Value: 0 (Left side), 1 (Right side), 2 (Bottom side)
 
+NOTE
+----
+If you have GWorkspace installed, GNUstep will try to use it automatically.
+Therefore, whenever you start AZDock, GWorkspace will also start.
+If you don't want this to happen, use
+`defaults write NSGlobalDomain GSWorkspaceApplication NotExist.app` block it.
+
 TODO
 ----
 * Drag file on icon and call -application:openFile: ?
