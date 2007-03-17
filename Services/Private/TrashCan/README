@@ -1,0 +1,18 @@
+========
+TrashCan
+========
+
+:Author: Yen-Ju Chen <yjchenx at gmail>
+:License: BSD license
+:NOTE: Highly unstable. Use it on your own risk.
+
+TrashCan is a trash can implementation of freedesktop trash specification.
+See trash.html or http://www.freedesktop.org/wiki/Standards_2ftrash_2dspec
+It only implements home trash under user's home directory.
+It depends on XWindowServerKit.
+
+User Defaults
+-------------
+Key: TrashCanPosition
+Value: 0 (Left Bottom), 1 (Right Bottom)
+
