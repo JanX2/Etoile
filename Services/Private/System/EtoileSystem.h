@@ -40,20 +40,43 @@
     LaunchPath                  NSString
     Arguments                   NSString
     UserName (or Identity)      NSString
+    Priority                    NSNumber
+    OnStart                     NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
     OnDemand                    NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
     Persistent                  NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
     Hidden                      NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
 
-    A 'Persistent' process is a task which is restarted on system boot if it
+    Priority --> All the tasks are launched sequentially by ascending priority
+    order. When the priority values are identical, then they are launched in 
+    parallel. For such tasks launch order becomes unpredictable.
+
+    OnStart --> 'YES' means the task is launched only when a new session is 
+    initiated as when the user logs in or launches a project. Default value
+    is 'YES'. 
+
+    OnDemand --> 'YES' means the task is launched only when the user or some
+    applications request it. Default value is 'NO'. If you set both 'OnStart' 
+    and 'OnDemand' to 'YES', your task will be launched at the beginning of the
+    session but won't restarted automatically when it terminates. You can use
+    this flag combination to let the user specify favorite applications which
+    get launched at login time.
+
+    Persistent --> 'YES' means the task will be restarted on system boot if it
     was already running during the previous session. It is usually bound to 
-    tasks running in background.
+    tasks running in background. 'Default value is 'NO'.
+
+    Hidden --> 'YES' means the task is going to be unvisible on user side. Not
+    listed as part of any kind of running application list specific to the 
+    user. 'Default value is 'NO'.
   */
 
 extern NSString * const EtoileSystemServerName;
 
 @interface SCSystem : NSObject
 {
-    NSMutableDictionary *_processes;
+    NSMutableDictionary *_processes; /* Main data structure */
+	NSMutableArray *_launchQueue;
+	NSMutableArray *_launchGroup;
 
     /* Config file handling related ivars */
     NSTimer *monitoringTimer;

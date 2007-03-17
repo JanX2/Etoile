@@ -28,6 +28,8 @@
 #import <math.h>
 
 @interface SCTask (Private)
+- (void) postTaskLaunched;
+- (void) taskLaunched: (NSNotification *)notif;
 - (void) taskTerminated: (NSNotification *)notif;
 @end
 
@@ -152,7 +154,7 @@
     [[NSNotificationCenter defaultCenter] addObserver: newTask
         selector: @selector(taskTerminated:) 
             name: NSTaskDidTerminateNotification
-          object: nil];
+          object: newTask];
     
     return [newTask autorelease];
 }
@@ -201,6 +203,7 @@
 
 - (void) launch
 {
+	NSDebugLLog(@"SCTask", @"Launching task %@", self);
 	launchDate = [[NSDate alloc] init];
 	[super launch];
 }
@@ -217,19 +220,7 @@
 	/* For tools, we need to simulate NSWorkspaceDidLaunchNotification */
 	if (isNSApplication == NO)
 	{
-		// NOTE: Incompletely filled userInfo dictionary
-		NSDictionary *userInfo = [NSDictionary 
-			dictionaryWithObjectsAndKeys: [self path], @"NSApplicationPath", 
-			[self name], @"NSApplicationName", nil]; 
-		NSNotification *notif = [NSNotification
-			notificationWithName: NSWorkspaceDidLaunchApplicationNotification
-			              object: self
-			            userInfo: userInfo];
-
-		NSDebugLLog(@"SCTask", @"Synthetize launch notification for task %@", self);
-
-		[[[NSWorkspace sharedWorkspace] notificationCenter] 
-			postNotification: notif];
+		[self postTaskLaunched];
 	}
 
     /*  appBinary = [ws locateApplicationBinary: appPath];
@@ -299,15 +290,47 @@
     return stopped;
 }
 
-/** Do nothing except logging. Useful for debugging purpose. */
+- (void) postTaskLaunched
+{
+	// NOTE: Incompletely filled userInfo dictionary
+	NSDictionary *userInfo = [NSDictionary 
+		dictionaryWithObjectsAndKeys: [self path], @"NSApplicationPath", 
+		[self name], @"NSApplicationName", nil]; 
+	NSNotification *notif = [NSNotification
+		notificationWithName: NSWorkspaceDidLaunchApplicationNotification
+						object: self
+					userInfo: userInfo];
+
+	NSDebugLLog(@"SCTask", @"Synthetize launch notification for task %@", self);
+
+	[[[NSWorkspace sharedWorkspace] notificationCenter] 
+		postNotification: notif];
+}
+
+/** Mostly useful for debugging purpose. */
 - (void) taskLaunched: (NSNotification *)notif
 {
-	NSDebugLLog(@"SCTask", @"Task %@ launched", [self name]);
+	NSString *appName = [[notif userInfo] objectForKey: @"NSApplicationName"];
+
+	if ([appName isEqual: [self name]])
+	{
+		NSDebugLLog(@"SCTask", @"Task %@ launched", [self name]);
+		launchFinished = YES;
+	}
 }
 
 - (void) taskTerminated: (NSNotification *)notif
 {
 	stopped = YES; 
+
+	/* For AppKit-based applications which exits before having finished to 
+	   launch, we synthetize a NSWorkspaceDidLaunchApplicationNotification
+	   in order to have them properly removed from the actual launch queue. */
+	if (isNSApplication && launchFinished == NO)
+	{
+		NSLog(@"Failed to launch %@", self);
+		[self postTaskLaunched];
+	}
 
 	/* We convert launch time to run duration */
 	// NOTE: -timeIntervalSinceNow returns a negative value in our case, 

@@ -72,6 +72,7 @@
     BOOL stopped;
 
 	BOOL isNSApplication;
+	BOOL launchFinished;
 
 	NSDate *launchDate;
 	NSTimeInterval runTime;

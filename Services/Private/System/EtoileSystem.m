@@ -113,6 +113,15 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     }
 }
 
+@interface SCSystem (Private)
+- (void) noteApplicationLaunched: (NSNotification *) notif;
+- (NSMutableArray *) processQueueWithProcesses: (NSDictionary *)processes;
+- (NSMutableArray *) processGroupQueueWithProcessQueue: (NSArray *)processQueue;
+- (void) startProcessesSequentiallyByPriorityOrder: 
+	(NSMutableArray *)launchQueue;
+- (void) startProcessesParallely: (NSArray *)processGroup;
+@end
+
 @interface SCSystem (HelperMethodsPrivate)
 - (void) checkConfigFileUpdate;
 - (void) findConfigFileAndStartUpdateMonitoring;
@@ -199,14 +208,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     if ((self = [super init]) != nil)
     {
         _processes = [[NSMutableDictionary alloc] initWithCapacity: 20];
-
-        [self findConfigFileAndStartUpdateMonitoring];
-        if (configFilePath != nil)
-        {
-            /* We register the core processes */
-            // FIXME: Takes care to standardize Etoile core processes naming scheme.
-            [self synchronizeProcessesWithConfigFile];
-        }
+		_launchQueue = [[NSMutableArray alloc] initWithCapacity: 20];
+		//_launchGroup = [[NSMutableArray alloc] initWithCapacity: 20];
 
         return self;
     }
@@ -217,6 +220,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 - (void) dealloc
 {
     DESTROY(_processes);
+	DESTROY(_launchQueue);
 
     TEST_RELEASE(monitoringTimer);
     TEST_RELEASE(configFilePath);
@@ -227,19 +231,6 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
 - (void) run
 {
-    NSEnumerator *e;
-    NSString *domain = nil;
-    
-    /* We start core processes */
-    e = [[_processes allKeys] objectEnumerator];
-    while ((domain = [e nextObject]) != nil)
-    {
-        SCTask *process = [_processes objectForKey: domain];
-        
-        if ([process launchOnDemand] == NO)
-            [self startProcessWithDomain: domain error: NULL]; //FIXME: Handles error properly.
-    }
-   
     /* We trigger the ApplicationManager singleton creation in order it 
        starts to monitor user applications. The return value is ignored. */
     [ApplicationManager sharedInstance];
@@ -249,14 +240,193 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     [[NSApplication sharedApplication] run];
 }
 
+/* Notification invoked when an NSWorkspaceDidLaunchApplicationNotification
+   is received */
+- (void) noteApplicationLaunched: (NSNotification *)notif
+{
+	NSDictionary * appInfo = [notif userInfo];
+	NSString * appName = [appInfo objectForKey: @"NSApplicationName"];
+	SCTask *lastLaunchedProcess = [_launchGroup objectAtIndex: 0];
+
+	/* Discard any notifications related to us, otherwise the launch queue will
+	   be messed up */
+	// FIXME: Write a safer test by not hardcoding 'etoile_system' name
+	if ([appName isEqual: @"etoile_system"])
+		return;
+
+	NSDebugLLog(@"SCSystem", @"App %@ launched through process %@", appName,
+		lastLaunchedProcess);
+
+	if (appName != nil)
+	{
+		// NOTE: We could do [_launchGroup removeObject: [notif object]]
+		[_launchGroup removeObject: lastLaunchedProcess];
+		NSDebugLLog(@"SCSystem", @"Process launch group count is %d", 
+			[_launchGroup count]);
+
+		if ([_launchGroup count] == 0)
+		{
+			NSDebugLLog(@"SCSystem", @"Going to reenter \
+				startProcessSequentiallyByPriorityOrder...");
+			[self startProcessesSequentiallyByPriorityOrder: nil];
+		}
+	}
+}
+
 - (void) applicationDidFinishLaunching: (NSNotification *)not
 {
 	NSDebugLLog(@"SCSystem", @"Did finish launching");
 	//NSRunAlertPanel(_(@"Test Alert Panel"), nil, nil, nil, nil);
+	NSMutableArray *processQueue = nil;
+	NSMutableArray *launchQueue = nil;
+
+	/* Find task list config file and synchronize _processes data structure 
+	   with it */ 
+	[self findConfigFileAndStartUpdateMonitoring];
+	if (configFilePath != nil)
+	{
+		/* We register the core processes */
+		// FIXME: Takes care to standardize Etoile core processes naming scheme.
+		[self synchronizeProcessesWithConfigFile];
+	}
+
+	/* We need to register for application launching finished notifications
+	   just to to be able to launch applications sequentially. */
+	[[[NSWorkspace sharedWorkspace] notificationCenter] 
+		addObserver: self
+		   selector: @selector(noteApplicationLaunched:)
+		       name: NSWorkspaceDidLaunchApplicationNotification
+		     object: nil];
+
+	/* Now we can launch tasks registered in _processes data structure. First 
+		we convert it into a launch queue to take in account launch priority 
+	    order. */
+	processQueue = [self processQueueWithProcesses: _processes];
+	launchQueue = [self processGroupQueueWithProcessQueue: processQueue];
+	[self startProcessesSequentiallyByPriorityOrder: launchQueue];
 }
 
-// - (BOOL) startProcessWithDomain: (NSString *)domain 
-//     arguments: (NSArray *)args;
+/** Returns a process launch queue by sorting processes values based on their
+    launch priority. The queue is ordered by ascending priority number values. */
+- (NSMutableArray *) processQueueWithProcesses: (NSDictionary *)processes
+{
+	NSSortDescriptor *desc = AUTORELEASE([[NSSortDescriptor alloc] 
+		initWithKey: @"launchPriority" ascending: YES]);
+
+	return [NSMutableArray arrayWithArray: [[_processes allValues] 
+		   sortedArrayUsingDescriptors: [NSArray arrayWithObject: desc]]];
+}
+
+/** Returns a structured process launch queue where processes are grouped by 
+	sets of identical launch priority. The queue is ordered by ascending priority number values. */
+- (NSMutableArray *) processGroupQueueWithProcessQueue: (NSArray *)processQueue
+{
+	NSMutableArray *processGroupQueue = [NSMutableArray array]; /* List of process group ordered by ascending launch priority */
+	NSMutableArray *processGroup = nil; /* Subset of all processes bound by the same launch priority */
+	NSEnumerator *e = [processQueue objectEnumerator];
+	SCTask *process = nil;
+
+	/* Split processes inside processLaunchQueue */
+	while ((process = [e nextObject]) != nil)
+	{
+		if (processGroup == nil || 
+			([processGroup count] > 0 && 
+			[[processGroup lastObject] launchPriority] < [process launchPriority]))
+		{
+			processGroup = [NSMutableArray array];
+			[processGroupQueue addObject: processGroup];
+
+			NSDebugLLog(@"SCSystem", @"Added process %@ to process group %@ from \
+				process queue %@", process, processGroup, processQueue);
+		}
+		[processGroup addObject: process];
+	}
+
+	return processGroupQueue;	
+}
+
+- (void) startProcessesSequentiallyByPriorityOrder: 
+	(NSMutableArray *)launchQueue
+{
+	NSDictionary *domains = [NSDictionary dictionaryWithObjects: 
+		[_processes allKeys] forKeys: [_processes allValues]];
+
+	if (launchQueue != nil 
+		&& [launchQueue isEqual: _launchQueue] == NO)
+	{
+		ASSIGN(_launchQueue, launchQueue);
+	}
+
+	NSDebugLLog(@"SCSystem", @"Start processes by priority with launch \
+        queue %@", _launchQueue);
+
+	if ([_launchQueue count] > 0)
+	{
+		NSArray *processGroup = RETAIN([_launchQueue objectAtIndex: 0]);
+		[_launchQueue removeObject: processGroup];
+
+		NSDebugLLog(@"SCSystem", @"Process group count is %d, process launch \
+            queue count is %d", [processGroup count], [_launchQueue count]);
+
+		[self startProcessesParallely: processGroup];
+		RELEASE(processGroup);
+	}
+	else /* The launch queue is empty now */
+	{
+		NSLog(@"Launch queue is empty now");
+		[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver: self];
+	}
+}
+
+- (void) startProcessesParallely: (NSArray *)processGroup
+{
+	NSDictionary *domains = [NSDictionary dictionaryWithObjects: 
+		[_processes allKeys] forKeys: [_processes allValues]];
+	NSEnumerator *e = [processGroup objectEnumerator];
+	SCTask *process = nil;
+	BOOL hasLaunchedProcess = NO;
+
+	DESTROY(_launchGroup);
+	_launchGroup = [processGroup mutableCopy];
+
+	NSDebugLLog(@"SCSystem", @"Launch a process group in parallel: %@", 
+		_launchGroup);
+
+	while ((process = [e nextObject]) != nil)
+	{
+		NSDebugLLog(@"SCSystem", @"Check whether to start process %@ with \
+			launchOnStart %d and launchPriority %d", process, 
+			[process launchOnStart], [process launchPriority]);
+
+		if ([process launchOnStart])
+		{
+			NSString *domain = [domains objectForKey: process];
+
+			hasLaunchedProcess = YES;
+			[self startProcessWithDomain: domain error: NULL]; //FIXME: Handles error
+		}
+		else
+		{
+			/* If the process isn't launched, it won't be removed from 
+			   _launchGroup by -noteApplicationLaunched:, therefore we must
+			   remove it now to prevent any blocking of the launch queue. */
+			[_launchGroup removeObject: process];
+		}
+	}
+
+	/* When no processes has been launched in the actual group, 
+	   -noteApplicationLaunched: won't called at all... which means we have to 
+	   handle reentering -startProcessesSequentiallyByPriorityOrder: by ourself
+	   in case the launch queue isn't yet empty. */
+	if (hasLaunchedProcess == NO)
+	{
+		NSDebugLLog(@"SCSystem", @"No processes launched for group %@",
+			processGroup);
+		NSDebugLLog(@"SCSystem", @"Going to reenter \
+            startProcessSequentiallyByPriorityOrder...");
+			[self startProcessesSequentiallyByPriorityOrder: nil];
+	}
+}
 
 /**
  * Launches a workspace process.
@@ -286,7 +456,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 		return NO;
 	}
 
-	NSDebugLLog(@"SCSystem", @"Trying to start process %@ associated with domain %@", 
+	NSDebugLLog(@"SCSystem", @"Try to start process %@ associated with domain %@", 
 		[process path], domain);
 		
     if ([process isRunning])
@@ -353,7 +523,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
     if ([process isRunning])
     {
-		NSDebugLLog(@"SCSystem", @"Terminating process now");
+		NSDebugLLog(@"SCSystem", @"Terminate process now");
 
 		NS_DURING
 			[process terminate];
@@ -369,7 +539,13 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
         /* We check the process has been really terminated before saying so. */
         if ([process isRunning] == NO)
+		{
+			// FIXME: Set up a timer to check whether the task has terminated 
+			// in 5 seconds from now. Well could be better to thread this object
+			// and make such method reentrant.
+			NSLog(@"Process still running...");
             return YES;
+		}
     }
     
     return NO;
@@ -489,7 +665,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 		{
           // TODO: initiate the power off process here
 		}
-
+		sleep(2);
 		// Time to put an end to our own life.
 		exit(0);
 	}
@@ -576,6 +752,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     NSEnumerator *e;
     NSMutableArray *searchPaths = [NSMutableArray array];
     NSFileManager *fm = [NSFileManager defaultManager];
+
+	NSDebugLLog(@"SCSystem", @"Looking for config file");
     
     // try looking in the user defaults
     tmp = [[NSUserDefaults standardUserDefaults]
@@ -623,8 +801,9 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
         NSInvocation * inv;
     
         ASSIGN(configFilePath, configPath);
-    
-        // NOTE: The next line corrupts the stack frame and leads to really 
+
+		NSDebugLLog(@"SCSystem", @"Triggering config monitoring");
+	// NOTE: The next line corrupts the stack frame and leads to really 
 	// strange segfaults related to gnustep lock objects or thread 
 	// dictionary.
 	// inv = NS_MESSAGE(self, checkConfigFileUpdate);
@@ -650,11 +829,17 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     NSDate *latestModificationDate = [[[NSFileManager defaultManager]
         fileAttributesAtPath: configFilePath traverseLink: YES]
         fileModificationDate];
+
+	/* We discard automatic synchronization with config file when we are in the
+	   middle of any process launch. */
+	// FIXME: Will change when I settle on which data structures are used.
+	//if ([_processLaunchQueue count] > 0 || [_processLaunchGroup count] > 0)
+		return;
     
     if ([latestModificationDate compare: modificationDate] ==
         NSOrderedDescending)
     {
-        NSDebugLLog(@"SCystem",
+        NSDebugLLog(@"SCSystem",
             @"Config file %@ changed, reloading...", configFilePath);
     
         [self synchronizeProcessesWithConfigFile];
@@ -672,6 +857,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     NSDictionary *newProcessTable;
     NSDictionary *fileAttributes = [[NSFileManager defaultManager]
             fileAttributesAtPath: configFilePath traverseLink: YES];
+
+	NSDebugLLog(@"SCSystem", @"Synchronizing processes with config file...");
 
     newProcessTable = [NSDictionary dictionaryWithContentsOfFile: configFilePath];
     if (newProcessTable != nil)
@@ -708,15 +895,21 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
             if ([_processes objectForKey: domain] == nil)
             {
                 NSDictionary *processInfo = [newProcessTable objectForKey: domain]; 
+				BOOL launchNow = YES;
+
+				if ([[processInfo allKeys] containsObject: @"OnStart"])
+					launchNow = [[processInfo objectForKey: @"OnStart"] boolValue];
             
                 // FIXME: Add support for Argument and Persistent keys as 
                 // described in Task config file schema (see EtoileSystem.h).
                 SCTask *entry = [SCTask taskWithLaunchPath: [processInfo objectForKey: @"LaunchPath"] 
+                    priority: [[processInfo objectForKey: @"LaunchPriority"] boolValue]
+                     onStart: launchNow
                     onDemand: [[processInfo objectForKey: @"OnDemand"] boolValue]
                     withUserName: [processInfo objectForKey: @"UserName"]];
-
                 [_processes setObject: entry forKey: domain];
-                [self startProcessWithDomain: domain error: NULL];
+
+                //[self startProcessWithDomain: domain error: NULL];
             }
         }
     }
@@ -732,13 +925,15 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
  * Notification method invoked when a workspace process terminates. This method
  * causes the given process to be relaunched again. Note the process isn't
  * relaunched when it is stopped by calling -stopProcessForDomain:.
+   Take note this notification is not related to NSTaskDidTerminateNotification
+   which is usually sent soon after the task launch.
  */
 - (void) processTerminated: (NSNotification *)notif
 {
     SCTask *task = [notif object];
     NSString *domain = [[_processes allKeysForObject: task] objectAtIndex: 0];
 
-    NSDebugLLog(@"SCSystem", @"Process %@ terminated", task);
+    NSDebugLLog(@"SCSystem", @"Process %@ terminated", [task name]);
 
     /* We relaunch every processes that exit and still referenced by the 
         process table, unless they are special daemons launched on demand 
@@ -746,7 +941,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     // FIXME: Checks the process isn't stopped by -stopProcessForDomain:.
     if (domain != nil && [task launchOnDemand] == NO)
     {
-        [self startProcessWithDomain: domain error: NULL];
+        //[self startProcessWithDomain: domain error: NULL];
     }
 }
 

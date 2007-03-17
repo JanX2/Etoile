@@ -1,3 +1,40 @@
+2007-03-17  Quentin Mathe <qmathe@club-internet.fr>
+
+	Last part of the update to support both sequential and parallel launch of
+	tasks.
+	* EtoileSystem.h:
+	* EtoileSystem.m:
+	New config file keys Priority and OnStart.
+	Written documentation for the keys supported in the config file.
+	New ivars _launchQueue, _launchGroup.
+	(-initWithArguments:): Added _launchQueue ivar init and moved config file
+	monitoring start to -run.
+	(-run): Moved the process starting to -applicationDidFinishLaunching:
+	(-applicationDidFinishLaunching:): Heavily modified to include config file
+	monitoring start and main method calls to launch processes by priority 
+	order. Also registers for task termination notifications.
+	(-noteApplicationLaunched:, 
+	-processQueueWithProcesses:, 
+	-processGroupQueueWithProcessQueue:, 
+	-startProcessesSequentiallyByPriorityOrder:,
+	startProcessesParallely:): New methods.
+	(-synchronizeProcessesWithConfigFile): Updated to take in account new keys
+	Priority and OnStart when creating task objects.
+	Improved or modified a bit logging statements across the file.
+	* SCTask.h:
+	* SCTask.m: 
+	New ivar launchFinished.
+	(+taskWithLaunchPath:priority:onStart:onDemand:withUserName:): Modified to
+	observe not all termination notifications but only the one related to 
+	ourself.
+	(-taskLaunched:): Modified to update new launchFinished flag.
+	(-taskTerminated:): Modified to take in account when a task exits before 
+	having finished to launch.
+	(-postTaskLaunched): New method.
+	* SystemTaskList.plist: Updated to include Priority number and OnStart 
+	boolean. Removed background process.
+	As a side effect, this update should fix bug #8729 and #8695
+
 2007-02-27  Quentin Mathe <qmathe@club-internet.fr>
 
 	First part of an update to support both sequential and parallel launch of
