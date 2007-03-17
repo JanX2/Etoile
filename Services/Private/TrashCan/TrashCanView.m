@@ -2,6 +2,7 @@
 #import "TrashCan.h"
 
 @implementation TrashCanView
+
 - (void) mouseDown: (NSEvent *) event
 {
   /* Check for double click */
@@ -14,8 +15,10 @@
   NSPasteboard *pboard = [sender draggingPasteboard];
   NSDragOperation mask = [sender draggingSourceOperationMask];
 
-  if ([[pboard types] containsObject: NSFilenamesPboardType]) {
-    if (mask & NSDragOperationMove) {
+  if ([[pboard types] containsObject: NSFilenamesPboardType]) 
+  {
+    if (mask & NSDragOperationMove) 
+    {
       return NSDragOperationMove;
     }
   }
@@ -34,14 +37,15 @@
 }
 #endif
 
-//- (BOOL) prepareForDragOperation: (id <NSDraggingInfo>) sender
 - (BOOL) performDragOperation: (id <NSDraggingInfo>) sender
 {
   NSPasteboard *pboard = [sender draggingPasteboard];
   NSDragOperation mask = [sender draggingSourceOperationMask];
 
-  if ([[pboard types] containsObject: NSFilenamesPboardType]) {
-    if (mask & NSDragOperationMove) {
+  if ([[pboard types] containsObject: NSFilenamesPboardType]) 
+  {
+    if (mask & NSDragOperationMove) 
+    {
       NSArray *files = [pboard propertyListForType: NSFilenamesPboardType];
       [[TrashCan sharedTrashCan] writeFiles: files];
     }
@@ -50,7 +54,7 @@
 }
 
 #if 0
-- (BOOL) performDragOperation: (id <NSDraggingInfo>) sender
+- (BOOL) prepareForDragOperation: (id <NSDraggingInfo>) sender
 {
 }
 #endif

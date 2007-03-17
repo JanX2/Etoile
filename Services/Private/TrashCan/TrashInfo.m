@@ -6,7 +6,8 @@
 {
   /* The path conform URL */
   ASSIGN(url, [NSURL fileURLWithPath: string]);
-  if ([url isFileURL] == NO) {
+  if ([url isFileURL] == NO) 
+  {
     NSLog(@"Not a URL conformed path: %@", string);
   }
 }
@@ -40,23 +41,30 @@
   NSString *s;
   int i = 0;
   self = [self init];
-  [lines addObjectsFromArray: [[NSString stringWithContentsOfFile: path] componentsSeparatedByString: @"\n"]];
-  if ([lines count] < 3) {
+  [lines addObjectsFromArray: [[NSString stringWithContentsOfFile: path] 
+                                           componentsSeparatedByString: @"\n"]];
+  if ([lines count] < 3) 
+  {
     NSLog(@"Cannot read trash info or it contains less than 3 lines: %@", path);
     success = NO;
   } 
-  if (success) {
+  if (success) 
+  {
     /* First line must be '[Trash Info]' */
     s = [lines objectAtIndex: 0];
-    if ([[s stringByTrimmingSpaces] isEqualToString: @"[Trash Info]"] == NO) {
+    if ([[s stringByTrimmingSpaces] isEqualToString: @"[Trash Info]"] == NO) 
+    {
       NSLog(@"First line is not [Trash Info]");
       success = NO;
-    } else {
+    } 
+    else 
+    {
       /* Remove first line here */
       [lines removeObject: s];
     }
   }
-  if (success) {
+  if (success) 
+  {
     /* Find path or deletion date and remove it */
     for (i = 0; i < [lines count]; i++) 
     {
@@ -74,28 +82,34 @@
         [self setPath: [s stringByTrimmingSpaces]];
         continue;
       } 
-      if ((date == nil) && [[s stringByTrimmingSpaces] hasPrefix: @"DeletionDate"]) 
+      if ((date == nil) && 
+          [[s stringByTrimmingSpaces] hasPrefix: @"DeletionDate"]) 
       {
         RETAIN(s);
         [lines removeObject: s];
         i--;
         AUTORELEASE(s);
-        s = [[[s componentsSeparatedByString: @"="] lastObject] stringByTrimmingSpaces];
+        s = [[[s componentsSeparatedByString: @"="] lastObject] 
+                                            stringByTrimmingSpaces];
         [self setDeletionDate: [NSCalendarDate dateWithString: s
-                                          calendarFormat: @"%Y%m%dT%H%M%S"]];
+                                             calendarFormat: @"%Y%m%dT%H%M%S"]];
         continue;
       }
     }
   }
 
-  if ((url == nil) || (date == nil)) {
+  if ((url == nil) || (date == nil)) 
+  {
     NSLog(@"Cannot get original path or deletion date");
     success = NO;
   }
 
-  if (success) {
+  if (success) 
+  {
     return self;
-  } else {
+  } 
+  else  
+  {
     [self dealloc];
     return nil;
   }
@@ -116,13 +130,15 @@
   [lines insertObject: @"[Trash Info]" atIndex: 0];
   s = [NSString stringWithFormat: @"Path=%@", [self path]];
   [lines insertObject: s atIndex: 1];
-  s = [NSString stringWithFormat: @"DeletionDate=%@", [[self deletionDate] descriptionWithCalendarFormat: @"%Y%m%dT%H%M%S"]];
+  s = [NSString stringWithFormat: @"DeletionDate=%@", 
+        [[self deletionDate] descriptionWithCalendarFormat: @"%Y%m%dT%H%M%S"]];
   [lines insertObject: s atIndex: 2];
   //NSLog(@"lines %@", lines);
 
   NSMutableString *output = AUTORELEASE([[NSMutableString alloc] init]);
   NSEnumerator *e = [lines objectEnumerator];
-  while ((s = [e nextObject])) {
+  while ((s = [e nextObject])) 
+  {
     [output appendString: s];
     [output appendString: @"\n"];
   }

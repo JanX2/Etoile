@@ -12,9 +12,12 @@ static TrashCan *sharedInstance;
 - (BOOL) directoryExistsOrCreatedAtPath: (NSString *) path
 {
   BOOL isDir = NO;
-  if ([fileManager fileExistsAtPath: path isDirectory: &isDir]) {
+  if ([fileManager fileExistsAtPath: path isDirectory: &isDir]) 
+  {
     return isDir;
-  } else {
+  } 
+  else 
+  {
     return [fileManager createDirectoryAtPath: path attributes: nil];
   }
 }
@@ -26,18 +29,21 @@ static TrashCan *sharedInstance;
   /* Try original name first */
   NSString *name = [path lastPathComponent];
   NSString *p = [trashFilesPath stringByAppendingPathComponent: name];
-  if ([fileManager fileExistsAtPath: p] == NO) {
+  if ([fileManager fileExistsAtPath: p] == NO) 
+  {
     return name;
   }
   /* Come up an unique name */
   NSString *ext = [name pathExtension];
   name = [name stringByDeletingPathExtension];
   int i;
-  for (i = 0; i < 10000; i++) {
+  for (i = 0; i < 10000; i++) 
+  {
     p = [NSString pathWithComponents: [NSArray arrayWithObjects:
               trashFilesPath, name, 
               [NSString stringWithFormat: @"_%d", i], ext, nil]];
-    if ([fileManager fileExistsAtPath: p] == NO) {
+    if ([fileManager fileExistsAtPath: p] == NO) 
+    {
       return [p lastPathComponent];
     }
   }
@@ -57,23 +63,32 @@ static TrashCan *sharedInstance;
              _(@"Are you sure to empty trash can ? Files in trash can will be deleted forever, \nand this application is considered as unstable, which may have seriously side affect."),
               _(@"No, Do Not Empty Trash Can"), _(@"Yes, Empty Trash Can Now"),
               nil, nil);
-  if (result == NSAlertAlternateReturn) {
+  if (result == NSAlertAlternateReturn) 
+  {
     /* To make things easy, we remove subdirectories and recreate new onw */
     /* Let do some basic check before we really remove file */
     NSString *home = NSHomeDirectory();
     NSArray *array  = [NSArray arrayWithObjects:
          home, @"", @"/", @"/usr", @"/bin", @"/sbin", nil];
-    if ([array containsObject: trashFilesPath]) {
-      NSLog(@"Internal Error: trashFilesPath is one of these directory: %@", array);
+    if ([array containsObject: trashFilesPath]) 
+    {
+      NSLog(@"Internal Error: trashFilesPath is one of these directory: %@", 
+                                                            array);
     }
-    if ([array containsObject: trashInfoPath]) {
-      NSLog(@"Internal Error: trashInfoPath is one of these directory: %@", array);
+    if ([array containsObject: trashInfoPath]) 
+    {
+      NSLog(@"Internal Error: trashInfoPath is one of these directory: %@", 
+                                                            array);
     }
-    if ([trashFilesPath hasPrefix: home] == NO) {
-      NSLog(@"Internal Error: trashFilesPath is not under home directory: %@", home);
+    if ([trashFilesPath hasPrefix: home] == NO) 
+    {
+      NSLog(@"Internal Error: trashFilesPath is not under home directory: %@", 
+                                                            home);
     }
-    if ([trashInfoPath hasPrefix: home] == NO) {
-      NSLog(@"Internal Error: trashInfoPath is not under home directory: %@", home);
+    if ([trashInfoPath hasPrefix: home] == NO) 
+    {
+      NSLog(@"Internal Error: trashInfoPath is not under home directory: %@", 
+                                                            home);
     }
     /* We stop removing if any of them fails */
     if ([fileManager removeFileAtPath: trashFilesPath handler: nil] == NO) 
@@ -110,26 +125,35 @@ static TrashCan *sharedInstance;
 - (void) recoverAllFiles: (id) sender
 {
   NSLog(@"Recover all files");
-  NSEnumerator *e = [[fileManager directoryContentsAtPath: trashFilesPath] objectEnumerator];
+  NSEnumerator *e = [[fileManager directoryContentsAtPath: trashFilesPath] 
+                                                           objectEnumerator];
   NSString *name = nil;
   while ((name = [e nextObject])) {
-    NSString *p = [[trashInfoPath stringByAppendingPathComponent: name] stringByAppendingPathExtension: @"trashinfo"];
+    NSString *p = [[trashInfoPath stringByAppendingPathComponent: name] 
+                                 stringByAppendingPathExtension: @"trashinfo"];
     TrashInfo *ti = [[TrashInfo alloc] initWithContentsOfFile: p];
     /* move the file back */
     NSString *w = [trashFilesPath stringByAppendingPathComponent: name];
-    if ([fileManager movePath: w toPath: [ti path] handler: nil] == NO) {
+    if ([fileManager movePath: w toPath: [ti path] handler: nil] == NO) 
+    {
       NSLog(@"Cannot recover file %@ from %@", [ti path], w);
-    } else {
-      if ([fileManager removeFileAtPath: p handler: nil] == NO) {
+    } 
+    else 
+    {
+      if ([fileManager removeFileAtPath: p handler: nil] == NO) 
+      {
          NSLog(@"Cannot remove %@", p);
       }
     }
   }
+
   /* Let do a final check */
-  if ([[fileManager directoryContentsAtPath: trashFilesPath] count] > 0)  {
+  if ([[fileManager directoryContentsAtPath: trashFilesPath] count] > 0)  
+  {
     NSLog(@"trashFilesPath is not empty: %@", trashFilesPath);
   }
-  if ([[fileManager directoryContentsAtPath: trashInfoPath] count] > 0)  {
+  if ([[fileManager directoryContentsAtPath: trashInfoPath] count] > 0)  
+  {
     NSLog(@"trashInfoPath is not empty: %@", trashInfoPath);
   }
 }
@@ -145,25 +169,32 @@ static TrashCan *sharedInstance;
 //  NSLog(@"%@", files);
   NSEnumerator *e = [files objectEnumerator];
   NSString *p = nil;
-  while ((p = [e nextObject])) {
+  while ((p = [e nextObject])) 
+  {
     /* Find an unique name */
     NSString *name = [self uniqueNameForFile: p];
-    if (name == nil) {
+    if (name == nil) 
+    {
       int result = NSRunAlertPanel(_(@"Trash can is full !"),
              _(@"Trash can cannot add this file. Do you want to empty trash can now ? "),
-             _(@"Yes, Empty Trash Can Now and Continue"), _(@"No, Abort"), nil, nil);
-      if (result == NSAlertDefaultReturn) {
+             _(@"Yes, Empty Trash Can Now and Continue"), _(@"No, Abort"), 
+               nil, nil);
+      if (result == NSAlertDefaultReturn) 
+      {
         [self emptyTrashCan: self];
         /* Get name again */
         name = [self uniqueNameForFile: p];
-        if (name == nil) {
+        if (name == nil) 
+        {
           /* Something is not right. Warn and quit */
           NSRunAlertPanel(_(@"Internal Error !"),
              _(@"Trash can cannot find an unique name even it is empty."),
              _(@"Quit Trash Can"), nil, nil, nil);
           [NSApp terminate: self];
         }
-      } else {
+      } 
+      else 
+      {
         /* Abort */
         return;
       }
@@ -176,17 +207,23 @@ static TrashCan *sharedInstance;
     //NSLog(@"%@ %@", [ti path], [ti deletionDate]);
     /* Move file */
     NSString *t = [trashFilesPath stringByAppendingPathComponent: name];
-    if ([fileManager movePath: p toPath: t handler: nil]) {
+    if ([fileManager movePath: p toPath: t handler: nil]) 
+    {
       /* Write .trashinfo */
-      NSString *w = [[trashInfoPath stringByAppendingPathComponent: name] stringByAppendingPathExtension: @"trashinfo"];
-      if ([ti writeToFile: w] == NO) {
+      NSString *w = [[trashInfoPath stringByAppendingPathComponent: name] 
+                                 stringByAppendingPathExtension: @"trashinfo"];
+      if ([ti writeToFile: w] == NO) 
+      {
         NSLog(@"Write .trashinfo failed");
         /* move the file back */
-        if ([fileManager movePath: t toPath: p handler: nil] == NO) {
+        if ([fileManager movePath: t toPath: p handler: nil] == NO) 
+        {
           NSLog(@"Cannot move file back. Totally failed");
         }
       }
-    } else {
+    } 
+    else 
+    {
       NSLog(@"Cannot move file into trash can: %@", p);
     }
     DESTROY(ti);
@@ -203,7 +240,8 @@ static TrashCan *sharedInstance;
   [appIcon setLevel: NSNormalWindowLevel+1];
 
   iconView = [[TrashCanView alloc] initWithFrame: NSMakeRect(8, 8, 48, 48)];
-  [iconView registerForDraggedTypes: [NSArray arrayWithObject: NSFilenamesPboardType]];
+  [iconView registerForDraggedTypes: 
+                        [NSArray arrayWithObject: NSFilenamesPboardType]];
 //  [iconView setImage: [NSImage imageNamed: @"GNUstep"]];
   [[appIcon contentView] addSubview: iconView];
   AUTORELEASE(iconView);
@@ -228,18 +266,24 @@ static TrashCan *sharedInstance;
   DESTROY(menu);
                   
   /* check the existance of trash directory */
-  ASSIGN(trashCanPath, [XDGDataHomePath() stringByAppendingPathComponent: @"Trash"]);
-  ASSIGN(trashFilesPath, [trashCanPath stringByAppendingPathComponent: @"files"]);
-  ASSIGN(trashInfoPath, [trashCanPath stringByAppendingPathComponent: @"info"]);
+  ASSIGN(trashCanPath, 
+         [XDGDataHomePath() stringByAppendingPathComponent: @"Trash"]);
+  ASSIGN(trashFilesPath, 
+         [trashCanPath stringByAppendingPathComponent: @"files"]);
+  ASSIGN(trashInfoPath, 
+         [trashCanPath stringByAppendingPathComponent: @"info"]);
   BOOL success = [self directoryExistsOrCreatedAtPath: trashCanPath];
-  if (success) {
+  if (success) 
+  {
     success = [self directoryExistsOrCreatedAtPath: trashFilesPath];
-    if (success) {
+    if (success) 
+    {
       success = [self directoryExistsOrCreatedAtPath: trashInfoPath];
     }
   } 
 
-  if (success == NO) {
+  if (success == NO) 
+  {
     NSRunAlertPanel(_(@"Failed to directory !"),
              _(@"TrashCan cannot create directory in the home directory"),
              _(@"Quit"), nil, nil, nil);
@@ -272,7 +316,8 @@ static TrashCan *sharedInstance;
 
 + (TrashCan *) sharedTrashCan
 {
-  if (sharedInstance == nil) {
+  if (sharedInstance == nil) 
+  {
     sharedInstance = [[TrashCan alloc] init];
   }
   return sharedInstance;
