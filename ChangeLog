@@ -1,3 +1,18 @@
+2007-03-17  Quentin Mathe <qmathe@club-internet.fr>
+
+	* etoile.make: 
+	Fixed a typo which prevented real frameworks like PopplerKit to export its 
+	headers and library file properly, then any applications which depend on it 
+	to compile.
+	Added code to have a symbolic libFrameworkName.so pointing on 
+	frameworkName.framework/Versions/Current/libFrameworkName.so.
+	As a side effect repository build should be fixed (after being broken for a
+	while... too bad). 
+	Modified $(PROJECT_NAME) references to be always prefixed by 'lib' on 
+	library cleaning. It might correct clean or distclean only done partially.
+	Also corrected issue #8484 by removing commented out debug statements in 
+	the code, therefore the repository should build on SuSE too now.
+
 2007-02-27  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Frameworks/Services/User: Removed Mollusk reference since it is not part 
