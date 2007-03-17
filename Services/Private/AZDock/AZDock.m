@@ -548,6 +548,7 @@ static AZDock *sharedInstance;
   [blacklist addObject: @"Azalea"];
   [blacklist addObject: @"AZBackground"];
   [blacklist addObject: @"etoile_system"];
+  [blacklist addObject: @"TrashCan"];
 
   /* Listen event */
   NSRunLoop     *loop = [NSRunLoop currentRunLoop];
