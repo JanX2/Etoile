@@ -9,6 +9,10 @@
   NSCalendarDate *date;
 }
 
+- (id) initWithContentsOfFile: (NSString *) path;
+
+- (BOOL) writeToFile: (NSString *) p;
+
 /* It should be absolute path according to specification. */
 - (void) setPath: (NSString *) string;
 - (NSString *) path;
@@ -16,8 +20,6 @@
 - (void) setDeletionDate: (NSCalendarDate *) date;
 - (NSCalendarDate *) deletionDate;
 
-- (id) initWithContentsOfFile: (NSString *) path;
-- (BOOL) writeToFile: (NSString *) p;
 
 @end
 
