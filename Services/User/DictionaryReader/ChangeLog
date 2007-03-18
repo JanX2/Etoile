@@ -2,6 +2,9 @@
 DictionaryReader Changelog
 ==========================
 
+Mar 18 2007  Yen-Ju Chen
+	* Add missing README
+
 Mar 11 2007  Yen-Ju Chen
 	* Use EtoileUI for UKNibOwner instead of EtoileFoundation.
           Patched by Frédéric Point (Bug #8712).
