@@ -2,7 +2,10 @@
 
 @implementation Camaelon
 
+#define ThemeExtension (@"theme")
+
 static Camaelon* theme;
+
 
 + (Camaelon*) sharedTheme
 {
@@ -23,14 +26,13 @@ static Camaelon* theme;
 		NSEnumerator *e = [paths objectEnumerator];
 		NSFileManager *fm = [NSFileManager defaultManager];
 		BOOL themeFound = NO;
+		BOOL isDir;
 		
 		while ((path = [e nextObject]) != nil)
 		{
-			BOOL isDir;
-			
 			path = [path stringByAppendingPathComponent: @"Themes"];
 			path = [path stringByAppendingPathComponent: themeName];
-			path = [path stringByAppendingPathExtension: @"theme"];	
+			path = [path stringByAppendingPathExtension: ThemeExtension];	
 			if ([fm fileExistsAtPath: path isDirectory:	&isDir])
 			{
 				themeFound = YES;
@@ -42,15 +44,29 @@ static Camaelon* theme;
 		{
 		   NSLog (@"No theme %@ found in search paths: %@", themeName, paths);
 		   
-		   // FIXME: Implement fall back on NeXT default theme. We probably need to 
-		   // hack a bit with the runtime in order to reactivate overriden methods (by
-		   // Camaelon categories).
-		   
+		   /* We use a default theme in resource.
+                    * We don't use main bundle because Camaelon is loaded
+                    * by other applications. */
+		   paths = [[NSBundle bundleForClass: [self class]] pathsForResourcesOfType: ThemeExtension inDirectory: nil];
+                   if ([paths count] > 0)
+                   {
+                   	path = [paths objectAtIndex: 0];
+		   	if ([fm fileExistsAtPath: path isDirectory:	&isDir])
+		   	{
+				themeFound = YES;
+			}
+                   }
+		}
+		if (themeFound == NO)
+		{
+		   NSLog(@"Internal Error: Cannot found theme");
+		   /* Something is wrong because default theme should come 
+                      with this bundle */
 		   return nil;
 		}
 		
 		ASSIGN (themePath, path);	
-		NSLog (@"Found theme with path: %@", themePath);		
+		//NSLog (@"Found theme with path: %@", themePath);		
 	}
 	
 	return themePath;
@@ -68,7 +84,7 @@ static Camaelon* theme;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary* dict = [defaults persistentDomainForName: @"Camaelon"];
     
-    NSLog(@"Camaelon Theme Engine v2.0pre 20/11/05 - nicolas@roard.com\n");
+    //NSLog(@"Camaelon Theme Engine v2.0pre 20/11/05 - nicolas@roard.com\n");
     
     self = [super init];
     
@@ -83,7 +99,7 @@ static Camaelon* theme;
     	/* Preventive check: Remove possible incorrect path extension set by user in 
        	   NSDefaults. */
         ASSIGN (themeName, [[dict objectForKey: @"Theme"] stringByDeletingPathExtension]);
-	NSLog (@"Theme named %@ is set in defaults", themeName);
+	//NSLog (@"Theme named %@ is set in defaults", themeName);
 	themePath = [self themePath];
 	if (themePath == nil)
 	{

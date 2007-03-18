@@ -83,6 +83,9 @@ Camaelon_OBJC_FILES += \
 		NSTableHeaderCell.m \
 		NSTextFieldCell.m
 
+Camaelon_RESOURCE_FILES += \
+		Nesedah.theme	
+
 -include GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/bundle.make
