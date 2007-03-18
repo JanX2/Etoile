@@ -107,7 +107,7 @@ endif
 ifeq ($(servicesbarkit), yes)
   ifneq ($(FOUNDATION_LIB), apple)
     # do not compile for apple
-    SUBPROJECTS += ServicesBarKit
+    #SUBPROJECTS += ServicesBarKit
   endif
 endif
 
