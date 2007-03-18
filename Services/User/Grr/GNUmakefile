@@ -100,7 +100,7 @@ ADDITIONAL_GUI_LIBS = -lRSSKit
 # If we're compiling on Etoile, we'll link to EtoileFoundation
 # for the UKNibOwner class, otherwise the local copy is used.
 ifeq ($(etoile), yes)
-	ADDITIONAL_GUI_LIBS += -lEtoileFoundation
+	ADDITIONAL_GUI_LIBS += -lEtoileUI
 	ADDITIONAL_OBJC_FLAGS += -DETOILE
 else
 	Grr_OBJC_FILES += UKNibOwner.m

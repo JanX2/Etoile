@@ -2,6 +2,9 @@
 Grr ChangeLog
 ==============
 
+Mar-18-2007  Yen-Ju Chen
+	* Use EtoileUI for UKNibOwner.
+
 Feb-23-2007  Yen-Ju Chen
 	* Fix for GNUmakefile (applied by Guenther Noack)
 
