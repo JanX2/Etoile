@@ -2,6 +2,13 @@
 AZBackground
 ============
 
-AZBackground allows drawing on root window.
-It treats root window as a NSWindow.
+:Authors: Yen-Ju Chen
+:Copyright: BSD License
+
+AZBackground set an image as background.
+
+Usage
+-----
+
+openapp AZBackground absolute-path-to-the-image
 
