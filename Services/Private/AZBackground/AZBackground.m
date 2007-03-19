@@ -7,7 +7,53 @@ NSString *const FileUserDefaults = @"File";
 static AZBackground *sharedInstance;
 
 @implementation AZBackground
+/** Private **/
+- (NSImage *) defaultImage
+{
+  /* Check for bundled images */
+  NSString *path = nil;
+  NSArray *paths = [[NSBundle mainBundle] pathsForResourcesOfType: @"jpg"
+                                                      inDirectory: nil];
+  /* Let pick the right ratio */
+  NSRect frame = [[NSScreen mainScreen] frame];
+  float screenRatio = frame.size.width/frame.size.height;
+  NSEnumerator *e = [paths objectEnumerator];
+  while ((path = [e nextObject]))
+  {
+    /* The default images is name as "'width'x'height'.jpg".
+       We do not want to load them in NSImage only for checking size.
+       It is a waste of memory */
+    NSArray *a = [[[path lastPathComponent] stringByDeletingPathExtension] 
+                                            componentsSeparatedByString: @"x"];
 
+    if ([a count] != 2) /* Wrong format */
+      continue;
+
+    int w = [[a objectAtIndex: 0] intValue];
+    int h = [[a objectAtIndex: 1] intValue];
+    float ratio = ((float)w)/h;
+
+    if ((w == 0) || (h == 0)) /* Wrong format */
+      continue;
+
+    /* Tolerate 1% error */
+    if ((screenRatio < ratio + 0.01) && (screenRatio > ratio - 0.01))
+    {
+      break;
+    }
+  }
+  NSLog(@"path %@", path);
+
+  return AUTORELEASE([[NSImage alloc] initWithContentsOfFile: path]);
+} 
+
+/** Private **/
+
+/* We cannot scale image with NSImage and EtoileUI use a hack which does not 
+   work on all backends. So we put up the whole image even it is bigger
+   than screen. User should make sure their images fit the screen.
+   For bundled images, even only top-left part of it is shown,
+   it still looks good. */
 - (void) drawImage: (NSImage *) image
 {
   NSImageRep *rep = [image bestRepresentationForDevice: nil];
@@ -117,7 +163,7 @@ static AZBackground *sharedInstance;
 - (void) applicationDidFinishLaunching:(NSNotification *) not
 {
   /* Setup drawable window */
-  NSImage *image;
+  NSImage *image = nil;
   NSFileManager *fm = [NSFileManager defaultManager];
   NSProcessInfo *pi = [NSProcessInfo processInfo];
   NSArray *args = [pi arguments];
@@ -143,8 +189,18 @@ static AZBackground *sharedInstance;
     }
   }
 
-  if (image) {
+  if (image == nil)
+  {
+    image = [self defaultImage];
+  }
+
+  if (image) 
+  {
     [self drawImage: image];
+  }
+  else
+  {
+    NSLog(@"Cannot find an image. Do nothing");
   }
 }
 

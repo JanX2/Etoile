@@ -8,9 +8,13 @@ AZBackground_OBJC_FILES = \
 	AZBackground.m \
 	main.m 
 
+AZBackground_RESOURCE_FILES = \
+	Images/*.jpg
+
 ADDITIONAL_INCLUDE_DIRS += -I/usr/include -I/usr/X11R6/include 
 
-ADDITIONAL_LIB_DIRS += -L/usr/lib -L/usr/X11R6/lib -lX11 -lXWindowServerKit
+ADDITIONAL_LIB_DIRS += \
+	-L/usr/lib -L/usr/X11R6/lib -lX11 -lXWindowServerKit 
 
 ADDITIONAL_GUI_LIBS += 
 
