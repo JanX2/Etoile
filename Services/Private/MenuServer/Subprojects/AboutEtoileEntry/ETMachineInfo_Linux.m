@@ -65,6 +65,24 @@ my_round (float x)
                return my_round ([[comps objectAtIndex: 1] floatValue]);
              }
         }
+	  /* Different format for non-x86 platforms including PowerPC */
+	  else if ([line hasPrefix: @"clock"])
+	  {
+           NSArray * comps = [line componentsSeparatedByString: @":"];
+
+           if ([comps count] > 1)
+             {
+				NSString * speed = [comps objectAtIndex: 1];
+				float mhz = my_round ([speed floatValue]);
+				/* Assume MHz unless GHz found */
+				NSRange * suffix = [speed rangeOfString:@"ghz" options:NSCaseInsensitiveSearch];
+				if(suffix.location != NSNotFound)
+				{
+					mhz *= 1024;
+				}
+				return mhz;
+             }
+	  }
     }
 
   return 0;
