@@ -7,7 +7,7 @@ AZDock
 
 AZDock is a dock for Etoile
 It depends on XWindowServerKit 
-and requires Azalea for tracking xwindow windows
+and requires Azalea for tracking xwindow windows.
 
 User Defaults
 -------------

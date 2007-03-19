@@ -1,3 +1,7 @@
+2007-03-18 Yen-Ju Chen <yjchenx at gmail>
+
+	* Use WorkspaceCommKit if building with etoile.
+
 2007-03-17 Yen-Ju Chen <yjchenx at gmail>
 
 	* Add TrashCan in blacklist.

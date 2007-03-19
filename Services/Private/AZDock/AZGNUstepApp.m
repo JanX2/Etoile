@@ -2,6 +2,10 @@
 #import "AZDock.h"
 #import <X11/Xutil.h>
 
+#ifdef ETOILE
+#import <WorkspaceCommKit/NSWorkspace+Communication.h>
+#endif
+
 @implementation AZGNUstepApp 
 
 /** Private **/
@@ -29,8 +33,13 @@
 {
   NSLog(@"quit %@", appName);
   /* Connect to application */
+#ifdef ETOILE // Use System's WorkspaceCommKit
+  id appProxy = [[NSWorkspace sharedWorkspace] connectToApplication: appName launch: NO];
+  NSLog(@"Use ETOILE");
+#else
   id appProxy = [NSConnection rootProxyForConnectionWithRegisteredName: appName
 	                                                          host: @""];
+#endif
   if (appProxy) {
     NS_DURING
       [appProxy terminate: nil];
