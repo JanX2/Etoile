@@ -134,6 +134,7 @@ struct CycleWindows {
     BOOL linear;
     BOOL forward;
     BOOL dialog;
+    BOOL opaque;
 };
 
 struct Stacking {

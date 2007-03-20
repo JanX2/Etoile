@@ -252,6 +252,7 @@ void setup_action_cycle_windows_next(AZAction **a, ObUserAction uact)
     [(*a) data_pointer]->cycle.linear = NO;
     [(*a) data_pointer]->cycle.forward = YES;
     [(*a) data_pointer]->cycle.dialog = YES;
+    [(*a) data_pointer]->cycle.opaque = NO;
 }
 
 void setup_action_cycle_windows_previous(AZAction **a, ObUserAction uact)
@@ -260,6 +261,7 @@ void setup_action_cycle_windows_previous(AZAction **a, ObUserAction uact)
     [(*a) data_pointer]->cycle.linear = NO;
     [(*a) data_pointer]->cycle.forward = NO;
     [(*a) data_pointer]->cycle.dialog = YES;
+    [(*a) data_pointer]->cycle.opaque = NO;
 }
 
 void setup_action_movetoedge_north(AZAction **a, ObUserAction uact)
@@ -927,6 +929,8 @@ AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
                     [act data_pointer]->cycle.linear = parse_bool(doc, n);
                 if ((n = parse_find_node("dialog", node->xmlChildrenNode)))
                     [act data_pointer]->cycle.dialog = parse_bool(doc, n);
+                if ((n = parse_find_node("opaque", node->xmlChildrenNode)))
+                    [act data_pointer]->cycle.opaque = parse_bool(doc, n);
             } else if ([act func] == action_directional_focus) {
                 if ((n = parse_find_node("dialog", node->xmlChildrenNode)))
                     [act data_pointer]->cycle.dialog = parse_bool(doc, n);
@@ -1582,7 +1586,8 @@ void action_cycle_windows(union ActionData *data)
 	    interactive:  data->any.interactive
             dialog: data->cycle.dialog
             done: data->cycle.inter.final
-	    cancel: data->cycle.inter.cancel];
+	    cancel: data->cycle.inter.cancel
+            opaque: data->cycle.opaque];
 }
 
 void action_directional_focus(union ActionData *data)

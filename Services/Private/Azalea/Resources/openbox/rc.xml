@@ -88,10 +88,10 @@
     <action name="Close"/>
   </keybind>
   <keybind key="A-Tab">
-    <action name="NextWindow"/>
+    <action name="NextWindow"><opaque>yes</opaque></action>
   </keybind>
   <keybind key="A-S-Tab">
-    <action name="PreviousWindow"/>
+    <action name="PreviousWindow"><opaque>yes</opaque></action>
   </keybind>
   <keybind key="A-F7">
     <action name="Move"/>

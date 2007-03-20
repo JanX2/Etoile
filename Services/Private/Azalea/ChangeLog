@@ -1,3 +1,9 @@
+2007-03-19  Yen-Ju Chen <yjchenx at gmail>
+
+	* Apply a patch from Jared Yanovich <phirerunner@comcast.net> 
+          which was submit to Openbox3 to show the real window
+          during window cycling.
+	
 2007-03-16  Yen-Ju Chen <yjchenx at gmail>
 
 	* Use XWindowServerKit for freedesktop.org base directories.

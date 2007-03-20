@@ -193,7 +193,7 @@ static AZFocusManager *sharedInstance;
     /* in the middle of cycling..? kill it. */
     if (focus_cycle_target)
 	[self cycleForward: YES linear: YES interactive: YES
-		dialog: YES done: YES cancel: YES];
+	      dialog: YES done: YES cancel: YES opaque: NO];
 
     old = focus_client;
     focus_client = client;
@@ -416,7 +416,8 @@ static AZFocusManager *sharedInstance;
 
 - (void) cycleForward: (BOOL) forward linear: (BOOL) linear
           interactive: (BOOL) interactive dialog: (BOOL) dialog
-	            done: (BOOL) done cancel: (BOOL) cancel;
+	         done: (BOOL) done cancel: (BOOL) cancel 
+               opaque: (BOOL) opaque
 {
     static AZClient *first = nil;
     static AZClient *t = nil;
@@ -495,7 +496,10 @@ static AZFocusManager *sharedInstance;
             if (interactive) {
 	        if (ft != focus_cycle_target) { /* prevents flicker */
 	            focus_cycle_target = ft;
-		    [self cycleDrawIndicator];
+		    if (opaque == YES)
+		      [focus_cycle_target raise];
+ 		    else
+		      [self cycleDrawIndicator];
 	        }
 		[self popupCycle: ft show: dialog];
 	        return;
@@ -546,7 +550,10 @@ static AZFocusManager *sharedInstance;
             if (interactive) {
 	        if (ft != focus_cycle_target) { /* prevents flicker */
 	            focus_cycle_target = ft;
-		    [self cycleDrawIndicator];
+		    if (opaque == YES)
+		      [focus_cycle_target raise];
+ 		    else
+		      [self cycleDrawIndicator];
 	        }
 		[self popupCycle: ft show: dialog];
 	        return;
@@ -568,7 +575,8 @@ done_cycle:
     focus_cycle_target = nil;
 
     if (interactive) {
-	[self cycleDrawIndicator];
+        if (opaque == NO)
+	  [self cycleDrawIndicator];
 	[self popupCycle: ft show: NO];
     }
 
@@ -917,7 +925,7 @@ done_cycle:
     AZClient *client = [not object];
     if (focus_cycle_target == client)
       [self cycleForward: YES linear: YES interactive: YES
-  	                        dialog: YES done: YES cancel: YES];
+  	    dialog: YES done: YES cancel: YES opaque: NO];
 }
 
 @end
