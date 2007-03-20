@@ -75,7 +75,7 @@ my_round (float x)
 				NSString * speed = [comps objectAtIndex: 1];
 				float mhz = my_round ([speed floatValue]);
 				/* Assume MHz unless GHz found */
-				NSRange * suffix = [speed rangeOfString:@"ghz" options:NSCaseInsensitiveSearch];
+				NSRange suffix = [speed rangeOfString:@"ghz" options:NSCaseInsensitiveSearch];
 				if(suffix.location != NSNotFound)
 				{
 					mhz *= 1024;

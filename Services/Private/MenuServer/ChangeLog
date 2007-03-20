@@ -2,6 +2,7 @@
 
 	* Show a calendar if clock is clicked.
           For some reason, actions does not work. Weird.
+	* Fix up compilation.
 
 2007-03-06  Quentin Mathe <qmathe@club-internet.fr>
 
