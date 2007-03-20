@@ -31,7 +31,7 @@
     option                      object type
 
     LaunchPath                  NSString
-    Arguments                   NSString
+    Arguments                   NSArray 
     UserName (or Identity)      NSString
     OnStart                     NSNumber/BOOL (<*BN> is NO and <*BY> is YES)
     OnDemand                    NSNumber/BOOL (<*BN> is NO and <*BY> is YES)

@@ -900,13 +900,15 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 				if ([[processInfo allKeys] containsObject: @"OnStart"])
 					launchNow = [[processInfo objectForKey: @"OnStart"] boolValue];
             
-                // FIXME: Add support for Argument and Persistent keys as 
+                // FIXME: Add support for Persistent keys as 
                 // described in Task config file schema (see EtoileSystem.h).
                 SCTask *entry = [SCTask taskWithLaunchPath: [processInfo objectForKey: @"LaunchPath"] 
                     priority: [[processInfo objectForKey: @"LaunchPriority"] boolValue]
                      onStart: launchNow
                     onDemand: [[processInfo objectForKey: @"OnDemand"] boolValue]
                     withUserName: [processInfo objectForKey: @"UserName"]];
+		// It is better not to have space in each arguments
+		[entry setArguments: [processInfo objectForKey: @"Arguments"]];
                 [_processes setObject: entry forKey: domain];
 
                 //[self startProcessWithDomain: domain error: NULL];

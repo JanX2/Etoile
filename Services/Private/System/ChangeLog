@@ -1,3 +1,13 @@
+2007-03-18  Yen-Ju Chen <yjchenx gmail>
+
+	* SCTask.h:
+	* EtoileSystem.h:
+	Change arguments to NSArray type 
+        since it is what SystemTaskList.plist has.
+	* EtoileSystem.m:
+	Support arguments.
+
+
 2007-03-17  Quentin Mathe <qmathe@club-internet.fr>
 
 	Last part of the update to support both sequential and parallel launch of
