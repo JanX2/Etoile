@@ -41,14 +41,24 @@ static AZDock *sharedInstance;
 /** Private **/
 - (BOOL) isGNUstepAppAlive: (NSString *) name
 {
-  NSConnection *conn = 
-             [NSConnection connectionWithRegisteredName: name host: @""];
+  NSConnection *conn = nil;
+  ASSIGN(conn, [NSConnection connectionWithRegisteredName: name host: @""]);
   if (conn) {
-    [conn invalidate];
-    return YES;
-  } else {
-    return NO;
+    /* It is reported that an exception is raised.
+     * It could be the connection dies suddenly.
+     * In that case, it is not alive.
+     * We catch the exception here and only return YES when
+     * there is no exception */
+    NS_DURING
+      [conn invalidate];
+      DESTROY(conn);
+      NS_VALUERETURN(YES, BOOL);
+    NS_HANDLER
+      /* Make sure it is released */
+      DESTROY(conn);
+    NS_ENDHANDLER
   }
+  return NO;
 }
 
 - (void) checkAlive: (id) sender
