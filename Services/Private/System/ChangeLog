@@ -1,5 +1,11 @@
 2007-03-18  Yen-Ju Chen <yjchenx gmail>
 
+	* WorkspaceCommKit/NSWorkspace+Communication.m:
+	Do not check for GSWorkspaceApplication because in any case,
+	it will not work. (See source code for more explanation).
+
+2007-03-18  Yen-Ju Chen <yjchenx gmail>
+
 	* SCTask.h:
 	* EtoileSystem.h:
 	Change arguments to NSArray type 

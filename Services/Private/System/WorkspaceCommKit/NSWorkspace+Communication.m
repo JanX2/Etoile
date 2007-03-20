@@ -83,10 +83,17 @@
  */
 - connectToWorkspaceApplicationLaunch: (BOOL) launchFlag
 {
-  NSString * appName;
+  NSString * appName = nil;
 
+#if 0 
+  /* It does not make sense to check for default workspace
+     because even if there is one, we still use etoile_system to log out.
+     And in order to avoid GWorkspace from launching automatically,
+     we may set GSWorkspaceApplication to a non-existing application.
+     If that is the case, it will break logout. */
   appName = [[NSUserDefaults standardUserDefaults]
     objectForKey: @"GSWorkspaceApplication"];
+#endif
   if (appName == nil)
     {
       // NOTE: appName is defined as SCSystemNamespace in EtoileSystem.h
