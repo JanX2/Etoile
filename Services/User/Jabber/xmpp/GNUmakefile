@@ -1,6 +1,7 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
 LIBRARY_NAME = XMPP
+DOCUMENT_NAME = ${LIBRARY_NAME}
 XMPP_OBJCFLAGS += -g -std=c99 -DGNUSTEP 
 
 ADDITIONAL_INCLUDE_DIRS += -I../TRXML/
@@ -70,6 +71,9 @@ XMPP_HEADER_FILES = \
 					XMPPAccount.h\
 					XMPPConnection.h\
 					jabber_iq_roster.h\
-					query_jabber_iq_auth.h\
+					query_jabber_iq_auth.h
+
+XMPP_AGSDOC_FILES = ${XMPP_HEADER_FILES}
 
 include $(GNUSTEP_MAKEFILES)/library.make
+include $(GNUSTEP_MAKEFILES)/documentation.make

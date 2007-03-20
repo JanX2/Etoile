@@ -11,15 +11,11 @@
 #import "JID.h"
 #import "Message.h"
 #import "JabberPerson.h"
-/*!
-@header ChatLog.h
- This file contains the interface to the ChatLog class
-*/
-
-/*!
-@class ChatLog
-@abstract A class encapsulating the log of an XMPP chat.  
-@discussion The ChatLog class supports two log formats; an XML format which stores the message in a form identical to that defined by XMPP, and a RTF format, which allows the messages to be easily used in NSText subclasses.
+/**
+ * A class encapsulating the log of an XMPP chat.  The current implementation
+ * logs to a series of RTF files (one per day per user) in a directory structure
+ * that mimics the roster.
+ *
 */
 @interface ChatLog : NSObject {
 	BOOL isXML;
@@ -30,28 +26,36 @@
 	NSTimer * autoSaveTimer;
 }
 
-/*!
-@method setLogBasePath:
- @abstract Sets the base path in which log files are created.  
- @discussion This method should not be called after the creation of any ChatLog objects.  The behaviour in this case is undefined.  
- @param _path The path in which log files are stored.  
+/**
+ * Sets the base path in which log files are created.  
+ * This method should not be called after the creation of any 
+ * ChatLog objects.  The behaviour in this case is undefined.  
 */
 + (void) setLogBasePath:(NSString*)_path;
-
-/*!
-@method chatLogWithPerson:withJid:
- @abstract Returns a ChatLog for the specified person.
- @discussion 
- @param _name The roster name of the remote entity.
- @param _jid The JID of the remote entity.
-*/
+/**
+ * Returns a ChatLog for the specified person.
+ */
 + (id) chatLogWithPerson:(JabberPerson*)person;
-+ (id) chatLogWithPerson:(JabberPerson*)person useXMLFormatLog:(BOOL)_xml;
+/**
+ * Initialises the chat log for a specific person.
+ */
 - (id) initWithPerson:(JabberPerson*)person;
-- (id) initWithPerson:(JabberPerson*)person useXMLFormatLog:(BOOL)_xml;
+/**
+ * Logs the given message.
+ */
 - (id) logMessage:(Message*)_message;
+/**
+ * Returns the root path from which all logs will be stored.
+ */
 + (NSString*) logPath;
-- (BOOL) isXML;
+/**
+ * Forces the log to be flushed to disk.  If not called, the log will be flushed
+ * periodically.
+ */
 - (BOOL) save;
+/**
+ * Returns a copy of the log for today.  Used typically for a client to re-load 
+ * previous conversations from the same day after exiting.
+ */
 - (id) getLogForToday;
 @end

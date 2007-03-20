@@ -10,6 +10,9 @@
 #import "Conversation.h"
 #import "TRXMLNode.h"
 
+/** 
+ * Group chat class.  Not yet implemented.
+ */
 @interface GroupChat : Conversation {
 	
 }

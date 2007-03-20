@@ -8,6 +8,10 @@
 
 #import <StanzaFactory.h>
 
+/**
+ * The IqStanzaFactory class is used to generate objects that parse children of
+ * an iq node.  
+ */
 @interface IqStanzaFactory : StanzaFactory {
 	
 }

@@ -10,6 +10,9 @@
 #import "JID.h"
 #import "TRXMLNode.h"
 
+/**
+ * Service Discovery node.  Not yet implemented; please feel free to modify this
+ */
 @interface DiscoIdentity : NSObject {
 	NSString * category;
 	NSString * type;
