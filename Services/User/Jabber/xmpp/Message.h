@@ -30,8 +30,11 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
 }
 /**
  * Constructs a new (outgoing) message, ready for sending.  The subject is usually
- * nil for 
-+ (id) messageWithBody:(NSString*)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type;
+ * nil for chat messages.  The type should be one of MESSAGE_TYPE_{CHAT,ERROR,
+ * MESSAGE,GROUPCHAT}.  Only those of MESSAGE_TYPE_MESSAGE should (generally)
+ * include a subject.
+ */
+ (id) messageWithBody:(NSString*)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type;
 - (id) initWithBody:(NSString*)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type;
 
 - (JID*) correspondent;
