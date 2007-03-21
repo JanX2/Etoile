@@ -25,7 +25,9 @@
 */
 
 #import <IconKit/IKIconTheme.h>
+#ifdef HAVE_UKTEST
 #import <UnitKit/UnitKit.h>
+#endif
 
 
 /*
@@ -69,6 +71,8 @@ static IKIconTheme *activeTheme = nil;
 	}
 }
 
+#ifdef HAVE_UKTEST
+
 + (void) testFindAllThemeBundles
 {
 	NSDictionary *themeBundlePaths = [IKIconTheme findAllThemeBundles];
@@ -78,6 +82,8 @@ static IKIconTheme *activeTheme = nil;
 	// in standard locations.
 	UKTrue([themeBundlePaths count] >= 1);
 }
+
+#endif
 
 + (NSDictionary *) findAllThemeBundles
 {
@@ -100,6 +106,8 @@ static IKIconTheme *activeTheme = nil;
 	return allThemeBundlePaths;
 }
 
+#ifdef HAVE_UKTEST
+
 + (void) testThemeBundlesInDirectory
 {
 	NSString *iconKitDir = [[NSFileManager defaultManager] currentDirectoryPath];
@@ -115,6 +123,8 @@ static IKIconTheme *activeTheme = nil;
 	themeBundle = [themeBundlePaths objectForKey: @"test"];
 	UKNotNil(themeBundle);
 }
+
+#endif
 
 + (NSDictionary *) themeBundlesInDirectory: (NSString *)themeFolder
 {
@@ -164,6 +174,8 @@ static IKIconTheme *activeTheme = nil;
 	return themeBundlePaths;
 }
 
+#ifdef HAVE_UKTEST
+
 + (void) testLoadThemeBundleAtPath
 {
 	NSString *iconKitDir = [[NSFileManager defaultManager] currentDirectoryPath];
@@ -182,6 +194,8 @@ static IKIconTheme *activeTheme = nil;
 	UKNotNil(theme);
 	UKStringsEqual([theme path], themeBundlePath);
 }
+
+#endif
 
 + (IKIconTheme *) loadThemeBundleAtPath: (NSString *)themePath
 {
@@ -309,6 +323,8 @@ will use theme bundle name %@", identifier);
 
 }
 
+#ifdef HAVE_UKTEST
+
 - (void) testLoadIdentifierMappingList
 {
 	[self loadIdentifierMappingList];
@@ -317,6 +333,8 @@ will use theme bundle name %@", identifier);
 	UKStringsEqual([_specIdentifiers objectForKey: @"home"], @"Folder-Home");
 	NSLog(@"Identifier mapping list loaded: %@", _specIdentifiers);
 }
+
+#endif
 
 - (void) loadIdentifierMappingList
 {
@@ -329,6 +347,8 @@ will use theme bundle name %@", identifier);
 	ASSIGN(_specIdentifiers, [[NSDictionary alloc] 
 		initWithContentsOfFile: mappingListPath]);
 }
+
+#ifdef HAVE_UKTEST
 
 - (void) testIconPathForIdentifier
 {
@@ -348,6 +368,8 @@ will use theme bundle name %@", identifier);
 	UKNotNil(path);
 	UKStringsEqual([components objectAtIndex: lastIndex], @"Folder-Home.png");
 }
+
+#endif
 
 - (NSString *) iconPathForIdentifier: (NSString *)iconIdentifier
 {
