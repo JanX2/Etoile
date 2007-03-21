@@ -8,7 +8,10 @@
 
 #import <StanzaFactory.h>
 
-
+/**
+ * The MessageStanzaFactory class is used to generate classes which handle child
+ * XML nodes of a message stanza.
+ */
 @interface MessageStanzaFactory : StanzaFactory {
 
 }

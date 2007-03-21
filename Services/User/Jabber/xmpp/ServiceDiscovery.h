@@ -11,6 +11,9 @@
 #import "Dispatcher.h"
 #import "Capabilities.h"
 
+/**
+ * Service discovery handler class.  Not yet implemented.
+ */
 @interface ServiceDiscovery : NSObject <DispatchDelegate> {
 	XMPPAccount * account;
 	NSMutableDictionary * cache;

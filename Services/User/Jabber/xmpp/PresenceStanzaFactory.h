@@ -9,6 +9,10 @@
 #import <Cocoa/Cocoa.h>
 #import "StanzaFactory.h"
 
+/**
+ * The PresenceStanzaFactory class is used to generate classes which handle child
+ * XML nodes of a presence stanza.
+ */
 @interface PresenceStanzaFactory : StanzaFactory {
 
 }

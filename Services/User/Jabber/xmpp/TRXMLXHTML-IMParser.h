@@ -8,6 +8,12 @@
 
 #import "TRXMLNullHandler.h"
 
+/**
+ * The TRXMLXHTML_IMParser class constructs an NSAttributedString from a series of
+ * XHTML-IM tags handed to the parser.  
+ *
+ * Not yet finished.
+ */
 @interface TRXMLXHTML_IMParser : TRXMLNullHandler {
 	NSMutableDictionary * currentAttributes;
 	NSMutableArray * attributeStack;

@@ -9,6 +9,12 @@
 #import <Cocoa/Cocoa.h>
 #import "TRXMLNullHandler.h"
 
+/**
+ * Handler for a query result in the jabber:iq:roster namespace.  This is used by 
+ * the server to deliver a series of roster entries.  This class, when used as a 
+ * parser delegate, will create an array of identities.  The identities will then
+ * be returned to the parent via the standard mechanism.
+ */
 @interface Query_jabber_iq_roster : TRXMLNullHandler {
 	NSMutableArray * identities;
 }

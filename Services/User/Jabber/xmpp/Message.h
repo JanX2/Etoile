@@ -35,16 +35,44 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
  * include a subject.
  */
 + (id) messageWithBody:(NSString*)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type;
+/**
+ * Initialise a new message.
+ */
 - (id) initWithBody:(NSString*)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type;
-
+/**
+ * Returns the JID of the sender (for incoming messages) or the recipient (for 
+ * outgoing messages).
+ */
 - (JID*) correspondent;
+/**
+ * Returns the subject of the message.
+ */
 - (NSString*) subject;
+/**
+ * Returns the (plain text) body of the message.
+ */
 - (NSString*) body;
+/**
+ * Returns the rich text version of the body.
+ */
 - (NSAttributedString*) HTMLBody;
+/**
+ * Returns the oldest timestamp associated with this message (e.g. offline
+ * storage).  May be broken (TEST).
+ */
 - (Timestamp*) timestamp;
+/**
+ * Returns YES for incoming messages, NO for outgoing.
+ */
 - (BOOL) in;
-
+/**
+ * Compare messages to determine their order of sending.
+ */
 - (NSComparisonResult) compareByTimestamp:(Message*)_other;
-
+/**
+ * Returns the XML representation of the node.  Should be deprecated in favour of
+ * a method returning the XML string directly to hide the TRXML dependency from 
+ * users.
+ */
 - (TRXMLNode*) xml;
 @end

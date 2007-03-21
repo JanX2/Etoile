@@ -9,6 +9,9 @@
 #import <Cocoa/Cocoa.h>
 #import "TRXMLNullHandler.h"
 
+/**
+ * I don't think this class is used anymore...
+ */
 @interface jabber_iq_roster : TRXMLNullHandler {
 	NSMutableArray * items;
 }

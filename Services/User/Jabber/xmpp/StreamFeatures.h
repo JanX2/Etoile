@@ -9,6 +9,10 @@
 #import <Cocoa/Cocoa.h>
 #import "TRXMLNullHandler.h"
 
+/**
+ * The StreamFeatures class is used to parse the features from a stream stanza.
+ * This is used during logging in, to determine which features a server supports.
+ */
 @interface StreamFeatures : TRXMLNullHandler {
 	NSMutableDictionary * features;
 }
