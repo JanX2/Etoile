@@ -498,8 +498,7 @@ static AZFocusManager *sharedInstance;
 	            focus_cycle_target = ft;
 		    if (opaque == YES)
 		      [focus_cycle_target raise];
- 		    else
-		      [self cycleDrawIndicator];
+		    [self cycleDrawIndicator];
 	        }
 		[self popupCycle: ft show: dialog];
 	        return;
@@ -552,8 +551,7 @@ static AZFocusManager *sharedInstance;
 	            focus_cycle_target = ft;
 		    if (opaque == YES)
 		      [focus_cycle_target raise];
- 		    else
-		      [self cycleDrawIndicator];
+		    [self cycleDrawIndicator];
 	        }
 		[self popupCycle: ft show: dialog];
 	        return;
@@ -575,8 +573,7 @@ done_cycle:
     focus_cycle_target = nil;
 
     if (interactive) {
-        if (opaque == NO)
-	  [self cycleDrawIndicator];
+	[self cycleDrawIndicator];
 	[self popupCycle: ft show: NO];
     }
 

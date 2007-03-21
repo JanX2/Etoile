@@ -1,3 +1,7 @@
+2007-03-21  Yen-Ju Chen <yjchenx at gmail>
+
+	* Draw indicator even the window is raise to improve visualization.
+
 2007-03-19  Yen-Ju Chen <yjchenx at gmail>
 
 	* Apply a patch from Jared Yanovich <phirerunner@comcast.net> 
