@@ -45,13 +45,13 @@
  * stanza has been passed, it will be encapsulated in an object.  There are 
  * three kinds of stanza specified by XMPP:
  *
- * <ol>
- * <li>Messages are one-to-one and have best-effort delivery semantics.  They
+ * - Messages are one-to-one and have best-effort delivery semantics.  They
  * will typically be enqueued if they can not be delivered immediately</li>
- * <li>Presences are one-to-many and are unreliable.</li>
- * <li>Info-query (iq) stanzas are one-to-one, will not be enqueued, but should
+ *
+ * - Presences are one-to-many and are unreliable.</li>
+ *
+ * - Info-query (iq) stanzas are one-to-one, will not be enqueued, but should
  * be acknowledged with either an error or a result reply.</li>
- * </ol>
  */
 @interface Dispatcher : NSObject {
 	NSMutableDictionary * iqHandlers;
@@ -71,7 +71,7 @@
 /** 
  * Initialise a new dispatcher with default handlers 
  */
-- (id) initWithDefaultIqHandler:(id <IqHandler>)iq 
+					  - (id) initWithDefaultIqHandler:(id <IqHandler>)iq 
 				 messageHandler:(id <MessageHandler>)message 
 				presenceHandler:(id <PresenceHandler>)presence;
 /**

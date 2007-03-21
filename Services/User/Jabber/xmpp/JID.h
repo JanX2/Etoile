@@ -51,18 +51,16 @@ typedef enum {invalidJID = 0, serverJID, serverResourceJID, userJID, resourceJID
 - (id) initWithString:(NSString*)_jid;
 /**
  * Returns the amount of information provided by this JID.
- * <dl>
- * <dt>invalidJID</dt>
- * <dd>Not a valid Jabber ID.</dd>
- * <dt>serverJID</dt>
- * <dd>A Jabber ID with only a server component.</dd>
- * <dt>serverResourceJID</dt>
- * <dd>A JID of the form server/resource.</dd>
- * <dt>userJID</dt>
- * <dd>A Jabber ID with a server and user, but no resource.</dd>
- * <dt>resourceJID</dt>
- * <dd>A Jabber ID with all three components set.</dd>
- * </dl>
+ *
+ * invalidJID - Not a valid Jabber ID.
+ *
+ * serverJID - A Jabber ID with only a server component.
+ *
+ * serverResourceJID - A JID of the form server/resource.
+ *
+ * userJID - A Jabber ID with a server and user, but no resource.
+ *
+ * resourceJID - A Jabber ID with all three components set.
  */
 - (JIDType) type;
 /**

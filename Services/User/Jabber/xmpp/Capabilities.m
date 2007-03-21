@@ -83,7 +83,7 @@
 + (DiscoNode*) discoNodeWithJID:(JID*)aJID
 						   node:(NSString*)aNode
 					 identities:(NSSet*)anIdentities
-					   features:(NSSet*)aFeatures;
+					   features:(NSSet*)aFeatures
 {
 	 return [[[DiscoNode alloc] initWithJID:aJID
 									   node:aNode
@@ -93,7 +93,7 @@
 - (DiscoNode*) initWithJID:(JID*)aJID
 					  node:(NSString*)aNode
 				identities:(NSSet*)anIdentities
-				  features:(NSSet*)aFeatures;
+				  features:(NSSet*)aFeatures
 {
 	if((self = [self init]) == nil)
 	{
