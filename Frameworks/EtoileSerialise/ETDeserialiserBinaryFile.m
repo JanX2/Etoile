@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <objc/objc-api.h>
+#import "ETSerialiserBackendBinaryFile.h"
+
+#define FORMAT(format,...) fprintf(file, format, __VA_ARGS__)
+#define WRITE(x,b) fwrite(x,b,1,file)
+#define STORECOMPLEX(type, value, size) WRITE(type,1);FORMAT("%s\0",aName);WRITE(value, size)
+#define STORE(type, value, c_type) STORECOMPLEX(type, &value, sizeof(c_type))
+
+@implementation ETSerialiserBackendBinaryFile
+- (void) setFile:(char*)filename
+{
+	file = fopen(filename, "w");
+}
+
+- (void) beginStructNamed:(char*)aName
+{
+	FORMAT("{%s%c",aName,0);
+}
+- (void) endStruct
+{
+	WRITE("}",1);
+}
+- (void) beginObject:(id)anObject named:(char*)aName withClass:(Class)aClass
+{
+	FORMAT("<%s%c%s%c",aClass->name,0,aName,0);
+}
+- (void) endObject
+{
+	WRITE(">", 1);
+}
+- (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength;
+{
+	FORMAT("[%s%c",aName,0);
+	WRITE(&aLength, sizeof(unsigned int));
+}
+- (void) endArray
+{
+	WRITE("]", 1);
+}
+
+- (void) storeChar:(char)aChar named:(char*)aName
+{
+	STORE("c", aChar, char);
+}
+- (void) storeUnsignedChar:(unsigned char)aChar named:(char*)aName
+{
+	STORE("C", aChar, unsigned char);
+}
+- (void) storeShort:(short)aShort named:(char*)aName
+{
+	STORE("s", aShort, short);
+}
+- (void) storeUnsignedShort:(unsigned short)aShort named:(char*)aName
+{
+	STORE("S", aShort, unsigned short);
+}
+- (void) storeInt:(int)aInt named:(char*)aName
+{
+	STORE("i", aInt, int);
+}
+- (void) storeUnsignedInt:(unsigned int)aInt named:(char*)aName
+{
+	STORE("I", aInt, unsigned int);
+}
+- (void) storeLong:(long)aLong named:(char*)aName
+{
+	STORE("l", aLong, long int);
+}
+- (void) storeUnsignedLong:(unsigned long)aLong named:(char*)aName
+{
+	STORE("L", aLong, unsigned long int);
+}
+- (void) storeLongLong:(long long)aLongLong named:(char*)aName
+{
+	STORE("Q", aLongLong, long long int);
+}
+- (void) storeUnsignedLongLong:(unsigned long long)aLongLong named:(char*)aName
+{
+	STORE("Q", aLongLong, unsigned long long int);
+}
+- (void) storeFloat:(float)aFloat named:(char*)aName
+{
+	STORE("f", aFloat, float);
+}
+- (void) storeDouble:(double)aDouble named:(char*)aName
+{
+	STORE("d", aDouble, double);
+}
+- (void) storeClass:(Class)aClass named:(char*)aName
+{
+	FORMAT("#%s%c%s%c", aName, 0,aClass,0);
+}
+- (void) storeSelector:(SEL)aSelector named:(char*)aName
+{
+	FORMAT(":%s%c%s%c", aName, 0, [NSStringFromSelector(aSelector) UTF8String], 0);
+}
+- (void) storeCString:(char*)aCString named:(char*)aName
+{
+	FORMAT("*%s%c%s%c", aName, 0, aCString, 0);
+}
+- (void) storeData:(void*)aBlob ofSize:(size_t)aSize named:(char*)aName
+{
+	FORMAT("^%s%c", aName, 0);
+	WRITE(aBlob,aSize);
+}
+@end

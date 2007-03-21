@@ -1,0 +1,24 @@
+===============
+EtoileSerialise
+===============
+
+This collection of classes will eventually be used by CoreObject to perform serialisation and deserialisation of arbitrary objects.
+
+So far, serialisation is working, deserialisation is not implemented.  All interfaces in this module should be considered flexible.  Eventually they will be hidden behind CoreObject interfaces, permitting them to be 
+
+Build and Install
+-----------------
+
+Run make (or gmake on non-GNU systems) to build the example.  It is not recommended that this be installed anywhere at this time.
+
+Mac OS X Support
+----------------
+
+This code is closely tied to the GNU Objective-C runtime library.  If it works on OS X, then this is more through luck than judgement.  It is not anticipated that it will actively try to support the Apple runtime unless it is re-licensed as LGPL.
+
+Developer Notes
+===============
+
+Currently, and probably permanently, pointers to non-objects are a problem.  The C runtime does not expose a good mechanism for finding out how big the allocation is.  As such, they are currently delegated to the class to handle.  At some point, I will add some macros wrapping malloc, calloc and realloc, so people can use them transparently-ish.
+
+Please test your classes with the example backend and see if they lose any information.
