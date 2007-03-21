@@ -49,48 +49,6 @@ NSMutableDictionary * chatLogs;
 {
 	return [[[ChatLog alloc] initWithPerson:person] autorelease];
 }
-- (id) initWithPerson:(JabberPerson*)person useXMLFormatLog:(BOOL)_xml
-{
-	self = [self init];
-	if(self == nil)
-	{
-		return nil;
-	}
-	isXML = _xml;
-	remoteEntity = [person retain];
-	[self initLog];
-	return self;
-}
-
-
-+ (id) chatLogWithPerson:(JabberPerson*)person useXMLFormatLog:(BOOL)_xml
-{
-	return  [[[ChatLog alloc] initWithPerson:person useXMLFormatLog:_xml] autorelease];
-}
-
-- (id) initWithPerson:(JabberPerson*)person
-{
-	return [self initWithPerson:(JabberPerson*)person useXMLFormatLog:NO];
-}
-
-- (id) init
-{
-	self = [super init];
-	if(self == nil)
-	{
-		return nil;
-	}
-	isXML = NO;
-	today = [[NSCalendarDate alloc] init];
-	logFileName = nil;
-	remoteEntity = nil;
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(autoSave:)
-												 name:@"NSApplicationWillTerminateNotification"
-											   object:NSApp];
-	return self;
-}
-
 - (void) initLog
 {
 	NSString * logFolder = [[NSString alloc] initWithFormat:@"%@%@/%@", 
@@ -151,6 +109,48 @@ NSMutableDictionary * chatLogs;
 		}			
 	}
 }
+- (id) initWithPerson:(JabberPerson*)person useXMLFormatLog:(BOOL)_xml
+{
+	self = [self init];
+	if(self == nil)
+	{
+		return nil;
+	}
+	isXML = _xml;
+	remoteEntity = [person retain];
+	[self initLog];
+	return self;
+}
+
+
++ (id) chatLogWithPerson:(JabberPerson*)person useXMLFormatLog:(BOOL)_xml
+{
+	return  [[[ChatLog alloc] initWithPerson:person useXMLFormatLog:_xml] autorelease];
+}
+
+- (id) initWithPerson:(JabberPerson*)person
+{
+	return [self initWithPerson:(JabberPerson*)person useXMLFormatLog:NO];
+}
+
+- (id) init
+{
+	self = [super init];
+	if(self == nil)
+	{
+		return nil;
+	}
+	isXML = NO;
+	today = [[NSCalendarDate alloc] init];
+	logFileName = nil;
+	remoteEntity = nil;
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(autoSave:)
+												 name:@"NSApplicationWillTerminateNotification"
+											   object:NSApp];
+	return self;
+}
+
 - (BOOL) update
 {
 	//Check if today is stil today
