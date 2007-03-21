@@ -49,6 +49,19 @@ NSMutableDictionary * chatLogs;
 {
 	return [[[ChatLog alloc] initWithPerson:person] autorelease];
 }
+- (id) initWithPerson:(JabberPerson*)person useXMLFormatLog:(BOOL)_xml
+{
+	self = [self init];
+	if(self == nil)
+	{
+		return nil;
+	}
+	isXML = _xml;
+	remoteEntity = [person retain];
+	[self initLog];
+	return self;
+}
+
 
 + (id) chatLogWithPerson:(JabberPerson*)person useXMLFormatLog:(BOOL)_xml
 {
@@ -138,19 +151,6 @@ NSMutableDictionary * chatLogs;
 		}			
 	}
 }
-- (id) initWithPerson:(JabberPerson*)person useXMLFormatLog:(BOOL)_xml
-{
-	self = [self init];
-	if(self == nil)
-	{
-		return nil;
-	}
-	isXML = _xml;
-	remoteEntity = [person retain];
-	[self initLog];
-	return self;
-}
-
 - (BOOL) update
 {
 	//Check if today is stil today
