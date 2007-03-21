@@ -46,12 +46,12 @@
  * three kinds of stanza specified by XMPP:
  *
  * - Messages are one-to-one and have best-effort delivery semantics.  They
- * will typically be enqueued if they can not be delivered immediately</li>
+ * will typically be enqueued if they can not be delivered immediately
  *
- * - Presences are one-to-many and are unreliable.</li>
+ * - Presences are one-to-many and are unreliable.
  *
  * - Info-query (iq) stanzas are one-to-one, will not be enqueued, but should
- * be acknowledged with either an error or a result reply.</li>
+ * be acknowledged with either an error or a result reply.
  */
 @interface Dispatcher : NSObject {
 	NSMutableDictionary * iqHandlers;
