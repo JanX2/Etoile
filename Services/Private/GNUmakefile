@@ -20,6 +20,7 @@ ifeq ($(etoile-extensions), yes)
 
     export azalea ?= yes
     export background ?= yes
+    export dock ?= yes
 
     # Was servicesbar
     export menuserver ?= yes
@@ -46,8 +47,13 @@ ifeq ($(system),yes)
     SUBPROJECTS += System
 endif
 
-# MenuServer depends on WorkspaceCommKit part of System, so it has to be built
-# afterwards.
+# MenuServer and AZDock depend on WorkspaceCommKit part of System, so they have
+# be built afterwards.
+
+ifeq ($(dock), yes)
+    SUBPROJECTS += AZDock
+endif
+
 ifeq ($(menuserver),yes)
     SUBPROJECTS += MenuServer
 endif
