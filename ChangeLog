@@ -1,3 +1,15 @@
+2007-03-22  Quentin Mathe <qmathe@club-internet.fr>
+
+	* setup.sh:
+	* setdown.sh:
+	Modified to set GWorkspace related defaults as suggested in bug reports
+	#8618 and #8668
+
+2007-03-22  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Services/Private/GNUmakefile: Included AZDock by default in the build 
+	process.
+
 2007-03-17  Quentin Mathe <qmathe@club-internet.fr>
 
 	* etoile.make: 
