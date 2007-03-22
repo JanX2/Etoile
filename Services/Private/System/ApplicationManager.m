@@ -326,7 +326,7 @@ static NSConnection *serverConnection = nil;
   NSEnumerator * e = [launchedApplications objectEnumerator];
   NSDictionary * appEntry;
   NSWorkspace * ws = [NSWorkspace sharedWorkspace];
-  NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+  //NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
 
   NSDebugLLog(@"ApplicationManager", @"Trying to terminate all apps except: %@", ommitedApps);
 

@@ -1,5 +1,13 @@
 2007-03-22  Quentin Mathe <qmathe@club-internet.fr>
 
+	* ApplicationManager.m:
+	* EtoileSystem.m:
+	* SCTask.m: 
+	Shut down all compilation warnings except one in ApplicationManager. This
+	corrects the potential bug in SCTask outlined in #8729
+
+2007-03-22  Quentin Mathe <qmathe@club-internet.fr>
+
 	* SystemTaskList.plist: Updated to include AZDock and AZBackground.
 
 2007-03-18  Yen-Ju Chen <yjchenx gmail>
@@ -15,7 +23,6 @@
 	Change arguments to NSArray type since it is what SystemTaskList.plist has.
 	* EtoileSystem.m:
 	Support arguments.
-
 
 2007-03-17  Quentin Mathe <qmathe@club-internet.fr>
 

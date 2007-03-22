@@ -348,9 +348,6 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 - (void) startProcessesSequentiallyByPriorityOrder: 
 	(NSMutableArray *)launchQueue
 {
-	NSDictionary *domains = [NSDictionary dictionaryWithObjects: 
-		[_processes allKeys] forKeys: [_processes allValues]];
-
 	if (launchQueue != nil 
 		&& [launchQueue isEqual: _launchQueue] == NO)
 	{
@@ -658,15 +655,21 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
 	if (appName == nil)
 	{
-		// All applications have been terminated, time to terminate our own tasks
-		BOOL end = [self terminateAllProcessesOnOperation: nil];
-		
+		/* All applications have been terminated, time to terminate our own tasks */
+		BOOL readyToEnd = [self terminateAllProcessesOnOperation: nil];
+
+		if (readyToEnd == NO)
+		{
+			// TODO: handle the possibility that some processes fail to
+			// terminate
+		}
+
 		if (powerOffRequested)
 		{
           // TODO: initiate the power off process here
 		}
-		sleep(2);
-		// Time to put an end to our own life.
+
+		/* Time to put an end to our own life. */
 		exit(0);
 	}
 	else

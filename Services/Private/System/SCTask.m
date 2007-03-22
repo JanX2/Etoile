@@ -165,8 +165,10 @@
 + (SCTask *) taskWithTask: (SCTask *)aTask
 {
 	SCTask *newTask = [SCTask taskWithLaunchPath: [aTask launchPath] 
-										onDemand: [aTask launchOnDemand] 
-									withUserName: nil];
+	                                    priority: [aTask launchPriority]
+	                                     onStart: [aTask launchOnStart]
+	                                    onDemand: [aTask launchOnDemand] 
+	                                withUserName: nil];
 
 	[newTask setArguments: [aTask arguments]];
 	[newTask setCurrentDirectoryPath: [aTask currentDirectoryPath]];
