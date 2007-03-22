@@ -32,6 +32,28 @@
 		Persistent = <*BN>;
 		Hidden = <*BY>;
 	};
+    /etoilesystem/application/dock =
+	{
+		LaunchPath = "AZDock";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 30;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+    /etoilesystem/application/background =
+	{
+		LaunchPath = "AZBackground";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 30;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
 	/etoilesystem/application/azalea =
 	{
 		LaunchPath = "Azalea";

@@ -1,3 +1,7 @@
+2007-03-22  Quentin Mathe <qmathe@club-internet.fr>
+
+	* SystemTaskList.plist: Updated to include AZDock and AZBackground.
+
 2007-03-18  Yen-Ju Chen <yjchenx gmail>
 
 	* WorkspaceCommKit/NSWorkspace+Communication.m:
@@ -8,8 +12,7 @@
 
 	* SCTask.h:
 	* EtoileSystem.h:
-	Change arguments to NSArray type 
-        since it is what SystemTaskList.plist has.
+	Change arguments to NSArray type since it is what SystemTaskList.plist has.
 	* EtoileSystem.m:
 	Support arguments.
 
