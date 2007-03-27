@@ -1,3 +1,7 @@
+2007-03-27  Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* GNUmakefile: add -I/usr/X11R6/include for older FreeBSD version.
+
 2007-02-19  Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Format README in reStructuedText

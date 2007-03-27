@@ -82,8 +82,10 @@ echo "POPPLER_LIBS=${POPPLER_LIBS}" >>config.make
 echo "${POPPLER_VERSION}=YES" >> config.make
 echo "FT_CFLAGS=${FT_CFLAGS}" >> config.make
 echo "FT_LIBS=${FT_LIBS}" >> config.make
-echo "ADDITIONAL_CFLAGS=\$(POPPLER_CFLAGS) \$(FT_CFLAGS)" >> config.make
-echo "ADDITIONAL_LDFLAGS=\$(POPPLER_LIBS) \$(POPPLER_LIBS)" >> config.make
+echo "ADDITIONAL_CFLAGS+=\$(POPPLER_CFLAGS) \$(FT_CFLAGS)" >> config.make
+echo "ADDITIONAL_LDFLAGS+=\$(POPPLER_LIBS) \$(POPPLER_LIBS)" >> config.make
+# we add -I/usr/X11R6/include for older FreeBSD version.
+echo "ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include" >> config.make
 echo "HAVE_CAIRO=${HAVE_CAIRO}" >>config.make
 
 exit 0
