@@ -43,7 +43,7 @@
 	return nil;
 }
 
-- (NSString*) getJIDStringWithNoResource;
+- (NSString*) getJIDStringWithNoResource
 {
 	switch(type)
 	{

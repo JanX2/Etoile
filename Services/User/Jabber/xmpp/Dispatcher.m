@@ -15,7 +15,7 @@
 
 + (id) dispatcherWithDefaultIqHandler:(id <IqHandler>)iq 
 					   messageHandler:(id <MessageHandler>)message 
-					  presenceHandler:(id <PresenceHandler>)presence;
+					  presenceHandler:(id <PresenceHandler>)presence
 {
 	return [[[Dispatcher alloc] initWithDefaultIqHandler:iq 
 										 messageHandler:message 
@@ -25,7 +25,7 @@
 
 - (id) initWithDefaultIqHandler:(id <IqHandler>)iq 
 				 messageHandler:(id <MessageHandler>)message 
-				presenceHandler:(id <PresenceHandler>)presence;
+				presenceHandler:(id <PresenceHandler>)presence
 {
 	defaultIqHandler = [iq retain];
 	defaultMessageHandler = [message retain];

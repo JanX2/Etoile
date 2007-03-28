@@ -12,7 +12,7 @@
 #include "../Macros.h"
 
 @implementation JabberRootIdentity
-- (void)findType;
+- (void)findType
 {
 	NSString * serverDomain = [jid domain];
 	switch([jid type])

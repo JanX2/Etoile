@@ -711,7 +711,7 @@ static NSDictionary * STANZA_KEYS;
 	[self XMPPSend:[presenceNode stringValue]];
 }
 
-- (void) setParser:(id)aParser;
+- (void) setParser:(id)aParser
 {
 	parser = aParser;
 }

@@ -31,7 +31,7 @@ static NSDictionary * TYPES;
 }
 
 - (void)startElement:(NSString *)aName
-		  attributes:(NSDictionary*)attributes;
+		  attributes:(NSDictionary*)attributes
 {
 	if([aName isEqualToString:@"iq"])
 	{

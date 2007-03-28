@@ -43,7 +43,7 @@
 /**
  * Logs the given message.
  */
-- (id) logMessage:(Message*)_message;
+- (id) logMessage:(Message*) aMessage;
 /**
  * Returns the root path from which all logs will be stored.
  */
