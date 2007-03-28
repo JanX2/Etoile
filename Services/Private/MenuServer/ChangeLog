@@ -1,3 +1,11 @@
+2007-03-27  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Subprojects/AboutEtoileEntry/English.lproj/AboutEtoileEntry.gorm: Added 
+    2007 to copyright years. Fixed 'Etoile Project' mention to simply talk of
+    of Étoilé with accented characters. Fixed GPL license mention by replacing
+    it with Jesse's idea. Improved info area layout to better accommodate long
+    hostnames and kernel version (without cutting them off most of time).
+
 2007-03-27  Yen-Ju Chen <yjchenx gmail>
 
 	* Subprojects/AboutEtoileEntry/ETMachineInfo_Linux.m:
