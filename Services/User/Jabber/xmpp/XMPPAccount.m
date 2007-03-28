@@ -76,7 +76,14 @@ NSString * passwordForJID(JID * aJID)
 
 	//Get user's Jabber ID from Address Book
 	ABMultiValue * jids = [[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty];
-	myJID = [JID jidWithString:[jids valueAtIndex:0]];
+	NSString * jidString = [jids valueAtIndex:0];
+	if(jidString == nil)
+	{
+		[[NSException exceptionWithName:XMPPNOJIDEXCEPTION
+								 reason:@"Unable to find JID for connection"
+		                       userInfo:nil] raise];
+	}
+	myJID = [JID jidWithString:jidString];
 
 		
 	NSString * password = passwordForJID(myJID);
@@ -92,9 +99,10 @@ NSString * passwordForJID(JID * aJID)
 	}
 	else
 	{
-		//TODO: Make this a notification with a reason
-		[(JabberApp*)[NSApp delegate] connectionFailed:self];
-		return nil;
+		[[NSException exceptionWithName:XMPPNOPASSWORDEXCEPTION
+								 reason:@"Unable to find password for connection"
+							   userInfo:[NSDictionary dictionaryWithObject:myJID
+							                                        forKey:@"JID"]] raise];
 	}
 }
 

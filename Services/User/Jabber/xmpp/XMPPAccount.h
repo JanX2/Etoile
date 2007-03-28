@@ -11,6 +11,9 @@
 #import "XMPPConnection.h"
 #import "JID.h"
 
+#define XMPPNOJIDEXCEPTION @"NoJIDinAB"
+#define XMPPNOPASSWORDEXCEPTION @"NoPasswordForJid"
+
 /**
  * The XMPPAccount class represents a single XMPP account.  The JID is retrieved
  * from the address book, and the password from the keychain (OS X) or user 
