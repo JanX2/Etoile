@@ -436,7 +436,9 @@ static NSDictionary * STANZA_KEYS;
 	{
 		//Once we're authenticated, re-initialise the stream...ha
 		connectionState = unbound;
-		[self send:"<stream:stream xmlns:stream='http://etherx.jabber.org/streams' xmlns='jabber:client' to='theravensnest.org' version='1.0'>"];
+		NSString * newStream = [NSString stringWithFormat:@"<stream:stream to='%@' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'>",
+                                server]
+		[self send:[newStream UTF8String]];
 	}
 	else
 	{
