@@ -80,24 +80,24 @@ humanReadableNumber (double value, unsigned int unitScale, NSString *unit,
     {
       if (prefix >= 0)
         {
-          return [NSString stringWithFormat:@"%d%c%@", my_round (value),
+          return [NSString stringWithFormat:@"%d %c%@", my_round (value),
             UnitPrefixes[prefix], unit];
         }
       else
         {
-          return [NSString stringWithFormat:@"%d%@", my_round (value), unit];
+          return [NSString stringWithFormat:@"%d %@", my_round (value), unit];
         }
     }
   else
     {
       if (prefix >= 0)
         {
-          return [NSString stringWithFormat:@"%#3.2f%c%@", value,
+          return [NSString stringWithFormat:@"%#3.2f %c%@", value,
             UnitPrefixes[prefix], unit];
         }
       else
         {
-          return [NSString stringWithFormat:@"%#3.2f%@", value, unit];
+          return [NSString stringWithFormat:@"%#3.2f %@", value, unit];
         }
     }
 }

@@ -1,3 +1,12 @@
+2007-03-27  Quentin Mathe <qmathe@club-internet.fr>
+
+    Time to commit an old patch (with minor tweaks) proposed on May 19, 2006. 
+    Override David's untested fix introduced on r1563.
+    * Subprojects/AboutEtoileEntry/ETMachineInfo.m: Added spacing between value 
+    and unit.
+    * Subprojects/AboutEtoileEntry/ETMachineInfo_Linux.m: Modified to support 
+    PowerPC architecture by parsing specific fields in /proc/cpuinfo. 
+
 2007-03-14  Yen-Ju Chen <yjchenx gmail>
 
 	* Show a calendar if clock is clicked.
