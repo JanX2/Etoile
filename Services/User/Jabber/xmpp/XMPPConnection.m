@@ -400,7 +400,7 @@ static NSDictionary * STANZA_KEYS;
 }
 
 //TODO:  Plain text and SASL authentication
-- (void) logInWithId:(NSString*) sessionID;
+- (void) logInWithId:(NSString*) sessionID
 {
 	if(connectionState != connected)
 	{
@@ -437,7 +437,7 @@ static NSDictionary * STANZA_KEYS;
 		//Once we're authenticated, re-initialise the stream...ha
 		connectionState = unbound;
 		NSString * newStream = [NSString stringWithFormat:@"<stream:stream to='%@' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'>",
-                                server]
+                                server];
 		[self send:[newStream UTF8String]];
 	}
 	else
@@ -592,7 +592,7 @@ static NSDictionary * STANZA_KEYS;
 	presenceDisplay = [_display retain];
 }
 
-- (void) handleIq:(Iq*)anIq;
+- (void) handleIq:(Iq*)anIq
 {
 	if(connectionState == unbound)
 	{
