@@ -1,3 +1,8 @@
+2007-03-27  Yen-Ju Chen <yjchenx gmail>
+
+	* Subprojects/AboutEtoileEntry/ETMachineInfo_Linux.m:
+	Add my G4 CPU identifier.
+
 2007-03-27  Quentin Mathe <qmathe@club-internet.fr>
 
     Time to commit an old patch (with minor tweaks) proposed on May 19, 2006. 
