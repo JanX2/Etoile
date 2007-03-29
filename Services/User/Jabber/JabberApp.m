@@ -19,13 +19,47 @@
 {
 	return xmlLogBox;
 }
+- (void) getPassword:aJid
+{
+	PasswordWindowController * passwordWindow = [[PasswordWindowController alloc] initWithWindowNibName:@"PasswordBox" forJID:aJid];
+	if([NSApp runModalForWindow:[passwordWindow window]] == 0)
+	{
+		//User entered a password.
+	}
+	else
+	{
+		//Do something sensible here.
+	}
+}
+
+- (void) getAccountInfo
+{
+	//TODO: Jesse, add the account selection dialog here.
+	//Look at PasswordWindowController for inspiration :)
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
 	//TODO: Make this a user defaults thing.
 #ifdef NDEBUG
 	[[debugMenu menu] removeItem:debugMenu];
 #endif
-	account = [[XMPPAccount alloc] init];
+	while(account == nil)
+	{
+		NS_DURING
+			//Account now throws an exception if there is no account.
+			account = [[XMPPAccount alloc] init];
+		NS_HANDLER
+			if([[localException name] isEqualToString:XMPPNOJIDEXCEPTION])
+			{
+				[self getAccountInfo];
+			}
+			else if([[localException name] isEqualToString:XMPPNOPASSWORDEXCEPTION])
+			{
+				[self getPassoword:[[localException userInfo] objectForKey:@"JID"]];
+			}
+		NS_ENDHANDLER
+	}
 	rosterWindow = [[RosterController alloc] initWithNibName:@"RosterWindow"
 												  forAccount:account
 												  withRoster:[account roster]];
@@ -71,20 +105,6 @@
 				[account reconnect];
 			}
 		}
-	}
-}
-
-- (void) connectionFailed:(XMPPAccount*)_account
-{
-	PasswordWindowController * passwordWindow = [[PasswordWindowController alloc] initWithWindowNibName:@"PasswordBox" forJID:[_account jid]];
-	if([NSApp runModalForWindow:[passwordWindow window]] == 0)
-	{
-		[_account release];
-		account = [[XMPPAccount alloc] init];
-	}
-	else
-	{
-		[_account release];
 	}
 }
 
