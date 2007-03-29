@@ -5,6 +5,8 @@
 
 @interface NSButtonCell (theme) // declare some methods used by gnustep..
 - (void) drawGradientWithFrame: (NSRect) frame inView: (NSView*) view;
+- (void) _drawBorderAndBackgroundWithFrame: (NSRect)cellFrame 
+                                    inView: (NSView*)controlView;
 @end
 
 @implementation NSButtonCell (theme)
@@ -12,20 +14,9 @@
     return NO;
 }
 
-- (void) drawWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
+- (void) _drawBorderAndBackgroundWithFrame: (NSRect)cellFrame 
+                                    inView: (NSView*)controlView
 {
-  // Save last view drawn to
-  if (_control_view != controlView)
-    _control_view = controlView;
-
-  // transparent buttons never draw
-  if (_buttoncell_is_transparent)
-    return;
-
-  // do nothing if cell's frame rect is zero
-  if (NSIsEmptyRect(cellFrame))
-    return;
-
   if ((_cell.is_bordered) &&
       (!_shows_border_only_while_mouse_inside || _mouse_inside))
   {
@@ -45,7 +36,23 @@
 	  NSRectFill (cellFrame);
 	}
   }
+}
 
+- (void) drawWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
+{
+  // Save last view drawn to
+  if (_control_view != controlView)
+    _control_view = controlView;
+
+  // transparent buttons never draw
+  if (_buttoncell_is_transparent)
+    return;
+
+  // do nothing if cell's frame rect is zero
+  if (NSIsEmptyRect(cellFrame))
+    return;
+
+  [self _drawBorderAndBackgroundWithFrame: cellFrame inView: controlView];
   [self drawInteriorWithFrame: cellFrame inView: controlView];
 
 /*

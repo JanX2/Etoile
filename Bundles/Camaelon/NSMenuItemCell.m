@@ -7,11 +7,14 @@ static NSImage  *arrowImageSelected = nil;
 static NSImage  *arrowImageCurrent = nil;
 
 @implementation NSMenuItemCell (theme)
+
 - (void) drawBorderAndBackgroundWithFrame: (NSRect)cellFrame
                                   inView: (NSView *)controlView
 {
 //  if (!_cell.is_bordered)
 //    return;
+
+  //NSLog(@"Camaelon - NSMenuItemCell %@ -drawBorderAndBackgroundWithFrame:inView:", [[self menuItem] title]);
 
   if (_cell.is_highlighted && (_highlightsByMask & NSPushInCellMask))
     {
@@ -24,9 +27,19 @@ static NSImage  *arrowImageCurrent = nil;
     }
 
 }
+
+// Overriden NSCell method (take note it's already overriden NSButtonCell)
+- (void) _drawBorderAndBackgroundWithFrame: (NSRect)cellFrame
+                                   inView: (NSView *)controlView
+{
+  [self drawBorderAndBackgroundWithFrame: cellFrame inView: controlView];
+}
+
 - (void) drawInteriorWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
 {
   unsigned  mask;
+
+  //NSLog(@"Camaelon - NSMenuItemCell %@ -drawInteriorWithFrame:inView: %@", [[self menuItem] title]);
 
   // Transparent buttons never draw
   if (_buttoncell_is_transparent)
