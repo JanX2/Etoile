@@ -107,15 +107,31 @@ static NSImage * arrowImage = nil;
   return cellFrame;
 }
 
-- (void) drawBorderAndBackgroundWithFrame: (NSRect)cellFrame
+// Overriden method NSCell/NSButtonCell (already overriden in Camaelon)
+- (void) _drawBorderAndBackgroundWithFrame: (NSRect)cellFrame
                                   inView: (NSView *)controlView
 {
+  //NSLog(@"WildMenus - GSHorizontalMenuItemCell %@ -drawBorderAndBackgroundWithFrame:inView:", [[self menuItem] title]);
+
+  // draw the borders of the menu item
+
+  [[NSColor colorWithCalibratedWhite: 1.0 alpha: 0.35] set];
+  PSmoveto(NSMinX(cellFrame), NSMinY(cellFrame));
+  PSrlineto(0, cellFrame.size.height);
+  PSstroke();
+
+  [[NSColor colorWithCalibratedWhite: 0.67 alpha: 0.3] set];
+  PSmoveto(NSMaxX(cellFrame) - 1, NSMinY(cellFrame));
+  PSrlineto(0, cellFrame.size.height);
+  PSstroke();
 }
 
 - (void) drawInteriorWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
 {
   unsigned  mask;
   NSColor *backgroundColor = nil;
+
+  //NSLog(@"WildMenus - GSHorizontalMenuItemCell %@ -drawInteriorWithFrame:inView:", [[self menuItem] title]);
 
   // Transparent buttons never draw
   if (_buttoncell_is_transparent)
@@ -184,20 +200,6 @@ static NSImage * arrowImage = nil;
     {
 //      [self drawKeyEquivalentWithFrame: cellFrame inView: controlView];
     }
-
-
-
-  // draw the borders of the menu item
-
-  [[NSColor colorWithCalibratedWhite: 1.0 alpha: 0.35] set];
-  PSmoveto(NSMinX(cellFrame), NSMinY(cellFrame));
-  PSrlineto(0, cellFrame.size.height);
-  PSstroke();
-
-  [[NSColor colorWithCalibratedWhite: 0.67 alpha: 0.3] set];
-  PSmoveto(NSMaxX(cellFrame) - 1, NSMinY(cellFrame));
-  PSrlineto(0, cellFrame.size.height);
-  PSstroke();
 }
 
 - (void) drawKeyEquivalentWithFrame:(NSRect)cellFrame

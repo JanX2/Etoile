@@ -31,5 +31,6 @@
 - (void) drawBorderAndBackgroundWithFrame: (NSRect)cellFrame
                                    inView: (NSView *)controlView
 {
+  //NSLog(@"WildMenus - NHMenuItemCell %@ -drawBorderAndBackgroundWithFrame:inView:", [[self menuItem] title]);
 }
 @end

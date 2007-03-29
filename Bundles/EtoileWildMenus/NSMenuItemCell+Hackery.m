@@ -14,6 +14,8 @@
 - (void) drawInteriorWithFrame: (NSRect) cellFrame
                         inView: (NSView*) controlView
 {
+  //NSLog(@"WildMenus - NSMenuItemCell %@ -drawInteriorWithFrame:inView:", [[self menuItem] title]);
+
   if ([_menuItem isKindOfClass: [EtoileSeparatorMenuItem class]])
     {
       [self drawSeparatorItemWithFrame: cellFrame inView: controlView];
