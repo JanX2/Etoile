@@ -19,7 +19,6 @@
 	IBOutlet NSMenuItem * debugMenu;
 	IBOutlet NSTextView * xmlLogBox;	
 }
-- (void) connectionFailed:(XMPPAccount*)_account;
 - (void) reconnect;
 - (void) redrawRosters;
 - (void) setPresence:(unsigned char)_presence withMessage:(NSString*)_message;

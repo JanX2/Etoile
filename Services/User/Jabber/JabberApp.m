@@ -56,7 +56,7 @@
 			}
 			else if([[localException name] isEqualToString:XMPPNOPASSWORDEXCEPTION])
 			{
-				[self getPassoword:[[localException userInfo] objectForKey:@"JID"]];
+				[self getPassword:[[localException userInfo] objectForKey:@"JID"]];
 			}
 		NS_ENDHANDLER
 	}

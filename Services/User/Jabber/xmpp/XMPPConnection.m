@@ -570,10 +570,16 @@ static NSDictionary * STANZA_KEYS;
 	{
 		if(connectionState != loggedIn)
 		{
+			/*
+			Jesse says: we need some other kind of solution here since we don't have
+			a -connectionFailed method anymore... not sure what to do. I commented it
+			out since it was causing XCode's build to fail.
+			
 			if([[NSApp delegate] respondsToSelector:@selector(connectionFailed:)])
 			{
 				[(JabberApp*)[NSApp delegate] connectionFailed:account];
 			}
+			*/
 		}
 		//If we have not manually disconnected, try to reconnect.
 		else if(connectionState != offline)

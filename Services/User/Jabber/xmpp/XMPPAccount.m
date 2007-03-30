@@ -104,6 +104,7 @@ NSString * passwordForJID(JID * aJID)
 							   userInfo:[NSDictionary dictionaryWithObject:myJID
 							                                        forKey:@"JID"]] raise];
 	}
+	return nil; // Jesse says: I added this, but I don't think it's right -- what should happen here?
 }
 
 - (void) reconnect
