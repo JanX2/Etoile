@@ -1,8 +1,7 @@
 #import "AZDockApp.h"
 #import <X11/Xlib.h>
 
-/* Dock app can be a x window application, a gnustep application 
- * or a file on harddisk */
+/* X window application */
 @interface AZXWindowApp: AZDockApp
 {
   NSString *wm_class;

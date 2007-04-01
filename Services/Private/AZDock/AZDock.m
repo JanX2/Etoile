@@ -1,6 +1,7 @@
 #import "AZDock.h"
 #import "AZXWindowApp.h"
 #import "AZGNUstepApp.h"
+#import "AZDockletApp.h"
 #import "AZWorkspaceView.h"
 #import <X11/Xatom.h>
 #import <X11/Xutil.h>
@@ -268,6 +269,48 @@ static AZDock *sharedInstance;
   }
 }
 
+- (AZDockletApp *) addDockletWithCommand: (NSString *) cmd
+                   instance: (NSString *) instance class: (NSString *) class
+{
+  NSLog(@"Add command %@", cmd);
+  AZDockletApp *app = [[AZDockletApp alloc] initWithCommand: cmd 
+                                            instance: instance class: class];
+  [apps addObject: app];
+  [self addBookmark: app];
+  [[app window] orderFront: self];
+  return AUTORELEASE(app);
+}
+
+- (void) addDockletWithID: (int) wid 
+{
+  /* Let's see whether any dockapp will take it.
+     We cannot use addXWindowWithID: because docklet's window is not mapped
+     yet. And Azalea does not send docklet as regular xwindow. */
+  AZDockletApp *app = nil;
+  int j;
+  for (j = 0; j < [apps count]; j++)
+  {
+    app = [apps objectAtIndex: j];
+    if ([app type] == AZDockWindowMakerDocklet) 
+    {
+      if ([(AZDockletApp *)app acceptXWindow: wid]) 
+      {
+        [app setState: AZDockAppRunning];
+        return;
+      }
+    }
+  }
+
+  NSLog(@"addDockletWithID %d", wid);
+  app = [[AZDockletApp alloc] initWithXWindow: wid];
+  [app setState: AZDockAppRunning];
+  [apps addObject: app];
+  [self addBookmark: app];
+  [[app window] orderFront: self];
+  DESTROY(app);
+}
+
+/* Notification from Azalea */
 - (void) gnustepAppWillLaunch: (NSNotification *) not
 {
 //  Not working ?
@@ -292,7 +335,6 @@ static AZDock *sharedInstance;
 
 - (void) xwindowAppDidLaunch: (NSNotification *) not
 {
-//  NSLog(@"xwindow launch %@", not);
   [self addXWindowWithID: 
            [[[not userInfo] objectForKey: @"AZXWindowID"] intValue]];
   [self organizeApplications];
@@ -301,6 +343,14 @@ static AZDock *sharedInstance;
 - (void) xwindowAppDidTerminate: (NSNotification *) not
 {
   [self removeXWindowWithID:
+           [[[not userInfo] objectForKey: @"AZXWindowID"] intValue]];
+  [self organizeApplications];
+}
+
+- (void) dockletAppDidLaunch: (NSNotification *) not
+{
+NSLog(@"docklet did launch");
+  [self addDockletWithID: 
            [[[not userInfo] objectForKey: @"AZXWindowID"] intValue]];
   [self organizeApplications];
 }
@@ -627,6 +677,12 @@ static AZDock *sharedInstance;
         }
       }
     }
+    else if (type == AZDockWindowMakerDocklet)
+    {
+      NSString *inst = [dict objectForKey: AZUserDefaultDockWMInstance];
+      NSString *clas = [dict objectForKey: AZUserDefaultDockWMClass];
+      app = [self addDockletWithCommand: cmd instance: inst class: clas];
+    }
     else
     {
     }
@@ -719,6 +775,21 @@ static AZDock *sharedInstance;
                      selector: @selector(xwindowAppDidTerminate:)
                      name: @"AZXWindowDidTerminateNotification"
                      object: nil];
+  [[workspace notificationCenter]
+                     addObserver: self
+                     selector: @selector(dockletAppDidLaunch:)
+                     name: @"AZDockletDidLaunchNotification"
+                     object: nil];
+
+  /* We start docklet here */
+  for (i = 0; i < [apps count]; i++)
+  {
+    AZDockletApp *app = [apps objectAtIndex: i];
+    if ([app type] == AZDockWindowMakerDocklet)
+    {
+      [app showAction: self];
+    }
+  }
 }
 
 - (void) applicationWillTerminate: (NSNotification *) not
@@ -759,7 +830,8 @@ static AZDock *sharedInstance;
     app = [apps objectAtIndex: i];
     if ([app isKeptInDock]) 
     {
-      if ([app type] == AZDockXWindowApplication) {
+      if ([app type] == AZDockXWindowApplication) 
+      {
         AZXWindowApp *xapp = (AZXWindowApp *) app;
         dict = [NSDictionary dictionaryWithObjectsAndKeys:
          [NSString stringWithFormat: @"%d", [app type]], AZUserDefaultDockType,
@@ -778,10 +850,22 @@ static AZDock *sharedInstance;
           //NSLog(@"Write to %@", p);
           [data writeToFile: p atomically: YES];
         }
-      } else if ([app type] == AZDockGNUstepApplication) {
+      } 
+      else if ([app type] == AZDockGNUstepApplication) 
+      {
         dict = [NSDictionary dictionaryWithObjectsAndKeys:
          [NSString stringWithFormat: @"%d", [app type]], AZUserDefaultDockType,
          [(AZGNUstepApp *)app applicationName], AZUserDefaultDockCommand,
+         nil];
+      }
+      else if ([app type] == AZDockWindowMakerDocklet) 
+      {
+        AZDockletApp *xapp = (AZDockletApp *) app;
+        dict = [NSDictionary dictionaryWithObjectsAndKeys:
+         [NSString stringWithFormat: @"%d", [app type]], AZUserDefaultDockType,
+         [xapp command], AZUserDefaultDockCommand,
+         [xapp wmInstance], AZUserDefaultDockWMInstance,
+         [xapp wmClass], AZUserDefaultDockWMClass,
          nil];
       }
       [array addObject: dict];

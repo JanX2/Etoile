@@ -33,3 +33,31 @@ TODO
 * Support docking regular file ? Or leave it to shelf ?.
 * Figure out how to change icon according to app icon from GNUstep application.
   See AZGNUstepApp -acceptXWindow: for all options.
+
+DESIGN
+------
+AZDock deal with many types of applications. Each one need special case.
+
+* XWindow:
+  AZDock listens to Azalea about the launch and termination fo XWindows.
+  XWindow is window-based. It keeps all windows from the same program
+  under a dock. 
+
+* GNUstep: 
+  AZDock use NSWorkspace to track GNUstep applications, 
+  with notification from Azalea for abnormal termination. 
+ 
+* WindowMaker Docklet:
+  AZDock listens to Azalea for docklet. Docklet starts as unmapped xwindow. 
+  Therefore, it is not treated as regular X window.
+  It need to be launched automatically.
+  Although docklet is older than other similar implementation,
+  it is used to expriment reparenting X window onto NSWindow.
+
+* System Trays:
+  In FreeDesktop.org specification, system trays is where program can stay
+  and send notification. Actually, it is very similar to GNUstep's app icon.
+  Because XWindow is window-based, once window is closed, program terminates.
+  Some programs need to stay running when their windows close, for example,
+  instant messenger. Therefore, system tray is where it can stay.
+  
