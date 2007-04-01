@@ -1,3 +1,8 @@
+2007-04-01  Yen-Ju Chen <yjchenx at gmail>
+
+	* AZClientManager.m: Post docklet notification to AZDock 
+	  in prepare to remove docklet support in Azalea.
+
 2007-03-21  Yen-Ju Chen <yjchenx at gmail>
 
 	* Draw indicator even the window is raise to improve visualization.

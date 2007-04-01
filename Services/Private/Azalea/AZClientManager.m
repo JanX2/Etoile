@@ -158,7 +158,14 @@ static AZClientManager *sharedInstance;
     if ((wmhint = XGetWMHints(ob_display, window))) {
         if ((wmhint->flags & StateHint) &&
             wmhint->initial_state == WithdrawnState) {
-	    [[AZDock defaultDock] addWindow: window hints: wmhint];
+//	    [[AZDock defaultDock] addWindow: window hints: wmhint];
+            [[workspace notificationCenter]
+                       postNotificationName: @"AZDockletDidLaunchNotification"
+                       object: workspace
+                       userInfo: [NSDictionary dictionaryWithObjectsAndKeys:
+                   [NSString stringWithFormat: @"%d", window], @"AZXWindowID",
+                                 nil]
+                       ];
             grab_server(NO);
             XFree(wmhint);
             return;
