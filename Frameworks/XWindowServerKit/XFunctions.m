@@ -238,6 +238,7 @@ void XWindowCloseWindow(Window win, BOOL forcefully)
 
   if (forcefully) {
     XKillClient(dpy, win);
+    return;
   } 
 
   Atom *data = NULL;
@@ -257,6 +258,7 @@ void XWindowCloseWindow(Window win, BOOL forcefully)
       XFree(data);
     }
     XKillClient(dpy, win);
+    return;
   } else {
     int i;
     for (i = 0; i < count; i++) {

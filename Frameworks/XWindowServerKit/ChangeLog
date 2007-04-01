@@ -1,3 +1,7 @@
+2007 04 01 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* XFunctions.m: return right after XKillClient() to avoid complaint.
+
 2007 03 16 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Add support for freedesktop.org base directories.
