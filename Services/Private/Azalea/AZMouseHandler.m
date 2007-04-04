@@ -201,7 +201,7 @@ static AZMouseHandler *sharedInstance = nil;
 
         if (CLIENT_CONTEXT(context, client)) {
             /* Replay the event, so it goes to the client*/
-            XAllowEvents(ob_display, ReplayPointer, [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
+            XAllowEvents(ob_display, ReplayPointer, [[AZEventHandler defaultHandler] eventCurrentTime]);
             /* Fall through to the release case! */
         } else
             break;

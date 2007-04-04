@@ -54,14 +54,14 @@ BOOL grab_keyboard(BOOL grab)
         if (kgrabs++ == 0) {
             ret = XGrabKeyboard(ob_display, RootWindow(ob_display, ob_screen),
                                 NO, GrabModeAsync, GrabModeAsync,
-                                [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/) == Success;
+                                [[AZEventHandler defaultHandler] eventCurrentTime]) == Success;
             if (!ret)
                 --kgrabs;
         } else
             ret = YES;
     } else if (kgrabs > 0) {
         if (--kgrabs == 0)
-            XUngrabKeyboard(ob_display, [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
+            XUngrabKeyboard(ob_display, [[AZEventHandler defaultHandler] eventCurrentTime]);
         ret = YES;
     }
 
@@ -78,14 +78,14 @@ BOOL grab_pointer(BOOL grab, ObCursor cur)
 			       [[AZScreen defaultScreen] supportXWindow],
                                False, GRAB_PTR_MASK, GrabModeAsync,
                                GrabModeAsync, None,
-                               ob_cursor(cur), [[AZEventHandler defaultHandler] eventLastTime]) == Success;
+                               ob_cursor(cur), [[AZEventHandler defaultHandler] eventCurrentTime]) == Success;
             if (!ret)
                 --pgrabs;
         } else
             ret = YES;
     } else if (pgrabs > 0) {
         if (--pgrabs == 0) {
-            XUngrabPointer(ob_display, [[AZEventHandler defaultHandler] eventLastTime]);
+            XUngrabPointer(ob_display, [[AZEventHandler defaultHandler] eventCurrentTime]);
         }
         ret = YES;
     }
@@ -101,14 +101,14 @@ BOOL grab_pointer_window(BOOL grab, ObCursor cur, Window win)
             ret = XGrabPointer(ob_display, win, False, GRAB_PTR_MASK,
                                GrabModeAsync, GrabModeAsync, None,
                                ob_cursor(cur),
-                               [[AZEventHandler defaultHandler] eventLastTime]) == Success;
+                               [[AZEventHandler defaultHandler] eventCurrentTime]) == Success;
             if (!ret)
                 --pgrabs;
         } else
             ret = YES;
     } else if (pgrabs > 0) {
         if (--pgrabs == 0) {
-            XUngrabPointer(ob_display, [[AZEventHandler defaultHandler] eventLastTime]);
+            XUngrabPointer(ob_display, [[AZEventHandler defaultHandler] eventCurrentTime]);
         }
         ret = YES;
     }

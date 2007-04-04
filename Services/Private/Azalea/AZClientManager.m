@@ -212,7 +212,7 @@ static AZClientManager *sharedInstance;
     XChangeSaveSet(ob_display, window, SetModeInsert);
 
     /* create the decoration frame for the client window */
-    [client set_frame: AUTORELEASE([[AZFrame alloc] init])];
+    [client set_frame: AUTORELEASE([[AZFrame alloc] initWithClient: client])];
 
     [[client frame] grabClient: client];
 
@@ -295,7 +295,8 @@ static AZClientManager *sharedInstance;
     [window_map setObject: client forKey: [NSNumber numberWithInt: [client window]]];
 
     /* this has to happen after we're in the client_list */
-    [screen updateAreas];
+    if (STRUT_EXISTS([client strut]))
+      [screen updateAreas];
 
     /* update the list hints */
     [self setList];
@@ -351,7 +352,8 @@ static AZClientManager *sharedInstance;
 
     /* once the client is out of the list, update the struts to remove it's
        influence */
-    [[AZScreen defaultScreen] updateAreas];
+    if (STRUT_EXISTS([client strut]))
+      [[AZScreen defaultScreen] updateAreas];
 
     [[NSNotificationCenter defaultCenter] postNotificationName: AZClientDestroyNotification
 	    object: client];

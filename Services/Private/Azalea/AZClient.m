@@ -594,7 +594,7 @@
     ce.xclient.window = window;
     ce.xclient.format = 32;
     ce.xclient.data.l[0] = prop_atoms.wm_delete_window;
-    ce.xclient.data.l[1] = [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/;
+    ce.xclient.data.l[1] = [[AZEventHandler defaultHandler] eventCurrentTime];
     ce.xclient.data.l[2] = 0l;
     ce.xclient.data.l[3] = 0l;
     ce.xclient.data.l[4] = 0l;
@@ -866,7 +866,7 @@
            #799. So now it is RevertToNone again.
         */
         XSetInputFocus(ob_display, [oself window], RevertToNone,
-                       [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
+                       [[AZEventHandler defaultHandler] eventCurrentTime]);
     }
 
     if ([oself focus_notify]) {
@@ -877,7 +877,7 @@
         ce.xclient.window = [oself window];
         ce.xclient.format = 32;
         ce.xclient.data.l[0] = prop_atoms.wm_take_focus;
-        ce.xclient.data.l[1] = [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/;
+        ce.xclient.data.l[1] = [[AZEventHandler defaultHandler] eventCurrentTime];
         ce.xclient.data.l[2] = 0l;
         ce.xclient.data.l[3] = 0l;
         ce.xclient.data.l[4] = 0l;
@@ -887,7 +887,7 @@
 #ifdef DEBUG_FOCUS
     AZDebug("%sively focusing %lx at %d\n",
              (oself->can_focus ? "act" : "pass"),
-             oself->window, (int) [[AZEventHandler defaultHandler] eventLastTime]/*event_lasttime*/);
+             oself->window, (int) [[AZEventHandler defaultHandler] eventCurrentTime]);
 #endif
 
     /* Cause the FocusIn to come back to us. Important for desktop switches,
@@ -909,8 +909,11 @@
     }
 }
 
-- (void) activateHere: (BOOL) here
+- (void) activateHere: (BOOL) here user: (BOOL) user
 {
+    /* XXX do some stuff here if user is false to determine if we really want
+       to activate it or not (a parent or group member is currently active) */
+
     AZScreen *screen = [AZScreen defaultScreen];
     if ([self normal] && [screen showingDesktop])
     {
@@ -1559,7 +1562,8 @@ no_number:
     if (mwmhints.flags & OB_MWM_FLAG_DECORATIONS) {
         if (! (mwmhints.decorations & OB_MWM_DECOR_ALL)) {
             if (! ((mwmhints.decorations & OB_MWM_DECOR_HANDLE) ||
-                   (mwmhints.decorations & OB_MWM_DECOR_TITLE))) {
+                   (mwmhints.decorations & OB_MWM_DECOR_TITLE))) 
+	    {
                 /* if the mwm hints request no handle or title, then all
                    decorations are disabled, but keep the border if that's
 		   specified */
@@ -1923,8 +1927,7 @@ no_number:
             continue;
         if([cur iconic])
             continue;
-        if([cur focusTarget] == cur &&
-           !([cur can_focus] || [cur focus_notify]))
+        if(!([cur focusTarget] == cur && [cur can_focus]))
             continue;
 
         /* find the centre coords of this window, from the
@@ -2301,19 +2304,22 @@ no_number:
 - (void) getAll
 {
     [self getArea];
-    [self updateTransientFor];
-    [self updateWmhints];
-    [self getStartupId];
-    [self getDesktop];
-    [self getShaped];
-
     [self getMwmHints];
-    [self getType];/* this can change the mwmhints for special cases */
 
     /* The transient hint is used to pick a type, but the type can also affect
-       transiency (dialogs are always made transients). This is Havoc's idea,
-       but it is needed to make some apps work right (eg tsclient). */
+       transiency (dialogs are always made transients of their group if they
+       have one). This is Havoc's idea, but it is needed to make some apps
+       work right (eg tsclient). */
     [self updateTransientFor];
+    [self getType];/* this can change the mwmhints for special cases */
+    [self updateTransientFor];
+
+    [self updateWmhints];
+    [self getStartupId];
+    [self getDesktop];/* uses transient data/group/startup id if a
+                                desktop is not specified */
+    [self getShaped];
+
     [self getState];
 
     {
@@ -3125,7 +3131,8 @@ AZClient *AZUnderPointer()
     if (changed) {
 	[self changeState];
 	[self showhide];
-	[[AZScreen defaultScreen] updateAreas];
+	if (STRUT_EXISTS([self strut]))
+	  [[AZScreen defaultScreen] updateAreas];
     }
 
     /* iconify all transients */
@@ -3165,7 +3172,8 @@ AZClient *AZUnderPointer()
         /* raise if it was not already on the desktop */
         if (old != DESKTOP_ALL)
 	    [self raise];
-	[[AZScreen defaultScreen] updateAreas];
+	if (STRUT_EXISTS([self strut]))
+	  [[AZScreen defaultScreen] updateAreas];
 
         /* add to the new desktop(s) */
         if (config_focus_new)

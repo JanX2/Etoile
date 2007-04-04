@@ -996,7 +996,7 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
            it won't work right unless we XUngrabKeyboard first,
            even though we grabbed the key/button Asychronously.
            e.g. "gnome-panel-control --main-menu" */
-        XUngrabKeyboard(ob_display, [[AZEventHandler defaultHandler] eventLastTime]);
+        XUngrabKeyboard(ob_display, [[AZEventHandler defaultHandler] eventCurrentTime]);
     }
 
     count = [acts count];
@@ -1082,16 +1082,30 @@ void action_execute(union ActionData *data)
 
 void action_activate(union ActionData *data)
 {
-    [data->activate.any.c activateHere: data->activate.here];
+    /* similar to the openbox dock for dockapps, don't let user actions give
+       focus to 3rd-party docks (panels) either (unless they ask for it
+       themselves). */
+    if ([data->client.any.c type] != OB_CLIENT_TYPE_DOCK) {
+        /* if using focus_delay, stop the timer now so that focus doesn't go
+           moving on us */
+        [[AZEventHandler defaultHandler] haltFocusDelay];
+
+        [data->activate.any.c activateHere: data->activate.here user: YES];
+    }
 }
 
 void action_focus(union ActionData *data)
 {
-    /* if using focus_delay, stop the timer now so that focus doesn't go moving
-       on us */
-    [[AZEventHandler defaultHandler] haltFocusDelay];
+    /* similar to the openbox dock for dockapps, don't let user actions give
+       focus to 3rd-party docks (panels) either (unless they ask for it
+       themselves). */
+    if ([data->client.any.c type] != OB_CLIENT_TYPE_DOCK) {
+        /* if using focus_delay, stop the timer now so that focus doesn't go
+           moving on us */
+        [[AZEventHandler defaultHandler] haltFocusDelay];
 
-    [data->client.any.c focus];
+        [data->client.any.c focus];
+    }
 }
 
 void action_unfocus (union ActionData *data)

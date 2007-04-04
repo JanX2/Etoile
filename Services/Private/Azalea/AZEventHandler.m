@@ -139,6 +139,19 @@ static AZEventHandler *sharedInstance;
   return sharedInstance;
 }
 
+- (id) init
+{
+  self = [super init];
+  event_lasttime = 0;
+  event_curtime = CurrentTime;
+  return self;
+}
+
+- (void) dealloc
+{
+  [super dealloc];
+}
+
 - (void) startup: (BOOL) reconfig
 {
     if (reconfig) return;
@@ -254,6 +267,11 @@ static AZEventHandler *sharedInstance;
 - (Time) eventLastTime
 {
   return event_lasttime;
+}
+
+- (Time) eventCurrentTime
+{
+  return event_curtime;
 }
 
 - (unsigned int) numLockMask
@@ -745,7 +763,7 @@ static AZEventHandler *sharedInstance;
                                        it can happen now when the window is on
                                        another desktop, but we still don't
                                        want it! */
-	[client activateHere: NO];
+	[client activateHere: NO user: YES];
         break;
     case ClientMessage:
         /* validate cuz we query stuff off the client here */
@@ -801,7 +819,10 @@ static AZEventHandler *sharedInstance;
 	    [client close];
         } else if (msgtype == prop_atoms.net_active_window) {
             AZDebug("net_active_window for 0x%lx\n", [client window]);
-	    [client activateHere: NO];
+            /* XXX make use of data.l[1] and [2] ! */
+            [client activateHere: NO 
+	                    user: (e->xclient.data.l[0] == 0 ||
+                                   e->xclient.data.l[0] == 2)];
         } else if (msgtype == prop_atoms.net_wm_moveresize) {
             AZDebug("net_wm_moveresize for 0x%lx\n", [client window]);
             if ((Atom)e->xclient.data.l[2] ==
@@ -1155,8 +1176,14 @@ static AZEventHandler *sharedInstance;
         break;
     }
 
-    if (t > event_lasttime)
+    if (t > event_lasttime) {
         event_lasttime = t;
+        event_curtime = event_lasttime;
+    } else if (t == 0) {
+        event_curtime = event_lasttime;
+    } else {
+        event_curtime = t;
+    }
 }
 
 #define STRIP_MODS(s) \

@@ -147,7 +147,7 @@ static AZFocusManager *sharedInstance;
 	[focus_order removeAllObjects];
 
         /* reset focus to root */
-        XSetInputFocus(ob_display, PointerRoot, RevertToNone, [[AZEventHandler defaultHandler] eventLastTime]);
+        XSetInputFocus(ob_display, PointerRoot, RevertToNone, CurrentTime);
 
         RrColorFree(color_white);
 
@@ -185,7 +185,7 @@ static AZFocusManager *sharedInstance;
 #endif
         /* when nothing will be focused, send focus to the backup target */
         XSetInputFocus(ob_display, [screen supportXWindow], RevertToNone,
-                       [[AZEventHandler defaultHandler] eventLastTime]);
+                       [[AZEventHandler defaultHandler] eventCurrentTime]);
         XSync(ob_display, NO);
     }
 
@@ -272,6 +272,11 @@ static AZFocusManager *sharedInstance;
             if ([c normal] && [c canFocus])
                 return c;
     }
+
+    /* XXX fallback to the "desktop window" if one exists ?
+       could store it while going through all the windows in the loop right
+       above this..
+    */
 
     return nil;
 }
@@ -565,7 +570,7 @@ static AZFocusManager *sharedInstance;
 
 done_cycle:
     if (done && focus_cycle_target)
-	[focus_cycle_target activateHere: NO];
+	[focus_cycle_target activateHere: NO user: YES];
 
     t = nil;
     first = nil;
@@ -628,7 +633,7 @@ done_cycle:
 
 done_cycle:
     if (done && focus_cycle_target)
-	[focus_cycle_target activateHere: NO];
+	[focus_cycle_target activateHere: NO user: YES];
 
     first = nil;
     focus_cycle_target = nil;

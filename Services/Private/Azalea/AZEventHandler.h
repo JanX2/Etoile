@@ -27,8 +27,12 @@
 
 @interface AZEventHandler: NSObject <AZXHandler, NSCopying>
 {
-  /*! Time at which the last event with a timestamp occured. */
+  /* The most recent time at which an event with a timestamp occured. */
   Time event_lasttime;
+ /* The time for the current event being processed
+    (it's the event_lasttime for events without times, if this is a bug then
+    use CurrentTime instead, but it seems ok) */
+  Time event_curtime;
 
   /*! The value of the mask for the NumLock modifier */
   unsigned int NumLockMask;
@@ -64,7 +68,7 @@
    window for focus */
 - (void) haltFocusDelay;
 
-- (Time) eventLastTime;
+- (Time) eventCurrentTime;
 - (unsigned int) numLockMask;
 - (unsigned int) scrollLockMask;
 

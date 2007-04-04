@@ -95,7 +95,7 @@ extern NSString *config_title_layout;
 /*! The number of desktops */
 extern int config_desktops_num;
 /*! Desktop to start on, put 5 to start in the center of a 3x3 grid */
-extern int config_screen_firstdesk;
+extern unsigned int config_screen_firstdesk;
 /*! Names for the desktops */
 extern NSArray *config_desktops_names;
 

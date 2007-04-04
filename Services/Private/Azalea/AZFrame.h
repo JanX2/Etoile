@@ -98,6 +98,8 @@ typedef enum {
   Window    tlresize;
   Window    trresize;
 
+  Colormap colormap;
+
   AZAppearance *a_unfocused_title;
   AZAppearance *a_focused_title;
   AZAppearance *a_unfocused_label;
@@ -137,6 +139,8 @@ typedef enum {
   BOOL flash_on;
   struct timeval flash_end;
 }
+
+- (id) initWithClient: (AZClient *) client;
 
 - (void) grabClient: (AZClient *) client;
 - (void) releaseClient: (AZClient *) client;

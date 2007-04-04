@@ -44,7 +44,7 @@ NSString *config_title_layout;
 
 int    config_desktops_num;
 NSArray *config_desktops_names;
-int    config_screen_firstdesk;
+unsigned int    config_screen_firstdesk;
 
 BOOL config_resize_redraw;
 BOOL config_resize_four_corners;
@@ -266,7 +266,7 @@ static void parse_desktops(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
     if ((n = parse_find_node("firstdesk", node))) {
         int d = parse_int(doc, n);
         if (d > 0)
-            config_screen_firstdesk = d;
+            config_screen_firstdesk = (unsigned int)d;
     }
     if ((n = parse_find_node("names", node))) {
         xmlNodePtr nname;
@@ -447,7 +447,7 @@ static void bind_default_mouse()
             uact = OB_USER_ACTION_MOUSE_DOUBLE_CLICK; break;
         case OB_MOUSE_ACTION_MOTION:
             uact = OB_USER_ACTION_MOUSE_MOTION; break;
-        case OB_NUM_MOUSE_ACTIONS:
+        default:
             NSLog(@"Internal Error: should reach here");
         }
 	[[AZMouseHandler defaultHandler] bind: it->button
