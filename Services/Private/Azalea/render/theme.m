@@ -494,8 +494,6 @@ RrTheme* RrThemeNew(const AZInstance *inst, NSString *name)
         theme->app_hilite_fg = [theme->a_focused_label copy];
     else
         theme->app_hilite_fg = [theme->a_focused_title copy];
-    theme->app_unhilite_bg = [theme->a_unfocused_title copy];
-    theme->app_unhilite_label = [theme->a_unfocused_label copy];
     if ([theme->a_unfocused_label surface].grad != RR_SURFACE_PARENTREL)
         theme->app_unhilite_fg = [theme->a_unfocused_label copy];
     else
@@ -665,16 +663,11 @@ RrTheme* RrThemeNew(const AZInstance *inst, NSString *name)
         [theme->app_hilite_label texture][0].data.text.color =
         theme->title_focused_color;
 
-    [theme->a_unfocused_label texture][0].type =
-        [theme->app_unhilite_label texture][0].type = RR_TEXTURE_TEXT;
+    [theme->a_unfocused_label texture][0].type = RR_TEXTURE_TEXT;
     [theme->a_unfocused_label texture][0].data.text.justify = winjust;
-    [theme->app_unhilite_label texture][0].data.text.justify =
-        RR_JUSTIFY_LEFT;
     [theme->a_unfocused_label texture][0].data.text.font =
-        [theme->app_unhilite_label texture][0].data.text.font =
         theme->win_font_unfocused;
     [theme->a_unfocused_label texture][0].data.text.color =
-        [theme->app_unhilite_label texture][0].data.text.color =
         theme->title_unfocused_color;
 
     [theme->a_menu_title texture][0].type = RR_TEXTURE_TEXT;
@@ -1040,11 +1033,9 @@ void RrThemeFree(RrTheme *theme)
         DESTROY(theme->a_clear);
         DESTROY(theme->a_clear_tex);
         DESTROY(theme->app_hilite_bg);
-        DESTROY(theme->app_unhilite_bg);
         DESTROY(theme->app_hilite_fg);
         DESTROY(theme->app_unhilite_fg);
         DESTROY(theme->app_hilite_label);
-        DESTROY(theme->app_unhilite_label);
 
         free(theme);
     }

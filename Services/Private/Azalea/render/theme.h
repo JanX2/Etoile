@@ -177,11 +177,9 @@ struct _RrTheme {
     AZAppearance *a_clear_tex; /* clear with a texture */
 
     AZAppearance *app_hilite_bg;
-    AZAppearance *app_unhilite_bg;
     AZAppearance *app_hilite_fg; /* never parent relative */
-    AZAppearance *app_unhilite_fg; /* never parent relative */
     AZAppearance *app_hilite_label; /* can be parent relative */
-    AZAppearance *app_unhilite_label; /* can be parent relative */
+    AZAppearance *app_unhilite_fg; /* never parent relative */
 
 };
 

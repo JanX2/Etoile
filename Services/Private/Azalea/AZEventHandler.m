@@ -431,9 +431,9 @@ static AZEventHandler *sharedInstance;
         } else if (msgtype == prop_atoms.net_showing_desktop) {
 	    [screen showDesktop: (e->xclient.data.l[0] != 0)];
         } else if (msgtype == prop_atoms.ob_control) {
-            if ((Atom)e->xclient.data.l[0] == 1) /* reconfigure */
+            if (e->xclient.data.l[0] == 1) /* reconfigure */
 		ob_reconfigure();
-            else if ((Atom)e->xclient.data.l[0] == 2) /* restart */
+            else if (e->xclient.data.l[0] == 2) /* restart */
 		ob_restart();
         }
         break;

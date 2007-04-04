@@ -380,12 +380,6 @@ static Visual *check_32bit_client(AZClient *c)
                     XUnmapWindow(ob_display, lgrip);
                     XUnmapWindow(ob_display, rgrip);
                 }
-
-                /* XXX make a subwindow with these dimentions?
-                   ob_rr_theme->grip_width + bwidth, 0,
-                   width - (ob_rr_theme->grip_width + bwidth) * 2,
-                   ob_rr_theme->handle_height);
-                */
             } else
                 XUnmapWindow(ob_display, handle);
 
