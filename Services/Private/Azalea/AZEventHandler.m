@@ -689,8 +689,13 @@ static AZEventHandler *sharedInstance;
                      [[client frame] size].left + [[client frame] size].right;
                 int fh = h +
                      [[client frame] size].top + [[client frame] size].bottom;
+                /* make this rude for size-only changes but not for position
+                   changes.. */
+                BOOL moving = ((e->xconfigurerequest.value_mask & CWX) ||
+                               (e->xconfigurerequest.value_mask & CWY));
+
 		[client findOnScreenAtX: &newx y: &newy
-			width: fw height: fh rude: NO];
+			width: fw height: fh rude: !moving];
 
                 if (e->xconfigurerequest.value_mask & CWX)
                     x = newx;
@@ -939,11 +944,8 @@ static AZEventHandler *sharedInstance;
                  b == prop_atoms.wm_icon_name)) {
                 continue;
             }
-            if ((a == prop_atoms.net_wm_icon ||
-                 a == prop_atoms.kwm_win_icon)
-                &&
-                (b == prop_atoms.net_wm_icon ||
-                 b == prop_atoms.kwm_win_icon))
+            if (a == prop_atoms.net_wm_icon &&
+                b == prop_atoms.net_wm_icon)
                 continue;
 
             XPutBackEvent(ob_display, &ce);
@@ -975,8 +977,7 @@ static AZEventHandler *sharedInstance;
 	    [client setupDecorAndFunctions];
         } else if (msgtype == prop_atoms.net_wm_strut) {
 	    [client updateStrut];
-        } else if (msgtype == prop_atoms.net_wm_icon ||
-                 msgtype == prop_atoms.kwm_win_icon) {
+        } else if (msgtype == prop_atoms.net_wm_icon) {
 	    [client updateIcons];
         } else if (msgtype == prop_atoms.sm_client_id) {
 	    [client updateSmClientId];

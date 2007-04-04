@@ -69,7 +69,7 @@ static Visual *check_32bit_client(AZClient *c)
 - (void) layoutTitle;
 - (void) setThemeStatics;
 - (void) freeThemeStatics;
-- (void) setFrameExtents; /* Set _NET_FRAME_EXTENTS */
+//- (void) setFrameExtents; /* Set _NET_FRAME_EXTENTS */
 
 /* callback */
 - (BOOL) flashTimeout: (id) data;
@@ -103,7 +103,7 @@ static Visual *check_32bit_client(AZClient *c)
     XMapWindow(ob_display, [client window]);
 
     [self adjustAreaWithMoved: YES resized: YES fake: NO];
-    [self setFrameExtents];
+//    [self setFrameExtents];
 
     /* set all the windows for the frame in the window_map */
     [window_map setObject: client forKey: [NSNumber numberWithInt: window]];
@@ -428,7 +428,7 @@ static Visual *check_32bit_client(AZClient *c)
             vals[1] = size.right;
             vals[2] = size.top;
             vals[3] = size.bottom;
-            PROP_SETA32([_client window], kde_net_wm_frame_strut,
+            PROP_SETA32([_client window], net_frame_extents,
                         cardinal, vals, 4);
         }
 
@@ -891,6 +891,7 @@ static Visual *check_32bit_client(AZClient *c)
     a_icon = [ob_rr_theme->a_icon copy];
 }
 
+#if 0
 - (void) setFrameExtents /* Set _NET_FRAME_EXTENTS */
 {
   unsigned long *extents = calloc(sizeof(unsigned long), 4);
@@ -901,6 +902,7 @@ static Visual *check_32bit_client(AZClient *c)
   PROP_SETA32([_client window], net_frame_extents, cardinal, extents, 4);
   free(extents);
 }
+#endif
 
 - (void) freeThemeStatics
 {

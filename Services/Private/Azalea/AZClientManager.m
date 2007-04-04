@@ -196,7 +196,9 @@ static AZClientManager *sharedInstance;
     [client getAll];
     [client restoreSessionState];
 
-    [[AZStartupHandler defaultHandler] applicationStarted: (char*)[[client class] cString]];
+    [[AZStartupHandler defaultHandler] 
+                 applicationStarted: (char*)[[client startup_id] cString]
+                              class: (char*)[[client class] cString]];
 
     /* update the focus lists, do this before the call to change_state or
        it can end up in the list twice! */

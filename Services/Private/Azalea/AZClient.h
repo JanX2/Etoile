@@ -223,8 +223,6 @@ typedef enum
 
     /*! Can the window receive input focus? */
     BOOL can_focus;
-    /*! Urgency flag */
-    BOOL urgent;
     /*! Notify the window when it receives focus? */
     BOOL focus_notify;
 
@@ -255,6 +253,8 @@ typedef enum
     /*! The window should be underneath other windows of the same type.
       above takes priority over below. */
     BOOL below;
+    /*! Demands attention flag */
+    BOOL demands_attention;
 
     /*! A bitmask of values in the ObFrameDecorations enum
       The values in the variable are the decorations that the client wants to
@@ -376,6 +376,10 @@ typedef enum
     unshaded.
  */
 - (void) shade: (BOOL) shade;
+
+
+/*! Hilite the window to make the user notice it */
+- (void) hilite: (BOOL) hilite;
 
 /*! Request the client to close its window */
 - (void) close;
@@ -643,11 +647,9 @@ typedef enum
 
 
 - (BOOL) can_focus;
-- (BOOL) urgent;
 - (BOOL) focus_notify;
 - (BOOL) shaped;
 - (void) set_can_focus: (BOOL) can_focus;
-- (void) set_urgent: (BOOL) urgent;
 - (void) set_focus_notify: (BOOL) focus_notify;
 - (void) set_shaped: (BOOL) shaped;
 

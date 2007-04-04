@@ -37,7 +37,6 @@
 
 @interface AZClient (AZPrivate)
 - (AZClientIcon *) iconRecursiveWithWidth: (int) w height: (int) h;
-- (void) urgentNotify;
 - (ObStackingLayer) calcStackingLayer;;
 - (void) calcLayerRecursiveWithOriginal: (AZClient *)orig
 	stackingLayer: (ObStackingLayer) l raised: (BOOL) raised;
@@ -51,7 +50,6 @@
 - (void) getShaped;
 - (void) getMwmHints;
 - (void) getGravity;
-
 @end
 
 @implementation AZClient
@@ -375,8 +373,8 @@
             *y = a->y + a->height - [frame area].height/10;
         if (!strut.left && *x + [frame area].width*9/10 - 1 < a->x)
             *x = a->x - [frame area].width*9/10;
-        if (!strut.top && *y < a->y)
-            *y = a->y;
+        if (!strut.top && *y + [frame area].height*9/10 - 1 < a->y)
+            *y = a->y - [frame area].width*9/10;
     }
     /* Azalea: for GNUstep menu, it will reposition itself to be inside the
        screen. If we force it here, it will not display properly. 
@@ -397,7 +395,8 @@
         /* avoid the xinerama monitor divide while we're at it,
          * remember to fix the placement stuff to avoid it also and
          * then remove this XXX */
-	a = [screen physicalAreaOfMonitor: [self monitor]];
+	a = [screen areaOfDesktop: [self desktop]
+ 			  monitor: [self monitor]];
         /* dont let windows map into the strut unless they
            are bigger than the available area */
         if (w <= a->width) {
@@ -614,6 +613,17 @@
     XKillClient(ob_display, window);
 }
 
+- (void) hilite: (BOOL) flag
+{
+   /* don't allow focused windows to hilite */
+   demands_attention = flag && ![self focused];
+   if (demands_attention)
+      [[self frame] flashStart];
+   else
+      [[self frame] flashStop];
+   [self changeState];
+}
+
 - (void) setDesktop: (unsigned int) target hide: (BOOL) donthide
 {
   [[self searchTopTransient] setDesktopRecursive: target
@@ -663,6 +673,7 @@
     BOOL _max_vert = max_vert;
     BOOL _modal = modal;
     BOOL _iconic = iconic;
+    BOOL _demands_attention = demands_attention;
     int i;
 
     if (!(action == prop_atoms.net_wm_state_add ||
@@ -712,6 +723,10 @@
             else if (state == prop_atoms.net_wm_state_below)
                 action = below ? prop_atoms.net_wm_state_remove :
                     prop_atoms.net_wm_state_add;
+            else if (state == prop_atoms.net_wm_state_demands_attention)
+                action = demands_attention ?
+                    prop_atoms.net_wm_state_remove :
+                    prop_atoms.net_wm_state_add;
             else if (state == prop_atoms.ob_wm_state_undecorated)
                 action = _undecorated ? prop_atoms.net_wm_state_remove :
                     prop_atoms.net_wm_state_add;
@@ -740,6 +755,8 @@
             } else if (state == prop_atoms.net_wm_state_below) {
                 above = NO;
                 below = YES;
+            } else if (state == prop_atoms.net_wm_state_demands_attention) {
+                _demands_attention = YES;
             } else if (state == prop_atoms.ob_wm_state_undecorated) {
                 _undecorated = YES;
             }
@@ -765,6 +782,8 @@
                 above = NO;
             } else if (state == prop_atoms.net_wm_state_below) {
                 below = NO;
+            } else if (state == prop_atoms.net_wm_state_demands_attention) {
+                _demands_attention = NO;
             } else if (state == prop_atoms.ob_wm_state_undecorated) {
                 _undecorated = NO;
             }
@@ -803,6 +822,9 @@
     }
     if (_iconic != iconic)
 	[self iconify: _iconic currentDesktop: NO];
+
+    if (_demands_attention != demands_attention)
+        [self hilite: _demands_attention];
 
     [self calcLayer];
     [self changeState]; /* change the hint to reflect these changes */
@@ -998,7 +1020,13 @@
                    a dockapp, for example */
                 target = nil;
             }
-            
+
+#if 0
+/* we used to do this, but it violates the ICCCM and causes problems because
+   toolkits seem to set transient_for = root rather arbitrarily (eg kicker's
+   config dialogs), so it is being removed. the ewmh provides other ways to
+   make things transient for their group. -dana
+*/
             if (!target && group) {
                 /* not transient to a client, see if it is transient for a
                    group */
@@ -1010,6 +1038,7 @@
                     target = OB_TRAN_GROUP;
                 }
             }
+#endif
         }
     } else if (type == OB_CLIENT_TYPE_DIALOG && group) {
         transient = YES;
@@ -1146,7 +1175,6 @@
 - (void) updateWmhints
 {
     XWMHints *hints;
-    BOOL ur = NO;
 
     /* assume a window takes input if it doesnt specify */
     can_focus = YES;
@@ -1160,9 +1188,6 @@
         if (ob_state() != OB_STATE_STARTING && frame == nil)
             if (hints->flags & StateHint)
                 iconic = (hints->initial_state == IconicState);
-
-        if (hints->flags & XUrgencyHint)
-            ur = YES;
 
         if (!(hints->flags & WindowGroupHint))
             hints->window_group = None;
@@ -1222,14 +1247,6 @@
 	[self updateIcons];
 
         XFree(hints);
-    }
-
-    if (ur != urgent) {
-	urgent = ur;
-        /* fire the urgent callback if we're mapped, otherwise, wait until
-           after we're mapped */
-        if (frame)
-	    [self urgentNotify];
     }
 }
 
@@ -1469,27 +1486,6 @@ no_number:
 	    [self addIcon: icon];
         }
 
-        free(data);
-    } else if (PROP_GETA32(window, kwm_win_icon,
-                           kwm_win_icon, &data, &num)) {
-        if (num == 2) {
-	    int _w, _h;
-	    RrPixel32 *_temp;
-	    AZXErrorSetIgnore(YES);
-            if (!RrPixmapToRGBA(ob_rr_inst, data[0], data[1],
-                                &_w, &_h, &_temp)) {
-            }
-	    else // success
-	    {
-	      AZClientIcon *icon = [[AZClientIcon alloc] init];
-	      [icon setWidth: _w];
-	      [icon setHeight: _h];
-	      [icon setData: _temp];
-	      [self addIcon: icon];
-	      DESTROY(icon);
-	    }
-	    AZXErrorSetIgnore(NO);
-        }
         free(data);
     } else {
         XWMHints *hints;
@@ -2437,6 +2433,8 @@ no_number:
         netstate[num++] = prop_atoms.net_wm_state_above;
     if (below)
         netstate[num++] = prop_atoms.net_wm_state_below;
+    if (demands_attention)
+        netstate[num++] = prop_atoms.net_wm_state_demands_attention;
     if (undecorated)
         netstate[num++] = prop_atoms.ob_wm_state_undecorated;
     PROP_SETA32(window, net_wm_state, atom, netstate, num);
@@ -2532,8 +2530,12 @@ no_number:
         shaded = NO;
 	[self shade: YES];
     }
-    if (urgent)
-	[self urgentNotify];
+    if (demands_attention) 
+    {
+        demands_attention = NO;
+	[self hilite: YES];
+    }
+
   
     if (max_vert && max_horz) {
         max_vert = NO;
@@ -2679,11 +2681,9 @@ no_number:
 - (void) set_layer: (ObStackingLayer) l { layer = l; }
 
 - (BOOL) can_focus { return can_focus; }
-- (BOOL) urgent { return urgent; }
 - (BOOL) focus_notify { return focus_notify; }
 - (BOOL) shaped { return shaped; }
 - (void) set_can_focus: (BOOL) b { can_focus = b; }
-- (void) set_urgent: (BOOL) b { urgent = b; }
 - (void) set_focus_notify: (BOOL) b { focus_notify = b; }
 - (void) set_shaped: (BOOL) b { shaped = b; }
 
@@ -2848,14 +2848,6 @@ AZClient *AZUnderPointer()
 
 @implementation AZClient (AZPrivate)
 
-- (void) urgentNotify
-{
-    if (urgent)
-      [frame flashStart];
-    else
-      [frame flashStop];
-}
-
 - (void) getStartupId
 {
     NSString *data = nil;
@@ -2963,6 +2955,8 @@ AZClient *AZUnderPointer()
                 above = YES;
             else if (state[i] == prop_atoms.net_wm_state_below)
                 below = YES;
+            else if (state[i] == prop_atoms.net_wm_state_demands_attention)
+                demands_attention = YES;
             else if (state[i] == prop_atoms.ob_wm_state_undecorated)
                 undecorated = YES;
         }

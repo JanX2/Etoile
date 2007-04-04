@@ -135,6 +135,7 @@ void prop_startup()
     CREATE(net_wm_state_fullscreen, "_NET_WM_STATE_FULLSCREEN");
     CREATE(net_wm_state_above, "_NET_WM_STATE_ABOVE");
     CREATE(net_wm_state_below, "_NET_WM_STATE_BELOW");
+    CREATE(net_wm_state_demands_attention, "_NET_WM_STATE_DEMANDS_ATTENTION");
   
     prop_atoms.net_wm_state_add = 1;
     prop_atoms.net_wm_state_remove = 0;
@@ -147,12 +148,9 @@ void prop_startup()
     prop_atoms.net_wm_bottomright = 2;
     prop_atoms.net_wm_bottomleft = 3;
 
-    CREATE(kde_net_wm_frame_strut, "_KDE_NET_WM_FRAME_STRUT");
     CREATE(kde_wm_change_state, "_KDE_WM_CHANGE_STATE");
     CREATE(kde_net_wm_window_type_override,"_KDE_NET_WM_WINDOW_TYPE_OVERRIDE");
 
-    CREATE(kwm_win_icon, "KWM_WIN_ICON");
-  
     CREATE(rootpmapid, "_XROOTPMAP_ID");
     CREATE(esetrootid, "ESETROOT_PMAP_ID");
 

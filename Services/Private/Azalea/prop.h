@@ -137,6 +137,7 @@ typedef struct Atoms {
     Atom net_wm_state_fullscreen;
     Atom net_wm_state_above;
     Atom net_wm_state_below;
+    Atom net_wm_state_demands_attention;
 
     Atom net_wm_state_add;
     Atom net_wm_state_remove;
@@ -150,12 +151,8 @@ typedef struct Atoms {
     Atom net_wm_bottomleft;
 
     /* Extra atoms */
-
-    Atom kde_net_wm_frame_strut;
     Atom kde_wm_change_state;
     Atom kde_net_wm_window_type_override;
-
-    Atom kwm_win_icon;
 
     Atom rootpmapid;
     Atom esetrootid;

@@ -9,6 +9,7 @@
 	  or different color for frame and menu.
 	  But in the future, we need to rewrite the theme with property list
 	  and probably use cairo for drawing.
+	* Update to r5599 of OpenBox3
 
 2007-04-03  Yen-Ju Chen <yjchenx at gmail>
 

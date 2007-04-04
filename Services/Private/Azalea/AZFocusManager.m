@@ -201,6 +201,10 @@ static AZFocusManager *sharedInstance;
         active = client ? [client window] : None;
         PROP_SET32(RootWindow(ob_display, ob_screen),
                    net_active_window, window, active);
+
+        /* remove hiliting from the window when it gets focused */
+        if (client != nil)
+            [client hilite: NO];
     }
 }
 
@@ -857,7 +861,7 @@ done_cycle:
            [ft type] == OB_CLIENT_TYPE_MENU ||
            [ft type] == OB_CLIENT_TYPE_UTILITY))) &&
         (([ft can_focus] || [ft focus_notify]) &&
-         ![ft skip_taskbar] &&
+         ![ft skip_pager] &&
          ([ft desktop] == [[AZScreen defaultScreen] desktop] || [ft desktop] == DESKTOP_ALL)) &&
         ft == [ft focusTarget])
         return YES;

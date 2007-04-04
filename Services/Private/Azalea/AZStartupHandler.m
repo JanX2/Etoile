@@ -30,7 +30,7 @@ static AZStartupHandler *sharedInstance;
 - (void) startup: (BOOL) reconfig {}
 - (void) shutdown: (BOOL) reconfig {}
 - (BOOL) applicationStarting { return NO; }
-- (void) applicationStarted: (char *) wmclass {}
+- (void) applicationStarted: (char *) iden class: (char *) wmclass {}
 - (BOOL) getDesktop: (unsigned int *) desktop forIdentifier: (char *) iden { return NO; }
 
 - (id) copyWithZone: (NSZone *) zone
@@ -139,13 +139,16 @@ static void sn_event_func(SnMonitorEvent *event, void *data);
     return NO;
 }
 
-- (void) applicationStarted: (char *) wmclass
+- (void) applicationStarted: (char *) iden class: (char *) wmclass
 {
     int i, count = [sn_waits count];
     for (i = 0; i < count; i++) {
         AZWaitData *d = [sn_waits objectAtIndex: i];
-        if (sn_startup_sequence_get_wmclass([d seq]) &&
-            !strcmp(sn_startup_sequence_get_wmclass([d seq]), wmclass))
+        const char *seqid, *seqclass;
+        seqid = sn_startup_sequence_get_id([d seq]);
+        seqclass = sn_startup_sequence_get_wmclass([d seq]);
+        if ((seqid && iden && !strcmp(seqid, iden)) ||
+            (seqclass && wmclass && !strcmp(seqclass, wmclass)))
         {
             sn_startup_sequence_complete([d seq]);
             break;
@@ -250,9 +253,9 @@ static void sn_event_func(SnMonitorEvent *event, void *data);
     case SN_MONITOR_EVENT_INITIATED:
         d = [self waitDataNew: seq];
 	[sn_waits insertObject: d atIndex: 0];
-        /* 30 second timeout for apps to start */
+        /* 15 second timeout for apps to start */
 	[mainLoop addTimeout: self handler: @selector(snWaitTimeout:)
-		        microseconds: 30 & USEC_PER_SEC
+		        microseconds: 15 & USEC_PER_SEC
 			data: d
 			notify: @selector(snWaitDestroy:)];
         change = YES;
