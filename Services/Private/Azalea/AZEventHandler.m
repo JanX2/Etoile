@@ -409,7 +409,7 @@ static AZEventHandler *sharedInstance;
     switch(e->type) {
     case SelectionClear:
         AZDebug("Another WM has requested to replace us. Exiting.\n");
-        ob_exit(0);
+        ob_exit_replace();
         break;
 
     case ClientMessage:
@@ -685,7 +685,7 @@ static AZEventHandler *sharedInstance;
                 int fh = h +
                      [[client frame] size].top + [[client frame] size].bottom;
 		[client findOnScreenAtX: &newx y: &newy
-			width: fw height: fh rude: [client normal]];
+			width: fw height: fh rude: NO];
 
                 if (e->xconfigurerequest.value_mask & CWX)
                     x = newx;

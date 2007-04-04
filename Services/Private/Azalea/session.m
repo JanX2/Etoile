@@ -91,7 +91,7 @@ NSMutableArray *session_saved_state;
 #ifndef USE_SM
 
 void session_startup(int argc, char **argv) {}
-void session_shutdown() {}
+void session_shutdown(BOOL permanent) {}
 AZSessionState *session_state_find(AZClient *c) { return nil; }
 BOOL session_state_cmp(AZSessionState *s, AZClient *c) { return NO; }
 
@@ -335,23 +335,26 @@ void session_shutdown()
     sm_argv = NULL;
 
     if (sm_conn) {
-#if 0 // NOTE: not used in OpenBox3
-        SmPropValue val_hint;
-        SmProp prop_hint = { SmRestartStyleHint, SmCARD8, 1, };
-        SmProp *props[1];
-        unsigned long hint;
+        /* if permanent is true then we will change our session state so that
+           the SM won't run us again */
+        if (permanent) {
+            SmPropValue val_hint;
+            SmProp prop_hint = { SmRestartStyleHint, SmCARD8, 1, };
+            SmProp *props[1];
+            unsigned long hint;
 
-        /* when we exit, we want to reset this to a more friendly state */
-        hint = SmRestartIfRunning;
-        val_hint.value = &hint;
-        val_hint.length = 1;
+            /* when we exit, we want to reset this to a more friendly state */
+            hint = SmRestartIfRunning;
+            val_hint.value = &hint;
+            val_hint.length = 1;
 
-        prop_hint.vals = &val_hint;
+            prop_hint.vals = &val_hint;
 
-        props[0] = &prop_hint;
+            props[0] = &prop_hint;
 
-        SmcSetProperties(sm_conn, 1, props);
-#endif
+            SmcSetProperties(sm_conn, 1, props);
+        }
+
         SmcCloseConnection(sm_conn, 0, NULL);
 
 	DESTROY(session_saved_state);

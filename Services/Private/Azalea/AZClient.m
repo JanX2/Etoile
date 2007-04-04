@@ -358,16 +358,24 @@
 
     /* XXX watch for xinerama dead areas */
     /* This makes sure windows aren't entirely outside of the screen so you
-     * can't see them at all */
+       can't see them at all.
+       It makes sure 10% of the window is on the screen at least. At don't let
+       it move itself off the top of the screen, which would hide the titlebar
+       on you. (The user can still do this if they want too, it's only limiting
+       the application.
+    */
+
     if ([self normal]) {
         a = [screen areaOfDesktop: desktop];
-        if (!strut.right && *x >= a->x + a->width - 1)
-            *x = a->x + a->width - [frame area].width;
-        if (!strut.bottom && *y >= a->y + a->height - 1)
-            *y = a->y + a->height - [frame area].height;
-        if (!strut.left && *x + [frame area].width - 1 < a->x)
-            *x = a->x;
-        if (!strut.top && *y + [frame area].height - 1 < a->y)
+        if (!strut.right &&
+            *x + [frame area].width/10 >= a->x + a->width - 1)
+            *x = a->x + a->width - [frame area].width/10;
+        if (!strut.bottom &&
+            *y + [frame area].height/10 >= a->y + a->height - 1)
+            *y = a->y + a->height - [frame area].height/10;
+        if (!strut.left && *x + [frame area].width*9/10 - 1 < a->x)
+            *x = a->x - [frame area].width*9/10;
+        if (!strut.top && *y < a->y)
             *y = a->y;
     }
     /* Azalea: for GNUstep menu, it will reposition itself to be inside the
@@ -390,7 +398,7 @@
          * remember to fix the placement stuff to avoid it also and
          * then remove this XXX */
 	a = [screen physicalAreaOfMonitor: [self monitor]];
-        /* dont let windows map/move into the strut unless they
+        /* dont let windows map into the strut unless they
            are bigger than the available area */
         if (w <= a->width) {
             if (!strut.left && *x < a->x) *x = a->x;
@@ -1265,8 +1273,22 @@
     {
       AZClient *c = [cManager clientAtIndex: j];
       if (c != self) {
-	    if ([title compare: [c title] options: 0 range: NSMakeRange(0, [title length])] == NSOrderedSame)
-                nums |= 1 << [c title_count];
+            if ([c title_count] == 1) {
+		if ([title compare: [c title]] == NSOrderedSame)
+                    nums |= 1 << [c title_count];
+            } else {
+#if 0 // FIXME: not ported from OpenBox3
+                size_t len;
+                char *end;
+
+                /* find the beginning of our " - [%u]", this relies on
+                 that syntax being used */
+                end = strrchr(c->title, '-') - 1;
+                len = end - c->title;
+                if (!strncmp(c->title, data, len))
+                    nums |= 1 << c->title_count;
+#endif
+            }
         }
     }
     /* find first free number */

@@ -34,6 +34,7 @@
 #define DEFAULT_THEME "Azalea"
 
 static XrmDatabase loaddb(RrTheme *theme, NSString *name);
+static BOOL read_bool(XrmDatabase db, char *rname, BOOL *value);
 static BOOL read_int(XrmDatabase db, char *rname, int *value);
 static BOOL read_string(XrmDatabase db, char *rname, char **value);
 static BOOL read_color(XrmDatabase db, const AZInstance *inst,
@@ -1091,6 +1092,27 @@ static char *create_class_name(char *rname)
         if (*p == '\0') break;
     }
     return rclass;
+}
+
+static BOOL read_bool(XrmDatabase db, char *rname, BOOL *value)
+{
+    BOOL ret = NO;
+    char *rclass = create_class_name(rname);
+    char *rettype;
+    XrmValue retvalue;
+  
+    if (XrmGetResource(db, rname, rclass, &rettype, &retvalue) &&
+        retvalue.addr != NULL) {
+        if (!strcasecmp(retvalue.addr, "true")) {
+            *value = YES;
+            ret = YES;
+        } else if (!strcasecmp(retvalue.addr, "false")) {
+            *value = NO;
+            ret = YES;
+        }
+    }
+    free(rclass);
+    return ret;
 }
 
 static BOOL read_int(XrmDatabase db, char *rname, int *value)

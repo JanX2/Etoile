@@ -50,6 +50,7 @@ ObState ob_state();
 void ob_restart_other(const char *path);
 void ob_restart();
 void ob_exit(int code);
+void ob_exit_replace();
 
 void ob_reconfigure();
 

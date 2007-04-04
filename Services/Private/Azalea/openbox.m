@@ -90,6 +90,7 @@ static Cursor    cursors[OB_NUM_CURSORS];
 static KeyCode   keys[OB_NUM_KEYS];
 static int      exitcode = 0;
 static BOOL reconfigure_and_exit = NO;
+static BOOL being_replaced = NO;
 
 static void signal_handler(int signal, void *data);
 static void parse_args(int argc, char **argv);
@@ -373,7 +374,7 @@ int main(int argc, char **argv)
     RrThemeFree(ob_rr_theme);
     DESTROY(ob_rr_inst);
 
-    session_shutdown();
+    session_shutdown(being_replaced);
 
     XCloseDisplay(ob_display);
 
@@ -503,7 +504,7 @@ static void parse_args(int argc, char **argv)
 void ob_exit_with_error(char *msg)
 {
     NSLog(@"Critical: %s", msg);
-    session_shutdown();
+    session_shutdown(YES);
     exit(EXIT_FAILURE);
 }
 
@@ -533,6 +534,13 @@ void ob_exit(int code)
 {
     exitcode = code;
     [mainLoop exit];
+}
+
+void ob_exit_replace()
+{
+    exitcode = 0;
+    being_replaced = YES;
+    [mainLoop exist];
 }
 
 Cursor ob_cursor(ObCursor cursor)
