@@ -164,6 +164,7 @@ typedef struct Atoms {
      
     Atom openbox_pid;
     Atom ob_wm_state_undecorated;
+    Atom ob_control;
 
     /* GNUstep specific atoms */
     Atom gnustep_wm_attr;

@@ -89,7 +89,7 @@ static NSString *restart_path = nil;
 static Cursor    cursors[OB_NUM_CURSORS];
 static KeyCode   keys[OB_NUM_KEYS];
 static int      exitcode = 0;
-static BOOL reconfigure_and_exit = NO;
+static unsigned int remote_control = 0;
 static BOOL being_replaced = NO;
 
 static void signal_handler(int signal, void *data);
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
     /* parse out command line args */
     parse_args(argc, argv);
 
-    if (!reconfigure_and_exit) {
+    if (!remote_control) {
         parse_paths_startup();
 
         session_startup(argc, argv);
@@ -120,23 +120,15 @@ int main(int argc, char **argv)
     if (fcntl(ConnectionNumber(ob_display), F_SETFD, 1) == -1)
         ob_exit_with_error("Failed to set display as close-on-exec.");
 
-    if (reconfigure_and_exit) {
-        unsigned long pid;
-        BOOL ret;
-
+    if (remote_control) {
         prop_startup(); /* get atoms values for the display */
-        ret = PROP_GET32(RootWindow(ob_display, DefaultScreen(ob_display)),
-                                    openbox_pid, cardinal, &pid);
+        /* Send client message telling the OB process to:
+         * remote_control = 1 -> reconfigure 
+         * remote_control = 2 -> restart */
+        PROP_MSG(RootWindow(ob_display, ob_screen),
+                 ob_control, remote_control, 0, 0, 0);
         XCloseDisplay(ob_display);
-        if (!ret) {
-            NSLog(@"Openbox does not appear to be running on this display.\n");
-        } else {
-            NSLog(@"Telling the Openbox process # %u to reconfigure.\n", pid);
-            ret = (kill(pid, SIGUSR2) == 0);
-            if (!ret)
-                NSLog(@"Error: %s.\n", strerror(errno));
-        }
-        exit(ret ? EXIT_SUCCESS : EXIT_FAILURE);
+	exit(EXIT_SUCCESS);
     }
 
     /* Initiate NSApp */
@@ -490,13 +482,9 @@ static void parse_args(int argc, char **argv)
         } else if (!strcmp(argv[i], "--debug")) {
             AZDebugShowOutput(YES);
         } else if (!strcmp(argv[i], "--reconfigure")) {
-	    reconfigure_and_exit = YES;
-#if 0 // NOTE: not used in OpenBox3.
-        } else {
-            printf("Invalid option: '%s'\n\n", argv[i]);
-            print_help();
-            exit(1);
-#endif
+            remote_control = 1;
+        } else if (!strcmp(argv[i], "--restart")) {
+            remote_control = 2;
         }
     }
 }
@@ -540,7 +528,7 @@ void ob_exit_replace()
 {
     exitcode = 0;
     being_replaced = YES;
-    [mainLoop exist];
+    [mainLoop exit];
 }
 
 Cursor ob_cursor(ObCursor cursor)

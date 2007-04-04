@@ -66,6 +66,13 @@ RrColor *RrColorNew(const AZInstance *inst, int r, int g, int b)
     XColor xcol;
     int key;
 
+    r = (r < 0) ? 0 : r;
+    r = (r > 256) ? 256 : r;
+    g = (g < 0) ? 0 : g;
+    g = (g > 256) ? 256 : g;
+    b = (b < 0) ? 0 : b;
+    b = (b > 256) ? 256 : b;
+
     key = (r << 24) + (g << 16) + (b << 8);
 #ifndef NO_COLOR_CACHE
     if ((out = [[[inst colorHash] objectForKey: [NSNumber numberWithInt: key]] pointerValue])) {
