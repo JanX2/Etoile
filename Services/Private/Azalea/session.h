@@ -81,7 +81,7 @@
 
 extern NSMutableArray *session_saved_state;
 
-void session_startup(int *argc, char ***argv);
+void session_startup(int argc, char **argv);
 void session_shutdown();
 
 AZSessionState* session_state_find(AZClient *c);

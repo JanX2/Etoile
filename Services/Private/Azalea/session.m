@@ -90,7 +90,7 @@ NSMutableArray *session_saved_state;
 
 #ifndef USE_SM
 
-void session_startup(int *argc, char ***argv) {}
+void session_startup(int argc, char **argv) {}
 void session_shutdown() {}
 AZSessionState *session_state_find(AZClient *c) { return nil; }
 BOOL session_state_cmp(AZSessionState *s, AZClient *c) { return NO; }
@@ -204,17 +204,27 @@ static void parse_args(int *argc, char ***argv)
     }
 }
 
-void session_startup(int *argc, char ***argv)
+void session_startup(int argc, char **argv)
 {
 #define SM_ERR_LEN 1024
 
     SmcCallbacks cb;
     char sm_err[SM_ERR_LEN];
+    int i;
 
-    parse_args(argc, argv);
+    sm_argc = argc;
+    sm_argv = malloc(sizeof(char*)*argc);
+    for (i = 0; i < argc; ++i)
+        sm_argv[i] = argv[i];
+
+    parse_args(&sm_argc, &sm_argv);
 
     if (sm_disable)
+    {
+	free(sm_argv);
+	sm_argv = NULL;
         return;
+    }
 
     ASSIGN(sm_sessions_path, ([NSString pathWithComponents: [NSArray arrayWithObjects: XDGDataHomePath(), @"openbox", @"sessions", nil]]));
     if (!parse_mkdir_path(sm_sessions_path, 0700))
@@ -231,9 +241,6 @@ void session_startup(int *argc, char ***argv)
 	filename = [NSString stringWithFormat: @"%d-%d-%u.obs", (int)time(NULL), (int)getpid(), random()];
 	ASSIGN(save_file, [sm_sessions_path stringByAppendingPathComponent: filename]);
     }
-
-    sm_argc = *argc;
-    sm_argv = *argv;
 
     cb.save_yourself.callback = sm_save_yourself;
     cb.save_yourself.client_data = NULL;
@@ -318,11 +325,17 @@ void session_startup(int *argc, char ***argv)
 
 void session_shutdown()
 {
+    if (sm_disable)
+      return;
+
     DESTROY(sm_sessions_path);
     DESTROY(save_file);
     DESTROY(sm_id);
+    free(sm_argv);
+    sm_argv = NULL;
 
     if (sm_conn) {
+#if 0 // NOTE: not used in OpenBox3
         SmPropValue val_hint;
         SmProp prop_hint = { SmRestartStyleHint, SmCARD8, 1, };
         SmProp *props[1];
@@ -338,7 +351,7 @@ void session_shutdown()
         props[0] = &prop_hint;
 
         SmcSetProperties(sm_conn, 1, props);
-
+#endif
         SmcCloseConnection(sm_conn, 0, NULL);
 
 	DESTROY(session_saved_state);

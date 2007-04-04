@@ -77,9 +77,9 @@ ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lX11 -lXft
 #ADDITIONAL_LIB_DIRS += -lXinerama
 
 # Startup Notification
-#ADDITIONAL_CPPFLAGS += -DUSE_LIBSN=1
-#ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags libstartup-notification-1.0`
-#ADDITIONAL_LIB_DIRS += `pkg-config --libs libstartup-notification-1.0`
+ADDITIONAL_CPPFLAGS += -DUSE_LIBSN=1
+ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags libstartup-notification-1.0`
+ADDITIONAL_LIB_DIRS += `pkg-config --libs libstartup-notification-1.0`
 
 -include GNUmakefile.preamble
 

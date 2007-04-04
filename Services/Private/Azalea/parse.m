@@ -248,6 +248,28 @@ xmlNodePtr parse_find_node(const char *tag, xmlNodePtr node)
     return NULL;
 }
 
+BOOL parse_attr_bool(const char *name, xmlNodePtr node, BOOL *value)
+{
+    xmlChar *c = xmlGetProp(node, (const xmlChar*) name);
+    BOOL r = NO;
+    if (c) {
+        if (!xmlStrcasecmp(c, (const xmlChar*) "true"))
+            *value = YES, r = YES;
+        else if (!xmlStrcasecmp(c, (const xmlChar*) "yes"))
+            *value = YES, r = YES;
+        else if (!xmlStrcasecmp(c, (const xmlChar*) "on"))
+            *value = YES, r = YES;
+        else if (!xmlStrcasecmp(c, (const xmlChar*) "false"))
+            *value = NO, r = YES;
+        else if (!xmlStrcasecmp(c, (const xmlChar*) "no"))
+            *value = NO, r = YES;
+        else if (!xmlStrcasecmp(c, (const xmlChar*) "off"))
+            *value = NO, r = YES;
+    }
+    xmlFree(c);
+    return r;
+}
+
 BOOL parse_attr_int(const char *name, xmlNodePtr node, int *value)
 {
     xmlChar *c = xmlGetProp(node, (const xmlChar*) name);
@@ -275,8 +297,9 @@ BOOL parse_attr_string(const char *name, xmlNodePtr node, NSString **value)
 BOOL parse_attr_contains(const char *val, xmlNodePtr node, const char *name)
 {
     xmlChar *c = xmlGetProp(node, (const xmlChar*) name);
-    BOOL r;
-    r = !xmlStrcasecmp(c, (const xmlChar*) val);
+    BOOL r = NO;
+    if (c)
+      r = !xmlStrcasecmp(c, (const xmlChar*) val);
     xmlFree(c);
     return r;
 }

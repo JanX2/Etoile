@@ -69,6 +69,7 @@ BOOL parse_attr_contains(const char *val, xmlNodePtr node, const char *name);
 /* return autoreleased string */
 BOOL parse_attr_string(const char *name, xmlNodePtr node, NSString **value);
 BOOL parse_attr_int(const char *name, xmlNodePtr node, int *value);
+BOOL parse_attr_bool(const char *name, xmlNodePtr node, BOOL *value);
 
 /* paths */
 

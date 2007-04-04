@@ -89,25 +89,20 @@ static AZFocusManager *sharedInstance;
         focus_indicator.right = [[AZInternalWindow alloc] init];
         focus_indicator.bottom = [[AZInternalWindow alloc] init];
 
-        attr.save_under = True;
         attr.override_redirect = True;
         attr.background_pixel = BlackPixel(ob_display, ob_screen);
         [focus_indicator.top set_window: 
             createWindow(RootWindow(ob_display, ob_screen),
-                         CWOverrideRedirect | CWBackPixel | CWSaveUnder,
-                         &attr)];
+                         CWOverrideRedirect | CWBackPixel, &attr)];
         [focus_indicator.left set_window:
             createWindow(RootWindow(ob_display, ob_screen),
-                         CWOverrideRedirect | CWBackPixel | CWSaveUnder,
-                         &attr)];
+                         CWOverrideRedirect | CWBackPixel, &attr)];
         [focus_indicator.right set_window:
             createWindow(RootWindow(ob_display, ob_screen),
-                         CWOverrideRedirect | CWBackPixel | CWSaveUnder,
-                         &attr)];
+                         CWOverrideRedirect | CWBackPixel, &attr)];
         [focus_indicator.bottom set_window:
             createWindow(RootWindow(ob_display, ob_screen),
-                         CWOverrideRedirect | CWBackPixel | CWSaveUnder,
-                         &attr)];
+                         CWOverrideRedirect | CWBackPixel, &attr)];
 
         [stacking addWindow: focus_indicator.top];
         [stacking addWindow: focus_indicator.left];

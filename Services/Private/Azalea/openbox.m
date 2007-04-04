@@ -79,16 +79,17 @@ AZInstance *ob_rr_inst;
 RrTheme    *ob_rr_theme;
 Display    *ob_display;
 int        ob_screen;
-BOOL    ob_replace_wm;
+BOOL    ob_replace_wm = NO;
 
-static ObState   state;
-static BOOL  xsync;
-static BOOL  reconfigure;
-static BOOL  restart;
+static ObState state;
+static BOOL  xsync = NO;
+static BOOL  reconfigure = NO;
+static BOOL  restart = NO;
 static NSString *restart_path = nil;
 static Cursor    cursors[OB_NUM_CURSORS];
 static KeyCode   keys[OB_NUM_KEYS];
 static int      exitcode = 0;
+static BOOL reconfigure_and_exit = NO;
 
 static void signal_handler(int signal, void *data);
 static void parse_args(int argc, char **argv);
@@ -103,18 +104,39 @@ int main(int argc, char **argv)
 
     state = OB_STATE_STARTING;
 
-    parse_paths_startup();
-
-    session_startup(&argc, &argv);
-
     /* parse out command line args */
     parse_args(argc, argv);
+
+    if (!reconfigure_and_exit) {
+        parse_paths_startup();
+
+        session_startup(argc, argv);
+    }
 
     ob_display = XOpenDisplay(NULL);
     if (ob_display == NULL)
         ob_exit_with_error("Failed to open the display.");
     if (fcntl(ConnectionNumber(ob_display), F_SETFD, 1) == -1)
         ob_exit_with_error("Failed to set display as close-on-exec.");
+
+    if (reconfigure_and_exit) {
+        unsigned long pid;
+        BOOL ret;
+
+        prop_startup(); /* get atoms values for the display */
+        ret = PROP_GET32(RootWindow(ob_display, DefaultScreen(ob_display)),
+                                    openbox_pid, cardinal, &pid);
+        XCloseDisplay(ob_display);
+        if (!ret) {
+            NSLog(@"Openbox does not appear to be running on this display.\n");
+        } else {
+            NSLog(@"Telling the Openbox process # %u to reconfigure.\n", pid);
+            ret = (kill(pid, SIGUSR2) == 0);
+            if (!ret)
+                NSLog(@"Error: %s.\n", strerror(errno));
+        }
+        exit(ret ? EXIT_SUCCESS : EXIT_FAILURE);
+    }
 
     /* Initiate NSApp */
 #if ALTERNATIVE_RUN_LOOP
@@ -274,6 +296,9 @@ int main(int argc, char **argv)
 
 		for (j = 0; j < jcount; j++) {
                     AZClient *c = [clientManager clientAtIndex: j];
+                    /* the new config can change the window's decorations */
+                    [c setupDecorAndFunctions];
+                    /* redraw the frames */
 		    [[c frame] adjustAreaWithMoved: YES resized: YES fake: NO];
                 }
             }
@@ -426,6 +451,9 @@ static void print_help()
 {
     printf("Syntax: openbox [options]\n\n");
     printf("Options:\n\n");
+    printf("  --reconfigure       Tell the currently running instance of "
+           "Openbox to\n"
+           "                      reconfigure (and then exit immediately)\n");
 #ifdef USE_SM
     printf("  --sm-disable        Disable connection to session manager\n");
     printf("  --sm-client-id ID   Specify session management ID\n");
@@ -460,10 +488,14 @@ static void parse_args(int argc, char **argv)
             xsync = YES;
         } else if (!strcmp(argv[i], "--debug")) {
             AZDebugShowOutput(YES);
+        } else if (!strcmp(argv[i], "--reconfigure")) {
+	    reconfigure_and_exit = YES;
+#if 0 // NOTE: not used in OpenBox3.
         } else {
             printf("Invalid option: '%s'\n\n", argv[i]);
             print_help();
             exit(1);
+#endif
         }
     }
 }
