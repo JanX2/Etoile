@@ -31,7 +31,6 @@
 #import "misc.h"
 #import "client_menu.h"
 #import "client_list_menu.h"
-#import "client_list_combined_menu.h"
 #import "parse.h"
 #import "action.h"
 
@@ -213,7 +212,6 @@ static AZMenuManager *sharedInstance;
     menu_hash = [[NSMutableDictionary alloc] init];
 
     client_list_menu_startup(reconfig);
-    client_list_combined_menu_startup(reconfig);
     client_menu_startup();
 
     menu_parse_inst = [[AZParser alloc] init];
@@ -252,7 +250,6 @@ static AZMenuManager *sharedInstance;
     DESTROY(menu_parse_inst);
     
     client_list_menu_shutdown(reconfig);
-    client_list_combined_menu_shutdown(reconfig);
 
     AZMenuFrameHideAll();
     DESTROY(menu_hash);

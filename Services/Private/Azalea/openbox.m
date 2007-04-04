@@ -26,7 +26,6 @@
 #import "AZStartupHandler.h"
 #import "AZEventHandler.h"
 #import "AZDebug.h"
-#import "AZDock.h"
 #import "AZGroup.h"
 #import "AZClientManager.h"
 #import "AZMoveResizeHandler.h"
@@ -130,7 +129,6 @@ int main(int argc, char **argv)
     AZGroupManager *groupManager = [AZGroupManager defaultManager];
     AZClientManager *clientManager = [AZClientManager defaultManager];
     AZMoveResizeHandler *mrHandler = [AZMoveResizeHandler defaultHandler];
-    AZDock *defaultDock = [AZDock defaultDock];
     AZFocusManager *focusManager = [AZFocusManager defaultManager];
     AZKeyboardHandler *keyboardHandler = [AZKeyboardHandler defaultHandler];
     AZMenuManager *menuManager = [AZMenuManager defaultManager];
@@ -261,7 +259,6 @@ int main(int argc, char **argv)
             grab_startup(reconfigure);
 	    [groupManager startup: reconfigure];
 	    [clientManager startup: reconfigure];
-	    [defaultDock startup: reconfigure];
 	    [mrHandler startup: reconfigure];
 	    [keyboardHandler startup: reconfigure];
 	    [mouseHandler startup: reconfigure];
@@ -327,7 +324,6 @@ int main(int argc, char **argv)
             state = OB_STATE_EXITING;
 
             if (!reconfigure) {
-		[defaultDock removeAll];
 		[clientManager unmanageAll];
             }
 
@@ -335,7 +331,6 @@ int main(int argc, char **argv)
 	    [mouseHandler shutdown: reconfigure];
 	    [keyboardHandler shutdown: reconfigure];
 	    [mrHandler shutdown: reconfigure];
-	    [defaultDock shutdown: reconfigure];
 	    [clientManager shutdown: reconfigure];
 	    [groupManager shutdown: reconfigure];
             grab_shutdown(reconfigure);

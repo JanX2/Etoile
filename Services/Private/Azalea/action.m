@@ -19,7 +19,6 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#import "AZDock.h"
 #import "AZStacking.h"
 #import "AZClient.h"
 #import "AZMoveResizeHandler.h"
@@ -662,11 +661,6 @@ ActionString actionstrings[] =
         @"resize",
         action_moveresize,
         setup_action_resize
-    },
-    {
-        @"toggledockautohide",
-        action_toggle_dockautohide,
-        NULL
     },
     {
         @"toggleshowdesktop",
@@ -1721,12 +1715,6 @@ void action_toggle_layer(union ActionData *data)
         [c setLayer: [c above] ? 0 : 1];
     }
     client_action_end(data);
-}
-
-void action_toggle_dockautohide(union ActionData *data)
-{
-    config_dock_hide = !config_dock_hide;
-    [[AZDock defaultDock] configure];
 }
 
 void action_toggle_show_desktop(union ActionData *data)

@@ -24,7 +24,6 @@
 #import "AZMainLoop.h"
 #import "AZScreen.h"
 #import "AZDebug.h"
-#import "AZDock.h"
 #import "AZGroup.h"
 #import "AZClientManager.h"
 #import "AZClient+GNUstep.h"
@@ -107,8 +106,6 @@ static AZEventHandler *sharedInstance;
 @interface AZEventHandler (AZPrivate)
 - (void) handleRootEvent: (XEvent *) e;
 - (void) handleMenuEvent: (XEvent *) e;
-- (void) handleDock: (AZDock *) s event: (XEvent *) e;
-- (void) handleDockapp: (AZDockApp *) app event: (XEvent *) e;
 - (void) handleClient: (AZClient *) c event: (XEvent *) e;
 - (void) handleGroup: (AZGroup *) g event: (XEvent *) e;
 
@@ -283,8 +280,6 @@ static AZEventHandler *sharedInstance;
     Window window;
     AZGroup *group = nil;
     AZClient *client = nil;
-    AZDock *dock = nil;
-    AZDockApp *dockapp = nil;
     XEvent ee, *e;
     ObEventData *ed = data;
 
@@ -298,11 +293,7 @@ static AZEventHandler *sharedInstance;
     {
 	id _win = nil;
         if ((_win = [window_map objectForKey: [NSNumber numberWithInt: window]])) {
-	    if ([_win isKindOfClass: [AZDock class]]) {
-		    dock = _win;
-	    } else if ([_win isKindOfClass: [AZDockApp class]]) {
-		    dockapp = _win;
-	    } else if ([_win isKindOfClass: [AZClient class]]) {
+	    if ([_win isKindOfClass: [AZClient class]]) {
 		    client = _win;
 	    } else {
                 /*Window_Menu:*/
@@ -327,10 +318,6 @@ static AZEventHandler *sharedInstance;
         [self handleGroup: group event:  e];
     else if (client) 
         [self handleClient: client event:  e];
-    else if (dockapp)
-        [self handleDockapp: dockapp event:  e];
-    else if (dock)
-        [self handleDock: dock event: e];
     else if (window == RootWindow(ob_display, ob_screen))
         [self handleRootEvent: e];
     else if (e->type == MapRequest) 
@@ -978,52 +965,6 @@ static AZEventHandler *sharedInstance;
 	    [[client frame] adjustShape];
         }
 #endif
-    }
-}
-
-- (void) handleDock: (AZDock *) s event: (XEvent *) e
-{
-    AZStacking *stacking = [AZStacking stacking];
-    switch (e->type) {
-    case ButtonPress:
-        if (e->xbutton.button == 1)
-            [stacking raiseWindow: s group: NO];
-        else if (e->xbutton.button == 2)
-            [stacking lowerWindow: s group: NO];
-        break;
-    case EnterNotify:
-	[s setHide: NO];
-        break;
-    case LeaveNotify:
-	[s setHide: YES];
-        break;
-    }
-}
-
-- (void) handleDockapp: (AZDockApp *) app event: (XEvent *) e
-{
-    AZDock *dock = [AZDock defaultDock];
-    switch (e->type) {
-    case MotionNotify:
-	[app drag: &e->xmotion];
-        break;
-    case UnmapNotify:
-        if ([app ignoreUnmaps]) {
-            [app setIgnoreUnmaps: [app ignoreUnmaps]-1];
-            break;
-        }
-	[dock remove: app reparent: YES];
-        break;
-    case DestroyNotify:
-	[dock remove: app reparent: NO];
-        break;
-    case ReparentNotify:
-	[dock remove: app reparent: NO];
-        break;
-    case ConfigureNotify:
-	[app configureWithWidth: e->xconfigure.width 
-		         height: e->xconfigure.height];
-        break;
     }
 }
 

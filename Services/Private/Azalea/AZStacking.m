@@ -21,7 +21,6 @@
 
 #import "AZStacking.h"
 #import "AZScreen.h"
-#import "AZDock.h"
 #import "AZGroup.h"
 #import "AZClient.h"
 #import "openbox.h"

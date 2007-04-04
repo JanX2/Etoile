@@ -15,8 +15,6 @@ Azalea_OBJC_FILES = \
 	AZClient+Place.m \
 	AZClient+Resist.m \
 	AZDebug.m \
-	AZDock.m \
-	AZDockApp.m \
 	AZEventHandler.m \
 	AZFocusManager.m \
 	AZFrame.m \
@@ -36,7 +34,6 @@ Azalea_OBJC_FILES = \
 	AZStartupHandler.m \
 	action.m \
 	client_list_menu.m \
-	client_list_combined_menu.m \
 	client_menu.m \
 	config.m \
 	extensions.m \

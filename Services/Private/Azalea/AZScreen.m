@@ -23,7 +23,6 @@
 #import "AZStartupHandler.h"
 #import "AZEventHandler.h"
 #import "AZDebug.h"
-#import "AZDock.h"
 #import "AZClientManager.h"
 #import "AZStacking.h"
 #import "AZPopUp.h"
@@ -277,7 +276,6 @@ static AZScreen *sharedInstance;
         return;
 
     [self updateAreas];
-    [[AZDock defaultDock] configure];
 
     AZClientManager *cManager = [AZClientManager defaultManager];
     int i, count = [cManager count];
@@ -802,7 +800,6 @@ done_cycle:
     for (i = 0; i < screen_num_desktops + 1; ++i) {
         Strut *struts;
         int l, r, t, b;
-	StrutPartial dock_strut = [[AZDock defaultDock] strut];
 
         struts = calloc(sizeof(Strut), screen_num_monitors);
 
@@ -843,10 +840,6 @@ done_cycle:
                                            &struts[x]);
 		[c set_strut: _strut];
             }
-            screen_area_add_strut_left(&dock_strut,
-                                       &monitor_area[x],
-                                       o + dock_strut.left - area[i][x].x,
-                                       &struts[x]);
 
             area[i][x].x += struts[x].left;
             area[i][x].width -= struts[x].left;
@@ -870,10 +863,6 @@ done_cycle:
                                            &struts[x]);
 		[c set_strut: _strut];
             }
-            screen_area_add_strut_top(&dock_strut,
-                                      &monitor_area[x],
-                                      o + dock_strut.top - area[i][x].y,
-                                      &struts[x]);
 
             area[i][x].y += struts[x].top;
             area[i][x].height -= struts[x].top;
@@ -899,12 +888,6 @@ done_cycle:
                                             &struts[x]);
 		[c set_strut: _strut];
             }
-            screen_area_add_strut_right(&dock_strut,
-                                        &monitor_area[x],
-                                        (area[i][x].x +
-                                         area[i][x].width - 1) -
-                                        (o - dock_strut.right),
-                                        &struts[x]);
 
             area[i][x].width -= struts[x].right;
         }
@@ -929,12 +912,6 @@ done_cycle:
                                              &struts[x]);
 		[c set_strut: _strut];
             }
-            screen_area_add_strut_bottom(&dock_strut,
-                                         &monitor_area[x],
-                                         (area[i][x].y +
-                                          area[i][x].height - 1) - \
-                                         (o - dock_strut.bottom),
-                                         &struts[x]);
 
             area[i][x].height -= struts[x].bottom;
         }

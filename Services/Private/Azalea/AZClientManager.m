@@ -24,7 +24,6 @@
 #import "AZClient+Place.h"
 #import "AZClient+GNUstep.h"
 #import "AZScreen.h"
-#import "AZDock.h"
 #import "AZStartupHandler.h"
 #import "AZEventHandler.h"
 #import "AZGroup.h"
@@ -155,10 +154,11 @@ static AZClientManager *sharedInstance;
     }
   
     /* is the window a docking app */
-    if ((wmhint = XGetWMHints(ob_display, window))) {
+    if ((wmhint = XGetWMHints(ob_display, window))) 
+    {
         if ((wmhint->flags & StateHint) &&
-            wmhint->initial_state == WithdrawnState) {
-//	    [[AZDock defaultDock] addWindow: window hints: wmhint];
+            wmhint->initial_state == WithdrawnState) 
+	{
             [[workspace notificationCenter]
                        postNotificationName: @"AZDockletDidLaunchNotification"
                        object: workspace

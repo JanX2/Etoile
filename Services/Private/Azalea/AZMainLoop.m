@@ -21,7 +21,6 @@
 */
 
 #import "AZMainLoop.h"
-#import "AZDock.h"
 #import "AZClient.h"
 #import "AZClientManager.h"
 #import <X11/Xlib.h>

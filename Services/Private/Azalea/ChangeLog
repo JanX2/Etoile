@@ -1,3 +1,14 @@
+2007-04-03  Yen-Ju Chen <yjchenx at gmail>
+
+	* client_list_combined_menu.m:
+	* client_list_combined_menu.h:
+	Remove combined menu since it is not that useful.
+	* AZDock.m:
+	* AZDock.h:
+	* AZDockApp.m:
+	* AZDockApp.h:
+	Remove docklet support in favor of AZDock.
+
 2007-04-01  Yen-Ju Chen <yjchenx at gmail>
 
 	* AZClientManager.m: Post docklet notification to AZDock 

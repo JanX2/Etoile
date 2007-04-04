@@ -20,7 +20,6 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
-#import "AZDock.h"
 #import "AZScreen.h"
 #import "AZEventHandler.h"
 #import "AZDebug.h"
