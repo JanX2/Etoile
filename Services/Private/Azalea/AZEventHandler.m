@@ -728,13 +728,17 @@ static AZEventHandler *sharedInstance;
             switch (e->xconfigurerequest.detail) {
             case Below:
             case BottomIf:
-		[client lower];
+                /* Apps are so rude. And this is totally disconnected from
+                   activation/focus. Bleh. */
+		/*[client lower];*/
                 break;
 
             case Above:
             case TopIf:
             default:
-		[client raise];
+                /* Apps are so rude. And this is totally disconnected from
+                   activation/focus. Bleh. */
+		/*[client raise];*/
                 break;
             }
         }
@@ -773,7 +777,7 @@ static AZEventHandler *sharedInstance;
                                        it can happen now when the window is on
                                        another desktop, but we still don't
                                        want it! */
-	[client activateHere: NO user: YES];
+	[client activateHere: NO user: YES time: CurrentTime];
         break;
     case ClientMessage:
         /* validate cuz we query stuff off the client here */
@@ -832,7 +836,8 @@ static AZEventHandler *sharedInstance;
             /* XXX make use of data.l[1] and [2] ! */
             [client activateHere: NO 
 	                    user: (e->xclient.data.l[0] == 0 ||
-                                   e->xclient.data.l[0] == 2)];
+                                   e->xclient.data.l[0] == 2)
+	                    time: e->xclient.data.l[1]];
         } else if (msgtype == prop_atoms.net_wm_moveresize) {
             AZDebug("net_wm_moveresize for 0x%lx\n", [client window]);
             if ((Atom)e->xclient.data.l[2] ==
@@ -979,6 +984,8 @@ static AZEventHandler *sharedInstance;
 	    [client updateStrut];
         } else if (msgtype == prop_atoms.net_wm_icon) {
 	    [client updateIcons];
+        } else if (msgtype == prop_atoms.net_wm_user_time) {
+            [client updateUserTime: YES];
         } else if (msgtype == prop_atoms.sm_client_id) {
 	    [client updateSmClientId];
         } else if (msgtype == prop_atoms.gnustep_wm_attr) {
@@ -1031,7 +1038,7 @@ static AZEventHandler *sharedInstance;
         if (menu_can_hide) {
             if ((e = AZMenuEntryFrameUnder(ev->xbutton.x_root,
                                             ev->xbutton.y_root)))
-		[e execute: ev->xbutton.state];
+		[e execute: ev->xbutton.state time: ev->xbutton.time];
             else
 		AZMenuFrameHideAll();
         }
@@ -1060,7 +1067,7 @@ static AZEventHandler *sharedInstance;
         else if (ev->xkey.keycode == ob_keycode(OB_KEY_RETURN)) {
             AZMenuFrame *f;
             if ((f = [self findActiveMenu]))
-		[[f selected] execute: ev->xkey.state];
+		[[f selected] execute: ev->xkey.state time: ev->xkey.time];
         } else if (ev->xkey.keycode == ob_keycode(OB_KEY_LEFT)) {
             AZMenuFrame *f;
             if ((f = [self findActiveOrLastMenu]) && [f parent])

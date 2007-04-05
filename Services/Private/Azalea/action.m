@@ -34,6 +34,7 @@
 #import "AZFocusManager.h"
 #import "AZMenuFrame.h"
 #import "AZMenuManager.h"
+#import "AZStartupHandler.h"
 #import <AppKit/AppKit.h>
 
 inline void client_action_start(union ActionData *data)
@@ -942,29 +943,29 @@ AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
     return act;
 }
 
-void action_run_mouse(NSArray *acts, AZClient *c, ObFrameContext n, unsigned int s, unsigned int b, int x, int y)
+void action_run_mouse(NSArray *acts, AZClient *c, ObFrameContext n, unsigned int s, unsigned int b, int x, int y, Time time)
 {
-    action_run_list(acts, c, n, s, b, x, y, NO, NO);
+    action_run_list(acts, c, n, s, b, x, y, NO, NO, time);
 }
 
-void action_run_interactive(NSArray *acts, AZClient *c, unsigned int s, BOOL n, BOOL d)
+void action_run_interactive(NSArray *acts, AZClient *c, unsigned int s, Time t, BOOL n, BOOL d)
 {
-    action_run_list(acts, c, OB_FRAME_CONTEXT_NONE, s, 0, -1, -1, n, d);
+    action_run_list(acts, c, OB_FRAME_CONTEXT_NONE, s, 0, -1, -1, t, n, d);
 }
 
-void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y)
+void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y, Time t)
 {
-    action_run_list(acts, c, OB_FRAME_CONTEXT_NONE, state, 0, x, y, NO, NO);
+    action_run_list(acts, c, OB_FRAME_CONTEXT_NONE, state, 0, x, y, t, NO, NO);
 }
 
-void action_run(NSArray *acts, AZClient *c, unsigned int state)
+void action_run(NSArray *acts, AZClient *c, unsigned int state, Time t)
 {
-    action_run_list(acts, c, OB_FRAME_CONTEXT_NONE, state, 0, -1, -1, NO, NO);
+    action_run_list(acts, c, OB_FRAME_CONTEXT_NONE, state, 0, -1, -1, t, NO, NO);
 }
 
 void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
                      unsigned int state, unsigned int button, int x, int y,
-                     BOOL cancel, BOOL done)
+                     Time time, BOOL cancel, BOOL done)
 {
     AZAction *a;
     BOOL inter = NO;
@@ -1011,6 +1012,8 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
 
             [a data_pointer]->any.button = button;
 
+	    [a data_pointer]->any.time = time;
+
             if ([a data].any.interactive) {
                 [a data_pointer]->inter.cancel = cancel;
                 [a data_pointer]->inter.final = done;
@@ -1037,7 +1040,7 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
     }
 }
 
-void action_run_string(NSString *name, AZClient *c)
+void action_run_string(NSString *name, AZClient *c, Time time)
 {
     AZAction *a = [AZAction actionWithName: name userAction: OB_USER_ACTION_NONE];
     if (a == nil) {
@@ -1045,7 +1048,7 @@ void action_run_string(NSString *name, AZClient *c)
       return;
     }
 
-    action_run([NSArray arrayWithObjects: a, nil], c, 0);
+    action_run([NSArray arrayWithObjects: a, nil], c, 0, time);
 }
 
 void action_execute(union ActionData *data)
@@ -1055,6 +1058,7 @@ void action_execute(union ActionData *data)
       if ([data->execute.path isAbsolutePath])
 	p = data->execute.path;
       else {
+        // FIXME: we need to port this part again 
 	/* Look through paths */
 	NSProcessInfo *pi = [NSProcessInfo processInfo];
 	NSArray *ps = [[[pi environment] objectForKey: @"PATH"] componentsSeparatedByString: @":"];
@@ -1090,7 +1094,8 @@ void action_activate(union ActionData *data)
            moving on us */
         [[AZEventHandler defaultHandler] haltFocusDelay];
 
-        [data->activate.any.c activateHere: data->activate.here user: YES];
+        [data->activate.any.c activateHere: data->activate.here user: YES
+	                              time: data->activate.any.time];
     }
 }
 
@@ -1595,7 +1600,8 @@ void action_cycle_windows(union ActionData *data)
             dialog: data->cycle.dialog
             done: data->cycle.inter.final
 	    cancel: data->cycle.inter.cancel
-            opaque: data->cycle.opaque];
+            opaque: data->cycle.opaque
+	    time: data->cycle.inter.any.time];
 }
 
 void action_directional_focus(union ActionData *data)
@@ -1609,7 +1615,8 @@ void action_directional_focus(union ActionData *data)
             interactive: data->any.interactive
             dialog: data->interdiraction.dialog
             done: data->interdiraction.inter.final
-            cancel: data->interdiraction.inter.cancel];
+            cancel: data->interdiraction.inter.cancel
+            time: data->interdiraction.inter.any.time];
 }
 
 void action_movetoedge(union ActionData *data)

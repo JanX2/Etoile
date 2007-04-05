@@ -29,6 +29,7 @@ extern NSString *AZClientDestroyNotification;
 {
   NSMutableArray *clist;
   NSWorkspace *workspace;
+  Time client_last_user_time;
 }
 + (AZClientManager *) defaultManager;
 - (void) startup: (BOOL) reconfig;
@@ -48,5 +49,8 @@ extern NSString *AZClientDestroyNotification;
 - (AZClient *) clientAtIndex: (int) index;
 - (int) count;
 - (int) indexOfClient: (AZClient *) client;
+
+- (void) setLastUserTime: (Time) time;
+- (Time) lastUserTime;
 
 @end

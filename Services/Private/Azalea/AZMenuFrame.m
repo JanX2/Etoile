@@ -302,7 +302,7 @@ static Window createWindow(Window parent, unsigned long mask,
     [f showWithParent: frame];
 }
 
-- (void) execute: (unsigned int) state
+- (void) execute: (unsigned int) state time: (Time) time
 {
     if ([entry type] == OB_MENU_ENTRY_TYPE_NORMAL &&
         [(AZNormalMenuEntry *)entry enabled])
@@ -316,8 +316,8 @@ static Window createWindow(Window parent, unsigned long mask,
         if (!(state & ControlMask))
 	    AZMenuFrameHideAll();
 
-	if ([[frame menu] execute: entry state: state] == NO) {
-            action_run(acts, client, state);
+	if ([[frame menu] execute: entry state: state time: time] == NO) {
+            action_run(acts, client, state, time);
 	}
     }
 }

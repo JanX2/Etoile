@@ -10,6 +10,10 @@
 	  But in the future, we need to rewrite the theme with property list
 	  and probably use cairo for drawing.
 	* Update to r5599 of OpenBox3
+	* Update to r5601 of OpenBox3
+          It is not finished. AZStartup need to be ported again.
+	  A non-intrusive window adding in AZStacking need to be ported again.
+	  See FIXME in AZClientManager.m
 
 2007-04-03  Yen-Ju Chen <yjchenx at gmail>
 

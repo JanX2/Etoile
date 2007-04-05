@@ -275,6 +275,8 @@ typedef enum
 
     /*! Icons for the client as specified on the client window */
     NSMutableArray *icons;
+
+    unsigned int user_time;
 }
 
 /*! Determines if the client should be shown or hidden currently.
@@ -434,8 +436,9 @@ typedef enum
     otherwise, the desktop is changed to where the client lives.
     @param user If true, then a user action is what requested the activation;
     otherwise, it means an application requested it on its own
+    @param timestamp The time at which the activate was requested.
  */
-- (void) activateHere: (BOOL) here user: (BOOL) user;
+- (void) activateHere: (BOOL) here user: (BOOL) user time: (Time) timestamp;
 
 /*! Calculates the stacking layer for the client window */
 - (void) calcLayer;
@@ -488,6 +491,9 @@ typedef enum
 
 /*! Updates the window's icons */
 - (void) updateIcons;
+
+/*! Updates the window's user time */
+- (void) updateUserTime: (BOOL) new_event;
 
 /*! Set up what decor should be shown on the window and what functions should
     be allowed (ObClient::decorations and ObClient::functions).
@@ -673,6 +679,9 @@ typedef enum
 - (void) set_fullscreen: (BOOL) fullscreen;
 - (void) set_above: (BOOL) above;
 - (void) set_below: (BOOL) below;
+
+- (void) set_user_time: (Time) time;
+- (Time) user_time;
 
 - (unsigned int) decorations;
 - (void) set_decorations: (unsigned int) decorations;

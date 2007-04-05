@@ -63,7 +63,8 @@ static AZMouseHandler *sharedInstance = nil;
 - (void) grabAllClients: (BOOL) grab;
 - (BOOL) fireBinding: (ObMouseAction) a context: (ObFrameContext) context
              client: (AZClient *) c state: (unsigned int) state
-	     button: (unsigned int) button x: (int) x y: (int) y;
+	     button: (unsigned int) button x: (int) x y: (int) y
+	     time: (Time) time;
 @end
 
 @implementation AZMouseHandler
@@ -197,7 +198,8 @@ static AZMouseHandler *sharedInstance = nil;
 	[self fireBinding: OB_MOUSE_ACTION_PRESS context: context
                      client: client state: e->xbutton.state
                      button: e->xbutton.button
-                     x: e->xbutton.x_root y: e->xbutton.y_root];
+                     x: e->xbutton.x_root y: e->xbutton.y_root
+	             time: e->xbutton.time];
 
         if (CLIENT_CONTEXT(context, client)) {
             /* Replay the event, so it goes to the client*/
@@ -250,17 +252,20 @@ static AZMouseHandler *sharedInstance = nil;
 	[self fireBinding: OB_MOUSE_ACTION_RELEASE context: context
                      client: client state: e->xbutton.state
                      button: e->xbutton.button
-                     x: e->xbutton.x_root y: e->xbutton.y_root];
+                     x: e->xbutton.x_root y: e->xbutton.y_root
+	             time: e->xbutton.time];
         if (click)
             [self fireBinding: OB_MOUSE_ACTION_CLICK context: context
                          client: client state: e->xbutton.state
                          button: e->xbutton.button
-                         x: e->xbutton.x_root y: e->xbutton.y_root];
+                         x: e->xbutton.x_root y: e->xbutton.y_root
+		         time: e->xbutton.time];
         if (dclick)
             [self fireBinding: OB_MOUSE_ACTION_DOUBLE_CLICK context: context
                          client: client state: e->xbutton.state
                          button: e->xbutton.button
-                         x: e->xbutton.x_root y: e->xbutton.y_root];
+                         x: e->xbutton.x_root y: e->xbutton.y_root
+		  	 time: e->xbutton.time];
         break;
 
     case MotionNotify:
@@ -284,7 +289,9 @@ static AZMouseHandler *sharedInstance = nil;
 
                 [self fireBinding: OB_MOUSE_ACTION_MOTION context: context
                              client: client state: state
-			     button: button x: px y: py];
+			     button: button x: px y: py
+			     time: e->xmotion.time
+		];
                 button = 0;
                 state = 0;
             }
@@ -378,6 +385,7 @@ static AZMouseHandler *sharedInstance = nil;
 - (BOOL) fireBinding: (ObMouseAction) a context: (ObFrameContext) context
              client: (AZClient *) c state: (unsigned int) state
 	     button: (unsigned int) button x: (int) x y: (int) y
+	     time: (Time) time
 {
     AZMouseBinding *b;
     NSArray *array = bound_contexts[context];
@@ -394,7 +402,7 @@ static AZMouseHandler *sharedInstance = nil;
     /* if not bound, then nothing to do! */
     if (found == NO) return NO;
 
-    action_run_mouse([b actions][a], c, context, state, button, x, y);
+    action_run_mouse([b actions][a], c, context, state, button, x, y, time);
     return YES;
 }
 

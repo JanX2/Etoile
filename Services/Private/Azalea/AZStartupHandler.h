@@ -44,7 +44,7 @@
 - (BOOL) applicationStarting;
 
 /*! Notify that an app has started */
-- (void) applicationStarted: (char *) iden class: (char *) wmclass;
+- (Time) applicationStarted: (char *) iden class: (char *) wmclass;
 
 /*! Get the desktop requested via the startup-notiication protocol if one
   was requested */

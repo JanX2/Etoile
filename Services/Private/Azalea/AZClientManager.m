@@ -192,13 +192,18 @@ static AZClientManager *sharedInstance;
     [client set_wmstate: NormalState];
     [client set_layer: -1];
     [client set_desktop: [screen numberOfDesktops]]; /* always an invalid value */
+    [client set_user_time: ~0]; /* maximum value, always newer than the real time */
 
     [client getAll];
     [client restoreSessionState];
-
-    [[AZStartupHandler defaultHandler] 
+ 
+    {
+      Time t = [[AZStartupHandler defaultHandler] 
                  applicationStarted: (char*)[[client startup_id] cString]
                               class: (char*)[[client class] cString]];
+      if (t) 
+        [client set_user_time: t];
+    }
 
     /* update the focus lists, do this before the call to change_state or
        it can end up in the list twice! */
@@ -222,7 +227,9 @@ static AZClientManager *sharedInstance;
 
     [client applyStartupState];
 
+// FIXME
     [[AZStacking stacking] addWindow: client];
+//    [[AZStacking stacking] addWindowNonIntrusive: client];
     [client restoreSessionStacking];
 
     /* focus the new window? */
@@ -268,6 +275,47 @@ static AZClientManager *sharedInstance;
     [[AZKeyboardHandler defaultHandler] grab: YES forClient: client];
     [[AZMouseHandler defaultHandler] grab: YES forClient: client];
 
+
+    if (activate) {
+        /* This is focus stealing prevention, if a user_time has been set */
+#if 0
+        ob_debug("Want to focus new window 0x%x with time %u (last time %u)\n",
+                 self->window, self->user_time, client_last_user_time);
+#endif
+        if (![client user_time] || [client user_time] >= client_last_user_time)
+        {
+            /* since focus can change the stacking orders, if we focus the
+               window then the standard raise it gets is not enough, we need
+               to queue one for after the focus change takes place */
+	    [client raise];
+        } else {
+#if 0
+            ob_debug("Focus stealing prevention activated for %s with time %u "
+                     "(last time %u)\n",
+                     self->title, self->user_time, client_last_user_time);
+#endif
+            /* if the client isn't focused, then hilite it so the user
+               knows it is there */
+	    [client hilite: YES];
+
+            /* don't focus it ! (focus stealing prevention) */
+            activate = NO;
+        }
+    }
+    else {
+        /* This may look rather odd. Well it's because new windows are added
+           to the stacking order non-intrusively. If we're not going to focus
+           the new window or hilite it, then we raise it to the top. This will
+           take affect for things that don't get focused like splash screens.
+           Also if you don't have focus_new enabled, then it's going to get
+           raised to the top. Legacy begets legacy I guess?
+        */
+	[client raise];
+    }
+
+    /* this has to happen before we try focus the window, but we want it to
+       happen after the client's stacking has been determined or it looks bad
+    */
     [client showhide];
 
     /* use client_focus instead of client_activate cuz client_activate does
@@ -276,15 +324,11 @@ static AZClientManager *sharedInstance;
        clicking a window to activate is. so keep the new window out of the way
        but do focus it. */
     if (activate) {
-        /* if using focus_delay, stop the timer now so that focus doesn't go
-           moving on us */
+        /* if using focus_delay, stop the timer now so that focus doesn't
+           go moving on us */
 	[[AZEventHandler defaultHandler] haltFocusDelay];
 
 	[client focus];
-        /* since focus can change the stacking orders, if we focus the window
-           then the standard raise it gets is not enough, we need to queue one
-           for after the focus change takes place */
-	[client raise];
     }
 
     /* client_activate does this but we aret using it so we have to do it
@@ -475,6 +519,7 @@ static AZClientManager *sharedInstance;
   self = [super init];
   clist = [[NSMutableArray alloc] init];
   workspace = [NSWorkspace sharedWorkspace];
+  client_last_user_time = CurrentTime;
   return self;
 }
 
@@ -482,6 +527,16 @@ static AZClientManager *sharedInstance;
 {
   DESTROY(clist);
   [super dealloc];
+}
+
+- (void) setLastUserTime: (Time) time
+{
+  client_last_user_time = time;
+}
+
+- (Time) lastUserTime
+{
+  return client_last_user_time;
 }
 
 + (AZClientManager *) defaultManager

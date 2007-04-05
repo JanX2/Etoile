@@ -46,6 +46,7 @@ struct AnyAction {
     int x;
     int y;
     int button;
+    Time time;
 };
 
 struct InteractiveAction {
@@ -212,17 +213,17 @@ AZAction* action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact);
 */
 void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
                      unsigned int state, unsigned int button, int x, int y,
-                     BOOL cancel, BOOL done);
+                     Time time, BOOL cancel, BOOL done);
 
-void action_run_mouse(NSArray *acts, AZClient *c, ObFrameContext context, unsigned int state, unsigned int button, int x, int y);
+void action_run_mouse(NSArray *acts, AZClient *c, ObFrameContext context, unsigned int state, unsigned int button, int x, int y, Time time);
 
-void action_run_interactive(NSArray *acts, AZClient *c, unsigned int state, BOOL cancel, BOOL done);
+void action_run_interactive(NSArray *acts, AZClient *c, unsigned int state, Time time, BOOL cancel, BOOL done);
 
-void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y);
+void action_run_key(NSArray *acts, AZClient *c, unsigned int state, int x, int y, Time time);
 
-void action_run(NSArray *acts, AZClient *c, unsigned int state);
+void action_run(NSArray *acts, AZClient *c, unsigned int state, Time time);
 
-void action_run_string(NSString *name, AZClient *c);
+void action_run_string(NSString *name, AZClient *c, Time time);
 
 /* Execute */
 void action_execute(union ActionData *data);

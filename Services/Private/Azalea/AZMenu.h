@@ -65,8 +65,8 @@
 - (void) findSubmenus;
 
 - (void) update: (AZMenuFrame *) frame;
-- (BOOL) execute: (AZMenuEntry *) entry state: (unsigned int) state;
-
+- (BOOL) execute: (AZMenuEntry *) entry 
+           state: (unsigned int) state time: (Time) time;
 /* Accessoris */
 - (NSString *) name;
 - (NSString *) title;

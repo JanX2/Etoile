@@ -939,43 +939,46 @@
     }
 }
 
-- (void) activateHere: (BOOL) here user: (BOOL) user
+- (void) activateHere: (BOOL) here user: (BOOL) user time: (Time) timestamp
 {
-    /* XXX do some stuff here if user is false to determine if we really want
-       to activate it or not (a parent or group member is currently active) */
-
     AZScreen *screen = [AZScreen defaultScreen];
-    if ([self normal] && [screen showingDesktop])
+    /* XXX do some stuff here if user is false to determine if we really want
+       to activate it or not (a parent or group member is currently
+       active)?
+    */
+    if (!user)
     {
-	[screen showDesktop: NO];
+      [self hilite: YES];
     }
-    if (iconic)
-	[self iconify: NO currentDesktop: here];
-    if (desktop != DESKTOP_ALL &&
-        desktop != [screen desktop]) {
-        if (here)
+    else 
+    {
+        if ([self normal] && [screen showingDesktop])
+	  [screen showDesktop: NO];
+        if (iconic)
+	  [self iconify: NO currentDesktop: here];
+        if (desktop != DESKTOP_ALL &&
+            desktop != [screen desktop]) 
 	{
-	    [self setDesktop: [screen desktop] hide: NO];
-	}
-        else
-	{
-	  [screen setDesktop: desktop];
-	}
-    } else if (![frame visible])
-        /* if its not visible for other reasons, then don't mess
-           with it */
-        return;
-    if (shaded)
-	[self shade: NO];
+            if (here)
+	      [self setDesktop: [screen desktop] hide: NO];
+            else
+	      [screen setDesktop: desktop];
+        } else if (![frame visible])
+            /* if its not visible for other reasons, then don't mess
+               with it */
+            return;
+        if (shaded)
+ 	  [self shade: NO];
 
-    [self focus];
+        [self focus];
 
-    /* we do this an action here. this is rather important. this is because
-       we want the results from the focus change to take place BEFORE we go
-       about raising the window. when a fullscreen window loses focus, we need
-       this or else the raise wont be able to raise above the to-lose-focus
-       fullscreen window. */
-    [self raise];
+        /* we do this an action here. this is rather important. this is because
+           we want the results from the focus change to take place BEFORE we go
+         about raising the window. when a fullscreen window loses focus, we need
+           this or else the raise wont be able to raise above the to-lose-focus
+           fullscreen window. */
+        [self raise];
+    }
 }
 
 - (void) calcLayer
@@ -996,12 +999,12 @@
 
 - (void) raise
 {
-    action_run_string(@"Raise", self);
+    action_run_string(@"Raise", self, CurrentTime);
 }
 
 - (void) lower
 {
-    action_run_string(@"Lower", self);
+    action_run_string(@"Lower", self, CurrentTime);
 }
 
 - (void) updateTransientFor
@@ -1519,6 +1522,28 @@ no_number:
 
     if (frame)
 	[frame adjustIcon];
+}
+
+- (void) updateUserTime: (BOOL) new_event;
+{
+    unsigned long time;
+
+    if (PROP_GET32([self window], net_wm_user_time, cardinal, &time)) {
+        user_time = time;
+        /* we set this every time, not just when it grows, because in practice
+           sometimes time goes backwards! (ntpdate.. yay....) so.. if it goes
+           backward we don't want all windows to stop focusing. we'll just
+           assume noone is setting times older than the last one, cuz that
+           would be pretty stupid anyways
+           However! This is called when a window is mapped to get its user time
+           but it's an old number, it's not changing it from new user
+           interaction, so in that case, don't change the last user time.
+        */
+        if (new_event)
+	{
+	    [[AZClientManager defaultManager] setLastUserTime: time];
+	}
+    }
 }
 
 - (void) setupDecorAndFunctions
@@ -2367,6 +2392,7 @@ no_number:
     [self updateSmClientId];
     [self updateStrut];
     [self updateIcons];
+    [self updateUserTime: NO];
 }
 
 - (void) restoreSessionState
@@ -2707,6 +2733,9 @@ no_number:
 - (void) set_fullscreen: (BOOL) b { fullscreen = b; }
 - (void) set_above: (BOOL) b { above = b; }
 - (void) set_below: (BOOL) b { below = b; }
+
+- (void) set_user_time: (Time) time { user_time = time; }
+- (Time) user_time { return user_time; }
 
 - (unsigned int) decorations { return decorations; }
 - (void) set_decorations: (unsigned int) i { decorations = i; }

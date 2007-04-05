@@ -73,9 +73,11 @@ typedef enum {
 /*! Cycle focus amongst windows. */
 - (void) cycleForward: (BOOL) forward linear: (BOOL) linear
           interactive: (BOOL) interactive dialog: (BOOL) dialog
-	  done: (BOOL) done cancel: (BOOL) cancel opaque: (BOOL) opaque;
+	  done: (BOOL) done cancel: (BOOL) cancel opaque: (BOOL) opaque
+          time: (Time) time;
 - (void) directionalCycle: (ObDirection) dir interactive: (BOOL) interactive
-                 dialog: (BOOL) dialog done: (BOOL) done cancel: (BOOL) cancel;
+                 dialog: (BOOL) dialog done: (BOOL) done cancel: (BOOL) cancel
+                 time: (Time) time;
 - (void) cycleDrawIndicator;
 
 /*! Add a new client into the focus order */

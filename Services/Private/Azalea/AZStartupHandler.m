@@ -30,7 +30,10 @@ static AZStartupHandler *sharedInstance;
 - (void) startup: (BOOL) reconfig {}
 - (void) shutdown: (BOOL) reconfig {}
 - (BOOL) applicationStarting { return NO; }
-- (void) applicationStarted: (char *) iden class: (char *) wmclass {}
+- (Time) applicationStarted: (char *) iden class: (char *) wmclass 
+{
+  return CurrentTime;
+}
 - (BOOL) getDesktop: (unsigned int *) desktop forIdentifier: (char *) iden { return NO; }
 
 - (id) copyWithZone: (NSZone *) zone
@@ -139,9 +142,10 @@ static void sn_event_func(SnMonitorEvent *event, void *data);
     return NO;
 }
 
-- (void) applicationStarted: (char *) iden class: (char *) wmclass
+- (Time) applicationStarted: (char *) iden class: (char *) wmclass
 {
     int i, count = [sn_waits count];
+    Time t = CurrentTime;
     for (i = 0; i < count; i++) {
         AZWaitData *d = [sn_waits objectAtIndex: i];
         const char *seqid, *seqclass;
@@ -151,6 +155,7 @@ static void sn_event_func(SnMonitorEvent *event, void *data);
             (seqclass && wmclass && !strcmp(seqclass, wmclass)))
         {
             sn_startup_sequence_complete([d seq]);
+            t = sn_startup_sequence_get_timestamp([d seq]);
             break;
         }
     }

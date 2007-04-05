@@ -184,10 +184,12 @@ static AZFocusManager *sharedInstance;
         XSync(ob_display, NO);
     }
 
-    /* in the middle of cycling..? kill it. */
+    /* in the middle of cycling..? kill it. CurrentTime is fine, time won't
+       be used.
+    */
     if (focus_cycle_target)
 	[self cycleForward: YES linear: YES interactive: YES
-	      dialog: YES done: YES cancel: YES opaque: NO];
+	      dialog: YES done: YES cancel: YES opaque: NO time: CurrentTime];
 
     old = focus_client;
     focus_client = client;
@@ -421,6 +423,7 @@ static AZFocusManager *sharedInstance;
           interactive: (BOOL) interactive dialog: (BOOL) dialog
 	         done: (BOOL) done cancel: (BOOL) cancel 
                opaque: (BOOL) opaque
+	         time: (Time) time
 {
     static AZClient *first = nil;
     static AZClient *t = nil;
@@ -569,7 +572,7 @@ static AZFocusManager *sharedInstance;
 
 done_cycle:
     if (done && focus_cycle_target)
-	[focus_cycle_target activateHere: NO user: YES];
+	[focus_cycle_target activateHere: NO user: YES time: time];
 
     t = nil;
     first = nil;
@@ -585,6 +588,7 @@ done_cycle:
 
 - (void) directionalCycle: (ObDirection) dir interactive: (BOOL) interactive
                  dialog: (BOOL) dialog done: (BOOL) done cancel: (BOOL) cancel
+	         time: (Time) time
 {
     static AZClient *first = nil;
     AZClient *ft = nil;
@@ -632,7 +636,7 @@ done_cycle:
 
 done_cycle:
     if (done && focus_cycle_target)
-	[focus_cycle_target activateHere: NO user: YES];
+	[focus_cycle_target activateHere: NO user: YES time: time];
 
     first = nil;
     focus_cycle_target = nil;
@@ -921,11 +925,13 @@ done_cycle:
 
 - (void) clientDestroy: (NSNotification *) not
 {
-    /* end cycling if the target disappears */
+    /* end cycling if the target disappears. CurrentTime is fine, time won't
+       be used
+    */
     AZClient *client = [not object];
     if (focus_cycle_target == client)
       [self cycleForward: YES linear: YES interactive: YES
-  	    dialog: YES done: YES cancel: YES opaque: NO];
+  	    dialog: YES done: YES cancel: YES opaque: NO time: CurrentTime];
 }
 
 @end

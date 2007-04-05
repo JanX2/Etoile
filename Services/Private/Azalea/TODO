@@ -17,6 +17,7 @@ GNUstep window protocol
 
 Bugs
 
+6. Need to port AZStartup again, and non-intrusive window adding in AZStacking.
 5. For application which cannot save itself (like xterm),
    openbox save the state for them.
    If state is saved before, then application is closed,
@@ -27,18 +28,7 @@ Bugs
    So they will be opened without state from openbox.
 4. Session doesn't work because when Azalea starts,
    the environment is not set by GNUstep.sh yet.
-3. Use openbox/test/urgent and close window when it is unfocosed.
-   OpenBox (and Azalea) will crash.
-   It's a memory management problem. Hope to resolve after porting.
 2. While change number of desktop without reconfigure,
    it will crash while trying to switch desktop through menu syste.
    No problem to switch via keyboard.
    (This is a bug from openbox. It crashes in [AZScreen -updateDesktopNames]).
-1. While changing dock settings in obconf. Azalea can freeze completely.
-   It is probably related to the USR2 signal (reconfigure)
-   sending to Azalea from obconf.
-   And Azalea only updated when mouse is out of obconfig,
-   which suggests an issue of run loop from NSApplication with USR2.
-   (Fixed by calling AZMainLoop to run once before [NSApp run]. 
-    It is a kind of hack.)
-

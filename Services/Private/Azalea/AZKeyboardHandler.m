@@ -70,7 +70,7 @@ static AZKeyboardHandler *sharedInstance;
 @interface AZKeyboardHandler (AZPrivate)
 - (void) grab: (BOOL) grab forWindow: (Window) win;
 - (void) grabKeys: (BOOL) grab;
-- (void) interactiveEnd: (AZInteractiveState *) s state: (unsigned int) state cancel: (BOOL) cancel;
+- (void) interactiveEnd: (AZInteractiveState *) s state: (unsigned int) state cancel: (BOOL) cancel time: (Time) time;
 - (void) clientDestroy: (NSNotification *) not;
 /* callback */
 - (BOOL) chainTimeout: (id) data;
@@ -203,9 +203,8 @@ static AZKeyboardHandler *sharedInstance;
                 cancel = done = YES;
         }
         if (done) {
-	    [self interactiveEnd: s
-		    state: e->xkey.state
-		    cancel: cancel];
+	    [self interactiveEnd: s state: e->xkey.state
+		    cancel: cancel time: e->xkey.time];
 
             handled = YES;
 	    i--; /* s is removed */
@@ -254,7 +253,8 @@ static AZKeyboardHandler *sharedInstance;
 		[self resetChains];
 
                 action_run_key([p actions], client, e->xkey.state,
-                               e->xkey.x_root, e->xkey.y_root);
+                               e->xkey.x_root, e->xkey.y_root,
+		               e->xkey.time);
             }
             break;
         }
@@ -348,9 +348,10 @@ static AZKeyboardHandler *sharedInstance;
 
 - (void) interactiveEnd: (AZInteractiveState *) s
                   state: (unsigned int) state
-		  cancel: (BOOL) cancel
+		 cancel: (BOOL) cancel
+                   time: (Time) time
 {
-    action_run_interactive([s actions], [s client], state, cancel, YES);
+    action_run_interactive([s actions], [s client], state, time, cancel, YES);
     [interactive_states removeObject: s];
 
     if ([interactive_states count] == 0) {

@@ -113,7 +113,8 @@ static AZMenu *client_list_menu;
 
 /* executes it using the client in the actions, since we set that
    when we make the actions! */
-- (BOOL) execute: (AZMenuEntry *) entry state: (unsigned int) state
+- (BOOL) execute: (AZMenuEntry *) entry 
+           state: (unsigned int) state time: (Time) time
 {
     AZAction *a;
 
@@ -121,7 +122,7 @@ static AZMenu *client_list_menu;
 		    [(AZNormalMenuEntry *)entry actions]) {
 	AZNormalMenuEntry *e = (AZNormalMenuEntry *) entry;
         a = [[e actions] objectAtIndex: 0];
-        action_run([e actions], [a data].any.c, state);
+        action_run([e actions], [a data].any.c, state, time);
     }
     return YES;
 }

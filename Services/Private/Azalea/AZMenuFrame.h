@@ -138,7 +138,7 @@
                menuFrame: (AZMenuFrame *) frame;
 - (void) render;
 - (void) showSubmenu;
-- (void) execute: (unsigned int) state;
+- (void) execute: (unsigned int) state time: (Time) time;
 
 /* accessories */
 - (Rect) area;
