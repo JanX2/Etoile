@@ -1,0 +1,36 @@
+================
+Workflow INSTALL
+================
+
+Dependancy
+----------
+
+GNUstep-make, -base, -gui, and -back are required (Duh). Otherwise there are no
+dependancies for compiling Workflow, however StepTalk and the Etoile Io bundle
+will be required in order to run a workflow. Unless changed in settings, a
+warning will appear on startup if either StepTalk or the Io bundle cannot be
+found.
+
+
+Compile & install
+-----------------
+
+To compile and install execute the following:
+
+  make
+  sudo make install
+
+Or, on some non-GNU systems:
+
+  gmake
+  sudo gmake install
+
+
+Run
+---
+
+Execute the following in an x11 terminal emulator:
+
+  openapp Workflow
+
+Enjoy!

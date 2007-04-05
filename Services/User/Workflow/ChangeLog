@@ -1,0 +1,23 @@
+2007-04-04  Isaiah Beerbower <ipaqah@tm.net>
+
+	* ChangeLog:
+	* README:
+	* INSTALL:
+	* COPYING:
+	* TODO:
+	* GNUmakefile:
+	* Modules/GNUmakefile:
+	* Modules/Core/GNUmakefile:
+	* Application/WFMain.m:
+	* Application/WFDocument.h:
+	* Application/WFDocument.m:
+	* Application/WFObject.h:
+	* Application/WFObject.m:
+	* Application/WFView.h:
+	* Application/WFView.m:
+	* Application/WorkflowInfo.plist:
+	* Application/GNUmakefile:
+	* Application/English.lproj/MainMenu.gorm:
+	* Application/English.lproj/Document.gorm:
+	Initial import of Workflow.
+

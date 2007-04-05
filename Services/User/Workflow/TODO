@@ -1,0 +1,32 @@
+=============
+Workflow TODO
+=============
+
+Fixes
+-----
+
+Nothing here.
+
+
+Features
+--------
+
+Basically everything:
+
+	* Implement the following classes:
+		* Model classes:
+			* WFWorkflow
+			* WFObject
+		* View classes:
+			* WFView
+		* Controller classes:
+			* WFDocument
+			* WFObjectManager
+			* WFObjectInspectorController
+			* WFObjectBrowserController
+	* Create object bundles:
+		* Core (Io, GNUstep-Base, GNUstep-GUI)
+		* After scriptability is implemented (in respective apps):
+			* Typewriter
+			* Grr
+

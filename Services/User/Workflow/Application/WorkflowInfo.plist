@@ -1,0 +1,19 @@
+{
+	ApplicationDescription = "Workflow Automator"; 
+	ApplicationName = Workflow; 
+	ApplicationRelease = "Workflow 0.1a (SVN)"; 
+	Authors = ("Isaiah Beerbower <ipaqah@tm.net>"); 
+	Copyright = "Copyright 2007 Isaiah Beerbower"; 
+	CopyrightDescription = "Released under the Modified BSD licence"; 
+	NSRole = Editor; 
+	NSTypes =
+	(
+		{
+			NSDocumentClass = WFDocument; 
+			NSHumanReadableName = Workflow; 
+			NSName = WFWorkflowType; 
+			NSRole = Editor; 
+			NSUnixExtensions = (wfd); 
+		}
+	); 
+}

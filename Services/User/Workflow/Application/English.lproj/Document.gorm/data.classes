@@ -1,0 +1,21 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    WFDocument = {
+	Actions = (
+	);
+	Outlets = (
+	    workflowView,
+	    scrollView
+	);
+	Super = NSDocument;
+    };
+    WFView = {
+	Actions = (
+	);
+	Outlets = (
+	    _delagate,
+	    _dataSource
+	);
+	Super = NSView;
+    };
+}
