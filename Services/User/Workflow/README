@@ -1,19 +1,16 @@
 ===============
-Workflow README
+Workflow Readme
 ===============
 
-Maintainer: Isaiah Beerbower <ipaqah@tm.net>
-Author: Isaiah Beerbower
-License: Modified BSD license (see file COPYING)
-Version: 0.1 alpha
+:Maintainer: Isaiah Beerbower <ipaqah@tm.net>
+:Author: Isaiah Beerbower
+:License: Modified BSD license (see file COPYING)
+:Version: 0.1 alpha
 
 Workflow is visual, object-oriented programming language for the purpose of
 automating a user/desktop environment. Actually, Workflow is not strictly a
 language. It merely generates code from a user made data-flow diagram. The code
 generated will be in Io. It will be possible to extend Workflow's functionality
 via object bundles (i.e. bundles which describe Io objects, how to create them,
-what methods they respond to, etc.). The Io-objc will make it possible to
-create object bundles on top of GNUstep and Etoile frameworks. Workflow is a
-part of the Etoile project <www.etoile-project.org>.
-
-See INSTALL for installation instructions.
+what methods they respond to, etc.). The Io-objc bridge will make it possible to
+create object bundles on top of GNUstep and Etoile frameworks.

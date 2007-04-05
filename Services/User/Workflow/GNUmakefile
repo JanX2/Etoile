@@ -11,8 +11,7 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
 SUBPROJECTS = \
-  Framework \
-  Application \
+  Source \
   Modules
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
