@@ -159,6 +159,7 @@ static void sn_event_func(SnMonitorEvent *event, void *data);
             break;
         }
     }
+    return t;
 }
 
 - (BOOL) getDesktop: (unsigned int *) desktop forIdentifier: (char *) iden

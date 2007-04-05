@@ -56,17 +56,9 @@
 - (void) startup: (BOOL) reconfig;
 - (void) shutdown: (BOOL) reconfig;
 
-/*! Make as if the mouse just entered the client, use only when using focus
-  follows mouse */
-- (void) enterClient: (AZClient *) client;
-
 /*! Request that any queued EnterNotify events not be used for distributing
   focus */
 - (void) ignoreQueuedEnters;
-
-/* Halts any focus delay in progress, use this when the user is selecting a
-   window for focus */
-- (void) haltFocusDelay;
 
 - (Time) eventCurrentTime;
 - (unsigned int) numLockMask;

@@ -446,22 +446,6 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
         dx = MAX(dx, a->x - area.x);
         dy = MAX(dy, a->y - area.y);
     }
-
-    if (dx || dy) {
-        AZMenuFrame *f;
-
-        /* move the current menu frame to fit, but dont touch parents yet */
-	[self moveToX: area.x + dx y: area.y + dy];
-        if (!config_menu_xorstyle)
-            dy = 0; /* if we want to be like xor, move parents in y- *
-                     * and x-direction, otherwise just in x-dir      */
-        for (f = parent; f; f = [f parent])
-	    [f moveToX: [f area].x + dx y: [f area].y + dy];
-        for (f = child; f; f = [f child])
-	    [f moveToX: [f area].x + dx y: [f area].y + dy];
-        if (config_menu_warppointer)
-            XWarpPointer(ob_display, None, None, 0, 0, 0, 0, dx, dy);
-    }
 }
 
 - (void) render

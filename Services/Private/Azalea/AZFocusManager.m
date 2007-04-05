@@ -221,17 +221,7 @@ static AZFocusManager *sharedInstance;
     if ((type == OB_FOCUS_FALLBACK_UNFOCUSING ||
 	 type == OB_FOCUS_FALLBACK_CLOSED) && old) {
         if ([old transient_for]) {
-            BOOL trans = NO;
-
-            if (!config_focus_follow || config_focus_last)
-                trans = YES;
-            else {
-                if ((target = AZUnderPointer()) &&
-	            [[target searchTopTransient] searchTransient: old])
-                {
-                    trans = YES;
-                }
-            }
+            BOOL trans = YES;
 
             /* try for transient relations */
             if (trans) {
@@ -256,13 +246,6 @@ static AZFocusManager *sharedInstance;
                 }
             }
         }
-    }
-
-    if (config_focus_follow && 
-	(type == OB_FOCUS_FALLBACK_UNFOCUSING || !config_focus_last)) {
-        if ((target = AZUnderPointer()))
-            if ([target normal] && [target canFocus])
-                return target;
     }
 
     NSArray *karray = [focus_order objectAtIndex: [screen desktop]];

@@ -8,10 +8,7 @@
 
 <focus>
   <focusNew>yes</focusNew>
-  <followMouse>no</followMouse>
   <focusLast>no</focusLast>
-  <focusDelay>0</focusDelay>
-  <raiseOnFocus>no</raiseOnFocus>
 </focus>
 
 <theme>

@@ -43,6 +43,7 @@ typedef struct _RrColor            RrColor;
 
 typedef gsu32 RrPixel32;
 typedef gsu16 RrPixel16;
+typedef gsu8 RrPixel8;
 
 typedef enum {
     RR_RELIEF_FLAT,

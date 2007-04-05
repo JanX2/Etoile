@@ -119,7 +119,6 @@ static AZEventHandler *sharedInstance;
 /* callback */
 - (void) processEvent: (XEvent *) e data: (void *) data;
 - (void) clientDestroy: (NSNotification *) not;
-- (BOOL) focusDelayFunc: (id) data;
 - (BOOL) menuHideDelayFunc: (id) data;
 @end
 
@@ -204,28 +203,6 @@ static AZEventHandler *sharedInstance;
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 
     XFreeModifiermap(modmap);
-}
-
-- (void) enterClient: (AZClient *) client;
-{
-    NSAssert(config_focus_follow == YES, @"enterClient:");
-
-    if ([client normal] && [client canFocus]) {
-        if (config_focus_delay) {
-	  AZMainLoop *mainLoop = [AZMainLoop mainLoop];
-	  [mainLoop removeTimeout: self handler: @selector(focusDelayFunc:)];
-	  [mainLoop addTimeout: self handler: @selector(focusDelayFunc:)
-		         microseconds: config_focus_delay
-			 data: client 
-			 notify: NULL];
-        } else
-	    [self focusDelayFunc: client];
-    }
-}
-
-- (void) haltFocusDelay
-{
-  [[AZMainLoop mainLoop] removeTimeout: self handler: @selector(focusDelayFunc:)];
 }
 
 - (void) ignoreQueuedEnters
@@ -564,12 +541,7 @@ static AZEventHandler *sharedInstance;
 	    [[client frame] adjustState];
             break;
         case OB_FRAME_CONTEXT_FRAME:
-            if (config_focus_follow && config_focus_delay)
-	    {
-	      [[AZMainLoop mainLoop] removeTimeout: self 
-		               handler: @selector(focusDelayFunc:)
-		                     data: client cancel: YES];
-	    }
+	    /* Used by focus follow mouse */
             break;
         default:
             break;
@@ -617,18 +589,7 @@ static AZEventHandler *sharedInstance;
                          e->xcrossing.detail, client?client->window:0);
 #endif
             } else {
-#ifdef DEBUG_FOCUS
-                AZDebug("%sNotify mode %d detail %d on %lx, "
-                         "focusing window: %d\n",
-                         (e->type == EnterNotify ? "Enter" : "Leave"),
-                         e->xcrossing.mode,
-                         e->xcrossing.detail, (client?client->window:0),
-                         !nofocus);
-#endif
-                if (!nofocus && config_focus_follow)
-		{
-		    [self enterClient: client];
-		}
+	       /* Only reach here for focus follow mouse */
             }
             break;
         default:
@@ -1095,23 +1056,9 @@ static AZEventHandler *sharedInstance;
     return NO; /* no repeat */
 }
 
-- (BOOL) focusDelayFunc: (id) data
-{
-    AZClient *c = data;
-
-    if ([[AZFocusManager defaultManager] focus_client] != c) {
-	[c focus];
-        if (config_focus_raise)
-	    [c raise];
-    }
-    return NO; /* no repeat */
-}
-
 - (void) clientDestroy: (NSNotification *) not
 {
   AZClient *client = [not object];
-  [[AZMainLoop mainLoop] removeTimeout: self handler: @selector(focusDelayFunc:)
-	                 data: client cancel: YES];
 
   if (client == [[AZFocusManager defaultManager] focus_hilite])
     [[AZFocusManager defaultManager] set_focus_hilite: nil];

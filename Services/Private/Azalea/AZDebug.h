@@ -24,7 +24,7 @@
 
 /* Debug */
 void AZDebugShowOutput(BOOL enable);
-void AZDebug(char *a, ...);
+void AZDebug(const char *a, ...);
 
 
 /* XError */

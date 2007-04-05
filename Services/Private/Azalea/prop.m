@@ -364,7 +364,7 @@ void prop_set_array32(Window win, Atom prop, Atom type, unsigned long *val,
                     (unsigned char*)val, num);
 }
 
-void prop_set_string_utf8(Window win, Atom prop, char *val)
+void prop_set_string_utf8(Window win, Atom prop, const char *val)
 {
     XChangeProperty(ob_display, win, prop, prop_atoms.utf8, 8,
                     PropModeReplace, (unsigned char*)val, strlen(val));

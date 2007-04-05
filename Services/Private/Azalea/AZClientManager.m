@@ -188,7 +188,6 @@ static AZClientManager *sharedInstance;
     [client set_window: window];
 
     /* non-zero defaults */
-    [client set_title_count: 1];
     [client set_wmstate: NormalState];
     [client set_layer: -1];
     [client set_desktop: [screen numberOfDesktops]]; /* always an invalid value */
@@ -324,10 +323,6 @@ static AZClientManager *sharedInstance;
        clicking a window to activate is. so keep the new window out of the way
        but do focus it. */
     if (activate) {
-        /* if using focus_delay, stop the timer now so that focus doesn't
-           go moving on us */
-	[[AZEventHandler defaultHandler] haltFocusDelay];
-
 	[client focus];
     }
 

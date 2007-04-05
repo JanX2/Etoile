@@ -126,7 +126,7 @@ void RrReduceDepth(const AZInstance *inst, RrPixel32 *data, XImage *im)
     int x,y;
     RrPixel32 *p32 = (RrPixel32 *) im->data;
     RrPixel16 *p16 = (RrPixel16 *) im->data;
-    unsigned char *p8 = (unsigned char *)im->data;
+    RrPixel8  *p8  = (RrPixel8 *)  im->data;
     switch (im->bits_per_pixel) {
     case 32:
         if (([inst redOffset] != RrDefaultRedOffset) ||
@@ -164,16 +164,33 @@ void RrReduceDepth(const AZInstance *inst, RrPixel32 *data, XImage *im)
         }
         break;
     case 8:
-        if([inst visual]->class == TrueColor) NSLog(@"Wrong depth");
-        for (y = 0; y < im->height; y++) {
-            for (x = 0; x < im->width; x++) {
-                p8[x] = RrPickColor(inst,
-                                    data[x] >> RrDefaultRedOffset,
-                                    data[x] >> RrDefaultGreenOffset,
-                                    data[x] >> RrDefaultBlueOffset)->pixel;
+        if ([inst visual]->class == TrueColor) {
+            for (y = 0; y < im->height; y++) {
+                for (x = 0; x < im->width; x++) {
+                    r = (data[x] >> RrDefaultRedOffset) & 0xFF;
+                    r = r >> [inst redShift];
+                    g = (data[x] >> RrDefaultGreenOffset) & 0xFF;
+                    g = g >> [inst greenShift];
+                    b = (data[x] >> RrDefaultBlueOffset) & 0xFF;
+                    b = b >> [inst blueShift];
+                    p8[x] = (r << [inst redOffset])
+                        + (g << [inst greenOffset])
+                        + (b << [inst blueOffset]);
+                }
+                data += im->width;
+                p8 += im->bytes_per_line;
             }
-            data += im->width;
-            p8 += im->bytes_per_line;
+        } else {
+            for (y = 0; y < im->height; y++) {
+                for (x = 0; x < im->width; x++) {
+                    p8[x] = RrPickColor(inst,
+                                        data[x] >> RrDefaultRedOffset,
+                                        data[x] >> RrDefaultGreenOffset,
+                                        data[x] >> RrDefaultBlueOffset)->pixel;
+                }
+                data += im->width;
+                p8 += im->bytes_per_line;
+            }
         }
         break;
     default:

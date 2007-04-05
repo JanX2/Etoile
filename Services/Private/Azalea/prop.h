@@ -182,7 +182,7 @@ BOOL prop_get_strings_utf8(Window win, Atom prop, NSArray **ret);
 void prop_set32(Window win, Atom prop, Atom type, unsigned long val);
 void prop_set_array32(Window win, Atom prop, Atom type, unsigned long *val,
                       unsigned int num);
-void prop_set_string_utf8(Window win, Atom prop, char *val);
+void prop_set_string_utf8(Window win, Atom prop, const char *val);
 void prop_set_strings_utf8(Window win, Atom prop, NSArray *strs);
 
 void prop_erase(Window win, Atom prop);

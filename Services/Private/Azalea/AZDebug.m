@@ -34,7 +34,7 @@ void AZDebugShowOutput(BOOL enable)
     show = enable;
 }
 
-void AZDebug(char *a, ...)
+void AZDebug(const char *a, ...)
 {
     va_list vl;
 

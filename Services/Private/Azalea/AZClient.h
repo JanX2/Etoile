@@ -119,9 +119,6 @@ typedef enum
 
     /*! Normal window title */
     NSString *title;
-    /*! The count for the title. When another window with the same title
-      exists, a count will be appended to it. */
-    unsigned int title_count;
     /*! Window title when iconified */
     NSString *icon_title;
 
@@ -597,7 +594,6 @@ typedef enum
 - (void) set_startup_id: (NSString *) startup_id;
 
 - (NSString *) title;
-- (unsigned int ) title_count;
 - (NSString *) icon_title;
 - (NSString *) name;
 - (NSString *) class;
@@ -605,7 +601,6 @@ typedef enum
 - (NSString *) sm_client_id;
 - (ObClientType) type;
 - (void) set_title: (NSString *) title;
-- (void) set_title_count: (unsigned int ) title_count;
 - (void) set_icon_title: (NSString *) icon_title;
 - (void) set_name: (NSString *) name;
 - (void) set_class: (NSString *) class;

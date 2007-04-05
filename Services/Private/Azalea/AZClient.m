@@ -1255,13 +1255,7 @@
 
 - (void) updateTitle
 {
-    long nums;
-    unsigned int i;
     NSString *s = nil;
-    BOOL read_title;
-    NSString *old_title = nil;
-
-    ASSIGN(old_title, title);
      
     /* try netwm */
     if (PROP_GETS(window, net_wm_name, utf8, &s)) {
@@ -1273,69 +1267,26 @@
       /* try old x stuff */
       ASSIGNCOPY(title, s);
     } else {
-          // http://developer.gnome.org/projects/gup/hig/draft_hig_new/windows-alert.html
-              if (transient) {
-		  ASSIGN(title, [NSString string]);
-                  goto no_number;
-              } else
-		  ASSIGN(title, [NSString stringWithCString: "Unnamed Window"]);
+      /*
+        GNOME alert windows are not given titles:
+        http://developer.gnome.org/projects/gup/hig/draft_hig_new/windows-alert.html
+       */
+      if (transient) {
+	  ASSIGN(title, [NSString string]);
+      } else {
+	  ASSIGN(title, [NSString stringWithCString: "Unnamed Window"]);
+      }
     }
 
-    /* did the title change? then reset the title_count */
-    if (old_title && [title compare: old_title options: 0 range: NSMakeRange(0, [title length])] != NSOrderedSame)
-	title_count = 1;
-
-    /* look for duplicates and append a number */
-    nums = 0;
-    AZClientManager *cManager = [AZClientManager defaultManager];
-    int j, count = [cManager count];
-    for (j = 0; j < count; j++)
-    {
-      AZClient *c = [cManager clientAtIndex: j];
-      if (c != self) {
-            if ([c title_count] == 1) {
-		if ([title compare: [c title]] == NSOrderedSame)
-                    nums |= 1 << [c title_count];
-            } else {
-#if 0 // FIXME: not ported from OpenBox3
-                size_t len;
-                char *end;
-
-                /* find the beginning of our " - [%u]", this relies on
-                 that syntax being used */
-                end = strrchr(c->title, '-') - 1;
-                len = end - c->title;
-                if (!strncmp(c->title, data, len))
-                    nums |= 1 << c->title_count;
-#endif
-            }
-        }
-    }
-    /* find first free number */
-    for (i = 1; i <= 32; ++i)
-        if (!(nums & (1 << i))) {
-            if (title_count == 1 || i == 1)
-                title_count = i;
-            break;
-        }
-    /* dont display the number for the first window */
-    if (title_count > 1) {
-	ASSIGN(title, ([NSString stringWithFormat: @"%@ - [%u]", title, title_count]));
-    }
-
-no_number:
     PROP_SETS(window, net_wm_visible_name, (char*)[title UTF8String]);
 
     if (frame)
 	[frame adjustTitle];
 
-    DESTROY(old_title);
-
     /* update the icon title */
     s = nil;
     DESTROY(icon_title);
 
-    read_title = YES;
     /* try netwm */
     if (PROP_GETS(window, net_wm_icon_name, utf8, &s)) {
       ASSIGNCOPY(icon_title, s);
@@ -1347,12 +1298,6 @@ no_number:
       ASSIGNCOPY(icon_title, s);
     } else {
       ASSIGNCOPY(icon_title, title);
-      read_title = NO;
-    }
-
-    /* append the title count, dont display the number for the first window. */
-    if (read_title && title_count > 1) {
-	ASSIGN(icon_title, ([NSString stringWithFormat: @"%@ - [%u]", icon_title, title_count]));
     }
 
     PROP_SETS(window, net_wm_visible_icon_name, (char*)[icon_title UTF8String]);
@@ -2652,7 +2597,6 @@ no_number:
 - (void) set_startup_id: (NSString *) s { ASSIGN(startup_id, s); }
 
 - (NSString *) title { return title; }
-- (unsigned int ) title_count { return title_count; }
 - (NSString *) icon_title { return icon_title; }
 - (NSString *) name { return name; }
 - (NSString *) class { return class; }
@@ -2660,7 +2604,6 @@ no_number:
 - (NSString *) sm_client_id { return sm_client_id; }
 - (ObClientType) type { return type; }
 - (void) set_title: (NSString *) t { ASSIGN(title, t); }
-- (void) set_title_count: (unsigned int ) t { title_count = t; }
 - (void) set_icon_title: (NSString *) i { ASSIGN(icon_title, i); }
 - (void) set_name: (NSString *) n { ASSIGN(name, n); }
 - (void) set_class: (NSString *) c { ASSIGN(class, c); }

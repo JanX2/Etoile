@@ -39,29 +39,10 @@
 
 inline void client_action_start(union ActionData *data)
 {
-    if (config_focus_follow)
-        if (data->any.context != OB_FRAME_CONTEXT_CLIENT && !data->any.button)
-            grab_pointer(YES, OB_CURSOR_NONE);
 }
 
 inline void client_action_end(union ActionData *data)
 {
-    if (config_focus_follow)
-        if (data->any.context != OB_FRAME_CONTEXT_CLIENT) {
-            if (!data->any.button) {
-                grab_pointer(NO, OB_CURSOR_NONE);
-            } else {
-                AZClient *c;
-
-                /* usually this is sorta redundant, but with a press action
-                   the enter event will come as a GrabNotify which is
-                   ignored, so this will handle that case */
-                if ((c = AZUnderPointer()))
-		{
-		  [[AZEventHandler defaultHandler] enterClient: c];
-		}
-            }
-        }
 }
 
 typedef struct
@@ -1090,10 +1071,6 @@ void action_activate(union ActionData *data)
        focus to 3rd-party docks (panels) either (unless they ask for it
        themselves). */
     if ([data->client.any.c type] != OB_CLIENT_TYPE_DOCK) {
-        /* if using focus_delay, stop the timer now so that focus doesn't go
-           moving on us */
-        [[AZEventHandler defaultHandler] haltFocusDelay];
-
         [data->activate.any.c activateHere: data->activate.here user: YES
 	                              time: data->activate.any.time];
     }
@@ -1105,10 +1082,6 @@ void action_focus(union ActionData *data)
        focus to 3rd-party docks (panels) either (unless they ask for it
        themselves). */
     if ([data->client.any.c type] != OB_CLIENT_TYPE_DOCK) {
-        /* if using focus_delay, stop the timer now so that focus doesn't go
-           moving on us */
-        [[AZEventHandler defaultHandler] haltFocusDelay];
-
         [data->client.any.c focus];
     }
 }
@@ -1590,10 +1563,6 @@ void action_showmenu(union ActionData *data)
 
 void action_cycle_windows(union ActionData *data)
 {
-    /* if using focus_delay, stop the timer now so that focus doesn't go moving
-       on us */
-    [[AZEventHandler defaultHandler] haltFocusDelay];
-
     [[AZFocusManager defaultManager] cycleForward: data->cycle.forward
 	    linear: data->cycle.linear
 	    interactive:  data->any.interactive
@@ -1606,10 +1575,6 @@ void action_cycle_windows(union ActionData *data)
 
 void action_directional_focus(union ActionData *data)
 {
-    /* if using focus_delay, stop the timer now so that focus doesn't go moving
-       on us */
-    [[AZEventHandler defaultHandler] haltFocusDelay];
-
     [[AZFocusManager defaultManager] 
             directionalCycle: data->interdiraction.direction
             interactive: data->any.interactive

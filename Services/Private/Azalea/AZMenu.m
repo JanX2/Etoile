@@ -233,6 +233,7 @@
 }
 
 - (BOOL) execute: (AZMenuEntry *) entry state: (unsigned int) state 
+            time: (Time) time
 {
   return NO;
 }

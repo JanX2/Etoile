@@ -29,9 +29,6 @@
 #import "openbox.h"
 
 BOOL config_focus_new;
-BOOL config_focus_follow;
-unsigned int    config_focus_delay;
-BOOL config_focus_raise;
 BOOL config_focus_last;
 
 ObPlacePolicy config_place_policy;
@@ -58,7 +55,6 @@ int config_mouse_threshold;
 int config_mouse_dclicktime;
 
 BOOL config_menu_warppointer;
-BOOL config_menu_xorstyle;
 unsigned int    config_menu_hide_delay;
 BOOL config_menu_client_list_icons;
 
@@ -207,12 +203,6 @@ static void parse_focus(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
     
     if ((n = parse_find_node("focusNew", node)))
         config_focus_new = parse_bool(doc, n);
-    if ((n = parse_find_node("followMouse", node)))
-        config_focus_follow = parse_bool(doc, n);
-    if ((n = parse_find_node("focusDelay", node)))
-        config_focus_delay = parse_int(doc, n) * 1000;
-    if ((n = parse_find_node("raiseOnFocus", node)))
-        config_focus_raise = parse_bool(doc, n);
     if ((n = parse_find_node("focusLast", node)))
         config_focus_last = parse_bool(doc, n);
 }
@@ -328,8 +318,6 @@ static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
         }
         if ((n = parse_find_node("warpPointer", node)))
             config_menu_warppointer = parse_bool(doc, n);
-        if ((n = parse_find_node("xorStyle", node)))
-            config_menu_xorstyle = parse_bool(doc, n);
         if ((n = parse_find_node("hideDelay", node)))
             config_menu_hide_delay = parse_int(doc, n);
         if ((n = parse_find_node("desktopMenuIcons", node)))
@@ -459,9 +447,6 @@ static void bind_default_mouse()
 void config_startup(AZParser *parser)
 {
     config_focus_new = YES;
-    config_focus_follow = NO;
-    config_focus_delay = 0;
-    config_focus_raise = NO;
     config_focus_last = NO;
 
     [parser registerTag: @"focus" callback: parse_focus data: NULL];
@@ -512,7 +497,6 @@ void config_startup(AZParser *parser)
     [parser registerTag: @"resistance" callback: parse_resistance data: NULL];
 
     config_menu_warppointer = YES;
-    config_menu_xorstyle = YES;
     config_menu_hide_delay = 250;
     config_menu_client_list_icons = YES;
     config_menu_files = nil;

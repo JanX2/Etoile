@@ -31,13 +31,6 @@
 
 /*! Should new windows be focused */
 extern BOOL config_focus_new;
-/*! Focus windows when the mouse enters them */
-extern BOOL config_focus_follow;
-/*! Timeout for focusing windows on focus follows mouse, in microseconds */
-extern unsigned int    config_focus_delay;
-/*! If windows should automatically be raised when they are focused in
- focus follows mouse */
-extern BOOL config_focus_raise;
 /*! Focus the last focused window, not under the mouse, in follow mouse mode */
 extern BOOL config_focus_last;
 
@@ -119,8 +112,6 @@ extern BOOL config_resist_layers_below;
 
 /*! Warp near edge on menu? */
 extern BOOL config_menu_warppointer;
-/*! make menus jump around a lot */
-extern BOOL config_menu_xorstyle;
 /*! delay for hiding menu when opening */
 extern unsigned int    config_menu_hide_delay;
 /*! show icons in client_list_menu */
