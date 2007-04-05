@@ -11,10 +11,11 @@
 
 @implementation NSMenuItemCell (EtoileMenusHackery)
 
+#if 0
 - (void) drawInteriorWithFrame: (NSRect) cellFrame
                         inView: (NSView*) controlView
 {
-  //NSLog(@"WildMenus - NSMenuItemCell %@ -drawInteriorWithFrame:inView:", [[self menuItem] title]);
+  NSLog(@"WildMenus - NSMenuItemCell %@ -drawInteriorWithFrame:inView:", [[self menuItem] title]);
 
   if ([_menuItem isKindOfClass: [EtoileSeparatorMenuItem class]])
     {
@@ -138,6 +139,8 @@
         }
     }
 }
+#endif
+
 /*
 - (void) drawTitleWithFrame:(NSRect)cellFrame
                     inView:(NSView *)controlView

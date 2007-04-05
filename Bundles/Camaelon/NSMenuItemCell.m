@@ -45,6 +45,12 @@ static NSImage  *arrowImageCurrent = nil;
   if (_buttoncell_is_transparent)
     return;
 
+  if ([_menuItem isSeparatorItem])
+    {
+      [self drawSeparatorItemWithFrame: cellFrame inView: controlView];
+      return;
+    }
+
   cellFrame = [self drawingRectForBounds: cellFrame];
 
   if (_cell.is_highlighted)

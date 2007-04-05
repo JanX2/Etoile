@@ -1,3 +1,11 @@
+2007-04-05  Quentin Mathe <qmathe@club-internet.fr>
+
+	Fix for bug #8611 (see EtoileWildMenus too)
+	* NSMenuItemCell.m (-drawInteriorWithFrame:inView:): Updated to be a bit 
+	more in sync with GNUstep svn by taking code that asks separator items to
+	draw themselves. This method is now called even when EtoileWildMenus is 
+	loaded.
+
 2007-03-29  Quentin Mathe <qmathe@club-internet.fr>
 
 	First part of a fix to get rid of bordered button drawing visible in menu
@@ -8,8 +16,8 @@
 	_drawBorderAndBackgroundWithFrame:inView:.
 	(_drawBorderAndBackgroundWithFrame:inView:): New method that can be 
 	overriden in subclass or category like WildMenus NSMenuItemCell one.
-	* NSMenuItem.m (_drawBorderAndBackgroundWithFrame:inView:): New method to
-	match latest GNUstep svn implementation.
+	* NSMenuItemCell.m (_drawBorderAndBackgroundWithFrame:inView:): New method
+	to match latest GNUstep svn implementation.
 	Also added some logging statements for debugging.
 
 2007-03-18  Yen-Ju Chen <yjchenx at gmail>

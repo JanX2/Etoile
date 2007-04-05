@@ -1,3 +1,10 @@
+2007-04-05  Quentin Mathe <qmathe@club-internet.fr>
+
+	Fix for bug #8611 (see Camaelon too).
+	* NSMenuItemCell+Hackery.m (-drawInteriorWithFrame:inView:): Turned off 
+	this method in order Camaelon equivalent method handles the drawing and
+	more importantly loads arrow images used to indicate submenus.
+
 2007-03-29  Quentin Mathe <qmathe@club-internet.fr>
 
 	Last part of the fix to get rid of bordered drawing in menu item cells. 
