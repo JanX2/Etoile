@@ -1568,8 +1568,7 @@ void action_cycle_windows(union ActionData *data)
             dialog: data->cycle.dialog
             done: data->cycle.inter.final
 	    cancel: data->cycle.inter.cancel
-            opaque: data->cycle.opaque
-	    time: data->cycle.inter.any.time];
+            opaque: data->cycle.opaque];
 }
 
 void action_directional_focus(union ActionData *data)

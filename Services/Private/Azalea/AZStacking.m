@@ -32,7 +32,7 @@ static AZStacking *sharedInstance;
 - (void) doRestack: (NSArray *) wins before: (id <AZWindow>) before;
 - (void) doRaise: (NSArray *) wins;
 - (void) doLower: (NSArray *) wins;
-#if 0 // r5729 of OpenBox3
+#if 1 // r5729 of OpenBox3
 - (void) restackWindows: (AZClient *) selected raise: (BOOL) raise;
 #else
 - (NSArray *)pickWindowsFrom: (AZClient *) top to: (AZClient *) selected raise: (BOOL) raise;
@@ -354,7 +354,7 @@ static AZStacking *sharedInstance;
     }
 }
 
-#if 0 // r5729 of OpenBox3
+#if 1 // r5729 of OpenBox3
 - (void)restackWindows: (AZClient *) selected raise: (BOOL) raise
 {
     NSMutableArray *ret = AUTORELEASE([[NSMutableArray alloc] init]);

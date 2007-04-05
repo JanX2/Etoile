@@ -189,7 +189,7 @@ static AZFocusManager *sharedInstance;
     */
     if (focus_cycle_target)
 	[self cycleForward: YES linear: YES interactive: YES
-	      dialog: YES done: YES cancel: YES opaque: NO time: CurrentTime];
+	      dialog: YES done: YES cancel: YES opaque: NO];
 
     old = focus_client;
     focus_client = client;
@@ -406,7 +406,6 @@ static AZFocusManager *sharedInstance;
           interactive: (BOOL) interactive dialog: (BOOL) dialog
 	         done: (BOOL) done cancel: (BOOL) cancel 
                opaque: (BOOL) opaque
-	         time: (Time) time
 {
     static AZClient *first = nil;
     static AZClient *t = nil;
@@ -913,7 +912,7 @@ done_cycle:
     AZClient *client = [not object];
     if (focus_cycle_target == client)
       [self cycleForward: YES linear: YES interactive: YES
-  	    dialog: YES done: YES cancel: YES opaque: NO time: CurrentTime];
+  	    dialog: YES done: YES cancel: YES opaque: NO];
 }
 
 @end

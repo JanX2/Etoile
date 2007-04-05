@@ -35,6 +35,26 @@
 static unsigned int mask_list[MASK_LIST_SIZE];
 static unsigned int kgrabs = 0;
 static unsigned int pgrabs = 0;
+/*! The time at which the last grab was made */
+static Time  grab_time = CurrentTime;
+
+static Time ungrab_time()
+{
+    Time t = event_curtime;
+    if (!(t == CurrentTime || event_time_after(t, grab_time)))
+    {
+        /* When the time moves backward on the server, then we can't use
+           the grab time because that will be in the future. So instead we
+           have to use CurrentTime.
+
+           "XUngrabPointer does not release the pointer if the specified time
+           is earlier than the last-pointer-grab time or is later than the
+           current X server time."
+        */
+        t = CurrentTime; /*grab_time;*/
+    }
+    return t;
+}
 
 BOOL grab_on_keyboard()
 {
@@ -57,11 +77,15 @@ BOOL grab_keyboard(BOOL grab)
                                 event_curtime) == Success;
             if (!ret)
                 --kgrabs;
+            else
+                grab_time = event_curtime;
         } else
             ret = YES;
     } else if (kgrabs > 0) {
         if (--kgrabs == 0)
-            XUngrabKeyboard(ob_display,  event_curtime);
+	{
+            XUngrabKeyboard(ob_display,  ungrab_time());
+	}
         ret = YES;
     }
 
@@ -81,11 +105,13 @@ BOOL grab_pointer(BOOL grab, ObCursor cur)
                                ob_cursor(cur), event_curtime) == Success;
             if (!ret)
                 --pgrabs;
+            else
+                grab_time = event_curtime;
         } else
             ret = YES;
     } else if (pgrabs > 0) {
         if (--pgrabs == 0) {
-            XUngrabPointer(ob_display, event_curtime);
+            XUngrabPointer(ob_display, ungrab_time());
         }
         ret = YES;
     }
@@ -104,11 +130,13 @@ BOOL grab_pointer_window(BOOL grab, ObCursor cur, Window win)
                                event_curtime) == Success;
             if (!ret)
                 --pgrabs;
+            else
+                grab_time = event_curtime;
         } else
             ret = YES;
     } else if (pgrabs > 0) {
         if (--pgrabs == 0) {
-            XUngrabPointer(ob_display, event_curtime);
+            XUngrabPointer(ob_display, ungrab_time());
         }
         ret = YES;
     }
