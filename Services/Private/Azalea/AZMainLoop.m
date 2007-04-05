@@ -23,6 +23,7 @@
 #import "AZMainLoop.h"
 #import "AZClient.h"
 #import "AZClientManager.h"
+#import "AZEventHandler.h"
 #import <X11/Xlib.h>
 #import <signal.h>
 #import "action.h"
@@ -533,7 +534,9 @@ static AZMainLoop *sharedInstance;
             } while (!act && [actionQueue count]);
 
             if  (act) {
+		event_curtime = [act data].any.time;
                 [act func]([act data_pointer]);
+		event_curtime = CurrentTime;
 		[actionQueue removeObjectAtIndex: 0];
             }
         } else {

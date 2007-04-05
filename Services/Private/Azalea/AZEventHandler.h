@@ -23,17 +23,15 @@
 #import <X11/Xlib.h>
 #import "AZMainLoop.h"
 
+/* The time for the current event being processed */
+extern Time event_curtime;
+
+BOOL event_time_after(Time t1, Time t2);
+
 @class AZClient;
 
 @interface AZEventHandler: NSObject <AZXHandler, NSCopying>
 {
-  /* The most recent time at which an event with a timestamp occured. */
-  Time event_lasttime;
- /* The time for the current event being processed
-    (it's the event_lasttime for events without times, if this is a bug then
-    use CurrentTime instead, but it seems ok) */
-  Time event_curtime;
-
   /*! The value of the mask for the NumLock modifier */
   unsigned int NumLockMask;
 
@@ -60,7 +58,8 @@
   focus */
 - (void) ignoreQueuedEnters;
 
-- (Time) eventCurrentTime;
+- (void) setCurrentTime: (XEvent *) e;
+
 - (unsigned int) numLockMask;
 - (unsigned int) scrollLockMask;
 

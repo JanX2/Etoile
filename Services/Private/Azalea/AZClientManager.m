@@ -40,6 +40,8 @@
 
 NSString *AZClientDestroyNotification = @"AZClientDestroyNotification";
 
+Time client_last_user_time = CurrentTime;
+
 /*! The event mask to grab on client windows */
 #define CLIENT_EVENTMASK (PropertyChangeMask | FocusChangeMask | \
                           StructureNotifyMask)
@@ -277,10 +279,6 @@ static AZClientManager *sharedInstance;
 
     if (activate) {
         /* This is focus stealing prevention, if a user_time has been set */
-#if 0
-        ob_debug("Want to focus new window 0x%x with time %u (last time %u)\n",
-                 self->window, self->user_time, client_last_user_time);
-#endif
         if (![client user_time] || [client user_time] >= client_last_user_time)
         {
             /* since focus can change the stacking orders, if we focus the
@@ -288,11 +286,6 @@ static AZClientManager *sharedInstance;
                to queue one for after the focus change takes place */
 	    [client raise];
         } else {
-#if 0
-            ob_debug("Focus stealing prevention activated for %s with time %u "
-                     "(last time %u)\n",
-                     self->title, self->user_time, client_last_user_time);
-#endif
             /* if the client isn't focused, then hilite it so the user
                knows it is there */
 	    [client hilite: YES];
@@ -514,7 +507,6 @@ static AZClientManager *sharedInstance;
   self = [super init];
   clist = [[NSMutableArray alloc] init];
   workspace = [NSWorkspace sharedWorkspace];
-  client_last_user_time = CurrentTime;
   return self;
 }
 
@@ -522,16 +514,6 @@ static AZClientManager *sharedInstance;
 {
   DESTROY(clist);
   [super dealloc];
-}
-
-- (void) setLastUserTime: (Time) time
-{
-  client_last_user_time = time;
-}
-
-- (Time) lastUserTime
-{
-  return client_last_user_time;
 }
 
 + (AZClientManager *) defaultManager

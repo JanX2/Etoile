@@ -32,7 +32,11 @@ static AZStacking *sharedInstance;
 - (void) doRestack: (NSArray *) wins before: (id <AZWindow>) before;
 - (void) doRaise: (NSArray *) wins;
 - (void) doLower: (NSArray *) wins;
+#if 0 // r5729 of OpenBox3
+- (void) restackWindows: (AZClient *) selected raise: (BOOL) raise;
+#else
 - (NSArray *)pickWindowsFrom: (AZClient *) top to: (AZClient *) selected raise: (BOOL) raise;
+#endif
 - (NSArray *)pickGroupWindowsFrom: (AZClient *) top to: (AZClient *) selected raise: (BOOL) raise normal: (BOOL) normal;
 @end
 
@@ -350,6 +354,89 @@ static AZStacking *sharedInstance;
     }
 }
 
+#if 0 // r5729 of OpenBox3
+- (void)restackWindows: (AZClient *) selected raise: (BOOL) raise
+{
+    NSMutableArray *ret = AUTORELEASE([[NSMutableArray alloc] init]);
+    id <AZWindow> data = nil;
+    int i, n;
+    NSMutableArray *modals = [[NSMutableArray alloc] init];
+    NSMutableArray *trans = [[NSMutableArray alloc] init];
+    NSMutableArray *modal_sel = [[NSMutableArray alloc] init]; /* the selected guys if modal */
+    NSMutableArray *tran_sel = [[NSMutableArray alloc] init]; /* the selected guys if not */
+
+    /* remove first so we can't run into ourself */
+    int index = [stacking_list indexOfObject: top];
+    if (index != NSNotFound)
+      [self removeWindow: top];
+    else
+      return ret; /* Empty */
+
+    i = 0;
+    n = [[top transients] count];
+
+    int prev_index;
+    int j;
+    for (j = 0; ((i < n) && (j < [self count]));/*j++ in the end */ ) {
+	data = [self windowAtIndex: j];
+	prev_index = j - 1;
+
+	int index = NSNotFound;
+
+	if (WINDOW_IS_CLIENT(data))
+	  index = [[top transients] indexOfObject: (AZClient*)data];
+
+	if (index != NSNotFound) {
+            AZClient *c = [[top transients] objectAtIndex: index];
+            BOOL sel_child;
+
+            ++i;
+
+            if (c == selected)
+                sel_child = YES;
+            else
+		sel_child = ([c searchTransient: selected] != nil);
+
+            if (![c modal]) {
+                if (!sel_child) {
+		    [trans addObjectsFromArray: [self pickWindowsFrom: c to: selected raise: raise]];
+                } else {
+		    [tran_sel addObjectsFromArray: [self pickWindowsFrom: c to: selected raise: raise]];
+                }
+            } else {
+                if (!sel_child) {
+		    [modals addObjectsFromArray: [self pickWindowsFrom: c to: selected raise: raise]];
+                } else {
+		    [modal_sel addObjectsFromArray: [self pickWindowsFrom: c to: selected raise: raise]];
+                }
+            }
+            /* if we dont have a prev then start back at the beginning,
+               otherwise skip back to the prev's next */
+	    if (prev_index < 0) {
+              j = 0;
+	      continue;
+	    }
+        }
+	j++;
+    }
+
+    [ret addObjectsFromArray: (raise ? modal_sel : modals)];
+    [ret addObjectsFromArray: (raise ? modals : modal_sel)];
+
+    [ret addObjectsFromArray: (raise ? tran_sel : trans)];
+    [ret addObjectsFromArray: (raise ? trans : tran_sel)];
+
+
+    /* add itself */
+    [ret addObject: top];
+    DESTROY(modals);
+    DESTROY(modal_sel);
+    DESTROY(trans);
+    DESTROY(tran_sel);
+
+    return ret;
+}
+#else
 - (NSArray *)pickWindowsFrom: (AZClient *) top to: (AZClient *) selected 
 		     raise: (BOOL) raise
 {
@@ -432,6 +519,7 @@ static AZStacking *sharedInstance;
 
     return ret;
 }
+#endif
 
 - (NSArray *)pickGroupWindowsFrom: (AZClient *) top to: (AZClient *) selected
                      raise: (BOOL) raise normal: (BOOL) normal

@@ -995,6 +995,33 @@ done_cycle:
     return &area[desktop][head];
 }
 
+- (unsigned int) findMonitor: (Rect *) search
+{
+    unsigned int i;
+    unsigned int most = 0;
+    unsigned int mostv = 0;
+
+    for (i = 0; i < [self numberOfMonitors]; ++i) 
+    {
+        Rect *a = [self physicalAreaOfMonitor: i];
+        if (RECT_INTERSECTS_RECT(*a, *search)) 
+        {
+            Rect r;
+            unsigned int v;
+
+            RECT_SET_INTERSECTION(r, *a, *search);
+            v = r.width * r.height;
+
+            if (v > mostv) 
+	    {
+                mostv = v;
+                most = i;
+            }
+        }
+    }
+    return most;
+}
+
 - (void) setRootCursor
 {
     if ([[AZStartupHandler defaultHandler] applicationStarting])

@@ -101,6 +101,31 @@ static void ice_watch(IceConn conn, IcePointer data, Bool opening,
 }
 #endif
 
+/* The time for the current event being processed */
+Time event_curtime = CurrentTime;
+
+BOOL event_time_after(Time t1, Time t2)
+{
+    /*
+      Timestamp values wrap around (after about 49.7 days). The server, given
+      its current time is represented by timestamp T, always interprets
+      timestamps from clients by treating half of the timestamp space as being
+      later in time than T.
+      - http://tronche.com/gui/x/xlib/input/pointer-grabbing.html
+    */
+
+    /* TIME_HALF is half of the number space of a Time type variable */
+#define TIME_HALF (Time)(1 << (sizeof(Time)*8-1))
+
+    if (t2 >= TIME_HALF)
+        /* t2 is in the second half so t1 might wrap around and be smaller than
+           t2 */
+        return t1 >= t2 || t1 < (t2 + TIME_HALF);
+    else
+        /* t2 is in the first half so t1 has to come after it */
+        return t1 >= t2 && t1 < (t2 + TIME_HALF);
+}
+
 static AZEventHandler *sharedInstance;
 
 @interface AZEventHandler (AZPrivate)
@@ -112,7 +137,6 @@ static AZEventHandler *sharedInstance;
 - (AZMenuFrame *) findActiveMenu;
 - (AZMenuFrame *) findActiveOrLastMenu;
 - (Window) getWindow: (XEvent *) e;
-- (void) setLastTime: (XEvent *) e;
 - (void) hackMods: (XEvent *) e;
 - (BOOL) ignoreEvent: (XEvent *) e forClient: (AZClient *) client;
 
@@ -141,7 +165,6 @@ static AZEventHandler *sharedInstance;
 - (id) init
 {
   self = [super init];
-  event_lasttime = 0;
   event_curtime = CurrentTime;
   return self;
 }
@@ -241,14 +264,39 @@ static AZEventHandler *sharedInstance;
     DESTROY(saved);
 }
 
-- (Time) eventLastTime
+- (void) setCurrentTime: (XEvent *) e
 {
-  return event_lasttime;
-}
+    Time t = CurrentTime;
 
-- (Time) eventCurrentTime
-{
-  return event_curtime;
+    /* grab the lasttime and hack up the state */
+    switch (e->type) {
+    case ButtonPress:
+    case ButtonRelease:
+        t = e->xbutton.time;
+        break;
+    case KeyPress:
+        t = e->xkey.time;
+        break;
+    case KeyRelease:
+        t = e->xkey.time;
+        break;
+    case MotionNotify:
+        t = e->xmotion.time;
+        break;
+    case PropertyNotify:
+        t = e->xproperty.time;
+        break;
+    case EnterNotify:
+    case LeaveNotify:
+        t = e->xcrossing.time;
+        break;
+    default:
+        /* if more event types are anticipated, get their timestamp
+           explicitly */
+        break;
+    }
+
+    event_curtime = t;
 }
 
 - (unsigned int) numLockMask
@@ -299,7 +347,7 @@ static AZEventHandler *sharedInstance;
 	}
     }
 
-    [self setLastTime: e];
+    [self setCurrentTime: e];
     [self hackMods: e];
     if ([self ignoreEvent: e forClient: client]) {
         if (ed)
@@ -376,6 +424,9 @@ static AZEventHandler *sharedInstance;
             }
         }
     }
+    /* if something happens and it's not from an XEvent, then we don't know
+       the time */
+    event_curtime = CurrentTime;
 }
 
 - (void) handleRootEvent: (XEvent *) e
@@ -395,6 +446,7 @@ static AZEventHandler *sharedInstance;
         msgtype = e->xclient.message_type;
         if (msgtype == prop_atoms.net_current_desktop) {
             unsigned int d = e->xclient.data.l[0];
+	    event_curtime = e->xclient.data.l[1];
             if (d < [screen numberOfDesktops])
 	    {
 		[screen setDesktop: d];
@@ -491,11 +543,6 @@ static AZEventHandler *sharedInstance;
         break;
     case FocusIn:
 	{
-#ifdef DEBUG_FOCUS
-        AZDebug("FocusIn on client for %lx (client %lx) mode %d detail %d\n",
-                 e->xfocus.window, client->window,
-                 e->xfocus.mode, e->xfocus.detail);
-#endif
 	AZFocusManager *fManager = [AZFocusManager defaultManager];
         if (client != [fManager focus_client]) {
 	    [fManager setClient: client];
@@ -505,11 +552,6 @@ static AZEventHandler *sharedInstance;
 	}
         break;
     case FocusOut:
-#ifdef DEBUG_FOCUS
-        AZDebug("FocusOut on client for %lx (client %lx) mode %d detail %d\n",
-                 e->xfocus.window, client->window,
-                 e->xfocus.mode, e->xfocus.detail);
-#endif
 	{
   	  AZFocusManager *fManager = [AZFocusManager defaultManager];
 	  [fManager set_focus_hilite: nil];
@@ -738,7 +780,7 @@ static AZEventHandler *sharedInstance;
                                        it can happen now when the window is on
                                        another desktop, but we still don't
                                        want it! */
-	[client activateHere: NO user: YES time: CurrentTime];
+	[client activateHere: NO user: YES];
         break;
     case ClientMessage:
         /* validate cuz we query stuff off the client here */
@@ -793,14 +835,12 @@ static AZEventHandler *sharedInstance;
             AZDebug("net_close_window for 0x%lx\n", [client window]);
 	    [client close];
         } else if (msgtype == prop_atoms.net_active_window) {
-            AZDebug("net_active_window for 0x%lx\n", [client window]);
-            /* XXX make use of data.l[1] and [2] ! */
+            /* XXX make use of data.l[2] ! */
+	    event_curtime = e->xclient.data.l[1];
             [client activateHere: NO 
 	                    user: (e->xclient.data.l[0] == 0 ||
-                                   e->xclient.data.l[0] == 2)
-	                    time: e->xclient.data.l[1]];
+                                   e->xclient.data.l[0] == 2)];
         } else if (msgtype == prop_atoms.net_wm_moveresize) {
-            AZDebug("net_wm_moveresize for 0x%lx\n", [client window]);
             if ((Atom)e->xclient.data.l[2] ==
                 prop_atoms.net_wm_moveresize_size_topleft ||
                 (Atom)e->xclient.data.l[2] ==
@@ -1104,47 +1144,6 @@ static AZEventHandler *sharedInstance;
     return window;
 }
 
-- (void) setLastTime: (XEvent *) e
-{
-    Time t = 0;
-
-    /* grab the lasttime and hack up the state */
-    switch (e->type) {
-    case ButtonPress:
-    case ButtonRelease:
-        t = e->xbutton.time;
-        break;
-    case KeyPress:
-        t = e->xkey.time;
-        break;
-    case KeyRelease:
-        t = e->xkey.time;
-        break;
-    case MotionNotify:
-        t = e->xmotion.time;
-        break;
-    case PropertyNotify:
-        t = e->xproperty.time;
-        break;
-    case EnterNotify:
-    case LeaveNotify:
-        t = e->xcrossing.time;
-        break;
-    default:
-        /* if more event types are anticipated, get their timestamp
-           explicitly */
-        break;
-    }
-
-    if (t > event_lasttime) {
-        event_lasttime = t;
-        event_curtime = event_lasttime;
-    } else if (t == 0) {
-        event_curtime = event_lasttime;
-    } else {
-        event_curtime = t;
-    }
-}
 
 #define STRIP_MODS(s) \
         s &= ~(LockMask | NumLockMask | ScrollLockMask), \

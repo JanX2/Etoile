@@ -76,8 +76,7 @@ typedef enum {
 	  done: (BOOL) done cancel: (BOOL) cancel opaque: (BOOL) opaque
           time: (Time) time;
 - (void) directionalCycle: (ObDirection) dir interactive: (BOOL) interactive
-                 dialog: (BOOL) dialog done: (BOOL) done cancel: (BOOL) cancel
-                 time: (Time) time;
+                 dialog: (BOOL) dialog done: (BOOL) done cancel: (BOOL) cancel;
 - (void) cycleDrawIndicator;
 
 /*! Add a new client into the focus order */

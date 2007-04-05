@@ -121,6 +121,11 @@ typedef struct DesktopLayout {
 - (Rect *) areaOfDesktop: (unsigned int) desktop
                  monitor: (unsigned int) head;
 
+/*! Determines which physical monitor a rectangle is on by calculating the
+    area of the part of the rectable on each monitor.  The number of the
+    monitor containing the greatest area of the rectangle is returned.*/
+- (unsigned int) findMonitor: (Rect *) search;
+
 /*! Sets the root cursor. This function decides which cursor to use, but you
   gotta call it to let it know it should change. */
 - (void) setRootCursor;

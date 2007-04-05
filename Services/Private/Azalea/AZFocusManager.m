@@ -180,7 +180,7 @@ static AZFocusManager *sharedInstance;
 #endif
         /* when nothing will be focused, send focus to the backup target */
         XSetInputFocus(ob_display, [screen supportXWindow], RevertToNone,
-                       [[AZEventHandler defaultHandler] eventCurrentTime]);
+                       event_curtime);
         XSync(ob_display, NO);
     }
 
@@ -555,7 +555,7 @@ static AZFocusManager *sharedInstance;
 
 done_cycle:
     if (done && focus_cycle_target)
-	[focus_cycle_target activateHere: NO user: YES time: time];
+	[focus_cycle_target activateHere: NO user: YES];
 
     t = nil;
     first = nil;
@@ -571,7 +571,6 @@ done_cycle:
 
 - (void) directionalCycle: (ObDirection) dir interactive: (BOOL) interactive
                  dialog: (BOOL) dialog done: (BOOL) done cancel: (BOOL) cancel
-	         time: (Time) time
 {
     static AZClient *first = nil;
     AZClient *ft = nil;
@@ -619,7 +618,7 @@ done_cycle:
 
 done_cycle:
     if (done && focus_cycle_target)
-	[focus_cycle_target activateHere: NO user: YES time: time];
+	[focus_cycle_target activateHere: NO user: YES];
 
     first = nil;
     focus_cycle_target = nil;

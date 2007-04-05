@@ -433,9 +433,8 @@ typedef enum
     otherwise, the desktop is changed to where the client lives.
     @param user If true, then a user action is what requested the activation;
     otherwise, it means an application requested it on its own
-    @param timestamp The time at which the activate was requested.
  */
-- (void) activateHere: (BOOL) here user: (BOOL) user time: (Time) timestamp;
+- (void) activateHere: (BOOL) here user: (BOOL) user;
 
 /*! Calculates the stacking layer for the client window */
 - (void) calcLayer;
@@ -528,6 +527,19 @@ typedef enum
 - (AZClient *) searchModalChild;
 
 - (AZClient *) searchTopTransient;
+/*! Returns a list of top-level windows which this is a transient for.
+  It will only contain more than 1 element if the client is transient for its
+  group.
+*/
+- (NSArray *) searchAllTopParents;
+
+/*! Returns a window's top level parent. This only counts direct parents,
+  not groups if it is transient for its group.
+*/
+- (AZClient *) searchTopParent;
+
+/*! Is one client a direct child of self (i.e. not through the group.) */
+- (BOOL) hasDirectChild: (AZClient *) child;
 
 /*! Search for a transient of a client. The transient is returned if it is one,
      NULL is returned if the given search is not a transient of the client. */

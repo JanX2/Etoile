@@ -466,10 +466,8 @@
 
 - (void) iconify: (BOOL) _iconic currentDesktop: (BOOL) curdesk
 {
-    /* move up the transient chain as far as possible first */
-    AZClient *client = [self searchTopTransient];
-
-    [[client searchTopTransient] iconifyRecursive: _iconic currentDesktop: curdesk];
+    AZClient *client = [self searchTopParent];
+    [client iconifyRecursive: _iconic currentDesktop: curdesk];
 }
 
 - (void) maximize: (BOOL) max direction: (int) dir saveArea: (BOOL) savearea
@@ -601,7 +599,7 @@
     ce.xclient.window = window;
     ce.xclient.format = 32;
     ce.xclient.data.l[0] = prop_atoms.wm_delete_window;
-    ce.xclient.data.l[1] = [[AZEventHandler defaultHandler] eventCurrentTime];
+    ce.xclient.data.l[1] = event_curtime;
     ce.xclient.data.l[2] = 0l;
     ce.xclient.data.l[3] = 0l;
     ce.xclient.data.l[4] = 0l;
@@ -615,8 +613,11 @@
 
 - (void) hilite: (BOOL) flag
 {
+   if (demands_attention == flag) 
+       return; /* no change */
+
    /* don't allow focused windows to hilite */
-   demands_attention = flag && ![self focused];
+   demands_attention = (flag && ![self focused]);
    if (demands_attention)
       [[self frame] flashStart];
    else
@@ -626,8 +627,8 @@
 
 - (void) setDesktop: (unsigned int) target hide: (BOOL) donthide
 {
-  [[self searchTopTransient] setDesktopRecursive: target
-	                                  hide: donthide];
+  AZClient *client = [self searchTopParent];
+  [client setDesktopRecursive: target hide: donthide];
 }
 
 - (BOOL) validate
@@ -834,8 +835,7 @@
 {
     AZClient *child = nil;
      
-    /* if we have a modal child, then focus it, not us */
-    child = [[self searchTopTransient] searchModalChild];
+    child = [self searchModalChild];
     if (child) return child;
     return self;
 }
@@ -896,7 +896,7 @@
            #799. So now it is RevertToNone again.
         */
         XSetInputFocus(ob_display, [oself window], RevertToNone,
-                       [[AZEventHandler defaultHandler] eventCurrentTime]);
+                       event_curtime);
     }
 
     if ([oself focus_notify]) {
@@ -907,7 +907,7 @@
         ce.xclient.window = [oself window];
         ce.xclient.format = 32;
         ce.xclient.data.l[0] = prop_atoms.wm_take_focus;
-        ce.xclient.data.l[1] = [[AZEventHandler defaultHandler] eventCurrentTime];
+        ce.xclient.data.l[1] = event_curtime;
         ce.xclient.data.l[2] = 0l;
         ce.xclient.data.l[3] = 0l;
         ce.xclient.data.l[4] = 0l;
@@ -917,7 +917,7 @@
 #ifdef DEBUG_FOCUS
     AZDebug("%sively focusing %lx at %d\n",
              (oself->can_focus ? "act" : "pass"),
-             oself->window, (int) [[AZEventHandler defaultHandler] eventCurrentTime]);
+             oself->window, (int) event_curtime);
 #endif
 
     /* Cause the FocusIn to come back to us. Important for desktop switches,
@@ -939,14 +939,15 @@
     }
 }
 
-- (void) activateHere: (BOOL) here user: (BOOL) user time: (Time) timestamp
+- (void) activateHere: (BOOL) here user: (BOOL) user 
 {
     AZScreen *screen = [AZScreen defaultScreen];
     /* XXX do some stuff here if user is false to determine if we really want
        to activate it or not (a parent or group member is currently
        active)?
     */
-    if (!user)
+    if (!user && event_curtime &&
+        !event_time_after(event_curtime, client_last_user_time))
     {
       [self hilite: YES];
     }
@@ -1486,7 +1487,7 @@
         */
         if (new_event)
 	{
-	    [[AZClientManager defaultManager] setLastUserTime: time];
+	    client_last_user_time = time;
 	}
     }
 }
@@ -2240,32 +2241,59 @@
     }
 }
 
-/* Determines which physical monitor a client is on by calculating the
-   area of the part of the client on each monitor.  The number of the
-   monitor containing the greatest area of the client is returned.*/
 - (unsigned int) monitor
 {
-    unsigned int i;
-    unsigned int most = 0;
-    unsigned int mostv = 0;
-    AZScreen *screen = [AZScreen defaultScreen];
+    Rect a = [[self frame] area];
+    return [[AZScreen defaultScreen] findMonitor: &a];
+}
 
-    for (i = 0; i < [screen numberOfMonitors]; ++i) {
-	Rect *_area = [screen physicalAreaOfMonitor: i];
-        if (RECT_INTERSECTS_RECT(*_area, [frame area])) {
-            Rect r;
-            unsigned int v;
+- (NSArray *) searchAllTopParents
+{
+    NSMutableArray *ret = [[NSMutableArray alloc] init];
 
-            RECT_SET_INTERSECTION(r, *_area, [frame area]);
-            v = r.width * r.height;
+    /* move up the direct transient chain as far as possible */
+    AZClient *t_for = self;
+    while ([t_for transient_for] && [t_for transient_for] != OB_TRAN_GROUP)
+      t_for = [t_for transient_for];
 
-            if (v > mostv) {
-                mostv = v;
-                most = i;
-            }
-        }
+    if ([t_for transient_for] == nil)
+    {
+        [ret addObject: t_for]; 
     }
-    return most;
+    else
+    {
+	if ([t_for group] == nil)
+	    NSLog(@"Internal Error: not group");
+
+	NSEnumerator *e = [[[t_for group] members] objectEnumerator];
+	AZClient *c = nil;
+	while ((c = [e nextObject]))
+	{
+	    if ([c transient_for] == nil)
+		[ret insertObject: c atIndex: 0];
+ 	}
+	if ([ret count] == 0) /* no group parents */
+	    [ret addObject: t_for];
+    }
+    return AUTORELEASE(ret);
+}
+
+- (AZClient *) searchTopParent
+{
+    /* move up the direct transient chain as far as possible */
+    AZClient *t_for = self;
+    while ([t_for transient_for] && [t_for transient_for] != OB_TRAN_GROUP)
+      t_for = [t_for transient_for];
+
+    return t_for;
+}
+
+- (BOOL) hasDirectChild: (AZClient *) child
+{
+    while (child != self &&
+           [child transient_for] && [child transient_for] != OB_TRAN_GROUP)
+        child = [child transient_for];
+    return [child isEqual: self];
 }
 
 - (void) updateSmClientId;
@@ -3173,10 +3201,15 @@ AZClient *AZUnderPointer()
     /* move all transients */
     int j, jcount = [transients count];
     AZClient *temp = nil;
-    for (j = 0; j < jcount; j++) {
+    for (j = 0; j < jcount; j++) 
+    {
         temp = [transients objectAtIndex: j];
-	if (temp != self) {
-	    [temp setDesktopRecursive: target hide: donthide];
+	if (temp != self) 
+	{
+	    if ([self hasDirectChild: temp])
+	    {
+	        [temp setDesktopRecursive: target hide: donthide];
+	    }
 	}
     }
 }

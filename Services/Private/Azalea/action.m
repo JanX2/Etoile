@@ -978,7 +978,7 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
            it won't work right unless we XUngrabKeyboard first,
            even though we grabbed the key/button Asychronously.
            e.g. "gnome-panel-control --main-menu" */
-        XUngrabKeyboard(ob_display, [[AZEventHandler defaultHandler] eventCurrentTime]);
+        XUngrabKeyboard(ob_display, event_curtime);
     }
 
     count = [acts count];
@@ -1071,8 +1071,7 @@ void action_activate(union ActionData *data)
        focus to 3rd-party docks (panels) either (unless they ask for it
        themselves). */
     if ([data->client.any.c type] != OB_CLIENT_TYPE_DOCK) {
-        [data->activate.any.c activateHere: data->activate.here user: YES
-	                              time: data->activate.any.time];
+        [data->activate.any.c activateHere: data->activate.here user: YES];
     }
 }
 
@@ -1580,8 +1579,7 @@ void action_directional_focus(union ActionData *data)
             interactive: data->any.interactive
             dialog: data->interdiraction.dialog
             done: data->interdiraction.inter.final
-            cancel: data->interdiraction.inter.cancel
-            time: data->interdiraction.inter.any.time];
+            cancel: data->interdiraction.inter.cancel];
 }
 
 void action_movetoedge(union ActionData *data)
