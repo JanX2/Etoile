@@ -228,9 +228,7 @@ static AZClientManager *sharedInstance;
 
     [client applyStartupState];
 
-// FIXME
-    [[AZStacking stacking] addWindow: client];
-//    [[AZStacking stacking] addWindowNonIntrusive: client];
+    [[AZStacking stacking] addWindowNonIntrusively: client];
     [client restoreSessionStacking];
 
     /* focus the new window? */

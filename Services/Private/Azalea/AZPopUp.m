@@ -167,7 +167,7 @@
 
     if (!mapped) {
         XMapWindow(ob_display, bg);
-	[[AZStacking stacking] raiseWindow: self group: NO];
+	[[AZStacking stacking] raiseWindow: self];
         mapped = YES;
     }
 }

@@ -49,13 +49,14 @@ typedef enum {
 - (void) setList;
 
 - (void) addWindow: (id <AZWindow>) win;
+- (void) addWindowNonIntrusively: (id <AZWindow>) win;
 - (void) removeWindow: (id <AZWindow>) win;
 
 /*! Raises a window above all others in its stacking layer */
-- (void) raiseWindow: (id <AZWindow>) win group: (BOOL) group;
+- (void) raiseWindow: (id <AZWindow>) win;
 
 /*! Lowers a window below all others in its stacking layer */
-- (void) lowerWindow: (id <AZWindow>) win group: (BOOL) group;
+- (void) lowerWindow: (id <AZWindow>) win;
 
 /*! Moves a window below another if its in the same layer.
   This function does not enforce stacking rules IRT transients n such, and so

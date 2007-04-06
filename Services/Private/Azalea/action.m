@@ -915,8 +915,6 @@ AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
                        [act func] == action_raiselower ||
                        [act func] == action_shadelower ||
                        [act func] == action_unshaderaise) {
-                if ((n = parse_find_node("group", node->xmlChildrenNode)))
-                    [act data_pointer]->stacking.group = parse_bool(doc, n);
             }
             INTERACTIVE_LIMIT(act, uact);
         }
@@ -1139,8 +1137,7 @@ void action_raiselower(union ActionData *data)
 void action_raise(union ActionData *data)
 {
     client_action_start(data);
-    [[AZStacking stacking] raiseWindow: data->client.any.c
-	                   group: data->stacking.group];
+    [[AZStacking stacking] raiseWindow: data->client.any.c];
     client_action_end(data);
 }
 
@@ -1163,8 +1160,7 @@ void action_shadelower(union ActionData *data)
 void action_lower(union ActionData *data)
 {
     client_action_start(data);
-    [[AZStacking stacking] lowerWindow: data->client.any.c
-	                   group: data->stacking.group];
+    [[AZStacking stacking] lowerWindow: data->client.any.c];
     client_action_end(data);
 }
 
