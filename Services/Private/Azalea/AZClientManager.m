@@ -134,16 +134,18 @@ static AZClientManager *sharedInstance;
     XSetWindowAttributes attrib_set;
     XWMHints *wmhint;
     BOOL activate = NO;
+    int newx, newy;
     AZScreen *screen = [AZScreen defaultScreen];
 
     grab_server(YES);
 
-    /* check if it has already been unmapped by the time we started mapping
+    /* check if it has already been unmapped by the time we started mapping.
        the grab does a sync so we don't have to here */
     if (XCheckTypedWindowEvent(ob_display, window, DestroyNotify, &e) ||
         XCheckTypedWindowEvent(ob_display, window, UnmapNotify, &e)) {
         XPutBackEvent(ob_display, &e);
 
+	/* Trying to manage unmapped window. Aborting that. */
         grab_server(NO);
         return; /* don't manage it */
     }
@@ -190,13 +192,15 @@ static AZClientManager *sharedInstance;
     [client set_window: window];
 
     /* non-zero defaults */
-    [client set_wmstate: NormalState];
+    [client set_wmstate: WithdrawnState]; /* make sure it gets updated first time */
     [client set_layer: -1];
     [client set_desktop: [screen numberOfDesktops]]; /* always an invalid value */
-    [client set_user_time: ~0]; /* maximum value, always newer than the real time */
+    [client set_user_time: client_last_user_time]; 
 
     [client getAll];
     [client restoreSessionState];
+
+    [client calcLayer];
  
     {
       Time t = [[AZStartupHandler defaultHandler] 
@@ -210,8 +214,6 @@ static AZClientManager *sharedInstance;
        it can end up in the list twice! */
     [[AZFocusManager defaultManager] focusOrderAdd: client];
 
-    [client changeState];
-
     /* remove the client's border (and adjust re gravity) */
     [client toggleBorder: NO];
      
@@ -224,9 +226,11 @@ static AZClientManager *sharedInstance;
 
     [[client frame] grabClient: client];
 
-    grab_server(NO);
+    /* do this after we have a frame.. it uses the frame to help determine the
+       WM_STATE to apply. */
+    [client changeState];
 
-    [client applyStartupState];
+    grab_server(NO);
 
     [[AZStacking stacking] addWindowNonIntrusively: client];
     [client restoreSessionStacking];
@@ -243,13 +247,16 @@ static AZClientManager *sharedInstance;
         activate = YES;
     }
 
+    /* get the current position */
+    newx = [client area].x;
+    newy = [client area].y;
+ 
+    /* figure out placement for the window */
     if (ob_state() == OB_STATE_RUNNING) {
-        int x = [client area].x, ox = x;
-        int y = [client area].y, oy = y;
-	BOOL transient = [client placeAtX: &x y: &y];
+	BOOL transient = [client placeAtX: &newx y: &newy];
 
         /* make sure the window is visible. */
-	[client findOnScreenAtX: &x y: &y
+	[client findOnScreenAtX: &newx y: &newy
 		width: [[client frame] area].width
 		height: [[client frame] area].height
                              /* non-normal clients has less rules, and
@@ -267,13 +274,16 @@ static AZClientManager *sharedInstance;
                               !([client positioned] & USPosition)) &&
                              [client normal] &&
                              ![client session])];
-        if (x != ox || y != oy) 	 
-	    [client moveToX: x y: y];
     }
+
+    /* do this after the window is placed, so the premax/prefullscreen numbers
+       won't be all wacko!!
+       also, this moves the window to the position where it has been placed
+    */
+    [client applyStartupStateAtX: newx y: newy];
 
     [[AZKeyboardHandler defaultHandler] grab: YES forClient: client];
     [[AZMouseHandler defaultHandler] grab: YES forClient: client];
-
 
     if (activate) {
         /* This is focus stealing prevention, if a user_time has been set */

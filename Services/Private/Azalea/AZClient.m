@@ -47,6 +47,7 @@
 - (void) getArea;
 - (void) getDesktop;
 - (void) getState;
+- (void) getLayer;
 - (void) getShaped;
 - (void) getMwmHints;
 - (void) getGravity;
@@ -423,8 +424,8 @@
         fullscreen == fs) return;                   /* already done */
 
     fullscreen = fs;
-    [self changeState]; /* change the state hints on the client,
-                                  and adjust out layer/stacking */
+    [self changeState]; /* change the state hints on the client */
+    [self calcLayer];   /* and adjust out layer/stacking */
 
     if (fs) {
         if (savearea)
@@ -558,18 +559,9 @@
     if ((!(functions & OB_CLIENT_FUNC_SHADE) && shade) || /* can't shade */
         shaded == shade) return;     /* already done */
 
-    /* when we're iconic, don't change the wmstate */
-    if (!iconic) {
-        long old;
-
-        old = wmstate;
-        wmstate = (shade ? IconicState : NormalState);
-        if (old != wmstate)
-            PROP_MSG(window, kde_wm_change_state, wmstate, 1, 0, 0);
-    }
-
     shaded = shade;
     [self changeState];
+    [self changeWMState];
     /* resize the frame to just the titlebar */
     [frame adjustAreaWithMoved: NO resized: NO fake: NO];
 }
@@ -827,7 +819,6 @@
     if (_demands_attention != demands_attention)
         [self hilite: _demands_attention];
 
-    [self calcLayer];
     [self changeState]; /* change the hint to reflect these changes */
 }
 
@@ -984,18 +975,19 @@
 
 - (void) calcLayer
 {
-    ObStackingLayer l;
     AZClient *orig = nil, *oself = self;
+    NSArray *it = nil;
 
     orig = oself;
 
     /* transients take on the layer of their parents */
-    oself = [oself searchTopTransient];
-
-    l = [oself calcStackingLayer];
-
-    [oself calcLayerRecursiveWithOriginal: orig
-	    stackingLayer: l raised: NO];
+    it = [oself searchAllTopParents];
+    int i;
+    for (i = 0; i < [it count]; i++)
+    {
+      [[it objectAtIndex: i]  calcLayerRecursiveWithOriginal: orig
+ 	                      stackingLayer: 0 raised: NO];
+    }
 }
 
 - (void) raise
@@ -1025,28 +1017,42 @@
                 target = nil;
             }
 
-#if 0
-/* we used to do this, but it violates the ICCCM and causes problems because
-   toolkits seem to set transient_for = root rather arbitrarily (eg kicker's
-   config dialogs), so it is being removed. the ewmh provides other ways to
-   make things transient for their group. -dana
-*/
+            /* THIS IS SO ANNOYING ! ! ! ! Let me explain.... have a seat..
+
+               Setting the transient_for to Root is actually illegal, however
+               applications from time have done this to specify transient for
+               their group.
+
+               Now you can do that by being a TYPE_DIALOG and not setting
+               the transient_for hint at all on your window. But people still
+               use Root, and Kwin is very strange in this regard.
+
+               KWin 3.0 will not consider windows with transient_for set to
+               Root as transient for their group *UNLESS* they are also modal.
+               In that case, it will make them transient for the group. This
+               leads to all sorts of weird behavior from KDE apps which are
+               only tested in KWin. I'd like to follow their behavior just to
+               make this work right with KDE stuff, but that seems wrong.
+            */
             if (!target && group) {
                 /* not transient to a client, see if it is transient for a
                    group */
-                if (t == [group leader] ||
-                    t == None ||
-                    t == RootWindow(ob_display, ob_screen))
+                if (t == RootWindow(ob_display, ob_screen))
                 {
                     /* window is a transient for its group! */
                     target = OB_TRAN_GROUP;
                 }
             }
-#endif
         }
-    } else if (type == OB_CLIENT_TYPE_DIALOG && group) {
-        transient = YES;
-        target = OB_TRAN_GROUP;
+    } else if (group) {
+        if (type == OB_CLIENT_TYPE_DIALOG ||
+            type == OB_CLIENT_TYPE_TOOLBAR ||
+            type == OB_CLIENT_TYPE_MENU ||
+            type == OB_CLIENT_TYPE_UTILITY)
+        {
+            transient = YES;
+            target = OB_TRAN_GROUP;
+        }
     } else
         transient = NO;
 
@@ -1816,57 +1822,6 @@
     return nil;
 }
 
-- (AZClient *) searchTopTransient
-{
-    /* move up the transient chain as far as possible */
-    if (transient_for) {
-        if (transient_for != OB_TRAN_GROUP) {
-	    return [transient_for searchTopTransient];
-        } else {
-            NSAssert(group, @"Group does not exist");
-	    BOOL found = NO;
-	    AZClient *c = nil;
-            int i, count = [[group members] count];
-	    for (i = 0; i < count; i++) {
-	      c = [group memberAtIndex: i];
-
-                /* checking transient_for prevents infinate loops! */
-                if (c != self && ![c transient_for])
-		{
-		    found = YES;
-                    break;
-		}
-            }
-            if (found)
-                return c;
-        }
-    }
-    return self;
-}
-
-#if 0 // FIXME: not used in anywhere
-- (AZClient *) searchParent: (AZClient *) search
-{
-    if (transient_for->_self) {
-        if (transient_for->_self != OB_TRAN_GROUP) {
-            if (transient_for->_self == search)
-                return search;
-        } else {
-            int i, count = [[group members] count];
-	    for (i = 0; i < count; i++) {
-	      AZClient *c = [group memberAtIndex: i];
-
-                /* checking transient_for prevents infinate loops! */
-                if (c != self && ![c transient_for])
-                    if (c == search)
-                        return search;
-            }
-        }
-    }
-    return nil;
-}
-#endif
-
 - (AZClient *) searchTransient: (AZClient *) search;
 {
     int j, jcount = [transients count];
@@ -2328,6 +2283,7 @@
        work right (eg tsclient). */
     [self updateTransientFor];
     [self getType];/* this can change the mwmhints for special cases */
+    [self getState];
     [self updateTransientFor];
 
     [self updateWmhints];
@@ -2335,8 +2291,8 @@
     [self getDesktop];/* uses transient data/group/startup id if a
                                 desktop is not specified */
     [self getShaped];
-
-    [self getState];
+    [self getLayer]; /* if layer hasn't been specified, get it from
+                               other sources if possible */
 
     {
         /* a couple type-based defaults for new windows */
@@ -2401,15 +2357,32 @@
     max_vert = [session max_vert];
 }
 
-- (void) changeState
+- (void) changeWMState
 {
     unsigned long state[2];
+    long old;
+
+    old = [self wmstate];
+
+    if (shaded || iconic || ![frame visible])
+        wmstate = IconicState;
+    else
+        wmstate = NormalState;
+
+    if (old != wmstate) {
+        PROP_MSG(window, kde_wm_change_state,
+                 wmstate, 1, 0, 0);
+
+        state[0] = wmstate;
+        state[1] = None;
+        PROP_SETA32(window, wm_state, wm_state, state, 2);
+    }
+}
+
+- (void) changeState
+{
     unsigned long netstate[11];
     unsigned int num;
-
-    state[0] = wmstate;
-    state[1] = None;
-    PROP_SETA32(window, wm_state, wm_state, state, 2);
 
     num = 0;
     if (modal)
@@ -2437,8 +2410,6 @@
     if (undecorated)
         netstate[num++] = prop_atoms.ob_wm_state_undecorated;
     PROP_SETA32(window, net_wm_state, atom, netstate, num);
-
-    [self calcLayer];
 
     if (frame)
 	[frame adjustState];
@@ -2509,8 +2480,17 @@
         XSetWindowBorderWidth(ob_display, window, 0);
 }
 
-- (void) applyStartupState
+- (void) applyStartupStateAtX: (int) x y: (int) y
 {
+    BOOL pos = NO; /* has the window's position been configured? */
+    int ox, oy;
+
+    /* save the position, and set self->area for these to use */
+    ox = area.x;
+    oy = area.y;
+    area.x = x;
+    area.y = y;
+
     /* these are in a carefully crafted order.. */
 
     if (iconic) {
@@ -2588,9 +2568,22 @@
 - (void) showhide
 {
     if ([self shouldShow])
+    {
 	[frame show];
+    }
     else
+    {
 	[frame hide];
+        /* Fall back focus since we're disappearing */
+        if ([[AZFocusManager defaultManager] focus_client] == self)
+	    [self unfocus];
+    }
+
+    /* According to the ICCCM (sec 4.1.3.1) when a window is not visible, it
+       needs to be in IconicState. This includes when it is on another
+       desktop!
+    */
+    [self changeWMState];
 }
 
 /* Accessories */
@@ -2963,22 +2956,26 @@ AZClient *AZUnderPointer()
 
         free(state);
     }
+}
 
+- (void) getLayer
+{
     if (!(above || below)) {
         if (group) {
             /* apply stuff from the group */
-            int _layer = -2;
-	    int i, count = [[group members] count];
-	    for (i = 0; i < count; i++) {
-	      AZClient *c = [group memberAtIndex: i];
-              if (c != self && ![self searchTransient: c] &&
-                    [self normal] && [c normal])
-                {
-                    _layer = MAX(_layer,
-                                ([c above] ? 1 : ([c below] ? -1 : 0)));
-                }
+            int ly= -2;
+	    int i;
+	    NSArray *members = [[self group] members];
+	    for (i = 0; i < [members count]; i++)
+	    {
+	      AZClient *c = [members objectAtIndex: i];
+	      if ((c != self) && ![self searchTransient: c] &&
+		  [self normal] && [c normal])
+	      {
+                    ly = MAX(ly, ([c above] ? 1 : ([c below] ? -1 : 0)));
+              }
             }
-            switch (_layer) {
+            switch (ly) {
             case -1:
                 below = YES;
                 break;
@@ -2989,12 +2986,13 @@ AZClient *AZUnderPointer()
                 above = YES;
                 break;
             default:
-		NSAssert(0, @"Should not reach here");
+		NSLog(@"Internal Error: getLayer shouldn't read here");
                 break;
             }
         }
     }
 }
+
 
 - (void) getShaped
 {
@@ -3072,24 +3070,24 @@ AZClient *AZUnderPointer()
 }
 
 - (void) calcLayerRecursiveWithOriginal: (AZClient *)orig
-        stackingLayer: (ObStackingLayer) l raised: (BOOL) raised
+        stackingLayer: (ObStackingLayer) min raised: (BOOL) raised
 {
     ObStackingLayer old, own;
     AZStacking *stacking = [AZStacking stacking];
 
     old = layer;
     own = [self calcStackingLayer];
-    layer = (l > own ? l : own);
+    layer = MAX(own, min);
 
     int j, jcount = [transients count];
     AZClient *temp = nil;
     for (j = 0; j < jcount; j++) {
 	temp = [transients objectAtIndex: j];
 	[temp calcLayerRecursiveWithOriginal: orig
-		stackingLayer: l raised: (raised ? raised : l != old)];
+		stackingLayer: layer raised: (raised ? raised : layer != old)];
     }
 
-    if (!raised && l != old)
+    if (!raised && layer != old)
         if ([orig frame]) { /* only restack if the original window is managed */
             [stacking removeWindow: self];
             [stacking addWindow: self];
@@ -3105,16 +3103,9 @@ AZClient *AZUnderPointer()
         AZDebug("%sconifying window: 0x%lx\n", (_iconic ? "I" : "Uni"),
                  window);
 
-        iconic = _iconic;
-
         if (_iconic) {
             if (functions & OB_CLIENT_FUNC_ICONIFY) {
-                long old;
-
-                old = wmstate;
-                wmstate = IconicState;
-                if (old != wmstate)
-                    PROP_MSG(window, kde_wm_change_state, wmstate, 1, 0, 0);
+		iconic = _iconic;
 
                 /* update the focus lists.. iconic windows go to the bottom of
                    the list, put the new iconic window at the 'top of the
@@ -3124,16 +3115,11 @@ AZClient *AZUnderPointer()
                 changed = YES;
             }
         } else {
-            long old;
+	    iconic = _iconic;
 
             if (curdesk)
 		[self setDesktop: [[AZScreen defaultScreen] desktop]
 			     hide: NO];
-
-            old = wmstate;
-            wmstate = (shaded ? IconicState : NormalState);
-            if (old != wmstate)
-                PROP_MSG(window, kde_wm_change_state, wmstate, 1, 0, 0);
 
             /* this puts it after the current focused window */
 	    AZFocusManager *fManager = [AZFocusManager defaultManager];
@@ -3151,13 +3137,16 @@ AZClient *AZUnderPointer()
 	  [[AZScreen defaultScreen] updateAreas];
     }
 
-    /* iconify all transients */
+    /* iconify all direct transients */
     int j, jcount = [transients count];
     AZClient *temp = nil;
     for (j = 0; j < jcount; j++) {
         temp = [transients objectAtIndex: j];
 	if (temp != self) {
-	    [temp iconifyRecursive: _iconic currentDesktop: curdesk];
+	    if ([self hasDirectChild: temp])
+	    {
+		[temp iconifyRecursive: _iconic currentDesktop: curdesk];
+	    }
 	}
     }
 }

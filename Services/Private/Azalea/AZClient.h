@@ -526,7 +526,6 @@ typedef enum
  */
 - (AZClient *) searchModalChild;
 
-- (AZClient *) searchTopTransient;
 /*! Returns a list of top-level windows which this is a transient for.
   It will only contain more than 1 element if the client is transient for its
   group.
@@ -568,8 +567,9 @@ typedef enum
 - (void) getAll;
 - (void) restoreSessionState;
 - (void) changeState;
+- (void) changeWMState;
 - (void) toggleBorder: (BOOL) show;
-- (void) applyStartupState;
+- (void) applyStartupStateAtX: (int) x y: (int) y;
 - (void) restoreSessionStacking;
 - (void) showhide;
 
