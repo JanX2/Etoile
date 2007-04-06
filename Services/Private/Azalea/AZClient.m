@@ -100,74 +100,21 @@
 	            user: user final: final forceReply: NO];
 }
 
-- (void) configureToCorner: (ObCorner) anchor x: (int) x y: (int) y
-                     width: (int) w height: (int) h
-                      user: (BOOL) user final: (BOOL) final
-                forceReply: (BOOL) force_reply;
+- (void) tryConfigureToCorner: (ObCorner) anchor
+                     x: (int *) x y: (int *) y 
+                     width: (int *) w height: (int *) h 
+                     logicalW: (int *) logicalw logicalH: (int *) logicalh
+                     user: (BOOL) user
 {
-    int oldw, oldh;
-    BOOL send_resize_client;
-    BOOL moved = NO, resized = NO;
-    unsigned int fdecor = [frame decorations];
-    BOOL fhorz = [frame max_horz];
+    Rect desired_area = {*x, *y, *w, *h};
 
     /* make the frame recalculate its dimentions n shit without changing
        anything visible for real, this way the constraints below can work with
        the updated frame dimensions. */
     [frame adjustAreaWithMoved: YES resized: YES fake: YES];
 
-    /* gets the frame's position */
-    [frame clientGravityAtX: &x y: &y];
-
-    /* these positions are frame positions, not client positions */
-
-    /* set the size and position if fullscreen */
-    if (fullscreen) {
-        Rect *a;
-        unsigned int i;
-
-        i = [self monitor];
-	a = [[AZScreen defaultScreen] physicalAreaOfMonitor: i];
-
-        x = a->x;
-        y = a->y;
-        w = a->width;
-        h = a->height;
-
-        user = NO; /* ignore that increment etc shit when in fullscreen */
-    } else {
-        Rect *a;
-
-	a = [[AZScreen defaultScreen] areaOfDesktop: desktop
-		                      monitor: [self monitor]];
-
-        /* set the size and position if maximized */
-        if (max_horz) {
-            x = a->x;
-            w = a->width - [frame size].left - [frame size].right;
-        }
-        if (max_vert) {
-            y = a->y;
-            h = a->height - [frame size].top - [frame size].bottom;
-        }
-    }
-
-    /* gets the client's position */
-    [frame frameGravityAtX: &x y: &y];
-
-    /* these override the above states! if you cant move you can't move! */
-    if (user) {
-        if (!(functions & OB_CLIENT_FUNC_MOVE)) {
-            x = area.x;
-            y = area.y;
-        }
-        if (!(functions & OB_CLIENT_FUNC_RESIZE)) {
-            w = area.width;
-            h = area.height;
-        }
-    }
-
-    if (!(w == area.width && h == area.height)) {
+    /* work within the prefered sizes given by the window */
+    if (!(*w == area.width && *h == area.height)) {
         int basew, baseh, minw, minh;
 
         /* base size is substituted with min size if not specified */
@@ -191,83 +138,161 @@
            sizes */
 
         /* smaller than min size or bigger than max size? */
-        if (w > max_size.width) w = max_size.width;
-        if (w < minw) w = minw;
-        if (h > max_size.height) h = max_size.height;
-        if (h < minh) h = minh;
+        if (*w > max_size.width) *w = max_size.width;
+        if (*w < minw) *w = minw;
+        if (*h > max_size.height) *h = max_size.height;
+        if (*h < minh) *h = minh;
 
-        w -= basew;
-        h -= baseh;
+        *w -= basew;
+        *h -= baseh;
 
         /* keep to the increments */
-        w /= size_inc.width;
-        h /= size_inc.height;
+        *w /= size_inc.width;
+        *h /= size_inc.height;
 
         /* you cannot resize to nothing */
-        if (basew + w < 1) w = 1 - basew;
-        if (baseh + h < 1) h = 1 - baseh;
+        if (basew + *w < 1) *w = 1 - basew;
+        if (baseh + *h < 1) *h = 1 - baseh;
   
-        /* store the logical size */
-        SIZE_SET(logical_size,
-                 size_inc.width > 1 ? w : w + basew,
-                 size_inc.height > 1 ? h : h + baseh);
+        /* save the logical size */
+        *logicalw = size_inc.width > 1 ? *w : *w + basew;
+        *logicalh = size_inc.height > 1 ? *h : *h + baseh;
 
-        w *= size_inc.width;
-        h *= size_inc.height;
+        *w *= size_inc.width;
+        *h *= size_inc.height;
 
-        w += basew;
-        h += baseh;
+        *w += basew;
+        *h += baseh;
 
         /* adjust the height to match the width for the aspect ratios.
            for this, min size is not substituted for base size ever. */
-        w -= base_size.width;
-        h -= base_size.height;
+        *w -= base_size.width;
+        *h -= base_size.height;
 
         if (!fullscreen) {
             if (min_ratio)
-                if (h * min_ratio > w) {
-                    h = (int)(w / min_ratio);
+                if (*h * min_ratio > *w) {
+                    *h = (int)(*w / min_ratio);
 
                     /* you cannot resize to nothing */
-                    if (h < 1) {
-                        h = 1;
-                        w = (int)(h * min_ratio);
+                    if (*h < 1) {
+                        *h = 1;
+                        *w = (int)(*h * min_ratio);
                     }
                 }
             if (max_ratio)
-                if (h * max_ratio < w) {
-                    h = (int)(w / max_ratio);
+                if (*h * max_ratio < *w) {
+                    *h = (int)(*w / max_ratio);
 
                     /* you cannot resize to nothing */
-                    if (h < 1) {
-                        h = 1;
-                        w = (int)(h * min_ratio);
+                    if (*h < 1) {
+                        *h = 1;
+                        *w = (int)(*h * min_ratio);
                     }
                 }
         }
 
-        w += base_size.width;
-        h += base_size.height;
+        *w += base_size.width;
+        *h += base_size.height;
     }
 
-    NSAssert(w > 0, @"Width less than 0");
-    NSAssert(h > 0, @"Height less than 0");
+    /* gets the frame's position */
+    [frame clientGravityAtX: x y: y];
+
+    /* these positions are frame positions, not client positions */
+
+    /* set the size and position if fullscreen */
+    AZScreen *screen = [AZScreen defaultScreen];
+    if (fullscreen) {
+        Rect *a;
+        unsigned int i;
+
+	i = [screen findMonitor: &desired_area];
+	a = [screen physicalAreaOfMonitor: i];
+
+        *x = a->x;
+        *y = a->y;
+        *w = a->width;
+        *h = a->height;
+
+        user = NO; /* ignore if the client can't be moved/resized when it
+                      is entering fullscreen */
+    } else if (max_horz || max_vert) {
+        Rect *a;
+        unsigned int i;
+
+	i = [screen findMonitor: &desired_area];
+	a = [screen areaOfDesktop: desktop monitor: i];
+
+        /* set the size and position if maximized */
+        if (max_horz) {
+            *x = a->x;
+            *w = a->width - [frame size].left - [frame size].right;
+        }
+        if (max_vert) {
+            *y = a->y;
+            *h = a->height - [frame size].top - [frame size].bottom;
+        }
+
+        /* maximizing is not allowed if the user can't move+resize the window
+         */
+    }
+
+    /* gets the client's position */
+    [frame frameGravityAtX: x y: y];
+
+    /* these override the above states! if you cant move you can't move! */
+    if (user) {
+        if (!(functions & OB_CLIENT_FUNC_MOVE)) {
+            *x = area.x;
+            *y = area.y;
+        }
+        if (!(functions & OB_CLIENT_FUNC_RESIZE)) {
+            *w = area.width;
+            *h = area.height;
+        }
+    }
+
+    if (*w <= 0) NSLog(@"Internal Error: width less than 0");
+    if (*h <= 0) NSLog(@"Internal Error: height less than 0");
 
     switch (anchor) {
     case OB_CORNER_TOPLEFT:
         break;
     case OB_CORNER_TOPRIGHT:
-        x -= w - area.width;
+        *x -= *w - area.width;
         break;
     case OB_CORNER_BOTTOMLEFT:
-        y -= h - area.height;
+        *y -= *h - area.height;
         break;
     case OB_CORNER_BOTTOMRIGHT:
-        x -= w - area.width;
-        y -= h - area.height;
+        *x -= *w - area.width;
+        *y -= *h - area.height;
         break;
     }
+}
 
+- (void) configureToCorner: (ObCorner) anchor x: (int) x y: (int) y
+                     width: (int) w height: (int) h
+                      user: (BOOL) user final: (BOOL) final
+                forceReply: (BOOL) force_reply;
+{
+    int oldw, oldh;
+    BOOL send_resize_client;
+    BOOL moved = NO, resized = NO;
+    unsigned int fdecor = [frame decorations];
+    BOOL fhorz = [frame max_horz];
+    int logicalw, logicalh;
+
+    /* find the new x, y, width, and height (and logical size) */
+    [self tryConfigureToCorner: anchor x: &x y: &y width: &w height: &h
+                      logicalW: &logicalw logicalH: &logicalh user: user];
+
+    /* set the logical size if things changed */
+    if (!(w == area.width && h == area.height))
+        SIZE_SET(logical_size, logicalw, logicalh);
+
+    /* figure out if we moved or resized or what */
     moved = x != area.x || y != area.y;
     resized = w != area.width || h != area.height;
 

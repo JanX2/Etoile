@@ -292,7 +292,31 @@ typedef enum
 - (void) configureToCorner: (ObCorner) anchor x: (int) x y: (int) y 
                      width: (int) w height: (int) h
 		     user: (BOOL) user final: (BOOL) final;
+/*! Figure out where a window will end up and what size it will be if you
+  told it to move/resize to these coordinates.
 
+  These values are what client_configure_full will give the window.
+
+  @param anchor The corner to keep in the same position when resizing.
+  @param x The x coordiante of the new position for the client.
+  @param y The y coordiante of the new position for the client.
+  @param w The width component of the new size for the client.
+  @param h The height component of the new size for the client.
+  @param logicalw Returns the width component of the new logical width.
+                  This value is only returned when the new w or h calculated
+                  differ from the ones passed in.
+  @param logicalh Returns the height component of the new logical height.
+                  This value is only returned when the new w or h calculated
+                  differ from the ones passed in.
+  @param user Specifies whether this is a user-requested change or a
+              program requested change. For program requested changes, the
+              constraints are not checked.
+*/
+- (void) tryConfigureToCorner: (ObCorner) anchor
+                     x: (int *) x y: (int *) y 
+                     width: (int *) w  height: (int *) h
+                     logicalW: (int *) logicalw logicalH: (int *) logicalh
+                     user: (BOOL) user;
 /*! Move and/or resize the window.
     This also maintains things like the client's minsize, and size increments.
     @param anchor The corner to keep in the same position when resizing.

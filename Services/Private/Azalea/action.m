@@ -1265,13 +1265,21 @@ void action_move_relative(union ActionData *data)
 void action_resize_relative(union ActionData *data)
 {
   AZClient *c = data->relative.any.c;
+  int x, y, ow, w, oh, h, lw, lh;
   client_action_start(data);
-  [c moveAndResizeToX: [c area].x - data->relative.deltaxl * [c size_inc].width
-	  y: [c area].y - data->relative.deltayu * [c size_inc].height
-	  width: [c area].width + data->relative.deltax * [c size_inc].width
-		 + data->relative.deltaxl * [c size_inc].width
-         height: [c area].height + data->relative.deltay * [c size_inc].height
-	         + data->relative.deltayu * [c size_inc].height];
+  x = [c area].x;
+  y = [c area].y;
+  ow = [c area].width;
+  w = ow + data->relative.deltax * [c size_inc].width
+      + data->relative.deltaxl * [c size_inc].width;
+  oh = [c area].height;
+  h = oh + data->relative.deltay * [c size_inc].height
+      + data->relative.deltayu * [c size_inc].height;
+
+  [c tryConfigureToCorner: OB_CORNER_TOPLEFT x: &x y: &y width: &w height: &h
+               logicalW: &lw logicalH: &lh user: YES];
+  [c moveAndResizeToX: x + (ow - w) y: y + (oh - h) width: w height: h];
+
   client_action_end(data);
 }
 
