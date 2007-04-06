@@ -295,11 +295,9 @@ static Window createWindow(Window parent, unsigned long mask,
 
     f = [[AZMenuFrame alloc] initWithMenu: [(AZSubmenuMenuEntry *)entry submenu]
 	                           client: [frame client]];
-    [f moveToX: [frame area].x + [frame area].width
-                    - ob_rr_theme->menu_overlap - ob_rr_theme->bwidth
-	     y: [frame area].y + [frame title_h] +
-                    area.y + ob_rr_theme->menu_overlap];
-    [f showWithParent: frame];
+    /* pass our direction on to our child */
+    [f set_direction_right: [frame direction_right]];
+    [f showSubmenuWithParent: frame entry: self];
 }
 
 - (void) execute: (unsigned int) state time: (Time) time
@@ -379,6 +377,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     selected = nil;
     show_title = YES;
     client = _client;
+    direction_right = YES;
 
     attr.event_mask = FRAME_EVENTMASK;
     window = createWindow(RootWindow(ob_display, ob_screen), 
@@ -421,30 +420,61 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     XMoveWindow(ob_display, window, area.x, area.y);
 }
 
-- (void) moveOnScreen
+- (void) placeTopMenuAtX: (int) x y: (int) y
+{
+    if (client && x < 0 && y < 0) {
+        x = [[client frame] area].x + [[client frame] size].left;
+        y = [[client frame] area].y + [[client frame] size].top;
+    } else {
+        y -= title_h;
+    }
+    [self moveToX: x y: y];
+}
+
+- (void) placeSubmenu
+{
+    int x, y;
+    int overlap;
+    int bwidth;
+
+    overlap = ob_rr_theme->menu_overlap;
+    bwidth = ob_rr_theme->bwidth;
+
+    if (direction_right)
+        x = [parent area].x + [parent area].width - overlap - bwidth;
+    else
+        x = [parent area].x - area.width + overlap + bwidth;
+
+    y = [parent area].y + [parent title_h] + [parent_entry area].y;
+    y += overlap;
+
+    [self moveToX: x y: y];
+}
+
+- (void) moveOnScreenToX: (int *) dx y: (int *) dy
 {
     Rect *a = NULL;
-    int dx = 0, dy = 0;
     int pos, half;
+    *dx = *dy = 0;
 
     a = [[AZScreen defaultScreen] physicalAreaOfMonitor: monitor];
 
     half = [entries count] / 2;
     pos = [entries indexOfObject: selected];
 
-    /* if in the bottom half then check this shit first, will keep the bottom
+    /* if in the bottom half then check this stuff first, will keep the bottom
        edge of the menu visible */
     if (pos > half) {
-        dx = MAX(dx, a->x - area.x);
-        dy = MAX(dy, a->y - area.y);
+        *dx = MAX(*dx, a->x - area.x);
+        *dy = MAX(*dy, a->y - area.y);
     }
-    dx = MIN(dx, (a->x + a->width) - (area.x + area.width));
-    dy = MIN(dy, (a->y + a->height) - (area.y + area.height));
-    /* if in the top half then check this shit last, will keep the top
+    *dx = MIN(*dx, (a->x + a->width) - (area.x + area.width));
+    *dy = MIN(*dy, (a->y + a->height) - (area.y + area.height));
+    /* if in the top half then check this stuff last, will keep the top
        edge of the menu visible */
     if (pos <= half) {
-        dx = MAX(dx, a->x - area.x);
-        dy = MAX(dy, a->y - area.y);
+        *dx = MAX(*dx, a->x - area.x);
+        *dy = MAX(*dy, a->y - area.y);
     }
 }
 
@@ -608,7 +638,6 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     int fit, fcount;
     int mit, mcount;
 
-    [menu pipeExecute];
     [menu findSubmenus];
 
     selected = nil;
@@ -634,13 +663,16 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     [self render];
 }
 
-- (BOOL) showWithParent: (AZMenuFrame *) p
+/* This is private */
+- (BOOL) isVisible
+{
+  return [[AZMenuFrame visibleFrames] containsObject: self];
+}
+
+- (BOOL) show
 {
     NSMutableArray *visibles = [AZMenuFrame visibleFrames];
     int i, count = [visibles count];
-
-    if ([visibles containsObject: self])
-        return YES;
 
     if (count == 0) {
         /* no menus shown yet */
@@ -651,15 +683,6 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
             return NO;
         }
     }
-
-    if (p) {
-        monitor = [p monitor];
-        if ([p child])
-	    [[p child] hide];
-	[p set_child: self];
-    }
-
-    parent = p;
 
     /* determine if the underlying menu is already visible */
     int found = NSNotFound;
@@ -678,7 +701,84 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     [visibles insertObject: self atIndex: 0];
 
-    [self moveOnScreen];
+    return YES;
+}
+/* End of private */
+
+- (BOOL) showTopMenuAtX: (int) x y: (int) y
+{
+    int dx, dy;
+    uint i;
+
+    if ([self isVisible])
+	return YES;
+    if ([self show] == NO)
+	return NO;
+
+    [self placeTopMenuAtX: x y: y];
+
+    /* find the monitor the menu is on */
+    AZScreen *screen = [AZScreen defaultScreen];
+    for (i = 0; i < [screen numberOfMonitors]; ++i) {
+        Rect *a = [screen physicalAreaOfMonitor: i];
+        if (RECT_CONTAINS(*a, x, y)) {
+            monitor = i;
+            break;
+        }
+     }
+
+    [self moveOnScreenToX: &dx y: &dy];
+    [self moveToX: x y: y];
+
+    XMapWindow(ob_display, window);
+
+    return YES;
+}
+
+- (BOOL) showSubmenuWithParent: (AZMenuFrame *) pt
+                         entry: (AZMenuEntryFrame *) pt_entry
+{
+    int dx, dy;
+
+    if ([self isVisible])
+	return YES;
+
+    monitor = [pt monitor];
+    parent = pt;
+    parent_entry = pt_entry;
+
+    /* set up parent's child to be us */
+    if ([pt child])
+	[[pt child] hide];
+    [pt set_child: self];
+
+    if ([self show] == NO)
+	return NO;
+
+    [self placeSubmenu];
+    [self moveOnScreenToX: &dx y: &dy];
+
+    if (dx == 0) {
+	[self moveToX: area.x y: area.y+dy];
+    } else {
+        BOOL dir;
+
+        /* flip the direction in which we're placing submenus */
+        if (dx > 0)
+            dir = YES;
+        else
+            dir = NO;
+
+        /* if it changed, then replace the menu on the opposite side,
+           and try keep it on the screen too */
+        if (dir != direction_right) 
+	{
+            direction_right = dir;
+	    [self placeSubmenu];
+	    [self moveOnScreenToX: &dx y: &dy];
+	    [self moveToX: area.x+dx y: area.y+dy];
+        }
+    }
 
     XMapWindow(ob_display, window);
 
@@ -698,6 +798,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
     if (parent)
         [parent set_child: nil];
     parent = nil;
+    parent_entry = nil;
 
     [visibles removeObject: self];
 
@@ -818,6 +919,9 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 - (Strut) item_margin { return item_margin; }
 - (NSArray *) entries { return entries; }
 - (void) set_show_title: (BOOL) b { show_title = b; }
+
+- (void) set_direction_right: (BOOL) d { direction_right = d; }
+- (BOOL) direction_right { return direction_right; }
 
 - (Window_InternalType) windowType { return Window_Menu; }
 - (int) windowLayer { return OB_STACKING_LAYER_INTERNAL; }

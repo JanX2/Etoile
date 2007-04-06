@@ -39,7 +39,6 @@ typedef struct _ObMenuParseState ObMenuParseState;
 struct _ObMenuParseState
 {
     AZMenu *parent;
-    AZMenu *pipe_creator;
 };
 
 static AZParser *menu_parse_inst = nil;
@@ -53,55 +52,6 @@ static void parse_menu_separator(AZParser *parser,
                                  void * data);
 static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                        void *data);
-
-void menu_pipe_execute(AZMenu *self)
-{
-    xmlDocPtr doc;
-    xmlNodePtr node;
-    const char *output;
-
-    if (![self execute])
-        return;
-
-    NSString *command;
-    NSArray *com = [[self execute] componentsSeparatedByString: @" "];
-    NSArray *args = nil;
-    if ([com count] > 1) {
-      args = [com subarrayWithRange: NSMakeRange(1, [com count]-1)];
-      command = [com objectAtIndex: 0];
-
-    }
-    else
-    {
-      command = [self execute];
-    }
-    NSPipe *pipe = [NSPipe pipe];
-    NSTask *task = [[NSTask alloc] init];
-    [task setStandardOutput: pipe];
-    [task setLaunchPath: command];
-    if (args)
-      [task setArguments: args];
-    [task launch];
-    NSFileHandle *f_output = [pipe fileHandleForReading];
-    NSData *data = [f_output readDataToEndOfFile];
-    NSString *s = [[NSString alloc] initWithData: data encoding: [NSString defaultCStringEncoding]];
-    output = [s UTF8String];
-    AUTORELEASE(task);
-
-    if (parse_load_mem((char*)output, strlen(output),
-                       "openbox_pipe_menu", &doc, &node))
-    {
-	[[AZMenuManager defaultManager] removePipeMenu: self];
-	[self clearEntries];
-
-        menu_parse_state.pipe_creator = self;
-        menu_parse_state.parent = self;
-	[menu_parse_inst parseDocument: doc node: node->children];
-        xmlFreeDoc(doc);
-    } else {
-        NSLog(@"Warning: Invalid output from pipe-menu: %@", [self execute]);
-    }
-}
 
 static void parse_menu_item(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                             void * data)
@@ -151,7 +101,6 @@ static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
 	    return;
 
         if ((menu = [[AZMenu alloc] initWithName: name title: title])) {
-            [menu set_pipe_creator: state->pipe_creator];
             if (parse_attr_string("execute", node, &script)) {
                 [menu set_execute: [script stringByExpandingTildeInPath]];
             } else {
@@ -217,7 +166,6 @@ static AZMenuManager *sharedInstance;
     menu_parse_inst = [[AZParser alloc] init];
 
     menu_parse_state.parent = nil;
-    menu_parse_state.pipe_creator = nil;
     [menu_parse_inst registerTag: @"menu" callback: parse_menu 
 	                 data: &menu_parse_state];
     [menu_parse_inst registerTag: @"item" callback: parse_menu_item 
@@ -284,24 +232,11 @@ static AZMenuManager *sharedInstance;
   [menu_hash removeObjectForKey: [menu name]];
 }
 
-- (void) removePipeMenu: (AZMenu *) pipe_menu
-{
-  NSArray *keys = [menu_hash allKeys];
-  int i, count = [keys count];
-  for (i = 0; i < count; i++) {
-     AZMenu *m = [menu_hash objectForKey: [keys objectAtIndex: i]];
-     if ([m pipe_creator] == pipe_menu) {
-       [self removeMenu: m];
-     }
-  }
-}
-
 - (void) showMenu: (NSString *) name x: (int) x y: (int) y 
 	   client: (AZClient *) client
 {
     AZMenu *menu;
     AZMenuFrame *frame;
-    unsigned int i;
 
     if (!(menu = [self menuWithName: name])
 	|| [[AZKeyboardHandler defaultHandler] interactivelyGrabbed]) return;
@@ -318,21 +253,7 @@ static AZMenuManager *sharedInstance;
     AZMenuFrameHideAll();
 
     frame = [[AZMenuFrame alloc] initWithMenu: menu client: client];
-    if (client && x < 0 && y < 0) {
-        x = [[client frame] area].x + [[client frame] size].left;
-        y = [[client frame] area].y + [[client frame] size].top;
-	[frame moveToX: x y: y];
-    } else
-	[frame moveToX: x - ob_rr_theme->bwidth y: y - ob_rr_theme->bwidth];
-    AZScreen *screen = [AZScreen defaultScreen];
-    for (i = 0; i < [screen numberOfMonitors]; ++i) {
-        Rect *a = [screen physicalAreaOfMonitor: i];
-        if (RECT_CONTAINS(*a, x, y)) {
-	    [frame set_monitor: i];
-            break;
-        }
-    }
-    if (![frame showWithParent: nil])
+    if (![frame showTopMenuAtX: x y: y])
 	DESTROY(frame);
 #if 0 
     /* I don't think it is a good idea to select the first non-submenu 

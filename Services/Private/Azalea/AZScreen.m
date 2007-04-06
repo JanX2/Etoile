@@ -123,9 +123,10 @@ static AZScreen *sharedInstance;
                window, screen_support_win);
 
     /* set the _NET_SUPPORTED_ATOMS hint */
-    num_support = 54;
+    num_support = 55;
     i = 0;
     supported = calloc(sizeof(unsigned long), num_support);
+    supported[i++] = prop_atoms.net_wm_full_placement;
     supported[i++] = prop_atoms.net_current_desktop;
     supported[i++] = prop_atoms.net_number_of_desktops;
     supported[i++] = prop_atoms.net_desktop_geometry;
@@ -379,8 +380,7 @@ static AZScreen *sharedInstance;
 	id <AZWindow> temp = [stacking windowAtIndex: i];
 	if (WINDOW_IS_CLIENT(temp)) {
             AZClient *c = (AZClient *)temp;
-	    if ([c shouldShow])
-		[[c frame] show];
+	    [c showhide];
         }
     }
 
@@ -390,8 +390,7 @@ static AZScreen *sharedInstance;
 	id <AZWindow> temp = [stacking windowAtIndex: i];
         if (WINDOW_IS_CLIENT(temp)) {
             AZClient *c = (AZClient *) temp;
-            if ([[c frame] visible] && ![c shouldShow])
-		[[c frame] hide];
+	    [c showhide];
         }
     }
 
@@ -601,8 +600,7 @@ done_cycle:
             id <AZWindow> temp = [stacking windowAtIndex: i];
             if (WINDOW_IS_CLIENT(temp)) {
                 AZClient *client = (AZClient *)temp;
-                if ([[client frame] visible] && ![client shouldShow])
-		    [[client frame] hide];
+		[client showhide];
             }
         }
     } else {
@@ -612,8 +610,7 @@ done_cycle:
 	    id <AZWindow> temp = [stacking windowAtIndex: i];
             if (WINDOW_IS_CLIENT(temp)) {
                 AZClient *client = (AZClient *)temp;
-                if (![[client frame] visible] && [client shouldShow])
-	            [[client frame] show];
+		[client showhide];
             }
         }
     }

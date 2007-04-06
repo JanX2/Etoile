@@ -42,15 +42,9 @@
 
     /* ObMenuEntry list */
     NSMutableArray *entries;
-
-    /* Pipe-menu parent, we get destroyed when it is destroyed */
-    AZMenu *pipe_creator;
 }
 
 - (id) initWithName: (NSString *) name title: (NSString *) title;
-
-/* Repopulate a pipe-menu by running its command */
-- (void) pipeExecute;
 
 /* functions for building menus */
 - (AZNormalMenuEntry *) addNormalMenuEntry: (int) identifier label: (NSString *) label actions: (NSArray *) actions;
@@ -72,11 +66,9 @@
 - (NSString *) title;
 - (NSString *) execute;
 - (NSMutableArray *) entries;
-- (AZMenu *) pipe_creator;
 - (void) set_name: (NSString *) name;
 - (void) set_title: (NSString *) title;
 - (void) set_execute: (NSString *) execute;
-- (void) set_pipe_creator: (AZMenu *) pipe_creator;
 
 @end
 

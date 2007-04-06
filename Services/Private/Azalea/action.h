@@ -140,7 +140,6 @@ struct CycleWindows {
 
 struct Stacking {
     struct AnyAction any;
-    BOOL group;
 };
 
 union ActionData {

@@ -366,24 +366,23 @@ static AZClientManager *sharedInstance;
 {
 //    unsigned int j;
 
-    AZDebug("Unmanaging window: %lx (%s)\n", [client window], [client class]);
-
     NSAssert(client != NULL, @"Client cannot be nil");
-
-    [[AZKeyboardHandler defaultHandler] grab: NO forClient: client];
-    [[AZMouseHandler defaultHandler] grab: NO forClient: client];
 
     /* potentially fix focusLast */
     if (config_focus_last)
         grab_pointer(YES, OB_CURSOR_NONE);
+
+    [[client frame] hide];
+    XFlush(ob_display);
+
+    [[AZKeyboardHandler defaultHandler] grab: NO forClient: client];
+    [[AZMouseHandler defaultHandler] grab: NO forClient: client];
 
     /* remove the window from our save set */
     XChangeSaveSet(ob_display, [client window], SetModeDelete);
 
     /* we dont want events no more */
     XSelectInput(ob_display, [client window], NoEventMask);
-
-    [[client frame] hide];
 
     [clist removeObject: client];
     [[AZStacking stacking] removeWindow: client];
@@ -392,7 +391,7 @@ static AZClientManager *sharedInstance;
     /* update the focus lists */
     [[AZFocusManager defaultManager] focusOrderRemove: client];
 
-    /* once the client is out of the list, update the struts to remove it's
+    /* once the client is out of the list, update the struts to remove its
        influence */
     if (STRUT_EXISTS([client strut]))
       [[AZScreen defaultScreen] updateAreas];
@@ -458,6 +457,27 @@ static AZClientManager *sharedInstance;
     /* reparent the window out of the frame, and free the frame */
     [[client frame] releaseClient: client];
     [client set_frame: nil];
+
+    /* restore the window's original geometry so it is not lost */
+    if ([client fullscreen])
+        XMoveResizeWindow(ob_display, [client window],
+                          [client pre_fullscreen_area].x,
+                          [client pre_fullscreen_area].y,
+                          [client pre_fullscreen_area].width,
+                          [client pre_fullscreen_area].height);
+    else if ([client max_horz] || [client max_vert]) {
+        Rect a = [client area];
+        if ([client max_horz]) {
+            a.x = [client pre_max_area].x;
+            a.width = [client pre_max_area].width;
+        }
+        if ([client max_vert]) {
+            a.y = [client pre_max_area].y;
+            a.height = [client pre_max_area].height;
+        }
+        XMoveResizeWindow(ob_display, [client window],
+                          a.x, a.y, a.width, a.height);
+    }
      
     if (ob_state() != OB_STATE_EXITING) {
         /* these values should not be persisted across a window

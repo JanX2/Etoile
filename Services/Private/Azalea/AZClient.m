@@ -441,7 +441,7 @@
     return ox != *x || oy != *y;
 }
 
-- (void) fullscreen: (BOOL) fs saveArea: (BOOL) savearea
+- (void) fullscreen: (BOOL) fs
 {
     int x, y, w, h;
 
@@ -453,10 +453,17 @@
     [self calcLayer];   /* and adjust out layer/stacking */
 
     if (fs) {
-        if (savearea)
-	{
-            pre_fullscreen_area = area;
-	}
+        pre_fullscreen_area = area;
+        /* if the window is maximized, its area isn't all that meaningful.
+           save it's premax area instead. */
+        if (max_horz) {
+            pre_fullscreen_area.x = pre_max_area.x;
+            pre_fullscreen_area.width = pre_max_area.width;
+        }
+        if (max_vert) {
+            pre_fullscreen_area.y = pre_max_area.y;
+            pre_fullscreen_area.height = pre_max_area.height;
+        }
 
         /* these are not actually used cuz client_configure will set them
            as appropriate when the window is fullscreened */
@@ -496,7 +503,7 @@
     [client iconifyRecursive: _iconic currentDesktop: curdesk];
 }
 
-- (void) maximize: (BOOL) max direction: (int) dir saveArea: (BOOL) savearea
+- (void) maximize: (BOOL) max direction: (int) dir
 {
     int x, y, w, h;
      
@@ -522,17 +529,15 @@
     h = area.height;
 
     if (max) {
-        if (savearea) {
-            if ((dir == 0 || dir == 1) && !max_horz) { /* horz */
-                RECT_SET(pre_max_area,
-                         area.x, pre_max_area.y,
-                         area.width, pre_max_area.height);
-            }
-            if ((dir == 0 || dir == 2) && !max_vert) { /* vert */
-                RECT_SET(pre_max_area,
-                         pre_max_area.x, area.y,
-                         pre_max_area.width, area.height);
-            }
+        if ((dir == 0 || dir == 1) && !max_horz) { /* horz */
+            RECT_SET(pre_max_area,
+                     area.x, pre_max_area.y,
+                     area.width, pre_max_area.height);
+	}
+        if ((dir == 0 || dir == 2) && !max_vert) { /* vert */
+            RECT_SET(pre_max_area,
+                     pre_max_area.x, area.y,
+                     pre_max_area.width, area.height);
         }
     } else {
         Rect *a;
@@ -811,23 +816,23 @@
         if (_max_horz != max_horz && _max_vert != max_vert) {
             /* toggling both */
             if (_max_horz == _max_vert) { /* both going the same way */
-		[self maximize: _max_horz direction: 0 saveArea: YES];
+		[self maximize: _max_horz direction: 0];
             } else {
-		[self maximize: _max_horz direction: 1 saveArea: YES];
-		[self maximize: _max_vert direction: 2 saveArea: YES];
+		[self maximize: _max_horz direction: 1];
+		[self maximize: _max_vert direction: 2];
             }
         } else {
             /* toggling one */
             if (_max_horz != max_horz)
-		[self maximize: _max_horz direction: 1 saveArea: YES];
+		[self maximize: _max_horz direction: 1];
             else
-		[self maximize: _max_vert direction: 2 saveArea: YES];
+		[self maximize: _max_vert direction: 2];
         }
     }
     /* change fullscreen state before shading, as it will affect if the window
        can shade or not */
     if (_fullscreen != fullscreen)
-	[self fullscreen: _fullscreen saveArea: YES];
+	[self fullscreen: _fullscreen];
     if (_shaded != shaded)
 	[self shade: _shaded];
     if (_undecorated != undecorated)
@@ -904,14 +909,7 @@
     }
 
     if ([oself can_focus]) {
-        /* RevertToPointerRoot causes much more headache than RevertToNone, so
-           I choose to use it always, hopefully to find errors quicker, if any
-           are left. (I hate X. I hate focus events.)
-           
-           Update: Changing this to RevertToNone fixed a bug with mozilla (bug
-           #799. So now it is RevertToNone again.
-        */
-        XSetInputFocus(ob_display, [oself window], RevertToNone,
+        XSetInputFocus(ob_display, [oself window], RevertToPointerRoot,
                        event_curtime);
     }
 
@@ -2524,7 +2522,8 @@
     }
     if (fullscreen) {
         fullscreen = NO;
-	[self fullscreen: YES saveArea: NO];
+	[self fullscreen: YES];
+	pos = YES;
     }
     if (undecorated) {
         undecorated = NO;
@@ -2544,13 +2543,28 @@
     if (max_vert && max_horz) {
         max_vert = NO;
 	max_horz = NO;
-	[self maximize: YES direction: 0 saveArea: NO];
+	[self maximize: YES direction: 0];
+	pos = YES;
     } else if (max_vert) {
         max_vert = NO;
-	[self maximize: YES direction: 2 saveArea: NO];
+	[self maximize: YES direction: 2];
+	pos = YES;
     } else if (max_horz) {
         max_horz = NO;
-	[self maximize: YES direction: 1 saveArea: NO];
+	[self maximize: YES direction: 1];
+	pos = YES;
+    }
+
+    /* if the client didn't get positioned yet, then do so now
+       call client_move even if the window is not being moved anywhere, because
+       when we reparent it and decorate it, it is getting moved and we need to
+       be telling it so with a ConfigureNotify event.
+    */
+    if (!pos) {
+        /* use the saved position */
+        area.x = ox;
+        area.y = oy;
+	[self moveToX: x y: y];
     }
 
     /* nothing to do for the other states:
@@ -2802,13 +2816,17 @@
     }
     if (!(functions & OB_CLIENT_FUNC_FULLSCREEN) && fullscreen) {
         if (frame) 
-		[self fullscreen: NO saveArea: YES];
-        else fullscreen = NO;
+	  [self fullscreen: NO];
+        else 
+	  fullscreen = NO;
     }
     if (!(functions & OB_CLIENT_FUNC_MAXIMIZE) && (max_horz || max_vert)) {
-        if (frame) {
-          [self maximize: NO direction: 0 saveArea: YES];
-	} else {
+        if (frame) 
+	{
+          [self maximize: NO direction: 0];
+	}
+	else 
+	{
 	  max_vert = NO;
 	  max_horz = NO;
 	}

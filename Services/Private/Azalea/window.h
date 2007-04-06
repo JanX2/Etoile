@@ -24,8 +24,6 @@
 
 typedef enum {
     Window_Menu,
-    Window_Dock,
-    Window_DockApp, /* used for events but not stacking */
     Window_Client,
     Window_Internal /* used for stacking but not events */
 } Window_InternalType;
@@ -45,8 +43,6 @@ typedef enum {
 @end
 
 #define WINDOW_IS_MENU(win) ([((id <AZWindow>)(win)) windowType] == Window_Menu)
-#define WINDOW_IS_DOCK(win) ([((id <AZWindow>)(win)) windowType] == Window_Dock)
-#define WINDOW_IS_DOCKAPP(win) ([((id <AZWindow>)(win)) windowType] == Window_DockApp)
 #define WINDOW_IS_CLIENT(win) ([((id <AZWindow>)(win)) windowType] == Window_Client)
 #define WINDOW_IS_INTERNAL(win) ([((id <AZWindow>)(win)) windowType] == Window_Internal)
 

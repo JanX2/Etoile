@@ -40,10 +40,14 @@
   AZClient *client;
 
   AZMenuFrame *parent;
+  AZMenuEntryFrame *parent_entry;
   AZMenuFrame *child;
 
   NSMutableArray *entries;
   AZMenuEntryFrame *selected;
+
+  /* If the submenus are being drawn to the right or the left */
+  BOOL direction_right;
 
   /* If a titlebar is displayed for the menu or not (for top-level menus) */
   BOOL show_title;
@@ -69,8 +73,12 @@
 + (NSMutableArray *) visibleFrames;
 
 - (void) moveToX: (int) x y: (int) y;
-- (void) moveOnScreen;
-- (BOOL) showWithParent: (AZMenuFrame *) parent;
+- (void) moveOnScreenToX: (int *) x y: (int *) y;
+- (void) placeTopMenuAtX: (int) x y: (int) y;
+- (void) placeSubmenu;
+- (BOOL) showTopMenuAtX: (int) x y: (int) y;
+- (BOOL) showSubmenuWithParent: (AZMenuFrame *) parent 
+                         entry: (AZMenuEntryFrame *) parent_entry;
 - (void) hide;
 - (void) selectMenuEntryFrame: (AZMenuEntryFrame *) entry;
 - (void) selectPrevious;
@@ -99,6 +107,9 @@
 - (Strut) item_margin;
 - (NSArray *) entries;
 - (void) set_show_title: (BOOL) show_title;
+
+- (void) set_direction_right: (BOOL) direction_right;
+- (BOOL) direction_right;
 
 - (id) initWithMenu: (AZMenu *) menu client: (AZClient *) client;
 

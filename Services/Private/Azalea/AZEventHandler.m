@@ -126,6 +126,8 @@ BOOL event_time_after(Time t1, Time t2)
         return t1 >= t2 && t1 < (t2 + TIME_HALF);
 }
 
+static Bool look_for_focusin(Display *d, XEvent *e, XPointer arg);
+
 static AZEventHandler *sharedInstance;
 
 @interface AZEventHandler (AZPrivate)
@@ -138,6 +140,7 @@ static AZEventHandler *sharedInstance;
 - (AZMenuFrame *) findActiveOrLastMenu;
 - (Window) getWindow: (XEvent *) e;
 - (void) hackMods: (XEvent *) e;
+- (BOOL) wantedFocusEvent: (XEvent *) e;
 - (BOOL) ignoreEvent: (XEvent *) e forClient: (AZClient *) client;
 
 /* callback */
@@ -873,6 +876,11 @@ static AZEventHandler *sharedInstance;
 		       button: e->xclient.data.l[3]
                        corner: e->xclient.data.l[2]];
             }
+            else if ((Atom)e->xclient.data.l[2] ==
+                     prop_atoms.net_wm_moveresize_cancel)
+	    {
+		[[AZMoveResizeHandler defaultHandler] end: YES];
+	    }
         } else if (msgtype == prop_atoms.net_moveresize_window) {
             int oldg = [client gravity];
             int tmpg, x, y, w, h;
@@ -1045,11 +1053,14 @@ static AZEventHandler *sharedInstance;
         }
         break;
     case MotionNotify:
-        if ((f = AZMenuFrameUnder(ev->xmotion.x_root, ev->xmotion.y_root))) {
-	    [f moveOnScreen];
+        if ((f = AZMenuFrameUnder(ev->xmotion.x_root, ev->xmotion.y_root))) 
+	{
             if ((e = AZMenuEntryFrameUnder(ev->xmotion.x_root,
                                             ev->xmotion.y_root)))
+	    {
+		/* XXX menu_frame_entry_move_on_screen(f); */
 		[f selectMenuEntryFrame: e];
+	    }
         }
         {
             AZMenuFrame *a;
@@ -1206,6 +1217,75 @@ static AZEventHandler *sharedInstance;
     }
 }
 
+- (BOOL) wantedFocusEvent: (XEvent *) e
+{
+    int mode = e->xfocus.mode;
+    int detail = e->xfocus.detail;
+    Window win = e->xany.window;
+
+    if (e->type == FocusIn) {
+
+        /* These are ones we never want.. */
+
+        /* This means focus was given by a keyboard/mouse grab. */
+        if (mode == NotifyGrab)
+            return NO;
+        /* This means focus was given back from a keyboard/mouse grab. */
+        if (mode == NotifyUngrab)
+            return NO;
+
+        /* These are the ones we want.. */
+
+        if (win == RootWindow(ob_display, ob_screen)) {
+            /* This means focus reverted off of a client */
+            if (detail == NotifyPointerRoot || detail == NotifyDetailNone ||
+                detail == NotifyInferior)
+                return YES;
+            else
+                return NO;
+        }
+
+        /* This means focus moved from the root window to a client */
+        if (detail == NotifyVirtual)
+            return YES;
+        /* This means focus moved from one client to another */
+        if (detail == NotifyNonlinearVirtual)
+            return YES;
+
+        /* This means focus reverted off of a client */
+        if (detail == NotifyInferior)
+            return YES;
+
+        /* Otherwise.. */
+        return NO;
+    } else {
+	NSAssert(e->type == FocusOut, @"Not a FocusOut event");
+
+
+        /* These are ones we never want.. */
+
+        /* This means focus was taken by a keyboard/mouse grab. */
+        if (mode == NotifyGrab)
+            return NO;
+
+        /* Focus left the root window revertedto state */
+        if (win == RootWindow(ob_display, ob_screen))
+            return NO;
+
+        /* These are the ones we want.. */
+
+        /* This means focus moved from a client to the root window */
+        if (detail == NotifyVirtual)
+            return YES;
+        /* This means focus moved from one client to another */
+        if (detail == NotifyNonlinearVirtual)
+            return YES;
+
+        /* Otherwise.. */
+        return NO;
+    }
+}
+
 - (BOOL) ignoreEvent: (XEvent *) e forClient: (AZClient *) client
 {
     switch(e->type) {
@@ -1338,3 +1418,9 @@ static AZEventHandler *sharedInstance;
 
 @end
 
+/* X protocal callback */
+static Bool look_for_focusin(Display *d, XEvent *e, XPointer arg)
+{
+    return (e->type == FocusIn && 
+            [[AZEventHandler defaultHandler] wantedFocusEvent: e]);
+}

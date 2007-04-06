@@ -36,11 +36,8 @@
 
 - (AZMenu *) menuWithName: (NSString *) name;
 - (void) removeMenu: (AZMenu *) menu;
-- (void) removePipeMenu: (AZMenu *) pipe_menu;
 - (void) showMenu: (NSString *) name x: (int) x y: (int) y client: (AZClient *) client;
 - (void) registerMenu: (AZMenu *) menu;
 
 @end
-
-void menu_pipe_execute(AZMenu *menu);
 

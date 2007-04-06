@@ -69,7 +69,6 @@ static Visual *check_32bit_client(AZClient *c)
 - (void) layoutTitle;
 - (void) setThemeStatics;
 - (void) freeThemeStatics;
-//- (void) setFrameExtents; /* Set _NET_FRAME_EXTENTS */
 
 /* callback */
 - (BOOL) flashTimeout: (id) data;
@@ -99,11 +98,10 @@ static Visual *check_32bit_client(AZClient *c)
        req's) the ButtonPress is to catch clicks on the client border */
     XSelectInput(ob_display, plate, PLATE_EVENTMASK);
 
+    [self adjustAreaWithMoved: YES resized: YES fake: NO];
+
     /* map the client so it maps when the frame does */
     XMapWindow(ob_display, [client window]);
-
-    [self adjustAreaWithMoved: YES resized: YES fake: NO];
-//    [self setFrameExtents];
 
     /* set all the windows for the frame in the window_map */
     [window_map setObject: client forKey: [NSNumber numberWithInt: window]];
@@ -890,19 +888,6 @@ static Visual *check_32bit_client(AZClient *c)
     a_focused_handle = [ob_rr_theme->a_focused_handle copy];
     a_icon = [ob_rr_theme->a_icon copy];
 }
-
-#if 0
-- (void) setFrameExtents /* Set _NET_FRAME_EXTENTS */
-{
-  unsigned long *extents = calloc(sizeof(unsigned long), 4);
-  extents[0] = innersize.left+bwidth;
-  extents[1] = innersize.right+bwidth;
-  extents[2] = innersize.top+bwidth;
-  extents[3] = innersize.bottom+bwidth;
-  PROP_SETA32([_client window], net_frame_extents, cardinal, extents, 4);
-  free(extents);
-}
-#endif
 
 - (void) freeThemeStatics
 {

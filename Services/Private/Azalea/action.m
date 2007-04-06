@@ -1286,14 +1286,14 @@ void action_resize_relative(union ActionData *data)
 void action_maximize_full(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c maximize: YES direction: 0 saveArea: YES];
+    [data->client.any.c maximize: YES direction: 0];
     client_action_end(data);
 }
 
 void action_unmaximize_full(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c maximize: NO direction: 0 saveArea: YES];
+    [data->client.any.c maximize: NO direction: 0];
     client_action_end(data);
 }
 
@@ -1303,21 +1303,21 @@ void action_toggle_maximize_full(union ActionData *data)
     [data->client.any.c maximize:  
 	       !([data->client.any.c max_horz] || 
 		 [data->client.any.c max_vert])
-	    direction: 0 saveArea: YES];
+	    direction: 0];
     client_action_end(data);
 }
 
 void action_maximize_horz(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c maximize: YES direction: 1 saveArea: YES];
+    [data->client.any.c maximize: YES direction: 1];
     client_action_end(data);
 }
 
 void action_unmaximize_horz(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c maximize: NO direction: 1 saveArea: YES];
+    [data->client.any.c maximize: NO direction: 1];
     client_action_end(data);
 }
 
@@ -1325,21 +1325,21 @@ void action_toggle_maximize_horz(union ActionData *data)
 {
     client_action_start(data);
     [data->client.any.c maximize: ![data->client.any.c max_horz]
-	    direction: 1 saveArea: YES];
+	               direction: 1];
     client_action_end(data);
 }
 
 void action_maximize_vert(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c maximize: YES direction: 2 saveArea: YES];
+    [data->client.any.c maximize: YES direction: 2];
     client_action_end(data);
 }
 
 void action_unmaximize_vert(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c maximize: NO direction: 2 saveArea: YES];
+    [data->client.any.c maximize: NO direction: 2];
     client_action_end(data);
 }
 
@@ -1347,15 +1347,14 @@ void action_toggle_maximize_vert(union ActionData *data)
 {
     client_action_start(data);
     [data->client.any.c maximize: ![data->client.any.c max_vert]
-	    direction: 2 saveArea: YES];
+	               direction: 2];
     client_action_end(data);
 }
 
 void action_toggle_fullscreen(union ActionData *data)
 {
     client_action_start(data);
-    [data->client.any.c fullscreen: !([data->client.any.c fullscreen])
-	                       saveArea: YES];
+    [data->client.any.c fullscreen: !([data->client.any.c fullscreen])];
     client_action_end(data);
 }
 
