@@ -1,5 +1,10 @@
 2007-04-07  Quentin Mathe <qmathe@club-internet.fr>
 
+	* ApplicationManager.m: Almost fully updated the indenting to be compliant 
+	with Etoile coding guidelines. Improved documentation.
+
+2007-04-07  Quentin Mathe <qmathe@club-internet.fr>
+
 	* EtoileSystem.m: Minor logging improvement.
 
 2007-03-22  Quentin Mathe <qmathe@club-internet.fr>

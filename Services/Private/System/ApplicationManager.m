@@ -31,13 +31,11 @@
 // and load it only when necessary. Or may be put this stuff in another daemon.
 
 #import "ApplicationManager.h"
-
+#import "EtoileSystem.h"
 #import <sys/types.h>
 #import <signal.h>
 // FIXME: Not sure the following line is needed on some platforms or never?
 //#import "OSType.h"
-
-#import "EtoileSystem.h"
 
 /* Strings with log out result description. They are used in informative alerts
    that give feedback to the user about his log out choice. */
@@ -56,31 +54,30 @@ static NSString *hasQuitReplyText = nil;
 static ApplicationManager *serverInstance = nil;
 static NSConnection *serverConnection = nil;
 
+/** Returns a proxy of ApplicationManager singleton in remote processes or the
+    singleton object itself in the local process (etoile_system presently). */
 + (id) sharedInstance
 {
-  /*if (shared == nil)
-    {
-      shared = [self new];
-    }
+	if (serverInstance == nil)
+	{
+		serverInstance = [self new];
+		[ApplicationManager setUpServerInstance: serverInstance];
+	}
 
-  return shared;*/
-  if (serverInstance == nil)
-    {
-      serverInstance = [self new];
-      [ApplicationManager setUpServerInstance: serverInstance];
-    }
-
-  return serverInstance;
+	return serverInstance;
 }
 
+/** Assigns <param>instance</param> object as the singleton to be returned by
+    -sharedInstance. Also creates a connection and vends 
+    <param>instance</param> over it, that lets other processes access it
+    through a proxy. */
 + (BOOL) setUpServerInstance: (id)instance
 {
 	ASSIGN(serverInstance, instance);
 
 	/* Finish set up by exporting server instance through DO */
-	//NSConnection *theConnection = [NSConnection defaultConnection];
-	NSConnection *theConnection = [NSConnection connectionWithReceivePort: [NSPort port] sendPort: [NSPort port]];
-	
+	NSConnection *theConnection = [NSConnection defaultConnection];
+
 	[theConnection setRootObject: instance];
 	if ([theConnection registerName: @"/etoileusersession"] == NO) 
 	{
@@ -94,98 +91,96 @@ static NSConnection *serverConnection = nil;
 
 	ASSIGN(serverConnection, theConnection);
 	
-	NSLog(@"Setting up ApplicationManager server instance");
+	NSDebugLLog(@"ApplicationManager", @"Setting up ApplicationManager server \
+instance");
 	
 	return YES;
 }
 
 - (void) dealloc
 {
-  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver: self];
+	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver: self];
 
-  TEST_RELEASE (launchedApplications);
-  TEST_RELEASE (waitedApplications);
-  TEST_RELEASE (terminateLaterTimers);
-  TEST_RELEASE (replyLock);
-  TEST_RELEASE (serverConnection);
+	TEST_RELEASE (launchedApplications);
+	TEST_RELEASE (waitedApplications);
+	TEST_RELEASE (terminateLaterTimers);
+	TEST_RELEASE (replyLock);
+	TEST_RELEASE (serverConnection);
 
-  [super dealloc];
+	[super dealloc];
 }
 
+/** Returns a fully initialized ApplicationManager instance. */
 - (id) init
 {
-  if ((self = [super init]) != nil)
-    {
-      NSNotificationCenter * nc;
-      NSInvocation * inv;
+	if ((self = [super init]) != nil)
+	{
+		NSNotificationCenter * nc;
+		NSInvocation * inv;
 
-      cancelReplyText = _(@"Service %@ cancels the log out.");
-      noReplyText = _(@"Service %@ does not reply."); // You can continue the log out by choosing Force To Quit.
-      hasQuitReplyText = _(@"Service %@ does not quit in the 1 minute delay \
+		cancelReplyText = _(@"Service %@ cancels the log out.");
+		noReplyText = _(@"Service %@ does not reply."); // You can continue the log out by choosing Force To Quit.
+		hasQuitReplyText = _(@"Service %@ does not quit in the 1 minute delay \
         requested to let you save your documents or finish you activity.");
 
-      launchedApplications = [NSMutableDictionary new];
-      waitedApplications = [NSMutableDictionary new];
-      terminateLaterTimers = [NSMutableArray new];
-      replyLock = [NSLock new];
+		launchedApplications = [NSMutableDictionary new];
+		waitedApplications = [NSMutableDictionary new];
+		terminateLaterTimers = [NSMutableArray new];
+		replyLock = [NSLock new];
 
-      nc = [[NSWorkspace sharedWorkspace] notificationCenter];
-      [nc addObserver: self
-             selector: @selector(noteApplicationLaunched:)
-                 name: NSWorkspaceDidLaunchApplicationNotification
-               object: nil];
-      [nc addObserver: self
-             selector: @selector(noteApplicationTerminated:)
-                 name: NSWorkspaceDidTerminateApplicationNotification
-               object: nil];
+		nc = [[NSWorkspace sharedWorkspace] notificationCenter];
+		[nc addObserver: self
+		       selector: @selector(noteApplicationLaunched:)
+		           name: NSWorkspaceDidLaunchApplicationNotification
+		         object: nil];
+		[nc addObserver: self
+		       selector: @selector(noteApplicationTerminated:)
+		           name: NSWorkspaceDidTerminateApplicationNotification
+		         object: nil];
 
- 	//FIXME: Stack frame related crash in -invoke with...
-	//inv = NS_MESSAGE(self, checkLiveApplications);
-	inv = [[NSInvocation alloc] initWithTarget: self selector: 
-		@selector(checkLiveApplications)];
-	AUTORELEASE(inv);
-      ASSIGN(autocheckTimer, [NSTimer scheduledTimerWithTimeInterval: 1.0
-                                                          invocation: inv
-                                                             repeats: YES]);
-    }
+		//FIXME: Stack frame related crash in -invoke with...
+		//inv = NS_MESSAGE(self, checkLiveApplications);
+		inv = [[NSInvocation alloc] initWithTarget: self selector: 
+				@selector(checkLiveApplications)];
+		AUTORELEASE(inv);
+		ASSIGN(autocheckTimer, [NSTimer scheduledTimerWithTimeInterval: 1.0
+		                                                    invocation: inv
+		                                                       repeats: YES]);
+	}
 
-  return self;
+	return self;
 }
 
-/**
- * Returns a list of launched applications. The list is structured in the
- * format as returned by -[NSWorkspace launchedApplications]
- */
+/** Returns a list of launched applications. The list is structured in the
+    format as returned by -[NSWorkspace launchedApplications]. */
 - (NSArray *) launchedApplications
 {
-  NSMutableArray * array = [NSMutableArray arrayWithCapacity:
-    [launchedApplications count]];
-  NSEnumerator * e = [launchedApplications objectEnumerator];
-  NSDictionary * entry;
-  NSArray * maskedApps = [[SCSystem serverInstance] maskedProcesses];
+	NSMutableArray * array = [NSMutableArray arrayWithCapacity:
+		[launchedApplications count]];
+	NSEnumerator * e = [launchedApplications objectEnumerator];
+	NSDictionary * entry;
+	NSArray * maskedApps = [[SCSystem serverInstance] maskedProcesses];
 
-  while ((entry = [e nextObject]) != nil)
-    {
-      NSString * appName = [entry objectForKey: @"NSApplicationName"];
+	while ((entry = [e nextObject]) != nil)
+	{
+		NSString * appName = [entry objectForKey: @"NSApplicationName"];
 
-      if (![maskedApps containsObject: appName] &&
-          ![appName isEqualToString: EtoileSystemServerName])
-        {
-          [array addObject: entry];
-        }
-    }
+		if (![maskedApps containsObject: appName] &&
+			![appName isEqualToString: EtoileSystemServerName])
+		{
+			[array addObject: entry];
+		}
+	}
 
-  NSDebugLLog(@"ApplicationManager", @"Launched applications list queried, "
-    @"returning: %@", array);
+	NSDebugLLog(@"ApplicationManager", @"Launched applications list queried, "
+		@"returning: %@", array);
 
-  return [[array copy] autorelease];
+	return [[array copy] autorelease];
 }
 
-/**
- * Returns a list of applications launched by the user, this excludes the ones
- * launched by the system (known with -[SCSystem maskedProcesses]). The list is 
- * a subset of the list returned by -launchedApplications.
- */
+/** Returns a list of applications launched by the user, this excludes the ones
+    launched by the system (known with -[SCSystem maskedProcesses]). The list 
+    is a subset of the list returned by -launchedApplications. */
 - (NSArray *) userApplications
 {
 	NSArray *maskedApps = [[SCSystem serverInstance] maskedProcesses];
@@ -197,112 +192,114 @@ static NSConnection *serverConnection = nil;
 	return userApps;
 }
 
-/* Notification invoked when an NSWorkspaceDidLaunchApplicationNotification
-   is received */
+/** Notification invoked when an NSWorkspaceDidLaunchApplicationNotification
+    is received. */
 - (void) noteApplicationLaunched: (NSNotification *) notif
 {
-  NSDictionary * appInfo = [notif userInfo];
-  NSString * appName = [appInfo objectForKey: @"NSApplicationName"];
+	NSDictionary * appInfo = [notif userInfo];
+	NSString * appName = [appInfo objectForKey: @"NSApplicationName"];
 
-  if (appName != nil)
-    {
-      [launchedApplications setObject: appInfo forKey: appName];
+	if (appName != nil)
+	{
+		[launchedApplications setObject: appInfo forKey: appName];
 
-      NSDebugLLog(@"ApplicationManager", @"App %@ launched", appName);
-    }
+		NSDebugLLog(@"ApplicationManager", @"App %@ launched", appName);
+	}
 }
 
-/* Notification invoked when an NSWorkspaceDidTerminateApplicationNotification
-   is received */
+/** Notification invoked when an NSWorkspaceDidTerminateApplicationNotification
+    is received. */
 - (void) noteApplicationTerminated: (NSNotification *) notif
 {
-  NSDictionary * userInfo = [notif userInfo];
-  NSString * appName = [userInfo objectForKey: @"NSApplicationName"];
+	NSDictionary * userInfo = [notif userInfo];
+	NSString * appName = [userInfo objectForKey: @"NSApplicationName"];
 
-  if ([launchedApplications objectForKey: appName] != nil)
+	if ([launchedApplications objectForKey: appName] != nil)
     {
-      [launchedApplications removeObjectForKey: appName];
+		[launchedApplications removeObjectForKey: appName];
 
-      NSDebugLLog(@"ApplicationManager", @"App %@ terminated", appName);
-    }
+		NSDebugLLog(@"ApplicationManager", @"App %@ terminated", appName);
+	}
 
-  if (logOut == NO)
-    return;
+	if (logOut == NO)
+		return;
 
-  /* If we are in a log out procedure, we check the applications which 
-     terminated is not the last application to terminate we are waiting for. */
-  int userAppCount = [[self userApplications] count];
+	/* If we are in a log out procedure, we check the applications which 
+		 terminated is not the last application to terminate we are waiting for. */
+	int userAppCount = [[self userApplications] count];
 
-  NSDebugLLog(@"ApplicationManager", @"Waiting %i user apps to terminate in launched apps: %@", 
-    userAppCount, launchedApplications);
+	NSDebugLLog(@"ApplicationManager", @"Waiting %i user apps to terminate in launched apps: %@", userAppCount, launchedApplications);
 
-  if (userAppCount == 0)
-  {
+	if (userAppCount == 0)
+	{
+		logOut = NO; /* Exiting log out procedure */
 
-    logOut = NO; /* Exiting log out procedure */
-	// NOTE: The next line is important to have the 
-	// -terminateAllApplicationsOnOperation: run loop exited.
-	[terminateLaterTimers makeObjectsPerformSelector: @selector(invalidate)];
-	[terminateLaterTimers removeAllObjects];
-	[waitedApplications removeAllObjects];
+		// NOTE: The next line is important to have the 
+		// -terminateAllApplicationsOnOperation: run loop exited.
+		[terminateLaterTimers makeObjectsPerformSelector: @selector(invalidate)];
+		[terminateLaterTimers removeAllObjects];
+		[waitedApplications removeAllObjects];
 
-    [[SCSystem serverInstance] performSelectorOnMainThread: 
-      @selector(replyToLogOutOrPowerOff:) withObject: nil waitUntilDone: NO];
-  }
+		[[SCSystem serverInstance] performSelectorOnMainThread: 
+			@selector(replyToLogOutOrPowerOff:) withObject: nil waitUntilDone: NO];
+	}
 }
 
 /** This method checks all applications returned by -launchedApplications are
     still running. For each application which exited since the last check, it
     posts NSWorkspaceDidTerminateApplicationNotification. Usually this should
     not arise unless application exist abruptly since they are in charge of 
-    posting this notification themselves. */
+    posting this notification themselves.
+    Only works on Linux currently (more operating systems should be supported
+    in future). */
 - (void) checkLiveApplications
 {
-  NSEnumerator * e;
-  NSDictionary * entry;
-  NSMutableArray * appsToRemove = [NSMutableArray array];
+	NSMutableArray *appsToRemove = [NSMutableArray array];
+	NSEnumerator *e = [launchedApplications objectEnumerator];
+	NSDictionary *entry = nil;
 
-  // look for non-existing apps first (we can't remove them immediatelly,
-  // because that would case the object enumerator to mess up)
-  e = [launchedApplications objectEnumerator];
-  while ((entry = [e nextObject]) != nil)
-    {
+	/* Look for non-existing apps first (we can't remove them immediately,
+	   because that would case the object enumerator to mess up) */
+	while ((entry = [e nextObject]) != nil)
+	{
+
 #ifdef LINUX
-      // on Linux we use the /proc filesystem
+		// NOTE: on Linux we use the /proc filesystem
 
-      if (![[NSFileManager defaultManager] fileExistsAtPath:
-        [@"/proc" stringByAppendingPathComponent: [[entry
-        objectForKey: @"NSApplicationProcessIdentifier"] description]]])
-        {
-          [appsToRemove addObject: [entry objectForKey:
-            @"NSApplicationName"]];
-        }
+		if (![[NSFileManager defaultManager] fileExistsAtPath:
+			[@"/proc" stringByAppendingPathComponent: [[entry
+			objectForKey: @"NSApplicationProcessIdentifier"] description]]])
+		{
+			[appsToRemove addObject: [entry objectForKey: 
+				@"NSApplicationName"]];
+		}
 #endif
-    }
 
-  // now remove the non-existing apps
-  if ([appsToRemove count] > 0)
-    {
-      NSNotificationCenter * nc = [[NSWorkspace sharedWorkspace]
-        notificationCenter];
-      NSEnumerator * e = [appsToRemove objectEnumerator];
-      NSString * appName;
+	}
 
-      while ((appName = [e nextObject]) != nil)
-        {
-          NSDictionary * userInfo = [launchedApplications objectForKey: appName];
-          NSNotification * notif = [NSNotification
-            notificationWithName: NSWorkspaceDidTerminateApplicationNotification
-                          object: self
-                        userInfo: userInfo];
+	/* Now remove the non-existing apps */
+	if ([appsToRemove count] > 0)
+	{
+		NSNotificationCenter *nc = [[NSWorkspace sharedWorkspace]
+			notificationCenter];
+		NSEnumerator *e = [appsToRemove objectEnumerator];
+		NSString *appName;
 
-          // Synthetize a shutdown notification so that any app waiting
-          // for the shutdown app knows. However, first send the event
-          // to us, so that we update our list first.
-          [self noteApplicationTerminated: notif];
-          [nc postNotification: notif];
-        }
-    }
+		while ((appName = [e nextObject]) != nil)
+		{
+			NSDictionary *userInfo = [launchedApplications 
+				objectForKey: appName];
+			NSNotification *notif = [NSNotification
+				notificationWithName: NSWorkspaceDidTerminateApplicationNotification
+				object: self userInfo: userInfo];
+
+			/* Synthetize a shutdown notification so that any app waiting for 
+			   the shutdown app knows. However, first send the event to us, so 
+			   that we update our list first. */
+			[self noteApplicationTerminated: notif];
+			[nc postNotification: notif];
+		}
+	}
 }
 
 /** <p>Terminates all running applications by contacting each and asking it to 
@@ -317,7 +314,7 @@ static NSConnection *serverConnection = nil;
 {
   /* If we are already in a log out procedure we discard any other log out
      requests. This acts as a primitive lock that coalesces log out requests. */
-  if(logOut == YES)
+  if(logOut)
     return;
 
   /* We set up a pool in case the method has been called in a thread */
@@ -469,6 +466,7 @@ static NSConnection *serverConnection = nil;
 			[NSString stringWithFormat: noReplyText, appName], @"Reply", nil];
 
 		logOut = NO; /* Exiting log out procedure */
+
 		// NOTE: The next line is important to have the 
 		// -terminateAllApplicationsOnOperation: run loop exited.
 		[terminateLaterTimers makeObjectsPerformSelector: @selector(invalidate)];
@@ -524,6 +522,7 @@ static NSConnection *serverConnection = nil;
 		{
 			case NSTerminateCancel:
 				logOut = NO; /* Exiting log out procedure */
+
 				// NOTE: The next line is important to have the 
 				// -terminateAllApplicationsOnOperation: run loop exited.
 				[terminateLaterTimers makeObjectsPerformSelector: @selector(invalidate)];
@@ -534,8 +533,8 @@ static NSConnection *serverConnection = nil;
 				[newInfo setObject: replyText forKey: @"Reply"];
 				[[SCSystem serverInstance] 
 					performSelectorOnMainThread: @selector(replyToLogOutOrPowerOff:) 
-									withObject: newInfo 
-								waitUntilDone: NO];
+					                 withObject: newInfo 
+					              waitUntilDone: NO];
 				break;
 	
 			case NSTerminateNow:
