@@ -29,7 +29,8 @@
 #import "config.h"
 #import "extensions.h"
 
-#define PLATE_EVENTMASK (SubstructureRedirectMask | ButtonPressMask)
+#define PLATE_EVENTMASK (SubstructureRedirectMask | ButtonPressMask | \
+			 FocusChangeMask)
 #define FRAME_EVENTMASK (EnterWindowMask | LeaveWindowMask | \
                          ButtonPressMask | ButtonReleaseMask | \
                          VisibilityChangeMask)
@@ -198,7 +199,7 @@ static Visual *check_32bit_client(AZClient *c)
 {
     if (visible) {
         visible = NO;
-        [_client set_ignore_unmaps: [_client ignore_unmaps]+2];
+        [_client set_ignore_unmaps: [_client ignore_unmaps]+1];
         /* we unmap the client itself so that we can get MapRequest
            events, and because the ICCCM tells us to! */
         XUnmapWindow(ob_display, window);

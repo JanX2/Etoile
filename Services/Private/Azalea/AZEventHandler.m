@@ -61,14 +61,6 @@ typedef struct
     BOOL ignored;
 } ObEventData;
 
-#define INVALID_FOCUSIN(e) ((e)->xfocus.detail == NotifyInferior || \
-                            (e)->xfocus.detail == NotifyAncestor || \
-                            (e)->xfocus.detail > NotifyNonlinearVirtual)
-#define INVALID_FOCUSOUT(e) ((e)->xfocus.mode == NotifyGrab || \
-                             (e)->xfocus.detail == NotifyInferior || \
-                             (e)->xfocus.detail == NotifyAncestor || \
-                             (e)->xfocus.detail > NotifyNonlinearVirtual)
-
 /*! Table of the constant modifier masks */
 static const int mask_table[] = {
     ShiftMask, LockMask, ControlMask, Mod1Mask,
@@ -505,6 +497,7 @@ static AZEventHandler *sharedInstance;
     Atom msgtype;
     int i=0;
     ObFrameContext con;
+    AZFocusManager *fManager = [AZFocusManager defaultManager];
      
     switch (e->type) {
     case VisibilityNotify:
@@ -545,17 +538,48 @@ static AZEventHandler *sharedInstance;
         }
         break;
     case FocusIn:
-	{
-	AZFocusManager *fManager = [AZFocusManager defaultManager];
         if (client != [fManager focus_client]) {
 	    [fManager setClient: client];
 	    [[client frame] adjustFocusWithHilite: YES];
 	    [client calcLayer];
         }
-	}
         break;
     case FocusOut:
+        /* Look for the followup FocusIn */
+        if (!XCheckIfEvent(ob_display, &ce, look_for_focusin, NULL)) {
+            /* There is no FocusIn, this means focus went to a window that
+               is not being managed, or a window on another screen. */
+            //ob_debug("Focus went to a black hole !\n");
+        } else if (ce.xany.window == e->xany.window) {
+            /* If focus didn't actually move anywhere, there is nothing to do*/
+            break;
+        } else if (ce.xfocus.detail == NotifyPointerRoot ||
+                 ce.xfocus.detail == NotifyDetailNone) {
+            //ob_debug("Focus went to root\n");
+            /* Focus has been reverted to the root window or nothing, so fall
+               back to something other than the window which just had it. */
+            [fManager fallback: NO];
+        } else if (ce.xfocus.detail == NotifyInferior) {
+            //ob_debug("Focus went to parent\n");
+            /* Focus has been reverted to parent, which is our frame window,
+               or the root window, so fall back to something other than the
+               window which had it. */
+            [fManager fallback: NO];
+        } else {
+            /* Focus did move, so process the FocusIn event */
+            ObEventData ed;
+	    ed.ignored = NO; 
+	    [self processEvent: &ce data: &ed];
+            if (ed.ignored) {
+                /* The FocusIn was ignored, this means it was on a window
+                   that isn't a client. */
+                /* ob_debug("Focus went to an unmanaged window 0x%x !\n",
+                         ce.xfocus.window); */
+                [fManager fallback: YES];
+            }
+        }
 	{
+          /* This client is no longer focused, so show that */
   	  AZFocusManager *fManager = [AZFocusManager defaultManager];
 	  [fManager set_focus_hilite: nil];
 	  [[client frame] adjustFocusWithHilite: NO];
@@ -1295,122 +1319,13 @@ static AZEventHandler *sharedInstance;
             return YES;
         break;
     case FocusIn:
-        /* NotifyAncestor is not ignored in FocusIn like it is in FocusOut
-           because of RevertToPointerRoot. If the focus ends up reverting to
-           pointer root on a workspace change, then the FocusIn event that we
-           want will be of type NotifyAncestor. This situation does not occur
-           for FocusOut, so it is safely ignored there.
-        */
-        if (INVALID_FOCUSIN(e) ||
-            client == nil) {
-#ifdef DEBUG_FOCUS
-            AZDebug("FocusIn on %lx mode %d detail %d IGNORED\n",
-                     e->xfocus.window, e->xfocus.mode, e->xfocus.detail);
-#endif
-            /* says a client was not found for the event (or a valid FocusIn
-               event was not found.
-            */
-            e->xfocus.window = None;
-            return YES;
-        }
-
-#ifdef DEBUG_FOCUS
-        AZDebug("FocusIn on %lx mode %d detail %d\n", e->xfocus.window,
-                 e->xfocus.mode, e->xfocus.detail);
-#endif
-        break;
     case FocusOut:
-        if (INVALID_FOCUSOUT(e)) {
-#ifdef DEBUG_FOCUS
-        AZDebug("FocusOut on %lx mode %d detail %d IGNORED\n",
-                 e->xfocus.window, e->xfocus.mode, e->xfocus.detail);
-#endif
+        /* I don't think this should ever happen with our event masks, but
+           if it does, we don't want it. */
+        if (client == nil)
             return YES;
-        }
-
-#ifdef DEBUG_FOCUS
-        AZDebug("FocusOut on %lx mode %d detail %d\n",
-                 e->xfocus.window, e->xfocus.mode, e->xfocus.detail);
-#endif
-        {
-            XEvent fe;
-            BOOL fallback = YES;
-
-            while (YES) {
-                if (!XCheckTypedWindowEvent(ob_display, e->xfocus.window,
-                                            FocusOut, &fe))
-                    if (!XCheckTypedEvent(ob_display, FocusIn, &fe))
-                        break;
-                if (fe.type == FocusOut) {
-#ifdef DEBUG_FOCUS
-                    AZDebug("found pending FocusOut\n");
-#endif
-                    if (!INVALID_FOCUSOUT(&fe)) {
-                        /* if there is a VALID FocusOut still coming, don't
-                           fallback focus yet, we'll deal with it then */
-                        XPutBackEvent(ob_display, &fe);
-                        fallback = NO;
-                        break;
-                    }
-                } else {
-#ifdef DEBUG_FOCUS
-                    AZDebug("found pending FocusIn\n");
-#endif
-                    /* is the focused window getting a FocusOut/In back to
-                       itself?
-                    */
-                    if (fe.xfocus.window == e->xfocus.window &&
-                        ![self ignoreEvent: &fe forClient: client]) {
-                        /*
-                          if focus_client is not set, then we can't do
-                          this. we need the FocusIn. This happens in the
-                          case when the set_focus_client(NULL) in the
-                          focus_fallback function fires and then
-                          focus_fallback picks the currently focused
-                          window (such as on a SendToDesktop-esque action.
-                        */
-                        if ([[AZFocusManager defaultManager] focus_client]) {
-#ifdef DEBUG_FOCUS
-                            AZDebug("focused window got an Out/In back to "
-                                     "itself IGNORED both\n");
-#endif
-                            return YES;
-                        } else {
-			    [self processEvent: &fe data: NULL];
-#ifdef DEBUG_FOCUS
-                            AZDebug("focused window got an Out/In back to "
-                                     "itself but focus_client was null "
-                                     "IGNORED just the Out\n");
-#endif
-                            return YES;
-                        }
-                    }
-
-                    {
-                        ObEventData d;
-
-                        /* once all the FocusOut's have been dealt with, if
-                           there is a FocusIn still left and it is valid, then
-                           use it */
-			[self processEvent: &fe data: &d];
-                        if (!d.ignored) {
-#ifdef DEBUG_FOCUS
-                            AZDebug("FocusIn was OK, so don't fallback\n");
-#endif
-                            fallback = NO;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (fallback) {
-#ifdef DEBUG_FOCUS
-                AZDebug("no valid FocusIn and no FocusOut events found, "
-                         "falling back\n");
-#endif
-		[[AZFocusManager defaultManager] fallback: OB_FOCUS_FALLBACK_NOFOCUS];
-            }
-        }
+        if (![self wantedFocusEvent: e])
+            return YES;
         break;
     }
     return NO;

@@ -56,12 +56,8 @@ static AZFocusManager *sharedInstance;
 @interface AZFocusManager (AZPrivate)
 
 - (void) pushToTop: (AZClient *) client;
-- (AZClient *) findTransientRecursive: (AZClient *) c : (AZClient *) top : (AZClient *) skip;
-- (AZClient *) fallbackTransient: (AZClient *) top : (AZClient *) old;
 - (void) popupCycle: (AZClient *) c show: (BOOL) show;
 - (BOOL) validFocusTarget: (AZClient *) ft;
-- (void) toTop: (AZClient *) c desktop: (unsigned int) d;
-- (void) toBottom: (AZClient *) c desktop: (unsigned int) d;
 - (void) clientDestroy: (NSNotification *) not;
 
 @end
@@ -129,16 +125,12 @@ static AZFocusManager *sharedInstance;
 
 - (void) shutdown: (BOOL) reconfig
 {
-    unsigned int i;
-    unsigned int count = [[AZScreen defaultScreen] numberOfDesktops];
-
     DESTROY(focus_cycle_popup);
 
     if (!reconfig) {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 
-        for (i = 0; i < count; ++i)
-	    [[focus_order objectAtIndex: i] removeAllObjects];
+// FIXME: should we clean up focus_order ?
 	[focus_order removeAllObjects];
 
         /* reset focus to root */
@@ -210,64 +202,59 @@ static AZFocusManager *sharedInstance;
     }
 }
 
-- (AZClient *) fallbackTarget: (ObFocusFallbackType) type
+- (AZClient *) fallbackTarget: (BOOL) allow_refocus old: (AZClient *) old
 {
-    AZClient *old = nil;
-    AZClient *target = nil;
+    AZClient *desktop = nil;
     AZScreen *screen = [AZScreen defaultScreen];
 
-    old = focus_client;
+    if (allow_refocus && old && [old desktop] == DESKTOP_ALL)
+        return old;
 
-    if ((type == OB_FOCUS_FALLBACK_UNFOCUSING ||
-	 type == OB_FOCUS_FALLBACK_CLOSED) && old) {
-        if ([old transient_for]) {
-            BOOL trans = YES;
-
-            /* try for transient relations */
-            if (trans) {
-                if ([old transient_for] == OB_TRAN_GROUP) {
-		    NSArray *order = [focus_order objectAtIndex: [screen desktop]];
-		    int j, jcount = [order count];
-		    for (j = 0; j < jcount; j++) 
-                    {
-	                int i, count = [[[old group] members] count];
-			for (i = 0; i < count; i++) {
-			  AZClient *data = [[old group] memberAtIndex: i];
-                          if (data == [order objectAtIndex: j])
-                                if ((target =
-				     [self fallbackTransient: data : old]))
-                                    return target;
-                        }
-                    }
-                } else {
-                    if ((target =
-			 [self fallbackTransient: [old transient_for] : old]))
-                        return target;
-                }
+    int i;
+    for (i = 0; i < [focus_order count]; i++)
+    {
+	AZClient *c = [focus_order objectAtIndex: i];
+	if (allow_refocus || c != old)
+	{
+            /* fallback focus to a window if:
+               1. it is actually focusable, cuz if it's not then we're sending
+               focus off to nothing
+               2. it is validated. if the window is about to disappear, then
+               don't try focus it.
+               3. it is visible on the current desktop. this ignores
+               omnipresent windows, which are problematic in their own rite.
+               4. it's not iconic
+               5. it is a normal type window, don't fall back onto a dock or
+               a splashscreen or a desktop window (save the desktop as a
+               backup fallback though)
+            */
+            if ([c canFocus] && [c desktop] == [screen desktop] && ![c iconic])
+            {
+                if ([c normal]) 
+		{
+                    return c;
+                } 
+		else if ([c type] == OB_CLIENT_TYPE_DESKTOP && !desktop)
+		{
+                    desktop = c;
+		}
             }
         }
     }
 
-    NSArray *karray = [focus_order objectAtIndex: [screen desktop]];
-    int k, kcount =  [karray count];
-    for (k = 0; k < kcount; k++) {
-	AZClient *c = [karray objectAtIndex: k];
-        if (type != OB_FOCUS_FALLBACK_UNFOCUSING || c != old)
-            if ([c normal] && [c canFocus])
-                return c;
-    }
-
-    /* XXX fallback to the "desktop window" if one exists ?
-       could store it while going through all the windows in the loop right
-       above this..
+    /* as a last resort fallback to the desktop window if there is one.
+       (if there's more than one, then the one most recently focused.)
     */
-
-    return nil;
+    return desktop;
 }
 
-- (void) fallback: (ObFocusFallbackType) type
+- (void) fallback: (BOOL) allow_refocus
 {
     AZClient *new;
+    AZClient *old;
+
+    /* save this before moving focus away to nothing */
+    old = focus_client;
 
     /* unfocus any focused clients.. they can be focused by Pointer events
        and such, and then when I try focus them, I won't get a FocusIn event
@@ -275,7 +262,7 @@ static AZFocusManager *sharedInstance;
     */
     [self setClient: nil];
 
-    if ((new = [self fallbackTarget: type]))
+    if ((new = [self fallbackTarget: allow_refocus old: old]))
 	[new focus];
 }
 
@@ -411,7 +398,6 @@ static AZFocusManager *sharedInstance;
     static AZClient *t = nil;
     NSArray *list = nil;
     AZClient *ft = nil;
-    AZScreen *screen = [AZScreen defaultScreen];
     BOOL use_clist = NO;
 
     if (interactive) {
@@ -421,7 +407,7 @@ static AZFocusManager *sharedInstance;
         } else if (done)
             goto done_cycle;
 
-        if ([(NSArray *)[focus_order objectAtIndex: [screen desktop]] count] == 0)
+        if ([focus_order count] == 0)
             goto done_cycle;
 
         if (!first) first = focus_client;
@@ -434,10 +420,10 @@ static AZFocusManager *sharedInstance;
         else        
 	{
 	  use_clist = NO;
-	  list = [focus_order objectAtIndex: [screen desktop]];
+	  list = focus_order;
 	}
     } else {
-        if ([(NSArray *)[focus_order objectAtIndex: [screen desktop]] count] == 0)
+        if ([focus_order count] == 0)
             goto done_cycle;
 	use_clist = YES;
 	list = nil;
@@ -573,7 +559,6 @@ done_cycle:
 {
     static AZClient *first = nil;
     AZClient *ft = nil;
-    AZScreen *screen = [AZScreen defaultScreen];
 
     if (!interactive)
         return;
@@ -584,19 +569,22 @@ done_cycle:
     } else if (done)
         goto done_cycle;
 
-    if ([(NSArray *)[focus_order objectAtIndex: [screen desktop]] count] == 0)
+    if ([focus_order count] == 0)
         goto done_cycle;
 
     if (!first) first = focus_client;
     if (!focus_cycle_target) focus_cycle_target = focus_client;
 
     if (focus_cycle_target)
+    {
 	ft = [focus_cycle_target findDirectional: dir];
-    else {
-	NSArray *order = [focus_order objectAtIndex: [screen desktop]];
-	int i, count = [order count];
-	for (i = 0; i < count; i++) {
-	  AZClient *c = [order objectAtIndex: i];
+    }
+    else 
+    {
+	int i;
+	for (i = 0; i < [focus_order count]; i++) 
+	{
+	  AZClient *c = [focus_order objectAtIndex: i];
           if ([self validFocusTarget: c])
                 ft = c;
 	}
@@ -630,101 +618,121 @@ done_cycle:
 
 - (void) focusOrderAdd: (AZClient *) c
 {
-    unsigned int d, i;
-    unsigned int count = [[AZScreen defaultScreen] numberOfDesktops];
-
     if ([c iconic])
+    {
 	[self focusOrderToTop: c];
-    else {
-        d = [c desktop];
-        if (d == DESKTOP_ALL) {
-            for (i = 0; i < count; ++i) {
-		NSMutableArray *order = [focus_order objectAtIndex: i];
-		NSAssert([order indexOfObject: c] == NSNotFound, @"Client exists in focus_order already.");
-	        if ([order count] && [[order objectAtIndex: 0] iconic])
-		    [order insertObject: c atIndex: 0];
-		else if ([order count] == 0)
-		    [order addObject: c];
-		else {
-		    [order insertObject: c atIndex: 1];
-		}
-            }
-        } else {
-	    NSMutableArray *order = [focus_order objectAtIndex: d];
-	    NSAssert([order indexOfObject: c] == NSNotFound, @"Client exists in focus_order already.");
-	    if ([order count] && [[order objectAtIndex: 0] iconic])
-	        [order insertObject: c atIndex: 0];
-	    else if ([order count] == 0)
-	        [order addObject: c];
-	    else {
-	        [order insertObject: c atIndex: 1];
-	    }
-        }
+    }
+    else 
+    {
+	if ([focus_order containsObject: c] == YES)
+	    NSLog(@"Internal Error: client %@ already in focus order", c);
+
+        /* if there are any iconic windows, put this above them in the order,
+           but if there are not, then put it under the currently focused one */
+        if ([focus_order count] && 
+	    [(AZClient*)[focus_order objectAtIndex: 0] iconic])
+	{
+	    [focus_order insertObject: c atIndex: 0];
+	}
+        else
+	{
+	    if ([focus_order count])
+		[focus_order insertObject: c atIndex: 1];
+	    else
+		[focus_order addObject: c];
+	}
     }
 }
 
 - (void) focusOrderRemove: (AZClient *) c
 {
-    unsigned int d, i;
-    unsigned int count = [[AZScreen defaultScreen] numberOfDesktops];
-
-    d = [c desktop];
-    if (d == DESKTOP_ALL) {
-        for (i = 0; i < count; ++i)
-            [[focus_order objectAtIndex: i] removeObject: c];
-    } else
-        [[focus_order objectAtIndex: d] removeObject: c];
+    [focus_order removeObject: c];
 }
 
 - (void) focusOrderToTop: (AZClient *) c
 {
-    unsigned int d, i;
-    unsigned int count = [[AZScreen defaultScreen] numberOfDesktops];
+    RETAIN(c);
+    [focus_order removeObject: c];
+    if (![c iconic])
+    {
+      [focus_order insertObject: c atIndex: 0];
+    }
+    else
+    {
+      /* insert before first iconic window */
+      BOOL found = NO;
+      int i;
+      for (i = 0; i < [focus_order count]; i++)
+      {
+	AZClient *ct = [focus_order objectAtIndex: i];
+	if ([ct iconic])
+        {
+          found = YES;
+          break;
+        }
+      }
+      if (found == YES)
+        [focus_order insertObject: c atIndex: i];
+      else
+        [focus_order addObject: c];
+#if 0
+        GList *it;
 
-    d = [c desktop];
-    if (d == DESKTOP_ALL) {
-        for (i = 0; i < count; ++i)
-            [self toTop: c desktop: i];
-    } else
-	[self toTop: c desktop: d];
+        for (it = focus_order;
+             it && !((ObClient*)it->data)->iconic; it = g_list_next(it));
+        focus_order = g_list_insert_before(focus_order, it, c);
+#endif
+    }
+    RELEASE(c);
 }
 
 - (void) focusOrderToBottom: (AZClient *) c
 {
-    unsigned int d, i;
-    unsigned int count = [[AZScreen defaultScreen] numberOfDesktops];
+    RETAIN(c);
+    [focus_order removeObject: c];
+    if ([c iconic])
+    {
+      [focus_order addObject: c];
+    }
+    else
+    {
+      BOOL found = NO;
+      int i;
+      for (i = 0; i < [focus_order count]; i++)
+      {
+	AZClient *ct = [focus_order objectAtIndex: i];
+	if ([ct iconic])
+        {
+          found = YES;
+          break;
+        }
+      }
+      if (found == YES)
+        [focus_order insertObject: c atIndex: i];
+      else
+        [focus_order addObject: c];
+#if 0
+        GList *it;
 
-    d = [c desktop];
-    if (d == DESKTOP_ALL) {
-        for (i = 0; i < count; ++i)
-	    [self toBottom: c desktop: i];
-    } else
-	[self toBottom: c desktop: d];
+        /* insert before first iconic window */
+        for (it = focus_order;
+             it && !((ObClient*)it->data)->iconic; it = g_list_next(it));
+        focus_order = g_list_insert_before(focus_order, it, c);
+#endif
+    }
+    RELEASE(c);
 }
 
-- (int) numberOfFocusOrderInScreen: (int) d
+- (AZClient *) focusOrderFindFirst: (unsigned int) desktop
 {
-  return [(NSArray *)[focus_order objectAtIndex: d] count];
-}
-
-- (AZClient *) focusOrder: (int) index inScreen: (int) d
-{
-  return [[focus_order objectAtIndex: d] objectAtIndex: index];
-}
-
-- (void) setNumberOfScreens: (int) num old: (int) old
-{
-  NSAssert(old == [focus_order count], @"Internal Error: number of focus_order doesn't match old number");
-  int i;
-  for (i = old-1; i >= num; i--) {
-    [[focus_order objectAtIndex: i] removeAllObjects];
-    [focus_order removeObjectAtIndex: i];
-  }
-
-  /* set the new lists to be empty */
-  for (i = old; i < num; ++i)
-    [focus_order addObject: AUTORELEASE([[NSMutableArray alloc] init])];
-  NSAssert(num == [focus_order count], @"Internal Error: number of focus_order doesn't match new number");
+    int i;
+    for (i = 0; i < [focus_order count]; i++)
+    {
+	AZClient *c = [focus_order objectAtIndex: i];
+	if ([c desktop] == desktop || [c desktop] == DESKTOP_ALL)
+	    return c;
+    }
+    return nil;
 }
 
 /* accessories */
@@ -734,6 +742,8 @@ done_cycle:
 - (AZClient *) focus_client { return focus_client; }
 - (AZClient *) focus_hilite { return focus_hilite; }
 - (AZClient *) focus_cycle_target { return focus_cycle_target; }
+
+- (NSArray *) focus_order { return focus_order; }
 
 - (id) init
 {
@@ -763,45 +773,10 @@ done_cycle:
 
 - (void) pushToTop: (AZClient *) client
 {
-    unsigned int desktop;
-
-    desktop = [client desktop];
-    if (desktop == DESKTOP_ALL) desktop = [[AZScreen defaultScreen] desktop];
-    [[focus_order objectAtIndex: desktop] removeObject: client];
-    [[focus_order objectAtIndex: desktop] insertObject: client atIndex: 0];
-}
-
-/* finds the first transient that isn't 'skip' and ensure's that client_normal
- is true for it */
-- (AZClient *) findTransientRecursive: (AZClient *) c : (AZClient *) top
-                                     : (AZClient *) skip
-{
-    AZClient *ret, *temp;
-
-    int j, jcount = [[c transients] count];
-    for (j = 0; j < jcount; j++) {
-	temp = [[c transients] objectAtIndex: j];
-	if (temp == top) return nil;
-	ret = [self findTransientRecursive: temp : top : skip];
-	if (ret && ret != skip && [ret normal]) return ret;
-	if (temp != skip && [temp normal]) return temp;
-    }
-    return nil;
-}
-
-- (AZClient *) fallbackTransient: (AZClient *) top : (AZClient *) old
-{
-    AZClient *target = [self findTransientRecursive: top : top : old];
-    if (!target) {
-        /* make sure client_normal is true always */
-	if (![top normal])
-            return nil;
-        target = top; /* no transient, keep the top */
-    }
-    if ([target canFocus])
-        return target;
-    else
-        return nil;
+    RETAIN(client);
+    [focus_order removeObject: client];
+    [focus_order insertObject: client atIndex: 0];
+    RELEASE(client);
 }
 
 - (void) popupCycle: (AZClient *) c show: (BOOL) show
@@ -852,56 +827,6 @@ done_cycle:
         return YES;
 
     return NO;
-}
-
-- (void) toTop: (AZClient *) c desktop: (unsigned int) d
-{
-    [[focus_order objectAtIndex: d] removeObject: c];
-    if (![c iconic]) {
-	[[focus_order objectAtIndex: d] insertObject: c atIndex: 0];
-    } else {
-	NSMutableArray *order = [focus_order objectAtIndex: d];
-	int i, count = [order count];
-	BOOL found = NO;
-        /* insert before first iconic window */
-	for (i = 0; i < count; i++) {
-	  AZClient *temp = [order objectAtIndex: i];
-	  if ([temp iconic]) {
-	    found = YES;
-	    break;
-	  }
-	}
-	if (found) {
-	  [order insertObject: c atIndex: i];
-	} else {
-	  [order addObject: c];
-	}
-    }
-}
-
-- (void) toBottom: (AZClient *) c desktop: (unsigned int) d
-{
-    [[focus_order objectAtIndex: d] removeObject: c];
-    if ([c iconic]) {
-	[[focus_order objectAtIndex: d] addObject: c];
-    } else {
-	NSMutableArray *order = [focus_order objectAtIndex: d];
-	int i, count = [order count];
-	BOOL found = NO;
-        /* insert before first iconic window */
-	for (i = 0; i < count; i++) {
-	  AZClient *temp = [order objectAtIndex: i];
-	  if ([temp iconic]) {
-	    found = YES;
-	    break;
-	  }
-	}
-	if (found) {
-	  [order insertObject: c atIndex: i];
-	} else {
-	  [order addObject: c];
-	}
-    }
 }
 
 - (void) clientDestroy: (NSNotification *) not

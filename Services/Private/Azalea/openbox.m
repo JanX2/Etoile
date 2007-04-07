@@ -279,7 +279,7 @@ int main(int argc, char **argv)
             if (!reconfigure) {
                 /* get all the existing windows */
 		[clientManager manageAll];
-		[focusManager fallback: OB_FOCUS_FALLBACK_NOFOCUS];
+		[focusManager fallback: YES];
             } else {
                 /* redecorate all existing windows */
 		int j, jcount = [clientManager count];

@@ -2,6 +2,8 @@
 
 	* Updating maximize and fullscreen.
 	* Remove pipe menu.
+	* Finish updating to r5731 except client placement 
+	  and startup notification which are less important.
 
 2007-04-05  Yen-Ju Chen <yjchenx at gmail>
 

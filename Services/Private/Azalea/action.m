@@ -1086,9 +1086,8 @@ void action_focus(union ActionData *data)
 void action_unfocus (union ActionData *data)
 {
   AZFocusManager *fmanager = [AZFocusManager defaultManager];
-//    [data->client.any.c unfocus];
-    if (data->client.any.c == [fmanager focus_client])
-      [fmanager fallbackTarget: OB_FOCUS_FALLBACK_UNFOCUSING];
+  if (data->client.any.c == [fmanager focus_client])
+    [fmanager fallbackTarget: NO old: nil];
 }
 
 void action_iconify(union ActionData *data)

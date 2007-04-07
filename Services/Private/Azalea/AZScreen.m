@@ -37,7 +37,7 @@
 /*! The event mask to grab on the root window */
 #define ROOT_EVENTMASK (StructureNotifyMask | PropertyChangeMask | \
                         EnterWindowMask | LeaveWindowMask | \
-                        SubstructureNotifyMask | SubstructureRedirectMask | \
+                        SubstructureRedirectMask | FocusChangeMask | \
                         ButtonPressMask | ButtonReleaseMask | ButtonMotionMask)
 
 static inline void
@@ -332,11 +332,6 @@ static AZScreen *sharedInstance;
     /* change our desktop if we're on one that no longer exists! */
     if (screen_desktop >= screen_num_desktops)
 	[self setDesktop: num-1];
-
-   /* update the focus lists */
-    AZFocusManager *fManager = [AZFocusManager defaultManager];
-    /* free our lists for the desktops which have disappeared */
-    [fManager setNumberOfScreens: num old: old];
 }
 
 - (unsigned int) numberOfDesktops
@@ -397,7 +392,8 @@ static AZScreen *sharedInstance;
     [[AZEventHandler defaultHandler] ignoreQueuedEnters];
 
     AZFocusManager *fManager = [AZFocusManager defaultManager];
-    [fManager set_focus_hilite: [fManager fallbackTarget: OB_FOCUS_FALLBACK_NOFOCUS]];
+    [fManager set_focus_hilite: [fManager fallbackTarget: YES
+			                  old: [fManager focus_client]]];
     if ([fManager focus_hilite]) {
 	[[[fManager focus_hilite] frame] adjustFocusWithHilite: YES];
 
@@ -617,16 +613,22 @@ done_cycle:
 
     AZFocusManager *fManager = [AZFocusManager defaultManager];
 
-    if (show) {
+    if (show) 
+    {
         /* focus desktop */
-	int i, count = [fManager numberOfFocusOrderInScreen: screen_desktop];
-	for (i = 0; i < count; i++) {
-	  AZClient *c = [fManager focusOrder: i inScreen: screen_desktop];
-          if ([c type] == OB_CLIENT_TYPE_DESKTOP && [c focus])
-                break;
-	}
-    } else {
-        [fManager fallback: OB_FOCUS_FALLBACK_NOFOCUS];
+	int i;
+	for (i = 0; i < [[fManager focus_order] count]; i++)
+	{
+	    AZClient *c = [[fManager focus_order] objectAtIndex: i];
+	    if (([c type] == OB_CLIENT_TYPE_DESKTOP) &&
+	        ([c desktop] == screen_desktop ||
+		 [c desktop] == DESKTOP_ALL) && [c focus])
+	        break;
+        }
+    } 
+    else 
+    {
+        [fManager fallback: YES];
     }
 
     show = !!show; /* make it boolean */

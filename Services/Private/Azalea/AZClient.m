@@ -941,15 +941,14 @@
     return YES;
 }
 
-/* Used when the current client is closed, focus_last will then prevent
- * focus from going to the mouse pointer */
+/* Used when the current client is closed or otherwise hidden, focus_last will
+   then prevent focus from going to the mouse pointer
+*/
 - (void) unfocus;
 {
-    if ([[AZFocusManager defaultManager] focus_client] == self) {
-#ifdef DEBUG_FOCUS
-        AZDebug("client_unfocus for %lx\n", oself->window);
-#endif
-	[[AZFocusManager defaultManager] fallback: OB_FOCUS_FALLBACK_CLOSED];
+    if ([[AZFocusManager defaultManager] focus_client] == self) 
+    {
+	[[AZFocusManager defaultManager] fallback: NO];
     }
 }
 

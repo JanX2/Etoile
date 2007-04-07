@@ -43,8 +43,7 @@ NSString *AZClientDestroyNotification = @"AZClientDestroyNotification";
 Time client_last_user_time = CurrentTime;
 
 /*! The event mask to grab on client windows */
-#define CLIENT_EVENTMASK (PropertyChangeMask | FocusChangeMask | \
-                          StructureNotifyMask)
+#define CLIENT_EVENTMASK (PropertyChangeMask | StructureNotifyMask)
 
 #define CLIENT_NOPROPAGATEMASK (ButtonPressMask | ButtonReleaseMask | \
                                 ButtonMotionMask)
@@ -136,6 +135,7 @@ static AZClientManager *sharedInstance;
     BOOL activate = NO;
     int newx, newy;
     AZScreen *screen = [AZScreen defaultScreen];
+    AZFocusManager *fManager = [AZFocusManager defaultManager];
 
     grab_server(YES);
 
@@ -212,7 +212,7 @@ static AZClientManager *sharedInstance;
 
     /* update the focus lists, do this before the call to change_state or
        it can end up in the list twice! */
-    [[AZFocusManager defaultManager] focusOrderAdd: client];
+    [fManager focusOrderAdd: client];
 
     /* remove the client's border (and adjust re gravity) */
     [client toggleBorder: NO];
@@ -286,8 +286,32 @@ static AZClientManager *sharedInstance;
     [[AZMouseHandler defaultHandler] grab: YES forClient: client];
 
     if (activate) {
-        /* This is focus stealing prevention, if a user_time has been set */
-        if (![client user_time] || [client user_time] >= client_last_user_time)
+        /* This is focus stealing prevention */
+
+        /* If a nothing at all, or a parent was focused, then focus this
+           always
+        */
+        if (![fManager focus_client] || [client searchFocusParent] != nil)
+	{
+            activate = YES;
+	}
+        else
+        {
+            /* If time stamp is old, don't steal focus */
+            if ([client user_time] &&
+                !event_time_after([client user_time], client_last_user_time))
+            {
+                activate = NO;
+            }
+            /* Don't steal focus from globally active clients.
+               I stole this idea from KWin. It seems nice.
+             */
+            if (!([[fManager focus_client] can_focus] || 
+	          [[fManager focus_client] focus_notify]))
+                activate = NO;
+        }
+
+        if (activate)
         {
             /* since focus can change the stacking orders, if we focus the
                window then the standard raise it gets is not enough, we need
@@ -297,9 +321,6 @@ static AZClientManager *sharedInstance;
             /* if the client isn't focused, then hilite it so the user
                knows it is there */
 	    [client hilite: YES];
-
-            /* don't focus it ! (focus stealing prevention) */
-            activate = NO;
         }
     }
     else {
@@ -364,9 +385,25 @@ static AZClientManager *sharedInstance;
 
 - (void) unmanageClient: (AZClient *) client
 {
-//    unsigned int j;
-
     NSAssert(client != NULL, @"Client cannot be nil");
+    AZFocusManager *fManager = [AZFocusManager defaultManager];
+
+    /* update the focus lists */
+    [fManager focusOrderRemove: client];
+
+    if ([fManager focus_client] == client) {
+        XEvent e;
+
+        /* focus the last focused window on the desktop, and ignore enter
+           events from the unmap so it doesnt mess with the focus */
+        while (XCheckTypedEvent(ob_display, EnterNotify, &e));
+        /* remove these flags so we don't end up getting focused in the
+           fallback! */
+        [client set_can_focus: NO];
+        [client set_focus_notify: NO];
+        [client set_modal: NO];
+	[client unfocus];
+    }
 
     /* potentially fix focusLast */
     if (config_focus_last)
@@ -388,9 +425,6 @@ static AZClientManager *sharedInstance;
     [[AZStacking stacking] removeWindow: client];
     [window_map removeObjectForKey: [NSNumber numberWithInt: [client window]]];
 
-    /* update the focus lists */
-    [[AZFocusManager defaultManager] focusOrderRemove: client];
-
     /* once the client is out of the list, update the struts to remove its
        influence */
     if (STRUT_EXISTS([client strut]))
@@ -404,20 +438,6 @@ static AZClientManager *sharedInstance;
     /* menus can be associated with a client, so close any that are since
        we are disappearing now */
     AZMenuFrameHideAllClient(client);
-
-    if ([[AZFocusManager defaultManager] focus_client] == client) {
-        XEvent e;
-
-        /* focus the last focused window on the desktop, and ignore enter
-           events from the unmap so it doesnt mess with the focus */
-        while (XCheckTypedEvent(ob_display, EnterNotify, &e));
-        /* remove these flags so we don't end up getting focused in the
-           fallback! */
-        [client set_can_focus: NO];
-        [client set_focus_notify: NO];
-        [client set_modal: NO];
-	[client unfocus];
-    }
 
     /* tell our parent(s) that we're gone */
     if ([client transient_for] == OB_TRAN_GROUP) { /* transient of group */

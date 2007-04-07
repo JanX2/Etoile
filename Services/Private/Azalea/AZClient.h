@@ -442,9 +442,6 @@ typedef enum
 */
 - (BOOL) focus;
 
-/*! Remove focus from the client window */
-- (void) unfocus;
-
 /*! Activates the client for use, focusing, uniconifying it, etc. To be used
     when the user deliberately selects a window for use.
     @param here If true, then the client is brought to the current desktop;
@@ -590,6 +587,7 @@ typedef enum
 - (void) applyStartupStateAtX: (int) x y: (int) y;
 - (void) restoreSessionStacking;
 - (void) showhide;
+- (void) unfocus;
 
 /* Accessories */
 - (AZFrame *) frame;

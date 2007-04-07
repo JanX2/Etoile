@@ -302,7 +302,8 @@ static BOOL place_smart(AZClient *client, int *x, int *y,
 	    unsigned int d = ([client desktop] == DESKTOP_ALL ? [screen desktop] : [client desktop]);
 
 	    // foc can be nil.
-	    foc = [[AZFocusManager defaultManager] focusOrder: 0 inScreen: d];
+	    foc = [[AZFocusManager defaultManager] focusOrderFindFirst:
+                       [client desktop] == DESKTOP_ALL ? d : [client desktop]];
 
 	    for (j = index; j < count && !stop; j++) {
 		temp = [stacking windowAtIndex: j];
