@@ -540,7 +540,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 			// FIXME: Set up a timer to check whether the task has terminated 
 			// in 5 seconds from now. Well could be better to thread this object
 			// and make such method reentrant.
-			NSLog(@"Process still running...");
+			NSLog(@"Process %@ still running...", process);
             return YES;
 		}
     }

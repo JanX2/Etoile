@@ -1,3 +1,7 @@
+2007-04-07  Quentin Mathe <qmathe@club-internet.fr>
+
+	* EtoileSystem.m: Minor logging improvement.
+
 2007-03-22  Quentin Mathe <qmathe@club-internet.fr>
 
 	* ApplicationManager.m:
