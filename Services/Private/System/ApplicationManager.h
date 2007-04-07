@@ -81,7 +81,7 @@
   NSMutableDictionary *waitedApplications;
   NSMutableArray *terminateLaterTimers;
   NSLock *replyLock;
-  BOOL logOut;
+  BOOL logOut; /* Flag to signal we are carrying out the log out procedure */
 }
 
 + (id) sharedInstance;

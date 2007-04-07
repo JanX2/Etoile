@@ -1,5 +1,13 @@
 2007-04-07  Quentin Mathe <qmathe@club-internet.fr>
 
+	* ApplicationManager.m: Made the code more solid by initializing all vars 
+	and by logging warnings for all incorrect returned values (not in their 
+	boundaries). Lot of work on public and private documentation. Finished to
+	update indenting for -terminateAllApplicationsOnOperation: especially.
+	Few cleanings of the code (like variable name or order of substatements).
+
+2007-04-07  Quentin Mathe <qmathe@club-internet.fr>
+
 	* ApplicationManager.m: Almost fully updated the indenting to be compliant 
 	with Etoile coding guidelines. Improved documentation.
 
