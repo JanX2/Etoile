@@ -21,6 +21,9 @@
   XWindow *iconWindow;
   AZWorkspaceView *workspaceView;
   AZDockPosition position;
+  BOOL isHidden;
+  BOOL autoHidden;
+  NSRect dockFrame;
 
   BKBookmarkStore *store;
   NSWorkspace *workspace;

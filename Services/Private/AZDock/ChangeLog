@@ -2,6 +2,7 @@
 
 	* Reserve space for dock so that full screen window 
 	  will not be covered.
+	* Initial support of auto-hidden. There are some glitches, though.
 
 2007-04-01 Yen-Ju Chen <yjchenx at gmail>
 

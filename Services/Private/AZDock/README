@@ -13,6 +13,8 @@ User Defaults
 -------------
 Key: DockPosition
 Value: 0 (Left side), 1 (Right side), 2 (Bottom side)
+Key: AutoHidden
+Value: YES or NO;
 
 NOTE
 ----
