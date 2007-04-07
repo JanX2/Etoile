@@ -40,6 +40,33 @@ static AZDock *sharedInstance;
 @implementation AZDock
 
 /** Private **/
+- (void) reserveSpaceForWindow: (XWindow *) window
+{
+  /* Finally, we occupy a strip of screen so that full-screen window
+     will not be covered. Ideally we should update the space according
+     to the real area of docks. But for now, we occupy the whole side
+     of screen. */
+  NSRect frame = [[NSScreen mainScreen] frame];
+  switch(position)
+  {
+    case AZDockBottomPosition:
+      [window reserveScreenAreaOn: XScreenBottomSide 
+                            width: DOCK_SIZE
+                            start: NSMinX(frame) end: NSMaxX(frame)];
+      break;
+    case AZDockRightPosition:
+      [window reserveScreenAreaOn: XScreenRightSide 
+                            width: DOCK_SIZE
+                            start: NSMinY(frame) end: NSMaxY(frame)];
+      break;
+    case AZDockLeftPosition:
+    default:
+      [window reserveScreenAreaOn: XScreenLeftSide 
+                            width: DOCK_SIZE
+                            start: NSMinY(frame) end: NSMaxY(frame)];
+  }
+}
+
 - (BOOL) isGNUstepAppAlive: (NSString *) name
 {
   NSConnection *conn = nil;
@@ -107,6 +134,7 @@ static AZDock *sharedInstance;
   [app setState: AZDockAppNotRunning]; 
   [apps addObject: app];
   [self addBookmark: app];
+  [self reserveSpaceForWindow: [app window]];
   [[app window] orderFront: self];
   return AUTORELEASE(app);
   /* Do not organize applications here 
@@ -162,6 +190,7 @@ static AZDock *sharedInstance;
                                             instance: instance class: class];
   [apps addObject: app];
   [self addBookmark: app];
+  [self reserveSpaceForWindow: [app window]];
   [[app window] orderFront: self];
   return AUTORELEASE(app);
 }
@@ -231,6 +260,7 @@ static AZDock *sharedInstance;
   [app setState: AZDockAppRunning];
   [apps addObject: app];
   [self addBookmark: app];
+  [self reserveSpaceForWindow: [app window]];
   [[app window] orderFront: self];
   DESTROY(app);
 }
@@ -277,6 +307,7 @@ static AZDock *sharedInstance;
                                             instance: instance class: class];
   [apps addObject: app];
   [self addBookmark: app];
+  [self reserveSpaceForWindow: [app window]];
   [[app window] orderFront: self];
   return AUTORELEASE(app);
 }
@@ -306,6 +337,7 @@ static AZDock *sharedInstance;
   [app setState: AZDockAppRunning];
   [apps addObject: app];
   [self addBookmark: app];
+  [self reserveSpaceForWindow: [app window]];
   [[app window] orderFront: self];
   DESTROY(app);
 }
@@ -700,6 +732,7 @@ NSLog(@"docklet did launch");
 				          defer: NO];
   [iconWindow setDesktop: ALL_DESKTOP];
   [iconWindow skipTaskbarAndPager];
+  [self reserveSpaceForWindow: iconWindow];
   [iconWindow setLevel: NSNormalWindowLevel+1];
 
   workspaceView = [[AZWorkspaceView alloc] initWithFrame: [[iconWindow contentView] bounds]];
