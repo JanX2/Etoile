@@ -1,3 +1,9 @@
+2004-04-09  Isaiah Beerbower <ipaqah@tm.net>
+	* Source/WFView.m: Moved object drawing code to WFObjectDrawing.*.
+	* Source/WFObjectDrawing.h:
+	* Source/WFObjectDrawing.m:
+	* Source/GNUmakefile: Added WFObjectDrawing.m to OBJC_FILES.
+
 2007-04-05  Isaiah Beerbower <ipaqah@tm.net>
 	* Made README, INSTALL, COPYING, & TODO reStructuredText.
 	* Moved "Application" dir to more standard "Source" dir.

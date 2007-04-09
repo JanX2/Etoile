@@ -16,6 +16,7 @@ Workflow_OBJC_FILES = \
   WFMain.m \
   WFDocument.m \
   WFObject.m \
+  WFObjectDrawing.m \
   WFView.m
 
 Workflow_LANGUAGES = \

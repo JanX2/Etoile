@@ -11,14 +11,13 @@
 
 #import "WFView.h"
 #import "WFObject.h"
+#import "WFObjectDrawing.h"
 
 
 @interface WFView (WorkflowPrivate)
 
 - (void) WFDrawPipeFromPoint: (NSPoint)sourcePoint
                      toPoint: (NSPoint)destinationPoint;
-- (NSRect) WFRectForObject: (WFObject *)anObject;
-- (void) WFDrawObject: (WFObject *)anObject;
 
 @end
 
@@ -66,8 +65,8 @@
 		[anObject respondsToSelector:@selector(objectsForWorkflowView:)]))
 		{
 			[NSException raise: NSInternalInconsistencyException 
-			format: @"Data source does not respond to "
-				@"objectsForWorkflowView:"];
+			            format: @"Data source does not respond to "
+			                    @"objectsForWorkflowView:"];
 		}
 
 	if ([anObject
@@ -151,54 +150,6 @@
 	[pipeColor set];
 
 	[pipePath stroke];
-}
-
-- (NSRect) WFRectForObject: (WFObject *)anObject
-{
-	// FIXME: The following should not be constants:
-	float connectionHeight = 12.0;
-	float titleHeight = 14.0;
-	float iconPadding = 4.0;
-
-	/* Find object height */
-	float iconHeight = (48.0 + (iconPadding * 2));
-
-	int inputHeight = ([[anObject dataInputs] count] * connectionHeight);
-	int outputHeight = ([[anObject dataOutputs] count] * connectionHeight);
-
-	float ioHeight = ((inputHeight > outputHeight) ? inputHeight : outputHeight);
-	float height = ((ioHeight > iconHeight) ? ioHeight : iconHeight)
-		+ titleHeight;
-
-	/* Find object width */
-
-	float width = 128.0; // TEMP
-
-	/* Create rect */
-
-	NSPoint position = [anObject position];
-
-	return NSMakeRect(position.x, position.y, width, height);
-}
-
-- (void) WFDrawObject: (WFObject *)anObject
-{
-	//
-	// TODO: Implement object drawing code.
-	//
-
-	/* Generate size information */
-
-	/* Draw inputs */
-
-	/* Draw outputs */
-
-	/* Draw icon */
-
-	/* Draw title */
-
-	[[NSColor redColor] set];
-	[NSBezierPath fillRect:[self WFRectForObject:anObject]];
 }
 
 @end
