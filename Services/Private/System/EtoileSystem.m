@@ -280,6 +280,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	NSMutableArray *processQueue = nil;
 	NSMutableArray *launchQueue = nil;
 
+	_launchQueueScheduled = YES;
+
 	/* Find task list config file and synchronize _processes data structure 
 	   with it */ 
 	[self findConfigFileAndStartUpdateMonitoring];
@@ -304,6 +306,8 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	processQueue = [self processQueueWithProcesses: _processes];
 	launchQueue = [self processGroupQueueWithProcessQueue: processQueue];
 	[self startProcessesSequentiallyByPriorityOrder: launchQueue];
+
+	_launchQueueScheduled = NO;
 }
 
 /** Returns a process launch queue by sorting processes values based on their
@@ -849,81 +853,86 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
      }
 }
 
-/**
- * Refreshes the processes list from the config file and modifies the
- * running processes accordingly - kills those which are not supposed
- * to be there and starts the new ones.
- */
+/** Refreshes the processes list from the config file and modifies the running 
+    processes accordingly - kills those which are not supposed to be there and 
+    starts the new ones. */
 - (void) synchronizeProcessesWithConfigFile
 {
-    //NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
-    NSDictionary *newProcessTable;
-    NSDictionary *fileAttributes = [[NSFileManager defaultManager]
-            fileAttributesAtPath: configFilePath traverseLink: YES];
+	NSDictionary *newProcessTable = nil;
+	NSDictionary *fileAttributes = [[NSFileManager defaultManager]
+		fileAttributesAtPath: configFilePath traverseLink: YES];
 
 	NSDebugLLog(@"SCSystem", @"Synchronizing processes with config file...");
 
-    newProcessTable = [NSDictionary dictionaryWithContentsOfFile: configFilePath];
-    if (newProcessTable != nil)
-    {
-        NSEnumerator *e;
-        NSString *domain;
+	newProcessTable = [NSDictionary dictionaryWithContentsOfFile: configFilePath];
+	if (newProcessTable != nil)
+	{
+		NSEnumerator *e = nil;
+		NSString *domain = nil;
 
-      // kill any old, left-over processes or changed processes.
-      // N.B. we can't use -keyEnumerator here, because it isn't guaranteed
-      // that the array over which the enumerator enumerates won't change
-      // as we remove left-over process entries from the underlying dict.
-        e = [[_processes allKeys] objectEnumerator];
-        while ((domain = [e nextObject]) != nil)
-        {
-            SCTask *oldEntry = [_processes objectForKey: domain],
-            *newEntry = [newProcessTable objectForKey: domain];
+		/* Kill any old, left-over processes or changed processes.
+		   NOTE: we can't use -keyEnumerator here, because it isn't guaranteed
+		   that the array over which the enumerator enumerates won't change as
+		   we remove left-over process entries from the underlying dict. */
+		e = [[_processes allKeys] objectEnumerator];
+		while ((domain = [e nextObject]) != nil)
+		{
+			SCTask *oldEntry = [_processes objectForKey: domain];
+			SCTask *newEntry = [newProcessTable objectForKey: domain];
 
-            /* If this entry isn't defined in the config file now, we must stop it. */
-            if (newEntry == nil)
-            {
-                [[NSNotificationCenter defaultCenter] removeObserver: self
-                    name: nil object: oldEntry];
-                // NOTE: The next line is equivalent to [oldEntry terminate]; 
-                // with extra checks.
-                [self stopProcessWithDomain: domain error: NULL];
-                [_processes removeObjectForKey: domain];
-            }
-        }
+			/* If this entry isn't defined in the config file now, we must stop it. */
+			if (newEntry == nil)
+			{
+				[[NSNotificationCenter defaultCenter] removeObserver: self
+					name: nil object: oldEntry];
 
-      // and bring in new processes
-        e = [newProcessTable keyEnumerator];
-        while ((domain = [e nextObject]) != nil)
-        {
-            if ([_processes objectForKey: domain] == nil)
-            {
-                NSDictionary *processInfo = [newProcessTable objectForKey: domain]; 
-				BOOL launchNow = YES;
+				// NOTE: The next line is equivalent to [oldEntry terminate]; 
+				// with extra checks.
+				[self stopProcessWithDomain: domain error: NULL];
+				[_processes removeObjectForKey: domain];
+			}
+		}
 
-				if ([[processInfo allKeys] containsObject: @"OnStart"])
-					launchNow = [[processInfo objectForKey: @"OnStart"] boolValue];
-            
-                // FIXME: Add support for Persistent keys as 
-                // described in Task config file schema (see EtoileSystem.h).
-                SCTask *entry = [SCTask taskWithLaunchPath: [processInfo objectForKey: @"LaunchPath"] 
-                    priority: [[processInfo objectForKey: @"LaunchPriority"] boolValue]
-                     onStart: launchNow
-                    onDemand: [[processInfo objectForKey: @"OnDemand"] boolValue]
-                    withUserName: [processInfo objectForKey: @"UserName"]];
-		// It is better not to have space in each arguments
-		[entry setArguments: [processInfo objectForKey: @"Arguments"]];
-                [_processes setObject: entry forKey: domain];
+		/* Afterwards bring in new processes */
+		e = [newProcessTable keyEnumerator];
+		while ((domain = [e nextObject]) != nil)
+		{
+			if ([_processes objectForKey: domain] == nil)
+			{
+				NSDictionary *processInfo = [newProcessTable objectForKey: domain]; 
+				NSString *launchPath = [processInfo objectForKey: @"LaunchPath"];
+				NSString *launchIdentity = [processInfo objectForKey: @"UserName"];
+				int launchPriority = [[processInfo objectForKey: @"LaunchPriority"] intValue];
+				BOOL launchNow = [[processInfo objectForKey: @"OnStart"] boolValue];
+				BOOL launchLazily = [[processInfo objectForKey: @"OnDemand"] boolValue];
 
-                //[self startProcessWithDomain: domain error: NULL];
-            }
-        }
-    }
-    else
-    {
-        NSLog(_(@"WARNING: unable to read SystemTaskList file."));
-    }
+				/* Now we create the new task with paramaters supplied in the 
+				  config file. */
+				SCTask *entry = [SCTask taskWithLaunchPath: launchPath 
+				                                  priority: launchPriority
+				                                   onStart: launchNow
+				                                  onDemand: launchLazily
+				                              withUserName: launchIdentity];
 
-    ASSIGN(modificationDate, [fileAttributes fileModificationDate]);
+				[entry setArguments: [processInfo objectForKey: @"Arguments"]];
+				// FIXME: 'Persistent' key support should be added.
+
+				[_processes setObject: entry forKey: domain];
+
+				/* When the session has already been started, we can start the
+				   process immediately, because no launch queue is going to 
+				   collect processes to launch them. */
+				if (_launchQueueScheduled == NO)
+					[self startProcessWithDomain: domain error: NULL];
+			}
+		}
+	}
+	else
+	{
+		NSLog(_(@"WARNING: unable to read SystemTaskList file."));
+	}
+
+	ASSIGN(modificationDate, [fileAttributes fileModificationDate]);
 }
 
 /**

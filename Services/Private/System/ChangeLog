@@ -1,3 +1,12 @@
+2007-04-09  Quentin Mathe <qmathe@club-internet.fr>
+
+	* ApplicationManager.h: Minor adjustments.
+	* EtoileSystem.h: New ivar _launchQueueScheduled.
+	* EtoileSystem.m (-synchronizeProcessesWithConfigFile): Modified indenting
+	to match Etoile guidelines and reformatted the code to look better. Also
+	reintroduced live processes synchronization with the config file thanks
+	to flag _launchQueueScheduled.
+
 2007-04-07  Quentin Mathe <qmathe@club-internet.fr>
 
 	* ApplicationManager.m: Made the code more solid by initializing all vars 

@@ -60,7 +60,7 @@
    * does not contain the @"NSApplicationProcessIdentifier" - that will
    * be added later on when the application is running.
    */
-  NSMutableDictionary * launchedApplications;
+  NSMutableDictionary *launchedApplications;
 
   /**
    * This timer fires every second, when we check whether our registered
@@ -75,7 +75,7 @@
    * NSWorkspaceDidTerminateApplicationNotification to make up for the app
    * which died and could do it.
    */
-  NSTimer * autocheckTimer;
+  NSTimer *autocheckTimer;
   
   /* Log out related ivars */
   NSMutableDictionary *waitedApplications;
@@ -89,11 +89,11 @@
 - (NSArray *) launchedApplications;
 - (NSArray *) userApplications;
 
-- (void) noteApplicationLaunched: (NSNotification *) notif;
-- (void) noteApplicationTerminated: (NSNotification *) notif;
+- (void) noteApplicationLaunched: (NSNotification *)notif;
+- (void) noteApplicationTerminated: (NSNotification *)notif;
 - (void) checkLiveApplications;
 
-- (void) terminateAllApplicationsOnOperation: (NSString *) operation;
+- (void) terminateAllApplicationsOnOperation: (NSString *)operation;
 
 + (BOOL) setUpServerInstance: (id)instance;
 

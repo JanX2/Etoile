@@ -86,6 +86,9 @@ extern NSString * const EtoileSystemServerName;
 	/* DO support */
 	//NSConnection *serverConnection;
 	NSConnection *clientConnection;
+
+	/* Flag used in -synchronizeProcessWithConfigFile */
+	BOOL _launchQueueScheduled;
 }
 
 + (SCSystem *) sharedInstance;
