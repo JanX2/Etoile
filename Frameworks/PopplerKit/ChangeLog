@@ -1,3 +1,7 @@
+2007-04-10  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Fixed bug #8806 by moving etoile.make include.
+
 2007-03-27  Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* GNUmakefile: add -I/usr/X11R6/include for older FreeBSD version.
