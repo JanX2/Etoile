@@ -607,13 +607,10 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     return [[array copy] autorelease];
 }
 
-/**
- * Gracefully terminates all workspace processes at log out or power
- * off time.
- *
- * @return YES if the log out/power off operation can proceed, NO
- *      if an app requested the operation to be halted.
- */
+/** <p>Gracefully terminates all Etoile system processes at log out or power
+    off time.</p>
+    <p>Returns YES if the log out/power off operation can proceed, NO if an 
+    app requested the operation to be halted.</p> */
 - (BOOL) terminateAllProcessesOnOperation: (NSString *)op
 {
 	NSEnumerator *e = [[_processes allKeys] objectEnumerator];
@@ -628,6 +625,10 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
   return stoppedAll;
 }
 
+/** Method called by remote clients to trigger either log out or power off. It
+    only asks ApplicationManager to terminate all applications for the 
+    requested operation. Then SCSystem will wait ApplicationManager reply 
+    through -replyToLogOutOrPowerOff: before doing anything. */
 - (oneway void) logOutAndPowerOff: (BOOL) powerOff
 {
 	NSString * operation;
@@ -650,6 +651,13 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	[[ApplicationManager sharedInstance] terminateAllApplicationsOnOperation: operation];
 }
 
+/** Method called by ApplicationManager when this latter class has finished to
+    to handle the log out work it is in charge of (usually application
+    termination). Two replies can be passed:
+    <enum>
+    <item>Ready to log out (or power off)</item>
+    <item>Log out cancelled by an application</item>
+    </enum> */
 - (void) replyToLogOutOrPowerOff: (NSDictionary *)info
 {
 	NSString *appName = [info objectForKey: @"NSApplicationName"];
@@ -691,40 +699,39 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
 @implementation SCSystem (HelperMethodsPrivate)
 
-/**
- * Launches a workspace process. This method is special in that if launching
- * the process fails, it queries the user whether to log out (fatal failure),
- * retry launching it or ignore it.
- *
- * @param processDescription A description dictionary of the process
- *      which to launch.
- */
+/** <p>Launches a workspace process. This method is special in that if 
+   launching the process fails, it queries the user whether to log out (fatal 
+   failure), retry launching it or ignore it.</p>
+   <p><deflist>
+   <term>processDescription</term><desc>A description dictionary of the process
+   which to launch.</desc>
+   </deflist></p> */
 - (void) startProcessWithUserFeedbackForDomain: (NSString *)domain
 {
-    NSError *error;
-    
-    relaunchProcess:
-    if (![self startProcessWithDomain: domain error: &error])
-    {
-        int result;
-    
-        result = NSRunAlertPanel(_(@"Failed to launch the process"),
-            _(@"Failed to launch the process \"%@\"\n"
-            @"Reason: %@.\n"),
-            _(@"Log Out"), _(@"Retry"), _(@"Ignore"),
-            [[_processes objectForKey: domain] path],
-            [[error userInfo] objectForKey: NSLocalizedDescriptionKey]);
-    
-        switch (result)
-        {
-            case NSAlertDefaultReturn:
-                [NSApp terminate: self];
-            case NSAlertAlternateReturn:
-                goto relaunchProcess;
-            default:
-                break;
-        }
-    }
+	NSError *error;
+	
+	relaunchProcess:
+	if (![self startProcessWithDomain: domain error: &error])
+	{
+		int result;
+	
+		result = NSRunAlertPanel(_(@"Failed to launch the process"),
+			_(@"Failed to launch the process \"%@\"\n"
+			@"Reason: %@.\n"),
+			_(@"Log Out"), _(@"Retry"), _(@"Ignore"),
+			[[_processes objectForKey: domain] path],
+			[[error userInfo] objectForKey: NSLocalizedDescriptionKey]);
+	
+		switch (result)
+		{
+			case NSAlertDefaultReturn:
+				[NSApp terminate: self];
+			case NSAlertAlternateReturn:
+				goto relaunchProcess;
+			default:
+				break;
+		}
+	}
 }
 
 /*

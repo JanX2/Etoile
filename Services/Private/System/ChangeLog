@@ -1,6 +1,15 @@
 2007-04-11  Quentin Mathe <qmathe@club-internet.fr>
 
 	* EtoileSystem.m
+	(-replyToLogOutOrPowerOff:):
+	(-logOutAndPowerOff:):
+	(-terminateAllProcessesOnOperation:):
+	(-startProcessWithUserFeedbackForDomain:):
+	More reindenting and documentation work.
+
+2007-04-11  Quentin Mathe <qmathe@club-internet.fr>
+
+	* EtoileSystem.m
 	(-findConfigFileAndStartUpdateMonitoring):
 	(-checkConfigFileUpdate):
 	(-processTerminated:)
