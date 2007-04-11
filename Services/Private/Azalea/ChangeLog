@@ -1,3 +1,7 @@
+2007-04-11  Yen-Ju Chen <yjchenx at gmail>
+
+	* Fix window level bug which crashes GNUstep application.
+
 2007-04-06  Yen-Ju Chen <yjchenx at gmail>
 
 	* Updating maximize and fullscreen.

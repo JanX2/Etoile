@@ -1002,6 +1002,27 @@
 
     orig = oself;
 
+    /* I do not fully understand why I need to treate GNUstep specially.
+       If I don't, Azalea will complain in [AZStacking doRestack:...]
+       where 'index == NSNotFound' and crashes most of time.
+       My take is that for regular X-window, transient window has the same
+       level as their parent window. But for GNUstep application,
+       transient window has its own level (floating panel, menu, etc).
+       If we set GNUstep window the same level as their parent,
+       which is probably the main window, it is actually the wrong behavior.
+       Although it does not explain why AZStacking complains and crashes,
+       it behaves well.
+       Another reason I can think about is that since we do not modify
+       window level based on transient relationship,
+       it is consistent with GNUstep, therefore, bug-free.
+       For debug purpose, this happens between r1649 to r1650,
+       or more specifically, in [AZClient calcLayer]. */
+    if ([self isGNUstep])
+    {
+	layer = [self calcStackingLayer];
+	return;
+    }
+
     /* transients take on the layer of their parents */
     it = [oself searchAllTopParents];
     int i;
