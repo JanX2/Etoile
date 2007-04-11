@@ -262,7 +262,7 @@ static AZStacking *sharedInstance;
         win[0] = [[stacking_list lastObject] windowTop];
     } else {
 	int index = [stacking_list indexOfObject: before];
-	if (index < 1) {
+	if (index == NSNotFound) {
 	  NSLog(@"Internal Error: cannot find window in doRestack:before:");
 	} else {
 	  win[0] = [(id <AZWindow>)[self windowAtIndex: index-1] windowTop];
