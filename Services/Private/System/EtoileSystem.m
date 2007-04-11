@@ -501,24 +501,38 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     return YES;
 }
 
+/** <p>Restarts process identified by <var>domain</var> which was suspended 
+    previously with -suspendProcessWithDomain:error:. Doesn't do anything if
+    you call it on a process which hasn't been suspended first.</p>
+    <p>This method should make any suspended processes reactive UI level if 
+    they have one.</p>
+    <p>Works by sending POSIX signal SIGCONT behind the scene. You should 
+    signal suspended processes with SIGCONT directly.</p>
+    <p>Note that calling this method on a stopped process has no effect.</p> */
 - (BOOL) restartProcessWithDomain: (NSString *)domain error: (NSError **)error
 {
-    BOOL stopped = NO;
-    BOOL restarted = NO;
-    
-    stopped = [self stopProcessWithDomain: domain error: NULL];
-    
-    /* The process has been properly stopped or was already, then we restart it now. */
-    if (stopped)
-        restarted = [self restartProcessWithDomain: domain error: NULL];
+	BOOL stopped = NO;
+	BOOL restarted = NO;
 
-    return restarted;
+	stopped = [self stopProcessWithDomain: domain error: NULL];
+
+	/* The process has been properly stopped or was already, then we restart it 
+	   now. */
+	if (stopped)
+		restarted = [self restartProcessWithDomain: domain error: NULL];
+
+	return restarted;
 }
 
+/** <p>Terminates process identified by <var>domain</var>.</p>
+    <p>When the process is an AppKit-based application, the application is 
+    stopped by sending -terminate message. If it does not exits after a five
+    seconds delay it, the termination occurs by signaling it with SIGKILL. For
+    other processes, SIGQUIT is sent before falling back on SIGKILL.</p> */
 - (BOOL) stopProcessWithDomain: (NSString *)domain error: (NSError **)error
 {
-    NSTask *process = [_processes objectForKey: domain];
-    
+	NSTask *process = [_processes objectForKey: domain];
+
 	NSDebugLLog(@"SCSystem", @"Trying to terminate process %@ with domain %@", 
 		[process launchPath], domain);
 
@@ -548,63 +562,81 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
             return YES;
 		}
     }
-    
+
     return NO;
 }
 
+/** <p>Suspends process identified by <var>domain</var>. Any suspended 
+    processes will appear frozen at UI level if they have one, in all cases 
+    they won't reply to any events.</p>
+    <p>Finally they will only resume if you call 
+    -restartProcessWithDomain:error: or if you send them POSIX signals like 
+    SIGCONT. Note that you should not signal a process with SIGCONT to resume, 
+    but rather uses -restartProcessWithDomain:error: otherwise SCSystem will 
+    still consider the process as suspended.</p>
+    </p>Works by sending SIGSTOP signal behind the scene. If you signal a 
+    process with SIGSTOP directly, SCSystem would still consider it as 
+    running.</p> */
 - (BOOL) suspendProcessWithDomain: (NSString *)domain error: (NSError **)error
 {
-    NSTask *process = [_processes objectForKey: domain];
-    
-    if ([process isRunning])
-    {
-        return [process suspend];
-    }
-    
-    return NO;
+	NSTask *process = [_processes objectForKey: domain];
+
+	if ([process isRunning])
+	{
+		return [process suspend];
+	}
+	
+	return NO;
 }
 
+/** <p>Synchronizes processes returned by -processes which SCSystem is in 
+    charge of with the config list <file>SystemTaskList.plist</file>. The 
+    config list file describes processes which must be launched in precise 
+    circumstances and ways to have a working Etoile environment.</p>
+    <p>This method is automatically called every two seconds by default.</p> */
 - (void) loadConfigList
 {
-    [self checkConfigFileUpdate];
+	[self checkConfigFileUpdate];
 }
 
+/** <p>Synchronizes the config list <file>SystemTaskList.plist</file> with the
+    processes returned by -processes method. Uses this method with care since 
+    it will overwrite the inital settings of <file>SystemTaskList</file>.
+    Etoile environment may then not start properly on next login. It is mostly
+    reserved to Etoile internal use.</p>
+    <p><strong>Not implemented</strong><em> */
 - (void) saveConfigList
 {
-    // TODO: Write the code to sync the _processes ivar and the config file
+	// TODO: Write the code to sync the _processes ivar and the config file
 }
 
-/**
- * Returns a list of Etoile system processes invisible to the user.
- *
- * This list is used by the application manager to determine which
- * apps it should ommit from its output and from terminating when
- * shutting down gracefully.
- *
- * @return An array of process names of processes to be kept masked
- */
+/** <p>Returns a list of Etoile system processes invisible to the user.</p>
+    <p>This list is used by the application manager to determine which 
+    applications it should ommit from its output and from terminating when
+    shutting down gracefully.</p>
+    <p>Returns an array of process names of processes to be kept masked.</p> */
 - (NSArray *) maskedProcesses
 {
-    NSMutableArray *array = 
-            [NSMutableArray arrayWithCapacity: [_processes count]];
-    NSEnumerator *e = [_processes objectEnumerator];
-    SCTask *processesEntry;
+	NSMutableArray *array = 
+		[NSMutableArray arrayWithCapacity: [_processes count]];
+	NSEnumerator *e = [_processes objectEnumerator];
+	SCTask *processesEntry;
 
 	/* Don't forget to add myself else ApplicationManager will kill us on log 
 	   out or shut down. */
 	[array addObject: @"etoile_system"];
-    
-    while ((processesEntry = [e nextObject]) != nil)
-    {
-        if ([processesEntry isHidden])
-        {
-            // NOTE: we could a Name key to the Task config file schema rather
-            // than always extracting the name from the task/executable path.
-            [array addObject: [processesEntry name]];
-        }
-    }
-    
-    return [[array copy] autorelease];
+
+	while ((processesEntry = [e nextObject]) != nil)
+	{
+		if ([processesEntry isHidden])
+		{
+			// NOTE: we could a Name key to the Task config file schema rather
+			// than always extracting the name from the task/executable path.
+			[array addObject: [processesEntry name]];
+		}
+	}
+	
+	return [[array copy] autorelease];
 }
 
 /** <p>Gracefully terminates all Etoile system processes at log out or power
