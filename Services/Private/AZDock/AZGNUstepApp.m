@@ -20,7 +20,7 @@
 
   NSString *path = [self command];
   BOOL success = [[NSWorkspace sharedWorkspace] launchApplication: path];
-  if (success == NO) {
+  if (path && (success == NO)) {
     /* Try regular execute */
     [NSTask launchedTaskWithLaunchPath: path arguments: nil];
   }

@@ -1,3 +1,8 @@
+2007-04-11 Yen-Ju Chen <yjchenx at gmail>
+
+	* Check command in case a GNUstep application is launched
+	  from non-standard places.
+
 2007-04-06 Yen-Ju Chen <yjchenx at gmail>
 
 	* Reserve space for dock so that full screen window 
