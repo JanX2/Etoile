@@ -14,4 +14,7 @@
 }
 
 - (void) showFindPanel: (id) sender;
+
+/* This add string straight into document */
+- (void) appendString: (NSString *) string;
 @end

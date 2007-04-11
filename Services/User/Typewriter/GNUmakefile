@@ -6,6 +6,7 @@ APP_NAME = Typewriter
 
 Typewriter_OBJC_FILES = \
 	main.m \
+	Controller.m \
 	TWTextView.m \
 	TWDocument.m \
 	TWCharacterPanel.m

@@ -8,6 +8,11 @@
 
 @implementation TWDocument
 
+- (void) appendString: (NSString *) string
+{
+  [textView insertText: string];
+}
+
 - (void) characterSelectedInPanel: (id) sender
 {
   NSString *character = [[[(TWCharacterPanel *)sender matrix] selectedCell] stringValue];

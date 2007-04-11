@@ -35,5 +35,18 @@
          NSDocumentClass = TWDocument;
       }
    );
+   NSServices = (
+     {
+       NSPortName = Typewriter;
+       NSMessage = newDocumentWithSelection;
+       NSSendTypes = (NSStringPboardType);
+       NSKeyEquivalent = {
+         default = "";
+        };
+       NSMenuItem = {
+         default = "New document with selection";
+        };
+     }
+   );
 }
 
