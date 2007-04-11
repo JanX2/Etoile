@@ -731,131 +731,127 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
  * Config file private methods
  */
 
-/**
- * Finds the Etoile system config file for the receiver and starts the file's
- * monitoring (watching for changes to the file).
- *
- * The config file is located in the following order:
- *
- * - first the user defaults database is searched for a key named
- *      "EtoileSystemTaskListFile". The path may contain a '~'
- *      abbreviation - this will be expanded according to standard
- *      shell expansion rules.
- * - next, the code looks for the file in
- *      $GNUSTEP_USER_ROOT/Etoile/SystemTaskList.plist
- * - next, the code tries all other domains' Library subdirectory
- *      "Etoile/SystemTaskList.plist"
- * - if even that fails, the file "SystemTaskList.plist" is looked
- *      for inside the app bundle's resources files.
- *
- * If everything fails, no process set is loaded and a warning message
- * is printed.
- */
+/** <p>Finds the Etoile system config file for the receiver and starts the 
+    file's monitoring (watching for changes to the file).</p>
+    <p>The config file is located in the following order:
+    <enum>
+    <item>first the user defaults database is searched for a key named 
+    "EtoileSystemTaskListFile". The path may contain a '~' abbreviation - this 
+     will be expanded according to standard shell expansion rules.</item>
+    <item>next, the code looks for the file in
+    $GNUSTEP_USER_ROOT/Etoile/SystemTaskList.plist</item>
+    <item>next, the code tries all other domains' Library subdirectory
+    "Etoile/SystemTaskList.plist"</item>
+    <item>if even that fails, the file "SystemTaskList.plist" is looked
+    for inside the app bundle's resources files.</item>
+    </enum></p>
+    <p>If everything fails, no process set is loaded and a warning message is
+    printed.</p> */
 - (void) findConfigFileAndStartUpdateMonitoring
 {
-    NSString *tmp;
-    NSString *configPath;
+	NSString *tmp;
+	NSString *configPath;
 	NSString *suffix;
-    NSEnumerator *e;
-    NSMutableArray *searchPaths = [NSMutableArray array];
-    NSFileManager *fm = [NSFileManager defaultManager];
+	NSEnumerator *e;
+	NSMutableArray *searchPaths = [NSMutableArray array];
+	NSFileManager *fm = [NSFileManager defaultManager];
 
 	NSDebugLLog(@"SCSystem", @"Looking for config file");
-    
-    // try looking in the user defaults
-    tmp = [[NSUserDefaults standardUserDefaults]
-        objectForKey: @"EtoileSystemTaskListFile"];
-    if (tmp != nil)
-    {
-        [searchPaths addObject: [tmp stringByExpandingTildeInPath]];
-    }
-    
+	
+	/* Try looking in the user defaults */
+	tmp = [[NSUserDefaults standardUserDefaults]
+		objectForKey: @"EtoileSystemTaskListFile"];
+	if (tmp != nil)
+	{
+		[searchPaths addObject: [tmp stringByExpandingTildeInPath]];
+	}
+	
 	suffix = [@"Etoile" stringByAppendingPathComponent: @"SystemTaskList.plist"];
-    // if that fails, try
-    // $GNUSTEP_USER_ROOT/Library/EtoileWorkspace/WorkspaceProcessSet.plist
-    tmp = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
-        NSUserDomainMask, YES) objectAtIndex: 0];
+	/* If that fails, try
+	   $GNUSTEP_USER_ROOT/Library/Etoile/SystemTaskList.plist */
+	tmp = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
+		NSUserDomainMask, YES) objectAtIndex: 0];
 	[searchPaths addObject: [tmp stringByAppendingPathComponent: suffix]];
-    
-    // and if that fails, try all domains
-    e = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
-        NSLocalDomainMask | NSNetworkDomainMask | NSSystemDomainMask, YES)
-        objectEnumerator];
-    while ((tmp = [e nextObject]) != nil)
-    {
+	
+	/* And if that fails, try all domains */
+	e = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
+		NSLocalDomainMask | NSNetworkDomainMask | NSSystemDomainMask, YES)
+		objectEnumerator];
+	while ((tmp = [e nextObject]) != nil)
+	{
 		[searchPaths addObject: [tmp stringByAppendingPathComponent: suffix]];
-    }
-    
-    // finally, try the application bundle's WorkspaceProcessSet.plist resource
-    tmp = [[NSBundle mainBundle] pathForResource: @"SystemTaskList"
-                                            ofType: @"plist"];
-    if (tmp != nil)
-    {
-        [searchPaths addObject: tmp];
-    }
-    
-    e = [searchPaths objectEnumerator];
-    while ((configPath = [e nextObject]) != nil)
-    {
-        if ([fm isReadableFileAtPath: configPath])
-        {
-            break;
-        }
-    }
-    
-    if (configPath != nil)
-    {
-        NSInvocation * inv;
-    
-        ASSIGN(configFilePath, configPath);
+	}
+	
+	/* Finally, try the application bundle's SystemTaskList.plist resource */
+	tmp = [[NSBundle mainBundle] pathForResource: @"SystemTaskList" 
+	                                      ofType: @"plist"];
+	if (tmp != nil)
+	{
+		[searchPaths addObject: tmp];
+	}
+	
+	e = [searchPaths objectEnumerator];
+	while ((configPath = [e nextObject]) != nil)
+	{
+		if ([fm isReadableFileAtPath: configPath])
+		{
+			break;
+		}
+	}
+	
+	if (configPath != nil)
+	{
+		NSInvocation * inv;
+	
+		ASSIGN(configFilePath, configPath);
 
 		NSDebugLLog(@"SCSystem", @"Triggering config monitoring");
-	// NOTE: The next line corrupts the stack frame and leads to really 
-	// strange segfaults related to gnustep lock objects or thread 
-	// dictionary.
-	// inv = NS_MESSAGE(self, checkConfigFileUpdate);
-	inv = [[NSInvocation alloc] initWithTarget: self selector: 
-		@selector(checkConfigFileUpdate)];
-	AUTORELEASE(inv);
-        ASSIGN(monitoringTimer, [NSTimer scheduledTimerWithTimeInterval: 2.0
-                                                             invocation: inv
-                                                                repeats: YES]);
-    }
-    else
-    {
-        NSLog(_(@"WARNING: no usable workspace process set file found. "
-                @"I'm not going to do workspace process management."));
-    }
+
+		// NOTE: The next line corrupts the stack frame and leads to really 
+		// strange segfaults related to gnustep lock objects or thread 
+		// dictionary.
+		//inv = NS_MESSAGE(self, checkConfigFileUpdate);
+		inv = [[NSInvocation alloc] initWithTarget: self selector: 
+			@selector(checkConfigFileUpdate)];
+		AUTORELEASE(inv);
+		ASSIGN(monitoringTimer, [NSTimer scheduledTimerWithTimeInterval: 2.0
+		                                                     invocation: inv
+		                                                        repeats: YES]);
+	}
+	else
+	{
+		NSLog(_(@"WARNING: no usable workspace process set file found. "
+			@"I'm not going to do workspace process management."));
+	}
 }
 
 /** This method is called by -loadConfigFile. The parsing of the config file 
-    and the update of the running processes is let to -synchronizeProcessesWithConfigFile 
-    method. */
+    and the update of the running processes is let to 
+    -synchronizeProcessesWithConfigFile method. */
 - (void) checkConfigFileUpdate
 {
-    NSDate *latestModificationDate = [[[NSFileManager defaultManager]
-        fileAttributesAtPath: configFilePath traverseLink: YES]
-        fileModificationDate];
+	NSDate *latestModificationDate = [[[NSFileManager defaultManager]
+		fileAttributesAtPath: configFilePath traverseLink: YES]
+		fileModificationDate];
 
 	/* We discard automatic synchronization with config file when we are in the
 	   middle of any process launch. */
-	// FIXME: Will change when I settle on which data structures are used.
-	//if ([_processLaunchQueue count] > 0 || [_processLaunchGroup count] > 0)
+	if (_launchQueueScheduled)
 		return;
-    
-    if ([latestModificationDate compare: modificationDate] ==
-        NSOrderedDescending)
-    {
-        NSDebugLLog(@"SCSystem",
-            @"Config file %@ changed, reloading...", configFilePath);
-    
-        [self synchronizeProcessesWithConfigFile];
-     }
+	
+	if ([latestModificationDate compare: modificationDate] ==
+		NSOrderedDescending)
+	{
+		NSDebugLLog(@"SCSystem",
+			@"Config file %@ changed, reloading...", configFilePath);
+	
+		[self synchronizeProcessesWithConfigFile];
+	 }
 }
 
 /** Refreshes the processes list from the config file and modifies the running 
-    processes accordingly - kills those which are not supposed to be there and 
-    starts the new ones. */
+    processes accordingly by killing those which are not supposed to be there
+    and starts the new ones. */
 - (void) synchronizeProcessesWithConfigFile
 {
 	NSDictionary *newProcessTable = nil;
@@ -935,28 +931,27 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	ASSIGN(modificationDate, [fileAttributes fileModificationDate]);
 }
 
-/**
- * Notification method invoked when a workspace process terminates. This method
- * causes the given process to be relaunched again. Note the process isn't
- * relaunched when it is stopped by calling -stopProcessForDomain:.
-   Take note this notification is not related to NSTaskDidTerminateNotification
-   which is usually sent soon after the task launch.
- */
+/** <p>Notification method invoked when a workspace process terminates. This 
+    method causes the given process to be relaunched again. Note the process 
+    isn't relaunched when it is stopped by calling -stopProcessForDomain:.</p>
+    <p>Take note this notification is not related to 
+    NSTaskDidTerminateNotification which is usually sent soon after the task 
+    launch.</p> */
 - (void) processTerminated: (NSNotification *)notif
 {
-    SCTask *task = [notif object];
-    NSString *domain = [[_processes allKeysForObject: task] objectAtIndex: 0];
+	SCTask *task = [notif object];
+	NSString *domain = [[_processes allKeysForObject: task] objectAtIndex: 0];
 
-    NSDebugLLog(@"SCSystem", @"Process %@ terminated", [task name]);
+	NSDebugLLog(@"SCSystem", @"Process %@ terminated", [task name]);
 
-    /* We relaunch every processes that exit and still referenced by the 
-        process table, unless they are special daemons launched on demand 
-        (in other words, not always running). */
-    // FIXME: Checks the process isn't stopped by -stopProcessForDomain:.
-    if (domain != nil && [task launchOnDemand] == NO)
-    {
-        //[self startProcessWithDomain: domain error: NULL];
-    }
+	/* We relaunch every processes that exit and still referenced by the 
+	    process table, unless they are special daemons launched on demand 
+	    (in other words, not always running). */
+	// FIXME: Checks the process isn't stopped by -stopProcessForDomain:.
+	if (domain != nil && [task launchOnDemand] == NO)
+	{
+	    //[self startProcessWithDomain: domain error: NULL];
+	}
 }
 
 @end

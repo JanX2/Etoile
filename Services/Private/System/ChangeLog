@@ -1,3 +1,12 @@
+2007-04-11  Quentin Mathe <qmathe@club-internet.fr>
+
+	* EtoileSystem.m
+	(-findConfigFileAndStartUpdateMonitoring):
+	(-checkConfigFileUpdate):
+	(-processTerminated:)
+	More reindenting and documentation work. Fixed -checkConfigFileUpdate not
+	be run when some tasks are on the way to be launch.
+
 2007-04-09  Quentin Mathe <qmathe@club-internet.fr>
 
 	* ApplicationManager.h: Minor adjustments.
