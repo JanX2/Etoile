@@ -16,7 +16,9 @@ AZDock_OBJC_FILES = \
 	AZDock.m \
 	main.m 
 
-AZDock_RESOURCE_FILES = Unknown.tiff
+AZDock_RESOURCE_FILES = \
+	Etoile.tiff \
+	Unknown.tiff
 
 ADDITIONAL_INCLUDE_DIRS += -I/usr/include -I/usr/X11R6/include
 

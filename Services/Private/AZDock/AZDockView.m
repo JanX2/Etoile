@@ -56,7 +56,8 @@ NSString *AZDockPositionDidChangeNotification = @"AZDockPositionDidChangeNotific
   [super drawRect: rect];
   [self lockFocus];
   if (image) {
-    NSRect source = NSMakeRect(0, 0, DOCK_SIZE, DOCK_SIZE);
+    NSSize size = [image size];
+    NSRect source = NSMakeRect(0, 0, size.width, size.height);
     NSRect dest = NSMakeRect(8, 8, DOCK_SIZE-16, DOCK_SIZE-16);
     source.size = [image size];
     [image drawInRect: dest

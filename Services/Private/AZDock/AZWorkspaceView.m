@@ -159,7 +159,7 @@
 - (id) initWithFrame: (NSRect) rect
 {
   self = [super initWithFrame: rect];
-  ASSIGN(image, [NSImage imageNamed: @"GNUstep.tiff"]);
+  ASSIGN(image, [NSImage imageNamed: @"Etoile.tiff"]);
   /* Remove all default menu */
   while (([contextualMenu numberOfItems])) {
     [contextualMenu removeItemAtIndex: 0];
