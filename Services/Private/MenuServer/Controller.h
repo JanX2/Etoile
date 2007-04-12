@@ -23,6 +23,7 @@
 
 #import <Foundation/NSObject.h>
 #import <Foundation/NSGeometry.h>
+#import <AppKit/NSApplication.h>
 
 @class NSNotification, MenuBarWindow;
 
@@ -44,4 +45,8 @@ extern MenuBarWindow * ServerMenuBarWindow;
 
 - (id) workspaceApp;
 
+@end
+
+@interface NSApplication (EtoileMenuBar)
+- (NSRect) menuBarWindowFrame;
 @end

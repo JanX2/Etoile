@@ -203,3 +203,14 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 }
 
 @end
+
+@implementation NSApplication (EtoileMenuBar)
+
+/* Useful for EtoileWildMenus which requests our position and size through DO 
+   thanks to this method. */
+- (NSRect) menuBarWindowFrame
+{
+  return [Controller menuBarWindowFrame];
+}
+
+@end
