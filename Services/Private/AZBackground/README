@@ -5,7 +5,11 @@ AZBackground
 :Authors: Yen-Ju Chen
 :Copyright: BSD License
 
-AZBackground set an image as background.
+AZBackground set an image as background 
+and provides services for service menulet.
+It can also work with X window primary selection, 
+aka, middle-mouse-button-copy.
+For example, select a text in firefox and use service menulet. 
 
 Usage
 -----

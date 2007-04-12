@@ -4,11 +4,14 @@
 
 @interface AZBackground: NSObject
 {
-  /* Accessories */
   GSDisplayServer *server;
   Display *dpy;
   int screen;
   Window root_win;
+  Window window;
+
+  NSString *serviceItem;
+  Atom X_NAME; /* property name */
 }
 
 + (AZBackground *) background;

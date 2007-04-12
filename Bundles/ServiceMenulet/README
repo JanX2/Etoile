@@ -1,0 +1,11 @@
+============== 
+ServiceMenulet
+==============
+
+:Authors: Yen-Ju Chen
+:Copyright: BSD License
+
+ServiceMenulet is a menulet allowing user to use services 
+provided by GNUstep applications.
+It is in early developement stage and 
+depends on AZBackground to perform service.
