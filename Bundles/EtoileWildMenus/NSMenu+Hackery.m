@@ -31,6 +31,16 @@
 
 #import "MenuBarHeight.h"
 
+@interface NSMenu (EtoilePrivate)
+- (NSRect) _menuServerWindowFrame;
+@end
+
+/* EtoileMenuServer NSApplication method (see -_menuServerWindowFrame) */
+@interface NSObject (EtoileMenuServerController)
+- (NSRect) menuBarWindowFrame;
+@end
+
+
 @implementation NSMenu (HorizontalHackery)
 
 #define SHIFT_DELTA 18.0
@@ -106,13 +116,53 @@
   [self setGeometry];
 }
 
-- (void)setGeometry
+/* By mapping geometry by default on EtoileMenuServer menu bar, menus and menu
+   bar should remained bound together if the menu bar moves. A common use case
+   is when you run Etoile inside GNOME (or whatever) which already displays a
+   a menu bar at the top. In GNOME case, menu bar is shifted down automatically
+   and menus can follow it thanks to -_menuServerWindowFrame. */
+- (void) setGeometry
 {
   NSPoint origin;
-  origin = NSMakePoint (1.5 * MenuBarHeight,
-    [[NSScreen mainScreen] frame].size.height - [_aWindow frame].size.height);
+  NSRect menuBarRect = [self _menuServerWindowFrame];
+
+  NSDebugLog(@"WildMenus", @"MenuServer menu bar rect %@", 
+    NSStringFromRect(menuBarRect));
+
+  if (NSEqualRects(menuBarRect, NSZeroRect) == NO)
+    {
+      // TODO: Find why origin.y must be shifted down of 3 px.
+      origin = NSMakePoint (1.5 * MenuBarHeight,
+        menuBarRect.origin.y - [_aWindow frame].size.height - 3);
+    }
+  else /* Fall back on screen frame */
+    {
+      origin = NSMakePoint (1.5 * MenuBarHeight,
+        [[NSScreen mainScreen] frame].size.height - [_aWindow frame].size.height);
+    }
+
   [_aWindow setFrameOrigin: origin];
   [_bWindow setFrameOrigin: origin];
+}
+
+/* Requests menu bar window rect to EtoileMenuServer process. */
+- (NSRect) _menuServerWindowFrame
+{
+  NSRect menuBarWindowFrame = NSZeroRect;
+  id app = [NSConnection 
+    rootProxyForConnectionWithRegisteredName: @"EtoileMenuServer" 
+                                        host: nil];
+
+  if (app != nil)
+    {
+      menuBarWindowFrame = [app menuBarWindowFrame];
+    }
+  else
+    {
+      NSLog(@"WARNING: Failed to retrieve MenuServer application proxy");
+    }
+
+  return menuBarWindowFrame;
 }
 
 //-(void) _updateUserDefaults:(id)notification

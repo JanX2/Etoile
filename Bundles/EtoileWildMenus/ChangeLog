@@ -1,3 +1,10 @@
+2007-04-12  Quentin Mathe <qmathe@club-internet.fr>
+
+	* NSMenuView+Hackery.m 
+	(-setGeometry:): Modified to be always mapped on menu bar location thanks 
+	to -_menuServerWindowFrame.
+	(-_menuServerWindowFrame): Added.
+
 2007-04-07  Quentin Mathe <qmathe@club-internet.fr>
 
 	Fix for bug #8571 #8568 (may help for bug #8608 too)
