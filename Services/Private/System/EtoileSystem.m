@@ -92,25 +92,25 @@ const int EtoileSystemTaskLaunchingError = 1;
  *      the error. Following it is a variable number of arguments,
  *      all of which are arguments to this format string.
  */
-static void
+static void 
 SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 {
-  if (error != NULL)
-    {
-      NSDictionary * userInfo;
-      NSString * reason;
-      va_list arglist;
+	if (error != NULL)
+	{
+		NSDictionary * userInfo;
+		NSString * reason;
+		va_list arglist;
 
-      va_start (arglist, reasonFormat);
-      reason = [NSString stringWithFormat: reasonFormat arguments: arglist];
-      va_end (arglist);
+		va_start (arglist, reasonFormat);
+		reason = [NSString stringWithFormat: reasonFormat arguments: arglist];
+		va_end (arglist);
 
-      userInfo = [NSDictionary
-        dictionaryWithObject: reason forKey: NSLocalizedDescriptionKey];
-      *error = [NSError errorWithDomain: EtoileSystemErrorDomain
-                                   code: code
-                               userInfo: userInfo];
-    }
+		userInfo = [NSDictionary
+			dictionaryWithObject: reason forKey: NSLocalizedDescriptionKey];
+		*error = [NSError errorWithDomain: EtoileSystemErrorDomain
+		                             code: code
+		                         userInfo: userInfo];
+	}
 }
 
 @interface SCSystem (Private)
@@ -154,11 +154,15 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	}
 }
 
+/* Returns SCSystem singleton. You should use this method to access SCSystem 
+   inside etoile_system process. */
 + (id) serverInstance
 {
 	return serverInstance;
 }
 
+/* Set up SCSystem singleton by registering it into DO. This makes possible to 
+   have it returned as a proxy by -sharedInstance in remote applications. */
 + (BOOL) setUpServerInstance: (id)instance
 {
 	ASSIGN(serverInstance, instance);
@@ -183,8 +187,10 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	return YES;
 }
 
-/** Reserved for client side. It's mandatory to have call -setUpServerInstance: 
-    before usually in the server process itself. */
+/** Returns SCSystem proxy that can be used to interact with Etoile main daemon
+    It should only be used on client side. */
+/* It's mandatory to have call -setUpServerInstance: before usually in the 
+   server process itself. */
 + (SCSystem *) sharedInstance
 {
 	proxyInstance = [NSConnection 
@@ -203,41 +209,44 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     return [self initWithArguments: nil];
 }
 
+/* Designated initializer */
 - (id) initWithArguments: (NSArray *)args
 {
-    if ((self = [super init]) != nil)
-    {
-        _processes = [[NSMutableDictionary alloc] initWithCapacity: 20];
+	if ((self = [super init]) != nil)
+	{
+		_processes = [[NSMutableDictionary alloc] initWithCapacity: 20];
 		_launchQueue = [[NSMutableArray alloc] initWithCapacity: 20];
 		//_launchGroup = [[NSMutableArray alloc] initWithCapacity: 20];
 
-        return self;
-    }
-    
-    return nil;
+		return self;
+	}
+	
+	return nil;
 }
 
 - (void) dealloc
 {
-    DESTROY(_processes);
+	DESTROY(_processes);
 	DESTROY(_launchQueue);
 
-    TEST_RELEASE(monitoringTimer);
-    TEST_RELEASE(configFilePath);
-    TEST_RELEASE(modificationDate);
-    
-    [super dealloc];
+	TEST_RELEASE(monitoringTimer);
+	TEST_RELEASE(configFilePath);
+	TEST_RELEASE(modificationDate);
+	
+	[super dealloc];
 }
 
+/** First creates ApplicationManager instance, then starts NSApplication-based
+    run loop used by SCSystem at this point. */
 - (void) run
 {
-    /* We trigger the ApplicationManager singleton creation in order it 
-       starts to monitor user applications. The return value is ignored. */
-    [ApplicationManager sharedInstance];
-    /* We trigger the NSApplication singleton creation in order we can use
-       UI stuff like window, panel etc. The return value is ignored. */
-    [[NSApplication sharedApplication] setDelegate: self];
-    [[NSApplication sharedApplication] run];
+	/* We trigger the ApplicationManager singleton creation in order it 
+	   starts to monitor user applications. The return value is ignored. */
+	[ApplicationManager sharedInstance];
+	/* We trigger the NSApplication singleton creation in order we can use
+	   UI stuff like window, panel etc. The return value is ignored. */
+	[[NSApplication sharedApplication] setDelegate: self];
+	[[NSApplication sharedApplication] run];
 }
 
 /* Notification invoked when an NSWorkspaceDidLaunchApplicationNotification
@@ -309,6 +318,10 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
 	_launchQueueScheduled = NO;
 }
+
+/*
+ * Launch queue related code (launch by priority support)
+ */ 
 
 /** Returns a process launch queue by sorting processes values based on their
     launch priority. The queue is ordered by ascending priority number values. */
@@ -429,27 +442,30 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	}
 }
 
-/**
- * Launches a workspace process.
- *
- * @param processDescription The description of the process which to launch.
- * @param error A pointer to an NSError variable which will be filled with
- *      an NSError instance in case of a launch error.
- *
- * @return YES if the launch succeeds, NO if it doesn't and indicates the
- *      reason in the ``error'' argument.
- */
+/** <p>Launchs process identified by <var>domain</domain>.</p>
+    <p>Note this method has no effect if you call it on a suspended process.
+    </p>
+    <deflist>
+    <term>domain</term><desc>A path which the process has been bound to. Note
+    that a process might be bind to more than one domain, though this should
+    not happen. In a similar way, an executable might be referenced and used by 
+    several processes. Hence SCSystem does not prevent to launch an already
+    running executable through itself or in another manner.</desc>
+    <term>error</term><desc>A pointer to an NSError variable which will be 
+    filled with an NSError instance in case of a launch error.</desc>
+    </deflist>
+    <p>Returns YES if the launch succeeds, NO if it doesn't and indicates the
+    reason in <var>error</var> argument.</p> */
 - (BOOL) startProcessWithDomain: (NSString *)domain error: (NSError **)error
 {
-    SCTask *process = [_processes objectForKey: domain];
-    /* We should pass process specific flags obtained in arguments (and the
-       ones from main function probably too) */
-    //NSArray *args = [NSArray arrayWithObjects: nil];
+	SCTask *process = [_processes objectForKey: domain];
 
-	/* Look for an already running process with the same domain.
+	/* May be we should check whether an already running process with the same 
+       domain exists...
 	   Well, I'm not sure we should do this, but it could be nice, we would 
-	   have to identify the process in one way or another (partially to not
+	   have to identify the process in one way or another (partially not to
 	   compromise the security). */
+
 	if (process == nil)
 	{
 		// FIXME: Set up an error explaing no process has been bound to this
@@ -476,29 +492,26 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 		[_processes setObject: process forKey: domain];
 	}
 
-    // NOTE: the next line triggers an invalid argument exception, although the
-    // array isn't nil.
-    // [process setArguments: args];
-
-    NS_DURING
-        /* We don't relaunch any processes that already failed to launch three 
-           times */
-        if ([process launchFailureCount] < 3)
-            [process launchForDomain: domain];
+	NS_DURING
+		/* We don't relaunch any processes that already failed to launch three 
+		   times */
+		if ([process launchFailureCount] < 3)
+			[process launchForDomain: domain];
     NS_HANDLER
-        SetNonNullError (error, EtoileSystemTaskLaunchingError,
-            _(@"Error launching program at %@: %@"), [process path],
-            [localException reason]);
+			SetNonNullError (error, EtoileSystemTaskLaunchingError,
+				_(@"Error launching program at %@: %@"), [process path],
+				[localException reason]);
 
-        return NO;
-    NS_ENDHANDLER
+			return NO;
+	NS_ENDHANDLER
 
-    [[NSNotificationCenter defaultCenter] addObserver: self
-        selector: @selector(processTerminated:) 
-            name: NSTaskDidTerminateNotification
-          object: process];
-    
-    return YES;
+	[[NSNotificationCenter defaultCenter] 
+		addObserver: self
+		   selector: @selector(processTerminated:) 
+		       name: NSTaskDidTerminateNotification
+		     object: process];
+
+	return YES;
 }
 
 /** <p>Restarts process identified by <var>domain</var> which was suspended 
@@ -508,7 +521,9 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     they have one.</p>
     <p>Works by sending POSIX signal SIGCONT behind the scene. You should 
     signal suspended processes with SIGCONT directly.</p>
-    <p>Note that calling this method on a stopped process has no effect.</p> */
+    <p>Note that calling this method on a stopped process has no effect.</p>
+    <p>Returns YES if the restart succeeds, NO if it doesn't and indicates the
+    reason in <var>error</var> argument.</p> */
 - (BOOL) restartProcessWithDomain: (NSString *)domain error: (NSError **)error
 {
 	BOOL stopped = NO;
@@ -528,7 +543,9 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     <p>When the process is an AppKit-based application, the application is 
     stopped by sending -terminate message. If it does not exits after a five
     seconds delay it, the termination occurs by signaling it with SIGKILL. For
-    other processes, SIGQUIT is sent before falling back on SIGKILL.</p> */
+    other processes, SIGQUIT is sent before falling back on SIGKILL.</p>
+    <p>Returns YES if the stop succeeds, NO if it doesn't and indicates the
+    reason in <var>error</var> argument.</p> */
 - (BOOL) stopProcessWithDomain: (NSString *)domain error: (NSError **)error
 {
 	NSTask *process = [_processes objectForKey: domain];
@@ -576,7 +593,9 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     still consider the process as suspended.</p>
     </p>Works by sending SIGSTOP signal behind the scene. If you signal a 
     process with SIGSTOP directly, SCSystem would still consider it as 
-    running.</p> */
+    running.</p>
+    <p>Returns YES if the suspend succeeds, NO if it doesn't and indicates the
+    reason in <var>error</var> argument.</p> */
 - (BOOL) suspendProcessWithDomain: (NSString *)domain error: (NSError **)error
 {
 	NSTask *process = [_processes objectForKey: domain];

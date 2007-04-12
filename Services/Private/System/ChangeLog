@@ -1,5 +1,10 @@
 2007-04-12  Quentin Mathe <qmathe@club-internet.fr>
 
+	* EtoileSystem.m: Finished the big part of remaining reindenting and 
+	documentation to be done.
+
+2007-04-12  Quentin Mathe <qmathe@club-internet.fr>
+
 	* EtoileSystem.m
 	(-restartProcessWithDomain:error:):
 	(-stopProcessWithDomain:error:):
