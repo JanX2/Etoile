@@ -1,6 +1,7 @@
 2007-04-12  Yen-Ju Chen <yjchenx at gmail>
 
 	* Perform service when called from notification.
+	* Move finding active window into XWindowServerKit.
 
 2007-03-18  Yen-Ju Chen <yjchenx at gmail>
 

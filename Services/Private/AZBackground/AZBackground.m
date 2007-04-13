@@ -55,60 +55,10 @@ static AZBackground *sharedInstance;
   return AUTORELEASE([[NSImage alloc] initWithContentsOfFile: path]);
 } 
 
-/* We need to find out which window has the selection.
-   First, XGetSelectionOwner is not reliable for no reason.
-   _NET_ACTIVE_WINDOW seems to be always on service menu,
-   which disappers after clicking, resulting BadWindow error.
- */
-- (Window) activeXWindow
-{
-#if 0
-  /* Let's see which window is on the top */ 
-  unsigned long num;
-  unsigned long *data = NULL;
-  Atom type_ret;
-  int format_ret;
-  unsigned long after_ret;
-  int result = XGetWindowProperty(dpy, root_win, X_NET_CLIENT_LIST_STACKING,
-                                  0, 0x7FFFFFFF, False, XA_WINDOW,
-                                  &type_ret, &format_ret, &num,
-                                  &after_ret, (unsigned char **)&data);
-  if ((result != Success)) {
-    NSLog(@"Error: cannot get client list stacking.");
-    if (data != NULL) {
-      XFree(data);
-    }
-    return None;
-  }
-  NSLog(@"number of windows %d", num);
-  return data[num-1];
-#endif
-#if 1
-  /* Let's see which window is the active by _NET_ACTIVE_WINDOW */
-  unsigned long num;
-  unsigned long *data = NULL;
-  Atom type_ret;
-  int format_ret;
-  unsigned long after_ret;
-  int result = XGetWindowProperty(dpy, root_win, X_NET_ACTIVE_WINDOW,
-                                  0, 0x7FFFFFFF, False, XA_WINDOW,
-                                  &type_ret, &format_ret, &num,
-                                  &after_ret, (unsigned char **)&data);
-  if ((result != Success)) {
-    NSLog(@"Error: cannot get active window.");
-    if (data != NULL) {
-      XFree(data);
-    }
-    return None;
-  }
-  return data[0];
-#endif
-}
-
 - (void) performServiceRequested: (NSNotification *) not
 {
   ASSIGN(serviceItem, [[not userInfo] objectForKey: AZServiceItem]);
-  Window activeXWindow = [self activeXWindow];
+  Window activeXWindow = XWindowActiveWindow();
 
   if (activeXWindow != None)
   {
