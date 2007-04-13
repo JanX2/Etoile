@@ -45,7 +45,7 @@ NSLog(@"here");
     [NSMenu popUpContextMenu: [manager servicesMenu]
                    withEvent: event 
 		     forView:self];
-    [super mouseDown: event];
+//    [super mouseDown: event];
 }
 @end
 

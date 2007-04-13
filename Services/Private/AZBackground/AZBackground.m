@@ -1,4 +1,6 @@
 #import <XWindowServerKit/XWindow.h>
+#import <XWindowServerKit/XFunctions.h>
+#import <GNUstepGUI/GSServicesManager.h>
 #import "AZBackground.h"
 #import <X11/Xutil.h>
 #import <X11/Xatom.h>
@@ -53,11 +55,88 @@ static AZBackground *sharedInstance;
   return AUTORELEASE([[NSImage alloc] initWithContentsOfFile: path]);
 } 
 
+/* We need to find out which window has the selection.
+   First, XGetSelectionOwner is not reliable for no reason.
+   _NET_ACTIVE_WINDOW seems to be always on service menu,
+   which disappers after clicking, resulting BadWindow error.
+ */
+- (Window) activeXWindow
+{
+#if 0
+  /* Let's see which window is on the top */ 
+  unsigned long num;
+  unsigned long *data = NULL;
+  Atom type_ret;
+  int format_ret;
+  unsigned long after_ret;
+  int result = XGetWindowProperty(dpy, root_win, X_NET_CLIENT_LIST_STACKING,
+                                  0, 0x7FFFFFFF, False, XA_WINDOW,
+                                  &type_ret, &format_ret, &num,
+                                  &after_ret, (unsigned char **)&data);
+  if ((result != Success)) {
+    NSLog(@"Error: cannot get client list stacking.");
+    if (data != NULL) {
+      XFree(data);
+    }
+    return None;
+  }
+  NSLog(@"number of windows %d", num);
+  return data[num-1];
+#endif
+#if 1
+  /* Let's see which window is the active by _NET_ACTIVE_WINDOW */
+  unsigned long num;
+  unsigned long *data = NULL;
+  Atom type_ret;
+  int format_ret;
+  unsigned long after_ret;
+  int result = XGetWindowProperty(dpy, root_win, X_NET_ACTIVE_WINDOW,
+                                  0, 0x7FFFFFFF, False, XA_WINDOW,
+                                  &type_ret, &format_ret, &num,
+                                  &after_ret, (unsigned char **)&data);
+  if ((result != Success)) {
+    NSLog(@"Error: cannot get active window.");
+    if (data != NULL) {
+      XFree(data);
+    }
+    return None;
+  }
+  return data[0];
+#endif
+}
+
 - (void) performServiceRequested: (NSNotification *) not
 {
-  /* This is only work for XWindow and string type for now */
   ASSIGN(serviceItem, [[not userInfo] objectForKey: AZServiceItem]);
-  XConvertSelection(dpy, XA_PRIMARY, XA_STRING, X_NAME, window, CurrentTime);
+  Window activeXWindow = [self activeXWindow];
+
+  if (activeXWindow != None)
+  {
+    NSString *wm_class = nil, *wm_instance = nil;
+    if (XWindowClassHint(activeXWindow, &wm_class, &wm_instance))
+    {
+      if ([wm_class isEqualToString: @"GNUstep"])
+      {
+        NSLog(@"This is a GNUstep application (%@.%@).", wm_instance, wm_class);
+        id proxy = [NSConnection rootProxyForConnectionWithRegisteredName: wm_instance host: @""];
+        if (proxy)
+        {
+	  NSLog(@"Got proxy");
+          [proxy application: nil serviceRequested: serviceItem];
+        }
+	[proxy invalidate];
+	return;
+      }
+    }
+    else
+    {
+      NSLog(@"Cannot get class and instance");
+      return;
+    }
+  }
+
+  /* This is only work for XWindow and string type for now */
+  XConvertSelection(dpy, XA_PRIMARY, XA_STRING, X_PROPERTY_NAME, window, CurrentTime);
   XSync(dpy, False);
 }
 
@@ -91,7 +170,7 @@ static AZBackground *sharedInstance;
 	  Atom type_ret;
 	  int format_ret;
 	  unsigned long after_ret;
-	  int result = XGetWindowProperty(dpy, window, X_NAME,
+	  int result = XGetWindowProperty(dpy, window, X_PROPERTY_NAME,
                                   0, 0x7FFFFFFF, False, (Atom)AnyPropertyType,
                                   &type_ret, &format_ret, &num,
                                   &after_ret, &data);
@@ -119,7 +198,7 @@ static AZBackground *sharedInstance;
             NSLog(@"Perform service fails.");
 	  }
 #if 0 // Should we clean up the selection ?
-        XDeleteProperty (dpy, window, X_NAME);
+        XDeleteProperty (dpy, window, X_PROPERTY_NAME);
 #endif
         }
       }
@@ -265,9 +344,16 @@ static AZBackground *sharedInstance;
 	       name: AZPerformServiceNotification
 	     object: nil];
 
-  X_NAME = XInternAtom(dpy, "X_NAME", False);
+  X_PROPERTY_NAME = XInternAtom(dpy, "X_PROPERTY_NAME", False);
+  X_NET_ACTIVE_WINDOW = XInternAtom(dpy, "_NET_ACTIVE_WINDOW", False);
+  X_NET_CLIENT_LIST_STACKING = XInternAtom(dpy, "_NET_CLIENT_LIST_STACKING", False);
 
-#if 0
+#if 0 // Not ncessary
+  GSServicesManager *gManager = [GSServicesManager newWithApplication: NSApp];
+  [gManager rebuildServices];
+  [gManager rebuildServicesMenu];
+#endif
+#if 0 // Not necessary
   /* We need to setup menu in order to have service work */
   NSMenu *menu = [[NSMenu alloc] initWithTitle: @"AZBackground"];
   NSMenu *services = [[NSMenu alloc] initWithTitle: @"Services"];
