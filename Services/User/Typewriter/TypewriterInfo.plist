@@ -44,7 +44,18 @@
          default = "";
         };
        NSMenuItem = {
-         default = "New document with selection";
+         default = "Typewriter/New document with selection";
+        };
+     },
+     {
+       NSPortName = Typewriter;
+       NSMessage = openDocumentWithPath;
+       NSSendTypes = (NSStringPboardType);
+       NSKeyEquivalent = {
+         default = "";
+        };
+       NSMenuItem = {
+         default = "Typewriter/Open selected file";
         };
      }
    );
