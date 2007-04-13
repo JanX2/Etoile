@@ -165,32 +165,34 @@ static NSObject <SCSession> *session = nil;
 {
   /* We need to be application:... in order to receive call remotely.
      See GSServicesManager for reasons. */
-  NSLog(@"service %@", service);
   GSServicesManager *gm = [GSServicesManager manager];
   /* Let find the menu item first */
   NSArray *array = [service componentsSeparatedByString: @"/"];
+  NSMenu *menu = [NSApp servicesMenu];
+  id <NSMenuItem> item = nil;
+  if (menu == nil)
+    return;
   if ([array count] == 1)
   {
     /* Must an item of service menu. */
-    NSMenu *menu = [NSApp servicesMenu];
-    if (menu)
-    {
-      id <NSMenuItem> item = [menu itemWithTitle: [array objectAtIndex: 0]];
-      if (item)
-      {
-	NSLog(@"Found imte %@", item);
-	[gm doService: item];
-      }
-    }
+    item = [menu itemWithTitle: [array objectAtIndex: 0]];
   }
   else if ([array count] == 2)
   {
     /* Must an item of submenu of service menu */
+    item = [menu itemWithTitle: [array objectAtIndex: 0]];
+    if (item && [item hasSubmenu])
+    {
+      item = [[item submenu] itemWithTitle: [array objectAtIndex: 1]];
+    }
   }
   else
   {
     /* Do nothing */
     NSLog(@"Cannot find service menu item for %@", service);
+    return;
   }
+  if (item)
+    [gm doService: item];
 }
 @end

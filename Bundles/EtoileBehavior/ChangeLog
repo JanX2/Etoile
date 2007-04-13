@@ -1,6 +1,7 @@
 2007-04-12  Yen-Ju Chen <yjchenx at gmail>
 
 	* Add method for service called from 3rd party.
+	* Support two-level services menu.
 
 2007-02-18  Yen-Ju Chen <yjchenx at gmail>
 
