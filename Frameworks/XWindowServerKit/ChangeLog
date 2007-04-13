@@ -1,3 +1,7 @@
+2007 04 11 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Find active window with _NET_ACTIVE_WINDOW.
+
 2007 04 01 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* XFunctions.m: return right after XKillClient() to avoid complaint.

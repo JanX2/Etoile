@@ -61,6 +61,10 @@ void XWindowCloseWindow(Window win, BOOL forcefully);
  * Return NO if it is not a GNUstep window. */
 BOOL XGNUstepWindowLevel(Window win, int *level); 
 
+/* Return X window ID based on _NET_ACTIVE_WINDOW.
+   Return None if none or fails. */
+Window XWindowActiveWindow();
+
 /* Freedesktop.org stuff */
 NSString *XDGConfigHomePath();
 NSString *XDGDataHomePath();
