@@ -14,7 +14,6 @@ static NSString *AZServiceItem = @"AZServiceItem";
 @implementation GSServicesManager (ServiceMenulet)
 - (BOOL) validateMenuItem: (id <NSMenuItem>) item
 {
-NSLog(@"here");
     // FIXME: we should ask application about this, but it can be difficult.
     /* We always return YES so that users can use any service */
     return YES;
@@ -80,8 +79,8 @@ NSLog(@"here");
   GSServicesManager *manager = [GSServicesManager manager];
   NSLog(@"%@", [manager servicesMenu]);
   [view setMenu: [manager servicesMenu]];
-#endif
   [view setMenu: menu];
+#endif
   DESTROY(menu);
 
   return self;
