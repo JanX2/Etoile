@@ -304,7 +304,6 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
 - (AZDockletApp *) addDockletWithCommand: (NSString *) cmd
                    instance: (NSString *) instance class: (NSString *) class
 {
-  NSLog(@"Add command %@", cmd);
   AZDockletApp *app = [[AZDockletApp alloc] initWithCommand: cmd 
                                             instance: instance class: class];
   [apps addObject: app];

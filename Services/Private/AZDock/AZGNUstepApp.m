@@ -31,7 +31,6 @@
 
 - (void) quitAction: (id) sender
 {
-  NSLog(@"quit %@", appName);
   /* Connect to application */
 #ifdef ETOILE // Use System's WorkspaceCommKit
   id appProxy = [[NSWorkspace sharedWorkspace] connectToApplication: appName launch: NO];
@@ -90,20 +89,17 @@
       DESTROY(command);
     }
   }
-
   /* Try to get the icon */
   if (command) {
     ASSIGN(icon, [[NSWorkspace sharedWorkspace] iconForFile: command]);
   }
-  if (!icon) {
+  if (icon == nil) {
     /* use default icon */
     ASSIGN(icon, [NSImage imageNamed: @"Unknown.tiff"]);
   }
   if (icon)
     [view setImage: icon];
-
   [[view menu] setTitle: appName];
-
   return self;
 }
 
