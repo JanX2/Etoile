@@ -1,0 +1,12 @@
+{
+   ApplicationDescription = "Étoilé Trash Can";
+   ApplicationIcon = "TrashCan.tiff";
+   NSIcon = "TrashCan.tiff";
+   ApplicationName = TrashCan;
+   ApplicationRelease = 0.1;
+   Authors = ("Yen-Ju Chen");
+   Copyright = "Copyright (C) 2007 by Yen-Ju Chen";
+   CopyrightDescription = "Released under BSD Licence";
+   FullVersionID = 0.1;
+}
+

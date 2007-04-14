@@ -17,8 +17,10 @@
 
   if ([[pboard types] containsObject: NSFilenamesPboardType]) 
   {
+    NSLog(@"mask %d", mask);
     if (mask & NSDragOperationMove) 
     {
+      NSLog(@"done");
       return NSDragOperationMove;
     }
   }
@@ -37,8 +39,15 @@
 }
 #endif
 
+- (BOOL) prepareForDragOperation: (id <NSDraggingInfo>) sender
+{
+  NSLog(@"prepare");
+  return YES;
+}
+
 - (BOOL) performDragOperation: (id <NSDraggingInfo>) sender
 {
+  NSLog(@"perform");
   NSPasteboard *pboard = [sender draggingPasteboard];
   NSDragOperation mask = [sender draggingSourceOperationMask];
 
@@ -47,22 +56,11 @@
     if (mask & NSDragOperationMove) 
     {
       NSArray *files = [pboard propertyListForType: NSFilenamesPboardType];
+NSLog(@"TrashCan %@", files);
       [[TrashCan sharedTrashCan] writeFiles: files];
     }
   }
   return YES;
 }
-
-#if 0
-- (BOOL) prepareForDragOperation: (id <NSDraggingInfo>) sender
-{
-}
-#endif
-
-#if 0
-- (BOOL) performDragOperation: (id <NSDraggingInfo>) sender
-{
-}
-#endif
 
 @end

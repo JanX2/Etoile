@@ -8,6 +8,9 @@ TrashCan_OBJC_FILES = \
 	TrashCan.m \
 	main.m 
 
+TrashCan_RESOURCE_FILES = \
+	TrashCan.tiff
+
 ADDITIONAL_INCLUDE_DIRS += 
 
 ADDITIONAL_LIB_DIRS += \
