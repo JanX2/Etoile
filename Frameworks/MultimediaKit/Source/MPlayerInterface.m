@@ -694,7 +694,7 @@
 - (void) setAdditionalParams:(NSArray *)params
 {
 	if (myAddParams && params) {
-		if (![myAddParams isEqualTo:params]) {
+		if (![myAddParams isEqualToArray:params]) {
 			if (myAddParams)
 				[myAddParams release];
 			
