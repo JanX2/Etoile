@@ -29,10 +29,15 @@
 // FIXME: Temporary hack to enable compilation, write a proper class.
 #define SCAudioDevice NSString
 
+/* This notification is posted to distributed notification center.
+   Applications can read volume after receive this notification */
+extern NSString *const SCSoundDidChangeNotification;
 
 @interface SCSound : SCConfigElement
 {
-
+  int mixer_fd;
+  int stereodevs;
+  int recmask;
 }
 
 /* Input/Output selection methods */
@@ -45,6 +50,7 @@
 
 /* Volumes methods */
 
+/* Volume ranges from 0-100 */
 - (int) inputVolume;
 - (void) setInputVolume: (int)volume;
 - (int) outputVolume;
