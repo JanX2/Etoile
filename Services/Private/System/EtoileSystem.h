@@ -72,6 +72,12 @@
 
 extern NSString * const EtoileSystemServerName;
 
+extern NSString *SCNoneOperation;
+extern NSString *SCLogOutOperation;
+extern NSString *SCShutDownOperation;
+extern NSString *SCRebootOperation;
+
+
 @interface SCSystem : NSObject
 {
     NSMutableDictionary *_processes; /* Main data structure */
@@ -87,13 +93,16 @@ extern NSString * const EtoileSystemServerName;
 	//NSConnection *serverConnection;
 	NSConnection *clientConnection;
 
+	/* Session or Power Management operation underway (nil by default) */
+	NSString *_operation;
+
 	/* Flag used in -synchronizeProcessWithConfigFile */
 	BOOL _launchQueueScheduled;
 }
 
 + (SCSystem *) sharedInstance;
 
-- (id) initWithArguments: (NSArray *)args;
+/* Process Management */
 
 - (BOOL) startProcessWithDomain: (NSString *)domain error: (NSError **)error;
 - (BOOL) restartProcessWithDomain: (NSString *)domain error: (NSError **)error;
@@ -108,7 +117,13 @@ extern NSString * const EtoileSystemServerName;
 - (NSArray *) maskedProcesses;
 - (BOOL) terminateAllProcessesOnOperation: (NSString *)op;
 
-- (oneway void) logOutAndPowerOff: (BOOL) powerOff;
+/* Session and Power Management */
+
+- (oneway void) logOut;
+- (oneway void) powerOff: (BOOL)reboot;
+- (oneway void) suspend;
+
+- (oneway void) extendPowerOffBy: (int)delay;
 - (void) replyToLogOutOrPowerOff: (NSDictionary *)info;
 
 /* SCSystem server daemon set up methods */

@@ -1,3 +1,19 @@
+2007-04-14  Quentin Mathe <qmathe@club-internet.fr>
+
+	* EtoileSystem.h:
+	* EtoileSystem.m: 
+	New ivar _operation. New constants SCNoneOperation, SCRebootOperation, 
+	SCShutDownOperation, SCLogOutOperation.
+	Removed powerOffRequest flag. 
+	(-terminateSession):
+	(-logOut):
+	(-powerOff:):
+	(-suspend):
+	(-extendPowerOffBy:):
+	New documented methods but only the first two are fully functional.
+	(-logOutAndPowerOff:): Removed. Moved most code to -terminateSession.
+	Also shut down warnings about -initWithArguments.
+
 2007-04-12  Quentin Mathe <qmathe@club-internet.fr>
 
 	* EtoileSystem.m: Finished the big part of remaining reindenting and 

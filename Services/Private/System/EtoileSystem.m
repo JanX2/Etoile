@@ -68,9 +68,13 @@ static id serverInstance = nil;
 static NSConnection *serverConnection = nil;
 static id proxyInstance = nil;
 static NSString *SCSystemNamespace = nil;
-NSString * const EtoileSystemServerName = @"etoile_system";
 
-static BOOL powerOffRequested = NO;
+NSString *SCNoneOperation = @"SCNoneOperation";
+NSString *SCLogOutOperation = @"SCLogOutOperation";
+NSString *SCShutDownOperation = @"SCShutDownOperation";
+NSString *SCRebootOperation = @"SCRebootOperation";
+
+NSString * const EtoileSystemServerName = @"etoile_system";
 
 /* NSError related extensions */
 
@@ -114,18 +118,24 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 }
 
 @interface SCSystem (Private)
+- (id) initWithArguments: (NSArray *)args;
+
+/* Notifications */
 - (void) noteApplicationLaunched: (NSNotification *) notif;
+
+/* Launch Queue methods */
 - (NSMutableArray *) processQueueWithProcesses: (NSDictionary *)processes;
 - (NSMutableArray *) processGroupQueueWithProcessQueue: (NSArray *)processQueue;
 - (void) startProcessesSequentiallyByPriorityOrder: 
 	(NSMutableArray *)launchQueue;
 - (void) startProcessesParallely: (NSArray *)processGroup;
+
+- (void) terminateSession;
 @end
 
 @interface SCSystem (HelperMethodsPrivate)
 - (void) checkConfigFileUpdate;
 - (void) findConfigFileAndStartUpdateMonitoring;
-
 - (void) synchronizeProcessesWithConfigFile;
 
 - (void) startProcessWithUserFeedbackForDomain: (NSString *)domain;
@@ -623,7 +633,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
     it will overwrite the inital settings of <file>SystemTaskList</file>.
     Etoile environment may then not start properly on next login. It is mostly
     reserved to Etoile internal use.</p>
-    <p><strong>Not implemented</strong><em> */
+    <p><strong>Not implemented</strong></p> */
 - (void) saveConfigList
 {
 	// TODO: Write the code to sync the _processes ivar and the config file
@@ -676,30 +686,85 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
   return stoppedAll;
 }
 
-/** Method called by remote clients to trigger either log out or power off. It
-    only asks ApplicationManager to terminate all applications for the 
-    requested operation. Then SCSystem will wait ApplicationManager reply 
-    through -replyToLogOutOrPowerOff: before doing anything. */
-- (oneway void) logOutAndPowerOff: (BOOL) powerOff
+/** Delays any log out, shut down or reboot operations underway by 
+    <var>delay</var> value expressed in milliseconds. 
+    <p><strong>Not implemented</strong></p> */
+- (void) extendPowerOffBy: (int)delay
 {
-	NSString * operation;
+	NSLog(@"-extendPowerOffBy: not implemented");
+}
 
+/* Log out implementation called by both  -logOut and -powerOff: */
+- (void) terminateSession
+{
+	/* Ask to close all applications gracefully and wait for a asynchronous 
+       reply to be handled in -replyToLogOutOrPowerOff: */
+	[[ApplicationManager sharedInstance] terminateAllApplicationsOnOperation: _operation];
+}
+
+/** Triggers log out operation. It asks ApplicationManager to terminate all 
+    applications for the requested operation. Then SCSystem will wait 
+    ApplicationManager reply through -replyToLogOutOrPowerOff: before doing 
+    anything. If no applications has cancelled the log out, SCSystem exits. */
+- (oneway void) logOut
+{
 	NSDebugLLog(@"SCSystem", @"Log out requested");
 
-	if (powerOff == NO)
+	if (_operation != nil)
 	{
-		operation = _(@"Log Out");
+		NSLog(@"System cannot log out now. SCSystem is carrying on %@", _operation);
+		return;
 	}
 	else
 	{
-		operation = _(@"Power Off");
-		powerOffRequested = YES;
-	}
+		_operation = SCLogOutOperation;
 
-	// Ask to close all applications gracefully and wait for a reply
-	//[NSThread detachNewThreadSelector: @selector(terminateAllApplicationsOnOperation:) 
-	//	toTarget: [ApplicationManager sharedInstance] withObject: operation];
-	[[ApplicationManager sharedInstance] terminateAllApplicationsOnOperation: operation];
+		[self terminateSession];
+	}
+}
+
+/** <p>Shuts down or reboots the computer depending on <var>reboot</var> flag 
+    value. Initially triggers lot out.</p>
+    <p>Read -logOut documentation to know more about it.</p> */
+- (oneway void) powerOff: (BOOL)reboot
+{
+	NSDebugLLog(@"SCSystem", @"Power off requested");
+
+	if (_operation != nil)
+	{
+		NSLog(@"System cannot power off now. SCSystem is carrying on %@", _operation);
+		return;
+	}
+	else
+	{
+		if (reboot)
+		{
+			_operation = SCRebootOperation;
+		}
+		else
+		{
+			_operation = SCShutDownOperation;
+		}
+
+		[self terminateSession];
+	}
+}
+
+/** Puts the computer into sleep mode until the user awake it through mouse or 
+    keyboard events. */
+- (oneway void) suspend
+{
+	NSDebugLLog(@"SCSystem", @"Suspend requested");
+
+	if (_operation != nil)
+	{
+		NSLog(@"System cannot suspend now. SCSystem is carrying on %@", _operation);
+		return;
+	}
+	else
+	{
+		NSLog(@"Suspend not yet implemented");
+	}
 }
 
 /** Method called by ApplicationManager when this latter class has finished to
@@ -718,27 +783,35 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
 	if (appName == nil)
 	{
-		/* All applications have been terminated, time to terminate our own tasks */
-		BOOL readyToEnd = [self terminateAllProcessesOnOperation: nil];
+		/* All applications have been terminated, time to terminate our own 
+           tasks. */
+		BOOL readyToEnd = [self terminateAllProcessesOnOperation: _operation];
 
 		if (readyToEnd == NO)
 		{
-			// TODO: handle the possibility that some processes fail to
+			// TODO: handle the possibility that some processes fail to 
 			// terminate
 		}
 
-		if (powerOffRequested)
+		if ([_operation isEqual: SCShutDownOperation])
 		{
-          // TODO: initiate the power off process here
+        	// TODO: initiate shut down here
+		}
+		else if ([_operation isEqual: SCRebootOperation])
+		{
+			// TODO: initiate reboot here
 		}
 
-		/* Time to put an end to our own life. */
+		/* Time to put an end to our own life */
 		exit(0);
 	}
 	else
 	{
 		NSRunAlertPanel(_(@"Log out or shut down cancelled"),
 			replyText, nil, nil, nil);
+
+		/* Ready to accept new operation */
+		_operation = nil;
 	}
 }
 
