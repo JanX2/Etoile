@@ -277,9 +277,9 @@
                       user: (BOOL) user final: (BOOL) final
                 forceReply: (BOOL) force_reply;
 {
-    int oldw, oldh;
+    int oldw, oldh, oldrx, oldry;
     BOOL send_resize_client;
-    BOOL moved = NO, resized = NO;
+    BOOL moved = NO, resized = NO, rootmoved = NO;
     unsigned int fdecor = [frame decorations];
     BOOL fhorz = [frame max_horz];
     int logicalw, logicalh;
@@ -311,35 +311,47 @@
     if (send_resize_client && user && (w > oldw || h > oldh))
         XResizeWindow(ob_display, window, MAX(w, oldw), MAX(h, oldh));
 
-    /* move/resize the frame to match the request */
-    if (frame) {
-        if (decorations != fdecor || max_horz != fhorz)
-            moved = resized = YES;
+    /* find the frame's dimensions and move/resize it */
+    if (decorations != fdecor || max_horz != fhorz)
+        moved = resized = YES;
 
-        if (moved || resized)
-	    [frame adjustAreaWithMoved: moved resized: resized fake: NO];
+    if (moved || resized)
+	[frame adjustAreaWithMoved: moved resized: resized fake: NO];
 
-        if (!resized && (force_reply || ((!user && moved) || (user && final))))
-        {
-            XEvent event;
-            event.type = ConfigureNotify;
-            event.xconfigure.display = ob_display;
-            event.xconfigure.event = window;
-            event.xconfigure.window = window;
+    /* find the client's position relative to the root window */
+    oldrx = root_pos.x;
+    oldry = root_pos.y;
+    rootmoved = (oldrx != (signed)([frame area].x +
+                                   [frame size].left -
+                                   border_width) ||
+                 oldry != (signed)([frame area].y +
+                                   [frame size].top -
+                                   border_width));
 
-            /* root window real coords */
-            event.xconfigure.x = [frame area].x + 
-		    [frame size].left - border_width;
-            event.xconfigure.y = [frame area].y + 
-		    [frame size].top - border_width;
-            event.xconfigure.width = w;
-            event.xconfigure.height = h;
-            event.xconfigure.border_width = 0;
-            event.xconfigure.above = [frame plate];
-            event.xconfigure.override_redirect = NO;
-            XSendEvent(event.xconfigure.display, event.xconfigure.window,
-                       NO, StructureNotifyMask, &event);
-        }
+    if (force_reply || ((!user || (user && final)) && rootmoved))
+    {
+        XEvent event;
+        POINT_SET(root_pos,
+                  [frame area].x + [frame size].left -
+                  border_width,
+                  [frame area].y + [frame size].top -
+                  border_width);
+
+        event.type = ConfigureNotify;
+        event.xconfigure.display = ob_display;
+        event.xconfigure.event = window;
+        event.xconfigure.window = window;
+
+        /* root window real coords */
+        event.xconfigure.x = root_pos.x;
+        event.xconfigure.y = root_pos.y;
+        event.xconfigure.width = w;
+        event.xconfigure.height = h;
+        event.xconfigure.border_width = 0;
+        event.xconfigure.above = [frame plate];
+        event.xconfigure.override_redirect = False;
+        XSendEvent(event.xconfigure.display, event.xconfigure.window,
+                   False, StructureNotifyMask, &event);
     }
 
     /* if the client is shrinking, then resize the frame before the client */
@@ -2514,11 +2526,9 @@
 
     if (show) {
         XSetWindowBorderWidth(ob_display, window, border_width);
-
-        /* move the client so it is back it the right spot _with_ its
-           border! */
-        if (x != oldx || y != oldy)
-            XMoveWindow(ob_display, window, x, y);
+        /* set border_width to 0 because there is no border to add into
+           calculations anymore */
+        border_width = 0;
     } else
         XSetWindowBorderWidth(ob_display, window, 0);
 }
@@ -2624,6 +2634,34 @@
     }
 }
 
+- (void) show
+{
+    if ([self shouldShow])
+    {
+      [[self frame] show];
+    }
+
+    /* According to the ICCCM (sec 4.1.3.1) when a window is not visible, it
+       needs to be in IconicState. This includes when it is on another
+       desktop!
+    */
+    [self changeWMState];
+}
+
+- (void) hide
+{
+    if ([self shouldShow] == NO)
+    {
+      [[self frame] hide];
+    }
+
+    /* According to the ICCCM (sec 4.1.3.1) when a window is not visible, it
+       needs to be in IconicState. This includes when it is on another
+       desktop!
+    */
+    [self changeWMState];
+}
+
 - (void) showhide
 {
     if ([self shouldShow])
@@ -2633,9 +2671,6 @@
     else
     {
 	[frame hide];
-        /* Fall back focus since we're disappearing */
-        if ([[AZFocusManager defaultManager] focus_client] == self)
-	    [self unfocus];
     }
 
     /* According to the ICCCM (sec 4.1.3.1) when a window is not visible, it
@@ -2930,6 +2965,7 @@ AZClient *AZUnderPointer()
     NSAssert(ret != BadWindow, @"Bad Window");
 
     RECT_SET(area, wattrib.x, wattrib.y, wattrib.width, wattrib.height);
+    POINT_SET(root_pos, wattrib.x, wattrib.y);
     border_width =  wattrib.border_width;
 }
 

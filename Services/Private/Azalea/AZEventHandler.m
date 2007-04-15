@@ -441,9 +441,9 @@ static AZEventHandler *sharedInstance;
         msgtype = e->xclient.message_type;
         if (msgtype == prop_atoms.net_current_desktop) {
             unsigned int d = e->xclient.data.l[0];
-	    event_curtime = e->xclient.data.l[1];
             if (d < [screen numberOfDesktops])
 	    {
+	        event_curtime = e->xclient.data.l[1];
 		[screen setDesktop: d];
 	    }
         } else if (msgtype == prop_atoms.net_number_of_desktops) {

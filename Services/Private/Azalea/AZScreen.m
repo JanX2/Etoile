@@ -369,13 +369,13 @@ static AZScreen *sharedInstance;
 
     /* show windows before hiding the rest to lessen the enter/leave events */
 
-    /* show windows from top to bottom */
+    /* show/hide  windows from top to bottom */
     count = [stacking count];
     for (i = 0; i < count; i++) {
 	id <AZWindow> temp = [stacking windowAtIndex: i];
 	if (WINDOW_IS_CLIENT(temp)) {
             AZClient *c = (AZClient *)temp;
-	    [c showhide];
+	    [c show];
         }
     }
 
@@ -385,7 +385,7 @@ static AZScreen *sharedInstance;
 	id <AZWindow> temp = [stacking windowAtIndex: i];
         if (WINDOW_IS_CLIENT(temp)) {
             AZClient *c = (AZClient *) temp;
-	    [c showhide];
+	    [c hide];
         }
     }
 
@@ -398,9 +398,10 @@ static AZScreen *sharedInstance;
 	[[[fManager focus_hilite] frame] adjustFocusWithHilite: YES];
 
         /*!
-          When this focus_client check is not used, you can end up with races,
-          as demonstrated with gnome-panel, sometmies the window you click on
-          another desktop ends up losing focus cuz of the focus change here.
+          When this focus_client check is not used, you can end up with
+          races, as demonstrated with gnome-panel, sometimes the window
+          you click on another desktop ends up losing focus cuz of the
+          focus change here.
         */
         /*if (!focus_client)*/
 	[[fManager focus_hilite] focus];

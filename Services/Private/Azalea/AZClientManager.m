@@ -337,7 +337,7 @@ static AZClientManager *sharedInstance;
     /* this has to happen before we try focus the window, but we want it to
        happen after the client's stacking has been determined or it looks bad
     */
-    [client showhide];
+    [client show];
 
     /* use client_focus instead of client_activate cuz client_activate does
        stuff like switch desktops etc and I'm not interested in all that when
@@ -473,32 +473,38 @@ static AZClientManager *sharedInstance;
 
     /* give the client its border back */
     [client toggleBorder: YES];
+    /* restore the window's original geometry so it is not lost */
+    {
+        Rect a = [client area];
+
+        if ([client fullscreen])
+            a = [client pre_fullscreen_area];
+        else if ([client max_horz] || [client max_vert]) {
+            if ([client max_horz]) {
+                a.x = [client pre_max_area].x;
+                a.width = [client pre_max_area].width;
+            }
+            if ([client max_vert]) {
+                a.y = [client pre_max_area].y;
+                a.height = [client pre_max_area].height;
+            }
+        }
+
+        /* give the client its border back */
+        [client toggleBorder: YES];
+
+        [client set_fullscreen: NO];
+	[client set_max_horz: NO];
+	[client set_max_vert: NO];
+	[client set_decorations: 0];  /* unmanaged windows have no decor */ 
+
+	[client moveAndResizeToX: a.x y: a.y width: a.width height: a.height];
+    }
 
     /* reparent the window out of the frame, and free the frame */
     [[client frame] releaseClient: client];
     [client set_frame: nil];
 
-    /* restore the window's original geometry so it is not lost */
-    if ([client fullscreen])
-        XMoveResizeWindow(ob_display, [client window],
-                          [client pre_fullscreen_area].x,
-                          [client pre_fullscreen_area].y,
-                          [client pre_fullscreen_area].width,
-                          [client pre_fullscreen_area].height);
-    else if ([client max_horz] || [client max_vert]) {
-        Rect a = [client area];
-        if ([client max_horz]) {
-            a.x = [client pre_max_area].x;
-            a.width = [client pre_max_area].width;
-        }
-        if ([client max_vert]) {
-            a.y = [client pre_max_area].y;
-            a.height = [client pre_max_area].height;
-        }
-        XMoveResizeWindow(ob_display, [client window],
-                          a.x, a.y, a.width, a.height);
-    }
-     
     if (ob_state() != OB_STATE_EXITING) {
         /* these values should not be persisted across a window
            unmapping/mapping */

@@ -141,6 +141,8 @@ typedef enum
     */
     Rect area;
 
+    /*! Position of the client window relative to the root window */
+    Point root_pos;
     /*! Position and size of the window prior to being maximized */
     Rect pre_max_area;
     /*! Position and size of the window prior to being fullscreened */
@@ -410,6 +412,17 @@ typedef enum
     desktop has been changed. Generally this should be FALSE. */
 - (void) setDesktop: (unsigned int) target hide: (BOOL) donthide;
 
+/*! Show the client if it should be shown. */
+- (void) show;
+
+/*! Show the client if it should be shown. */
+- (void) hide;
+
+/*! Show the client if it should be shown, and hide it if it should be
+  hidden. This is for example, when switching desktops.
+*/
+- (void) showhide;
+
 /*! Validate client, by making sure no Destroy or Unmap events exist in
     the event queue for the window.
     @return true if the client is valid; false if the client has already
@@ -586,7 +599,6 @@ typedef enum
 - (void) toggleBorder: (BOOL) show;
 - (void) applyStartupStateAtX: (int) x y: (int) y;
 - (void) restoreSessionStacking;
-- (void) showhide;
 - (void) unfocus;
 
 /* Accessories */
