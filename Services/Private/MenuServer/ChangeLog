@@ -1,3 +1,14 @@
+2007-04-14  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Controller.h:
+    * Controller.m:
+    (-logOut:): Rewritten to take in account bug report #8575 #8556. Also now
+    calls -[SCSystem logOut] instead of -logOutAndPowerOff:.
+    (-sleep:, -reboot:, -shutDown:): Implemented.
+    (-_reportSessionServerError:): New method.
+    (-_workspaceApp): Renamed -workspaceApp method.
+    Made -applicationDidFinishLaunching: and -windowDidMove: private methods.
+
 2007-04-12  Quentin Mathe <qmathe@club-internet.fr>
 
     * Controller.h:

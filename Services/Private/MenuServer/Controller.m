@@ -52,11 +52,20 @@ my_round (float x)
   return (int) (x + 0.5);
 }
 
-@interface NSObject (WorkspaceAppInterface)
-
-- (oneway void) logOutAndPowerOff: (BOOL) powerOff;
-
+/* Proxy protocol to interact with session/workspace server */
+@interface NSObject (SCSystem)
+- (oneway void) logOut;
+- (oneway void) powerOff: (BOOL) reboot;
+- (oneway void) suspend;
 @end
+
+@interface Controller (EtoileMenuServerPrivate)
+- (void) applicationDidFinishLaunching: (NSNotification *) notif;
+- (void) windowDidMove: (NSNotification *) notif;
+- (id) _workspaceApp;
+- (void) _reportSessionServerError: (NSString *)localizedOperation;
+@end
+
 
 @implementation Controller
 
@@ -150,56 +159,165 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 // a log out operation
 - (void) logOut: sender
 {
+  NSAlert *alert = nil;
+  NSString *explanation = _(@"If you log out, you may be asked to review open documents with unsaved changes.");
   int reply;
 
-  reply = NSRunAlertPanel (_(@"Really log out?"),
-    _(@"Are sure you want to log out?"),
-    _(@"Log Out"), _(@"Power Off"), _(@"Cancel"));
+#if 0
+  alert = [NSAlert alertWithMessageText: _(@"Are sure you want to log out now?")
+                          defaultButton: _(@"Log Out")
+                        alternateButton: _(@"Cancel")
+                            otherButton: nil
+              informativeTextWithFormat: explanation];
+  reply = [alert runModal];
+#endif
+  reply = NSRunAlertPanel (_(@"Are sure you want to log out now?"), explanation, 
+    _(@"Log Out"), _(@"Cancel"), nil);
 
-  if (reply == NSAlertDefaultReturn || reply == NSAlertAlternateReturn)
+  if (reply == NSAlertDefaultReturn)
     {
       NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-      id workspaceApp;
+      id sessionApp = [self _workspaceApp];
 
-      workspaceApp = [self workspaceApp];
-
-      if (workspaceApp != nil)
+      if (sessionApp != nil)
         {
           NS_DURING
-            [workspaceApp logOutAndPowerOff: reply];
+           [sessionApp logOut];
           NS_HANDLER
-            NSRunAlertPanel (_(@"Failed to log out"),
-              _(@"Failed to initiate log out operation: %@"),
-              nil, nil, nil, [localException reason]);
+            NSString * msgText = _(@"Log out cannot be carried out.");
+            NSString * infoText = [localException reason];
+
+            NSRunAlertPanel (nil, msgText, infoText, nil, nil);
           NS_ENDHANDLER
         }
       else
         {
-          NSRunAlertPanel(_(@"Failed to contact workspace"),
-            _(@"Failed to contact workspace application."),
-            nil, nil, nil);
+          [self _reportSessionServerError: _(@"Log out")];
         }
     }
 }
 
 - (void) sleep: sender
 {
-	// TODO
+  NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
+  id sessionApp = [self _workspaceApp];
+
+  if (sessionApp != nil)
+    {
+      NS_DURING
+       [sessionApp suspend];
+      NS_HANDLER
+        NSString * msgText = _(@"Sleep failed.");
+        NSString * infoText = [localException reason];
+
+        NSRunAlertPanel (msgText, infoText, nil, nil, nil);
+      NS_ENDHANDLER
+    }
+  else
+    {
+      [self _reportSessionServerError: _(@"Sleep")];
+    }
 }
 
 - (void) reboot: sender
 {
-	// TODO
+  NSAlert *alert = nil;
+  NSString *explanation = _(@"If you reboot, you may be asked to review open documents with unsaved changes.");
+  int reply;
+
+#if 0
+  alert = [NSAlert alertWithMessageText: _(@"Are sure you want to reboot now?")
+                          defaultButton: _(@"Reboot")
+                        alternateButton: _(@"Cancel")
+                            otherButton: nil
+              informativeTextWithFormat: explanation];
+  reply = [alert runModal];
+#endif
+  reply = NSRunAlertPanel (_(@"Are sure you want to reboot now?"), explanation, 
+    _(@"Reboot"), _(@"Cancel"), nil);
+
+  if (reply == NSAlertDefaultReturn)
+    {
+      NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
+      id sessionApp = [self _workspaceApp];
+
+      if (sessionApp != nil)
+        {
+NSLog(@"hmm reboot");
+          NS_DURING
+            [sessionApp powerOff: YES];
+          NS_HANDLER
+            NSString * msgText = _(@"Reboot cannot be carried out.");
+            NSString * infoText = [localException reason];
+
+            NSRunAlertPanel (msgText, infoText, nil, nil, nil);
+          NS_ENDHANDLER
+        }
+      else
+        {
+          [self _reportSessionServerError: _(@"Reboot")];
+        }
+    }
 }
 
 - (void) shutDown: sender
 {
-	// TODO
+  NSAlert *alert = nil;
+  NSString *explanation = _(@"If you shut down, you may be asked to review open documents with unsaved changes.");
+  int reply;
+
+#if 0
+  alert = [NSAlert alertWithMessageText: _(@"Are sure you want to shut down now?")
+                          defaultButton: _(@"Shut Down")
+                        alternateButton: _(@"Cancel")
+                            otherButton: nil
+              informativeTextWithFormat: explanation];
+  reply = [alert runModal];
+#endif
+  reply = NSRunAlertPanel (_(@"Are sure you want to shut down now?"), explanation, 
+    _(@"Shut Down"), _(@"Cancel"), nil);
+
+
+  if (reply == NSAlertDefaultReturn)
+    {
+      NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
+      id sessionApp = [self _workspaceApp];
+
+      if (sessionApp != nil)
+        {
+          NS_DURING
+            [sessionApp powerOff: NO];
+          NS_HANDLER
+            NSString * msgText = _(@"Shut down cannot be carried out.");
+            NSString * infoText = [localException reason];
+
+            NSRunAlertPanel (msgText, infoText, nil, nil, nil);
+          NS_ENDHANDLER
+        }
+      else
+        {
+          [self _reportSessionServerError: _(@"Shut down")];
+        }
+    }
 }
 
-- (id) workspaceApp
+- (id) _workspaceApp
 {
   return [[NSWorkspace sharedWorkspace] connectToWorkspaceApplicationLaunch: NO];
+}
+
+// TODO: May be better to pass an NSError instance rather than a simple string.
+- (void) _reportSessionServerError: (NSString *)localizedOperation
+{
+  NSString * msgText = _(@" failed. No session server is available.");
+  NSString * infoText = _(@"Etoile is in a very unstable state. You should review your open documents with unsaved changes, then try to force log out or reboot your computer.");
+
+  msgText = [localizedOperation stringByAppendingString: msgText];
+
+  /* If System dies, it should normally bring the whole session down 
+     with him. Thereby this problem should't happen. */
+
+  NSRunAlertPanel(msgText, infoText, nil, nil, nil);
 }
 
 @end
