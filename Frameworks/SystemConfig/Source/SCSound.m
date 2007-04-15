@@ -116,6 +116,10 @@ NSString *const SCSoundDidChangeNotification = @"SCSoundDidChangeNotification";
 
 - (void) _setVolume: (int) v atChannel: (int) channel
 {
+  /* Safe guard */
+  if (v < 0) v = 0;
+  if (v > 100) v = 100;
+
   int volume, status;
   if (stereodevs & (1 << channel))
   {
