@@ -22,7 +22,8 @@
         /* Iconified */
         XMapWindow(dpy, w);
       } else {
-        XRaiseWindow(dpy, w);
+        //XRaiseWindow(dpy, w); // Not handled by OpenBox anymore
+	XWindowSetActiveWindow(w, None);      
       }
     }
     /* Focus on the last one */

@@ -1,3 +1,7 @@
+2007-04-14 Yen-Ju Chen <yjchenx at gmail>
+
+	* Use XWindowSetActiveWindwo to raise window.
+
 2007-04-13 Yen-Ju Chen <yjchenx at gmail>
 
 	* Minor clean up.
