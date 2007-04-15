@@ -760,7 +760,8 @@ static AZEventHandler *sharedInstance;
             case BottomIf:
                 /* Apps are so rude. And this is totally disconnected from
                    activation/focus. Bleh. */
-		/*[client lower];*/
+		// GNUstep need this because it has NSWindowAbove, Below, Out
+		[client lower];
                 break;
 
             case Above:
@@ -768,7 +769,8 @@ static AZEventHandler *sharedInstance;
             default:
                 /* Apps are so rude. And this is totally disconnected from
                    activation/focus. Bleh. */
-		/*[client raise];*/
+		// GNUstep need this because it has NSWindowAbove, Below, Out
+		[client raise];
                 break;
             }
         }

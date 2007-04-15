@@ -1,6 +1,7 @@
 2007-04-14  Yen-Ju Chen <yjchenx at gmail>
 
 	* Update to r5739.
+	* Make sure GNUstep stacking work with ConfigureRequest.
 
 2007-04-11  Yen-Ju Chen <yjchenx at gmail>
 
