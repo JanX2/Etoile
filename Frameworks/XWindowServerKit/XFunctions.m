@@ -319,6 +319,27 @@ BOOL XGNUstepWindowLevel(Window win, int *level)
   return result_value;
 }
 
+void XWindowSetActiveWindow(Window win, Window old)
+{
+  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Window root_win = RootWindow(dpy, [[NSScreen mainScreen] screenNumber]);
+  Atom X_NET_ACTIVE_WINDOW = XInternAtom(dpy, "_NET_ACTIVE_WINDOW", False);
+
+  XClientMessageEvent *xev = calloc(1, sizeof(XClientMessageEvent));
+  xev->type = ClientMessage;
+  xev->display = dpy;
+  xev->window = win;
+  xev->message_type = X_NET_ACTIVE_WINDOW;
+  xev->format = 32;
+  xev->data.l[0] = 2;
+  xev->data.l[1] = CurrentTime; /* Not sure about this */
+  xev->data.l[2] = (old == None) ? 0 : old;
+  xev->data.l[3] = 0;
+  XSendEvent(dpy, root_win, False,
+             SubstructureRedirectMask, (XEvent *)xev);
+  XFree(xev);
+}
+
 Window XWindowActiveWindow()
 {
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];
