@@ -26,10 +26,15 @@
 @interface MenuletLoader : NSObject
 {
   NSArray * menulets;
+  int totalWidth;
 }
 
-+ shared;
++ (MenuletLoader *) sharedLoader;
 
 - (void) loadMenulets;
+- (void) organizeMenulets; /* Put menulet from right to left */
+
+/* Return the width to fit all menulet including space in-between */
+- (int) width;
 
 @end

@@ -71,25 +71,20 @@ my_round (float x)
 
 MenuBarWindow * ServerMenuBarWindow = nil;
 
-+ (NSRect) menuBarWindowFrame
-{
-  NSScreen * screen = [NSScreen mainScreen];
-  NSRect screenFrame;
-
-  screenFrame = [screen frame];
-  return NSMakeRect(screenFrame.origin.x,
-    screenFrame.size.height - MenuBarHeight, screenFrame.size.width,
-    MenuBarHeight);
-}
-
 + (MenuBarWindow *) sharedMenuBarWindow
 {
   if (ServerMenuBarWindow == nil)
     {
-      MenuBarView * menuBarView;
+      NSScreen * screen = [NSScreen mainScreen];
+      NSRect screenFrame = [screen frame];
+      NSRect frame = NSMakeRect(screenFrame.origin.x,
+                               screenFrame.size.height - MenuBarHeight,
+                               screenFrame.size.width,
+                               MenuBarHeight);
+      MenuBarView *view;
 
       ServerMenuBarWindow = [[MenuBarWindow alloc]
-        initWithContentRect: [self menuBarWindowFrame]
+        initWithContentRect: frame
                   styleMask: NSBorderlessWindowMask
                     backing: NSBackingStoreRetained
                       defer: NO];
@@ -103,37 +98,66 @@ MenuBarWindow * ServerMenuBarWindow = nil;
       [ServerMenuBarWindow
         reserveScreenAreaOn: XScreenTopSide
                       width: MenuBarHeight
-                      start: 0
-                        end: [self menuBarWindowFrame].size.width];
+                      start: NSMinX(frame)
+                        end: NSMaxX(frame)];
 
 #endif
-
-      menuBarView = [[[MenuBarView alloc]
-        initWithFrame: NSZeroRect]
-        autorelease];
-      [ServerMenuBarWindow setContentView: menuBarView];
-
+      view = AUTORELEASE([[MenuBarView alloc] initWithFrame: NSZeroRect]);
+      [ServerMenuBarWindow setContentView: view];
       [ServerMenuBarWindow setLevel: NSMainMenuWindowLevel - 1];
     }
 
   return ServerMenuBarWindow;
 }
 
+- (void) applicationWillFinishLaunching: (NSNotification *) notif
+{
+  if ([[[NSProcessInfo processInfo] arguments] containsObject: @"--short"])
+  {
+    isShortFormat = YES;
+  }
+  else
+  {
+    isShortFormat = NO;
+  }
+}
+
 - (void) applicationDidFinishLaunching: (NSNotification *) notif
 {
+  MenuletLoader *loader;
+
   // create the menu bar
   [[[self class] sharedMenuBarWindow] setDelegate: self];
+  menuBarView = [ServerMenuBarWindow contentView];
 
   // and load all menulets
-  [[MenuletLoader shared] loadMenulets];
+  loader = [MenuletLoader sharedLoader];
+  [loader loadMenulets];
+
+  if (isShortFormat == YES)
+  {
+     /* Shrink it */
+     int width = [loader width] + [menuBarView minimalSize].width+2;
+     NSRect frame = [ServerMenuBarWindow frame];
+     frame.origin.x = frame.size.width-width;
+     frame.size.width = width;
+     [ServerMenuBarWindow setFrame: frame display: NO];
+  }
+
+  [loader organizeMenulets];
 
   [ServerMenuBarWindow orderFront: nil];
 }
 
 - (void) windowDidMove: (NSNotification *) notif
 {
-  NSRect windowFrame = [ServerMenuBarWindow frame],
-         correctFrame = [Controller menuBarWindowFrame];
+  NSScreen * screen = [NSScreen mainScreen];
+  NSRect screenFrame = [screen frame];
+  NSRect windowFrame = [ServerMenuBarWindow frame];
+  NSRect correctFrame = NSMakeRect(screenFrame.origin.x,
+                                  screenFrame.size.height - MenuBarHeight,
+                                  screenFrame.size.width,
+                                  MenuBarHeight);
 
   NSDebugLLog(@"MenuServer", @"Menu window did move: %@", notif);
 
@@ -328,7 +352,8 @@ NSLog(@"hmm reboot");
    thanks to this method. */
 - (NSRect) menuBarWindowFrame
 {
-  return [Controller menuBarWindowFrame];
+  NSLog(@"%@", NSStringFromRect([ServerMenuBarWindow frame]));
+  return [ServerMenuBarWindow frame];
 }
 
 @end

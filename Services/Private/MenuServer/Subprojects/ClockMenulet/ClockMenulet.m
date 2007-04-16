@@ -64,14 +64,15 @@ AMPMStringForHour(int hour)
 - (void) buttonAction: (id) sender
 {
   if (calendarWindow == nil) {
-    CalendarView *cView = [[CalendarView alloc] initWithFrame: [[calendarWindow contentView] bounds]];
+    CalendarView *cView = [[CalendarView alloc] initWithFrame: NSZeroRect];
     [cView setDate: [NSCalendarDate calendarDate]];
 
     /* Try to get right position */
     int w = [CalendarView size].width;
     int h = [CalendarView size].height;
     int y = NSMinY([[view window] frame])-h;
-    int x = NSMinX([view frame]);
+//    int x = NSMinX([view frame]);
+    int x = NSMinX([view frame]) + NSMinX([[view window] frame]);
     /* Make sure the window is inside the screen */
     x = (x+w > NSMaxX([[view window] frame])) ? NSMaxX([[view window] frame])-w : x;
     NSRect rect = NSMakeRect(x, y, w, h);

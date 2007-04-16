@@ -36,4 +36,7 @@
   BOOL systemLogoPushedIn;
 }
 
+/* Return the minimal size to display menu bar. It is etoile log only */
+- (NSSize) minimalSize;
+
 @end

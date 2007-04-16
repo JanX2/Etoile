@@ -233,15 +233,6 @@ static NSImage * filler = nil,
                             action: @selector(shutDown:)
                      keyEquivalent: nil];
       [systemMenu sizeToFit];
-
-      // and now adjust the menubar's window's frame to appear in the
-      // upper left corner just under the menubar
-      systemMenuWindow = [systemMenu window];
-      frame = [systemMenuWindow frame];
-      frame.origin.x = 0;
-      frame.origin.y = NSHeight([[NSScreen mainScreen] frame]) -
-        NSHeight(frame) - MenuBarHeight;
-      [systemMenuWindow setFrameOrigin: frame.origin];
     }
 
   return self;
@@ -304,8 +295,30 @@ static NSImage * filler = nil,
       [NSEvent stopPeriodicEvents];
 
       systemLogoPushedIn = NO;
+
+      // and now adjust the menubar's window's frame to appear in the
+      // upper left corner just under the menubar
+      NSWindow *systemMenuWindow = [systemMenu window];
+      NSRect frame = [systemMenuWindow frame];
+      frame.origin.x = [[self window] frame].origin.x;
+      if (NSMaxX(frame) > NSMaxX([[NSScreen mainScreen] frame]))
+      {
+        frame.origin.x = NSMaxX([[NSScreen mainScreen] frame]) -
+                         frame.size.width;
+      }
+
+      frame.origin.y = NSHeight([[NSScreen mainScreen] frame]) -
+        NSHeight(frame) - MenuBarHeight;
+      [systemMenuWindow setFrameOrigin: frame.origin];
+
       [self setNeedsDisplay: YES];
     }
+}
+
+- (NSSize) minimalSize
+{
+  NSSize size = [etoileLogo size];
+  return size;
 }
 
 @end

@@ -45,7 +45,7 @@
 
 static MenuletLoader * shared = nil;
 
-+ shared
++ (MenuletLoader *) sharedLoader
 {
   if (shared == nil)
     {
@@ -64,8 +64,6 @@ static MenuletLoader * shared = nil;
 
 - (void) loadMenulets
 {
-  float offset;
-  NSRect windowFrame = [ServerMenuBarWindow frame];
   NSArray * bundles = [[BundleExtensionLoader shared]
     extensionsForBundleType: @"menulet"
      principalClassProtocol: @protocol(EtoileMenulet)
@@ -80,7 +78,7 @@ static MenuletLoader * shared = nil;
   NSDebugLLog(@"MenuServer", @"Loading menulet bundles %@", bundles);
 
   e = [bundles objectEnumerator];
-  for (offset = windowFrame.size.width; (bundle = [e nextObject]) != nil;)
+  while ((bundle = [e nextObject]))
     {
       id <EtoileMenulet> menulet;
       NSView * view;
@@ -98,15 +96,7 @@ static MenuletLoader * shared = nil;
       view = [menulet menuletView];
       NSDebugLLog(@"MenuServer", @"Retrieved menulet view %@", view);
 
-      frame = [view frame];
-      offset -= (frame.size.width + 2);
-      frame.origin.x = offset;
-      frame.origin.y = windowFrame.size.height / 2 - frame.size.height / 2;
-      [view setFrame: frame];
-
-      NSDebugLLog(@"MenuServer", @"Inserting menulet view with the frame \
-        %@", NSStringFromRect([view frame]));
-      [[ServerMenuBarWindow contentView] addSubview: view];
+      totalWidth += (2 + [view frame].size.width);
 
       /* The -test method below is useful when a menulet want to test whether
          it is properly set up or not. */
@@ -115,6 +105,32 @@ static MenuletLoader * shared = nil;
     }
 
   ASSIGNCOPY(menulets, array);
+}
+
+- (int) width
+{
+  return totalWidth;
+}
+
+- (void) organizeMenulets
+{
+  NSRect windowFrame = [ServerMenuBarWindow frame];
+  int offset = windowFrame.size.width;
+  NSEnumerator *e = [menulets objectEnumerator];
+  id <EtoileMenulet> menulet = nil;
+  while ((menulet = [e nextObject]))
+  {
+    NSView *view = [menulet menuletView];
+    NSRect frame = [view frame];
+    offset -= (frame.size.width + 2);
+    frame.origin.x = offset;
+    frame.origin.y = windowFrame.size.height / 2 - frame.size.height / 2;
+    [view setFrame: frame];
+
+    NSDebugLLog(@"MenuServer", @"Inserting menulet view with the frame \
+          %@", NSStringFromRect([view frame]));
+    [[ServerMenuBarWindow contentView] addSubview: view];
+  }
 }
 
 @end
