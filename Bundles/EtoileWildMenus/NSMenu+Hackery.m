@@ -132,8 +132,7 @@
   if (NSEqualRects(menuBarRect, NSZeroRect) == NO)
     {
       // TODO: Find why origin.y must be shifted down of 3 px.
-      origin = NSMakePoint (1.5 * MenuBarHeight,
-        menuBarRect.origin.y - [_aWindow frame].size.height - 3);
+      origin = NSMakePoint (1.5 * MenuBarHeight, menuBarRect.origin.y);
     }
   else /* Fall back on screen frame */
     {
