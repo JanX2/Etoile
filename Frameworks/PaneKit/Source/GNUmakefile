@@ -15,6 +15,7 @@ PaneKit_OBJC_FILES = \
 	PKPreferencePane.m \
 	PKPane.m \
 	PKPresentationBuilder.m \
+	PKPopUpButtonPresentation.m \
 	PKTableViewPresentation.m \
 	PKMatrixViewPresentation.m \
 	PKMatrixView.m \

@@ -39,6 +39,7 @@ extern const NSString *PKToolbarPresentationMode;
 extern const NSString *PKTablePresentationMode;
 extern const NSString *PKMatrixPresentationMode;
 extern const NSString *PKPlainPresentationMode;
+extern const NSString *PKPopUpPresentationMode;
 extern const NSString *PKOtherPresentationMode;
 
 @interface PKPanesController: NSObject <PKPaneOwner>
