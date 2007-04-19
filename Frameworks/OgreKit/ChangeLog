@@ -1,3 +1,7 @@
+2007-04-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Use oniguruma 5.x by default unless 'old=yes' is definied.
+
 2007-04-11 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Support oniguruma 5.x with `make new=yes`.

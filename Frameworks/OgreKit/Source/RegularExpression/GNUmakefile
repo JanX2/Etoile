@@ -30,8 +30,8 @@ RegularExpression_OBJC_FILES += \
 	TestOGRegularExpression.m
 endif
 
-ifeq ($(new), yes)
-	ADDITIONAL_OBJCFLAGS += -DONIGURUMA_5
+ifeq ($(old), yes)
+	ADDITIONAL_OBJCFLAGS += -DONIGURUMA_4
 endif
 
 include $(GNUSTEP_MAKEFILES)/subproject.make

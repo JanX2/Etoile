@@ -49,8 +49,9 @@ UnitKit (bundled with Etoile) is required.
 Dependency
 ---------
 
-OniGuruma 4 <http://www.geocities.jp/kosako3/oniguruma/>
-(It does not work with OniGuruma 5 yet).
+OniGuruma 5 <http://www.geocities.jp/kosako3/oniguruma/>
+It is available in Etoile svn: etoile/trunk/Dependencies/oniguruma5
+Use 'make old=yes' for OniGuruma 4.x.
 
 
 Contribute 

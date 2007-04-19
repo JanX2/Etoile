@@ -281,7 +281,7 @@ static int namedGroupCallback(const unsigned char *name, const unsigned char *na
 
     ci.syntax      = [[self class] onigSyntaxTypeForSyntax:_syntax];
     ci.option      = compileTimeOptions;
-#ifdef ONIGURUMA_5
+#ifndef ONIGURUMA_4
     ci.case_fold_flag = ONIGENC_CASE_FOLD_DEFAULT;
 #else
     ci.ambig_flag  = ONIGENC_AMBIGUOUS_MATCH_DEFAULT;
@@ -295,7 +295,7 @@ static int namedGroupCallback(const unsigned char *name, const unsigned char *na
         &einfo);
 	if (r != ONIG_NORMAL) {
 		// エラー。例外を発生させる。
-#ifdef ONIGURUMA_5
+#ifndef ONIGURUMA_4
 		UChar s[ONIG_MAX_ERROR_MESSAGE_LEN];
 #else
 		char s[ONIG_MAX_ERROR_MESSAGE_LEN];
