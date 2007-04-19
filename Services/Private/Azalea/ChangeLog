@@ -1,3 +1,7 @@
+2007-04-18  Yen-Ju Chen <yjchenx at gmail>
+
+	* Fix crash when switching between a GNUstep modal window and a regular window.
+
 2007-04-14  Yen-Ju Chen <yjchenx at gmail>
 
 	* Update to r5739.

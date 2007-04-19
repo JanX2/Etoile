@@ -405,13 +405,10 @@ static AZStacking *sharedInstance;
 {
     if (!raise && [selected transient_for])
     {
-	NSMutableArray *top = nil;
-	NSMutableArray *top_reorder = nil;
-
         /* if it's a transient lowering, lower its parents so that we can lower
            this window, or it won't move */
-        top = [NSMutableArray arrayWithObjects: [selected searchAllTopParents]];
-        top_reorder = AUTORELEASE([[NSMutableArray alloc] init]);
+        NSMutableArray *top = [[NSMutableArray alloc] initWithArray: [selected searchAllTopParents]];
+        NSMutableArray *top_reorder = [[NSMutableArray alloc] init];
 
         /* go thru stacking list backwards so we can use g_slist_prepend */
 	int i = [stacking_list count]-1;
@@ -427,6 +424,7 @@ static AZStacking *sharedInstance;
 	    [top removeObject: it];
 	  }
 	}
+
 	if ([top count] > 0)
 	  NSLog(@"Internal Error: top parents are left");
 
@@ -436,6 +434,8 @@ static AZStacking *sharedInstance;
 	  [self restackWindows: [top_reorder objectAtIndex: i]
 	                 raise: raise];
 	}
+	DESTROY(top_reorder);
+	DESTROY(top);
 	return;
     }
 
