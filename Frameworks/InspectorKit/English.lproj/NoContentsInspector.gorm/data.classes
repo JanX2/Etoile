@@ -1,0 +1,20 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    Inspector = {
+	Actions = (
+	);
+	Outlets = (
+	    noContents
+	);
+	Super = NSObject;
+    };
+    NoContentsInspector = {
+	Actions = (
+	);
+	Outlets = (
+	    box,
+	    bogusWindow
+	);
+	Super = NSObject;
+    };
+}
