@@ -1,0 +1,41 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    AppInspector = {
+	Actions = (
+	    "launch:"
+	);
+	Outlets = (
+	    view,
+	    bogusWindow,
+	    sv,
+	    invalidBox,
+	    normalBox
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "changeGroup:",
+	    "changeOwner:",
+	    "computeSize:",
+	    "launch:",
+	    "okAction:",
+	    "revert:"
+	);
+	Super = NSObject;
+    };
+    PWSDateView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSView;
+    };
+    PermissionsView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSView;
+    };
+}

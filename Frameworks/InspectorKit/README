@@ -1,0 +1,26 @@
+============
+InspectorKit
+============
+
+:Author: Saso Kiselkov, Yen-Ju Chen
+:License: BSD license (see COPYING document)
+:Version: 0.1
+
+InspectorKit provides commonly used inspector.
+It is originally part of OpenSpaceManager.
+
+Build and Install
+-----------------
+
+make; sudo make install
+
+
+Developer notes
+===============
+
+Dependency
+---------
+
+PaneKit
+
+
