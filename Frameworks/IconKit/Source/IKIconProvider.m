@@ -159,6 +159,8 @@ static NSWorkspace *workspace = nil;
   
   if (icon != nil)
     return icon;
+
+  return nil;
 }
 
 - (NSImage *) defaultIconForPath: (NSString *)path

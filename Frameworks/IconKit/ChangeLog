@@ -1,3 +1,7 @@
+2007-04-20  Yen-Ju Chen <yjchenx gmail>
+
+	* Return nil if icon is not found.
+
 2007-03-19  Yen-Ju Chen <yjchenx gmail>
 
 	* Disable unit kit if not specified.
