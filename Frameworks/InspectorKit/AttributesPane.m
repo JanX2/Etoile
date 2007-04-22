@@ -172,6 +172,7 @@
   NSTextField *textField = nil;
   NSRect frame = [view frame];
   NSRect rect = NSZeroRect;
+  int y = 0;
 
   /* Size */
   rect = NSMakeRect(5, frame.size.height-5-30, 50, 30);
@@ -182,6 +183,7 @@
   [textField setDrawsBackground: NO];
   [textField setBordered: NO];
   [textField setBezeled: NO];
+  [textField setAlignment: NSRightTextAlignment];
   [view addSubview: textField];
   DESTROY(textField);
 
@@ -213,6 +215,7 @@
   [textField setDrawsBackground: NO];
   [textField setBordered: NO];
   [textField setBezeled: NO];
+  [textField setAlignment: NSRightTextAlignment];
   [view addSubview: textField];
   DESTROY(textField);
 
@@ -231,6 +234,7 @@
   [textField setDrawsBackground: NO];
   [textField setBordered: NO];
   [textField setBezeled: NO];
+  [textField setAlignment: NSRightTextAlignment];
   [view addSubview: textField];
   DESTROY(textField);
 
@@ -241,32 +245,121 @@
   RELEASE(fileGroup);
 
   /* Permission */
-  rect = NSMakeRect(5, NSMinY(rect)-5-80, 150, 80);
+  rect = NSMakeRect(5, NSMinY(rect)-5-30, 50, 30);
+  textField = [[NSTextField alloc] initWithFrame: rect];
+  [textField setEditable: NO];
+  [textField setSelectable: NO];
+  [textField setStringValue: _(@"Read")];
+  [textField setDrawsBackground: NO];
+  [textField setBordered: NO];
+  [textField setBezeled: NO];
+  [textField setAlignment: NSRightTextAlignment];
+  [view addSubview: textField];
+  DESTROY(textField);
+
+  rect = NSMakeRect(5, NSMinY(rect)-5-30, 50, 30);
+  textField = [[NSTextField alloc] initWithFrame: rect];
+  [textField setEditable: NO];
+  [textField setSelectable: NO];
+  [textField setStringValue: _(@"Write")];
+  [textField setDrawsBackground: NO];
+  [textField setBordered: NO];
+  [textField setBezeled: NO];
+  [textField setAlignment: NSRightTextAlignment];
+  [view addSubview: textField];
+  DESTROY(textField);
+
+  rect = NSMakeRect(NSMaxX(rect)+5, NSMinY(rect)-5, 150, 70);
+  permView = [[PermissionsView alloc] initWithFrame: rect];
+  [permView setTarget: self];
+  [permView setAction: @selector(changePermissions:)];
+  [view addSubview: permView];
+  RELEASE(permView);
+
+  /* We cache y */
+  y = NSMinY(rect);
+
+  rect = NSMakeRect(NSMinX(rect), NSMinY(rect)-5-30, NSWidth(rect)/3, 30);
+  textField = [[NSTextField alloc] initWithFrame: rect];
+  [textField setEditable: NO];
+  [textField setSelectable: NO];
+  [textField setStringValue: _(@"Owner")];
+  [textField setDrawsBackground: NO];
+  [textField setBordered: NO];
+  [textField setBezeled: NO];
+  [textField setAlignment: NSCenterTextAlignment];
+  [view addSubview: textField];
+  DESTROY(textField);
+
+  rect = NSMakeRect(NSMaxX(rect), NSMinY(rect), NSWidth(rect), 30);
+  textField = [[NSTextField alloc] initWithFrame: rect];
+  [textField setEditable: NO];
+  [textField setSelectable: NO];
+  [textField setStringValue: _(@"Group")];
+  [textField setDrawsBackground: NO];
+  [textField setBordered: NO];
+  [textField setBezeled: NO];
+  [textField setAlignment: NSCenterTextAlignment];
+  [view addSubview: textField];
+  DESTROY(textField);
+
+  rect = NSMakeRect(NSMaxX(rect), NSMinY(rect), NSWidth(rect), 30);
+  textField = [[NSTextField alloc] initWithFrame: rect];
+  [textField setEditable: NO];
+  [textField setSelectable: NO];
+  [textField setStringValue: _(@"Others")];
+  [textField setDrawsBackground: NO];
+  [textField setBordered: NO];
+  [textField setBezeled: NO];
+  [textField setAlignment: NSCenterTextAlignment];
+  [view addSubview: textField];
+  DESTROY(textField);
+
   /* Calendar */
-  rect = NSMakeRect(NSMaxX(rect)+5, rect.origin.y, 
+  rect = NSMakeRect(NSMaxX(rect)+5, y, 
                     frame.size.width-NSMaxX(rect)-5*2, 80);
   dateView = [[OSDateView alloc] initWithFrame: rect];
   [dateView setShowsYear: YES];
   [view addSubview: dateView];
   RELEASE(dateView);
+
+  /* Revert & OK */
+  rect = NSMakeRect(NSWidth(frame)-100-5, 5, 100, 30);
+  okButton = [[NSButton alloc] initWithFrame: rect];
+  [okButton setTitle: _(@"OK")];
+  [okButton setTarget: self];
+  [okButton setAction: @selector(ok:)];
+  [view addSubview: okButton];
+  RELEASE(okButton);
+
+  rect = NSMakeRect(NSMinX(rect)-100-5, 5, 100, 30);
+  revertButton = [[NSButton alloc] initWithFrame: rect];
+  [revertButton setTitle: _(@"Revert")];
+  [revertButton setTarget: self];
+  [revertButton setAction: @selector(revert:)];
+  [view addSubview: revertButton];
+  RELEASE(revertButton);
+}
+
+- (void) changePermissions: (id) sender
+{
+  mode = [permView mode];
+  [okButton setEnabled: YES];
+  [revertButton setEnabled: YES];
 }
 
 - (void) changeOwner: (id) sender
 {
   ASSIGN(user, [sender titleOfSelectedItem]);
-#if 0
   [okButton setEnabled: YES];
   [revertButton setEnabled: YES];
-#endif
 }
 
 - (void) changeGroup: (id) sender
 {
   ASSIGN(group, [sender titleOfSelectedItem]);
-#if 0
   [okButton setEnabled: YES];
   [revertButton setEnabled: YES];
-#endif
 }
 
 - (void) computeSize: (id) sender
@@ -335,12 +428,11 @@
 
   DESTROY(user);
   DESTROY(group);
-#if 0
+
   modeChanged = NO;
 
   [okButton setEnabled: NO];
   [revertButton setEnabled: NO];
-#endif
 
   fattrs = [fm fileAttributesAtPath: path traverseLink: YES];
 
@@ -368,15 +460,81 @@
     [fileSize setStringValue: [self stringFromSize: [fattrs fileSize]]];
   }
 
-#if 0
   oldMode = mode = [fattrs filePosixPermissions];
-  [(PermissionsView *) perms setMode: mode];
+  [permView setMode: mode];
   if (![[fattrs fileOwnerAccountName] isEqualToString: NSUserName()] &&
       geteuid() != 0)
-    [perms setEditable: NO];
+  {
+    [permView setEditable: NO];
+  }
   else
-    [perms setEditable: YES];
-#endif
+  {
+    [permView setEditable: YES];
+  }
+}
+
+- (void) ok: (id) sender
+{
+  NSFileManager * fm = [NSFileManager defaultManager];
+  NSMutableDictionary * fattrs = [[[fm
+          fileAttributesAtPath: path traverseLink: YES]
+          mutableCopy]
+          autorelease];
+  int uid, gid;
+
+  if (user)
+    uid = [[users objectForKey: user] intValue];
+  else
+    uid = -1;
+
+  if (group)
+    gid = [[groups objectForKey: group] intValue];
+  else
+    gid = -1;
+
+  if (mode != oldMode)
+  {
+    [fattrs setObject: [NSNumber numberWithInt: mode]
+               forKey: NSFilePosixPermissions];
+  }
+
+  if ([fm changeFileAttributes: fattrs atPath: path] == NO ||
+      chown([path cString], uid, gid) != 0) 
+  {
+    NSRunAlertPanel(_(@"Failed to change attributes"),
+                    _(@"Couldn't change attributes of file %@: access denied"),
+                    nil, nil, nil, [path lastPathComponent]);
+    return;
+  }
+
+  DESTROY(user);
+  DESTROY(group);
+  oldMode = mode;
+
+  [okButton setEnabled: NO];
+  [revertButton setEnabled: NO];
+}
+
+- (void) revert: (id) sender
+{
+  NSDictionary *fattrs = [[NSFileManager defaultManager]
+  fileAttributesAtPath: path traverseLink: YES];
+
+  [permView setMode: oldMode];
+
+  if (user != nil) 
+  {
+    DESTROY(user);
+    [fileOwner selectItemWithTitle: [fattrs fileOwnerAccountName]];
+  }
+  if (group != nil) 
+  {
+    DESTROY(group);
+    [fileGroup selectItemWithTitle: [fattrs fileGroupOwnerAccountName]];
+  }
+
+  [okButton setEnabled: NO];
+  [revertButton setEnabled: NO];
 }
 
 @end

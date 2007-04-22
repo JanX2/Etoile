@@ -33,6 +33,7 @@
 #import <PaneKit/PaneKit.h>
 #import "InspectorModule.h"
 #import "OSDateView.h"
+#import "PermissionsView.h"
 
 @interface AttributesPane : PKPane <InspectorModule>
 {
@@ -41,6 +42,9 @@
   NSTextField *fileSize;
   NSButton *computeSizeBtn;
   OSDateView *dateView;
+  PermissionsView *permView;
+  NSButton *okButton;
+  NSButton *revertButton;
 
   NSDictionary *info;
   NSString *path;
@@ -50,8 +54,12 @@
   NSDictionary *myGroups;
   NSString * user;
   NSString * group;
+  BOOL modeChanged;
+  unsigned oldMode;
+  unsigned mode;
 }
 
+- (void) changePermissions: (id) sender;
 - (void) changeOwner: (id) sender;
 - (void) changeGroup: (id) sender;
 - (void) computeSize: (id) sender;
