@@ -34,6 +34,11 @@ PaneKit_HEADER_FILES_INSTALL_DIR = PaneKit
 
 PaneKit_HEADER_FILES = \
 	CocoaCompatibility.h \
+	PKMatrixViewPresentation.h \
+	PKTableViewPresentation.h \
+	PKPlainPresentation.h \
+	PKToolbarPresentation.h \
+	PKPopUpButtonPresentation.h \
 	PKPresentationBuilder.h \
 	PKPreferencesController.h \
 	PKPreferencePaneRegistry.h \

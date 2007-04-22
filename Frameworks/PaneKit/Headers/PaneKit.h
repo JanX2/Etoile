@@ -33,3 +33,10 @@
 #import <PaneKit/PKPaneRegistry.h>
 
 #import <PaneKit/PKPresentationBuilder.h>
+/* We install all presentations so that they can be subclassed */
+#import <PaneKit/PKMatrixViewPresentation.h>
+#import <PaneKit/PKTableViewPresentation.h>
+#import <PaneKit/PKPlainPresentation.h>
+#import <PaneKit/PKToolbarPresentation.h>
+#import <PaneKit/PKPopUpButtonPresentation.h>
+
