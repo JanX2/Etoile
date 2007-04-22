@@ -29,14 +29,14 @@
    THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#define INSPECTOR_WIDTH 300 // recommended size 
+
 @protocol InspectorModule
 
 + (NSArray *) extensions;
+- (void) setPath: (NSString *) filePath;
 
-- (NSString *) inspectorName;
-
-- (void) displayForPath: (NSString *) filePath;
-
-- (NSView *) view;
+/* Return dictionary of plugin so that it can be added into registry */
+- (NSDictionary *) pluginInfo;
 
 @end

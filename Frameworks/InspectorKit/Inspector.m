@@ -31,58 +31,70 @@
 */
 
 #import "Inspector.h"
-
 #import "InspectorModule.h"
-
 #import <EtoileFoundation/OSBundleExtensionLoader.h>
 #import <IconKit/IconKit.h>
+#import "AttributesPane.h"
 
 @interface Inspector (Private)
 
 - (void) updateDisplay;
-
+#if 0
 - (void) setInspector: inspector;
-
 - (id <InspectorModule>) contentsInspectorForFile: (NSString *) filename;
+#endif
 
 @end
 
 @implementation Inspector (Private)
-
 - (void) updateDisplay
 {
-        if (filePath != nil) {
-                id <InspectorModule> mod;
+  if (filePath != nil) 
+  {
+    NSArray *array = [[self registry] loadedPlugins];
+    int i = 0; 
+    for (i = 0; i < [array count]; i++)
+    {
+      id <InspectorModule> module = [[array objectAtIndex: i] objectForKey: @"instance"];
+      [module setPath: filePath];
+    }
+#if 0
+     id <InspectorModule> mod;
 
-                [icon setImage: [[IKIcon iconForFile: filePath] image]];
-                [filename setStringValue: [filePath lastPathComponent]];
-                [path setStringValue: filePath];
+     [icon setImage: [[IKIcon iconForFile: filePath] image]];
+     [filename setStringValue: [filePath lastPathComponent]];
+     [path setStringValue: filePath];
 
-                if ([popUpButton indexOfSelectedItem] != 1) {
-                        [self setInspector: currentInspector];
-/*                        [box setContentView: [currentInspector view]];
-                        [currentInspector displayForPath: filePath];*/
-                } else {
-                        [self setInspector: [self
-                          contentsInspectorForFile: filePath]];
-                }
-        } else {
-                [icon setImage: nil];
-                [filename setStringValue: nil];
-                [path setStringValue: nil];
-                if (multipleSelectionView == nil) {
-                        [NSBundle loadNibNamed: @"MultipleSelectionInspectorView"
-                                         owner: self];
-
-                        [multipleSelectionView retain];
-                        [multipleSelectionView removeFromSuperview];
-                        DESTROY(multipleSelectionViewBogusWindow);
-                }
-                [box setContentView: multipleSelectionView];
-                [panel setTitle: _(@"Inspector")];
-        }
+     if ([popUpButton indexOfSelectedItem] != 1) 
+     {
+       [self setInspector: currentInspector];
+     } 
+     else 
+     {
+       [self setInspector: [self contentsInspectorForFile: filePath]];
+     }
+#endif
+  } 
+  else 
+  {
+#if 0
+     [icon setImage: nil];
+     [filename setStringValue: nil];
+     [path setStringValue: nil];
+     if (multipleSelectionView == nil) 
+     {
+       [NSBundle loadNibNamed: @"MultipleSelectionInspectorView" owner: self];
+       [multipleSelectionView retain];
+       [multipleSelectionView removeFromSuperview];
+       DESTROY(multipleSelectionViewBogusWindow);
+     }
+     [box setContentView: multipleSelectionView];
+     [panel setTitle: _(@"Inspector")];
+#endif
+  }
 }
 
+#if 0
 - (void) setInspector: inspector
 {
         if (filePath != nil) {
@@ -94,7 +106,9 @@
 
         ASSIGN(currentInspector, inspector);
 }
+#endif
 
+#if 0
 - (id <InspectorModule>) contentsInspectorForFile: (NSString *) file
 {
         NSEnumerator * e;
@@ -150,6 +164,7 @@
 
         return noContents;
 }
+#endif
 
 @end
 
@@ -157,128 +172,81 @@
 
 static Inspector * shared = nil;
 
-+ shared
++ (Inspector *) sharedInspector
 {
-        if (shared == nil)
-                shared = [self new];
-        return shared;
+  if (shared == nil)
+  {
+    PKPaneRegistry *registry = [[PKPaneRegistry alloc] init];
+    [registry addPlugin: AUTORELEASE([[[AttributesPane alloc] init] pluginInfo])];
+    
+    shared = [[Inspector alloc] 
+                initWithRegistry: AUTORELEASE(registry)
+                presentationMode: PKPopUpPresentationMode
+                           owner: nil];
+  }
+  return shared;
 }
 
 - (void) dealloc
 {
-        NSDebugLLog(@"Inspector", @"Inspector: dealloc");
-
-        TEST_RELEASE(filePath);
-
-        TEST_RELEASE(attrs);
-        TEST_RELEASE(tools);
-        TEST_RELEASE(perms);
-
-        TEST_RELEASE(contentsInspectors);
-        TEST_RELEASE(multipleSelectionView);
-
-        [super dealloc];
+  DESTROY(filePath);
+  [super dealloc];
 }
 
-- init
+- (id) init
 {
-        [super init];
+  self = [super init];
 
-        [[NSNotificationCenter defaultCenter]
-          addObserver: self
-             selector: @selector(release)
-                 name: NSApplicationWillTerminateNotification
-               object: NSApp];
-
-        return self;
+  return self;
 }
 
 - (void) activate
 {
-        if (panel == nil)
-                [NSBundle loadNibNamed: @"Inspector" owner: self];
+  [self updateDisplay];
 
-        [self updateDisplay];
-         // don't make our panel the key window - we want to allow
-         // the user to open the inspector a continue on browsing
-         // the file system.
-        [panel orderFront: nil];
+  /* don't make our panel the key window - we want to allow
+     the user to open the inspector a continue on browsing the file system.
+   */
+  [[self owner] orderFront: nil]; 
 }
 
+#if 0
 - (void) awakeFromNib
 {
-        [panel setFrameAutosaveName: @"Inspector"];
+  [panel setFrameAutosaveName: @"Inspector"];
 }
+#endif
 
 - (void) displayPath: (NSString *) aPath
 {
-        if ([filePath isEqualToString: aPath])
-                return;
+  if ([filePath isEqualToString: aPath])
+    return;
 
-        ASSIGN(filePath, aPath);
+  ASSIGN(filePath, aPath);
 
-        if (panel && [panel isVisible])
-                [self updateDisplay];
+  if ([self owner] && [[self owner] isKindOfClass: [NSWindow class]] && 
+      [[self owner] isVisible])
+    [self updateDisplay];
 }
 
-
-- (void) selectView: (id)sender
+- (void) showAttributesInspector: (id) sender
 {
-        switch ([popUpButton indexOfSelectedItem]) {
-             // attributes
-            case 0:
-                if (attrs == nil)
-                        [NSBundle loadNibNamed: @"AttributesInspector"
-                                         owner: self];
-                [self setInspector: attrs];
-            break;
-             // contents
-            case 1:
-                [self setInspector: [self contentsInspectorForFile: filePath]];
-            break;
-             // tools
-            case 2:
-                if (tools == nil)
-                        [NSBundle loadNibNamed: @"ToolsInspector"
-                                         owner: self];
-                [self setInspector: tools];
-            break;
-             // permissions
-            case 3:
-                if (perms == nil)
-                        [NSBundle loadNibNamed: @"PermissionsInspector"
-                                         owner: self];
-                [self setInspector: perms];
-            break;
-        }
+  [self activate];
 }
 
-- (void) showAttributesInspector: sender
+- (void) showContentsInspector: (id) sender
 {
-        [self activate];
-        [popUpButton selectItemAtIndex: 0];
-        [self selectView: popUpButton];
+  [self activate];
 }
 
-- (void) showContentsInspector: sender
+- (void) showToolsInspector: (id) sender
 {
-        [self activate];
-        [popUpButton selectItemAtIndex: 1];
-        [self selectView: popUpButton];
+  [self activate];
 }
 
-- (void) showToolsInspector: sender
+- (void) showPermissionsInspector: (id) sender
 {
-        [self activate];
-        [popUpButton selectItemAtIndex: 2];
-        [self selectView: popUpButton];
-}
-
-- (void) showPermissionsInspector: sender
-{
-        [self activate];
-        [popUpButton selectItemAtIndex: 3];
-        [self selectView: popUpButton];
+  [self activate];
 }
 
 @end

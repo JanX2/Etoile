@@ -31,45 +31,25 @@
 */
 
 #import <AppKit/AppKit.h>
+#import <PaneKit/PaneKit.h>
 
 @protocol InspectorModule;
 
-@interface Inspector : NSObject
+@interface Inspector: PKPanesController
 {
-  NSBox * box;
-  id filename;
-  id icon;
-  id panel;
-  id path;
-  id popUpButton;
-  id multipleSelectionView;
-  id multipleSelectionViewBogusWindow;
-
-  NSString * filePath;
-
-   // built-in inspectors
-  id attrs,
-     tools,
-     perms,
-     noContents;
-
-  NSMutableArray * contentsInspectors;
-  
-  id <InspectorModule> currentInspector;
+  NSString *filePath;
 }
 
-+ shared;
++ (Inspector *) sharedInspector;
 
 - (void) displayPath: (NSString *) aPath;
 
- // order the inspector front
+// order the inspector front
 - (void) activate;
 
-- (void) selectView: (id)sender;
-
-- (void) showAttributesInspector: sender;
-- (void) showContentsInspector: sender;
-- (void) showToolsInspector: sender;
-- (void) showPermissionsInspector: sender;
+- (void) showAttributesInspector: (id) sender;
+- (void) showContentsInspector: (id) sender;
+- (void) showToolsInspector: (id) sender;
+- (void) showPermissionsInspector: (id) sender;
 
 @end

@@ -7,7 +7,8 @@ InspectorKit
 :Version: 0.1
 
 InspectorKit provides commonly used inspector.
-It is originally part of OpenSpaceManager.
+It is originally part of OpenSpaceManager
+and mostly rewritten to use other components in Etoile.
 
 Build and Install
 -----------------
