@@ -35,6 +35,7 @@
 #import <EtoileFoundation/OSBundleExtensionLoader.h>
 #import <IconKit/IconKit.h>
 #import "AttributesPane.h"
+#import "FilePopUpPresentation.h"
 
 @interface Inspector (Private)
 
@@ -58,6 +59,11 @@
       id <InspectorModule> module = [[array objectAtIndex: i] objectForKey: @"instance"];
       [module setPath: filePath];
     }
+    if ([presentation isKindOfClass: [FilePopUpButtonPresentation class]])
+    {
+      [(FilePopUpButtonPresentation *)presentation setFilePath: filePath];
+    }
+     
 #if 0
      id <InspectorModule> mod;
 
@@ -181,7 +187,7 @@ static Inspector * shared = nil;
     
     shared = [[Inspector alloc] 
                 initWithRegistry: AUTORELEASE(registry)
-                presentationMode: PKPopUpPresentationMode
+                presentationMode: FilePopUpPresentationMode
                            owner: nil];
   }
   return shared;

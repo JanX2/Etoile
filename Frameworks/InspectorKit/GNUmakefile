@@ -3,6 +3,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 FRAMEWORK_NAME = InspectorKit
 InspectorKit_OBJC_FILES = \
+	FilePopUpPresentation.m \
 	AttributesPane.m \
 	OSDateView.m \
 	Inspector.m \
@@ -18,9 +19,7 @@ InspectorKit_RESOURCE_FILES = \
 	$(wildcard Images/*)
 
 #InspectorKit_LOCALIZED_RESOURCE_FILES = \
-	AttributesInspector.gorm \
 	NoContentsInspector.gorm \
-	Inspector.gorm \
 	PermissionsInspector.gorm \
 	MultipleSelectionInspectorView.gorm \
 	ToolsInspector.gorm

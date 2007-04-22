@@ -1,6 +1,8 @@
 2007-02-22  Yen-Ju Chen <yjchenx at gmail>
 
 	* Finish AttributesPane.
+	* Add FilePopUpPresentation which shows icon and name
+	  between popup button and pane.
 
 2007-02-21  Yen-Ju Chen <yjchenx at gmail>
 
