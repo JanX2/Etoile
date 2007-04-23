@@ -9,6 +9,8 @@ InspectorKit
 InspectorKit provides commonly used inspector.
 It is originally part of OpenSpaceManager
 and mostly rewritten to use other components in Etoile.
+Ideally, Inspector should automatically pick suitable panes for selected file
+or object.
 
 Build and Install
 -----------------
