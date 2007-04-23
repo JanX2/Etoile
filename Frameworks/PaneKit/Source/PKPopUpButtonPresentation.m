@@ -161,7 +161,6 @@ const NSString *PKPopUpPresentationMode = @"PKPopUpPresentationMode";
 
 - (void) popUpButtonAction: (id) sender
 {
-NSLog(@"%@", sender);
   [self switchPaneView: sender];
 #if 0
   int row = [preferencesTableView selectedRow];
@@ -171,7 +170,6 @@ NSLog(@"%@", sender);
 #endif
 }
 
-#if 0
 /*
  * Preferences controller delegate methods
  */
@@ -181,36 +179,8 @@ NSLog(@"%@", sender);
   NSDictionary *info = [allLoadedPlugins objectWithValue: identifier 
                                          forKey: @"identifier"];
   int row = [allLoadedPlugins indexOfObject: info];
-    
-  [preferencesTableView selectRow: row byExtendingSelection: NO];
+  if (row != NSNotFound)
+    [popUpButton selectItemAtIndex: row];
 }
-
-/*
- * Table view delegate methods
- */
-
-- (int) numberOfRowsInTableView: (NSTableView *)tableView
-{
-  return [allLoadedPlugins count];
-}
-
-
-- (id) tableView: (NSTableView*)tableView 
-       objectValueForTableColumn: (NSTableColumn *) tableColumn 
-       row: (int)row
-{
-  NSDictionary *info = [allLoadedPlugins objectAtIndex: row];
-  return [info objectForKey: @"name"];
-}
-
-
-- (void) tableViewSelectionDidChange: (NSNotification *)notification
-{
-  int row = [preferencesTableView selectedRow];
-  NSString *path = (NSString *)[[allLoadedPlugins objectAtIndex: row] objectForKey: @"path"];
-	
-  [controller updateUIForPane: [[controller registry] paneAtPath: path]];
-}
-#endif
 
 @end
