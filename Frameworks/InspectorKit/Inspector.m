@@ -35,6 +35,7 @@
 #import <EtoileFoundation/OSBundleExtensionLoader.h>
 #import <IconKit/IconKit.h>
 #import "AttributesPane.h"
+#import "ToolsPane.h"
 #import "FilePopUpPresentation.h"
 
 @interface Inspector (Private)
@@ -184,6 +185,7 @@ static Inspector * shared = nil;
   {
     PKPaneRegistry *registry = [[PKPaneRegistry alloc] init];
     [registry addPlugin: AUTORELEASE([[[AttributesPane alloc] init] pluginInfo])];
+    [registry addPlugin: AUTORELEASE([[[ToolsPane alloc] init] pluginInfo])];
     
     shared = [[Inspector alloc] 
                 initWithRegistry: AUTORELEASE(registry)

@@ -118,7 +118,7 @@ const NSString *FilePopUpPresentationMode = @"FilePopUpPresentationMode";
     [mainView addSubview: paneView];
   NSRect rect = NSMakeRect(5, NSMaxY(paneFrame)+PAD, 48, 48);
   [iconView setFrame: rect];
-  rect = NSMakeRect(NSMaxX(rect), NSMaxY(paneFrame)+PAD+24, 
+  rect = NSMakeRect(NSMaxX(rect)+5, NSMaxY(paneFrame)+PAD+24, 
                     NSWidth(paneFrame)-2*PAD-NSMaxX(rect), 24);
   [nameField setFrame: rect];
   rect.origin.y -= 24;
@@ -131,7 +131,6 @@ const NSString *FilePopUpPresentationMode = @"FilePopUpPresentationMode";
 
   if (path)
   {
-NSLog(@"File Icon %@", path);
     [iconView setImage: [[IKIcon iconForFile: path] image]];
     [nameField setStringValue: [path lastPathComponent]];
     [pathField setStringValue: path];
@@ -146,6 +145,9 @@ NSLog(@"File Icon %@", path);
 - (void) dealloc
 {
   DESTROY(path);
+  DESTROY(iconView);
+  DESTROY(nameField);
+  DESTROY(pathField);
   [super dealloc];
 }
 

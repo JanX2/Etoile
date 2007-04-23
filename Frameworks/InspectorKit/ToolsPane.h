@@ -1,6 +1,6 @@
 /*
-   ToolsInspector.h
-   The tools inspector.
+   ToolsPane.h
+   The tools pane.
 
    Copyright (C) 2005 Saso Kiselkov
                  2007 Yen-Ju Chen
@@ -30,28 +30,25 @@
    THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <AppKit/AppKit.h>
-
+#import <PaneKit/PaneKit.h>
 #import "InspectorModule.h"
 
-@interface ToolsInspector : NSObject <InspectorModule>
+@interface ToolsPane: PKPane <InspectorModule>
 {
-        id appList;
-        id appPath;
-        id bogusWindow;
-        id defaultApp;
-        id textSv;
-        id text;
-        id view;
-        id setDefaultButton;
-        id revertButton;
+  NSMatrix *matrix;
+  NSTextField *defaultApp;
+  NSTextField *appPath;
+  NSTextView *text;
+  NSButton *setDefaultButton;
+  NSButton *revertButton;
 
-        NSString * path;
+  NSString *path;
+  NSDictionary *info;
 }
 
-- (void) appSelected: sender;
-- (void) openWithApp: sender;
-- (void) setDefault: sender;
-- (void) revert: sender;
+- (void) appSelected: (id) sender;
+- (void) openWithApp: (id) sender;
+- (void) setDefault: (id) sender;
+- (void) revert: (id) sender;
 
 @end

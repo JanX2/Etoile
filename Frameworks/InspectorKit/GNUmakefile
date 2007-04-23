@@ -4,12 +4,15 @@ include $(GNUSTEP_MAKEFILES)/common.make
 FRAMEWORK_NAME = InspectorKit
 InspectorKit_OBJC_FILES = \
 	FilePopUpPresentation.m \
+	ToolsPane.m \
 	AttributesPane.m \
 	OSDateView.m \
 	Inspector.m \
 	PermissionsView.m
 
 InspectorKit_HEADER_FILES = \
+	FilePopUpPresentation.h \
+	ToolsPane.h \
 	AttributesPane.h \
 	OSDateView.h \
 	Inspector.h \
