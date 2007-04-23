@@ -240,6 +240,7 @@ static Inspector * shared = nil;
 - (void) showAttributesInspector: (id) sender
 {
   [self activate];
+  [self selectPaneWithIdentifier: @"AttributesPane"];
 }
 
 - (void) showContentsInspector: (id) sender
@@ -250,6 +251,7 @@ static Inspector * shared = nil;
 - (void) showToolsInspector: (id) sender
 {
   [self activate];
+  [self selectPaneWithIdentifier: @"ToolsPane"];
 }
 
 - (void) showPermissionsInspector: (id) sender
