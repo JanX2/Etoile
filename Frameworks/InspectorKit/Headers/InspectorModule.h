@@ -1,6 +1,5 @@
 /*
-   ToolsPane.h
-   The tools pane.
+   Inspector module protocol.
 
    Copyright (C) 2005 Saso Kiselkov
                  2007 Yen-Ju Chen
@@ -30,25 +29,14 @@
    THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#import <PaneKit/PaneKit.h>
-#import "InspectorModule.h"
+#define INSPECTOR_WIDTH 300 // recommended size 
 
-@interface ToolsPane: PKPane <InspectorModule>
-{
-  NSMatrix *matrix;
-  NSTextField *defaultApp;
-  NSTextField *appPath;
-  NSTextView *text;
-  NSButton *setDefaultButton;
-  NSButton *revertButton;
+@protocol InspectorModule
 
-  NSString *path;
-  NSDictionary *info;
-}
++ (NSArray *) extensions;
+- (void) setPath: (NSString *) filePath;
 
-- (void) appSelected: (id) sender;
-- (void) openWithApp: (id) sender;
-- (void) setDefault: (id) sender;
-- (void) revert: (id) sender;
+/* Return dictionary of plugin so that it can be added into registry */
+- (NSDictionary *) pluginInfo;
 
 @end

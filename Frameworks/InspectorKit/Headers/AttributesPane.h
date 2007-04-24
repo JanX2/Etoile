@@ -31,9 +31,9 @@
 */
 
 #import <PaneKit/PaneKit.h>
-#import "InspectorModule.h"
-#import "OSDateView.h"
-#import "PermissionsView.h"
+#import <InspectorKit/InspectorModule.h>
+#import <InspectorKit/OSDateView.h>
+#import <InspectorKit/PermissionsView.h>
 
 @interface AttributesPane : PKPane <InspectorModule>
 {
