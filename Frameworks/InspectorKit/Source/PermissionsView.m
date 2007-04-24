@@ -70,7 +70,6 @@ enum {
 
 - (void) drawRect: (NSRect) r
 {
-  NSLog(@"Draw PrefView");
   NSSize s = [self frame].size;
   int xslot = s.width / 3;
   int yslot = displaysExecute ? s.height / 3 : s.height/2;
