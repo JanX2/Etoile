@@ -1,3 +1,17 @@
+2007-04-24  Quentin Mathe <qmathe@club-internet.fr>
+
+	* EtoileSystem.m: 
+	(-powerOff:): Improved to check whether reboot and shutdown are supported
+	and reporting error to the user otherwise.
+	(-reportPowerOffError:): New method.
+	(-suspend): Improved to report error if suspend cannot be completed.
+	(-replyToLogOutOrPowerOff:): Modified to trigger reboot or shutdown when
+	the operation underway isn't a simple logout.
+	* SCHardware.m: Added. New set of functions to talk to host system and 
+	hardware through DBus/HAL combo. Includes detailed documentation on Linux 
+	suspend support.
+	* GNUmakefile: Updated to link dbus library.
+
 2007-04-14  Quentin Mathe <qmathe@club-internet.fr>
 
 	* EtoileSystem.h:

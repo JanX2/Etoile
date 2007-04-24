@@ -117,6 +117,14 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	}
 }
 
+/* Private SCHardware interface */
+
+BOOL SCHardwareIsShutDownSupported();
+BOOL SCHardwareIsRebootSupported();
+BOOL SCHardwareShutDown();
+BOOL SCHardwareReboot();
+BOOL SCHardwareSuspend();
+
 @interface SCSystem (Private)
 - (id) initWithArguments: (NSArray *)args;
 
@@ -131,6 +139,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 - (void) startProcessesParallely: (NSArray *)processGroup;
 
 - (void) terminateSession;
+- (void) reportPowerOffError: (NSString *)op;
 @end
 
 @interface SCSystem (HelperMethodsPrivate)
@@ -735,18 +744,44 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 		NSLog(@"System cannot power off now. SCSystem is carrying on %@", _operation);
 		return;
 	}
-	else
+
+	if (reboot)
 	{
-		if (reboot)
+		if (SCHardwareIsRebootSupported())
 		{
 			_operation = SCRebootOperation;
+			[self terminateSession];
 		}
 		else
 		{
-			_operation = SCShutDownOperation;
+			[self reportPowerOffError: SCRebootOperation];
 		}
+	}
+	else
+	{
+		if (SCHardwareIsShutDownSupported())
+		{
+			_operation = SCShutDownOperation;
+			[self terminateSession];
+		}
+		else
+		{
+			[self reportPowerOffError: SCShutDownOperation];
+		}
+	}
+}
 
-		[self terminateSession];
+- (void) reportPowerOffError: (NSString *)op
+{
+	if ([op isEqual: SCShutDownOperation])
+	{
+		NSRunAlertPanel(_(@"The computer cannot be shutdown."),
+			_(@"This limitation may occur either because you aren't allowed to shutdown or your configuration doesn't support shutdown properly."), nil, nil, nil);
+	}
+	else if ([op isEqual: SCRebootOperation])
+	{
+		NSRunAlertPanel(_(@"The computer cannot be reboot."), 
+			_(@"This limitation may occur either because you aren't allowed to reboot or your configuration doesn't support reboot properly."), nil, nil, nil);
 	}
 }
 
@@ -759,11 +794,14 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	if (_operation != nil)
 	{
 		NSLog(@"System cannot suspend now. SCSystem is carrying on %@", _operation);
-		return;
 	}
 	else
 	{
-		NSLog(@"Suspend not yet implemented");
+		if (SCHardwareSuspend() == NO)
+		{
+			NSRunAlertPanel(_(@"The computer cannot be put in sleep mode."), 
+				_(@"This limitation may occur either because you aren't allowed to put it in sleep mode or your configuration doesn't support sleep mode properly."), nil, nil, nil);
+		}
 	}
 }
 
@@ -795,11 +833,13 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 
 		if ([_operation isEqual: SCShutDownOperation])
 		{
-        	// TODO: initiate shut down here
+			if (SCHardwareShutDown() == NO)
+				NSLog(@"System fails to trigger shut down before logging out");
 		}
 		else if ([_operation isEqual: SCRebootOperation])
 		{
-			// TODO: initiate reboot here
+			if (SCHardwareReboot() == NO)
+				NSLog(@"System fails to trigger reboot before logging out");
 		}
 
 		/* Time to put an end to our own life */
@@ -807,7 +847,7 @@ SetNonNullError (NSError ** error, int code, NSString * reasonFormat, ...)
 	}
 	else
 	{
-		NSRunAlertPanel(_(@"Log out or shut down cancelled"),
+		NSRunAlertPanel(_(@"Log out, shut down or reboot has been cancelled."),
 			replyText, nil, nil, nil);
 
 		/* Ready to accept new operation */
