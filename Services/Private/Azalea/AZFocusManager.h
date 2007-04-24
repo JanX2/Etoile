@@ -31,14 +31,6 @@
   /*! The client which is currently focused */
   AZClient *focus_client;
 
-  /*! The client which is being decorated as focused, not always matching the
-  real focus, but this is used to track it so that it can be resolved to match.
-  This is for when you change desktops. We know which window is *going to be*
-  focused, so we hilight it. But since it's hilighted, we also want
-  keybindings to go to it, which is really what this is for.
-  */
-  AZClient *focus_hilite;
-
   /*! The client which appears focused during a focus cycle operation */
   AZClient *focus_cycle_target;
 
@@ -74,6 +66,9 @@
                  dialog: (BOOL) dialog done: (BOOL) done cancel: (BOOL) cancel;
 - (void) cycleDrawIndicator;
 
+/*! Focus nothing, but let keyboard events be caught. */
+- (void) focusNothing;
+
 /*! Add a new client into the focus order */
 - (void) focusOrderAdd: (AZClient *) c;
 
@@ -91,10 +86,8 @@
 
 /* accessories */
 - (void) set_focus_client: (AZClient *) focus_client;
-- (void) set_focus_hilite: (AZClient *) focus_hilite;
 - (void) set_focus_cycle_target: (AZClient *) focus_cycle_target;
 - (AZClient *) focus_client;
-- (AZClient *) focus_hilite;
 - (AZClient *) focus_cycle_target;
 
 - (NSArray *) focus_order;

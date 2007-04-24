@@ -32,11 +32,11 @@
 #import "AZFocusManager.h"
 #import "AZKeyboardHandler.h"
 #import "AZMouseHandler.h"
+#import "AZDebug.h"
 #import "config.h"
 #import "openbox.h"
 #import "grab.h"
 #import "prop.h"
-#import "AZMenuFrame.h"
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
@@ -416,7 +416,7 @@ static AZClientManager *sharedInstance;
     /* update the focus lists */
     [fManager focusOrderRemove: client];
     /* don't leave an invalid focus_client */
-    if (self == [fManager focus_client])
+    if (client == [fManager focus_client])
         [fManager set_focus_client: nil];
 
     [clist removeObject: client];
@@ -430,12 +430,6 @@ static AZClientManager *sharedInstance;
 
     [[NSNotificationCenter defaultCenter] postNotificationName: AZClientDestroyNotification
 	    object: client];
-    /* Taken from menu (AZMenu in the future). Since it uses global function,
-     * it is not really suitable in object, or it will be called multiple
-     * time in each object, which is not good */
-    /* menus can be associated with a client, so close any that are since
-       we are disappearing now */
-    AZMenuFrameHideAllClient(client);
 
     /* tell our parent(s) that we're gone */
     if ([client transient_for] == OB_TRAN_GROUP) { /* transient of group */

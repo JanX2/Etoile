@@ -28,6 +28,7 @@
 #import "AZEventHandler.h"
 #import "AZStartupHandler.h"
 #import "AZFocusManager.h"
+#import "AZDebug.h"
 #import "prop.h"
 #import "config.h"
 #import "openbox.h"

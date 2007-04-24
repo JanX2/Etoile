@@ -30,8 +30,6 @@
 #import "AZFrame+Render.h"
 #import "AZMoveResizeHandler.h"
 #import "AZFocusManager.h"
-#import "AZMenuFrame.h"
-#import "AZMenu.h"
 #import "AZMouseHandler.h"
 #import "openbox.h"
 #import "config.h"
@@ -124,12 +122,9 @@ static AZEventHandler *sharedInstance;
 
 @interface AZEventHandler (AZPrivate)
 - (void) handleRootEvent: (XEvent *) e;
-- (void) handleMenuEvent: (XEvent *) e;
 - (void) handleClient: (AZClient *) c event: (XEvent *) e;
 - (void) handleGroup: (AZGroup *) g event: (XEvent *) e;
 
-- (AZMenuFrame *) findActiveMenu;
-- (AZMenuFrame *) findActiveOrLastMenu;
 - (Window) getWindow: (XEvent *) e;
 - (void) hackMods: (XEvent *) e;
 - (BOOL) wantedFocusEvent: (XEvent *) e;
@@ -137,7 +132,6 @@ static AZEventHandler *sharedInstance;
 
 /* callback */
 - (void) processEvent: (XEvent *) e data: (void *) data;
-- (BOOL) menuHideDelayFunc: (id) data;
 @end
 
 @implementation AZEventHandler
@@ -353,12 +347,7 @@ static AZEventHandler *sharedInstance;
             ed->ignored = NO;
 
     /* deal with it in the kernel */
-    if (([[AZMenuFrame visibleFrames] count] > 0) &&
-        (e->type == EnterNotify || e->type == LeaveNotify))
-    {
-        /* crossing events for menu */
-	[self handleMenuEvent: e];
-    } else if (e->type == FocusIn) {
+    if (e->type == FocusIn) {
 	AZFocusManager *fManager = [AZFocusManager defaultManager];
         if (client && client != [fManager focus_client]) {
 	    [[client frame] adjustFocusWithHilite: YES];
@@ -451,9 +440,7 @@ static AZEventHandler *sharedInstance;
         e->type == MotionNotify || e->type == KeyPress ||
         e->type == KeyRelease)
     {
-        if ([[AZMenuFrame visibleFrames] count])
-            [self handleMenuEvent: e];
-        else {
+        {
 	    AZKeyboardHandler *kHandler = [AZKeyboardHandler defaultHandler];
 	    if (![kHandler processInteractiveGrab: e forClient: &client]) {
 		AZMoveResizeHandler *mrHandler = [AZMoveResizeHandler defaultHandler];
@@ -464,12 +451,6 @@ static AZEventHandler *sharedInstance;
                        moved/resized */
 		    client = [mrHandler moveresize_client];
                 }
-
-                menu_can_hide = NO;
-		[[AZMainLoop mainLoop] addTimeout: self 
-			     handler: @selector(menuHideDelayFunc:)
-	                     microseconds: config_menu_hide_delay * 1000
-			     data: nil notify: NULL];
 
                 if (e->type == ButtonPress || e->type == ButtonRelease ||
                     e->type == MotionNotify) 
@@ -1061,102 +1042,6 @@ static AZEventHandler *sharedInstance;
         }
 #endif
     }
-}
-
-- (AZMenuFrame *) findActiveMenu
-{
-    AZMenuFrame *ret = nil;
-    NSArray *visibles = [AZMenuFrame visibleFrames];
-    int i, count = [visibles count];
-
-    for (i = 0; i < count; i++) {
-	ret = [visibles objectAtIndex: i];
-        if ([ret selected])
-            break;
-        ret = nil;
-    }
-    return ret;
-}
-
-- (AZMenuFrame *) findActiveOrLastMenu
-{
-    AZMenuFrame *ret = nil;
-    NSArray *visibles = [AZMenuFrame visibleFrames];
-
-    ret = [self findActiveMenu];
-    if (!ret && [visibles count])
-        ret = [visibles objectAtIndex: 0];
-    return ret;
-}
-
-- (void) handleMenuEvent: (XEvent *) ev
-{
-    AZMenuFrame *f;
-    AZMenuEntryFrame *e;
-
-    switch (ev->type) {
-    case ButtonRelease:
-        if (menu_can_hide) {
-            if ((e = AZMenuEntryFrameUnder(ev->xbutton.x_root,
-                                            ev->xbutton.y_root)))
-		[e execute: ev->xbutton.state time: ev->xbutton.time];
-            else
-		AZMenuFrameHideAll();
-        }
-        break;
-    case MotionNotify:
-        if ((f = AZMenuFrameUnder(ev->xmotion.x_root, ev->xmotion.y_root))) 
-	{
-            if ((e = AZMenuEntryFrameUnder(ev->xmotion.x_root,
-                                            ev->xmotion.y_root)))
-	    {
-		/* XXX menu_frame_entry_move_on_screen(f); */
-		[f selectMenuEntryFrame: e];
-	    }
-        }
-        {
-            AZMenuFrame *a;
-
-            a = [self findActiveMenu];
-            if (a && a != f &&
-                [[[a selected] entry] type] != OB_MENU_ENTRY_TYPE_SUBMENU)
-            {
-		[a selectMenuEntryFrame: nil];
-            }
-        }
-        break;
-    case KeyPress:
-        if (ev->xkey.keycode == ob_keycode(OB_KEY_ESCAPE))
-	    AZMenuFrameHideAll();
-        else if (ev->xkey.keycode == ob_keycode(OB_KEY_RETURN)) {
-            AZMenuFrame *f;
-            if ((f = [self findActiveMenu]))
-		[[f selected] execute: ev->xkey.state time: ev->xkey.time];
-        } else if (ev->xkey.keycode == ob_keycode(OB_KEY_LEFT)) {
-            AZMenuFrame *f;
-            if ((f = [self findActiveOrLastMenu]) && [f parent])
-		[f selectMenuEntryFrame: nil];
-        } else if (ev->xkey.keycode == ob_keycode(OB_KEY_RIGHT)) {
-            AZMenuFrame *f;
-            if ((f = [self findActiveOrLastMenu]) && [f child])
-		[[f child] selectNext];
-        } else if (ev->xkey.keycode == ob_keycode(OB_KEY_UP)) {
-            AZMenuFrame *f;
-            if ((f = [self findActiveOrLastMenu]))
-		[f selectPrevious];
-        } else if (ev->xkey.keycode == ob_keycode(OB_KEY_DOWN)) {
-            AZMenuFrame *f;
-            if ((f = [self findActiveOrLastMenu]))
-		[f selectNext];
-        }
-        break;
-    }
-}
-
-- (BOOL) menuHideDelayFunc: (id) data
-{
-    menu_can_hide = YES;
-    return NO; /* no repeat */
 }
 
 - (Window) getWindow: (XEvent *) e
