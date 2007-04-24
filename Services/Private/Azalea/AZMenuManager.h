@@ -1,9 +1,9 @@
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
-   AZMoveResizeHandler.h for the Azalea window manager
+   AZMenuManager.h for the Azalea window manager
    Copyright (c) 2006        Yen-Ju Chen
 
-   moveresize.h for the Openbox window manager
+   menu.h for the Openbox window manager
    Copyright (c) 2003        Ben Jansens
 
    This program is free software; you can redistribute it and/or modify
@@ -20,40 +20,24 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <X11/Xlib.h>
-#import "misc.h"
+#import "AZMenu.h"
 
 @class AZClient;
-@class AZPopUp;
 
-@interface AZMoveResizeHandler: NSObject
+@interface AZMenuManager: NSObject
 {
-  BOOL moveresize_in_progress;
-  AZClient *moveresize_client;
-
-  /* private */
-  BOOL moving; /* TRUE - moving, FALSE - resizing */
-  int start_x, start_y, start_cx, start_cy, start_cw, start_ch;
-  int cur_x, cur_y;
-  unsigned int button;
-  unsigned int corner;
-  ObCorner lockcorner;
-
-  AZPopUp *popup;
+  NSMutableDictionary *menu_hash;
 }
 
-+ (AZMoveResizeHandler *) defaultHandler;
++ (AZMenuManager *) defaultManager;
 
 - (void) startup: (BOOL) reconfig;
 - (void) shutdown: (BOOL) reconfig;
 
-- (void) startWithClient: (AZClient *) c x: (int) x y: (int) y
-                  button: (unsigned int) button corner: (unsigned int) corner;
-- (void) end: (BOOL) cancel;
-- (void) event: (XEvent *) e;
-
-/* accessories */
-- (BOOL) moveresize_in_progress;
-- (AZClient *) moveresize_client;
+- (AZMenu *) menuWithName: (NSString *) name;
+- (void) removeMenu: (AZMenu *) menu;
+- (void) showMenu: (NSString *) name x: (int) x y: (int) y client: (AZClient *) client;
+- (void) registerMenu: (AZMenu *) menu;
 
 @end
+

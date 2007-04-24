@@ -32,6 +32,8 @@
 #import "AZScreen.h"
 #import "AZEventHandler.h"
 #import "AZFocusManager.h"
+#import "AZMenuFrame.h"
+#import "AZMenuManager.h"
 #import "AZStartupHandler.h"
 #import <AppKit/AppKit.h>
 
@@ -329,9 +331,15 @@ void setup_action_resize(AZAction **a, ObUserAction uact)
          uact == OB_USER_ACTION_MENU_SELECTION);
 }
 
-void setup_action_focus(AZAction **a, ObUserAction uact)
+void setup_action_showmenu(AZAction **a, ObUserAction uact)
 {
-    [(*a) data_pointer]->any.client_action = OB_CLIENT_ACTION_OPTIONAL;
+    [(*a) data_pointer]->showmenu.any.client_action = OB_CLIENT_ACTION_OPTIONAL;
+    /* you cannot call ShowMenu from inside a menu, cuz the menu code makes
+       assumptions that there is only one menu (and submenus) open at
+       a time! */
+    if (uact == OB_USER_ACTION_MENU_SELECTION) {
+        *a = NULL;
+    }
 }
 
 void setup_client_action(AZAction **a, ObUserAction uact)
@@ -394,7 +402,7 @@ ActionString actionstrings[] =
     {
         @"focus",
         action_focus,
-        setup_action_focus
+        setup_client_action
     },
     {
         @"unfocus",
@@ -672,6 +680,11 @@ ActionString actionstrings[] =
         NULL
     },
     {
+        @"showmenu",
+        action_showmenu,
+        setup_action_showmenu
+    },
+    {
         @"sendtotoplayer",
         action_send_to_layer,
         setup_action_top_layer
@@ -801,6 +814,8 @@ ActionString actionstrings[] =
     /* deal with pointers */
     if (func == action_execute || func == action_restart)
         DESTROY(data.execute.path);
+    else if (func == action_showmenu)
+        DESTROY(data.showmenu.name);
     [super dealloc];
 }
 
@@ -813,6 +828,8 @@ ActionString actionstrings[] =
     /* deal with pointers */
     if ([a func] == action_execute || [a func] == action_restart)
         [a data_pointer]->execute.path = [data.execute.path copy];
+    else if ([a func] == action_showmenu)
+        [a data_pointer]->showmenu.name = [data.showmenu.name copy];
 
     return a;
 }
@@ -830,6 +847,9 @@ AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
                 if ((n = parse_find_node("execute", node->xmlChildrenNode))) {
                     ASSIGN([act data_pointer]->execute.path, ([parse_string(doc, n) stringByExpandingTildeInPath]));
                 }
+            } else if ([act func] == action_showmenu) {
+                if ((n = parse_find_node("menu", node->xmlChildrenNode)))
+                    ASSIGN([act data_pointer]->showmenu.name, parse_string(doc, n));
             } else if ([act func] == action_move_relative_horz ||
                        [act func] == action_move_relative_vert ||
                        [act func] == action_resize_relative_horz ||
@@ -889,7 +909,7 @@ AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
                     [act data_pointer]->cycle.opaque = parse_bool(doc, n);
             } else if ([act func] == action_directional_focus) {
                 if ((n = parse_find_node("dialog", node->xmlChildrenNode)))
-                    [act data_pointer]->interdiraction.dialog = parse_bool(doc, n);
+                    [act data_pointer]->cycle.dialog = parse_bool(doc, n);
             } else if ([act func] == action_raise ||
                        [act func] == action_lower ||
                        [act func] == action_raiselower ||
@@ -956,7 +976,7 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
            it won't work right unless we XUngrabKeyboard first,
            even though we grabbed the key/button Asychronously.
            e.g. "gnome-panel-control --main-menu" */
-	grab_keyboard(NO);
+        XUngrabKeyboard(ob_display, event_curtime);
     }
 
     count = [acts count];
@@ -1055,19 +1075,12 @@ void action_activate(union ActionData *data)
 
 void action_focus(union ActionData *data)
 {
-  if (data->client.any.c) {
     /* similar to the openbox dock for dockapps, don't let user actions give
        focus to 3rd-party docks (panels) either (unless they ask for it
        themselves). */
     if ([data->client.any.c type] != OB_CLIENT_TYPE_DOCK) {
         [data->client.any.c focus];
     }
-  } else {
-    /* focus action on something other than a client, make keybindings
-       work for this openbox instance, but don't focus any specific client
-     */
-   [[AZFocusManager defaultManager] focusNothing];
-  }
 }
 
 void action_unfocus (union ActionData *data)
@@ -1538,6 +1551,15 @@ void action_restart(union ActionData *data)
 void action_exit(union ActionData *data)
 {
     ob_exit(0);
+}
+
+void action_showmenu(union ActionData *data)
+{
+    if (data->showmenu.name) {
+	[[AZMenuManager defaultManager] showMenu: data->showmenu.name
+		x: data->any.x y: data->any.y
+		client: data->showmenu.any.c];
+    }
 }
 
 void action_cycle_windows(union ActionData *data)

@@ -78,7 +78,7 @@ static AZFocusManager *sharedInstance;
 		object: nil];
 
         /* start with nothing focused */
-	[self focusNothing];
+	[self setClient: nil];
 
         focus_indicator.top = [[AZInternalWindow alloc] init];
         focus_indicator.left = [[AZInternalWindow alloc] init];
@@ -155,11 +155,26 @@ static AZFocusManager *sharedInstance;
 - (void) setClient: (AZClient *) client
 {
     Window active;
+    AZClient *old;
     AZScreen *screen = [AZScreen defaultScreen];
+
+#ifdef DEBUG_FOCUS
+    AZDebug("focus_set_client 0x%lx\n", client ? [client window] : 0);
+#endif
 
     /* uninstall the old colormap, and install the new one */
     [screen installColormap: focus_client install: NO];
     [screen installColormap: client install: YES];
+
+    if (client == nil) {
+#ifdef DEBUG_FOCUS
+        AZDebug("actively focusing NONWINDOW\n");
+#endif
+        /* when nothing will be focused, send focus to the backup target */
+        XSetInputFocus(ob_display, [screen supportXWindow], RevertToNone,
+                       event_curtime);
+        XSync(ob_display, NO);
+    }
 
     /* in the middle of cycling..? kill it. CurrentTime is fine, time won't
        be used.
@@ -168,20 +183,22 @@ static AZFocusManager *sharedInstance;
 	[self cycleForward: YES linear: YES interactive: YES
 	      dialog: YES done: YES cancel: YES opaque: NO];
 
+    old = focus_client;
     focus_client = client;
 
     /* move to the top of the list */
-    if (client != nil) {
+    if (client != nil)
 	[self pushToTop: client];
-        /* remove hiliting from the window when it gets focused */
-	[client hilite: NO];
-    }
 
     /* set the NET_ACTIVE_WINDOW hint, but preserve it on shutdown */
     if (ob_state() != OB_STATE_EXITING) {
         active = client ? [client window] : None;
         PROP_SET32(RootWindow(ob_display, ob_screen),
                    net_active_window, window, active);
+
+        /* remove hiliting from the window when it gets focused */
+        if (client != nil)
+            [client hilite: NO];
     }
 }
 
@@ -190,7 +207,7 @@ static AZFocusManager *sharedInstance;
     AZClient *desktop = nil;
     AZScreen *screen = [AZScreen defaultScreen];
 
-    if (allow_refocus && old && [old desktop] == DESKTOP_ALL && [old normal])
+    if (allow_refocus && old && [old desktop] == DESKTOP_ALL)
         return old;
 
     int i;
@@ -211,16 +228,13 @@ static AZFocusManager *sharedInstance;
                a splashscreen or a desktop window (save the desktop as a
                backup fallback though)
             */
-            if ([c canFocus]  && ![c iconic])
+            if ([c canFocus] && [c desktop] == [screen desktop] && ![c iconic])
             {
-		AZScreen *screen = [AZScreen defaultScreen];
-                if ([c desktop] == [screen desktop] && [c normal]) 
+                if ([c normal]) 
 		{
                     return c;
                 } 
-		else if (([c desktop] == [screen desktop]||
-			  [c desktop] == DESKTOP_ALL) &&
-                         [c type] == OB_CLIENT_TYPE_DESKTOP && desktop == NULL)
+		else if ([c type] == OB_CLIENT_TYPE_DESKTOP && !desktop)
 		{
                     desktop = c;
 		}
@@ -237,32 +251,19 @@ static AZFocusManager *sharedInstance;
 - (void) fallback: (BOOL) allow_refocus
 {
     AZClient *new;
-    AZClient *old = focus_client;
+    AZClient *old;
+
+    /* save this before moving focus away to nothing */
+    old = focus_client;
 
     /* unfocus any focused clients.. they can be focused by Pointer events
        and such, and then when I try focus them, I won't get a FocusIn event
        at all for them.
     */
-    [self focusNothing];
+    [self setClient: nil];
 
     if ((new = [self fallbackTarget: allow_refocus old: old]))
 	[new focus];
-}
-
-- (void) focusNothing
-{
-    AZScreen *screen = [AZScreen defaultScreen];
-    /* Install our own colormap */
-    if (focus_client != nil) {
-	[screen installColormap: focus_client install: NO];
-	[screen installColormap: nil install: YES];
-    }
-
-    focus_client = nil;
-
-    /* when nothing will be focused, send focus to the backup target */
-    XSetInputFocus(ob_display, [screen supportXWindow], RevertToPointerRoot,
-                   event_curtime);
 }
 
 - (void) cycleDrawIndicator
@@ -272,8 +273,6 @@ static AZFocusManager *sharedInstance;
         XUnmapWindow(ob_display, [focus_indicator.left window]);
         XUnmapWindow(ob_display, [focus_indicator.right window]);
         XUnmapWindow(ob_display, [focus_indicator.bottom window]);
-        /* kill enter events cause by this unmapping */
-        [[AZEventHandler defaultHandler] ignoreQueuedEnters];
     } else {
         int x, y, w, h;
         int wt, wl, wr, wb;
@@ -738,8 +737,10 @@ done_cycle:
 
 /* accessories */
 - (void) set_focus_client: (AZClient *) f { focus_client = f; }
+- (void) set_focus_hilite: (AZClient *) f { focus_hilite = f; }
 - (void) set_focus_cycle_target: (AZClient *) f { focus_cycle_target = f; }
 - (AZClient *) focus_client { return focus_client; }
+- (AZClient *) focus_hilite { return focus_hilite; }
 - (AZClient *) focus_cycle_target { return focus_cycle_target; }
 
 - (NSArray *) focus_order { return focus_order; }

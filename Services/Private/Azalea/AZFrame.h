@@ -74,13 +74,15 @@ typedef enum {
 
   BOOL visible;
 
+  /*! Whether the window is obscured at all or fully visible. */
+  BOOL obscured;
+
   unsigned int decorations;
   BOOL max_horz;
 
   Window    window;
   Window    plate;
 
-  Window    inner; /*!< The window for drawing the inner client border */
   Window    title;
   Window    label;
   Window    max;
@@ -148,7 +150,6 @@ typedef enum {
 
 - (void) adjustTheme;
 - (void) adjustShape;
-- (void) adjustClientArea;
 - (void) adjustState;
 - (void) adjustFocusWithHilite: (BOOL) hilite;
 - (void) adjustTitle;
@@ -175,7 +176,6 @@ typedef enum {
 - (void) setClient: (AZClient *) client;
 
 - (Window) window;
-- (Window) inner;
 - (Window) plate;
 - (Window) title;
 - (Window) label;
@@ -214,9 +214,11 @@ typedef enum {
 - (void) set_iconify_hover: (BOOL) b;
 - (void) set_focused: (BOOL) b;
 
+- (BOOL) obscured;
 - (BOOL) visible;
 - (unsigned int) decorations;
 - (BOOL) max_horz;
+- (void) set_obscured: (BOOL) b;
 
 - (Strut) size;
 - (Rect) area;

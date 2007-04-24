@@ -28,7 +28,6 @@
 #import "AZEventHandler.h"
 #import "AZStartupHandler.h"
 #import "AZFocusManager.h"
-#import "AZDebug.h"
 #import "prop.h"
 #import "config.h"
 #import "openbox.h"
@@ -309,10 +308,8 @@
                                     (resized && config_resize_redraw))));
 
     /* if the client is enlarging, then resize the client before the frame */
-    if (send_resize_client && user && (w > oldw || h > oldh)) {
+    if (send_resize_client && user && (w > oldw || h > oldh))
         XResizeWindow(ob_display, window, MAX(w, oldw), MAX(h, oldh));
-	[frame adjustClientArea];
-    }
 
     /* find the frame's dimensions and move/resize it */
     if (decorations != fdecor || max_horz != fhorz)
@@ -358,10 +355,8 @@
     }
 
     /* if the client is shrinking, then resize the frame before the client */
-    if (send_resize_client && (!user || (w <= oldw || h <= oldh))) {
-	[frame adjustClientArea];
+    if (send_resize_client && (!user || (w <= oldw || h <= oldh)))
         XResizeWindow(ob_display, window, w, h);
-    }
 
     XFlush(ob_display);
 }
@@ -926,12 +921,8 @@
     }
 
     if ([oself can_focus]) {
-        /* This can cause a BadMatch error with CurrentTime, or if an app
-           passed in a bad time for _NET_WM_ACTIVE_WINDOW. */
-	AZXErrorSetIgnore(YES);
         XSetInputFocus(ob_display, [oself window], RevertToPointerRoot,
                        event_curtime);
-	AZXErrorSetIgnore(NO);
     }
 
     if ([oself focus_notify]) {
@@ -962,17 +953,26 @@
     return YES;
 }
 
+/* Used when the current client is closed or otherwise hidden, focus_last will
+   then prevent focus from going to the mouse pointer
+*/
+- (void) unfocus;
+{
+    if ([[AZFocusManager defaultManager] focus_client] == self) 
+    {
+	[[AZFocusManager defaultManager] fallback: NO];
+    }
+}
+
 - (void) activateHere: (BOOL) here user: (BOOL) user 
 {
-    AZFocusManager *fManager = [AZFocusManager defaultManager];
-    unsigned int last_time = [fManager focus_client] ? [[fManager focus_client] user_time] : CurrentTime;
     AZScreen *screen = [AZScreen defaultScreen];
     /* XXX do some stuff here if user is false to determine if we really want
        to activate it or not (a parent or group member is currently
        active)?
     */
-    if (!user && event_curtime && last_time &&
-        !event_time_after(event_curtime, last_time))
+    if (!user && event_curtime &&
+        !event_time_after(event_curtime, client_last_user_time))
     {
       [self hilite: YES];
     }
@@ -1162,46 +1162,13 @@
             if (proto[i] == prop_atoms.wm_delete_window) {
                 /* this means we can request the window to close */
 		delete_window = YES;
-            } else if (proto[i] == prop_atoms.wm_take_focus) {
+            } else if (proto[i] == prop_atoms.wm_take_focus)
                 /* if this protocol is requested, then the window will be
                    notified whenever we want it to receive focus */
 		focus_notify = YES;
-#ifdef SYNC
-            } else if (proto[i] == prop_atoms.net_wm_sync_request)
-                /* if this protocol is requested, then resizing the
-                   window will be synchronized between the frame and the
-                   client */
-		sync_request = YES;
-#endif
-            }
         }
         free(proto);
     }
-}
-
-#ifdef SYNC
-- (void) updateSyncRequestCounter
-{
-    unsigned int32 i;
-
-    if (PROP_GET32(window, net_wm_sync_request_counter, cardinal, &i)) {
-        sync_counter = i;
-    } else
-        sync_counter = None;
-}
-#endif
-
-- (void) getColormap
-{
-    XWindowAttributes wa;
-
-    if (XGetWindowAttributes(ob_display, window, &wa))
-	[self updateColormap: wa.colormap];
-}
-
-- (void) updateColormap: (Colormap) cmp
-{
-    colormap = cmp;
 }
 
 - (void) updateNormalHints
@@ -1351,7 +1318,6 @@
 - (void) updateTitle
 {
     NSString *s = nil;
-    NSString *visible = nil;
      
     /* try netwm */
     if (PROP_GETS(window, net_wm_name, utf8, &s)) {
@@ -1374,13 +1340,7 @@
       }
     }
 
-    if (client_machine) {
-	ASSIGN(visible, ([NSString stringWithFormat: @"%@ (%@)", title, client_machine]));
-    } else
-	ASSIGN(visible, title);
-
-    PROP_SETS(window, net_wm_visible_name, (char*)[visible UTF8String]);
-    ASSIGN(title, visible);
+    PROP_SETS(window, net_wm_visible_name, (char*)[title UTF8String]);
 
     if (frame)
 	[frame adjustTitle];
@@ -1571,34 +1531,26 @@
 	[frame adjustIcon];
 }
 
-- (void) updateUserTime
+- (void) updateUserTime: (BOOL) new_event;
 {
     unsigned long time;
 
     if (PROP_GET32([self window], net_wm_user_time, cardinal, &time)) {
+        user_time = time;
         /* we set this every time, not just when it grows, because in practice
            sometimes time goes backwards! (ntpdate.. yay....) so.. if it goes
            backward we don't want all windows to stop focusing. we'll just
            assume noone is setting times older than the last one, cuz that
            would be pretty stupid anyways
+           However! This is called when a window is mapped to get its user time
+           but it's an old number, it's not changing it from new user
+           interaction, so in that case, don't change the last user time.
         */
-	user_time = time;
+        if (new_event)
+	{
+	    client_last_user_time = time;
+	}
     }
-}
-
-- (void) getClientMachine
-{
-  char *data = NULL;
-  char localhost[128];
-
-  DESTROY(client_machine);
-
-  if (PROP_GETS(window, wm_client_machine, locale, &data)) {
-        gethostname(localhost, 127);
-        localhost[127] = '\0';
-        if (strcmp(localhost, data))
-	    ASSIGN(client_machine, [NSString stringWithCString: data]);
-  }
 }
 
 - (void) setupDecorAndFunctions
@@ -1939,6 +1891,104 @@
     return nil;
 }
 
+- (AZClient *) findDirectional: (ObDirection) dir
+{
+    /* this be mostly ripped from fvwm */
+    int my_cx, my_cy, his_cx, his_cy;
+    int offset = 0;
+    int distance = 0;
+    int score, best_score;
+    AZClient *best_client = nil, *cur = nil;
+    AZClientManager *cManager = [AZClientManager defaultManager];
+
+    if ([cManager count] == 0) return NULL;
+
+    /* first, find the centre coords of the currently focused window */
+    my_cx = [frame area].x + [frame area].width / 2;
+    my_cy = [frame area].y + [frame area].height / 2;
+
+    best_score = -1;
+    best_client = NULL;
+
+    int i, count = [cManager count];
+    for (i = 0; i < count; i++) {
+	cur = [cManager clientAtIndex: i];
+
+        /* the currently selected window isn't interesting */
+        if(cur == self)
+            continue;
+        if (![cur normal])
+            continue;
+        /* using c->desktop instead of screen_desktop doesn't work if the
+         * current window was omnipresent, hope this doesn't have any other
+         * side effects */
+        if([[AZScreen defaultScreen] desktop] != [cur desktop] && [cur desktop] != DESKTOP_ALL)
+            continue;
+        if([cur iconic])
+            continue;
+        if(!([cur focusTarget] == cur && [cur can_focus]))
+            continue;
+
+        /* find the centre coords of this window, from the
+         * currently focused window's point of view */
+        his_cx = ([[cur frame] area].x - my_cx) + [[cur frame] area].width / 2;
+        his_cy = ([[cur frame] area].y - my_cy) + [[cur frame] area].height / 2;
+
+        if(dir == OB_DIRECTION_NORTHEAST || dir == OB_DIRECTION_SOUTHEAST ||
+           dir == OB_DIRECTION_SOUTHWEST || dir == OB_DIRECTION_NORTHWEST) {
+            int tx;
+            /* Rotate the diagonals 45 degrees counterclockwise.
+             * To do this, multiply the matrix /+h +h\ with the
+             * vector (x y).                   \-h +h/
+             * h = sqrt(0.5). We can set h := 1 since absolute
+             * distance doesn't matter here. */
+            tx = his_cx + his_cy;
+            his_cy = -his_cx + his_cy;
+            his_cx = tx;
+        }
+
+        switch(dir) {
+        case OB_DIRECTION_NORTH:
+        case OB_DIRECTION_SOUTH:
+        case OB_DIRECTION_NORTHEAST:
+        case OB_DIRECTION_SOUTHWEST:
+            offset = (his_cx < 0) ? -his_cx : his_cx;
+            distance = ((dir == OB_DIRECTION_NORTH ||
+                         dir == OB_DIRECTION_NORTHEAST) ?
+                        -his_cy : his_cy);
+            break;
+        case OB_DIRECTION_EAST:
+        case OB_DIRECTION_WEST:
+        case OB_DIRECTION_SOUTHEAST:
+        case OB_DIRECTION_NORTHWEST:
+            offset = (his_cy < 0) ? -his_cy : his_cy;
+            distance = ((dir == OB_DIRECTION_WEST ||
+                         dir == OB_DIRECTION_NORTHWEST) ?
+                        -his_cx : his_cx);
+            break;
+        }
+
+        /* the target must be in the requested direction */
+        if(distance <= 0)
+            continue;
+
+        /* Calculate score for this window.  The smaller the better. */
+        score = distance + offset;
+
+        /* windows more than 45 degrees off the direction are
+         * heavily penalized and will only be chosen if nothing
+         * else within a million pixels */
+        if(offset > distance)
+            score += 1000000;
+
+        if(best_score == -1 || score < best_score)
+            best_client = cur,
+                best_score = score;
+    }
+
+    return best_client;
+}
+
 /* finds the nearest edge in the given direction from the current client
  * note to oself: the edge is the -frame- edge (the actual one), not the
  * client edge.
@@ -2216,7 +2266,7 @@
     while ([t_for transient_for] && [t_for transient_for] != OB_TRAN_GROUP)
       t_for = [t_for transient_for];
 
-    if (([t_for transient_for] == nil) && [t_for normal])
+    if ([t_for transient_for] == nil)
     {
         [ret addObject: t_for]; 
     }
@@ -2242,11 +2292,8 @@
 {
     /* move up the direct transient chain as far as possible */
     AZClient *t_for = self;
-    while ([t_for transient_for] && [t_for transient_for] != OB_TRAN_GROUP &&
-           [self normal])
-    {
+    while ([t_for transient_for] && [t_for transient_for] != OB_TRAN_GROUP)
       t_for = [t_for transient_for];
-    }
 
     return t_for;
 }
@@ -2325,16 +2372,11 @@
        (min/max sizes), so we're ready to set up the decorations/functions */
     [self setupDecorAndFunctions];
   
-#ifdef SYNC
-    [self updateSyncRequestCounter];
-#endif
-    [self getClientMachine];
-    [self getColormap];
     [self updateTitle];
     [self updateSmClientId];
     [self updateStrut];
     [self updateIcons];
-    [self updateUserTime];
+    [self updateUserTime: NO];
 }
 
 - (void) restoreSessionState
@@ -2501,9 +2543,6 @@
     oy = area.y;
     area.x = x;
     area.y = y;
-
-    /* set the desktop hint, to make sure that it always exists */
-    PROP_SET32(window, net_wm_desktop, cardinal, desktop);
 
     /* these are in a carefully crafted order.. */
 
@@ -2756,8 +2795,6 @@
 - (void) set_user_time: (Time) time { user_time = time; }
 - (Time) user_time { return user_time; }
 
-- (Colormap) colormap { return colormap; }
-
 - (unsigned int) decorations { return decorations; }
 - (void) set_decorations: (unsigned int) i { decorations = i; }
 - (BOOL) undecorated { return undecorated; }
@@ -2788,7 +2825,6 @@
   DESTROY(name);
   DESTROY(class);
   DESTROY(role);
-  DESTROY(client_machine);
   [super dealloc];
 }
 
@@ -2976,6 +3012,10 @@ AZClient *AZUnderPointer()
                 /* defaults to the current desktop */
                 desktop = [screen desktop];
         }
+    }
+    if (desktop != d) {
+        /* set the desktop hint, to make sure that it always exists */
+        PROP_SET32(window, net_wm_desktop, cardinal, desktop);
     }
 }
 

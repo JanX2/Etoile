@@ -54,11 +54,15 @@ int AZXErrorHandler(Display *d, XErrorEvent *e)
 #ifdef DEBUG_AZALEA
     if (!xerror_ignore) {
         char errtxt[128];
-        XGetErrorText(d, e->error_code, errtxt, 127);
-        if (e->error_code == BadWindow)
-            /*g_warning("X Error: %s", errtxt)*/;
-        else
-            g_error("X Error: %s", errtxt);
+
+        /*if (e->error_code != BadWindow) */
+        {
+            XGetErrorText(d, e->error_code, errtxt, 127);
+            if (e->error_code == BadWindow)
+                /*g_warning("X Error: %s", errtxt)*/;
+            else
+                g_error("X Error: %s", errtxt);
+        }
     }
 #else
     (void)d; (void)e;

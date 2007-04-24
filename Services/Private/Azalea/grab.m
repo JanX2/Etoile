@@ -73,7 +73,7 @@ BOOL grab_keyboard(BOOL grab)
     if (grab) {
         if (kgrabs++ == 0) {
             ret = XGrabKeyboard(ob_display, RootWindow(ob_display, ob_screen),
-                                False, GrabModeAsync, GrabModeAsync,
+                                NO, GrabModeAsync, GrabModeAsync,
                                 event_curtime) == Success;
             if (!ret)
                 --kgrabs;
@@ -92,7 +92,7 @@ BOOL grab_keyboard(BOOL grab)
     return ret;
 }
 
-BOOL grab_pointer(BOOL grab, BOOL owner_events, ObCursor cur)
+BOOL grab_pointer(BOOL grab, ObCursor cur)
 {
     BOOL ret = NO;
 
@@ -100,9 +100,34 @@ BOOL grab_pointer(BOOL grab, BOOL owner_events, ObCursor cur)
         if (pgrabs++ == 0) {
             ret = XGrabPointer(ob_display, 
 			       [[AZScreen defaultScreen] supportXWindow],
-                               owner_events, GRAB_PTR_MASK, GrabModeAsync,
+                               False, GRAB_PTR_MASK, GrabModeAsync,
                                GrabModeAsync, None,
                                ob_cursor(cur), event_curtime) == Success;
+            if (!ret)
+                --pgrabs;
+            else
+                grab_time = event_curtime;
+        } else
+            ret = YES;
+    } else if (pgrabs > 0) {
+        if (--pgrabs == 0) {
+            XUngrabPointer(ob_display, ungrab_time());
+        }
+        ret = YES;
+    }
+    return ret;
+}
+
+BOOL grab_pointer_window(BOOL grab, ObCursor cur, Window win)
+{
+    BOOL ret = NO;
+
+    if (grab) {
+        if (pgrabs++ == 0) {
+            ret = XGrabPointer(ob_display, win, False, GRAB_PTR_MASK,
+                               GrabModeAsync, GrabModeAsync, None,
+                               ob_cursor(cur),
+                               event_curtime) == Success;
             if (!ret)
                 --pgrabs;
             else
@@ -161,7 +186,8 @@ void grab_shutdown(BOOL reconfig)
     if (reconfig) return;
 
     while (grab_keyboard(NO));
-    while (grab_pointer(NO, NO, OB_CURSOR_NONE));    
+    while (grab_pointer(NO, OB_CURSOR_NONE));
+    while (grab_pointer_window(NO, OB_CURSOR_NONE, None));
     while (grab_server(NO));
 }
 
@@ -169,7 +195,7 @@ void grab_button_full(unsigned int button, unsigned int state, Window win, unsig
 {
     unsigned int i;
 
-    AZXErrorSetIgnore(YES); /* can get BadAccess from these */
+    AZXErrorSetIgnore(YES); /* can get BadAccess' from these */
     xerror_occured = NO;
     for (i = 0; i < MASK_LIST_SIZE; ++i)
         XGrabButton(ob_display, button, state | mask_list[i], win, NO, mask,

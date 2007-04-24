@@ -160,14 +160,14 @@ static AZMoveResizeHandler *sharedInstance = nil;
     else
 	NSAssert(0, @"Should not reach here");
 
-    grab_pointer(YES, NO, cur);
+    grab_pointer(YES, cur);
     grab_keyboard(YES);
 }
 
 - (void) end: (BOOL) cancel
 {
     grab_keyboard(NO);
-    grab_pointer(NO, NO, OB_CURSOR_NONE);
+    grab_pointer(NO, OB_CURSOR_NONE);
 
     [popup hide];
 

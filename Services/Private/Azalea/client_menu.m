@@ -62,6 +62,7 @@ enum {
     AZMenuEntry *e;
     int i, count;
 
+
     [frame set_show_title: NO];
 
     count = [[menu entries] count];
@@ -203,7 +204,12 @@ void client_menu_startup()
     /* Client menu */
     AZClientMenu *menu = [[AZClientMenu alloc] initWithName: CLIENT_MENU_NAME title: @"Client menu"];
 
-    [menu addSubmenuMenuEntry: CLIENT_SEND_TO submenu: SEND_TO_MENU_NAME];
+    e = [menu addSubmenuMenuEntry: CLIENT_SEND_TO submenu: SEND_TO_MENU_NAME];
+    [(AZSubmenuMenuEntry*)e set_mask: ob_rr_theme->desk_mask];
+    [(AZSubmenuMenuEntry*)e set_mask_normal_color: ob_rr_theme->menu_color];
+    [(AZSubmenuMenuEntry*)e set_mask_disabled_color: ob_rr_theme->menu_disabled_color];
+    [(AZSubmenuMenuEntry*)e set_mask_selected_color: ob_rr_theme->menu_selected_color];
+
     [menu addSubmenuMenuEntry: CLIENT_LAYER submenu: LAYER_MENU_NAME];
 
     act = [AZAction actionWithName: @"Iconify" userAction: OB_USER_ACTION_MENU_SELECTION];

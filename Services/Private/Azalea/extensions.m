@@ -31,8 +31,6 @@ BOOL extensions_xinerama  = NO;
 int     extensions_xinerama_event_basep;
 BOOL extensions_randr     = NO;
 int     extensions_randr_event_basep;
-BOOL extensions_sync      = NO;
-int     extensions_sync_event_basep;
 
 void extensions_query_all()
 {
@@ -43,43 +41,24 @@ void extensions_query_all()
     extensions_xkb =
         XkbQueryExtension(ob_display, &junk, &extensions_xkb_event_basep,
                           &junk, NULL, NULL);
-    if (!extensions_xkb)
-        NSLog(@"XKB extension is not present on the server");
 #endif
 
 #ifdef SHAPE
     extensions_shape =
         XShapeQueryExtension(ob_display, &extensions_shape_event_basep,
                              &junk);
-    if (!extensions_shape)
-        NSLog(@"X Shape extension is not present on the server");
-
 #endif
 
 #ifdef XINERAMA
     extensions_xinerama =
         XineramaQueryExtension(ob_display, &extensions_xinerama_event_basep,
                                &junk) && XineramaIsActive(ob_display);
-    if (!extensions_xinerama)
-        NSLog(@"Xinerama extension is not present on the server");
 #endif
 
 #ifdef XRANDR
     extensions_randr =
         XRRQueryExtension(ob_display, &extensions_randr_event_basep,
                           &junk);
-    if (!extensions_randr)
-        NSLog("XRandR extension is not present on the server");
-#endif
-
-#ifdef SYNC
-    extensions_sync =
-        XSyncQueryExtension(ob_display, &extensions_sync_event_basep,
-                            &junk) &&
-        XSyncInitialize(ob_display, &junk, &junk);
-    if (!extensions_sync)
-        NSLog("X Sync extension is not present on the server or is an "
-                 "incompatible version");
 #endif
 }
 

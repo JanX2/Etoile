@@ -36,9 +36,6 @@
 #ifdef    XRANDR
 #include <X11/extensions/Xrandr.h>
 #endif
-#ifdef    SYNC
-#include <X11/extensions/sync.h>
-#endif
 
 /*! Does the display have the XKB extension? */
 extern BOOL extensions_xkb;
@@ -59,11 +56,6 @@ extern int extensions_xinerama_event_basep;
 extern BOOL extensions_randr;
 /*! Base for events for the Randr extension */
 extern int extensions_randr_event_basep;
-
-/*! Does the display have the Sync extension? */
-extern BOOL extensions_sync;
-/*! Base for events for the Sync extension */
-extern int extensions_sync_event_basep;
 
 void extensions_query_all();
 

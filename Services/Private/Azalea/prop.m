@@ -53,7 +53,6 @@ void prop_startup()
     CREATE(wm_icon_name, "WM_ICON_NAME");
     CREATE(wm_class, "WM_CLASS");
     CREATE(wm_window_role, "WM_WINDOW_ROLE");
-    CREATE(wm_client_machine, "WM_CLIENT_MACHINE");
     CREATE(motif_wm_hints, "_MOTIF_WM_HINTS");
 
     CREATE(sm_client_id, "SM_CLIENT_ID");
@@ -96,10 +95,6 @@ void prop_startup()
     CREATE(net_frame_extents, "_NET_FRAME_EXTENTS");
 
 /*   CREATE(net_wm_ping, "_NET_WM_PING"); */
-#ifdef SYNC
-    CREATE(net_wm_sync_request, "_NET_WM_SYNC_REQUEST");
-    CREATE(net_wm_sync_request_counter, "_NET_WM_SYNC_REQUEST_COUNTER");
-#endif
   
     CREATE(net_wm_window_type_desktop, "_NET_WM_WINDOW_TYPE_DESKTOP");
     CREATE(net_wm_window_type_dock, "_NET_WM_WINDOW_TYPE_DOCK");
@@ -127,6 +122,7 @@ void prop_startup()
     CREATE(net_wm_action_resize, "_NET_WM_ACTION_RESIZE");
     CREATE(net_wm_action_minimize, "_NET_WM_ACTION_MINIMIZE");
     CREATE(net_wm_action_shade, "_NET_WM_ACTION_SHADE");
+    CREATE(net_wm_action_stick, "_NET_WM_ACTION_STICK");
     CREATE(net_wm_action_maximize_horz, "_NET_WM_ACTION_MAXIMIZE_HORZ");
     CREATE(net_wm_action_maximize_vert, "_NET_WM_ACTION_MAXIMIZE_VERT");
     CREATE(net_wm_action_fullscreen, "_NET_WM_ACTION_FULLSCREEN");
@@ -374,7 +370,7 @@ void prop_set_array32(Window win, Atom prop, Atom type, unsigned long *val,
 void prop_set_string_utf8(Window win, Atom prop, const char *val)
 {
     XChangeProperty(ob_display, win, prop, prop_atoms.utf8, 8,
-                    PropModeReplace, (const unsigned char*)val, strlen(val));
+                    PropModeReplace, (unsigned char*)val, strlen(val));
 }
 
 void prop_set_strings_utf8(Window win, Atom prop, NSArray *strs)

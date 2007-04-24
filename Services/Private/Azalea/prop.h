@@ -48,7 +48,6 @@ typedef struct Atoms {
     Atom wm_icon_name;
     Atom wm_class;
     Atom wm_window_role;
-    Atom wm_client_machine;
     Atom motif_wm_hints;
 
     /* SM atoms */
@@ -96,10 +95,6 @@ typedef struct Atoms {
     Atom net_frame_extents;
     /* application protocols */
 /*  Atom   Atom net_wm_ping; */
-#ifdef SYNC
-    Atom net_wm_sync_request;
-    Atom net_wm_sync_request_counter;
-#endif
 
     Atom net_wm_window_type_desktop;
     Atom net_wm_window_type_dock;
@@ -127,6 +122,7 @@ typedef struct Atoms {
     Atom net_wm_action_resize;
     Atom net_wm_action_minimize;
     Atom net_wm_action_shade;
+    Atom net_wm_action_stick;
     Atom net_wm_action_maximize_horz;
     Atom net_wm_action_maximize_vert;
     Atom net_wm_action_fullscreen;
