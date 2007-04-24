@@ -180,9 +180,13 @@ static AZStacking *sharedInstance;
     }
     if (it_below == nil)
     {
-        /* out of ideas, just add it normally... */
-        [self addWindow: win];
-    } else {
+        /* there is no window to put this directly above, so put it at the
+           bottom */
+	[stacking_list insertObject: win atIndex: 0];
+	[self lowerWindow: win];
+    } 
+    else 
+    {
         /* make sure it's not in the wrong layer though ! */
 	for (; index < [stacking_list count]; index++)
  	{
@@ -409,34 +413,37 @@ static AZStacking *sharedInstance;
            this window, or it won't move */
         NSMutableArray *top = [[NSMutableArray alloc] initWithArray: [selected searchAllTopParents]];
         NSMutableArray *top_reorder = [[NSMutableArray alloc] init];
-
-        /* go thru stacking list backwards so we can use g_slist_prepend */
-	int i = [stacking_list count]-1;
-        for (; (i > -1) && ([top count] > 0); i--)
-	{
-	  id <AZWindow> it = [self windowAtIndex: i];
-	  if ([top containsObject: it])
+        /* that is, if it has any parents */
+        if (!([top count] == 1 && [top objectAtIndex: 0] == selected))
+        {
+          /* go thru stacking list backwards so we can use g_slist_prepend */
+	  int i = [stacking_list count]-1;
+          for (; (i > -1) && ([top count] > 0); i--)
 	  {
-	    if ([top_reorder count] > 0)
- 	      [top_reorder insertObject: it atIndex: 0];
-	    else 
- 	      [top_reorder addObject: it];
-	    [top removeObject: it];
+	    id <AZWindow> it = [self windowAtIndex: i];
+	    if ([top containsObject: it])
+	    {
+	      if ([top_reorder count] > 0)
+ 	        [top_reorder insertObject: it atIndex: 0];
+	      else 
+ 	        [top_reorder addObject: it];
+	      [top removeObject: it];
+	    }
 	  }
-	}
 
-	if ([top count] > 0)
-	  NSLog(@"Internal Error: top parents are left");
+	  if ([top count] > 0)
+	    NSLog(@"Internal Error: top parents are left");
 
-        /* call restack for each of these to lower them */
-	for (i = 0; i < [top_reorder count]; i++)
-	{
-	  [self restackWindows: [top_reorder objectAtIndex: i]
-	                 raise: raise];
-	}
-	DESTROY(top_reorder);
-	DESTROY(top);
-	return;
+          /* call restack for each of these to lower them */
+	  for (i = 0; i < [top_reorder count]; i++)
+	  {
+	    [self restackWindows: [top_reorder objectAtIndex: i]
+	                   raise: raise];
+	  }
+	  DESTROY(top_reorder);
+	  DESTROY(top);
+	  return;
+        }
     }
 
     /* remove first so we can't run into ourself */

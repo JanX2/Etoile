@@ -121,6 +121,9 @@ typedef enum
     NSString *title;
     /*! Window title when iconified */
     NSString *icon_title;
+    /*! Hostname of machine running the client */
+    NSString *client_machine;
+
 
     /*! The application that created the window */
     NSString *name;
@@ -196,6 +199,9 @@ typedef enum
     /*! Window decoration and functionality hints */
     ObMwmHints mwmhints;
 
+    /*! The client's specified colormap */
+    Colormap colormap;
+
     /*! GNUstep attributes */
     GNUstepWMAttributes gnustep_attr;
 
@@ -224,6 +230,15 @@ typedef enum
     BOOL can_focus;
     /*! Notify the window when it receives focus? */
     BOOL focus_notify;
+
+#ifdef SYNC
+    /*! The client wants to sync during resizes */
+    BOOL sync_request;
+    /*! The XSync counter used for synchronizing during resizes */
+    unsigned int sync_counter;
+    /*! The value we're waiting for the counter to reach */
+    unsigned long sync_counter_value;
+#endif
 
     /*! The window uses shape extension to be non-rectangular? */
     BOOL shaped;
@@ -494,6 +509,13 @@ typedef enum
     change */
 - (void) updateProtocols;
 
+#ifdef SYNC
+/*! Updates the window's sync request counter for resizes */
+- (void) updateSyncRequestCounter;
+#endif
+/*! Updates the window's colormap */
+- (void) updateColormap: (Colormap) colormap;
+
 /*! Updates the WMNormalHints and adjusts things if they change */
 - (void) updateNormalHints;
 
@@ -517,7 +539,7 @@ typedef enum
 - (void) updateIcons;
 
 /*! Updates the window's user time */
-- (void) updateUserTime: (BOOL) new_event;
+- (void) updateUserTime;
 
 /*! Set up what decor should be shown on the window and what functions should
     be allowed (ObClient::decorations and ObClient::functions).
@@ -572,9 +594,6 @@ typedef enum
      NULL is returned if the given search is not a transient of the client. */
 - (AZClient *) searchTransient: (AZClient *) search;
 
-/*! Return the "closest" client in the given direction */
-- (AZClient *) findDirectional: (ObDirection) dir;
-
 /*! Return the closest edge in the given direction */
 - (int) directionalEdgeSearch: (ObDirection) dir;
 
@@ -594,12 +613,13 @@ typedef enum
 /* For AZClientManager */
 - (void) getAll;
 - (void) restoreSessionState;
+- (void) getClientMachine;
+- (void) getColormap;
 - (void) changeState;
 - (void) changeWMState;
 - (void) toggleBorder: (BOOL) show;
 - (void) applyStartupStateAtX: (int) x y: (int) y;
 - (void) restoreSessionStacking;
-- (void) unfocus;
 
 /* Accessories */
 - (AZFrame *) frame;
@@ -717,6 +737,8 @@ typedef enum
 
 - (void) set_user_time: (Time) time;
 - (Time) user_time;
+
+- (Colormap) colormap;
 
 - (unsigned int) decorations;
 - (void) set_decorations: (unsigned int) decorations;

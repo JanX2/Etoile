@@ -164,10 +164,6 @@ static AZKeyboardHandler *sharedInstance;
     if ([interactive_states count] == 0) {
         if (!grab_keyboard(YES))
             return NO;
-        if (!grab_pointer(YES, OB_CURSOR_NONE)) {
-            grab_keyboard(NO);
-            return NO;
-        }
     }
 
     s = [[AZInteractiveState alloc] init];
@@ -356,7 +352,6 @@ static AZKeyboardHandler *sharedInstance;
 
     if ([interactive_states count] == 0) {
         grab_keyboard(NO);
-        grab_pointer(NO, OB_CURSOR_NONE);
         [self resetChains];
     }
 }

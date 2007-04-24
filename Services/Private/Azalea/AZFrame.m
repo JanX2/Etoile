@@ -32,10 +32,9 @@
 #define PLATE_EVENTMASK (SubstructureRedirectMask | ButtonPressMask | \
 			 FocusChangeMask)
 #define FRAME_EVENTMASK (EnterWindowMask | LeaveWindowMask | \
-                         ButtonPressMask | ButtonReleaseMask | \
-                         VisibilityChangeMask)
+                         ButtonPressMask | ButtonReleaseMask)
 #define ELEMENT_EVENTMASK (ButtonPressMask | ButtonReleaseMask | \
-                           ButtonMotionMask | ExposureMask | \
+                           ButtonMotionMask | \
                            EnterWindowMask | LeaveWindowMask)
 
 #define FRAME_HANDLE_Y(f) (innersize.top + [_client area].height + cbwidth_y)
@@ -107,6 +106,7 @@ static Visual *check_32bit_client(AZClient *c)
     /* set all the windows for the frame in the window_map */
     [window_map setObject: client forKey: [NSNumber numberWithInt: window]];
     [window_map setObject: client forKey: [NSNumber numberWithInt: plate]];
+    [window_map setObject: client forKey: [NSNumber numberWithInt: inner]];
     [window_map setObject: client forKey: [NSNumber numberWithInt: title]];
     [window_map setObject: client forKey: [NSNumber numberWithInt: label]];
     [window_map setObject: client forKey: [NSNumber numberWithInt: max]];
@@ -159,6 +159,7 @@ static Visual *check_32bit_client(AZClient *c)
     /* remove all the windows for the frame from the window_map */
     [window_map removeObjectForKey: [NSNumber numberWithInt: window]];
     [window_map removeObjectForKey: [NSNumber numberWithInt: plate]];
+    [window_map removeObjectForKey: [NSNumber numberWithInt: inner]];
     [window_map removeObjectForKey: [NSNumber numberWithInt: title]];
     [window_map removeObjectForKey: [NSNumber numberWithInt: label]];
     [window_map removeObjectForKey: [NSNumber numberWithInt: max]];
@@ -266,6 +267,14 @@ static Visual *check_32bit_client(AZClient *c)
 {
   focused = hilite;
   [self render];
+  XFlush(ob_display);
+}
+
+- (void) adjustClientArea
+{
+    /* resize the plate */
+    XResizeWindow(ob_display, plate,
+                  [_client area].width, [_client area].height);
 }
 
 - (void) adjustTitle
@@ -382,14 +391,20 @@ static Visual *check_32bit_client(AZClient *c)
             } else
                 XUnmapWindow(ob_display, handle);
 
-            /* move and resize the plate */
-            XMoveResizeWindow(ob_display, plate,
+            /* move and resize the inner border window which contains the plate
+             */
+            XMoveResizeWindow(ob_display, inner,
                               innersize.left - cbwidth_x,
                               innersize.top - cbwidth_y,
                               [_client area].width + cbwidth_x * 2,
                               [_client area].height + cbwidth_y * 2);
+
+            /* move the plate */
+            XMoveWindow(ob_display, plate,
+                        cbwidth_x, cbwidth_y);
+
             /* when the client has StaticGravity, it likes to move around. */
-            XMoveWindow(ob_display, [_client window], cbwidth_x, cbwidth_y);
+            XMoveWindow(ob_display, [_client window], 0, 0);
         }
 
         STRUT_SET(size, innersize.left + bwidth, innersize.top + bwidth,
@@ -577,8 +592,6 @@ static Visual *check_32bit_client(AZClient *c)
   unsigned long mask;
   Visual *visual;
 
-  obscured = YES;
-
   visual = check_32bit_client(client);
 
   /* create the non-visible decor windows */
@@ -599,8 +612,12 @@ static Visual *check_32bit_client(AZClient *c)
   window = createWindow(RootWindow(ob_display, ob_screen), visual,
                                 mask, &attrib);
 
+  attrib.event_mask = ELEMENT_EVENTMASK;
+  inner = createWindow(window, visual, mask, &attrib);
+
   mask &= ~CWEventMask;
-  plate = createWindow(window, visual, mask, &attrib);
+  plate = createWindow(inner, visual, mask, &attrib);
+
   /* create the visible decor windows */
 
   mask = CWEventMask;
@@ -640,6 +657,7 @@ static Visual *check_32bit_client(AZClient *c)
 
   /* the other stuff is shown based on decor settings */
   XMapWindow(ob_display, plate);
+  XMapWindow(ob_display, inner);
   XMapWindow(ob_display, lgrip);
   XMapWindow(ob_display, rgrip);
   XMapWindow(ob_display, label);
@@ -663,6 +681,7 @@ static Visual *check_32bit_client(AZClient *c)
 - (void) setClient: (AZClient *) client { _client = client; }
 
 - (Window) window { return window; }
+- (Window) inner { return inner; }
 - (Window) plate { return plate; }
 - (Window) title { return title; }
 - (Window) label { return label; }
@@ -701,11 +720,9 @@ static Visual *check_32bit_client(AZClient *c)
 - (void) set_iconify_hover: (BOOL) b { iconify_hover = b; }
 - (void) set_focused: (BOOL) b { focused = b; }
 
-- (BOOL) obscured { return obscured; }
 - (BOOL) visible { return visible; }
 - (unsigned int) decorations { return decorations; }
 - (BOOL) max_horz { return max_horz; }
-- (void) set_obscured: (BOOL) b { obscured = b; }
 
 - (Strut) size { return size; }
 - (Rect) area { return area; }
@@ -994,6 +1011,7 @@ ObFrameContext frame_context(AZClient *client, Window win)
     }
 
     if (win == [[client frame] window])   return OB_FRAME_CONTEXT_FRAME;
+    if (win == [[client frame] inner])    return OB_FRAME_CONTEXT_FRAME;
     if (win == [[client frame] title])    return OB_FRAME_CONTEXT_TITLEBAR;
     if (win == [[client frame] label])    return OB_FRAME_CONTEXT_TITLEBAR;
     if (win == [[client frame] handle])   return OB_FRAME_CONTEXT_HANDLE;

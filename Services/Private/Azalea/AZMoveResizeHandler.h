@@ -23,6 +23,14 @@
 #import <X11/Xlib.h>
 #import "misc.h"
 
+#ifdef SYNC
+#include <X11/extensions/sync.h>
+#endif
+
+#ifdef SYNC
+extern XSyncAlarm moveresize_alarm;
+#endif
+
 @class AZClient;
 @class AZPopUp;
 

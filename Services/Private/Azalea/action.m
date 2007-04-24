@@ -342,6 +342,11 @@ void setup_action_showmenu(AZAction **a, ObUserAction uact)
     }
 }
 
+void setup_action_focus(ObAction **a, ObUserAction uact)
+{
+    (*a)->data.any.client_action = OB_CLIENT_ACTION_OPTIONAL;
+}
+
 void setup_client_action(AZAction **a, ObUserAction uact)
 {
     [(*a) data_pointer]->any.client_action = OB_CLIENT_ACTION_ALWAYS;
@@ -402,7 +407,7 @@ ActionString actionstrings[] =
     {
         @"focus",
         action_focus,
-        setup_client_action
+        setup_action_focus
     },
     {
         @"unfocus",
@@ -909,7 +914,7 @@ AZAction *action_parse(xmlDocPtr doc, xmlNodePtr node, ObUserAction uact)
                     [act data_pointer]->cycle.opaque = parse_bool(doc, n);
             } else if ([act func] == action_directional_focus) {
                 if ((n = parse_find_node("dialog", node->xmlChildrenNode)))
-                    [act data_pointer]->cycle.dialog = parse_bool(doc, n);
+                    [act data_pointer]->interdiraction.dialog = parse_bool(doc, n);
             } else if ([act func] == action_raise ||
                        [act func] == action_lower ||
                        [act func] == action_raiselower ||
@@ -976,7 +981,7 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
            it won't work right unless we XUngrabKeyboard first,
            even though we grabbed the key/button Asychronously.
            e.g. "gnome-panel-control --main-menu" */
-        XUngrabKeyboard(ob_display, event_curtime);
+	grab_keyboard(NO);
     }
 
     count = [acts count];
@@ -1075,12 +1080,19 @@ void action_activate(union ActionData *data)
 
 void action_focus(union ActionData *data)
 {
+  if (data->client.any.c) {
     /* similar to the openbox dock for dockapps, don't let user actions give
        focus to 3rd-party docks (panels) either (unless they ask for it
        themselves). */
     if ([data->client.any.c type] != OB_CLIENT_TYPE_DOCK) {
         [data->client.any.c focus];
     }
+  } else {
+    /* focus action on something other than a client, make keybindings
+       work for this openbox instance, but don't focus any specific client
+     */
+   [[AZFocusManager defaultManager] focusNothing];
+  }
 }
 
 void action_unfocus (union ActionData *data)

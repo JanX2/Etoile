@@ -676,10 +676,10 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     if (count == 0) {
         /* no menus shown yet */
-        if (!grab_pointer(YES, OB_CURSOR_NONE))
+        if (!grab_pointer(YES, YES, OB_CURSOR_NONE))
             return NO;
         if (!grab_keyboard(YES)) {
-            grab_pointer(NO, OB_CURSOR_NONE);
+            grab_pointer(NO, YES, OB_CURSOR_NONE);
             return NO;
         }
     }
@@ -804,7 +804,7 @@ AZMenuEntryFrame* AZMenuEntryFrameUnder(int x, int y)
 
     if ([visibles count] == 0) {
         /* last menu shown */
-        grab_pointer(NO, OB_CURSOR_NONE);
+        grab_pointer(NO, YES, OB_CURSOR_NONE);
         grab_keyboard(NO);
     }
 

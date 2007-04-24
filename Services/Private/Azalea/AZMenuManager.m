@@ -182,12 +182,21 @@ static AZMenuManager *sharedInstance;
 	    [menu_parse_inst parseDocument: doc node: node->children];
             xmlFreeDoc(doc);
         }
+	else
+	{
+            NSLog(@"Unable to find a valid menu file '%@'", [config_menu_files objectAtIndex: i]);
+	}
     }
     if (!loaded) {
-        if (parse_load_menu(@"menu.xml", &doc, &node)) {
+        if (parse_load_menu(@"menu.xml", &doc, &node)) 
+        {
 	    [menu_parse_inst parseDocument: doc node: node->children];
             xmlFreeDoc(doc);
         }
+	else
+	{
+            NSLog(@"Unable to find a valid menu file 'menu.xml'");
+	}
     }
     
     NSAssert(menu_parse_state.parent == nil, @"menu_parse_state.parent is not nil");

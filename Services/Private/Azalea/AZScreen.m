@@ -87,7 +87,7 @@ static AZScreen *sharedInstance;
                                        CopyFromParent, InputOutput,
                                        CopyFromParent,
                                        CWOverrideRedirect, &attrib);
-    XMapRaised(ob_display, screen_support_win);
+    XMapWindow(ob_display, screen_support_win);
 
     if (![self replaceWM]) {
         XDestroyWindow(ob_display, screen_support_win);
@@ -124,6 +124,9 @@ static AZScreen *sharedInstance;
 
     /* set the _NET_SUPPORTED_ATOMS hint */
     num_support = 55;
+#ifdef SYNC
+    num_support += 2;
+#endif
     i = 0;
     supported = calloc(sizeof(unsigned long), num_support);
     supported[i++] = prop_atoms.net_wm_full_placement;
@@ -180,11 +183,12 @@ static AZScreen *sharedInstance;
     supported[i++] = prop_atoms.net_wm_moveresize;
     supported[i++] = prop_atoms.net_wm_user_time;
     supported[i++] = prop_atoms.net_frame_extents;
+#ifdef SYNC
+    supported[i++] = prop_atoms.net_wm_sync_request;
+    supported[i++] = prop_atoms.net_wm_sync_request_counter;
+#endif
     supported[i++] = prop_atoms.ob_wm_state_undecorated;
     NSAssert(i == num_support, @"Out of range");
-/*
-  supported[] = prop_atoms.net_wm_action_stick;
-*/
 
     PROP_SETA32(RootWindow(ob_display, ob_screen),
                 net_supported, atom, supported, num_support);
@@ -219,7 +223,18 @@ static AZScreen *sharedInstance;
         screen_num_desktops = 0;
     [self setNumberOfDesktops: config_desktops_num];
     if (!reconfig) {
-        [self setDesktop:(MIN(config_screen_firstdesk, screen_num_desktops)-1)];
+        unsigned int d;
+        /* start on the current desktop when a wm was already running */
+        if (PROP_GET32(RootWindow(ob_display, ob_screen),
+                       net_current_desktop, cardinal, &d) &&
+            d < screen_num_desktops)
+        {
+	    [self setDesktop: d];
+        }
+	else
+	{
+            [self setDesktop:(MIN(config_screen_firstdesk, screen_num_desktops)-1)];
+	}
 
         /* don't start in showing-desktop mode */
         screen_showing_desktop = NO;
@@ -341,6 +356,7 @@ static AZScreen *sharedInstance;
 
 - (void) setDesktop: (unsigned int) num
 {
+    AZClient *c = nil;
     int i, count;
     unsigned int old;
     AZStacking *stacking = [AZStacking stacking];
@@ -389,23 +405,20 @@ static AZScreen *sharedInstance;
         }
     }
 
-    [[AZEventHandler defaultHandler] ignoreQueuedEnters];
-
+    /* have to try focus here because when you leave an empty desktop
+       there is no focus out to watch for */
     AZFocusManager *fManager = [AZFocusManager defaultManager];
-    [fManager set_focus_hilite: [fManager fallbackTarget: YES
-			                  old: [fManager focus_client]]];
-    if ([fManager focus_hilite]) {
-	[[[fManager focus_hilite] frame] adjustFocusWithHilite: YES];
-
-        /*!
-          When this focus_client check is not used, you can end up with
-          races, as demonstrated with gnome-panel, sometimes the window
-          you click on another desktop ends up losing focus cuz of the
-          focus change here.
-        */
-        /*if (!focus_client)*/
-	[[fManager focus_hilite] focus];
+    AZClient *focus_client = [fManager focus_client];
+    c = [fManager fallbackTarget: YES old: focus_client];
+    if (c)
+    {
+        /* reduce flicker by hiliting now rather than waiting for the server
+           FocusIn event */
+	[[c frame] adjustFocusWithHilite: YES];
+	[c focus];
     }
+
+    [[AZEventHandler defaultHandler] ignoreQueuedEnters];
 }
 
 - (unsigned int) desktop
@@ -629,7 +642,13 @@ done_cycle:
     } 
     else 
     {
-        [fManager fallback: YES];
+        AZClient *c;
+
+        /* use NULL for the "old" argument because the desktop was focused
+           and we don't want to fallback to the desktop by default */
+        c = [fManager fallbackTarget: YES old: nil];
+        if (c)
+	  [c focus];
     }
 
     show = !!show; /* make it boolean */
@@ -758,23 +777,19 @@ done_cycle:
 - (void) installColormap: (AZClient*) client
                   install: (BOOL) install
 {
-    XWindowAttributes wa;
-
     if (client == nil) {
         if (install)
             XInstallColormap([ob_rr_inst display], [ob_rr_inst colormap]);
         else
             XUninstallColormap([ob_rr_inst display], [ob_rr_inst colormap]);
     } else {
-        if (XGetWindowAttributes(ob_display, [client window], &wa) &&
-            wa.colormap != None) {
-	    AZXErrorSetIgnore(YES);
-            if (install)
-                XInstallColormap([ob_rr_inst display], wa.colormap);
-            else
-                XUninstallColormap([ob_rr_inst display], wa.colormap);
-	    AZXErrorSetIgnore(NO);
-        }
+	AZXErrorSetIgnore(YES);
+        if (install) {
+            if ([client colormap] != None)
+                XInstallColormap([ob_rr_inst display], [client colormap]);
+        } else
+            XUninstallColormap([ob_rr_inst display], [client colormap]);
+	AZXErrorSetIgnore(NO);
     }
 }
 
