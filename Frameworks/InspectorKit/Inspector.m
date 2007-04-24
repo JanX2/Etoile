@@ -38,17 +38,10 @@
 #import "ToolsPane.h"
 #import "FilePopUpPresentation.h"
 
-@interface Inspector (Private)
+static Inspector *shared = nil;
 
-- (void) updateDisplay;
-#if 0
-- (void) setInspector: inspector;
-- (id <InspectorModule>) contentsInspectorForFile: (NSString *) filename;
-#endif
-
-@end
-
-@implementation Inspector (Private)
+@implementation Inspector
+/* Private */
 - (void) updateDisplay
 {
   if (filePath != nil) 
@@ -173,11 +166,33 @@
 }
 #endif
 
-@end
+- (void) refreshMenu
+{
+  /* We remove all menu items */
+  while ([menu numberOfItems])
+  {
+    [menu removeItemAtIndex: 0];
+  }
 
-@implementation Inspector
+  /* See which panes do we have */
 
-static Inspector * shared = nil;
+  if (filePath)
+  {
+    NSArray *array = [[self registry] loadedPlugins];
+    id <NSMenuItem> item = nil;
+    int i, count = [array count];
+    for (i = 0; i < count; i++)
+    {
+      NSDictionary *dict = [array objectAtIndex: i];
+      item = [menu addItemWithTitle: [dict objectForKey: @"name"]
+                      action: @selector(menuItemAction:)
+               keyEquivalent: @""];
+      [item setTarget: self];
+    }
+  }
+}
+
+/* End of private */
 
 + (Inspector *) sharedInspector
 {
@@ -231,10 +246,35 @@ static Inspector * shared = nil;
     return;
 
   ASSIGN(filePath, aPath);
+  [self refreshMenu];
 
   if ([self owner] && [[self owner] isKindOfClass: [NSWindow class]] && 
       [[self owner] isVisible])
     [self updateDisplay];
+}
+
+- (void) setInspectorMenu: (NSMenu *) m
+{
+  ASSIGN(menu, m);
+  [self refreshMenu];
+}
+
+- (void) menuItemAction: (id) sender
+{
+  NSLog(@"sender %@", sender);
+  [self activate];
+  /* Let's find out which pane it is */
+  NSArray *array = [[self registry] loadedPlugins];
+  int i = 0;
+  for (i = 0; i < [array count]; i++)
+  {
+    NSDictionary *dict = [array objectAtIndex: i];
+    if ([[dict objectForKey: @"name"] isEqualToString: [sender title]])
+    {
+      [self selectPaneWithIdentifier: [dict objectForKey: @"identifier"]];
+    }
+    break;
+  }
 }
 
 - (void) showAttributesInspector: (id) sender

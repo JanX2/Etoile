@@ -33,247 +33,241 @@
 #import "PermissionsView.h"
 
 enum {
-        UserField = 6,
-        GroupField = 3,
-        OtherField = 0,
+  UserField = 6,
+  GroupField = 3,
+  OtherField = 0,
 
-        ReadField = 2,
-        WriteField = 1,
-        ExecuteField = 0
+  ReadField = 2,
+  WriteField = 1,
+  ExecuteField = 0
 };
 
 @implementation PermissionsView
 
 - (void) dealloc
 {
-        TEST_RELEASE(check);
-        TEST_RELEASE(cross);
+  DESTROY(check);
+  DESTROY(cross);
 
-        [super dealloc];
+  [super dealloc];
 }
 
-- initWithFrame: (NSRect) frame
+- (id) initWithFrame: (NSRect) frame
 {
-        ASSIGN(check, [NSImage imageNamed: @"CheckMark"]);
-        ASSIGN(cross, [NSImage imageNamed: @"CrossMark"]);
+  self = [super initWithFrame: frame];
 
-        editable = YES;
+  NSBundle *bundle = [NSBundle bundleForClass: [self class]];
 
-        return [super initWithFrame: frame];
+  check = [[NSImage alloc] initByReferencingFile: 
+                  [bundle pathForResource: @"CheckMark" ofType: @"tiff"]];
+  cross = [[NSImage alloc] initByReferencingFile: 
+                  [bundle pathForResource: @"CrossMark" ofType: @"tiff"]];
+
+  editable = YES;
+
+  return self;
 }
 
 - (void) drawRect: (NSRect) r
 {
-        NSSize s = [self frame].size;
-        int xslot = s.width / 3;
-        int yslot = displaysExecute ? s.height / 3 : s.height/2;
-        int i;
-        NSPoint p;
+  NSLog(@"Draw PrefView");
+  NSSize s = [self frame].size;
+  int xslot = s.width / 3;
+  int yslot = displaysExecute ? s.height / 3 : s.height/2;
+  int i;
+  NSPoint p;
 
-        PSsetgray(0.5);
-        PSrectstroke(0.0, 0.0, s.width-1, s.height-1);
+  PSsetgray(0.5);
+  PSrectstroke(0.0, 0.0, s.width-1, s.height-1);
 
-        for (i=1; i<=2; i++) {
-                PSmoveto(xslot*i, 0.0);
-                PSlineto(xslot*i, s.height);
-                PSstroke();
-        }
+  for (i = 1; i <= 2; i++) 
+  {
+    PSmoveto(xslot*i, 0.0);
+    PSlineto(xslot*i, s.height);
+    PSstroke();
+  }
 
-        if (displaysExecute) {
-                PSmoveto(0.0, yslot*2);
-                PSlineto(s.width, yslot*2);
-                PSstroke();
+  if (displaysExecute) 
+  {
+    PSmoveto(0.0, yslot*2);
+    PSlineto(s.width, yslot*2);
+    PSstroke();
+  }
 
-        }
+  PSmoveto(0.0, yslot);
+  PSlineto(s.width, yslot);
+  PSstroke();
 
-        PSmoveto(0.0, yslot);
-        PSlineto(s.width, yslot);
-        PSstroke();
+  // user
+  p = NSMakePoint(xslot*0.5 - 5, yslot * 0.5 + 5);
+  if (mode & (1 << (UserField + ReadField)))
+    [check compositeToPoint: p operation: NSCompositeSourceOver];
+  else
+    [cross compositeToPoint: p operation: NSCompositeSourceOver];
 
-         // user
-        p = NSMakePoint(xslot*0.5 - 5, yslot * 0.5 + 5);
-        if (mode & (1 << (UserField + ReadField)))
-                [check compositeToPoint: p
-                              operation: NSCompositeSourceOver];
-        else
-                [cross compositeToPoint: p
-                              operation: NSCompositeSourceOver];
+  p = NSMakePoint(xslot*1.5 - 5, yslot * 0.5 + 5);
+  if (mode & (1 << (GroupField + ReadField)))
+    [check compositeToPoint: p operation: NSCompositeSourceOver];
+  else
+    [cross compositeToPoint: p operation: NSCompositeSourceOver];
 
-        p = NSMakePoint(xslot*1.5 - 5, yslot * 0.5 + 5);
-        if (mode & (1 << (GroupField + ReadField)))
-                [check compositeToPoint: p
-                              operation: NSCompositeSourceOver];
-        else
-                [cross compositeToPoint: p
-                              operation: NSCompositeSourceOver];
+  p = NSMakePoint(xslot*2.5 - 5, yslot * 0.5 + 5);
+  if (mode & (1 << (OtherField + ReadField)))
+    [check compositeToPoint: p operation: NSCompositeSourceOver];
+  else
+    [cross compositeToPoint: p operation: NSCompositeSourceOver];
 
-        p = NSMakePoint(xslot*2.5 - 5, yslot * 0.5 + 5);
-        if (mode & (1 << (OtherField + ReadField)))
-                [check compositeToPoint: p
-                              operation: NSCompositeSourceOver];
-        else
-                [cross compositeToPoint: p
-                              operation: NSCompositeSourceOver];
+  // group
+  p = NSMakePoint(xslot*0.5 - 5, yslot * 1.5 + 5);
+  if (mode & (1 << (UserField + WriteField)))
+    [check compositeToPoint: p operation: NSCompositeSourceOver];
+  else
+    [cross compositeToPoint: p operation: NSCompositeSourceOver];
 
-         // group
-        p = NSMakePoint(xslot*0.5 - 5, yslot * 1.5 + 5);
-        if (mode & (1 << (UserField + WriteField)))
-                [check compositeToPoint: p
-                              operation: NSCompositeSourceOver];
-        else
-                [cross compositeToPoint: p
-                              operation: NSCompositeSourceOver];
+  p = NSMakePoint(xslot*1.5 - 5, yslot * 1.5 + 5);
+  if (mode & (1 << (GroupField + WriteField)))
+    [check compositeToPoint: p operation: NSCompositeSourceOver];
+  else
+    [cross compositeToPoint: p operation: NSCompositeSourceOver];
 
-        p = NSMakePoint(xslot*1.5 - 5, yslot * 1.5 + 5);
-        if (mode & (1 << (GroupField + WriteField)))
-                [check compositeToPoint: p
-                              operation: NSCompositeSourceOver];
-        else
-                [cross compositeToPoint: p
-                              operation: NSCompositeSourceOver];
+  p = NSMakePoint(xslot*2.5 - 5, yslot * 1.5 + 5);
+  if (mode & (1 << (OtherField + WriteField)))
+    [check compositeToPoint: p operation: NSCompositeSourceOver];
+  else
+    [cross compositeToPoint: p operation: NSCompositeSourceOver];
 
-        p = NSMakePoint(xslot*2.5 - 5, yslot * 1.5 + 5);
-        if (mode & (1 << (OtherField + WriteField)))
-                [check compositeToPoint: p
-                              operation: NSCompositeSourceOver];
-        else
-                [cross compositeToPoint: p
-                              operation: NSCompositeSourceOver];
+  // other
+  if (displaysExecute) 
+  {
+    p = NSMakePoint(xslot*0.5 - 5, yslot * 2.5 + 5);
+    if (mode & (1 << (UserField + ExecuteField)))
+      [check compositeToPoint: p operation: NSCompositeSourceOver];
+    else
+      [cross compositeToPoint: p operation: NSCompositeSourceOver];
 
-         // other
-        if (displaysExecute) {
-                p = NSMakePoint(xslot*0.5 - 5, yslot * 2.5 + 5);
-                if (mode & (1 << (UserField + ExecuteField)))
-                        [check compositeToPoint: p
-                                      operation: NSCompositeSourceOver];
-                else
-                        [cross compositeToPoint: p
-                                      operation: NSCompositeSourceOver];
+    p = NSMakePoint(xslot*1.5 - 5, yslot * 2.5 + 5);
+    if (mode & (1 << (GroupField + ExecuteField)))
+      [check compositeToPoint: p operation: NSCompositeSourceOver];
+    else
+      [cross compositeToPoint: p operation: NSCompositeSourceOver];
 
-                p = NSMakePoint(xslot*1.5 - 5, yslot * 2.5 + 5);
-                if (mode & (1 << (GroupField + ExecuteField)))
-                        [check compositeToPoint: p
-                                      operation: NSCompositeSourceOver];
-                else
-                        [cross compositeToPoint: p
-                                      operation: NSCompositeSourceOver];
-
-                p = NSMakePoint(xslot*2.5 - 5, yslot * 2.5 + 5);
-                if (mode & (1 << (OtherField + ExecuteField)))
-                        [check compositeToPoint: p
-                                      operation: NSCompositeSourceOver];
-                else
-                        [cross compositeToPoint: p
-                                      operation: NSCompositeSourceOver];
-        }
+    p = NSMakePoint(xslot*2.5 - 5, yslot * 2.5 + 5);
+    if (mode & (1 << (OtherField + ExecuteField)))
+      [check compositeToPoint: p operation: NSCompositeSourceOver];
+    else
+      [cross compositeToPoint: p operation: NSCompositeSourceOver];
+  }
 }
 
 - (void) setMode: (unsigned) mod
 {
-        mode = mod;
-        [self setNeedsDisplay: YES];
+  mode = mod;
+  [self setNeedsDisplay: YES];
 }
 
 - (unsigned) mode
 {
-        return mode;
+  return mode;
 }
 
 - (void) setDisplaysExecute: (BOOL) flag
 {
-        displaysExecute = flag;
-        [self setNeedsDisplay: YES];
+  displaysExecute = flag;
+  [self setNeedsDisplay: YES];
 }
 
 - (BOOL) displaysExecute
 {
-        return displaysExecute;
+  return displaysExecute;
 }
 
 - (BOOL) acceptsFirstResponder
 {
-        return editable;
+  return editable;
 }
 
-- (void) setTarget: aTarget
+- (void) setTarget: (id) aTarget
 {
-        target = aTarget;
+  target = aTarget;
 }
 
-- target
+- (id) target
 {
-        return target;
+  return target;
 }
 
 - (void) setAction: (SEL) anAction
 {
-        action = anAction;
+  action = anAction;
 }
 
 - (SEL) action
 {
-        return action;
+  return action;
 }
 
 - (void) setEditable: (BOOL) flag
 {
-        editable = flag;
+  editable = flag;
 }
 
 - (BOOL) isEditable
 {
-        return editable;
+  return editable;
 }
 
 - (void) mouseDown: (NSEvent *) ev
 {
-        NSPoint p;
-        NSSize s = [self frame].size;
-        unsigned userField;
-        unsigned permField;
+  NSPoint p;
+  NSSize s = [self frame].size;
+  unsigned userField;
+  unsigned permField;
 
-        if (editable == NO)
-                return;
+  if (editable == NO)
+    return;
 
-        p = [self convertPoint: [ev locationInWindow] fromView: nil];
-        if (displaysExecute) {
-                p.y /= (s.height / 3);
-                if (p.y < 1)
-                        permField = ReadField;
-                else if (p.y > 1 && p.y < 2)
-                        permField = WriteField;
-                else
-                        permField = ExecuteField;
-        } else {
-                p.y /= (s.height / 2);
-                if (p.y < 1)
-                        permField = ReadField;
-                else
-                        permField = WriteField;
-        }
+  p = [self convertPoint: [ev locationInWindow] fromView: nil];
+  if (displaysExecute) 
+  {
+    p.y /= (s.height / 3);
+    if (p.y < 1)
+      permField = ReadField;
+    else if (p.y > 1 && p.y < 2)
+      permField = WriteField;
+    else
+      permField = ExecuteField;
+  } 
+  else 
+  {
+    p.y /= (s.height / 2);
+    if (p.y < 1)
+      permField = ReadField;
+    else
+      permField = WriteField;
+  }
 
-        p.x /= (s.width / 3);
-        if (p.x < 1)
-                userField = UserField;
-        else if (p.x > 1 && p.x < 2)
-                userField = GroupField;
-        else
-                userField = OtherField;
+  p.x /= (s.width / 3);
+  if (p.x < 1)
+    userField = UserField;
+  else if (p.x > 1 && p.x < 2)
+    userField = GroupField;
+  else
+    userField = OtherField;
 
-        if (mode & (1 << (userField + permField)))
-                mode &= ~(1 << (userField + permField));
-        else
-                mode |= (1 << (userField + permField));
+  if (mode & (1 << (userField + permField)))
+    mode &= ~(1 << (userField + permField));
+  else
+    mode |= (1 << (userField + permField));
 
-        [self setNeedsDisplay: YES];
+  [self setNeedsDisplay: YES];
 
-        if (target != nil && action != NULL && [target respondsToSelector: action])
-                [target performSelector: action withObject: self];
+  if (target != nil && action != NULL && [target respondsToSelector: action])
+    [target performSelector: action withObject: self];
 }
 
 - (BOOL) isFlipped
 {
-        return YES;
+  return YES;
 }
 
 @end

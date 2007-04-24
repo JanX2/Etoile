@@ -38,11 +38,14 @@
 @interface Inspector: PKPanesController
 {
   NSString *filePath;
+  NSMenu *menu;
 }
 
 + (Inspector *) sharedInspector;
 
 - (void) displayPath: (NSString *) aPath;
+/* As service menu, this updates inspector menu dynamically */
+- (void) setInspectorMenu: (NSMenu *) menu;
 
 // order the inspector front
 - (void) activate;

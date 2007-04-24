@@ -34,20 +34,20 @@
 
 @interface PermissionsView : NSView
 {
-        BOOL displaysExecute;
+  BOOL displaysExecute;
 
-        unsigned long mode;
+  unsigned long mode;
 
-        NSImage * check,
-                * cross;
+  NSImage *check;
+  NSImage *cross;
 
-        id target;
-        SEL action;
+  id target;
+  SEL action;
 
-        BOOL editable;
+  BOOL editable;
 }
 
-- initWithFrame: (NSRect) frame;
+- (id) initWithFrame: (NSRect) frame;
 
 - (void) setMode: (unsigned) mod;
 - (unsigned) mode;
@@ -55,8 +55,8 @@
 - (void) setDisplaysExecute: (BOOL) flag;
 - (BOOL) displaysExecute;
 
-- (void) setTarget: aTarget;
-- target;
+- (void) setTarget: (id) aTarget;
+- (id) target;
 
 - (void) setAction: (SEL) anAction;
 - (SEL) action;
