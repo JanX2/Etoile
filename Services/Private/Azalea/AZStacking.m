@@ -180,8 +180,10 @@ static AZStacking *sharedInstance;
     }
     if (it_below == nil)
     {
-        /* out of ideas, just add it normally... */
-        [self addWindow: win];
+        /* there is no window to put this directly above, so put it at the
+           bottom */
+        [stacking_list insertObject: win atIndex: 0];
+	[self lowerWindow: win];
     } else {
         /* make sure it's not in the wrong layer though ! */
 	for (; index < [stacking_list count]; index++)
@@ -410,39 +412,45 @@ static AZStacking *sharedInstance;
         NSMutableArray *top = [[NSMutableArray alloc] initWithArray: [selected searchAllTopParents]];
         NSMutableArray *top_reorder = [[NSMutableArray alloc] init];
 
-        /* go thru stacking list backwards so we can use g_slist_prepend */
-	int i = [stacking_list count]-1;
-        for (; (i > -1) && ([top count] > 0); i--)
-	{
-	  id <AZWindow> it = [self windowAtIndex: i];
-	  if ([top containsObject: it])
+        /* that is, if it has any parents */
+        if (!(top && [top count] == 1 && [top objectAtIndex: 0] == selected)) 
+        {
+          /* go thru stacking list backwards so we can use g_slist_prepend */
+	  int i = [stacking_list count]-1;
+          for (; (i > -1) && ([top count] > 0); i--)
 	  {
-	    if ([top_reorder count] > 0)
- 	      [top_reorder insertObject: it atIndex: 0];
-	    else 
- 	      [top_reorder addObject: it];
-	    [top removeObject: it];
+	    id <AZWindow> it = [self windowAtIndex: i];
+	    if ([top containsObject: it])
+	    {
+	      if ([top_reorder count] > 0)
+ 	        [top_reorder insertObject: it atIndex: 0];
+	      else 
+ 	        [top_reorder addObject: it];
+	      [top removeObject: it];
+	    }
 	  }
-	}
 
-	if ([top count] > 0)
-	  NSLog(@"Internal Error: top parents are left");
+	  if ([top count] > 0)
+	    NSLog(@"Internal Error: top parents are left");
 
-        /* call restack for each of these to lower them */
-	for (i = 0; i < [top_reorder count]; i++)
-	{
-	  [self restackWindows: [top_reorder objectAtIndex: i]
-	                 raise: raise];
-	}
-	DESTROY(top_reorder);
-	DESTROY(top);
-	return;
+          /* call restack for each of these to lower them */
+	  for (i = 0; i < [top_reorder count]; i++)
+	  {
+	    [self restackWindows: [top_reorder objectAtIndex: i]
+	                   raise: raise];
+	  }
+	  DESTROY(top_reorder);
+	  DESTROY(top);
+	  return;
+       }
     }
 
     /* remove first so we can't run into ourself */
     int index = [stacking_list indexOfObject: selected];
     if (index != NSNotFound)
       [self removeWindow: selected];
+    else
+      NSLog(@"Internal Error: Cannot find itself");
 
     /* go from the bottom of the stacking list up */
     NSMutableArray *wins = AUTORELEASE([[NSMutableArray alloc] init]);
@@ -459,6 +467,7 @@ static AZStacking *sharedInstance;
 	if (WINDOW_IS_CLIENT(data))
 	{
 	  AZClient *ch = (AZClient *) data;
+          /* only move windows in the same stacking layer */
           if (([ch windowLayer] == [selected windowLayer]) &&
 	      [selected searchTransient: ch])
 	  {
@@ -576,15 +585,34 @@ static AZStacking *sharedInstance;
        we actually want to save 1 position _above_ that, for for loops to work
        nicely, so move back one position in the list while saving it
     */
-    int above = (i < [stacking_list count]) ? (i--) : [stacking_list count]-1;
+    int above = NSNotFound;
+    if (i < [stacking_list count])
+    {
+      if (i > 1)
+        above = i-1;
+    }
+    else
+    {
+      if ([stacking_list count] > 0)
+        above = [stacking_list count]-1;
+    }
 
     /* put the windows inside the gap to the other windows we're stacking
        into the restacking list, go from the bottom up so that we can use
        g_list_prepend */
     index = NSNotFound;
-    index = (below != NSNotFound) ? below-- : [stacking_list count]-1;
+    if (below != NSNotFound)
+    {
+      if (below > 1)
+        index = below-1;
+    }
+    else
+    {
+      if ([stacking_list count] > 0)
+        index = [stacking_list count]-1;
+    }
 
-    if ((index < 0) || (index > [stacking_list count]-1))
+    if (index == NSNotFound)
       NSLog(@"Internal Error: index %d out of range of stacking_list", index);
 
     for (; (index != above) && (index > -1); index--)
