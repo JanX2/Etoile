@@ -35,7 +35,13 @@ extern NSString *const AZApplicationDidTerminateNotification;
 
 - (void) keepInDockAction: (id) sender;
 - (void) removeFromDockAction: (id) sender;
+/* Left-mouse click on dock. */
+/* Shows the last window.
+   It may change desktop if last window is not on current desktop. */
 - (void) showAction: (id) sender;
+/* NSCommandKeyMask & Left-mouse-click on dock */
+/* It should create new window on current desktop. */
+- (void) newAction: (id) sender;
 - (void) quitAction: (id) sender;
 
 - (void) setKeptInDock: (BOOL) b;

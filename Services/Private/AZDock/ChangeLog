@@ -1,3 +1,7 @@
+2007-04-24 Yen-Ju Chen <yjchenx at gmail>
+
+	* Support creating new window with modifier key for xwindow.
+
 2007-04-14 Yen-Ju Chen <yjchenx at gmail>
 
 	* Use XWindowSetActiveWindwo to raise window.

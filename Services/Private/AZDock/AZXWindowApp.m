@@ -10,24 +10,54 @@
 - (void) showAction: (id) sender
 {
   if ([self state] == AZDockAppRunning) {
-    /* Go through all windows and raise them */
+    /* Go through all windows and raise the ones on current desktop. */
     Display *dpy = (Display *)[GSCurrentServer() serverDevice];
     int i;
-    Window w;
+    Window w, last;
+    unsigned int currentDesktop = [[NSScreen mainScreen] currentWorkspace];
+    BOOL hasSome = NO;
+    int desk = -1;
+    for (i = 0; i < [xwindows count]; i++) 
+    {
+      /* Do we have windows on current desktop ? */
+      w = [[xwindows objectAtIndex: i] unsignedLongValue];
+      desk = XWindowDesktopOfWindow(w);
+      if ((desk == currentDesktop) || (desk == 0xFFFFFFFF))
+      {
+	 hasSome = YES;
+         break;
+      }
+    }
+
+    if (hasSome == NO)
+    {
+      /* No window at current desktop */
+      w = [[xwindows lastObject] unsignedLongValue];
+      desk = XWindowDesktopOfWindow(w);
+      [[NSScreen mainScreen] setCurrentWorkspace: desk];
+    }
+    
+    currentDesktop = [[NSScreen mainScreen] currentWorkspace];
     for (i = 0; i < [xwindows count]; i++) {
       w = [[xwindows objectAtIndex: i] unsignedLongValue];
-      unsigned long s = XWindowState(w);
-      if (s == -1) {
-      } else if (s == IconicState) {
-        /* Iconified */
-        XMapWindow(dpy, w);
-      } else {
-        //XRaiseWindow(dpy, w); // Not handled by OpenBox anymore
-	XWindowSetActiveWindow(w, None);      
+      desk = XWindowDesktopOfWindow(w);
+      if ((desk == currentDesktop) || (desk == 0xFFFFFFFF))
+      {
+        last = w;
+        unsigned long s = XWindowState(w);
+        if (s == -1) {
+        } else if (s == IconicState) {
+          /* Iconified */
+          XMapWindow(dpy, w);
+        } else {
+          //XRaiseWindow(dpy, w); // Not handled by OpenBox anymore
+  	  XWindowSetActiveWindow(w, None);      
+        }
       }
     }
     /* Focus on the last one */
-    XSetInputFocus(dpy, w, RevertToNone, CurrentTime);
+    //XSetInputFocus(dpy, last, RevertToNone, CurrentTime);
+    //XWindowSetActiveWindow(last, None);      
   } else if ([self state] == AZDockAppLaunching) {
     /* Do nothing during launching */
   } else {
@@ -36,6 +66,18 @@
       [NSTask launchedTaskWithLaunchPath: command arguments: nil];
       [self setState: AZDockAppLaunching];
     }
+  }
+}
+
+- (void) newAction: (id) sender
+{
+  NSLog(@"newAction");
+  /* We create new window on current desktop no matter what is the status. */
+  if (command) {
+    [NSTask launchedTaskWithLaunchPath: command arguments: nil];
+    /* If it is not running (no running windows) */
+    if ([self state] == AZDockAppNotRunning)
+      [self setState: AZDockAppLaunching];
   }
 }
 

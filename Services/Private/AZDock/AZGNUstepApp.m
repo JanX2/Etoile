@@ -1,6 +1,8 @@
 #import "AZGNUstepApp.h"
 #import "AZDock.h"
 #import <X11/Xutil.h>
+#import <XWindowServerKit/XFunctions.h>
+#import <XWindowServerKit/XScreen.h>
 
 #ifdef ETOILE
 #import <WorkspaceCommKit/NSWorkspace+Communication.h>
@@ -16,17 +18,33 @@
   if ([self state] == AZDockAppLaunching) {
     /* Do nothing during launching */
     return;
+  } else if ([self state] == AZDockAppRunning) {
+    int currentDesktop = [[NSScreen mainScreen] currentWorkspace];
+    int desk = XWindowDesktopOfWindow([[xwindows lastObject] unsignedLongValue]);
+    if ((desk != 0xFFFFFFFF) && (currentDesktop != desk))
+    {
+      [[NSScreen mainScreen] setCurrentWorkspace: desk];
+    }
   }
 
   NSString *path = [self command];
   BOOL success = [[NSWorkspace sharedWorkspace] launchApplication: path];
-  if (path && (success == NO)) {
+  if (path && (success == NO)) 
+  {
     /* Try regular execute */
     [NSTask launchedTaskWithLaunchPath: path arguments: nil];
   }
-  if ([self state] == AZDockAppNotRunning) {
+  if ([self state] == AZDockAppNotRunning) 
+  {
     [self setState: AZDockAppLaunching];
   }
+}
+
+- (void) newAction: (id) sender
+{
+  /* For GNUstep application,
+     we do not create new window because GNUstep is not desktop-safe */
+  [self showAction: sender];
 }
 
 - (void) quitAction: (id) sender

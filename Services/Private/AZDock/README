@@ -9,6 +9,17 @@ AZDock is a dock for Etoile
 It depends on XWindowServerKit 
 and requires Azalea for tracking xwindow windows.
 
+Behaviors
+---------
+Left-click on dock to raise windows on current desktop.
+If there is no windows on current desktop, 
+it will automatically change desktop to the one having windows.
+COMMAND+Left-click will create new window for xwindow application,
+but not GNUstep application.
+
+In short, left-click to switch application and workspace if necessary.
+COMMAND+left-click to create new application for xwindows.
+
 User Defaults
 -------------
 Key: DockPosition
