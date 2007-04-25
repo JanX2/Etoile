@@ -340,6 +340,28 @@ void XWindowSetActiveWindow(Window win, Window old)
   XFree(xev);
 }
 
+unsigned int XWindowDesktopOfWindow(Window win)
+{
+  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+
+  unsigned long *data = NULL;
+  Atom prop = XInternAtom(dpy, "_NET_WM_DESKTOP", False);
+  Atom type_ret;
+  int format_ret;
+  unsigned long after_ret, count;
+  int result = XGetWindowProperty(dpy, win, prop,
+                                  0, 0x7FFFFFFF, False, XA_CARDINAL,
+                                  &type_ret, &format_ret, &count,
+                                  &after_ret, (unsigned char **)&data);
+  if ((result != Success)) {
+    NSLog(@"Error: cannot get net state of client");
+    return -1;
+  }
+  int desktop = (int)*data;
+  XFree(data);
+  return desktop;
+}
+
 Window XWindowActiveWindow()
 {
   Display *dpy = (Display*)[GSCurrentServer() serverDevice];

@@ -69,6 +69,9 @@ void XWindowSetActiveWindow(Window win, Window old);
    Return None if none or fails. */
 Window XWindowActiveWindow();
 
+/* Return number of desktop of xwindow */
+unsigned int XWindowDesktopOfWindow(Window win);
+
 /* Freedesktop.org stuff */
 NSString *XDGConfigHomePath();
 NSString *XDGDataHomePath();
