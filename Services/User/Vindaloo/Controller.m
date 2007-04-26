@@ -136,6 +136,11 @@
    [searchController forceQuit];
 }
 
+- (SearchController*) searchController
+{
+   return searchController;
+}
+
 - (IBAction) nextPage: (id)aSender
 {
    [[self myDocument] nextPage];
@@ -388,7 +393,7 @@
    NSToolbar* toolbar = [[[NSToolbar alloc] 
       initWithIdentifier: @"PDFViewerDocument"] autorelease];
 
-   tools = [[DocumentTools alloc] initWithFrame: NSMakeRect(0, 0, 0, 0) target: self];
+   tools = [[DocumentTools alloc] initWithWindowController: self target: self];
    [toolbar setDelegate: tools];
    [[self window] setToolbar: toolbar];
 }
@@ -485,10 +490,9 @@
 - (NSSize) myCalcPDFContentSize: (NSSize)aSize add: (BOOL)addToSize
 {
    float factor = (addToSize ? 1 : -1);
-   
+
    NSSize newSize = aSize;
-   
-   newSize.height += NSHeight([tools frame]) * factor;
+
    newSize.height += NSHeight([[scrollView horizontalScroller] frame]) * factor;
    newSize.width += NSWidth([[scrollView verticalScroller] frame]) * factor;
 

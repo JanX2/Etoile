@@ -43,6 +43,7 @@
 
 - (void) showView;
 - (void) hideView;
+- (NSView *) searchView;
 
 - (void) userDidModifySearchText;
 

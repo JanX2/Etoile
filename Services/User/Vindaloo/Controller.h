@@ -38,6 +38,8 @@
    BOOL windowIsVisible;
 }
 
+- (SearchController*) searchController;
+
 /* Navigation */
 - (IBAction) nextPage: (id)aSender;
 - (IBAction) previousPage: (id)aSender;

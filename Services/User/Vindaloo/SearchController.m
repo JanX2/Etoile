@@ -78,17 +78,9 @@ enum searchThreadLockConditions {
 {
    if (searchViewVisible)
       return;
-   
-   // reserve space for view
-   [scrollView setFrameSize: NSMakeSize(NSWidth([scrollView frame]), NSHeight([scrollView frame])- NSHeight([searchView frame]))];
-   
-   // arrange search view at the top of the window's content view
-   [searchView setFrameOrigin: NSMakePoint(0, NSHeight([NSWindow contentRectForFrameRect: [window frame] styleMask: [window styleMask]]) - NSHeight([searchView frame]))];
-   [searchView setFrameSize: NSMakeSize(NSWidth([scrollView frame]), NSHeight([searchView frame]))];
-   [[window contentView] addSubview: searchView];
-   
+
    [searchView focusSearchText];
-   
+
    searchViewVisible = YES;
 }
 
@@ -96,11 +88,13 @@ enum searchThreadLockConditions {
 {
    if (!searchViewVisible)
       return;
-         
-   [searchView removeFromSuperview];
-   [scrollView setFrameSize: NSMakeSize(NSWidth([scrollView frame]), NSHeight([scrollView frame]) + NSHeight([searchView frame]))];
-   
+
    searchViewVisible = NO;
+}
+
+- (NSView *) searchView
+{
+   return searchView;
 }
 
 - (void) userDidModifySearchText;

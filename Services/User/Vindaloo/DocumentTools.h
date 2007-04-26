@@ -20,14 +20,17 @@
 #import <AppKit/AppKit.h>
 #import "PDFContentView.h"
 
+@class Controller;
+
 /**
  * A view that provides standard tools for a PDF document.
  * These tools include things like page navigation controls,
  * zoom controls etc.
  */
-@interface DocumentTools : NSView
+@interface DocumentTools : NSObject
 {
-   id target;
+	Controller *controller;
+	id target;
 }
 
 /** The frame size of the view is calculated automatically during
@@ -36,7 +39,7 @@
     belittled. You can safely use 0, 0 for the frame's size and rely
     on the initialization to determine and set the minimum required
     width.  */
-- (id) initWithFrame: (NSRect)aFrame target: (id)aTarget;
+- (id) initWithWindowController: (Controller *)controller target: (id)aTarget;
 
 /** A DocumentTools view will send all actions of it's embeded
     controls to a target object.  */

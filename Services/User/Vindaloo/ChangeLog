@@ -1,5 +1,30 @@
 2007-04-26  Quentin Mathe <qmathe@club-internet.fr>
 
+	Fixed search feature.
+	* DocumentTools.h:
+	* DocumentTools.m:
+	Now a subclass of NSObject rather than NSView.
+	(-initWithFrame:target:): Replaced by -initWithWindowController:target:.
+	(-initWithWindowController:target:): New method.
+	(-toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:): Modified to 
+	use SearchView from Controller->SearchController.
+	Modified window instance retrieve in action methods to pass through 
+	Controller instance.
+	* SearchController.h:
+	* SearchController.m:
+	(-showView, -hideView): Removed view hierarchy manipulation (the view is 
+	now to be handled by toolbar).
+	(-searchView): New accessor.
+	* Controller.h:
+	* Controller.m:
+	(-searchController): New accessor.
+	(-myAddDocumentTools): Modified to use new DocumentTools initialization 
+	method.
+	(-myCalcPDFContentSize:): Ignore DocumentTools since it isn't a view 
+	anymore.
+
+2007-04-26  Quentin Mathe <qmathe@club-internet.fr>
+
 	* DocumentTools.m
 	(-toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:): Removed 
 	redundant toolbar item instantations which translated into memory leaks.

@@ -16,6 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#import "Controller.h"
+#import "SearchController.h"
+#import "SearchView.h"
 #import "DocumentTools.h"
 
 /**
@@ -36,14 +39,15 @@
 
 @implementation DocumentTools
 
-- (id) initWithFrame: (NSRect)aFrame target: (id)aTarget
+- (id) initWithWindowController: (Controller *)aController target: (id)aTarget
 {
-   if (![super initWithFrame: aFrame])
-      return nil;
-   
-   [self setTarget: aTarget];
+	if (![super init])
+		return nil;
 
-   return self;
+	controller = aController;
+	[self setTarget: aTarget];
+
+	return self;
 }
 
 /* Toolbar delegate methods */
@@ -157,12 +161,12 @@
 	}
 	else if ([identifier isEqual: @"Search"]) 
 	{
-		NSTextField *searchField = [[[NSTextField alloc] initWithFrame: NSZeroRect] autorelease];
+		SearchView *searchView = (SearchView *)[[controller searchController] searchView];
 
-		[searchField setFrameSize: NSMakeSize(100, 22)];
+		[searchView setFrameSize: NSMakeSize(100, 22)];
 
 		[item setLabel: _(@"Search")];
-		[item setView: searchField];
+		[item setView: searchView];
 	}
 	else 
 	{
@@ -215,7 +219,7 @@
 - (void) setPage: (int)aPage
 {
 	NSString *text = [NSString stringWithFormat: @"%d", aPage];
-	NSToolbarItem *item = [[[self window] toolbar] itemForIdentifier: @"CurrentPage"];
+	NSToolbarItem *item = [[[controller window] toolbar] itemForIdentifier: @"CurrentPage"];
 	
 	[(NSTextField *)[item view] setStringValue: text];
 }
@@ -223,7 +227,7 @@
 - (void) setPageCount: (int)aPageCount
 {
 	NSString *text = [NSString stringWithFormat:@"of %d", aPageCount];
-	NSToolbarItem *item = [[[self window] toolbar] itemForIdentifier: @"NumberOfPages"];
+	NSToolbarItem *item = [[[controller window] toolbar] itemForIdentifier: @"NumberOfPages"];
 	
 	[(NSTextField *)[item view] setStringValue: text];
 }
@@ -231,7 +235,7 @@
 - (void) setZoom: (float)aFactor
 {
 	NSString* text = [NSString stringWithFormat: @"%.0f %%", aFactor];
-	NSToolbarItem *item = [[[self window] toolbar] itemForIdentifier: @"ZoomFactor"];
+	NSToolbarItem *item = [[[controller window] toolbar] itemForIdentifier: @"ZoomFactor"];
 	
 	[(NSTextField *)[item view] setStringValue: text];
 }
@@ -245,10 +249,10 @@
 
 - (void) focusPageField
 {
-	NSToolbarItem *currentPageItem = [[[self window] toolbar] 
+	NSToolbarItem *currentPageItem = [[[controller window] toolbar] 
 		visibleItemForIdentifier: @"CurrentPage"];
 
-	[[self window] makeFirstResponder: [currentPageItem view]];
+	[[controller window] makeFirstResponder: [currentPageItem view]];
 }
 
 @end
