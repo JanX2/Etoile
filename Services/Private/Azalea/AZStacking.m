@@ -175,7 +175,9 @@ static AZStacking *sharedInstance;
 	{
 	    index = [stacking_list indexOfObject: fc];
 	    if ((index != NSNotFound) && (index < [stacking_list count]-2))
+	    {
 	        it_below = [self windowAtIndex: index+1];
+	    }
         }
     }
     if (it_below == nil)
@@ -186,6 +188,9 @@ static AZStacking *sharedInstance;
 	[self lowerWindow: win];
     } else {
         /* make sure it's not in the wrong layer though ! */
+	index = [stacking_list indexOfObject: it_below];
+	if (index == NSNotFound)
+	    NSLog(@"Internal Error: inconsistent it_below position");
 	for (; index < [stacking_list count]; index++)
  	{
             /* stop when the window is not in a higher layer than the window
