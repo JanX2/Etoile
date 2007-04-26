@@ -664,6 +664,8 @@ done_cycle:
 - (void) focusOrderRemove: (AZClient *) c
 {
     [focus_order removeObject: c];
+    if (c == focus_client)
+	focus_client = nil;
 }
 
 - (void) focusOrderToTop: (AZClient *) c
