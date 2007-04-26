@@ -158,6 +158,7 @@
 	{
 		NSTextField *searchField = [[[NSTextField alloc] initWithFrame: NSZeroRect] autorelease];
 
+		[searchField setFrameSize: NSMakeSize(100, 22)];
 		[item setView: searchField];
 	}
 	else 
@@ -182,13 +183,23 @@
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar 
 {
-	return [self toolbarAllowedItemIdentifiers: toolbar];
+	NSArray *identifiers = [NSArray arrayWithObjects: @"Back", @"Forward", 
+		@"CurrentPage", NSToolbarFlexibleSpaceItemIdentifier, @"ZoomFactor",
+		@"ZoomIn", @"ZoomOut", @"FitWidth", NSToolbarSeparatorItemIdentifier, 
+		@"Search", nil];
+
+	return identifiers;
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar 
 {
 	NSArray *identifiers = [NSArray arrayWithObjects: @"Back", @"Forward", 
-		NSToolbarFlexibleSpaceItemIdentifier, @"Search", nil];
+		@"FirstPage", @"LastPage", @"CurrentPage", @"NumberOfPages", 
+		@"ZoomFactor", @"ZoomIn", @"ZoomOut", @"FitWidth", @"FitHeight", 
+		@"FitPage", @"Search", NSToolbarSeparatorItemIdentifier, 
+		NSToolbarSpaceItemIdentifier, NSToolbarFlexibleSpaceItemIdentifier,
+		NSToolbarCustomizeToolbarItemIdentifier, NSToolbarPrintItemIdentifier, 
+		nil];
 
 	return identifiers;
 }

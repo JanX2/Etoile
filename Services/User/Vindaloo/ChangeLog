@@ -1,4 +1,9 @@
-2007-04-25  Quentin Mathe <qmathe@club-internet.fr>
+2007-04-26  Quentin Mathe <qmathe@club-internet.fr>
+
+	* DocumentTools.m (-toolbarAllowedItemIdentifiers:, 
+	-toolbarDefaultItemIdentifiers:): Modified to return all desired identifiers.
+
+2007-04-26  Quentin Mathe <qmathe@club-internet.fr>
 
 	On the way to streamline Vindaloo UI.
 	* DocumentTools.h:
