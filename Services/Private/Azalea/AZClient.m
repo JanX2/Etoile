@@ -36,6 +36,12 @@
 #import "extensions.h"
 #import "AZDebug.h"
 
+#ifdef HAVE_UNISTD_H // For locahost name
+#  include <unistd.h>
+#endif
+
+
+
 @interface AZClient (AZPrivate)
 - (AZClientIcon *) iconRecursiveWithWidth: (int) w height: (int) h;
 - (ObStackingLayer) calcStackingLayer;;
@@ -52,6 +58,7 @@
 - (void) getShaped;
 - (void) getMwmHints;
 - (void) getGravity;
+- (void) getClientMachine;
 @end
 
 @implementation AZClient
@@ -1326,6 +1333,7 @@
 - (void) updateTitle
 {
     NSString *s = nil;
+    NSString *visible = nil;
      
     /* try netwm */
     if (PROP_GETS(window, net_wm_name, utf8, &s)) {
@@ -1348,7 +1356,17 @@
       }
     }
 
+#if 0
     PROP_SETS(window, net_wm_visible_name, (char*)[title UTF8String]);
+#else
+    if (client_machine) {
+	ASSIGN(visible, ([NSString stringWithFormat: @"%@ (%@)", title, client_machine]));
+    } else
+	ASSIGNCOPY(visible, title);
+
+    PROP_SETS(window, net_wm_visible_name, (char*)[visible UTF8String]);
+    ASSIGNCOPY(title, visible);
+#endif
 
     if (frame)
 	[frame adjustTitle];
@@ -2373,6 +2391,7 @@
        (min/max sizes), so we're ready to set up the decorations/functions */
     [self setupDecorAndFunctions];
   
+    [self getClientMachine];
     [self updateTitle];
     [self updateSmClientId];
     [self updateStrut];
@@ -2826,6 +2845,8 @@
   DESTROY(name);
   DESTROY(class);
   DESTROY(role);
+  DESTROY(client_machine);
+  DESTROY(sm_client_id);
   [super dealloc];
 }
 
@@ -3350,6 +3371,25 @@ AZClient *AZUnderPointer()
 	return [icons objectAtIndex: si];
     }
     return [icons objectAtIndex: li];
+}
+
+- (void) getClientMachine
+{
+    NSString *data = nil;
+    char localhost[128];
+
+    DESTROY(client_machine);
+
+    if (PROP_GETS(window, wm_client_machine, locale, &data)) {
+        gethostname(localhost, 127);
+        localhost[127] = '\0';
+        NSString *l = [NSString stringWithUTF8String: localhost];
+        /*if (strcmp(localhost, data))*/
+        if ([data isEqualToString: l] == NO)
+        {
+            ASSIGN(client_machine, data);
+        }
+    }
 }
 
 @end

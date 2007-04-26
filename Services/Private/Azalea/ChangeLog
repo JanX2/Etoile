@@ -4,6 +4,7 @@
 	* Update to r5751 except client placement and startup notification.
 	* Update to r5822 (skipping r5777:5778). 
 	  Hope there is not side effect.
+	* Update to r5830. 
 
 2007-04-24  Yen-Ju Chen <yjchenx at gmail>
 

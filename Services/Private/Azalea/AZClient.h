@@ -121,6 +121,8 @@ typedef enum
     NSString *title;
     /*! Window title when iconified */
     NSString *icon_title;
+    /*! Hostname of machine running the client */
+    NSString *client_machine;
 
     /*! The application that created the window */
     NSString *name;
