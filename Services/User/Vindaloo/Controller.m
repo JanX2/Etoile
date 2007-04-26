@@ -63,6 +63,7 @@
    [[NSNotificationCenter defaultCenter] removeObserver: self];
    [menuState release];
    [singlePageView release];
+   [tools release];
    [super dealloc];
 }
 
@@ -384,17 +385,12 @@
 
 - (void) myAddDocumentTools
 {
+   NSToolbar* toolbar = [[[NSToolbar alloc] 
+      initWithIdentifier: @"PDFViewerDocument"] autorelease];
+
    tools = [[DocumentTools alloc] initWithFrame: NSMakeRect(0, 0, 0, 0) target: self];
-   
-   // we need to re-frame the scrollview such that the tools view
-   // fits underneath it
-   NSRect scrollViewF = [scrollView frame];
-   [scrollView setFrame: 
-      NSMakeRect(NSMinX(scrollViewF), NSMinY(scrollViewF) + NSHeight([tools frame]),
-                 NSWidth(scrollViewF), NSHeight(scrollViewF) - NSHeight([tools frame]))];
-                 
-   [[[self window] contentView] addSubview: tools];
-   [tools release];
+   [toolbar setDelegate: tools];
+   [[self window] setToolbar: toolbar];
 }
 
 - (void) myCreateSinglePageView

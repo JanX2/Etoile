@@ -28,25 +28,12 @@
 @interface DocumentTools : NSView
 {
    id target;
-   
-   NSButton*     firstBT;
-   NSButton*     previousBT;
-   NSButton*     nextBT;
-   NSButton*     lastBT;
-   NSTextField*  pageTF;
-   NSTextField*  nbpageTF;
-   NSButton*     zoomInBT;
-   NSTextField*  zoomTF;
-   NSButton*     zoomOutBT;
-   NSButton*     fitPageBT;
-   NSButton*     fitWidthBT;
-   NSButton*     fitHeightBT;
 }
 
 /** The frame size of the view is calculated automatically during
     initialization. Thus, the frame's size may be modified to hold
     all tool views. The frame may be heightened but it is never 
-    belittled. You can safley use 0, 0 for the frame's size and rely
+    belittled. You can safely use 0, 0 for the frame's size and rely
     on the initialization to determine and set the minimum required
     width.  */
 - (id) initWithFrame: (NSRect)aFrame target: (id)aTarget;

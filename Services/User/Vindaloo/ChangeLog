@@ -1,3 +1,12 @@
+2007-04-25  Quentin Mathe <qmathe@club-internet.fr>
+
+	On the way to streamline Vindaloo UI.
+	* DocumentTools.h:
+	* DocumentTools.m:
+	Rewritten to use NSToolbar.
+	* Controller.m (-myAddDocumentTools): Plugged in the new toolbar in place 
+	of the old one.
+
 2007-02-08  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Udpated to include etoile.make, this should allow 
