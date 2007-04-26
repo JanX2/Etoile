@@ -345,7 +345,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
     if (config_resize_popup_pos == 1) /* == "Top" */
 	[popup positionWithGravity: SouthGravity
 		x: [[c frame] area].x + [[c frame] area].width/2
-		y: [[c frame] area].y];
+		y: [[c frame] area].y - ob_rr_theme->bwidth];
     else /* == "Center" */
 	[popup positionWithGravity: CenterGravity
 	    x: [[c frame] area].x + [[c frame] size].left + [c area].width / 2

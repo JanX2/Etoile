@@ -137,7 +137,7 @@ static void save_commands()
 {
     SmProp *props[2];
     SmProp prop_cmd = { SmCloneCommand, SmLISTofARRAY8, 1, };
-    SmProp prop_res = { SmRestartCommand, SmLISTofARRAY8, };
+    SmProp prop_res = { SmRestartCommand, SmLISTofARRAY8 };
     int i;
 
     prop_cmd.vals = calloc(sizeof(SmPropValue), sm_argc);
