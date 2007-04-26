@@ -599,7 +599,6 @@ typedef enum
 - (void) toggleBorder: (BOOL) show;
 - (void) applyStartupStateAtX: (int) x y: (int) y;
 - (void) restoreSessionStacking;
-- (void) unfocus;
 
 /* Accessories */
 - (AZFrame *) frame;

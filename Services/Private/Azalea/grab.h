@@ -30,7 +30,6 @@ void grab_shutdown(BOOL reconfig);
 
 BOOL grab_keyboard(BOOL grab);
 BOOL grab_pointer(BOOL grab, ObCursor cur);
-BOOL grab_pointer_window(BOOL grab, ObCursor cur, Window win);
 int grab_server(BOOL grab);
 
 BOOL grab_on_keyboard();

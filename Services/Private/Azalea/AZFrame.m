@@ -266,6 +266,7 @@ static Visual *check_32bit_client(AZClient *c)
 {
   focused = hilite;
   [self render];
+  XFlush(ob_display);
 }
 
 - (void) adjustTitle

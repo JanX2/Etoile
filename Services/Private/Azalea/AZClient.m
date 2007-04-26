@@ -958,6 +958,7 @@
     return YES;
 }
 
+#if 0
 /* Used when the current client is closed or otherwise hidden, focus_last will
    then prevent focus from going to the mouse pointer
 */
@@ -968,7 +969,7 @@
 	[[AZFocusManager defaultManager] fallback: NO];
     }
 }
-
+#endif
 - (void) activateHere: (BOOL) here user: (BOOL) user 
 {
     AZFocusManager *fManager = [AZFocusManager defaultManager];

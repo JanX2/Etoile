@@ -118,31 +118,6 @@ BOOL grab_pointer(BOOL grab, ObCursor cur)
     return ret;
 }
 
-BOOL grab_pointer_window(BOOL grab, ObCursor cur, Window win)
-{
-    BOOL ret = NO;
-
-    if (grab) {
-        if (pgrabs++ == 0) {
-            ret = XGrabPointer(ob_display, win, False, GRAB_PTR_MASK,
-                               GrabModeAsync, GrabModeAsync, None,
-                               ob_cursor(cur),
-                               event_curtime) == Success;
-            if (!ret)
-                --pgrabs;
-            else
-                grab_time = event_curtime;
-        } else
-            ret = YES;
-    } else if (pgrabs > 0) {
-        if (--pgrabs == 0) {
-            XUngrabPointer(ob_display, ungrab_time());
-        }
-        ret = YES;
-    }
-    return ret;
-}
-
 int grab_server(BOOL grab)
 {
     static unsigned int sgrabs = 0;
@@ -187,7 +162,6 @@ void grab_shutdown(BOOL reconfig)
 
     while (grab_keyboard(NO));
     while (grab_pointer(NO, OB_CURSOR_NONE));
-    while (grab_pointer_window(NO, OB_CURSOR_NONE, None));
     while (grab_server(NO));
 }
 

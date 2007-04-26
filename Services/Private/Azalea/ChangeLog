@@ -2,6 +2,8 @@
 
 	* Spot an error, though no side-effect is observed before the fix.
 	* Update to r5751 except client placement and startup notification.
+	* Update to r5822 (skipping r5777:5778). 
+	  Hope there is not side effect.
 
 2007-04-24  Yen-Ju Chen <yjchenx at gmail>
 

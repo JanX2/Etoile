@@ -348,7 +348,7 @@ static AZClientManager *sharedInstance;
 	[client focus];
     }
 
-    /* client_activate does this but we aret using it so we have to do it
+    /* client_activate does this but we aren't using it so we have to do it
        here as well */
     if ([screen showingDesktop])
       [screen showDesktop: NO];
@@ -388,10 +388,16 @@ static AZClientManager *sharedInstance;
     NSAssert(client != NULL, @"Client cannot be nil");
     AZFocusManager *fManager = [AZFocusManager defaultManager];
 
-    /* update the focus lists */
-    [fManager focusOrderRemove: client];
+    /* we dont want events no more. do this before hiding the frame so we
+       don't generate more events */
+    XSelectInput(ob_display, [client window], NoEventMask);
+
+    [[client frame] hide];
+    /* flush to send the hide to the server quickly */
+    XFlush(ob_display);
 
     if ([fManager focus_client] == client) {
+#if 0
         XEvent e;
 
         /* focus the last focused window on the desktop, and ignore enter
@@ -403,23 +409,31 @@ static AZClientManager *sharedInstance;
         [client set_focus_notify: NO];
         [client set_modal: NO];
 	[client unfocus];
+#endif
+        /* ignore enter events from the unmap so it doesnt mess with the focus
+         */
+	[[AZEventHandler defaultHandler] ignoreQueuedEnters];
     }
-
+#if 0
     /* potentially fix focusLast */
     if (config_focus_last)
         grab_pointer(YES, OB_CURSOR_NONE);
 
     [[client frame] hide];
     XFlush(ob_display);
-
+#endif
     [[AZKeyboardHandler defaultHandler] grab: NO forClient: client];
     [[AZMouseHandler defaultHandler] grab: NO forClient: client];
 
     /* remove the window from our save set */
     XChangeSaveSet(ob_display, [client window], SetModeDelete);
 
+#if 0
     /* we dont want events no more */
     XSelectInput(ob_display, [client window], NoEventMask);
+#endif
+    /* update the focus lists */
+    [fManager focusOrderRemove: client];
 
     [clist removeObject: client];
     [[AZStacking stacking] removeWindow: client];
@@ -535,10 +549,10 @@ static AZClientManager *sharedInstance;
      
     /* update the list hints */
     [self setList];
-
+#if 0
     if (config_focus_last)
         grab_pointer(NO, OB_CURSOR_NONE);
-
+#endif
 }
 
 - (AZClient *) clientAtIndex: (int) index

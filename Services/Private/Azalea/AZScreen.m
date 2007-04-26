@@ -341,6 +341,7 @@ static AZScreen *sharedInstance;
 
 - (void) setDesktop: (unsigned int) num
 {
+    AZClient *c;
     int i, count;
     unsigned int old;
     AZStacking *stacking = [AZStacking stacking];
@@ -389,8 +390,21 @@ static AZScreen *sharedInstance;
         }
     }
 
-    [[AZEventHandler defaultHandler] ignoreQueuedEnters];
+    /* have to try focus here because when you leave an empty desktop
+       there is no focus out to watch for */
+    AZFocusManager *fManager = [AZFocusManager defaultManager];
+    AZClient *fc = [fManager focus_client];
+    if ((c = [fManager fallbackTarget: YES old: fc]))
+    {
+        /* reduce flicker by hiliting now rather than waiting for the server
+           FocusIn event */
+	[[c frame] adjustFocusWithHilite: YES];
+	[c focus];
+    }
 
+
+    [[AZEventHandler defaultHandler] ignoreQueuedEnters];
+#if 0
     AZFocusManager *fManager = [AZFocusManager defaultManager];
     [fManager set_focus_hilite: [fManager fallbackTarget: YES
 			                  old: [fManager focus_client]]];
@@ -406,6 +420,7 @@ static AZScreen *sharedInstance;
         /*if (!focus_client)*/
 	[[fManager focus_hilite] focus];
     }
+#endif
 }
 
 - (unsigned int) desktop
@@ -629,7 +644,13 @@ done_cycle:
     } 
     else 
     {
-        [fManager fallback: YES];
+//        [fManager fallback: YES];
+        AZClient *c;
+
+        /* use NULL for the "old" argument because the desktop was focused
+           and we don't want to fallback to the desktop by default */
+	if ((c = [fManager fallbackTarget: YES old: nil]))
+	    [c focus];
     }
 
     show = !!show; /* make it boolean */

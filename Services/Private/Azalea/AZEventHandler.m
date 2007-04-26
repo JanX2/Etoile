@@ -139,7 +139,9 @@ static AZEventHandler *sharedInstance;
 
 /* callback */
 - (void) processEvent: (XEvent *) e data: (void *) data;
+#if 0 // Not used in OpenBox3
 - (void) clientDestroy: (NSNotification *) not;
+#endif
 - (BOOL) menuHideDelayFunc: (id) data;
 @end
 
@@ -206,10 +208,12 @@ static AZEventHandler *sharedInstance;
     IceAddConnectionWatch(ice_watch, NULL);
 #endif
 
+#if 0 // Not used in OpenBox3
     [[NSNotificationCenter defaultCenter] addObserver: self
 	    selector: @selector(clientDestroy:)
 	    name: AZClientDestroyNotification
 	    object: nil];
+#endif
 }
 
 - (void) shutdown: (BOOL) reconfig
@@ -220,7 +224,9 @@ static AZEventHandler *sharedInstance;
     IceRemoveConnectionWatch(ice_watch, NULL);
 #endif
 
+#if 0 // Not used in OpenBox3
     [[NSNotificationCenter defaultCenter] removeObserver: self];
+#endif
 
     XFreeModifiermap(modmap);
 }
@@ -354,15 +360,59 @@ static AZEventHandler *sharedInstance;
             ed->ignored = NO;
 
     /* deal with it in the kernel */
-    if (group)
+    AZFocusManager *fManager = [AZFocusManager defaultManager];
+    if (e->type == FocusIn) {
+        if (client && client != [fManager focus_client]) {
+	    [[client frame] adjustFocusWithHilite: YES];
+	    [fManager setClient: client];
+	    [client calcLayer];
+        }
+    } else if (e->type == FocusOut) {
+        BOOL nomove = NO;
+        XEvent ce;
+
+        /* Look for the followup FocusIn */
+        if (!XCheckIfEvent(ob_display, &ce, look_for_focusin, NULL)) {
+            /* There is no FocusIn, this means focus went to a window that
+               is not being managed, or a window on another screen. */
+            /* nothing is focused */
+	    [fManager setClient: nil];
+        } else if (ce.xany.window == e->xany.window) {
+            /* If focus didn't actually move anywhere, there is nothing to do*/
+            nomove = YES;
+        } else if (ce.xfocus.detail == NotifyPointerRoot ||
+                   ce.xfocus.detail == NotifyDetailNone ||
+                   ce.xfocus.detail == NotifyInferior) {
+            /* Focus has been reverted to the root window or nothing
+               FocusOut events come after UnmapNotify, so we don't need to
+               worry about focusing an invalid window
+             */
+	    [fManager fallback: YES];
+        } else {
+            /* Focus did move, so process the FocusIn event */
+            ObEventData ed = { .ignored = NO };
+	    [self processEvent: &ce data: &ed];
+            if (ed.ignored) {
+                /* The FocusIn was ignored, this means it was on a window
+                   that isn't a client. */
+                [fManager fallback: YES];
+            }
+        }
+
+        if (client && !nomove) {
+	    [[client frame] adjustFocusWithHilite: NO];
+            /* focus_set_client has already been called for sure */
+	    [client calcLayer];
+        }
+    } else if (group) {
         [self handleGroup: group event:  e];
-    else if (client) 
+    } else if (client) {
         [self handleClient: client event:  e];
-    else if (window == RootWindow(ob_display, ob_screen))
+    } else if (window == RootWindow(ob_display, ob_screen)) {
         [self handleRootEvent: e];
-    else if (e->type == MapRequest) 
+    } else if (e->type == MapRequest) {
 	[[AZClientManager defaultManager] manageWindow: window];
-    else if (e->type == ConfigureRequest) {
+    } else if (e->type == ConfigureRequest) {
         /* unhandled configure requests must be used to configure the
            window directly */
         XWindowChanges xwc;
@@ -414,9 +464,8 @@ static AZEventHandler *sharedInstance;
 		} else if (e->type == KeyPress) {
 		    AZFocusManager *fManager = [AZFocusManager defaultManager];
 		    AZClient *focus_cycle_target = [fManager focus_cycle_target];
-		    AZClient *focus_hilite = [fManager focus_hilite];
 		    [kHandler processEvent: e
-			    forClient: (focus_cycle_target ? focus_cycle_target: (focus_hilite ? focus_hilite : client))];
+			    forClient: (focus_cycle_target ? focus_cycle_target: client)];
 		}
             }
         }
@@ -499,7 +548,7 @@ static AZEventHandler *sharedInstance;
     Atom msgtype;
     int i=0;
     ObFrameContext con;
-    AZFocusManager *fManager = [AZFocusManager defaultManager];
+//    AZFocusManager *fManager = [AZFocusManager defaultManager];
      
     switch (e->type) {
     case VisibilityNotify:
@@ -539,6 +588,7 @@ static AZEventHandler *sharedInstance;
             }
         }
         break;
+#if 0 // Removed in OpenBox3
     case FocusIn:
         if (client != [fManager focus_client]) {
 	    [fManager setClient: client];
@@ -588,6 +638,7 @@ static AZEventHandler *sharedInstance;
 	  [client calcLayer];
 	}
         break;
+#endif
     case LeaveNotify:
         con = frame_context(client, e->xcrossing.window);
         switch (con) {
@@ -612,6 +663,8 @@ static AZEventHandler *sharedInstance;
 	    [[client frame] adjustState];
             break;
         case OB_FRAME_CONTEXT_FRAME:
+            if ([[AZKeyboardHandler defaultHandler] interactivelyGrabbed])
+                break;
 	    /* Used by focus follow mouse */
             break;
         default:
@@ -650,6 +703,8 @@ static AZEventHandler *sharedInstance;
 	    [[client frame] adjustState];
             break;
         case OB_FRAME_CONTEXT_FRAME:
+            if ([[AZKeyboardHandler defaultHandler] interactivelyGrabbed])
+                break;
             if (e->xcrossing.mode == NotifyGrab ||
                 e->xcrossing.mode == NotifyUngrab)
             {
@@ -1135,6 +1190,7 @@ static AZEventHandler *sharedInstance;
     return NO; /* no repeat */
 }
 
+#if 0 // Not used in OpenBox3
 - (void) clientDestroy: (NSNotification *) not
 {
   AZClient *client = [not object];
@@ -1142,6 +1198,7 @@ static AZEventHandler *sharedInstance;
   if (client == [[AZFocusManager defaultManager] focus_hilite])
     [[AZFocusManager defaultManager] set_focus_hilite: nil];
 }
+#endif
 
 - (Window) getWindow: (XEvent *) e
 {
@@ -1280,10 +1337,6 @@ static AZEventHandler *sharedInstance;
         if (detail == NotifyNonlinearVirtual)
             return YES;
 
-        /* This means focus reverted off of a client */
-        if (detail == NotifyInferior)
-            return YES;
-
         /* Otherwise.. */
         return NO;
     } else {
@@ -1308,6 +1361,9 @@ static AZEventHandler *sharedInstance;
         /* This means focus moved from one client to another */
         if (detail == NotifyNonlinearVirtual)
             return YES;
+        /* This means focus had moved to our frame window and now moved off */
+        if (detail == NotifyNonlinear)
+            return YES;
 
         /* Otherwise.. */
         return NO;
@@ -1323,11 +1379,10 @@ static AZEventHandler *sharedInstance;
             return YES;
         break;
     case FocusIn:
-    case FocusOut:
-        /* I don't think this should ever happen with our event masks, but
-           if it does, we don't want it. */
-        if (client == nil)
+        if (![self wantedFocusEvent: e])
             return YES;
+	break;
+    case FocusOut:
         if (![self wantedFocusEvent: e])
             return YES;
         break;

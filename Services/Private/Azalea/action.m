@@ -342,6 +342,11 @@ void setup_action_showmenu(AZAction **a, ObUserAction uact)
     }
 }
 
+void setup_action_focus(AZAction **a, ObUserAction uact)
+{
+    [(*a) data_pointer]->any.client_action = OB_CLIENT_ACTION_OPTIONAL;
+}
+
 void setup_client_action(AZAction **a, ObUserAction uact)
 {
     [(*a) data_pointer]->any.client_action = OB_CLIENT_ACTION_ALWAYS;
@@ -402,7 +407,7 @@ ActionString actionstrings[] =
     {
         @"focus",
         action_focus,
-        setup_client_action
+        setup_action_focus
     },
     {
         @"unfocus",
@@ -976,7 +981,7 @@ void action_run_list(NSArray *acts, AZClient *c, ObFrameContext context,
            it won't work right unless we XUngrabKeyboard first,
            even though we grabbed the key/button Asychronously.
            e.g. "gnome-panel-control --main-menu" */
-        XUngrabKeyboard(ob_display, event_curtime);
+	grab_keyboard(NO);
     }
 
     count = [acts count];
@@ -1078,8 +1083,15 @@ void action_focus(union ActionData *data)
     /* similar to the openbox dock for dockapps, don't let user actions give
        focus to 3rd-party docks (panels) either (unless they ask for it
        themselves). */
-    if ([data->client.any.c type] != OB_CLIENT_TYPE_DOCK) {
-        [data->client.any.c focus];
+    if (data->client.any.c) {
+	if ([data->client.any.c type] != OB_CLIENT_TYPE_DOCK) {
+	    [data->client.any.c focus];
+	}
+    } else {
+        /* focus action on something other than a client, make keybindings
+           work for this openbox instance, but don't focus any specific client
+        */
+        [[AZFocusManager defaultManager] focusNothing];
     }
 }
 
