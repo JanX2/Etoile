@@ -108,6 +108,22 @@
 	}
 }
 
+//Should not be called any longer...
+- (void) connectionFailed:(XMPPAccount*)_account
+{
+	NSLog(@"Account: %@",_account);
+	PasswordWindowController * passwordWindow = [[PasswordWindowController alloc] initWithWindowNibName:@"PasswordBox" forJID:[_account jid]];
+	if([NSApp runModalForWindow:[passwordWindow window]] == 0)
+	{
+		[_account release];
+		account = [[XMPPAccount alloc] init];
+	}
+	else
+	{
+		[_account release];
+	}
+}
+
 - (IBAction) showRosterWindow:(id)_sender
 {
 	[rosterWindow showWindow:_sender];

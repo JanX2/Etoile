@@ -26,6 +26,14 @@
 	XMPPConnection * connection;
 }
 /**
+ * Sets the default JID (stored in address book)
+ */
++ (void) setDefaultJID:(JID*) aJID;
+/**
+ * Sets the default JID along with a server to use for connection.
+ */
++ (void) setDefaultJID:(JID*) aJID withServer:(NSString*) aServer;
+/**
  * Attempt to reconnect after disconnection.
  */
 - (void) reconnect;

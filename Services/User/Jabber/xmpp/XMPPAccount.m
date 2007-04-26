@@ -11,6 +11,7 @@
 #import <AddressBook/ADMultiValue.h>
 #import <AddressBook/ADPerson.h>
 #define ABMultiValue ADMultiValue
+#define ABMutableMultiValue ADMutableMultiValue
 #define ABAddressBook ADAddressBook
 #define kABJabberInstantProperty ADJabberInstantProperty
 #else
@@ -60,7 +61,32 @@ NSString * passwordForJID(JID * aJID)
 #endif
 }
 
+void setDefault(NSString * dictionary, id key, id value)
+{
+	NSMutableDictionary * dict = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:dictionary]];
+	if(dict == nil)
+	{
+		dict = [NSMutableDictionary dictionary];
+	}
+	[dict setValue:value forKey:key];
+	[[NSUserDefaults standardUserDefaults] setObject:dict forKey:dictionary];
+}
+
 @implementation XMPPAccount
++ (void) setDefaultJID:(JID*) aJID
+{
+	ABMutableMultiValue * jids = [[[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty] mutableCopy];
+	NSString * defaultID = [jids primaryIdentifier];
+	[jids addValue:[aJID jidString] withLabel:defaultID];
+	[[[ABAddressBook sharedAddressBook] me] setValue:jids forProperty:kABJabberInstantProperty];
+	[[ABAddressBook sharedAddressBook] save];
+}
++ (void) setDefaultJID:(JID*) aJID withServer:(NSString*) aServer
+{
+	[self setDefaultJID:aJID];
+	setDefault(@"Servers", [aJID jidString], aServer);
+}
+
 - (id) initWithName:(NSString*)_name
 {
 	self = [super init];
@@ -104,7 +130,9 @@ NSString * passwordForJID(JID * aJID)
 							   userInfo:[NSDictionary dictionaryWithObject:myJID
 							                                        forKey:@"JID"]] raise];
 	}
-	return nil; // Jesse says: I added this, but I don't think it's right -- what should happen here?
+	// Never reached; just used to eliminate a warning
+	// from the compiler that doesn't know about exceptions
+	return nil; 
 }
 
 - (void) reconnect
