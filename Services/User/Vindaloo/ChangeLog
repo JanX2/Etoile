@@ -1,5 +1,12 @@
 2007-04-26  Quentin Mathe <qmathe@club-internet.fr>
 
+	* DocumentTools.m
+	(-toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:): Removed 
+	redundant toolbar item instantations which translated into memory leaks.
+	Added labels to toolbar items.
+
+2007-04-26  Quentin Mathe <qmathe@club-internet.fr>
+
 	* DocumentTools.m (-toolbarAllowedItemIdentifiers:, 
 	-toolbarDefaultItemIdentifiers:): Modified to return all desired identifiers.
 

@@ -58,55 +58,55 @@
 
 	if ([identifier isEqual: @"Back"]) 
 	{
-		item = [[NSToolbarItem alloc] initWithItemIdentifier: @"PreviousPage"];
+		[item setLabel: _(@"Previous Page")];
 		[item setImage: [NSImage imageNamed: @"Previous.png"]];
 		[item setAction: @selector(previousPage:)];
 	} 
 	else if ([identifier isEqual: @"Forward"]) 
 	{
-		item = [[NSToolbarItem alloc] initWithItemIdentifier: @"NextPage"];
+		[item setLabel: _(@"Next Page")];
 		[item setImage: [NSImage imageNamed: @"Next.png"]];
 		[item setAction: @selector(nextPage:)];
 	} 
 	else if ([identifier isEqual: @"FirstPage"]) 
 	{
-		item =  [[NSToolbarItem alloc] initWithItemIdentifier: @"FirstPage"];
+		[item setLabel: _(@"First Page")];
 		[item setImage: [NSImage imageNamed: @"First.png"]];
 		[item setAction: @selector(firstPage:)];
 	} 
 	else if ([identifier isEqual: @"LastPage"]) 
 	{
-		item = [[NSToolbarItem alloc] initWithItemIdentifier: @"LastPage"];
+		[item setLabel: _(@"Last Page")];
 		[item setImage: [NSImage imageNamed: @"Last.png"]];
 		[item setAction: @selector(lastPage:)];
 	}
 	else if ([identifier isEqual: @"ZoomIn"]) 
 	{
-		item = [[NSToolbarItem alloc] initWithItemIdentifier: @"ZoomIn"];
+		[item setLabel: _(@"Zoom In")];
 		[item setImage: [NSImage imageNamed: @"ZoomIn.png"]];
 		[item setAction: @selector(zoomIn:)];
 	}
 	else if ([identifier isEqual: @"ZoomOut"]) 
 	{
-		item = [[NSToolbarItem alloc] initWithItemIdentifier: @"ZoomOut"];
+		[item setLabel: _(@"Zoom Out")];
 		[item setImage: [NSImage imageNamed: @"ZoomOut.png"]];
 		[item setAction: @selector(zoomOut:)];
 	}
 	else if ([identifier isEqual: @"FitPage"]) 
 	{
-		item = [[NSToolbarItem alloc] initWithItemIdentifier: @"FitPage"];
+		[item setLabel: _(@"Full Page")];
 		[item setImage: [NSImage imageNamed: @"FitPage.png"]];
 		[item setAction: @selector(toggleFitPage:)];
 	}
 	else if ([identifier isEqual: @"FitWidth"]) 
 	{
-		item = [[NSToolbarItem alloc] initWithItemIdentifier: @"FitWidth"];
+		[item setLabel: _(@"Full Page Width")];
 		[item setImage: [NSImage imageNamed: @"FitWidth.png"]];
 		[item setAction: @selector(toggleFitWidth:)];
 	}
 	else if ([identifier isEqual: @"FitHeight"]) 
 	{
-		item = [[NSToolbarItem alloc] initWithItemIdentifier: @"FitHeight"];
+		[item setLabel: _(@"Full Page Height")];
 		[item setImage: [NSImage imageNamed: @"FitHeight.png"]];
 		[item setAction: @selector(toggleFitHeight:)];
 	}
@@ -119,7 +119,7 @@
 		[fieldCurrentPage sizeToFit];
 		[fieldCurrentPage setFrameSize: NSMakeSize(40, NSHeight([fieldCurrentPage frame]))];
 
-		item = [[NSToolbarItem alloc] initWithItemIdentifier: @"CurrentPage"];
+		[item setLabel: _(@"Page")];
 		[item setView: fieldCurrentPage];
 	}
 	else if ([identifier isEqual: @"NumberOfPages"]) 
@@ -138,7 +138,7 @@
 		[fieldPageNumber setAction: @selector(takePageFrom:)];
 		[fieldPageNumber setTarget: target];
 
-		item = [[NSToolbarItem alloc] initWithItemIdentifier: identifier];
+		[item setLabel: _(@"Number of Pages")];
 		[item setView: fieldPageNumber];
 	}
 	else if ([identifier isEqual: @"ZoomFactor"]) 
@@ -152,6 +152,7 @@
 		[fieldZoomFactor setAction: @selector(takeZoomFrom:)];
 		[fieldZoomFactor setTarget: target];
 
+		[item setLabel: _(@"Scale")];
 		[item setView: fieldZoomFactor];
 	}
 	else if ([identifier isEqual: @"Search"]) 
@@ -159,6 +160,8 @@
 		NSTextField *searchField = [[[NSTextField alloc] initWithFrame: NSZeroRect] autorelease];
 
 		[searchField setFrameSize: NSMakeSize(100, 22)];
+
+		[item setLabel: _(@"Search")];
 		[item setView: searchField];
 	}
 	else 
