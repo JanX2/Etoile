@@ -2311,8 +2311,11 @@
 {
     /* move up the direct transient chain as far as possible */
     AZClient *t_for = self;
-    while ([t_for transient_for] && [t_for transient_for] != OB_TRAN_GROUP)
+    while ([t_for transient_for] && [t_for transient_for] != OB_TRAN_GROUP &&
+	   [t_for normal])
+    {
       t_for = [t_for transient_for];
+    }
 
     return t_for;
 }
