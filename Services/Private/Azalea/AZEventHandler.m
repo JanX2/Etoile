@@ -98,6 +98,8 @@ Time event_curtime = CurrentTime;
 
 BOOL event_time_after(Time t1, Time t2)
 {
+    if ((t1 == CurrentTime) || (t2 == CurrentTime))
+	NSLog(@"Internal Error: t1 or t2 should not be CurrentTime");
     /*
       Timestamp values wrap around (after about 49.7 days). The server, given
       its current time is represented by timestamp T, always interprets
@@ -1020,7 +1022,7 @@ static AZEventHandler *sharedInstance;
         } else if (msgtype == prop_atoms.net_wm_icon) {
 	    [client updateIcons];
         } else if (msgtype == prop_atoms.net_wm_user_time) {
-            [client updateUserTime: YES];
+            [client updateUserTime];
         } else if (msgtype == prop_atoms.sm_client_id) {
 	    [client updateSmClientId];
         } else if (msgtype == prop_atoms.gnustep_wm_attr) {

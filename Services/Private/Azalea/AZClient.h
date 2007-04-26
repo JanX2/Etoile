@@ -517,7 +517,7 @@ typedef enum
 - (void) updateIcons;
 
 /*! Updates the window's user time */
-- (void) updateUserTime: (BOOL) new_event;
+- (void) updateUserTime;
 
 /*! Set up what decor should be shown on the window and what functions should
     be allowed (ObClient::decorations and ObClient::functions).

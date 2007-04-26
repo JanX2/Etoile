@@ -28,6 +28,7 @@
 #import "openbox.h"
 #import "render/theme.h"
 #import "action.h"
+#import "grab.h"
 
 static NSMutableArray *menu_frame_visible = nil;
 

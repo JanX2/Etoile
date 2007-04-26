@@ -37,10 +37,9 @@
 #import "grab.h"
 #import "prop.h"
 #import "AZMenuFrame.h"
+#import "AZDebug.h"
 
 NSString *AZClientDestroyNotification = @"AZClientDestroyNotification";
-
-Time client_last_user_time = CurrentTime;
 
 /*! The event mask to grab on client windows */
 #define CLIENT_EVENTMASK (PropertyChangeMask | StructureNotifyMask)
@@ -195,7 +194,7 @@ static AZClientManager *sharedInstance;
     [client set_wmstate: WithdrawnState]; /* make sure it gets updated first time */
     [client set_layer: -1];
     [client set_desktop: [screen numberOfDesktops]]; /* always an invalid value */
-    [client set_user_time: client_last_user_time]; 
+    [client set_user_time: CurrentTime]; 
 
     [client getAll];
     [client restoreSessionState];
@@ -286,6 +285,7 @@ static AZClientManager *sharedInstance;
     [[AZMouseHandler defaultHandler] grab: YES forClient: client];
 
     if (activate) {
+	unsigned int last_time = [fManager focus_client] ? [[fManager focus_client] user_time] : CurrentTime;
         /* This is focus stealing prevention */
 
         /* If a nothing at all, or a parent was focused, then focus this
@@ -298,8 +298,8 @@ static AZClientManager *sharedInstance;
         else
         {
             /* If time stamp is old, don't steal focus */
-            if ([client user_time] &&
-                !event_time_after([client user_time], client_last_user_time))
+            if ([client user_time] && last_time &&
+                !event_time_after([client user_time], last_time))
             {
                 activate = NO;
             }

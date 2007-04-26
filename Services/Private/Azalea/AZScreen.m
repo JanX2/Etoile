@@ -87,7 +87,7 @@ static AZScreen *sharedInstance;
                                        CopyFromParent, InputOutput,
                                        CopyFromParent,
                                        CWOverrideRedirect, &attrib);
-    XMapRaised(ob_display, screen_support_win);
+    XMapWindow(ob_display, screen_support_win);
 
     if (![self replaceWM]) {
         XDestroyWindow(ob_display, screen_support_win);

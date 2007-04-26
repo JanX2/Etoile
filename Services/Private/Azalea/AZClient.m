@@ -34,6 +34,7 @@
 #import "action.h"
 #import "session.h"
 #import "extensions.h"
+#import "AZDebug.h"
 
 @interface AZClient (AZPrivate)
 - (AZClientIcon *) iconRecursiveWithWidth: (int) w height: (int) h;
@@ -921,8 +922,12 @@
     }
 
     if ([oself can_focus]) {
+        /* This can cause a BadMatch error with CurrentTime, or if an app
+           passed in a bad time for _NET_WM_ACTIVE_WINDOW. */
+        AZXErrorSetIgnore(YES);
         XSetInputFocus(ob_display, [oself window], RevertToPointerRoot,
                        event_curtime);
+        AZXErrorSetIgnore(NO);
     }
 
     if ([oself focus_notify]) {
@@ -966,13 +971,15 @@
 
 - (void) activateHere: (BOOL) here user: (BOOL) user 
 {
+    AZFocusManager *fManager = [AZFocusManager defaultManager];
+    unsigned int last_time = [fManager focus_client] ? [[fManager focus_client] user_time] : CurrentTime;
     AZScreen *screen = [AZScreen defaultScreen];
     /* XXX do some stuff here if user is false to determine if we really want
        to activate it or not (a parent or group member is currently
        active)?
     */
-    if (!user && event_curtime &&
-        !event_time_after(event_curtime, client_last_user_time))
+    if (!user && event_curtime && last_time &&
+        !event_time_after(event_curtime, last_time))
     {
       [self hilite: YES];
     }
@@ -1531,25 +1538,18 @@
 	[frame adjustIcon];
 }
 
-- (void) updateUserTime: (BOOL) new_event;
+- (void) updateUserTime
 {
     unsigned long time;
 
     if (PROP_GET32([self window], net_wm_user_time, cardinal, &time)) {
-        user_time = time;
         /* we set this every time, not just when it grows, because in practice
            sometimes time goes backwards! (ntpdate.. yay....) so.. if it goes
            backward we don't want all windows to stop focusing. we'll just
            assume noone is setting times older than the last one, cuz that
            would be pretty stupid anyways
-           However! This is called when a window is mapped to get its user time
-           but it's an old number, it's not changing it from new user
-           interaction, so in that case, don't change the last user time.
         */
-        if (new_event)
-	{
-	    client_last_user_time = time;
-	}
+	user_time = time;
     }
 }
 
@@ -2279,7 +2279,7 @@
 	AZClient *c = nil;
 	while ((c = [e nextObject]))
 	{
-	    if ([c transient_for] == nil)
+	    if (([c transient_for] == nil) && [c normal])
 		[ret insertObject: c atIndex: 0];
  	}
 	if ([ret count] == 0) /* no group parents */
@@ -2376,7 +2376,7 @@
     [self updateSmClientId];
     [self updateStrut];
     [self updateIcons];
-    [self updateUserTime: NO];
+    [self updateUserTime];
 }
 
 - (void) restoreSessionState
