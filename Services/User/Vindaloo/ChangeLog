@@ -1,5 +1,12 @@
 2007-04-26  Quentin Mathe <qmathe@club-internet.fr>
 
+	* DocumentTools.m:
+	(-toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:): Modified to 
+	rely on IconKit and related Icon Theme support for any standard icons.
+	* GNUmakefile: Updated to link IconKit.
+
+2007-04-26  Quentin Mathe <qmathe@club-internet.fr>
+
 	Fixed search feature.
 	* DocumentTools.h:
 	* DocumentTools.m:

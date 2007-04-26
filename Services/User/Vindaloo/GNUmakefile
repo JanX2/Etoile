@@ -17,7 +17,7 @@ Vindaloo_MAIN_MODEL_FILE = Main
 # Used Libraries
 #
 Vindaloo_LIB_DIRS =
-Vindaloo_GUI_LIBS = -lPopplerKit
+Vindaloo_GUI_LIBS = -lPopplerKit -lIconKit
 
 #
 # Global Resource files

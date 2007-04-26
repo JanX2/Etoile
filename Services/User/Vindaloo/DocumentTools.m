@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#import <IconKit/IconKit.h>
 #import "Controller.h"
 #import "SearchController.h"
 #import "SearchView.h"
@@ -63,13 +64,15 @@
 	if ([identifier isEqual: @"Back"]) 
 	{
 		[item setLabel: _(@"Previous Page")];
-		[item setImage: [NSImage imageNamed: @"Previous.png"]];
+		//[item setImage: [NSImage imageNamed: @"Previous.png"]];
+		[item setImage: [[IKIcon iconWithIdentifier: @"go-previous"] image]];
 		[item setAction: @selector(previousPage:)];
 	} 
 	else if ([identifier isEqual: @"Forward"]) 
 	{
 		[item setLabel: _(@"Next Page")];
-		[item setImage: [NSImage imageNamed: @"Next.png"]];
+		//[item setImage: [NSImage imageNamed: @"Next.png"]];
+		[item setImage: [[IKIcon iconWithIdentifier: @"go-next"] image]];
 		[item setAction: @selector(nextPage:)];
 	} 
 	else if ([identifier isEqual: @"FirstPage"]) 
@@ -87,13 +90,15 @@
 	else if ([identifier isEqual: @"ZoomIn"]) 
 	{
 		[item setLabel: _(@"Zoom In")];
-		[item setImage: [NSImage imageNamed: @"ZoomIn.png"]];
+		//[item setImage: [NSImage imageNamed: @"ZoomIn.png"]];
+		[item setImage: [[IKIcon iconWithIdentifier: @"zoom-in"] image]];
 		[item setAction: @selector(zoomIn:)];
 	}
 	else if ([identifier isEqual: @"ZoomOut"]) 
 	{
 		[item setLabel: _(@"Zoom Out")];
-		[item setImage: [NSImage imageNamed: @"ZoomOut.png"]];
+		//[item setImage: [NSImage imageNamed: @"ZoomOut.png"]];
+		[item setImage: [[IKIcon iconWithIdentifier: @"zoom-out"] image]];
 		[item setAction: @selector(zoomOut:)];
 	}
 	else if ([identifier isEqual: @"FitPage"]) 
