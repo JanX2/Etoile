@@ -179,6 +179,8 @@ NSString *IKIconChangedNotification = @"IKIconChangedNotification";
     return nil;
 
   iconPath = [[IKIconTheme theme] iconPathForIdentifier: ident];
+  NSDebugLLog(@"IconKit", @"Icon Theme returns path %@ for identifier %@", 
+    iconPath, ident);
   if (iconPath != nil)
     {
       _image = [[NSImage alloc] initWithContentsOfFile: iconPath];

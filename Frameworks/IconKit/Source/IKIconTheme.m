@@ -34,6 +34,7 @@
  * Private variables and constants
  */
 
+#define ThemePathComponent @"Themes"
 #define IconThemePathComponent @"Themes/Icon"
 #define IconThemeExt @"icontheme"
 
@@ -96,9 +97,17 @@ static IKIconTheme *activeTheme = nil;
 	while ((parentPath = [e nextObject]) != nil)
 	{
 		NSString *themeFolder = [parentPath 
-			stringByAppendingPathComponent: IconThemePathComponent];
+			stringByAppendingPathComponent: ThemePathComponent];
 		NSDictionary *themeBundlePaths = [IKIconTheme 
 			themeBundlesInDirectory: themeFolder];
+
+		[allThemeBundlePaths addEntriesFromDictionary: themeBundlePaths];
+
+		/* Also tries to find themes directly in Icon Themes folder in addition
+		   to Themes folder. */
+		themeFolder = [parentPath 
+			stringByAppendingPathComponent: IconThemePathComponent];
+		themeBundlePaths =  [IKIconTheme themeBundlesInDirectory: themeFolder];
 
 		[allThemeBundlePaths addEntriesFromDictionary: themeBundlePaths];
 	}
@@ -239,6 +248,16 @@ will use theme bundle name %@", identifier);
 
 + (IKIconTheme *) theme
 {
+	/* If no theme has been already set, we try to load and active default 
+	   GNUstep theme. */
+	if (activeTheme == nil)
+	{
+		IKIconTheme *defaultTheme = 
+			AUTORELEASE([[IKIconTheme alloc] initWithTheme: @"GNUstep"]);
+
+		[IKIconTheme setTheme: defaultTheme];
+	}
+
 	return activeTheme;
 }
 
@@ -376,9 +395,16 @@ will use theme bundle name %@", identifier);
 	NSString *realIdentifier = [_specIdentifiers objectForKey: iconIdentifier];
 	NSString *imageType = @"png";
 
+	NSDebugLLog(@"IconKit", @"For identifier %@, mapping list returns %@", 
+		iconIdentifier, realIdentifier);
+
 	if (realIdentifier == nil)
 		realIdentifier = iconIdentifier;
 
+	if ([realIdentifier pathExtension] != nil)
+		imageType = nil;
+
+	// NOTE: We may use -pathForImageResource:
 	return [_themeBundle pathForResource: realIdentifier ofType: imageType];
 }
 

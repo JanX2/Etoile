@@ -1,3 +1,15 @@
+2007-04-26  Quentin Mathe <qmathe@club-internet.fr>
+
+	Last tweaks to make Icon Theme support effective.
+	* Source/IKIcon.m: Added a logging statement for debugging.
+	* Source/IKIconTheme.m:
+	(-findAllThemeBundles): Modified to look for icon themes in Themes 
+	directory directly too.
+	(+theme): Improved to return a default theme when no theme has already been
+	loaded and activated.
+	(-iconPathForIdentifier:): Fixed not to return nil when the identifier 
+	already includes filename extension. Added a logging statement.
+
 2007-04-20  Yen-Ju Chen <yjchenx gmail>
 
 	* Return nil if icon is not found.
