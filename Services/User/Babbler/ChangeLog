@@ -1,3 +1,9 @@
+2007-04-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Controller.h:
+	* Controller.m: 
+	Updated to match code guidelines. Added license notice.
+
 2007-02-19  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Player.h:
