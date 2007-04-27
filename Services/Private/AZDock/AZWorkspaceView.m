@@ -104,6 +104,7 @@
 {
   current_workspace = workspace;
   [self updateWorkspaceMenu];
+  [self setNeedsDisplay: YES];
 }
 
 - (void) setNumberOfWorkspaces: (int) number
@@ -122,6 +123,14 @@
 {
   appStore = store;
   [self updateApplicationMenu];
+}
+
+- (void) drawRect: (NSRect) frame
+{
+  [super drawRect: frame];
+  /* Let's draw the workspace number */
+  NSAttributedString *as = [[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", current_workspace]];
+  [as drawAtPoint: NSMakePoint(5, NSMaxY([self frame])-5-[as size].height)];
 }
 
 - (void) mouseUp: (NSEvent *) event
