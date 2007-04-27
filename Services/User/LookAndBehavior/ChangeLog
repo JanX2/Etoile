@@ -1,3 +1,7 @@
+2007-04-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	* main.m: Fixed incorrect PreferencesKit import now replaced by PaneKit.
+
 2006-12-02  Quentin Mathe <qmathe@club-internet.fr>
 
     * GNUmakefile:
