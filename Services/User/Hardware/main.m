@@ -24,7 +24,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import <PreferencesKit/PreferencesKit.h>
+#import <PaneKit/PaneKit.h>
 
 // FIXME: Hack to workaround the fact Gorm doesn't support NSView as custom view
 // class.
