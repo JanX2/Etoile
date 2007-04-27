@@ -231,6 +231,7 @@ static AZClientManager *sharedInstance;
 
     grab_server(NO);
 
+//    [[AZStacking stacking] addWindow: client];
     [[AZStacking stacking] addWindowNonIntrusively: client];
     [client restoreSessionStacking];
 

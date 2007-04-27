@@ -1,3 +1,7 @@
+2007-04-26  Yen-Ju Chen <yjchenx at gmail>
+
+	* Fix a show blocker in window stacking !!
+
 2007-04-25  Yen-Ju Chen <yjchenx at gmail>
 
 	* Spot an error, though no side-effect is observed before the fix.

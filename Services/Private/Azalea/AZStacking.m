@@ -137,10 +137,14 @@ static AZStacking *sharedInstance;
     client = (AZClient *)win;
 
     /* insert above its highest parent */
-    if ([client transient_for]) {
-        if ([client transient_for] != OB_TRAN_GROUP) {
+    if ([client transient_for]) 
+    {
+        if ([client transient_for] != OB_TRAN_GROUP) 
+        {
             parent = [client transient_for];
-        } else {
+        }
+	else 
+        {
 	    int sit, it;
 
             if ([client group])
@@ -155,7 +159,7 @@ static AZStacking *sharedInstance;
 			{
 			    AZClient *c = [members objectAtIndex: sit];
 			    /* checking transient_for prevents infinate loops */
-                    	    if ([c isEqual: data] && ![c transient_for])
+                    	    if (c == data && ![c transient_for])
                               parent = data;
 			}
 		    }
@@ -180,6 +184,11 @@ static AZStacking *sharedInstance;
 	    }
         }
     }
+    else
+    {
+	it_below = parent;
+    }
+
     if (it_below == nil)
     {
         /* there is no window to put this directly above, so put it at the
