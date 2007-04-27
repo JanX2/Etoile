@@ -136,7 +136,7 @@ ifeq ($(bookmarkkit), yes)
 endif
 
 ifeq ($(iconkit), yes)
-   #SUBPROJECTS += IconKit
+   SUBPROJECTS += IconKit
 endif
 
 ifeq ($(panekit), yes)

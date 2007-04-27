@@ -1,5 +1,10 @@
 2007-04-27  Quentin Mathe <qmathe@club-internet.fr>
 
+	* Frameworks/GNUmakefile: Turned on IconKit compilation because it is now 
+	used by applications like Vindaloo.
+
+2007-04-27  Quentin Mathe <qmathe@club-internet.fr>
+
 	* INSTALL.Ubuntu: Updated to take in account latest dependencies introduced
 	by System and Azalea. Added a web reference to Ubuntu package list 
 	classified by version (Dapper, Breezy etc.).
