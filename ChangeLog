@@ -1,3 +1,17 @@
+2007-04-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	* INSTALL.Ubuntu: Updated to take in account latest dependencies introduced
+	by System and Azalea. Added a web reference to Ubuntu package list 
+	classified by version (Dapper, Breezy etc.).
+
+2007-04-24  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Themes/GNUstep.icontheme: Added GNUstep icon theme by Jesse Ross and 
+	Jasper Hauser. This theme follows Freedesktop Icon Naming Specification 
+	with some generic extensions and more specific additions (to fit Etoile 
+	needs). Ready to be used by IconKit with a minor update of the latter
+	framework.
+
 2007-03-22  Quentin Mathe <qmathe@club-internet.fr>
 
 	* setup.sh:
