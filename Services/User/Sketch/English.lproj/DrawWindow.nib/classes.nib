@@ -1,0 +1,67 @@
+{
+    IBClasses = (
+	{
+	    CLASS = SKTDrawWindowController;
+	    LANGUAGE = ObjC;
+	    OUTLETS = {
+		graphicView = id;
+		toolButtons = id;
+	    };
+	    SUPERCLASS = NSWindowController;
+	},
+	{
+	    ACTIONS = {
+		alignBottomEdges = id;
+		alignHorizontalCenters = id;
+		alignLeftEdges = id;
+		alignRightEdges = id;
+		alignTopEdges = id;
+		alignVerticalCenters = id;
+		bringToFront = id;
+		changeColor = id;
+		delete = id;
+		deselectAll = id;
+		gridSelectedGraphicsAction = id;
+		makeNaturalSize = id;
+		makeSameHeight = id;
+		makeSameWidth = id;
+		selectAll = id;
+		sendToBack = id;
+		showsGridMenuAction = id;
+		snapsToGridMenuAction = id;
+	    };
+	    CLASS = SKTGraphicView;
+	    LANGUAGE = ObjC;
+	    OUTLETS = {
+		_gridColor = id;
+		_gridSpacing = id;
+		_unhideKnobsTimer = id;
+		controller = id;
+		int = id;
+	    };
+	    SUPERCLASS = NSView;
+	},
+	{
+	    ACTIONS = {
+		alignBottomEdges = id;
+		alignHorizontalCenters = id;
+		alignLeftEdges = id;
+		alignRightEdges = id;
+		alignTopEdges = id;
+		alignVerticalCenters = id;
+		bringToFront = id;
+		gridSelectedGraphicsAction = id;
+		makeNaturalSize = id;
+		makeSameHeight = id;
+		makeSameWidth = id;
+		sendToBack = id;
+		showsGridMenuAction = id;
+		snapsToGridMenuAction = id;
+	    };
+	    CLASS = FirstResponder;
+	    LANGUAGE = ObjC;
+	    SUPERCLASS = NSObject;
+	}
+    );
+    IBVersion = 1;
+}

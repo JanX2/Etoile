@@ -1,0 +1,61 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "alignBottomEdges:",
+	    "alignHorizontalCenters:",
+	    "alignLeftEdges:",
+	    "alignRightEdges:",
+	    "alignTopEdges:",
+	    "alignVerticalCenters:",
+	    "bringToFront:",
+	    "gridSelectedGraphicsAction:",
+	    "makeNaturalSize:",
+	    "makeSameHeight:",
+	    "makeSameWidth:",
+	    "sendToBack:",
+	    "showsGridMenuAction:",
+	    "snapsToGridMenuAction:"
+	);
+	Super = NSObject;
+    };
+    SKTDrawWindowController = {
+	Actions = (
+	);
+	Outlets = (
+	    toolButtons,
+	    graphicView
+	);
+	Super = NSWindowController;
+    };
+    SKTGraphicView = {
+	Actions = (
+	    "makeSameHeight:",
+	    "alignRightEdges:",
+	    "alignLeftEdges:",
+	    "showsGridMenuAction:",
+	    "alignHorizontalCenters:",
+	    "snapsToGridMenuAction:",
+	    "sendToBack:",
+	    "alignVerticalCenters:",
+	    "bringToFront:",
+	    "delete:",
+	    "makeSameWidth:",
+	    "gridSelectedGraphicsAction:",
+	    "selectAll:",
+	    "alignBottomEdges:",
+	    "deselectAll:",
+	    "makeNaturalSize:",
+	    "alignTopEdges:",
+	    "changeColor:"
+	);
+	Outlets = (
+	    _gridColor,
+	    int,
+	    _gridSpacing,
+	    controller,
+	    _unhideKnobsTimer
+	);
+	Super = NSView;
+    };
+}

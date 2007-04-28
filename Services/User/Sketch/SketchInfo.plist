@@ -1,0 +1,12 @@
+{
+	ApplicationName = "Sketch";
+	NSTypes =
+	(
+		{
+		NSName = "Apple Sketch Graphic Format";
+		NSUnixExtensions = ("sketch","draw2");
+		NSRole= Editor;
+		NSDocumentClass = SKTDrawDocument;
+		}
+	);
+}
