@@ -1,3 +1,10 @@
+2007-04-28  Quentin Mathe <qmathe@club-internet.fr>
+
+	* README: Updated Dependency section and added David to Authors section
+	(now sorted by alphetical order). Also made clearer that Cocoa support 
+	isn't our priority.
+	* INSTALL: Made Required software section up-to-date.
+
 2007-04-27  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Frameworks/GNUmakefile: Turned on IconKit compilation because it is now 
