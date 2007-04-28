@@ -1,0 +1,18 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = PasswordWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                no = NSButton; 
+                passwordBox = NSTextField; 
+                question = NSTextField; 
+                yes = NSButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = "java.lang.Object"; LANGUAGE = Java; }
+    ); 
+    IBVersion = 1; 
+}

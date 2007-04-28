@@ -171,6 +171,9 @@
 		28DD6AAF0B07BCD700035263 /* Query_jabber_iq_roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 28DD6AAD0B07BCD700035263 /* Query_jabber_iq_roster.m */; };
 		28F8E98B0632E612004623A5 /* XMPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F8E9890632E612004623A5 /* XMPPConnection.h */; };
 		28F8E98C0632E612004623A5 /* XMPPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */; };
+		3BC84C270BE28B6F002833ED /* AccountBox.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3BC84C250BE28B6F002833ED /* AccountBox.nib */; };
+		3BC84C2C0BE37830002833ED /* AccountWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3BC84C2A0BE37830002833ED /* AccountWindowController.h */; };
+		3BC84C2D0BE37830002833ED /* AccountWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC84C2B0BE37830002833ED /* AccountWindowController.m */; };
 		8D1107280486CEB800E47090 /* Jabber_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32CA4F630368D1EE00C91783 /* Jabber_Prefix.pch */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -334,6 +337,9 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* Jabber_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Jabber_Prefix.pch; sourceTree = "<group>"; };
+		3BC84C260BE28B6F002833ED /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/AccountBox.nib; sourceTree = "<group>"; };
+		3BC84C2A0BE37830002833ED /* AccountWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AccountWindowController.h; sourceTree = "<group>"; };
+		3BC84C2B0BE37830002833ED /* AccountWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AccountWindowController.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* StepChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StepChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -494,6 +500,8 @@
 		28C501F606B2684700CE9114 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				3BC84C2A0BE37830002833ED /* AccountWindowController.h */,
+				3BC84C2B0BE37830002833ED /* AccountWindowController.m */,
 				28A5470607C66A3500595357 /* ChatLogMenuController.h */,
 				28A5470707C66A3500595357 /* ChatLogMenuController.m */,
 				2815EF1407660F630078C5AE /* AddContactWindowController.h */,
@@ -565,6 +573,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3BC84C250BE28B6F002833ED /* AccountBox.nib */,
 				2860DD32072541760081D50C /* MessageWindow.nib */,
 				289835D1063D8CC300A3D164 /* jabber.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -685,6 +694,7 @@
 				28DD66890B05725D00035263 /* NSData+Base64.h in Headers */,
 				28DD6AAE0B07BCD700035263 /* Query_jabber_iq_roster.h in Headers */,
 				285A5CC90B3571C600F5A7AB /* CompareHack.h in Headers */,
+				3BC84C2C0BE37830002833ED /* AccountWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -792,6 +802,7 @@
 				2860DD33072541760081D50C /* MessageWindow.nib in Resources */,
 				2860DD35072541920081D50C /* RosterWindow.nib in Resources */,
 				2860DD370725419A0081D50C /* PasswordBox.nib in Resources */,
+				3BC84C270BE28B6F002833ED /* AccountBox.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -889,6 +900,7 @@
 				28DD668A0B05725D00035263 /* NSData+Base64.m in Sources */,
 				28DD6AAF0B07BCD700035263 /* Query_jabber_iq_roster.m in Sources */,
 				285A5CCA0B3571C600F5A7AB /* CompareHack.m in Sources */,
+				3BC84C2D0BE37830002833ED /* AccountWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -951,6 +963,14 @@
 				29B97319FDCFA39411CA2CEA /* English */,
 			);
 			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+		3BC84C250BE28B6F002833ED /* AccountBox.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3BC84C260BE28B6F002833ED /* English */,
+			);
+			name = AccountBox.nib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

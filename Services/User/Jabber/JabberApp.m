@@ -8,6 +8,7 @@
 
 #import "JabberApp.h"
 #import "PasswordWindowController.h"
+#import "AccountWindowController.h"
 
 @implementation JabberApp
 
@@ -34,8 +35,15 @@
 
 - (void) getAccountInfo
 {
-	//TODO: Jesse, add the account selection dialog here.
-	//Look at PasswordWindowController for inspiration :)
+	AccountWindowController * accountWindow = [[AccountWindowController alloc] initWithWindowNibName:@"AccountBox"];
+	if([NSApp runModalForWindow:[accountWindow window]] == 0)
+	{
+		//User entered an account.
+	}
+	else
+	{
+		//Do something sensible here.
+	}
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
