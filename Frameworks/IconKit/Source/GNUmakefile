@@ -43,33 +43,33 @@ ADDITIONAL_INCLUDE_DIRS += -I../Headers -I..
 
 PACKAGE_NAME = IconKit
 ifeq ($(test), yes)
-BUNDLE_NAME = libIconKit
+BUNDLE_NAME = IconKit
 ADDITIONAL_LDFLAGS += -lUnitKit -lgnustep-gui -lgnustep-base
 ADDITIONAL_CFLAGS += -DHAVE_UKTEST
 else
-LIBRARY_NAME = libIconKit	
+FRAMEWORK_NAME = IconKit	
 endif
 VERSION = 0.1
 
 #
 # Resource files
 #
-libIconKit_MAIN_MODEL_FILE =
+IconKit_MAIN_MODEL_FILE =
 
-libIconKit_RESOURCE_FILES =
+IconKit_RESOURCE_FILES = ../GNUstep.icontheme
 
-libIconKit_LOCALIZED_RESOURCE_FILES =
+IconKit_LOCALIZED_RESOURCE_FILES =
 
 #
 # Languages we're localized for
 #
-libIconKit_LANGUAGES= \
+IconKit_LANGUAGES= \
 	English
 		
 #
 # Class files
 #
-libIconKit_OBJC_FILES= \
+IconKit_OBJC_FILES= \
 	IKCompositorOperation.m \
 	IKCompositor.m \
 	IKIcon.m \
@@ -84,17 +84,17 @@ libIconKit_OBJC_FILES= \
 #
 # C files
 #
-libIconKit_C_FILES =
+IconKit_C_FILES =
 
 #
 # Header files
 #
-libIconKit_HEADER_FILES_DIR = ../Headers
+IconKit_HEADER_FILES_DIR = ../Headers
 
 ifneq ($(test), yes)
-libIconKit_HEADER_FILES_INSTALL_DIR = IconKit
+IconKit_HEADER_FILES_INSTALL_DIR = IconKit
 
-libIconKit_HEADER_FILES = \
+IconKit_HEADER_FILES = \
 	IconKit.h \
 	IKCompositorOperation.h \
 	IKCompositor.h \
@@ -110,10 +110,13 @@ endif
 
 -include ../GNUmakefile.preamble
 
+# NOTE: Include etoile.make include before framework.make otherwise the
+# compilation may fail if you type 'make; make' (see bug #8806).
+include ../../../etoile.make
 ifeq ($(test), yes)
 include $(GNUSTEP_MAKEFILES)/bundle.make
 else
-include $(GNUSTEP_MAKEFILES)/library.make
+include $(GNUSTEP_MAKEFILES)/framework.make
 endif
 
 -include ../GNUmakefile.postamble

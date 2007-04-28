@@ -33,6 +33,6 @@ SUBPROJECTS = Source
 -include GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
-include ../../etoile.make
+#include ../../etoile.make
 
 -include GNUmakefile.postamble

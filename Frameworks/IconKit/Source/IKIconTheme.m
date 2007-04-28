@@ -94,11 +94,13 @@ static IKIconTheme *activeTheme = nil;
 	NSString *parentPath = nil;
 	NSMutableDictionary *allThemeBundlePaths = [NSMutableDictionary dictionary];
 
+	NSString *themeFolder = nil;
+	NSDictionary *themeBundlePaths = nil;
 	while ((parentPath = [e nextObject]) != nil)
 	{
-		NSString *themeFolder = [parentPath 
+		themeFolder = [parentPath 
 			stringByAppendingPathComponent: ThemePathComponent];
-		NSDictionary *themeBundlePaths = [IKIconTheme 
+		themeBundlePaths = [IKIconTheme 
 			themeBundlesInDirectory: themeFolder];
 
 		[allThemeBundlePaths addEntriesFromDictionary: themeBundlePaths];
@@ -111,6 +113,10 @@ static IKIconTheme *activeTheme = nil;
 
 		[allThemeBundlePaths addEntriesFromDictionary: themeBundlePaths];
 	}
+	/* We look for framework resource */
+	themeFolder = [[NSBundle bundleForClass: [self class]] resourcePath];
+	themeBundlePaths =  [IKIconTheme themeBundlesInDirectory: themeFolder];
+	[allThemeBundlePaths addEntriesFromDictionary: themeBundlePaths];
 
 	return allThemeBundlePaths;
 }
