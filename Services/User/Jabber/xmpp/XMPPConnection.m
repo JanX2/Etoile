@@ -171,7 +171,7 @@ static NSDictionary * STANZA_KEYS;
 		connectionState = connected;
 		[self XMPPSend:
 			[NSString stringWithFormat:@"<?xml version='1.0' encoding='UTF-8' ?><stream:stream to='%@' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'>",
-				server]];
+				host]];
 	}
 	while(connectionState != loggedIn)
 	{
