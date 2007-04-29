@@ -2,14 +2,10 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            ACTIONS = {no = id; yes = id; }; 
             CLASS = PasswordWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {
-                no = NSButton; 
-                passwordBox = NSTextField; 
-                question = NSTextField; 
-                yes = NSButton; 
-            }; 
+            OUTLETS = {passwordBox = NSTextField; question = NSTextField; }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = "java.lang.Object"; LANGUAGE = Java; }

@@ -246,14 +246,14 @@ NSMutableArray * rosterControllers = nil;
 - (void) update:(id)_object
 {
 	[view reloadData];
-/*	if(_object == nil)
+	if(_object == nil)
 	{
 		[view reloadData];
 	}
 	else
 	{
 		[view reloadItem:_object reloadChildren:YES];
-		//TODO:  Work out why this crashes.
+		//TODO:  Work out why I thought this crashed, and had it all commented out.
 		if([view isItemExpanded:_object])
 		{
 			[view reloadItem:_object reloadChildren:YES];
@@ -266,7 +266,7 @@ NSMutableArray * rosterControllers = nil;
 				[view expandItem:_object];
 			}
 		}
-	}*/
+	}
 	[[self window] setFrame:[self optimalSize] display:YES animate:YES];
 	[view display];
 }

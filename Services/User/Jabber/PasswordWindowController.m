@@ -54,25 +54,19 @@ void setPasswordForAccount(NSString * password, JID * account)
 
 - (void)windowDidLoad
 {
-	[yes setAction:@selector(yes)];
-	[no setAction:@selector(no)];
-	[yes setTarget:self];
-	[no setTarget:self];
-
 	[question setStringValue:[NSString stringWithFormat:@"%@%@",
 		[question stringValue],
-		[myJID jidStringWithNoResource]]];
-	
+		[myJID jidStringWithNoResource]]];	
 }
 
-- (void) yes
+- (void) yes:(id)sender
 {
 	NSString * password = [passwordBox stringValue];
 	setPasswordForAccount(password, myJID);
 	[[self window] close];
 	[NSApp stopModalWithCode:0];
 }
-- (void) no
+- (void) no:(id)sender
 {
 	[[self window] close];
 	[NSApp stopModalWithCode:-1];

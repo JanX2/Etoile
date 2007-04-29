@@ -193,7 +193,7 @@ static NSDictionary * STANZA_KEYS;
 	struct sockaddr_in serverAddress;
 	
 	
-	host = gethostbyname([server UTF8String]);
+	host = gethostbyname([serverHost UTF8String]);
 	//host = gethostbyname("66.116.97.186");
 	if(host == NULL)
 	{
@@ -229,12 +229,15 @@ static NSDictionary * STANZA_KEYS;
 	}	
 }
 
-//Connect to a Jabber (NOT XMPP) server.
-- (void) connectToJabberServer:(NSString*) jabberServer user:(NSString*) userName password:(NSString*) password
+//Connect to an XMPP server.
+- (void) connectToJabberServer:(NSString*) jabberServer 
+					   withJID:(JID*) aJID
+					  password:(NSString*) password;
 {
-	user = [userName retain];
+	user = [[aJID node] retain];
+	server = [[aJID domain] retain];
 	pass = [password retain];
-	server = [jabberServer retain];
+	serverHost = [jabberServer retain];
 	[self reconnectToJabberServer];
 }
 

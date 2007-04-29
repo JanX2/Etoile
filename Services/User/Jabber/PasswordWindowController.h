@@ -14,9 +14,9 @@
 @interface PasswordWindowController : NSWindowController {
 	IBOutlet NSTextField * question;
 	IBOutlet NSTextField * passwordBox;
-	IBOutlet NSButton * yes;
-	IBOutlet NSButton * no;
 	JID * myJID;
 }
 - (id) initWithWindowNibName:(NSString*)windowNibName forJID:(JID*)_jid;
+- (void) yes:(id)sender;
+- (void) no:(id)sender;
 @end

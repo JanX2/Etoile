@@ -12,7 +12,7 @@
 @interface AccountWindowController : NSWindowController {
 	IBOutlet NSTextField * jidBox;
 	IBOutlet NSTextField * serverBox;
-	IBOutlet NSButton * yes;
-	IBOutlet NSButton * no;
 }
+- (IBAction) yes:(id)sender;
+- (IBAction) no:(id)sender;
 @end

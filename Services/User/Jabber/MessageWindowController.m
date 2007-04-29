@@ -246,7 +246,15 @@ NSMutableArray * messageWindowControllers = nil;
 {
 	if(![[jid jidString] isEqual:[recipientBox titleOfSelectedItem]])
 	{
-		[recipientBox selectItemWithTitle:[jid jidString]];
+		if([recipientBox indexOfItemWithTitle:[jid jidString]] >= 0)
+		{
+			[recipientBox selectItemWithTitle:[jid jidString]];			
+		}
+		else if([recipientBox indexOfItemWithTitle:[jid jidStringWithNoResource]] >= 0)
+		{
+			[recipientBox selectItemWithTitle:[jid jidStringWithNoResource]];
+		}
+		
 	}
 	return YES;
 }

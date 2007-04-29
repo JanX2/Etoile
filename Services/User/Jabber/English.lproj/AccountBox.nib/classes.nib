@@ -1,5 +1,12 @@
 {
     IBClasses = (
+        {
+            ACTIONS = {no = id; yes = id; }; 
+            CLASS = AccountWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {jidBox = NSTextField; serverBox = NSTextField; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             CLASS = PasswordWindowController; 

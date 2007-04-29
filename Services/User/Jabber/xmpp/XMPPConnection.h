@@ -48,6 +48,7 @@ typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSess
 	ConnectionState connectionState;
 	NSDictionary * streamFeatures;
 	//Current account details
+	NSString * serverHost;
 	NSString * server;
 	NSString * user;
 	NSString * pass;
@@ -76,7 +77,9 @@ typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSess
  * This needs changing for cases where the server is not that specified by the 
  * client's JID.
  */
-- (void) connectToJabberServer:(NSString*) jabberServer user:(NSString*) userName password:(NSString*) password;
+- (void) connectToJabberServer:(NSString*) jabberServer 
+					   withJID:(JID*) aJID
+					  password:(NSString*) password;
 /**
  * Reconnect after disconnection.
  */

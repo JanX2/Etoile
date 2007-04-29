@@ -10,32 +10,24 @@
 #import "JabberApp.h"
 
 @implementation AccountWindowController
-
-- (void)windowDidLoad
+- (IBAction) yes:(id)sender
 {
-	[yes setAction:@selector(yes)];
-	[no setAction:@selector(no)];
-	[yes setTarget:self];
-	[no setTarget:self];
-	
-}
-
-- (void) yes
-{
-	JID * myJID = [[JID alloc] initWithString:[jidBox stringValue]];
+	JID * myJID = [JID jidWithString:[jidBox stringValue]];
 	NSString * myServer = [serverBox stringValue];
-	[XMPPAccount setDefaultJID:myJID withServer:myServer];
+	if(myServer != nil && ![myServer isEqualToString:@""])
+	{
+		[XMPPAccount setDefaultJID:myJID withServer:myServer];
+	}
+	else
+	{
+		[XMPPAccount setDefaultJID:myJID];
+	}
 	[[self window] close];
 	[NSApp stopModalWithCode:0];
 }
-- (void) no
+- (IBAction) no:(id)sender
 {
 	[[self window] close];
 	[NSApp stopModalWithCode:-1];
-}
-
-- (void) dealloc
-{
-	[super dealloc];
 }
 @end

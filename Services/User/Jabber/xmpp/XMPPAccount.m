@@ -61,6 +61,7 @@ NSString * passwordForJID(JID * aJID)
 #endif
 }
 
+//NOTE: These could probably be done more neatly with KVC
 void setDefault(NSString * dictionary, id key, id value)
 {
 	NSMutableDictionary * dict = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:dictionary]];
@@ -72,18 +73,33 @@ void setDefault(NSString * dictionary, id key, id value)
 	[[NSUserDefaults standardUserDefaults] setObject:dict forKey:dictionary];
 }
 
+id getDefault(NSString * dictionary, id key)
+{
+	NSDictionary * dict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:dictionary];
+	return [dict valueForKey:key];
+	
+}
 @implementation XMPPAccount
 + (void) setDefaultJID:(JID*) aJID
 {
-	ABMutableMultiValue * jids = [[[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty] mutableCopy];
-	NSString * defaultID = [jids primaryIdentifier];
-	[jids addValue:[aJID jidString] withLabel:defaultID];
-	[[[ABAddressBook sharedAddressBook] me] setValue:jids forProperty:kABJabberInstantProperty];
-	[[ABAddressBook sharedAddressBook] save];
+	[self setDefaultJID:aJID withServer:[aJID domain]];
 }
 + (void) setDefaultJID:(JID*) aJID withServer:(NSString*) aServer
 {
-	[self setDefaultJID:aJID];
+	ABMutableMultiValue * jids = [[[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty] mutableCopy];
+	if(jids == nil)
+	{
+		jids = [[[ABMutableMultiValue alloc] init] autorelease];
+	}
+	NSString * defaultID = [jids primaryIdentifier];
+	if(defaultID == nil)
+	{
+		//TODO: This could arguably be more sensible.
+		defaultID = @"home";
+	}
+	[jids addValue:[aJID jidString] withLabel:defaultID];
+	[[[ABAddressBook sharedAddressBook] me] setValue:jids forProperty:kABJabberInstantProperty];
+	[[ABAddressBook sharedAddressBook] save];
 	setDefault(@"Servers", [aJID jidString], aServer);
 }
 
@@ -110,15 +126,15 @@ void setDefault(NSString * dictionary, id key, id value)
 		                       userInfo:nil] raise];
 	}
 	myJID = [JID jidWithString:jidString];
-
 		
 	NSString * password = passwordForJID(myJID);
-
+	
 	if(password != nil)
-	{	
-		[connection connectToJabberServer:[myJID domain]
-									 user:[myJID node]
-								 password:password];
+	{
+		NSString * server = getDefault(@"Servers", [myJID jidString]);
+		[connection connectToJabberServer:server
+		                          withJID:myJID
+		                         password:password];
 		
 		
 		return self;
