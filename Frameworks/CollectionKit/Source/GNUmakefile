@@ -3,9 +3,9 @@ include $(GNUSTEP_MAKEFILES)/common.make
 ifeq ($(test), yes)
 BUNDLE_NAME = CollectionKit
 else
-LIBRARY_NAME = CollectionKit
+FRAMEWORK_NAME = CollectionKit
 endif
-VERSION = 0.1
+#VERSION = 0.1
 
 CollectionKit_OBJC_FILES = \
 	CKCollectionView.m \
@@ -27,8 +27,6 @@ endif
 
 CollectionKit_HEADER_FILES_DIR = ../Headers
 
-CollectionKit_HEADER_FILES_INSTALL_DIR = CollectionKit
-
 CollectionKit_HEADER_FILES = \
 	CollectionKit.h \
 	CKCollectionView.h \
@@ -46,7 +44,7 @@ CollectionKit_HEADER_FILES = \
 ifeq ($(test), yes)
 include $(GNUSTEP_MAKEFILES)/bundle.make
 else
-include $(GNUSTEP_MAKEFILES)/library.make
+include $(GNUSTEP_MAKEFILES)/framework.make
 endif
 
 -include ../GNUmakefile.postamble

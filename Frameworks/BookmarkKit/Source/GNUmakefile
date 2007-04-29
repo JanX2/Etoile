@@ -3,9 +3,9 @@ include $(GNUSTEP_MAKEFILES)/common.make
 ifeq ($(test), yes)
 BUNDLE_NAME = BookmarkKit
 else
-LIBRARY_NAME = BookmarkKit
+FRAMEWORK_NAME = BookmarkKit
 endif
-VERSION = 0.1
+#VERSION = 0.1
 
 BookmarkKit_LIBRARIES_DEPEND_UPON = -lCollectionKit
 ifeq ($(test), yes)
@@ -29,8 +29,6 @@ endif
 
 BookmarkKit_HEADER_FILES_DIR = ../Headers
 
-BookmarkKit_HEADER_FILES_INSTALL_DIR = BookmarkKit
-
 BookmarkKit_HEADER_FILES = \
 	BookmarkKit.h \
 	BKGlobals.h \
@@ -46,7 +44,7 @@ BookmarkKit_HEADER_FILES = \
 ifeq ($(test), yes)
 include $(GNUSTEP_MAKEFILES)/bundle.make
 else
-include $(GNUSTEP_MAKEFILES)/library.make
+include $(GNUSTEP_MAKEFILES)/framework.make
 endif
 
 -include ../GNUmakefile.postamble
