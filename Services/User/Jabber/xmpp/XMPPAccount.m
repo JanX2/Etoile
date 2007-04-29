@@ -86,7 +86,13 @@ id getDefault(NSString * dictionary, id key)
 }
 + (void) setDefaultJID:(JID*) aJID withServer:(NSString*) aServer
 {
-	ABMutableMultiValue * jids = [[[[ABAddressBook sharedAddressBook] me] valueForProperty:kABJabberInstantProperty] mutableCopy];
+	ABPerson * me =  [[ABAddressBook sharedAddressBook] me];
+	if(me == nil)
+	{
+		me = [[[ABPerson alloc] init] autorelease];
+		[[ABAddressBook sharedAddressBook] setMe:me];
+	}
+	ABMutableMultiValue * jids = [[me valueForProperty:kABJabberInstantProperty] mutableCopy];
 	if(jids == nil)
 	{
 		jids = [[[ABMutableMultiValue alloc] init] autorelease];
@@ -98,7 +104,7 @@ id getDefault(NSString * dictionary, id key)
 		defaultID = @"home";
 	}
 	[jids addValue:[aJID jidString] withLabel:defaultID];
-	[[[ABAddressBook sharedAddressBook] me] setValue:jids forProperty:kABJabberInstantProperty];
+	[me setValue:jids forProperty:kABJabberInstantProperty];
 	[[ABAddressBook sharedAddressBook] save];
 	setDefault(@"Servers", [aJID jidString], aServer);
 }
