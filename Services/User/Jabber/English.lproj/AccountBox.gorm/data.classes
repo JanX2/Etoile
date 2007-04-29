@@ -1,0 +1,21 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    AccountWindowController = {
+	Actions = (
+	    "yes:",
+	    "no:"
+	);
+	Outlets = (
+	    jidBox,
+	    serverBox
+	);
+	Super = NSWindowController;
+    };
+    FirstResponder = {
+	Actions = (
+	    "no:",
+	    "yes:"
+	);
+	Super = NSObject;
+    };
+}
