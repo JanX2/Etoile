@@ -1,3 +1,7 @@
+2007-04-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Turn into framework.
+
 2007-04-18 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Use oniguruma 5.x by default unless 'old=yes' is definied.

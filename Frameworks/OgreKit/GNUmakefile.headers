@@ -1,6 +1,5 @@
 
-OgreKit_HEADER_FILES_DIR = ./OgreKit
-OgreKit_HEADER_FILES_INSTALL_DIR = OgreKit
+OgreKit_HEADER_FILES_DIR = ./Headers
 # Regular Expression
 OgreKit_HEADER_FILES = \
 	NSString_OgreKitAdditions.h \
