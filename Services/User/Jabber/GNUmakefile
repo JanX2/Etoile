@@ -19,6 +19,7 @@ StepChat_RESOURCE_FILES = StepChatInfo.plist
 StepChat_LOCALIZED_RESOURCE_FILES = \
 	  MainMenu.nib\
 	  MessageWindow.nib\
+	  AccountBox.nib\
 	  PasswordBox.nib\
 	  RosterWindow.nib
 
@@ -38,6 +39,7 @@ StepChat_OBJC_FILES = \
 	HideMenuController.m\
 	JabberApp.m\
 	MessageWindowController.m\
+	AccountWindowController.m\
 	PasswordWindowController.m\
 	PreferenceWindowController.m\
 	PresenceMenuController.m\
