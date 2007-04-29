@@ -246,7 +246,6 @@
 				currentIndex++;
 			}
 			parseSuccess = [self parseTagFrom:&currentIndex named:tagName withAttributes:tagAttributes];
- 			currentChar = [buffer characterAtIndex:currentIndex];
 			switch(parseSuccess)
 			{
 				case SUCCESS:
@@ -268,6 +267,7 @@
 							state = incdata;
 						}
 					}
+					currentChar = [buffer characterAtIndex:currentIndex];
 					if(currentChar == '/' || !openTag)
 					{
 						if([openTags count] == 0 || ![[openTags lastObject] isEqualToString:tagName])

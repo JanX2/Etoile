@@ -315,7 +315,7 @@ static NSDictionary * STANZA_KEYS;
 	//LOCK(connectionMutex);
 	{
 		//TODO: Make this into an ivar.
-		static char buffer[1024];
+		static char buffer[2000];
 		ssize_t dataLength;
 
 		if(connectionState == connecting)
@@ -361,7 +361,7 @@ static NSDictionary * STANZA_KEYS;
 			return NO;
 		}
 		
-		dataLength = SSL_read(ssl,buffer,500);
+		dataLength = SSL_read(ssl,buffer,1500);
 		if(dataLength > 0)
 		{
 			keepalive = 0;

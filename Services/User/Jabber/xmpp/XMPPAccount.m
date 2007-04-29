@@ -13,6 +13,7 @@
 #define ABMultiValue ADMultiValue
 #define ABMutableMultiValue ADMutableMultiValue
 #define ABAddressBook ADAddressBook
+#define ABPerson ADPerson
 #define kABJabberInstantProperty ADJabberInstantProperty
 #else
 #import <AddressBook/ABAddressBook.h>
@@ -90,6 +91,7 @@ id getDefault(NSString * dictionary, id key)
 	if(me == nil)
 	{
 		me = [[[ABPerson alloc] init] autorelease];
+		[[ABAddressBook sharedAddressBook] addRecord:me];		
 		[[ABAddressBook sharedAddressBook] setMe:me];
 	}
 	ABMutableMultiValue * jids = [[me valueForProperty:kABJabberInstantProperty] mutableCopy];

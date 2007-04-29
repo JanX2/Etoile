@@ -102,6 +102,7 @@ NSMutableArray * rosterControllers = nil;
 	size.height = [view numberOfRows] * ([view rowHeight] + [view intercellSpacing].height);
 	for(int i=0 ; i<[view numberOfRows] ; i++)
 	{
+		NS_DURING
 		float width = indent * ([view levelForRow:i] + 1);
 		NSCell * cell = [self outlineView:view
 				objectValueForTableColumn:0
@@ -111,6 +112,8 @@ NSMutableArray * rosterControllers = nil;
 		{
 			size.width = width;
 		}
+		NS_HANDLER
+		NS_ENDHANDLER
 	}
 	size.width += interCellHorizontalSpacing;
 	[[[view tableColumns] objectAtIndex:0] setWidth:size.width];

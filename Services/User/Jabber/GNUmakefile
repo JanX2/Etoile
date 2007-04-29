@@ -19,7 +19,7 @@ StepChat_RESOURCE_FILES = StepChatInfo.plist
 StepChat_LOCALIZED_RESOURCE_FILES = \
 	  MainMenu.nib\
 	  MessageWindow.nib\
-	  AccountBox.nib\
+	  AccountBox.gorm\
 	  PasswordBox.nib\
 	  RosterWindow.nib
 
@@ -49,7 +49,7 @@ StepChat_OBJC_FILES = \
 	main.m
 
 ADDITIONAL_LDFLAGS += -lTRXML -lXMPP -lssl -lcrypto -lAddresses
-ADDITIONAL_OBJCFLAGS += -werror
+ADDITIONAL_OBJCFLAGS += -werror -g
 ADDITIONAL_LIB_DIRS += -LTRXML/$(GNUSTEP_OBJ_DIR) -Lxmpp/$(GNUSTEP_OBJ_DIR)
 ADDITIONAL_OBJCFLAGS = -DGNUSTEP -DNO_ATTRIBUTED_TITLES -std=c99 -Wno-import -Ixmpp -ITRXML
 
