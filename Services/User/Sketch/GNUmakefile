@@ -1,5 +1,3 @@
-GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
-
 include $(GNUSTEP_MAKEFILES)/common.make
 
 APP_NAME = Sketch
@@ -36,7 +34,12 @@ Sketch_LOCALIZED_RESOURCE_FILES = \
 Sketch_MAIN_MODEL_FILE = Draw2.nib
 else
 Sketch_LOCALIZED_RESOURCE_FILES = \
-	DrawWindow.gorm 
+	GridPanel.nib \
+	Inspector.nib \
+	ToolPalette.nib \
+	DrawWindow.gorm \
+	Draw2.nib 
+Sketch_MAIN_MODEL_FILE = Draw2.nib
 endif
 Sketch_RESOURCE_FILES = \
 	Arrow.tiff \
