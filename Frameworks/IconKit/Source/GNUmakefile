@@ -92,7 +92,7 @@ IconKit_C_FILES =
 IconKit_HEADER_FILES_DIR = ../Headers
 
 ifneq ($(test), yes)
-IconKit_HEADER_FILES_INSTALL_DIR = IconKit
+#IconKit_HEADER_FILES_INSTALL_DIR = IconKit
 
 IconKit_HEADER_FILES = \
 	IconKit.h \
