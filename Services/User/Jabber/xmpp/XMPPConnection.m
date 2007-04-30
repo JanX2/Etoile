@@ -402,7 +402,7 @@ static NSDictionary * STANZA_KEYS;
 	return NO;
 }
 
-//TODO:  Plain text and SASL authentication
+//Digest non-SASL auth.
 - (void) logInWithId:(NSString*) sessionID
 {
 	if(connectionState != connected)
@@ -433,7 +433,10 @@ static NSDictionary * STANZA_KEYS;
 	{
 		[server release];
 		server = [[_attributes objectForKey:@"from"] retain];
-		//[self logInWithId:[_attributes objectForKey:@"id"]];
+		if(![[_attributes objectForKey:@"version"] isEqualToString:@"1.0"])
+		{
+			[self logInWithId:[_attributes objectForKey:@"id"]];
+		}
 	}
 	else if ([aName isEqualToString:@"success"])
 	{
@@ -614,6 +617,10 @@ static NSDictionary * STANZA_KEYS;
 		{
 			connectionState = loggedIn;			
 		}
+	}
+	else if (connectionState == loggingIn)
+	{
+		//TODO: Check that this actually is the response to the old-style auth request
 	}
 	else if (connectionState == noSession)
 	{
