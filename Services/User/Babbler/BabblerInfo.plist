@@ -1,0 +1,23 @@
+{
+   ApplicationDescription = "Étoilé Multimedia Player";
+   ApplicationName = Babbler;
+   ApplicationRelease = 0.1;
+   Authors = ("Yen-Ju Chen");
+   Copyright = "Copyright (C) 2006, 2007 by Yen-Ju Chen";
+   CopyrightDescription = "Released under GPL 2";
+   FullVersionID = 0.1;
+   NSServices = (
+     {
+       NSPortName = Babbler;
+       NSMessage = openStreamWithSelection;
+       NSSendTypes = (NSStringPboardType);
+       NSKeyEquivalent = {
+         default = "";
+        };
+       NSMenuItem = {
+         default = "New stream with selection";
+        };
+     }
+   );
+}
+
