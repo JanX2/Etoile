@@ -81,6 +81,7 @@ NSString *XCurrentWorkspaceDidChangeNotification = @"XCurrentWorkspaceDidChangeN
   XSendEvent(dpy, root_win, False,
              (SubstructureNotifyMask|SubstructureRedirectMask), (XEvent *)xev);
   XFree(xev);
+  XFlush(dpy);
 }
 
 - (int) currentWorkspace

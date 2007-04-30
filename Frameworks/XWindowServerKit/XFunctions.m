@@ -354,7 +354,7 @@ unsigned int XWindowDesktopOfWindow(Window win)
                                   &type_ret, &format_ret, &count,
                                   &after_ret, (unsigned char **)&data);
   if ((result != Success)) {
-    NSLog(@"Error: cannot get net state of client");
+    NSLog(@"Error: cannot get _NET_WM_DESKTOP of client");
     return -1;
   }
   int desktop = (int)*data;
