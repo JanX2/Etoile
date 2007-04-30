@@ -171,7 +171,7 @@ static NSDictionary * STANZA_KEYS;
 		connectionState = connected;
 		[self XMPPSend:
 			[NSString stringWithFormat:@"<?xml version='1.0' encoding='UTF-8' ?><stream:stream to='%@' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'>",
-				host]];
+				server]];
 	}
 	while(connectionState != loggedIn)
 	{
@@ -630,7 +630,7 @@ static NSDictionary * STANZA_KEYS;
 		[query set:@"xmlns" to:@"jabber:iq:roster"];
 		[rosterQuery set:@"id" to:newMessageID];
 		[rosterQuery set:@"type" to:@"get"];
-		[rosterQuery set:@"to" to:server];
+		//[rosterQuery set:@"to" to:server];
 		[rosterQuery addChild:query];
 		
 		connectionState = loggedIn;
