@@ -26,6 +26,13 @@ static inline NSString* escapeXMLCData(NSString* _XMLString)
 	value = nil;
 	return self;
 }
+- (void) notifyParent
+{
+	id oldValue = value;
+	value = escapeXMLCData(value);
+	[oldValue release];
+	[super notifyParent];
+}
 - (void)characters:(NSString *)aString
 {
 	if(value == nil)

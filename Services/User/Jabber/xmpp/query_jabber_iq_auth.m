@@ -33,7 +33,7 @@
 	return [super init];
 }
 
-- (NSString*) toXML:(NSDictionary *)flags
+- (NSString*) stringValueWithFlags:(NSDictionary *)flags
 {
 	if([[flags valueForKey:@"authtype"] isEqualToString:@"plain"])
 	{
