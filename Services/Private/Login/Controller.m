@@ -87,9 +87,9 @@
 
 - (void) setBusyImage
 {
-	busyImageCounter = busyImageCounter % 8;
+	busyImageCounter = busyImageCounter % 16;
 	
-	[imageView setImage: [NSImage imageNamed: [NSString stringWithFormat: @"Loader%d.png", ++busyImageCounter]]];	
+	[imageView setImage: [NSImage imageNamed: [NSString stringWithFormat: @"Loader%02d.png", ++busyImageCounter]]];	
 	[imageView setNeedsDisplay: YES];
 	if (busy) [self performSelector: @selector(setBusyImage) withObject: nil afterDelay: 0.1];
 }
