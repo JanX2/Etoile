@@ -34,7 +34,8 @@
       /* No window at current desktop */
       w = [[xwindows lastObject] unsignedLongValue];
       desk = XWindowDesktopOfWindow(w);
-      [[NSScreen mainScreen] setCurrentWorkspace: desk];
+      if (desk > -1)
+        [[NSScreen mainScreen] setCurrentWorkspace: desk];
     }
     
     currentDesktop = [[NSScreen mainScreen] currentWorkspace];

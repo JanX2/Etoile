@@ -21,7 +21,7 @@
   } else if ([self state] == AZDockAppRunning) {
     int currentDesktop = [[NSScreen mainScreen] currentWorkspace];
     int desk = XWindowDesktopOfWindow([[xwindows lastObject] unsignedLongValue]);
-    if ((desk != 0xFFFFFFFF) && (currentDesktop != desk))
+    if ((desk > -1) && (desk != 0xFFFFFFFF) && (currentDesktop != desk))
     {
       [[NSScreen mainScreen] setCurrentWorkspace: desk];
     }
