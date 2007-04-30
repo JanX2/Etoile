@@ -6,10 +6,41 @@
 #import <unistd.h>
 
 @implementation Controller
+/* Private */
+- (NSArray *) allSessions
+{
+  NSMutableArray *returnArray = [[NSMutableArray alloc] init];
+  NSArray *allPaths = [[NSArray alloc] initWithObjects:
+                              @"/usr/local/share/xsessions",
+                              @"/usr/share/xsessions", nil];
+  NSFileManager *fm = [NSFileManager defaultManager];
+  NSEnumerator *e = [allPaths objectEnumerator];
+  NSString *path = nil;
+  while ((path = [e nextObject]))
+  {
+    NSEnumerator *pe = [[fm directoryContentsAtPath: path] objectEnumerator];
+    NSString *p = nil;
+    while ((p = [pe nextObject]))
+    {
+      if ([[p pathExtension] isEqualToString: @"desktop"])
+      {
+	[returnArray addObject: [p stringByDeletingPathExtension]];
+      }
+    }
+  }
+  DESTROY(allPaths);
+  return AUTORELEASE(returnArray);
+}
+/* End of private */
 
 - (void) awakeFromNib
 {
 	[self setView: loginView];
+	[sessionPopUpButton removeAllItems];
+	[sessionPopUpButton addItemWithTitle: @"default"];
+	[sessionPopUpButton addItemsWithTitles: [self allSessions]];
+	[sessionPopUpButton addItemWithTitle: @"failsafe"];
+	[sessionPopUpButton selectItemAtIndex: 0];
 	busyImageCounter = 0;
 	busy = NO;
 	[self displayHostname];

@@ -2,5 +2,13 @@
 
 int main(int argc, const char *argv[]) 
 {
-	return NSApplicationMain (argc, argv);
+  CREATE_AUTORELEASE_POOL(x);
+
+  /* Hide App Icon */
+  [[NSUserDefaults standardUserDefaults]
+    setObject: [NSNumber numberWithBool: YES] forKey: @"GSSuppressAppIcon"];
+
+  int result = NSApplicationMain (argc, argv);
+  DESTROY(x);
+  return result;
 }

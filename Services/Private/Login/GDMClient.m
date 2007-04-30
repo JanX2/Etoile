@@ -4,18 +4,18 @@
 
 - (id) init
 {
-	return [self initWithInput: 
-	       		[NSFileHandle fileHandleWithStandardInput]
-			andOutput: 
-	       		[NSFileHandle fileHandleWithStandardOutput]];
+	return [self initWithInput: [NSFileHandle fileHandleWithStandardInput]
+	             andOutput: [NSFileHandle fileHandleWithStandardOutput]];
 }
 
-- (id) initWithInput: (NSFileHandle*) anInput andOutput: (NSFileHandle*) anOutput
+- (id) initWithInput: (NSFileHandle*) anInput 
+           andOutput: (NSFileHandle*) anOutput
 {
 	self = [super init];
+	ASSIGN(desktop, @"default");
 
-	input = [anInput retain];
-	output = [anOutput retain];
+	ASSIGN(input, anInput);
+	ASSIGN(output, anOutput);
 	log = [NSMutableString new];
 	
 	waitForInput = NO;
@@ -24,17 +24,9 @@
 	return self;
 }
 
-- (void) start
-{
-	waitForInput = YES;
-//	[input waitForDataInBackgroundAndNotify];
-}
-
 - (void) setDelegate: (id) aDelegate
 {
-	[aDelegate retain];
-	[delegate release];
-	delegate = aDelegate;
+	ASSIGN(delegate, aDelegate);
 }
 
 - (void) error
@@ -46,10 +38,10 @@
 
 - (void) dealloc
 {
-	[desktop release];
-	[log release];
-	[input release];
-	[output release];
+	DESTROY(desktop);
+	DESTROY(log);
+	DESTROY(input);
+	DESTROY(output);
 	[super dealloc];
 }
 
@@ -74,7 +66,8 @@
 	BOOL res = NO;
 	user = userName;
 	password = pw;
-        desktop = session;
+	if (session)
+	        desktop = session;
 
 	NS_DURING
 	#define READ(NAME) if ([self read: NAME] == NO) { [output sendSTX]; return NO; } else { [output sendSTX]; }
