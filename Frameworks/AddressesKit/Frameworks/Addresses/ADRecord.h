@@ -40,7 +40,7 @@
   \note This is a non-Apple extension; Apple's API doesn't need it as
   it knows nothing about multiple address books.
 */
-- (id) addressBook;
+- (ADAddressBook *) addressBook;
 
 /*!
   \brief Set the address book this record is part of.
@@ -52,7 +52,7 @@
   \note This is a non-Apple extension; Apple's API doesn't need it as
   it knows nothing about multiple address books.
 */
-- (void) setAddressBook: (id) book;
+- (void) setAddressBook: (ADAddressBook *) book;
 @end
 
 @interface ADRecord(Convenience)

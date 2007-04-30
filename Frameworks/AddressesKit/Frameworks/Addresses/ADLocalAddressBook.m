@@ -389,6 +389,7 @@ static ADLocalAddressBook *_localAB = nil;
   [_unsaved release];
   [[NSNotificationCenter defaultCenter] removeObserver: self];
   [[NSDistributedNotificationCenter defaultCenter] removeObserver: self];
+  [super dealloc];
 }
 
 - (NSString*) location

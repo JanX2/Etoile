@@ -27,6 +27,7 @@ static ADPluginManager *manager = NULL;
 - (void) dealloc
 {
     [abClassPlugins release];
+    [super dealloc];
 }
 
 + (ADPluginManager*) sharedPluginManager

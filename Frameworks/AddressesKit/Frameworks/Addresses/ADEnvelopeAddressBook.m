@@ -133,6 +133,7 @@ static ADEnvelopeAddressBook *_envelopeAB = nil;
 - (void) dealloc
 {
   [_books release];
+  [super dealloc];
 }
 
 - (BOOL) addAddressBook: (ADAddressBook*) book

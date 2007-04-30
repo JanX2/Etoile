@@ -106,6 +106,7 @@ static NSString *__defaultCountryCode = nil;
   [_person release];
 
   [[NSNotificationCenter defaultCenter] removeObserver: self];
+  [super dealloc];
 }
 
 - (BOOL) isFlipped

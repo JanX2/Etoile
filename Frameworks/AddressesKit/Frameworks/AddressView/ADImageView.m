@@ -35,6 +35,7 @@
 - (void) dealloc
 {
   [_person release];
+  [super dealloc];
 }
 
 - (void) setTarget: (id) target

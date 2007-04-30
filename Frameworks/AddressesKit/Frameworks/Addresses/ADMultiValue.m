@@ -15,7 +15,7 @@
 /* my includes */
 #include "ADMultiValue.h"
 
-#define IS_A(obj,cls) [obj isKindOf: [cls class]]
+#define IS_A(obj,cls) [obj isKindOfClass: [cls class]]
 
 static ADPropertyType _propTypeFromDict(NSDictionary *dict)
 {
@@ -64,6 +64,7 @@ static ADPropertyType _propTypeFromDict(NSDictionary *dict)
 {
   [_arr release];
   [_primaryId release];
+  [super dealloc];
 }
 
 - (NSArray*) contentArray

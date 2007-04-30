@@ -29,7 +29,7 @@
 - (BOOL) useString: (NSString*) str
 {
   _plist = [str propertyList];
-  if(![_plist isKindOf: [NSDictionary class]])
+  if(![_plist isKindOfClass: [NSDictionary class]])
     {
       NSLog(@"String (%@) does not contain valid property list!\n", str);
       return NO;
@@ -44,10 +44,10 @@
   ADRecord *r;
   NSEnumerator *e;
 
-  keys = [NSMutableArray arrayWithArray: [_plist allKeys]];
-  if([[_plist objectForKey: @"Type"] isEqualToString: @"Group"])
+  keys = [NSMutableArray arrayWithArray: [(NSDictionary *)_plist allKeys]];
+  if([[(NSDictionary *)_plist objectForKey: @"Type"] isEqualToString: @"Group"])
     {
-      NSArray *members = [_plist objectForKey: @"Members"];
+      NSArray *members = [(NSDictionary *)_plist objectForKey: @"Members"];
       r = [[[ADGroup alloc] init] autorelease];
       if(members)
 	{
@@ -66,7 +66,7 @@
       id val;
       ADPropertyType t;
 
-      val = [_plist objectForKey: key];
+      val = [(NSDictionary *)_plist objectForKey: key];
       t = [ADPerson typeOfProperty: key];
       if(t & ADMultiValueMask)
 	{

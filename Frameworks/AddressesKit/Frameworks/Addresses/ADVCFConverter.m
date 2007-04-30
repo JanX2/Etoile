@@ -93,7 +93,7 @@
 - (NSString*) stringByQuotedPrintableEncoding
 {
   int i;
-  const unsigned char *cstr;
+  const char *cstr;
   NSMutableString *str;
 
   cstr = [self UTF8String];
@@ -243,6 +243,7 @@ static NSArray *knownItems;
 {
   [_str release];
   [_out release];
+  [super dealloc];
 }
 
 - initForInput

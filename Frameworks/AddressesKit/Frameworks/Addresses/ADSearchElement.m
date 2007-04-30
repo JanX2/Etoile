@@ -51,6 +51,7 @@
 - (void) dealloc
 {
   [_children release];
+  [super dealloc];
 }
 
 - (BOOL) matchesRecord: (ADRecord*) record
@@ -102,6 +103,7 @@
 - (void) dealloc
 {
   [_property release]; [_label release]; [_key release]; [_val release];
+  [super dealloc];
 }
 
 - (BOOL) matchesValue: (id) v

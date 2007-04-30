@@ -21,7 +21,7 @@
 @interface ADPListConverter: NSObject<ADInputConverting>
 {
   BOOL _done;
-  id _plist;
+  NSObject *_plist;
 }
 - initForInput;
 - (BOOL) useString: (NSString*) str;
