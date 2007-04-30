@@ -26,7 +26,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
 // Flags from which IKBadgePositions are made up. Don't use these, use IKBadgePosition:
 enum _IKBadgePositionFlags

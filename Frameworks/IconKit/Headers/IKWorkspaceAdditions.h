@@ -25,10 +25,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef ICONKIT_IKWORKSPACEADDITIONS_H
-#define ICONKIT_IKWORKSPACEADDITIONS_H 1
-
-#include <AppKit/AppKit.h>
+#import <AppKit/AppKit.h>
 
 
 @interface NSWorkspace (IKIconAdditions)
@@ -39,4 +36,3 @@
 
 @end
 
-#endif /*ICONKIT_IKWORKSPACEADDITIONS_H*/

@@ -30,7 +30,7 @@
 
 #import "NSFileManager+IconKit.h"
 #import "NSString+MD5Hash.h"
-#import "IKThumbnailProvider.h"
+#import <IconKit/IKThumbnailProvider.h>
 
 static IKThumbnailProvider *thumbnailProvider = nil;
 static NSFileManager *fileManager = nil;

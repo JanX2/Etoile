@@ -27,10 +27,10 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import "IKThumbnailProvider.h"
+#import <IconKit/IKThumbnailProvider.h>
 #import "NSString+MD5Hash.h"
-#import "IKIconProvider.h"
-#import "IKApplicationIconProvider.h"
+#import <IconKit/IKIconProvider.h>
+#import <IconKit/IKApplicationIconProvider.h>
 
 static IKIconProvider *iconProvider = nil;
 static NSFileManager *fileManager = nil;

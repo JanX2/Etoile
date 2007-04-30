@@ -1,6 +1,7 @@
 2007-04-29  Yen-Ju Chen <yjchen gmail.com>
 
 	* Remove unnecessary HEADER_INSTALL_DIR.
+	* Use <IconKit/IK...> as headers.
 
 2007-04-27  Yen-Ju Chen <yjchen gmail.com>
 

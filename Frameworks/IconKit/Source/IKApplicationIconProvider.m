@@ -27,11 +27,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import "IKCompositor.h"
-#import "IKCompositorOperation.h"
+#import <IconKit/IKCompositor.h>
+#import <IconKit/IKCompositorOperation.h>
 #import "NSString+MD5Hash.h"
 #import "NSFileManager+IconKit.h"
-#import "IKApplicationIconProvider.h"
+#import <IconKit/IKApplicationIconProvider.h>
 
 #ifdef HAVE_UKTEST
 #import <UnitKit/UnitKit.h>

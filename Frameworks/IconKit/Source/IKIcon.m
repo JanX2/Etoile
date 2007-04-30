@@ -26,8 +26,8 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#import "IKIcon.h"
-#import "IKIconTheme.h"
+#import <IconKit/IKIcon.h>
+#import <IconKit/IKIconTheme.h>
 
 /* For truncf on Linux and other platforms probably...
    #import <math.h> doesn't work on many Linux systems since truncf is often 

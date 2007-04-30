@@ -25,18 +25,14 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef ICONKIT_ICONKIT_H
-#define ICONKIT_ICONKIT_H 1
+#import <IconKit/IKIcon.h>
+#import <IconKit/IKIconIdentifier.h>
+#import <IconKit/IKIconPositions.h>
+#import <IconKit/IKIconTheme.h>
+#import <IconKit/IKIconProvider.h>
+#import <IconKit/IKApplicationIconProvider.h>
+#import <IconKit/IKThumbnailProvider.h>
+#import <IconKit/IKCompositor.h>
+#import <IconKit/IKCompositorOperation.h>
+#import <IconKit/IKWorkspaceAdditions.h>
 
-#include <IconKit/IKIcon.h>
-#include <IconKit/IKIconIdentifier.h>
-#include <IconKit/IKIconPositions.h>
-#include <IconKit/IKIconTheme.h>
-#include <IconKit/IKIconProvider.h>
-#include <IconKit/IKApplicationIconProvider.h>
-#include <IconKit/IKThumbnailProvider.h>
-#include <IconKit/IKCompositor.h>
-#include <IconKit/IKCompositorOperation.h>
-#include <IconKit/IKWorkspaceAdditions.h>
-
-#endif /*ICONKIT_IKICON_H*/

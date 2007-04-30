@@ -26,10 +26,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef ICONKIT_IKICONIDENTIFIER_H
-#define ICONKIT_IKICONIDENTIFIER_H 1
-
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
 typedef NSString *IKIconIdentifier;  // IKIconIdentifier is opaque, and not guaranteed to be an object! It's a struct on MacOS X.
 
@@ -54,4 +51,3 @@ extern IKIconIdentifier    IKIconAlertNote;
 extern IKIconIdentifier    IKIconAlertWarning;
 extern IKIconIdentifier    IKIconAlertFailure;
 
-#endif /*ICONKIT_IKICONIDENTIFIER_H*/
