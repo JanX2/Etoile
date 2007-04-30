@@ -18,12 +18,6 @@
 	output = [anOutput retain];
 	log = [NSMutableString new];
 	
-	[[NSNotificationCenter defaultCenter]
-		addObserver: self
-		selector: @selector(newData:)
-		name: NSFileHandleDataAvailableNotification
-		object: input];
-
 	waitForInput = NO;
 	loggingIn = NO;
 	
@@ -57,11 +51,6 @@
 	[input release];
 	[output release];
 	[super dealloc];
-}
-
-- (void) newData: (id) notification
-{
-//	[self parse];
 }
 
 - (void) defaultRead
@@ -201,6 +190,7 @@
 	return res;
 }
 
+#if 0 // Not used, but worth to keep
 - (void) parse
 {
 	BOOL valid = NO;	
@@ -297,10 +287,6 @@
 	}
 	if (waitForInput) [input waitForDataInBackgroundAndNotify];
 }
-
-- (void) sendLoginPassword
-{  
-	[output sendMSG: password];
-}
+#endif
 @end
 

@@ -1,10 +1,15 @@
-GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
+GNUSTEP_INSTALLATION_DOMAIN = SYSTEM
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
 APP_NAME = Login
 
-Login_OBJC_FILES = main.m NSFileHandle+line.m GDMClient.m Controller.m Background.m
+Login_OBJC_FILES = \
+	main.m \
+	NSFileHandle+line.m \
+	GDMClient.m \
+	Controller.m \
+	Background.m
 
 Login_LANGUAGES = English
 

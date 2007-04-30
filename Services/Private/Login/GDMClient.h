@@ -21,8 +21,6 @@
 - (BOOL) loginWithUsername: (NSString*) userName 
                   password: (NSString*) password
                    session: (NSString *) session;
-- (void) setDesktop: (NSString*) aDesktop;
-- (void) parse;
 - (void) beginning;
 - (BOOL) read: (int) code;
 @end
