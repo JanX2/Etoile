@@ -10,6 +10,7 @@ Babbler_OBJC_FILES = \
 	Player.m
 
 Babbler_RESOURCE_FILES = \
+	BabblerInfo.plist \
 	Resources/pause.tiff \
 	Resources/play.tiff \
 	Resources/seek_back.tiff \
@@ -27,7 +28,6 @@ Babbler_LOCALIZED_RESOURCE_FILES += \
         MainMenu.gorm
 
 Babbler_MAIN_MODEL_FILE = MainMenu.gorm
-
 
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -lXWindowServerKit -lMultimediaKit

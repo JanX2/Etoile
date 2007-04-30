@@ -1,0 +1,97 @@
+=======================
+OuterSpace File Manager
+=======================
+
+:Author: Yen-Ju Chen
+:Copyright: BSD License
+:NOTE: Experimental
+
+OuterSpace is a simple file manager.  It is spacial, not navagational.
+It treats files as objects.  It is designed to be simple, therefore,
+may not be suitable for power users.
+It is more focused on underneath file operation than user interface.
+The idea is to provide a platform to implement
+common framework for a file manager
+so that an advanced file manager can be built on top of it.
+And because of the hope that some of classes will be in a framework later,
+distributed view has to be written from scratch 
+so that it can be licensed under BSD or LGPL (UKDistributedView is GPL).
+
+Keyboard control
+----------------
+Read gui/Documentation/GuiUser/KeyboardSetup.gsdoc for key definition
+of CONTROL, COMMAND, ALTERNATE
+CONTROL + double-left-click to open new folder.
+Double-left-click to change folder.
+Left-drag to move file (move to trash can is to delet).
+ALTERNATE + left-drag is copy file.
+
+By default, CONTROL is left and right CTRL. ALTERNATE is right Alt.
+If you do not have right control keys (small notebook),
+you can use left Shift as ALTERNATE by doing:
+`defaults write NSGlobalDomain GSFirstAlternateKey Shift_L`
+
+Features (Not fully implmeneted yet)
+------------------------------------
+* Table or distributed view.
+* Single and blocking file operation
+* Bookmarks
+* Do not show hidden files.
+* Distributed view are always organized and sorted by names.
+* Drag-and-Drop.
+* Type to select.
+* File info.
+* Preview of images (or anything which can be image, ex. first frame of movie).
+* One path for one window. No multiple windows with the same path.
+* Recover trash via drag-and-drop.
+* Double-click to launch application or open files.
+
+Later or Never
+--------------
+* Browser view
+* Multiple file operations at the same time.
+* Smart folder
+* Search.
+* Go into GNUstep bundle (application bundle mostly).
+
+Design
+------
+OSObject protocol reflects an object, which can be physical or virtual.
+Physical object represents a node on file system, implmented by OSNode.
+Virtual object could be a file in archive, 
+which does not exist on file system.
+
+OSNode may or may not exist yet. Even though it is a physical node,
+it may represent more than a node.
+For example, a GNUstep application is a directory,
+but its OSNode behavies like a file.
+Similarily, an OSNode in freedesktop's trash can is actually two files,
+a real file and its info file. The OSNode will represents the real file
+and grab the information from the info file. Therefore, OSNode does not
+always map to physical file system one-to-one. 
+Same applies to desktop entry of freedesktop standard.
+
+OSVirtualNode can be anything. A great care is needed to make it work well,
+especially for file operation (see below).
+
+File operation
+--------------
+OuterSpace supports only copying and moving. Deleting is moving to trash can.
+Anything else, use terminals and command-line tools.
+Copying and moving is basically done with [OSObject -doTakeChild:move:error:];
+Adding OSNode into OSNode is done with NSFileManager.
+Adding OSVirtualNode into OSNode may be first writing OSVirtualNode into /tmp
+then doing a OSNode to OSNode operation.
+Adding OSNode or OSVirtualNode into OSVirtualNode depends on the 
+implementation of OSVirtualNode.
+Not everything can be mapped as a file system.
+See OSObject.h about how to prepare for file operation.
+
+Behaviors
+---------
+Icon is selected with mouse down. If users select several icons and decide
+to drag them, they will select one of them and start to drag.
+Because all the icons are selected already, another mouse down action on one
+of them will unselect the one under the mouse. To eliminate this problem,
+a mouse drag action will also select the icon under it so that users
+do not need to select icon again.

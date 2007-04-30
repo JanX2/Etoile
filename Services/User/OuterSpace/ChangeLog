@@ -1,0 +1,39 @@
+04-23-2007 Yen-Ju Chen <yjchenx at gmail>
+
+	* Show icon on path view.
+	* Use InspectorKit.
+
+04-13-2007 Yen-Ju Chen <yjchenx at gmail>
+
+	* Use trash can icon from TrashCan.
+
+04-01-2007 Yen-Ju Chen <yjchenx at gmail>
+
+	* Mouse drag will select icon under pointer.
+
+03-31-2007 Yen-Ju Chen <yjchenx at gmail>
+
+	* Work out trash can.
+
+03-30-2007 Yen-Ju Chen <yjchenx at gmail>
+
+	* Initial implmenetation of file operation.
+
+03-28-2007 Yen-Ju Chen <yjchenx at gmail>
+
+	* Implement drag-and-drop.
+	* Update icon in real time.
+
+03-25-2007 Yen-Ju Chen <yjchenx at gmail>
+
+	* Support Applications.
+	* Deal with multiple windows.
+	* Add trash can view.
+
+03-24-2007 Yen-Ju Chen <yjchenx at gmail>
+
+	* Add OSPathView and OSShelfView and make them work.
+
+03-19-2007 Yen-Ju Chen <yjchenx at gmail>
+
+	* Initial import.

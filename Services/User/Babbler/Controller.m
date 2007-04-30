@@ -117,5 +117,23 @@
 	DESTROY(players);
 }
 
+/**
+ * Services 
+ */
+- (void) openStreamWithSelection: (NSPasteboard *) pboard
+                     userData: (NSString *) userData
+                        error: (NSString **) error
+{
+  if ([[pboard types] containsObject: NSStringPboardType])
+  {
+    /* Should be string */
+    NSString *string = [pboard stringForType: NSStringPboardType];
+    if (string)
+    {
+NSLog(@"string %@", string);
+    }
+  }
+}
+
 @end
 
