@@ -1,0 +1,28 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    Controller = {
+	Actions = (
+	    "login:",
+	    "shutdown:",
+	    "reboot:"
+	);
+	Outlets = (
+	    loginTextfield,
+	    passwordTextfield,
+	    window,
+	    loginView,
+	    busyView,
+	    imageView,
+	    hostnameText
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "login:",
+	    "shutdown:",
+	    "reboot:"
+	);
+	Super = NSObject;
+    };
+}
