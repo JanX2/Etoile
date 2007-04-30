@@ -456,6 +456,7 @@ static NSDictionary * STANZA_KEYS;
 }
 - (void)logInWithMechansisms:(NSSet*) aFeatureSet
 {
+	//TODO: DIGEST-MD5 auth
 	/*
 	 if([aFeatureSet containsObject:@"DIGEST-MD5"])
 	 {
@@ -544,6 +545,7 @@ static NSDictionary * STANZA_KEYS;
 }
 - (void) addstreamFeatures:(NSDictionary*) aFeatureSet
 {
+	NSLog(@"Stream features has retain count %d", [streamFeatures retainCount]);
 	[streamFeatures release];
 	streamFeatures = [aFeatureSet retain];
 	//If we are connected, try logging in

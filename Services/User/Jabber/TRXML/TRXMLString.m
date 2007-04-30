@@ -29,7 +29,7 @@ static inline NSString* escapeXMLCData(NSString* _XMLString)
 - (void) notifyParent
 {
 	id oldValue = value;
-	value = escapeXMLCData(value);
+	value = [escapeXMLCData(value) retain];
 	[oldValue release];
 	[super notifyParent];
 }
