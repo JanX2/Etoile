@@ -51,6 +51,9 @@
 
 - (void) waitUntilData: (id) log
 {
+	if (log == nil)
+		return;
+
 	NS_DURING
 	while (YES)
 	{

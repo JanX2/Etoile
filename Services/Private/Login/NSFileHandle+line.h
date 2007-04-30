@@ -8,6 +8,6 @@
 
 - (void) sendSTX;
 - (void) sendMSG: (NSString*) message;
-- (void) waitUntilData;
+- (void) waitUntilData: (id) log;
 
 @end

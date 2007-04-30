@@ -13,6 +13,7 @@
   id view;
   id imageView;
   id hostnameText;
+  id sessionPopUpButton;
 
   int busyImageCounter;
 

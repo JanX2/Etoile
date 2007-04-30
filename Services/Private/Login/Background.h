@@ -6,4 +6,7 @@
 }
 - (void) set;
 + (Background*) background;
+- (void) redraw;
+- (void) setNeedsDisplayInRect: (NSRect) aRect;
+
 @end

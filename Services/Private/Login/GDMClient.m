@@ -17,7 +17,6 @@
 	input = [anInput retain];
 	output = [anOutput retain];
 	log = [NSMutableString new];
-	[self setDesktop: @"etoile"];
 	
 	[[NSNotificationCenter defaultCenter]
 		addObserver: self
@@ -44,18 +43,6 @@
 	delegate = aDelegate;
 }
 
-- (BOOL) logUser: (NSString*) anUser withPassword: (NSString*) aPassword
-{
-	if (loggingIn == NO)
-	{	
-		[self setUser: anUser];
-		[self setPassword: aPassword];
-		[self start];
-		loggingIn = YES;
-	}
-	//return [self parse];
-}
-
 - (void) error
 {
 	waitForInput = NO;
@@ -63,26 +50,9 @@
 	[delegate gdmError: self];
 }
 
-- (void) setDesktop: (NSString*) aDesktop
-{
-	ASSIGN (desktop, aDesktop);
-}
-
-- (void) setUser: (NSString*) anUsername
-{
-	ASSIGN (user, anUsername);
-}
-
-- (void) setPassword: (NSString*) aPassword
-{
-	ASSIGN (password, aPassword);
-}
-
 - (void) dealloc
 {
 	[desktop release];
-	[user release];
-	[password release];
 	[log release];
 	[input release];
 	[output release];
@@ -103,22 +73,21 @@
 - (void) beginning
 {
 	[self defaultRead];
-	#define READ(NAME) if ([self read: NAME] == NO) { [output sendSTX]; return NO; } else { [output sendSTX]; }
+	#define READ(NAME) if ([self read: NAME] == NO) { [output sendSTX]; return; } else { [output sendSTX]; }
 	READ (GDM_SETLOGIN);
 	READ (GDM_MSG);
+        #undef READ
 }
 
-- (BOOL) loginWithUsername: (NSString*) userName password: (NSString*) password
+- (BOOL) loginWithUsername: (NSString*) userName password: (NSString*) pw 
+                   session: (NSString *) session
 {
 	BOOL res = NO;
+	user = userName;
+	password = pw;
+        desktop = session;
+
 	NS_DURING
-
-	#warning The following is a hack for the livecd and need to be removed !
-	if ([userName isEqualToString: @"gnustep"])
-	{
-		[self setDesktop: @"gnustep"];
-	}
-
 	#define READ(NAME) if ([self read: NAME] == NO) { [output sendSTX]; return NO; } else { [output sendSTX]; }
 
 	[log appendFormat: @"\nLOGIN: <%@> PASS: <%@>\n", userName, password];
@@ -232,14 +201,14 @@
 	return res;
 }
 
-- (BOOL) parse
+- (void) parse
 {
 	BOOL valid = NO;	
 	while (valid)
 	{
 		[log appendString: @"PARSE\n"];
 		[log writeToFile: @"/tmp/log" atomically: YES];
-		[input waitUntilData];
+		[input waitUntilData: nil];
 		NSString* msg = [input readLine];
 
 		[log appendFormat: @"Lu <%@> ", msg];
@@ -329,7 +298,7 @@
 	if (waitForInput) [input waitForDataInBackgroundAndNotify];
 }
 
-- (BOOL) sendLoginPassword
+- (void) sendLoginPassword
 {  
 	[output sendMSG: password];
 }

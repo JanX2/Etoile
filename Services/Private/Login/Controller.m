@@ -3,6 +3,7 @@
 #import <AppKit/AppKit.h>
 #import "Controller.h"
 #import "Background.h"
+#import <unistd.h>
 
 @implementation Controller
 
@@ -64,11 +65,6 @@
 
 - (void) login: (id)sender
 {
-	//GDMClient* gdm = [GDMClient new];
-	
-	//[gdm logUser: [loginTextfield stringValue] 
-	//	withPassword: [passwordTextfield stringValue]];
-
 	busy = YES;
 	busyImageCounter = 0;
 	[self setView: busyView];
@@ -79,10 +75,9 @@
 
 - (void) doLogin
 {
-	if ([gdm loginWithUsername: 
-			[loginTextfield stringValue]
-		password: 
-			[passwordTextfield stringValue]])
+	if ([gdm loginWithUsername: [loginTextfield stringValue]
+		 password: [passwordTextfield stringValue]
+		 session: [sessionPopUpButton stringValue]])
 	{
 		//[self gdmLogged: self];
 		[self performSelectorOnMainThread: @selector(gdmLogged:) withObject: nil waitUntilDone: NO];	
@@ -94,25 +89,6 @@
 	}
 
 	[NSThread exit];
-
-		/*
-	if ([gdm logUser: [loginTextfield stringValue] 
-		withPassword: [passwordTextfield stringValue]])
-	{
-		[gdm release];
-		exit (0);
-	}
-	else
-	{
-		[gdm release];
-		waggleCount = 0;
-		add = 5;
-		originalPosition = [window frame];
-		[self waggle: nil];	
-		[NSTimer scheduledTimerWithTimeInterval: (1.0/400.0)
-			target: self selector: @selector(waggle:) userInfo: nil repeats: YES]; 
-	}	
-	*/
 }
 
 - (void) waggle: (NSTimer*) timer
