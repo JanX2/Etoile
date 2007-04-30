@@ -1904,7 +1904,7 @@
 		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
 		name = "XMPPConnection.m: 633";
 		rLen = 0;
-		rLoc = 16750;
+		rLoc = 16780;
 		rType = 0;
 		vrLen = 958;
 		vrLoc = 15926;
@@ -1924,7 +1924,7 @@
 		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
 		name = "XMPPConnection.m: 633";
 		rLen = 0;
-		rLoc = 16750;
+		rLoc = 16780;
 		rType = 0;
 		vrLen = 958;
 		vrLoc = 15926;
@@ -1944,7 +1944,7 @@
 		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
 		name = "XMPPConnection.m: 633";
 		rLen = 0;
-		rLoc = 16754;
+		rLoc = 16784;
 		rType = 0;
 		vrLen = 894;
 		vrLoc = 15885;
@@ -2024,7 +2024,7 @@
 		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
 		name = "XMPPConnection.m: 633";
 		rLen = 0;
-		rLoc = 16754;
+		rLoc = 16784;
 		rType = 0;
 		vrLen = 894;
 		vrLoc = 15885;
@@ -2054,7 +2054,7 @@
 		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
 		name = "XMPPConnection.m: 633";
 		rLen = 0;
-		rLoc = 16754;
+		rLoc = 16784;
 		rType = 0;
 		vrLen = 894;
 		vrLoc = 15885;
@@ -2084,7 +2084,7 @@
 		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
 		name = "XMPPConnection.m: 740";
 		rLen = 0;
-		rLoc = 18967;
+		rLoc = 18997;
 		rType = 0;
 		vrLen = 894;
 		vrLoc = 15886;
@@ -2276,7 +2276,7 @@
 		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
 		name = "XMPPConnection.m: 743";
 		rLen = 0;
-		rLoc = 18967;
+		rLoc = 18997;
 		rType = 0;
 		vrLen = 649;
 		vrLoc = 5129;
@@ -2296,7 +2296,7 @@
 		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
 		name = "XMPPConnection.m: 743";
 		rLen = 0;
-		rLoc = 18967;
+		rLoc = 18997;
 		rType = 0;
 		vrLen = 649;
 		vrLoc = 5129;
@@ -2406,7 +2406,7 @@
 		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
 		name = "XMPPConnection.m: 623";
 		rLen = 0;
-		rLoc = 16210;
+		rLoc = 16240;
 		rType = 0;
 		vrLen = 971;
 		vrLoc = 15677;
@@ -2536,7 +2536,7 @@
 		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
 		name = "XMPPConnection.m: 623";
 		rLen = 0;
-		rLoc = 16210;
+		rLoc = 16240;
 		rType = 0;
 		vrLen = 971;
 		vrLoc = 15677;
@@ -3011,7 +3011,7 @@
 		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
 		name = "XMPPConnection.m: 749";
 		rLen = 0;
-		rLoc = 18967;
+		rLoc = 18997;
 		rType = 0;
 		vrLen = 649;
 		vrLoc = 5129;
@@ -3047,6 +3047,116 @@
 		vrLoc = 2847;
 	};
 	286B6BD60BE698F7008B6753 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 286B6B3C0BE6136B008B6753 /* xs_wire.h */;
+		name = "xs_wire.h: 100";
+		rLen = 87;
+		rLoc = 2890;
+		rType = 0;
+		vrLen = 1250;
+		vrLoc = 2011;
+	};
+	286B6BD90BE6997A008B6753 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 28B2AA8F0A18F47A0077DC9B /* TRXMLString.m */;
+		name = "TRXMLString.m: 32";
+		rLen = 0;
+		rLoc = 1102;
+		rType = 0;
+		vrLen = 1172;
+		vrLoc = 80;
+	};
+	286B6BDA0BE6997A008B6753 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
+		name = "authIq stringValue";
+		rLen = 18;
+		rLoc = 10128;
+		rType = 0;
+		vrLen = 1046;
+		vrLoc = 9533;
+	};
+	286B6BDB0BE6997A008B6753 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 28B2AA8F0A18F47A0077DC9B /* TRXMLString.m */;
+		name = "TRXMLString.m: 32";
+		rLen = 0;
+		rLoc = 1102;
+		rType = 0;
+		vrLen = 1172;
+		vrLoc = 80;
+	};
+	286B6BDC0BE6997A008B6753 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
+		name = roster;
+		rLen = 6;
+		rLoc = 16621;
+		rType = 0;
+		vrLen = 931;
+		vrLoc = 16241;
+	};
+	286B6BDD0BE6997A008B6753 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 286B6B360BE6136B008B6753 /* xen.h */;
+		name = mfn_;
+		rLen = 4;
+		rLoc = 21274;
+		rType = 0;
+		vrLen = 2335;
+		vrLoc = 19909;
+	};
+	286B6BDE0BE6997A008B6753 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 286B6B560BE667F0008B6753 /* ring.h */;
+		name = "* This is OK in 1-for-1 request-response situations where the";
+		rLen = 64;
+		rLoc = 6413;
+		rType = 0;
+		vrLen = 3210;
+		vrLoc = 2847;
+	};
+	286B6BDF0BE6997A008B6753 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 286B6B3C0BE6136B008B6753 /* xs_wire.h */;
+		name = "xs_wire.h: 100";
+		rLen = 87;
+		rLoc = 2890;
+		rType = 0;
+		vrLen = 1250;
+		vrLoc = 2011;
+	};
+	286B6BE20BE6997E008B6753 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */;
+		name = roster;
+		rLen = 6;
+		rLoc = 16621;
+		rType = 0;
+		vrLen = 931;
+		vrLoc = 16241;
+	};
+	286B6BE30BE6997E008B6753 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 286B6B360BE6136B008B6753 /* xen.h */;
+		name = mfn_;
+		rLen = 4;
+		rLoc = 21274;
+		rType = 0;
+		vrLen = 2335;
+		vrLoc = 19909;
+	};
+	286B6BE40BE6997E008B6753 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 286B6B560BE667F0008B6753 /* ring.h */;
+		name = "* This is OK in 1-for-1 request-response situations where the";
+		rLen = 64;
+		rLoc = 6413;
+		rType = 0;
+		vrLen = 3210;
+		vrLoc = 2847;
+	};
+	286B6BE50BE6997E008B6753 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 286B6B3C0BE6136B008B6753 /* xs_wire.h */;
 		name = "xs_wire.h: 100";
@@ -3235,7 +3345,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {792, 672}}";
 			sepNavSelRange = "{1102, 0}";
-			sepNavVisRect = "{{0, 143}, {792, 527}}";
+			sepNavVisRect = "{{0, 73}, {792, 527}}";
 			sepNavWindowFrame = "{{816, 141}, {975, 869}}";
 		};
 	};
@@ -3516,9 +3626,9 @@
 	};
 	28F8E98A0632E612004623A5 /* XMPPConnection.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1139, 10500}}";
-			sepNavSelRange = "{14425, 0}";
-			sepNavVisRect = "{{0, 7490}, {1139, 353}}";
+			sepNavIntBoundsRect = "{{0, 0}, {792, 10612}}";
+			sepNavSelRange = "{16621, 6}";
+			sepNavVisRect = "{{0, 8878}, {792, 527}}";
 			sepNavWindowFrame = "{{400, 46}, {975, 832}}";
 		};
 	};
@@ -4575,6 +4685,17 @@
 			286B6BD40BE698F7008B6753 /* PBXTextBookmark */ = 286B6BD40BE698F7008B6753 /* PBXTextBookmark */;
 			286B6BD50BE698F7008B6753 /* PBXTextBookmark */ = 286B6BD50BE698F7008B6753 /* PBXTextBookmark */;
 			286B6BD60BE698F7008B6753 /* PBXTextBookmark */ = 286B6BD60BE698F7008B6753 /* PBXTextBookmark */;
+			286B6BD90BE6997A008B6753 /* PBXTextBookmark */ = 286B6BD90BE6997A008B6753 /* PBXTextBookmark */;
+			286B6BDA0BE6997A008B6753 /* PBXTextBookmark */ = 286B6BDA0BE6997A008B6753 /* PBXTextBookmark */;
+			286B6BDB0BE6997A008B6753 /* PBXTextBookmark */ = 286B6BDB0BE6997A008B6753 /* PBXTextBookmark */;
+			286B6BDC0BE6997A008B6753 /* PBXTextBookmark */ = 286B6BDC0BE6997A008B6753 /* PBXTextBookmark */;
+			286B6BDD0BE6997A008B6753 /* PBXTextBookmark */ = 286B6BDD0BE6997A008B6753 /* PBXTextBookmark */;
+			286B6BDE0BE6997A008B6753 /* PBXTextBookmark */ = 286B6BDE0BE6997A008B6753 /* PBXTextBookmark */;
+			286B6BDF0BE6997A008B6753 /* PBXTextBookmark */ = 286B6BDF0BE6997A008B6753 /* PBXTextBookmark */;
+			286B6BE20BE6997E008B6753 /* PBXTextBookmark */ = 286B6BE20BE6997E008B6753 /* PBXTextBookmark */;
+			286B6BE30BE6997E008B6753 /* PBXTextBookmark */ = 286B6BE30BE6997E008B6753 /* PBXTextBookmark */;
+			286B6BE40BE6997E008B6753 /* PBXTextBookmark */ = 286B6BE40BE6997E008B6753 /* PBXTextBookmark */;
+			286B6BE50BE6997E008B6753 /* PBXTextBookmark */ = 286B6BE50BE6997E008B6753 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 28C99CE805DFDE1F00BF3B71 /* Source Control */;
 		userBookmarkGroup = 28177AC407005F2100A694A2 /* PBXBookmarkGroup */;

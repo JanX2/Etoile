@@ -622,6 +622,7 @@ static NSDictionary * STANZA_KEYS;
 	}
 	else if (connectionState == loggingIn)
 	{
+		connectionState = loggedIn;
 		//TODO: Check that this actually is the response to the old-style auth request
 	}
 	else if (connectionState == noSession)
