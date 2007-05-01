@@ -1,0 +1,13 @@
+2006-05-01 Yen-Ju Chen <yjchenx at gmail>
+
+	* RosterWindow.m:
+	  Use - outlineView:willDisplayCell:forTableColumn:item: to change cell
+	  property and simplify outlineView:objectValueForTableColumn:byItem:,
+	  which should just return object to display.
+	  GNUstep does not accept NSCell as object to display.
+	  The color text does not work yet.
+	  Because it is difficult to link NSTableColumn from Gorm,
+	  we link it manually in windowDidLoad and set minimal width.
+	* English.lproj/RosterWindow.gorm:
+	  Update all links from NSOwner.
+

@@ -39,6 +39,16 @@ NSMutableArray * rosterControllers = nil;
 	}
 	return rosterController;
 }
+#ifdef GNUSTEP
+- (void) windowDidLoad
+{
+	/* Because it is difficult to link table column,
+	   we do it after the nib file is loaded */
+	column = [view outlineTableColumn];
+	[column setWidth: 200];
+	[column setMinWidth: 200];
+}
+#endif
 
 - (void) redraw:(NSNotification*)_notification
 {
@@ -136,7 +146,6 @@ NSMutableArray * rosterControllers = nil;
 	self = [self initWithWindowNibName:_nib];
 	if(self == nil)
 	{
-NSLog(@"***** Cannot load nib file ******");
 		[self release];
 		return nil;
 	}
@@ -381,14 +390,13 @@ NSLog(@"***** Cannot load nib file ******");
 	return 0;
 }
 
-- (id)outlineView:(NSOutlineView *)_outlineView objectValueForTableColumn:(NSTableColumn *)_tableColumn byItem:(id)_item
+- (void)outlineView:(NSOutlineView *)_outlineView willDisplayCell:(id)_cell forTableColumn:(NSTableColumn *)_tableColumn item:(id)_item
 {
-	NSCell * cell;
 	NSMutableDictionary * attributes = [[[NSMutableDictionary alloc] init] autorelease];
 	NSAttributedString * text;
 	if([_item isKindOfClass:[RosterGroup class]])
 	{
-		cell = [[[NSCell alloc] initTextCell:[_item groupName]] autorelease];
+		/* Nothing to change */
 	}
 	else if([_item isKindOfClass:[JabberPerson class]])
 	{
@@ -399,9 +407,7 @@ NSLog(@"***** Cannot load nib file ******");
 						  forKey:NSForegroundColorAttributeName];
 		}
 		text = [[[NSAttributedString alloc] initWithString:[(JabberPerson*)_item name] attributes:attributes] autorelease];
-		cell = [[[NSCell alloc] init] autorelease];
-		[cell setType:NSTextCellType];
-		[cell setAttributedStringValue:text];
+		[_cell setAttributedStringValue:text];
 	}
 	else if([_item isKindOfClass:[JabberIdentity class]])
 	{
@@ -412,15 +418,32 @@ NSLog(@"***** Cannot load nib file ******");
 						  forKey:NSForegroundColorAttributeName];
 		}
 		text = [[[NSAttributedString alloc] initWithString:[[_item jid] jidString] attributes:attributes] autorelease];
-		cell = [[[NSCell alloc] init] autorelease];
-		[cell setType:NSTextCellType];
-		[cell setAttributedStringValue:text];
+		[_cell setAttributedStringValue:text];
 	}
 	else 
 	{
-		cell = [[[NSCell alloc] initTextCell:@"Wrgon!"] autorelease];
+		/* Nothing to change */
 	}
-	return cell;
+}
+
+- (id)outlineView:(NSOutlineView *)_outlineView objectValueForTableColumn:(NSTableColumn *)_tableColumn byItem:(id)_item
+{
+	if([_item isKindOfClass:[RosterGroup class]])
+	{
+		return [_item groupName];
+	}
+	else if([_item isKindOfClass:[JabberPerson class]])
+	{
+		return [(JabberPerson*)_item name];
+	}
+	else if([_item isKindOfClass:[JabberIdentity class]])
+	{
+		return [[_item jid] jidString];
+	}
+	else 
+	{
+		return @"Wrgon!";
+	}
 }
 
 - (void)outlineViewItemDidExpand:(NSNotification *)notification
