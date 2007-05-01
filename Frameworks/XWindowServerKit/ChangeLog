@@ -1,6 +1,7 @@
 2007 04 30 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Flush Xwindow while switch desktop.
+	* Use a hack to make framework compile when etoile.make is in front of framework.make
 
 2007 04 30 Quentin Mathe <qmathe@club-internet.fr>
 
