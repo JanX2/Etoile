@@ -34,7 +34,7 @@
  * 'value' instance variable when -notifyParent: is called.  This is only
  * relevant to sub-classes.
  */
-- (id) initWithXMLParser:(id)parser parent:(id<NSObject,TRXMLParserDelegate>)parent key:(id)aKey;
+- (id) initWithXMLParser:(id)aParser parent:(id<NSObject,TRXMLParserDelegate>)aParent key:(id)aKey;
 /**
  * Dynamic dispatch method that calls [self add{aChild}:aKey] if the object
  * responds to add{aChild}:.  This is similar to the KVC mechamism, but used

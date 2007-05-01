@@ -109,4 +109,7 @@ static const NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#ite
 	[knownNodes release];
 	[super dealloc];
 }
+
 @end
+
+

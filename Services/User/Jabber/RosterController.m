@@ -136,6 +136,7 @@ NSMutableArray * rosterControllers = nil;
 	self = [self initWithWindowNibName:_nib];
 	if(self == nil)
 	{
+NSLog(@"***** Cannot load nib file ******");
 		[self release];
 		return nil;
 	}

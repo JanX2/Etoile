@@ -1,0 +1,29 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "changePresence:",
+	    "click:"
+	);
+	Super = NSObject;
+    };
+    ResizingOutlineView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSOutlineView;
+    };
+    RosterController = {
+	Actions = (
+	    "click:",
+	    "changePresence:"
+	);
+	Outlets = (
+	    column,
+	    view,
+	    presenceBox
+	);
+	Super = NSWindowController;
+    };
+}

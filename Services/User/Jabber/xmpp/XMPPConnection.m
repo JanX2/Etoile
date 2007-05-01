@@ -232,7 +232,7 @@ static NSDictionary * STANZA_KEYS;
 //Connect to an XMPP server.
 - (void) connectToJabberServer:(NSString*) jabberServer 
 					   withJID:(JID*) aJID
-					  password:(NSString*) password;
+					  password:(NSString*) password
 {
 	user = [[aJID node] retain];
 	server = [[aJID domain] retain];

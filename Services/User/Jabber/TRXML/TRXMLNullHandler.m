@@ -44,7 +44,7 @@
 }
 
 - (void)startElement:(NSString *)_Name
-		  attributes:(NSDictionary*)_attributes;
+		  attributes:(NSDictionary*)_attributes
 {
 	depth++;
 }

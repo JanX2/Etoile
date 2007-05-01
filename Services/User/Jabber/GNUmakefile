@@ -16,12 +16,21 @@ StepChat_LANGUAGES = English
 
 StepChat_RESOURCE_FILES = StepChatInfo.plist
 
+ifeq ($(FOUNDATION_LIB), apple)
+StepChat_LOCALIZED_RESOURCE_FILES = \
+	  MainMenu.nib\
+	  MessageWindow.nib\
+	  AccountBox.nib\
+	  PasswordBox.nib\
+	  RosterWindow.nib
+else
 StepChat_LOCALIZED_RESOURCE_FILES = \
 	  MainMenu.nib\
 	  MessageWindow.nib\
 	  AccountBox.gorm\
 	  PasswordBox.nib\
-	  RosterWindow.nib
+	  RosterWindow.gorm
+endif
 
 #
 # Header files

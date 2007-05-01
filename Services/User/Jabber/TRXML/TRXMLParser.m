@@ -35,10 +35,10 @@
 	return [super init];
 }
 
-- (id) setContentHandler:(id<NSObject, TRXMLParserDelegate>) contentHandler
+- (id) setContentHandler:(id<NSObject, TRXMLParserDelegate>) _contentHandler
 {
 	[delegate release];
-	delegate = [contentHandler retain];
+	delegate = [_contentHandler retain];
 	return self;
 }
 

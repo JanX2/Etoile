@@ -139,7 +139,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 }
 
 
-- (void)characters:(NSString *)_chars;
+- (void)characters:(NSString *)_chars
 {
 	NSString * plainChars = unescapeXMLCData(_chars);
 	id lastElement = [elements lastObject];
