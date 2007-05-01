@@ -53,15 +53,20 @@ static Background* sharedInstance;
 	NSFileManager* fm = [NSFileManager defaultManager];	
 	NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 	NSString* path = [defaults stringForKey: @"ImagePath"];
+	NSImage *image = nil;
 
 	if (path)
 	{
 		if ([fm fileExistsAtPath: [path stringByStandardizingPath]])
 		{
-			NSImage* image = [[NSImage alloc] initWithContentsOfFile: path];
-			[view setImage: [image autorelease]];
+			image = AUTORELEASE([[NSImage alloc] initWithContentsOfFile: path]);
 		}
 	}
+	else
+	{
+		image = [NSImage imageNamed: @"2560x1920.jpg"];
+	}
+	[view setImage: image];
 
 	[win makeKeyAndOrderFront: self];
 	[win orderBack: self];

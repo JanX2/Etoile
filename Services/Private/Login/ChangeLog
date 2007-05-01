@@ -2,6 +2,12 @@
 
 	* Use 16 steps for login instead of 8 step.
 	  Fix bug #8553.
+	* etoile_login.sh:
+	* Background.m:
+	  Include a default image and put an example of loading bundle
+	  through arguments instead of user defaults.
+	  In this case, there is no need to put GNUstep Default in root
+ 	  or special users.
 
 2007-04-29 Yen-Ju Chen <yjchenx at gmail>
 

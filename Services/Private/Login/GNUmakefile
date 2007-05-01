@@ -14,7 +14,8 @@ Login_OBJC_FILES = \
 Login_LANGUAGES = English
 
 Login_RESOURCE_FILES = \
-	login-images/*.png 
+	login-images/*.png \
+	login-images/*.jpg
 
 Login_LOCALIZED_RESOURCE_FILES = login.gorm
 

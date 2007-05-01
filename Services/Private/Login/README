@@ -37,6 +37,11 @@ Greeter=/usr/local/bin/etoile_greeter.sh
 Defaults 
 ========
 
+You can add user defaults in the script. For example:
+
+openapp /usr/local/GNUstep/System/Applications/Login.app -GSAppKitUserBundles "(
+"/usr/local/GNUstep/Local/Library/Bundles/Camaelon.themeEngine")"
+
 There is a couple of useful defaults you could set for this program.
 First, you should set GSSupressAppIcon to true -- you do not want the appicon to show.
 Secondly, if you want to use a background image, you need to set up the ImagePath key.
