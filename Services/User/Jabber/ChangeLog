@@ -10,4 +10,6 @@
 	  we link it manually in windowDidLoad and set minimal width.
 	* English.lproj/RosterWindow.gorm:
 	  Update all links from NSOwner.
+	* RosterWindow:
+	  Fix size calculation broken by changes abolve.
 

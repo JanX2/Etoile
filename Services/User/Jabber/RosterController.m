@@ -114,9 +114,7 @@ NSMutableArray * rosterControllers = nil;
 	{
 		NS_DURING
 		float width = indent * ([view levelForRow:i] + 1);
-		NSCell * cell = [self outlineView:view
-				objectValueForTableColumn:0
-								   byItem:[view itemAtRow:i]];
+		NSCell *cell = [[[view tableColumns] objectAtIndex: 0] dataCellForRow: i];
 		width += [[cell attributedStringValue] size].width;
 		if(width > size.width)
 		{
@@ -392,6 +390,7 @@ NSMutableArray * rosterControllers = nil;
 
 - (void)outlineView:(NSOutlineView *)_outlineView willDisplayCell:(id)_cell forTableColumn:(NSTableColumn *)_tableColumn item:(id)_item
 {
+return;
 	NSMutableDictionary * attributes = [[[NSMutableDictionary alloc] init] autorelease];
 	NSAttributedString * text;
 	if([_item isKindOfClass:[RosterGroup class]])
