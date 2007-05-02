@@ -48,6 +48,10 @@ NSMutableArray * messageWindowControllers = nil;
 
 - (void) resizeEditingBox:(id)_sender
 {
+#ifdef GNUSTEP
+	/* We do not resize editing box during editing */
+	return;
+#endif
 	//Note:  The 2.0f may be cocoa-specific.
 	NSSize editingBoxSize = [editingBox frame].size;
 	NSSize editingBoxVisibleSize = [editingBoxBox frame].size;

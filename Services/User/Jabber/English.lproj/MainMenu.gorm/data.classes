@@ -1,0 +1,22 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "setCustomPresence:",
+	    "showRosterWindow:"
+	);
+	Super = NSObject;
+    };
+    JabberApp = {
+	Actions = (
+	    "setCustomPresence:",
+	    "showRosterWindow:"
+	);
+	Outlets = (
+	    customPresenceWindow,
+	    debugMenu,
+	    xmlLogBox
+	);
+	Super = NSObject;
+    };
+}

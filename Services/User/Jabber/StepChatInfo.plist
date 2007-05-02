@@ -1,6 +1,6 @@
 {
   NSExecutable = "StepChat";
-  NSMainNibFile = "MainMenu.nib";
+  NSMainNibFile = "MainMenu.gorm";
   NSPrincipalClass = "NSApplication";
   ApplicationName = "StepChat";
   ApplicationRelease = "0.1";

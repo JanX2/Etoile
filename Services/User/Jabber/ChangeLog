@@ -15,4 +15,9 @@
 	* English.lproj/MessageWindow.gorm:
 	* English.lproj/PasswordBox.gorm:
 	  Make it work for GNUstep.
+	* English.lproj/MainMenu.gorm:
+	  Write new MainMenu. Not complete yet.
+	* MessageWindowController.m:
+	* RosterController.m:
+	  Do not change size on GNUstep.
 

@@ -39,14 +39,12 @@ NSMutableArray * rosterControllers = nil;
 	}
 	return rosterController;
 }
+
 #ifdef GNUSTEP
-- (void) windowDidLoad
+- (void) awakeFromNib
 {
-	/* Because it is difficult to link table column,
-	   we do it after the nib file is loaded */
-	column = [view outlineTableColumn];
-	[column setWidth: 200];
-	[column setMinWidth: 200];
+	[view setHeaderView: nil];
+	[view setCornerView: nil];
 }
 #endif
 
@@ -223,6 +221,9 @@ NSMutableArray * rosterControllers = nil;
 
 - (NSRect)optimalSize
 {
+#ifdef GNUSTEP
+	return [[self window] frame];
+#endif
 	NSRect windowFrameDimensions = [[self window] frame];
 	float oldHeight = windowFrameDimensions.size.height;
 	

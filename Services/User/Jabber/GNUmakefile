@@ -25,7 +25,7 @@ StepChat_LOCALIZED_RESOURCE_FILES = \
 	  RosterWindow.nib
 else
 StepChat_LOCALIZED_RESOURCE_FILES = \
-	  MainMenu.nib\
+	  MainMenu.gorm\
 	  MessageWindow.gorm\
 	  AccountBox.gorm \
 	  PasswordBox.gorm \
