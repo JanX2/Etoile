@@ -11,61 +11,57 @@ ADDITIONAL_INCLUDE_DIRS += -I../Headers
 GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_SYSTEM_ROOT)
 
 ifeq ($(test), yes)
-BUNDLE_NAME = libServicesBarKit
+BUNDLE_NAME = ServicesBarKit
 ADDITIONAL_CPPFLAGS += -DHAVE_UKTEST
 ADDITIONAL_LDFLAGS += -lUnitKit -lgnustep-gui -lgnustep-base
 else
-LIBRARY_NAME = libServicesBarKit
+FRAMEWORK_NAME = ServicesBarKit
 endif
 VERSION = 0.1
 
-libServicesBarKit_LIB_DIRS = -L../$(GNUSTEP_LIBRARIES_ROOT)
+ServicesBarKit_LIB_DIRS = -L../$(GNUSTEP_LIBRARIES_ROOT)
 
 #
 # Resource files
 #
-libServicesBarKit_MAIN_MODEL_FILE =
-libServicesBarKit_RESOURCE_FILES =
+ServicesBarKit_MAIN_MODEL_FILE =
+ServicesBarKit_RESOURCE_FILES =
 
-libServicesBarKit_LOCALIZED_RESOURCE_FILES =
+ServicesBarKit_LOCALIZED_RESOURCE_FILES =
 
 #
 # Languages we're localized for
 #
-libServicesBarKit_LANGUAGES = \
+ServicesBarKit_LANGUAGES = \
 	English
 
 #
 # Header files
 #
-libServicesBarKit_HEADERS = \
+ServicesBarKit_HEADERS = \
 	SBServicesBarItem.h \
 	SBServicesBar.h
 
-libServicesBarKit_HEADER_FILES_DIR = ../Headers
+ServicesBarKit_HEADER_FILES_DIR = ../Headers
 	
-ifneq ($(test), yes)
-libServicesBarKit_HEADER_FILES_INSTALL_DIR = /ServicesBarKit
-endif
-
 #
 # Class files
 #
-libServicesBarKit_OBJC_FILES = \
+ServicesBarKit_OBJC_FILES = \
 	SBServicesBarItem.m \
 	SBServicesBar.m
 
 #
 # C files
 #
-libServicesBarKit_C_FILES =
+ServicesBarKit_C_FILES =
 
 -include GNUmakefile.preamble
 
 ifeq ($(test), yes)
 include $(GNUSTEP_MAKEFILES)/bundle.make
 else
-include $(GNUSTEP_MAKEFILES)/library.make
+include $(GNUSTEP_MAKEFILES)/framework.make
 endif
 
 -include GNUmakefile.postamble

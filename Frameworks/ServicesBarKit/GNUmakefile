@@ -2,7 +2,7 @@ PACKAGE_NAME = ServicesBarKit
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
-SUBPROJECTS = Source ServicesBarMenulet #StatusItemExample 
+SUBPROJECTS = Source #ServicesBarMenulet #StatusItemExample 
 
 -include GNUmakefile.preamble
 
