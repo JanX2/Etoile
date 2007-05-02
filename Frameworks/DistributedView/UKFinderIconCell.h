@@ -16,7 +16,7 @@
 //  Headers:
 // -----------------------------------------------------------------------------
 
-#import <Cocoa/Cocoa.h>
+#import <AppKit/AppKit.h>
 
 #ifdef GNUSTEP
 #import "EtoileCompatibility.h"

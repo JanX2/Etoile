@@ -1,12 +1,8 @@
 before-all::
-	rm -f $(CURDIR)/Cocoa.h
-	$(LN_S) $(CURDIR)/Cocoa/Cocoa.h \
-		$(CURDIR)/Cocoa.h
 
 after-all::
 
 after-clean::
-	rm -f $(CURDIR)/Cocoa.h
 
 after-distclean::
 

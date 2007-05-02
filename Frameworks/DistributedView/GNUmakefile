@@ -7,7 +7,7 @@ ADDITIONAL_OBJCFLAGS = -Wno-import
 #
 # Main application
 #
-LIBRARY_NAME = libDistributedView
+FRAMEWORK_NAME = DistributedView
 VERSION = 0.1
 LIBRARIES_DEPEND_UPON = -lEtoileUI
 
@@ -17,34 +17,31 @@ LIBRARIES_DEPEND_UPON += -lm
 #
 # Resource files
 #
-$(LIBRARY_NAME)_MAIN_MODEL_FILE =
+DistributedView_MAIN_MODEL_FILE =
 
-$(LIBRARY_NAME)_RESOURCE_FILES =
+DistributedView_RESOURCE_FILES =
 
-$(LIBRARY_NAME)_LOCALIZED_RESOURCE_FILES =
+DistributedView_LOCALIZED_RESOURCE_FILES =
 
 #
 # Languages we're localized for
 #
-$(LIBRARY_NAME)_LANGUAGES = \
+DistributedView_LANGUAGES = \
 	English
 	
 #
 # Class files
 #
-$(LIBRARY_NAME)_OBJC_FILES = \
+DistributedView_OBJC_FILES = \
 	UKDistributedView.m \
 	UKFinderIconCell.m
 
 #
 # Header files to be installed
 #
-$(LIBRARY_NAME)_HEADER_FILES_DIR = ./
+DistributedView_HEADER_FILES_DIR = ./
 
-$(LIBRARY_NAME)_HEADER_FILES_INSTALL_DIR = /DistributedView
-
-$(LIBRARY_NAME)_HEADER_FILES = \
-	Cocoa.h \
+DistributedView_HEADER_FILES = \
 	EtoileCompatibility.h \
 	UKDistributedView.h \
 	UKFinderIconCell.h
@@ -52,11 +49,12 @@ $(LIBRARY_NAME)_HEADER_FILES = \
 #
 # C files
 #
-$(LIBRARY_NAME)_C_FILES =
+DistributedView_C_FILES =
 
 -include GNUmakefile.preamble
 
-include $(GNUSTEP_MAKEFILES)/library.make
+include $(GNUSTEP_MAKEFILES)/aggregate.make
 include ../../etoile.make
+include $(GNUSTEP_MAKEFILES)/framework.make
 
 -include GNUmakefile.postamble
