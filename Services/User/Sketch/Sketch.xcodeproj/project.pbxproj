@@ -15,14 +15,6 @@
 		38D54A3C07D51A2A00514CB8 /* SKTToolPaletteController.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECEE8FE888A39C02AAC07 /* SKTToolPaletteController.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		38D54A3D07D51A2A00514CB8 /* SKTGridPanelController.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECEE9FE888A39C02AAC07 /* SKTGridPanelController.h */; };
 		38D54A3E07D51A2A00514CB8 /* SKTGridView.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECEEAFE888A39C02AAC07 /* SKTGridView.h */; };
-		38D54A3F07D51A2A00514CB8 /* SKTDrawDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECF21FE888A39C02AAC07 /* SKTDrawDocument.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		38D54A4007D51A2A00514CB8 /* SKTGraphic.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECF22FE888A39C02AAC07 /* SKTGraphic.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		38D54A4107D51A2A00514CB8 /* SKTRectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECF23FE888A39C02AAC07 /* SKTRectangle.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		38D54A4207D51A2A00514CB8 /* SKTCircle.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECF24FE888A39C02AAC07 /* SKTCircle.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		38D54A4307D51A2A00514CB8 /* SKTLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECF25FE888A39C02AAC07 /* SKTLine.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		38D54A4407D51A2A00514CB8 /* SKTTextArea.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECF26FE888A39C02AAC07 /* SKTTextArea.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		38D54A4507D51A2A00514CB8 /* SKTImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECF27FE888A39C02AAC07 /* SKTImage.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		38D54A4607D51A2A00514CB8 /* SKTRenderingView.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A3ECF28FE888A39C02AAC07 /* SKTRenderingView.h */; settings = {ATTRIBUTES = (); }; };
 		38D54A4707D51A2A00514CB8 /* SKT_Prefix.h in Headers */ = {isa = PBXBuildFile; fileRef = 26D1BC9902E4B4D608C917DD /* SKT_Prefix.h */; };
 		38D54A4907D51A2A00514CB8 /* DrawWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEEEFE888A39C02AAC07 /* DrawWindow.nib */; };
 		38D54A4A07D51A2A00514CB8 /* GridPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF0FE888A39C02AAC07 /* GridPanel.nib */; };
@@ -55,44 +47,25 @@
 		38D54A6607D51A2A00514CB8 /* SKTToolPaletteController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECEDFFE888A39C02AAC07 /* SKTToolPaletteController.m */; settings = {ATTRIBUTES = (); }; };
 		38D54A6707D51A2A00514CB8 /* SKTGridPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECEE0FE888A39C02AAC07 /* SKTGridPanelController.m */; settings = {ATTRIBUTES = (); }; };
 		38D54A6807D51A2A00514CB8 /* SKTGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECEE1FE888A39C02AAC07 /* SKTGridView.m */; settings = {ATTRIBUTES = (); }; };
-		38D54A6907D51A2A00514CB8 /* SKTDrawDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECF18FE888A39C02AAC07 /* SKTDrawDocument.m */; settings = {ATTRIBUTES = (); }; };
-		38D54A6A07D51A2A00514CB8 /* SKTGraphic.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECF19FE888A39C02AAC07 /* SKTGraphic.m */; settings = {ATTRIBUTES = (); }; };
-		38D54A6B07D51A2A00514CB8 /* SKTRectangle.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECF1AFE888A39C02AAC07 /* SKTRectangle.m */; settings = {ATTRIBUTES = (); }; };
-		38D54A6C07D51A2A00514CB8 /* SKTCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECF1BFE888A39C02AAC07 /* SKTCircle.m */; settings = {ATTRIBUTES = (); }; };
-		38D54A6D07D51A2A00514CB8 /* SKTLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECF1CFE888A39C02AAC07 /* SKTLine.m */; settings = {ATTRIBUTES = (); }; };
-		38D54A6E07D51A2A00514CB8 /* SKTTextArea.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECF1DFE888A39C02AAC07 /* SKTTextArea.m */; settings = {ATTRIBUTES = (); }; };
-		38D54A6F07D51A2A00514CB8 /* SKTImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECF1EFE888A39C02AAC07 /* SKTImage.m */; settings = {ATTRIBUTES = (); }; };
-		38D54A7007D51A2A00514CB8 /* SKTRenderingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECF1FFE888A39C02AAC07 /* SKTRenderingView.m */; settings = {ATTRIBUTES = (); }; };
 		38D54A7107D51A2A00514CB8 /* Sketch_main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3ECEECFE888A39C02AAC07 /* Sketch_main.m */; settings = {ATTRIBUTES = (); }; };
 		38D54A7307D51A2A00514CB8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09B61A73FFA8B0EB11CA2CEA /* Cocoa.framework */; };
+		3B41DB3D0BE93BBD0039A82E /* SKTCircle.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B41DB3B0BE93BBD0039A82E /* SKTCircle.h */; };
+		3B41DB3E0BE93BBD0039A82E /* SKTCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B41DB3C0BE93BBD0039A82E /* SKTCircle.m */; };
+		3B41DB410BE93BCC0039A82E /* SKTDrawDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B41DB3F0BE93BCC0039A82E /* SKTDrawDocument.h */; };
+		3B41DB420BE93BCC0039A82E /* SKTDrawDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B41DB400BE93BCC0039A82E /* SKTDrawDocument.m */; };
+		3B41DB450BE93BDC0039A82E /* SKTGraphic.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B41DB430BE93BDC0039A82E /* SKTGraphic.h */; };
+		3B41DB460BE93BDC0039A82E /* SKTGraphic.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B41DB440BE93BDC0039A82E /* SKTGraphic.m */; };
+		3B41DB490BE93BE80039A82E /* SKTRectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B41DB470BE93BE80039A82E /* SKTRectangle.h */; };
+		3B41DB4A0BE93BE80039A82E /* SKTRectangle.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B41DB480BE93BE80039A82E /* SKTRectangle.m */; };
+		3B41DB4D0BE93BF50039A82E /* SKTLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B41DB4B0BE93BF50039A82E /* SKTLine.h */; };
+		3B41DB4E0BE93BF50039A82E /* SKTLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B41DB4C0BE93BF50039A82E /* SKTLine.m */; };
+		3B41DB510BE93C070039A82E /* SKTTextArea.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B41DB4F0BE93C070039A82E /* SKTTextArea.h */; };
+		3B41DB520BE93C070039A82E /* SKTTextArea.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B41DB500BE93C070039A82E /* SKTTextArea.m */; };
+		3B41DB550BE93C160039A82E /* SKTImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B41DB530BE93C160039A82E /* SKTImage.h */; };
+		3B41DB560BE93C160039A82E /* SKTImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B41DB540BE93C160039A82E /* SKTImage.m */; };
+		3B41DB590BE93C1D0039A82E /* SKTRenderingView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B41DB570BE93C1D0039A82E /* SKTRenderingView.h */; };
+		3B41DB5A0BE93C1D0039A82E /* SKTRenderingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B41DB580BE93C1D0039A82E /* SKTRenderingView.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildStyle section */
-		0E226A11FF8418F311CA2CEA /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PREBINDING = NO;
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		0E226A12FF8418F311CA2CEA /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				PREBINDING = NO;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
 
 /* Begin PBXFileReference section */
 		09B61A73FFA8B0EB11CA2CEA /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -136,22 +109,6 @@
 		0A3ECF11FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
 		0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sketch.scriptSuite; sourceTree = "<group>"; };
 		0A3ECF14FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		0A3ECF18FE888A39C02AAC07 /* SKTDrawDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTDrawDocument.m; sourceTree = "<group>"; };
-		0A3ECF19FE888A39C02AAC07 /* SKTGraphic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTGraphic.m; sourceTree = "<group>"; };
-		0A3ECF1AFE888A39C02AAC07 /* SKTRectangle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTRectangle.m; sourceTree = "<group>"; };
-		0A3ECF1BFE888A39C02AAC07 /* SKTCircle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTCircle.m; sourceTree = "<group>"; };
-		0A3ECF1CFE888A39C02AAC07 /* SKTLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTLine.m; sourceTree = "<group>"; };
-		0A3ECF1DFE888A39C02AAC07 /* SKTTextArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTTextArea.m; sourceTree = "<group>"; };
-		0A3ECF1EFE888A39C02AAC07 /* SKTImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTImage.m; sourceTree = "<group>"; };
-		0A3ECF1FFE888A39C02AAC07 /* SKTRenderingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTRenderingView.m; sourceTree = "<group>"; };
-		0A3ECF21FE888A39C02AAC07 /* SKTDrawDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTDrawDocument.h; sourceTree = "<group>"; };
-		0A3ECF22FE888A39C02AAC07 /* SKTGraphic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTGraphic.h; sourceTree = "<group>"; };
-		0A3ECF23FE888A39C02AAC07 /* SKTRectangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTRectangle.h; sourceTree = "<group>"; };
-		0A3ECF24FE888A39C02AAC07 /* SKTCircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTCircle.h; sourceTree = "<group>"; };
-		0A3ECF25FE888A39C02AAC07 /* SKTLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTLine.h; sourceTree = "<group>"; };
-		0A3ECF26FE888A39C02AAC07 /* SKTTextArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTTextArea.h; sourceTree = "<group>"; };
-		0A3ECF27FE888A39C02AAC07 /* SKTImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTImage.h; sourceTree = "<group>"; };
-		0A3ECF28FE888A39C02AAC07 /* SKTRenderingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTRenderingView.h; sourceTree = "<group>"; };
 		0A3ECF35FE888A39C02AAC07 /* ToDo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ToDo.txt; sourceTree = "<group>"; };
 		0A3ECF36FE888A39C02AAC07 /* ReadMe.rtf */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = "<group>"; };
 		0A3ECF39FE888A39C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -159,6 +116,22 @@
 		26D1BC9902E4B4D608C917DD /* SKT_Prefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKT_Prefix.h; sourceTree = "<group>"; };
 		38D54A7507D51A2A00514CB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
 		38D54A7607D51A2A00514CB8 /* Sketch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sketch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B41DB3B0BE93BBD0039A82E /* SKTCircle.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTCircle.h; sourceTree = SOURCE_ROOT; };
+		3B41DB3C0BE93BBD0039A82E /* SKTCircle.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTCircle.m; sourceTree = SOURCE_ROOT; };
+		3B41DB3F0BE93BCC0039A82E /* SKTDrawDocument.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTDrawDocument.h; sourceTree = SOURCE_ROOT; };
+		3B41DB400BE93BCC0039A82E /* SKTDrawDocument.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTDrawDocument.m; sourceTree = SOURCE_ROOT; };
+		3B41DB430BE93BDC0039A82E /* SKTGraphic.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTGraphic.h; sourceTree = SOURCE_ROOT; };
+		3B41DB440BE93BDC0039A82E /* SKTGraphic.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTGraphic.m; sourceTree = SOURCE_ROOT; };
+		3B41DB470BE93BE80039A82E /* SKTRectangle.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTRectangle.h; sourceTree = SOURCE_ROOT; };
+		3B41DB480BE93BE80039A82E /* SKTRectangle.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTRectangle.m; sourceTree = SOURCE_ROOT; };
+		3B41DB4B0BE93BF50039A82E /* SKTLine.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTLine.h; sourceTree = SOURCE_ROOT; };
+		3B41DB4C0BE93BF50039A82E /* SKTLine.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTLine.m; sourceTree = SOURCE_ROOT; };
+		3B41DB4F0BE93C070039A82E /* SKTTextArea.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTTextArea.h; sourceTree = SOURCE_ROOT; };
+		3B41DB500BE93C070039A82E /* SKTTextArea.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTTextArea.m; sourceTree = SOURCE_ROOT; };
+		3B41DB530BE93C160039A82E /* SKTImage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTImage.h; sourceTree = SOURCE_ROOT; };
+		3B41DB540BE93C160039A82E /* SKTImage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTImage.m; sourceTree = SOURCE_ROOT; };
+		3B41DB570BE93C1D0039A82E /* SKTRenderingView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTRenderingView.h; sourceTree = SOURCE_ROOT; };
+		3B41DB580BE93C1D0039A82E /* SKTRenderingView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTRenderingView.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,22 +234,22 @@
 		0A3ECF16FE888A39C02AAC07 /* Model Classes */ = {
 			isa = PBXGroup;
 			children = (
-				0A3ECF21FE888A39C02AAC07 /* SKTDrawDocument.h */,
-				0A3ECF18FE888A39C02AAC07 /* SKTDrawDocument.m */,
-				0A3ECF22FE888A39C02AAC07 /* SKTGraphic.h */,
-				0A3ECF19FE888A39C02AAC07 /* SKTGraphic.m */,
-				0A3ECF23FE888A39C02AAC07 /* SKTRectangle.h */,
-				0A3ECF1AFE888A39C02AAC07 /* SKTRectangle.m */,
-				0A3ECF24FE888A39C02AAC07 /* SKTCircle.h */,
-				0A3ECF1BFE888A39C02AAC07 /* SKTCircle.m */,
-				0A3ECF25FE888A39C02AAC07 /* SKTLine.h */,
-				0A3ECF1CFE888A39C02AAC07 /* SKTLine.m */,
-				0A3ECF26FE888A39C02AAC07 /* SKTTextArea.h */,
-				0A3ECF1DFE888A39C02AAC07 /* SKTTextArea.m */,
-				0A3ECF27FE888A39C02AAC07 /* SKTImage.h */,
-				0A3ECF1EFE888A39C02AAC07 /* SKTImage.m */,
-				0A3ECF28FE888A39C02AAC07 /* SKTRenderingView.h */,
-				0A3ECF1FFE888A39C02AAC07 /* SKTRenderingView.m */,
+				3B41DB3B0BE93BBD0039A82E /* SKTCircle.h */,
+				3B41DB3C0BE93BBD0039A82E /* SKTCircle.m */,
+				3B41DB3F0BE93BCC0039A82E /* SKTDrawDocument.h */,
+				3B41DB400BE93BCC0039A82E /* SKTDrawDocument.m */,
+				3B41DB430BE93BDC0039A82E /* SKTGraphic.h */,
+				3B41DB440BE93BDC0039A82E /* SKTGraphic.m */,
+				3B41DB470BE93BE80039A82E /* SKTRectangle.h */,
+				3B41DB480BE93BE80039A82E /* SKTRectangle.m */,
+				3B41DB4B0BE93BF50039A82E /* SKTLine.h */,
+				3B41DB4C0BE93BF50039A82E /* SKTLine.m */,
+				3B41DB4F0BE93C070039A82E /* SKTTextArea.h */,
+				3B41DB500BE93C070039A82E /* SKTTextArea.m */,
+				3B41DB530BE93C160039A82E /* SKTImage.h */,
+				3B41DB540BE93C160039A82E /* SKTImage.m */,
+				3B41DB570BE93C1D0039A82E /* SKTRenderingView.h */,
+				3B41DB580BE93C1D0039A82E /* SKTRenderingView.m */,
 			);
 			name = "Model Classes";
 			path = DocumentModel.subproj;
@@ -324,15 +297,15 @@
 				38D54A3C07D51A2A00514CB8 /* SKTToolPaletteController.h in Headers */,
 				38D54A3D07D51A2A00514CB8 /* SKTGridPanelController.h in Headers */,
 				38D54A3E07D51A2A00514CB8 /* SKTGridView.h in Headers */,
-				38D54A3F07D51A2A00514CB8 /* SKTDrawDocument.h in Headers */,
-				38D54A4007D51A2A00514CB8 /* SKTGraphic.h in Headers */,
-				38D54A4107D51A2A00514CB8 /* SKTRectangle.h in Headers */,
-				38D54A4207D51A2A00514CB8 /* SKTCircle.h in Headers */,
-				38D54A4307D51A2A00514CB8 /* SKTLine.h in Headers */,
-				38D54A4407D51A2A00514CB8 /* SKTTextArea.h in Headers */,
-				38D54A4507D51A2A00514CB8 /* SKTImage.h in Headers */,
-				38D54A4607D51A2A00514CB8 /* SKTRenderingView.h in Headers */,
 				38D54A4707D51A2A00514CB8 /* SKT_Prefix.h in Headers */,
+				3B41DB3D0BE93BBD0039A82E /* SKTCircle.h in Headers */,
+				3B41DB410BE93BCC0039A82E /* SKTDrawDocument.h in Headers */,
+				3B41DB450BE93BDC0039A82E /* SKTGraphic.h in Headers */,
+				3B41DB490BE93BE80039A82E /* SKTRectangle.h in Headers */,
+				3B41DB4D0BE93BF50039A82E /* SKTLine.h in Headers */,
+				3B41DB510BE93C070039A82E /* SKTTextArea.h in Headers */,
+				3B41DB550BE93C160039A82E /* SKTImage.h in Headers */,
+				3B41DB590BE93C1D0039A82E /* SKTRenderingView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,19 +324,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				CURRENT_PROJECT_VERSION = 45;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = SKT_Prefix.h;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VALUE = YES;
-				INFOPLIST_FILE = Info.plist;
-				PRODUCT_NAME = Sketch;
-				RC_PROJECT_NAME = Draw2;
-				VERSIONING_SYSTEM = "apple-generic";
-				WRAPPER_EXTENSION = app;
-			};
 			dependencies = (
 			);
 			name = Sketch;
@@ -377,12 +337,6 @@
 		0A3ECED7FE888A39C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 03FA48AC0B8131EB00605BFF /* Build configuration list for PBXProject "Sketch" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				0E226A11FF8418F311CA2CEA /* Development */,
-				0E226A12FF8418F311CA2CEA /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 0A3ECED8FE888A39C02AAC07 /* Sketch */;
 			projectDirPath = "";
@@ -450,15 +404,15 @@
 				38D54A6607D51A2A00514CB8 /* SKTToolPaletteController.m in Sources */,
 				38D54A6707D51A2A00514CB8 /* SKTGridPanelController.m in Sources */,
 				38D54A6807D51A2A00514CB8 /* SKTGridView.m in Sources */,
-				38D54A6907D51A2A00514CB8 /* SKTDrawDocument.m in Sources */,
-				38D54A6A07D51A2A00514CB8 /* SKTGraphic.m in Sources */,
-				38D54A6B07D51A2A00514CB8 /* SKTRectangle.m in Sources */,
-				38D54A6C07D51A2A00514CB8 /* SKTCircle.m in Sources */,
-				38D54A6D07D51A2A00514CB8 /* SKTLine.m in Sources */,
-				38D54A6E07D51A2A00514CB8 /* SKTTextArea.m in Sources */,
-				38D54A6F07D51A2A00514CB8 /* SKTImage.m in Sources */,
-				38D54A7007D51A2A00514CB8 /* SKTRenderingView.m in Sources */,
 				38D54A7107D51A2A00514CB8 /* Sketch_main.m in Sources */,
+				3B41DB3E0BE93BBD0039A82E /* SKTCircle.m in Sources */,
+				3B41DB420BE93BCC0039A82E /* SKTDrawDocument.m in Sources */,
+				3B41DB460BE93BDC0039A82E /* SKTGraphic.m in Sources */,
+				3B41DB4A0BE93BE80039A82E /* SKTRectangle.m in Sources */,
+				3B41DB4E0BE93BF50039A82E /* SKTLine.m in Sources */,
+				3B41DB520BE93C070039A82E /* SKTTextArea.m in Sources */,
+				3B41DB560BE93C160039A82E /* SKTImage.m in Sources */,
+				3B41DB5A0BE93C1D0039A82E /* SKTRenderingView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
