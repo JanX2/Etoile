@@ -12,4 +12,7 @@
 	  Update all links from NSOwner.
 	* RosterWindow:
 	  Fix size calculation broken by changes abolve.
+	* English.lproj/MessageWindow.gorm:
+	* English.lproj/PasswordBox.gorm:
+	  Make it work for GNUstep.
 

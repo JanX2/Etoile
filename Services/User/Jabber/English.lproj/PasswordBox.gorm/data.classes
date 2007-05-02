@@ -1,0 +1,27 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "no:",
+	    "yes:"
+	);
+	Super = NSObject;
+    };
+    PasswordWindowController = {
+	Actions = (
+	    "yes:",
+	    "no:"
+	);
+	Outlets = (
+	    question,
+	    passwordBox
+	);
+	Super = NSWindowController;
+    };
+    java.lang.Object = {
+	Actions = (
+	);
+	Outlets = (
+	);
+    };
+}
