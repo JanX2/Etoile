@@ -65,6 +65,7 @@ typedef enum {online, unavailable, subscribe, unsubscribe, subscribed, unsubscri
 	PresenceType type;
 	unsigned char onlineStatus;
 	NSString * message;
+	NSString * nickname;
 	int priority;
 }
 /**
@@ -94,6 +95,10 @@ typedef enum {online, unavailable, subscribe, unsubscribe, subscribed, unsubscri
  * Returns the status message.
  */
 - (NSString*) status;
+/**
+ * Returns the preferred nickname set by the remote user.
+ */
+- (NSString*) nickname;
 /**
  * Returns the priority set for the stanza.
  */

@@ -19,6 +19,7 @@ static PresenceStanzaFactory * sharedInstance;
 	//Insert default handlers here:
 	[sharedInstance addHandler:[TRXMLString class] forTag:@"show"];
 	[sharedInstance addHandler:[TRXMLString class] forTag:@"status"];
+	[sharedInstance addHandler:[TRXMLString class] forTag:@"nickname"];
 	[sharedInstance addHandler:[TRXMLString class] forTag:@"priority"];
 	//Replace the status message with an error message if one exists.
 	[sharedInstance addHandler:[TRXMLString class] withValue:@"status" forTag:@"error" ];

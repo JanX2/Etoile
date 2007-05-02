@@ -147,6 +147,11 @@
 {
 	priority = [aPriority intValue];
 }
+- (void) addnickname:(NSString*)aNickname
+{
+	[nickname release];
+	nickname = [aNickname retain];
+}
 
 - (id) initWithJID:(JID*)_jid
 {
@@ -173,6 +178,11 @@
 - (NSString*) status
 {
 	return message;
+}
+
+- (NSString*) nickname
+{
+	return nickname;
 }
 
 - (JID*) jid
