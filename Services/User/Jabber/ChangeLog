@@ -5,6 +5,10 @@
 	  Make sure the index is in the range of array.
 	* PreferencesWindowController.m:
 	  Change default color to darker ones.
+	* RosterController.m:
+	  Change color based on states on GNUstep.
+	* StepChatInfo.plist:
+	  Use MainMenu.nib as interface since it works for now.
 
 2006-05-01 Yen-Ju Chen <yjchenx at gmail>
 

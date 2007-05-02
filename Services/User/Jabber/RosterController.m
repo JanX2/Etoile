@@ -397,9 +397,6 @@ NSMutableArray * rosterControllers = nil;
 
 - (void)outlineView:(NSOutlineView *)_outlineView willDisplayCell:(id)_cell forTableColumn:(NSTableColumn *)_tableColumn item:(id)_item
 {
-#ifdef GNUSTEP
-return;
-#endif
 	NSMutableDictionary * attributes = [[[NSMutableDictionary alloc] init] autorelease];
 	NSAttributedString * text;
 	if([_item isKindOfClass:[RosterGroup class]])
