@@ -1,7 +1,7 @@
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
-LIBRARY_NAME = OPMLKit
+FRAMEWORK_NAME = OPMLKit
 OPMLKit_OBJC_FILES = \
 	OPMLParser.m \
 	OPMLDocument.m \
@@ -12,7 +12,8 @@ OPMLKit_HEADER_FILES = \
 	OPMLDocument.h \
 	OPMLOutline.h \
 
-include $(GNUSTEP_MAKEFILES)/library.make
+include $(GNUSTEP_MAKEFILES)/aggregate.make
+-include ../../etoile.make
+include $(GNUSTEP_MAKEFILES)/framework.make
 
--include ../../../../etoile.make
 
