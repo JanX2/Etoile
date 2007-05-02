@@ -2,6 +2,9 @@
 Grr ChangeLog
 ==============
 
+May-01-2007  Yen-Ju Chen
+	* UKNibOwner.h: Use AppKit.h instead of Cocoa.h
+
 Mar-18-2007  Yen-Ju Chen
 	* Use EtoileUI for UKNibOwner.
 
