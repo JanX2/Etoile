@@ -81,7 +81,11 @@ NSMutableArray * messageWindowControllers = nil;
 		
 		//Redraw the window at the new size.
 		hack = YES;
+#ifdef GNUSTEP
+		[[self window] setFrame:windowSize display:YES animate:NO];
+#else
 		[[self window] setFrame:windowSize display:YES animate:YES];
+#endif
 	}
 }
 

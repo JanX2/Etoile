@@ -114,6 +114,8 @@
 
 - (JabberPerson*) personAtIndex:(unsigned int)_index
 {
-	return [people objectAtIndex:_index];
+	if (_index < [people count])
+		return [people objectAtIndex:_index];
+	return nil;
 }
 @end

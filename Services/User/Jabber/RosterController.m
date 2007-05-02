@@ -279,7 +279,11 @@ NSMutableArray * rosterControllers = nil;
 			}
 		}
 	}
+#ifdef GNUSTEP
+	[[self window] setFrame:[self optimalSize] display:YES animate:NO];
+#else
 	[[self window] setFrame:[self optimalSize] display:YES animate:YES];
+#endif
 	[view display];
 }
 
@@ -300,7 +304,9 @@ NSMutableArray * rosterControllers = nil;
 	}
 	if([_item isKindOfClass:[JabberPerson class]])
 	{
-		return [[_item identityList] objectAtIndex:_index];
+		NSArray *list = [_item identityList];
+		if ((_index > -1) && (_index < [list count]))
+			return [list objectAtIndex:_index];
 	}	
 	return nil;
 }
@@ -453,7 +459,11 @@ return;
 	{
 		[[NSUserDefaults standardUserDefaults] setExpanded:[group groupName] to:YES];
 	}
+#ifdef GNUSTEP
+        [[self window] setFrame:[self optimalSize] display:YES animate:NO];
+#else
 	[[self window] setFrame:[self optimalSize] display:YES animate:YES];
+#endif
 }
 
 - (void)outlineViewItemDidCollapse:(NSNotification *)notification
@@ -463,7 +473,11 @@ return;
 	{
 		[[NSUserDefaults standardUserDefaults] setExpanded:[group groupName] to:NO];
 	}
+#ifdef GNUSTEP
+        [[self window] setFrame:[self optimalSize] display:YES animate:NO];
+#else
 	[[self window] setFrame:[self optimalSize] display:YES animate:YES];
+#endif
 }
 
 inline Conversation * createChatWithPerson(id self, JabberPerson* person, XMPPAccount * account)
