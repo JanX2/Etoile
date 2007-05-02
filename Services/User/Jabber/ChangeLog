@@ -3,6 +3,8 @@
 	* xmpp/RosterGroup.m:
 	* RosterController.m:
 	  Make sure the index is in the range of array.
+	* PreferencesWindowController.m:
+	  Change default color to darker ones.
 
 2006-05-01 Yen-Ju Chen <yjchenx at gmail>
 

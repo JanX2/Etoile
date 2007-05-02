@@ -18,39 +18,39 @@
 {
 	NSUserDefaults * settings = [NSUserDefaults standardUserDefaults];
 	NSMutableDictionary * colours = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:1.0f
-																		 green:1.0f
+		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.75f
+																		 green:0.41f
 																		  blue:0.0f
 																		 alpha:1.0f]],
 		@"Away",
-		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:1.0f
+		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.69f
 																		 green:0.0f
 																		  blue:0.0f
 																		 alpha:1.0f]],
 		@"Do Not Disturb",
-		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:1.0f
-																		 green:0.5f
+		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.75f
+																		 green:0.41f
 																		  blue:0.0f
 																		 alpha:1.0f]],
 		@"Extended Away",
 		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.0f
-																		 green:1.0f
+																		 green:0.35f
 																		  blue:0.0f
 																		 alpha:1.0f]],
 		@"Free For Chat",
-		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.8f
-																		 green:0.8f
-																		  blue:0.8f
+		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.57f
+																		 green:0.57f
+																		  blue:0.57f
 																		 alpha:1.0f]],
 		@"Offline",
 		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.0f
-																		 green:1.0f
+																		 green:0.35f
 																		  blue:0.0f
 																		 alpha:1.0f]],
 		@"Online",
-		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.8f
-																		 green:0.8f
-																		  blue:0.8f
+		[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.57f
+																		 green:0.57f
+																		  blue:0.57f
 																		 alpha:1.0f]],
 		@"Unknown",
 		nil];
