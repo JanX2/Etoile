@@ -305,7 +305,7 @@ NSMutableArray * rosterControllers = nil;
 	if([_item isKindOfClass:[JabberPerson class]])
 	{
 		NSArray *list = [_item identityList];
-		if ((_index > -1) && (_index < [list count]))
+		if ((_index > -1) && (_index < (int)[list count]))
 			return [list objectAtIndex:_index];
 	}	
 	return nil;
