@@ -2,6 +2,9 @@
 RSSKit Changelog
 ================
 
+May-01-2007  Yen-Ju Chen
+	* Turn into framework
+
 Feb-19-2007  Yen-Ju Chen
 	* Format README in reStructuedText
 
