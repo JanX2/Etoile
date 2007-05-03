@@ -4,7 +4,7 @@
 #include "GSDrawFunctions.h"
 
 @interface NSButtonCell (theme) // declare some methods used by gnustep..
-- (void) drawGradientWithFrame: (NSRect) frame inView: (NSView*) view;
+//- (void) drawGradientWithFrame: (NSRect) frame inView: (NSView*) view;
 - (void) _drawBorderAndBackgroundWithFrame: (NSRect)cellFrame 
                                     inView: (NSView*)controlView;
 @end
@@ -316,7 +316,7 @@
     {
     	//NRO: this thing SHOULD NOT BE THERE --> a call to GSDrawFunctions would be better. 
         //FIXME: Fix this in GNUstep cvs
-      [self drawGradientWithFrame: cellFrame inView: controlView];
+      //[self drawGradientWithFrame: cellFrame inView: controlView];
     }
     
   // Draw image

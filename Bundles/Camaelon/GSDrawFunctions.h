@@ -52,7 +52,7 @@
 - (void) drawTopTabFill: (NSRect) rect selected: (BOOL) selected on: (NSView*) view;
 - (void) drawTabFrame: (NSRect) rect on: (NSView*) view;
 - (void) drawScrollViewFrame: (NSRect) rect on: (NSView*) view;
-- (void) drawFocusFrame: (NSRect) cellFrame;
+//- (void) drawFocusFrame: (NSRect) cellFrame;
 @end
 
 #endif // __GSDRAWFUNCTIONS_H__

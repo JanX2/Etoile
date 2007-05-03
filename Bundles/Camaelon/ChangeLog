@@ -1,6 +1,7 @@
 2007-05-02  Yen-Ju Chen <yjchen gmail>
 	
 	* Reduce number of warning. Hope not break anything.
+	* Last fix for now. The rest is mostly private methods in GNUstep.
 
 2007-04-05  Quentin Mathe <qmathe@club-internet.fr>
 
