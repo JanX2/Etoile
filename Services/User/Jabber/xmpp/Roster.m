@@ -136,7 +136,7 @@
 
 - (void) handleIq:(Iq*)anIq
 {
-	NSLog(@"Children of iq node: %@", [anIq children]);
+	//NSLog(@"Children of iq node: %@", [anIq children]);
 	if([[anIq children] objectForKey:@"RosterItems"] != nil)
 	{
 		[self addRosterFromQuery:anIq];

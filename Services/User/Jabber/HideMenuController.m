@@ -13,6 +13,8 @@
 #import "Roster.h"
 #import "RosterController.h"
 
+//TODO: Get rid of all of these messy [NSApp delegate] things.  
+
 @implementation HideMenuController
 - (IBAction) away:(id) sender
 {
@@ -20,7 +22,7 @@
 	[sender setState:NSOnState];
 	current = sender;
 	[[NSUserDefaults standardUserDefaults] setPresence:PRESENCE_AWAY forKey:@"HiddenPresences"];
-	[(RosterController*)[[[(JabberApp*)NSApp account] roster] delegate] update:nil];
+	[(RosterController*)[[[(JabberApp*)[NSApp delegate] account] roster] delegate] update:nil];
 }
 - (IBAction) xa:(id) sender
 {

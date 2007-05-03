@@ -174,7 +174,7 @@
 {
 //Macro to end parsing neatly if a particular condition is met
 //Invoking this stores the unparsed buffer and returns YES.
-#define ENDPARSINGIF(x) if(x) { [buffer deleteCharactersInRange:NSMakeRange(0,lastSuccessfullyParsed)]; NSLog(@"Unparsed: '%@'", buffer);return YES;}
+#define ENDPARSINGIF(x) if(x) { [buffer deleteCharactersInRange:NSMakeRange(0,lastSuccessfullyParsed)]; /*NSLog(@"Unparsed: '%@'", buffer);*/return YES;}
 #define SKIPTO(x) currentIndex = [self parseFrom:currentIndex to:x]; ENDPARSINGIF(currentIndex == -1);
 #define CURRENTSTRING [buffer substringWithRange:NSMakeRange(lastSuccessfullyParsed,currentIndex - lastSuccessfullyParsed)]
 	int currentIndex = 0;
@@ -255,7 +255,7 @@
 						{
 							NS_DURING
 							{
-								NSLog(@"<%@> (%@)", tagName, openTags);
+								//NSLog(@"<%@> (%@)", tagName, openTags);
 								[delegate startElement:tagName attributes:tagAttributes];
 							}
 							NS_HANDLER
@@ -279,7 +279,7 @@
 						[openTags removeLastObject];
 						NS_DURING
 						{
-							NSLog(@"</%@> (%@)", tagName, openTags);
+							//NSLog(@"</%@> (%@)", tagName, openTags);
 							[delegate endElement:tagName];
 						}
 						NS_HANDLER

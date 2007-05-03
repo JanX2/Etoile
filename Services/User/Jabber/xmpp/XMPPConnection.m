@@ -93,9 +93,6 @@ static NSDictionary * STANZA_KEYS;
 - (id) init
 {
 	connectionState = offline;
-	//Initialise the parser
-	parser = [[TRXMLParser alloc] init];
-	[parser setContentHandler:self];
 	unsentBuffer = [[NSMutableString alloc] init];
 	//TODO: Make this more sensible
 	res = @"TRJabberTest2";
@@ -218,6 +215,10 @@ static NSDictionary * STANZA_KEYS;
 		[[NSException exceptionWithName:@"Socket Error" reason:@"Error Connecting" userInfo:nil] raise];
 	}
 	connectionState = connecting;
+	//Initialise the parser
+	[parser release];
+	parser = [[TRXMLParser alloc] init];
+	[parser setContentHandler:self];
 	//Check for incoming Jabber messages 10 times per second
 	if(timer == nil)
 	{

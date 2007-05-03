@@ -87,7 +87,7 @@
 		NSString * presenceType = [attributes objectForKey:@"type"];
 		priority = 0;
 		onlineStatus = PRESENCE_UNKNOWN;
-		NSLog(@"Presence from %@: %@", [attributes objectForKey:@"from"], presenceType);
+		//NSLog(@"Presence from %@: %@", [attributes objectForKey:@"from"], presenceType);
 		if(presenceType == nil || [presenceType isEqualToString:@"online"])
 		{
 			NSLog(@"Online");
