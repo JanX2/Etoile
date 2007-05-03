@@ -1,13 +1,8 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-ifeq ($(test), yes)
-BUNDLE_NAME = PaneKit
-else
-FRAMEWORK_NAME = PaneKit
-endif
-#VERSION = 0.1
+SUBPROJECT_NAME = libPaneKit
 
-PaneKit_OBJC_FILES = \
+libPaneKit_OBJC_FILES = \
 	CocoaCompatibility.m \
 	NSPreferencePane.m \
 	PKPanesController.m \
@@ -25,34 +20,8 @@ PaneKit_OBJC_FILES = \
 	PKPaneRegistry.m 
 
 ifeq ($(test), yes)
-PaneKit_OBJC_FILES += 
+libPaneKit_OBJC_FILES += 
 endif
 
-PaneKit_HEADER_FILES_DIR = ../Headers
+include $(GNUSTEP_MAKEFILES)/subproject.make
 
-PaneKit_HEADER_FILES = \
-	CocoaCompatibility.h \
-	PKMatrixViewPresentation.h \
-	PKTableViewPresentation.h \
-	PKPlainPresentation.h \
-	PKToolbarPresentation.h \
-	PKPopUpButtonPresentation.h \
-	PKPresentationBuilder.h \
-	PKPreferencesController.h \
-	PKPreferencePaneRegistry.h \
-	PKPreferencePane.h \
-	NSPreferencePane.h \
-	PKPanesController.h \
-	PKPaneRegistry.h \
-	PKPane.h \
-	PaneKit.h
-
--include ../GNUmakefile.preamble
-
-ifeq ($(test), yes)
-include $(GNUSTEP_MAKEFILES)/bundle.make
-else
-include $(GNUSTEP_MAKEFILES)/framework.make
-endif
-
--include ../GNUmakefile.postamble
