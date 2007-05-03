@@ -28,7 +28,7 @@
 - (NSRect) drawDarkBezel: (NSRect)border : (NSRect)clip
 {
 	/* We call GSTheme implementation */
-	[self drawDarkBezel: border withClip: clip];
+	return [self drawDarkBezel: border withClip: clip];
 }
 
 - (NSRect) drawGrayBezelRound: (NSRect)border : (NSRect)clip
@@ -83,6 +83,7 @@
 - (NSRect) drawGroove: (NSRect)border : (NSRect)clip
 { 
   	[THEME drawBox: border on: self];
+	return border;
 	/*
 	NSBezierPath* path = [NSBezierPath bezierPath];
 	NSBezierPath* path2 = [NSBezierPath bezierPath];
@@ -366,7 +367,7 @@ static CLCompositor* myBrowserHeader;
 	NSColor* start = [NSColor colorWithCalibratedRed: 0.8 green: 0.8 blue: 0.8 alpha: 1.0];
 	NSColor* end   = [NSColor colorWithCalibratedRed: 1.0 green: 1.0 blue: 1.0 alpha: 1.0];
 
-	NSGraphicsContext *ctxt = GSCurrentContext();
+//	NSGraphicsContext *ctxt = GSCurrentContext();
 	//DPSgsave (ctxt);
 	//[path addClip];
 	[THEME drawVerticalGradient: start to: end frame: border];
@@ -454,7 +455,7 @@ static CLBoxCompositor* mygroupBox;
       }
       return;
 */
-	CLCompositor* compositor = nil;
+//	CLCompositor* compositor = nil;
 
 	if (standardButtonH == nil)
 	{

@@ -44,7 +44,7 @@
 
 - (NSRect) knobRectFlipped: (BOOL)flipped
 {
-  NSImage       *image = [_knobCell image];
+//  NSImage       *image = [_knobCell image];
   NSSize        size;
   NSPoint       origin;
   float         floatValue = [self floatValue];

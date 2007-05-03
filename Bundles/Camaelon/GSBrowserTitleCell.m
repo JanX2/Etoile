@@ -33,7 +33,7 @@
 //  NSDrawGrayBezel (cellFrame, NSZeroRect);
   _textfieldcell_draws_background = NO;
   [super drawInteriorWithFrame: cellFrame  inView: controlView];
-  NSBezierPath* path = [NSBezierPath bezierPath];
+//  NSBezierPath* path = [NSBezierPath bezierPath];
  // [path appendBezierPathWithRect: cellFrame];
 //  [path setLineWidth: 1.5];
 //  [path stroke];

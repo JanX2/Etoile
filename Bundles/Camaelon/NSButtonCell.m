@@ -73,7 +73,7 @@
   NSRect	titleRect;
   NSSize	imageSize = {0, 0};
   NSSize        titleSize = {0, 0};
-  NSColor	*backgroundColor = nil;
+//  NSColor	*backgroundColor = nil;
   BOOL		flippedView = [controlView isFlipped];
   NSCellImagePosition ipos = _cell.image_position;
 

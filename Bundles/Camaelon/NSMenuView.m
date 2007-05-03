@@ -15,8 +15,8 @@
 {
   int        i;
   int        howMany = [_itemCells count];
-  NSRectEdge sides[] = {NSMinXEdge, NSMaxYEdge};
-  float      grays[] = {NSDarkGray, NSDarkGray};
+//  NSRectEdge sides[] = {NSMinXEdge, NSMaxYEdge};
+//  float      grays[] = {NSDarkGray, NSDarkGray};
 
   // Draw the dark gray upper left lines.
   //NSDrawTiledRects(rect, rect, sides, grays, 2);

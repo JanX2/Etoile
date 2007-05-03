@@ -25,7 +25,7 @@ NSRect vS = [_vertScroller frame];
  	[[self documentView] setBackgroundColor: [NSColor rowBackgroundColor]];
  }
   //NSGraphicsContext *ctxt = GSCurrentContext();
-
+#if 0
   switch (_borderType)
     {
 //      case NSNoBorder:
@@ -49,9 +49,9 @@ NSRect vS = [_vertScroller frame];
 
 
     }
-
+#endif
 	NSBezierPath* path = [NSBezierPath bezierPath];
-	NSRect mrect = NSMakeRect (rect.origin.x + 1, rect.origin.y + 1, rect.size.width - 2, rect.size.height - 2);
+//	NSRect mrect = NSMakeRect (rect.origin.x + 1, rect.origin.y + 1, rect.size.width - 2, rect.size.height - 2);
 	[path appendBezierPathWithRect: rect];
 /*	if ([self hasHorizontalScroller] && [self hasVerticalScroller])
 	{

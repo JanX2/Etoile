@@ -2,6 +2,7 @@
 #import "GraphicToolbox.h"
 
 @interface NSColor (theme)
++ (void) setSystemColorList;
 + (NSColor*) titlebarTextColor;
 + (NSColor*) selectedTitlebarTextColor;
 + (NSColor*) rowBackgroundColor;

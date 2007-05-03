@@ -23,7 +23,7 @@ Class theNSImageClass;
 + (id) imageNamed: (NSString*) aName
 {
 //	NSLog (@"imageNamed: %@", aName);
-	NSBundle* bundle = [NSBundle bundleForClass: NSClassFromString (@"Camaelon")];
+//	NSBundle* bundle = [NSBundle bundleForClass: NSClassFromString (@"Camaelon")];
 	BOOL providedInTheme = YES;
 	NSImage* ret = nil;
 

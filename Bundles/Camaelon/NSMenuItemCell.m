@@ -148,7 +148,7 @@ static NSImage  *arrowImageCurrent = nil;
 }
 
 
-/*
+#if 0
 - (void) idrawWithFrame: (NSRect) cellFrame inView: (NSView*) controlView
 {
 	[super drawWithFrame: cellFrame inView: controlView];
@@ -195,14 +195,14 @@ static NSImage  *arrowImageCurrent = nil;
       if ([[self controlView] isKindOfClass: [NSPopUpButton class]])
       {
         //NSColor* startColor = [NSColor colorWithCalibratedRed: 0.75 green: 0.75 blue: 0.75 alpha: 1.0];
-	/*
-        NSColor* startColor = [NSColor colorWithCalibratedRed: 0.8 green: 0.8 blue: 0.8 alpha: 1.0];
-        NSColor* endColor = [NSColor colorWithCalibratedRed: 0.8 green: 0.8 blue: 0.8 alpha: 1.0];
-        [GraphicToolbox drawVerticalGradientOnRect: cellFrame 
-          withStartColor: startColor
-          andEndColor: endColor];
+	
+        //NSColor* startColor = [NSColor colorWithCalibratedRed: 0.8 green: 0.8 blue: 0.8 alpha: 1.0];
+        //NSColor* endColor = [NSColor colorWithCalibratedRed: 0.8 green: 0.8 blue: 0.8 alpha: 1.0];
+        //[GraphicToolbox drawVerticalGradientOnRect: cellFrame 
+        //  withStartColor: startColor
+        //  andEndColor: endColor];
 */
-/*
+
       NSColor* startColor = [NSColor colorWithCalibratedRed: 0.8 green: 0.8 blue: 0.8 alpha: 1.0];
       NSColor* endColor = [NSColor colorWithCalibratedRed: 1.0 green: 1.0 blue: 1.0 alpha: 1.0];
 
@@ -299,7 +299,7 @@ static NSImage  *arrowImageCurrent = nil;
 
   _backgroundColor = nil;
 }
-*/
+#endif
 
 - (void) drawKeyEquivalentWithFrame:(NSRect)cellFrame
                             inView:(NSView *)controlView
@@ -320,10 +320,10 @@ static NSImage  *arrowImageCurrent = nil;
           size = [arrowImageCurrent size];
           position.x = cellFrame.origin.x + cellFrame.size.width - size.width;
           position.y = MAX(NSMidY(cellFrame) - (size.height/2.), 0.);
-          /*
-      *        * Images are always drawn with their bottom-left corner at the origin
-      *               * so we must adjust the position to take account of a flipped view.
-      *                      */
+          
+      	// Images are always drawn with their bottom-left corner at the origin
+        // so we must adjust the position to take account of a flipped view.
+                           
           if ([controlView isFlipped])
               position.y += size.height;
         
@@ -331,15 +331,15 @@ static NSImage  *arrowImageCurrent = nil;
         }
     }
   /* FIXME/TODO here - decide a consistent policy for images.
- *    *
- *       * The reason of the following code is that we draw the key
- *          * equivalent, but not if we are a popup button and are displaying
- *             * an image (the image is displayed in the title or selected entry
- *                * in the popup, it's the small square on the right). In that case,
- *                   * the image will be drawn in the same position where the key
- *                      * equivalent would be, so we do not display the key equivalent,
- *                         * else they would be displayed one over the other one.
- *                            */
+ *
+ * The reason of the following code is that we draw the key
+ * equivalent, but not if we are a popup button and are displaying
+ * an image (the image is displayed in the title or selected entry
+ * in the popup, it's the small square on the right). In that case,
+ * the image will be drawn in the same position where the key
+ * equivalent would be, so we do not display the key equivalent,
+ * else they would be displayed one over the other one.
+ */
   else if (![[_menuView menu] _ownedByPopUp])
     {
       [self _drawText: [_menuItem keyEquivalent] inFrame: cellFrame];

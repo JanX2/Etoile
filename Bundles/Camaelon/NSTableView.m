@@ -364,14 +364,14 @@
 		if ([cell respondsToSelector: @selector(setTextColor:)])
 		{
 			[cell setHighlighted: YES];
-			[cell setTextColor: [NSColor selectedRowTextColor]];
+			[(NSTextFieldCell *)cell setTextColor: [NSColor selectedRowTextColor]];
 		}
 	  }
 	  else 
 	  {
 		[cell setHighlighted: NO]; 
 		if ([cell respondsToSelector: @selector(setTextColor:)])
-		[cell setTextColor: [NSColor rowTextColor]];
+			[(NSTextFieldCell *)cell setTextColor: [NSColor rowTextColor]];
  	  }
       [cell drawWithFrame: drawingRect inView: self];
     }

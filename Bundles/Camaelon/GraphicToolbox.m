@@ -79,7 +79,7 @@ static NSMutableDictionary* cache;
 + (void) fillRect: (NSRect) rect withImage: (NSImage*) image
 {
 	NSGraphicsContext* ctxt = GSCurrentContext ();
-	NSAffineTransform *ctm = nil;
+//	NSAffineTransform *ctm = nil;
 	DPSgsave (ctxt);
 	NSBezierPath* path = [NSBezierPath bezierPathWithRect: rect];
 	[path addClip];
@@ -97,15 +97,15 @@ static NSMutableDictionary* cache;
 	nx++;
 	ny++;
 
-	NSBitmapImageRep* bmp = [[image representations] objectAtIndex: 0];
+//	NSBitmapImageRep* bmp = [[image representations] objectAtIndex: 0];
 	for (x=0; x<nx; x++)
 	{
 		for (y=0; y<ny; y++)
 		{
 			NSPoint p = NSMakePoint (rect.origin.x + x*wImage, rect.origin.y + y*hImage);
 			/*
-    //  		if ([[ctxt focusView] isFlipped])
-	//      	p.y -= hImage;
+//			if ([[ctxt focusView] isFlipped])
+//				p.y -= hImage;
  			ctm = GSCurrentCTM(ctxt);
 			DPStranslate(ctxt, p.x, p.y);
 			[bmp draw];
@@ -136,9 +136,9 @@ static NSMutableDictionary* cache;
 	[path addClip];
 
 	float wImage = [image size].width;
-	float hImage = [image size].height;
+//	float hImage = [image size].height;
 	float wRect = rect.size.width;
-	float hRect = rect.size.height;
+//	float hRect = rect.size.height;
 
 	int nx = wRect / wImage;
 	int x = 0;
@@ -149,7 +149,7 @@ static NSMutableDictionary* cache;
 
 	if (flipped) y = rect.origin.y + rect.size.height;
 	
-	NSBitmapImageRep* bmp = [[image representations] objectAtIndex: 0];
+//	NSBitmapImageRep* bmp = [[image representations] objectAtIndex: 0];
 	for (x=0; x<nx; x++)
 	{
 		NSPoint p = NSMakePoint (rect.origin.x + x*wImage, y);
@@ -176,9 +176,9 @@ static NSMutableDictionary* cache;
 	DPSgsave (ctxt);
 	NSBezierPath* path = [NSBezierPath bezierPathWithRect: rect];
 
-	float wImage = [image size].width;
+//	float wImage = [image size].width;
 	float hImage = [image size].height;
-	float wRect = rect.size.width;
+//	float wRect = rect.size.width;
 	float hRect = rect.size.height;
 
 	[path addClip];
@@ -190,7 +190,7 @@ static NSMutableDictionary* cache;
 
 		ny++;
 
-		NSBitmapImageRep* bmp = [[image representations] objectAtIndex: 0];
+//		NSBitmapImageRep* bmp = [[image representations] objectAtIndex: 0];
 		for (y=0; y<ny; y++)
 		{
 			NSPoint p = NSMakePoint (rect.origin.x, rect.origin.y + hRect - y*hImage);
@@ -205,7 +205,7 @@ static NSMutableDictionary* cache;
 
 		ny++;
 
-		NSBitmapImageRep* bmp = [[image representations] objectAtIndex: 0];
+//		NSBitmapImageRep* bmp = [[image representations] objectAtIndex: 0];
 		for (y=0; y<ny; y++)
 		{
 			NSPoint p = NSMakePoint (rect.origin.x, rect.origin.y + y*hImage);

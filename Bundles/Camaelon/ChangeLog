@@ -1,3 +1,7 @@
+2007-05-02  Yen-Ju Chen <yjchen gmail>
+	
+	* Reduce number of warning. Hope not break anything.
+
 2007-04-05  Quentin Mathe <qmathe@club-internet.fr>
 
 	Fix for bug #8611 (see EtoileWildMenus too)

@@ -10,7 +10,7 @@
 					withRadius: (float) radius
 {
   NSPoint topMid = NSMakePoint(NSMidX(aRect), NSMaxY(aRect));
-  NSPoint bottomMid = NSMakePoint(NSMidX(aRect), NSMinY(aRect));
+//  NSPoint bottomMid = NSMakePoint(NSMidX(aRect), NSMinY(aRect));
   NSPoint topLeft = NSMakePoint(NSMinX(aRect), NSMaxY(aRect));
   NSPoint topRight = NSMakePoint(NSMaxX(aRect), NSMaxY(aRect));
   NSPoint bottomRight = NSMakePoint(NSMaxX(aRect), NSMinY(aRect));
@@ -120,7 +120,7 @@
 - (void) appendBezierDemiSupPathWithRoundedRectangle: (NSRect) aRect
                                    withRadius: (float) radius
 {
-  NSPoint topMid = NSMakePoint(NSMidX(aRect), NSMaxY(aRect));
+//  NSPoint topMid = NSMakePoint(NSMidX(aRect), NSMaxY(aRect));
   NSPoint topLeft = NSMakePoint(NSMinX(aRect), NSMaxY(aRect));
   NSPoint topRight = NSMakePoint(NSMaxX(aRect) - radius, NSMaxY(aRect));
   NSPoint bottomRight = NSMakePoint(NSMaxX(aRect), NSMinY(aRect));
@@ -136,7 +136,7 @@
 - (void) appendBezierDemiDownPathWithRoundedRectangle: (NSRect) aRect
                                    withRadius: (float) radius
 {
-  NSPoint topMid = NSMakePoint(NSMidX(aRect), NSMaxY(aRect));
+//  NSPoint topMid = NSMakePoint(NSMidX(aRect), NSMaxY(aRect));
   NSPoint topLeft = NSMakePoint(NSMinX(aRect), NSMaxY(aRect));
   NSPoint topRight = NSMakePoint(NSMaxX(aRect), NSMaxY(aRect));
   NSPoint bottomRight = NSMakePoint(NSMaxX(aRect), NSMinY(aRect));

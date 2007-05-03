@@ -93,6 +93,7 @@
 	[path2 stroke];
  	[[NSColor blackColor] set];
 	[path stroke];
+	return border;
 }
 
 ////
@@ -255,7 +256,7 @@ static CLCompositor* myBrowserHeader;
 
 	NSData* gradient = [NSData dataWithBytesNoCopy: data length: datasize];
 	NSArray* size = [NSArray arrayWithObjects: [NSNumber numberWithInt: 2], [NSNumber numberWithInt: 1], nil];
-	[GSTheme drawGradient: gradient withSize: size border: frame];
+	[self drawGradient: gradient withSize: size border: frame];
 	free (data);
 }
 
@@ -275,7 +276,7 @@ static CLCompositor* myBrowserHeader;
 
 	NSData* gradient = [NSData dataWithBytesNoCopy: data length: datasize];
 	NSArray* size = [NSArray arrayWithObjects: [NSNumber numberWithInt: 1], [NSNumber numberWithInt: 2], nil];
-	[GSTheme drawGradient: gradient withSize: size border: frame];
+	[self drawGradient: gradient withSize: size border: frame];
 	free (data);
 }
 
@@ -345,7 +346,7 @@ static CLCompositor* myBrowserHeader;
 
 	NSData* gradient = [NSData dataWithBytesNoCopy: data length: datasize];
 	NSArray* size = [NSArray arrayWithObjects: [NSNumber numberWithInt: 2], [NSNumber numberWithInt: 2], nil];
-	[GSTheme drawGradient: gradient withSize: size border: frame];
+	[self drawGradient: gradient withSize: size border: frame];
 	free (data);
 }
 
@@ -358,10 +359,10 @@ static CLCompositor* myBrowserHeader;
 	NSColor* start = [NSColor colorWithCalibratedRed: 0.8 green: 0.8 blue: 0.8 alpha: 1.0];
 	NSColor* end   = [NSColor colorWithCalibratedRed: 1.0 green: 1.0 blue: 1.0 alpha: 1.0];
 
-	NSGraphicsContext *ctxt = GSCurrentContext();
+//	NSGraphicsContext *ctxt = GSCurrentContext();
 	//DPSgsave (ctxt);
 	//[path addClip];
-	[GSTheme drawVerticalGradient: start to: end frame: border];
+	[self drawVerticalGradient: start to: end frame: border];
 	//DPSgrestore (ctxt);
 	[[NSColor blackColor] set];
 	[path setLineWidth: 1.5];
@@ -436,7 +437,7 @@ static CLBoxCompositor* mygroupBox;
 	style: (NSBezelStyle) bezelStyle highlighted: (BOOL) highlighted 
 {
 
-	CLCompositor* compositor = nil;
+//	CLCompositor* compositor = nil;
 
 	if (standardButtonH == nil)
 	{

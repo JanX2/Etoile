@@ -2,7 +2,7 @@
 #include <AppKit/AppKit.h>
 #include "NSColor.h"
 
-static NSNotificationCenter *nc = nil;
+//static NSNotificationCenter *nc = nil;
 static const int current_version = 1;
 static NSImage *collapsed = nil;
 static NSImage *unexpandable = nil;
@@ -157,15 +157,15 @@ static NSImage *expanded  = nil;
 	  {
 		if ([cell respondsToSelector: @selector(setTextColor:)])
 		{
-		//	[cell setHighlighted: YES];
-			[cell setTextColor: [NSColor selectedRowTextColor]];
+//			[cell setHighlighted: YES];
+			[(NSTextFieldCell *)cell setTextColor: [NSColor selectedRowTextColor]];
 		}
 	  }
 	  else 
 	  {
 		//[cell setHighlighted: NO]; 
 		if ([cell respondsToSelector: @selector(setTextColor:)])
-		[cell setTextColor: [NSColor rowTextColor]];
+			[(NSTextFieldCell *)cell setTextColor: [NSColor rowTextColor]];
  	  }
       [cell drawWithFrame: drawingRect inView: self];
     }

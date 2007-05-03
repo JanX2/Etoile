@@ -40,7 +40,7 @@
 - (void) drawTitleBox: (NSRect) rect on: (id) box;
 - (void) setGroupBoxImages;
 - (float) boxBorderHeight;
-- (void) drawBox: (NSRect) rect on: (id) box;
+- (void) drawBox: (NSRect) rect on: (NSView *) box;
 - (void) drawWindowBackground: (NSRect) rect on: (id) window;
 - (void) drawPopupButton: (NSRect) border inView: (NSView*) view;
 - (void) drawHorizontalScrollerKnob: (NSRect) knob on: (NSView*) view;
