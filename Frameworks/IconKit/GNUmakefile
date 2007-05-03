@@ -28,11 +28,41 @@ PACKAGE_NAME = IconKit
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
+ifeq ($(test), yes)
+BUNDLE_NAME = IconKit
+ADDITIONAL_LDFLAGS += -lUnitKit -lgnustep-gui -lgnustep-base
+ADDITIONAL_CFLAGS += -DHAVE_UKTEST
+else
+FRAMEWORK_NAME = IconKit
+endif
+
 SUBPROJECTS = Source
+
+IconKit_RESOURCE_FILES = GNUstep.icontheme
+
+IconKit_HEADER_FILES_DIR = Headers
+
+ifneq ($(test), yes)
+
+IconKit_HEADER_FILES = \
+        IconKit.h \
+        IKCompositorOperation.h \
+        IKCompositor.h \
+        IKIcon.h \
+        IKIconTheme.h \
+        IKIconIdentifier.h \
+        IKIconPositions.h \
+        IKIconProvider.h \
+        IKThumbnailProvider.h \
+        IKApplicationIconProvider.h \
+        IKWorkspaceAdditions.h
+endif
+
 
 -include GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
-#include ../../etoile.make
+include ../../etoile.make
+include $(GNUSTEP_MAKEFILES)/framework.make
 
 -include GNUmakefile.postamble

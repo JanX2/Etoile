@@ -24,52 +24,18 @@
 #		Boston, MA  02111-1307, USA
 #
 
-ETOILE_CORE_MODULE = YES
-
 include $(GNUSTEP_MAKEFILES)/common.make
-
-ADDITIONAL_OBJCFLAGS += -Wno-import
-# The last flag is to include the headers directory named IconKit and created 
-# by etoile.make
-ADDITIONAL_INCLUDE_DIRS += -I../Headers -I..
 
 # If we decide to move away from truncf as a GCC builtin function, it will be
 # mandatory to link C math lib.
 # ADDITIONAL_LDFLAGS = -lm 
 
-#
-# Main library
-#
+SUBPROJECT_NAME = libIconKit	
 
-PACKAGE_NAME = IconKit
-ifeq ($(test), yes)
-BUNDLE_NAME = IconKit
-ADDITIONAL_LDFLAGS += -lUnitKit -lgnustep-gui -lgnustep-base
-ADDITIONAL_CFLAGS += -DHAVE_UKTEST
-else
-FRAMEWORK_NAME = IconKit	
-endif
-VERSION = 0.1
-
-#
-# Resource files
-#
-IconKit_MAIN_MODEL_FILE =
-
-IconKit_RESOURCE_FILES = ../GNUstep.icontheme
-
-IconKit_LOCALIZED_RESOURCE_FILES =
-
-#
-# Languages we're localized for
-#
-IconKit_LANGUAGES= \
-	English
-		
 #
 # Class files
 #
-IconKit_OBJC_FILES= \
+libIconKit_OBJC_FILES= \
 	IKCompositorOperation.m \
 	IKCompositor.m \
 	IKIcon.m \
@@ -81,42 +47,8 @@ IconKit_OBJC_FILES= \
 	NSFileManager+IconKit.m \
 	NSString+MD5Hash.m
 	
-#
-# C files
-#
-IconKit_C_FILES =
-
-#
-# Header files
-#
-IconKit_HEADER_FILES_DIR = ../Headers
-
-ifneq ($(test), yes)
-#IconKit_HEADER_FILES_INSTALL_DIR = IconKit
-
-IconKit_HEADER_FILES = \
-	IconKit.h \
-	IKCompositorOperation.h \
-	IKCompositor.h \
-	IKIcon.h \
-	IKIconTheme.h \
-	IKIconIdentifier.h \
-	IKIconPositions.h \
-	IKIconProvider.h \
-	IKThumbnailProvider.h \
-	IKApplicationIconProvider.h \
-	IKWorkspaceAdditions.h	
-endif
-
 -include ../GNUmakefile.preamble
 
-# NOTE: Include etoile.make include before framework.make otherwise the
-# compilation may fail if you type 'make; make' (see bug #8806).
-include ../../../etoile.make
-ifeq ($(test), yes)
-include $(GNUSTEP_MAKEFILES)/bundle.make
-else
-include $(GNUSTEP_MAKEFILES)/framework.make
-endif
+include $(GNUSTEP_MAKEFILES)/subproject.make
 
 -include ../GNUmakefile.postamble
