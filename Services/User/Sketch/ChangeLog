@@ -1,0 +1,8 @@
+2006-05-02 Yen-Ju Chen <yjchenx at gmail>
+
+	* Do not show button label on tool palette.
+
+2006-04-28 Yen-Ju Chen <yjchenx at gmail>
+
+	* Make sure it work on GNUstep.
+
