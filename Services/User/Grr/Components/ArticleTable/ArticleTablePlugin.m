@@ -33,7 +33,7 @@ int compareArticleDates( id articleA, id articleB, void* context ) {
     id<Article> a = (id<Article>) articleA;
     id<Article> b = (id<Article>) articleB;
     
-    return -[[a date] compare: [b date]];
+    return [[a date] compare: [b date]];
 }
 
 int compareArticleRatings( id articleA, id articleB, void* context) {
