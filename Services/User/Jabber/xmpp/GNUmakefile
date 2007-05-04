@@ -76,5 +76,6 @@ XMPP_HEADER_FILES = \
 
 XMPP_AGSDOC_FILES = ${XMPP_HEADER_FILES}
 
+-include ../../../../etoile.make
 include $(GNUSTEP_MAKEFILES)/library.make
 include $(GNUSTEP_MAKEFILES)/documentation.make

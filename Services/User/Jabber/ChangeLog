@@ -1,3 +1,10 @@
+2006-05-04 Yen-Ju Chen <yjchenx at gmail>
+
+	* xmpp/GNUmakefile:
+	* GNUmakefile:
+	  Include etoile.make in order to access Addresses 
+	  before it is installed.
+
 2006-05-02 Yen-Ju Chen <yjchenx at gmail>
 	
 	* xmpp/RosterGroup.m:
