@@ -36,7 +36,7 @@ else
 FRAMEWORK_NAME = IconKit
 endif
 
-SUBPROJECTS = Source
+IconKit_SUBPROJECTS = Source
 
 IconKit_RESOURCE_FILES = GNUstep.icontheme
 
