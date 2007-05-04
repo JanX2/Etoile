@@ -51,6 +51,9 @@ include ../../../../etoile.make
 include $(GNUSTEP_MAKEFILES)/framework.make
 -include GNUmakefile.postamble
 
+after-Addresses-all::
+	ln -sf $(PROJECT_DIR)/Addresses $(BUILD_DIR)/AddressBook
+
 after-Addresses-install::
 	ln -sf $(GNUSTEP_HEADERS)/Addresses \
 	       $(GNUSTEP_HEADERS)/AddressBook
