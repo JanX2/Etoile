@@ -53,7 +53,7 @@ include $(GNUSTEP_MAKEFILES)/framework.make
 
 ifeq ($(etoile), yes)
 after-Addresses-all::
-	ln -sf $(PROJECT_DIR)/Addresses $(BUILD_DIR)/AddressBook
+	ln -sf $(PROJECT_DIR) $(BUILD_DIR)/AddressBook
 endif
 
 after-Addresses-install::
