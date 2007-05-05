@@ -65,6 +65,6 @@ ADDITIONAL_OBJCFLAGS = -DGNUSTEP -DNO_ATTRIBUTED_TITLES -std=c99 -Wno-import -Ix
 #
 # Makefiles
 #
--include ../../../etoile.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
+-include ../../../etoile.make
 include $(GNUSTEP_MAKEFILES)/application.make
