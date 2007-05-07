@@ -1,3 +1,9 @@
+2007-05-07  Yen-Ju Chen <yjchenx at gmail>
+
+	* GNUmakefile.preamble:
+	  Do not link to XWindowServerKit if building along.
+	  etoile.make should take care of building etoile as whole.
+
 2007-04-26  Yen-Ju Chen <yjchenx at gmail>
 
 	* Fix a show blocker in window stacking !!
