@@ -1,3 +1,8 @@
+2007-05-07  Yen-Ju Chen <yjchen gmail>
+
+	* etoile.make: use $(SHARED_LIBEXT) instead of so. 
+	  Patched by Yves de Champlain (#9046)..
+
 2007-04-28  Quentin Mathe <qmathe@club-internet.fr>
 
 	* README: Updated Dependency section and added David to Authors section
