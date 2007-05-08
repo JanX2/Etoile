@@ -108,7 +108,7 @@
 		hitCount = 1;
 		lineNumber = 266;
 		location = StepChat;
-		modificationTime = 200332219.910319;
+		modificationTime = 200346301.016529;
 		state = 1;
 	};
 	280A55C60A24CCA80056829B /* StanzaFactory.h */ = {
@@ -216,7 +216,7 @@
 		hitCount = 1;
 		lineNumber = 22;
 		location = XMPP;
-		modificationTime = 200332219.910332;
+		modificationTime = 200346301.016567;
 		state = 1;
 	};
 	280A5B490A32E7280056829B /* Message.m:186 */ = {
@@ -231,7 +231,7 @@
 		hitCount = 1;
 		lineNumber = 186;
 		location = StepChat;
-		modificationTime = 200332219.910338;
+		modificationTime = 200346301.016573;
 		state = 1;
 	};
 	280A5D7F0A3491100056829B /* StreamFeatures.h */ = {
@@ -414,7 +414,7 @@
 		hitCount = 1;
 		lineNumber = 275;
 		location = XML;
-		modificationTime = 200332219.910397;
+		modificationTime = 200346301.016607;
 		state = 1;
 	};
 	2821C5B40701BF1F0044C298 /* PasswordWindowController.h */ = {
@@ -515,15 +515,15 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {711, 1736}}";
 			sepNavSelRange = "{3177, 0}";
-			sepNavVisRect = "{{0, 424}, {711, 500}}";
+			sepNavVisRect = "{{0, 420}, {711, 500}}";
 			sepNavWindowFrame = "{{697, 255}, {750, 558}}";
 		};
 	};
 	2835827E063C1605008F21EA /* presence.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {749, 3024}}";
-			sepNavSelRange = "{1919, 0}";
-			sepNavVisRect = "{{0, 1107}, {749, 293}}";
+			sepNavIntBoundsRect = "{{0, 0}, {792, 3178}}";
+			sepNavSelRange = "{291, 0}";
+			sepNavVisRect = "{{0, 0}, {792, 527}}";
 			sepNavWindowFrame = "{{356, 165}, {750, 558}}";
 		};
 	};
@@ -681,7 +681,7 @@
 		hitCount = 1;
 		lineNumber = 126;
 		location = StepChat;
-		modificationTime = 200332219.910375;
+		modificationTime = 200346301.016584;
 		state = 1;
 	};
 	285B91C60AACC1B90014ADE1 /* XMPPConnection.m:571 */ = {
@@ -1035,7 +1035,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 200332222.703776;
+		modificationTime = 200346304.080797;
 		state = 1;
 		symbolName = "[NSException raise]";
 	};
@@ -1721,6 +1721,56 @@
 		vrLen = 1139;
 		vrLoc = 602;
 	};
+	28815B5B0BF10AC200D9206E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 289836A7063DB65700A3D164 /* RosterController.m */;
+		name = "if(foreground != nil)";
+		rLen = 24;
+		rLoc = 12712;
+		rType = 0;
+		vrLen = 1317;
+		vrLoc = 12019;
+	};
+	28815B5C0BF10AC200D9206E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2835827E063C1605008F21EA /* presence.m */;
+		name = "presence.m: 98";
+		rLen = 0;
+		rLoc = 1919;
+		rType = 0;
+		vrLen = 1050;
+		vrLoc = 1459;
+	};
+	28815B5D0BF10AC200D9206E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 289836A7063DB65700A3D164 /* RosterController.m */;
+		name = "if(foreground != nil)";
+		rLen = 24;
+		rLoc = 12712;
+		rType = 0;
+		vrLen = 1317;
+		vrLoc = 12019;
+	};
+	28815B5E0BF10AC200D9206E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2835827E063C1605008F21EA /* presence.m */;
+		name = "presence.m: 19";
+		rLen = 0;
+		rLoc = 291;
+		rType = 0;
+		vrLen = 669;
+		vrLoc = 0;
+	};
+	28815B5F0BF10AC200D9206E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2835827D063C1605008F21EA /* presence.h */;
+		name = "presence.h: 124";
+		rLen = 0;
+		rLoc = 3177;
+		rType = 0;
+		vrLen = 1139;
+		vrLoc = 602;
+	};
 	2885B0960660E4270068D300 /* Dispatcher.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {749, 700}}";
@@ -1835,8 +1885,8 @@
 	289836A7063DB65700A3D164 /* RosterController.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {792, 8120}}";
-			sepNavSelRange = "{12542, 0}";
-			sepNavVisRect = "{{0, 5642}, {792, 527}}";
+			sepNavSelRange = "{12712, 24}";
+			sepNavVisRect = "{{0, 5502}, {792, 527}}";
 			sepNavWindowFrame = "{{645, 430}, {750, 558}}";
 		};
 	};
@@ -2121,7 +2171,7 @@
 		hitCount = 1;
 		lineNumber = 126;
 		location = StepChat;
-		modificationTime = 200332219.910383;
+		modificationTime = 200346301.01659;
 		state = 1;
 	};
 	28DD6DB80B0823BD00035263 /* Message.m:210 */ = {
@@ -2136,7 +2186,7 @@
 		hitCount = 1;
 		lineNumber = 210;
 		location = StepChat;
-		modificationTime = 200332219.910388;
+		modificationTime = 200346301.016593;
 		state = 1;
 	};
 	28DD6DD50B08248F00035263 /* Timestamp.m:41 */ = {
@@ -2151,7 +2201,7 @@
 		hitCount = 1;
 		lineNumber = 41;
 		location = StepChat;
-		modificationTime = 200332219.910393;
+		modificationTime = 200346301.016596;
 		state = 2;
 	};
 	28DE6F5E0868727F000C4FB7 /* XCBreakpointsBucket */ = {
@@ -3105,6 +3155,11 @@
 			28815B530BF0D3B500D9206E /* PBXTextBookmark */ = 28815B530BF0D3B500D9206E /* PBXTextBookmark */;
 			28815B550BF0D3BF00D9206E /* PBXTextBookmark */ = 28815B550BF0D3BF00D9206E /* PBXTextBookmark */;
 			28815B560BF0D3BF00D9206E /* PBXTextBookmark */ = 28815B560BF0D3BF00D9206E /* PBXTextBookmark */;
+			28815B5B0BF10AC200D9206E /* PBXTextBookmark */ = 28815B5B0BF10AC200D9206E /* PBXTextBookmark */;
+			28815B5C0BF10AC200D9206E /* PBXTextBookmark */ = 28815B5C0BF10AC200D9206E /* PBXTextBookmark */;
+			28815B5D0BF10AC200D9206E /* PBXTextBookmark */ = 28815B5D0BF10AC200D9206E /* PBXTextBookmark */;
+			28815B5E0BF10AC200D9206E /* PBXTextBookmark */ = 28815B5E0BF10AC200D9206E /* PBXTextBookmark */;
+			28815B5F0BF10AC200D9206E /* PBXTextBookmark */ = 28815B5F0BF10AC200D9206E /* PBXTextBookmark */;
 		};
 		sourceControlManager = 28C99CE805DFDE1F00BF3B71 /* Source Control */;
 		userBookmarkGroup = 28177AC407005F2100A694A2 /* PBXBookmarkGroup */;
