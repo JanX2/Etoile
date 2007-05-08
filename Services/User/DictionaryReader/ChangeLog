@@ -2,6 +2,10 @@
 DictionaryReader Changelog
 ==========================
 
+May 07 2007  Yen-Ju Chen
+	* Change license to MIT as agreed by Günther Noack.
+	  Attach email in the end of COPYING.
+
 Mar 18 2007  Yen-Ju Chen
 	* Add missing README
 
