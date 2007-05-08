@@ -104,7 +104,7 @@
  * Returns the number of groups when only groups containing people more online than
  * the given onlineState value are counted.
  */
-- (int) numberOfCroupsContainingPeopleMoreOnlineThat:(unsigned int)onlineState;
+- (int) numberOfGroupsContainingPeopleMoreOnlineThan:(unsigned int)onlineState;
 
 //Post a notification in case it successes or fails.
 /**

@@ -303,7 +303,7 @@
 	return [groups count];
 }
 //TODO: Fix typo in selector name
-- (int) numberOfCroupsContainingPeopleMoreOnlineThat:(unsigned int)onlineState
+- (int) numberOfGroupsContainingPeopleMoreOnlineThan:(unsigned int)onlineState
 {
 	int count = 0;
 	FOREACH(groups, group, RosterGroup*)

@@ -382,7 +382,7 @@ NSMutableArray * rosterControllers = nil;
 	//Root node.  Children are all groups
 	if(_item == nil)
 	{
-		return [data numberOfCroupsContainingPeopleMoreOnlineThat:[[NSUserDefaults standardUserDefaults] presenceForKey:@"HiddenPresences"]];
+		return [data numberOfGroupsContainingPeopleMoreOnlineThan:[[NSUserDefaults standardUserDefaults] presenceForKey:@"HiddenPresences"]];
 	}
 	if([_item isKindOfClass:[RosterGroup class]])
 	{
@@ -405,13 +405,15 @@ NSMutableArray * rosterControllers = nil;
 	}
 	else if([_item isKindOfClass:[JabberPerson class]])
 	{
-		NSColor * foreground = [[NSUserDefaults standardUserDefaults] colourForPresence:[[[_item defaultIdentity] presence] show]];
+		unsigned char onlineState = [[[_item defaultIdentity] presence] show];
+		NSColor * foreground = [[NSUserDefaults standardUserDefaults] colourForPresence:onlineState];
 		if(foreground != nil)
 		{
 			[attributes setValue:foreground 
 						  forKey:NSForegroundColorAttributeName];
 		}
-		text = [[[NSAttributedString alloc] initWithString:[(JabberPerson*)_item name] attributes:attributes] autorelease];
+		NSString * iconString = [NSString stringWithFormat:@"%C %@", PRESENCE_ICONS[(onlineState / 10) - 1], [(JabberPerson*)_item name]];
+		text = [[[NSAttributedString alloc] initWithString:iconString attributes:attributes] autorelease];
 		[_cell setAttributedStringValue:text];
 	}
 	else if([_item isKindOfClass:[JabberIdentity class]])

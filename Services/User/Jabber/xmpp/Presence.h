@@ -41,6 +41,11 @@
 #define PRESENCE_UNKNOWN 70
 
 /**
+ * Unicode characters representing various online states
+ */
+extern int PRESENCE_ICONS[];
+
+/**
  * Protocol implemented by any UI component with a presence display.  This should
  * probably be replaced with a notification based system.
  */
