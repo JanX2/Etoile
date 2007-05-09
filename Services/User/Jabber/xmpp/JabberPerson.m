@@ -66,7 +66,6 @@
 	[identities removeObjectForKey:[[_identity jid] jidString]];
 	[self calculateIdentityList];
 }
-
 - (NSString*) group
 {
 	return group;

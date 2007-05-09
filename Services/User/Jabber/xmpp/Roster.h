@@ -124,6 +124,14 @@
  * receive presence stanzas from you.
  */
 - (void) unauthorise:(JID*)_jid;
+/**
+ * Renames an identity.  This will cause the identity to be assigned to a new person.
+ */
+- (void) setName:(NSString*)aName forIdentity:(JabberIdentity*)anIdentity;
+/**
+ * Moves an identity to a new group.  This will cause the identity to be assigned to a new person.
+ */
+- (void) setGroup:(NSString*)aName forIdentity:(JabberIdentity*)anIdentity;
 
 - (id) delegate;
 @end

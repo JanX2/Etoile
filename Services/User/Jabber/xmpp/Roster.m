@@ -239,6 +239,91 @@
 }
 
 
+/*
+ Roster updates look like this:
+ <iq type='set' id='roster_3'>
+ <query xmlns='jabber:iq:roster'>
+ <item jid='romeo@example.net'
+ name='Romeo'
+ subscription='both'>
+ <group>Friends</group>
+ <group>Lovers</group>
+ </item>
+ </query>
+ </iq>
+ */ 
+- (NSString*) iqSettingGroup:(NSString*)aGroup
+						name:(NSString*)aName
+					  forJID:(NSString*)aJID
+{
+	//<group>
+	TRXMLNode * group = [[TRXMLNode alloc] initWithType:@"group"];
+	[group setCData:aGroup];
+	//<item>
+	NSDictionary * itemAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+		aJID, @"jid",
+		aName, @"name",
+		nil];
+	TRXMLNode * item = [[TRXMLNode alloc] initWithType:@"item"
+											attributes:itemAttributes];
+	[item addChild:group];
+	//<query>
+	TRXMLNode * query = [[TRXMLNode alloc] initWithType:@"query"
+											 attributes:[NSDictionary dictionaryWithObject:@"jabber:iq:roster"
+																					forKey:@"xmlns"]];
+	[query addChild:item];
+	//<iq>
+	NSDictionary * iqAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+		@"set", @"type",
+		[connection newMessageID], @"id",
+		nil];
+	TRXMLNode * iq = [[TRXMLNode alloc] initWithType:@"item"
+										  attributes:iqAttributes];
+	
+	NSString * xml = [iq stringValue];
+	//Clean up:
+	[iq release];
+	[query release];
+	[item release];
+	[group release];
+	return xml;
+}
+
+
+- (void) setName:(NSString*)aName forIdentity:(JabberIdentity*)anIdentity
+{
+	JabberPerson * person = [self personForJID:[anIdentity jid]];
+	//Don't use this for people who aren't in our roster. 
+	if(person == nil)
+	{
+		return;
+	}
+	NSString * xml = [self iqSettingGroup:[person group]
+									 name:aName
+								   forJID:[[anIdentity jid] jidString]];
+	//Send the iq:
+	[connection XMPPSend:xml];
+	//Remove the identity from the old person:
+	[person removeIdentity:anIdentity];
+}
+
+- (void) setGroup:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity;
+{
+	JabberPerson * person = [self personForJID:[anIdentity jid]];
+	//Don't use this for people who aren't in our roster. 
+	if(person == nil)
+	{
+		return;
+	}
+	NSString * xml = [self iqSettingGroup:aGroup
+									 name:[person name]
+								   forJID:[[anIdentity jid] jidString]];
+	//Send the iq:
+	[connection XMPPSend:xml];
+	//Remove the identity from the old person:
+	[person removeIdentity:anIdentity];
+}
+
 - (JabberPerson*) personForJID:(JID*)_jid
 {
 	JabberPerson * person = [peopleByJID objectForKey:[_jid jidStringWithNoResource]];
