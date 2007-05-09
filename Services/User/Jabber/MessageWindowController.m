@@ -191,6 +191,7 @@ NSMutableArray * messageWindowControllers = nil;
 {
 	unread = 0;
 	[[self window] setTitle:[conversation name]];
+	[[self window] makeFirstResponder:editingBox];
 }
 
 - (void) activate:(id)_sender
