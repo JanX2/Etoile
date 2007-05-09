@@ -153,7 +153,7 @@ NSMutableArray * rosterControllers = nil;
 		NS_DURING
 		float width = indent * ([view levelForRow:i] + 1);
 		id rowObject = [view itemAtRow:i];
-		NSString * rowText = [self outlineView:view objectValueForTableColumn:nil byItem:rowObject];
+		//NSString * rowText = [self outlineView:view objectValueForTableColumn:nil byItem:rowObject];
 		NSAttributedString * attributedText = [self displayStringForObject:rowObject];
 		width += [attributedText size].width;
 		if(width > size.width)
