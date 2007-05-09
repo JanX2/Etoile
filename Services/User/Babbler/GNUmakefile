@@ -10,11 +10,7 @@ Babbler_OBJC_FILES = \
 	Player.m
 
 Babbler_RESOURCE_FILES = \
-	BabblerInfo.plist \
-	Resources/pause.tiff \
-	Resources/play.tiff \
-	Resources/seek_back.tiff \
-	Resources/seek_fwd.tiff
+	BabblerInfo.plist 
 
 Babbler_LANGUAGES = \
         English
