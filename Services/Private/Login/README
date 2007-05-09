@@ -1,9 +1,9 @@
+=====
+Login
+=====
 
-                             L O G I N . a p p
-
-				    v1.0
-What is it
-==========
+:AUTHORS: Nicolas Roard <nicolas@roard.com>
+:COPYING: BSD License (See COPYING)
 
 This Login.app is a simple "greeter" program you can use for XDM sessions.
 It is NOT a standalone XDM-like implementation, rather it takes advantage of
@@ -14,7 +14,7 @@ GDM communicates through pipes and a simple protocol with the clients
 (check the GDMClient class and the list of opcodes to have a better idea).
 
 How to use it
-=============
+-------------
 
 You simply need to modify the line indicating the path to 
 the "Greeter" program in /etc/gdm/gdm.conf, to have something like that:
@@ -35,7 +35,7 @@ reference etoile_greeter.sh instead of Login:
 Greeter=/usr/local/bin/etoile_greeter.sh
 
 Defaults 
-========
+--------
 
 You can add user defaults in the script. For example:
 
@@ -54,23 +54,10 @@ Secondly, if you want to use a background image, you need to set up the ImagePat
 (on my system GDM runs its clients under 'gdm', an unprivileged user -- it should 
 be the case everywhere... here the home directory of this user is locate in /var/lib)
 
-
-Contact
-=======
-
-Nicolas Roard <nicolas@roard.com>
-
-
 Note
-====
+----
 
 The program is loosely inspired by LoginPanel from Greg Casamento, in 
 particular LoginPanel is the origin of the wagging' window code...
 I also borrowed the root window drawing code from AZBackground, from Yen-Ju Chen.
-
-Licence
-=======
-
-The program is released under the BSD LICENCE.
-See the file COPYING for more informations.
 
