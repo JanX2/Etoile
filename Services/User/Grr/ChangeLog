@@ -2,6 +2,10 @@
 Grr ChangeLog
 ==============
 
+May-08-2007  Yen-Ju Chen
+	* Update top-level license to MIT agreed by authors.
+	  See COPYING and attached email inside.
+
 May-01-2007  Yen-Ju Chen
 	* UKNibOwner.h: Use AppKit.h instead of Cocoa.h
 
