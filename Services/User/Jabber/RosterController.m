@@ -101,19 +101,61 @@ NSMutableArray * rosterControllers = nil;
 	[colouredTitle release];
 }
 
+- (NSAttributedString*) displayStringForObject:(id)anObject
+{
+	NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
+	NSAttributedString * text = [NSAttributedString alloc];
+	if([anObject isKindOfClass:[RosterGroup class]])
+	{
+		[text initWithString:[anObject groupName]];
+	}
+	else if([anObject isKindOfClass:[JabberPerson class]])
+	{
+		unsigned char onlineState = [[[anObject defaultIdentity] presence] show];
+		NSColor * foreground = [[NSUserDefaults standardUserDefaults] colourForPresence:onlineState];
+		if(foreground != nil)
+		{
+			[attributes setValue:foreground
+						  forKey:NSForegroundColorAttributeName];
+		}
+		NSString * iconString = [NSString stringWithFormat:@"%C %@", 
+			PRESENCE_ICONS[(onlineState / 10) - 1], 
+			[(JabberPerson*)anObject name]];
+		[[text initWithString:iconString attributes:attributes] autorelease];
+	}
+	else if([anObject isKindOfClass:[JabberIdentity class]])
+	{
+		NSColor * foreground = [[NSUserDefaults standardUserDefaults] colourForPresence:[[anObject presence] show]];
+		if(foreground != nil)
+		{
+			[attributes setValue:foreground 
+						  forKey:NSForegroundColorAttributeName];
+		}
+		[[text initWithString:[[anObject jid] jidString] attributes:attributes] autorelease];
+	}
+	else 
+	{
+		[text init];
+	}
+	[attributes release];
+	return text;
+}
+
 - (NSSize) calculateRosterSize;
 {
 	NSSize size;
+	//Calculate width
 	float interCellHorizontalSpacing = [view intercellSpacing].width;
 	float indent = [view indentationPerLevel] + (4*interCellHorizontalSpacing);
 	size.width = 0;
-	size.height = [view numberOfRows] * ([view rowHeight] + [view intercellSpacing].height);
 	for(int i=0 ; i<[view numberOfRows] ; i++)
 	{
 		NS_DURING
 		float width = indent * ([view levelForRow:i] + 1);
-		NSCell *cell = [[[view tableColumns] objectAtIndex: 0] dataCellForRow: i];
-		width += [[cell attributedStringValue] size].width;
+		id rowObject = [view itemAtRow:i];
+		NSString * rowText = [self outlineView:view objectValueForTableColumn:nil byItem:rowObject];
+		NSAttributedString * attributedText = [self displayStringForObject:rowObject];
+		width += [attributedText size].width;
 		if(width > size.width)
 		{
 			size.width = width;
@@ -124,6 +166,10 @@ NSMutableArray * rosterControllers = nil;
 	size.width += interCellHorizontalSpacing;
 	[[[view tableColumns] objectAtIndex:0] setWidth:size.width];
 	size.width += interCellHorizontalSpacing;
+
+	//Calculate height
+	size.height = [view numberOfRows] * ([view rowHeight] + [view intercellSpacing].height);
+	
 	return size;
 }
 
@@ -397,35 +443,17 @@ NSMutableArray * rosterControllers = nil;
 
 - (void)outlineView:(NSOutlineView *)_outlineView willDisplayCell:(id)_cell forTableColumn:(NSTableColumn *)_tableColumn item:(id)_item
 {
-	NSMutableDictionary * attributes = [[[NSMutableDictionary alloc] init] autorelease];
-	NSAttributedString * text;
 	if([_item isKindOfClass:[RosterGroup class]])
 	{
 		/* Nothing to change */
 	}
 	else if([_item isKindOfClass:[JabberPerson class]])
 	{
-		unsigned char onlineState = [[[_item defaultIdentity] presence] show];
-		NSColor * foreground = [[NSUserDefaults standardUserDefaults] colourForPresence:onlineState];
-		if(foreground != nil)
-		{
-			[attributes setValue:foreground 
-						  forKey:NSForegroundColorAttributeName];
-		}
-		NSString * iconString = [NSString stringWithFormat:@"%C %@", PRESENCE_ICONS[(onlineState / 10) - 1], [(JabberPerson*)_item name]];
-		text = [[[NSAttributedString alloc] initWithString:iconString attributes:attributes] autorelease];
-		[_cell setAttributedStringValue:text];
+		[_cell setAttributedStringValue:[self displayStringForObject:_item]];
 	}
 	else if([_item isKindOfClass:[JabberIdentity class]])
 	{
-		NSColor * foreground = [[NSUserDefaults standardUserDefaults] colourForPresence:[[_item presence] show]];
-		if(foreground != nil)
-		{
-			[attributes setValue:foreground 
-						  forKey:NSForegroundColorAttributeName];
-		}
-		text = [[[NSAttributedString alloc] initWithString:[[_item jid] jidString] attributes:attributes] autorelease];
-		[_cell setAttributedStringValue:text];
+		[_cell setAttributedStringValue:[self displayStringForObject:_item]];
 	}
 	else 
 	{

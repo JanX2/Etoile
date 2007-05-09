@@ -150,10 +150,15 @@ NSMutableArray * messageWindowControllers = nil;
 }
 
 
-- (void) displayMessage:(Message*)_message incoming:(BOOL)_in
+- (void) displayMessage:(Message*)aMessage incoming:(BOOL)_in
 {
 	if(_in)
 	{
+		//Ignore empty messages.
+		if([[aMessage body] length] == 0)
+		{
+			return;
+		}
 		if(![[self window] isVisible])
 		{
 			[self showWindow:self];
@@ -177,7 +182,7 @@ NSMutableArray * messageWindowControllers = nil;
 			[[self window] setTitle:[NSString stringWithFormat:@"%@ (%d unread)", [conversation name], ++unread]];
 		}
 	}
-	[[messageBox textStorage] appendAttributedString:[log logMessage:_message]];
+	[[messageBox textStorage] appendAttributedString:[log logMessage:aMessage]];
 	[messageBox display];
 	[messageBox scrollRangeToVisible:NSMakeRange([[messageBox textStorage] length],0)];
 }

@@ -229,7 +229,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>28FAB16C0BF1D16E00FE0D7E</string>
+						<string>28FAB1E80BF1E04600FE0D7E</string>
 						<key>history</key>
 						<array>
 							<string>28815B640BF1D07700D9206E</string>
@@ -349,7 +349,7 @@
 							<real>177</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>312 239 1032 786 0 0 1920 1178 </string>
+						<string>118 289 1032 786 0 0 1920 1178 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -367,7 +367,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>Presence.m</string>
+								<string>RosterController.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -375,11 +375,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>Presence.m</string>
+										<string>RosterController.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>28FAB1690BF1D16E00FE0D7E</string>
+										<string>28FAB1E70BF1E04600FE0D7E</string>
 										<key>history</key>
 										<array>
 											<string>2839E3640B76542F00145C44</string>
@@ -398,7 +398,6 @@
 											<string>286B6A8E0BE50A63008B6753</string>
 											<string>286B6AC20BE50DFF008B6753</string>
 											<string>286B6AE50BE50F18008B6753</string>
-											<string>286B6AE60BE50F18008B6753</string>
 											<string>286B6B2D0BE6136B008B6753</string>
 											<string>286B6B710BE694FE008B6753</string>
 											<string>286B6B850BE696CC008B6753</string>
@@ -419,23 +418,23 @@
 											<string>287F46710BEA02880083F380</string>
 											<string>287F46EB0BEA32F50083F380</string>
 											<string>287E304C0BF0CEA200A1EFC1</string>
-											<string>287E304E0BF0CEA200A1EFC1</string>
 											<string>287E305E0BF0CEEE00A1EFC1</string>
 											<string>287E305F0BF0CEEE00A1EFC1</string>
 											<string>287E306E0BF0CF9A00A1EFC1</string>
 											<string>287E306F0BF0CF9A00A1EFC1</string>
-											<string>28815B5B0BF10AC200D9206E</string>
 											<string>28FAB1600BF1D16E00FE0D7E</string>
 											<string>28FAB1610BF1D16E00FE0D7E</string>
 											<string>28FAB1620BF1D16E00FE0D7E</string>
 											<string>28FAB1630BF1D16E00FE0D7E</string>
-											<string>28FAB1640BF1D16E00FE0D7E</string>
+											<string>28FAB1780BF1D71D00FE0D7E</string>
+											<string>28FAB1840BF1D7FC00FE0D7E</string>
+											<string>28FAB1850BF1D7FC00FE0D7E</string>
+											<string>28FAB1A90BF1DC7400FE0D7E</string>
+											<string>28FAB1AA0BF1DC7400FE0D7E</string>
 										</array>
 										<key>nextStack</key>
 										<array>
-											<string>28FAB1660BF1D16E00FE0D7E</string>
-											<string>28FAB1670BF1D16E00FE0D7E</string>
-											<string>28FAB1680BF1D16E00FE0D7E</string>
+											<string>28FAB1AB0BF1DC7400FE0D7E</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -462,7 +461,6 @@
 											<string>286B6AEA0BE50F18008B6753</string>
 											<string>286B6AEB0BE50F18008B6753</string>
 											<string>286B6AED0BE50F18008B6753</string>
-											<string>286B6B090BE521E3008B6753</string>
 											<string>286B6B250BE541E9008B6753</string>
 											<string>286B6B8E0BE696CC008B6753</string>
 											<string>286B6B900BE696CC008B6753</string>
@@ -480,6 +478,9 @@
 											<string>287E30630BF0CEEE00A1EFC1</string>
 											<string>287E30710BF0CF9A00A1EFC1</string>
 											<string>28FAB1650BF1D16E00FE0D7E</string>
+											<string>28FAB17A0BF1D71D00FE0D7E</string>
+											<string>28FAB1860BF1D7FC00FE0D7E</string>
+											<string>28FAB1870BF1D7FC00FE0D7E</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -493,7 +494,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {833, 544}}</string>
 								<key>RubberWindowFrame</key>
-								<string>312 239 1032 786 0 0 1920 1178 </string>
+								<string>118 289 1032 786 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -513,7 +514,7 @@
 								<key>Frame</key>
 								<string>{{0, 549}, {833, 196}}</string>
 								<key>RubberWindowFrame</key>
-								<string>312 239 1032 786 0 0 1920 1178 </string>
+								<string>118 289 1032 786 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -664,7 +665,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>200397166.688052</real>
+	<real>200400966.32552901</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -679,19 +680,18 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>28FAB16D0BF1D16E00FE0D7E</string>
 		<string>28FAB16E0BF1D16E00FE0D7E</string>
 		<string>28FAB16F0BF1D16E00FE0D7E</string>
 		<string>28EB893D0827B5CC001D638E</string>
-		<string>2842CFB3089FE3D000F2D0AA</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>28FAB15C0BF1D16D00FE0D7E</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>287E30980BF0D17700A1EFC1</string>
+		<string>2842CFB3089FE3D000F2D0AA</string>
+		<string>28FAB15C0BF1D16D00FE0D7E</string>
+		<string>1CD10A99069EF8BA00B06720</string>
 		<string>/Users/theraven/etoile/Etoile/Services/User/Jabber/Jabber.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>312 239 1032 786 0 0 1920 1178 </string>
+	<string>118 289 1032 786 0 0 1920 1178 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -707,12 +707,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>RosterController.m</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -721,7 +723,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1215, 417}}</string>
 								<key>RubberWindowFrame</key>
-								<string>215 232 1215 751 0 0 1920 1178 </string>
+								<string>434 126 1215 751 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -745,7 +747,7 @@
 								<key>Frame</key>
 								<string>{{0, 422}, {1215, 288}}</string>
 								<key>RubberWindowFrame</key>
-								<string>215 232 1215 751 0 0 1920 1178 </string>
+								<string>434 126 1215 751 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXBuildResultsModule</string>
@@ -775,11 +777,11 @@
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.build</string>
 			<key>WindowString</key>
-			<string>215 232 1215 751 0 0 1920 1178 </string>
+			<string>434 126 1215 751 0 0 1920 1178 </string>
 			<key>WindowToolGUID</key>
 			<string>2842CFB3089FE3D000F2D0AA</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -851,7 +853,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1180, 781}}</string>
 								<key>RubberWindowFrame</key>
-								<string>462 253 1180 822 0 0 1920 1178 </string>
+								<string>479 270 1180 822 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXDebugSessionModule</string>
@@ -886,11 +888,11 @@
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debug</string>
 			<key>WindowString</key>
-			<string>462 253 1180 822 0 0 1920 1178 </string>
+			<string>479 270 1180 822 0 0 1920 1178 </string>
 			<key>WindowToolGUID</key>
 			<string>1CD10A99069EF8BA00B06720</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
