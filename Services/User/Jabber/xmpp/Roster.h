@@ -131,7 +131,7 @@
 /**
  * Moves an identity to a new group.  This will cause the identity to be assigned to a new person.
  */
-- (void) setGroup:(NSString*)aName forIdentity:(JabberIdentity*)anIdentity;
+- (void) setGroup:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity;
 
 - (id) delegate;
 @end

@@ -307,7 +307,7 @@
 	[person removeIdentity:anIdentity];
 }
 
-- (void) setGroup:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity;
+- (void) setGroup:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity
 {
 	JabberPerson * person = [self personForJID:[anIdentity jid]];
 	//Don't use this for people who aren't in our roster. 
