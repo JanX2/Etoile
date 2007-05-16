@@ -1,0 +1,7 @@
+{
+  NSExecutable = "Corner";
+  NSPrincipalClass = "NSApplication";
+  ApplicationName = "Corner";
+  ApplicationRelease = "0.1";
+  Authors = ("David Chisnall");
+}
