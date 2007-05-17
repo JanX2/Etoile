@@ -1,3 +1,7 @@
+2007 05 17 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Support _NET_SHOWING_DESKTOP.
+
 2007 04 30 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Flush Xwindow while switch desktop.

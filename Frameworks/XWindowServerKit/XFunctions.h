@@ -72,6 +72,12 @@ Window XWindowActiveWindow();
 /* Return number of desktop of xwindow */
 unsigned int XWindowDesktopOfWindow(Window win);
 
+/* See whether it is in "showing desktop" mode. (_NET_SHOWING_DESKTOP) */
+BOOL XWindowIsShowingDesktop();
+
+/* Set _NET_SHOWING_DESKTOP */
+void XWindowSetShowingDesktop(BOOL flag);
+
 /* Freedesktop.org stuff */
 NSString *XDGConfigHomePath();
 NSString *XDGDataHomePath();

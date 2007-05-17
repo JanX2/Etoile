@@ -393,6 +393,51 @@ Window XWindowActiveWindow()
   return window;
 }
 
+/* See whether it is in "showing desktop" mode. (_NET_SHOWING_DESKTOP) */
+BOOL XWindowIsShowingDesktop()
+{
+  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Window root_win = RootWindow(dpy, [[NSScreen mainScreen] screenNumber]);
+
+  unsigned long *data = NULL;
+  Atom prop = XInternAtom(dpy, "_NET_SHOWING_DESKTOP", False);
+  Atom type_ret;
+  int format_ret;
+  unsigned long after_ret, count;
+  int result = XGetWindowProperty(dpy, root_win, prop,
+                                  0, 0x7FFFFFFF, False, XA_CARDINAL,
+                                  &type_ret, &format_ret, &count,
+                                  &after_ret, (unsigned char **)&data);
+  if ((result != Success)) {
+    NSLog(@"Error: cannot get _NET_SHOWING_DESKTOP of client");
+    return -1;
+  }
+  BOOL flag = ((int)*data == 1) ? YES : NO;
+  XFree(data);
+  return flag ;
+}
+
+/* Set _NET_SHOWING_DESKTOP */
+void XWindowSetShowingDesktop(BOOL flag)
+{
+  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Window root_win = RootWindow(dpy, [[NSScreen mainScreen] screenNumber]);
+  Atom prop = XInternAtom(dpy, "_NET_SHOWING_DESKTOP", False);
+
+  XClientMessageEvent *xev = calloc(1, sizeof(XClientMessageEvent));
+  xev->type = ClientMessage;
+  xev->display = dpy;
+  xev->window = root_win;
+  xev->message_type = prop;
+  xev->format = 32;
+  xev->data.l[0] = (flag == YES) ? 1 : 0;
+  xev->data.l[1] = 0; // just in case
+  xev->data.l[2] = 0;
+  xev->data.l[3] = 0;
+  XSendEvent(dpy, root_win, False, SubstructureRedirectMask, (XEvent *)xev);
+  XFree(xev);
+  XFlush(dpy);
+}
 
 /* Freedesktop.org stuff */
 NSString *XDGConfigHomePath()
