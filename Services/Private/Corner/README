@@ -1,0 +1,9 @@
+======
+Corner
+======
+
+:Author: David Chisnall
+:License: BSD License
+
+Corner (in Services/Private) will run a StepTalk script
+when the mouse moves into the corner of the screen.

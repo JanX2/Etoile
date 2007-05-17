@@ -8,8 +8,8 @@
 	int cornerWaitCount;
 	Window w; 
 	Window lastRoot;
-	int rootWidth;
-	int rootHeight;
+	unsigned int rootWidth;
+	unsigned int rootHeight;
 	BOOL inCorner;
 	STEnvironment * scriptingEnvironment;
 	STEngine * smalltalkEngine;
