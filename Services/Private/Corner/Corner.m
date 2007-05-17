@@ -24,7 +24,9 @@
 		scripts = [[NSArray arrayWithObjects:
 						@"Application unhide:nil",
 						@"Application unhide:nil",
-						@"Application unhide:nil",
+					    @"args := #('-activate').\
+						task := NSTask launchedTaskWithLaunchPath:'xscreensaver-command' arguments:args.\
+						task waitUntilExit.",
 						@"Application unhide:nil",
 						nil] retain];
 		[defaults setObject:scripts forKey:@"CornerScripts"];
