@@ -16,6 +16,8 @@ XWindowServerKit_HEADER_FILES = \
 	XWindow.h \
 	gnustep.h
 
+XWindowServerKit_RESOURCE_FILES = ScriptingInfo.plist
+
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lX11
 
