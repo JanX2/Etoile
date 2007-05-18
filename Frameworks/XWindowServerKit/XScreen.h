@@ -61,4 +61,8 @@ typedef enum _XScreenSide {
 - (void) setCurrentWorkspace: (int) workspace;
 - (int) currentWorkspace;
 
+/* _NET_SHOWING_DESKTOP */
+- (BOOL) isShowingDesktop;
+- (void) setShowingDesktop:(BOOL) flag;
+
 @end

@@ -135,4 +135,13 @@ NSString *XCurrentWorkspaceDidChangeNotification = @"XCurrentWorkspaceDidChangeN
   }
 }
 
+- (BOOL) isShowingDesktop
+{
+	return XWindowIsShowingDesktop();
+}
+
+- (void) setShowingDesktop:(BOOL) flag
+{
+	XWindowSetShowingDesktop(flag);
+}
 @end
