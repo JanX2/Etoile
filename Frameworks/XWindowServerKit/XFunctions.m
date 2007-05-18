@@ -410,7 +410,7 @@ BOOL XWindowIsShowingDesktop()
                                   &after_ret, (unsigned char **)&data);
   if ((result != Success)) {
     NSLog(@"Error: cannot get _NET_SHOWING_DESKTOP of client");
-    return -1;
+    return NO;
   }
   BOOL flag = ((int)*data == 1) ? YES : NO;
   XFree(data);
