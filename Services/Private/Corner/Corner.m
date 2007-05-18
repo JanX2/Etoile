@@ -21,13 +21,22 @@
 	scripts = [[defaults arrayForKey:@"CornerScripts"] retain];
 	if(scripts == nil)
 	{
+		/* Scripts in clockwise order from the
+		 * top left corner */
+		//TODO: Put these in a plist
 		scripts = [[NSArray arrayWithObjects:
-						@"Application unhide:nil",
-						@"Application unhide:nil",
+						/* No actions for top corners yet */
+						@"Transcript showLine:'Top Left!'.",
+						@"Transcript showLine:'Top Right!'.",
+						/* Activate Screensaver (xscreensaver) */
 					    @"args := #('-activate').\
 						task := NSTask launchedTaskWithLaunchPath:'xscreensaver-command' arguments:args.\
 						task waitUntilExit.",
-						@"Application unhide:nil",
+						/* Show / hide desktop */
+						@"Environment includeFramework:'XWindowServerKit'.\
+						screen := NSScreen mainScreen.\
+						isShown := screen isShowingDesktop.\
+						screen setShowingDesktop:(isShown not).",
 						nil] retain];
 		[defaults setObject:scripts forKey:@"CornerScripts"];
 	}
