@@ -97,6 +97,7 @@
 		280AD0C90B7503A90008F3F3 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28177B5E0700BFB500A694A2 /* AddressBook.framework */; };
 		280AD13D0B7506BF0008F3F3 /* XML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* XML.framework */; };
 		280AD1470B7506CC0008F3F3 /* XMPP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280AD0290B75025F0008F3F3 /* XMPP.framework */; };
+		2812F1000BF60FF10041AAE4 /* StepChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2812F0FF0BF60FF10041AAE4 /* StepChat.icns */; };
 		28135C9908ACE3780032967E /* XMLLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 28135C9708ACE3780032967E /* XMLLog.h */; };
 		28135C9A08ACE3780032967E /* XMLLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 28135C9808ACE3780032967E /* XMLLog.m */; };
 		2815EF1607660F630078C5AE /* AddContactWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2815EF1407660F630078C5AE /* AddContactWindowController.h */; };
@@ -152,7 +153,6 @@
 		2888DE9D0719AA6C00A44A41 /* CustomPresenceWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2888DE9B0719AA6C00A44A41 /* CustomPresenceWindowController.m */; };
 		2891BCB2063BBCA700A7F522 /* JID.h in Headers */ = {isa = PBXBuildFile; fileRef = 2891BCB0063BBCA700A7F522 /* JID.h */; };
 		2891BCB3063BBCA700A7F522 /* JID.m in Sources */ = {isa = PBXBuildFile; fileRef = 2891BCB1063BBCA700A7F522 /* JID.m */; };
-		289835D2063D8CC300A3D164 /* jabber.icns in Resources */ = {isa = PBXBuildFile; fileRef = 289835D1063D8CC300A3D164 /* jabber.icns */; };
 		289836A8063DB65700A3D164 /* RosterController.h in Headers */ = {isa = PBXBuildFile; fileRef = 289836A6063DB65700A3D164 /* RosterController.h */; };
 		289836A9063DB65700A3D164 /* RosterController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289836A7063DB65700A3D164 /* RosterController.m */; };
 		28A32C2E082E3E3B0012AD55 /* Capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 28A32C2C082E3E3B0012AD55 /* Capabilities.h */; };
@@ -247,6 +247,7 @@
 		280ACF710B75013B0008F3F3 /* XML.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = XML.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		280ACF720B75013B0008F3F3 /* XML-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "XML-Info.plist"; sourceTree = "<group>"; };
 		280AD0290B75025F0008F3F3 /* XMPP.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = XMPP.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2812F0FF0BF60FF10041AAE4 /* StepChat.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = StepChat.icns; sourceTree = "<group>"; };
 		28135C9708ACE3780032967E /* XMLLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLLog.h; sourceTree = "<group>"; };
 		28135C9808ACE3780032967E /* XMLLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLLog.m; sourceTree = "<group>"; };
 		2815EF1407660F630078C5AE /* AddContactWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddContactWindowController.h; sourceTree = "<group>"; };
@@ -573,6 +574,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2812F0FF0BF60FF10041AAE4 /* StepChat.icns */,
 				3BC84C250BE28B6F002833ED /* AccountBox.nib */,
 				2860DD32072541760081D50C /* MessageWindow.nib */,
 				289835D1063D8CC300A3D164 /* jabber.icns */,
@@ -798,11 +800,11 @@
 			files = (
 				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
-				289835D2063D8CC300A3D164 /* jabber.icns in Resources */,
 				2860DD33072541760081D50C /* MessageWindow.nib in Resources */,
 				2860DD35072541920081D50C /* RosterWindow.nib in Resources */,
 				2860DD370725419A0081D50C /* PasswordBox.nib in Resources */,
 				3BC84C270BE28B6F002833ED /* AccountBox.nib in Resources */,
+				2812F1000BF60FF10041AAE4 /* StepChat.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
