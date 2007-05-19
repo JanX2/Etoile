@@ -111,6 +111,10 @@
 		28177B5F0700BFB500A694A2 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28177B5E0700BFB500A694A2 /* AddressBook.framework */; };
 		281C98710638396200732148 /* query_jabber_iq_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = 281C986F0638396200732148 /* query_jabber_iq_auth.h */; };
 		281C98720638396200732148 /* query_jabber_iq_auth.m in Sources */ = {isa = PBXBuildFile; fileRef = 281C98700638396200732148 /* query_jabber_iq_auth.m */; };
+		281EF7C30BFF78D900B26B33 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
+		281EF7C40BFF78DC00B26B33 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
+		281EF7C60BFF78EA00B26B33 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97324FDCFA39411CA2CEA /* AppKit.framework */; };
+		281EF7C90BFF78F700B26B33 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97324FDCFA39411CA2CEA /* AppKit.framework */; };
 		2821C44607019FE60044C298 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2821C44507019FE60044C298 /* Security.framework */; };
 		2821C5330701A0190044C298 /* DefaultHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 2885B14E066113560068D300 /* DefaultHandler.h */; };
 		2821C5B60701BF1F0044C298 /* PasswordWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2821C5B40701BF1F0044C298 /* PasswordWindowController.h */; };
@@ -162,7 +166,6 @@
 		28B2AB890A19C0130077DC9B /* TRXMLXHTML-IMParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */; };
 		28C5029406B3CEED00CE9114 /* RosterGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 28C5029206B3CEED00CE9114 /* RosterGroup.h */; };
 		28C5029506B3CEED00CE9114 /* RosterGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C5029306B3CEED00CE9114 /* RosterGroup.m */; };
-		28CD15B1079168610025B96F /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28CD15B0079168610025B96F /* Carbon.framework */; };
 		28D744B307565ED800D7EE0C /* ChatLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 28D744B107565ED800D7EE0C /* ChatLog.h */; };
 		28D744B407565ED800D7EE0C /* ChatLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D744B207565ED800D7EE0C /* ChatLog.m */; };
 		28DD66890B05725D00035263 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD66870B05725D00035263 /* NSData+Base64.h */; };
@@ -350,6 +353,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				281EF7C30BFF78D900B26B33 /* Foundation.framework in Frameworks */,
+				281EF7C60BFF78EA00B26B33 /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,6 +365,8 @@
 				280AD13D0B7506BF0008F3F3 /* XML.framework in Frameworks */,
 				280AD0C90B7503A90008F3F3 /* AddressBook.framework in Frameworks */,
 				280AD0C80B7503A10008F3F3 /* Security.framework in Frameworks */,
+				281EF7C40BFF78DC00B26B33 /* Foundation.framework in Frameworks */,
+				281EF7C90BFF78F700B26B33 /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,7 +379,6 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				28177B5F0700BFB500A694A2 /* AddressBook.framework in Frameworks */,
 				2821C44607019FE60044C298 /* Security.framework in Frameworks */,
-				28CD15B1079168610025B96F /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -995,12 +1001,8 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "XML-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
+				LINK_WITH_STANDARD_LIBRARIES = YES;
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = XML;
 				ZERO_LINK = YES;
@@ -1022,12 +1024,8 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "XML-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
+				LINK_WITH_STANDARD_LIBRARIES = YES;
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = XML;
 				ZERO_LINK = NO;
@@ -1046,12 +1044,8 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "XML-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
+				LINK_WITH_STANDARD_LIBRARIES = YES;
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = XML;
 				ZERO_LINK = YES;
@@ -1079,11 +1073,8 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "XMPP-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
 					"-lcrypto",
 					"-lssl",
 				);
@@ -1112,11 +1103,8 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "XMPP-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
 					"-lcrypto",
 					"-lssl",
 				);
@@ -1143,11 +1131,8 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "XMPP-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
 					"-lcrypto",
 					"-lssl",
 				);
@@ -1246,7 +1231,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.3;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-lssl",
@@ -1308,7 +1293,11 @@
 		28F8E8E20867708100948872 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				OTHER_LDFLAGS = "";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 			};
 			name = Development;
@@ -1316,14 +1305,22 @@
 		28F8E8E30867708100948872 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				OTHER_LDFLAGS = "";
 			};
 			name = Deployment;
 		};
 		28F8E8E40867708100948872 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				OTHER_LDFLAGS = "";
 			};
 			name = Default;
 		};

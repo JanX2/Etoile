@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string>jabber.icns</string>
+	<string>StepChat.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.etoile.jabber</string>
 	<key>CFBundleInfoDictionaryVersion</key>
