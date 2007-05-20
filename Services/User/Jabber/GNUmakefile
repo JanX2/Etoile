@@ -14,7 +14,9 @@ StepChat_APPLICATION_ICON =
 #
 StepChat_LANGUAGES = English
 
-StepChat_RESOURCE_FILES = StepChatInfo.plist
+StepChat_RESOURCE_FILES = \
+	StepChatInfo.plist \
+	Resources/StepChat.tiff
 
 ifeq ($(FOUNDATION_LIB), apple)
 StepChat_LOCALIZED_RESOURCE_FILES = \

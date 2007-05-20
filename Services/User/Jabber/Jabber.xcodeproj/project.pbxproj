@@ -307,7 +307,6 @@
 		28963A1806AD64A50013F057 /* TRXMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TRXMLParser.h; path = TRXML/TRXMLParser.h; sourceTree = "<group>"; };
 		28963A1906AD64A50013F057 /* TRXMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TRXMLParser.m; path = TRXML/TRXMLParser.m; sourceTree = "<group>"; };
 		28963A1A06AD64A50013F057 /* TRXMLParserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TRXMLParserDelegate.h; path = TRXML/TRXMLParserDelegate.h; sourceTree = "<group>"; };
-		289835D1063D8CC300A3D164 /* jabber.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = jabber.icns; sourceTree = "<group>"; };
 		289836A6063DB65700A3D164 /* RosterController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RosterController.h; sourceTree = "<group>"; };
 		289836A7063DB65700A3D164 /* RosterController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RosterController.m; sourceTree = "<group>"; };
 		28A32C2C082E3E3B0012AD55 /* Capabilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Capabilities.h; path = xmpp/Capabilities.h; sourceTree = "<group>"; };
@@ -583,7 +582,6 @@
 				2812F0FF0BF60FF10041AAE4 /* StepChat.icns */,
 				3BC84C250BE28B6F002833ED /* AccountBox.nib */,
 				2860DD32072541760081D50C /* MessageWindow.nib */,
-				289835D1063D8CC300A3D164 /* jabber.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
