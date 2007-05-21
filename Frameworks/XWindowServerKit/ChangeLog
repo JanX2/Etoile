@@ -1,6 +1,7 @@
 2007 05 20 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Include XFunctions.h in XScreen.m to avoid complain.
+	* Use ETOILE_CORE_MODULE patch by Frédéric Point (Bug #9164).
 
 2007 05 17 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
