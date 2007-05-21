@@ -1,3 +1,7 @@
+2007-05-21  Yen-Ju Chen <yjchenx at gmail>
+
+	* Include etoile.make for clean build.
+
 2007-05-20  Yen-Ju Chen <yjchenx at gmail>
 
 	* Add etoile.make patched by Frédéric Point (Bug #9164).
