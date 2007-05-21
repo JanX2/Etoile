@@ -1,6 +1,8 @@
 2007-05-20  Yen-Ju Chen <yjchenx at gmail>
 
 	* Add etoile.make patched by Frédéric Point (Bug #9164).
+	* Do not include GNUmakefile.postamble.
+	  It is supposed to be the right way for current design.
 
 2007-05-07  Yen-Ju Chen <yjchenx at gmail>
 

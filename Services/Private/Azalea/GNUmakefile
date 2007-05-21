@@ -85,6 +85,6 @@ ADDITIONAL_LIB_DIRS += `pkg-config --libs libstartup-notification-1.0`
 
 include $(GNUSTEP_MAKEFILES)/application.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
--include ../../../etoile.make
+#-include ../../../etoile.make
 
--include GNUmakefile.postamble
+#-include GNUmakefile.postamble
