@@ -50,7 +50,7 @@ int main(void)
 		}
 		/* Sleep until a complete minute will have elapsed */
 		//NSLog(@"Sleeping for %d seconds",
-		SECONDS_PER_MINUTE - (idleSeconds % SECONDS_PER_MINUTE));
+		//SECONDS_PER_MINUTE - (idleSeconds % SECONDS_PER_MINUTE));
 		sleep(SECONDS_PER_MINUTE - (idleSeconds % SECONDS_PER_MINUTE));
 	}
 }
