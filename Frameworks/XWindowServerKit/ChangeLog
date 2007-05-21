@@ -1,3 +1,7 @@
+2007 05 20 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Include XFunctions.h in XScreen.m to avoid complain.
+
 2007 05 17 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Support _NET_SHOWING_DESKTOP.
