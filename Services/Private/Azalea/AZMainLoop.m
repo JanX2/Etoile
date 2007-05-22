@@ -66,9 +66,6 @@ void time_val_add (struct timeval *time_, long microseconds)
   }
 }
 
-/* all created ObMainLoops. Used by the signal handler to pass along signals */
-static NSMutableArray *all_loops = nil;
-
 /* signals are global to all loops */
 struct {
     unsigned int installed; /* a ref count */
@@ -195,29 +192,6 @@ static void sighandler(int sig);
 - (void) set_del_me: (BOOL) d { del_me = d; }
 - (void) set_last: (struct timeval) l { last = l; }
 - (void) set_timeout: (struct timeval) t { timeout = t; }
-@end
-
-@interface AZMainLoopSignalHandler: NSObject
-{
-    int signal;
-    ObMainLoopSignalHandler func;
-}
-- (void) fire;
-- (int) signal;
-- (ObMainLoopSignalHandler) func;
-- (void) set_signal: (int) signal;
-- (void) set_func: (ObMainLoopSignalHandler) func;
-@end
-
-@implementation AZMainLoopSignalHandler
-- (void) fire
-{
-  func(signal, NULL);
-}
-- (int) signal { return signal; }
-- (ObMainLoopSignalHandler) func { return func; }
-- (void) set_signal: (int) s { signal = s; }
-- (void) set_func: (ObMainLoopSignalHandler) f { func = f; }
 @end
 
 @interface AZMainLoopFdHandler: NSObject
@@ -382,21 +356,12 @@ static AZMainLoop *sharedInstance;
   }
 }
 
-- (void) addSignalHandler: (ObMainLoopSignalHandler) handler
+- (void) setSignalHandler: (ObMainLoopSignalHandler) handler
                 forSignal: (int) signal
 {
     if (signal >= NUM_SIGNALS) return;
 
-    AZMainLoopSignalHandler *h = [[AZMainLoopSignalHandler alloc] init];
-    [h set_signal: signal];
-    [h set_func: handler];
-
-    if (signal_handlers[signal]== nil)
-      signal_handlers[signal] = [[NSMutableArray alloc] init];
-
-    NSMutableArray *handlers = signal_handlers[signal];
-    [handlers insertObject: h atIndex: 0];
-    DESTROY(h);
+    signal_handlers[signal] = handler;
 
     if (!all_signals[signal].installed) {
         struct sigaction action;
@@ -408,33 +373,6 @@ static AZMainLoop *sharedInstance;
         action.sa_flags = SA_NOCLDSTOP;
 
         sigaction(signal, &action, &all_signals[signal].oldact);
-    }
-
-}
-
-- (void) removeSignalHandler: (ObMainLoopSignalHandler) handler
-{
-    unsigned int i, j;
-
-    for (i = 0; i < NUM_SIGNALS; ++i) {
-	NSMutableArray *handlers = signal_handlers[i];
-	if ((handlers == nil) || ([handlers count] == 0))
-          continue;
-	for (j = 0; j < [handlers count]; j++) {
-            AZMainLoopSignalHandler *h = [handlers objectAtIndex: j];
-
-            if ([h func] == handler) {
-		NSAssert(all_signals[[h signal]].installed > 0, @"Signal is not installed");
-
-                all_signals[[h signal]].installed--;
-                if (!all_signals[[h signal]].installed) {
-                    sigaction([h signal], &all_signals[[h signal]].oldact, NULL);
-                }
-
-		[handlers removeObject: h];
-		j--;
-            }
-        }
     }
 }
 
@@ -488,20 +426,18 @@ static AZMainLoop *sharedInstance;
     while (run)
     {
         if (signal_fired) {
-            unsigned int i, j;
+            unsigned int i;
             sigset_t oldset;
 
             /* block signals so that we can do this without the data changing
                on us */
             sigprocmask(SIG_SETMASK, &all_signals_set, &oldset);
 
-            for (i = 0; i < NUM_SIGNALS; ++i) {
-                while (signals_fired[i]) {
-		    NSArray *handlers = signal_handlers[i];
-		    for (j = 0; j < [handlers count]; j++) {
-		        AZMainLoopSignalHandler *h = [handlers objectAtIndex: j];
-			[h fire];
-                    }
+            for (i = 0; i < NUM_SIGNALS; ++i) 
+            {
+                while (signals_fired[i]) 
+                {
+                    signal_handlers[i](i, NULL);
                     signals_fired[i]--;
                 }
             }
@@ -597,9 +533,7 @@ static AZMainLoop *sharedInstance;
   gettimeofday(&now, NULL);
 
   /* only do this if we're the first loop created */
-  if (!all_loops) {
-        all_loops = [[NSMutableArray alloc] init];
-
+  {
         unsigned int i;
         struct sigaction action;
         sigset_t sigset;
@@ -625,8 +559,6 @@ static AZMainLoop *sharedInstance;
             }
         }
     }
-
-  [all_loops insertObject: self atIndex: 0];
 
   return self;
 }
@@ -822,10 +754,6 @@ static void sighandler(int sig)
 {
     if (sig >= NUM_SIGNALS) return;
 
-    int i, count = [all_loops count];
-    for (i = 0; i < count; i++) {
-        AZMainLoop *loop = [all_loops objectAtIndex: i];
-	[loop handleSignal: sig]; 
-    }
+    [[AZMainLoop mainLoop] handleSignal: sig];
 }
 

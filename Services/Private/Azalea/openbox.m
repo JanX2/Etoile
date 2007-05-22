@@ -157,13 +157,13 @@ int main(int argc, char **argv)
     mainLoop = [AZMainLoop mainLoop];
 
     /* set up signal handler */
-    [mainLoop addSignalHandler: signal_handler forSignal: SIGUSR1];
-    [mainLoop addSignalHandler: signal_handler forSignal: SIGUSR2];
-    [mainLoop addSignalHandler: signal_handler forSignal: SIGTERM];
-    [mainLoop addSignalHandler: signal_handler forSignal: SIGINT];
-    [mainLoop addSignalHandler: signal_handler forSignal: SIGHUP];
-    [mainLoop addSignalHandler: signal_handler forSignal: SIGPIPE];
-    [mainLoop addSignalHandler: signal_handler forSignal: SIGCHLD];
+    [mainLoop setSignalHandler: signal_handler forSignal: SIGUSR1];
+    [mainLoop setSignalHandler: signal_handler forSignal: SIGUSR2];
+    [mainLoop setSignalHandler: signal_handler forSignal: SIGTERM];
+    [mainLoop setSignalHandler: signal_handler forSignal: SIGINT];
+    [mainLoop setSignalHandler: signal_handler forSignal: SIGHUP];
+    [mainLoop setSignalHandler: signal_handler forSignal: SIGPIPE];
+    [mainLoop setSignalHandler: signal_handler forSignal: SIGCHLD];
 
     ob_screen = DefaultScreen(ob_display);
 
