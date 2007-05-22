@@ -141,12 +141,17 @@
 	
 	[self calculateIdentityList];
 	//Notify anyone who cares that a new presence has been received if it results in the presence of this person changing
-	if([oldPresence show] != [aPresence show])
+	if([oldPresence show] != [aPresence show]
+	   ||
+	   ![[oldPresence status] isEqualToString:[aPresence status]]
+	   )
 	{
 		//TODO: Make each Identity do this as well
 		NSDictionary * userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 			[NSNumber numberWithInt:[aPresence show]], @"NewPresence",
 			[NSNumber numberWithInt:[oldPresence show]], @"OldPresence",
+			[aPresence status], @"NewStatus",
+			[oldPresence status], @"OldStatus",
 			nil];
 		[notifier postNotificationName:@"TRXMPPPresenceChanged" object:self userInfo:userInfo];			
 	}

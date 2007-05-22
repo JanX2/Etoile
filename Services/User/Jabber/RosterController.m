@@ -182,6 +182,12 @@ NSMutableArray * rosterControllers = nil;
 		[data authorise:[(Presence*)[_notification object] jid]];
 	}
 }
+- (void) presenceChanged:(NSNotification *)notification
+{
+	NSDictionary * dict = [notification userInfo];
+	[self setPresence:[[dict objectForKey:@"show"] unsignedCharValue]
+		  withMessage:[dict objectForKey:@"status"]];
+}
 
 - (id) initWithNibName:(NSString*)_nib forAccount:(id)_account withRoster:(id)_roster
 {
@@ -230,6 +236,12 @@ NSMutableArray * rosterControllers = nil;
 	[[self window] setFrameAutosaveName:@"Jabber Roster"];
 	data = _roster;
 	account = _account;
+	//Note: nil must be changed to account if permitting multiple accounts
+	NSNotificationCenter * localCenter = [NSNotificationCenter defaultCenter];
+	[localCenter addObserver:self
+					selector:@selector(presenceChanged:)
+						name:@"LocalPresenceChangedNotification"
+					  object:nil];	
 	return self;
 }
 - (void) updateIdentities:(NSNotification*)_notification

@@ -172,6 +172,8 @@
 		28DD668A0B05725D00035263 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 28DD66880B05725D00035263 /* NSData+Base64.m */; };
 		28DD6AAE0B07BCD700035263 /* Query_jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */; };
 		28DD6AAF0B07BCD700035263 /* Query_jabber_iq_roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 28DD6AAD0B07BCD700035263 /* Query_jabber_iq_roster.m */; };
+		28F698B60C036A6B007BE36F /* PresenceLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F698B40C036A6B007BE36F /* PresenceLogController.h */; };
+		28F698B70C036A6B007BE36F /* PresenceLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28F698B50C036A6B007BE36F /* PresenceLogController.m */; };
 		28F8E98B0632E612004623A5 /* XMPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F8E9890632E612004623A5 /* XMPPConnection.h */; };
 		28F8E98C0632E612004623A5 /* XMPPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */; };
 		3BC84C270BE28B6F002833ED /* AccountBox.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3BC84C250BE28B6F002833ED /* AccountBox.nib */; };
@@ -333,6 +335,8 @@
 		28DD66880B05725D00035263 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Base64.m"; path = "xmpp/NSData+Base64.m"; sourceTree = "<group>"; };
 		28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Query_jabber_iq_roster.h; path = xmpp/Query_jabber_iq_roster.h; sourceTree = "<group>"; };
 		28DD6AAD0B07BCD700035263 /* Query_jabber_iq_roster.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Query_jabber_iq_roster.m; path = xmpp/Query_jabber_iq_roster.m; sourceTree = "<group>"; };
+		28F698B40C036A6B007BE36F /* PresenceLogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresenceLogController.h; sourceTree = "<group>"; };
+		28F698B50C036A6B007BE36F /* PresenceLogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresenceLogController.m; sourceTree = "<group>"; };
 		28F8E9890632E612004623A5 /* XMPPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMPPConnection.h; path = xmpp/XMPPConnection.h; sourceTree = "<group>"; };
 		28F8E98A0632E612004623A5 /* XMPPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPConnection.m; path = xmpp/XMPPConnection.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -528,6 +532,8 @@
 				289836A7063DB65700A3D164 /* RosterController.m */,
 				2835875D063D4D7F008F21EA /* JabberApp.h */,
 				2835875E063D4D7F008F21EA /* JabberApp.m */,
+				28F698B40C036A6B007BE36F /* PresenceLogController.h */,
+				28F698B50C036A6B007BE36F /* PresenceLogController.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -701,6 +707,7 @@
 				28DD6AAE0B07BCD700035263 /* Query_jabber_iq_roster.h in Headers */,
 				285A5CC90B3571C600F5A7AB /* CompareHack.h in Headers */,
 				3BC84C2C0BE37830002833ED /* AccountWindowController.h in Headers */,
+				28F698B60C036A6B007BE36F /* PresenceLogController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -907,6 +914,7 @@
 				28DD6AAF0B07BCD700035263 /* Query_jabber_iq_roster.m in Sources */,
 				285A5CCA0B3571C600F5A7AB /* CompareHack.m in Sources */,
 				3BC84C2D0BE37830002833ED /* AccountWindowController.m in Sources */,
+				28F698B70C036A6B007BE36F /* PresenceLogController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

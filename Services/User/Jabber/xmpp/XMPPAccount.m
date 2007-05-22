@@ -183,7 +183,10 @@ id getDefault(NSString * dictionary, id key)
 {
 	return myJID;
 }
-
+- (NSString*) name
+{
+	return name;
+}
 - (void) dealloc
 {
 	[name release];

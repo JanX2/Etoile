@@ -49,4 +49,8 @@
  * Returns the connection associated with the account.
  */
 - (XMPPConnection*) connection;
+/**
+ * Returns the name of the current account.
+ */
+- (NSString*) name;
 @end

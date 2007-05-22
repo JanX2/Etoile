@@ -720,14 +720,32 @@ static NSDictionary * STANZA_KEYS;
 		[showNode setCData:[Presence xmppStringForPresence:_status]];
 		[presenceNode addChild:showNode];
 	}
+	NSDictionary * presenceDictionary;
 	if(_message != nil)
 	{
 		TRXMLNode * statusNode = [TRXMLNode TRXMLNodeWithType:@"status"];
 		[statusNode setCData:_message];
 		[presenceNode addChild:statusNode];
+		presenceDictionary = 
+			[NSDictionary dictionaryWithObjectsAndKeys:
+				[NSNumber numberWithChar:_status],@"show",
+				_message,@"status",
+				nil];
 	}
-	//TODO: Do this using NSNotifications
-	[presenceDisplay setPresence:_status withMessage:_message];
+	else
+	{
+		presenceDictionary = [NSDictionary dictionaryWithObject:[NSNumber numberWithChar:_status] forKey:@"show"];
+	}
+	//Notify anyone who cares that our presence has changed
+	NSNotificationCenter * local = [NSNotificationCenter defaultCenter];
+	NSNotificationCenter * remote = [NSDistributedNotificationCenter defaultCenter];
+	[local postNotificationName:@"LocalPresenceChangedNotification"
+						 object:account
+					   userInfo:presenceDictionary];
+	[remote postNotificationName:@"LocalPresenceChangedNotification"
+						  object:[account name]
+						userInfo:presenceDictionary];
+	//[presenceDisplay setPresence:_status withMessage:_message];
 	[self XMPPSend:[presenceNode stringValue]];
 }
 

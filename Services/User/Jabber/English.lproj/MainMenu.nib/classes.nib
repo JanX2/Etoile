@@ -66,6 +66,12 @@
             SUPERCLASS = NSWindowController; 
         }, 
         {
+            CLASS = PresenceLogController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {view = NSTextView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
             ACTIONS = {
                 away = id; 
                 chat = id; 
