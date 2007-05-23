@@ -19,6 +19,7 @@
 	IBOutlet NSTextView * editingBox;
 	IBOutlet NSScrollView * editingBoxBox;
 	IBOutlet NSTextField * presenceBox;
+	IBOutlet NSTextField * presenceIconBox;
 	IBOutlet NSPopUpButton * recipientBox;
 	Conversation * conversation;
 	unsigned int unread;

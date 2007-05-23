@@ -11,6 +11,7 @@
                 messageBox = NSTextView; 
                 messageBoxBox = NSScrollView; 
                 presenceBox = NSTextField; 
+                presenceIconBox = NSTextField; 
                 recipientBox = NSPopUpButton; 
             }; 
             SUPERCLASS = NSWindowController; 

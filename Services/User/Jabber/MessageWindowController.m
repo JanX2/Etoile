@@ -234,6 +234,9 @@ NSMutableArray * messageWindowControllers = nil;
 	}
 	[presenceBox setTextColor:[[NSUserDefaults standardUserDefaults] colourForPresence:_status]];
 	[presenceBox setToolTip:_message];
+	
+	[presenceIconBox setTextColor:[[NSUserDefaults standardUserDefaults] colourForPresence:_status]];
+	[presenceIconBox setStringValue:[NSString stringWithFormat:@"%C", PRESENCE_ICONS[(_status / 10) - 1]]];
 	//Set the available identities
 	NSString * currentJID = [[recipientBox titleOfSelectedItem] retain];
 	[recipientBox removeAllItems];
