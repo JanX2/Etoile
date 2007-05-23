@@ -72,8 +72,8 @@ static AZKeyboardHandler *sharedInstance;
 - (void) grabKeys: (BOOL) grab;
 - (void) interactiveEnd: (AZInteractiveState *) s state: (unsigned int) state cancel: (BOOL) cancel time: (Time) time;
 - (void) clientDestroy: (NSNotification *) not;
-/* callback */
-- (BOOL) chainTimeout: (id) data;
+
+- (void) chainTimerAction: (id) sender;
 
 @end
 
@@ -86,8 +86,11 @@ static AZKeyboardHandler *sharedInstance;
 
 - (void) resetChains
 {
-    [[AZMainLoop mainLoop] removeTimeout: self 
-	                         handler: @selector(chainTimeout:)];
+	if (chainTimer)
+	{
+		[chainTimer invalidate];
+		DESTROY(chainTimer);
+	}
 
     if (curpos) {
         [self grabKeys: NO];
@@ -213,54 +216,58 @@ static AZKeyboardHandler *sharedInstance;
 
 - (void) processEvent: (XEvent *) e forClient: (AZClient *) client
 {
-    AZKeyBindingTree *p;
+	AZKeyBindingTree *p;
 
-    NSAssert(e->type == KeyPress, @"Event type is not KeyPress");
+	NSAssert(e->type == KeyPress, @"Event type is not KeyPress");
 
-    if (e->xkey.keycode == config_keyboard_reset_keycode &&
-        e->xkey.state == config_keyboard_reset_state)
-    {
-	[self resetChains];
-        return;
-    }
-
-    if (curpos == NULL)
-        p = keyboard_firstnode;
-    else
-        p = [curpos first_child];
-    while (p) {
-        if ([p key] == e->xkey.keycode &&
-            [p state] == e->xkey.state)
-        {
-            if ([p first_child] != nil) { /* part of a chain */
-		AZMainLoop *mainLoop = [AZMainLoop mainLoop];
-		[mainLoop removeTimeout: self 
-			        handler: @selector(chainTimeout:)];
-                /* 5 second timeout for chains */
-		[mainLoop addTimeout: self 
-			     handler: @selector(chainTimeout:)
-			     microseconds: 5 * USEC_PER_SEC
-			     data: nil notify: NULL];
-		[self grabKeys: NO];
-                curpos = p;
-		[self grabKeys: YES];
-            } else {
-
+	if (e->xkey.keycode == config_keyboard_reset_keycode &&
+	    e->xkey.state == config_keyboard_reset_state)
+	{
 		[self resetChains];
+		return;
+	}
 
-                action_run_key([p actions], client, e->xkey.state,
+	if (curpos == NULL)
+		p = keyboard_firstnode;
+	else
+		p = [curpos first_child];
+	while (p) 
+	{
+		if ([p key] == e->xkey.keycode &&
+		    [p state] == e->xkey.state)
+		{
+			if ([p first_child] != nil) 
+			{ /* part of a chain */
+				if (chainTimer)
+				{
+					[chainTimer invalidate];
+					DESTROY(chainTimer);
+				}
+				ASSIGN(chainTimer, [NSTimer scheduledTimerWithTimeInterval: 5
+		                            target: self
+                                    selector: @selector(chainTimerAction:)
+		                            userInfo: nil
+		                            repeats: NO]);
+				[self grabKeys: NO];
+				curpos = p;
+				[self grabKeys: YES];
+			} 
+			else 
+			{
+				[self resetChains];
+				action_run_key([p actions], client, e->xkey.state,
                                e->xkey.x_root, e->xkey.y_root,
-		               e->xkey.time);
-            }
-            break;
-        }
-        p = [p next_sibling];
-    }
+				               e->xkey.time);
+			}
+			break;
+		}
+		p = [p next_sibling];
+	}
 }
 
 - (BOOL) interactivelyGrabbed
 {
-    return ([interactive_states count] > 0);
+	return ([interactive_states count] > 0);
 }
 
 - (void) startup: (BOOL) reconfig
@@ -285,8 +292,11 @@ static AZKeyboardHandler *sharedInstance;
 
     DESTROY(interactive_states);
 
-    [[AZMainLoop mainLoop] removeTimeout: self 
-	                         handler: @selector(chainTimeout:)];
+	if (chainTimer)
+	{
+		[chainTimer invalidate];
+		DESTROY(chainTimer);
+	}
 
     [self unbindAll];
 }
@@ -368,10 +378,9 @@ static AZKeyboardHandler *sharedInstance;
     }
 }
 
-- (BOOL) chainTimeout: (id) data
+- (void) chainTimerAction: (id) sender
 {
-  [[AZKeyboardHandler defaultHandler] resetChains];
-  return NO; /* don't repeat */
+  [self resetChains];
 }
 
 @end

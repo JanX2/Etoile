@@ -327,9 +327,9 @@ int main(int argc, char **argv)
 
 		while ([mainLoop run] == YES)
 		{
-		  [mainLoop mainLoopRun]; /* run once in case reconfigure */
-		  [loop acceptInputForMode: NSDefaultRunLoopMode
-			   beforeDate: past];
+		  [mainLoop mainLoopRun];
+	      /* We need this in order to get NSTimer working */
+		  [loop runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.01]];
 		}
 		DESTROY(x);
 #endif

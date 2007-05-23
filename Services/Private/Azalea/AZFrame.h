@@ -135,9 +135,10 @@ typedef enum {
 
   BOOL focused;
 
+  NSTimer *flashTimer;
+  unsigned int flashCount;
   BOOL flashing;
   BOOL flash_on;
-  struct timeval flash_end;
 }
 
 - (id) initWithClient: (AZClient *) client;

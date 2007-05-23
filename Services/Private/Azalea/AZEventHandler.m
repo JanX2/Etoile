@@ -142,7 +142,8 @@ static AZEventHandler *sharedInstance;
 #if 0 // Not used in OpenBox3
 - (void) clientDestroy: (NSNotification *) not;
 #endif
-- (BOOL) menuHideDelayFunc: (id) data;
+
+- (void) menuTimerAction: (id) sender;
 @end
 
 @implementation AZEventHandler
@@ -439,24 +440,31 @@ static AZEventHandler *sharedInstance;
         e->type == KeyRelease)
     {
         if ([[AZMenuFrame visibleFrames] count])
+		{
             [self handleMenuEvent: e];
-        else {
-	    AZKeyboardHandler *kHandler = [AZKeyboardHandler defaultHandler];
-	    if (![kHandler processInteractiveGrab: e forClient: &client]) {
-		AZMoveResizeHandler *mrHandler = [AZMoveResizeHandler defaultHandler];
-		if ([mrHandler moveresize_in_progress]) {
- 		   [mrHandler event: e];
+		}
+        else 
+		{
+			AZKeyboardHandler *kHandler = [AZKeyboardHandler defaultHandler];
+			if (![kHandler processInteractiveGrab: e forClient: &client]) 
+			{
+				AZMoveResizeHandler *mrHandler = [AZMoveResizeHandler defaultHandler];
+			if ([mrHandler moveresize_in_progress]) 
+			{
+				[mrHandler event: e];
 
-                    /* make further actions work on the client being
-                       moved/resized */
-		    client = [mrHandler moveresize_client];
-                }
+				/* make further actions work on the client being 
+				   moved/resized */
+				client = [mrHandler moveresize_client];
+			}
 
-                menu_can_hide = NO;
-		[[AZMainLoop mainLoop] addTimeout: self 
-			     handler: @selector(menuHideDelayFunc:)
-	                     microseconds: config_menu_hide_delay * 1000
-			     data: nil notify: NULL];
+			menu_can_hide = NO;
+			ASSIGN(menuTimer, [NSTimer scheduledTimerWithTimeInterval: config_menu_hide_delay
+			                           target: self
+			                           selector: @selector(menuTimerAction:)
+			                           userInfo: nil
+			                           repeats: NO]);
+				
 
                 if (e->type == ButtonPress || e->type == ButtonRelease ||
                     e->type == MotionNotify) {
@@ -1184,10 +1192,9 @@ static AZEventHandler *sharedInstance;
     }
 }
 
-- (BOOL) menuHideDelayFunc: (id) data
+- (void) menuTimerAction: (id) sender
 {
-    menu_can_hide = YES;
-    return NO; /* no repeat */
+	menu_can_hide = YES;
 }
 
 #if 0 // Not used in OpenBox3

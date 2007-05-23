@@ -33,6 +33,8 @@
   /* private */
   NSMutableArray *interactive_states;
   AZKeyBindingTree *curpos;
+
+  NSTimer *chainTimer;
 }
 
 + (AZKeyboardHandler *) defaultHandler;

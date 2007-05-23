@@ -47,6 +47,8 @@ BOOL event_time_after(Time t1, Time t2);
   unsigned int ignore_enter_focus;
 
   BOOL menu_can_hide;
+
+  NSTimer *menuTimer;
 }
 
 + (AZEventHandler *) defaultHandler;

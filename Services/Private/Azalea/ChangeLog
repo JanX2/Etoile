@@ -1,3 +1,8 @@
+2007-05-22  Yen-Ju Chen <yjchenx at gmail>
+
+	* Use NSTimer and NSRunLoop for timeout, which simplify the code.
+	* Turn off Startup-notification and XCursor for now.
+
 2007-05-21  Yen-Ju Chen <yjchenx at gmail>
 
 	* Include etoile.make for clean build.

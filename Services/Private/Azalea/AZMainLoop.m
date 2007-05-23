@@ -28,44 +28,6 @@
 #import <signal.h>
 #import "action.h"
 
-/* Taken from glib */
-
-/* g_time_val_add:
- * @time_: a #GTimeVal
- * @microseconds: number of microseconds to add to @time
- *
- * Adds the given number of microseconds to @time_. @microseconds can
- * also be negative to decrease the value of @time_.
- **/
-void time_val_add (struct timeval *time_, long microseconds)
-{
-  if (!(time_->tv_usec >= 0 && time_->tv_usec < USEC_PER_SEC)) {
-    return;
-  }
-
-  if (microseconds >= 0)
-  {
-    time_->tv_usec += microseconds % USEC_PER_SEC;
-    time_->tv_sec += microseconds / USEC_PER_SEC;
-    if (time_->tv_usec >= USEC_PER_SEC)
-    {
-      time_->tv_usec -= USEC_PER_SEC;
-      time_->tv_sec++;
-    }
-  }
-  else
-  {
-    microseconds *= -1;
-    time_->tv_usec -= microseconds % USEC_PER_SEC;
-    time_->tv_sec -= microseconds / USEC_PER_SEC;
-    if (time_->tv_usec < 0)
-    {
-      time_->tv_usec += USEC_PER_SEC;
-      time_->tv_sec--;
-    }      
-  }
-}
-
 /* signals are global to all loops */
 struct {
     unsigned int installed; /* a ref count */
@@ -92,107 +54,6 @@ static int core_signals[] =
 #define NUM_CORE_SIGNALS (sizeof(core_signals) / sizeof(core_signals[0]))
 
 static void sighandler(int sig);
-
-@interface AZMainLoopTimer: NSObject
-{
-    id target;
-    unsigned long delay;
-    SEL func;
-    id data;
-    SEL destroy;
-
-    /* The timer needs to be freed */
-    BOOL del_me;
-    /* The time the last fire should've been at */
-    struct timeval last;
-    /* When this timer will next trigger */
-    struct timeval timeout;
-}
-- (BOOL) fire;
-- (void) cleanup; /* Don't confuse -dealloc */
-
-- (void) addTimeout: (unsigned long) delta;
-- (void) addLast: (unsigned long) delta;
-
-- (id) target;
-- (unsigned long) delay;
-- (SEL) func;
-- (id) data;
-- (SEL) destroy;
-- (BOOL) del_me;
-- (struct timeval) last;
-- (struct timeval) timeout;
-- (void) set_target: (id) target;
-- (void) set_delay: (unsigned long) delay;
-- (void) set_func: (SEL) func;
-- (void) set_data: (id) data;
-- (void) set_destroy: (SEL) destroy;
-- (void) set_del_me: (BOOL) del_me;
-- (void) set_last: (struct timeval) last;
-- (void) set_timeout: (struct timeval) timeout;
-@end
-
-@implementation AZMainLoopTimer
-
-- (BOOL) fire
-{
-  if ((target == nil) || (func == NULL)) return NO;
-
-  /* fire invocation */
-  NSMethodSignature *ms = [target methodSignatureForSelector: func];
-  NSInvocation *inv = [NSInvocation invocationWithMethodSignature: ms];
-  [inv setTarget: target];
-  [inv setSelector: func];
-  if (data)
-    [inv setArgument: &data atIndex: 2];
-
-  [inv invoke];
-  BOOL ret = NO;
-  [inv getReturnValue: &ret];
-  return ret;
-}
-
-- (void) cleanup
-{
-  if ((target == nil) || (destroy== NULL)) return;
-
-  /* fire invocation */
-  NSMethodSignature *ms = [target methodSignatureForSelector: destroy];
-  NSInvocation *inv = [NSInvocation invocationWithMethodSignature: ms];
-  [inv setTarget: target];
-  [inv setSelector: destroy];
-  if (data)
-    [inv setArgument: &data atIndex: 2];
-  [inv invoke];
-}
-
-- (void) addTimeout: (unsigned long) delta
-{
-    time_val_add(&timeout, delta);
-}
-
-- (void) addLast: (unsigned long) delta
-{
-    time_val_add(&last, delta);
-}
-
-- (id) target { return target; }
-- (unsigned long) delay { return delay; }
-- (SEL) func { return func; }
-- (id) data { return data; }
-- (SEL) destroy { return destroy; }
-- (BOOL) del_me { return del_me; }
-- (struct timeval) last { return last; }
-- (struct timeval) timeout { return timeout; }
-- (void) set_target: (id) t { target = t; }
-- (void) set_delay: (unsigned long) d { delay = d; }
-- (void) set_func: (SEL) f { func = f; }
-- (void) set_data: (id) d { data = d; }
-- (void) set_destroy: (SEL) d { destroy = d; }
-- (void) set_del_me: (BOOL) d { del_me = d; }
-- (void) set_last: (struct timeval) l { last = l; }
-- (void) set_timeout: (struct timeval) t { timeout = t; }
-@end
 
 @interface AZMainLoopFdHandler: NSObject
 {
@@ -258,10 +119,6 @@ static AZMainLoop *sharedInstance;
 
 @interface AZMainLoop (AZPrivate)
 - (void) destroyActionForClient: (NSNotification *) not;
-- (long) timeCompare: (struct timeval) a to: (struct timeval) b;
-- (void) insertTimer: (AZMainLoopTimer *) ins;
-- (BOOL) nearestTimeoutWait: (struct timeval *) tm;
-- (void) dispatchTimer: (struct timeval **) wait;
 - (void) handleSignal: (int) signal;
 - (void) calcMaxFd;
 @end
@@ -307,52 +164,6 @@ static AZMainLoop *sharedInstance;
     /* Cannot wait until the object is autoreleased. */
     [temp fd_clear];
     [fd_handlers removeObjectForKey: key];
-  }
-}
-
-- (void) addTimeout: (id) target
-            handler: (SEL) handler
-       microseconds: (unsigned long) microseconds
-               data: (id) data
-             notify: (SEL) notify
-{
-    AZMainLoopTimer *t = [[AZMainLoopTimer alloc] init];
-    [t set_target: target];
-    [t set_delay: microseconds];
-    [t set_func: handler];
-    [t set_data: data];
-    [t set_destroy: notify];
-    [t set_del_me: NO];
-    gettimeofday(&now, NULL);
-    [t set_last: now];
-    [t set_timeout: now];
-    [t addTimeout: [t delay]];
-
-    [self insertTimer: AUTORELEASE(t)];
-}
-
-- (void) removeTimeout: (id) target handler: (SEL) handler
-{
-    int i, count = [timers count];
-    for (i = 0; i < count; i++)
-    {
-      AZMainLoopTimer *t = [timers objectAtIndex: i];
-      if (([t target] == target) && ([t func] == handler))
-        [t set_del_me: YES];
-    }
-}
-
-- (void) removeTimeout: (id) target handler: (SEL) handler
-                         data: (id) data cancel: (BOOL) cancel_dest
-{
-  int i, count = [timers count];
-  for (i = 0; i < count; i++)
-  {
-    AZMainLoopTimer *t = [timers objectAtIndex: i];
-    if ([t target] == target && [t func] == handler && [t data] == data)
-      [t set_del_me: YES];
-      if (cancel_dest)
-	[t set_destroy: NULL];
   }
 }
 
@@ -418,167 +229,169 @@ static AZMainLoop *sharedInstance;
 
 - (void) mainLoopRun
 {
-    XEvent e;
-    struct timeval *wait;
-    fd_set selset;
-    AZAction *act;
+	XEvent e;
+	fd_set selset;
+	AZAction *act;
 
-    while (run)
-    {
-        if (signal_fired) {
-            unsigned int i;
-            sigset_t oldset;
+	if (signal_fired) 
+	{
+		unsigned int i;
+		sigset_t oldset;
 
-            /* block signals so that we can do this without the data changing
-               on us */
-            sigprocmask(SIG_SETMASK, &all_signals_set, &oldset);
+		/* block signals so that we can do this without the data changing
+		   on us */
+		sigprocmask(SIG_SETMASK, &all_signals_set, &oldset);
 
-            for (i = 0; i < NUM_SIGNALS; ++i) 
-            {
-                while (signals_fired[i]) 
-                {
-                    signal_handlers[i](i, NULL);
-                    signals_fired[i]--;
-                }
-            }
-            signal_fired = NO;
-
-            sigprocmask(SIG_SETMASK, &oldset, NULL);
-        } else if (XPending(ob_display)) {
-            do {
-                XNextEvent(ob_display, &e);
-
-		int i, count = [xHandlers count];
-		for (i = 0; i < count; i++)
+		for (i = 0; i < NUM_SIGNALS; ++i) 
 		{
-		  [[xHandlers objectAtIndex: i] processXEvent: &e];
+			while (signals_fired[i]) 
+			{
+				signal_handlers[i](i, NULL);
+				signals_fired[i]--;
+			}
 		}
-            } while (XPending(ob_display));
-        } else if ([actionQueue count]) {
-            /* only fire off one action at a time, then go back for more
-               X events, since the action might cause some X events (like
-               FocusIn :) */
+		signal_fired = NO;
 
-            do {
-		act = [actionQueue objectAtIndex: 0];
-                if ([act data].any.client_action == OB_CLIENT_ACTION_ALWAYS &&
-                    ![act data].any.c)
-                {
-		    [actionQueue removeObjectAtIndex: 0];
-                    act = nil;
-                }
-            } while (!act && [actionQueue count]);
+		sigprocmask(SIG_SETMASK, &oldset, NULL);
+	} 
+	else if (XPending(ob_display)) 
+	{
+		do {
+			XNextEvent(ob_display, &e);
 
-            if  (act) {
-		event_curtime = [act data].any.time;
-                [act func]([act data_pointer]);
-		event_curtime = CurrentTime;
-		[actionQueue removeObjectAtIndex: 0];
-            }
-        } else {
-            /* this only runs if there were no x events received */
+			int i, count = [xHandlers count];
+			for (i = 0; i < count; i++)
+			{
+				[[xHandlers objectAtIndex: i] processXEvent: &e];
+			}
+		} while (XPending(ob_display));
+	} 
+	else if ([actionQueue count]) 
+	{
+		/* only fire off one action at a time, then go back for more
+		   X events, since the action might cause some X events (like
+		   FocusIn :) */
 
-	    [self dispatchTimer: &wait];
+		do {
+			act = [actionQueue objectAtIndex: 0];
+			if ([act data].any.client_action == OB_CLIENT_ACTION_ALWAYS &&
+			    ![act data].any.c)
+			{
+				[actionQueue removeObjectAtIndex: 0];
+				act = nil;
+			}
+		} while (!act && [actionQueue count]);
 
-            selset = _fd_set;
-            /* there is a small race condition here. if a signal occurs
-               between this if() and the select() then we will not process
-               the signal until 'wait' expires. possible solutions include
-               using GStaticMutex, and having the signal handler set 'wait'
-               to 0 */
-            if (!signal_fired)
-                select(fd_max + 1, &selset, NULL, NULL, wait);
+		if  (act) 
+		{
+			event_curtime = [act data].any.time;
+			[act func]([act data_pointer]);
+			event_curtime = CurrentTime;
+			[actionQueue removeObjectAtIndex: 0];
+		}
+	} 
+	else 
+	{
+		/* this only runs if there were no x events received */
 
-            /* handle the X events with highest prioirity */
-            if (FD_ISSET(fd_x, &selset))
-	    {
-	       return;
-               //continue;
+		selset = _fd_set;
+		/* there is a small race condition here. if a signal occurs
+		   between this if() and the select() then we will not process
+		   the signal until 'wait' expires. possible solutions include
+		   using GStaticMutex, and having the signal handler set 'wait'
+		   to 0 */
+		struct timeval zero_wait;
+		zero_wait.tv_sec = zero_wait.tv_usec = 0;
+
+		if (!signal_fired)
+			select(fd_max + 1, &selset, NULL, NULL, &zero_wait);
+
+		/* handle the X events with highest prioirity */
+		if (FD_ISSET(fd_x, &selset))
+		{
+			return;
+		}
+
+		NSArray *allKeys = [fd_handlers allKeys];
+		NSEnumerator *e = [allKeys objectEnumerator];
+		NSNumber *key = nil;
+		AZMainLoopFdHandler *h = nil;
+		while ((key = [e nextObject])) 
+		{
+			h = [fd_handlers objectForKey: key];
+			if ([h fd_is_set: &selset])
+				[h fire];
 	    }
-
-	    NSArray *allKeys = [fd_handlers allKeys];
-	    NSEnumerator *e = [allKeys objectEnumerator];
-	    NSNumber *key = nil;
-	    AZMainLoopFdHandler *h = nil;
-	    while ((key = [e nextObject])) {
-              h = [fd_handlers objectForKey: key];
-              if ([h fd_is_set: &selset])
-	        [h fire];
-	    }
-
-        }
-    }
+	}
 }
 
 - (void) exit
 {
-  [self setRun: NO];
+	[self setRun: NO];
 }
 
 - (id) init
 {
-  self = [super init];
+	self = [super init];
 
-  xHandlers = [[NSMutableArray alloc] init];
-  actionQueue = [[NSMutableArray alloc] init];
-  timers = [[NSMutableArray alloc] init];
+	xHandlers = [[NSMutableArray alloc] init];
+	actionQueue = [[NSMutableArray alloc] init];
 
-  fd_x = ConnectionNumber(ob_display);
-  FD_ZERO(&_fd_set);
-  FD_SET(fd_x, &_fd_set);
-  fd_max = fd_x;
+	fd_x = ConnectionNumber(ob_display);
+	FD_ZERO(&_fd_set);
+	FD_SET(fd_x, &_fd_set);
+	fd_max = fd_x;
 
-  fd_handlers = [[NSMutableDictionary alloc] init];
+	fd_handlers = [[NSMutableDictionary alloc] init];
 
-  gettimeofday(&now, NULL);
+	gettimeofday(&now, NULL);
 
-  /* only do this if we're the first loop created */
-  {
-        unsigned int i;
-        struct sigaction action;
-        sigset_t sigset;
+	/* only do this if we're the first loop created */
+	unsigned int i;
+	struct sigaction action;
+	sigset_t sigset;
 
-        /* initialize the all_signals_set */
-        sigfillset(&all_signals_set);
+	/* initialize the all_signals_set */
+	sigfillset(&all_signals_set);
 
-        sigemptyset(&sigset);
-        action.sa_handler = sighandler;
-        action.sa_mask = sigset;
-        action.sa_flags = SA_NOCLDSTOP;
+	sigemptyset(&sigset);
+	action.sa_handler = sighandler;
+	action.sa_mask = sigset;
+	action.sa_flags = SA_NOCLDSTOP;
 
-        /* grab all the signals that cause core dumps */
-        for (i = 0; i < NUM_CORE_SIGNALS; ++i) {
-            /* SIGABRT is curiously not grabbed here!! that's because when we
-               get one of the core_signals, we use abort() to dump the core.
-               And having the abort() only go back to our signal handler again
-               is less than optimal */
-            if (core_signals[i] != SIGABRT) {
-                sigaction(core_signals[i], &action,
-                          &all_signals[core_signals[i]].oldact);
-                all_signals[core_signals[i]].installed++;
-            }
-        }
-    }
+	/* grab all the signals that cause core dumps */
+	for (i = 0; i < NUM_CORE_SIGNALS; ++i) 
+	{
+		/* SIGABRT is curiously not grabbed here!! that's because when we
+		   get one of the core_signals, we use abort() to dump the core.
+		   And having the abort() only go back to our signal handler again
+		   is less than optimal */
+		if (core_signals[i] != SIGABRT) 
+		{
+			sigaction(core_signals[i], &action,
+			          &all_signals[core_signals[i]].oldact);
+			all_signals[core_signals[i]].installed++;
+		}
+	}
 
-  return self;
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(xHandlers);
-  DESTROY(actionQueue);
-  DESTROY(timers);
-  DESTROY(fd_handlers);
-  [super dealloc];
+	DESTROY(xHandlers);
+	DESTROY(actionQueue);
+	DESTROY(fd_handlers);
+	[super dealloc];
 }
 
 + (AZMainLoop *) mainLoop
 {
-  if (sharedInstance == nil)
-  {
-    sharedInstance = [[AZMainLoop alloc] init];
-  }
-  return sharedInstance;
+	if (sharedInstance == nil)
+	{
+		sharedInstance = [[AZMainLoop alloc] init];
+	}
+	return sharedInstance;
 }
 
 @end
@@ -595,121 +408,6 @@ static AZMainLoop *sharedInstance;
     {
       [act data_pointer]->any.c = nil;
     }
-  }
-}
-
-/*** TIMEOUTS ***/
-
-#define NEAREST_TIMEOUT \
-    ([[timers objectAtIndex: 0] timeout])
-
-- (long) timeCompare: (struct timeval) a to: (struct timeval) b
-{
-    long r = 0;
-
-    if ((r = b.tv_sec - a.tv_sec)) return r;
-    return b.tv_usec - a.tv_usec;
-}
-
-- (void) insertTimer: (AZMainLoopTimer *) ins
-{
-  int i, count = [timers count];
-
-  for (i = 0; i < count; i++)
-  {
-    AZMainLoopTimer *t = [timers objectAtIndex: i];
-    if ([self timeCompare: [ins timeout] to: [t timeout]] >= 0)
-    {
-      [timers insertObject: ins atIndex: i];
-      return;
-    }
-  }
-  
-  /* didn't fit anywhere in the list */
-  [timers addObject: ins];
-}
-
-/* find the time to wait for the nearest timeout */
-- (BOOL) nearestTimeoutWait: (struct timeval*) tm
-{
-  if ([timers count] == 0)
-    return NO;
-
-  tm->tv_sec = NEAREST_TIMEOUT.tv_sec - now.tv_sec;
-  tm->tv_usec = NEAREST_TIMEOUT.tv_usec - now.tv_usec;
-
-  while (tm->tv_usec < 0) {
-    tm->tv_usec += USEC_PER_SEC;
-    tm->tv_sec--;
-  }
-  tm->tv_sec += tm->tv_usec / USEC_PER_SEC;
-  tm->tv_usec %= USEC_PER_SEC;
-  if (tm->tv_sec < 0)
-    tm->tv_sec = 0;
-
-  return YES;
-}
-
-- (void) dispatchTimer: (struct timeval **) wait
-{
-  BOOL fired = NO;
-  gettimeofday(&now, NULL);
-
-  int i;
-  for (i = 0; i < [timers count]; i++)
-  {
-    AZMainLoopTimer *curr;
-
-    curr = [timers objectAtIndex: i];
-
-    /* since timer_stop doesn't actually free the timer, we have to do our
-       real freeing in here.
-     */
-    if ([curr del_me]) {
-      /* delete the top */
-      RETAIN(curr);
-      [timers removeObjectAtIndex: i];
-      [curr cleanup];
-      RELEASE(curr);
-
-      i--; /* because object is deleted, reduce i by 1 */
-      continue;
-    }
-
-    /* the queue is sorted, so if this timer shouldn't fire,
-     * none are ready */
-    if ([self timeCompare: NEAREST_TIMEOUT to: now] < 0)
-      break;
-
-    /* we set the last fired time to delay msec after the previous firing,
-       then re-insert.  timers maintain their order and may trigger more
-       than once if they've waited more than one delay's worth of time.
-     */
-    RETAIN(curr);
-    [timers removeObjectAtIndex: i];
-    [curr addLast: [curr delay]];
-
-    if ([curr fire]) {
-      [curr addTimeout: [curr delay]];
-      [self insertTimer: curr];
-    } else {
-      [curr cleanup];
-    }
-    RELEASE(curr);
-
-    fired = YES;
-  }
-
-  if (fired) {
-    /* if at least one timer fires, then don't wait on X events, as there
-       may already be some in the queue from the timer callbacks.
-     */
-    ret_wait.tv_sec = ret_wait.tv_usec = 0;
-    *wait = &ret_wait;
-  } else if ([self nearestTimeoutWait: &ret_wait]) {
-    *wait = &ret_wait;
-  } else {
-    *wait = NULL;
   }
 }
 

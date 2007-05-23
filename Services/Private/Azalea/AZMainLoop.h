@@ -41,7 +41,6 @@ typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
 
 @interface AZMainLoop: NSObject
 {
-  NSMutableArray *timers;
   struct timeval now;
   struct timeval ret_wait;
 
@@ -71,15 +70,7 @@ typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
                 forFd: (int) fd
 		 data: (void *) data;
 - (void) removeFdHandlerForFd: (int) fd;
-             
-- (void) addTimeout: (id) target
-            handler: (SEL) handler
-       microseconds: (unsigned long) microseconds
-               data: (id) data
-             notify: (SEL) notify;
-- (void) removeTimeout: (id) target handler: (SEL) handler;
-- (void) removeTimeout: (id) target handler: (SEL) handler
-                         data: (id) data cancel: (BOOL) cancel_dest;
+
 - (void) setSignalHandler: (ObMainLoopSignalHandler) handler 
                 forSignal: (int) signal;
 

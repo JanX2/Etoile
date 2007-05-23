@@ -61,13 +61,13 @@ ADDITIONAL_LIB_DIRS += `pkg-config --libs freetype2` `pkg-config --libs libxml-2
 ADDITIONAL_CPPFLAGS += -DHAVE_LIBX11=1 
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lX11 -lXft
-ADDITIONAL_CPPFLAGS += -DUSE_XCURSOR=1
-ADDITIONAL_LIB_DIRS += -lXcursor
+#ADDITIONAL_CPPFLAGS += -DUSE_XCURSOR=1
+#ADDITIONAL_LIB_DIRS += -lXcursor
 
 # Startup Notification
-ADDITIONAL_CPPFLAGS += -DUSE_LIBSN=1
-ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags libstartup-notification-1.0`
-ADDITIONAL_LIB_DIRS += `pkg-config --libs libstartup-notification-1.0`
+#ADDITIONAL_CPPFLAGS += -DUSE_LIBSN=1
+#ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags libstartup-notification-1.0`
+#ADDITIONAL_LIB_DIRS += `pkg-config --libs libstartup-notification-1.0`
 
 # Xwindow extra (optional)
 #ADDITIONAL_CPPFLAGS += -DXKB=1 -DXRANDR=1 -DSHAPE=1

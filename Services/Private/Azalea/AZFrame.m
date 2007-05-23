@@ -71,9 +71,7 @@ static Visual *check_32bit_client(AZClient *c)
 - (void) setThemeStatics;
 - (void) freeThemeStatics;
 
-/* callback */
-- (BOOL) flashTimeout: (id) data;
-- (void) flashDone: (id) data;
+- (void) flashTimerAction: (id) sender;
 @end
 
 @implementation AZFrame
@@ -173,10 +171,11 @@ static Visual *check_32bit_client(AZClient *c)
     [window_map removeObjectForKey: [NSNumber numberWithInt: tlresize]];
     [window_map removeObjectForKey: [NSNumber numberWithInt: trresize]];
 
-    [[AZMainLoop mainLoop] removeTimeout: self 
-	                         handler: @selector(flashTimeout:)
-	                            data: self cancel: YES];
-
+	if (flashTimer)
+	{
+		[flashTimer invalidate];
+		DESTROY(flashTimer);
+	}
     /* These two lines are from frame_free(). 
      * And obFrame is released in dealloc;
      */
@@ -547,26 +546,32 @@ static Visual *check_32bit_client(AZClient *c)
     }
 }
 
+
 - (void) flashStart
 {
     flash_on = focused;
 
     if (!flashing)
     {
-      [[AZMainLoop mainLoop] addTimeout: self 
-	                     handler: @selector(flashTimeout:)
-	                     microseconds: USEC_PER_SEC * 0.6
-			     data: self 
-			     notify: @selector(flashDone:)];
+      flashCount = 0;
+      ASSIGN(flashTimer, [NSTimer scheduledTimerWithTimeInterval: 0.6
+                                  target: self
+                                  selector: @selector(flashTimerAction:)
+                                  userInfo: nil
+                                  repeats: YES]);
+
     }
-    gettimeofday(&flash_end, NULL);
-    time_val_add(&flash_end, USEC_PER_SEC * 5);
     
     flashing = YES;
 }
 
 - (void) flashStop
 {
+	if (flashTimer)
+	{
+		[flashTimer invalidate];
+		DESTROY(flashTimer);
+	}
     flashing = NO;
 }
 
@@ -903,32 +908,25 @@ static Visual *check_32bit_client(AZClient *c)
     DESTROY(a_icon);
 }
 
-- (void) flashDone: (id) data
+- (void) flashTimerAction: (id) sender
 {
-    if (focused != flash_on)
-      [self adjustFocusWithHilite: focused];
-}
-
-- (BOOL) flashTimeout: (id) data
-{
-    struct timeval now;
-
-    gettimeofday(&now, NULL);
-    if (now.tv_sec > flash_end.tv_sec ||
-        (now.tv_sec == flash_end.tv_sec &&
-         now.tv_usec >= flash_end.tv_usec))
+    flashCount++;
+	if (flashCount > 10)
+	{
+		flashCount = 0;
+		[flashTimer invalidate];
+		DESTROY(flashTimer);
         flashing = NO;
-
-    if (!flashing)
-        return NO; /* we are done */
-
+	    if (focused != flash_on)
+		    [self adjustFocusWithHilite: focused];
+		return;
+	}	
     flash_on = !flash_on;
     if (!focused) {
-	[self adjustFocusWithHilite: flash_on];
+        [self adjustFocusWithHilite: flash_on];
         focused = NO;
     }
-
-    return YES; /* go again */
+    return;
 }
 @end
 
