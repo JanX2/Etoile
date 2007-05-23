@@ -7,6 +7,8 @@
 //
 
 #import "PresenceLogController.h"
+#import "Presence.h"
+#import "TRUserDefaults.h"
 
 
 @implementation PresenceLogController
@@ -27,13 +29,27 @@
 	   &&
 	   ![oldMessage isEqualToString:newMessage]
 	   &&
-	   ![newMessage isEqualToString:@""])
+	   ![newMessage isEqualToString:@""]
+	   &&
+	   ![newMessage isEqualToString:[Presence displayStringForPresence:
+		   [[dict objectForKey:@"NewPresence"] unsignedCharValue]]])
 	{
 		NSString * name = [[notification object] name];
-		NSString * emoString = [NSString stringWithFormat:@"%@:\n\t%@\n", name, newMessage];
+		NSString * date = [[NSDate  date] descriptionWithCalendarFormat:@"%H:%M"
+															   timeZone:nil
+																 locale:[[NSUserDefaults standardUserDefaults] 
+																	  dictionaryRepresentation]];
+		NSAttributedString * headline = [[NSAttributedString alloc]
+			initWithString:[NSString stringWithFormat:@"%@ - %@:\n", date, name]
+				attributes:PRESENCE_COLOUR_DICTIONARY(([[dict objectForKey:@"NewPresence"] unsignedCharValue]))];
+
+		NSString * emoString = [NSString stringWithFormat:@"\t%@\n", newMessage];
+		
 		NSAttributedString * emoText = [[NSAttributedString alloc] initWithString:emoString];
 		[[view textStorage] insertAttributedString:emoText atIndex:0];
+		[[view textStorage] insertAttributedString:headline atIndex:0];
 		[emoText release];
+		[headline release];
 	}
 }
 @end

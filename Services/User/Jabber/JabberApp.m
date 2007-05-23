@@ -101,6 +101,10 @@
 	}
 	else
 	{
+		if(_message == nil)
+		{
+			_message = [rosterWindow currentStatusMessage];
+		}
 		if([[account connection] connected] == loggedIn)
 		{
 			[[account connection] setStatus:_presence withMessage:_message];

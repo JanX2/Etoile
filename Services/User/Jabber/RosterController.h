@@ -17,9 +17,11 @@
 	IBOutlet NSOutlineView * view;
 	IBOutlet NSTableColumn * column;
 	IBOutlet NSPopUpButton * presenceBox;
+	IBOutlet NSTextField * statusBox;
 }
 - (id) initWithNibName:(NSString*)_nib forAccount:(id)_account withRoster:(id)_roster;
 - (void) updatePresence:(NSNotification*)_notification;
 - (IBAction) click:(id)sender;
 - (IBAction) changePresence:(id)sender;
+- (NSString*) currentStatusMessage;
 @end

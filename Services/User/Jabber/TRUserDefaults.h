@@ -32,4 +32,9 @@
 //- (NSRect) locationOfWindowNamed:(NSString*)_name;
 
 @end
+/**
+ * Set the foreground colour of text to the presence state 
+ */
+#define PRESENCE_COLOUR(presence) [[NSUserDefaults standardUserDefaults] colourForPresence:presence]
+#define PRESENCE_COLOUR_DICTIONARY(presence) [NSDictionary dictionaryWithObject:PRESENCE_COLOUR(presence) forKey:NSForegroundColorAttributeName]
 

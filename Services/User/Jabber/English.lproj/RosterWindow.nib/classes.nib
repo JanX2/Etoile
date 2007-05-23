@@ -6,7 +6,12 @@
             ACTIONS = {changePresence = id; click = id; }; 
             CLASS = RosterController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {column = NSTableColumn; presenceBox = NSPopUpButton; view = NSOutlineView; }; 
+            OUTLETS = {
+                column = NSTableColumn; 
+                presenceBox = NSPopUpButton; 
+                statusBox = NSTextField; 
+                view = NSOutlineView; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }
     ); 

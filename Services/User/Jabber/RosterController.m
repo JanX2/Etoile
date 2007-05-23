@@ -559,39 +559,53 @@ inline Conversation * createChatWithPerson(id self, JabberPerson* person, XMPPAc
 
 - (IBAction) changePresence:(id)sender
 {
-	switch([sender indexOfSelectedItem])
+	NSString * status = [statusBox stringValue];
+	switch([presenceBox indexOfSelectedItem])
 	{
 		case 0:
-			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_CHAT withMessage:nil];
+			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_CHAT withMessage:status];
 			break;
 		case 1:
-			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_ONLINE withMessage:nil];
+			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_ONLINE withMessage:status];
 			break;
 		case 2:
-			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_AWAY withMessage:nil];
+			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_AWAY withMessage:status];
 			break;
 		case 3:
-			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_XA withMessage:nil];
+			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_XA withMessage:status];
 			break;
 		case 4:
-			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_DND withMessage:nil];
+			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_DND withMessage:status];
 			break;
 		case 6:
-			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_OFFLINE withMessage:nil];
+			[(JabberApp*)[NSApp delegate] setPresence:PRESENCE_OFFLINE withMessage:status];
 			break;
 		case 8:
-			[(JabberApp*)[NSApp delegate] setCustomPresence:self];
+			[(JabberApp*)[NSApp delegate] setCustomPresence:status];
 			break;
 	}
 }
 
 - (void) setPresence:(unsigned char)_status withMessage:(NSString*)_message
 {
+	if(_message == nil)
+	{
+		_message = [statusBox stringValue];
+	}
 	if(presence != _status)
 	{
 		presence = _status;
 		[presenceBox selectItemWithTitle:[Presence displayStringForPresence:_status]];		
 	}
+	if(_message == nil)
+	{
+		_message = @"";
+	}
+	if(![[statusBox stringValue] isEqualToString:_message])
+	{
+		[statusBox setStringValue:_message];
+	}	
+	[statusBox setTextColor:PRESENCE_COLOUR(_status)];
 }
 /*- (void) update
 {
@@ -600,6 +614,10 @@ inline Conversation * createChatWithPerson(id self, JabberPerson* person, XMPPAc
 		[[self window] setFrame:[self windowWillUseStandardFrame:[self window] defaultFrame:NSMakeRect(0,0,0,0)] display:YES];
 	}
 }*/
+- (NSString*) currentStatusMessage
+{
+	return [statusBox stringValue];
+}
 
 - (void) dealloc
 {

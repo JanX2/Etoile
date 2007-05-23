@@ -177,7 +177,7 @@ int PRESENCE_ICONS[] = {
 {
 	from = [[JID alloc] init];
 	onlineStatus = PRESENCE_UNKNOWN;
-	message = @"Status Unknown";
+	message = nil;
 	return [super init];
 }
 
