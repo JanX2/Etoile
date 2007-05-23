@@ -1,7 +1,7 @@
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    config.m for the Azalea window manager
-   Copyright (c) 2006        Yen-Ju Chen
+   Copyright (c) 2006-2007        Yen-Ju Chen
 
    config.c for the Openbox window manager
    Copyright (c) 2004        Mikael Magnusson
@@ -195,115 +195,6 @@ static void parse_mouse(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
         n = parse_find_node("context", n->next);
     }
 }
-
-static void parse_focus(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                        void * d)
-{
-    xmlNodePtr n;
-
-    node = node->children;
-    
-    if ((n = parse_find_node("focusNew", node)))
-        config_focus_new = parse_bool(doc, n);
-    if ((n = parse_find_node("focusLast", node)))
-        config_focus_last = parse_bool(doc, n);
-}
-
-static void parse_placement(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                            void * d)
-{
-    xmlNodePtr n;
-
-    node = node->children;
-    
-    if ((n = parse_find_node("policy", node)))
-        if (parse_contains("UnderMouse", doc, n))
-            config_place_policy = OB_PLACE_POLICY_MOUSE;
-}
-
-static void parse_theme(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                        void * d)
-{
-    xmlNodePtr n;
-
-    node = node->children;
-
-    if ((n = parse_find_node("name", node))) {
-        NSString *c;
-
-        c = parse_string(doc, n);
-	ASSIGN(config_theme, [c stringByExpandingTildeInPath]);
-    }
-    if ((n = parse_find_node("titleLayout", node))) {
-	ASSIGN(config_title_layout, parse_string(doc, n));
-    }
-    if ((n = parse_find_node("keepBorder", node)))
-        config_theme_keepborder = parse_bool(doc, n);
-    if ((n = parse_find_node("hideDisabled", node)))
-        config_theme_hidedisabled = parse_bool(doc, n);
-}
-
-static void parse_desktops(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                           void * d)
-{
-    xmlNodePtr n;
-
-    node = node->children;
-    
-    if ((n = parse_find_node("number", node))) {
-        int d = parse_int(doc, n);
-        if (d > 0)
-            config_desktops_num = d;
-    }
-    if ((n = parse_find_node("firstdesk", node))) {
-        int d = parse_int(doc, n);
-        if (d > 0)
-            config_screen_firstdesk = (unsigned int)d;
-    }
-    if ((n = parse_find_node("names", node))) {
-        xmlNodePtr nname;
-
-	NSMutableArray *a = [[NSMutableArray alloc] init];
-
-        nname = parse_find_node("name", n->children);
-        while (nname) {
-	    [a addObject: parse_string(doc, nname)];
-            nname = parse_find_node("name", nname->next);
-        }
-	ASSIGNCOPY(config_desktops_names, a);
-	DESTROY(a);
-    }
-}
-
-static void parse_resize(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
-                         void * d)
-{
-    xmlNodePtr n;
-
-    node = node->children;
-    
-    if ((n = parse_find_node("drawContents", node)))
-        config_resize_redraw = parse_bool(doc, n);
-    if ((n = parse_find_node("fourCorner", node)))
-        config_resize_four_corners = parse_bool(doc, n);
-    if ((n = parse_find_node("popupShow", node))) {
-        config_resize_popup_show = parse_int(doc, n);
-        if (parse_contains("Always", doc, n))
-            config_resize_popup_show = 2;
-        else if (parse_contains("Never", doc, n))
-            config_resize_popup_show = 0;
-        else if (parse_contains("Nonpixel", doc, n))
-            config_resize_popup_show = 1;
-    }
-    if ((n = parse_find_node("popupPosition", node))) {
-        config_resize_popup_pos = parse_int(doc, n);
-        if (parse_contains("Top", doc, n))
-            config_resize_popup_pos = 1;
-        else if (parse_contains("Center", doc, n))
-            config_resize_popup_pos = 0;
-    }
-}
-
 #ifdef USE_MENU
 static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                        void * d)
@@ -329,21 +220,6 @@ static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
     ASSIGNCOPY(config_menu_files, a);
 }
 #endif
-   
-static void parse_resistance(AZParser *parser, xmlDocPtr doc, xmlNodePtr node, 
-                             void * d)
-{
-    xmlNodePtr n;
-
-    node = node->children;
-    if ((n = parse_find_node("strength", node)))
-        config_resist_win = parse_int(doc, n);
-    if ((n = parse_find_node("screen_edge_strength", node)))
-        config_resist_edge = parse_int(doc, n);
-    if ((n = parse_find_node("edges_hit_layers_below", node)))
-        config_resist_layers_below = parse_bool(doc, n);
-}
-
 typedef struct
 {
     NSString *key;
@@ -450,35 +326,85 @@ static void bind_default_mouse()
 
 void config_startup(AZParser *parser)
 {
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	NSString *string;
+
     config_focus_new = YES;
     config_focus_last = NO;
 
-    [parser registerTag: @"focus" callback: parse_focus data: NULL];
+	if ([defaults objectForKey: @"FocusNew"])
+		config_focus_new = [defaults boolForKey: @"FocusNew"];
+	if ([defaults objectForKey: @"FocusLast"])
+		config_focus_last = [defaults boolForKey: @"FocusLast"];
 
     config_place_policy = OB_PLACE_POLICY_SMART;
 
-    [parser registerTag: @"placement" callback: parse_placement data: NULL];
+	string = [defaults stringForKey: @"WindowPlacement"];
+	if (string)
+	{
+		if ([string isEqualToString: @"Smart"])
+			config_place_policy = OB_PLACE_POLICY_SMART;
+		else if ([string isEqualToString: @"UnderMouse"])
+            config_place_policy = OB_PLACE_POLICY_MOUSE;
+	}
 
-    config_theme = nil;
-
+	ASSIGN(config_theme, [NSString stringWithCString: "Azalea"]);
     ASSIGN(config_title_layout, ([NSString stringWithCString: "NLIMC"]));
-    config_theme_keepborder = YES;
+    config_theme_keepborder = NO;
     config_theme_hidedisabled = NO;
 
-    [parser registerTag: @"theme" callback: parse_theme data: NULL];
+	string = [defaults stringForKey: @"Theme"];
+	if (string)
+		ASSIGN(config_theme, string);
+	string = [defaults stringForKey: @"TitleLayout"];
+	if (string)
+		ASSIGN(config_title_layout, string);
+	if ([defaults objectForKey: @"KeepBorder"])
+		config_theme_keepborder = [defaults boolForKey: @"KeepBorder"];
+	/* Hide disabled icon on the title bar */
+	if ([defaults objectForKey: @"HideDisabled"])
+		config_theme_hidedisabled = [defaults boolForKey: @"HideDisabled"];
 
     config_desktops_num = 4;
     config_screen_firstdesk = 1;
-    config_desktops_names = nil;
+    ASSIGN(config_desktops_names, ([NSArray arrayWithObjects:
+		@"Main", @"Second", @"Third", @"Fourth", nil]));
 
-    [parser registerTag: @"desktops" callback: parse_desktops data: NULL];
+	if ([defaults objectForKey: @"DesktopNumber"])
+		config_desktops_num = [defaults integerForKey: @"DesktopNumber"];
+	if ([defaults objectForKey: @"FirstDesktop"])
+		config_screen_firstdesk = [defaults integerForKey: @"FirstDesktop"];
+	if ([defaults objectForKey: @"DesktopNames"])
+		ASSIGN(config_desktops_names, [defaults arrayForKey: @"DesktopNames"]);
 
     config_resize_redraw = YES;
     config_resize_four_corners = NO;
     config_resize_popup_show = 1; /* nonpixel increments */
     config_resize_popup_pos = 0;  /* center of client */
 
-    [parser registerTag: @"resize" callback: parse_resize data: NULL];
+	/* Draw content during resizing */
+	if ([defaults objectForKey: @"DrawContents"])
+		config_resize_redraw = [defaults boolForKey: @"DrawContents"];
+	if ([defaults objectForKey: @"FourCorners"])
+		config_resize_four_corners = [defaults boolForKey: @"FourCorners"];
+	string = [defaults stringForKey: @"PopupShow"];
+	if (string)
+	{
+		if ([string isEqualToString: @"Always"])
+			config_resize_popup_show = 2;
+		else if ([string isEqualToString: @"Never"])
+			config_resize_popup_show = 0;
+		else if ([string isEqualToString: @"NonPixel"])
+			config_resize_popup_show = 1;
+	}
+	string = [defaults stringForKey: @"PopupPosition"];
+	if (string)
+	{
+		if ([string isEqualToString: @"Top"])
+			config_resize_popup_pos = 1;
+		else if ([string isEqualToString: @"Center"])
+			config_resize_popup_pos = 0;
+	}
 
     translate_key(@"C-g", &config_keyboard_reset_state,
                   &config_keyboard_reset_keycode);
@@ -498,8 +424,12 @@ void config_startup(AZParser *parser)
     config_resist_edge = 20;
     config_resist_layers_below = NO;
 
-    [parser registerTag: @"resistance" callback: parse_resistance data: NULL];
-
+	if ([defaults objectForKey: @"ResistentStrength"])
+        config_resist_win = [defaults integerForKey: @"ResistentStrength"];
+	if ([defaults objectForKey: @"ScreenEdgeStrength"])
+        config_resist_win = [defaults integerForKey: @"ScreenEdgeStrength"];
+	if ([defaults objectForKey: @"EdgesHitLayersBelow"])
+		config_resist_layers_below = [defaults boolForKey: @"EdgesHitLayersBelow"];
 #ifdef USE_MENU
     config_menu_warppointer = YES;
     config_menu_hide_delay = 250;

@@ -1,36 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openbox_config xmlns="http://openbox.org/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://openbox.org/                 file:///usr/share/openbox/rc.xsd">
 
-<resistance>
-  <strength>10</strength>
-  <screen_edge_strength>20</screen_edge_strength>
-</resistance>
-
-<focus>
-  <focusNew>yes</focusNew>
-  <focusLast>no</focusLast>
-</focus>
-
-<theme>
-  <name>Azalea</name>
-  <titlelayout>NLIMC</titlelayout>
-  <keepborder>NO</keepborder>
-</theme>
-
-<placement>
-  <policy>Smart</policy>
-</placement>
-
-<desktops>
-  <number>4</number>
-  <firstdesk>1</firstdesk>
-  <names><name>Main</name><name>Second</name><name>Third</name><name>Fourth</name></names>
-</desktops>
-
-<resize>
-  <drawContents>yes</drawContents>
-</resize>
-
 <keyboard>
   <chainQuitKey>C-g</chainQuitKey>
 

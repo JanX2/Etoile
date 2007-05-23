@@ -1014,7 +1014,7 @@
     NSArray *it = nil;
 
     orig = oself;
-
+#if 0 // Statement below may not be correct anymore
     /* I do not fully understand why I need to treate GNUstep specially.
        If I don't, Azalea will complain in [AZStacking doRestack:...]
        where 'index == NSNotFound' and crashes most of time.
@@ -1035,7 +1035,7 @@
 	layer = [self calcStackingLayer];
 	return;
     }
-
+#endif
     /* transients take on the layer of their parents */
     it = [oself searchAllTopParents];
     int i;

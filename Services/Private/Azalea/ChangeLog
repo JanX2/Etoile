@@ -3,6 +3,7 @@
 	* Use NSDebugLLog for debug messages. 
 	  Current support 'X', 'Client', 'Focus' and 'Signal'.
 	  All options can be viewed through 'grep NSDebugLLog *.m'
+	* Use user defaults for most of settings.
 
 2007-05-22  Yen-Ju Chen <yjchenx at gmail>
 
