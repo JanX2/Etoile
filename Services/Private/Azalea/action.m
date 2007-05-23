@@ -32,8 +32,10 @@
 #import "AZScreen.h"
 #import "AZEventHandler.h"
 #import "AZFocusManager.h"
+#ifdef USE_MENU
 #import "AZMenuFrame.h"
 #import "AZMenuManager.h"
+#endif
 #import "AZStartupHandler.h"
 #import <AppKit/AppKit.h>
 
@@ -1567,11 +1569,13 @@ void action_exit(union ActionData *data)
 
 void action_showmenu(union ActionData *data)
 {
+#ifdef USE_MENU
     if (data->showmenu.name) {
 	[[AZMenuManager defaultManager] showMenu: data->showmenu.name
 		x: data->any.x y: data->any.y
 		client: data->showmenu.any.c];
     }
+#endif
 }
 
 void action_cycle_windows(union ActionData *data)

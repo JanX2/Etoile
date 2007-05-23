@@ -32,8 +32,9 @@
 #import "AZFocusManager.h"
 #import "AZKeyboardHandler.h"
 #import "AZMouseHandler.h"
+#ifdef USE_MENU
 #import "AZMenuManager.h"
-
+#endif
 #import "openbox.h"
 #import "session.h"
 #import "prop.h"
@@ -150,7 +151,9 @@ int main(int argc, char **argv)
     AZMoveResizeHandler *mrHandler = [AZMoveResizeHandler defaultHandler];
     AZFocusManager *focusManager = [AZFocusManager defaultManager];
     AZKeyboardHandler *keyboardHandler = [AZKeyboardHandler defaultHandler];
+#ifdef USE_MENU
     AZMenuManager *menuManager = [AZMenuManager defaultManager];
+#endif
     AZMouseHandler *mouseHandler = [AZMouseHandler defaultHandler];
 
     /* Initiate main loop */
@@ -274,7 +277,9 @@ int main(int argc, char **argv)
 	    [mrHandler startup: reconfigure];
 	    [keyboardHandler startup: reconfigure];
 	    [mouseHandler startup: reconfigure];
+#ifdef USE_MENU
 	    [menuManager startup: reconfigure];
+#endif
 
             if (!reconfigure) {
                 /* get all the existing windows */
@@ -323,7 +328,6 @@ int main(int argc, char **argv)
 #else
 		CREATE_AUTORELEASE_POOL(x);
 		NSRunLoop *loop = [NSRunLoop currentRunLoop];
-		NSDate *past = [NSDate distantPast];
 
 		while ([mainLoop run] == YES)
 		{
@@ -342,7 +346,9 @@ int main(int argc, char **argv)
 		[clientManager unmanageAll];
             }
 
+#ifdef USE_MENU
 	    [menuManager shutdown: reconfigure];
+#endif
 	    [mouseHandler shutdown: reconfigure];
 	    [keyboardHandler shutdown: reconfigure];
 	    [mrHandler shutdown: reconfigure];

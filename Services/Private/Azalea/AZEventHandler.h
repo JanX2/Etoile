@@ -45,10 +45,11 @@ BOOL event_time_after(Time t1, Time t2);
   int mask_table_size;
 
   unsigned int ignore_enter_focus;
-
+#ifdef USE_MENU
   BOOL menu_can_hide;
 
   NSTimer *menuTimer;
+#endif
 }
 
 + (AZEventHandler *) defaultHandler;

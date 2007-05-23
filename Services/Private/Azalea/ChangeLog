@@ -2,6 +2,7 @@
 
 	* Use NSTimer and NSRunLoop for timeout, which simplify the code.
 	* Turn off Startup-notification and XCursor for now.
+	* Disable menu by default.
 
 2007-05-21  Yen-Ju Chen <yjchenx at gmail>
 

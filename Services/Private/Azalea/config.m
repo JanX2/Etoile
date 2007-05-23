@@ -54,11 +54,13 @@ unsigned int config_keyboard_reset_state;
 int config_mouse_threshold;
 int config_mouse_dclicktime;
 
+#ifdef USE_MENU
 BOOL config_menu_warppointer;
 unsigned int    config_menu_hide_delay;
 BOOL config_menu_client_list_icons;
 
 NSArray *config_menu_files;
+#endif
 
 int config_resist_win;
 int config_resist_edge;
@@ -302,6 +304,7 @@ static void parse_resize(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
     }
 }
 
+#ifdef USE_MENU
 static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
                        void * d)
 {
@@ -325,6 +328,7 @@ static void parse_menu(AZParser *parser, xmlDocPtr doc, xmlNodePtr node,
     }
     ASSIGNCOPY(config_menu_files, a);
 }
+#endif
    
 static void parse_resistance(AZParser *parser, xmlDocPtr doc, xmlNodePtr node, 
                              void * d)
@@ -496,12 +500,14 @@ void config_startup(AZParser *parser)
 
     [parser registerTag: @"resistance" callback: parse_resistance data: NULL];
 
+#ifdef USE_MENU
     config_menu_warppointer = YES;
     config_menu_hide_delay = 250;
     config_menu_client_list_icons = YES;
     config_menu_files = nil;
 
     [parser registerTag: @"menu" callback: parse_menu data: NULL];
+#endif
 }
 
 void config_shutdown()
@@ -509,5 +515,7 @@ void config_shutdown()
     DESTROY(config_theme);
     DESTROY(config_title_layout);
     DESTROY(config_desktops_names);
+#ifdef USE_MENU
     DESTROY(config_menu_files);
+#endif
 }

@@ -36,7 +36,9 @@
 #import "openbox.h"
 #import "grab.h"
 #import "prop.h"
+#ifdef USE_MENU
 #import "AZMenuFrame.h"
+#endif
 #import "AZDebug.h"
 
 NSString *AZClientDestroyNotification = @"AZClientDestroyNotification";
@@ -447,12 +449,15 @@ static AZClientManager *sharedInstance;
 
     [[NSNotificationCenter defaultCenter] postNotificationName: AZClientDestroyNotification
 	    object: client];
+
+#ifdef USE_MENU
     /* Taken from menu (AZMenu in the future). Since it uses global function,
      * it is not really suitable in object, or it will be called multiple
      * time in each object, which is not good */
     /* menus can be associated with a client, so close any that are since
        we are disappearing now */
     AZMenuFrameHideAllClient(client);
+#endif
 
     /* tell our parent(s) that we're gone */
     if ([client transient_for] == OB_TRAN_GROUP) { /* transient of group */

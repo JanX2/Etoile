@@ -30,8 +30,10 @@
 #import "AZFrame+Render.h"
 #import "AZMoveResizeHandler.h"
 #import "AZFocusManager.h"
+#ifdef USE_MENU
 #import "AZMenuFrame.h"
 #import "AZMenu.h"
+#endif
 #import "AZMouseHandler.h"
 #import "openbox.h"
 #import "config.h"
@@ -126,12 +128,15 @@ static AZEventHandler *sharedInstance;
 
 @interface AZEventHandler (AZPrivate)
 - (void) handleRootEvent: (XEvent *) e;
+#ifdef USE_MENU
 - (void) handleMenuEvent: (XEvent *) e;
+#endif
 - (void) handleClient: (AZClient *) c event: (XEvent *) e;
 - (void) handleGroup: (AZGroup *) g event: (XEvent *) e;
-
+#ifdef USE_MENU
 - (AZMenuFrame *) findActiveMenu;
 - (AZMenuFrame *) findActiveOrLastMenu;
+#endif
 - (Window) getWindow: (XEvent *) e;
 - (void) hackMods: (XEvent *) e;
 - (BOOL) wantedFocusEvent: (XEvent *) e;
@@ -142,8 +147,9 @@ static AZEventHandler *sharedInstance;
 #if 0 // Not used in OpenBox3
 - (void) clientDestroy: (NSNotification *) not;
 #endif
-
+#ifdef USE_MENU
 - (void) menuTimerAction: (id) sender;
+#endif
 @end
 
 @implementation AZEventHandler
@@ -439,11 +445,13 @@ static AZEventHandler *sharedInstance;
         e->type == MotionNotify || e->type == KeyPress ||
         e->type == KeyRelease)
     {
+#ifdef USE_MENU
         if ([[AZMenuFrame visibleFrames] count])
 		{
             [self handleMenuEvent: e];
 		}
         else 
+#endif
 		{
 			AZKeyboardHandler *kHandler = [AZKeyboardHandler defaultHandler];
 			if (![kHandler processInteractiveGrab: e forClient: &client]) 
@@ -457,14 +465,14 @@ static AZEventHandler *sharedInstance;
 				   moved/resized */
 				client = [mrHandler moveresize_client];
 			}
-
+#ifdef USE_MENU
 			menu_can_hide = NO;
 			ASSIGN(menuTimer, [NSTimer scheduledTimerWithTimeInterval: config_menu_hide_delay
 			                           target: self
 			                           selector: @selector(menuTimerAction:)
 			                           userInfo: nil
 			                           repeats: NO]);
-				
+#endif
 
                 if (e->type == ButtonPress || e->type == ButtonRelease ||
                     e->type == MotionNotify) {
@@ -1101,7 +1109,7 @@ static AZEventHandler *sharedInstance;
 #endif
     }
 }
-
+#ifdef USE_MENU
 - (AZMenuFrame *) findActiveMenu
 {
     AZMenuFrame *ret = nil;
@@ -1196,7 +1204,7 @@ static AZEventHandler *sharedInstance;
 {
 	menu_can_hide = YES;
 }
-
+#endif
 #if 0 // Not used in OpenBox3
 - (void) clientDestroy: (NSNotification *) not
 {

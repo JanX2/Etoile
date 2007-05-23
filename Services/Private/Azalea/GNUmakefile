@@ -21,9 +21,6 @@ Azalea_OBJC_FILES = \
 	AZKeyboardHandler.m \
 	AZKeyTree.m \
 	AZMainLoop.m \
-	AZMenu.m \
-	AZMenuFrame.m \
-	AZMenuManager.m \
 	AZMouseHandler.m \
 	AZMoveResizeHandler.m \
 	AZPopUp.m \
@@ -31,8 +28,6 @@ Azalea_OBJC_FILES = \
 	AZStacking.m \
 	AZStartupHandler.m \
 	action.m \
-	client_list_menu.m \
-	client_menu.m \
 	config.m \
 	extensions.m \
 	grab.m \

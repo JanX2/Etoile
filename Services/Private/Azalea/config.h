@@ -110,6 +110,7 @@ extern int config_resist_edge;
 /*! Should windows resist edges at layers below */
 extern BOOL config_resist_layers_below;
 
+#ifdef USE_MENU
 /*! Warp near edge on menu? */
 extern BOOL config_menu_warppointer;
 /*! delay for hiding menu when opening */
@@ -118,6 +119,7 @@ extern unsigned int    config_menu_hide_delay;
 extern BOOL config_menu_client_list_icons;
 /*! User-specified menu files */
 extern NSArray *config_menu_files;
+#endif
 
 void config_startup(AZParser *i);
 void config_shutdown();
