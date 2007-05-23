@@ -1,3 +1,9 @@
+2007-05-23  Yen-Ju Chen <yjchenx at gmail>
+
+	* Use NSDebugLLog for debug messages. 
+	  Current support 'X', 'Client', 'Focus' and 'Signal'.
+	  All options can be viewed through 'grep NSDebugLLog *.m'
+
 2007-05-22  Yen-Ju Chen <yjchenx at gmail>
 
 	* Use NSTimer and NSRunLoop for timeout, which simplify the code.

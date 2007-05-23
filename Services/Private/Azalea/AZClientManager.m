@@ -39,7 +39,6 @@
 #ifdef USE_MENU
 #import "AZMenuFrame.h"
 #endif
-#import "AZDebug.h"
 
 NSString *AZClientDestroyNotification = @"AZClientDestroyNotification";
 
@@ -178,7 +177,7 @@ static AZClientManager *sharedInstance;
         XFree(wmhint);
     }
 
-    AZDebug("Managing window: %lx\n", window);
+    NSDebugLLog(@"Client", @"Managing window: %lx\n", window);
 
     /* choose the events we want to receive on the CLIENT window */
     attrib_set.event_mask = CLIENT_EVENTMASK;
@@ -374,7 +373,8 @@ static AZClientManager *sharedInstance;
            [NSString stringWithFormat: @"%d", window], @"AZXWindowID",
                                  nil]
                        ];
-    AZDebug("Managed window 0x%lx (%s)\n", window, [client class]);
+    NSDebugLLog(@"Client", 
+	            @"Managed window 0x%lx (%s)\n", window, NSStringFromClass([client class]));
 }
 
 - (void) unmanageAll
@@ -399,42 +399,19 @@ static AZClientManager *sharedInstance;
     /* flush to send the hide to the server quickly */
     XFlush(ob_display);
 
-    if ([fManager focus_client] == client) {
-#if 0
-        XEvent e;
+	if ([fManager focus_client] == client) 
+	{
+		/* ignore enter events from the unmap so it doesnt mess with the focus
+		 */
+		[[AZEventHandler defaultHandler] ignoreQueuedEnters];
+	}
 
-        /* focus the last focused window on the desktop, and ignore enter
-           events from the unmap so it doesnt mess with the focus */
-        while (XCheckTypedEvent(ob_display, EnterNotify, &e));
-        /* remove these flags so we don't end up getting focused in the
-           fallback! */
-        [client set_can_focus: NO];
-        [client set_focus_notify: NO];
-        [client set_modal: NO];
-	[client unfocus];
-#endif
-        /* ignore enter events from the unmap so it doesnt mess with the focus
-         */
-	[[AZEventHandler defaultHandler] ignoreQueuedEnters];
-    }
-#if 0
-    /* potentially fix focusLast */
-    if (config_focus_last)
-        grab_pointer(YES, OB_CURSOR_NONE);
-
-    [[client frame] hide];
-    XFlush(ob_display);
-#endif
     [[AZKeyboardHandler defaultHandler] grab: NO forClient: client];
     [[AZMouseHandler defaultHandler] grab: NO forClient: client];
 
     /* remove the window from our save set */
     XChangeSaveSet(ob_display, [client window], SetModeDelete);
 
-#if 0
-    /* we dont want events no more */
-    XSelectInput(ob_display, [client window], NoEventMask);
-#endif
     /* update the focus lists */
     [fManager focusOrderRemove: client];
 
@@ -538,7 +515,7 @@ static AZClientManager *sharedInstance;
     }
 
 
-    AZDebug("Unmanaged window 0x%lx\n", [client window]);
+    NSDebugLLog(@"Client", @"Unmanaged window 0x%lx\n", [client window]);
 
     [[workspace notificationCenter]
                    postNotificationName: @"AZXWindowDidTerminateNotification"
@@ -555,10 +532,6 @@ static AZClientManager *sharedInstance;
      
     /* update the list hints */
     [self setList];
-#if 0
-    if (config_focus_last)
-        grab_pointer(NO, OB_CURSOR_NONE);
-#endif
 }
 
 - (AZClient *) clientAtIndex: (int) index

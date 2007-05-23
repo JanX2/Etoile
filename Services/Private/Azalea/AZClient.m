@@ -34,7 +34,6 @@
 #import "action.h"
 #import "session.h"
 #import "extensions.h"
-#import "AZDebug.h"
 
 #ifdef HAVE_UNISTD_H // For locahost name
 #  include <unistd.h>
@@ -952,11 +951,10 @@
         XSendEvent(ob_display, [oself window], NO, NoEventMask, &ce);
     }
 
-#ifdef DEBUG_FOCUS
-    AZDebug("%sively focusing %lx at %d\n",
-             (oself->can_focus ? "act" : "pass"),
-             oself->window, (int) event_curtime);
-#endif
+	NSDebugLLog(@"Focus", 
+	            @"%sively focusing %lx at %d\n",
+				(oself->can_focus ? "act" : "pass"),
+				oself->window, (int) event_curtime);
 
     /* Cause the FocusIn to come back to us. Important for desktop switches,
        since otherwise we'll have no FocusIn on the queue and send it off to
@@ -965,18 +963,6 @@
     return YES;
 }
 
-#if 0
-/* Used when the current client is closed or otherwise hidden, focus_last will
-   then prevent focus from going to the mouse pointer
-*/
-- (void) unfocus;
-{
-    if ([[AZFocusManager defaultManager] focus_client] == self) 
-    {
-	[[AZFocusManager defaultManager] fallback: NO];
-    }
-}
-#endif
 - (void) activateHere: (BOOL) here user: (BOOL) user 
 {
     AZFocusManager *fManager = [AZFocusManager defaultManager];
@@ -1356,9 +1342,6 @@
       }
     }
 
-#if 0
-    PROP_SETS(window, net_wm_visible_name, (char*)[title UTF8String]);
-#else
     if (client_machine) {
 	ASSIGN(visible, ([NSString stringWithFormat: @"%@ (%@)", title, client_machine]));
     } else
@@ -1366,7 +1349,6 @@
 
     PROP_SETS(window, net_wm_visible_name, (char*)[visible UTF8String]);
     ASSIGNCOPY(title, visible);
-#endif
 
     if (frame)
 	[frame adjustTitle];
@@ -1851,37 +1833,6 @@
     }
     return nil;
 }
-
-#if 0 // Not used
-- (AZClient *) searchFocusTreeFull
-{
-    if (transient_for) {
-        if (transient_for != OB_TRAN_GROUP) {
-	    return [transient_for->_self searchFocusTreeFull];
-        } else {
-            BOOL recursed = NO;
-            int i, count = [[group members] count];
-	    for (i = 0; i < count; i++) {
-	      AZClient *data = [group memberAtIndex: i];
-              if (![data transient_for]) {
-                    AZClient *c = nil;
-		    if ((c = [data searchFocusTreeFull]))
-                        return c;
-                    recursed = YES;
-                }
-	    }
-            if (recursed)
-                return nil;
-        }
-    }
-
-    /* this function checks the whole tree, the client_search_focus_tree~
-       does not, so we need to check this window */
-    if ([self focused])
-        return self;
-    return client_search_focus_tree(obClient)->_self;
-}
-#endif
 
 - (AZClient *) searchModalChild
 {
@@ -3224,8 +3175,9 @@ AZClient *AZUnderPointer()
 
 
     if (iconic != _iconic) {
-        AZDebug("%sconifying window: 0x%lx\n", (_iconic ? "I" : "Uni"),
-                 window);
+	    NSDebugLLog(@"Client", 
+		            @"%sconifying window: 0x%lx\n", 
+		            (_iconic ? "I" : "Uni"), window);
 
         if (_iconic) {
             if (functions & OB_CLIENT_FUNC_ICONIFY) {
@@ -3283,7 +3235,7 @@ AZClient *AZUnderPointer()
 
     if (target != desktop) {
 
-        AZDebug("Setting desktop %u\n", target+1);
+        NSDebugLLog(@"Client", @"Setting desktop %u\n", target+1);
 
         NSAssert((target < [[AZScreen defaultScreen] numberOfDesktops] || target == DESKTOP_ALL), @"Desktop out of range");
 

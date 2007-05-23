@@ -21,29 +21,6 @@
 
 #import "AZDebug.h"
 #import "openbox.h"
-#if 0
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdio.h>
-#endif
-
-static BOOL show;
-
-void AZDebugShowOutput(BOOL enable)
-{
-    show = enable;
-}
-
-void AZDebug(const char *a, ...)
-{
-    va_list vl;
-
-    if (show) {
-        va_start(vl, a);
-        vfprintf(stderr, a, vl);
-        va_end(vl);
-    }
-}
 
 static BOOL xerror_ignore = NO;
 BOOL xerror_occured = NO;
@@ -51,7 +28,6 @@ BOOL xerror_occured = NO;
 int AZXErrorHandler(Display *d, XErrorEvent *e)
 {
     xerror_occured = YES;
-#ifdef DEBUG_AZALEA
     if (!xerror_ignore) {
         char errtxt[128];
 
@@ -59,14 +35,11 @@ int AZXErrorHandler(Display *d, XErrorEvent *e)
         {
             XGetErrorText(d, e->error_code, errtxt, 127);
             if (e->error_code == BadWindow)
-                /*g_warning("X Error: %s", errtxt)*/;
+                /*NSDebugLLog(@"X", @"X Error: %s", errtxt)*/;
             else
-                g_error("X Error: %s", errtxt);
+                NSDebugLLog(@"X", @"X Error: %s", errtxt);
         }
     }
-#else
-    (void)d; (void)e;
-#endif
     return 0;
 }
 

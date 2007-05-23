@@ -6,4 +6,6 @@ Azalea
 
 Azalea is a window mamager for GNUstep,
 based on OpenBox3 (http://icculus.org/openbox/).
+While OpenBox start to have more features since 3.3 release,
+Azalea intends to stay small, minimal, and compliant with EWMH.
 

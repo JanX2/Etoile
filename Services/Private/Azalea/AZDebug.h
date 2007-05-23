@@ -22,11 +22,6 @@
 #import <Foundation/Foundation.h>
 #import <X11/Xlib.h>
 
-/* Debug */
-void AZDebugShowOutput(BOOL enable);
-void AZDebug(const char *a, ...);
-
-
 /* XError */
 
 /* can be used to track errors */

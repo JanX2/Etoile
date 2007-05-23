@@ -25,8 +25,8 @@
 #import "AZScreen.h"
 #import "AZStartupHandler.h"
 #import "AZEventHandler.h"
-#import "AZDebug.h"
 #import "AZGroup.h"
+#import "AZDebug.h"
 #import "AZClientManager.h"
 #import "AZMoveResizeHandler.h"
 #import "AZFocusManager.h"
@@ -102,10 +102,6 @@ static Cursor load_cursor(const char *name, unsigned int fontval);
 
 int main(int argc, char **argv)
 {
-#ifdef DEBUG_AZALEA
-    AZDebug_show_output(YES);
-#endif
-
     CREATE_AUTORELEASE_POOL(x);
 
     state = OB_STATE_STARTING;
@@ -414,11 +410,11 @@ static void signal_handler(int signal, void *data)
 {
     switch (signal) {
     case SIGUSR1:
-        AZDebug("Caught signal %d. Restarting.\n", signal);
+        NSDebugLLog(@"Signal", @"Caught signal %d. Restarting.", signal);
         ob_restart();
         break;
     case SIGUSR2:
-        AZDebug("Caught signal %d. Reconfiguring.\n", signal);
+        NSDebugLLog(@"Signal", @"Caught signal %d. Reconfiguring.", signal);
         ob_reconfigure(); 
         break;
     case SIGCHLD:
@@ -426,7 +422,7 @@ static void signal_handler(int signal, void *data)
         while (waitpid(-1, NULL, WNOHANG) > 0);
         break;
     default:
-        AZDebug("Caught signal %d. Exiting.\n", signal);
+        NSDebugLLog(@"Signal", @"Caught signal %d. Exiting.", signal);
         /* TERM and INT return a 0 code */
         ob_exit(!(signal == SIGTERM || signal == SIGINT));
     }
@@ -463,7 +459,6 @@ static void print_help()
     printf("  --sync              Run in synchronous mode (this is slow and "
             "meant for\n"
             "                      debugging X routines)\n");
-    printf("  --debug             Display debugging output\n");
     printf("\nPlease report bugs at %s\n\n", PACKAGE_BUGREPORT);
 }
 
@@ -482,8 +477,6 @@ static void parse_args(int argc, char **argv)
             ob_replace_wm = YES;
         } else if (!strcmp(argv[i], "--sync")) {
             xsync = YES;
-        } else if (!strcmp(argv[i], "--debug")) {
-            AZDebugShowOutput(YES);
         } else if (!strcmp(argv[i], "--reconfigure")) {
             remote_control = 1;
         } else if (!strcmp(argv[i], "--restart")) {

@@ -23,7 +23,6 @@
 #import "AZEventHandler.h"
 #import "AZMainLoop.h"
 #import "AZScreen.h"
-#import "AZDebug.h"
 #import "AZGroup.h"
 #import "AZClientManager.h"
 #import "AZClient+GNUstep.h"
@@ -498,7 +497,8 @@ static AZEventHandler *sharedInstance;
      
     switch(e->type) {
     case SelectionClear:
-        AZDebug("Another WM has requested to replace us. Exiting.\n");
+        NSDebugLLog(@"Event", 
+		            @"Another WM has requested to replace us. Exiting.");
         ob_exit_replace();
         break;
 
@@ -724,12 +724,11 @@ static AZEventHandler *sharedInstance;
             if (e->xcrossing.mode == NotifyGrab ||
                 e->xcrossing.mode == NotifyUngrab)
             {
-#ifdef DEBUG_FOCUS
-                AZDebug("%sNotify mode %d detail %d on %lx IGNORED\n",
+                NSDebugLLog(@"Focus", 
+				         @"%sNotify mode %d detail %d on %lx IGNORED",
                          (e->type == EnterNotify ? "Enter" : "Leave"),
                          e->xcrossing.mode,
-                         e->xcrossing.detail, client?client->window:0);
-#endif
+                         e->xcrossing.detail, client? [client window]:0);
             } else {
 	       /* Only reach here for focus follow mouse */
             }
@@ -876,7 +875,7 @@ static AZEventHandler *sharedInstance;
 	[[AZClientManager defaultManager] unmanageClient: client];
         break;
     case MapRequest:
-        AZDebug("MapRequest for 0x%lx\n", [client window]);
+        NSDebugLLog(@"Event", @"MapRequest for 0x%lx\n", [client window]);
         if (![client iconic]) break; /* this normally doesn't happen, but if it
                                        does, we don't want it!
                                        it can happen now when the window is on
@@ -924,7 +923,7 @@ static AZEventHandler *sharedInstance;
 			             hide: NO];
         } else if (msgtype == prop_atoms.net_wm_state) {
             /* can't compress these */
-            AZDebug("net_wm_state %s %ld %ld for 0x%lx\n",
+            NSDebugLLog(@"Event", @"net_wm_state %s %ld %ld for 0x%lx",
                      (e->xclient.data.l[0] == 0 ? "Remove" :
                       e->xclient.data.l[0] == 1 ? "Add" :
                       e->xclient.data.l[0] == 2 ? "Toggle" : "INVALID"),
@@ -934,7 +933,8 @@ static AZEventHandler *sharedInstance;
 		           data1: e->xclient.data.l[1]
 			   data2: e->xclient.data.l[2]];
         } else if (msgtype == prop_atoms.net_close_window) {
-            AZDebug("net_close_window for 0x%lx\n", [client window]);
+            NSDebugLLog(@"Event", 
+			            @"net_close_window for 0x%lx", [client window]);
 	    [client close];
         } else if (msgtype == prop_atoms.net_active_window) {
             /* XXX make use of data.l[2] ! */

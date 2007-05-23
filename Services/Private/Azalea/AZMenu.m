@@ -187,7 +187,7 @@
 
 - (void) clearEntries
 {
-#ifdef DEBUG_AZALEA
+#if 0 // For debug purpose
     /* assert that the menu isn't visible */
     {
         GList *it;

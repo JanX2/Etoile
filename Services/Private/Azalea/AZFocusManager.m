@@ -160,14 +160,7 @@ static AZFocusManager *sharedInstance;
     /* uninstall the old colormap, and install the new one */
     [screen installColormap: focus_client install: NO];
     [screen installColormap: client install: YES];
-#if 0
-    if (client == nil) {
-        /* when nothing will be focused, send focus to the backup target */
-        XSetInputFocus(ob_display, [screen supportXWindow], RevertToNone,
-                       event_curtime);
-        XSync(ob_display, NO);
-    }
-#endif
+
     /* in the middle of cycling..? kill it. CurrentTime is fine, time won't
        be used.
     */
@@ -191,11 +184,6 @@ static AZFocusManager *sharedInstance;
         active = client ? [client window] : None;
         PROP_SET32(RootWindow(ob_display, ob_screen),
                    net_active_window, window, active);
-#if 0
-        /* remove hiliting from the window when it gets focused */
-        if (client != nil)
-            [client hilite: NO];
-#endif
     }
 }
 
@@ -694,13 +682,6 @@ done_cycle:
         [focus_order insertObject: c atIndex: i];
       else
         [focus_order addObject: c];
-#if 0
-        GList *it;
-
-        for (it = focus_order;
-             it && !((ObClient*)it->data)->iconic; it = g_list_next(it));
-        focus_order = g_list_insert_before(focus_order, it, c);
-#endif
     }
     RELEASE(c);
 }
@@ -730,14 +711,6 @@ done_cycle:
         [focus_order insertObject: c atIndex: i];
       else
         [focus_order addObject: c];
-#if 0
-        GList *it;
-
-        /* insert before first iconic window */
-        for (it = focus_order;
-             it && !((ObClient*)it->data)->iconic; it = g_list_next(it));
-        focus_order = g_list_insert_before(focus_order, it, c);
-#endif
     }
     RELEASE(c);
 }
