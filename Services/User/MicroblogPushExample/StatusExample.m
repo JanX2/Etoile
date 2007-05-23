@@ -13,8 +13,16 @@
 - (void) statusChanged:(NSNotification*)aNotification
 {
 	NSString * message = [[aNotification userInfo] objectForKey:@"status"];
-	//Replace this with code to push the presence
-	NSLog(@"userInfo: %@", message);
+	/* Avoid duplicates */
+	if(![lastStatus isEqualToString:message])
+	{
+		//Replace this with code to push the presence
+		NSLog(@"userInfo: %@", message);
+
+		/* Log the last status */
+		[lastStatus release];
+		lastStatus = [message retain];
+	}
 }
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification
 {
