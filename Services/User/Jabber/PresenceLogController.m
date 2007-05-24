@@ -9,6 +9,7 @@
 #import "PresenceLogController.h"
 #import "Presence.h"
 #import "TRUserDefaults.h"
+#import "NSTextView+ClickableLinks.h"
 
 
 @implementation PresenceLogController
@@ -70,6 +71,7 @@
 		[[view textStorage] insertAttributedString:headline atIndex:0];
 		[emoText release];
 		[headline release];
+		[view makeLinksClickable];
 	}
 }
 @end

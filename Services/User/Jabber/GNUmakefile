@@ -50,6 +50,7 @@ StepChat_OBJC_FILES = \
 	HideMenuController.m\
 	JabberApp.m\
 	MessageWindowController.m\
+	NSTextView+ClickableLinks.m\
 	AccountWindowController.m\
 	PasswordWindowController.m\
 	PreferenceWindowController.m\

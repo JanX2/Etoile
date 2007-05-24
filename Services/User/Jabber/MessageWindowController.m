@@ -9,6 +9,7 @@
 #import "MessageWindowController.h"
 #import "Presence.h"
 #import "TRUserDefaults.h"
+#import "NSTextView+ClickableLinks.h"
 
 #ifdef NO_ATTRIBUTED_TITLES
 #define setAttributedTitle(x) setTitle:[x string]
@@ -183,6 +184,7 @@ NSMutableArray * messageWindowControllers = nil;
 		}
 	}
 	[[messageBox textStorage] appendAttributedString:[log logMessage:aMessage]];
+	[messageBox makeLinksClickable];
 	[messageBox display];
 	[messageBox scrollRangeToVisible:NSMakeRange([[messageBox textStorage] length],0)];
 }
