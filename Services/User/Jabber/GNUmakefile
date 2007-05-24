@@ -31,7 +31,7 @@ StepChat_LOCALIZED_RESOURCE_FILES = \
 	  MessageWindow.gorm\
 	  AccountBox.gorm \
 	  PasswordBox.gorm \
-	  RosterWindow.gorm
+	  RosterWindow.nib
 endif
 
 #
@@ -55,6 +55,7 @@ StepChat_OBJC_FILES = \
 	PasswordWindowController.m\
 	PreferenceWindowController.m\
 	PresenceMenuController.m\
+	PresenceLogController.m\
 	RosterController.m\
 	TRUserDefaults.m\
 	XMLLog.m\
