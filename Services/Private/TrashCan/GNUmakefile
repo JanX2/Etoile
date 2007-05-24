@@ -1,3 +1,5 @@
+ETOILE_CORE_MODULE = YES
+
 include $(GNUSTEP_MAKEFILES)/common.make
 
 APP_NAME = TrashCan
@@ -19,6 +21,4 @@ ADDITIONAL_LIB_DIRS += \
 ADDITIONAL_GUI_LIBS += 
 
 include $(GNUSTEP_MAKEFILES)/application.make
-include $(GNUSTEP_MAKEFILES)/aggregate.make
 include ../../../etoile.make
-
