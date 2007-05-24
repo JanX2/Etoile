@@ -1,3 +1,5 @@
+ETOILE_CORE_MODULE = YES
+
 include $(GNUSTEP_MAKEFILES)/common.make
 
 DEPENDENCIES = \
