@@ -16,7 +16,7 @@ Microblogger_OBJC_FILES = \
 	Microblogger.m\
 	main.m
 
-ADDITIONAL_OBJCFLAGS = -std=c99 -g -Werror
+ADDITIONAL_OBJCFLAGS = -std=c99 -g -Werror -DGNUSTEP
 ADDITIONAL_LDFLAGS += -g
 
 

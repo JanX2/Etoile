@@ -22,24 +22,30 @@
 		[lastStatus release];
 		lastStatus = [message retain];
 		
-		script = [NSString stringWithFormat:@"user=%@&personal_key=%@&method=presence.send&message=%@", 
-					username, 
-					password, 
-					[message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+		/* Construct the Jaiku API call */
+		NSString * query = [NSString stringWithFormat:@"user=%@&personal_key=%@&method=presence.send&message=%@", 
+			username, 
+			password, 
+			[message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+		/* Use curl to send it. */
+#ifdef GNUSTEP		
+		[NSTask launchedTaskWithLaunchPath:@"curl"
+#else
+		[NSTask launchedTaskWithLaunchPath:@"/usr/bin/curl"
+#endif
+								 arguments:[NSArray arrayWithObjects:
+			@"api.jaiku.com/json",
+			@"-d",
+			query,
+			nil]];
 	}
 
-	[NSTask launchedTaskWithLaunchPath:@"/usr/bin/curl"
-							 arguments:[NSArray arrayWithObjects:
-		@"api.jaiku.com/json",
-		@"-d",
-		script,
-		nil]];
 }
 - (void) runWithUsername:(NSString*)aUsername password:(NSString*)aPassword
 {
 	/* Set username and password */
-	username = aUsername;
-	password = aPassword;
+	username = [aUsername retain];
+	password = [aPassword retain];
 	
 	/* Register for the notification */
 	NSNotificationCenter * center = [NSDistributedNotificationCenter 
