@@ -1,5 +1,10 @@
 # AUTOMATICALLY GENERATED. DO NOT EDIT - YOUR CHANGES WILL BE OVERWRITTEN
 
+# FIXME: Find a way not to overwrite ETOILE_CORE_MODULE below...
+# This variable only works when put here :-/ Thereby it's impossible to have it
+# within GNUmakefile.postamble. 
+ETOILE_CORE_MODULE = YES 
+
 include $(GNUSTEP_MAKEFILES)/common.make
 
 ifeq ($(warnings), yes)

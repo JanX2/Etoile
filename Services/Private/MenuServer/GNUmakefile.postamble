@@ -23,8 +23,6 @@
 # that's why we do the include in this GNUmakefile.postamble.
 include ../../../etoile.make
 
-DEPENDENCIES = XWindowServerKit
-
 ifeq ($(findstring solaris, $(GNUSTEP_TARGET_OS)), solaris)
 # Solaris' find(1) doesn't understand -print0 and its xargs(1)
 # doesn't understand -0 either, so use the more fragile newline
