@@ -11,6 +11,7 @@
 
 @interface PresenceLogController : NSWindowController {
 	IBOutlet NSTextView * view;
+	NSString * myStatus;
 }
 
 @end
