@@ -1,3 +1,7 @@
+2007-05-24  Quentin Mathé <qmathe@club-internet.fr>
+
+	* GNUmakefile: Added ETOILE_CORE_MODULE.
+
 2007-05-23  Yen-Ju Chen <yjchenx at gmail>
 
 	* Use NSDebugLLog for debug messages. 
