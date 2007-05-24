@@ -1,0 +1,17 @@
+2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
+	* ChangeLog:
+	* PQSampleController.h:
+	* PQSampleController.m:
+	* PQController.h:
+	* PQController.m:
+	* PQFontFamily.h:
+	* PQFontFamily.m:
+	* PQFontFamily.m:
+	* PQCompat.h:
+	* PQMain.m:
+	* Info.plist:
+	* English.lproj/:
+	* English.lproj/MainMenu.nib/*:
+	* InfoPlist.strings:
+	* FontManager.xcodeproj/*:
+	Initial import of Font Manager.

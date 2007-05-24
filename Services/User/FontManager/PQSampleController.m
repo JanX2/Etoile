@@ -1,7 +1,19 @@
-#import "Compat.h"
-#import "FMSampleController.h"
+/*
+ * PQSamplerController.m - Font Manager
+ *
+ * Controller for font sampler.
+ *
+ * Copyright 2007 Isaiah Beerbower.
+ *
+ * Author: Isaiah Beerbower
+ * Created: 05/24/07
+ * License: Modified BSD license (see file COPYING)
+ */
 
-@implementation FMSampleController
+#import "PQCompat.h"
+#import "PQSampleController.h"
+
+@implementation PQSampleController
 
 - (id) init
 {
@@ -85,7 +97,7 @@
 
 
 	NSEnumerator *fontEnumerator = [[self fonts] objectEnumerator];
-	NSFont *currentFont;
+	NSString *currentFont;
 	
 	NSTextStorage *fontSample = [sampleView textStorage];
 
@@ -96,33 +108,10 @@
 	while (currentFont = [fontEnumerator nextObject])
 	{
     NSAttributedString *fontName =
-			[[NSAttributedString alloc] initWithString:[currentFont displayName]];
+			[[NSAttributedString alloc] initWithString:
+				[currentFont stringByAppendingString:@"\n"]];
 		[fontSample appendAttributedString:fontName];
 	}
-}
-
-- (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(int)rowIndex
-{
-	/* if (aTableView == sizeListView) */
-
-	ASSIGN(fontSize, [sizes objectAtIndex:rowIndex]);
-	[self update];
-
-	return YES;
-}
-
-- (int) numberOfRowsInTableView: (NSTableView *)aTableView
-{
-	/* if (aTableView == sizeListView) */
-	return [sizes count];
-}
-
-- (id) tableView: (NSTableView *)aTableView
-	objectValueForTableColumn: (NSTableColumn *)aTableColumn
-             row: (int)rowIndex
-{
-	/* if (aTableView == sizeListView) */
-	return [sizes objectAtIndex:rowIndex];
 }
 
 - (void) controlTextDidEndEditing: (NSNotification *)aNotification

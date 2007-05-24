@@ -1,5 +1,7 @@
 /*
- * Compat.h - Font Manager
+ * PQCompat.h - Font Manager
+ *
+ * Mac OS X compatibility.
  *
  * Copyright 2007 Isaiah Beerbower.
  *
