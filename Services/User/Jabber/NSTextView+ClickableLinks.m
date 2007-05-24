@@ -59,27 +59,33 @@
 			foundRange.location = startOfURLRange.location;
 			foundRange.length = endOfURLRange.location-foundRange.location;
 			
-			/* Make a URL from the link text */
-			NSURL * url = [NSURL URLWithString:[string substringWithRange:foundRange]];
-			
-			NSDictionary * linkAttributes= [NSDictionary dictionaryWithObjectsAndKeys: 
-				url, NSLinkAttributeName,
-				[NSNumber numberWithInt:NSSingleUnderlineStyle], NSUnderlineStyleAttributeName,
-				[NSCursor pointingHandCursor],NSCursorAttributeName,
-				[NSColor blueColor], NSForegroundColorAttributeName,
-				nil];
-			
-			/* Clickify the link */
-			[textStorage addAttributes:linkAttributes range:foundRange];
-			
-			/* Reset attributes for after the link */
+			/* Range starting after the link */
 			NSRange afterLink;
 			afterLink.location = foundRange.location + foundRange.length;
 			afterLink.length = 0;
-			[textStorage removeAttribute:NSLinkAttributeName range:afterLink];
-			[textStorage removeAttribute:NSCursorAttributeName range:afterLink];
-			[textStorage removeAttribute:NSUnderlineStyleAttributeName range:afterLink];
-			[textStorage removeAttribute:NSForegroundColorAttributeName range:afterLink];
+			
+			/* Don't do anything for tiny things that look like links. */
+			if(foundRange.length > 4)
+			{
+				/* Make a URL from the link text */
+				NSURL * url = [NSURL URLWithString:[string substringWithRange:foundRange]];
+				
+				NSDictionary * linkAttributes= [NSDictionary dictionaryWithObjectsAndKeys: 
+					url, NSLinkAttributeName,
+					[NSNumber numberWithInt:NSSingleUnderlineStyle], NSUnderlineStyleAttributeName,
+					[NSCursor pointingHandCursor],NSCursorAttributeName,
+					[NSColor blueColor], NSForegroundColorAttributeName,
+					nil];
+				
+				/* Clickify the link */
+				[textStorage addAttributes:linkAttributes range:foundRange];
+				
+				/* Reset attributes for after the link */
+				[textStorage removeAttribute:NSLinkAttributeName range:afterLink];
+				[textStorage removeAttribute:NSCursorAttributeName range:afterLink];
+				[textStorage removeAttribute:NSUnderlineStyleAttributeName range:afterLink];
+				[textStorage removeAttribute:NSForegroundColorAttributeName range:afterLink];
+			}
 			
 			/* Search after the end of the link */
 			searchRange.location = afterLink.location;
