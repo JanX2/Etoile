@@ -1,0 +1,4 @@
+2007-05-24  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Added ETOILE_CORE_MODULE.
+	* ChangeLog: Added.
