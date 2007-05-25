@@ -125,9 +125,10 @@ static AZExpose *sharedInstance;
 		{
 			case KeyPress:
 				if ((event.xkey.keycode == switchKey) &&
-				    (event.xkey.state & mask) &&
-				    (isSwitching == NO))
+				         (event.xkey.state & mask) &&
+				         (isSwitching == NO))
 				{
+					NSLog(@"Start");
 					isSwitching = YES;
 					[self updateClientList];
 					[window setClients: clients];
@@ -137,6 +138,7 @@ static AZExpose *sharedInstance;
 				else if ((event.xkey.keycode == switchKey) &&
 				         (isSwitching == YES))
 				{
+					NSLog(@"Switch");
 					if (event.xkey.state & ShiftMask)
 					{
 						[window previous: self];
@@ -147,7 +149,6 @@ static AZExpose *sharedInstance;
 					}
 					break;
 				}
-				break;
 			case KeyRelease:
 				if ((event.xkey.keycode == modifierKey) &&
 				    (isSwitching == YES))
@@ -158,7 +159,6 @@ static AZExpose *sharedInstance;
 					[client show: self];
 					break;
 				}
-				break;
 #if 0 // Cannot have modifier key and button at the same time !!
 			case ButtonPress:
 			case ButtonRelease:
@@ -251,7 +251,7 @@ static AZExpose *sharedInstance;
 	/* Grab key */
 	XGrabKey(dpy, modifierKey, AnyModifier, root_win, False,
 	         GrabModeAsync, GrabModeAsync);
-	XGrabKey(dpy, switchKey, AnyModifier, root_win, False,
+	XGrabKey(dpy, switchKey, mask, root_win, False,
 	         GrabModeAsync, GrabModeAsync);
 
 	/* Setup Atom */
