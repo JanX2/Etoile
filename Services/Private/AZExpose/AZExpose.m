@@ -129,6 +129,8 @@ static AZExpose *sharedInstance;
 				         (isSwitching == NO))
 				{
 					NSLog(@"Start");
+					XGrabKeyboard(dpy, root_win, True, 
+					              GrabModeAsync, GrabModeAsync, CurrentTime);
 					isSwitching = YES;
 					[self updateClientList];
 					[window setClients: clients];
@@ -153,6 +155,7 @@ static AZExpose *sharedInstance;
 				if ((event.xkey.keycode == modifierKey) &&
 				    (isSwitching == YES))
 				{
+					XUngrabKeyboard(dpy, CurrentTime);
 					isSwitching = NO;
 					[window orderOut: self];
 					AZClient *client = [clients objectAtIndex: [window indexOfSelectedClient]];
@@ -249,8 +252,10 @@ static AZExpose *sharedInstance;
 	XSelectInput(dpy, root_win, PropertyChangeMask);
 
 	/* Grab key */
+#if 0
 	XGrabKey(dpy, modifierKey, AnyModifier, root_win, False,
 	         GrabModeAsync, GrabModeAsync);
+#endif
 	XGrabKey(dpy, switchKey, mask, root_win, False,
 	         GrabModeAsync, GrabModeAsync);
 
