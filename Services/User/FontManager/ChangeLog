@@ -1,4 +1,7 @@
 2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
+	* English.lproj/MainMenu.nib/*: Update nib
+
+2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
 	* ChangeLog:
 	* PQSampleController.h:
 	* PQSampleController.m:

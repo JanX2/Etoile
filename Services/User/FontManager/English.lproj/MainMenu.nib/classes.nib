@@ -1,7 +1,8 @@
 {
     IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            CLASS = FMController; 
+            CLASS = PQController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 fontList = NSOutlineView; 
@@ -11,20 +12,18 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            CLASS = FMSampleController; 
+            CLASS = PQSampleController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 backgroundColorWell = NSColorWell; 
                 customSampleField = NSComboBox; 
                 foregroundColorWell = NSColorWell; 
                 sampleView = NSTextView; 
-                sizeField = NSTextField; 
-                sizeListView = NSTableView; 
+                sizeField = NSComboBox; 
                 sizeSlider = NSSlider; 
             }; 
             SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+        }
     ); 
     IBVersion = 1; 
 }
