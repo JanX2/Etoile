@@ -60,6 +60,11 @@
 	return YES;
 }
 
+- (NSComparisonResult) caseInsensitiveCompare: (PQFontFamily *)aFontFamily
+{
+	return [[self name] caseInsensitiveCompare:[aFontFamily name]];
+}
+
 - (void) dealloc
 {
 	RELEASE(name);

@@ -1,4 +1,9 @@
 2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
+	* PQController.m: Added sorting of fonts.
+	* PQFontFamily.h: Added -caseInsensitiveCompare: for sorting.
+	* PQFontFamily.m: Same.
+
+2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
 	* English.lproj/MainMenu.nib/*: Update nib
 
 2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
@@ -8,7 +13,6 @@
 	* PQController.h:
 	* PQController.m:
 	* PQFontFamily.h:
-	* PQFontFamily.m:
 	* PQFontFamily.m:
 	* PQCompat.h:
 	* PQMain.m:

@@ -30,4 +30,6 @@
 
 - (bool) hasMultipleMembers;
 
+- (NSComparisonResult) caseInsensitiveCompare: (PQFontFamily *)aFontFamily;
+
 @end
