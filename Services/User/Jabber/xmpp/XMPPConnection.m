@@ -189,7 +189,7 @@ static NSDictionary * STANZA_KEYS;
 	struct hostent * host;
 	struct sockaddr_in serverAddress;
 	
-	
+	NSLog(@"Looking up host %@,(%s)", serverHost, [serverHost UTF8String]);
 	host = gethostbyname([serverHost UTF8String]);
 	//host = gethostbyname("66.116.97.186");
 	if(host == NULL)
@@ -238,7 +238,15 @@ static NSDictionary * STANZA_KEYS;
 	user = [[aJID node] retain];
 	server = [[aJID domain] retain];
 	pass = [password retain];
-	serverHost = [jabberServer retain];
+	if(serverHost == nil)
+	{
+		serverHost = [server retain];
+	}
+	else
+	{
+		serverHost = [jabberServer retain];
+	}
+	NSLog(@"Connecting to %@ with username %@ and password %@", serverHost, user, pass);
 	[self reconnectToJabberServer];
 }
 

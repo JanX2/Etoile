@@ -18,21 +18,21 @@ StepChat_RESOURCE_FILES = \
 	StepChatInfo.plist \
 	Resources/StepChat.tiff
 
-ifeq ($(FOUNDATION_LIB), apple)
+#ifeq ($(FOUNDATION_LIB), apple)
 StepChat_LOCALIZED_RESOURCE_FILES = \
 	  MainMenu.nib\
 	  MessageWindow.nib\
 	  AccountBox.nib\
 	  PasswordBox.nib\
 	  RosterWindow.nib
-else
-StepChat_LOCALIZED_RESOURCE_FILES = \
-	  MainMenu.nib\
-	  MessageWindow.gorm\
-	  AccountBox.gorm \
-	  PasswordBox.gorm \
-	  RosterWindow.nib
-endif
+#else
+#StepChat_LOCALIZED_RESOURCE_FILES = \
+	  #MainMenu.nib\
+	  #MessageWindow.gorm\
+	  #AccountBox.gorm \
+	  #PasswordBox.gorm \
+	  #RosterWindow.nib
+#endif
 
 #
 # Header files
@@ -61,7 +61,7 @@ StepChat_OBJC_FILES = \
 	XMLLog.m\
 	main.m
 
-ADDITIONAL_LDFLAGS += -lTRXML -lXMPP -lssl -lcrypto -lAddresses
+ADDITIONAL_LDFLAGS += -lTRXML -lXMPP -lssl -lcrypto -lAddresses -g
 ADDITIONAL_OBJCFLAGS += -werror -g
 ADDITIONAL_LIB_DIRS += -LTRXML/$(GNUSTEP_OBJ_DIR) -Lxmpp/$(GNUSTEP_OBJ_DIR)
 ADDITIONAL_OBJCFLAGS = -DGNUSTEP -DNO_ATTRIBUTED_TITLES -std=c99 -Wno-import -Ixmpp -ITRXML

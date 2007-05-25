@@ -279,9 +279,6 @@ NSMutableArray * rosterControllers = nil;
 
 - (NSRect)optimalSize
 {
-#ifdef GNUSTEP
-	return [[self window] frame];
-#endif
 	NSRect windowFrameDimensions = [[self window] frame];
 	float oldHeight = windowFrameDimensions.size.height;
 	
@@ -315,7 +312,10 @@ NSMutableArray * rosterControllers = nil;
 
 - (void) update:(id)_object
 {
+#ifdef GNUSTEP
 	[view reloadData];
+	[[self window] setFrame:[self optimalSize] display:YES animate:NO];
+#else
 	if(_object == nil)
 	{
 		[view reloadData];
@@ -337,9 +337,6 @@ NSMutableArray * rosterControllers = nil;
 			}
 		}
 	}
-#ifdef GNUSTEP
-	[[self window] setFrame:[self optimalSize] display:YES animate:NO];
-#else
 	[[self window] setFrame:[self optimalSize] display:YES animate:YES];
 #endif
 	[view display];
