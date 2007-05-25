@@ -216,6 +216,68 @@ NSString* XWindowCommandPath(Window win)
   return [NSString stringWithCString: argv_return[0]];
 }
 
+NSString *XWindowTitle(Window win)
+{
+	NSString *title;
+	Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+
+	unsigned char *data = NULL;
+	Atom utf8 = XInternAtom(dpy, "UTF8_STRING", False);
+	Atom visible = XInternAtom(dpy, "_NET_WM_VISIBLE_NAME", False);
+	Atom name = XInternAtom(dpy, "_NET_WM_NAME", False);
+	Atom type_ret;
+	int format_ret;
+	unsigned long after_ret;
+	unsigned long count;
+	int result = XGetWindowProperty(dpy, win, visible,
+	                                0, 0x7FFFFFFF, False, utf8,
+                                    &type_ret, &format_ret, &count,
+                                    &after_ret, &data);
+	if ((result != Success)) 
+	{
+		NSLog(@"Error: cannot get visible name of client");
+		if (data != NULL) 
+		{
+			XFree(data);
+		}
+	}
+	else
+	{
+		title = [NSString stringWithUTF8String: (char*)data];
+		if (data != NULL)
+		{
+			XFree(data);
+		}
+		if (title)
+			return title;
+	}
+
+	result = XGetWindowProperty(dpy, win, name,
+	                            0, 0x7FFFFFFF, False, utf8,
+                                &type_ret, &format_ret, &count,
+                                &after_ret, &data);
+	if ((result != Success)) 
+	{
+		NSLog(@"Error: cannot get name of client");
+		if (data != NULL) 
+		{
+			XFree(data);
+		}
+	}
+	else
+	{
+		title = [NSString stringWithUTF8String: (char*)data];
+		if (data != NULL)
+		{
+			XFree(data);
+		}
+		if (title)
+			return title;
+	}
+
+	return nil;
+}
+
 /* This one does not work because GNUstep 
  * only set IconWindowHint for WindowMaker */
 BOOL XWindowIsIcon(Window win)

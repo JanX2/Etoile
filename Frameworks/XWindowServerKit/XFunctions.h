@@ -51,6 +51,9 @@ Window XWindowGroupWindow(Window win);
 /* Get the command path */
 NSString* XWindowCommandPath(Window win);
 
+/* Get title */
+NSString *XWindowTitle(Window win);
+
 /* Returns if the window is an icon window */
 BOOL XWindowIsIcon(Window win);
 

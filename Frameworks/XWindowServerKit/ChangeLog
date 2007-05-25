@@ -1,3 +1,7 @@
+2007 05 24 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Support _NET_WM_NAME and _NET_WM_VISIBLE_NAME.
+
 2007 05 20 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Include XFunctions.h in XScreen.m to avoid complain.
