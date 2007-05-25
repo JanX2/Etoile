@@ -49,7 +49,7 @@
 	[fontFamilies sortUsingSelector:@selector(caseInsensitiveCompare:)];
 	
 	RETAIN(fontFamilies);
-	
+
 	return self;
 }
 

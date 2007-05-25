@@ -10,7 +10,8 @@
  * License: Modified BSD license (see file COPYING)
  */
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 #import "PQSampleController.h"
 #import "PQFontFamily.h"
 
@@ -20,6 +21,6 @@
 	IBOutlet NSTableView *groupList;
 	IBOutlet PQSampleController *sampleController;
 	
-	NSMutableArray *fontFamilies; // All font families
+	NSMutableArray *fontFamilies; /* All font families */
 }
 @end

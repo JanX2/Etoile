@@ -29,10 +29,6 @@
 		[NSNumber numberWithInt:144], [NSNumber numberWithInt:288], nil];
 	RETAIN(sizes);
 	
-	[[NSNotificationCenter defaultCenter] addObserver: self
-    selector: @selector(controlTextDidEndEditing:)
-    name: NSControlTextDidEndEditingNotification object: sizeField];
-	
 	return self;
 }
 
@@ -95,7 +91,7 @@
 	[sizeField setObjectValue:fontSize];
 	[sizeSlider setObjectValue:fontSize];
 
-
+/*
 	NSEnumerator *fontEnumerator = [[self fonts] objectEnumerator];
 	NSString *currentFont;
 	
@@ -111,16 +107,37 @@
 			[[NSAttributedString alloc] initWithString:
 				[currentFont stringByAppendingString:@"\n"]];
 		[fontSample appendAttributedString:fontName];
-	}
+	}*/
 }
 
-- (void) controlTextDidEndEditing: (NSNotification *)aNotification
+- (id) comboBox: (NSComboBox *)aComboBox objectValueForItemAtIndex: (int)index
 {
-	/* NSControlTextDidEndEditingNotification */
+	if (aComboBox == sizeField)
+	{
+		return [sizes objectAtIndex:index];
+	}
+	else if (aComboBox == customSampleField)
+	{
+		return @"The quick brown fox jumps over a lazy dog."; // Temp
+	}
 	
-	ASSIGN(fontSize, [sizeField objectValue]);
+	/* Else: something is wrong */
+	return nil;
+}
+
+- (int) numberOfItemsInComboBox: (NSComboBox *)aComboBox
+{
+	if (aComboBox == sizeField)
+	{
+		return [sizes count];
+	}
+	else if (aComboBox == customSampleField)
+	{
+		return 1; // Temp
+	}
 	
-	[self update];
+	/* Else: something is wrong */
+	return 0;
 }
 
 @end

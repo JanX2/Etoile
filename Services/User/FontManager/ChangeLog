@@ -1,4 +1,9 @@
 2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
+	* PQController.h: Comments.
+	* PQSampleController.m: NSComboBoxDataSource methods added.
+	* English.lproj/MainMenu.nib/*: Combo boxes no use data source.
+
+2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
 	* PQController.m: Added sorting of fonts.
 	* PQFontFamily.h: Added -caseInsensitiveCompare: for sorting.
 	* PQFontFamily.m: Same.

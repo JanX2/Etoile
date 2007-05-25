@@ -11,6 +11,7 @@
 		719DE2A60C0592B100474A48 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 719DE2A50C0592B100474A48 /* MainMenu.nib */; };
 		719DE2AE0C05986400474A48 /* PQSampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 719DE2AD0C05986400474A48 /* PQSampleController.m */; };
 		719DE2B10C05987700474A48 /* PQController.m in Sources */ = {isa = PBXBuildFile; fileRef = 719DE2B00C05987700474A48 /* PQController.m */; };
+		71C9C5150C0675CC0040458A /* message.txt in Resources */ = {isa = PBXBuildFile; fileRef = 71C9C5140C0675CC0040458A /* message.txt */; };
 		71E420F00C062B90003CEA47 /* PQFontFamily.m in Sources */ = {isa = PBXBuildFile; fileRef = 71E420EF0C062B90003CEA47 /* PQFontFamily.m */; };
 		8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
 		8D15AC320486D014006FF6A4 /* PQMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* PQMain.m */; settings = {ATTRIBUTES = (); }; };
@@ -45,6 +46,7 @@
 		719DE2AF0C05987700474A48 /* PQController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PQController.h; sourceTree = "<group>"; };
 		719DE2B00C05987700474A48 /* PQController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PQController.m; sourceTree = "<group>"; };
 		719DE2C50C059AE400474A48 /* PQCompat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PQCompat.h; sourceTree = "<group>"; };
+		71C9C5140C0675CC0040458A /* message.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = message.txt; sourceTree = "<group>"; };
 		71E420EE0C062B90003CEA47 /* PQFontFamily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PQFontFamily.h; sourceTree = "<group>"; };
 		71E420EF0C062B90003CEA47 /* PQFontFamily.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PQFontFamily.m; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
 				717D53CD0C06571300DE5BBC /* ChangeLog */,
+				71C9C5140C0675CC0040458A /* message.txt */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -194,6 +197,7 @@
 				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
 				719DE2A60C0592B100474A48 /* MainMenu.nib in Resources */,
 				717D53CE0C06571300DE5BBC /* ChangeLog in Resources */,
+				71C9C5150C0675CC0040458A /* message.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
