@@ -43,10 +43,10 @@
   <keybind key="A-F4">
     <action name="Close"/>
   </keybind>
-  <keybind key="A-Tab">
+  <keybind key="C-Tab">
     <action name="NextWindow"><opaque>yes</opaque></action>
   </keybind>
-  <keybind key="A-S-Tab">
+  <keybind key="C-S-Tab">
     <action name="PreviousWindow"><opaque>yes</opaque></action>
   </keybind>
   <keybind key="A-F7">
@@ -75,12 +75,6 @@
   <context name="Frame">
     <mousebind button="A-Left" action="Drag">
       <action name="Move"/>
-    </mousebind>
-    <mousebind button="A-Left" action="Click">
-      <action name="Raise"/>
-    </mousebind>
-    <mousebind button="A-Left" action="Press">
-      <action name="Focus"/>
     </mousebind>
     <mousebind button="A-Middle" action="Drag">
       <action name="Resize"/>
