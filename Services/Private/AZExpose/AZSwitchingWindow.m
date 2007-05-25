@@ -42,6 +42,13 @@
 		[cell setClient: [clients objectAtIndex: i]];
 	}
 	[matrix sizeToCells];
+
+	NSRect rect = NSZeroRect;
+	rect.size = [matrix frame].size;
+	rect.origin = [self frame].origin;
+	/* Window is displayed after update clients. So display is NO */
+    [self setFrame: rect display:NO animate:NO];
+
 	/* Always select the first one */
 	selectedIndex = 0;
 	[matrix selectCellAtRow: selectedIndex column: 0];
@@ -76,7 +83,6 @@
 	[matrix setCellSize: NSMakeSize(rect.size.width, 25)];
 	[matrix setDrawsCellBackground: YES];
 	[matrix setAllowsEmptySelection: NO];
-	[matrix setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
 	[[self contentView] addSubview: matrix];
 	DESTROY(cell);
 	return self;
