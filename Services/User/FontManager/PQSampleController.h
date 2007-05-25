@@ -24,12 +24,12 @@
 
 	NSArray *fonts;
 	NSString *sampleText;
+	NSArray *sampleTextHistory;
 
 	NSColor *foregroundColor;
 	NSColor *backgroundColor;
 
 	NSArray *sizes;
-
 	NSNumber *fontSize;
 }
 

@@ -38,7 +38,7 @@
 
 		while (currentMember = [membersEnum nextObject])
 		{
-			[newMembers addObject:[currentMember objectAtIndex:1]];
+			[newMembers addObject:[currentMember objectAtIndex:0]];
 		}
 		
 		PQFontFamily *newFontFamily =
@@ -61,14 +61,14 @@
 
 - (int) numberOfRowsInTableView: (NSTableView *)aTableView
 {
-	return 1;
+	return 1; // Temp
 }
 
 - (id) tableView: (NSTableView *)aTableView
 	objectValueForTableColumn: (NSTableColumn *)aTableColumn
 	           row: (int)rowIndex
 {
-	return @"All";
+	return @"All"; // Temp
 }
 
 /* Fonts [outline] view data source code */
@@ -83,7 +83,25 @@
 	}
 	else if ([item isKindOfClass:[NSString class]])
 	{
-		return item;
+		NSMutableString *styleName = [[NSMutableString alloc] init];
+		
+		[styleName setString: [[NSFont fontWithName: item size: 0.0] displayName]];
+		
+		NSRange familyName = [styleName
+			rangeOfString: [[NSFont fontWithName: item size: 0.0] familyName]];
+
+		[styleName deleteCharactersInRange:familyName];
+
+		[styleName setString: [styleName stringByTrimmingCharactersInSet:
+			[NSCharacterSet whitespaceCharacterSet]]];
+
+
+		if ([styleName isEqualToString:@""])
+		{
+			return @"Regular";
+		}
+		/* else */
+		return styleName;
 	}
 	
 	/* Else: something is wrong */
@@ -134,6 +152,60 @@
 	
 	/* Else: something is wrong */
 	return nil;
+}
+
+/* Watch for selection changes */
+
+- (void) tableViewSelectionDidChange: (NSNotification *)aNotification
+{
+	// Until we implement groups.
+}
+
+- (void) outlineViewSelectionDidChange: (NSNotification *)notification
+{
+	[self updateSample];
+}
+
+- (void) updateSample
+{
+	// NOTE: This method probably could be better.
+	NSIndexSet *selectedRows = [fontList selectedRowIndexes];
+	
+	NSEnumerator *itemEnum = [fontFamilies objectEnumerator];
+	PQFontFamily *currentItem;
+	
+	NSMutableArray *selectedItems = [[NSMutableArray alloc] init];
+	
+	while (currentItem = [itemEnum nextObject])
+	{
+    if ([selectedRows containsIndex:[fontList rowForItem:currentItem]])
+		{
+			[selectedItems addObjectsFromArray:[currentItem members]];
+		}
+		else
+		{
+			NSEnumerator *membersEnum = [[currentItem members] objectEnumerator];
+			NSString *currentMember;
+			
+			while (currentMember = [membersEnum nextObject])
+			{
+				if ([selectedRows containsIndex:[fontList rowForItem:currentMember]])
+				{
+					[selectedItems addObject:currentMember];
+				}
+			}
+		}
+		/* Else: something is wrong */
+	}
+	
+	[sampleController setFonts:selectedItems];
+}
+
+- (void) dealloc
+{
+	RELEASE(fontFamilies);
+	
+	[super dealloc];
 }
 
 @end

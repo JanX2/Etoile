@@ -18,6 +18,13 @@
 - (id) init
 {
 	[super init];
+
+	fonts = [[NSArray alloc] init];
+	sampleText = @"The quick brown fox jumps over a lazy dog.";
+	sampleTextHistory = [NSArray arrayWithObject:@"Big Fat Hairy Test"];
+
+	foregroundColor = [NSColor blackColor];
+	backgroundColor = [NSColor whiteColor];
 	
 	sizes = [NSArray arrayWithObjects: [NSNumber numberWithInt:9],
 		[NSNumber numberWithInt:10], [NSNumber numberWithInt:11],
@@ -27,16 +34,18 @@
 		[NSNumber numberWithInt:48], [NSNumber numberWithInt:64],
 		[NSNumber numberWithInt:72], [NSNumber numberWithInt:96],
 		[NSNumber numberWithInt:144], [NSNumber numberWithInt:288], nil];
+
+	fontSize = [NSNumber numberWithInt:24];
+
+	RETAIN(fonts);
+	RETAIN(sampleText);
+	RETAIN(sampleTextHistory);
+	RETAIN(foregroundColor);
+	RETAIN(backgroundColor);
 	RETAIN(sizes);
+	RETAIN(fontSize);
 	
 	return self;
-}
-
-- (void) dealloc
-{
-	[[NSNotificationCenter defaultCenter] removeObserver: self];
-	
-	[super dealloc];
 }
 
 - (void) setFonts: (NSArray *)newFonts
@@ -83,31 +92,67 @@
 	return sampleText;
 }
 
+- (void) setSampleTextHistory: (NSArray *)newHistory
+{
+	ASSIGN(sampleTextHistory, newHistory);
+	[self update];
+}
+
+- (NSArray *) sampleTextHistory
+{
+	return sampleTextHistory;
+}
+
 - (void) update
 {
 
-	/* Update size controls */
+	/* Update controls */
 
-	[sizeField setObjectValue:fontSize];
-	[sizeSlider setObjectValue:fontSize];
+	[sizeField setObjectValue: fontSize];
+	[sizeSlider setObjectValue: fontSize];
 
-/*
-	NSEnumerator *fontEnumerator = [[self fonts] objectEnumerator];
-	NSString *currentFont;
+
+	/* Update sample */
+
+	NSEnumerator *fontNamesEnum = [[self fonts] objectEnumerator];
+	NSString *currentFontName;
+	NSFont *currentFont;
+	NSString *currentString;
+	
+	BOOL isFirstSample = YES;
 	
 	NSTextStorage *fontSample = [sampleView textStorage];
+	
+	[fontSample setAttributedString:
+		[[NSAttributedString alloc] initWithString:@""]];
 
-	// "The quick brown fox jumps over a lazy dog."
-	//initWithString:attributes:
-	//addAttribute:value:range:
-	//NSMakeRange(0, )
-	while (currentFont = [fontEnumerator nextObject])
+	while (currentFontName = [fontNamesEnum nextObject])
 	{
-    NSAttributedString *fontName =
-			[[NSAttributedString alloc] initWithString:
-				[currentFont stringByAppendingString:@"\n"]];
-		[fontSample appendAttributedString:fontName];
-	}*/
+		currentFont = [NSFont fontWithName: currentFontName
+		                              size: [fontSize floatValue]];
+		
+		if (isFirstSample == YES)
+		{
+			currentString =
+				[NSString stringWithFormat:@"%@:\n", [currentFont displayName]];
+			isFirstSample = NO;
+		}
+		else /* isFirstSample == NO */
+		{
+			currentString =
+				[NSString stringWithFormat:@"\n\n%@:\n", [currentFont displayName]];
+		}
+
+		[fontSample appendAttributedString:
+			[[NSAttributedString alloc] initWithString: currentString]];
+
+		NSDictionary *attributes = [NSDictionary dictionaryWithObject: currentFont
+			forKey: NSFontAttributeName];
+
+		[fontSample appendAttributedString:
+			[[NSAttributedString alloc] initWithString: sampleText
+			attributes:attributes]];
+	}
 }
 
 - (id) comboBox: (NSComboBox *)aComboBox objectValueForItemAtIndex: (int)index
@@ -138,6 +183,19 @@
 	
 	/* Else: something is wrong */
 	return 0;
+}
+
+- (void) dealloc
+{
+	RELEASE(fonts);
+	RELEASE(sampleText);
+	RELEASE(sampleTextHistory);
+	RELEASE(foregroundColor);
+	RELEASE(backgroundColor);
+	RELEASE(sizes);
+	RELEASE(fontSize);
+
+	[super dealloc];
 }
 
 @end

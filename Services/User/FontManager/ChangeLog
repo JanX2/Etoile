@@ -1,3 +1,11 @@
+2007-05-25  Isaiah Beerbower <ipaqah@tm.net>
+	* COPYING: Added license.
+	* PQSampleController.*: Sampling is now implemented.
+	* PQController.*: Now handles the font sample controller.
+	* PQSampleController.*: Added sample text history.
+	* PQSampleController.m: Fixed memory leak.
+	* PQController.m ([PQController -dealloc]): Release objects when done.
+
 2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
 	* PQController.h: Comments.
 	* PQSampleController.m: NSComboBoxDataSource methods added.

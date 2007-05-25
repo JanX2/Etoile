@@ -23,4 +23,7 @@
 	
 	NSMutableArray *fontFamilies; /* All font families */
 }
+
+- (void) updateSample;
+
 @end
