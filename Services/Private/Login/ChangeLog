@@ -1,3 +1,12 @@
+2007-05-26  Quentin Mathe <qmathe@club-internet.fr
+
+	* English.lproj/login.gorm: Improved alignment, typography and added 
+	sessionText outlet.
+	* Controller.h: Added sessionText outlet.
+	* Controller.m: Added default ETAllowUserToChooseEnvironment to control 
+	session/environment popup button visibility.
+	* GDMClient.m: Modified default session to be 'etoile'.
+
 2007-05-02 Yen-Ju Chen <yjchenx at gmail>
 
 	* Use green icon as default button.

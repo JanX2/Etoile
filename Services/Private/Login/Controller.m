@@ -5,7 +5,27 @@
 #import "Background.h"
 #import <unistd.h>
 
+NSString *ETAllowUserToChooseEnvironment = @"ETAllowUserToChooseEnvironment";
+
+#define DEFAULTS [NSUserDefaults standardUserDefaults]
+/* Define space between popup button and next text field downwards */
+#define UI_SPACING 5
+
 @implementation Controller
+
+/* Factory defaults */
++ (void) initialize
+{
+	NSMutableDictionary *defaultValues = [NSMutableDictionary dictionary];
+
+	[defaultValues setObject: [NSNumber numberWithBool: NO] 
+	                  forKey: ETAllowUserToChooseEnvironment];
+	// FIXME: Rather than storing defaults in /var/lib/gdm, we should store 
+	// them in Local/Defaults with..
+	// [[NSUserDefaults alloc] initWithContentsOfFile: 
+	[DEFAULTS registerDefaults: defaultValues];
+}
+
 /* Private */
 - (NSArray *) allSessions
 {
@@ -36,11 +56,24 @@
 - (void) awakeFromNib
 {
 	[self setView: loginView];
+
 	[sessionPopUpButton removeAllItems];
 	[sessionPopUpButton addItemWithTitle: @"default"];
 	[sessionPopUpButton addItemsWithTitles: [self allSessions]];
 	[sessionPopUpButton addItemWithTitle: @"failsafe"];
 	[sessionPopUpButton selectItemAtIndex: 0];
+
+	if ([DEFAULTS boolForKey: ETAllowUserToChooseEnvironment] == NO)
+	{
+		NSRect newWindowFrame = [window frame];
+
+		[sessionText removeFromSuperview];
+		[sessionPopUpButton removeFromSuperview];
+		newWindowFrame.size.height = [window frame].size.height 
+			- ([sessionPopUpButton frame].size.height + UI_SPACING);
+		[window setFrame: newWindowFrame display: YES];
+	}
+
 	busyImageCounter = 0;
 	busy = NO;
 	[self displayHostname];
@@ -106,9 +139,14 @@
 
 - (void) doLogin
 {
+	NSString *selectedSession = nil;
+
+	if ([DEFAULTS boolForKey: ETAllowUserToChooseEnvironment])
+		selectedSession = [sessionPopUpButton stringValue];
+
 	if ([gdm loginWithUsername: [loginTextfield stringValue]
 		 password: [passwordTextfield stringValue]
-		 session: [sessionPopUpButton stringValue]])
+		 session: selectedSession])
 	{
 		//[self gdmLogged: self];
 		[self performSelectorOnMainThread: @selector(gdmLogged:) withObject: nil waitUntilDone: NO];	

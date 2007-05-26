@@ -12,7 +12,7 @@
            andOutput: (NSFileHandle*) anOutput
 {
 	self = [super init];
-	ASSIGN(desktop, @"default");
+	ASSIGN(desktop, @"etoile");
 
 	ASSIGN(input, anInput);
 	ASSIGN(output, anOutput);
@@ -66,8 +66,8 @@
 	BOOL res = NO;
 	user = userName;
 	password = pw;
-	if (session)
-	        desktop = session;
+	if (session != nil)
+		desktop = session;
 
 	NS_DURING
 	#define READ(NAME) if ([self read: NAME] == NO) { [output sendSTX]; return NO; } else { [output sendSTX]; }

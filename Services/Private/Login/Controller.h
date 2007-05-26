@@ -3,6 +3,8 @@
 #include <AppKit/AppKit.h>
 #import "GDMClient.h"
 
+extern NSString *ETAllowUserToChooseEnvironment;
+
 @interface Controller : NSObject
 {
   id loginTextfield;
@@ -14,6 +16,7 @@
   id imageView;
   id hostnameText;
   id sessionPopUpButton;
+  id sessionText;
 
   int busyImageCounter;
 

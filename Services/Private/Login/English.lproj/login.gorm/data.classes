@@ -14,7 +14,8 @@
 	    busyView,
 	    imageView,
 	    hostnameText,
-	    sessionPopUpButton
+	    sessionPopUpButton,
+	    sessionText
 	);
 	Super = NSObject;
     };
