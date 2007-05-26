@@ -55,6 +55,7 @@
 
 - (void) awakeFromNib
 {
+	[self updateSample];
 }
 
 /* Groups [table] view data source code */

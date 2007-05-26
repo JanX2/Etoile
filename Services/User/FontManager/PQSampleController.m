@@ -20,7 +20,7 @@
 	[super init];
 
 	fonts = [[NSArray alloc] init];
-	sampleText = @"The quick brown fox jumps over a lazy dog.";
+	sampleText = NSLocalizedString(@"PQPangram", nil);
 	sampleTextHistory = [NSArray arrayWithObject:@"Big Fat Hairy Test"];
 
 	foregroundColor = [NSColor blackColor];
@@ -44,7 +44,7 @@
 	RETAIN(backgroundColor);
 	RETAIN(sizes);
 	RETAIN(fontSize);
-	
+
 	return self;
 }
 
@@ -110,7 +110,7 @@
 
 	[sizeField setObjectValue: fontSize];
 	[sizeSlider setObjectValue: fontSize];
-
+	[customSampleField setStringValue: [self sampleText]];
 
 	/* Update sample */
 
@@ -183,6 +183,14 @@
 	
 	/* Else: something is wrong */
 	return 0;
+}
+
+/* Keep controls updated */
+
+- (void) controlTextDidEndEditing: (NSNotification *)aNotification
+{
+	sampleText = [customSampleField stringValue];
+	[self update];
 }
 
 - (void) dealloc
