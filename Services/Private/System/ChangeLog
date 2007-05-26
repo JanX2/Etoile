@@ -1,3 +1,7 @@
+2007-05-26  Quentin Mathe <qmathe@club-internet.fr>
+
+	* SystemTaskList.plist: Added OuterSpace.
+
 2007-05-24  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Added ETOILE_CORE_MODULE (replace 

@@ -21,7 +21,18 @@
 		Persistent = <*BN>;
 		Hidden = <*BY>;
 	};
-    /etoilesystem/application/menuserver =
+	/etoilesystem/application/azalea =
+	{
+		LaunchPath = "Azalea";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 20;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/application/menuserver =
 	{
 		LaunchPath = "EtoileMenuServer";
 		Arguments = ();
@@ -54,15 +65,15 @@
 		Persistent = <*BN>;
 		Hidden = <*BY>;
 	};
-	/etoilesystem/application/azalea =
+	/etoilesystem/application/outerspace =
 	{
-		LaunchPath = "Azalea";
+		LaunchPath = "OuterSpace";
 		Arguments = ();
 		UserName = "";
-		LaunchPriority = 20;
+		LaunchPriority = 40;
 		OnStart = <*BY>;
 		OnDemand = <*BN>;
 		Persistent = <*BN>;
-		Hidden = <*BY>;
+		Hidden = <*BN>;
 	};
 }
