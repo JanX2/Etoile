@@ -21,7 +21,9 @@
 
 	fonts = [[NSArray alloc] init];
 	sampleText = NSLocalizedString(@"PQPangram", nil);
-	sampleTextHistory = [NSArray arrayWithObject:@"Big Fat Hairy Test"];
+	defaultSampleText =
+		[NSArray arrayWithObjects:NSLocalizedString(@"PQPangram", nil), @"A test ok", nil];
+	sampleTextHistory = [[NSMutableArray alloc] init];
 
 	foregroundColor = [NSColor blackColor];
 	backgroundColor = [NSColor whiteColor];
@@ -35,22 +37,23 @@
 		[NSNumber numberWithInt:72], [NSNumber numberWithInt:96],
 		[NSNumber numberWithInt:144], [NSNumber numberWithInt:288], nil];
 
-	fontSize = [NSNumber numberWithInt:24];
+	size = [NSNumber numberWithInt:24];
 
 	RETAIN(fonts);
 	RETAIN(sampleText);
+	RETAIN(defaultSampleText);
 	RETAIN(sampleTextHistory);
 	RETAIN(foregroundColor);
 	RETAIN(backgroundColor);
 	RETAIN(sizes);
-	RETAIN(fontSize);
+	RETAIN(size);
 
 	return self;
 }
 
-- (void) setFonts: (NSArray *)newFonts
+- (void) setFonts: (NSArray *)someFonts
 {
-	ASSIGN(fonts, newFonts);
+	ASSIGN(fonts, someFonts);
 	[self update];
 }
 
@@ -59,9 +62,9 @@
 	return fonts;
 }
 
-- (void) setForegroundColor: (NSColor *)newColor
+- (void) setForegroundColor: (NSColor *)aColor
 {
-	ASSIGN(foregroundColor, newColor);
+	ASSIGN(foregroundColor, aColor);
 	[self update];
 }
 
@@ -70,9 +73,9 @@
 	return foregroundColor;
 }
 
-- (void) setBackgroundColor: (NSColor *)newColor
+- (void) setBackgroundColor: (NSColor *)aColor
 {
-	ASSIGN(backgroundColor, newColor);
+	ASSIGN(backgroundColor, aColor);
 	[self update];
 }
 
@@ -81,9 +84,9 @@
 	return backgroundColor;
 }
 
-- (void) setSampleText: (NSString *)newText
+- (void) setSampleText: (NSString *)someText
 {
-	ASSIGN(sampleText, newText);
+	ASSIGN(sampleText, someText);
 	[self update];
 }
 
@@ -92,9 +95,9 @@
 	return sampleText;
 }
 
-- (void) setSampleTextHistory: (NSArray *)newHistory
+- (void) setSampleTextHistory: (NSArray *)aHistory
 {
-	ASSIGN(sampleTextHistory, newHistory);
+	ASSIGN(sampleTextHistory, aHistory);
 	[self update];
 }
 
@@ -103,14 +106,29 @@
 	return sampleTextHistory;
 }
 
+- (void) updateFonts
+{
+	[self update];
+}
+
+- (void) updateSampleText
+{
+	[self update];
+}
+
+- (void) updateSize
+{
+	[self update];
+}
+
 - (void) update
 {
 
 	/* Update controls */
 
-	[sizeField setObjectValue: fontSize];
-	[sizeSlider setObjectValue: fontSize];
-	[customSampleField setStringValue: [self sampleText]];
+	[sizeField setObjectValue: size];
+	[sizeSlider setObjectValue: size];
+	[sampleField setStringValue: [self sampleText]];
 
 	/* Update sample */
 
@@ -129,7 +147,7 @@
 	while (currentFontName = [fontNamesEnum nextObject])
 	{
 		currentFont = [NSFont fontWithName: currentFontName
-		                              size: [fontSize floatValue]];
+		                              size: [size floatValue]];
 		
 		if (isFirstSample == YES)
 		{
@@ -161,9 +179,20 @@
 	{
 		return [sizes objectAtIndex:index];
 	}
-	else if (aComboBox == customSampleField)
-	{
-		return @"The quick brown fox jumps over a lazy dog."; // Temp
+	else if (aComboBox == sampleField)
+	{/*
+		if (index < [defaultSampleText count])
+		{
+			return [defaultSampleText objectAtIndex:index];
+		}
+		else
+		{
+			return [sampleTextHistory
+				objectAtIndex:(index - [defaultSampleText count])];
+		}*/
+		
+		return [[defaultSampleText
+			arrayByAddingObjectsFromArray: sampleTextHistory] objectAtIndex: index];
 	}
 	
 	/* Else: something is wrong */
@@ -176,9 +205,12 @@
 	{
 		return [sizes count];
 	}
-	else if (aComboBox == customSampleField)
+	else if (aComboBox == sampleField)
 	{
-		return 1; // Temp
+		//return ([defaultSampleText count] + [sampleTextHistory count]);
+		
+		return [[defaultSampleText
+			arrayByAddingObjectsFromArray: sampleTextHistory] count];
 	}
 	
 	/* Else: something is wrong */
@@ -189,19 +221,72 @@
 
 - (void) controlTextDidEndEditing: (NSNotification *)aNotification
 {
-	sampleText = [customSampleField stringValue];
-	[self update];
+	id theObject = [aNotification object];
+	
+	if (theObject == sampleField)
+	{
+		sampleText = [sampleField stringValue];
+
+		if ([defaultSampleText containsObject: sampleText] == NO)
+		{
+			unsigned index = [sampleTextHistory indexOfObject: sampleText];
+
+			if (index != NSNotFound)
+			{
+				[sampleTextHistory removeObjectAtIndex: index];
+			}
+
+			[sampleTextHistory insertObject: sampleText atIndex: 0];
+		}
+
+		if ([sampleTextHistory count] > 10)
+		{
+			NSRange trimRange = NSMakeRange(10, ([sampleTextHistory count] - 10));
+
+			[sampleTextHistory removeObjectsInRange:trimRange];
+		}
+		[self updateSampleText];
+	}
+	else if (theObject == sizeField)
+	{
+		size = [sizeField objectValue];
+
+		[self updateSize];
+	}
+}
+
+- (void) comboBoxWillDismiss: (NSNotification *)notification
+{
+	id theObject = [notification object];
+	
+	if (theObject == sampleField)
+	{
+		int index = [sampleField indexOfSelectedItem];
+		[self setSampleText:
+			[[defaultSampleText arrayByAddingObjectsFromArray: sampleTextHistory]
+			objectAtIndex: index]];
+
+		[self updateSampleText];
+	}
+	else if (theObject == sizeField)
+	{
+		int index = [sizeField indexOfSelectedItem];
+		size = [sizes objectAtIndex: index];
+
+		[self updateSize];
+	}
 }
 
 - (void) dealloc
 {
 	RELEASE(fonts);
 	RELEASE(sampleText);
+	RELEASE(defaultSampleText);
 	RELEASE(sampleTextHistory);
 	RELEASE(foregroundColor);
 	RELEASE(backgroundColor);
 	RELEASE(sizes);
-	RELEASE(fontSize);
+	RELEASE(size);
 
 	[super dealloc];
 }

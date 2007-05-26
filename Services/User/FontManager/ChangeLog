@@ -1,4 +1,9 @@
 2007-05-25  Isaiah Beerbower <ipaqah@tm.net>
+	* PQSampleController.m: Added to combo box datasource methods.
+	* PQSampleController.h:
+	* English.lproj/MainMenu.nib/*: Small amount of tweaking.
+
+2007-05-25  Isaiah Beerbower <ipaqah@tm.net>
 	* PQController.m ([-awakeFromNib]): Updates font sample after nib is loaded.
 	* PQSampleController.m: Added -controlTextDidEndEditing: method.
 	* PQSampleController.m: Default sample text is moved to Localizable.strings.

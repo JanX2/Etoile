@@ -16,7 +16,7 @@
 @interface PQSampleController : NSObject
 {
   IBOutlet NSColorWell *backgroundColorWell;
-	IBOutlet NSComboBox *customSampleField;
+	IBOutlet NSComboBox *sampleField;
 	IBOutlet NSColorWell *foregroundColorWell;
 	IBOutlet NSTextView *sampleView;
 	IBOutlet NSComboBox *sizeField;
@@ -24,18 +24,29 @@
 
 	NSArray *fonts;
 	NSString *sampleText;
-	NSArray *sampleTextHistory;
+	NSArray *defaultSampleText;
+	NSMutableArray *sampleTextHistory;
 
 	NSColor *foregroundColor;
 	NSColor *backgroundColor;
 
 	NSArray *sizes;
-	NSNumber *fontSize;
+	NSNumber *size;
 }
 
-- (void) setFonts: (NSArray *)newFonts;
+- (void) setFonts: (NSArray *)someFonts;
 - (NSArray *) fonts;
+- (void) setForegroundColor: (NSColor *)aColor;
+- (NSColor *) foregroundColor;
+- (void) setBackgroundColor: (NSColor *)aColor;
+- (NSColor *) backgroundColor;
+- (void) setSampleText: (NSString *)someText;
+- (NSString *) sampleText;
+- (void) setSampleTextHistory: (NSArray *)aHistory;
+- (NSArray *) sampleTextHistory;
 
-- (void) update;
+- (void) updateFonts;
+- (void) updateSampleText;
+- (void) updateSize;
 
 @end

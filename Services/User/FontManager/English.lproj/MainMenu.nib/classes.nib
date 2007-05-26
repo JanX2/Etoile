@@ -16,8 +16,8 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 backgroundColorWell = NSColorWell; 
-                customSampleField = NSComboBox; 
                 foregroundColorWell = NSColorWell; 
+                sampleField = NSComboBox; 
                 sampleView = NSTextView; 
                 sizeField = NSComboBox; 
                 sizeSlider = NSSlider; 
