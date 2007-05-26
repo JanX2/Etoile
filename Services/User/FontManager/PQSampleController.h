@@ -15,7 +15,7 @@
 
 @interface PQSampleController : NSObject
 {
-  IBOutlet NSColorWell *backgroundColorWell;
+	IBOutlet NSColorWell *backgroundColorWell;
 	IBOutlet NSComboBox *sampleField;
 	IBOutlet NSColorWell *foregroundColorWell;
 	IBOutlet NSTextView *sampleView;
@@ -32,7 +32,24 @@
 
 	NSArray *sizes;
 	NSNumber *size;
+
+	BOOL needsUpdateFonts;
+	BOOL needsUpdateSampleText;
+	BOOL needsUpdateSize;
 }
+
+/* Methods for updating the font sample.
+   Do not call directly. Instead use -setNeedsUpdate*: methods. */
+- (void) updateFonts;
+- (void) updateSampleText;
+- (void) updateSize;
+
+- (void) setNeedsUpdateFonts: (BOOL)flag;
+- (BOOL) needsUpdateFonts;
+- (void) setNeedsUpdateSampleText: (BOOL)flag;
+- (BOOL) needsUpdateSampleText;
+- (void) setNeedsUpdateSize: (BOOL)flag;
+- (BOOL) needsUpdateSize;
 
 - (void) setFonts: (NSArray *)someFonts;
 - (NSArray *) fonts;
@@ -40,13 +57,11 @@
 - (NSColor *) foregroundColor;
 - (void) setBackgroundColor: (NSColor *)aColor;
 - (NSColor *) backgroundColor;
+- (void) setSize: (NSNumber *)aNumber;
+- (NSNumber *) size;
 - (void) setSampleText: (NSString *)someText;
 - (NSString *) sampleText;
 - (void) setSampleTextHistory: (NSArray *)aHistory;
 - (NSArray *) sampleTextHistory;
-
-- (void) updateFonts;
-- (void) updateSampleText;
-- (void) updateSize;
 
 @end

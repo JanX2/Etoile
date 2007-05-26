@@ -10,8 +10,15 @@
  * License: Modified BSD license (see file COPYING)
  */
 
+
 #import "PQCompat.h"
 #import "PQSampleController.h"
+
+
+@interface PQSampleController (FontManagerPrivate)
+- (void) PQAddSampleTextToHistory: (NSString *)someText;
+@end
+
 
 @implementation PQSampleController
 
@@ -22,12 +29,12 @@
 	fonts = [[NSArray alloc] init];
 	sampleText = NSLocalizedString(@"PQPangram", nil);
 	defaultSampleText =
-		[NSArray arrayWithObjects:NSLocalizedString(@"PQPangram", nil), @"A test ok", nil];
+		[NSArray arrayWithObjects:NSLocalizedString(@"PQPangram", nil), nil];
 	sampleTextHistory = [[NSMutableArray alloc] init];
 
 	foregroundColor = [NSColor blackColor];
 	backgroundColor = [NSColor whiteColor];
-	
+
 	sizes = [NSArray arrayWithObjects: [NSNumber numberWithInt:9],
 		[NSNumber numberWithInt:10], [NSNumber numberWithInt:11],
 		[NSNumber numberWithInt:12], [NSNumber numberWithInt:13],
@@ -38,6 +45,10 @@
 		[NSNumber numberWithInt:144], [NSNumber numberWithInt:288], nil];
 
 	size = [NSNumber numberWithInt:24];
+
+	needsUpdateFonts = NO;
+	needsUpdateSampleText = NO;
+	needsUpdateSize= NO;
 
 	RETAIN(fonts);
 	RETAIN(sampleText);
@@ -51,59 +62,18 @@
 	return self;
 }
 
-- (void) setFonts: (NSArray *)someFonts
+- (void) dealloc
 {
-	ASSIGN(fonts, someFonts);
-	[self update];
-}
+	RELEASE(fonts);
+	RELEASE(sampleText);
+	RELEASE(defaultSampleText);
+	RELEASE(sampleTextHistory);
+	RELEASE(foregroundColor);
+	RELEASE(backgroundColor);
+	RELEASE(sizes);
+	RELEASE(size);
 
-- (NSArray *) fonts
-{
-	return fonts;
-}
-
-- (void) setForegroundColor: (NSColor *)aColor
-{
-	ASSIGN(foregroundColor, aColor);
-	[self update];
-}
-
-- (NSColor *) foregroundColor
-{
-	return foregroundColor;
-}
-
-- (void) setBackgroundColor: (NSColor *)aColor
-{
-	ASSIGN(backgroundColor, aColor);
-	[self update];
-}
-
-- (NSColor *) backgroundColor
-{
-	return backgroundColor;
-}
-
-- (void) setSampleText: (NSString *)someText
-{
-	ASSIGN(sampleText, someText);
-	[self update];
-}
-
-- (NSString *) sampleText
-{
-	return sampleText;
-}
-
-- (void) setSampleTextHistory: (NSArray *)aHistory
-{
-	ASSIGN(sampleTextHistory, aHistory);
-	[self update];
-}
-
-- (NSArray *) sampleTextHistory
-{
-	return sampleTextHistory;
+	[super dealloc];
 }
 
 - (void) updateFonts
@@ -136,11 +106,11 @@
 	NSString *currentFontName;
 	NSFont *currentFont;
 	NSString *currentString;
-	
+
 	BOOL isFirstSample = YES;
-	
+
 	NSTextStorage *fontSample = [sampleView textStorage];
-	
+
 	[fontSample setAttributedString:
 		[[NSAttributedString alloc] initWithString:@""]];
 
@@ -173,6 +143,100 @@
 	}
 }
 
+- (void) setNeedsUpdateFonts: (BOOL)flag
+{
+	needsUpdateFonts = flag;
+}
+
+- (BOOL) needsUpdateFonts
+{
+	return needsUpdateFonts;
+}
+
+- (void) setNeedsUpdateSampleText: (BOOL)flag
+{
+	needsUpdateSampleText = flag;
+}
+
+- (BOOL) needsUpdateSampleText
+{
+	return needsUpdateSampleText;
+}
+
+- (void) setNeedsUpdateSize: (BOOL)flag
+{
+	needsUpdateSize = flag;
+}
+
+- (BOOL) needsUpdateSize
+{
+	return needsUpdateSize;
+}
+
+- (void) setFonts: (NSArray *)someFonts
+{
+	ASSIGN(fonts, someFonts);
+	[self updateFonts];
+}
+
+- (NSArray *) fonts
+{
+	return fonts;
+}
+
+- (void) setForegroundColor: (NSColor *)aColor
+{
+	ASSIGN(foregroundColor, aColor);
+}
+
+- (NSColor *) foregroundColor
+{
+	return foregroundColor;
+}
+
+- (void) setBackgroundColor: (NSColor *)aColor
+{
+	ASSIGN(backgroundColor, aColor);
+}
+
+- (NSColor *) backgroundColor
+{
+	return backgroundColor;
+}
+
+- (void) setSize: (NSNumber *)aNumber
+{
+	ASSIGN(size, aNumber);
+	[self updateSize];
+}
+
+- (NSNumber *) size
+{
+	return size;
+}
+
+- (void) setSampleText: (NSString *)someText
+{
+	ASSIGN(sampleText, someText);
+	[self updateSampleText];
+}
+
+- (NSString *) sampleText
+{
+	return sampleText;
+}
+
+- (void) setSampleTextHistory: (NSArray *)aHistory
+{
+	ASSIGN(sampleTextHistory, aHistory);
+	[self update];
+}
+
+- (NSArray *) sampleTextHistory
+{
+	return sampleTextHistory;
+}
+
 - (id) comboBox: (NSComboBox *)aComboBox objectValueForItemAtIndex: (int)index
 {
 	if (aComboBox == sizeField)
@@ -180,17 +244,7 @@
 		return [sizes objectAtIndex:index];
 	}
 	else if (aComboBox == sampleField)
-	{/*
-		if (index < [defaultSampleText count])
-		{
-			return [defaultSampleText objectAtIndex:index];
-		}
-		else
-		{
-			return [sampleTextHistory
-				objectAtIndex:(index - [defaultSampleText count])];
-		}*/
-		
+	{
 		return [[defaultSampleText
 			arrayByAddingObjectsFromArray: sampleTextHistory] objectAtIndex: index];
 	}
@@ -207,12 +261,10 @@
 	}
 	else if (aComboBox == sampleField)
 	{
-		//return ([defaultSampleText count] + [sampleTextHistory count]);
-		
 		return [[defaultSampleText
 			arrayByAddingObjectsFromArray: sampleTextHistory] count];
 	}
-	
+
 	/* Else: something is wrong */
 	return 0;
 }
@@ -222,49 +274,41 @@
 - (void) controlTextDidEndEditing: (NSNotification *)aNotification
 {
 	id theObject = [aNotification object];
-	
+
 	if (theObject == sampleField)
 	{
-		sampleText = [sampleField stringValue];
+		NSString *newSampleText = [sampleField stringValue];
 
-		if ([defaultSampleText containsObject: sampleText] == NO)
-		{
-			unsigned index = [sampleTextHistory indexOfObject: sampleText];
+		[self setSampleText: newSampleText];
 
-			if (index != NSNotFound)
-			{
-				[sampleTextHistory removeObjectAtIndex: index];
-			}
-
-			[sampleTextHistory insertObject: sampleText atIndex: 0];
-		}
-
-		if ([sampleTextHistory count] > 10)
-		{
-			NSRange trimRange = NSMakeRange(10, ([sampleTextHistory count] - 10));
-
-			[sampleTextHistory removeObjectsInRange:trimRange];
-		}
-		[self updateSampleText];
+		[self PQAddSampleTextToHistory: newSampleText];
 	}
 	else if (theObject == sizeField)
 	{
-		size = [sizeField objectValue];
-
-		[self updateSize];
+		[self setSize: [sizeField objectValue]];
 	}
 }
 
 - (void) comboBoxWillDismiss: (NSNotification *)notification
 {
 	id theObject = [notification object];
-	
+
 	if (theObject == sampleField)
 	{
 		int index = [sampleField indexOfSelectedItem];
-		[self setSampleText:
+		
+		if (index == -1)
+		{
+			return;
+		}
+
+		NSString *newSampleText =
 			[[defaultSampleText arrayByAddingObjectsFromArray: sampleTextHistory]
-			objectAtIndex: index]];
+			objectAtIndex: index];
+			
+		[self setSampleText: newSampleText];
+
+		[self PQAddSampleTextToHistory: newSampleText];
 
 		[self updateSampleText];
 	}
@@ -277,18 +321,31 @@
 	}
 }
 
-- (void) dealloc
-{
-	RELEASE(fonts);
-	RELEASE(sampleText);
-	RELEASE(defaultSampleText);
-	RELEASE(sampleTextHistory);
-	RELEASE(foregroundColor);
-	RELEASE(backgroundColor);
-	RELEASE(sizes);
-	RELEASE(size);
+@end
 
-	[super dealloc];
+
+@implementation PQSampleController (FontManagerPrivate)
+
+- (void) PQAddSampleTextToHistory: (NSString *)someText
+{
+	if ([defaultSampleText containsObject: someText] == NO)
+	{
+		unsigned index = [sampleTextHistory indexOfObject: someText];
+
+		if (index != NSNotFound)
+		{
+			[sampleTextHistory removeObjectAtIndex: index];
+		}
+
+		[sampleTextHistory insertObject: someText atIndex: 0];
+	}
+
+	if ([sampleTextHistory count] > 10)
+	{
+		NSRange trimRange = NSMakeRange(10, ([sampleTextHistory count] - 10));
+
+		[sampleTextHistory removeObjectsInRange:trimRange];
+	}
 }
 
 @end

@@ -1,4 +1,7 @@
-2007-05-25  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-26  Isaiah Beerbower <ipaqah@tm.net>
+	* PQSampleController: Internal cleanup.
+
+2007-05-26  Isaiah Beerbower <ipaqah@tm.net>
 	* PQSampleController.m: Added to combo box datasource methods.
 	* PQSampleController.h:
 	* English.lproj/MainMenu.nib/*: Small amount of tweaking.
