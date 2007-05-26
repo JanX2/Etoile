@@ -27,19 +27,15 @@
 			username, 
 			password, 
 			[message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
-		/* Use curl to send it. */
-#ifdef GNUSTEP		
-		[NSTask launchedTaskWithLaunchPath:@"curl"
-#else
-		[NSTask launchedTaskWithLaunchPath:@"/usr/bin/curl"
-#endif
-								 arguments:[NSArray arrayWithObjects:
-			@"api.jaiku.com/json",
-			@"-d",
-			query,
-			nil]];
+		/* Send it. */
+		[jaikuCall setHTTPBody:[query dataUsingEncoding:NSASCIIStringEncoding]];
+		[[NSURLConnection alloc] initWithRequest:jaikuCall delegate:self];
 	}
 
+}
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+	[connection release];
 }
 - (void) runWithUsername:(NSString*)aUsername password:(NSString*)aPassword
 {
@@ -54,6 +50,10 @@
 			   selector:@selector(statusChanged:) 
 				   name:@"LocalPresenceChangedNotification" 
 				 object:nil];
+	/* Set up Jaiku Request */
+	jaikuCall = [[NSMutableURLRequest alloc] init];
+	[jaikuCall setURL:[NSURL URLWithString:@"http://api.jaiku.com/json"]];
+	[jaikuCall setHTTPMethod:@"POST"];
 	/* Loop */
 	NSRunLoop * loop = [NSRunLoop currentRunLoop];
 	[loop run];

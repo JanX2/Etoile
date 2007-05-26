@@ -13,6 +13,7 @@
 	NSString * lastStatus;
 	NSString * username;
 	NSString * password;
+	NSMutableURLRequest * jaikuCall;
 }
 - (void) runWithUsername:(NSString*)aUsername password:(NSString*)aPassword;
 @end
