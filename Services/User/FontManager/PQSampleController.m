@@ -315,6 +315,12 @@
 	else if (theObject == sizeField)
 	{
 		int index = [sizeField indexOfSelectedItem];
+
+		if (index == -1)
+		{
+			return;
+		}
+
 		size = [sizes objectAtIndex: index];
 
 		[self updateSize];

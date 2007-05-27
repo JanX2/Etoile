@@ -17,7 +17,8 @@
 
 @interface PQController : NSObject
 {
-  IBOutlet NSOutlineView *fontList;
+	IBOutlet NSOutlineView *fontList;
+	IBOutlet NSTextField *fontsInfoField;
 	IBOutlet NSTableView *groupList;
 	IBOutlet PQSampleController *sampleController;
 	

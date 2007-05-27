@@ -56,6 +56,19 @@
 - (void) awakeFromNib
 {
 	[self updateSample];
+	
+	int fontsCount = [fontFamilies count];
+
+	if (fontsCount < 2)
+	{
+		[fontsInfoField setStringValue:
+			[NSString stringWithFormat:@"%i font", fontsCount]];
+	}
+	else
+	{
+		[fontsInfoField setStringValue:
+			[NSString stringWithFormat:@"%i fonts", fontsCount]];
+	}
 }
 
 /* Groups [table] view data source code */
@@ -111,7 +124,7 @@
 
 - (BOOL) outlineView: (NSOutlineView *)outlineView isItemExpandable: (id)item
 {
-	if (item == nil) /* Is this even necessary */
+	if (item == nil) /* Is this even necessary? */
 	{
 		return YES;
 	}

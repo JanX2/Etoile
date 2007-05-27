@@ -6,8 +6,9 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 fontList = NSOutlineView; 
+                fontsInfoField = NSTextField; 
                 groupList = NSTableView; 
-                sampleController = FMSampleController; 
+                sampleController = PQSampleController; 
             }; 
             SUPERCLASS = NSObject; 
         }, 
