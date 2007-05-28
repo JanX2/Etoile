@@ -1,4 +1,8 @@
 2007-05-28  Isaiah Beerbower <ipaqah@tm.net>
+	* PQSampleController.*: Replaced -update with -updateFonts, -updateSampleText,
+	  & -updateSize.
+
+2007-05-28  Isaiah Beerbower <ipaqah@tm.net>
 	* PQController.m ([-outlineView:objectValueForTableColumn:byItem:]): Fixed
 		possible range exception.
 

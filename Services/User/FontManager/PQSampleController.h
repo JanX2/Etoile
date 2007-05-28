@@ -26,6 +26,8 @@
 	NSString *sampleText;
 	NSArray *defaultSampleText;
 	NSMutableArray *sampleTextHistory;
+	
+	NSMutableArray *sampleTextRanges;
 
 	NSColor *foregroundColor;
 	NSColor *backgroundColor;
@@ -38,8 +40,6 @@
 	BOOL needsUpdateSize;
 }
 
-/* Methods for updating the font sample.
-   Do not call directly. Instead use -setNeedsUpdate*: methods. */
 - (void) updateFonts;
 - (void) updateSampleText;
 - (void) updateSize;

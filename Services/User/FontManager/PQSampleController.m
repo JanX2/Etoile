@@ -32,6 +32,8 @@
 		[NSArray arrayWithObjects:NSLocalizedString(@"PQPangram", nil), nil];
 	sampleTextHistory = [[NSMutableArray alloc] init];
 
+	sampleTextRanges = [[NSMutableArray alloc] init];
+
 	foregroundColor = [NSColor blackColor];
 	backgroundColor = [NSColor whiteColor];
 
@@ -68,6 +70,7 @@
 	RELEASE(sampleText);
 	RELEASE(defaultSampleText);
 	RELEASE(sampleTextHistory);
+	RELEASE(sampleTextRanges);
 	RELEASE(foregroundColor);
 	RELEASE(backgroundColor);
 	RELEASE(sizes);
@@ -78,36 +81,15 @@
 
 - (void) updateFonts
 {
-	[self update];
-}
-
-- (void) updateSampleText
-{
-	[self update];
-}
-
-- (void) updateSize
-{
-	[self update];
-}
-
-- (void) update
-{
-
-	/* Update controls */
-
-	[sizeField setObjectValue: size];
-	[sizeSlider setObjectValue: size];
-	[sampleField setStringValue: [self sampleText]];
-
-	/* Update sample */
-
 	NSEnumerator *fontNamesEnum = [[self fonts] objectEnumerator];
 	NSString *currentFontName;
 	NSFont *currentFont;
 	NSString *currentString;
+	NSRange currentSampleRange;
 
 	BOOL isFirstSample = YES;
+
+	[sampleTextRanges removeAllObjects];
 
 	NSTextStorage *fontSample = [sampleView textStorage];
 
@@ -134,12 +116,49 @@
 		[fontSample appendAttributedString:
 			[[NSAttributedString alloc] initWithString: currentString]];
 
+		currentSampleRange = NSMakeRange([fontSample length], [sampleText length]);
+
+		[sampleTextRanges addObject: [NSValue valueWithRange: currentSampleRange]];
+
 		NSDictionary *attributes = [NSDictionary dictionaryWithObject: currentFont
 			forKey: NSFontAttributeName];
 
-		[fontSample appendAttributedString:
-			[[NSAttributedString alloc] initWithString: sampleText
-			attributes:attributes]];
+		[fontSample appendAttributedString: [[NSAttributedString alloc]
+			initWithString: sampleText attributes: attributes]];
+	}
+}
+
+- (void) updateSampleText
+{
+	[self updateFonts];
+}
+
+- (void) updateSize
+{
+	NSEnumerator *sampleRangesEnum = [sampleTextRanges objectEnumerator];
+	NSDictionary *currentAttributes;
+	NSFont *currentFont;
+	id currentObject;
+	NSRange currentSampleRange;
+
+	NSTextStorage *fontSample = [sampleView textStorage];
+
+	while (currentObject = [sampleRangesEnum nextObject])
+	{
+		currentSampleRange = [currentObject rangeValue];
+
+		currentAttributes =
+			[fontSample attributesAtIndex: currentSampleRange.location
+										 effectiveRange: NULL];
+
+		currentFont = [currentAttributes objectForKey: NSFontAttributeName];
+
+		currentFont = [[NSFontManager sharedFontManager] convertFont: currentFont
+			toSize: [[self size] floatValue]];
+
+		[fontSample addAttribute: NSFontAttributeName
+											 value: currentFont
+											 range: currentSampleRange];
 	}
 }
 
@@ -229,7 +248,7 @@
 - (void) setSampleTextHistory: (NSArray *)aHistory
 {
 	ASSIGN(sampleTextHistory, aHistory);
-	[self update];
+	[self updateFonts];
 }
 
 - (NSArray *) sampleTextHistory
@@ -321,9 +340,7 @@
 			return;
 		}
 
-		size = [sizes objectAtIndex: index];
-
-		[self updateSize];
+		[self setSize: [sizes objectAtIndex: index]];
 	}
 }
 
