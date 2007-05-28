@@ -1,3 +1,7 @@
+2007-05-28  Isaiah Beerbower <ipaqah@tm.net>
+	* PQController.m ([-outlineView:objectValueForTableColumn:byItem:]): Fixed
+		possible range exception.
+
 2007-05-27  Isaiah Beerbower <ipaqah@tm.net>
 	* PQController.*: Added text field showing number of fonts.
 	* English.lproj/MainMenu.nib/*:

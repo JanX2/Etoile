@@ -104,11 +104,13 @@
 		NSRange familyName = [styleName
 			rangeOfString: [[NSFont fontWithName: item size: 0.0] familyName]];
 
-		[styleName deleteCharactersInRange:familyName];
+		if (familyName.location != NSNotFound)
+		{
+			[styleName deleteCharactersInRange:familyName];
 
-		[styleName setString: [styleName stringByTrimmingCharactersInSet:
-			[NSCharacterSet whitespaceCharacterSet]]];
-
+			[styleName setString: [styleName stringByTrimmingCharactersInSet:
+				[NSCharacterSet whitespaceCharacterSet]]];
+		}
 
 		if ([styleName isEqualToString:@""])
 		{
