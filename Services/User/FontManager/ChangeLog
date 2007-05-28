@@ -1,4 +1,7 @@
 2007-05-28  Isaiah Beerbower <ipaqah@tm.net>
+	* PQSampleController.m: Implemented -updateSampleText.
+
+2007-05-28  Isaiah Beerbower <ipaqah@tm.net>
 	* PQSampleController.*: Replaced -update with -updateFonts, -updateSampleText,
 	  & -updateSize.
 

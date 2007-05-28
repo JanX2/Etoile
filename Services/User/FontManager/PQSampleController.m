@@ -64,6 +64,10 @@
 	return self;
 }
 
+- (void) awakeFromNib
+{
+}
+
 - (void) dealloc
 {
 	RELEASE(fonts);
@@ -130,7 +134,33 @@
 
 - (void) updateSampleText
 {
-	[self updateFonts];
+	NSEnumerator *sampleRangesEnum = [sampleTextRanges objectEnumerator];
+	id currentObject;
+	NSRange currentSampleRange;
+
+	NSMutableArray *newSampleRanges = [[NSMutableArray alloc] init];
+
+	NSTextStorage *fontSample = [sampleView textStorage];
+
+	int differance = 0;
+	int conglomerateDifferance = 0;
+
+	while (currentObject = [sampleRangesEnum nextObject])
+	{
+		currentSampleRange = [currentObject rangeValue];
+
+		currentSampleRange.location += conglomerateDifferance;
+
+		[fontSample replaceCharactersInRange: currentSampleRange
+		                          withString: [self sampleText]];
+
+		differance = [[self sampleText] length] - currentSampleRange.length;
+		conglomerateDifferance += differance;
+
+		currentSampleRange.length = [[self sampleText] length];
+		[newSampleRanges addObject: [NSValue valueWithRange: currentSampleRange]];
+	}
+	[sampleTextRanges setArray: newSampleRanges];
 }
 
 - (void) updateSize
@@ -328,8 +358,6 @@
 		[self setSampleText: newSampleText];
 
 		[self PQAddSampleTextToHistory: newSampleText];
-
-		[self updateSampleText];
 	}
 	else if (theObject == sizeField)
 	{

@@ -10,8 +10,10 @@
  * License: Modified BSD license (see file COPYING)
  */
 
+
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+
 
 @interface PQSampleController : NSObject
 {
