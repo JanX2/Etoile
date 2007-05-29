@@ -16,7 +16,7 @@
 	NSString * message = [[aNotification userInfo] objectForKey:@"status"];
 	NSString * script = nil;
 	/* Avoid duplicates */
-	if(![lastStatus isEqualToString:message])
+	if(![lastStatus isEqualToString:message] && ![message isEqualToString:@""])
 	{
 		/* Log the last status */
 		[lastStatus release];
