@@ -1,5 +1,5 @@
 /*
- *  AZExpose - A window switcher for GNUstep
+ *  AZSwitch - A window switcher for GNUstep
  *  Copyright (C) 2007 Yen-Ju Chen
  *
  *  This program is free software; you can redistribute it and/or modify

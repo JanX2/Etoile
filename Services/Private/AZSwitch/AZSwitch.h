@@ -1,5 +1,5 @@
 /*  
- *  AZExpose - A window switcher for GNUstep
+ *  AZSwitch - A window switcher for GNUstep
  *  Copyright (C) 2007 Yen-Ju Chen 
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -11,7 +11,7 @@
 #import <X11/Xlib.h>
 #import "AZSwitchingWindow.h"
 
-@interface AZExpose: NSObject
+@interface AZSwitch: NSObject
 {
 	GSDisplayServer *server;
 	Display *dpy;
@@ -37,7 +37,7 @@
 	NSMutableArray *blacklist;
 }
 
-+ (AZExpose *) expose;
++ (AZSwitch *) switch;
 
 @end
 

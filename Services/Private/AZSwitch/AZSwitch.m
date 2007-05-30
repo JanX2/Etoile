@@ -1,12 +1,12 @@
 /*  
- *  AZExpose - A window switcher for GNUstep
+ *  AZSwitch - A window switcher for GNUstep
  *  Copyright (C) 2007 Yen-Ju Chen 
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the MIT license. See COPYING.
  */
 
-#import "AZExpose.h"
+#import "AZSwitch.h"
 #import "AZClient.h"
 #import <X11/Xatom.h>
 #import <X11/Xutil.h>
@@ -16,13 +16,13 @@ static NSString *AZUserDefaultModifierKey = @"ModifierKey";
 static NSString *AZUserDefaultModifierMask = @"ModifierMask";
 static NSString *AZUserDefaultSwitchKey = @"SwitchKey";
 
-static AZExpose *sharedInstance;
+static AZSwitch *sharedInstance;
 
 @interface GSDisplayServer (AZPrivate) 	 
  - (void) processEvent: (XEvent *) event; 	 
 @end
 
-@implementation AZExpose
+@implementation AZSwitch
 
 - (void) updateClientList
 {
@@ -293,10 +293,10 @@ static AZExpose *sharedInstance;
 	[super dealloc];
 }
 
-+ (AZExpose *) expose 
++ (AZSwitch *) switch 
 {
 	if (sharedInstance == nil)
-		sharedInstance = [[AZExpose alloc] init];
+		sharedInstance = [[AZSwitch alloc] init];
 	return sharedInstance;
 }
 

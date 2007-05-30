@@ -1,14 +1,14 @@
 ========
-AZExpose
+AZSwitch
 ========
 
 :Author: Yen-Ju Chen
 :License: MIT License
 
-AZExpose is an experimental application for window switching.
+AZSwitch is an experimental application for window switching.
 The main challenge is how to track key and mouse input
 and show minimature window.
-Unlike AZDock, which is application-based, AZExpose is window-based.
+Unlike AZDock, which is application-based, AZSwitch is window-based.
 Therefore, they are not compatible to each other in implementation.
 
 User Defaults

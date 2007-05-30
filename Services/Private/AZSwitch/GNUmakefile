@@ -1,12 +1,12 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-APP_NAME = AZExpose
+APP_NAME = AZSwitch
 
-AZExpose_OBJC_FILES = \
+AZSwitch_OBJC_FILES = \
 	AZClientCell.m \
 	AZSwitchingWindow.m \
 	AZClient.m \
-	AZExpose.m \
+	AZSwitch.m \
 	main.m
 
 # Xwindow
