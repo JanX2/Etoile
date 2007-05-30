@@ -13,20 +13,20 @@
 @implementation Microblogger
 - (void) statusChanged:(NSNotification*)aNotification
 {
-	NSString * message = [[aNotification userInfo] objectForKey:@"status"];
+	NSString * status = [[aNotification userInfo] objectForKey:@"status"];
 	NSString * script = nil;
 	/* Avoid duplicates */
-	if(![lastStatus isEqualToString:message] && ![message isEqualToString:@""])
+	if(!(status == nil || [status isEqualToString:@""] || [lastStatus isEqualToString:status]))
 	{
 		/* Log the last status */
 		[lastStatus release];
-		lastStatus = [message retain];
+		lastStatus = [status retain];
 		
 		/* Construct the Jaiku API call */
 		NSString * query = [NSString stringWithFormat:@"user=%@&personal_key=%@&method=presence.send&message=%@", 
 			username, 
 			password, 
-			[message stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+			[status stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
 		/* Send it. */
 		[jaikuCall setHTTPBody:[query dataUsingEncoding:NSASCIIStringEncoding]];
 		[[NSURLConnection alloc] initWithRequest:jaikuCall delegate:self];
