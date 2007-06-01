@@ -9,9 +9,7 @@
 #import "NSTextView+ClickableLinks.h"
 
 #ifdef GNUSTEP
-#define NO_GNUSTEP(x)
-#else
-#define NO_GNUSTEP(x) x
+#define NSCursorAttributeName @"NSCursorAttributeName"
 #endif
 
 @implementation NSTextView (ClickableLinks)
@@ -78,7 +76,7 @@
 				NSDictionary * linkAttributes= [NSDictionary dictionaryWithObjectsAndKeys: 
 					url, NSLinkAttributeName,
 					[NSNumber numberWithInt:NSSingleUnderlineStyle], NSUnderlineStyleAttributeName,
-					NO_GNUSTEP(([NSCursor pointingHandCursor],NSCursorAttributeName,))
+					[NSCursor pointingHandCursor],NSCursorAttributeName,
 					[NSColor blueColor], NSForegroundColorAttributeName,
 					nil];
 				
@@ -87,7 +85,7 @@
 				
 				/* Reset attributes for after the link */
 				[textStorage removeAttribute:NSLinkAttributeName range:afterLink];
-				NO_GNUSTEP([textStorage removeAttribute:NSCursorAttributeName range:afterLink];)
+				[textStorage removeAttribute:NSCursorAttributeName range:afterLink];
 				[textStorage removeAttribute:NSUnderlineStyleAttributeName range:afterLink];
 				[textStorage removeAttribute:NSForegroundColorAttributeName range:afterLink];
 			}
