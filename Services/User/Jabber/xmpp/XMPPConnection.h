@@ -41,6 +41,7 @@ typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSess
 	
 	//XML Parser
 	//id parser;
+	NSString* sessionID;
 	
 	NSThread * connectThread;
 	NSMutableString * unsentBuffer;
