@@ -1,0 +1,9 @@
+{
+  NSExecutable = "TermX";
+  NSMainNibFile = "MainMenu.nib";
+  NSIcon = "";
+  NSPrincipalClass = "NSApplication";
+  ApplicationName = "TermX";
+  ApplicationRelease = "0.1";
+  Authors = ("Yen-Ju Chen");
+}

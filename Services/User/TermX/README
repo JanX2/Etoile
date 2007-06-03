@@ -1,0 +1,15 @@
+=====
+TermX
+=====
+
+A Terminal Emulator.
+
+It is rewritten from macosxterm[1] under the same MIT license[2]
+It needs GNUstep-make to build. 
+
+[1] http://code.google.com/p/macosxterm/
+[2] http://www.opensource.org/licenses/mit-license.php
+
+Yen-Ju
+
+

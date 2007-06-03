@@ -1,0 +1,19 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    TerminalController = {
+	Actions = (
+	);
+	Outlets = (
+	    window,
+	    terminalView
+	);
+	Super = NSObject;
+    };
+    TerminalView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSView;
+    };
+}

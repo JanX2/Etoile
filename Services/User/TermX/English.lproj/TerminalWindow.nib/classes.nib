@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = TerminalController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {terminalView = id; window = id; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = TerminalView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
+    ); 
+    IBVersion = 1; 
+}
