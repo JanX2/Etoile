@@ -13,9 +13,15 @@
 - (void) drawInteriorWithFrame: (NSRect) cellFrame 
                         inView: (NSView *) controlView
 {
-//	[super drawInteriorWithFrame: cellFrame inView: controlView];
+#if 0
+	[super drawInteriorWithFrame: cellFrame inView: controlView];
+#else
 	[[self textColor] set];
-	NSRectFill(cellFrame);
+	NSRect r = cellFrame;
+	r.origin.y += r.size.height-3;
+	r.size.height = 3;
+	NSRectFill(r);
+#endif
 }
 
 - (id) initTextCell: (NSString *) s

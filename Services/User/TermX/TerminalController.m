@@ -26,8 +26,12 @@ NSString *TXFontSizeUserDefault = @"TXFontSizeUserDefault";
 
 - (IBAction) closeTerminal: (id) sender
 {
-    NSLog(@"%@", NSStringFromSelector(_cmd));
 	[window performClose: self];
+}
+
+- (void) windowDidResize: (NSNotification *) not
+{
+	[terminalView resizeBuffer];
 }
 
 - (void) windowWillClose: (NSNotification *) not

@@ -55,9 +55,6 @@ struct esc_state {
 
 	NSRect lastFrame;
 
-	struct tv_row *scrollbuf;
-	uint32_t *scroll_rows_alloc;
-	
 	NSTimer *redrawTimer;
 	int chars_since_draw;
 
@@ -65,6 +62,8 @@ struct esc_state {
 
 	int rows, cols;
 	int scroll_top, scroll_btm;
+	struct tv_row *scrollbuf;
+	uint32_t *scroll_rows_alloc;
 	char *tabstops;
 
 	TXCursor *cursor, *save_cursor;

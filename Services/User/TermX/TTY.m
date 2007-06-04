@@ -86,10 +86,10 @@
 										 closeOnDealloc: YES];
 
 	[[NSNotificationCenter defaultCenter] 
-	                                 addObserver:self
-	                                 selector:@selector(gotData:)
-	                                 name:NSFileHandleDataAvailableNotification
-	                                 object:term];
+					addObserver:self
+					selector:@selector(gotData:)
+					name:NSFileHandleDataAvailableNotification
+					object:term];
 	[term waitForDataInBackgroundAndNotify];
 
 	delegate = nil;
