@@ -11,11 +11,28 @@
 #import "TRUserDefaults.h"
 #import "NSTextView+ClickableLinks.h"
 
+#define GET_METHOD(type, x) - (type) x { return x; }
+#define COMPARE_METHOD(ivar, ivarName) - (NSComparisonResult) compareBy ## ivarName:(id)other { return [ivar compare:[other ivar]]; }
+@interface PresenceLogEntry : NSObject {
+	NSDate * date;
+	NSString * user;
+	NSString * statusMessage;
+}
+@end
+@implementation PresenceLogEntry
+GET_METHOD(NSDate*, date)
+GET_METHOD(NSString*,user)
+GET_METHOD(NSString*,statusMessage)
+COMPARE_METHOD(date,Date)
+COMPARE_METHOD(user,User)
+COMPARE_METHOD(statusMessage,Status)
+@end
 
 @implementation PresenceLogController
 - (void) awakeFromNib
 {
 	NSNotificationCenter * localCenter = [NSNotificationCenter defaultCenter];
+	lastStatus = [[NSMutableDictionary alloc] init];
 	[localCenter addObserver:self
 					selector:@selector(newPresence:)
 						name:@"TRXMPPPresenceChanged"
@@ -39,8 +56,9 @@
 
 - (void) newPresence:(NSNotification *)notification
 {
+	NSString * name = [[notification object] name];
 	NSDictionary * dict = [notification userInfo];
-	NSString * oldMessage = [dict objectForKey:@"OldStatus"];
+	NSString * oldMessage = [lastStatus objectForKey:name];
 	NSString * newMessage = [dict objectForKey:@"NewStatus"];
 	/* If the pressence has changed, and is not an echo */
 	if(newMessage != nil
@@ -55,7 +73,7 @@
 		   [[dict objectForKey:@"NewPresence"] unsignedCharValue]]]
 	   )
 	{
-		NSString * name = [[notification object] name];
+		[lastStatus setObject:newMessage forKey:name];
 		NSString * date = [[NSDate  date] descriptionWithCalendarFormat:@"%H:%M"
 															   timeZone:nil
 																 locale:[[NSUserDefaults standardUserDefaults] 
