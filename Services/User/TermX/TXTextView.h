@@ -12,9 +12,6 @@
 
 #define MAX_ESC_OPTS 16
 
-// Use text system for drawing. Otherwise, use attributed string
-//#define TEXT_SYSTEM 
-
 struct tv_row {
 	BOOL dirty;
 	uint32_t *data;   // MSB-LSB: Attr BG FG char
@@ -39,24 +36,22 @@ struct esc_state {
 #define ATTR_BLINK 0x04
 #define ATTR_RVID  0x08
 
-@interface TerminalView : NSView
+@interface TXTextView: NSTextView
 {
-	NSFont *font;
+	TTY *tty;
+
 	NSFont *boldFont;
 	NSSize fontSize;
-	TTY *tty;
 	NSMutableArray *scrollRows; // We cache NSAttributedString for drawing
 	NSMutableDictionary *attributes;
-#ifdef TEXT_SYSTEM
+
 	NSTextStorage *textStorage;
 	NSLayoutManager *layoutManager;
 	NSTextContainer *textContainer;
-#endif
 
 	NSRect lastFrame;
 
 	NSTimer *redrawTimer;
-	int chars_since_draw;
 
 	NSColor *ctab[256];
 
@@ -79,12 +74,9 @@ struct esc_state {
 
 - (void) resizeWindowForTerminal;
 - (void) resizeBuffer;
-- (void)tty:(TTY *)tty gotInput:(NSData *)dat;
-- (void)tty:(TTY *)tty closed:(id)ignored;
+- (void) tty: (TTY *)tty gotInput: (NSData *) dat;
+- (void) tty: (TTY *)tty closed: (id) ignored;
 
-- (void)doChars:(NSData *)buf;
-
-- (NSFont *) font;
-- (void) setFont: (NSFont *) font;
+- (void) doChars: (NSData *) buf;
 
 @end

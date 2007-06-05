@@ -6,12 +6,13 @@
    modify it under the terms of the MIT license. See COPYING.
 */
 
-#import "TerminalView.h"
+#import "TXTextView.h"
 #import "TXCursor.h"
 #import "GNUstep.h"
 
-#define WINDOW_PAD 4
-#define ROW_PAD 2 /* Between lines */
+#define WINDOW_PAD 0
+#define ROW_PAD 1 /* Between lines */
+#define LINE_PAD 2 /* Between lines */
 
 #define DEFAULT_COLS 80
 #define DEFAULT_ROWS 24
@@ -39,7 +40,7 @@ extern unsigned char default_colors[256][3];
 #define FKEY(nbase, kbase) \
 		TILDE2('0' + (c-kbase+nbase) / 10, '0' + (c-kbase+nbase) % 10);
 
-@implementation TerminalView
+@implementation TXTextView
 
 - (void) setWindowTitle
 {
@@ -67,7 +68,7 @@ extern unsigned char default_colors[256][3];
 	NSRect rt = NSZeroRect;
 	rt.size = fontSize;
 	rt.size.height += ROW_PAD;
-	rt.origin = NSMakePoint(WINDOW_PAD+cursor->column*fontSize.width,
+	rt.origin = NSMakePoint(WINDOW_PAD+LINE_PAD+cursor->column*fontSize.width,
 	                        WINDOW_PAD+cursor->row*(fontSize.height+ROW_PAD));
 	return rt;
 }
@@ -98,29 +99,24 @@ extern unsigned char default_colors[256][3];
 	return YES;
 }
 
-- (NSFont *) font
-{
-	return font;
-}
-
 - (void) setFont: (NSFont *) f
 {
 	if (f == nil)
 		return;
-	ASSIGN(font, f);
+	[super setFont: f];
 
 	NSFontManager *fm = [NSFontManager sharedFontManager];
-	ASSIGN(boldFont, [fm convertFont: font toHaveTrait: NSBoldFontMask]);
+	ASSIGN(boldFont, [fm convertFont: [self font] toHaveTrait: NSBoldFontMask]);
 	if (boldFont == nil)
 	{
 		NSLog(@"Cannot get bold font, use system bold font instead");
 		ASSIGN(boldFont, [fm convertFont: [NSFont boldSystemFontOfSize: 12] toHaveTrait: NSFixedPitchFontMask]);
 	}
 
-	fontSize = [font maximumAdvancement];
-	fontSize.height = [font pointSize];
+	fontSize = [[self font] maximumAdvancement];
+	fontSize.height = [[self font] pointSize];
 
-	[attributes setObject: font forKey: NSFontAttributeName];
+	[attributes setObject: [self font] forKey: NSFontAttributeName];
 	NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];;
 	[ps setMaximumLineHeight: fontSize.height+ROW_PAD];
 	[attributes setObject: ps forKey: NSParagraphStyleAttributeName];
@@ -131,7 +127,7 @@ extern unsigned char default_colors[256][3];
 	/* We adjust font width because it may be different from font size */
 	fontSize.width = [@"W" sizeWithAttributes: attributes].width;
 
-	[cursor setFont: font];
+	[cursor setFont: [self font]];
 }
 
 - (void) keyDown: (NSEvent *) event
@@ -278,13 +274,10 @@ extern unsigned char default_colors[256][3];
 	self = [super initWithFrame: frame];
 
 	attributes = [[NSMutableDictionary alloc] init];
-#ifdef TEXT_SYSTEM
-	textStorage = [[NSTextStorage alloc] initWithString:@""];
-	layoutManager = [[NSLayoutManager alloc] init];
-	textContainer = [[NSTextContainer alloc] init];
-	[layoutManager addTextContainer:textContainer];
-	[textStorage addLayoutManager:layoutManager];
-#endif
+
+	textStorage = [self textStorage];
+	layoutManager = [self layoutManager];
+	textContainer = [self textContainer];
 
 	ASSIGN(cursor, AUTORELEASE([[TXCursor alloc] initTextCell: @" "]));
 	[cursor setBezeled: NO];
@@ -333,15 +326,68 @@ extern unsigned char default_colors[256][3];
 	
 	// do other setup stuff?
 	redrawTimer = nil;
-
 	return self;
 }
 
+- (void) updateText
+{
+	/* Clean up */
+	int r, c;
+	unsigned int at;
+	unsigned int fg = 0;
+	unsigned int bg = 0;
+	NSColor *fgColor = nil, *bgColor = nil;
+	for(r = 0; r < rows; r++) 
+	{
+		NSMutableAttributedString *as = nil;
+		if (scrollbuf[r].dirty == YES)
+		{
+			ASSIGN(as, AUTORELEASE([[NSMutableAttributedString alloc] init]));
+			unichar ucs;
+			NSString *s = nil;
+			NSDictionary *attr = nil;
+		
+			[as beginEditing];
+			for (c = 0; c < cols; c++)
+			{
+				uint32_t ch = scrollbuf[r].data[c];
+				ucs = 0xFF & ch;
+				fg = (ch >> 8) & 0xFF;
+				bg = (ch >> 16) & 0xFF;
+				at = (ch >> 24) & 0xFF;
+				s = [NSString stringWithCharacters: (const unichar *)&ucs length: 1];
+				fgColor = [self colorAtIndex: fg];
+				bgColor = [self colorAtIndex: bg];
+				attr = [NSDictionary dictionaryWithObjectsAndKeys:
+					fgColor, NSForegroundColorAttributeName, 
+					bgColor, NSBackgroundColorAttributeName, 
+					nil];
+				[as appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: s attributes: attr])];
+			}
+			[as appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes])];
+			[as addAttributes: attributes range: NSMakeRange(0, [as length])];
+			[as endEditing];
+			[scrollRows replaceObjectAtIndex: r withObject: as];
+			scrollbuf[r].dirty = NO;
+		}
+		else
+		{
+			ASSIGN(as, [scrollRows objectAtIndex: r]);
+		}
+	}
+	[textStorage beginEditing];
+	[textStorage setAttributedString: [scrollRows objectAtIndex: 0]];
+	for (r = 1; r < rows; r++)
+	{
+		[textStorage appendAttributedString: [scrollRows objectAtIndex: r]];
+	}
+	[textStorage endEditing];
+}
 
 - (void) tty: (TTY *) sender gotInput: (NSData *) dat
 {
-	chars_since_draw += [dat length];	
 	[self doChars:dat];
+	[self updateText];
 	
 	if(!redrawTimer)
 	{
@@ -375,10 +421,7 @@ extern unsigned char default_colors[256][3];
 
 - (void) awakeFromNib
 {
-	if (font == nil)
-	{
-		[self setFont: [NSFont userFixedPitchFontOfSize: 12]];
-	}
+	[self setFont: [NSFont userFixedPitchFontOfSize: 12]];
 	[self resizeWindowForTerminal];
 	[self resizeBuffer];
 	[[self window] makeFirstResponder: self];
@@ -411,15 +454,9 @@ extern unsigned char default_colors[256][3];
 		[blinkTimer invalidate];
 		DESTROY(blinkTimer);
 	}
-#ifdef TEXT_SYSTEM
-	DESTROY(textStorage);
-	DESTROY(layoutManager);
-	DESTROY(textContainer);
-#endif
 	DESTROY(scrollRows);
 	DESTROY(attributes);
 	DESTROY(tty);
-	DESTROY(font);
 	[super dealloc];
 }
 
@@ -429,20 +466,30 @@ extern unsigned char default_colors[256][3];
 	NSRect new_cr = NSMakeRect(0, 0,
 							 cols * fontSize.width + 2 * WINDOW_PAD,
 							 rows * (fontSize.height+ROW_PAD) + 2 * WINDOW_PAD);
+	[textContainer setContainerSize: new_cr.size];
+	[textContainer setLineFragmentPadding: LINE_PAD];
 	
 	NSRect new_frame;
+	NSScrollView *scrollView = [self enclosingScrollView];
+	if (scrollView)
+	{
+		new_frame.size = [NSScrollView frameSizeForContentSize: new_cr.size
+	                  hasHorizontalScroller: [scrollView hasHorizontalScroller]
+		              hasVerticalScroller: [scrollView hasVerticalScroller]
+		              borderType: [scrollView borderType]];
+	}
+	else
+	{
+		new_frame = new_cr;
+	}
 #ifdef GNUSTEP
-	new_frame = new_cr;
 	new_frame.size.height += 30;
 #else
-	new_frame = [[self window] frameRectForContentRect:new_cr];
+	new_frame = [[self window] frameRectForContentRect: new_frame];
 #endif
 	
 	new_frame.origin = old_frame.origin;
 	new_frame.origin.y -= new_frame.size.height - old_frame.size.height;
-#ifdef TEXT_SYSTEM
-	[textContainer setContainerSize: new_frame.size];
-#endif
 	[[self window] setFrame:new_frame display:YES];
 	[[self window] setResizeIncrements:NSMakeSize(fontSize.width, fontSize.height+ROW_PAD)];
 }
@@ -503,12 +550,6 @@ extern unsigned char default_colors[256][3];
 	int i = 0;
 	if (old_tabstops)
 	{
-#if 0
-		for(i = 0; i < oldCols; i++)
-			tabstops[i] = old_tabstops[i];
-		for(i = oldCols; i < cols; i++)
-			tabstops[i] = (i % 8 == 0) ? 1 : 0;
-#endif
 		for(i = 0; i < overlapCols; i++)
 			tabstops[i] = old_tabstops[i];
 		for(i = overlapCols; i < cols; i++)
@@ -553,86 +594,11 @@ extern unsigned char default_colors[256][3];
 - (void) drawRect: (NSRect) rect
 {
 	[[NSGraphicsContext currentContext] setShouldAntialias: NO];
-
-	[[NSColor blackColor] set];
-	NSRectFill(rect);
-
-	/* Clean up */
-	int r, c;
-	unsigned int at;
-	unsigned int fg = 0;
-	unsigned int bg = 0;
-	NSColor *fgColor = nil, *bgColor = nil;
-	for(r = 0; r < rows; r++) 
-	{
-		NSMutableAttributedString *as = nil;
-		if (scrollbuf[r].dirty == YES)
-		{
-			ASSIGN(as, AUTORELEASE([[NSMutableAttributedString alloc] init]));
-			unichar ucs;
-			NSString *s = nil;
-			NSDictionary *attr = nil;
-		
-			[as beginEditing];
-			for (c = 0; c < cols; c++)
-			{
-				uint32_t ch = scrollbuf[r].data[c];
-				ucs = 0xFF & ch;
-				fg = (ch >> 8) & 0xFF;
-				bg = (ch >> 16) & 0xFF;
-				at = (ch >> 24) & 0xFF;
-				s = [NSString stringWithCharacters: (const unichar *)&ucs length: 1];
-				fgColor = [self colorAtIndex: fg];
-				bgColor = [self colorAtIndex: bg];
-				attr = [NSDictionary dictionaryWithObjectsAndKeys:
-					fgColor, NSForegroundColorAttributeName, 
-					bgColor, NSBackgroundColorAttributeName, nil];
-				[as appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: s attributes: attr])];
-			}
-#ifdef TEXT_SYSTEM
-			[as appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes])];
-#endif
-			[as addAttributes: attributes range: NSMakeRange(0, [as length])];
-			[as endEditing];
-			[scrollRows replaceObjectAtIndex: r withObject: as];
-			scrollbuf[r].dirty = NO;
-		}
-		else
-		{
-			ASSIGN(as, [scrollRows objectAtIndex: r]);
-		}
-#ifndef TEXT_SYSTEM
-		NSPoint p;
-		p = NSMakePoint(WINDOW_PAD, 
-		                WINDOW_PAD+r*(fontSize.height+ROW_PAD));
-		[as drawAtPoint: p];
-		DESTROY(as);
-#endif
-	}
-
-#ifdef TEXT_SYSTEM
-	[textStorage beginEditing];
-	[textStorage setAttributedString: [scrollRows objectAtIndex: 0]];
-	for (r = 1; r < rows; r++)
-	{
-		[textStorage appendAttributedString: [scrollRows objectAtIndex: r]];
-	}
-	[textStorage endEditing];
-
-	[self lockFocus];
-	for(r = 0; r < rows; r++)
-	{
-		NSRange glyphRange;
-		glyphRange = [layoutManager glyphRangeForCharacterRange: NSMakeRange(r*(cols+1), (cols+1)) actualCharacterRange: NULL];
-		[layoutManager drawGlyphsForGlyphRange: glyphRange atPoint: NSMakePoint(0, 0)];
-	}
-	[self unlockFocus];
-#endif
+	[super drawRect: rect];
 
 	// non-blinking cursor for GNUSTep 
 	[cursor drawWithFrame: [self cursorFrame] inView: self];
 
-	chars_since_draw = 0;
 }
 
 - (void) scrollRegionFromRow: (int) start toRow: (int) end byLines: (int) count

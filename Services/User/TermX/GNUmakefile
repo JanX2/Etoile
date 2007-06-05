@@ -4,7 +4,7 @@ APP_NAME = TermX
 
 TermX_OBJC_FILES = \
 	TXCursor.m \
-	TerminalView.m \
+	TXTextView.m \
 	TerminalController.m \
 	TTY.m \
 	AppController.m \
@@ -19,12 +19,10 @@ TermX_LANGUAGES = English
 
 ifeq ($(FOUNDATION_LIB), apple)
 	TermX_LOCALIZED_RESOURCE_FILES = \
-		MainMenu.nib  \
-		TerminalWindow.nib 
+		MainMenu.nib  
 else
 	TermX_LOCALIZED_RESOURCE_FILES = \
-		MainMenu.nib  \
-		TerminalWindow.gorm
+		MainMenu.nib  
 endif
 
 ifeq ($(findstring freebsd, $(GNUSTEP_TARGET_OS)), freebsd)

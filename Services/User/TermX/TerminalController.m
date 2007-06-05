@@ -7,7 +7,8 @@
 */
 
 #import "TerminalController.h"
-#import "TerminalView.h"
+#import "TXTextView.h"
+#import "GNUstep.h"
 
 NSString *TXFontNameUserDefault = @"TXFontNameUserDefault";
 NSString *TXFontSizeUserDefault = @"TXFontSizeUserDefault";
@@ -41,6 +42,7 @@ NSString *TXFontSizeUserDefault = @"TXFontSizeUserDefault";
 
 - (void) awakeFromNib
 {
+	[terminalView awakeFromNib];
 	[window setReleasedWhenClosed: YES];
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	NSString *name = [defaults stringForKey: TXFontNameUserDefault];
@@ -60,13 +62,50 @@ NSString *TXFontSizeUserDefault = @"TXFontSizeUserDefault";
 {
 	if (window == nil)
 	{
-		[NSBundle loadNibNamed: @"TerminalWindow" owner: self];
+		NSRect rect = NSMakeRect(200, 200, 500, 400);
+		window = [[NSWindow alloc] initWithContentRect: rect
+		                           styleMask: NSTitledWindowMask |
+		                                      NSClosableWindowMask |
+		                                      NSResizableWindowMask
+		                           backing: NSBackingStoreBuffered
+		                           defer: NO];
+		rect = [[window contentView] bounds];
+		NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame: rect];
+		[scrollView setBorderType: NSNoBorder];
+		[scrollView setHasVerticalScroller: YES];
+		[scrollView setHasHorizontalScroller: NO];
+		[scrollView setAutoresizesSubviews: YES];
+		[scrollView setAutoresizingMask: NSViewWidthSizable |
+		                                 NSViewHeightSizable];
+		rect.size = [NSScrollView contentSizeForFrameSize: rect.size
+					  hasHorizontalScroller: [scrollView hasHorizontalScroller]
+					  hasVerticalScroller: [scrollView hasVerticalScroller] 
+		              borderType: [scrollView borderType]];
+		terminalView = [[TXTextView alloc] initWithFrame: rect];
+		[terminalView setDelegate: self];
+		[terminalView setEditable: NO];
+		[terminalView setSelectable: YES];
+		[terminalView setAutoresizingMask: NSViewWidthSizable |
+		                                   NSViewHeightSizable];
+		[scrollView setDocumentView: terminalView];
+		[window setContentView: scrollView];
+		DESTROY(scrollView);
+		RELEASE(terminalView);
+		[window setDelegate: self];
+		[self awakeFromNib];
 	}
 	if (window == nil)
 	{
 		NSLog(@"Internal Error: Cannot load TerminalWindow nib");
 	}
 	[window makeKeyAndOrderFront: self];
+}
+
+- (void) dealloc
+{
+	DESTROY(window);
+	/* terminalView is automreleased */
+	[super dealloc];
 }
 
 @end

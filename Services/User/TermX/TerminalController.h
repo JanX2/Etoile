@@ -11,12 +11,12 @@
 extern NSString *TXFontNameUserDefault;
 extern NSString *TXFontSizeUserDefault;
 
-@class TerminalView;
+@class TXTextView;
 
 @interface TerminalController: NSObject
 {
-	IBOutlet id terminalView;
-	IBOutlet id window;
+	TXTextView *terminalView;
+	NSWindow *window;
 }
 
 - (IBAction) showWindow: (id) sender;
