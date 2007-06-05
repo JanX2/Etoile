@@ -14,7 +14,6 @@
 - (IBAction) newTerminal: (id) sender
 {
 	TerminalController *controller = [[TerminalController alloc] init];
-	[terminalControllers addObject: controller];
 	[controller showWindow: self];
 	DESTROY(controller);
 }
@@ -41,13 +40,11 @@
 - (id) init
 {
 	self = [super init];
-	terminalControllers = [[NSMutableArray alloc] init];
 	return self;
 }
 
 - (void) dealloc
 {
-	DESTROY(terminalControllers);
 	[super dealloc];
 }
 

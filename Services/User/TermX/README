@@ -10,6 +10,11 @@ It needs GNUstep-make to build.
 [1] http://code.google.com/p/macosxterm/
 [2] http://www.opensource.org/licenses/mit-license.php
 
+Developer Note
+--------------
+TXWindow retain TerminaiController. When TXWindow is released after closed,
+TerminalController is relased, too.
+
 Yen-Ju
 
 

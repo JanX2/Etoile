@@ -7,13 +7,22 @@
 */
 
 #import "TerminalController.h"
+#import "TXWindow.h"
 #import "TXTextView.h"
 #import "GNUstep.h"
 
 NSString *TXFontNameUserDefault = @"TXFontNameUserDefault";
 NSString *TXFontSizeUserDefault = @"TXFontSizeUserDefault";
 
+static NSPoint window_origin;
+
 @implementation TerminalController
+
++ (void) initialize
+{
+	window_origin.x = 200;
+	window_origin.y = 200;
+}
 
 - (IBAction) changeFont: (id) sender
 {
@@ -33,11 +42,6 @@ NSString *TXFontSizeUserDefault = @"TXFontSizeUserDefault";
 - (void) windowDidResize: (NSNotification *) not
 {
 	[terminalView resizeBuffer];
-}
-
-- (void) windowWillClose: (NSNotification *) not
-{
-	NSLog(@"%@", NSStringFromSelector(_cmd));
 }
 
 - (void) awakeFromNib
@@ -63,7 +67,8 @@ NSString *TXFontSizeUserDefault = @"TXFontSizeUserDefault";
 	if (window == nil)
 	{
 		NSRect rect = NSMakeRect(200, 200, 500, 400);
-		window = [[NSWindow alloc] initWithContentRect: rect
+		rect.origin = window_origin;
+		window = [[TXWindow alloc] initWithContentRect: rect
 		                           styleMask: NSTitledWindowMask |
 		                                      NSClosableWindowMask |
 		                                      NSResizableWindowMask
@@ -92,7 +97,26 @@ NSString *TXFontSizeUserDefault = @"TXFontSizeUserDefault";
 		DESTROY(scrollView);
 		RELEASE(terminalView);
 		[window setDelegate: self];
+		[window setController: self];
 		[self awakeFromNib];
+
+		/* Prepare to next window */
+		if (window_origin.x < 500)
+		{
+			window_origin.x += 50;
+		}
+		else
+		{
+			window_origin.x = 0;
+		}
+		if (window_origin.y < 500)
+		{
+			window_origin.y += 50;
+		}
+		else
+		{
+			window_origin.y = 0;
+		}
 	}
 	if (window == nil)
 	{
@@ -103,9 +127,15 @@ NSString *TXFontSizeUserDefault = @"TXFontSizeUserDefault";
 
 - (void) dealloc
 {
-	DESTROY(window);
+	/* window is autoreleased when closed */
+	/* scrollView is released after been content view */
 	/* terminalView is automreleased */
 	[super dealloc];
+}
+
+- (NSWindow *) window
+{
+	return window;
 }
 
 @end

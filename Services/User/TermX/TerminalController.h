@@ -12,15 +12,18 @@ extern NSString *TXFontNameUserDefault;
 extern NSString *TXFontSizeUserDefault;
 
 @class TXTextView;
+@class TXWindow;
 
 @interface TerminalController: NSObject
 {
 	TXTextView *terminalView;
-	NSWindow *window;
+	TXWindow *window;
 }
 
 - (IBAction) showWindow: (id) sender;
 - (IBAction) closeTerminal: (id) sender;
+
+- (NSWindow *) window;
 
 @end
 

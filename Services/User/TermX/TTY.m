@@ -108,6 +108,7 @@ NS_HANDLER
 	/* If we are notified but got exception here,
 	   the connection is dead. */
 	alive = NO;
+	NSLog(@"Not alive");
 	return;
 NS_ENDHANDLER
 	if ([d length] == 0) 
@@ -115,6 +116,7 @@ NS_ENDHANDLER
 		[delegate performSelector: @selector(tty:closed:)
 		               withObject: self withObject: self];
 		alive = NO;
+		NSLog(@"Not alive");
 		return;
 	}
 
@@ -167,6 +169,7 @@ NS_ENDHANDLER
 - (void)dealloc
 {
 	DESTROY(term);
+	DESTROY(delegate);
 	[super dealloc];
 }
 

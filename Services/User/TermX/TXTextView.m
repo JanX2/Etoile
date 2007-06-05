@@ -288,11 +288,13 @@ extern unsigned char default_colors[256][3];
 	[cursor setBordered: NO];
 	ASSIGN(save_cursor, cursor);
 #ifndef GNUSTEP
+#if 0
 	ASSIGN(blinkTimer, [NSTimer scheduledTimerWithTimeInterval: 0.5
 	                        target: self 
 	                        selector: @selector(blinkAction:)
 	                        userInfo: nil
 	                        repeats: YES]);
+#endif
 #endif
 	blinkState = NO;
 	wrapnext = NO;
@@ -522,8 +524,10 @@ extern unsigned char default_colors[256][3];
 	cols = (rect.size.width  - 2 * WINDOW_PAD - 2 * LINE_PAD) / fontSize.width;
 	int overlapCols = MIN(cols, oldCols);
 	
+#if 0
 	NSLog(@"Resizing from %dx%d to %dx%d - %d columns overlap",
 					oldCols, oldRows, cols, rows, overlapCols);
+#endif
 	
 	scrollbuf = malloc(rows * sizeof(struct tv_row));
 	if (scrollbuf == NULL)

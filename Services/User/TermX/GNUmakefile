@@ -5,6 +5,7 @@ APP_NAME = TermX
 TermX_OBJC_FILES = \
 	TXCursor.m \
 	TXTextView.m \
+	TXWindow.m \
 	TerminalController.m \
 	TTY.m \
 	AppController.m \
