@@ -66,7 +66,7 @@ static NSPoint window_origin;
 {
 	if (window == nil)
 	{
-		NSRect rect = NSMakeRect(200, 200, 500, 400);
+		NSRect rect = NSMakeRect(200, 200, 600, 500);
 		rect.origin = window_origin;
 		window = [[TXWindow alloc] initWithContentRect: rect
 		                           styleMask: NSTitledWindowMask |

@@ -50,10 +50,9 @@ struct esc_state {
 	NSTextStorage *textStorage;
 	NSLayoutManager *layoutManager;
 	NSTextContainer *textContainer;
+	BOOL needRedraw;
 
 	NSRect lastFrame;
-
-	NSTimer *redrawTimer;
 
 	NSColor *ctab[256];
 

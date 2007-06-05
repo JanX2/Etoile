@@ -89,7 +89,6 @@ extern unsigned char default_colors[256][3];
 		}
 		[self lockFocus];
 		[cursor drawWithFrame: [self cursorFrame] inView: self];
-//		NSLog(@"%@", NSStringFromRect([self cursorFrame]));
 		[self unlockFocus];
 		[context flushGraphics];
 		blinkState = !blinkState;
@@ -281,6 +280,10 @@ extern unsigned char default_colors[256][3];
 	textStorage = [self textStorage];
 	layoutManager = [self layoutManager];
 	textContainer = [self textContainer];
+#ifdef GNUSTEP
+	[textContainer setWidthTracksTextView: YES];
+	[textContainer setHeightTracksTextView: YES];
+#endif
     [textContainer setLineFragmentPadding: LINE_PAD];
 
 	ASSIGN(cursor, AUTORELEASE([[TXCursor alloc] initTextCell: @" "]));
@@ -329,8 +332,6 @@ extern unsigned char default_colors[256][3];
 	tty = [[TTY alloc] initWithColumns: cols rows: rows];
 	[tty setDelegate:self];
 	
-	// do other setup stuff?
-	redrawTimer = nil;
 	return self;
 }
 
@@ -344,9 +345,9 @@ extern unsigned char default_colors[256][3];
 	NSColor *fgColor = nil, *bgColor = nil;
 	for(r = 0; r < rows; r++) 
 	{
-		NSMutableAttributedString *as = nil;
 		if (scrollbuf[r].dirty == YES)
 		{
+			NSMutableAttributedString *as = nil;
 			ASSIGN(as, AUTORELEASE([[NSMutableAttributedString alloc] init]));
 			unichar ucs;
 			NSString *s = nil;
@@ -369,15 +370,10 @@ extern unsigned char default_colors[256][3];
 					nil];
 				[as appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: s attributes: attr])];
 			}
-//			[as appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes])];
 			[as addAttributes: attributes range: NSMakeRange(0, [as length])];
 			[as endEditing];
 			[scrollRows replaceObjectAtIndex: r withObject: as];
 			scrollbuf[r].dirty = NO;
-		}
-		else
-		{
-			ASSIGN(as, [scrollRows objectAtIndex: r]);
 		}
 	}
 	[textStorage beginEditing];
@@ -393,32 +389,20 @@ extern unsigned char default_colors[256][3];
 	}
 
 	[textStorage endEditing];
+#ifdef GNUSTEP
+	NSSize size = [textStorage size];
+	size.width += 2*LINE_PAD;
+	[self setFrameSize: size];
+#endif
 	[self scrollRangeToVisible: NSMakeRange([textStorage length]-1, [textStorage length])];
+	needRedraw = YES;
 }
 
 - (void) tty: (TTY *) sender gotInput: (NSData *) dat
 {
 	[self doChars:dat];
 	[self updateText];
-	
-	if(!redrawTimer)
-	{
-		ASSIGN(redrawTimer, 
-		       [NSTimer scheduledTimerWithTimeInterval:1/30.0
-								 target:self
-								 selector:@selector(timedDraw:)
-								 userInfo:nil
-								repeats:NO]);
-	}
 }
-
-
-- (void) timedDraw: (id) ignored
-{
-	[self setNeedsDisplay:YES];
-	DESTROY(redrawTimer);
-}
-
 
 - (void) tty: (TTY *) sender closed: (id) ignored
 {
@@ -441,12 +425,6 @@ extern unsigned char default_colors[256][3];
 
 - (void) dealloc
 {
-	if (redrawTimer) 
-	{
-		[redrawTimer invalidate];
-		DESTROY(redrawTimer);
-	}
-	
 	if (scrollbuf) 
 	{
 		free(scrollbuf);
@@ -478,7 +456,6 @@ extern unsigned char default_colors[256][3];
 	NSRect new_cr = NSMakeRect(0, 0,
 						 cols * fontSize.width + 2 * WINDOW_PAD + 2 * LINE_PAD,
 						 rows * (fontSize.height+ROW_PAD) + 2 * WINDOW_PAD);
-//	[textContainer setContainerSize: new_cr.size];
 	
 	NSRect new_frame;
 	NSScrollView *scrollView = [self enclosingScrollView];
@@ -524,7 +501,7 @@ extern unsigned char default_colors[256][3];
 	cols = (rect.size.width  - 2 * WINDOW_PAD - 2 * LINE_PAD) / fontSize.width;
 	int overlapCols = MIN(cols, oldCols);
 	
-#if 0
+#if 1
 	NSLog(@"Resizing from %dx%d to %dx%d - %d columns overlap",
 					oldCols, oldRows, cols, rows, overlapCols);
 #endif
@@ -613,12 +590,15 @@ extern unsigned char default_colors[256][3];
 
 - (void) drawRect: (NSRect) rect
 {
-	[[NSGraphicsContext currentContext] setShouldAntialias: NO];
-	[super drawRect: rect];
+	if (needRedraw)
+	{
+		[[NSGraphicsContext currentContext] setShouldAntialias: NO];
+		[super drawRect: rect];
 
-	// non-blinking cursor for GNUSTep 
-	[cursor drawWithFrame: [self cursorFrame] inView: self];
-//	NSLog(@"cursor %dx%d", cursor->row, cursor->column); 
+		// non-blinking cursor for GNUSTep 
+		[cursor drawWithFrame: [self cursorFrame] inView: self];
+		needRedraw = NO;
+	}
 }
 
 - (void) scrollRegionFromRow: (int) start toRow: (int) end byLines: (int) count
