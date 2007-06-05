@@ -66,10 +66,11 @@ extern unsigned char default_colors[256][3];
 {
 	// non-blinking cursor for GNUSTep 
 	NSRect rt = NSZeroRect;
+	NSRect visible = [[self enclosingScrollView] documentVisibleRect];
 	rt.size = fontSize;
 	rt.size.height += ROW_PAD;
 	rt.origin = NSMakePoint(WINDOW_PAD+LINE_PAD+cursor->column*fontSize.width,
-	                        WINDOW_PAD+cursor->row*(fontSize.height+ROW_PAD));
+	                        WINDOW_PAD+NSMinY(visible)+cursor->row*(fontSize.height+ROW_PAD));
 	return rt;
 }
 
@@ -88,6 +89,7 @@ extern unsigned char default_colors[256][3];
 		}
 		[self lockFocus];
 		[cursor drawWithFrame: [self cursorFrame] inView: self];
+//		NSLog(@"%@", NSStringFromRect([self cursorFrame]));
 		[self unlockFocus];
 		[context flushGraphics];
 		blinkState = !blinkState;
@@ -278,6 +280,7 @@ extern unsigned char default_colors[256][3];
 	textStorage = [self textStorage];
 	layoutManager = [self layoutManager];
 	textContainer = [self textContainer];
+    [textContainer setLineFragmentPadding: LINE_PAD];
 
 	ASSIGN(cursor, AUTORELEASE([[TXCursor alloc] initTextCell: @" "]));
 	[cursor setBezeled: NO];
@@ -291,7 +294,6 @@ extern unsigned char default_colors[256][3];
 	                        repeats: YES]);
 #endif
 	blinkState = NO;
-		
 	wrapnext = NO;
 		
 	esc.mode = ESC_NORMAL;
@@ -364,7 +366,7 @@ extern unsigned char default_colors[256][3];
 					nil];
 				[as appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: s attributes: attr])];
 			}
-			[as appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes])];
+//			[as appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes])];
 			[as addAttributes: attributes range: NSMakeRange(0, [as length])];
 			[as endEditing];
 			[scrollRows replaceObjectAtIndex: r withObject: as];
@@ -376,12 +378,19 @@ extern unsigned char default_colors[256][3];
 		}
 	}
 	[textStorage beginEditing];
-	[textStorage setAttributedString: [scrollRows objectAtIndex: 0]];
-	for (r = 1; r < rows; r++)
+	/* Remove text after cached text */
+	[textStorage deleteCharactersInRange: NSMakeRange(cachedLength, [textStorage length] - cachedLength)];
+	for (r = 0; r < rows; r++)
 	{
 		[textStorage appendAttributedString: [scrollRows objectAtIndex: r]];
+		if (r < rows-1)
+		{
+			[textStorage  appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes])];
+		}
 	}
+
 	[textStorage endEditing];
+	[self scrollRangeToVisible: NSMakeRange([textStorage length]-1, [textStorage length])];
 }
 
 - (void) tty: (TTY *) sender gotInput: (NSData *) dat
@@ -466,8 +475,7 @@ extern unsigned char default_colors[256][3];
 	NSRect new_cr = NSMakeRect(0, 0,
 							 cols * fontSize.width + 2 * WINDOW_PAD,
 							 rows * (fontSize.height+ROW_PAD) + 2 * WINDOW_PAD);
-	[textContainer setContainerSize: new_cr.size];
-	[textContainer setLineFragmentPadding: LINE_PAD];
+//	[textContainer setContainerSize: new_cr.size];
 	
 	NSRect new_frame;
 	NSScrollView *scrollView = [self enclosingScrollView];
@@ -502,8 +510,15 @@ extern unsigned char default_colors[256][3];
 	uint32_t *old_ralloc = scroll_rows_alloc;
 	char *old_tabstops = tabstops;
 
-	rows = ([self frame].size.height - 2 * WINDOW_PAD) / (fontSize.height+ROW_PAD);
-	cols = ([self frame].size.width  - 2 * WINDOW_PAD) / fontSize.width;
+	NSScrollView *scrollView = [self enclosingScrollView];
+	NSRect rect = [scrollView  bounds];
+	rect.size = [NSScrollView contentSizeForFrameSize: rect.size
+					hasHorizontalScroller: [scrollView hasHorizontalScroller]
+					hasVerticalScroller: [scrollView hasVerticalScroller]
+					borderType: [scrollView borderType]];
+
+	rows = (rect.size.height - 2 * WINDOW_PAD) / (fontSize.height+ROW_PAD);
+	cols = (rect.size.width  - 2 * WINDOW_PAD) / fontSize.width;
 	int overlapCols = MIN(cols, oldCols);
 	
 	NSLog(@"Resizing from %dx%d to %dx%d - %d columns overlap",
@@ -598,7 +613,7 @@ extern unsigned char default_colors[256][3];
 
 	// non-blinking cursor for GNUSTep 
 	[cursor drawWithFrame: [self cursorFrame] inView: self];
-
+//	NSLog(@"cursor %dx%d", cursor->row, cursor->column); 
 }
 
 - (void) scrollRegionFromRow: (int) start toRow: (int) end byLines: (int) count
@@ -655,7 +670,14 @@ extern unsigned char default_colors[256][3];
 {
 	if (cursor->row >= scroll_btm) 
 	{ // XXX what if out of range?
+		NSAttributedString *as = [scrollRows objectAtIndex: 0];
+		[textStorage insertAttributedString: as atIndex: cachedLength];
+		cachedLength += [as length];
+		as = AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes]);
+		[textStorage insertAttributedString: as atIndex: cachedLength];
+		cachedLength += [as length];
 		[self scrollRegionFromRow:scroll_top toRow:scroll_btm byLines:1];
+
 	} 
 	else 
 	{
