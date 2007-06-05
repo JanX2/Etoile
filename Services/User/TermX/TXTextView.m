@@ -121,6 +121,7 @@ extern unsigned char default_colors[256][3];
 	[attributes setObject: [self font] forKey: NSFontAttributeName];
 	NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];;
 	[ps setMaximumLineHeight: fontSize.height+ROW_PAD];
+	[ps setLineBreakMode: NSLineBreakByCharWrapping];
 	[attributes setObject: ps forKey: NSParagraphStyleAttributeName];
 	DESTROY(ps);
 	[attributes setObject: [NSNumber numberWithInt: 0]
@@ -473,8 +474,8 @@ extern unsigned char default_colors[256][3];
 {
 	NSRect old_frame = [[self window] frame];
 	NSRect new_cr = NSMakeRect(0, 0,
-							 cols * fontSize.width + 2 * WINDOW_PAD,
-							 rows * (fontSize.height+ROW_PAD) + 2 * WINDOW_PAD);
+						 cols * fontSize.width + 2 * WINDOW_PAD + 2 * LINE_PAD,
+						 rows * (fontSize.height+ROW_PAD) + 2 * WINDOW_PAD);
 //	[textContainer setContainerSize: new_cr.size];
 	
 	NSRect new_frame;
@@ -518,7 +519,7 @@ extern unsigned char default_colors[256][3];
 					borderType: [scrollView borderType]];
 
 	rows = (rect.size.height - 2 * WINDOW_PAD) / (fontSize.height+ROW_PAD);
-	cols = (rect.size.width  - 2 * WINDOW_PAD) / fontSize.width;
+	cols = (rect.size.width  - 2 * WINDOW_PAD - 2 * LINE_PAD) / fontSize.width;
 	int overlapCols = MIN(cols, oldCols);
 	
 	NSLog(@"Resizing from %dx%d to %dx%d - %d columns overlap",
