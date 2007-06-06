@@ -65,6 +65,12 @@ static BOOL blockRedraw = NO;
 	return color;
 }
 
+- (void) setBackgroundColorIndex: (unsigned int) index
+{
+	NSColor *color = [self colorAtIndex: index];
+	[self setBackgroundColor: color];
+}
+
 - (NSRect) cursorFrame
 {
 	// non-blinking cursor for GNUSTep 
@@ -95,6 +101,24 @@ static BOOL blockRedraw = NO;
 		[self unlockFocus];
 		[context flushGraphics];
 		blinkState = !blinkState;
+	}
+}
+
+/* We use special method for pasting because TXTextView is not editable,
+   Regular -paste: will not activated in main menu.
+   And we need to process paste string manually. */
+- (void) pasteInTerminal: (id) sender
+{
+	NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSGeneralPboard];
+	NSArray *types = [NSArray arrayWithObjects: NSStringPboardType, NSFilenamesPboardType, nil];
+	NSString *availableType = [pboard availableTypeFromArray: types];
+	if (availableType != nil)
+	{
+		NSString *s = [pboard stringForType: availableType];	
+		if ([s length] > 0)
+		{
+			[tty writeString: s];
+		}
 	}
 }
 

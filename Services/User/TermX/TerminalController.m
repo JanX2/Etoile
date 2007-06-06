@@ -13,6 +13,7 @@
 
 NSString *TXFontNameUserDefault = @"TXFontNameUserDefault";
 NSString *TXFontSizeUserDefault = @"TXFontSizeUserDefault";
+NSString *TXBackgroundColorUserDefault = @"TXBackgroundColorUserDefault";
 
 static NSPoint window_origin;
 
@@ -59,6 +60,15 @@ static NSPoint window_origin;
 			[terminalView setFont: font];
 			[terminalView resizeWindowForTerminal];
 		}
+	}
+	if ([defaults objectForKey: TXBackgroundColorUserDefault])
+	{
+		unsigned index = [defaults integerForKey: TXBackgroundColorUserDefault];
+		[terminalView setBackgroundColorIndex: index];
+	}
+	else
+	{
+		[terminalView setBackgroundColorIndex: 0]; // Black
 	}
 }
 

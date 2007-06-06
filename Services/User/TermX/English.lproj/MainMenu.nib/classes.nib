@@ -2,7 +2,7 @@
     IBClasses = (
         {CLASS = AppController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {closeTerminal = id; newTerminal = id; }; 
+            ACTIONS = {closeTerminal = id; newTerminal = id; pasteInTerminal = id; }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 

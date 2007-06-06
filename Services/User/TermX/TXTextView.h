@@ -82,4 +82,7 @@ struct esc_state {
 
 - (void) doChars: (NSData *) buf;
 
+/* see 256colors.c */
+- (void) setBackgroundColorIndex: (unsigned int) index;
+
 @end
