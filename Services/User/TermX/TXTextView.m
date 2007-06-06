@@ -19,6 +19,8 @@
 
 extern unsigned char default_colors[256][3];
 
+static BOOL blockRedraw = NO;
+
 #define FORCE_RANGE(min,val,max) MAX(min, MIN(val, max))
 
 #define SET_DEFAULT(index, dflt) do { if(esc.optptr <= index) { \
@@ -377,6 +379,10 @@ extern unsigned char default_colors[256][3];
 				if (cur_fg != scrollbuf[r].fg[c])
 				{
 					fgColor = [self colorAtIndex: cur_fg];
+					if (NSMaxRange(fg_range) > [as length])
+					{
+						fg_range.length = [as length]-fg_range.location;
+					}
 					[as addAttribute: NSForegroundColorAttributeName
 					    value: fgColor
 					    range: fg_range];
@@ -391,6 +397,10 @@ extern unsigned char default_colors[256][3];
 				if (cur_bg != scrollbuf[r].bg[c])
 				{
 					bgColor = [self colorAtIndex: cur_bg];
+					if (NSMaxRange(bg_range) > [as length])
+					{
+						bg_range.length = [as length]-bg_range.location;
+					}
 					[as addAttribute: NSBackgroundColorAttributeName
 					    value: bgColor
 					    range: bg_range];
@@ -432,8 +442,10 @@ extern unsigned char default_colors[256][3];
 
 - (void) tty: (TTY *) sender gotInput: (NSData *) dat
 {
+	blockRedraw = YES;
 	[self doChars:dat];
 	[self updateText];
+	blockRedraw = NO;
 }
 
 - (void) tty: (TTY *) sender closed: (id) ignored
@@ -630,6 +642,8 @@ extern unsigned char default_colors[256][3];
 
 - (void) drawRect: (NSRect) rect
 {
+	if (blockRedraw == YES)
+		return;
 	[[NSGraphicsContext currentContext] setShouldAntialias: NO];
 	[super drawRect: rect];
 
