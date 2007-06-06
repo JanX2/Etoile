@@ -11,7 +11,6 @@
 #import "TXCursor.h"
 
 #define MAX_ESC_OPTS 16
-#define MAX_LINES 50
 
 struct tv_row {
 	BOOL dirty;
@@ -47,6 +46,7 @@ struct esc_state {
 	NSFont *boldFont;
 	NSSize fontSize;
 	unsigned long cachedLength;
+	unsigned long totalLines;
 	NSMutableArray *scrollRows; // We cache NSAttributedString for drawing
 	NSMutableDictionary *attributes;
 

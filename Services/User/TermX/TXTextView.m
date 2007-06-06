@@ -13,6 +13,7 @@
 #define WINDOW_PAD 0
 #define ROW_PAD 1 /* Between lines */
 #define LINE_PAD 2 /* Between lines */
+#define MAX_LINES 10
 
 #define DEFAULT_COLS 80
 #define DEFAULT_ROWS 24
@@ -339,6 +340,18 @@ static BOOL blockRedraw = NO;
 
 - (void) updateText
 {
+	NSString *string = [textStorage string];
+	int linesToDelete = totalLines - MAX_LINES;
+	NSRange lineRange = NSMakeRange(0, 0);
+	while (linesToDelete > 0)
+	{
+		linesToDelete--;
+		lineRange = [string lineRangeForRange: NSMakeRange(0, 0)];
+		totalLines--;
+		cachedLength -= lineRange.length;
+		[textStorage deleteCharactersInRange: lineRange];
+	}
+
 	/* Clean up */
 	int r, c;
 	for(r = 0; r < rows; r++) 
@@ -420,6 +433,7 @@ static BOOL blockRedraw = NO;
 		}
 	}
 	[textStorage beginEditing];
+
 	/* Remove text after cached text */
 	[textStorage deleteCharactersInRange: NSMakeRange(cachedLength, [textStorage length] - cachedLength)];
 	for (r = 0; r < rows; r++)
@@ -442,10 +456,12 @@ static BOOL blockRedraw = NO;
 
 - (void) tty: (TTY *) sender gotInput: (NSData *) dat
 {
+	CREATE_AUTORELEASE_POOL(x);
 	blockRedraw = YES;
 	[self doChars:dat];
 	[self updateText];
 	blockRedraw = NO;
+	DESTROY(x);
 }
 
 - (void) tty: (TTY *) sender closed: (id) ignored
@@ -715,6 +731,7 @@ static BOOL blockRedraw = NO;
 		cachedLength += [as length];
 		[self scrollRegionFromRow:scroll_top toRow:scroll_btm byLines:1];
 
+		totalLines++;
 	} 
 	else 
 	{
