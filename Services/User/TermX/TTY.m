@@ -77,6 +77,7 @@
 		char *shell = getenv("SHELL");
 		if(!shell) shell = "/bin/sh";
 		setenv("TERM", "vt100", 1);
+//		setenv("TERM", "xterm-color", 1);
 		execl(shell, "-", NULL);
 		NSLog(@"exec failure!");
 		exit(255);

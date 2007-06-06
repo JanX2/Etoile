@@ -15,7 +15,10 @@
 
 struct tv_row {
 	BOOL dirty;
-	uint32_t *data;   // MSB-LSB: Attr BG FG char
+	char *attr;
+	char *fg;
+	char *bg;
+	char *chars;
 };
 
 struct esc_state {
@@ -50,7 +53,6 @@ struct esc_state {
 	NSTextStorage *textStorage;
 	NSLayoutManager *layoutManager;
 	NSTextContainer *textContainer;
-	BOOL needRedraw;
 
 	NSRect lastFrame;
 
@@ -59,7 +61,7 @@ struct esc_state {
 	int rows, cols;
 	int scroll_top, scroll_btm;
 	struct tv_row *scrollbuf;
-	uint32_t *scroll_rows_alloc;
+	char *scroll_rows_alloc;
 	char *tabstops;
 
 	TXCursor *cursor, *save_cursor;

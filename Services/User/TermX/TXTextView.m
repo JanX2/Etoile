@@ -339,36 +339,69 @@ extern unsigned char default_colors[256][3];
 {
 	/* Clean up */
 	int r, c;
-	unsigned int at;
-	unsigned int fg = 0;
-	unsigned int bg = 0;
-	NSColor *fgColor = nil, *bgColor = nil;
 	for(r = 0; r < rows; r++) 
 	{
 		if (scrollbuf[r].dirty == YES)
 		{
+			NSColor *fgColor = nil, *bgColor = nil;
+			unsigned int cur_fg = 0;
+			unsigned int cur_bg = 0;
 			NSMutableAttributedString *as = nil;
 			ASSIGN(as, AUTORELEASE([[NSMutableAttributedString alloc] init]));
-			unichar ucs;
 			NSString *s = nil;
-			NSDictionary *attr = nil;
-		
+			NSRange fg_range = NSMakeRange(0, 1);
+			NSRange bg_range = NSMakeRange(0, 1);
+			NSDictionary *attr = [NSDictionary dictionaryWithObjectsAndKeys:
+					[NSColor whiteColor], NSForegroundColorAttributeName, 
+					[NSColor blackColor], NSBackgroundColorAttributeName, 
+					nil];
+			s = [[NSString alloc] initWithBytes: scrollbuf[r].chars
+			                                length: cols
+			       encoding: [NSString defaultCStringEncoding]];
+			/* Default color */
 			[as beginEditing];
+			[as appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: s attributes: attr])];
+			DESTROY(s);
 			for (c = 0; c < cols; c++)
 			{
-				uint32_t ch = scrollbuf[r].data[c];
-				ucs = 0xFF & ch;
-				fg = (ch >> 8) & 0xFF;
-				bg = (ch >> 16) & 0xFF;
-				at = (ch >> 24) & 0xFF;
-				s = [NSString stringWithCharacters: (const unichar *)&ucs length: 1];
-				fgColor = [self colorAtIndex: fg];
-				bgColor = [self colorAtIndex: bg];
-				attr = [NSDictionary dictionaryWithObjectsAndKeys:
-					fgColor, NSForegroundColorAttributeName, 
-					bgColor, NSBackgroundColorAttributeName, 
-					nil];
-				[as appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: s attributes: attr])];
+				if (fgColor == nil)
+				{
+					cur_fg = scrollbuf[r].fg[c];
+					fgColor = [self colorAtIndex: cur_fg];
+				}
+				if (bgColor == nil)
+				{
+					cur_bg = scrollbuf[r].bg[c];
+					bgColor = [self colorAtIndex: cur_bg];
+				}
+				if (cur_fg != scrollbuf[r].fg[c])
+				{
+					fgColor = [self colorAtIndex: cur_fg];
+					[as addAttribute: NSForegroundColorAttributeName
+					    value: fgColor
+					    range: fg_range];
+					cur_fg = scrollbuf[r].fg[c];
+					fg_range.location = c;
+					fg_range.length = 1;
+				}
+				else
+				{
+					fg_range.length++;
+				}
+				if (cur_bg != scrollbuf[r].bg[c])
+				{
+					bgColor = [self colorAtIndex: cur_bg];
+					[as addAttribute: NSBackgroundColorAttributeName
+					    value: bgColor
+					    range: bg_range];
+					cur_bg = scrollbuf[r].bg[c];
+					bg_range.location = c;
+					bg_range.length = 1;
+				}
+				else
+				{
+					bg_range.length++;
+				}
 			}
 			[as addAttributes: attributes range: NSMakeRange(0, [as length])];
 			[as endEditing];
@@ -395,7 +428,6 @@ extern unsigned char default_colors[256][3];
 	[self setFrameSize: size];
 #endif
 	[self scrollRangeToVisible: NSMakeRange([textStorage length]-1, [textStorage length])];
-	needRedraw = YES;
 }
 
 - (void) tty: (TTY *) sender gotInput: (NSData *) dat
@@ -487,7 +519,7 @@ extern unsigned char default_colors[256][3];
 {
 	int oldRows = rows, oldCols = cols;
 	struct tv_row *old_scrollbuf = scrollbuf;
-	uint32_t *old_ralloc = scroll_rows_alloc;
+	char *old_ralloc = scroll_rows_alloc;
 	char *old_tabstops = tabstops;
 
 	NSScrollView *scrollView = [self enclosingScrollView];
@@ -501,7 +533,7 @@ extern unsigned char default_colors[256][3];
 	cols = (rect.size.width  - 2 * WINDOW_PAD - 2 * LINE_PAD) / fontSize.width;
 	int overlapCols = MIN(cols, oldCols);
 	
-#if 1
+#if 0
 	NSLog(@"Resizing from %dx%d to %dx%d - %d columns overlap",
 					oldCols, oldRows, cols, rows, overlapCols);
 #endif
@@ -512,12 +544,12 @@ extern unsigned char default_colors[256][3];
 		NSLog(@"Internal error: cannot get scrollbuf");
 	}
 	bzero(scrollbuf, rows*sizeof(struct tv_row));
-	scroll_rows_alloc = malloc(rows * cols * sizeof(uint32_t));
+	scroll_rows_alloc = malloc(rows * cols * sizeof(char) * 4);
 	if (scroll_rows_alloc == NULL)
 	{
 		NSLog(@"Internal error: cannot get scroll_rows_alloc");
 	}
-	bzero(scroll_rows_alloc, rows*cols*sizeof(uint32_t));
+	bzero(scroll_rows_alloc, rows * cols * sizeof(char) * 4);
 	[scrollRows removeAllObjects];
 
 	int r;
@@ -525,16 +557,24 @@ extern unsigned char default_colors[256][3];
 	{
 		[scrollRows addObject: [NSNull null]];
 		scrollbuf[r].dirty  = YES; // better safe than sorry
-		scrollbuf[r].data = &scroll_rows_alloc[r * cols];
+		scrollbuf[r].attr = &scroll_rows_alloc[(r*4) * cols];
+		scrollbuf[r].fg = &scroll_rows_alloc[((r*4)+1) * cols];
+		scrollbuf[r].bg = &scroll_rows_alloc[((r*4)+2) * cols];
+		scrollbuf[r].chars = &scroll_rows_alloc[((r*4)+3) * cols];
 
 		int c;
 		for(c = 0; c < cols; c++) 
 		{
-			scrollbuf[r].data[c] = ' '; // XXX MODE?
+			scrollbuf[r].chars[c] = ' '; // XXX MODE?
 		}
 
 		if ((r < oldRows) && old_scrollbuf)
-			memcpy(scrollbuf[r].data, old_scrollbuf[r].data, overlapCols*sizeof(uint32_t));
+		{
+			memcpy(scrollbuf[r].attr, old_scrollbuf[r].attr, overlapCols*sizeof(char));
+			memcpy(scrollbuf[r].fg, old_scrollbuf[r].fg, overlapCols*sizeof(char));
+			memcpy(scrollbuf[r].bg, old_scrollbuf[r].bg, overlapCols*sizeof(char));
+			memcpy(scrollbuf[r].chars, old_scrollbuf[r].chars, overlapCols*sizeof(char));
+		}
 	}
 
 	tabstops = malloc(cols * sizeof(char));
@@ -590,15 +630,11 @@ extern unsigned char default_colors[256][3];
 
 - (void) drawRect: (NSRect) rect
 {
-	if (needRedraw)
-	{
-		[[NSGraphicsContext currentContext] setShouldAntialias: NO];
-		[super drawRect: rect];
+	[[NSGraphicsContext currentContext] setShouldAntialias: NO];
+	[super drawRect: rect];
 
-		// non-blinking cursor for GNUSTep 
-		[cursor drawWithFrame: [self cursorFrame] inView: self];
-		needRedraw = NO;
-	}
+	// non-blinking cursor for GNUSTep 
+	[cursor drawWithFrame: [self cursorFrame] inView: self];
 }
 
 - (void) scrollRegionFromRow: (int) start toRow: (int) end byLines: (int) count
@@ -648,7 +684,9 @@ extern unsigned char default_colors[256][3];
 
 	moved->dirty = YES;
 	for(i = 0; i < cols; i++)
-		moved->data[i] = ' '; // XXX what should this really fill with?
+	{
+		moved->chars[i] = ' '; // XXX what should this really fill with?
+	}
 }
 
 - (void) scrollDown
@@ -790,14 +828,14 @@ extern unsigned char default_colors[256][3];
 		case 'J':
 			for(i = cursor->column; i < cols; i++) 
 			{
-				scrollbuf[cursor->row].data[i] = ' '; // XXX attributes
+				scrollbuf[cursor->row].chars[i] = ' '; // XXX attributes
 			}
 			scrollbuf[cursor->row].dirty = YES;
 			for(i = cursor->row + 1; i < rows; i++) 
 			{
 				for(j = 0; j < cols; j++) 
 				{
-					scrollbuf[i].data[j] = ' '; // XXX attributes
+					scrollbuf[i].chars[j] = ' '; // XXX attributes
 				}
 				scrollbuf[i].dirty = YES;
 			}
@@ -805,7 +843,7 @@ extern unsigned char default_colors[256][3];
 		case 'K':
 			for(i = cursor->column; i < cols; i++) 
 			{
-				scrollbuf[cursor->row].data[i] = ' '; // XXX attributes
+				scrollbuf[cursor->row].chars[i] = ' '; // XXX attributes
 			}
 			scrollbuf[cursor->row].dirty = YES;
 			break;
@@ -850,10 +888,19 @@ extern unsigned char default_colors[256][3];
 			}
 			else 
 			{
-				memmove(scrollbuf[cursor->row].data + 1,
-								scrollbuf[cursor->row].data,
+				memmove(scrollbuf[cursor->row].attr + 1,
+								scrollbuf[cursor->row].attr,
 								cols - 1);
-				scrollbuf[cursor->row].data[0] = ' ';
+				memmove(scrollbuf[cursor->row].fg + 1,
+								scrollbuf[cursor->row].fg,
+								cols - 1);
+				memmove(scrollbuf[cursor->row].bg + 1,
+								scrollbuf[cursor->row].bg,
+								cols - 1);
+				memmove(scrollbuf[cursor->row].chars + 1,
+								scrollbuf[cursor->row].chars,
+								cols - 1);
+				scrollbuf[cursor->row].chars[0] = ' ';
 			}
 			break;
 		
@@ -872,10 +919,19 @@ extern unsigned char default_colors[256][3];
 			}
 			else 
 			{
-				memmove(scrollbuf[cursor->row].data,
-								scrollbuf[cursor->row].data + 1,
-								cols - 1);
-				scrollbuf[cursor->row].data[cols - 1] = ' ';
+                memmove(scrollbuf[cursor->row].attr,
+                                scrollbuf[cursor->row].attr + 1,
+                                cols - 1);
+                memmove(scrollbuf[cursor->row].fg,
+                                scrollbuf[cursor->row].fg + 1,
+                                cols - 1);
+                memmove(scrollbuf[cursor->row].bg,
+                                scrollbuf[cursor->row].bg + 1,
+                                cols - 1);
+                memmove(scrollbuf[cursor->row].chars,
+                                scrollbuf[cursor->row].chars + 1,
+                                cols - 1);
+                scrollbuf[cursor->row].chars[cols - 1] = ' ';
 			}
 			break;
 		
@@ -941,7 +997,7 @@ extern unsigned char default_colors[256][3];
 				{
 					for(j = 0; j < cols; j++) 
 					{
-						scrollbuf[i].data[j] = 'E'; // XXX attributes?
+						scrollbuf[i].chars[j] = 'E'; // XXX attributes?
 					}
 					scrollbuf[i].dirty = YES;
 				}
@@ -1093,14 +1149,14 @@ extern unsigned char default_colors[256][3];
 						{
 							for(i = cursor->column; i < cols; i++) 
 							{
-								scrollbuf[cursor->row].data[i] = ' '; // XXX attributes
+								scrollbuf[cursor->row].chars[i] = ' '; // XXX attributes
 							}
 							scrollbuf[cursor->row].dirty = YES;
 							for(i = cursor->row + 1; i < rows; i++) 
 							{
 								for(j = 0; j < cols; j++) 
 								{
-									scrollbuf[i].data[j] = ' '; // XXX attributes
+									scrollbuf[i].chars[j] = ' '; // XXX attributes
 								}
 								scrollbuf[i].dirty = YES;
 							}
@@ -1112,13 +1168,13 @@ extern unsigned char default_colors[256][3];
 							{
 								for(j = 0; j < cols; j++) 
 								{
-									scrollbuf[i].data[j] = ' '; // XXX attributes
+									scrollbuf[i].chars[j] = ' '; // XXX attributes
 								}
 								scrollbuf[i].dirty = YES;
 							}
 							for(i = 0; i <= cursor->column; i++) 
 							{
-								scrollbuf[cursor->row].data[i] = ' '; // etc
+								scrollbuf[cursor->row].chars[i] = ' '; // etc
 							}
 							scrollbuf[cursor->row].dirty = YES;
 							break;
@@ -1129,7 +1185,7 @@ extern unsigned char default_colors[256][3];
 							{
 								for(j = 0; j < cols; j++) 
 								{
-									scrollbuf[i].data[j] = ' '; // XXX attributes
+									scrollbuf[i].chars[j] = ' '; // XXX attributes
 								}
 								scrollbuf[i].dirty = YES;
 							}
@@ -1149,7 +1205,7 @@ extern unsigned char default_colors[256][3];
 						{
 							for(i = cursor->column; i < cols; i++) 
 							{
-								scrollbuf[cursor->row].data[i] = ' '; // XXX attributes
+								scrollbuf[cursor->row].chars[i] = ' '; // XXX attributes
 							}
 							scrollbuf[cursor->row].dirty = YES;
 							break;
@@ -1158,7 +1214,7 @@ extern unsigned char default_colors[256][3];
 						{
 							for(i = 0; i <= cursor->column; i++) 
 							{
-								scrollbuf[cursor->row].data[i] = ' '; // etc
+								scrollbuf[cursor->row].chars[i] = ' '; // etc
 							}
 							scrollbuf[cursor->row].dirty = YES;
 							break;
@@ -1167,7 +1223,7 @@ extern unsigned char default_colors[256][3];
 						{
 							for(i = 0; i < cols; i++) 
 							{
-								scrollbuf[cursor->row].data[i] = ' '; // etc
+								scrollbuf[cursor->row].chars[i] = ' '; // etc
 							}
 							scrollbuf[cursor->row].dirty = YES;
 							break;
@@ -1394,9 +1450,10 @@ extern unsigned char default_colors[256][3];
 			}
 												
 			// XXX insert mode			
-			scrollbuf[cursor->row].data[cursor->column] = 
-				(ch | (cursor->fg << 8) |
-				 (cursor->bg << 16) | (cursor->attribute << 24));
+			scrollbuf[cursor->row].attr[cursor->column] = cursor->attribute;
+			scrollbuf[cursor->row].fg[cursor->column] = cursor->fg;
+			scrollbuf[cursor->row].bg[cursor->column] = cursor->bg;
+			scrollbuf[cursor->row].chars[cursor->column] = ch;
 			scrollbuf[cursor->row].dirty = YES;
 			if(cursor->column < cols - 1)
 				cursor->column++;
