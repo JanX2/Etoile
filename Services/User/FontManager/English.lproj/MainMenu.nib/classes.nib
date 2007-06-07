@@ -1,6 +1,7 @@
 {
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
         {
             CLASS = PQController; 
             LANGUAGE = ObjC; 
@@ -13,13 +14,19 @@
             SUPERCLASS = NSObject; 
         }, 
         {
+            CLASS = PQFontSampleView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {dataSource = id; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
             CLASS = PQSampleController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 backgroundColorWell = NSColorWell; 
                 foregroundColorWell = NSColorWell; 
                 sampleField = NSComboBox; 
-                sampleView = NSTextView; 
+                sampleView = PQFontSampleView; 
                 sizeField = NSComboBox; 
                 sizeSlider = NSSlider; 
             }; 

@@ -50,7 +50,7 @@
 	return members;
 }
 
-- (bool) hasMultipleMembers
+- (BOOL) hasMultipleMembers
 {
 	if (2 > [members count])
 	{

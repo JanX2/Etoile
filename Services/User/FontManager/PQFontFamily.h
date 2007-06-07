@@ -28,7 +28,7 @@
 - (void) setMembers: (NSArray *)someMembers;
 - (NSArray *) members;
 
-- (bool) hasMultipleMembers;
+- (BOOL) hasMultipleMembers;
 
 - (NSComparisonResult) caseInsensitiveCompare: (PQFontFamily *)aFontFamily;
 

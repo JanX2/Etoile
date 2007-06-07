@@ -1,3 +1,9 @@
+2007-06-07  Isaiah Beerbower <ipaqag@tm.net>
+	* PQFontSampleView.*: Font sampling view to replace text view.
+	* PQSampleController.m: Changed to use PQFontSampleView instead of a text view.
+	* GNUmakefile: Makefile for GNUstep.
+	* English.lproj/MainMenu.gorm*: Interface for GNUstep.
+
 2007-05-28  Isaiah Beerbower <ipaqah@tm.net>
 	* PQSampleController.m: Implemented -updateSampleText.
 

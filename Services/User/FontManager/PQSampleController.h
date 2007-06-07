@@ -13,54 +13,33 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+#import "PQFontSampleView.h"
 
 
 @interface PQSampleController : NSObject
 {
-	IBOutlet NSColorWell *backgroundColorWell;
-	IBOutlet NSComboBox *sampleField;
-	IBOutlet NSColorWell *foregroundColorWell;
-	IBOutlet NSTextView *sampleView;
-	IBOutlet NSComboBox *sizeField;
-	IBOutlet NSSlider *sizeSlider;
+	PQFontSampleView *sampleView;
+
+	NSComboBox *sampleField;
+	NSComboBox *sizeField;
+	NSSlider *sizeSlider;
+
+	NSColorWell *foregroundColorWell;
+	NSColorWell *backgroundColorWell;
 
 	NSArray *fonts;
 	NSString *sampleText;
 	NSArray *defaultSampleText;
 	NSMutableArray *sampleTextHistory;
-	
-	NSMutableArray *sampleTextRanges;
 
-	NSColor *foregroundColor;
-	NSColor *backgroundColor;
+	BOOL fontsNeedUpdate;
 
-	NSArray *sizes;
 	NSNumber *size;
-
-	BOOL needsUpdateFonts;
-	BOOL needsUpdateSampleText;
-	BOOL needsUpdateSize;
+	NSArray *sizes;
 }
-
-- (void) updateFonts;
-- (void) updateSampleText;
-- (void) updateSize;
-
-- (void) setNeedsUpdateFonts: (BOOL)flag;
-- (BOOL) needsUpdateFonts;
-- (void) setNeedsUpdateSampleText: (BOOL)flag;
-- (BOOL) needsUpdateSampleText;
-- (void) setNeedsUpdateSize: (BOOL)flag;
-- (BOOL) needsUpdateSize;
 
 - (void) setFonts: (NSArray *)someFonts;
 - (NSArray *) fonts;
-- (void) setForegroundColor: (NSColor *)aColor;
-- (NSColor *) foregroundColor;
-- (void) setBackgroundColor: (NSColor *)aColor;
-- (NSColor *) backgroundColor;
-- (void) setSize: (NSNumber *)aNumber;
-- (NSNumber *) size;
 - (void) setSampleText: (NSString *)someText;
 - (NSString *) sampleText;
 - (void) setSampleTextHistory: (NSArray *)aHistory;
