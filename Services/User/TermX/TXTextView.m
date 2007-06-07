@@ -464,6 +464,11 @@ static BOOL blockRedraw = NO;
 	[textStorage deleteCharactersInRange: NSMakeRange(cachedLength, [textStorage length] - cachedLength)];
 	for (r = 0; r < rows; r++)
 	{
+		NSAttributedString *as = [scrollRows objectAtIndex: r];
+		if ((id)as == [NSNull null])
+		{
+			NSLog(@"Internal Error (%@), row %d cannot be NULL", NSStringFromSelector(_cmd), r);
+		}
 		[textStorage appendAttributedString: [scrollRows objectAtIndex: r]];
 		if (r < rows-1)
 		{
@@ -750,6 +755,10 @@ static BOOL blockRedraw = NO;
 	if (cursor->row >= scroll_btm) 
 	{ // XXX what if out of range?
 		NSAttributedString *as = [scrollRows objectAtIndex: 0];
+		if ((id)as == [NSNull null])
+		{
+			NSLog(@"Internal Errror (%@), string is NULL", NSStringFromSelector(_cmd));
+		}
 		[textStorage insertAttributedString: as atIndex: cachedLength];
 		cachedLength += [as length];
 		as = AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes]);
