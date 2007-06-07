@@ -13,7 +13,7 @@
 #define WINDOW_PAD 0
 #define ROW_PAD 1 /* Between lines */
 #define LINE_PAD 2 /* Between lines */
-#define MAX_LINES 10
+#define MAX_LINES 500
 
 #define DEFAULT_COLS 80
 #define DEFAULT_ROWS 24
@@ -366,15 +366,17 @@ static BOOL blockRedraw = NO;
 {
 	NSString *string = [textStorage string];
 	int linesToDelete = totalLines - MAX_LINES;
+	NSRange deleteRange = NSMakeRange(0, 0);
 	NSRange lineRange = NSMakeRange(0, 0);
 	while (linesToDelete > 0)
 	{
-		linesToDelete--;
 		lineRange = [string lineRangeForRange: NSMakeRange(0, 0)];
+		linesToDelete--;
 		totalLines--;
 		cachedLength -= lineRange.length;
-		[textStorage deleteCharactersInRange: lineRange];
+		deleteRange.length += lineRange.length;
 	}
+	[textStorage deleteCharactersInRange: deleteRange];
 
 	/* Clean up */
 	int r, c;
@@ -413,7 +415,7 @@ static BOOL blockRedraw = NO;
 					cur_bg = scrollbuf[r].bg[c];
 					bgColor = [self colorAtIndex: cur_bg];
 				}
-				if (cur_fg != scrollbuf[r].fg[c])
+				if ((cur_fg != scrollbuf[r].fg[c]) || (c == cols-1))
 				{
 					fgColor = [self colorAtIndex: cur_fg];
 					if (NSMaxRange(fg_range) > [as length])
@@ -431,7 +433,7 @@ static BOOL blockRedraw = NO;
 				{
 					fg_range.length++;
 				}
-				if (cur_bg != scrollbuf[r].bg[c])
+				if ((cur_bg != scrollbuf[r].bg[c]) || (c = cols-1))
 				{
 					bgColor = [self colorAtIndex: cur_bg];
 					if (NSMaxRange(bg_range) > [as length])
@@ -456,9 +458,9 @@ static BOOL blockRedraw = NO;
 			scrollbuf[r].dirty = NO;
 		}
 	}
-	[textStorage beginEditing];
 
 	/* Remove text after cached text */
+	[textStorage beginEditing];
 	[textStorage deleteCharactersInRange: NSMakeRange(cachedLength, [textStorage length] - cachedLength)];
 	for (r = 0; r < rows; r++)
 	{
