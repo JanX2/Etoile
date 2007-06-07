@@ -45,4 +45,6 @@
 - (void) setSampleTextHistory: (NSArray *)aHistory;
 - (NSArray *) sampleTextHistory;
 
+- (void) updateControls;
+
 @end

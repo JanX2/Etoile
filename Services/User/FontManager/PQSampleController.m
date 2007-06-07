@@ -59,6 +59,8 @@
 {
 	[sampleView setSampleText: sampleText];
 	[sampleView setFontSize: [size intValue]];
+	
+	[self updateControls];
 }
 
 - (void) dealloc
@@ -169,6 +171,12 @@
 
 
 /* Keep controls updated */
+
+- (void) updateControls
+{
+	[sampleField setStringValue: [self sampleText]];
+	[sizeField setObjectValue: size];
+}
 
 - (void) controlTextDidEndEditing: (NSNotification *)aNotification
 {

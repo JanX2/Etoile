@@ -1,4 +1,8 @@
 2007-06-07  Isaiah Beerbower <ipaqag@tm.net>
+	* PQSampleController.m: Added method -updateControls, and call it from
+		-awakeFromNib so controls will be updated on startup.
+
+2007-06-07  Isaiah Beerbower <ipaqag@tm.net>
 	* PQFontSampleView.*: Font sampling view to replace text view.
 	* PQSampleController.m: Changed to use PQFontSampleView instead of a text view.
 	* GNUmakefile: Makefile for GNUstep.
