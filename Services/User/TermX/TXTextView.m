@@ -13,7 +13,7 @@
 #define WINDOW_PAD 0
 #define ROW_PAD 1 /* Between lines */
 #define LINE_PAD 2 /* Between lines */
-#define MAX_LINES 10
+#define MAX_LINES 500
 
 #define DEFAULT_COLS 80
 #define DEFAULT_ROWS 24
@@ -387,12 +387,13 @@ static BOOL blockRedraw = NO;
 	string = [textStorage string];
 	for(r = 0; r < rows; r++)
 	{
-		deleteRange = [string lineRangeForRange: NSMakeRange(NSMaxRange(deleteRange), 0)];
 		if (scrollbuf[r].dirty == YES)
 		{
 			/* First dirty line */
 			break;
 		}
+		deleteRange = [string lineRangeForRange: deleteRange];
+		deleteRange = NSMakeRange(NSMaxRange(deleteRange), 0);
 	}
 	deleteRange.length = [textStorage length]-deleteRange.location;
 
@@ -780,12 +781,7 @@ static BOOL blockRedraw = NO;
 	{ // XXX what if out of range?
 		NSRange lineRange = [[textStorage string] lineRangeForRange: NSMakeRange(cachedLength, 0)];
 		cachedLength += lineRange.length;
-
 		NSAttributedString *as = AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes]);
-		if ((id)as == [NSNull null])
-		{
-			NSLog(@"Internal Errror (%@), string is NULL", NSStringFromSelector(_cmd));
-		}
 		[textStorage appendAttributedString: as];
 		[self scrollRegionFromRow:scroll_top toRow:scroll_btm byLines:1];
 
