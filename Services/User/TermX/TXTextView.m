@@ -13,7 +13,7 @@
 #define WINDOW_PAD 0
 #define ROW_PAD 1 /* Between lines */
 #define LINE_PAD 2 /* Between lines */
-#define MAX_LINES 500
+#define MAX_LINES 10
 
 #define DEFAULT_COLS 80
 #define DEFAULT_ROWS 24
@@ -368,9 +368,12 @@ static BOOL blockRedraw = NO;
 	int linesToDelete = totalLines - MAX_LINES;
 	NSRange deleteRange = NSMakeRange(0, 0);
 	NSRange lineRange = NSMakeRange(0, 0);
+
+	[textStorage beginEditing];
+
 	while (linesToDelete > 0)
 	{
-		lineRange = [string lineRangeForRange: NSMakeRange(0, 0)];
+		lineRange = [string lineRangeForRange: NSMakeRange(NSMaxRange(lineRange), 0)];
 		linesToDelete--;
 		totalLines--;
 		cachedLength -= lineRange.length;
@@ -380,6 +383,19 @@ static BOOL blockRedraw = NO;
 
 	/* Clean up */
 	int r, c;
+	deleteRange = NSMakeRange(cachedLength, 0);
+	string = [textStorage string];
+	for(r = 0; r < rows; r++)
+	{
+		deleteRange = [string lineRangeForRange: NSMakeRange(NSMaxRange(deleteRange), 0)];
+		if (scrollbuf[r].dirty == YES)
+		{
+			/* First dirty line */
+			break;
+		}
+	}
+	deleteRange.length = [textStorage length]-deleteRange.location;
+
 	for(r = 0; r < rows; r++) 
 	{
 		if (scrollbuf[r].dirty == YES)
@@ -455,28 +471,33 @@ static BOOL blockRedraw = NO;
 			[as addAttributes: attributes range: NSMakeRange(0, [as length])];
 			[as endEditing];
 			[scrollRows replaceObjectAtIndex: r withObject: as];
-			scrollbuf[r].dirty = NO;
 		}
 	}
 
 	/* Remove text after cached text */
-	[textStorage beginEditing];
-	[textStorage deleteCharactersInRange: NSMakeRange(cachedLength, [textStorage length] - cachedLength)];
+	[textStorage deleteCharactersInRange: deleteRange];
+	BOOL keepReplacing = NO;
 	for (r = 0; r < rows; r++)
 	{
-		NSAttributedString *as = [scrollRows objectAtIndex: r];
-		if ((id)as == [NSNull null])
+		if ((scrollbuf[r].dirty == YES) || (keepReplacing == YES))
 		{
-			NSLog(@"Internal Error (%@), row %d cannot be NULL", NSStringFromSelector(_cmd), r);
-		}
-		[textStorage appendAttributedString: [scrollRows objectAtIndex: r]];
-		if (r < rows-1)
-		{
-			[textStorage  appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes])];
+			keepReplacing = YES;
+			NSAttributedString *as = [scrollRows objectAtIndex: r];
+			if ((id)as == [NSNull null])
+			{
+				NSLog(@"Internal Error (%@), row %d cannot be NULL", NSStringFromSelector(_cmd), r);
+			}
+			[textStorage appendAttributedString: [scrollRows objectAtIndex: r]];
+			if (r < rows-1)
+			{
+				[textStorage  appendAttributedString: AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes])];
+			}
+			scrollbuf[r].dirty = NO;
 		}
 	}
 
 	[textStorage endEditing];
+
 #ifdef GNUSTEP
 	NSSize size = [textStorage size];
 	size.width += 2*LINE_PAD;
@@ -740,6 +761,9 @@ static BOOL blockRedraw = NO;
 			[scrollRows replaceObjectAtIndex: start withObject: row];
 			RELEASE(row);
 			moved = &scrollbuf[start];
+#if 0
+			moved->dirty = YES;
+#endif
 		}
 	}
 
@@ -754,16 +778,15 @@ static BOOL blockRedraw = NO;
 {
 	if (cursor->row >= scroll_btm) 
 	{ // XXX what if out of range?
-		NSAttributedString *as = [scrollRows objectAtIndex: 0];
+		NSRange lineRange = [[textStorage string] lineRangeForRange: NSMakeRange(cachedLength, 0)];
+		cachedLength += lineRange.length;
+
+		NSAttributedString *as = AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes]);
 		if ((id)as == [NSNull null])
 		{
 			NSLog(@"Internal Errror (%@), string is NULL", NSStringFromSelector(_cmd));
 		}
-		[textStorage insertAttributedString: as atIndex: cachedLength];
-		cachedLength += [as length];
-		as = AUTORELEASE([[NSAttributedString alloc] initWithString: @"\n" attributes: attributes]);
-		[textStorage insertAttributedString: as atIndex: cachedLength];
-		cachedLength += [as length];
+		[textStorage appendAttributedString: as];
 		[self scrollRegionFromRow:scroll_top toRow:scroll_btm byLines:1];
 
 		totalLines++;
