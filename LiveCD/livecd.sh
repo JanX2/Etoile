@@ -9,6 +9,8 @@ $UBUNTU_IMAGE_NAME=/home/qmathe/live/ubuntu-7.04-desktop-i386.iso
 $ETOILE_LIVECD_NAME="Etoile LiveCD 0.2"
 $ETOILE_IMAGE_NAME=etoile.iso
 
+$ETOILE_USER_NAME=guest
+
 #
 # --prepare
 #
@@ -123,17 +125,37 @@ make && make install
 # Add a new user named 'etoile' and set up Etoile environment
 # NOTE: This is the only part where user interaction is necessary
 
-adduser etoile
-adduser etoile admin # Add 'etoile' user to sudoers
-su etoile
+adduser $ETOILE_USER_NAME
+adduser $ETOILE_USER_NAME admin # Add 'etoile' user to sudoers
+su $ETOILE_USER_NAME
 . /System/Library/Makefiles/GNUstep.sh
 ./setup.sh
+
+# Register /usr/local/lib so libonig can be found by OgreKit
+echo "/usr/local/lib" >> /etc/ld.so.conf
+ldconfig
+
 exit
-cd ..
+
+# TODO: Take care of Login.app specific set up
+
+cd .. # Move out of Etoile directory
 
 # Customize boot screens with usplash
 
-apt-get install libusplash-dev # libupsplash-dev requires libc6-dev         
+apt-get install libusplash-dev # libupsplash-dev requires libc6-dev
+
+cd LiveCD/BootScreen
+make && make install
+cd..
+
+# Install hidden root directory list and init script (which will be run as root 
+# on GDM login)
+
+cd LiveCD
+cp hidden /.hidden
+cp init.sh /etc/gdm/PostLogin/Default
+cd ..
 
 # --cleanup
 
@@ -142,7 +164,22 @@ rm -rf /tmp/*
 rm /etc/resolv.conf
 umount /proc
 umount /sys
+
+# Etoile specific cleanup
+rm /root/GNUstep/Defaults/*
+rm /home/$ETOILE_USER_NAME/GNUstep/Defaults/*
+rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/ApplicationSupport/AZDock
+rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/Addresses
+rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/Bookmark
+
+# Build cleanup
+
+rm -r /build
+apt-get -y uninstall subversion
+
 exit
+
+# Try to clean up as much GNOME stuff as possible
 
 # --build
 
