@@ -1,7 +1,18 @@
+2007-06-10  Quentin Mathe <qmathe@club-internet.fr>
+
+	* README: Added StepTalk and XScreenSaver to Dependency section. 
+	Updated gnustep-make required version to 2.0. Removed comment about
+        broken 'sudo' support which isn't true anymore (in my experience). 
+        Added a clear WARNING to make evident you cannot avoid setup.sh.
+	* INSTALL: Made Required software section up-to-date.
+        * INSTALL.Ubuntu: Updated to take in account new dependencies 
+        introduced by Idle. Also explained Edgy Eft section is also valid for
+        Feisty Fawn.
+
 2007-05-07  Yen-Ju Chen <yjchen gmail>
 
 	* etoile.make: use $(SHARED_LIBEXT) instead of so. 
-	  Patched by Yves de Champlain (#9046)..
+	  Patched by Yves de Champlain (#9046).
 
 2007-04-28  Quentin Mathe <qmathe@club-internet.fr>
 
