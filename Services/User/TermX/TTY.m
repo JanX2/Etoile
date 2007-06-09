@@ -103,7 +103,7 @@
 - (void)gotData:(NSNotification *)notification
 {
 	/* Sleep a short time so data can accumulate.  It helps a lot in speed. */
-	usleep(50);
+	usleep(200);
 	NSData *d = nil;
 NS_DURING
 	d = [term availableData];

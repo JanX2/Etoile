@@ -11,8 +11,8 @@
 #import "GNUstep.h"
 
 #define WINDOW_PAD 0
-#define ROW_PAD 1 /* Between lines */
-#define LINE_PAD 2 /* Between lines */
+#define ROW_PAD 1 /* Between lines vertically*/
+#define LINE_PAD 2 /* PAD one left and right side of lines */
 #define MAX_LINES 500
 
 #define DEFAULT_COLS 80
@@ -369,8 +369,6 @@ static BOOL blockRedraw = NO;
 	NSRange deleteRange = NSMakeRange(0, 0);
 	NSRange lineRange = NSMakeRange(0, 0);
 
-	[textStorage beginEditing];
-
 	while (linesToDelete > 0)
 	{
 		lineRange = [string lineRangeForRange: NSMakeRange(NSMaxRange(lineRange), 0)];
@@ -474,6 +472,7 @@ static BOOL blockRedraw = NO;
 			[scrollRows replaceObjectAtIndex: r withObject: as];
 		}
 	}
+	[textStorage beginEditing];
 
 	/* Remove text after cached text */
 	[textStorage deleteCharactersInRange: deleteRange];
