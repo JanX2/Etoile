@@ -1083,8 +1083,8 @@ BOOL SCHardwareSuspend();
 
 				[entry setArguments: [processInfo objectForKey: @"Arguments"]];
 				// FIXME: 'Persistent' key support should be added.
-
-				[_processes setObject: entry forKey: domain];
+				if (entry != nil)
+					[_processes setObject: entry forKey: domain];
 
 				/* When the session has already been started, we can start the
 				   process immediately, because no launch queue is going to 

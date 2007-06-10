@@ -1,5 +1,16 @@
 2007-05-26  Quentin Mathe <qmathe@club-internet.fr>
 
+	Fixed buggy task management which occurs when an invalid launch path is
+	specified in SystemTaskList.plist. Found it because OuterSpace is part of
+	SystemTaskList but not included in trunk build process. Log out was broken
+	as a side-effect.
+	* SCTask.m: Fixed to return nil rather than an invalid task when the launch
+	path cannot be resolved.
+	* EtoileSystem: Modified to check a task isn't nil before adding it to the
+	process list.
+
+2007-05-26  Quentin Mathe <qmathe@club-internet.fr>
+
 	* SystemTaskList.plist: Added OuterSpace.
 
 2007-05-24  Quentin Mathe <qmathe@club-internet.fr>

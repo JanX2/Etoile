@@ -104,7 +104,10 @@
         }
         else
         {
-            NSLog(@"SCTask does not found a path for tool or application name: %@", path);
+            NSLog(@"WARNING: SCTask does not found a path for tool or "
+				  @"application name: %@", path);
+			RELEASE(newTask);
+			return nil;
         }
     }
     else
@@ -123,8 +126,10 @@
         }
         else
         {
-            NSLog(@"Failed to create an SCTask with launch path %@ because it \
-                does not reference an application bundle.");
+            NSLog(@"WARNING: Failed to create an SCTask with launch path %@ "
+				  @"because it does not reference an application bundle.");
+			RELEASE(newTask);
+			return nil;
         }
     }
     else
