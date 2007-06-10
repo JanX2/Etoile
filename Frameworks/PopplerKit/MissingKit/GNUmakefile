@@ -19,7 +19,7 @@
 #
 
 include $(GNUSTEP_MAKEFILES)/common.make
--include ../config.make
+#-include ../config.make
 
 SUBPROJECT_NAME=MissingKit
 

@@ -1,3 +1,7 @@
+2007-06-10  Yen-Ju Chen <yjchenx at gmail _got_ com>
+
+	* Avoid linking in subproject (Bug #9306)
+
 2007-04-10  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Fixed bug #8806 by moving etoile.make include.

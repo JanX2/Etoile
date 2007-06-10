@@ -21,6 +21,9 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 -include ../config.make
 
+# Remove LDFLAGS so that it will not try to link in subproject
+ADDITIONAL_LDFLAGS =
+
 # use cplusplus compiler
 CC = ${CXX}
 
