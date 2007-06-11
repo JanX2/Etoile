@@ -22,6 +22,13 @@
 #define setAttributedTitle(x) setAttributedTitle:x
 #endif
 
+//Don't animate the window on GNUstep; it breaks
+#ifdef GNUSTEP
+#define ANIMATE_WINDOW NO
+#else
+#define ANIMATE_WINDOW YES
+#endif
+
 NSMutableArray * rosterControllers = nil;
 
 @implementation RosterController
@@ -141,35 +148,35 @@ NSMutableArray * rosterControllers = nil;
 	return text;
 }
 
+- (float) widthOfItemAndChildren:(id) anObject withIndent:(float)anIndent
+{
+	NSAttributedString * attributedText= [self displayStringForObject:anObject];
+	float myWidth = [attributedText size].width;
+	for(unsigned int i=0 ; i<[self outlineView:view numberOfChildrenOfItem:anObject] ; i++)
+	{
+		attributedText = [self displayStringForObject:[self outlineView:view child:i ofItem:anObject]];
+		float width = [attributedText size].width + anIndent;
+		if(width > myWidth)
+		{
+			myWidth = width;
+		}
+	}
+	return myWidth;
+}
+
 - (NSSize) calculateRosterSize;
 {
 	NSSize size;
 	//Calculate width
 	float interCellHorizontalSpacing = [view intercellSpacing].width;
 	float indent = [view indentationPerLevel] + (4*interCellHorizontalSpacing);
-	size.width = 0;
-	for(int i=0 ; i<[view numberOfRows] ; i++)
-	{
-		NS_DURING
-		float width = indent * ([view levelForRow:i] + 1);
-		id rowObject = [view itemAtRow:i];
-		//NSString * rowText = [self outlineView:view objectValueForTableColumn:nil byItem:rowObject];
-		NSAttributedString * attributedText = [self displayStringForObject:rowObject];
-		width += [attributedText size].width;
-		if(width > size.width)
-		{
-			size.width = width;
-		}
-		NS_HANDLER
-		NS_ENDHANDLER
-	}
+	size.width = [self widthOfItemAndChildren:nil withIndent:indent];
 	size.width += interCellHorizontalSpacing;
 	[[[view tableColumns] objectAtIndex:0] setWidth:size.width];
 	size.width += interCellHorizontalSpacing;
 
 	//Calculate height
 	size.height = [view numberOfRows] * ([view rowHeight] + [view intercellSpacing].height);
-	
 	return size;
 }
 
@@ -312,10 +319,8 @@ NSMutableArray * rosterControllers = nil;
 
 - (void) update:(id)_object
 {
-#ifdef GNUSTEP
 	[view reloadData];
 	[[self window] setFrame:[self optimalSize] display:YES animate:NO];
-#else
 	if(_object == nil)
 	{
 		[view reloadData];
@@ -337,9 +342,11 @@ NSMutableArray * rosterControllers = nil;
 			}
 		}
 	}
-	[[self window] setFrame:[self optimalSize] display:YES animate:YES];
-#endif
+	[[self window] setFrame:[self optimalSize] display:YES animate:ANIMATE_WINDOW];
+	NS_DURING
 	[view display];
+	NS_HANDLER
+	NS_ENDHANDLER
 }
 
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)sender defaultFrame:(NSRect)defaultFrame
@@ -497,11 +504,7 @@ NSMutableArray * rosterControllers = nil;
 	{
 		[[NSUserDefaults standardUserDefaults] setExpanded:[group groupName] to:YES];
 	}
-#ifdef GNUSTEP
-        [[self window] setFrame:[self optimalSize] display:YES animate:NO];
-#else
-	[[self window] setFrame:[self optimalSize] display:YES animate:YES];
-#endif
+	[[self window] setFrame:[self optimalSize] display:YES animate:ANIMATE_WINDOW];
 }
 
 - (void)outlineViewItemDidCollapse:(NSNotification *)notification
@@ -511,11 +514,7 @@ NSMutableArray * rosterControllers = nil;
 	{
 		[[NSUserDefaults standardUserDefaults] setExpanded:[group groupName] to:NO];
 	}
-#ifdef GNUSTEP
-        [[self window] setFrame:[self optimalSize] display:YES animate:NO];
-#else
-	[[self window] setFrame:[self optimalSize] display:YES animate:YES];
-#endif
+	[[self window] setFrame:[self optimalSize] display:YES animate:ANIMATE_WINDOW];
 }
 
 inline Conversation * createChatWithPerson(id self, JabberPerson* person, XMPPAccount * account)
