@@ -47,12 +47,6 @@
 -(void)updateGUI;
 
 
-
-// The file to store the dictionary list to
--(NSString*) dictionaryStoreFile;
-
-
-
 // Listen for actions...
 
 // ...from the GUI

@@ -2,6 +2,39 @@
 DictionaryReader Changelog
 ==========================
 
+Jun 11 2007  Quentin Mathe
+	Important update to make DictionaryReader works in a reliable and friendly 
+	way. We now look for dictionaries on launching, that means a default 
+	dictionary is set by looking for local or remote dictionaries. You don't 
+	need anymore to go to Preferences and rescan for dictionaries if no 
+	dictionaries.plist file is installed. Fixed crash which occurs when you 
+	click two times on Rescan, DictConnection is now properly closed and 
+	deallocated. Similar fix for LocalDictionary.
+	* AppController.h:
+	* AppController.m: 
+	(-init): Removed dictionary list loading related code.
+	(-awakeFromNib): Added code delagating dictionary list loading to 
+	Preferences.
+	(-dictionaryStoreFile): Moved to Preferences.
+	(-applicationWillTerminate:): Minor update to match previous changes.
+	* Preferences.h:
+	* Preferences.m:
+	(-rescanDictionaries): Extended to call -searchWithDictionaryStoreFile.
+	(-dictionaryStoreFile): Added method from AppController.
+	(-searchWithDictionaryStoreFile): New method based on code previously
+	located in -[AppController init].
+	* LocalDictionary.m: Fixed memory management by adding missing -dealloc 
+	method.
+	(-setDefinitionWriter:): Added assertion to avoid nil argument.
+	* DictConnection.m: Fixed memory management.
+	(-setDefinitionWriter:): Added assertion to avoid nil argument.
+	(-close): Modified to close only if necessary (may help to avoid crash).
+	* StreamDefinitionWriter.m:
+	* StreamDefinitionReader.m:
+	(-dealloc): Replaced RELEASE by DESTROY (not really necessary but extra 
+	safety).
+	
+
 May 07 2007  Yen-Ju Chen
 	* Change license to MIT as agreed by Günther Noack.
 	  Attach email in the end of COPYING.

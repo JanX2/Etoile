@@ -53,9 +53,13 @@
   NSAssert(_dictionaries != nil,
            @"The preference panel must be given a dictionary handle list!");
 
+  // NOTE: Before releasing all dictionaries, take care to close all open 
+  // connections to avoid a crash.
+
   /* Remove all dictionaries before rescan */
   [_dictionaries removeAllObjects];
   
+  [self searchWithDictionaryStoreFile];
   [self searchInUsualPlaces];
   
   // default remote dictionary: dict.org
@@ -67,7 +71,6 @@
   NSLog(@"recanned: %@", _dictionaries);
   
   [_tableView reloadData];
-  //[_tableView setNeedsDisplay: YES];
 }
 
 
@@ -85,6 +88,32 @@
 
 @implementation Preferences (SearchForDictionaries)
 
+-(NSString*) dictionaryStoreFile
+{
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *path = [@"~/GNUstep/Library/DictionaryReader" stringByExpandingTildeInPath];
+    BOOL isDir = NO;
+    if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
+    {
+      /* Directory does not exist, create it */
+      if ([fm createDirectoryAtPath: path attributes: nil] == NO)
+      {
+        /* Cannot create path */
+        NSLog(@"Error: cannot create ~/GNUstep/Library/DictionaryReader/");
+        return nil;
+      }
+    }
+    else if (isDir == NO)
+    {
+      /* path exist, but not a directory */
+      NSLog(@"Error: ~/GNUstep/Library/DictionaryReader is not a directory");
+      return nil;
+    }
+    /* path exists, and is a directory. do nothing */
+
+    return [path stringByAppendingPathComponent: @"dictionaries.plist"];
+}
+
 -(void) foundDictionary: (id)aDictionary
 {
     if (aDictionary != nil && [_dictionaries containsObject: aDictionary] == NO) {
@@ -92,6 +121,23 @@
         [aDictionary setActive: YES];
         [_dictionaries addObject: aDictionary];
     }
+}
+
+- (void) searchWithDictionaryStoreFile
+{
+	NSString* dictStoreFile = [self dictionaryStoreFile];
+
+	if ([[NSFileManager defaultManager] fileExistsAtPath: dictStoreFile]) {
+	   NSArray* plist = [NSArray arrayWithContentsOfFile: [self dictionaryStoreFile]];
+	   int i;
+	   for (i=0; i<[plist count]; i++) {
+	       DictionaryHandle* dict =
+		   [DictionaryHandle dictionaryFromPropertyList: [plist objectAtIndex: i]];
+	       [self foundDictionary: dict];
+	       NSLog(@" *** Added %@", dict);
+	   }
+	   NSLog(@" *** result: %@", _dictionaries);
+	}
 }
 
 -(void) searchInUsualPlaces

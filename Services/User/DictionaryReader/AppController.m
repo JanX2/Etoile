@@ -198,7 +198,6 @@ NSDictionary* normalAttributes;
 -(id)init
 {
     if ((self = [super init]) != nil) {
-	id dict;
 
 	// create toolbar items
 	forwardItem = [[NSToolbarItem alloc] initWithItemIdentifier: @"Forward"];
@@ -224,36 +223,6 @@ NSDictionary* normalAttributes;
 
 	// create mutable dictionaries array
 	dictionaries = [[NSMutableArray alloc] initWithCapacity: 2];
-
-	NSString* dictStoreFile = [self dictionaryStoreFile];
-
-	if ([[NSFileManager defaultManager] fileExistsAtPath: dictStoreFile]) {
-	   NSArray* plist = [NSArray arrayWithContentsOfFile: [self dictionaryStoreFile]];
-	   int i;
-	   for (i=0; i<[plist count]; i++) {
-	       DictionaryHandle* dict =
-		   [DictionaryHandle dictionaryFromPropertyList: [plist objectAtIndex: i]];
-	       [dict setDefinitionWriter: self];
-	       [dictionaries addObject: dict];
-	       NSLog(@" *** Added %@", dict);
-	   }
-	   NSLog(@" *** result: %@", dictionaries);
-	} else {
-#ifdef PREDEFINED_DICTIONARIES // predefined dictionaries
-	    // create local dictionary object
-	    dict = [[LocalDictionary alloc] initWithResourceName: @"jargon"];
-	    [dict setDefinitionWriter: self];
-	    [dictionaries addObject: dict];
-	    [dict release];
-#ifdef REMOTE_DICTIONARIES // remote dictionaries
-	    // create remote dictionary object
-	    dict = [[DictConnection alloc] init];
-	    [dict setDefinitionWriter: self];
-	    [dictionaries addObject: dict];
-	    [dict release];
-#endif // end remote dictionaries block
-#endif // end predefined dictionaries
-	}
 
 
 	// create history manager
@@ -307,6 +276,29 @@ NSDictionary* normalAttributes;
 	
 	[dictionaryContentWindow setToolbar:toolbar];
 	RELEASE(toolbar);
+
+
+	// find available dictionaries
+	[[Preferences shared] setDictionaries: dictionaries];
+	[[Preferences shared] rescanDictionaries: self];
+
+// FIXME: Don't really know what to do with this code. May be useful for 
+// debugging if -rescanDictionaries above is commented out. 
+#ifdef PREDEFINED_DICTIONARIES // predefined dictionaries
+	    // create local dictionary object
+	    dict = [[LocalDictionary alloc] initWithResourceName: @"jargon"];
+	    [dict setDefinitionWriter: self];
+	    [dictionaries addObject: dict];
+	    [dict release];
+#ifdef REMOTE_DICTIONARIES // remote dictionaries
+	    // create remote dictionary object
+	    dict = [[DictConnection alloc] init];
+	    [dict setDefinitionWriter: self];
+	    [dictionaries addObject: dict];
+	    [dict release];
+#endif // end remote dictionaries block
+#endif // end predefined dictionaries
+
 }
 
 // ---- Toolbar delegate methods
@@ -488,33 +480,6 @@ NSDictionary* normalAttributes;
   [dictionaryContentWindow orderFront: self];
 }
 
-
--(NSString*) dictionaryStoreFile
-{
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *path = [@"~/GNUstep/Library/DictionaryReader" stringByExpandingTildeInPath];
-    BOOL isDir = NO;
-    if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
-    {
-      /* Directory does not exist, create it */
-      if ([fm createDirectoryAtPath: path attributes: nil] == NO)
-      {
-        /* Cannot create path */
-        NSLog(@"Error: cannot create ~/GNUstep/Library/DictionaryReader/");
-        return nil;
-      }
-    }
-    else if (isDir == NO)
-    {
-      /* path exist, but not a directory */
-      NSLog(@"Error: ~/GNUstep/Library/DictionaryReader is not a directory");
-      return nil;
-    }
-    /* path exists, and is a directory. do nothing */
-
-    return [path stringByAppendingPathComponent: @"dictionaries.plist"];
-}
-
 -(void) applicationWillTerminate: (NSNotification*) theNotification
 {
     int i;
@@ -524,7 +489,7 @@ NSDictionary* normalAttributes;
         [mut addObject: [[dictionaries objectAtIndex: i] shortPropertyList]];
     }
     
-    [mut writeToFile: [self dictionaryStoreFile] atomically: YES];
+    [mut writeToFile: [[Preferences shared] dictionaryStoreFile] atomically: YES];
 }
 
 -(void) applicationDidFinishLaunching: (NSNotification*) theNotification

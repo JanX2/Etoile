@@ -53,7 +53,9 @@
   NSLog(@"%@ dealloc start", self);
   free(delim);
   free(strBuf);
-  RELEASE(inputStream);
+  // DictConnection takes care of closing and releasing inputStream but we
+  // retained it in our initializer
+  DESTROY(inputStream);
   NSLog(@"%@ dealloc end", self);
   [super dealloc];
 }

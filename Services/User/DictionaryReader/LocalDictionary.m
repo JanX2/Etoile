@@ -184,6 +184,23 @@ static NSMutableDictionary* existingDictionaries;
   return self;
 }
 
+-(void)dealloc
+{
+  // first close connection, if open
+  [self close];
+
+  // NOTE: dictHandle and ranges are currently destroyed in -close, but it must
+  // be checked whether that makes sense or not.
+  //DESTROY(dictHandle);
+  //DESTROY(ranges);
+  DESTROY(indexFile);
+  DESTROY(dictFile);
+  DESTROY(fullName);
+  DESTROY(defWriter);
+  
+  [super dealloc];
+}
+
 /**
  * Returns a dictionary with the specifiled Dict-server-style index and
  * dictionary database files.
@@ -419,6 +436,8 @@ static NSMutableDictionary* existingDictionaries;
  */
 -(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter
 {
+  NSAssert1(aDefinitionWriter != nil,
+	    @"-setDefinitionWriter: parameter must not be nil in %@", self);
   ASSIGN(defWriter, aDefinitionWriter);
 }
 

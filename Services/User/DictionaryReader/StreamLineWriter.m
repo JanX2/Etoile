@@ -24,7 +24,9 @@
 
 -(void)dealloc {
   NSLog(@"%@ dealloc start", self);
-  RELEASE(outputStream);
+  // DictConnection takes care of closing and releasing outputStream but we
+  // retained it in our initializer
+  DESTROY(outputStream);
   NSLog(@"%@ dealloc end", self);
   [super dealloc];
 }

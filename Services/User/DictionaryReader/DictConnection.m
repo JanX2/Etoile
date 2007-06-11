@@ -84,11 +84,9 @@
   // first close connection, if open
   [self close];
   
-  [reader release];
-  [writer release];
-  [inputStream release];
-  [outputStream release];
-  [host release];
+  // NOTE: inputStream, outputStream, reader and writer are released in -close
+  DESTROY(defWriter);
+  DESTROY(host);
   
   [super dealloc];
 }
@@ -180,6 +178,10 @@
 	    port: port
 	    inputStream: &inputStream
 	    outputStream: &outputStream];
+
+  // Streams are returned autoreleased
+  RETAIN(inputStream);
+  RETAIN(outputStream);
   
   if (inputStream == nil || outputStream == nil) {
     [self log: @"open failed: cannot create input and output stream"];
@@ -220,14 +222,22 @@
 #warning FIXME: Crashes sometimes?
 -(void)close
 {
-  [inputStream close];
-  RELEASE(inputStream); inputStream = nil;
+  if ([inputStream streamStatus] != NSStreamStatusNotOpen
+   && [inputStream streamStatus] != NSStreamStatusClosed)
+  {
+    [inputStream close];
+  }
+  DESTROY(inputStream);
+
+  if ([outputStream streamStatus] != NSStreamStatusNotOpen
+   && [outputStream streamStatus] != NSStreamStatusClosed)
+  {
+    [outputStream close];
+  }
+  DESTROY(outputStream);
   
-  [outputStream close];
-  RELEASE(outputStream); outputStream = nil;
-  
-  RELEASE(reader); reader = nil;
-  RELEASE(writer); writer = nil;
+  DESTROY(reader);
+  DESTROY(writer);
 }
 
 -(void) log: (NSString*) aLogMsg
@@ -243,6 +253,8 @@
 
 -(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter
 {
+  NSAssert1(aDefinitionWriter != nil,
+	    @"-setDefinitionWriter: parameter must not be nil in %@", self);
   ASSIGN(defWriter, aDefinitionWriter);
 }
 

@@ -47,7 +47,10 @@ static NSString* DRActiveDictsChangedNotification = @"DRActiveDictsChangedNotifi
 
 
 @interface Preferences (SearchForDictionaries)
+// The file to store the dictionary list to
+-(NSString*) dictionaryStoreFile;
 -(void) foundDictionary: (id)aDictionary;
+- (void) searchWithDictionaryStoreFile;
 -(void) searchInUsualPlaces;
 -(void) searchInDirectory: (NSString*) dirName;
 @end
