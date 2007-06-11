@@ -1,5 +1,5 @@
 /*
- * PQSampleView.h - Font Manager
+ * PQFontSampleView.h - Font Manager
  *
  * A font sampling view.
  *

@@ -1,5 +1,5 @@
 /*
- * PQSampleView.m - Font Manager
+ * PQFontSampleView.m - Font Manager
  *
  * A font sampling view.
  *
@@ -134,41 +134,87 @@
 
 - (void) drawRect: (NSRect)rect
 {
+	int fontsCount = [[self dataSource] numberOfFontsInFontSampleView: self];
+	int index = 0;
+	float currentHeight = 0.0;
+	NSPoint currentDrawingPoint = NSMakePoint(0, 0);
+
+	/* Text system components */
+	NSTextStorage *textStorage = [[NSTextStorage alloc] init];
+	NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+	NSTextContainer *textContainer = [[NSTextContainer alloc] init];
+
+	/* Font sample components */
 	NSString *currentFontName;
 	NSFont *currentFont;
+	NSString *currentLabel;
 	NSMutableDictionary *currentAttributes = [[NSMutableDictionary alloc] init];
-	NSRect currentDrawingRect = NSMakeRect(0, 0, 0, 0);
-	int fontsCount = [dataSource numberOfFontsInFontSampleView: self];
-	int index = 0;
-	NSSize frameSize = [self frame].size;
-	BOOL shouldUpdateSize = NO;
-	
-	float biggestWidth = 0;
+
+
+	/* Setting up text system */
+	[textContainer setContainerSize: [self frame].size];
+	[layoutManager addTextContainer: textContainer];
+	[textStorage addLayoutManager: layoutManager];
+
+	/* Adding color attribute */
+	[currentAttributes setValue: [self foregroundColor]
+	                     forKey: NSForegroundColorAttributeName];
 
 	while (index < fontsCount)
 	{
-		currentFontName = [dataSource fontSampleView: self fontAtIndex: index];
+		/* Find next font */
+		currentFontName = [[self dataSource] fontSampleView: self
+		                                        fontAtIndex: index];
+
 		currentFont = [NSFont fontWithName: currentFontName size: [self fontSize]];
 
-		[currentAttributes setObject: currentFont forKey: NSFontAttributeName];
+		/* Add label to text storage */
+		[textStorage deleteCharactersInRange: NSMakeRange(0, [textStorage length])];
 
-		if (frameSize.height < currentDrawingRect.origin.y)
+		[currentAttributes setValue: [NSFont labelFontOfSize: 0]
+		                     forKey: NSFontAttributeName];
+
+		currentLabel =
+			[NSString stringWithFormat: @"%@\n", [currentFont displayName]];
+
+		[textStorage appendAttributedString:
+			[[NSAttributedString alloc] initWithString: currentLabel
+														          attributes: currentAttributes]];
+
+		/* Add font sample to text storage */
+		[currentAttributes setValue: currentFont forKey: NSFontAttributeName];
+
+		[textStorage appendAttributedString:
+			[[NSAttributedString alloc] initWithString: [self sampleText]
+			                                attributes: currentAttributes]];
+
+		/* Make sure that the frame is big enough */
+		(void) [layoutManager glyphRangeForTextContainer:textContainer];
+
+		currentHeight =
+			[layoutManager usedRectForTextContainer: textContainer].size.height;
+
+		if ([self frame].size.height < (currentDrawingPoint.y + currentHeight))
 		{
-			frameSize.height = currentDrawingRect.origin.y;
-			shouldUpdateSize = YES;
+			[self setFrameSize: NSMakeSize([self frame].size.width,
+				(currentDrawingPoint.y + currentHeight))];
 		}
 
-		if (shouldUpdateSize)
-			[self setFrameSize: frameSize];
 
-		[sampleText drawAtPoint: currentDrawingRect.origin
-		         withAttributes: currentAttributes];
+		/* Draw */
+		[layoutManager drawGlyphsForGlyphRange:
+			[layoutManager glyphRangeForTextContainer: textContainer]
+		                               atPoint: currentDrawingPoint];
 
-
-		currentDrawingRect.origin.y +=
-			[sampleText sizeWithAttributes: currentAttributes].height;
+		/* Increment vars */
+		currentDrawingPoint.y += currentHeight;
 
 		++index;
+
+		if (! index < fontsCount)
+		{
+			/* Draw a line */
+		}
 	}
 }
 

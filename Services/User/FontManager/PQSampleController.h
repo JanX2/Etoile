@@ -32,8 +32,6 @@
 	NSArray *defaultSampleText;
 	NSMutableArray *sampleTextHistory;
 
-	BOOL fontsNeedUpdate;
-
 	NSNumber *size;
 	NSArray *sizes;
 }

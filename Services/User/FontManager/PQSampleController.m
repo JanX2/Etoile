@@ -32,7 +32,6 @@
 		[NSArray arrayWithObjects:NSLocalizedString(@"PQPangram", nil), nil];
 	sampleTextHistory = [[NSMutableArray alloc] init];
 
-	fontsNeedUpdate = YES;
 
 	sizes = [NSArray arrayWithObjects: [NSNumber numberWithInt:9],
 		[NSNumber numberWithInt:10], [NSNumber numberWithInt:11],
@@ -78,7 +77,6 @@
 - (void) setFonts: (NSArray *)someFonts
 {
 	ASSIGN(fonts, someFonts);
-	fontsNeedUpdate = YES;
 	[sampleView setNeedsDisplay: YES];
 }
 
@@ -176,6 +174,7 @@
 {
 	[sampleField setStringValue: [self sampleText]];
 	[sizeField setObjectValue: size];
+	[sizeSlider setObjectValue: size];
 }
 
 - (void) controlTextDidEndEditing: (NSNotification *)aNotification
