@@ -23,7 +23,6 @@
  */
 @interface DictConnection : DictionaryHandle
 {
-  // Instance variables
   NSInputStream* inputStream;
   NSOutputStream* outputStream;
   StreamLineReader* reader;
@@ -37,16 +36,13 @@
 // Class methods
 
 
-
 // Instance methods
 -(id)initWithHost: (NSHost*) aHost
 	     port: (int) aPort;
 
 -(id)initWithHost: (NSHost*) aHost;
 
--(id)init;
-
--(void)dealloc;
+-(NSHost*) host;
 
 -(void) sendClientString: (NSString*) clientName;
 -(void) handleDescription;

@@ -57,6 +57,8 @@
 
 // MAIN FUNCTIONALITY
 
+-(NSString*) fullName;
+
 /**
  * Gives away the client identification string to the dictionary handle.
  */

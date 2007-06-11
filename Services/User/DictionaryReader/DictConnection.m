@@ -43,7 +43,7 @@
 -(id)initWithHost: (NSHost*) aHost
 	     port: (int) aPort
 {
-  if (self = [super init]) {
+  if ((self = [super init]) != nil) {
     if (aHost == nil) {
         [self release];
         return nil;
@@ -91,6 +91,30 @@
   [super dealloc];
 }
 
+/** To know whether two remote dictionaries are equal we check if they have the
+	the same host. */
+-(BOOL) isEqual: (id)object
+{
+  // TODO: Refactor this into DictionaryHandle by checking -fullName for 
+  // equality rather than -host. DICT protocol seems to support 
+  // requesting dictionary name then it shouldn't be a problem to add -fullName 
+  // method. Equality test based on host could be kept as a fallback here 
+  // (useful when connection is unavailable). Don't forget to update 
+  // -[LocalDictionary isEqual:].
+  if ([object isKindOfClass: [DictionaryHandle class]]
+   && [object respondsToSelector: @selector(host)]) {
+    if ([[self host] isEqual: [object host]])
+      return YES;
+  }
+
+  return NO;
+}
+
+-(NSHost*) host
+{
+	return host;
+}
+
 -(void) sendClientString: (NSString*) clientName
 {
   LOG(@"Sending client String: %@", clientName);
@@ -119,7 +143,7 @@
 -(void) definitionFor: (NSString*) aWord
          inDictionary: (NSString*) aDict
 {
-  NSMutableString* result = [NSMutableString stringWithCapacity: 100];
+  //NSMutableString* result = [NSMutableString stringWithCapacity: 100];
   
   [writer writeLine:
 	    [NSString stringWithFormat: @"define %@ \"%@\"\r\n",
@@ -219,6 +243,7 @@
   } 
 }
 
+// Probably not true anymore now we check the connection status...
 #warning FIXME: Crashes sometimes?
 -(void)close
 {

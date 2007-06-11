@@ -3,6 +3,15 @@ DictionaryReader Changelog
 ==========================
 
 Jun 11 2007  Quentin Mathe
+	* DictConnection.m:
+	* LocalDictionary.m:
+	(-isEqual:): Implemented equality test to avoid adding again a dictionary
+	already listed in Preferences window. -[AppController foundDictionary:] 
+	checks for identical dictionaries but until now never finds identical ones.
+	* DictConnection.h, DictConnection.m (-host): New method.
+	* LocalDictionary.h, LocalDictionary.m (-fullName): New method.
+
+Jun 11 2007  Quentin Mathe
 	Important update to make DictionaryReader works in a reliable and friendly 
 	way. We now look for dictionaries on launching, that means a default 
 	dictionary is set by looking for local or remote dictionaries. You don't 

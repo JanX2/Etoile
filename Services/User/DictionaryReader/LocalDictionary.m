@@ -90,10 +90,30 @@ static NSMutableDictionary* existingDictionaries;
 // INITIALISATION
 
 /**
+ * Returns a dictionary with the specifiled Dict-server-style index and
+ * dictionary database files.
+ */
++(id) dictionaryWithIndexAtPath: indexFileName
+               dictionaryAtPath: fileName
+{
+  LocalDictionary* localDict =
+      [existingDictionaries objectForKey: fileName];
+  
+  if (localDict != nil) {
+    return localDict;
+  } else {
+    return [[self alloc] initWithIndexAtPath: indexFileName
+                            dictionaryAtPath: fileName];
+  }
+}
+
+/**
  * Initialises the DictionaryHandle from the property list aPropertyList.
  */
 -(id) initFromPropertyList: (NSDictionary*) aPropertyList
 {
+	// FIXME: Reports the failure in a more friendly way which lets the user
+	// uses the application.
     NSAssert1([aPropertyList objectForKey: @"index file"] != nil,
               @"Property list %@ lacking 'index file' key.", aPropertyList);
     NSAssert1([aPropertyList objectForKey: @"dict file"] != nil,
@@ -201,27 +221,25 @@ static NSMutableDictionary* existingDictionaries;
   [super dealloc];
 }
 
-/**
- * Returns a dictionary with the specifiled Dict-server-style index and
- * dictionary database files.
- */
-+(id) dictionaryWithIndexAtPath: indexFileName
-               dictionaryAtPath: fileName
+/** To know whether two local dictionaries are equal we check if they have the
+	the same host. */
+-(BOOL) isEqual: (id)object
 {
-  LocalDictionary* localDict =
-      [existingDictionaries objectForKey: fileName];
-  
-  if (localDict != nil) {
-    return localDict;
-  } else {
-    return [[self alloc] initWithIndexAtPath: indexFileName
-                            dictionaryAtPath: fileName];
+  if ([object isKindOfClass: [DictionaryHandle class]]
+   && [object respondsToSelector: @selector(fullName)]) {
+    if ([[self fullName] isEqual: [object fullName]])
+      return YES;
   }
+	
+  return NO;
 }
 
-
-
 // MAIN FUNCTIONALITY
+
+-(NSString*) fullName
+{
+  return fullName;
+}
 
 /**
  * Gives away the client identification string to the dictionary handle.
