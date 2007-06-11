@@ -238,7 +238,7 @@ static NSDictionary * STANZA_KEYS;
 	user = [[aJID node] retain];
 	server = [[aJID domain] retain];
 	pass = [password retain];
-	if(serverHost == nil)
+	if(jabberServer == nil)
 	{
 		serverHost = [server retain];
 	}
