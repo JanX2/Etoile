@@ -1,0 +1,19 @@
+{
+	audio-x-generic =  (mp3, m3a, m4b, au, ulw, snd, aifc, aiff, aif, caf, wav, wave, wma, wax, sd2, ram, ogg);
+	text-x-script = (js, jscript, javascript, sh, csh, pl, pm, py, rb, rbw, php, php3, php4, ph3, ph4, phtml, applescript, io);
+	font-x-generic = (donft, otf, tff, ttc, suit, pfb, pfa, nfont);
+	image-x-generic = (jpg, jpeg, jp2, tif, tiff, pic, pct, pict, png, xbm, qif, qtif, icns, pdf, ps, eps, psd, ai, gif, bmp, ico, tga, sgi, exr, fpx, xcf);
+	text-x-generic = (txt, rtf, rtfd, html, htm, xml, doc, odt, smil);
+	video-x-generic = (mov, qt, avi, vfw, mpg, mpeg, m75, m15, mp4, 3gp, 3gpp, 3g2, 3gp2, asf, wm, wmv, wmp, asx, wvx, rm);
+	application-x-executable = (app, exe);
+
+	tool-x-executable = ();
+	document-x-generic = ();
+	contact-x-generic = (vcf, vard);
+	url-x-generic = ();
+	url-x-feed.png = ();
+	archive-x-generic = (jar, gtar, tar, hqx, bin, sit, sitx);
+	archive-x-zip = (zip, gz, bz, bz2);
+	plugin-x-generic = (plugin, bundle, framework, prefPane, themeEngine, menulet);
+	sourcecode-x-generic = (c, m, cp, cpp, c++, cc, cxx, mm, h, hpp, h++, hxx, s, r, defs, mig, exp);
+}

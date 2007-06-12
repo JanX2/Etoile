@@ -28,6 +28,7 @@
 
 #import <IconKit/IKIcon.h>
 #import <IconKit/IKIconTheme.h>
+#import <IconKit/IKIconProvider.h>
 
 /* For truncf on Linux and other platforms probably...
    #import <math.h> doesn't work on many Linux systems since truncf is often 
@@ -136,7 +137,9 @@ NSString *IKIconChangedNotification = @"IKIconChangedNotification";
 
   // FIX ME: Causes endless recursion with NSWorkspace overrides. Change this 
   // to use Quentin's code so we can activate NSWorkspaceAdditions.
-  _image = [[[NSWorkspace sharedWorkspace] iconForFile: fpath] retain];
+  //_image = [[[NSWorkspace sharedWorkspace] iconForFile: fpath] retain];
+  _image = [[IKIconProvider sharedInstance] defaultIconForPath: fpath];
+  [_image retain];
   _lock = [[NSRecursiveLock alloc] init];
 
   return self;

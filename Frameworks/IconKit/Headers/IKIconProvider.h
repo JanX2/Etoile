@@ -32,6 +32,7 @@
 
 @interface IKIconProvider : NSObject
 {
+  NSMutableDictionary *_systemIconMappingList;
   BOOL _usesThumbnails;
   BOOL _ignoresCustomIcons;
 }
@@ -47,6 +48,9 @@
 - (NSImage *) iconForPath: (NSString *)path;
 - (NSImage *) defaultIconForURL: (NSURL *)url;
 - (NSImage *) defaultIconForPath: (NSString *)path;
+
+// NOTE: May be rename this method -themeIconForURL:
+- (NSImage *) systemIconForURL: (NSURL *)url;
 
 - (BOOL) usesThumbnails;
 - (void) setUsesThumbnails: (BOOL)flag;

@@ -1,11 +1,42 @@
+2007-06-13  Quentin Mathe <qmathe@club-internet.fr>
+
+	Modified IKIcon to use the provider architecture. Wrote the missing code 
+	in IKIconProvider to have a working implementation. Implemented it with a
+	rudimentary scheme which checks a mapping file to convert file extensions 
+	to IKIconTheme icon identifiers. In future, we should use UTI database to
+	get the proper icon identifier, as a side effect we would gain supercasting
+	(as David nicknames it ;-)... To take a bad example: when no icon has been
+	registered for xhtml, fallback occurs on any parent types (like xml, html
+	or text) which have a registered icon rather than default document icon. The 
+	real result of this commit is visible in OuterSpace which now displays 
+	files with GNUstep/Etoile icon theme.
+	* GNUstep.icontheme/Resources/IdentifierMapping.plist: Added new mappings 
+	which can prove to be useful.
+	* GNUstep.icontheme/Resources/Application-Application.png: New icon for 
+	applications without bundled icon.
+	* ExtensionMapping.plist: New plist file to map extensions to icon theme
+	identifiers.
+	* IconKitInfo.plist: Added (includes CFBundleIdentifier).
+	* Source/IKIcon.m (-initForFile:): Now uses IKIconProvider.
+	* Headers/IKIconProvider.h:
+	* Source/IKIconProvider.m:
+	Added ivar _systemIconMappingList.
+	(-init): Updated to init new ivar.
+	(-dealloc): Added to release new ivar.
+	(-_loadSystemIconMappingList:): New method.
+	(-iconForURL:): Turned off thumbnails and cached icons.
+	(-defaultIconForURL:): Updated to take in account application package and
+	document icons registered by applications. Documented too.
+	(-systemIconForURL:): Wrote implementation and documented.
+
 2007-05-04  Yen-Ju Chen <yjchenx at gmail>
 
 	* Fix a typo which make IconKit unusable.
 
 2007-05-03  Yen-Ju Chen <yjchenx at gmail>
 
-        * Toplevel GNUmakefile make the frameworks
-          while Source/GNUmakefile make the subproject
+	* Toplevel GNUmakefile make the frameworks
+	  while Source/GNUmakefile make the subproject
 
 2007-04-29  Yen-Ju Chen <yjchen gmail.com>
 

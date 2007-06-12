@@ -38,7 +38,7 @@ endif
 
 IconKit_SUBPROJECTS = Source
 
-IconKit_RESOURCE_FILES = GNUstep.icontheme
+IconKit_RESOURCE_FILES = IconKitInfo.plist GNUstep.icontheme ExtensionMapping.plist
 
 IconKit_HEADER_FILES_DIR = Headers
 

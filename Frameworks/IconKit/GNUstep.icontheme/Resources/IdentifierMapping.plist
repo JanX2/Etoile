@@ -1,4 +1,5 @@
 {
+	application-x-executable = "Application-Application.png";
 	accessories-calculator = "Application-Calculator.png";
 	utilities-terminal = "Application-Terminal.png";
 	audio-x-generic = "Document-Audio.png";
@@ -48,11 +49,13 @@
 	applications-mail = "Application-Mail.png";
 	tool-x-executable = "Document-CommandLineTool.png";
 	document-x-generic = "Document-Unknown.png";
+	contact-x-generic = "Toolbar-User.png";
 	url-x-generic = "Document-URL.png";
 	url-x-feed.png = "Document-Feed.png";
 	archive-x-generic = "Document-Zipped.png";
 	archive-x-zip = "Document-Zipped.png";
 	plugin-x-generic = "Bundle-Plugin.png";
+	sourcecode-x-generic = "Document-Text.png";
 	preferences-desktop-datetime = "Toolbar-DateTime.png";
 	preferences-desktop-users = "Toolbar-Users.png";
 	preferences-desktop-energy = "Toolbar-Energy.png";
@@ -67,6 +70,7 @@
 	users = "Toolbar-Users.png";
 	energy = "Toolbar-Energy.png";
 	security = "Toolbar-Security.png";
+	contact = "Toolbar-User.png";
 	contacts = "Toolbar-Addresses.png";
 	back = "Toolbar-Back.png";
 	forward = "Toolbar-Forward.png";
