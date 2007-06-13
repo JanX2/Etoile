@@ -1,3 +1,8 @@
+2007-06-13  Quentin Mathe <qmathe@club-internet.fr
+
+	* Controller.m: Force login window to be centered on the screen.
+	* README: Documented ETAllowUserToChooseEnvironmnet key.
+
 2007-05-26  Quentin Mathe <qmathe@club-internet.fr
 
 	* English.lproj/login.gorm: Improved alignment, typography and added 

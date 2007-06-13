@@ -78,6 +78,16 @@ NSString *ETAllowUserToChooseEnvironment = @"ETAllowUserToChooseEnvironment";
 	busy = NO;
 	[self displayHostname];
 	[[NSCursor arrowCursor] set];
+
+	/* Ensure the login window is always exactly centered on the screen, 
+	   taking in account the slight vertical shift induced by -center. */
+	NSPoint betterVerticalLoc = NSZeroPoint;
+
+	[window center];
+	betterVerticalLoc.x = NSMinX([window frame]);
+	betterVerticalLoc.y = (NSHeight([[NSScreen mainScreen] frame]) 
+		- NSHeight([window frame])) / 2.0;
+	[window setFrameOrigin: betterVerticalLoc];
 }
 
 - (void) setView: (NSView*) aView

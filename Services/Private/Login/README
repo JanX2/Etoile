@@ -43,7 +43,7 @@ openapp /usr/local/GNUstep/System/Applications/Login.app -GSAppKitUserBundles "(
 "/usr/local/GNUstep/Local/Library/Bundles/Camaelon.themeEngine")"
 
 There is a couple of useful defaults you could set for this program.
-First, you should set GSSupressAppIcon to true -- you do not want the appicon to show.
+First, you should set GSSupressAppIcon to YES -- you do not want the appicon to show.
 Secondly, if you want to use a background image, you need to set up the ImagePath key.
 
     Login = {
@@ -53,6 +53,10 @@ Secondly, if you want to use a background image, you need to set up the ImagePat
 
 (on my system GDM runs its clients under 'gdm', an unprivileged user -- it should 
 be the case everywhere... here the home directory of this user is locate in /var/lib)
+
+If you want to be able to select your session/environment (like GNOME, KDE, 
+Etoile etc.) on login, set ETAllowUserToChooseEnvironment to YES. By default 
+this feature is turned off.
 
 Note
 ----
