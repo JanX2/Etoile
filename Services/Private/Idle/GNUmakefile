@@ -27,5 +27,5 @@ ADDITIONAL_OBJCFLAGS = -std=c99 -g -Werror
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lX11 -lXss
 
-
 include $(GNUSTEP_MAKEFILES)/tool.make
+-include ../../../etoile.make
