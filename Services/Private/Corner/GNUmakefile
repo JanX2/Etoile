@@ -29,5 +29,5 @@ ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lX11
 ADDITIONAL_LDFLAGS += -lStepTalk -g
 
-
 include $(GNUSTEP_MAKEFILES)/application.make
+-include ../../../etoile.make
