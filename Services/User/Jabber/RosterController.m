@@ -181,7 +181,7 @@ NSMutableArray * rosterControllers = nil;
 	float interCellHorizontalSpacing = [view intercellSpacing].width;
 	float indent = [view indentationPerLevel] + (4*interCellHorizontalSpacing);
 	size.width = [self widthOfItemAndChildren:nil withIndent:indent];
-	size.width += interCellHorizontalSpacing;
+	size.width += interCellHorizontalSpacing + indent;
 	[[[view tableColumns] objectAtIndex:0] setWidth:size.width];
 	size.width += interCellHorizontalSpacing;
 
@@ -345,16 +345,16 @@ NSMutableArray * rosterControllers = nil;
 		{
 			[view reloadItem:_object reloadChildren:YES];
 		}
-		else if([_object isKindOfClass:[RosterGroup class]] && 
-				[[NSUserDefaults standardUserDefaults] expandedGroup:[_object groupName]])
-		{
-			if([view isExpandable:_object])
-			{
-				[view expandItem:_object];
-			}
-		}
 	}
 #endif
+	if([_object isKindOfClass:[RosterGroup class]] && 
+			[[NSUserDefaults standardUserDefaults] expandedGroup:[_object groupName]])
+	{
+		if([view isExpandable:_object])
+		{
+			[view expandItem:_object];
+		}
+	}
 	/* These exception handlers were a work around for a now-fixed bug.
 	 * They can probably be removed.
 	 */
