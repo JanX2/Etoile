@@ -90,7 +90,8 @@ NSMutableArray * messageWindowControllers = nil;
 	}
 }
 
-- (void) awakeFromNib
+//- (void) awakeFromNib
+- (void) windowDidLoad
 {
 	NSNotificationCenter * defaultCenter = [NSNotificationCenter defaultCenter];
 	[editingBox setFieldEditor:YES];

@@ -16,6 +16,8 @@
 #import "TRUserDefaults.h"
 #import "MessageWindowController.h"
 
+#define AUTO_RESIZE
+
 #ifdef NO_ATTRIBUTED_TITLES
 #define setAttributedTitle(x) setTitle:[x string]
 #else
@@ -27,6 +29,12 @@
 #define ANIMATE_WINDOW NO
 #else
 #define ANIMATE_WINDOW YES
+#endif
+
+#ifdef AUTO_RESIZE
+#define RESIZE_ROSTER [[self window] setFrame:[self optimalSize] display:YES animate:ANIMATE_WINDOW]
+#else
+#define RESIZE_ROSTER
 #endif
 
 NSMutableArray * rosterControllers = nil;
@@ -48,10 +56,12 @@ NSMutableArray * rosterControllers = nil;
 }
 
 #ifdef GNUSTEP
-- (void) awakeFromNib
+- (void)windowDidLoad
 {
+	[super windowDidLoad];
 	[view setHeaderView: nil];
 	[view setCornerView: nil];
+	[[self window] setShowsResizeIndicator:YES];
 }
 #endif
 
@@ -198,6 +208,7 @@ NSMutableArray * rosterControllers = nil;
 
 - (id) initWithNibName:(NSString*)_nib forAccount:(id)_account withRoster:(id)_roster
 {
+	NSLog(@"Loading roster nib...");
 	self = [self initWithWindowNibName:_nib];
 	if(self == nil)
 	{
@@ -234,11 +245,7 @@ NSMutableArray * rosterControllers = nil;
 						  name:@"TRXMPPUnubscription"
 						object:nil];
 	
-	//TODO: Put this in the nib
-	[view setDoubleAction:@selector(click:)];
-	[view setTarget:self];
 	
-	[[self window] setDelegate:self];
 	[[self window] setFrameFromString:@"Jabber Roster"];
 	[[self window] setFrameAutosaveName:@"Jabber Roster"];
 	data = _roster;
@@ -319,8 +326,13 @@ NSMutableArray * rosterControllers = nil;
 
 - (void) update:(id)_object
 {
+#ifdef GNUSTEP
+	/* GNUSTEP BUG:
+	 * [NSOutlineView -reloadItem] is badly broken on GNUstep.
+	 * Remove this work-around when it is fixed.
+	 */
 	[view reloadData];
-	[[self window] setFrame:[self optimalSize] display:YES animate:NO];
+#else
 	if(_object == nil)
 	{
 		[view reloadData];
@@ -342,10 +354,15 @@ NSMutableArray * rosterControllers = nil;
 			}
 		}
 	}
-	[[self window] setFrame:[self optimalSize] display:YES animate:ANIMATE_WINDOW];
+#endif
+	/* These exception handlers were a work around for a now-fixed bug.
+	 * They can probably be removed.
+	 */
+	RESIZE_ROSTER;
 	NS_DURING
 	[view display];
 	NS_HANDLER
+		NSLog(@"Exception while displaying roster: %@", [localException reason]);
 	NS_ENDHANDLER
 }
 
@@ -504,7 +521,7 @@ NSMutableArray * rosterControllers = nil;
 	{
 		[[NSUserDefaults standardUserDefaults] setExpanded:[group groupName] to:YES];
 	}
-	[[self window] setFrame:[self optimalSize] display:YES animate:ANIMATE_WINDOW];
+	RESIZE_ROSTER;
 }
 
 - (void)outlineViewItemDidCollapse:(NSNotification *)notification
@@ -514,7 +531,7 @@ NSMutableArray * rosterControllers = nil;
 	{
 		[[NSUserDefaults standardUserDefaults] setExpanded:[group groupName] to:NO];
 	}
-	[[self window] setFrame:[self optimalSize] display:YES animate:ANIMATE_WINDOW];
+	RESIZE_ROSTER;
 }
 
 inline Conversation * createChatWithPerson(id self, JabberPerson* person, XMPPAccount * account)
