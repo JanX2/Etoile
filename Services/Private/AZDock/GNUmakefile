@@ -30,6 +30,7 @@ ADDITIONAL_LIB_DIRS += \
 ADDITIONAL_GUI_LIBS += \
 	-lX11 \
 	-lXWindowServerKit \
+	-lIconKit \
 	-lBookmarkKit \
 	-lCollectionKit
 
@@ -39,6 +40,5 @@ ifeq ($(etoile), yes)
 endif
 
 include $(GNUSTEP_MAKEFILES)/application.make
-include $(GNUSTEP_MAKEFILES)/aggregate.make
 include ../../../etoile.make
 

@@ -3,6 +3,7 @@
 #import <X11/Xutil.h>
 #import <XWindowServerKit/XFunctions.h>
 #import <XWindowServerKit/XScreen.h>
+#import <IconKit/IconKit.h>
 
 #ifdef ETOILE
 #import <WorkspaceCommKit/NSWorkspace+Communication.h>
@@ -109,7 +110,7 @@
   }
   /* Try to get the icon */
   if (command) {
-    ASSIGN(icon, [[NSWorkspace sharedWorkspace] iconForFile: command]);
+    ASSIGN(icon, [[IKIcon iconForFile: command] image]);
   }
   if (icon == nil) {
     /* use default icon */
