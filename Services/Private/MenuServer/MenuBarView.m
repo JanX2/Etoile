@@ -34,7 +34,6 @@
 #import <AppKit/NSScreen.h>
 #import <AppKit/NSWindow.h>
 
-#import "MenuBarHeight.h"
 #import "EtoileSystemBarEntry.h"
 #import "BundleExtensionLoader.h"
 
@@ -288,6 +287,25 @@ static NSImage * filler = nil,
       systemLogoPushedIn = YES;
       [self setNeedsDisplay: YES];
 
+      // and now adjust the menubar's window's frame to appear in the
+      // upper left corner just under the menubar
+      NSWindow *systemMenuWindow = [systemMenu window];
+      NSRect frame = [systemMenuWindow frame];
+      NSRect menuBarFrame = [[self window] frame];
+
+      frame.origin.x = menuBarFrame.origin.x;
+      // NOTE: Useful in short menu bar mode where the menu bar width can be 
+      // too small to display system menu without cutting it at its right.
+      if (NSMaxX(frame) > NSMaxX(menuBarFrame))
+      {
+        /* Shift menu window to left back on screen */
+        frame.origin.x = NSMaxX([[NSScreen mainScreen] frame]) -
+                         frame.size.width;
+      }
+
+      frame.origin.y = menuBarFrame.origin.y - NSHeight(frame);
+      [systemMenuWindow setFrameOrigin: frame.origin];
+
       [NSEvent startPeriodicEventsAfterDelay: 0.1 withPeriod: 0.01];
       [systemMenu display];
       [[systemMenu menuRepresentation] trackWithEvent: ev];
@@ -295,22 +313,6 @@ static NSImage * filler = nil,
       [NSEvent stopPeriodicEvents];
 
       systemLogoPushedIn = NO;
-
-      // and now adjust the menubar's window's frame to appear in the
-      // upper left corner just under the menubar
-      NSWindow *systemMenuWindow = [systemMenu window];
-      NSRect frame = [systemMenuWindow frame];
-      frame.origin.x = [[self window] frame].origin.x;
-      if (NSMaxX(frame) > NSMaxX([[NSScreen mainScreen] frame]))
-      {
-        frame.origin.x = NSMaxX([[NSScreen mainScreen] frame]) -
-                         frame.size.width;
-      }
-
-      frame.origin.y = NSHeight([[NSScreen mainScreen] frame]) -
-        NSHeight(frame) - MenuBarHeight;
-      [systemMenuWindow setFrameOrigin: frame.origin];
-
       [self setNeedsDisplay: YES];
     }
 }
