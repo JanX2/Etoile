@@ -1,13 +1,21 @@
+2007-06-13  Quentin Mathe <qmathe@club-internet.fr>
+
+	Most frameworks and private services will now be installed in System
+	domain.
+	Warning: check redundant elements in Local and System carefully on next
+	install.
+	* etoile.make: Added ETOILE_CORE_MODULE support.
+
 2007-06-10  Quentin Mathe <qmathe@club-internet.fr>
 
 	* README: Added StepTalk and XScreenSaver to Dependency section. 
 	Updated gnustep-make required version to 2.0. Removed comment about
-        broken 'sudo' support which isn't true anymore (in my experience). 
-        Added a clear WARNING to make evident you cannot avoid setup.sh.
+	broken 'sudo' support which isn't true anymore (in my experience). 
+	Added a clear WARNING to make evident you cannot avoid setup.sh.
 	* INSTALL: Made Required software section up-to-date.
-        * INSTALL.Ubuntu: Updated to take in account new dependencies 
-        introduced by Idle. Also explained Edgy Eft section is also valid for
-        Feisty Fawn.
+	* INSTALL.Ubuntu: Updated to take in account new dependencies 
+	introduced by Idle. Also explained Edgy Eft section is also valid for
+	Feisty Fawn.
 
 2007-05-07  Yen-Ju Chen <yjchen gmail>
 
