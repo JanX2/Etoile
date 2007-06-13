@@ -1,4 +1,4 @@
-GNUSTEP_INSTALLATION_DOMAIN = SYSTEM
+ETOILE_CORE_MODULE = YES
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
@@ -22,4 +22,4 @@ Login_LOCALIZED_RESOURCE_FILES = login.gorm
 Login_MAIN_MODEL_FILE = login.gorm
 
 include $(GNUSTEP_MAKEFILES)/application.make
-
+include ../../../etoile.make
