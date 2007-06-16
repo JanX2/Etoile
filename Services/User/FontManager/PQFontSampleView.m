@@ -136,8 +136,7 @@
 {
 	int fontsCount = [[self dataSource] numberOfFontsInFontSampleView: self];
 	int index = 0;
-	float currentHeight = 0.0;
-	NSPoint currentDrawingPoint = NSMakePoint(0, 0);
+  NSRange rangeNeedsDrawing;
 
 	/* Text system components */
 	NSTextStorage *textStorage = [[NSTextStorage alloc] init];
@@ -151,15 +150,16 @@
 	NSMutableDictionary *currentAttributes = [[NSMutableDictionary alloc] init];
 
 
-	/* Setting up text system */
-	[textContainer setContainerSize: [self frame].size];
+	/* Set up text system */
+	[textContainer setContainerSize: NSMakeSize([self frame].size.width, 50000)];
 	[layoutManager addTextContainer: textContainer];
 	[textStorage addLayoutManager: layoutManager];
 
-	/* Adding color attribute */
+	/* Add color attribute */
 	[currentAttributes setValue: [self foregroundColor]
 	                     forKey: NSForegroundColorAttributeName];
 
+	/* Create font sample */
 	while (index < fontsCount)
 	{
 		/* Find next font */
@@ -169,13 +169,19 @@
 		currentFont = [NSFont fontWithName: currentFontName size: [self fontSize]];
 
 		/* Add label to text storage */
-		[textStorage deleteCharactersInRange: NSMakeRange(0, [textStorage length])];
-
 		[currentAttributes setValue: [NSFont labelFontOfSize: 0]
 		                     forKey: NSFontAttributeName];
 
-		currentLabel =
-			[NSString stringWithFormat: @"%@\n", [currentFont displayName]];
+		if (index == 0)
+		{
+			currentLabel =
+				[NSString stringWithFormat: @"%@:\n", [currentFont displayName]];
+		}
+		else
+		{
+			currentLabel =
+				[NSString stringWithFormat: @"\n\n%@:\n", [currentFont displayName]];
+		}
 
 		[textStorage appendAttributedString:
 			[[NSAttributedString alloc] initWithString: currentLabel
@@ -188,34 +194,21 @@
 			[[NSAttributedString alloc] initWithString: [self sampleText]
 			                                attributes: currentAttributes]];
 
-		/* Make sure that the frame is big enough */
-		(void) [layoutManager glyphRangeForTextContainer:textContainer];
-
-		currentHeight =
-			[layoutManager usedRectForTextContainer: textContainer].size.height;
-
-		if ([self frame].size.height < (currentDrawingPoint.y + currentHeight))
-		{
-			[self setFrameSize: NSMakeSize([self frame].size.width,
-				(currentDrawingPoint.y + currentHeight))];
-		}
-
-
-		/* Draw */
-		[layoutManager drawGlyphsForGlyphRange:
-			[layoutManager glyphRangeForTextContainer: textContainer]
-		                               atPoint: currentDrawingPoint];
-
-		/* Increment vars */
-		currentDrawingPoint.y += currentHeight;
-
 		++index;
-
-		if (! index < fontsCount)
-		{
-			/* Draw a line */
-		}
 	}
+
+	/*(void) [layoutManager glyphRangeForTextContainer: textContainer];
+	_sampleSizeHeight =
+		[layoutManager usedRectForTextContainer:textContainer].size.height;
+NSLog(@"-%f", _sampleSizeHeight);*/
+
+
+	/* Draw font sample */
+  rangeNeedsDrawing = [layoutManager glyphRangeForBoundingRect: rect
+	                                             inTextContainer: textContainer];
+
+	[layoutManager drawGlyphsForGlyphRange: rangeNeedsDrawing
+																 atPoint: NSMakePoint(0, 0)];
 }
 
 @end

@@ -1,3 +1,6 @@
+2007-06-16  Isaiah Beerbower <ipaqah@tm.net>
+	* PQFontSampleView.m: Some small changes.
+
 2007-06-11  Isaiah Beerbower <ipaqah@tm.net>
 	* PQFontSampleView.m ([-drawRect:]): Changed almost everything.
 
