@@ -44,6 +44,10 @@
 
 	size = [NSNumber numberWithInt:24];
 
+	NSColorPanel *sharedColorPanel = [NSColorPanel sharedColorPanel];
+	[sharedColorPanel setTarget: self];
+	[sharedColorPanel setAction: @selector(changeColor:)];
+
 	fontsNeedUpdate = YES;
 
 	RETAIN(fonts);
@@ -240,6 +244,14 @@
 
 		[self setSize: [sizes objectAtIndex: index]];
 	}
+}
+
+- (void) changeColor: (id)sender
+{
+	[sampleView setForegroundColor: [foregroundColorWell color]];
+	[sampleView setBackgroundColor: [backgroundColorWell color]];
+
+	
 }
 
 @end

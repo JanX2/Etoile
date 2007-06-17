@@ -90,7 +90,7 @@
 - (void) setSampleText: (NSString *)someText
 {
 	ASSIGN(sampleText, someText);
-	fontAttributesNeedUpdate == YES;
+	fontAttributesNeedUpdate = YES;
 	[self setNeedsDisplay: YES];
 }
 
@@ -102,7 +102,7 @@
 - (void) setFontSize: (int)aSize
 {
 	fontSize = aSize;
-	fontAttributesNeedUpdate == YES;
+	fontAttributesNeedUpdate = YES;
 	[self setNeedsDisplay: YES];
 }
 
@@ -186,6 +186,9 @@
 
 - (void) drawRect: (NSRect)rect
 {
+	/* Set up text system */
+	[textContainer setContainerSize: NSMakeSize([self frame].size.width, 50000)];
+
 	/* Create font sample */
 	if ([dataSource fontsShouldChangeInFontSampleView: self] == YES
 			|| fontAttributesNeedUpdate == YES)
@@ -199,13 +202,8 @@
 		NSString *currentLabel;
 		NSMutableDictionary *currentAttributes = [[NSMutableDictionary alloc] init];
 
-		/* Set up text system */
-		[textContainer setContainerSize: NSMakeSize([self frame].size.width, 50000)];
+		fontAttributesNeedUpdate = NO;
 
-		/* Add color attribute */
-		[currentAttributes setValue: [self foregroundColor]
-	                     forKey: NSForegroundColorAttributeName];
-		fontAttributesNeedUpdate == NO;
 		[textStorage deleteCharactersInRange: NSMakeRange(0, [textStorage length])];
 
 		while (index < fontsCount)
@@ -253,6 +251,14 @@
 		[self setConstrainedFrameSize:
 			[layoutManager usedRectForTextContainer: textContainer].size];
 	}
+
+	/* Add color */
+	[textStorage addAttribute: NSForegroundColorAttributeName
+											value: [self foregroundColor]
+											range: NSMakeRange(0, [textStorage length])];
+
+	[[self backgroundColor] set];
+	[NSBezierPath fillRect: rect];
 
 	/* Draw font sample */
   NSRange rangeNeedsDrawing = [layoutManager glyphRangeForBoundingRect: rect
