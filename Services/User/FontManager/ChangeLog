@@ -1,4 +1,8 @@
 2007-06-16  Isaiah Beerbower <ipaqah@tm.net>
+	* PQFontSampleView.*: Added auto resize methods, and changed drawRect: to use
+	  them.
+
+2007-06-16  Isaiah Beerbower <ipaqah@tm.net>
 	* PQFontSampleView.m: Some small changes.
 
 2007-06-11  Isaiah Beerbower <ipaqah@tm.net>
@@ -10,7 +14,8 @@
 
 2007-06-07  Isaiah Beerbower <ipaqah@tm.net>
 	* PQFontSampleView.*: Font sampling view to replace text view.
-	* PQSampleController.m: Changed to use PQFontSampleView instead of a text view.
+	* PQSampleController.m: Changed to use PQFontSampleView instead of a
+	  text view.
 	* GNUmakefile: Makefile for GNUstep.
 	* English.lproj/MainMenu.gorm*: Interface for GNUstep.
 

@@ -24,6 +24,8 @@
 	
 	NSColor *foregroundColor;
 	NSColor *backgroundColor;
+
+	BOOL autoSize;
 }
 
 - (void) setDataSource: (id)anObject;
@@ -33,6 +35,10 @@
 - (NSString *) sampleText;
 - (void) setFontSize: (int)aSize;
 - (int) fontSize;
+
+- (void) setAutoSize: (BOOL)flag;
+- (BOOL) autoSize;
+- (void) setConstrainedFrameSize: (NSSize)aSize;
 
 - (void) setForegroundColor: (NSColor *)aColor;
 - (NSColor *) foregroundColor;

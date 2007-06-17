@@ -27,6 +27,7 @@
 	foregroundColor = [NSColor blackColor];
 	backgroundColor = [NSColor whiteColor];
 
+	autoSize = /*NO*/ YES;
 
 	RETAIN(sampleText);
 	RETAIN(foregroundColor);
@@ -125,6 +126,46 @@
 }
 
 
+/* Resizing */
+
+- (void) setAutoSize: (BOOL)flag
+{
+	autoSize = flag;
+}
+
+- (BOOL) autoSize
+{
+	return autoSize;
+}
+
+- (void) setConstrainedFrameSize: (NSSize)aSize
+{
+	id superview = [self superview];
+	NSSize currentSize = [self frame].size;
+	NSSize newSize;
+
+	if ([superview isKindOfClass: [NSClipView class]] == YES)
+	{
+		if ([superview documentView] == self)
+		{
+			newSize = [superview bounds].size;
+		}
+	}
+
+	/* If should resize horizontally */
+	/* Fun stuff */
+	/* Else */ newSize.width = currentSize.width;
+
+	/* If should resize vertically */
+	if (newSize.height < aSize.height)
+	{
+		newSize.height = aSize.height;
+	}
+
+	[self setFrameSize: newSize];
+}
+
+
 /* Drawing */
 
 - (BOOL) isFlipped
@@ -197,11 +238,13 @@
 		++index;
 	}
 
-	/*(void) [layoutManager glyphRangeForTextContainer: textContainer];
-	_sampleSizeHeight =
-		[layoutManager usedRectForTextContainer:textContainer].size.height;
-NSLog(@"-%f", _sampleSizeHeight);*/
+	if (autoSize == YES)
+	{
+		(void) [layoutManager glyphRangeForTextContainer: textContainer];
 
+		[self setConstrainedFrameSize:
+			[layoutManager usedRectForTextContainer: textContainer].size];
+	}
 
 	/* Draw font sample */
   rangeNeedsDrawing = [layoutManager glyphRangeForBoundingRect: rect
