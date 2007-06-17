@@ -34,6 +34,8 @@
 
 	NSNumber *size;
 	NSArray *sizes;
+
+	BOOL fontsNeedUpdate;
 }
 
 - (void) setFonts: (NSArray *)someFonts;

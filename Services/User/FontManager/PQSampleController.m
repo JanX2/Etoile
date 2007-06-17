@@ -44,6 +44,8 @@
 
 	size = [NSNumber numberWithInt:24];
 
+	fontsNeedUpdate = YES;
+
 	RETAIN(fonts);
 	RETAIN(sampleText);
 	RETAIN(defaultSampleText);
@@ -77,6 +79,7 @@
 - (void) setFonts: (NSArray *)someFonts
 {
 	ASSIGN(fonts, someFonts);
+	fontsNeedUpdate = YES;
 	[sampleView setNeedsDisplay: YES];
 }
 
@@ -165,6 +168,16 @@
 									fontAtIndex: (int)rowIndex
 {
 	return [fonts objectAtIndex: rowIndex];
+}
+
+- (BOOL) fontsShouldChangeInFontSampleView: (PQFontSampleView *)aFontSampleView
+{
+	if (fontsNeedUpdate == YES)
+	{
+		fontsNeedUpdate = NO;
+		return YES;
+	}
+	return NO;
 }
 
 

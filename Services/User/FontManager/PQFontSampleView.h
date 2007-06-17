@@ -25,6 +25,13 @@
 	NSColor *foregroundColor;
 	NSColor *backgroundColor;
 
+	/* Text system components */
+	NSTextStorage *textStorage;
+	NSLayoutManager *layoutManager;
+	NSTextContainer *textContainer;
+
+	BOOL fontAttributesNeedUpdate;
+
 	BOOL autoSize;
 }
 
@@ -53,5 +60,6 @@
 - (int) numberOfFontsInFontSampleView: (PQFontSampleView *)aFontSampleView;
 - (NSString *) fontSampleView: (PQFontSampleView *)aFontSampleView
 									fontAtIndex: (int)rowIndex;
+- (BOOL) fontsShouldChangeInFontSampleView: (PQFontSampleView *)aFontSampleView;
 
 @end

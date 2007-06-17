@@ -1,3 +1,7 @@
+2007-06-17  Isaiah Beerbower <ipaqah@tm.net>
+	* PQFontSampleView.*: Only generates font sample if it needs to.
+	* PQSampleController.*: Remembers if fonts need updating or not.
+
 2007-06-16  Isaiah Beerbower <ipaqah@tm.net>
 	* PQFontSampleView.*: Added auto resize methods, and changed drawRect: to use
 	  them.
