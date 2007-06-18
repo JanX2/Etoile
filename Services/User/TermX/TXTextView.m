@@ -510,8 +510,33 @@ static BOOL blockRedraw = NO;
 {
 	CREATE_AUTORELEASE_POOL(x);
 	blockRedraw = YES;
-	[self doChars:dat];
+#if 0
+	/* If we receive too much data at once, 
+	   -updateText will be called in the last minute, 
+	   in which scrollbuf will be over-written by later data
+	   while scrollRows has no chance to update.
+	   Therefore, the cached lines (above visible view) will be empty.
+	   So avoid this problem for now, we update text about every half view size.
+	   We probably want better solution. */
+	/* We either do it here or in TTY */
+	int size = 512;
+	NSRange range = NSMakeRange(0, size);
+	NSData *subdata = nil;
+	while (range.location <= [dat length])
+	{
+		if (NSMaxRange(range) > [dat length])
+		{
+			range.length= [dat length] - range.location;
+		}
+		subdata = [dat subdataWithRange: range];
+		[self doChars:subdata];
+		[self updateText];
+		range.location += size;
+	}
+#else
+	[self doChars: dat];
 	[self updateText];
+#endif
 	blockRedraw = NO;
 	DESTROY(x);
 }

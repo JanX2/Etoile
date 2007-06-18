@@ -15,6 +15,8 @@
 	NSFileHandle *term;
 	id delegate;
 	BOOL alive;
+	NSMutableData *appendingData;
+	NSTimer *processTimer;
 }
 
 - (id)initWithColumns: (int) cols rows: (int) rows;

@@ -99,17 +99,24 @@
 	return self;
 }
 
-
-- (void)gotData:(NSNotification *)notification
+- (void) processData: (id) sender
 {
-	/* Sleep a short time so data can accumulate.  It helps a lot in speed. */
-	usleep(200);
+	[delegate performSelector: @selector(tty:gotInput:)
+	               withObject: self withObject: appendingData];
+//	NSLog(@"Fire data %d", [appendingData length]);
+	/* Clean up */
+	DESTROY(appendingData);
+	DESTROY(processTimer);
+}
+
+- (void) gotData: (NSNotification *) notification
+{
+//	NSLog(@"got data");
 	NSData *d = nil;
 NS_DURING
 	d = [term availableData];
 NS_HANDLER
-	/* If we are notified but got exception here,
-	   the connection is dead. */
+	/* If we are notified but got exception here, the connection is dead. */
 	alive = NO;
 	NSLog(@"Not alive");
 	return;
@@ -122,9 +129,38 @@ NS_ENDHANDLER
 		NSLog(@"Not alive");
 		return;
 	}
+	/* We cache data here in case the buffer for term is full */
+	if (appendingData == nil)
+	{
+		appendingData = [[NSMutableData alloc] init];
+	}
+	[appendingData appendData: d];
 
+#if 1
+	if ([appendingData length] > 512)
+	{
+		/* If the data is big, we process immediately */
+		[delegate performSelector: @selector(tty:gotInput:)
+		               withObject: self withObject: appendingData];
+		DESTROY(appendingData);
+	}
+	else if (processTimer == nil)
+	{
+		/* Sleep a short time so data can accumulate.
+		   It helps a lot in speed. */
+		ASSIGN(processTimer, [NSTimer scheduledTimerWithTimeInterval: 0.05
+		                                 target: self
+		                               selector: @selector(processData:)
+		                               userInfo: nil
+		                                repeats: NO]);
+		// NOTE: I think there is a racing issue between timer
+		// and -waitForDataInBackgroundAndNotify.
+	}
+#else
 	[delegate performSelector: @selector(tty:gotInput:)
-	               withObject: self withObject: d];
+	               withObject: self withObject: appendingData];
+	DESTROY(appendingData);
+#endif
 NS_DURING
 	[term waitForDataInBackgroundAndNotify];
 NS_HANDLER
@@ -173,6 +209,7 @@ NS_ENDHANDLER
 {
 	DESTROY(term);
 	DESTROY(delegate);
+	DESTROY(appendingData);
 	[super dealloc];
 }
 
