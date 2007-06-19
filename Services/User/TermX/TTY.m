@@ -139,7 +139,8 @@ NS_ENDHANDLER
 #if 1
 	if ([appendingData length] > 512)
 	{
-		/* If the data is big, we process immediately */
+		/* If the data is big, we process immediately.
+		   This will cause redraw every 512 bytes. */
 		[delegate performSelector: @selector(tty:gotInput:)
 		               withObject: self withObject: appendingData];
 		DESTROY(appendingData);

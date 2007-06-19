@@ -13,7 +13,7 @@
 #define WINDOW_PAD 0
 #define ROW_PAD 1 /* Between lines vertically*/
 #define LINE_PAD 2 /* PAD one left and right side of lines */
-#define MAX_LINES 500
+#define MAX_LINES 250
 
 #define DEFAULT_COLS 80
 #define DEFAULT_ROWS 24
@@ -510,7 +510,7 @@ static BOOL blockRedraw = NO;
 {
 	CREATE_AUTORELEASE_POOL(x);
 	blockRedraw = YES;
-#if 0
+#if 1
 	/* If we receive too much data at once, 
 	   -updateText will be called in the last minute, 
 	   in which scrollbuf will be over-written by later data
@@ -518,8 +518,7 @@ static BOOL blockRedraw = NO;
 	   Therefore, the cached lines (above visible view) will be empty.
 	   So avoid this problem for now, we update text about every half view size.
 	   We probably want better solution. */
-	/* We either do it here or in TTY */
-	int size = 512;
+	int size = 256;
 	NSRange range = NSMakeRange(0, size);
 	NSData *subdata = nil;
 	while (range.location <= [dat length])
