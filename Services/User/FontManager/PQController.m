@@ -64,12 +64,14 @@
 	if (fontsCount < 2)
 	{
 		[fontsInfoField setStringValue:
-			[NSString stringWithFormat:@"%i font", fontsCount]];
+			[NSString stringWithFormat:@"%i %@", fontsCount,
+			                           NSLocalizedString(@"PQFamily", nil)]];
 	}
 	else
 	{
 		[fontsInfoField setStringValue:
-			[NSString stringWithFormat:@"%i fonts", fontsCount]];
+			[NSString stringWithFormat:@"%i %@", fontsCount,
+			                           NSLocalizedString(@"PQFamilies", nil)]];
 	}
 }
 

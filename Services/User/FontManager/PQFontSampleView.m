@@ -36,7 +36,7 @@
 
 	fontAttributesNeedUpdate = YES;
 
-	autoSize = /*NO*/ YES;
+	autoSize = NO;
 
 	RETAIN(sampleText);
 	RETAIN(foregroundColor);
@@ -151,6 +151,7 @@
 
 - (void) setConstrainedFrameSize: (NSSize)aSize
 {
+	// FIXME: Shouldn't take some things for granted. (See the comments)
 	id superview = [self superview];
 	NSSize currentSize = [self frame].size;
 	NSSize newSize;
@@ -186,9 +187,6 @@
 
 - (void) drawRect: (NSRect)rect
 {
-	/* Set up text system */
-	[textContainer setContainerSize: NSMakeSize([self frame].size.width, 50000)];
-
 	/* Create font sample */
 	if ([dataSource fontsShouldChangeInFontSampleView: self] == YES
 			|| fontAttributesNeedUpdate == YES)
@@ -201,6 +199,9 @@
 		NSFont *currentFont;
 		NSString *currentLabel;
 		NSMutableDictionary *currentAttributes = [[NSMutableDictionary alloc] init];
+
+		/* Set up text system */
+		[textContainer setContainerSize: NSMakeSize([self frame].size.width, 50000)];
 
 		fontAttributesNeedUpdate = NO;
 

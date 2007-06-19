@@ -62,9 +62,10 @@
 
 - (void) awakeFromNib
 {
+	[sampleView setAutoSize: YES];
 	[sampleView setSampleText: sampleText];
 	[sampleView setFontSize: [size intValue]];
-	
+
 	[self updateControls];
 }
 
@@ -250,8 +251,6 @@
 {
 	[sampleView setForegroundColor: [foregroundColorWell color]];
 	[sampleView setBackgroundColor: [backgroundColorWell color]];
-
-	
 }
 
 @end
