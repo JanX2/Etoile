@@ -15,6 +15,7 @@ ifeq ($(user-base), yes)
     export look-and-behavior ?= yes
     export hardware ?= yes
     export dictionary ?= yes
+		export fontmanager ?= yes
     export grr ?= yes
     export typewriter ?= yes
     export vindaloo ?= yes
@@ -27,6 +28,7 @@ ifeq ($(user-base), no)
     export look-and-behavior ?= no
     export hardware ?= no
     export dictionary ?= no
+		export fontmanager ?= no
     export grr ?= no
     export typewriter ?= no
     export vindaloo ?= no
@@ -51,6 +53,10 @@ endif
 
 ifeq ($(dictionary), yes)
 	SUBPROJECTS += DictionaryReader
+endif
+
+ifeq ($(fontmanager), yes)
+	SUBPROJECTS += FontManager
 endif
 
 ifeq ($(grr), yes)
