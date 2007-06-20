@@ -2,6 +2,13 @@
 Grr ChangeLog
 ==============
 
+Jun-19-2007  Yen-Ju Chen
+	* Install components inside applications so it can be relocated easily.
+	  (Bug #9352).
+	* Set window frame in -applicationDidFinishLaunching
+	  which redraw the window and eliminate double toolbar bug.
+	  (Bug #8663).
+
 May-08-2007  Yen-Ju Chen
 	* Update top-level license to MIT agreed by authors.
 	  See COPYING and attached email inside.

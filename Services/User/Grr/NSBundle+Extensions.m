@@ -35,6 +35,10 @@
         [[[NSBundle mainBundle] builtInPlugInsPath] stringByAppendingPathComponent:
             [name stringByAppendingPathExtension: type]];
 #else
+    bundlePathName =
+        [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:
+            [name stringByAppendingPathExtension: type]];
+#if 0
     bundlePathName = [[[NSBundle mainBundle] resourcePath] stringByDeletingLastPathComponent];
     bundlePathName = [bundlePathName stringByDeletingPathExtension];
     
@@ -51,6 +55,7 @@
                           [bundlePathName stringByDeletingLastPathComponent],
                           name, name, type];
     }
+#endif
 #endif
     
     NSLog(@"Loading bundle at %@", bundlePathName);

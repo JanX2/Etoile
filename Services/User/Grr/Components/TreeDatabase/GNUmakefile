@@ -5,7 +5,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 BUNDLE_NAME = TreeDatabase
 BUNDLE_EXTENSION = .grrdb
 
-BUNDLE_INSTALL_DIR = $(GNUSTEP_INSTALLATION_DIR)/Library/Grr
+$(BUNDLE_NAME)_STANDARD_INSTALL=no
 
 TreeDatabase_OBJC_FILES = \
 	TreeDatabaseComponent.m \

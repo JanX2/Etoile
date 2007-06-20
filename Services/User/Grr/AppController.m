@@ -110,10 +110,6 @@
     
     // toolbar is created in applicationDidFinishLaunching
     
-    // Set the autosave name for the window to let the window
-    // appear in the same place next time, too. :)
-    [window setFrameAutosaveName: @"Grr main window"];
-    
     // Make sure the toolbar provider array is initialized
     ASSIGN(toolbarProviders, [NSMutableArray new]);
 }
@@ -213,6 +209,10 @@
     [fToolbar setDelegate: self];
     
     [window setToolbar: fToolbar];
+
+    // Set the autosave name for the window to let the window
+    // appear in the same place next time, too. :)
+    [window setFrameAutosaveName: @"Grr main window"];
     
     // Now that everything is loaded, we can show the window.
     [window makeKeyAndOrderFront: self];

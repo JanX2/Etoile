@@ -5,7 +5,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 BUNDLE_NAME = URLOpening
 BUNDLE_EXTENSION = .grrc
 
-BUNDLE_INSTALL_DIR = $(GNUSTEP_INSTALLATION_DIR)/Library/Grr
+$(BUNDLE_NAME)_STANDARD_INSTALL=no
 
 URLOpening_OBJC_FILES = \
 	URLOpeningComponent.m \

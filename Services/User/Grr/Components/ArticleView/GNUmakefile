@@ -5,7 +5,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 BUNDLE_NAME = ArticleView
 BUNDLE_EXTENSION = .grrc
 
-BUNDLE_INSTALL_DIR = $(GNUSTEP_INSTALLATION_DIR)/Library/Grr
+$(BUNDLE_NAME)_STANDARD_INSTALL=no
 
 ArticleView_OBJC_FILES = \
 	ArticleTextViewPlugin.m \

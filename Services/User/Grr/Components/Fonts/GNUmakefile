@@ -5,7 +5,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 BUNDLE_NAME = Fonts
 BUNDLE_EXTENSION = .grrc
 
-BUNDLE_INSTALL_DIR = $(GNUSTEP_INSTALLATION_DIR)/Library/Grr
+$(BUNDLE_NAME)_STANDARD_INSTALL=no
 
 Fonts_OBJC_FILES = \
 	FontsComponent.m \
