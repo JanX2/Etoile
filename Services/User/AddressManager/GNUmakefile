@@ -29,6 +29,7 @@ AddressManager_LDFLAGS=\
 
 -include GNUmakefile.preamble
 -include GNUmakefile.local
+-include ../../../etoile.make
 include $(GNUSTEP_MAKEFILES)/application.make
 -include GNUmakefile.postamble
 
