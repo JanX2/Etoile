@@ -27,7 +27,6 @@
 	[super init];
 
 	fonts = [[NSArray alloc] init];
-	sampleText = NSLocalizedString(@"PQPangram", nil);
 	defaultSampleText =
 		[NSArray arrayWithObjects:NSLocalizedString(@"PQPangram", nil), nil];
 	sampleTextHistory = [[NSMutableArray alloc] init];
@@ -42,20 +41,19 @@
 		[NSNumber numberWithInt:72], [NSNumber numberWithInt:96],
 		[NSNumber numberWithInt:144], [NSNumber numberWithInt:288], nil];
 
-	size = [NSNumber numberWithInt:24];
-
+/*
 	NSColorPanel *sharedColorPanel = [NSColorPanel sharedColorPanel];
 	[sharedColorPanel setTarget: self];
 	[sharedColorPanel setAction: @selector(changeColor:)];
-
+*/
 	fontsNeedUpdate = YES;
 
 	RETAIN(fonts);
-	RETAIN(sampleText);
+	// REMOVE: RETAIN(sampleText);
 	RETAIN(defaultSampleText);
 	RETAIN(sampleTextHistory);
 	RETAIN(sizes);
-	RETAIN(size);
+	// REMOVE: RETAIN(size);
 
 	return self;
 }
@@ -63,9 +61,9 @@
 - (void) awakeFromNib
 {
 	[sampleView setAutoSize: YES];
-	[sampleView setSampleText: sampleText];
-	[sampleView setFontSize: [size intValue]];
-
+	[sampleView setFontSize: 24];
+	[sampleView setSampleText: NSLocalizedString(@"PQPangram", nil)];
+/*
 	[sampleField setUsesDataSource: YES];
 	[sampleField setDataSource: self];
 	[sampleField setDelegate: self];
@@ -73,18 +71,18 @@
 	[sizeField setUsesDataSource: YES];
 	[sizeField setDataSource: self];
 	[sizeField setDelegate: self];
-
+*/
 	[self updateControls];
 }
 
 - (void) dealloc
 {
 	RELEASE(fonts);
-	RELEASE(sampleText);
+	// REMOVE: RELEASE(sampleText);
 	RELEASE(defaultSampleText);
 	RELEASE(sampleTextHistory);
 	RELEASE(sizes);
-	RELEASE(size);
+	// REMOVE: RELEASE(size);
 
 	[super dealloc];
 }
@@ -100,7 +98,7 @@
 {
 	return fonts;
 }
-
+/*
 - (void) setSize: (NSNumber *)aNumber
 {
 	ASSIGN(size, aNumber);
@@ -122,7 +120,7 @@
 {
 	return sampleText;
 }
-
+*/
 - (void) setSampleTextHistory: (NSArray *)aHistory
 {
 	ASSIGN(sampleTextHistory, aHistory);
@@ -198,12 +196,12 @@
 
 - (void) updateControls
 {
-	[sampleField setStringValue: [self sampleText]];
-	[sizeField setObjectValue: size];
-	[sizeSlider setObjectValue: size];
+	[sampleField setStringValue: [sampleView sampleText]];
+	[sizeField setIntValue: [sampleView fontSize]];
+	[sizeSlider setIntValue: [sampleView fontSize]];
 }
 
-- (void) controlTextDidEndEditing: (NSNotification *)aNotification
+/*- (void) controlTextDidEndEditing: (NSNotification *)aNotification
 {
 	id theObject = [aNotification object];
 
@@ -253,11 +251,11 @@
 
 		[self setSize: [sizes objectAtIndex: index]];
 	}
-}
+}*/
 
 - (void) changeSize: (id)sender
 {
-	[self setSize: [NSNumber numberWithInt: [sender intValue]]];
+	[sampleView setFontSize: [sender intValue]];
 	[self updateControls];
 }
 
@@ -265,6 +263,13 @@
 {
 	[sampleView setForegroundColor: [foregroundColorWell color]];
 	[sampleView setBackgroundColor: [backgroundColorWell color]];
+}
+
+- (void) changeSampleText: (id)sender
+{
+	NSString *newSampleText = [sampleField stringValue];
+	[sampleView setSampleText: newSampleText];
+	[self PQAddSampleTextToHistory: newSampleText];
 }
 
 @end

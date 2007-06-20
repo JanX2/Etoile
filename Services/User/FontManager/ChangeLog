@@ -1,3 +1,7 @@
+2007-06-20  Isaiah Beerbower <ipaqah@tm.net>
+	* PQSampleController.*: Simplified unnecessarily complex code.
+	* English.lproj/MainMenu.nib: Totally redid the nib.
+
 2007-06-19  Isaiah Beerbower <ipaqah@tm.net>
 	* PQController.m: Put parentheses around 'assignment used as truth value'.
 	* PQSampleController.*: Added -changeSize.
