@@ -45,6 +45,9 @@
 - (void) setSampleTextHistory: (NSArray *)aHistory;
 - (NSArray *) sampleTextHistory;
 
+- (void) changeSize: (id)sender;
+- (void) changeColor: (id)sender;
+
 - (void) updateControls;
 
 @end

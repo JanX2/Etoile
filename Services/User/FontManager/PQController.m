@@ -30,7 +30,7 @@
 	NSEnumerator *familyNamesEnum = [fontFamilyNames objectEnumerator];
 	NSString *currentName;
 
-	while (currentName = [familyNamesEnum nextObject])
+	while ((currentName = [familyNamesEnum nextObject]))
 	{
 		NSArray *members = [fontManager availableMembersOfFontFamily: currentName];
 
@@ -38,7 +38,7 @@
 		NSArray *currentMember;
 		NSEnumerator *membersEnum = [members objectEnumerator];
 
-		while (currentMember = [membersEnum nextObject])
+		while ((currentMember = [membersEnum nextObject]))
 		{
 			[newMembers addObject:[currentMember objectAtIndex:0]];
 		}
@@ -196,7 +196,7 @@
 	
 	NSMutableArray *selectedItems = [[NSMutableArray alloc] init];
 	
-	while (currentItem = [itemEnum nextObject])
+	while ((currentItem = [itemEnum nextObject]))
 	{
     if ([selectedRows containsIndex:[fontList rowForItem:currentItem]])
 		{
@@ -207,7 +207,7 @@
 			NSEnumerator *membersEnum = [[currentItem members] objectEnumerator];
 			NSString *currentMember;
 			
-			while (currentMember = [membersEnum nextObject])
+			while ((currentMember = [membersEnum nextObject]))
 			{
 				if ([selectedRows containsIndex:[fontList rowForItem:currentMember]])
 				{

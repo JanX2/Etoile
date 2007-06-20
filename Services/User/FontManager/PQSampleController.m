@@ -66,6 +66,14 @@
 	[sampleView setSampleText: sampleText];
 	[sampleView setFontSize: [size intValue]];
 
+	[sampleField setUsesDataSource: YES];
+	[sampleField setDataSource: self];
+	[sampleField setDelegate: self];
+
+	[sizeField setUsesDataSource: YES];
+	[sizeField setDataSource: self];
+	[sizeField setDelegate: self];
+
 	[self updateControls];
 }
 
@@ -245,6 +253,12 @@
 
 		[self setSize: [sizes objectAtIndex: index]];
 	}
+}
+
+- (void) changeSize: (id)sender
+{
+	[self setSize: [NSNumber numberWithInt: [sender intValue]]];
+	[self updateControls];
 }
 
 - (void) changeColor: (id)sender

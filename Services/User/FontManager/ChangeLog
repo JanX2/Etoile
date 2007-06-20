@@ -1,3 +1,10 @@
+2007-06-19  Isaiah Beerbower <ipaqah@tm.net>
+	* PQController.m: Put parentheses around 'assignment used as truth value'.
+	* PQSampleController.*: Added -changeSize.
+	* English.lproj/MainMenu.nib: Added connection between size slider and sample
+	  controller's -changeSize.
+	* README: A README.
+
 2007-06-17  Isaiah Beerbower <ipaqah@tm.net>
 	* PQFontSampleView.m: Handles changing colors.
 	* PQSampleController.m: Handles changing colors.

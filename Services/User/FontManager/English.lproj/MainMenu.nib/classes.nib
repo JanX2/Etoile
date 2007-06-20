@@ -20,6 +20,7 @@
             SUPERCLASS = NSView; 
         }, 
         {
+            ACTIONS = {changeSize = id; }; 
             CLASS = PQSampleController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
