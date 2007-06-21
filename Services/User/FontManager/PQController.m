@@ -61,11 +61,11 @@
 
 
 	/* Values that should be set in MainMenu.gorm, but aren't */
-	NSTableColumn * fontListColumn = [[[fontList tableColumns] 
-objectAtIndex: 0] headerCell];
-	[fontListColumn setTitle: @"Fonts"];
+	NSTableColumn * fontListColumn = [[fontList tableColumns] objectAtIndex: 0];
+	[[fontListColumn headerCell] setTitle: @"Fonts"];
 	[fontListColumn setEditable: NO];
-	[[[[groupList tableColumns] objectAtIndex: 0] headerCell] setTitle: @"Groups"];
+	[[[[groupList tableColumns] objectAtIndex: 0] headerCell]
+		setTitle: @"Groups"];
 
 	[fontList sizeLastColumnToFit];
 	[groupList sizeLastColumnToFit];
@@ -113,27 +113,20 @@ objectAtIndex: 0] headerCell];
 	}
 	else if ([item isKindOfClass:[NSString class]])
 	{
-		NSMutableString *styleName = [[NSMutableString alloc] init];
-		
-		[styleName setString: [[NSFont fontWithName: item size: 0.0] displayName]];
-		
-		NSRange familyName = [styleName
-			rangeOfString: [[NSFont fontWithName: item size: 0.0] familyName]];
+		NSString *familyName = [[NSFont fontWithName: item size: 0.0] familyName];
+		NSArray *familyMembersInfo =
+			[[NSFontManager sharedFontManager] availableMembersOfFontFamily: familyName];
 
-		if (familyName.location != NSNotFound)
+		NSEnumerator *membersEnum = [familyMembersInfo objectEnumerator];
+		NSArray *currentMember;
+
+		while ((currentMember = [membersEnum nextObject]))
 		{
-			[styleName deleteCharactersInRange:familyName];
-
-			[styleName setString: [styleName stringByTrimmingCharactersInSet:
-				[NSCharacterSet whitespaceCharacterSet]]];
+			if ([[currentMember objectAtIndex: 0] isEqualToString: item])
+			{
+				return [currentMember objectAtIndex: 1];
+			}
 		}
-
-		if ([styleName isEqualToString:@""])
-		{
-			return @"Regular";
-		}
-		/* else */
-		return styleName;
 	}
 	
 	/* Else: something is wrong */

@@ -1,4 +1,8 @@
-2007-06-20  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-21  Isaiah Beerbower <ipaqah@tm.net>
+	* PQSampleController.*: Removed some commented out code.
+	* PQController.m: Better method for finding style name.
+
+2007-06-21  Isaiah Beerbower <ipaqah@tm.net>
 	* English.lproj/MainMenu.gorm: Totally redid the gorm file.
 	* *.m: Various small additions.
 

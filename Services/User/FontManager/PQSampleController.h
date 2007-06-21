@@ -28,11 +28,9 @@
 	NSColorWell *backgroundColorWell;
 
 	NSArray *fonts;
-	// REMOVE: NSString *sampleText;
 	NSArray *defaultSampleText;
 	NSMutableArray *sampleTextHistory;
 
-	// REMOVE: NSNumber *size;
 	NSArray *sizes;
 
 	BOOL fontsNeedUpdate;
@@ -40,10 +38,6 @@
 
 - (void) setFonts: (NSArray *)someFonts;
 - (NSArray *) fonts;
-/*
-- (void) setSampleText: (NSString *)someText;
-- (NSString *) sampleText;
-*/
 - (void) setSampleTextHistory: (NSArray *)aHistory;
 - (NSArray *) sampleTextHistory;
 

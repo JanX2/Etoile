@@ -41,19 +41,12 @@
 		[NSNumber numberWithInt:72], [NSNumber numberWithInt:96],
 		[NSNumber numberWithInt:144], [NSNumber numberWithInt:288], nil];
 
-/*
-	NSColorPanel *sharedColorPanel = [NSColorPanel sharedColorPanel];
-	[sharedColorPanel setTarget: self];
-	[sharedColorPanel setAction: @selector(changeColor:)];
-*/
 	fontsNeedUpdate = YES;
 
 	RETAIN(fonts);
-	// REMOVE: RETAIN(sampleText);
 	RETAIN(defaultSampleText);
 	RETAIN(sampleTextHistory);
 	RETAIN(sizes);
-	// REMOVE: RETAIN(size);
 
 	return self;
 }
@@ -76,11 +69,9 @@
 - (void) dealloc
 {
 	RELEASE(fonts);
-	// REMOVE: RELEASE(sampleText);
 	RELEASE(defaultSampleText);
 	RELEASE(sampleTextHistory);
 	RELEASE(sizes);
-	// REMOVE: RELEASE(size);
 
 	[super dealloc];
 }
@@ -96,33 +87,10 @@
 {
 	return fonts;
 }
-/*
-- (void) setSize: (NSNumber *)aNumber
-{
-	ASSIGN(size, aNumber);
-	[sampleView setFontSize: [size intValue]];
-}
 
-- (NSNumber *) size
-{
-	return size;
-}
-
-- (void) setSampleText: (NSString *)someText
-{
-	ASSIGN(sampleText, someText);
-	[sampleView setSampleText: sampleText];
-}
-
-- (NSString *) sampleText
-{
-	return sampleText;
-}
-*/
 - (void) setSampleTextHistory: (NSArray *)aHistory
 {
 	ASSIGN(sampleTextHistory, aHistory);
-	// REMOVE: [self updateFonts];
 }
 
 - (NSArray *) sampleTextHistory
@@ -198,58 +166,6 @@
 	[sizeField setIntValue: [sampleView fontSize]];
 	[sizeSlider setIntValue: [sampleView fontSize]];
 }
-
-/*- (void) controlTextDidEndEditing: (NSNotification *)aNotification
-{
-	id theObject = [aNotification object];
-
-	if (theObject == sampleField)
-	{
-		NSString *newSampleText = [sampleField stringValue];
-
-		[self setSampleText: newSampleText];
-
-		[self PQAddSampleTextToHistory: newSampleText];
-	}
-	else if (theObject == sizeField)
-	{
-		[self setSize: [sizeField objectValue]];
-	}
-}
-
-- (void) comboBoxWillDismiss: (NSNotification *)notification
-{
-	id theObject = [notification object];
-
-	if (theObject == sampleField)
-	{
-		int index = [sampleField indexOfSelectedItem];
-		
-		if (index == -1)
-		{
-			return;
-		}
-
-		NSString *newSampleText =
-			[[defaultSampleText arrayByAddingObjectsFromArray: sampleTextHistory]
-			objectAtIndex: index];
-			
-		[self setSampleText: newSampleText];
-
-		[self PQAddSampleTextToHistory: newSampleText];
-	}
-	else if (theObject == sizeField)
-	{
-		int index = [sizeField indexOfSelectedItem];
-
-		if (index == -1)
-		{
-			return;
-		}
-
-		[self setSize: [sizes objectAtIndex: index]];
-	}
-}*/
 
 - (void) changeSize: (id)sender
 {
