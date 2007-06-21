@@ -63,15 +63,13 @@
 	[sampleView setAutoSize: YES];
 	[sampleView setFontSize: 24];
 	[sampleView setSampleText: NSLocalizedString(@"PQPangram", nil)];
-/*
+
+	/* Couldn't set "Uses data source" in gorm */
 	[sampleField setUsesDataSource: YES];
 	[sampleField setDataSource: self];
-	[sampleField setDelegate: self];
-
 	[sizeField setUsesDataSource: YES];
 	[sizeField setDataSource: self];
-	[sizeField setDelegate: self];
-*/
+
 	[self updateControls];
 }
 

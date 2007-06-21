@@ -1,4 +1,8 @@
 2007-06-20  Isaiah Beerbower <ipaqah@tm.net>
+	* English.lproj/MainMenu.gorm: Totally redid the gorm file.
+	* *.m: Various small additions.
+
+2007-06-20  Isaiah Beerbower <ipaqah@tm.net>
 	* PQSampleController.*: Simplified unnecessarily complex code.
 	* English.lproj/MainMenu.nib: Totally redid the nib.
 

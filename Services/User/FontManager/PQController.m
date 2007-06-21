@@ -58,7 +58,19 @@
 - (void) awakeFromNib
 {
 	[self updateSample];
-	
+
+
+	/* Values that should be set in MainMenu.gorm, but aren't */
+	NSTableColumn * fontListColumn = [[[fontList tableColumns] 
+objectAtIndex: 0] headerCell];
+	[fontListColumn setTitle: @"Fonts"];
+	[fontListColumn setEditable: NO];
+	[[[[groupList tableColumns] objectAtIndex: 0] headerCell] setTitle: @"Groups"];
+
+	[fontList sizeLastColumnToFit];
+	[groupList sizeLastColumnToFit];
+
+
 	int fontsCount = [fontFamilies count];
 
 	if (fontsCount < 2)

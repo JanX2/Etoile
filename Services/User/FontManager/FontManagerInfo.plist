@@ -1,0 +1,9 @@
+{
+	ApplicationDescription = "A Font Previewer/Installer";
+	ApplicationName = "Font Manager";
+	ApplicationRelease = "Font Manager 0.1";
+	Authors = ("Isaiah Beerbower <ipaqah@tm.net>");
+	Copyright = "Copyright 2007 Isaiah Beerbower";
+	CopyrightDescription = "Released under the Modified BSD licence";
+	NSRole = "Viewer";
+}
