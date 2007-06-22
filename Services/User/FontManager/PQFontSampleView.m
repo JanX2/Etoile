@@ -196,6 +196,7 @@
 
 		/* Font sample components */
 		NSString *currentFontName;
+		NSString *displayName;
 		NSFont *currentFont;
 		NSString *currentLabel;
 		NSMutableDictionary *currentAttributes = [[NSMutableDictionary alloc] init];
@@ -219,15 +220,51 @@
 			[currentAttributes setValue: [NSFont labelFontOfSize: 0]
 													 forKey: NSFontAttributeName];
 
+			displayName = nil; /* So we know if we've found it yet. */
+
+#ifdef GNUSTEP
+			/* GNUsteps -displayName returns the post script name instead of a human
+			   friendly name, so we get our own here. */
+
+			NSString *familyName = [currentFont familyName];
+			NSArray *familyMembersInfo = [[NSFontManager sharedFontManager]
+				availableMembersOfFontFamily: familyName];
+
+			NSEnumerator *membersEnum = [familyMembersInfo objectEnumerator];
+			NSArray *currentMember;
+
+			while ((currentMember = [membersEnum nextObject]))
+			{
+				if ([[currentMember objectAtIndex: 0] isEqualToString: currentFontName])
+				{
+					displayName = [NSString stringWithFormat: @"%@ %@",
+					                                          familyName,
+																							[currentMember objectAtIndex: 1]];
+				}
+			}
+
+			if (displayName == nil) /* We haven't found it yet. */
+			{
+				displayName = familyName;
+			}
+
+#else
+			/* If were not using GNUstep, it's probably safe to assume that
+			   -displayName returns what we want */
+
+			displayName = [currentFont displayName];
+
+#endif
+
 			if (index == 0)
 			{
 				currentLabel =
-					[NSString stringWithFormat: @"%@:\n", [currentFont displayName]];
+					[NSString stringWithFormat: @"%@:\n", displayName];
 			}
 			else
 			{
 				currentLabel =
-					[NSString stringWithFormat: @"\n\n%@:\n", [currentFont displayName]];
+					[NSString stringWithFormat: @"\n\n%@:\n", displayName];
 			}
 
 			[textStorage appendAttributedString:
@@ -251,6 +288,12 @@
 
 		[self setConstrainedFrameSize:
 			[layoutManager usedRectForTextContainer: textContainer].size];
+
+		/* Fix a drawing bug caused by resize. */
+
+		rect = [self visibleRect];
+
+		[self lockFocus];
 	}
 
 	/* Add color */
@@ -267,6 +310,11 @@
 
 	[layoutManager drawGlyphsForGlyphRange: rangeNeedsDrawing
 																 atPoint: NSMakePoint(0, 0)];
+
+	if (autoSize == YES)
+	{
+		[self unlockFocus];
+	}
 }
 
 @end
