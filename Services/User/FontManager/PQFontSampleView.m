@@ -187,6 +187,9 @@
 
 - (void) drawRect: (NSRect)rect
 {
+	BOOL shouldUnlockFocus = NO;
+
+
 	/* Create font sample */
 	if ([dataSource fontsShouldChangeInFontSampleView: self] == YES
 			|| fontAttributesNeedUpdate == YES)
@@ -280,20 +283,22 @@
 
 			++index;
 		}
-	}
 
-	if (autoSize == YES)
-	{
-		(void) [layoutManager glyphRangeForTextContainer: textContainer];
+		if (autoSize == YES)
+		{
+			(void) [layoutManager glyphRangeForTextContainer: textContainer];
 
-		[self setConstrainedFrameSize:
-			[layoutManager usedRectForTextContainer: textContainer].size];
+			[self setConstrainedFrameSize:
+				[layoutManager usedRectForTextContainer: textContainer].size];
 
-		/* Fix a drawing bug caused by resize. */
+			/* Fix a drawing bug caused by resize. */
 
-		rect = [self visibleRect];
+			rect = [self visibleRect];
 
-		[self lockFocus];
+			[self lockFocus];
+
+			shouldUnlockFocus = YES;
+		}
 	}
 
 	/* Add color */
@@ -311,7 +316,7 @@
 	[layoutManager drawGlyphsForGlyphRange: rangeNeedsDrawing
 																 atPoint: NSMakePoint(0, 0)];
 
-	if (autoSize == YES)
+	if (shouldUnlockFocus == YES)
 	{
 		[self unlockFocus];
 	}

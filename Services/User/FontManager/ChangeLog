@@ -1,4 +1,7 @@
 2007-06-22  Isaiah Beerbower <ipaqah@tm.net>
+	* PQFontSampleView.m ([-drawRect:]): Moved some code for performance reasons.
+
+2007-06-22  Isaiah Beerbower <ipaqah@tm.net>
 	* PQFontSampleView.m ([-drawRect:]): Worked around problem with GNUstep's
 		[-displayName].
 	* PQFontSampleView.m ([-drawRect:]): Fix a drawing bug caused by auto resize.
