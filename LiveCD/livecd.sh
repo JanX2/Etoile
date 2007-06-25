@@ -75,7 +75,7 @@ cd build
 # Install Etoile and GNUstep dependencies
 
 # NOTE: Not including openssl, this means no SSL support built by GNUstep
-apt-get -y install gobjc-4.1 openssl libxml2-dev libxslt1-dev libffi4-dev libjpeg62-dev libtiff4-dev libpng12-dev libungif4-dev libfreetype6-dev libx11-dev libart-2.0-dev libxft-dev libxmu-dev libdbus-1-dev libstartup-notification0-dev g++ libpoppler-dev
+apt-get -y install gobjc-4.1 openssl libxml2-dev libxslt1-dev libffi4-dev libjpeg62-dev libtiff4-dev libpng12-dev libungif4-dev libfreetype6-dev libx11-dev libart-2.0-dev libxft-dev libxmu-dev libxss-dev xscreensaver libdbus-1-dev libstartup-notification0-dev g++ libpoppler-dev
 
 # Install Subversion to be able to check both GNUstep and Etoile stable versions
 
@@ -102,12 +102,20 @@ cd gnustep-back
 ./configure && make && make install
 cd ..
 
+# Download latest StepTalk release over FTP, uncompress and build it
+
+wget ftp://ftp.gnustep.org/pub/gnustep/libs/StepTalk-0.10.0.tar.gz
+tar -xzf StepTalk-0.10.0.tar.gz
+cd StepTalk
+make && make install
+cd ..
+
 # Download latest Gorm release over FTP, uncompress and build it
 
-wget ftp://ftp.gnustep.org/pub/gnustep/dev-apps/gorm-1.2.0.tar.gz
-tar -xzf gorm-1.2.0.tar.gz
+wget ftp://ftp.gnustep.org/pub/gnustep/dev-apps/gorm-1.2.1.tar.gz
+tar -xzf gorm-1.2.1.tar.gz
 
-cd gorm-1.2.0
+cd gorm-1.2.1
 make && make install
 cd ..
 
@@ -121,6 +129,12 @@ cd Dependencies/oniguruma5
 cd ../..
 cd Etoile
 make && make install
+
+# Workaround install bug (probably related to gnustep-make)
+# FIXME: Remove this hack.
+
+ln -s /Library/StepTalk /Local/Library/StepTalk
+#ln -s /Library/Grr /Local/Library/Grr
 
 # Add a new user named 'etoile' and set up Etoile environment
 # NOTE: This is the only part where user interaction is necessary
@@ -180,6 +194,38 @@ apt-get -y uninstall subversion
 exit
 
 # Try to clean up as much GNOME stuff as possible
+
+# NOTE: 'dpkg -l' reports them but 'apt-get remove' cannot find them
+# app-install-data* before-light
+
+# FIXME: compiz* removes too many stuff like objc compiler
+# fstobdf
+# ^gconf* removes gdm
+# ^gij* matches way too many things
+# ^gnome* removes gdm
+# ^languages-pack-gnome-*
+# ^libdb4*
+# ^libgcj*
+# ^libgconf* ^libgda*
+# ^libgdbm* ^libgdi* 
+# ^libmagick*
+# ^libnewt*
+# ^liborbit* removes gconf
+# ^libpango* removes gdm
+# ^libpq* ^libpt* 
+# ^libsasl* removes gconf and gdm
+# ^libselinux* ^libpi* libtext-charwidth-perl libtext-wrapi18n-perl ^libxaw* removes xorg
+# ^libslab* ^libslang* ^libslp* creates conflicts with ubiquity and/or font-config
+# ^python* removes gdm and gconf and probably too many things
+# gksu ^libgksu* ^libcroco* ^libglade*  ^libgnome* ^libgtop* removes gdm
+#^libbrlapi* ^libatk1*
+#^gtk2* ^libgtk*
+
+apt-get remove alacarte apport-gtk at-spi ^brltty* bug-buddy capplets-data cli-common contact-lookup-applet deskbar-applet desktop-effects diveintopython docbook-xml ekiga eog evince ^evolution* f-spot file-roller ^gaim* gcalctool gcc-3.3-base ^gedit* gimp gparted gstreamer0.10-gnomevfs ^gtkhtml* ^guile* hwdb-client-gnome ^language-pack-* libapr1 ^libatspi* ^libaudio* ^libaudiofile* ^libbeagle* ^libbonobo* ^libcamel* ^libdjvulibre* ^libebook* ^libecal* ^libedata* ^libeel* ^libegroupwise* ^libexchange-storage* ^libgadu* ^libgail* ^libgamin* ^libgimp*  libglib-perl libglib2.0-cil libgmime2.2-cil  ^libgucharmap* ^libguile* libhsqldb-java ^libhtml* ^libjaxp* libjline-java ^liblaunchpad-integration* ^liblircclient* ^liblpint-bonobo* ^libmetacity* ^libmono* ^libnautilus* libnet-dbus-perl ^libnm-glib* ^libnspr* ^libopal*  ^libparted* ^libperl*  libpoppler1-glib ^libqthreads*  ^libscrollkeeper* ^libsdl* libservlet2.3-java ^libsexy* ^libsigc++* ^libsoup* ^libtotem-plparser* ^libuniconf* liburi-perl libvisual* ^libvte* ^libwmf* ^libwnck* ^libwpd8c2a ^libwps* ^libwvstreams* libwww-perl libxalan2-java  libxerces2-java libxml-parser-perl libxml-twig-perl ^libxplc* ^metacity* ^mono-* mscompress ^nautilus* ^network-manager* ^openoffice.org* rdesktop rhythmbox scim-gtk2-immodule scrollkeeper serpentine software-properties-gtk sound-juicer ssh-askpass-gnome thunderbird-locale-en-gb tomboy totem tsclient ^update-manager* update-notifier vino w3m yelp
+
+apt-get check
+
+#ubiquity
 
 # --build
 
