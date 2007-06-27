@@ -1,3 +1,7 @@
+2007-06-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	* setup.sh: Implemented automatic Etoile default font installation.
+
 2007-06-13  Quentin Mathe <qmathe@club-internet.fr>
 
 	Most frameworks and private services will now be installed in System
