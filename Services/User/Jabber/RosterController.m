@@ -323,6 +323,13 @@ NSMutableArray * rosterControllers = nil;
 	{
 		windowFrameDimensions.size.height = [[[self window] screen] visibleFrame].size.height;
 	}
+#ifdef GNUSTEP
+	//GNUstep doesn't respect minimum window size for some reason
+	if(windowFrameDimensions.size.width < 137)
+	{
+		windowFrameDimensions.size.width = 137;
+	}
+#endif
 	return windowFrameDimensions;
 }
 
