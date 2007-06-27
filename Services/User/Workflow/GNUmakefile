@@ -16,4 +16,4 @@ SUBPROJECTS = \
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 
-include ../../../etoile.make
+-include ../../../etoile.make

@@ -21,4 +21,4 @@ ADDITIONAL_LIB_DIRS += \
 ADDITIONAL_GUI_LIBS += 
 
 include $(GNUSTEP_MAKEFILES)/application.make
-include ../../../etoile.make
+-include ../../../etoile.make

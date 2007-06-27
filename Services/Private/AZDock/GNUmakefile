@@ -40,5 +40,5 @@ ifeq ($(etoile), yes)
 endif
 
 include $(GNUSTEP_MAKEFILES)/application.make
-include ../../../etoile.make
+-include ../../../etoile.make
 

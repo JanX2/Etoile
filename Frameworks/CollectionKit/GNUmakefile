@@ -27,7 +27,7 @@ CollectionKit_HEADER_FILES = \
 -include GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
-include ../../etoile.make
+-include ../../etoile.make
 
 ifeq ($(test), yes)
 include $(GNUSTEP_MAKEFILES)/bundle.make

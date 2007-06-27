@@ -32,4 +32,4 @@ FontManager_MAIN_MODEL_FILE = MainMenu.gorm
 include $(GNUSTEP_MAKEFILES)/application.make
 
 
-include ../../../etoile.make
+-include ../../../etoile.make

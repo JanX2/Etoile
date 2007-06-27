@@ -62,7 +62,7 @@ endif
 -include GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
-include ../../etoile.make
+-include ../../etoile.make
 include $(GNUSTEP_MAKEFILES)/framework.make
 
 -include GNUmakefile.postamble

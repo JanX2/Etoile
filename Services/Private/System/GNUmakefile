@@ -50,6 +50,6 @@ $(TOOL_NAME)_C_FILES =
 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/aggregate.make
-include ../../../etoile.make
+-include ../../../etoile.make
 include $(GNUSTEP_MAKEFILES)/tool.make
 -include GNUmakefile.postamble

@@ -28,6 +28,6 @@ include $(GNUSTEP_MAKEFILES)/framework.make
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
-include ../../etoile.make
+-include ../../etoile.make
 -include GNUmakefile.postamble
 

@@ -22,4 +22,4 @@ Login_LOCALIZED_RESOURCE_FILES = login.gorm
 Login_MAIN_MODEL_FILE = login.gorm
 
 include $(GNUSTEP_MAKEFILES)/application.make
-include ../../../etoile.make
+-include ../../../etoile.make
