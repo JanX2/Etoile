@@ -258,9 +258,11 @@ NSMutableArray * rosterControllers = nil;
 					  object:nil];	
 	return self;
 }
-- (void) updateIdentities:(NSNotification*)_notification
+- (void) updateIdentities:(NSNotification*)aNotification
 {
-	[self update:[_notification object]];
+	//TODO: It might be possible to optimise this,
+	//but the overhead of testing might be self-defeating
+	[self update:nil];
 }
 
 - (void) updatePresence:(NSNotification*)_notification
