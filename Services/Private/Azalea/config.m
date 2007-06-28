@@ -377,7 +377,7 @@ void config_startup(AZParser *parser)
 	if ([defaults objectForKey: @"DesktopNames"])
 		ASSIGN(config_desktops_names, [defaults arrayForKey: @"DesktopNames"]);
 
-    config_resize_redraw = YES;
+    config_resize_redraw = NO;
     config_resize_four_corners = NO;
     config_resize_popup_show = 1; /* nonpixel increments */
     config_resize_popup_pos = 0;  /* center of client */
