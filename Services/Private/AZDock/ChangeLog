@@ -4,6 +4,10 @@
 	Set focus to target GNUstep xwindow which fix #9047.
 	* AZDock:
 	Add "AZSwitch", "Corner" and "Idle" into blacklist.
+	* AZGNUstepApp.m:
+	* AZXWindowApp.m:
+	* AZDockletApp.m:
+	Add tooltip.
 
 2007-06-13  Quentin Mathe <qmathe@club-internet.fr>
 

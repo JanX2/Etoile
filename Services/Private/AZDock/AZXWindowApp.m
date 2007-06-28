@@ -160,34 +160,37 @@
        instance: (NSString *) instance class: (NSString *) class;
 
 {
-  self = [self init];
+	self = [self init];
 
-  /* use default icon */
-  ASSIGN(icon, [NSImage imageNamed: @"Unknown.tiff"]);
-  ASSIGN(command, cmd);
-  ASSIGN(wm_instance, instance);
-  ASSIGN(wm_class, class);
-  [[view menu] setTitle: wm_instance];
+	/* use default icon */
+	ASSIGN(icon, [NSImage imageNamed: @"Unknown.tiff"]);
+	ASSIGN(command, cmd);
+	ASSIGN(wm_instance, instance);
+	ASSIGN(wm_class, class);
+	[[view menu] setTitle: wm_instance];
+	[view setToolTip: wm_instance];
 
-  return self;
+	return self;
 }
 
 - (id) initWithXWindow: (Window) w
 {
-  self = [self init];
-  [xwindows addObject: [NSNumber numberWithUnsignedLong: w]];
+	self = [self init];
+	[xwindows addObject: [NSNumber numberWithUnsignedLong: w]];
 
-  /* Get class and instance */
-  if (XWindowClassHint(w, &wm_class, &wm_instance)) {
-    RETAIN(wm_class);
-    RETAIN(wm_instance);
-  } 
+	/* Get class and instance */
+	if (XWindowClassHint(w, &wm_class, &wm_instance)) 
+	{
+		RETAIN(wm_class);
+		RETAIN(wm_instance);
+	} 
 
-  [self updateIcon: w];
-  [self updateCommand: w];
-  [[view menu] setTitle: wm_instance];
+	[self updateIcon: w];
+	[self updateCommand: w];
+	[[view menu] setTitle: wm_instance];
+	[view setToolTip: wm_instance];
 
-  return self;
+	return self;
 }
 
 - (BOOL) acceptXWindow: (Window) win
