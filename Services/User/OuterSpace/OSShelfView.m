@@ -11,7 +11,7 @@
   OSShelfCell *cell = [[OSShelfCell alloc] initTextCell: @""];
   [cell setObject: object];
   [cell setBordered: NO];
-//  [cell setImagePosition: NSImageAbove];
+  [cell setImagePosition: NSImageAbove];
   return AUTORELEASE(cell);
 }
 

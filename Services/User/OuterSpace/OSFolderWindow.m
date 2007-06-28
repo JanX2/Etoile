@@ -6,7 +6,7 @@
 #import "OSTrashCan.h"
 #import <InspectorKit/InspectorKit.h>
 
-#define SHELF_HEIGHT 60
+#define SHELF_HEIGHT 80
 #define PATH_HEIGHT 20
 #define BOTTOM_BAR_HEIGHT 15
 #define SPACE 3
