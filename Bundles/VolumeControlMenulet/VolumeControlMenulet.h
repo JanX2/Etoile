@@ -4,11 +4,11 @@
 
 @interface VolumeControlMenulet : NSObject <EtoileMenulet>
 {
-  NSButton *view;
-  NSTimer *timer;
-  NSWindow *volumeControlWindow;
-  NSSlider *slider;
-  SCSound *sound;
+	NSButton *view;
+	NSTimer *timer;
+	NSWindow *volumeControlWindow;
+	NSSlider *slider;
+	SCSound *sound;
 }
 
 - (NSView *) menuletView;
