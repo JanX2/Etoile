@@ -23,13 +23,11 @@ AddressManager_LOCALIZED_RESOURCE_FILES=\
 AddressManager_LANGUAGES=Dutch English French German Spanish
 #AddressManager_OBJCFLAGS=-I../Frameworks -Wall
 AddressManager_LDFLAGS=\
-	-L$(GNUSTEP_LOCAL_ROOT)/AddressView.framework/Versions/A \
-	-L$(GNUSTEP_LOCAL_ROOT)/Addresses.framework/Versions/A     \
 	-lAddressView -lAddresses
 
 -include GNUmakefile.preamble
 -include GNUmakefile.local
--include ../../../etoile.make
 include $(GNUSTEP_MAKEFILES)/application.make
+-include ../../../etoile.make
 -include GNUmakefile.postamble
 
