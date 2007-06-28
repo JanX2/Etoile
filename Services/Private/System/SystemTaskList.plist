@@ -74,6 +74,39 @@
 		OnStart = <*BY>;
 		OnDemand = <*BN>;
 		Persistent = <*BN>;
-		Hidden = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/application/switch =
+	{
+		LaunchPath = "AZSwitch";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 40;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/tool/idle =
+	{
+		LaunchPath = "Idle";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 40;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
+	/etoilesystem/application/corner =
+	{
+		LaunchPath = "Corner";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 40;
+		OnStart = <*BY>;
+		OnDemand = <*BN>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
 	};
 }

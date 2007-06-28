@@ -1,3 +1,7 @@
+2007-06-28  Quentin Mathe <qmathe@club-internet.fr>
+
+	* SystemTaskList.plist: Added AZSwitch, Corner and Idle. Made OuterSpace hidden.
+
 2007-05-26  Quentin Mathe <qmathe@club-internet.fr>
 
 	Fixed buggy task management which occurs when an invalid launch path is
