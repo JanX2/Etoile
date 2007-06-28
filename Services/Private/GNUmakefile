@@ -20,7 +20,10 @@ ifeq ($(etoile-extensions), yes)
 
     export azalea ?= yes
     export background ?= yes
+    export corner ?= yes
     export dock ?= yes
+    export idle ?= yes
+    export switch ?= yes
 
     # Was servicesbar
     export menuserver ?= yes
@@ -52,6 +55,18 @@ endif
 
 ifeq ($(dock), yes)
     SUBPROJECTS += AZDock
+endif
+
+ifeq ($(switch),yes)
+    SUBPROJECTS += AZSwitch
+endif
+
+ifeq ($(corner),yes)
+    SUBPROJECTS += Corner
+endif
+
+ifeq ($(idle),yes)
+    SUBPROJECTS += Idle
 endif
 
 ifeq ($(menuserver),yes)
