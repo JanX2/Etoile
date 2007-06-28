@@ -1,3 +1,10 @@
+2007-04-30 Yen-Ju Chen <yjchenx at gmail>
+
+	* AZGNUstepApp (-showAction:):
+	Set focus to target GNUstep xwindow which fix #9047.
+	* AZDock:
+	Add "AZSwitch", "Corner" and "Idle" into blacklist.
+
 2007-06-13  Quentin Mathe <qmathe@club-internet.fr>
 
 	* AZGNUstep.app (-initWithApplicationName:): Modified to use IconKit by default.

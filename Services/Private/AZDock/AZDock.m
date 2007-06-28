@@ -691,6 +691,9 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
   [blacklist addObject: @"AZBackground"];
   [blacklist addObject: @"etoile_system"];
   [blacklist addObject: @"TrashCan"];
+  [blacklist addObject: @"AZSwitch"];
+  [blacklist addObject: @"Corner"];
+  [blacklist addObject: @"Idle"];
 
   /* Listen event */
   NSRunLoop     *loop = [NSRunLoop currentRunLoop];

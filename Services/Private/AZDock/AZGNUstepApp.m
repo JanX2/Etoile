@@ -16,29 +16,54 @@
 /* Action from AZDockView */
 - (void) showAction: (id) sender
 {
-  if ([self state] == AZDockAppLaunching) {
-    /* Do nothing during launching */
-    return;
-  } else if ([self state] == AZDockAppRunning) {
-    int currentDesktop = [[NSScreen mainScreen] currentWorkspace];
-    int desk = XWindowDesktopOfWindow([[xwindows lastObject] unsignedLongValue]);
-    if ((desk > -1) && (desk != 0xFFFFFFFF) && (currentDesktop != desk))
-    {
-      [[NSScreen mainScreen] setCurrentWorkspace: desk];
-    }
-  }
+	if ([self state] == AZDockAppLaunching) 
+	{
+		/* Do nothing during launching */
+		return;
+	}
+	else if ([self state] == AZDockAppRunning) 
+	{
+		int currentDesktop = [[NSScreen mainScreen] currentWorkspace];
+		int desk = XWindowDesktopOfWindow([[xwindows lastObject] unsignedLongValue]);
+		if ((desk > -1) && (desk != 0xFFFFFFFF) && (currentDesktop != desk))
+		{
+			[[NSScreen mainScreen] setCurrentWorkspace: desk];
+		}
+	}
 
-  NSString *path = [self command];
-  BOOL success = [[NSWorkspace sharedWorkspace] launchApplication: path];
-  if (path && (success == NO)) 
-  {
-    /* Try regular execute */
-    [NSTask launchedTaskWithLaunchPath: path arguments: nil];
-  }
-  if ([self state] == AZDockAppNotRunning) 
-  {
-    [self setState: AZDockAppLaunching];
-  }
+#if 1 // This seems to fix focus issue for GNUstep application
+	if ([xwindows count])
+	{
+		Display *dpy = (Display *)[GSCurrentServer() serverDevice];
+		Window w = [[xwindows lastObject] unsignedLongValue];
+		unsigned long s = XWindowState(w);
+		if (s == -1) 
+		{
+		}
+		else if (s == IconicState) 
+		{
+			/* Iconified */
+			XMapWindow(dpy, w);
+		}
+		else 
+		{
+//			XWindowSetActiveWindow(w, None);
+			XSetInputFocus(dpy, w, RevertToPointerRoot, CurrentTime);
+		}
+//		return;
+	}
+#endif
+	NSString *path = [self command];
+	BOOL success = [[NSWorkspace sharedWorkspace] launchApplication: path];
+	if (path && (success == NO)) 
+	{
+		/* Try regular execute */
+		[NSTask launchedTaskWithLaunchPath: path arguments: nil];
+	}
+	if ([self state] == AZDockAppNotRunning) 
+	{
+		[self setState: AZDockAppLaunching];
+	}
 }
 
 - (void) newAction: (id) sender
