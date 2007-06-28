@@ -1,5 +1,10 @@
 06-28-2007 Quentin Mathe <qmathe@club-internet.fr>
 
+	* OSApplications.m: Modified to filter out all System applications except
+    user related ones like Gorm.
+
+06-28-2007 Quentin Mathe <qmathe@club-internet.fr>
+
 	* OSApplications.m: Modified to display more friendly name 'Applications' 
 	use default application icon.
 	* OSNode.m: Modified to display home icon for user home directory.
