@@ -1,3 +1,10 @@
+2007-06-28  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Services/Private/GNUmakefile: Included Corner, Idle and AZSwitch in the
+	build process by default.
+	* Services/User/GNUmakefile: Included AddressManager, Grr, Jabber (chat 
+	client and Jabber framework) and TermX in build process by default.
+
 2007-06-27  Quentin Mathe <qmathe@club-internet.fr>
 
 	* setup.sh: Implemented automatic Etoile default font installation.
