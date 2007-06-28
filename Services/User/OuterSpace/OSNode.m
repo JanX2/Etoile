@@ -61,8 +61,14 @@
 - (NSImage *) icon
 {
   NSImage *image = nil;
-  if (path)
+  if ([path isEqual: NSHomeDirectory()])
+  {
+    image = [[IKIcon iconWithIdentifier: @"user-home"] image];
+  }
+  else
+  {
     image = [[IKIcon iconForFile: path] image];
+  }
   if (image == nil)
   {
     if ([self hasChildren] == YES)

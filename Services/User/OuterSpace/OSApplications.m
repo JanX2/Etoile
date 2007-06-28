@@ -1,8 +1,9 @@
 #import "OSApplications.h"
 #import "OSObjectFactory.h"
 #import "OSBundleNode.h"
+#import <IconKit/IconKit.h>
 
-static NSString *identifier = @"/VIRTUAL_OBJECT/Applications";
+static NSString *identifier = @"Applications"; //@"/VIRTUAL_OBJECT/Applications"
 static NSArray *prefix;
 
 @implementation OSApplications
@@ -65,7 +66,12 @@ static NSArray *prefix;
 
 - (NSImage *) icon
 {
-  return [NSImage imageNamed: @"common_UnknownApplication"];
+  return [[IKIcon iconWithIdentifier: @"application-x-executable"] image];
+}
+
+- (NSString *) name
+{
+  return @"Applications";
 }
 
 - (NSImage *) preview
