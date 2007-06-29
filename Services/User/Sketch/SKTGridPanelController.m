@@ -6,6 +6,7 @@
 #import "SKTGridView.h"
 #import "SKTGraphicView.h"
 #import "SKTDrawWindowController.h"
+#import <math.h>
 
 @implementation SKTGridPanelController
 

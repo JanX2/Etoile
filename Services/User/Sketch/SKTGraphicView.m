@@ -10,6 +10,7 @@
 #import "SKTToolPaletteController.h"
 #import "SKTImage.h"
 #import "SKTGridPanelController.h"
+#import <math.h>
 
 NSString *SKTGraphicViewSelectionDidChangeNotification = @"SKTGraphicViewSelectionDidChange";
 

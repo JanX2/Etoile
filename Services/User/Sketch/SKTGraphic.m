@@ -6,6 +6,7 @@
 #import "SKTGraphicView.h"
 #import "SKTDrawDocument.h"
 #import "SKTFoundationExtras.h"
+#import <math.h>
 
 NSString *SKTGraphicDidChangeNotification = @"SKTGraphicDidChange";
 

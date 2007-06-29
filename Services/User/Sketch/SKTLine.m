@@ -4,6 +4,7 @@
 
 #import "SKTLine.h"
 #import "SKTGraphicView.h"
+#import <math.h>
 
 @implementation SKTLine
 

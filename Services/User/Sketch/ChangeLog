@@ -1,3 +1,8 @@
+2006-06-28 Yen-Ju Chen <yjchenx at gmail>
+
+	* SKTTextArea.m: Do not reuse NSLayoutManager. Fix bug #8669.
+	* Fix warning on missing math.h.
+
 2006-05-02 Yen-Ju Chen <yjchenx at gmail>
 
 	* Do not show button label on tool palette.

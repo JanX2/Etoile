@@ -215,7 +215,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 
 - (NSData *)dataRepresentationOfType: (NSString*) typeName
 {
-	return [self dataOfType: typeName error: nil];
+	return [self dataOfType: typeName error: NULL];
 }
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
@@ -247,7 +247,7 @@ static NSString *SKTPrintInfoKey = @"PrintInfo";
 //
 - (BOOL) loadDataRepresentation: (NSData*) data ofType: (NSString*) typeName
 {
-	return [self readFromData: data ofType: typeName error: nil];
+	return [self readFromData: data ofType: typeName error: NULL];
 }
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError {
