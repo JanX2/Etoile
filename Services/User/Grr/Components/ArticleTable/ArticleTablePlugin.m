@@ -70,10 +70,10 @@ int compareArticleRatings( id articleA, id articleB, void* context) {
     
     // Register for change notifications
     [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector(articleChanged:)
-                                                 name: RSSArticleChangedNotification
-                                               object: nil];
-    
+                                          selector: @selector(articleChanged:)
+                                          name: RSSArticleChangedNotification
+                                          object: nil];
+
     // Ensure table is autosaved
     [table setAutosaveName: @"Article Table"];
     [table setAutosaveTableColumns: YES];

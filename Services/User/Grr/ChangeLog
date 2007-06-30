@@ -2,6 +2,10 @@
 Grr ChangeLog
 ==============
 
+Jun-29-2007  Yen-Ju Chen
+	* Refresh artible table view when feed is refreshed.
+	  Fix bug #8533.
+
 Jun-19-2007  Yen-Ju Chen
 	* Install components inside applications so it can be relocated easily.
 	  (Bug #9352).

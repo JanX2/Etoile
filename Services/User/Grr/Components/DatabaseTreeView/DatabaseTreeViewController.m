@@ -182,6 +182,12 @@ static NSImage* arrowDown = nil;
     id<Feed> feed = [notif object];
     
     [self redrawFeed: feed];
+
+	int index = [outlineView selectedRow];
+	if ((index < 0) || (index == NSNotFound))
+		return;
+	if (feed == [outlineView itemAtRow: index])
+	    [self notifyChanges];
 }
 
 
