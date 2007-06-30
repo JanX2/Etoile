@@ -40,7 +40,7 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
    by runtime, when each subclass receives this message. */
 + (void) load
 {
-  [super inject: self forKey: PKTablePresentationMode];
+  [PKPresentationBuilder inject: self forKey: PKTablePresentationMode];
 }
 
 /*

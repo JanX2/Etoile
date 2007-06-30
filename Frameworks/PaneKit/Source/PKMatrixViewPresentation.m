@@ -41,7 +41,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
    by runtime, when each subclass receives this message. */
 + (void) load
 {
-  [super inject: self forKey: PKMatrixPresentationMode];
+  [PKPresentationBuilder inject: self forKey: PKMatrixPresentationMode];
 }
 
 /*

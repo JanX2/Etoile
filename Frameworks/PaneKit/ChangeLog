@@ -1,7 +1,11 @@
+2007-06-29  Yen-Ju Chen <yjchenx at gmail>
+
+	* Try to fix bug #9366.
+
 2007-05-03  Yen-Ju Chen <yjchenx at gmail>
 
-        * Toplevel GNUmakefile make the frameworks
-          while Source/GNUmakefile make the subproject
+    * Toplevel GNUmakefile make the frameworks
+      while Source/GNUmakefile make the subproject
 
 2007-04-28  Yen-Ju Chen <yjchenx at gmail _dot_ com>
 	

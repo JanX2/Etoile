@@ -56,7 +56,7 @@ const NSString *PKToolbarPresentationMode = @"PKToolbarPresentationMode";
    by runtime, when each subclass receives this message. */
 + (void) load
 {
-  [super inject: self forKey: PKToolbarPresentationMode];
+  [PKPresentationBuilder inject: self forKey: PKToolbarPresentationMode];
 }
 
 /*

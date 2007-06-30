@@ -43,7 +43,7 @@ const NSString *PKPopUpPresentationMode = @"PKPopUpPresentationMode";
    by runtime, when each subclass receives this message. */
 + (void) load
 {
-  [super inject: self forKey: PKPopUpPresentationMode];
+  [PKPresentationBuilder inject: self forKey: PKPopUpPresentationMode];
 }
 
 /*
