@@ -74,6 +74,8 @@ int compareArticleRatings( id articleA, id articleB, void* context) {
                                           name: RSSArticleChangedNotification
                                           object: nil];
 
+	[table setAutoresizesAllColumnsToFit: YES];
+//	[table sizeLastColumnToFit];
     // Ensure table is autosaved
     [table setAutosaveName: @"Article Table"];
     [table setAutosaveTableColumns: YES];
