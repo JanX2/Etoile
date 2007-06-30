@@ -9,3 +9,40 @@ based on OpenBox3 (http://icculus.org/openbox/).
 While OpenBox start to have more features since 3.3 release,
 Azalea intends to stay small, minimal, and compliant with EWMH.
 
+User Defaults
+-------------
+
+	* FocusNew: Focus on newly mapped window. YES/NO.
+	* FocusLast: Focus on last window if current one disappear. YES/NO.
+	* WindowPlacement: How to place window. "Smart"/"UnderMouse".
+	  "Smart" will place window where it is appropriate.
+	  "UnderMouse" will place window under mouse pointer.
+	* Theme: Name of theme (Old OpenBox3 format, not the xml one). "Azalea".
+	* TitleLayout: Title layout in string. "NLIMC".
+	  N: window icon
+	  D: desk button
+	  S: shade button
+	  I: iconify button
+	  L: window title 
+	  M: maximize button
+	  C: close button
+	* KeepBorder: Always has a border on window, 
+	  even the one without decoration. YES/NO.
+	* HideDisabled: Hide disabled icon on the title bar. YES/NO.
+	* DesktopNumber: Number of desktops. 1/2/....
+	* FirstDesktop: First desktop to use. 1/2/....
+	* DesktopNames: Names of each desktops. ("Desk1", "Desk2");
+	* DrawContents: Draw window content during resizing. YES/NO.
+	* FourCorners: Allot resizing by using four corners of window. YES/NO.
+	  If NO, only the botton left and right can resize window.
+	* PopupShow: Show popup when window is resizing. 
+	  "Always"/"Never"/"NonPixel".
+	  "Always" will always show popup.
+	  "Never" will never show popup.
+	  "NonPixel" will only show popup when window is resizing stepwise,
+	  mostly terminal emulator.
+	* PopupPosition: Where to show popup. "Top"/"Center".
+	* ResistentStrength: Pixels to resist window overlapping. 10/20/...
+	* ScreenEdgeStrength: Pixels to resist window out of screen. 10/20/...
+	* EdgesHitLayersBelow: Resist to window in lower layer. YES/NO.
+
