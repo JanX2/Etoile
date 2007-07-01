@@ -4,6 +4,10 @@
 #import "Controller.h"
 #import "Background.h"
 #import <unistd.h>
+#import <GNUstepGUI/GSDisplayServer.h>
+#import <X11/Xlib.h>
+#import <X11/Xatom.h>
+#import <X11/Xutil.h>
 
 NSString *ETAllowUserToChooseEnvironment = @"ETAllowUserToChooseEnvironment";
 
@@ -99,6 +103,29 @@ NSString *ETAllowUserToChooseEnvironment = @"ETAllowUserToChooseEnvironment";
 
 - (void) applicationWillFinishLaunching: (NSNotification*) notification
 {
+	Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+	Window root_win = RootWindow(dpy, [[NSScreen mainScreen] screenNumber]);
+	Atom WM_CHECK = XInternAtom(dpy, "_NET_SUPPORTING_WM_CHECK", False);
+
+	Atom *data = NULL;
+	Atom type_ret;
+	int format_ret;
+	unsigned long after_ret, count;
+	int result = XGetWindowProperty(dpy, root_win, WM_CHECK,
+                                  0, 0x7FFFFFFF, False, XA_WINDOW,
+                                  &type_ret, &format_ret, &count,
+                                  &after_ret, (unsigned char **)&data);
+	if ((result != Success) || count == 0) 
+	{
+		NSLog(@"No window manager running");
+	    if (data != NULL) 
+		{
+	      XFree(data);
+	    }
+		return;
+	}
+	NSLog(@"Has window manager running. Quit.");
+	[NSApp terminate: self];
 }
 
 - (void) applicationDidFinishLaunching: (NSNotification*) notification

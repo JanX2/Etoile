@@ -1,6 +1,10 @@
-2007-06-30  Quentin Mathe <qmathe@club-internet.fr
+2007-06-30  Yen-Ju Chen <yjchen gmail>
 
 	* Convert Loader*.png into TIFF format. Fix bug #8554.
+	* Check existing window manager to know whether it is running
+	  with GDM or a user accidentally run it. Fix bug #8607.
+      NOTE: it only works with EWMH window manager
+	  and assuming GDM is not running an EWMH at the same time.
 
 2007-06-13  Quentin Mathe <qmathe@club-internet.fr
 
