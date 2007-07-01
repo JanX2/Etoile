@@ -1,3 +1,8 @@
+2007-06-30  Yen-Ju Chen <yjchenx gmail>
+
+	* Use 'pkg-config --cflags dbus-1` and `pkg-config --libs dbus-1`
+	  for headers and libraries. Fix bug 9332.
+
 2007-06-28  Quentin Mathe <qmathe@club-internet.fr>
 
 	* SystemTaskList.plist: Added AZSwitch, Corner and Idle. Made OuterSpace hidden.

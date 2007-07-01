@@ -3,7 +3,7 @@ ETOILE_CORE_MODULE = YES
 include $(GNUSTEP_MAKEFILES)/common.make
 
 ADDITIONAL_CPPFLAGS += -DDBUS_API_SUBJECT_TO_CHANGE=1
-ADDITIONAL_INCLUDE_DIRS += -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include
+ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags dbus-1`
 
 SUBPROJECTS = WorkspaceCommKit
 
@@ -22,7 +22,7 @@ VERSION = 0.1
 
 # FIXME: When you take in account System can be use without any graphical UI 
 # loaded, linking AppKit by default is bad.
-$(TOOL_NAME)_TOOL_LIBS = -lgnustep-gui -ldbus-1
+$(TOOL_NAME)_TOOL_LIBS = -lgnustep-gui `pkg-config --libs dbus-1`
 
 #
 # Class files
