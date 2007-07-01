@@ -1,3 +1,7 @@
+2007-06-30  Quentin Mathe <qmathe@club-internet.fr
+
+	* Convert Loader*.png into TIFF format. Fix bug #8554.
+
 2007-06-13  Quentin Mathe <qmathe@club-internet.fr
 
 	* Controller.m: Force login window to be centered on the screen.

@@ -18,7 +18,7 @@ NSString *ETAllowUserToChooseEnvironment = @"ETAllowUserToChooseEnvironment";
 {
 	NSMutableDictionary *defaultValues = [NSMutableDictionary dictionary];
 
-	[defaultValues setObject: [NSNumber numberWithBool: NO] 
+	[defaultValues setObject: [NSNumber numberWithBool: YES] 
 	                  forKey: ETAllowUserToChooseEnvironment];
 	// FIXME: Rather than storing defaults in /var/lib/gdm, we should store 
 	// them in Local/Defaults with..
@@ -132,7 +132,7 @@ NSString *ETAllowUserToChooseEnvironment = @"ETAllowUserToChooseEnvironment";
 {
 	busyImageCounter = busyImageCounter % 16;
 	
-	[imageView setImage: [NSImage imageNamed: [NSString stringWithFormat: @"Loader%02d.png", ++busyImageCounter]]];	
+	[imageView setImage: [NSImage imageNamed: [NSString stringWithFormat: @"Loader%02d.tif", ++busyImageCounter]]];	
 	[imageView setNeedsDisplay: YES];
 	if (busy) [self performSelector: @selector(setBusyImage) withObject: nil afterDelay: 0.1];
 }
