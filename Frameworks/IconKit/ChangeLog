@@ -1,3 +1,11 @@
+2007-06-30  Yen-Ju Chen <yjchen gmail>
+
+    * GNUstep.icontheme/Resources/: 
+	  Convert PNG to TIFF to avoid GNUstep bug on PNG format.
+	* Source/IKIconTheme.m:
+	* Source/IKThumbnailProvider.m:
+	  Use TIF by default and fix bug when real identifier has extension already.
+
 2007-06-13  Quentin Mathe <qmathe@club-internet.fr>
 
 	Modified IKIcon to use the provider architecture. Wrote the missing code 

@@ -185,7 +185,7 @@ static NSFileManager *fileManager = nil;
   path = [self _thumbnailsPath];  
   subpath = [path stringByAppendingPathComponent: @"large"];
   subpath = [subpath stringByAppendingPathComponent: pathComponentHash];
-  subpath = [subpath stringByAppendingPathExtension: @"png"];
+  subpath = [subpath stringByAppendingPathExtension: @"tif"];
   
   [fileManager removeFileAtPath: subpath handler: nil];
   if (result == NO)
@@ -196,7 +196,7 @@ static NSFileManager *fileManager = nil;
     
   subpath = [path stringByAppendingPathComponent: @"normal"];
   subpath = [subpath stringByAppendingPathComponent: pathComponentHash];
-  subpath = [subpath stringByAppendingPathExtension: @"png"];
+  subpath = [subpath stringByAppendingPathExtension: @"tif"];
   
   [fileManager removeFileAtPath: subpath handler: nil];
   if (result == NO)
@@ -272,7 +272,7 @@ static NSFileManager *fileManager = nil;
       return nil;
     }
   
-  pathComponent = [[[url absoluteString] md5Hash] stringByAppendingPathExtension: @"png"];
+  pathComponent = [[[url absoluteString] md5Hash] stringByAppendingPathExtension: @"tif"];
   path = [path stringByAppendingPathComponent: pathComponent];
   
   if ([fileManager fileExistsAtPath: path isDirectory: &isDir] && !isDir)

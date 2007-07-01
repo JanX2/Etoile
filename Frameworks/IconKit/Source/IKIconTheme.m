@@ -382,7 +382,7 @@ will use theme bundle name %@", identifier);
 	int lastIndex = [components count] - 1;
 
 	UKNotNil(path);
-	UKStringsEqual([components objectAtIndex: lastIndex], @"folder.png");
+	UKStringsEqual([components objectAtIndex: lastIndex], @"folder.tif");
 	UKStringsEqual([components objectAtIndex: --lastIndex], @"Resources");
 	UKStringsEqual([components objectAtIndex: --lastIndex], @"test.icontheme");
 
@@ -391,7 +391,7 @@ will use theme bundle name %@", identifier);
 	lastIndex = [components count] - 1;
 
 	UKNotNil(path);
-	UKStringsEqual([components objectAtIndex: lastIndex], @"Folder-Home.png");
+	UKStringsEqual([components objectAtIndex: lastIndex], @"Folder-Home.tif");
 }
 
 #endif
@@ -399,7 +399,7 @@ will use theme bundle name %@", identifier);
 - (NSString *) iconPathForIdentifier: (NSString *)iconIdentifier
 {
 	NSString *realIdentifier = [_specIdentifiers objectForKey: iconIdentifier];
-	NSString *imageType = @"png";
+	NSString *imageType = @"tif";
 
 	NSDebugLLog(@"IconKit", @"For identifier %@, mapping list returns %@", 
 		iconIdentifier, realIdentifier);
@@ -408,9 +408,14 @@ will use theme bundle name %@", identifier);
 		realIdentifier = iconIdentifier;
 
 	if ([realIdentifier pathExtension] != nil)
-		imageType = nil;
+	{
+		imageType = [realIdentifier pathExtension];
+		realIdentifier = [realIdentifier stringByDeletingPathExtension];
+//		imageType = nil;
+	}
 
 	// NOTE: We may use -pathForImageResource:
+	NSDebugLLog(@"IconKit", @"path %@.%@", realIdentifier, imageType);
 	return [_themeBundle pathForResource: realIdentifier ofType: imageType];
 }
 
