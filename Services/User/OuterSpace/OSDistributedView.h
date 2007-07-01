@@ -18,6 +18,8 @@
 - (void) setDataSource: (id) dataSource;
 - (id) dataSource;
 
+- (void) reloadData;
+
 - (NSArray *) selectedCells;
 
 /* The last selected cell. 

@@ -394,9 +394,6 @@
 
   [super drawRect: frame];
 
-  [self _buildCells];
-  [self _distributeCells];
-
   [self lockFocus];
 
   /* Draw background */
@@ -412,7 +409,8 @@
     cell = [cells objectAtIndex: i];
     rect.origin = [cell origin];
     rect.size = [cell cellSize];
-    [cell drawWithFrame: rect inView: self];
+	if (NSIntersectsRect(rect, frame))
+		[cell drawWithFrame: rect inView: self];
   }
 
   [self unlockFocus];
@@ -445,38 +443,43 @@
 
 - (id) delegate
 {
-  return delegate;
+	return delegate;
 }
 
 - (void) setDataSource: (id) ds
 {
-  ASSIGN(dataSource, ds);
+	ASSIGN(dataSource, ds);
 }
 
 - (id) dataSource
 {
-  return dataSource;
+	return dataSource;
 }
 
+- (void) reloadData
+{
+	[self _buildCells];
+	[self _distributeCells];
+}
 
 - (id) initWithFrame: (NSRect) rect
 {
-  self = [super initWithFrame: rect];
-  cells = [[NSMutableArray alloc] init];
-  selectedCells = [[NSMutableArray alloc] init];
-  [self setNeedsDisplay: YES];
-  [self registerForDraggedTypes: 
+	self = [super initWithFrame: rect];
+	cells = [[NSMutableArray alloc] init];
+	selectedCells = [[NSMutableArray alloc] init];
+	[self setNeedsDisplay: YES];
+	[self registerForDraggedTypes: 
                         [NSArray arrayWithObject: NSFilenamesPboardType]];
-  return self;
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(cells);
-  DESTROY(selectedCells);
-  DESTROY(delegate);
-  DESTROY(dataSource);
-  [super dealloc];
+	DESTROY(cells);
+	DESTROY(selectedCells);
+	DESTROY(delegate);
+	DESTROY(dataSource);
+	[super dealloc];
 }
 
 /* Dragging Source */

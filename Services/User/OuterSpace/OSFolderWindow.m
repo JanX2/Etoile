@@ -120,99 +120,101 @@ static NSMutableArray *windowList;
 /* Override */
 - (void) orderFront: (id) sender
 {
-  if (object == nil)
-  {
-    /* Use home as default object */
-    OSNode *node = [factory homeObject];
-    [self setObject: node];
-  }
-  if (view == nil)
-  {
-    [self _switchType: [self type]];
-  }
-  [super orderFront: sender];
+	if (view == nil)
+	{
+		[self _switchType: [self type]];
+	}
+	if (object == nil)
+	{
+		/* Use home as default object */
+		OSNode *node = [factory homeObject];
+		[self setObject: node];
+	}
+	[super orderFront: sender];
 }
 
 - (void) close
 {
-  [windowList removeObject: self];
-  [super close];
+	[windowList removeObject: self];
+	[super close];
 }
 
 /* Accessories */
 
 - (void) setObject: (id <OSObject>) o
 {
-  if ([object isEqual: o])
-    return;
+	if ([object isEqual: o])
+		return;
 
-  ASSIGN(object, o);
-  NSString *p = nil;
-  if ([object isKindOfClass: [OSNode class]])
-  {
-    p = [(OSNode *)object path];
-  }
-  else if ([object isKindOfClass: [OSVirtualNode class]])
-  {
-    p = [(OSVirtualNode *)object pathRepresentation];
-  }
-  if (p)
-  {
-    [self setTitle: p];
-    /* Let's see whether it match rootPath */
-    DESTROY(rootPath);
-    int i;
-    for (i = 0; i < [rootPaths count]; i++)
-    {
-      NSString *prefix = [rootPaths objectAtIndex: i];
-      if ([p hasPrefix: prefix])
-      {
-	ASSIGN(rootPath, [prefix stringByDeletingLastPathComponent]);
-	break;
-      }
-    }
-    if (rootPath && [p hasPrefix: rootPath])
-    {
-      [pathView setPrefix: rootPath];
-      [pathView setPath: [p substringFromIndex: [rootPath length]]];
-    }
-    else
-    {
-      [pathView setPrefix: @"/"];
-      [pathView setPath: p];
-    }
-  }
+	ASSIGN(object, o);
+	NSString *p = nil;
+	if ([object isKindOfClass: [OSNode class]])
+	{
+		p = [(OSNode *)object path];
+	}
+	else if ([object isKindOfClass: [OSVirtualNode class]])
+	{
+		p = [(OSVirtualNode *)object pathRepresentation];
+	}
+	if (p)
+	{
+		[self setTitle: p];
+		/* Let's see whether it match rootPath */
+		DESTROY(rootPath);
+		int i;
+		for (i = 0; i < [rootPaths count]; i++)
+		{
+			NSString *prefix = [rootPaths objectAtIndex: i];
+			if ([p hasPrefix: prefix])
+			{
+				ASSIGN(rootPath, [prefix stringByDeletingLastPathComponent]);
+				break;
+			}
+		}
+		if (rootPath && [p hasPrefix: rootPath])
+		{
+			[pathView setPrefix: rootPath];
+			[pathView setPath: [p substringFromIndex: [rootPath length]]];
+		}
+		else
+		{
+			[pathView setPrefix: @"/"];
+			[pathView setPath: p];
+		}
+	}
 
-  [view setNeedsDisplay: YES];
+	[view reloadData];
+	[view setNeedsDisplay: YES];
 }
 
 - (id <OSObject>) object
 {
-  return object;
+	return object;
 }
 
 
 - (void) setType: (OSViewType) t
 {
-  if ((view == nil) || (type != t))  {
-    [self _switchType: t];
-  }
-  type = t;
+	if ((view == nil) || (type != t))  
+	{
+		[self _switchType: t];
+	}
+	type = t;
 }
 
 - (OSViewType) type
 {
-  return type;
+	return type;
 }
 
 - (void) setRootPath: (NSString *) path
 {
-  ASSIGN(rootPath, path);
+	ASSIGN(rootPath, path);
 }
 
 - (NSString *) rootPath
 {
-  return rootPath;
+	return rootPath;
 }
 
 - (id) initWithContentRect: (NSRect) contentRect
@@ -220,67 +222,69 @@ static NSMutableArray *windowList;
                    backing: (NSBackingStoreType) bufferingType
                      defer: (BOOL) flag
 {
-  self = [super initWithContentRect: contentRect
+	self = [super initWithContentRect: contentRect
 		          styleMask: aStyle
 		            backing: bufferingType
 		              defer: flag];
 
-  NSRect rect = NSMakeRect(0, NSHeight(contentRect)-SHELF_HEIGHT,
+	NSRect rect = NSMakeRect(0, NSHeight(contentRect)-SHELF_HEIGHT,
                            NSWidth(contentRect)-SHELF_HEIGHT-SPACE, 
                            SHELF_HEIGHT);
-  shelfView = [[OSShelfView alloc] initWithFrame: rect];
-  [shelfView setAutoresizingMask: NSViewWidthSizable | NSViewMinYMargin];
-  [shelfView setDelegate: self];
-  [[self contentView] addSubview: shelfView];
-  RELEASE(shelfView);
+	shelfView = [[OSShelfView alloc] initWithFrame: rect];
+	[shelfView setAutoresizingMask: NSViewWidthSizable | NSViewMinYMargin];
+	[shelfView setDelegate: self];
+	[[self contentView] addSubview: shelfView];
+	RELEASE(shelfView);
 
-  rect.origin.x = NSMaxX(rect);
-  rect.size.width = SHELF_HEIGHT;
-  trashCanView = [[OSTrashCanView alloc] initWithFrame: rect];
-  [trashCanView setAutoresizingMask: NSViewMinXMargin | NSViewMinYMargin];
-  [trashCanView setTarget: self];
-  [trashCanView setAction: @selector(trashCanAction:)];
-  [[self contentView] addSubview: trashCanView];
-  RELEASE(trashCanView);
+	rect.origin.x = NSMaxX(rect);
+	rect.size.width = SHELF_HEIGHT;
+	trashCanView = [[OSTrashCanView alloc] initWithFrame: rect];
+	[trashCanView setAutoresizingMask: NSViewMinXMargin | NSViewMinYMargin];
+	[trashCanView setTarget: self];
+	[trashCanView setAction: @selector(trashCanAction:)];
+	[[self contentView] addSubview: trashCanView];
+	RELEASE(trashCanView);
 
-  rect.size.width = NSWidth(contentRect);
-  rect.size.height = PATH_HEIGHT;
-  rect.origin.y -= (PATH_HEIGHT+SPACE);
-  rect.origin.x = 0;
-  pathView = [[OSPathView alloc] initWithFrame: rect];
-  [pathView setAutoresizingMask: NSViewWidthSizable | NSViewMinYMargin];
-  [pathView setDelegate: self];
-  [[self contentView] addSubview: pathView];
-  RELEASE(pathView);
+	rect.size.width = NSWidth(contentRect);
+	rect.size.height = PATH_HEIGHT;
+	rect.origin.y -= (PATH_HEIGHT+SPACE);
+	rect.origin.x = 0;
+	pathView = [[OSPathView alloc] initWithFrame: rect];
+	[pathView setAutoresizingMask: NSViewWidthSizable | NSViewMinYMargin];
+	[pathView setDelegate: self];
+	[[self contentView] addSubview: pathView];
+	RELEASE(pathView);
 
-  /* Keep a copy of root objects */
-  factory = [OSObjectFactory defaultFactory];
-  [shelfView addObject: [factory homeObject]];
-  [shelfView addObject: [factory applications]];
-  [shelfView addObject: [NSNull null]];
+	/* Keep a copy of root objects */
+	factory = [OSObjectFactory defaultFactory];
+	[shelfView addObject: [factory homeObject]];
+	[shelfView addObject: [factory applications]];
+	[shelfView addObject: [NSNull null]];
 
-  /* Order matters here because prefix may overlapping.
-     For example, home and trash can */
-  rootPaths = [[NSMutableArray alloc] init];
-  [rootPaths addObject: [[factory trashCan] path]];
-  [rootPaths addObject: [[factory homeObject] path]];
-  [rootPaths addObject: [[factory applications] pathRepresentation]];
+	/* Order matters here because prefix may overlapping.
+	   For example, home and trash can */
+	rootPaths = [[NSMutableArray alloc] init];
+	[rootPaths addObject: [[factory trashCan] path]];
+	[rootPaths addObject: [[factory homeObject] path]];
+	[rootPaths addObject: [[factory applications] pathRepresentation]];
 
-  /* We keep track of windows */
-  if (windowList == nil)
-    windowList = [[NSMutableArray alloc] init];
-  [windowList addObject: self];
+	/* We keep track of windows */
+	if (windowList == nil)
+		windowList = [[NSMutableArray alloc] init];
+	[windowList addObject: self];
 
-  return self;
+	[self _switchType: [self type]];
+
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(object);
-  DESTROY(rootPath);
-  DESTROY(rootPaths);
-  /* Do not release view. It is retained by NSWindow */
-  [super dealloc];
+	DESTROY(object);
+	DESTROY(rootPath);
+	DESTROY(rootPaths);
+	/* Do not release view. It is retained by NSWindow */
+	[super dealloc];
 }
 
 /* Data source for distributed view */
@@ -575,42 +579,53 @@ static NSMutableArray *windowList;
 + (OSFolderWindow *) windowForObject: (id <OSObject>) object
                createNewIfNotExisted: (BOOL) flag;
 {
-  /* Find existing window */
-  if (object == nil)
-    object = [[OSObjectFactory defaultFactory] homeObject];
+	/* Find existing window */
+	id <OSObject> o = nil;
+	if (object == nil)
+		o = [[OSObjectFactory defaultFactory] homeObject];
+	else
+		o = object;
 
-  NSPoint point = NSMakePoint(200, 200);
-  NSEnumerator *e = [windowList objectEnumerator];
-  OSFolderWindow *window = nil;
-  while ((window = [e nextObject]))
-  {
-    if ([window isKindOfClass: [OSFolderWindow class]])
-    {
-      if ([[window object] isEqual: object])
-        return window;
-      point.x += 40;
-      point.y -= 40;
-    }
-  }
+	NSLog(@"%@ %@", NSStringFromSelector(_cmd), o);
 
-  if (flag)
-  {
-    /* No window found */
-    NSRect rect;
-    rect.origin = point;
-    rect.size = NSMakeSize(500, 400);
-    window = [[OSFolderWindow alloc] initWithContentRect: rect
-                             styleMask: NSTitledWindowMask |
+	NSPoint point = NSMakePoint(200, 200);
+	NSEnumerator *e = [windowList objectEnumerator];
+	OSFolderWindow *window = nil;
+	while ((window = [e nextObject]))
+	{
+		if ([window isKindOfClass: [OSFolderWindow class]])
+		{
+			if ([[window object] isEqual: o])
+			{
+				NSLog(@"Found window");
+				return window;
+			}
+			point.x += 40;
+			point.y -= 40;
+		}
+	}
+
+	if (flag)
+	{
+		/* No window found */
+		NSRect rect;
+		rect.origin = point;
+		rect.size = NSMakeSize(500, 400);
+		window = [[OSFolderWindow alloc] initWithContentRect: rect
+		                                 styleMask: NSTitledWindowMask |
                                      NSResizableWindowMask |
                                      NSClosableWindowMask
                             backing: NSBackingStoreBuffered
                               defer: NO];
-    [window setReleasedWhenClosed: YES];
-    if (object)
-      [window setObject: object];
-    return window;
-  }
-  return nil;
+		[window setReleasedWhenClosed: YES];
+		if (o)
+		{
+			NSLog(@"Here");
+			[window setObject: o];
+		}
+		return window;
+	}
+	return nil;
 }
 
 @end

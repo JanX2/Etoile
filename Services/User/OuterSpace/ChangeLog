@@ -1,3 +1,7 @@
+06-30-2007 Yen-Ju Chen <yjchenx gmail>
+
+	* Speed up by only draw necessary part.
+
 06-28-2007 Quentin Mathe <qmathe@club-internet.fr>
 
 	* OSApplications.m: Modified to filter out all System applications except
