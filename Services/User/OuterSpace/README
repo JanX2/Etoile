@@ -6,7 +6,7 @@ OuterSpace File Manager
 :Copyright: BSD License
 :NOTE: Experimental
 
-OuterSpace is a simple file manager.  It is spacial, not navagational.
+OuterSpace is a simple file manager.  It is spacial, not navigational.
 It treats files as objects.  It is designed to be simple, therefore,
 may not be suitable for power users.
 It is more focused on underneath file operation than user interface.
@@ -23,7 +23,7 @@ Read gui/Documentation/GuiUser/KeyboardSetup.gsdoc for key definition
 of CONTROL, COMMAND, ALTERNATE
 CONTROL + double-left-click to open new folder.
 Double-left-click to change folder.
-Left-drag to move file (move to trash can is to delet).
+Left-drag to move file (move to trash can is to delete).
 ALTERNATE + left-drag is copy file.
 
 By default, CONTROL is left and right CTRL. ALTERNATE is right Alt.
@@ -31,7 +31,7 @@ If you do not have right control keys (small notebook),
 you can use left Shift as ALTERNATE by doing:
 `defaults write NSGlobalDomain GSFirstAlternateKey Shift_L`
 
-Features (Not fully implmeneted yet)
+Features (Not fully implemented yet)
 ------------------------------------
 * Table or distributed view.
 * Single and blocking file operation
@@ -57,15 +57,15 @@ Later or Never
 Design
 ------
 OSObject protocol reflects an object, which can be physical or virtual.
-Physical object represents a node on file system, implmented by OSNode.
+Physical object represents a node on file system, implemented by OSNode.
 Virtual object could be a file in archive, 
 which does not exist on file system.
 
 OSNode may or may not exist yet. Even though it is a physical node,
 it may represent more than a node.
 For example, a GNUstep application is a directory,
-but its OSNode behavies like a file.
-Similarily, an OSNode in freedesktop's trash can is actually two files,
+but its OSNode behaves like a file.
+Similarly, an OSNode in freedesktop's trash can is actually two files,
 a real file and its info file. The OSNode will represents the real file
 and grab the information from the info file. Therefore, OSNode does not
 always map to physical file system one-to-one. 
