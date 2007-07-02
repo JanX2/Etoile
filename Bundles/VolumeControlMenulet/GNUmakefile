@@ -11,5 +11,6 @@ VolumeControlMenulet_GUI_LIBS += \
 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/bundle.make
+-include ../../etoile.make
 -include GNUmakefile.postamble
 
