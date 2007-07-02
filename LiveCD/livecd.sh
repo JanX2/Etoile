@@ -74,8 +74,7 @@ cd build
 
 # Install Etoile and GNUstep dependencies
 
-# NOTE: Not including openssl, this means no SSL support built by GNUstep
-sudo apt-get -y install gobjc-4.1 openssl libxml2-dev libxslt1-dev libffi4-dev libjpeg62-dev libtiff4-dev libpng12-dev libungif4-dev libfreetype6-dev libx11-dev libart-2.0-dev libxft-dev libxmu-dev libxss-dev xscreensaver libdbus-1-dev libstartup-notification0-dev g++ libpoppler-dev
+sudo apt-get -y install gobjc-4.1 openssl libssl-dev libxml2-dev libxslt1-dev libffi4-dev libjpeg62-dev libtiff4-dev libpng12-dev libungif4-dev libfreetype6-dev libx11-dev libart-2.0-dev libxft-dev libxmu-dev libxss-dev xscreensaver libdbus-1-dev libstartup-notification0-dev g++ libpoppler-dev
 
 # Install Subversion to be able to check both GNUstep and Etoile stable versions
 
