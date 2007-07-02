@@ -6,11 +6,41 @@
 #define PAD 5
 
 @implementation VolumeControlMenulet
+- (void) checkSound: (id) sender
+{
+	int volume = [sound outputVolume];
+	NSImage *img = nil;
+	if (volume < 5)
+	{
+		img = v0;
+	}
+	else if (volume < 50)
+	{
+		img = v1;
+	}
+	else if (volume < 95)
+	{
+		img = v2;
+	}
+	else if (volume < 101)
+	{
+		img = v3;
+	}
+
+	if (img == nil)
+	{
+		NSLog(@"Internal Error: Cannot get sound volume %d", volume);
+	}
+	[view setImage: img];
+	[view setNeedsDisplay: YES];
+}
+
 - (void) sliderAction: (id) sender
 {
 	if (slider == sender)
 	{
 		[sound setOutputVolume: [slider intValue]];
+		[self checkSound: self];
 	}
 }
 
@@ -48,6 +78,7 @@
 	{
 		[slider setIntValue: [sound outputVolume]];
 		[slider setNeedsDisplay: YES];
+		[self checkSound: self];
 		[volumeControlWindow makeKeyAndOrderFront: self];
 	}
 }
@@ -61,6 +92,10 @@
 	}
 	DESTROY(view);
 	DESTROY(volumeControlWindow);
+	DESTROY(v0);
+	DESTROY(v1);
+	DESTROY(v2);
+	DESTROY(v3);
 	[super dealloc];
 }
 
@@ -71,12 +106,29 @@
 	self = [super init];
 
 	rect.size.height = 22;
-	rect.size.width = 50;
+	rect.size.width = 26;
 	view = [[NSButton alloc] initWithFrame: rect];
+	[view setImagePosition: NSImageOnly];
 	[view setBordered: NO];
 	[view setTitle: @"Volume"];
 	[view setTarget: self];
 	[view setAction: @selector(buttonAction:)];
+
+	/* Cache image */
+	NSBundle *bundle = [NSBundle bundleForClass: [self class]];
+	NSString *path = nil;
+	path = [bundle pathForResource: @"VolumeControl_0" ofType: @"tif"];
+	if (path)
+		v0 = [[NSImage alloc] initWithContentsOfFile: path];
+	path = [bundle pathForResource: @"VolumeControl_1" ofType: @"tif"];
+	if (path)
+		v1 = [[NSImage alloc] initWithContentsOfFile: path];
+	path = [bundle pathForResource: @"VolumeControl_2" ofType: @"tif"];
+	if (path)
+		v2 = [[NSImage alloc] initWithContentsOfFile: path];
+	path = [bundle pathForResource: @"VolumeControl_3" ofType: @"tif"];
+	if (path)
+		v3 = [[NSImage alloc] initWithContentsOfFile: path];
 
 	ASSIGN(sound, (SCSound *)[SCSound sharedInstance]);
 
@@ -84,13 +136,13 @@
 	/* Start timer for every 5 seconds */
 	`ASSIGN(timer, [NSTimer scheduledTimerWithTimeInterval: 5
                          target: self
-                         selector: @selector(checkPower:)
+                         selector: @selector(checkSound:)
                          userInfo: nil
                          repeats: YES]);
-	[self checkPower: timer];
 #endif
+	[self checkSound: self];
 
-  return self;
+	return self;
 }
 
 - (NSView *) menuletView
