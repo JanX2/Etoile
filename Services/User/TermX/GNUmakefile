@@ -28,6 +28,7 @@ endif
 
 ifeq ($(findstring freebsd, $(GNUSTEP_TARGET_OS)), freebsd)
 	ADDITIONAL_OBJCFLAGS += -DFREEBSD
+	ADDITIONAL_LDFLAGS   += -lutil
 endif
 
 ifeq ($(findstring openbsd, $(GNUSTEP_TARGET_OS)), openbsd)

@@ -17,6 +17,12 @@
 #ifdef DARWIN
 #import <util.h> // forkpty
 #endif
+#ifdef FREEBSD
+#include <sys/types.h>
+#include <sys/ioctl.h> 
+#include <termios.h>
+#include <libutil.h>
+#endif
 #import "GNUstep.h"
 
 #define CTRLKEY(x) (x - 64)
