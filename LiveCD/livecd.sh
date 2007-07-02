@@ -75,11 +75,11 @@ cd build
 # Install Etoile and GNUstep dependencies
 
 # NOTE: Not including openssl, this means no SSL support built by GNUstep
-apt-get -y install gobjc-4.1 openssl libxml2-dev libxslt1-dev libffi4-dev libjpeg62-dev libtiff4-dev libpng12-dev libungif4-dev libfreetype6-dev libx11-dev libart-2.0-dev libxft-dev libxmu-dev libxss-dev xscreensaver libdbus-1-dev libstartup-notification0-dev g++ libpoppler-dev
+sudo apt-get -y install gobjc-4.1 openssl libxml2-dev libxslt1-dev libffi4-dev libjpeg62-dev libtiff4-dev libpng12-dev libungif4-dev libfreetype6-dev libx11-dev libart-2.0-dev libxft-dev libxmu-dev libxss-dev xscreensaver libdbus-1-dev libstartup-notification0-dev g++ libpoppler-dev
 
 # Install Subversion to be able to check both GNUstep and Etoile stable versions
 
-apt-get -y install subversion
+sudo apt-get -y install subversion
 
 # Check out and build GNUstep stable version
 
@@ -89,17 +89,17 @@ svn co http://svn.gna.org/svn/gnustep/libs/gui/branches/stable gnustep-gui
 svn co http://svn.gna.org/svn/gnustep/libs/back/branches/stable gnustep-back
 
 cd gnustep-make
-./configure --prefix=/ && make && make install
+./configure --prefix=/ && make && sudo make install
 cd ..
 . /System/Library/Makefiles/GNUstep.sh
 cd gnustep-base
-./configure && make && make install
+./configure && make && sudo make install
 cd ..
 cd gnustep-gui
-./configure && make && make install
+./configure && make && sudo make install
 cd ..
 cd gnustep-back
-./configure && make && make install
+./configure && make && sudo make install
 cd ..
 
 # Download latest StepTalk release over FTP, uncompress and build it
@@ -107,7 +107,7 @@ cd ..
 wget ftp://ftp.gnustep.org/pub/gnustep/libs/StepTalk-0.10.0.tar.gz
 tar -xzf StepTalk-0.10.0.tar.gz
 cd StepTalk
-make && make install
+make && sudo make install
 cd ..
 
 # Download latest Gorm release over FTP, uncompress and build it
@@ -116,7 +116,7 @@ wget ftp://ftp.gnustep.org/pub/gnustep/dev-apps/gorm-1.2.1.tar.gz
 tar -xzf gorm-1.2.1.tar.gz
 
 cd gorm-1.2.1
-make && make install
+make && sudo make install
 cd ..
 
 # Check out and build Etoile stable version
@@ -125,10 +125,10 @@ svn co http://svn.gna.org/svn/etoile/trunk/Dependencies Dependencies
 svn co http://svn.gna.org/svn/etoile/stable/Etoile Etoile
 
 cd Dependencies/oniguruma5
-./configure && make && make install # Build and install Oniguruma first
+./configure && make && sudo make install # Build and install Oniguruma first
 cd ../..
 cd Etoile
-make && make install
+make && sudo make install
 
 # Workaround install bug (probably related to gnustep-make)
 # FIXME: Remove this hack.
@@ -144,6 +144,9 @@ adduser $ETOILE_USER_NAME admin # Add 'etoile' user to sudoers
 su $ETOILE_USER_NAME
 . /System/Library/Makefiles/GNUstep.sh
 ./setup.sh
+
+# NOTE: Keep a pristine copy of the defaults to be reset on cleanup
+cp /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults.original
 
 # Register /usr/local/lib so libonig can be found by OgreKit
 echo "/usr/local/lib" >> /etc/ld.so.conf
@@ -177,11 +180,12 @@ apt-get clean
 rm -rf /tmp/*
 rm /etc/resolv.conf
 umount /proc
-umount /sys
+umount /sys # Looks not really necessary...
+umount /dev && rm /dev/null
 
 # Etoile specific cleanup
-rm /root/GNUstep/Defaults/*
-rm /home/$ETOILE_USER_NAME/GNUstep/Defaults/*
+rm -f /root/GNUstep/Defaults/*
+cp /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults.original /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults
 rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/ApplicationSupport/AZDock
 rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/Addresses
 rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/Bookmark
@@ -194,6 +198,10 @@ apt-get -y uninstall subversion
 exit
 
 # Try to clean up as much GNOME stuff as possible
+
+# NOTE: Trick to enable universe repository install deborphan that allows to purge which got removed without --purge
+#cp /etc/apt/sources.list /etc/apt/sources.list.backup
+#sudo sed -i -e "s/# deb/deb/g" /etc/apt/sources.list
 
 # NOTE: 'dpkg -l' reports them but 'apt-get remove' cannot find them
 # app-install-data* before-light
@@ -223,6 +231,11 @@ exit
 
 apt-get remove alacarte apport-gtk at-spi ^brltty* bug-buddy capplets-data cli-common contact-lookup-applet deskbar-applet desktop-effects diveintopython docbook-xml ekiga eog evince ^evolution* f-spot file-roller ^gaim* gcalctool gcc-3.3-base ^gedit* gimp gparted gstreamer0.10-gnomevfs ^gtkhtml* ^guile* hwdb-client-gnome ^language-pack-* libapr1 ^libatspi* ^libaudio* ^libaudiofile* ^libbeagle* ^libbonobo* ^libcamel* ^libdjvulibre* ^libebook* ^libecal* ^libedata* ^libeel* ^libegroupwise* ^libexchange-storage* ^libgadu* ^libgail* ^libgamin* ^libgimp*  libglib-perl libglib2.0-cil libgmime2.2-cil  ^libgucharmap* ^libguile* libhsqldb-java ^libhtml* ^libjaxp* libjline-java ^liblaunchpad-integration* ^liblircclient* ^liblpint-bonobo* ^libmetacity* ^libmono* ^libnautilus* libnet-dbus-perl ^libnm-glib* ^libnspr* ^libopal*  ^libparted* ^libperl*  libpoppler1-glib ^libqthreads*  ^libscrollkeeper* ^libsdl* libservlet2.3-java ^libsexy* ^libsigc++* ^libsoup* ^libtotem-plparser* ^libuniconf* liburi-perl libvisual* ^libvte* ^libwmf* ^libwnck* ^libwpd8c2a ^libwps* ^libwvstreams* libwww-perl libxalan2-java  libxerces2-java libxml-parser-perl libxml-twig-perl ^libxplc* ^metacity* ^mono-* mscompress ^nautilus* ^network-manager* ^openoffice.org* rdesktop rhythmbox scim-gtk2-immodule scrollkeeper serpentine software-properties-gtk sound-juicer ssh-askpass-gnome thunderbird-locale-en-gb tomboy totem tsclient ^update-manager* update-notifier vino w3m yelp
 
+deborphan | xargs apt-get remove --purge -y # deborphan --guess-all
+dpkg --list | grep ^rc | awk '{print $2}'
+... et pour les purger :
+# COLUMNS=300 dpkg --list | grep ^rc | awk '{print $2}' | xargs dpkg -P
+
 apt-get check
 
 #ubiquity
@@ -238,7 +251,7 @@ sudo sed -ie '/ubiquity/d' extract-cd/casper/filesystem.manifest-desktop
 
 # Recompress the livecd filesystem now customized
 
-#sudo rm extract-cd/casper/filesystem.squashfs
+sudo rm extract-cd/casper/filesystem.squashfs
 sudo mksquashfs edit extract-cd/casper/filesystem.squashfs
 
 # Give a lengthy name that will be used in boot screens to the new livecd 
