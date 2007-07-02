@@ -236,6 +236,9 @@ dpkg --list | grep ^rc | awk '{print $2}'
 ... et pour les purger :
 # COLUMNS=300 dpkg --list | grep ^rc | awk '{print $2}' | xargs dpkg -P
 
+# To be sure some critical packages haven't been removed during the last step
+apt-get -y install locales ssh firefox #language-pack-en-base
+
 apt-get check
 
 #ubiquity
