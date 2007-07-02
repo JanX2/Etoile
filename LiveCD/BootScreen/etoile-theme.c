@@ -35,7 +35,7 @@ struct usplash_theme usplash_theme_1024_576_cropped;
 struct usplash_theme usplash_theme = {
 	.version = THEME_VERSION, /* ALWAYS set this to THEME_VERSION, 
 	                             it's a compatibility check */
-	.next = &uspixmap_etoileboot_1024_768,
+	.next = &pixmap_etoileboot_1024_768,
 	.ratio = USPLASH_4_3,
 
 	/* Background and font */
