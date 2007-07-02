@@ -1,15 +1,80 @@
 
 # For example ~/live
-$LIVECD_DIR=/home/qmathe/live
+LIVECD_DIR=~/live
 
 # For example ~/Desktop/ubuntu-6.06.1-desktop-i386.iso
-$UBUNTU_IMAGE=/home/qmathe/live/ubuntu-7.04-desktop-i386.iso
-$UBUNTU_IMAGE_NAME=/home/qmathe/live/ubuntu-7.04-desktop-i386.iso
+UBUNTU_IMAGE=/home/qmathe/live/ubuntu-7.04-desktop-i386.iso
+UBUNTU_IMAGE_NAME=/home/qmathe/live/ubuntu-7.04-desktop-i386.iso
 
-$ETOILE_LIVECD_NAME="Etoile LiveCD 0.2"
-$ETOILE_IMAGE_NAME=etoile.iso
+ETOILE_LIVECD_NAME="Etoile LiveCD 0.2"
+ETOILE_IMAGE_NAME=etoile.iso
 
-$ETOILE_USER_NAME=guest
+ETOILE_USER_NAME=guest
+ETOILE_USER_PASSWORD=guest
+
+# Default values for script stages
+PREPARE=yes
+BUILD=yes
+GENERATE=yes
+EDIT=no
+TEST=no
+CLEANUP=yes
+
+while test $# != 0
+do
+  option=
+  case $1 in
+    --help | -h)
+      echo "$0: Script to build, test and generate Etoile LiveCD"
+      echo "Options:"
+      echo "  --help	  - Print help"
+      echo "  --prepare	  - Download Ubuntu LiveCD, mount and extract to be ready for customization"
+      echo "  --build     - Build and set up Etoile Environment by downloading and compiling all dependencies"
+      echo "  --generate  - Generate Etoile LiveCD iso by compressing customized LiveCD directory"
+      echo
+      echo "  --edit      - Test and customize LiveCD running as a sandboxed environment in shell. Done by calling chroot on LiveCD directory"
+      echo "  --test      - Test LiveCD environment. Done by calling --edit and launching GDM"
+      echo "  --cleanup   - Clean up LiveCD environment of every testing specific settings and user preferences/defaults"
+      exit 0
+      ;;
+    --prepare | -p)
+      PREPARE=yes;;
+    --build | -b)
+      BUILD=yes;;
+    --generate | -g)
+      BUILD=yes;;
+    --edit | -e)
+      EDIT=yes;;
+    --test | -t)
+      TEST=yes;;
+    --cleanup | -c)
+      CLEANUP=yes;;
+    --*=*)
+      option=`expr "x$1" : 'x\([^=]*\)='`
+      optionarg=`expr "x$1" : 'x[^=]*=\(.*\)'`
+      ;;
+    *)
+      ;;
+  esac
+
+  case $option in
+    --livcd-dir)
+      LIVECD_DIR=$optionarg;;
+    --ubuntu-image)
+      UBUNTU_IMAGE=$optionarg;; 
+    --etoile-livecd-name)
+      ETOILE_LIVECD_NAME=$optionarg;; 
+    --etoile-image-name)
+      ETOILE_IMAGE_NAME=$optionarg;; 
+    --etoile-user-name)
+      ETOILE_USER_NAME=$optionarg;; 
+    --etoile-user-password)
+      ETOILE_USER_PASSWORD=$optionarg;; 
+    *)
+      ;;
+  esac
+  shift
+done
 
 #
 # --prepare
