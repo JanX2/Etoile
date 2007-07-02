@@ -29,7 +29,8 @@ Images/Next.png \
 Images/Previous.png \
 Images/ZoomIn.png \
 Images/ZoomOut.png \
-Images/Fit*.png
+Images/Fit*.png \
+Resources/*.tif
 
 #
 # Language Resources

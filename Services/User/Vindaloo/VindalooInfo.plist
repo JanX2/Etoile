@@ -1,9 +1,10 @@
 {
     ApplicationDescription = "A spicy PDF Reader.";
-    ApplicationIcon = Vindaloo;
+    ApplicationIcon = "Vindaloo.tif";
+    NSIcon = "Vindaloo.tif";
     ApplicationName = Vindaloo;
     ApplicationRelease = "0.2";
-    ApplicationURL = "http://home.gna.org/gsimageapps/";
+    ApplicationURL = "http://www.etoile-project.org";
     Authors = ("Stefan Kleine Stegemann<stefankst@gmail.com>");
     Copyright = "Copyright \U00a9 2005 Stefan Kleine Stegemann";
     CopyrightDescription = "Released under the GNU GPL.";
