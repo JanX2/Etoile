@@ -30,9 +30,11 @@ RegularExpression_OBJC_FILES += \
 	TestOGRegularExpression.m
 endif
 
-ONIGURUMA_MAJOR_VERSION = `/usr/local/bin/onig-config --version | awk 'BEGIN {FS="."};{print $1}'`
+ONIGURUMA_VERSION = $(shell /usr/local/bin/onig-config --version)
+# We assume it is in format of X.X.X
+ONIGURUMA_MAJOR_VERSION = $(basename $(basename $(ONIGURUMA_VERSION)))
 
-ifneq  ($(ONIGURUMA_MAJOR_VERSION), 5)
+ifneq ($(ONIGURUMA_MAJOR_VERSION), 5)
 	ADDITIONAL_OBJCFLAGS += -DONIGURUMA_4
 endif
 
