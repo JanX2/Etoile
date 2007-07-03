@@ -62,11 +62,26 @@ cd ../..
 cd Etoile
 make && sudo make install
 
+# Register /usr/local/lib so libonig can be found by OgreKit
+echo "/usr/local/lib" >> /etc/ld.so.conf
+ldconfig
+
 # Workaround install bug (probably related to gnustep-make)
 # FIXME: Remove this hack.
 
 ln -s /Library/StepTalk /Local/Library/StepTalk
 #ln -s /Library/Grr /Local/Library/Grr
+
+# Login panel specific stuff
+# NOTE: Keep a copy of original gdm.conf before deleting it to force 
+# gdm.conf-custom to be used
+cp /etc/gdm/gdm.conf /etc/gdm.conf-original 
+rm /etc/gdm/gdm.conf
+sed -e '/^Greeter.*$/d' /etc/gdm/gdm.conf-custom
+sed -e 's/\(^\[greeter\].*$\)/\1\nGreeter=\/usr\/local\/bin\/etoile_login.sh/' /etc/gdm/gdm.conf-custom
+su gdm
+defaults write Login ETAllowUserToChooseEnvironment 'NO'
+exit
 
 # Add a new user named 'etoile' and set up Etoile environment
 # NOTE: This is the only part where user interaction is necessary
@@ -80,13 +95,7 @@ su $ETOILE_USER_NAME
 # NOTE: Keep a pristine copy of the defaults to be reset on cleanup
 cp /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults.original
 
-# Register /usr/local/lib so libonig can be found by OgreKit
-echo "/usr/local/lib" >> /etc/ld.so.conf
-ldconfig
-
 exit
-
-# TODO: Take care of Login.app specific set up
 
 cd .. # Move out of Etoile directory
 
