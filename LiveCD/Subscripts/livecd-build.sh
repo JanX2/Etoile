@@ -87,7 +87,12 @@ exit
 # NOTE: This is the only part where user interaction is necessary
 
 adduser $ETOILE_USER_NAME
-adduser $ETOILE_USER_NAME admin # Add 'etoile' user to sudoers
+adduser $ETOILE_USER_NAME powerdev lpadmin netdev scanner plugdev video dip 
+adduser $ETOILE_USER_NAME audio floppy cdrom dialout adm
+# Add 'etoile' user to sudoers
+adduser $ETOILE_USER_NAME admin 
+echo '%admin	ALL=(ALL) ALL' >> /etc/sudoers
+
 su $ETOILE_USER_NAME
 . /System/Library/Makefiles/GNUstep.sh
 ./setup.sh
