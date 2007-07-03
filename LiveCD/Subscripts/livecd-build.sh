@@ -72,6 +72,12 @@ ldconfig
 ln -s /Library/StepTalk /Local/Library/StepTalk
 #ln -s /Library/Grr /Local/Library/Grr
 
+#
+# In all the code that follows it's important to take in account it can be run
+# multiple times, so we must restore any conf file in its original state before
+# applying modifications.
+#
+
 # Login panel specific stuff
 # NOTE: Keep a copy of original gdm.conf before deleting it to force 
 # gdm.conf-custom to be used
@@ -79,8 +85,12 @@ cp /etc/gdm/gdm.conf /etc/gdm.conf-original
 rm /etc/gdm/gdm.conf
 sed -e '/^Greeter.*$/d' /etc/gdm/gdm.conf-custom
 sed -e 's/\(^\[greeter\].*$\)/\1\nGreeter=\/usr\/local\/bin\/etoile_login.sh/' /etc/gdm/gdm.conf-custom
-su gdm
-defaults write Login ETAllowUserToChooseEnvironment 'NO'
+# NOTE: su gdm doesn't work, so we pass the default in GDM greeter script
+#su gdm
+#defaults write Login ETAllowUserToChooseEnvironment 'NO'
+cp Services/Private/Login/etoile_login.sh /usr/local/bin
+sed -e '/-ETAllowUserToChooseEnvironment "NO"/d' /usr/local/bin/etoile_login.sh
+sed -e 's/\(Login.*\)/\1 -ETAllowUserToChooseEnvironment "NO"/' /usr/local/bin/etoile_login.sh
 exit
 
 # Add a new user named 'etoile' and set up Etoile environment
@@ -90,7 +100,12 @@ adduser $ETOILE_USER_NAME
 adduser $ETOILE_USER_NAME powerdev lpadmin netdev scanner plugdev video dip 
 adduser $ETOILE_USER_NAME audio floppy cdrom dialout adm
 # Add 'etoile' user to sudoers
-adduser $ETOILE_USER_NAME admin 
+adduser $ETOILE_USER_NAME admin
+if [ ! -f /etc/sudoers-original ]; then
+	cp /etc/sudoers /etc/sudoers-original;
+else
+	cp /etc/sudoers-original /etc/sudoers;
+fi
 echo '%admin	ALL=(ALL) ALL' >> /etc/sudoers
 
 su $ETOILE_USER_NAME
