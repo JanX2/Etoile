@@ -18,21 +18,18 @@ StepChat_RESOURCE_FILES = \
 	StepChatInfo.plist \
 	Resources/StepChat.tiff
 
-#ifeq ($(FOUNDATION_LIB), apple)
 StepChat_LOCALIZED_RESOURCE_FILES = \
 	  MainMenu.nib\
-	  MessageWindow.nib\
 	  AccountBox.nib\
 	  PasswordBox.nib\
 	  RosterWindow.nib
-#else
-#StepChat_LOCALIZED_RESOURCE_FILES = \
-	  #MainMenu.nib\
-	  #MessageWindow.gorm\
-	  #AccountBox.gorm \
-	  #PasswordBox.gorm \
-	  #RosterWindow.nib
-#endif
+ifeq ($(FOUNDATION_LIB), apple)
+StepChat_LOCALIZED_RESOURCE_FILES += \
+	  MessageWindow.nib
+else
+StepChat_LOCALIZED_RESOURCE_FILES += \
+	  MessageWindow.gorm
+endif
 
 #
 # Header files
