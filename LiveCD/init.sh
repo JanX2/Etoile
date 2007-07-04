@@ -4,6 +4,8 @@
 /etc/init.d/networking restart
 
 # Start HAL
+killall -9 hald
+/usr/bin/hald
 
 # Register /usr/local/lib so libonig can be found by OgreKit
 # Already set up in /etc/ld.so.conf on livecd creation
