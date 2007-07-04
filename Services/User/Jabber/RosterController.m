@@ -162,14 +162,18 @@ NSMutableArray * rosterControllers = nil;
 {
 	NSAttributedString * attributedText= [self displayStringForObject:anObject];
 	float myWidth = [attributedText size].width;
-	for(int i=0 ; i<[self outlineView:view numberOfChildrenOfItem:anObject] ; i++)
+	if([view isItemExpanded:anObject])
 	{
-		attributedText = [self displayStringForObject:[self outlineView:view child:i ofItem:anObject]];
-		float width = [attributedText size].width + anIndent;
-		NSLog(@"Width of %@ is %d", attributedText, width);
-		if(width > myWidth)
+		for(int i=0 ; i<[self outlineView:view numberOfChildrenOfItem:anObject] ; i++)
 		{
-			myWidth = width;
+			float width = [self widthOfItemAndChildren:[self outlineView:view
+																   child:i
+																  ofItem:anObject] 
+											withIndent:anIndent] + anIndent;
+			if(width > myWidth)
+			{
+				myWidth = width;
+			}
 		}
 	}
 	return myWidth;
