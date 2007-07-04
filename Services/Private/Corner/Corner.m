@@ -1,13 +1,6 @@
-#import <GNUstepGUI/GSDisplayServer.h>
 #import <Corner.h>
 
 @implementation Corner
-/* Always stay hidden */
-- (void)applicationDidUnhide:(NSNotification *)aNotification
-{
-	/* This seems to show the menu.  No idea why. */
-	//[NSApp hide:self];
-}
 /**
  * Load the scripts from defaults, setting some defaults if 
  * there are none.  The default scripts need making more sensible.
@@ -45,18 +38,20 @@
  * Initialise the scripting engine and set up a timer to periodically
  * poll the mouse position.
  */
-- (void) applicationDidFinishLaunching:(NSNotification*)aNotification
+- (id) init
 {
-	/* Make sure we are not displaying anything to the user */
-	[NSApp hide:self];
+	if(nil == (self = [super init]))
+	{
+		return nil;
+	}
 	/* Set up scripting */
 	scriptingEnvironment = [[STEnvironment sharedEnvironment] retain];
 	smalltalkEngine = [[STEngine engineForLanguage:@"Smalltalk"] retain];
 	[scriptingEnvironment setObject:[[NSProcessInfo processInfo] arguments] 
 	                        forName:@"ARGS"];
 	[scriptingEnvironment loadModule:@"SimpleTranscript"];
-	[scriptingEnvironment setObject:NSApp
-	                        forName:@"Application"];
+/*	[scriptingEnvironment setObject:NSApp
+	                        forName:@"Application"];*/
 	[scriptingEnvironment setObject:scriptingEnvironment
 	                        forName:@"Environment"];
 	/* Set up the scripts */
@@ -65,14 +60,17 @@
 											 selector:@selector(loadScripts:)
 												 name:NSUserDefaultsDidChangeNotification
 	                                           object:nil];
-	/* Get the X11 Window we use with our query */
-	w = *(Window *)[GSCurrentServer() windowDevice:[[NSApp mainWindow] windowNumber]];
-	/* Poll the mouse */
 	[NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)0.2
-		target:self
-	  selector:@selector(periodic:)
-	  userInfo:nil
-	   repeats:YES];
+	                                 target:self
+								   selector:@selector(periodic:)
+								   userInfo:nil
+								    repeats:YES];
+
+	/* Get the X11 Window we use with our query */
+	w = DefaultRootWindow(XOpenDisplay(NULL));
+	[[NSRunLoop currentRunLoop] run];
+	/* Should not be reached */
+	return self;
 }
 /**
  * Returns an NSRect containing the mouse position (x,y) and
@@ -81,7 +79,7 @@
  */
 - (NSRect) globalMousePosition
 {
-	Display * display = (Display*)[GSCurrentServer() serverDevice];
+	Display * display = (Display*) XOpenDisplay(NULL);
 	Window root, child;
 	int x,y,x1,y1;
 	unsigned int mask, other;
@@ -116,6 +114,7 @@
 - (void) invokeActionForCorner:(int)aCorner
 {
 	NS_DURING
+		NSLog(@"In corner %d", aCorner);
 		NSString * script = [scripts objectAtIndex:aCorner-1];
 		if(script != nil && ![script isEqualToString:@""])
 		{

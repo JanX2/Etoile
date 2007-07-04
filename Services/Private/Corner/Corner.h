@@ -1,4 +1,4 @@
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 #import <X11/Xlib.h>
 #import <StepTalk/StepTalk.h>
 
@@ -15,4 +15,8 @@
 	STEngine * smalltalkEngine;
 	NSArray * scripts;
 }
+/**
+ * Poll the mouse position.
+ */
+- (void) periodic:(id)sender;
 @end

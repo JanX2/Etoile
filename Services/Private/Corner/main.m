@@ -1,22 +1,18 @@
-//
-//  main.m
-//  TestApp
-//
-//  Created by David Chisnall on 23/02/2007.
-//  Copyright __MyCompanyName__ 2007. All rights reserved.
-//
+#include <stdio.h>
+#include <unistd.h>
+#import <Foundation/Foundation.h>
+#import <Corner.h>
 
-#import <Cocoa/Cocoa.h>
-
-int main(int argc, char *argv[])
+/* Number of seconds in a minute.  Change to small values while testing so that
+ * you don't need to wait for ages for the notification to fire */
+#define SECONDS_PER_MINUTE 60
+/**
+ * Small application that implements hot corners.
+ */
+int main(void)
 {
-	/* Don't display an icon for this application, since it is supposed not to
-	 * have a GUI at all.  It uses AppKit solely in order to be able to get an
-	 * X11 Window.
-	 */
-	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES]
-	                                          forKey: @"GSSuppressAppIcon"];
-	[pool release];
-	return NSApplicationMain(argc,  (const char **) argv);
+	/* Set up an autorelease pool that is never destroyed. */
+	[[NSAutoreleasePool alloc] init];
+	/* Creates its own runloop */
+	[[Corner alloc] init];
 }
