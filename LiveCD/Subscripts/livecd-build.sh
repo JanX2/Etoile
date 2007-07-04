@@ -68,3 +68,7 @@ cp hidden /.hidden
 cp init.sh /etc/gdm/PostLogin/Default
 cd ..
 
+# Finally remove some Ubuntu user stuff
+rm -rf /home/$ETOILE_USER_NAME/Desktop
+rm -rf /home/$ETOILE_USER_NAME/Examples
+
