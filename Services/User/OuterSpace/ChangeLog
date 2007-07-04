@@ -1,3 +1,8 @@
+07-04-2007 Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Declared ETOILE_CORE_MODULE to install into System
+	domain.
+
 06-30-2007 Yen-Ju Chen <yjchenx gmail>
 
 	* Speed up by only draw necessary part.
@@ -5,7 +10,7 @@
 06-28-2007 Quentin Mathe <qmathe@club-internet.fr>
 
 	* OSApplications.m: Modified to filter out all System applications except
-    user related ones like Gorm.
+	user related ones like Gorm.
 
 06-28-2007 Quentin Mathe <qmathe@club-internet.fr>
 
