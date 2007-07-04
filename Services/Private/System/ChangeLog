@@ -1,3 +1,7 @@
+2007-07-04  Quentin Mathe <qmathe@club-internet.fr>
+
+	* SystemTaskList.plist: Added make_services.
+
 2007-06-30  Yen-Ju Chen <yjchenx gmail>
 
 	* Use 'pkg-config --cflags dbus-1` and `pkg-config --libs dbus-1`

@@ -109,4 +109,15 @@
 		Persistent = <*BN>;
 		Hidden = <*BY>;
 	};
+	/etoilesystem/tool/make_services =
+	{
+		LaunchPath = "make_services";
+		Arguments = ();
+		UserName = "";
+		LaunchPriority = 50;
+		OnStart = <*BY>;
+		OnDemand = <*BY>;
+		Persistent = <*BN>;
+		Hidden = <*BY>;
+	};
 }
