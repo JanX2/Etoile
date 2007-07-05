@@ -1,3 +1,8 @@
+2007-07-06  Quentin Mathe <qmathe@club-internet.fr>
+
+	* setup.sh: Fixed to look for bundles in System domain rather than 
+	Local (induced by ETOILE_CORE_MODULE use). Needs improvement.
+
 2007-06-28  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Services/Private/GNUmakefile: Included Corner, Idle and AZSwitch in the
