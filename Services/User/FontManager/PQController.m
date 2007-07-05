@@ -15,6 +15,11 @@
 #import "PQCompat.h"
 
 
+const float groupsBoxMinWidth = 100.0 + 16.0;
+const float fontsBoxMinWidth = 100.0;
+const float sampleBoxMinWidth = 220.0;
+
+
 @implementation PQController
 
 - (id) init
@@ -66,10 +71,15 @@
 	[fontListColumn setEditable: NO];
 	[[[[groupList tableColumns] objectAtIndex: 0] headerCell]
 		setTitle: @"Groups"];
+	[splitView setDelegate: self];
 
 	[fontList sizeLastColumnToFit];
 	[groupList sizeLastColumnToFit];
 
+	float windowMinWidth = (([splitView dividerThickness] * 2) +
+	                        groupsBoxMinWidth + fontsBoxMinWidth +
+													sampleBoxMinWidth);
+	[window setMinSize: NSMakeSize(windowMinWidth, [window minSize].height)];
 
 	int fontsCount = [fontFamilies count];
 
@@ -87,7 +97,142 @@
 	}
 }
 
-/* Groups [table] view data source code */
+/* Split view data source */
+
+- (float) splitView: (NSSplitView *)sender
+	constrainMaxCoordinate: (float)proposedMax
+        ofSubviewAt: (int)offset
+{
+	if (offset == 0)
+	{
+		/* FUTURE:
+		if ([sender isSubviewCollapsed: sampleBox])
+		{
+			return ([sender frame].size.width - 128.0);
+		}
+		else
+		{
+			return ([sender frame].size.width - [sampleBox frame].size.width - 128.0);
+		}
+		*/
+		/* NOW: */
+		return ([sender frame].size.width - [sampleBox frame].size.width -
+		        fontsBoxMinWidth - ([sender dividerThickness] * 2));
+	}
+	else if (offset == 1)
+	{
+		return ([sender frame].size.width - sampleBoxMinWidth -
+		        [sender dividerThickness]);
+	}
+	/* Else */
+	return proposedMax;
+}
+
+- (float) splitView: (NSSplitView *)sender
+	constrainMinCoordinate: (float)proposedMin
+        ofSubviewAt: (int)offset
+{
+	if (offset == 0)
+	{
+		return groupsBoxMinWidth;
+	}
+	else if (offset == 1)
+	{
+		return ([groupsBox frame].size.width + fontsBoxMinWidth +
+		        [sender dividerThickness]);
+	}
+	/* Else */
+	return proposedMin;
+}
+
+/* FUTURE:
+- (BOOL) splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
+{
+	if (subview == sampleBox)
+	{
+		return YES;
+	}
+	/ * Else * /
+	return NO;
+}
+*/
+
+- (void) splitView: (NSSplitView *)sender
+	resizeSubviewsWithOldSize: (NSSize)oldSize
+{
+	NSSize newSize = [splitView frame].size;
+	float differance = newSize.width - oldSize.width;
+
+	if (differance > 0)
+	{
+		[sampleBox setFrameSize:
+			NSMakeSize(([sampleBox frame].size.width + differance), newSize.height)];
+	}
+	else if (differance < 0)
+	{
+		if (([sampleBox frame].size.width + differance) > sampleBoxMinWidth)
+		{
+			[sampleBox setFrameSize:
+				NSMakeSize(([sampleBox frame].size.width + differance),
+				           newSize.height)];
+		}
+		else
+		{
+			differance -= (sampleBoxMinWidth - [sampleBox frame].size.width);
+
+			/* Split the rest between the remaining views */
+			/* We assume that the window's minimum size is correct */
+
+			float groupsBoxWidth = [groupsBox frame].size.width;
+			float fontsBoxWidth = [fontsBox frame].size.width;
+
+			float groupsBoxDifferance =
+				(int)(differance * (groupsBoxWidth / (groupsBoxWidth + fontsBoxWidth)));
+			float fontsBoxDifferance = (differance - groupsBoxDifferance);
+
+			groupsBoxWidth += groupsBoxDifferance;
+			fontsBoxWidth += fontsBoxDifferance;
+
+			/* Avoid resizing to small if possible */
+			if (fontsBoxWidth < fontsBoxMinWidth)
+			{
+				groupsBoxDifferance += (fontsBoxWidth - fontsBoxMinWidth);
+				fontsBoxDifferance += (fontsBoxMinWidth - fontsBoxWidth);
+				groupsBoxWidth += (fontsBoxWidth - fontsBoxMinWidth);
+				fontsBoxWidth = fontsBoxMinWidth;
+			}
+			else if (groupsBoxWidth < groupsBoxMinWidth)
+			{
+				fontsBoxDifferance += (groupsBoxMinWidth - fontsBoxWidth);
+				groupsBoxDifferance += (groupsBoxMinWidth - groupsBoxWidth);
+				fontsBoxWidth += (groupsBoxWidth - groupsBoxMinWidth);
+				groupsBoxWidth = groupsBoxMinWidth;
+			}
+
+			[groupsBox setFrameSize: NSMakeSize(groupsBoxWidth, newSize.height)];
+			[fontsBox setFrame:
+				NSMakeRect(([fontsBox frame].origin.x + groupsBoxDifferance),
+									 [fontsBox frame].origin.y, fontsBoxWidth, newSize.height)];
+			[sampleBox setFrame:
+				NSMakeRect(([sampleBox frame].origin.x + differance),
+									 [sampleBox frame].origin.y, sampleBoxMinWidth,
+									 newSize.height)];
+		}
+	}
+	else
+	{
+		[sampleBox setFrameSize: NSMakeSize([sampleBox frame].size.width,
+	                                      newSize.height)];
+	}
+
+
+	[groupsBox setFrameSize: NSMakeSize([groupsBox frame].size.width,
+	                                    newSize.height)];
+	[fontsBox setFrameSize: NSMakeSize([fontsBox frame].size.width,
+																		 newSize.height)];
+}
+
+/* Groups [table] view data source */
 
 - (int) numberOfRowsInTableView: (NSTableView *)aTableView
 {
@@ -101,7 +246,7 @@
 	return @"All"; // Temp
 }
 
-/* Fonts [outline] view data source code */
+/* Fonts [outline] view data source */
 
 - (id) outlineView: (NSOutlineView *)outlineView
 	objectValueForTableColumn: (NSTableColumn *)tableColumn

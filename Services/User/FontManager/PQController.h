@@ -21,7 +21,13 @@
 	IBOutlet NSTextField *fontsInfoField;
 	IBOutlet NSTableView *groupList;
 	IBOutlet PQSampleController *sampleController;
-	
+
+	IBOutlet NSWindow *window;
+	IBOutlet NSSplitView *splitView;
+	IBOutlet NSBox *groupsBox;
+	IBOutlet NSBox *fontsBox;
+	IBOutlet NSBox *sampleBox;
+
 	NSMutableArray *fontFamilies; /* All font families */
 }
 

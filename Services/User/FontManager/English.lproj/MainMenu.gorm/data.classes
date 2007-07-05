@@ -15,7 +15,12 @@
 	    fontList,
 	    fontsInfoField,
 	    groupList,
-	    sampleController
+	    sampleController,
+	    fontsBox,
+	    groupsBox,
+	    sampleBox,
+	    splitView,
+	    window
 	);
 	Super = NSObject;
     };

@@ -7,9 +7,14 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 fontList = NSOutlineView; 
+                fontsBox = NSBox; 
                 fontsInfoField = NSTextField; 
                 groupList = NSTableView; 
+                groupsBox = NSBox; 
+                sampleBox = NSBox; 
                 sampleController = PQSampleController; 
+                splitView = NSSplitView; 
+                window = NSWindow; 
             }; 
             SUPERCLASS = NSObject; 
         }, 

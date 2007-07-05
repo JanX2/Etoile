@@ -188,12 +188,17 @@
 - (void) drawRect: (NSRect)rect
 {
 	BOOL shouldUnlockFocus = NO;
+	BOOL sampleChanged = NO;
+
+	/* Set up text system */
+	[textContainer setContainerSize: NSMakeSize([self frame].size.width, 50000)];
 
 
 	/* Create font sample */
 	if ([dataSource fontsShouldChangeInFontSampleView: self] == YES
 			|| fontAttributesNeedUpdate == YES)
 	{
+		sampleChanged = YES;
 		int fontsCount = [[self dataSource] numberOfFontsInFontSampleView: self];
 		int index = 0;
 
@@ -203,9 +208,6 @@
 		NSFont *currentFont;
 		NSString *currentLabel;
 		NSMutableDictionary *currentAttributes = [[NSMutableDictionary alloc] init];
-
-		/* Set up text system */
-		[textContainer setContainerSize: NSMakeSize([self frame].size.width, 50000)];
 
 		fontAttributesNeedUpdate = NO;
 
@@ -283,22 +285,21 @@
 
 			++index;
 		}
+	}
 
-		if (autoSize == YES)
-		{
-			(void) [layoutManager glyphRangeForTextContainer: textContainer];
+	if (autoSize == YES)
+	{
+		(void) [layoutManager glyphRangeForTextContainer: textContainer];
 
-			[self setConstrainedFrameSize:
-				[layoutManager usedRectForTextContainer: textContainer].size];
+		[self setConstrainedFrameSize:
+			[layoutManager usedRectForTextContainer: textContainer].size];
 
-			/* Fix a drawing bug caused by resize. */
+		/* Fix a drawing bug caused by resize. */
+		rect = [self visibleRect];
 
-			rect = [self visibleRect];
+		[self lockFocus];
 
-			[self lockFocus];
-
-			shouldUnlockFocus = YES;
-		}
+		shouldUnlockFocus = YES;
 	}
 
 	/* Add color */

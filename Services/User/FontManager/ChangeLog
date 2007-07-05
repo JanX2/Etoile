@@ -1,3 +1,11 @@
+2007-07-04  Isaiah Beerbower <ipaqah@tm.net>
+	* Info.plist: Fix "Can't create document" error message on Mac OS X.
+	* PQController.*: Add NSSplitView delegate methods.
+	* English.lproj/MainMenu.nib/*: Set PQController as NSSplitView's delegate.
+	* English.lproj/MainMenu.gorm/*: Same.
+	* PQFontSampleView.m ([-drawRect:]): Moved some code back because it was
+	  causing a drawing bug when moved. (:
+
 2007-06-22  Isaiah Beerbower <ipaqah@tm.net>
 	* PQFontSampleView.m ([-drawRect:]): Moved some code for performance reasons.
 
