@@ -198,7 +198,7 @@ NSMutableArray * rosterControllers = nil;
 	NSSize size;
 	//Calculate width
 	float interCellHorizontalSpacing = [view intercellSpacing].width;
-	float indent = [view indentationPerLevel] + (4*interCellHorizontalSpacing);
+	float indent = [view indentationPerLevel] + (interCellHorizontalSpacing);
 	size.width = [self widthOfItemAndChildren:nil withIndent:indent];
 	size.width += interCellHorizontalSpacing + indent;
 	[[[view tableColumns] objectAtIndex:0] setWidth:size.width];
