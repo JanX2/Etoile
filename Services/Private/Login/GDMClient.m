@@ -72,7 +72,11 @@
 	NS_DURING
 	#define READ(NAME) if ([self read: NAME] == NO) { [output sendSTX]; return NO; } else { [output sendSTX]; }
 
+#if 0 // Do not write password
 	[log appendFormat: @"\nLOGIN: <%@> PASS: <%@>\n", userName, password];
+#else
+	[log appendFormat: @"\nLOGIN: <%@> PASS: *** hidden ***\n", userName];
+#endif
 	[log writeToFile: @"/tmp/log" atomically: YES];
 	
 	//READ (GDM_SETLOGIN);
