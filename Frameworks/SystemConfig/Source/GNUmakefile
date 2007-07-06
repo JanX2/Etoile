@@ -1,11 +1,5 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-####################################################
-#             WHAT MODULES TO COMPILE              #
-####################################################
-
-export X11 ?= yes
-
 #
 # Main application
 #
@@ -22,9 +16,9 @@ libSystemConfig_OBJC_FILES = \
 	SCMouse.m \
 	SCSound.m
 
-ifeq ($(X11), yes)
+ifeq ($(ETOILE_X11), yes)
 libSystemConfig_OBJC_FILES += X11Mouse.m
-libSystemConfig_LIBRARIES_DEPEND_UPON += -lX11
+
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib
 endif
