@@ -27,6 +27,10 @@ FontManager_LOCALIZED_RESOURCE_FILES = \
   MainMenu.gorm \
   Localizable.strings
 
+FontManager_RESOURCE_FILES = \
+  Resources/FontManager.tif
+
+
 FontManager_MAIN_MODEL_FILE = MainMenu.gorm
 
 include $(GNUSTEP_MAKEFILES)/application.make

@@ -1,9 +1,11 @@
 {
 	ApplicationDescription = "A Font Previewer/Installer";
 	ApplicationName = "Font Manager";
+	ApplicationIcon = "FontManager.tif";
 	ApplicationRelease = "Font Manager 0.1";
 	Authors = ("Isaiah Beerbower <ipaqah@tm.net>");
 	Copyright = "Copyright 2007 Isaiah Beerbower";
 	CopyrightDescription = "Released under the Modified BSD licence";
+	NSIcon = "FontManager.tif";
 	NSRole = "Viewer";
 }

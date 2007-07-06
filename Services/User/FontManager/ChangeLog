@@ -1,3 +1,9 @@
+2007-07-06  Quentin Mathe <qmathe@club-internet.fr>
+	* Info.plist: Modified CFBundleIdentifier to be valid and added 
+	FontManager.tif icon reference.
+	* FontManagerInfo.plist: Added ApplicationIcon and NSIcon.
+	* GNUmakefile. Updated.
+
 2007-07-04  Isaiah Beerbower <ipaqah@tm.net>
 	* Info.plist: Fix "Can't create document" error message on Mac OS X.
 	* PQController.*: Add NSSplitView delegate methods.
