@@ -2,6 +2,9 @@
 DictionaryReader Changelog
 ==========================
 
+Jul 6 2007  Yen-Ju Chen
+	* Update nib file and clean up code.
+
 Jun 11 2007  Quentin Mathe
 	* DictConnection.m:
 	* LocalDictionary.m:

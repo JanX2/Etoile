@@ -11,7 +11,7 @@
 
 #import "LocalDictionary.h"
 #import "NSScanner+Base64Encoding.h"
-
+#import "GNUstep.h"
 
 
 /**
@@ -20,12 +20,11 @@
  */
 @interface BigRange : NSObject
 {
-  int fromIndex;
-  int length;
+	int fromIndex;
+	int length;
 }
 
-+ (id)rangeFrom: (int)aFromIndex
-	 length: (int)aToIndex;
++ (id)rangeFrom: (int)aFromIndex length: (int)aToIndex;
 
 - (int)fromIndex;
 - (int)length;
@@ -36,30 +35,28 @@
 
 @implementation BigRange
 
-+ (id)rangeFrom: (int)aFromIndex
-	 length: (int)aLength
++ (id) rangeFrom: (int) aFromIndex length: (int) aLength
 {
-  BigRange* instance = [[BigRange alloc] init];
-  if (instance != nil) {
-    instance->fromIndex = aFromIndex;
-    instance->length    = aLength;
-  }
-  return instance;
+	BigRange* instance = [[BigRange alloc] init];
+	if (instance != nil) 
+	{
+		instance->fromIndex = aFromIndex;
+		instance->length    = aLength;
+	}
+	return instance;
 }
 
-- (int)fromIndex
+- (int) fromIndex
 {
-  return fromIndex;
+	return fromIndex;
 }
 
-- (int)length
+- (int) length
 {
-  return length;
+	return length;
 }
 
 @end
-
-
 
 // -----------------------------------
 
@@ -79,11 +76,11 @@ static NSMutableDictionary* existingDictionaries;
 
 
 // CLASS INITIALISATION
-+(void)initialize
++ (void)initialize
 {
-    [super initialize];
+	[super initialize];
     
-    existingDictionaries = [[NSMutableDictionary alloc] init];
+	existingDictionaries = [[NSMutableDictionary alloc] init];
 }
 
 
@@ -93,152 +90,159 @@ static NSMutableDictionary* existingDictionaries;
  * Returns a dictionary with the specifiled Dict-server-style index and
  * dictionary database files.
  */
-+(id) dictionaryWithIndexAtPath: indexFileName
-               dictionaryAtPath: fileName
++ (id) dictionaryWithIndexAtPath: (NSString *) indexFileName
+                dictionaryAtPath: (NSString *) fileName
 {
-  LocalDictionary* localDict =
-      [existingDictionaries objectForKey: fileName];
+	LocalDictionary* localDict = [existingDictionaries objectForKey: fileName];
   
-  if (localDict != nil) {
-    return localDict;
-  } else {
-    return [[self alloc] initWithIndexAtPath: indexFileName
-                            dictionaryAtPath: fileName];
-  }
+	if (localDict != nil) 
+	{
+		return localDict;
+	}
+	else 
+	{
+		return [[self alloc] initWithIndexAtPath: indexFileName
+		                        dictionaryAtPath: fileName];
+	}
 }
 
 /**
  * Initialises the DictionaryHandle from the property list aPropertyList.
  */
--(id) initFromPropertyList: (NSDictionary*) aPropertyList
+- (id) initFromPropertyList: (NSDictionary *) aPropertyList
 {
 	// FIXME: Reports the failure in a more friendly way which lets the user
 	// uses the application.
-    NSAssert1([aPropertyList objectForKey: @"index file"] != nil,
-              @"Property list %@ lacking 'index file' key.", aPropertyList);
-    NSAssert1([aPropertyList objectForKey: @"dict file"] != nil,
-              @"Property list %@ lacking 'index file' key.", aPropertyList);
+	NSAssert1([aPropertyList objectForKey: @"index file"] != nil,
+	          @"Property list %@ lacking 'index file' key.", aPropertyList);
+	NSAssert1([aPropertyList objectForKey: @"dict file"] != nil,
+	          @"Property list %@ lacking 'index file' key.", aPropertyList);
     
-    if ((self = [super initFromPropertyList: aPropertyList]) != nil) {
-        self = [self initWithIndexAtPath: [aPropertyList objectForKey: @"index file"]
-                     dictionaryAtPath: [aPropertyList objectForKey: @"dict file"]];
+	if ((self = [super initFromPropertyList: aPropertyList]) != nil) 
+	{
+		self = [self initWithIndexAtPath: [aPropertyList objectForKey: @"index file"]
+		             dictionaryAtPath: [aPropertyList objectForKey: @"dict file"]];
         
-        NSString* fname = [aPropertyList objectForKey: @"full name"];
-        if (fname != nil) {
-            ASSIGN(fullName, fname);
-        }
-    }
+		NSString* fname = [aPropertyList objectForKey: @"full name"];
+		if (fname != nil) 
+		{
+			ASSIGN(fullName, fname);
+		}
+	}
     
-    return self;
+	return self;
 }
 
 /**
  * Initialises the instance by expanding the given base name using
  * the .dict and .index postfixes and looking it up as resource.
  */
--(id) initWithResourceName: (NSString*) baseName
+- (id) initWithResourceName: (NSString *) baseName
 {
-  NSBundle* mainBundle = [NSBundle mainBundle];
-  NSString* anIndexFile;
-  NSString* aDictFile;
+	NSBundle* mainBundle = [NSBundle mainBundle];
+	NSString* anIndexFile;
+	NSString* aDictFile;
   
-  anIndexFile = [mainBundle pathForResource: baseName ofType: @"index"];
-  aDictFile = [mainBundle pathForResource: baseName ofType: @"dict"];
+	anIndexFile = [mainBundle pathForResource: baseName ofType: @"index"];
+	aDictFile = [mainBundle pathForResource: baseName ofType: @"dict"];
 #warning TODO Add support for gz compressed files here
   
-  NSAssert1(anIndexFile != nil,
+	NSAssert1(anIndexFile != nil,
 	    @"Index resource %@ not found",
 	    baseName);
   
-  NSAssert1(aDictFile != nil,
+	NSAssert1(aDictFile != nil,
 	    @"Dict resource %@ not found",
 	    baseName);
   
-  return [self initWithIndexAtPath: anIndexFile
-	       dictionaryAtPath: aDictFile];
+	return [self initWithIndexAtPath: anIndexFile
+	                dictionaryAtPath: aDictFile];
 }
 
 /**
  * Initialises the instance with the specified Dict-server-style index
  * and dictionary database files.
  */
--(id) initWithIndexAtPath: (NSString*) anIndexFile
-	 dictionaryAtPath: (NSString*) aDictFile
+- (id) initWithIndexAtPath: (NSString*) anIndexFile
+          dictionaryAtPath: (NSString*) aDictFile
 {
-  LocalDictionary* localDict =
-      [existingDictionaries objectForKey: aDictFile];
+	LocalDictionary* localDict =
+		[existingDictionaries objectForKey: aDictFile];
   
-  // In case this object is already allocated, just return
-  // the known instance, discarding the allocated object.
-  if (localDict != nil) {
-      [self release];
-      return [[localDict retain] autorelease];
-  }
+	// In case this object is already allocated, just return
+	// the known instance, discarding the allocated object.
+	if (localDict != nil) 
+	{
+		[self dealloc];
+		return localDict;
+	}
   
-  NSAssert1([anIndexFile hasSuffix: @".index"],
+	NSAssert1([anIndexFile hasSuffix: @".index"],
             @"Index file \"%@\" has no .index suffix.",
             anIndexFile
-  );
+	);
   
-  NSAssert1([aDictFile hasSuffix: @".dict"]
+	NSAssert1([aDictFile hasSuffix: @".dict"]
 #ifdef GNUSTEP
-            // only GNUstep supports on-the-fly gunzipping right now
-            || [aDictFile hasSuffix: @".dz"]
+	          // only GNUstep supports on-the-fly gunzipping right now
+	          || [aDictFile hasSuffix: @".dz"]
 #endif // GNUSTEP
-            , @"Dict file \"%@\" has a bad suffix (must be .dict"
+	          , @"Dict file \"%@\" has a bad suffix (must be .dict"
 #ifdef GNUSTEP
-              @" or .dz"
+	          @" or .dz"
 #endif // GNUSTEP
-              @").",
-              aDictFile
-  );
+	          @").",
+	          aDictFile
+	);
   
-  if ((self = [super init]) != nil) {
-    ASSIGN(indexFile, anIndexFile);
-    ASSIGN(dictFile, aDictFile);
-    opened = NO;
+	if ((self = [super init]) != nil) 
+	{
+		ASSIGN(indexFile, anIndexFile);
+		ASSIGN(dictFile, aDictFile);
+		opened = NO;
     
-    [existingDictionaries setObject: self forKey: aDictFile];
-  }
+		[existingDictionaries setObject: self forKey: aDictFile];
+	}
   
-  return self;
+	return self;
 }
 
 -(void)dealloc
 {
-  // first close connection, if open
-  [self close];
+	// first close connection, if open
+	[self close];
 
-  // NOTE: dictHandle and ranges are currently destroyed in -close, but it must
-  // be checked whether that makes sense or not.
-  //DESTROY(dictHandle);
-  //DESTROY(ranges);
-  DESTROY(indexFile);
-  DESTROY(dictFile);
-  DESTROY(fullName);
-  DESTROY(defWriter);
+	// NOTE: dictHandle and ranges are currently destroyed in -close, 
+	// but it must be checked whether that makes sense or not.
+	//DESTROY(dictHandle);
+	//DESTROY(ranges);
+	DESTROY(indexFile);
+	DESTROY(dictFile);
+	DESTROY(fullName);
+	DESTROY(defWriter);
   
-  [super dealloc];
+	[super dealloc];
 }
 
 /** To know whether two local dictionaries are equal we check if they have the
 	the same host. */
--(BOOL) isEqual: (id)object
+- (BOOL) isEqual: (id)object
 {
-  if ([object isKindOfClass: [DictionaryHandle class]]
-   && [object respondsToSelector: @selector(fullName)]) {
-    if ([[self fullName] isEqual: [object fullName]])
-      return YES;
-  }
+	if ([object isKindOfClass: [DictionaryHandle class]] &&
+	    [object respondsToSelector: @selector(fullName)]) 
+	{
+		if ([[self fullName] isEqual: [object fullName]])
+			return YES;
+	}
 	
-  return NO;
+	return NO;
 }
 
 // MAIN FUNCTIONALITY
 
--(NSString*) fullName
+- (NSString *) fullName
 {
-  return fullName;
+	return fullName;
 }
 
 /**
@@ -254,47 +258,48 @@ static NSMutableDictionary* existingDictionaries;
  */
 -(void) handleDescription;
 {
-  [NSString stringWithFormat: @"Local dictionary %@", dictFile];
+	[NSString stringWithFormat: @"Local dictionary %@", dictFile];
 }
 
 /**
  * Lets the dictionary handle describe a specific database.
  */
--(void) descriptionForDatabase: (NSString*) aDatabase
+- (void) descriptionForDatabase: (NSString *) aDatabase
 {
-  // we ignore the argument here
+	// we ignore the argument here
   
-  [defWriter writeLine:
+	[defWriter writeLine:
 	       [NSString stringWithFormat: @"Index file %@", indexFile]];
-  [defWriter writeLine:
+	[defWriter writeLine:
 	       [NSString stringWithFormat: @"Database file %@", dictFile]];
-  [defWriter writeLine:
+	[defWriter writeLine:
 	       (opened)?@"Connection is opened":@"Connection is closed"];
   
-  [defWriter writeLine: @"\nDatabase information"];
+	[defWriter writeLine: @"\nDatabase information"];
   
-  [self definitionFor: @"00-database-info"];
+	[self definitionFor: @"00-database-info"];
 }
 
 /**
  * Lets the dictionary handle print all available definitions
  * for aWord in the main window.
  */
--(void) definitionFor: (NSString*) aWord
+- (void) definitionFor: (NSString *) aWord
 {
-  NSString* entry = [self _getEntryFor: aWord];
+	NSString* entry = [self _getEntryFor: aWord];
   
-  if (entry != nil) {
+	if (entry != nil) 
+	{
+		[defWriter writeHeadline:
+		    [NSString stringWithFormat: @"From %@ (local):", fullName]];
     
-    [defWriter writeHeadline:
-		 [NSString stringWithFormat: @"From %@ (local):", fullName]];
-    
-    [defWriter writeLine: entry];
-    
-  } else {
-    [defWriter writeHeadline:
-		 [NSString stringWithFormat: @"No results from %@", self]];
-  }
+		[defWriter writeLine: entry];
+	}
+	else 
+	{
+		[defWriter writeHeadline:
+	        [NSString stringWithFormat: @"No results from %@", self]];
+	}
 }
 
 /**
@@ -304,10 +309,9 @@ static NSMutableDictionary* existingDictionaries;
  *
  * This implementation just calls definitionFor:.
  */
--(void) definitionFor: (NSString*) aWord
-	 inDictionary: (NSString*) aDict
+- (void) definitionFor: (NSString *) aWord inDictionary: (NSString*) aDict
 {
-  [self definitionFor: aWord];
+	[self definitionFor: aWord];
 }
 
 
@@ -315,28 +319,28 @@ static NSMutableDictionary* existingDictionaries;
  * Returns a dictionary entry from the file as a string. If not present,
  * nil is returned.
  */
--(NSString*) _getEntryFor: (NSString*) aWord
+- (NSString *) _getEntryFor: (NSString *) aWord
 {
-  NSAssert1(dictHandle != nil, @"Dictionary file %@ not opened!", dictFile);
+	NSAssert1(dictHandle != nil, @"Dictionary file %@ not opened!", dictFile);
   
-  // get range of entry
-  BigRange* range = [ranges objectForKey: [aWord capitalizedString]];
+	// get range of entry
+	BigRange* range = [ranges objectForKey: [aWord capitalizedString]];
   
-  if (range == nil)
-    return nil;
+	if (range == nil)
+		return nil;
   
-  // seek there
-  [dictHandle seekToFileOffset: [range fromIndex]];
+	// seek there
+	[dictHandle seekToFileOffset: [range fromIndex]];
   
-  // retrieve entry as data
-  NSData* data = [dictHandle readDataOfLength: [range length]];
+	// retrieve entry as data
+	NSData* data = [dictHandle readDataOfLength: [range length]];
   
-  // convert it to a string
-  // XXX: Which encoding are dict-server-like dictionaries stored in?!
-  NSString* entry = [[NSString alloc] initWithData: data
-				      encoding: NSASCIIStringEncoding];
+	// convert it to a string
+	// XXX: Which encoding are dict-server-like dictionaries stored in?!
+	NSString* entry = [[NSString alloc] initWithData: data
+	                                        encoding: NSASCIIStringEncoding];
   
-  return AUTORELEASE(entry);
+	return AUTORELEASE(entry);
 }
 
 
@@ -350,139 +354,143 @@ static NSMutableDictionary* existingDictionaries;
  * Reads the dictionary index from the file system and opens the
  * dictionary database file handle.
  */
--(void)open
+- (void) open
 {
-  NSString* indexStr;
-  NSScanner* indexScanner;
+	NSString* indexStr;
+	NSScanner* indexScanner;
   
-  if (opened == YES)
-    return;
+	if (opened == YES)
+		return;
   
-  indexStr = [NSString stringWithContentsOfFile: indexFile];
+	indexStr = [NSString stringWithContentsOfFile: indexFile];
   
-  NSAssert1(indexStr != nil, @"Index file %@ could not be opened!", indexFile);
+	NSAssert1(indexStr != nil, @"Index file %@ could not be opened!", indexFile);
   
-  indexScanner = [NSScanner scannerWithString: indexStr];
+	indexScanner = [NSScanner scannerWithString: indexStr];
   
-  NSString* word = nil;
-  int fromLocation;
-  int length;
-  NSMutableDictionary* dict;
+	NSString* word = nil;
+	int fromLocation;
+	int length;
+	NSMutableDictionary* dict;
   
-  dict = [NSMutableDictionary dictionary];
+	dict = [NSMutableDictionary dictionary];
   
-  while ([indexScanner scanUpToString: @"\t" intoString: &word] == YES) {
-    // wow, we scanned a word! :-)
+	while ([indexScanner scanUpToString: @"\t" intoString: &word] == YES) 
+	{
+		// wow, we scanned a word! :-)
     
-    // consume first tab
-    [indexScanner scanString: @"\t" intoString: NULL];
+		// consume first tab
+		[indexScanner scanString: @"\t" intoString: NULL];
     
-    // scan the start location of the dictionary entry
-    [indexScanner scanBase64Int: &fromLocation];
+		// scan the start location of the dictionary entry
+		[indexScanner scanBase64Int: &fromLocation];
     
-    // consume second tab
-    [indexScanner scanString: @"\t" intoString: NULL];
+		// consume second tab
+		[indexScanner scanString: @"\t" intoString: NULL];
     
-    // scan the length of the dictionary entry
-    [indexScanner scanBase64Int: &length];
+		// scan the length of the dictionary entry
+		[indexScanner scanBase64Int: &length];
     
-    // scan newline
-    [indexScanner scanString: @"\n" intoString: NULL];
+		// scan newline
+		[indexScanner scanString: @"\n" intoString: NULL];
     
-    // save entry in index -------------------------------------------
-    [dict setObject: [BigRange rangeFrom: fromLocation length: length]
-	  forKey: [word capitalizedString]];
-  }
+		// save entry in index -------------------------------------------
+		[dict setObject: [BigRange rangeFrom: fromLocation length: length]
+		         forKey: [word capitalizedString]];
+	}
   
-  ASSIGN(ranges, [NSDictionary dictionaryWithDictionary: dict]);
-  NSAssert1(ranges != nil,
-	    @"Couldn't generate dictionary index from %@", indexFile);
+	ASSIGN(ranges, [NSDictionary dictionaryWithDictionary: dict]);
+	NSAssert1(ranges != nil,
+	          @"Couldn't generate dictionary index from %@", indexFile);
   
-  ASSIGN(dictHandle, [NSFileHandle fileHandleForReadingAtPath: dictFile]);
-  NSAssert1(dictHandle != nil,
-	    @"Couldn't open the file handle for %@", dictFile);
+	ASSIGN(dictHandle, [NSFileHandle fileHandleForReadingAtPath: dictFile]);
+	NSAssert1(dictHandle != nil,
+	          @"Couldn't open the file handle for %@", dictFile);
 #ifdef GNUSTEP
-  // Enable on-the-fly Gunzipping if needed
-  if ([dictFile hasSuffix: @".dz"]) {
-      NSAssert([dictHandle useCompression] == YES,
-          @"Using compression failed, please enable zlib support when compiling GNUstep!"
-      );
-  }
+	// Enable on-the-fly Gunzipping if needed
+	if ([dictFile hasSuffix: @".dz"]) 
+	{
+		NSAssert([dictHandle useCompression] == YES,
+	             @"Using compression failed, please enable zlib support when compiling GNUstep!"
+		);
+	}
 #endif // GNUSTEP
   
-  // Retrieve full name of database! ------------
-  NSString* name = [self _getEntryFor: @"00-database-short"];
-  NSScanner* scanner = [NSScanner scannerWithString: name];
+	// Retrieve full name of database! ------------
+	NSString* name = [self _getEntryFor: @"00-database-short"];
+	NSScanner* scanner = [NSScanner scannerWithString: name];
   
-  // consume first line (don't need it, it reads 00-database-short. ;-))
-  [scanner scanUpToString: @"\n" intoString: NULL];
+	// consume first line (don't need it, it reads 00-database-short. ;-))
+	[scanner scanUpToString: @"\n" intoString: NULL];
   
-  // consume newline
-  [scanner scanString: @"\n" intoString: NULL];
+	// consume newline
+	[scanner scanString: @"\n" intoString: NULL];
   
-  // consume first few whitespaces
-  [scanner scanCharactersFromSet: [NSCharacterSet whitespaceCharacterSet]
-	   intoString: NULL];
+	// consume first few whitespaces
+	[scanner scanCharactersFromSet: [NSCharacterSet whitespaceCharacterSet]
+	                    intoString: NULL];
   
-  // get the name itself
-  [scanner scanUpToString: @"\n"
-	   intoString: &name];
+	// get the name itself
+	[scanner scanUpToString: @"\n" intoString: &name];
   
-  // assign it
-  ASSIGN(fullName, name);
+	// assign it
+	ASSIGN(fullName, name);
   
-  
-  // that's it, we've opened the database!
-  opened = YES;
+	// that's it, we've opened the database!
+	opened = YES;
 }
 
 /**
  * Closes the dictionary handle. Implementing classes may close
  * network connections here.
  */
--(void)close
+- (void) close
 {
-  [dictHandle closeFile];
-  DESTROY(dictHandle);
-  DESTROY(ranges);
-  opened = NO;
+	[dictHandle closeFile];
+	DESTROY(dictHandle);
+	DESTROY(ranges);
+	opened = NO;
 }
 
 /**
  * Provides the dictionary handle with a definition writer to write
  * its word definitions to.
  */
--(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter
+- (void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter
 {
-  NSAssert1(aDefinitionWriter != nil,
-	    @"-setDefinitionWriter: parameter must not be nil in %@", self);
-  ASSIGN(defWriter, aDefinitionWriter);
+	NSAssert1(aDefinitionWriter != nil,
+	          @"-setDefinitionWriter: parameter must not be nil in %@", self);
+	ASSIGN(defWriter, aDefinitionWriter);
 }
 
 /**
  * Returns a short property list used for storing short information about this
  * dictionary handle.
  */
--(NSDictionary*) shortPropertyList
+- (NSDictionary *) shortPropertyList
 {
-    NSMutableDictionary* result = [super shortPropertyList];
+	NSMutableDictionary* result = [super shortPropertyList];
     
-    [result setObject: indexFile forKey: @"index file"];
-    [result setObject: dictFile forKey: @"dict file"];
+	[result setObject: indexFile forKey: @"index file"];
+	[result setObject: dictFile forKey: @"dict file"];
     
-    if (fullName != nil) {
-        [result setObject: fullName forKey: @"full name"];
-    }
+	if (fullName != nil) 
+	{
+		[result setObject: fullName forKey: @"full name"];
+	}
     
-    return result;
+	return result;
 }
 
--(NSString*) description
+- (NSString *) description
 {
-  if (fullName == nil) {
-    return [dictFile lastPathComponent]; // e.g. jargon.dict
-  } else {
-    return fullName;
-  }
+	if (fullName == nil) 
+	{
+		return [dictFile lastPathComponent]; // e.g. jargon.dict
+	}
+	else 
+	{
+		return fullName;
+	}
 }
 @end

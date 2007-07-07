@@ -16,24 +16,33 @@ static NSString* b64 =
 
 int indexInB64( unichar unicharacter )
 {
-  char character = unicharacter & 0xff;
+	char character = unicharacter & 0xff;
   
-  if (character >= 'A' && character <= 'Z') {
-    return character-'A';
-  } else if (character >= 'a' && character <= 'z') {
-    return character-'a'+26;
-  } else if (character >= '0' && character <= '9') {
-    return character-'0'+52;
-  } else if (character == '+') {
-    return 62;
-  } else {
-    NSCAssert2(
-        character == '/',
-        @"Character %c (%d) is not a valid Base64 character",
-        character, character
-    );
-    return 63;
-  }
+	if (character >= 'A' && character <= 'Z') 
+	{
+		return character-'A';
+	}
+	else if (character >= 'a' && character <= 'z') 
+	{
+		return character-'a'+26;
+	}
+	else if (character >= '0' && character <= '9') 
+	{
+		return character-'0'+52;
+	}
+	else if (character == '+') 
+	{
+		return 62;
+	}
+	else 
+	{
+		NSCAssert2(
+			character == '/',
+			@"Character %c (%d) is not a valid Base64 character",
+			character, character
+		);
+		return 63;
+	}
 }
 
 @implementation NSScanner (Base64Encoding)
@@ -43,42 +52,46 @@ int indexInB64( unichar unicharacter )
  * @param outputInteger the location to save the result
  * @return YES if and only if scanning succeeded.
  */
--(BOOL) scanBase64Int: (int*)outputInteger
+- (BOOL) scanBase64Int: (int*)outputInteger
 {
-  static NSCharacterSet* b64chars = nil;
-  int i;
+	static NSCharacterSet* b64chars = nil;
+	int i;
   
-  if (b64chars == nil) {
-    b64chars = [NSCharacterSet characterSetWithCharactersInString: b64];
-    [b64chars retain];
-  }
+	if (b64chars == nil) 
+	{
+		b64chars = [NSCharacterSet characterSetWithCharactersInString: b64];
+		[b64chars retain];
+	}
   
-  NSString* scanned;
+	NSString* scanned;
   
-  if ([self scanCharactersFromSet: b64chars intoString: &scanned] == NO) {
-    *outputInteger = 0;
-    return NO;
-  }
+	if ([self scanCharactersFromSet: b64chars intoString: &scanned] == NO) 
+	{
+		*outputInteger = 0;
+		return NO;
+	}
   
-  (*outputInteger) = 0;
-  for (i=0; i<[scanned length]; i++)
-    {
-      (*outputInteger) *= 64;
-      (*outputInteger) += indexInB64([scanned characterAtIndex: i]);
-    }
+	(*outputInteger) = 0;
+	for (i = 0; i < [scanned length]; i++)
+	{
+		(*outputInteger) *= 64;
+		(*outputInteger) += indexInB64([scanned characterAtIndex: i]);
+	}
   
-  // TEST XXX: test indexInB64() correctness
-  #ifdef DEBUGGING
-  for (i=0;i<64;i++) {
-    NSAssert3(i==indexInB64([b64 characterAtIndex: i]),
+	// TEST XXX: test indexInB64() correctness
+	#ifdef DEBUGGING
+	for (i=0;i<64;i++) 
+	{
+		NSAssert3(i==indexInB64([b64 characterAtIndex: i]),
 	      @"iib64('%c') == %d != %d (<-soll)",
 	      [b64 characterAtIndex: i],
 	      indexInB64([b64 characterAtIndex: i]),
 	      i);
-  }
-  #endif //DEBUGGING
+	}
+	#endif //DEBUGGING
   
-  return YES;
+	return YES;
 }
 
 @end
+

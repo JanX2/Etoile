@@ -1,25 +1,18 @@
 {
     IBClasses = (
-	{
-	    ACTIONS = {
-		searchAction = id;
-	    };
-	    CLASS = AppController;
-	    LANGUAGE = ObjC;
-	    OUTLETS = {
-		dictionaryContentWindow = id;
-		searchResultView = id;
-	    };
-	    SUPERCLASS = NSObject;
-	},
-	{
-	    ACTIONS = {
-		searchAction = id;
-	    };
-	    CLASS = FirstResponder;
-	    LANGUAGE = ObjC;
-	    SUPERCLASS = NSObject;
-	}
-    );
-    IBVersion = 1;
+        {
+            ACTIONS = {
+                browseBackClicked = id; 
+                browseForwardClicked = id; 
+                orderFrontPreferencesPanel = id; 
+                searchAction = id; 
+            }; 
+            CLASS = AppController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {dictionaryContentWindow = NSWindow; searchResultView = NSTextView; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
 }

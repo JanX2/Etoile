@@ -24,9 +24,8 @@
  */
 @interface NSString (Convenience)
 
--(int)firstIndexOf: (unichar)aCharacter;
-
--(int)firstIndexOf: (unichar)aCharacter
-	 fromIndex: (int) startIndex;
+- (int) firstIndexOf: (unichar) aCharacter;
+- (int) firstIndexOf: (unichar) aCharacter fromIndex: (int) startIndex;
 
 @end
+

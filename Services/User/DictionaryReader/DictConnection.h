@@ -23,46 +23,40 @@
  */
 @interface DictConnection : DictionaryHandle
 {
-  NSInputStream* inputStream;
-  NSOutputStream* outputStream;
-  StreamLineReader* reader;
-  StreamLineWriter* writer;
-  NSHost* host;
-  int port;
+	NSInputStream* inputStream;
+	NSOutputStream* outputStream;
+	StreamLineReader* reader;
+	StreamLineWriter* writer;
+	NSHost* host;
+	int port;
   
-  id<DefinitionWriter> defWriter;
+	id<DefinitionWriter> defWriter;
 }
 
-// Class methods
-
-
 // Instance methods
--(id)initWithHost: (NSHost*) aHost
-	     port: (int) aPort;
+- (id) initWithHost: (NSHost *) aHost port: (int) aPort;
+- (id) initWithHost: (NSHost *) aHost;
 
--(id)initWithHost: (NSHost*) aHost;
+- (NSHost *) host;
 
--(NSHost*) host;
+- (void) sendClientString: (NSString *) clientName;
+- (void) handleDescription;
+- (void) descriptionForDatabase: (NSString *) aDatabase;
+- (void) definitionFor: (NSString *) aWord;
+- (void) definitionFor: (NSString *) aWord inDictionary: (NSString *) aDict;
 
--(void) sendClientString: (NSString*) clientName;
--(void) handleDescription;
--(void) descriptionForDatabase: (NSString*) aDatabase;
--(void) definitionFor: (NSString*) aWord;
--(void) definitionFor: (NSString*) aWord
-	 inDictionary: (NSString*) aDict;
+- (void) open;
+- (void) close;
 
--(void)open;
--(void)close;
-
--(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter;
+- (void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter;
 
 @end
 
 
 @interface DictConnection (Private)
 
--(void) log: (NSString*) aLogMsg;
--(void) showError: (NSString*) aString;
+- (void) log: (NSString *) aLogMsg;
+- (void) showError: (NSString *) aString;
 
 @end
 

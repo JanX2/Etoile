@@ -1,23 +1,14 @@
 {
     IBClasses = (
-	{
-	    CLASS = UKNibOwner;
-	    LANGUAGE = ObjC;
-	    SUPERCLASS = NSObject;
-	},
-	{
-	    CLASS = Preferences;
-	    LANGUAGE = ObjC;
-	    OUTLETS = {
-		_prefPanel = id;
-	    };
-	    SUPERCLASS = UKNibOwner;
-	},
-	{
-	    CLASS = FirstResponder;
-	    LANGUAGE = ObjC;
-	    SUPERCLASS = NSObject;
-	}
-    );
-    IBVersion = 1;
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {rescanDictionaries = id; }; 
+            CLASS = Preferences; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_prefPanel" = id; "_tableView" = id; }; 
+            SUPERCLASS = UKNibOwner; 
+        }, 
+        {CLASS = UKNibOwner; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
 }

@@ -2,15 +2,16 @@
     ApplicationDescription = "A Dict client for GNUstep";
     ApplicationIcon = dict.png;
     ApplicationName = DictionaryReader;
-    ApplicationRelease = 0.2;
+    ApplicationRelease = 0.3;
     Authors = (
+	"Yen-Ju Chen <yjchenx gmail>",
 	"Guenther Noack <guenther@unix-ag.uni-kl.de>",
 	"With help from:",
 	"Quentin Mathe",
 	"Chris B. Vetter"
     );
-    Copyright = "Copyright (C) 2006, 2007 Guenther Noack";
-    CopyrightDescription = "Released under the terms of the GNU General Public Licence.";
+    Copyright = "Copyright (C) 2006, 2007 Guenther Noack, Yen-Ju Chen";
+    CopyrightDescription = "Released under the terms of MIT Licence.";
     NSIcon = dict.png;
     NSTypes = (
     );

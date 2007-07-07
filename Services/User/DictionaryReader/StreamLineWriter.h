@@ -12,25 +12,13 @@
 
 #import <Foundation/Foundation.h>
 
-
 @interface StreamLineWriter : NSObject
 {
-  // Instance variables
-  NSOutputStream* outputStream;
+	NSOutputStream* outputStream;
 }
 
-// Class methods
-
-
-
-// Instance methods
-
--(id)init;
--(id)initWithOutputStream: (NSOutputStream*) anOutputStream;
-
--(void)dealloc;
-
--(BOOL)writeLine: (NSString*) aString;
+- (id) initWithOutputStream: (NSOutputStream *) anOutputStream;
+- (BOOL) writeLine: (NSString *) aString;
 
 @end
 

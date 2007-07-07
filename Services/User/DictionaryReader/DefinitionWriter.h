@@ -17,8 +17,7 @@
 -(void) writeBigHeadline: (NSString*) aString;
 -(void) writeHeadline: (NSString*) aString;
 -(void) writeLine: (NSString*) aString;
--(void) writeString: (NSString*) aString
-	       link: (id) aClickable;
+-(void) writeString: (NSString*) aString link: (id) aClickable;
 
 @end
 

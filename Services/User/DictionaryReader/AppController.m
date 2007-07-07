@@ -7,11 +7,9 @@
  */
 
 #import <AppKit/AppKit.h>
-#import <Foundation/Foundation.h>
 
 #import "AppController.h"
 #import "GNUstep.h"
-
 #import "DictConnection.h"
 #import "LocalDictionary.h"
 #import "NSString+Clickable.h"
@@ -21,183 +19,174 @@ NSDictionary* bigHeadlineAttributes;
 NSDictionary* headlineAttributes;
 NSDictionary* normalAttributes;
 
-
 @implementation AppController (HistoryManagerDelegate)
 
--(BOOL) historyManager: (HistoryManager*) aHistoryManager
-	 needsBrowseTo: (id) aLocation {
-  if ([[aLocation class] isSubclassOfClass: [NSString class]]) {
-    [self defineWord: (NSString*) aLocation];
-  }
+- (BOOL) historyManager: (HistoryManager *) aHistoryManager
+         needsBrowseTo: (id) aLocation 
+{
+	if ([[aLocation class] isSubclassOfClass: [NSString class]]) 
+	{
+		[self defineWord: (NSString*) aLocation];
+	}
   
-  return YES;
+	return YES;
 }
 
 @end
 
 @implementation AppController (DefinitionWriter)
 
--(void) beginWriting
+- (void) beginWriting
 {
-  // TODO: For multithreaded dictionary entry fetching, lock access here!
+	// TODO: For multithreaded dictionary entry fetching, lock access here!
 }
 
--(void) endWriting
+- (void) endWriting
 {
-  // TODO: For multithreaded dictionary entry fetching, unlock access here!
+	// TODO: For multithreaded dictionary entry fetching, unlock access here!
 }
 
--(void) clearResults
+- (void) clearResults
 {
-  NSAttributedString* emptyAttrStr = [[NSAttributedString alloc] init];
-  [[searchResultView textStorage] setAttributedString: emptyAttrStr];
-  [emptyAttrStr release];
+	[searchResultView setString: @""];
 }
 
--(void) writeString: (NSString*) aString
-        attributes: (NSDictionary*) attributes
+- (void) writeString: (NSString *) aString
+          attributes: (NSDictionary*) attributes
 {
-  NSAttributedString* attrStr =
-    [[NSAttributedString alloc]
-      initWithString: aString
-      attributes: attributes];
-  [[searchResultView textStorage] appendAttributedString: attrStr];
-  [attrStr release];
+	NSAttributedString* as = [[NSAttributedString alloc] initWithString: aString
+	                                                    attributes: attributes];
+	[[searchResultView textStorage] appendAttributedString: as];
+	DESTROY(as);
   
-  // Tell the search result view to scroll to the top,
-  // select nothing and redraw
-  [searchResultView scrollRangeToVisible: NSMakeRange(0.0,0.0)];
-  [searchResultView setSelectedRange: NSMakeRange(0.0,0.0)];
-  [searchResultView setNeedsDisplay: YES];
+	/* Tell the search result view to scroll to the top,
+	   select nothing and redraw */
+	[searchResultView scrollRangeToVisible: NSMakeRange(0.0,0.0)];
+	[searchResultView setSelectedRange: NSMakeRange(0.0,0.0)];
+	[searchResultView setNeedsDisplay: YES];
 }
 
--(void) writeBigHeadline: (NSString*) aString {
-  [self writeString: [NSString stringWithFormat: @"\n%@\n", aString]
-	attributes: bigHeadlineAttributes];
+- (void) writeBigHeadline: (NSString *) aString 
+{
+	[self writeString: [NSString stringWithFormat: @"\n%@\n", aString]
+	       attributes: bigHeadlineAttributes];
 }
 
--(void) writeHeadline: (NSString*) aString {
-  [self writeString: [NSString stringWithFormat: @"\n%@\n\n", aString]
-	attributes: headlineAttributes];
+- (void) writeHeadline: (NSString *) aString 
+{
+	[self writeString: [NSString stringWithFormat: @"\n%@\n\n", aString]
+           attributes: headlineAttributes];
 }
 
--(void) writeLine: (NSString*) aString {
-  // the index of the next character to write
-  unsigned index = 0;
-  unsigned strLength = [aString length];
+- (void) writeLine: (NSString *) aString 
+{
+	// the index of the next character to write
+	unsigned index = 0;
+	unsigned strLength = [aString length];
+
+	// YES if and only if we are inside a link
+	BOOL inLink = NO;
   
-  // YES if and only if we are inside a link
-  BOOL inLink = NO;
+	unsigned nextBracketIdx;
   
-  unsigned nextBracketIdx;
-  
-  while (index < strLength) {
-    if (inLink == YES) {
-      nextBracketIdx = [aString firstIndexOf: (unichar)'}'
-				fromIndex: index];
+	while (index < strLength) 
+	{
+		if (inLink == YES) 
+		{
+			nextBracketIdx = [aString firstIndexOf: (unichar)'}'
+			                             fromIndex: index];
       
-      if (nextBracketIdx == -1) {
-	// treat as if the next bracket started right after the
-	// last character in the string
-	nextBracketIdx = strLength;
+			if (nextBracketIdx == NSNotFound) 
+			{
+				/* treat as if the next bracket started right after the
+				   last character in the string */
+				nextBracketIdx = strLength;
 	
-	// FIXME: Handle multiline links, too!
-	NSLog(@"multiline link detected!");
-      }
+				// FIXME: Handle multiline links, too!
+				NSLog(@"multiline link detected!");
+			}
       
-      // crop text out of the input string
-      NSString* linkContent =
-	[aString substringWithRange: NSMakeRange(index, nextBracketIdx-index)];
+			// crop text out of the input string
+			NSString* linkContent = [aString substringWithRange: NSMakeRange(index, nextBracketIdx-index)];
       
-      // next index is right after the found bracket
-      index = nextBracketIdx + 1;
+			// next index is right after the found bracket
+			index = nextBracketIdx + 1;
       
-      // we're not in the link any more
-      inLink = NO;
+			// we're not in the link any more
+			inLink = NO;
       
-      // write link!
-      [self writeString: linkContent
-	    link: linkContent];
+			// write link!
+			[self writeString: linkContent link: linkContent];
+		}
+		else 
+		{ // inLink == FALSE
+			nextBracketIdx = [aString firstIndexOf: (unichar)'{'
+			                             fromIndex: index];
       
-    } else { // inLink == FALSE
-      nextBracketIdx = [aString firstIndexOf: (unichar)'{'
-				fromIndex: index];
+			if (nextBracketIdx == NSNotFound) 
+			{
+				/* treat as if the next bracket was right after the
+				   last character in the string */
+				nextBracketIdx = strLength;
+			}
       
-      if (nextBracketIdx == -1) {
-	// treat as if the next bracket was right after the
-	// last character in the string
-	nextBracketIdx = strLength;
-      }
+			// crop text
+			NSString* text = [aString substringWithRange: NSMakeRange(index, nextBracketIdx-index)];
       
-      // crop text
-      NSString* text =
-	[aString substringWithRange: NSMakeRange(index, nextBracketIdx-index)];
+			// proceed right after the bracket
+			index = nextBracketIdx + 1;
       
-      // proceed right after the bracket
-      index = nextBracketIdx + 1;
+			// now we're in a link
+			inLink = YES;
       
-      // now we're in a link
-      inLink = YES;
-      
-      // write text!
-      [self writeString: text
-	    attributes: normalAttributes];
-      
-    } // end if(inLink)
+			// write text!
+			[self writeString: text attributes: normalAttributes];
+		} // end if(inLink)
     
-  } // end while(index < strLength)
+	} // end while(index < strLength)
   
-  
-  // after everything is done, write a newline!
-  [self writeString: @"\n"
-	attributes: normalAttributes];
-  
+	// after everything is done, write a newline!
+	[self writeString: @"\n" attributes: normalAttributes];
 }
 
--(void) writeString: (NSString*) aString
-	       link: (id) aClickable
+- (void) writeString: (NSString*) aString link: (id) aClickable
 {
-  // fall back to 'no link'
-  NSDictionary* attributes = normalAttributes;
+	// fall back to 'no link'
+	NSDictionary* attributes = normalAttributes;
   
-  // if it's a valid link, use special attributes!
-  if ([aClickable respondsToSelector: @selector(click)]) {
-    attributes =
-      [NSDictionary dictionaryWithObjectsAndKeys:
-		      // the link itself
-		      aClickable, NSLinkAttributeName,
-		    
-		    // font
-		    [NSFont userFixedPitchFontOfSize: 10], NSFontAttributeName,
-		    
-		    // underlining
-		    [NSNumber numberWithInt: NSSingleUnderlineStyle],
-		    NSUnderlineStyleAttributeName,
-		    
-		    // color
-		    [NSColor blueColor],
-		    NSForegroundColorAttributeName,
-		    nil];
-  }
+	// if it's a valid link, use special attributes!
+	if ([aClickable respondsToSelector: @selector(click)]) 
+	{
+		attributes = [NSDictionary dictionaryWithObjectsAndKeys:
+		        // the link itself
+		        aClickable, NSLinkAttributeName,
+		        // font
+		        [NSFont userFixedPitchFontOfSize: 10], NSFontAttributeName,
+		        // underlining
+		        [NSNumber numberWithInt: NSSingleUnderlineStyle],
+		        NSUnderlineStyleAttributeName,
+		        // color
+		        [NSColor blueColor],
+		        NSForegroundColorAttributeName,
+		        nil];
+	}
   
-  // write
-  [self writeString: aString
-	attributes: attributes];
+	// write
+	[self writeString: aString attributes: attributes];
 }
 
 @end // AppController (DefinitionWriter)
 
-
-
-
-// FIXME: Just for clean programming style: dealloc is missing,
-//        but I think it's not needed.
-
 @implementation AppController
 
--(id)init
+- (id) init
 {
-    if ((self = [super init]) != nil) {
+	self = [super init];
+	if (self == nil)
+	{
+		[self dealloc];
+		return nil;
+	}
 
 	// create toolbar items
 	forwardItem = [[NSToolbarItem alloc] initWithItemIdentifier: @"Forward"];
@@ -217,53 +206,59 @@ NSDictionary* normalAttributes;
 	searchItem = [[NSToolbarItem alloc] initWithItemIdentifier: @"Search"];
 	searchField = [[NSSearchField alloc] initWithFrame: NSMakeRect(0, 0, 150, 22)];
 	[searchField setRecentsAutosaveName: @"recentDictionaryLookups"];
-	[searchItem setView: searchField];
 	[searchField setAction: @selector(searchAction:)];
+	[[searchField cell] setSendsWholeSearchString: YES];
+	[searchItem setView: searchField];
 	[searchItem setLabel: @"Search"];
+	[searchItem setMinSize: NSMakeSize(150, 22)];
 
 	// create mutable dictionaries array
 	dictionaries = [[NSMutableArray alloc] initWithCapacity: 2];
 
-
 	// create history manager
 	historyManager = [[HistoryManager alloc] init];
 	[historyManager setDelegate: self];
-    }
-
 
     // create fonts
-    if (bigHeadlineAttributes == nil) {
-	bigHeadlineAttributes = 
-	    [[NSDictionary alloc]
-	    initWithObjectsAndKeys:
-	[NSFont titleBarFontOfSize: 16], NSFontAttributeName, nil];
-    }
+	if (bigHeadlineAttributes == nil) 
+	{
+		bigHeadlineAttributes = [[NSDictionary alloc] initWithObjectsAndKeys:
+		       [NSFont titleBarFontOfSize: 16], NSFontAttributeName, nil];
+	}
 
-    if (headlineAttributes == nil) {
-	headlineAttributes = 
-	    [[NSDictionary alloc]
-	    initWithObjectsAndKeys:
-      	[NSFont boldSystemFontOfSize: 12], NSFontAttributeName, nil];
-    }
+	if (headlineAttributes == nil) 
+	{
+		headlineAttributes = [[NSDictionary alloc] initWithObjectsAndKeys:
+		       [NSFont boldSystemFontOfSize: 12], NSFontAttributeName, nil];
+	}
 
-    if (normalAttributes == nil) {
-	normalAttributes = 
-	    [[NSDictionary alloc]
-	    initWithObjectsAndKeys:
-  	[NSFont userFixedPitchFontOfSize: 10], NSFontAttributeName, nil];
-    }
+	if (normalAttributes == nil) 
+	{
+		normalAttributes = [[NSDictionary alloc] initWithObjectsAndKeys:
+		       [NSFont userFixedPitchFontOfSize: 10], NSFontAttributeName, nil];
+	}
 
-    // Notifications --------------
-    NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
+	// Notifications --------------
+	NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
 
-    // Register in the default notification center to receive link clicked events
-    [defaultCenter
-	addObserver: self
-	   selector: @selector(clickSearchNotification:)
-	       name: WordClickedNotificationType
-	     object: nil];
+	// Register in the default notification center to receive link clicked events
+	[defaultCenter addObserver: self
+	                  selector: @selector(clickSearchNotification:)
+	                      name: WordClickedNotificationType
+	                    object: nil];
 
     return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(dictionaries);
+	DESTROY(historyManager);
+	DESTROY(backItem);
+	DESTROY(forwardItem);
+	DESTROY(searchItem);
+	DESTROY(searchField);
+	[super dealloc];
 }
 
 - (void) awakeFromNib 
@@ -275,8 +270,7 @@ NSDictionary* normalAttributes;
 	[toolbar setDelegate:self];
 	
 	[dictionaryContentWindow setToolbar:toolbar];
-	RELEASE(toolbar);
-
+	DESTROY(toolbar);
 
 	// find available dictionaries
 	[[Preferences shared] setDictionaries: dictionaries];
@@ -303,16 +297,21 @@ NSDictionary* normalAttributes;
 
 // ---- Toolbar delegate methods
 
-- (NSToolbarItem *) toolbar:(NSToolbar *)toolbar
-		itemForItemIdentifier:(NSString*)identifier
-		willBeInsertedIntoToolbar:(BOOL)willBeInserted 
+- (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
+      itemForItemIdentifier: (NSString*) identifier
+  willBeInsertedIntoToolbar: (BOOL) willBeInserted 
 {
 	NSToolbarItem* toolbarItem;
-	if ([identifier isEqual: @"Back"]) {
+	if ([identifier isEqual: @"Back"]) 
+	{
 		toolbarItem = backItem;
-	} else if ([identifier isEqual: @"Forward"]) {
+	}
+	else if ([identifier isEqual: @"Forward"]) 
+	{
 		toolbarItem = forwardItem;
-	} else {
+	}
+	else 
+	{
 		NSAssert1(
 		  [identifier isEqual: @"Search"],
 		  @"Bad toolbar item requested: %@", identifier
@@ -330,12 +329,12 @@ NSDictionary* normalAttributes;
 	return toolbarItem;
 }
 
-- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar 
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar 
 {
 	return [self toolbarAllowedItemIdentifiers: toolbar];
 }
 
-- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *)toolbar 
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar 
 {
 	NSArray *identifiers = [NSArray arrayWithObjects: @"Back", @"Forward", 
 		NSToolbarFlexibleSpaceItemIdentifier, @"Search", nil];
@@ -344,50 +343,50 @@ NSDictionary* normalAttributes;
 }
 
 // ---- Some methods called by the GUI
--(void) browseBackClicked: (id)sender {
-  [historyManager browseBack];
+- (void) browseBackClicked: (id) sender 
+{
+	[historyManager browseBack];
 }
 
--(void) browseForwardClicked: (id)sender {
-  [historyManager browseForward];
+- (void) browseForwardClicked: (id) sender 
+{
+	[historyManager browseForward];
 }
 
--(void) orderFrontPreferencesPanel: (id)sender {
-    [[Preferences shared] setDictionaries: dictionaries];
-    [[Preferences shared] show];
+- (void) orderFrontPreferencesPanel: (id)sender 
+{
+	[[Preferences shared] setDictionaries: dictionaries];
+	[[Preferences shared] show];
 }
 
--(void)updateGUI {
-    [backItem setEnabled: [historyManager canBrowseBack]];
-    [forwardItem setEnabled: [historyManager canBrowseForward]];
+- (void) updateGUI 
+{
+	[backItem setEnabled: [historyManager canBrowseBack]];
+	[forwardItem setEnabled: [historyManager canBrowseForward]];
 }
 
 
 // ---- This object is the delegate for the result view, too.
--(BOOL) textView: (NSTextView*) textView
-   clickedOnLink: (id) link
-	 atIndex: (unsigned) charIndex
+- (BOOL) textView: (NSTextView*) textView clickedOnLink: (id) link
+          atIndex: (unsigned) charIndex
 {
-  if ([link respondsToSelector: @selector(click)]) {
+	if ([link respondsToSelector: @selector(click)]) 
+	{
+		NS_DURING
+			[link click];
+		NS_HANDLER
+			NSRunAlertPanel(@"Link click failed!", [localException reason],
+		                    @"Oh no!", nil, nil);
+			return NO;
+		NS_ENDHANDLER;
     
-    NS_DURING
-      {
-	[link click];
-      }
-    NS_HANDLER
-      {
-	NSRunAlertPanel(@"Link click failed!",
-			[localException reason],
-			@"Oh no!", nil, nil);
-	return NO;
-      }
-    NS_ENDHANDLER;
-    
-    return YES;
-  } else {
-    NSLog(@"Link %@ clicked, but it doesn't respond to 'click'", link);
-    return NO;
-  }
+		return YES;
+	}
+	else 
+	{
+		NSLog(@"Link %@ clicked, but it doesn't respond to 'click'", link);
+		return NO;
+	}
 }
 
 
@@ -397,35 +396,34 @@ NSDictionary* normalAttributes;
  * Responds to a search action invoked from the GUI by clicking the
  * search button or hitting enter when the search field is focused.
  */
--(void)searchAction: (id)sender
+- (void) searchAction: (id) sender
 {
-  // define the word that's written in the search field
-  [self defineWord: [searchField stringValue]];
+	// define the word that's written in the search field
+	[self defineWord: [searchField stringValue]];
 }
 
 /**
  * Responds to a search action invoked by clicking a word
  * reference in the text view.
  */
--(void)clickSearchNotification: (NSNotification*)aNotification
+- (void) clickSearchNotification: (NSNotification*) not
 {
-  NSParameterAssert(aNotification != nil);
+	NSParameterAssert(not != nil);
   
-  // fetch string from notification
-  NSString* searchString = [aNotification object];
+	// fetch string from notification
+	NSString* searchString = [not object];
   
-  NSAssert1(
-      searchString != nil,
-      @"Search string encapsuled in %@ notification was nil", aNotification
-  );
+	NSAssert1(
+		searchString != nil,
+		@"Search string encapsuled in %@ notification was nil", not 
+	);
   
-  if ( ![[searchField stringValue] isEqualToString: searchString] ) {
-    // invoke search
-    [self defineWord: searchString];
-  }
+	if ( ![[searchField stringValue] isEqualToString: searchString] ) 
+	{
+		// invoke search
+		[self defineWord: searchString];
+	}
 }
-
-
 
 /**
  * Searches for definitions of the word given in the aWord
@@ -433,74 +431,75 @@ NSDictionary* normalAttributes;
  * 
  * @param aWord the word to define
  */ 
--(void)defineWord: (NSString*)aWord
+- (void) defineWord: (NSString *) aWord
 {
-  if ( ![[searchField stringValue] isEqualToString: aWord] ) {
-    // set string in search field
-    [searchField setStringValue: aWord];
-  }
+	if ( ![[searchField stringValue] isEqualToString: aWord] ) 
+	{
+		// set string in search field
+		[searchField setStringValue: aWord];
+	}
   
-  // We need space for new content
-  [self clearResults];
+	// We need space for new content
+	[self clearResults];
   
-  // Iterate over all dictionaries, query them!
-  int i;
+	// Iterate over all dictionaries, query them!
+	int i;
   
-  for (i=0; i<[dictionaries count]; i++) {
-    id dict = [dictionaries objectAtIndex: i];
+	for (i = 0; i < [dictionaries count]; i++) 
+	{
+		id dict = [dictionaries objectAtIndex: i];
     
-    if ([dict isActive]) {
-        NS_DURING
-          {
-	    [dict open];
-	    [dict sendClientString: @"GNUstep DictionaryReader.app"];
-	    [dict definitionFor: aWord];
-	    // [dict close];
-          }
-        NS_HANDLER
-          {
-	    NSRunAlertPanel
-	      (
-	       @"Word definition failed.",
-	       [NSString
-	         stringWithFormat:
-	           @"The definition of %@ failed because of this exception:\n%@",
-	         aWord, [localException reason]],
-	       @"Argh", nil, nil);
-          }
-        NS_ENDHANDLER;
-    }
-  }
+		if ([dict isActive]) 
+		{
+			NS_DURING
+			{
+				[dict open];
+				[dict sendClientString: @"GNUstep DictionaryReader.app"];
+				[dict definitionFor: aWord];
+				// [dict close];
+			}
+			NS_HANDLER
+			{
+				NSRunAlertPanel (
+					@"Word definition failed.",
+					[NSString stringWithFormat:
+				@"The definition of %@ failed because of this exception:\n%@",
+				 aWord, [localException reason]],
+				@"Argh", nil, nil);
+			}
+			NS_ENDHANDLER;
+		}
+	}
   
-  [historyManager browser: self
-		  didBrowseTo: aWord];
+	[historyManager browser: self didBrowseTo: aWord];
   
-  [self updateGUI];
+	[self updateGUI];
   
-  [dictionaryContentWindow orderFront: self];
+	[dictionaryContentWindow orderFront: self];
 }
 
--(void) applicationWillTerminate: (NSNotification*) theNotification
+- (void) applicationWillTerminate: (NSNotification*) theNotification
 {
-    int i;
-    NSMutableArray* mut = [NSMutableArray arrayWithCapacity: [dictionaries count]];
+	int i;
+	NSMutableArray* mut = [NSMutableArray arrayWithCapacity: [dictionaries count]];
     
-    for (i=0; i<[dictionaries count]; i++) {
-        [mut addObject: [[dictionaries objectAtIndex: i] shortPropertyList]];
-    }
+	for (i = 0; i < [dictionaries count]; i++) 
+	{
+		[mut addObject: [[dictionaries objectAtIndex: i] shortPropertyList]];
+	}
     
-    [mut writeToFile: [[Preferences shared] dictionaryStoreFile] atomically: YES];
+	[mut writeToFile: [[Preferences shared] dictionaryStoreFile] atomically: YES];
 }
 
--(void) applicationDidFinishLaunching: (NSNotification*) theNotification
+- (void) applicationDidFinishLaunching: (NSNotification *) theNotification
 {
-    [NSApp setServicesProvider: self];
+	[NSApp setServicesProvider: self];
 }
 
--(void) applicationDidBecomeActive: (NSNotification*) aNotification
+- (void) applicationDidBecomeActive: (NSNotification *) aNotification
 {
-    // show dictionary window when clicking the app icon
-    [dictionaryContentWindow makeKeyAndOrderFront: self];
+	// show dictionary window when clicking the app icon
+	[dictionaryContentWindow makeKeyAndOrderFront: self];
 }
 
 /**
@@ -512,31 +511,31 @@ NSDictionary* normalAttributes;
                    userData: (NSString *) userData
                       error: (NSString **) error
 {
-  NSString *aString = nil;
-  NSArray *allTypes = nil;
+	NSString *aString = nil;
+	NSArray *allTypes = nil;
   
-  allTypes = [pboard types];
+	allTypes = [pboard types];
   
-  if ( ![allTypes containsObject: NSStringPboardType] )
-  {
-    *error = @"No string type supplied on pasteboard";
-    return;
-  }
+	if ( ![allTypes containsObject: NSStringPboardType] )
+	{
+		*error = @"No string type supplied on pasteboard";
+		return;
+	}
   
-  aString = [pboard stringForType: NSStringPboardType];
+	aString = [pboard stringForType: NSStringPboardType];
   
-  if (aString == nil)
-  {
-    *error = @"No string value supplied on pasteboard";
-    return;
-  }
+	if (aString == nil)
+	{
+		*error = @"No string value supplied on pasteboard";
+		return;
+	}
   
-  NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
-  [runLoop performSelector: @selector(defineWord:)
-      target: self
-      argument: aString
-      order: 1 //whatever
-      modes: [NSArray arrayWithObject: [runLoop currentMode]]];
+	NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
+	[runLoop performSelector: @selector(defineWord:)
+	                  target: self
+	                argument: aString
+	                   order: 1 //whatever
+	                   modes: [NSArray arrayWithObject: [runLoop currentMode]]];
 }
 
 @end // AppController

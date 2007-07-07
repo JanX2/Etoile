@@ -11,167 +11,170 @@
 
 @implementation StreamLineReader
 
--(id)init
+- (id) initWithInputStream: (NSInputStream *) anInputStream
 {
-  RELEASE(self);
-  return nil;
+	return [self initWithInputStream: anInputStream andDelimiter: @"\r\n"];
 }
 
--(id)initWithInputStream: (NSInputStream*) anInputStream
+- (id) initWithInputStream: (NSInputStream *) anInputStream
+              andDelimiter: (NSString *) aDelimiter
 {
-  return [self initWithInputStream: anInputStream
-	       andDelimiter: @"\r\n"];
+	self = [self init];
+
+	ASSIGN(inputStream, anInputStream);
+	NSData* delimData;
+  
+	delimData = [aDelimiter dataUsingEncoding: NSUTF8StringEncoding];
+	delimSize = [delimData length];
+	delim = malloc(delimSize);
+  
+	if (delim != NULL)
+		memcpy(delim, [delimData bytes], delimSize);
+  
+	strBufSize = 0x1000;
+	strBufPos = 0;
+	strBuf = malloc(strBufSize);
+  
+	if (strBuf == NULL || delim == NULL) 
+	{
+		[self dealloc];
+		return nil;
+	}
+  
+	return self;
 }
 
--(id)initWithInputStream: (NSInputStream*) anInputStream
-            andDelimiter: (NSString*) aDelimiter
+- (void) dealloc
 {
-  ASSIGN(inputStream, anInputStream);
-  NSData* delimData;
-  
-  delimData = [aDelimiter dataUsingEncoding: NSUTF8StringEncoding];
-  delimSize = [delimData length];
-  delim = malloc(delimSize);
-  
-  if (delim != NULL)
-    memcpy(delim, [delimData bytes], delimSize);
-  
-  strBufSize = 0x1000;
-  strBufPos = 0;
-  strBuf = malloc(strBufSize);
-  
-  if (strBuf == NULL || delim == NULL) {
-    [self dealloc];
-    return nil;
-  }
-  
-  return self;
+	NSLog(@"%@ dealloc start", self);
+	free(delim);
+	free(strBuf);
+	// DictConnection takes care of closing and releasing inputStream but we
+	// retained it in our initializer
+	DESTROY(inputStream);
+	NSLog(@"%@ dealloc end", self);
+	[super dealloc];
 }
 
--(void)dealloc
+- (NSString *) readLineAndRetry
 {
-  NSLog(@"%@ dealloc start", self);
-  free(delim);
-  free(strBuf);
-  // DictConnection takes care of closing and releasing inputStream but we
-  // retained it in our initializer
-  DESTROY(inputStream);
-  NSLog(@"%@ dealloc end", self);
-  [super dealloc];
+	NSString* result = nil;
+	while (result == nil) 
+	{
+		result = [self readLine];
+	}
+	return result;
 }
 
--(NSString*)readLineAndRetry
+- (NSString *) readLine
 {
-  NSString* result = nil;
-  while (result == nil) {
-    result = [self readLine];
-  }
-  return result;
+	BOOL canProceed = YES;
+	while([self canExtractNextLine] == NO && canProceed) 
+	{
+		//NSLog(@"getting more, bufSize=%d bufPos=%d", strBufSize, strBufPos);
+		canProceed = [self getMoreCharacters];
+	}
+  
+	if ([self canExtractNextLine] == YES)
+		return [self extractNextLine];
+	else
+		return nil;
 }
 
--(NSString*)readLine
+- (BOOL) getMoreCharacters
 {
-  BOOL canProceed = YES;
-  while([self canExtractNextLine] == NO && canProceed) {
-    //NSLog(@"getting more, bufSize=%d bufPos=%d", strBufSize, strBufPos);
-    canProceed = [self getMoreCharacters];
-  }
+	//NSLog(@"getMoreChars opened (stream status = %d)",
+	//      [inputStream streamStatus]);
   
-  if ([self canExtractNextLine] == YES)
-    return [self extractNextLine];
-  else
-    return nil;
+	// cancel if nothing in queue
+	if ([inputStream hasBytesAvailable] == NO) 
+	{
+		NSLog(@"stream says nothing available (GNUstep impl b0rken?)");
+		//return NO;
+	}
+  
+	if ([inputStream streamStatus] == NSStreamStatusClosed) 
+	{
+		NSLog(@"Stream is closed (by server?)");
+		return NO;
+	}
+  
+	// make buffer bigger if needed
+	if (strBufPos > (strBufSize>>1)) 
+	{
+		strBufSize = strBufSize<<1;
+		strBuf = realloc(strBuf, strBufSize);
+	}
+  
+	NSAssert(strBufPos < strBufSize, @"strBufPos >= strBufSize");
+  
+	//NSLog(@"getMoreChars: now reading from %@", inputStream);
+  
+	// read bytes
+	int numBytesRead = [inputStream read: (strBuf+strBufPos)
+	                           maxLength: (strBufSize-strBufPos)];
+  
+  
+	//NSLog(@"getMoreChars closed with %d bytes read", numBytesRead);
+  
+	if (numBytesRead > 0) 
+	{
+		strBufPos += numBytesRead;
+		return YES;
+	}
+	else 
+	{
+		return NO;
+	}
 }
 
--(BOOL) getMoreCharacters
+- (NSString *) extractNextLine
 {
-  //NSLog(@"getMoreChars opened (stream status = %d)",
-  //      [inputStream streamStatus]);
+	NSString* result;
+	int resultLength;
   
-  // cancel if nothing in queue
-  if ([inputStream hasBytesAvailable] == NO) {
-    NSLog(@"stream says nothing available (GNUstep impl b0rken?)");
-    //return NO;
-  }
+	resultLength = [self delimPosInBuffer];
   
-  if ([inputStream streamStatus] == NSStreamStatusClosed) {
-    NSLog(@"Stream is closed (by server?)");
-    return NO;
-  }
+	//NSLog(@"buf@0x%08x, resLen=%d, delSize=%d, strBufPos=%d",
+	//      strBuf, resultLength, delimSize, strBufPos);
+	NSAssert(resultLength < strBufPos, @"resultLength >= strBufPos");
+	NSAssert(resultLength >= 0, @"resultLength < 0");
   
+	if (resultLength < 0)
+		return nil;
   
-  // make buffer bigger if needed
-  if (strBufPos > (strBufSize>>1)) {
-    strBufSize = strBufSize<<1;
-    strBuf = realloc(strBuf, strBufSize);
-  }
+	result = [[NSString alloc] initWithBytes: strBuf
+	                                  length: resultLength
+	                                encoding: NSUTF8StringEncoding];
+	AUTORELEASE(result);
   
-  NSAssert(strBufPos < strBufSize, @"strBufPos >= strBufSize");
+	memmove(strBuf, strBuf+resultLength+delimSize, 
+	        strBufPos-(resultLength+delimSize));
+	strBufPos -= (resultLength+delimSize);
   
-  //NSLog(@"getMoreChars: now reading from %@", inputStream);
-  
-  // read bytes
-  int numBytesRead = [inputStream read: (strBuf+strBufPos)
-				  maxLength: (strBufSize-strBufPos)];
-  
-  
-  //NSLog(@"getMoreChars closed with %d bytes read", numBytesRead);
-  
-  if (numBytesRead > 0) {
-    strBufPos += numBytesRead;
-    return YES;
-  } else {
-    return NO;
-  }
+	return result;
 }
 
--(NSString*) extractNextLine
+- (int) delimPosInBuffer
 {
-  NSString* result;
-  int resultLength;
+	if (delimSize > strBufPos)
+		return -1;
   
-  resultLength = [self delimPosInBuffer];
-  
-  //NSLog(@"buf@0x%08x, resLen=%d, delSize=%d, strBufPos=%d",
-  //      strBuf, resultLength, delimSize, strBufPos);
-  NSAssert(resultLength < strBufPos, @"resultLength >= strBufPos");
-  NSAssert(resultLength >= 0, @"resultLength < 0");
-  
-  if (resultLength < 0)
-    return nil;
-  
-  result = [[NSString alloc] initWithBytes: strBuf
-			     length: resultLength
-			     encoding: NSUTF8StringEncoding];
-  AUTORELEASE(result);
-  
-  memmove(strBuf, strBuf+resultLength+delimSize, 
-	  strBufPos-(resultLength+delimSize));
-  strBufPos -= (resultLength+delimSize);
-  
-  return result;
-}
-
--(int) delimPosInBuffer
-{
-  if (delimSize > strBufPos)
-    return -1;
-  
-  int pos = 0;
-  while (pos < strBufPos - delimSize + 1) {
-    if (memcmp(strBuf+pos, delim, delimSize) == 0)
-      return pos;
+	int pos = 0;
+	while (pos < strBufPos - delimSize + 1) 
+	{
+		if (memcmp(strBuf+pos, delim, delimSize) == 0)
+		return pos;
     
-    pos++;
-  }
+		pos++;
+	}
   
-  return -1;
+	return -1;
 }
 
--(BOOL) canExtractNextLine
+- (BOOL) canExtractNextLine
 {
-  return ([self delimPosInBuffer] == -1) ? NO : YES;
+	return ([self delimPosInBuffer] == -1) ? NO : YES;
 }
-
 
 @end

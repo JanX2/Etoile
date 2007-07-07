@@ -9,39 +9,34 @@
 
 #import <AppKit/AppKit.h>
 
-// predeclaration
-@class HistoryManager;
-
-@protocol HistoryManagerDelegate <NSObject>
--(BOOL) historyManager: (HistoryManager*) aHistoryManager
-	 needsBrowseTo: (id) aLocation;
-@end
-
 @interface HistoryManager : NSObject
 {
-@private
-  id<HistoryManagerDelegate> _delegate;
-  NSMutableArray* history;
-  BOOL listenMode;
-  unsigned currentLocationIndex;
-  unsigned futureLocationIndex;
+	@private
+	id _delegate;
+	NSMutableArray* history;
+	BOOL listenMode;
+	unsigned currentLocationIndex;
+	unsigned futureLocationIndex;
 }
 
--(id)init;
--(void)setDelegate: (id<HistoryManagerDelegate>)aDelegate;
--(id<HistoryManagerDelegate>)delegate;
+- (void) setDelegate: (id) aDelegate;
+- (id) delegate;
 
--(void) browseToIndex: (unsigned) aNewIndex;
--(void) browseBack;
--(void) browseForward;
--(BOOL) canBrowseTo: (unsigned) aNewIndex;
--(BOOL) canBrowseBack;
--(BOOL) canBrowseForward;
+- (void) browseToIndex: (unsigned) aNewIndex;
+- (void) browseBack;
+- (void) browseForward;
+- (BOOL) canBrowseTo: (unsigned) aNewIndex;
+- (BOOL) canBrowseBack;
+- (BOOL) canBrowseForward;
 
--(void) browser: (id)aBrowser
-    didBrowseTo: (id)aBrowsingLocation;
-
+- (void) browser: (id) aBrowser
+     didBrowseTo: (id) aBrowsingWord;
 
 @end
 
+/* Delegate should implement this one */
+@interface NSObject (HistoryManagerDelegate)
+- (BOOL) historyManager: (HistoryManager *) aHistoryManager
+          needsBrowseTo: (id) word;
+@end
 

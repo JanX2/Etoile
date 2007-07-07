@@ -5,70 +5,67 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
 ifeq ($(warnings), yes)
-ADDITIONAL_OBJCFLAGS += -W
-ADDITIONAL_OBJCPPFLAGS += -W
-ADDITIONAL_CFLAGS += -W
-ADDITIONAL_CPPFLAGS += -W
+	ADDITIONAL_OBJCFLAGS += -W
+	ADDITIONAL_OBJCPPFLAGS += -W
+	ADDITIONAL_CFLAGS += -W
+	ADDITIONAL_CPPFLAGS += -W
 endif
+
 ifeq ($(allwarnings), yes)
-ADDITIONAL_OBJCFLAGS += -Wall
-ADDITIONAL_OBJCPPFLAGS += -Wall
-ADDITIONAL_CFLAGS += -Wall
-ADDITIONAL_CPPFLAGS += -Wall
+	ADDITIONAL_OBJCFLAGS += -Wall
+	ADDITIONAL_OBJCPPFLAGS += -Wall
+	ADDITIONAL_CFLAGS += -Wall
+	ADDITIONAL_CPPFLAGS += -Wall
 endif
 
 APP_NAME = DictionaryReader
 
 DictionaryReader_OBJC_FILES = \
-AppController.m \
-StreamLineWriter.m \
-StreamLineReader.m \
-DictConnection.m \
-HistoryManager.m \
-NSString+Convenience.m \
-NSString+Clickable.m \
-NSString+DictLineParsing.m \
-DictionaryHandle.m \
-NSScanner+Base64Encoding.m \
-LocalDictionary.m \
-Preferences.m \
-main.m \
-
+	AppController.m \
+	StreamLineWriter.m \
+	StreamLineReader.m \
+	DictConnection.m \
+	HistoryManager.m \
+	NSString+Convenience.m \
+	NSString+Clickable.m \
+	NSString+DictLineParsing.m \
+	DictionaryHandle.m \
+	NSScanner+Base64Encoding.m \
+	LocalDictionary.m \
+	Preferences.m \
+	main.m \
 
 DictionaryReader_HEADER_FILES = \
-AppController.h \
-StreamLineWriter.h \
-StreamLineReader.h \
-DictConnection.h \
-HistoryManager.h \
-NSString+Convenience.h \
-NSString+Clickable.h \
-NSString+DictLineParsing.h \
-DefintionWriter.h \
-DictionaryHandle.h \
-NSScanner+Base64Encoding.h \
-LocalDictionary.h \
-Preferences.h \
-
-
+	AppController.h \
+	StreamLineWriter.h \
+	StreamLineReader.h \
+	DictConnection.h \
+	HistoryManager.h \
+	NSString+Convenience.h \
+	NSString+Clickable.h \
+	NSString+DictLineParsing.h \
+	DefintionWriter.h \
+	DictionaryHandle.h \
+	NSScanner+Base64Encoding.h \
+	LocalDictionary.h \
+	Preferences.h \
 
 DictionaryReader_OBJCC_FILES = 
 DictionaryReader_C_FILES = 
 DictionaryReader_RESOURCE_FILES = \
-Resources/dict.png \
-Resources/Dictionaries/jargon/jargon.index \
-Resources/Dictionaries/jargon/jargon.dict \
-Resources/etoile_back.tiff \
-Resources/etoile_forward.tiff \
+	Resources/dict.png \
+	Resources/Dictionaries/jargon/jargon.index \
+	Resources/Dictionaries/jargon/jargon.dict \
+	Resources/etoile_back.tiff \
+	Resources/etoile_forward.tiff \
 
 DictionaryReader_LANGUAGES = English
 
 DictionaryReader_LOCALIZED_RESOURCE_FILES = \
-DictionaryReader.gorm \
-Preferences.gorm \
-DictionaryReader.nib \
-Preferences.nib
-
+	DictionaryReader.gorm \
+	Preferences.gorm \
+	DictionaryReader.nib \
+	Preferences.nib
 
 DictionaryReader_MAIN_MODEL_FILE = DictionaryReader.gorm
 
@@ -84,18 +81,14 @@ else
 	DictionaryReader_HEADER_FILES += UKNibOwner.h
 endif
 
-ifeq ($(debug), yes)
-	ADDITIONAL_FLAGS += -fprofile-arcs -ftest-coverage
-	ADDITIONAL_OBJC_LIBS += -lgcov
-endif
+#ifeq ($(debug), yes)
+#	ADDITIONAL_FLAGS += -fprofile-arcs -ftest-coverage
+#	ADDITIONAL_OBJC_LIBS += -lgcov
+#endif
 
-
-SUBPROJECTS = 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/application.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 -include ../../../etoile.make
 -include GNUmakefile.postamble
-
-
 

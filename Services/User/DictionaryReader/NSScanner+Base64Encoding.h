@@ -19,3 +19,4 @@
 -(BOOL) scanBase64Int: (int*)outputInteger;
 
 @end
+

@@ -9,7 +9,6 @@
 
 #import "DictConnection.h"
 #import "GNUstep.h"
-
 #import "NSString+Clickable.h"
 #import "NSString+DictLineParsing.h"
 
@@ -24,278 +23,295 @@
 /**
  * Initialises the DictionaryHandle from the property list aPropertyList.
  */
--(id) initFromPropertyList: (NSDictionary*) aPropertyList
+- (id) initFromPropertyList: (NSDictionary *) aPropertyList
 {
-  NSAssert1([aPropertyList objectForKey: @"host"] != nil,
-            @"No entry for 'host' key in NSDictionary %@", aPropertyList);
-  NSAssert1([aPropertyList objectForKey: @"port"] != nil,
-            @"No entry for 'host' key in NSDictionary %@", aPropertyList);
+	NSAssert1([aPropertyList objectForKey: @"host"] != nil,
+	          @"No entry for 'host' key in NSDictionary %@", aPropertyList);
+	NSAssert1([aPropertyList objectForKey: @"port"] != nil,
+	          @"No entry for 'host' key in NSDictionary %@", aPropertyList);
     
-  if ((self = [super initFromPropertyList: aPropertyList]) != nil) {
-    NSHost *ahost = [NSHost hostWithName: [aPropertyList objectForKey: @"host"]];
-    self = [self initWithHost: ahost
-                         port: [[aPropertyList objectForKey: @"port"] intValue]];
-  }
+	if ((self = [super initFromPropertyList: aPropertyList]) != nil) 
+	{
+		NSHost *ahost = [NSHost hostWithName: [aPropertyList objectForKey: @"host"]];
+		self = [self initWithHost: ahost
+		             port: [[aPropertyList objectForKey: @"port"] intValue]];
+	}
     
-  return self;
+	return self;
 }
 
--(id)initWithHost: (NSHost*) aHost
-	     port: (int) aPort
+- (id) initWithHost: (NSHost *) aHost port: (int) aPort
 {
-  if ((self = [super init]) != nil) {
-    if (aHost == nil) {
-        [self release];
-        return nil;
-    }
+	if ((self = [super init]) != nil) 
+	{
+		if (aHost == nil) 
+		{
+			[self dealloc];
+			return nil;
+		}
     
-    ASSIGN(host, aHost);
-    port = aPort;
+		ASSIGN(host, aHost);
+		port = aPort;
     
-    reader = nil;
-    writer = nil;
-    inputStream = nil;
-    outputStream = nil;
-    defWriter = nil;
-  }
+		reader = nil;
+		writer = nil;
+		inputStream = nil;
+		outputStream = nil;
+		defWriter = nil;
+	}
   
-  return self;
+	return self;
 }
 
-- (id) initWithHost: (NSHost*) aHost
+- (id) initWithHost: (NSHost *) aHost
 {
-  return [self initWithHost: aHost port: 2628];
+	return [self initWithHost: aHost port: 2628];
 }
 
 - (id) init
 {
-  NSString *hostname = nil;
+	NSString *hostname = nil;
   
-  hostname = [[NSUserDefaults standardUserDefaults] objectForKey: @"Dict Server"];
+	hostname = [[NSUserDefaults standardUserDefaults] objectForKey: @"Dict Server"];
   
-  if (hostname == nil)
-    hostname = @"dict.org";
+	if (hostname == nil)
+		hostname = @"dict.org";
   
-  return [self initWithHost: [NSHost hostWithName: hostname]];
+	return [self initWithHost: [NSHost hostWithName: hostname]];
 }
 
--(void)dealloc
+- (void) dealloc
 {
-  // first close connection, if open
-  [self close];
+	// first close connection, if open
+	[self close];
   
-  // NOTE: inputStream, outputStream, reader and writer are released in -close
-  DESTROY(defWriter);
-  DESTROY(host);
+	// NOTE: inputStream, outputStream, reader and writer are released in -close
+	DESTROY(defWriter);
+	DESTROY(host);
   
-  [super dealloc];
+	[super dealloc];
 }
 
 /** To know whether two remote dictionaries are equal we check if they have the
 	the same host. */
--(BOOL) isEqual: (id)object
+- (BOOL) isEqual: (id)object
 {
-  // TODO: Refactor this into DictionaryHandle by checking -fullName for 
-  // equality rather than -host. DICT protocol seems to support 
-  // requesting dictionary name then it shouldn't be a problem to add -fullName 
-  // method. Equality test based on host could be kept as a fallback here 
-  // (useful when connection is unavailable). Don't forget to update 
-  // -[LocalDictionary isEqual:].
-  if ([object isKindOfClass: [DictionaryHandle class]]
-   && [object respondsToSelector: @selector(host)]) {
-    if ([[self host] isEqual: [object host]])
-      return YES;
-  }
+	// TODO: Refactor this into DictionaryHandle by checking -fullName for 
+	// equality rather than -host. DICT protocol seems to support 
+	// requesting dictionary name then it shouldn't be a problem to add 
+	// -fullName method. Equality test based on host could be kept as a 
+	// fallback here (useful when connection is unavailable). 
+	// Don't forget to update -[LocalDictionary isEqual:].
+	if ([object isKindOfClass: [DictionaryHandle class]]
+	    && [object respondsToSelector: @selector(host)]) 
+	{
+		if ([[self host] isEqual: [object host]])
+		return YES;
+	}
 
-  return NO;
+	return NO;
 }
 
--(NSHost*) host
+- (NSHost *) host
 {
 	return host;
 }
 
--(void) sendClientString: (NSString*) clientName
+- (void) sendClientString: (NSString *) clientName
 {
-  LOG(@"Sending client String: %@", clientName);
+	LOG(@"Sending client String: %@", clientName);
   
-  [writer writeLine:
-	    [NSString stringWithFormat: @"client \"%@\"\r\n",
-		      clientName]];
+	[writer writeLine: [NSString stringWithFormat: @"client \"%@\"\r\n", clientName]];
   
-  NSString* answer = [reader readLineAndRetry];
+	NSString* answer = [reader readLineAndRetry];
   
-  if (![answer hasPrefix: @"250"]) {
-    LOG(@"Answer not accepted?: %@", answer);
-  }
+	if (![answer hasPrefix: @"250"]) 
+	{
+		LOG(@"Answer not accepted?: %@", answer);
+	}
 }
 
--(void) handleDescription
+- (void) handleDescription
 {
-  [self showError: @"Retrieval of server descriptions not implemented yet."];
+	[self showError: @"Retrieval of server descriptions not implemented yet."];
 }
   
--(void) descriptionForDatabase: (NSString*) aDatabase
+- (void) descriptionForDatabase: (NSString*) aDatabase
 {
-  [self showError: @"Database description retrieval not implemented yet."];
+	[self showError: @"Database description retrieval not implemented yet."];
 }
 
--(void) definitionFor: (NSString*) aWord
-         inDictionary: (NSString*) aDict
+- (void) definitionFor: (NSString*) aWord inDictionary: (NSString*) aDict
 {
-  //NSMutableString* result = [NSMutableString stringWithCapacity: 100];
+	//NSMutableString* result = [NSMutableString stringWithCapacity: 100];
   
-  [writer writeLine:
-	    [NSString stringWithFormat: @"define %@ \"%@\"\r\n",
+	[writer writeLine: [NSString stringWithFormat: @"define %@ \"%@\"\r\n",
 		      aDict, aWord]];
   
+	NSString* answer = [reader readLineAndRetry];
   
-  NSString* answer = [reader readLineAndRetry];
-  
-  if ([answer hasPrefix: @"552"]) { // word not found
-    [defWriter writeHeadline:
-		 [NSString stringWithFormat: @"No results from %@", self]];
-  } else if ([answer hasPrefix: @"550"]) {
-    [self
-      showError: [NSString stringWithFormat: @"Invalid database: %@", aDict]];
-  } else if ([answer hasPrefix: @"150"]) { // got results
-    BOOL lastDefinition = NO;
-    do {
-      answer = [reader readLineAndRetry];
-      if ([answer hasPrefix: @"151"]) {
-	[defWriter writeHeadline:
-		     [NSString stringWithFormat: @"From %@:",
-			       [answer dictLineComponent: 3]]
-	 ];
-	
-	// TODO: Extract database information here!
-	//[defWriter writeHeadline: [answer substringFromIndex: 4]];
-	
-	BOOL lastLine = NO;
-	do {
-	  answer = [reader readLineAndRetry];
-	  if ([answer isEqualToString: @"."]) {
-	    lastLine = YES;
-	  } else { // wow, actual text! ^^
-	    [defWriter writeLine: answer];
-	  }
-	} while (lastLine == NO);
-      } else {
-	lastDefinition = YES;
-	if (![answer hasPrefix: @"250"]) {
-	  [self showError: answer];
+	if ([answer hasPrefix: @"552"]) 
+	{ // word not found
+		[defWriter writeHeadline: [NSString stringWithFormat: @"No results from %@", self]];
 	}
-      }
-    } while (lastDefinition == NO);
-  }
+	else if ([answer hasPrefix: @"550"]) 
+	{
+		[self showError: [NSString stringWithFormat: @"Invalid database: %@", aDict]];
+	}
+	else if ([answer hasPrefix: @"150"]) 
+	{ // got results
+		BOOL lastDefinition = NO;
+		do {
+			answer = [reader readLineAndRetry];
+			if ([answer hasPrefix: @"151"]) 
+			{
+				[defWriter writeHeadline: 
+					[NSString stringWithFormat: @"From %@:",
+						[answer dictLineComponent: 3]]
+				];
+	
+				// TODO: Extract database information here!
+				//[defWriter writeHeadline: [answer substringFromIndex: 4]];
+	
+				BOOL lastLine = NO;
+				do {
+					answer = [reader readLineAndRetry];
+					if ([answer isEqualToString: @"."]) 
+					{
+						lastLine = YES;
+					}
+					else
+					{ // wow, actual text! ^^
+						[defWriter writeLine: answer];
+					}
+				} while (lastLine == NO);
+			}
+			else 
+			{
+				lastDefinition = YES;
+				if (![answer hasPrefix: @"250"]) 
+				{
+					[self showError: answer];
+				}
+			}
+		} while (lastDefinition == NO);
+	}
 }
 
--(void) definitionFor: (NSString*) aWord
+- (void) definitionFor: (NSString *) aWord
 {
-  return [self definitionFor: aWord
-	       inDictionary: @"*"];
+	return [self definitionFor: aWord inDictionary: @"*"];
 }
 
--(void)open
+- (void) open
 {
-  [NSStream getStreamsToHost: host
-	    port: port
-	    inputStream: &inputStream
-	    outputStream: &outputStream];
+	[NSStream getStreamsToHost: host port: port
+	               inputStream: &inputStream outputStream: &outputStream];
 
-  // Streams are returned autoreleased
-  RETAIN(inputStream);
-  RETAIN(outputStream);
+	// Streams are returned autoreleased
+	RETAIN(inputStream);
+	RETAIN(outputStream);
   
-  if (inputStream == nil || outputStream == nil) {
-    [self log: @"open failed: cannot create input and output stream"];
-    return;
-  }
+	if (inputStream == nil || outputStream == nil) 
+	{
+		[self log: @"open failed: cannot create input and output stream"];
+		return;
+	}
   
-  [inputStream open];
-  [outputStream open];
+	[inputStream open];
+	[outputStream open];
   
-  reader = [[StreamLineReader alloc] initWithInputStream: inputStream];
-  writer = [[StreamLineWriter alloc] initWithOutputStream: outputStream];
+	reader = [[StreamLineReader alloc] initWithInputStream: inputStream];
+	writer = [[StreamLineWriter alloc] initWithOutputStream: outputStream];
   
-  if (reader == nil || writer == nil) {
-    [self log: @"open failed: cannot create reader and writer"];
-    return;
-  }
+	if (reader == nil || writer == nil) 
+	{
+		[self log: @"open failed: cannot create reader and writer"];
+		return;
+	}
   
-  // fetch server banner
-  NSString* banner = [reader readLineAndRetry];
+	// fetch server banner
+	NSString* banner = [reader readLineAndRetry];
   
-  
-  // interprete server banner
-  if ([banner hasPrefix: @"220"]) {
-    LOG(@"Server banner: %@", banner);
-  } else {
-    if ([banner hasPrefix: @"530"]) {
-      [self showError: @"Access to server denied."];
-    } else if ([banner hasPrefix: @"420"]) {
-      [self showError: @"Temporarily unavailable."];
-    } else if ([banner hasPrefix: @"421"]) {
-      [self showError: @"Server shutting down at operator request."];
-    } else {
-      LOG(@"Bad banner: %@", banner);
-    }
-  } 
+	// interprete server banner
+	if ([banner hasPrefix: @"220"]) 
+	{
+		LOG(@"Server banner: %@", banner);
+	}
+	else 
+	{
+		if ([banner hasPrefix: @"530"]) 
+		{
+			[self showError: @"Access to server denied."];
+		}
+		else if ([banner hasPrefix: @"420"]) 
+		{
+			[self showError: @"Temporarily unavailable."];
+		}
+		else if ([banner hasPrefix: @"421"]) 
+		{
+			[self showError: @"Server shutting down at operator request."];
+		}
+		else 
+		{
+			LOG(@"Bad banner: %@", banner);
+		}
+	} 
 }
 
 // Probably not true anymore now we check the connection status...
 #warning FIXME: Crashes sometimes?
--(void)close
+- (void) close
 {
-  if ([inputStream streamStatus] != NSStreamStatusNotOpen
-   && [inputStream streamStatus] != NSStreamStatusClosed)
-  {
-    [inputStream close];
-  }
-  DESTROY(inputStream);
+	if (([inputStream streamStatus] != NSStreamStatusNotOpen) &&
+	    ([inputStream streamStatus] != NSStreamStatusClosed))
+	{
+		[inputStream close];
+	}
+	DESTROY(inputStream);
 
-  if ([outputStream streamStatus] != NSStreamStatusNotOpen
-   && [outputStream streamStatus] != NSStreamStatusClosed)
-  {
-    [outputStream close];
-  }
-  DESTROY(outputStream);
+	if (([outputStream streamStatus] != NSStreamStatusNotOpen) &&
+	    ([outputStream streamStatus] != NSStreamStatusClosed))
+	{
+		[outputStream close];
+	}
+	DESTROY(outputStream);
   
-  DESTROY(reader);
-  DESTROY(writer);
+	DESTROY(reader);
+	DESTROY(writer);
 }
 
--(void) log: (NSString*) aLogMsg
+- (void) log: (NSString *) aLogMsg
 {
-  NSLog(@"%@", aLogMsg);
+	NSLog(@"%@", aLogMsg);
 }
 
--(void) showError: (NSString*) aString
+- (void) showError: (NSString *) aString
 {
-  [defWriter writeBigHeadline: [NSString stringWithFormat: @"%@ Error", self]];
-  [defWriter writeLine: aString];
+	[defWriter writeBigHeadline: [NSString stringWithFormat: @"%@ Error", self]];
+	[defWriter writeLine: aString];
 }
 
 -(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter
 {
-  NSAssert1(aDefinitionWriter != nil,
-	    @"-setDefinitionWriter: parameter must not be nil in %@", self);
-  ASSIGN(defWriter, aDefinitionWriter);
+	NSAssert1(aDefinitionWriter != nil,
+	          @"-setDefinitionWriter: parameter must not be nil in %@", self);
+	ASSIGN(defWriter, aDefinitionWriter);
 }
 
--(NSDictionary*) shortPropertyList
+- (NSDictionary *) shortPropertyList
 {
-    NSMutableDictionary* result = [super shortPropertyList];
+	NSMutableDictionary* result = [super shortPropertyList];
+
+	[result setObject: [host name] forKey: @"host"];
+	[result setObject: [NSNumber numberWithInt: port] forKey: @"port"];
     
-    [result setObject: [host name] forKey: @"host"];
-    [result setObject: [NSNumber numberWithInt: port] forKey: @"port"];
-    
-    return result;
+	return result;
 }
 
--(NSString*) description
+- (NSString *) description
 {
-  return [NSString stringWithFormat: @"Dictionary at %@", host];
+	return [NSString stringWithFormat: @"Dictionary at %@", host];
 }
 
 @end

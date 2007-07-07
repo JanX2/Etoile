@@ -13,11 +13,12 @@ NSString* WordClickedNotificationType = @"WordClickedNotificationType";
 
 @implementation NSString (Clickable)
 
--(void) click
+- (void) click
 {
-  [[NSNotificationCenter defaultCenter]
-    postNotificationName: WordClickedNotificationType
-    object: self];
+	[[NSNotificationCenter defaultCenter]
+		postNotificationName: WordClickedNotificationType
+		object: self];
 }
 
 @end
+

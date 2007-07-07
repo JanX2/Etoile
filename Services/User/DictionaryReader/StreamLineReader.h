@@ -14,37 +14,32 @@
 
 @interface StreamLineReader : NSObject
 {
-  // Instance variables
-  NSInputStream* inputStream;
-  uint8_t* delim;
-  unsigned delimSize;
+	// Instance variables
+	NSInputStream* inputStream;
+	uint8_t* delim;
+	unsigned delimSize;
   
-  uint8_t* strBuf;
-  unsigned strBufPos;
-  unsigned strBufSize;
+	uint8_t* strBuf;
+	unsigned strBufPos;
+	unsigned strBufSize;
 }
 
 // Class methods
 
 
-
 // Instance methods
 
--(id)init;
--(id)initWithInputStream: (NSInputStream*) anInputStream;
--(id)initWithInputStream: (NSInputStream*) anInputStream
-            andDelimiter: (NSString*) aDelimiter;
+- (id) initWithInputStream: (NSInputStream *) anInputStream;
+- (id) initWithInputStream: (NSInputStream *) anInputStream
+              andDelimiter: (NSString *) aDelimiter;
 
--(void)dealloc;
+- (NSString *) readLineAndRetry;
+- (NSString *) readLine;
 
--(NSString*)readLineAndRetry;
--(NSString*)readLine;
-
--(BOOL) getMoreCharacters;
--(NSString*) extractNextLine;
--(int) delimPosInBuffer;
--(BOOL) canExtractNextLine;
-
+- (BOOL) getMoreCharacters;
+- (NSString *) extractNextLine;
+- (int) delimPosInBuffer;
+- (BOOL) canExtractNextLine;
 
 @end
 

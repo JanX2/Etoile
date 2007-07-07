@@ -13,80 +13,77 @@
 
 @interface LocalDictionary : DictionaryHandle
 {
-@private
+	@private
   
-  // the handle for the dictionary file
-  NSFileHandle* dictHandle;
+	// the handle for the dictionary file
+	NSFileHandle* dictHandle;
   
-  // the ranges of the articles
-  NSDictionary* ranges;
+	// the ranges of the articles
+	NSDictionary* ranges;
   
-  NSString* indexFile;
-  NSString* dictFile;
-  NSString* fullName;
+	NSString* indexFile;
+	NSString* dictFile;
+	NSString* fullName;
   
-  id<DefinitionWriter> defWriter;
+	id<DefinitionWriter> defWriter;
   
-  BOOL opened;
+	BOOL opened;
 }
-
-// INITIALISATION
 
 /**
  * Initialises the instance by expanding the given base name using
  * the .dict and .index postfixes and looking it up as resource.
  */
--(id) initWithResourceName: (NSString*) baseName;
+- (id) initWithResourceName: (NSString *) baseName;
 
 /**
  * Initialises the instance with the specified Dict-server-style index
  * and dictionary database files.
  */
--(id) initWithIndexAtPath: (NSString*) indexFile
-	 dictionaryAtPath: (NSString*) dbFile;
+- (id) initWithIndexAtPath: (NSString *) indexFile
+          dictionaryAtPath: (NSString *) dbFile;
 
 
 /**
  * Returns a dictionary with the specifiled Dict-server-style index and
  * dictionary database files.
  */
-+(id) dictionaryWithIndexAtPath: indexFileName
-               dictionaryAtPath: fileName;
++ (id) dictionaryWithIndexAtPath: (NSString *) indexFileName
+                dictionaryAtPath: (NSString *) fileName;
 
 
 
 // MAIN FUNCTIONALITY
 
--(NSString*) fullName;
+- (NSString*) fullName;
 
 /**
  * Gives away the client identification string to the dictionary handle.
  */
--(void) sendClientString: (NSString*) clientName;
+- (void) sendClientString: (NSString *) clientName;
 
 /**
  * Lets the dictionary handle show handle information in the main window.
  */
--(void) handleDescription;
+- (void) handleDescription;
 
 /**
  * Lets the dictionary handle describe a specific database.
  */
--(void) descriptionForDatabase: (NSString*) aDatabase;
+- (void) descriptionForDatabase: (NSString *) aDatabase;
 
 /**
  * Lets the dictionary handle print all available definitions
  * for aWord in the main window.
  */
--(void) definitionFor: (NSString*) aWord;
+- (void) definitionFor: (NSString*) aWord;
 
 /**
  * Lets the dictionary handle print the defintion for aWord
  * in a specific dictionary. (Note: The dictionary handle may
  * represent multiple dictionaries.)
  */
--(void) definitionFor: (NSString*) aWord
-	 inDictionary: (NSString*) aDict;
+- (void) definitionFor: (NSString*) aWord inDictionary: (NSString*) aDict;
 
 
 // SETTING UP THE CONNECTION
@@ -109,7 +106,6 @@
  * its word definitions to.
  */
 -(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter;
-
 
 
 // PRIVATE

@@ -20,18 +20,15 @@
 
 @implementation NSString (Convenience)
 
-// Note: startsWith: method was obsolete because of the existing hasPrefix: method.
-
 /**
  * Returns the first index in the string where the
  * character given by the aCharacter parameter can
  * be found. If there's no such character in the
  * string, a value of -1 is returned.
  */
--(int)firstIndexOf: (unichar)aCharacter
+- (int) firstIndexOf: (unichar) aCharacter
 {
-  return [self firstIndexOf: aCharacter
-	       fromIndex: 0];
+	return [self firstIndexOf: aCharacter fromIndex: 0];
 }
 
 /**
@@ -41,28 +38,27 @@
  * no such character in the string, a value of -1 is
  * returned.
  */
--(int)firstIndexOf: (unichar)aCharacter
-	 fromIndex: (int) startIndex
+- (int) firstIndexOf: (unichar) aCharacter fromIndex: (int) startIndex
 {
-  // -1 means 'not found' or -inside this method- 'not *yet* found'
-  int result = -1;
+	// NSNotFound means 'not found' or -inside this method- 'not *yet* found'
+	int result = NSNotFound;
   
-  // the length of this string
-  unsigned length = [self length];
+	// the length of this string
+	unsigned length = [self length];
   
-  // the index where we are searching at the moment
-  unsigned index = startIndex;
+	// the index where we are searching at the moment
+	unsigned index = startIndex;
   
-  while (index < length && result == -1)
-    {
-      if ([self characterAtIndex: index] == aCharacter) {
-	result = index;
-      }
-      
-      index++;
-    }
+	while (index < length && result == NSNotFound)
+	{
+		if ([self characterAtIndex: index] == aCharacter) 
+		{
+			result = index;
+		}
+		index++;
+	}
   
-  return result;
+	return result;
 }
 
 @end

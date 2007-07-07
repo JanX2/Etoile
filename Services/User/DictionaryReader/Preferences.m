@@ -12,6 +12,7 @@
 
 #import <DictConnection.h>
 #import <LocalDictionary.h>
+#import "GNUstep.h"
 
 @implementation Preferences
 
