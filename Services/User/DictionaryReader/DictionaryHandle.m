@@ -16,9 +16,8 @@
 {
     DictionaryHandle *dict = nil;
 	Class dictClass = NSClassFromString([aPropertyList objectForKey: @"class"]);
-    dict = [[dictClass alloc] initFromPropertyList: aPropertyList];
-    
-    return AUTORELEASE(dict);
+	dict = [[dictClass alloc] initFromPropertyList: aPropertyList];
+	return AUTORELEASE(dict);
 }
 
 - (id) initFromPropertyList: (NSDictionary*) aPropertyList

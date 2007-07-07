@@ -34,13 +34,12 @@ static NSString* DRActiveDictsChangedNotification = @"DRActiveDictsChangedNotifi
 }
 
 // Singleton
-+(id)shared;
++ (id) shared;
 
--(void)setDictionaries: (NSMutableArray*) dicts;
--(void)rescanDictionaries: (id)sender;
+- (void) setDictionaries: (NSMutableArray*) dicts;
+- (void) rescanDictionaries: (id)sender;
 
--(void)show;
--(void)hide;
+- (void) show;
 @end
 
 

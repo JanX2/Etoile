@@ -84,11 +84,6 @@
 	[NSApp stopModal];
 }
 
-- (void) hide 
-{
-	[_prefPanel close];
-}
-
 - (void) awakeFromNib
 {
 	NSButtonCell* cell = [[_tableView tableColumnWithIdentifier: @"active"] dataCell];
@@ -153,7 +148,8 @@
 		for (i = 0; i < [plist count]; i++) 
 		{
 			DictionaryHandle *dict = [DictionaryHandle dictionaryFromPropertyList: [plist objectAtIndex: i]];
-			[self foundDictionary: dict];
+			if (dict)
+				[self foundDictionary: dict];
 		}
 	}
 }

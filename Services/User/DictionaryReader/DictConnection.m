@@ -50,6 +50,7 @@
 		if (aHost == nil) 
 		{
 			[self dealloc];
+			self = nil;
 			return nil;
 		}
     

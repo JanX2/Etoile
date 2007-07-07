@@ -67,7 +67,6 @@
 @end
 
 
-#warning FIXME: dealloc is missing
 @implementation LocalDictionary
 
 // INITIALISATION
@@ -79,8 +78,13 @@
 + (id) dictionaryWithIndexAtPath: (NSString *) indexFileName
                 dictionaryAtPath: (NSString *) fileName
 {
-	return AUTORELEASE([[self alloc] initWithIndexAtPath: indexFileName
-		                                dictionaryAtPath: fileName]);
+	LocalDictionary *dict = [[LocalDictionary alloc] 
+	                                    initWithIndexAtPath: indexFileName
+		                                dictionaryAtPath: fileName];
+	if (dict)
+		return AUTORELEASE(dict);
+	else
+		return nil;
 }
 
 /**
@@ -100,7 +104,8 @@
 		self = [self initWithIndexAtPath: [aPropertyList objectForKey: @"index file"]
 		             dictionaryAtPath: [aPropertyList objectForKey: @"dict file"]];
         
-		ASSIGN(fullName, [aPropertyList objectForKey: @"full name"]);
+		if (self)
+			ASSIGN(fullName, [aPropertyList objectForKey: @"full name"]);
 	}
     
 	return self;
@@ -143,6 +148,23 @@
             @"Index file \"%@\" has no .index suffix.",
             anIndexFile
 	);
+
+	NSFileManager *fm = [NSFileManager defaultManager];
+	BOOL isDir = NO;
+	if (([fm fileExistsAtPath: anIndexFile isDirectory: &isDir] == NO) ||
+	    (isDir == YES))
+	{
+		[self dealloc];
+		self = nil;
+		return nil;
+	}
+	if (([fm fileExistsAtPath: aDictFile isDirectory: &isDir] == NO) ||
+	    (isDir == YES))
+	{
+		[self dealloc];
+		self = nil;
+		return nil;
+	}
   
 	NSAssert1([aDictFile hasSuffix: @".dict"]
 #ifdef GNUSTEP
@@ -388,13 +410,10 @@
  */
 - (void) close
 {
-	if (opened)
-	{
-		[dictHandle closeFile];
-		DESTROY(dictHandle);
-		DESTROY(ranges);
-		opened = NO;
-	}
+	[dictHandle closeFile];
+	DESTROY(dictHandle);
+	DESTROY(ranges);
+	opened = NO;
 }
 
 /**
