@@ -1,3 +1,7 @@
+2006-07-07 Yen-Ju Chen <yjchenx at gmail>
+
+	* Move all images into Resources/ and use new icon.
+
 2006-06-28 Yen-Ju Chen <yjchenx at gmail>
 
 	* SKTTextArea.m: Do not reuse NSLayoutManager. Fix bug #8669.

@@ -1,5 +1,7 @@
 {
 	ApplicationName = "Sketch";
+	ApplicationIcon = "Sketch.tiff";
+	NSIcon = "Sketch.tiff";
 	NSTypes =
 	(
 		{

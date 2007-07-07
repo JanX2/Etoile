@@ -42,18 +42,19 @@ Sketch_LOCALIZED_RESOURCE_FILES = \
 Sketch_MAIN_MODEL_FILE = Draw2.nib
 endif
 Sketch_RESOURCE_FILES = \
-	Arrow.tiff \
-	Curve.tiff \
-	Line.tiff \
-	Rectangle.tiff \
-	Circle.tiff \
-	Draw2App.tiff \
-	Pencil.tiff \
-	Scribble.tiff \
-	Cross.tiff \
-	Draw2File.tiff \
-	Polygon.tiff \
-	TextGraphic.tiff
+	Resources/Arrow.tiff \
+	Resources/Curve.tiff \
+	Resources/Line.tiff \
+	Resources/Rectangle.tiff \
+	Resources/Circle.tiff \
+	Resources/Draw2App.tiff \
+	Resources/Pencil.tiff \
+	Resources/Scribble.tiff \
+	Resources/Cross.tiff \
+	Resources/Draw2File.tiff \
+	Resources/Polygon.tiff \
+	Resources/TextGraphic.tiff \
+	Resources/Sketch.tiff
 
 include $(GNUSTEP_MAKEFILES)/application.make
 -include GNUmakefile.postamble
