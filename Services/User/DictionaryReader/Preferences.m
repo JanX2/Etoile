@@ -64,10 +64,14 @@
 	[self searchWithDictionaryStoreFile];
 	[self searchInUsualPlaces];
   
-	// default remote dictionary: dict.org
-	DictConnection* dict = [[DictConnection alloc] initWithDefaultHost];
-	[self foundDictionary: dict];
-	DESTROY(dict);
+	/* We add a network one only if there is no local one */
+	if ([_dictionaries count] == 0)
+	{
+		// default remote dictionary: dict.org
+		DictConnection* dict = [[DictConnection alloc] initWithDefaultHost];
+		[self foundDictionary: dict];
+		DESTROY(dict);
+	}
   
 	[_tableView reloadData];
 }

@@ -245,7 +245,7 @@ NSDictionary* normalAttributes;
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar 
 {
-	NSArray *identifiers = [NSArray arrayWithObjects: @"Back", @"Forward", 
+	NSArray *identifiers = [NSArray arrayWithObjects: /*@"Back", @"Forward",*/ 
 		NSToolbarFlexibleSpaceItemIdentifier, @"Search", nil];
 
 	return identifiers;
