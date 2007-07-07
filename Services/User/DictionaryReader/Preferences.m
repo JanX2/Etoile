@@ -85,7 +85,8 @@
 
 - (void) windowWillClose: (NSNotification *) not
 {
-	[NSApp stopModal];
+	if ([NSApp modalWindow] == _prefPanel)
+		[NSApp stopModal];
 }
 
 - (void) awakeFromNib

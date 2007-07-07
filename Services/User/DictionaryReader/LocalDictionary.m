@@ -11,51 +11,6 @@
 #import "NSScanner+Base64Encoding.h"
 #import "GNUstep.h"
 
-
-/**
- * A class that just encapsulates two integer ranges.
- * Needed for storing ranges in a NSDictionary.
- */
-@interface BigRange : NSObject
-{
-	int fromIndex;
-	int length;
-}
-
-+ (id)rangeFrom: (int)aFromIndex length: (int)aToIndex;
-
-- (int)fromIndex;
-- (int)length;
-@end
-
-
-// ---------------------------
-
-@implementation BigRange
-
-+ (id) rangeFrom: (int) aFromIndex length: (int) aLength
-{
-	BigRange* instance = [[BigRange alloc] init];
-	if (instance != nil) 
-	{
-		instance->fromIndex = aFromIndex;
-		instance->length    = aLength;
-	}
-	return instance;
-}
-
-- (int) fromIndex
-{
-	return fromIndex;
-}
-
-- (int) length
-{
-	return length;
-}
-
-@end
-
 // -----------------------------------
 
 @interface LocalDictionary (Private)
@@ -332,36 +287,30 @@
   
 	indexScanner = [NSScanner scannerWithString: indexStr];
   
-	NSString* word = nil;
-	int fromLocation;
-	int length;
+	NSString *word = nil;
+	NSString *offset = nil;
 	NSMutableDictionary* dict;
   
 	dict = [NSMutableDictionary dictionary];
-  
+NSLog(@"Start open");  
 	while ([indexScanner scanUpToString: @"\t" intoString: &word] == YES) 
 	{
 		// wow, we scanned a word! :-)
     
 		// consume first tab
 		[indexScanner scanString: @"\t" intoString: NULL];
-    
-		// scan the start location of the dictionary entry
-		[indexScanner scanBase64Int: &fromLocation];
-    
-		// consume second tab
-		[indexScanner scanString: @"\t" intoString: NULL];
-    
-		// scan the length of the dictionary entry
-		[indexScanner scanBase64Int: &length];
-    
+
+		// scan offset 
+		[indexScanner scanUpToString: @"\n" intoString: &offset];
+
 		// scan newline
 		[indexScanner scanString: @"\n" intoString: NULL];
-    
+
 		// save entry in index -------------------------------------------
-		[dict setObject: [BigRange rangeFrom: fromLocation length: length]
+		[dict setObject: offset
 		         forKey: [word capitalizedString]];
 	}
+NSLog(@"Finish open");  
   
 	ASSIGN(ranges, [NSDictionary dictionaryWithDictionary: dict]);
 	NSAssert1(ranges != nil,
@@ -459,16 +408,27 @@
 	NSAssert1(dictHandle != nil, @"Dictionary file %@ not opened!", dictFile);
   
 	// get range of entry
-	BigRange* range = [ranges objectForKey: [aWord capitalizedString]];
-  
-	if (range == nil)
-		return nil;
-  
+	NSString *offset = [ranges objectForKey: [aWord capitalizedString]];
+	if (offset == nil)
+		return nil
+;
+	NSScanner *scanner = [NSScanner scannerWithString: offset];
+	int location, length;
+	
+	// scan the start location of the dictionary entry
+	[scanner scanBase64Int: &location];
+    
+	// consume second tab
+	[scanner scanString: @"\t" intoString: NULL];
+    
+	// scan the length of the dictionary entry
+	[scanner scanBase64Int: &length];
+
 	// seek there
-	[dictHandle seekToFileOffset: [range fromIndex]];
+	[dictHandle seekToFileOffset: location];
   
 	// retrieve entry as data
-	NSData* data = [dictHandle readDataOfLength: [range length]];
+	NSData* data = [dictHandle readDataOfLength: length];
   
 	// convert it to a string
 	// XXX: Which encoding are dict-server-like dictionaries stored in?!
