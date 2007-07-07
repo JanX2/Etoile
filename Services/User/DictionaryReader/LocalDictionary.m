@@ -7,8 +7,6 @@
  *  it under the terms of the MIT license. See COPYING.
  */
 
-#import <Foundation/Foundation.h>
-
 #import "LocalDictionary.h"
 #import "NSScanner+Base64Encoding.h"
 #import "GNUstep.h"
@@ -60,29 +58,17 @@
 
 // -----------------------------------
 
-
+@interface LocalDictionary (Private)
 /**
- * This hash map contains all allocated local dictionaries.
- *
- *   - Keys: The names of the dictionary files (NSString*)
- *   - Objects: corresponding LocalDictionary instances
+ * Returns a dictionary entry from the file as a string. If not present,
+ * nil is returned.
  */
-#warning TODO Check for memory leaks in this dictionary.
-static NSMutableDictionary* existingDictionaries;
+-(NSString*) _getEntryFor: (NSString*) aWord;
+@end
 
 
 #warning FIXME: dealloc is missing
 @implementation LocalDictionary
-
-
-// CLASS INITIALISATION
-+ (void)initialize
-{
-	[super initialize];
-    
-	existingDictionaries = [[NSMutableDictionary alloc] init];
-}
-
 
 // INITIALISATION
 
@@ -93,17 +79,8 @@ static NSMutableDictionary* existingDictionaries;
 + (id) dictionaryWithIndexAtPath: (NSString *) indexFileName
                 dictionaryAtPath: (NSString *) fileName
 {
-	LocalDictionary* localDict = [existingDictionaries objectForKey: fileName];
-  
-	if (localDict != nil) 
-	{
-		return localDict;
-	}
-	else 
-	{
-		return [[self alloc] initWithIndexAtPath: indexFileName
-		                        dictionaryAtPath: fileName];
-	}
+	return AUTORELEASE([[self alloc] initWithIndexAtPath: indexFileName
+		                                dictionaryAtPath: fileName]);
 }
 
 /**
@@ -123,11 +100,7 @@ static NSMutableDictionary* existingDictionaries;
 		self = [self initWithIndexAtPath: [aPropertyList objectForKey: @"index file"]
 		             dictionaryAtPath: [aPropertyList objectForKey: @"dict file"]];
         
-		NSString* fname = [aPropertyList objectForKey: @"full name"];
-		if (fname != nil) 
-		{
-			ASSIGN(fullName, fname);
-		}
+		ASSIGN(fullName, [aPropertyList objectForKey: @"full name"]);
 	}
     
 	return self;
@@ -166,17 +139,6 @@ static NSMutableDictionary* existingDictionaries;
 - (id) initWithIndexAtPath: (NSString*) anIndexFile
           dictionaryAtPath: (NSString*) aDictFile
 {
-	LocalDictionary* localDict =
-		[existingDictionaries objectForKey: aDictFile];
-  
-	// In case this object is already allocated, just return
-	// the known instance, discarding the allocated object.
-	if (localDict != nil) 
-	{
-		[self dealloc];
-		return localDict;
-	}
-  
 	NSAssert1([anIndexFile hasSuffix: @".index"],
             @"Index file \"%@\" has no .index suffix.",
             anIndexFile
@@ -200,14 +162,12 @@ static NSMutableDictionary* existingDictionaries;
 		ASSIGN(indexFile, anIndexFile);
 		ASSIGN(dictFile, aDictFile);
 		opened = NO;
-    
-		[existingDictionaries setObject: self forKey: aDictFile];
 	}
   
 	return self;
 }
 
--(void)dealloc
+- (void) dealloc
 {
 	// first close connection, if open
 	[self close];
@@ -219,20 +179,27 @@ static NSMutableDictionary* existingDictionaries;
 	DESTROY(indexFile);
 	DESTROY(dictFile);
 	DESTROY(fullName);
-	DESTROY(defWriter);
   
 	[super dealloc];
 }
 
 /** To know whether two local dictionaries are equal we check if they have the
 	the same host. */
-- (BOOL) isEqual: (id)object
+- (unsigned long) hash
 {
-	if ([object isKindOfClass: [DictionaryHandle class]] &&
-	    [object respondsToSelector: @selector(fullName)]) 
+	return [dictFile hash] ^ [indexFile hash];
+}
+
+- (BOOL) isEqual: (id) object
+{
+	if ([object isKindOfClass: [self class]])
 	{
-		if ([[self fullName] isEqual: [object fullName]])
+		LocalDictionary *dict = (LocalDictionary *) object;
+		if ([[self index] isEqual: [dict index]] &&
+		    [[self dictionary] isEqual: [dict dictionary]])
+		{
 			return YES;
+		}
 	}
 	
 	return NO;
@@ -240,17 +207,19 @@ static NSMutableDictionary* existingDictionaries;
 
 // MAIN FUNCTIONALITY
 
+- (NSString *) index
+{
+	return indexFile;
+}
+
+- (NSString *) dictionary
+{
+	return dictFile;
+}
+
 - (NSString *) fullName
 {
 	return fullName;
-}
-
-/**
- * Gives away the client identification string to the dictionary handle.
- */
--(void) sendClientString: (NSString*) clientName
-{
-  // ignored
 }
 
 /**
@@ -315,33 +284,6 @@ static NSMutableDictionary* existingDictionaries;
 }
 
 
-/**
- * Returns a dictionary entry from the file as a string. If not present,
- * nil is returned.
- */
-- (NSString *) _getEntryFor: (NSString *) aWord
-{
-	NSAssert1(dictHandle != nil, @"Dictionary file %@ not opened!", dictFile);
-  
-	// get range of entry
-	BigRange* range = [ranges objectForKey: [aWord capitalizedString]];
-  
-	if (range == nil)
-		return nil;
-  
-	// seek there
-	[dictHandle seekToFileOffset: [range fromIndex]];
-  
-	// retrieve entry as data
-	NSData* data = [dictHandle readDataOfLength: [range length]];
-  
-	// convert it to a string
-	// XXX: Which encoding are dict-server-like dictionaries stored in?!
-	NSString* entry = [[NSString alloc] initWithData: data
-	                                        encoding: NSASCIIStringEncoding];
-  
-	return AUTORELEASE(entry);
-}
 
 
 
@@ -446,21 +388,13 @@ static NSMutableDictionary* existingDictionaries;
  */
 - (void) close
 {
-	[dictHandle closeFile];
-	DESTROY(dictHandle);
-	DESTROY(ranges);
-	opened = NO;
-}
-
-/**
- * Provides the dictionary handle with a definition writer to write
- * its word definitions to.
- */
-- (void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter
-{
-	NSAssert1(aDefinitionWriter != nil,
-	          @"-setDefinitionWriter: parameter must not be nil in %@", self);
-	ASSIGN(defWriter, aDefinitionWriter);
+	if (opened)
+	{
+		[dictHandle closeFile];
+		DESTROY(dictHandle);
+		DESTROY(ranges);
+		opened = NO;
+	}
 }
 
 /**
@@ -493,4 +427,36 @@ static NSMutableDictionary* existingDictionaries;
 		return fullName;
 	}
 }
+@end
+
+@implementation LocalDictionary (Private)
+
+/**
+ * Returns a dictionary entry from the file as a string. If not present,
+ * nil is returned.
+ */
+- (NSString *) _getEntryFor: (NSString *) aWord
+{
+	NSAssert1(dictHandle != nil, @"Dictionary file %@ not opened!", dictFile);
+  
+	// get range of entry
+	BigRange* range = [ranges objectForKey: [aWord capitalizedString]];
+  
+	if (range == nil)
+		return nil;
+  
+	// seek there
+	[dictHandle seekToFileOffset: [range fromIndex]];
+  
+	// retrieve entry as data
+	NSData* data = [dictHandle readDataOfLength: [range length]];
+  
+	// convert it to a string
+	// XXX: Which encoding are dict-server-like dictionaries stored in?!
+	NSString* entry = [[NSString alloc] initWithData: data
+	                                        encoding: NSASCIIStringEncoding];
+  
+	return AUTORELEASE(entry);
+}
+
 @end

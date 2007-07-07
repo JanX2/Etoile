@@ -8,52 +8,105 @@
  */
 
 #import "DictionaryHandle.h"
-
+#import "GNUstep.h"
 
 @implementation DictionaryHandle
 
-+(id) dictionaryFromPropertyList: (NSDictionary*) aPropertyList
++ (id) dictionaryFromPropertyList: (NSDictionary*) aPropertyList
 {
-    DictionaryHandle* dict;
+    DictionaryHandle *dict = nil;
+	Class dictClass = NSClassFromString([aPropertyList objectForKey: @"class"]);
+    dict = [[dictClass alloc] initFromPropertyList: aPropertyList];
     
-    dict = [NSClassFromString([aPropertyList objectForKey: @"class"]) alloc];
-    dict = [dict initFromPropertyList: aPropertyList];
-    [dict autorelease];
-    
-    return dict;
+    return AUTORELEASE(dict);
 }
 
--(id) initFromPropertyList: (NSDictionary*) aPropertyList
+- (id) initFromPropertyList: (NSDictionary*) aPropertyList
 {
     NSAssert([self class] != [DictionaryHandle class],
         @"DictionaryHandle is abstract, don't instantiate it directly!"
     );
     
-    if ((self = [super init]) != nil) {
+    if ((self = [self init]) != nil) 
+	{
         [self setActive: [[aPropertyList objectForKey: @"active"] intValue]];
     }
     
     return self;
 }
 
--(NSDictionary*) shortPropertyList
+- (void) dealloc
+{
+	DESTROY(defWriter);
+	[super dealloc];
+}
+
+- (void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter
+{
+    NSAssert1(aDefinitionWriter != nil,
+              @"-setDefinitionWriter: parameter must not be nil in %@", self);
+    ASSIGN(defWriter, aDefinitionWriter);
+}
+
+- (NSDictionary*) shortPropertyList
 {
     NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity: 4];
     
-    [dict setObject: [isa description] forKey: @"class"];
+    [dict setObject: NSStringFromClass([self class]) forKey: @"class"];
     [dict setObject: [NSNumber numberWithBool: _active] forKey: @"active"];
     
     return dict;
 }
 
--(BOOL) isActive
+- (BOOL) isActive
 {
     return _active;
 }
 
--(void) setActive: (BOOL) isActive
+- (void) setActive: (BOOL) isActive
 {
     _active = isActive;
+}
+
+- (void) showError: (NSString *) aString
+{
+	[defWriter writeBigHeadline: [NSString stringWithFormat: @"%@ Error", self]];
+	[defWriter writeLine: aString];
+}
+
+- (void) log: (NSString *) aLogMsg
+{
+	NSLog(@"%@", aLogMsg);
+}
+
+- (void) handleDescription
+{
+	// Do nothing
+}
+
+- (void) descriptionForDatabase: (NSString *) aDatabase
+{
+	// Do nothing
+}
+
+- (void) definitionFor: (NSString *) aWord
+{
+	// Do nothing
+}
+
+- (void) definitionFor: (NSString *) aWord inDictionary: (NSString *) aDict
+{
+	// Do nothing
+}
+
+- (void) open
+{
+	// Do nothing
+}
+
+- (void) close
+{
+	// Do nothing
 }
 
 @end

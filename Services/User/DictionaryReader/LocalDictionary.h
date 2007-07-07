@@ -7,11 +7,9 @@
  *  it under the terms of the MIT license. See COPYING.
  */
 
-#import <Foundation/Foundation.h>
-#import "DefinitionWriter.h"
 #import "DictionaryHandle.h"
 
-@interface LocalDictionary : DictionaryHandle
+@interface LocalDictionary: DictionaryHandle
 {
 	@private
   
@@ -24,8 +22,6 @@
 	NSString* indexFile;
 	NSString* dictFile;
 	NSString* fullName;
-  
-	id<DefinitionWriter> defWriter;
   
 	BOOL opened;
 }
@@ -55,66 +51,9 @@
 
 // MAIN FUNCTIONALITY
 
+- (NSString *) index;
+- (NSString *) dictionary;
 - (NSString*) fullName;
-
-/**
- * Gives away the client identification string to the dictionary handle.
- */
-- (void) sendClientString: (NSString *) clientName;
-
-/**
- * Lets the dictionary handle show handle information in the main window.
- */
-- (void) handleDescription;
-
-/**
- * Lets the dictionary handle describe a specific database.
- */
-- (void) descriptionForDatabase: (NSString *) aDatabase;
-
-/**
- * Lets the dictionary handle print all available definitions
- * for aWord in the main window.
- */
-- (void) definitionFor: (NSString*) aWord;
-
-/**
- * Lets the dictionary handle print the defintion for aWord
- * in a specific dictionary. (Note: The dictionary handle may
- * represent multiple dictionaries.)
- */
-- (void) definitionFor: (NSString*) aWord inDictionary: (NSString*) aDict;
-
-
-// SETTING UP THE CONNECTION
-
-/**
- * Opens the dictionary handle. Needs to be done before asking for
- * definitions. Implementing classes may open network connections
- * here.
- */
--(void)open;
-
-/**
- * Closes the dictionary handle. Implementing classes may close
- * network connections here.
- */
--(void)close;
-
-/**
- * Provides the dictionary handle with a definition writer to write
- * its word definitions to.
- */
--(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter;
-
-
-// PRIVATE
-
-/**
- * Returns a dictionary entry from the file as a string. If not present,
- * nil is returned.
- */
--(NSString*) _getEntryFor: (NSString*) aWord;
 
 @end
 

@@ -16,6 +16,9 @@
 #define LOG(format, args...) \
 	[self log: [NSString stringWithFormat: format, ##args]];
 
+@interface DictConnection (Private)
+- (void) sendClientString: (NSString *) clientName;
+@end
 
 @implementation DictConnection
 
@@ -57,7 +60,6 @@
 		writer = nil;
 		inputStream = nil;
 		outputStream = nil;
-		defWriter = nil;
 	}
   
 	return self;
@@ -68,7 +70,7 @@
 	return [self initWithHost: aHost port: 2628];
 }
 
-- (id) init
+- (id) initWithDefaultHost
 {
 	NSString *hostname = nil;
   
@@ -86,7 +88,6 @@
 	[self close];
   
 	// NOTE: inputStream, outputStream, reader and writer are released in -close
-	DESTROY(defWriter);
 	DESTROY(host);
   
 	[super dealloc];
@@ -94,19 +95,21 @@
 
 /** To know whether two remote dictionaries are equal we check if they have the
 	the same host. */
-- (BOOL) isEqual: (id)object
+- (unsigned long) hash
 {
-	// TODO: Refactor this into DictionaryHandle by checking -fullName for 
-	// equality rather than -host. DICT protocol seems to support 
-	// requesting dictionary name then it shouldn't be a problem to add 
-	// -fullName method. Equality test based on host could be kept as a 
-	// fallback here (useful when connection is unavailable). 
-	// Don't forget to update -[LocalDictionary isEqual:].
-	if ([object isKindOfClass: [DictionaryHandle class]]
-	    && [object respondsToSelector: @selector(host)]) 
+	return [host hash] ^ port;
+}
+
+- (BOOL) isEqual: (id) object
+{
+	if ([object isKindOfClass: [self class]])
 	{
-		if ([[self host] isEqual: [object host]])
-		return YES;
+		DictConnection *conn = (DictConnection *) object;
+		if (([[self host] isEqualToHost: [conn host]]) &&
+		    ([self port] == [conn port]))
+		{
+			return YES;
+		}
 	}
 
 	return NO;
@@ -117,18 +120,9 @@
 	return host;
 }
 
-- (void) sendClientString: (NSString *) clientName
+- (int) port
 {
-	LOG(@"Sending client String: %@", clientName);
-  
-	[writer writeLine: [NSString stringWithFormat: @"client \"%@\"\r\n", clientName]];
-  
-	NSString* answer = [reader readLineAndRetry];
-  
-	if (![answer hasPrefix: @"250"]) 
-	{
-		LOG(@"Answer not accepted?: %@", answer);
-	}
+	return port;
 }
 
 - (void) handleDescription
@@ -257,20 +251,23 @@
 			LOG(@"Bad banner: %@", banner);
 		}
 	} 
+	[self sendClientString: @"GNUstep DictionaryReader.app"];
 }
 
 // Probably not true anymore now we check the connection status...
 #warning FIXME: Crashes sometimes?
 - (void) close
 {
-	if (([inputStream streamStatus] != NSStreamStatusNotOpen) &&
+	if ((inputStream != nil) &&
+	    ([inputStream streamStatus] != NSStreamStatusNotOpen) &&
 	    ([inputStream streamStatus] != NSStreamStatusClosed))
 	{
 		[inputStream close];
 	}
 	DESTROY(inputStream);
 
-	if (([outputStream streamStatus] != NSStreamStatusNotOpen) &&
+	if ((outputStream != nil) &&
+	    ([outputStream streamStatus] != NSStreamStatusNotOpen) &&
 	    ([outputStream streamStatus] != NSStreamStatusClosed))
 	{
 		[outputStream close];
@@ -279,24 +276,6 @@
   
 	DESTROY(reader);
 	DESTROY(writer);
-}
-
-- (void) log: (NSString *) aLogMsg
-{
-	NSLog(@"%@", aLogMsg);
-}
-
-- (void) showError: (NSString *) aString
-{
-	[defWriter writeBigHeadline: [NSString stringWithFormat: @"%@ Error", self]];
-	[defWriter writeLine: aString];
-}
-
--(void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter
-{
-	NSAssert1(aDefinitionWriter != nil,
-	          @"-setDefinitionWriter: parameter must not be nil in %@", self);
-	ASSIGN(defWriter, aDefinitionWriter);
 }
 
 - (NSDictionary *) shortPropertyList
@@ -311,8 +290,24 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"Dictionary at %@", host];
+	return [NSString stringWithFormat: @"Dictionary at %@", [host name]];
 }
 
+@end
+
+@implementation DictConnection (Private)
+- (void) sendClientString: (NSString *) clientName
+{
+	LOG(@"Sending client String: %@", clientName);
+  
+	[writer writeLine: [NSString stringWithFormat: @"client \"%@\"\r\n", clientName]];
+  
+	NSString* answer = [reader readLineAndRetry];
+  
+	if (![answer hasPrefix: @"250"]) 
+	{
+		LOG(@"Answer not accepted?: %@", answer);
+	}
+}
 @end
 

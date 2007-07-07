@@ -12,7 +12,7 @@
 #import "DefinitionWriter.h"
 #import "HistoryManager.h"
 
-@interface AppController : NSObject
+@interface AppController : NSObject <DefinitionWriter>
 {
 	@private
 	IBOutlet NSTextView* searchResultView;
@@ -41,22 +41,10 @@
 
 - (void) updateGUI;
 
-
-// Listen for actions...
-
 // ...from the Links in the text field
 - (void) clickSearchNotification: (NSNotification*)aNotification;
 
 - (void) defineWord: (NSString*) aWord;
-
-@end
-
-
-@interface AppController (DefinitionWriter) <DefinitionWriter> 
-
-// not part of the protocol
-- (void) writeString: (NSString*) aString
-          attributes: (NSDictionary*) attributes;
 
 @end
 

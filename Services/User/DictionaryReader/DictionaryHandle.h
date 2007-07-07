@@ -14,17 +14,20 @@
 #import "DefinitionWriter.h"
 
 /**
- * The Dictionary handle protocol.
+ * The dictionary handle class
  */
-@interface NSObject (DictionaryHandle)
+@interface DictionaryHandle: NSObject
+{
+	BOOL _active;
+	id <DefinitionWriter> defWriter;
+}
 
-
-// MAIN FUNCTIONALITY
++ (id) dictionaryFromPropertyList: (NSDictionary *) aPropertyList;
 
 /**
- * Gives away the client identification string to the dictionary handle.
+ * Initialises the DictionaryHandle from the property list aPropertyList.
  */
-- (void) sendClientString: (NSString *) clientName;
+- (id) initFromPropertyList: (NSDictionary *) aPropertyList;
 
 /**
  * Lets the dictionary handle show handle information in the main window.
@@ -66,38 +69,18 @@
 - (void)close;
 
 /**
- * Provides the dictionary handle with a definition writer to write
- * its word definitions to.
- */
-- (void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter;
-
-@end
-
-
-
-
-/**
- * The dictionary handle class
- */
-@interface DictionaryHandle : NSObject
-{
-    BOOL _active;
-}
-
-+ (id) dictionaryFromPropertyList: (NSDictionary *) aPropertyList;
-
-/**
- * Initialises the DictionaryHandle from the property list aPropertyList.
- */
-- (id) initFromPropertyList: (NSDictionary *) aPropertyList;
-
-/**
  * Returns a NSDictionary instance that shortly describes the dictionary so
  * that it can be restored again using the initFromPropertyList: method. The
  * key @"class" must be present and the corresponding object must be the class
  * name of the DictionaryHandle class.
  */
 - (NSDictionary *) shortPropertyList;
+
+/**
+ * Provides the dictionary handle with a definition writer to write
+ * its word definitions to.
+ */
+- (void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter;
 
 /**
  * Returns YES if and only if the dictionary is active
@@ -108,6 +91,16 @@
  * Sets if the dictionary is active
  */
 - (void) setActive: (BOOL) isActive;
+
+/**
+ * Show error on defition writer.
+ */
+- (void) showError: (NSString *) aString;
+
+/**
+ * Debug purpose.
+ */
+- (void) log: (NSString *) aString;
 @end
 
 #endif // _DICTIONARY_H_
