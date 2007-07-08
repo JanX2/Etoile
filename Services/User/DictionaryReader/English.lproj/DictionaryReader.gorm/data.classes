@@ -5,11 +5,16 @@
 	    "searchAction:",
 	    "browseBackClicked:",
 	    "browseForwardClicked:",
-	    "orderFrontPreferencesPanel:"
+	    "orderFrontPreferencesPanel:",
+	    "increaseFontSize:",
+	    "decreaseFontSize:"
 	);
 	Outlets = (
 	    searchResultView,
-	    dictionaryContentWindow
+	    dictionaryContentWindow,
+	    backButton,
+	    forwardButton,
+	    searchField
 	);
 	Super = NSObject;
     };
@@ -17,6 +22,8 @@
 	Actions = (
 	    "browseBackClicked:",
 	    "browseForwardClicked:",
+	    "increaseFontSize:",
+	    "decreaseFontSize:",
 	    "orderFrontPreferencesPanel:",
 	    "searchAction:"
 	);

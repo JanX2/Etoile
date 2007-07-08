@@ -55,8 +55,6 @@ DictionaryReader_OBJCC_FILES =
 DictionaryReader_C_FILES = 
 DictionaryReader_RESOURCE_FILES = \
 	Resources/dict.png \
-	Resources/Dictionaries/jargon/jargon.index \
-	Resources/Dictionaries/jargon/jargon.dict \
 	Resources/etoile_back.tiff \
 	Resources/etoile_forward.tiff \
 

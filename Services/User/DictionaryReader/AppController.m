@@ -303,7 +303,6 @@ NSDictionary* normalAttributes;
 	    [dict release];
 #endif // end remote dictionaries block
 #endif // end predefined dictionaries
-
 }
 #if 0
 // ---- Toolbar delegate methods
@@ -493,6 +492,7 @@ NSDictionary* normalAttributes;
  */ 
 - (void) defineWord: (NSString *) aWord
 {
+NSLog(@"%@: %@", NSStringFromSelector(_cmd), aWord);
 	if ( ![[searchField stringValue] isEqualToString: aWord] ) 
 	{
 		// set string in search field
@@ -506,11 +506,10 @@ NSDictionary* normalAttributes;
 	for (i = 0; i < [dictionaries count]; i++) 
 	{
 		id dict = [dictionaries objectAtIndex: i];
-		NSArray *array = nil;
-		NSString *error = nil;
-    
 		if ([dict isActive]) 
 		{
+			NSArray *array = nil;
+			NSString *error = nil;
 			NS_DURING
 			{
 				[dict open];

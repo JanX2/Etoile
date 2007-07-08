@@ -155,6 +155,7 @@
 	{
 		if (error)
 			*error = [NSString stringWithFormat: @"Invalid database: %@", aDict];
+		return nil;
 	}
 	else if ([answer hasPrefix: @"150"]) 
 	{ // got results
@@ -199,6 +200,7 @@
 				{
 					if (error)
 						*error = answer;
+					return nil;
 				}
 			}
 		} while (lastDefinition == NO);
