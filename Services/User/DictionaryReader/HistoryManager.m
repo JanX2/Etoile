@@ -48,7 +48,7 @@
 	[self browseToIndex: currentLocationIndex+1];
 }
 
-- (void) browseToIndex: (unsigned) aNewIndex 
+- (void) browseToIndex: (int) aNewIndex 
 {
 	if (listenMode == YES) 
 	{
@@ -72,9 +72,9 @@
 }
 
 
-- (BOOL) canBrowseTo: (unsigned) aNewIndex 
+- (BOOL) canBrowseTo: (int) aNewIndex 
 {
-	return ([history count] > aNewIndex && aNewIndex != -1) ? YES : NO;
+	return ((([history count] > aNewIndex) && (aNewIndex > -1)) ? YES : NO);
 }
 
 - (BOOL) canBrowseBack 
@@ -97,8 +97,10 @@
 		currentLocationIndex = futureLocationIndex;
 		return;
 	}
-  
-	[history removeObjectsInRange: NSMakeRange(currentLocationIndex+1,[history count])];
+
+	NSRange range = NSMakeRange(currentLocationIndex+1,[history count]);
+	range.length -= range.location;
+	[history removeObjectsInRange: range];
 	[history addObject: aBrowsingLocation];
   
 	currentLocationIndex++;

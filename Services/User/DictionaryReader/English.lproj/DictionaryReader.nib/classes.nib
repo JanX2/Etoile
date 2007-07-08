@@ -4,12 +4,20 @@
             ACTIONS = {
                 browseBackClicked = id; 
                 browseForwardClicked = id; 
+                decreaseFontSize = id; 
+                increaseFontSize = id; 
                 orderFrontPreferencesPanel = id; 
                 searchAction = id; 
             }; 
             CLASS = AppController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {dictionaryContentWindow = NSWindow; searchResultView = NSTextView; }; 
+            OUTLETS = {
+                backButton = id; 
+                dictionaryContentWindow = NSWindow; 
+                forwardButton = id; 
+                searchField = id; 
+                searchResultView = NSTextView; 
+            }; 
             SUPERCLASS = NSObject; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }

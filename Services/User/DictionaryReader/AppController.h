@@ -14,25 +14,31 @@
 @interface AppController : NSObject
 {
 	@private
-	IBOutlet NSTextView* searchResultView;
-	IBOutlet NSWindow* dictionaryContentWindow;
+	IBOutlet NSTextView *searchResultView;
+	IBOutlet NSWindow *dictionaryContentWindow;
+	IBOutlet NSSearchField *searchField;
+	IBOutlet NSButton *backButton;
+	IBOutlet NSButton *forwardButton;
 	
 	NSMutableArray* dictionaries;
 	HistoryManager* historyManager;
-	
+	NSArray *definitions; /* Currently displayed definitions */
+#if 0	
 	NSToolbarItem* backItem;
 	NSToolbarItem* forwardItem;
 	NSToolbarItem* searchItem;
-	NSSearchField* searchField;
+#endif
 }
 
 - (id)init;
 
 // Some methods called by the GUI
-- (void) browseBackClicked: (id)sender;
-- (void) browseForwardClicked: (id)sender;
-- (void) orderFrontPreferencesPanel: (id)sender;
-- (void) searchAction: (id)sender;
+- (void) browseBackClicked: (id) sender;
+- (void) browseForwardClicked: (id) sender;
+- (void) orderFrontPreferencesPanel: (id) sender;
+- (void) searchAction: (id) sender;
+- (void) increaseFontSize: (id) sender;
+- (void) decreaseFontSize: (id) sender;
 
 // TextView delegate stuff
 - (BOOL) textView: (NSTextView*) textView clickedOnLink: (id) link

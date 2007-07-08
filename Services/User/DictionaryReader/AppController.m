@@ -25,6 +25,7 @@ NSDictionary* normalAttributes;
 - (void) writeString: (NSString*) aString
           attributes: (NSDictionary*) attributes;
 - (void) writeString: (NSString*) aString link: (id) aClickable;
+- (void) renderDefinitions;
 @end
 
 @implementation AppController (HistoryManagerDelegate)
@@ -43,6 +44,18 @@ NSDictionary* normalAttributes;
 @end
 
 @implementation AppController (DefinitionWriter)
+- (void) renderDefinitions
+{
+	int i;
+
+	// We need space for new content
+	[searchResultView setString: @""];
+
+	for (i = 0; i < [definitions count]; i++)
+	{
+		[self writeDefinition: [definitions objectAtIndex: i]];
+	}
+}
 
 - (void) writeBigHeadline: (NSString *) aString 
 {
@@ -147,7 +160,8 @@ NSDictionary* normalAttributes;
 		        // the link itself
 		        aClickable, NSLinkAttributeName,
 		        // font
-		        [NSFont userFixedPitchFontOfSize: 10], NSFontAttributeName,
+		        [attributes objectForKey: NSFontAttributeName],
+				NSFontAttributeName,
 		        // underlining
 		        [NSNumber numberWithInt: NSSingleUnderlineStyle],
 		        NSUnderlineStyleAttributeName,
@@ -173,7 +187,7 @@ NSDictionary* normalAttributes;
 		[self dealloc];
 		return nil;
 	}
-
+#if 0
 	// create toolbar items
 	forwardItem = [[NSToolbarItem alloc] initWithItemIdentifier: @"Forward"];
 	[forwardItem setImage: [NSImage imageNamed: @"etoile_forward"]];
@@ -197,7 +211,7 @@ NSDictionary* normalAttributes;
 	[searchItem setView: searchField];
 	[searchItem setLabel: @"Search"];
 	[searchItem setMinSize: NSMakeSize(150, 22)];
-
+#endif
 	// create mutable dictionaries array
 	dictionaries = [[NSMutableArray alloc] initWithCapacity: 2];
 
@@ -240,15 +254,28 @@ NSDictionary* normalAttributes;
 {
 	DESTROY(dictionaries);
 	DESTROY(historyManager);
+#if 0
 	DESTROY(backItem);
 	DESTROY(forwardItem);
 	DESTROY(searchItem);
+#endif
+#if 0
 	DESTROY(searchField);
+#endif
+	DESTROY(definitions);
 	[super dealloc];
 }
 
 - (void) awakeFromNib 
 {
+	[searchField setRecentsAutosaveName: @"recentDictionaryLookups"];
+//	[searchField setAction: @selector(searchAction:)];
+	[[searchField cell] setSendsWholeSearchString: YES];
+#ifdef GNUSTEP
+	[forwardButton setImage: [NSImage imageNamed: @"etoile_forward"]];
+	[backButton setImage: [NSImage imageNamed: @"etoile_back"]];
+#endif
+#if 0
 	NSToolbar *toolbar = 
 	  [[NSToolbar alloc] initWithIdentifier: @"DictionaryContentToolbar"];
 	
@@ -257,7 +284,7 @@ NSDictionary* normalAttributes;
 	
 	[dictionaryContentWindow setToolbar:toolbar];
 	DESTROY(toolbar);
-
+#endif
 	// find available dictionaries
 	[[Preferences shared] setDictionaries: dictionaries];
 	[[Preferences shared] rescanDictionaries: self];
@@ -278,7 +305,7 @@ NSDictionary* normalAttributes;
 #endif // end predefined dictionaries
 
 }
-
+#if 0
 // ---- Toolbar delegate methods
 
 - (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
@@ -325,6 +352,7 @@ NSDictionary* normalAttributes;
 
 	return identifiers;
 }
+#endif
 
 // ---- Some methods called by the GUI
 - (void) browseBackClicked: (id) sender 
@@ -345,8 +373,13 @@ NSDictionary* normalAttributes;
 
 - (void) updateGUI 
 {
+#if 1
+	[backButton setEnabled: [historyManager canBrowseBack]];
+	[forwardButton setEnabled: [historyManager canBrowseForward]];
+#else
 	[backItem setEnabled: [historyManager canBrowseBack]];
 	[forwardItem setEnabled: [historyManager canBrowseForward]];
+#endif
 }
 
 
@@ -373,6 +406,49 @@ NSDictionary* normalAttributes;
 	}
 }
 
+- (void) increaseFontSize: (id) sender
+{
+	int size = 0;
+	NSDictionary *dict = nil;
+
+	size = [[bigHeadlineAttributes objectForKey: NSFontAttributeName] pointSize] + 2;
+	dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+               [NSFont titleBarFontOfSize: size], NSFontAttributeName, nil];
+	ASSIGN(bigHeadlineAttributes, dict);
+
+	size = [[headlineAttributes objectForKey: NSFontAttributeName] pointSize] + 2;
+	dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+               [NSFont boldSystemFontOfSize: size], NSFontAttributeName, nil];
+	ASSIGN(headlineAttributes, dict);
+
+	size = [[normalAttributes objectForKey: NSFontAttributeName] pointSize] + 2;
+	dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+             [NSFont userFixedPitchFontOfSize: size], NSFontAttributeName, nil];
+	ASSIGN(normalAttributes, dict);
+	[self renderDefinitions];
+}
+
+- (void) decreaseFontSize: (id) sender
+{
+	int size = 0;
+	NSDictionary *dict = nil;
+
+	size = [[bigHeadlineAttributes objectForKey: NSFontAttributeName] pointSize] - 2;
+	dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+               [NSFont titleBarFontOfSize: size], NSFontAttributeName, nil];
+	ASSIGN(bigHeadlineAttributes, dict);
+
+	size = [[headlineAttributes objectForKey: NSFontAttributeName] pointSize] - 2;
+	dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+               [NSFont boldSystemFontOfSize: size], NSFontAttributeName, nil];
+	ASSIGN(headlineAttributes, dict);
+
+	size = [[normalAttributes objectForKey: NSFontAttributeName] pointSize] - 2;
+	dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+             [NSFont userFixedPitchFontOfSize: size], NSFontAttributeName, nil];
+	ASSIGN(normalAttributes, dict);
+	[self renderDefinitions];
+}
 
 // ---- Searching
 
@@ -423,9 +499,6 @@ NSDictionary* normalAttributes;
 		[searchField setStringValue: aWord];
 	}
   
-	// We need space for new content
-	[searchResultView setString: @""];
-  
 	// Iterate over all dictionaries, query them!
 	NSMutableArray *result = [[NSMutableArray alloc] init];
 	int i;
@@ -460,12 +533,10 @@ NSDictionary* normalAttributes;
 			NS_ENDHANDLER;
 		}
 	}
+	ASSIGN(definitions, result);
+	DESTROY(result);
 
-	for (i = 0; i < [result count]; i++)
-	{
-		Definition *def = [result objectAtIndex: i];
-		[self writeDefinition: def];
-	}
+	[self renderDefinitions];
 
 	/* Tell the search result view to scroll to the top,
 	   select nothing and redraw */
@@ -496,12 +567,14 @@ NSDictionary* normalAttributes;
 - (void) applicationDidFinishLaunching: (NSNotification *) theNotification
 {
 	[NSApp setServicesProvider: self];
+	[self updateGUI];
 }
 
 - (void) applicationDidBecomeActive: (NSNotification *) aNotification
 {
 	// show dictionary window when clicking the app icon
 	[dictionaryContentWindow makeKeyAndOrderFront: self];
+	[dictionaryContentWindow makeFirstResponder: searchField];
 }
 
 /**

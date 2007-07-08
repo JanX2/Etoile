@@ -15,22 +15,21 @@
 	id _delegate;
 	NSMutableArray* history;
 	BOOL listenMode;
-	unsigned currentLocationIndex;
-	unsigned futureLocationIndex;
+	int currentLocationIndex;
+	int futureLocationIndex;
 }
 
 - (void) setDelegate: (id) aDelegate;
 - (id) delegate;
 
-- (void) browseToIndex: (unsigned) aNewIndex;
+- (void) browseToIndex: (int) aNewIndex;
 - (void) browseBack;
 - (void) browseForward;
-- (BOOL) canBrowseTo: (unsigned) aNewIndex;
+- (BOOL) canBrowseTo: (int) aNewIndex;
 - (BOOL) canBrowseBack;
 - (BOOL) canBrowseForward;
 
-- (void) browser: (id) aBrowser
-     didBrowseTo: (id) aBrowsingWord;
+- (void) browser: (id) aBrowser didBrowseTo: (id) aBrowsingWord;
 
 @end
 

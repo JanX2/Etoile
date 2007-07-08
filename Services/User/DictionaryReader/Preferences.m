@@ -66,7 +66,12 @@
   
 	// default remote dictionary: dict.org
 	DictConnection* dict = [[DictConnection alloc] initWithDefaultHost];
-	[dict setActive: NO];
+
+	if ([_dictionaries count] > 0)
+		[dict setActive: NO];
+	else
+		[dict setActive: YES];
+
 	[self foundDictionary: dict];
 	DESTROY(dict);
   
