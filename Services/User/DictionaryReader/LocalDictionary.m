@@ -285,30 +285,28 @@
   
 	NSAssert1(indexStr != nil, @"Index file %@ could not be opened!", indexFile);
   
-	indexScanner = [NSScanner scannerWithString: indexStr];
-  
 	NSString *word = nil;
 	NSString *offset = nil;
 	NSMutableDictionary* dict;
   
 	dict = [NSMutableDictionary dictionary];
 NSLog(@"Start open");  
+	indexScanner = [NSScanner scannerWithString: indexStr];
 	while ([indexScanner scanUpToString: @"\t" intoString: &word] == YES) 
 	{
 		// wow, we scanned a word! :-)
     
-		// consume first tab
-		[indexScanner scanString: @"\t" intoString: NULL];
+		// consume first tab '\t'
+		[indexScanner setScanLocation: [indexScanner scanLocation]+1];
 
 		// scan offset 
 		[indexScanner scanUpToString: @"\n" intoString: &offset];
 
-		// scan newline
-		[indexScanner scanString: @"\n" intoString: NULL];
+		// scan newline '\n'
+		[indexScanner setScanLocation: [indexScanner scanLocation]+1];
 
 		// save entry in index -------------------------------------------
-		[dict setObject: offset
-		         forKey: [word capitalizedString]];
+		[dict setObject: offset forKey: word];
 	}
 NSLog(@"Finish open");  
   
@@ -408,7 +406,24 @@ NSLog(@"Finish open");
 	NSAssert1(dictHandle != nil, @"Dictionary file %@ not opened!", dictFile);
   
 	// get range of entry
-	NSString *offset = [ranges objectForKey: [aWord capitalizedString]];
+	NSString *offset = [ranges objectForKey: aWord];
+	if (offset == nil)
+	{
+		offset = [ranges objectForKey: [aWord lowercaseString]];
+	}
+	if (offset == nil)
+	{
+		offset = [ranges objectForKey: [aWord uppercaseString]];
+	}
+	if (offset == nil)
+	{
+		offset = [ranges objectForKey: [aWord capitalizedString]];
+	}
+	if (offset == nil)
+	{
+		/* Only capitalized the first letter, not every word */
+//		offset = [ranges objectForKey: [aWord capitalizedString]];
+	}
 	if (offset == nil)
 		return nil
 ;
@@ -418,8 +433,8 @@ NSLog(@"Finish open");
 	// scan the start location of the dictionary entry
 	[scanner scanBase64Int: &location];
     
-	// consume second tab
-	[scanner scanString: @"\t" intoString: NULL];
+	// consume second tab '\t'
+	[scanner setScanLocation: [scanner scanLocation]+1];
     
 	// scan the length of the dictionary entry
 	[scanner scanBase64Int: &length];
