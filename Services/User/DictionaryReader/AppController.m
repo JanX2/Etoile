@@ -20,6 +20,8 @@ NSDictionary* headlineAttributes;
 NSDictionary* normalAttributes;
 
 @interface AppController (DefinitionWriter)
+- (void) writeBigHeadline: (NSString*) aString;
+- (void) writeDefinition: (Definition *) definition;
 - (void) writeString: (NSString*) aString
           attributes: (NSDictionary*) attributes;
 - (void) writeString: (NSString*) aString link: (id) aClickable;
@@ -42,6 +44,87 @@ NSDictionary* normalAttributes;
 
 @implementation AppController (DefinitionWriter)
 
+- (void) writeBigHeadline: (NSString *) aString 
+{
+	[self writeString: [NSString stringWithFormat: @"\n%@\n", aString]
+	       attributes: bigHeadlineAttributes];
+}
+
+- (void) writeDefinition: (Definition *) def
+{
+	[self writeString: [NSString stringWithFormat: @"\n%@\n\n", [def database]]
+           attributes: headlineAttributes];
+
+	NSString *aString = [def definition];
+	// the index of the next character to write
+	unsigned index = 0;
+	unsigned strLength = [aString length];
+
+	// YES if and only if we are inside a link
+	BOOL inLink = NO;
+  
+	unsigned nextBracketIdx;
+  
+	while (index < strLength) 
+	{
+		if (inLink == YES) 
+		{
+			nextBracketIdx = [aString firstIndexOf: (unichar)'}'
+			                             fromIndex: index];
+      
+			if (nextBracketIdx == NSNotFound) 
+			{
+				/* treat as if the next bracket started right after the
+				   last character in the string */
+				nextBracketIdx = strLength;
+	
+				// FIXME: Handle multiline links, too!
+				NSLog(@"multiline link detected!");
+			}
+      
+			// crop text out of the input string
+			NSString* linkContent = [aString substringWithRange: NSMakeRange(index, nextBracketIdx-index)];
+      
+			// next index is right after the found bracket
+			index = nextBracketIdx + 1;
+      
+			// we're not in the link any more
+			inLink = NO;
+      
+			// write link!
+			[self writeString: linkContent link: linkContent];
+		}
+		else 
+		{ // inLink == FALSE
+			nextBracketIdx = [aString firstIndexOf: (unichar)'{'
+			                             fromIndex: index];
+      
+			if (nextBracketIdx == NSNotFound) 
+			{
+				/* treat as if the next bracket was right after the
+				   last character in the string */
+				nextBracketIdx = strLength;
+			}
+      
+			// crop text
+			NSString* text = [aString substringWithRange: NSMakeRange(index, nextBracketIdx-index)];
+      
+			// proceed right after the bracket
+			index = nextBracketIdx + 1;
+      
+			// now we're in a link
+			inLink = YES;
+      
+			// write text!
+			[self writeString: text attributes: normalAttributes];
+		} // end if(inLink)
+    
+	} // end while(index < strLength)
+  
+	// after everything is done, write a newline!
+	[self writeString: @"\n" attributes: normalAttributes];
+}
+
 - (void) writeString: (NSString *) aString
           attributes: (NSDictionary*) attributes
 {
@@ -49,12 +132,6 @@ NSDictionary* normalAttributes;
 	                                                    attributes: attributes];
 	[[searchResultView textStorage] appendAttributedString: as];
 	DESTROY(as);
-  
-	/* Tell the search result view to scroll to the top,
-	   select nothing and redraw */
-	[searchResultView scrollRangeToVisible: NSMakeRange(0.0,0.0)];
-	[searchResultView setSelectedRange: NSMakeRange(0.0,0.0)];
-	[searchResultView setNeedsDisplay: YES];
 }
 
 
@@ -190,13 +267,11 @@ NSDictionary* normalAttributes;
 #ifdef PREDEFINED_DICTIONARIES // predefined dictionaries
 	    // create local dictionary object
 	    dict = [[LocalDictionary alloc] initWithResourceName: @"jargon"];
-	    [dict setDefinitionWriter: self];
 	    [dictionaries addObject: dict];
 	    [dict release];
 #ifdef REMOTE_DICTIONARIES // remote dictionaries
 	    // create remote dictionary object
 	    dict = [[DictConnection alloc] init];
-	    [dict setDefinitionWriter: self];
 	    [dictionaries addObject: dict];
 	    [dict release];
 #endif // end remote dictionaries block
@@ -349,22 +424,28 @@ NSDictionary* normalAttributes;
 	}
   
 	// We need space for new content
-	[self clearResults];
+	[searchResultView setString: @""];
   
 	// Iterate over all dictionaries, query them!
+	NSMutableArray *result = [[NSMutableArray alloc] init];
 	int i;
   
 	for (i = 0; i < [dictionaries count]; i++) 
 	{
 		id dict = [dictionaries objectAtIndex: i];
+		NSArray *array = nil;
+		NSString *error = nil;
     
 		if ([dict isActive]) 
 		{
 			NS_DURING
 			{
 				[dict open];
-				//[dict sendClientString: @"GNUstep DictionaryReader.app"];
-				[dict definitionFor: aWord];
+				array = [dict definitionsFor: aWord error: &error];
+				if (array)
+					[result addObjectsFromArray: array];
+				else
+					NSLog(@"Error: %@", error);
 				// [dict close];
 			}
 			NS_HANDLER
@@ -379,6 +460,18 @@ NSDictionary* normalAttributes;
 			NS_ENDHANDLER;
 		}
 	}
+
+	for (i = 0; i < [result count]; i++)
+	{
+		Definition *def = [result objectAtIndex: i];
+		[self writeDefinition: def];
+	}
+
+	/* Tell the search result view to scroll to the top,
+	   select nothing and redraw */
+	[searchResultView scrollRangeToVisible: NSMakeRange(0.0,0.0)];
+	[searchResultView setSelectedRange: NSMakeRange(0.0,0.0)];
+	[searchResultView setNeedsDisplay: YES];
   
 	[historyManager browser: self didBrowseTo: aWord];
   
@@ -447,94 +540,6 @@ NSDictionary* normalAttributes;
 	                   modes: [NSArray arrayWithObject: [runLoop currentMode]]];
 }
 
-/* Definition Writer Protocol */
-- (void) clearResults
-{
-	[searchResultView setString: @""];
-}
-
-- (void) writeBigHeadline: (NSString *) aString 
-{
-	[self writeString: [NSString stringWithFormat: @"\n%@\n", aString]
-	       attributes: bigHeadlineAttributes];
-}
-
-- (void) writeHeadline: (NSString *) aString 
-{
-	[self writeString: [NSString stringWithFormat: @"\n%@\n\n", aString]
-           attributes: headlineAttributes];
-}
-
-- (void) writeLine: (NSString *) aString 
-{
-	// the index of the next character to write
-	unsigned index = 0;
-	unsigned strLength = [aString length];
-
-	// YES if and only if we are inside a link
-	BOOL inLink = NO;
-  
-	unsigned nextBracketIdx;
-  
-	while (index < strLength) 
-	{
-		if (inLink == YES) 
-		{
-			nextBracketIdx = [aString firstIndexOf: (unichar)'}'
-			                             fromIndex: index];
-      
-			if (nextBracketIdx == NSNotFound) 
-			{
-				/* treat as if the next bracket started right after the
-				   last character in the string */
-				nextBracketIdx = strLength;
-	
-				// FIXME: Handle multiline links, too!
-				NSLog(@"multiline link detected!");
-			}
-      
-			// crop text out of the input string
-			NSString* linkContent = [aString substringWithRange: NSMakeRange(index, nextBracketIdx-index)];
-      
-			// next index is right after the found bracket
-			index = nextBracketIdx + 1;
-      
-			// we're not in the link any more
-			inLink = NO;
-      
-			// write link!
-			[self writeString: linkContent link: linkContent];
-		}
-		else 
-		{ // inLink == FALSE
-			nextBracketIdx = [aString firstIndexOf: (unichar)'{'
-			                             fromIndex: index];
-      
-			if (nextBracketIdx == NSNotFound) 
-			{
-				/* treat as if the next bracket was right after the
-				   last character in the string */
-				nextBracketIdx = strLength;
-			}
-      
-			// crop text
-			NSString* text = [aString substringWithRange: NSMakeRange(index, nextBracketIdx-index)];
-      
-			// proceed right after the bracket
-			index = nextBracketIdx + 1;
-      
-			// now we're in a link
-			inLink = YES;
-      
-			// write text!
-			[self writeString: text attributes: normalAttributes];
-		} // end if(inLink)
-    
-	} // end while(index < strLength)
-  
-	// after everything is done, write a newline!
-	[self writeString: @"\n" attributes: normalAttributes];
-}
 
 @end
 

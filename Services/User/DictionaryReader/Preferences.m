@@ -64,14 +64,11 @@
 	[self searchWithDictionaryStoreFile];
 	[self searchInUsualPlaces];
   
-	/* We add a network one only if there is no local one */
-	if ([_dictionaries count] == 0)
-	{
-		// default remote dictionary: dict.org
-		DictConnection* dict = [[DictConnection alloc] initWithDefaultHost];
-		[self foundDictionary: dict];
-		DESTROY(dict);
-	}
+	// default remote dictionary: dict.org
+	DictConnection* dict = [[DictConnection alloc] initWithDefaultHost];
+	[dict setActive: NO];
+	[self foundDictionary: dict];
+	DESTROY(dict);
   
 	[_tableView reloadData];
 }
@@ -136,8 +133,6 @@
 	if (aDictionary != nil && 
 	    [_dictionaries containsObject: aDictionary] == NO) 
 	{
-		[aDictionary setDefinitionWriter: [NSApp delegate]];
-		[aDictionary setActive: YES];
 		[_dictionaries addObject: aDictionary];
 	}
 }
@@ -212,6 +207,7 @@
 					[LocalDictionary dictionaryWithIndexAtPath: indexFileName
 					                 dictionaryAtPath: fileName];
                 
+				[dict setActive: YES];
 				[self foundDictionary: dict];
 			}
 		}

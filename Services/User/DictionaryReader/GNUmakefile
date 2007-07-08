@@ -32,6 +32,7 @@ DictionaryReader_OBJC_FILES = \
 	DictionaryHandle.m \
 	NSScanner+Base64Encoding.m \
 	LocalDictionary.m \
+	Definition.m \
 	Preferences.m \
 	main.m \
 
@@ -44,10 +45,10 @@ DictionaryReader_HEADER_FILES = \
 	NSString+Convenience.h \
 	NSString+Clickable.h \
 	NSString+DictLineParsing.h \
-	DefintionWriter.h \
 	DictionaryHandle.h \
 	NSScanner+Base64Encoding.h \
 	LocalDictionary.h \
+	Definition.h \
 	Preferences.h \
 
 DictionaryReader_OBJCC_FILES = 

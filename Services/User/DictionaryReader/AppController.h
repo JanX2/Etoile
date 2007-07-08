@@ -9,10 +9,9 @@
 
 #import <AppKit/AppKit.h>
 #import "DictConnection.h"
-#import "DefinitionWriter.h"
 #import "HistoryManager.h"
 
-@interface AppController : NSObject <DefinitionWriter>
+@interface AppController : NSObject
 {
 	@private
 	IBOutlet NSTextView* searchResultView;

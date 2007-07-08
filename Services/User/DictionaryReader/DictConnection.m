@@ -136,31 +136,36 @@
 	[self showError: @"Database description retrieval not implemented yet."];
 }
 
-- (void) definitionFor: (NSString*) aWord inDictionary: (NSString*) aDict
+- (NSArray *) definitionsFor: (NSString*) aWord 
+                inDictionary: (NSString*) aDict
+                       error: (NSString **) error
 {
-	//NSMutableString* result = [NSMutableString stringWithCapacity: 100];
-  
 	[writer writeLine: [NSString stringWithFormat: @"define %@ \"%@\"\r\n",
 		      aDict, aWord]];
   
-	NSString* answer = [reader readLineAndRetry];
+	NSString *answer = [reader readLineAndRetry];
   
 	if ([answer hasPrefix: @"552"]) 
 	{ // word not found
-		[defWriter writeHeadline: [NSString stringWithFormat: @"No results from %@", self]];
+		if (error)
+			*error = [NSString stringWithFormat: @"No results from %@", self];
+		return nil;
 	}
 	else if ([answer hasPrefix: @"550"]) 
 	{
-		[self showError: [NSString stringWithFormat: @"Invalid database: %@", aDict]];
+		if (error)
+			*error = [NSString stringWithFormat: @"Invalid database: %@", aDict];
 	}
 	else if ([answer hasPrefix: @"150"]) 
 	{ // got results
 		BOOL lastDefinition = NO;
+		NSMutableArray *result = [[NSMutableArray alloc] init];
 		do {
 			answer = [reader readLineAndRetry];
 			if ([answer hasPrefix: @"151"]) 
 			{
-				[defWriter writeHeadline: 
+				Definition *def = [[Definition alloc] init];
+				[def setDatabase: 
 					[NSString stringWithFormat: @"From %@:",
 						[answer dictLineComponent: 3]]
 				];
@@ -169,6 +174,7 @@
 				//[defWriter writeHeadline: [answer substringFromIndex: 4]];
 	
 				BOOL lastLine = NO;
+				NSMutableString *ms = [[NSMutableString alloc] init];
 				do {
 					answer = [reader readLineAndRetry];
 					if ([answer isEqualToString: @"."]) 
@@ -177,25 +183,33 @@
 					}
 					else
 					{ // wow, actual text! ^^
-						[defWriter writeLine: answer];
+						[ms appendString: answer];
+						[ms appendString: @"\n"];
 					}
 				} while (lastLine == NO);
+				[def setDefinition: ms];
+				[result addObject: def];
+				DESTROY(ms);
+				DESTROY(def);
 			}
 			else 
 			{
 				lastDefinition = YES;
 				if (![answer hasPrefix: @"250"]) 
 				{
-					[self showError: answer];
+					if (error)
+						*error = answer;
 				}
 			}
 		} while (lastDefinition == NO);
+		return AUTORELEASE(result);
 	}
+	return nil;
 }
 
-- (void) definitionFor: (NSString *) aWord
+- (NSArray *) definitionsFor: (NSString *) aWord error: (NSString **) error
 {
-	return [self definitionFor: aWord inDictionary: @"*"];
+	return [self definitionsFor: aWord inDictionary: @"*" error: error];
 }
 
 - (void) open

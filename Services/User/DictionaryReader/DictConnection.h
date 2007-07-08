@@ -13,7 +13,6 @@
 #import "StreamLineReader.h"
 #import "StreamLineWriter.h"
 #import "NSString+Convenience.h"
-#import "DefinitionWriter.h"
 #import "DictionaryHandle.h"
 
 /**

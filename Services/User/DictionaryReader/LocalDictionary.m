@@ -212,6 +212,7 @@
  */
 - (void) descriptionForDatabase: (NSString *) aDatabase
 {
+#if 0
 	// we ignore the argument here
   
 	[defWriter writeLine:
@@ -223,29 +224,36 @@
   
 	[defWriter writeLine: @"\nDatabase information"];
   
-	[self definitionFor: @"00-database-info"];
+	[self definitionsFor: @"00-database-info"];
+#endif
 }
 
 /**
  * Lets the dictionary handle print all available definitions
  * for aWord in the main window.
  */
-- (void) definitionFor: (NSString *) aWord
+- (NSArray *) definitionsFor: (NSString *) aWord error: (NSString **) error
 {
 	NSString* entry = [self _getEntryFor: aWord];
   
 	if (entry != nil) 
 	{
-		[defWriter writeHeadline:
+		Definition *def = [[Definition alloc] init];
+		[def setDatabase: 
 		    [NSString stringWithFormat: @"From %@ (local):", fullName]];
     
-		[defWriter writeLine: entry];
+		[def setDefinition: entry];
+		return [NSArray arrayWithObject: AUTORELEASE(def)];
 	}
 	else 
 	{
-		[defWriter writeHeadline:
-	        [NSString stringWithFormat: @"No results from %@", self]];
+		if (error)
+			*error = [NSString stringWithFormat: @"No results from %@", self];
+		return nil;
 	}
+	if (error)
+		*error = [NSString stringWithFormat: @"%@ error", self];
+	return nil;
 }
 
 /**
@@ -255,9 +263,11 @@
  *
  * This implementation just calls definitionFor:.
  */
-- (void) definitionFor: (NSString *) aWord inDictionary: (NSString*) aDict
+- (NSArray *) definitionsFor: (NSString *) aWord 
+                inDictionary: (NSString*) aDict
+                       error: (NSString **) error
 {
-	[self definitionFor: aWord];
+	return [self definitionsFor: aWord error: error];
 }
 
 

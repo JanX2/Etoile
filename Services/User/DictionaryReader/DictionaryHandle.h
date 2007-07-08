@@ -11,7 +11,7 @@
 #define _DICTIONARY_H_
 
 #import <Foundation/Foundation.h>
-#import "DefinitionWriter.h"
+#import "Definition.h"
 
 /**
  * The dictionary handle class
@@ -19,7 +19,6 @@
 @interface DictionaryHandle: NSObject
 {
 	BOOL _active;
-	id <DefinitionWriter> defWriter;
 }
 
 + (id) dictionaryFromPropertyList: (NSDictionary *) aPropertyList;
@@ -40,18 +39,17 @@
 - (void) descriptionForDatabase: (NSString *) aDatabase;
 
 /**
- * Lets the dictionary handle print all available definitions
- * for aWord in the main window.
+ * Get definition (synchronized) or error
  */
-- (void) definitionFor: (NSString *) aWord;
+- (NSArray *) definitionsFor: (NSString *) aWord error: (NSString **) error;
 
 /**
- * Lets the dictionary handle print the defintion for aWord
- * in a specific dictionary. (Note: The dictionary handle may
- * represent multiple dictionaries.)
+ * Get definition (synchronized) or error
+ * (Note: The dictionary handle may represent multiple dictionaries.)
  */
-- (void) definitionFor: (NSString *) aWord inDictionary: (NSString *) aDict;
-
+- (NSArray *) definitionsFor: (NSString *) aWord 
+                inDictionary: (NSString *) aDict
+                       error: (NSString **) error;
 
 // SETTING UP THE CONNECTION
 
@@ -75,12 +73,6 @@
  * name of the DictionaryHandle class.
  */
 - (NSDictionary *) shortPropertyList;
-
-/**
- * Provides the dictionary handle with a definition writer to write
- * its word definitions to.
- */
-- (void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter;
 
 /**
  * Returns YES if and only if the dictionary is active

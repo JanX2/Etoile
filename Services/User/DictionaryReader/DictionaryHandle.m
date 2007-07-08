@@ -36,15 +36,7 @@
 
 - (void) dealloc
 {
-	DESTROY(defWriter);
 	[super dealloc];
-}
-
-- (void) setDefinitionWriter: (id<DefinitionWriter>) aDefinitionWriter
-{
-    NSAssert1(aDefinitionWriter != nil,
-              @"-setDefinitionWriter: parameter must not be nil in %@", self);
-    ASSIGN(defWriter, aDefinitionWriter);
 }
 
 - (NSDictionary*) shortPropertyList
@@ -69,8 +61,7 @@
 
 - (void) showError: (NSString *) aString
 {
-	[defWriter writeBigHeadline: [NSString stringWithFormat: @"%@ Error", self]];
-	[defWriter writeLine: aString];
+	NSLog(@"%@ Error: %@", self, aString);
 }
 
 - (void) log: (NSString *) aLogMsg
@@ -88,14 +79,16 @@
 	// Do nothing
 }
 
-- (void) definitionFor: (NSString *) aWord
+- (NSArray *) definitionsFor: (NSString *) aWord error: (NSString **) error;
 {
-	// Do nothing
+	return nil;
 }
 
-- (void) definitionFor: (NSString *) aWord inDictionary: (NSString *) aDict
+- (NSArray *) definitionsFor: (NSString *) aWord 
+                inDictionary: (NSString *) aDict
+                       error: (NSString **) error
 {
-	// Do nothing
+	return nil;
 }
 
 - (void) open
