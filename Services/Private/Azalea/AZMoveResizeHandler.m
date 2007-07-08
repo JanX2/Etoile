@@ -1,7 +1,7 @@
 /* -*- indent-tabs-mode: nil; tab-width: 4; c-basic-offset: 4; -*-
 
    AZMoveResizeHandler.m for the Azalea window manager
-   Copyright (c) 2006        Yen-Ju Chen
+   Copyright (c) 2006-2007   Yen-Ju Chen
 
    moveresize.c for the Openbox window manager
    Copyright (c) 2004        Mikael Magnusson
@@ -48,63 +48,65 @@ static AZMoveResizeHandler *sharedInstance = nil;
 
 + (AZMoveResizeHandler *) defaultHandler
 {
-  if (sharedInstance == nil)
-  {
-    sharedInstance = [[AZMoveResizeHandler alloc] init];
-  }
-  return sharedInstance;
+	if (sharedInstance == nil)
+ 	{
+		sharedInstance = [[AZMoveResizeHandler alloc] init];
+	}
+	return sharedInstance;
 }
 
 - (id) init
 {
-  self = [super init];
-  moving = NO;
-  return self;
+	self = [super init];
+	moving = NO;
+	return self;
 }
 
 - (void) dealloc
 {
-  [super dealloc];
+	[super dealloc];
 }
 
 - (void) startup: (BOOL) reconfig
 {
-  popup = [[AZPopUp alloc] initWithIcon: NO];
-  if (!reconfig) {
-    [[NSNotificationCenter defaultCenter] addObserver: self
-	    selector: @selector(clientDestroy:)
-	    name: AZClientDestroyNotification
-	    object: nil];
-  }
+	popup = [[AZPopUp alloc] initWithIcon: NO];
+	if (!reconfig) 
+	{
+		[[NSNotificationCenter defaultCenter] addObserver: self
+			selector: @selector(clientDestroy:)
+			name: AZClientDestroyNotification
+			object: nil];
+	}
 }
 
 - (void) shutdown: (BOOL) reconfig
 {
-  if (!reconfig) {
-    if (moveresize_in_progress)
-      [self end: NO];
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-  }
-  DESTROY(popup);
+	if (!reconfig) 
+	{
+		if (moveresize_in_progress)
+			[self end: NO];
+		[[NSNotificationCenter defaultCenter] removeObserver: self];
+	}
+	DESTROY(popup);
 }
 
 - (void) startWithClient: (AZClient *) c x: (int) x y: (int) y
                 button: (unsigned int) b corner: (unsigned int) cnr
 {
-    ObCursor cur;
+	ObCursor cur;
 
-    moving = (cnr == prop_atoms.net_wm_moveresize_move ||
-              cnr == prop_atoms.net_wm_moveresize_move_keyboard);
+	moving = (cnr == prop_atoms.net_wm_moveresize_move ||
+	          cnr == prop_atoms.net_wm_moveresize_move_keyboard);
 
-    if (moveresize_in_progress || ![[c frame] visible] ||
-        !(moving ?
+	if (moveresize_in_progress || ![[c frame] visible] ||
+	    !(moving ?
           ([c functions] & OB_CLIENT_FUNC_MOVE) :
           ([c functions] & OB_CLIENT_FUNC_RESIZE)))
         return;
 
-    moveresize_client = c;
-    start_cx = [[c frame] area].x;
-    start_cy = [[c frame] area].y;
+	moveresize_client = c;
+	start_cx = [[c frame] area].x;
+	start_cy = [[c frame] area].y;
     /* these adjustments for the size_inc make resizing a terminal more
        friendly. you essentially start the resize in the middle of the
        increment instead of at 0, so you have to move half an increment
@@ -171,13 +173,16 @@ static AZMoveResizeHandler *sharedInstance = nil;
 
     [popup hide];
 
-    if (moving) {
-	[moveresize_client moveToX: (cancel ? start_cx : cur_x)
+    if (moving) 
+	{
+		[moveresize_client moveToX: (cancel ? start_cx : cur_x)
 		                        y: (cancel ? start_cy : cur_y)];
-    } else {
-	[moveresize_client configureToCorner: lockcorner
-		x: [moveresize_client area].x
-		y: [moveresize_client area].y
+    }
+	else 
+	{
+		[moveresize_client configureToCorner: lockcorner
+			x: [moveresize_client area].x
+			y: [moveresize_client area].y
 		width: (cancel ? start_cw : cur_x)
 		height: (cancel ? start_ch : cur_y)
 		user: YES final: YES];
@@ -191,72 +196,104 @@ static AZMoveResizeHandler *sharedInstance = nil;
 {
     NSAssert(moveresize_in_progress, @"Not in moving or resizing");
 
-    if (e->type == ButtonPress) {
-        if (!button) {
+    if (e->type == ButtonPress) 
+	{
+        if (!button) 
+		{
             start_x = e->xbutton.x_root;
             start_y = e->xbutton.y_root;
             button = e->xbutton.button; /* this will end it now */
         }
-    } else if (e->type == ButtonRelease) {
-        if (!button || e->xbutton.button == button) {
-	    [self end: NO];
+    }
+	else if (e->type == ButtonRelease) 
+	{
+        if (!button || e->xbutton.button == button) 
+		{
+		    [self end: NO];
         }
-    } else if (e->type == MotionNotify) {
-        if (moving) {
+    }
+	else if (e->type == MotionNotify) 
+	{
+        if (moving) 
+		{
             cur_x = start_cx + e->xmotion.x_root - start_x;
             cur_y = start_cy + e->xmotion.y_root - start_y;
-	    [self doMove: YES];
-        } else {
-            if (corner == prop_atoms.net_wm_moveresize_size_topleft) {
-                cur_x = start_cw - (e->xmotion.x_root - start_x);
-                cur_y = start_ch - (e->xmotion.y_root - start_y);
-                lockcorner = OB_CORNER_BOTTOMRIGHT;
-            } else if (corner == prop_atoms.net_wm_moveresize_size_top) {
-                cur_x = start_cw;
-                cur_y = start_ch - (e->xmotion.y_root - start_y);
-                lockcorner = OB_CORNER_BOTTOMRIGHT;
-            } else if (corner == prop_atoms.net_wm_moveresize_size_topright) {
-                cur_x = start_cw + (e->xmotion.x_root - start_x);
-                cur_y = start_ch - (e->xmotion.y_root - start_y);
-                lockcorner = OB_CORNER_BOTTOMLEFT;
-            } else if (corner == prop_atoms.net_wm_moveresize_size_right) { 
-                cur_x = start_cw + (e->xmotion.x_root - start_x);
-                cur_y = start_ch;
-                lockcorner = OB_CORNER_BOTTOMLEFT;
-            } else if (corner ==
-                       prop_atoms.net_wm_moveresize_size_bottomright) {
-                cur_x = start_cw + (e->xmotion.x_root - start_x);
-                cur_y = start_ch + (e->xmotion.y_root - start_y);
-                lockcorner = OB_CORNER_TOPLEFT;
-            } else if (corner == prop_atoms.net_wm_moveresize_size_bottom) {
-                cur_x = start_cw;
-                cur_y = start_ch + (e->xmotion.y_root - start_y);
-                lockcorner = OB_CORNER_TOPLEFT;
-            } else if (corner ==
-                       prop_atoms.net_wm_moveresize_size_bottomleft) {
-                cur_x = start_cw - (e->xmotion.x_root - start_x);
-                cur_y = start_ch + (e->xmotion.y_root - start_y);
-                lockcorner = OB_CORNER_TOPRIGHT;
-            } else if (corner == prop_atoms.net_wm_moveresize_size_left) {
-                cur_x = start_cw - (e->xmotion.x_root - start_x);
-                cur_y = start_ch;
-                lockcorner = OB_CORNER_TOPRIGHT;
-            } else if (corner == prop_atoms.net_wm_moveresize_size_keyboard) {
-                cur_x = start_cw + (e->xmotion.x_root - start_x);
-                cur_y = start_ch + (e->xmotion.y_root - start_y);
-                lockcorner = OB_CORNER_TOPLEFT;
-            } else
-		NSAssert(0, @"Should not reach here");
-
-	    [self doResize: YES];
+		    [self doMove: YES];
         }
-    } else if (e->type == KeyPress) {
+		else 
+		{
+            if (corner == prop_atoms.net_wm_moveresize_size_topleft) 
+			{
+                cur_x = start_cw - (e->xmotion.x_root - start_x);
+                cur_y = start_ch - (e->xmotion.y_root - start_y);
+                lockcorner = OB_CORNER_BOTTOMRIGHT;
+            }
+			else if (corner == prop_atoms.net_wm_moveresize_size_top) 
+			{
+                cur_x = start_cw;
+                cur_y = start_ch - (e->xmotion.y_root - start_y);
+                lockcorner = OB_CORNER_BOTTOMRIGHT;
+            }
+			else if (corner == prop_atoms.net_wm_moveresize_size_topright) 
+			{
+                cur_x = start_cw + (e->xmotion.x_root - start_x);
+                cur_y = start_ch - (e->xmotion.y_root - start_y);
+                lockcorner = OB_CORNER_BOTTOMLEFT;
+            }
+			else if (corner == prop_atoms.net_wm_moveresize_size_right) 
+			{
+                cur_x = start_cw + (e->xmotion.x_root - start_x);
+                cur_y = start_ch;
+                lockcorner = OB_CORNER_BOTTOMLEFT;
+            }
+			else if (corner == prop_atoms.net_wm_moveresize_size_bottomright) 
+			{
+                cur_x = start_cw + (e->xmotion.x_root - start_x);
+                cur_y = start_ch + (e->xmotion.y_root - start_y);
+                lockcorner = OB_CORNER_TOPLEFT;
+            }
+			else if (corner == prop_atoms.net_wm_moveresize_size_bottom) 
+			{
+                cur_x = start_cw;
+                cur_y = start_ch + (e->xmotion.y_root - start_y);
+                lockcorner = OB_CORNER_TOPLEFT;
+            }
+			else if (corner == prop_atoms.net_wm_moveresize_size_bottomleft) 
+			{
+                cur_x = start_cw - (e->xmotion.x_root - start_x);
+                cur_y = start_ch + (e->xmotion.y_root - start_y);
+                lockcorner = OB_CORNER_TOPRIGHT;
+            }
+			else if (corner == prop_atoms.net_wm_moveresize_size_left) 
+			{
+                cur_x = start_cw - (e->xmotion.x_root - start_x);
+                cur_y = start_ch;
+                lockcorner = OB_CORNER_TOPRIGHT;
+            }
+			else if (corner == prop_atoms.net_wm_moveresize_size_keyboard) 
+			{
+                cur_x = start_cw + (e->xmotion.x_root - start_x);
+                cur_y = start_ch + (e->xmotion.y_root - start_y);
+                lockcorner = OB_CORNER_TOPLEFT;
+            }
+			else
+			{
+				NSAssert(0, @"Should not reach here");
+			}
+
+		    [self doResize: YES];
+        }
+    }
+	else if (e->type == KeyPress) 
+	{
         if (e->xkey.keycode == ob_keycode(OB_KEY_ESCAPE))
-	    [self end: YES];
+		    [self end: YES];
         else if (e->xkey.keycode == ob_keycode(OB_KEY_RETURN))
-	    [self end: NO];
-        else {
-            if (corner == prop_atoms.net_wm_moveresize_size_keyboard) {
+		    [self end: NO];
+        else 
+		{
+            if (corner == prop_atoms.net_wm_moveresize_size_keyboard) 
+			{
                 int dx = 0, dy = 0, ox = cur_x, oy = cur_y;
 
                 if (e->xkey.keycode == ob_keycode(OB_KEY_RIGHT))
@@ -280,7 +317,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
                     while (XCheckTypedEvent(ob_display, MotionNotify, &ce));
                 }
 
-		[self doResize: NO];
+				[self doResize: NO];
 
                 /* because the cursor moves even though the window does
                    not nessesarily (resistance), this adjusts where the curor
@@ -288,10 +325,12 @@ static AZMoveResizeHandler *sharedInstance = nil;
                    actually is */
                 start_x += dx - (cur_x - ox);
                 start_y += dy - (cur_y - oy);
-            } else if (corner == prop_atoms.net_wm_moveresize_move_keyboard) {
+            }
+			else if (corner == prop_atoms.net_wm_moveresize_move_keyboard) 
+			{
                 int dx = 0, dy = 0, ox = cur_x, oy = cur_y;
                 int opx, px, opy, py;
-		AZScreen *screen = [AZScreen defaultScreen];
+				AZScreen *screen = [AZScreen defaultScreen];
 
                 if (e->xkey.keycode == ob_keycode(OB_KEY_RIGHT))
                     dx = 4;
@@ -306,7 +345,7 @@ static AZMoveResizeHandler *sharedInstance = nil;
 
                 cur_x += dx;
                 cur_y += dy;
-		[screen pointerPosAtX: &opx y: &opy];
+				[screen pointerPosAtX: &opx y: &opy];
                 XWarpPointer(ob_display, None, None, 0, 0, 0, 0, dx, dy);
                 /* steal the motion events this causes */
                 XSync(ob_display, NO);
@@ -314,9 +353,9 @@ static AZMoveResizeHandler *sharedInstance = nil;
                     XEvent ce;
                     while (XCheckTypedEvent(ob_display, MotionNotify, &ce));
                 }
-		[screen pointerPosAtX: &px y: &py];
+				[screen pointerPosAtX: &px y: &py];
 
-		[self doMove: NO];
+				[self doMove: NO];
 
                 /* because the cursor moves even though the window does
                    not nessesarily (resistance), this adjusts where the curor
@@ -356,8 +395,9 @@ static AZMoveResizeHandler *sharedInstance = nil;
 
 - (void) doMove: (BOOL) resist
 {
-    if (resist) {
-	[moveresize_client resistMoveWindowsAtX: &cur_x y: &cur_y];
+    if (resist) 
+	{
+		[moveresize_client resistMoveWindowsAtX: &cur_x y: &cur_y];
     	[moveresize_client resistMoveMonitorsAtX: &cur_x y: &cur_y];
     }
 

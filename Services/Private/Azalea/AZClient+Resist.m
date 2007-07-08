@@ -50,70 +50,86 @@
     cb = RECT_BOTTOM([[self frame] area]);
     
     if (config_resist_win)
-	for (j = 0; j < count; j++) {
+	for (j = 0; j < count; j++) 
+	{
 	    id <AZWindow> temp = [stacking windowAtIndex: j];
-            AZClient *target;
-            int tl, tt, tr, tb; /* 1 past the target's edges on each side */
+        AZClient *target;
+        int tl, tt, tr, tb; /* 1 past the target's edges on each side */
 
-            if (!WINDOW_IS_CLIENT(temp))
-                continue;
-            target = (AZClient *)temp;
+        if (!WINDOW_IS_CLIENT(temp))
+            continue;
+        target = (AZClient *)temp;
 
-            /* don't snap to self or non-visibles */
-            if (![[target frame] visible] || target == self) continue; 
+        /* don't snap to self or non-visibles */
+        if (![[target frame] visible] || target == self) continue; 
 
-            /* don't snap to windows in layers beneath */
-            if([target layer] < [self layer] && !config_resist_layers_below)
-                continue;
+        /* don't snap to windows in layers beneath */
+        if([target layer] < [self layer] && !config_resist_layers_below)
+            continue;
 
-            tl = RECT_LEFT([[target frame] area]) - 1;
-            tt = RECT_TOP([[target frame] area]) - 1;
-            tr = RECT_RIGHT([[target frame] area]) + 1;
-            tb = RECT_BOTTOM([[target frame] area]) + 1;
+        tl = RECT_LEFT([[target frame] area]) - 1;
+        tt = RECT_TOP([[target frame] area]) - 1;
+        tr = RECT_RIGHT([[target frame] area]) + 1;
+        tb = RECT_BOTTOM([[target frame] area]) + 1;
 
-            /* snapx and snapy ensure that the window snaps to the top-most
-               window edge available, without going all the way from
-               bottom-to-top in the stacking list
-            */
-            if (snapx == nil) {
-                if (ct < tb && cb > tt) {
-                    if (cl >= tr && l < tr && l >= tr - config_resist_win)
-                        *x = tr, snapx = target;
-                    else if (cr <= tl && r > tl &&
-                             r <= tl + config_resist_win)
-                        *x = tl - w + 1, snapx = target;
-                    if (snapx != nil) {
-                        /* try to corner snap to the window */
-                        if (ct > tt && t <= tt &&
-                            t > tt - config_resist_win)
-                            *y = tt + 1, snapy = target;
-                        else if (cb < tb && b >= tb &&
-                                 b < tb + config_resist_win)
-                            *y = tb - h, snapy = target;
-                    }
+        /* snapx and snapy ensure that the window snaps to the top-most
+           window edge available, without going all the way from
+           bottom-to-top in the stacking list
+        */
+        if (snapx == nil) 
+		{
+            if (ct < tb && cb > tt) 
+			{
+                if (cl >= tr && l < tr && l >= tr - config_resist_win)
+                    *x = tr, snapx = target;
+                else if (cr <= tl && r > tl &&
+                         r <= tl + config_resist_win)
+                    *x = tl - w + 1, snapx = target;
+                if (snapx != nil) 
+				{
+                    /* try to corner snap to the window */
+                    if (ct > tt && t <= tt &&
+                        t > tt - config_resist_win)
+                        *y = tt + 1, snapy = target;
+                    else if (cb < tb && b >= tb &&
+                             b < tb + config_resist_win)
+                        *y = tb - h, snapy = target;
                 }
             }
-            if (snapy == nil) {
-                if (cl < tr && cr > tl) {
-                    if (ct >= tb && t < tb && t >= tb - config_resist_win)
-                        *y = tb, snapy = target;
-                    else if (cb <= tt && b > tt &&
-                             b <= tt + config_resist_win)
-                        *y = tt - h + 1, snapy = target;
-                    if (snapy != NULL) {
-                        /* try to corner snap to the window */
-                        if (cl > tl && l <= tl &&
-                            l > tl - config_resist_win)
-                            *x = tl + 1, snapx = target;
-                        else if (cr < tr && r >= tr &&
-                                 r < tr + config_resist_win)
-                            *x = tr - w, snapx = target;
-                    }
-                }
-            }
-
-            if (snapx && snapy) break;
         }
+        if (snapy == nil) 
+		{
+            if (cl < tr && cr > tl) 
+			{
+				/* This prevent window moved below another one which
+				 * has strut.top. Other direction should not be affected. */
+				int top_resist = config_resist_win;
+				if ([target strut].top > 0)
+				{
+					top_resist += [target strut].top + [[self frame] innersize].top;
+				}
+                if (ct >= tb && t < tb && t >= tb - top_resist/*config_resist_win*/)
+				{
+                    *y = tb, snapy = target;
+				}
+                else if (cb <= tt && b > tt && b <= tt + /*top_resist*/config_resist_win)
+				{
+                    *y = tt - h + 1, snapy = target;
+				}
+                if (snapy != NULL) {
+                    /* try to corner snap to the window */
+                    if (cl > tl && l <= tl &&
+                        l > tl - config_resist_win)
+                        *x = tl + 1, snapx = target;
+                    else if (cr < tr && r >= tr &&
+                             r < tr + config_resist_win)
+                        *x = tr - w, snapx = target;
+                }
+            }
+        }
+
+        if (snapx && snapy) break;
+    }
 }
 
 - (void) resistMoveMonitorsAtX: (int *) x y: (int *) y;
@@ -140,10 +156,12 @@
     cr = RECT_RIGHT([[self frame] area]);
     cb = RECT_BOTTOM([[self frame] area]);
     
-    if (config_resist_edge) {
-        for (i = 0; i < [screen numberOfMonitors]; ++i) {
-	    _area = [screen areaOfDesktop: [self desktop] monitor: i];
-	    parea = [screen physicalAreaOfMonitor: i];
+    if (config_resist_edge) 
+	{
+        for (i = 0; i < [screen numberOfMonitors]; ++i) 
+		{
+		    _area = [screen areaOfDesktop: [self desktop] monitor: i];
+		    parea = [screen physicalAreaOfMonitor: i];
 
             if (!RECT_INTERSECTS_RECT(*parea, [[self frame] area]))
                 continue;
