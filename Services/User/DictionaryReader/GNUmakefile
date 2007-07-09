@@ -54,6 +54,7 @@ DictionaryReader_HEADER_FILES = \
 DictionaryReader_OBJCC_FILES = 
 DictionaryReader_C_FILES = 
 DictionaryReader_RESOURCE_FILES = \
+	Resources/DictionaryReader.tif \
 	Resources/dict.png \
 	Resources/etoile_back.tiff \
 	Resources/etoile_forward.tiff \

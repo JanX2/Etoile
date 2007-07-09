@@ -1,6 +1,6 @@
 {
     ApplicationDescription = "A Dict client for GNUstep";
-    ApplicationIcon = dict.png;
+    ApplicationIcon = DictionaryReader.tif;
     ApplicationName = DictionaryReader;
     ApplicationRelease = 0.3;
     Authors = (
@@ -12,7 +12,7 @@
     );
     Copyright = "Copyright (C) 2006, 2007 Guenther Noack, Yen-Ju Chen";
     CopyrightDescription = "Released under the terms of MIT Licence.";
-    NSIcon = dict.png;
+    NSIcon = DictionaryReader.tif;
     NSTypes = (
     );
     NSServices = (
