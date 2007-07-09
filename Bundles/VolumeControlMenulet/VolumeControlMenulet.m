@@ -10,15 +10,15 @@
 {
 	int volume = [sound outputVolume];
 	NSImage *img = nil;
-	if (volume < 5)
+	if (volume < 1)
 	{
 		img = v0;
 	}
-	else if (volume < 50)
+	else if (volume < 36)
 	{
 		img = v1;
 	}
-	else if (volume < 95)
+	else if (volume < 71)
 	{
 		img = v2;
 	}
