@@ -50,10 +50,16 @@ NSDictionary* normalAttributes;
 
 	// We need space for new content
 	[searchResultView setString: @""];
-
-	for (i = 0; i < [definitions count]; i++)
+	if ([definitions count] == 0)
 	{
-		[self writeDefinition: [definitions objectAtIndex: i]];
+		[self writeBigHeadline: [NSString stringWithFormat: @"Cannot find definition for '%@'", [searchField stringValue]]];
+	}
+	else
+	{
+		for (i = 0; i < [definitions count]; i++)
+		{
+			[self writeDefinition: [definitions objectAtIndex: i]];
+		}
 	}
 }
 
@@ -492,7 +498,6 @@ NSDictionary* normalAttributes;
  */ 
 - (void) defineWord: (NSString *) aWord
 {
-NSLog(@"%@: %@", NSStringFromSelector(_cmd), aWord);
 	if ( ![[searchField stringValue] isEqualToString: aWord] ) 
 	{
 		// set string in search field
