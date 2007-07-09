@@ -52,7 +52,21 @@ NSDictionary* normalAttributes;
 	[searchResultView setString: @""];
 	if ([definitions count] == 0)
 	{
-		[self writeBigHeadline: [NSString stringWithFormat: @"Cannot find definition for '%@'", [searchField stringValue]]];
+		NSString *word = [searchField stringValue];
+		if ((word == nil) || ([word length] == 0))
+			return;
+		[self writeBigHeadline: [NSString stringWithFormat: @"Cannot find definition for '%@'\n", word]];
+		NSArray *guesses = [[NSSpellChecker sharedSpellChecker] guessesForWord: word];
+		if ((guesses != nil) && ([guesses count] > 0))
+		{
+			[self writeString: @"Do you means any of these:\n\n" attributes: headlineAttributes];
+			for (i = 0; i < [guesses count]; i++)
+			{
+				NSString *guess = [guesses objectAtIndex: i];
+				[self writeString: guess link: guess];
+				[self writeString: @"\n" attributes: normalAttributes];
+			}
+		}
 	}
 	else
 	{
