@@ -7,10 +7,10 @@
 #define STORECOMPLEX(type, value, size) WRITE(type,1);FORMAT("%s\0",aName);WRITE(value, size)
 #define STORE(type, value, c_type) STORECOMPLEX(type, &value, sizeof(c_type))
 
-@implementation ETSerialiserBackendBinaryFile
+@implementation ETDeserialiserBackendBinaryFile
 - (void) setFile:(char*)filename
 {
-	file = fopen(filename, "w");
+	file = fopen(filename, "r");
 }
 
 - (void) beginStructNamed:(char*)aName

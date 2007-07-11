@@ -1,11 +1,13 @@
 #import <Foundation/Foundation.h>
 
+typedef uint32_t CORef;
+
 @protocol ETSerialiserBackend
 //Objects
-- (void) beginObjectWithID:(unsigned long long)aReference withName:(char*)aName withClass:(Class)aClass;
+- (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass;
 - (void) endObject;
-- (void) storeObjectReference:(unsigned long long)aReference withName:(char*)aName;
-- (void) incrementReferenceCountForObject:(unsigned long long)anObjectID;
+- (void) storeObjectReference:(CORef)aReference withName:(char*)aName;
+- (void) incrementReferenceCountForObject:(CORef)anObjectID;
 //Nested types
 - (void) beginStructNamed:(char*)aName;
 - (void) endStruct;

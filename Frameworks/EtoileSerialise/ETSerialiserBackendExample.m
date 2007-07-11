@@ -34,19 +34,19 @@
 	[self indent];
 	printf("}\n");
 }
-- (void) beginObjectWithID:(unsigned long long)aReference withName:(char*)aName withClass:(Class)aClass
+- (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
 {
 	printf("(Object with ID:%lld)\n",aReference);
 	[self indent];
 	printf("%s * %s {\n",aClass->name,aName);
 	indent++;
 }
-- (void) storeObjectReference:(unsigned long long)aReference withName:(char*)aName
+- (void) storeObjectReference:(CORef)aReference withName:(char*)aName
 {
 	[self indent];
 	printf("id %s=%lld\n",aName,aReference);
 }
-- (void) incrementReferenceCountForObject:(unsigned long long)anObjectID
+- (void) incrementReferenceCountForObject:(CORef)anObjectID
 {
 	NSNumber * key = [NSNumber numberWithUnsignedLongLong: anObjectID];
 	unsigned long long count = [[referenceCounts objectForKey:key] unsignedLongLongValue];

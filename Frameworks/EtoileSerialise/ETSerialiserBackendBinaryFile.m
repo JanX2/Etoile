@@ -34,20 +34,20 @@ inline char * safe_strcat(char* str1, char* str2)
 {
 	WRITE("}",1);
 }
-- (void) beginObjectWithID:(unsigned long long)aReference withName:(char*)aName withClass:(Class)aClass
+- (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
 {
 	off_t offset = ftello(blobFile);
-	fwrite(&aReference, sizeof(unsigned long long), 1, indexFile);
+	fwrite(&aReference, sizeof(CORef), 1, indexFile);
 	fwrite(&offset, sizeof(off_t), 1, indexFile);
 	FORMAT("<%s%c",aClass->name,0);
 }
-- (void) storeObjectReference:(unsigned long long)aReference withName:(char*)aName
+- (void) storeObjectReference:(CORef)aReference withName:(char*)aName
 {
-	STORE("@", aReference, unsigned long long);
+	STORE("@", aReference, CORef);
 }
-- (void) incrementReferenceCountForObject:(unsigned long long)anObjectID
+- (void) incrementReferenceCountForObject:(CORef)anObjectID
 {
-	printf("Increasing reference count for object: %lld (not implemented yet)\n", anObjectID);
+	printf("Increasing reference count for object: %ld (not implemented yet)\n", anObjectID);
 }
 
 - (void) endObject

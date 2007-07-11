@@ -1,21 +1,25 @@
 #import <Foundation/Foundation.h>
+#import "ETSerialiser.h"
 
-@protocol ETDeserialiserBackend
-- (id) deserialiseObjectWithID:(unsigned long long)aRefference;
+@protocol ETDeserialiserBackend <NSObject>
+- (id) deserialiseObjectWithID:(CORef)aRefference;
 @end
 
 @interface ETDeserialiser : NSObject {
 	id<ETDeserialiserBackend> backend;
 	NSMutableDictionary * pointersToReferences;
+	NSMapTable * loadedObjects;
+	//Object currently being deserialised
+	id object;
+	int loadedIVar;
 }
-+ (ETSerialiser*) serialiserWithBackend:(id<ETDeserialiserBackend>)aBackend;
++ (ETDeserialiser*) deserialiserWithBackend:(id<ETDeserialiserBackend>)aBackend;
 - (void) setBackend:(id<ETDeserialiserBackend>)aBackend;
-- (unsigned long long) serialiseObject:(id)anObject withName:(char*)aName;
 //Objects
-- (void) beginObjectWithID:(unsigned long long)aReference withName:(char*)aName withClass:(Class)aClass;
+- (void) beginObjectWithID:(CORef)aReference withClass:(Class)aClass;
 - (void) endObject;
-- (void) loadObjectReference:(unsigned long long)aReference withName:(char*)aName;
-- (void) incrementReferenceCountForObject:(unsigned long long)anObjectID;
+- (void) loadObjectReference:(CORef)aReference withName:(char*)aName;
+- (void) setReferenceCountForObject:(CORef)anObjectID to:(int)aRefCount;
 //Nested types
 - (void) beginStructNamed:(char*)aName;
 - (void) endStruct;
@@ -35,7 +39,6 @@
 - (void) loadFloat:(float)aFloat withName:(char*)aName;
 - (void) loadDouble:(double)aDouble withName:(char*)aName;
 - (void) loadClass:(Class)aClass withName:(char*)aName;
-- (void) loadFloat:(Class)aClass withName:(char*)aName;
 - (void) loadSelector:(SEL)aSelector withName:(char*)aName;
 - (void) loadCString:(char*)aCString withName:(char*)aName;
 - (void) loadData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName;
