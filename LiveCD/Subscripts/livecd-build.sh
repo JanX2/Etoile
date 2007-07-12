@@ -45,6 +45,8 @@ su $ETOILE_USER_NAME
 . /System/Library/Makefiles/GNUstep.sh
 ./setup.sh
 
+defaults write AZDock DockedApplications "({ Command = Typewriter; Type = 0; }, { Command = Grr; Type = 0; },  { Command = StepChat; Type = 0; }, { Command = "/usr/bin/firefox"; Type = 1; WMClass = "Firefox-bin"; WMInstance = "firefox-bin"; }, { Command = Gorm; Type = 0; })"
+
 # NOTE: Keep a pristine copy of the defaults to be reset on cleanup
 cp /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults.original
 
@@ -58,6 +60,7 @@ apt-get install libusplash-dev # libupsplash-dev requires libc6-dev
 
 cd LiveCD/BootScreen
 make && make install
+dpkg-reconfigure linux-image-$(uname -r)
 cd..
 
 # Install hidden root directory list and init script (which will be run as root 
