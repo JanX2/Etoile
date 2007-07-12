@@ -39,6 +39,7 @@
 {
 	[delegate release];
 	delegate = [_contentHandler retain];
+	[delegate setParser: self];
 	return self;
 }
 

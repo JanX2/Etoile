@@ -18,4 +18,7 @@ TRXML_HEADER_FILES = TRXMLNode.h\
 TRXML_AGSDOC_FILES = ${TRXML_HEADER_FILES}
 
 include $(GNUSTEP_MAKEFILES)/library.make
+ifneq ($(FOUNDATION_LIB), apple)
+# Do not build document for Cocoa.
 include $(GNUSTEP_MAKEFILES)/documentation.make
+endif
