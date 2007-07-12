@@ -40,7 +40,7 @@
 #import "ScrollingImageView.h"
 #import "ETMachineInfo.h"
 
-static NSString * const EtoileVersion = @"0.1";
+static NSString * const EtoileVersion = @"0.2";
 
 @interface AboutEtoileEntry (Private)
 

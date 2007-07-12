@@ -1,3 +1,10 @@
+2007-07-12  Quentin Mathe <qmathe@club-internet.fr>
+
+    * Subprojects/AboutEtoileEntry/AboutEtoileEntry.m: Incremented Etoile 
+    version to 0.2.
+    * Subprojects/AboutEtoileEntry/Resources/Credits.rtf: Updated to include
+    Isaiah, David and Jasper Hauser. Removed Frederico Munoz.
+
 2007-06-13  Quentin Mathe <qmathe@club-internet.fr>
 
     * MenuBarView.m (-mouseDown:): Fixed system menu initial menu location, now
