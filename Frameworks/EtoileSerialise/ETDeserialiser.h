@@ -1,10 +1,19 @@
 #import <Foundation/Foundation.h>
 #import "ETSerialiser.h"
 
+
 @protocol ETDeserialiserBackend <NSObject>
-- (id) deserialiseObjectWithID:(CORef)aRefference;
+- (BOOL) readDataFromURL:(NSURL*)aURL;
+- (BOOL) deserialiseObjectWithID:(CORef)aRefference;
+- (void) setDeserialiser:(id)aDeserialiser;
+- (CORef) principalObject;
 @end
 
+/**
+ * Deserialiser.  Performs construction of object graphs based
+ * on instructions received from back end.  Each back end is
+ * expected to read data from a 
+ */
 @interface ETDeserialiser : NSObject {
 	id<ETDeserialiserBackend> backend;
 	NSMutableDictionary * pointersToReferences;
@@ -15,6 +24,7 @@
 }
 + (ETDeserialiser*) deserialiserWithBackend:(id<ETDeserialiserBackend>)aBackend;
 - (void) setBackend:(id<ETDeserialiserBackend>)aBackend;
+- (id) restoreObjectGraph;
 //Objects
 - (void) beginObjectWithID:(CORef)aReference withClass:(Class)aClass;
 - (void) endObject;

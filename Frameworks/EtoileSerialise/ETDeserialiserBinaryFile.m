@@ -1,107 +1,142 @@
 #include <stdio.h>
-#include <objc/objc-api.h>
-#import "ETSerialiserBackendBinaryFile.h"
-
-#define FORMAT(format,...) fprintf(file, format, __VA_ARGS__)
-#define WRITE(x,b) fwrite(x,b,1,file)
-#define STORECOMPLEX(type, value, size) WRITE(type,1);FORMAT("%s\0",aName);WRITE(value, size)
-#define STORE(type, value, c_type) STORECOMPLEX(type, &value, sizeof(c_type))
+#import "ETDeserialiserBinaryFile.h"
 
 @implementation ETDeserialiserBackendBinaryFile
-- (void) setFile:(char*)filename
+- (BOOL) readDataFromURL:(NSURL*)aURL
 {
-	file = fopen(filename, "r");
+	/* TODO: Implement this method in GNUstep's NSData
+	data = [[NSData dataWithContentsOfURL:aURL 
+								  options:NSMappedRead
+									error:nil] retain];
+	 */
+	data = [NSData dataWithContentsOfURL:aURL];
+	//TODO: Get rid of this hack and store the index in the file
+	FILE * indexFile = fopen([[[aURL path] stringByAppendingString:@"index"] UTF8String], "r");
+    const NSMapTableKeyCallBacks keycallbacks = {NULL, NULL, NULL, NULL, NULL, NSNotAnIntMapKey};
+	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
+	index = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
+	while(!feof(indexFile))
+	{
+		CORef ref;
+		off_t offset;
+		fread(&ref, sizeof(CORef), 1, indexFile);
+		fread(&offset, sizeof(off_t), 1, indexFile);
+		NSMapInsert(index, (void*)(int)ref, (void*)(int) offset);
+		if(principalObjectRef == 0)
+		{
+			principalObjectRef = ref;
+		}
+	}
+	fclose(indexFile);
+	return (data != nil);
+}
+- (void) setDeserialiser:(id)aDeserialiser;
+{
+	deserialiser = aDeserialiser;
 }
 
-- (void) beginStructNamed:(char*)aName
+- (void) dealloc
 {
-	FORMAT("{%s%c",aName,0);
+	[data release];
+	NSFreeMapTable(index);
+	[super dealloc];
 }
-- (void) endStruct
+- (CORef) principalObject
 {
-	WRITE("}",1);
+	return principalObjectRef;
 }
-- (void) beginObject:(id)anObject named:(char*)aName withClass:(Class)aClass
+#define SKIP_STRING() obj += strlen(obj) + 1
+- (BOOL) deserialiseObjectWithID:(CORef)aReference
 {
-	FORMAT("<%s%c%s%c",aClass->name,0,aName,0);
-}
-- (void) endObject
-{
-	WRITE(">", 1);
-}
-- (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength;
-{
-	FORMAT("[%s%c",aName,0);
-	WRITE(&aLength, sizeof(unsigned int));
-}
-- (void) endArray
-{
-	WRITE("]", 1);
-}
+	NSLog(@"Loading object for ref %d", aReference);
+	//Note: Using int rather than off_t here.  This is not
+	//actually a limitation, since NSData and common sense
+	//both impose tighter ones.
+	unsigned int offset = (unsigned int)NSMapGet(index, (void*)aReference);
+	NSLog(@"Object is at offset %d", offset);
+	if(offset > [data length])
+	{
+		return NO;
+	}
 
-- (void) storeChar:(char)aChar named:(char*)aName
-{
-	STORE("c", aChar, char);
-}
-- (void) storeUnsignedChar:(unsigned char)aChar named:(char*)aName
-{
-	STORE("C", aChar, unsigned char);
-}
-- (void) storeShort:(short)aShort named:(char*)aName
-{
-	STORE("s", aShort, short);
-}
-- (void) storeUnsignedShort:(unsigned short)aShort named:(char*)aName
-{
-	STORE("S", aShort, unsigned short);
-}
-- (void) storeInt:(int)aInt named:(char*)aName
-{
-	STORE("i", aInt, int);
-}
-- (void) storeUnsignedInt:(unsigned int)aInt named:(char*)aName
-{
-	STORE("I", aInt, unsigned int);
-}
-- (void) storeLong:(long)aLong named:(char*)aName
-{
-	STORE("l", aLong, long int);
-}
-- (void) storeUnsignedLong:(unsigned long)aLong named:(char*)aName
-{
-	STORE("L", aLong, unsigned long int);
-}
-- (void) storeLongLong:(long long)aLongLong named:(char*)aName
-{
-	STORE("Q", aLongLong, long long int);
-}
-- (void) storeUnsignedLongLong:(unsigned long long)aLongLong named:(char*)aName
-{
-	STORE("Q", aLongLong, unsigned long long int);
-}
-- (void) storeFloat:(float)aFloat named:(char*)aName
-{
-	STORE("f", aFloat, float);
-}
-- (void) storeDouble:(double)aDouble named:(char*)aName
-{
-	STORE("d", aDouble, double);
-}
-- (void) storeClass:(Class)aClass named:(char*)aName
-{
-	FORMAT("#%s%c%s%c", aName, 0,aClass,0);
-}
-- (void) storeSelector:(SEL)aSelector named:(char*)aName
-{
-	FORMAT(":%s%c%s%c", aName, 0, [NSStringFromSelector(aSelector) UTF8String], 0);
-}
-- (void) storeCString:(char*)aCString named:(char*)aName
-{
-	FORMAT("*%s%c%s%c", aName, 0, aCString, 0);
-}
-- (void) storeData:(void*)aBlob ofSize:(size_t)aSize named:(char*)aName
-{
-	FORMAT("^%s%c", aName, 0);
-	WRITE(aBlob,aSize);
+	char * obj = ((char*)[data bytes]) + offset;
+	if(*obj == '<')
+	{
+		char * class = ++obj;
+		NSLog(@"Loading object of class %s", class);
+		[deserialiser beginObjectWithID:aReference
+							  withClass:NSClassFromString([NSString stringWithUTF8String:class])];
+		SKIP_STRING();
+	}
+	else
+	{
+		return NO;
+	}
+	while(*obj != '>')
+	{
+		NSLog(@"Char %c", *obj);
+		char * name;
+#define LOAD(typeChar, typeName, type) case typeChar: \
+	name = ++obj;\
+	SKIP_STRING();\
+	[deserialiser load ## typeName:*(type*)obj withName:name];\
+	obj += sizeof(type);\
+	break;
+		switch(*obj)
+		{
+			//Intrinsics:
+			LOAD('c', Char, char)
+			LOAD('C', UnsignedChar, unsigned char)
+			LOAD('s', Short, short)
+			LOAD('S', UnsignedShort, unsigned short)
+			LOAD('i', Int, int)
+			LOAD('I', UnsignedInt, unsigned int)
+			LOAD('l', Long, long)
+			LOAD('L', UnsignedLong, unsigned long)
+			LOAD('q', LongLong, long long)
+			LOAD('Q', UnsignedLongLong, unsigned long long)
+			LOAD('f', Float, float)
+			LOAD('d', Double, double)
+			LOAD('@', ObjectReference, CORef)
+			case '#':
+				name = ++obj;
+				SKIP_STRING();
+				Class class = NSClassFromString([NSString stringWithUTF8String:obj]);
+				[deserialiser loadClass:class withName:name];
+				SKIP_STRING();
+				break;
+			case ':':
+				name = ++obj;
+				SKIP_STRING();
+				SEL selector = NSSelectorFromString([NSString stringWithUTF8String:obj]);
+				[deserialiser loadSelector:selector withName:name];
+				SKIP_STRING();
+				break;
+			//Complex types
+			case '{':
+				name = ++obj;
+				SKIP_STRING();
+				[deserialiser beginStructNamed:name];
+				break;
+			case '}':
+				[deserialiser endStruct];
+				obj++;
+				break;
+			case '[':
+				name = ++obj;
+				SKIP_STRING();
+				[deserialiser beginArrayNamed:name withLength:*(unsigned int*)obj];
+				obj += sizeof(unsigned int);
+				break;
+			case ']':
+				[deserialiser endArray];
+				obj++;
+				break;
+			default:
+				return NO;
+		}
+	}
+	[deserialiser endObject];
+	return YES;
 }
 @end

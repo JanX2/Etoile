@@ -40,6 +40,7 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 - (void) setBackend:(id<ETDeserialiserBackend>)aBackend
 {
 	backend = [aBackend retain];
+	[backend setDeserialiser:self];
 }
 + (ETDeserialiser*) deserialiserWithBackend:(id<ETDeserialiserBackend>)aBackend
 {
@@ -47,12 +48,21 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 	[deserialiser setBackend:aBackend];
 	return deserialiser;
 }
+- (id) restoreObjectGraph
+{
+	CORef mainObject = [backend principalObject];
+	//TODO: Also restore referenced objects
+	[backend deserialiseObjectWithID:mainObject];
+	NSLog(@"Deserialising %d", mainObject);
+	return GET_OBJ(mainObject);
+}
 //Objects
 - (void) beginObjectWithID:(CORef)aReference withClass:(Class)aClass 
 {
 	//TODO: Decide if this should call init.  Probably not...
 	object = [aClass alloc];
 	SET_REF(aReference, object);
+	NSLog(@"Restored {%d, %d}", aReference, object);
 }
 - (void) endObject 
 {

@@ -4,8 +4,9 @@
 
 #define FORMAT(format,...) fprintf(blobFile, format, __VA_ARGS__)
 #define WRITE(x,b) fwrite(x,b,1,blobFile)
-#define STORECOMPLEX(type, value, size) WRITE(type,1);FORMAT("%s\0",aName);WRITE(value, size)
+#define STORECOMPLEX(type, value, size) WRITE(type,1);FORMAT("%s%c",aName, '\0');WRITE(value, size)
 #define STORE(type, value, c_type) STORECOMPLEX(type, &value, sizeof(c_type))
+#define OFFSET (ftell(blobfile))
 
 inline char * safe_strcat(char* str1, char* str2)
 {
@@ -25,7 +26,12 @@ inline char * safe_strcat(char* str1, char* str2)
 	indexFile = fopen(indexFileName, "w");
 	free(indexFileName);
 }
-
+- (void) dealloc
+{
+	fclose(blobFile);
+	fclose(indexFile);
+	[super dealloc];
+}
 - (void) beginStructNamed:(char*)aName
 {
 	FORMAT("{%s%c",aName,0);

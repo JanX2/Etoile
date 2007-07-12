@@ -227,15 +227,17 @@ typedef struct
 	}
 	return retVal;
 }
-- (void) serialiseObject:(id)anObject named:(char*)name
+- (void) serialiseObject:(id)anObject named:(char*)aName
 {
+	//NSLog(@"Starting object %s", aName);
 	Class aClass = anObject->class_pointer;
 	[backend beginObjectWithID:(unsigned long long)(uintptr_t)anObject 
-	                  withName:name
+	                  withName:aName
 	                 withClass:aClass];
 	do
 	{
 		struct objc_ivar_list* ivarlist = aClass->ivars;
+		//NSLog(@"Serialising ivars belonging to class %s", aClass->name);
 		if(ivarlist != NULL)
 		{
 			for(int i=0 ; i<ivarlist->ivar_count ; i++)
@@ -243,19 +245,23 @@ typedef struct
 				void * address = ((char*)anObject + (ivarlist->ivar_list[i].ivar_offset));
 				char * name = (char*)ivarlist->ivar_list[i].ivar_name;
 				char * type = (char*)ivarlist->ivar_list[i].ivar_type;
-				
-				if([aClass instancesRespondTo:@selector(serialise:using:)])
+				//NSLog(@"Serialising %d: %s->%s", i,aName,name);
+				/* Don't bother with the isa pointer; we get that filled in for us automatically */
+				if(strcmp("isa", name) != 0)
 				{
-					//printf("Instances of %s respond to the given selector\n", aClass->name);
-					if(![anObject serialise:name using:backend])
+					if([aClass instancesRespondTo:@selector(serialise:using:)])
 					{
-						//printf("Method failed...\n");
+						//printf("Instances of %s respond to the given selector\n", aClass->name);
+						if(![anObject serialise:name using:backend])
+						{
+							//printf("Method failed...\n");
+							free([self parseType:type atAddress:address withName:name]);
+						}
+					}
+					else
+					{
 						free([self parseType:type atAddress:address withName:name]);
 					}
-				}
-				else
-				{
-					free([self parseType:type atAddress:address withName:name]);
 				}
 			}
 		}
