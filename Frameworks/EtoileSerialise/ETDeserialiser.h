@@ -9,6 +9,14 @@
 - (CORef) principalObject;
 @end
 
+
+typedef struct 
+{
+	void * startOffset;
+	int index;
+	char type;
+} ETDeserialiserState;
+
 /**
  * Deserialiser.  Performs construction of object graphs based
  * on instructions received from back end.  Each back end is
@@ -19,6 +27,9 @@
 	NSMutableDictionary * pointersToReferences;
 	NSMapTable * loadedObjects;
 	NSMapTable * objectPointers;
+	//State machine stack
+	ETDeserialiserState states[20];
+	int stackTop;
 	//Object currently being deserialised
 	id object;
 	int loadedIVar;

@@ -14,22 +14,21 @@
 	BOOL aBool;
 	float aFloat;
 	double aDouble;
-	/*
 	struct
 	{
 		BOOL boolInStruct;
-		float floatArrayInStruct[10];
 		unsigned long long int intInStruct;
+		/*
+		float floatArrayInStruct[10];
 		struct 
 		{
 			int foo;
 			int bar;
 		} thisWontWork[3];
-	} aStruct;*/
+		*/
+	} aStruct;
 	id anObject;
-	/*
 	int anArray[3];
-	*/
 	NSString * aString;
 	NSString * anotherReferenceToTheSameString;
 	int * aPointer;
@@ -48,9 +47,9 @@
 	aBool = YES;
 	aFloat = 12.345f;
 	aDouble = 67.890;
-	/*
 	aStruct.intInStruct = 12;
 	aStruct.boolInStruct = YES;
+	/*
 	aStruct.floatArrayInStruct[0] = -0.0f;
 	aStruct.floatArrayInStruct[1] = -0.1f;
 	aStruct.floatArrayInStruct[2] = -0.2f;
@@ -60,11 +59,9 @@
 	anObject = [Object new];
 	aString = @"Some text";
 	anotherReferenceToTheSameString = aString;
-	/*
 	anArray[0] = 0;
 	anArray[1] = 1;
 	anArray[2] = 2;
-	*/
 	aPointer = malloc(5*sizeof(int));
 	for(unsigned int i=0; i<5 ; i++)
 	{
@@ -88,6 +85,9 @@
 	NSLog(@"String Object: \"Some text\" = \"%@\"", aString, aString);
 	NSLog(@"Float: 12.345 = %f",(double)aFloat);
 	NSLog(@"Double: 67.890 = %f", aDouble);
+	NSLog(@"Array {0,1,2} = {%d,%d,%d}", anArray[0], anArray[1], anArray[2]);
+	NSLog(@"Unsigned long long in struct: 12 = %d", aStruct.intInStruct);
+	NSLog(@"BOOL in struct: 1 = %d", (int)aStruct.boolInStruct);
 	NSLog(@"Retain count of object: 2 = %d", [aString retainCount]);
 }
 @end

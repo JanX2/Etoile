@@ -124,12 +124,9 @@ typedef struct
 				}
 				//Give the length of the string now
 				nameSize = nameEnd - 1;
-				structName = malloc(nameSize);
-				structName[nameSize] = 0;
+				//TODO: Use the struct name to allow type encodings to be specified for opaque types.
 				//printf("Parsing struct...\n");
-				memcpy(structName, type+1, nameSize);
-				[backend beginStructNamed:structName];
-				free(structName);
+				[backend beginStructNamed:name];
 				//First char after the name
 				type = type + nameEnd + 1;
 				retVal->offset = nameSize + 2;
