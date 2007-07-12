@@ -215,7 +215,7 @@ typedef struct
 		case 'O':
 		case 'V':
 			{
-				parsed_type_size_t *realtype = [self parseType:type+1 atAddress:address withName:"?"];
+				parsed_type_size_t *realtype = [self parseType:type+1 atAddress:address withName:name];
 				retVal->offset = realtype->offset + 1;
 				retVal->size = realtype->size;
 				free(realtype);
@@ -245,7 +245,6 @@ typedef struct
 				void * address = ((char*)anObject + (ivarlist->ivar_list[i].ivar_offset));
 				char * name = (char*)ivarlist->ivar_list[i].ivar_name;
 				char * type = (char*)ivarlist->ivar_list[i].ivar_type;
-				//NSLog(@"Serialising %d: %s->%s", i,aName,name);
 				/* Don't bother with the isa pointer; we get that filled in for us automatically */
 				if(strcmp("isa", name) != 0)
 				{

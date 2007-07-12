@@ -4,7 +4,7 @@
 
 @protocol ETDeserialiserBackend <NSObject>
 - (BOOL) readDataFromURL:(NSURL*)aURL;
-- (BOOL) deserialiseObjectWithID:(CORef)aRefference;
+- (BOOL) deserialiseObjectWithID:(CORef)aReference;
 - (void) setDeserialiser:(id)aDeserialiser;
 - (CORef) principalObject;
 @end
@@ -18,6 +18,7 @@
 	id<ETDeserialiserBackend> backend;
 	NSMutableDictionary * pointersToReferences;
 	NSMapTable * loadedObjects;
+	NSMapTable * objectPointers;
 	//Object currently being deserialised
 	id object;
 	int loadedIVar;

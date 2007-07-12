@@ -35,6 +35,7 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 	//TODO: After we've got some real profiling data, 
 	//change 100 to a more sensible value
 	loadedObjects = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
+	objectPointers = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 	return self;
 }
 - (void) setBackend:(id<ETDeserialiserBackend>)aBackend
@@ -51,9 +52,25 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 - (id) restoreObjectGraph
 {
 	CORef mainObject = [backend principalObject];
-	//TODO: Also restore referenced objects
 	[backend deserialiseObjectWithID:mainObject];
-	NSLog(@"Deserialising %d", mainObject);
+	//Also restore referenced objects
+	NSMapEnumerator enumerator = NSEnumerateMapTable(objectPointers);
+	CORef ref;
+	id * pointer;
+	while(NSNextMapEnumeratorPair(&enumerator, (void*)&pointer, (void*)&ref))
+	{
+		*pointer = GET_OBJ(ref);
+		//If we haven't already loaded this object
+		if(*pointer == NULL)
+		{
+			[backend deserialiseObjectWithID:ref];
+			*pointer = GET_OBJ(ref);
+		}
+		NSMapRemove(objectPointers, pointer);
+		//Restart the enumeration
+		NSEndMapTableEnumeration(&enumerator);
+		enumerator = NSEnumerateMapTable(objectPointers);
+	}
 	return GET_OBJ(mainObject);
 }
 //Objects
@@ -62,7 +79,6 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 	//TODO: Decide if this should call init.  Probably not...
 	object = [aClass alloc];
 	SET_REF(aReference, object);
-	NSLog(@"Restored {%d, %d}", aReference, object);
 }
 - (void) endObject 
 {
@@ -89,10 +105,19 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 		{
 			LOAD_INTRINSIC(id, aName);
 		}
+		else
+		{
+			void * pointer = addressForIVarName(object, aName, loadedIVar++);
+			NSMapInsert(objectPointers, pointer, (void*)aReference);
+		}
 	}
 	else
 	{
-		NSLog(@"Set %s to %d after deserialising", aName, aReference);
+		char * address = addressForIVarName(object, aName, loadedIVar++);
+		if(address != NULL)
+		{
+			*(id*)address = nil;
+		}
 	}
 }
 - (void) setReferenceCountForObject:(CORef)anObjectID to:(int)aRefCount 
@@ -132,7 +157,14 @@ LOAD_METHOD(Selector, SEL)
 		*(char**)address = strdup(aCString);
 	}
 }
-- (void) loadData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName {}
+- (void) loadData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName 
+{
+	char * address = addressForIVarName(object, aName, loadedIVar++);
+	if(address != NULL)
+	{
+		memcpy(address, aBlob, aSize);
+	}
+}
 
 - (void) dealloc
 {

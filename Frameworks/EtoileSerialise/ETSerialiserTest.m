@@ -29,9 +29,9 @@
 	id anObject;
 	/*
 	int anArray[3];
+	*/
 	NSString * aString;
 	NSString * anotherReferenceToTheSameString;
-	*/
 	int * aPointer;
 }
 @end
@@ -58,9 +58,9 @@
 	aStruct.floatArrayInStruct[4] = -0.4f;
 	*/
 	anObject = [Object new];
-	/*
 	aString = @"Some text";
 	anotherReferenceToTheSameString = aString;
+	/*
 	anArray[0] = 0;
 	anArray[1] = 1;
 	anArray[2] = 2;
@@ -83,7 +83,12 @@
 }
 - (void) methodTest
 {
-	NSLog(@"Correctly deserialised");
+	NSLog(@"Method calls work");
+	NSLog(@"Integer: 10 = %d", anInteger);
+	NSLog(@"String Object: \"Some text\" = \"%@\"", aString, aString);
+	NSLog(@"Float: 12.345 = %f",(double)aFloat);
+	NSLog(@"Double: 67.890 = %f", aDouble);
+	NSLog(@"Retain count of object: 2 = %d", [aString retainCount]);
 }
 @end
 
@@ -102,7 +107,6 @@ int main(void)
 	[deback readDataFromURL:[NSURL fileURLWithPath:@"testfile"]];
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
 	TestClass * bar = [deserialiser restoreObjectGraph];
-	NSLog(@"10 = %d", bar->anInteger);
 	[bar methodTest];
 	return 0;
 }

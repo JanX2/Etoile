@@ -48,12 +48,10 @@
 #define SKIP_STRING() obj += strlen(obj) + 1
 - (BOOL) deserialiseObjectWithID:(CORef)aReference
 {
-	NSLog(@"Loading object for ref %d", aReference);
 	//Note: Using int rather than off_t here.  This is not
 	//actually a limitation, since NSData and common sense
 	//both impose tighter ones.
 	unsigned int offset = (unsigned int)NSMapGet(index, (void*)aReference);
-	NSLog(@"Object is at offset %d", offset);
 	if(offset > [data length])
 	{
 		return NO;
@@ -63,7 +61,6 @@
 	if(*obj == '<')
 	{
 		char * class = ++obj;
-		NSLog(@"Loading object of class %s", class);
 		[deserialiser beginObjectWithID:aReference
 							  withClass:NSClassFromString([NSString stringWithUTF8String:class])];
 		SKIP_STRING();
@@ -74,7 +71,6 @@
 	}
 	while(*obj != '>')
 	{
-		NSLog(@"Char %c", *obj);
 		char * name;
 #define LOAD(typeChar, typeName, type) case typeChar: \
 	name = ++obj;\
@@ -98,6 +94,12 @@
 			LOAD('f', Float, float)
 			LOAD('d', Double, double)
 			LOAD('@', ObjectReference, CORef)
+			case '*':
+				name = ++obj;
+				SKIP_STRING();
+				[deserialiser loadCString:obj withName:name];
+				SKIP_STRING();
+				break;
 			case '#':
 				name = ++obj;
 				SKIP_STRING();
