@@ -16,14 +16,14 @@ if [ -f /etc/gdm.conf ]; then
 	cp /etc/gdm/gdm.conf /etc/gdm.conf-original
 	rm /etc/gdm/gdm.conf
 fi
-sed -e '/^Greeter.*$/d' /etc/gdm/gdm.conf-custom
-sed -e 's/\(^\[greeter\].*$\)/\1\nGreeter=\/usr\/local\/bin\/etoile_login.sh/' /etc/gdm/gdm.conf-custom
+sed -i -e '/^Greeter.*$/d' /etc/gdm/gdm.conf-custom
+sed -i -e 's/\(^\[greeter\].*$\)/\1\nGreeter=\/usr\/local\/bin\/etoile_login.sh/' /etc/gdm/gdm.conf-custom
 # NOTE: su gdm doesn't work, so we pass the default in GDM greeter script
 #su gdm
 #defaults write Login ETAllowUserToChooseEnvironment 'NO'
 cp Services/Private/Login/etoile_login.sh /usr/local/bin
-#sed -e '/-ETAllowUserToChooseEnvironment "NO"/d' /usr/local/bin/etoile_login.sh
-sed -e 's/\(Login.*\)/\1 -ETAllowUserToChooseEnvironment "NO"/' /usr/local/bin/etoile_login.sh
+#sed -i -e '/-ETAllowUserToChooseEnvironment "NO"/d' /usr/local/bin/etoile_login.sh
+sed -i -e 's/\(Login.*\)/\1 -ETAllowUserToChooseEnvironment "NO"/' /usr/local/bin/etoile_login.sh
 exit
 
 # Add a new user named 'etoile' and set up Etoile environment
@@ -59,9 +59,28 @@ cd .. # Move out of Etoile directory
 apt-get install libusplash-dev # libupsplash-dev requires libc6-dev
 
 cd LiveCD/BootScreen
+
+# GRUB splash image (limited to 14 colors) 
+if [ ! -d /boot/grub/images ]; then
+	mkdir /boot/grub/images;
+fi
+gzip early_boot_screen.xpm
+mv early_boot_screen.xpm.gz /boot/grub/images
+if [ -f /boot/grub/menu.lst.original ]; then
+	cp /boot/grub/menu.lst.original /boot/grub/menu.lst;
+else
+	cp /boot/grub/menu.lst /boot/grub/menu.lst.original;
+fi
+# menu.lst must include splashimage (hd0,0)/boot/grub/images/early_boot_screen.xpm.gz
+sed -i -e '/#\s*color/a\
+splashimage \(hd0,0\)\/boot\/grub\/images\/early_boot_screen\.xpm\.gz' /boot/grub/menu.lst
+
+# Boot splash image strictly speaking
 make && make install
 ln -sf /usr/lib/usplash/etoile-theme.so /etc/alternatives/usplash-artwork.so
-dpkg-reconfigure linux-image-$(uname -r)
+
+dpkg-reconfigure linux-image-$(uname -r) # Regenerate the initramfs
+
 cd..
 
 # Install hidden root directory list and init script (which will be run as root 
