@@ -1,3 +1,8 @@
+2007-07-12  Quentin Mathe <qmathe@club-internet.fr>
+
+	* HACKING: Added a fourth rule about defaults.
+	* README: Bumped version number to 0.2. Updated Authors list.
+
 2007-07-06  Quentin Mathe <qmathe@club-internet.fr>
 
 	* setup.sh: Fixed to look for bundles in System domain rather than 
