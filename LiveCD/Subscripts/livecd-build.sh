@@ -60,6 +60,7 @@ apt-get install libusplash-dev # libupsplash-dev requires libc6-dev
 
 cd LiveCD/BootScreen
 make && make install
+ln -sf /usr/lib/usplash/etoile-theme.so /etc/alternatives/usplash-artwork.so
 dpkg-reconfigure linux-image-$(uname -r)
 cd..
 
