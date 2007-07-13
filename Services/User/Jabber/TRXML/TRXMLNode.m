@@ -104,7 +104,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 
 - (id) initWithType:(NSString*)type attributes:(NSDictionary*)_attributes
 {
-	nodeType = [type retain];
+	nodeType = [[type lowercaseString] retain];
 	attributes = [_attributes retain];
 	return [self init];
 }
