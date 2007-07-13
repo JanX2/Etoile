@@ -138,33 +138,39 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 }
 #define LOAD_INTRINSIC(type, name) \
 {\
-	char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, type);\
-	if(address != NULL)\
+	if(![object deserialise:aName fromPointer:&aVal])\
 	{\
-		*(type*)address = aVal;\
+		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, type);\
+		if(address != NULL)\
+		{\
+			*(type*)address = aVal;\
+		}\
 	}\
 }
 - (void) loadObjectReference:(CORef)aReference withName:(char*)aName
 {
-	if(aReference != 0)
+	if(![object deserialise:aName fromPointer:&aName])
 	{
-		id aVal = GET_OBJ(aReference);
-		if(aVal != nil)
+		if(aReference != 0)
 		{
-			LOAD_INTRINSIC(id, aName);
+			id aVal = GET_OBJ(aReference);
+			if(aVal != nil)
+			{
+				LOAD_INTRINSIC(id, aName);
+			}
+			else
+			{
+				void * pointer = OFFSET_OF_IVAR(object, aName, loadedIVar++, id);
+				NSMapInsert(objectPointers, pointer, (void*)aReference);
+			}
 		}
 		else
 		{
-			void * pointer = OFFSET_OF_IVAR(object, aName, loadedIVar++, id);
-			NSMapInsert(objectPointers, pointer, (void*)aReference);
-		}
-	}
-	else
-	{
-		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, id);
-		if(address != NULL)
-		{
-			*(id*)address = nil;
+			char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, id);
+			if(address != NULL)
+			{
+				*(id*)address = nil;
+			}
 		}
 	}
 }
@@ -222,18 +228,24 @@ LOAD_METHOD(Class, Class)
 LOAD_METHOD(Selector, SEL)
 - (void) loadCString:(char*)aCString withName:(char*)aName
 {
-	char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, sizeof(char*));
-	if(address != NULL)
+	if(![object deserialise:aName fromPointer:aCString])
 	{
-		*(char**)address = strdup(aCString);
+		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, sizeof(char*));
+		if(address != NULL)
+		{
+			*(char**)address = strdup(aCString);
+		}
 	}
 }
 - (void) loadData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName 
 {
-	char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, aSize);
-	if(address != NULL)
+	if(![object deserialise:aName fromPointer:aBlob])
 	{
-		memcpy(address, aBlob, aSize);
+		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, aSize);
+		if(address != NULL)
+		{
+			memcpy(address, aBlob, aSize);
+		}
 	}
 }
 

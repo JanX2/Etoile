@@ -34,7 +34,7 @@ typedef uint32_t CORef;
 @end
 
 //Informal protocol for serialisable objects.  Implement this to manually handle unsupported types.
-@protocol ETSerialisable
+@interface NSObject (ETSerialisable)
 - (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend;
 - (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob;
 @end

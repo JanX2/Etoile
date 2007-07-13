@@ -6,4 +6,5 @@
 	NSURL * baseURL;
 	Class storageBackend;
 }
+
 @end

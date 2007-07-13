@@ -12,6 +12,17 @@
 }
 @end
 
+@implementation NSObject (ETSerialisable)
+- (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend
+{
+	return NO;
+}
+- (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob
+{
+	return NO;
+}
+@end
+
 //Must be set to the size along which things are aligned.
 const unsigned int WORD_SIZE = sizeof(int);
 typedef struct 
@@ -257,17 +268,9 @@ typedef struct
 				if(strcmp("isa", name) != 0)
 				{
 					//NSLog(@"Serialising ivar: %s", name);
-					if([aClass instancesRespondTo:@selector(serialise:using:)])
+					if(![anObject serialise:name using:backend])
 					{
-						//printf("Instances of %s respond to the given selector\n", aClass->name);
-						if(![anObject serialise:name using:backend])
-						{
-							//printf("Method failed...\n");
-							free([self parseType:type atAddress:address withName:name]);
-						}
-					}
-					else
-					{
+						//TODO: Print the name of the ivar and class if this fails.
 						free([self parseType:type atAddress:address withName:name]);
 					}
 				}
