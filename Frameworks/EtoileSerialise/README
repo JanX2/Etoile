@@ -55,4 +55,6 @@ Aliasing of non-object types is not supported, however serialisation of non-obje
 
 Alignment of fields in structs is not properly handled.  It works on x86, but probably won't work anywhere more sensible.  ETDeserialiser needs to check the alignment requirements of each type.  Currently, it just guesses everything has the same alignment requirements as an int (quick hack).
 
+Opaque types are not handled well (i.e. at all).  The runtime does store the name of structs.  This is currently ignored, but could be used to register a struct name to serialiser function mapping that could be done once for every struct, rather than every in every object where the struct was used.
+
 Please report any other issues.

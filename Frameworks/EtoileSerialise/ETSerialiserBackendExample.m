@@ -36,7 +36,7 @@
 }
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
 {
-	printf("(Object with ID:%lld)\n",aReference);
+	printf("(Object with ID:%ld)\n",aReference);
 	[self indent];
 	printf("%s * %s {\n",aClass->name,aName);
 	indent++;
@@ -44,14 +44,14 @@
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName
 {
 	[self indent];
-	printf("id %s=%lld\n",aName,aReference);
+	printf("id %s=%ld\n",aName,aReference);
 }
 - (void) incrementReferenceCountForObject:(CORef)anObjectID
 {
-	NSNumber * key = [NSNumber numberWithUnsignedLongLong: anObjectID];
-	unsigned long long count = [[referenceCounts objectForKey:key] unsignedLongLongValue];
+	NSNumber * key = [NSNumber numberWithUnsignedInt: anObjectID];
+	unsigned int count = [[referenceCounts objectForKey:key] unsignedIntValue];
 	count++;
-	[referenceCounts setObject:[NSNumber numberWithUnsignedLongLong:count]
+	[referenceCounts setObject:[NSNumber numberWithUnsignedInt:count]
 						forKey:key];
 }
 - (void) endObject
@@ -165,9 +165,9 @@
 	NSNumber * key;
 	while((key = [keys nextObject]) != nil)
 	{
-		printf("Object %lld has reference count %lld\n",
-				[key unsignedLongLongValue],
-				[[referenceCounts objectForKey:key] unsignedLongLongValue]);
+		printf("Object %ld has reference count %ld\n",
+				[key unsignedIntValue],
+				[[referenceCounts objectForKey:key] unsignedIntValue]);
 	}
 	[referenceCounts release];
 	[super dealloc];

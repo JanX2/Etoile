@@ -58,6 +58,7 @@
 	aStruct.floatArrayInStruct[3] = -0.3f;
 	aStruct.floatArrayInStruct[4] = -0.4f;
 	*/
+	//Check we don't break on non-OpenStep objects.
 	anObject = [Object new];
 	aString = @"Some text";
 	anotherReferenceToTheSameString = aString;
@@ -96,18 +97,26 @@
 }
 @end
 
+void testWithBackend(id backend)
+{
+	id serialiser = [ETSerialiser serialiserWithBackend:backend];
+	id foo = [TestClass new];
+	[serialiser serialiseObject:foo withName:"foo"];
+	[serialiser release];
+	[backend release];
+}
+
 int main(void)
 {
 	[NSAutoreleasePool new];
-	id foo = [TestClass new];
-	//id backend = [ETSerialiserBackendExample new];
+	NSLog(@"Testing serialiser with human-readable output");
+	testWithBackend([ETSerialiserBackendExample new]);
 	id backend = [ETSerialiserBackendBinaryFile new];
 	[backend setFile:"testfile"];
-	id serialiser = [ETSerialiser serialiserWithBackend:backend];
-	NSLog(@"Serialising...");
-	NSLog(@"Object serialised with handle %lld\n",[serialiser serialiseObject:foo withName:"foo"]);
-	[backend release];
-	NSLog(@"Deserialising...");
+	NSLog(@"Serialising to binary file...");
+	testWithBackend(backend);
+	NSLog(@"Deserialising from binary file...");
+
 	id deback = [ETDeserialiserBackendBinaryFile new];
 	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"testfile"]];
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
