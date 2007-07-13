@@ -6,7 +6,9 @@
 #define WRITE(x,b) fwrite(x,b,1,blobFile)
 #define STORECOMPLEX(type, value, size) WRITE(type,1);FORMAT("%s%c",aName, '\0');WRITE(value, size)
 #define STORE(type, value, c_type) STORECOMPLEX(type, &value, sizeof(c_type))
-#define OFFSET (ftell(blobfile))
+#define OFFSET (ftell(blobFile))
+
+
 
 inline char * safe_strcat(char* str1, char* str2)
 {
@@ -23,13 +25,34 @@ inline char * safe_strcat(char* str1, char* str2)
 {
 	char * indexFileName = safe_strcat(filename, "index");
 	blobFile = fopen(filename, "w");
-	indexFile = fopen(indexFileName, "w");
+	WRITE("\0\0\0\0", sizeof(int));
 	free(indexFileName);
+	const NSMapTableKeyCallBacks keycallbacks = {NULL, NULL, NULL, NULL, NULL, NSNotAnIntMapKey};
+	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
+	//TODO: After we've got some real profiling data, 
+	//change 100 to a more sensible value
+	offsets = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
+	refCounts = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 }
 - (void) dealloc
 {
+	NSMapEnumerator enumerator = NSEnumerateMapTable(offsets);
+	int indexOffset = (int)OFFSET;
+    CORef ref;
+    int offset;
+    while(NSNextMapEnumeratorPair(&enumerator, (void*)&ref, (void*)&offset))
+	{
+		int refCount = (int)NSMapGet(refCounts, (void*)ref);
+		WRITE(&ref, sizeof(ref));
+		WRITE(&offset, sizeof(offset));
+		WRITE(&refCount, sizeof(refCount));
+		//NSLog(@"ref: %d, refCount: %d, offset: %d",ref, refCount, offset);
+	}
+	rewind(blobFile);
+	WRITE(&indexOffset, sizeof(int));
 	fclose(blobFile);
-	fclose(indexFile);
+	NSFreeMapTable(offsets);
+	NSFreeMapTable(refCounts);
 	[super dealloc];
 }
 - (void) beginStructNamed:(char*)aName
@@ -43,8 +66,7 @@ inline char * safe_strcat(char* str1, char* str2)
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
 {
 	off_t offset = ftello(blobFile);
-	fwrite(&aReference, sizeof(CORef), 1, indexFile);
-	fwrite(&offset, sizeof(off_t), 1, indexFile);
+	NSMapInsert(offsets, (void*)aReference, (void*)(int)offset);
 	FORMAT("<%s%c",aClass->name,0);
 }
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName
@@ -53,7 +75,8 @@ inline char * safe_strcat(char* str1, char* str2)
 }
 - (void) incrementReferenceCountForObject:(CORef)anObjectID
 {
-	printf("Increasing reference count for object: %ld (not implemented yet)\n", anObjectID);
+	int refCount = (int)NSMapGet(refCounts, (void*)anObjectID);
+	NSMapInsert(refCounts, (void*)anObjectID, (void*) (++refCount));
 }
 
 - (void) endObject

@@ -1,33 +1,69 @@
 #include <stdio.h>
 #import "ETDeserialiserBinaryFile.h"
 
-@implementation ETDeserialiserBackendBinaryFile
-- (BOOL) readDataFromURL:(NSURL*)aURL
+//NOTE: Remove this once GNUstep has this method in base.
+#define HAVE_MMAP
+@interface NSData (MappedURL)
++ (id)dataWithContentsOfURL:(NSURL *)aURL 
+					options:(unsigned int)mask 
+	  				  error:(NSError **)errorPtr;
+@end
+
+@implementation NSData (MappedURL)
+enum {
+	NSMappedRead = 1,
+	NSUncachedRead = 2
+};
+
++ (id)dataWithContentsOfURL:(NSURL *)aURL 
+					options:(unsigned int)mask 
+	  				  error:(NSError **)errorPtr
 {
-	/* TODO: Implement this method in GNUstep's NSData
-	data = [[NSData dataWithContentsOfURL:aURL 
-								  options:NSMappedRead
-									error:nil] retain];
-	 */
-	data = [NSData dataWithContentsOfURL:aURL];
-	//TODO: Get rid of this hack and store the index in the file
-	FILE * indexFile = fopen([[[aURL path] stringByAppendingString:@"index"] UTF8String], "r");
+	if((mask & NSMappedRead)
+		&&
+		[aURL isFileURL])
+	{
+		return [NSData dataWithContentsOfMappedFile:[aURL path]];
+	}
+	//FIXME: NSUncachedRead should set the 
+	//F_NOCACHE fcntl, or equivalent
+	return [aURL resourceDataUsingCache: YES];
+}
+@end
+@implementation ETDeserialiserBackendBinaryFile
+- (BOOL) deserialiseFromURL:(NSURL*)aURL
+{
+	return [self deserialiseFromData:[NSData dataWithContentsOfURL:aURL 
+	                                                       options:NSMappedRead
+	                                                         error:(NSError**)nil]];
+}
+- (BOOL) deserialiseFromData:(NSData*)aData
+{
+	data = [aData retain];
     const NSMapTableKeyCallBacks keycallbacks = {NULL, NULL, NULL, NULL, NULL, NSNotAnIntMapKey};
 	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
 	index = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
-	while(!feof(indexFile))
+	refCounts = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
+
+	const char * blob = [data bytes];
+	//Load the index
+	int indexOffset = *(int*)blob;
+	for(unsigned int i=indexOffset ; i<[data length] ; )
 	{
-		CORef ref;
-		off_t offset;
-		fread(&ref, sizeof(CORef), 1, indexFile);
-		fread(&offset, sizeof(off_t), 1, indexFile);
-		NSMapInsert(index, (void*)(int)ref, (void*)(int) offset);
-		if(principalObjectRef == 0)
+		CORef ref = *(CORef*)&blob[i];
+		i += sizeof(CORef);
+		int offset = *(int*)&blob[i];
+		i += sizeof(int);
+		int refCount = *(int*)&blob[i];
+		i += sizeof(int);
+		//NSLog(@"ref: %d, refCount: %d, offset: %d",ref, refCount, offset);
+		NSMapInsert(index, (void*)(int)ref, (void*)offset);
+		NSMapInsert(refCounts, (void*)(int)ref, (void*)refCount);
+		if(offset == sizeof(int))
 		{
 			principalObjectRef = ref;
 		}
 	}
-	fclose(indexFile);
 	return (data != nil);
 }
 - (void) setDeserialiser:(id)aDeserialiser;
@@ -52,6 +88,7 @@
 	//actually a limitation, since NSData and common sense
 	//both impose tighter ones.
 	unsigned int offset = (unsigned int)NSMapGet(index, (void*)aReference);
+	//TODO: check offset doesn't point inside the index
 	if(offset > [data length])
 	{
 		return NO;
@@ -139,6 +176,8 @@
 		}
 	}
 	[deserialiser endObject];
+	[deserialiser setReferenceCountForObject:aReference 
+										  to:(int) NSMapGet(refCounts, (void*)aReference)];
 	return YES;
 }
 @end

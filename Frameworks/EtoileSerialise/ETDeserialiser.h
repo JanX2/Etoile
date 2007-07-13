@@ -3,7 +3,8 @@
 
 
 @protocol ETDeserialiserBackend <NSObject>
-- (BOOL) readDataFromURL:(NSURL*)aURL;
+- (BOOL) deserialiseFromURL:(NSURL*)aURL;
+- (BOOL) deserialiseFromData:(NSData*)aData;
 - (BOOL) deserialiseObjectWithID:(CORef)aReference;
 - (void) setDeserialiser:(id)aDeserialiser;
 - (CORef) principalObject;

@@ -5,6 +5,13 @@
 #include <objc/objc-api.h>
 #include <objc/Object.h>
 
+@implementation Object (UglyHack)
+- (BOOL)isKindOfClass:(Class)aClass
+{
+	return aClass == [Object class];
+}
+@end
+
 //Must be set to the size along which things are aligned.
 const unsigned int WORD_SIZE = sizeof(int);
 typedef struct 
@@ -97,7 +104,10 @@ typedef struct
 			//[backend storeData:*(void**)address ofSize:_msize(*(void**)address) withName:name];
 			return sizeof(void*);
 		case '@':
-			[self enqueueObject:*(id*)address];
+			if(*(id*)address != nil)
+			{
+				[self enqueueObject:*(id*)address];
+			}
 			[backend storeObjectReference:(unsigned long long)(uintptr_t)(*(id*)address) withName:name];
 			return sizeof(id);
 		default:
@@ -242,9 +252,11 @@ typedef struct
 				void * address = ((char*)anObject + (ivarlist->ivar_list[i].ivar_offset));
 				char * name = (char*)ivarlist->ivar_list[i].ivar_name;
 				char * type = (char*)ivarlist->ivar_list[i].ivar_type;
+				//NSLog(@"Found ivar: %s", name);
 				/* Don't bother with the isa pointer; we get that filled in for us automatically */
 				if(strcmp("isa", name) != 0)
 				{
+					//NSLog(@"Serialising ivar: %s", name);
 					if([aClass instancesRespondTo:@selector(serialise:using:)])
 					{
 						//printf("Instances of %s respond to the given selector\n", aClass->name);

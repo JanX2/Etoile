@@ -27,7 +27,7 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 //TODO: Add bounds checking to this and some overflow capability
 //for stupidly nested objects.
 #define STATE states[stackTop]
-#define PUSH_STATE(offset, stateType) ++stackTop;STATE.startOffset = offset; STATE.type = stateType; STATE.index = loadedIVar; loadedIVar = 0; NSLog(@"Pushing state '%c'", stateType);
+#define PUSH_STATE(offset, stateType) ++stackTop;STATE.startOffset = offset; STATE.type = stateType; STATE.index = loadedIVar; loadedIVar = 0;// NSLog(@"Pushing state '%c'", stateType);
 #define PUSH_STRUCT(offset) PUSH_STATE(offset, 's')
 #define PUSH_ARRAY(offset) PUSH_STATE(offset, 'a')
 #define POP() loadedIVar = states[stackTop--].index;
@@ -42,7 +42,7 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 	}
 	else
 	{
-		NSLog(@"Inside nested type looking for %s.", aName);
+		//NSLog(@"Inside nested type looking for %s.", aName);
 		switch(state->type)
 		{
 			case 'a':
@@ -179,10 +179,9 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 //Nested types
 - (void) beginStructNamed:(char*)aName 
 {
-	NSLog(@"Begin struct");
-	//TODO: Change this 0 to something correct
+	//TODO: Change this 10 to something correct
 	char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, 10);
-	NSLog(@"Struct address = %s", address);
+	//NSLog(@"Struct address = 0x%x", address);
 	if(address != NULL)
 	{
 		PUSH_STRUCT(address);

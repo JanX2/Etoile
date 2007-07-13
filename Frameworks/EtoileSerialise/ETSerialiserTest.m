@@ -31,6 +31,8 @@
 	int anArray[3];
 	NSString * aString;
 	NSString * anotherReferenceToTheSameString;
+	NSNumber * aNumber;
+	NSNumber * theSameNumber;
 	int * aPointer;
 }
 @end
@@ -62,6 +64,8 @@
 	anArray[0] = 0;
 	anArray[1] = 1;
 	anArray[2] = 2;
+	aNumber = [[NSNumber numberWithInt:42] retain];
+	theSameNumber = [aNumber retain];
 	aPointer = malloc(5*sizeof(int));
 	for(unsigned int i=0; i<5 ; i++)
 	{
@@ -88,7 +92,7 @@
 	NSLog(@"Array {0,1,2} = {%d,%d,%d}", anArray[0], anArray[1], anArray[2]);
 	NSLog(@"Unsigned long long in struct: 12 = %d", aStruct.intInStruct);
 	NSLog(@"BOOL in struct: 1 = %d", (int)aStruct.boolInStruct);
-	NSLog(@"Retain count of object: 2 = %d", [aString retainCount]);
+	NSLog(@"Retain count of object %@: 2 = %d", aNumber, [aNumber retainCount]);
 }
 @end
 
@@ -100,11 +104,12 @@ int main(void)
 	id backend = [ETSerialiserBackendBinaryFile new];
 	[backend setFile:"testfile"];
 	id serialiser = [ETSerialiser serialiserWithBackend:backend];
-	printf("Object serialised with handle %lld\n",[serialiser serialiseObject:foo withName:"foo"]);
+	NSLog(@"Serialising...");
+	NSLog(@"Object serialised with handle %lld\n",[serialiser serialiseObject:foo withName:"foo"]);
 	[backend release];
 	NSLog(@"Deserialising...");
 	id deback = [ETDeserialiserBackendBinaryFile new];
-	[deback readDataFromURL:[NSURL fileURLWithPath:@"testfile"]];
+	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"testfile"]];
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
 	TestClass * bar = [deserialiser restoreObjectGraph];
 	[bar methodTest];
