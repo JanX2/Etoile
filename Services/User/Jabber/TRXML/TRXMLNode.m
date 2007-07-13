@@ -292,7 +292,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 
 - (NSSet*) getChildrenWithName:(NSString*)_name
 {
-	return [childrenByName objectForKey:_name];
+	return [childrenByName objectForKey:[_name lowercaseString]];
 }
 
 - (unsigned int) children
@@ -364,7 +364,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 	[attributes release];
 	[plainCDATA release];
 	[nodeType release];
-//	[childrenByName release];
+	[childrenByName release];
 	[super dealloc];
 }
 @end
