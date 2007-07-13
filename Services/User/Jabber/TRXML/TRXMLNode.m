@@ -104,9 +104,16 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 
 - (id) initWithType:(NSString*)type attributes:(NSDictionary*)_attributes
 {
+	self = [self init];
 	nodeType = [[type lowercaseString] retain];
-	attributes = [_attributes retain];
-	return [self init];
+	/* Make sure the key is always lowercase */
+	NSEnumerator *e = [_attributes keyEnumerator];
+	id key = nil;
+	while ((key = [e nextObject]))
+	{
+		[self set: [key lowercaseString] to: [_attributes objectForKey: key]];
+	}
+	return self;
 }
 
 
@@ -114,7 +121,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 - (void)endElement:(NSString *)_Name
 {
 /*	NSLog(@"Ending Element %@", _Name);*/
-	if([_Name isEqualToString:nodeType])
+	if([[_Name lowercaseString] isEqualToString:nodeType])
 	{
 		[parser setContentHandler:parent];
 		[parent addChild:(id)self];
@@ -335,7 +342,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 		attributes = [[NSMutableDictionary dictionaryWithDictionary:attributes] retain];
 		[oldAttributes release];
 	}	
-	[attributes setObject:value forKey:attribute];
+	[attributes setObject:value forKey:[attribute lowercaseString]];
 }
 
 - (NSString *) cdata
