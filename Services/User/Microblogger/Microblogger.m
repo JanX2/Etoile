@@ -26,7 +26,7 @@
 		NSString * query = [NSString stringWithFormat:@"user=%@&personal_key=%@&method=presence.send&message=%@", 
 			username, 
 			password, 
-			[status stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
+			[status stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 		/* Send it. */
 		[jaikuCall setHTTPBody:[query dataUsingEncoding:NSASCIIStringEncoding]];
 		[[NSURLConnection alloc] initWithRequest:jaikuCall delegate:self];
