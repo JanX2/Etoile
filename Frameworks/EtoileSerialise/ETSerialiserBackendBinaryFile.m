@@ -10,7 +10,7 @@
 
 
 
-inline char * safe_strcat(char* str1, char* str2)
+static inline char * safe_strcat(char* str1, char* str2)
 {
 	unsigned int len1 = strlen(str1);
 	unsigned int len2 = strlen(str2);
