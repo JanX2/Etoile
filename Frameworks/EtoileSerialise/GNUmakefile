@@ -15,7 +15,8 @@ ETSerialiserTest_OBJC_FILES = \
 				   	ETSerialiserBackendBinaryFile.m\
 				   	ETDeserialiser.m\
 				   	ETDeserialiserBinaryFile.m\
-					COProxy.m
+					COProxy.m\
+					GSMutableString+ETSerialisable.m
 
 OBJCFLAGS += -std=c99 -Wall -W -Wunreachable-code -Winline -Werror -Wno-unused -Wno-format -g
 LDFLAGS += -g

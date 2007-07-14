@@ -96,7 +96,7 @@ enum {
 	}
 
 	char * obj = ((char*)[data bytes]) + offset;
-	NSLog(@"offset: %d, obj: %s", offset, obj);
+	//NSLog(@"offset: %d, obj: %s", offset, obj);
 	if(*obj == '<')
 	{
 		char * class = ++obj;

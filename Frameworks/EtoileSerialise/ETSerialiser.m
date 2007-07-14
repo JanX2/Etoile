@@ -122,7 +122,7 @@ typedef struct
 			[backend storeCString:*(char**)address withName:name];
 			return sizeof(char*);
 		case '^':
-			printf("Pointer types not yet supported\n");
+			//printf("Pointer types not yet supported\n");
 			return -1;
 			//[backend storeData:*(void**)address ofSize:_msize(*(void**)address) withName:name];
 			//return sizeof(void*);
