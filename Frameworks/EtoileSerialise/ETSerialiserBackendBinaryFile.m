@@ -10,7 +10,7 @@
 
 
 
-static inline char * safe_strcat(char* str1, char* str2)
+static inline char * safe_strcat(const char* str1, const char* str2)
 {
 	unsigned int len1 = strlen(str1);
 	unsigned int len2 = strlen(str2);
@@ -21,12 +21,30 @@ static inline char * safe_strcat(char* str1, char* str2)
 }
 
 @implementation ETSerialiserBackendBinaryFile
-- (void) setFile:(char*)filename
++ (id) serialiserBackendWithURL:(NSURL*)anURL
 {
-	char * indexFileName = safe_strcat(filename, "index");
+	return [[[ETSerialiserBackendBinaryFile alloc] initWithURL:anURL] autorelease];
+}
+- (id) initWithURL:(NSURL*)anURL
+{
+	if(nil == (self = [self init]))
+	{
+		return nil;
+	}
+	/* Only works on local files for now */
+	if(![anURL isFileURL])
+	{
+		[self release];
+		return nil;
+	}
+	ASSIGN(fileName, [anURL path]);
+	[self setFile:[fileName UTF8String]];
+	return self;
+}
+- (void) setFile:(const char*)filename
+{
 	blobFile = fopen(filename, "w");
 	WRITE("\0\0\0\0", sizeof(int));
-	free(indexFileName);
 	const NSMapTableKeyCallBacks keycallbacks = {NULL, NULL, NULL, NULL, NULL, NSNotAnIntMapKey};
 	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
 	//TODO: After we've got some real profiling data, 
@@ -34,7 +52,7 @@ static inline char * safe_strcat(char* str1, char* str2)
 	offsets = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 	refCounts = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 }
-- (void) dealloc
+- (void) closeFile
 {
 	NSMapEnumerator enumerator = NSEnumerateMapTable(offsets);
 	int indexOffset = (int)OFFSET;
@@ -46,14 +64,24 @@ static inline char * safe_strcat(char* str1, char* str2)
 		WRITE(&ref, sizeof(ref));
 		WRITE(&offset, sizeof(offset));
 		WRITE(&refCount, sizeof(refCount));
-		//NSLog(@"ref: %d, refCount: %d, offset: %d",ref, refCount, offset);
 	}
 	rewind(blobFile);
 	WRITE(&indexOffset, sizeof(int));
 	fclose(blobFile);
 	NSFreeMapTable(offsets);
 	NSFreeMapTable(refCounts);
+}
+- (void) dealloc
+{
+	[self closeFile];
 	[super dealloc];
+}
+- (int) newVersion
+{
+	version++;
+	[self closeFile];
+	[self setFile:[[NSString stringWithFormat:@"%@.%d", fileName, version] UTF8String]];
+	return version;
 }
 - (void) beginStructNamed:(char*)aName
 {

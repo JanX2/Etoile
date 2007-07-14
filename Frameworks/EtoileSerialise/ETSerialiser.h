@@ -2,7 +2,11 @@
 
 typedef uint32_t CORef;
 
-@protocol ETSerialiserBackend
+@protocol ETSerialiserBackend <NSObject>
+//Setup
++ (id) serialiserBackendWithURL:(NSURL*)anURL;
+- (id) initWithURL:(NSURL*)anURL;
+- (int) newVersion;
 //Objects
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass;
 - (void) endObject;
@@ -44,7 +48,7 @@ typedef uint32_t CORef;
 	NSMutableSet * unstoredObjects;
 	NSMutableSet * storedObjects;
 }
-+ (ETSerialiser*) serialiserWithBackend:(id<ETSerialiserBackend>)aBackend;
-- (void) setBackend:(id<ETSerialiserBackend>)aBackend;
++ (ETSerialiser*) serialiserWithBackend:(Class)aBackend forURL:(NSURL*)anURL;
+- (int) newVersion;
 - (unsigned long long) serialiseObject:(id)anObject withName:(char*)aName;
 @end

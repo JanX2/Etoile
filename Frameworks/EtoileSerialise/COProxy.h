@@ -4,7 +4,9 @@
 	id object;
 	int version;
 	NSURL * baseURL;
-	Class storageBackend;
+	id serialiser;
+	id backend;
 }
-
+- (id) initWithObject:(id)anObject
+           serialiser:(id)aSerialiser;
 @end

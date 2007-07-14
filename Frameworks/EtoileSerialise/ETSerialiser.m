@@ -32,15 +32,19 @@ typedef struct
 } parsed_type_size_t;
 
 @implementation ETSerialiser
-+ (ETSerialiser*) serialiserWithBackend:(id<ETSerialiserBackend>)aBackend
-{
-	ETSerialiser * serialiser = [[self alloc] init];
-	[serialiser setBackend:aBackend];
-	return serialiser;
-}
 - (void) setBackend:(id<ETSerialiserBackend>)aBackend
 {
-	backend = aBackend;
+	ASSIGN(backend, aBackend);
+}
++ (ETSerialiser*) serialiserWithBackend:(Class)aBackend forURL:(NSURL*)anURL
+{
+	ETSerialiser * serialiser = [[self alloc] init];
+	[serialiser setBackend:[aBackend serialiserBackendWithURL:anURL]];
+	return serialiser;
+}
+- (int) newVersion
+{
+	return [backend newVersion];
 }
 - (id) init
 {
@@ -52,6 +56,13 @@ typedef struct
 	unstoredObjects = [[NSMutableSet alloc] init];
 	storedObjects = [[NSMutableSet alloc] init];
 	return self;
+}
+- (void) dealloc
+{
+	[backend release];
+	[unstoredObjects release];
+	[storedObjects release];
+	[super dealloc];
 }
 
 - (void) enqueueObject:(id)anObject

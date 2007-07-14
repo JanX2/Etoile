@@ -4,6 +4,15 @@
 
 
 @implementation ETSerialiserBackendExample
++ (id) serialiserBackendWithURL:(NSURL*)anURL
+{
+	/* Outputs to stdout, ignores URL */
+	return [[[ETSerialiserBackendExample alloc] init] autorelease];
+}
+- (id) initWithURL:(NSURL*)anURL
+{
+	return [self init];
+}
 - (id) init
 {
 	self = [super init];
@@ -21,7 +30,11 @@
 		printf("\t");
 	}
 }
-
+- (int) newVersion
+{
+	printf("\nNext version:\n\n");
+	return 0;
+}
 - (void) beginStructNamed:(char*)aName
 {
 	[self indent];

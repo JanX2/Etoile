@@ -68,13 +68,14 @@ enum {
 }
 - (void) setDeserialiser:(id)aDeserialiser;
 {
-	deserialiser = aDeserialiser;
+	ASSIGN(deserialiser, aDeserialiser);
 }
 
 - (void) dealloc
 {
 	[data release];
 	NSFreeMapTable(index);
+	NSFreeMapTable(refCounts);
 	[super dealloc];
 }
 - (CORef) principalObject
@@ -95,6 +96,7 @@ enum {
 	}
 
 	char * obj = ((char*)[data bytes]) + offset;
+	NSLog(@"offset: %d, obj: %s", offset, obj);
 	if(*obj == '<')
 	{
 		char * class = ++obj;

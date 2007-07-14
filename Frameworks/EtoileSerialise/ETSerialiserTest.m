@@ -97,26 +97,25 @@
 }
 @end
 
-void testWithBackend(id backend)
+void testWithBackend(Class backend, NSURL * anURL)
 {
-	id serialiser = [ETSerialiser serialiserWithBackend:backend];
+	NSAutoreleasePool * pool = [NSAutoreleasePool new];
+	id serialiser = [ETSerialiser serialiserWithBackend:backend forURL:anURL];
 	id foo = [TestClass new];
 	[serialiser serialiseObject:foo withName:"foo"];
 	[serialiser release];
-	[backend release];
+	[pool release];
 }
 
 int main(void)
 {
 	[NSAutoreleasePool new];
 	NSLog(@"Testing serialiser with human-readable output");
-	testWithBackend([ETSerialiserBackendExample new]);
+	testWithBackend([ETSerialiserBackendExample class], [NSURL new]);
 	id backend = [ETSerialiserBackendBinaryFile new];
-	[backend setFile:"testfile"];
 	NSLog(@"Serialising to binary file...");
-	testWithBackend(backend);
+	testWithBackend([ETSerialiserBackendBinaryFile class], [NSURL fileURLWithPath:@"testfile"]);
 	NSLog(@"Deserialising from binary file...");
-
 	id deback = [ETDeserialiserBackendBinaryFile new];
 	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"testfile"]];
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
