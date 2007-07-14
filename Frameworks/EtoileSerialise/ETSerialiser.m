@@ -123,8 +123,9 @@ typedef struct
 			return sizeof(char*);
 		case '^':
 			printf("Pointer types not yet supported\n");
+			return -1;
 			//[backend storeData:*(void**)address ofSize:_msize(*(void**)address) withName:name];
-			return sizeof(void*);
+			//return sizeof(void*);
 		case '@':
 			if(*(id*)address != nil)
 			{
@@ -133,8 +134,8 @@ typedef struct
 			[backend storeObjectReference:(unsigned long long)(uintptr_t)(*(id*)address) withName:name];
 			return sizeof(id);
 		default:
-			printf("%c not recognised\n", type);
-			return 0;
+			printf("%c not recognised(%s)\n", type);
+			return -1;
 	}
 }
 #define INCREMENT_OFFSET type++; retVal->offset++
@@ -253,20 +254,24 @@ typedef struct
 		default:
 			retVal->offset = 1;
 			retVal->size = [self storeIntrinsicOfType:type[0] fromAddress:address withName:name];
+			if(retVal->size == (unsigned)-1)
+			{
+				NSLog(@"Unable to serialise %s in %@ (type: %s)", name, currentClass, type);
+			}
 	}
 	return retVal;
 }
 - (void) serialiseObject:(id)anObject named:(char*)aName
 {
 	//NSLog(@"Starting object %s", aName);
-	Class aClass = anObject->class_pointer;
+	currentClass = anObject->class_pointer;
 	[backend beginObjectWithID:(unsigned long long)(uintptr_t)anObject 
 	                  withName:aName
-	                 withClass:aClass];
+	                 withClass:currentClass];
 	do
 	{
-		struct objc_ivar_list* ivarlist = aClass->ivars;
-		//NSLog(@"Serialising ivars belonging to class %s", aClass->name);
+		struct objc_ivar_list* ivarlist = currentClass->ivars;
+		//NSLog(@"Serialising ivars belonging to class %s", currentClass->name);
 		if(ivarlist != NULL)
 		{
 			for(int i=0 ; i<ivarlist->ivar_count ; i++)
@@ -287,9 +292,9 @@ typedef struct
 				}
 			}
 		}
-		aClass = aClass->super_class;
+		currentClass = currentClass->super_class;
 	}
-	while(aClass != NULL);
+	while(currentClass != NULL);
 	[backend endObject];
 
 	[storedObjects addObject:anObject];

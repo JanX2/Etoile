@@ -6,11 +6,23 @@
 @implementation ETSerialiserBackendExample
 + (id) serialiserBackendWithURL:(NSURL*)anURL
 {
-	/* Outputs to stdout, ignores URL */
-	return [[[ETSerialiserBackendExample alloc] init] autorelease];
+	return [[[ETSerialiserBackendExample alloc] initWithURL:anURL] autorelease];
 }
 - (id) initWithURL:(NSURL*)anURL
 {
+	/* Write to stdout, or a file.  Other URL types not supported */
+	if(anURL == nil)
+	{
+		outFile = stdout;
+	}
+	else if([anURL isFileURL])
+	{
+		outFile = fopen([[anURL path] UTF8String], "w");
+	}
+	else
+	{
+		return nil;
+	}
 	return [self init];
 }
 - (id) init
@@ -27,37 +39,37 @@
 {
 	for(unsigned int i=0 ; i<indent ; i++)
 	{
-		printf("\t");
+		fprintf(outFile, "\t");
 	}
 }
 - (int) newVersion
 {
-	printf("\nNext version:\n\n");
-	return 0;
+	fprintf(outFile, "\nNext version:\n\n");
+	return ++version;
 }
 - (void) beginStructNamed:(char*)aName
 {
 	[self indent];
-	printf("struct %s {\n",aName);
+	fprintf(outFile, "struct %s {\n",aName);
 	indent++;
 }
 - (void) endStruct
 {
 	indent--;
 	[self indent];
-	printf("}\n");
+	fprintf(outFile, "}\n");
 }
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
 {
-	printf("(Object with ID:%ld)\n",aReference);
+	fprintf(outFile, "(Object with ID:%ld)\n",aReference);
 	[self indent];
-	printf("%s * %s {\n",aClass->name,aName);
+	fprintf(outFile, "%s * %s {\n",aClass->name,aName);
 	indent++;
 }
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName
 {
 	[self indent];
-	printf("id %s=%ld\n",aName,aReference);
+	fprintf(outFile, "id %s=%ld\n",aName,aReference);
 }
 - (void) incrementReferenceCountForObject:(CORef)anObjectID
 {
@@ -71,105 +83,105 @@
 {
 	indent--;
 	[self indent];
-	printf("}\n");
+	fprintf(outFile, "}\n");
 }
 - (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength;
 {
 	[self indent];
-	printf("array %s [%u]{\n",aName, aLength);
+	fprintf(outFile, "array %s [%u]{\n",aName, aLength);
 	indent++;
 }
 - (void) endArray
 {
 	indent--;
 	[self indent];
-	printf("}\n");
+	fprintf(outFile, "}\n");
 }
 
 - (void) storeChar:(char)aChar withName:(char*)aName
 {
 	[self indent];
-	printf("char %s=%c;\n",aName,aChar);
+	fprintf(outFile, "char %s=%c;\n",aName,aChar);
 }
 - (void) storeUnsignedChar:(unsigned char)aChar withName:(char*)aName
 {
 	[self indent];
-	printf("unsigned char %s=%u;\n",aName,(unsigned int)aChar);
+	fprintf(outFile, "unsigned char %s=%u;\n",aName,(unsigned int)aChar);
 }
 - (void) storeShort:(short)aShort withName:(char*)aName
 {
 	[self indent];
-	printf("short %s=%hd;\n",aName,aShort);
+	fprintf(outFile, "short %s=%hd;\n",aName,aShort);
 }
 - (void) storeUnsignedShort:(unsigned short)aShort withName:(char*)aName
 {
 	[self indent];
-	printf("unsigned short %s=%hu;\n",aName,aShort);
+	fprintf(outFile, "unsigned short %s=%hu;\n",aName,aShort);
 }
 - (void) storeInt:(int)aInt withName:(char*)aName
 {
 	[self indent];
-	printf("int %s=%d;\n",aName,aInt);
+	fprintf(outFile, "int %s=%d;\n",aName,aInt);
 }
 - (void) storeUnsignedInt:(unsigned int)aInt withName:(char*)aName
 {
 	[self indent];
-	printf("unsigned int %s=%u;\n",aName,aInt);
+	fprintf(outFile, "unsigned int %s=%u;\n",aName,aInt);
 }
 - (void) storeLong:(long)aLong withName:(char*)aName
 {
 	[self indent];
-	printf("long int %s=%ld;\n",aName,aLong);
+	fprintf(outFile, "long int %s=%ld;\n",aName,aLong);
 }
 - (void) storeUnsignedLong:(unsigned long)aLong withName:(char*)aName
 {
 	[self indent];
-	printf("unsigned long int %s=%lu;\n",aName,aLong);
+	fprintf(outFile, "unsigned long int %s=%lu;\n",aName,aLong);
 }
 - (void) storeLongLong:(long long)aLongLong withName:(char*)aName
 {
 	[self indent];
-	printf("long long int %s=%lld;\n",aName,aLongLong);
+	fprintf(outFile, "long long int %s=%lld;\n",aName,aLongLong);
 }
 - (void) storeUnsignedLongLong:(unsigned long long)aLongLong withName:(char*)aName
 {
 	[self indent];
-	printf("unsigned long int %s=%llu;\n",aName,aLongLong);
+	fprintf(outFile, "unsigned long int %s=%llu;\n",aName,aLongLong);
 }
 - (void) storeFloat:(float)aFloat withName:(char*)aName
 {
 	[self indent];
-	printf("float %s=%f;\n",aName,(double)aFloat);
+	fprintf(outFile, "float %s=%f;\n",aName,(double)aFloat);
 }
 - (void) storeDouble:(double)aDouble withName:(char*)aName
 {
 	[self indent];
-	printf("double %s=%f;\n",aName,aDouble);
+	fprintf(outFile, "double %s=%f;\n",aName,aDouble);
 }
 - (void) storeClass:(Class)aClass withName:(char*)aName
 {
 	[self indent];
-	printf("Class %s=[%s class];\n",aName,aClass->class_pointer->name);
+	fprintf(outFile, "Class %s=[%s class];\n",aName,aClass->class_pointer->name);
 }
 - (void) storeSelector:(SEL)aSelector withName:(char*)aName
 {
 	[self indent];
-	printf("SEL %s=@selector(%s);\n",aName,sel_get_name(aSelector));
+	fprintf(outFile, "SEL %s=@selector(%s);\n",aName,sel_get_name(aSelector));
 }
 - (void) storeCString:(char*)aCString withName:(char*)aName
 {
 	[self indent];
-	printf("char* %s=\"%s\";\n",aName, aCString);
+	fprintf(outFile, "char* %s=\"%s\";\n",aName, aCString);
 }
 - (void) storeData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName
 {
 	[self indent];
-	printf("void * %s = <<", aName);
+	fprintf(outFile, "void * %s = <<", aName);
 	for(unsigned int i=0 ; i<aSize ; i++)
 	{
-		printf("%.2u",(unsigned int)(*(char*)(aBlob++)));
+		fprintf(outFile, "%.2u",(unsigned int)(*(char*)(aBlob++)));
 	}
-	printf(">>;\n");
+	fprintf(outFile, ">>;\n");
 }
 
 - (void) dealloc
@@ -178,9 +190,13 @@
 	NSNumber * key;
 	while((key = [keys nextObject]) != nil)
 	{
-		printf("Object %ld has reference count %ld\n",
+		fprintf(outFile, "Object %ld has reference count %ld\n",
 				[key unsignedIntValue],
 				[[referenceCounts objectForKey:key] unsignedIntValue]);
+	}
+	if(outFile != stdout)
+	{
+		fclose(outFile);
 	}
 	[referenceCounts release];
 	[super dealloc];

@@ -8,7 +8,14 @@ include $(GNUSTEP_MAKEFILES)/common.make
 TOOL_NAME = ETSerialiserTest
 
 # The Objective-C files to compile
-ETSerialiserTest_OBJC_FILES = ETSerialiser.m ETSerialiserBackendExample.m ETSerialiserTest.m ETSerialiserBackendBinaryFile.m ETDeserialiser.m ETDeserialiserBinaryFile.m
+ETSerialiserTest_OBJC_FILES = \
+					ETSerialiser.m\
+				   	ETSerialiserBackendExample.m\
+				   	ETSerialiserTest.m\
+				   	ETSerialiserBackendBinaryFile.m\
+				   	ETDeserialiser.m\
+				   	ETDeserialiserBinaryFile.m\
+					COProxy.m
 
 OBJCFLAGS += -std=c99 -Wall -W -Wunreachable-code -Winline -Werror -Wno-unused -Wno-format -g
 LDFLAGS += -g

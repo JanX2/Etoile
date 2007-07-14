@@ -1,4 +1,5 @@
 #import "COProxy.h"
+#import "ETSerialiser.h"
 
 static const int FULL_SAVE_INTERVAL = 100;
 
@@ -6,20 +7,16 @@ static const int FULL_SAVE_INTERVAL = 100;
 - (id) initWithObject:(id)anObject
            serialiser:(id)aSerialiser
 {
-	if(nil == (self = [super init]))
-	{
-		return nil;
-	}
 	object = [anObject retain];
 	serialiser = [aSerialiser retain];
-	[serialiser serialiseObject:object withName:@"BaseVersion"];
+	[serialiser serialiseObject:object withName:"BaseVersion"];
 	return self;
 }
-– (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
 {
 	    return [object methodSignatureForSelector:aSelector];
 }
-– (void)forwardInvocation:(NSInvocation *)anInvocation
+- (void)forwardInvocation:(NSInvocation *)anInvocation
 {
 	version = [serialiser newVersion];
 	/* Periodically save a full copy */
@@ -27,12 +24,12 @@ static const int FULL_SAVE_INTERVAL = 100;
 	{
 		[anInvocation setTarget:object];
 		[anInvocation invoke];
-		[serialiser serialiseObject:object withName:@"FullSave"];
+		[serialiser serialiseObject:object withName:"FullSave"];
 	}
 	else
 	{
 		[anInvocation setTarget:nil];
-		[serialiser serialiseObject:anInvocation withName:@"Delta"];
+		[serialiser serialiseObject:anInvocation withName:"Delta"];
 		[anInvocation setTarget:object];
 		[anInvocation invoke];
 	}

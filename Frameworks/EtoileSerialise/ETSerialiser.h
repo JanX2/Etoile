@@ -47,6 +47,7 @@ typedef uint32_t CORef;
 	id<ETSerialiserBackend> backend;
 	NSMutableSet * unstoredObjects;
 	NSMutableSet * storedObjects;
+	Class currentClass;
 }
 + (ETSerialiser*) serialiserWithBackend:(Class)aBackend forURL:(NSURL*)anURL;
 - (int) newVersion;

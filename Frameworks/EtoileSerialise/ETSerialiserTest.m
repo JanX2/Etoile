@@ -7,6 +7,7 @@
 #import "ETDeserialiserBinaryFile.h"
 #import "ETSerialiserBackendExample.h"
 #import "ETSerialiserBackendBinaryFile.h"
+#import "COProxy.h"
 
 @interface TestClass : NSObject {
 @public
@@ -109,9 +110,9 @@ void testWithBackend(Class backend, NSURL * anURL)
 
 int main(void)
 {
-	[NSAutoreleasePool new];
+	NSAutoreleasePool * pool = [NSAutoreleasePool new];
 	NSLog(@"Testing serialiser with human-readable output");
-	testWithBackend([ETSerialiserBackendExample class], [NSURL new]);
+	testWithBackend([ETSerialiserBackendExample class], nil);
 	id backend = [ETSerialiserBackendBinaryFile new];
 	NSLog(@"Serialising to binary file...");
 	testWithBackend([ETSerialiserBackendBinaryFile class], [NSURL fileURLWithPath:@"testfile"]);
@@ -121,5 +122,12 @@ int main(void)
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
 	TestClass * bar = [deserialiser restoreObjectGraph];
 	[bar methodTest];
+	
+	NSMutableString * str = [NSMutableString stringWithString:@"A string"];
+	NSMutableString * fake = [[COProxy alloc] initWithObject:str
+												  serialiser:[ETSerialiser serialiserWithBackend:[ETSerialiserBackendExample class] forURL:nil]];
+	[fake appendString:@" containing"];
+	[fake appendString:@" some character."];
+	[pool release];
 	return 0;
 }
