@@ -138,10 +138,10 @@ typedef struct
 			return -1;
 	}
 }
-#define INCREMENT_OFFSET type++; retVal->offset++
-- (parsed_type_size_t*) parseType:(char*) type atAddress:(void*) address withName:(char*) name
+#define INCREMENT_OFFSET type++; retVal.offset++
+- (parsed_type_size_t) parseType:(char*) type atAddress:(void*) address withName:(char*) name
 {
-	parsed_type_size_t * retVal = calloc(sizeof(parsed_type_size_t),1);
+	parsed_type_size_t  retVal;
 	switch(type[0])
 	{
 		case '{':
@@ -162,7 +162,7 @@ typedef struct
 				[backend beginStructNamed:name];
 				//First char after the name
 				type = type + nameEnd + 1;
-				retVal->offset = nameSize + 2;
+				retVal.offset = nameSize + 2;
 				while(*type != '}')
 				{
 					size_t substructSize;
@@ -179,10 +179,9 @@ typedef struct
 						//Skip close "
 						INCREMENT_OFFSET;
 					}
-					parsed_type_size_t *substruct = [self parseType:type atAddress:address withName:"?"];
-					substructSize = substruct->size;
-					type += substruct->offset;
-					free(substruct);
+					parsed_type_size_t substruct = [self parseType:type atAddress:address withName:"?"];
+					substructSize = substruct.size;
+					type += substruct.offset;
 					if(substructSize < WORD_SIZE)
 					{
 						substructSize = WORD_SIZE;
@@ -192,8 +191,8 @@ typedef struct
 				}
 				[backend endStruct];
 //printf("Remainder: %s\n", type);
-				retVal->size = structSize;
-				retVal->offset++;
+				retVal.size = structSize;
+				retVal.offset++;
 				break;
 			}
 		case '[':
@@ -215,26 +214,25 @@ typedef struct
 				memcpy(size, type, sizeLength);
 				elements = strtol(type, NULL, 10);
 				type = sizeEnd;
-				retVal->offset = sizeLength + 2;
+				retVal.offset = sizeLength + 2;
 				
 				[backend beginArrayNamed:name withLength:elements];
-				retVal->size = 0;
+				retVal.size = 0;
 				for(unsigned int i=0 ; i<elements ; i++)
 				{
-					parsed_type_size_t *substruct = [self parseType:type atAddress:address withName:"?"];
-					retVal->size += substruct->size;
-					typeOffset = substruct->offset;
-					address += substruct->size;
-					free(substruct);
+					parsed_type_size_t substruct = [self parseType:type atAddress:address withName:"?"];
+					retVal.size += substruct.size;
+					typeOffset = substruct.offset;
+					address += substruct.size;
 				}
-				retVal->offset += typeOffset;
+				retVal.offset += typeOffset;
 				[backend endArray];
 				break;
 			}
 		case ']':
 			{
-				retVal->size = 0;
-				retVal->offset = 1;
+				retVal.size = 0;
+				retVal.offset = 1;
 				break;
 			}
 		//Ignore type specifiers:
@@ -245,16 +243,15 @@ typedef struct
 		case 'O':
 		case 'V':
 			{
-				parsed_type_size_t *realtype = [self parseType:type+1 atAddress:address withName:name];
-				retVal->offset = realtype->offset + 1;
-				retVal->size = realtype->size;
-				free(realtype);
+				parsed_type_size_t realtype = [self parseType:type+1 atAddress:address withName:name];
+				retVal.offset = realtype.offset + 1;
+				retVal.size = realtype.size;
 				break;
 			}
 		default:
-			retVal->offset = 1;
-			retVal->size = [self storeIntrinsicOfType:type[0] fromAddress:address withName:name];
-			if(retVal->size == (unsigned)-1)
+			retVal.offset = 1;
+			retVal.size = [self storeIntrinsicOfType:type[0] fromAddress:address withName:name];
+			if(retVal.size == (unsigned)-1)
 			{
 				NSLog(@"Unable to serialise %s in %@ (type: %s)", name, currentClass, type);
 			}
@@ -287,7 +284,7 @@ typedef struct
 					if(![anObject serialise:name using:backend])
 					{
 						//TODO: Print the name of the ivar and class if this fails.
-						free([self parseType:type atAddress:address withName:name]);
+						[self parseType:type atAddress:address withName:name];
 					}
 				}
 			}
