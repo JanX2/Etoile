@@ -21,20 +21,8 @@
 		38D54A4B07D51A2A00514CB8 /* Inspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF3FE888A39C02AAC07 /* Inspector.nib */; };
 		38D54A4C07D51A2A00514CB8 /* ToolPalette.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF6FE888A39C02AAC07 /* ToolPalette.nib */; };
 		38D54A4D07D51A2A00514CB8 /* Draw2.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEF9FE888A39C02AAC07 /* Draw2.nib */; };
-		38D54A4E07D51A2A00514CB8 /* Draw2App.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEFDFE888A39C02AAC07 /* Draw2App.tiff */; };
-		38D54A4F07D51A2A00514CB8 /* Curve.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEFEFE888A39C02AAC07 /* Curve.tiff */; };
-		38D54A5007D51A2A00514CB8 /* Draw2File.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECEFFFE888A39C02AAC07 /* Draw2File.tiff */; };
-		38D54A5107D51A2A00514CB8 /* Line.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF00FE888A39C02AAC07 /* Line.tiff */; };
 		38D54A5207D51A2A00514CB8 /* Draw2App.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF01FE888A39C02AAC07 /* Draw2App.icns */; };
-		38D54A5307D51A2A00514CB8 /* Scribble.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF02FE888A39C02AAC07 /* Scribble.tiff */; };
-		38D54A5407D51A2A00514CB8 /* Cross.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF03FE888A39C02AAC07 /* Cross.tiff */; };
-		38D54A5507D51A2A00514CB8 /* Arrow.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF04FE888A39C02AAC07 /* Arrow.tiff */; };
-		38D54A5607D51A2A00514CB8 /* TextGraphic.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF05FE888A39C02AAC07 /* TextGraphic.tiff */; };
-		38D54A5707D51A2A00514CB8 /* Polygon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF06FE888A39C02AAC07 /* Polygon.tiff */; };
-		38D54A5807D51A2A00514CB8 /* Circle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF08FE888A39C02AAC07 /* Circle.tiff */; };
-		38D54A5907D51A2A00514CB8 /* Rectangle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF0AFE888A39C02AAC07 /* Rectangle.tiff */; };
 		38D54A5A07D51A2A00514CB8 /* Draw2File.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */; };
-		38D54A5B07D51A2A00514CB8 /* Pencil.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF0CFE888A39C02AAC07 /* Pencil.tiff */; };
 		38D54A5C07D51A2A00514CB8 /* Sketch.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF0EFE888A39C02AAC07 /* Sketch.scriptTerminology */; };
 		38D54A5D07D51A2A00514CB8 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF10FE888A39C02AAC07 /* Credits.rtf */; };
 		38D54A5E07D51A2A00514CB8 /* Sketch.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = 0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */; };
@@ -65,6 +53,19 @@
 		3B41DB560BE93C160039A82E /* SKTImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B41DB540BE93C160039A82E /* SKTImage.m */; };
 		3B41DB590BE93C1D0039A82E /* SKTRenderingView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B41DB570BE93C1D0039A82E /* SKTRenderingView.h */; };
 		3B41DB5A0BE93C1D0039A82E /* SKTRenderingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B41DB580BE93C1D0039A82E /* SKTRenderingView.m */; };
+		3B6549D40C48623D0056CBD6 /* Draw2App.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549D30C48623D0056CBD6 /* Draw2App.tiff */; };
+		3B6549D70C48625D0056CBD6 /* Arrow.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549D60C48625D0056CBD6 /* Arrow.tiff */; };
+		3B6549DC0C48626D0056CBD6 /* Circle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549DB0C48626D0056CBD6 /* Circle.tiff */; };
+		3B6549DE0C4862730056CBD6 /* Cross.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549DD0C4862730056CBD6 /* Cross.tiff */; };
+		3B6549E00C48627D0056CBD6 /* Curve.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549DF0C48627D0056CBD6 /* Curve.tiff */; };
+		3B6549E20C4862830056CBD6 /* Draw2File.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549E10C4862830056CBD6 /* Draw2File.tiff */; };
+		3B6549EA0C4862900056CBD6 /* Line.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549E30C4862900056CBD6 /* Line.tiff */; };
+		3B6549EB0C4862900056CBD6 /* Pencil.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549E40C4862900056CBD6 /* Pencil.tiff */; };
+		3B6549EC0C4862900056CBD6 /* Polygon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549E50C4862900056CBD6 /* Polygon.tiff */; };
+		3B6549ED0C4862900056CBD6 /* Rectangle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549E60C4862900056CBD6 /* Rectangle.tiff */; };
+		3B6549EE0C4862900056CBD6 /* Scribble.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549E70C4862900056CBD6 /* Scribble.tiff */; };
+		3B6549EF0C4862900056CBD6 /* Sketch.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549E80C4862900056CBD6 /* Sketch.tiff */; };
+		3B6549F00C4862900056CBD6 /* TextGraphic.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 3B6549E90C4862900056CBD6 /* TextGraphic.tiff */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -91,20 +92,8 @@
 		0A3ECEF4FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Inspector.nib; sourceTree = "<group>"; };
 		0A3ECEF7FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ToolPalette.nib; sourceTree = "<group>"; };
 		0A3ECEFBFE888A39C02AAC07 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Draw2.nib; sourceTree = "<group>"; };
-		0A3ECEFDFE888A39C02AAC07 /* Draw2App.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Draw2App.tiff; sourceTree = "<group>"; };
-		0A3ECEFEFE888A39C02AAC07 /* Curve.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Curve.tiff; sourceTree = "<group>"; };
-		0A3ECEFFFE888A39C02AAC07 /* Draw2File.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Draw2File.tiff; sourceTree = "<group>"; };
-		0A3ECF00FE888A39C02AAC07 /* Line.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Line.tiff; sourceTree = "<group>"; };
 		0A3ECF01FE888A39C02AAC07 /* Draw2App.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Draw2App.icns; sourceTree = "<group>"; };
-		0A3ECF02FE888A39C02AAC07 /* Scribble.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Scribble.tiff; sourceTree = "<group>"; };
-		0A3ECF03FE888A39C02AAC07 /* Cross.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Cross.tiff; sourceTree = "<group>"; };
-		0A3ECF04FE888A39C02AAC07 /* Arrow.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Arrow.tiff; sourceTree = "<group>"; };
-		0A3ECF05FE888A39C02AAC07 /* TextGraphic.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TextGraphic.tiff; sourceTree = "<group>"; };
-		0A3ECF06FE888A39C02AAC07 /* Polygon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Polygon.tiff; sourceTree = "<group>"; };
-		0A3ECF08FE888A39C02AAC07 /* Circle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Circle.tiff; sourceTree = "<group>"; };
-		0A3ECF0AFE888A39C02AAC07 /* Rectangle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Rectangle.tiff; sourceTree = "<group>"; };
 		0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Draw2File.icns; sourceTree = "<group>"; };
-		0A3ECF0CFE888A39C02AAC07 /* Pencil.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Pencil.tiff; sourceTree = "<group>"; };
 		0A3ECF0FFE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = English; path = English.lproj/Sketch.scriptTerminology; sourceTree = "<group>"; };
 		0A3ECF11FE888A39C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
 		0A3ECF12FE888A39C02AAC07 /* Sketch.scriptSuite */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sketch.scriptSuite; sourceTree = "<group>"; };
@@ -132,6 +121,19 @@
 		3B41DB540BE93C160039A82E /* SKTImage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTImage.m; sourceTree = SOURCE_ROOT; };
 		3B41DB570BE93C1D0039A82E /* SKTRenderingView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKTRenderingView.h; sourceTree = SOURCE_ROOT; };
 		3B41DB580BE93C1D0039A82E /* SKTRenderingView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTRenderingView.m; sourceTree = SOURCE_ROOT; };
+		3B6549D30C48623D0056CBD6 /* Draw2App.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Draw2App.tiff; path = Resources/Draw2App.tiff; sourceTree = "<group>"; };
+		3B6549D60C48625D0056CBD6 /* Arrow.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Arrow.tiff; path = Resources/Arrow.tiff; sourceTree = "<group>"; };
+		3B6549DB0C48626D0056CBD6 /* Circle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Circle.tiff; path = Resources/Circle.tiff; sourceTree = "<group>"; };
+		3B6549DD0C4862730056CBD6 /* Cross.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Cross.tiff; path = Resources/Cross.tiff; sourceTree = "<group>"; };
+		3B6549DF0C48627D0056CBD6 /* Curve.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Curve.tiff; path = Resources/Curve.tiff; sourceTree = "<group>"; };
+		3B6549E10C4862830056CBD6 /* Draw2File.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Draw2File.tiff; path = Resources/Draw2File.tiff; sourceTree = "<group>"; };
+		3B6549E30C4862900056CBD6 /* Line.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Line.tiff; path = Resources/Line.tiff; sourceTree = "<group>"; };
+		3B6549E40C4862900056CBD6 /* Pencil.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Pencil.tiff; path = Resources/Pencil.tiff; sourceTree = "<group>"; };
+		3B6549E50C4862900056CBD6 /* Polygon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Polygon.tiff; path = Resources/Polygon.tiff; sourceTree = "<group>"; };
+		3B6549E60C4862900056CBD6 /* Rectangle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rectangle.tiff; path = Resources/Rectangle.tiff; sourceTree = "<group>"; };
+		3B6549E70C4862900056CBD6 /* Scribble.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Scribble.tiff; path = Resources/Scribble.tiff; sourceTree = "<group>"; };
+		3B6549E80C4862900056CBD6 /* Sketch.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Sketch.tiff; path = Resources/Sketch.tiff; sourceTree = "<group>"; };
+		3B6549E90C4862900056CBD6 /* TextGraphic.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TextGraphic.tiff; path = Resources/TextGraphic.tiff; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -196,20 +198,21 @@
 		0A3ECEFCFE888A39C02AAC07 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				0A3ECEFDFE888A39C02AAC07 /* Draw2App.tiff */,
+				3B6549D30C48623D0056CBD6 /* Draw2App.tiff */,
 				0A3ECF01FE888A39C02AAC07 /* Draw2App.icns */,
-				0A3ECEFFFE888A39C02AAC07 /* Draw2File.tiff */,
+				3B6549E10C4862830056CBD6 /* Draw2File.tiff */,
 				0A3ECF0BFE888A39C02AAC07 /* Draw2File.icns */,
-				0A3ECF04FE888A39C02AAC07 /* Arrow.tiff */,
-				0A3ECF08FE888A39C02AAC07 /* Circle.tiff */,
-				0A3ECF03FE888A39C02AAC07 /* Cross.tiff */,
-				0A3ECEFEFE888A39C02AAC07 /* Curve.tiff */,
-				0A3ECF00FE888A39C02AAC07 /* Line.tiff */,
-				0A3ECF0CFE888A39C02AAC07 /* Pencil.tiff */,
-				0A3ECF06FE888A39C02AAC07 /* Polygon.tiff */,
-				0A3ECF0AFE888A39C02AAC07 /* Rectangle.tiff */,
-				0A3ECF02FE888A39C02AAC07 /* Scribble.tiff */,
-				0A3ECF05FE888A39C02AAC07 /* TextGraphic.tiff */,
+				3B6549D60C48625D0056CBD6 /* Arrow.tiff */,
+				3B6549DB0C48626D0056CBD6 /* Circle.tiff */,
+				3B6549DD0C4862730056CBD6 /* Cross.tiff */,
+				3B6549DF0C48627D0056CBD6 /* Curve.tiff */,
+				3B6549E30C4862900056CBD6 /* Line.tiff */,
+				3B6549E40C4862900056CBD6 /* Pencil.tiff */,
+				3B6549E50C4862900056CBD6 /* Polygon.tiff */,
+				3B6549E60C4862900056CBD6 /* Rectangle.tiff */,
+				3B6549E70C4862900056CBD6 /* Scribble.tiff */,
+				3B6549E80C4862900056CBD6 /* Sketch.tiff */,
+				3B6549E90C4862900056CBD6 /* TextGraphic.tiff */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -356,24 +359,25 @@
 				38D54A4B07D51A2A00514CB8 /* Inspector.nib in Resources */,
 				38D54A4C07D51A2A00514CB8 /* ToolPalette.nib in Resources */,
 				38D54A4D07D51A2A00514CB8 /* Draw2.nib in Resources */,
-				38D54A4E07D51A2A00514CB8 /* Draw2App.tiff in Resources */,
-				38D54A4F07D51A2A00514CB8 /* Curve.tiff in Resources */,
-				38D54A5007D51A2A00514CB8 /* Draw2File.tiff in Resources */,
-				38D54A5107D51A2A00514CB8 /* Line.tiff in Resources */,
 				38D54A5207D51A2A00514CB8 /* Draw2App.icns in Resources */,
-				38D54A5307D51A2A00514CB8 /* Scribble.tiff in Resources */,
-				38D54A5407D51A2A00514CB8 /* Cross.tiff in Resources */,
-				38D54A5507D51A2A00514CB8 /* Arrow.tiff in Resources */,
-				38D54A5607D51A2A00514CB8 /* TextGraphic.tiff in Resources */,
-				38D54A5707D51A2A00514CB8 /* Polygon.tiff in Resources */,
-				38D54A5807D51A2A00514CB8 /* Circle.tiff in Resources */,
-				38D54A5907D51A2A00514CB8 /* Rectangle.tiff in Resources */,
 				38D54A5A07D51A2A00514CB8 /* Draw2File.icns in Resources */,
-				38D54A5B07D51A2A00514CB8 /* Pencil.tiff in Resources */,
 				38D54A5C07D51A2A00514CB8 /* Sketch.scriptTerminology in Resources */,
 				38D54A5D07D51A2A00514CB8 /* Credits.rtf in Resources */,
 				38D54A5E07D51A2A00514CB8 /* Sketch.scriptSuite in Resources */,
 				38D54A5F07D51A2A00514CB8 /* InfoPlist.strings in Resources */,
+				3B6549D40C48623D0056CBD6 /* Draw2App.tiff in Resources */,
+				3B6549D70C48625D0056CBD6 /* Arrow.tiff in Resources */,
+				3B6549DC0C48626D0056CBD6 /* Circle.tiff in Resources */,
+				3B6549DE0C4862730056CBD6 /* Cross.tiff in Resources */,
+				3B6549E00C48627D0056CBD6 /* Curve.tiff in Resources */,
+				3B6549E20C4862830056CBD6 /* Draw2File.tiff in Resources */,
+				3B6549EA0C4862900056CBD6 /* Line.tiff in Resources */,
+				3B6549EB0C4862900056CBD6 /* Pencil.tiff in Resources */,
+				3B6549EC0C4862900056CBD6 /* Polygon.tiff in Resources */,
+				3B6549ED0C4862900056CBD6 /* Rectangle.tiff in Resources */,
+				3B6549EE0C4862900056CBD6 /* Scribble.tiff in Resources */,
+				3B6549EF0C4862900056CBD6 /* Sketch.tiff in Resources */,
+				3B6549F00C4862900056CBD6 /* TextGraphic.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
