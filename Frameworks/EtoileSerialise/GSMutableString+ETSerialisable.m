@@ -5,12 +5,16 @@
 @implementation GSMutableString (ETSerialisable)
 - (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend
 {
+	if([super serialise:aVariable using:aBackend])
+	{
+		return YES;
+	}
 	if(strcmp(aVariable, "_flags") == 0)
 	{
 		[aBackend storeInt:*(int*)&_flags withName:"_flags"];
 		return YES;
 	}
-	else if(strcmp(aVariable, "_contents") == 0)
+	if(strcmp(aVariable, "_contents") == 0)
 	{
 		if(_flags.wide)
 		{
@@ -26,13 +30,24 @@
 		}
 		return YES;
 	}
+	if(strcmp(aVariable, "_zone") == 0)
+	{
+		//TODO: Make this serialise the zone properly
+		[aBackend storeChar:'Z' withName:"_zone"];
+		return YES;
+	}
 	return NO;
 }
-- (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob
+- (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion
 {
 	if(strcmp(aVariable, "_flags") == 0)
 	{
 		*(int*)&_flags = *(int*)aBlob;
+		return YES;
+	}
+	if(strcmp(aVariable, "_zone") == 0)
+	{
+		_zone = NSDefaultMallocZone();
 		return YES;
 	}
 	/* No deserialisation required for _contents; 

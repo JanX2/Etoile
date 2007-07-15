@@ -33,6 +33,7 @@ typedef struct
 	int stackTop;
 	//Object currently being deserialised
 	id object;
+	int classVersion;
 	int loadedIVar;
 }
 + (ETDeserialiser*) deserialiserWithBackend:(id<ETDeserialiserBackend>)aBackend;
@@ -41,6 +42,7 @@ typedef struct
 //Objects
 - (void) beginObjectWithID:(CORef)aReference withClass:(Class)aClass;
 - (void) endObject;
+- (void) setClassVersion:(int)aVersion;
 - (void) loadObjectReference:(CORef)aReference withName:(char*)aName;
 - (void) setReferenceCountForObject:(CORef)anObjectID to:(int)aRefCount;
 //Nested types

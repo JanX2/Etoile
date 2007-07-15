@@ -133,6 +133,10 @@ enum {
 			LOAD('f', Float, float)
 			LOAD('d', Double, double)
 			LOAD('@', ObjectReference, CORef)
+			case 'V':
+				[deserialiser setClassVersion:*(int*)++obj];
+				obj += sizeof(int);
+				break;
 			case '*':
 				name = ++obj;
 				SKIP_STRING();

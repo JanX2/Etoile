@@ -95,6 +95,10 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 	[deserialiser setBackend:aBackend];
 	return deserialiser;
 }
+- (void) setClassVersion:(int)aVersion
+{
+	classVersion = aVersion;
+}
 - (id) restoreObjectGraph
 {
 	CORef mainObject = [backend principalObject];
@@ -138,7 +142,7 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 }
 #define LOAD_INTRINSIC(type, name) \
 {\
-	if(![object deserialise:aName fromPointer:&aVal])\
+	if(![object deserialise:aName fromPointer:&aVal version:classVersion])\
 	{\
 		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, type);\
 		if(address != NULL)\
@@ -149,7 +153,7 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 }
 - (void) loadObjectReference:(CORef)aReference withName:(char*)aName
 {
-	if(![object deserialise:aName fromPointer:&aName])
+	if(![object deserialise:aName fromPointer:&aName version:classVersion])
 	{
 		if(aReference != 0)
 		{
@@ -228,7 +232,7 @@ LOAD_METHOD(Class, Class)
 LOAD_METHOD(Selector, SEL)
 - (void) loadCString:(char*)aCString withName:(char*)aName
 {
-	if(![object deserialise:aName fromPointer:aCString])
+	if(![object deserialise:aName fromPointer:aCString version:classVersion])
 	{
 		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, sizeof(char*));
 		if(address != NULL)
@@ -239,7 +243,7 @@ LOAD_METHOD(Selector, SEL)
 }
 - (void) loadData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName 
 {
-	if(![object deserialise:aName fromPointer:aBlob])
+	if(![object deserialise:aName fromPointer:aBlob version:classVersion])
 	{
 		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, aSize);
 		if(address != NULL)

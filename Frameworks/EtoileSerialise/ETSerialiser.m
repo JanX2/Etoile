@@ -17,7 +17,7 @@
 {
 	return NO;
 }
-- (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob
+- (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion
 {
 	return NO;
 }
@@ -118,6 +118,8 @@ typedef struct
 		case 'd':
 			[backend storeDouble:*(double*)address withName:name];
 			return sizeof(double);
+		case ':':
+			[backend storeSelector:*(SEL*)address withName:name];
 		case '*':
 			[backend storeCString:*(char**)address withName:name];
 			return sizeof(char*);
@@ -261,6 +263,7 @@ typedef struct
 - (void) serialiseObject:(id)anObject named:(char*)aName
 {
 	//NSLog(@"Starting object %s", aName);
+	int lastVersion = -1;
 	currentClass = anObject->class_pointer;
 	[backend beginObjectWithID:(unsigned long long)(uintptr_t)anObject 
 	                  withName:aName
@@ -271,6 +274,12 @@ typedef struct
 		//NSLog(@"Serialising ivars belonging to class %s", currentClass->name);
 		if(ivarlist != NULL)
 		{
+			int version = [currentClass version];
+			if(version != lastVersion)
+			{
+				lastVersion = version;
+				[backend setClassVersion:[currentClass version]];
+			}
 			for(int i=0 ; i<ivarlist->ivar_count ; i++)
 			{
 				void * address = ((char*)anObject + (ivarlist->ivar_list[i].ivar_offset));

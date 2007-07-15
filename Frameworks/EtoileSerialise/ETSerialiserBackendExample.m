@@ -59,6 +59,11 @@
 	[self indent];
 	fprintf(outFile, "}\n");
 }
+- (void) setClassVersion:(int)aVersion
+{
+	[self indent];
+	fprintf(outFile, "Class has version %d\n", aVersion);
+}
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
 {
 	fprintf(outFile, "(Object with ID:%ld)\n",aReference);

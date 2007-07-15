@@ -8,6 +8,7 @@ typedef uint32_t CORef;
 - (id) initWithURL:(NSURL*)anURL;
 - (int) newVersion;
 //Objects
+- (void) setClassVersion:(int)aVersion;
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass;
 - (void) endObject;
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName;
@@ -40,7 +41,7 @@ typedef uint32_t CORef;
 //Informal protocol for serialisable objects.  Implement this to manually handle unsupported types.
 @interface NSObject (ETSerialisable)
 - (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend;
-- (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob;
+- (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion;
 @end
 
 @interface ETSerialiser : NSObject {

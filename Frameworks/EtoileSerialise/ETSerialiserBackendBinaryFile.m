@@ -120,7 +120,12 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 {
 	WRITE("]", 1);
 }
-
+- (void) setClassVersion:(int)aVersion
+{
+	//TODO: Don't write this more than once per object if the superclass has the same version as the subclass.
+	WRITE("V", 1);
+	WRITE(&aVersion, sizeof(int));
+}
 - (void) storeChar:(char)aChar withName:(char*)aName
 {
 	STORE("c", aChar, char);
