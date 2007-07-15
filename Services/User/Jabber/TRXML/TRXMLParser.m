@@ -254,18 +254,26 @@
 					{
 						if(![tagName isEqualToString:@"!--"])
 						{
-							NS_DURING
+							//Special case for stupid CDATA things.
+							if([tagName isEqualToString:@"<![CDATA["])
 							{
-								//NSLog(@"<%@> (%@)", tagName, openTags);
-								[delegate startElement:tagName attributes:tagAttributes];
+								state = instupidcdata;
 							}
-							NS_HANDLER
+							else
 							{
-								NSLog(@"An exception occured while starting element %@.  Write better code!  Exception: %@", tagName, [localException reason]);	
+								NS_DURING
+								{
+									//NSLog(@"<%@> (%@)", tagName, openTags);
+									[delegate startElement:tagName attributes:tagAttributes];
+								}
+								NS_HANDLER
+								{
+									NSLog(@"An exception occured while starting element %@.  Write better code!  Exception: %@", tagName, [localException reason]);	
+								}
+								NS_ENDHANDLER
+								[openTags addObject:tagName];
+								state = incdata;
 							}
-							NS_ENDHANDLER
-							[openTags addObject:tagName];
-							state = incdata;
 						}
 					}
 					currentChar = [buffer characterAtIndex:currentIndex];
@@ -335,6 +343,39 @@
 				lastSuccessfullyParsed = currentIndex;
 			}
 			state = intag;
+		}
+		else if(state == instupidcdata)
+		{
+			NSString * cdata = CURRENTSTRING;
+			NSRange cdataEnd = [cdata rangeOfString:@"]]>"];
+			if(cdataEnd.location == NSNotFound)
+			{				
+				NS_DURING
+				{
+					[delegate characters:cdata];
+				}
+				NS_HANDLER
+				{
+					NSLog(@"An exception occured while adding CDATA: \n'%@'\n.  Write better code!", cdata);
+				}
+				NS_ENDHANDLER
+			}
+			else
+			{
+				NS_DURING
+				{
+					[delegate characters:[cdata substringToIndex:cdataEnd.location]];
+				}
+				NS_HANDLER
+				{
+					NSLog(@"An exception occured while adding CDATA: \n'%@'\n.  Write better code!", cdata);
+				}
+				NS_ENDHANDLER
+				currentIndex = cdataEnd.location + 3;
+				state = notag;
+			}
+			lastSuccessfullyParsed = currentIndex;
+			
 		}
 	}
 	[buffer setString:@""];
