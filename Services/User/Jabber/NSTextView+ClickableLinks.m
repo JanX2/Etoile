@@ -70,8 +70,16 @@
 			/* Don't do anything for tiny things that look like links. */
 			if(foundRange.length > 4)
 			{
+				NSString * urlString = [string substringWithRange:foundRange];
+				/* Trim brackets */
+				if([urlString characterAtIndex:0] == '('
+						&&
+					[urlString characterAtIndex:[urlString length]-1] == ')')
+				{
+					urlString = [urlString substringWithRange:NSMakeRange(1,[urlString length] -2)];
+				}
 				/* Make a URL from the link text */
-				NSURL * url = [NSURL URLWithString:[string substringWithRange:foundRange]];
+				NSURL * url = [NSURL URLWithString:urlString];
 				
 				NSDictionary * linkAttributes= [NSDictionary dictionaryWithObjectsAndKeys: 
 					url, NSLinkAttributeName,

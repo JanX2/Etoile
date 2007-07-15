@@ -49,6 +49,7 @@
 	return [_items objectAtIndex: row];
 }
 @end
+#endif
 
 NSMutableArray * rosterControllers = nil;
 
