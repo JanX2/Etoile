@@ -37,6 +37,19 @@
 #define RESIZE_ROSTER
 #endif
 
+#ifdef GNUSTEP
+/* Ugly hack to fix a GNUstep bug */
+@implementation NSOutlineView (UglyHack)
+- (id)itemAtRow: (int)row
+{
+	if (row >= [_items count])
+	{
+		return [NSNull null];
+	}
+	return [_items objectAtIndex: row];
+}
+@end
+
 NSMutableArray * rosterControllers = nil;
 
 @implementation RosterController
