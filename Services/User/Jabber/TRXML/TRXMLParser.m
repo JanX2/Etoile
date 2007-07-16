@@ -111,15 +111,6 @@
 		currentChar = [buffer characterAtIndex:start];
 	}
 	SKIPWHITESPACE;
-/*	while([buffer characterAtIndex:start] == '<')
-	{
-		start++;
-	}
-	if([buffer characterAtIndex:start] == '/')
-	{
-		start++;
-	}
-*/	//TODO: Special case for those stupid <![CDATA[ ]]> things.
 //TODO: Parse <?xml and <!DOCTYPE things with this.
 	//get the name
 	currentChar=[buffer characterAtIndex:current];
@@ -127,6 +118,13 @@
 	{
 		current++;
 		currentChar=[buffer characterAtIndex:current];		
+		if(current - start == 8
+			&&
+			[CURRENTSTRING isEqualToString:@"![CDATA["])
+		{
+			[_name setString:CURRENTSTRING];
+			RETURN(SUCCESS);
+		}
 	}
 	[_name setString:CURRENTSTRING];
 	if([_name isEqualToString:@"!--"])
@@ -175,7 +173,7 @@
 {
 //Macro to end parsing neatly if a particular condition is met
 //Invoking this stores the unparsed buffer and returns YES.
-#define ENDPARSINGIF(x) if(x) { [buffer deleteCharactersInRange:NSMakeRange(0,lastSuccessfullyParsed)]; /*NSLog(@"Unparsed: '%@'", buffer);*/return YES;}
+#define ENDPARSINGIF(x) if(x) { [buffer deleteCharactersInRange:NSMakeRange(0,lastSuccessfullyParsed)]; /*NSLog(@"Unparsed: '%@'", buffer);*/ return YES;}
 #define SKIPTO(x) currentIndex = [self parseFrom:currentIndex to:x]; ENDPARSINGIF(currentIndex == -1);
 #define CURRENTSTRING [buffer substringWithRange:NSMakeRange(lastSuccessfullyParsed,currentIndex - lastSuccessfullyParsed)]
 	int currentIndex = 0;
@@ -197,185 +195,196 @@
 		//2) A <!DOCTYPE... tag
 		//3) A root tag.
 		//Currently, we ignore anything other than case 3.
-		if(state == notag)
+		switch (state)
 		{
-			currentIndex = [self ignoreWhiteSpaceFrom:currentIndex];
-			if(currentIndex < 0)
+			case notag:
 			{
-				[buffer setString:@""];
-				return YES;
-			}
-			SKIPTO('<');
-			currentIndex++;
-			state = intag;
-			ENDPARSINGIF(currentIndex >= bufferLength);
-			currentChar = [buffer characterAtIndex:currentIndex];
-			//Case 2.
-			//BUG: <?xml...?> initial tags containing the > tag will break this parser.
-			if(currentChar == '!' || currentChar == '?')
-			{
-				//Skip to the end of the tag
-				SKIPTO('>');
-				state = notag;
-				lastSuccessfullyParsed = currentIndex;
-				currentIndex++;
-			} 
-			else
-			{
-				lastSuccessfullyParsed = currentIndex;
-			}
-		}
-		if(state == intag)
-		{
-			NSMutableString * tagName = [[NSMutableString alloc] init];
-			NSMutableDictionary * tagAttributes = [[NSMutableDictionary alloc] init];
-			BOOL openTag = YES;
-			int parseSuccess;
-			
-			if([buffer characterAtIndex:currentIndex] == '<')
-			{
-				currentIndex++;
-				if(currentIndex >= bufferLength)
+				currentIndex = [self ignoreWhiteSpaceFrom:currentIndex];
+				if(currentIndex < 0)
 				{
-					lastSuccessfullyParsed = currentIndex;
+					[buffer setString:@""];
 					return YES;
 				}
-			}
-			if([buffer characterAtIndex:currentIndex] == '/')
-			{
-				openTag = NO;
+				SKIPTO('<');
 				currentIndex++;
-			}
-			parseSuccess = [self parseTagFrom:&currentIndex named:tagName withAttributes:tagAttributes];
-			switch(parseSuccess)
-			{
-				case SUCCESS:
-					if(openTag)
-					{
-						if(![tagName isEqualToString:@"!--"])
-						{
-							//Special case for stupid CDATA things.
-							if([tagName isEqualToString:@"<![CDATA["])
-							{
-								state = instupidcdata;
-							}
-							else
-							{
-								NS_DURING
-								{
-									//NSLog(@"<%@> (%@)", tagName, openTags);
-									[delegate startElement:tagName attributes:tagAttributes];
-								}
-								NS_HANDLER
-								{
-									NSLog(@"An exception occured while starting element %@.  Write better code!  Exception: %@", tagName, [localException reason]);	
-								}
-								NS_ENDHANDLER
-								[openTags addObject:tagName];
-								state = incdata;
-							}
-						}
-					}
-					currentChar = [buffer characterAtIndex:currentIndex];
-					if(currentChar == '/' || !openTag)
-					{
-						if([openTags count] == 0 || ![[openTags lastObject] isEqualToString:tagName])
-						{
-							state = broken;
-							NSLog(@"Tag %@ closed, but last tag opened was %@.", tagName, [openTags lastObject]);
-							return NO;
-						}
-						[openTags removeLastObject];
-						NS_DURING
-						{
-							//NSLog(@"</%@> (%@)", tagName, openTags);
-							[delegate endElement:tagName];
-						}
-						NS_HANDLER
-						{
-							NSLog(@"An exception (%@) occured while ending element %@.  Write better code!", [localException reason], tagName);
-						}
-						NS_ENDHANDLER
-						currentIndex++;
-						state = notag;
-					}
-					currentIndex--;
+				state = intag;
+				ENDPARSINGIF(currentIndex >= bufferLength);
+				currentChar = [buffer characterAtIndex:currentIndex];
+				//Case 2.
+				//BUG: <?xml...?> initial tags containing the > tag will break this parser.
+				if(currentChar == '!' || currentChar == '?')
+				{
+					//Skip to the end of the tag
 					SKIPTO('>');
-					currentIndex++;
+					state = notag;
 					lastSuccessfullyParsed = currentIndex;
-					break;
-				case TEMPORARYFAILURE:
-					ENDPARSINGIF(YES);
-				case FAILURE:
-					state = broken;
-					return NO;
-				default:
-					NSLog(@"parseTagFrom returned %d, which is just plain wrgon.", parseSuccess);
-					state = broken;
-					return NO;
+					currentIndex++;
+				} 
+				else
+				{
+					lastSuccessfullyParsed = currentIndex;
+				}
+				break;
 			}
-			[tagName release];
-			[tagAttributes release];
-		}
-		else if(state == incdata)
-		{
-			NSString * cdata;
-			SKIPTO('<');
-			if(currentIndex != lastSuccessfullyParsed)
+			case intag:
 			{
-				cdata = CURRENTSTRING;
-				//If cdata contains a > (close tag) then we are parsing nonsense, not XML.
-				if([cdata rangeOfString:@">"].location != NSNotFound)
+				NSMutableString * tagName = [[NSMutableString alloc] init];
+				NSMutableDictionary * tagAttributes = [[NSMutableDictionary alloc] init];
+				BOOL openTag = YES;
+				int parseSuccess;
+				
+				if([buffer characterAtIndex:currentIndex] == '<')
 				{
-					[cdata release];
-					state = broken;
-					return NO;
+					currentIndex++;
+					if(currentIndex >= bufferLength)
+					{
+						lastSuccessfullyParsed = currentIndex;
+						return YES;
+					}
 				}
-				NS_DURING
+				if([buffer characterAtIndex:currentIndex] == '/')
 				{
-					[delegate characters:cdata];
+					openTag = NO;
+					currentIndex++;
 				}
-				NS_HANDLER
+				parseSuccess = [self parseTagFrom:&currentIndex named:tagName withAttributes:tagAttributes];
+				switch(parseSuccess)
 				{
-					NSLog(@"An exception occured while adding CDATA: \n'%@'\n.  Write better code!", cdata);
+					case SUCCESS:
+						if(openTag)
+						{
+							if(![tagName isEqualToString:@"!--"])
+							{
+								//Special case for stupid CDATA things.
+								if([tagName isEqualToString:@"![CDATA["])
+								{
+									lastSuccessfullyParsed = currentIndex;
+									state = instupidcdata;
+									break;
+								}
+								else
+								{
+									NS_DURING
+									{
+										//NSLog(@"<%@> (%@)", tagName, openTags);
+										[delegate startElement:tagName attributes:tagAttributes];
+									}
+									NS_HANDLER
+									{
+										NSLog(@"An exception occured while starting element %@.  Write better code!  Exception: %@", tagName, [localException reason]);	
+									}
+									NS_ENDHANDLER
+									[openTags addObject:tagName];
+									state = incdata;
+								}
+							}
+						}
+						currentChar = [buffer characterAtIndex:currentIndex];
+						if(currentChar == '/' || !openTag)
+						{
+							if([openTags count] == 0 || ![[openTags lastObject] isEqualToString:tagName])
+							{
+								state = broken;
+								NSLog(@"Tag %@ closed, but last tag opened was %@.", tagName, [openTags lastObject]);
+								return NO;
+							}
+							[openTags removeLastObject];
+							NS_DURING
+							{
+								//NSLog(@"</%@> (%@)", tagName, openTags);
+								[delegate endElement:tagName];
+							}
+							NS_HANDLER
+							{
+								NSLog(@"An exception (%@) occured while ending element %@.  Write better code!", [localException reason], tagName);
+							}
+							NS_ENDHANDLER
+							currentIndex++;
+							state = notag;
+						}
+						currentIndex--;
+						SKIPTO('>');
+						currentIndex++;
+						lastSuccessfullyParsed = currentIndex;
+						break;
+					case TEMPORARYFAILURE:
+						ENDPARSINGIF(YES);
+					case FAILURE:
+						state = broken;
+						return NO;
+					default:
+						NSLog(@"parseTagFrom returned %d, which is just plain wrgon.", parseSuccess);
+						state = broken;
+						return NO;
 				}
-				NS_ENDHANDLER
+				[tagName release];
+				[tagAttributes release];
+				break;
+			}
+			case incdata:
+			{
+				NSString * cdata;
+				SKIPTO('<');
+				if(currentIndex != lastSuccessfullyParsed)
+				{
+					cdata = CURRENTSTRING;
+					//If cdata contains a > (close tag) then we are parsing nonsense, not XML.
+					if([cdata rangeOfString:@">"].location != NSNotFound)
+					{
+						[cdata release];
+						state = broken;
+						return NO;
+					}
+					NS_DURING
+					{
+						[delegate characters:cdata];
+					}
+					NS_HANDLER
+					{
+						NSLog(@"An exception occured while adding CDATA: \n'%@'\n.  Write better code!", cdata);
+					}
+					NS_ENDHANDLER
+					lastSuccessfullyParsed = currentIndex;
+				}
+				state = intag;
+				break;
+			}
+			case instupidcdata:
+			{
+				NSString * cdata = [buffer substringFromIndex:lastSuccessfullyParsed];
+				NSRange cdataEnd = [cdata rangeOfString:@"]]>"];
+				if(cdataEnd.location == NSNotFound)
+				{				
+					NS_DURING
+					{
+						[delegate characters:cdata];
+					}
+					NS_HANDLER
+					{
+						NSLog(@"An exception occured while adding CDATA: \n'%@'\n.  Write better code!", cdata);
+					}
+					NS_ENDHANDLER
+					currentIndex = bufferLength;
+				}
+				else
+				{
+					NS_DURING
+					{
+						[delegate characters:[cdata substringToIndex:cdataEnd.location]];
+					}
+					NS_HANDLER
+					{
+						NSLog(@"An exception occured while adding CDATA: \n'%@'\n.  Write better code!", cdata);
+					}
+					NS_ENDHANDLER
+					currentIndex += cdataEnd.location + 3;
+					state = notag;
+				}
 				lastSuccessfullyParsed = currentIndex;
+				break;
 			}
-			state = intag;
-		}
-		else if(state == instupidcdata)
-		{
-			NSString * cdata = CURRENTSTRING;
-			NSRange cdataEnd = [cdata rangeOfString:@"]]>"];
-			if(cdataEnd.location == NSNotFound)
-			{				
-				NS_DURING
-				{
-					[delegate characters:cdata];
-				}
-				NS_HANDLER
-				{
-					NSLog(@"An exception occured while adding CDATA: \n'%@'\n.  Write better code!", cdata);
-				}
-				NS_ENDHANDLER
-			}
-			else
-			{
-				NS_DURING
-				{
-					[delegate characters:[cdata substringToIndex:cdataEnd.location]];
-				}
-				NS_HANDLER
-				{
-					NSLog(@"An exception occured while adding CDATA: \n'%@'\n.  Write better code!", cdata);
-				}
-				NS_ENDHANDLER
-				currentIndex = cdataEnd.location + 3;
-				state = notag;
-			}
-			lastSuccessfullyParsed = currentIndex;
-			
+			default:
+				NSLog(@"Parser in undefined state.");
 		}
 	}
 	[buffer setString:@""];
