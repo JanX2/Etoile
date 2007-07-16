@@ -25,6 +25,8 @@ int main(int argc, char ** argv)
 {
 	[NSAutoreleasePool new];
 	TRXMLParser * parser = [TRXMLParser parserWithContentHandler:[ParserTest new]];
+	//Uncomment to test parser as an SGML parser.
+	//[parser setMode:sgml];
 	for(unsigned int i=1 ; i<argc ; i++)
 	{
 		[parser parseFromSource:[NSString stringWithCString:argv[i]]];

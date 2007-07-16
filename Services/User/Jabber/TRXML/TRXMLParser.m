@@ -31,6 +31,7 @@
 	delegate = nil;
 	buffer = [[NSMutableString stringWithString:@""] retain];
 	openTags = [[NSMutableArray alloc] init];
+	mode = xml;
 	state = notag;
 	return [super init];
 }
@@ -274,7 +275,10 @@
 										NSLog(@"An exception occured while starting element %@.  Write better code!  Exception: %@", tagName, [localException reason]);	
 									}
 									NS_ENDHANDLER
-									[openTags addObject:tagName];
+									if(mode == xml)
+									{
+										[openTags addObject:tagName];
+									}
 									state = incdata;
 								}
 							}
@@ -282,13 +286,16 @@
 						currentChar = [buffer characterAtIndex:currentIndex];
 						if(currentChar == '/' || !openTag)
 						{
-							if([openTags count] == 0 || ![[openTags lastObject] isEqualToString:tagName])
+							if(mode == xml)
 							{
-								state = broken;
-								NSLog(@"Tag %@ closed, but last tag opened was %@.", tagName, [openTags lastObject]);
-								return NO;
+								if([openTags count] == 0 || ![[openTags lastObject] isEqualToString:tagName])
+								{
+									state = broken;
+									NSLog(@"Tag %@ closed, but last tag opened was %@.", tagName, [openTags lastObject]);
+									return NO;
+								}
+								[openTags removeLastObject];
 							}
-							[openTags removeLastObject];
 							NS_DURING
 							{
 								//NSLog(@"</%@> (%@)", tagName, openTags);
@@ -393,5 +400,8 @@
 #undef ENDPARSINGIF
 #undef SKIPTO
 }
-
+- (void) setMode:(enum MarkupLanguage)aMode
+{
+	mode = aMode;
+}
 @end

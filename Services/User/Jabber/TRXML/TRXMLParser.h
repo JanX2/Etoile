@@ -23,6 +23,7 @@
 	int depth;
 	NSMutableArray * openTags;
 	enum {notag, intag, inattribute, incdata, instupidcdata, incomment, broken} state;
+	enum MarkupLanguage {xml, sgml}  mode;
 }
 /**
  * Create a new parser with the specified delegate.
@@ -44,4 +45,10 @@
  * NO if an error occurs while parsing.
  */
 - (BOOL) parseFromSource:(NSString*) data;
+/**
+ * Switch between parsing modes.  Acceptable values are xml and sgml.  When in
+ * SGML mode, open tags do not have to have corresponding closing tags, allowing
+ * things like &lt;br&gt; to exist.  XML is the default.
+ */
+- (void) setMode:(enum MarkupLanguage)aMode;
 @end
