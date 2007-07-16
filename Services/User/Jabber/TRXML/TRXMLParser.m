@@ -31,7 +31,7 @@
 	delegate = nil;
 	buffer = [[NSMutableString stringWithString:@""] retain];
 	openTags = [[NSMutableArray alloc] init];
-	mode = xml;
+	mode = PARSER_MODE_XML;
 	state = notag;
 	return [super init];
 }
@@ -275,7 +275,7 @@
 										NSLog(@"An exception occured while starting element %@.  Write better code!  Exception: %@", tagName, [localException reason]);	
 									}
 									NS_ENDHANDLER
-									if(mode == xml)
+									if(mode == PARSER_MODE_XML)
 									{
 										[openTags addObject:tagName];
 									}
@@ -286,7 +286,7 @@
 						currentChar = [buffer characterAtIndex:currentIndex];
 						if(currentChar == '/' || !openTag)
 						{
-							if(mode == xml)
+							if(mode == PARSER_MODE_XML)
 							{
 								if([openTags count] == 0 || ![[openTags lastObject] isEqualToString:tagName])
 								{
