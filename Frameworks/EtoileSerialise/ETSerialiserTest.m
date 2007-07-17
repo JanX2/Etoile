@@ -34,6 +34,7 @@
 	NSString * anotherReferenceToTheSameString;
 	NSNumber * aNumber;
 	NSNumber * theSameNumber;
+	NSData * aData;
 	int * aPointer;
 }
 @end
@@ -52,6 +53,7 @@
 	aDouble = 67.890;
 	aStruct.intInStruct = 12;
 	aStruct.boolInStruct = YES;
+	aData = [[NSData dataWithBytes:"this is a bit of data" length:22] retain];
 	/*
 	aStruct.floatArrayInStruct[0] = -0.0f;
 	aStruct.floatArrayInStruct[1] = -0.1f;

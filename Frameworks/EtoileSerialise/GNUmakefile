@@ -13,10 +13,13 @@ ETSerialiserTest_OBJC_FILES = \
 				   	ETSerialiserBackendExample.m\
 				   	ETSerialiserTest.m\
 				   	ETSerialiserBackendBinaryFile.m\
+					ETSerialiserNullBackend.m\
 				   	ETDeserialiser.m\
 				   	ETDeserialiserBinaryFile.m\
 					COProxy.m\
-					GSMutableString+ETSerialisable.m
+					GSMutableString+ETSerialisable.m\
+					NSMallocData+ETSerialisable.m\
+					NSInvocation+ETSerialisable.m
 
 OBJCFLAGS += -std=c99 -Wall -W -Wunreachable-code -Winline -Werror -Wno-unused -Wno-format -g
 LDFLAGS += -g

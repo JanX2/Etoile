@@ -30,12 +30,13 @@
 		}
 		return YES;
 	}
+	/*
 	if(strcmp(aVariable, "_zone") == 0)
 	{
 		//TODO: Make this serialise the zone properly
 		[aBackend storeChar:'Z' withName:"_zone"];
 		return YES;
-	}
+	}*/
 	return NO;
 }
 - (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion
@@ -45,11 +46,13 @@
 		*(int*)&_flags = *(int*)aBlob;
 		return YES;
 	}
+	/*
 	if(strcmp(aVariable, "_zone") == 0)
 	{
 		_zone = NSDefaultMallocZone();
 		return YES;
 	}
+	*/
 	/* No deserialisation required for _contents; 
 	 * blobs are automatically restored as-is */
 	return NO;

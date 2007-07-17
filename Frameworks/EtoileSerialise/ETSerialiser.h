@@ -14,6 +14,7 @@ typedef uint32_t CORef;
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName;
 - (void) incrementReferenceCountForObject:(CORef)anObjectID;
 //Nested types
+//- (void) beginStruct:(char*)aStructName Named:(char*)aName shouldMalloc:(BOOL)aFlag;
 - (void) beginStructNamed:(char*)aName;
 - (void) endStruct;
 - (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength;
@@ -44,12 +45,20 @@ typedef uint32_t CORef;
 - (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion;
 @end
 
+typedef struct 
+{
+	size_t size;
+	unsigned int offset;
+} parsed_type_size_t;
+typedef parsed_type_size_t(*custom_serialiser)(char*,void*, id<ETSerialiserBackend>,BOOL);
+
 @interface ETSerialiser : NSObject {
 	id<ETSerialiserBackend> backend;
 	NSMutableSet * unstoredObjects;
 	NSMutableSet * storedObjects;
 	Class currentClass;
 }
++ (void) registerSerialiser:(custom_serialiser)aFunction forStruct:(char*)aName;
 + (ETSerialiser*) serialiserWithBackend:(Class)aBackend forURL:(NSURL*)anURL;
 - (int) newVersion;
 - (unsigned long long) serialiseObject:(id)anObject withName:(char*)aName;

@@ -44,8 +44,8 @@
 }
 - (int) newVersion
 {
-	fprintf(outFile, "\nNext version:\n\n");
-	return ++version;
+	fprintf(outFile, "\nVersion %d:\n\n", ++version);
+	return version;
 }
 - (void) beginStructNamed:(char*)aName
 {

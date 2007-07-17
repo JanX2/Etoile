@@ -1,9 +1,19 @@
-#import "ETSerialiser.h"
 #include <stdlib.h>
 #include <ctype.h>
 #include <objc/objc.h>
 #include <objc/objc-api.h>
 #include <objc/Object.h>
+#import "ETSerialiser.h"
+#import "ETSerialiserNullBackend.h"
+
+//TODO: Put this in the Makefile
+//#define WARN_IF_GUESS
+
+#ifdef WARN_IF_GUESS
+#define GUESSWARN NSLog
+#else
+#define GUESSWARN(...)
+#endif
 
 @implementation Object (UglyHack)
 - (BOOL)isKindOfClass:(Class)aClass
@@ -25,13 +35,52 @@
 
 //Must be set to the size along which things are aligned.
 const unsigned int WORD_SIZE = sizeof(int);
-typedef struct 
+
+id nullBackend;
+
+static NSMapTable * serialiserFunctions;
+
+unsigned simpleStringHash(NSMapTable *table, const void *anObject)
 {
-	size_t size;
-	unsigned int offset;
-} parsed_type_size_t;
+	if(strlen(anObject) > 3)
+	{
+		return *(unsigned *)anObject;
+	}
+	return 0;
+}
+BOOL isCStringEqual(NSMapTable *table, const void * str1, const void * str2)
+{
+	return strcmp(str1, str2) == 0;
+}
+
+parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id<ETSerialiserBackend> aBackend, BOOL shouldMalloc)
+{
+	//Just a placeholder to be used to trigger the reloading function
+	NSLog(@"Serialising NSZone");
+	[aBackend storeChar:'Z' withName:aName];
+	parsed_type_size_t retVal;
+	retVal.size = 1;
+	retVal.offset = strlen(@encode(NSZone));
+	return retVal;
+}
 
 @implementation ETSerialiser
++ (void) initialize
+{
+	[super initialize];
+	/* Null backend we can reuse */
+	nullBackend = [[ETSerialiserNullBackend alloc] init];
+	const NSMapTableKeyCallBacks keycallbacks = {simpleStringHash, isCStringEqual, NULL, NULL, NULL, NSNotAnIntMapKey};
+	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
+	serialiserFunctions = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
+	/* Custom serialisers for known types */
+	[self registerSerialiser:serialiseNSZone forStruct:"_NSZone"];
+	[self registerSerialiser:serialiseNSZone forStruct:"NSZone"];
+}
++ (void) registerSerialiser:(custom_serialiser)aFunction forStruct:(char*)aName
+{
+	NSMapInsert(serialiserFunctions, aName, (void*)aFunction);
+}
 - (void) setBackend:(id<ETSerialiserBackend>)aBackend
 {
 	ASSIGN(backend, aBackend);
@@ -120,14 +169,11 @@ typedef struct
 			return sizeof(double);
 		case ':':
 			[backend storeSelector:*(SEL*)address withName:name];
+			return sizeof(SEL);
 		case '*':
+			GUESSWARN(@"WARNING: Guessing that %s in %@ is NULL-terminated", name, currentClass);
 			[backend storeCString:*(char**)address withName:name];
 			return sizeof(char*);
-		case '^':
-			//printf("Pointer types not yet supported\n");
-			return -1;
-			//[backend storeData:*(void**)address ofSize:_msize(*(void**)address) withName:name];
-			//return sizeof(void*);
 		case '@':
 			if(*(id*)address != nil)
 			{
@@ -141,6 +187,35 @@ typedef struct
 	}
 }
 #define INCREMENT_OFFSET type++; retVal.offset++
+#define PARSE_STRUCT_BODY() \
+				size_t structSize = 0;\
+				while(*type != '}')\
+				{\
+					size_t substructSize;\
+					/*Skip over the name of struct members.  We don't care about them. */\
+					if(*type == '"')\
+					{\
+						/*Skip open " */\
+						INCREMENT_OFFSET;\
+						/*Skip name */\
+						while(*type != '"')\
+						{\
+							INCREMENT_OFFSET;\
+						}\
+						/* Skip close " */\
+						INCREMENT_OFFSET;\
+					}\
+					parsed_type_size_t substruct = [self parseType:type atAddress:address withName:"?"];\
+					substructSize = substruct.size;\
+					type += substruct.offset;\
+					if(substructSize < WORD_SIZE)\
+					{\
+						substructSize = WORD_SIZE;\
+					}\
+					address += substructSize;\
+					structSize += substructSize;\
+				}
+
 - (parsed_type_size_t) parseType:(char*) type atAddress:(void*) address withName:(char*) name
 {
 	parsed_type_size_t  retVal;
@@ -148,49 +223,31 @@ typedef struct
 	{
 		case '{':
 			{
-//printf("Parsing %s\n", type);
-				size_t structSize = 0;
+				//NSLog(@"Parsing %s\n", type);
 				unsigned int nameEnd = 1;
 				unsigned int nameSize = 0;
-				char * structName;
+				type++;
 				while(type[nameEnd] != '=')
 				{
 					nameEnd++;
 				}
 				//Give the length of the string now
-				nameSize = nameEnd - 1;
-				//TODO: Use the struct name to allow type encodings to be specified for opaque types.
-				//printf("Parsing struct...\n");
+				nameSize = nameEnd;
+				char structName[nameSize + 1];
+				memcpy(structName, type, nameSize);
+				structName[nameSize] = '\0';
+				custom_serialiser function = NSMapGet(serialiserFunctions, structName);
+				if(function != NULL)
+				{
+					retVal = function(name, address, backend, NO);
+					break;
+				}
+				
 				[backend beginStructNamed:name];
 				//First char after the name
-				type = type + nameEnd + 1;
+				type += nameSize + 1;
 				retVal.offset = nameSize + 2;
-				while(*type != '}')
-				{
-					size_t substructSize;
-					//Skip over the name of struct members.  We don't care about them.
-					if(*type == '"')
-					{
-						//Skip open "
-						INCREMENT_OFFSET;
-						//Skip name
-						while(*type != '"')
-						{
-							INCREMENT_OFFSET;
-						}
-						//Skip close "
-						INCREMENT_OFFSET;
-					}
-					parsed_type_size_t substruct = [self parseType:type atAddress:address withName:"?"];
-					substructSize = substruct.size;
-					type += substruct.offset;
-					if(substructSize < WORD_SIZE)
-					{
-						substructSize = WORD_SIZE;
-					}
-					address += substructSize;
-					structSize += substructSize;
-				}
+				PARSE_STRUCT_BODY();
 				[backend endStruct];
 //printf("Remainder: %s\n", type);
 				retVal.size = structSize;
@@ -229,6 +286,45 @@ typedef struct
 				}
 				retVal.offset += typeOffset;
 				[backend endArray];
+				break;
+			}
+		case '^':
+			{
+				if(type[1] == '{')
+				{
+					/* Get the size of the pointed structute */
+					id realBackend = backend;
+					backend = nullBackend;
+					parsed_type_size_t indirect = [self parseType:type + 1 atAddress:address withName:name];
+					backend = realBackend;
+					unsigned int nameEnd = 2;
+					while(type[nameEnd] != '=')
+					{
+						nameEnd++;
+					}
+					nameEnd -= 2;
+					//Give the length of the string now
+					char structName[nameEnd + 1];
+					memcpy(structName, type + 2, nameEnd);
+					structName[nameEnd] = '\0';
+					custom_serialiser function = NSMapGet(serialiserFunctions, structName);
+					if(function != NULL)
+					{
+						retVal = function(name, address, backend, YES);
+						break;
+					}
+					else if((int)indirect.size >= 0)
+					{
+						GUESSWARN(@"WARNING: Guessing that %s in %@ is not an array.  If it is, you need to serialise it manually.", name, currentClass);
+						type += nameEnd + 3;
+						retVal.offset += nameEnd + 3;
+						NSLog(@"Begin struct pointer");
+						PARSE_STRUCT_BODY();
+						NSLog(@"End struct pointer");
+					}
+				}
+				retVal.size = (unsigned)-1;
+				NSLog(@"Unable to serialise %s in %@ (type: %s)", name, currentClass, type);
 				break;
 			}
 		case ']':
