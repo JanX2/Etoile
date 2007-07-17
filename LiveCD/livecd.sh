@@ -25,7 +25,7 @@ do
       echo "$0: Script to build, test and generate Etoile LiveCD"
       echo "Do nothing by default, you must specify at least one option like --livecd"
       echo
-      echo "Options:"
+      echo "Actions:"
       echo "      --help      - Print help"
       echo "  -l, --livecd    - Create Etoile LiveCD iso from scratch by taking care of all"
       echo "                    steps. Shortcut to livecd.sh --prepare -- build --cleanup "
@@ -35,7 +35,7 @@ do
       echo "                    customization"
       echo "  -b, --build     - Build and set up Etoile Environment by downloading and "
       echo "                    compiling all dependencies"
-      echo "  -s, --shrink    - Reduce LiveCD size by removing as many packages as possible, "
+      echo "  -s, --shrink    - Reduce LiveCD size by removing as many packages as possible,"
       echo "                    mostly GNOME stuff but many unrelated elements too."
       echo "  -g, --generate  - Generate Etoile LiveCD iso by compressing customized LiveCD "
       echo "                    directory"
@@ -46,6 +46,23 @@ do
       echo "                    launching GDM. Run on DISPLAY=:0.9 by default"
       echo "  -c, --cleanup   - Clean up LiveCD environment of every testing specific "
       echo "                    settings and user preferences/defaults"
+      echo
+      echo "Options:"
+      echo "  --livcd-dir             - Name of the directory inside which the LiveCD build "
+      echo "                            will happen (default: \$PWD/live)"
+      echo "  --ubuntu-image          - Path to the original Ubuntu LiveCD image if you want"
+      echo "                            not to download it or use you own and not the one "
+      echo "                            located inside LiveCD build directory "
+      echo "                            (default: livecd-dir/ubuntu-7.04-desktop-i386.iso "
+      echo
+      echo "  --etoile-livecd-name    - Name of the LiveCD volume you get when you mount the"
+      echo "                            image (default: Etoile LiveCD 0.2)"
+      echo "  --etoile-image-name     - Name of the LiveCD image file you get by running "
+      echo "                            --generate (default: etoile.iso)"
+      echo "  --etoile-user-name      - Login used to login in LiveCD account "
+      echo "                            (default: guest)"
+      echo "  --etoile-user-password  - Password used to login in LiveCD account "
+      echo "                            (default: guest)"
       echo
       exit 0
       ;;
