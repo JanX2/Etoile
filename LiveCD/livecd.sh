@@ -28,7 +28,8 @@ do
       echo "Options:"
       echo "      --help      - Print help"
       echo "  -l, --livecd    - Create Etoile LiveCD iso from scratch by taking care of all"
-      echo "                    steps. Shortcut to livecd.sh --prepare -- build --generate"
+      echo "                    steps. Shortcut to livecd.sh --prepare -- build --cleanup "
+      echo "                   --shrink --generate"
       echo
       echo "  -p, --prepare   - Download Ubuntu LiveCD, mount and extract to be ready for "
       echo "                    customization"
@@ -150,8 +151,6 @@ if [ $SCRIPT_DEBUG = yes ]; then
 	echo "TEST: $TEST"
 	echo
 fi
-
-return
 
 if [ $PREPARE = yes ]; then
 	$SUBSCRIPT_DIR/livecd-prepare.sh;
