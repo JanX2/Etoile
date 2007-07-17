@@ -7,6 +7,7 @@ SCRIPT_DEBUG=yes
 # Default values for script stages
 PREPARE=no
 BUILD=no
+SHRINK=no
 GENERATE=no
 EDIT=no
 TEST=no
@@ -33,6 +34,8 @@ do
       echo "                    customization"
       echo "  -b, --build     - Build and set up Etoile Environment by downloading and "
       echo "                    compiling all dependencies"
+      echo "  -s, --shrink    - Reduce LiveCD size by removing as many packages as possible, "
+      echo "                    mostly GNOME stuff but many unrelated elements too."
       echo "  -g, --generate  - Generate Etoile LiveCD iso by compressing customized LiveCD "
       echo "                    directory"
       echo
@@ -46,11 +49,13 @@ do
       exit 0
       ;;
     --livecd | -l)
-      PREPARE=yes; BUILD=yes; GENERATE=yes;;
+      PREPARE=yes; BUILD=yes; CLEANUP=yes; SHRINK=yes; GENERATE=yes;;
     --prepare | -p)
       PREPARE=yes;;
     --build | -b)
       BUILD=yes;;
+    --shrink | -s)
+      SHRINK=yes;;
     --generate | -g)
       GENERATE=yes;;
     --edit | -e)
@@ -117,6 +122,8 @@ checkVar ()
 # Script Customization Variables
 #
 
+echo
+
 # For example ~/live
 checkVar LIVECD_DIR "$PWD/live";
 
@@ -136,27 +143,41 @@ checkVar SUBSCRIPT_DIR "./Subscripts"
 # Script Action
 #
 
-if [ PREPARE = yes ]; then
-	#$SUBSCRIPT_DIR/livecd-prepare.sh
+if [ $SCRIPT_DEBUG = yes ]; then
+	echo
+	echo "PREPARE: $PREPARE, BUILD: $BUILD, SHRINK: $SHRINK, CLEANUP = $CLEANUP, GENERATE: $GENERATE"
+	echo "EDIT: $EDIT"
+	echo "TEST: $TEST"
+	echo
 fi
 
-if [ EDIT = yes ]; then
-	#$SUBSCRIPT_DIR/livecd-edit.sh
+return
+
+if [ $PREPARE = yes ]; then
+	$SUBSCRIPT_DIR/livecd-prepare.sh;
 fi
 
-if [ BUILD = yes ]; then
-	#$SUBSCRIPT_DIR/livecd-build.sh
+if [ $EDIT = yes ]; then
+	$SUBSCRIPT_DIR/livecd-edit.sh;
 fi
 
-if [ CLEANUP = yes ]; then
-	#$SUBSCRIPT_DIR/livecd-cleanup.sh
+if [ $BUILD = yes ]; then
+	$SUBSCRIPT_DIR/livecd-build.sh;
 fi
 
-if [ GENERATE = yes ]; then
-	#$SUBSCRIPT_DIR/livecd-generate.sh
+if [ $SHRINK = yes ]; then
+	$SUBSCRIPT_DIR/livecd-build.sh;
 fi
 
-if [ TEST = yes ]; then
-	#$SUBSCRIPT_DIR/livecd-test.sh
+if [ $CLEANUP = yes ]; then
+	$SUBSCRIPT_DIR/livecd-cleanup.sh;
+fi
+
+if [ $GENERATE = yes ]; then
+	$SUBSCRIPT_DIR/livecd-generate.sh;
+fi
+
+if [ $TEST = yes ]; then
+	$SUBSCRIPT_DIR/livecd-test.sh;
 fi
 
