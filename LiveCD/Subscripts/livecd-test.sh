@@ -8,6 +8,8 @@ sudo cp /etc/X11/xorg.conf edit/etc/X11/
 sudo mount -t proc -o bind /proc edit/proc
 sudo mount -t dev -o bind /dev edit/dev
 sudo chroot edit /bin/bash
+export DISPLAY=:0.9
+/etc/init.d/gdm start
 #mount -t proc none /proc
 #mount -t sysfs none /sys
 #export HOME=/etc/skel/

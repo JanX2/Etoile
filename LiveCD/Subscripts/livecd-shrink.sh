@@ -46,6 +46,22 @@ dpkg --list | grep ^rc | awk '{print $2}'
 # To be sure some critical packages haven't been removed during the last step
 apt-get -y install locales ssh firefox #language-pack-en-base
 
+# On firefox install at this point, apt-get reports:
+#The following extra packages will be installed:
+#  libhunspell-1.1-0 libnspr4 libnss3
+#Suggested packages:
+#  firefox-gnome-support latex-xft-fonts firefox-libthai
+#The following NEW packages will be installed:
+#  firefox libhunspell-1.1-0 libnspr4 libnss3
+#
+# On shh install:
+#The following extra packages will be installed:
+#  openssh-server
+#Suggested packages:
+#  ssh-askpass rssh molly-guard
+#The following NEW packages will be installed:
+#  openssh-server ssh
+
 apt-get check
 
 #ubiquity
