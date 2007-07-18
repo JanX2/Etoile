@@ -35,6 +35,7 @@ typedef struct
 	id object;
 	int classVersion;
 	int loadedIVar;
+	NSMutableArray * loadedObjectList;
 }
 + (ETDeserialiser*) deserialiserWithBackend:(id<ETDeserialiserBackend>)aBackend;
 - (void) setBackend:(id<ETDeserialiserBackend>)aBackend;

@@ -82,6 +82,7 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 	//change 100 to a more sensible value
 	loadedObjects = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 	objectPointers = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
+	loadedObjectList = [[NSMutableArray alloc] init];
 	return self;
 }
 - (void) setBackend:(id<ETDeserialiserBackend>)aBackend
@@ -122,6 +123,13 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 		NSEndMapTableEnumeration(&enumerator);
 		enumerator = NSEnumerateMapTable(objectPointers);
 	}
+	NSEnumerator * finishedEnumerator = [loadedObjectList objectEnumerator];
+	id finishedObject;
+	while((finishedObject = [finishedEnumerator nextObject]) != nil)
+	{
+		[finishedObject finishedDeserialising];
+	}
+	[loadedObjectList removeAllObjects];
 	return GET_OBJ(mainObject);
 }
 //Objects
@@ -134,10 +142,9 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 }
 - (void) endObject 
 {
-	//TODO: Call using the returned IMP
 	if(class_get_instance_method(object->class_pointer, @selector(finishedDeserialising)))
 	{
-		[object finishedDeserialising];
+		[loadedObjectList addObject:object];
 	}
 }
 #define LOAD_INTRINSIC(type, name) \
@@ -257,6 +264,7 @@ LOAD_METHOD(Selector, SEL)
 {
 	NSFreeMapTable(loadedObjects);
 	[backend release];
+	[loadedObjectList release];
 	[super dealloc];
 }
 @end

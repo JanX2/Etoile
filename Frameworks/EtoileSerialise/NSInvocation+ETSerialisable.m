@@ -29,7 +29,7 @@ void serialiseArgumentInfos(NSArgumentInfo * sig, unsigned int count, char * nam
 #define LOAD_FIELD(type, field) if(strcmp(name, #field) == 0) { sig->field = *(type*)aBlob; return; }
 void deserialiseArgumentInfo(NSArgumentInfo * sig, char * name, void * aBlob)
 {
-	//Get the element in the array we need
+	//Get the element in the array we need (same ugly hack in reverse)
 	sig += name[1] - 060;
 	//Get the field name
 	char * aVariable = name + 3;
@@ -85,7 +85,11 @@ static int discardRetValSize = 0;
 		[aBackend storeInt:0 withName:aVariable];
 		return YES;
 	}
-			
+	CASE(_cframe)
+	{
+		//Save the arguments later
+		return YES;
+	}
 	return [super serialise:aVariable using:aBackend];
 }
 - (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion 
@@ -102,6 +106,10 @@ static int discardRetValSize = 0;
 		//deeply wrong so I don't mind breaking your code for now.
 		_retval = discardRetVal;
 		return YES;
+	}
+	CASE(_info)
+	{
+		deserialiseArgumentInfo(_info, aVariable + 5, aBlob);
 	}
 	return [super deserialise:aVariable fromPointer:aBlob version:aVersion];
 }

@@ -216,7 +216,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id<ETSerialiserBack
 					structSize += substructSize;\
 				}
 
-- (parsed_type_size_t) parseType:(char*) type atAddress:(void*) address withName:(char*) name
+- (parsed_type_size_t) parseType:(const char*) type atAddress:(void*) address withName:(char*) name
 {
 	parsed_type_size_t  retVal;
 	switch(type[0])
@@ -261,7 +261,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id<ETSerialiserBack
 				unsigned int typeOffset = 0;
 				//Get the number of array elements:
 				type++;
-				char * sizeEnd = type;
+				char * sizeEnd = (char*)type;
 				unsigned int sizeLength = 0;
 				while(isdigit((int)*sizeEnd))
 				{
@@ -393,6 +393,20 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id<ETSerialiserBack
 						[self parseType:type atAddress:address withName:name];
 					}
 				}
+			}
+		}
+		//Special handling for invocation
+		if(strcmp(currentClass->name, "NSInvocation") == 0)
+		{
+			NSMethodSignature * sig = [anObject methodSignature];
+			char name[6] = {'a','r','g','.','\0','\0'};
+			//FIXME: Calculate the size sensibly and don't use a horribly insecure stack-buffer
+			char buffer[1024];
+			for(unsigned int i=2 ; i<[sig numberOfArguments] ; i++)
+			{
+				name[4] = i + 060;
+				[anObject getArgument:buffer atIndex:i];
+				[self parseType:[sig getArgumentTypeAtIndex:i] atAddress:buffer withName:name];
 			}
 		}
 		currentClass = currentClass->super_class;
