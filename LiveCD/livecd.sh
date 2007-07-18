@@ -26,6 +26,7 @@ do
       echo "Do nothing by default, you must specify at least one option like --livecd"
       echo
       echo "Actions:"
+      echo
       echo "      --help      - Print help"
       echo "  -l, --livecd    - Create Etoile LiveCD iso from scratch by taking care of all"
       echo "                    steps. Shortcut to livecd.sh --prepare -- build --cleanup "
@@ -47,7 +48,10 @@ do
       echo "  -c, --cleanup   - Clean up LiveCD environment of every testing specific "
       echo "                    settings and user preferences/defaults"
       echo
-      echo "Options:"
+      echo "Options:
+      echo "Type --option-name=value to set an option and quote the value when it contains "
+      echo "spaces.
+      echo
       echo "  --livcd-dir             - Name of the directory inside which the LiveCD build "
       echo "                            will happen (default: \$PWD/live)"
       echo "  --ubuntu-image          - Path to the original Ubuntu LiveCD image if you want"
@@ -91,7 +95,7 @@ do
   esac
 
   case $option in
-    --livcd-dir)
+    --livecd-dir)
       LIVECD_DIR=$optionarg;;
     --ubuntu-image)
       UBUNTU_IMAGE=$optionarg;; 
