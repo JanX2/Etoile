@@ -18,7 +18,7 @@ ETSerialiserTest_OBJC_FILES = \
 				   	ETDeserialiserBinaryFile.m\
 					COProxy.m\
 					GSMutableString+ETSerialisable.m\
-					NSMallocData+ETSerialisable.m\
+					NSDataStatic+ETSerialisable.m\
 					NSInvocation+ETSerialisable.m
 
 OBJCFLAGS += -std=c99 -Wall -W -Wunreachable-code -Winline -Werror -Wno-unused -Wno-format -g

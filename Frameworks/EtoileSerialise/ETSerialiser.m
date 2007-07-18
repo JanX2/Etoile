@@ -321,6 +321,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id<ETSerialiserBack
 						NSLog(@"Begin struct pointer");
 						PARSE_STRUCT_BODY();
 						NSLog(@"End struct pointer");
+						break;
 					}
 				}
 				retVal.size = (unsigned)-1;

@@ -35,7 +35,7 @@ typedef uint32_t CORef;
 - (void) storeClass:(Class)aClass withName:(char*)aName;
 - (void) storeFloat:(Class)aClass withName:(char*)aName;
 - (void) storeSelector:(SEL)aSelector withName:(char*)aName;
-- (void) storeCString:(char*)aCString withName:(char*)aName;
+- (void) storeCString:(const char*)aCString withName:(char*)aName;
 - (void) storeData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName;
 @end
 
