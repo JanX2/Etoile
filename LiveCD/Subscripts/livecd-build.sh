@@ -45,7 +45,21 @@ su $ETOILE_USER_NAME
 . /System/Library/Makefiles/GNUstep.sh
 ./setup.sh
 
+# Customize AZDock
+
 defaults write AZDock DockedApplications "({ Command = Typewriter; Type = 0; }, { Command = Grr; Type = 0; },  { Command = StepChat; Type = 0; }, { Command = "/usr/bin/firefox"; Type = 1; WMClass = "Firefox-bin"; WMInstance = "firefox-bin"; }, { Command = Gorm; Type = 0; })"
+# Install Firefox cached icon 
+APPSUPPORT_DIR = /home/$ETOILE_USER_NAME/GNUstep/Library/ApplicationSupport
+if [ ! -d /home/$ETOILE_USER_NAME/GNUstep/Library/ ]; then
+	mkdir /home/$ETOILE_USER_NAME/GNUstep/Library/;
+	if [ ! -d $APPSUPPORT_DIR ]; then
+		mkdir $APPSUPPORT_DIR;
+		if [ ! -d $APPSUPPORT_DIR/AZDock ]; then
+			mkdir $APPSUPPORT_DIR/AZDock;
+		fi;
+	fi
+fi
+cp $SUBSCRIPT_DIR/Firefox.tiff $APPSUPPORT_DIR/AZDock/firefox-bin_Firefox-bin.tiff
 
 # NOTE: Keep a pristine copy of the defaults to be reset on cleanup
 cp /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults.original
