@@ -41,7 +41,7 @@ rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/Addresses
 rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/Bookmark
 
 # Build cleanup
-if [ $REMOVE_BUILD_FILES = yes ]; the
+if [ $REMOVE_BUILD_FILES = yes ]; then
 	rm -r /build
 	apt-get -y uninstall subversion
 fi
