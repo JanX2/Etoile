@@ -48,11 +48,11 @@ do
       echo "  -c, --cleanup   - Clean up LiveCD environment of every testing specific "
       echo "                    settings and user preferences/defaults"
       echo
-      echo "Options:
+      echo "Options:"
       echo "Type --option-name=value to set an option and quote the value when it contains "
-      echo "spaces.
+      echo "spaces."
       echo
-      echo "  --livcd-dir             - Name of the directory inside which the LiveCD build "
+      echo "  --livecd-dir            - Name of the directory inside which the LiveCD build "
       echo "                            will happen (default: \$PWD/live)"
       echo "  --ubuntu-image          - Path to the original Ubuntu LiveCD image if you want"
       echo "                            not to download it or use you own and not the one "
@@ -159,11 +159,13 @@ checkVar ETOILE_IMAGE_NAME "etoile.iso"
 checkVar ETOILE_USER_NAME "guest"
 checkVar ETOILE_USER_PASSWORD "guest"
 
-checkVar SUBSCRIPT_DIR "./Subscripts"
+checkVar SUBSCRIPT_DIR "$PWD/Subscripts"
 
 #
 # Script Action
 #
+
+export TEST
 
 if [ $SCRIPT_DEBUG = yes ]; then
 	echo
@@ -198,6 +200,6 @@ if [ $GENERATE = yes ]; then
 fi
 
 if [ $TEST = yes ]; then
-	$SUBSCRIPT_DIR/livecd-test.sh;
+	$SUBSCRIPT_DIR/livecd-edit.sh;
 fi
 
