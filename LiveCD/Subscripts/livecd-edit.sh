@@ -7,6 +7,7 @@ if [ -f $LIVECD_DIR/edit/etc/profile.original ]; then
 	echo "LiveCD filesystem is in --test mode, you must first source "
 	echo "livecd-exit.sh in the test shell to exit properly"
 	echo
+	return
 fi
 
 # Time to time /dev cannot be unmount on --exit

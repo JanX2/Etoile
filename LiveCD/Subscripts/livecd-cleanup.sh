@@ -4,7 +4,16 @@
 # --cleanup
 #
 
-apt-get clean
+if [ -f $LIVECD_DIR/edit/etc/profile.original ]; then
+	echo
+	echo "LiveCD filesystem is in --test mode, you must first source "
+	echo "livecd-exit.sh in the test shell to exit properly"
+	echo
+	return
+fi
+
+sudo cp /etc/resolv.conf $LIVECD_DIR/edit/etc/
+sudo chroot $LIVECD_DIR/edit
 
 # Linux/GNOME specific cleanup
 rm -f /home/$ETOILE_USER_NAME/.bash_history
@@ -32,9 +41,12 @@ rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/Addresses
 rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/Bookmark
 
 # Build cleanup
+if [ $REMOVE_BUILD_FILES = yes ]; the
+	rm -r /build
+	apt-get -y uninstall subversion
+fi
 
-rm -r /build
-apt-get -y uninstall subversion
+apt-get clean
 
 exit
 

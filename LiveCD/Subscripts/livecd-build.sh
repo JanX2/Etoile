@@ -1,5 +1,16 @@
 #!/bin/sh
 
+if [ -f $LIVECD_DIR/edit/etc/profile.original ]; then
+	echo
+	echo "LiveCD filesystem is in --test mode, you must first source "
+	echo "livecd-exit.sh in the test shell to exit properly"
+	echo
+	return
+fi
+
+sudo cp /etc/resolv.conf $LIVECD_DIR/edit/etc/
+sudo chroot $LIVECD_DIR/edit
+
 # Download and install Etoile, GNUstep and all required dependencies
 $SUBSCRIPT_DIR/ubuntu-install-etoile.sh
 
@@ -108,4 +119,6 @@ cd ..
 # Finally remove some Ubuntu user stuff
 rm -rf /home/$ETOILE_USER_NAME/Desktop
 rm -rf /home/$ETOILE_USER_NAME/Examples
+
+exit
 

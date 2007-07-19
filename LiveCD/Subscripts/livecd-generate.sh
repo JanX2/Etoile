@@ -2,6 +2,21 @@
 
 # --generate
 
+if [ -f $LIVECD_DIR/edit/etc/profile.original ]; then
+	echo
+	echo "LiveCD filesystem is in --test mode, you must first source "
+	echo "livecd-exit.sh in the test shell to exit properly"
+	echo
+	return
+fi
+
+echo
+echo "WARNING: You are entering Generate stage and you will be asked to type a
+echo "name to identify the LiveCD in boot menu... You just have to be patient"
+echo
+
+cd $LIVECD_DIR
+
 # Regenerate manifest
 
 chmod +w extract-cd/casper/filesystem.manifest
@@ -16,6 +31,11 @@ sudo mksquashfs edit extract-cd/casper/filesystem.squashfs
 
 # Give a lengthy name that will be used in boot screens to the new livecd 
 
+echo
+echo "WARNING: Type a lengthy name that will be used in boot menu to identify
+echo "the operating system on the LiveCD, then exits the editor..."
+echo
+
 sudo pico extract-cd/README.diskdefines
 
 # Remove old md5sum.txt and calculate new md5 sums
@@ -28,5 +48,10 @@ exit
 # Create Iso
 
 cd extract-cd
-sudo mkisofs -r -V "$ETOILE_LIVECD_NAME" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ../$ETOILE_IMAGE_NAME .
+sudo mkisofs -r -V "$ETOILE_LIVECD_NAME" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $LIVECD_DIR/$ETOILE_IMAGE_NAME .
+
+echo
+echo "Finished to generate new Etoile LiveCD image :-)"
+ls -l $LIVECD_DIR/$ETOILE_IMAGE_NAME
+echo
 

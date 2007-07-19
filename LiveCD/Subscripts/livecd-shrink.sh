@@ -4,6 +4,17 @@
 # --shrink
 #
 
+if [ -f $LIVECD_DIR/edit/etc/profile.original ]; then
+	echo
+	echo "LiveCD filesystem is in --test mode, you must first source "
+	echo "livecd-exit.sh in the test shell to exit properly"
+	echo
+	return
+fi
+
+sudo cp /etc/resolv.conf $LIVECD_DIR/edit/etc/
+sudo chroot $LIVECD_DIR/edit
+
 # Try to clean up as much GNOME stuff as possible
 
 # NOTE: Trick to enable universe repository install deborphan that allows to purge which got removed without --purge
@@ -77,4 +88,6 @@ apt-get -y install language-pack-en ssh firefox
 
 # A last check to verify package tree integrity
 apt-get check
+
+exit
 

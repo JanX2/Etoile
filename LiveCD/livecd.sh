@@ -150,8 +150,8 @@ echo
 checkVar LIVECD_DIR "$PWD/live";
 
 # For example ~/Desktop/ubuntu-6.06.1-desktop-i386.iso
-checkVar UBUNTU_IMAGE "$LIVECD_DIR/ubuntu-7.04-desktop-i386.iso"
-#checkVar(UBUNTU_IMAGE_NAME ubuntu-7.04-desktop-i386.iso)
+export UBUNTU_IMAGE_NAME=ubuntu-7.04-desktop-i386.iso
+checkVar UBUNTU_IMAGE "$LIVECD_DIR/$UBUNTU_IMAGE_NAME"
 
 checkVar ETOILE_LIVECD_NAME "Etoile LiveCD 0.2"
 checkVar ETOILE_IMAGE_NAME "etoile.iso"
@@ -161,11 +161,14 @@ checkVar ETOILE_USER_PASSWORD "guest"
 
 checkVar SUBSCRIPT_DIR "$PWD/Subscripts"
 
+export UBUNTU_DOWNLOAD_URL=http://releases.ubuntu.com/feisty/$UBUNTU_IMAGE_NAME
+
 #
 # Script Action
 #
 
 export TEST
+export REMOVE_BUILD_FILES=yes
 
 if [ $SCRIPT_DEBUG = yes ]; then
 	echo
@@ -188,7 +191,7 @@ if [ $BUILD = yes ]; then
 fi
 
 if [ $SHRINK = yes ]; then
-	$SUBSCRIPT_DIR/livecd-build.sh;
+	$SUBSCRIPT_DIR/livecd-shrink.sh;
 fi
 
 if [ $CLEANUP = yes ]; then
@@ -202,4 +205,7 @@ fi
 if [ $TEST = yes ]; then
 	$SUBSCRIPT_DIR/livecd-edit.sh;
 fi
+
+echo
+echo "Exiting now LiveCD script"
 

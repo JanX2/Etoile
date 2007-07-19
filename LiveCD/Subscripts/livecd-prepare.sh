@@ -9,16 +9,22 @@
 sudo apt-get install squashfs-tools
 sudo modprobe squashfs
 
-# Move existing livecd image into work directory
+# Move into new work directory
 
 mkdir $LIVECD_DIR
-mv $UBUNTU_IMAGE $LIVECD_DIR
 cd $LIVECD_DIR
+
+# Fetch original image file from Ubuntu server
+
+if [ ! -f $UBUNTU_IMAGE ]; then
+	wget $UBUNTU_DOWNLOAD_URL
+	export UBUNTU_IMAGE=$LIVECD_DIR/$UBUNTU_IMAGE_NAME
+fi
 
 # Mount the existing image
 
 mkdir mnt
-sudo mount -o loop $UBUNTU_IMAGE_NAME mnt
+sudo mount -o loop $UBUNTU_IMAGE mnt
 
 # Extract the content of mounted image into extract-cd directory
 
