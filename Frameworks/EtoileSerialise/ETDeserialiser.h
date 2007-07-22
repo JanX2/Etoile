@@ -19,6 +19,19 @@ typedef struct
 } ETDeserialiserState;
 
 /**
+ * <p>Custom deserialiser for a specific structure. </p>
+<example>
+void * custom_deserialiser(char* varName,
+		void * aBlob,
+		void * aLocation);
+</example>
+ * The <code>varName</code> argument contains the name of the variable to
+ * be deserialised, as set by the corresponding custom serialiser function.</p>
+ * <p>The <code>aBlob</code> argument points </p>
+ */
+typedef void*(*custom_deserialiser)(char*,void*,void*);
+
+/**
  * Deserialiser.  Performs construction of object graphs based
  * on instructions received from back end.  Each back end is
  * expected to read data from a 
@@ -38,6 +51,7 @@ typedef struct
 	NSMutableArray * loadedObjectList;
 }
 + (ETDeserialiser*) deserialiserWithBackend:(id<ETDeserialiserBackend>)aBackend;
++ (void) registerDeserialiser:(custom_deserialiser)aDeserialiser forStructNamed:(char*)aName;
 - (void) setBackend:(id<ETDeserialiserBackend>)aBackend;
 - (id) restoreObjectGraph;
 //Objects
@@ -47,7 +61,7 @@ typedef struct
 - (void) loadObjectReference:(CORef)aReference withName:(char*)aName;
 - (void) setReferenceCountForObject:(CORef)anObjectID to:(int)aRefCount;
 //Nested types
-- (void) beginStructNamed:(char*)aName;
+- (void) beginStruct:(char*)aStructName withName:(char*)aName;
 - (void) endStruct;
 - (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength;
 - (void) endArray;

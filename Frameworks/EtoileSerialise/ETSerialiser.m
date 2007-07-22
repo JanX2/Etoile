@@ -5,6 +5,7 @@
 #include <objc/Object.h>
 #import "ETSerialiser.h"
 #import "ETSerialiserNullBackend.h"
+#import "StringMap.h"
 
 //TODO: Put this in the Makefile
 //#define WARN_IF_GUESS
@@ -23,13 +24,13 @@
 @end
 
 @implementation NSObject (ETSerialisable)
-- (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend
+- (BOOL) serialise:(char*)aVariable using:(id <ETSerialiserBackend>)aBackend
 {
 	return NO;
 }
-- (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion
+- (void*) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion
 {
-	return NO;
+	return AUTO_DESERIALISE;
 }
 @end
 
@@ -40,24 +41,11 @@ id nullBackend;
 
 static NSMapTable * serialiserFunctions;
 
-unsigned simpleStringHash(NSMapTable *table, const void *anObject)
-{
-	if(strlen(anObject) > 3)
-	{
-		return *(unsigned *)anObject;
-	}
-	return 0;
-}
-BOOL isCStringEqual(NSMapTable *table, const void * str1, const void * str2)
-{
-	return strcmp(str1, str2) == 0;
-}
-
-parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id<ETSerialiserBackend> aBackend, BOOL shouldMalloc)
+parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBackend> aBackend, BOOL shouldMalloc)
 {
 	//Just a placeholder to be used to trigger the reloading function
-	NSLog(@"Serialising NSZone");
-	[aBackend storeChar:'Z' withName:aName];
+	[aBackend beginStruct:"_NSZone" withName:aName];
+	[aBackend endStruct];
 	parsed_type_size_t retVal;
 	retVal.size = 1;
 	retVal.offset = strlen(@encode(NSZone));
@@ -70,18 +58,16 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id<ETSerialiserBack
 	[super initialize];
 	/* Null backend we can reuse */
 	nullBackend = [[ETSerialiserNullBackend alloc] init];
-	const NSMapTableKeyCallBacks keycallbacks = {simpleStringHash, isCStringEqual, NULL, NULL, NULL, NSNotAnIntMapKey};
 	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
-	serialiserFunctions = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
+	serialiserFunctions = NSCreateMapTable(STRING_MAP_KEY_CALLBACKS, valuecallbacks, 100);
 	/* Custom serialisers for known types */
 	[self registerSerialiser:serialiseNSZone forStruct:"_NSZone"];
-	[self registerSerialiser:serialiseNSZone forStruct:"NSZone"];
 }
 + (void) registerSerialiser:(custom_serialiser)aFunction forStruct:(char*)aName
 {
 	NSMapInsert(serialiserFunctions, aName, (void*)aFunction);
 }
-- (void) setBackend:(id<ETSerialiserBackend>)aBackend
+- (void) setBackend:(id <ETSerialiserBackend>)aBackend
 {
 	ASSIGN(backend, aBackend);
 }
@@ -243,7 +229,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id<ETSerialiserBack
 					break;
 				}
 				
-				[backend beginStructNamed:name];
+				[backend beginStruct:structName withName:name];
 				//First char after the name
 				type += nameSize + 1;
 				retVal.offset = nameSize + 2;

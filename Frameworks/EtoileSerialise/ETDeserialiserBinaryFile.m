@@ -159,10 +159,14 @@ enum {
 				break;
 			//Complex types
 			case '{':
-				name = ++obj;
-				SKIP_STRING();
-				[deserialiser beginStructNamed:name];
-				break;
+				{
+					char * structName = ++obj;
+					SKIP_STRING();
+					name = obj;
+					SKIP_STRING();
+					[deserialiser beginStruct:structName withName:name];
+					break;
+				}
 			case '}':
 				[deserialiser endStruct];
 				obj++;

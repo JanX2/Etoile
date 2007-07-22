@@ -14,8 +14,8 @@ typedef uint32_t CORef;
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName;
 - (void) incrementReferenceCountForObject:(CORef)anObjectID;
 //Nested types
-//- (void) beginStruct:(char*)aStructName Named:(char*)aName shouldMalloc:(BOOL)aFlag;
-- (void) beginStructNamed:(char*)aName;
+- (void) beginStruct:(char*)aStructName withName:(char*)aName;
+//- (void) beginStructNamed:(char*)aName;
 - (void) endStruct;
 - (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength;
 - (void) endArray;
@@ -40,9 +40,12 @@ typedef uint32_t CORef;
 @end
 
 //Informal protocol for serialisable objects.  Implement this to manually handle unsupported types.
+
+#define MANUAL_DESERIALISE ((void*)1)
+#define AUTO_DESERIALISE ((void*)0)
 @interface NSObject (ETSerialisable)
 - (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend;
-- (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion;
+- (void*) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion;
 @end
 
 typedef struct 
@@ -50,6 +53,7 @@ typedef struct
 	size_t size;
 	unsigned int offset;
 } parsed_type_size_t;
+
 typedef parsed_type_size_t(*custom_serialiser)(char*,void*, id<ETSerialiserBackend>,BOOL);
 
 @interface ETSerialiser : NSObject {

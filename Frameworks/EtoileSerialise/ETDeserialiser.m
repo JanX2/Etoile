@@ -1,4 +1,7 @@
 #import "ETDeserialiser.h"
+//TODO: Move the things from here that I need into a shared header.
+#import "ETSerialiser.h"
+#import "StringMap.h"
 
 inline static void * addressForIVarName(id anObject, char * aName, int hint)
 {
@@ -29,6 +32,7 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 #define STATE states[stackTop]
 #define PUSH_STATE(offset, stateType) ++stackTop;STATE.startOffset = offset; STATE.type = stateType; STATE.index = loadedIVar; loadedIVar = 0;// NSLog(@"Pushing state '%c'", stateType);
 #define PUSH_STRUCT(offset) PUSH_STATE(offset, 's')
+#define PUSH_CUSTOM(offset) PUSH_STATE(offset, 'c');STATE.index = (int)function
 #define PUSH_ARRAY(offset) PUSH_STATE(offset, 'a')
 #define POP() loadedIVar = states[stackTop--].index;
 
@@ -69,7 +73,21 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 	}
 }
 
+static NSMapTable * deserialiserFunctions;
+
 @implementation ETDeserialiser
++ (void) initialize
+{
+	[super initialize];
+	/* Null backend we can reuse */
+	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
+	deserialiserFunctions = NSCreateMapTable(STRING_MAP_KEY_CALLBACKS, valuecallbacks, 100);
+	/* Custom serialisers for known types */
+}
++ (void) registerDeserialiser:(custom_deserialiser)aDeserialiser forStructNamed:(char*)aName
+{
+	NSMapInsert(deserialiserFunctions, aName, (void*)aDeserialiser);
+}
 - (id) init
 {
 	if(nil == (self = [super init]))
@@ -147,9 +165,17 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 		[loadedObjectList addObject:object];
 	}
 }
+#define CUSTOM_DESERIALISER ((custom_deserialiser)STATE.index)
+#define CHECK_CUSTOM() \
+	if(STATE.type == 'c')\
+	{\
+		STATE.startOffset = CUSTOM_DESERIALISER(aName, &aVal, STATE.startOffset);\
+	}
+
 #define LOAD_INTRINSIC(type, name) \
 {\
-	if(![object deserialise:aName fromPointer:&aVal version:classVersion])\
+	CHECK_CUSTOM()\
+	else if(![object deserialise:aName fromPointer:&aVal version:classVersion])\
 	{\
 		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, type);\
 		if(address != NULL)\
@@ -194,14 +220,40 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 	}
 }
 //Nested types
-- (void) beginStructNamed:(char*)aName 
+- (void) beginStruct:(char*)aStructName withName:(char*)aName;
 {
-	//TODO: Change this 10 to something correct
 	char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, 10);
-	//NSLog(@"Struct address = 0x%x", address);
-	if(address != NULL)
+	//First see if the object wants to change the offset (e.g. loading a pointer)
+	char * fudgedAddress = [object deserialise:aName fromPointer:NULL version:classVersion];
+	NSLog(@"Fudged address for %s is 0x%x", aName, fudgedAddress);
+	switch((int)fudgedAddress)
 	{
-		PUSH_STRUCT(address);
+		case (int)MANUAL_DESERIALISE:
+			{
+				NSLog(@"ERROR:  Invalid return for deserialising struct");
+				break;
+			}
+		case (int)AUTO_DESERIALISE:
+			break;
+		default:
+			//Set the address to the one the class wants (for malloc'd data structures, etc)
+			address = fudgedAddress;
+	}
+	//Try using a registered decoder function.
+	custom_deserialiser function = NSMapGet(deserialiserFunctions, aStructName);
+	if(function != NULL)
+	{
+		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, 10);
+		PUSH_CUSTOM(address);
+	}
+	else
+	{
+		//TODO: Change this 10 to something correct
+		//NSLog(@"Struct address = 0x%x", address);
+		if(address != NULL)
+		{
+			PUSH_STRUCT(address);
+		}
 	}
 }
 - (void) endStruct 

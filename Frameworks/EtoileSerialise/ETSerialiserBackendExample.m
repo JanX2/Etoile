@@ -47,10 +47,10 @@
 	fprintf(outFile, "\nVersion %d:\n\n", ++version);
 	return version;
 }
-- (void) beginStructNamed:(char*)aName
+- (void) beginStruct:(char*)aStructName withName:(char*)aName
 {
 	[self indent];
-	fprintf(outFile, "struct %s {\n",aName);
+	fprintf(outFile, "struct %s %s {\n",aStructName, aName);
 	indent++;
 }
 - (void) endStruct

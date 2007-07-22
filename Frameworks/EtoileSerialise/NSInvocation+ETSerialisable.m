@@ -54,7 +54,7 @@ void deserialiseArgumentInfo(NSArgumentInfo * sig, char * name, void * aBlob)
 	}
 	return [super serialise:aVariable using:aBackend];
 }
-- (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion 
+- (void*) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion 
 {
 	CASE(_numArgs)
 	{
@@ -92,7 +92,7 @@ static int discardRetValSize = 0;
 	}
 	return [super serialise:aVariable using:aBackend];
 }
-- (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion 
+- (void*) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion 
 {
 	if(discardRetVal == NULL)
 	{
@@ -105,7 +105,7 @@ static int discardRetValSize = 0;
 		//if you're returning more than 1KB on the stack you're doing something
 		//deeply wrong so I don't mind breaking your code for now.
 		_retval = discardRetVal;
-		return YES;
+		return MANUAL_DESERIALISE;
 	}
 	CASE(_info)
 	{

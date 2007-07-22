@@ -21,7 +21,7 @@
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName {}
 - (void) incrementReferenceCountForObject:(CORef)anObjectID {}
 //Nested types
-- (void) beginStructNamed:(char*)aName {}
+- (void) beginStruct:(char*)aStructName withName:(char*)aName {}
 - (void) endStruct {}
 - (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength {}
 - (void) endArray {}

@@ -83,9 +83,9 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 	[self setFile:[[NSString stringWithFormat:@"%@.%d", fileName, version] UTF8String]];
 	return version;
 }
-- (void) beginStructNamed:(char*)aName
+- (void) beginStruct:(char*)aStructName withName:(char*)aName
 {
-	FORMAT("{%s%c",aName,0);
+	FORMAT("{%s%c%s%c",aStructName, 0, aName,0);
 }
 - (void) endStruct
 {
