@@ -189,6 +189,7 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 - (void) storeData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName
 {
 	FORMAT("^%s%c", aName, 0);
+	WRITE(&aSize, sizeof(int));
 	WRITE(aBlob,aSize);
 }
 @end

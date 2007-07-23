@@ -40,7 +40,7 @@ LDFLAGS += -g
 # Include in the rules for making command line tools
 include $(GNUSTEP_MAKEFILES)/tool.make
 # Uncomment this when gsdoc is fixed and doesn't generate loads or errors because it can't parse id<foo> properly
-#include $(GNUSTEP_MAKEFILES)/documentation.make
+include $(GNUSTEP_MAKEFILES)/documentation.make
 
 -include GNUmakefile.postamble
 

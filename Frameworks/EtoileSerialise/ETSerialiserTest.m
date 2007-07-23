@@ -28,6 +28,11 @@
 		} thisWontWork[3];
 		*/
 	} aStruct;
+	struct TestStruct
+	{
+		int len;
+		void * data;
+	} bar;
 	id anObject;
 	int anArray[3];
 	NSString * aString;
@@ -38,8 +43,46 @@
 	int * aPointer;
 }
 @end
+parsed_type_size_t TestStructSerialiser(char* aName, void* aStruct, id <ETSerialiserBackend> aBackend, BOOL shouldMalloc)
+{
+	struct TestStruct * s = (struct TestStruct*)aStruct;
+	[aBackend beginStruct:"TestStruct" withName:aName];
+	[aBackend storeInt:s->len withName:"len"];
+	[aBackend storeData:s->data ofSize:s->len withName:"data"];
+	[aBackend endStruct];
+	parsed_type_size_t retVal;
+	retVal.size = sizeof(struct TestStruct);
+	retVal.offset = strlen(@encode(struct TestStruct));
+	return retVal;
+}
+#define CASE(x) if(strcmp(varName, #x) == 0)
+void * TestStructDeserialiser(char* varName,
+	void * aBlob,
+	void * aLocation)
+{
+	struct TestStruct * s = (struct TestStruct*)aLocation;
+	CASE(len)
+	{
+		s->len = *(int*)aBlob;
+		return aLocation;
+	}
+	CASE(data)
+	{
+		s->data = malloc(s->len);
+		memcpy(s->data, aBlob, s->len);
+		//Return the location of the end of the struct once 
+		//we have loaded it
+		return aLocation + sizeof(struct TestStruct);
+	}
+	return aLocation;
+}
 @implementation TestClass
-
++ (void) initialize
+{
+	[super initialize];
+	[ETSerialiser registerSerialiser:TestStructSerialiser forStruct:"TestStruct"];
+	[ETDeserialiser registerDeserialiser:TestStructDeserialiser forStructNamed:"TestStruct"];
+}
 - (id) init
 {
 	self = [super init];
@@ -53,6 +96,8 @@
 	aDouble = 67.890;
 	aStruct.intInStruct = 12;
 	aStruct.boolInStruct = YES;
+	bar.len = 12;
+	bar.data = "123456789012";
 	aData = [[NSData dataWithBytes:"this is a bit of data" length:22] retain];
 	/*
 	aStruct.floatArrayInStruct[0] = -0.0f;
@@ -95,6 +140,7 @@
 	NSLog(@"Double: 67.890 = %f", aDouble);
 	NSLog(@"Array {0,1,2} = {%d,%d,%d}", anArray[0], anArray[1], anArray[2]);
 	NSLog(@"Unsigned long long in struct: 12 = %d", aStruct.intInStruct);
+	NSLog(@"Struct with custom serialiser: \"123456789012\" = \"%.12s\"", bar.data);
 	NSLog(@"BOOL in struct: 1 = %d", (int)aStruct.boolInStruct);
 	NSLog(@"Retain count of object %@: 2 = %d", aNumber, [aNumber retainCount]);
 }
@@ -124,12 +170,13 @@ int main(void)
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
 	TestClass * bar = [deserialiser restoreObjectGraph];
 	[bar methodTest];
-	
+#ifdef TEST_COREOBJECT
 	NSMutableString * str = [NSMutableString stringWithString:@"A string"];
 	NSMutableString * fake = [[COProxy alloc] initWithObject:str
 												  serialiser:[ETSerialiser serialiserWithBackend:[ETSerialiserBackendExample class] forURL:nil]];
 	[fake appendString:@" containing"];
 	[fake appendString:@" some character."];
 	[pool release];
+#endif
 	return 0;
 }

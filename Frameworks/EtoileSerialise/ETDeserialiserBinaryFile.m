@@ -82,6 +82,16 @@ enum {
 {
 	return principalObjectRef;
 }
+- (char*) classNameOfPrincipalObject
+{
+	unsigned int offset = (unsigned int)NSMapGet(index, (void*)principalObjectRef);
+	char * obj = ((char*)[data bytes]) + offset;
+	if(*obj == '<')
+	{
+		return ++obj;
+	}
+	return NULL;
+}
 #define SKIP_STRING() obj += strlen(obj) + 1
 - (BOOL) deserialiseObjectWithID:(CORef)aReference
 {
@@ -137,6 +147,14 @@ enum {
 				[deserialiser setClassVersion:*(int*)++obj];
 				obj += sizeof(int);
 				break;
+			case '^':
+				name = ++obj;
+				SKIP_STRING();
+				int size = *(int*)obj;
+				obj += sizeof(int);
+				[deserialiser loadData:obj ofSize:size withName:name];
+				obj += size;
+				break;
 			case '*':
 				name = ++obj;
 				SKIP_STRING();
@@ -182,6 +200,7 @@ enum {
 				obj++;
 				break;
 			default:
+				NSLog(@"Deserialiser encountered unexpected char %c in stream", (char)*obj);
 				return NO;
 		}
 	}

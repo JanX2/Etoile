@@ -8,6 +8,7 @@
 - (BOOL) deserialiseObjectWithID:(CORef)aReference;
 - (void) setDeserialiser:(id)aDeserialiser;
 - (CORef) principalObject;
+- (char*) classNameOfPrincipalObject;
 @end
 
 

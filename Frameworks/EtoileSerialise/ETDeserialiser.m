@@ -79,7 +79,6 @@ static NSMapTable * deserialiserFunctions;
 + (void) initialize
 {
 	[super initialize];
-	/* Null backend we can reuse */
 	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
 	deserialiserFunctions = NSCreateMapTable(STRING_MAP_KEY_CALLBACKS, valuecallbacks, 100);
 	/* Custom serialisers for known types */
@@ -105,7 +104,7 @@ static NSMapTable * deserialiserFunctions;
 }
 - (void) setBackend:(id<ETDeserialiserBackend>)aBackend
 {
-	backend = [aBackend retain];
+	ASSIGN(backend, aBackend);
 	[backend setDeserialiser:self];
 }
 + (ETDeserialiser*) deserialiserWithBackend:(id<ETDeserialiserBackend>)aBackend
@@ -130,7 +129,7 @@ static NSMapTable * deserialiserFunctions;
 	{
 		//NSLog(@"Setting *(id*)0x%x=%d", pointer, ref);
 		*pointer = GET_OBJ(ref);
-		//If we haven't already loaded this object
+		//If we haven't already loaded this object, then do.
 		if(*pointer == NULL)
 		{
 			[backend deserialiseObjectWithID:ref];
@@ -225,7 +224,7 @@ static NSMapTable * deserialiserFunctions;
 	char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, 10);
 	//First see if the object wants to change the offset (e.g. loading a pointer)
 	char * fudgedAddress = [object deserialise:aName fromPointer:NULL version:classVersion];
-	NSLog(@"Fudged address for %s is 0x%x", aName, fudgedAddress);
+	//NSLog(@"Fudged address for %s is 0x%x", aName, fudgedAddress);
 	switch((int)fudgedAddress)
 	{
 		case (int)MANUAL_DESERIALISE:
@@ -291,7 +290,11 @@ LOAD_METHOD(Class, Class)
 LOAD_METHOD(Selector, SEL)
 - (void) loadCString:(char*)aCString withName:(char*)aName
 {
-	if(![object deserialise:aName fromPointer:aCString version:classVersion])
+	if(STATE.type == 'c')
+	{
+		STATE.startOffset = CUSTOM_DESERIALISER(aName, aCString, STATE.startOffset);
+	}
+	else if(![object deserialise:aName fromPointer:aCString version:classVersion])
 	{
 		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, sizeof(char*));
 		if(address != NULL)
@@ -302,7 +305,11 @@ LOAD_METHOD(Selector, SEL)
 }
 - (void) loadData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName 
 {
-	if(![object deserialise:aName fromPointer:aBlob version:classVersion])
+	if(STATE.type == 'c')
+	{
+		STATE.startOffset = CUSTOM_DESERIALISER(aName, aBlob, STATE.startOffset);
+	}
+	else if(![object deserialise:aName fromPointer:aBlob version:classVersion])
 	{
 		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, aSize);
 		if(address != NULL)
