@@ -2,16 +2,13 @@
 
 # --generate
 
-if [ -f $LIVECD_DIR/edit/etc/profile.original ]; then
-	echo
-	echo "LiveCD filesystem is in --test mode, you must first source "
-	echo "livecd-exit.sh in the test shell to exit properly"
-	echo
-	return
+$SUBSCRIPT_DIR/livecd-checkexit.sh
+if [ "$?" -ne '0' ]; then
+	return 1;
 fi
 
 echo
-echo "WARNING: You are entering Generate stage and you will be asked to type a
+echo "WARNING: You are entering Generate stage and you will be asked to type a"
 echo "name to identify the LiveCD in boot menu... You just have to be patient"
 echo
 
@@ -32,7 +29,7 @@ sudo mksquashfs edit extract-cd/casper/filesystem.squashfs
 # Give a lengthy name that will be used in boot screens to the new livecd 
 
 echo
-echo "WARNING: Type a lengthy name that will be used in boot menu to identify
+echo "WARNING: Type a lengthy name that will be used in boot menu to identify"
 echo "the operating system on the LiveCD, then exits the editor..."
 echo
 

@@ -168,7 +168,22 @@ export UBUNTU_DOWNLOAD_URL=http://releases.ubuntu.com/feisty/$UBUNTU_IMAGE_NAME
 #
 
 export TEST
-export REMOVE_BUILD_FILES=yes
+export REMOVE_BUILD_FILES=no
+
+runUchroot ()
+{
+	$SUBSCRIPT_DIR/livecd-checkexit.sh
+	if [ "$?" -ne '0' ]; then
+		return 1;
+	fi
+
+	sudo cp /etc/resolv.conf $LIVECD_DIR/edit/etc/
+	#echo $LIVECD_DIR $1
+	sudo cp $SUBSCRIPT_DIR/$1 $LIVECD_DIR/edit
+	# Following line equals to sudo chroot $LIVECD_DIR/edit /bin/bash $1;
+	sudo $SUBSCRIPT_DIR/../uchroot root $LIVECD_DIR/edit /bin/bash $1;
+	sudo rm $SUBCRIPT_DIR/$1
+}
 
 if [ $SCRIPT_DEBUG = yes ]; then
 	echo
@@ -187,15 +202,15 @@ if [ $EDIT = yes ]; then
 fi
 
 if [ $BUILD = yes ]; then
-	$SUBSCRIPT_DIR/livecd-build.sh;
+	runUchroot livecd-build.sh;
 fi
 
 if [ $SHRINK = yes ]; then
-	$SUBSCRIPT_DIR/livecd-shrink.sh;
+	runUchroot livecd-shrink.sh;
 fi
 
 if [ $CLEANUP = yes ]; then
-	$SUBSCRIPT_DIR/livecd-cleanup.sh;
+	runUchroot livecd-cleanup.sh;
 fi
 
 if [ $GENERATE = yes ]; then

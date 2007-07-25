@@ -1,8 +1,12 @@
 #!/bin/sh
 
-#
 # --cleanup
-#
+
+echo
+echo "Entering Cleanup stage..."
+
+touch /tmp/bla
+return
 
 apt-get clean
 rm -rf /tmp/*
@@ -37,9 +41,10 @@ rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/Bookmark
 
 # Build cleanup
 
-rm -r /build
-apt-get -y uninstall subversion
+if [ $REMOVE_BUILD_FILES = yes ]; then
+	rm -r /build
+	apt-get -y uninstall subversion
+fi
 
 exit
 
-$SUBSCRIPT_DIR/livecd-shrink.sh

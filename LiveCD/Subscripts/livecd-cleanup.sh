@@ -4,16 +4,12 @@
 # --cleanup
 #
 
-if [ -f $LIVECD_DIR/edit/etc/profile.original ]; then
-	echo
-	echo "LiveCD filesystem is in --test mode, you must first source "
-	echo "livecd-exit.sh in the test shell to exit properly"
-	echo
-	return
-fi
+echo
+echo "Entering Cleanup stage..."
 
-sudo cp /etc/resolv.conf $LIVECD_DIR/edit/etc/
-sudo chroot $LIVECD_DIR/edit
+# For extra safety (normally handled by livecd-exit.sh)
+rm -rf /tmp/*
+rm -f /etc/resolv.conf
 
 # Linux/GNOME specific cleanup
 rm -f /home/$ETOILE_USER_NAME/.bash_history
@@ -37,8 +33,8 @@ rm -f /root/GNUstep/Defaults/*
 cp /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults.original /home/$ETOILE_USER_NAME/GNUstep/Defaults/.GNUstepDefaults
 # Don't clean up AZDock because it contains Firefox cached icon actually
 #rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/ApplicationSupport/AZDock
-rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/Addresses
-rm -r /home/$ETOILE_USER_NAME/GNUstep/Library/Bookmark
+rm -rf /home/$ETOILE_USER_NAME/GNUstep/Library/Addresses
+rm -rf /home/$ETOILE_USER_NAME/GNUstep/Library/Bookmark
 
 # Build cleanup
 if [ $REMOVE_BUILD_FILES = yes ]; then

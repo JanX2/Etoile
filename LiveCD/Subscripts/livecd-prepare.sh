@@ -1,8 +1,9 @@
 #!/bin/sh
 
-#
 # --prepare
-#
+
+echo
+echo "Entering Prepare stage..."
 
 # Set up Squashfs
 
