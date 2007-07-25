@@ -30,17 +30,20 @@
 
 @implementation NewGroupFolder
 
+- (id) init
+{
+	if ((self = [super initWithWindowNibName:@"GroupFolder"]) != nil)
+	{
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTextDidChange:) name:NSControlTextDidChangeNotification object:folderName];
+	}
+	return self;
+}
+
 /* newGroupFolder
  * Display the sheet to create a new group folder.
  */
--(void)newGroupFolder:(NSWindow *)window underParent:(int)itemId
+- (void) newGroupFolder: (NSWindow *) window underParent: (int) itemId
 {
-	if ([self window] == nil)
-	{
-		[NSBundle loadNibNamed:@"GroupFolder" owner:self];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTextDidChange:) name:NSControlTextDidChangeNotification object:folderName];
-	}
-
 	// Reset from the last time we used this sheet.
 	parentId = itemId;
 	[folderName setStringValue:@""];
