@@ -1,0 +1,19 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {doCancelButton = id; doOKButton = id; }; 
+            CLASS = FeedCredentials; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                cancelButton = NSButton; 
+                okButton = NSButton; 
+                password = NSSecureTextField; 
+                promptString = NSTextField; 
+                userName = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

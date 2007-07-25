@@ -1,0 +1,5 @@
+{
+	"BBC World News" = {
+		URL = "http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml";
+	};
+}

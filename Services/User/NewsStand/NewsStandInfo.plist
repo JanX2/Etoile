@@ -1,0 +1,14 @@
+{
+   ApplicationDescription = "Étoilé RSS Reader";
+   ApplicationIcon = "";
+   NSIcon = "";
+   ApplicationName = NewsStand;
+   ApplicationRelease = 0.3;
+   Authors = ("Yen-Ju Chen");
+   Copyright = "Copyright (C) 2007 by Yen-Ju Chen";
+   CopyrightDescription = "Released under Apache Licence 2.0";
+   FullVersionID = 0.3;
+   URL = "";
+   NSPrincipalClass = NSApplication;
+}
+

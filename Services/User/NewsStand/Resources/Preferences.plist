@@ -1,0 +1,17 @@
+{
+	"1" = {
+		Title = General;
+		ClassName = GeneralPreferences;
+		Image = "generalPrefImage.tiff";
+	};
+	"2" = {
+		Title = Appearance;
+		ClassName = AppearancesPreferences;
+		Image = "appearancePrefImage.tiff";
+	};
+	"3" = {
+		Title = Advanced;
+		ClassName = AdvancedPreferences;
+		Image = "advancedPrefImage.tiff";
+	};
+}

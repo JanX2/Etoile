@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {doCancel = id; doSave = id; }; 
+            CLASS = NewGroupFolder; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {cancelButton = NSButton; folderName = NSTextField; saveButton = NSButton; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

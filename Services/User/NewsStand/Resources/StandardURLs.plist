@@ -1,0 +1,4 @@
+{
+	FeedValidatorTemplate = "http://feedvalidator.org/check?url=%@";
+	ViennaHomePage = "http://www.opencommunity.co.uk/vienna2.html";
+}

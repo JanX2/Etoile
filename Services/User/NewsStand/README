@@ -1,0 +1,23 @@
+=========
+NewsStand
+=========
+
+This is a fork of Vienna[1]. The codes is derived from svn[2].
+The main purpose is to have a usable RSS reader for GNUstep and Etoile[3].
+It use TRXML[4] for XML parsing and SimpleWebKit[5] for web page.
+For cross-platform purpose, some UI are rewritten into codes and adapt default 
+look-and-feel of GNUstep or Cocoa instead of customized views.
+In the long run, it may be decomposed into frameworks and components.
+Current goal is to have a RSS reader *just work*.
+
+It is under Apache 2.0 license (See LICENSE) following Vienna..
+
+Yen-Ju
+
+[1] http://sourceforge.net/projects/vienna-rss/
+[2] The last svn commit before fork:
+    r970 | stevewpalmer | 2007-07-08 14:56:09 -0700 (Sun, 08 Jul 2007) | 3 lines
+[3] http://www.etoile-project.org.
+[4] See StepChat, a jabber client, in Etoile probject.
+[5] http://wiki.gnustep.org/index.php/SimpleWebKit
+

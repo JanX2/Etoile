@@ -1,0 +1,30 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                changeCheckFrequency = id; 
+                changeCheckOnStartUp = id; 
+                changeDownloadFolder = id; 
+                changeExpireDuration = id; 
+                changeMarkReadBehaviour = id; 
+                changeOpenLinksInBackground = id; 
+                selectDefaultLinksHandler = id; 
+            }; 
+            CLASS = GeneralPreferences; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                checkFrequency = NSPopUpButton; 
+                checkOnStartUp = NSButton; 
+                downloadFolder = NSPopUpButton; 
+                expireDuration = NSPopUpButton; 
+                linksHandler = NSPopUpButton; 
+                markReadAfterDelay = NSButtonCell; 
+                markReadAfterNext = NSButtonCell; 
+                openLinksInBackground = NSButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}
