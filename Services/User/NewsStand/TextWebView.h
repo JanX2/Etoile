@@ -45,6 +45,9 @@
 -(void)setFrameLoadDelegate:(id)anObject;
 -(void)setMaintainsBackForwardList:(BOOL)flag;
 
+- (void) makeTextLarger: (id) sender;
+- (void) makeTextSmaller: (id) sender;
+
 #if 0
 -(void)keyDown:(NSEvent *)theEvent;
 -(BOOL)isFeedRedirect;

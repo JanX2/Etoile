@@ -23,10 +23,11 @@
 
 @interface NewPreferencesController : NSWindowController
 {
-	NSView * blankView;
-	NSDictionary * prefsDict;
-	NSArray * prefsIdentifiers;
-	NSMutableDictionary * prefPanes;
-	NSString * selectedIdentifier;
+	NSView *blankView;
+	NSView *currentView;
+	NSDictionary *prefsDict;
+	NSArray *prefsIdentifiers;
+	NSMutableDictionary *prefPanes;
+	NSString *selectedIdentifier;
 }
 @end

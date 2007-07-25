@@ -19,13 +19,15 @@
 //
 
 @protocol BaseView
-	-(void)performFindPanelAction:(int)tag;
-	-(void)printDocument:(id)sender;
-	-(void)handleGoForward:(id)sender;
-	-(void)handleGoBack:(id)sender;
-	-(BOOL)canGoForward;
-	-(BOOL)canGoBack;
-	-(NSView *)mainView;
-	-(NSView *)webView;
-	-(BOOL)handleKeyDown:(unichar)keyChar withFlags:(unsigned int)flags;
+	- (void) performFindPanelAction: (int) tag;
+	- (void) printDocument: (id) sender;
+	- (void) handleGoForward: (id) sender;
+	- (void) handleGoBack: (id) sender;
+	- (BOOL) canGoForward;
+	- (BOOL) canGoBack;
+	- (NSView *) mainView;
+	- (NSView *) webView;
+	- (void) makeTextLarger: (id) sender;
+	- (void) makeTextSmaller: (id) sender;
+	- (BOOL) handleKeyDown: (unichar) keyChar withFlags: (unsigned int) flags;
 @end

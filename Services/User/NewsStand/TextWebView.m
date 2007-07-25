@@ -284,6 +284,16 @@
 {
 }
 
+- (void) makeTextLarger: (id) sender
+{
+	NSLog(@"%@ %@", self, NSStringFromSelector(_cmd));
+}
+
+- (void) makeTextSmaller: (id) sender
+{
+	NSLog(@"%@ %@", self, NSStringFromSelector(_cmd));
+}
+
 /* dealloc
  * Clean up behind ourself.
  */

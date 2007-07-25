@@ -2461,9 +2461,7 @@ NSLog(@"New Feed %@", urlString);
  */
 -(IBAction)makeTextSmaller:(id)sender
 {
-#if 0 // FIXME
-	[[primaryView webView] makeTextSmaller:sender];
-#endif
+	[primaryView makeTextSmaller:sender];
 }
 
 /* makeTextLarger
@@ -2472,9 +2470,7 @@ NSLog(@"New Feed %@", urlString);
  */
 -(IBAction)makeTextLarger:(id)sender
 {
-#if 0 // FIXME
-	[[primaryView webView] makeTextLarger:sender];
-#endif
+	[primaryView makeTextLarger:sender];
 }
 
 #if 0 // NOT_USED

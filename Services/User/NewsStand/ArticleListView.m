@@ -719,6 +719,16 @@ static const int MA_Minimum_Article_Pane_Width = 80;
 	[[NSApp mainWindow] makeFirstResponder:([self selectedArticle] != nil) ? articleList : [foldersTree mainView]];
 }
 
+- (void) makeTextLarger: (id) sender
+{
+	[articleText makeTextLarger: sender];
+}
+
+- (void) makeTextSmaller: (id) sender
+{
+	[articleText makeTextSmaller: sender];
+}
+
 /* handleKeyDown [delegate]
  * Support special key codes. If we handle the key, return YES otherwise
  * return NO to allow the framework to pass it on for default processing.

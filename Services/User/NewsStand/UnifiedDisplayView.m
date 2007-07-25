@@ -277,6 +277,19 @@
 	return unifiedText;
 }
 
+/* makeTextLarger
+ * Make text bigger.
+ */
+- (void) makeTextLarger: (id) sender
+{
+	[unifiedText makeTextLarger: sender];
+}
+
+- (void) makeTextSmaller: (id) sender
+{
+	[unifiedText makeTextSmaller: sender];
+}
+
 /* handleKeyDown [delegate]
  * Support special key codes. If we handle the key, return YES otherwise
  * return NO to allow the framework to pass it on for default processing.

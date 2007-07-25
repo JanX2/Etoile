@@ -180,23 +180,24 @@
 	NSToolbar * toolbar = [[self window] toolbar];
 	[toolbar setSelectedItemIdentifier:identifier];
 
-	// Now pull the new pane into view.
-	[[self window] setContentView:blankView];
-	[[self window] display];
+	if (currentView)
+	{
+		[currentView removeFromSuperview];
+		currentView = nil;
+	}
 
-	NSView * theView = [[[prefPane window] contentView] retain];
+	currentView = [[[prefPane window] contentView] retain];
 
 	// Compute the new frame window height and width
 	NSRect windowFrame = [NSWindow contentRectForFrameRect:[[self window] frame] styleMask:[[self window] styleMask]];
 
-	float newWindowHeight = NSHeight([theView frame]) + NSHeight([[toolbar _toolbarView] frame]);
-	float newWindowWidth = NSWidth([theView frame]);
+	float newWindowHeight = NSHeight([currentView frame]) + NSHeight([[toolbar _toolbarView] frame]);
+	float newWindowWidth = NSWidth([currentView frame]);
 
 	NSRect newFrameRect = NSMakeRect(NSMinX(windowFrame), NSMaxY(windowFrame) - newWindowHeight, newWindowWidth, newWindowHeight);
 	NSRect newWindowFrame = [NSWindow frameRectForContentRect:newFrameRect styleMask:[[self window] styleMask]];
 	[[self window] setFrame:newWindowFrame display:YES animate:[[self window] isVisible]];
-
-	[[self window] setContentView:theView];
+	[[[self window] contentView] addSubview: currentView];
 
 	// Remember this pane identifier.
 	[selectedIdentifier release];
