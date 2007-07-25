@@ -3,6 +3,7 @@
 //  Vienna
 //
 //  Created by Steve on Sat Jan 31 2004.
+//  Copyright (c) 2007 Yen-Ju Chen. All rights reserved.
 //  Copyright (c) 2004-2005 Steve Palmer. All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");

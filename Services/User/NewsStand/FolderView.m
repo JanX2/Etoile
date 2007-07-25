@@ -3,6 +3,7 @@
 //  Vienna
 //
 //  Created by Steve on Tue Apr 06 2004.
+//  Copyright (c) 2007 Yen-Ju Chen. All rights reserved.
 //  Copyright (c) 2004-2005 Steve Palmer. All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,14 +47,6 @@
  */
 -(void)awakeFromNib
 {
-	NSString * blueGradientURL = [[NSBundle mainBundle] pathForResource:@"selBlue" ofType:@"tiff"];
-	blueGradient = [[NSImage alloc] initWithContentsOfFile: blueGradientURL ];
-	
-	NSString * grayGradientURL = [[NSBundle mainBundle] pathForResource:@"selGray" ofType:@"tiff"];
-	grayGradient = [[NSImage alloc] initWithContentsOfFile: grayGradientURL ];
-
-	iRect = NSMakeRect(0,0,1,[blueGradient size].height-1);					
-	[grayGradient setFlipped:YES];
 }
 
 /* becomeFirstResponder
@@ -263,110 +256,6 @@
 	return NO;
 }
 
-/* _highlightColorForCell
- * Ensure that the default outline/table view doesn't draw its own
- * selection.
- */
--(id)_highlightColorForCell:(NSCell *)cell
-{
-	return nil;
-}
-
-/* highlightSelectionInClipRect
- * Draw the hightlight selection using the gradient.
- */
--(void)highlightSelectionInClipRect:(NSRect)rect
-{
-	NSEnumerator * enumerator = [self selectedRowEnumerator];
-	NSNumber * rowIndex;
-
-	while ((rowIndex = [enumerator nextObject]) != nil)
-	{
-		NSRect selectedRect = [self rectOfRow:[rowIndex intValue]];
-		if (NSIntersectsRect(selectedRect, rect))
-		{
-			[blueGradient setFlipped:YES];
-			[blueGradient drawInRect:selectedRect fromRect:iRect operation:NSCompositeSourceOver fraction:1];
-			[blueGradient setFlipped:NO];
-
-			if ([self editedRow] == -1)
-			{
-				if ([[self window] firstResponder] != self || ![[self window] isKeyWindow])
-					[grayGradient drawInRect:selectedRect fromRect:iRect operation:NSCompositeSourceOver fraction:1];
-			}
-			if ([self editedRow] != -1)
-				[self performSelector:@selector(prvtResizeTheFieldEditor) withObject:nil afterDelay:0.001];
-		}
-	}
-}
-
-/* prvtResizeTheFieldEditor
- * (Code copyright (c) 2005 Ryan Stevens and used with permission. Some additional modifications made.)
- * Resize the field editor on the edit cell so that we display an iTunes-like border around the text
- * being edited.
- */
--(void)prvtResizeTheFieldEditor
-{
-	id editor = [[self window] fieldEditor:YES forObject:self];
-	NSRect editRect = NSIntersectionRect([self rectOfColumn:[self editedColumn]], [self rectOfRow:[self editedRow]]);
-	NSRect frame = [[editor superview] frame];
-	NSLayoutManager * layoutManager = [editor layoutManager];
-	
-	[layoutManager boundingRectForGlyphRange:NSMakeRange(0, [layoutManager numberOfGlyphs]) inTextContainer:[editor textContainer]];
-	frame.size.width = [layoutManager usedRectForTextContainer:[editor textContainer]].size.width;
-	
-	if (editRect.size.width > frame.size.width)
-		[[editor superview] setFrame:frame];
-	else
-	{
-		frame.size.width = editRect.size.width-4;
-		[[editor superview] setFrame:frame];
-	}
-	
-	[editor setNeedsDisplay:YES];
-	
-	if ([self lockFocusIfCanDraw])
-	{
-		id clipView = [[[self window] fieldEditor:YES forObject:self] superview];
-		NSRect borderRect = [clipView frame];
-
-		// Get rid of the white border, leftover from resizing the fieldEditor..
-		editRect.origin.x -= 6;
-		editRect.size.width += 6;
-		[blueGradient setFlipped:YES];
-		[blueGradient drawInRect:editRect fromRect:iRect operation:NSCompositeSourceOver fraction:1];
-		[blueGradient setFlipped:NO];
-		
-		// Put back any cell image
-		int editColumnIndex = [self editedColumn];
-		if (editColumnIndex != -1)
-		{
-			NSTableColumn * editColumn = [[self tableColumns] objectAtIndex:editColumnIndex];
-			ImageAndTextCell * fieldCell = (ImageAndTextCell *)[editColumn dataCell];
-			if ([fieldCell respondsToSelector:@selector(drawCellImage:inView:)])
-			{
-				// The fieldCell needs to be primed with the image for the cell.
-				[[self delegate] outlineView:self willDisplayCell:fieldCell forTableColumn:editColumn item:[self itemAtRow:[self editedRow]]];
-
-				NSRect cellRect = [self frameOfCellAtColumn:editColumnIndex row:[self editedRow]];
-				[fieldCell drawCellImage:&cellRect inView:clipView];
-			}
-		}
-
-		// Fix up the borderRect..
-		borderRect.origin.y -= 1;
-		borderRect.origin.x -= 1;
-		borderRect.size.height += 2;
-		borderRect.size.width += 2;
-		
-		// Draw the border...
-		[[NSColor whiteColor] set];
-		NSFrameRect(borderRect);
-		
-		[self unlockFocus];
-	}
-}
-
 /* textDidChange
  * When the cell contents are edited, redraw the border so it wraps the text
  * rather than the cell.
@@ -374,7 +263,6 @@
 -(void)textDidChange:(NSNotification *)aNotification
 {
 	[super textDidChange:aNotification];
-	[self prvtResizeTheFieldEditor];
 }
 
 /* textDidEndEditing
@@ -408,8 +296,6 @@
 -(void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[grayGradient release];
-	[blueGradient release];
 	[super dealloc];
 }
 @end

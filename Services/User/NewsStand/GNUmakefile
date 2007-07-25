@@ -41,7 +41,6 @@ NewsStand_OBJC_FILES = \
 
 NewsStand_RESOURCE_FILES = \
 	Resources/*.icns \
-	Resources/*.png \
 	Resources/*.tiff \
 	Resources/*.plist \
 	Styles \

@@ -483,6 +483,7 @@ static const int MA_StatusBarHeight = 22;
 	[folderView setAutosaveName: @"outViewer"];
 	[folderView setAllowsMultipleSelection: YES];
 	[folderView setAllowsEmptySelection: YES];
+	[folderView setUsesAlternatingRowBackgroundColors: YES];
 	[scrollView setDocumentView: folderView];
 	[splitView1 addSubview: scrollView];
 	[[mainWindow contentView] addSubview: splitView1];

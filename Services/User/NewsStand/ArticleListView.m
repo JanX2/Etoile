@@ -95,6 +95,7 @@ static const int MA_Minimum_Article_Pane_Width = 80;
 		rect.size = [NSScrollView contentSizeForFrameSize: rect.size hasHorizontalScroller: YES hasVerticalScroller: YES borderType: NSBezelBorder];
 		articleList = [[MessageListView alloc] initWithFrame: rect];
 	    [articleList setAutoresizingMask: NSViewWidthSizable|NSViewHeightSizable];
+		[articleList setUsesAlternatingRowBackgroundColors: YES];
 
 		rect = NSMakeRect(0, 0, NSWidth(frame), NSHeight(frame)-rect.size.height);
 		articleText = [[ArticleView alloc] initWithFrame: NSMakeRect(0, 0, NSWidth(frame), NSHeight(frame)/2)];

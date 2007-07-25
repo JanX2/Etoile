@@ -3,6 +3,7 @@
 //  Vienna
 //
 //  Created by Steve on Sat Jan 24 2004.
+//  Copyright (c) 2007 Yen-Ju Chen. All rights reserved.
 //  Copyright (c) 2004-2005 Steve Palmer. All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,7 +59,7 @@
 	return self;
 }
 
--copyWithZone:(NSZone *)zone\
+- (id) copyWithZone:(NSZone *)zone
 {
 	ImageAndTextCell *cell = (ImageAndTextCell *)[super copyWithZone:zone];
 	cell->image = [image retain];
@@ -367,7 +368,6 @@
 		if (image != nil)
 			aRect.origin.x += [image size].width + 3;
 		++aRect.origin.y;
-		[controlView performSelector:@selector(prvtResizeTheFieldEditor) withObject:nil afterDelay:0.001];
 	}
 	[super selectWithFrame:aRect inView:controlView editor:textObj delegate:anObject start:selStart length:selLength];
 }
