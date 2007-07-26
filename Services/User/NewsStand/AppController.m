@@ -527,6 +527,8 @@ static const int MA_StatusBarHeight = 22;
 	[statusText setEditable: NO];
 	[statusText setSelectable: NO];
 	[statusText setBordered: NO];
+	[statusText setBezeled: NO];
+	[statusText setDrawsBackground: NO];
 	[statusText setFont: [NSFont controlContentFontOfSize: 10]];
 	[statusText setAlignment: NSCenterTextAlignment];
 	[[mainWindow contentView] addSubview: statusText];
@@ -1444,7 +1446,7 @@ static const int MA_StatusBarHeight = 22;
  */
 -(NSString *)appName
 {
-	return [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+	return NSLocalizedString(@"NewsStand", nil);
 }
 
 /* selectedArticle

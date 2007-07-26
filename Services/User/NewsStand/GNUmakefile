@@ -28,7 +28,7 @@ NewsStand_OBJC_FILES = \
 	Database.m                      SearchString.m \
 	DownloadManager.m \
 	DownloadWindow.m \
-	EmptyTrashWarning.m             TabbedWebView.m \
+	EmptyTrashWarning.m \
 	Export.m \
 	FeedCredentials.m \
 	Field.m                         TreeNode.m \
@@ -38,6 +38,9 @@ NewsStand_OBJC_FILES = \
 	GeneralPreferences.m            main.m \
 	HelperFunctions.m \
 	TextWebView.m
+
+#NewsStand_OBJC_FILES += \
+	TabbedWebView.m
 
 NewsStand_RESOURCE_FILES = \
 	Resources/*.icns \
@@ -77,17 +80,17 @@ ADDITIONAL_LDFLAGS += \
 	`curl-config --libs`
 
 ifeq ($(FOUNDATION_LIB), apple)
-ADDITIONAL_LDFLAGS += \
-	-framework WebKit
+#ADDITIONAL_LDFLAGS += \
+#	-framework WebKit
 NewsStand_LOCALIZED_RESOURCE_FILES += MainMenu.nib
 NewsStand_MAIN_MODEL_FILE = MainMenu.nib
 else
-ADDITIONAL_LDFLAGS += \
-	-lSimpleWebKit
+#ADDITIONAL_LDFLAGS += \
+#	-lSimpleWebKit
 #NewsStand_LOCALIZED_RESOURCE_FILES += MainMenu.gorm
 #NewsStand_MAIN_MODEL_FILE = MainMenu.gorm
 endif
-
+ADDITIONAL_OBJCFLAGS += -DNO_WEBKIT
 
 include $(GNUSTEP_MAKEFILES)/application.make
 -include GNUmakefile.postamble

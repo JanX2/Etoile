@@ -43,3 +43,4 @@
 -(BOOL)isFeedRedirect;
 -(BOOL)isDownload;
 @end
+

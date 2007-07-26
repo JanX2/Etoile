@@ -19,7 +19,9 @@
 //
 
 #import <AppKit/AppKit.h>
+#ifndef NO_WEBKIT
 #import "TabbedWebView.h"
+#endif
 #import "TextWebView.h"
 
 #define USE_TEXT_WEB_VIEW 0
