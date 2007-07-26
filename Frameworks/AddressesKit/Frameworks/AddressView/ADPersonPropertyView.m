@@ -4,10 +4,10 @@
 // 
 // Address View Framework for GNUstep
 // 
-// $Author: bjoern $
+// $Author: rmottola $
 // $Locker:  $
-// $Revision: 1.1.1.1 $
-// $Date: 2004/02/14 18:00:01 $
+// $Revision: 1.2 $
+// $Date: 2007/07/19 17:25:20 $
 
 /* system includes */
 #include <Foundation/Foundation.h>
@@ -276,7 +276,6 @@ static float _globalFontSize;
   [_delegate release];
   [_addImg release];
   [_chgImg release];
-  [super dealloc];
 }
 
 - (void) setDelegate: (id) delegate
@@ -549,8 +548,8 @@ static float _globalFontSize;
       id cell;
 
       cell = [_cells objectAtIndex: _editingCellIndex];
-      [cell endEditing: _textObject];
       [cell setStringValue: [[[_textObject string] copy] autorelease]];
+      [cell endEditing: _textObject];
       
       if([[cell stringValue] isEmptyString])
 	{
@@ -834,8 +833,8 @@ static float _globalFontSize;
   id details;
 
   c = [_cells objectAtIndex: _editingCellIndex];
-  [c endEditing: _textObject];
   [c setStringValue: [[[_textObject string] copy] autorelease]];
+  [c endEditing: _textObject];
 
   [self updatePersonWithValueFromCell: c];
   
