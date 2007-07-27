@@ -166,6 +166,7 @@
 	TRXMLParser *parser = [TRXMLParser parserWithContentHandler: self];
 	[textView setString: @""];
 	[[textView textStorage] beginEditing];
+	[parser setMode: PARSER_MODE_SGML];
 	[parser parseFromSource: _htmlText];
 	[[textView textStorage] endEditing];
 }
