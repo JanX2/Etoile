@@ -381,6 +381,9 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 				}
 			}
 		}
+		//NOTE: This is a bit of a hack, but there's no clean way of handling 
+		//it that I can think of
+
 		//Special handling for invocation
 		if(strcmp(currentClass->name, "NSInvocation") == 0)
 		{
@@ -388,6 +391,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 			char name[6] = {'a','r','g','.','\0','\0'};
 			//FIXME: Calculate the size sensibly and don't use a horribly insecure stack-buffer
 			char buffer[1024];
+			[backend storeInt:[sig numberOfArguments] withName:"numberOfArguments"];
 			for(unsigned int i=2 ; i<[sig numberOfArguments] ; i++)
 			{
 				name[4] = i + 060;

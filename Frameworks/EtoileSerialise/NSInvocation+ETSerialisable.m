@@ -110,6 +110,7 @@ static int discardRetValSize = 0;
 	CASE(_info)
 	{
 		deserialiseArgumentInfo(_info, aVariable + 5, aBlob);
+		return MANUAL_DESERIALISE;
 	}
 	return [super deserialise:aVariable fromPointer:aBlob version:aVersion];
 }

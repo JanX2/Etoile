@@ -36,6 +36,15 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 #define PUSH_ARRAY(offset) PUSH_STATE(offset, 'a')
 #define POP() loadedIVar = states[stackTop--].index;
 
+@interface ETDeserialiser (RegisterObjectPointer)
+- (void) registerPointer:(id*)aPointer forObject:(CORef)anObject;
+@end
+@implementation ETDeserialiser (RegisterObjectPointer)
+- (void) registerPointer:(id*)aPointer forObject:(CORef)anObject
+{
+	NSMapInsert(objectPointers, aPointer, (void*)anObject);
+}
+@end
 #define OFFSET_OF_IVAR(object, name, hint, type) offsetOfIvar(object, name, hint, sizeof(type), stackTop, &STATE)
 
 inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size, int stackTop, ETDeserialiserState * state)
@@ -74,6 +83,173 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 }
 
 static NSMapTable * deserialiserFunctions;
+
+@interface ETInvocationDeserialiser : ETDeserialiser {
+	ETDeserialiser * realDeserialiser;
+	int argCount;
+	void ** args;
+	void * stackFrame;
+	char * nextArg;
+}
+@end
+@implementation ETInvocationDeserialiser
+- (void) dealloc
+{
+	free(args);
+	free(stackFrame);
+	[super dealloc];
+}
+- (id) initWithDeserialiser:(ETDeserialiser*)aDeserialiser 
+			  forInvocation:(id)anInvocation
+			   withArgCount:(int)anInt
+{
+	if(nil == (self = [self init]))
+	{
+		return nil;
+	}
+	argCount = anInt;
+	args = calloc(anInt, sizeof(void*));
+	object = anInvocation;
+	//aDeserialiser ought to have a longer life cycle than us.
+	realDeserialiser = aDeserialiser;
+	return self;
+}
+- (void) setupInvocation
+{
+	//FIXME: This probably leaks memory. 
+	//Use some proper skill to find out where.
+
+	//Set up the stack frame again
+	NSMethodSignature * sig = [object methodSignature];
+	[object initWithMethodSignature:sig];
+	//Re-add the arguments.
+	for(int i=0 ; i<argCount ; i++)
+	{
+		[object setArgument:args[i] atIndex:i];
+	}
+}
+#define CUSTOM_DESERIALISER ((custom_deserialiser)STATE.index)
+#define IS_NEW_ARG(name) \
+	if(strncmp("arg.", name, 4))\
+	{\
+		args[name[5] - 060] = nextArg;\
+	}
+//TODO: Resize the frame if I need it.
+#define ADD_ARG(type, arg) \
+	*(type*)nextArg = arg;\
+	nextArg += sizeof(type);
+#define CHECK_CUSTOM() \
+	if(STATE.type == 'c')\
+	{\
+		nextArg = CUSTOM_DESERIALISER(aName, &aVal, nextArg);\
+	}
+#define LOAD_INTRINSIC(type, name) \
+{\
+	IS_NEW_ARG(name);\
+	CHECK_CUSTOM()\
+	if(![object deserialise:name fromPointer:&aVal version:classVersion])\
+	{\
+		ADD_ARG(type, aVal);\
+	}\
+}
+//Callbacks
+- (void) loadObjectReference:(CORef)aReference withName:(char*)aName
+{
+	IS_NEW_ARG(aName);
+	id * address = (id*)&nextArg;
+	if(aReference != 0)
+	{
+		[realDeserialiser registerPointer:address forObject:aReference];
+	}
+	ADD_ARG(id, nil);
+}
+//Nested types
+- (void) beginStruct:(char*)aStructName withName:(char*)aName;
+{
+	//FIXME: We want some way of determining the size of the data
+	//Try using a registered decoder function.
+	custom_deserialiser function = NSMapGet(deserialiserFunctions, aStructName);
+	if(function != NULL)
+	{
+		PUSH_CUSTOM(nextArg);
+	}
+	else
+	{
+		PUSH_STRUCT(nextArg);
+	}
+}
+- (void) endStruct 
+{
+	POP();
+}
+- (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength
+{
+	if(stackTop == 0)
+	{
+		int i = aName[4] - 060;
+		args[i] = malloc(aLength);
+	}
+	char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, aLength);
+
+	if(address != NULL)
+	{
+		PUSH_ARRAY(address);
+	}
+}
+- (void) endArray 
+{
+	POP();
+}
+//Intrinsics
+#define LOAD_METHOD(name, type) - (void) load ## name:(type)aVal withName:(char*)aName LOAD_INTRINSIC(type, aName)
+LOAD_METHOD(Char, char)
+LOAD_METHOD(UnsignedChar, unsigned char)
+LOAD_METHOD(Short, short)
+LOAD_METHOD(UnsignedShort, unsigned short)
+LOAD_METHOD(Int, int)
+LOAD_METHOD(UnsignedInt, unsigned int)
+LOAD_METHOD(Long, long)
+LOAD_METHOD(UnsignedLong, unsigned long)
+LOAD_METHOD(LongLong, long long)
+LOAD_METHOD(UnsignedLongLong, unsigned long long)
+LOAD_METHOD(Float, float)
+LOAD_METHOD(Double, double)
+LOAD_METHOD(Class, Class)
+LOAD_METHOD(Selector, SEL)
+- (void) loadCString:(char*)aCString withName:(char*)aName
+{
+	if(STATE.type == 'c')
+	{
+		STATE.startOffset = CUSTOM_DESERIALISER(aName, aCString, STATE.startOffset);
+	}
+	else 
+	{
+		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, sizeof(char*));
+		if(address != NULL)
+		{
+			*(char**)address = strdup(aCString);
+		}
+	}
+}
+- (void) loadData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName 
+{
+	if(STATE.type == 'c')
+	{
+		STATE.startOffset = CUSTOM_DESERIALISER(aName, aBlob, STATE.startOffset);
+	}
+	else if(![object deserialise:aName fromPointer:aBlob version:classVersion])
+	{
+		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, aSize);
+		if(address != NULL)
+		{
+			memcpy(address, aBlob, aSize);
+		}
+	}
+}
+#undef LOAD_METHOD
+#undef LOAD_INTRINSIC
+#undef CHECK_CUSTOM
+@end
 
 @implementation ETDeserialiser
 + (void) initialize
@@ -164,7 +340,6 @@ static NSMapTable * deserialiserFunctions;
 		[loadedObjectList addObject:object];
 	}
 }
-#define CUSTOM_DESERIALISER ((custom_deserialiser)STATE.index)
 #define CHECK_CUSTOM() \
 	if(STATE.type == 'c')\
 	{\
