@@ -25,37 +25,68 @@
 #import "StringExtensions.h"
 #import "TRXML/TRXMLParser.h"
 
+#define TITLE_FONT_SIZE_OFFSET 4
+#define BODY_FONT_SIZE_OFFSET 0
+#define DETAIL_FONT_SIZE_OFFSET -2 
+
+
 #if 0
 @interface NSObject (TabbedWebViewDelegate)
 	-(BOOL)handleKeyDown:(unichar)keyChar withFlags:(unsigned int)flags;
 @end
 #endif
 
+@interface TextWebView (Private)
+	- (void) updateFontWithSize: (int) size;
 #if 0
-@interface TabbedWebView (Private)
 	-(BOOL)isDownloadFileType:(NSURL *)filename;
 	-(void)loadMinimumFontSize;
 	-(void)handleMinimumFontSizeChange:(NSNotification *)nc;
 	-(void)loadUseJavaScript;
 	-(void)handleUseJavaScript:(NSNotification *)nc;
-@end
 #endif
+@end
 
 @implementation TextWebView
 
 /* TRXMLParser Delegate */
-- (void)characters:(NSString *)_chars
+- (void) characters: (NSString *) _chars
 {
-	[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: _chars] autorelease]];
+	NSAttributedString *as = [[[NSAttributedString alloc] initWithString: [_chars stringByUnescapingExtendedCharacters]  attributes: attributes] autorelease];
+	[[textView textStorage] appendAttributedString: as];
 }
 
-- (void)startElement:(NSString *)_Name
-          attributes:(NSDictionary*)_attributes
+- (void) startElement: (NSString *) _name
+           attributes: (NSDictionary*) _attributes
 {
+	if ([_name isEqualToString: @"div"])
+	{
+		if ([[_attributes objectForKey: @"class"] isEqualToString: @"articleTitleStyle"])
+		{
+			textStyle = TitleTextStyle;
+			[attributes setObject: titleFont forKey: NSFontAttributeName];
+		}
+		else if ([[_attributes objectForKey: @"class"] isEqualToString: @"articleBodyStyle"])
+		{
+			[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @"\n\n"] autorelease]];
+			textStyle = BodyTextStyle;
+			[attributes setObject: bodyFont forKey: NSFontAttributeName];
+		}
+		else if ([[_attributes objectForKey: @"class"] isEqualToString: @"articleDetails"])
+		{
+			[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @"\n\n"] autorelease]];
+			textStyle = DetailTextStyle;
+			[attributes setObject: detailFont forKey: NSFontAttributeName];
+		}
+	}
 }
 
-- (void)endElement:(NSString *)_Name
+- (void) endElement: (NSString *) _name
 {
+	if ((textStyle == DetailTextStyle) && [_name isEqualToString: @"span"])
+	{
+		[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @"\n"] autorelease]];
+	}
 }
 
 - (void) setParser:(id) XMLParser
@@ -69,7 +100,7 @@
 /* initWithFrame
  * The designated instance initialiser.
  */
--(id)initWithFrame:(NSRect)frameRect
+-(id) initWithFrame:(NSRect)frameRect
 {
 	if ((self = [super initWithFrame:frameRect]) != nil)
 	{
@@ -91,6 +122,11 @@
 		[scrollView setBorderType: NSBezelBorder];
 		[self addSubview: scrollView];
 		openLinksInNewBrowser = NO;
+		
+		fontSize = 12;
+		[self updateFontWithSize: fontSize];
+		textStyle = NoTextStyle;
+		attributes = [[NSMutableDictionary alloc] init];
 #if 0
 	isFeedRedirect = NO;
 	isDownload = NO;
@@ -110,13 +146,27 @@
 	controller = theController;
 }
 
--(void)setHTML:(NSString *)htmlText withBase:(NSString *)urlString
+- (void) setHTML: (NSString *) htmlText withBase: (NSString *) urlString
 {
-//	[textView setString: htmlText];
+	if (htmlText != _htmlText)
+	{
+		[htmlText retain];
+		[_htmlText release];
+		_htmlText = htmlText;
+	}
+
+	if (urlString != _urlString)
+	{
+		[urlString retain];
+		[_urlString release];
+		_urlString = urlString;
+	}
+
+//	NSLog(@"htmlText %@", _htmlText);
 	TRXMLParser *parser = [TRXMLParser parserWithContentHandler: self];
 	[textView setString: @""];
 	[[textView textStorage] beginEditing];
-	[parser parseFromSource: htmlText];
+	[parser parseFromSource: _htmlText];
 	[[textView textStorage] endEditing];
 }
 
@@ -286,21 +336,38 @@
 
 - (void) makeTextLarger: (id) sender
 {
-	NSLog(@"%@ %@", self, NSStringFromSelector(_cmd));
+	fontSize += 2;
+	[self updateFontWithSize: fontSize];
+	[self setHTML: _htmlText withBase: _urlString];
 }
 
 - (void) makeTextSmaller: (id) sender
 {
-	NSLog(@"%@ %@", self, NSStringFromSelector(_cmd));
+	fontSize -= 2;
+	[self updateFontWithSize: fontSize];
+	[self setHTML: _htmlText withBase: _urlString];
+}
+
+- (void) updateFontWithSize: (int) size
+{
+	titleFont = [[NSFont boldSystemFontOfSize: size + TITLE_FONT_SIZE_OFFSET] retain];
+	bodyFont = [[NSFont userFontOfSize: size + BODY_FONT_SIZE_OFFSET] retain];
+	detailFont = [[NSFont userFixedPitchFontOfSize: size + DETAIL_FONT_SIZE_OFFSET] retain];
 }
 
 /* dealloc
  * Clean up behind ourself.
  */
--(void)dealloc
+- (void) dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[controller release];
+	[attributes release];
+	[titleFont release];
+	[bodyFont release];
+	[detailFont release];
+	[_htmlText release];
+	[_urlString release];
 	[super dealloc];
 }
 @end

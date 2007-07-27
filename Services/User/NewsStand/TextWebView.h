@@ -21,6 +21,13 @@
 #import <AppKit/AppKit.h>
 #import <TRXML/TRXMLParserDelegate.h>
 
+typedef enum _TextStyle {
+	NoTextStyle = 0,
+	TitleTextStyle,
+	BodyTextStyle,
+	DetailTextStyle
+} TextStyle;
+
 @class AppController;
 
 @interface TextWebView: NSView <TRXMLParserDelegate> {
@@ -28,6 +35,14 @@
 	NSTextView *textView;
 	NSScrollView *scrollView;
 	BOOL openLinksInNewBrowser;
+	NSFont *titleFont;
+	NSFont *bodyFont;
+	NSFont *detailFont;
+	NSMutableDictionary *attributes;
+	TextStyle textStyle;
+	int fontSize;
+	NSString *_htmlText;
+	NSString *_urlString;
 #if 0
 	BOOL isFeedRedirect;
 	BOOL isDownload;
