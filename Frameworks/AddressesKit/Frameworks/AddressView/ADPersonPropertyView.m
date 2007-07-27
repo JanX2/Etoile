@@ -276,6 +276,7 @@ static float _globalFontSize;
   [_delegate release];
   [_addImg release];
   [_chgImg release];
+  [super dealloc];
 }
 
 - (void) setDelegate: (id) delegate

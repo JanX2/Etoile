@@ -35,6 +35,7 @@ AddressView_LDFLAGS=-L..
 -include GNUmakefile.local
 # NOTE: Include etoile.make include before framework.make otherwise the 
 # compilation may fail if you type 'make; make' (see bug #8806).
+include $(GNUSTEP_MAKEFILES)/aggregate.make
 -include ../../../../etoile.make
 include $(GNUSTEP_MAKEFILES)/framework.make
 -include GNUmakefile.postamble
