@@ -536,7 +536,7 @@ static int SKT_orderGraphicsFrontToBack(id graphic1, id graphic2, void *gArray) 
     graphic = [self graphicUnderPoint:curPoint];
     isSelected = (graphic ? [self graphicIsSelected:graphic] : NO);
 
-    NSLog (@"graphic %@ isSelected %d", graphic, isSelected);
+//    NSLog (@"graphic %@ isSelected %d", graphic, isSelected);
 
     if (!extending && !isSelected) {
         [self clearSelection];

@@ -35,7 +35,7 @@ Sketch_MAIN_MODEL_FILE = Draw2.nib
 else
 Sketch_LOCALIZED_RESOURCE_FILES = \
 	GridPanel.nib \
-	Inspector.nib \
+	Inspector.gorm \
 	ToolPalette.nib \
 	DrawWindow.gorm \
 	Draw2.nib 

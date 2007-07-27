@@ -7,6 +7,10 @@
 #import "SKTGraphicView.h"
 #import "SKTGraphic.h"
 
+@interface SKTInspectorController (Private)
+- (void) updateUI;
+@end
+
 @implementation SKTInspectorController
 
 + (id)sharedInspectorController {
@@ -23,6 +27,9 @@
     if (self) {
         [self setWindowFrameAutosaveName:@"Inspector"];
         needsUpdate = NO;
+#ifdef GNUSTEP
+		[self updateUI];
+#endif
     }
     return self;
 }
@@ -41,6 +48,9 @@
         _inspectingGraphicView = nil;
     }
     needsUpdate = YES;
+#ifdef GNUSTEP
+	[self updateUI];
+#endif
 }
 
 - (void)windowDidLoad {
@@ -64,6 +74,13 @@
     if (_inspectingGraphicView) {
         if ([[_inspectingGraphicView selectedGraphics] containsObject:[notification object]]) {
             needsUpdate = YES;
+#ifdef GNUSTEP
+/* When multiple objects is selected, fields in inspector 
+ * will change to mixed status, which lead chaning of graphics,
+ * which then changing the fields in inspector again.
+ * So we don't updateUI here */
+//			[self updateUI];
+#endif
         }
     }
 }
@@ -71,90 +88,20 @@
 - (void)selectionChanged:(NSNotification *)notification {
     if ([notification object] == _inspectingGraphicView) {
         needsUpdate = YES;
+#ifdef GNUSTEP
+		[self updateUI];
+#endif
     }
 }
 
 - (void)windowDidUpdate:(NSNotification *)notification {
-    if (needsUpdate) {
-        NSArray *selectedGraphics = [_inspectingGraphicView selectedGraphics];
-        unsigned c = (selectedGraphics ? [selectedGraphics count] : 0);
-        SKTGraphic *graphic;
-
-        needsUpdate = NO;
-        
-        if (c == 1) {
-            NSRect bounds;
-            BOOL tempFlag;
-
-            graphic = [selectedGraphics objectAtIndex:0];
-            bounds = [graphic bounds];
-            tempFlag = [graphic drawsFill];
-            [fillCheckbox setState:(tempFlag ? NSOnState : NSOffState)];
-            [fillCheckbox setEnabled:[graphic canDrawFill]];
-            [fillColorWell setColor:([graphic fillColor] ? [graphic fillColor] : [NSColor clearColor])];
-            [fillColorWell setEnabled:tempFlag];
-            tempFlag = [graphic drawsStroke];
-            [lineCheckbox setState:(tempFlag ? NSOnState : NSOffState)];
-            [lineCheckbox setEnabled:[graphic canDrawStroke]];
-            [lineColorWell setColor:([graphic strokeColor] ? [graphic strokeColor] : [NSColor clearColor])];
-            [lineColorWell setEnabled:tempFlag];
-            [lineWidthSlider setFloatValue:[graphic strokeLineWidth]];
-            [lineWidthSlider setEnabled:tempFlag];
-            [lineWidthTextField setFloatValue:[graphic strokeLineWidth]];
-            [lineWidthTextField setEnabled:tempFlag];
-            [xTextField setFloatValue:bounds.origin.x];
-            [xTextField setEnabled:YES];
-            [yTextField setFloatValue:bounds.origin.y];
-            [yTextField setEnabled:YES];
-            [widthTextField setFloatValue:bounds.size.width];
-            [widthTextField setEnabled:YES];
-            [heightTextField setFloatValue:bounds.size.height];
-            [heightTextField setEnabled:YES];
-        } else if (c > 1) {
-            // MF: Multiple selection should be editable
-            [fillCheckbox setState:NSMixedState];
-            [fillCheckbox setEnabled:NO];
-            [fillColorWell setColor:[NSColor whiteColor]];
-            [fillColorWell setEnabled:NO];
-            [lineCheckbox setState:NSMixedState];
-            [lineCheckbox setEnabled:NO];
-            [lineColorWell setColor:[NSColor whiteColor]];
-            [lineColorWell setEnabled:NO];
-            [lineWidthSlider setFloatValue:0.0];
-            [lineWidthSlider setEnabled:NO];
-            [lineWidthTextField setStringValue:@"--"];
-            [lineWidthTextField setEnabled:NO];
-            [xTextField setStringValue:@"--"];
-            [xTextField setEnabled:NO];
-            [yTextField setStringValue:@"--"];
-            [yTextField setEnabled:NO];
-            [widthTextField setStringValue:@"--"];
-            [widthTextField setEnabled:NO];
-            [heightTextField setStringValue:@"--"];
-            [heightTextField setEnabled:NO];
-        } else {
-            [fillCheckbox setState:NSOffState];
-            [fillCheckbox setEnabled:NO];
-            [fillColorWell setColor:[NSColor whiteColor]];
-            [fillColorWell setEnabled:NO];
-            [lineCheckbox setState:NSOffState];
-            [lineCheckbox setEnabled:NO];
-            [lineColorWell setColor:[NSColor whiteColor]];
-            [lineColorWell setEnabled:NO];
-            [lineWidthSlider setFloatValue:0.0];
-            [lineWidthSlider setEnabled:NO];
-            [lineWidthTextField setFloatValue:0.0];
-            [lineWidthTextField setEnabled:NO];
-            [xTextField setStringValue:@""];
-            [xTextField setEnabled:NO];
-            [yTextField setStringValue:@""];
-            [yTextField setEnabled:NO];
-            [widthTextField setStringValue:@""];
-            [widthTextField setEnabled:NO];
-            [heightTextField setStringValue:@""];
-            [heightTextField setEnabled:NO];
-        }
-    }
+/* NOTE: GNUstep post this notification when subclass is updated,
+ * which creates a recursive situation.
+ * We use '#ifdef GNUSTEP' here to show the difference of implementation.
+ */
+#ifndef GNUSTEP
+	[self updateUI];
+#endif
 }
 
 - (IBAction)fillCheckboxAction:(id)sender {
@@ -252,6 +199,92 @@
             [[selectedGraphics objectAtIndex:i] setBounds:bounds];
         }
         [[_inspectingGraphicView undoManager] setActionName:NSLocalizedStringFromTable(@"Set Bounds", @"UndoStrings", @"Action name for numerically setting bounds.")];
+    }
+}
+
+@end
+
+@implementation SKTInspectorController (Private)
+- (void) updateUI {
+    if (needsUpdate) {
+        NSArray *selectedGraphics = [_inspectingGraphicView selectedGraphics];
+        unsigned c = (selectedGraphics ? [selectedGraphics count] : 0);
+        SKTGraphic *graphic;
+
+        needsUpdate = NO;
+        
+        if (c == 1) {
+            NSRect bounds;
+            BOOL tempFlag;
+
+            graphic = [selectedGraphics objectAtIndex:0];
+            bounds = [graphic bounds];
+            tempFlag = [graphic drawsFill];
+            [fillCheckbox setState:(tempFlag ? NSOnState : NSOffState)];
+            [fillCheckbox setEnabled:[graphic canDrawFill]];
+            [fillColorWell setColor:([graphic fillColor] ? [graphic fillColor] : [NSColor clearColor])];
+            [fillColorWell setEnabled:tempFlag];
+            tempFlag = [graphic drawsStroke];
+            [lineCheckbox setState:(tempFlag ? NSOnState : NSOffState)];
+            [lineCheckbox setEnabled:[graphic canDrawStroke]];
+            [lineColorWell setColor:([graphic strokeColor] ? [graphic strokeColor] : [NSColor clearColor])];
+            [lineColorWell setEnabled:tempFlag];
+            [lineWidthSlider setFloatValue:[graphic strokeLineWidth]];
+            [lineWidthSlider setEnabled:tempFlag];
+            [lineWidthTextField setFloatValue:[graphic strokeLineWidth]];
+            [lineWidthTextField setEnabled:tempFlag];
+            [xTextField setFloatValue:bounds.origin.x];
+            [xTextField setEnabled:YES];
+            [yTextField setFloatValue:bounds.origin.y];
+            [yTextField setEnabled:YES];
+            [widthTextField setFloatValue:bounds.size.width];
+            [widthTextField setEnabled:YES];
+            [heightTextField setFloatValue:bounds.size.height];
+            [heightTextField setEnabled:YES];
+        } else if (c > 1) {
+            // MF: Multiple selection should be editable
+            [fillCheckbox setState:NSMixedState];
+            [fillCheckbox setEnabled:NO];
+            [fillColorWell setColor:[NSColor whiteColor]];
+            [fillColorWell setEnabled:NO];
+            [lineCheckbox setState:NSMixedState];
+            [lineCheckbox setEnabled:NO];
+            [lineColorWell setColor:[NSColor blackColor]];
+            [lineColorWell setEnabled:NO];
+            [lineWidthSlider setFloatValue:0.0];
+            [lineWidthSlider setEnabled:NO];
+            [lineWidthTextField setStringValue:@"--"];
+            [lineWidthTextField setEnabled:NO];
+            [xTextField setStringValue:@"--"];
+            [xTextField setEnabled:NO];
+            [yTextField setStringValue:@"--"];
+            [yTextField setEnabled:NO];
+            [widthTextField setStringValue:@"--"];
+            [widthTextField setEnabled:NO];
+            [heightTextField setStringValue:@"--"];
+            [heightTextField setEnabled:NO];
+        } else {
+            [fillCheckbox setState:NSOffState];
+            [fillCheckbox setEnabled:NO];
+            [fillColorWell setColor:[NSColor whiteColor]];
+            [fillColorWell setEnabled:NO];
+            [lineCheckbox setState:NSOffState];
+            [lineCheckbox setEnabled:NO];
+            [lineColorWell setColor:[NSColor whiteColor]];
+            [lineColorWell setEnabled:NO];
+            [lineWidthSlider setFloatValue:0.0];
+            [lineWidthSlider setEnabled:NO];
+            [lineWidthTextField setFloatValue:0.0];
+            [lineWidthTextField setEnabled:NO];
+            [xTextField setStringValue:@""];
+            [xTextField setEnabled:NO];
+            [yTextField setStringValue:@""];
+            [yTextField setEnabled:NO];
+            [widthTextField setStringValue:@""];
+            [widthTextField setEnabled:NO];
+            [heightTextField setStringValue:@""];
+            [heightTextField setEnabled:NO];
+        }
     }
 }
 

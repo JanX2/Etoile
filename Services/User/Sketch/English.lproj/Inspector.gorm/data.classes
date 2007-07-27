@@ -1,0 +1,46 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "dimensionTextFieldAction:",
+	    "fillCheckboxAction:",
+	    "fillColorWellAction:",
+	    "lineCheckboxAction:",
+	    "lineColorWellAction:",
+	    "lineWidthSliderAction:",
+	    "lineWidthTextFieldAction:"
+	);
+	Super = NSObject;
+    };
+    SKTInspectorController = {
+	Actions = (
+	    "fillCheckboxAction:",
+	    "lineCheckboxAction:",
+	    "fillColorWellAction:",
+	    "lineWidthTextFieldAction:",
+	    "dimensionTextFieldAction:",
+	    "lineWidthSliderAction:",
+	    "lineColorWellAction:"
+	);
+	Outlets = (
+	    xTextField,
+	    widthTextField,
+	    lineCheckbox,
+	    needsUpdate,
+	    fillCheckbox,
+	    lineWidthSlider,
+	    lineColorWell,
+	    yTextField,
+	    lineWidthTextField,
+	    fillColorWell,
+	    heightTextField
+	);
+	Super = NSWindowController;
+    };
+    java.lang.Object = {
+	Actions = (
+	);
+	Outlets = (
+	);
+    };
+}
