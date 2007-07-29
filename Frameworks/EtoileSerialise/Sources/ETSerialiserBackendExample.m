@@ -66,7 +66,7 @@
 }
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
 {
-	fprintf(outFile, "(Object with ID:%ld)\n",aReference);
+	fprintf(outFile, "(Object with ID:%d)\n",aReference);
 	[self indent];
 	fprintf(outFile, "%s * %s {\n",aClass->name,aName);
 	indent++;
@@ -74,7 +74,7 @@
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName
 {
 	[self indent];
-	fprintf(outFile, "id %s=%ld\n",aName,aReference);
+	fprintf(outFile, "id %s=%d\n",aName,aReference);
 }
 - (void) incrementReferenceCountForObject:(CORef)anObjectID
 {
@@ -195,7 +195,7 @@
 	NSNumber * key;
 	while((key = [keys nextObject]) != nil)
 	{
-		fprintf(outFile, "Object %ld has reference count %ld\n",
+		fprintf(outFile, "Object %d has reference count %d\n",
 				[key unsignedIntValue],
 				[[referenceCounts objectForKey:key] unsignedIntValue]);
 	}

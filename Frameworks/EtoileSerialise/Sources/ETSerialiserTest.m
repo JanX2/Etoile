@@ -163,7 +163,6 @@ int main(void)
 	NSAutoreleasePool * pool = [NSAutoreleasePool new];
 	NSLog(@"Testing serialiser with human-readable output");
 	testWithBackend([ETSerialiserBackendExample class], nil);
-	id backend = [ETSerialiserBackendBinaryFile new];
 	NSLog(@"Serialising to binary file...");
 	testWithBackend([ETSerialiserBackendBinaryFile class], [NSURL fileURLWithPath:@"testfile"]);
 	NSLog(@"Deserialising from binary file...");

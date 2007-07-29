@@ -168,7 +168,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 			[backend storeObjectReference:(unsigned long long)(uintptr_t)(*(id*)address) withName:name];
 			return sizeof(id);
 		default:
-			printf("%c not recognised(%s)\n", type);
+			printf("%c not recognised(%s)\n", type, name);
 			return -1;
 	}
 }
