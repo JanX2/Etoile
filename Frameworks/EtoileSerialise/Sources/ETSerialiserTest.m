@@ -136,16 +136,28 @@ void * TestStructDeserialiser(char* varName,
 }
 - (void) methodTest
 {
-	NSLog(@"Method calls work");
-	NSLog(@"Integer: 10 = %d", anInteger);
-	NSLog(@"String Object: \"Some text\" = \"%@\"", aString, aString);
-	NSLog(@"Float: 12.345 = %f",(double)aFloat);
-	NSLog(@"Double: 67.890 = %f", aDouble);
-	NSLog(@"Array {0,1,2} = {%d,%d,%d}", anArray[0], anArray[1], anArray[2]);
-	NSLog(@"Unsigned long long in struct: 12 = %d", aStruct.intInStruct);
-	NSLog(@"Struct with custom serialiser: \"123456789012\" = \"%.12s\"", bar.data);
-	NSLog(@"BOOL in struct: 1 = %d", (int)aStruct.boolInStruct);
-	NSLog(@"Retain count of object %@: 2 = %d", aNumber, [aNumber retainCount]);
+	//Method correctly entered
+	UKPass();
+	//Integer 
+	UKIntsEqual(10, anInteger);
+	//NSString
+	UKStringsEqual(@"Some text", aString);
+	//Float
+	UKFloatsEqual(12.345f, aFloat, 0.01);
+	//Double
+	UKFloatsEqual(67.890f, (float)aDouble, 0.01);
+	//Array of ints
+	UKIntsEqual(0, anArray[0]);
+	UKIntsEqual(1, anArray[1]);
+	UKIntsEqual(2, anArray[2]);
+	//Int in a structure
+	UKIntsEqual(12, aStruct.intInStruct);
+	//Custom serialiser for structure
+	UKTrue(strncmp("123456789012", bar.data, 12) == 0);
+	//BOOL
+	UKIntsEqual((int)YES, (int)aStruct.boolInStruct);
+	//Retain count
+	UKIntsEqual(2, [aNumber retainCount]);
 }
 @end
 
@@ -162,38 +174,41 @@ void testWithBackend(Class backend, NSURL * anURL)
 @interface ETSerialiserTest : NSObject <UKTest>
 @end
 @implementation ETSerialiserTest
-- (void) testEverything
+#ifdef VISUAL_TEST
+- (void) testHuman
 {
-	NSAutoreleasePool * pool = [NSAutoreleasePool new];
-	NSLog(@"Testing serialiser with human-readable output");
 	testWithBackend([ETSerialiserBackendExample class], nil);
-	NSLog(@"Serialising to binary file...");
 	testWithBackend([ETSerialiserBackendBinaryFile class], [NSURL fileURLWithPath:@"testfile"]);
-	NSLog(@"Deserialising from binary file...");
+}
+#endif
+- (void) testBinary
+{
 	id deback = [ETDeserialiserBackendBinaryFile new];
 	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"testfile"]];
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
 	TestClass * bar = [deserialiser restoreObjectGraph];
 	[bar methodTest];
+}
 #ifdef TEST_COREOBJECT
+- (void) testCoreObject
+{
 	NSMutableString * str = [NSMutableString stringWithString:@"A string"];
 	NSMutableString * fake = [[COProxy alloc] initWithObject:str
 												  serialiser:[ETSerialiser serialiserWithBackend:[ETSerialiserBackendBinaryFile class] forURL:[NSURL fileURLWithPath:@"cotest"]]];
 	[fake appendString:@" containing"];
 	[fake appendString:@" some character."];
-	NSLog(@"Attempting to re-load an invocation");
-	deback = [ETDeserialiserBackendBinaryFile new];
+	id deback = [ETDeserialiserBackendBinaryFile new];
 	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"cotest.1"]];
-	deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
+	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
 	NSInvocation * inv = [deserialiser restoreObjectGraph];
+#ifdef VISUAL_TEST
 	id serialiser = [ETSerialiser serialiserWithBackend:[ETSerialiserBackendExample class] forURL:nil];
 	[serialiser serialiseObject:inv withName:"FirstInvocation"];
-	NSLog(@"Attempting to re-apply invocation...");
+#endif
 	str = [NSMutableString stringWithString:@"A string"];
 	[inv setTarget:str];
 	[inv invoke];
-	NSLog(@"\"A string containing\" = \"%@\"", str);
-#endif
-	[pool release];
+	UKStringsEqual(@"A string containing", str);
 }
+#endif
 @end
