@@ -182,9 +182,14 @@ int main(void)
 	deback = [ETDeserialiserBackendBinaryFile new];
 	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"cotest.1"]];
 	deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
-	id inv = [deserialiser restoreObjectGraph];
+	NSInvocation * inv = [deserialiser restoreObjectGraph];
 	id serialiser = [ETSerialiser serialiserWithBackend:[ETSerialiserBackendExample class] forURL:nil];
 	[serialiser serialiseObject:inv withName:"FirstInvocation"];
+	NSLog(@"Attempting to re-apply invocation...");
+	str = [NSMutableString stringWithString:@"A string"];
+	[inv setTarget:str];
+	[inv invoke];
+	NSLog(@"\"A string containing\" = \"%@\"", str);
 #endif
 	[pool release];
 	return 0;
