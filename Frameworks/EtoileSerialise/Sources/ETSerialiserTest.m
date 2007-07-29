@@ -2,6 +2,7 @@
 #include <objc/objc.h>
 #include <objc/objc-api.h>
 #include <objc/Object.h>
+#import <UnitKit/UnitKit.h>
 #import "ETSerialiser.h"
 #import "ETDeserialiser.h"
 #import "ETDeserialiserBinaryFile.h"
@@ -158,7 +159,10 @@ void testWithBackend(Class backend, NSURL * anURL)
 	[pool release];
 }
 
-int main(void)
+@interface ETSerialiserTest : NSObject <UKTest>
+@end
+@implementation ETSerialiserTest
+- (void) testEverything
 {
 	NSAutoreleasePool * pool = [NSAutoreleasePool new];
 	NSLog(@"Testing serialiser with human-readable output");
@@ -191,5 +195,5 @@ int main(void)
 	NSLog(@"\"A string containing\" = \"%@\"", str);
 #endif
 	[pool release];
-	return 0;
 }
+@end

@@ -10,11 +10,15 @@ libEtoileSerialise_OBJC_FILES = \
 					ETSerialiserBackendBinaryFile.m \
 					ETSerialiserBackendExample.m \
 					ETSerialiserNullBackend.m \
-					ETSerialiserTest.m \
 					GSMutableString+ETSerialisable.m \
 					NSDataStatic+ETSerialisable.m \
 					NSInvocation+ETSerialisable.m \
 					StringMap.m
+
+ifeq ($(test), yes)
+libEtoileSerialise_OBJC_FILES +=\
+					ETSerialiserTest.m 
+endif
 
 libEtoileSerialise_OBJCFLAGS += -g -std=c99
 

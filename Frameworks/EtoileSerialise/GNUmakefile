@@ -1,6 +1,7 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
 FRAMEWORK_NAME = EtoileSerialise
+BUNDLE_NAME = ${FRAMEWORK_NAME}
 DOCUMENT_NAME = EtoileSerialiseDoc
 
 EtoileSerialise_SUBPROJECTS = Sources
@@ -40,7 +41,13 @@ LDFLAGS += -g
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 -include ../../etoile.make
+
+ifeq ($(test), yes)
+include $(GNUSTEP_MAKEFILES)/bundle.make
+else
 include $(GNUSTEP_MAKEFILES)/framework.make
+endif
+
 include $(GNUSTEP_MAKEFILES)/documentation.make
 
 -include GNUmakefile.postamble
