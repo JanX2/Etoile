@@ -36,12 +36,12 @@
  */
 -(id)init
 {
-	NSRect rect = NSMakeRect(200, 200, 360, 240);;
+	NSRect rect = NSMakeRect(200, 200, 360, 240);
 	NSWindow * win = [[NSWindow alloc] initWithContentRect: rect
 	                     styleMask: NSTitledWindowMask |
                                     NSClosableWindowMask
 	                       backing: NSBackingStoreBuffered
-	                         defer: YES];
+	                         defer: NO];
 	[win setFrameAutosaveName: @"newPreferencesWindow"];
 	[win setDelegate: self];
 	[win setReleasedWhenClosed: NO];
