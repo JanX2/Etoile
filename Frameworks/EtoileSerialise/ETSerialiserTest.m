@@ -9,6 +9,8 @@
 #import "ETSerialiserBackendBinaryFile.h"
 #import "COProxy.h"
 
+#define TEST_COREOBJECT
+
 @interface TestClass : NSObject {
 @public
 	int anInteger;
@@ -173,10 +175,17 @@ int main(void)
 #ifdef TEST_COREOBJECT
 	NSMutableString * str = [NSMutableString stringWithString:@"A string"];
 	NSMutableString * fake = [[COProxy alloc] initWithObject:str
-												  serialiser:[ETSerialiser serialiserWithBackend:[ETSerialiserBackendExample class] forURL:nil]];
+												  serialiser:[ETSerialiser serialiserWithBackend:[ETSerialiserBackendBinaryFile class] forURL:[NSURL fileURLWithPath:@"cotest"]]];
 	[fake appendString:@" containing"];
 	[fake appendString:@" some character."];
-	[pool release];
+	NSLog(@"Attempting to re-load an invocation");
+	deback = [ETDeserialiserBackendBinaryFile new];
+	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"cotest.1"]];
+	deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
+	id inv = [deserialiser restoreObjectGraph];
+	id serialiser = [ETSerialiser serialiserWithBackend:[ETSerialiserBackendExample class] forURL:nil];
+	[serialiser serialiseObject:inv withName:"FirstInvocation"];
 #endif
+	[pool release];
 	return 0;
 }

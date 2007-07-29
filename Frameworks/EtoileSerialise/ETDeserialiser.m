@@ -6,17 +6,22 @@
 inline static void * addressForIVarName(id anObject, char * aName, int hint)
 {
 	//Find a real iVar
-	struct objc_ivar_list* ivarlist = anObject->class_pointer->ivars;
-	if(ivarlist != NULL) 
+	Class class = anObject->class_pointer;
+	while(class != Nil && class != class->super_class)
 	{
-		for(int i=0 ; i<ivarlist->ivar_count ; i++)
+		struct objc_ivar_list* ivarlist = class->ivars;
+		if(ivarlist != NULL) 
 		{
-			char * name = (char*)ivarlist->ivar_list[i].ivar_name;
-			if(strcmp(aName, name) == 0)
+			for(int i=0 ; i<ivarlist->ivar_count ; i++)
 			{
-				return ((char*)anObject + (ivarlist->ivar_list[i].ivar_offset));
+				char * name = (char*)ivarlist->ivar_list[i].ivar_name;
+				if(strcmp(aName, name) == 0)
+				{
+					return ((char*)anObject + (ivarlist->ivar_list[i].ivar_offset));
+				}
 			}
 		}
+		class = class->super_class;
 	}
 	return NULL;
 }
@@ -91,6 +96,10 @@ static NSMapTable * deserialiserFunctions;
 	void * stackFrame;
 	char * nextArg;
 }
+- (id) initWithDeserialiser:(ETDeserialiser*)aDeserialiser 
+			  forInvocation:(id)anInvocation
+			   withArgCount:(int)anInt;
+- (void) setupInvocation;
 @end
 @implementation ETInvocationDeserialiser
 - (void) dealloc
@@ -109,10 +118,17 @@ static NSMapTable * deserialiserFunctions;
 	}
 	argCount = anInt;
 	args = calloc(anInt, sizeof(void*));
+	stackFrame = calloc(1024,1);
+	nextArg = stackFrame;
 	object = anInvocation;
 	//aDeserialiser ought to have a longer life cycle than us.
 	realDeserialiser = aDeserialiser;
 	return self;
+}
+- (void) endObject 
+{
+	[backend setDeserialiser:realDeserialiser];
+	[realDeserialiser endObject];
 }
 - (void) setupInvocation
 {
@@ -122,19 +138,23 @@ static NSMapTable * deserialiserFunctions;
 	//Set up the stack frame again
 	NSMethodSignature * sig = [object methodSignature];
 	[object initWithMethodSignature:sig];
-	//Re-add the arguments.
-	for(int i=0 ; i<argCount ; i++)
+	//Re-add the arguments (0 and 1 are self and cmd)
+	for(int i=2 ; i<argCount ; i++)
 	{
+		//NSLog(@"Setting argument %d to 0x%x", i, args[i]);
 		[object setArgument:args[i] atIndex:i];
 	}
+	//Invocation now has two references to method signature.
+	[sig release];
 }
 #define CUSTOM_DESERIALISER ((custom_deserialiser)STATE.index)
 #define IS_NEW_ARG(name) \
-	if(strncmp("arg.", name, 4))\
+	if(strncmp("arg.", name, 4) == 0)\
 	{\
-		args[name[5] - 060] = nextArg;\
+		args[name[4] - 060] = nextArg;\
 	}
 //TODO: Resize the frame if I need it.
+//TODO: Alignment stuff for structs
 #define ADD_ARG(type, arg) \
 	*(type*)nextArg = arg;\
 	nextArg += sizeof(type);
@@ -156,7 +176,7 @@ static NSMapTable * deserialiserFunctions;
 - (void) loadObjectReference:(CORef)aReference withName:(char*)aName
 {
 	IS_NEW_ARG(aName);
-	id * address = (id*)&nextArg;
+	id * address = (id*)nextArg;
 	if(aReference != 0)
 	{
 		[realDeserialiser registerPointer:address forObject:aReference];
@@ -164,8 +184,9 @@ static NSMapTable * deserialiserFunctions;
 	ADD_ARG(id, nil);
 }
 //Nested types
-- (void) beginStruct:(char*)aStructName withName:(char*)aName;
+- (void) beginStruct:(char*)aStructName withName:(char*)aName
 {
+	IS_NEW_ARG(aName);
 	//FIXME: We want some way of determining the size of the data
 	//Try using a registered decoder function.
 	custom_deserialiser function = NSMapGet(deserialiserFunctions, aStructName);
@@ -184,6 +205,7 @@ static NSMapTable * deserialiserFunctions;
 }
 - (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength
 {
+	IS_NEW_ARG(aName);
 	if(stackTop == 0)
 	{
 		int i = aName[4] - 060;
@@ -276,6 +298,7 @@ LOAD_METHOD(Selector, SEL)
 	loadedObjects = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 	objectPointers = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 	loadedObjectList = [[NSMutableArray alloc] init];
+	invocations = [[NSMutableArray alloc] init];
 	return self;
 }
 - (void) setBackend:(id<ETDeserialiserBackend>)aBackend
@@ -303,12 +326,13 @@ LOAD_METHOD(Selector, SEL)
 	id * pointer;
 	while(NSNextMapEnumeratorPair(&enumerator, (void*)&pointer, (void*)&ref))
 	{
-		//NSLog(@"Setting *(id*)0x%x=%d", pointer, ref);
+		//NSLog(@"Setting pointer at 0x%x to 0x%x for ref %d", pointer, GET_OBJ(ref), ref);
 		*pointer = GET_OBJ(ref);
 		//If we haven't already loaded this object, then do.
 		if(*pointer == NULL)
 		{
 			[backend deserialiseObjectWithID:ref];
+			//NSLog(@"Setting pointer at 0x%x to 0x%x for ref %d", pointer, GET_OBJ(ref), ref);
 			*pointer = GET_OBJ(ref);
 		}
 		NSMapRemove(objectPointers, pointer);
@@ -323,6 +347,8 @@ LOAD_METHOD(Selector, SEL)
 		[finishedObject finishedDeserialising];
 	}
 	[loadedObjectList removeAllObjects];
+	//Fix up invocations with some hacks.
+	[invocations makeObjectsPerformSelector:@selector(setupInvocation)];
 	return GET_OBJ(mainObject);
 }
 //Objects
@@ -331,7 +357,16 @@ LOAD_METHOD(Selector, SEL)
 	loadedIVar = 0;
 	//TODO: Decide if this should call init.  Probably not...
 	object = [aClass alloc];
+	//NSLog(@"Loading %@ at address 0x%x for ref %d", [aClass className], object, aReference);
 	SET_REF(aReference, object);
+	if([object isKindOfClass:[NSInvocation class]])
+	{
+		isInvocation = YES;
+	}
+	else
+	{
+		isInvocation = NO;
+	}
 }
 - (void) endObject 
 {
@@ -453,7 +488,27 @@ LOAD_METHOD(Char, char)
 LOAD_METHOD(UnsignedChar, unsigned char)
 LOAD_METHOD(Short, short)
 LOAD_METHOD(UnsignedShort, unsigned short)
-LOAD_METHOD(Int, int)
+- (void) loadInt:(int)aVal withName:(char*)aName
+{
+	if(
+	    isInvocation
+		&&
+		strcmp(aName, "numberOfArguments") == 0
+	  )
+	{
+		id inv = [[ETInvocationDeserialiser alloc] initWithDeserialiser:self
+		                                                  forInvocation:object
+		                                                   withArgCount:(int)aVal];
+		[inv setBackend:backend];
+		[invocations addObject:inv];
+		[inv release];
+		[backend setDeserialiser:inv];
+	}
+	else
+	{
+		LOAD_INTRINSIC(int, name);
+	}
+}
 LOAD_METHOD(UnsignedInt, unsigned int)
 LOAD_METHOD(Long, long)
 LOAD_METHOD(UnsignedLong, unsigned long)
@@ -499,6 +554,7 @@ LOAD_METHOD(Selector, SEL)
 	NSFreeMapTable(loadedObjects);
 	[backend release];
 	[loadedObjectList release];
+	[invocations release];
 	[super dealloc];
 }
 @end

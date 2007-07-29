@@ -47,9 +47,11 @@ typedef void*(*custom_deserialiser)(char*,void*,void*);
 	int stackTop;
 	//Object currently being deserialised
 	id object;
+	BOOL isInvocation;
 	int classVersion;
 	int loadedIVar;
 	NSMutableArray * loadedObjectList;
+	NSMutableArray * invocations;
 }
 + (ETDeserialiser*) deserialiserWithBackend:(id<ETDeserialiserBackend>)aBackend;
 + (void) registerDeserialiser:(custom_deserialiser)aDeserialiser forStructNamed:(char*)aName;
