@@ -25,6 +25,17 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 {
 	return [[[ETSerialiserBackendBinaryFile alloc] initWithURL:anURL] autorelease];
 }
+- (void) setFile:(const char*)filename
+{
+	blobFile = fopen(filename, "w");
+	WRITE("\0\0\0\0", sizeof(int));
+	const NSMapTableKeyCallBacks keycallbacks = {NULL, NULL, NULL, NULL, NULL, NSNotAnIntMapKey};
+	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
+	//TODO: After we've got some real profiling data, 
+	//change 100 to a more sensible value
+	offsets = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
+	refCounts = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
+}
 - (id) initWithURL:(NSURL*)anURL
 {
 	if(nil == (self = [self init]))
@@ -40,17 +51,6 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 	ASSIGN(fileName, [anURL path]);
 	[self setFile:[fileName UTF8String]];
 	return self;
-}
-- (void) setFile:(const char*)filename
-{
-	blobFile = fopen(filename, "w");
-	WRITE("\0\0\0\0", sizeof(int));
-	const NSMapTableKeyCallBacks keycallbacks = {NULL, NULL, NULL, NULL, NULL, NSNotAnIntMapKey};
-	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
-	//TODO: After we've got some real profiling data, 
-	//change 100 to a more sensible value
-	offsets = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
-	refCounts = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 }
 - (void) closeFile
 {

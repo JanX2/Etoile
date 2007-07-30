@@ -41,7 +41,7 @@ id nullBackend;
 
 static NSMapTable * serialiserFunctions;
 
-parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBackend> aBackend, BOOL shouldMalloc)
+parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBackend> aBackend)
 {
 	//Just a placeholder to be used to trigger the reloading function
 	[aBackend beginStruct:"_NSZone" withName:aName];
@@ -225,7 +225,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 				custom_serialiser function = NSMapGet(serialiserFunctions, structName);
 				if(function != NULL)
 				{
-					retVal = function(name, address, backend, NO);
+					retVal = function(name, address, backend);
 					break;
 				}
 				
@@ -296,7 +296,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 					custom_serialiser function = NSMapGet(serialiserFunctions, structName);
 					if(function != NULL)
 					{
-						retVal = function(name, address, backend, YES);
+						retVal = function(name, address, backend);
 						break;
 					}
 					else if((int)indirect.size >= 0)

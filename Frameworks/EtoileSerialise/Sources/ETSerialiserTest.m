@@ -46,7 +46,7 @@
 	int * aPointer;
 }
 @end
-parsed_type_size_t TestStructSerialiser(char* aName, void* aStruct, id <ETSerialiserBackend> aBackend, BOOL shouldMalloc)
+parsed_type_size_t TestStructSerialiser(char* aName, void* aStruct, id <ETSerialiserBackend> aBackend)
 {
 	struct TestStruct * s = (struct TestStruct*)aStruct;
 	[aBackend beginStruct:"TestStruct" withName:aName];
