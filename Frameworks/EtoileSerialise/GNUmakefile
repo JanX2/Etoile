@@ -2,29 +2,14 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 FRAMEWORK_NAME = EtoileSerialise
 BUNDLE_NAME = ${FRAMEWORK_NAME}
-DOCUMENT_NAME = EtoileSerialiseDoc
+DOCUMENT_NAME = ${FRAMEWORK_NAME}
 
-EtoileSerialise_SUBPROJECTS = Sources
+${FRAMEWORK_NAME}_SUBPROJECTS = Sources
 
-# The Objective-C files to compile
-ETSerialiserTest_OBJC_FILES = \
-					StringMap.m\
-					ETSerialiser.m\
-				   	ETSerialiserBackendExample.m\
-				   	ETSerialiserTest.m\
-				   	ETSerialiserBackendBinaryFile.m\
-					ETSerialiserNullBackend.m\
-				   	ETDeserialiser.m\
-				   	ETDeserialiserBinaryFile.m\
-					COProxy.m\
-					GSMutableString+ETSerialisable.m\
-					NSDataStatic+ETSerialisable.m\
-					NSInvocation+ETSerialisable.m
-
-EtoileSerialise_HEADER_FILES_DIR = Headers
+${FRAMEWORK_NAME}_HEADER_FILES_DIR = Headers
 
 
-EtoileSerialise_HEADER_FILES = \
+${FRAMEWORK_NAME}_HEADER_FILES = \
 				   COProxy.h\
 				   ETDeserialiserBinaryFile.h\
 				   ETSerialiserBackendBinaryFile.h\
@@ -33,7 +18,7 @@ EtoileSerialise_HEADER_FILES = \
 				   ETSerialiser.h\
 				   ETSerialiserBackendExample.h
 
-EtoileSerialiseDoc_AGSDOC_FILES = ${ETSerialiserTest_HEADER_FILES}
+${DOCUMENT_NAME}_AGSDOC_FILES = $(addprefix Headers/, ${EtoileSerialise_HEADER_FILES})
 
 OBJCFLAGS += -std=c99 -Wall -W -Wunreachable-code -Winline -Werror -Wno-unused -Wno-format -g
 LDFLAGS += -g
