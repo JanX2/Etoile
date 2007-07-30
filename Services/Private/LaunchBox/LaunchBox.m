@@ -114,7 +114,7 @@
 
 - (IBAction) launch:(id)sender
 {
-	NSString app = [apps objectForKey:[commandBox stringValue]];
+	NSString * app = [apps objectForKey:[commandBox stringValue]];
 	if(app != nil)
 	{
 		[[NSWorkspace sharedWorkspace] launchApplication:app];
