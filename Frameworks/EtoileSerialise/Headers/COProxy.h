@@ -1,3 +1,6 @@
+/**
+ * <author name="David Chisnall"></author>
+ */
 #import <Foundation/Foundation.h>
 
 /**
@@ -23,7 +26,7 @@
 	id backend;
 }
 /**
- * Manage <var>anObject</var>, using <var>aSerialiser</var> to for serialisation
+ * Manage anObject, using aSerialiser to for serialisation
  */
 - (id) initWithObject:(id)anObject
            serialiser:(id)aSerialiser;

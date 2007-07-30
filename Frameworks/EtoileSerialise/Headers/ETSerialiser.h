@@ -1,3 +1,6 @@
+/**
+ * <author name="David Chisnall"></author>
+ */
 #import <Foundation/Foundation.h>
 
 /**
@@ -61,7 +64,7 @@ typedef uint32_t CORef;
  * Begin storing a structure.  Subsequent messages will correspond to fields in
  * this structure until a corresponding -endStruct message is received.
  *
- * The <var>aStructName</var> stores the name of the structure type.  This is
+ * The aStructName stores the name of the structure type.  This is
  * used by the deserialiser to identify a custom structure deserialiser to use.
  */
 - (void) beginStruct:(char*)aStructName withName:(char*)aName;
@@ -79,69 +82,69 @@ typedef uint32_t CORef;
 - (void) endArray;
 //Intrinsics
 /**
- * Store the value <val>aChar</val> for the instance variable <var>aName</var>.
+ * Store the value aChar for the instance variable aName.
  */
 - (void) storeChar:(char)aChar withName:(char*)aName;
 /**
- * Store the value <val>aChar</val> for the instance variable <var>aName</var>.
+ * Store the value aChar for the instance variable aName.
  */
 - (void) storeUnsignedChar:(unsigned char)aChar withName:(char*)aName;
 /**
- * Store the value <val>aShort</val> for the instance variable <var>aName</var>.
+ * Store the value aShort for the instance variable aName.
  */
 - (void) storeShort:(short)aShort withName:(char*)aName;
 /**
- * Store the value <val>aShort</val> for the instance variable <var>aName</var>.
+ * Store the value aShort for the instance variable aName.
  */
 - (void) storeUnsignedShort:(unsigned short)aShort withName:(char*)aName;
 /**
- * Store the value <val>aInt</val> for the instance variable <var>aName</var>.
+ * Store the value aInt for the instance variable aName.
  */
 - (void) storeInt:(int)aInt withName:(char*)aName;
 /**
- * Store the value <val>aInt</val> for the instance variable <var>aName</var>.
+ * Store the value aInt for the instance variable aName.
  */
 - (void) storeUnsignedInt:(unsigned int)aInt withName:(char*)aName;
 /**
- * Store the value <val>aLong</val> for the instance variable <var>aName</var>.
+ * Store the value aLong for the instance variable aName.
  */
 - (void) storeLong:(long)aLong withName:(char*)aName;
 /**
- * Store the value <val>aLong</val> for the instance variable <var>aName</var>.
+ * Store the value aLong for the instance variable aName.
  */
 - (void) storeUnsignedLong:(unsigned long)aLong withName:(char*)aName;
 /**
- * Store the value <val>aLongLong</val> for the instance variable <var>aName</var>.
+ * Store the value aLongLong for the instance variable aName.
  */
 - (void) storeLongLong:(long long)aLongLong withName:(char*)aName;
 /**
- * Store the value <val>aLongLong</val> for the instance variable <var>aName</var>.
+ * Store the value aLongLong for the instance variable aName.
  */
 - (void) storeUnsignedLongLong:(unsigned long long)aLongLong withName:(char*)aName;
 /**
- * Store the value <val>aFloat</val> for the instance variable <var>aName</var>.
+ * Store the value aFloat for the instance variable aName.
  */
 - (void) storeFloat:(float)aFloat withName:(char*)aName;
 /**
- * Store the value <val>aDouble</val> for the instance variable <var>aName</var>.
+ * Store the value aDouble for the instance variable aName.
  */
 - (void) storeDouble:(double)aDouble withName:(char*)aName;
 /**
- * Store the value <val>aClass</val> for the instance variable <var>aName</var>.
+ * Store the value aClass for the instance variable aName.
  */
 - (void) storeClass:(Class)aClass withName:(char*)aName;
 /**
- * Store the value <val>aChar</val> for the instance variable <var>aName</var>.
+ * Store the value aChar for the instance variable aName.
  */
 - (void) storeSelector:(SEL)aSelector withName:(char*)aName;
 /**
- * Store the value <val>aCString</val> for the instance variable
- * <var>aName</var>.  The backend should ensure it copies the string, rather
+ * Store the value aCString for the instance variable
+ * aName.  The backend should ensure it copies the string, rather
  * than simply retaining a reference to it.
  */
 - (void) storeCString:(const char*)aCString withName:(char*)aName;
 /**
- * Store the value <val>aBlob</val> for the instance variable <var>aName</var>.
+ * Store the value aBlob for the instance variable aName.
  * The data should be copied by the backend.
  */
 - (void) storeData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName;
@@ -163,7 +166,7 @@ typedef uint32_t CORef;
 - (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend;
 /**
  * Load the contents of the named instance variable from the contents of
- * <var>aBlob</var>.  The <var>aVersion</var> parameter indicates the version
+ * aBlob.  The aVersion parameter indicates the version
  * of the class that serialised this instance variable as returned by +version.
  * This method should return MANUAL_DESERIALISE for cases if it completely
  * deserialises the variable or AUTO_DESERIALISE to cause the deserialiser to
@@ -177,8 +180,8 @@ typedef uint32_t CORef;
 
 /**
  * Type used for returns from type parser functions and custom structure
- * serialisers.  The <var>size</var> field should be set to the size of the
- * data serialised, and the <var>offset</var> field set to the size of the type
+ * serialisers.  The size field should be set to the size of the
+ * data serialised, and the offset field set to the size of the type
  * representation.  For custom structure serialisers, this will be
  * strlen(@encode(struct {structure name})).
  */

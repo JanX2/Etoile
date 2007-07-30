@@ -19,6 +19,7 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 				   ETSerialiserBackendExample.h
 
 ${DOCUMENT_NAME}_AGSDOC_FILES = $(addprefix Headers/, ${EtoileSerialise_HEADER_FILES})
+${DOCUMENT_NAME}_AGSDOC_FLAGS += -MakeFrames YES
 
 OBJCFLAGS += -std=c99 -Wall -W -Wunreachable-code -Winline -Werror -Wno-unused -Wno-format -g
 LDFLAGS += -g

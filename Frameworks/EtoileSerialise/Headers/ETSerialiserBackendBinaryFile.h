@@ -1,3 +1,6 @@
+/**
+ * <author name="David Chisnall"></author>
+ */
 #import "ETSerialiser.h"
 
 /**

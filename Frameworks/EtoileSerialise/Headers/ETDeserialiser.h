@@ -1,3 +1,6 @@
+/**
+ * <author name="David Chisnall"></author>
+ */
 #import <Foundation/Foundation.h>
 #import "ETSerialiser.h"
 
@@ -13,7 +16,7 @@
 - (BOOL) deserialiseFromURL:(NSURL*)aURL;
 /**
  * Use the specified data when reading objects to deserialise.  Returns YES if
- * <var>aData</var> contains contains serialised object data in a format
+ * aData contains contains serialised object data in a format
  * understood by the backend.
  */
 - (BOOL) deserialiseFromData:(NSData*)aData;
@@ -53,7 +56,7 @@ void * custom_deserialiser(char* varName,
 		void * aBlob,
 		void * aLocation);
 </example>
- * The <code>varName</code> argument contains the name of the variable to
+ * <p>The <code>varName</code> argument contains the name of the variable to
  * be deserialised, as set by the corresponding custom serialiser function.</p>
  * <p>The <code>aBlob</code> argument points </p>
  */
@@ -121,8 +124,8 @@ typedef void*(*custom_deserialiser)(char*,void*,void*);
 - (id) restoreObjectGraph;
 //Objects
 /**
- * Begin deserialising an object which is an instance of <var>aClass</var> and
- * uniquely identified with <var>aReference</var> within the set of objects for
+ * Begin deserialising an object which is an instance of aClass and
+ * uniquely identified with aReference within the set of objects for
  * which the current backend instance is responsible.
  */
 - (void) beginObjectWithID:(CORef)aReference withClass:(Class)aClass;
@@ -140,14 +143,14 @@ typedef void*(*custom_deserialiser)(char*,void*,void*);
  */
 - (void) setClassVersion:(int)aVersion;
 /**
- * Set the instance variable <var>aName</var>, which is a object reference, to
- * the object referenced by <var>aReference</var>.  This may be deferred until
+ * Set the instance variable aName, which is a object reference, to
+ * the object referenced by aReference.  This may be deferred until
  * the object is loaded.
  */
 - (void) loadObjectReference:(CORef)aReference withName:(char*)aName;
 /**
- * Set the reference count of the object referenced by <var>anObjectID</var> to
- * <var>aRefCount</var>.
+ * Set the reference count of the object referenced by anObjectID to
+ * aRefCount.
  */
 - (void) setReferenceCountForObject:(CORef)anObjectID to:(int)aRefCount;
 //Nested types
@@ -173,68 +176,68 @@ typedef void*(*custom_deserialiser)(char*,void*,void*);
 - (void) endArray;
 //Intrinsics
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aChar</var>.
+ * Set the instance variable aName to the value of aChar.
  */
 - (void) loadChar:(char)aChar withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aChar</var>.
+ * Set the instance variable aName to the value of aChar.
  */
 - (void) loadUnsignedChar:(unsigned char)aChar withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aShort</var>.
+ * Set the instance variable aName to the value of aShort.
  */
 - (void) loadShort:(short)aShort withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aShort</var>.
+ * Set the instance variable aName to the value of aShort.
  */
 - (void) loadUnsignedShort:(unsigned short)aShort withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aInt</var>.
+ * Set the instance variable aName to the value of aInt.
  */
 - (void) loadInt:(int)aInt withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aInt</var>.
+ * Set the instance variable aName to the value of aInt.
  */
 - (void) loadUnsignedInt:(unsigned int)aInt withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aLong</var>.
+ * Set the instance variable aName to the value of aLong.
  */
 - (void) loadLong:(long)aLong withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aLong</var>.
+ * Set the instance variable aName to the value of aLong.
  */
 - (void) loadUnsignedLong:(unsigned long)aLong withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aLongLong</var>.
+ * Set the instance variable aName to the value of aLongLong.
  */
 - (void) loadLongLong:(long long)aLongLong withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aLongLong</var>.
+ * Set the instance variable aName to the value of aLongLong.
  */
 - (void) loadUnsignedLongLong:(unsigned long long)aLongLong withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aFloat</var>.
+ * Set the instance variable aName to the value of aFloat.
  */
 - (void) loadFloat:(float)aFloat withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aDouble</var>.
+ * Set the instance variable aName to the value of aDouble.
  */
 - (void) loadDouble:(double)aDouble withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aClass</var>.
+ * Set the instance variable aName to the value of aClass.
  */
 - (void) loadClass:(Class)aClass withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aSelector</var>.
+ * Set the instance variable aName to the value of aSelector.
  */
 - (void) loadSelector:(SEL)aSelector withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of
- * <var>aCString</var>, copying the data.
+ * Set the instance variable aName to the value of
+ * aCString, copying the data.
  */
 - (void) loadCString:(char*)aCString withName:(char*)aName;
 /**
- * Set the instance variable <var>aName</var> to the value of <var>aBlob</var>,
+ * Set the instance variable aName to the value of aBlob,
  * copying the data.
  */
 - (void) loadData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName;
