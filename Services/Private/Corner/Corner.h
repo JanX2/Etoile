@@ -14,6 +14,8 @@
 	STEnvironment * scriptingEnvironment;
 	STEngine * smalltalkEngine;
 	NSArray * scripts;
+
+	Display *display;
 }
 /**
  * Poll the mouse position.

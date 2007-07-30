@@ -20,7 +20,10 @@
 		scripts = [[NSArray arrayWithObjects:
 						/* No actions for top corners yet */
 						@"Transcript showLine:'Top Left!'.",
-						@"Transcript showLine:'Top Right!'.",
+						/* Activate switch */
+						@"nc := NSDistributedNotificationCenter defaultCenter.\
+						nc postNotificationName: 'AZLaunchSwitcher' object: nil.\
+						Transcript showLine:'post AZLaunchSwitcher'.",
 						/* Activate Screensaver (xscreensaver) */
 					    @"args := #('-activate').\
 						task := NSTask launchedTaskWithLaunchPath:'xscreensaver-command' arguments:args.\
@@ -67,7 +70,8 @@
 								    repeats:YES];
 
 	/* Get the X11 Window we use with our query */
-	w = DefaultRootWindow(XOpenDisplay(NULL));
+	display = XOpenDisplay(NULL);
+	w = DefaultRootWindow(display);
 	[[NSRunLoop currentRunLoop] run];
 	/* Should not be reached */
 	return self;
@@ -79,7 +83,6 @@
  */
 - (NSRect) globalMousePosition
 {
-	Display * display = (Display*) XOpenDisplay(NULL);
 	Window root, child;
 	int x,y,x1,y1;
 	unsigned int mask, other;
