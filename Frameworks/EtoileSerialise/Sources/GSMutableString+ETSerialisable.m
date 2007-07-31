@@ -2,13 +2,16 @@
 #import "ETSerialiser.h"
 #import "ETDeserialiser.h"
 
+/**
+ * Categories on GSMutableString to support serialisation.  
+ */
 @implementation GSMutableString (ETSerialisable)
+/**
+ * Store the flags (a bitfield) as a single integer and the _contents as a 
+ * blob of data.
+ */
 - (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend
 {
-	if([super serialise:aVariable using:aBackend])
-	{
-		return YES;
-	}
 	if(strcmp(aVariable, "_flags") == 0)
 	{
 		[aBackend storeInt:*(int*)&_flags withName:"_flags"];
@@ -30,15 +33,11 @@
 		}
 		return YES;
 	}
-	/*
-	if(strcmp(aVariable, "_zone") == 0)
-	{
-		//TODO: Make this serialise the zone properly
-		[aBackend storeChar:'Z' withName:"_zone"];
-		return YES;
-	}*/
-	return NO;
+	return [super serialise:aVariable using:aBackend];
 }
+/**
+ * Load the flags and correctly.
+ */
 - (BOOL) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion
 {
 	if(strcmp(aVariable, "_flags") == 0)
@@ -46,13 +45,6 @@
 		*(int*)&_flags = *(int*)aBlob;
 		return YES;
 	}
-	/*
-	if(strcmp(aVariable, "_zone") == 0)
-	{
-		_zone = NSDefaultMallocZone();
-		return YES;
-	}
-	*/
 	/* No deserialisation required for _contents; 
 	 * blobs are automatically restored as-is */
 	return NO;

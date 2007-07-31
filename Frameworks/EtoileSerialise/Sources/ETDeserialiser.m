@@ -3,6 +3,13 @@
 #import "ETSerialiser.h"
 #import "StringMap.h"
 
+/**
+ * Find the address of an named instance variable for an object.  This searches
+ * through the list of instance variables in the class structure's ivars field.
+ * Since this is a simple array, this search completes in O(n) time.  This can
+ * not be improved upon without maintaining an external map of names to
+ * instance variables.
+ */
 inline static void * addressForIVarName(id anObject, char * aName, int hint)
 {
 	//Find a real iVar
@@ -21,27 +28,69 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 				}
 			}
 		}
+		//If the instance variable is not from this class, check the superclass.
 		class = class->super_class;
 	}
 	return NULL;
 }
 
+/**
+ * This protocol defines the -finishedDeserialising method.  It is private to
+ * this file, and only exists to prevent a compiler warning that the selector
+ * is not defined anywhere.  This is not done as a category on NSObject to
+ * allow run-time checking of whether the object implements the method to work.  
+ */
 @protocol _COAwareObject
 - (void) finishedDeserialising;
 @end
 
+/**
+ * Macro used to store an object reference to pointer mapping.
+ */
 #define SET_REF(ref, obj) NSMapInsert(loadedObjects, (void*)ref, (void*) obj)
+/**
+ * Macro to retrieve a pointer from an object reference.
+ */
 #define GET_OBJ(ref) (id)NSMapGet(loadedObjects, (void*)ref)
 //TODO: Add bounds checking to this and some overflow capability
 //for stupidly nested objects.
+/**
+ * Macro defining the top state on our state stack.
+ */
 #define STATE states[stackTop]
+/**
+ * Push a new state onto the stack.  Takes the offset at which instance
+ * variables are written and the state as arguments.
+ */
 #define PUSH_STATE(offset, stateType) ++stackTop;STATE.startOffset = offset; STATE.type = stateType; STATE.index = loadedIVar; loadedIVar = 0;// NSLog(@"Pushing state '%c'", stateType);
+/**
+ * Push a state indicating that we are deserialising a structure onto the stack.
+ */
 #define PUSH_STRUCT(offset) PUSH_STATE(offset, 's')
+/**
+ * Push a state indicating that we are deserialising a structure with a custom
+ * deserialiser onto the stack.
+ */
 #define PUSH_CUSTOM(offset) PUSH_STATE(offset, 'c');STATE.index = (int)function
+/**
+ * Push a state indicating that we are deserialising an array onto the stack.
+ */
 #define PUSH_ARRAY(offset) PUSH_STATE(offset, 'a')
+/**
+ * Pop the top state from the stack.
+ */
 #define POP() loadedIVar = states[stackTop--].index;
 
+/**
+ * Category on ETDeserialiser for storing a pointer to an object that should be
+ * set later, after the object is loaded.  This is used by
+ * ETInvocationDeserialiser for object pointers loaded in arguments.
+ */
 @interface ETDeserialiser (RegisterObjectPointer)
+/**
+ * Register that aPointer the value of is a pointer to the object referenced by
+ * anObject.
+ */
 - (void) registerPointer:(id*)aPointer forObject:(CORef)anObject;
 @end
 @implementation ETDeserialiser (RegisterObjectPointer)
@@ -50,8 +99,21 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 	NSMapInsert(objectPointers, aPointer, (void*)anObject);
 }
 @end
+
+/**
+ * Macro for calling offsetOfIvar with some default arguments.
+ */
 #define OFFSET_OF_IVAR(object, name, hint, type) offsetOfIvar(object, name, hint, sizeof(type), stackTop, &STATE)
 
+/**
+ * Find the offset of a variable to be loaded.  In the top state this finds an
+ * instance variable.  If a structure or array state is on the top of the stack
+ * then this will return the address of the next element in the structure or
+ * array instead.
+ *
+ * Addresses for elements structures with a custom deserialiser should be
+ * determined by the custom deserialiser, not this function.
+ */
 inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size, int stackTop, ETDeserialiserState * state)
 {
 	if(stackTop == 0)
@@ -63,10 +125,12 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 		//NSLog(@"Inside nested type looking for %s.", aName);
 		switch(state->type)
 		{
+			//In an array
 			case 'a':
 				{
 					return state->startOffset + size * hint;
 				}
+			//In a structure
 			case 's':
 				{
 					//TODO: Make this alignment-aware
@@ -78,6 +142,7 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 					}
 					return offset;
 				}
+			//Called for a state we don't know about.
 			default:
 				{
 					NSLog(@"Invalid state '%c'!  No skill!", state->type);\
@@ -87,18 +152,49 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 	}
 }
 
+/**
+ * Map of structure names to functions registered for deserialising them.
+ */
 static NSMapTable * deserialiserFunctions;
 
+/**
+ * ETInvocationDeserialiser is a private class used for deserialising
+ * NSInvocations and their subclasses.  This is a horrible hack, which is
+ * needed since invocations store their data in a way that is not easily
+ * accessible by the standard mechanisms.  Invocation objects store their
+ * arguments in a C stack frame, which is not easy for the deserialiser to
+ * load.  In order to re-create the stack frame, the NSMethodSignature object
+ * must have already been loaded.  This is typically not the case, so some
+ * patchwork is required.  This class caches the arguments in a buffer.  Once
+ * the arguments have been loaded, it calls the invocation's
+ * -initWithMethodSignature: method, which re-creates the stack frame (using
+ *  FFCall or libFFI).  It then sets the arguments using -setArgument:atIndex:.  
+ *
+ * This is not a wonderful solution.  If anyone can think of a better one,
+ * please let me know.
+ */
 @interface ETInvocationDeserialiser : ETDeserialiser {
+	/** The deserialiser that created this object. */
 	ETDeserialiser * realDeserialiser;
+	/** The number of arguments we expect to load. */
 	int argCount;
+	/** An array of pointers to the arguments. */
 	void ** args;
+	/** The buffer in which we load the arguments. */
 	void * stackFrame;
+	/** The address to which we write the next argument. */
 	char * nextArg;
 }
+/**
+ * Initialise a newly created invocation deserialiser loading an already
+ * +alloc'd invocation with the specified number of arguments.
+ */
 - (id) initWithDeserialiser:(ETDeserialiser*)aDeserialiser 
 			  forInvocation:(id)anInvocation
 			   withArgCount:(int)anInt;
+/**
+ * Initialise the invocation and set the arguments.
+ */
 - (void) setupInvocation;
 @end
 @implementation ETInvocationDeserialiser
@@ -118,6 +214,9 @@ static NSMapTable * deserialiserFunctions;
 	}
 	argCount = anInt;
 	args = calloc(anInt, sizeof(void*));
+	//FIXME: Dynamically resize this.  Note:  Doing this will require some
+	//modification to the way in which pointers to objects are registered if
+	//realloc ever needs to move the original allocation.
 	stackFrame = calloc(1024,1);
 	nextArg = stackFrame;
 	object = anInvocation;
@@ -273,7 +372,14 @@ LOAD_METHOD(Selector, SEL)
 #undef CHECK_CUSTOM
 @end
 
+/**
+ * The deserialiser is responsible for creating objects from a stream of (name,
+ * type, value) tuples supplied as messages from the back end.
+ */
 @implementation ETDeserialiser
+/**
+ * Allocate the custom deserialiser mapping structure.
+ */
 + (void) initialize
 {
 	[super initialize];
@@ -316,6 +422,15 @@ LOAD_METHOD(Selector, SEL)
 {
 	classVersion = aVersion;
 }
+/**
+ * Load the principle object from the back end.  Doing this may involve loading
+ * some object pointers that point to objects that are not yet loaded.  If it
+ * does, load the referenced objects, and set up the pointers to point to the
+ * correct location.  Repeat this until there are no unresolved pointers.
+ *
+ * Once all objects in the graph are loaded, call the -finishedDeserialising
+ * method in any objects that implement it.
+ */
 - (id) restoreObjectGraph
 {
 	CORef mainObject = [backend principalObject];
@@ -352,10 +467,14 @@ LOAD_METHOD(Selector, SEL)
 	return GET_OBJ(mainObject);
 }
 //Objects
+/**
+ * Begin loading an object.  Allocate space for it, and then add subsequent
+ * values as instance variables.  If this is an invocation, set up some special
+ * handling.
+ */
 - (void) beginObjectWithID:(CORef)aReference withClass:(Class)aClass 
 {
 	loadedIVar = 0;
-	//TODO: Decide if this should call init.  Probably not...
 	object = [aClass alloc];
 	//NSLog(@"Loading %@ at address 0x%x for ref %d", [aClass className], object, aReference);
 	SET_REF(aReference, object);
@@ -368,6 +487,10 @@ LOAD_METHOD(Selector, SEL)
 		isInvocation = NO;
 	}
 }
+/**
+ * Finish loading an object.  If it responds to the -finishedDeserialising
+ * selector then call this later.
+ */
 - (void) endObject 
 {
 	if(class_get_instance_method(object->class_pointer, @selector(finishedDeserialising)))
@@ -375,12 +498,19 @@ LOAD_METHOD(Selector, SEL)
 		[loadedObjectList addObject:object];
 	}
 }
+/**
+ * If we are loading a structure with a custom deserialiser function then call
+ * this function.
+ */
 #define CHECK_CUSTOM() \
 	if(STATE.type == 'c')\
 	{\
 		STATE.startOffset = CUSTOM_DESERIALISER(aName, &aVal, STATE.startOffset);\
 	}
 
+/**
+ * Load an intrinsic by looking up its address and copying the value.
+ */
 #define LOAD_INTRINSIC(type, name) \
 {\
 	CHECK_CUSTOM()\
@@ -393,6 +523,11 @@ LOAD_METHOD(Selector, SEL)
 		}\
 	}\
 }
+/**
+ * Load an object reference.  If we have already loaded this object, just set
+ * the pointer to the correct value, otherwise record this and come back to it
+ * later.
+ */
 - (void) loadObjectReference:(CORef)aReference withName:(char*)aName
 {
 	if(![object deserialise:aName fromPointer:&aName version:classVersion])
@@ -420,6 +555,9 @@ LOAD_METHOD(Selector, SEL)
 		}
 	}
 }
+/**
+ * Set the retain count for a newly loaded object.
+ */
 - (void) setReferenceCountForObject:(CORef)anObjectID to:(int)aRefCount 
 {
 	id obj = GET_OBJ(anObjectID);
@@ -429,6 +567,11 @@ LOAD_METHOD(Selector, SEL)
 	}
 }
 //Nested types
+/**
+ * Begin deserialising a structure.  An object may allocate space for the
+ * structure with its custom method, and provide an alternate location to load
+ * the fields, if it wishes.
+ */
 - (void) beginStruct:(char*)aStructName withName:(char*)aName;
 {
 	char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, 10);
@@ -465,12 +608,20 @@ LOAD_METHOD(Selector, SEL)
 		}
 	}
 }
+/**
+ * End a structure by popping the 'in structure' state from the top of the
+ * stack.
+ */
 - (void) endStruct 
 {
 	POP();
 }
+/**
+ * Begin loading an array.
+ */
 - (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength
 {
+	//FIXME: This should do the same fudging as beginStruct:withName:
 	char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, aLength);
 
 	if(address != NULL)
@@ -483,11 +634,19 @@ LOAD_METHOD(Selector, SEL)
 	POP();
 }
 //Intrinsics
+/**
+ * Macro used to define a method for loading an intrinsic.
+ */
 #define LOAD_METHOD(name, type) - (void) load ## name:(type)aVal withName:(char*)aName LOAD_INTRINSIC(type, name)
 LOAD_METHOD(Char, char)
 LOAD_METHOD(UnsignedChar, unsigned char)
 LOAD_METHOD(Short, short)
 LOAD_METHOD(UnsignedShort, unsigned short)
+/**
+ * Load an integer.  Contains a special case for loading the number of
+ * arguments in an invocation, causing it to vector off into the custom
+ * invocation deserialiser.
+ */
 - (void) loadInt:(int)aVal withName:(char*)aName
 {
 	if(

@@ -16,6 +16,10 @@
 #define GUESSWARN(...)
 #endif
 
+/**
+ * Objects that inherit from Object instead of NSObject don't understand
+ * isKindOfClass:
+ */
 @implementation Object (UglyHack)
 - (BOOL)isKindOfClass:(Class)aClass
 {
@@ -23,11 +27,21 @@
 }
 @end
 
+/**
+ * Informal protocol for serialisation-aware objects.
+ */
 @implementation NSObject (ETSerialisable)
+/**
+ * Returns NO, indicating that the object does not serialise the variable manually.
+ */
 - (BOOL) serialise:(char*)aVariable using:(id <ETSerialiserBackend>)aBackend
 {
 	return NO;
 }
+/**
+ * Automatically deserialise everything, unless a subclass overrides this to
+ * provide special handling.
+ */
 - (void*) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion
 {
 	return AUTO_DESERIALISE;
@@ -35,12 +49,25 @@
 @end
 
 //Must be set to the size along which things are aligned.
+//FIXME: This is broken on pretty much every architecture.
 const unsigned int WORD_SIZE = sizeof(int);
 
-id nullBackend;
+/**
+ * Instance of the NULL backend, used to try serialising structures to find
+ * their size.
+ */
+static id nullBackend;
 
+/**
+ * Custom serialiser functions for named structures.
+ */
 static NSMapTable * serialiserFunctions;
 
+/**
+ * Custom serialiser function for storing NSZones.  NSZones contain function
+ * pointers and so should just be thrown away and replaced with the default
+ * zone unless a class includes some special handling.
+ */
 parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBackend> aBackend)
 {
 	//Just a placeholder to be used to trigger the reloading function
@@ -88,6 +115,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 	{
 		return nil;
 	}
+	//TODO: Replace these with NSHashMaps if we aren't fast enough
 	unstoredObjects = [[NSMutableSet alloc] init];
 	storedObjects = [[NSMutableSet alloc] init];
 	return self;
@@ -100,6 +128,10 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 	[super dealloc];
 }
 
+/**
+ * Add an object to the queue of unstored objects if we haven't loaded it yet,
+ * or increment its reference count if we have.
+ */
 - (void) enqueueObject:(id)anObject
 {
 	if(![storedObjects containsObject:anObject] &&
@@ -110,6 +142,9 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 	[backend incrementReferenceCountForObject:(unsigned long long)(uintptr_t)anObject];
 }
 
+/**
+ * Parse simple types and fire off events to the back end serialising them.
+ */
 - (size_t) storeIntrinsicOfType:(char) type fromAddress:(void*) address withName:(char*) name
 {
 	switch(type)
@@ -172,7 +207,13 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 			return -1;
 	}
 }
+/**
+ * Consume one character from the type stream.
+ */
 #define INCREMENT_OFFSET type++; retVal.offset++
+/**
+ * Parse the body of a structure.  
+ */
 #define PARSE_STRUCT_BODY() \
 				size_t structSize = 0;\
 				while(*type != '}')\
@@ -202,17 +243,24 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 					structSize += substructSize;\
 				}
 
+/**
+ * Parse the type string for an instance variable and serialise it.  If it is a
+ * complex type, store the individual components as well.  Note that this can
+ * be called recursively for nested types.
+ */
 - (parsed_type_size_t) parseType:(const char*) type atAddress:(void*) address withName:(char*) name
 {
 	parsed_type_size_t  retVal;
 	switch(type[0])
 	{
+		//Start of a structure
 		case '{':
 			{
 				//NSLog(@"Parsing %s\n", type);
 				unsigned int nameEnd = 1;
 				unsigned int nameSize = 0;
 				type++;
+				//Find the name of the structure
 				while(type[nameEnd] != '=')
 				{
 					nameEnd++;
@@ -222,6 +270,8 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 				char structName[nameSize + 1];
 				memcpy(structName, type, nameSize);
 				structName[nameSize] = '\0';
+				//See if there is a custom serialiser function registered for
+				//this structure type.
 				custom_serialiser function = NSMapGet(serialiserFunctions, structName);
 				if(function != NULL)
 				{
@@ -240,6 +290,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 				retVal.offset++;
 				break;
 			}
+		//Arrays (fixed size)
 		case '[':
 			{
 //printf("Parsing %s\n", type);
@@ -274,6 +325,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 				[backend endArray];
 				break;
 			}
+		//Pointer.  We only handle pointers to structs automatically
 		case '^':
 			{
 				if(type[1] == '{')
@@ -333,6 +385,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 				retVal.size = realtype.size;
 				break;
 			}
+		//Everything else is a simple type, so we can parse it easily.
 		default:
 			retVal.offset = 1;
 			retVal.size = [self storeIntrinsicOfType:type[0] fromAddress:address withName:name];
@@ -343,6 +396,10 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 	}
 	return retVal;
 }
+/**
+ * Serialise a specified object, including all instance variables, but not
+ * referenced objects.
+ */
 - (void) serialiseObject:(id)anObject named:(char*)aName
 {
 	//NSLog(@"Starting object %s", aName);
@@ -351,6 +408,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 	[backend beginObjectWithID:(unsigned long long)(uintptr_t)anObject 
 	                  withName:aName
 	                 withClass:currentClass];
+	//Loop over instance variables.
 	do
 	{
 		struct objc_ivar_list* ivarlist = currentClass->ivars;
@@ -399,6 +457,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 				[self parseType:[sig getArgumentTypeAtIndex:i] atAddress:buffer withName:name];
 			}
 		}
+		//Get ivars from superclass as well.
 		currentClass = currentClass->super_class;
 	}
 	while(currentClass != NULL);
@@ -407,17 +466,12 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 	[storedObjects addObject:anObject];
 	[unstoredObjects removeObject:anObject];
 }
+/**
+ * Public version of the object serialisation method.  Serialises referenced
+ * objects as well.
+ */
 - (unsigned long long) serialiseObject:(id)anObject withName:(char*)name
 {
-	//TODO: Remove this and fix anything that breaks
-/*	if(anObject == nil || anObject->class_pointer == nil)
-	{
-		[backend beginObjectWithID:(unsigned long long)(uintptr_t)anObject
-		                  withName:name
-		                 withClass:[Object class]];
-		[backend endObject];
-		return;
-	}*/
 	[self enqueueObject:anObject];
 	[self serialiseObject:anObject named:name];
 	id leftoverObject;

@@ -38,4 +38,5 @@ include $(GNUSTEP_MAKEFILES)/documentation.make
 
 -include GNUmakefile.postamble
 
-
+test:
+	${MAKE} test=yes && ukrun ${BUNDLE_NAME}.bundle

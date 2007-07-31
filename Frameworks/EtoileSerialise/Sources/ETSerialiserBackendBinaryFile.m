@@ -9,7 +9,9 @@
 #define OFFSET (ftell(blobFile))
 
 
-
+/**
+ * Version of strcat that performs allocation to prevent numpty errors.
+ */
 static inline char * safe_strcat(const char* str1, const char* str2)
 {
 	unsigned int len1 = strlen(str1);
@@ -20,14 +22,28 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 	return str3;	
 }
 
+/**
+ * Currently this back end only works on local files.  To make it work with
+ * other kinds of stream you will need to modify the -initWithURL and
+ * -closeFile methods to include a case for non-file URLs, and re-define the
+ *  WRITE and FORMAT macros to write to the stream.  This format stores
+ *  metadata at the end, with a
+ * pointer to the start of the metadata at the beginning of the file.  This
+ * would need to be changed for streams that don't support seeking.
+ */
 @implementation ETSerialiserBackendBinaryFile
 + (id) serialiserBackendWithURL:(NSURL*)anURL
 {
 	return [[[ETSerialiserBackendBinaryFile alloc] initWithURL:anURL] autorelease];
 }
+/**
+ * This back end currently only works with files.  It uses this method to open
+ * and prepare them.
+ */
 - (void) setFile:(const char*)filename
 {
 	blobFile = fopen(filename, "w");
+	//Space for the header.
 	WRITE("\0\0\0\0", sizeof(int));
 	const NSMapTableKeyCallBacks keycallbacks = {NULL, NULL, NULL, NULL, NULL, NSNotAnIntMapKey};
 	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
@@ -122,7 +138,6 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 }
 - (void) setClassVersion:(int)aVersion
 {
-	//TODO: Don't write this more than once per object if the superclass has the same version as the subclass.
 	WRITE("V", 1);
 	WRITE(&aVersion, sizeof(int));
 }

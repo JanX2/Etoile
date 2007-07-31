@@ -8,7 +8,6 @@
 					options:(unsigned int)mask 
 	  				  error:(NSError **)errorPtr;
 @end
-
 @implementation NSData (MappedURL)
 enum {
 	NSMappedRead = 1,
@@ -30,13 +29,24 @@ enum {
 	return [aURL resourceDataUsingCache: YES];
 }
 @end
+
+/**
+ * Binary file back end for the deserialiser.  
+ */
 @implementation ETDeserialiserBackendBinaryFile
+/**
+ * Loads the URL and prepares to deserialise it.
+ */
 - (BOOL) deserialiseFromURL:(NSURL*)aURL
 {
 	return [self deserialiseFromData:[NSData dataWithContentsOfURL:aURL 
 	                                                       options:NSMappedRead
 	                                                         error:(NSError**)nil]];
 }
+/**
+ * Load the header from the provided data, containing the offsets and reference
+ * counts of objects, and prepare to deserialise.
+ */
 - (BOOL) deserialiseFromData:(NSData*)aData
 {
 	data = [aData retain];
@@ -78,10 +88,16 @@ enum {
 	NSFreeMapTable(refCounts);
 	[super dealloc];
 }
+/**
+ * Return the first object listed in the index.
+ */
 - (CORef) principalObject
 {
 	return principalObjectRef;
 }
+/**
+ * Look up the class of the principle object.
+ */
 - (char*) classNameOfPrincipalObject
 {
 	unsigned int offset = (unsigned int)NSMapGet(index, (void*)principalObjectRef);
@@ -93,6 +109,11 @@ enum {
 	return NULL;
 }
 #define SKIP_STRING() obj += strlen(obj) + 1
+/**
+ * Load the object for the specified reference.  This finds the object in the
+ * index and then scans the data associated with it, firing off messages to the
+ * deserialiser for each component.
+ */
 - (BOOL) deserialiseObjectWithID:(CORef)aReference
 {
 	//Note: Using int rather than off_t here.  This is not
@@ -105,6 +126,7 @@ enum {
 		return NO;
 	}
 
+	//Check that this actually is an object
 	char * obj = ((char*)[data bytes]) + offset;
 	//NSLog(@"offset: %d, obj: %s", offset, obj);
 	if(*obj == '<')
@@ -121,6 +143,8 @@ enum {
 	while(*obj != '>')
 	{
 		char * name;
+		//Intrinsics are all stored as a single character indicating the type
+		//followed by the value.
 #define LOAD(typeChar, typeName, type) case typeChar: \
 	name = ++obj;\
 	SKIP_STRING();\
@@ -147,6 +171,8 @@ enum {
 				[deserialiser setClassVersion:*(int*)++obj];
 				obj += sizeof(int);
 				break;
+			//Arbitrary data, to be memcpy'd by the deserialiser to the correct
+			//location.
 			case '^':
 				name = ++obj;
 				SKIP_STRING();
@@ -155,12 +181,14 @@ enum {
 				[deserialiser loadData:obj ofSize:size withName:name];
 				obj += size;
 				break;
+			//NULL-terminated C strings.
 			case '*':
 				name = ++obj;
 				SKIP_STRING();
 				[deserialiser loadCString:obj withName:name];
 				SKIP_STRING();
 				break;
+			//Classes.
 			case '#':
 				name = ++obj;
 				SKIP_STRING();
@@ -168,6 +196,7 @@ enum {
 				[deserialiser loadClass:class withName:name];
 				SKIP_STRING();
 				break;
+			//Selectors
 			case ':':
 				name = ++obj;
 				SKIP_STRING();

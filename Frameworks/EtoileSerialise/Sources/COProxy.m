@@ -2,7 +2,6 @@
 #import "ETSerialiser.h"
 
 static const int FULL_SAVE_INTERVAL = 100;
-
 @implementation COProxy 
 - (id) initWithObject:(id)anObject
            serialiser:(id)aSerialiser
@@ -16,6 +15,10 @@ static const int FULL_SAVE_INTERVAL = 100;
 {
 	    return [object methodSignatureForSelector:aSelector];
 }
+/**
+ * Forwards the invocation to the real object after serialising it.  Every few
+ * invocations, it will also save a full copy of the object.
+ */
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
 	version = [serialiser newVersion];

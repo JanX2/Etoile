@@ -8,6 +8,9 @@
 }
 @end
 
+/**
+ * Category on NSDataStatic to correctly store the data.
+ */
 @implementation NSDataStatic(ETSerialisable)
 - (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend
 {

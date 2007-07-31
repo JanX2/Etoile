@@ -12,6 +12,10 @@
 
 #define TEST_COREOBJECT
 
+/**
+ * Example class that the tests try to serialise.  Has lots of instance
+ * variables of different types.
+ */
 @interface TestClass : NSObject {
 @public
 	int anInteger;
@@ -46,6 +50,9 @@
 	int * aPointer;
 }
 @end
+/**
+ * Example custom structure serialiser.  Stores the TestStruct structure.
+ */
 parsed_type_size_t TestStructSerialiser(char* aName, void* aStruct, id <ETSerialiserBackend> aBackend)
 {
 	struct TestStruct * s = (struct TestStruct*)aStruct;
@@ -59,6 +66,9 @@ parsed_type_size_t TestStructSerialiser(char* aName, void* aStruct, id <ETSerial
 	return retVal;
 }
 #define CASE(x) if(strcmp(varName, #x) == 0)
+/**
+ * Corresponding custom deserialiser function for struct TestStruct.
+ */
 void * TestStructDeserialiser(char* varName,
 	void * aBlob,
 	void * aLocation)
@@ -80,12 +90,18 @@ void * TestStructDeserialiser(char* varName,
 	return aLocation;
 }
 @implementation TestClass
+/**
+ * Register the custom [de]serialiser function.
+ */
 + (void) initialize
 {
 	[super initialize];
 	[ETSerialiser registerSerialiser:TestStructSerialiser forStruct:"TestStruct"];
 	[ETDeserialiser registerDeserialiser:TestStructDeserialiser forStructNamed:"TestStruct"];
 }
+/**
+ * Set some values for instance variables that we will test later.
+ */
 - (id) init
 {
 	self = [super init];
@@ -125,6 +141,9 @@ void * TestStructDeserialiser(char* varName,
 	}
 	return self;
 }
+/**
+ * Custom serialiser method for storing a pointer.
+ */
 - (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend
 {
 	if(strcmp(aVariable, "aPointer") == 0)
@@ -134,6 +153,9 @@ void * TestStructDeserialiser(char* varName,
 	}
 	return NO;
 }
+/**
+ * Test that the class was correctly re-loaded after serialisation.
+ */
 - (void) methodTest
 {
 	//Method correctly entered
@@ -161,6 +183,10 @@ void * TestStructDeserialiser(char* varName,
 }
 @end
 
+/**
+ * Attempt to serialise an instance of the test class with the specified back
+ * end.
+ */
 void testWithBackend(Class backend, NSURL * anURL)
 {
 	NSAutoreleasePool * pool = [NSAutoreleasePool new];
@@ -175,12 +201,20 @@ void testWithBackend(Class backend, NSURL * anURL)
 @end
 @implementation ETSerialiserTest
 #ifdef VISUAL_TEST
+/**
+ * If VISUAL_TEST is defined, use the example back end to serialise the test
+ * class to the standard output for visual inspection.
+ */
 - (void) testHuman
 {
 	testWithBackend([ETSerialiserBackendExample class], nil);
 	testWithBackend([ETSerialiserBackendBinaryFile class], [NSURL fileURLWithPath:@"testfile"]);
 }
 #endif
+/**
+ * Serialise an instance of the test class with the binary back end, then try
+ * re-loading it and see if any information was lost.
+ */
 - (void) testBinary
 {
 	id deback = [ETDeserialiserBackendBinaryFile new];
@@ -190,6 +224,10 @@ void testWithBackend(Class backend, NSURL * anURL)
 	[bar methodTest];
 }
 #ifdef TEST_COREOBJECT
+/**
+ * Test CoreObject replay by sending a message to a class and seeing if we can
+ * re-load and re-play that message.
+ */
 - (void) testCoreObject
 {
 	NSMutableString * str = [NSMutableString stringWithString:@"A string"];
