@@ -1,0 +1,20 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "launch:",
+	    "refreshAppsList:"
+	);
+	Super = NSObject;
+    };
+    LaunchBox = {
+	Actions = (
+	    "refreshAppsList:",
+	    "launch:"
+	);
+	Outlets = (
+	    commandBox
+	);
+	Super = NSObject;
+    };
+}

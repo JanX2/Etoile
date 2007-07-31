@@ -9,13 +9,14 @@ APP_NAME = LaunchBox
 LaunchBox_LANGUAGES = English
 
 LaunchBox_LOCALIZED_RESOURCE_FILES = \
-	  MainMenu.nib
+	  MainMenu.gorm
 
 LaunchBox_OBJC_FILES = \
 	LaunchBox.m\
 	main.m
 
 LaunchBox_PRINCIPLE_CLASS = LaunchBox
+LaunchBox_MAIN_MODEL_FILE = MainMenu.gorm
 
 ADDITIONAL_OBJCFLAGS += -werror -g
 ADDITIONAL_OBJCFLAGS = -std=c99 -Wno-import 

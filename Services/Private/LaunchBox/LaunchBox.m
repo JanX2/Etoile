@@ -56,6 +56,7 @@
 		{
 			if(length > 4 && [[file substringWithRange:NSMakeRange(length-4,4)] isEqualToString:@".app"])
 			{
+				NSLog(@"Found app %@",file);
 				[apps setObject:path forKey:[file substringToIndex:length-4]];
 			}
 			else
@@ -77,6 +78,12 @@
 	}
 	[appNames release];
 	appNames = [[[apps allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] retain];
+	NSLog(@"Setting data source.");
+	NSLog(@"Setting data source.");
+	[commandBox setUsesDataSource:YES];
+	NSLog(@"Setting data source.");
+	NSLog(@"Setting data source.");
+	[commandBox setDataSource:self];
 }
 
 - (NSString *)comboBox:(NSComboBox *)aComboBox completedString:(NSString *)uncompletedString
@@ -114,6 +121,7 @@
 
 - (IBAction) launch:(id)sender
 {
+	NSLog(@"Launching app..");
 	NSString * app = [apps objectForKey:[commandBox stringValue]];
 	if(app != nil)
 	{
