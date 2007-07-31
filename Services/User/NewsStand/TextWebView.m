@@ -54,38 +54,106 @@
 {
 	NSAttributedString *as = [[[NSAttributedString alloc] initWithString: [_chars stringByUnescapingExtendedCharacters]  attributes: attributes] autorelease];
 	[[textView textStorage] appendAttributedString: as];
+#if 0
+	if (bold)
+		NSLog(@"%@", _chars);
+#endif
 }
 
 - (void) startElement: (NSString *) _name
            attributes: (NSDictionary*) _attributes
 {
-	if ([_name isEqualToString: @"div"])
+	if ([_name caseInsensitiveCompare: @"div"] == NSOrderedSame)
 	{
-		if ([[_attributes objectForKey: @"class"] isEqualToString: @"articleTitleStyle"])
+		if ([[_attributes objectForKey: @"class"] caseInsensitiveCompare: @"articleTitleStyle"] == NSOrderedSame)
 		{
 			textStyle = TitleTextStyle;
 			[attributes setObject: titleFont forKey: NSFontAttributeName];
 		}
-		else if ([[_attributes objectForKey: @"class"] isEqualToString: @"articleBodyStyle"])
+		else if ([[_attributes objectForKey: @"class"] caseInsensitiveCompare: @"articleBodyStyle"] == NSOrderedSame)
 		{
-			[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @"\n\n"] autorelease]];
 			textStyle = BodyTextStyle;
 			[attributes setObject: bodyFont forKey: NSFontAttributeName];
+			[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @"\n\n" attributes: attributes] autorelease]];
 		}
-		else if ([[_attributes objectForKey: @"class"] isEqualToString: @"articleDetails"])
+		else if ([[_attributes objectForKey: @"class"] caseInsensitiveCompare: @"articleDetails"] == NSOrderedSame)
 		{
-			[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @"\n\n"] autorelease]];
 			textStyle = DetailTextStyle;
 			[attributes setObject: detailFont forKey: NSFontAttributeName];
+			[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @"\n\n" attributes: attributes] autorelease]];
 		}
 	}
+	else if (([_name caseInsensitiveCompare: @"b"] == NSOrderedSame) ||
+	         ([_name caseInsensitiveCompare: @"em"] == NSOrderedSame) ||
+	         ([_name caseInsensitiveCompare: @"strong"] == NSOrderedSame)
+	        )
+	{
+		if (textStyle != TitleTextStyle)
+		{
+			if (bold < 1)
+			{
+				NSFont *font = [attributes objectForKey: NSFontAttributeName];
+				font = [[NSFontManager sharedFontManager] convertFont: font toHaveTrait: NSBoldFontMask];
+				[attributes setObject: font forKey: NSFontAttributeName];
+			}
+			bold++;
+		}
+	}
+	else if (([_name caseInsensitiveCompare: @"a"] == NSOrderedSame))
+	{
+		if (textStyle != DetailTextStyle)
+		{
+			[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @" " attributes: attributes] autorelease]];
+		}
+	}
+	else if (([_name caseInsensitiveCompare: @"img"] == NSOrderedSame))
+	{
+	}
+	else if (([_name caseInsensitiveCompare: @"blockquote"] == NSOrderedSame))
+	{
+	}
+#if 1 // DEBUG
+	else if (([_name caseInsensitiveCompare: @"body"] != NSOrderedSame) &&
+	         ([_name caseInsensitiveCompare: @"p"] != NSOrderedSame) &&
+	         ([_name caseInsensitiveCompare: @"br"] != NSOrderedSame) &&
+	         ([_name caseInsensitiveCompare: @"link"] != NSOrderedSame) &&
+	         ([_name caseInsensitiveCompare: @"span"] != NSOrderedSame) &&
+	         ([_name caseInsensitiveCompare: @"meta"] != NSOrderedSame) &&
+	         ([_name caseInsensitiveCompare: @"head"] != NSOrderedSame) &&
+	         ([_name caseInsensitiveCompare: @"html"] != NSOrderedSame)
+	        )
+	{
+		NSLog(@"Start tag %@", _name);
+	}
+#endif
+
 }
 
 - (void) endElement: (NSString *) _name
 {
-	if ((textStyle == DetailTextStyle) && [_name isEqualToString: @"span"])
+	if ((textStyle == DetailTextStyle) && [_name caseInsensitiveCompare: @"span"] == NSOrderedSame)
 	{
 		[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @"\n"] autorelease]];
+	}
+	else if (([_name caseInsensitiveCompare: @"b"] == NSOrderedSame) ||
+	         ([_name caseInsensitiveCompare: @"em"] == NSOrderedSame) ||
+	         ([_name caseInsensitiveCompare: @"strong"] == NSOrderedSame)
+	        )
+	{
+		if (textStyle != TitleTextStyle)
+		{
+			bold--;
+			if (bold < 1)
+			{
+				NSFont *font = [attributes objectForKey: NSFontAttributeName];
+				font = [[NSFontManager sharedFontManager] convertFont: font toHaveTrait: NSUnboldFontMask];
+				[attributes setObject: font forKey: NSFontAttributeName];
+			}
+		}
+	}
+	else if (([_name caseInsensitiveCompare: @"a"] == NSOrderedSame))
+	{
+		[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @" " attributes: attributes] autorelease]];
 	}
 }
 

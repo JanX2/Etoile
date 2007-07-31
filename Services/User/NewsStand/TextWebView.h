@@ -43,6 +43,8 @@ typedef enum _TextStyle {
 	int fontSize;
 	NSString *_htmlText;
 	NSString *_urlString;
+
+	int bold; // tag
 #if 0
 	BOOL isFeedRedirect;
 	BOOL isDownload;
