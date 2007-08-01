@@ -28,12 +28,20 @@
 		return nil;
 	}
 	apps = [[NSMutableDictionary alloc] init];
-	[self refreshAppsList:self];
+
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(activate:)
 												 name:NSApplicationDidBecomeActiveNotification
 											   object:NSApp];
 	return self;
+}
+
+- (void) awakeFromNib
+{
+	[commandBox setCompletes: YES];
+	[commandBox setUsesDataSource:YES];
+	[commandBox setDataSource:self];
+	[self refreshAppsList:self];
 }
 
 - (void) activate:(id)sender
@@ -78,12 +86,7 @@
 	}
 	[appNames release];
 	appNames = [[[apps allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] retain];
-	NSLog(@"Setting data source.");
-	NSLog(@"Setting data source.");
-	[commandBox setUsesDataSource:YES];
-	NSLog(@"Setting data source.");
-	NSLog(@"Setting data source.");
-	[commandBox setDataSource:self];
+
 }
 
 - (NSString *)comboBox:(NSComboBox *)aComboBox completedString:(NSString *)uncompletedString
@@ -91,6 +94,7 @@
 	NSEnumerator * enumerator = [appNames objectEnumerator];
 	NSString * appName;
 	unsigned int length = [uncompletedString length];
+	NSLog(@"LaunchBox custom complete");
 	while(nil != (appName = [enumerator nextObject]))
 	{
 		if(length < [appName length])
