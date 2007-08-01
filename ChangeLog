@@ -1,3 +1,8 @@
+2007-08-01  Quentin Mathe <qmathe@club-internet.fr>
+
+	* setup.sh: Removed spurious -z flag in tar command. Andreas Hoschler
+	reported that Solaris don't accept it.
+
 2007-07-12  Quentin Mathe <qmathe@club-internet.fr>
 
 	* HACKING: Added a fourth rule about defaults.
