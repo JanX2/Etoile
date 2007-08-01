@@ -28,29 +28,42 @@
 
 - (void) updateGNUstepWMAttributes
 {
-  unsigned long *data;
-  unsigned int num;
-  if (!prop_get_array32(window, prop_atoms.gnustep_wm_attr,
-		  prop_atoms.gnustep_wm_attr, (unsigned long **)&data, &num))
-    return;
+	unsigned long *data;
+	unsigned int num;
+	if (!prop_get_array32(window, prop_atoms.gnustep_wm_attr,
+		prop_atoms.gnustep_wm_attr, (unsigned long **)&data, &num))
+	{
+		return;
+	}
 
-  if (num != 9) {
-	    NSLog(@"Internal Error: wrong GNUstep attributes");
-	    return;
-  }
-  gnustep_attr.flags = data[0];
-  gnustep_attr.window_style = data[1];
-  gnustep_attr.window_level = data[2];
-  gnustep_attr.reserved = data[3];
-  gnustep_attr.miniaturize_pixmap = data[4];
-  gnustep_attr.close_pixmap = data[5];
-  gnustep_attr.miniaturize_mask = data[6];
-  gnustep_attr.close_mask = data[7];
-  gnustep_attr.extra_flags = data[8];
+	if (num != 9) 
+	{
+		NSLog(@"Internal Error: wrong GNUstep attributes");
+		return;
+	}
+	gnustep_attr.flags = data[0];
+	gnustep_attr.window_style = data[1];
+	gnustep_attr.window_level = data[2];
+	gnustep_attr.reserved = data[3];
+	gnustep_attr.miniaturize_pixmap = data[4];
+	gnustep_attr.close_pixmap = data[5];
+	gnustep_attr.miniaturize_mask = data[6];
+	gnustep_attr.close_mask = data[7];
+	gnustep_attr.extra_flags = data[8];
 
-  XFree(data);
+	if (gnustep_attr.flags & GSExtraFlagsAttr)
+	{
+		BOOL edited = (gnustep_attr.extra_flags & GSDocumentEditedFlag);
+		if (isGNUstepDocumentEdited != edited)
+		{
+			isGNUstepDocumentEdited = edited;
+//			NSLog(@"GNUstep document edited ? %d", isGNUstepDocumentEdited);
+		}
+	}
 
-  return;
+	XFree(data);
+
+	return;
 
 #if 0
   NSMutableString *ms = [[NSMutableString alloc] init];

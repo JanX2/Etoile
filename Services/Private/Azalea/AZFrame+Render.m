@@ -39,199 +39,225 @@
 
 - (void) render
 {
-    {
-        unsigned long px;
+	unsigned long px;
 
-        px = ([self focused] ?
-              RrColorPixel(ob_rr_theme->cb_focused_color) :
-              RrColorPixel(ob_rr_theme->cb_unfocused_color));
-        XSetWindowBackground(ob_display, [self plate], px);
-        XClearWindow(ob_display, [self plate]);
-    }
+	px = ([self focused] ?
+		RrColorPixel(ob_rr_theme->cb_focused_color) :
+		RrColorPixel(ob_rr_theme->cb_unfocused_color));
+	XSetWindowBackground(ob_display, [self plate], px);
+	XClearWindow(ob_display, [self plate]);
 
-    if (decorations & OB_FRAME_DECOR_TITLEBAR) {
-        AZAppearance *t, *l, *m, *n, *i, *d, *s, *c;
-        if ([self focused]) {
+	if (decorations & OB_FRAME_DECOR_TITLEBAR) 
+	{
+		AZAppearance *t, *l, *m, *n, *i, *d, *s, *c;
+		if ([self focused]) 
+		{
+			t = a_focused_title;
+			l = a_focused_label;
+			m = (!(decorations & OB_FRAME_DECOR_MAXIMIZE) ?
+				ob_rr_theme->a_disabled_focused_max :
+				([[self client] max_vert] || [[self client] max_horz] ?
+				ob_rr_theme->a_toggled_focused_max :
+				([self max_press] ?
+				ob_rr_theme->a_focused_pressed_max :
+				([self max_hover] ?
+				ob_rr_theme->a_hover_focused_max : 
+				ob_rr_theme->a_focused_unpressed_max))));
+			n = a_icon;
+			i = (!(decorations & OB_FRAME_DECOR_ICONIFY) ?
+				ob_rr_theme->a_disabled_focused_iconify :
+				([self iconify_press] ?
+				ob_rr_theme->a_focused_pressed_iconify :
+				([self iconify_hover] ?
+				ob_rr_theme->a_hover_focused_iconify : 
+				ob_rr_theme->a_focused_unpressed_iconify)));
+			d = (!(decorations & OB_FRAME_DECOR_ALLDESKTOPS) ?
+				ob_rr_theme->a_disabled_focused_desk :
+				([[self client] desktop] == DESKTOP_ALL ?
+				ob_rr_theme->a_toggled_focused_desk :
+				([self desk_press] ?
+				ob_rr_theme->a_focused_pressed_desk :
+				([self desk_hover] ?
+				ob_rr_theme->a_hover_focused_desk : 
+				ob_rr_theme->a_focused_unpressed_desk))));
+			s = (!(decorations & OB_FRAME_DECOR_SHADE) ?
+				ob_rr_theme->a_disabled_focused_shade :
+				([[self client] shaded] ?
+				ob_rr_theme->a_toggled_focused_shade :
+				([self shade_press] ?
+				ob_rr_theme->a_focused_pressed_shade :
+				([self shade_hover] ?
+				ob_rr_theme->a_hover_focused_shade : 
+				ob_rr_theme->a_focused_unpressed_shade))));
+			if ([[self client] isGNUstepDocumentEdited])
+			{
+				c = (!(decorations & OB_FRAME_DECOR_CLOSE) ?
+					ob_rr_theme->a_disabled_focused_broken_close :
+					([self close_press] ?
+					ob_rr_theme->a_focused_pressed_broken_close :
+					([self close_hover] ?
+					ob_rr_theme->a_hover_focused_broken_close : 
+					ob_rr_theme->a_focused_unpressed_broken_close)));
+			}
+			else
+			{
+				c = (!(decorations & OB_FRAME_DECOR_CLOSE) ?
+					ob_rr_theme->a_disabled_focused_close :
+					([self close_press] ?
+					ob_rr_theme->a_focused_pressed_close :
+					([self close_hover] ?
+					ob_rr_theme->a_hover_focused_close : 
+					ob_rr_theme->a_focused_unpressed_close)));
+			}
+		}
+		else 
+		{
+			t = a_unfocused_title;
+			l = a_unfocused_label;
+			m = (!(decorations & OB_FRAME_DECOR_MAXIMIZE) ?
+				ob_rr_theme->a_disabled_unfocused_max :
+				([[self client] max_vert] || [[self client] max_horz] ?
+				ob_rr_theme->a_toggled_unfocused_max :
+				([self max_press] ?
+				ob_rr_theme->a_unfocused_pressed_max :
+				([self max_hover] ?
+				ob_rr_theme->a_hover_unfocused_max : 
+				ob_rr_theme->a_unfocused_unpressed_max))));
+			n = a_icon;
+			i = (!(decorations & OB_FRAME_DECOR_ICONIFY) ?
+				ob_rr_theme->a_disabled_unfocused_iconify :
+				([self iconify_press] ?
+				ob_rr_theme->a_unfocused_pressed_iconify :
+				([self iconify_hover] ?
+				ob_rr_theme->a_hover_unfocused_iconify : 
+				ob_rr_theme->a_unfocused_unpressed_iconify)));
+			d = (!(decorations & OB_FRAME_DECOR_ALLDESKTOPS) ?
+				ob_rr_theme->a_disabled_unfocused_desk :
+				([[self client] desktop] == DESKTOP_ALL ?
+				ob_rr_theme->a_toggled_unfocused_desk :
+				([self desk_press] ?
+				ob_rr_theme->a_unfocused_pressed_desk :
+				([self desk_hover] ?
+				ob_rr_theme->a_hover_unfocused_desk : 
+				ob_rr_theme->a_unfocused_unpressed_desk))));
+			s = (!(decorations & OB_FRAME_DECOR_SHADE) ?
+				ob_rr_theme->a_disabled_unfocused_shade :
+				([[self client] shaded] ?
+				ob_rr_theme->a_toggled_unfocused_shade :
+				([self shade_press] ?
+				ob_rr_theme->a_unfocused_pressed_shade :
+				([self shade_hover] ?
+				ob_rr_theme->a_hover_unfocused_shade : 
+				ob_rr_theme->a_unfocused_unpressed_shade))));
+			if ([[self client] isGNUstepDocumentEdited])
+			{
+				c = (!(decorations & OB_FRAME_DECOR_CLOSE) ?
+					ob_rr_theme->a_disabled_unfocused_broken_close :
+					([self close_press] ?
+					ob_rr_theme->a_unfocused_pressed_broken_close :
+					([self close_hover] ?
+					ob_rr_theme->a_hover_unfocused_broken_close : 
+					ob_rr_theme->a_unfocused_unpressed_broken_close)));
+			}
+			else
+			{
+				c = (!(decorations & OB_FRAME_DECOR_CLOSE) ?
+					ob_rr_theme->a_disabled_unfocused_close :
+					([self close_press] ?
+					ob_rr_theme->a_unfocused_pressed_close :
+					([self close_hover] ?
+					ob_rr_theme->a_hover_unfocused_close : 
+					ob_rr_theme->a_unfocused_unpressed_close)));
+			}
+		}
 
-          t = a_focused_title;
-          l = a_focused_label;
-          m = (!(decorations & OB_FRAME_DECOR_MAXIMIZE) ?
-              ob_rr_theme->a_disabled_focused_max :
-              ([[self client] max_vert] || [[self client] max_horz] ?
-               ob_rr_theme->a_toggled_focused_max :
-               ([self max_press] ?
-                ob_rr_theme->a_focused_pressed_max :
-                ([self max_hover] ?
-                 ob_rr_theme->a_hover_focused_max : 
-                 ob_rr_theme->a_focused_unpressed_max))));
-          n = a_icon;
-          i = (!(decorations & OB_FRAME_DECOR_ICONIFY) ?
-              ob_rr_theme->a_disabled_focused_iconify :
-              ([self iconify_press] ?
-               ob_rr_theme->a_focused_pressed_iconify :
-               ([self iconify_hover] ?
-                ob_rr_theme->a_hover_focused_iconify : 
-                ob_rr_theme->a_focused_unpressed_iconify)));
-          d = (!(decorations & OB_FRAME_DECOR_ALLDESKTOPS) ?
-              ob_rr_theme->a_disabled_focused_desk :
-              ([[self client] desktop] == DESKTOP_ALL ?
-               ob_rr_theme->a_toggled_focused_desk :
-               ([self desk_press] ?
-                ob_rr_theme->a_focused_pressed_desk :
-                ([self desk_hover] ?
-                 ob_rr_theme->a_hover_focused_desk : 
-                 ob_rr_theme->a_focused_unpressed_desk))));
-          s = (!(decorations & OB_FRAME_DECOR_SHADE) ?
-              ob_rr_theme->a_disabled_focused_shade :
-              ([[self client] shaded] ?
-               ob_rr_theme->a_toggled_focused_shade :
-               ([self shade_press] ?
-                ob_rr_theme->a_focused_pressed_shade :
-                ([self shade_hover] ?
-                 ob_rr_theme->a_hover_focused_shade : 
-                 ob_rr_theme->a_focused_unpressed_shade))));
-          c = (!(decorations & OB_FRAME_DECOR_CLOSE) ?
-              ob_rr_theme->a_disabled_focused_close :
-              ([self close_press] ?
-               ob_rr_theme->a_focused_pressed_close :
-               ([self close_hover] ?
-                ob_rr_theme->a_hover_focused_close : 
-                ob_rr_theme->a_focused_unpressed_close)));
-        } else {
+		[t paint: [self title] width: width height: ob_rr_theme->title_height];
 
-          t = a_unfocused_title;
-          l = a_unfocused_label;
-          m = (!(decorations & OB_FRAME_DECOR_MAXIMIZE) ?
-              ob_rr_theme->a_disabled_unfocused_max :
-              ([[self client] max_vert] || [[self client] max_horz] ?
-               ob_rr_theme->a_toggled_unfocused_max :
-               ([self max_press] ?
-                ob_rr_theme->a_unfocused_pressed_max :
-                ([self max_hover] ?
-                 ob_rr_theme->a_hover_unfocused_max : 
-                 ob_rr_theme->a_unfocused_unpressed_max))));
-          n = a_icon;
-          i = (!(decorations & OB_FRAME_DECOR_ICONIFY) ?
-              ob_rr_theme->a_disabled_unfocused_iconify :
-              ([self iconify_press] ?
-               ob_rr_theme->a_unfocused_pressed_iconify :
-               ([self iconify_hover] ?
-                ob_rr_theme->a_hover_unfocused_iconify : 
-                ob_rr_theme->a_unfocused_unpressed_iconify)));
-          d = (!(decorations & OB_FRAME_DECOR_ALLDESKTOPS) ?
-              ob_rr_theme->a_disabled_unfocused_desk :
-              ([[self client] desktop] == DESKTOP_ALL ?
-               ob_rr_theme->a_toggled_unfocused_desk :
-               ([self desk_press] ?
-                ob_rr_theme->a_unfocused_pressed_desk :
-                ([self desk_hover] ?
-                 ob_rr_theme->a_hover_unfocused_desk : 
-                 ob_rr_theme->a_unfocused_unpressed_desk))));
-          s = (!(decorations & OB_FRAME_DECOR_SHADE) ?
-              ob_rr_theme->a_disabled_unfocused_shade :
-              ([[self client] shaded] ?
-               ob_rr_theme->a_toggled_unfocused_shade :
-               ([self shade_press] ?
-                ob_rr_theme->a_unfocused_pressed_shade :
-                ([self shade_hover] ?
-                 ob_rr_theme->a_hover_unfocused_shade : 
-                 ob_rr_theme->a_unfocused_unpressed_shade))));
-          c = (!(decorations & OB_FRAME_DECOR_CLOSE) ?
-              ob_rr_theme->a_disabled_unfocused_close :
-              ([self close_press] ?
-               ob_rr_theme->a_unfocused_pressed_close :
-               ([self close_hover] ?
-                ob_rr_theme->a_hover_unfocused_close : 
-                ob_rr_theme->a_unfocused_unpressed_close)));
-        }
+		[ob_rr_theme->a_clear surfacePointer]->parent = t;
+		[ob_rr_theme->a_clear surfacePointer]->parentx = 0;
+		[ob_rr_theme->a_clear surfacePointer]->parenty = 0;
 
-        [t paint: [self title] width: width height: ob_rr_theme->title_height];
+		[ob_rr_theme->a_clear paint: [self tlresize]
+ 		                      width: ob_rr_theme->grip_width
+		                     height: ob_rr_theme->handle_height];
 
-        [ob_rr_theme->a_clear surfacePointer]->parent = t;
-        [ob_rr_theme->a_clear surfacePointer]->parentx = 0;
-        [ob_rr_theme->a_clear surfacePointer]->parenty = 0;
+		[ob_rr_theme->a_clear surfacePointer]->parentx =
+			width - ob_rr_theme->grip_width;
 
-        [ob_rr_theme->a_clear paint: [self tlresize]
-                width: ob_rr_theme->grip_width height: ob_rr_theme->handle_height];
+		[ob_rr_theme->a_clear paint: [self trresize]
+		                      width: ob_rr_theme->grip_width 
+		                     height: ob_rr_theme->handle_height];
 
-        [ob_rr_theme->a_clear surfacePointer]->parentx =
-            width - ob_rr_theme->grip_width;
+		/* set parents for any parent relative guys */
+		[l surfacePointer]->parent = t;
+		[l surfacePointer]->parentx = label_x;
+		[l surfacePointer]->parenty = ob_rr_theme->padding;
 
-        [ob_rr_theme->a_clear paint: [self trresize]
-                width: ob_rr_theme->grip_width 
-		height: ob_rr_theme->handle_height];
+		[m surfacePointer]->parent = t;
+		[m surfacePointer]->parentx = max_x;
+		[m surfacePointer]->parenty = ob_rr_theme->padding + 1;
 
+		[n surfacePointer]->parent = t;
+		[n surfacePointer]->parentx = icon_x;
+		[n surfacePointer]->parenty = ob_rr_theme->padding;
 
-        /* set parents for any parent relative guys */
-        [l surfacePointer]->parent = t;
-        [l surfacePointer]->parentx = label_x;
-        [l surfacePointer]->parenty = ob_rr_theme->padding;
+		[i surfacePointer]->parent = t;
+		[i surfacePointer]->parentx = iconify_x;
+		[i surfacePointer]->parenty = ob_rr_theme->padding + 1;
 
-        [m surfacePointer]->parent = t;
-        [m surfacePointer]->parentx = max_x;
-        [m surfacePointer]->parenty = ob_rr_theme->padding + 1;
+		[d surfacePointer]->parent = t;
+		[d surfacePointer]->parentx = desk_x;
+		[d surfacePointer]->parenty = ob_rr_theme->padding + 1;
 
-        [n surfacePointer]->parent = t;
-        [n surfacePointer]->parentx = icon_x;
-        [n surfacePointer]->parenty = ob_rr_theme->padding;
+		[s surfacePointer]->parent = t;
+		[s surfacePointer]->parentx = shade_x;
+		[s surfacePointer]->parenty = ob_rr_theme->padding + 1;
 
-        [i surfacePointer]->parent = t;
-        [i surfacePointer]->parentx = iconify_x;
-        [i surfacePointer]->parenty = ob_rr_theme->padding + 1;
+		[c surfacePointer]->parent = t;
+		[c surfacePointer]->parentx = close_x;
+		[c surfacePointer]->parenty = ob_rr_theme->padding + 1;
 
-        [d surfacePointer]->parent = t;
-        [d surfacePointer]->parentx = desk_x;
-        [d surfacePointer]->parenty = ob_rr_theme->padding + 1;
+		[self renderLabel: l];
+		[self renderMax: m];
+		[self renderIcon: n];
+		[self renderIconify: i];
+		[self renderDesk: d];
+		[self renderShade: s];
+		[self renderClose: c];
+	}
 
-        [s surfacePointer]->parent = t;
-        [s surfacePointer]->parentx = shade_x;
-        [s surfacePointer]->parenty = ob_rr_theme->padding + 1;
+	if (decorations & OB_FRAME_DECOR_HANDLE) 
+	{
+		AZAppearance *h, *g;
 
-        [c surfacePointer]->parent = t;
-        [c surfacePointer]->parentx = close_x;
-        [c surfacePointer]->parenty = ob_rr_theme->padding + 1;
+		h = ([self focused] ? a_focused_handle : a_unfocused_handle);
+		[h paint: [self handle] width: width height: ob_rr_theme->handle_height];
 
-	[self renderLabel: l];
-	[self renderMax: m];
-	[self renderIcon: n];
-	[self renderIconify: i];
-	[self renderDesk: d];
-	[self renderShade: s];
-	[self renderClose: c];
-    }
+		if (decorations & OB_FRAME_DECOR_GRIPS) 
+		{
+			g = ([self focused] ?
+				ob_rr_theme->a_focused_grip : ob_rr_theme->a_unfocused_grip);
 
-    if (decorations & OB_FRAME_DECOR_HANDLE) {
-        AZAppearance *h, *g;
+			if ([g surface].grad == RR_SURFACE_PARENTREL)
+				[g surfacePointer]->parent = h;
 
-        h = ([self focused] ?
-             a_focused_handle : a_unfocused_handle);
+			[g surfacePointer]->parentx = 0;
+			[g surfacePointer]->parenty = 0;
 
-        [h paint: [self handle] width: width height: ob_rr_theme->handle_height];
+			[g paint: [self lgrip]
+			   width: ob_rr_theme->grip_width
+			  height: ob_rr_theme->handle_height];
 
-        if (decorations & OB_FRAME_DECOR_GRIPS) {
-            g = ([self focused] ?
-                 ob_rr_theme->a_focused_grip : ob_rr_theme->a_unfocused_grip);
+			[g surfacePointer]->parentx = width - ob_rr_theme->grip_width;
+			[g surfacePointer]->parenty = 0;
 
-            if ([g surface].grad == RR_SURFACE_PARENTREL)
-                [g surfacePointer]->parent = h;
+			[g paint: [self rgrip]
+			   width: ob_rr_theme->grip_width
+			  height: ob_rr_theme->handle_height];
+		}
+	}
 
-            [g surfacePointer]->parentx = 0;
-            [g surfacePointer]->parenty = 0;
-
-            [g paint: [self lgrip]
-                    width: ob_rr_theme->grip_width
-		    height: ob_rr_theme->handle_height];
-
-            [g surfacePointer]->parentx = width - ob_rr_theme->grip_width;
-            [g surfacePointer]->parenty = 0;
-
-            [g paint: [self rgrip]
-                    width: ob_rr_theme->grip_width
-		    height: ob_rr_theme->handle_height];
-        }
-    }
-
-    XFlush(ob_display);
+	XFlush(ob_display);
 }
 
 @end

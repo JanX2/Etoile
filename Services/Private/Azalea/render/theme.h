@@ -102,6 +102,10 @@ struct _RrTheme {
     RrPixmapMask *close_hover_mask;
     RrPixmapMask *close_disabled_mask;
     RrPixmapMask *close_pressed_mask;
+    RrPixmapMask *broken_close_mask;
+    RrPixmapMask *broken_close_hover_mask;
+    RrPixmapMask *broken_close_disabled_mask;
+    RrPixmapMask *broken_close_pressed_mask;
 
     RrPixmapMask *menu_bullet_mask; /* submenu pointer */
     RrPixmapMask *menu_toggle_mask; /* menu boolean */
@@ -125,6 +129,14 @@ struct _RrTheme {
     AZAppearance *a_focused_pressed_close;
     AZAppearance *a_unfocused_unpressed_close;
     AZAppearance *a_unfocused_pressed_close;
+    AZAppearance *a_disabled_focused_broken_close;
+    AZAppearance *a_disabled_unfocused_broken_close;
+    AZAppearance *a_hover_focused_broken_close;
+    AZAppearance *a_hover_unfocused_broken_close;
+    AZAppearance *a_focused_unpressed_broken_close;
+    AZAppearance *a_focused_pressed_broken_close;
+    AZAppearance *a_unfocused_unpressed_broken_close;
+    AZAppearance *a_unfocused_pressed_broken_close;
     AZAppearance *a_disabled_focused_desk;
     AZAppearance *a_disabled_unfocused_desk;
     AZAppearance *a_hover_focused_desk;

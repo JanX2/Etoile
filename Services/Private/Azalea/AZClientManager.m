@@ -374,7 +374,7 @@ static AZClientManager *sharedInstance;
                                  nil]
                        ];
     NSDebugLLog(@"Client", 
-	            @"Managed window 0x%lx (%s)\n", window, NSStringFromClass([client class]));
+	            @"Managed window 0x%lx (%@)\n", window, NSStringFromClass([client class]));
 }
 
 - (void) unmanageAll

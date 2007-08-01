@@ -436,6 +436,29 @@ RrTheme* RrThemeNew(const AZInstance *inst, NSString *name)
         theme->close_hover_mask = RrPixmapMaskCopy(theme->close_mask);
     }
 
+    if (read_mask(inst, "broken_close.xbm", theme, &theme->broken_close_mask)) {
+        if (!read_mask(inst, "broken_close_pressed.xbm", theme,
+                       &theme->broken_close_pressed_mask)) {
+            theme->broken_close_pressed_mask = RrPixmapMaskCopy(theme->broken_close_mask);
+        } 
+        if (!read_mask(inst, "broken_close_disabled.xbm", theme,
+                       &theme->broken_close_disabled_mask)) {
+            theme->broken_close_disabled_mask = RrPixmapMaskCopy(theme->broken_close_mask);
+        } 
+        if (!read_mask(inst, "broken_close_hover.xbm", theme,
+                       &theme->broken_close_hover_mask)) {
+            theme->broken_close_hover_mask = RrPixmapMaskCopy(theme->broken_close_mask);
+        }
+    } else {
+        {
+            unsigned char data[] = { 0x63, 0x77, 0x3e, 0x1c, 0x3e, 0x77, 0x63 };
+            theme->broken_close_mask = RrPixmapMaskNew(inst, 7, 7, (char*)data);
+        }
+        theme->broken_close_pressed_mask = RrPixmapMaskCopy(theme->broken_close_mask);
+        theme->broken_close_disabled_mask = RrPixmapMaskCopy(theme->broken_close_mask);
+        theme->broken_close_hover_mask = RrPixmapMaskCopy(theme->broken_close_mask);
+    }
+
     if (!read_mask(inst, "bullet.xbm", theme, &theme->menu_bullet_mask)) {
         unsigned char data[] = { 0x01, 0x03, 0x07, 0x0f, 0x07, 0x03, 0x01 };
         theme->menu_bullet_mask = RrPixmapMaskNew(inst, 4, 7, (char*)data);
@@ -583,6 +606,22 @@ RrTheme* RrThemeNew(const AZInstance *inst, NSString *name)
         [theme->a_focused_unpressed_max copy];
     theme->a_focused_pressed_close =
         [theme->a_focused_pressed_max copy];
+    theme->a_disabled_focused_broken_close =
+        [theme->a_disabled_focused_max copy];
+    theme->a_disabled_unfocused_broken_close =
+        [theme->a_disabled_unfocused_max copy];
+    theme->a_hover_focused_broken_close =
+        [theme->a_hover_focused_max copy];
+    theme->a_hover_unfocused_broken_close =
+        [theme->a_hover_unfocused_max copy];
+    theme->a_unfocused_unpressed_broken_close =
+        [theme->a_unfocused_unpressed_max copy];
+    theme->a_unfocused_pressed_broken_close =
+        [theme->a_unfocused_pressed_max copy];
+    theme->a_focused_unpressed_broken_close =
+        [theme->a_focused_unpressed_max copy];
+    theme->a_focused_pressed_broken_close =
+        [theme->a_focused_pressed_max copy];
     theme->a_disabled_focused_desk =
         [theme->a_disabled_focused_max copy];
     theme->a_disabled_unfocused_desk =
@@ -710,6 +749,14 @@ RrTheme* RrThemeNew(const AZInstance *inst, NSString *name)
         [theme->a_focused_pressed_close texture][0].type = 
         [theme->a_unfocused_unpressed_close texture][0].type = 
         [theme->a_unfocused_pressed_close texture][0].type = 
+        [theme->a_disabled_focused_broken_close texture][0].type = 
+        [theme->a_disabled_unfocused_broken_close texture][0].type = 
+        [theme->a_hover_focused_broken_close texture][0].type = 
+        [theme->a_hover_unfocused_broken_close texture][0].type = 
+        [theme->a_focused_unpressed_broken_close texture][0].type = 
+        [theme->a_focused_pressed_broken_close texture][0].type = 
+        [theme->a_unfocused_unpressed_broken_close texture][0].type = 
+        [theme->a_unfocused_pressed_broken_close texture][0].type = 
         [theme->a_disabled_focused_desk texture][0].type = 
         [theme->a_disabled_unfocused_desk texture][0].type = 
         [theme->a_hover_focused_desk texture][0].type = 
@@ -768,6 +815,18 @@ RrTheme* RrThemeNew(const AZInstance *inst, NSString *name)
     [theme->a_focused_unpressed_close texture][0].data.mask.mask = 
         [theme->a_unfocused_unpressed_close texture][0].data.mask.mask =
         theme->close_mask;
+    [theme->a_disabled_focused_broken_close texture][0].data.mask.mask = 
+        [theme->a_disabled_unfocused_broken_close texture][0].data.mask.mask = 
+        theme->broken_close_disabled_mask;
+    [theme->a_hover_focused_broken_close texture][0].data.mask.mask = 
+        [theme->a_hover_unfocused_broken_close texture][0].data.mask.mask = 
+        theme->broken_close_hover_mask;
+    [theme->a_focused_pressed_broken_close texture][0].data.mask.mask = 
+        [theme->a_unfocused_pressed_broken_close texture][0].data.mask.mask =
+        theme->broken_close_pressed_mask;
+    [theme->a_focused_unpressed_broken_close texture][0].data.mask.mask = 
+        [theme->a_unfocused_unpressed_broken_close texture][0].data.mask.mask =
+        theme->broken_close_mask;
     [theme->a_disabled_focused_desk texture][0].data.mask.mask = 
         [theme->a_disabled_unfocused_desk texture][0].data.mask.mask = 
         theme->desk_disabled_mask;
@@ -815,24 +874,28 @@ RrTheme* RrThemeNew(const AZInstance *inst, NSString *name)
         theme->menu_bullet_mask;
     [theme->a_disabled_focused_max texture][0].data.mask.color = 
         [theme->a_disabled_focused_close texture][0].data.mask.color = 
+        [theme->a_disabled_focused_broken_close texture][0].data.mask.color = 
         [theme->a_disabled_focused_desk texture][0].data.mask.color = 
         [theme->a_disabled_focused_shade texture][0].data.mask.color = 
         [theme->a_disabled_focused_iconify texture][0].data.mask.color = 
         theme->titlebut_disabled_focused_color;
     [theme->a_disabled_unfocused_max texture][0].data.mask.color = 
         [theme->a_disabled_unfocused_close texture][0].data.mask.color = 
+        [theme->a_disabled_unfocused_broken_close texture][0].data.mask.color = 
         [theme->a_disabled_unfocused_desk texture][0].data.mask.color = 
         [theme->a_disabled_unfocused_shade texture][0].data.mask.color = 
         [theme->a_disabled_unfocused_iconify texture][0].data.mask.color = 
         theme->titlebut_disabled_unfocused_color;
     [theme->a_hover_focused_max texture][0].data.mask.color = 
         [theme->a_hover_focused_close texture][0].data.mask.color = 
+        [theme->a_hover_focused_broken_close texture][0].data.mask.color = 
         [theme->a_hover_focused_desk texture][0].data.mask.color = 
         [theme->a_hover_focused_shade texture][0].data.mask.color = 
         [theme->a_hover_focused_iconify texture][0].data.mask.color = 
         theme->titlebut_hover_focused_color;
     [theme->a_hover_unfocused_max texture][0].data.mask.color = 
         [theme->a_hover_unfocused_close texture][0].data.mask.color = 
+        [theme->a_hover_unfocused_broken_close texture][0].data.mask.color = 
         [theme->a_hover_unfocused_desk texture][0].data.mask.color = 
         [theme->a_hover_unfocused_shade texture][0].data.mask.color = 
         [theme->a_hover_unfocused_iconify texture][0].data.mask.color = 
@@ -847,24 +910,28 @@ RrTheme* RrThemeNew(const AZInstance *inst, NSString *name)
         theme->titlebut_toggled_unfocused_color;
     [theme->a_focused_unpressed_max texture][0].data.mask.color = 
         [theme->a_focused_unpressed_close texture][0].data.mask.color = 
+        [theme->a_focused_unpressed_broken_close texture][0].data.mask.color = 
         [theme->a_focused_unpressed_desk texture][0].data.mask.color = 
         [theme->a_focused_unpressed_shade texture][0].data.mask.color = 
         [theme->a_focused_unpressed_iconify texture][0].data.mask.color = 
         theme->titlebut_focused_unpressed_color;
     [theme->a_focused_pressed_max texture][0].data.mask.color = 
         [theme->a_focused_pressed_close texture][0].data.mask.color = 
+        [theme->a_focused_pressed_broken_close texture][0].data.mask.color = 
         [theme->a_focused_pressed_desk texture][0].data.mask.color = 
         [theme->a_focused_pressed_shade texture][0].data.mask.color = 
         [theme->a_focused_pressed_iconify texture][0].data.mask.color =
         theme->titlebut_focused_pressed_color;
     [theme->a_unfocused_unpressed_max texture][0].data.mask.color = 
         [theme->a_unfocused_unpressed_close texture][0].data.mask.color = 
+        [theme->a_unfocused_unpressed_broken_close texture][0].data.mask.color = 
         [theme->a_unfocused_unpressed_desk texture][0].data.mask.color = 
         [theme->a_unfocused_unpressed_shade texture][0].data.mask.color = 
         [theme->a_unfocused_unpressed_iconify texture][0].data.mask.color = 
         theme->titlebut_unfocused_unpressed_color;
     [theme->a_unfocused_pressed_max texture][0].data.mask.color = 
         [theme->a_unfocused_pressed_close texture][0].data.mask.color = 
+        [theme->a_unfocused_pressed_broken_close texture][0].data.mask.color = 
         [theme->a_unfocused_pressed_desk texture][0].data.mask.color = 
         [theme->a_unfocused_pressed_shade texture][0].data.mask.color = 
         [theme->a_unfocused_pressed_iconify texture][0].data.mask.color =
@@ -958,6 +1025,10 @@ void RrThemeFree(RrTheme *theme)
         RrPixmapMaskFree(theme->close_disabled_mask);
         RrPixmapMaskFree(theme->close_hover_mask);
         RrPixmapMaskFree(theme->close_pressed_mask);
+        RrPixmapMaskFree(theme->broken_close_mask);
+        RrPixmapMaskFree(theme->broken_close_disabled_mask);
+        RrPixmapMaskFree(theme->broken_close_hover_mask);
+        RrPixmapMaskFree(theme->broken_close_pressed_mask);
         RrPixmapMaskFree(theme->menu_bullet_mask);
 
         RrFontClose(theme->win_font_focused); 
@@ -983,6 +1054,14 @@ void RrThemeFree(RrTheme *theme)
         DESTROY(theme->a_focused_pressed_close);
         DESTROY(theme->a_unfocused_unpressed_close);
         DESTROY(theme->a_unfocused_pressed_close);
+        DESTROY(theme->a_disabled_focused_broken_close);
+        DESTROY(theme->a_disabled_unfocused_broken_close);
+        DESTROY(theme->a_hover_focused_broken_close);
+        DESTROY(theme->a_hover_unfocused_broken_close);
+        DESTROY(theme->a_focused_unpressed_broken_close);
+        DESTROY(theme->a_focused_pressed_broken_close);
+        DESTROY(theme->a_unfocused_unpressed_broken_close);
+        DESTROY(theme->a_unfocused_pressed_broken_close);
         DESTROY(theme->a_disabled_focused_desk);
         DESTROY(theme->a_disabled_unfocused_desk);
         DESTROY(theme->a_hover_focused_desk);

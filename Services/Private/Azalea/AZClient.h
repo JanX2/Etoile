@@ -257,6 +257,9 @@ typedef enum
     /*! Demands attention flag */
     BOOL demands_attention;
 
+	/*! GNUstep document edited */
+	BOOL isGNUstepDocumentEdited;
+
     /*! A bitmask of values in the ObFrameDecorations enum
       The values in the variable are the decorations that the client wants to
       be displayed around it.
@@ -725,6 +728,8 @@ typedef enum
 - (void) set_undecorated: (BOOL) undecorated;
 - (unsigned int) functions;
 - (void) set_functions: (unsigned int) functions;
+
+- (BOOL) isGNUstepDocumentEdited;
 
 - (NSArray *) icons;
 - (void) removeAllIcons;

@@ -2780,6 +2780,8 @@
 - (void) removeAllIcons { [icons removeAllObjects]; }
 - (void) addIcon: (AZClientIcon *) icon { [icons addObject: icon]; }
 
+- (BOOL) isGNUstepDocumentEdited { return isGNUstepDocumentEdited; }
+
 - (id) init
 {
   self = [super init];

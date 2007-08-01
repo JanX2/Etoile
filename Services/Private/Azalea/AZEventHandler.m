@@ -1030,12 +1030,12 @@ static AZEventHandler *sharedInstance;
         }
         break;
     case PropertyNotify:
-        /* validate cuz we query stuff off the client here */
-	if (![client validate]) break;
+		/* validate cuz we query stuff off the client here */
+		if (![client validate]) break;
   
-        /* compress changes to a single property into a single change */
-        while (XCheckTypedWindowEvent(ob_display, [client window],
-                                      e->type, &ce)) {
+		/* compress changes to a single property into a single change */
+		while (XCheckTypedWindowEvent(ob_display, [client window], e->type, &ce)) 
+		{
             Atom a, b;
 
             /* XXX: it would be nice to compress ALL changes to a property,
@@ -1098,7 +1098,8 @@ static AZEventHandler *sharedInstance;
 	    [client updateSmClientId];
         } else if (msgtype == prop_atoms.gnustep_wm_attr) {
 	    [client updateGNUstepWMAttributes];
-	}
+			[[client frame] render];
+		}
     default:
         ;
 #ifdef SHAPE
