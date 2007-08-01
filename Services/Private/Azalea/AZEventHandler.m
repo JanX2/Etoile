@@ -560,19 +560,19 @@ static AZEventHandler *sharedInstance;
 
 - (void) handleClient: (AZClient *) client event: (XEvent *) e
 {
-    XEvent ce;
-    Atom msgtype;
-    int i=0;
-    ObFrameContext con;
-//    AZFocusManager *fManager = [AZFocusManager defaultManager];
+	XEvent ce;
+	Atom msgtype;
+	int i=0;
+	ObFrameContext con;
      
-    switch (e->type) {
-    case VisibilityNotify:
-        [[client frame] set_obscured: (e->xvisibility.state != VisibilityUnobscured)];
-        break;
-    case ButtonPress:
-    case ButtonRelease:
-        /* Wheel buttons don't draw because they are an instant click, so it
+	switch (e->type) 
+	{
+		case VisibilityNotify:
+			[[client frame] set_obscured: (e->xvisibility.state != VisibilityUnobscured)];
+			break;
+		case ButtonPress:
+		case ButtonRelease:
+			/* Wheel buttons don't draw because they are an instant click, so it
            is a waste of resources to go drawing it. */
         if (!(e->xbutton.button == 4 || e->xbutton.button == 5)) {
             con = frame_context(client, e->xbutton.window);
@@ -1029,79 +1029,104 @@ static AZEventHandler *sharedInstance;
             [client set_gravity: oldg];
         }
         break;
-    case PropertyNotify:
-		/* validate cuz we query stuff off the client here */
-		if (![client validate]) break;
+		case PropertyNotify:
+			/* validate cuz we query stuff off the client here */
+			if (![client validate]) break;
   
-		/* compress changes to a single property into a single change */
-		while (XCheckTypedWindowEvent(ob_display, [client window], e->type, &ce)) 
-		{
-            Atom a, b;
+			/* compress changes to a single property into a single change */
+			while (XCheckTypedWindowEvent(ob_display, [client window], e->type, &ce)) 
+			{
+				Atom a, b;
 
-            /* XXX: it would be nice to compress ALL changes to a property,
-               not just changes in a row without other props between. */
+				/* XXX: it would be nice to compress ALL changes to a property,
+				   not just changes in a row without other props between. */
 
-            a = ce.xproperty.atom;
-            b = e->xproperty.atom;
+				a = ce.xproperty.atom;
+				b = e->xproperty.atom;
 
-            if (a == b)
-                continue;
-            if ((a == prop_atoms.net_wm_name ||
-                 a == prop_atoms.wm_name ||
-                 a == prop_atoms.net_wm_icon_name ||
-                 a == prop_atoms.wm_icon_name)
-                &&
-                (b == prop_atoms.net_wm_name ||
-                 b == prop_atoms.wm_name ||
-                 b == prop_atoms.net_wm_icon_name ||
-                 b == prop_atoms.wm_icon_name)) {
-                continue;
-            }
-            if (a == prop_atoms.net_wm_icon &&
-                b == prop_atoms.net_wm_icon)
-                continue;
+				if (a == b)
+					continue;
+				if ((a == prop_atoms.net_wm_name ||
+					 a == prop_atoms.wm_name ||
+					 a == prop_atoms.net_wm_icon_name ||
+					 a == prop_atoms.wm_icon_name)
+					&&
+					 (b == prop_atoms.net_wm_name ||
+					  b == prop_atoms.wm_name ||
+					  b == prop_atoms.net_wm_icon_name ||
+					  b == prop_atoms.wm_icon_name)) 
+				{
+					continue;
+				}
+				if (a == prop_atoms.net_wm_icon &&
+				    b == prop_atoms.net_wm_icon)
+				{
+					continue;
+				}
 
-            XPutBackEvent(ob_display, &ce);
-            break;
-        }
+				XPutBackEvent(ob_display, &ce);
+				break;
+			}
 
-        msgtype = e->xproperty.atom;
-        if (msgtype == XA_WM_NORMAL_HINTS) {
-	    [client updateNormalHints];
-            /* normal hints can make a window non-resizable */
-	    [client setupDecorAndFunctions];
-        } else if (msgtype == XA_WM_HINTS) {
-	    [client updateWmhints];
-        } else if (msgtype == XA_WM_TRANSIENT_FOR) {
-	    [client updateTransientFor];
-	    [client getType];
-            /* type may have changed, so update the layer */
-	    [client calcLayer];
-	    [client setupDecorAndFunctions];
-        } else if (msgtype == prop_atoms.net_wm_name ||
-                   msgtype == prop_atoms.wm_name ||
-                   msgtype == prop_atoms.net_wm_icon_name ||
-                   msgtype == prop_atoms.wm_icon_name) {
-	    [client updateTitle];
-        } else if (msgtype == prop_atoms.wm_class) {
-	    [client updateClass];
-        } else if (msgtype == prop_atoms.wm_protocols) {
-	    [client updateProtocols];
-	    [client setupDecorAndFunctions];
-        } else if (msgtype == prop_atoms.net_wm_strut) {
-	    [client updateStrut];
-        } else if (msgtype == prop_atoms.net_wm_icon) {
-	    [client updateIcons];
-        } else if (msgtype == prop_atoms.net_wm_user_time) {
-            [client updateUserTime];
-        } else if (msgtype == prop_atoms.sm_client_id) {
-	    [client updateSmClientId];
-        } else if (msgtype == prop_atoms.gnustep_wm_attr) {
-	    [client updateGNUstepWMAttributes];
-			[[client frame] render];
-		}
-    default:
-        ;
+			msgtype = e->xproperty.atom;
+			if (msgtype == XA_WM_NORMAL_HINTS) 
+			{
+				[client updateNormalHints];
+				/* normal hints can make a window non-resizable */
+				[client setupDecorAndFunctions];
+			}
+			else if (msgtype == XA_WM_HINTS) 
+			{
+				[client updateWmhints];
+			}
+			else if (msgtype == XA_WM_TRANSIENT_FOR) 
+			{
+				[client updateTransientFor];
+				[client getType];
+				/* type may have changed, so update the layer */
+				[client calcLayer];
+				[client setupDecorAndFunctions];
+			}
+			else if (msgtype == prop_atoms.net_wm_name ||
+			         msgtype == prop_atoms.wm_name ||
+			         msgtype == prop_atoms.net_wm_icon_name ||
+			         msgtype == prop_atoms.wm_icon_name) 
+			{
+				[client updateTitle];
+			}
+			else if (msgtype == prop_atoms.wm_class)
+			{
+				[client updateClass];
+			}
+			else if (msgtype == prop_atoms.wm_protocols) 
+			{
+				[client updateProtocols];
+				[client setupDecorAndFunctions];
+			}
+			else if (msgtype == prop_atoms.net_wm_strut) 
+			{
+				[client updateStrut];
+			}
+			else if (msgtype == prop_atoms.net_wm_icon) 
+			{
+				[client updateIcons];
+			}
+			else if (msgtype == prop_atoms.net_wm_user_time) 
+			{
+				[client updateUserTime];
+			}
+			else if (msgtype == prop_atoms.sm_client_id) 
+			{
+				[client updateSmClientId];
+			}
+			else if (msgtype == prop_atoms.gnustep_wm_attr) 
+			{
+				[client updateGNUstepWMAttributes];
+				/* Should we render in less frequency ? */
+				[[client frame] render];
+			}
+		default:
+			;
 #ifdef SHAPE
         if (extensions_shape && e->type == extensions_shape_event_basep) {
             [client set_shaped: ((XShapeEvent*)e)->shaped];
