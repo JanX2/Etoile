@@ -64,56 +64,44 @@ BOOL XWindowClassHint(Window window, NSString **wm_class, NSString **wm_instance
 
 NSImage *XWindowIcon(Window window)
 {
-  NSImage *icon = nil;
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+	NSImage *icon = nil;
+	Display *dpy = (Display*)[GSCurrentServer() serverDevice];
 
-  unsigned long num;
-  unsigned long *data = NULL;
-  Atom prop = XInternAtom(dpy, "_NET_WM_ICON", False);
-  Atom type_ret;
-  int format_ret;
-  unsigned long after_ret;
-  int result = XGetWindowProperty(dpy, window, prop,
+	unsigned long num;
+	unsigned long *data = NULL;
+	Atom prop = XInternAtom(dpy, "_NET_WM_ICON", False);
+	Atom type_ret;
+	int format_ret;
+	unsigned long after_ret;
+	int result = XGetWindowProperty(dpy, window, prop,
                                   0, 0x7FFFFFFF, False, XA_CARDINAL,
                                   &type_ret, &format_ret, &num,
                                   &after_ret, (unsigned char **)&data);
-  if ((result != Success)) {
-    NSLog(@"Error: cannot get client icon");
-    if (data != NULL) {
-      XFree(data);
-    }
-    return nil;
-  }
-
-  if (num && data) {
-    int width = data[0];
-    int height = data[1];
-    int size = width * height;
-    if (2+size > num) {
-      NSLog(@"Internal Error: icon size larger than return data.");
-      if (data != NULL) {
-        XFree(data);
-      }
-      return nil;
-    }
-    /* Try to make a bitmap representation */
-    unsigned char *buf = calloc(sizeof(unsigned char), size * 4);
-    int i = 0, j;
-    for (j = 2; j < size; j++) {
-#if 1 /* Although this is correct behavior, it can be platform-dependent */
-      buf[i++] = (data[j] >> 16) & 0xff; // B
-      buf[i++] = (data[j] >> 8) & 0xff; // G
-      buf[i++] = (data[j] >> 0) & 0xff; // R
-      buf[i++] = (data[j] >> 24) & 0xff; // A
-#else
-      buf[i++] = (data[j] >> 24) & 0xff; // A
-      buf[i++] = (data[j] >> 16) & 0xff; // R
-      buf[i++] = (data[j] >> 8) & 0xff; // G
-      buf[i++] = (data[j]) & 0xff; // B
-#endif
-    }
-    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc]
-	                        initWithBitmapDataPlanes: &buf
+	if ((result != Success)) 
+	{
+		NSLog(@"Error: cannot get client icon");
+		if (data != NULL) 
+		{
+			XFree(data);
+		}
+	} 
+	else if (num && data) 
+	{
+		int width = data[0];
+		int height = data[1];
+		int size = width * height;
+		if (2+size > num) 
+		{
+			NSLog(@"Internal Error: icon size larger than return data.");
+			if (data != NULL) 
+			{
+				XFree(data);
+			}
+			return nil;
+		}
+		/* Try to make a bitmap representation */
+		NSBitmapImageRep *rep = [[NSBitmapImageRep alloc]
+	                        initWithBitmapDataPlanes: NULL
  	                        pixelsWide: width
 	                        pixelsHigh: height
 		                bitsPerSample: 8 /* depth */
@@ -123,15 +111,31 @@ NSImage *XWindowIcon(Window window)
 			        colorSpaceName: NSCalibratedRGBColorSpace
 				bytesPerRow: 4 * width
 				bitsPerPixel: 4 * 8];
-    icon = [[NSImage alloc] initWithSize: NSMakeSize(width, height)];
-    [icon addRepresentation: rep];
-    DESTROY(rep);
-    /* Should free buf */
-  }
-  if (data != NULL) {
-    XFree(data);
-  }
-  return icon;
+		unsigned char *buf = [rep bitmapData];
+		int i = 0, j;
+		for (j = 2; j < size; j++) 
+		{
+#if 1 /* Although this is correct behavior, it can be platform-dependent */
+			buf[i++] = (data[j] >> 16) & 0xff; // B
+			buf[i++] = (data[j] >> 8) & 0xff; // G
+			buf[i++] = (data[j] >> 0) & 0xff; // R
+			buf[i++] = (data[j] >> 24) & 0xff; // A
+#else
+			buf[i++] = (data[j] >> 24) & 0xff; // A
+			buf[i++] = (data[j] >> 16) & 0xff; // R
+			buf[i++] = (data[j] >> 8) & 0xff; // G
+			buf[i++] = (data[j]) & 0xff; // B
+#endif
+		}
+		icon = [[NSImage alloc] initWithSize: NSMakeSize(width, height)];
+		[icon addRepresentation: rep];
+		DESTROY(rep);
+	}
+	if (data != NULL) 
+	{
+		XFree(data);
+	}
+	return icon;
 }
 
 unsigned long XWindowState(Window win)
