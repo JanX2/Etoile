@@ -44,7 +44,9 @@ typedef enum _TextStyle {
 	NSString *_htmlText;
 	NSString *_urlString;
 
-	int bold; // tag
+	int bold; // <b>, <em>, <strong>tag
+	int italic; // <i>tag
+	int link; // <a href> tag
 #if 0
 	BOOL isFeedRedirect;
 	BOOL isDownload;

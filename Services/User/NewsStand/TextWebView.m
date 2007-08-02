@@ -99,15 +99,40 @@
 			bold++;
 		}
 	}
+	else if (([_name caseInsensitiveCompare: @"i"] == NSOrderedSame))
+	{
+		if (textStyle != TitleTextStyle)
+		{
+			if (italic < 1)
+			{
+				NSFont *font = [attributes objectForKey: NSFontAttributeName];
+				font = [[NSFontManager sharedFontManager] convertFont: font toHaveTrait: NSItalicFontMask];
+				[attributes setObject: font forKey: NSFontAttributeName];
+			}
+			italic++;
+		}
+	}
 	else if (([_name caseInsensitiveCompare: @"a"] == NSOrderedSame))
 	{
-		if (textStyle != DetailTextStyle)
+		if (textStyle == BodyTextStyle)
 		{
 			[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @" " attributes: attributes] autorelease]];
 		}
+		if (link < 1)
+		{
+			NSString *url = [_attributes objectForKey: @"href"];
+			if (url == nil)
+				url = [_attributes objectForKey: @"HREF"];
+			if (url)
+			{
+				[attributes setObject: url forKey: NSLinkAttributeName];
+			}
+		}
+		link++;
 	}
 	else if (([_name caseInsensitiveCompare: @"img"] == NSOrderedSame))
 	{
+		[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @" " attributes: attributes] autorelease]];
 	}
 	else if (([_name caseInsensitiveCompare: @"blockquote"] == NSOrderedSame))
 	{
@@ -151,9 +176,30 @@
 			}
 		}
 	}
+	else if (([_name caseInsensitiveCompare: @"i"] == NSOrderedSame))
+	{
+		if (textStyle != TitleTextStyle)
+		{
+			italic--;
+			if (italic < 1)
+			{
+				NSFont *font = [attributes objectForKey: NSFontAttributeName];
+				font = [[NSFontManager sharedFontManager] convertFont: font toHaveTrait: NSUnitalicFontMask ];
+				[attributes setObject: font forKey: NSFontAttributeName];
+			}
+		}
+	}
 	else if (([_name caseInsensitiveCompare: @"a"] == NSOrderedSame))
 	{
-		[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @" " attributes: attributes] autorelease]];
+		link--;
+		if (link < 1)
+		{
+			[attributes removeObjectForKey: NSLinkAttributeName];
+		}
+		if (textStyle == BodyTextStyle)
+		{
+			[[textView textStorage] appendAttributedString: [[[NSAttributedString alloc] initWithString: @" " attributes: attributes] autorelease]];
+		}
 	}
 }
 
