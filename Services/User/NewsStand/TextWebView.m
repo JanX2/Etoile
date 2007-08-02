@@ -277,6 +277,10 @@
 	}
 
 //	NSLog(@"htmlText %@", _htmlText);
+	/* Reset tag counter so that it won't effect the next html */
+	bold = 0;
+	italic = 0;
+	link = 0;
 	TRXMLParser *parser = [TRXMLParser parserWithContentHandler: self];
 	[textView setString: @""];
 	[[textView textStorage] beginEditing];
