@@ -197,7 +197,7 @@ static Busy *sharedInstance;
 
 	if (checkTimer == nil)
 	{
-		ASSIGN(checkTimer, [NSTimer scheduledTimerWithTimeInterval: 10
+		ASSIGN(checkTimer, [NSTimer scheduledTimerWithTimeInterval: 600
 		                            target: self
 		                            selector: @selector(checkAlive:)
 		                            userInfo: nil
