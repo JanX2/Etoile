@@ -1,0 +1,10 @@
+====
+BUSY
+====
+
+:Author: Yen-Ju Chen
+:License: MIT License
+
+BUSY poke each window and waiting for _NET_PING.
+If not receive, it mark it busy.
+
