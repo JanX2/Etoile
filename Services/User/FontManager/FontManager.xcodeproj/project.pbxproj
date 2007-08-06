@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		3B63AE6B0C3E696900BC13D2 /* FontManager.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3B63AE6A0C3E696900BC13D2 /* FontManager.icns */; };
 		7122D3B70C1398C300B29EAE /* PQFontSampleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7122D3B60C1398C300B29EAE /* PQFontSampleView.m */; };
-		7173BE080C3E61F200CA3817 /* FontManager.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7173BE070C3E61F200CA3817 /* FontManager.tif */; };
 		717A9B1D0C07C06200F75DB5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 717A9B1C0C07C06200F75DB5 /* Localizable.strings */; };
 		719DE2A60C0592B100474A48 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 719DE2A50C0592B100474A48 /* MainMenu.nib */; };
 		719DE2AE0C05986400474A48 /* PQSampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 719DE2AD0C05986400474A48 /* PQSampleController.m */; };
@@ -30,7 +29,6 @@
 		7122D3B60C1398C300B29EAE /* PQFontSampleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PQFontSampleView.m; sourceTree = "<group>"; };
 		7138698A0C27F647003E5A5A /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		714B92EE0C070CB900F5B7CF /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
-		7173BE070C3E61F200CA3817 /* FontManager.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = FontManager.tif; path = Resources/FontManager.tif; sourceTree = SOURCE_ROOT; };
 		717A9B1A0C07C05700F75DB5 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		717D53CD0C06571300DE5BBC /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
 		719DE29E0C05929500474A48 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
@@ -128,7 +126,6 @@
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
 				717A9B1C0C07C06200F75DB5 /* Localizable.strings */,
 				717D53CD0C06571300DE5BBC /* ChangeLog */,
-				7173BE070C3E61F200CA3817 /* FontManager.tif */,
 				7138698A0C27F647003E5A5A /* README */,
 				714B92EE0C070CB900F5B7CF /* COPYING */,
 			);
@@ -188,7 +185,6 @@
 				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
 				719DE2A60C0592B100474A48 /* MainMenu.nib in Resources */,
 				717A9B1D0C07C06200F75DB5 /* Localizable.strings in Resources */,
-				7173BE080C3E61F200CA3817 /* FontManager.tif in Resources */,
 				3B63AE6B0C3E696900BC13D2 /* FontManager.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

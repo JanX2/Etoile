@@ -254,7 +254,7 @@ const float sampleBoxMinWidth = 220.0;
 {
 	if ([item isKindOfClass:[PQFontFamily class]])
 	{
-		return [item name];
+		return [(PQFontFamily *)item name];
 	}
 	else if ([item isKindOfClass:[NSString class]])
 	{
