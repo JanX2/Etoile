@@ -4,7 +4,7 @@
 	* FontManagerInfo.plist: Added ApplicationIcon and NSIcon.
 	* GNUmakefile. Updated.
 
-2007-07-04  Isaiah Beerbower <ipaqah@tm.net>
+2007-07-04  Isaiah Beerbower <public@ipaqah.com>
 	* Info.plist: Fix "Can't create document" error message on Mac OS X.
 	* PQController.*: Add NSSplitView delegate methods.
 	* English.lproj/MainMenu.nib/*: Set PQController as NSSplitView's delegate.
@@ -12,93 +12,93 @@
 	* PQFontSampleView.m ([-drawRect:]): Moved some code back because it was
 	  causing a drawing bug when moved. (:
 
-2007-06-22  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-22  Isaiah Beerbower <public@ipaqah.com>
 	* PQFontSampleView.m ([-drawRect:]): Moved some code for performance reasons.
 
-2007-06-22  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-22  Isaiah Beerbower <public@ipaqah.com>
 	* PQFontSampleView.m ([-drawRect:]): Worked around problem with GNUstep's
 		[-displayName].
 	* PQFontSampleView.m ([-drawRect:]): Fix a drawing bug caused by auto resize.
 
-2007-06-21  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-21  Isaiah Beerbower <public@ipaqah.com>
 	* PQSampleController.*: Removed some commented out code.
 	* PQController.m: Better method for finding style name.
 
-2007-06-21  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-21  Isaiah Beerbower <public@ipaqah.com>
 	* English.lproj/MainMenu.gorm: Totally redid the gorm file.
 	* *.m: Various small additions.
 
-2007-06-20  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-20  Isaiah Beerbower <public@ipaqah.com>
 	* PQSampleController.*: Simplified unnecessarily complex code.
 	* English.lproj/MainMenu.nib: Totally redid the nib.
 
-2007-06-19  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-19  Isaiah Beerbower <public@ipaqah.com>
 	* PQController.m: Put parentheses around 'assignment used as truth value'.
 	* PQSampleController.*: Added -changeSize.
 	* English.lproj/MainMenu.nib: Added connection between size slider and sample
 	  controller's -changeSize.
 	* README: A README.
 
-2007-06-17  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-17  Isaiah Beerbower <public@ipaqah.com>
 	* PQFontSampleView.m: Handles changing colors.
 	* PQSampleController.m: Handles changing colors.
 
-2007-06-17  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-17  Isaiah Beerbower <public@ipaqah.com>
 	* PQFontSampleView.*: Only generates font sample if it needs to.
 	* PQSampleController.*: Remembers if fonts need updating or not.
 
-2007-06-16  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-16  Isaiah Beerbower <public@ipaqah.com>
 	* PQFontSampleView.*: Added auto resize methods, and changed drawRect: to use
 	  them.
 
-2007-06-16  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-16  Isaiah Beerbower <public@ipaqah.com>
 	* PQFontSampleView.m: Some small changes.
 
-2007-06-11  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-11  Isaiah Beerbower <public@ipaqah.com>
 	* PQFontSampleView.m ([-drawRect:]): Changed almost everything.
 
-2007-06-07  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-07  Isaiah Beerbower <public@ipaqah.com>
 	* PQSampleController.m: Added method -updateControls, and call it from
 		-awakeFromNib so controls will be updated on startup.
 
-2007-06-07  Isaiah Beerbower <ipaqah@tm.net>
+2007-06-07  Isaiah Beerbower <public@ipaqah.com>
 	* PQFontSampleView.*: Font sampling view to replace text view.
 	* PQSampleController.m: Changed to use PQFontSampleView instead of a
 	  text view.
 	* GNUmakefile: Makefile for GNUstep.
 	* English.lproj/MainMenu.gorm*: Interface for GNUstep.
 
-2007-05-28  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-28  Isaiah Beerbower <public@ipaqah.com>
 	* PQSampleController.m: Implemented -updateSampleText.
 
-2007-05-28  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-28  Isaiah Beerbower <public@ipaqah.com>
 	* PQSampleController.*: Replaced -update with -updateFonts, -updateSampleText,
 	  & -updateSize.
 
-2007-05-28  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-28  Isaiah Beerbower <public@ipaqah.com>
 	* PQController.m ([-outlineView:objectValueForTableColumn:byItem:]): Fixed
 		possible range exception.
 
-2007-05-27  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-27  Isaiah Beerbower <public@ipaqah.com>
 	* PQController.*: Added text field showing number of fonts.
 	* English.lproj/MainMenu.nib/*:
 	* PQSampleController.m: Fixed small problem with size combo box.
 
-2007-05-26  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-26  Isaiah Beerbower <public@ipaqah.com>
 	* PQSampleController: Internal cleanup.
 
-2007-05-26  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-26  Isaiah Beerbower <public@ipaqah.com>
 	* PQSampleController.m: Added to combo box datasource methods.
 	* PQSampleController.h:
 	* English.lproj/MainMenu.nib/*: Small amount of tweaking.
 
-2007-05-25  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-25  Isaiah Beerbower <public@ipaqah.com>
 	* PQController.m ([-awakeFromNib]): Updates font sample after nib is loaded.
 	* PQSampleController.m: Added -controlTextDidEndEditing: method.
 	* PQSampleController.m: Default sample text is moved to Localizable.strings.
 	* English.lproj/Localizable.strings: See above.
 
-2007-05-25  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-25  Isaiah Beerbower <public@ipaqah.com>
 	* COPYING: Added license.
 	* PQSampleController.*: Sampling is now implemented.
 	* PQController.*: Now handles the font sample controller.
@@ -106,20 +106,20 @@
 	* PQSampleController.m: Fixed memory leak.
 	* PQController.m ([PQController -dealloc]): Release objects when done.
 
-2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-24  Isaiah Beerbower <public@ipaqah.com>
 	* PQController.h: Comments.
 	* PQSampleController.m: NSComboBoxDataSource methods added.
 	* English.lproj/MainMenu.nib/*: Combo boxes no use data source.
 
-2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-24  Isaiah Beerbower <public@ipaqah.com>
 	* PQController.m: Added sorting of fonts.
 	* PQFontFamily.h: Added -caseInsensitiveCompare: for sorting.
 	* PQFontFamily.m: Same.
 
-2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-24  Isaiah Beerbower <public@ipaqah.com>
 	* English.lproj/MainMenu.nib/*: Update nib
 
-2007-05-24  Isaiah Beerbower <ipaqah@tm.net>
+2007-05-24  Isaiah Beerbower <public@ipaqah.com>
 	* ChangeLog:
 	* PQSampleController.h:
 	* PQSampleController.m:
