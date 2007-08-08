@@ -95,6 +95,7 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 #ifdef XWindowServerKit
       [ServerMenuBarWindow setDesktop: ALL_DESKTOP];
       [ServerMenuBarWindow skipTaskbarAndPager];
+      [ServerMenuBarWindow setAsSystemDock];
       [ServerMenuBarWindow
         reserveScreenAreaOn: XScreenTopSide
                       width: MenuBarHeight
