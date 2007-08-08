@@ -44,6 +44,8 @@
   Atom X_NET_WM_STATE_SKIP_PAGER;
   Atom X_NET_WM_STATE_SKIP_TASKBAR;
   Atom X_NET_WM_STRUT_PARTIAL;
+  Atom X_NET_WM_WINDOW_TYPE;
+  Atom X_NET_WM_WINDOW_TYPE_DOCK;
 }
 
 /* If defer is NO when window is created. 
@@ -62,5 +64,8 @@
  */ 
 - (void) reserveScreenAreaOn: (XScreenSide) side 
          width: (int) width start: (int) start end: (int) end;
+
+/* Set _NET_WM_WINDOW_TYPE_DOCK */
+- (void) setAsSystemDock;
 
 @end

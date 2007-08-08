@@ -54,6 +54,8 @@
   X_NET_WM_STATE_SKIP_PAGER = XInternAtom(dpy, "_NET_WM_STATE_SKIP_PAGER", False);
   X_NET_WM_STATE_SKIP_TASKBAR = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);
   X_NET_WM_STRUT_PARTIAL = XInternAtom(dpy, "_NET_WM_STRUT_PARTIAL", False);
+  X_NET_WM_WINDOW_TYPE = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False);
+  X_NET_WM_WINDOW_TYPE_DOCK = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DOCK", False);
 
   return self;
 }
@@ -140,6 +142,15 @@
   XChangeProperty(dpy, [self xwindow], X_NET_WM_STRUT_PARTIAL, XA_CARDINAL, 32,
 		  PropModeReplace, (unsigned char *)strut, 12);
   XFree(strut);
+}
+
+- (void) setAsSystemDock
+{
+  Atom *state = calloc(1, sizeof(Atom));
+  state[0] = X_NET_WM_WINDOW_TYPE_DOCK;
+  XChangeProperty(dpy, [self xwindow], X_NET_WM_WINDOW_TYPE, XA_ATOM, 32,
+		  PropModeReplace, (unsigned char *) state, 1);
+  XFree(state);
 }
 
 @end

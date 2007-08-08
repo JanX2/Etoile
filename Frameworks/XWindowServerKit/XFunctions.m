@@ -32,6 +32,9 @@
 #import "gnustep.h"
 #import <X11/Xatom.h>
 #import <X11/Xutil.h>
+#if 0 // Imlib2
+#include "grab.h"
+#endif
 
 static NSString *_XDGConfigHomePath;
 static NSString *_XDGDataHomePath;
@@ -40,32 +43,34 @@ static NSArray *_XDGDataDirectories;
 
 BOOL XWindowClassHint(Window window, NSString **wm_class, NSString **wm_instance)
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+	Display *dpy = (Display*)[GSCurrentServer() serverDevice];
 
-  XClassHint *class_hint;
+	XClassHint *class_hint;
+	class_hint = XAllocClassHint();
+	if (XGetClassHint(dpy,window,class_hint) == 0) 
+	{
+		if (wm_class)
+			*wm_class = nil;
+		if (wm_instance)
+			*wm_instance = nil;
+		XFree(class_hint);
+		return NO;
+	}
+	if (wm_instance)
+		*wm_instance = [NSString stringWithCString: class_hint->res_name];
+	if (wm_class)
+		*wm_class = [NSString stringWithCString: class_hint->res_class];
 
-  class_hint = XAllocClassHint();
-  if (XGetClassHint(dpy,window,class_hint) == 0) {
-    if (wm_class)
-      *wm_class = nil;
-    if (wm_instance)
-      *wm_instance = nil;
-    XFree(class_hint);
-    return NO;
-  }
-  if (wm_instance)
-    *wm_instance = [NSString stringWithCString: class_hint->res_name];
-  if (wm_class)
-    *wm_class = [NSString stringWithCString: class_hint->res_class];
-
-  XFree(class_hint);
-  return YES;
+	XFree(class_hint);
+	return YES;
 }
 
 NSImage *XWindowIcon(Window window)
 {
 	NSImage *icon = nil;
 	Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+	Visual *visual = DefaultVisual(dpy, DefaultScreen(dpy));
+	Colormap colormap = DefaultColormap(dpy, DefaultScreen(dpy));
 
 	unsigned long num;
 	unsigned long *data = NULL;
@@ -83,6 +88,7 @@ NSImage *XWindowIcon(Window window)
 		if (data != NULL) 
 		{
 			XFree(data);
+			data = NULL;
 		}
 	} 
 	else if (num && data) 
@@ -96,6 +102,7 @@ NSImage *XWindowIcon(Window window)
 			if (data != NULL) 
 			{
 				XFree(data);
+				data = NULL;
 			}
 			return nil;
 		}
@@ -130,12 +137,122 @@ NSImage *XWindowIcon(Window window)
 		icon = [[NSImage alloc] initWithSize: NSMakeSize(width, height)];
 		[icon addRepresentation: rep];
 		DESTROY(rep);
+		if (data != NULL) 
+		{
+			XFree(data);
+			data = NULL;
+		}
+		return icon;
 	}
+#if 0 // Imlib2
+	/* Let's get from pixmap */
+	XWMHints *wmHints = XGetWMHints(dpy, window);
+	if (wmHints)
+	{
+		Pixmap iconPixmap = None;
+		Pixmap iconMask = None;
+		int iconX = 0, iconY = 0;
+		if (wmHints->flags & IconPixmapHint)
+		{
+			iconPixmap = wmHints->icon_pixmap;
+		}
+		if (wmHints->flags & IconPositionHint)
+		{
+			iconX = wmHints->icon_x;
+			iconY = wmHints->icon_y;
+		}
+		if (wmHints->flags & IconMaskHint)
+		{
+			iconMask= wmHints->icon_mask;
+//			NSLog(@"Has mask");
+		}
+		if (iconPixmap)
+		{
+			int xp_x, xp_y;
+			Window unused1;
+			unsigned int unused2; 
+			unsigned int xp_width, xp_height;
+			unsigned int xp_depth;
+			DATA32 *xdata = NULL;
+			if (XGetGeometry(dpy, iconPixmap, &unused1, &xp_x, &xp_y,
+			                 &xp_width, &xp_height, &unused2, &xp_depth))
+			{
+				char domask = (iconMask != None);
+//				NSLog(@"domask %d", domask);
+				xdata = malloc(xp_width * xp_height * sizeof(DATA32));
+				if (__imlib_GrabDrawableToRGBA(xdata, 0, 0, xp_width, xp_height,
+				                               dpy, iconPixmap, 
+				                               (iconMask ? iconMask: None), 
+				                               visual, colormap, xp_depth,
+				                               0, 0, xp_width, xp_height, 
+				                               &domask, True))
+				{
+//					NSLog(@"Grab succeed, Has alpha %d", domask);
+				}
+				else
+				{
+//					NSLog(@"Grab failed");
+				}
+
+				/* Try to make a bitmap representation */
+				NSBitmapImageRep *rep = [[NSBitmapImageRep alloc]
+	                        initWithBitmapDataPlanes: NULL
+ 	                        pixelsWide: xp_width
+	                        pixelsHigh: xp_height
+			                bitsPerSample: 8 /* depth */
+			                samplesPerPixel: 4 /* channels */
+			                hasAlpha: YES
+			                isPlanar: NO
+					        colorSpaceName: NSCalibratedRGBColorSpace
+							bytesPerRow: 4 * xp_width
+							bitsPerPixel: 4 * 8];
+				unsigned char *buf = [rep bitmapData];
+				int i = 0, j;
+				for (j = 0; j < xp_width*xp_height; j++) 
+				{
+#if 1 /* Although this is correct behavior, it can be platform-dependent */
+#if 1
+					buf[i++] = ((xdata[j] >> 0) & 0xff) * 0xff; // B
+					buf[i++] = ((xdata[j] >> 0) & 0xff) * 0xff; // G
+					buf[i++] = ((xdata[j] >> 0) & 0xff) * 0xff; // R
+					buf[i++] = (xdata[j] >> 24) & 0xff; // A
+//					buf[i++] = 0xff; // A
+#else
+					buf[i++] = (xdata[j] >> 16) & 0xff; // B
+					buf[i++] = (xdata[j] >> 8) & 0xff; // G
+					buf[i++] = (xdata[j] >> 0) & 0xff; // R
+					buf[i++] = (xdata[j] >> 24) & 0xff; // A
+#endif
+#else
+					buf[i++] = (xdata[j] >> 24) & 0xff; // A
+					buf[i++] = (xdata[j] >> 16) & 0xff; // R
+					buf[i++] = (xdata[j] >> 8) & 0xff; // G
+					buf[i++] = (xdata[j]) & 0xff; // B
+#endif
+				}
+				icon = [[NSImage alloc] initWithSize: NSMakeSize(xp_width, xp_height)];
+				[icon addRepresentation: rep];
+				DESTROY(rep);
+				if (xdata != NULL) 
+				{
+					XFree(data);
+					xdata = NULL;
+				}
+				return icon;
+			}
+		}
+		XFree(wmHints);
+		wmHints = NULL;
+		return icon;
+	}
+#endif
+
 	if (data != NULL) 
 	{
 		XFree(data);
+		data = NULL;
 	}
-	return icon;
+	return nil;
 }
 
 unsigned long XWindowState(Window win)
@@ -192,13 +309,14 @@ Atom *XWindowNetStates(Window win, unsigned long *count)
 
 Window XWindowGroupWindow(Window win)
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
-  XWMHints *wmHints = XGetWMHints(dpy, win);
-  if (wmHints) {
-    Window group_leader = wmHints->window_group;
-    XFree(wmHints);
-    return group_leader;
-  }
+	Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+	XWMHints *wmHints = XGetWMHints(dpy, win);
+	if ((wmHints) && (wmHints->flags & WindowGroupHint))
+	{
+		Window group_leader = wmHints->window_group;
+		XFree(wmHints);
+		return group_leader;
+	}
   return 0;
 }
 

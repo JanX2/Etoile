@@ -9,6 +9,9 @@ XWindowServerKit_OBJC_FILES = \
 	XScreen.m \
 	XWindow.m 
 
+#XWindowServerKit_C_FILES = \
+#	grab.c
+
 XWindowServerKit_LIBRARIES_DEPEND_UPON = -lX11 
 XWindowServerKit_HEADER_FILES = \
 	XFunctions.h \
