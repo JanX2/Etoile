@@ -246,6 +246,8 @@ static AZBackground *sharedInstance;
     GC gc = XDefaultGC(dpy, screen);
     XPutImage(dpy, pixmap, gc, ximage, 0, 0, 
 	      0, 0, size.width, size.height);
+	XChangeProperty(dpy, root_win, X_XROOTPMAP_ID, XA_PIXMAP, 32, 
+	                PropModeReplace, (unsigned char *)&pixmap, 1);
     XSetWindowBackgroundPixmap(dpy, root_win, pixmap);
     XClearWindow(dpy, root_win);
     XSync(dpy, False);
@@ -297,6 +299,7 @@ static AZBackground *sharedInstance;
   X_PROPERTY_NAME = XInternAtom(dpy, "X_PROPERTY_NAME", False);
   X_NET_ACTIVE_WINDOW = XInternAtom(dpy, "_NET_ACTIVE_WINDOW", False);
   X_NET_CLIENT_LIST_STACKING = XInternAtom(dpy, "_NET_CLIENT_LIST_STACKING", False);
+  X_XROOTPMAP_ID = XInternAtom(dpy, "_XROOTPMAP_ID", False);
 
 #if 0 // Not ncessary
   GSServicesManager *gManager = [GSServicesManager newWithApplication: NSApp];

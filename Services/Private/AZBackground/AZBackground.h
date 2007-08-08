@@ -14,6 +14,7 @@
   Atom X_PROPERTY_NAME; /* property name */
   Atom X_NET_ACTIVE_WINDOW;
   Atom X_NET_CLIENT_LIST_STACKING;
+  Atom X_XROOTPMAP_ID;
 }
 
 + (AZBackground *) background;
