@@ -72,6 +72,7 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 				          defer: NO];
   [window setDesktop: ALL_DESKTOP];
   [window skipTaskbarAndPager];
+  [window setAsSystemDock];
   [window setContentView: view];
   [window setBackgroundColor: [NSColor windowBackgroundColor]];
   [window setLevel: NSNormalWindowLevel+1];
