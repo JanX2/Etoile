@@ -240,21 +240,20 @@ static AZBackground *sharedInstance;
         NSLog(@"Not ARGA or RGA image");
         return;
     }
-    Pixmap pixmap = XCreatePixmap(dpy, root_win, 
+    background_pixmap = XCreatePixmap(dpy, root_win, 
 				  size.width, size.height, depth);
 
     GC gc = XDefaultGC(dpy, screen);
-    XPutImage(dpy, pixmap, gc, ximage, 0, 0, 
+    XPutImage(dpy, background_pixmap, gc, ximage, 0, 0, 
 	      0, 0, size.width, size.height);
 	XChangeProperty(dpy, root_win, X_XROOTPMAP_ID, XA_PIXMAP, 32, 
-	                PropModeReplace, (unsigned char *)&pixmap, 1);
-    XSetWindowBackgroundPixmap(dpy, root_win, pixmap);
+	                PropModeReplace, (unsigned char *)&background_pixmap, 1);
+    XSetWindowBackgroundPixmap(dpy, root_win, background_pixmap);
     XClearWindow(dpy, root_win);
     XSync(dpy, False);
     /* Is it safe to destroy ximage ? Seems to be.
      * NOTE: XDestroyImage will also free ximage->data. */
     XDestroyImage(ximage); 
-    XFreePixmap(dpy, pixmap);
 
     /* Based on some old information, we should put pixmap onto root window
        '_XROOTPMAP_ID' (type XA_PIXMAP). And if there is an old one,
@@ -366,6 +365,12 @@ static AZBackground *sharedInstance;
   {
     NSLog(@"Cannot find an image. Do nothing");
   }
+}
+
+- (void) applicationWillTerminate:(NSNotification *) not
+{
+	if (background_pixmap)
+		XFreePixmap(dpy, background_pixmap);
 }
 
 + (AZBackground  *) background 
