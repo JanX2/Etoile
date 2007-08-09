@@ -151,10 +151,10 @@ Atom		winActiveAtom;
 #define TRANSLUCENT	0xe0000000
 #define OPAQUE		0xffffffff
 
-conv           *gaussianMap;
+conv           *defaultGaussianMap;
 conv           *foregroundGaussianMap;
 
-win * forgroundWindow;
+win * foregroundWindow = NULL;
 
 #define WINDOW_SOLID	0
 #define WINDOW_TRANS	1
@@ -165,7 +165,7 @@ win * forgroundWindow;
 #define DEBUG_REPAINT 0
 #define DEBUG_EVENTS 0
 #define MONITOR_REPAINT 0
-#define DEBUG_LOG_ATOM_VALUES 1
+#define DEBUG_LOG_ATOM_VALUES 0
 
 #define SHADOWS		1
 #define SHARP_SHADOW	0
@@ -193,6 +193,7 @@ int		shadowOffsetY = -7;
 int		forgroundShadowRadius = 12;
 int		foregroundShadowOffsetX = -15;
 int		foregroundShadowOffsetY = -15;
+double		foregroundShadowOpacity = .9;
 double		shadowOpacity = .75;
 
 double		fade_in_step = 0.028;
@@ -528,10 +529,15 @@ presum_gaussian(conv * map)
 }
 
 static XImage  *
-make_shadow(Display * dpy, double opacity, int width, int height)
+make_shadow(Display * dpy, double opacity, int width, int height, Atom type)
 {
 	XImage         *ximage;
 	unsigned char  *data;
+	conv * gaussianMap = defaultGaussianMap;
+	if(type == winActiveAtom)
+	{
+		gaussianMap = foregroundGaussianMap;
+	}
 	int		gsize = gaussianMap->size;
 	int		ylimit    , xlimit;
 	int		swidth = width + gsize;
@@ -630,7 +636,7 @@ make_shadow(Display * dpy, double opacity, int width, int height)
 }
 
 static		Picture
-shadow_picture(Display * dpy, double opacity, Picture alpha_pict, int width, int height, int *wp, int *hp)
+shadow_picture_for_type(Display * dpy, double opacity, Picture alpha_pict, int width, int height, int *wp, int *hp, Atom type)
 {
 	XImage         *shadowImage;
 	Pixmap		shadowPixmap;
@@ -639,7 +645,7 @@ shadow_picture(Display * dpy, double opacity, Picture alpha_pict, int width, int
 	Picture		finalPicture;
 	GC		gc;
 
-	shadowImage = make_shadow(dpy, opacity, width, height);
+	shadowImage = make_shadow(dpy, opacity, width, height, type);
 	if (!shadowImage)
 		return None;
 	shadowPixmap = XCreatePixmap(dpy, root,
@@ -677,6 +683,11 @@ shadow_picture(Display * dpy, double opacity, Picture alpha_pict, int width, int
 	XDestroyImage(shadowImage);
 	XFreePixmap(dpy, shadowPixmap);
 	return shadowPicture;
+}
+static		Picture
+shadow_picture(Display * dpy, double opacity, Picture alpha_pict, int width, int height, int *wp, int *hp)
+{
+	return shadow_picture_for_type(dpy, opacity, alpha_pict, width, height, wp, hp, winNormalAtom);
 }
 
 Picture
@@ -846,18 +857,40 @@ win_extents(Display * dpy, win * w)
 		{
 			XRectangle	sr;
 
-			w->shadow_dx = shadowOffsetX;
-			w->shadow_dy = shadowOffsetY;
+			if(w == foregroundWindow)
+			{
+				w->shadow_dx = foregroundShadowOffsetX;
+				w->shadow_dy = foregroundShadowOffsetY;
+			}
+			else
+			{
+				w->shadow_dx = shadowOffsetX;
+				w->shadow_dy = shadowOffsetY;
+			}
 			if (!w->shadow)
 			{
 				double		opacity = shadowOpacity;
+				if(w == foregroundWindow)
+				{
+					opacity = foregroundShadowOpacity;
+				}
 
 				if (w->mode == WINDOW_TRANS)
 					opacity = opacity * ((double)w->opacity) / ((double)OPAQUE);
-				w->shadow = shadow_picture(dpy, opacity, w->alphaPict,
-				 w->a.width + w->a.border_width * 2,
-				w->a.height + w->a.border_width * 2,
-				&w->shadow_width, &w->shadow_height);
+				if(w == foregroundWindow)
+				{
+					w->shadow = shadow_picture_for_type(dpy, opacity, w->alphaPict,
+					 w->a.width + w->a.border_width * 2,
+					w->a.height + w->a.border_width * 2,
+					&w->shadow_width, &w->shadow_height, winActiveAtom);
+				}
+				else
+				{
+					w->shadow = shadow_picture(dpy, opacity, w->alphaPict,
+					 w->a.width + w->a.border_width * 2,
+					w->a.height + w->a.border_width * 2,
+					&w->shadow_width, &w->shadow_height);
+				}
 			}
 			sr.x = w->a.x + w->shadow_dx;
 			sr.y = w->a.y + w->shadow_dy;
@@ -995,7 +1028,7 @@ paint_all(Display * dpy, XserverRegion region)
 		}
 		if (!w->borderSize)
 			w->borderSize = border_size(dpy, w);
-		if (!w->extents)
+		//if (!w->extents)
 			w->extents = win_extents(dpy, w);
 		if (w->mode == WINDOW_SOLID)
 		{
@@ -1048,12 +1081,23 @@ paint_all(Display * dpy, XserverRegion region)
 				 */
 				if (w->shadow && w->windowType != winDesktopAtom)
 				{
-					NSLog(@"Drawing shadow for window %x of type %d", w->id, w->windowType);
-					XRenderComposite(dpy, PictOpOver, blackPicture, w->shadow, rootBuffer,
-							 0, 0, 0, 0,
-						      w->a.x + w->shadow_dx,
-						      w->a.y + w->shadow_dy,
-					 w->shadow_width, w->shadow_height);
+					if(w == 0)
+					{
+						NSLog(@"Drawing shadow for window %x of type %d", w->id, w->windowType);
+						XRenderComposite(dpy, PictOpOver, blackPicture, w->shadow, rootBuffer,
+								 0, 0, 0, 0,
+								  w->a.x + foregroundShadowOffsetX,
+								  w->a.y + foregroundShadowOffsetY,
+						 w->shadow_width, w->shadow_height);
+					}
+					else
+					{
+						XRenderComposite(dpy, PictOpOver, blackPicture, w->shadow, rootBuffer,
+								 0, 0, 0, 0,
+								  w->a.x + w->shadow_dx,
+								  w->a.y + w->shadow_dy,
+						 w->shadow_width, w->shadow_height);
+					}
 				}
 				break;
 		}
@@ -1645,7 +1689,6 @@ static void
 destroy_win(Display * dpy, Window id, Bool gone, Bool fade)
 {
 	win            *w = find_win(dpy, id);
-	NSLog(@"Destroying window %x", id);
 
 #if HAS_NAME_WINDOW_PIXMAP
 	if (w && w->pixmap && fade && fadeWindows)
@@ -1733,8 +1776,10 @@ error(Display * dpy, XErrorEvent * ev)
 			break;
 	}
 
+	/*
 	printf("error %d request %d minor %d serial %d\n",
 	       ev->error_code, ev->request_code, ev->minor_code, (int) ev->serial);
+		   */
 
 	/* abort ();	    this is just annoying to most people */
 	return 0;
@@ -1986,7 +2031,7 @@ main(int argc, char **argv)
 	winDialogAtom = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
 	winNormalAtom = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_NORMAL", False);
 	winActiveAtom = XInternAtom(dpy, "_NET_ACTIVE_WINDOW", False);
-#ifdef DEBUG_LOG_ATOM_VALUES
+#if DEBUG_LOG_ATOM_VALUES
 #define LOG_ATOM_VALUE(x) NSLog(@"%s = %d", #x, x);
 	LOG_ATOM_VALUE(winDesktopAtom);
 	LOG_ATOM_VALUE(winDockAtom);
@@ -2004,8 +2049,8 @@ main(int argc, char **argv)
 
 	if (compMode == CompClientShadows)
 	{
-		gaussianMap = make_gaussian_map(dpy, shadowRadius);
-		presum_gaussian(gaussianMap);
+		defaultGaussianMap = make_gaussian_map(dpy, shadowRadius);
+		presum_gaussian(defaultGaussianMap);
 		foregroundGaussianMap = make_gaussian_map(dpy, forgroundShadowRadius);
 		presum_gaussian(foregroundGaussianMap);
 	}
@@ -2076,18 +2121,15 @@ main(int argc, char **argv)
 						configure_win(dpy, &ev.xconfigure);
 						break;
 					case DestroyNotify:
-						NSLog(@"Destroying window %x", ev.xdestroywindow.window);
 						destroy_win(dpy, ev.xdestroywindow.window, True, True);
 						break;
 					case MapNotify:
 						map_win(dpy, ev.xmap.window, ev.xmap.serial, True);
 						break;
 					case UnmapNotify:
-						NSLog(@"Unmapping window %x", ev.xdestroywindow.window);
 						unmap_win(dpy, ev.xunmap.window, True);
 						break;
 					case ReparentNotify:
-						NSLog(@"Reparenting window %x to %x", ev.xdestroywindow.window, ev.xreparent.parent);
 						if (ev.xreparent.parent == root)
 							add_win(dpy, ev.xreparent.window, 0);
 						else
@@ -2166,30 +2208,41 @@ main(int argc, char **argv)
 							}
 							else
 							{
+								win *w = foregroundWindow;
+								foregroundWindow = NULL;
+								if (w && w->shadow)
+								{
+									w->opacity = get_opacity_prop(dpy, w, OPAQUE);
+									determine_mode(dpy, w);
+									XRenderFreePicture(dpy, w->shadow);
+									w->shadow = None;
+									w->extents = win_extents(dpy, w);
+								}
 								window = data[0];
 								XFree(data);
 								//Find the real parent.
-								win *w = find_win(dpy, window);
+								w = find_win(dpy, window);
 								while(w == NULL && window != 0)
 								{
 									XQueryTree(dpy, window, (Window*)&format_ret, &window, &data, (unsigned int*)&num);
 									XFree(data);
 									w = find_win(dpy, window);
 								}
-								NSLog(@"Found window: %x", find_win(dpy, window));
 								if(w != NULL && window != 0)
 								{
-									NSLog(@"Found new window...");
 									if(w->shadow)
 									{
-										NSLog(@"Removing shadow");
-										XRenderFreePicture(dpy, w->shadow);
-										w->shadow = None;
-										w->extents = win_extents(dpy, w);
+										if(foregroundWindow)
+										{
+											foregroundWindow->isFront = NO;
+										}
+										w->isFront = YES;
 									}
+									foregroundWindow = w;
 									w->extents = win_extents(dpy, w);
+									XRenderFreePicture(dpy, w->shadow);
+									w->shadow = None;
 								}
-								NSLog(@"New active window");
 							}
 						}
 						/*
