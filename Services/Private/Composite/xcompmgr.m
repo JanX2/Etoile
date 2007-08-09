@@ -22,7 +22,6 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-
 /*
  * Modified by Matthew Hawn. I don't know what to say here so follow what it
  * says above. Not that I can really do anything about it
@@ -43,10 +42,13 @@
 #include <X11/extensions/Xcomposite.h>
 #include <X11/extensions/Xdamage.h>
 #include <X11/extensions/Xrender.h>
+#import <Foundation/Foundation.h>
 
 #if COMPOSITE_MAJOR > 0 || COMPOSITE_MINOR >= 2
 #define HAS_NAME_WINDOW_PIXMAP 1
 #endif
+
+NSSet * unshadowedApps;
 
 typedef struct _ignore
 {
@@ -77,6 +79,7 @@ typedef struct _win
 	int		shadow_height;
 	unsigned int	opacity;
 	Atom		windowType;
+	BOOL isFront;
 	unsigned long	damage_sequence;	/* sequence when damage was
 						 * created */
 
@@ -140,6 +143,7 @@ Atom		winUtilAtom;
 Atom		winSplashAtom;
 Atom		winDialogAtom;
 Atom		winNormalAtom;
+Atom		winActiveAtom;
 
 /* opacity property name; sometime soon I'll write up an EWMH spec for it */
 #define OPACITY_PROP	"_NET_WM_WINDOW_OPACITY"
@@ -148,6 +152,9 @@ Atom		winNormalAtom;
 #define OPAQUE		0xffffffff
 
 conv           *gaussianMap;
+conv           *foregroundGaussianMap;
+
+win * forgroundWindow;
 
 #define WINDOW_SOLID	0
 #define WINDOW_TRANS	1
@@ -158,6 +165,7 @@ conv           *gaussianMap;
 #define DEBUG_REPAINT 0
 #define DEBUG_EVENTS 0
 #define MONITOR_REPAINT 0
+#define DEBUG_LOG_ATOM_VALUES 1
 
 #define SHADOWS		1
 #define SHARP_SHADOW	0
@@ -165,8 +173,6 @@ conv           *gaussianMap;
 typedef enum _compMode
 {
 	CompSimple,		/* looks like a regular X server */
-	CompServerShadows,	/* use window alpha for shadow; sharp, but
-				 * precise */
 	CompClientShadows,	/* use window extents for shadow, blurred */
 }		CompMode;
 
@@ -179,11 +185,14 @@ static double
 static		XserverRegion
 		win_extents   (Display * dpy, win * w);
 
-CompMode	compMode = CompSimple;
+CompMode	compMode = CompClientShadows;
 
-int		shadowRadius = 12;
-int		shadowOffsetX = -15;
-int		shadowOffsetY = -15;
+int		shadowRadius = 6;
+int		shadowOffsetX = -7;
+int		shadowOffsetY = -7;
+int		forgroundShadowRadius = 12;
+int		foregroundShadowOffsetX = -15;
+int		foregroundShadowOffsetY = -15;
 double		shadowOpacity = .75;
 
 double		fade_in_step = 0.028;
@@ -191,7 +200,7 @@ double		fade_out_step = 0.03;
 int		fade_delta = 10;
 int		fade_time = 0;
 Bool		fadeWindows = False;
-Bool		excludeDockShadows = False;
+Bool		excludeDockShadows = True;
 Bool		fadeTrans = False;
 
 Bool		autoRedirect = False;
@@ -336,7 +345,7 @@ run_fades(Display * dpy)
 	if (fade_time - now > 0)
 		return;
 	steps = 1 + (now - fade_time) / fade_delta;
-	for (next = fades; f = next;)
+	for (next = fades; (f = next);)
 	{
 		win            *w = f->w;
 
@@ -746,8 +755,12 @@ find_win(Display * dpy, Window id)
 	win            *w;
 
 	for (w = list; w; w = w->next)
+	{
 		if (w->id == id)
+		{
 			return w;
+		}
+	}
 	return 0;
 }
 
@@ -829,32 +842,22 @@ win_extents(Display * dpy, win * w)
 	r.height = w->a.height + w->a.border_width * 2;
 	if (compMode != CompSimple && !(w->windowType == winDockAtom && excludeDockShadows))
 	{
-		if (compMode == CompServerShadows || w->mode != WINDOW_ARGB)
+		if (w->mode != WINDOW_ARGB)
 		{
 			XRectangle	sr;
 
-			if (compMode == CompServerShadows)
+			w->shadow_dx = shadowOffsetX;
+			w->shadow_dy = shadowOffsetY;
+			if (!w->shadow)
 			{
-				w->shadow_dx = 2;
-				w->shadow_dy = 7;
-				w->shadow_width = w->a.width;
-				w->shadow_height = w->a.height;
-			}
-			else
-			{
-				w->shadow_dx = shadowOffsetX;
-				w->shadow_dy = shadowOffsetY;
-				if (!w->shadow)
-				{
-					double		opacity = shadowOpacity;
+				double		opacity = shadowOpacity;
 
-					if (w->mode == WINDOW_TRANS)
-						opacity = opacity * ((double)w->opacity) / ((double)OPAQUE);
-					w->shadow = shadow_picture(dpy, opacity, w->alphaPict,
-					 w->a.width + w->a.border_width * 2,
-					w->a.height + w->a.border_width * 2,
-					&w->shadow_width, &w->shadow_height);
-				}
+				if (w->mode == WINDOW_TRANS)
+					opacity = opacity * ((double)w->opacity) / ((double)OPAQUE);
+				w->shadow = shadow_picture(dpy, opacity, w->alphaPict,
+				 w->a.width + w->a.border_width * 2,
+				w->a.height + w->a.border_width * 2,
+				&w->shadow_width, &w->shadow_height);
 			}
 			sr.x = w->a.x + w->shadow_dx;
 			sr.y = w->a.y + w->shadow_dy;
@@ -1038,26 +1041,6 @@ paint_all(Display * dpy, XserverRegion region)
 		{
 			case CompSimple:
 				break;
-			case CompServerShadows:
-				/*
-				 * dont' bother drawing shadows on desktop
-				 * windows
-				 */
-				if (w->windowType == winDesktopAtom)
-					break;
-				set_ignore(dpy, NextRequest(dpy));
-				if (w->opacity != OPAQUE && !w->shadowPict)
-					w->shadowPict = solid_picture(dpy, True,
-					  (double)w->opacity / OPAQUE * 0.3,
-								   0, 0, 0);
-				XRenderComposite(dpy, PictOpOver,
-						 w->shadowPict ? w->shadowPict : transBlackPicture,
-						 w->picture, rootBuffer,
-						 0, 0, 0, 0,
-						 w->a.x + w->shadow_dx,
-						 w->a.y + w->shadow_dy,
-					 w->shadow_width, w->shadow_height);
-				break;
 			case CompClientShadows:
 				/*
 				 * don't bother drawing shadows on desktop
@@ -1065,6 +1048,7 @@ paint_all(Display * dpy, XserverRegion region)
 				 */
 				if (w->shadow && w->windowType != winDesktopAtom)
 				{
+					NSLog(@"Drawing shadow for window %x of type %d", w->id, w->windowType);
 					XRenderComposite(dpy, PictOpOver, blackPicture, w->shadow, rootBuffer,
 							 0, 0, 0, 0,
 						      w->a.x + w->shadow_dx,
@@ -1161,14 +1145,6 @@ repair_win(Display * dpy, win * w)
 		XFixesTranslateRegion(dpy, parts,
 				      w->a.x + w->a.border_width,
 				      w->a.y + w->a.border_width);
-		if (compMode == CompServerShadows)
-		{
-			o = XFixesCreateRegion(dpy, 0, 0);
-			XFixesCopyRegion(dpy, o, parts);
-			XFixesTranslateRegion(dpy, o, w->shadow_dx, w->shadow_dy);
-			XFixesUnionRegion(dpy, parts, parts, o);
-			XFixesDestroyRegion(dpy, o);
-		}
 	}
 	add_damage(dpy, parts);
 	w->damaged = 1;
@@ -1390,6 +1366,24 @@ determine_wintype(Display * dpy, Window w)
 	unsigned int	nchildren, i;
 	Atom		type;
 
+	/*
+	 * Hack to hide shadows on menu and dock.
+	 */
+
+	XClassHint *class_hint = XAllocClassHint();
+	int result =  XGetClassHint(dpy,w,class_hint);
+	if((result != 0))
+	{
+		NSString * process = [NSString stringWithCString:class_hint->res_name];
+		//NSLog(@"Window %x owned by %@", w, process);
+		if([unshadowedApps containsObject:process])
+		{
+			//NSLog(@"No shadow for window %x (%@)", w, process);
+			return winDockAtom;
+		}
+	}
+	XFree(class_hint);
+
 	type = get_wintype_prop(dpy, w);
 	if (type != winNormalAtom)
 		return type;
@@ -1406,7 +1400,9 @@ determine_wintype(Display * dpy, Window w)
 	{
 		type = determine_wintype(dpy, children[i]);
 		if (type != winNormalAtom)
+		{
 			return type;
+		}
 	}
 
 	if (children)
@@ -1420,6 +1416,14 @@ add_win(Display * dpy, Window id, Window prev)
 {
 	win            *new = malloc(sizeof(win));
 	win           **p;
+	Window parent = id;
+	while(parent != 0)
+	{
+		Window r;
+		Window * data;
+		unsigned int num;
+		XQueryTree(dpy, parent, &r, &parent, &data, (unsigned int*)&num);
+	}
 
 	if (!new)
 		return;
@@ -1641,6 +1645,7 @@ static void
 destroy_win(Display * dpy, Window id, Bool gone, Bool fade)
 {
 	win            *w = find_win(dpy, id);
+	NSLog(@"Destroying window %x", id);
 
 #if HAS_NAME_WINDOW_PIXMAP
 	if (w && w->pixmap && fade && fadeWindows)
@@ -1729,7 +1734,7 @@ error(Display * dpy, XErrorEvent * ev)
 	}
 
 	printf("error %d request %d minor %d serial %d\n",
-	       ev->error_code, ev->request_code, ev->minor_code, ev->serial);
+	       ev->error_code, ev->request_code, ev->minor_code, (int) ev->serial);
 
 	/* abort ();	    this is just annoying to most people */
 	return 0;
@@ -1747,7 +1752,7 @@ expose_root(Display * dpy, Window root, XRectangle * rects, int nrects)
 static int
 ev_serial(XEvent * ev)
 {
-	if (ev->type & 0x7f != KeymapNotify)
+	if ((ev->type & 0x7f) != KeymapNotify)
 		return ev->xany.serial;
 	return NextRequest(ev->xany.display);
 }
@@ -1820,7 +1825,6 @@ usage(char *program)
 	fprintf(stderr, "   -f\n      Fade windows in/out when opening/closing.\n");
 	fprintf(stderr, "   -F\n      Fade windows during opacity changes.\n");
 	fprintf(stderr, "   -n\n      Normal client-side compositing with transparency support\n");
-	fprintf(stderr, "   -s\n      Draw server-side shadows with sharp edges.\n");
 	fprintf(stderr, "   -S\n      Enable synchronous operation (for debugging).\n");
 	exit(1);
 }
@@ -1861,7 +1865,14 @@ main(int argc, char **argv)
 	char           *display = 0;
 	int		o;
 
-	while ((o = getopt(argc, argv, "D:I:O:d:r:o:l:t:scnfFCaS")) != -1)
+	[[NSAutoreleasePool alloc] init];
+	unshadowedApps = [[NSSet alloc] initWithObjects:
+		@"EtoileMenuServer",
+		@"AZDock",
+		@"AZSwitch",
+		nil];
+	//TODO: We don't want most of these to be use-tweakable, so remove them
+	while ((o = getopt(argc, argv, "D:I:O:d:r:o:l:t:cnfFCaS")) != -1)
 	{
 		switch (o)
 		{
@@ -1882,9 +1893,6 @@ main(int argc, char **argv)
 				fade_out_step = atof(optarg);
 				if (fade_out_step <= 0)
 					fade_out_step = 0.01;
-				break;
-			case 's':
-				compMode = CompServerShadows;
 				break;
 			case 'c':
 				compMode = CompClientShadows;
@@ -1977,6 +1985,20 @@ main(int argc, char **argv)
 	winSplashAtom = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_SPLASH", False);
 	winDialogAtom = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
 	winNormalAtom = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_NORMAL", False);
+	winActiveAtom = XInternAtom(dpy, "_NET_ACTIVE_WINDOW", False);
+#ifdef DEBUG_LOG_ATOM_VALUES
+#define LOG_ATOM_VALUE(x) NSLog(@"%s = %d", #x, x);
+	LOG_ATOM_VALUE(winDesktopAtom);
+	LOG_ATOM_VALUE(winDockAtom);
+	LOG_ATOM_VALUE(winToolbarAtom);
+	LOG_ATOM_VALUE(winMenuAtom);
+	LOG_ATOM_VALUE(winUtilAtom);
+	LOG_ATOM_VALUE(winSplashAtom);
+	LOG_ATOM_VALUE(winDockAtom);
+	LOG_ATOM_VALUE(winNormalAtom);
+	LOG_ATOM_VALUE(winActiveAtom);
+#undef LOG_ATOM_VALUE
+#endif
 
 	pa.subwindow_mode = IncludeInferiors;
 
@@ -1984,6 +2006,8 @@ main(int argc, char **argv)
 	{
 		gaussianMap = make_gaussian_map(dpy, shadowRadius);
 		presum_gaussian(gaussianMap);
+		foregroundGaussianMap = make_gaussian_map(dpy, forgroundShadowRadius);
+		presum_gaussian(foregroundGaussianMap);
 	}
 	root_width = DisplayWidth(dpy, scr);
 	root_height = DisplayHeight(dpy, scr);
@@ -1994,8 +2018,6 @@ main(int argc, char **argv)
 					   CPSubwindowMode,
 					   &pa);
 	blackPicture = solid_picture(dpy, True, 1, 0, 0, 0);
-	if (compMode == CompServerShadows)
-		transBlackPicture = solid_picture(dpy, True, 0.3, 0, 0, 0);
 	allDamage = None;
 	clipChanged = True;
 	XGrabServer(dpy);
@@ -2011,7 +2033,9 @@ main(int argc, char **argv)
 			     PropertyChangeMask);
 		XQueryTree(dpy, root, &root_return, &parent_return, &children, &nchildren);
 		for (i = 0; i < nchildren; i++)
+		{
 			add_win(dpy, children[i], i ? children[i - 1] : None);
+		}
 		XFree(children);
 	}
 	XUngrabServer(dpy);
@@ -2024,6 +2048,7 @@ main(int argc, char **argv)
 		/* dump_wins (); */
 		do
 		{
+			id pool = [[NSAutoreleasePool alloc] init];
 			if (autoRedirect)
 				XFlush(dpy);
 			if (!QLength(dpy))
@@ -2035,7 +2060,7 @@ main(int argc, char **argv)
 				}
 			}
 			XNextEvent(dpy, &ev);
-			if (ev.type & 0x7f != KeymapNotify)
+			if ((ev.type & 0x7f) != KeymapNotify)
 				discard_ignore(dpy, ev.xany.serial);
 #if DEBUG_EVENTS
 			printf("event %10.10s serial 0x%08x window 0x%08x\n",
@@ -2051,15 +2076,18 @@ main(int argc, char **argv)
 						configure_win(dpy, &ev.xconfigure);
 						break;
 					case DestroyNotify:
+						NSLog(@"Destroying window %x", ev.xdestroywindow.window);
 						destroy_win(dpy, ev.xdestroywindow.window, True, True);
 						break;
 					case MapNotify:
 						map_win(dpy, ev.xmap.window, ev.xmap.serial, True);
 						break;
 					case UnmapNotify:
+						NSLog(@"Unmapping window %x", ev.xdestroywindow.window);
 						unmap_win(dpy, ev.xunmap.window, True);
 						break;
 					case ReparentNotify:
+						NSLog(@"Reparenting window %x to %x", ev.xdestroywindow.window, ev.xreparent.parent);
 						if (ev.xreparent.parent == root)
 							add_win(dpy, ev.xreparent.window, 0);
 						else
@@ -2115,6 +2143,56 @@ main(int argc, char **argv)
 							}
 						}
 						/*
+						 * If the active window has changed.
+						 */
+						if (ev.xproperty.atom == winActiveAtom)
+						{
+							/*
+							 * Get the new active window.
+							 */
+							Window window = None;
+							unsigned long num;
+							Window *data = NULL;
+							Atom type_ret;
+							int format_ret;
+							unsigned long after_ret;
+							int result = XGetWindowProperty(dpy, root, winActiveAtom,
+									0, 0x7FFFFFFF, False, XA_WINDOW,
+									&type_ret, &format_ret, &num,
+									&after_ret, (unsigned char **)&data);
+							if ((result != Success))
+							{
+								NSLog(@"Error: cannot get active window.");
+							}
+							else
+							{
+								window = data[0];
+								XFree(data);
+								//Find the real parent.
+								win *w = find_win(dpy, window);
+								while(w == NULL && window != 0)
+								{
+									XQueryTree(dpy, window, (Window*)&format_ret, &window, &data, (unsigned int*)&num);
+									XFree(data);
+									w = find_win(dpy, window);
+								}
+								NSLog(@"Found window: %x", find_win(dpy, window));
+								if(w != NULL && window != 0)
+								{
+									NSLog(@"Found new window...");
+									if(w->shadow)
+									{
+										NSLog(@"Removing shadow");
+										XRenderFreePicture(dpy, w->shadow);
+										w->shadow = None;
+										w->extents = win_extents(dpy, w);
+									}
+									w->extents = win_extents(dpy, w);
+								}
+								NSLog(@"New active window");
+							}
+						}
+						/*
 						 * check if Trans property
 						 * was changed
 						 */
@@ -2150,6 +2228,7 @@ main(int argc, char **argv)
 							damage_win(dpy, (XDamageNotifyEvent *) & ev);
 						break;
 				}
+			[pool release];
 		} while (QLength(dpy));
 		if (allDamage && !autoRedirect)
 		{
