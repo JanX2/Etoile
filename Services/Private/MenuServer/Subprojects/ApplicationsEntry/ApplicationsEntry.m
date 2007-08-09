@@ -158,7 +158,12 @@
   NSDictionary * appInfo = [notif userInfo];
   NSString * appName = [appInfo objectForKey: @"NSApplicationName"];
   NSString * appPath = [appInfo objectForKey: @"NSApplicationPath"];
-  NSImage * icon = [[[ws iconForFile: appPath] copy] autorelease];
+  NSImage * icon;
+  NS_DURING
+    icon = [[[ws iconForFile: appPath] copy] autorelease];
+  NS_HANDLER
+    icon = nil;
+  NS_ENDHANDLER
   NSNumber * pid = [appInfo objectForKey: @"NSApplicationProcessIdentifier"];
   NSMenuItem * appMenuItem;
   int index;
@@ -274,8 +279,12 @@
       NSString * appName = [entry objectForKey: @"NSApplicationName"],
                * appPath = [entry objectForKey: @"NSApplicationPath"];
 
-      [appIcon setImage: [[NSWorkspace sharedWorkspace]
-        iconForFile: appPath]];
+
+      NS_DURING
+        [appIcon setImage: [[NSWorkspace sharedWorkspace]
+          iconForFile: appPath]];
+      NS_HANDLER
+      NS_ENDHANDLER
       [appNameField setStringValue: appName];
       [appPathField setStringValue: appPath];
       [appPIDField setObjectValue: [entry objectForKey:
