@@ -36,6 +36,12 @@
 #include "grab.h"
 #endif
 
+#if 1
+#define XDISPLAY ((Display*)[GSCurrentServer() serverDevice])
+#else
+#define XDISPLAY (XOpenDisplay(NULL))
+#endif
+
 static NSString *_XDGConfigHomePath;
 static NSString *_XDGDataHomePath;
 static NSArray *_XDGConfigDirectories;
@@ -43,7 +49,7 @@ static NSArray *_XDGDataDirectories;
 
 BOOL XWindowClassHint(Window window, NSString **wm_class, NSString **wm_instance)
 {
-	Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+	Display *dpy = XDISPLAY; 
 
 	XClassHint *class_hint;
 	class_hint = XAllocClassHint();
@@ -68,7 +74,7 @@ BOOL XWindowClassHint(Window window, NSString **wm_class, NSString **wm_instance
 NSImage *XWindowIcon(Window window)
 {
 	NSImage *icon = nil;
-	Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+	Display *dpy = XDISPLAY;
 	Visual *visual = DefaultVisual(dpy, DefaultScreen(dpy));
 	Colormap colormap = DefaultColormap(dpy, DefaultScreen(dpy));
 
@@ -257,7 +263,7 @@ NSImage *XWindowIcon(Window window)
 
 unsigned long XWindowState(Window win)
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Display *dpy = XDISPLAY;
 
   unsigned long return_value = -1;
   unsigned long *data = NULL;
@@ -285,7 +291,7 @@ unsigned long XWindowState(Window win)
 
 Atom *XWindowNetStates(Window win, unsigned long *count)
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Display *dpy = XDISPLAY;
 
   Atom *data = NULL;
   Atom prop = XInternAtom(dpy, "_NET_WM_STATE", False);
@@ -309,7 +315,7 @@ Atom *XWindowNetStates(Window win, unsigned long *count)
 
 Window XWindowGroupWindow(Window win)
 {
-	Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+	Display *dpy = XDISPLAY;
 	XWMHints *wmHints = XGetWMHints(dpy, win);
 	if ((wmHints) && (wmHints->flags & WindowGroupHint))
 	{
@@ -323,7 +329,7 @@ Window XWindowGroupWindow(Window win)
 NSString* XWindowCommandPath(Window win)
 {
   /* WM_COMMAND is not used by many modern applications */
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Display *dpy = XDISPLAY;
   int argc_return;
   char **argv_return;
   
@@ -341,7 +347,7 @@ NSString* XWindowCommandPath(Window win)
 NSString *XWindowTitle(Window win)
 {
 	NSString *title;
-	Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+	Display *dpy = XDISPLAY;
 
 	unsigned char *data = NULL;
 	Atom utf8 = XInternAtom(dpy, "UTF8_STRING", False);
@@ -404,7 +410,7 @@ NSString *XWindowTitle(Window win)
  * only set IconWindowHint for WindowMaker */
 BOOL XWindowIsIcon(Window win)
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Display *dpy = XDISPLAY;
 
   XWMHints* hints = XGetWMHints (dpy, win);
 
@@ -422,7 +428,7 @@ BOOL XWindowIsIcon(Window win)
 
 void XWindowCloseWindow(Window win, BOOL forcefully)
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Display *dpy = XDISPLAY;
 
   if (forcefully) {
     XKillClient(dpy, win);
@@ -476,7 +482,7 @@ void XWindowCloseWindow(Window win, BOOL forcefully)
 
 BOOL XGNUstepWindowLevel(Window win, int *level)
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Display *dpy = XDISPLAY;
 
   BOOL result_value = NO;
   unsigned long *data = NULL;
@@ -505,7 +511,7 @@ BOOL XGNUstepWindowLevel(Window win, int *level)
 
 void XWindowSetActiveWindow(Window win, Window old)
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Display *dpy = XDISPLAY;
   Window root_win = RootWindow(dpy, [[NSScreen mainScreen] screenNumber]);
   Atom X_NET_ACTIVE_WINDOW = XInternAtom(dpy, "_NET_ACTIVE_WINDOW", False);
 
@@ -526,7 +532,7 @@ void XWindowSetActiveWindow(Window win, Window old)
 
 unsigned int XWindowDesktopOfWindow(Window win)
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Display *dpy = XDISPLAY;
 
   unsigned long *data = NULL;
   Atom prop = XInternAtom(dpy, "_NET_WM_DESKTOP", False);
@@ -548,7 +554,7 @@ unsigned int XWindowDesktopOfWindow(Window win)
 
 Window XWindowActiveWindow()
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Display *dpy = XDISPLAY;
   Window root_win = RootWindow(dpy, [[NSScreen mainScreen] screenNumber]);
   Atom X_NET_ACTIVE_WINDOW = XInternAtom(dpy, "_NET_ACTIVE_WINDOW", False);
 
@@ -580,7 +586,7 @@ Window XWindowActiveWindow()
 /* See whether it is in "showing desktop" mode. (_NET_SHOWING_DESKTOP) */
 BOOL XWindowIsShowingDesktop()
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Display *dpy = XDISPLAY;
   Window root_win = RootWindow(dpy, [[NSScreen mainScreen] screenNumber]);
 
   unsigned long *data = NULL;
@@ -604,7 +610,7 @@ BOOL XWindowIsShowingDesktop()
 /* Set _NET_SHOWING_DESKTOP */
 void XWindowSetShowingDesktop(BOOL flag)
 {
-  Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+  Display *dpy = XDISPLAY;
   Window root_win = RootWindow(dpy, [[NSScreen mainScreen] screenNumber]);
   Atom prop = XInternAtom(dpy, "_NET_SHOWING_DESKTOP", False);
 
