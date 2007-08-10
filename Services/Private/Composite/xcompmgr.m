@@ -1465,14 +1465,6 @@ add_win(Display * dpy, Window id, Window prev)
 {
 	win            *new = malloc(sizeof(win));
 	win           **p;
-	Window parent = id;
-	while(parent != 0)
-	{
-		Window r;
-		Window * data;
-		unsigned int num;
-		XQueryTree(dpy, parent, &r, &parent, &data, (unsigned int*)&num);
-	}
 
 	if (!new)
 		return;
