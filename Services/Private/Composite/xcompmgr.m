@@ -2190,6 +2190,7 @@ main(int argc, char **argv)
 							 * Get the new active window.
 							 */
 							Window window = None;
+							Window parent = None;
 							unsigned long num;
 							Window *data = NULL;
 							Atom type_ret;
@@ -2199,7 +2200,7 @@ main(int argc, char **argv)
 									0, 0x7FFFFFFF, False, XA_WINDOW,
 									&type_ret, &format_ret, &num,
 									&after_ret, (unsigned char **)&data);
-							if ((result != Success))
+							if ((result != Success) || (num == 0))
 							{
 								NSLog(@"Error: cannot get active window.");
 							}
@@ -2217,12 +2218,22 @@ main(int argc, char **argv)
 								}
 								window = data[0];
 								XFree(data);
+								data = NULL;
 								//Find the real parent.
 								w = find_win(dpy, window);
 								while(w == NULL && window != 0)
 								{
-									XQueryTree(dpy, window, (Window*)&format_ret, &window, &data, (unsigned int*)&num);
-									XFree(data);
+									if (XQueryTree(dpy, window, (Window*)&format_ret, &parent, &data, (unsigned int*)&num) == False)
+									{
+										// Failed
+										break;
+									}
+									if (data)
+									{
+										XFree(data);
+										data = NULL;
+									}
+									window = parent;
 									w = find_win(dpy, window);
 								}
 								if(w != NULL && window != 0)
