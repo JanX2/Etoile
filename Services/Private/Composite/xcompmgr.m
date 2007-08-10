@@ -36,6 +36,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
+#include <getopt.h> // for getopt and optarg on Ubuntu/Linux
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
@@ -46,6 +47,10 @@
 
 #if COMPOSITE_MAJOR > 0 || COMPOSITE_MINOR >= 2
 #define HAS_NAME_WINDOW_PIXMAP 1
+#endif
+
+#ifndef M_PI
+#define  M_PI 3.14159265358979323846  /* glibc is a waste of space */
 #endif
 
 NSSet * unshadowedApps;
