@@ -68,6 +68,17 @@
 	counter--;
 }
 
+- (void) setDate: (NSDate *) date
+{
+	ASSIGN(lastPingDate, date);
+}
+
+- (NSDate *) date
+{
+	return lastPingDate;
+}
+
+
 - (NSString *) description
 {
 	return [NSString stringWithFormat: @"%@.%@", instance, class];

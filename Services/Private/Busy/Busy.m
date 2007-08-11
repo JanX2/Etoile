@@ -13,6 +13,9 @@
 #import <X11/cursorfont.h>
 #import <XWindowServerKit/XFunctions.h>
 
+/* Client has to reponse in this seconds. Otherwise, it counts as busy */
+#define DELAY_SECONDS 10  
+
 static Busy *sharedInstance;
 
 @interface GSDisplayServer (AZPrivate) 	 
@@ -70,7 +73,7 @@ static Busy *sharedInstance;
 		AZClient *client = [allClients objectAtIndex: i];
 		if ([client isSupportingPing] == NO)
 			continue;
-		if ([client counter] > 0)
+		if (([client counter] > 0) && ([client date] != nil) && ([NSDate timeIntervalSinceReferenceDate] - [[client date] timeIntervalSinceReferenceDate] > DELAY_SECONDS))
 		{
 			//Opacity from 0 (transparent) to 0xffffffff (opaque)
 			unsigned int opacity = 0x60000000;
@@ -120,6 +123,10 @@ static Busy *sharedInstance;
 		XFlush(dpy);
 		XFree(xev);
 		[client increaseCounter];
+		if ([client date] == nil)
+		{
+			[client setDate: [NSDate date]];
+		}
 	}
 }
 
@@ -274,8 +281,8 @@ static Busy *sharedInstance;
 					window = parent;
 				}
 				[client setCounter: 0]; // Reset counter
+				[client setDate: nil];
 			}
-//			[client decreaseCounter];
 		}
 	}
 }

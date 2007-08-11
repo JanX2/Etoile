@@ -16,6 +16,7 @@
 	NSString *class; /* group */
 	BOOL supportingPing;
 	int counter;
+	NSDate *lastPingDate;
 }
 
 - (id) initWithXWindow: (Window) window;
@@ -31,6 +32,10 @@
 - (int) counter;
 - (void) increaseCounter;
 - (void) decreaseCounter;
+
+/* Use to check how long the client does not replay */
+- (void) setDate: (NSDate *) date;
+- (NSDate *) date;
 
 @end
 
