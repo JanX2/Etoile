@@ -111,6 +111,13 @@ typedef struct _fade
 	Bool		gone;
 }		fade;
 
+XTransform shrink = {{
+	{ XDoubleToFixed( 1 ), XDoubleToFixed( 0 ), XDoubleToFixed(     0 ) },
+	{ XDoubleToFixed( 0 ), XDoubleToFixed( 1 ), XDoubleToFixed(     0 ) },
+	{ XDoubleToFixed( 0 ), XDoubleToFixed( 0 ), XDoubleToFixed(   0.5 ) }
+}};
+
+
 win            *list;
 fade           *fades;
 Display        *dpy;
@@ -192,9 +199,9 @@ static		XserverRegion
 
 CompMode	compMode = CompClientShadows;
 
-int		shadowRadius = 6;
-int		shadowOffsetX = -7;
-int		shadowOffsetY = -7;
+int		shadowRadius = 3;
+int		shadowOffsetX = -4;
+int		shadowOffsetY = -4;
 int		forgroundShadowRadius = 12;
 int		foregroundShadowOffsetX = -15;
 int		foregroundShadowOffsetY = -15;
@@ -1008,6 +1015,7 @@ paint_all(Display * dpy, XserverRegion region)
 							  format,
 							  CPSubwindowMode,
 							  &pa);
+			//XRenderSetPictureTransform(dpy, w->picture, &shrink);
 		}
 #if DEBUG_REPAINT
 		printf(" 0x%x", w->id);
@@ -1307,9 +1315,9 @@ get_opacity_prop(Display * dpy, win * w, unsigned int def)
 
 	if (result == Success && data != NULL)
 	{
-		unsigned int	i;
+		uint32_t	i;
 
-		memcpy(&i, data, sizeof(unsigned int));
+		memcpy(&i, data, sizeof(uint32_t));
 		XFree((void *)data);
 		return i;
 	}
@@ -1341,8 +1349,7 @@ get_wintype_prop(Display * dpy, Window w)
 	unsigned long	n, left;
 
 	unsigned char  *data;
-	int		result = XGetWindowProperty(dpy, w, winTypeAtom, 0L, 1L, False,
-					 XA_ATOM, &actual, &format,
+	int		result = XGetWindowProperty(dpy, w, winTypeAtom, 0L, 1L, False, XA_ATOM, &actual, &format,
 					 &n, &left, &data);
 
 	if (result == Success && data != None)
@@ -1909,7 +1916,7 @@ main(int argc, char **argv)
 
 	[[NSAutoreleasePool alloc] init];
 	unshadowedApps = [[NSSet alloc] initWithObjects:
-		@"EtoileMenuServer",
+	//	@"EtoileMenuServer",
 		@"AZDock",
 		@"AZSwitch",
 		nil];
