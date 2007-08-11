@@ -84,7 +84,8 @@ typedef struct _win
 	int		shadow_height;
 	unsigned int	opacity;
 	Atom		windowType;
-	BOOL isFront;
+	BOOL isIconified;
+	Window realWindow;
 	unsigned long	damage_sequence;	/* sequence when damage was
 						 * created */
 
@@ -111,11 +112,6 @@ typedef struct _fade
 	Bool		gone;
 }		fade;
 
-XTransform shrink = {{
-	{ XDoubleToFixed( 1 ), XDoubleToFixed( 0 ), XDoubleToFixed(     0 ) },
-	{ XDoubleToFixed( 0 ), XDoubleToFixed( 1 ), XDoubleToFixed(     0 ) },
-	{ XDoubleToFixed( 0 ), XDoubleToFixed( 0 ), XDoubleToFixed(   0.5 ) }
-}};
 
 
 win            *list;
@@ -163,6 +159,8 @@ Atom		winActiveAtom;
 #define TRANSLUCENT	0xe0000000
 #define OPAQUE		0xffffffff
 
+#define ICON_SIZE	128	
+
 conv           *defaultGaussianMap;
 conv           *foregroundGaussianMap;
 
@@ -178,6 +176,7 @@ win * foregroundWindow = NULL;
 #define DEBUG_EVENTS 0
 #define MONITOR_REPAINT 0
 #define DEBUG_LOG_ATOM_VALUES 0
+#define DEBUG_ICONIFY 0
 
 #define SHADOWS		1
 #define SHARP_SHADOW	0
@@ -924,6 +923,20 @@ win_extents(Display * dpy, win * w)
 				r.height = sr.y + sr.height - r.y;
 		}
 	}
+	if(w->isIconified)
+	{
+		//Calculate the clipping rectangle
+		if(w->a.width > w->a.height)
+		{
+			r.height =(int) (((double)w->a.height/(double)w->a.width) * (double)ICON_SIZE);
+			r.width = ICON_SIZE;
+		}
+		else
+		{
+			r.width =(int)(((double)w->a.width/(double)w->a.height) * (double)ICON_SIZE);
+			r.height = ICON_SIZE;
+		}
+	}
 	return XFixesCreateRegion(dpy, &r, 1);
 }
 
@@ -947,6 +960,17 @@ border_size(Display * dpy, win * w)
 			      w->a.x + w->a.border_width,
 			      w->a.y + w->a.border_width);
 	return border;
+}
+
+
+static inline XTransform scale_for_window(win * w)
+{
+	int size = MAX(w->a.width, w->a.height);
+	return (XTransform){{
+		{ XDoubleToFixed( 1 ), XDoubleToFixed( 0 ), XDoubleToFixed(     0 ) },
+		{ XDoubleToFixed( 0 ), XDoubleToFixed( 1 ), XDoubleToFixed(     0 ) },
+		{ XDoubleToFixed( 0 ), XDoubleToFixed( 0 ), XDoubleToFixed(   (double)ICON_SIZE/ (double)size) }
+	}};
 }
 
 static void
@@ -1015,7 +1039,6 @@ paint_all(Display * dpy, XserverRegion region)
 							  format,
 							  CPSubwindowMode,
 							  &pa);
-			//XRenderSetPictureTransform(dpy, w->picture, &shrink);
 		}
 #if DEBUG_REPAINT
 		printf(" 0x%x", w->id);
@@ -1060,7 +1083,37 @@ paint_all(Display * dpy, XserverRegion region)
 #endif
 			XFixesSetPictureClipRegion(dpy, rootBuffer, 0, 0, region);
 			set_ignore(dpy, NextRequest(dpy));
-			XFixesSubtractRegion(dpy, region, region, w->borderSize);
+			//Scale miniwindows down to ICON_SIZE
+			if(w->isIconified)
+			{
+				//Apply the scaling transform
+				XTransform shrink = scale_for_window(w);
+				XRenderSetPictureTransform(dpy, w->picture, &shrink);
+				//Calculate the clipping rectangle
+				if(wid > hei)
+				{
+					hei =(int) (((double)hei/(double)wid) * (double)ICON_SIZE);
+					wid = ICON_SIZE;
+				}
+				else
+				{
+					wid =(int)(((double)wid/(double)hei) * (double)ICON_SIZE);
+					hei = ICON_SIZE;
+				}
+				XRectangle r;
+				r.x = w->a.x;
+				r.y = w->a.y;
+				r.width = wid;
+				r.height = hei;
+				XserverRegion clip = XFixesCreateRegion(dpy, &r, 1);
+				//XFixesSetWindowShapeRegion(dpy, w->id, 0, 0,0,clip);
+				XFixesSubtractRegion(dpy, region, region, clip);
+				XFixesDestroyRegion(dpy, clip);
+			}
+			else
+			{
+				XFixesSubtractRegion(dpy, region, region, w->borderSize);
+			}
 			set_ignore(dpy, NextRequest(dpy));
 			XRenderComposite(dpy, PictOpSrc, w->picture, None, rootBuffer,
 					 0, 0, 0, 0,
@@ -1090,9 +1143,9 @@ paint_all(Display * dpy, XserverRegion region)
 			case CompClientShadows:
 				/*
 				 * don't bother drawing shadows on desktop
-				 * windows
+				 * windows or iconfified windows.
 				 */
-				if (w->shadow && w->windowType != winDesktopAtom)
+				if (w->shadow && w->windowType != winDesktopAtom && !w->isIconified)
 				{
 					if(w == 0)
 					{
@@ -1491,6 +1544,7 @@ add_win(Display * dpy, Window id, Window prev)
 		return;
 	}
 	new->damaged = 0;
+	new->isIconified = NO;
 #if HAS_NAME_WINDOW_PIXMAP
 	new->pixmap = None;
 #endif
@@ -1890,6 +1944,23 @@ give_me_a_name(void)
 			     NULL);
 }
 
+static inline void uniconify_win(win * w)
+{
+	w->isIconified = NO;
+	XRenderFreePicture(dpy, w->picture);
+	w->picture = None;
+	w->extents = win_extents(dpy, w);
+}
+
+static inline void iconify_win(win * w)
+{
+	w->isIconified = YES;
+	XRenderFreePicture(dpy, w->picture);
+	w->picture = None;
+	w->extents = win_extents(dpy, w);
+}
+
+
 int
 main(int argc, char **argv)
 {
@@ -2222,6 +2293,10 @@ main(int argc, char **argv)
 									XRenderFreePicture(dpy, w->shadow);
 									w->shadow = None;
 									w->extents = win_extents(dpy, w);
+
+#ifdef DEBUG_ICONIFY
+									uniconify_win(w);
+#endif
 								}
 								window = data[0];
 								XFree(data);
@@ -2245,18 +2320,14 @@ main(int argc, char **argv)
 								}
 								if(w != NULL && window != 0)
 								{
-									if(w->shadow)
-									{
-										if(foregroundWindow)
-										{
-											foregroundWindow->isFront = NO;
-										}
-										w->isFront = YES;
-									}
 									foregroundWindow = w;
 									w->extents = win_extents(dpy, w);
 									XRenderFreePicture(dpy, w->shadow);
 									w->shadow = None;
+
+#ifdef DEBUG_ICONIFY
+									iconify_win(w);
+#endif
 								}
 							}
 						}
