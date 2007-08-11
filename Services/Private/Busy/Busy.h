@@ -22,6 +22,7 @@
 	Atom X_NET_WM_STATE_SKIP_TASKBAR;
 	Atom X_WM_PROTOCOLS;
 	Atom X_NET_WM_PING;
+	Atom X_NET_WM_WINDOW_OPACITY;
 
 	Cursor busy_cursor;
 	Cursor pointer_cursor;

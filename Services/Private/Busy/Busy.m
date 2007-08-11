@@ -58,6 +58,7 @@ static Busy *sharedInstance;
 	return supporting;
 }
 
+
 /* End of Private */
 - (void) checkAlive: (id) sender
 {
@@ -71,8 +72,36 @@ static Busy *sharedInstance;
 			continue;
 		if ([client counter] > 0)
 		{
-			NSLog(@"Client does not response: %@", client);
+			//Opacity from 0 (transparent) to 0xffffffff (opaque)
+			unsigned int opacity = 0x60000000;
+			NSLog(@"Client does not respond: %@", client);
 			XDefineCursor(dpy, [client xwindow], busy_cursor);
+			Window window = [client xwindow];
+			while(window != 0)
+			{
+				XChangeProperty(dpy,
+						window,
+						X_NET_WM_WINDOW_OPACITY,
+						XA_CARDINAL,
+						32,
+						PropModeReplace,
+						(unsigned char*)&opacity,
+						1L);
+				Window parent;
+				int format_ret;
+				unsigned int num;
+				Window *data = NULL;
+				if (XQueryTree(dpy, window, (Window*)&format_ret, &parent, &data, (unsigned int*)&num) == False)
+				{
+					break;
+				}
+				if (data)
+				{
+					XFree(data);
+					data = NULL;
+				}
+				window = parent;
+			}
 		}
 //		NSLog(@"Check %@ %d", client, [client xwindow]);
 		XClientMessageEvent *xev = calloc(1, sizeof(XClientMessageEvent));
@@ -225,6 +254,25 @@ static Busy *sharedInstance;
 			{
 //				XDefineCursor(dpy, [client xwindow], pointer_cursor);
 				XUndefineCursor(dpy, [client xwindow]);
+				Window window = [client xwindow];
+				while(window != 0)
+				{
+					XDeleteProperty(dpy, window, X_NET_WM_WINDOW_OPACITY);
+					Window parent;
+					int format_ret;
+					unsigned int num;
+					Window *data = NULL;
+					if (XQueryTree(dpy, window, (Window*)&format_ret, &parent, &data, (unsigned int*)&num) == False)
+					{
+						break;
+					}
+					if (data)
+					{
+						XFree(data);
+						data = NULL;
+					}
+					window = parent;
+				}
 				[client setCounter: 0]; // Reset counter
 			}
 //			[client decreaseCounter];
@@ -296,7 +344,7 @@ static Busy *sharedInstance;
 	root_win = RootWindow(dpy, screen);
 
 	/* Get key */
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	//NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	clients = [[NSMutableDictionary alloc] init];
 
 #if 1 // NOT_USED
@@ -313,6 +361,7 @@ static Busy *sharedInstance;
 	X_NET_CLIENT_LIST_STACKING = XInternAtom(dpy, "_NET_CLIENT_LIST_STACKING", False);
 	X_NET_WM_STATE_SKIP_PAGER = XInternAtom(dpy, "_NET_WM_STATE_SKIP_PAGER", False);
 	X_NET_WM_STATE_SKIP_TASKBAR = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);
+	X_NET_WM_WINDOW_OPACITY = XInternAtom(dpy, "_NET_WM_WINDOW_OPACITY", False);
 
 	X_WM_PROTOCOLS = XInternAtom(dpy, "WM_PROTOCOLS", False);
 	X_NET_WM_PING = XInternAtom(dpy, "_NET_WM_PING", False);
