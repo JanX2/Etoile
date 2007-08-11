@@ -84,8 +84,10 @@ typedef struct _win
 	int		shadow_height;
 	unsigned int	opacity;
 	Atom		windowType;
+
 	BOOL isIconified;
-	Window realWindow;
+	int realX, realY;
+
 	unsigned long	damage_sequence;	/* sequence when damage was
 						 * created */
 
@@ -159,7 +161,7 @@ Atom		winActiveAtom;
 #define TRANSLUCENT	0xe0000000
 #define OPAQUE		0xffffffff
 
-#define ICON_SIZE	128	
+#define ICON_SIZE	64
 
 conv           *defaultGaussianMap;
 conv           *foregroundGaussianMap;
@@ -1018,8 +1020,11 @@ paint_all(Display * dpy, XserverRegion region)
 		if (!w->damaged)
 			continue;
 		/* if invisible, ignore it */
-		if (w->a.x + w->a.width < 1 || w->a.y + w->a.height < 1
+		if (
+			!w->isIconified &&
+			(w->a.x + w->a.width < 1 || w->a.y + w->a.height < 1
 		    || w->a.x >= root_width || w->a.y >= root_height)
+			)
 			continue;
 		if (!w->picture)
 		{
@@ -1086,6 +1091,7 @@ paint_all(Display * dpy, XserverRegion region)
 			//Scale miniwindows down to ICON_SIZE
 			if(w->isIconified)
 			{
+				
 				//Apply the scaling transform
 				XTransform shrink = scale_for_window(w);
 				XRenderSetPictureTransform(dpy, w->picture, &shrink);
@@ -1100,13 +1106,14 @@ paint_all(Display * dpy, XserverRegion region)
 					wid =(int)(((double)wid/(double)hei) * (double)ICON_SIZE);
 					hei = ICON_SIZE;
 				}
+				x = w->realX;
+				y = w->realY;
 				XRectangle r;
-				r.x = w->a.x;
-				r.y = w->a.y;
+				r.x = x;
+				r.y = y;
 				r.width = wid;
 				r.height = hei;
 				XserverRegion clip = XFixesCreateRegion(dpy, &r, 1);
-				//XFixesSetWindowShapeRegion(dpy, w->id, 0, 0,0,clip);
 				XFixesSubtractRegion(dpy, region, region, clip);
 				XFixesDestroyRegion(dpy, clip);
 			}
@@ -1950,11 +1957,20 @@ static inline void uniconify_win(win * w)
 	XRenderFreePicture(dpy, w->picture);
 	w->picture = None;
 	w->extents = win_extents(dpy, w);
+	//Bring it back
+	XMoveWindow(dpy, w->id, w->realX, w->realY);
 }
 
 static inline void iconify_win(win * w)
 {
 	w->isIconified = YES;
+	
+	static int i=0;
+	w->realX = w->a.x;
+	w->realY = w->a.y;
+	//Hide iconified windows off the screen
+	XMoveWindow(dpy, w->id, -500,-500);
+
 	XRenderFreePicture(dpy, w->picture);
 	w->picture = None;
 	w->extents = win_extents(dpy, w);
