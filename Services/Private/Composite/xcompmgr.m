@@ -2294,7 +2294,7 @@ main(int argc, char **argv)
 									w->shadow = None;
 									w->extents = win_extents(dpy, w);
 
-#ifdef DEBUG_ICONIFY
+#if DEBUG_ICONIFY
 									uniconify_win(w);
 #endif
 								}
@@ -2325,7 +2325,7 @@ main(int argc, char **argv)
 									XRenderFreePicture(dpy, w->shadow);
 									w->shadow = None;
 
-#ifdef DEBUG_ICONIFY
+#if DEBUG_ICONIFY
 									iconify_win(w);
 #endif
 								}
