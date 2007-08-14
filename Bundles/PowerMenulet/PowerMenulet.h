@@ -3,19 +3,20 @@
 
 enum PowerLevel
 {
-  NoPower,
-  WiredPower,
-  BatteryPower
+	NoPower,
+	WiredPower,
+	BatteryPower
 };
 
 @interface PowerMenulet : NSObject <EtoileMenulet>
 {
-  NSButton *view;
-  NSTimer *timer;
-  int batteryLevel;
+	NSButton *view;
+	NSTimer *timer;
+	int batteryLevel;
+	NSImage *p0, *p1, *p2, *p3;
 
-  /* Cache */
-  NSFileManager *fm;
+	/* Cache */
+	NSFileManager *fm;
 }
 
 - (NSView *) menuletView;

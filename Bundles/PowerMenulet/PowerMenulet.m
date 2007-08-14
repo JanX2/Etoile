@@ -3,11 +3,11 @@
 @implementation PowerMenulet
 - (void) checkPower: (NSTimer *) t
 {
-  /* Check /proc/apm (For Linux with APM) */
-  if ([fm fileExistsAtPath: @"/proc/apm"])
-  {
-    NSString *apm = [NSString stringWithContentsOfFile: @"/proc/apm"];
-    NSArray *array = [apm componentsSeparatedByString: @" "];
+	/* Check /proc/apm (For Linux with APM) */
+	if ([fm fileExistsAtPath: @"/proc/apm"])
+	{
+		NSString *apm = [NSString stringWithContentsOfFile: @"/proc/apm"];
+		NSArray *array = [apm componentsSeparatedByString: @" "];
     /* This is what I gather:
        0: Driver-version, string
        1: BIOS-version, string
@@ -35,66 +35,117 @@
        7: Battery time, number
        8: Battery time unit, string
     */
-    if ([[array objectAtIndex: 3] isEqualToString: @"0x01"])
-    {
-      /* We are charging */
-      [view setTitle: @"AC line"];
-      return;
-    }
-    else if ([[array objectAtIndex: 3] isEqualToString: @"0x00"])
-    {
-      /* We are not on power */
-      if ([[array objectAtIndex: 6] hasSuffix: @"\%"])
-      {
-        /* We are in format of '56%', luckly !! */
-        [view setTitle: [array objectAtIndex: 6]];
-        return;
-      }
-    }
-  }
-  /* Unknown */
-  [view setTitle: @"Power Unknwon"];
+		if ([[array objectAtIndex: 3] isEqualToString: @"0x01"])
+		{
+			/* We are charging */
+			[view setTitle: @"AC"];
+			[view setImagePosition: NSNoImage];
+			return;
+		}
+		else if ([[array objectAtIndex: 3] isEqualToString: @"0x00"])
+		{
+			/* We are not on power */
+			NSString *s = [array objectAtIndex: 6];
+			if ([s hasSuffix: @"\%"])
+			{
+				/* We are in format of '56%', luckly !! */
+				s = [s substringToIndex: [s length]-1];
+				int percent = [s intValue];
+//NSLog(@"Power Level: %d\%", percent);
+				[view setImagePosition: NSImageOnly];
+				if (percent > 75)
+				{
+					[view setImage: p3];
+				}
+				else if (percent > 50)
+				{
+					[view setImage: p2];
+				}
+				else if (percent > 25)
+				{
+					[view setImage: p1];
+				}
+				else if (percent > 0)
+				{
+					[view setImage: p0];
+				}
+				else
+				{
+					/* If percent is 0, the computer dies.
+					   So it is probably due to the failure of 
+					   parsing power level.
+					 */
+					[view setTitle: @"Power Unknwon"];
+					[view setImagePosition: NSNoImage];
+				}
+				return;
+			}
+		}
+	}
+	/* Unknown */
+	[view setTitle: @"??"];
+	[view setImagePosition: NSNoImage];
 }
 
 - (void) dealloc
 {
-  if (timer)
-  {
-    [timer invalidate];
-    DESTROY(timer);
-  }
-  DESTROY(view);
-  [super dealloc];
+	if (timer)
+	{
+		[timer invalidate];
+		DESTROY(timer);
+	}
+	DESTROY(p0);
+	DESTROY(p1);
+	DESTROY(p2);
+	DESTROY(p3);
+	DESTROY(view);
+	[super dealloc];
 }
 
 - (id) init
 {
-  NSRect rect = NSZeroRect;
+	NSRect rect = NSZeroRect;
 
-  self = [super init];
+	self = [super init];
 
-  rect.size.height = 22;
-  rect.size.width = 50;
-  view = [[NSButton alloc] initWithFrame: rect];
-  [view setBordered: NO];
-  [view setTitle: @"Power ?"];
+	rect.size.height = 22;
+	rect.size.width = 29;
+	view = [[NSButton alloc] initWithFrame: rect];
+	[view setBordered: NO];
+	[view setTitle: @"Power ?"];
 
-  fm = [NSFileManager defaultManager];
+	fm = [NSFileManager defaultManager];
 
-  /* Start timer for every 5 seconds */
-  ASSIGN(timer, [NSTimer scheduledTimerWithTimeInterval: 5
+    /* Cache image */
+    NSBundle *bundle = [NSBundle bundleForClass: [self class]];
+    NSString *path = nil;
+    path = [bundle pathForResource: @"Power_0" ofType: @"tiff"];
+    if (path)
+        p0 = [[NSImage alloc] initWithContentsOfFile: path];
+    path = [bundle pathForResource: @"Power_1" ofType: @"tiff"];
+    if (path)
+        p1 = [[NSImage alloc] initWithContentsOfFile: path];
+    path = [bundle pathForResource: @"Power_2" ofType: @"tiff"];
+    if (path)
+        p2 = [[NSImage alloc] initWithContentsOfFile: path];
+    path = [bundle pathForResource: @"Power_3" ofType: @"tiff"];
+    if (path)
+        p3 = [[NSImage alloc] initWithContentsOfFile: path];
+
+	/* Start timer for every 5 seconds */
+	ASSIGN(timer, [NSTimer scheduledTimerWithTimeInterval: 5
                          target: self
                          selector: @selector(checkPower:)
                          userInfo: nil
                          repeats: YES]);
-  [self checkPower: timer];
+	[self checkPower: timer];
 
-  return self;
+	return self;
 }
 
 - (NSView *) menuletView
 {
-  return (NSView *)view;
+	return (NSView *)view;
 }
 
 @end
