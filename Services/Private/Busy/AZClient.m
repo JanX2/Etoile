@@ -20,6 +20,8 @@
 
 - (void) dealloc
 {
+	DESTROY(class);
+	DESTROY(instance);
 	[super dealloc];
 }
 

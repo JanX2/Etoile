@@ -132,7 +132,6 @@ static Busy *sharedInstance;
 
 - (void) updateClientList: (id) sender
 {
-	CREATE_AUTORELEASE_POOL(x);
 	NSMutableDictionary *oldClients = nil;
 	Window *win = NULL;
 	unsigned long count;
@@ -156,6 +155,8 @@ static Busy *sharedInstance;
 		[checkTimer invalidate];
 		DESTROY(checkTimer);
 	}
+
+	CREATE_AUTORELEASE_POOL(x);
 
 	oldClients = [[NSMutableDictionary alloc] initWithDictionary: clients];
 	[clients removeAllObjects];
