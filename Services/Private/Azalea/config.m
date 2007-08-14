@@ -349,7 +349,7 @@ void config_startup(AZParser *parser)
 	}
 
 	ASSIGN(config_theme, [NSString stringWithCString: "Azalea"]);
-    ASSIGN(config_title_layout, ([NSString stringWithCString: "NLIMC"]));
+    ASSIGN(config_title_layout, ([NSString stringWithCString: "ILC"]));
     config_theme_keepborder = NO;
     config_theme_hidedisabled = NO;
 

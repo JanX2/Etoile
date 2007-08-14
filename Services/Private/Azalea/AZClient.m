@@ -1456,87 +1456,97 @@
 
 - (void) updateIcons;
 {
-    unsigned int num;
-    unsigned long *data;
-    unsigned int w, h, i, j;
+	unsigned int num;
+	unsigned long *data;
+	unsigned int w, h, i, j;
 
-    [self removeAllIcons];
+	[self removeAllIcons];
 
-    if (PROP_GETA32(window, net_wm_icon, cardinal, &data, &num)) {
-	int nicons = 0;
-        /* figure out how many valid icons are in here */
-        i = 0;
-        while (num - i > 2) {
-            w = data[i++];
-            h = data[i++];
-            i += w * h;
-            if (i > num || w*h == 0) break;
-            ++nicons;
-        }
+	if (PROP_GETA32(window, net_wm_icon, cardinal, &data, &num)) 
+	{
+		int nicons = 0;
+		/* figure out how many valid icons are in here */
+		i = 0;
+		while (num - i > 2) 
+		{
+			w = data[i++];
+			h = data[i++];
+			i += w * h;
+			if (i > num || w*h == 0) 
+				break;
+			++nicons;
+		}
 
-        /* store the icons */
-        i = 0;
-        for (j = 0; j < nicons; ++j) {
-            unsigned int x, y, t;
+		/* store the icons */
+		i = 0;
+		for (j = 0; j < nicons; ++j) 
+		{
+			unsigned int x, y, t;
 
-	    AZClientIcon *icon = AUTORELEASE([[AZClientIcon alloc] init]);
-	    w = data[i++];
-	    h = data[i++];
-	    [icon setWidth: w];
-	    [icon setHeight: h];
+			AZClientIcon *icon = AUTORELEASE([[AZClientIcon alloc] init]);
+			w = data[i++];
+			h = data[i++];
+			[icon setWidth: w];
+			[icon setHeight: h];
 
-            if (w*h == 0) continue;
+			if (w*h == 0) 
+				continue;
 
-	    RrPixel32 *temp = calloc(sizeof(RrPixel32), w * h);
-            for (x = 0, y = 0, t = 0; t < w * h; ++t, ++x, ++i) {
-                if (x >= w) {
-                    x = 0;
-                    ++y;
-                }
-		temp[t] =
-                    (((data[i] >> 24) & 0xff) << RrDefaultAlphaOffset) +
-                    (((data[i] >> 16) & 0xff) << RrDefaultRedOffset) +
-                    (((data[i] >> 8) & 0xff) << RrDefaultGreenOffset) +
-                    (((data[i] >> 0) & 0xff) << RrDefaultBlueOffset);
-            }
-            NSAssert(i <= num, @"Out of range");
-	    [icon setData: temp];
-	    [self addIcon: icon];
-        }
+			RrPixel32 *temp = calloc(sizeof(RrPixel32), w * h);
+			for (x = 0, y = 0, t = 0; t < w * h; ++t, ++x, ++i) 
+			{
+				if (x >= w) 
+				{
+					x = 0;
+					++y;
+				}
+				temp[t] = (((data[i] >> 24) & 0xff) << RrDefaultAlphaOffset) +
+				            (((data[i] >> 16) & 0xff) << RrDefaultRedOffset) +
+				            (((data[i] >> 8) & 0xff) << RrDefaultGreenOffset) +
+				            (((data[i] >> 0) & 0xff) << RrDefaultBlueOffset);
+			}
+			NSAssert(i <= num, @"Out of range");
+			[icon setData: temp];
+			[self addIcon: icon];
+		}
 
-        free(data);
-    } else {
-        XWMHints *hints;
+		free(data);
+	}
+	else 
+	{
+		XWMHints *hints;
 
-        if ((hints = XGetWMHints(ob_display, window))) {
-            if (hints->flags & IconPixmapHint) {
-		int _w, _h;
-		RrPixel32 *_temp;
-		AZXErrorSetIgnore(YES);
-                if (!RrPixmapToRGBA(ob_rr_inst,
+		if ((hints = XGetWMHints(ob_display, window))) 
+		{
+			if (hints->flags & IconPixmapHint) 
+			{
+				int _w, _h;
+				RrPixel32 *_temp;
+				AZXErrorSetIgnore(YES);
+				if (!RrPixmapToRGBA(ob_rr_inst,
                                     hints->icon_pixmap,
                                     (hints->flags & IconMaskHint ?
                                      hints->icon_mask : None),
                                     &_w, &_h, &_temp))
-		{
-                }
-		else // success
-		{
-	          AZClientIcon *icon = [[AZClientIcon alloc] init];
-	          [icon setWidth: _w];
-	          [icon setHeight: _h];
-	          [icon setData: _temp];
-	          [self addIcon: icon];
-	          DESTROY(icon);
+				{
+				}
+				else // success
+				{
+					AZClientIcon *icon = [[AZClientIcon alloc] init];
+					[icon setWidth: _w];
+					[icon setHeight: _h];
+					[icon setData: _temp];
+					[self addIcon: icon];
+					DESTROY(icon);
+				}
+				AZXErrorSetIgnore(NO);
+			}
+			XFree(hints);
 		}
-		AZXErrorSetIgnore(NO);
-            }
-            XFree(hints);
-        }
-    }
+	}
 
-    if (frame)
-	[frame adjustIcon];
+	if (frame)
+		[frame adjustIcon];
 }
 
 - (void) updateUserTime

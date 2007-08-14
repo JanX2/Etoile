@@ -65,17 +65,19 @@ window.inactive.button.disabled.image.color:  #d8d4d4
 
 !! colours
 window.*.client.color: #d8d4d4
-border.color: #222222
+border.color: #606060
 
 !! width
 borderWidth: 1
-padding.width: 1
-window.handle.width: 4
+padding.width: 2
+window.handle.width: 6
 window.client.padding.width: 0
 menu.overlap: 8
 
 !! fonts
-window.active.label.text.font: Bitstream Vera Sans:pixelsize=13:bold
+window.active.label.text.font: Bitstream Vera Sans:pixelsize=14
 menu.title.text.font: Bitstream Vera Sans:pixelsize=13:bold
 menu.items.font: Bitstream Vera Sans:pixelsize=13
 
+!! window title
+window.label.text.justify: center
