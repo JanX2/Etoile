@@ -37,9 +37,17 @@
     */
 		if ([[array objectAtIndex: 3] isEqualToString: @"0x01"])
 		{
-			/* We are charging */
-			[view setTitle: @"AC"];
-			[view setImagePosition: NSNoImage];
+			[view setImagePosition: NSImageOnly];
+			if ([[array objectAtIndex: 4] isEqualToString: @"0x03"])
+			{
+				/* We are charging */
+				[view setImage: p4];
+			}
+			else
+			{
+				/* Full ? */
+				[view setImage: p5];
+			}
 			return;
 		}
 		else if ([[array objectAtIndex: 3] isEqualToString: @"0x00"])
@@ -131,6 +139,12 @@
     path = [bundle pathForResource: @"Power_3" ofType: @"tiff"];
     if (path)
         p3 = [[NSImage alloc] initWithContentsOfFile: path];
+    path = [bundle pathForResource: @"Power_4" ofType: @"tiff"];
+    if (path)
+        p4 = [[NSImage alloc] initWithContentsOfFile: path];
+    path = [bundle pathForResource: @"Power_5" ofType: @"tiff"];
+    if (path)
+        p5 = [[NSImage alloc] initWithContentsOfFile: path];
 
 	/* Start timer for every 5 seconds */
 	ASSIGN(timer, [NSTimer scheduledTimerWithTimeInterval: 5
