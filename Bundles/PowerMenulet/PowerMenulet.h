@@ -13,7 +13,7 @@ enum PowerLevel
 	NSButton *view;
 	NSTimer *timer;
 	int batteryLevel;
-	NSImage *p0, *p1, *p2, *p3, *p4, *p5;
+	NSImage *p0, *p1, *p2, *p3, *p4, *p5, *p6;
 
 	/* Cache */
 	NSFileManager *fm;

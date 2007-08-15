@@ -37,7 +37,6 @@
     */
 		if ([[array objectAtIndex: 3] isEqualToString: @"0x01"])
 		{
-			[view setImagePosition: NSImageOnly];
 			if ([[array objectAtIndex: 4] isEqualToString: @"0x03"])
 			{
 				/* We are charging */
@@ -60,7 +59,6 @@
 				s = [s substringToIndex: [s length]-1];
 				int percent = [s intValue];
 //NSLog(@"Power Level: %d\%", percent);
-				[view setImagePosition: NSImageOnly];
 				if (percent > 75)
 				{
 					[view setImage: p3];
@@ -83,16 +81,14 @@
 					   So it is probably due to the failure of 
 					   parsing power level.
 					 */
-					[view setTitle: @"Power Unknwon"];
-					[view setImagePosition: NSNoImage];
+					[view setImage: p6];
 				}
 				return;
 			}
 		}
 	}
 	/* Unknown */
-	[view setTitle: @"??"];
-	[view setImagePosition: NSNoImage];
+	[view setImage: p6];
 }
 
 - (void) dealloc
@@ -120,7 +116,8 @@
 	rect.size.width = 29;
 	view = [[NSButton alloc] initWithFrame: rect];
 	[view setBordered: NO];
-	[view setTitle: @"Power ?"];
+	[view setTitle: @"?Power?"];
+	[view setImagePosition: NSImageOnly];
 
 	fm = [NSFileManager defaultManager];
 
@@ -145,6 +142,9 @@
     path = [bundle pathForResource: @"Power_5" ofType: @"tiff"];
     if (path)
         p5 = [[NSImage alloc] initWithContentsOfFile: path];
+    path = [bundle pathForResource: @"Power_6" ofType: @"tiff"];
+    if (path)
+        p6 = [[NSImage alloc] initWithContentsOfFile: path];
 
 	/* Start timer for every 5 seconds */
 	ASSIGN(timer, [NSTimer scheduledTimerWithTimeInterval: 5
