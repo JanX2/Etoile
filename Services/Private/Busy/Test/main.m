@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 	Display *dpy = XOpenDisplay(NULL);
 	int screen = DefaultScreen(dpy);
 	Window root_win = RootWindow(dpy, screen);
-	Window win = XCreateSimpleWindow(dpy, root_win, 100, 100, 400, 200, 0, 0, 0);
+	Window win = XCreateSimpleWindow(dpy, root_win, 100, 100, 400, 200, 0, 0, 0xFFFFFF);
 	int count = 0;
 	Atom X_WM_PROTOCOLS = XInternAtom(dpy, "WM_PROTOCOLS", False);
 	Atom X_NET_WM_PING = XInternAtom(dpy, "_NET_WM_PING", False);

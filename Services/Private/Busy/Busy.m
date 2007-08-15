@@ -61,24 +61,32 @@ static Busy *sharedInstance;
 	return supporting;
 }
 
-
-/* End of Private */
-- (void) checkAlive: (id) sender
+- (void) setClient: (AZClient *) client busy: (BOOL) flag
 {
-	NSLog(@"checkAlive");
-	int i;
-	NSArray *allClients = [clients allValues];
-	for (i = 0; i < [allClients count]; i++)
+	if (flag == YES)
 	{
-		AZClient *client = [allClients objectAtIndex: i];
-		if ([client isSupportingPing] == NO)
-			continue;
-		if (([client counter] > 0) && ([client date] != nil) && ([NSDate timeIntervalSinceReferenceDate] - [[client date] timeIntervalSinceReferenceDate] > DELAY_SECONDS))
-		{
-			//Opacity from 0 (transparent) to 0xffffffff (opaque)
-			unsigned int opacity = 0x60000000;
-			NSLog(@"Client does not respond: %@", client);
-			XDefineCursor(dpy, [client xwindow], busy_cursor);
+		NSLog(@"Client does not respond: %@", client);
+		XDefineCursor(dpy, [client xwindow], busy_cursor);
+		//Opacity from 0 (transparent) to 0xffffffff (opaque)
+		unsigned int opacity = 0x60000000;
+#if 1
+		XClientMessageEvent *xev = calloc(1, sizeof(XClientMessageEvent));
+		xev->type = ClientMessage; 
+		xev->display = dpy;
+		xev->window = [client xwindow];
+		xev->message_type = X_NET_WM_WINDOW_OPACITY;
+		xev->format = 32;
+		xev->data.l[0] = [client xwindow];
+		xev->data.l[1] = CurrentTime;
+		xev->data.l[2] = opacity;
+		xev->data.l[3] = 0;
+		xev->data.l[4] = 0;
+		xev->data.l[5] = 0;
+//		XSendEvent(dpy, root_win, False, NoEventMask, (XEvent *)xev);
+		XSendEvent(dpy, root_win, False, SubstructureRedirectMask, (XEvent *)xev);
+		XFlush(dpy);
+		XFree(xev);
+#else
 			Window window = [client xwindow];
 			while(window != 0)
 			{
@@ -105,6 +113,68 @@ static Busy *sharedInstance;
 				}
 				window = parent;
 			}
+#endif
+	}
+	else
+	{
+//				XDefineCursor(dpy, [client xwindow], pointer_cursor);
+				XUndefineCursor(dpy, [client xwindow]);
+#if 1
+		unsigned int opacity = 0xffffffff;
+		XClientMessageEvent *xev = calloc(1, sizeof(XClientMessageEvent));
+		xev->type = ClientMessage; 
+		xev->display = dpy;
+		xev->window = [client xwindow];
+		xev->message_type = X_NET_WM_WINDOW_OPACITY;
+		xev->format = 32;
+		xev->data.l[0] = [client xwindow];
+		xev->data.l[1] = CurrentTime;
+		xev->data.l[2] = opacity;
+		xev->data.l[3] = 0;
+		xev->data.l[4] = 0;
+		xev->data.l[5] = 0;
+//		XSendEvent(dpy, root_win, False, NoEventMask, (XEvent *)xev);
+		XSendEvent(dpy, root_win, False, SubstructureRedirectMask, (XEvent *)xev);
+		XFlush(dpy);
+		XFree(xev);
+#else
+				Window window = [client xwindow];
+				while(window != 0)
+				{
+					XDeleteProperty(dpy, window, X_NET_WM_WINDOW_OPACITY);
+					Window parent;
+					int format_ret;
+					unsigned int num;
+					Window *data = NULL;
+					if (XQueryTree(dpy, window, (Window*)&format_ret, &parent, &data, (unsigned int*)&num) == False)
+					{
+						break;
+					}
+					if (data)
+					{
+						XFree(data);
+						data = NULL;
+					}
+					window = parent;
+				}
+#endif
+	}
+}
+
+/* End of Private */
+- (void) checkAlive: (id) sender
+{
+//	NSLog(@"checkAlive");
+	int i;
+	NSArray *allClients = [clients allValues];
+	for (i = 0; i < [allClients count]; i++)
+	{
+		AZClient *client = [allClients objectAtIndex: i];
+		if ([client isSupportingPing] == NO)
+			continue;
+		if (([client counter] > 0) && ([client date] != nil) && ([NSDate timeIntervalSinceReferenceDate] - [[client date] timeIntervalSinceReferenceDate] > DELAY_SECONDS))
+		{
+			[self setClient: client busy: YES];
 		}
 //		NSLog(@"Check %@ %d", client, [client xwindow]);
 		XClientMessageEvent *xev = calloc(1, sizeof(XClientMessageEvent));
@@ -260,27 +330,7 @@ static Busy *sharedInstance;
 			}
 			if ([client counter] > 0)
 			{
-//				XDefineCursor(dpy, [client xwindow], pointer_cursor);
-				XUndefineCursor(dpy, [client xwindow]);
-				Window window = [client xwindow];
-				while(window != 0)
-				{
-					XDeleteProperty(dpy, window, X_NET_WM_WINDOW_OPACITY);
-					Window parent;
-					int format_ret;
-					unsigned int num;
-					Window *data = NULL;
-					if (XQueryTree(dpy, window, (Window*)&format_ret, &parent, &data, (unsigned int*)&num) == False)
-					{
-						break;
-					}
-					if (data)
-					{
-						XFree(data);
-						data = NULL;
-					}
-					window = parent;
-				}
+				[self setClient: client busy: NO];
 				[client setCounter: 0]; // Reset counter
 				[client setDate: nil];
 			}
