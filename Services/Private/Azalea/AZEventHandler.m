@@ -572,62 +572,74 @@ static AZEventHandler *sharedInstance;
 			break;
 		case ButtonPress:
 		case ButtonRelease:
-			/* Wheel buttons don't draw because they are an instant click, so it
-           is a waste of resources to go drawing it. */
-        if (!(e->xbutton.button == 4 || e->xbutton.button == 5)) {
-            con = frame_context(client, e->xbutton.window);
-            con = [[AZMouseHandler defaultHandler] frameContext: con withButton: e->xbutton.button];
-            switch (con) {
-            case OB_FRAME_CONTEXT_MAXIMIZE:
-                [[client frame] set_max_press: (e->type == ButtonPress)];
-		[[client frame] render];
-                break;
-            case OB_FRAME_CONTEXT_CLOSE:
-                [[client frame] set_close_press: (e->type == ButtonPress)];
-		[[client frame] render];
-                break;
-            case OB_FRAME_CONTEXT_ICONIFY:
-                [[client frame] set_iconify_press: (e->type == ButtonPress)];
-		[[client frame] render];
-                break;
-            case OB_FRAME_CONTEXT_ALLDESKTOPS:
-                [[client frame] set_desk_press: (e->type == ButtonPress)];
-		[[client frame] render];
-                break; 
-            case OB_FRAME_CONTEXT_SHADE:
-                [[client frame] set_shade_press: (e->type == ButtonPress)];
-		[[client frame] render];
-                break;
-            default:
-                /* nothing changes with clicks for any other contexts */
-                break;
-            }
-        }
-        break;
+			/* Wheel buttons don't draw because they are an instant click, 
+			   so it is a waste of resources to go drawing it. */
+			if (!(e->xbutton.button == 4 || e->xbutton.button == 5)) 
+			{
+				con = frame_context(client, e->xbutton.window);
+				con = [[AZMouseHandler defaultHandler] frameContext: con withButton: e->xbutton.button];
+				switch (con) 
+				{
+					case OB_FRAME_CONTEXT_MAXIMIZE:
+						[[client frame] set_max_press: (e->type == ButtonPress)];
+						[[client frame] render];
+						break;
+					case OB_FRAME_CONTEXT_CLOSE:
+						[[client frame] set_close_press: (e->type == ButtonPress)];
+						[[client frame] render];
+						break;
+					case OB_FRAME_CONTEXT_ICONIFY:
+						[[client frame] set_iconify_press: (e->type == ButtonPress)];
+						[[client frame] render];
+						break;
+					case OB_FRAME_CONTEXT_ALLDESKTOPS:
+						[[client frame] set_desk_press: (e->type == ButtonPress)];
+						[[client frame] render];
+						break; 
+					case OB_FRAME_CONTEXT_SHADE:
+						[[client frame] set_shade_press: (e->type == ButtonPress)];
+						[[client frame] render];
+						break;
+					default:
+						/* nothing changes with clicks for any other contexts */
+						break;
+				}
+			}
+			break;
 #if 0 // Removed in OpenBox3
-    case FocusIn:
-        if (client != [fManager focus_client]) {
-	    [fManager setClient: client];
-	    [[client frame] adjustFocusWithHilite: YES];
-	    [client calcLayer];
-        }
-        break;
-    case FocusOut:
-        /* Look for the followup FocusIn */
-        if (!XCheckIfEvent(ob_display, &ce, look_for_focusin, NULL)) {
-            /* There is no FocusIn, this means focus went to a window that
-               is not being managed, or a window on another screen. */
-            //ob_debug("Focus went to a black hole !\n");
-        } else if (ce.xany.window == e->xany.window) {
-            /* If focus didn't actually move anywhere, there is nothing to do*/
-            break;
-        } else if (ce.xfocus.detail == NotifyPointerRoot ||
-                 ce.xfocus.detail == NotifyDetailNone) {
-            //ob_debug("Focus went to root\n");
-            /* Focus has been reverted to the root window or nothing, so fall
-               back to something other than the window which just had it. */
-            [fManager fallback: NO];
-        } else if (ce.xfocus.detail == NotifyInferior) {
+		case FocusIn:
+			if (client != [fManager focus_client]) 
+			{
+				[fManager setClient: client];
+				[[client frame] adjustFocusWithHilite: YES];
+				[client calcLayer];
+			}
+			break;
+		case FocusOut:
+			/* Look for the followup FocusIn */
+			if (!XCheckIfEvent(ob_display, &ce, look_for_focusin, NULL)) 
+			{
+				/* There is no FocusIn, this means focus went to a window that
+				   is not being managed, or a window on another screen. */
+				//ob_debug("Focus went to a black hole !\n");
+			}
+			else if (ce.xany.window == e->xany.window) 
+			{
+				/* If focus didn't actually move anywhere, 
+				   there is nothing to do*/
+				break;
+			}
+			else if (ce.xfocus.detail == NotifyPointerRoot ||
+			         ce.xfocus.detail == NotifyDetailNone) 
+			{
+				//ob_debug("Focus went to root\n");
+				/* Focus has been reverted to the root window or nothing, 
+				   so fall back to something other than the window which 
+				   just had it. */
+				[fManager fallback: NO];
+			}
+			else if (ce.xfocus.detail == NotifyInferior) 
+			{
             //ob_debug("Focus went to parent\n");
             /* Focus has been reverted to parent, which is our frame window,
                or the root window, so fall back to something other than the
@@ -655,380 +667,419 @@ static AZEventHandler *sharedInstance;
 	}
         break;
 #endif
-    case LeaveNotify:
-        con = frame_context(client, e->xcrossing.window);
-        switch (con) {
-        case OB_FRAME_CONTEXT_MAXIMIZE:
-            [[client frame] set_max_hover: NO];
-	    [[client frame] adjustState];
-            break;
-        case OB_FRAME_CONTEXT_ALLDESKTOPS:
-            [[client frame] set_desk_hover: NO];
-	    [[client frame] adjustState];
-            break;
-        case OB_FRAME_CONTEXT_SHADE:
-            [[client frame] set_shade_hover: NO];
-	    [[client frame] adjustState];
-            break;
-        case OB_FRAME_CONTEXT_ICONIFY:
-            [[client frame] set_iconify_hover: NO];
-	    [[client frame] adjustState];
-            break;
-        case OB_FRAME_CONTEXT_CLOSE:
-            [[client frame] set_close_hover: NO];
-	    [[client frame] adjustState];
-            break;
-        case OB_FRAME_CONTEXT_FRAME:
-            if ([[AZKeyboardHandler defaultHandler] interactivelyGrabbed])
-                break;
-	    /* Used by focus follow mouse */
-            break;
-        default:
-            break;
-        }
-        break;
-    case EnterNotify:
-    {
-        BOOL nofocus = NO;
+		case LeaveNotify:
+			con = frame_context(client, e->xcrossing.window);
+			switch (con) 
+			{
+				case OB_FRAME_CONTEXT_MAXIMIZE:
+					[[client frame] set_max_hover: NO];
+					[[client frame] adjustState];
+					break;
+				case OB_FRAME_CONTEXT_ALLDESKTOPS:
+					[[client frame] set_desk_hover: NO];
+					[[client frame] adjustState];
+					break;
+				case OB_FRAME_CONTEXT_SHADE:
+					[[client frame] set_shade_hover: NO];
+					[[client frame] adjustState];
+					break;
+				case OB_FRAME_CONTEXT_ICONIFY:
+					[[client frame] set_iconify_hover: NO];
+					[[client frame] adjustState];
+					break;
+				case OB_FRAME_CONTEXT_CLOSE:
+					[[client frame] set_close_hover: NO];
+					[[client frame] adjustState];
+					break;
+				case OB_FRAME_CONTEXT_FRAME:
+					if ([[AZKeyboardHandler defaultHandler] interactivelyGrabbed])
+					break;
+				default:
+					break;
+			}
+			break;
+		case EnterNotify:
+		{
+			BOOL nofocus = NO;
 
-        if (ignore_enter_focus) {
-            ignore_enter_focus--;
-            nofocus = YES;
-        }
+			if (ignore_enter_focus) 
+			{
+				ignore_enter_focus--;
+				nofocus = YES;
+			}
 
-        con = frame_context(client, e->xcrossing.window);
-        switch (con) {
-        case OB_FRAME_CONTEXT_MAXIMIZE:
-            [[client frame] set_max_hover: YES];
-	    [[client frame] adjustState];
-            break;
-        case OB_FRAME_CONTEXT_ALLDESKTOPS:
-            [[client frame] set_desk_hover: YES];
-	    [[client frame] adjustState];
-            break;
-        case OB_FRAME_CONTEXT_SHADE:
-            [[client frame] set_shade_hover: YES];
-	    [[client frame] adjustState];
-            break;
-        case OB_FRAME_CONTEXT_ICONIFY:
-            [[client frame] set_iconify_hover: YES];
-	    [[client frame] adjustState];
-            break;
-        case OB_FRAME_CONTEXT_CLOSE:
-            [[client frame] set_close_hover: YES];
-	    [[client frame] adjustState];
-            break;
-        case OB_FRAME_CONTEXT_FRAME:
-            if ([[AZKeyboardHandler defaultHandler] interactivelyGrabbed])
-                break;
-            if (e->xcrossing.mode == NotifyGrab ||
-                e->xcrossing.mode == NotifyUngrab)
-            {
-                NSDebugLLog(@"Focus", 
-				         @"%sNotify mode %d detail %d on %lx IGNORED",
+			con = frame_context(client, e->xcrossing.window);
+			switch (con) 
+			{
+				case OB_FRAME_CONTEXT_MAXIMIZE:
+					[[client frame] set_max_hover: YES];
+					[[client frame] adjustState];
+					break;
+				case OB_FRAME_CONTEXT_ALLDESKTOPS:
+					[[client frame] set_desk_hover: YES];
+					[[client frame] adjustState];
+					break;
+				case OB_FRAME_CONTEXT_SHADE:
+					[[client frame] set_shade_hover: YES];
+					[[client frame] adjustState];
+					break;
+				case OB_FRAME_CONTEXT_ICONIFY:
+					[[client frame] set_iconify_hover: YES];
+					[[client frame] adjustState];
+					break;
+				case OB_FRAME_CONTEXT_CLOSE:
+					[[client frame] set_close_hover: YES];
+					[[client frame] adjustState];
+					break;
+				case OB_FRAME_CONTEXT_FRAME:
+					if ([[AZKeyboardHandler defaultHandler] interactivelyGrabbed])
+						break;
+					if (e->xcrossing.mode == NotifyGrab ||
+					    e->xcrossing.mode == NotifyUngrab)
+					{
+						NSDebugLLog(@"Focus", 
+							@"%sNotify mode %d detail %d on %lx IGNORED",
                          (e->type == EnterNotify ? "Enter" : "Leave"),
                          e->xcrossing.mode,
                          e->xcrossing.detail, client? [client window]:0);
-            } else {
-	       /* Only reach here for focus follow mouse */
-            }
-            break;
-        default:
-            break;
-        }
-        break;
-    }
-    case ConfigureRequest:
-        /* compress these */
-        while (XCheckTypedWindowEvent(ob_display, [client window],
-                                      ConfigureRequest, &ce)) {
-            ++i;
-            /* XXX if this causes bad things.. we can compress config req's
-               with the same mask. */
-            e->xconfigurerequest.value_mask |=
-                ce.xconfigurerequest.value_mask;
-            if (ce.xconfigurerequest.value_mask & CWX)
-                e->xconfigurerequest.x = ce.xconfigurerequest.x;
-            if (ce.xconfigurerequest.value_mask & CWY)
-                e->xconfigurerequest.y = ce.xconfigurerequest.y;
-            if (ce.xconfigurerequest.value_mask & CWWidth)
-                e->xconfigurerequest.width = ce.xconfigurerequest.width;
-            if (ce.xconfigurerequest.value_mask & CWHeight)
-                e->xconfigurerequest.height = ce.xconfigurerequest.height;
-            if (ce.xconfigurerequest.value_mask & CWBorderWidth)
-                e->xconfigurerequest.border_width =
-                    ce.xconfigurerequest.border_width;
-            if (ce.xconfigurerequest.value_mask & CWStackMode)
-                e->xconfigurerequest.detail = ce.xconfigurerequest.detail;
-        }
+					}
+					else
+					{
+						/* Only reach here for focus follow mouse */
+					}
+					break;
+				default:
+					break;
+			}
+			break;
+		}
+		case ConfigureRequest:
+			/* compress these */
+			while (XCheckTypedWindowEvent(ob_display, [client window],
+			                              ConfigureRequest, &ce)) 
+			{
+				++i;
+				/* XXX if this causes bad things.
+				   we can compress config req's with the same mask. */
+				e->xconfigurerequest.value_mask |=
+					ce.xconfigurerequest.value_mask;
+				if (ce.xconfigurerequest.value_mask & CWX)
+					e->xconfigurerequest.x = ce.xconfigurerequest.x;
+				if (ce.xconfigurerequest.value_mask & CWY)
+					e->xconfigurerequest.y = ce.xconfigurerequest.y;
+				if (ce.xconfigurerequest.value_mask & CWWidth)
+					e->xconfigurerequest.width = ce.xconfigurerequest.width;
+				if (ce.xconfigurerequest.value_mask & CWHeight)
+					e->xconfigurerequest.height = ce.xconfigurerequest.height;
+				if (ce.xconfigurerequest.value_mask & CWBorderWidth)
+					e->xconfigurerequest.border_width =
+						ce.xconfigurerequest.border_width;
+				if (ce.xconfigurerequest.value_mask & CWStackMode)
+					e->xconfigurerequest.detail = ce.xconfigurerequest.detail;
+			}
 
-        /* if we are iconic (or shaded (fvwm does this)) ignore the event */
-        if ([client iconic] || [client shaded]) return;
+			/* if we are iconic (or shaded (fvwm does this)) ignore the event */
+			if ([client iconic] || [client shaded]) 
+				return;
 
-        /* resize, then move, as specified in the EWMH section 7.7 */
-        if (e->xconfigurerequest.value_mask & (CWWidth | CWHeight |
-                                               CWX | CWY |
-                                               CWBorderWidth)) {
-            int x, y, w, h;
-            ObCorner corner;
+			/* resize, then move, as specified in the EWMH section 7.7 */
+			if (e->xconfigurerequest.value_mask & (CWWidth | CWHeight |
+			                                       CWX | CWY |
+			                                       CWBorderWidth)) 
+			{
+				int x, y, w, h;
+				ObCorner corner;
 
-            if (e->xconfigurerequest.value_mask & CWBorderWidth)
-                [client set_border_width: e->xconfigurerequest.border_width];
+				if (e->xconfigurerequest.value_mask & CWBorderWidth)
+					[client set_border_width: e->xconfigurerequest.border_width];
 
-            x = (e->xconfigurerequest.value_mask & CWX) ?
-                e->xconfigurerequest.x : [client area].x;
-            y = (e->xconfigurerequest.value_mask & CWY) ?
-                e->xconfigurerequest.y : [client area].y;
-            w = (e->xconfigurerequest.value_mask & CWWidth) ?
-                e->xconfigurerequest.width : [client area].width;
-            h = (e->xconfigurerequest.value_mask & CWHeight) ?
-                e->xconfigurerequest.height : [client area].height;
+				x = (e->xconfigurerequest.value_mask & CWX) ?
+					e->xconfigurerequest.x : [client area].x;
+				y = (e->xconfigurerequest.value_mask & CWY) ?
+					e->xconfigurerequest.y : [client area].y;
+				w = (e->xconfigurerequest.value_mask & CWWidth) ?
+					e->xconfigurerequest.width : [client area].width;
+				h = (e->xconfigurerequest.value_mask & CWHeight) ?
+					e->xconfigurerequest.height : [client area].height;
 
             {
-                int newx = x;
-                int newy = y;
-                int fw = w +
-                     [[client frame] size].left + [[client frame] size].right;
-                int fh = h +
-                     [[client frame] size].top + [[client frame] size].bottom;
-                /* make this rude for size-only changes but not for position
-                   changes.. */
-                BOOL moving = ((e->xconfigurerequest.value_mask & CWX) ||
-                               (e->xconfigurerequest.value_mask & CWY));
+				int newx = x;
+				int newy = y;
+				int fw = w +
+					[[client frame] size].left + [[client frame] size].right;
+				int fh = h +
+					[[client frame] size].top + [[client frame] size].bottom;
+				/* make this rude for size-only changes but not for position
+				   changes.. */
+				BOOL moving = ((e->xconfigurerequest.value_mask & CWX) ||
+				               (e->xconfigurerequest.value_mask & CWY));
 
-		[client findOnScreenAtX: &newx y: &newy
-			width: fw height: fh rude: !moving];
+				[client findOnScreenAtX: &newx y: &newy
+				                  width: fw height: fh rude: !moving];
 
-                if (e->xconfigurerequest.value_mask & CWX)
-                    x = newx;
-                if (e->xconfigurerequest.value_mask & CWY)
-                    y = newy;
-            }
+				if (e->xconfigurerequest.value_mask & CWX)
+					x = newx;
+				if (e->xconfigurerequest.value_mask & CWY)
+					y = newy;
+			}
 
-            switch ([client gravity]) {
-            case NorthEastGravity:
-            case EastGravity:
-                corner = OB_CORNER_TOPRIGHT;
-                break;
-            case SouthWestGravity:
-            case SouthGravity:
-                corner = OB_CORNER_BOTTOMLEFT;
-                break;
-            case SouthEastGravity:
-                corner = OB_CORNER_BOTTOMRIGHT;
-                break;
-            default:     /* NorthWest, Static, etc */
-                corner = OB_CORNER_TOPLEFT;
-            }
+			switch ([client gravity]) 
+			{
+				case NorthEastGravity:
+				case EastGravity:
+					corner = OB_CORNER_TOPRIGHT;
+					break;
+				case SouthWestGravity:
+				case SouthGravity:
+					corner = OB_CORNER_BOTTOMLEFT;
+					break;
+				case SouthEastGravity:
+					corner = OB_CORNER_BOTTOMRIGHT;
+					break;
+				default:     /* NorthWest, Static, etc */
+					corner = OB_CORNER_TOPLEFT;
+			}
 
-	    [client configureToCorner: corner
-		    x: x y: y width: w height: h
-		    user: NO final: YES forceReply: YES];
-        }
+			[client configureToCorner: corner
+			                        x: x y: y width: w height: h
+			                      user: NO final: YES forceReply: YES];
+			}
 
-        if (e->xconfigurerequest.value_mask & CWStackMode) {
-            switch (e->xconfigurerequest.detail) {
-            case Below:
-            case BottomIf:
-                /* Apps are so rude. And this is totally disconnected from
-                   activation/focus. Bleh. */
-		// GNUstep need this because it has NSWindowAbove, Below, Out
-		[client lower];
-                break;
+			if (e->xconfigurerequest.value_mask & CWStackMode) 
+			{
+				switch (e->xconfigurerequest.detail) 
+				{
+					case Below:
+					case BottomIf:
+						/* Apps are so rude. And this is totally disconnected from
+						   activation/focus. Bleh. */
+						// GNUstep need this because it has NSWindowAbove, Below, Out
+						[client lower];
+						break;
+					case Above:
+					case TopIf:
+					default:
+						/* Apps are so rude. And this is totally disconnected from
+						   activation/focus. Bleh. */
+						// GNUstep need this because it has NSWindowAbove, Below, Out
+						[client raise];
+						break;
+				}
+			}
+			break;
+		case UnmapNotify:
+			if ([client ignore_unmaps]) 
+			{
+				[client set_ignore_unmaps: [client ignore_unmaps]-1];
+				break;
+			}
+			[[AZClientManager defaultManager] unmanageClient: client];
+			break;
+		case DestroyNotify:
+			[[AZClientManager defaultManager] unmanageClient: client];
+			break;
+		case ReparentNotify:
+			/* this is when the client is first taken captive in the frame */
+			if (e->xreparent.parent == [[client frame] plate]) break;
 
-            case Above:
-            case TopIf:
-            default:
-                /* Apps are so rude. And this is totally disconnected from
-                   activation/focus. Bleh. */
-		// GNUstep need this because it has NSWindowAbove, Below, Out
-		[client raise];
-                break;
-            }
-        }
-        break;
-    case UnmapNotify:
-        if ([client ignore_unmaps]) {
-            [client set_ignore_unmaps: [client ignore_unmaps]-1];
-            break;
-        }
-        [[AZClientManager defaultManager] unmanageClient: client];
-        break;
-    case DestroyNotify:
-        [[AZClientManager defaultManager] unmanageClient: client];
-        break;
-    case ReparentNotify:
-        /* this is when the client is first taken captive in the frame */
-        if (e->xreparent.parent == [[client frame] plate]) break;
+			/*
+			This event is quite rare and is usually handled in unmapHandler.
+			However, if the window is unmapped when the reparent event occurs,
+			the window manager never sees it because an unmap event is not sent
+			to an already unmapped window.
+			*/
 
-        /*
-          This event is quite rare and is usually handled in unmapHandler.
-          However, if the window is unmapped when the reparent event occurs,
-          the window manager never sees it because an unmap event is not sent
-          to an already unmapped window.
-        */
-
-        /* we don't want the reparent event, put it back on the stack for the
-           X server to deal with after we unmanage the window */
-        XPutBackEvent(ob_display, e);
+			/* we don't want the reparent event, put it back on the stack for
+			   the X server to deal with after we unmanage the window */
+			XPutBackEvent(ob_display, e);
      
-	[[AZClientManager defaultManager] unmanageClient: client];
-        break;
-    case MapRequest:
-        NSDebugLLog(@"Event", @"MapRequest for 0x%lx\n", [client window]);
-        if (![client iconic]) break; /* this normally doesn't happen, but if it
+			[[AZClientManager defaultManager] unmanageClient: client];
+			break;
+		case MapRequest:
+			NSDebugLLog(@"Event", @"MapRequest for 0x%lx\n", [client window]);
+			if (![client iconic]) 
+				break; /* this normally doesn't happen, but if it
                                        does, we don't want it!
                                        it can happen now when the window is on
                                        another desktop, but we still don't
                                        want it! */
-	[client activateHere: NO user: YES];
-        break;
-    case ClientMessage:
-        /* validate cuz we query stuff off the client here */
-	if (![client validate]) break;
+			[client activateHere: NO user: YES];
+			break;
+		case ClientMessage:
+			/* validate cuz we query stuff off the client here */
+			if (![client validate]) break;
 
-        if (e->xclient.format != 32) return;
+			if (e->xclient.format != 32) return;
 
-        msgtype = e->xclient.message_type;
-        if (msgtype == prop_atoms.wm_change_state) {
-            /* compress changes into a single change */
-            while (XCheckTypedWindowEvent(ob_display, [client window],
-                                          e->type, &ce)) {
-                /* XXX: it would be nice to compress ALL messages of a
-                   type, not just messages in a row without other
-                   message types between. */
-                if (ce.xclient.message_type != msgtype) {
-                    XPutBackEvent(ob_display, &ce);
-                    break;
-                }
-                e->xclient = ce.xclient;
-            }
-	    [client setWmState: e->xclient.data.l[0]];
-        } else if (msgtype == prop_atoms.net_wm_desktop) {
-            /* compress changes into a single change */
-            while (XCheckTypedWindowEvent(ob_display, [client window],
-                                          e->type, &ce)) {
-                /* XXX: it would be nice to compress ALL messages of a
-                   type, not just messages in a row without other
-                   message types between. */
-                if (ce.xclient.message_type != msgtype) {
-                    XPutBackEvent(ob_display, &ce);
-                    break;
-                }
-                e->xclient = ce.xclient;
-            }
-            if ((unsigned)e->xclient.data.l[0] < [[AZScreen defaultScreen] numberOfDesktops] ||
-                (unsigned)e->xclient.data.l[0] == DESKTOP_ALL)
-		[client setDesktop: (unsigned)e->xclient.data.l[0]
-			             hide: NO];
-        } else if (msgtype == prop_atoms.net_wm_state) {
-            /* can't compress these */
-            NSDebugLLog(@"Event", @"net_wm_state %s %ld %ld for 0x%lx",
+			msgtype = e->xclient.message_type;
+			if (msgtype == prop_atoms.wm_change_state) 
+			{
+				/* compress changes into a single change */
+				while (XCheckTypedWindowEvent(ob_display, [client window],
+                                          e->type, &ce)) 
+				{
+					/* XXX: it would be nice to compress ALL messages of a
+					  type, not just messages in a row without other
+					  message types between. */
+					if (ce.xclient.message_type != msgtype) 
+					{
+						XPutBackEvent(ob_display, &ce);
+						break;
+					}
+					e->xclient = ce.xclient;
+				}
+				[client setWmState: e->xclient.data.l[0]];
+			}
+			else if (msgtype == prop_atoms.net_wm_desktop) 
+			{
+				/* compress changes into a single change */
+				while (XCheckTypedWindowEvent(ob_display, [client window],
+				                              e->type, &ce)) 
+				{
+					/* XXX: it would be nice to compress ALL messages of a
+					   type, not just messages in a row without other
+					   message types between. */
+					if (ce.xclient.message_type != msgtype) 
+					{
+						XPutBackEvent(ob_display, &ce);
+						break;
+					}
+					e->xclient = ce.xclient;
+				}
+				if ((unsigned)e->xclient.data.l[0] < [[AZScreen defaultScreen] numberOfDesktops] || (unsigned)e->xclient.data.l[0] == DESKTOP_ALL)
+				{
+					[client setDesktop: (unsigned)e->xclient.data.l[0]
+					              hide: NO];
+				}
+			}
+			else if (msgtype == prop_atoms.net_wm_state) 
+			{
+				/* can't compress these */
+				NSDebugLLog(@"Event", @"net_wm_state %s %ld %ld for 0x%lx",
                      (e->xclient.data.l[0] == 0 ? "Remove" :
                       e->xclient.data.l[0] == 1 ? "Add" :
                       e->xclient.data.l[0] == 2 ? "Toggle" : "INVALID"),
                      e->xclient.data.l[1], e->xclient.data.l[2],
                      [client window]);
-	    [client setState: e->xclient.data.l[0]
-		           data1: e->xclient.data.l[1]
-			   data2: e->xclient.data.l[2]];
-        } else if (msgtype == prop_atoms.net_close_window) {
-            NSDebugLLog(@"Event", 
+				[client setState: e->xclient.data.l[0]
+				           data1: e->xclient.data.l[1]
+				           data2: e->xclient.data.l[2]];
+			}
+			else if (msgtype == prop_atoms.net_close_window) 
+			{
+				NSDebugLLog(@"Event", 
 			            @"net_close_window for 0x%lx", [client window]);
-	    [client close];
-        } else if (msgtype == prop_atoms.net_active_window) {
-            /* XXX make use of data.l[2] ! */
-	    event_curtime = e->xclient.data.l[1];
-            [client activateHere: NO 
-	                    user: (e->xclient.data.l[0] == 0 ||
-                                   e->xclient.data.l[0] == 2)];
-        } else if (msgtype == prop_atoms.net_wm_moveresize) {
-            if ((Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_size_topleft ||
-                (Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_size_top ||
-                (Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_size_topright ||
-                (Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_size_right ||
-                (Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_size_right ||
-                (Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_size_bottomright ||
-                (Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_size_bottom ||
-                (Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_size_bottomleft ||
-                (Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_size_left ||
-                (Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_move ||
-                (Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_size_keyboard ||
-                (Atom)e->xclient.data.l[2] ==
-                prop_atoms.net_wm_moveresize_move_keyboard) {
+				[client close];
+			}
+			else if (msgtype == prop_atoms.net_active_window) 
+			{
+				/* XXX make use of data.l[2] ! */
+				event_curtime = e->xclient.data.l[1];
+				[client activateHere: NO 
+				                user: (e->xclient.data.l[0] == 0 ||
+				                      e->xclient.data.l[0] == 2)];
+			}
+			else if (msgtype == prop_atoms.net_wm_moveresize) 
+			{
+				if ((Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_size_topleft ||
+					(Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_size_top ||
+					(Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_size_topright ||
+					(Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_size_right ||
+					(Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_size_right ||
+					(Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_size_bottomright ||
+					(Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_size_bottom ||
+					(Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_size_bottomleft ||
+					(Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_size_left ||
+					(Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_move ||
+					(Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_size_keyboard ||
+					(Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_move_keyboard) 
+				{
+					[[AZMoveResizeHandler defaultHandler]
+						startWithClient: client
+						x: e->xclient.data.l[0]
+						y: e->xclient.data.l[1]
+						button: e->xclient.data.l[3]
+						corner: e->xclient.data.l[2]];
+				}
+				else if ((Atom)e->xclient.data.l[2] ==
+					prop_atoms.net_wm_moveresize_cancel)
+				{
+					[[AZMoveResizeHandler defaultHandler] end: YES];
+				}
+			}
+			else if (msgtype == prop_atoms.net_moveresize_window) 
+			{
+				int oldg = [client gravity];
+				int tmpg, x, y, w, h;
 
-		[[AZMoveResizeHandler defaultHandler]
-			startWithClient: client
-			x: e->xclient.data.l[0]
-			y: e->xclient.data.l[1]
-		       button: e->xclient.data.l[3]
-                       corner: e->xclient.data.l[2]];
-            }
-            else if ((Atom)e->xclient.data.l[2] ==
-                     prop_atoms.net_wm_moveresize_cancel)
-	    {
-		[[AZMoveResizeHandler defaultHandler] end: YES];
-	    }
-        } else if (msgtype == prop_atoms.net_moveresize_window) {
-            int oldg = [client gravity];
-            int tmpg, x, y, w, h;
+				if (e->xclient.data.l[0] & 0xff)
+					tmpg = e->xclient.data.l[0] & 0xff;
+				else
+					tmpg = oldg;
 
-            if (e->xclient.data.l[0] & 0xff)
-                tmpg = e->xclient.data.l[0] & 0xff;
-            else
-                tmpg = oldg;
+				if (e->xclient.data.l[0] & 1 << 8)
+					x = e->xclient.data.l[1];
+				else
+					x = [client area].x;
 
-            if (e->xclient.data.l[0] & 1 << 8)
-                x = e->xclient.data.l[1];
-            else
-                x = [client area].x;
-            if (e->xclient.data.l[0] & 1 << 9)
-                y = e->xclient.data.l[2];
-            else
-                y = [client area].y;
-            if (e->xclient.data.l[0] & 1 << 10)
-                w = e->xclient.data.l[3];
-            else
-                w = [client area].width;
-            if (e->xclient.data.l[0] & 1 << 11)
-                h = e->xclient.data.l[4];
-            else
-                h = [client area].height;
-            [client set_gravity: tmpg];
+				if (e->xclient.data.l[0] & 1 << 9)
+					y = e->xclient.data.l[2];
+				else
+					y = [client area].y;
 
-            {
-                int newx = x;
-                int newy = y;
-                int fw = w +
-                     [[client frame] size].left + [[client frame] size].right;
-                int fh = h +
-                     [[client frame] size].top + [[client frame] size].bottom;
-		[client findOnScreenAtX: &newx y: &newy
-			width: fw height: fh rude: [client normal]];
+				if (e->xclient.data.l[0] & 1 << 10)
+					w = e->xclient.data.l[3];
+				else
+					w = [client area].width;
 
-                if (e->xclient.data.l[0] & 1 << 8)
-                    x = newx;
-                if (e->xclient.data.l[0] & 1 << 9)
-                    y = newy;
-            }
+				if (e->xclient.data.l[0] & 1 << 11)
+					h = e->xclient.data.l[4];
+				else
+					h = [client area].height;
 
-	    [client configureToCorner: OB_CORNER_TOPLEFT
-		    x: x y: y width: w height: h user: NO final: YES];
+				[client set_gravity: tmpg];
+			{
+				int newx = x;
+				int newy = y;
+				int fw = w +
+					[[client frame] size].left + [[client frame] size].right;
+				int fh = h +
+					[[client frame] size].top + [[client frame] size].bottom;
+				[client findOnScreenAtX: &newx y: &newy
+				                  width: fw height: fh rude: [client normal]];
 
-            [client set_gravity: oldg];
-        }
-        break;
+				if (e->xclient.data.l[0] & 1 << 8)
+					x = newx;
+				if (e->xclient.data.l[0] & 1 << 9)
+					y = newy;
+			}
+
+				[client configureToCorner: OB_CORNER_TOPLEFT
+				        x: x y: y width: w height: h user: NO final: YES];
+
+				[client set_gravity: oldg];
+			}
+			else if (msgtype == prop_atoms.net_wm_window_shadow) 
+			{
+				[client setHasShadow: e->xclient.data.l[2]];
+			}
+			else if (msgtype == prop_atoms.net_wm_window_opacity) 
+			{
+				[client setOpacity: e->xclient.data.l[2]];
+			}
+			break;
 		case PropertyNotify:
 			/* validate cuz we query stuff off the client here */
 			if (![client validate]) break;

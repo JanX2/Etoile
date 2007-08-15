@@ -2664,6 +2664,37 @@
     [self changeWMState];
 }
 
+- (unsigned int) opacity
+{
+	return opacity;
+}
+
+- (void) setOpacity: (unsigned int) o
+{
+	/* Full opacity */
+	if (o == 0xffffff)
+		PROP_ERASE(window, net_wm_window_opacity);
+	else if (opacity != o)
+		PROP_SET32([frame window], net_wm_window_opacity, cardinal, o);
+
+	opacity = o;
+}
+
+- (BOOL) hasShadow
+{
+	return has_shadow;
+}
+
+- (void) setHasShadow: (BOOL) flag
+{
+	if (has_shadow != flag)
+	{	
+		NSLog(@"Change shadow %d", flag);
+		has_shadow = flag;
+	}
+}
+
+
 /* Accessories */
 - (AZFrame *) frame { return frame; }
 - (void) set_frame: (AZFrame *) f { ASSIGN(frame, f); }
@@ -2794,26 +2825,27 @@
 
 - (id) init
 {
-  self = [super init];
-  icons = [[NSMutableArray alloc] init];
-  transients = [[NSMutableArray alloc] init];
-  return self;
+	self = [super init];
+	icons = [[NSMutableArray alloc] init];
+	transients = [[NSMutableArray alloc] init];
+	opacity = 0xffffffff;
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(transients);
-  DESTROY(icons);
-  DESTROY(group);
-  DESTROY(frame);
-  DESTROY(title);
-  DESTROY(icon_title);
-  DESTROY(name);
-  DESTROY(class);
-  DESTROY(role);
-  DESTROY(client_machine);
-  DESTROY(sm_client_id);
-  [super dealloc];
+	DESTROY(transients);
+	DESTROY(icons);
+	DESTROY(group);
+	DESTROY(frame);
+	DESTROY(title);
+	DESTROY(icon_title);
+	DESTROY(name);
+	DESTROY(class);
+	DESTROY(role);
+	DESTROY(client_machine);
+	DESTROY(sm_client_id);
+	[super dealloc];
 }
 
 /* Only used by categories */

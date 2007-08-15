@@ -154,6 +154,9 @@ typedef struct Atoms {
     Atom net_wm_bottomright;
     Atom net_wm_bottomleft;
 
+	Atom net_wm_window_shadow;
+	Atom net_wm_window_opacity;
+
     /* Extra atoms */
     Atom kde_wm_change_state;
     Atom kde_net_wm_window_type_override;

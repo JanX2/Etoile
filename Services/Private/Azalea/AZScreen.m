@@ -123,7 +123,7 @@ static AZScreen *sharedInstance;
                window, screen_support_win);
 
     /* set the _NET_SUPPORTED_ATOMS hint */
-    num_support = 55;
+    num_support = 57;
     i = 0;
     supported = calloc(sizeof(unsigned long), num_support);
     supported[i++] = prop_atoms.net_wm_full_placement;
@@ -181,6 +181,8 @@ static AZScreen *sharedInstance;
     supported[i++] = prop_atoms.net_wm_user_time;
     supported[i++] = prop_atoms.net_frame_extents;
     supported[i++] = prop_atoms.ob_wm_state_undecorated;
+    supported[i++] = prop_atoms.net_wm_window_shadow;
+    supported[i++] = prop_atoms.net_wm_window_opacity;
     NSAssert(i == num_support, @"Out of range");
 /*
   supported[] = prop_atoms.net_wm_action_stick;

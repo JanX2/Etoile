@@ -281,6 +281,9 @@ typedef enum
     NSMutableArray *icons;
 
     unsigned int user_time;
+
+	unsigned int opacity;
+	BOOL has_shadow;
 }
 
 /*! Determines if the client should be shown or hidden currently.
@@ -728,6 +731,11 @@ typedef enum
 - (void) set_undecorated: (BOOL) undecorated;
 - (unsigned int) functions;
 - (void) set_functions: (unsigned int) functions;
+
+- (unsigned int) opacity;
+- (void) setOpacity: (unsigned int) opacity;
+- (BOOL) hasShadow;
+- (void) setHasShadow: (BOOL) flag;
 
 - (BOOL) isGNUstepDocumentEdited;
 
