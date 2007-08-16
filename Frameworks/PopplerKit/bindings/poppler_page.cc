@@ -33,7 +33,8 @@ void* poppler_page_create(void* poppler_document, unsigned pageIndex)
       return NULL;
    }
    
-   if ((pageIndex <= 0) || (pageIndex > PDF_DOC(poppler_document)->getNumPages()))
+   if ((pageIndex <= 0) || 
+       ((int)pageIndex > PDF_DOC(poppler_document)->getNumPages()))
    {
       return NULL;
    }
@@ -69,8 +70,7 @@ double poppler_page_get_width(void* poppler_page)
 
 #ifdef POPPLER_0_4
    return PAGE(poppler_page)->getWidth();
-#endif
-#ifdef POPPLER_0_5
+#else
    return PAGE(poppler_page)->getMediaWidth();
 #endif
 
@@ -85,9 +85,7 @@ double poppler_page_get_height(void* poppler_page)
    
 #ifdef POPPLER_0_4
    return PAGE(poppler_page)->getHeight();
-#endif
-#ifdef POPPLER_0_5
+#else
    return PAGE(poppler_page)->getMediaHeight();
 #endif
-
 }

@@ -110,7 +110,7 @@ int poppler_init(const unsigned char* fcConfigPath,
       }
       
       // tell fontconfig about application fonts
-      for (int i = 0; i < nappFonts; i++)
+      for (unsigned int i = 0; i < nappFonts; i++)
       {
          if (FcConfigAppFontAddFile(FcConfigGetCurrent(), appFonts[i]))
          {
@@ -118,12 +118,16 @@ int poppler_init(const unsigned char* fcConfigPath,
          }
          else
          {
-            fprintf(stderr, "failed to register application font %s\n");
+            fprintf(stderr, "failed to register application font %s\n", appFonts[i]);
          }
          fflush(stderr);
       }
 
+#ifdef POPPLER_0_6
+      globalParams = new GlobalParams();
+#else
       globalParams = new GlobalParams(NULL);
+#endif
 #ifdef POPPLER_0_4
       globalParams->setupBaseFontsFc(NULL);
 #endif

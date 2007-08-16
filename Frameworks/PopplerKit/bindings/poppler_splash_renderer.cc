@@ -38,8 +38,7 @@ void* poppler_splash_device_create(int bg_red, int bg_green, int bg_blue)
 #ifdef POPPLER_0_4
       white.rgb8 = splashMakeRGB8(bg_red, bg_green, bg_blue);
       void* splashDevice = new SplashOutputDev(splashModeRGB8, gFalse, white);
-#endif
-#ifdef POPPLER_0_5
+#else // 0.5, 0.6
       white[0] = bg_red;
       white[1] = bg_green;
       white[2] = bg_blue;
@@ -86,13 +85,17 @@ int poppler_splash_device_display_slice(void* output_dev, void* poppler_page,
    SYNCHRONIZED(PAGE(poppler_page)->displaySlice(SPLASH_DEV(output_dev),
                                                  (double)hDPI, (double)vDPI,
                                                  rotate,
-#ifdef POPPLER_0_5
+#ifndef POPPLER_0_4 // 0.5, 0.6
 						 gTrue, // useMediaBox
 #endif
                                                  gTrue, // Crop
                                                  (int)sliceX, (int)sliceY,
                                                  (int)sliceW, (int)sliceH,
+#ifdef POPPLER_0_6
+												 gFalse, // printing
+#else
                                                  NULL, // Links
+#endif
                                                  PDF_DOC(poppler_document)->getCatalog()));
 
    return 1;
@@ -123,16 +126,14 @@ int poppler_splash_device_get_rgb(void* bitmap, unsigned char** data)
 
 #ifdef POPPLER_0_4
    SplashRGB8*     rgb8;
-#endif
-#ifdef POPPLER_0_5
+#else // 0.5, 0.6
    SplashColorPtr  color;
 #endif
    unsigned char*  dataPtr;
 
 #ifdef POPPLER_0_4
    rgb8 = SPLASH_BITMAP(bitmap)->getDataPtr().rgb8;
-#endif
-#ifdef POPPLER_0_5
+#else // 0.5, 0.6
    color = SPLASH_BITMAP(bitmap)->getDataPtr();
 #endif
 
@@ -146,8 +147,7 @@ int poppler_splash_device_get_rgb(void* bitmap, unsigned char** data)
          *dataPtr++ = splashRGB8G(*rgb8);
          *dataPtr++ = splashRGB8B(*rgb8);
          ++rgb8;
-#endif
-#ifdef POPPLER_0_5
+#else // 0.5, 0.6
 	 *dataPtr++ = splashRGB8R(color);
 	 *dataPtr++ = splashRGB8G(color);
 	 *dataPtr++ = splashRGB8B(color);

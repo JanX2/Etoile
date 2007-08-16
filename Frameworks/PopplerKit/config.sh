@@ -60,6 +60,13 @@ if [ $? -eq 0 ]; then
   POPPLER_VERSION="POPPLER_0_5"
 fi
 
+${PKG_CONFIG} --atleast-version=0.5.9 poppler
+if [ $? -eq 0 ]; then
+  POPPLER_VERSION="POPPLER_0_6"
+fi
+
+echo $POPPLER_VERSION
+
 # include freetype, just to be sure
 ${PKG_CONFIG} --exists freetype2
 if [ $? -eq 0 ]; then
