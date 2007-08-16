@@ -5,10 +5,10 @@
 #define DOCK_SIZE 64
 
 typedef enum _AZDockType {
-  AZDockGNUstepApplication,
-  AZDockXWindowApplication,
-  AZDockWindowMakerDocklet,
-  AZDockFile
+	AZDockGNUstepApplication,
+	AZDockXWindowApplication,
+	AZDockWindowMakerDocklet,
+	AZDockFile
 } AZDockType;
 
 /* Post when this dock application terminates and should be remove from dock.
@@ -17,14 +17,15 @@ extern NSString *const AZApplicationDidTerminateNotification;
 
 @interface AZDockApp: NSObject
 {
-  AZDockType type;
-  AZDockView *view;
-  XWindow *window;
-  NSImage *icon;
-  NSMutableArray *xwindows;
+	AZDockType type;
+	AZDockView *view;
+	XWindow *window;
+	NSImage *icon;
+	NSMutableArray *xwindows;
 
-  NSString *command; /* Command to launch this application */
-  BOOL keepInDock;
+	NSString *command; /* Command to launch this application */
+	BOOL keepInDock;
+	int counter;
 }
 
 - (AZDockType) type;
@@ -54,5 +55,11 @@ extern NSString *const AZApplicationDidTerminateNotification;
 - (BOOL) acceptXWindow: (Window) win;
 /* return YES if it has win already and remove it */
 - (BOOL) removeXWindow: (Window) win;
+
+- (int) counter;
+- (void) setCounter: (int) value;
+- (void) increaseCounter;
+- (NSComparisonResult) compareCounter: (id) another;
+
 
 @end

@@ -133,7 +133,7 @@
   ASSIGN(wm_instance, instance);
   ASSIGN(wm_class, class);
   [[view menu] setTitle: wm_instance];
-  [view setToolTip: wm_instance];
+//  [view setToolTip: wm_instance];
 
 #if 0 
   /* We do not start here because AZDock may not start completely.
@@ -169,7 +169,7 @@
 #endif
   [self updateCommand: w];
   [[view menu] setTitle: wm_instance];
-  [view setToolTip: wm_instance];
+//  [view setToolTip: wm_instance];
   return self;
 }
 

@@ -64,6 +64,7 @@
 	{
 		[self setState: AZDockAppLaunching];
 	}
+	[self increaseCounter];
 }
 
 - (void) newAction: (id) sender
@@ -144,7 +145,7 @@
   if (icon)
     [view setImage: icon];
   [[view menu] setTitle: appName];
-  [view setToolTip: appName];
+//  [view setToolTip: appName];
   return self;
 }
 

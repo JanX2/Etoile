@@ -11,35 +11,36 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 /* Action from AZDockView */
 - (void) keepInDockAction: (id) sender
 {
-//  NSLog(@"Keep in dock");
-  [self setKeptInDock: YES];
+	[self setKeptInDock: YES];
+	int min = [[AZDock sharedDock] minimalCountToStayInDock];
+	if ([self counter] <= min)
+		[self setCounter: min+1];
 }
 
 - (void) removeFromDockAction: (id) sender
 {
-//  NSLog(@"remove from dock");
-  [self setKeptInDock: NO];
+	[self setKeptInDock: NO];
   
-  if ([self state] == AZDockAppNotRunning) 
-  {
-    [[AZDock sharedDock] removeDockApp: self];
-    [[AZDock sharedDock] organizeApplications];
-  }
+	if ([self state] == AZDockAppNotRunning) 
+	{
+		[[AZDock sharedDock] removeDockApp: self];
+		[[AZDock sharedDock] organizeApplications];
+	}
 }
 
 - (void) showAction: (id) sender
 {
-  NSLog(@"showAction: %@", sender);
+	NSLog(@"showAction: %@", sender);
 }
 
 - (void) newAction: (id) sender
 {
-  NSLog(@"newAction: %@", sender);
+	NSLog(@"newAction: %@", sender);
 }
 
 - (void) quitAction: (id) sender
 {
-  NSLog(@"quitAction: %@", sender);
+	NSLog(@"quitAction: %@", sender);
 }
 
 /** End of Private **/
@@ -61,111 +62,121 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 
 - (id) init
 {
-  self = [super init];
+	self = [super init];
 
-  NSRect rect = NSMakeRect(0, 0, DOCK_SIZE, DOCK_SIZE);
-  view = [[AZDockView alloc] initWithFrame: rect];
-  [view setDelegate: self];
-  window = [[XWindow alloc] initWithContentRect: rect
+	NSRect rect = NSMakeRect(0, 0, DOCK_SIZE, DOCK_SIZE);
+	view = [[AZDockView alloc] initWithFrame: rect];
+	[view setDelegate: self];
+	window = [[XWindow alloc] initWithContentRect: rect
  	                              styleMask: NSBorderlessWindowMask
 				        backing: NSBackingStoreRetained
 				          defer: NO];
-  [window setDesktop: ALL_DESKTOP];
-  [window skipTaskbarAndPager];
-  [window setAsSystemDock];
-  [window setContentView: view];
-  [window setBackgroundColor: [NSColor windowBackgroundColor]];
-  [window setLevel: NSNormalWindowLevel+1];
-  [window skipTaskbarAndPager]; // We need this because window level changed
+	[window setDesktop: ALL_DESKTOP];
+	[window skipTaskbarAndPager];
+	[window setAsSystemDock];
+	[window setContentView: view];
+	[window setBackgroundColor: [NSColor windowBackgroundColor]];
+	[window setLevel: NSNormalWindowLevel+1];
+	[window skipTaskbarAndPager]; // We need this because window level changed
 
-  xwindows = [[NSMutableArray alloc] init];
+	xwindows = [[NSMutableArray alloc] init];
 
-  keepInDock = NO;
-  [self setState: AZDockAppNotRunning];
+	keepInDock = YES;
+	[self setState: AZDockAppNotRunning];
+	counter = 0;
 
-  return self;
+	return self;
 }
 
 - (void) dealloc
 {
-  DESTROY(xwindows);
-  DESTROY(command);
-  DESTROY(view);
-  DESTROY(icon);
-  if (window) {
-    [window close];
-    DESTROY(window);
-  }
-  [super dealloc];
+	DESTROY(xwindows);
+	DESTROY(command);
+	DESTROY(view);
+	DESTROY(icon);
+	if (window) 
+	{
+		[window close];
+		DESTROY(window);
+	}
+	[super dealloc];
 }
 
 - (XWindow *) window
 {
-  return window;
+	return window;
 }
 
 - (AZDockType) type
 {
-  return type;
+	return type;
 }
 
 - (NSString *) command
 {
-  return command;
+	return command;
 }
 
 - (NSImage *) icon
 {
-  return icon;
+	return icon;
 }
 
 - (void) setIcon: (NSImage *) i
 {
-  ASSIGN(icon, i);
-  [view setImage: icon];
+	ASSIGN(icon, i);
+	[view setImage: icon];
 }
 
 - (void) setKeptInDock: (BOOL) b
 {
-  keepInDock = b;
-  id <NSMenuItem> item = nil;
-  if (keepInDock == NO)
-  {
-    /* Change menu to keep in dock */
-    item = [[view menu] itemWithTitle: _(@"Remove from dock")];
-    if (item) {
-      [item setTitle: _(@"Keep in dock")];
-      [item setAction: @selector(keepInDockAction:)];
-    } else {
-      NSLog(@"Internal Error: cannot find menu item 'Remove from dock'");
-    }
-  } 
-  else
-  {
-    /* Change menu to remove from dock */
-    item = [[view menu] itemWithTitle: _(@"Keep in dock")];
-    if (item) {
-      [item setTitle: _(@"Remove from dock")];
-      [item setAction: @selector(removeFromDockAction:)];
-    } else {
-      NSLog(@"Internal Error: cannot find menu item 'Keep in dock'");
-    }
-  }
+	keepInDock = b;
+#if 0 // NOT_USED
+	id <NSMenuItem> item = nil;
+	if (keepInDock == NO)
+	{
+		/* Change menu to keep in dock */
+		item = [[view menu] itemWithTitle: _(@"Remove from dock")];
+		if (item) 
+		{
+			[item setTitle: _(@"Keep in dock")];
+			[item setAction: @selector(keepInDockAction:)];
+		}
+		else 
+		{
+			NSLog(@"Internal Error: cannot find menu item 'Remove from dock'");
+		}
+	} 
+	else
+	{
+		/* Change menu to remove from dock */
+		item = [[view menu] itemWithTitle: _(@"Keep in dock")];
+		if (item) 
+		{
+			[item setTitle: _(@"Remove from dock")];
+			[item setAction: @selector(removeFromDockAction:)];
+		}
+		else 
+		{
+			NSLog(@"Internal Error: cannot find menu item 'Keep in dock'");
+		}
+	}
+#endif
 }
 
 - (BOOL) isKeptInDock
 {
-  return keepInDock;
+	return keepInDock;
 }
 
 - (void) setState: (AZDockAppState) b
 {
-  [view setState: b];
+	[view setState: b];
 }
 
 - (AZDockAppState) state
 {
-  return [view state];
+	return [view state];
 }
 
 /* return YES if it has win already */
@@ -195,6 +206,37 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
     }
   }
   return NO;
+}
+
+- (int) counter
+{
+	return counter;
+}
+
+- (void) setCounter: (int) value
+{
+	counter = value;
+}
+
+- (void) increaseCounter
+{
+	counter++;
+}
+
+- (NSComparisonResult) compareCounter: (id) object
+{
+	if ([object isKindOfClass: [AZDockApp class]])
+	{
+		/* Bigger counter has less index in array */
+		AZDockApp *other = (AZDockApp *) object;
+		if ([self counter] > [other counter])
+			return NSOrderedAscending;
+		else if ([self counter] < [other counter])
+			return NSOrderedDescending;
+		else
+			return NSOrderedSame;
+	}
+	return NSOrderedDescending;
 }
 
 @end

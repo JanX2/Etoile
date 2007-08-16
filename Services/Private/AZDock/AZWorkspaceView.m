@@ -1,6 +1,8 @@
 #import "AZWorkspaceView.h"
 #import <XWindowServerKit/XScreen.h>
+#ifdef USE_BOOKMARK
 #import <BookmarkKit/BookmarkKit.h>
+#endif
 
 @interface AZWorkspaceView (AZPrivate)
 - (void) updateWorkspaceMenu;
@@ -54,6 +56,7 @@
   }
 }
 
+#ifdef USE_BOOKMARK
 - (void) applicationAction: (id) sender
 {
   int index = [applicationMenu indexOfItem: sender];
@@ -97,6 +100,7 @@
     [self updateApplicationMenu];
   }
 }
+#endif
 
 /** End of private **/
 
@@ -119,11 +123,13 @@
   [self updateWorkspaceMenu];
 }
 
+#ifdef USE_BOOKMARK
 - (void) setApplicationBookmarkStore: (BKBookmarkStore *) store
 {
   appStore = store;
   [self updateApplicationMenu];
 }
+#endif
 
 - (void) drawRect: (NSRect) frame
 {
@@ -180,6 +186,7 @@
   [contextualMenu setSubmenu: workspaceMenu forItem: item];
   RELEASE(workspaceMenu);
 
+#ifdef USE_BOOKMARK
   item = [contextualMenu addItemWithTitle: _(@"Recent Applications")
 	                        action: NULL
 				keyEquivalent: NULL];
@@ -187,17 +194,20 @@
   applicationMenu = [[NSMenu alloc] initWithTitle: _(@"Recent Applications")];
   [contextualMenu setSubmenu: applicationMenu forItem: item];
   RELEASE(applicationMenu);
+#endif
 
   [contextualMenu addItemWithTitle: _(@"Quit")
                             action: @selector(terminate:)
                      keyEquivalent: NULL];
 
+#ifdef USE_BOOKMARK
   /* Listen to recent applications change */
   [[NSNotificationCenter defaultCenter]
 	  addObserver: self
 	  selector: @selector(bookmarkChanged:)
 	  name: CKCollectionChangedNotification
 	  object: nil];
+#endif
 
   return self;
 }

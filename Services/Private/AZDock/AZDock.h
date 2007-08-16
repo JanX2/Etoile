@@ -5,7 +5,9 @@
 
 @class XWindow;
 @class AZWorkspaceView;
+#ifdef USE_BOOKMARK
 @class BKBookmarkStore;
+#endif
 
 @interface AZDock: NSObject
 {
@@ -24,8 +26,11 @@
 	BOOL isHidden;
 	BOOL autoHidden;
 	NSRect dockFrame;
+	int maxApps;
 
+#ifdef USE_BOOKMARK
 	BKBookmarkStore *store;
+#endif
 	NSWorkspace *workspace;
 
 	Atom X_NET_CURRENT_DESKTOP;
@@ -38,9 +43,12 @@
 
 + (AZDock *) sharedDock;
 
+#ifdef USE_BOOKMARK
 - (void) addBookmark: (AZDockApp *) app;
+#endif
 - (void) organizeApplications;
 - (void) removeDockApp: (AZDockApp *) app;
+- (int) minimalCountToStayInDock;
 
 @end
 

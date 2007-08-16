@@ -30,9 +30,7 @@ ADDITIONAL_LIB_DIRS += \
 ADDITIONAL_GUI_LIBS += \
 	-lX11 \
 	-lXWindowServerKit \
-	-lIconKit \
-	-lBookmarkKit \
-	-lCollectionKit
+	-lIconKit
 
 ifeq ($(etoile), yes)
 	ADDITIONAL_GUI_LIBS += -lWorkspaceCommKit 

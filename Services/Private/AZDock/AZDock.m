@@ -10,10 +10,12 @@
 
 static NSString *AZUserDefaultDockType = @"Type";
 static NSString *AZUserDefaultDockCommand = @"Command";
+static NSString *AZUserDefaultDockCounter = @"Counter";
 static NSString *AZUserDefaultDockWMInstance = @"WMInstance"; // For xwindow
 static NSString *AZUserDefaultDockWMClass = @"WMClass"; // For xwindow
 static NSString *AZUserDefaultDockedApp = @"DockedApplications";
 static NSString *AZUserDefaultDockAutoHidden = @"AutoHidden";
+static NSString *AZUserDefaultDockMaxApps = @"MaxApps";
 
 static AZDock *sharedInstance;
 
@@ -23,22 +25,24 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
  - (void) processEvent: (XEvent *) event; 	 
 @end
 
+#ifdef USE_BOOKMARK
 @interface BKBookmark (AZDockSorting)
 @end
 
 @implementation BKBookmark (AZDockSorting)
 - (NSComparisonResult) isLaterThan: (BKBookmark *) other
 {
-  NSDate *thisDate = [self lastVisitedDate];
-  NSDate *thatDate = [other lastVisitedDate];
-  if ([thisDate timeIntervalSinceDate: thatDate] > 0)
-    return NSOrderedAscending;
-  else if ([thisDate timeIntervalSinceDate: thatDate] < 0)
-    return NSOrderedDescending;
-  else
-    return NSOrderedSame;
+	NSDate *thisDate = [self lastVisitedDate];
+	NSDate *thatDate = [other lastVisitedDate];
+	if ([thisDate timeIntervalSinceDate: thatDate] > 0)
+		return NSOrderedAscending;
+	else if ([thisDate timeIntervalSinceDate: thatDate] < 0)
+		return NSOrderedDescending;
+	else
+		return NSOrderedSame;
 }	
 @end
+#endif
 
 @implementation AZDock
 
@@ -93,54 +97,60 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
 
 - (void) checkAlive: (id) sender
 {
-  //NSLog(@"checkAlive %@", sender);
-  if ([[sender userInfo] isKindOfClass: [AZGNUstepApp class]])
-  {
-    /* Connect to application */
-    AZGNUstepApp *app = (AZGNUstepApp *)[sender userInfo];
-    if ([self isGNUstepAppAlive: [app applicationName]]) {
-    } else {
-      [app setState: AZDockAppNotRunning];
-      if ([app isKeptInDock] == YES) {
-        return;
-      }
-      [[app window] orderOut: self];
-      [apps removeObject: app];
-    }
-  } 
+	//NSLog(@"checkAlive %@", sender);
+	if ([[sender userInfo] isKindOfClass: [AZGNUstepApp class]])
+	{
+		/* Connect to application */
+		AZGNUstepApp *app = (AZGNUstepApp *)[sender userInfo];
+		if ([self isGNUstepAppAlive: [app applicationName]]) 
+		{
+		}
+		else 
+		{
+			[app setState: AZDockAppNotRunning];
+			if ([app isKeptInDock] == YES) 
+			{
+				return;
+			}
+			[[app window] orderOut: self];
+			[apps removeObject: app];
+		}
+	} 
 }
 
 - (AZGNUstepApp *) addGNUstepAppNamed: (NSString *) name 
 {
-  if ([blacklist containsObject: name])
-    return nil;
+	if ([blacklist containsObject: name])
+		return nil;
 
-  /* Check existence of GNUstep application */
-  AZGNUstepApp *app = nil;
-  int i, count = [apps count];
-  for (i = 0; i < count; i++) 
-  {
-    app = [apps objectAtIndex: i];
-    if ([app type] == AZDockGNUstepApplication)
-    {
-      if ([[app applicationName] isEqualToString: name])
-      {
-        /* Application exists in dock. */
-        return app;
-      }
-    }
-  }
+	/* Check existence of GNUstep application */
+	AZGNUstepApp *app = nil;
+	int i, count = [apps count];
+	for (i = 0; i < count; i++) 
+	{
+		app = [apps objectAtIndex: i];
+		if ([app type] == AZDockGNUstepApplication)
+		{
+			if ([[app applicationName] isEqualToString: name])
+			{
+				/* Application exists in dock. */
+				return app;
+			}
+		}
+	}
 
-  /* New GNUstep application */
-  app = [[AZGNUstepApp alloc] initWithApplicationName: name];
-  [app setState: AZDockAppNotRunning]; 
-  [apps addObject: app];
-  [self addBookmark: app];
-  [self reserveSpaceForWindow: [app window]];
-  [[app window] orderFront: self];
-  return AUTORELEASE(app);
-  /* Do not organize applications here 
-     because it will be called multiple times from other method. */
+	/* New GNUstep application */
+	app = [[AZGNUstepApp alloc] initWithApplicationName: name];
+	[app setState: AZDockAppNotRunning]; 
+	[apps addObject: app];
+#ifdef USE_BOOKMARK
+	[self addBookmark: app];
+#endif
+	[self reserveSpaceForWindow: [app window]];
+	[[app window] orderFront: self];
+	return AUTORELEASE(app);
+	/* Do not organize applications here 
+	   because it will be called multiple times from other method. */
 }
 
 - (void) removeGNUstepAppNamed: (NSString *) name
@@ -191,7 +201,9 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
   AZXWindowApp *app = [[AZXWindowApp alloc] initWithCommand: cmd 
                                             instance: instance class: class];
   [apps addObject: app];
+#ifdef USE_BOOKMARK
   [self addBookmark: app];
+#endif
   [self reserveSpaceForWindow: [app window]];
   [[app window] orderFront: self];
   return AUTORELEASE(app);
@@ -199,72 +211,77 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
 
 - (void) addXWindowWithID: (int) wid
 {
-  /* Avoid transcient window */
-  {
-    Window tr = None;
-    if (XGetTransientForHint(dpy, wid, &tr)) 
-    {
-      return;
-    }
-  }
+	/* Avoid transcient window */
+	{
+		Window tr = None;
+		if (XGetTransientForHint(dpy, wid, &tr)) 
+		{
+			return;
+		}
+	}
 
-  /* We check GNUstep application early because main menu
-     and app icon has SKIP_PAGER and SKIP_TASKBAR hints. */
-  NSString *wm_class, *wm_instance;
-  BOOL result = XWindowClassHint(wid, &wm_class, &wm_instance);
-  if (result) 
-  {
-    /* Avoid anything in blacklist */
-    if ([blacklist containsObject: wm_instance] == YES) {
-      return;
-    }
+	/* We check GNUstep application early because main menu
+	   and app icon has SKIP_PAGER and SKIP_TASKBAR hints. */
+	NSString *wm_class, *wm_instance;
+	BOOL result = XWindowClassHint(wid, &wm_class, &wm_instance);
+	if (result) 
+	{
+		/* Avoid anything in blacklist */
+		if ([blacklist containsObject: wm_instance] == YES) 
+		{
+			return;
+		}
 
-    if ([wm_class isEqualToString: @"GNUstep"]) {
-      /* We let GNUstep app to hanel it */
-      [self addGNUstepAppWithXWindowID: wid instance: wm_instance];
-      return;
-    }
-  }
+		if ([wm_class isEqualToString: @"GNUstep"]) 
+		{
+			/* We let GNUstep app to hanel it */
+			[self addGNUstepAppWithXWindowID: wid instance: wm_instance];
+			return;
+		}
+	}
 
-  /* Avoid _NET_WM_STATE_SKIP_PAGER and _NET_WM_STATE_SKIP_TASKBAR */
-  if (wid) 
-  {
-    unsigned long k, kcount;
-    Atom *states = XWindowNetStates(wid, &kcount);
-    for (k = 0; k < kcount; k++) 
-    {
-      if ((states[k] == X_NET_WM_STATE_SKIP_PAGER) ||
-          (states[k] == X_NET_WM_STATE_SKIP_TASKBAR)) 
-      {
-        return;
-      }
-    }
-  }
+	/* Avoid _NET_WM_STATE_SKIP_PAGER and _NET_WM_STATE_SKIP_TASKBAR */
+	if (wid) 
+	{
+		unsigned long k, kcount;
+		Atom *states = XWindowNetStates(wid, &kcount);
+		for (k = 0; k < kcount; k++) 
+		{
+			if ((states[k] == X_NET_WM_STATE_SKIP_PAGER) ||
+				(states[k] == X_NET_WM_STATE_SKIP_TASKBAR)) 
+			{
+				return;
+			}
+		}
+	}
 
-  /* Go through all apps to see which one want to accept it */
-  AZXWindowApp *app = nil;
-  int j;
-  for (j = 0; j < [apps count]; j++)
-  {
-    app = [apps objectAtIndex: j];
-    if ([app type] == AZDockXWindowApplication) 
-    {
-      if ([(AZXWindowApp *)app acceptXWindow: wid]) 
-      {
-        [app setState: AZDockAppRunning];
-        return;
-      }
-    }
-  }
+	/* Go through all apps to see which one want to accept it */
+	AZXWindowApp *app = nil;
+	int j;
+	for (j = 0; j < [apps count]; j++)
+	{
+		app = [apps objectAtIndex: j];
+		if ([app type] == AZDockXWindowApplication) 
+		{
+			if ([(AZXWindowApp *)app acceptXWindow: wid]) 
+			{
+				[app setState: AZDockAppRunning];
+				[app increaseCounter];
+				return;
+			}
+		}
+	}
    
-  /* No one takes it. Create new dock apps */
-  app = [[AZXWindowApp alloc] initWithXWindow: wid];
-  [app setState: AZDockAppRunning];
-  [apps addObject: app];
+	/* No one takes it. Create new dock apps */
+	app = [[AZXWindowApp alloc] initWithXWindow: wid];
+	[app setState: AZDockAppRunning];
+	[apps addObject: app];
+#ifdef USE_BOOKMARK
   [self addBookmark: app];
-  [self reserveSpaceForWindow: [app window]];
-  [[app window] orderFront: self];
-  DESTROY(app);
+#endif
+	[self reserveSpaceForWindow: [app window]];
+	[[app window] orderFront: self];
+	DESTROY(app);
 }
 
 - (void) removeXWindowWithID: (int) wid 
@@ -307,7 +324,9 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
   AZDockletApp *app = [[AZDockletApp alloc] initWithCommand: cmd 
                                             instance: instance class: class];
   [apps addObject: app];
+#ifdef USE_BOOKMARK
   [self addBookmark: app];
+#endif
   [self reserveSpaceForWindow: [app window]];
   [[app window] orderFront: self];
   return AUTORELEASE(app);
@@ -337,7 +356,9 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
   app = [[AZDockletApp alloc] initWithXWindow: wid];
   [app setState: AZDockAppRunning];
   [apps addObject: app];
+#ifdef USE_BOOKMARK
   [self addBookmark: app];
+#endif
   [self reserveSpaceForWindow: [app window]];
   [[app window] orderFront: self];
   DESTROY(app);
@@ -387,6 +408,7 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
   [self organizeApplications];
 }
 
+#ifdef USE_BOOKMARK
 - (void) addBookmark: (AZDockApp *) app
 {
   /* Add application into bookmark.
@@ -430,8 +452,29 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
     [store save];
   }
 }
+#endif
 
 /** End of private */
+- (int) minimalCountToStayInDock
+{
+	/* Return the counter of last object */
+	int ctr, index, count = [apps count];
+	if (count > 0)
+	{
+		if (maxApps < count)
+		{
+			index = maxApps -1;
+		}
+		else
+		{
+			index = count-1;
+		}
+		ctr = [[apps objectAtIndex: index] counter];
+		return ctr;
+	}
+	return 0;
+}
+
 - (void) removeDockApp: (AZDockApp *) app
 {
   if ([app isKeptInDock] == YES) 
@@ -672,312 +715,348 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
 
 - (void) applicationWillFinishLaunching: (NSNotification *) not
 {
-  isHidden = NO;
-  dockFrame = NSZeroRect;
+	isHidden = NO;
+	dockFrame = NSZeroRect;
 
-  apps = [[NSMutableArray alloc] init];
-  blacklist = [[NSMutableArray alloc] init];
+	apps = [[NSMutableArray alloc] init];
+	blacklist = [[NSMutableArray alloc] init];
 
-  server = GSCurrentServer();
-  dpy = (Display *)[server serverDevice];
-  screen = [[NSScreen mainScreen] screenNumber];
-  root_win = RootWindow(dpy, screen);
-  workspace = [NSWorkspace sharedWorkspace];
+	server = GSCurrentServer();
+	dpy = (Display *)[server serverDevice];
+	screen = [[NSScreen mainScreen] screenNumber];
+	root_win = RootWindow(dpy, screen);
+	workspace = [NSWorkspace sharedWorkspace];
 
-  /* Hard-coded blacklist for now */
-  [blacklist addObject: @"EtoileMenuServer"];
-  [blacklist addObject: @"AZDock"];
-  [blacklist addObject: @"Azalea"];
-  [blacklist addObject: @"AZBackground"];
-  [blacklist addObject: @"etoile_system"];
-  [blacklist addObject: @"TrashCan"];
-  [blacklist addObject: @"AZSwitch"];
-  [blacklist addObject: @"Corner"];
-  [blacklist addObject: @"Idle"];
+	/* Hard-coded blacklist for now */
+	[blacklist addObject: @"EtoileMenuServer"];
+	[blacklist addObject: @"AZDock"];
+	[blacklist addObject: @"Azalea"];
+	[blacklist addObject: @"AZBackground"];
+	[blacklist addObject: @"etoile_system"];
+	[blacklist addObject: @"TrashCan"];
+	[blacklist addObject: @"AZSwitch"];
+	[blacklist addObject: @"Corner"];
+	[blacklist addObject: @"Idle"];
 
-  /* Listen event */
-  NSRunLoop     *loop = [NSRunLoop currentRunLoop];
-  int xEventQueueFd = XConnectionNumber(dpy);
+	/* Listen event */
+	NSRunLoop     *loop = [NSRunLoop currentRunLoop];
+	int xEventQueueFd = XConnectionNumber(dpy);
 
-  [loop addEvent: (void*)(gsaddr)xEventQueueFd
+	[loop addEvent: (void*)(gsaddr)xEventQueueFd
                         type: ET_RDESC
                      watcher: (id<RunLoopEvents>)self
                      forMode: NSDefaultRunLoopMode];
 
-  /* Listen to window closing and opening */
-  XSelectInput(dpy, root_win, PropertyChangeMask|StructureNotifyMask|SubstructureNotifyMask);
+	/* Listen to window closing and opening */
+	XSelectInput(dpy, root_win, PropertyChangeMask|StructureNotifyMask|SubstructureNotifyMask);
 
+	/* Setup Atom */
+	X_NET_CURRENT_DESKTOP = XInternAtom(dpy, "_NET_CURRENT_DESKTOP", False);
+	X_NET_NUMBER_OF_DESKTOPS = XInternAtom(dpy, "_NET_NUMBER_OF_DESKTOPS", False);
+	X_NET_DESKTOP_NAMES = XInternAtom(dpy, "_NET_DESKTOP_NAMES", False);
+	X_NET_CLIENT_LIST = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
+	X_NET_WM_STATE_SKIP_PAGER = XInternAtom(dpy, "_NET_WM_STATE_SKIP_PAGER", False);
+	X_NET_WM_STATE_SKIP_TASKBAR = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);
 
-  /* Setup Atom */
-  X_NET_CURRENT_DESKTOP = XInternAtom(dpy, "_NET_CURRENT_DESKTOP", False);
-  X_NET_NUMBER_OF_DESKTOPS = XInternAtom(dpy, "_NET_NUMBER_OF_DESKTOPS", False);
-  X_NET_DESKTOP_NAMES = XInternAtom(dpy, "_NET_DESKTOP_NAMES", False);
-  X_NET_CLIENT_LIST = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
-  X_NET_WM_STATE_SKIP_PAGER = XInternAtom(dpy, "_NET_WM_STATE_SKIP_PAGER", False);
-  X_NET_WM_STATE_SKIP_TASKBAR = XInternAtom(dpy, "_NET_WM_STATE_SKIP_TASKBAR", False);
+	/* user defaults */
+	position = [[NSUserDefaults standardUserDefaults] integerForKey: AZUserDefaultDockPosition];
+	autoHidden = [[NSUserDefaults standardUserDefaults] boolForKey: AZUserDefaultDockAutoHidden];
+	if (autoHidden == YES)
+		isHidden = YES;
 
-  /* user defaults */
-  position = [[NSUserDefaults standardUserDefaults] integerForKey: AZUserDefaultDockPosition];
-  autoHidden = [[NSUserDefaults standardUserDefaults] boolForKey: AZUserDefaultDockAutoHidden];
-  if (autoHidden == YES)
-    isHidden = YES;
+	maxApps = [[NSUserDefaults standardUserDefaults] boolForKey: AZUserDefaultDockMaxApps];
+	if (maxApps == 0)
+		maxApps = 5;
 
-  /* Put up docked application */
-  NSArray *array = [[NSUserDefaults standardUserDefaults] objectForKey: AZUserDefaultDockedApp];
-  int i, count = [array count];
-  AZDockType type;
-  NSString *cmd;
-  NSDictionary *dict;
-  AZDockApp *app = nil;
-  /* Path to cached icon */
-  NSString *path = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
-  if (path)
-  {
-    path = [path stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]];
-  }
+	/* Put up docked application */
+	NSArray *array = [[NSUserDefaults standardUserDefaults] objectForKey: AZUserDefaultDockedApp];
+	int i, count = [array count];
+	AZDockType type;
+	NSString *cmd;
+	int ctr;
+	NSDictionary *dict;
+	AZDockApp *app = nil;
+	/* Path to cached icon */
+	NSString *path = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+	if (path)
+	{
+		path = [path stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]];
+	}
 
-  for (i = 0; i < count; i++) 
-  {
-    dict = [array objectAtIndex: i];
-    type = [[dict objectForKey: AZUserDefaultDockType] intValue];
-    cmd = [dict objectForKey: AZUserDefaultDockCommand];
-    if (type == AZDockGNUstepApplication)
-    {
-      app = [self addGNUstepAppNamed: cmd];
-    }
-    else if (type == AZDockXWindowApplication)
-    {
-      NSString *inst = [dict objectForKey: AZUserDefaultDockWMInstance];
-      NSString *clas = [dict objectForKey: AZUserDefaultDockWMClass];
-      app = [self addXWindowWithCommand: cmd instance: inst class: clas];
-      /* See whether we have icon cached */
-      NSFileManager *fm = [NSFileManager defaultManager];
-      if ([fm fileExistsAtPath: path])
-      {
-        NSString *p = [NSString stringWithFormat: @"%@_%@.tiff", inst, clas];
-        p = [path stringByAppendingPathComponent: p];
-        //NSLog(@"load from %@", p);
-        NSImage *image = [[NSImage alloc] initWithContentsOfFile: p];
-        if (image) {
-          [app setIcon: AUTORELEASE(image)];
-        } else {
-          NSLog(@"No image");
-        }
-      }
-    }
-    else if (type == AZDockWindowMakerDocklet)
-    {
-      NSString *inst = [dict objectForKey: AZUserDefaultDockWMInstance];
-      NSString *clas = [dict objectForKey: AZUserDefaultDockWMClass];
-      app = [self addDockletWithCommand: cmd instance: inst class: clas];
-    }
-    else
-    {
-    }
-    [app setState: AZDockAppNotRunning];
-    [app setKeptInDock: YES];
-  }
+	for (i = 0; i < count; i++) 
+	{
+		dict = [array objectAtIndex: i];
+		type = [[dict objectForKey: AZUserDefaultDockType] intValue];
+		cmd = [dict objectForKey: AZUserDefaultDockCommand];
+		ctr = [[dict objectForKey: AZUserDefaultDockCounter] intValue];
+		if (type == AZDockGNUstepApplication)
+		{
+			app = [self addGNUstepAppNamed: cmd];
+		}
+		else if (type == AZDockXWindowApplication)
+		{
+			NSString *inst = [dict objectForKey: AZUserDefaultDockWMInstance];
+			NSString *clas = [dict objectForKey: AZUserDefaultDockWMClass];
+			app = [self addXWindowWithCommand: cmd instance: inst class: clas];
+			/* See whether we have icon cached */
+			NSFileManager *fm = [NSFileManager defaultManager];
+			if ([fm fileExistsAtPath: path])
+			{
+				NSString *p = [NSString stringWithFormat: @"%@_%@.tiff", inst, clas];
+				p = [path stringByAppendingPathComponent: p];
+				//NSLog(@"load from %@", p);
+				NSImage *image = [[NSImage alloc] initWithContentsOfFile: p];
+				if (image) 
+				{
+					[app setIcon: AUTORELEASE(image)];
+				}
+				else 
+				{
+					NSLog(@"No image");
+				}
+			}
+		}
+		else if (type == AZDockWindowMakerDocklet)
+		{
+			NSString *inst = [dict objectForKey: AZUserDefaultDockWMInstance];
+			NSString *clas = [dict objectForKey: AZUserDefaultDockWMClass];
+			app = [self addDockletWithCommand: cmd instance: inst class: clas];
+		}
+		else
+		{
+		}
+		if (ctr == 0)
+		{
+			/* First time */
+			[app setCounter: (count-i)*20];
+		}
+		else
+		{
+			[app setCounter: ctr];
+		}
+		[app setState: AZDockAppNotRunning];
+		[app setKeptInDock: YES];
+	}
+	/* Sort apps */
+	[apps sortUsingSelector: @selector(compareCounter:)];
 }
 
 - (void) applicationDidFinishLaunching: (NSNotification *) not
 {
-  NSRect rect = NSMakeRect(0, 0, 64, 64);
-  iconWindow = [[XWindow alloc] initWithContentRect: rect
+	NSRect rect = NSMakeRect(0, 0, 64, 64);
+	iconWindow = [[XWindow alloc] initWithContentRect: rect
 	                              styleMask: NSBorderlessWindowMask
 				        backing: NSBackingStoreRetained
 				          defer: NO];
-  [iconWindow setDesktop: ALL_DESKTOP];
-  [iconWindow skipTaskbarAndPager];
-  [self reserveSpaceForWindow: iconWindow];
-  [iconWindow setLevel: NSNormalWindowLevel+1];
+	[iconWindow setDesktop: ALL_DESKTOP];
+	[iconWindow skipTaskbarAndPager];
+	[self reserveSpaceForWindow: iconWindow];
+	[iconWindow setLevel: NSNormalWindowLevel+1];
 
-  workspaceView = [[AZWorkspaceView alloc] initWithFrame: [[iconWindow contentView] bounds]];
-  [iconWindow setContentView: workspaceView];
-  [iconWindow orderFront: self];
+	workspaceView = [[AZWorkspaceView alloc] initWithFrame: [[iconWindow contentView] bounds]];
+	[iconWindow setContentView: workspaceView];
+	[iconWindow orderFront: self];
 
-  /* Update workspace */
-  [workspaceView setWorkspaceNames: [[iconWindow screen] namesOfWorkspaces]];
-  [workspaceView setNumberOfWorkspaces: [[iconWindow screen] numberOfWorkspaces]];
-  [workspaceView setCurrentWorkspace: [[iconWindow screen] currentWorkspace]];
+	/* Update workspace */
+	[workspaceView setWorkspaceNames: [[iconWindow screen] namesOfWorkspaces]];
+	[workspaceView setNumberOfWorkspaces: [[iconWindow screen] numberOfWorkspaces]];
+	[workspaceView setCurrentWorkspace: [[iconWindow screen] currentWorkspace]];
 
-  ASSIGN(store, [BKBookmarkStore sharedBookmarkWithDomain: BKRecentApplicationsBookmarkStore]);
-  [workspaceView setApplicationBookmarkStore: store];
+#ifdef USE_BOOKMARK
+	ASSIGN(store, [BKBookmarkStore sharedBookmarkWithDomain: BKRecentApplicationsBookmarkStore]);
+	[workspaceView setApplicationBookmarkStore: store];
+#endif
 
-  /* Build up launched GNUstep application */
-  AZDockApp *app;
-  NSArray *a = [workspace launchedApplications];
-  int i, count = [a count];
-  for (i = 0; i < count; i++)
-  {
-    NSString *name = [[a objectAtIndex: i] objectForKey: @"NSApplicationName"];
-    /* We need to check the existance of application with NSConnection
-       because NSWorkspace is not realiable */
-    if ([self isGNUstepAppAlive: name]) {
-      app = [self addGNUstepAppNamed: name];
-      [app setState: AZDockAppRunning];
-    }
-  }
+	/* Build up launched GNUstep application */
+	AZDockApp *app;
+	NSArray *a = [workspace launchedApplications];
+	int i, count = [a count];
+	for (i = 0; i < count; i++)
+	{
+		NSString *name = [[a objectAtIndex: i] objectForKey: @"NSApplicationName"];
+		/* We need to check the existance of application with NSConnection
+		   because NSWorkspace is not realiable */
+		if ([self isGNUstepAppAlive: name]) 
+		{
+			app = [self addGNUstepAppNamed: name];
+			[app setState: AZDockAppRunning];
+			[app increaseCounter];
+		}
+	}
 
-  /* Build up launched XWindow application */
-  Window *win = NULL;
-  Atom type_ret;
-  int format_ret;
-  unsigned long after_ret, ret_count;
-  int result = XGetWindowProperty(dpy, root_win, X_NET_CLIENT_LIST,
+	/* Build up launched XWindow application */
+	Window *win = NULL;
+	Atom type_ret;
+	int format_ret;
+	unsigned long after_ret, ret_count;
+	int result = XGetWindowProperty(dpy, root_win, X_NET_CLIENT_LIST,
                                   0, 0x7FFFFFFF, False, XA_WINDOW,
                                   &type_ret, &format_ret, &ret_count,
                                   &after_ret, (unsigned char **)&win);
-  if ((result == Success) && (ret_count> 0) && (win != NULL)) 
-  {
-    for (i = 0; i < ret_count; i++)
-    {
-      [self addXWindowWithID: win[i]];
-    }
-  }
+	if ((result == Success) && (ret_count> 0) && (win != NULL)) 
+	{
+		for (i = 0; i < ret_count; i++)
+		{
+			[self addXWindowWithID: win[i]];
+		}
+	}
 
-  [self organizeApplications];
+	[self organizeApplications];
 
-  /* Listen to NSWorkspace for application launch and termination. */
-  [[workspace notificationCenter]
+	/* Listen to NSWorkspace for application launch and termination. */
+	[[workspace notificationCenter]
                      addObserver: self
                      selector: @selector(gnustepAppWillLaunch:)
                      name: NSWorkspaceWillLaunchApplicationNotification
                      object: nil];
-  [[workspace notificationCenter]
+	[[workspace notificationCenter]
                      addObserver: self
                      selector: @selector(gnustepAppDidLaunch:)
                      name: NSWorkspaceDidLaunchApplicationNotification
                      object: nil];
-  [[workspace notificationCenter]
+	[[workspace notificationCenter]
                      addObserver: self
                      selector: @selector(gnustepAppDidTerminate:)
                      name: NSWorkspaceDidTerminateApplicationNotification
                      object: nil];
-  /* From Azalea */
-  [[workspace notificationCenter]
+	/* From Azalea */
+	[[workspace notificationCenter]
                      addObserver: self
                      selector: @selector(xwindowAppDidLaunch:)
                      name: @"AZXWindowDidLaunchNotification"
                      object: nil];
-  [[workspace notificationCenter]
+	[[workspace notificationCenter]
                      addObserver: self
                      selector: @selector(xwindowAppDidTerminate:)
                      name: @"AZXWindowDidTerminateNotification"
                      object: nil];
-  [[workspace notificationCenter]
+	[[workspace notificationCenter]
                      addObserver: self
                      selector: @selector(dockletAppDidLaunch:)
                      name: @"AZDockletDidLaunchNotification"
                      object: nil];
 
-  /* We start docklet here */
-  for (i = 0; i < [apps count]; i++)
-  {
-    AZDockletApp *app = [apps objectAtIndex: i];
-    if ([app type] == AZDockWindowMakerDocklet)
-    {
-      [app showAction: self];
-    }
-  }
+	/* We start docklet here */
+	for (i = 0; i < [apps count]; i++)
+	{
+		AZDockletApp *app = [apps objectAtIndex: i];
+		if ([app type] == AZDockWindowMakerDocklet)
+		{
+			[app showAction: self];
+		}
+	}
 }
 
 - (void) applicationWillTerminate: (NSNotification *) not
 {
-  [[workspace notificationCenter] removeObserver: self];
+	[[workspace notificationCenter] removeObserver: self];
 
-  /* We need to cache icon for xwindow applications.
-     Prepare the directory first */
-  NSString *path = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
-  if (path) 
-  {
-    NSFileManager *fm = [NSFileManager defaultManager];
-    BOOL isDir = NO;
-    if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
-    {
-      [fm createDirectoryAtPath: path attributes: nil];
-    }
+	/* We need to cache icon for xwindow applications.
+	   Prepare the directory first */
+	NSString *path = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+	if (path) 
+	{
+		NSFileManager *fm = [NSFileManager defaultManager];
+		BOOL isDir = NO;
+		if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
+		{
+			[fm createDirectoryAtPath: path attributes: nil];
+		}
 
-    path = [path stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]];
-    if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
-    {
-      //NSLog(@"create path %@", path);
-      if([fm createDirectoryAtPath: path attributes: nil] == NO)
-      {
-        //NSLog(@"Internal Erro: cannot create path at %@", path);
-        path = nil;
-      }
-    }
-  }
+		path = [path stringByAppendingPathComponent: [[NSProcessInfo processInfo] processName]];
+		if ([fm fileExistsAtPath: path isDirectory: &isDir] == NO)
+		{
+			//NSLog(@"create path %@", path);
+			if([fm createDirectoryAtPath: path attributes: nil] == NO)
+			{
+				//NSLog(@"Internal Erro: cannot create path at %@", path);
+				path = nil;
+			}
+		}
+	}
 
-  /* Remember the application on dock */
-  NSMutableArray *array = [[NSMutableArray alloc] init];
-  NSDictionary *dict;
-  int i, count = [apps count];
-  AZDockApp *app;
-  for (i = 0; i < count; i++) 
-  {
-    app = [apps objectAtIndex: i];
-    if ([app isKeptInDock]) 
-    {
-      if ([app type] == AZDockXWindowApplication) 
-      {
-        AZXWindowApp *xapp = (AZXWindowApp *) app;
-        dict = [NSDictionary dictionaryWithObjectsAndKeys:
-         [NSString stringWithFormat: @"%d", [app type]], AZUserDefaultDockType,
-         [xapp command], AZUserDefaultDockCommand,
-         [xapp wmInstance], AZUserDefaultDockWMInstance,
-         [xapp wmClass], AZUserDefaultDockWMClass,
-         nil];
-        /* We also need to cache the icon because we cannot get icon
-           without a window running */
-        if (path)
-        {
-          NSImage *icon = [xapp icon];
-          NSData *data = [icon TIFFRepresentation];
-          NSString *p = [NSString stringWithFormat: @"%@_%@.tiff", [xapp wmInstance], [xapp wmClass]];
-          p = [path stringByAppendingPathComponent: p];
-          //NSLog(@"Write to %@", p);
-          [data writeToFile: p atomically: YES];
-        }
-      } 
-      else if ([app type] == AZDockGNUstepApplication) 
-      {
-        dict = [NSDictionary dictionaryWithObjectsAndKeys:
-         [NSString stringWithFormat: @"%d", [app type]], AZUserDefaultDockType,
-         [(AZGNUstepApp *)app applicationName], AZUserDefaultDockCommand,
-         nil];
-      }
-      else if ([app type] == AZDockWindowMakerDocklet) 
-      {
-        AZDockletApp *xapp = (AZDockletApp *) app;
-        dict = [NSDictionary dictionaryWithObjectsAndKeys:
-         [NSString stringWithFormat: @"%d", [app type]], AZUserDefaultDockType,
-         [xapp command], AZUserDefaultDockCommand,
-         [xapp wmInstance], AZUserDefaultDockWMInstance,
-         [xapp wmClass], AZUserDefaultDockWMClass,
-         nil];
-      }
-      [array addObject: dict];
-    }
-  }
-  [[NSUserDefaults standardUserDefaults] setObject: array
+	/* Sort before save */
+	[apps sortUsingSelector: @selector(compareCounter:)];
+
+	/* Remember the application on dock */
+	NSMutableArray *array = [[NSMutableArray alloc] init];
+	NSDictionary *dict;
+	int i, count = [apps count];
+	AZDockApp *app;
+	for (i = 0; (i < count) && (i < maxApps); i++) 
+	{
+		app = [apps objectAtIndex: i];
+//		if ([app isKeptInDock]) 
+		{
+			if ([app type] == AZDockXWindowApplication) 
+			{
+				AZXWindowApp *xapp = (AZXWindowApp *) app;
+				dict = [NSDictionary dictionaryWithObjectsAndKeys:
+					[NSString stringWithFormat: @"%d", [app type]], 
+					AZUserDefaultDockType,
+					[NSString stringWithFormat: @"%d", [app counter]], 
+					AZUserDefaultDockCounter,
+					[xapp command], AZUserDefaultDockCommand,
+					[xapp wmInstance], AZUserDefaultDockWMInstance,
+					[xapp wmClass], AZUserDefaultDockWMClass,
+					nil];
+				/* We also need to cache the icon because we cannot get icon
+				   without a window running */
+				if (path)
+				{
+					NSImage *icon = [xapp icon];
+					NSData *data = [icon TIFFRepresentation];
+					NSString *p = [NSString stringWithFormat: @"%@_%@.tiff", [xapp wmInstance], [xapp wmClass]];
+					p = [path stringByAppendingPathComponent: p];
+					//NSLog(@"Write to %@", p);
+					[data writeToFile: p atomically: YES];
+				}
+			} 
+			else if ([app type] == AZDockGNUstepApplication) 
+			{
+				dict = [NSDictionary dictionaryWithObjectsAndKeys:
+					[NSString stringWithFormat: @"%d", [app type]], 
+					AZUserDefaultDockType,
+					[NSString stringWithFormat: @"%d", [app counter]], 
+					AZUserDefaultDockCounter,
+					[(AZGNUstepApp *)app applicationName], 
+					AZUserDefaultDockCommand,
+					nil];
+			}
+			else if ([app type] == AZDockWindowMakerDocklet) 
+			{
+				AZDockletApp *xapp = (AZDockletApp *) app;
+				dict = [NSDictionary dictionaryWithObjectsAndKeys:
+				[NSString stringWithFormat: @"%d", 
+					[app type]], AZUserDefaultDockType,
+					[xapp command], AZUserDefaultDockCommand,
+					[xapp wmInstance], AZUserDefaultDockWMInstance,
+					[xapp wmClass], AZUserDefaultDockWMClass,
+					nil];
+			}
+			[array addObject: dict];
+		}
+	}
+	[[NSUserDefaults standardUserDefaults] setObject: array
                                             forKey: AZUserDefaultDockedApp];
 }
 
 - (void) dealloc
 {
-  DESTROY(apps);
-  DESTROY(blacklist);
-  DESTROY(workspaceView);
-  DESTROY(store);
-  [super dealloc];
+	DESTROY(apps);
+	DESTROY(blacklist);
+	DESTROY(workspaceView);
+#ifdef USE_BOOKMARK
+	DESTROY(store);
+#endif
+	[super dealloc];
 }
 
 + (AZDock *) sharedDock
 {
-  if (sharedInstance == nil)
-    sharedInstance = [[AZDock alloc] init];
-  return sharedInstance;
+	if (sharedInstance == nil)
+		sharedInstance = [[AZDock alloc] init];
+	return sharedInstance;
 }
 
 @end
