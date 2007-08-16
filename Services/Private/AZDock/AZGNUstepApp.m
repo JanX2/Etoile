@@ -63,6 +63,18 @@
 	if ([self state] == AZDockAppNotRunning) 
 	{
 		[self setState: AZDockAppLaunching];
+
+		/* Let's give it 10 seconds to launch */
+		if (timer) 
+		{
+			[timer invalidate];  
+		}
+		DESTROY(timer);
+		ASSIGN(timer, [NSTimer scheduledTimerWithTimeInterval: 3
+                                     target: [AZDock sharedDock]
+                                   selector: @selector(checkAlive:)
+                                   userInfo: self
+                                    repeats: NO]);
 	}
 	[self increaseCounter];
 }
