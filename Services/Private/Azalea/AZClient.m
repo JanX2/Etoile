@@ -120,8 +120,10 @@
        the updated frame dimensions. */
     [frame adjustAreaWithMoved: YES resized: YES fake: YES];
 
-    /* work within the prefered sizes given by the window */
-    if (!(*w == area.width && *h == area.height)) {
+    /* work within the prefered sizes given by the window.
+	 * NOTE: this only apply to user resizing, not programminly resizing. */
+    if ((!(*w == area.width && *h == area.height)) && user)
+	{
         int basew, baseh, minw, minh;
 
         /* base size is substituted with min size if not specified */
