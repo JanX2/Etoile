@@ -56,7 +56,7 @@ NSMutableArray * messageWindowControllers = nil;
 	//Note:  The 2.0f may be cocoa-specific.
 	NSSize editingBoxSize = [editingBox frame].size;
 	NSSize editingBoxVisibleSize = [editingBoxBox frame].size;
-	NSSize messageBoxSize = [messageBoxBox frame].size;
+	NSRect messageBoxSize = [messageBoxBox frame];
 	NSRect windowSize = [[self window] frame];
 	//Hack to get around the fact that Cocoa controls seem not to shrink by more than 2 pixels at a time, but will happily grow by as many as they need to.
 	editingBoxSize.height = 1.0f;
@@ -78,7 +78,9 @@ NSMutableArray * messageWindowControllers = nil;
 //		[[[editingBox superview] setFrameSize:editingBoxSize];
 		
 		
-		[messageBoxBox setFrameSize:messageBoxSize];
+		messageBoxSize.origin.y += difference;
+		
+		[messageBoxBox setFrame:messageBoxSize];
 		
 		//Redraw the window at the new size.
 		hack = YES;
