@@ -94,7 +94,7 @@
 		  iP.y -= 1;
 		}
 	      else
-		NSLog(@"Not finished yet. Luff ya.\n");
+		NSDebugLLog(@"Theme", @"Not finished yet. Luff ya.\n");
 
 	      r.origin.x = aRect.origin.x + 13;
 	      r.origin.y = aRect.origin.y + 2;
@@ -151,7 +151,7 @@
 		    }
 		} 
 	      else
-		NSLog(@"Not finished yet. Luff ya.\n");
+		NSDebugLLog(@"Theme", @"Not finished yet. Luff ya.\n");
 	      
 	      r.origin.x = iP.x + 13;
 	      r.origin.y = aRect.origin.y + 2;
@@ -188,7 +188,7 @@
 		  //		  iP.y -= 1;
 		}
 	      else
-		NSLog(@"Not finished yet. Luff ya.\n");
+		NSDebugLLog(@"Theme", @"Not finished yet. Luff ya.\n");
 	    }
 	}
     }
@@ -224,7 +224,7 @@
 		[[NSImage imageNamed: @"common_TabUnSelectedLeft.tiff"]
 		  compositeToPoint: iP operation: NSCompositeSourceOver];
 	      else
-		NSLog(@"Not finished yet. Luff ya.\n");
+		NSDebugLLog(@"Theme", @"Not finished yet. Luff ya.\n");
 
 
 		r.origin.x = aRect.origin.x + [img size].width;
@@ -308,7 +308,7 @@
 		[[NSImage imageNamed: @"common_TabUnSelectedRight.tiff"]
 		compositeToPoint: iP operation: NSCompositeSourceOver];
 	      else
-		NSLog(@"Not finished yet. Luff ya.\n");
+		NSDebugLLog(@"Theme", @"Not finished yet. Luff ya.\n");
 	    }
 	}
     }

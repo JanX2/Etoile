@@ -42,20 +42,26 @@ static Camaelon* theme;
 		
 		if (themeFound == NO)
 		{
-		   NSLog (@"No theme %@ found in search paths: %@", themeName, paths);
-		   
-		   /* We use a default theme in resource.
-                    * We don't use main bundle because Camaelon is loaded
-                    * by other applications. */
-		   paths = [[NSBundle bundleForClass: [self class]] pathsForResourcesOfType: ThemeExtension inDirectory: nil];
-                   if ([paths count] > 0)
-                   {
-                   	path = [paths objectAtIndex: 0];
-		   	if ([fm fileExistsAtPath: path isDirectory:	&isDir])
-		   	{
+			NSDebugLLog (@"Theme", @"No theme %@ found in search paths: %@", themeName, paths);
+
+			/* We use a default theme in resource.
+		 	 * We don't use main bundle because Camaelon is loaded
+			 * by other applications. */
+			paths = [[NSBundle bundleForClass: [self class]] pathsForResourcesOfType: ThemeExtension inDirectory: nil];
+			e = [paths objectEnumerator];
+			while ((path = [e nextObject]))
+			{
+				if ([[[path lastPathComponent] stringByDeletingPathExtension] isEqualToString: themeName])
+				{
+					themeFound = YES;
+					break;
+				}
+			}
+			if ((themeFound == NO) && ([paths count] > 0))
+			{
+				path = [paths objectAtIndex: 0];
 				themeFound = YES;
 			}
-                   }
 		}
 		if (themeFound == NO)
 		{
@@ -66,7 +72,7 @@ static Camaelon* theme;
 		}
 		
 		ASSIGN (themePath, path);	
-		//NSLog (@"Found theme with path: %@", themePath);		
+		NSDebugLLog(@"Theme", @"Found theme with path: %@", themePath);		
 	}
 	
 	return themePath;
