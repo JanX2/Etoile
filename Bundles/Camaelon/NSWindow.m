@@ -16,7 +16,7 @@ static NSColor *titleColor[3];
 {
   NSImage* caps= [NSImage imageNamed: @"Window/Window-titlebar-caps.tiff"];
   if (hasTitleBar)
-    titleBarRect = NSMakeRect(0.0, _frame.size.height - [caps size].height -1,
+    titleBarRect = NSMakeRect(0.0, _frame.size.height - [caps size].height,
                               _frame.size.width, [caps size].height);
   if (hasResizeBar)
   {
@@ -68,6 +68,33 @@ static NSColor *titleColor[3];
     contentRect.origin.y -= 1;
     contentRect.size.height += 2;
     [THEME drawWindowBackground: contentRect on: self];
+    contentRect.origin.y += 1;
+    contentRect.size.height -= 2;
+
+    // -----------------------
+    // draw window borders
+    // -----------------------
+    [[NSColor windowBorderColor] set];
+
+    if (NSMinX(rect) < 1.0) {
+    	PSmoveto(0.5, 0.0);
+	PSlineto(0.5, _frame.size.height - titleBarRect.size.height);
+	PSstroke();
+    }
+    
+    if (NSMaxX(rect) > _frame.size.width - 1.0) {
+    	PSmoveto(_frame.size.width - 0.5, 0.0);
+	PSlineto(_frame.size.width - 0.5, _frame.size.height - titleBarRect.size.height);
+	PSstroke();
+    }
+    		    
+    if (!hasResizeBar && NSMinY(rect) < 1.0) {
+    	PSmoveto(0.0, 0.5);
+	PSlineto(_frame.size.width, 0.5);
+	PSstroke();
+    }
+    // ------------------------
+			    
   //  titleBarRect.origin.x -= 1;
   if (hasTitleBar && NSIntersectsRect(rect, titleBarRect))
     {
@@ -75,12 +102,11 @@ static NSColor *titleColor[3];
 	NSRectFillUsingOperation (titleBarRect, NSCompositeClear);
   titleBarRect.size.height -= 1;
 //  titleBarRect.size.height = [caps size].height;
-		NSLog (@"(1) inputState: %d", inputState);
+	//	NSLog (@"(1) inputState: %d", inputState);
       [self drawTitleBar];
     }
 
-  //if (hasResizeBar && NSIntersectsRect(rect, resizeBarRect))
-  //if (NSIntersectsRect(rect, resizeBarRect))
+  if (hasResizeBar && NSIntersectsRect(rect, resizeBarRect))
     {
       NSRectFillUsingOperation (resizeBarRect, NSCompositeClear);
       [self drawResizeBar];
@@ -140,7 +166,7 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
   */
   //[[NSColor blackColor] set];
 //[[NSColor redColor] set];
-  [[NSColor windowBackgroundColor] set];
+  //[[NSColor windowBackgroundColor] set];
 
 //  PSmoveto(0, NSMinY(titleBarRect) + 0.5);
 //  PSrlineto(titleBarRect.size.width, 0);
@@ -263,28 +289,27 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
 {
 	if (hasResizeBar)
 	{
-		NSLog (@"(2) inputState: %d", inputState);
 		if (inputState == 0)
 		{
-				NSLog (@"(2) unselected resizebar");
 				[GraphicToolbox drawButton: resizeBarRect
 					withCaps: [NSImage imageNamed: @"Window/Window-resizebar-caps-unselected.tiff"]
 					filledWith: [NSImage imageNamed: @"Window/Window-resizebar-fill-unselected.tiff"]];
 		}
 		else
 		{
-				NSLog (@"(2) selected resizebar");
 				[GraphicToolbox drawButton: resizeBarRect
 					withCaps: [NSImage imageNamed: @"Window/Window-resizebar-caps.tiff"]
 					filledWith: [NSImage imageNamed: @"Window/Window-resizebar-fill.tiff"]];
 		}
 	}
+	/* Disabled -guenther
 	else
 	{
 		[GraphicToolbox drawButton: resizeBarRect
 			withCaps: [NSImage imageNamed: @"Window/Window-resizebar-caps-unselected.tiff"]
 			filledWith: [NSImage imageNamed: @"Window/Window-resizebar-fill-unselected.tiff"]];
 	}
+	*/
 		/*
   [[NSColor lightGrayColor] set];
   [[NSColor windowBackgroundColor] set];
@@ -327,4 +352,91 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
   PSstroke();
   */
 }
+
+// Copied from GSStandardDecoratorView.m
+- (void) setInputState: (int)state
+{
+	NSAssert(state >= 0 && state <= 2, @"Invalid state!");
+	[super setInputState: state];
+	if (hasTitleBar)
+		[self setNeedsDisplayInRect: titleBarRect];
+
+	[self setNeedsDisplayInRect: contentRect];
+}
+
 @end
+
+
+
+@implementation NSWindow (NoBackgroundColor)
+
+-(NSColor*) backgroundColor {
+  int inputState = ([self isKeyWindow] ? 0 : ([self isMainWindow] ? 2 : 1));
+  
+  NSAssert( 0 <= inputState && inputState <= 2,
+	    @"inputState not between 0 and 3" );
+  
+  static NSColor** windowBackgrounds = NULL;
+  if (windowBackgrounds == NULL) {
+    windowBackgrounds = malloc(3*sizeof(NSColor*));
+    windowBackgrounds[0] = [GraphicToolbox readColorFromImage:
+					     [NSImage imageNamed: @"Colors/Colors-window-background-key.tiff"]];
+    windowBackgrounds[1] = [GraphicToolbox readColorFromImage:
+					     [NSImage imageNamed: @"Colors/Colors-window-background.tiff"]];
+    windowBackgrounds[2] = [GraphicToolbox readColorFromImage:
+					     [NSImage imageNamed: @"Colors/Colors-window-background-main.tiff"]];
+    int i;
+    for (i=0; i<3; i++) {
+      if (windowBackgrounds[i] == nil) {
+	windowBackgrounds[i] = [NSColor windowBackgroundColor];
+      }
+      [windowBackgrounds[i] retain];
+    }
+  }
+  
+  return windowBackgrounds[inputState];
+}
+
+
+-(NSColor*) toolbarColor {
+  int inputState = ([self isKeyWindow] ? 0 : ([self isMainWindow] ? 2 : 1));
+  
+  NSAssert( 0 <= inputState && inputState <= 2,
+	    @"inputState not between 0 and 3" );
+  
+  static NSColor** toolbarColors = NULL;
+  if (toolbarColors == NULL) {
+    toolbarColors = malloc(3*sizeof(NSColor*));
+    toolbarColors[0] = [GraphicToolbox readColorFromImage:
+					     [NSImage imageNamed: @"Colors/Colors-toolbar-key.tiff"]];
+    toolbarColors[1] = [GraphicToolbox readColorFromImage:
+					     [NSImage imageNamed: @"Colors/Colors-toolbar.tiff"]];
+    toolbarColors[2] = [GraphicToolbox readColorFromImage:
+					     [NSImage imageNamed: @"Colors/Colors-toolbar-main.tiff"]];
+    int i;
+    for (i=0; i<3; i++) {
+      if (toolbarColors[i] == nil) {
+	toolbarColors[i] = [NSColor windowBorderColor];
+      }
+      [toolbarColors[i] retain];
+    }
+  }
+  
+  return toolbarColors[inputState];
+}
+
+/*
+-(NSImage*) toolbarFillImage {
+  if ([self isMainWindow]) {
+  	return [NSImage imageNamed: @"Window/Toolbar-main.tiff"];
+  } else if ([self isKeyWindow]) {
+  	return [NSImage imageNamed: @"Window/Toolbar-key.tiff"];
+  } else {
+  	return [NSImage imageNamed: @"Window/Toolbar-normal.tiff"];
+  }
+}
+*/
+
+@end
+
+

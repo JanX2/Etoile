@@ -1,3 +1,11 @@
+2007-08-19  Guenther Noack <guenther@unix-ag.uni-kl.de>
+
+	* GSToolbar.[mh]: Toolbar themeability support (color gradients)
+	* NSColor.[mh]: Added a couple of colors
+	* NSWindow.[mh]: Very minor code cleanups, overwriting -[NSWindow
+	  backgroundColor] and a method in the window decoration view,
+	  which is unfortunately a small hack. :(
+	
 2007-05-02  Yen-Ju Chen <yjchen gmail>
 	
 	* Reduce number of warning. Hope not break anything.

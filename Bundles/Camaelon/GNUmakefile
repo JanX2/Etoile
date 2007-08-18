@@ -36,7 +36,7 @@ Camaelon_OBJC_FILES += \
 		NSBezierPath+round.m \
 		NSColor.m \
 		NSTabViewItem.m \
-		#NSWindow.m
+		NSWindow.m
 
 #
 # View class files
@@ -50,7 +50,8 @@ Camaelon_OBJC_FILES += \
 		NSTabView.m \
 		NSTableView.m \
 		NSTableHeaderView.m \
-		GSTableCornerView.m 
+		GSTableCornerView.m \
+	        GSToolbar.m	
 #		GSWindowDecoratorView.m \
 		#NSView.m 
 

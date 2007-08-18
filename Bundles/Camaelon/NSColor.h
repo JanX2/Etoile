@@ -15,4 +15,6 @@
 + (NSColor*) selectedTextBackgroundColor;
 + (NSColor*) windowBackgroundColor;
 + (NSColor*) controlBackgroundColor;
+
++ (NSColor*) windowBorderColor;
 @end

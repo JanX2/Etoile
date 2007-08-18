@@ -211,4 +211,21 @@ static NSColor* controlBackgroundColor;
 	return controlBackgroundColor;
 }
 
+
+static NSColor* windowBorderColor;
+
++ (NSColor*) windowBorderColor 
+{
+	if (windowBorderColor == nil)
+	{
+		windowBorderColor = [GraphicToolbox readColorFromImage:
+		[NSImage imageNamed: @"Colors/Colors-window-border.tiff"]];
+		if (windowBorderColor == nil) {
+			windowBorderColor = [NSColor blackColor];
+		}
+		[windowBorderColor retain];
+	}
+	return windowBorderColor;
+}
+
 @end

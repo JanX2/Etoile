@@ -1,4 +1,6 @@
 #include "GSDrawFunctions.h"
+#include "GSWindowDecorationView.h"
+
 
 @implementation GSTheme (theme)
 
@@ -677,9 +679,10 @@ static CLCompositor* cl_progressIndicatorBackground;
 
 - (void) drawWindowBackground: (NSRect) rect on: (id) window
 {
-	[[NSColor windowBackgroundColor] set];
+	[[[(NSView*) window window] backgroundColor] set];
 	NSRectFill (rect);
 }
+
 
 - (void) drawPopupButton: (NSRect) border inView: (NSView*) view 
 {
