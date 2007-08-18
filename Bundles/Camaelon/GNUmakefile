@@ -85,7 +85,9 @@ Camaelon_OBJC_FILES += \
 		NSTextFieldCell.m
 
 Camaelon_RESOURCE_FILES += \
-		Nesedah.theme	
+		Nesedah.theme \
+		Narcissus.theme
+
 
 -include GNUmakefile.preamble
 

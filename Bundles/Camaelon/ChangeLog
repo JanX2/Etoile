@@ -1,5 +1,9 @@
 2007-08-19  Guenther Noack <guenther@unix-ag.uni-kl.de>
 
+	* Narcissus.theme: Added.
+
+2007-08-19  Guenther Noack <guenther@unix-ag.uni-kl.de>
+
 	* GSToolbar.[mh]: Toolbar themeability support (color gradients)
 	* NSColor.[mh]: Added a couple of colors
 	* NSWindow.[mh]: Very minor code cleanups, overwriting -[NSWindow
