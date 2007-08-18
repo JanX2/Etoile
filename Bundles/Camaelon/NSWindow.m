@@ -360,13 +360,27 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
 	[super setInputState: state];
 	if (hasTitleBar)
 		[self setNeedsDisplayInRect: titleBarRect];
-
+#if 0 // Called in super already
 	[self setNeedsDisplayInRect: contentRect];
+#endif
 }
 
 @end
 
+@implementation  GSWindowDecorationView (theme)
+// Copy from GSWindowDecorationView
+- (void) setInputState: (int)state
+{
+	/* Start of original code from GSWindowDecorationView */
+	inputState = state;
+	if (windowNumber)
+		[GSServerForWindow(window) setinputstate: inputState : windowNumber];
+	/* End of original code from GSWindowDecorationView */
 
+	/* This is the extra code to redraw window background */
+	[self setNeedsDisplayInRect: contentRect];
+}
+@end
 
 @implementation NSWindow (NoBackgroundColor)
 
