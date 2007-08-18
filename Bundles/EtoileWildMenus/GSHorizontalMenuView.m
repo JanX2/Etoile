@@ -20,14 +20,8 @@
    59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "GSHorizontalMenuView.h"
-#include <Foundation/Foundation.h>
-
-#import <AppKit/NSParagraphStyle.h>
-#import <AppKit/NSImage.h>
-#import <AppKit/NSColor.h>
-#import <AppKit/PSOperators.h>
-
+#import "GSHorizontalMenuView.h"
+#import <AppKit/AppKit.h>
 #import "GSHorizontalMenuItemCell.h"
 #import "EtoileMenuUtilities.h"
 #import "MenuBarHeight.h"

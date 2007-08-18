@@ -21,14 +21,7 @@
 */
 
 #import "GSHorizontalMenuItemCell.h"
-
-#import <AppKit/NSGraphics.h>
-#import <AppKit/NSImage.h>
-#import <AppKit/NSParagraphStyle.h>
-#import <AppKit/NSMenuView.h>
-#import <AppKit/PSOperators.h>
-#import <AppKit/NSColor.h>
-
+#import <AppKit/AppKit.h>
 #import "MenuBarHeight.h"
 
 @implementation GSHorizontalMenuItemCell
