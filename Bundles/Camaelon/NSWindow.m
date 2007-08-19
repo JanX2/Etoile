@@ -353,18 +353,6 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
   */
 }
 
-// Copied from GSStandardDecoratorView.m
-- (void) setInputState: (int)state
-{
-	NSAssert(state >= 0 && state <= 2, @"Invalid state!");
-	[super setInputState: state];
-	if (hasTitleBar)
-		[self setNeedsDisplayInRect: titleBarRect];
-#if 0 // Called in super already
-	[self setNeedsDisplayInRect: contentRect];
-#endif
-}
-
 @end
 
 @implementation  GSWindowDecorationView (theme)
