@@ -359,14 +359,16 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
 // Copy from GSWindowDecorationView
 - (void) setInputState: (int)state
 {
+	/* This is the extra code to redraw window background */
+	if (inputState != state) {
+		[self setNeedsDisplayInRect: contentRect];
+	}
+	
 	/* Start of original code from GSWindowDecorationView */
 	inputState = state;
 	if (windowNumber)
 		[GSServerForWindow(window) setinputstate: inputState : windowNumber];
 	/* End of original code from GSWindowDecorationView */
-
-	/* This is the extra code to redraw window background */
-	[self setNeedsDisplayInRect: contentRect];
 }
 @end
 
