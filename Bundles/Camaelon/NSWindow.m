@@ -97,10 +97,10 @@ static NSColor *titleColor[3];
 			    
   //  titleBarRect.origin.x -= 1;
   if (hasTitleBar && NSIntersectsRect(rect, titleBarRect))
-    {
+    {/*
   titleBarRect.size.height += 1;
 	NSRectFillUsingOperation (titleBarRect, NSCompositeClear);
-  titleBarRect.size.height -= 1;
+  titleBarRect.size.height -= 1; */
 //  titleBarRect.size.height = [caps size].height;
 	//	NSLog (@"(1) inputState: %d", inputState);
       [self drawTitleBar];
