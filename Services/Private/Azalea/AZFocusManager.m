@@ -25,6 +25,7 @@
 #import "AZDebug.h"
 #import "AZGroup.h"
 #import "AZClientManager.h"
+#import "AZClient+GNUstep.h"
 #import "AZStacking.h"
 #import "AZPopUp.h"
 #import "AZFocusManager.h"
@@ -189,52 +190,59 @@ static AZFocusManager *sharedInstance;
 
 - (AZClient *) fallbackTarget: (BOOL) allow_refocus old: (AZClient *) old
 {
-    AZClient *desktop = nil;
-    AZScreen *screen = [AZScreen defaultScreen];
+	AZClient *desktop = nil;
+	AZScreen *screen = [AZScreen defaultScreen];
 
-    if (allow_refocus && old && [old desktop] == DESKTOP_ALL && [old normal])
-    {
-        return old;
-    }
+	if (allow_refocus && old && [old desktop] == DESKTOP_ALL && [old normal])
+	{
+		return old;
+	}
 
-    int i;
-    for (i = 0; i < [focus_order count]; i++)
+	int i;
+#if 0
+    for (i = 0; i < [focus_order count] && i < 5; i++)
     {
 	AZClient *c = [focus_order objectAtIndex: i];
-	if (allow_refocus || c != old)
+	NSLog(@"c %@", c);
+	}
+#endif
+	for (i = 0; i < [focus_order count]; i++)
 	{
-            /* fallback focus to a window if:
-               1. it is actually focusable, cuz if it's not then we're sending
-               focus off to nothing
-               2. it is validated. if the window is about to disappear, then
-               don't try focus it.
-               3. it is visible on the current desktop. this ignores
-               omnipresent windows, which are problematic in their own rite.
-               4. it's not iconic
-               5. it is a normal type window, don't fall back onto a dock or
-               a splashscreen or a desktop window (save the desktop as a
-               backup fallback though)
-            */
-            if ([c canFocus] && ![c iconic])
-            {
-                if ([c desktop] == [screen desktop] && [c normal]) 
+		AZClient *c = [focus_order objectAtIndex: i];
+		if (allow_refocus || c != old)
 		{
-                    return c;
-                } 
-		else if (([c desktop] == [screen desktop] ||
-			  [c desktop] == DESKTOP_ALL) &&
-			 [c type] == OB_CLIENT_TYPE_DESKTOP && desktop == nil)
-		{
-                    desktop = c;
+			/* fallback focus to a window if:
+			   1. it is actually focusable, cuz if it's not then we're sending
+			      focus off to nothing
+			   2. it is validated. if the window is about to disappear, then
+			      don't try focus it.
+			   3. it is visible on the current desktop. this ignores
+			      omnipresent windows, which are problematic in their own rite.
+			   4. it's not iconic
+			   5. it is a normal type window, don't fall back onto a dock or
+			      a splashscreen or a desktop window (save the desktop as a
+			      backup fallback though)
+			*/
+			if ([c canFocus] && ![c iconic])
+			{
+				if ([c desktop] == [screen desktop] && [c normal]) 
+				{
+					return c;
+				} 
+				else if (([c desktop] == [screen desktop] ||
+				         [c desktop] == DESKTOP_ALL) &&
+				         [c type] == OB_CLIENT_TYPE_DESKTOP && desktop == nil)
+				{
+					desktop = c;
+				}
+			}
 		}
-            }
-        }
-    }
+	}
 
-    /* as a last resort fallback to the desktop window if there is one.
-       (if there's more than one, then the one most recently focused.)
-    */
-    return desktop;
+	/* as a last resort fallback to the desktop window if there is one.
+	   (if there's more than one, then the one most recently focused.)
+	*/
+	return desktop;
 }
 
 - (void) fallback: (BOOL) allow_refocus
@@ -623,30 +631,45 @@ done_cycle:
 
 - (void) focusOrderAdd: (AZClient *) c
 {
-    if ([c iconic])
-    {
-	[self focusOrderToTop: c];
-    }
-    else 
-    {
-	if ([focus_order containsObject: c] == YES)
-	    NSLog(@"Internal Error: client %@ already in focus order", c);
+	if ([c iconic])
+	{
+		[self focusOrderToTop: c];
+	}
+	else 
+	{
+		if ([focus_order containsObject: c] == YES)
+			NSLog(@"Internal Error: client %@ already in focus order", c);
 
-        /* if there are any iconic windows, put this above them in the order,
-           but if there are not, then put it under the currently focused one */
-        if ([focus_order count] && 
-	    [(AZClient*)[focus_order objectAtIndex: 0] iconic])
-	{
-	    [focus_order insertObject: c atIndex: 0];
+		/* if there are any iconic windows, put this above them in the order,
+		   but if there are not, then put it under the currently focused one */
+		if ([focus_order count] && 
+			[(AZClient*)[focus_order objectAtIndex: 0] iconic])
+		{
+			[focus_order insertObject: c atIndex: 0];
+		}
+		else
+		{
+			if ([focus_order count])
+				[focus_order insertObject: c atIndex: 0];
+			else
+				[focus_order addObject: c];
+		}
+		int i, index = 1;
+		for (i = 1; i < [focus_order count]; i++)
+		{
+			AZClient *ct = [focus_order objectAtIndex: i];
+			if ([ct isGNUstep] &&
+				[ct isEqual: c] == NO &&
+				[[ct name] isEqualToString: [c name]])
+			{
+				RETAIN(ct);
+				[focus_order removeObjectAtIndex: i];
+				[focus_order insertObject: ct atIndex: index];
+				DESTROY(ct);
+				index++;
+			}
+		}
 	}
-        else
-	{
-	    if ([focus_order count])
-		[focus_order insertObject: c atIndex: 1];
-	    else
-		[focus_order addObject: c];
-	}
-    }
 }
 
 - (void) focusOrderRemove: (AZClient *) c

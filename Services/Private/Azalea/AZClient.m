@@ -2825,6 +2825,11 @@
 
 - (BOOL) isGNUstepDocumentEdited { return isGNUstepDocumentEdited; }
 
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@.%@ (%d", [self name], [self class], [self windowLayer]];
+}
+
 - (id) init
 {
 	self = [super init];
