@@ -766,7 +766,7 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
 
 	maxApps = [[NSUserDefaults standardUserDefaults] boolForKey: AZUserDefaultDockMaxApps];
 	if (maxApps == 0)
-		maxApps = 5;
+		maxApps = 9;
 
 	/* Put up docked application */
 	NSArray *array = [[NSUserDefaults standardUserDefaults] objectForKey: AZUserDefaultDockedApp];

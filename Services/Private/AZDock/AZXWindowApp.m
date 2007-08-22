@@ -54,7 +54,8 @@
 				else if (s == IconicState) 
 				{
 					/* Iconified */
-					XMapWindow(dpy, w);
+					//XMapWindow(dpy, w);
+					XWindowSetActiveWindow(w, None);      
 				}
 				else 
 				{
