@@ -920,18 +920,18 @@
 {
     /* choose the correct target */
     AZClient *oself = [self focusTarget];
-NSLog(@"focus");
-    if (![oself canFocus]) {
-        if (![[oself frame] visible]) {
+    if (![oself canFocus]) 
+	{
+        if (![[oself frame] visible]) 
+		{
             /* update the focus lists */
-	    [[AZFocusManager defaultManager] focusOrderToTop: oself];
+			[[AZFocusManager defaultManager] focusOrderToTop: oself];
         }
         return NO;
     }
 
-NSLog(@"%@ focus (%d)", oself, [oself window]);
-    if ([oself can_focus] || [oself isGNUstep]) {
-NSLog(@"can_focus");
+    if ([oself can_focus]) 
+	{
         /* This can cause a BadMatch error with CurrentTime, or if an app
            passed in a bad time for _NET_WM_ACTIVE_WINDOW. */
         AZXErrorSetIgnore(YES);
@@ -940,7 +940,8 @@ NSLog(@"can_focus");
         AZXErrorSetIgnore(NO);
     }
 
-    if ([oself focus_notify]) {
+    if ([oself focus_notify]) 
+	{
         XEvent ce;
         ce.xclient.type = ClientMessage;
         ce.xclient.message_type = prop_atoms.wm_protocols;

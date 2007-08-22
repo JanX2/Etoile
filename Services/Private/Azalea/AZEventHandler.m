@@ -329,115 +329,148 @@ static AZEventHandler *sharedInstance;
 
 - (void) processEvent: (XEvent *) ec data: (void *) data
 {
-    Window window;
-    AZGroup *group = nil;
-    AZClient *client = nil;
-    XEvent ee, *e;
-    ObEventData *ed = data;
+	Window window;
+	AZGroup *group = nil;
+	AZClient *client = nil;
+	XEvent ee, *e;
+	ObEventData *ed = data;
 
-    /* make a copy we can mangle */
-    ee = *ec;
-    e = &ee;
+	/* make a copy we can mangle */
+	ee = *ec;
+	e = &ee;
 
-    window = [self getWindow: e];
-    if (!(e->type == PropertyNotify &&
-          (group = [[AZGroupManager defaultManager] groupWithLeader: window])))
-    {
-	id _win = nil;
-        if ((_win = [window_map objectForKey: [NSNumber numberWithInt: window]])) {
-	    if ([_win isKindOfClass: [AZClient class]]) {
-		    client = _win;
-	    } else {
-                /*Window_Menu:*/
-                /*Window_Internal: */
-                /* not to be used for events */
-		NSAssert(NO, @"Should not reach here");
-	    }
+	window = [self getWindow: e];
+	if (!(e->type == PropertyNotify &&
+		(group = [[AZGroupManager defaultManager] groupWithLeader: window])))
+	{
+		id _win = nil;
+		if ((_win = [window_map objectForKey: [NSNumber numberWithInt: window]])) 
+		{
+			if ([_win isKindOfClass: [AZClient class]]) 
+			{
+				client = _win;
+			}
+			else
+			{
+				/*Window_Menu:*/
+				/*Window_Internal: */
+				/* not to be used for events */
+				NSAssert(NO, @"Should not reach here");
+			}
+		}
 	}
-    }
 
-    [self setCurrentTime: e];
-    [self hackMods: e];
-    if ([self ignoreEvent: e forClient: client]) {
-        if (ed)
-            ed->ignored = YES;
-        return;
-    } else if (ed)
-            ed->ignored = NO;
+	[self setCurrentTime: e];
+	[self hackMods: e];
+	if ([self ignoreEvent: e forClient: client]) 
+	{
+		if (ed)
+			ed->ignored = YES;
+		return;
+	}
+	else if (ed)
+	{
+		ed->ignored = NO;
+	}
 
-    /* deal with it in the kernel */
-    AZFocusManager *fManager = [AZFocusManager defaultManager];
-    if (e->type == FocusIn) {
-        if (client && client != [fManager focus_client]) {
-	    [[client frame] adjustFocusWithHilite: YES];
-	    [fManager setClient: client];
-	    [client calcLayer];
-        }
-    } else if (e->type == FocusOut) {
-        BOOL nomove = NO;
-        XEvent ce;
+	/* deal with it in the kernel */
+	AZFocusManager *fManager = [AZFocusManager defaultManager];
+	if (e->type == FocusIn) 
+	{
+		if (client && client != [fManager focus_client]) 
+		{
+			[[client frame] adjustFocusWithHilite: YES];
+			[fManager setClient: client];
+			[client calcLayer];
+		}
+	}
+	else if (e->type == FocusOut)
+	{
+		BOOL nomove = NO;
+		XEvent ce;
 
-        /* Look for the followup FocusIn */
-        if (!XCheckIfEvent(ob_display, &ce, look_for_focusin, NULL)) {
-            /* There is no FocusIn, this means focus went to a window that
-               is not being managed, or a window on another screen. */
-            /* nothing is focused */
-	    [fManager setClient: nil];
-        } else if (ce.xany.window == e->xany.window) {
-            /* If focus didn't actually move anywhere, there is nothing to do*/
-            nomove = YES;
-        } else if (ce.xfocus.detail == NotifyPointerRoot ||
-                   ce.xfocus.detail == NotifyDetailNone ||
-                   ce.xfocus.detail == NotifyInferior) {
-            /* Focus has been reverted to the root window or nothing
-               FocusOut events come after UnmapNotify, so we don't need to
-               worry about focusing an invalid window
-             */
-	    [fManager fallback: YES];
-        } else {
-            /* Focus did move, so process the FocusIn event */
-            ObEventData ed = { .ignored = NO };
-	    [self processEvent: &ce data: &ed];
-            if (ed.ignored) {
-                /* The FocusIn was ignored, this means it was on a window
-                   that isn't a client. */
-                [fManager fallback: YES];
-            }
-        }
+		/* Look for the followup FocusIn */
+		if (!XCheckIfEvent(ob_display, &ce, look_for_focusin, NULL)) 
+		{
+			/* There is no FocusIn, this means focus went to a window that
+			   is not being managed, or a window on another screen. */
+			/* nothing is focused */
+			[fManager setClient: nil];
+		}
+		else if (ce.xany.window == e->xany.window) 
+		{
+			/* If focus didn't actually move anywhere, there is nothing to do*/
+			nomove = YES;
+		}
+		else if (ce.xfocus.detail == NotifyPointerRoot ||
+		         ce.xfocus.detail == NotifyDetailNone ||
+		         ce.xfocus.detail == NotifyInferior) 
+		{
+			/* Focus has been reverted to the root window or nothing
+			   FocusOut events come after UnmapNotify, so we don't need to
+			   worry about focusing an invalid window
+			 */
+			/* FIXME: fallback should only apply on non-GNUstep application.
+			 * GNUstep handles itself */
+//			[fManager fallback: YES];
+		}
+		else
+		{
+			/* Focus did move, so process the FocusIn event */
+			ObEventData ed = { .ignored = NO };
+			[self processEvent: &ce data: &ed];
+			if (ed.ignored) 
+			{
+				/* The FocusIn was ignored, this means it was on a window
+				   that isn't a client. */
+				[fManager fallback: YES];
+			}
+		}
 
-        if (client && !nomove) {
-	    [[client frame] adjustFocusWithHilite: NO];
-            /* focus_set_client has already been called for sure */
-	    [client calcLayer];
-        }
-    } else if (group) {
-        [self handleGroup: group event:  e];
-    } else if (client) {
-        [self handleClient: client event:  e];
-    } else if (window == RootWindow(ob_display, ob_screen)) {
-        [self handleRootEvent: e];
-    } else if (e->type == MapRequest) {
-	[[AZClientManager defaultManager] manageWindow: window];
-    } else if (e->type == ConfigureRequest) {
-        /* unhandled configure requests must be used to configure the
-           window directly */
-        XWindowChanges xwc;
+		if (client && !nomove) 
+		{
+			[[client frame] adjustFocusWithHilite: NO];
+			/* focus_set_client has already been called for sure */
+			[client calcLayer];
+		}
+	}
+	else if (group)
+	{
+		[self handleGroup: group event:  e];
+	}
+	else if (client)
+	{
+		[self handleClient: client event:  e];
+	}
+	else if (window == RootWindow(ob_display, ob_screen))
+	{
+		[self handleRootEvent: e];
+	}
+	else if (e->type == MapRequest)
+	{
+		[[AZClientManager defaultManager] manageWindow: window];
+	}
+	else if (e->type == ConfigureRequest)
+	{
+		/* unhandled configure requests must be used to configure the
+		   window directly */
+		XWindowChanges xwc;
 
-        xwc.x = e->xconfigurerequest.x;
-        xwc.y = e->xconfigurerequest.y;
-        xwc.width = e->xconfigurerequest.width;
-        xwc.height = e->xconfigurerequest.height;
-        xwc.border_width = e->xconfigurerequest.border_width;
-        xwc.sibling = e->xconfigurerequest.above;
-        xwc.stack_mode = e->xconfigurerequest.detail;
+		xwc.x = e->xconfigurerequest.x;
+		xwc.y = e->xconfigurerequest.y;
+		xwc.width = e->xconfigurerequest.width;
+		xwc.height = e->xconfigurerequest.height;
+		xwc.border_width = e->xconfigurerequest.border_width;
+		xwc.sibling = e->xconfigurerequest.above;
+		xwc.stack_mode = e->xconfigurerequest.detail;
        
-        /* we are not to be held responsible if someone sends us an
-           invalid request! */
-	AZXErrorSetIgnore(YES);
-        XConfigureWindow(ob_display, window,
-                         e->xconfigurerequest.value_mask, &xwc);
-	AZXErrorSetIgnore(NO);
-    }
+		/* we are not to be held responsible if someone sends us an
+		   invalid request! */
+		AZXErrorSetIgnore(YES);
+		XConfigureWindow(ob_display, window,
+		                 e->xconfigurerequest.value_mask, &xwc);
+		AZXErrorSetIgnore(NO);
+	}
 
     /* user input (action-bound) events */
     if (e->type == ButtonPress || e->type == ButtonRelease ||
