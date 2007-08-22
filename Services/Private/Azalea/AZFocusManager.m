@@ -209,6 +209,11 @@ static AZFocusManager *sharedInstance;
 	for (i = 0; i < [focus_order count]; i++)
 	{
 		AZClient *c = [focus_order objectAtIndex: i];
+		if ([c isGNUstep])
+		{
+			if (i > 0)
+				return c;
+		}
 		if (allow_refocus || c != old)
 		{
 			/* fallback focus to a window if:

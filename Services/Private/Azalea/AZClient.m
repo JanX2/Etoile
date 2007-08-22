@@ -920,7 +920,7 @@
 {
     /* choose the correct target */
     AZClient *oself = [self focusTarget];
-
+NSLog(@"focus");
     if (![oself canFocus]) {
         if (![[oself frame] visible]) {
             /* update the focus lists */
@@ -929,7 +929,9 @@
         return NO;
     }
 
-    if ([oself can_focus]) {
+NSLog(@"%@ focus (%d)", oself, [oself window]);
+    if ([oself can_focus] || [oself isGNUstep]) {
+NSLog(@"can_focus");
         /* This can cause a BadMatch error with CurrentTime, or if an app
            passed in a bad time for _NET_WM_ACTIVE_WINDOW. */
         AZXErrorSetIgnore(YES);
