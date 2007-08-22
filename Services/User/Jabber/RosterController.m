@@ -225,7 +225,6 @@ NSMutableArray * rosterControllers = nil;
 #else
 	size.height = [view numberOfRows] * ([view rowHeight] + [view intercellSpacing].height);
 #endif
-	NSLog(@"Roster is %d rows high", [self rowsUnder:nil]);
 	return size;
 }
 

@@ -83,7 +83,6 @@ NSMutableArray * messageWindowControllers = nil;
 		[messageBoxBox setFrame:messageBoxSize];
 		
 		//Redraw the window at the new size.
-		hack = YES;
 #ifdef GNUSTEP
 		[[self window] setFrame:windowSize display:YES animate:NO];
 #else
@@ -165,7 +164,7 @@ NSMutableArray * messageWindowControllers = nil;
 		}
 		if(![[self window] isVisible])
 		{
-			[self showWindow:self];
+			[[self window] orderFront:self];
 			[[[NSUserDefaults standardUserDefaults] soundForKey:@"MessageSound"] play];
 			[[self window] setTitle:[NSString stringWithFormat:@"%@ (%d unread)", [conversation name], ++unread]];
 		}
