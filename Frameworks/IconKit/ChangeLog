@@ -1,3 +1,30 @@
+2007-08-24  Isaiah Beerbower <public@ipaqah.com>
+
+	Change license on Quentin's and Nicolas' (permission from Quentin):
+	* Headers/IKApplicationIconProvider.h
+	* Headers/IKIconTheme.h
+	* Headers/IKCompositor.h
+	* Headers/IKThumbnailProvider.h
+	* Headers/IKCompositorOperation.h
+	* Headers/IKIconProvider.h
+	* Headers/NSFileManager+IconKit.h
+	* Source/IKIconProvider.m
+	* Source/NSFileManager+IconKit.m
+	* Source/IKApplicationIconProvider.m
+	* Source/IKIconTheme.m
+	* Source/IKCompositor.m
+	* Source/IKThumbnailProvider.m
+	* Source/IKCompositorOperation.m
+	Added Xcode project and Mac OS X compatibility header
+	(for my own convenience):
+	* Info.plist
+	* IconKit.xcodeproj
+	* Headers/IKCompat.h
+	* Source/IKIcon.m
+	* Source/NSString+MD5Hash.m
+	* Source/IKWorkspaceAdditions.m
+
+
 2007-06-30  Yen-Ju Chen <yjchen gmail>
 
     * GNUstep.icontheme/Resources/: 

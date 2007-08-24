@@ -6,6 +6,7 @@
 //  Copyright (c) 2003-2004 amon-re. All rights reserved.
 //
 
+#import "IKCompat.h"
 #import "NSString+MD5Hash.h"
 #import <string.h>
 

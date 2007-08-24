@@ -1,0 +1,354 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		713851A30C77048500C1C998 /* NSString+MD5Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 713851990C77048500C1C998 /* NSString+MD5Hash.m */; };
+		713851A40C77048500C1C998 /* IKThumbnailProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7138519A0C77048500C1C998 /* IKThumbnailProvider.m */; };
+		713851A50C77048500C1C998 /* IKWorkspaceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7138519B0C77048500C1C998 /* IKWorkspaceAdditions.m */; };
+		713851A60C77048500C1C998 /* NSFileManager+IconKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 7138519C0C77048500C1C998 /* NSFileManager+IconKit.m */; };
+		713851A70C77048500C1C998 /* IKIconTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 7138519D0C77048500C1C998 /* IKIconTheme.m */; };
+		713851A80C77048500C1C998 /* IKCompositorOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7138519E0C77048500C1C998 /* IKCompositorOperation.m */; };
+		713851A90C77048500C1C998 /* IKIcon.m in Sources */ = {isa = PBXBuildFile; fileRef = 7138519F0C77048500C1C998 /* IKIcon.m */; };
+		713851AA0C77048500C1C998 /* IKIconProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 713851A00C77048500C1C998 /* IKIconProvider.m */; };
+		713851AB0C77048500C1C998 /* IKApplicationIconProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 713851A10C77048500C1C998 /* IKApplicationIconProvider.m */; };
+		713851AC0C77048500C1C998 /* IKCompositor.m in Sources */ = {isa = PBXBuildFile; fileRef = 713851A20C77048500C1C998 /* IKCompositor.m */; };
+		713851BA0C77049700C1C998 /* IKCompositor.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851AD0C77049700C1C998 /* IKCompositor.h */; };
+		713851BB0C77049700C1C998 /* IKApplicationIconProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851AE0C77049700C1C998 /* IKApplicationIconProvider.h */; };
+		713851BC0C77049700C1C998 /* IconKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851AF0C77049700C1C998 /* IconKit.h */; };
+		713851BD0C77049700C1C998 /* IKCompositorOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851B00C77049700C1C998 /* IKCompositorOperation.h */; };
+		713851BE0C77049700C1C998 /* IKIcon.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851B10C77049700C1C998 /* IKIcon.h */; };
+		713851BF0C77049700C1C998 /* IKIconIdentifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851B20C77049700C1C998 /* IKIconIdentifier.h */; };
+		713851C00C77049700C1C998 /* IKIconPositions.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851B30C77049700C1C998 /* IKIconPositions.h */; };
+		713851C10C77049700C1C998 /* IKIconProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851B40C77049700C1C998 /* IKIconProvider.h */; };
+		713851C20C77049700C1C998 /* IKIconTheme.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851B50C77049700C1C998 /* IKIconTheme.h */; };
+		713851C30C77049700C1C998 /* IKThumbnailProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851B60C77049700C1C998 /* IKThumbnailProvider.h */; };
+		713851C40C77049700C1C998 /* IKWorkspaceAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851B70C77049700C1C998 /* IKWorkspaceAdditions.h */; };
+		713851C50C77049700C1C998 /* NSFileManager+IconKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851B80C77049700C1C998 /* NSFileManager+IconKit.h */; };
+		713851C60C77049700C1C998 /* NSString+MD5Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 713851B90C77049700C1C998 /* NSString+MD5Hash.h */; };
+		7181CE6D0C770611003D6722 /* IKCompat.h in Headers */ = {isa = PBXBuildFile; fileRef = 7181CE6C0C770611003D6722 /* IKCompat.h */; };
+		71BB1E210C7F701300CC6E69 /* ChangeLog in Resources */ = {isa = PBXBuildFile; fileRef = 71BB1E200C7F701300CC6E69 /* ChangeLog */; };
+		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		713851990C77048500C1C998 /* NSString+MD5Hash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+MD5Hash.m"; path = "Source/NSString+MD5Hash.m"; sourceTree = "<group>"; };
+		7138519A0C77048500C1C998 /* IKThumbnailProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IKThumbnailProvider.m; path = Source/IKThumbnailProvider.m; sourceTree = "<group>"; };
+		7138519B0C77048500C1C998 /* IKWorkspaceAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IKWorkspaceAdditions.m; path = Source/IKWorkspaceAdditions.m; sourceTree = "<group>"; };
+		7138519C0C77048500C1C998 /* NSFileManager+IconKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSFileManager+IconKit.m"; path = "Source/NSFileManager+IconKit.m"; sourceTree = "<group>"; };
+		7138519D0C77048500C1C998 /* IKIconTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IKIconTheme.m; path = Source/IKIconTheme.m; sourceTree = "<group>"; };
+		7138519E0C77048500C1C998 /* IKCompositorOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IKCompositorOperation.m; path = Source/IKCompositorOperation.m; sourceTree = "<group>"; };
+		7138519F0C77048500C1C998 /* IKIcon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IKIcon.m; path = Source/IKIcon.m; sourceTree = "<group>"; };
+		713851A00C77048500C1C998 /* IKIconProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IKIconProvider.m; path = Source/IKIconProvider.m; sourceTree = "<group>"; };
+		713851A10C77048500C1C998 /* IKApplicationIconProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IKApplicationIconProvider.m; path = Source/IKApplicationIconProvider.m; sourceTree = "<group>"; };
+		713851A20C77048500C1C998 /* IKCompositor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IKCompositor.m; path = Source/IKCompositor.m; sourceTree = "<group>"; };
+		713851AD0C77049700C1C998 /* IKCompositor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKCompositor.h; path = Headers/IKCompositor.h; sourceTree = "<group>"; };
+		713851AE0C77049700C1C998 /* IKApplicationIconProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKApplicationIconProvider.h; path = Headers/IKApplicationIconProvider.h; sourceTree = "<group>"; };
+		713851AF0C77049700C1C998 /* IconKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IconKit.h; path = Headers/IconKit.h; sourceTree = "<group>"; };
+		713851B00C77049700C1C998 /* IKCompositorOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKCompositorOperation.h; path = Headers/IKCompositorOperation.h; sourceTree = "<group>"; };
+		713851B10C77049700C1C998 /* IKIcon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKIcon.h; path = Headers/IKIcon.h; sourceTree = "<group>"; };
+		713851B20C77049700C1C998 /* IKIconIdentifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKIconIdentifier.h; path = Headers/IKIconIdentifier.h; sourceTree = "<group>"; };
+		713851B30C77049700C1C998 /* IKIconPositions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKIconPositions.h; path = Headers/IKIconPositions.h; sourceTree = "<group>"; };
+		713851B40C77049700C1C998 /* IKIconProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKIconProvider.h; path = Headers/IKIconProvider.h; sourceTree = "<group>"; };
+		713851B50C77049700C1C998 /* IKIconTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKIconTheme.h; path = Headers/IKIconTheme.h; sourceTree = "<group>"; };
+		713851B60C77049700C1C998 /* IKThumbnailProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKThumbnailProvider.h; path = Headers/IKThumbnailProvider.h; sourceTree = "<group>"; };
+		713851B70C77049700C1C998 /* IKWorkspaceAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKWorkspaceAdditions.h; path = Headers/IKWorkspaceAdditions.h; sourceTree = "<group>"; };
+		713851B80C77049700C1C998 /* NSFileManager+IconKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+IconKit.h"; path = "Headers/NSFileManager+IconKit.h"; sourceTree = "<group>"; };
+		713851B90C77049700C1C998 /* NSString+MD5Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+MD5Hash.h"; path = "Headers/NSString+MD5Hash.h"; sourceTree = "<group>"; };
+		7181CE6C0C770611003D6722 /* IKCompat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKCompat.h; path = Headers/IKCompat.h; sourceTree = "<group>"; };
+		71BB1E200C7F701300CC6E69 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
+		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8DC2EF5B0486A6940098B216 /* IconKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IconKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DC2EF560486A6940098B216 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DC2EF5B0486A6940098B216 /* IconKit.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* IconKit */ = {
+			isa = PBXGroup;
+			children = (
+				71BB1E200C7F701300CC6E69 /* ChangeLog */,
+				08FB77AEFE84172EC02AAC07 /* Source */,
+				32C88DFF0371C24200C91783 /* Headers */,
+				089C1665FE841158C02AAC07 /* Resources */,
+				0867D69AFE84028FC02AAC07 /* Frameworks */,
+				034768DFFF38A50411DB9C8B /* Products */,
+			);
+			name = IconKit;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */,
+				1058C7B2FEA5585E11CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		089C1665FE841158C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8DC2EF5A0486A6940098B216 /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AEFE84172EC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				713851990C77048500C1C998 /* NSString+MD5Hash.m */,
+				7138519A0C77048500C1C998 /* IKThumbnailProvider.m */,
+				7138519B0C77048500C1C998 /* IKWorkspaceAdditions.m */,
+				7138519C0C77048500C1C998 /* NSFileManager+IconKit.m */,
+				7138519D0C77048500C1C998 /* IKIconTheme.m */,
+				7138519E0C77048500C1C998 /* IKCompositorOperation.m */,
+				7138519F0C77048500C1C998 /* IKIcon.m */,
+				713851A00C77048500C1C998 /* IKIconProvider.m */,
+				713851A10C77048500C1C998 /* IKApplicationIconProvider.m */,
+				713851A20C77048500C1C998 /* IKCompositor.m */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7B2FEA5585E11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0867D6A5FE840307C02AAC07 /* AppKit.framework */,
+				0867D69BFE84028FC02AAC07 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		32C88DFF0371C24200C91783 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				7181CE6C0C770611003D6722 /* IKCompat.h */,
+				713851AD0C77049700C1C998 /* IKCompositor.h */,
+				713851AE0C77049700C1C998 /* IKApplicationIconProvider.h */,
+				713851AF0C77049700C1C998 /* IconKit.h */,
+				713851B00C77049700C1C998 /* IKCompositorOperation.h */,
+				713851B10C77049700C1C998 /* IKIcon.h */,
+				713851B20C77049700C1C998 /* IKIconIdentifier.h */,
+				713851B30C77049700C1C998 /* IKIconPositions.h */,
+				713851B40C77049700C1C998 /* IKIconProvider.h */,
+				713851B50C77049700C1C998 /* IKIconTheme.h */,
+				713851B60C77049700C1C998 /* IKThumbnailProvider.h */,
+				713851B70C77049700C1C998 /* IKWorkspaceAdditions.h */,
+				713851B80C77049700C1C998 /* NSFileManager+IconKit.h */,
+				713851B90C77049700C1C998 /* NSString+MD5Hash.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8DC2EF500486A6940098B216 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				713851BA0C77049700C1C998 /* IKCompositor.h in Headers */,
+				713851BB0C77049700C1C998 /* IKApplicationIconProvider.h in Headers */,
+				713851BC0C77049700C1C998 /* IconKit.h in Headers */,
+				713851BD0C77049700C1C998 /* IKCompositorOperation.h in Headers */,
+				713851BE0C77049700C1C998 /* IKIcon.h in Headers */,
+				713851BF0C77049700C1C998 /* IKIconIdentifier.h in Headers */,
+				713851C00C77049700C1C998 /* IKIconPositions.h in Headers */,
+				713851C10C77049700C1C998 /* IKIconProvider.h in Headers */,
+				713851C20C77049700C1C998 /* IKIconTheme.h in Headers */,
+				713851C30C77049700C1C998 /* IKThumbnailProvider.h in Headers */,
+				713851C40C77049700C1C998 /* IKWorkspaceAdditions.h in Headers */,
+				713851C50C77049700C1C998 /* NSFileManager+IconKit.h in Headers */,
+				713851C60C77049700C1C998 /* NSString+MD5Hash.h in Headers */,
+				7181CE6D0C770611003D6722 /* IKCompat.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8DC2EF4F0486A6940098B216 /* IconKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91AD08733DA50010E9CD /* Build configuration list for PBXNativeTarget "IconKit" */;
+			buildPhases = (
+				8DC2EF500486A6940098B216 /* Headers */,
+				8DC2EF520486A6940098B216 /* Resources */,
+				8DC2EF540486A6940098B216 /* Sources */,
+				8DC2EF560486A6940098B216 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IconKit;
+			productInstallPath = "$(HOME)/Library/Frameworks";
+			productName = IconKit;
+			productReference = 8DC2EF5B0486A6940098B216 /* IconKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "IconKit" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 0867D691FE84028FC02AAC07 /* IconKit */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			targets = (
+				8DC2EF4F0486A6940098B216 /* IconKit */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8DC2EF520486A6940098B216 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				71BB1E210C7F701300CC6E69 /* ChangeLog in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DC2EF540486A6940098B216 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				713851A30C77048500C1C998 /* NSString+MD5Hash.m in Sources */,
+				713851A40C77048500C1C998 /* IKThumbnailProvider.m in Sources */,
+				713851A50C77048500C1C998 /* IKWorkspaceAdditions.m in Sources */,
+				713851A60C77048500C1C998 /* NSFileManager+IconKit.m in Sources */,
+				713851A70C77048500C1C998 /* IKIconTheme.m in Sources */,
+				713851A80C77048500C1C998 /* IKCompositorOperation.m in Sources */,
+				713851A90C77048500C1C998 /* IKIcon.m in Sources */,
+				713851AA0C77048500C1C998 /* IKIconProvider.m in Sources */,
+				713851AB0C77048500C1C998 /* IKApplicationIconProvider.m in Sources */,
+				713851AC0C77048500C1C998 /* IKCompositor.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91AE08733DA50010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				PRODUCT_NAME = IconKit;
+				WRAPPER_EXTENSION = framework;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB91AF08733DA50010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				PRODUCT_NAME = IconKit;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		1DEB91B208733DA50010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB91B308733DA50010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91AD08733DA50010E9CD /* Build configuration list for PBXNativeTarget "IconKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91AE08733DA50010E9CD /* Debug */,
+				1DEB91AF08733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "IconKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91B208733DA50010E9CD /* Debug */,
+				1DEB91B308733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}

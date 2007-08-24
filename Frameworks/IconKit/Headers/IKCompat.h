@@ -1,14 +1,13 @@
 /*
-	IKIconTheme.h
-
-	IKIconTheme class provides icon theme support (finding, loading icon 
-	theme bundles and switching between them)
-
-	Copyright (C) 2007 Quentin Mathe <qmathe@club-internet.fr>
-
-	Author:  Quentin Mathe <qmathe@club-internet.fr>
-	Date:  February 2007
-
+ * IKCompat.h - IconKit
+ *
+ * Mac OS X compatibility.
+ *
+ * Copyright 2007 Isaiah Beerbower.
+ *
+ * Author: Isaiah Beerbower
+ * Created: 05/24/07
+ 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
 
@@ -32,32 +31,36 @@
 	OF SUCH DAMAGE.
 */
 
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
+#ifndef GNUSTEP
 
-@protocol UKTest;
+#define AUTORELEASE(object) [object autorelease]
+#define RELEASE(object) [object release]
+#define RETAIN(object) [object retain]
+#define ASSIGN(object, value)	({\
+id __value = (id)(value); \
+id __object = (id)(object); \
+if (__value != __object) { \
+   if (__value != nil) \
+      [__value retain]; \
+   object = __value; \
+   if (__object != nil) \
+      [__object release]; \
+}})
+#define DESTROY(object) ({\
+if (object) \
+	{ \
+		id __o = object; \
+		object = nil; \
+		[__o release]; \
+	} \
+})
 
+#ifdef DEBUG
+#define NSDebugLLog(level, format, args...) \
+do { if (GSDebugSet(level) == YES) \
+	NSLog(format , ## args); } while (0)
+#else
+#define NSDebugLLog(level, format, args...)
+#endif
 
-@interface IKIconTheme : NSObject <UKTest>
-{
-	NSString *_themeName;
-	NSBundle *_themeBundle;
-
-	/* Mapping of each specification identifier to multiple identifiers 
-	   supported as synonyms (make compatibility straightforward) */
-	NSMutableDictionary *_specIdentifiers; 
-}
-
-+ (IKIconTheme *) theme;
-+ (void) setTheme: (IKIconTheme *)theme;
-
-- (id) initWithPath: (NSString *)path;
-- (id) initWithTheme: (NSString *)name;
-
-- (NSString *) iconPathForIdentifier: (NSString *)iconIdentifier;
-- (NSURL*) iconURLForIdentifier: (NSString *)iconIdentifier;
-
-- (void) activate;
-- (void) deactivate;
-
-@end
+#endif
