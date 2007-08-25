@@ -133,10 +133,11 @@
 
 - (void) drawRect: (NSRect) frame
 {
-  [super drawRect: frame];
-  /* Let's draw the workspace number */
-  NSAttributedString *as = [[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", current_workspace]];
-  [as drawAtPoint: NSMakePoint(5, NSMaxY([self frame])-5-[as size].height)];
+	[super drawRect: frame];
+	/* Let's draw the workspace number */
+	NSAttributedString *as = [[NSAttributedString alloc] initWithString: [NSString stringWithFormat: @"%d", current_workspace]];
+	int pad = NSWidth([self frame])/16;
+	[as drawAtPoint: NSMakePoint(pad, NSMaxY([self frame])-pad-[as size].height)];
 }
 
 - (void) mouseUp: (NSEvent *) event

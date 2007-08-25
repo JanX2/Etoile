@@ -4,14 +4,14 @@
 /* WindowMaker dock app */
 @interface AZDockletApp: AZDockApp
 {
-  Display *dpy;
-  Window rootWindow;
-  Window mainWindow;
-  Window iconWindow;
-  NSRect frame; // frame for docklet window.
+	Display *dpy;
+	Window rootWindow;
+	Window mainWindow;
+	Window iconWindow;
+	NSRect frame; // frame for docklet window.
 
-  NSString *wm_class;
-  NSString *wm_instance;
+	NSString *wm_class;
+	NSString *wm_instance;
 }
 
 - (id) initWithCommand: (NSString *) cmd

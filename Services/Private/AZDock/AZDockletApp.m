@@ -175,58 +175,59 @@
 
 - (BOOL) acceptXWindow: (Window) win
 {
-  NSString *_class, *_instance;
-  XWMHints *wmhints;
-  XWindowAttributes attrib;
-  if (XWindowClassHint(win, &_class, &_instance)) 
-  {
-    if ([_class isEqualToString: wm_class] &&
-	[_instance isEqualToString: wm_instance])
-    {
-      if (mainWindow)
-      {
-	/* It is our window, but we already have one. Do nothing.
-	   return YES so that it will not be taken by others. */
-	return YES;
-      }
-      mainWindow = win;
+	NSString *_class, *_instance;
+	XWMHints *wmhints;
+	XWindowAttributes attrib;
+	int size = NSWidth([view frame]);
+	if (XWindowClassHint(win, &_class, &_instance)) 
+	{
+		if ([_class isEqualToString: wm_class] &&
+		    [_instance isEqualToString: wm_instance])
+		{
+			if (mainWindow)
+			{
+				/* It is our window, but we already have one. Do nothing.
+				   return YES so that it will not be taken by others. */
+				return YES;
+			}
+			mainWindow = win;
 
-      /* Let's attach window to ours */
-      iconWindow = win;
-      wmhints = XGetWMHints(dpy, win);
-      if (wmhints && (wmhints->flags & IconWindowHint))
-      {
-        iconWindow = wmhints->icon_window;
-      }
-      XFree(wmhints);
-      wmhints = NULL;
+			/* Let's attach window to ours */
+			iconWindow = win;
+			wmhints = XGetWMHints(dpy, win);
+			if (wmhints && (wmhints->flags & IconWindowHint))
+			{
+				iconWindow = wmhints->icon_window;
+			}
+			XFree(wmhints);
+			wmhints = NULL;
 
-      if (XGetWindowAttributes(dpy, iconWindow, &attrib))
-      {
-        frame.size.width = attrib.width;
-        frame.size.height = attrib.height;
-      }
-      else
-      {
-        frame.size.width = DOCK_SIZE;
-        frame.size.height = DOCK_SIZE;
-      }
-      frame.origin.x = (DOCK_SIZE-NSWidth(frame))/2;
-      frame.origin.y = (DOCK_SIZE-NSHeight(frame))/2;
+			if (XGetWindowAttributes(dpy, iconWindow, &attrib))
+			{
+				frame.size.width = attrib.width;
+				frame.size.height = attrib.height;
+			}
+			else
+			{
+				frame.size.width = size;
+				frame.size.height = size;
+			}
+			frame.origin.x = (size-NSWidth(frame))/2;
+			frame.origin.y = (size-NSHeight(frame))/2;
 
-      XReparentWindow(dpy, iconWindow, [window xwindow], 
-                      NSMinX(frame), NSMinY(frame));
-      XMapWindow(dpy, iconWindow);
-      XSync(dpy, False);
+			XReparentWindow(dpy, iconWindow, [window xwindow], 
+			                NSMinX(frame), NSMinY(frame));
+			XMapWindow(dpy, iconWindow);
+			XSync(dpy, False);
 
-      if ((command == nil) || ([command length] == 0)) 
-      {
-	[self updateCommand: win];
-      }
-      return YES;
-    }
-  }
-  return NO;
+			if ((command == nil) || ([command length] == 0)) 
+			{
+				[self updateCommand: win];
+			}
+			return YES;
+		}
+	}
+	return NO;
 }
 
 - (BOOL) removeXWindow: (Window) win

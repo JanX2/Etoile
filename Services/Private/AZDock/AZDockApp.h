@@ -2,8 +2,6 @@
 #import <XWindowServerKit/XWindow.h>
 #import "AZDockView.h"
 
-#define DOCK_SIZE 64
-
 typedef enum _AZDockType {
 	AZDockGNUstepApplication,
 	AZDockXWindowApplication,

@@ -17,11 +17,11 @@ extern NSString *AZDockPositionDidChangeNotification;
 
 @interface AZDockView: NSView
 {
-  NSImage *image;
-  id delegate;
-  NSMenu *contextualMenu;
-  AZDockAppState state;
-  NSBezierPath *bp;
+	NSImage *image;
+	id delegate;
+	NSMenu *contextualMenu;
+	AZDockAppState state;
+	NSBezierPath *bp;
 }
 
 - (void) setImage: (NSImage *) image;

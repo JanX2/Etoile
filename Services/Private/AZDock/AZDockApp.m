@@ -64,7 +64,7 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 {
 	self = [super init];
 
-	NSRect rect = NSMakeRect(0, 0, DOCK_SIZE, DOCK_SIZE);
+	NSRect rect = NSMakeRect(0, 0, 64, 64);
 	view = [[AZDockView alloc] initWithFrame: rect];
 	[view setDelegate: self];
 	window = [[XWindow alloc] initWithContentRect: rect
