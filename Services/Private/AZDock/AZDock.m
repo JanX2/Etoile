@@ -6,7 +6,9 @@
 #import <X11/Xatom.h>
 #import <X11/Xutil.h>
 #import <XWindowServerKit/XFunctions.h>
+#ifdef USE_BOOKMARK
 #import <BookmarkKit/BookmarkKit.h>
+#endif
 
 static NSString *AZUserDefaultDockType = @"Type";
 static NSString *AZUserDefaultDockCommand = @"Command";
@@ -508,40 +510,87 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
 	if (do_not_display == YES)
 		return;
 
+	NSScreen *screen = [iconWindow screen];
 	NSWindow *win;
 	int i, x, y, w, h;
 
+	/* Calculate size */
+	NSRect area = [screen workAreaOfDesktop: -1];
+	if ((area.size.width == 0) || (area.size.height == 0))
+	{
+		/* Fail to get work area. Use screen frame as default */
+		area = [screen frame];
+	}
+
+	switch (position) 
+	{
+		case AZDockBottomPosition:
+			w = NSWidth(area)/(1+[apps count]);
+			break;
+		default:
+			w = NSHeight(area)/(1+[apps count]);
+	}
+
+	if (w > 64)
+		w = 64;
+	else if (w > 56)
+		w = 56;
+	else if (w > 48)
+		w = 48;
+	else if (w > 32)
+		w = 32;
+	else if (w > 24)
+		w = 24;
+	else 
+		w = 16;
+
+	if (w > maxDockSize)
+		w = maxDockSize;
+
+	[self resizeDocksToSize: w];
+
 	/* Calculate the position */
-	NSSize size = [[iconWindow screen] frame].size;
 	w = NSWidth([iconWindow frame]);
 	h = 0;
 
 	switch (position) 
 	{
 		case AZDockBottomPosition:
+#if 1
+			w += NSWidth([iconWindow frame])*[apps count];
+#else
 			for (i = 0; i < [apps count]; i++)
 			{
 				w += NSWidth([[(AZDockApp *)[apps objectAtIndex: i] window] frame]);
 			}
-			x = (size.width-w)/2;
+#endif
+			x = ((NSWidth(area)-w)/2) + NSMinX(area);
 			y = (isHidden) ? -NSHeight([iconWindow frame])+autoHiddenSpace : 0;
 			break;
 		case AZDockRightPosition:
+#if 1
+			h += NSHeight([iconWindow frame])*[apps count];
+#else
 			for (i = 0; i < [apps count]; i++)
 			{
 				h += NSHeight([[(AZDockApp *)[apps objectAtIndex: i] window] frame]);
 			}
-			x = (isHidden) ? size.width-autoHiddenSpace : size.width-w;
-			y = (size.height+h)/2;
+#endif
+			x = (isHidden) ? NSWidth(area)-autoHiddenSpace : NSWidth(area)-w;
+			y = ((NSHeight(area)+h)/2) - (NSMaxY([screen frame])-NSMaxY(area));
 			break;
 		case AZDockLeftPosition:
 		default:
+#if 1
+			h += NSHeight([iconWindow frame])*[apps count];
+#else
 			for (i = 0; i < [apps count]; i++)
 			{
 				h += NSHeight([[(AZDockApp *)[apps objectAtIndex: i] window] frame]);
 			}
+#endif
 			x = (isHidden) ? -w+autoHiddenSpace : 0;
-			y = (size.height+h)/2;
+			y = (NSHeight(area)+h)/2 - (NSMaxY([screen frame])-NSMaxY(area));
 			break;
 	}
 
@@ -755,7 +804,7 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
 
 	server = GSCurrentServer();
 	dpy = (Display *)[server serverDevice];
-	screen = [[NSScreen mainScreen] screenNumber];
+	int screen = [[NSScreen mainScreen] screenNumber];
 	root_win = RootWindow(dpy, screen);
 	workspace = [NSWorkspace sharedWorkspace];
 
@@ -801,11 +850,10 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
 		maxApps = 9;
 
 	/* Build icon window (Etoile icon) */
-    int size = [defaults integerForKey: AZUserDefaultDockSize];
-	if (size == 0)
-		size = 64;
-	NSRect rect = NSMakeRect(0, 0, size, size);
-NSLog(@"iconWindow %@", NSStringFromRect(rect));
+    maxDockSize = [defaults integerForKey: AZUserDefaultDockSize];
+	if (maxDockSize == 0)
+		maxDockSize = 64;
+	NSRect rect = NSMakeRect(0, 0, maxDockSize, maxDockSize);
 	iconWindow = [[XWindow alloc] initWithContentRect: rect
 	                              styleMask: NSBorderlessWindowMask
 				        backing: NSBackingStoreRetained
@@ -982,7 +1030,6 @@ NSLog(@"iconWindow %@", NSStringFromRect(rect));
 			[app showAction: self];
 		}
 	}
-	[self resizeDocksToSize: [iconWindow frame].size.width];
 	do_not_display = NO;
 	[self organizeApplications];
 }

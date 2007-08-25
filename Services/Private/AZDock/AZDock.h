@@ -13,7 +13,6 @@
 {
 	GSDisplayServer *server;
 	Display *dpy;
-	int screen;
 	Window root_win;
 
 	NSMutableArray *apps; // application to display;
@@ -27,6 +26,7 @@
 	BOOL autoHidden;
 	NSRect dockFrame;
 	int maxApps;
+	int maxDockSize;
 
 #ifdef USE_BOOKMARK
 	BKBookmarkStore *store;
