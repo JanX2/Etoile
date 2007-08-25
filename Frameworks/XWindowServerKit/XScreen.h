@@ -65,4 +65,10 @@ typedef enum _XScreenSide {
 - (BOOL) isShowingDesktop;
 - (void) setShowingDesktop:(BOOL) flag;
 
+/* Workable area for desktop. Use -1 for current desktop.
+   Return NSZeroRect if specified desktop does not exist.
+   NOTE: This is GNUstep window coordinate. Origin is on top-bottom,
+   not top-left. */
+- (NSRect) workAreaOfDesktop: (int) desktop;
+
 @end

@@ -145,4 +145,52 @@ NSString *XCurrentWorkspaceDidChangeNotification = @"XCurrentWorkspaceDidChangeN
 {
 	XWindowSetShowingDesktop(flag);
 }
+
+- (NSRect) workAreaOfDesktop: (int) d
+{
+	int desktop = 0;
+	int numberOfDesktops = [self numberOfWorkspaces];
+
+	if (d == -1)
+		desktop = [self currentWorkspace];
+
+	if ((desktop == -1) || (desktop > numberOfDesktops))
+	{
+		// Failed 
+		return NSZeroRect;
+	}
+	NSLog(@"Desktop %d", desktop);
+	
+	Display *dpy = (Display*)[GSCurrentServer() serverDevice];
+	Window root_win = RootWindow(dpy, [self screenNumber]);
+
+	NSRect return_rect = NSZeroRect;
+	Atom X_NET_WORKAREA = XInternAtom(dpy, "_NET_WORKAREA", False);
+	Atom type_ret;
+	int format_ret;
+	unsigned long items_ret;
+	unsigned long after_ret;
+	unsigned long *prop_data = NULL;
+	int result = XGetWindowProperty(dpy, root_win, X_NET_WORKAREA, 
+	                                0, 0x7FFFFFFF, False, XA_CARDINAL, 
+	                                &type_ret, &format_ret, &items_ret,
+	                                &after_ret, (unsigned char**)&prop_data);
+	if ((result == Success) && (items_ret > 0)) 
+	{
+		return_rect.origin.x = prop_data[desktop*4];
+		return_rect.origin.y = prop_data[desktop*4+1];
+		return_rect.size.width = prop_data[desktop*4+2];
+		return_rect.size.height = prop_data[desktop*4+3];
+
+		return_rect.origin.y = NSHeight([self frame])-return_rect.origin.y-NSHeight(return_rect);
+	}
+
+	if (prop_data)
+	{
+		XFree(prop_data);
+		prop_data = NULL;
+	}
+	return return_rect;
+}
+
 @end
