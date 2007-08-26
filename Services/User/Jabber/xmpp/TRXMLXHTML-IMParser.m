@@ -11,7 +11,10 @@
 
 #define TRIM(x) [x stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
 
-
+#ifdef GNUSTEP
+#define NSUnderlineStyleSingle NSSingleUnderlineStyle
+#define NSStrikethoughStyleAttributeName @"NSStrikethoughStyleAttributeName"
+#endif
 
 inline NSColor * colourFromCSSColourString(NSString * aColour)
 {
@@ -226,6 +229,8 @@ inline NSMutableDictionary * attributesFromStyles(NSDictionary * oldAttributes, 
 			}
 		}
 	}
+	[attributes setObject:font
+				   forKey:NSFontAttributeName];
 	return attributes;
 }
 
@@ -235,9 +240,11 @@ NSMutableDictionary * stylesForTags;
 + (void) loadStyles:(id)unused
 {
 	stylesForTags = [[NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"XHTML-IM HTML Styles"]] retain];
-	if(nil == stylesForTags)
+//	if(nil == stylesForTags)
 	{
 		stylesForTags = [[NSMutableDictionary alloc] init];
+		[stylesForTags setObject:attributesFromStyles(nil,@"font-style : italic")
+						  forKey:@"em"];		
 	}	
 }
 
@@ -252,6 +259,15 @@ NSMutableDictionary * stylesForTags;
 											   object:nil];
 }
 
+- (id) init
+{
+	SUPERINIT;
+	string = [[NSMutableAttributedString alloc] init];
+	currentAttributes = [[NSMutableDictionary alloc] init];	
+	attributeStack = [[NSMutableArray alloc] init];
+	return self;
+}
+
 - (void)characters:(NSString *)_chars
 {
 	NSAttributedString * newSection = [[NSAttributedString alloc] initWithString:_chars attributes:currentAttributes];
@@ -262,11 +278,10 @@ NSMutableDictionary * stylesForTags;
 - (void)startElement:(NSString *)_Name
 		  attributes:(NSDictionary*)_attributes;
 {
-	NSLog(@"Parsing HTML tag: %@", _Name);
 	if(depth == 0)
 	{
 		//Ignore any elements that are not <body>
-		if(![_Name isEqualToString:@"body"])
+		if(![_Name isEqualToString:@"html"])
 		{
 			[[[TRXMLNullHandler alloc] initWithXMLParser:parser
 												  parent:self
@@ -280,11 +295,12 @@ NSMutableDictionary * stylesForTags;
 		[attributeStack addObject:currentAttributes];
 		//Get the new attributes
 		NSDictionary * defaultStyle = [stylesForTags objectForKey:_Name];
-		currentAttributes = [NSMutableDictionary dictionaryWithDictionary:currentAttributes];
 		if(defaultStyle != nil)
 		{
 			[currentAttributes addEntriesFromDictionary:defaultStyle];
 		}
+		currentAttributes = [NSMutableDictionary dictionaryWithDictionary:currentAttributes];
+		NSString * style = [_attributes objectForKey:@"style"];
 		//Special case for hyperlinks
 		if([_Name isEqualToString:@"a"])
 		{
@@ -294,12 +310,11 @@ NSMutableDictionary * stylesForTags;
 		}
 		//Display alt tags for images
 		//TODO:  Make it optional to get the real image
-		if([_Name isEqualToString:@"img"])
+		else if([_Name isEqualToString:@"img"])
 		{
 			[self characters:[_attributes objectForKey:@"alt"]];
 		}
 		//Get an explicit style
-		NSString * style = [_attributes objectForKey:@"style"];
 		if(style != nil)
 		{
 			currentAttributes = attributesFromStyles(currentAttributes,style);
@@ -318,6 +333,7 @@ NSMutableDictionary * stylesForTags;
 }
 - (void)endElement:(NSString *)_Name
 {
+	depth--;
 	if(depth == 0)
 	{
 		[parser setContentHandler:parent];
@@ -326,7 +342,6 @@ NSMutableDictionary * stylesForTags;
 	}
 	else
 	{
-		depth--;
 		[currentAttributes release];
 		currentAttributes = [attributeStack lastObject];
 		[attributeStack removeLastObject];
@@ -334,7 +349,7 @@ NSMutableDictionary * stylesForTags;
 }
 - (void) notifyParent
 {
-	[(id)parent setValue:string forKey:key];
+	[(id)parent addChild:string forKey:key];
 }
 - (void) dealloc
 {

@@ -212,7 +212,7 @@ NSDictionary * MESSAGE_TYPES;
 }
 - (void) addhtml:(NSAttributedString*)anAttributedString
 {
-//	html = [anAttributedString retain];
+	html = [anAttributedString retain];
 }
 //TODO:  Move this to a stanza class
 - (void) addChild:(id)aChild forKey:(NSString*)aKey

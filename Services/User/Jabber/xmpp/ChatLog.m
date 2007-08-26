@@ -231,17 +231,16 @@ NSMutableDictionary * chatLogs;
 			}
 		}
 		messageText = [[[NSMutableAttributedString alloc] initWithString:headerString] autorelease];
-		NSMutableAttributedString * attributedMessageBody = [[[NSMutableAttributedString alloc] initWithAttributedString:[aMessage HTMLBody]] autorelease];
-		//TODO:  Modify this once Message returns an attributed string in the body.
-		NSString * messageBody = [attributedMessageBody mutableString];
+		NSAttributedString * attributedMessageBody = [aMessage HTMLBody];
 		if(emote)
 		{
-			messageBody = [messageBody substringFromIndex:3];
-			messageBody = [messageBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			attributedMessageBody = [attributedMessageBody attributedSubstringFromRange:NSMakeRange(0,3)];
+			//messageBody = [messageBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		}
 		[messageText addAttribute:NSForegroundColorAttributeName value:headerColour range:NSMakeRange(0,[messageText length])];
 		
-		[messageText appendAttributedString:[[[NSAttributedString alloc] initWithString:[messageBody stringByAppendingString:@"\n"]] autorelease]];
+		[messageText appendAttributedString:attributedMessageBody];
+		[messageText appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
 		
 		
 		[log appendAttributedString:messageText];
