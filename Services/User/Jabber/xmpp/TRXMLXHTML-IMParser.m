@@ -130,6 +130,8 @@ inline NSColor * colourFromCSSColourString(NSString * aColour)
 	return [NSColor blackColor];
 }
 
+static NSDictionary * FONT_SIZES;
+
 inline NSMutableDictionary * attributesFromStyles(NSDictionary * oldAttributes, NSString * style)
 {
 	NSFontManager * fontManager = [NSFontManager sharedFontManager];
@@ -154,7 +156,7 @@ inline NSMutableDictionary * attributesFromStyles(NSDictionary * oldAttributes, 
 				[attributes setObject:colourFromCSSColourString(value)
 							   forKey:NSForegroundColorAttributeName];
 			}
-			else if([key isEqualToString:@"background-color"])
+			else if([key isEqualToString:@"background-color"] || [key isEqualToString:@"background"])
 			{
 				[attributes setObject:colourFromCSSColourString(value)
 							   forKey:NSBackgroundColorAttributeName];
@@ -180,7 +182,15 @@ inline NSMutableDictionary * attributesFromStyles(NSDictionary * oldAttributes, 
 			}
 			else if([key isEqualToString:@"font-size"])
 			{
-				font = [fontManager convertFont:font toSize:[value floatValue]];
+				NSNumber * size = [FONT_SIZES objectForKey:value];
+				if(nil != size)
+				{
+					font = [fontManager convertFont:font toSize:[size floatValue]];
+				}
+				else
+				{
+					font = [fontManager convertFont:font toSize:[value floatValue]];
+				}
 			}
 			else if([key isEqualToString:@"font-style"])
 			{
@@ -239,8 +249,17 @@ NSMutableDictionary * stylesForTags;
 @implementation TRXMLXHTML_IMParser
 + (void) loadStyles:(id)unused
 {
-	stylesForTags = [[NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"XHTML-IM HTML Styles"]] retain];
-//	if(nil == stylesForTags)
+//	stylesForTags = [[NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"XHTML-IM HTML Styles"]] retain];
+	FONT_SIZES = [[NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithFloat:6.0f],@"xx-small",
+		[NSNumber numberWithFloat:8.0f],@"x-small",
+		[NSNumber numberWithFloat:10.0f],@"small",
+		[NSNumber numberWithFloat:12.0f],@"medium",
+		[NSNumber numberWithFloat:14.0f],@"large",
+		[NSNumber numberWithFloat:16.0f],@"x-large",
+		[NSNumber numberWithFloat:18.0f],@"xx-large",
+		nil] retain];
+	//	if(nil == stylesForTags)
 	{
 		stylesForTags = [[NSMutableDictionary alloc] init];
 		[stylesForTags setObject:attributesFromStyles(nil,@"font-style : italic")
