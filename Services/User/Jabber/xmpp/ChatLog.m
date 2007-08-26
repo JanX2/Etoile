@@ -7,10 +7,12 @@
 //
 
 #import "ChatLog.h"
+#import "XMPPError.h"
 
 NSString * logBasePath;
 NSMutableDictionary * chatLogs;
 
+static NSDictionary * ERROR_STYLE;
 @implementation ChatLog
 + (void)initialize
 {
@@ -30,6 +32,13 @@ NSMutableDictionary * chatLogs;
 	}
 	logBasePath = [[logBasePath stringByAppendingString:@"/"] retain];
 	chatLogs = [[NSMutableDictionary alloc] init];
+	ERROR_STYLE = [[NSDictionary dictionaryWithObjectsAndKeys:
+		[NSColor colorWithCalibratedRed:1.0f 
+								  green:0.0f
+								   blue:0.0f
+								  alpha:1.0f],
+		NSForegroundColorAttributeName,
+		nil] retain];
 }
 
 + (void) setLogBasePath:(NSString*)_path
@@ -175,7 +184,23 @@ NSMutableDictionary * chatLogs;
 		[self save];
 	}
 }
-
+- (id) logErrorMessage:(Message*)aMessage
+{
+	XMPPError * error = [aMessage error];
+	NSCalendarDate * timestamp = [[aMessage timestamp] time];
+	if(timestamp == nil)
+	{
+		timestamp = [NSCalendarDate calendarDate];
+	}	
+	NSString * errorString = [NSString stringWithFormat:@"(%@) Error %d:\n%@\n",
+		[timestamp descriptionWithCalendarFormat:@"%H:%M:%S"],
+		[error errorCode],
+		[[error errorMessage] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+	NSAttributedString * errorMessage = [[NSAttributedString alloc] initWithString:errorString
+																		attributes:ERROR_STYLE];
+	[log appendAttributedString:errorMessage];
+	return [errorMessage autorelease];
+}
 - (id) logMessage:(Message*)aMessage
 {
 	if(isXML)
@@ -185,6 +210,19 @@ NSMutableDictionary * chatLogs;
 	}
 	else
 	{
+		if(autoSaveTimer == nil)
+		{
+			autoSaveTimer = [[NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)15.0
+															  target:self
+															selector:@selector(autoSave:)
+															userInfo:nil
+															 repeats:NO]
+				retain];
+		}		
+		if([aMessage type] == MESSAGE_TYPE_ERROR)
+		{
+			return [self logErrorMessage:aMessage];
+		}
 		//TODO:  Make `you / he says' message colours configurable.
 		//TODO:  Localise messages
 		BOOL emote = ([[aMessage body] length] >= 3 && [[[aMessage body] substringToIndex:3] isEqualToString:@"/me"]);
@@ -244,15 +282,6 @@ NSMutableDictionary * chatLogs;
 		
 		
 		[log appendAttributedString:messageText];
-		if(autoSaveTimer == nil)
-		{
-			autoSaveTimer = [[NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)15.0
-															  target:self
-															selector:@selector(autoSave:)
-															userInfo:nil
-															 repeats:NO]
-				retain];
-		}
 		return messageText;
 	}
 }

@@ -11,6 +11,7 @@
 #import <AppKit/AppKit.h>
 #import "TRXMLString.h"
 #import "MessageStanzaFactory.h"
+#import "XMPPError.h"
 #import "../Macros.h"
 
 NSDictionary * MESSAGE_TYPES;
@@ -138,12 +139,18 @@ NSDictionary * MESSAGE_TYPES;
 	}
 	return NO;
 }
-
+- (message_type_t) type
+{
+	return type;
+}
 - (Timestamp*) timestamp
 {
 	return [timestamps lastObject];
 }
-
+- (XMPPError*) error
+{
+	return error;
+}
 - (NSComparisonResult) compareByTimestamp:(Message*)_other
 {
 	return [[self timestamp] compare:[_other timestamp]];
@@ -214,6 +221,11 @@ NSDictionary * MESSAGE_TYPES;
 {
 	html = [anAttributedString retain];
 }
+- (void) adderror:(XMPPError*)anError
+{
+	[error release];
+	error = [anError retain];
+}
 //TODO:  Move this to a stanza class
 - (void) addChild:(id)aChild forKey:(NSString*)aKey
 {
@@ -235,6 +247,7 @@ NSDictionary * MESSAGE_TYPES;
 	[subject release];
 	[body release];
 	[timestamps release];
+	[error release];
 	[super dealloc];
 }
 

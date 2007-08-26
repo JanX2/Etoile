@@ -37,6 +37,7 @@ XMPP_OBJC_FILES = \
 					TRXMLXHTML-IMParser.m\
 					XMPPAccount.m\
 					XMPPConnection.m\
+					XMPPError.m\
 					jabber_iq_roster.m\
 					query_jabber_iq_auth.m
 # Not currently compiled files:
@@ -73,6 +74,7 @@ XMPP_HEADER_FILES = \
 					Timestamp.h\
 					XMPPAccount.h\
 					XMPPConnection.h\
+					XMPPError.h\
 					jabber_iq_roster.h\
 					query_jabber_iq_auth.h
 

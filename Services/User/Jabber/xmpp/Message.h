@@ -14,6 +14,9 @@
 
 typedef enum {in, out} MessageDirection;
 typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_GROUPCHAT, MESSAGE_TYPE_SPECIAL} message_type_t;
+
+@class XMPPError;
+
 /**
  * The Message class represents a message stanza, one of the three types of XML
  * stanza embodying discrete elements within an XMPP connection.
@@ -24,6 +27,7 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
 	message_type_t type;
 	NSString * subject;
 	NSString * body;
+	XMPPError * error;
 	NSAttributedString * html;
 	NSMutableArray * timestamps;
 	NSMutableDictionary * unknownAttributes;
@@ -45,6 +49,10 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
  */
 - (JID*) correspondent;
 /**
+ * Returns the type of the message stanza.
+ */
+- (message_type_t) type;
+/**
  * Returns the subject of the message.
  */
 - (NSString*) subject;
@@ -61,6 +69,10 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
  * storage).  May be broken (TEST).
  */
 - (Timestamp*) timestamp;
+/**
+ * Returns the associated error, if one exists.
+ */
+- (XMPPError*) error;
 /**
  * Returns YES for incoming messages, NO for outgoing.
  */

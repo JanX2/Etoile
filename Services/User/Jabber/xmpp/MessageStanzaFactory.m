@@ -9,6 +9,7 @@
 #import "MessageStanzaFactory.h"
 #import "TRXMLString.h"
 #import "TRXMLXHTML-IMParser.h"
+#import "XMPPError.h"
 #import "Message.h"
 
 static MessageStanzaFactory * sharedInstance;
@@ -21,6 +22,7 @@ static MessageStanzaFactory * sharedInstance;
 	[sharedInstance addHandler:[TRXMLString class] forTag:@"body"];
 	[sharedInstance addHandler:[TRXMLString class] forTag:@"subject"];
 	[sharedInstance addHandler:[Timestamp class] withValue:@"timestamp" forTag:@"x" inNamespace:@"jabber:x:delay"];
+	[sharedInstance addHandler:[XMPPError class] forTag:@"error"];
 #ifndef WITHOUT_XHTML_IM
 	[sharedInstance addHandler:[TRXMLXHTML_IMParser class] forTag:@"html"];
 #endif
