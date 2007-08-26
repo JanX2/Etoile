@@ -20,7 +20,7 @@ static MessageStanzaFactory * sharedInstance;
 	//Insert default handlers here:
 	[sharedInstance addHandler:[TRXMLString class] forTag:@"body"];
 	[sharedInstance addHandler:[TRXMLString class] forTag:@"subject"];
-	[sharedInstance addHandler:[Timestamp class] forTag:@"x" inNamespace:@"jabber:x:delay"];
+	[sharedInstance addHandler:[Timestamp class] withValue:@"timestamp" forTag:@"x" inNamespace:@"jabber:x:delay"];
 #ifndef WITHOUT_XHTML_IM
 	[sharedInstance addHandler:[TRXMLXHTML_IMParser class] forTag:@"html"];
 #endif

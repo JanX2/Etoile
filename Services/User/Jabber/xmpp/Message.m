@@ -45,6 +45,7 @@ NSDictionary * MESSAGE_TYPES;
 {
 	SUPERINIT;
 	unknownAttributes = [[NSMutableDictionary alloc] init];
+	timestamps = [[NSMutableArray alloc] init];
 	body = @"";
 	return self;
 }
@@ -140,7 +141,6 @@ NSDictionary * MESSAGE_TYPES;
 
 - (Timestamp*) timestamp
 {
-	NSLog(@"First timestamp: %@, Last timestamp: %@", [[timestamps objectAtIndex:0] stamp], [[timestamps lastObject] stamp]);
 	return [timestamps lastObject];
 }
 
