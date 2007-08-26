@@ -6,6 +6,7 @@ XMPP_OBJCFLAGS += -g -std=c99 -DGNUSTEP
 XMPP_LDFLAGS += -g
 
 ADDITIONAL_INCLUDE_DIRS += -I../TRXML/
+
 XMPP_AGSDOC_FLAGS += -MakeFrames YES
 
 XMPP_OBJC_FILES = \
@@ -33,6 +34,7 @@ XMPP_OBJC_FILES = \
 					StanzaFactory.m\
 					StreamFeatures.m\
 					Timestamp.m\
+					TRXMLXHTML-IMParser.m\
 					XMPPAccount.m\
 					XMPPConnection.m\
 					jabber_iq_roster.m\
@@ -40,7 +42,6 @@ XMPP_OBJC_FILES = \
 # Not currently compiled files:
 #					Capabilities.m\
 #					ServiceDiscovery.m\
-#					TRXMLXHTML-IMParser.m\
 
 XMPP_HEADER_FILES = \
 					Capabilities.h\

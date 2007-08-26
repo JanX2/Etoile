@@ -13,10 +13,10 @@
 
 #ifdef GNUSTEP
 #define NSUnderlineStyleSingle NSSingleUnderlineStyle
-#define NSStrikethoughStyleAttributeName @"NSStrikethoughStyleAttributeName"
+#define NSStrikethroughStyleAttributeName @"NSStrikethroughStyleAttributeName"
 #endif
 
-inline NSColor * colourFromCSSColourString(NSString * aColour)
+static inline NSColor * colourFromCSSColourString(NSString * aColour)
 {
 	const char * colourString = [aColour UTF8String];
 	int r,g,b;
@@ -132,7 +132,7 @@ inline NSColor * colourFromCSSColourString(NSString * aColour)
 
 static NSDictionary * FONT_SIZES;
 
-inline NSMutableDictionary * attributesFromStyles(NSDictionary * oldAttributes, NSString * style)
+static inline NSMutableDictionary * attributesFromStyles(NSDictionary * oldAttributes, NSString * style)
 {
 	NSFontManager * fontManager = [NSFontManager sharedFontManager];
 	NSMutableDictionary * attributes = [[NSMutableDictionary alloc] initWithDictionary:oldAttributes];
