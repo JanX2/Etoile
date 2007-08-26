@@ -234,7 +234,7 @@ NSMutableDictionary * chatLogs;
 		NSAttributedString * attributedMessageBody = [aMessage HTMLBody];
 		if(emote)
 		{
-			attributedMessageBody = [attributedMessageBody attributedSubstringFromRange:NSMakeRange(0,3)];
+			attributedMessageBody = [attributedMessageBody attributedSubstringFromRange:NSMakeRange(3,[[aMessage body] length]-3)];
 			//messageBody = [messageBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		}
 		[messageText addAttribute:NSForegroundColorAttributeName value:headerColour range:NSMakeRange(0,[messageText length])];
