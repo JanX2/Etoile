@@ -244,6 +244,18 @@ static inline NSMutableDictionary * attributesFromStyles(NSDictionary * oldAttri
 	return attributes;
 }
 
+static inline NSString* unescapeXMLCData(NSString* _XMLString)
+{
+	NSMutableString * XMLString = [NSMutableString stringWithString:_XMLString];
+	[XMLString replaceOccurrencesOfString:@"&lt;" withString:@"<" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&gt;" withString:@">" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&amp;" withString:@"&" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&apos;" withString:@"'" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&quot;" withString:@"\"" options:0 range:NSMakeRange(0,[XMLString length])];
+	return XMLString;
+}
+
+
 NSMutableDictionary * stylesForTags;
 
 @implementation TRXMLXHTML_IMParser
@@ -289,7 +301,8 @@ NSMutableDictionary * stylesForTags;
 
 - (void)characters:(NSString *)_chars
 {
-	NSAttributedString * newSection = [[NSAttributedString alloc] initWithString:_chars attributes:currentAttributes];
+	NSAttributedString * newSection = [[NSAttributedString alloc] initWithString:unescapeXMLCData(_chars)
+																	  attributes:currentAttributes];
 	[string appendAttributedString:newSection];
 	[newSection release];
 }
