@@ -34,7 +34,6 @@ XMPP_OBJC_FILES = \
 					StanzaFactory.m\
 					StreamFeatures.m\
 					Timestamp.m\
-					TRXMLXHTML-IMParser.m\
 					XMPPAccount.m\
 					XMPPConnection.m\
 					XMPPError.m\
@@ -70,7 +69,6 @@ XMPP_HEADER_FILES = \
 					ServiceDiscovery.h\
 					StanzaFactory.h\
 					StreamFeatures.h\
-					TRXMLXHTML-IMParser.h\
 					Timestamp.h\
 					XMPPAccount.h\
 					XMPPConnection.h\

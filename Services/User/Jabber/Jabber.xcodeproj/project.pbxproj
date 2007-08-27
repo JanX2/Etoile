@@ -21,7 +21,6 @@
 		280ACFFD0B7501A40008F3F3 /* TRXMLNullHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 28B2AAD40A1919DA0077DC9B /* TRXMLNullHandler.h */; };
 		280ACFFE0B7501A40008F3F3 /* TRXMLNullHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B2AAD50A1919DA0077DC9B /* TRXMLNullHandler.m */; };
 		280ACFFF0B7501A40008F3F3 /* TRXMLParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28963A1806AD64A50013F057 /* TRXMLParser.h */; };
-		280AD0000B7501A40008F3F3 /* TRXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28963A1906AD64A50013F057 /* TRXMLParser.m */; };
 		280AD0010B7501A40008F3F3 /* TRXMLParserDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 28963A1A06AD64A50013F057 /* TRXMLParserDelegate.h */; };
 		280AD0020B7501A40008F3F3 /* TRXMLString.h in Headers */ = {isa = PBXBuildFile; fileRef = 28B2AA8E0A18F47A0077DC9B /* TRXMLString.h */; };
 		280AD0030B7501A40008F3F3 /* TRXMLString.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B2AA8F0A18F47A0077DC9B /* TRXMLString.m */; };
@@ -109,7 +108,6 @@
 		283D78E80C8335C200986BBA /* StanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A55C70A24CCA80056829B /* StanzaFactory.m */; };
 		283D78E90C8335C200986BBA /* StreamFeatures.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A5D800A3491100056829B /* StreamFeatures.m */; };
 		283D78EA0C8335C200986BBA /* Timestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C10206D6603A00D0644B /* Timestamp.m */; };
-		283D78EB0C8335C200986BBA /* TRXMLXHTML-IMParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */; };
 		283D78EC0C8335C200986BBA /* XMPPAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 28177ADE0700A3E800A694A2 /* XMPPAccount.m */; };
 		283D78ED0C8335C200986BBA /* XMPPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */; };
 		283D78EE0C8335C200986BBA /* XMPPError.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CCCCC50C8227010025B407 /* XMPPError.m */; };
@@ -129,6 +127,9 @@
 		283D79DE0C833E8800986BBA /* XMLLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 28135C9808ACE3780032967E /* XMLLog.m */; };
 		283D79E50C833E9700986BBA /* TRUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 285F6FE8073820CA00FD5D67 /* TRUserDefaults.m */; };
 		283D79E90C833E9D00986BBA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		283D7BE70C837D3B00986BBA /* TRXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28963A1906AD64A50013F057 /* TRXMLParser.m */; };
+		283D7BEA0C837D4400986BBA /* TRXMLXHTML-IMParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */; };
+		283D7BF00C837D7300986BBA /* TRXMLXHTML-IMParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28B2AB860A19C0130077DC9B /* TRXMLXHTML-IMParser.h */; };
 		2842CF04089FCFD900F2D0AA /* JabberResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF02089FCFD900F2D0AA /* JabberResource.h */; };
 		2842CF22089FD23F00F2D0AA /* JabberRootIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF20089FD23F00F2D0AA /* JabberRootIdentity.h */; };
 		2842CF68089FD32100F2D0AA /* Macros.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF67089FD32100F2D0AA /* Macros.h */; };
@@ -147,7 +148,6 @@
 		289836A8063DB65700A3D164 /* RosterController.h in Headers */ = {isa = PBXBuildFile; fileRef = 289836A6063DB65700A3D164 /* RosterController.h */; };
 		28A32C2E082E3E3B0012AD55 /* Capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 28A32C2C082E3E3B0012AD55 /* Capabilities.h */; };
 		28A5470807C66A3500595357 /* ChatLogMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 28A5470607C66A3500595357 /* ChatLogMenuController.h */; };
-		28B2AB880A19C0130077DC9B /* TRXMLXHTML-IMParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28B2AB860A19C0130077DC9B /* TRXMLXHTML-IMParser.h */; };
 		28C5029406B3CEED00CE9114 /* RosterGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 28C5029206B3CEED00CE9114 /* RosterGroup.h */; };
 		28CCCCC60C8227010025B407 /* XMPPError.h in Headers */ = {isa = PBXBuildFile; fileRef = 28CCCCC40C8227010025B407 /* XMPPError.h */; };
 		28CCCD9B0C8322310025B407 /* NSAttributedString+HTML-IM.h in Headers */ = {isa = PBXBuildFile; fileRef = 28CCCD990C8322310025B407 /* NSAttributedString+HTML-IM.h */; };
@@ -178,7 +178,6 @@
 		28CCCE3C0C832BD00025B407 /* StanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A55C60A24CCA80056829B /* StanzaFactory.h */; };
 		28CCCE3E0C832BD00025B407 /* StreamFeatures.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A5D7F0A3491100056829B /* StreamFeatures.h */; };
 		28CCCE400C832BD00025B407 /* Timestamp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C10106D6603A00D0644B /* Timestamp.h */; };
-		28CCCE420C832BD00025B407 /* TRXMLXHTML-IMParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28B2AB860A19C0130077DC9B /* TRXMLXHTML-IMParser.h */; };
 		28CCCE440C832BD00025B407 /* XMPPAccount.h in Headers */ = {isa = PBXBuildFile; fileRef = 28177ADD0700A3E800A694A2 /* XMPPAccount.h */; };
 		28CCCE460C832BD00025B407 /* XMPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F8E9890632E612004623A5 /* XMPPConnection.h */; };
 		28CCCE480C832BD00025B407 /* XMPPError.h in Headers */ = {isa = PBXBuildFile; fileRef = 28CCCCC40C8227010025B407 /* XMPPError.h */; };
@@ -331,8 +330,8 @@
 		28B2AA8F0A18F47A0077DC9B /* TRXMLString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TRXMLString.m; path = TRXML/TRXMLString.m; sourceTree = "<group>"; };
 		28B2AAD40A1919DA0077DC9B /* TRXMLNullHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TRXMLNullHandler.h; path = TRXML/TRXMLNullHandler.h; sourceTree = "<group>"; };
 		28B2AAD50A1919DA0077DC9B /* TRXMLNullHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TRXMLNullHandler.m; path = TRXML/TRXMLNullHandler.m; sourceTree = "<group>"; };
-		28B2AB860A19C0130077DC9B /* TRXMLXHTML-IMParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "TRXMLXHTML-IMParser.h"; path = "xmpp/TRXMLXHTML-IMParser.h"; sourceTree = "<group>"; };
-		28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "TRXMLXHTML-IMParser.m"; path = "xmpp/TRXMLXHTML-IMParser.m"; sourceTree = "<group>"; };
+		28B2AB860A19C0130077DC9B /* TRXMLXHTML-IMParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "TRXMLXHTML-IMParser.h"; path = "TRXML/TRXMLXHTML-IMParser.h"; sourceTree = "<group>"; };
+		28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "TRXMLXHTML-IMParser.m"; path = "TRXML/TRXMLXHTML-IMParser.m"; sourceTree = "<group>"; };
 		28C5029206B3CEED00CE9114 /* RosterGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RosterGroup.h; path = xmpp/RosterGroup.h; sourceTree = "<group>"; };
 		28C5029306B3CEED00CE9114 /* RosterGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RosterGroup.m; path = xmpp/RosterGroup.m; sourceTree = "<group>"; };
 		28CCCCC40C8227010025B407 /* XMPPError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMPPError.h; path = xmpp/XMPPError.h; sourceTree = "<group>"; };
@@ -511,8 +510,6 @@
 				28F8E98A0632E612004623A5 /* XMPPConnection.m */,
 				28C5029206B3CEED00CE9114 /* RosterGroup.h */,
 				28C5029306B3CEED00CE9114 /* RosterGroup.m */,
-				28B2AB860A19C0130077DC9B /* TRXMLXHTML-IMParser.h */,
-				28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */,
 				280A55C60A24CCA80056829B /* StanzaFactory.h */,
 				280A55C70A24CCA80056829B /* StanzaFactory.m */,
 				280A55D00A24CD600056829B /* MessageStanzaFactory.h */,
@@ -563,6 +560,8 @@
 		28D8D52E06AAB2AC002C2165 /* XML Parser */ = {
 			isa = PBXGroup;
 			children = (
+				28B2AB860A19C0130077DC9B /* TRXMLXHTML-IMParser.h */,
+				28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */,
 				28B2AA8E0A18F47A0077DC9B /* TRXMLString.h */,
 				28B2AA8F0A18F47A0077DC9B /* TRXMLString.m */,
 				28963A1606AD64A50013F057 /* TRXMLNode.h */,
@@ -640,6 +639,7 @@
 				280ACFFF0B7501A40008F3F3 /* TRXMLParser.h in Headers */,
 				280AD0010B7501A40008F3F3 /* TRXMLParserDelegate.h in Headers */,
 				280AD0020B7501A40008F3F3 /* TRXMLString.h in Headers */,
+				283D7BF00C837D7300986BBA /* TRXMLXHTML-IMParser.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -707,7 +707,6 @@
 				28CCCE3C0C832BD00025B407 /* StanzaFactory.h in Headers */,
 				28CCCE3E0C832BD00025B407 /* StreamFeatures.h in Headers */,
 				28CCCE400C832BD00025B407 /* Timestamp.h in Headers */,
-				28CCCE420C832BD00025B407 /* TRXMLXHTML-IMParser.h in Headers */,
 				28CCCE440C832BD00025B407 /* XMPPAccount.h in Headers */,
 				28CCCE460C832BD00025B407 /* XMPPConnection.h in Headers */,
 				28CCCE480C832BD00025B407 /* XMPPError.h in Headers */,
@@ -751,7 +750,6 @@
 				2842CF22089FD23F00F2D0AA /* JabberRootIdentity.h in Headers */,
 				2842CF68089FD32100F2D0AA /* Macros.h in Headers */,
 				28135C9908ACE3780032967E /* XMLLog.h in Headers */,
-				28B2AB880A19C0130077DC9B /* TRXMLXHTML-IMParser.h in Headers */,
 				280A55C80A24CCA80056829B /* StanzaFactory.h in Headers */,
 				280A55D20A24CD600056829B /* MessageStanzaFactory.h in Headers */,
 				280A56D80A25C4050056829B /* IqStanzaFactory.h in Headers */,
@@ -884,8 +882,9 @@
 			files = (
 				280ACFFC0B7501A40008F3F3 /* TRXMLNode.m in Sources */,
 				280ACFFE0B7501A40008F3F3 /* TRXMLNullHandler.m in Sources */,
-				280AD0000B7501A40008F3F3 /* TRXMLParser.m in Sources */,
 				280AD0030B7501A40008F3F3 /* TRXMLString.m in Sources */,
+				283D7BE70C837D3B00986BBA /* TRXMLParser.m in Sources */,
+				283D7BEA0C837D4400986BBA /* TRXMLXHTML-IMParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -920,7 +919,6 @@
 				283D78E80C8335C200986BBA /* StanzaFactory.m in Sources */,
 				283D78E90C8335C200986BBA /* StreamFeatures.m in Sources */,
 				283D78EA0C8335C200986BBA /* Timestamp.m in Sources */,
-				283D78EB0C8335C200986BBA /* TRXMLXHTML-IMParser.m in Sources */,
 				283D78EC0C8335C200986BBA /* XMPPAccount.m in Sources */,
 				283D78ED0C8335C200986BBA /* XMPPConnection.m in Sources */,
 				283D78EE0C8335C200986BBA /* XMPPError.m in Sources */,

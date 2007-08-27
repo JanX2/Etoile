@@ -9,6 +9,7 @@ TRXML_OBJC_FILES = \
 	TRXMLDeclaration.m \
 	TRXMLNullHandler.m \
 	TRXMLParser.m \
+	TRXMLXHTML-IMParser.m\
 	TRXMLString.m
 
 TRXML_HEADER_FILES = \
@@ -17,6 +18,7 @@ TRXML_HEADER_FILES = \
 	TRXMLParser.h \
 	TRXMLString.h \
 	TRXMLNullHandler.h \
+	TRXMLXHTML-IMParser.h\
 	TRXMLParserDelegate.h
 
 TRXML_AGSDOC_FILES = ${TRXML_HEADER_FILES}
