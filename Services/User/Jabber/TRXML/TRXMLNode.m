@@ -162,26 +162,18 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 	return nodeType;
 }
 
-- (NSString*) stringValue
-{
-	return [self stringValueWithFlags:[[[NSDictionary alloc] init] autorelease]];
-}
-
-- (NSString*) stringValueWithFlags:(NSDictionary *)flags
+- (NSString*) stringValueWithIndent:(int)indent
 {
 	//Open tag
 	NSMutableString * XML = [NSMutableString stringWithFormat:@"<%@",nodeType];
 	//Number of tabs to indent
-	NSNumber * indent = [flags objectForKey:@"indent"];
-	NSMutableString * indentString = [NSMutableString stringWithString:@"\n"];
-	
-	//Calculate the string we will use for indent
-	if(indent == nil)
+	NSMutableString * indentString = @"";
+	if(indent >= 0)
 	{
-		indent = [NSNumber numberWithInt:0];
+		indentString = [NSMutableString stringWithString:@"\n"];
 	}
-
-	for(int i=0 ; i<[indent intValue] ; i++)
+	
+	for(int i=0 ; i<indent ; i++)
 	{
 		[indentString appendString:@"\t"];
 	}
@@ -196,7 +188,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 			[XML appendString:[NSString stringWithFormat:@" %@=\"%@\"",key, (NSString*)[attributes objectForKey:key]]];
 		}
 	}
-
+	
 	//If we just have CDATA (no children)
 	if([elements count] > 0 && [childrenByName count] == 0)
 	{
@@ -206,13 +198,13 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 	}
 	else if([elements count] > 0)
 	{
-		//Create the dictionary we will pass to the children
-		NSMutableDictionary * childFlags = [NSMutableDictionary dictionaryWithDictionary:flags];
 		NSMutableString * childIndentString = [NSMutableString stringWithString:indentString];
-		
+
 		//Children are indented one more tab than parents
-		[childFlags setObject:[NSNumber numberWithInt:([indent intValue]+1)] forKey:@"indent"];
-		[childIndentString appendString:@"\t"];
+		if(indent > 0)
+		{
+			[childIndentString appendString:@"\t"];
+		}
 		//End the start element
 		[XML appendString:@">"];
 		
@@ -228,7 +220,14 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 			}
 			else
 			{
-				[XML appendString:[element stringValueWithFlags:childFlags]];
+				if(indent < 0)
+				{
+					[XML appendString:[element stringValueWithIndent:indent]];					
+				}
+				else
+				{
+					[XML appendString:[element stringValueWithIndent:indent + 1]];
+				}
 			}
 		}
 		[XML appendString:indentString];
@@ -239,6 +238,16 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 		[XML appendString:@"/>"];
 	}
 	return XML;
+}
+
+
+- (NSString*) stringValue
+{
+	return [self stringValueWithIndent:0];
+}
+- (NSString*) unindentedStringValue
+{
+	return [self stringValueWithIndent:-1];
 }
 
 - (void) addChild:(id)anElement

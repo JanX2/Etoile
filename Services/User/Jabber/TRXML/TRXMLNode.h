@@ -52,15 +52,13 @@
 - (id) initWithType:(NSString*)type attributes:(NSDictionary*)_attributes;
 - (NSString*) type;
 /**
- * Generate a string representation of the node.  Currently the flags are only
- * used to pass a depth when calling this method recursively on child nodes for
- * indenting.
- */
-- (NSString*) stringValueWithFlags:(NSDictionary *)flags;
-/**
  * Generate an XML string representing the node.
  */
 - (NSString*) stringValue;
+/**
+ * Produces an XML string without pretty printing.
+ */
+- (NSString*) unindentedStringValue;
 - (NSSet*) getChildrenWithName:(NSString*)_name;
 - (unsigned int) children;
 - (NSArray*) elements;
