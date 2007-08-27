@@ -33,15 +33,15 @@
 	return [super init];
 }
 
-- (NSString*) stringValueWithFlags:(NSDictionary *)flags
+- (NSString*) stringValueWithIndent:(int)indent
 {
-	if([[flags valueForKey:@"authtype"] isEqualToString:@"plain"])
+	/* Plain auth (not used)
 	{
 		NSString * XML;
 		XML = [NSString stringWithFormat:@"\t<query xmlns=\"jabber:iq:auth\">\n\t\t<username>%@</username>\n\t\t<password>%@</password>\n\t\t<resource>%@</resource>\n\t</query>\n",user,pass,res];
 		return XML;		
 	}
-	else
+	else */
 	{
 		NSString * sessionPassword = [sessionID stringByAppendingString:pass];
 		NSString * XML;

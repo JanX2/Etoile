@@ -349,7 +349,7 @@ NSMutableDictionary * stylesForTags;
 		//Get an explicit style
 		if(style != nil)
 		{
-			currentAttributes = attributesFromStyles(currentAttributes,style);
+			currentAttributes = attributesFromStyles([currentAttributes autorelease],style);
 		}
 		[currentAttributes retain];
 		//And some line breaks...
