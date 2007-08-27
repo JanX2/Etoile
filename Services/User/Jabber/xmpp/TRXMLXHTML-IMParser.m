@@ -287,7 +287,7 @@ NSSet * lineBreakAfterTags;
 		@"p", @"h1", @"h2", @"h3", @"h4", @"h5", @"h6", @"h7", @"h8", @"h9",
 		nil];
 	lineBreakBeforeTags = [[NSSet alloc] initWithObjects:
-		@"br",@"h1", @"h2", @"h3", @"h4", @"h5", @"h6", @"h7", @"h8", @"h9",
+		@"br", @"p", @"h1", @"h2", @"h3", @"h4", @"h5", @"h6", @"h7", @"h8", @"h9",
 		nil];
 	//Load stored tag to style mappings
 	[self loadStyles:nil];
