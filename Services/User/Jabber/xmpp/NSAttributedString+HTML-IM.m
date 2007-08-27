@@ -79,6 +79,26 @@ NSString * styleFromAttributes(NSDictionary * attributes)
 	return style;
 }
 
+void addCdataWithLineBreaksToNode(TRXMLNode * node, NSString* cdata)
+{
+	TRXMLNode * br = [TRXMLNode TRXMLNodeWithType:@"br"];
+	NSArray * segments = [cdata componentsSeparatedByString:@"\n"];
+	if([segments count] > 1)
+	{
+		int i;
+		for(i=0 ; i < [segments count] -1 ; i++)
+		{
+			[node addCData:[segments objectAtIndex:i]];
+			[node addChild:br];
+		}
+		[node addCData:[segments objectAtIndex:i]];		
+	}
+	else
+	{
+		[node addCData:cdata];
+	}
+}
+
 @implementation NSAttributedString (XHTML_IM)
 - (TRXMLNode*) xhtmlimValue
 {
@@ -104,13 +124,13 @@ NSString * styleFromAttributes(NSDictionary * attributes)
 			NSDictionary * style = [NSDictionary dictionaryWithObject:styleFromAttributes(attributes)
 															   forKey:@"style"];
 			span = [TRXMLNode TRXMLNodeWithType:@"span"
-									 attributes:style];			
-			[span addCData:[plainText substringWithRange:attributeRange]];
+									 attributes:style];
+			addCdataWithLineBreaksToNode(span, [plainText substringWithRange:attributeRange]);
 			[body addChild:span];
 		}
 		else
 		{
-			[body addCData:[plainText substringWithRange:attributeRange]];
+			addCdataWithLineBreaksToNode(body, [plainText substringWithRange:attributeRange]);
 		}
 		start = attributeRange.location + attributeRange.length;
 	}
