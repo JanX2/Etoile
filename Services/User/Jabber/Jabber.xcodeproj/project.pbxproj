@@ -166,6 +166,8 @@
 		28B2AB890A19C0130077DC9B /* TRXMLXHTML-IMParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */; };
 		28C5029406B3CEED00CE9114 /* RosterGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 28C5029206B3CEED00CE9114 /* RosterGroup.h */; };
 		28C5029506B3CEED00CE9114 /* RosterGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C5029306B3CEED00CE9114 /* RosterGroup.m */; };
+		28CCCCC60C8227010025B407 /* XMPPError.h in Headers */ = {isa = PBXBuildFile; fileRef = 28CCCCC40C8227010025B407 /* XMPPError.h */; };
+		28CCCCC70C8227010025B407 /* XMPPError.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CCCCC50C8227010025B407 /* XMPPError.m */; };
 		28D744B307565ED800D7EE0C /* ChatLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 28D744B107565ED800D7EE0C /* ChatLog.h */; };
 		28D744B407565ED800D7EE0C /* ChatLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D744B207565ED800D7EE0C /* ChatLog.m */; };
 		28DD66890B05725D00035263 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD66870B05725D00035263 /* NSData+Base64.h */; };
@@ -327,6 +329,8 @@
 		28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "TRXMLXHTML-IMParser.m"; path = "xmpp/TRXMLXHTML-IMParser.m"; sourceTree = "<group>"; };
 		28C5029206B3CEED00CE9114 /* RosterGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RosterGroup.h; path = xmpp/RosterGroup.h; sourceTree = "<group>"; };
 		28C5029306B3CEED00CE9114 /* RosterGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RosterGroup.m; path = xmpp/RosterGroup.m; sourceTree = "<group>"; };
+		28CCCCC40C8227010025B407 /* XMPPError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMPPError.h; path = xmpp/XMPPError.h; sourceTree = "<group>"; };
+		28CCCCC50C8227010025B407 /* XMPPError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPError.m; path = xmpp/XMPPError.m; sourceTree = "<group>"; };
 		28CD158F079160F20025B96F /* TRIdleTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TRIdleTimer.h; sourceTree = "<group>"; };
 		28CD1590079160F20025B96F /* TRIdleTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TRIdleTimer.m; sourceTree = "<group>"; };
 		28CD15B0079168610025B96F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -445,6 +449,8 @@
 		28C501F506B2680E00CE9114 /* XMPP */ = {
 			isa = PBXGroup;
 			children = (
+				28CCCCC40C8227010025B407 /* XMPPError.h */,
+				28CCCCC50C8227010025B407 /* XMPPError.m */,
 				28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */,
 				28DD6AAD0B07BCD700035263 /* Query_jabber_iq_roster.m */,
 				28DD66870B05725D00035263 /* NSData+Base64.h */,
@@ -662,6 +668,7 @@
 				280AD06A0B7502930008F3F3 /* TRXMLXHTML-IMParser.h in Headers */,
 				280AD06C0B7502930008F3F3 /* XMPPAccount.h in Headers */,
 				280AD06E0B7502930008F3F3 /* XMPPConnection.h in Headers */,
+				28CCCCC60C8227010025B407 /* XMPPError.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -872,6 +879,7 @@
 				280AD06B0B7502930008F3F3 /* TRXMLXHTML-IMParser.m in Sources */,
 				280AD06D0B7502930008F3F3 /* XMPPAccount.m in Sources */,
 				280AD06F0B7502930008F3F3 /* XMPPConnection.m in Sources */,
+				28CCCCC70C8227010025B407 /* XMPPError.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

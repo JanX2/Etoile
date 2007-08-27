@@ -69,7 +69,7 @@
 	}
 	else
 	{
-		NSLog(@"Unrecognised XML child type: %@", aKey);
+		//NSLog(@"Unrecognised XML child type: %@", aKey);
 	}
 }
 
