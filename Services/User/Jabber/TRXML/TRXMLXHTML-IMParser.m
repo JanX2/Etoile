@@ -256,9 +256,9 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 }
 
 
-NSMutableDictionary * stylesForTags;
-NSSet * lineBreakBeforeTags;
-NSSet * lineBreakAfterTags;
+static NSMutableDictionary * stylesForTags;
+static NSSet * lineBreakBeforeTags;
+static NSSet * lineBreakAfterTags;
 
 @implementation TRXMLXHTML_IMParser
 + (void) loadStyles:(id)unused
@@ -277,8 +277,20 @@ NSSet * lineBreakAfterTags;
 	{
 		stylesForTags = [[NSMutableDictionary alloc] init];
 		[stylesForTags setObject:attributesFromStyles(nil,@"font-style : italic")
-						  forKey:@"em"];		
-	}	
+						  forKey:@"em"];	
+		[stylesForTags setObject:attributesFromStyles(nil,@"font-style : italic")
+						  forKey:@"i"];	
+		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold")
+						  forKey:@"b"];
+		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold;font-size: xx-large")
+						  forKey:@"h1"];	
+		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold;font-size: x-large")
+						  forKey:@"h2"];	
+		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold;font-size: large")
+						  forKey:@"h3"];
+		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold")
+						  forKey:@"h4"];
+	}
 }
 
 + (void) initialize 
@@ -291,6 +303,7 @@ NSSet * lineBreakAfterTags;
 		nil];
 	//Load stored tag to style mappings
 	[self loadStyles:nil];
+	NSLog(@"Styles: %@", stylesForTags);
 	//Request notification if these change
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(loadStyles:)
@@ -311,6 +324,7 @@ NSSet * lineBreakAfterTags;
 {
 	NSAttributedString * newSection = [[NSAttributedString alloc] initWithString:unescapeXMLCData(_chars)
 																	  attributes:currentAttributes];
+	NSLog(@"Adding '%@' with attributes: %@", _chars, currentAttributes);
 	[string appendAttributedString:newSection];
 	[newSection release];
 }
@@ -385,8 +399,8 @@ NSSet * lineBreakAfterTags;
 			[self characters:@"\n"];
 		}
 		[currentAttributes release];
-		currentAttributes = [attributeStack lastObject];
 		[attributeStack removeLastObject];
+		currentAttributes = [attributeStack lastObject];
 	}
 }
 - (void) notifyParent

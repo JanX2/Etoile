@@ -215,6 +215,13 @@
 			remoteGlobalIDString = 280ACF700B75013B0008F3F3;
 			remoteInfo = XML;
 		};
+		281EF1AC0C83972D00D07C7C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 280ACF700B75013B0008F3F3 /* TRXML */;
+			remoteInfo = TRXML;
+		};
 		2839E2E90B76504300145C44 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -304,7 +311,7 @@
 		2835875D063D4D7F008F21EA /* JabberApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JabberApp.h; sourceTree = "<group>"; };
 		2835875E063D4D7F008F21EA /* JabberApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JabberApp.m; sourceTree = "<group>"; };
 		283D7C180C838A2300986BBA /* HTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "HTMLTest-Info.plist"; sourceTree = "<group>"; };
-		283D7C210C838A8200986BBA /* XHTMLTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = XHTMLTest.app; path = build/Development/XHTMLTest.app; sourceTree = "<group>"; };
+		283D7C210C838A8200986BBA /* XHTMLTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XHTMLTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		283D7C230C838A8200986BBA /* XHTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "XHTMLTest-Info.plist"; sourceTree = "<group>"; };
 		283D7C350C838B3900986BBA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/HTMLTestWindow.nib; sourceTree = "<group>"; };
 		283D7C390C838B6700986BBA /* TRXHTMLTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TRXHTMLTest.h; path = TRXML/TRXHTMLTest.h; sourceTree = "<group>"; };
@@ -852,6 +859,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				281EF1AD0C83972D00D07C7C /* PBXTargetDependency */,
 			);
 			name = XHTMLTest;
 			productName = XHTMLTest;
@@ -1031,6 +1039,11 @@
 			isa = PBXTargetDependency;
 			target = 280ACF700B75013B0008F3F3 /* TRXML */;
 			targetProxy = 280AD13F0B7506C20008F3F3 /* PBXContainerItemProxy */;
+		};
+		281EF1AD0C83972D00D07C7C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 280ACF700B75013B0008F3F3 /* TRXML */;
+			targetProxy = 281EF1AC0C83972D00D07C7C /* PBXContainerItemProxy */;
 		};
 		2839E2EA0B76504300145C44 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
