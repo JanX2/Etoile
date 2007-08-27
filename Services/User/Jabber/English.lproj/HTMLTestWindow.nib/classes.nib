@@ -1,0 +1,19 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {update = id; }; 
+            CLASS = TRXHTMLTest; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {inHTML = NSTextView; outHTML = NSTextView; }; 
+            SUPERCLASS = TRXMLNullHandler; 
+        }, 
+        {
+            CLASS = TRXMLNullHandler; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {key = id; parent = id; parser = id; value = id; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

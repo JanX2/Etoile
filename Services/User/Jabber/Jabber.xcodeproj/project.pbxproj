@@ -130,6 +130,11 @@
 		283D7BE70C837D3B00986BBA /* TRXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28963A1906AD64A50013F057 /* TRXMLParser.m */; };
 		283D7BEA0C837D4400986BBA /* TRXMLXHTML-IMParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */; };
 		283D7BF00C837D7300986BBA /* TRXMLXHTML-IMParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28B2AB860A19C0130077DC9B /* TRXMLXHTML-IMParser.h */; };
+		283D7C360C838B3900986BBA /* HTMLTestWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 283D7C340C838B3900986BBA /* HTMLTestWindow.nib */; };
+		283D7C3B0C838B6700986BBA /* TRXHTMLTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 283D7C3A0C838B6700986BBA /* TRXHTMLTest.m */; };
+		283D7C520C838CC700986BBA /* XML.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* XML.framework */; };
+		283D7CAF0C838F5C00986BBA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		283D7CDD0C8390AD00986BBA /* XML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* XML.framework */; };
 		2842CF04089FCFD900F2D0AA /* JabberResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF02089FCFD900F2D0AA /* JabberResource.h */; };
 		2842CF22089FD23F00F2D0AA /* JabberRootIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF20089FD23F00F2D0AA /* JabberRootIdentity.h */; };
 		2842CF68089FD32100F2D0AA /* Macros.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF67089FD32100F2D0AA /* Macros.h */; };
@@ -232,6 +237,16 @@
 			name = "Copy Private Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		283D7C550C838CF600986BBA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				283D7C520C838CC700986BBA /* XML.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -288,6 +303,12 @@
 		283584CD063C4642008F21EA /* JabberPerson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JabberPerson.m; path = xmpp/JabberPerson.m; sourceTree = "<group>"; };
 		2835875D063D4D7F008F21EA /* JabberApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JabberApp.h; sourceTree = "<group>"; };
 		2835875E063D4D7F008F21EA /* JabberApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JabberApp.m; sourceTree = "<group>"; };
+		283D7C180C838A2300986BBA /* HTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "HTMLTest-Info.plist"; sourceTree = "<group>"; };
+		283D7C210C838A8200986BBA /* XHTMLTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = XHTMLTest.app; path = build/Development/XHTMLTest.app; sourceTree = "<group>"; };
+		283D7C230C838A8200986BBA /* XHTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "XHTMLTest-Info.plist"; sourceTree = "<group>"; };
+		283D7C350C838B3900986BBA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/HTMLTestWindow.nib; sourceTree = "<group>"; };
+		283D7C390C838B6700986BBA /* TRXHTMLTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TRXHTMLTest.h; path = TRXML/TRXHTMLTest.h; sourceTree = "<group>"; };
+		283D7C3A0C838B6700986BBA /* TRXHTMLTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TRXHTMLTest.m; path = TRXML/TRXHTMLTest.m; sourceTree = "<group>"; };
 		2842CF02089FCFD900F2D0AA /* JabberResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JabberResource.h; path = xmpp/JabberResource.h; sourceTree = "<group>"; };
 		2842CF03089FCFD900F2D0AA /* JabberResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JabberResource.m; path = xmpp/JabberResource.m; sourceTree = "<group>"; };
 		2842CF20089FD23F00F2D0AA /* JabberRootIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JabberRootIdentity.h; path = xmpp/JabberRootIdentity.h; sourceTree = "<group>"; };
@@ -388,6 +409,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		283D7C1F0C838A8200986BBA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				283D7CDD0C8390AD00986BBA /* XML.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072E0486CEB800E47090 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -440,6 +469,7 @@
 				280ACF710B75013B0008F3F3 /* XML.framework */,
 				8D1107320486CEB800E47090 /* StepChat.app */,
 				280AD0290B75025F0008F3F3 /* XMPP.framework */,
+				283D7C210C838A8200986BBA /* XHTMLTest.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -590,6 +620,8 @@
 				2842CF67089FD32100F2D0AA /* Macros.h */,
 				280ACF670B75012E0008F3F3 /* XMPP-Info.plist */,
 				280ACF720B75013B0008F3F3 /* XML-Info.plist */,
+				283D7C180C838A2300986BBA /* HTMLTest-Info.plist */,
+				283D7C230C838A8200986BBA /* XHTMLTest-Info.plist */,
 			);
 			name = Jabber;
 			sourceTree = "<group>";
@@ -614,6 +646,9 @@
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
 				2860DD34072541920081D50C /* RosterWindow.nib */,
 				2860DD360725419A0081D50C /* PasswordBox.nib */,
+				283D7C340C838B3900986BBA /* HTMLTestWindow.nib */,
+				283D7C390C838B6700986BBA /* TRXHTMLTest.h */,
+				283D7C3A0C838B6700986BBA /* TRXHTMLTest.m */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -805,6 +840,24 @@
 			productReference = 280AD0290B75025F0008F3F3 /* XMPP.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		283D7C200C838A8200986BBA /* XHTMLTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 283D7C240C838A8200986BBA /* Build configuration list for PBXNativeTarget "XHTMLTest" */;
+			buildPhases = (
+				283D7C1D0C838A8200986BBA /* Resources */,
+				283D7C1E0C838A8200986BBA /* Sources */,
+				283D7C1F0C838A8200986BBA /* Frameworks */,
+				283D7C550C838CF600986BBA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XHTMLTest;
+			productName = XHTMLTest;
+			productReference = 283D7C210C838A8200986BBA /* XHTMLTest.app */;
+			productType = "com.apple.product-type.application";
+		};
 		8D1107260486CEB800E47090 /* StepChat */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 28F8E8DD0867708100948872 /* Build configuration list for PBXNativeTarget "StepChat" */;
@@ -840,6 +893,7 @@
 				8D1107260486CEB800E47090 /* StepChat */,
 				280ACF700B75013B0008F3F3 /* TRXML */,
 				280AD0280B75025F0008F3F3 /* XMPP */,
+				283D7C200C838A8200986BBA /* XHTMLTest */,
 			);
 		};
 /* End PBXProject section */
@@ -856,6 +910,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		283D7C1D0C838A8200986BBA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				283D7C360C838B3900986BBA /* HTMLTestWindow.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -948,6 +1010,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		283D7C1E0C838A8200986BBA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				283D7C3B0C838B6700986BBA /* TRXHTMLTest.m in Sources */,
+				283D7CAF0C838F5C00986BBA /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -975,6 +1046,14 @@
 				089C165DFE840E0CC02AAC07 /* English */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		283D7C340C838B3900986BBA /* HTMLTestWindow.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				283D7C350C838B3900986BBA /* English */,
+			);
+			name = HTMLTestWindow.nib;
 			sourceTree = "<group>";
 		};
 		2860DD32072541760081D50C /* MessageWindow.nib */ = {
@@ -1178,6 +1257,78 @@
 			};
 			name = Default;
 		};
+		283D7C250C838A8200986BBA /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "XHTMLTest-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = XHTMLTest;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		283D7C260C838A8200986BBA /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "XHTMLTest-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = XHTMLTest;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		283D7C270C838A8200986BBA /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "XHTMLTest-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = XHTMLTest;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Default;
+		};
 		28F8E8DE0867708100948872 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1376,6 +1527,16 @@
 				280AD02D0B75027D0008F3F3 /* Development */,
 				280AD02E0B75027D0008F3F3 /* Deployment */,
 				280AD02F0B75027D0008F3F3 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		283D7C240C838A8200986BBA /* Build configuration list for PBXNativeTarget "XHTMLTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				283D7C250C838A8200986BBA /* Development */,
+				283D7C260C838A8200986BBA /* Deployment */,
+				283D7C270C838A8200986BBA /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
