@@ -307,7 +307,7 @@
 							}
 							NS_ENDHANDLER
 							currentIndex++;
-							state = notag;
+							state = incdata;
 						}
 						currentIndex--;
 						SKIPTO('>');
