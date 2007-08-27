@@ -257,6 +257,8 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 
 
 NSMutableDictionary * stylesForTags;
+NSSet * lineBreakBeforeTags;
+NSSet * lineBreakAfterTags;
 
 @implementation TRXMLXHTML_IMParser
 + (void) loadStyles:(id)unused
@@ -281,6 +283,12 @@ NSMutableDictionary * stylesForTags;
 
 + (void) initialize 
 {
+	lineBreakAfterTags = [[NSSet alloc] initWithObjects:
+		@"p", @"h1", @"h2", @"h3", @"h4", @"h5", @"h6", @"h7", @"h8", @"h9",
+		nil];
+	lineBreakBeforeTags = [[NSSet alloc] initWithObjects:
+		@"br",@"h1", @"h2", @"h3", @"h4", @"h5", @"h6", @"h7", @"h8", @"h9",
+		nil];
 	//Load stored tag to style mappings
 	[self loadStyles:nil];
 	//Request notification if these change
@@ -353,9 +361,7 @@ NSMutableDictionary * stylesForTags;
 		}
 		[currentAttributes retain];
 		//And some line breaks...
-		if([_Name isEqualToString:@"br"]
-		   ||
-		   [_Name isEqualToString:@"p"])
+		if([lineBreakBeforeTags containsObject:_Name])
 		{
 			[self characters:@"\n"];
 		}
@@ -374,6 +380,10 @@ NSMutableDictionary * stylesForTags;
 	}
 	else
 	{
+		if([lineBreakAfterTags containsObject:_Name])
+		{
+			[self characters:@"\n"];
+		}
 		[currentAttributes release];
 		currentAttributes = [attributeStack lastObject];
 		[attributeStack removeLastObject];
