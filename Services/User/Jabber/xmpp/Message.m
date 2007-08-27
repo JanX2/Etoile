@@ -12,6 +12,7 @@
 #import "TRXMLString.h"
 #import "MessageStanzaFactory.h"
 #import "XMPPError.h"
+#import "NSAttributedString+HTML-IM.h"
 #import "../Macros.h"
 
 NSDictionary * MESSAGE_TYPES;
@@ -27,14 +28,22 @@ NSDictionary * MESSAGE_TYPES;
 		nil];
 }
 	
-+ (id) messageWithBody:(NSString*)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type
++ (id) messageWithBody:(id)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type
 {
 	return [[[Message alloc] initWithBody:_body for:_recipient withSubject:_subject type:_type] autorelease];
 }
 
-- (id) initWithBody:(NSString*)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type
+- (id) initWithBody:(id)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type
 {
-	body = [[_body stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
+	if([_body isKindOfClass:[NSString class]])
+	{
+		body = [[_body stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];		
+	}
+	else if([_body isKindOfClass:[NSAttributedString class]])
+	{
+		body = [[[_body string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
+		html = [_body retain];
+	}
 	correspondent = [_recipient retain];
 	subject = [_subject retain];
 	type = type;
@@ -90,6 +99,10 @@ NSDictionary * MESSAGE_TYPES;
 		child = [TRXMLNode TRXMLNodeWithType:@"body"];
 		[child setCData:body];
 		[messageNode addChild:child];
+	}
+	if(html != nil)
+	{
+		[messageNode addChild:[html xhtmlimValue]];
 	}
 	[attributes release];
 	return messageNode;

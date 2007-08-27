@@ -143,7 +143,14 @@ NSMutableArray * messageWindowControllers = nil;
 	   &&
 	   [[[aNotification userInfo] objectForKey:@"NSTextMovement"] intValue] == NSReturnTextMovement)
 	{
-		[conversation sendPlainText:[editingBox string]];
+		if([editingBox isRichText])
+		{
+			[conversation sendText:[editingBox textStorage]];
+		}
+		else
+		{
+			[conversation sendText:[editingBox string]];			
+		}
 		[editingBox setString:@""];
 		[self resizeEditingBox:self];
 		[[self window] makeFirstResponder:editingBox];

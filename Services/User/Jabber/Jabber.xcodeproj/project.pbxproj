@@ -8,23 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		2803C0F006D65A7400D0644B /* JabberIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C0EE06D65A7400D0644B /* JabberIdentity.h */; };
-		2803C0F106D65A7400D0644B /* JabberIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C0EF06D65A7400D0644B /* JabberIdentity.m */; };
 		2803C0FD06D65FA100D0644B /* Message.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C0FB06D65FA100D0644B /* Message.h */; };
-		2803C0FE06D65FA100D0644B /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C0FC06D65FA100D0644B /* Message.m */; };
 		2803C10306D6603A00D0644B /* Timestamp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C10106D6603A00D0644B /* Timestamp.h */; };
-		2803C10406D6603A00D0644B /* Timestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C10206D6603A00D0644B /* Timestamp.m */; };
 		280A55C80A24CCA80056829B /* StanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A55C60A24CCA80056829B /* StanzaFactory.h */; };
-		280A55C90A24CCA90056829B /* StanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A55C70A24CCA80056829B /* StanzaFactory.m */; };
 		280A55D20A24CD600056829B /* MessageStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A55D00A24CD600056829B /* MessageStanzaFactory.h */; };
-		280A55D30A24CD600056829B /* MessageStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A55D10A24CD600056829B /* MessageStanzaFactory.m */; };
 		280A56D80A25C4050056829B /* IqStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A56D60A25C4050056829B /* IqStanzaFactory.h */; };
-		280A56D90A25C4050056829B /* IqStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A56D70A25C4050056829B /* IqStanzaFactory.m */; };
 		280A56DE0A25C4750056829B /* PresenceStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A56DC0A25C4750056829B /* PresenceStanzaFactory.h */; };
-		280A56DF0A25C4750056829B /* PresenceStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A56DD0A25C4750056829B /* PresenceStanzaFactory.m */; };
 		280A582B0A2C91320056829B /* Iq.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A58290A2C91310056829B /* Iq.h */; };
-		280A582C0A2C91320056829B /* Iq.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A582A0A2C91320056829B /* Iq.m */; };
 		280A5D810A3491100056829B /* StreamFeatures.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A5D7F0A3491100056829B /* StreamFeatures.h */; };
-		280A5D820A3491100056829B /* StreamFeatures.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A5D800A3491100056829B /* StreamFeatures.m */; };
 		280ACFFB0B7501A40008F3F3 /* TRXMLNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 28963A1606AD64A50013F057 /* TRXMLNode.h */; };
 		280ACFFC0B7501A40008F3F3 /* TRXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 28963A1706AD64A50013F057 /* TRXMLNode.m */; };
 		280ACFFD0B7501A40008F3F3 /* TRXMLNullHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 28B2AAD40A1919DA0077DC9B /* TRXMLNullHandler.h */; };
@@ -36,81 +27,47 @@
 		280AD0030B7501A40008F3F3 /* TRXMLString.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B2AA8F0A18F47A0077DC9B /* TRXMLString.m */; };
 		280AD0320B7502930008F3F3 /* Capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 28A32C2C082E3E3B0012AD55 /* Capabilities.h */; };
 		280AD0340B7502930008F3F3 /* ChatLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 28D744B107565ED800D7EE0C /* ChatLog.h */; };
-		280AD0350B7502930008F3F3 /* ChatLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D744B207565ED800D7EE0C /* ChatLog.m */; };
 		280AD0360B7502930008F3F3 /* CompareHack.h in Headers */ = {isa = PBXBuildFile; fileRef = 285A5CC70B3571C600F5A7AB /* CompareHack.h */; };
-		280AD0370B7502930008F3F3 /* CompareHack.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A5CC80B3571C600F5A7AB /* CompareHack.m */; };
 		280AD0380B7502930008F3F3 /* Conversation.h in Headers */ = {isa = PBXBuildFile; fileRef = 281778B406FB649200A694A2 /* Conversation.h */; };
-		280AD0390B7502930008F3F3 /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 281778B506FB649200A694A2 /* Conversation.m */; };
 		280AD03A0B7502930008F3F3 /* DefaultHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 2885B14E066113560068D300 /* DefaultHandler.h */; };
-		280AD03B0B7502930008F3F3 /* DefaultHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 2885B14F066113560068D300 /* DefaultHandler.m */; };
 		280AD03C0B7502930008F3F3 /* Dispatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 2885B0960660E4270068D300 /* Dispatcher.h */; };
-		280AD03D0B7502930008F3F3 /* Dispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 2885B0970660E4270068D300 /* Dispatcher.m */; };
 		280AD03E0B7502930008F3F3 /* GroupChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 285F6C520729A3ED00FD5D67 /* GroupChat.h */; };
 		280AD0400B7502930008F3F3 /* Iq.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A58290A2C91310056829B /* Iq.h */; };
-		280AD0410B7502930008F3F3 /* Iq.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A582A0A2C91320056829B /* Iq.m */; };
 		280AD0420B7502930008F3F3 /* IqStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A56D60A25C4050056829B /* IqStanzaFactory.h */; };
-		280AD0430B7502930008F3F3 /* IqStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A56D70A25C4050056829B /* IqStanzaFactory.m */; };
 		280AD0440B7502930008F3F3 /* jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A5AA90A31C11A0056829B /* jabber_iq_roster.h */; };
-		280AD0450B7502930008F3F3 /* jabber_iq_roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A5AAA0A31C11A0056829B /* jabber_iq_roster.m */; };
 		280AD0460B7502930008F3F3 /* JabberIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C0EE06D65A7400D0644B /* JabberIdentity.h */; };
-		280AD0470B7502930008F3F3 /* JabberIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C0EF06D65A7400D0644B /* JabberIdentity.m */; };
 		280AD0480B7502930008F3F3 /* JabberPerson.h in Headers */ = {isa = PBXBuildFile; fileRef = 283584CC063C4642008F21EA /* JabberPerson.h */; };
-		280AD0490B7502930008F3F3 /* JabberPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = 283584CD063C4642008F21EA /* JabberPerson.m */; };
 		280AD04A0B7502930008F3F3 /* JabberResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF02089FCFD900F2D0AA /* JabberResource.h */; };
-		280AD04B0B7502930008F3F3 /* JabberResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2842CF03089FCFD900F2D0AA /* JabberResource.m */; };
 		280AD04C0B7502930008F3F3 /* JabberRootIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF20089FD23F00F2D0AA /* JabberRootIdentity.h */; };
-		280AD04D0B7502930008F3F3 /* JabberRootIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2842CF21089FD23F00F2D0AA /* JabberRootIdentity.m */; };
 		280AD04E0B7502930008F3F3 /* JID.h in Headers */ = {isa = PBXBuildFile; fileRef = 2891BCB0063BBCA700A7F522 /* JID.h */; };
-		280AD04F0B7502930008F3F3 /* JID.m in Sources */ = {isa = PBXBuildFile; fileRef = 2891BCB1063BBCA700A7F522 /* JID.m */; };
 		280AD0500B7502930008F3F3 /* Message.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C0FB06D65FA100D0644B /* Message.h */; };
-		280AD0510B7502930008F3F3 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C0FC06D65FA100D0644B /* Message.m */; };
 		280AD0520B7502930008F3F3 /* MessageStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A55D00A24CD600056829B /* MessageStanzaFactory.h */; };
-		280AD0530B7502930008F3F3 /* MessageStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A55D10A24CD600056829B /* MessageStanzaFactory.m */; };
 		280AD0540B7502930008F3F3 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD66870B05725D00035263 /* NSData+Base64.h */; };
-		280AD0550B7502930008F3F3 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 28DD66880B05725D00035263 /* NSData+Base64.m */; };
 		280AD0560B7502930008F3F3 /* presence.h in Headers */ = {isa = PBXBuildFile; fileRef = 2835827D063C1605008F21EA /* presence.h */; };
-		280AD0570B7502930008F3F3 /* presence.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835827E063C1605008F21EA /* presence.m */; };
 		280AD0580B7502930008F3F3 /* PresenceStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A56DC0A25C4750056829B /* PresenceStanzaFactory.h */; };
-		280AD0590B7502930008F3F3 /* PresenceStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A56DD0A25C4750056829B /* PresenceStanzaFactory.m */; };
 		280AD05A0B7502930008F3F3 /* query_jabber_iq_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = 281C986F0638396200732148 /* query_jabber_iq_auth.h */; };
-		280AD05B0B7502930008F3F3 /* query_jabber_iq_auth.m in Sources */ = {isa = PBXBuildFile; fileRef = 281C98700638396200732148 /* query_jabber_iq_auth.m */; };
 		280AD05C0B7502930008F3F3 /* Query_jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */; };
-		280AD05D0B7502930008F3F3 /* Query_jabber_iq_roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 28DD6AAD0B07BCD700035263 /* Query_jabber_iq_roster.m */; };
 		280AD05E0B7502930008F3F3 /* Roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 283584B4063C4516008F21EA /* Roster.h */; };
-		280AD05F0B7502930008F3F3 /* Roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 283584B5063C4516008F21EA /* Roster.m */; };
 		280AD0600B7502930008F3F3 /* RosterGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 28C5029206B3CEED00CE9114 /* RosterGroup.h */; };
-		280AD0610B7502930008F3F3 /* RosterGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C5029306B3CEED00CE9114 /* RosterGroup.m */; };
 		280AD0620B7502930008F3F3 /* ServiceDiscovery.h in Headers */ = {isa = PBXBuildFile; fileRef = 28A5476807C6780600595357 /* ServiceDiscovery.h */; };
 		280AD0640B7502930008F3F3 /* StanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A55C60A24CCA80056829B /* StanzaFactory.h */; };
-		280AD0650B7502930008F3F3 /* StanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A55C70A24CCA80056829B /* StanzaFactory.m */; };
 		280AD0660B7502930008F3F3 /* StreamFeatures.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A5D7F0A3491100056829B /* StreamFeatures.h */; };
-		280AD0670B7502930008F3F3 /* StreamFeatures.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A5D800A3491100056829B /* StreamFeatures.m */; };
 		280AD0680B7502930008F3F3 /* Timestamp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C10106D6603A00D0644B /* Timestamp.h */; };
-		280AD0690B7502930008F3F3 /* Timestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C10206D6603A00D0644B /* Timestamp.m */; };
 		280AD06A0B7502930008F3F3 /* TRXMLXHTML-IMParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28B2AB860A19C0130077DC9B /* TRXMLXHTML-IMParser.h */; };
-		280AD06B0B7502930008F3F3 /* TRXMLXHTML-IMParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */; };
 		280AD06C0B7502930008F3F3 /* XMPPAccount.h in Headers */ = {isa = PBXBuildFile; fileRef = 28177ADD0700A3E800A694A2 /* XMPPAccount.h */; };
-		280AD06D0B7502930008F3F3 /* XMPPAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 28177ADE0700A3E800A694A2 /* XMPPAccount.m */; };
 		280AD06E0B7502930008F3F3 /* XMPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F8E9890632E612004623A5 /* XMPPConnection.h */; };
-		280AD06F0B7502930008F3F3 /* XMPPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */; };
 		280AD0C80B7503A10008F3F3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2821C44507019FE60044C298 /* Security.framework */; };
 		280AD0C90B7503A90008F3F3 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28177B5E0700BFB500A694A2 /* AddressBook.framework */; };
 		280AD13D0B7506BF0008F3F3 /* XML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* XML.framework */; };
 		280AD1470B7506CC0008F3F3 /* XMPP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280AD0290B75025F0008F3F3 /* XMPP.framework */; };
 		2812F1000BF60FF10041AAE4 /* StepChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2812F0FF0BF60FF10041AAE4 /* StepChat.icns */; };
 		28135C9908ACE3780032967E /* XMLLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 28135C9708ACE3780032967E /* XMLLog.h */; };
-		28135C9A08ACE3780032967E /* XMLLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 28135C9808ACE3780032967E /* XMLLog.m */; };
 		2815EF1607660F630078C5AE /* AddContactWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2815EF1407660F630078C5AE /* AddContactWindowController.h */; };
-		2815EF1707660F630078C5AE /* AddContactWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2815EF1507660F630078C5AE /* AddContactWindowController.m */; };
 		281778B606FB649200A694A2 /* Conversation.h in Headers */ = {isa = PBXBuildFile; fileRef = 281778B406FB649200A694A2 /* Conversation.h */; };
-		281778B706FB649200A694A2 /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 281778B506FB649200A694A2 /* Conversation.m */; };
 		281778D006FC963500A694A2 /* MessageWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 281778CE06FC963500A694A2 /* MessageWindowController.h */; };
-		281778D106FC963500A694A2 /* MessageWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 281778CF06FC963500A694A2 /* MessageWindowController.m */; };
 		28177ADF0700A3E800A694A2 /* XMPPAccount.h in Headers */ = {isa = PBXBuildFile; fileRef = 28177ADD0700A3E800A694A2 /* XMPPAccount.h */; };
-		28177AE00700A3E800A694A2 /* XMPPAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 28177ADE0700A3E800A694A2 /* XMPPAccount.m */; };
 		28177B5F0700BFB500A694A2 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28177B5E0700BFB500A694A2 /* AddressBook.framework */; };
 		281C98710638396200732148 /* query_jabber_iq_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = 281C986F0638396200732148 /* query_jabber_iq_auth.h */; };
-		281C98720638396200732148 /* query_jabber_iq_auth.m in Sources */ = {isa = PBXBuildFile; fileRef = 281C98700638396200732148 /* query_jabber_iq_auth.m */; };
 		281EF7C30BFF78D900B26B33 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		281EF7C40BFF78DC00B26B33 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		281EF7C60BFF78EA00B26B33 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97324FDCFA39411CA2CEA /* AppKit.framework */; };
@@ -118,75 +75,124 @@
 		2821C44607019FE60044C298 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2821C44507019FE60044C298 /* Security.framework */; };
 		2821C5330701A0190044C298 /* DefaultHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 2885B14E066113560068D300 /* DefaultHandler.h */; };
 		2821C5B60701BF1F0044C298 /* PasswordWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2821C5B40701BF1F0044C298 /* PasswordWindowController.h */; };
-		2821C5B70701BF1F0044C298 /* PasswordWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2821C5B50701BF1F0044C298 /* PasswordWindowController.m */; };
 		2835827F063C1605008F21EA /* presence.h in Headers */ = {isa = PBXBuildFile; fileRef = 2835827D063C1605008F21EA /* presence.h */; };
-		28358280063C1605008F21EA /* presence.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835827E063C1605008F21EA /* presence.m */; };
 		283584B6063C4516008F21EA /* Roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 283584B4063C4516008F21EA /* Roster.h */; };
-		283584B7063C4516008F21EA /* Roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 283584B5063C4516008F21EA /* Roster.m */; };
 		283584CE063C4642008F21EA /* JabberPerson.h in Headers */ = {isa = PBXBuildFile; fileRef = 283584CC063C4642008F21EA /* JabberPerson.h */; };
-		283584CF063C4642008F21EA /* JabberPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = 283584CD063C4642008F21EA /* JabberPerson.m */; };
 		2835875F063D4D7F008F21EA /* JabberApp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2835875D063D4D7F008F21EA /* JabberApp.h */; };
-		28358760063D4D7F008F21EA /* JabberApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835875E063D4D7F008F21EA /* JabberApp.m */; };
 		2839E2790B76455100145C44 /* XML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* XML.framework */; };
 		2839E27A0B76455100145C44 /* XMPP.framework in Copy Private Frameworks */ = {isa = PBXBuildFile; fileRef = 280AD0290B75025F0008F3F3 /* XMPP.framework */; };
 		2839E4320B77996C00145C44 /* XML.framework in Copy Private Frameworks */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* XML.framework */; };
+		283D78CA0C8335A400986BBA /* DefaultHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 2885B14F066113560068D300 /* DefaultHandler.m */; };
+		283D78D00C8335C200986BBA /* ChatLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CCCECB0C832DC90025B407 /* ChatLog.m */; };
+		283D78D10C8335C200986BBA /* CompareHack.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A5CC80B3571C600F5A7AB /* CompareHack.m */; };
+		283D78D20C8335C200986BBA /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 281778B506FB649200A694A2 /* Conversation.m */; };
+		283D78D30C8335C200986BBA /* Dispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 2885B0970660E4270068D300 /* Dispatcher.m */; };
+		283D78D40C8335C200986BBA /* GroupChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 285F6C530729A3ED00FD5D67 /* GroupChat.m */; };
+		283D78D50C8335C200986BBA /* Iq.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A582A0A2C91320056829B /* Iq.m */; };
+		283D78D60C8335C200986BBA /* IqStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A56D70A25C4050056829B /* IqStanzaFactory.m */; };
+		283D78D70C8335C200986BBA /* jabber_iq_roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A5AAA0A31C11A0056829B /* jabber_iq_roster.m */; };
+		283D78D80C8335C200986BBA /* JabberIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C0EF06D65A7400D0644B /* JabberIdentity.m */; };
+		283D78D90C8335C200986BBA /* JabberPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = 283584CD063C4642008F21EA /* JabberPerson.m */; };
+		283D78DA0C8335C200986BBA /* JabberResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2842CF03089FCFD900F2D0AA /* JabberResource.m */; };
+		283D78DB0C8335C200986BBA /* JabberRootIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2842CF21089FD23F00F2D0AA /* JabberRootIdentity.m */; };
+		283D78DC0C8335C200986BBA /* JID.m in Sources */ = {isa = PBXBuildFile; fileRef = 2891BCB1063BBCA700A7F522 /* JID.m */; };
+		283D78DD0C8335C200986BBA /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C0FC06D65FA100D0644B /* Message.m */; };
+		283D78DE0C8335C200986BBA /* MessageStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A55D10A24CD600056829B /* MessageStanzaFactory.m */; };
+		283D78DF0C8335C200986BBA /* NSAttributedString+HTML-IM.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CCCD9A0C8322310025B407 /* NSAttributedString+HTML-IM.m */; };
+		283D78E00C8335C200986BBA /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 28DD66880B05725D00035263 /* NSData+Base64.m */; };
+		283D78E10C8335C200986BBA /* presence.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835827E063C1605008F21EA /* presence.m */; };
+		283D78E20C8335C200986BBA /* PresenceStanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A56DD0A25C4750056829B /* PresenceStanzaFactory.m */; };
+		283D78E30C8335C200986BBA /* query_jabber_iq_auth.m in Sources */ = {isa = PBXBuildFile; fileRef = 281C98700638396200732148 /* query_jabber_iq_auth.m */; };
+		283D78E40C8335C200986BBA /* Query_jabber_iq_roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 28DD6AAD0B07BCD700035263 /* Query_jabber_iq_roster.m */; };
+		283D78E50C8335C200986BBA /* Roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 283584B5063C4516008F21EA /* Roster.m */; };
+		283D78E60C8335C200986BBA /* RosterGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C5029306B3CEED00CE9114 /* RosterGroup.m */; };
+		283D78E80C8335C200986BBA /* StanzaFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A55C70A24CCA80056829B /* StanzaFactory.m */; };
+		283D78E90C8335C200986BBA /* StreamFeatures.m in Sources */ = {isa = PBXBuildFile; fileRef = 280A5D800A3491100056829B /* StreamFeatures.m */; };
+		283D78EA0C8335C200986BBA /* Timestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 2803C10206D6603A00D0644B /* Timestamp.m */; };
+		283D78EB0C8335C200986BBA /* TRXMLXHTML-IMParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */; };
+		283D78EC0C8335C200986BBA /* XMPPAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 28177ADE0700A3E800A694A2 /* XMPPAccount.m */; };
+		283D78ED0C8335C200986BBA /* XMPPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */; };
+		283D78EE0C8335C200986BBA /* XMPPError.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CCCCC50C8227010025B407 /* XMPPError.m */; };
+		283D79D00C833E7B00986BBA /* AccountWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC84C2B0BE37830002833ED /* AccountWindowController.m */; };
+		283D79D10C833E7B00986BBA /* AddContactWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2815EF1507660F630078C5AE /* AddContactWindowController.m */; };
+		283D79D20C833E7B00986BBA /* ChatLogMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28A5470707C66A3500595357 /* ChatLogMenuController.m */; };
+		283D79D30C833E7B00986BBA /* CustomPresenceWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2888DE9B0719AA6C00A44A41 /* CustomPresenceWindowController.m */; };
+		283D79D40C833E7B00986BBA /* HideMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 286590060718421900B0F29D /* HideMenuController.m */; };
+		283D79D50C833E7B00986BBA /* JabberApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 2835875E063D4D7F008F21EA /* JabberApp.m */; };
+		283D79D60C833E7B00986BBA /* MessageWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 281778CF06FC963500A694A2 /* MessageWindowController.m */; };
+		283D79D70C833E7B00986BBA /* NSTextView+ClickableLinks.m in Sources */ = {isa = PBXBuildFile; fileRef = 28F99A200C05E2FC001D0306 /* NSTextView+ClickableLinks.m */; };
+		283D79D80C833E7B00986BBA /* PasswordWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2821C5B50701BF1F0044C298 /* PasswordWindowController.m */; };
+		283D79D90C833E7B00986BBA /* PreferenceWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860DE4C07259CF70081D50C /* PreferenceWindowController.m */; };
+		283D79DA0C833E7B00986BBA /* PresenceLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28F698B50C036A6B007BE36F /* PresenceLogController.m */; };
+		283D79DB0C833E7B00986BBA /* PresenceMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 286590340718802800B0F29D /* PresenceMenuController.m */; };
+		283D79DC0C833E7B00986BBA /* RosterController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289836A7063DB65700A3D164 /* RosterController.m */; };
+		283D79DE0C833E8800986BBA /* XMLLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 28135C9808ACE3780032967E /* XMLLog.m */; };
+		283D79E50C833E9700986BBA /* TRUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 285F6FE8073820CA00FD5D67 /* TRUserDefaults.m */; };
+		283D79E90C833E9D00986BBA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		2842CF04089FCFD900F2D0AA /* JabberResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF02089FCFD900F2D0AA /* JabberResource.h */; };
-		2842CF05089FCFD900F2D0AA /* JabberResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2842CF03089FCFD900F2D0AA /* JabberResource.m */; };
 		2842CF22089FD23F00F2D0AA /* JabberRootIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF20089FD23F00F2D0AA /* JabberRootIdentity.h */; };
-		2842CF23089FD23F00F2D0AA /* JabberRootIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2842CF21089FD23F00F2D0AA /* JabberRootIdentity.m */; };
 		2842CF68089FD32100F2D0AA /* Macros.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF67089FD32100F2D0AA /* Macros.h */; };
 		285A5CC90B3571C600F5A7AB /* CompareHack.h in Headers */ = {isa = PBXBuildFile; fileRef = 285A5CC70B3571C600F5A7AB /* CompareHack.h */; };
-		285A5CCA0B3571C600F5A7AB /* CompareHack.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A5CC80B3571C600F5A7AB /* CompareHack.m */; };
 		285F6C540729A3ED00FD5D67 /* GroupChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 285F6C520729A3ED00FD5D67 /* GroupChat.h */; };
-		285F6C550729A3ED00FD5D67 /* GroupChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 285F6C530729A3ED00FD5D67 /* GroupChat.m */; };
 		285F6FE9073820CA00FD5D67 /* TRUserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 285F6FE7073820CA00FD5D67 /* TRUserDefaults.h */; };
-		285F6FEA073820CA00FD5D67 /* TRUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 285F6FE8073820CA00FD5D67 /* TRUserDefaults.m */; };
 		2860DD33072541760081D50C /* MessageWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2860DD32072541760081D50C /* MessageWindow.nib */; };
 		2860DD35072541920081D50C /* RosterWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2860DD34072541920081D50C /* RosterWindow.nib */; };
 		2860DD370725419A0081D50C /* PasswordBox.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2860DD360725419A0081D50C /* PasswordBox.nib */; };
 		2860DE4D07259CF70081D50C /* PreferenceWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2860DE4B07259CF70081D50C /* PreferenceWindowController.h */; };
-		2860DE4E07259CF70081D50C /* PreferenceWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860DE4C07259CF70081D50C /* PreferenceWindowController.m */; };
 		286590070718421900B0F29D /* HideMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 286590050718421900B0F29D /* HideMenuController.h */; };
-		286590080718421900B0F29D /* HideMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 286590060718421900B0F29D /* HideMenuController.m */; };
 		286590350718802800B0F29D /* PresenceMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 286590330718802800B0F29D /* PresenceMenuController.h */; };
-		286590360718802800B0F29D /* PresenceMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 286590340718802800B0F29D /* PresenceMenuController.m */; };
 		2885B0980660E4270068D300 /* Dispatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 2885B0960660E4270068D300 /* Dispatcher.h */; };
-		2885B0990660E4270068D300 /* Dispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 2885B0970660E4270068D300 /* Dispatcher.m */; };
-		2885B151066113560068D300 /* DefaultHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 2885B14F066113560068D300 /* DefaultHandler.m */; };
 		2888DE9C0719AA6C00A44A41 /* CustomPresenceWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2888DE9A0719AA6C00A44A41 /* CustomPresenceWindowController.h */; };
-		2888DE9D0719AA6C00A44A41 /* CustomPresenceWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2888DE9B0719AA6C00A44A41 /* CustomPresenceWindowController.m */; };
 		2891BCB2063BBCA700A7F522 /* JID.h in Headers */ = {isa = PBXBuildFile; fileRef = 2891BCB0063BBCA700A7F522 /* JID.h */; };
-		2891BCB3063BBCA700A7F522 /* JID.m in Sources */ = {isa = PBXBuildFile; fileRef = 2891BCB1063BBCA700A7F522 /* JID.m */; };
 		289836A8063DB65700A3D164 /* RosterController.h in Headers */ = {isa = PBXBuildFile; fileRef = 289836A6063DB65700A3D164 /* RosterController.h */; };
-		289836A9063DB65700A3D164 /* RosterController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289836A7063DB65700A3D164 /* RosterController.m */; };
 		28A32C2E082E3E3B0012AD55 /* Capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 28A32C2C082E3E3B0012AD55 /* Capabilities.h */; };
 		28A5470807C66A3500595357 /* ChatLogMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 28A5470607C66A3500595357 /* ChatLogMenuController.h */; };
-		28A5470907C66A3500595357 /* ChatLogMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28A5470707C66A3500595357 /* ChatLogMenuController.m */; };
 		28B2AB880A19C0130077DC9B /* TRXMLXHTML-IMParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28B2AB860A19C0130077DC9B /* TRXMLXHTML-IMParser.h */; };
-		28B2AB890A19C0130077DC9B /* TRXMLXHTML-IMParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */; };
 		28C5029406B3CEED00CE9114 /* RosterGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 28C5029206B3CEED00CE9114 /* RosterGroup.h */; };
-		28C5029506B3CEED00CE9114 /* RosterGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C5029306B3CEED00CE9114 /* RosterGroup.m */; };
 		28CCCCC60C8227010025B407 /* XMPPError.h in Headers */ = {isa = PBXBuildFile; fileRef = 28CCCCC40C8227010025B407 /* XMPPError.h */; };
-		28CCCCC70C8227010025B407 /* XMPPError.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CCCCC50C8227010025B407 /* XMPPError.m */; };
+		28CCCD9B0C8322310025B407 /* NSAttributedString+HTML-IM.h in Headers */ = {isa = PBXBuildFile; fileRef = 28CCCD990C8322310025B407 /* NSAttributedString+HTML-IM.h */; };
+		28CCCE0A0C832BD00025B407 /* ChatLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 28D744B107565ED800D7EE0C /* ChatLog.h */; };
+		28CCCE0C0C832BD00025B407 /* CompareHack.h in Headers */ = {isa = PBXBuildFile; fileRef = 285A5CC70B3571C600F5A7AB /* CompareHack.h */; };
+		28CCCE0E0C832BD00025B407 /* Conversation.h in Headers */ = {isa = PBXBuildFile; fileRef = 281778B406FB649200A694A2 /* Conversation.h */; };
+		28CCCE100C832BD00025B407 /* DefaultHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 2885B14E066113560068D300 /* DefaultHandler.h */; };
+		28CCCE120C832BD00025B407 /* Dispatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 2885B0960660E4270068D300 /* Dispatcher.h */; };
+		28CCCE140C832BD00025B407 /* GroupChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 285F6C520729A3ED00FD5D67 /* GroupChat.h */; };
+		28CCCE160C832BD00025B407 /* Iq.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A58290A2C91310056829B /* Iq.h */; };
+		28CCCE180C832BD00025B407 /* IqStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A56D60A25C4050056829B /* IqStanzaFactory.h */; };
+		28CCCE1A0C832BD00025B407 /* jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A5AA90A31C11A0056829B /* jabber_iq_roster.h */; };
+		28CCCE1C0C832BD00025B407 /* JabberIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C0EE06D65A7400D0644B /* JabberIdentity.h */; };
+		28CCCE1E0C832BD00025B407 /* JabberPerson.h in Headers */ = {isa = PBXBuildFile; fileRef = 283584CC063C4642008F21EA /* JabberPerson.h */; };
+		28CCCE200C832BD00025B407 /* JabberResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF02089FCFD900F2D0AA /* JabberResource.h */; };
+		28CCCE220C832BD00025B407 /* JabberRootIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2842CF20089FD23F00F2D0AA /* JabberRootIdentity.h */; };
+		28CCCE240C832BD00025B407 /* JID.h in Headers */ = {isa = PBXBuildFile; fileRef = 2891BCB0063BBCA700A7F522 /* JID.h */; };
+		28CCCE260C832BD00025B407 /* Message.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C0FB06D65FA100D0644B /* Message.h */; };
+		28CCCE280C832BD00025B407 /* MessageStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A55D00A24CD600056829B /* MessageStanzaFactory.h */; };
+		28CCCE2A0C832BD00025B407 /* NSAttributedString+HTML-IM.h in Headers */ = {isa = PBXBuildFile; fileRef = 28CCCD990C8322310025B407 /* NSAttributedString+HTML-IM.h */; };
+		28CCCE2C0C832BD00025B407 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD66870B05725D00035263 /* NSData+Base64.h */; };
+		28CCCE2E0C832BD00025B407 /* presence.h in Headers */ = {isa = PBXBuildFile; fileRef = 2835827D063C1605008F21EA /* presence.h */; };
+		28CCCE300C832BD00025B407 /* PresenceStanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A56DC0A25C4750056829B /* PresenceStanzaFactory.h */; };
+		28CCCE320C832BD00025B407 /* query_jabber_iq_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = 281C986F0638396200732148 /* query_jabber_iq_auth.h */; };
+		28CCCE340C832BD00025B407 /* Query_jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */; };
+		28CCCE360C832BD00025B407 /* Roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 283584B4063C4516008F21EA /* Roster.h */; };
+		28CCCE380C832BD00025B407 /* RosterGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 28C5029206B3CEED00CE9114 /* RosterGroup.h */; };
+		28CCCE3C0C832BD00025B407 /* StanzaFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A55C60A24CCA80056829B /* StanzaFactory.h */; };
+		28CCCE3E0C832BD00025B407 /* StreamFeatures.h in Headers */ = {isa = PBXBuildFile; fileRef = 280A5D7F0A3491100056829B /* StreamFeatures.h */; };
+		28CCCE400C832BD00025B407 /* Timestamp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2803C10106D6603A00D0644B /* Timestamp.h */; };
+		28CCCE420C832BD00025B407 /* TRXMLXHTML-IMParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28B2AB860A19C0130077DC9B /* TRXMLXHTML-IMParser.h */; };
+		28CCCE440C832BD00025B407 /* XMPPAccount.h in Headers */ = {isa = PBXBuildFile; fileRef = 28177ADD0700A3E800A694A2 /* XMPPAccount.h */; };
+		28CCCE460C832BD00025B407 /* XMPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F8E9890632E612004623A5 /* XMPPConnection.h */; };
+		28CCCE480C832BD00025B407 /* XMPPError.h in Headers */ = {isa = PBXBuildFile; fileRef = 28CCCCC40C8227010025B407 /* XMPPError.h */; };
 		28D744B307565ED800D7EE0C /* ChatLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 28D744B107565ED800D7EE0C /* ChatLog.h */; };
-		28D744B407565ED800D7EE0C /* ChatLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D744B207565ED800D7EE0C /* ChatLog.m */; };
 		28DD66890B05725D00035263 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD66870B05725D00035263 /* NSData+Base64.h */; };
-		28DD668A0B05725D00035263 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 28DD66880B05725D00035263 /* NSData+Base64.m */; };
 		28DD6AAE0B07BCD700035263 /* Query_jabber_iq_roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */; };
-		28DD6AAF0B07BCD700035263 /* Query_jabber_iq_roster.m in Sources */ = {isa = PBXBuildFile; fileRef = 28DD6AAD0B07BCD700035263 /* Query_jabber_iq_roster.m */; };
 		28F698B60C036A6B007BE36F /* PresenceLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F698B40C036A6B007BE36F /* PresenceLogController.h */; };
-		28F698B70C036A6B007BE36F /* PresenceLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28F698B50C036A6B007BE36F /* PresenceLogController.m */; };
 		28F8E98B0632E612004623A5 /* XMPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F8E9890632E612004623A5 /* XMPPConnection.h */; };
-		28F8E98C0632E612004623A5 /* XMPPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 28F8E98A0632E612004623A5 /* XMPPConnection.m */; };
 		28F99A210C05E2FC001D0306 /* NSTextView+ClickableLinks.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F99A1F0C05E2FC001D0306 /* NSTextView+ClickableLinks.h */; };
-		28F99A220C05E2FC001D0306 /* NSTextView+ClickableLinks.m in Sources */ = {isa = PBXBuildFile; fileRef = 28F99A200C05E2FC001D0306 /* NSTextView+ClickableLinks.m */; };
 		3BC84C270BE28B6F002833ED /* AccountBox.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3BC84C250BE28B6F002833ED /* AccountBox.nib */; };
 		3BC84C2C0BE37830002833ED /* AccountWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3BC84C2A0BE37830002833ED /* AccountWindowController.h */; };
-		3BC84C2D0BE37830002833ED /* AccountWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC84C2B0BE37830002833ED /* AccountWindowController.m */; };
 		8D1107280486CEB800E47090 /* Jabber_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32CA4F630368D1EE00C91783 /* Jabber_Prefix.pch */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
-		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -331,12 +337,14 @@
 		28C5029306B3CEED00CE9114 /* RosterGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RosterGroup.m; path = xmpp/RosterGroup.m; sourceTree = "<group>"; };
 		28CCCCC40C8227010025B407 /* XMPPError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMPPError.h; path = xmpp/XMPPError.h; sourceTree = "<group>"; };
 		28CCCCC50C8227010025B407 /* XMPPError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPError.m; path = xmpp/XMPPError.m; sourceTree = "<group>"; };
+		28CCCD990C8322310025B407 /* NSAttributedString+HTML-IM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+HTML-IM.h"; path = "xmpp/NSAttributedString+HTML-IM.h"; sourceTree = "<group>"; };
+		28CCCD9A0C8322310025B407 /* NSAttributedString+HTML-IM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAttributedString+HTML-IM.m"; path = "xmpp/NSAttributedString+HTML-IM.m"; sourceTree = "<group>"; };
+		28CCCECB0C832DC90025B407 /* ChatLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChatLog.m; path = xmpp/ChatLog.m; sourceTree = "<group>"; };
 		28CD158F079160F20025B96F /* TRIdleTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TRIdleTimer.h; sourceTree = "<group>"; };
 		28CD1590079160F20025B96F /* TRIdleTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TRIdleTimer.m; sourceTree = "<group>"; };
 		28CD15B0079168610025B96F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		28CF42C306F777B500F46AC0 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MessageWindow.nib; sourceTree = "<group>"; };
 		28D744B107565ED800D7EE0C /* ChatLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChatLog.h; path = xmpp/ChatLog.h; sourceTree = "<group>"; };
-		28D744B207565ED800D7EE0C /* ChatLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChatLog.m; path = xmpp/ChatLog.m; sourceTree = "<group>"; };
 		28DD66870B05725D00035263 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Base64.h"; path = "xmpp/NSData+Base64.h"; sourceTree = "<group>"; };
 		28DD66880B05725D00035263 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+Base64.m"; path = "xmpp/NSData+Base64.m"; sourceTree = "<group>"; };
 		28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Query_jabber_iq_roster.h; path = xmpp/Query_jabber_iq_roster.h; sourceTree = "<group>"; };
@@ -449,6 +457,7 @@
 		28C501F506B2680E00CE9114 /* XMPP */ = {
 			isa = PBXGroup;
 			children = (
+				28CCCECB0C832DC90025B407 /* ChatLog.m */,
 				28CCCCC40C8227010025B407 /* XMPPError.h */,
 				28CCCCC50C8227010025B407 /* XMPPError.m */,
 				28DD6AAC0B07BCD700035263 /* Query_jabber_iq_roster.h */,
@@ -472,7 +481,6 @@
 				28A5476807C6780600595357 /* ServiceDiscovery.h */,
 				28A5476907C6780600595357 /* ServiceDiscovery.m */,
 				28D744B107565ED800D7EE0C /* ChatLog.h */,
-				28D744B207565ED800D7EE0C /* ChatLog.m */,
 				285F6C520729A3ED00FD5D67 /* GroupChat.h */,
 				285F6C530729A3ED00FD5D67 /* GroupChat.m */,
 				28177ADD0700A3E800A694A2 /* XMPPAccount.h */,
@@ -513,6 +521,8 @@
 				280A582A0A2C91320056829B /* Iq.m */,
 				285A5CC70B3571C600F5A7AB /* CompareHack.h */,
 				285A5CC80B3571C600F5A7AB /* CompareHack.m */,
+				28CCCD990C8322310025B407 /* NSAttributedString+HTML-IM.h */,
+				28CCCD9A0C8322310025B407 /* NSAttributedString+HTML-IM.m */,
 			);
 			name = XMPP;
 			sourceTree = "<group>";
@@ -669,6 +679,38 @@
 				280AD06C0B7502930008F3F3 /* XMPPAccount.h in Headers */,
 				280AD06E0B7502930008F3F3 /* XMPPConnection.h in Headers */,
 				28CCCCC60C8227010025B407 /* XMPPError.h in Headers */,
+				28CCCD9B0C8322310025B407 /* NSAttributedString+HTML-IM.h in Headers */,
+				28CCCE0A0C832BD00025B407 /* ChatLog.h in Headers */,
+				28CCCE0C0C832BD00025B407 /* CompareHack.h in Headers */,
+				28CCCE0E0C832BD00025B407 /* Conversation.h in Headers */,
+				28CCCE100C832BD00025B407 /* DefaultHandler.h in Headers */,
+				28CCCE120C832BD00025B407 /* Dispatcher.h in Headers */,
+				28CCCE140C832BD00025B407 /* GroupChat.h in Headers */,
+				28CCCE160C832BD00025B407 /* Iq.h in Headers */,
+				28CCCE180C832BD00025B407 /* IqStanzaFactory.h in Headers */,
+				28CCCE1A0C832BD00025B407 /* jabber_iq_roster.h in Headers */,
+				28CCCE1C0C832BD00025B407 /* JabberIdentity.h in Headers */,
+				28CCCE1E0C832BD00025B407 /* JabberPerson.h in Headers */,
+				28CCCE200C832BD00025B407 /* JabberResource.h in Headers */,
+				28CCCE220C832BD00025B407 /* JabberRootIdentity.h in Headers */,
+				28CCCE240C832BD00025B407 /* JID.h in Headers */,
+				28CCCE260C832BD00025B407 /* Message.h in Headers */,
+				28CCCE280C832BD00025B407 /* MessageStanzaFactory.h in Headers */,
+				28CCCE2A0C832BD00025B407 /* NSAttributedString+HTML-IM.h in Headers */,
+				28CCCE2C0C832BD00025B407 /* NSData+Base64.h in Headers */,
+				28CCCE2E0C832BD00025B407 /* presence.h in Headers */,
+				28CCCE300C832BD00025B407 /* PresenceStanzaFactory.h in Headers */,
+				28CCCE320C832BD00025B407 /* query_jabber_iq_auth.h in Headers */,
+				28CCCE340C832BD00025B407 /* Query_jabber_iq_roster.h in Headers */,
+				28CCCE360C832BD00025B407 /* Roster.h in Headers */,
+				28CCCE380C832BD00025B407 /* RosterGroup.h in Headers */,
+				28CCCE3C0C832BD00025B407 /* StanzaFactory.h in Headers */,
+				28CCCE3E0C832BD00025B407 /* StreamFeatures.h in Headers */,
+				28CCCE400C832BD00025B407 /* Timestamp.h in Headers */,
+				28CCCE420C832BD00025B407 /* TRXMLXHTML-IMParser.h in Headers */,
+				28CCCE440C832BD00025B407 /* XMPPAccount.h in Headers */,
+				28CCCE460C832BD00025B407 /* XMPPConnection.h in Headers */,
+				28CCCE480C832BD00025B407 /* XMPPError.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -752,8 +794,8 @@
 			buildPhases = (
 				280AD0240B75025F0008F3F3 /* Headers */,
 				280AD0250B75025F0008F3F3 /* Resources */,
-				280AD0260B75025F0008F3F3 /* Sources */,
 				280AD0270B75025F0008F3F3 /* Frameworks */,
+				283D78C40C83357A00986BBA /* Sources */,
 			);
 			buildRules = (
 			);
@@ -771,9 +813,9 @@
 			buildPhases = (
 				8D1107270486CEB800E47090 /* Headers */,
 				8D1107290486CEB800E47090 /* Resources */,
-				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				2839E2730B76452000145C44 /* Copy Private Frameworks */,
+				283D79CA0C833E6F00986BBA /* Sources */,
 			);
 			buildRules = (
 			);
@@ -847,90 +889,64 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		280AD0260B75025F0008F3F3 /* Sources */ = {
+		283D78C40C83357A00986BBA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				280AD0350B7502930008F3F3 /* ChatLog.m in Sources */,
-				280AD0370B7502930008F3F3 /* CompareHack.m in Sources */,
-				280AD0390B7502930008F3F3 /* Conversation.m in Sources */,
-				280AD03B0B7502930008F3F3 /* DefaultHandler.m in Sources */,
-				280AD03D0B7502930008F3F3 /* Dispatcher.m in Sources */,
-				280AD0410B7502930008F3F3 /* Iq.m in Sources */,
-				280AD0430B7502930008F3F3 /* IqStanzaFactory.m in Sources */,
-				280AD0450B7502930008F3F3 /* jabber_iq_roster.m in Sources */,
-				280AD0470B7502930008F3F3 /* JabberIdentity.m in Sources */,
-				280AD0490B7502930008F3F3 /* JabberPerson.m in Sources */,
-				280AD04B0B7502930008F3F3 /* JabberResource.m in Sources */,
-				280AD04D0B7502930008F3F3 /* JabberRootIdentity.m in Sources */,
-				280AD04F0B7502930008F3F3 /* JID.m in Sources */,
-				280AD0510B7502930008F3F3 /* Message.m in Sources */,
-				280AD0530B7502930008F3F3 /* MessageStanzaFactory.m in Sources */,
-				280AD0550B7502930008F3F3 /* NSData+Base64.m in Sources */,
-				280AD0570B7502930008F3F3 /* presence.m in Sources */,
-				280AD0590B7502930008F3F3 /* PresenceStanzaFactory.m in Sources */,
-				280AD05B0B7502930008F3F3 /* query_jabber_iq_auth.m in Sources */,
-				280AD05D0B7502930008F3F3 /* Query_jabber_iq_roster.m in Sources */,
-				280AD05F0B7502930008F3F3 /* Roster.m in Sources */,
-				280AD0610B7502930008F3F3 /* RosterGroup.m in Sources */,
-				280AD0650B7502930008F3F3 /* StanzaFactory.m in Sources */,
-				280AD0670B7502930008F3F3 /* StreamFeatures.m in Sources */,
-				280AD0690B7502930008F3F3 /* Timestamp.m in Sources */,
-				280AD06B0B7502930008F3F3 /* TRXMLXHTML-IMParser.m in Sources */,
-				280AD06D0B7502930008F3F3 /* XMPPAccount.m in Sources */,
-				280AD06F0B7502930008F3F3 /* XMPPConnection.m in Sources */,
-				28CCCCC70C8227010025B407 /* XMPPError.m in Sources */,
+				283D78CA0C8335A400986BBA /* DefaultHandler.m in Sources */,
+				283D78D00C8335C200986BBA /* ChatLog.m in Sources */,
+				283D78D10C8335C200986BBA /* CompareHack.m in Sources */,
+				283D78D20C8335C200986BBA /* Conversation.m in Sources */,
+				283D78D30C8335C200986BBA /* Dispatcher.m in Sources */,
+				283D78D40C8335C200986BBA /* GroupChat.m in Sources */,
+				283D78D50C8335C200986BBA /* Iq.m in Sources */,
+				283D78D60C8335C200986BBA /* IqStanzaFactory.m in Sources */,
+				283D78D70C8335C200986BBA /* jabber_iq_roster.m in Sources */,
+				283D78D80C8335C200986BBA /* JabberIdentity.m in Sources */,
+				283D78D90C8335C200986BBA /* JabberPerson.m in Sources */,
+				283D78DA0C8335C200986BBA /* JabberResource.m in Sources */,
+				283D78DB0C8335C200986BBA /* JabberRootIdentity.m in Sources */,
+				283D78DC0C8335C200986BBA /* JID.m in Sources */,
+				283D78DD0C8335C200986BBA /* Message.m in Sources */,
+				283D78DE0C8335C200986BBA /* MessageStanzaFactory.m in Sources */,
+				283D78DF0C8335C200986BBA /* NSAttributedString+HTML-IM.m in Sources */,
+				283D78E00C8335C200986BBA /* NSData+Base64.m in Sources */,
+				283D78E10C8335C200986BBA /* presence.m in Sources */,
+				283D78E20C8335C200986BBA /* PresenceStanzaFactory.m in Sources */,
+				283D78E30C8335C200986BBA /* query_jabber_iq_auth.m in Sources */,
+				283D78E40C8335C200986BBA /* Query_jabber_iq_roster.m in Sources */,
+				283D78E50C8335C200986BBA /* Roster.m in Sources */,
+				283D78E60C8335C200986BBA /* RosterGroup.m in Sources */,
+				283D78E80C8335C200986BBA /* StanzaFactory.m in Sources */,
+				283D78E90C8335C200986BBA /* StreamFeatures.m in Sources */,
+				283D78EA0C8335C200986BBA /* Timestamp.m in Sources */,
+				283D78EB0C8335C200986BBA /* TRXMLXHTML-IMParser.m in Sources */,
+				283D78EC0C8335C200986BBA /* XMPPAccount.m in Sources */,
+				283D78ED0C8335C200986BBA /* XMPPConnection.m in Sources */,
+				283D78EE0C8335C200986BBA /* XMPPError.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8D11072C0486CEB800E47090 /* Sources */ = {
+		283D79CA0C833E6F00986BBA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D11072D0486CEB800E47090 /* main.m in Sources */,
-				28F8E98C0632E612004623A5 /* XMPPConnection.m in Sources */,
-				281C98720638396200732148 /* query_jabber_iq_auth.m in Sources */,
-				2891BCB3063BBCA700A7F522 /* JID.m in Sources */,
-				28358280063C1605008F21EA /* presence.m in Sources */,
-				283584B7063C4516008F21EA /* Roster.m in Sources */,
-				283584CF063C4642008F21EA /* JabberPerson.m in Sources */,
-				28358760063D4D7F008F21EA /* JabberApp.m in Sources */,
-				289836A9063DB65700A3D164 /* RosterController.m in Sources */,
-				2885B0990660E4270068D300 /* Dispatcher.m in Sources */,
-				2885B151066113560068D300 /* DefaultHandler.m in Sources */,
-				28C5029506B3CEED00CE9114 /* RosterGroup.m in Sources */,
-				2803C0F106D65A7400D0644B /* JabberIdentity.m in Sources */,
-				2803C0FE06D65FA100D0644B /* Message.m in Sources */,
-				2803C10406D6603A00D0644B /* Timestamp.m in Sources */,
-				281778B706FB649200A694A2 /* Conversation.m in Sources */,
-				281778D106FC963500A694A2 /* MessageWindowController.m in Sources */,
-				28177AE00700A3E800A694A2 /* XMPPAccount.m in Sources */,
-				2821C5B70701BF1F0044C298 /* PasswordWindowController.m in Sources */,
-				286590080718421900B0F29D /* HideMenuController.m in Sources */,
-				286590360718802800B0F29D /* PresenceMenuController.m in Sources */,
-				2888DE9D0719AA6C00A44A41 /* CustomPresenceWindowController.m in Sources */,
-				2860DE4E07259CF70081D50C /* PreferenceWindowController.m in Sources */,
-				285F6C550729A3ED00FD5D67 /* GroupChat.m in Sources */,
-				285F6FEA073820CA00FD5D67 /* TRUserDefaults.m in Sources */,
-				28D744B407565ED800D7EE0C /* ChatLog.m in Sources */,
-				2815EF1707660F630078C5AE /* AddContactWindowController.m in Sources */,
-				28A5470907C66A3500595357 /* ChatLogMenuController.m in Sources */,
-				2842CF05089FCFD900F2D0AA /* JabberResource.m in Sources */,
-				2842CF23089FD23F00F2D0AA /* JabberRootIdentity.m in Sources */,
-				28135C9A08ACE3780032967E /* XMLLog.m in Sources */,
-				28B2AB890A19C0130077DC9B /* TRXMLXHTML-IMParser.m in Sources */,
-				280A55C90A24CCA90056829B /* StanzaFactory.m in Sources */,
-				280A55D30A24CD600056829B /* MessageStanzaFactory.m in Sources */,
-				280A56D90A25C4050056829B /* IqStanzaFactory.m in Sources */,
-				280A56DF0A25C4750056829B /* PresenceStanzaFactory.m in Sources */,
-				280A582C0A2C91320056829B /* Iq.m in Sources */,
-				280A5D820A3491100056829B /* StreamFeatures.m in Sources */,
-				28DD668A0B05725D00035263 /* NSData+Base64.m in Sources */,
-				28DD6AAF0B07BCD700035263 /* Query_jabber_iq_roster.m in Sources */,
-				285A5CCA0B3571C600F5A7AB /* CompareHack.m in Sources */,
-				3BC84C2D0BE37830002833ED /* AccountWindowController.m in Sources */,
-				28F698B70C036A6B007BE36F /* PresenceLogController.m in Sources */,
-				28F99A220C05E2FC001D0306 /* NSTextView+ClickableLinks.m in Sources */,
+				283D79DE0C833E8800986BBA /* XMLLog.m in Sources */,
+				283D79D00C833E7B00986BBA /* AccountWindowController.m in Sources */,
+				283D79D10C833E7B00986BBA /* AddContactWindowController.m in Sources */,
+				283D79D20C833E7B00986BBA /* ChatLogMenuController.m in Sources */,
+				283D79D30C833E7B00986BBA /* CustomPresenceWindowController.m in Sources */,
+				283D79D40C833E7B00986BBA /* HideMenuController.m in Sources */,
+				283D79D50C833E7B00986BBA /* JabberApp.m in Sources */,
+				283D79D60C833E7B00986BBA /* MessageWindowController.m in Sources */,
+				283D79D70C833E7B00986BBA /* NSTextView+ClickableLinks.m in Sources */,
+				283D79D80C833E7B00986BBA /* PasswordWindowController.m in Sources */,
+				283D79D90C833E7B00986BBA /* PreferenceWindowController.m in Sources */,
+				283D79DA0C833E7B00986BBA /* PresenceLogController.m in Sources */,
+				283D79DB0C833E7B00986BBA /* PresenceMenuController.m in Sources */,
+				283D79DC0C833E7B00986BBA /* RosterController.m in Sources */,
+				283D79E50C833E9700986BBA /* TRUserDefaults.m in Sources */,
+				283D79E90C833E9D00986BBA /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1315,6 +1331,7 @@
 		28F8E8E20867708100948872 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH)";
 				OTHER_LDFLAGS = "";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 			};

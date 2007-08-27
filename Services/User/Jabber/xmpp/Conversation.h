@@ -84,7 +84,7 @@
 /**
  * Send a string as a message to the remote party.
  */
-- (void) sendPlainText:(NSString*)_message;
+- (void) sendText:(id)_message;
 /**
  * Returns the delegate.
  */

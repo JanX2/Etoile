@@ -100,11 +100,11 @@ Class delegateClass = Nil;
 	[delegate newRemoteJID:[[remotePerson defaultIdentity] jid]];
 }
 
-- (void) sendPlainText:(NSString*)_message
+- (void) sendText:(id)_message
 {
 	Message * newMessage = [Message messageWithBody:_message for:remoteJID withSubject:nil type:MESSAGE_TYPE_CHAT];
 	[delegate displayMessage:newMessage incoming:NO];
-	[connection XMPPSend:[[newMessage xml] stringValue]];
+	[connection XMPPSend:[[newMessage xml] unindentedStringValue]];
 }
 
 //If the corespondent's presence changes, we may wish to talk to a different one of their identities.  Check this, then update the UI.
