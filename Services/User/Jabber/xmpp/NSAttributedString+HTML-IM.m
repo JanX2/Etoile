@@ -49,7 +49,7 @@ NSString * fontAttributes(NSFont * aFont)
 	{
 		[style appendString:@"font-style: oblique;"];
 	}
-	if(traits & NSFontItalicTrait)
+	if(traits & NSFontBoldTrait)
 	{
 		[style appendString:@"font-weight: bold;"];
 	}
