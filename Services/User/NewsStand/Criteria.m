@@ -333,7 +333,7 @@
 		[groupTree addChild: oneCriteriaTree];
 	}
 	
-	NSString * criteriaString = [newTree stringValue];
+	NSString * criteriaString = [newTree unindentedStringValue];
 	return criteriaString;
 }
 

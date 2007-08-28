@@ -25,8 +25,6 @@
 #import <TRXML/TRXMLDeclaration.h>
 #import <TRXML/TRXMLParser.h>
 
-#define USE_TRXML 1
-
 @interface FeedItem (Private)
 	-(void)setTitle:(NSString *)newTitle;
 	-(void)setDescription:(NSString *)newDescription;
@@ -516,15 +514,9 @@
  */
 -(TRXMLNode *)channelTree:(TRXMLNode *)feedTree
 {
-#ifdef USE_TRXML
 	TRXMLNode *channelTree = [[feedTree getChildrenWithName: @"channel"] anyObject];
 	if (channelTree == nil)
 		channelTree = [[feedTree getChildrenWithName :@"rss:channel"] anyObject];
-#else
-	XMLParser * channelTree = [feedTree treeByName:@"channel"];
-	if (channelTree == nil)
-		channelTree = [feedTree treeByName:@"rss:channel"];
-#endif
 	return channelTree;
 }
 
@@ -536,7 +528,6 @@
 	BOOL success = YES;
 	
 	// Iterate through the channel items
-#ifdef USE_TRXML
 	int count = [[feedTree elements] count];
 	int index;
 	
@@ -601,69 +592,6 @@
 			continue;
 		}
 	}
-#else
-	int count = [feedTree countOfChildren];
-	int index;
-	
-	for (index = 0; index < count; ++index)
-	{
-		XMLParser * subTree = [feedTree treeByIndex:index];
-		NSString * nodeName = [subTree nodeName];
-
-		// Parse title
-		if ([nodeName isEqualToString:@"title"])
-		{
-			[self setTitle:[[subTree valueOfElement] stringByUnescapingExtendedCharacters]];
-			continue;
-		}
-
-		// Parse items group which dictates the sequence of the articles.
-		if ([nodeName isEqualToString:@"items"])
-		{
-			XMLParser * seqTree = [subTree treeByName:@"rdf:Seq"];
-			if (seqTree != nil)
-				[self parseSequence:seqTree];
-		}
-
-		// Parse description
-		if ([nodeName isEqualToString:@"description"])
-		{
-			[self setDescription:[subTree valueOfElement]];
-			continue;
-		}			
-		
-		// Parse link
-		if ([nodeName isEqualToString:@"link"])
-		{
-			[self setLink:[[subTree valueOfElement] stringByUnescapingExtendedCharacters]];
-			continue;
-		}			
-		
-		// Parse the date when this feed was last updated
-		if ([nodeName isEqualToString:@"lastBuildDate"])
-		{
-			NSString * dateString = [subTree valueOfElement];
-			[self setLastModified: parseXMLDate(dateString)];
-			continue;
-		}
-		
-		// Parse item date
-		if ([nodeName isEqualToString:@"dc:date"])
-		{
-			NSString * dateString = [subTree valueOfElement];
-			[self setLastModified: parseXMLDate(dateString)];
-			continue;
-		}
-		
-		// Parse item date
-		if ([nodeName isEqualToString:@"pubDate"])
-		{
-			NSString * dateString = [subTree valueOfElement];
-			[self setLastModified: parseXMLDate(dateString)];
-			continue;
-		}
-	}
-#endif
 	return success;
 }
 
@@ -673,7 +601,6 @@
  */
 -(void)parseSequence:(TRXMLNode *)seqTree
 {
-#ifdef USE_TRXML
 	int count = [[seqTree elements] count];
 	int index;
 
@@ -682,6 +609,9 @@
 	for (index = 0; index < count; ++index)
 	{
 		TRXMLNode *subTree = [[seqTree elements] objectAtIndex: index];
+        if ([subTree isKindOfClass: [TRXMLNode class]] == NO)
+            continue;
+
 		if ([[subTree type] isEqualToString:@"rdf:li"])
 		{
 			NSString * resourceString = [subTree get: @"rdf:resource"];
@@ -691,25 +621,6 @@
 				[orderArray addObject:resourceString];
 		}
 	}
-#else
-	int count = [seqTree countOfChildren];
-	int index;
-
-	[orderArray release];
-	orderArray = [[NSMutableArray alloc] initWithCapacity:count];
-	for (index = 0; index < count; ++index)
-	{
-		XMLParser * subTree = [seqTree treeByIndex:index];
-		if ([[subTree nodeName] isEqualToString:@"rdf:li"])
-		{
-			NSString * resourceString = [subTree valueOfAttribute:@"rdf:resource"];
-			if (resourceString == nil)
-				resourceString = [subTree valueOfAttribute:@"resource"];
-			if (resourceString != nil)
-				[orderArray addObject:resourceString];
-		}
-	}
-#endif
 }
 
 /* initRSSFeedItems
@@ -719,7 +630,6 @@
 {
 	BOOL success = YES;
 
-#ifdef USE_TRXML
 	// Iterate through the channel items
 	NSArray *nodes = [[feedTree getChildrenWithName: @"item"] allObjects];
 	int count = [nodes count];
@@ -748,6 +658,9 @@
 		for (itemIndex = 0; itemIndex < itemCount; ++itemIndex)
 		{
 			TRXMLNode *subItemTree = [[subTree elements] objectAtIndex: itemIndex];
+			if ([subItemTree isKindOfClass: [TRXMLNode class]] == NO)
+				continue;
+
 			NSString * itemNodeName = [subItemTree type];
 
 			// Parse item title
@@ -834,154 +747,30 @@
 				continue;
 			}
 		}
-#else
-
-	// Iterate through the channel items
-	int count = [feedTree countOfChildren];
-	int index;
-
-	// Allocate an items array
-	NSAssert(items == nil, @"initRSSFeedItems called more than once per initialisation");
-	items = [[NSMutableArray alloc] initWithCapacity:count];
-
-	for (index = 0; index < count; ++index)
-	{
-		XMLParser * subTree = [feedTree treeByIndex:index];
-		NSString * nodeName = [subTree nodeName];
-		
-		// Parse a single item to construct a FeedItem object which is appended to
-		// the items array we maintain.
-		if ([nodeName isEqualToString:@"item"])
-		{
-			FeedItem * newItem = [[FeedItem alloc] init];
-			int itemCount = [subTree countOfChildren];
-			NSMutableString * articleBody = nil;
-			BOOL hasDetailedContent = NO;
-			BOOL hasLink = NO;
-			int itemIndex;
-
-			// Check for rdf:about so we can identify this item in the orderArray.
-			NSString * itemIdentifier = [subTree valueOfAttribute:@"rdf:about"];
-
-			for (itemIndex = 0; itemIndex < itemCount; ++itemIndex)
-			{
-				XMLParser * subItemTree = [subTree treeByIndex:itemIndex];
-				NSString * itemNodeName = [subItemTree nodeName];
-
-				// Parse item title
-				if ([itemNodeName isEqualToString:@"title"])
-				{
-					NSString * newTitle = [[[subItemTree valueOfElement] firstNonBlankLine] stringByUnescapingExtendedCharacters];
-					[newItem setTitle:[self stripHTMLTags:newTitle]];
-					continue;
-				}
-				
-				// Parse item description
-				if ([itemNodeName isEqualToString:@"description"] && !hasDetailedContent)
-				{
-					[articleBody release];
-					articleBody = [[subItemTree valueOfElement] retain];
-					continue;
-				}
-				
-				// Parse GUID. The GUID may optionally have a permaLink attribute
-				// in which case this is also the article link unless overridden by
-				// an explicit link tag.
-				if ([itemNodeName isEqualToString:@"guid"])
-				{
-					NSString * permaLink = [subItemTree valueOfAttribute:@"isPermaLink"];
-					if (permaLink && [permaLink isEqualToString:@"true"] && !hasLink)
-						[newItem setLink:[subItemTree valueOfElement]];
-					[newItem setGuid:[subItemTree valueOfElement]];
-					continue;
-				}
-				
-				// Parse detailed item description. This overrides the existing
-				// description for this item.
-				if ([itemNodeName isEqualToString:@"content:encoded"])
-				{
-					[articleBody release];
-					articleBody = [[subItemTree valueOfElement] retain];
-					hasDetailedContent = YES;
-					continue;
-				}
-				
-				// Parse item author
-				if ([itemNodeName isEqualToString:@"author"])
-				{
-					[newItem setAuthor:[subItemTree valueOfElement]];
-					continue;
-				}
-				
-				// Parse item author
-				if ([itemNodeName isEqualToString:@"dc:creator"])
-				{
-					[newItem setAuthor:[subItemTree valueOfElement]];
-					continue;
-				}
-				
-				// Parse item date
-				if ([itemNodeName isEqualToString:@"dc:date"])
-				{
-					NSString * dateString = [subItemTree valueOfElement];
-					[newItem setDate: parseXMLDate(dateString)];
-					continue;
-				}
-				
-				// Parse item link
-				if ([itemNodeName isEqualToString:@"link"])
-				{
-					[newItem setLink:[[subItemTree valueOfElement] stringByUnescapingExtendedCharacters]];
-					hasLink = YES;
-					continue;
-				}
-				
-				// Parse item date
-				if ([itemNodeName isEqualToString:@"pubDate"])
-				{
-					NSString * dateString = [subItemTree valueOfElement];
-					[newItem setDate: parseXMLDate(dateString)];
-					continue;
-				}
-				
-				// Parse associated enclosure
-				if ([itemNodeName isEqualToString:@"enclosure"])
-				{
-					if ([subItemTree valueOfAttribute:@"url"])
-						[newItem setEnclosure:[subItemTree valueOfAttribute:@"url"]];
-					continue;
-				}
-
-			}
-#endif
 			
-			// If no link, set it to the feed link if there is one
-			if (!hasLink && [self link])
-				[newItem setLink:[self link]];
+		// If no link, set it to the feed link if there is one
+		if (!hasLink && [self link])
+			[newItem setLink:[self link]];
 
-			// Do relative IMG tag fixup
-			[articleBody fixupRelativeImgTags:[self link]];
-			[newItem setDescription:SafeString(articleBody)];
-			[articleBody release];
+		// Do relative IMG tag fixup
+		[articleBody fixupRelativeImgTags:[self link]];
+		[newItem setDescription:SafeString(articleBody)];
+		[articleBody release];
 
-			// Synthesize a summary from the description
-			[newItem setSummary:[[newItem description] summaryTextFromHTML]];
+		// Synthesize a summary from the description
+		[newItem setSummary:[[newItem description] summaryTextFromHTML]];
 
-			// Derive any missing title
-			[self ensureTitle:newItem];
-			
-			// Add this item in the proper location in the array
-			int indexOfItem = (orderArray && itemIdentifier) ? [orderArray indexOfStringInArray:itemIdentifier] : NSNotFound;
-			if (indexOfItem == NSNotFound || indexOfItem >= [items count])
-				[items addObject:newItem];
-			else
-				[items insertObject:newItem atIndex:indexOfItem];
-			[newItem release];
-#ifndef USE_TRXML
-		}
-#endif
+		// Derive any missing title
+		[self ensureTitle:newItem];
+	
+		// Add this item in the proper location in the array
+		int indexOfItem = (orderArray && itemIdentifier) ? [orderArray indexOfStringInArray:itemIdentifier] : NSNotFound;
+		if (indexOfItem == NSNotFound || indexOfItem >= [items count])
+			[items addObject:newItem];
+		else
+			[items insertObject:newItem atIndex:indexOfItem];
+		[newItem release];
 	}
-
 	// Now scan the array and set the article date if it is missing. We'll use the
 	// last modified date of the feed and set each article to be 1 second older than the
 	// previous one. So the array is effectively newest first.
@@ -1009,7 +798,6 @@
 	// Allocate an items array
 	NSAssert(items == nil, @"initAtomFeed called more than once per initialisation");
 	items = [[NSMutableArray alloc] initWithCapacity:10];
-#ifdef USE_TRXML	
 	// Look for feed attributes we need to process
 	NSString * linkBase = [[feedTree get: @"xml:base"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	if (linkBase == nil)
@@ -1024,6 +812,9 @@
 	for (index = 0; index < count; ++index)
 	{
 		TRXMLNode *subTree = [[feedTree elements] objectAtIndex: index];
+        if ([subTree isKindOfClass: [TRXMLNode class]] == NO)
+            continue;
+
 		NSString *nodeName = [subTree type];
 
 		// Parse title
@@ -1119,6 +910,9 @@
 			for (itemIndex = 0; itemIndex < itemCount; ++itemIndex)
 			{
 				TRXMLNode *subItemTree = [[subTree elements] objectAtIndex: itemIndex];
+				if ([subItemTree isKindOfClass: [TRXMLNode class]] == NO)
+					continue;
+
 				NSString * itemNodeName = [subItemTree type];
 				
 				// Parse item title
@@ -1233,231 +1027,6 @@
 					continue;
 				}
 			}
-#else
-	// Look for feed attributes we need to process
-	NSString * linkBase = [[feedTree valueOfAttribute:@"xml:base"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-	if (linkBase == nil)
-		linkBase = [[self link] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-	NSURL * linkBaseURL = (linkBase != nil) ? [NSURL URLWithString:linkBase] : nil;
-
-	// Iterate through the atom items
-	NSString * defaultAuthor = @"";
-	int count = [feedTree countOfChildren];
-	int index;
-	
-	for (index = 0; index < count; ++index)
-	{
-		XMLParser * subTree = [feedTree treeByIndex:index];
-		NSString * nodeName = [subTree nodeName];
-
-		// Parse title
-		if ([nodeName isEqualToString:@"title"])
-		{
-			[self setTitle:[[subTree valueOfElement] stringByUnescapingExtendedCharacters]];
-			continue;
-		}
-		
-		// Parse description
-		if ([nodeName isEqualToString:@"subtitle"])
-		{
-			[self setDescription:[subTree valueOfElement]];
-			continue;
-		}			
-		
-		// Parse description
-		if ([nodeName isEqualToString:@"tagline"])
-		{
-			[self setDescription:[subTree valueOfElement]];
-			continue;
-		}			
-
-		// Parse link
-		if ([nodeName isEqualToString:@"link"])
-		{
-			if ([subTree valueOfAttribute:@"rel"] == nil || [[subTree valueOfAttribute:@"rel"] isEqualToString:@"alternate"])
-			{
-				NSString * theLink = [[subTree valueOfAttribute:@"href"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-				if (theLink != nil)
-				{
-					if ((linkBaseURL != nil) && ![theLink hasPrefix:@"http://"])
-					{
-						NSURL * theLinkURL = [NSURL URLWithString:theLink relativeToURL:linkBaseURL];
-						[self setLink:(theLinkURL != nil) ? [theLinkURL absoluteString] : theLink];
-					}
-					else
-						[self setLink:theLink];
-				}
-			}
-			continue;
-		}			
-		
-		// Parse author at the feed level. This is the default for any entry
-		// that doesn't have an explicit author.
-		if ([nodeName isEqualToString:@"author"])
-		{
-			XMLParser * emailTree = [subTree treeByName:@"name"];
-			if (emailTree != nil)
-				defaultAuthor = [emailTree valueOfElement];
-			continue;
-		}
-		
-		// Parse the date when this feed was last updated
-		if ([nodeName isEqualToString:@"updated"])
-		{
-			NSString * dateString = [subTree valueOfElement];
-			[self setLastModified: parseXMLDate(dateString)];
-			continue;
-		}
-		
-		// Parse the date when this feed was last updated
-		if ([nodeName isEqualToString:@"modified"])
-		{
-			NSString * dateString = [subTree valueOfElement];
-			[self setLastModified: parseXMLDate(dateString)];
-			continue;
-		}
-		
-		// Parse a single item to construct a FeedItem object which is appended to
-		// the items array we maintain.
-		if ([nodeName isEqualToString:@"entry"])
-		{
-			FeedItem * newItem = [[FeedItem alloc] init];
-			[newItem setAuthor:defaultAuthor];
-			int itemCount = [subTree countOfChildren];
-			NSMutableString * articleBody = nil;
-			int itemIndex;
-			BOOL hasLink = NO;
-
-			// Look for the xml:base attribute, and use absolute url or stack relative url
-			NSString * entryBase = [[subTree valueOfAttribute:@"xml:base"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-			if (entryBase == nil)
-				entryBase = linkBase;
-			NSURL * entryBaseURL = (entryBase != nil) ? [NSURL URLWithString:entryBase] : nil;
-			if ((entryBaseURL != nil) && (linkBaseURL != nil) && ([entryBaseURL scheme] == nil))
-			{
-				entryBaseURL = [NSURL URLWithString:entryBase relativeToURL:linkBaseURL];
-				if (entryBaseURL != nil)
-					entryBase = [entryBaseURL absoluteString];
-			}
-
-			for (itemIndex = 0; itemIndex < itemCount; ++itemIndex)
-			{
-				XMLParser * subItemTree = [subTree treeByIndex:itemIndex];
-				NSString * itemNodeName = [subItemTree nodeName];
-				
-				// Parse item title
-				if ([itemNodeName isEqualToString:@"title"])
-				{
-					NSString * newTitle = [[[subItemTree valueOfElement] firstNonBlankLine] stringByUnescapingExtendedCharacters];
-					NSString * titleType = [subItemTree valueOfAttribute:@"type"];
-					
-					if ([titleType isEqualToString:@"html"] || [titleType isEqualToString:@"xhtml"])
-						[newItem setTitle:[self stripHTMLTags:newTitle]];
-					else
-						[newItem setTitle:newTitle];
-					continue;
-				}
-
-				// Parse item description
-				if ([itemNodeName isEqualToString:@"content"])
-				{
-					[articleBody release];
-					articleBody = [[subItemTree valueOfElement] retain];
-					continue;
-				}
-				
-				// Parse item description
-				if ([itemNodeName isEqualToString:@"summary"])
-				{
-					[articleBody release];
-					articleBody = [[subItemTree valueOfElement] retain];
-					continue;
-				}
-				
-				// Parse item author
-				if ([itemNodeName isEqualToString:@"author"])
-				{
-					XMLParser * emailTree = [subItemTree treeByName:@"name"];
-					[newItem setAuthor:[emailTree valueOfElement]];
-					continue;
-				}
-				
-				// Parse item link
-				if ([itemNodeName isEqualToString:@"link"])
-				{
-					if ([[subItemTree valueOfAttribute:@"rel"] isEqualToString:@"enclosure"])
-					{
-						NSString * theLink = [[subItemTree valueOfAttribute:@"href"] stringByUnescapingExtendedCharacters];
-						if (theLink != nil)
-						{
-							if ((entryBaseURL != nil) && ([[NSURL URLWithString:theLink] scheme] == nil))
-							{
-								NSURL * theLinkURL = [NSURL URLWithString:theLink relativeToURL:entryBaseURL];
-								[newItem setEnclosure:(theLinkURL != nil) ? [theLinkURL absoluteString] : theLink];
-							}
-							else
-								[newItem setEnclosure:theLink];
-					}
-				}
-				else
-				{
-					if ([subItemTree valueOfAttribute:@"rel"] == nil || [[subItemTree valueOfAttribute:@"rel"] isEqualToString:@"alternate"])
-					{
-						NSString * theLink = [[subItemTree valueOfAttribute:@"href"] stringByUnescapingExtendedCharacters];
-						if (theLink != nil)
-						{
-							if ((entryBaseURL != nil) && ([[NSURL URLWithString:theLink] scheme] == nil))
-							{
-								NSURL * theLinkURL = [NSURL URLWithString:theLink relativeToURL:entryBaseURL];
-								[newItem setLink:(theLinkURL != nil) ? [theLinkURL absoluteString] : theLink];
-							}
-							else
-								[newItem setLink:theLink];
-							hasLink = YES;
-						}
-					}
-					continue;
-				}
-				}
-				
-				// Parse item id
-				if ([itemNodeName isEqualToString:@"id"])
-				{
-					[newItem setGuid:[subItemTree valueOfElement]];
-					continue;
-				}
-
-				// Parse item date
-				if ([itemNodeName isEqualToString:@"modified"])
-				{
-					NSString * dateString = [subItemTree valueOfElement];
-					NSDate * newDate = parseXMLDate(dateString);
-					if ([newItem date] == nil || [newDate isGreaterThan:[newItem date]])
-						[newItem setDate:newDate];
-					continue;
-				}
-
-				// Parse item date
-				if ([itemNodeName isEqualToString:@"created"])
-				{
-					NSString * dateString = [subItemTree valueOfElement];
-					NSDate * newDate = parseXMLDate(dateString);
-					if ([newItem date] == nil || [newDate isGreaterThan:[newItem date]])
-						[newItem setDate:newDate];
-					continue;
-				}
-				
-				// Parse item date
-				if ([itemNodeName isEqualToString:@"updated"])
-				{
-					NSString * dateString = [subItemTree valueOfElement];
-					NSDate * newDate = parseXMLDate(dateString);
-					if ([newItem date] == nil || [newDate isGreaterThan:[newItem date]])
-						[newItem setDate:newDate];
-					continue;
-				}
-			}
-#endif
 			// Do relative IMG tag fixup
 			[articleBody fixupRelativeImgTags:entryBase];
 			[newItem setDescription:SafeString(articleBody)];

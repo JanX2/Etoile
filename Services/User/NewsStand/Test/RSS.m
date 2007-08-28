@@ -18,6 +18,68 @@
 	UKTrue([parser parseFromSource: string]);
 //	UKNotNil([[decl getChildrenWithName: @"rss"] anyObject]);
 }
+- (void) test0
+{
+	NSString *string = @"<A><b></b><c></c>\t</A>";
+	TRXMLDeclaration *decl = [TRXMLDeclaration TRXMLDeclaration];
+	TRXMLParser *parser = [TRXMLParser parserWithContentHandler: decl];
+	UKTrue([parser parseFromSource: string]);
+	int i, count = [[decl elements] count];
+	UKIntsEqual(1, [[decl elements] count]);
+	TRXMLNode *node = [[decl elements] objectAtIndex: 0];
+	UKStringsEqual(@"A", [node type]);
+	count = [[node elements] count];
+	NSLog(@"%d", count);
+}
+
+- (void) test1
+{
+	NSString *string = @"<A><!--msn 20070323 --></A>";
+	TRXMLDeclaration *decl = [TRXMLDeclaration TRXMLDeclaration];
+	TRXMLParser *parser = [TRXMLParser parserWithContentHandler: decl];
+	UKTrue([parser parseFromSource: string]);
+#if 0
+	int count = [[decl elements] count];
+	UKIntsEqual(1, [[decl elements] count]);
+#endif
+#if 0
+	TRXMLNode *node = [[decl elements] objectAtIndex: 0];
+	UKStringsEqual(@"A", [node type]);
+#endif
+}
+
+#if 1
+- (void) test2
+{
+	NSData *data = [NSData dataWithContentsOfFile: @"test3.xml"];
+	NSString *string = [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
+	// READ
+	TRXMLDeclaration *decl = [TRXMLDeclaration TRXMLDeclaration];
+	TRXMLParser *parser = [TRXMLParser parserWithContentHandler: decl];
+	UKTrue([parser parseFromSource: string]);
+	int i, count = [[decl elements] count];
+	for (i = 0; i < count; i++)
+	{
+		id o = [[decl elements] objectAtIndex: i];
+		if ([o isKindOfClass: [TRXMLNode class]])
+		{
+			NSLog(@"Element Type %@", [o type]);
+		}
+		else
+		{
+			NSLog(@"Element cdata %@", o);
+		}
+	}
+//	UKIntsEqual(1, [[decl elements] count]);
+#if 0
+	TRXMLNode *node = [[decl elements] objectAtIndex: 0];
+	UKStringsEqual(@"item", [node type]);
+	count = [[node elements] count];
+	NSLog(@"%d", count);
+//	UKNotNil([[decl getChildrenWithName: @"rss"] anyObject]);
+#endif
+}
+#endif
 #if 0
 - (void) testRSS091
 {
