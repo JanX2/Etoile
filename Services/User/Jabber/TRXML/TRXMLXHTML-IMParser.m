@@ -393,7 +393,11 @@ static NSSet * lineBreakAfterTags;
 		//TODO:  Make it optional to get the real image
 		else if([_Name isEqualToString:@"img"])
 		{
-			[self characters:[_attributes objectForKey:@"alt"]];
+			NSString * alt = [_attributes objectForKey:@"alt"];
+			if(alt != nil)
+			{
+				[self characters:alt];
+			}
 		}
 		//Get an explicit style
 		if(style != nil)
