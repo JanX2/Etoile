@@ -282,6 +282,8 @@ static NSSet * lineBreakAfterTags;
 						  forKey:@"em"];	
 		[stylesForTags setObject:attributesFromStyles(nil,@"font-style : italic")
 						  forKey:@"i"];	
+		[stylesForTags setObject:attributesFromStyles(nil,@"color : blue ; text-decoration : underline")
+						  forKey:@"a"];	
 		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold")
 						  forKey:@"b"];
 		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold;font-size: xx-large")
