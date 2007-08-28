@@ -41,7 +41,7 @@ NSDictionary * MESSAGE_TYPES;
 	}
 	else if([_body isKindOfClass:[NSAttributedString class]])
 	{
-		body = [[[_body string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
+		body = [[[_body stringValueWithExpandedLinks] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
 		html = [_body retain];
 	}
 	correspondent = [_recipient retain];

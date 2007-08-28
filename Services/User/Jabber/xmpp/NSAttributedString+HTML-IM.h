@@ -11,4 +11,5 @@
 @class TRXMLNode;
 @interface NSAttributedString (XHTML_IM)
 - (TRXMLNode*) xhtmlimValue;
+- (NSString*) stringValueWithExpandedLinks;
 @end

@@ -118,13 +118,23 @@ void addCdataWithLineBreaksToNode(TRXMLNode * node, NSString* cdata)
 		//Get the range and attributes:
 		NSDictionary * attributes = [self attributesAtIndex:start effectiveRange:&attributeRange];
 		NSString * css = styleFromAttributes(attributes);
+		NSString * linkTarget = [attributes objectForKey:NSLinkAttributeName];
 		TRXMLNode * span;
-		if(![css isEqualToString:@""])
+		if(![css isEqualToString:@""] || linkTarget != nil)
 		{
-			NSDictionary * style = [NSDictionary dictionaryWithObject:styleFromAttributes(attributes)
-															   forKey:@"style"];
-			span = [TRXMLNode TRXMLNodeWithType:@"span"
-									 attributes:style];
+			if(linkTarget != nil)
+			{
+				span = [TRXMLNode TRXMLNodeWithType:@"a"];
+				[span set:@"href" to:linkTarget];
+			}
+			else
+			{
+				span = [TRXMLNode TRXMLNodeWithType:@"span"];
+			}
+			if(![css isEqualToString:@""])
+			{
+				[span set:@"style" to:styleFromAttributes(attributes)];
+			}
 			addCdataWithLineBreaksToNode(span, [plainText substringWithRange:attributeRange]);
 			[body addChild:span];
 		}
@@ -136,5 +146,28 @@ void addCdataWithLineBreaksToNode(TRXMLNode * node, NSString* cdata)
 	}
 	NSLog(@"XHTML-IM: %@", [html stringValue]);
 	return html;
+}
+
+- (NSString*) stringValueWithExpandedLinks
+{
+	NSMutableString * string = [NSMutableString stringWithString:[self string]];
+	int length = [self length];
+	int offset = 0;
+	for(int i = 0 ; i<length ; i++)
+	{
+		NSRange range;
+		NSString * href;
+		if((href = [self attribute:NSLinkAttributeName
+						   atIndex:i
+					effectiveRange:&range]))
+		{
+			i += range.length;
+			NSString * link = [NSString stringWithFormat:@" (%@)", href];
+			[string insertString:link
+						 atIndex:i + offset];
+			offset += [link length];
+		}
+	}
+	return string;
 }
 @end
