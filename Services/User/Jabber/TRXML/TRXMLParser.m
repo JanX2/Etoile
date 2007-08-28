@@ -83,6 +83,8 @@
 	return -1;	
 }
 
+#define ISCOMMENT(tag) (([tag length] > 2) && [[tag substringToIndex:3] isEqualToString:@"!--"])
+
 - (int) parseTagFrom:(int*) _index named:(NSMutableString*)_name withAttributes:(NSMutableDictionary*)_attributes
 {
 #define RETURN(x) (*_index) = current ; return x
@@ -128,9 +130,10 @@
 		}
 	}
 	[_name setString:CURRENTSTRING];
-	if([_name isEqualToString:@"!--"])
+	if(ISCOMMENT(_name))
 	{
 		SEARCHTO('>');
+		state = incdata;
 		RETURN(SUCCESS);
 	}
 	start = current;
@@ -177,6 +180,7 @@
 #define ENDPARSINGIF(x) if(x) { [buffer deleteCharactersInRange:NSMakeRange(0,lastSuccessfullyParsed)]; /*NSLog(@"Unparsed: '%@'", buffer);*/ return YES;}
 #define SKIPTO(x) currentIndex = [self parseFrom:currentIndex to:x]; ENDPARSINGIF(currentIndex == -1);
 #define CURRENTSTRING [buffer substringWithRange:NSMakeRange(lastSuccessfullyParsed,currentIndex - lastSuccessfullyParsed)]
+						
 	int currentIndex = 0;
 	int lastSuccessfullyParsed = 0;
 	int bufferLength;
@@ -254,7 +258,7 @@
 					case SUCCESS:
 						if(openTag)
 						{
-							if(![tagName isEqualToString:@"!--"])
+							if(!ISCOMMENT(tagName))
 							{
 								//Special case for stupid CDATA things.
 								if([tagName isEqualToString:@"![CDATA["])

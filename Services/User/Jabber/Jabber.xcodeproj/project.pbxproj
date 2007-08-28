@@ -219,7 +219,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 280ACF700B75013B0008F3F3 /* TRXML */;
+			remoteGlobalIDString = 280ACF700B75013B0008F3F3;
 			remoteInfo = TRXML;
 		};
 		2839E2E90B76504300145C44 /* PBXContainerItemProxy */ = {
