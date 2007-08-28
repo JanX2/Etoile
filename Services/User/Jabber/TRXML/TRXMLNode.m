@@ -230,6 +230,11 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 				}
 			}
 		}
+		/* Remove last '\t' */
+		if (indent > 0)
+		{
+			[indentString deleteCharactersInRange: NSMakeRange([indentString length]-1, 1)];
+		}
 		[XML appendString:indentString];
 		[XML appendString:[NSString stringWithFormat:@"</%@>",nodeType]];
 	}

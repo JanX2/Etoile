@@ -186,7 +186,7 @@
 	}
 	
 	[buffer appendString:data];
-	NSLog(@"XML: %@", buffer);
+//	NSLog(@"XML: %@", buffer);
 	bufferLength = [buffer length];
 	while(currentIndex < bufferLength)
 	{

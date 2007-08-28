@@ -17,7 +17,7 @@
 	return [decl autorelease];
 }
 
-- (NSString*) stringValueWithFlags:(NSDictionary *)flags
+- (NSString*) stringValueWithIndent:(int)indent
 {
 	/* Because this is the first element, we don't really care about indent */
 
@@ -55,7 +55,7 @@
 		{
 			if([element isKindOfClass: [TRXMLNode class]])
 			{
-				[XML appendString:[element stringValueWithFlags:flags]];
+				[XML appendString:[element stringValueWithIndent:indent]];
 			}
 		}
 	}
