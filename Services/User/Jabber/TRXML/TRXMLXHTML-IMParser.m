@@ -246,7 +246,7 @@ static inline NSMutableDictionary * attributesFromStyles(NSMutableDictionary * a
 	return attributes;
 }
 
-static inline NSString* unescapeXMLCData(NSString* _XMLString)
+static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 {
 	NSMutableString * XMLString = [NSMutableString stringWithString:_XMLString];
 	[XMLString replaceOccurrencesOfString:@"&lt;" withString:@"<" options:0 range:NSMakeRange(0,[XMLString length])];
@@ -324,9 +324,33 @@ static NSSet * lineBreakAfterTags;
 
 - (void)characters:(NSString *)_chars
 {
-	NSAttributedString * newSection = [[NSAttributedString alloc] initWithString:unescapeXMLCData(_chars)
+	NSMutableString * text = unescapeXMLCData(_chars);
+	NSLog(@"Received cdata '%@'", _chars);
+	[text replaceOccurrencesOfString:@"\t"
+						  withString:@" "
+							 options:0
+							   range:NSMakeRange(0, [text length])];
+	[text replaceOccurrencesOfString:@"\n"
+						  withString:@" "
+							 options:0
+							   range:NSMakeRange(0, [text length])];
+	while([text replaceOccurrencesOfString:@"  "
+						  withString:@" "
+							 options:0
+							   range:NSMakeRange(0, [text length])] > 0) {};
+	NSString * existing  = [string string];
+	int length = [existing length];
+	if(length > 0
+	   &&
+	   [existing characterAtIndex:length - 1] == ' '
+	   &&
+	   [text characterAtIndex:0] == ' ')
+	{
+		[text deleteCharactersInRange:NSMakeRange(0,1)];
+	}
+	NSAttributedString * newSection = [[NSAttributedString alloc] initWithString:text
 																	  attributes:currentAttributes];
-	NSLog(@"Adding '%@' with attributes: %@", _chars, currentAttributes);
+	NSLog(@"Adding '%@' with attributes: %@", text, currentAttributes);
 	[string appendAttributedString:newSection];
 	[newSection release];
 }
@@ -379,7 +403,9 @@ static NSSet * lineBreakAfterTags;
 		//And some line breaks...
 		if([lineBreakBeforeTags containsObject:_Name])
 		{
-			[self characters:@"\n"];
+			NSAttributedString * newline = [[NSAttributedString alloc] initWithString:@"\n"];
+			[string appendAttributedString:newline];
+			[newline release];
 		}
 		//Increment the depth counter.  This should always be equal to [attributeStack count] + 1, and it might be worth using this for validation
 	}
@@ -398,7 +424,9 @@ static NSSet * lineBreakAfterTags;
 	{
 		if([lineBreakAfterTags containsObject:_Name])
 		{
-			[self characters:@"\n"];
+			NSAttributedString * newline = [[NSAttributedString alloc] initWithString:@"\n"];
+			[string appendAttributedString:newline];
+			[newline release];
 		}
 		[currentAttributes release];
 		currentAttributes = [attributeStack lastObject];
