@@ -132,16 +132,18 @@ static inline NSColor * colourFromCSSColourString(NSString * aColour)
 
 static NSDictionary * FONT_SIZES;
 
-static inline NSMutableDictionary * attributesFromStyles(NSDictionary * oldAttributes, NSString * style)
+static inline NSMutableDictionary * attributesFromStyles(NSDictionary * attributes, NSString * style)
 {
 	NSFontManager * fontManager = [NSFontManager sharedFontManager];
-	NSMutableDictionary * attributes = [[NSMutableDictionary alloc] initWithDictionary:oldAttributes];
 	NSFont * font = [attributes objectForKey:NSFontAttributeName];
 	if(font == nil)
 	{
 		font = [NSFont userFontOfSize:12.0f];
 	}
-	
+	if(nil == attributes)
+	{
+		attributes = [NSMutableDictionary dictionary];
+	}
 	NSArray * styles = [style componentsSeparatedByString:@";"];
 	//Parse each CSS property
 	FOREACH(styles, theStyle, NSString*)
@@ -349,11 +351,11 @@ static NSSet * lineBreakAfterTags;
 		[attributeStack addObject:currentAttributes];
 		//Get the new attributes
 		NSDictionary * defaultStyle = [stylesForTags objectForKey:_Name];
+		currentAttributes = [NSMutableDictionary dictionaryWithDictionary:currentAttributes];
 		if(defaultStyle != nil)
 		{
 			[currentAttributes addEntriesFromDictionary:defaultStyle];
 		}
-		currentAttributes = [NSMutableDictionary dictionaryWithDictionary:currentAttributes];
 		NSString * style = [_attributes objectForKey:@"style"];
 		//Special case for hyperlinks
 		if([_Name isEqualToString:@"a"])
@@ -399,8 +401,8 @@ static NSSet * lineBreakAfterTags;
 			[self characters:@"\n"];
 		}
 		[currentAttributes release];
-		[attributeStack removeLastObject];
 		currentAttributes = [attributeStack lastObject];
+		[attributeStack removeLastObject];
 	}
 }
 - (void) notifyParent
