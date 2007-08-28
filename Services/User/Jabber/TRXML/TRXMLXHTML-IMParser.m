@@ -132,7 +132,7 @@ static inline NSColor * colourFromCSSColourString(NSString * aColour)
 
 static NSDictionary * FONT_SIZES;
 
-static inline NSMutableDictionary * attributesFromStyles(NSDictionary * attributes, NSString * style)
+static inline NSMutableDictionary * attributesFromStyles(NSMutableDictionary * attributes, NSString * style)
 {
 	NSFontManager * fontManager = [NSFontManager sharedFontManager];
 	NSFont * font = [attributes objectForKey:NSFontAttributeName];
