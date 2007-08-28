@@ -167,10 +167,14 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 	//Open tag
 	NSMutableString * XML = [NSMutableString stringWithFormat:@"<%@",nodeType];
 	//Number of tabs to indent
-	NSMutableString * indentString = @"";
+	NSMutableString * indentString;
 	if(indent >= 0)
 	{
 		indentString = [NSMutableString stringWithString:@"\n"];
+	}
+	else
+	{
+		indentString = [NSMutableString string];
 	}
 	
 	for(int i=0 ; i<indent ; i++)
