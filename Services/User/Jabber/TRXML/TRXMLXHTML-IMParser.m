@@ -358,6 +358,7 @@ static NSSet * lineBreakAfterTags;
 - (void)startElement:(NSString *)_Name
 		  attributes:(NSDictionary*)_attributes;
 {
+	_Name = [_Name lowercaseString];
 	if(depth == 0)
 	{
 		//Ignore any elements that are not <body>
@@ -413,6 +414,7 @@ static NSSet * lineBreakAfterTags;
 }
 - (void)endElement:(NSString *)_Name
 {
+	_Name = [_Name lowercaseString];
 	depth--;
 	if(depth == 0)
 	{
