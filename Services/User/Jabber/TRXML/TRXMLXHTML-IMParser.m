@@ -358,16 +358,17 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 		  attributes:(NSDictionary*)_attributes;
 {
 	_Name = [_Name lowercaseString];
+	if([_Name isEqualToString:@"html"])
+	{
+		depth++;
+	}
 	if(depth == 0)
 	{
 		//Ignore any elements that are not <body>
-		if(![_Name isEqualToString:@"html"])
-		{
-			[[[TRXMLNullHandler alloc] initWithXMLParser:parser
-												  parent:self
-													 key:nil] startElement:_Name
-																attributes:_attributes];
-		}
+		[[[TRXMLNullHandler alloc] initWithXMLParser:parser
+											  parent:self
+												 key:nil] startElement:_Name
+															attributes:_attributes];
 	}
 	else
 	{
@@ -413,13 +414,15 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 		}
 		//Increment the depth counter.  This should always be equal to [attributeStack count] + 1, and it might be worth using this for validation
 	}
-	depth++;
 }
 - (void)endElement:(NSString *)_Name
 {
 	_Name = [_Name lowercaseString];
-	depth--;
 	if([_Name isEqualToString:@"html"])
+	{
+		depth--;
+	}	
+	if(depth == 0)
 	{
 		[parser setContentHandler:parent];
 		[self notifyParent];
