@@ -257,13 +257,8 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 	return XMLString;
 }
 
-
-static NSMutableDictionary * stylesForTags;
-static NSSet * lineBreakBeforeTags;
-static NSSet * lineBreakAfterTags;
-
 @implementation TRXMLXHTML_IMParser
-+ (void) loadStyles:(id)unused
+- (void) loadStyles:(id)unused
 {
 //	stylesForTags = [[NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"XHTML-IM HTML Styles"]] retain];
 	FONT_SIZES = [[NSDictionary dictionaryWithObjectsAndKeys:
@@ -297,8 +292,13 @@ static NSSet * lineBreakAfterTags;
 	}
 }
 
-+ (void) initialize 
+- (id) init
 {
+	SUPERINIT;
+	string = [[NSMutableAttributedString alloc] init];
+	currentAttributes = [[NSMutableDictionary alloc] init];	
+	attributeStack = [[NSMutableArray alloc] init];
+
 	lineBreakAfterTags = [[NSSet alloc] initWithObjects:
 		@"p", @"h1", @"h2", @"h3", @"h4", @"h5", @"h6", @"h7", @"h8", @"h9",
 		nil];
@@ -307,20 +307,13 @@ static NSSet * lineBreakAfterTags;
 		nil];
 	//Load stored tag to style mappings
 	[self loadStyles:nil];
-	NSLog(@"Styles: %@", stylesForTags);
+
+	//NSLog(@"Styles: %@", stylesForTags);
 	//Request notification if these change
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(loadStyles:)
 												 name:NSUserDefaultsDidChangeNotification
 											   object:nil];
-}
-
-- (id) init
-{
-	SUPERINIT;
-	string = [[NSMutableAttributedString alloc] init];
-	currentAttributes = [[NSMutableDictionary alloc] init];	
-	attributeStack = [[NSMutableArray alloc] init];
 	return self;
 }
 

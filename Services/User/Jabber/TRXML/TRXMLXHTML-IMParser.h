@@ -18,6 +18,10 @@
 	NSMutableDictionary * currentAttributes;
 	NSMutableArray * attributeStack;
 	NSMutableAttributedString * string;
+
+	NSMutableDictionary * stylesForTags;
+	NSSet * lineBreakBeforeTags;
+	NSSet * lineBreakAfterTags;
 }
 
 @end
