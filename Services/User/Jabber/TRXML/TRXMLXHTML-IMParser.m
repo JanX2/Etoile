@@ -335,9 +335,11 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 							   range:NSMakeRange(0, [text length])] > 0) {};
 	NSString * existing  = [string string];
 	int length = [existing length];
-	if(length > 0
+	if(((length > 0
 	   &&
-	   [existing characterAtIndex:length - 1] == ' '
+	   [existing characterAtIndex:length - 1] == ' ')
+		||
+		length == 0)
 	   &&
 	   [text length] > 0
 	   &&
@@ -417,7 +419,7 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 {
 	_Name = [_Name lowercaseString];
 	depth--;
-	if(depth == 0)
+	if([_Name isEqualToString:@"html"])
 	{
 		[parser setContentHandler:parent];
 		[self notifyParent];
@@ -438,6 +440,7 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 }
 - (void) notifyParent
 {
+	NSLog(@"Parsed HTML: %@", string);
 	[(id)parent addChild:string forKey:key];
 }
 - (void) dealloc

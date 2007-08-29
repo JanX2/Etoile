@@ -19,6 +19,7 @@
 - (IBAction) update:(id)sender;
 {
 	id p = [[TRXMLParser alloc] init];
+	[p setMode:PARSER_MODE_SGML];
 	[[TRXMLXHTML_IMParser alloc] initWithXMLParser:p
 											parent:self
 											   key:@"html"];
