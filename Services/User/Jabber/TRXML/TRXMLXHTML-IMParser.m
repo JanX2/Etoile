@@ -346,6 +346,8 @@ static NSSet * lineBreakAfterTags;
 	   &&
 	   [existing characterAtIndex:length - 1] == ' '
 	   &&
+	   [text length] > 0
+	   &&
 	   [text characterAtIndex:0] == ' ')
 	{
 		[text deleteCharactersInRange:NSMakeRange(0,1)];
