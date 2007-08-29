@@ -17,7 +17,8 @@ typedef NSString*(*styleHandler)(id);
 NSString * foregroundColor(NSColor * aColour)
 {
 	float r,g,b,a;
-	[aColour getRed:&r
+	[[aColour colorUsingColorSpaceName:NSCalibratedRGBColorSpace]
+			 getRed:&r
 			  green:&g
 			   blue:&b
 			  alpha:&a];
@@ -26,25 +27,45 @@ NSString * foregroundColor(NSColor * aColour)
 		(int) (g * 255),
 		(int) (b * 255)];
 }
-
+NSString * cssGenericFontFamily(NSFontSymbolicTraits traits)
+{
+	if(traits & NSFontMonoSpaceTrait)
+	{
+		return @"monospace";
+	}
+	switch(traits & NSFontFamilyClassMask)
+	{
+#define FONT_FAMILY(value, name) case value: return name; break;
+		case NSFontOldStyleSerifsClass:
+		case NSFontTransitionalSerifsClass:
+		case NSFontModernSerifsClass:
+		case NSFontClarendonSerifsClass:
+		case NSFontSlabSerifsClass:
+		case NSFontOrnamentalsClass:
+		FONT_FAMILY(NSFontFreeformSerifsClass, @"serif")
+		FONT_FAMILY(NSFontSansSerifClass, @"sans-serif")
+		FONT_FAMILY(NSFontScriptsClass, @"cursive")
+		FONT_FAMILY(NSFontSymbolicClass, @"fantasy")
+#undef FONT_FAMILY
+	}
+	return nil;
+}
 NSString * fontAttributes(NSFont * aFont)
 {
-	NSDictionary * attributes = [[aFont fontDescriptor] fontAttributes];
-	NSMutableString * style = [NSMutableString string];
-	NSString * attribute;
-	if((attribute = [attributes objectForKey:NSFontFamilyAttribute]))
-	{
-		[style appendFormat:@"font-family: %@;", attribute];
-	}
-	if((attribute = [attributes objectForKey:NSFontSizeAttribute]))
-	{
-		[style appendFormat:@"font-size: %.1fpt;", [attribute floatValue]];
-	}
-	if((attribute = [attributes objectForKey:NSUnderlineStyleAttributeName]))
-	{
-		[style appendString:@"text-decoration: underline;"];
-	}
 	NSFontSymbolicTraits traits = [[aFont fontDescriptor] symbolicTraits];
+	NSString * genericFamily = cssGenericFontFamily(traits);
+	NSMutableString * style;
+	if(genericFamily == nil)
+	{
+		style = [NSMutableString stringWithFormat:@"font-family: %@;",
+			[aFont familyName]];
+	}
+	else
+	{
+		style = [NSMutableString stringWithFormat:@"font-family: %@, %@;",
+			[aFont familyName],
+			genericFamily];
+	}
 	if(traits & NSFontItalicTrait)
 	{
 		[style appendString:@"font-style: oblique;"];
@@ -52,6 +73,16 @@ NSString * fontAttributes(NSFont * aFont)
 	if(traits & NSFontBoldTrait)
 	{
 		[style appendString:@"font-weight: bold;"];
+	}
+	NSDictionary * attributes = [[aFont fontDescriptor] fontAttributes];
+	NSString * attribute;
+	if((attribute = [attributes objectForKey:NSFontSizeAttribute]))
+	{
+		[style appendFormat:@"font-size: %.1fpt;", [attribute floatValue]];
+	}
+	if((attribute = [attributes objectForKey:NSUnderlineStyleAttributeName]))
+	{
+		[style appendString:@"text-decoration: underline;"];
 	}
 	return style;
 }
