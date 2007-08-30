@@ -22,6 +22,7 @@
 	NSMutableDictionary * stylesForTags;
 	NSSet * lineBreakBeforeTags;
 	NSSet * lineBreakAfterTags;
+	NSDictionary * FONT_SIZES;
 }
 
 @end

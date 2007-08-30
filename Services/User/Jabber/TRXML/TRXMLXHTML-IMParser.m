@@ -130,9 +130,22 @@ static inline NSColor * colourFromCSSColourString(NSString * aColour)
 	return [NSColor blackColor];
 }
 
-static NSDictionary * FONT_SIZES;
 
-static inline NSMutableDictionary * attributesFromStyles(NSMutableDictionary * attributes, NSString * style)
+static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
+{
+	NSMutableString * XMLString = [NSMutableString stringWithString:_XMLString];
+	[XMLString replaceOccurrencesOfString:@"&lt;" withString:@"<" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&gt;" withString:@">" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&amp;" withString:@"&" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&apos;" withString:@"'" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&quot;" withString:@"\"" options:0 range:NSMakeRange(0,[XMLString length])];
+	return XMLString;
+}
+
+@implementation TRXMLXHTML_IMParser
+
+- (NSMutableDictionary *) attributes: (NSMutableDictionary *) attributes
+                          fromStyle:  (NSString *) style
 {
 	NSFontManager * fontManager = [NSFontManager sharedFontManager];
 	NSFont * font = [attributes objectForKey:NSFontAttributeName];
@@ -151,22 +164,22 @@ static inline NSMutableDictionary * attributesFromStyles(NSMutableDictionary * a
 		NSArray * styleComponents = [theStyle componentsSeparatedByString:@":"];
 		if([styleComponents count] == 2)
 		{
-			NSString * key = TRIM([styleComponents objectAtIndex:0]);
-			NSString * value = TRIM([styleComponents objectAtIndex:1]);
-			if([key isEqualToString:@"color"])
+			NSString * k = TRIM([styleComponents objectAtIndex:0]);
+			NSString * v = TRIM([styleComponents objectAtIndex:1]);
+			if([k isEqualToString:@"color"])
 			{
-				[attributes setObject:colourFromCSSColourString(value)
+				[attributes setObject:colourFromCSSColourString(v)
 							   forKey:NSForegroundColorAttributeName];
 			}
-			else if([key isEqualToString:@"background-color"] || [key isEqualToString:@"background"])
+			else if([k isEqualToString:@"background-color"] || [k isEqualToString:@"background"])
 			{
-				[attributes setObject:colourFromCSSColourString(value)
+				[attributes setObject:colourFromCSSColourString(v)
 							   forKey:NSBackgroundColorAttributeName];
 			}
-			else if([key isEqualToString:@"font-family"])
+			else if([k isEqualToString:@"font-family"])
 			{
 				NSFont * oldFont = font;
-				NSArray * families = [value componentsSeparatedByString:@","];
+				NSArray * families = [v componentsSeparatedByString:@","];
 				unsigned int numberOfFamilies = [families count];
 				
 				for(unsigned int i=0 ; i<numberOfFamilies ; i++)
@@ -182,56 +195,56 @@ static inline NSMutableDictionary * attributesFromStyles(NSMutableDictionary * a
 				}
 				
 			}
-			else if([key isEqualToString:@"font-size"])
+			else if([k isEqualToString:@"font-size"])
 			{
-				NSNumber * size = [FONT_SIZES objectForKey:value];
+				NSNumber * size = [FONT_SIZES objectForKey:v];
 				if(nil != size)
 				{
 					font = [fontManager convertFont:font toSize:[size floatValue]];
 				}
 				else
 				{
-					font = [fontManager convertFont:font toSize:[value floatValue]];
+					font = [fontManager convertFont:font toSize:[v floatValue]];
 				}
 			}
-			else if([key isEqualToString:@"font-style"])
+			else if([k isEqualToString:@"font-style"])
 			{
-				if([value isEqualToString:@"italic"] 
+				if([v isEqualToString:@"italic"] 
 				   ||
-				   [value isEqualToString:@"oblique"])
+				   [v isEqualToString:@"oblique"])
 				{
 					font = [fontManager convertFont:font toHaveTrait:NSItalicFontMask];
 				}
-				else if([value isEqualToString:@"normal"])
+				else if([v isEqualToString:@"normal"])
 				{
 					font = [fontManager convertFont:font toNotHaveTrait:NSItalicFontMask];
 				}
 			}
-			else if([key isEqualToString:@"font-weight"])
+			else if([k isEqualToString:@"font-weight"])
 			{
 				//TODO: make this handle numeric weights
-				if([value isEqualToString:@"bold"])
+				if([v isEqualToString:@"bold"])
 				{
 					font = [fontManager convertFont:font toHaveTrait:NSBoldFontMask];
 				}
-				else if([value isEqualToString:@"normal"])
+				else if([v isEqualToString:@"normal"])
 				{
 					font = [fontManager convertFont:font toNotHaveTrait:NSBoldFontMask];
 				}
 			}
-			else if([key isEqualToString:@"text-decoration"])
+			else if([k isEqualToString:@"text-decoration"])
 			{
-				if([value isEqualToString:@"underline"])
+				if([v isEqualToString:@"underline"])
 				{
 					[attributes setObject:[NSNumber numberWithInt:NSUnderlineStyleSingle]
 								   forKey:NSUnderlineStyleAttributeName];
 				}
-				else if([value isEqualToString:@"line-through"])
+				else if([v isEqualToString:@"line-through"])
 				{
 					[attributes setObject:[NSNumber numberWithInt:NSUnderlineStyleSingle]
 								   forKey:NSStrikethroughStyleAttributeName];
 				}
-				else if([value isEqualToString:@"normal"])
+				else if([v isEqualToString:@"normal"])
 				{
 					[attributes setObject:nil
 								   forKey:NSUnderlineStyleAttributeName];
@@ -245,19 +258,6 @@ static inline NSMutableDictionary * attributesFromStyles(NSMutableDictionary * a
 				   forKey:NSFontAttributeName];
 	return attributes;
 }
-
-static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
-{
-	NSMutableString * XMLString = [NSMutableString stringWithString:_XMLString];
-	[XMLString replaceOccurrencesOfString:@"&lt;" withString:@"<" options:0 range:NSMakeRange(0,[XMLString length])];
-	[XMLString replaceOccurrencesOfString:@"&gt;" withString:@">" options:0 range:NSMakeRange(0,[XMLString length])];
-	[XMLString replaceOccurrencesOfString:@"&amp;" withString:@"&" options:0 range:NSMakeRange(0,[XMLString length])];
-	[XMLString replaceOccurrencesOfString:@"&apos;" withString:@"'" options:0 range:NSMakeRange(0,[XMLString length])];
-	[XMLString replaceOccurrencesOfString:@"&quot;" withString:@"\"" options:0 range:NSMakeRange(0,[XMLString length])];
-	return XMLString;
-}
-
-@implementation TRXMLXHTML_IMParser
 - (void) loadStyles:(id)unused
 {
 //	stylesForTags = [[NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"XHTML-IM HTML Styles"]] retain];
@@ -273,21 +273,21 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 	//	if(nil == stylesForTags)
 	{
 		stylesForTags = [[NSMutableDictionary alloc] init];
-		[stylesForTags setObject:attributesFromStyles(nil,@"font-style : italic")
+		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-style : italic"]
 						  forKey:@"em"];	
-		[stylesForTags setObject:attributesFromStyles(nil,@"font-style : italic")
+		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-style : italic"]
 						  forKey:@"i"];	
-		[stylesForTags setObject:attributesFromStyles(nil,@"color : blue ; text-decoration : underline")
+		[stylesForTags setObject: [self attributes: nil fromStyle: @"color : blue ; text-decoration : underline"]
 						  forKey:@"a"];	
-		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold")
+		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-weight : bold"]
 						  forKey:@"b"];
-		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold;font-size: xx-large")
+		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-weight : bold;font-size: xx-large"]
 						  forKey:@"h1"];	
-		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold;font-size: x-large")
+		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-weight : bold;font-size: x-large"]
 						  forKey:@"h2"];	
-		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold;font-size: large")
+		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-weight : bold;font-size: large"]
 						  forKey:@"h3"];
-		[stylesForTags setObject:attributesFromStyles(nil,@"font-weight : bold")
+		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-weight : bold"]
 						  forKey:@"h4"];
 	}
 }
@@ -402,7 +402,7 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 		//Get an explicit style
 		if(style != nil)
 		{
-			currentAttributes = attributesFromStyles(currentAttributes,style);
+			currentAttributes = [self attributes: currentAttributes fromStyle: style];
 		}
 		[currentAttributes retain];
 		//And some line breaks...
@@ -451,6 +451,10 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 	[currentAttributes release];
 	[attributeStack release];
 	[string release];
+	[FONT_SIZES release];
+	[stylesForTags release];
+	[lineBreakAfterTags release];
+	[lineBreakBeforeTags release];
 	[super dealloc];
 }
 @end
