@@ -11,6 +11,22 @@
 
 #define TRIM(x) [x stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
 
+/* find the attribute regardless the case */
+static inline id attributeForCaseInsensitiveKey(NSDictionary *attrs, id key)
+{
+	NSEnumerator *e = [[attrs allKeys] objectEnumerator];
+	id k = nil;
+	while ((k = [e nextObject]))
+	{
+		if ([k caseInsensitiveCompare: key] == NSOrderedSame)
+			break;
+		k = nil;
+	}
+	if (k)
+		return [attrs objectForKey: k];
+	return nil;
+}
+
 #ifdef GNUSTEP
 #define NSUnderlineStyleSingle NSSingleUnderlineStyle
 #define NSStrikethroughStyleAttributeName @"NSStrikethroughStyleAttributeName"
@@ -320,6 +336,7 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 - (void)characters:(NSString *)_chars
 {
 	NSMutableString * text = unescapeXMLCData(_chars);
+
 	NSLog(@"Received cdata '%@'", _chars);
 	[text replaceOccurrencesOfString:@"\t"
 						  withString:@" "
@@ -347,11 +364,15 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 	{
 		[text deleteCharactersInRange:NSMakeRange(0,1)];
 	}
-	NSAttributedString * newSection = [[NSAttributedString alloc] initWithString:text
+
+	if ([text length] > 0)
+	{
+		NSAttributedString * newSection = [[NSAttributedString alloc] initWithString:text
 																	  attributes:currentAttributes];
-	NSLog(@"Adding '%@' with attributes: %@", text, currentAttributes);
-	[string appendAttributedString:newSection];
-	[newSection release];
+		NSLog(@"Adding '%@' with attributes: %@", text, currentAttributes);
+		[string appendAttributedString:newSection];
+		[newSection release];
+	}
 }
 
 - (void)startElement:(NSString *)_Name
@@ -381,19 +402,21 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 		{
 			[currentAttributes addEntriesFromDictionary:defaultStyle];
 		}
-		NSString * style = [_attributes objectForKey:@"style"];
+		NSString *style = attributeForCaseInsensitiveKey(_attributes, @"style");
 		//Special case for hyperlinks
 		if([_Name isEqualToString:@"a"])
 		{
 			//Set the link target
-			[currentAttributes setObject:[_attributes objectForKey:@"href"]
-								  forKey:NSLinkAttributeName];
+			id v = attributeForCaseInsensitiveKey(_attributes, @"href");
+			if (v)
+				[currentAttributes setObject:v
+									  forKey:NSLinkAttributeName];
 		}
 		//Display alt tags for images
 		//TODO:  Make it optional to get the real image
 		else if([_Name isEqualToString:@"img"])
 		{
-			NSString * alt = [_attributes objectForKey:@"alt"];
+			NSString * alt = attributeForCaseInsensitiveKey(_attributes, @"alt");
 			if(alt != nil)
 			{
 				[self characters:alt];
