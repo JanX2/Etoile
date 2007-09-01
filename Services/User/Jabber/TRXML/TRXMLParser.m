@@ -152,14 +152,27 @@
 		quote = [buffer characterAtIndex:current];
 		if(quote != '"' && quote != '\'')
 		{
-			RETURN(FAILURE);
+			if(mode == PARSER_MODE_XML)
+			{
+				RETURN(FAILURE);
+			}
+			else
+			{
+				quote = ' ';
+				current--;
+			}
 		}
 		current++;
 		start = current;
 		SEARCHTO(quote);
 		attributeValue = CURRENTSTRING;
 		[_attributes setValue:attributeValue forKey:attributeName];
-		start = current+1;
+		if(mode == PARSER_MODE_XML
+		   ||
+		   [buffer characterAtIndex:start] == ' ')
+		{
+			start = current+1;
+		}
 		SKIPWHITESPACE;
 	}
 	if([buffer characterAtIndex:start] == '>' || (start+1 < bufferLength && [buffer characterAtIndex:(start + 1)] == '>'))
