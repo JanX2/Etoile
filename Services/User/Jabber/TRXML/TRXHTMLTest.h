@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TRXMLNullHandler.h"
+#import "ETXMLNullHandler.h"
 
-@interface TRXHTMLTest : TRXMLNullHandler {
+@interface TRXHTMLTest : ETXMLNullHandler {
 	IBOutlet NSTextView * inHTML;
 	IBOutlet NSTextView * outHTML;	
 }

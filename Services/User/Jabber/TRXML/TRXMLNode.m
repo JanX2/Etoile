@@ -1,12 +1,12 @@
 //
-//  TRXMLNode.m
+//  ETXMLNode.m
 //  Jabber
 //
 //  Created by David Chisnall on Thu Apr 22 2004.
 //  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import "TRXMLNode.h"
+#import "ETXMLNode.h"
 #import "../Macros.h"
 #include <stdio.h>
 
@@ -34,28 +34,28 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 
 
 //TODO: Generalise this as a filtered array enumerator
-@interface TRXMLNodeChildEnumerator : NSEnumerator
+@interface ETXMLNodeChildEnumerator : NSEnumerator
 {
 	unsigned int index;
 	NSArray * elements;
 }
-+ (TRXMLNodeChildEnumerator*) enumeratorWithElements:(NSArray*)anArray;
++ (ETXMLNodeChildEnumerator*) enumeratorWithElements:(NSArray*)anArray;
 @end
-@implementation TRXMLNodeChildEnumerator
-- (TRXMLNodeChildEnumerator*) initWithElements:(NSArray*)anArray
+@implementation ETXMLNodeChildEnumerator
+- (ETXMLNodeChildEnumerator*) initWithElements:(NSArray*)anArray
 {
 	SUPERINIT;
 	elements = [anArray retain];
 	return self;
 }
-+ (TRXMLNodeChildEnumerator*) enumeratorWithElements:(NSArray*)anArray
++ (ETXMLNodeChildEnumerator*) enumeratorWithElements:(NSArray*)anArray
 {
-	return [[TRXMLNodeChildEnumerator alloc] initWithElements:anArray];
+	return [[ETXMLNodeChildEnumerator alloc] initWithElements:anArray];
 }
 - (NSArray *)allObjects
 {
 	NSMutableArray * elementsLeft = AUTORELEASED(NSMutableArray);
-	TRXMLNode * nextObject;
+	ETXMLNode * nextObject;
 	while((nextObject = [self nextObject]) != nil)
 	{
 		[elementsLeft addObject:nextObject];
@@ -68,7 +68,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 	while(index < count)
 	{
 		id nextObject = [elements objectAtIndex:index++];
-		if([nextObject isKindOfClass:[TRXMLNode class]])
+		if([nextObject isKindOfClass:[ETXMLNode class]])
 		{
 			return nextObject;
 		}
@@ -77,7 +77,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 }
 @end
 
-@implementation TRXMLNode
+@implementation ETXMLNode
 
 - (id) init
 {
@@ -87,14 +87,14 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 	return [super init];
 }
 
-+ (id) TRXMLNodeWithType:(NSString*)type
++ (id) ETXMLNodeWithType:(NSString*)type
 {
-	return [[[TRXMLNode alloc] initWithType:type]autorelease];
+	return [[[ETXMLNode alloc] initWithType:type]autorelease];
 }
 
-+ (id) TRXMLNodeWithType:(NSString*)type attributes:(NSDictionary*)_attributes
++ (id) ETXMLNodeWithType:(NSString*)type attributes:(NSDictionary*)_attributes
 {
-	return [[[TRXMLNode alloc] initWithType:type attributes:_attributes] autorelease];
+	return [[[ETXMLNode alloc] initWithType:type attributes:_attributes] autorelease];
 }
 
 - (id) initWithType:(NSString*)type
@@ -132,7 +132,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 		NSLog(@"%@=%@", key, [_attributes objectForKey:key]);
 		key = [enumerator nextObject];
 	}*/
-	id newNode = [[TRXMLNode alloc] initWithType:_Name attributes:_attributes];
+	id newNode = [[ETXMLNode alloc] initWithType:_Name attributes:_attributes];
 	[newNode setParser:parser];
 	[newNode setParent:self];
 	[parser setContentHandler:newNode];		
@@ -261,7 +261,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 
 - (void) addChild:(id)anElement
 {
-	if(![anElement isKindOfClass:[TRXMLNode class]])
+	if(![anElement isKindOfClass:[ETXMLNode class]])
 	{
 		if([anElement respondsToSelector:@selector(xmlValue)])
 		{
@@ -320,7 +320,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 
 - (NSEnumerator*) childEnumerator
 {
-	return [TRXMLNodeChildEnumerator enumeratorWithElements:elements];
+	return [ETXMLNodeChildEnumerator enumeratorWithElements:elements];
 }
 
 

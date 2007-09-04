@@ -7,8 +7,8 @@
 //
 
 #import "TRXHTMLTest.h"
-#import "TRXMLParser.h"
-#import "TRXMLXHTML-IMParser.h"
+#import "ETXMLParser.h"
+#import "ETXMLXHTML-IMParser.h"
 
 @implementation TRXHTMLTest
 - (void) addhtml:(NSAttributedString*)aString
@@ -18,9 +18,9 @@
 
 - (IBAction) update:(id)sender;
 {
-	id p = [[TRXMLParser alloc] init];
+	id p = [[ETXMLParser alloc] init];
 	[p setMode:PARSER_MODE_SGML];
-	[[TRXMLXHTML_IMParser alloc] initWithXMLParser:p
+	[[ETXMLXHTML_IMParser alloc] initWithXMLParser:p
 											parent:self
 											   key:@"html"];
 	[p parseFromSource:[inHTML string]];

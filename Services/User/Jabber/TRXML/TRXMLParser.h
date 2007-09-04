@@ -1,5 +1,5 @@
 //
-//  TRXMLParser.h
+//  ETXMLParser.h
 //  Jabber
 //
 //  Created by David Chisnall on Wed Apr 28 2004.
@@ -7,19 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TRXMLParserDelegate.h"
+#import "ETXMLParserDelegate.h"
 
 /**
  * An XML stream parse class.  This parser is statefull, and will cache any 
  * unparsed data.  Messages are fired off to the delegate for start and end tags
  * as well as character data.  
  *
- * This class might more accurately be called TRXMLScanner or TRXMLTokeniser
+ * This class might more accurately be called ETXMLScanner or ETXMLTokeniser
  * since the actual parsing is handled by the delegate.
  */
-@interface TRXMLParser : NSObject {
+@interface ETXMLParser : NSObject {
 	NSMutableString * buffer;
-	id <NSObject, TRXMLParserDelegate> delegate;
+	id <NSObject, ETXMLParserDelegate> delegate;
 	int depth;
 	NSMutableArray * openTags;
 	enum {notag, intag, inattribute, incdata, instupidcdata, incomment, broken} state;
@@ -28,17 +28,17 @@
 /**
  * Create a new parser with the specified delegate.
  */
-+ (id) parserWithContentHandler:(id <NSObject, TRXMLParserDelegate>) _contentHandler;
++ (id) parserWithContentHandler:(id <NSObject, ETXMLParserDelegate>) _contentHandler;
 /**
  * Initialise a new parser with the specified delegate.
  */
-- (id) initWithContentHandler:(id <NSObject, TRXMLParserDelegate>) _contentHandler;
+- (id) initWithContentHandler:(id <NSObject, ETXMLParserDelegate>) _contentHandler;
 /**
  * Set the class to receive messages from input data.  Commonly used to delegate
  * handling child elements to other classes, or to pass control back to the 
  * parent afterwards.
  */
-- (id) setContentHandler:(id <NSObject, TRXMLParserDelegate>) _contentHandler;
+- (id) setContentHandler:(id <NSObject, ETXMLParserDelegate>) _contentHandler;
 /**
  * Parse the given input string.  This, appended to any data previously supplied
  * using this method, must form a (partial) XML document.  This function returns

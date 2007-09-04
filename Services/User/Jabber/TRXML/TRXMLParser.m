@@ -1,25 +1,25 @@
 //
-//  TRXMLParser.m
+//  ETXMLParser.m
 //  Jabber
 //
 //  Created by David Chisnall on Wed Apr 28 2004.
 //  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import "TRXMLParser.h"
-#import "TRXMLParserDelegate.h"
+#import "ETXMLParser.h"
+#import "ETXMLParserDelegate.h"
 
 #define SUCCESS 0
 #define FAILURE -1
 #define TEMPORARYFAILURE 1
 
-@implementation TRXMLParser
-+ (id) parserWithContentHandler:(id <NSObject, TRXMLParserDelegate>) _contentHandler
+@implementation ETXMLParser
++ (id) parserWithContentHandler:(id <NSObject, ETXMLParserDelegate>) _contentHandler
 {
-	return [[[TRXMLParser alloc] initWithContentHandler:_contentHandler] autorelease];
+	return [[[ETXMLParser alloc] initWithContentHandler:_contentHandler] autorelease];
 }
 
-- (id) initWithContentHandler:(id <NSObject, TRXMLParserDelegate>) _contentHandler
+- (id) initWithContentHandler:(id <NSObject, ETXMLParserDelegate>) _contentHandler
 {
 	[self init];
 	[self setContentHandler:_contentHandler];
@@ -36,7 +36,7 @@
 	return [super init];
 }
 
-- (id) setContentHandler:(id<NSObject, TRXMLParserDelegate>) _contentHandler
+- (id) setContentHandler:(id<NSObject, ETXMLParserDelegate>) _contentHandler
 {
 	[delegate release];
 	delegate = [_contentHandler retain];

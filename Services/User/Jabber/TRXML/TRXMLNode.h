@@ -1,5 +1,5 @@
 //
-//  TRXMLNode.h
+//  ETXMLNode.h
 //  Jabber
 //
 //  Created by David Chisnall on Thu Apr 22 2004.
@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TRXMLParserDelegate.h"
-#import "TRXMLParser.h"
+#import "ETXMLParserDelegate.h"
+#import "ETXMLParser.h"
 
 /**
- * The TRXMLNode class represents a single XML element, which may contain 
+ * The ETXMLNode class represents a single XML element, which may contain 
  * character data or other nodes.  It can be used with the parser directly
  * to create an object structure representing the XML hierarchy.  More commonly,
  * it is used to generate the tree directly and then output XML.
@@ -19,12 +19,12 @@
  * This class almost certainly uses some non-standard terminology relating to
  * XML, which should probably be fixed at some point.  Eventually, this class
  * should probably be retired.  Currently, most of the XMPP code only uses the
- * +TRXMLNodeWithType, +TRXMLNodeWithType:attributes:, -addChild:, -addCData:
+ * +ETXMLNodeWithType, +ETXMLNodeWithType:attributes:, -addChild:, -addCData:
  * and -stringValue: methods. All others should be considered deprecated.
  *
- * Note: TRXMLNode objects are always mutable, and should be treated as such.
+ * Note: ETXMLNode objects are always mutable, and should be treated as such.
  */
-@interface TRXMLNode : NSObject <TRXMLParserDelegate> {
+@interface ETXMLNode : NSObject <ETXMLParserDelegate> {
 	NSMutableArray * elements;
 	unsigned int children;
 	NSMutableDictionary * childrenByName;
@@ -35,13 +35,13 @@
 	NSMutableString * plainCDATA;
 }
 /**
- * Create a new instance of the class with the specified type.  [TRXMLNode TRXMLNodeWithType:@"foo"] give an object representing the XML string "<foo />"
+ * Create a new instance of the class with the specified type.  [ETXMLNode ETXMLNodeWithType:@"foo"] give an object representing the XML string "<foo />"
  */
-+ (id) TRXMLNodeWithType:(NSString*)type;
++ (id) ETXMLNodeWithType:(NSString*)type;
 /**
  * Create a new instance of the class with the specified type and attributes.  
  */
-+ (id) TRXMLNodeWithType:(NSString*)type attributes:(NSDictionary*)_attributes;
++ (id) ETXMLNodeWithType:(NSString*)type attributes:(NSDictionary*)_attributes;
 /**
  * Initialise a created instance with an XML node name.
  */

@@ -1,5 +1,5 @@
 //
-//  TRXMLParserDelegate.h
+//  ETXMLParserDelegate.h
 //  Jabber
 //
 //  Created by David Chisnall on Wed Apr 28 2004.
@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 
 /**
- * The TRXMLParserDelegate protocol is a formal protocol that must be 
+ * The ETXMLParserDelegate protocol is a formal protocol that must be 
  * implemented by classes used as delegates for XML parsing.  
  */
-@protocol TRXMLParserDelegate
+@protocol ETXMLParserDelegate
 /**
  * Called by the parser whenever character data is parsed.  The parser will 
  * attempt to compromise between getting the data to the handler as soon as 

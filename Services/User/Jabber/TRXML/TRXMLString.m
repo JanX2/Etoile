@@ -1,12 +1,12 @@
 //
-//  TRXMLString.m
+//  ETXMLString.m
 //  Jabber
 //
 //  Created by David Chisnall on 15/05/2006.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
 //
 
-#import "TRXMLString.h"
+#import "ETXMLString.h"
 #import "../Macros.h"
 static inline NSString* unescapeXMLCData(NSString* _XMLString)
 {
@@ -19,7 +19,7 @@ static inline NSString* unescapeXMLCData(NSString* _XMLString)
 	return XMLString;
 }
 
-@implementation TRXMLString
+@implementation ETXMLString
 - (id) init
 {
 	SUPERINIT;

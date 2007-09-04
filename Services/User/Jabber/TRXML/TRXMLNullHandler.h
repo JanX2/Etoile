@@ -1,5 +1,5 @@
 //
-//  TRXMLNullHandler.h
+//  ETXMLNullHandler.h
 //  Jabber
 //
 //  Created by David Chisnall on 15/05/2006.
@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TRXMLParser.h"
+#import "ETXMLParser.h"
 /**
- * The TRXMLNullHandler class serves two purposes.  First, it is used when
+ * The ETXMLNullHandler class serves two purposes.  First, it is used when
  * parsing to ignore an XML element and all of its children.  It simply 
  * maintains a count of the depth, and ignores everything passed to it.
  *
@@ -17,10 +17,10 @@
  * implements the required functionality for a parser delegate, and so can be
  * easily extended through subclassing.
  */
-@interface TRXMLNullHandler : NSObject<TRXMLParserDelegate> {
+@interface ETXMLNullHandler : NSObject<ETXMLParserDelegate> {
 	unsigned int depth;
 	id parser;
-	id<NSObject,TRXMLParserDelegate> parent;
+	id<NSObject,ETXMLParserDelegate> parent;
 	id key;
 	id value;
 }
@@ -34,7 +34,7 @@
  * 'value' instance variable when -notifyParent: is called.  This is only
  * relevant to sub-classes.
  */
-- (id) initWithXMLParser:(id)aParser parent:(id<NSObject,TRXMLParserDelegate>)aParent key:(id)aKey;
+- (id) initWithXMLParser:(id)aParser parent:(id<NSObject,ETXMLParserDelegate>)aParent key:(id)aKey;
 /**
  * Dynamic dispatch method that calls [self add{aChild}:aKey] if the object
  * responds to add{aChild}:.  This is similar to the KVC mechamism, but used

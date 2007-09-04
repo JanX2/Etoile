@@ -1,16 +1,16 @@
 //
-//  TRXMLNullHandler.m
+//  ETXMLNullHandler.m
 //  Jabber
 //
 //  Created by David Chisnall on 15/05/2006.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
 //
 
-#import "TRXMLNullHandler.h"
+#import "ETXMLNullHandler.h"
 #import "../Macros.h"
 
-@implementation TRXMLNullHandler
-- (id) initWithXMLParser:(id)aParser parent:(id<NSObject,TRXMLParserDelegate>)aParent key:(id)aKey
+@implementation ETXMLNullHandler
+- (id) initWithXMLParser:(id)aParser parent:(id<NSObject,ETXMLParserDelegate>)aParent key:(id)aKey
 {
 	SELFINIT
 	[aParser setContentHandler:self];

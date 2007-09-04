@@ -1,12 +1,12 @@
 //
-//  TRXMLXHTML-IMParser.m
+//  ETXMLXHTML-IMParser.m
 //  Jabber
 //
 //  Created by David Chisnall on 16/05/2006.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
 //
 
-#import "TRXMLXHTML-IMParser.h"
+#import "ETXMLXHTML-IMParser.h"
 #import "../Macros.h"
 
 #define TRIM(x) [x stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
@@ -158,7 +158,7 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 	return XMLString;
 }
 
-@implementation TRXMLXHTML_IMParser
+@implementation ETXMLXHTML_IMParser
 
 - (NSMutableDictionary *) attributes: (NSMutableDictionary *) attributes
                           fromStyle:  (NSString *) style
@@ -386,7 +386,7 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 	if(depth == 0)
 	{
 		//Ignore any elements that are not <body>
-		[[[TRXMLNullHandler alloc] initWithXMLParser:parser
+		[[[ETXMLNullHandler alloc] initWithXMLParser:parser
 											  parent:self
 												 key:nil] startElement:_Name
 															attributes:_attributes];
