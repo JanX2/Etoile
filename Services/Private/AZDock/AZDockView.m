@@ -68,7 +68,18 @@ NSString *AZDockPositionDidChangeNotification = @"AZDockPositionDidChangeNotific
 - (void) drawRect: (NSRect) rect
 {
 	[super drawRect: rect];
+
 	[self lockFocus];
+#define USE_TRANSPARENCY 1
+#if USE_TRANSPARENCY
+	NSRectFillUsingOperation([self bounds], NSCompositeClear);
+	NSColor *color = [NSColor colorWithCalibratedRed: 1.0
+	                                          green: 1.0
+	                                          blue: 1.0
+	                                alpha: 0.5];
+	[color set];
+	NSRectFillUsingOperation([self bounds], NSCompositeSourceOver);
+#endif
 	if (image) 
 	{
 		NSSize size = [image size];
@@ -78,7 +89,7 @@ NSString *AZDockPositionDidChangeNotification = @"AZDockPositionDidChangeNotific
 		source.size = [image size];
 		[image drawInRect: dest
 		         fromRect: source 
-		        operation: NSCompositeSourceAtop
+		        operation: NSCompositeSourceOver
 		         fraction: 1];
 	}
 	if (state == AZDockAppRunning) 
