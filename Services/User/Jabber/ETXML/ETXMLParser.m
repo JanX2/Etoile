@@ -150,7 +150,8 @@
 			return TEMPORARYFAILURE;
 		}
 		quote = [buffer characterAtIndex:current];
-		if(quote != '"' && quote != '\'')
+		BOOL quotedAttribute = (quote == '"' || quote == '\'');
+		if(!quotedAttribute)
 		{
 			if(mode == PARSER_MODE_XML)
 			{
@@ -164,14 +165,32 @@
 		}
 		current++;
 		start = current;
-		SEARCHTO(quote);
+		if(quotedAttribute)
+		{
+			SEARCHTO(quote);			
+		}
+		else
+		{
+			int end = [buffer length];
+			//TODO:  Make this a bit less slow.
+			while(current < end && 
+				  [buffer characterAtIndex:current] != quote
+				  &&
+				  [buffer characterAtIndex:current] != '>')
+			{
+				current++;
+			}
+			if(current >= end)
+			{
+				return TEMPORARYFAILURE;
+			}
+		}
 		attributeValue = CURRENTSTRING;
 		[_attributes setValue:attributeValue forKey:attributeName];
-		if(mode == PARSER_MODE_XML
-		   ||
-		   [buffer characterAtIndex:start] == ' ')
+		start = current;
+		if(quotedAttribute)
 		{
-			start = current+1;
+			start++;
 		}
 		SKIPWHITESPACE;
 	}
