@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
-#import "TRXMLParser.h"
+#import "ETXMLParser.h"
 
-@interface ParserTest :NSObject <TRXMLParserDelegate>
+@interface ParserTest :NSObject <ETXMLParserDelegate>
 @end
 @implementation ParserTest
 - (void)characters:(NSString *)_chars
@@ -24,7 +24,7 @@
 int main(int argc, char ** argv)
 {
 	[NSAutoreleasePool new];
-	TRXMLParser * parser = [TRXMLParser parserWithContentHandler:[ParserTest new]];
+	ETXMLParser * parser = [ETXMLParser parserWithContentHandler:[ParserTest new]];
 	//Uncomment to test parser as an SGML parser.
 	//[parser setMode:sgml];
 	for(unsigned int i=1 ; i<argc ; i++)

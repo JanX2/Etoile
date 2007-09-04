@@ -1,19 +1,19 @@
 //
-//  TRXMLDeclaration.h
+//  ETXMLDeclaration.h
 //  Jabber
 //
 //  Created by Yen-Ju Chen on Thu Jul 12 2007.
 //  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
 //
 
-#import "TRXMLDeclaration.h"
+#import "ETXMLDeclaration.h"
 #import "../Macros.h"
 
-@implementation TRXMLDeclaration
+@implementation ETXMLDeclaration
 
-+ (id) TRXMLDeclaration
++ (id) ETXMLDeclaration
 {
-	TRXMLDeclaration *decl = [[TRXMLDeclaration alloc] initWithType: @"" attributes: [NSDictionary dictionaryWithObjectsAndKeys: @"version", @"1.0", @"encoding", @"UTF-8", nil]];
+	ETXMLDeclaration *decl = [[ETXMLDeclaration alloc] initWithType: @"" attributes: [NSDictionary dictionaryWithObjectsAndKeys: @"version", @"1.0", @"encoding", @"UTF-8", nil]];
 	return [decl autorelease];
 }
 
@@ -53,7 +53,7 @@
 		//Add children (not CDATA)
 		FOREACHI(elements, element)
 		{
-			if([element isKindOfClass: [TRXMLNode class]])
+			if([element isKindOfClass: [ETXMLNode class]])
 			{
 				[XML appendString:[element stringValueWithIndent:indent]];
 			}

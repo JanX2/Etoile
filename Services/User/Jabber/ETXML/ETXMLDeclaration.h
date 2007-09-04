@@ -1,29 +1,29 @@
 //
-//  TRXMLDeclaration.h
+//  ETXMLDeclaration.h
 //  Jabber
 //
 //  Created by Yen-Ju Chen on Thu Jul 12 2007.
 //  Copyright (c) 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import "TRXMLNode.h"
+#import "ETXMLNode.h"
 
 /**
- * The TRXMLDeclaration is a TRXMLNode representing the XML header 
+ * The ETXMLDeclaration is a ETXMLNode representing the XML header 
  * in a form of <?xml version="1.0" encoding="UTF-8" ?>.
  * It only take attributes of 'version', 'encoding', 'standalone'
  * and without any CDATA.
  * 
- * NOTE: TRXMLParser does not generate TRXMLDeclaration node.
- * This node is only used for build TRXMLNode tree
+ * NOTE: ETXMLParser does not generate ETXMLDeclaration node.
+ * This node is only used for build ETXMLNode tree
  * and write out a string of XML document or serves as a root 
- * for TRXMLParser.
+ * for ETXMLParser.
  */
 
-@interface TRXMLDeclaration: TRXMLNode
+@interface ETXMLDeclaration: ETXMLNode
 
 /* Return a node representing <?xml version="1.0" encoding="UTF-8" ?> */
-+ (id) TRXMLDeclaration;
++ (id) ETXMLDeclaration;
 
 @end
 
