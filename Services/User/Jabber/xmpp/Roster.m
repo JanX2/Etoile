@@ -8,7 +8,7 @@
 
 #import "Roster.h"
 #import "XMPPAccount.h"
-#import "TRXMLNode.h"
+#import "ETXMLNode.h"
 #import "JabberPerson.h"
 #import "JabberRootIdentity.h"
 #import "JabberResource.h"
@@ -141,7 +141,7 @@
 	{
 		[self addRosterFromQuery:anIq];
 	}
-/*	TRXMLNode * child = [[node getChildrenWithName:@"query"] anyObject];
+/*	ETXMLNode * child = [[node getChildrenWithName:@"query"] anyObject];
 	if([[child get:@"xmlns"] isEqualToString:@"jabber:iq:roster"])
 	{
 		[self addRosterFromQuery:child];
@@ -164,13 +164,13 @@
 	 <presence type="subscribe" to="theraven@theravensnest.org" />
 	 */
 	NSString * jidString = [_jid jidString];
-	TRXMLNode * setRoster = [TRXMLNode TRXMLNodeWithType:@"iq" attributes:[NSDictionary dictionaryWithObjectsAndKeys:
+	ETXMLNode * setRoster = [ETXMLNode ETXMLNodeWithType:@"iq" attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 		@"set", @"type",
 		[connection newMessageID], @"id", nil]];
-	TRXMLNode * query = [TRXMLNode TRXMLNodeWithType:@"query" 
+	ETXMLNode * query = [ETXMLNode ETXMLNodeWithType:@"query" 
 										  attributes:[NSDictionary dictionaryWithObject:@"jabber:iq:roster" 
 																				 forKey:@"xmlns"]];
-	TRXMLNode * item = [TRXMLNode TRXMLNodeWithType:@"item" 
+	ETXMLNode * item = [ETXMLNode ETXMLNodeWithType:@"item" 
 											attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 												_name, @"name",
 												jidString, @"jid", 
@@ -178,14 +178,14 @@
 	//Add the group if one is specified
 	if(_group != nil && ![_group isEqualToString:@""])
 	{
-		TRXMLNode * group = [TRXMLNode TRXMLNodeWithType:@"group"];
+		ETXMLNode * group = [ETXMLNode ETXMLNodeWithType:@"group"];
 		[group setCData:_group];
 		[item addChild:group];
 	}
 	[query addChild:item];
 	[setRoster addChild:query];
 	
-	TRXMLNode * presenceNode = [TRXMLNode TRXMLNodeWithType:@"presence" 
+	ETXMLNode * presenceNode = [ETXMLNode ETXMLNodeWithType:@"presence" 
 												 attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 													 @"subscribe", @"type", 
 													 jidString, @"to", 
@@ -201,15 +201,15 @@
 	<item subscription="remove" jid="gimbo@theravensnest.org" />
 	</query>
 	</iq>*/
-	TRXMLNode * setRoster = [TRXMLNode TRXMLNodeWithType:@"iq" attributes:
+	ETXMLNode * setRoster = [ETXMLNode ETXMLNodeWithType:@"iq" attributes:
 		[NSDictionary dictionaryWithObjectsAndKeys:
 			@"set", @"type", 
 			[connection newMessageID], @"id", 
 			nil]];
-	TRXMLNode * query = [TRXMLNode TRXMLNodeWithType:@"query" 
+	ETXMLNode * query = [ETXMLNode ETXMLNodeWithType:@"query" 
 										  attributes:[NSDictionary dictionaryWithObject:@"jabber:iq:roster" 
 																				 forKey:@"xmlns"]];
-	TRXMLNode * item = [TRXMLNode TRXMLNodeWithType:@"item" 
+	ETXMLNode * item = [ETXMLNode ETXMLNodeWithType:@"item" 
 											attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 												@"remove", @"subscription",
 												[_jid jidString], @"jid",
@@ -221,7 +221,7 @@
 }
 - (void) authorise:(JID*)_jid
 {
-	[connection XMPPSend:[[TRXMLNode TRXMLNodeWithType:@"presence" 
+	[connection XMPPSend:[[ETXMLNode ETXMLNodeWithType:@"presence" 
 					  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 						  @"subscribed", @"type", 
 						  [_jid jidString], @"to",
@@ -231,7 +231,7 @@
 
 - (void) unauthorise:(JID*)_jid
 {
-	[connection XMPPSend:[[TRXMLNode TRXMLNodeWithType:@"presence" 
+	[connection XMPPSend:[[ETXMLNode ETXMLNodeWithType:@"presence" 
 										   attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 											   @"unsubscribed", @"type",
 											   [_jid jidString], @"to",
@@ -257,18 +257,18 @@
 					  forJID:(NSString*)aJID
 {
 	//<group>
-	TRXMLNode * group = [[TRXMLNode alloc] initWithType:@"group"];
+	ETXMLNode * group = [[ETXMLNode alloc] initWithType:@"group"];
 	[group setCData:aGroup];
 	//<item>
 	NSDictionary * itemAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
 		aJID, @"jid",
 		aName, @"name",
 		nil];
-	TRXMLNode * item = [[TRXMLNode alloc] initWithType:@"item"
+	ETXMLNode * item = [[ETXMLNode alloc] initWithType:@"item"
 											attributes:itemAttributes];
 	[item addChild:group];
 	//<query>
-	TRXMLNode * query = [[TRXMLNode alloc] initWithType:@"query"
+	ETXMLNode * query = [[ETXMLNode alloc] initWithType:@"query"
 											 attributes:[NSDictionary dictionaryWithObject:@"jabber:iq:roster"
 																					forKey:@"xmlns"]];
 	[query addChild:item];
@@ -277,7 +277,7 @@
 		@"set", @"type",
 		[connection newMessageID], @"id",
 		nil];
-	TRXMLNode * iq = [[TRXMLNode alloc] initWithType:@"item"
+	ETXMLNode * iq = [[ETXMLNode alloc] initWithType:@"item"
 										  attributes:iqAttributes];
 	
 	NSString * xml = [iq stringValue];

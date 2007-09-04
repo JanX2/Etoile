@@ -265,6 +265,8 @@
 		2803C0FC06D65FA100D0644B /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Message.m; path = xmpp/Message.m; sourceTree = "<group>"; };
 		2803C10106D6603A00D0644B /* Timestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Timestamp.h; path = xmpp/Timestamp.h; sourceTree = "<group>"; };
 		2803C10206D6603A00D0644B /* Timestamp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Timestamp.m; path = xmpp/Timestamp.m; sourceTree = "<group>"; };
+		280459530C8DFB72001B9AEE /* TRXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TRXMLNode.h; path = TRXML/TRXMLNode.h; sourceTree = "<group>"; };
+		280459540C8DFB7C001B9AEE /* TRXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TRXMLNode.m; path = TRXML/TRXMLNode.m; sourceTree = "<group>"; };
 		280A55C60A24CCA80056829B /* StanzaFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StanzaFactory.h; path = xmpp/StanzaFactory.h; sourceTree = "<group>"; };
 		280A55C70A24CCA80056829B /* StanzaFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StanzaFactory.m; path = xmpp/StanzaFactory.m; sourceTree = "<group>"; };
 		280A55D00A24CD600056829B /* MessageStanzaFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageStanzaFactory.h; path = xmpp/MessageStanzaFactory.h; sourceTree = "<group>"; };
@@ -601,7 +603,9 @@
 				28B2AB870A19C0130077DC9B /* TRXMLXHTML-IMParser.m */,
 				28B2AA8E0A18F47A0077DC9B /* TRXMLString.h */,
 				28B2AA8F0A18F47A0077DC9B /* TRXMLString.m */,
+				280459530C8DFB72001B9AEE /* TRXMLNode.h */,
 				28963A1606AD64A50013F057 /* TRXMLNode.h */,
+				280459540C8DFB7C001B9AEE /* TRXMLNode.m */,
 				28963A1706AD64A50013F057 /* TRXMLNode.m */,
 				28963A1806AD64A50013F057 /* TRXMLParser.h */,
 				28963A1906AD64A50013F057 /* TRXMLParser.m */,

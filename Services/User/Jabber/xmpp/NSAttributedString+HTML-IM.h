@@ -8,8 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class TRXMLNode;
+@class ETXMLNode;
 @interface NSAttributedString (XHTML_IM)
-- (TRXMLNode*) xhtmlimValue;
+- (ETXMLNode*) xhtmlimValue;
 - (NSString*) stringValueWithExpandedLinks;
 @end

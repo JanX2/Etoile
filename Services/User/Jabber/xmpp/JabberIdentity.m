@@ -8,7 +8,7 @@
 
 #import "JabberIdentity.h"
 #import "JabberRootIdentity.h"
-#import "TRXMLString.h"
+#import "ETXMLString.h"
 #include "../Macros.h"
 
 @implementation JabberIdentity
@@ -54,14 +54,14 @@
 	}
 	else if([aName isEqualToString:@"group"])
 	{
-		[[[TRXMLString alloc] initWithXMLParser:parser
+		[[[ETXMLString alloc] initWithXMLParser:parser
 										parent:self
 										   key:@"group"] startElement:aName
 														   attributes:attributes];
 	}
 	else
 	{
-		[[[TRXMLNullHandler alloc] initWithXMLParser:parser
+		[[[ETXMLNullHandler alloc] initWithXMLParser:parser
 											  parent:self
 												 key:nil] startElement:aName
 															attributes:attributes];

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TRXMLNode.h"
+#import "ETXMLNode.h"
 #import "Message.h"
 #import "Iq.h"
 #import "Presence.h"

@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TRXMLNode.h"
-#import "TRXMLNullHandler.h"
+#import "ETXMLNode.h"
+#import "ETXMLNullHandler.h"
 #import "JID.h"
 
 /**
@@ -65,7 +65,7 @@ typedef enum {online, unavailable, subscribe, unsubscribe, subscribed, unsubscri
  * broadcast stanza form, presence is now used for a lot more things than presence
  * information.
  */
-@interface Presence : TRXMLNullHandler {
+@interface Presence : ETXMLNullHandler {
 	JID * from;
 	PresenceType type;
 	unsigned char onlineStatus;

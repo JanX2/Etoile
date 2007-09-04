@@ -30,12 +30,12 @@
 	return self;
 }
 
-+ (DiscoIdentity*) identityWithXML:(TRXMLNode*)xml
++ (DiscoIdentity*) identityWithXML:(ETXMLNode*)xml
 {
 	return [[[DiscoIdentity alloc] initWithXML:xml] autorelease];
 }
 
-- (DiscoIdentity*) initWithXML:(TRXMLNode*)xml
+- (DiscoIdentity*) initWithXML:(ETXMLNode*)xml
 {
 	if(![[xml getType] isEqualToString:@"identity"])
 	{
@@ -66,9 +66,9 @@
 {
 	return name;
 }
-- (TRXMLNode*) toXML
+- (ETXMLNode*) toXML
 {
-	return [TRXMLNode TRXMLNodeWithType:@"identity"
+	return [ETXMLNode ETXMLNodeWithType:@"identity"
 							 attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 								 category, @"category",
 								 type, @"type",
@@ -108,12 +108,12 @@
 	return self;
 }
 
-+ (DiscoNode*) discoNodeFromXML:(TRXMLNode*)xml
++ (DiscoNode*) discoNodeFromXML:(ETXMLNode*)xml
 {
 	return [[[DiscoNode alloc] initFromXML:xml] autorelease];
 }
 
-- (DiscoNode*) initFromXML:(TRXMLNode*)xml
+- (DiscoNode*) initFromXML:(ETXMLNode*)xml
 {
 	if((self = [self init]) == nil)
 	{
@@ -123,7 +123,7 @@
 	if([[xml getType] isEqualToString:@"iq"] && [[xml get:@"type"] isEqualToString:@"result"])
 	{
 		NSString * from = [xml get:@"from"];
-		TRXMLNode * query = [[xml getChildrenWithName:@"query"] anyObject];
+		ETXMLNode * query = [[xml getChildrenWithName:@"query"] anyObject];
 		//Check we are receiving a disco reply
 		if([[query get:@"xmlns"] isEqualToString:@"http://jabber.org/protocol/disco#info"])
 		{
@@ -131,14 +131,14 @@
 			NSMutableSet * mutableIdentities = [[NSMutableSet alloc] init];
 			
 			NSEnumerator * identityEnumerator = [[query getChildrenWithName:@"identity"] objectEnumerator];
-			TRXMLNode * nextIdentity;
+			ETXMLNode * nextIdentity;
 			while((nextIdentity = [identityEnumerator nextObject]))
 			{
 				[mutableIdentities addObject:[DiscoIdentity identityWithXML:nextIdentity]];
 			}
 			
 			NSEnumerator * enumerator = [[query getChildrenWithName:@"feature"] objectEnumerator];
-			TRXMLNode * nextFeature;
+			ETXMLNode * nextFeature;
 			while((nextFeature = [enumerator nextObject]))
 			{
 				[mutableFeatures addObject:[nextFeature get:@"var"]];
@@ -158,14 +158,14 @@
 	
 }
 
-- (TRXMLNode*) toXML
+- (ETXMLNode*) toXML
 {
-	TRXMLNode * iq = [[[TRXMLNode alloc] initWithType:@"iq"
+	ETXMLNode * iq = [[[ETXMLNode alloc] initWithType:@"iq"
 										   attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 											   [jid jidString], @"from",
 											   @"result", @"type",
 											   nil]] autorelease];
-	TRXMLNode * query = [[[TRXMLNode alloc] initWithType:@"query"
+	ETXMLNode * query = [[[ETXMLNode alloc] initWithType:@"query"
 											  attributes:[NSDictionary dictionaryWithObject:@"http://jabber.org/protocol/disco#info" 
 																					 forKey:@"xmlns"]] autorelease];
 	
@@ -181,7 +181,7 @@
 	NSString * feature;
 	while((feature = [enumerator nextObject]))
 	{
-		TRXMLNode * featureNode = [[[TRXMLNode alloc] initWithType:@"feature"
+		ETXMLNode * featureNode = [[[ETXMLNode alloc] initWithType:@"feature"
 														attributes:[NSDictionary dictionaryWithObject:feature
 																							   forKey:@"var"]] autorelease];
 		[query addChild:featureNode];
@@ -260,12 +260,12 @@
 	return self;
 }
 
-- (void) addChildrenFromXML:(TRXMLNode*)xml
+- (void) addChildrenFromXML:(ETXMLNode*)xml
 {
 	[children release];
 	children = [[NSMutableSet alloc] init];
-	TRXMLNode * query = [[xml getChildrenWithName:@"query"] anyObject];
-	TRXMLNode * child;
+	ETXMLNode * query = [[xml getChildrenWithName:@"query"] anyObject];
+	ETXMLNode * child;
 	NSEnumerator * enumerator = [[query children] objectEnumerator];
 	while((child = [enumerator nextObject]))
 	{
@@ -309,14 +309,14 @@
 	return [jid isEqual:[anObject jid]] && [name isEqualToString:[anObject name]];
 }
 
-- (TRXMLNode*) toXML
+- (ETXMLNode*) toXML
 {
-	TRXMLNode * iq = [TRXMLNode TRXMLNodeWithType:@"iq"
+	ETXMLNode * iq = [ETXMLNode ETXMLNodeWithType:@"iq"
 									   attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 										   [jid jidString], @"from",
 										   @"result", @"type",
 										   nil]];
-	TRXMLNode * query = [TRXMLNode TRXMLNodeWithType:@"query"
+	ETXMLNode * query = [ETXMLNode ETXMLNodeWithType:@"query"
 										  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 											  @"http://jabber.org/protocol/disco#items", @"xmlns",
 											  nil]];
@@ -330,17 +330,17 @@
 	return iq;
 }
 
-- (TRXMLNode*) toXMLAsChild
+- (ETXMLNode*) toXMLAsChild
 {
 	if(node == nil)
 	{
-		return [TRXMLNode TRXMLNodeWithType:@"item"
+		return [ETXMLNode ETXMLNodeWithType:@"item"
 								 attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 									 [jid jidString], @"jid",
 									 name, @"name",
 									 nil]];			
 	}
-	return [TRXMLNode TRXMLNodeWithType:@"item"
+	return [ETXMLNode ETXMLNodeWithType:@"item"
 							 attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 								 [jid jidString], @"jid",
 								 name, @"name",

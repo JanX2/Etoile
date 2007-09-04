@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Conversation.h"
-#import "TRXMLNode.h"
+#import "ETXMLNode.h"
 
 /** 
  * Group chat class.  Not yet implemented.
@@ -16,7 +16,7 @@
 @interface GroupChat : Conversation {
 	
 }
-//+ (id) groupChatFromInvitation:(TRXMLNode*)_invitation;
+//+ (id) groupChatFromInvitation:(ETXMLNode*)_invitation;
 //+ (id) groupChatOnServer:(JID*)_server;
 
 @end

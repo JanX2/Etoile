@@ -7,7 +7,7 @@
 //
 
 #import "StanzaFactory.h"
-#import "TRXMLNullHandler.h"
+#import "ETXMLNullHandler.h"
 #import "../Macros.h"
 
 @implementation StanzaFactory
@@ -87,7 +87,7 @@
 	}
 	if(handler == Nil)
 	{
-		handler = [TRXMLNullHandler class];
+		handler = [ETXMLNullHandler class];
 	}
 	return handler;
 }

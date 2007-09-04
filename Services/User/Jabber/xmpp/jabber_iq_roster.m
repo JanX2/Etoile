@@ -8,10 +8,10 @@
 
 #import "jabber_iq_roster.h"
 #import "JID.h"
-#import "TRXMLString.h"
+#import "ETXMLString.h"
 #import "../Macros.h"
 
-@interface roster_item : TRXMLNullHandler {
+@interface roster_item : ETXMLNullHandler {
 }
 @end
 
@@ -25,7 +25,7 @@
 	}
 	else if([aName isEqualToString:@"group"])
 	{
-		[[TRXMLString alloc] initWithXMLParser:parser
+		[[ETXMLString alloc] initWithXMLParser:parser
 										parent:self
 										   key:@"group"];
 	}

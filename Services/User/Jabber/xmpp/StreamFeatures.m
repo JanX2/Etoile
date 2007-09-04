@@ -7,7 +7,7 @@
 //
 
 #import "StreamFeatures.h"
-#import "TRXMLString.h"
+#import "ETXMLString.h"
 #import "../Macros.h"
 
 @implementation StreamFeatures
@@ -28,7 +28,7 @@
 	}
 	else if([aName isEqualToString:@"mechanism"])
 	{
-		[[[TRXMLString alloc] initWithXMLParser:parser
+		[[[ETXMLString alloc] initWithXMLParser:parser
 										 parent:self
 											key:@"mechanism"] startElement:aName
 																attributes:attributes];
@@ -36,7 +36,7 @@
 	else
 	{
 		[features setObject:[attributes objectForKey:@"xmlns"] forKey:aName];
-		[[[TRXMLNullHandler alloc] initWithXMLParser:parser
+		[[[ETXMLNullHandler alloc] initWithXMLParser:parser
 											  parent:self
 												 key:nil] startElement:aName
 															attributes:attributes];

@@ -80,7 +80,7 @@
 	return self;
 }
 
-- (void) dispatch:(TRXMLNode*)node
+- (void) dispatch:(ETXMLNode*)node
 {
 /*	NSMutableSet * handlers = nil;
 	id <DispatchDelegate> defaultHandler = nil;

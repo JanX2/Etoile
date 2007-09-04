@@ -7,7 +7,7 @@
 //
 
 #import "XMPPError.h"
-#import "TRXMLString.h"
+#import "ETXMLString.h"
 #include "../Macros.h"
 
 @implementation XMPPError
@@ -35,14 +35,14 @@
 	}
 	else if([aName isEqualToString:@"text"])
 	{
-		[[[TRXMLString alloc] initWithXMLParser:parser
+		[[[ETXMLString alloc] initWithXMLParser:parser
 										 parent:self
 											key:@"text"] startElement:aName
 														   attributes:attributes];
 	}
 	else
 	{
-		[[[TRXMLNullHandler alloc] initWithXMLParser:parser
+		[[[ETXMLNullHandler alloc] initWithXMLParser:parser
 											  parent:self
 												 key:@"text"] startElement:aName
 																attributes:attributes];

@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TRXMLNullHandler.h"
-#import "TRXMLNode.h"
+#import "ETXMLNullHandler.h"
+#import "ETXMLNode.h"
 #import "Dispatcher.h"
 #import "Roster.h"
 #import "Presence.h"
@@ -26,7 +26,7 @@ typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSess
  * delegated to others by this class).  All sending of XML data goes via this 
  * class.
  */
-@interface XMPPConnection : TRXMLNullHandler <IqHandler>
+@interface XMPPConnection : ETXMLNullHandler <IqHandler>
 {
 	//Socket
 	int s;

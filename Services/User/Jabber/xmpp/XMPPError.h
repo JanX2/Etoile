@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TRXMLNullHandler.h"
+#import "ETXMLNullHandler.h"
 
-@interface XMPPError : TRXMLNullHandler {
+@interface XMPPError : ETXMLNullHandler {
 	int code;
 	NSString * type;
 	NSString * message;

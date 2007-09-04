@@ -99,7 +99,7 @@
 	return [resources objectForKey:resource];
 }
 
-- (id) initWithRosterItem:(TRXMLNode*)_xml
+- (id) initWithRosterItem:(ETXMLNode*)_xml
 {
 	SELFINIT
 	jid = [[JID jidWithString:[_xml get:@"jid"]] retain];

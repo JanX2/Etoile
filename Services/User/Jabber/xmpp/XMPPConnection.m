@@ -17,7 +17,7 @@
 #include <openssl/sha.h>
 
 #import "XMPPConnection.h"
-#import "TRXMLParser.h"
+#import "ETXMLParser.h"
 #import "query_jabber_iq_auth.h"
 #import "StreamFeatures.h"
 #import "DefaultHandler.h"
@@ -217,7 +217,7 @@ static NSDictionary * STANZA_KEYS;
 	connectionState = connecting;
 	//Initialise the parser
 	[parser release];
-	parser = [[TRXMLParser alloc] init];
+	parser = [[ETXMLParser alloc] init];
 	[parser setContentHandler:self];
 	//Check for incoming Jabber messages 10 times per second
 	if(timer == nil)
@@ -418,7 +418,7 @@ static NSDictionary * STANZA_KEYS;
 	{
 		return;
 	}
-	TRXMLNode * authIq = [TRXMLNode TRXMLNodeWithType:@"iq"];
+	ETXMLNode * authIq = [ETXMLNode ETXMLNodeWithType:@"iq"];
 	query_jabber_iq_auth * query = [query_jabber_iq_auth queryWithUsername:user password:pass resource:res];
 	NSString * newMessageID = [self newMessageID];
 	
@@ -427,7 +427,7 @@ static NSDictionary * STANZA_KEYS;
 	[authIq set:@"type" to:@"set"];
 	[authIq set:@"to" to:server];
 	[query setSessionID:sessionID];
-	[authIq addChild:(TRXMLNode*)query];
+	[authIq addChild:(ETXMLNode*)query];
 	
 	[self send:[[authIq stringValue] UTF8String]];
 	connectionState = loggingIn;
@@ -459,7 +459,7 @@ static NSDictionary * STANZA_KEYS;
 	else
 	{
 		NSString * childKey = [STANZA_KEYS objectForKey:aName];
-		id <TRXMLParserDelegate> stanzaDelegate = [[[STANZA_CLASSES objectForKey:aName] alloc] initWithXMLParser:parser parent:self key:childKey];
+		id <ETXMLParserDelegate> stanzaDelegate = [[[STANZA_CLASSES objectForKey:aName] alloc] initWithXMLParser:parser parent:self key:childKey];
 		[stanzaDelegate startElement:aName
 						  attributes:_attributes];
 	}
@@ -471,7 +471,7 @@ static NSDictionary * STANZA_KEYS;
 	 if([aFeatureSet containsObject:@"DIGEST-MD5"])
 	 {
 		 //Send auth mechanism
-		 [self XMPPSend:[[TRXMLNode TRXMLNodeWithType:@"auth"
+		 [self XMPPSend:[[ETXMLNode ETXMLNodeWithType:@"auth"
 										   attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 																						   @"urn:ietf:params:xml:ns:xmpp-sasl", @"xmlns",
 											   @"DIGEST-MD5", @"mechanism",
@@ -481,7 +481,7 @@ static NSDictionary * STANZA_KEYS;
 	if([aFeatureSet containsObject:@"PLAIN"])
 	{
 		//Send auth mechanism
-		TRXMLNode * authNode = [TRXMLNode TRXMLNodeWithType:@"auth"
+		ETXMLNode * authNode = [ETXMLNode ETXMLNodeWithType:@"auth"
 												 attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 																								 @"urn:ietf:params:xml:ns:xmpp-sasl", @"xmlns",
 													 @"PLAIN", @"mechanism",
@@ -504,10 +504,10 @@ static NSDictionary * STANZA_KEYS;
 - (void) startSession
 {
 	NSString * sessionIqID = [self newMessageID];
-	TRXMLNode * sessionNode = [TRXMLNode TRXMLNodeWithType:@"session"
+	ETXMLNode * sessionNode = [ETXMLNode ETXMLNodeWithType:@"session"
 												attributes:[NSDictionary dictionaryWithObject:@"urn:ietf:params:xml:ns:xmpp-session"
 																					   forKey:@"xmlns"]];
-	TRXMLNode * iqNode = [TRXMLNode TRXMLNodeWithType:@"iq"
+	ETXMLNode * iqNode = [ETXMLNode ETXMLNodeWithType:@"iq"
 										   attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 											   @"set", @"type",
 											   sessionIqID, @"id",
@@ -522,13 +522,13 @@ static NSDictionary * STANZA_KEYS;
 	//Bind to a resource
 	//<iq type='set' id='bind_2'><bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'><resource>someresource</resource></bind></iq>
 	NSString * bindID = [self newMessageID];
-	TRXMLNode * resourceNode = [TRXMLNode TRXMLNodeWithType:@"resource"];
+	ETXMLNode * resourceNode = [ETXMLNode ETXMLNodeWithType:@"resource"];
 	[resourceNode addCData:res];
-	TRXMLNode * bindNode = [TRXMLNode TRXMLNodeWithType:@"bind"
+	ETXMLNode * bindNode = [ETXMLNode ETXMLNodeWithType:@"bind"
 											 attributes:[NSDictionary dictionaryWithObject:@"urn:ietf:params:xml:ns:xmpp-bind" 
 																					forKey:@"xmlns"]];
 	[bindNode addChild:resourceNode];
-	TRXMLNode * iqNode = [TRXMLNode TRXMLNodeWithType:@"iq"
+	ETXMLNode * iqNode = [ETXMLNode ETXMLNodeWithType:@"iq"
 										   attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 											   @"set", @"type",
 											   bindID, @"id",
@@ -650,8 +650,8 @@ static NSDictionary * STANZA_KEYS;
 	if((connectionState == loggedIn) && ([anIq type] == IQ_TYPE_RESULT))
 	{
 		NSString * newMessageID = [self newMessageID];
-		TRXMLNode * rosterQuery = [TRXMLNode TRXMLNodeWithType:@"iq"]; 
-		TRXMLNode * query = [TRXMLNode TRXMLNodeWithType:@"query" attributes:nil];
+		ETXMLNode * rosterQuery = [ETXMLNode ETXMLNodeWithType:@"iq"]; 
+		ETXMLNode * query = [ETXMLNode ETXMLNodeWithType:@"query" attributes:nil];
 		
 		[dispatcher addIqResultHandler:roster forID:newMessageID];
 		
@@ -725,14 +725,14 @@ static NSDictionary * STANZA_KEYS;
 
 - (void) setStatus:(unsigned char)_status withMessage:(NSString*)_message
 {
-	TRXMLNode * presenceNode = [TRXMLNode TRXMLNodeWithType:@"presence"];
+	ETXMLNode * presenceNode = [ETXMLNode ETXMLNodeWithType:@"presence"];
 	if(_status == PRESENCE_OFFLINE)
 	{
 		[presenceNode set:@"type" to:@"unavailable"];
 	}
 	if(_status != PRESENCE_ONLINE)
 	{
-		TRXMLNode * showNode = [TRXMLNode TRXMLNodeWithType:@"show"];
+		ETXMLNode * showNode = [ETXMLNode ETXMLNodeWithType:@"show"];
 		
 		[showNode setCData:[Presence xmppStringForPresence:_status]];
 		[presenceNode addChild:showNode];
@@ -740,7 +740,7 @@ static NSDictionary * STANZA_KEYS;
 	NSDictionary * presenceDictionary;
 	if(_message != nil)
 	{
-		TRXMLNode * statusNode = [TRXMLNode TRXMLNodeWithType:@"status"];
+		ETXMLNode * statusNode = [ETXMLNode ETXMLNodeWithType:@"status"];
 		[statusNode setCData:_message];
 		[presenceNode addChild:statusNode];
 		presenceDictionary = 

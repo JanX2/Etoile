@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TRXMLNullHandler.h"
+#import "ETXMLNullHandler.h"
 
 /**
  * The timestamp class encapsulates an XMPP timestamp of the kind found in the 
@@ -15,7 +15,7 @@
  * associated with it.  This class is used to parse such delays from the incoming
  * XML stream.
  */
-@interface Timestamp : TRXMLNullHandler {
+@interface Timestamp : ETXMLNullHandler {
 	NSMutableString * reason;
 	NSCalendarDate * time;
 }

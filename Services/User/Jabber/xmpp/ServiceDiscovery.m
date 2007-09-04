@@ -43,21 +43,21 @@ static const NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#ite
 	if(caps == nil)
 	{
 		NSString * messageID = [[account connection] newMessageID];
-		TRXMLNode * queryNode = [TRXMLNode TRXMLNodeWithType:@"iq"
+		ETXMLNode * queryNode = [ETXMLNode ETXMLNodeWithType:@"iq"
 												  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 													  messageID,@"id",
 													  @"get",@"type",
 													  nil]];
 		if(node == nil)
 		{
-			[queryNode addChild:[TRXMLNode TRXMLNodeWithType:@"query" 
+			[queryNode addChild:[ETXMLNode ETXMLNodeWithType:@"query" 
 												  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 													  xmlnsDiscoInfo, @"xmlns",
 													  nil]]];
 		}
 		else
 		{
-			[queryNode addChild:[TRXMLNode TRXMLNodeWithType:@"query" 
+			[queryNode addChild:[ETXMLNode ETXMLNodeWithType:@"query" 
 												  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
 													  xmlnsDiscoInfo, @"xmlns",
 													  node, @"node",
@@ -77,14 +77,14 @@ static const NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#ite
 }
 
 
-- (void) handleNode:(TRXMLNode*)node fromDispatcher:(id)_dispatcher
+- (void) handleNode:(ETXMLNode*)node fromDispatcher:(id)_dispatcher
 {
 	if([[node getType] isEqualToString:@"iq"])
 	{
 		NSString * nodeID = [xml get:@"id"];
 		if([[node get:@"type"] isEqualToString:@"result"])
 		{
-			TRXMLNode * query = [[xml getChildrenWithName:@"query"] anyObject];
+			ETXMLNode * query = [[xml getChildrenWithName:@"query"] anyObject];
 			Capabilities * caps = [[Capabilities alloc] initFromXML:query];
 			//Cache capabilities
 			[cache setObject:caps forKey:from];

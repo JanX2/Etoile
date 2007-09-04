@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "JID.h"
-#import "TRXMLNode.h"
+#import "ETXMLNode.h"
 
 /**
  * Service Discovery node.  Not yet implemented; please feel free to modify this
@@ -21,11 +21,11 @@
 + (DiscoIdentity*) identityWithCategory:(NSString*)aCategory
 									type:(NSString*)aType
 									name:(NSString*)aName;
-+ (DiscoIdentity*) identityWithXML:(TRXMLNode*)xml;
++ (DiscoIdentity*) identityWithXML:(ETXMLNode*)xml;
 - (NSString*) category;
 - (NSString*) type;
 - (NSString*) name;
-- (TRXMLNode*) toXML;
+- (ETXMLNode*) toXML;
 @end
 
 @interface DiscoNode : NSObject {
@@ -43,14 +43,14 @@
 					  node:(NSString*)aNode
 				identities:(NSSet*)anIdentities
 				  features:(NSSet*)aFeatures;
-+ (DiscoNode*) discoNodeFromXML:(TRXMLNode*)xml;
-- (DiscoNode*) initFromXML:(TRXMLNode*)xml;
++ (DiscoNode*) discoNodeFromXML:(ETXMLNode*)xml;
+- (DiscoNode*) initFromXML:(ETXMLNode*)xml;
 - (NSString*) node;
 - (NSSet*) features;
 - (NSSet*) identities;
 - (JID*) jid;
 - (BOOL) supportsFeature:(NSString*)feature;
-- (TRXMLNode*) toXML;
+- (ETXMLNode*) toXML;
 @end
 
 @interface DiscoTreeNode : NSObject {
@@ -65,11 +65,11 @@
 - (DiscoTreeNode*) initWithJID:(JID*)aJID
 						  name:(NSString*)aName
 						  node:(NSString*)aNode;
-- (void) addChildrenFromXML:(TRXMLNode*)xml;
+- (void) addChildrenFromXML:(ETXMLNode*)xml;
 - (JID*) jid;
 - (NSString*) name;
 - (NSString*) node;
 - (NSSet*) children;
-- (TRXMLNode*) toXML;
-- (TRXMLNode*) toXMLAsChild;
+- (ETXMLNode*) toXML;
+- (ETXMLNode*) toXMLAsChild;
 @end

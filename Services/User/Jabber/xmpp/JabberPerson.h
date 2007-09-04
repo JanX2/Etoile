@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import "JID.h"
-#import "TRXMLNode.h"
+#import "ETXMLNode.h"
 #import "Presence.h"
 #import "JabberIdentity.h"
 
@@ -83,7 +83,7 @@
  * Sets the name of the person.
  */
 - (void) name:(NSString*)_name;
-//- (TRXMLNode*) rosterNodeForJID:(JID*)_jid;
+//- (ETXMLNode*) rosterNodeForJID:(JID*)_jid;
 /**
  * Compares two people by their name.
  */

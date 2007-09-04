@@ -7,12 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TRXMLNullHandler.h"
+#import "ETXMLNullHandler.h"
 
 /**
  * I don't think this class is used anymore...
  */
-@interface jabber_iq_roster : TRXMLNullHandler {
+@interface jabber_iq_roster : ETXMLNullHandler {
 	NSMutableArray * items;
 }
 

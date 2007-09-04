@@ -56,7 +56,7 @@
 	}
 	else
 	{
-		[[[TRXMLNullHandler alloc] initWithXMLParser:parser
+		[[[ETXMLNullHandler alloc] initWithXMLParser:parser
 											  parent:parent
 												 key:nil] startElement:aName
 															attributes:attributes];

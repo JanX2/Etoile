@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TRXMLNullHandler.h"
+#import "ETXMLNullHandler.h"
 
 /**
  * Handler for a query result in the jabber:iq:roster namespace.  This is used by 
@@ -15,7 +15,7 @@
  * parser delegate, will create an array of identities.  The identities will then
  * be returned to the parent via the standard mechanism.
  */
-@interface Query_jabber_iq_roster : TRXMLNullHandler {
+@interface Query_jabber_iq_roster : ETXMLNullHandler {
 	NSMutableArray * identities;
 }
 

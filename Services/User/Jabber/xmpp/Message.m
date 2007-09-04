@@ -9,7 +9,7 @@
 #import "Message.h"
 #import <wctype.h>
 #import <AppKit/AppKit.h>
-#import "TRXMLString.h"
+#import "ETXMLString.h"
 #import "MessageStanzaFactory.h"
 #import "XMPPError.h"
 #import "NSAttributedString+HTML-IM.h"
@@ -60,7 +60,7 @@ NSDictionary * MESSAGE_TYPES;
 	return self;
 }
 
-- (TRXMLNode*) xml
+- (ETXMLNode*) xml
 {
 	NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
 	
@@ -86,17 +86,17 @@ NSDictionary * MESSAGE_TYPES;
 	{
 		[attributes setValue:[correspondent jidString] forKey:@"from"];
 	}
-	TRXMLNode * messageNode = [TRXMLNode TRXMLNodeWithType:@"message" attributes:attributes];
-	TRXMLNode * child;
+	ETXMLNode * messageNode = [ETXMLNode ETXMLNodeWithType:@"message" attributes:attributes];
+	ETXMLNode * child;
 	if(subject != nil)
 	{
-		child = [TRXMLNode TRXMLNodeWithType:@"subject"];
+		child = [ETXMLNode ETXMLNodeWithType:@"subject"];
 		[child setCData:subject];
 		[messageNode addChild:child];
 	}
 	if(body != nil)
 	{
-		child = [TRXMLNode TRXMLNodeWithType:@"body"];
+		child = [ETXMLNode ETXMLNodeWithType:@"body"];
 		[child setCData:body];
 		[messageNode addChild:child];
 	}

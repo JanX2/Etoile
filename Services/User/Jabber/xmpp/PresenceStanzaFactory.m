@@ -8,7 +8,7 @@
 
 #import "PresenceStanzaFactory.h"
 #import "Presence.h"
-#import "TRXMLString.h"
+#import "ETXMLString.h"
 
 static PresenceStanzaFactory * sharedInstance;
 
@@ -17,12 +17,12 @@ static PresenceStanzaFactory * sharedInstance;
 {
 	sharedInstance = [[PresenceStanzaFactory alloc] init];
 	//Insert default handlers here:
-	[sharedInstance addHandler:[TRXMLString class] forTag:@"show"];
-	[sharedInstance addHandler:[TRXMLString class] forTag:@"status"];
-	[sharedInstance addHandler:[TRXMLString class] forTag:@"nickname"];
-	[sharedInstance addHandler:[TRXMLString class] forTag:@"priority"];
+	[sharedInstance addHandler:[ETXMLString class] forTag:@"show"];
+	[sharedInstance addHandler:[ETXMLString class] forTag:@"status"];
+	[sharedInstance addHandler:[ETXMLString class] forTag:@"nickname"];
+	[sharedInstance addHandler:[ETXMLString class] forTag:@"priority"];
 	//Replace the status message with an error message if one exists.
-	[sharedInstance addHandler:[TRXMLString class] withValue:@"status" forTag:@"error" ];
+	[sharedInstance addHandler:[ETXMLString class] withValue:@"status" forTag:@"error" ];
 	//TODO: timestamps
 }
 

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "JID.h"
-#import "TRXMLNullHandler.h"
+#import "ETXMLNullHandler.h"
 #import "Presence.h"
 #import "Dispatcher.h"
 
@@ -25,7 +25,7 @@
  * same JID will be treated as different identities belonging to the same 
  * person.
  */
-@interface JabberIdentity : TRXMLNullHandler {
+@interface JabberIdentity : ETXMLNullHandler {
 	id person;
 	JID * jid;
 	NSString * subscription;

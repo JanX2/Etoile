@@ -7,8 +7,8 @@
 //
 
 #import "MessageStanzaFactory.h"
-#import "TRXMLString.h"
-#import "TRXMLXHTML-IMParser.h"
+#import "ETXMLString.h"
+#import "ETXMLXHTML-IMParser.h"
 #import "XMPPError.h"
 #import "Message.h"
 
@@ -19,12 +19,12 @@ static MessageStanzaFactory * sharedInstance;
 {
 	sharedInstance = [[MessageStanzaFactory alloc] init];
 	//Insert default handlers here:
-	[sharedInstance addHandler:[TRXMLString class] forTag:@"body"];
-	[sharedInstance addHandler:[TRXMLString class] forTag:@"subject"];
+	[sharedInstance addHandler:[ETXMLString class] forTag:@"body"];
+	[sharedInstance addHandler:[ETXMLString class] forTag:@"subject"];
 	[sharedInstance addHandler:[Timestamp class] withValue:@"timestamp" forTag:@"x" inNamespace:@"jabber:x:delay"];
 	[sharedInstance addHandler:[XMPPError class] forTag:@"error"];
 #ifndef WITHOUT_XHTML_IM
-	[sharedInstance addHandler:[TRXMLXHTML_IMParser class] forTag:@"html"];
+	[sharedInstance addHandler:[ETXMLXHTML_IMParser class] forTag:@"html"];
 #endif
 }
 

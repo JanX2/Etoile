@@ -7,7 +7,7 @@
 //
 
 #import "NSAttributedString+HTML-IM.h"
-#import "TRXMLNode.h"
+#import "ETXMLNode.h"
 #include "../Macros.h"
 
 static NSMapTable * STYLE_HANDLERS = NULL;
@@ -110,9 +110,9 @@ NSString * styleFromAttributes(NSDictionary * attributes)
 	return style;
 }
 
-void addCdataWithLineBreaksToNode(TRXMLNode * node, NSString* cdata)
+void addCdataWithLineBreaksToNode(ETXMLNode * node, NSString* cdata)
 {
-	TRXMLNode * br = [TRXMLNode TRXMLNodeWithType:@"br"];
+	ETXMLNode * br = [ETXMLNode ETXMLNodeWithType:@"br"];
 	NSArray * segments = [cdata componentsSeparatedByString:@"\n"];
 	if([segments count] > 1)
 	{
@@ -131,15 +131,15 @@ void addCdataWithLineBreaksToNode(TRXMLNode * node, NSString* cdata)
 }
 
 @implementation NSAttributedString (XHTML_IM)
-- (TRXMLNode*) xhtmlimValue
+- (ETXMLNode*) xhtmlimValue
 {
 	NSDictionary * htmlns = [NSDictionary dictionaryWithObject:@"http://jabber.org/protocol/xhtml-im"
 														forKey:@"xmlns"];
 	NSDictionary * bodyns = [NSDictionary dictionaryWithObject:@"http://www.w3.org/1999/xhtml"
 														forKey:@"xmlns"];
 	NSString * plainText = [self string];
-	TRXMLNode * html = [TRXMLNode TRXMLNodeWithType:@"html" attributes:htmlns];
-	TRXMLNode * body = [TRXMLNode TRXMLNodeWithType:@"body" attributes:bodyns];
+	ETXMLNode * html = [ETXMLNode ETXMLNodeWithType:@"html" attributes:htmlns];
+	ETXMLNode * body = [ETXMLNode ETXMLNodeWithType:@"body" attributes:bodyns];
 	[html addChild:body];
 	NSRange attributeRange;
 	int start = 0;
@@ -150,17 +150,17 @@ void addCdataWithLineBreaksToNode(TRXMLNode * node, NSString* cdata)
 		NSDictionary * attributes = [self attributesAtIndex:start effectiveRange:&attributeRange];
 		NSString * css = styleFromAttributes(attributes);
 		NSString * linkTarget = [attributes objectForKey:NSLinkAttributeName];
-		TRXMLNode * span;
+		ETXMLNode * span;
 		if(![css isEqualToString:@""] || linkTarget != nil)
 		{
 			if(linkTarget != nil)
 			{
-				span = [TRXMLNode TRXMLNodeWithType:@"a"];
+				span = [ETXMLNode ETXMLNodeWithType:@"a"];
 				[span set:@"href" to:linkTarget];
 			}
 			else
 			{
-				span = [TRXMLNode TRXMLNodeWithType:@"span"];
+				span = [ETXMLNode ETXMLNodeWithType:@"span"];
 			}
 			if(![css isEqualToString:@""])
 			{

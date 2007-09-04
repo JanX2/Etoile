@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "Timestamp.h"
 #import "JID.h"
-#import "TRXMLNullHandler.h"
-#import "TRXMLNode.h"
+#import "ETXMLNullHandler.h"
+#import "ETXMLNode.h"
 
 typedef enum {in, out} MessageDirection;
 typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_GROUPCHAT, MESSAGE_TYPE_SPECIAL} message_type_t;
@@ -21,7 +21,7 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
  * The Message class represents a message stanza, one of the three types of XML
  * stanza embodying discrete elements within an XMPP connection.
  */
-@interface Message : TRXMLNullHandler {
+@interface Message : ETXMLNullHandler {
 	JID * correspondent;
 	MessageDirection direction;
 	message_type_t type;
@@ -83,8 +83,8 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
 - (NSComparisonResult) compareByTimestamp:(Message*)_other;
 /**
  * Returns the XML representation of the node.  Should be deprecated in favour of
- * a method returning the XML string directly to hide the TRXML dependency from 
+ * a method returning the XML string directly to hide the ETXML dependency from 
  * users.
  */
-- (TRXMLNode*) xml;
+- (ETXMLNode*) xml;
 @end

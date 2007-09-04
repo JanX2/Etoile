@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TRXMLNode.h"
+#import "ETXMLNode.h"
 
 /**
  * The query_jabber_iq_auth class is used to construct an auth request to send to 
@@ -15,7 +15,7 @@
  * and is no longer used.  It is retained in case anyone feels like adding non-SASL
  * auth support back in (some people might still want it...).
  */
-@interface query_jabber_iq_auth : TRXMLNode {
+@interface query_jabber_iq_auth : ETXMLNode {
 	NSString * user;
 	NSString * pass;
 	NSString * res;

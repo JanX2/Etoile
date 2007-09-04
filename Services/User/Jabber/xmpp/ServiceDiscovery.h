@@ -22,7 +22,7 @@
 }
 - (ServiceDiscovery*) initWithAccount:(XMPPAccount*)xmppaccount;
 - (void) getCapabilitiesForJID:(JID*)node notifyObject:(id)target withSelector:(SEL)selector;
-- (void) handleNode:(TRXMLNode*)node fromDispatcher:(id)_dispatcher;
+- (void) handleNode:(ETXMLNode*)node fromDispatcher:(id)_dispatcher;
 - (void) invalidateCacheForJID:(JID*)jid;
 
 @end

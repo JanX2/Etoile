@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TRXMLNullHandler.h"
+#import "ETXMLNullHandler.h"
 #import "JID.h"
 
 typedef enum {IQ_TYPE_SET,IQ_TYPE_GET,IQ_TYPE_RESULT,IQ_TYPE_ERROR} iq_type_t;
@@ -15,7 +15,7 @@ typedef enum {IQ_TYPE_SET,IQ_TYPE_GET,IQ_TYPE_RESULT,IQ_TYPE_ERROR} iq_type_t;
  * An object encapsulating an info-query stanza.  Child elements are parsed by
  * objects retrieved from an IqStanzaFactory and stored in a dictionary.
  */
-@interface Iq : TRXMLNullHandler {
+@interface Iq : ETXMLNullHandler {
 	iq_type_t type;
 	NSString * sequenceID;
 	JID * jid;
