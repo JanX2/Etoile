@@ -14,17 +14,7 @@
 /* find the attribute regardless the case */
 static inline id attributeForCaseInsensitiveKey(NSDictionary *attrs, id key)
 {
-	NSEnumerator *e = [[attrs allKeys] objectEnumerator];
-	id k = nil;
-	while ((k = [e nextObject]))
-	{
-		if ([k caseInsensitiveCompare: key] == NSOrderedSame)
-			break;
-		k = nil;
-	}
-	if (k)
-		return [attrs objectForKey: k];
-	return nil;
+	[attrs objectForKey:[key lowercaseString]];
 }
 
 #ifdef GNUSTEP
@@ -289,21 +279,21 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 	//	if(nil == stylesForTags)
 	{
 		stylesForTags = [[NSMutableDictionary alloc] init];
-		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-style : italic"]
+		[stylesForTags setObject:@"font-style : italic"
 						  forKey:@"em"];	
-		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-style : italic"]
+		[stylesForTags setObject:@"font-style : italic"
 						  forKey:@"i"];	
-		[stylesForTags setObject: [self attributes: nil fromStyle: @"color : blue ; text-decoration : underline"]
+		[stylesForTags setObject:@"color : blue ; text-decoration : underline"
 						  forKey:@"a"];	
-		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-weight : bold"]
+		[stylesForTags setObject:@"font-weight : bold"
 						  forKey:@"b"];
-		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-weight : bold;font-size: xx-large"]
+		[stylesForTags setObject:@"font-weight : bold;font-size: xx-large"
 						  forKey:@"h1"];	
-		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-weight : bold;font-size: x-large"]
+		[stylesForTags setObject:@"font-weight : bold;font-size: x-large"
 						  forKey:@"h2"];	
-		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-weight : bold;font-size: large"]
+		[stylesForTags setObject:@"font-weight : bold;font-size: large"
 						  forKey:@"h3"];
-		[stylesForTags setObject: [self attributes: nil fromStyle: @"font-weight : bold"]
+		[stylesForTags setObject:@"font-weight : bold"
 						  forKey:@"h4"];
 	}
 }
@@ -395,13 +385,11 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 	{
 		//Push the current style onto the stack
 		[attributeStack addObject:currentAttributes];
+		NSLog(@"Current style:\n%@", currentAttributes);
 		//Get the new attributes
-		NSDictionary * defaultStyle = [stylesForTags objectForKey:_Name];
 		currentAttributes = [NSMutableDictionary dictionaryWithDictionary:currentAttributes];
-		if(defaultStyle != nil)
-		{
-			[currentAttributes addEntriesFromDictionary:defaultStyle];
-		}
+		NSDictionary * defaultStyle = [self attributes:currentAttributes
+											 fromStyle:[stylesForTags objectForKey:_Name]];
 		NSString *style = attributeForCaseInsensitiveKey(_attributes, @"style");
 		//Special case for hyperlinks
 		if([_Name isEqualToString:@"a"])
