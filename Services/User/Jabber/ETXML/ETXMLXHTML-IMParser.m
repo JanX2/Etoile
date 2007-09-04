@@ -314,7 +314,6 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 	//Load stored tag to style mappings
 	[self loadStyles:nil];
 
-	//NSLog(@"Styles: %@", stylesForTags);
 	//Request notification if these change
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(loadStyles:)
@@ -327,7 +326,6 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 {
 	NSMutableString * text = unescapeXMLCData(_chars);
 
-	NSLog(@"Received cdata '%@'", _chars);
 	[text replaceOccurrencesOfString:@"\t"
 						  withString:@" "
 							 options:0
@@ -359,7 +357,6 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 	{
 		NSAttributedString * newSection = [[NSAttributedString alloc] initWithString:text
 																	  attributes:currentAttributes];
-		NSLog(@"Adding '%@' with attributes: %@", text, currentAttributes);
 		[string appendAttributedString:newSection];
 		[newSection release];
 	}
@@ -385,7 +382,6 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 	{
 		//Push the current style onto the stack
 		[attributeStack addObject:currentAttributes];
-		NSLog(@"Current style:\n%@", currentAttributes);
 		//Get the new attributes
 		currentAttributes = [NSMutableDictionary dictionaryWithDictionary:currentAttributes];
 		NSDictionary * defaultStyle = [self attributes:currentAttributes
@@ -419,7 +415,7 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 		//And some line breaks...
 		if([lineBreakBeforeTags containsObject:_Name])
 		{
-			if([string length] > 0)
+			if([string length] > 0 || [_Name isEqualToString:@"br"])
 			{
 				NSAttributedString * newline = [[NSAttributedString alloc] initWithString:@"\n"];
 				[string appendAttributedString:newline];
@@ -457,7 +453,6 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 }
 - (void) notifyParent
 {
-	NSLog(@"Parsed HTML: %@", string);
 	[(id)parent addChild:string forKey:key];
 }
 - (void) dealloc
