@@ -419,9 +419,12 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 		//And some line breaks...
 		if([lineBreakBeforeTags containsObject:_Name])
 		{
-			NSAttributedString * newline = [[NSAttributedString alloc] initWithString:@"\n"];
-			[string appendAttributedString:newline];
-			[newline release];
+			if([string length] > 0)
+			{
+				NSAttributedString * newline = [[NSAttributedString alloc] initWithString:@"\n"];
+				[string appendAttributedString:newline];
+				[newline release];
+			}
 		}
 		//Increment the depth counter.  This should always be equal to [attributeStack count] + 1, and it might be worth using this for validation
 	}
