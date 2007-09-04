@@ -10,8 +10,8 @@
 }
 
 - (void) dealloc {
-	[super dealloc];
 	[images release];
+	[super dealloc];
 }
 
 - (void) addImage: (NSImage*) anImage named: (NSString*) aName {
