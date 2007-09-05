@@ -22,8 +22,8 @@
 #import "Import.h"
 #import "StringExtensions.h"
 #import "ViennaApp.h"
-#import <TRXML/TRXMLDeclaration.h>
-#import <TRXML/TRXMLParser.h>
+#import <ETXML/ETXMLDeclaration.h>
+#import <ETXML/ETXMLParser.h>
 
 @implementation AppController (Import)
 
@@ -57,16 +57,16 @@
 /* importSubscriptionGroup
  * Import one group of an OPML subscription tree.
  */
--(int)importSubscriptionGroup:(TRXMLNode *)tree underParent:(int)parentId
+-(int)importSubscriptionGroup:(ETXMLNode *)tree underParent:(int)parentId
 {
 	int countImported = 0;
 	int count = [[tree elements] count];
 	int index;
 	for (index = 0; index < count; ++index)
 	{
-		TRXMLNode *outlineItem = [[tree elements] objectAtIndex: index];
-		/* We only deal with TRXMLNode */
-		if ([outlineItem isKindOfClass: [TRXMLNode class]] == NO)
+		ETXMLNode *outlineItem = [[tree elements] objectAtIndex: index];
+		/* We only deal with ETXMLNode */
+		if ([outlineItem isKindOfClass: [ETXMLNode class]] == NO)
 			continue;
 
 		NSString *feedTitle = [[outlineItem get: @"title"] stringByUnescapingExtendedCharacters];
@@ -135,8 +135,8 @@
 
 	if (string != nil)
 	{
-		TRXMLDeclaration *decl = [TRXMLDeclaration TRXMLDeclaration];
-		TRXMLParser *parser = [TRXMLParser parserWithContentHandler: decl];
+		ETXMLDeclaration *decl = [ETXMLDeclaration ETXMLDeclaration];
+		ETXMLParser *parser = [ETXMLParser parserWithContentHandler: decl];
 		if (![parser parseFromSource: string])
 		{
 			NSRunAlertPanel(NSLocalizedString(@"Error importing subscriptions title", nil),
@@ -147,7 +147,7 @@
 		else
 		{
 			/* Find opml/body */
-			TRXMLNode *opmlTree = nil, *bodyTree = nil;
+			ETXMLNode *opmlTree = nil, *bodyTree = nil;
 			if ([[decl elements] count] > 0)
 			{
 				// Should only have one "opml" child

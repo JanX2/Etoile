@@ -23,8 +23,8 @@
 #import "FoldersTree.h"
 #import "XMLFunctions.h"
 #import "StringExtensions.h"
-#import <TRXML/TRXMLParser.h>
-#import <TRXML/TRXMLDeclaration.h>
+#import <ETXML/ETXMLParser.h>
+#import <ETXML/ETXMLDeclaration.h>
 
 @implementation AppController (Export)
 
@@ -96,7 +96,7 @@
 /* exportSubscriptionGroup
  * Export one group of folders.
  */
--(int)exportSubscriptionGroup:(TRXMLNode *)xmlTree fromArray:(NSArray *)feedArray withGroups:(BOOL)groupFlag
+-(int)exportSubscriptionGroup:(ETXMLNode *)xmlTree fromArray:(NSArray *)feedArray withGroups:(BOOL)groupFlag
 {
 	NSEnumerator * enumerator = [feedArray objectEnumerator];
 	int countExported = 0;
@@ -115,7 +115,7 @@
 			else
 			{
 				[itemDict setObject:quoteAttributes((name ? name : @"")) forKey:@"text"];
-				TRXMLNode *subTree = [TRXMLNode TRXMLNodeWithType: @"outline" attributes: itemDict];
+				ETXMLNode *subTree = [ETXMLNode ETXMLNodeWithType: @"outline" attributes: itemDict];
 				[xmlTree addChild: subTree];
 				countExported += [self exportSubscriptionGroup:subTree fromArray:subFolders withGroups:groupFlag];
 			}
@@ -131,7 +131,7 @@
 			[itemDict setObject:quoteAttributes((link ? link : @"")) forKey:@"htmlUrl"];
 			[itemDict setObject:quoteAttributes((url ? url : @"")) forKey:@"xmlUrl"];
 			[itemDict setObject:quoteAttributes(description) forKey:@"description"];
-			TRXMLNode *subTree = [TRXMLNode TRXMLNodeWithType: @"outline" attributes: itemDict];
+			ETXMLNode *subTree = [ETXMLNode ETXMLNodeWithType: @"outline" attributes: itemDict];
 			[xmlTree addChild: subTree];
 			++countExported;
 		}
@@ -146,22 +146,22 @@
  */
 -(int)exportToFile:(NSString *)exportFileName from:(NSArray *)foldersArray withGroups:(BOOL)groupFlag
 {
-	TRXMLNode *node = nil;
-	TRXMLDeclaration *newTree = [TRXMLDeclaration TRXMLDeclaration];
-	TRXMLNode *opmlTree = [TRXMLNode TRXMLNodeWithType: @"opml" attributes: [NSDictionary dictionaryWithObject:@"1.0" forKey:@"version"]];
+	ETXMLNode *node = nil;
+	ETXMLDeclaration *newTree = [ETXMLDeclaration ETXMLDeclaration];
+	ETXMLNode *opmlTree = [ETXMLNode ETXMLNodeWithType: @"opml" attributes: [NSDictionary dictionaryWithObject:@"1.0" forKey:@"version"]];
 	[newTree addChild: opmlTree];
-	TRXMLNode *headTree = [TRXMLNode TRXMLNodeWithType: @"head"];
+	ETXMLNode *headTree = [ETXMLNode ETXMLNodeWithType: @"head"];
 	[opmlTree addChild: headTree];
 
-	node = [TRXMLNode TRXMLNodeWithType: @"title"];
+	node = [ETXMLNode ETXMLNodeWithType: @"title"];
 	[node setCData: @"Vienna Subscriptions"];
 	[headTree addChild: node];
-	node = [TRXMLNode TRXMLNodeWithType: @"dateCreated"];
+	node = [ETXMLNode ETXMLNodeWithType: @"dateCreated"];
 	[node setCData: [[NSCalendarDate date] description]];
 	[headTree addChild: node];
 	
 	// Create the body section
-	TRXMLNode *bodyTree = [TRXMLNode TRXMLNodeWithType: @"body"];
+	ETXMLNode *bodyTree = [ETXMLNode ETXMLNodeWithType: @"body"];
 	[opmlTree addChild: bodyTree];
 
 	int countExported = [self exportSubscriptionGroup:bodyTree fromArray:foldersArray withGroups:groupFlag];

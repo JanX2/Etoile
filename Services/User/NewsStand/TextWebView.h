@@ -18,8 +18,13 @@
 //  limitations under the License.
 //
 
+#define USE_TRXML_XHTML 1
+
 #import <AppKit/AppKit.h>
+#if USE_TRXML_XHTML
+#else
 #import <TRXML/TRXMLParserDelegate.h>
+#endif
 
 typedef enum _TextStyle {
 	NoTextStyle = 0,
@@ -30,23 +35,32 @@ typedef enum _TextStyle {
 
 @class AppController;
 
+#if USE_TRXML_XHTML
+@interface TextWebView: NSView {
+#else
 @interface TextWebView: NSView <TRXMLParserDelegate> {
+#endif
 	AppController *controller;
 	NSTextView *textView;
 	NSScrollView *scrollView;
 	BOOL openLinksInNewBrowser;
+
 	NSFont *titleFont;
 	NSFont *bodyFont;
 	NSFont *detailFont;
 	NSMutableDictionary *attributes;
 	TextStyle textStyle;
 	int fontSize;
+
 	NSString *_htmlText;
 	NSString *_urlString;
-
+#if USE_TRXML_XHTML
+#else
 	int bold; // <b>, <em>, <strong>tag
 	int italic; // <i>tag
 	int link; // <a href> tag
+#endif
+
 #if 0
 	BOOL isFeedRedirect;
 	BOOL isDownload;

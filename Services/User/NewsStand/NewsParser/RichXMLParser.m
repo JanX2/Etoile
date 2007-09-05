@@ -22,8 +22,8 @@
 #import "XMLTag.h"
 #import "XMLFunctions.h"
 #import "StringExtensions.h"
-#import <TRXML/TRXMLDeclaration.h>
-#import <TRXML/TRXMLParser.h>
+#import <ETXML/ETXMLDeclaration.h>
+#import <ETXML/ETXMLParser.h>
 
 @interface FeedItem (Private)
 	-(void)setTitle:(NSString *)newTitle;
@@ -40,12 +40,12 @@
 	-(void)reset;
 	-(NSData *)preFlightValidation:(NSData *)xmlData;
 	-(NSStringEncoding)parseEncodingType:(NSData *)xmlData;
-	-(BOOL)initRSSFeed:(TRXMLNode *)feedTree isRDF:(BOOL)isRDF;
-	-(TRXMLNode *)channelTree:(TRXMLNode *)feedTree;
-	-(BOOL)initRSSFeedHeader:(TRXMLNode *)feedTree;
-	-(BOOL)initRSSFeedItems:(TRXMLNode *)feedTree;
-	-(BOOL)initAtomFeed:(TRXMLNode *)feedTree;
-	-(void)parseSequence:(TRXMLNode *)seqTree;
+	-(BOOL)initRSSFeed:(ETXMLNode *)feedTree isRDF:(BOOL)isRDF;
+	-(ETXMLNode *)channelTree:(ETXMLNode *)feedTree;
+	-(BOOL)initRSSFeedHeader:(ETXMLNode *)feedTree;
+	-(BOOL)initRSSFeedItems:(ETXMLNode *)feedTree;
+	-(BOOL)initAtomFeed:(ETXMLNode *)feedTree;
+	-(void)parseSequence:(ETXMLNode *)seqTree;
 	-(void)setTitle:(NSString *)newTitle;
 	-(void)setLink:(NSString *)newLink;
 	-(void)setDescription:(NSString *)newDescription;
@@ -283,11 +283,11 @@
 	NSData * parsedXmlData = [self preFlightValidation:xmlData];
 	/* Encoding is set in -preFlightValidation: */
 	NSString *string = [[NSString alloc] initWithData: parsedXmlData encoding: encodingType];
-	TRXMLDeclaration *decl = [TRXMLDeclaration TRXMLDeclaration];
-	TRXMLParser *parser = [TRXMLParser parserWithContentHandler: decl];
+	ETXMLDeclaration *decl = [ETXMLDeclaration ETXMLDeclaration];
+	ETXMLParser *parser = [ETXMLParser parserWithContentHandler: decl];
 	if ((string != nil) && ([parser parseFromSource: string]))
 	{
-		TRXMLNode *subtree = nil;
+		ETXMLNode *subtree = nil;
 		// If this RSS?
 		if ((subtree = [[decl getChildrenWithName: @"rss"] anyObject]) != nil)
 		{
@@ -496,7 +496,7 @@
 /* initRSSFeed
  * Prime the feed with header and items from an RSS feed
  */
--(BOOL)initRSSFeed:(TRXMLNode *)feedTree isRDF:(BOOL)isRDF
+-(BOOL)initRSSFeed:(ETXMLNode *)feedTree isRDF:(BOOL)isRDF
 {
 	BOOL success = [self initRSSFeedHeader:[self channelTree:feedTree]];
 	if (success)
@@ -512,9 +512,9 @@
 /* channelTree
  * Return the root of the RSS feed's channel.
  */
--(TRXMLNode *)channelTree:(TRXMLNode *)feedTree
+-(ETXMLNode *)channelTree:(ETXMLNode *)feedTree
 {
-	TRXMLNode *channelTree = [[feedTree getChildrenWithName: @"channel"] anyObject];
+	ETXMLNode *channelTree = [[feedTree getChildrenWithName: @"channel"] anyObject];
 	if (channelTree == nil)
 		channelTree = [[feedTree getChildrenWithName :@"rss:channel"] anyObject];
 	return channelTree;
@@ -523,7 +523,7 @@
 /* initRSSFeedHeader
  * Parse an RSS feed header items.
  */
--(BOOL)initRSSFeedHeader:(TRXMLNode *)feedTree
+-(BOOL)initRSSFeedHeader:(ETXMLNode *)feedTree
 {
 	BOOL success = YES;
 	
@@ -533,8 +533,8 @@
 	
 	for (index = 0; index < count; ++index)
 	{
-		TRXMLNode *subTree = [[feedTree elements] objectAtIndex: index];
-		if ([subTree isKindOfClass: [TRXMLNode class]] == NO)
+		ETXMLNode *subTree = [[feedTree elements] objectAtIndex: index];
+		if ([subTree isKindOfClass: [ETXMLNode class]] == NO)
 			continue;
 
 		NSString *nodeName = [subTree type];
@@ -549,7 +549,7 @@
 		// Parse items group which dictates the sequence of the articles.
 		if ([nodeName isEqualToString:@"items"])
 		{
-			TRXMLNode *seqTree = [[subTree getChildrenWithName: @"rdf:Seq"] anyObject];
+			ETXMLNode *seqTree = [[subTree getChildrenWithName: @"rdf:Seq"] anyObject];
 			if (seqTree != nil)
 				[self parseSequence:seqTree];
 		}
@@ -599,7 +599,7 @@
  * Parses an RDF sequence and initialises orderArray with the appropriate sequence.
  * The RSS parser will then use this to order the actual items appropriately.
  */
--(void)parseSequence:(TRXMLNode *)seqTree
+-(void)parseSequence:(ETXMLNode *)seqTree
 {
 	int count = [[seqTree elements] count];
 	int index;
@@ -608,8 +608,8 @@
 	orderArray = [[NSMutableArray alloc] initWithCapacity:count];
 	for (index = 0; index < count; ++index)
 	{
-		TRXMLNode *subTree = [[seqTree elements] objectAtIndex: index];
-        if ([subTree isKindOfClass: [TRXMLNode class]] == NO)
+		ETXMLNode *subTree = [[seqTree elements] objectAtIndex: index];
+        if ([subTree isKindOfClass: [ETXMLNode class]] == NO)
             continue;
 
 		if ([[subTree type] isEqualToString:@"rdf:li"])
@@ -626,7 +626,7 @@
 /* initRSSFeedItems
  * Parse the items from an RSS feed
  */
--(BOOL)initRSSFeedItems:(TRXMLNode *)feedTree
+-(BOOL)initRSSFeedItems:(ETXMLNode *)feedTree
 {
 	BOOL success = YES;
 
@@ -641,7 +641,7 @@
 
 	for (index = 0; index < count; ++index)
 	{
-		TRXMLNode *subTree = [nodes objectAtIndex: index];
+		ETXMLNode *subTree = [nodes objectAtIndex: index];
 		
 		// Parse a single item to construct a FeedItem object which is appended to
 		// the items array we maintain.
@@ -657,8 +657,8 @@
 
 		for (itemIndex = 0; itemIndex < itemCount; ++itemIndex)
 		{
-			TRXMLNode *subItemTree = [[subTree elements] objectAtIndex: itemIndex];
-			if ([subItemTree isKindOfClass: [TRXMLNode class]] == NO)
+			ETXMLNode *subItemTree = [[subTree elements] objectAtIndex: itemIndex];
+			if ([subItemTree isKindOfClass: [ETXMLNode class]] == NO)
 				continue;
 
 			NSString * itemNodeName = [subItemTree type];
@@ -791,7 +791,7 @@
 /* initAtomFeed
  * Prime the feed with header and items from an Atom feed
  */
--(BOOL)initAtomFeed:(TRXMLNode *)feedTree
+-(BOOL)initAtomFeed:(ETXMLNode *)feedTree
 {
 	BOOL success = YES;
 	
@@ -811,8 +811,8 @@
 	
 	for (index = 0; index < count; ++index)
 	{
-		TRXMLNode *subTree = [[feedTree elements] objectAtIndex: index];
-        if ([subTree isKindOfClass: [TRXMLNode class]] == NO)
+		ETXMLNode *subTree = [[feedTree elements] objectAtIndex: index];
+        if ([subTree isKindOfClass: [ETXMLNode class]] == NO)
             continue;
 
 		NSString *nodeName = [subTree type];
@@ -862,7 +862,7 @@
 		// that doesn't have an explicit author.
 		if ([nodeName isEqualToString:@"author"])
 		{
-			TRXMLNode *emailTree = [[subTree getChildrenWithName: @"name"] anyObject];
+			ETXMLNode *emailTree = [[subTree getChildrenWithName: @"name"] anyObject];
 			if (emailTree != nil)
 				defaultAuthor = [emailTree cdata];
 			continue;
@@ -909,8 +909,8 @@
 
 			for (itemIndex = 0; itemIndex < itemCount; ++itemIndex)
 			{
-				TRXMLNode *subItemTree = [[subTree elements] objectAtIndex: itemIndex];
-				if ([subItemTree isKindOfClass: [TRXMLNode class]] == NO)
+				ETXMLNode *subItemTree = [[subTree elements] objectAtIndex: itemIndex];
+				if ([subItemTree isKindOfClass: [ETXMLNode class]] == NO)
 					continue;
 
 				NSString * itemNodeName = [subItemTree type];
@@ -947,7 +947,7 @@
 				// Parse item author
 				if ([itemNodeName isEqualToString:@"author"])
 				{
-					TRXMLNode *emailTree = [[subItemTree getChildrenWithName: @"name"] anyObject];
+					ETXMLNode *emailTree = [[subItemTree getChildrenWithName: @"name"] anyObject];
 					[newItem setAuthor:[emailTree cdata]];
 					continue;
 				}

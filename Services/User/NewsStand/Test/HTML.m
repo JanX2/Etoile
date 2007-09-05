@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
 #import <UnitKit/UnitKit.h>
-#import <TRXML/TRXMLNode.h>
-#import <TRXML/TRXMLParserDelegate.h>
+#import <ETXML/ETXMLNode.h>
+#import <ETXML/ETXMLParserDelegate.h>
 
-@interface HTML: NSObject <UKTest, TRXMLParserDelegate>
+@interface HTML: NSObject <UKTest, ETXMLParserDelegate>
 @end
 
 @implementation HTML
@@ -35,7 +35,7 @@
 	NSString *string = [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
 
 	// READ
-	TRXMLParser *parser = [TRXMLParser parserWithContentHandler: self];
+	ETXMLParser *parser = [ETXMLParser parserWithContentHandler: self];
 	UKTrue([parser parseFromSource: string]);
 }
 @end

@@ -76,7 +76,7 @@ ADDITIONAL_OBJCFLAGS += \
 	-fobjc-exceptions
 
 ADDITIONAL_LDFLAGS += \
-	-lTRXML \
+	-lETXML \
 	`curl-config --libs`
 
 ifeq ($(FOUNDATION_LIB), apple)

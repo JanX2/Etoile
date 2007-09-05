@@ -20,8 +20,8 @@
 //
 
 #import "Criteria.h"
-#import <TRXML/TRXMLDeclaration.h>
-#import <TRXML/TRXMLParser.h>
+#import <ETXML/ETXMLDeclaration.h>
+#import <ETXML/ETXMLParser.h>
 
 @implementation Criteria
 
@@ -205,11 +205,11 @@
 	{
 		criteriaTree = [[NSMutableArray alloc] init];
 		condition = MA_CritCondition_All;
-		TRXMLDeclaration *xmlTree = [TRXMLDeclaration TRXMLDeclaration];
-		TRXMLParser *parser = [TRXMLParser parserWithContentHandler: xmlTree];
+		ETXMLDeclaration *xmlTree = [ETXMLDeclaration ETXMLDeclaration];
+		ETXMLParser *parser = [ETXMLParser parserWithContentHandler: xmlTree];
 		if (string && [parser parseFromSource: string])
 		{
-			TRXMLNode *criteriaGroup = [[xmlTree getChildrenWithName: @"criteriagroup"] anyObject];
+			ETXMLNode *criteriaGroup = [[xmlTree getChildrenWithName: @"criteriagroup"] anyObject];
 			int index = 0;
 
 			// For backward compatibility, the absence of the condition attribute
@@ -221,7 +221,7 @@
 			if (criteriaGroup != nil)
 				while (index < [[criteriaGroup elements] count])
 				{
-					TRXMLNode *subTree = [[criteriaGroup elements] objectAtIndex: index];
+					ETXMLNode *subTree = [[criteriaGroup elements] objectAtIndex: index];
 					NSString * fieldName = [subTree get:@"field"];
 					NSString * operator = [[[subTree getChildrenWithName:@"operator"] anyObject] cdata];
 					NSString * value = [[[subTree getChildrenWithName:@"value"] anyObject] cdata];
@@ -313,9 +313,9 @@
  */
 -(NSString *)string
 {
-	TRXMLDeclaration *newTree = [TRXMLDeclaration TRXMLDeclaration];
+	ETXMLDeclaration *newTree = [ETXMLDeclaration ETXMLDeclaration];
 	NSDictionary * conditionDict = [NSDictionary dictionaryWithObject:[CriteriaTree conditionToString:condition] forKey:@"condition"];
-	TRXMLNode *groupTree = [TRXMLNode TRXMLNodeWithType: @"criteriagroup" attributes: conditionDict];
+	ETXMLNode *groupTree = [ETXMLNode ETXMLNodeWithType: @"criteriagroup" attributes: conditionDict];
 	[newTree addChild: groupTree];
 	unsigned int index;
 	
@@ -323,11 +323,11 @@
 	{
 		Criteria * criteria = [criteriaTree objectAtIndex:index];
 		NSDictionary * criteriaDict = [NSDictionary dictionaryWithObject:[criteria field] forKey:@"field"];
-		TRXMLNode *oneCriteriaTree = [TRXMLNode TRXMLNodeWithType: @"criteria" attributes: criteriaDict];
-		TRXMLNode *node = [TRXMLNode TRXMLNodeWithType: @"operator"];
+		ETXMLNode *oneCriteriaTree = [ETXMLNode ETXMLNodeWithType: @"criteria" attributes: criteriaDict];
+		ETXMLNode *node = [ETXMLNode ETXMLNodeWithType: @"operator"];
 		[node setCData: [NSString stringWithFormat:@"%d", [criteria operator]]];
 		[oneCriteriaTree addChild: node];
-		node = [TRXMLNode TRXMLNodeWithType: @"value"];
+		node = [ETXMLNode ETXMLNodeWithType: @"value"];
 		[node setCData: [criteria value]];
 		[oneCriteriaTree addChild: node];
 		[groupTree addChild: oneCriteriaTree];

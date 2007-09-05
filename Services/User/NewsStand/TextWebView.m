@@ -23,7 +23,8 @@
 #import "Preferences.h"
 #import "DownloadManager.h"
 #import "StringExtensions.h"
-#import "TRXML/TRXMLParser.h"
+#import "ETXML/ETXMLParser.h"
+#import "ETXML/ETXMLXHTML-IMParser.h"
 
 #define TITLE_FONT_SIZE_OFFSET 4
 #define BODY_FONT_SIZE_OFFSET 0
@@ -35,6 +36,47 @@
 	-(BOOL)handleKeyDown:(unichar)keyChar withFlags:(unsigned int)flags;
 @end
 #endif
+
+@interface HtmlHandler: ETXMLNullHandler
+{
+	NSAttributedString *as;
+}
+- (NSAttributedString *) attributedHTMLString;
+@end
+
+@implementation HtmlHandler: ETXMLNullHandler
+
+- (NSAttributedString *) attributedHTMLString
+{
+	return as;
+}
+
+- (void) addhtml: (NSAttributedString *) aString
+{
+	[as release];
+	as = [aString retain];
+}
+
+- (void) parseHTML:(NSString*) aString
+{
+	id p = [[ETXMLParser alloc] init];
+    [p setMode: PARSER_MODE_SGML];
+	id handler = [[ETXMLXHTML_IMParser alloc] initWithXMLParser: p
+	                             parent: self
+	                             key: @"html"];
+	[p parseFromSource:aString];
+	[p release];
+	[handler release];
+}
+
+- (void) dealloc
+{
+	if (as)
+		[as release];
+	[super dealloc];
+}
+
+@end
 
 @interface TextWebView (Private)
 	- (void) updateFontWithSize: (int) size;
@@ -49,7 +91,9 @@
 
 @implementation TextWebView
 
-/* TRXMLParser Delegate */
+#if USE_TRXML_XHTML
+#else
+/* ETXMLParser Delegate */
 - (void) characters: (NSString *) _chars
 {
 	NSAttributedString *as = [[[NSAttributedString alloc] initWithString: [_chars stringByUnescapingExtendedCharacters]  attributes: attributes] autorelease];
@@ -210,6 +254,7 @@
 - (void) setParent:(id) newParent
 {
 }
+#endif
 
 /* initWithFrame
  * The designated instance initialiser.
@@ -276,17 +321,30 @@
 		_urlString = urlString;
 	}
 
-//	NSLog(@"htmlText %@", _htmlText);
+	NSLog(@"htmlText %@", _htmlText);
 	/* Reset tag counter so that it won't effect the next html */
+#if USE_TRXML_XHTML
+	HtmlHandler *hhandler = [[HtmlHandler alloc] init];
+	[textView setString: @""];
+	[[textView textStorage] beginEditing];
+	[hhandler parseHTML: _htmlText];
+	NSAttributedString *as = [hhandler attributedHTMLString];
+	NSAssert(as, @"Cannot convert HTML into attributed string");
+	[[textView textStorage] appendAttributedString: as];
+	[[textView textStorage] endEditing];
+	[hhandler release];
+#else
 	bold = 0;
 	italic = 0;
 	link = 0;
-	TRXMLParser *parser = [TRXMLParser parserWithContentHandler: self];
+
+	ETXMLParser *parser = [ETXMLParser parserWithContentHandler: self];
 	[textView setString: @""];
 	[[textView textStorage] beginEditing];
 	[parser setMode: PARSER_MODE_SGML];
 	[parser parseFromSource: _htmlText];
 	[[textView textStorage] endEditing];
+#endif
 }
 
 /* setOpenLinksInNewBrowser
