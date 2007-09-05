@@ -1,27 +1,27 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
 OBJCFLAGS += -g -std=c99
-LIBRARY_NAME = TRXML
+LIBRARY_NAME = ETXML
 DOCUMENT_NAME = ${LIBRARY_NAME}
 
-TRXML_OBJC_FILES = \
-	TRXMLNode.m \
-	TRXMLDeclaration.m \
-	TRXMLNullHandler.m \
-	TRXMLParser.m \
-	TRXMLXHTML-IMParser.m\
-	TRXMLString.m
+ETXML_OBJC_FILES = \
+	ETXMLNode.m \
+	ETXMLDeclaration.m \
+	ETXMLNullHandler.m \
+	ETXMLParser.m \
+	ETXMLXHTML-IMParser.m\
+	ETXMLString.m
 
-TRXML_HEADER_FILES = \
-	TRXMLNode.h \
-	TRXMLDeclaration.h \
-	TRXMLParser.h \
-	TRXMLString.h \
-	TRXMLNullHandler.h \
-	TRXMLXHTML-IMParser.h\
-	TRXMLParserDelegate.h
+ETXML_HEADER_FILES = \
+	ETXMLNode.h \
+	ETXMLDeclaration.h \
+	ETXMLParser.h \
+	ETXMLString.h \
+	ETXMLNullHandler.h \
+	ETXMLXHTML-IMParser.h\
+	ETXMLParserDelegate.h
 
-TRXML_AGSDOC_FILES = ${TRXML_HEADER_FILES}
+ETXML_AGSDOC_FILES = ${ETXML_HEADER_FILES}
 
 include $(GNUSTEP_MAKEFILES)/library.make
 ifneq ($(FOUNDATION_LIB), apple)

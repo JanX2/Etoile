@@ -14,7 +14,7 @@
 /* find the attribute regardless the case */
 static inline id attributeForCaseInsensitiveKey(NSDictionary *attrs, id key)
 {
-	[attrs objectForKey:[key lowercaseString]];
+	return [attrs objectForKey:[key lowercaseString]];
 }
 
 #ifdef GNUSTEP
