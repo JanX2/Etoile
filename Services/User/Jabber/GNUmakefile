@@ -3,7 +3,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 #
 # Application
 #
-SUBPROJECTS = TRXML xmpp
+SUBPROJECTS = ETXML xmpp
 VERSION = 0.1
 PACKAGE_NAME = StepChat
 APP_NAME = StepChat
@@ -58,10 +58,10 @@ StepChat_OBJC_FILES = \
 	XMLLog.m\
 	main.m
 
-ADDITIONAL_LDFLAGS += -lTRXML -lXMPP -lssl -lcrypto -lAddresses -g
+ADDITIONAL_LDFLAGS += -lETXML -lXMPP -lssl -lcrypto -lAddresses -g
 ADDITIONAL_OBJCFLAGS += -werror -g
-ADDITIONAL_LIB_DIRS += -LTRXML/$(GNUSTEP_OBJ_DIR) -Lxmpp/$(GNUSTEP_OBJ_DIR)
-ADDITIONAL_OBJCFLAGS = -DGNUSTEP -DNO_ATTRIBUTED_TITLES -std=c99 -Wno-import -Ixmpp -ITRXML
+ADDITIONAL_LIB_DIRS += -LETXML/$(GNUSTEP_OBJ_DIR) -Lxmpp/$(GNUSTEP_OBJ_DIR)
+ADDITIONAL_OBJCFLAGS = -DGNUSTEP -DNO_ATTRIBUTED_TITLES -std=c99 -Wno-import -Ixmpp -IETXML
 
 #
 # Makefiles
