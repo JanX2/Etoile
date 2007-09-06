@@ -384,8 +384,6 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 		[attributeStack addObject:currentAttributes];
 		//Get the new attributes
 		currentAttributes = [NSMutableDictionary dictionaryWithDictionary:currentAttributes];
-		NSDictionary * defaultStyle = [self attributes:currentAttributes
-											 fromStyle:[stylesForTags objectForKey:_Name]];
 		NSString *style = attributeForCaseInsensitiveKey(_attributes, @"style");
 		//Special case for hyperlinks
 		if([_Name isEqualToString:@"a"])
