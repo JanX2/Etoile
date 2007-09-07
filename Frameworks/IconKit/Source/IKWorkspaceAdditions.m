@@ -5,6 +5,8 @@
  *  Created by Uli Kusterer on 31.12.04.
  *  Copyright 2004 M. Uli Kusterer. All rights reserved.
  *
+ *  This application is free software; you can redistribute it and/or 
+ *  modify it under the terms of the 3-clause BSD license. See COPYING.
  */
 
 // -----------------------------------------------------------------------------

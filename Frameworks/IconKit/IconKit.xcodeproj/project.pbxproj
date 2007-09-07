@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32F40F350C91A4F500997DA7 /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 32F40F340C91A4F500997DA7 /* COPYING */; };
 		713851A30C77048500C1C998 /* NSString+MD5Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 713851990C77048500C1C998 /* NSString+MD5Hash.m */; };
 		713851A40C77048500C1C998 /* IKThumbnailProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7138519A0C77048500C1C998 /* IKThumbnailProvider.m */; };
 		713851A50C77048500C1C998 /* IKWorkspaceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7138519B0C77048500C1C998 /* IKWorkspaceAdditions.m */; };
@@ -39,6 +40,7 @@
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		32F40F340C91A4F500997DA7 /* COPYING */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
 		713851990C77048500C1C998 /* NSString+MD5Hash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+MD5Hash.m"; path = "Source/NSString+MD5Hash.m"; sourceTree = "<group>"; };
 		7138519A0C77048500C1C998 /* IKThumbnailProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IKThumbnailProvider.m; path = Source/IKThumbnailProvider.m; sourceTree = "<group>"; };
 		7138519B0C77048500C1C998 /* IKWorkspaceAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IKWorkspaceAdditions.m; path = Source/IKWorkspaceAdditions.m; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				71BB1E200C7F701300CC6E69 /* ChangeLog */,
+				32F40F340C91A4F500997DA7 /* COPYING */,
 				08FB77AEFE84172EC02AAC07 /* Source */,
 				32C88DFF0371C24200C91783 /* Headers */,
 				089C1665FE841158C02AAC07 /* Resources */,
@@ -241,6 +244,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				71BB1E210C7F701300CC6E69 /* ChangeLog in Resources */,
+				32F40F350C91A4F500997DA7 /* COPYING in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
