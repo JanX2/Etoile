@@ -1,3 +1,8 @@
+2007-09-07  Isaiah Beerbower <public@ipaqah.com>
+
+	Change license to 3-clause BSD (With permission from all those concerned).
+	Make the Xcode project work. Testing to follow...
+
 2007-08-24  Isaiah Beerbower <public@ipaqah.com>
 
 	Change license on Quentin's and Nicolas' (permission from Quentin):
