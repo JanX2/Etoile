@@ -186,7 +186,7 @@
 			}
 		}
 		attributeValue = CURRENTSTRING;
-		[_attributes setValue:attributeValue forKey:attributeName];
+		[_attributes setValue:unescapeXMLCData(attributeValue) forKey:attributeName];
 		start = current;
 		if(quotedAttribute)
 		{

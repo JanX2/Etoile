@@ -137,17 +137,6 @@ static inline NSColor * colourFromCSSColourString(NSString * aColour)
 }
 
 
-static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
-{
-	NSMutableString * XMLString = [NSMutableString stringWithString:_XMLString];
-	[XMLString replaceOccurrencesOfString:@"&lt;" withString:@"<" options:0 range:NSMakeRange(0,[XMLString length])];
-	[XMLString replaceOccurrencesOfString:@"&gt;" withString:@">" options:0 range:NSMakeRange(0,[XMLString length])];
-	[XMLString replaceOccurrencesOfString:@"&amp;" withString:@"&" options:0 range:NSMakeRange(0,[XMLString length])];
-	[XMLString replaceOccurrencesOfString:@"&apos;" withString:@"'" options:0 range:NSMakeRange(0,[XMLString length])];
-	[XMLString replaceOccurrencesOfString:@"&quot;" withString:@"\"" options:0 range:NSMakeRange(0,[XMLString length])];
-	return XMLString;
-}
-
 @implementation ETXMLXHTML_IMParser
 
 - (NSMutableDictionary *) attributes: (NSMutableDictionary *) attributes

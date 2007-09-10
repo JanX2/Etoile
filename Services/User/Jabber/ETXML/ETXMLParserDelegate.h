@@ -9,6 +9,33 @@
 #import <Foundation/Foundation.h>
 
 /**
+ * Helper function for escaping XML character data.
+ */
+static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
+{
+	NSMutableString * XMLString = [NSMutableString stringWithString:_XMLString];
+	[XMLString replaceOccurrencesOfString:@"&" withString:@"&amp;" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"<" withString:@"&lt;" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@">" withString:@"&gt;" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"'" withString:@"&apos;" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"\"" withString:@"&quot;" options:0 range:NSMakeRange(0,[XMLString length])];
+	return XMLString;
+}
+
+/**
+ * Helper function for unescaping XML character data.
+ */
+static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
+{
+	NSMutableString * XMLString = [NSMutableString stringWithString:_XMLString];
+	[XMLString replaceOccurrencesOfString:@"&lt;" withString:@"<" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&gt;" withString:@">" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&amp;" withString:@"&" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&apos;" withString:@"'" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"&quot;" withString:@"\"" options:0 range:NSMakeRange(0,[XMLString length])];
+	return XMLString;
+}
+/**
  * The ETXMLParserDelegate protocol is a formal protocol that must be 
  * implemented by classes used as delegates for XML parsing.  
  */
