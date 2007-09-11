@@ -43,7 +43,6 @@ StepChat_OBJC_FILES = \
 	AddContactWindowController.m\
 	ChatLogMenuController.m\
 	CustomPresenceWindowController.m\
-	GlobalPreferences.m\
 	HideMenuController.m\
 	JabberApp.m\
 	MessageWindowController.m\

@@ -581,7 +581,7 @@ NSMutableArray * rosterControllers = nil;
 	RESIZE_ROSTER;
 }
 
-inline Conversation * createChatWithPerson(id self, JabberPerson* person, XMPPAccount * account)
+inline static Conversation * createChatWithPerson(id self, JabberPerson* person, XMPPAccount * account)
 {
 	JID * destinationJID = [[person defaultIdentity] jid];
 	Conversation * conversation = [Conversation conversationForPerson:person];
