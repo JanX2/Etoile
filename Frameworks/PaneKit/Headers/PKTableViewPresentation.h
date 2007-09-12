@@ -32,6 +32,8 @@ extern const NSString *PKTablePresentationMode;
 {
     IBOutlet NSTableView *preferencesTableView;
     IBOutlet NSScrollView *prebuiltTableView;
+    
+    int lastSelectedRow;
 }
 
 @end

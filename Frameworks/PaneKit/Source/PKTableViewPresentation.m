@@ -49,32 +49,34 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 
 - (id) init
 {
-  self = [super init];
+	self = [super init];
 
-  /* We build the table here and reuse it */
-  NSRect rect = NSMakeRect(0, 0, 180, 100);
-  prebuiltTableView = [[NSScrollView alloc] initWithFrame: rect];
-  [prebuiltTableView setAutoresizingMask: NSViewHeightSizable];
+	/* We build the table here and reuse it */
+	NSRect rect = NSMakeRect(0, 0, 180, 100);
+	prebuiltTableView = [[NSScrollView alloc] initWithFrame: rect];
+	[prebuiltTableView setAutoresizingMask: NSViewHeightSizable];
 
-  NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier: @"name"];
-  [column setWidth: 180];
-  [column setEditable: NO];
+	NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier: @"name"];
+	[column setWidth: 180];
+	[column setEditable: NO];
 
-  rect = [[prebuiltTableView documentView] bounds];
-  preferencesTableView = [[NSTableView alloc] initWithFrame: rect];
-  [preferencesTableView setAutoresizingMask: NSViewHeightSizable];
-  [preferencesTableView addTableColumn: column];
-  [prebuiltTableView setDocumentView: preferencesTableView];
-  DESTROY(column);
-  RELEASE(preferencesTableView);
-  AUTORELEASE(prebuiltTableView);
+	rect = [[prebuiltTableView documentView] bounds];
+	preferencesTableView = [[NSTableView alloc] initWithFrame: rect];
+	[preferencesTableView setAutoresizingMask: NSViewHeightSizable];
+	[preferencesTableView addTableColumn: column];
+	[prebuiltTableView setDocumentView: preferencesTableView];
+	DESTROY(column);
+	RELEASE(preferencesTableView);
+	AUTORELEASE(prebuiltTableView);
 
-  [preferencesTableView setCornerView: nil];
-  [preferencesTableView setHeaderView: nil];
-  [preferencesTableView setDataSource: self];
-  [preferencesTableView setDelegate: self];
+	[preferencesTableView setCornerView: nil];
+	[preferencesTableView setHeaderView: nil];
+	[preferencesTableView setDataSource: self];
+	[preferencesTableView setDelegate: self];
 
-  return self;
+	lastSelectedRow = -1;
+
+	return self;
 }
 
 - (void) loadUI
@@ -198,10 +200,19 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 
 - (void) tableViewSelectionDidChange: (NSNotification *)notification
 {
-  int row = [preferencesTableView selectedRow];
-  NSString *path = (NSString *)[[allLoadedPlugins objectAtIndex: row] objectForKey: @"path"];
-	
-  [controller updateUIForPane: [[controller registry] paneAtPath: path]];
+	int row = [preferencesTableView selectedRow];
+  
+	if (row < 0 && lastSelectedRow >= 0)
+	{
+		[preferencesTableView selectRow:lastSelectedRow byExtendingSelection:NO];
+	}
+	else if (row >= 0 && row != lastSelectedRow)
+	{
+		NSString *path = (NSString *)[[allLoadedPlugins objectAtIndex: row] objectF
+orKey: @"path"];
+		[controller updateUIForPane: [[controller registry] paneAtPath: path]];
+		lastSelectedRow = row;
+	}
 }
 
 @end
