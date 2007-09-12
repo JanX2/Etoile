@@ -377,7 +377,7 @@ static PKPaneRegistry *sharedPluginRegistry = nil;
         
   if (pane == nil)
   {
-    NSString *type = [[info objectForKey: @"path"] pathExtension];
+//    NSString *type = [[info objectForKey: @"path"] pathExtension];
                 
     Class mainClass = [[info objectForKey: @"class"] pointerValue];
     pane = [[[mainClass alloc] initWithBundle: [info objectForKey: @"bundle"]]

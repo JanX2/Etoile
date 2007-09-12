@@ -35,15 +35,17 @@
 		608A97A909291261009145A7 /* PKPresentationBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 608A97A709291261009145A7 /* PKPresentationBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		608A97AA09291261009145A7 /* PKPresentationBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 608A97A809291261009145A7 /* PKPresentationBuilder.m */; };
 		608A97AC09291261009145A7 /* PKPresentationBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 608A97A809291261009145A7 /* PKPresentationBuilder.m */; };
-		608A97BC092A0D1B009145A7 /* CocoaCompatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 608A97BA092A0D1A009145A7 /* CocoaCompatibility.h */; };
+		608A97BC092A0D1B009145A7 /* CocoaCompatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 608A97BA092A0D1A009145A7 /* CocoaCompatibility.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		60F5FC1D092FEF4400683FCF /* CocoaCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */; };
 		60F5FC1E092FEF4400683FCF /* CocoaCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */; };
-		E81D60F30B02D52000811C3D /* PaneKit.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60ED0B02D52000811C3D /* PaneKit.h */; };
-		E81D60F40B02D52000811C3D /* PKPane.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60EE0B02D52000811C3D /* PKPane.h */; };
-		E81D60F50B02D52000811C3D /* PKPaneRegistry.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60EF0B02D52000811C3D /* PKPaneRegistry.h */; };
-		E81D60F60B02D52000811C3D /* PKPanesController.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60F00B02D52000811C3D /* PKPanesController.h */; };
-		E81D60F70B02D52000811C3D /* PKPlainPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60F10B02D52000811C3D /* PKPlainPresentation.h */; };
-		E81D60F80B02D52000811C3D /* PKPreferencePaneRegistry.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60F20B02D52000811C3D /* PKPreferencePaneRegistry.h */; };
+		D380AE190C971E7A00A8453E /* PKPopUpButtonPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = D380AE180C971E7A00A8453E /* PKPopUpButtonPresentation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D380AE1B0C971E8900A8453E /* PKPopUpButtonPresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = D380AE1A0C971E8900A8453E /* PKPopUpButtonPresentation.m */; };
+		E81D60F30B02D52000811C3D /* PaneKit.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60ED0B02D52000811C3D /* PaneKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E81D60F40B02D52000811C3D /* PKPane.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60EE0B02D52000811C3D /* PKPane.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E81D60F50B02D52000811C3D /* PKPaneRegistry.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60EF0B02D52000811C3D /* PKPaneRegistry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E81D60F60B02D52000811C3D /* PKPanesController.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60F00B02D52000811C3D /* PKPanesController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E81D60F70B02D52000811C3D /* PKPlainPresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60F10B02D52000811C3D /* PKPlainPresentation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E81D60F80B02D52000811C3D /* PKPreferencePaneRegistry.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60F20B02D52000811C3D /* PKPreferencePaneRegistry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E81D60F90B02D52000811C3D /* PaneKit.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60ED0B02D52000811C3D /* PaneKit.h */; };
 		E81D60FA0B02D52000811C3D /* PKPane.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60EE0B02D52000811C3D /* PKPane.h */; };
 		E81D60FB0B02D52000811C3D /* PKPaneRegistry.h in Headers */ = {isa = PBXBuildFile; fileRef = E81D60EF0B02D52000811C3D /* PKPaneRegistry.h */; };
@@ -76,7 +78,6 @@
 		600B9BE8087222120024A432 /* PKToolbarPresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PKToolbarPresentation.h; path = Headers/PKToolbarPresentation.h; sourceTree = "<group>"; };
 		600B9BE9087222120024A432 /* PKTableViewPresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PKTableViewPresentation.h; path = Headers/PKTableViewPresentation.h; sourceTree = "<group>"; };
 		600B9E9B0872A46F0024A432 /* UnitKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnitKit.framework; path = /Library/Frameworks/UnitKit.framework; sourceTree = "<absolute>"; };
-		600B9F8F0872BA230024A432 /* PreferencesKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = PreferencesKit.framework; path = /Users/yjchen/Etoile/Frameworks/PaneKit/build/Development/PreferencesKit.framework; sourceTree = "<absolute>"; };
 		604B431D0924BCA300127256 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
 		604B431F0924BDC400127256 /* PreferencesKit.xcclassmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcclassmodel; path = PreferencesKit.xcclassmodel; sourceTree = "<group>"; };
 		606766A7096EBD1100AF2C8A /* PKToolbarPresentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PKToolbarPresentation.m; path = Source/PKToolbarPresentation.m; sourceTree = "<group>"; };
@@ -91,6 +92,10 @@
 		608A97BA092A0D1A009145A7 /* CocoaCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaCompatibility.h; path = Headers/CocoaCompatibility.h; sourceTree = "<group>"; };
 		60F5FC1C092FEF4400683FCF /* CocoaCompatibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CocoaCompatibility.m; path = Source/CocoaCompatibility.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; lineEnding = 0; path = Info.plist; sourceTree = "<group>"; };
+		D380ADE20C971D5800A8453E /* PaneKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PaneKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D380ADE30C971D5800A8453E /* LuceneKitTest.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = LuceneKitTest.bundle; path = /Users/yjchen/Etoile/Frameworks/PaneKit/build/Development/LuceneKitTest.bundle; sourceTree = "<absolute>"; };
+		D380AE180C971E7A00A8453E /* PKPopUpButtonPresentation.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PKPopUpButtonPresentation.h; path = Headers/PKPopUpButtonPresentation.h; sourceTree = "<group>"; };
+		D380AE1A0C971E8900A8453E /* PKPopUpButtonPresentation.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = PKPopUpButtonPresentation.m; path = Source/PKPopUpButtonPresentation.m; sourceTree = "<group>"; };
 		E81D60ED0B02D52000811C3D /* PaneKit.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PaneKit.h; path = Headers/PaneKit.h; sourceTree = "<group>"; };
 		E81D60EE0B02D52000811C3D /* PKPane.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PKPane.h; path = Headers/PKPane.h; sourceTree = "<group>"; };
 		E81D60EF0B02D52000811C3D /* PKPaneRegistry.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PKPaneRegistry.h; path = Headers/PKPaneRegistry.h; sourceTree = "<group>"; };
@@ -103,7 +108,6 @@
 		E81D61020B02D53D00811C3D /* PKPanesController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = PKPanesController.m; path = Source/PKPanesController.m; sourceTree = "<group>"; };
 		E81D61030B02D53D00811C3D /* PKPlainPresentation.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = PKPlainPresentation.m; path = Source/PKPlainPresentation.m; sourceTree = "<group>"; };
 		E81D61040B02D53D00811C3D /* PKPreferencePaneRegistry.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = PKPreferencePaneRegistry.m; path = Source/PKPreferencePaneRegistry.m; sourceTree = "<group>"; };
-		E8E0463A0B02D66C001ACFF7 /* LuceneKitTest.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = LuceneKitTest.bundle; path = /Users/yjchen/Etoile/Frameworks/PaneKit/build/Development/LuceneKitTest.bundle; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +135,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				D380AE1A0C971E8900A8453E /* PKPopUpButtonPresentation.m */,
+				D380AE180C971E7A00A8453E /* PKPopUpButtonPresentation.h */,
 				600B9F980872BA330024A432 /* PaneKit */,
 				E81D60FF0B02D53D00811C3D /* GNUstep.h */,
 				E81D61000B02D53D00811C3D /* PKPane.m */,
@@ -172,6 +178,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				D380ADE20C971D5800A8453E /* PaneKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -273,6 +280,7 @@
 				E81D60F70B02D52000811C3D /* PKPlainPresentation.h in Headers */,
 				E81D60F80B02D52000811C3D /* PKPreferencePaneRegistry.h in Headers */,
 				E81D61050B02D53D00811C3D /* GNUstep.h in Headers */,
+				D380AE190C971E7A00A8453E /* PKPopUpButtonPresentation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,7 +303,7 @@
 			);
 			name = PreferencesKitTest;
 			productName = UnitKit;
-			productReference = E8E0463A0B02D66C001ACFF7 /* LuceneKitTest.bundle */;
+			productReference = D380ADE30C971D5800A8453E /* LuceneKitTest.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
 		600B9F8E0872BA230024A432 /* PaneKit */ = {
@@ -315,7 +323,7 @@
 			);
 			name = PaneKit;
 			productName = PreferencesKit;
-			productReference = 600B9F8F0872BA230024A432 /* PreferencesKit.framework */;
+			productReference = D380ADE20C971D5800A8453E /* PaneKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -433,6 +441,7 @@
 				E81D61080B02D53D00811C3D /* PKPanesController.m in Sources */,
 				E81D61090B02D53D00811C3D /* PKPlainPresentation.m in Sources */,
 				E81D610A0B02D53D00811C3D /* PKPreferencePaneRegistry.m in Sources */,
+				D380AE1B0C971E8900A8453E /* PKPopUpButtonPresentation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -576,12 +585,6 @@
 				MACH_O_TYPE = mh_dylib;
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
@@ -618,16 +621,10 @@
 				MACH_O_TYPE = mh_dylib;
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
-				PRODUCT_NAME = PreferencesKit;
+				PRODUCT_NAME = PaneKit;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -655,16 +652,10 @@
 				MACH_O_TYPE = mh_dylib;
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
-				PRODUCT_NAME = PreferencesKit;
+				PRODUCT_NAME = PaneKit;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -722,16 +713,10 @@
 				MACH_O_TYPE = mh_dylib;
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRIVATE_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/PrivateHeaders";
-				PRODUCT_NAME = PreferencesKit;
+				PRODUCT_NAME = PaneKit;
 				SECTORDER_FLAGS = "";
 				STRIP_INSTALLED_PRODUCT = NO;
 				WARNING_CFLAGS = (

@@ -123,7 +123,7 @@ const NSString *PKMatrixPresentationMode = @"PKMatrixPresentationMode";
   if (paneView == nil) 
     return;
    
-  NSView *prefsView = [controller view];
+//  NSView *prefsView = [controller view];
    
   NSSize size = [matrixView frameSizeForContentSize: [paneView frame].size];
   NSRect rect = NSMakeRect(0, 0, size.width, size.height);

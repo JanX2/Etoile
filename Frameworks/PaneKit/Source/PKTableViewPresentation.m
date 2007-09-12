@@ -208,8 +208,7 @@ const NSString *PKTablePresentationMode = @"PKTablePresentationMode";
 	}
 	else if (row >= 0 && row != lastSelectedRow)
 	{
-		NSString *path = (NSString *)[[allLoadedPlugins objectAtIndex: row] objectF
-orKey: @"path"];
+		NSString *path = (NSString *)[[allLoadedPlugins objectAtIndex: row] objectForKey: @"path"];
 		[controller updateUIForPane: [[controller registry] paneAtPath: path]];
 		lastSelectedRow = row;
 	}
