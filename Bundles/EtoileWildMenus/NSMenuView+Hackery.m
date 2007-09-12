@@ -25,6 +25,7 @@
 
 #import <AppKit/NSApplication.h>
 #import <AppKit/PSOperators.h>
+#import <AppKit/NSEvent.h>
 
 #import "EtoileMenuTitleView.h"
 #import "MenuBarHeight.h"
