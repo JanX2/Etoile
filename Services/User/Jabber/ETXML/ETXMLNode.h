@@ -35,7 +35,9 @@
 	NSMutableString * plainCDATA;
 }
 /**
- * Create a new instance of the class with the specified type.  [ETXMLNode ETXMLNodeWithType:@"foo"] give an object representing the XML string "<foo />"
+ * Create a new instance of the class with the specified type.  [ETXMLNode
+ * ETXMLNodeWithType:@"foo"] give an object representing the XML string
+ * "&lt;foo /&gt;"
  */
 + (id) ETXMLNodeWithType:(NSString*)type;
 /**

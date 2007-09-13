@@ -9,8 +9,8 @@
 #import "ETXMLNullHandler.h"
 
 /**
- * The ETXMLXHTML_IMParser class constructs an NSAttributedString from a series of
- * XHTML-IM tags handed to the parser.  
+ * The ETXMLXHTML_IMParser class constructs an NSAttributedString from a series
+ * of XHTML-IM tags handed to the parser.  
  *
  * Not yet finished.
  */

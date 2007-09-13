@@ -10,7 +10,7 @@
 
 /**
  * The ETXMLDeclaration is a ETXMLNode representing the XML header 
- * in a form of <?xml version="1.0" encoding="UTF-8" ?>.
+ * in a form of &lt;?xml version="1.0" encoding="UTF-8" ?&gt;.
  * It only take attributes of 'version', 'encoding', 'standalone'
  * and without any CDATA.
  * 
@@ -22,7 +22,7 @@
 
 @interface ETXMLDeclaration: ETXMLNode
 
-/* Return a node representing <?xml version="1.0" encoding="UTF-8" ?> */
+/* Return a node representing &lt;?xml version="1.0" encoding="UTF-8" ?&gt; */
 + (id) ETXMLDeclaration;
 
 @end

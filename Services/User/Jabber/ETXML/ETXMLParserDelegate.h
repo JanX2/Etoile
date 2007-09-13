@@ -55,9 +55,9 @@ static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 - (void)startElement:(NSString *)_Name
           attributes:(NSDictionary*)_attributes;
 /**
- * Called whenever an XML element is terminated.  Short form XML elements (e.g.
- * <br />) will cause immediate calls to the start and end element methods in
- * the delegate.
+ * Called whenever an XML element is terminated.  Short form XML elements
+ * (e.g.  &lt;br /&gt;) will cause immediate calls to the start and end element
+ * methods in the delegate.
  */
 - (void)endElement:(NSString *)_Name;
 /**

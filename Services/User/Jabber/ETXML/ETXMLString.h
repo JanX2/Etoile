@@ -9,9 +9,9 @@
 #import "ETXMLNullHandler.h"
 
 /**
- * The ETXMLString class parses XML elements of the form <element>some character
- * data</element>.  All child elements will be ignored, and the character data 
- * will be returned to the parent as an NSString.
+ * The ETXMLString class parses XML elements of the form &lt;element&gt;some
+ * character data&lt;/element&gt;.  All child elements will be ignored, and the
+ * character data will be returned to the parent as an NSString.
  */
 @interface ETXMLString : ETXMLNullHandler {
 }
