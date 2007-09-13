@@ -1,5 +1,5 @@
 /*
- * ETMachineInfo_PlatformIndependent.m - platform indepenent for ETMachineInfo
+ * ETMachineInfo.m - platform independent for ETMachineInfo
  *
  * Copyright 2006, David Chisnall
  * All rights reserved.
@@ -104,6 +104,20 @@ humanReadableNumber (double value, unsigned int unitScale, NSString *unit,
 
 @implementation ETMachineInfo
 
+/**
+ * Returns the remaining battery life in minutes
+ */
++ (unsigned int) batteryLife
+{
+	return 0;
+}
+/**
+ * Returns the remaining battery life as a percentage
+ */
++ (unsigned char) batteryPercent
+{
+	return 0;
+}
 /**
  * Returns the real memory size in bytes.
  */

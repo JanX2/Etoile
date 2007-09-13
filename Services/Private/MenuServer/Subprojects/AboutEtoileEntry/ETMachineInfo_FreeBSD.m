@@ -36,6 +36,16 @@
 
 @implementation ETMachineInfo (FreeBSD)
 
++ (unsigned int) batteryLife
+{
+	return (unsigned int) performIntegerSysctlNamed("hw.acpi.battery.time");
+}
+
++ (unsigned char) batteryPercent
+{
+	return (unsigned char) performIntegerSysctlNamed("hw.acpi.battery.life");
+}
+
 + (unsigned long long) realMemory
 {
   return (unsigned long long) performIntegerSysctlNamed ("hw.physmem");
@@ -94,7 +104,7 @@
   return performSysctlNamed ("hw.model");
 }
 
-+ (NSString *) platformSupported
++ (BOOL) platformSupported
 {
   return YES;
 }

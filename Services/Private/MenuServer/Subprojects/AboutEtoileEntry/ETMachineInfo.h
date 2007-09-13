@@ -1,7 +1,7 @@
 /*
  * ETMachineInfo.h - ETMachineInfo class for determining information about the
  * current machine.  All platform-specific code is handled by extending
- * categories, the class only includes platformat independent code.
+ * categories, the class only includes platform independent code.
  *
  * Copyright 2006, David Chisnall
  * All rights reserved.
@@ -44,6 +44,8 @@
 + (unsigned int) cpuMHzSpeed;
 + (NSString *) cpuName;
 + (BOOL) platformSupported;
++ (unsigned int) batteryLife;
++ (unsigned char) batteryPercent;
 
 // Platform independent portions
 + (NSString *) humanReadableRealMemory;
