@@ -119,6 +119,13 @@ humanReadableNumber (double value, unsigned int unitScale, NSString *unit,
 	return 0;
 }
 /**
+ * Indicates whether mains power is being used.
+ */
++ (BOOL) isUsingMains
+{
+	return YES;
+}
+/**
  * Returns the real memory size in bytes.
  */
 + (unsigned long long) realMemory

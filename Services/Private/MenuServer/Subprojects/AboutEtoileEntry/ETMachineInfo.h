@@ -46,6 +46,7 @@
 + (BOOL) platformSupported;
 + (unsigned int) batteryLife;
 + (unsigned char) batteryPercent;
++ (BOOL) isUsingMains;
 
 // Platform independent portions
 + (NSString *) humanReadableRealMemory;

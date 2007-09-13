@@ -46,6 +46,11 @@
 	return (unsigned char) performIntegerSysctlNamed("hw.acpi.battery.life");
 }
 
++ (BOOL) isUsingMains
+{
+	return (BOOL) performIntegerSysctlNamed("hw.acpi.acline");
+}
+
 + (unsigned long long) realMemory
 {
   return (unsigned long long) performIntegerSysctlNamed ("hw.physmem");
