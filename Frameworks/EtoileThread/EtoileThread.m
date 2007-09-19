@@ -5,19 +5,10 @@ struct EtoileThreadInitialiser
 	id object;
 	SEL selector;
 	id target;
-	NSAutoreleasePool * pool;
 	EtoileThread * thread;
 };
 
 static pthread_key_t threadObjectKey;
-
-void cleanup(void * initialiser)
-{
-	struct EtoileThreadInitialiser * init = initialiser;
-	[init->thread release];
-	[init->pool release];
-	free(init);
-}
 
 /* Thread creation trampoline */
 void * threadStart(void* initialiser)
@@ -27,34 +18,18 @@ void * threadStart(void* initialiser)
 #endif
 	[NSAutoreleasePool new];
 	struct EtoileThreadInitialiser * init = initialiser;
+	id object = init->object;
+	id target = init->target;
+	SEL selector = init->selector;
+	ETThread * thread = init->thread;
+	free(init);
 	pthread_setspecific(threadObjectKey, init->thread);
-	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	init->pool = pool;
-	/*
-	   This is 100% broken on Darwin.  These #defines can be removed if Apple
-	   ever implements a version of pthread_cleanup_push that actually conforms
-	   to the specification (i.e. does something useful, instead of requiring
-	   cleanup functions to be popped as soon as they are pushed).
-		
-	   NRO: apparently this does not compile on gnustep either ?
-	*/
-#ifndef __APPLE__
-#ifndef GNUSTEP
-	pthread_cleanup_push(cleanup, initialiser);
-#endif
-#endif
-	id result = [init->target performSelector:init->selector 
-								   withObject:init->object];
-	/*
-	  This stuff should all be done by the pthread cleanup routine, but this is
-	  currently broken on OS X.  This means that threads exited with 
-	  -exitWithValue will leak memory on OS X.
-	*/
-#ifdef __APPLE__
-#ifdef GNUSTEP
-	cleanup(init);
-#endif
-#endif
+	thread->pool = [[NSAutoreleasePool alloc] init];
+	id result = [init->target performSelector:selector 
+								   withObject:object];
+	//NOTE: Not reached if exitWithValue: is called
+	[thread->pool release];
+	[thread release];
 	return result;
 }
 
@@ -107,6 +82,8 @@ void * threadStart(void* initialiser)
 {
 	if([self isCurrentThread])
 	{
+		[pool release];
+		[self release];
 		pthread_exit(aValue);
 	}
 }
@@ -119,9 +96,10 @@ void * threadStart(void* initialiser)
 
 - (void) dealloc
 {
-	/* If no one has a reference to this object, don't keep the return value around */
-	//NOTE: It might be worth catching the return value and releasing it to prevent
-	//leaking.
+	/* If no one has a reference to this object, don't keep the return value
+	 * around */
+	//NOTE: It might be worth catching the return value and releasing it to
+	//prevent leaking.
 	pthread_detach(thread);
 	[super dealloc];
 }

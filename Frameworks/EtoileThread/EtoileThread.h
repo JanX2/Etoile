@@ -8,6 +8,8 @@
  */
 @interface EtoileThread : NSObject {
 	pthread_t thread;
+@public
+	NSAutoreleasePool * pool;
 }
 /**
  * Similar to NSThread's method of the same name.  Creates a new thread and
