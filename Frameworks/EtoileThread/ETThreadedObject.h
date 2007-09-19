@@ -1,13 +1,15 @@
 #import <Foundation/Foundation.h>
-#import "EtoileThread.h"
+#import "ETThread.h"
 #include <pthread.h>
 
+#define QUEUE_SIZE 256
+
 /**
- * The EtoileThreadedObject class represents an object which has its
+ * The ETThreadedObject class represents an object which has its
  * own thread and run loop.  Messages that return either an object
  * or void will, when sent to this object, return asynchronously.
  *
- * For methods returning an object, an [EtoileThreadProxyReturn] will
+ * For methods returning an object, an [ETThreadProxyReturn] will
  * be returned immediately.  Messages passed to this object will
  * block until the real return value is ready.
  *
@@ -15,15 +17,22 @@
  * Instead, the [NSObject(Threaded)+threadedNew] method should be 
  * used.
  */
-@interface EtoileThreadedObject : NSProxy{
+@interface ETThreadedObject : NSProxy{
 	id object;
+	/** 
+	 * The condition variable and mutex are only used when the queue is empty.
+	 * If the message queue is kept fed then the class moves to a lockless
+	 * model for communication.
+	 */
 	pthread_cond_t conditionVariable;
 	pthread_mutex_t mutex;
-	NSMutableArray * invocations;
-	NSMutableArray * returns;
+	BOOL lockless;
+	id invocations[QUEUE_SIZE];
+	unsigned long producer;
+	unsigned long consumer;
 	id proxy;
 	BOOL terminate;
-	EtoileThread * thread;
+	ETThread * thread;
 }
 /**
  * Create a threaded instance of aClass

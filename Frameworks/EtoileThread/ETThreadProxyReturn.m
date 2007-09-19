@@ -1,6 +1,6 @@
-#import "EtoileThreadProxyReturn.h"
+#import "ETThreadProxyReturn.h"
 
-@implementation EtoileThreadProxyReturn
+@implementation ETThreadProxyReturn
 - (id) init
 {
 	object = nil;

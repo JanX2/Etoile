@@ -1,7 +1,8 @@
-#import "EtoileThreadedObject.h"
-#import "EtoileThreadProxyReturn.h"
+#import "ETThreadedObject.h"
+#import "ETThreadProxyReturn.h"
+#include <sched.h>
 
-@implementation EtoileThreadedObject
+@implementation ETThreadedObject
 - (id) init
 {
 	pthread_cond_init(&conditionVariable, NULL);
@@ -55,7 +56,7 @@
 
 - (void) runloop:(id)sender
 {
-	thread = [[EtoileThread currentThread] retain];
+	thread = [[ETThread currentThread] retain];
 	while (object)
 	{
 		pthread_mutex_lock(&mutex);
@@ -77,7 +78,7 @@
 		pthread_mutex_unlock(&mutex);
 		
 		BOOL concreteType = NO;	
-		EtoileThreadProxyReturn * retVal = nil;
+		ETThreadProxyReturn * retVal = nil;
 		if([[anInvocation methodSignature] methodReturnType][0] == '@')
 		{
 			retVal = [returns objectAtIndex:0];
@@ -137,7 +138,7 @@
 
 	if([[anInvocation methodSignature] methodReturnType][0] == '@')
 	{
-		EtoileThreadProxyReturn * retVal = [[[EtoileThreadProxyReturn alloc] init] autorelease];
+		ETThreadProxyReturn * retVal = [[[ETThreadProxyReturn alloc] init] autorelease];
 		[returns addObject:retVal];
 		proxy = retVal;
 		/*
@@ -151,19 +152,21 @@
 	else
 	{
 		/*
-		 * This is a hack.. if the method returns a concrete type (eg not an object)
-		 * the result is immediately assigned as soon a forwardInvocation: ends. 
-                 * As the invocation is not yet invoked, that means we get default values instead
-		 * of the correct returned value (eg, with a method returning an int, say 42, 
-		 * the actual value returned will be 0)
-		 * But as we can't call the invocation ourself (that would break the invocations order)
-		 * we need to wait until the runloop invoke it. We could use a condition variable
-		 * to signal that the invocation is ready, but a faster way is to poll until the invocation
-		 * is done (no context switch that way). 
-		 * There doesn't seem to be a method returning the invocation status, therefore
-		 * we simply increment the retain count before adding the invocation to the runloop.
-		 * In the runloop we decrement the retain count once the invocation is invoked, and we
-		 * just wait until the retain count equals the original count.
+		 * This is a hack.. if the method returns a concrete type (eg not an
+		 * object) the result is immediately assigned as soon a
+		 * forwardInvocation: ends.  As the invocation is not yet invoked, that
+		 * means we get default values instead of the correct returned value
+		 * (eg, with a method returning an int, say 42, the actual value
+		 * returned will be 0) But as we can't call the invocation ourself
+		 * (that would break the invocations order) we need to wait until the
+		 * runloop invoke it. We could use a condition variable to signal that
+		 * the invocation is ready, but a faster way is to poll until the
+		 * invocation is done (no context switch that way).  There doesn't seem
+		 * to be a method returning the invocation status, therefore we simply
+		 * increment the retain count before adding the invocation to the
+		 * runloop.  In the runloop we decrement the retain count once the
+		 * invocation is invoked, and we just wait until the retain count
+		 * equals the original count.
 		 */
 		rc = [anInvocation retainCount];
 		[anInvocation retain];
@@ -180,6 +183,7 @@
 		while ([anInvocation retainCount] > rc) 
 		{
 			// do nothing... just poll...
+			sched_yield();
 		}
 	}
 }

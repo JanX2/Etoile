@@ -2,16 +2,16 @@
 #include <pthread.h>
 
 /**
- * The EtoileThreadProxyReturn class is used to implement futures.  It is returned
+ * The ETThreadProxyReturn class is used to implement futures.  It is returned
  * from a threaded object.
  */
-@interface EtoileThreadProxyReturn : NSProxy {
+@interface ETThreadProxyReturn : NSProxy {
 	id object;
 	pthread_cond_t conditionVariable;
 	pthread_mutex_t mutex;
 }
 /**
- * Sets the object represented by the proxy.  Should only be called by EtoileThreadedObject.
+ * Sets the object represented by the proxy.  Should only be called by ETThreadedObject.
  */
 - (void) setProxyObject:(id)anObject;
 /**

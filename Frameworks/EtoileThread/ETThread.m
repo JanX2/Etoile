@@ -1,11 +1,11 @@
-#import "EtoileThread.h"
+#import "ETThread.h"
 
-struct EtoileThreadInitialiser
+struct ETThreadInitialiser
 {
 	id object;
 	SEL selector;
 	id target;
-	EtoileThread * thread;
+	ETThread * thread;
 };
 
 static pthread_key_t threadObjectKey;
@@ -17,7 +17,7 @@ void * threadStart(void* initialiser)
 	GSRegisterCurrentThread ();
 #endif
 	[NSAutoreleasePool new];
-	struct EtoileThreadInitialiser * init = initialiser;
+	struct ETThreadInitialiser * init = initialiser;
 	id object = init->object;
 	id target = init->target;
 	SEL selector = init->selector;
@@ -33,7 +33,7 @@ void * threadStart(void* initialiser)
 	return result;
 }
 
-@implementation EtoileThread
+@implementation ETThread
 
 + (void) initialize
 {
@@ -42,13 +42,13 @@ void * threadStart(void* initialiser)
 
 + (id) detachNewThreadSelector:(SEL)aSelector toTarget:(id)aTarget withObject:(id)anArgument
 {
-	EtoileThread * thread = [[EtoileThread alloc] init];
+	ETThread * thread = [[ETThread alloc] init];
 	if(thread == nil)
 	{
 		return nil;
 	}
-	struct EtoileThreadInitialiser * threadArgs = 
-		malloc(sizeof(struct EtoileThreadInitialiser));
+	struct ETThreadInitialiser * threadArgs = 
+		malloc(sizeof(struct ETThreadInitialiser));
 	threadArgs->object = anArgument;
 	threadArgs->selector = aSelector;
 	threadArgs->thread = thread;
@@ -57,9 +57,9 @@ void * threadStart(void* initialiser)
 	return thread;
 }
 
-+ (EtoileThread*) currentThread
++ (ETThread*) currentThread
 {
-	return (EtoileThread*)pthread_getspecific(threadObjectKey);
+	return (ETThread*)pthread_getspecific(threadObjectKey);
 }
 
 - (id) waitForTermination

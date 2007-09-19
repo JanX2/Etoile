@@ -1,6 +1,6 @@
 #import "NSObject+Futures.h"
 #import "NSObject+Threaded.h"
-#import "EtoileThreadProxyReturn.h"
+#import "ETThreadProxyReturn.h"
 #include <unistd.h>
 
 @interface ThreadTest : NSObject {
@@ -57,7 +57,7 @@ int main(void)
 	if([foo isFuture])
 	{
 		NSLog(@"4) Real object returned by future: %@", 
-				[(EtoileThreadProxyReturn*)foo value]);
+				[(ETThreadProxyReturn*)foo value]);
 	}
 	/*
 	 * Clean up

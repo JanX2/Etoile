@@ -1,17 +1,17 @@
 #import "NSObject+Threaded.h"
-#import "EtoileThread.h"
-#import "EtoileThreadedObject.h"
-#import "EtoileThreadProxyReturn.h"
+#import "ETThread.h"
+#import "ETThreadedObject.h"
+#import "ETThreadProxyReturn.h"
 
-struct EtoileThreadedInvocationInitialiser
+struct ETThreadedInvocationInitialiser
 {
 	NSInvocation * invocation;
-	EtoileThreadProxyReturn * retVal;
+	ETThreadProxyReturn * retVal;
 };
 
 void * threadedInvocationTrampoline(void* initialiser)
 {
-	struct EtoileThreadedInvocationInitialiser * init = initialiser;
+	struct ETThreadedInvocationInitialiser * init = initialiser;
 	id pool = [[NSAutoreleasePool alloc] init];
 	[init->invocation invoke];
 	id retVal;
@@ -27,8 +27,8 @@ void * threadedInvocationTrampoline(void* initialiser)
 @implementation NSObject (Threaded)
 + (id) threadedNew
 {
-    id proxy = [[EtoileThreadedObject alloc] initWithClass:[self class]];
-    [EtoileThread detachNewThreadSelector:@selector(runloop:)
+    id proxy = [[ETThreadedObject alloc] initWithClass:[self class]];
+    [ETThread detachNewThreadSelector:@selector(runloop:)
 							  toTarget:proxy
 							withObject:nil];
     return proxy;
@@ -36,6 +36,6 @@ void * threadedInvocationTrampoline(void* initialiser)
 
 - (id) inNewThread
 {
-		return [[[EtoileThreadedObject alloc] initWithObject:self] autorelease];
+		return [[[ETThreadedObject alloc] initWithObject:self] autorelease];
 }
 @end
