@@ -127,15 +127,14 @@
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
 	BOOL concreteType = NO;
-	int rc = 0;
-
+	int rc = [anInvocation retainCount];
 	if(![anInvocation argumentsRetained])
 	{
 		[anInvocation retainArguments];
 	}
-
 	ETThreadProxyReturn * retVal = nil;
-	if([[anInvocation methodSignature] methodReturnType][0] == '@')
+	char returnType = [[anInvocation methodSignature] methodReturnType][0];
+	if(returnType == '@')
 	{
 		retVal = [[[ETThreadProxyReturn alloc] init] autorelease];
 		proxy = retVal;
@@ -147,7 +146,8 @@
 		[anInvocation invokeWithTarget:self];
 		[anInvocation setSelector:selector];
 	}
-	else
+	//Non-void, non-object, return
+	else if(returnType != 'v')
 	{
 		/*
 		 * This is a hack.. if the method returns a concrete type (eg not an
@@ -176,7 +176,7 @@
 	pthread_mutex_unlock(&mutex);
 	*/
 	INSERT(anInvocation, retVal);
-	if (concreteType)
+	if(concreteType)
 	{
 		while ([anInvocation retainCount] > rc) 
 		{

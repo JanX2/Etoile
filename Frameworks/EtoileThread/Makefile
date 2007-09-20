@@ -1,20 +1,20 @@
 
 CFLAGS += -g
 
-all: EtoileThread.o EtoileThreadProxyReturn.o EtoileThreadTest.o EtoileThreadedObject.o NSObject+Threaded.o NSObject+Futures.o
-	$(CC) -framework Foundation $^ -o EtoileThreadTest
+all: ETThread.o ETThreadProxyReturn.o ETThreadTest.o ETThreadedObject.o NSObject+Threaded.o NSObject+Futures.o
+	$(CC) -framework Foundation $^ -o ETThreadTest
 
 clean:
 	@rm -f *.o
 
 
-EtoileThread.o: EtoileThread.m EtoileThread.h
-EtoileThreadProxyReturn.o: EtoileThreadProxyReturn.m \
-  EtoileThreadProxyReturn.h
-EtoileThreadTest.o: EtoileThreadTest.m NSObject+Threaded.h \
-  EtoileThreadProxyReturn.h
-EtoileThreadedObject.o: EtoileThreadedObject.m EtoileThreadedObject.h \
-  EtoileThread.h EtoileThreadProxyReturn.h
+ETThread.o: ETThread.m ETThread.h
+ETThreadProxyReturn.o: ETThreadProxyReturn.m \
+  ETThreadProxyReturn.h
+ETThreadTest.o: ETThreadTest.m NSObject+Threaded.h \
+  ETThreadProxyReturn.h
+ETThreadedObject.o: ETThreadedObject.m ETThreadedObject.h \
+  ETThread.h ETThreadProxyReturn.h
 NSObject+Futures.o: NSObject+Futures.m NSObject+Futures.h
 NSObject+Threaded.o: NSObject+Threaded.m NSObject+Threaded.h \
-  EtoileThread.h EtoileThreadedObject.h EtoileThreadProxyReturn.h
+  ETThread.h ETThreadedObject.h ETThreadProxyReturn.h
