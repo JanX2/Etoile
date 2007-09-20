@@ -3,6 +3,7 @@
 #include <pthread.h>
 
 #define QUEUE_SIZE 256
+#define QUEUE_MASK 0xff
 
 /**
  * The ETThreadedObject class represents an object which has its

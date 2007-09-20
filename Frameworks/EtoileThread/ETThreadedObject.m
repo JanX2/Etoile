@@ -2,13 +2,38 @@
 #import "ETThreadProxyReturn.h"
 #include <sched.h>
 
+/* Ring buffer macros */
+
+#define SPACE (QUEUE_SIZE - (producer - consumer))
+#define ISFULL (SPACE == 0)
+#define ISEMPTY ((producer - consumer) == 0)
+#define MASK(index) ((index) & QUEUE_MASK)
+#define INSERT(x,r) do {\
+	/* Wait for space in the buffer */\
+	while(ISFULL)\
+	{\
+		sched_yield();\
+	}\
+	invocations[MASK(producer)] = x;\
+	invocations[MASK(producer+1)] = r;\
+	producer += 2;\
+}while(0);
+#define REMOVE(x,r) do {\
+	while(ISEMPTY)\
+	{\
+		if(terminate) { return; }\
+		sched_yield();\
+	}\
+	x = invocations[MASK(consumer)];\
+	r = invocations[MASK(consumer+1)];\
+	consumer += 2;\
+}while(0);
+
 @implementation ETThreadedObject
 - (id) init
 {
 	pthread_cond_init(&conditionVariable, NULL);
 	pthread_mutex_init(&mutex, NULL);
-	invocations = [[NSMutableArray alloc] init];
-	returns = [[NSMutableArray alloc] init];
 	return self;
 }
 - (id) initWithClass:(Class) aClass
@@ -49,8 +74,6 @@
 	/* Destroy synchronisation objects */
 	pthread_cond_destroy(&conditionVariable);
 	pthread_mutex_destroy(&mutex);
-	/* Clean up */
-	[invocations release];
 	[super dealloc];
 }
 
@@ -59,54 +82,29 @@
 	thread = [[ETThread currentThread] retain];
 	while (object)
 	{
-		pthread_mutex_lock(&mutex);
-		/* If there are no messages waiting, sleep until there are */
-		while ([invocations count] == 0)
-		{
-			if (terminate)
-			{
-				[object release];
-				return;
-			}
-			pthread_cond_wait(&conditionVariable, &mutex);
-		}
 		NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 		/* Take the first invocation from the queue */
-		NSInvocation * anInvocation = [[invocations objectAtIndex:0] retain];
-		[invocations removeObjectAtIndex:0];
-		/* Now that we've got the message, unlock the queue */
-		pthread_mutex_unlock(&mutex);
+		NSInvocation * anInvocation;
 		
-		BOOL concreteType = NO;	
-		ETThreadProxyReturn * retVal = nil;
+		ETThreadProxyReturn * retVal;
+		REMOVE(anInvocation, retVal);
+		/*
 		if([[anInvocation methodSignature] methodReturnType][0] == '@')
 		{
-			retVal = [returns objectAtIndex:0];
-			[returns removeObjectAtIndex:0];
 			//TODO: Implement auto-boxing for non-object returns
 		}
-		else
-		{
-			concreteType = YES;
-		}
-
+		*/
 		[anInvocation invokeWithTarget:object];
-
-		if (concreteType == YES)
-		{
-			[anInvocation release];
-		}
-
 		if(retVal != nil)
 		{
 			id realReturn;
 			[anInvocation getReturnValue:&realReturn];
 			[retVal setProxyObject:realReturn];
 			/*
-			  Proxy return object is created with a retain count of 2 and an autorelease
-			  count of 1 in the main thread.  This will set it to a retain count of 1
-			  and an autorelease count of 1 if it has not been used, or dealloc it if it
-			  has
+			  Proxy return object is created with a retain count of 2 and an
+			  autorelease count of 1 in the main thread.  This will set it to a
+			  retain count of 1 and an autorelease count of 1 if it has not
+			  been used, or dealloc it if it has
 			*/
 			//[retVal release];
 		}
@@ -136,10 +134,10 @@
 		[anInvocation retainArguments];
 	}
 
+	ETThreadProxyReturn * retVal = nil;
 	if([[anInvocation methodSignature] methodReturnType][0] == '@')
 	{
-		ETThreadProxyReturn * retVal = [[[ETThreadProxyReturn alloc] init] autorelease];
-		[returns addObject:retVal];
+		retVal = [[[ETThreadProxyReturn alloc] init] autorelease];
 		proxy = retVal;
 		/*
 		  This is a hack to force the invocation to stop blocking the caller.
@@ -168,16 +166,16 @@
 		 * invocation is invoked, and we just wait until the retain count
 		 * equals the original count.
 		 */
-		rc = [anInvocation retainCount];
-		[anInvocation retain];
 		concreteType = YES;
 	}
-
+	[anInvocation retain];
+	/*
 	pthread_mutex_lock(&mutex);
 	[invocations addObject:anInvocation];
 	pthread_cond_signal(&conditionVariable);
 	pthread_mutex_unlock(&mutex);
-
+	*/
+	INSERT(anInvocation, retVal);
 	if (concreteType)
 	{
 		while ([anInvocation retainCount] > rc) 
