@@ -4,6 +4,8 @@
 
 /* Ring buffer macros */
 
+static const unsigned int MAX_SPINS = 100;
+
 #define SPACE (QUEUE_SIZE - (producer - consumer))
 #define ISFULL (SPACE == 0)
 #define ISEMPTY ((producer - consumer) == 0)
@@ -17,12 +19,23 @@
 	invocations[MASK(producer)] = x;\
 	invocations[MASK(producer+1)] = r;\
 	producer += 2;\
+	if(producer - consumer == 2)\
+	{\
+		pthread_mutex_lock(&mutex);\
+		pthread_cond_signal(&conditionVariable);\
+		pthread_mutex_unlock(&mutex);\
+	}\
 }while(0);
 #define REMOVE(x,r) do {\
 	while(ISEMPTY)\
 	{\
+		pthread_mutex_lock(&mutex);\
+		if(ISEMPTY)\
+		{\
+			pthread_cond_wait(&conditionVariable, &mutex);\
+		}\
+		pthread_mutex_unlock(&mutex);\
 		if(terminate) { return; }\
-		sched_yield();\
 	}\
 	x = invocations[MASK(consumer)];\
 	r = invocations[MASK(consumer+1)];\
@@ -169,12 +182,6 @@
 		concreteType = YES;
 	}
 	[anInvocation retain];
-	/*
-	pthread_mutex_lock(&mutex);
-	[invocations addObject:anInvocation];
-	pthread_cond_signal(&conditionVariable);
-	pthread_mutex_unlock(&mutex);
-	*/
 	INSERT(anInvocation, retVal);
 	if(concreteType)
 	{

@@ -28,6 +28,7 @@
 	pthread_cond_t conditionVariable;
 	pthread_mutex_t mutex;
 	BOOL lockless;
+	unsigned int emptyCount;
 	id invocations[QUEUE_SIZE];
 	unsigned long producer;
 	unsigned long consumer;
