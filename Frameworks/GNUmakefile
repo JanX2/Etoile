@@ -24,8 +24,6 @@ endif
 
 ifeq ($(desktop-base), yes)
     
-    export collectionkit ?= yes
-    export bookmarkkit ?= yes
     export iconkit ?= yes
     export panekit ?= yes
     export addresseskit ?= yes
@@ -33,7 +31,8 @@ ifeq ($(desktop-base), yes)
 endif
 
 ifeq ($(etoile-extensions), yes)
-    
+
+    export coreobject ?= yes    
     export etoilefoundation ?= yes
     export etoileui ?= yes
     export distributedview ?= yes
@@ -79,8 +78,12 @@ endif
 # etoile-extensions
 #
 
-# We need to build EtoileExtensionsKit first because other frameworks like 
-# ExtendedWorkspaceKit, PreferencesKit depends on it.
+# We need to build CoreObject, EtoileFoundation and EtoileUI first because 
+# other frameworks depends on it.
+ifeq ($(coreobject), yes)
+    SUBPROJECTS += CoreObject
+endif
+
 ifeq ($(etoilefoundation), yes)
     SUBPROJECTS += EtoileFoundation
 endif
@@ -126,14 +129,6 @@ endif
 #
 # desktop-base
 #
-
-ifeq ($(collectionkit), yes)
-   SUBPROJECTS += CollectionKit
-endif
-
-ifeq ($(bookmarkkit), yes)
-   SUBPROJECTS += BookmarkKit
-endif
 
 ifeq ($(iconkit), yes)
    SUBPROJECTS += IconKit
