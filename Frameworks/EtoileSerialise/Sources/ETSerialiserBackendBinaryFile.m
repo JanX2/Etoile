@@ -141,53 +141,37 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 	WRITE("V", 1);
 	WRITE(&aVersion, sizeof(int));
 }
-- (void) storeChar:(char)aChar withName:(char*)aName
-{
-	STORE("c", aChar, char);
+#define NSSwapHostCharToBig(x) x
+#define NSSwapHostUnsignedCharToBig(x) x
+#define NSSwapHostUnsignedShortToBig(x) NSSwapHostShortToBig(x)
+#define NSSwapHostUnsignedIntToBig(x) NSSwapHostIntToBig(x)
+#define NSSwapHostUnsignedLongToBig(x) NSSwapHostLongToBig(x)
+#define NSSwapHostUnsignedLongLongToBig(x) NSSwapHostLongLongToBig(x)
+#define STORE_METHOD(typeName, type,typeChar)\
+- (void) store##typeName:(type)a##typeName withName:(char*)aName\
+{\
+	type tmp = NSSwapHost##typeName##ToBig(a##typeName);\
+	STORE(typeChar, tmp, type);\
 }
-- (void) storeUnsignedChar:(unsigned char)aChar withName:(char*)aName
-{
-	STORE("C", aChar, unsigned char);
-}
-- (void) storeShort:(short)aShort withName:(char*)aName
-{
-	STORE("s", aShort, short);
-}
-- (void) storeUnsignedShort:(unsigned short)aShort withName:(char*)aName
-{
-	STORE("S", aShort, unsigned short);
-}
-- (void) storeInt:(int)aInt withName:(char*)aName
-{
-	STORE("i", aInt, int);
-}
-- (void) storeUnsignedInt:(unsigned int)aInt withName:(char*)aName
-{
-	STORE("I", aInt, unsigned int);
-}
-- (void) storeLong:(long)aLong withName:(char*)aName
-{
-	STORE("l", aLong, long int);
-}
-- (void) storeUnsignedLong:(unsigned long)aLong withName:(char*)aName
-{
-	STORE("L", aLong, unsigned long int);
-}
-- (void) storeLongLong:(long long)aLongLong withName:(char*)aName
-{
-	STORE("Q", aLongLong, long long int);
-}
-- (void) storeUnsignedLongLong:(unsigned long long)aLongLong withName:(char*)aName
-{
-	STORE("Q", aLongLong, unsigned long long int);
-}
+STORE_METHOD(Char, char, "c")
+STORE_METHOD(UnsignedChar, unsigned char, "C")
+STORE_METHOD(Short, short, "s")
+STORE_METHOD(UnsignedShort, unsigned short, "S")
+STORE_METHOD(Int, int, "i")
+STORE_METHOD(UnsignedInt, unsigned int, "I")
+STORE_METHOD(Long, long, "l")
+STORE_METHOD(UnsignedLong, unsigned long, "L")
+STORE_METHOD(LongLong, long long, "q")
+STORE_METHOD(UnsignedLongLong, unsigned long long, "Q")
 - (void) storeFloat:(float)aFloat withName:(char*)aName
 {
-	STORE("f", aFloat, float);
+	NSSwappedFloat tmp = NSSwapHostFloatToBig(aFloat);
+	STORE("f", tmp, NSSwappedFloat);
 }
 - (void) storeDouble:(double)aDouble withName:(char*)aName
 {
-	STORE("d", aDouble, double);
+	NSSwappedDouble tmp = NSSwapHostDoubleToBig(aDouble);
+	STORE("d", tmp, NSSwappedDouble);
 }
 - (void) storeClass:(Class)aClass withName:(char*)aName
 {

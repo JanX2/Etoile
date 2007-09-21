@@ -11,6 +11,14 @@ static const int FULL_SAVE_INTERVAL = 100;
 	[serialiser serialiseObject:object withName:"BaseVersion"];
 	return self;
 }
+- (int) version
+{
+	return version;
+}
+- (BOOL) setVersion:(int)aVersion
+{
+	return NO;
+}
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
 {
 	    return [object methodSignatureForSelector:aSelector];

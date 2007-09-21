@@ -9,6 +9,8 @@
  * provided by the GNU Objective-C runtime.
  */
 @interface ETDeserialiserBackendBinaryFile : NSObject <ETDeserialiserBackend>{
+	/** The base URL of the data */
+	NSURL * url;
 	/** The data from which to load the file. */
 	NSData * data;
 	/** A mapping from object references to offsets within the file. */

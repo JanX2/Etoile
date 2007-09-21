@@ -21,6 +21,10 @@
  */
 - (BOOL) deserialiseFromData:(NSData*)aData;
 /**
+ * Jump to the specified version.
+ */
+- (BOOL) setVersion:(int)aVersion;
+/**
  * Load the specified object.  Objects are stored with a unique ID within the
  * object graph.
  */

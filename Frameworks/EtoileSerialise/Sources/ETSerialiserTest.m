@@ -208,7 +208,6 @@ void testWithBackend(Class backend, NSURL * anURL)
 - (void) testHuman
 {
 	testWithBackend([ETSerialiserBackendExample class], nil);
-	testWithBackend([ETSerialiserBackendBinaryFile class], [NSURL fileURLWithPath:@"testfile"]);
 }
 #endif
 /**
@@ -217,6 +216,7 @@ void testWithBackend(Class backend, NSURL * anURL)
  */
 - (void) testBinary
 {
+	testWithBackend([ETSerialiserBackendBinaryFile class], [NSURL fileURLWithPath:@"testfile"]);
 	id deback = [ETDeserialiserBackendBinaryFile new];
 	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"testfile"]];
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];

@@ -39,6 +39,7 @@ enum {
  */
 - (BOOL) deserialiseFromURL:(NSURL*)aURL
 {
+	ASSIGN(url, aURL);
 	return [self deserialiseFromData:[NSData dataWithContentsOfURL:aURL 
 	                                                       options:NSMappedRead
 	                                                         error:(NSError**)nil]];
@@ -49,12 +50,20 @@ enum {
  */
 - (BOOL) deserialiseFromData:(NSData*)aData
 {
-	data = [aData retain];
     const NSMapTableKeyCallBacks keycallbacks = {NULL, NULL, NULL, NULL, NULL, NSNotAnIntMapKey};
 	const NSMapTableValueCallBacks valuecallbacks = {NULL, NULL, NULL};
+	if(index != NULL)
+	{
+		NSFreeMapTable(index);
+	}
+	if(refCounts != NULL)
+	{
+		NSFreeMapTable(refCounts);
+	}
 	index = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 	refCounts = NSCreateMapTable(keycallbacks, valuecallbacks, 100);
 
+	ASSIGN(data, aData);
 	const char * blob = [data bytes];
 	//Load the index
 	int indexOffset = *(int*)blob;
@@ -76,6 +85,20 @@ enum {
 	}
 	return (data != nil);
 }
+- (BOOL) setVersion:(int)aVersion
+{
+	if(url == nil)
+	{
+		//We only support versioning with files
+		return NO;
+	}
+	NSString * versionURL = [NSString stringWithFormat:@"%@.%d", [url absoluteString], aVersion];
+	NSLog(@"Attempting to load version %d from %d", aVersion, versionURL);
+	return [self deserialiseFromData:[NSData dataWithContentsOfURL:[NSURL URLWithString:versionURL]
+	                                                       options:NSMappedRead
+	                                                         error:(NSError**)nil]];
+}
+
 - (void) setDeserialiser:(id)aDeserialiser;
 {
 	ASSIGN(deserialiser, aDeserialiser);
@@ -145,10 +168,17 @@ enum {
 		char * name;
 		//Intrinsics are all stored as a single character indicating the type
 		//followed by the value.
+#define NSSwapBigCharToHost(x) x
+#define NSSwapBigUnsignedCharToHost(x) x
+#define NSSwapBigUnsignedShortToHost(x) NSSwapBigShortToHost(x)
+#define NSSwapBigUnsignedIntToHost(x) NSSwapBigIntToHost(x)
+#define NSSwapBigUnsignedLongToHost(x) NSSwapBigLongToHost(x)
+#define NSSwapBigUnsignedLongLongToHost(x) NSSwapBigLongLongToHost(x)
+#define NSSwapBigObjectReferenceToHost(x) x
 #define LOAD(typeChar, typeName, type) case typeChar: \
 	name = ++obj;\
 	SKIP_STRING();\
-	[deserialiser load ## typeName:*(type*)obj withName:name];\
+	[deserialiser load ## typeName:NSSwapBig##typeName##ToHost(*(type*)obj) withName:name];\
 	obj += sizeof(type);\
 	break;
 		switch(*obj)
@@ -164,8 +194,18 @@ enum {
 			LOAD('L', UnsignedLong, unsigned long)
 			LOAD('q', LongLong, long long)
 			LOAD('Q', UnsignedLongLong, unsigned long long)
-			LOAD('f', Float, float)
-			LOAD('d', Double, double)
+			case 'f':
+				name = ++obj;
+				SKIP_STRING();
+				[deserialiser loadFloat:NSSwapBigFloatToHost(*(NSSwappedFloat*)obj) withName:name];
+				obj += sizeof(NSSwappedFloat);
+				break;
+			case 'd':
+				name = ++obj;
+				SKIP_STRING();
+				[deserialiser loadDouble:NSSwapBigDoubleToHost(*(NSSwappedDouble*)obj) withName:name];
+				obj += sizeof(NSSwappedDouble);
+				break;
 			LOAD('@', ObjectReference, CORef)
 			case 'V':
 				[deserialiser setClassVersion:*(int*)++obj];
