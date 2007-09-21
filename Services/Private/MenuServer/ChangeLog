@@ -1,3 +1,11 @@
+2007-09-21  Quentin Mathe <qmathe@club-internet.fr>
+
+    Fixed ETOILE_CORE_MODULE by removing a trailing space. 'YES ' and not 'YES'
+    was the reason behind the failure. MenuServer should now properly installs
+	in System domain.
+    * GNUmakefile.postamble: Put ETOILE_CORE_MODULE here.
+    * GNUmakefile: Removed ETOILE_CORE_MODULE
+
 2007-07-12  Quentin Mathe <qmathe@club-internet.fr>
 
     * Subprojects/AboutEtoileEntry/AboutEtoileEntry.m: Incremented Etoile 

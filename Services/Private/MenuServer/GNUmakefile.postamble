@@ -21,6 +21,7 @@
 # The following include isn't put in the main GNUmakefile directly because PM
 # manages it. However it must follow any gnustep-make makefiles included, 
 # that's why we do the include in this GNUmakefile.postamble.
+ETOILE_CORE_MODULE = YES
 include ../../../etoile.make
 
 ifeq ($(findstring solaris, $(GNUSTEP_TARGET_OS)), solaris)
