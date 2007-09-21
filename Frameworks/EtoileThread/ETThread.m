@@ -19,14 +19,13 @@ void * threadStart(void* initialiser)
 	[NSAutoreleasePool new];
 	struct ETThreadInitialiser * init = initialiser;
 	id object = init->object;
-	id target = init->target;
 	SEL selector = init->selector;
 	ETThread * thread = init->thread;
 	free(init);
-	pthread_setspecific(threadObjectKey, init->thread);
+	pthread_setspecific(threadObjectKey, thread);
 	thread->pool = [[NSAutoreleasePool alloc] init];
-	id result = [init->target performSelector:selector 
-								   withObject:object];
+	id result = [target performSelector:selector 
+				  		     withObject:object];
 	//NOTE: Not reached if exitWithValue: is called
 	[thread->pool release];
 	[thread release];

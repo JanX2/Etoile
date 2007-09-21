@@ -35,7 +35,7 @@ int main(void)
 	 */
 	[proxy log:@"1) Logging in another thread"];
 	/*
-	 * Try a mthod that returns a value
+	 * Try a method that returns a value
 	 */
 	NSString * foo = [proxy getFoo];
 	/*
