@@ -19,6 +19,7 @@ void * threadStart(void* initialiser)
 	[NSAutoreleasePool new];
 	struct ETThreadInitialiser * init = initialiser;
 	id object = init->object;
+	id target = init->object;
 	SEL selector = init->selector;
 	ETThread * thread = init->thread;
 	free(init);
