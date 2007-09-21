@@ -8,7 +8,7 @@ memory := 0.0
 operator := ""
 
 [NSObject newSubclassNamed:"Controller"] do(
-	[addVariableNamed:"output"]
+	[self addVariableNamed:"output"]
 	setSlot("add:",
 		method(sender,
 			[self compute:sender]
@@ -23,14 +23,14 @@ operator := ""
 			if(operator == "*", memory = memory * self output doubleValue)
 			if(operator == "/", memory = memory / self output doubleValue)
 			if(operator == "sqrt", memory = self output doubleValue sqrt)
-			[self output setFloatValue:memory]
+			[[self output] setFloatValue:memory]
 			operator = ""
 			buffer = ""
 		)
 	)
 	setSlot("clear:",
 		method(sender,
-			[self output setFloatValue:0.0]
+			[[self output] setFloatValue:0.0]
 			buffer = ""
 			memory = 0
 		)
@@ -38,7 +38,7 @@ operator := ""
 	setSlot("digit:",
 		method(sender,
 			buffer = buffer .. sender tag
-			[self output setStringValue:buffer]
+			[[self output] setStringValue:buffer]
 		)
 	)
 	setSlot("div:",
@@ -50,7 +50,7 @@ operator := ""
 	setSlot("dot:",
 		method(sender,
 			buffer = buffer .. "."
-			[self output setStringValue:buffer]
+			[[self output] setStringValue:buffer]
 		)
 	)
 	setSlot("mul:",
