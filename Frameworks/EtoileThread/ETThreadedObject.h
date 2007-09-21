@@ -19,6 +19,9 @@
  * used.
  */
 @interface ETThreadedObject : NSProxy{
+	/**
+	 * Proxied object.
+	 */
 	id object;
 	/** 
 	 * The condition variable and mutex are only used when the queue is empty.
@@ -27,8 +30,9 @@
 	 */
 	pthread_cond_t conditionVariable;
 	pthread_mutex_t mutex;
-	BOOL lockless;
-	unsigned int emptyCount;
+	/**
+	 * Lockless ring buffer and free-running counters.
+	 */
 	id invocations[QUEUE_SIZE];
 	unsigned long producer;
 	unsigned long consumer;
