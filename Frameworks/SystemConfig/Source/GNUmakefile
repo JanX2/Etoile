@@ -17,6 +17,7 @@ libSystemConfig_OBJC_FILES = \
 	SCPower.m \
 	SCPower_Linux.m \
 	SCPower_FreeBSD.m \
+	SCPower_OpenBSD.m \
 	SCSound.m
 
 ifeq ($(ETOILE_X11), yes)
