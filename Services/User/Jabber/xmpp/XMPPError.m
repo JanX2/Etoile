@@ -44,7 +44,7 @@
 	{
 		[[[ETXMLNullHandler alloc] initWithXMLParser:parser
 											  parent:self
-												 key:@"text"] startElement:aName
+												 key:nil] startElement:aName
 																attributes:attributes];
 	}
 }

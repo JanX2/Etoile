@@ -13,6 +13,10 @@
  */
 static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
 {
+	if(_XMLString == nil)
+	{
+		return [NSMutableString stringWithString:@""];
+	}
 	NSMutableString * XMLString = [NSMutableString stringWithString:_XMLString];
 	[XMLString replaceOccurrencesOfString:@"&" withString:@"&amp;" options:0 range:NSMakeRange(0,[XMLString length])];
 	[XMLString replaceOccurrencesOfString:@"<" withString:@"&lt;" options:0 range:NSMakeRange(0,[XMLString length])];
@@ -27,6 +31,10 @@ static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
  */
 static inline NSMutableString* unescapeXMLCData(NSString* _XMLString)
 {
+	if(_XMLString == nil)
+	{
+		return [NSMutableString stringWithString:@""];
+	}
 	NSMutableString * XMLString = [NSMutableString stringWithString:_XMLString];
 	[XMLString replaceOccurrencesOfString:@"&lt;" withString:@"<" options:0 range:NSMakeRange(0,[XMLString length])];
 	[XMLString replaceOccurrencesOfString:@"&gt;" withString:@">" options:0 range:NSMakeRange(0,[XMLString length])];

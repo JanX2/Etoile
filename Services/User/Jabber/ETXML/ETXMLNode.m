@@ -166,7 +166,7 @@
 		NSString* key;
 		while ((key = (NSString*)[enumerator nextObject])) 
 		{
-			[XML appendString:[NSString stringWithFormat:@" %@=\"%@\"",key, (NSString*)[attributes objectForKey:key]]];
+			[XML appendString:[NSString stringWithFormat:@" %@=\"%@\"",key, escapeXMLCData([attributes objectForKey:key])]];
 		}
 	}
 	
