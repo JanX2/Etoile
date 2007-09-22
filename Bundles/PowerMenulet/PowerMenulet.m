@@ -3,6 +3,34 @@
 @implementation PowerMenulet
 - (void) checkPower: (NSTimer *) t
 {
+#if 1
+	SCPowerStatus status = [power status];
+	NSLog(@"Status %d", status);
+	switch(status) {
+		case SCPowerBatteryLow:
+			[view setImage: p0];
+			break;
+		case SCPowerBatteryMedium:
+			[view setImage: p1];
+			break;
+		case SCPowerBatteryHigh:
+			[view setImage: p2];
+			break;
+		case SCPowerBatteryFull:
+			[view setImage: p3];
+			break;
+		case SCPowerACCharging:
+			[view setImage: p4];
+			break;
+		case SCPowerACFull:
+			[view setImage: p5];
+			break;
+		case SCPowerUnknown:
+		default:
+			[view setImage: p6];
+			break;
+	}
+#else
 	/* Check /proc/apm (For Linux with APM) */
 	if ([fm fileExistsAtPath: @"/proc/apm"])
 	{
@@ -89,6 +117,7 @@
 	}
 	/* Unknown */
 	[view setImage: p6];
+#endif
 }
 
 - (void) dealloc
@@ -118,6 +147,8 @@
 	[view setBordered: NO];
 	[view setTitle: @"?Power?"];
 	[view setImagePosition: NSImageOnly];
+
+	ASSIGN(power, (SCPower *)[SCPower sharedInstance]);
 
 	fm = [NSFileManager defaultManager];
 

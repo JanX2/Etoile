@@ -1,5 +1,6 @@
 #import <AppKit/AppKit.h>
 #import "EtoileMenulet.h"
+#import <SystemConfig/SCPower.h>
 
 enum PowerLevel
 {
@@ -10,6 +11,7 @@ enum PowerLevel
 
 @interface PowerMenulet : NSObject <EtoileMenulet>
 {
+	SCPower *power;
 	NSButton *view;
 	NSTimer *timer;
 	int batteryLevel;
