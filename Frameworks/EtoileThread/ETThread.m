@@ -16,7 +16,6 @@ void * threadStart(void* initialiser)
 #ifdef GNUSTEP
 	GSRegisterCurrentThread ();
 #endif
-	[NSAutoreleasePool new];
 	struct ETThreadInitialiser * init = initialiser;
 	id object = init->object;
 	id target = init->object;

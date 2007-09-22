@@ -3,11 +3,11 @@
 #include <sched.h>
 
 /**
- * GCC 4.2 provides atomic operations which impose memory barriers.  These are
+ * GCC 4.1 provides atomic operations which impose memory barriers.  These are
  * not needed on x86, but might be on other platforms (anything that does not
  * enforce strong ordering of memory operations, e.g. Itanium or Alpha).
  */
-#if __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 2)
+#if __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 1)
 static inline void __sync_fetch_and_add(unsigned long *ptr, unsigned int value)
 {
 	*ptr += value;

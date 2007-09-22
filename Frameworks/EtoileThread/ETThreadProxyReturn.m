@@ -50,12 +50,10 @@
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
-	pthread_mutex_lock(&mutex);
 	if(nil == object)
 	{
-		pthread_cond_wait(&conditionVariable, &mutex);
+		[self value];
 	}
-	pthread_mutex_unlock(&mutex);
 	[anInvocation invokeWithTarget:object];
 }
 - (BOOL) isFuture
