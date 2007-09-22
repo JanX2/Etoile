@@ -12,11 +12,12 @@ SystemConfig_SUBPROJECTS = Source
 SystemConfig_HEADER_FILES_DIR = Headers
 
 SystemConfig_HEADER_FILES = \
-        SCConfig.h \
-        SCKeyboard.h \
-        SCMonitor.h \
-        SCMouse.h \
-        SCSound.h
+	SCConfig.h \
+	SCKeyboard.h \
+	SCMonitor.h \
+	SCMouse.h \
+	SCPower.h \
+	SCSound.h
 
 ifeq ($(ETOILE_X11), yes)
 SystemConfig_LIBRARIES_DEPEND_UPON += -lX11

@@ -14,6 +14,8 @@ libSystemConfig_OBJC_FILES = \
 	SCKeyboard.m \
 	SCMonitor.m \
 	SCMouse.m \
+	SCPower.m \
+	SCPower_Linux.m \
 	SCSound.m
 
 ifeq ($(ETOILE_X11), yes)

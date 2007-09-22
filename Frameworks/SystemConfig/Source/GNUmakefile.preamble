@@ -1,0 +1,22 @@
+# defines the proper macro based on the target OS
+
+ifeq ($(findstring freebsd, $(GNUSTEP_TARGET_OS)), freebsd)
+	ADDITIONAL_OBJCFLAGS += -DFREEBSD
+endif
+
+ifeq ($(findstring openbsd, $(GNUSTEP_TARGET_OS)), openbsd)
+	ADDITIONAL_OBJCFLAGS += -DOPENBSD
+endif
+
+ifeq ($(findstring darwin, $(GNUSTEP_TARGET_OS)), darwin)
+	ADDITIONAL_OBJCFLAGS += -DDARWIN
+endif
+
+ifeq ($(findstring solaris, $(GNUSTEP_TARGET_OS)), solaris)
+	ADDITIONAL_OBJCFLAGS += -DSOLARIS
+endif
+
+ifeq ($(findstring gnu, $(GNUSTEP_TARGET_OS)), gnu)
+	ADDITIONAL_OBJCFLAGS += -DLINUX
+endif
+
