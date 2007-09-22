@@ -48,9 +48,21 @@ typedef enum _SCPowerStatus {
 
 @interface SCPower : SCConfigElement
 {
+	int percent;
+	int time;
 }
 
 - (SCPowerStatus) status;
+
+/* For battery. Return -1 if unknown.
+   Application should ask for -status before querying percent
+   since some implementation may cache percent from -status. */
+- (int) percent;
+
+/* For battery, in minutes. Return -1 if unknown.
+   Application should ask for -status before querying time 
+   since some implementation may cache time from -status. */
+- (int) time;
 
 @end
 

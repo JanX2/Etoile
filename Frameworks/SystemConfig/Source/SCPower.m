@@ -40,6 +40,8 @@
 - (id) init
 {
 	self = [super init];
+	percent = -1;
+	time = -1;
 	return self;
 }
 
@@ -48,10 +50,19 @@
 	[super dealloc];
 }
 
-
 - (SCPowerStatus) status
 {
 	return SCPowerUnknown;
+}
+
+- (int) percent
+{
+	return percent;
+}
+
+- (int) time;
+{
+	return time;
 }
 
 @end

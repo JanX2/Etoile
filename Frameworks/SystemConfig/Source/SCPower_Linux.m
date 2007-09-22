@@ -38,11 +38,12 @@
 #import "SCPower.h"
 
 @implementation SCPower (Linux)
-
 - (SCPowerStatus) status
 {
 	/* Check /proc/apm (For Linux with APM) */
 	NSFileManager *fm = [NSFileManager defaultManager];
+	SCPowerStatus statue = SCPowerUnknown;
+
 	if ([fm fileExistsAtPath: @"/proc/apm"])
 	{
 		NSString *apm = [NSString stringWithContentsOfFile: @"/proc/apm"
@@ -97,7 +98,7 @@
 			{
 				/* We are in format of '56%', luckly !! */
 				s = [s substringToIndex: [s length]-1];
-				int percent = [s intValue];
+				percent = [s intValue];
 //NSLog(@"Power Level: %d\%", percent);
 				if (percent > 75)
 				{
