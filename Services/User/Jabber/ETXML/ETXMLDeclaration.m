@@ -3,7 +3,6 @@
 //  Jabber
 //
 //  Created by Yen-Ju Chen on Thu Jul 12 2007.
-//  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
 //
 
 #import "ETXMLDeclaration.h"
