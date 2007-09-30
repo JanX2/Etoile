@@ -69,7 +69,7 @@
 		return SCPowerBatteryHigh;
 	else if (percent > 25)
 		return SCPowerBatteryMedium;
-	else if (precent > 0)
+	else if (percent > 0)
 		return SCPowerBatteryLow;
 	else
 		return SCPowerUnknown;
