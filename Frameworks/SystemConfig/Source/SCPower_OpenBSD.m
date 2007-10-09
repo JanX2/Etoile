@@ -67,14 +67,14 @@
 	{
 		close(apm);
 		percent = (int) power.battery_life;
-		time = power->minutes_left;
+		time = power.minutes_left;
 		if(power.ac_state == APM_AC_ON)
 		{
 			if(power.battery_state == APM_BATT_HIGH)
 			switch(power.battery_state)
 			{
 				case APM_BATT_HIGH:
-				case APM_BATT_ABSENT:
+				case APM_BATTERY_ABSENT:
 				case APM_BATT_UNKNOWN:
 					return SCPowerACFull;
 				default:
