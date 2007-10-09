@@ -27,6 +27,8 @@ ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib
 endif
 
+ADDITIONAL_INCLUDE_DIRS += -I/usr/include/sys
+
 -include GNUmakefile.preamble
 
 include $(GNUSTEP_MAKEFILES)/subproject.make

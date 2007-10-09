@@ -27,8 +27,8 @@
 #import "SCSound.h"
 #import <fcntl.h>
 #import <unistd.h>
-#import <sys/ioctl.h>
-#import <sys/soundcard.h>
+#import <ioctl.h>
+#import <soundcard.h>
 
 NSString *const SCSoundDidChangeNotification = @"SCSoundDidChangeNotification";
 
