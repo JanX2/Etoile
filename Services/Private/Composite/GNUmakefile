@@ -14,6 +14,9 @@ TOOL_NAME = Composite
 Composite_LANGUAGES = English
 
 Composite_OBJC_FILES = \
+	CompositeDisplay.m \
+	CompositeWindow.m \
+	Shadow.m\
 	xcompmgr.m
 
 ADDITIONAL_OBJCFLAGS = -std=c99 -g -Wno-unused # -Werror

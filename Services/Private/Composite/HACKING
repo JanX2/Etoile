@@ -1,0 +1,3 @@
+Composite is currently broken (does not compile).  For a working version, please check out the revision before this file was added.  
+
+The reason everything is broken is that I am refactoring the big blob of C code into a slightly more compartmentalised blob of Objective-C.  If you want to help, try compiling it, find an error, and try to fix it.  Typically, this involves moving code from xcompmgr.m into one of the classes.
