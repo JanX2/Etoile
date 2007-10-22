@@ -34,7 +34,7 @@ void * threadStart(void* initialiser)
 #endif
 	struct ETThreadInitialiser * init = initialiser;
 	id object = init->object;
-	id target = init->object;
+	id target = init->target;
 	SEL selector = init->selector;
 	ETThread * thread = init->thread;
 	free(init);
