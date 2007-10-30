@@ -1,6 +1,17 @@
 #import "COProxy.h"
 #import "ETSerialiser.h"
 
+@interface NSObject(CoreObject)
++ (SEL*) immutableMethods;
+@end
+@implementation NSObject(CoreObject)
++ (SEL*) immutableMethods
+{
+	static selectors[] ={(SEL)0}; 
+	return selectors;
+}
+@end
+
 static const int FULL_SAVE_INTERVAL = 100;
 @implementation COProxy 
 - (id) initWithObject:(id)anObject
