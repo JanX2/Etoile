@@ -41,6 +41,18 @@
 @end
 
 /**
+ * A message filter is an object that performs some modifications to a message
+ * before it is displayed.
+ */
+@protocol MessageFilter <NSObject>
+/**
+ * Process the message in some way.  If the message should not be displayed then
+ * -setShouldDisplay:NO should be called on the message before returning.
+ */
+- (void) filterMessage:(Message*)aMessage;
+@end
+
+/**
  * The Conversation class is an encapsulation of an abstract conversation.  This
  * is a dialogue between two parties; the local user and some other person.  The
  * remote person is not a client, but some abstraction of a person which may 

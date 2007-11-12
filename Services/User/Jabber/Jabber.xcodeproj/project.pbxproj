@@ -910,9 +910,11 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 28F8E8E10867708100948872 /* Build configuration list for PBXProject "Jabber" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Jabber */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* StepChat */,
 				280ACF700B75013B0008F3F3 /* TRXML */,

@@ -31,6 +31,7 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
 	NSAttributedString * html;
 	NSMutableArray * timestamps;
 	NSMutableDictionary * unknownAttributes;
+	BOOL shouldDisplay;
 }
 /**
  * Constructs a new (outgoing) message, ready for sending.  The subject is usually
@@ -73,6 +74,16 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
  * Returns the associated error, if one exists.
  */
 - (XMPPError*) error;
+/**
+ * Sets a flag indicating that this message is destined for display.
+ */
+- (void) setShouldDisplay:(BOOL)aFlag;
+/**
+ * Indicates whether the message should be displayed.  Messages of supported
+ * types where the plain text and HTML elements are purely for fall-back 
+ * support should return NO here.
+ */
+- (BOOL) shouldDisplay;
 /**
  * Returns YES for incoming messages, NO for outgoing.
  */

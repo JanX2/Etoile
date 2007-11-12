@@ -57,6 +57,7 @@ NSDictionary * MESSAGE_TYPES;
 	unknownAttributes = [[NSMutableDictionary alloc] init];
 	timestamps = [[NSMutableArray alloc] init];
 	body = @"";
+	shouldDisplay = YES;
 	return self;
 }
 
@@ -253,6 +254,16 @@ NSDictionary * MESSAGE_TYPES;
 		[unknownAttributes setValue:aChild forKey:aKey];
 	}
 }
+
+- (void) setShouldDisplay:(BOOL)aFlag
+{
+	shouldDisplay = aFlag;
+}
+- (BOOL) shouldDisplay
+{
+	return shouldDisplay;
+}
+
 
 - (void) dealloc
 {

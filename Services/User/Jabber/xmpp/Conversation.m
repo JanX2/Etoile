@@ -8,11 +8,21 @@
 
 #import "Conversation.h"
 #import "Message.h"
+#include "Macros.h"
 
-NSMutableDictionary * conversations = nil;
-Class delegateClass = Nil;
+static NSMutableDictionary * conversations = nil;
+static Class delegateClass = Nil;
+
+static NSMutableArray * filters;
+
 
 @implementation Conversation
++ (void) initialize
+{
+	conversations = [[NSMutableDictionary alloc] init];
+	filters = [[NSMutableArray alloc] init];
+	[super initialize];
+}
 + (void) setViewClass:(Class)aClass
 {
 	if([aClass conformsToProtocol:@protocol(ConversationDelegate)])
@@ -22,11 +32,7 @@ Class delegateClass = Nil;
 }
 - (id) initWithPerson:(JabberPerson*)corespondent forAccount:(XMPPAccount*)_account
 {
-	self = [self init];
-	if(self == nil)
-	{
-		return nil;
-	}
+	SELFINIT;
 	connection = [_account connection];
 	name = [[corespondent name] retain];
 	remoteJID = [[[corespondent defaultIdentity] jid] retain];
@@ -41,11 +47,7 @@ Class delegateClass = Nil;
 
 - (id) init
 {
-	self = [super init];
-	if(self == nil)
-	{
-		return nil;
-	}
+	SUPERINIT;
 	connection = nil;
 	return self;
 }
@@ -82,7 +84,14 @@ Class delegateClass = Nil;
 
 - (void) handleMessage:(Message*)aMessage
 {
-	[delegate displayMessage:aMessage incoming:YES];
+	FOREACH(filters, filter, id<MessageFilter>)
+	{
+		[filter filterMessage:aMessage];
+	}
+	if([aMessage shouldDisplay])
+	{
+		[delegate displayMessage:aMessage incoming:YES];
+	}
 }
 
 - (id<NSObject,ConversationDelegate>) delegate
