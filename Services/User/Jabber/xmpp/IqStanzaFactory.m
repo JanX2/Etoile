@@ -17,12 +17,20 @@ static IqStanzaFactory * sharedInstance;
 {
 	sharedInstance = [[IqStanzaFactory alloc] init];
 	//Insert default handlers here:
+	//Roster updates:
 	[sharedInstance addHandler:NSClassFromString(@"Query_jabber_iq_roster")
 						forTag:@"query" 
 				   inNamespace:@"jabber:iq:roster"];
 	[sharedInstance addValue:@"RosterItems"
 					  forTag:@"query" 
 				 inNamespace:@"jabber:iq:roster"];
+	//vCards:
+	[sharedInstance addHandler:NSClassFromString(@"XMPPvCard")
+						forTag:@"vCard" 
+				   inNamespace:@"vcard-temp"];
+	[sharedInstance addValue:@"vCard"
+					  forTag:@"vCard" 
+				 inNamespace:@"vcard-temp"];	
 }
 
 + (id) sharedStazaFactory

@@ -69,6 +69,8 @@
 		283584B6063C4516008F21EA /* Roster.h in Headers */ = {isa = PBXBuildFile; fileRef = 283584B4063C4516008F21EA /* Roster.h */; };
 		283584CE063C4642008F21EA /* JabberPerson.h in Headers */ = {isa = PBXBuildFile; fileRef = 283584CC063C4642008F21EA /* JabberPerson.h */; };
 		2835875F063D4D7F008F21EA /* JabberApp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2835875D063D4D7F008F21EA /* JabberApp.h */; };
+		283963E30CE8AEC0007958FA /* XMPPvCard.h in Headers */ = {isa = PBXBuildFile; fileRef = 283963E10CE8AEC0007958FA /* XMPPvCard.h */; };
+		283963E40CE8AEC0007958FA /* XMPPvCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 283963E20CE8AEC0007958FA /* XMPPvCard.m */; };
 		2839E2790B76455100145C44 /* XML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* XML.framework */; };
 		2839E27A0B76455100145C44 /* XMPP.framework in Copy Private Frameworks */ = {isa = PBXBuildFile; fileRef = 280AD0290B75025F0008F3F3 /* XMPP.framework */; };
 		2839E4320B77996C00145C44 /* XML.framework in Copy Private Frameworks */ = {isa = PBXBuildFile; fileRef = 280ACF710B75013B0008F3F3 /* XML.framework */; };
@@ -315,6 +317,8 @@
 		283584CD063C4642008F21EA /* JabberPerson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JabberPerson.m; path = xmpp/JabberPerson.m; sourceTree = "<group>"; };
 		2835875D063D4D7F008F21EA /* JabberApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JabberApp.h; sourceTree = "<group>"; };
 		2835875E063D4D7F008F21EA /* JabberApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JabberApp.m; sourceTree = "<group>"; };
+		283963E10CE8AEC0007958FA /* XMPPvCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMPPvCard.h; path = xmpp/XMPPvCard.h; sourceTree = "<group>"; };
+		283963E20CE8AEC0007958FA /* XMPPvCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPvCard.m; path = xmpp/XMPPvCard.m; sourceTree = "<group>"; };
 		283D7C180C838A2300986BBA /* HTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "HTMLTest-Info.plist"; sourceTree = "<group>"; };
 		283D7C210C838A8200986BBA /* XHTMLTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XHTMLTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		283D7C230C838A8200986BBA /* XHTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "XHTMLTest-Info.plist"; sourceTree = "<group>"; };
@@ -503,6 +507,8 @@
 		28C501F506B2680E00CE9114 /* XMPP */ = {
 			isa = PBXGroup;
 			children = (
+				283963E10CE8AEC0007958FA /* XMPPvCard.h */,
+				283963E20CE8AEC0007958FA /* XMPPvCard.m */,
 				28CCCECB0C832DC90025B407 /* ChatLog.m */,
 				28CCCCC40C8227010025B407 /* XMPPError.h */,
 				28CCCCC50C8227010025B407 /* XMPPError.m */,
@@ -768,6 +774,7 @@
 				28CCCE440C832BD00025B407 /* XMPPAccount.h in Headers */,
 				28CCCE460C832BD00025B407 /* XMPPConnection.h in Headers */,
 				28CCCE480C832BD00025B407 /* XMPPError.h in Headers */,
+				283963E30CE8AEC0007958FA /* XMPPvCard.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1012,6 +1019,7 @@
 				283D78EC0C8335C200986BBA /* XMPPAccount.m in Sources */,
 				283D78ED0C8335C200986BBA /* XMPPConnection.m in Sources */,
 				283D78EE0C8335C200986BBA /* XMPPError.m in Sources */,
+				283963E40CE8AEC0007958FA /* XMPPvCard.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

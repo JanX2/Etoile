@@ -48,7 +48,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	}
 	else
 	{
-		value = [value stringByAppendingString:aString];
+		id new = [[value stringByAppendingString:aString] retain];
+		[value release];
+		value = new;
 	}
 }
 @end
