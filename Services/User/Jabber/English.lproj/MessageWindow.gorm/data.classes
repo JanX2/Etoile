@@ -11,6 +11,7 @@
 	    "changeRemoteJid:"
 	);
 	Outlets = (
+	    avatarBox,
 	    messageBox,
 	    messageBoxBox,
 	    editingBox,

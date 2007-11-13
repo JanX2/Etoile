@@ -135,10 +135,10 @@ NSMutableArray * rosterControllers = nil;
 - (NSAttributedString*) displayStringForObject:(id)anObject
 {
 	NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
-	NSAttributedString * text = [NSAttributedString alloc];
+	NSString * plainText;
 	if([anObject isKindOfClass:[RosterGroup class]])
 	{
-		[text initWithString:[anObject groupName]];
+		plainText = [anObject groupName];
 	}
 	else if([anObject isKindOfClass:[JabberPerson class]])
 	{
@@ -149,10 +149,9 @@ NSMutableArray * rosterControllers = nil;
 			[attributes setValue:foreground
 						  forKey:NSForegroundColorAttributeName];
 		}
-		NSString * iconString = [NSString stringWithFormat:@"%C %@", 
+		plainText = [NSString stringWithFormat:@"%C %@", 
 			PRESENCE_ICONS[(onlineState / 10) - 1], 
 			[(JabberPerson*)anObject name]];
-		[[text initWithString:iconString attributes:attributes] autorelease];
 	}
 	else if([anObject isKindOfClass:[JabberIdentity class]])
 	{
@@ -162,12 +161,13 @@ NSMutableArray * rosterControllers = nil;
 			[attributes setValue:foreground 
 						  forKey:NSForegroundColorAttributeName];
 		}
-		[[text initWithString:[[anObject jid] jidString] attributes:attributes] autorelease];
+		plainText = [[anObject jid] jidString];
 	}
 	else 
 	{
-		[text init];
+		plainText = @"Wrgon!";
 	}
+	NSAttributedString * text = [[NSAttributedString alloc] initWithString:plainText attributes:attributes];
 	[attributes release];
 	return text;
 }
