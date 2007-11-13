@@ -96,8 +96,6 @@
 
 		[dispatcher addPresenceHandler:[newIdentity person]
 								ForJID:[jid jidStringWithNoResource]];
-		[connection XMPPSend:[NSString stringWithFormat:@"<iq to='%@' type='get' id='%@'><vCard xmlns='vcard-temp'/></iq>"
-							  , [jid jidStringWithNoResource], [connection newMessageID]]];
 	}
 	//Once we have received the roster, tell the server we are online.
 	if(!connected)
@@ -413,7 +411,14 @@
 	[delegate release];
 	delegate = [_delegate retain];
 }
-
+- (Dispatcher*) dispatcher
+{
+	return dispatcher;
+}
+- (id) connection
+{
+	return connection;
+}
 - (void) update:(id)_object
 {
 	[delegate update:_object];

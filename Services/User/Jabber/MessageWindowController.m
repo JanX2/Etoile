@@ -17,7 +17,7 @@
 #define setAttributedTitle(x) setAttributedTitle:x
 #endif
 
-NSMutableArray * messageWindowControllers = nil;
+static NSMutableArray * messageWindowControllers = nil;
 
 @implementation MessageWindowController
 
@@ -159,6 +159,14 @@ NSMutableArray * messageWindowControllers = nil;
 	}
 }
 
+- (void) setPicture
+{
+	NSImage * avatar = [[conversation remotePerson] avatar];
+	if(avatar != nil)
+	{
+		[avatarBox setImage:avatar];
+	}
+}
 
 - (void) displayMessage:(Message*)aMessage incoming:(BOOL)_in
 {
@@ -191,6 +199,10 @@ NSMutableArray * messageWindowControllers = nil;
 			[[self window] orderFront:self];
 			[[self window] setTitle:[NSString stringWithFormat:@"%@ (%d unread)", [conversation name], ++unread]];
 		}
+	}
+	if([avatarBox image] == nil)
+	{
+		[self setPicture];
 	}
 	[[messageBox textStorage] appendAttributedString:[log logMessage:aMessage]];
 	[messageBox makeLinksClickable];
@@ -229,6 +241,7 @@ NSMutableArray * messageWindowControllers = nil;
 	//Set presence and current resource
 	Presence * remotePresence = [[[conversation remotePerson] identityForJID:jid] presence];
 	[self setPresence:[remotePresence show] withMessage:[remotePresence status]];
+	[self setPicture];
 }
 
 - (void) setPresence:(unsigned char)_status withMessage:(NSString*)_message

@@ -436,7 +436,7 @@ static NSDictionary * STANZA_KEYS;
 - (void)startElement:(NSString *)aName
 		  attributes:(NSDictionary *)_attributes
 {
-	NSLog(@"Parsing element: %@", aName);
+	//NSLog(@"Parsing element: %@", aName);
 	
 	if([aName isEqualToString:@"stream:stream"])
 	{

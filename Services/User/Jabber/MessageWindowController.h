@@ -21,6 +21,7 @@
 	IBOutlet NSTextField * presenceBox;
 	IBOutlet NSTextField * presenceIconBox;
 	IBOutlet NSPopUpButton * recipientBox;
+	IBOutlet NSImageView * avatarBox;
 	Conversation * conversation;
 	unsigned int unread;
 	ChatLog * log;

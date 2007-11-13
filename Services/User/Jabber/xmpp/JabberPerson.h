@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+#import <AddressBook/AddressBook.h>
 #import "JID.h"
 #import "ETXMLNode.h"
 #import "Presence.h"
@@ -23,7 +24,7 @@
  * modeled as people, for example a groupchat room could be a person and all
  * members of it identities of that person.
  */
-@interface JabberPerson : NSObject <PresenceHandler> {
+@interface JabberPerson : NSObject <PresenceHandler, IqHandler> {
 	NSMutableDictionary * identities;
 	NSMutableArray * identityList;
 	unsigned int identityCount;
@@ -31,6 +32,8 @@
 	NSString * group;
 	id roster;
 	unsigned int hash;
+	ABPerson * vCard;
+	NSImage * avatar;
 }
 /**
  * Instantiate a new person from an identity and associate them with a roster.
@@ -88,5 +91,9 @@
  * Compares two people by their name.
  */
 - (NSComparisonResult) compare:(JabberPerson*)otherPerson;
+/**
+ * Returns the user's avatar.
+ */
+- (NSImage*) avatar;
 @end
 

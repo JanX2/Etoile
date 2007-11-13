@@ -132,7 +132,17 @@
  * Moves an identity to a new group.  This will cause the identity to be assigned to a new person.
  */
 - (void) setGroup:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity;
-
+/**
+ * Returns the roster's delegate.
+ */
 - (id) delegate;
+/**
+ * Returns the dispatcher used by this roster.
+ */
+- (Dispatcher*) dispatcher;
+/**
+ * Returns the connection used by this roster.
+ */
+- (id) connection;
 @end
 

@@ -71,7 +71,7 @@
 /** 
  * Initialise a new dispatcher with default handlers 
  */
-					  - (id) initWithDefaultIqHandler:(id <IqHandler>)iq 
+- (id) initWithDefaultIqHandler:(id <IqHandler>)iq 
 				 messageHandler:(id <MessageHandler>)message 
 				presenceHandler:(id <PresenceHandler>)presence;
 /**
