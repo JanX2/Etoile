@@ -81,6 +81,8 @@
 #define kABOrganizationProperty       ADOrganizationProperty
 #define kABJobTitleProperty           ADJobTitleProperty
 #define kABHomePageProperty           ADHomePageProperty
+#define kABHomePageLabel              ADHomePageLabel
+#define kABURLsProperty               ADHomePageProperty
 #define kABEmailProperty              ADEmailProperty
 #define kABEmailWorkLabel             ADEmailWorkLabel
 #define kABEmailHomeLabel             ADEmailHomeLabel

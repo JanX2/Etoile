@@ -44,6 +44,7 @@ extern NSString * const ADBirthdayProperty;           // date
 extern NSString * const ADOrganizationProperty;       // string
 extern NSString * const ADJobTitleProperty;           // string
 extern NSString * const ADHomePageProperty;           // string
+extern NSString * const ADHomePageLabel;           // string
 
 extern NSString * const ADEmailProperty;              // multi-string
 extern NSString * const ADEmailWorkLabel;
