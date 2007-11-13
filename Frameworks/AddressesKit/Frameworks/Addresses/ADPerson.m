@@ -44,6 +44,7 @@ static ADScreenNameFormat _scrNameFormat = ADScreenNameLastNameFirst;
 		 N(ADStringProperty),          ADJobTitleProperty,
 		 N(ADStringProperty),          ADHomePageProperty,
 		 N(ADMultiStringProperty),     ADEmailProperty,
+		 N(ADMultiStringProperty),     ADURLsProperty,
 		 N(ADMultiDictionaryProperty), ADAddressProperty,
 		 N(ADMultiStringProperty),     ADPhoneProperty,
 		 

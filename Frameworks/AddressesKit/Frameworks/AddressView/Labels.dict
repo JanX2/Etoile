@@ -1,5 +1,6 @@
 {
 	Email = (WorkEmail, HomeEmail);
+	URLs = (HomePage);
 	Address = (WorkAddr, HomeAddr);
 	Phone = (MainPhone, WorkPhone, HomePhone, MobilePhone, HomeFax,
 	         WorkFax, Pager);

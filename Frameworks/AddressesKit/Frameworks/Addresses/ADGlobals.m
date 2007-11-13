@@ -32,6 +32,7 @@ NSString* const ADBirthdayProperty = @"Birthday";
 NSString* const ADOrganizationProperty = @"Organization";
 NSString* const ADJobTitleProperty = @"JobTitle"; 
 NSString* const ADHomePageProperty = @"HomePage";
+NSString* const ADURLsProperty = @"URLs";
 NSString* const ADHomePageLabel = @"HomePage";
 NSString* const ADEmailProperty = @"Email";
 NSString* const ADEmailWorkLabel = @"WorkEmail";
@@ -148,6 +149,7 @@ NSString* ADLocalizedPropertyOrLabel(NSString* propertyOrLabel)
       ADOrganizationProperty, @"ADOrganizationProperty",
       ADJobTitleProperty, @"ADJobTitleProperty",
       ADHomePageProperty, @"ADHomePageProperty",
+      ADURLsProperty, @"ADURLsProperty",
       ADHomePageLabel, @"ADHomePageLabel",
       
       ADEmailProperty, @"ADEmailProperty",

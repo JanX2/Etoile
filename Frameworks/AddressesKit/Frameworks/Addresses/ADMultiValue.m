@@ -51,7 +51,6 @@ static ADPropertyType _propTypeFromDict(NSDictionary *dict)
   _type = [mv type];
   return self;
 }
-
 - (id) initWithType: (ADPropertyType) type
 {
   _arr = [[NSMutableArray alloc] initWithCapacity: 5];
