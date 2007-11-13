@@ -520,45 +520,9 @@ NSMutableArray * rosterControllers = nil;
 	}
 	return 0;
 }
-
-- (void)outlineView:(NSOutlineView *)_outlineView willDisplayCell:(id)_cell forTableColumn:(NSTableColumn *)_tableColumn item:(id)_item
-{
-	if([_item isKindOfClass:[RosterGroup class]])
-	{
-		/* Nothing to change */
-	}
-	else if([_item isKindOfClass:[JabberPerson class]])
-	{
-		[_cell setAttributedStringValue:[self displayStringForObject:_item]];
-	}
-	else if([_item isKindOfClass:[JabberIdentity class]])
-	{
-		[_cell setAttributedStringValue:[self displayStringForObject:_item]];
-	}
-	else 
-	{
-		/* Nothing to change */
-	}
-}
-
 - (id)outlineView:(NSOutlineView *)_outlineView objectValueForTableColumn:(NSTableColumn *)_tableColumn byItem:(id)_item
 {
-	if([_item isKindOfClass:[RosterGroup class]])
-	{
-		return [_item groupName];
-	}
-	else if([_item isKindOfClass:[JabberPerson class]])
-	{
-		return [(JabberPerson*)_item name];
-	}
-	else if([_item isKindOfClass:[JabberIdentity class]])
-	{
-		return [[_item jid] jidString];
-	}
-	else 
-	{
-		return @"Wrgon!";
-	}
+	return [self displayStringForObject:_item];
 }
 
 - (void)outlineViewItemDidExpand:(NSNotification *)notification

@@ -65,37 +65,57 @@
 #define PROPERTY_FROM_XML(property, xml)\
 - (void) add ## xml:(NSString*)aString\
 {\
-	[person setValue:aString forProperty:property];\
+	NSLog(@"Trying to add '%@' for property %s", aString, #property);\
+	if(aString != nil && ![aString isEqualToString:@""])\
+	{\
+		[person setValue:aString forProperty:property];\
+	}\
 }
 PROPERTY_FROM_XML(kABNicknameProperty, NICKNAME)
 PROPERTY_FROM_XML(kABLastNameProperty, FAMILY)
 PROPERTY_FROM_XML(kABFirstNameProperty, GIVEN)
+#ifdef GNUSTEP
+#define MULTI_INIT ABMutableMultiValue * multi = [[ABMutableMultiValue alloc] initWithType:kABMultiStringProperty]
+#else
+#define MULTI_INIT ABMutableMultiValue * multi = [[ABMutableMultiValue alloc] init]
+#endif
 #define MULTI_PROPERTY_FROM_XML(property, label, xml) \
 - (void) add ## xml:(NSString*)aString\
 {\
-	ABMutableMultiValue * multi = [[ABMutableMultiValue alloc] init];\
-	[multi addValue:aString withLabel:label];\
-	[person setValue:multi forProperty:property];\
-	[multi release];\
+	NSLog(@"Trying to add '%@' for property %s", aString, #property);\
+	if(aString != nil && ![aString isEqualToString:@""])\
+	{\
+		MULTI_INIT;\
+		[multi addValue:aString withLabel:label];\
+		[person setValue:multi forProperty:property];\
+		[multi release];\
+	}\
 }
 MULTI_PROPERTY_FROM_XML(kABEmailProperty, kABEmailHomeLabel, EMAIL)
 MULTI_PROPERTY_FROM_XML(kABURLsProperty, kABHomePageLabel, URL)
 - (void) addPHOTO:(NSString*)aString
 {
-	aString = [aString stringByReplacingOccurrencesOfString:@"\n" withString:@""];	
-	if([aString length] > 9 && [[aString substringToIndex:9] isEqualToString:@"image/png"])
+	NSMutableString * photo = [aString mutableCopy];
+	[photo replaceOccurrencesOfString:@"\n" withString:@"" options:0 range:NSMakeRange(0, [photo length])];	
+
+
+	if([photo length] > 9 && [[photo substringToIndex:9] isEqualToString:@"image/png"])
 	{
-		aString = [aString substringFromIndex:9];
+		[photo deleteCharactersInRange:NSMakeRange(0,9)];
 	}
-	if([aString length] > 10 && [[aString substringToIndex:10] isEqualToString:@"image/jpeg"])
+	else if([photo length] > 10 && [[photo substringToIndex:10] isEqualToString:@"image/jpeg"])
 	{
-		aString = [aString substringFromIndex:10];
+		[photo deleteCharactersInRange:NSMakeRange(0,10)];
 	}
-	[person setImageData:[aString base64DecodedData]];
+	[person setImageData:[photo base64DecodedData]];
 }
 - (void) addFN:(NSString*)aString
 {
+#ifdef GNUSTEP
+	NSArray * names = [aString componentsSeparatedByString:@" "];
+#else
 	NSArray * names = [aString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+#endif
 	switch([names count])
 	{
 		case 3:

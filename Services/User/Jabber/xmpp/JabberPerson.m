@@ -202,7 +202,11 @@
 			//as an ICQ UIN, not a JID)
 			if([vCard valueForProperty:kABJabberInstantProperty] == nil)
 			{
+#ifdef GNUSTEP
+				ABMutableMultiValue * vCardJID = [[ABMutableMultiValue alloc] initWithType:kABMultiStringProperty];
+#else
 				ABMutableMultiValue * vCardJID = [[ABMutableMultiValue alloc] init];
+#endif
 				[vCardJID addValue:[[anIq jid] jidStringWithNoResource] withLabel:kABJabberHomeLabel];
 				[vCard setValue:vCardJID forProperty:kABJabberInstantProperty];
 				[vCardJID release];

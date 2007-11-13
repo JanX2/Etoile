@@ -6,22 +6,11 @@
 //  Copyright 2004 __MyCompanyName__. All rights reserved.
 //
 
-#ifdef GNUSTEP
-#import <AddressBook/ADAddressBook.h>
-#import <AddressBook/ADMultiValue.h>
-#import <AddressBook/ADPerson.h>
-#define ABMultiValue ADMultiValue
-#define ABMutableMultiValue ADMutableMultiValue
-#define ABAddressBook ADAddressBook
-#define ABPerson ADPerson
-#define kABJabberInstantProperty ADJabberInstantProperty
-#else
-#import <AddressBook/ABAddressBook.h>
-#import <AddressBook/ABMultiValue.h>
-#import <AddressBook/ABPerson.h>
+#ifndef GNUSTEP
 #include <Security/Security.h>
 #endif
 
+#import <AddressBook/AddressBook.h>
 #import "XMPPAccount.h"
 #import "JID.h"
 //TODO: Remove this:

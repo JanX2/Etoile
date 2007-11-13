@@ -37,6 +37,7 @@ XMPP_OBJC_FILES = \
 					XMPPAccount.m\
 					XMPPConnection.m\
 					XMPPError.m\
+					XMPPvCard.m\
 					jabber_iq_roster.m\
 					query_jabber_iq_auth.m
 # Not currently compiled files:
@@ -73,6 +74,7 @@ XMPP_HEADER_FILES = \
 					XMPPAccount.h\
 					XMPPConnection.h\
 					XMPPError.h\
+					XMPPvCard.h\
 					jabber_iq_roster.h\
 					query_jabber_iq_auth.h
 
