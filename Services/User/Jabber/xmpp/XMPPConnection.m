@@ -410,7 +410,10 @@ static NSDictionary * STANZA_KEYS;
 	//This line should never be reached - it exists to get rid of a compiler warning
 	return NO;
 }
-
+- (NSString*) server
+{
+	return server;
+}
 //Digest non-SASL auth.
 - (void) legacyLogIn
 {

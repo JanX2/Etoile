@@ -7,105 +7,219 @@
 //
 
 #import "ServiceDiscovery.h"
+#import "XMPPAccount.h"
+#import "ETXMLNode.h"
+#import "DiscoInfo.h"
+#import "DiscoItems.h"
+#include "Macros.h"
 
-
-static const NSString * xmlnsDiscoInfo = @"http://jabber.org/protocol/disco#info";
-static const NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
+static NSString * xmlnsDiscoInfo = @"http://jabber.org/protocol/disco#info";
+static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 
 @implementation ServiceDiscovery
-- (ServiceDiscovery*) initWithAccount:(XMPPAccount*)xmppaccount
+- (ServiceDiscovery*) initWithAccount:(XMPPAccount*)account
 {
-	self = [self init];
-	if(!self)
-	{
-		return nil;
-	}
-	account = [xmppaccount retain];
-	cache = [[NSMutableDictionary alloc] init];
-	returnHandlers = [[NSMutableDictionary alloc] init];
+	SELFINIT;
+	features = [[NSMutableDictionary alloc] init];
+	myFeatures = [[NSMutableSet alloc] init];
+	//Feature must be supported
+	[myFeatures addObject:@"http://jabber.org/protocol/disco#info"];
+	//TODO: Put these initialisations somewhere sensible.
+	[myFeatures addObject:@"http://jabber.org/protocol/xhtml-im"];
+	children = [[NSMutableDictionary alloc] init];
+	capabilitiesPerJID = [[NSMutableDictionary alloc] init];
+	featuresForCapabilities = [[NSMutableDictionary alloc] init];
+	dispatcher = [[[account roster] dispatcher] retain];
+	connection = [[account connection] retain];
+	[dispatcher addIqQueryHandler:self forNamespace:xmlnsDiscoInfo];
+	[dispatcher addIqQueryHandler:self forNamespace:xmlnsDiscoItems];
 	return self;
 }
-
-//Return the capabilities if we know them
-- (Capabilities*) getCapabilitiesForJID:(JID*)jid atNode:(NSString*)node
+- (void) setCapabilities:(NSString*)caps forJID:(JID*)aJid
 {
-	NSDictionary * nodes = [cache objectForKey:[node jidString]];
-	Capabilities * caps;
+	NSString * jid = [aJid jidString];
+	[capabilitiesPerJID setObject:caps forKey:jid];
+	if([featuresForCapabilities objectForKey:caps] == nil)
+	{
+		[self featuresForJID:aJid node:nil];
+	}
+}
+- (void) sendQueryToJID:(const NSString*)jid node:(const NSString*)node inNamespace:(const NSString*)xmlns
+{
+	ETXMLNode * query;
 	if(node == nil)
 	{
-		caps = [nodes objectForKey:@""];
+		query = [[ETXMLNode alloc] initWithType:@"query" 
+									 attributes:D(xmlns, @"xmlns",
+												  node, @"node")];
 	}
 	else
 	{
-		caps = [nodes objectForKey:node];		
+		query = [[ETXMLNode alloc] initWithType:@"query" 
+									 attributes:D(xmlns, @"xmlns")];			
 	}
-	//If we have not already disco'd this node
-	if(caps == nil)
+	NSString * iqID = [connection newMessageID];
+	ETXMLNode * iq = [[ETXMLNode alloc] initWithType:@"iq"
+										  attributes:D(@"get", @"type",
+													   jid, @"to",
+													   iqID, @"id")];
+	[iq addChild:query];
+	[query release];
+	[connection XMPPSend:[iq stringValue]];
+	[iq release];
+	[dispatcher addIqResultHandler:self forID:iqID];
+}
+- (NSDictionary*) infoForJID:(JID*)aJid node:(NSString*)aNode
+{
+	NSString * jid = [aJid jidString];
+	NSString * node = aNode;
+	if(aNode == nil)
 	{
-		NSString * messageID = [[account connection] newMessageID];
-		ETXMLNode * queryNode = [ETXMLNode ETXMLNodeWithType:@"iq"
-												  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-													  messageID,@"id",
-													  @"get",@"type",
-													  nil]];
-		if(node == nil)
+		node = @"";
+	}
+	NSDictionary * result = [[features objectForKey:jid] objectForKey:node];
+	//If we haven't already got these values, request them
+	if(result == nil)
+	{
+		NSString * caps = [capabilitiesPerJID objectForKey:jid];
+		if(caps != nil)
 		{
-			[queryNode addChild:[ETXMLNode ETXMLNodeWithType:@"query" 
-												  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-													  xmlnsDiscoInfo, @"xmlns",
-													  nil]]];
+			result = [featuresForCapabilities objectForKey:caps];
 		}
 		else
 		{
-			[queryNode addChild:[ETXMLNode ETXMLNodeWithType:@"query" 
-												  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-													  xmlnsDiscoInfo, @"xmlns",
-													  node, @"node",
-													  nil]]];
+			[self sendQueryToJID:jid node:node inNamespace:xmlnsDiscoInfo];
 		}
-		[[[account connection] dispatcher] addIqResultHandler:self forID:messageID];
-		[[account connection] XMPPSend:[queryNode toXML]];
 	}
-	return caps;
+	return result;
 }
-
-- (void) invalidateCacheForJID:(JID*)jid
+- (NSArray*) identitiesForJID:(JID*)aJid node:(NSString*)aNode
 {
-	NSString * jidString = [jid jidString];
-	[cache removeObjectForKey:jidString];
-	[knownNodes removeObjectForKey:jidString];
+	NSDictionary * info = [self infoForJID:aJid node:aNode];
+	return [info objectForKey:@"identities"];
 }
-
-
-- (void) handleNode:(ETXMLNode*)node fromDispatcher:(id)_dispatcher
+- (NSArray*) featuresForJID:(JID*)aJid node:(NSString*)aNode
 {
-	if([[node getType] isEqualToString:@"iq"])
+	NSDictionary * info = [self infoForJID:aJid node:aNode];
+	return [info objectForKey:@"features"];
+}
+- (NSArray*) itemsForJID:(JID*)aJid node:(NSString*)aNode
+{
+	NSString * jid = [aJid jidString];
+	NSString * node = aNode;
+	if(aNode == nil)
 	{
-		NSString * nodeID = [xml get:@"id"];
-		if([[node get:@"type"] isEqualToString:@"result"])
+		node = @"";
+	}
+	NSArray * result = [[children objectForKey:jid] objectForKey:node];
+	//If we haven't already got these values, request them
+	if(result == nil)
+	{
+		[self sendQueryToJID:jid node:node inNamespace:xmlnsDiscoItems];
+	}
+	return result;
+}
+- (ETXMLNode*) queryNode
+{
+	ETXMLNode * query = [ETXMLNode ETXMLNodeWithType:@"query"
+										  attributes:D(xmlnsDiscoInfo, @"xmlns")];
+	//TODO: Make the type configurable
+	[query addChild:[ETXMLNode ETXMLNodeWithType:@"identity"
+									  attributes:D(@"client", @"category",
+												   @"pc", @"type")]];
+	FOREACH(myFeatures, feature, NSString*)
+	{
+		ETXMLNode * featureNode = [[ETXMLNode alloc] initWithType:@"feature"
+												   attributes:D(feature, @"var")];
+		[query addChild:featureNode];
+		[feature release];
+	}
+	return query;
+}
+- (void) handleIq:(Iq*)anIQ
+{
+	NSString * jid = [[anIQ jid] jidString];
+	switch([anIQ type])
+	{
+		case IQ_TYPE_GET:
 		{
-			ETXMLNode * query = [[xml getChildrenWithName:@"query"] anyObject];
-			Capabilities * caps = [[Capabilities alloc] initFromXML:query];
-			//Cache capabilities
-			[cache setObject:caps forKey:from];
-			//Send notification
-			NSInvocation * invocation = [returnHandlers objectForKey:nodeID];
-			[returnHandlers removeObjectForKey:nodeID];
-			[invocation setArgument:caps atIndex:2];
-			[invocation invoke];
-			[invocation release];
+			if([[anIQ queryNamespace] isEqualToString:xmlnsDiscoInfo])
+			{
+				ETXMLNode * result = [[ETXMLNode alloc] initWithType:@"iq"
+														  attributes:D(@"result", @"type",
+																	   jid, @"to",
+																	   [anIQ sequenceID], @"id")];
+				[result addChild:[self queryNode]];
+				[connection XMPPSend:[result stringValue]];
+				[result release];
+			}
+			break;
 		}
-		else if([[node get:@"type"] isEqualToString:@"get"])
+		case IQ_TYPE_RESULT:
+		{
+			DiscoInfo * info = [[anIQ children] objectForKey:@"DiscoInfo"];
+			DiscoItems * items = [[anIQ children] objectForKey:@"DiscoItems"];
+			if(info != nil)
+			{
+				NSDictionary * nodeInfo = D([info identities], @"identities",
+											[info features], @"features");
+				NSString * node = [info node];
+				if(node == nil)
+				{
+					node = @"";
+				}
+				NSMutableDictionary * nodes = [features objectForKey:jid];
+				if(nodes == nil)
+				{
+					nodes = [NSMutableDictionary dictionary];
+					[features setObject:nodes forKey:jid];
+				}
+				[nodes setObject:nodeInfo forKey:node];
+				NSString * caps = [capabilitiesPerJID objectForKey:jid];
+				if(caps != nil)
+				{
+					[featuresForCapabilities setObject:nodeInfo forKey:caps];
+				}
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"DiscoFeaturesFound"
+																	object:self
+																  userInfo:D(jid, @"jid")];
+			}
+			if(items != nil)
+			{
+				NSArray * nodeItems = [items items];
+				NSString * node = [items node];
+				if(node == nil)
+				{
+					node = @"";
+				}
+				NSMutableDictionary * nodes = [children objectForKey:jid];
+				if(nodes == nil)
+				{
+					nodes = [NSMutableDictionary dictionary];
+					[children setObject:nodes forKey:jid];
+				}
+				[nodes setObject:nodeItems forKey:node];
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"DiscoItemsFound"
+																	object:self
+																  userInfo:D(jid, @"jid")];		
+			}	
+		}
+		default:
 		{
 			
 		}
 	}
 }
+- (void) addFeature:(NSString*)aFeature
+{
+	[myFeatures addObject:aFeature];
+}
 
 - (void) dealloc
 {
-	[account release];
-	[cache release];
+	[connection release];
+	[myFeatures release];
+	[dispatcher release];
 	[knownNodes release];
 	[super dealloc];
 }

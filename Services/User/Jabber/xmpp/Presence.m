@@ -128,8 +128,13 @@ int PRESENCE_ICONS[] = {
 		}
 		else
 		{
-			NSLog(@"Presence stanza with unknown type received.");
+			//NSLog(@"Presence stanza with unknown type received.");
 		}
+	}
+	else if([aName isEqualToString:@"c"])
+	{
+		caps = [[attributes objectForKey:@"ver"] retain];
+		depth++;
 	}
 	else
 	{
@@ -211,6 +216,11 @@ int PRESENCE_ICONS[] = {
 	return type;
 }
 
+- (NSString*) caps
+{
+	return caps;
+}
+
 - (NSComparisonResult) compare:(Presence*)_otherPresence
 {
 	if(onlineStatus < [_otherPresence show])
@@ -222,5 +232,14 @@ int PRESENCE_ICONS[] = {
 		return NSOrderedDescending;
 	}
 	return NSOrderedSame;
+}
+
+- (void) dealloc
+{
+	[from release];
+	[message release];
+	[nickname release];
+	[caps release];
+	[super dealloc];
 }
 @end

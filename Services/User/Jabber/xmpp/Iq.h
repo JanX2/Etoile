@@ -19,6 +19,7 @@ typedef enum {IQ_TYPE_SET,IQ_TYPE_GET,IQ_TYPE_RESULT,IQ_TYPE_ERROR} iq_type_t;
 	iq_type_t type;
 	NSString * sequenceID;
 	JID * jid;
+	NSString * queryxmlns;
 	NSMutableDictionary * children;
 }
 /**
@@ -41,4 +42,8 @@ typedef enum {IQ_TYPE_SET,IQ_TYPE_GET,IQ_TYPE_RESULT,IQ_TYPE_ERROR} iq_type_t;
  * Returns the Jabber ID of the sender.
  */
 - (JID*) jid;
+/**
+ * Returns the namespace of the query node, if there is one.
+ */
+- (NSString*) queryNamespace;
 @end

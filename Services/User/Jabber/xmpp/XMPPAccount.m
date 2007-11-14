@@ -12,6 +12,7 @@
 
 #import <AddressBook/AddressBook.h>
 #import "XMPPAccount.h"
+#import "Roster.h"
 #import "JID.h"
 //TODO: Remove this:
 #import "../JabberApp.h"
@@ -109,8 +110,8 @@ id getDefault(NSString * dictionary, id key)
 	}
 	
 	name = [_name retain];
-	roster = [[Roster alloc] initWithAccount:self];
-	connection = [[XMPPConnection alloc] initWithAccount:self];
+	roster = (Roster*)[[Roster alloc] initWithAccount:self];
+	connection = (XMPPConnection*)[[XMPPConnection alloc] initWithAccount:self];
 	[connection setPresenceDisplay:[roster delegate]];
 
 	//Get user's Jabber ID from Address Book

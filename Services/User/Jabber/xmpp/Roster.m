@@ -13,10 +13,11 @@
 #import "JabberRootIdentity.h"
 #import "JabberResource.h"
 #import "CompareHack.h"
+#import "ServiceDiscovery.h"
 #include "../Macros.h"
 
 @implementation Roster
-- (id) initWithAccount:(id)_account
+- (Roster*) initWithAccount:(id)_account
 {
 	self = [self init];
 	if(self == nil || ![_account isKindOfClass:[XMPPAccount class]])
@@ -30,9 +31,6 @@
 
 - (id) init
 {
-	account = nil;
-	delegate = nil;
-	dispatcher = nil;
 	peopleByJID = [[NSMutableDictionary alloc] init];
 	groups = [[NSMutableArray alloc] init];
 	groupsByName = [[NSMutableDictionary alloc] init];
@@ -69,6 +67,10 @@
 	NSLog(@"Parsing roster...");
 	connection = [(XMPPAccount*)account connection];
 	dispatcher = [connection dispatcher];
+	if(disco == nil)
+	{
+		disco = (ServiceDiscovery*)[[ServiceDiscovery alloc] initWithAccount:account];		
+	}
 
 	FOREACH([[rosterQuery children] objectForKey:@"RosterItems"], newIdentity, JabberIdentity*)
 	{
@@ -143,7 +145,15 @@
 			//Ignore presence info for people not on the roster.  
 			//If there is a conversation open for these people, it should have registered itself already
 		case online:
+		{
+			NSString * caps = [aPresence caps];
+			if(caps != nil)
+			{
+				[disco setCapabilities:caps forJID:[aPresence jid]];		
+			}
 			//TODO: Make this temporarily add people to the roster when they bing-bong you. 
+			break;
+		}
 		case unavailable:
 		default:
 			break;

@@ -30,7 +30,20 @@ static IqStanzaFactory * sharedInstance;
 				   inNamespace:@"vcard-temp"];
 	[sharedInstance addValue:@"vCard"
 					  forTag:@"vCard" 
-				 inNamespace:@"vcard-temp"];	
+				 inNamespace:@"vcard-temp"];
+	//Service Discovery:
+	[sharedInstance addHandler:NSClassFromString(@"DiscoItems")
+						forTag:@"query" 
+				   inNamespace:@"http://jabber.org/protocol/disco#items"];
+	[sharedInstance addValue:@"DiscoItems"
+					  forTag:@"query" 
+				 inNamespace:@"http://jabber.org/protocol/disco#items"];
+		[sharedInstance addHandler:NSClassFromString(@"DiscoInfo")
+						forTag:@"query" 
+				   inNamespace:@"http://jabber.org/protocol/disco#info"];
+	[sharedInstance addValue:@"DiscoItems"
+					  forTag:@"query" 
+				 inNamespace:@"http://jabber.org/protocol/disco#items"];
 }
 
 + (id) sharedStazaFactory

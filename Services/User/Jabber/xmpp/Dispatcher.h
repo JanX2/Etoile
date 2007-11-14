@@ -55,6 +55,7 @@
  */
 @interface Dispatcher : NSObject {
 	NSMutableDictionary * iqHandlers;
+	NSMutableDictionary * iqNamespaceHandlers;
 	NSMutableDictionary * messageHandlers;
 	NSMutableDictionary * presenceHandlers;
 	id <IqHandler> defaultIqHandler;
@@ -82,6 +83,11 @@
  * remote clients.
  */
 - (id) addIqResultHandler:(id <IqHandler>)handler forID:(NSString*)iqID;
+/**
+ * Add a handler for info-query packets with the type 'set' or 'get' in the 
+ * specified namespace.
+ */
+- (id) addIqQueryHandler:(id <IqHandler>)handler forNamespace:(NSString*)aNamespace;
 /**
  * Add a message handler for a specified JID.  All messages sent by this JID 
  * will be routed to the specified handler.  If a JID with no resource is 

@@ -13,6 +13,7 @@
 #import "Presence.h"
 #import "Iq.h"
 
+@class ServiceDiscovery;
 /**
  * Protocol to be implemented by a roster UI component.
  */
@@ -33,6 +34,7 @@
 	NSMutableDictionary * peopleByJID;
 	NSMutableDictionary * groupsByName;
 	NSMutableArray * groups;
+	ServiceDiscovery * disco;
 	BOOL connected;
 	//TODO: Dispatcher should be in Account
 	Dispatcher * dispatcher;
@@ -45,7 +47,7 @@
 /**
  * Initialise a roster for a specified account.
  */
-- (id) initWithAccount:(id)_account;
+- (Roster*) initWithAccount:(id)_account;
 /**
  * Add items to the roster from an iq with type result containing one or more 
  * roster items.

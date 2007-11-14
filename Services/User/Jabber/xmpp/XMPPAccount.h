@@ -7,12 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Roster.h"
 #import "XMPPConnection.h"
 #import "JID.h"
 
 #define XMPPNOJIDEXCEPTION @"NoJIDinAB"
 #define XMPPNOPASSWORDEXCEPTION @"NoPasswordForJid"
+
+@class Roster;
 
 /**
  * The XMPPAccount class represents a single XMPP account.  The JID is retrieved

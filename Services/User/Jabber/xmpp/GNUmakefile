@@ -15,6 +15,8 @@ XMPP_OBJC_FILES = \
 					Conversation.m\
 					DefaultHandler.m\
 					Dispatcher.m\
+					DiscoItems.m\
+					DiscoInfo.m\
 					GroupChat.m\
 					Iq.m\
 					IqStanzaFactory.m\
@@ -40,17 +42,16 @@ XMPP_OBJC_FILES = \
 					XMPPvCard.m\
 					jabber_iq_roster.m\
 					query_jabber_iq_auth.m
-# Not currently compiled files:
-#					Capabilities.m\
-#					ServiceDiscovery.m\
+					ServiceDiscovery.m\
 
 XMPP_HEADER_FILES = \
-					Capabilities.h\
 					ChatLog.h\
 					CompareHack.h\
 					Conversation.h\
 					DefaultHandler.h\
 					Dispatcher.h\
+					DiscoItems.h\
+					DiscoInfo.h\
 					GroupChat.h\
 					Iq.h\
 					IqStanzaFactory.h\

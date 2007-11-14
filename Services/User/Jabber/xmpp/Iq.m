@@ -44,13 +44,16 @@ static NSDictionary * TYPES;
 	{
 		IqStanzaFactory * factory = [IqStanzaFactory sharedStazaFactory];
 		NSString * xmlns = [attributes objectForKey:@"xmlns"];
+		if([aName isEqualToString:@"query"])
+		{
+			queryxmlns = [xmlns retain];
+		}
 		Class handler = [factory handlerForTag:aName inNamespace:xmlns];
 		NSString * elementKey = [factory valueForTag:aName inNamespace:xmlns];
 		[[[handler alloc] initWithXMLParser:parser
 									 parent:self
 										key:elementKey] startElement:aName
 														  attributes:attributes];
-		
 	}
 }
 - (NSString*) sequenceID
@@ -67,7 +70,10 @@ static NSDictionary * TYPES;
 {
 	return type;
 }
-
+- (NSString*) queryNamespace
+{
+	return queryxmlns;
+}
 //TODO:  Put this in a Stanza class, and make it a common superclass of Iq, Message and Presence
 - (void) addChild:(id)aChild forKey:(NSString*)aKey
 {
@@ -77,5 +83,14 @@ static NSDictionary * TYPES;
 - (NSDictionary*) children
 {
 	return children;
+}
+
+- (void) dealloc
+{
+	[sequenceID release];
+	[jid release];
+	[queryxmlns release];
+	[children release];
+	[super dealloc];
 }
 @end

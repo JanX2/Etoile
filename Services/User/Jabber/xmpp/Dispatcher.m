@@ -35,10 +35,24 @@
 - (id) init
 {
 	iqHandlers = [[NSMutableDictionary alloc] init];
+	iqNamespaceHandlers = [[NSMutableDictionary alloc] init];
 	messageHandlers = [[NSMutableDictionary alloc] init];
 	presenceHandlers = [[NSMutableDictionary alloc] init];
 	
 	return [super init];
+}
+
+- (id) addIqQueryHandler:(id <IqHandler>)handler forNamespace:(NSString*)aNamespace
+{
+	NSMutableSet * handlers = [iqNamespaceHandlers valueForKey:aNamespace];
+	if(handlers == nil)
+	{
+		handlers = [[NSMutableSet alloc] init];
+		[iqNamespaceHandlers setObject:handlers forKey:aNamespace];
+		[handlers release];
+	}
+	[handlers addObject:handler];
+	return self;
 }
 
 - (id) addIqResultHandler:(id <IqHandler>)handler forID:(NSString*)iqID
@@ -79,69 +93,6 @@
 	[handlers addObject:handler];
 	return self;
 }
-
-- (void) dispatch:(ETXMLNode*)node
-{
-/*	NSMutableSet * handlers = nil;
-	id <DispatchDelegate> defaultHandler = nil;
-	if([[node getType] isEqualToString:@"message"])
-	{
-		NSString * jidString = [node get:@"from"];
-		handlers = [messageHandlers objectForKey:jidString];
-		if(handlers == nil)
-		{
-			JID *  jid = [[JID jidWithString:[node get:@"from"]] retain];
-			handlers = [messageHandlers objectForKey:[jid jidStringWithNoResource]];
-			if(handlers == nil)
-			{
-				handlers = [[NSMutableSet alloc] init];
-				[messageHandlers setObject:handlers forKey:[jid jidStringWithNoResource]];
-				[handlers release];
-			}
-		}
-		defaultHandler = defaultMessageHandler;
-	}
-	else if([[node getType] isEqualToString:@"presence"])
-	{
-		NSString * jidString = [node get:@"from"];
-		handlers = [presenceHandlers objectForKey:jidString];
-		if(handlers == nil)
-		{
-			JID *  jid = [JID jidWithString:[node get:@"from"]];
-			handlers = [presenceHandlers objectForKey:[jid jidStringWithNoResource]];
-			if(handlers == nil)
-			{
-				handlers = [[NSMutableSet alloc] init];
-				[presenceHandlers setObject:handlers forKey:[jid jidStringWithNoResource]];
-				[handlers release];
-			}
-		}
-		defaultHandler = defaultPresenceHandler;
-	}
-	else if([[node getType] isEqualToString:@"iq"])
-	{
-		NSString * nodeId = [node get:@"id"];
-		if(nodeId != nil)
-		{
-			handlers = [iqHandlers objectForKey:nodeId];
-			if(handlers == nil)
-			{
-				handlers = [[NSMutableSet alloc] init];
-				[iqHandlers setObject:handlers forKey:[node get:@"id"]];
-				[handlers release];
-			}
-		}
-		defaultHandler = defaultIqHandler;
-	}
-	NSEnumerator * handlerList = [handlers objectEnumerator];
-	id <DispatchDelegate> currentHandler;
-	while((currentHandler = [handlerList nextObject]))
-	{
-		[currentHandler handleNode:node fromDispatcher:self];
-	}
-	[defaultHandler handleNode:node fromDispatcher:self];*/
-}
-
 - (void) dispatchMessage:(Message*)aMessage
 {
 	JID * jid = [aMessage correspondent];
@@ -184,11 +135,22 @@
 
 - (void) dispatchIq:(Iq*)anIq
 {
-	//TODO: namespaced handlers for 'get's.
-	NSMutableSet * handlers = [iqHandlers valueForKey:[anIq sequenceID]];
-	FOREACH(handlers, iqHandler, id<IqHandler>)
+	iq_type_t type = [anIq type];
+	if(type == IQ_TYPE_SET || type == IQ_TYPE_GET)
 	{
-		[iqHandler handleIq:anIq];
+		NSMutableSet * handlers = [iqNamespaceHandlers valueForKey:[anIq queryNamespace]];
+		FOREACH(handlers, iqHandler, id<IqHandler>)
+		{
+			[iqHandler handleIq:anIq];
+		}		
+	}
+	else
+	{
+		NSMutableSet * handlers = [iqHandlers valueForKey:[anIq sequenceID]];
+		FOREACH(handlers, iqHandler, id<IqHandler>)
+		{
+			[iqHandler handleIq:anIq];
+		}
 	}
 	[defaultIqHandler handleIq:anIq];
 }

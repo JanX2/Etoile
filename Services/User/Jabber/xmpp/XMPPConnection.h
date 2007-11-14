@@ -123,4 +123,8 @@ typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSess
  * Returns the dispatcher associated with the connection.
  */
 - (Dispatcher*) dispatcher;
+/**
+ * Returns the server name.
+ */
+- (NSString*) server;
 @end

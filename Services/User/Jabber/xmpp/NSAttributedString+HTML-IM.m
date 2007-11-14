@@ -175,7 +175,7 @@ void addCdataWithLineBreaksToNode(ETXMLNode * node, NSString* cdata)
 		}
 		start = attributeRange.location + attributeRange.length;
 	}
-	NSLog(@"XHTML-IM: %@", [html stringValue]);
+	//NSLog(@"XHTML-IM: %@", [html stringValue]);
 	return html;
 }
 

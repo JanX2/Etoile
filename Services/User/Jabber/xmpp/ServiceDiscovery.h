@@ -7,22 +7,54 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "XMPPAccount.h"
 #import "Dispatcher.h"
-#import "Capabilities.h"
 
+@class XMPPAccount;
+@class XMPPConnection;
 /**
- * Service discovery handler class.  Not yet implemented.
+ * Service discovery handler class.  Handles XEP-0030 service discovery and
+ * caching via XEP-0115 entity capabilities.
  */
-@interface ServiceDiscovery : NSObject <DispatchDelegate> {
-	XMPPAccount * account;
-	NSMutableDictionary * cache;
+@interface ServiceDiscovery : NSObject <IqHandler> {
+	XMPPConnection * connection;
+	Dispatcher * dispatcher;
+	NSMutableDictionary * features;
+	NSMutableDictionary * children;
 	NSMutableDictionary * knownNodes;
-	NSMutableSet * capabilities;
+	NSMutableDictionary * capabilitiesPerJID;
+	NSMutableDictionary * featuresForCapabilities;
+	NSMutableSet * myFeatures;
 }
-- (ServiceDiscovery*) initWithAccount:(XMPPAccount*)xmppaccount;
-- (void) getCapabilitiesForJID:(JID*)node notifyObject:(id)target withSelector:(SEL)selector;
-- (void) handleNode:(ETXMLNode*)node fromDispatcher:(id)_dispatcher;
-- (void) invalidateCacheForJID:(JID*)jid;
-
+- (ServiceDiscovery*) initWithAccount:(XMPPAccount*)account;
+/**
+ * Sets XEP-00115 entitiy capabilities for a specified JID.
+ */
+- (void) setCapabilities:(NSString*)caps forJID:(JID*)aJid;
+/**
+ * Returns the identities associated with a given JID/node combination.
+ * Returns nil if they have not been retrieved yet.  A DiscoFeaturesFound
+ * notification will be posted when they have been with the jid field of the
+ * userinfo dictionary set to the 
+ * JID.
+ */
+- (NSArray*) identitiesForJID:(JID*)aJid node:(NSString*)aNode;
+/**
+ * Returns the features associated with a given JID/node combination.  Returns
+ * nil if they have not been retrieved yet.  A DiscoFeaturesFound notification
+ * will be posted when they have been with the jid field of the userinfo
+ * dictionary set to the 
+ * JID.
+ */
+- (NSArray*) featuresForJID:(JID*)aJid node:(NSString*)aNode;
+/**
+ * Returns the items associated with a given JID/node combination.  Returns nil
+ * if they have not been retrieved yet.  A DiscoItemsFound notification will be
+ * posted when they have been with the jid field of the userinfo dictionary set
+ * to the JID.
+ */
+- (NSArray*) itemsForJID:(JID*)aJid node:(NSString*)aNode;
+/**
+ * Adds a feature to the list this client advertises.
+ */
+- (void) addFeature:(NSString*)aFeature;
 @end

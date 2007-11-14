@@ -71,6 +71,7 @@ typedef enum {online, unavailable, subscribe, unsubscribe, subscribed, unsubscri
 	unsigned char onlineStatus;
 	NSString * message;
 	NSString * nickname;
+	NSString * caps;
 	int priority;
 }
 /**
@@ -112,6 +113,10 @@ typedef enum {online, unavailable, subscribe, unsubscribe, subscribed, unsubscri
  * Returns the JID of the sender.
  */
 - (JID*) jid;
+/**
+ * Returns the XEP-0115 entity capabilities ver string.
+ */
+- (NSString*) caps;
 /**
  * Returns the presence type as described above.
  */

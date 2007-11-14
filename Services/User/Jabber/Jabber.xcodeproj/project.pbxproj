@@ -140,6 +140,11 @@
 		2888DE9C0719AA6C00A44A41 /* CustomPresenceWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2888DE9A0719AA6C00A44A41 /* CustomPresenceWindowController.h */; };
 		2891BCB2063BBCA700A7F522 /* JID.h in Headers */ = {isa = PBXBuildFile; fileRef = 2891BCB0063BBCA700A7F522 /* JID.h */; };
 		289836A8063DB65700A3D164 /* RosterController.h in Headers */ = {isa = PBXBuildFile; fileRef = 289836A6063DB65700A3D164 /* RosterController.h */; };
+		289EC29F0CEB19BA00E89CE6 /* DiscoInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 289EC29D0CEB19BA00E89CE6 /* DiscoInfo.h */; };
+		289EC2A00CEB19BA00E89CE6 /* DiscoInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 289EC29E0CEB19BA00E89CE6 /* DiscoInfo.m */; };
+		289EC2B10CEB1C9200E89CE6 /* DiscoItems.h in Headers */ = {isa = PBXBuildFile; fileRef = 289EC2AF0CEB1C9200E89CE6 /* DiscoItems.h */; };
+		289EC2B20CEB1C9200E89CE6 /* DiscoItems.m in Sources */ = {isa = PBXBuildFile; fileRef = 289EC2B00CEB1C9200E89CE6 /* DiscoItems.m */; };
+		289EC42D0CEB790B00E89CE6 /* ServiceDiscovery.m in Sources */ = {isa = PBXBuildFile; fileRef = 28A5476907C6780600595357 /* ServiceDiscovery.m */; };
 		28A32C2E082E3E3B0012AD55 /* Capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 28A32C2C082E3E3B0012AD55 /* Capabilities.h */; };
 		28A5470807C66A3500595357 /* ChatLogMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 28A5470607C66A3500595357 /* ChatLogMenuController.h */; };
 		28C5029406B3CEED00CE9114 /* RosterGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 28C5029206B3CEED00CE9114 /* RosterGroup.h */; };
@@ -350,6 +355,10 @@
 		2891BCB1063BBCA700A7F522 /* JID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JID.m; path = xmpp/JID.m; sourceTree = "<group>"; };
 		289836A6063DB65700A3D164 /* RosterController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RosterController.h; sourceTree = "<group>"; };
 		289836A7063DB65700A3D164 /* RosterController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RosterController.m; sourceTree = "<group>"; };
+		289EC29D0CEB19BA00E89CE6 /* DiscoInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DiscoInfo.h; path = xmpp/DiscoInfo.h; sourceTree = "<group>"; };
+		289EC29E0CEB19BA00E89CE6 /* DiscoInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DiscoInfo.m; path = xmpp/DiscoInfo.m; sourceTree = "<group>"; };
+		289EC2AF0CEB1C9200E89CE6 /* DiscoItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DiscoItems.h; path = xmpp/DiscoItems.h; sourceTree = "<group>"; };
+		289EC2B00CEB1C9200E89CE6 /* DiscoItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DiscoItems.m; path = xmpp/DiscoItems.m; sourceTree = "<group>"; };
 		28A32C2C082E3E3B0012AD55 /* Capabilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Capabilities.h; path = xmpp/Capabilities.h; sourceTree = "<group>"; };
 		28A32C2D082E3E3B0012AD55 /* Capabilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Capabilities.m; path = xmpp/Capabilities.m; sourceTree = "<group>"; };
 		28A5470607C66A3500595357 /* ChatLogMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatLogMenuController.h; sourceTree = "<group>"; };
@@ -507,6 +516,8 @@
 		28C501F506B2680E00CE9114 /* XMPP */ = {
 			isa = PBXGroup;
 			children = (
+				289EC2AF0CEB1C9200E89CE6 /* DiscoItems.h */,
+				289EC2B00CEB1C9200E89CE6 /* DiscoItems.m */,
 				283963E10CE8AEC0007958FA /* XMPPvCard.h */,
 				283963E20CE8AEC0007958FA /* XMPPvCard.m */,
 				28CCCECB0C832DC90025B407 /* ChatLog.m */,
@@ -573,6 +584,8 @@
 				285A5CC80B3571C600F5A7AB /* CompareHack.m */,
 				28CCCD990C8322310025B407 /* NSAttributedString+HTML-IM.h */,
 				28CCCD9A0C8322310025B407 /* NSAttributedString+HTML-IM.m */,
+				289EC29D0CEB19BA00E89CE6 /* DiscoInfo.h */,
+				289EC29E0CEB19BA00E89CE6 /* DiscoInfo.m */,
 			);
 			name = XMPP;
 			sourceTree = "<group>";
@@ -775,6 +788,8 @@
 				28CCCE460C832BD00025B407 /* XMPPConnection.h in Headers */,
 				28CCCE480C832BD00025B407 /* XMPPError.h in Headers */,
 				283963E30CE8AEC0007958FA /* XMPPvCard.h in Headers */,
+				289EC29F0CEB19BA00E89CE6 /* DiscoInfo.h in Headers */,
+				289EC2B10CEB1C9200E89CE6 /* DiscoItems.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1020,6 +1035,9 @@
 				283D78ED0C8335C200986BBA /* XMPPConnection.m in Sources */,
 				283D78EE0C8335C200986BBA /* XMPPError.m in Sources */,
 				283963E40CE8AEC0007958FA /* XMPPvCard.m in Sources */,
+				289EC2A00CEB19BA00E89CE6 /* DiscoInfo.m in Sources */,
+				289EC2B20CEB1C9200E89CE6 /* DiscoItems.m in Sources */,
+				289EC42D0CEB790B00E89CE6 /* ServiceDiscovery.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

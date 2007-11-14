@@ -17,7 +17,6 @@
 	self = [self init];
 	if(self == nil)
 	{
-		[self release];
 		return nil;
 	}
 	account = _account;
@@ -29,7 +28,6 @@
 	self = [super init];
 	if(self == nil)
 	{
-		[self release];
 		return nil;
 	}
 	account = nil;
