@@ -15,6 +15,7 @@
 	Roster * data;
 	XMPPAccount * account;
 	IBOutlet NSOutlineView * view;
+	IBOutlet NSTableColumn * avatarColumn;
 	IBOutlet NSTableColumn * column;
 	IBOutlet NSPopUpButton * presenceBox;
 	IBOutlet NSTextField * statusBox;

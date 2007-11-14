@@ -34,6 +34,7 @@
 	peopleByJID = [[NSMutableDictionary alloc] init];
 	groups = [[NSMutableArray alloc] init];
 	groupsByName = [[NSMutableDictionary alloc] init];
+	queriedServers = [[NSMutableSet alloc] init];
 	initialMessage = nil;
 	initialStatus = PRESENCE_ONLINE;
 	return [super init];
@@ -90,6 +91,12 @@
 		}
 		else
 		{
+			NSString * server = [jid domain];
+			if(![queriedServers containsObject:server])
+			{
+				[queriedServers addObject:server];
+				[disco featuresForJID:[JID jidWithString:server] node:nil];
+			}
 			NSString * groupName = [newIdentity group];
 			if(groupName == nil)
 			{
@@ -436,6 +443,10 @@
 - (Dispatcher*) dispatcher
 {
 	return dispatcher;
+}
+- (ServiceDiscovery*) disco
+{
+	return disco;
 }
 - (id) connection
 {

@@ -41,9 +41,9 @@ static IqStanzaFactory * sharedInstance;
 		[sharedInstance addHandler:NSClassFromString(@"DiscoInfo")
 						forTag:@"query" 
 				   inNamespace:@"http://jabber.org/protocol/disco#info"];
-	[sharedInstance addValue:@"DiscoItems"
+	[sharedInstance addValue:@"DiscoInfo"
 					  forTag:@"query" 
-				 inNamespace:@"http://jabber.org/protocol/disco#items"];
+				 inNamespace:@"http://jabber.org/protocol/disco#info"];
 }
 
 + (id) sharedStazaFactory

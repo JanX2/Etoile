@@ -11,6 +11,7 @@
 #import "Roster.h"
 #import "CompareHack.h"
 #import "XMPPConnection.h"
+#import "ServiceDiscovery.h"
 #import "../Macros.h"
 
 @implementation JabberPerson
@@ -200,6 +201,39 @@
 			}
 			//TODO: Parse bridged JIDs correctly (i.e. parse 123456@icq.example.com 
 			//as an ICQ UIN, not a JID)
+			id property = kABJabberInstantProperty;
+			id label = kABJabberHomeLabel;
+			JID * jid = [anIq jid];
+			NSString * address = [jid jidStringWithNoResource];
+			NSArray * serverIdentities = [[roster disco] identitiesForJID:[JID jidWithString:[jid domain]] node:nil];
+			NSString * gatewayType = nil;
+			FOREACH(serverIdentities, serverIdentity, NSDictionary*)
+			{
+				if([[serverIdentity objectForKey:@"category"] isEqualToString:@"gateway"])
+				{
+					gatewayType = [serverIdentity objectForKey:@"type"];
+				}
+			}
+			if(gatewayType != nil)
+			{
+				if([gatewayType isEqualToString:@"msn"])
+				{
+					property = kABMSNInstantProperty;
+					label = kABMSNHomeLabel;
+					NSMutableString * msnAddress = [NSMutableString stringWithString:[jid domain]];
+					[msnAddress replaceOccurrencesOfString:@"%%"
+												withString:@"@"
+												   options:0
+													 range:NSMakeRange(0, [msnAddress length])];
+					address = msnAddress;
+				}
+				else if([gatewayType isEqualToString:@"aim"])
+				{
+					property = kABAIMInstantProperty;
+					label = kABAIMHomeLabel;
+					address = [jid node];
+				}
+			}
 			if([vCard valueForProperty:kABJabberInstantProperty] == nil)
 			{
 #ifdef GNUSTEP
@@ -207,7 +241,7 @@
 #else
 				ABMutableMultiValue * vCardJID = [[ABMutableMultiValue alloc] init];
 #endif
-				[vCardJID addValue:[[anIq jid] jidStringWithNoResource] withLabel:kABJabberHomeLabel];
+				[vCardJID addValue:address withLabel:kABJabberHomeLabel];
 				[vCard setValue:vCardJID forProperty:kABJabberInstantProperty];
 				[vCardJID release];
 			}

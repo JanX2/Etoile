@@ -34,6 +34,7 @@
 	NSMutableDictionary * peopleByJID;
 	NSMutableDictionary * groupsByName;
 	NSMutableArray * groups;
+	NSMutableSet * queriedServers;
 	ServiceDiscovery * disco;
 	BOOL connected;
 	//TODO: Dispatcher should be in Account
@@ -146,5 +147,9 @@
  * Returns the connection used by this roster.
  */
 - (id) connection;
+/**
+ * Returns the service discovery interface.
+ */
+- (ServiceDiscovery*) disco;
 @end
 

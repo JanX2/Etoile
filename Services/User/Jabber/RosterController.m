@@ -216,8 +216,9 @@ NSMutableArray * rosterControllers = nil;
 	float indent = [view indentationPerLevel] + (interCellHorizontalSpacing);
 	size.width = [self widthOfItemAndChildren:nil withIndent:indent];
 	size.width += interCellHorizontalSpacing + indent;
-	[[[view tableColumns] objectAtIndex:0] setWidth:size.width];
-	size.width += interCellHorizontalSpacing;
+	[avatarColumn setWidth:54.0f];
+	[column setWidth:size.width];
+	size.width += interCellHorizontalSpacing + 54.0f;
 
 	//Calculate height
 #ifdef GNUSTEP
@@ -572,7 +573,18 @@ NSMutableArray * rosterControllers = nil;
 }
 - (id)outlineView:(NSOutlineView *)_outlineView objectValueForTableColumn:(NSTableColumn *)_tableColumn byItem:(id)_item
 {
-	return [self displayStringForObject:_item];
+	if(_tableColumn == column)
+	{
+		return [self displayStringForObject:_item];
+	}
+	else
+	{
+		if([_item isKindOfClass:[JabberPerson class]])
+		{
+			return [(JabberPerson*)_item avatar];
+		}
+	}
+	return nil;
 }
 
 - (void)outlineViewItemDidExpand:(NSNotification *)notification
