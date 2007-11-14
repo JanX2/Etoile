@@ -215,9 +215,10 @@ NSMutableArray * rosterControllers = nil;
 	float interCellHorizontalSpacing = [view intercellSpacing].width;
 //	float indent = [view indentationPerLevel] + (interCellHorizontalSpacing);
 	size.width = [self widthOfItemAndChildren:nil withIndent:0.0f];
-//	size.width += interCellHorizontalSpacing;
-	[column setWidth:size.width];
-	size.width += interCellHorizontalSpacing;// + 54.0f;
+	size.width += interCellHorizontalSpacing;
+	//Hack to ensure text doesn't get truncated.
+	[column setWidth:size.width + 200];
+	size.width += interCellHorizontalSpacing + 70.0f;
 
 	//Calculate height
 #ifdef GNUSTEP
