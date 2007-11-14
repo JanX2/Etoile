@@ -213,12 +213,11 @@ NSMutableArray * rosterControllers = nil;
 	NSSize size;
 	//Calculate width
 	float interCellHorizontalSpacing = [view intercellSpacing].width;
-	float indent = [view indentationPerLevel] + (interCellHorizontalSpacing);
-	size.width = [self widthOfItemAndChildren:nil withIndent:indent];
-	size.width += interCellHorizontalSpacing + indent;
-	[avatarColumn setWidth:54.0f];
+//	float indent = [view indentationPerLevel] + (interCellHorizontalSpacing);
+	size.width = [self widthOfItemAndChildren:nil withIndent:0.0f];
+//	size.width += interCellHorizontalSpacing;
 	[column setWidth:size.width];
-	size.width += interCellHorizontalSpacing + 54.0f;
+	size.width += interCellHorizontalSpacing;// + 54.0f;
 
 	//Calculate height
 #ifdef GNUSTEP
