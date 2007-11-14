@@ -109,7 +109,10 @@
 {
 	return priority;
 }
-
+- (NSString*) subscription
+{
+	return subscription;
+}
 - (id) person
 {
 	return person;

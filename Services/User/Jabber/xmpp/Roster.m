@@ -73,29 +73,45 @@
 	FOREACH([[rosterQuery children] objectForKey:@"RosterItems"], newIdentity, JabberIdentity*)
 	{
 		JID * jid = [newIdentity jid];
-		NSString * groupName = [newIdentity group];
-		if(groupName == nil)
+		if([[newIdentity subscription] isEqualToString:@"remove"])
 		{
-			groupName = @"None";
+			JabberPerson * person = [self personForJID:jid];
+			JabberIdentity * oldIdentity = [person identityForJID:jid];
+			RosterGroup * group = [self groupNamed:[person group]];
+			[group removeIdentity:oldIdentity];
+			[peopleByJID removeObjectForKey:[jid jidStringWithNoResource]];
+			if([group numberOfPeopleInGroupMoreOnlineThan:PRESENCE_UNKNOWN + 10] == 0)
+			{
+				[groups removeObject:group];
+				[groupsByName removeObjectForKey:[group groupName]];
+			}
 		}
-		RosterGroup * group = [groupsByName objectForKey:groupName];
-		if(group == nil)
+		else
 		{
-			group = [RosterGroup groupWithRoster:self];
-			[group groupName:groupName];
-			[groupsByName setObject:group forKey:groupName];
-			[groups addObject:group];
-			//[groups sortUsingSelector:@selector(compare:)];
-			[groups sortUsingFunction:compareTest context:nil];
+			NSString * groupName = [newIdentity group];
+			if(groupName == nil)
+			{
+				groupName = @"None";
+			}
+			RosterGroup * group = [groupsByName objectForKey:groupName];
+			if(group == nil)
+			{
+				group = [RosterGroup groupWithRoster:self];
+				[group groupName:groupName];
+				[groupsByName setObject:group forKey:groupName];
+				[groups addObject:group];
+				//[groups sortUsingSelector:@selector(compare:)];
+				[groups sortUsingFunction:compareTest context:nil];
+				
+			}
+			[group addIdentity:newIdentity];
 			
+			[peopleByJID setObject:[group personNamed:[newIdentity name]] 
+							forKey:[jid jidStringWithNoResource]];
+			
+			[dispatcher addPresenceHandler:[newIdentity person]
+									ForJID:[jid jidStringWithNoResource]];			
 		}
-		[group addIdentity:newIdentity];
-
-		[peopleByJID setObject:[group personNamed:[newIdentity name]] 
-						forKey:[jid jidStringWithNoResource]];
-
-		[dispatcher addPresenceHandler:[newIdentity person]
-								ForJID:[jid jidStringWithNoResource]];
 	}
 	//Once we have received the roster, tell the server we are online.
 	if(!connected)
@@ -141,13 +157,6 @@
 	{
 		[self addRosterFromQuery:anIq];
 	}
-/*	ETXMLNode * child = [[node getChildrenWithName:@"query"] anyObject];
-	if([[child get:@"xmlns"] isEqualToString:@"jabber:iq:roster"])
-	{
-		[self addRosterFromQuery:child];
-		//Trigger a full roster redisplay after it has been updated
-		[delegate update:nil];
-	}*/
 }
 
 - (void) subscribe:(JID*)_jid withName:(NSString*)_name inGroup:(NSString*)_group
@@ -215,7 +224,6 @@
 												[_jid jidString], @"jid",
 												nil]];
 	[query addChild:item];
-	[setRoster addChild:query];	
 	[setRoster addChild:query];
 	[connection XMPPSend:[setRoster stringValue]];
 }
@@ -381,6 +389,10 @@
 
 - (RosterGroup*) groupNamed:(NSString*)_groupName
 {
+	if(_groupName == nil)
+	{
+		_groupName = @"None";
+	}
 	return [groupsByName objectForKey:_groupName];
 }
 - (int) numberOfGroups

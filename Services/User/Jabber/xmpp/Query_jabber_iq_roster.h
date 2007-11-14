@@ -17,6 +17,7 @@
  */
 @interface Query_jabber_iq_roster : ETXMLNullHandler {
 	NSMutableArray * identities;
+	NSMutableArray * deletedIdentities;
 }
 
 @end

@@ -74,6 +74,10 @@
  */
 - (int) priority;
 /**
+ * The type of subscription that the user has to this contact.
+ */
+- (NSString*) subscription;
+/**
  * Compare two identities by their priority.  Used to determine which should
  * be the default recipient of messages.
  */

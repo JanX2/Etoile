@@ -1,99 +1,234 @@
-{
-    IBClasses = (
-        {
-            ACTIONS = {addPerson = id; cancel = id; }; 
-            CLASS = AddContactWindowController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {group = NSTextField; jid = NSTextField; name = NSTextField; }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {
-            ACTIONS = {openChatLog = id; }; 
-            CLASS = ChatLogMenuController; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {
-            ACTIONS = {cancel = id; okay = id; }; 
-            CLASS = CustomPresenceWindowController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {message = NSTextView; name = NSComboBox; presence = NSComboBox; }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {away = id; dnd = id; none = id; offline = id; xa = id; }; 
-            CLASS = HideMenuController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {current = id; }; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {
-            ACTIONS = {setCustomPresence = id; showRosterWindow = id; }; 
-            CLASS = JabberApp; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                customPresenceWindow = CustomPresenceWindowController; 
-                debugMenu = NSMenuItem; 
-                xmlLogBox = NSTextView; 
-            }; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
-        {
-            ACTIONS = {
-                playMessageSound = id; 
-                playOfflineSound = id; 
-                playOnlineSound = id; 
-                selectMessageSound = id; 
-                selectOfflineSound = id; 
-                selectOnlineSound = id; 
-            }; 
-            CLASS = PreferenceWindowController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                awayColour = NSColorWell; 
-                chatColour = NSColorWell; 
-                dndColour = NSColorWell; 
-                messageSoundBox = NSComboBox; 
-                offlineColour = NSColorWell; 
-                offlineSoundBox = NSComboBox; 
-                onlineColour = NSColorWell; 
-                onlineSoundBox = NSComboBox; 
-                unknownColour = NSColorWell; 
-                xaColour = NSColorWell; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {
-            CLASS = PresenceLogController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {view = NSTextView; }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {
-            ACTIONS = {
-                away = id; 
-                chat = id; 
-                custom = id; 
-                dnd = id; 
-                offline = id; 
-                online = id; 
-                xa = id; 
-            }; 
-            CLASS = PresenceMenuController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {current = id; }; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = Roster; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {CLASS = RosterController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            CLASS = XMLLog; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {textView = NSTextView; }; 
-            SUPERCLASS = NSObject; 
-        }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>playMessageSound</key>
+				<string>id</string>
+				<key>playOfflineSound</key>
+				<string>id</string>
+				<key>playOnlineSound</key>
+				<string>id</string>
+				<key>selectMessageSound</key>
+				<string>id</string>
+				<key>selectOfflineSound</key>
+				<string>id</string>
+				<key>selectOnlineSound</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>PreferenceWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>awayColour</key>
+				<string>NSColorWell</string>
+				<key>chatColour</key>
+				<string>NSColorWell</string>
+				<key>dndColour</key>
+				<string>NSColorWell</string>
+				<key>messageSoundBox</key>
+				<string>NSComboBox</string>
+				<key>offlineColour</key>
+				<string>NSColorWell</string>
+				<key>offlineSoundBox</key>
+				<string>NSComboBox</string>
+				<key>onlineColour</key>
+				<string>NSColorWell</string>
+				<key>onlineSoundBox</key>
+				<string>NSComboBox</string>
+				<key>unknownColour</key>
+				<string>NSColorWell</string>
+				<key>xaColour</key>
+				<string>NSColorWell</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>PresenceLogController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>view</key>
+				<string>NSTextView</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>addPerson</key>
+				<string>id</string>
+				<key>cancel</key>
+				<string>id</string>
+				<key>showWindow</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>AddContactWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>group</key>
+				<string>NSTextField</string>
+				<key>jid</key>
+				<string>NSTextField</string>
+				<key>name</key>
+				<string>NSTextField</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>setCustomPresence</key>
+				<string>id</string>
+				<key>showRosterWindow</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>JabberApp</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>customPresenceWindow</key>
+				<string>CustomPresenceWindowController</string>
+				<key>debugMenu</key>
+				<string>NSMenuItem</string>
+				<key>xmlLogBox</key>
+				<string>NSTextView</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>away</key>
+				<string>id</string>
+				<key>chat</key>
+				<string>id</string>
+				<key>custom</key>
+				<string>id</string>
+				<key>dnd</key>
+				<string>id</string>
+				<key>offline</key>
+				<string>id</string>
+				<key>online</key>
+				<string>id</string>
+				<key>xa</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>PresenceMenuController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>current</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSTextView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSText</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>remove</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>away</key>
+				<string>id</string>
+				<key>dnd</key>
+				<string>id</string>
+				<key>none</key>
+				<string>id</string>
+				<key>offline</key>
+				<string>id</string>
+				<key>xa</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>HideMenuController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>current</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>openChatLog</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>ChatLogMenuController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>cancel</key>
+				<string>id</string>
+				<key>okay</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>CustomPresenceWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>message</key>
+				<string>NSTextView</string>
+				<key>name</key>
+				<string>NSComboBox</string>
+				<key>presence</key>
+				<string>NSComboBox</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

@@ -15,6 +15,7 @@
 #import "Conversation.h"
 #import "TRUserDefaults.h"
 #import "MessageWindowController.h"
+#import "Macros.h"
 
 #define AUTO_RESIZE
 
@@ -502,7 +503,56 @@ NSMutableArray * rosterControllers = nil;
 	}
 	return NO;
 }
-
+- (void) confirmDeleteDidEnd:(NSAlert *)alert returnCode:(int)returnCode contact:(id)contact
+{
+	if(returnCode == NSAlertFirstButtonReturn)
+	{
+		if([contact isKindOfClass:[JabberPerson class]])
+		{
+			FOREACH([contact identityList], identity, JabberIdentity*)
+			{
+				NSLog(@"Deleting %@", [[identity jid] jidString]);
+				[data unsubscribe:[identity jid]];
+			}
+		}
+		else if([contact isKindOfClass:[JabberIdentity class]])
+		{
+			NSLog(@"Deleting %@", [[contact jid] jidString]);
+			[data unsubscribe:[contact jid]];			
+		}
+	}
+	[alert release];
+}
+- (IBAction) remove:(id)sender
+{
+	id item = [view itemAtRow:[view selectedRow]];
+	if([item isKindOfClass:[JabberPerson class]])
+	{
+		NSAlert * alert = [[NSAlert alloc] init];
+		[alert addButtonWithTitle:@"Delete Contact"];
+		[alert addButtonWithTitle:@"Cancel"];
+		[alert setMessageText:[NSString stringWithFormat:@"Are you sure you want to delete %@?", [item name]]];
+		[alert setInformativeText:@"All identities for this contact will be deleted."];
+		[alert setAlertStyle:NSWarningAlertStyle];
+		[alert beginSheetModalForWindow:[self window]
+						  modalDelegate:self
+						 didEndSelector:@selector(confirmDeleteDidEnd:returnCode:contact:)
+							contextInfo:item];		
+	}
+	else if([item isKindOfClass:[JabberIdentity class]])
+	{
+		NSAlert * alert = [[NSAlert alloc] init];
+		[alert addButtonWithTitle:@"Delete Contact"];
+		[alert addButtonWithTitle:@"Cancel"];
+		[alert setMessageText:[NSString stringWithFormat:@"Are you sure you want to delete %@?", [[item jid] jidString]]];
+		[alert setInformativeText:@"Other identities belonging to this contact will be unaffected."];
+		[alert setAlertStyle:NSWarningAlertStyle];
+		[alert beginSheetModalForWindow:[self window]
+						  modalDelegate:self
+						 didEndSelector:@selector(confirmDeleteDidEnd:returnCode:contact:)
+							contextInfo:item];		
+	}
+}
 - (int)outlineView:(NSOutlineView *)_outlineView numberOfChildrenOfItem:(id)_item
 {
 	//Root node.  Children are all groups

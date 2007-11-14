@@ -23,5 +23,6 @@
 - (void) updatePresence:(NSNotification*)_notification;
 - (IBAction) click:(id)sender;
 - (IBAction) changePresence:(id)sender;
+- (IBAction) remove:(id)sender;
 - (NSString*) currentStatusMessage;
 @end
