@@ -7,11 +7,9 @@
 	<key>IBLastKnownRelativeProjectPath</key>
 	<string>../../Jabber.xcodeproj</string>
 	<key>IBOldestOS</key>
-	<integer>5</integer>
+	<integer>3</integer>
 	<key>IBOpenObjects</key>
-	<array>
-		<integer>63</integer>
-	</array>
+	<array/>
 	<key>IBSystem Version</key>
 	<string>9A581</string>
 	<key>targetFramework</key>
