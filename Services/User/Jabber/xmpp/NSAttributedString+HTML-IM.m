@@ -149,14 +149,14 @@ void addCdataWithLineBreaksToNode(ETXMLNode * node, NSString* cdata)
 		//Get the range and attributes:
 		NSDictionary * attributes = [self attributesAtIndex:start effectiveRange:&attributeRange];
 		NSString * css = styleFromAttributes(attributes);
-		NSString * linkTarget = [NSString stringWithFormat:@"%@", [attributes objectForKey:NSLinkAttributeName]];
+		NSURL * linkTarget = [attributes objectForKey:NSLinkAttributeName];
 		ETXMLNode * span;
 		if(![css isEqualToString:@""] || linkTarget != nil)
 		{
 			if(linkTarget != nil)
 			{
 				span = [ETXMLNode ETXMLNodeWithType:@"a"];
-				[span set:@"href" to:linkTarget];
+				[span set:@"href" to:[NSString stringWithFormat:@"%@", linkTarget]];
 			}
 			else
 			{
