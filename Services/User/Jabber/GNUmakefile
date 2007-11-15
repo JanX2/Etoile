@@ -21,14 +21,15 @@ StepChat_RESOURCE_FILES = \
 StepChat_LOCALIZED_RESOURCE_FILES = \
 	  MainMenu.nib\
 	  AccountBox.nib\
-	  PasswordBox.nib\
-	  RosterWindow.nib
+	  PasswordBox.nib
 ifeq ($(FOUNDATION_LIB), apple)
 StepChat_LOCALIZED_RESOURCE_FILES += \
-	  MessageWindow.nib
+	  MessageWindow.nib\
+	  RosterWindow.nib
 else
 StepChat_LOCALIZED_RESOURCE_FILES += \
-	  MessageWindow.gorm
+	  MessageWindow.gorm\
+	  RosterWindow.gorm
 endif
 
 #

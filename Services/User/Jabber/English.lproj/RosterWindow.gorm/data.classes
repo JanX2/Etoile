@@ -3,19 +3,23 @@
     FirstResponder = {
 	Actions = (
 	    "changePresence:",
-	    "click:"
+	    "click:",
+	    "remove:"
 	);
 	Super = NSObject;
     };
     RosterController = {
 	Actions = (
 	    "click:",
-	    "changePresence:"
+	    "changePresence:",
+	    "remove:"
 	);
 	Outlets = (
 	    view,
+	    avatarColumn,
 	    column,
-	    presenceBox
+	    presenceBox,
+	    statusBox
 	);
 	Super = NSWindowController;
     };

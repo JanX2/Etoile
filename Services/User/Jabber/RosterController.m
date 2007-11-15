@@ -25,9 +25,10 @@
 #define setAttributedTitle(x) setAttributedTitle:x
 #endif
 
-//Don't animate the window on GNUstep; it breaks
+//Don't animate the window on GNUstep; it breaks (Seems to work now.  Delete
+//this if it doesn't break)
 #ifdef GNUSTEP
-#define ANIMATE_WINDOW NO
+#define ANIMATE_WINDOW YES
 #else
 #define ANIMATE_WINDOW YES
 #endif
@@ -76,7 +77,10 @@ NSMutableArray * rosterControllers = nil;
 	[super windowDidLoad];
 	[view setHeaderView: nil];
 	[view setCornerView: nil];
+	avatarColumn= [[view tableColumns] objectAtIndex:0];
+	column = [[view tableColumns] objectAtIndex:1];
 	[[self window] setShowsResizeIndicator:YES];
+	NSLog(@"Loaded roster window");
 }
 #endif
 

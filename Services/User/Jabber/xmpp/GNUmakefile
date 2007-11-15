@@ -41,7 +41,7 @@ XMPP_OBJC_FILES = \
 					XMPPError.m\
 					XMPPvCard.m\
 					jabber_iq_roster.m\
-					query_jabber_iq_auth.m
+					query_jabber_iq_auth.m\
 					ServiceDiscovery.m\
 
 XMPP_HEADER_FILES = \
