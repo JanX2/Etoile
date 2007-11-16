@@ -549,6 +549,7 @@ LOAD_METHOD(Selector, SEL)
 					}
 					else
 					{
+						//NSLog(@"Storing 0x%x as address of %d", address, aReference);
 						NSMapInsert(objectPointers, address, (void*)aReference);
 					}
 				}

@@ -223,6 +223,20 @@ id testRoundTrip(NSString * tempfile, id object)
 	testWithBackend([ETSerialiserBackendExample class], nil);
 }
 #endif
+- (void) testDictionary
+{
+	NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:
+		@"val1", @"key1",
+		@"val2", @"key2",
+		@"val3", @"key3",
+		@"val4", @"key4",
+		@"val5", @"key5",
+		nil];
+	NSDictionary * newdict = testRoundTrip(@"dictionarytestfile", dict);
+	UKTrue([dict isEqual:newdict]);
+	NSMutableDictionary * mutable = [newdict mutableCopy];
+	UKTrue([dict isEqual:testRoundTrip(@"dictionarytestfile", mutable)]);
+}
 - (void) testArray
 {
 	NSArray * array =[NSArray arrayWithObjects:@"foo", @"bar", @"wibble", nil];
