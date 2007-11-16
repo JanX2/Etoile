@@ -34,7 +34,7 @@
 /**
  * Returns NO, indicating that the object does not serialise the variable manually.
  */
-- (BOOL) serialise:(char*)aVariable using:(id <ETSerialiserBackend>)aBackend
+- (BOOL) serialise:(char*)aVariable using:(ETSerialiser*)aBackend
 {
 	return NO;
 }
@@ -127,6 +127,10 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 	[storedObjects release];
 	[super dealloc];
 }
+- (id<ETSerialiserBackend>) backend
+{
+	return backend;
+}
 
 /**
  * Add an object to the queue of unstored objects if we haven't loaded it yet,
@@ -200,7 +204,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 			{
 				[self enqueueObject:*(id*)address];
 			}
-			[backend storeObjectReference:(unsigned long long)(uintptr_t)(*(id*)address) withName:name];
+			[backend storeObjectReference:COREF_FROM_ID(*(id*)address) withName:name];
 			return sizeof(id);
 		default:
 			printf("%c not recognised(%s)\n", type, name);
@@ -430,8 +434,8 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 				/* Don't bother with the isa pointer; we get that filled in for us automatically */
 				if(strcmp("isa", name) != 0)
 				{
-					//NSLog(@"Serialising ivar: %s", name);
-					if(![anObject serialise:name using:backend])
+					//NSLog(@"Serialising ivar: %s in %@", name, anObject);
+					if(![anObject serialise:name using:self])
 					{
 						//TODO: Print the name of the ivar and class if this fails.
 						[self parseType:type atAddress:address withName:name];

@@ -34,7 +34,7 @@ else
 include $(GNUSTEP_MAKEFILES)/framework.make
 endif
 
-include $(GNUSTEP_MAKEFILES)/documentation.make
+#include $(GNUSTEP_MAKEFILES)/documentation.make
 
 -include GNUmakefile.postamble
 

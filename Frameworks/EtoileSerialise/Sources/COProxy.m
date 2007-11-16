@@ -7,7 +7,7 @@
 @implementation NSObject(CoreObject)
 + (SEL*) immutableMethods
 {
-	static selectors[] ={(SEL)0}; 
+	static SEL selectors[] ={(SEL)0}; 
 	return selectors;
 }
 @end

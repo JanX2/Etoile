@@ -144,11 +144,11 @@ void * TestStructDeserialiser(char* varName,
 /**
  * Custom serialiser method for storing a pointer.
  */
-- (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend
+- (BOOL) serialise:(char*)aVariable using:(ETSerialiser*)aSerialiser
 {
 	if(strcmp(aVariable, "aPointer") == 0)
 	{
-		[aBackend storeData:aPointer ofSize:5 withName:aVariable];
+		[[aSerialiser backend] storeData:aPointer ofSize:5 withName:aVariable];
 		return YES;
 	}
 	return NO;
@@ -196,6 +196,19 @@ void testWithBackend(Class backend, NSURL * anURL)
 	[serialiser release];
 	[pool release];
 }
+id testRoundTrip(NSString * tempfile, id object)
+{
+	NSAutoreleasePool * pool = [NSAutoreleasePool new];
+	id serialiser = [ETSerialiser serialiserWithBackend:[ETSerialiserBackendBinaryFile class]
+												 forURL:[NSURL fileURLWithPath:tempfile]];
+	[serialiser serialiseObject:object withName:"test"];
+	[serialiser release];
+	[pool release];
+	id deback = [ETDeserialiserBackendBinaryFile new];
+	[deback deserialiseFromURL:[NSURL fileURLWithPath:tempfile]];
+	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
+	return [deserialiser restoreObjectGraph];
+}
 
 @interface ETSerialiserTest : NSObject <UKTest>
 @end
@@ -210,6 +223,20 @@ void testWithBackend(Class backend, NSURL * anURL)
 	testWithBackend([ETSerialiserBackendExample class], nil);
 }
 #endif
+- (void) testArray
+{
+	NSArray * array =[NSArray arrayWithObjects:@"foo", @"bar", @"wibble", nil];
+	NSArray * newArray = testRoundTrip(@"arraytestfile", array);
+	UKTrue([array isEqual:newArray]);
+	NSMutableArray * mutable = [newArray mutableCopy];
+	[mutable addObject:[NSNumber numberWithInt:12]];
+	[mutable addObject:[NSNumber numberWithInt:26]];
+	[mutable addObject:[NSNumber numberWithInt:35]];
+	[mutable addObject:[NSNumber numberWithInt:59]];
+	[mutable addObject:@"another string"];
+	NSMutableArray * mutableCopy = testRoundTrip(@"mutablearraytestfile", mutable);
+	UKTrue([mutable isEqual:mutableCopy]);
+}
 /**
  * Serialise an instance of the test class with the binary back end, then try
  * re-loading it and see if any information was lost.

@@ -3,6 +3,11 @@
  */
 #import <Foundation/Foundation.h>
 
+/** 
+ * Turn a pointer into a CORef.
+ */
+//TODO: 64-bit version of this.
+#define COREF_FROM_ID(x) ((CORef)(unsigned long)x)
 /**
  * CoreObject reference type, used to uniquely identify serialised objects
  * within a serialised object graph.
@@ -153,30 +158,6 @@ typedef uint32_t CORef;
 
 #define MANUAL_DESERIALISE ((void*)1)
 #define AUTO_DESERIALISE ((void*)0)
-/**
- * Informal protocol for serialisable objects.  Implement this to manually
- * handle unsupported types.
- */
-@interface NSObject (ETSerialisable)
-/** 
- * Serialise the named variable with the given serialiser back end.  This
- * method should return YES if manual serialisation has occurred.  Returning NO
- * will cause the serialiser to attempt automatic serialisation.
- */
-- (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend;
-/**
- * Load the contents of the named instance variable from the contents of
- * aBlob.  The aVersion parameter indicates the version
- * of the class that serialised this instance variable as returned by +version.
- * This method should return MANUAL_DESERIALISE for cases if it completely
- * deserialises the variable or AUTO_DESERIALISE to cause the deserialiser to
- * automatically deserialise it.  If the deserialiser should load the variable
- * to a different location, it should return a pointer to the location.  An
- * example use of this would be when loading a structure-pointer or dynamic
- * array, where the memory should be allocated prior to deserialisation.
- */
-- (void*) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion;
-@end
 
 /**
  * Type used for returns from type parser functions and custom structure
@@ -233,4 +214,37 @@ typedef parsed_type_size_t(*custom_serialiser)(char*,void*, id<ETSerialiserBacke
  * Serialise the specified object.
  */
 - (unsigned long long) serialiseObject:(id)anObject withName:(char*)aName;
+/**
+ * Add an object to the queue of unstored objects if we haven't loaded it yet,
+ * or increment its reference count if we have.
+ */ 
+- (void) enqueueObject:(id)anObject;
+/**
+ * Retrieves the back end used by this serialiser.
+ */
+- (id<ETSerialiserBackend>) backend;
+@end
+/**
+ * Informal protocol for serialisable objects.  Implement this to manually
+ * handle unsupported types.
+ */
+@interface NSObject (ETSerialisable)
+/** 
+ * Serialise the named variable with the given serialiser back end.  This
+ * method should return YES if manual serialisation has occurred.  Returning NO
+ * will cause the serialiser to attempt automatic serialisation.
+ */
+- (BOOL) serialise:(char*)aVariable using:(ETSerialiser*)aSerialiser;
+/**
+ * Load the contents of the named instance variable from the contents of
+ * aBlob.  The aVersion parameter indicates the version
+ * of the class that serialised this instance variable as returned by +version.
+ * This method should return MANUAL_DESERIALISE for cases if it completely
+ * deserialises the variable or AUTO_DESERIALISE to cause the deserialiser to
+ * automatically deserialise it.  If the deserialiser should load the variable
+ * to a different location, it should return a pointer to the location.  An
+ * example use of this would be when loading a structure-pointer or dynamic
+ * array, where the memory should be allocated prior to deserialisation.
+ */
+- (void*) deserialise:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion;
 @end

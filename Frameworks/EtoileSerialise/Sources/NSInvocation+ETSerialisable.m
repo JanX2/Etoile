@@ -59,14 +59,14 @@ void deserialiseArgumentInfo(NSArgumentInfo * sig, char * name, void * aBlob)
 /**
  * Store the array of argument info structures.
  */
-- (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend
+- (BOOL) serialise:(char*)aVariable using:(ETSerialiser*)aSerialiser
 {
 	CASE(_info)
 	{
-		serialiseArgumentInfos(_info, _numArgs + 1, aVariable, aBackend);
+		serialiseArgumentInfos(_info, _numArgs + 1, aVariable, [aSerialiser backend]);
 		return YES;
 	}
-	return [super serialise:aVariable using:aBackend];
+	return [super serialise:aVariable using:aSerialiser];
 }
 /**
  * Reload the _info array.  Allocates space for it wgen the number of elements is known.
@@ -95,7 +95,7 @@ static int discardRetValSize = 0;
  * will be re-created after deserialisation.  _info, _retval and _cframe fall
  * into this category.
  */
-- (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend
+- (BOOL) serialise:(char*)aVariable using:(ETSerialiser*)aSerialiser
 {
 	CASE(_info)
 	{
@@ -106,7 +106,7 @@ static int discardRetValSize = 0;
 	CASE(_retval)
 	{
 		//Don't store retval, but use this as a trigger to re-create it.
-		[aBackend storeInt:0 withName:aVariable];
+		[[aSerialiser backend] storeInt:0 withName:aVariable];
 		return YES;
 	}
 	CASE(_cframe)
@@ -114,7 +114,7 @@ static int discardRetValSize = 0;
 		//Save the arguments later
 		return YES;
 	}
-	return [super serialise:aVariable using:aBackend];
+	return [super serialise:aVariable using:aSerialiser];
 }
 /**
  * Point _retval at a static buffer (we discard the return value unless someone

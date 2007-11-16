@@ -10,6 +10,7 @@ libEtoileSerialise_OBJC_FILES = \
 					ETSerialiserBackendBinaryFile.m \
 					ETSerialiserBackendExample.m \
 					ETSerialiserNullBackend.m \
+					GSArray+ETSerialisable.m \
 					GSMutableString+ETSerialisable.m \
 					NSDataStatic+ETSerialisable.m \
 					NSInvocation+ETSerialisable.m \
@@ -20,7 +21,7 @@ libEtoileSerialise_OBJC_FILES +=\
 					ETSerialiserTest.m 
 endif
 
-libEtoileSerialise_OBJCFLAGS += -g -std=c99
+libEtoileSerialise_OBJCFLAGS += -g -std=c99 -Werror
 
 -include ../GNUmakefile.preamble
 

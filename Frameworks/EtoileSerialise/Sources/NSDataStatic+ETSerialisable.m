@@ -12,17 +12,17 @@
  * Category on NSDataStatic to correctly store the data.
  */
 @implementation NSDataStatic(ETSerialisable)
-- (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend
+- (BOOL) serialise:(char*)aVariable using:(ETSerialiser*)aSerialiser
 {
-	if([super serialise:aVariable using:aBackend])
+	if([super serialise:aVariable using:aSerialiser])
 	{
 		return YES;
 	}
 	if(strcmp(aVariable, "bytes") == 0)
 	{
-		[aBackend storeData:bytes
-					 ofSize:length
-				   withName:"bytes"];
+		[[aSerialiser backend] storeData:bytes
+								  ofSize:length
+								withName:"bytes"];
 		return YES;
 	}
 	return NO;

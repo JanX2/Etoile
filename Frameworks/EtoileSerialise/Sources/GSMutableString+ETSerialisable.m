@@ -10,30 +10,30 @@
  * Store the flags (a bitfield) as a single integer and the _contents as a 
  * blob of data.
  */
-- (BOOL) serialise:(char*)aVariable using:(id<ETSerialiserBackend>)aBackend
+- (BOOL) serialise:(char*)aVariable using:(ETSerialiser*)aSerialiser
 {
 	if(strcmp(aVariable, "_flags") == 0)
 	{
-		[aBackend storeInt:*(int*)&_flags withName:"_flags"];
+		[[aSerialiser backend] storeInt:*(int*)&_flags withName:"_flags"];
 		return YES;
 	}
 	if(strcmp(aVariable, "_contents") == 0)
 	{
 		if(_flags.wide)
 		{
-			[aBackend storeData:_contents.u
+			[[aSerialiser backend] storeData:_contents.u
 						 ofSize:sizeof(unichar) * (_count + 1)
 					   withName:"_contents"];
 		}
 		else
 		{
-			[aBackend storeData:_contents.c
+			[[aSerialiser backend] storeData:_contents.c
 						 ofSize:sizeof(char) * (_count + 1)
 					   withName:"_contents"];
 		}
 		return YES;
 	}
-	return [super serialise:aVariable using:aBackend];
+	return [super serialise:aVariable using:aSerialiser];
 }
 /**
  * Load the flags and correctly.

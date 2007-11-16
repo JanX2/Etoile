@@ -530,29 +530,33 @@ LOAD_METHOD(Selector, SEL)
  */
 - (void) loadObjectReference:(CORef)aReference withName:(char*)aName
 {
-	if(![object deserialise:aName fromPointer:&aName version:classVersion])
+	id * address = [object deserialise:aName fromPointer:&aName version:classVersion];
+	switch((long)address)
 	{
-		if(aReference != 0)
-		{
-			id aVal = GET_OBJ(aReference);
-			if(aVal != nil)
-			{
-				LOAD_INTRINSIC(id, aName);
-			}
-			else
-			{
-				void * pointer = OFFSET_OF_IVAR(object, aName, loadedIVar++, id);
-				NSMapInsert(objectPointers, pointer, (void*)aReference);
-			}
-		}
-		else
-		{
-			char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, id);
+		case YES:
+			break;
+		case NO:
+			address = OFFSET_OF_IVAR(object, aName, loadedIVar++, id);
+		default:
 			if(address != NULL)
 			{
-				*(id*)address = nil;
+				if(aReference != 0)
+				{
+					id aVal = GET_OBJ(aReference);
+					if(aVal != nil)
+					{
+						*address = aVal;
+					}
+					else
+					{
+						NSMapInsert(objectPointers, address, (void*)aReference);
+					}
+				}
+				else
+				{
+					*(id*)address = nil;
+				}
 			}
-		}
 	}
 }
 /**
