@@ -237,6 +237,20 @@ id testRoundTrip(NSString * tempfile, id object)
 	NSMutableDictionary * mutable = [newdict mutableCopy];
 	UKTrue([dict isEqual:testRoundTrip(@"dictionarytestfile", mutable)]);
 }
+- (void) testSet
+{
+	NSSet * set =[NSSet setWithObjects:@"foo", @"bar", @"wibble", nil];
+	NSSet * newSet = testRoundTrip(@"settestfile", set);
+	UKTrue([set isEqual:newSet]);
+	NSMutableSet * mutable = [newSet mutableCopy];
+	[mutable addObject:[NSNumber numberWithInt:12]];
+	[mutable addObject:[NSNumber numberWithInt:26]];
+	[mutable addObject:[NSNumber numberWithInt:35]];
+	[mutable addObject:[NSNumber numberWithInt:59]];
+	[mutable addObject:@"another string"];
+	NSMutableSet * mutableCopy = testRoundTrip(@"mutablesettestfile", mutable);
+	UKTrue([mutable isEqual:mutableCopy]);
+}
 - (void) testArray
 {
 	NSArray * array =[NSArray arrayWithObjects:@"foo", @"bar", @"wibble", nil];

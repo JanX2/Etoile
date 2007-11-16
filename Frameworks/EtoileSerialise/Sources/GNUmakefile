@@ -12,6 +12,7 @@ libEtoileSerialise_OBJC_FILES = \
 					ETSerialiserNullBackend.m \
 					GSArray+ETSerialisable.m \
 					GSDictionary+ETSerialisable.m \
+					GSSet+ETSerialisable.m \
 					GSMutableString+ETSerialisable.m \
 					NSDataStatic+ETSerialisable.m \
 					NSInvocation+ETSerialisable.m \

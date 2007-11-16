@@ -1,22 +1,20 @@
 #import "ETSerialiser.h"
 #import "ETDeserialiser.h"
 #import <GNUstepBase/GSIMap.h>
-@interface GSDictionary : NSDictionary
+@interface GSSet : NSSet
 {
 	@public
 		  GSIMapTable_t map;
 }
 @end
-@class GSMutableDictionary;
 
-
-#define MAP_IVAR (((GSDictionary*)self)->map)
+#define MAP_IVAR (((GSSet*)self)->map)
 
 #define CASE(x) if(strcmp(aVariable, #x) == 0)
 /**
  * Category for correctly serialising array objects.
  */
-@implementation NSDictionary (ETSerialisable)
+@implementation NSSet (ETSerialisable)
 - (BOOL) serialise:(char*)aVariable using:(ETSerialiser*)aSerialiser
 {
 	CASE(map)
@@ -31,16 +29,9 @@
 		{
 			char * saveName;
 			id key = node->key.obj;
-			//TODO: Work out why this is needed:
-			id value = [self objectForKey:node->key.obj];//node->value.obj;
 			asprintf(&saveName, "map.%d", i);
 			[back storeObjectReference:COREF_FROM_ID(key) withName:saveName];
 			[aSerialiser enqueueObject:key];
-			free(saveName);
-			i++;
-			asprintf(&saveName, "map.%d", i);
-			[back storeObjectReference:COREF_FROM_ID(value) withName:saveName];
-			[aSerialiser enqueueObject:value];
 			free(saveName);
 			i++;
 			node = GSIMapEnumeratorNextNode(&enumerator);
@@ -56,7 +47,7 @@
 	CASE(_count)
 	{
 		unsigned count = *(unsigned*)aBlob;
-		*objects = calloc(count * 2 + 2, sizeof(id));
+		*objects = calloc(count + 1, sizeof(id));
 		(*objects)[0] = (id)count;
 	}
 	int index;
@@ -69,14 +60,7 @@
 - (void) finishedDeserialising
 {
 	id* objects = *(id**)&MAP_IVAR;
-	[self init];
-	Class real = self->isa;
-	self->isa = [GSMutableDictionary class];
-	for(unsigned i=1 ; (objects)[i] != nil ; i+=2)
-	{
-		[(GSMutableDictionary*)self setObject:objects[i+1] forKey:objects[i]];
-	}
-	self->isa = real;
+	[self initWithObjects:objects+1 count:(unsigned)(unsigned long)objects[0]];
 	free(objects);
 }
 @end
