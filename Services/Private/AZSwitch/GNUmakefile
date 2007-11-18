@@ -18,6 +18,7 @@ ADDITIONAL_INCLUDE_DIRS += \
 ADDITIONAL_LIB_DIRS += \
 	-L/usr/X11R6/lib -lX11 \
 	-lXWindowServerKit \
+	-lEtoileFoundation \
 	-lEtoileUI
 
 include $(GNUSTEP_MAKEFILES)/application.make
