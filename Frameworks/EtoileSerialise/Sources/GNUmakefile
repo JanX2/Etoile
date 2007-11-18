@@ -4,6 +4,7 @@ SUBPROJECT_NAME = libEtoileSerialise
 
 libEtoileSerialise_OBJC_FILES = \
 					COProxy.m \
+					COProxy_NSAttributedString.m \
 					ETDeserialiser.m \
 					ETDeserialiserBinaryFile.m \
 					ETSerialiser.m \

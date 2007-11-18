@@ -10,6 +10,7 @@ ${FRAMEWORK_NAME}_HEADER_FILES_DIR = Headers
 
 
 ${FRAMEWORK_NAME}_HEADER_FILES = \
+				   EtoileSerialise.h\
 				   COProxy.h\
 				   ETDeserialiserBinaryFile.h\
 				   ETSerialiserBackendBinaryFile.h\

@@ -2,6 +2,37 @@
 #import "ETSerialiser.h"
 #import "ETDeserialiser.h"
 
+#define STORE_FLAGS_AND_CONTENTS()\
+	if(strcmp(aVariable, "_flags") == 0)\
+	{\
+		[[aSerialiser backend] storeInt:*(int*)&_flags withName:"_flags"];\
+		return YES;\
+	}\
+	if(strcmp(aVariable, "_contents") == 0)\
+	{\
+		if(_flags.wide)\
+		{\
+			[[aSerialiser backend] storeData:_contents.u\
+						 ofSize:sizeof(unichar) * (_count + 1)\
+					   withName:"_contents"];\
+		}\
+		else\
+		{\
+			[[aSerialiser backend] storeData:_contents.c\
+						 ofSize:sizeof(char) * (_count + 1)\
+					   withName:"_contents"];\
+		}\
+		return YES;\
+	}
+
+@implementation GSString (ETSerialisable)
+- (BOOL) serialise:(char*)aVariable using:(ETSerialiser*)aSerialiser
+{
+	STORE_FLAGS_AND_CONTENTS();
+	return [super serialise:aVariable using:aSerialiser];
+}
+@end
+
 /**
  * Categories on GSMutableString to support serialisation.  
  */
@@ -12,27 +43,7 @@
  */
 - (BOOL) serialise:(char*)aVariable using:(ETSerialiser*)aSerialiser
 {
-	if(strcmp(aVariable, "_flags") == 0)
-	{
-		[[aSerialiser backend] storeInt:*(int*)&_flags withName:"_flags"];
-		return YES;
-	}
-	if(strcmp(aVariable, "_contents") == 0)
-	{
-		if(_flags.wide)
-		{
-			[[aSerialiser backend] storeData:_contents.u
-						 ofSize:sizeof(unichar) * (_count + 1)
-					   withName:"_contents"];
-		}
-		else
-		{
-			[[aSerialiser backend] storeData:_contents.c
-						 ofSize:sizeof(char) * (_count + 1)
-					   withName:"_contents"];
-		}
-		return YES;
-	}
+	STORE_FLAGS_AND_CONTENTS();
 	return [super serialise:aVariable using:aSerialiser];
 }
 /**

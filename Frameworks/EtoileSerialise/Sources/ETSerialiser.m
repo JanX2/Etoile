@@ -360,9 +360,9 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 						GUESSWARN(@"WARNING: Guessing that %s in %@ is not an array.  If it is, you need to serialise it manually.", name, currentClass);
 						type += nameEnd + 3;
 						retVal.offset += nameEnd + 3;
-						NSLog(@"Begin struct pointer");
+						//NSLog(@"Begin struct pointer");
 						PARSE_STRUCT_BODY();
-						NSLog(@"End struct pointer");
+						//NSLog(@"End struct pointer");
 						break;
 					}
 				}

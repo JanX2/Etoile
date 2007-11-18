@@ -1,23 +1,24 @@
 #import "COProxy.h"
 #import "ETSerialiser.h"
 
-@interface NSObject(CoreObject)
-+ (SEL*) immutableMethods;
-@end
-@implementation NSObject(CoreObject)
-+ (SEL*) immutableMethods
-{
-	static SEL selectors[] ={(SEL)0}; 
-	return selectors;
-}
-@end
-
 static const int FULL_SAVE_INTERVAL = 100;
 @implementation COProxy 
 - (id) initWithObject:(id)anObject
            serialiser:(id)aSerialiser
 {
 	object = [anObject retain];
+	//Find the correct proxy class:
+	Class objectClass = [anObject class];
+	Class proxyClass = Nil;
+	while(objectClass != Nil)
+	{
+		if(Nil != (proxyClass = NSClassFromString([NSString stringWithFormat:@"COProxy_%s", objectClass->name])))
+		{
+			self->isa = proxyClass;
+			break;
+		}
+		objectClass = objectClass->super_class;
+	}
 	serialiser = [aSerialiser retain];
 	[serialiser serialiseObject:object withName:"BaseVersion"];
 	return self;
