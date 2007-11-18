@@ -40,4 +40,4 @@ endif
 -include GNUmakefile.postamble
 
 test:
-	${MAKE} test=yes && ukrun ${BUNDLE_NAME}.bundle
+	${MAKE} test=yes && ukrun -q ${BUNDLE_NAME}.bundle

@@ -22,12 +22,13 @@
 	NSURL * baseURL;
 	/** The serialiser used to store the document and any changes. */
 	id serialiser;
-	/** The serialiser's back end. */
-	id backend;
+	/** The class of the serialiser's back end. */
+	Class backend;
 }
 /**
  * Manage anObject, using aSerialiser to for serialisation
  */
 - (id) initWithObject:(id)anObject
-           serialiser:(id)aSerialiser;
+           serialiser:(Class)aSerialiser
+			forBundle:(NSURL*)anURL;
 @end

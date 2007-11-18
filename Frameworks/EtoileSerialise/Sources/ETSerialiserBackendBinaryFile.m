@@ -64,8 +64,15 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 		[self release];
 		return nil;
 	}
+	NSFileManager * manager = [NSFileManager defaultManager];
+	NSString * path = [anURL path];
+	if(![manager fileExistsAtPath:path])
+	{
+		[manager createDirectoryAtPath:path
+								  attributes:nil];
+	}
 	ASSIGN(fileName, [anURL path]);
-	[self setFile:[fileName UTF8String]];
+	[self setFile:[[NSString stringWithFormat:@"%@/0.save", fileName] UTF8String]];
 	return self;
 }
 - (void) closeFile
@@ -96,7 +103,7 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 {
 	version++;
 	[self closeFile];
-	[self setFile:[[NSString stringWithFormat:@"%@.%d", fileName, version] UTF8String]];
+	[self setFile:[[NSString stringWithFormat:@"%@/%d.save", fileName, version] UTF8String]];
 	return version;
 }
 - (void) beginStruct:(char*)aStructName withName:(char*)aName

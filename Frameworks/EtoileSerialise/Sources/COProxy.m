@@ -1,14 +1,32 @@
 #import "COProxy.h"
 #import "ETSerialiser.h"
+#import "ETSerialiserBackendBinaryFile.h"
 
 static const int FULL_SAVE_INTERVAL = 100;
+
 @implementation COProxy 
 - (id) initWithObject:(id)anObject
-           serialiser:(id)aSerialiser
+           serialiser:(Class)aSerialiser
+			forBundle:(NSURL*)anURL
 {
-	object = [anObject retain];
+	//Set a default URL for temporary objects
+	if(anURL == nil)
+	{
+		anURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@ (%@).CoreObject",
+			  NSTemporaryDirectory(),
+			  [[NSProcessInfo processInfo] processName],
+			  [[NSDate date] description]]];
+	}
+	//Only local file URLs are supported so far:
+	if(![anURL isFileURL] || anObject == nil)
+	{
+		NSLog(@"Proxy creation failed.");
+		[self release];
+		return nil;
+	}
+	ASSIGN(object, anObject);
 	//Find the correct proxy class:
-	Class objectClass = [anObject class];
+	Class objectClass = [object class];
 	Class proxyClass = Nil;
 	while(objectClass != Nil)
 	{
@@ -19,7 +37,14 @@ static const int FULL_SAVE_INTERVAL = 100;
 		}
 		objectClass = objectClass->super_class;
 	}
-	serialiser = [aSerialiser retain];
+	ASSIGN(baseURL,anURL);
+	if(aSerialiser == nil)
+	{
+		aSerialiser = [ETSerialiserBackendBinaryFile class];
+	}
+	backend = aSerialiser;
+	serialiser = [[ETSerialiser serialiserWithBackend:aSerialiser 
+								 			  forURL:baseURL] retain];
 	[serialiser serialiseObject:object withName:"BaseVersion"];
 	return self;
 }
@@ -42,19 +67,19 @@ static const int FULL_SAVE_INTERVAL = 100;
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
 	version = [serialiser newVersion];
+	[anInvocation setTarget:nil];
+	[serialiser serialiseObject:anInvocation withName:"Delta"];
+	[anInvocation setTarget:object];
+	[anInvocation invoke];
 	/* Periodically save a full copy */
 	if(version % FULL_SAVE_INTERVAL == 0)
 	{
-		[anInvocation setTarget:object];
-		[anInvocation invoke];
-		[serialiser serialiseObject:object withName:"FullSave"];
-	}
-	else
-	{
-		[anInvocation setTarget:nil];
-		[serialiser serialiseObject:anInvocation withName:"Delta"];
-		[anInvocation setTarget:object];
-		[anInvocation invoke];
+		NSString * path = [NSString stringWithFormat:@"%@/FullSaves",
+						 [baseURL path]];
+		NSURL * fullsaveURL = [NSURL fileURLWithPath:path];
+		ETSerialiser * s = [ETSerialiser serialiserWithBackend:backend
+														forURL:fullsaveURL];
+		[s serialiseObject:object withName:"FullSave"];
 	}
 }
 @end

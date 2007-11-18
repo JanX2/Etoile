@@ -100,7 +100,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 }
 + (ETSerialiser*) serialiserWithBackend:(Class)aBackend forURL:(NSURL*)anURL
 {
-	ETSerialiser * serialiser = [[self alloc] init];
+	ETSerialiser * serialiser = [[[self alloc] init] autorelease];
 	[serialiser setBackend:[aBackend serialiserBackendWithURL:anURL]];
 	return serialiser;
 }
@@ -138,12 +138,15 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
  */
 - (void) enqueueObject:(id)anObject
 {
-	if(![storedObjects containsObject:anObject] &&
-	   ![unstoredObjects containsObject:anObject])
+	if(anObject != nil)
 	{
-		[unstoredObjects addObject:anObject];
+		if(![storedObjects containsObject:anObject] &&
+		   ![unstoredObjects containsObject:anObject])
+		{
+			[unstoredObjects addObject:anObject];
+		}
+		[backend incrementReferenceCountForObject:(unsigned long long)(uintptr_t)anObject];
 	}
-	[backend incrementReferenceCountForObject:(unsigned long long)(uintptr_t)anObject];
 }
 
 /**

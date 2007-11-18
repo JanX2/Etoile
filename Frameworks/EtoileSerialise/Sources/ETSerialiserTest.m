@@ -193,7 +193,6 @@ void testWithBackend(Class backend, NSURL * anURL)
 	id serialiser = [ETSerialiser serialiserWithBackend:backend forURL:anURL];
 	id foo = [TestClass new];
 	[serialiser serialiseObject:foo withName:"foo"];
-	[serialiser release];
 	[pool release];
 }
 id testRoundTrip(NSString * tempfile, id object)
@@ -202,10 +201,9 @@ id testRoundTrip(NSString * tempfile, id object)
 	id serialiser = [ETSerialiser serialiserWithBackend:[ETSerialiserBackendBinaryFile class]
 												 forURL:[NSURL fileURLWithPath:tempfile]];
 	[serialiser serialiseObject:object withName:"test"];
-	[serialiser release];
 	[pool release];
 	id deback = [ETDeserialiserBackendBinaryFile new];
-	[deback deserialiseFromURL:[NSURL fileURLWithPath:tempfile]];
+	[deback deserialiseFromURL:[NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/0.save", tempfile]]];
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
 	return [deserialiser restoreObjectGraph];
 }
@@ -273,7 +271,7 @@ id testRoundTrip(NSString * tempfile, id object)
 {
 	testWithBackend([ETSerialiserBackendBinaryFile class], [NSURL fileURLWithPath:@"testfile"]);
 	id deback = [ETDeserialiserBackendBinaryFile new];
-	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"testfile"]];
+	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"testfile/0.save"]];
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
 	TestClass * bar = [deserialiser restoreObjectGraph];
 	[bar methodTest];
@@ -287,11 +285,12 @@ id testRoundTrip(NSString * tempfile, id object)
 {
 	NSMutableString * str = [NSMutableString stringWithString:@"A string"];
 	NSMutableString * fake = [[COProxy alloc] initWithObject:str
-												  serialiser:[ETSerialiser serialiserWithBackend:[ETSerialiserBackendBinaryFile class] forURL:[NSURL fileURLWithPath:@"cotest"]]];
+												  serialiser:[ETSerialiserBackendBinaryFile class] 
+												   forBundle:[NSURL fileURLWithPath:@"cotest.CoreObject"]];
 	[fake appendString:@" containing"];
 	[fake appendString:@" some character."];
 	id deback = [ETDeserialiserBackendBinaryFile new];
-	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"cotest.1"]];
+	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"cotest.CoreObject/1.save"]];
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
 	NSInvocation * inv = [deserialiser restoreObjectGraph];
 #ifdef VISUAL_TEST
