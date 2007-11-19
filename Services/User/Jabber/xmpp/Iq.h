@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "ETXMLNullHandler.h"
+#import "Stanza.h"
 #import "JID.h"
 
 typedef enum {IQ_TYPE_SET,IQ_TYPE_GET,IQ_TYPE_RESULT,IQ_TYPE_ERROR} iq_type_t;
@@ -15,12 +15,11 @@ typedef enum {IQ_TYPE_SET,IQ_TYPE_GET,IQ_TYPE_RESULT,IQ_TYPE_ERROR} iq_type_t;
  * An object encapsulating an info-query stanza.  Child elements are parsed by
  * objects retrieved from an IqStanzaFactory and stored in a dictionary.
  */
-@interface Iq : ETXMLNullHandler {
+@interface Iq : Stanza {
 	iq_type_t type;
 	NSString * sequenceID;
 	JID * jid;
 	NSString * queryxmlns;
-	NSMutableDictionary * children;
 }
 /**
  * Returns the type of the iq stanza.  This is IQ_TYPE_{SET,GET,RESULT,ERROR}, 
@@ -33,11 +32,6 @@ typedef enum {IQ_TYPE_SET,IQ_TYPE_GET,IQ_TYPE_RESULT,IQ_TYPE_ERROR} iq_type_t;
  * should be unique for each pair of correspondents.
  */
 - (NSString*) sequenceID;
-/**
- * Returns a dictionary containing the children.  The key under which each is
- * stored is defined in the IqStanzaFactory, as is the class used to parse it.
- */
-- (NSDictionary*) children;
 /**
  * Returns the Jabber ID of the sender.
  */

@@ -34,6 +34,7 @@ XMPP_OBJC_FILES = \
 					Roster.m\
 					RosterGroup.m\
 					StanzaFactory.m\
+					Stanza.m\
 					StreamFeatures.m\
 					Timestamp.m\
 					XMPPAccount.m\
@@ -70,6 +71,7 @@ XMPP_HEADER_FILES = \
 					RosterGroup.h\
 					ServiceDiscovery.h\
 					StanzaFactory.h\
+					Stanza.h\
 					StreamFeatures.h\
 					Timestamp.h\
 					XMPPAccount.h\

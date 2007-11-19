@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ETXMLNode.h"
-#import "ETXMLNullHandler.h"
+#import "Stanza.h"
 #import "JID.h"
 
 /**
@@ -65,7 +65,7 @@ typedef enum {online, unavailable, subscribe, unsubscribe, subscribed, unsubscri
  * broadcast stanza form, presence is now used for a lot more things than presence
  * information.
  */
-@interface Presence : ETXMLNullHandler {
+@interface Presence : Stanza {
 	JID * from;
 	PresenceType type;
 	unsigned char onlineStatus;

@@ -18,6 +18,7 @@
  */
 @interface NSData (Base64) 
 - (NSString*) base64String;
+- (NSString*) sha1;
 @end
 
 @interface NSString (Base64)

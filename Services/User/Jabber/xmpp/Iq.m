@@ -74,23 +74,12 @@ static NSDictionary * TYPES;
 {
 	return queryxmlns;
 }
-//TODO:  Put this in a Stanza class, and make it a common superclass of Iq, Message and Presence
-- (void) addChild:(id)aChild forKey:(NSString*)aKey
-{
-	[children setValue:aChild forKey:aKey];
-}
-
-- (NSDictionary*) children
-{
-	return children;
-}
 
 - (void) dealloc
 {
 	[sequenceID release];
 	[jid release];
 	[queryxmlns release];
-	[children release];
 	[super dealloc];
 }
 @end

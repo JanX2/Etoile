@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Timestamp.h"
 #import "JID.h"
-#import "ETXMLNullHandler.h"
+#import "Stanza.h"
 #import "ETXMLNode.h"
 
 typedef enum {in, out} MessageDirection;
@@ -21,7 +21,7 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
  * The Message class represents a message stanza, one of the three types of XML
  * stanza embodying discrete elements within an XMPP connection.
  */
-@interface Message : ETXMLNullHandler {
+@interface Message : Stanza {
 	JID * correspondent;
 	MessageDirection direction;
 	message_type_t type;

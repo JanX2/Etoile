@@ -12,6 +12,7 @@
 #import "CompareHack.h"
 #import "XMPPConnection.h"
 #import "ServiceDiscovery.h"
+#import "NSData+Base64.h"
 #import "../Macros.h"
 
 @implementation JabberPerson
@@ -65,6 +66,15 @@
 	[self calculateIdentityList];
 	return self;
 }
+- (void) requestvCard:(NSString*)jidString
+{
+	XMPPConnection * connection = (id)[roster connection];
+	NSString * vCardRequestID = [connection newMessageID];
+	[connection XMPPSend:
+	 [NSString stringWithFormat:@"<iq to='%@' type='get' id='%@'><vCard xmlns='vcard-temp'/></iq>"
+	  , jidString, vCardRequestID]];
+	[[roster dispatcher] addIqResultHandler:self forID:vCardRequestID];
+}
 
 - (void) addIdentity:(JabberIdentity*)anIdentity
 {
@@ -75,12 +85,7 @@
 	//Request the identity's vcard
 	if(vCard == nil)
 	{
-		XMPPConnection * connection = (id)[roster connection];
-		NSString * vCardRequestID = [connection newMessageID];
-		[connection XMPPSend:
-		 [NSString stringWithFormat:@"<iq to='%@' type='get' id='%@'><vCard xmlns='vcard-temp'/></iq>"
-		  , jidString, vCardRequestID]];
-		[[roster dispatcher] addIqResultHandler:self forID:vCardRequestID];
+		[self requestvCard:jidString];
 	}
 }
 
@@ -156,6 +161,20 @@
 	
 	JabberIdentity * identity = [identities objectForKey:from];
 	
+	//vCard updates
+	NSString * newPhotoHash = [[aPresence children] objectForKey:@"vCardUpdate"];
+	if(newPhotoHash)
+	{
+		if(photoHash == nil)
+		{
+			photoHash = [[[vCard imageData] sha1] retain];
+		}
+		if(![photoHash isEqualToString:newPhotoHash])
+		{
+			[self requestvCard:from];
+		}
+	}
+	
 	NSNotificationCenter * notifier = [NSNotificationCenter defaultCenter];
 	
 	//Set the presence for the identity
@@ -220,8 +239,8 @@
 				{
 					property = kABMSNInstantProperty;
 					label = kABMSNHomeLabel;
-					NSMutableString * msnAddress = [NSMutableString stringWithString:[jid domain]];
-					[msnAddress replaceOccurrencesOfString:@"%%"
+					NSMutableString * msnAddress = [NSMutableString stringWithString:[jid node]];
+					[msnAddress replaceOccurrencesOfString:@"%"
 												withString:@"@"
 												   options:0
 													 range:NSMakeRange(0, [msnAddress length])];
@@ -241,8 +260,8 @@
 #else
 				ABMutableMultiValue * vCardJID = [[ABMutableMultiValue alloc] init];
 #endif
-				[vCardJID addValue:address withLabel:kABJabberHomeLabel];
-				[vCard setValue:vCardJID forProperty:kABJabberInstantProperty];
+				[vCardJID addValue:address withLabel:label];
+				[vCard setValue:vCardJID forProperty:property];
 				[vCardJID release];
 			}
 			//Get the group that contains Jabber people
@@ -274,6 +293,8 @@
 			NSMutableDictionary * newvCards = [vCards mutableCopy];
 			[newvCards setObject:[vCard uniqueId] forKey:[NSString stringWithFormat:@"%@!%@", group, name]];
 			[defaults setObject:newvCards forKey:@"vCards"];
+			[photoHash release];
+			photoHash = [[[vCard imageData] sha1] retain];
 		}
 	}
 }

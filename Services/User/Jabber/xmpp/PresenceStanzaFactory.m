@@ -23,6 +23,11 @@ static PresenceStanzaFactory * sharedInstance;
 	[sharedInstance addHandler:[ETXMLString class] forTag:@"priority"];
 	//Replace the status message with an error message if one exists.
 	[sharedInstance addHandler:[ETXMLString class] withValue:@"status" forTag:@"error" ];
+	//vCard updates
+	[sharedInstance addHandler:NSClassFromString(@"XMPPvCardUpdate") 
+					 withValue:@"vCardUpdate"
+						forTag:@"x"
+				   inNamespace:@"vcard-temp:x:update"];
 	//TODO: timestamps
 }
 

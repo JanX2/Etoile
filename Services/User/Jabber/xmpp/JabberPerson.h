@@ -33,6 +33,7 @@
 	id roster;
 	unsigned int hash;
 	ABPerson * vCard;
+	NSString * photoHash;
 	NSImage * avatar;
 }
 /**

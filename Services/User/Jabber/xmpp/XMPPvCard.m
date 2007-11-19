@@ -11,6 +11,37 @@
 #include "Macros.h"
 #import "NSData+Base64.h"
 
+@interface XMPPvCardUpdate : ETXMLNullHandler {
+}
+@end
+@implementation XMPPvCardUpdate
+- (id) init
+{
+	SUPERINIT;
+	value = @"";
+	return self;
+}
+- (void)startElement:(NSString *)aName
+		  attributes:(NSDictionary*)attributes
+{
+	if([aName isEqualToString:@"photo"])
+	{
+		[[[ETXMLString alloc] initWithXMLParser:parser
+										 parent:self
+											key:aName] startElement:aName
+		 attributes:attributes];
+	}
+	else
+	{
+		depth++;
+	}
+}
+- (void) addphoto:(NSString*)photoHash
+{
+	value = [photoHash retain];
+}
+@end
+
 @implementation XMPPvCard
 - (id) init
 {
@@ -36,32 +67,7 @@
 														attributes:attributes];
 	}
 }
-/*
-- (void) notifyParent
-{
-		ABGroup * jabberGroup = nil;
-		NSArray * groups = [ab groups];
-		FOREACH(groups, group, ABRecord*)
-		{
-			if([[group valueForProperty:kABGroupNameProperty] isEqualToString:@"Jabber People"])
-			{
-				jabberGroup = (ABGroup*)group;
-			}
-		}
-		if(jabberGroup == nil)
-		{
-			group = [[[ABGroup alloc] init] autorelease];
-			[group setValue:@"Jabber People" forProperty:kABGroupNameProperty];
-			[ab addRecord:group];
-		}
-		NSLog(@"Adding person: %@ %@", [person valueForProperty:kABFirstNameProperty], [person valueForProperty:kABLastNameProperty]);
-		[ab addRecord:person];
-		[jabberGroup addMember:person];
-		[ab save];
-	}
-	[super notifyParent];
-}
-*/
+
 #define PROPERTY_FROM_XML(property, xml)\
 - (void) add ## xml:(NSString*)aString\
 {\
@@ -93,20 +99,10 @@ PROPERTY_FROM_XML(kABFirstNameProperty, GIVEN)
 }
 MULTI_PROPERTY_FROM_XML(kABEmailProperty, kABEmailHomeLabel, EMAIL)
 MULTI_PROPERTY_FROM_XML(kABURLsProperty, kABHomePageLabel, URL)
-- (void) addPHOTO:(NSString*)aString
+- (void) addBINVAL:(NSString*)aString
 {
 	NSMutableString * photo = [aString mutableCopy];
 	[photo replaceOccurrencesOfString:@"\n" withString:@"" options:0 range:NSMakeRange(0, [photo length])];	
-
-
-	if([photo length] > 9 && [[photo substringToIndex:9] isEqualToString:@"image/png"])
-	{
-		[photo deleteCharactersInRange:NSMakeRange(0,9)];
-	}
-	else if([photo length] > 10 && [[photo substringToIndex:10] isEqualToString:@"image/jpeg"])
-	{
-		[photo deleteCharactersInRange:NSMakeRange(0,10)];
-	}
 	[person setImageData:[photo base64DecodedData]];
 }
 - (void) addFN:(NSString*)aString
