@@ -13,6 +13,7 @@
 #import "XMPPConnection.h"
 #import "ServiceDiscovery.h"
 #import "NSData+Base64.h"
+#import "ABPerson+merging.h"
 #import "../Macros.h"
 
 @implementation JabberPerson
@@ -41,7 +42,8 @@
 {
 	SUPERINIT
 	identities = [[NSMutableDictionary alloc] init];
-	identityList = [[NSMutableArray alloc] init];	
+	identityList = [[NSMutableArray alloc] init];
+	photoHashes = [[NSMutableDictionary alloc] init];
 	return self;
 }
 
@@ -165,11 +167,11 @@
 	NSString * newPhotoHash = [[aPresence children] objectForKey:@"vCardUpdate"];
 	if(newPhotoHash)
 	{
-		if(photoHash == nil)
+		if(currentHash == nil)
 		{
-			photoHash = [[[vCard imageData] sha1] retain];
+			currentHash = [[[vCard imageData] sha1] retain];
 		}
-		if(![photoHash isEqualToString:newPhotoHash])
+		if(![photoHashes objectForKey:newPhotoHash])
 		{
 			[self requestvCard:from];
 		}
@@ -209,7 +211,12 @@
 		ABAddressBook * ab = [ABAddressBook sharedAddressBook];
 		if(vCard != nil)
 		{
-			//TODO: Merge the vCard data
+			//Merge the vCard data
+			NSArray * unmerged = [vCard mergePerson:identityvCard];
+			if([unmerged count] > 0)
+			{
+				//TODO: Ask about which ones to merge
+			}
 		}
 		else
 		{
@@ -218,7 +225,7 @@
 			{
 				[vCard setValue:name forProperty:kABNicknameProperty];
 			}
-			//TODO: Parse bridged JIDs correctly (i.e. parse 123456@icq.example.com 
+			//Parse bridged JIDs correctly (i.e. parse 123456@icq.example.com 
 			//as an ICQ UIN, not a JID)
 			id property = kABJabberInstantProperty;
 			id label = kABJabberHomeLabel;
@@ -264,25 +271,40 @@
 				[vCard setValue:vCardJID forProperty:property];
 				[vCardJID release];
 			}
-			//Get the group that contains Jabber people
-			ABGroup * jabberGroup = nil;
-			NSArray * groups = [ab groups];
-			FOREACH(groups, abgroup, ABRecord*)
+			ABPerson * oldPerson = [vCard findExistingPerson];
+			if(oldPerson != nil)
 			{
-				if([[abgroup valueForProperty:kABGroupNameProperty] isEqualToString:@"Jabber People"])
+				NSString * notes = [oldPerson valueForProperty:kABNoteProperty];
+				if(notes == nil)
 				{
-					jabberGroup = (ABGroup*)abgroup;
+					notes = @"";
 				}
+				notes = [notes stringByAppendingFormat:@"\nMerged properties from %@", [jid jidString]];
+				[oldPerson setValue:notes forProperty:kABNoteProperty];
+				[oldPerson mergePerson:vCard];
+				vCard = oldPerson;
 			}
-			if(jabberGroup == nil)
+			else
 			{
-				jabberGroup = [[[ABGroup alloc] init] autorelease];
-				[jabberGroup setValue:@"Jabber People" forProperty:kABGroupNameProperty];
-				[ab addRecord:jabberGroup];
+				//Get the group that contains Jabber people
+				ABGroup * jabberGroup = nil;
+				NSArray * groups = [ab groups];
+				FOREACH(groups, abgroup, ABRecord*)
+				{
+					if([[abgroup valueForProperty:kABGroupNameProperty] isEqualToString:@"Jabber People"])
+					{
+						jabberGroup = (ABGroup*)abgroup;
+					}
+				}
+				if(jabberGroup == nil)
+				{
+					jabberGroup = [[[ABGroup alloc] init] autorelease];
+					[jabberGroup setValue:@"Jabber People" forProperty:kABGroupNameProperty];
+					[ab addRecord:jabberGroup];
+				}
+				[ab addRecord:vCard];
+				[jabberGroup addMember:vCard];
 			}
-			//
-			[ab addRecord:vCard];
-			[jabberGroup addMember:vCard];
 			[ab save];
 			NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
 			NSDictionary * vCards = [defaults dictionaryForKey:@"vCards"];
@@ -293,8 +315,19 @@
 			NSMutableDictionary * newvCards = [vCards mutableCopy];
 			[newvCards setObject:[vCard uniqueId] forKey:[NSString stringWithFormat:@"%@!%@", group, name]];
 			[defaults setObject:newvCards forKey:@"vCards"];
-			[photoHash release];
-			photoHash = [[[vCard imageData] sha1] retain];
+		}
+		NSData * imageData = [vCard imageData];
+		if(imageData != nil)
+		{
+			NSString * imageHash = [imageData sha1];
+			if(![imageHash isEqualToString:currentHash])
+			{
+				[photoHashes setObject:imageData forKey:imageHash];
+				[avatar release];
+				avatar = nil;
+				[currentHash release];
+				currentHash = [imageHash retain];
+			}
 		}
 	}
 }
@@ -326,7 +359,16 @@
 {
 	if(avatar == nil)
 	{
-		NSData * avatarData = [vCard imageData];
+		NSData * avatarData = [photoHashes objectForKey:currentHash];
+		if(avatarData == nil)
+		{
+			avatarData = [vCard imageData];
+			if(avatarData != nil)
+			{
+				currentHash = [[avatarData sha1] retain];
+				[photoHashes setObject:avatarData forKey:currentHash];
+			}
+		}
 		if(avatarData != nil)
 		{
 			avatar = [[NSImage alloc] initWithData:avatarData];
@@ -340,6 +382,7 @@
 	[group release];
 	[name release];
 	[identities release];
+	[photoHashes release];
 	[super dealloc];
 }
 @end

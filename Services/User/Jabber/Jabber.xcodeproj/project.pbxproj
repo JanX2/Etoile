@@ -136,6 +136,8 @@
 		2860DE4D07259CF70081D50C /* PreferenceWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2860DE4B07259CF70081D50C /* PreferenceWindowController.h */; };
 		286429860CF1ED0C00234112 /* Stanza.h in Headers */ = {isa = PBXBuildFile; fileRef = 286429840CF1ED0C00234112 /* Stanza.h */; };
 		286429870CF1ED0C00234112 /* Stanza.m in Sources */ = {isa = PBXBuildFile; fileRef = 286429850CF1ED0C00234112 /* Stanza.m */; };
+		28642A400CF24F4C00234112 /* ABPerson+merging.h in Headers */ = {isa = PBXBuildFile; fileRef = 28642A3E0CF24F4C00234112 /* ABPerson+merging.h */; };
+		28642A410CF24F4C00234112 /* ABPerson+merging.m in Sources */ = {isa = PBXBuildFile; fileRef = 28642A3F0CF24F4C00234112 /* ABPerson+merging.m */; };
 		286590070718421900B0F29D /* HideMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 286590050718421900B0F29D /* HideMenuController.h */; };
 		286590350718802800B0F29D /* PresenceMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 286590330718802800B0F29D /* PresenceMenuController.h */; };
 		2885B0980660E4270068D300 /* Dispatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 2885B0960660E4270068D300 /* Dispatcher.h */; };
@@ -345,6 +347,8 @@
 		2860DE4C07259CF70081D50C /* PreferenceWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferenceWindowController.m; sourceTree = "<group>"; };
 		286429840CF1ED0C00234112 /* Stanza.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Stanza.h; path = xmpp/Stanza.h; sourceTree = "<group>"; };
 		286429850CF1ED0C00234112 /* Stanza.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Stanza.m; path = xmpp/Stanza.m; sourceTree = "<group>"; };
+		28642A3E0CF24F4C00234112 /* ABPerson+merging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ABPerson+merging.h"; path = "xmpp/ABPerson+merging.h"; sourceTree = "<group>"; };
+		28642A3F0CF24F4C00234112 /* ABPerson+merging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "ABPerson+merging.m"; path = "xmpp/ABPerson+merging.m"; sourceTree = "<group>"; };
 		286590050718421900B0F29D /* HideMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HideMenuController.h; sourceTree = "<group>"; };
 		286590060718421900B0F29D /* HideMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HideMenuController.m; sourceTree = "<group>"; };
 		286590330718802800B0F29D /* PresenceMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresenceMenuController.h; sourceTree = "<group>"; };
@@ -520,6 +524,8 @@
 		28C501F506B2680E00CE9114 /* XMPP */ = {
 			isa = PBXGroup;
 			children = (
+				28642A3E0CF24F4C00234112 /* ABPerson+merging.h */,
+				28642A3F0CF24F4C00234112 /* ABPerson+merging.m */,
 				286429840CF1ED0C00234112 /* Stanza.h */,
 				286429850CF1ED0C00234112 /* Stanza.m */,
 				289EC2AF0CEB1C9200E89CE6 /* DiscoItems.h */,
@@ -797,6 +803,7 @@
 				289EC29F0CEB19BA00E89CE6 /* DiscoInfo.h in Headers */,
 				289EC2B10CEB1C9200E89CE6 /* DiscoItems.h in Headers */,
 				286429860CF1ED0C00234112 /* Stanza.h in Headers */,
+				28642A400CF24F4C00234112 /* ABPerson+merging.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1046,6 +1053,7 @@
 				289EC2B20CEB1C9200E89CE6 /* DiscoItems.m in Sources */,
 				289EC42D0CEB790B00E89CE6 /* ServiceDiscovery.m in Sources */,
 				286429870CF1ED0C00234112 /* Stanza.m in Sources */,
+				28642A410CF24F4C00234112 /* ABPerson+merging.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
