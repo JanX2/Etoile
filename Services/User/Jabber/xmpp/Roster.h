@@ -130,7 +130,7 @@
 /**
  * Renames an identity.  This will cause the identity to be assigned to a new person.
  */
-- (void) setName:(NSString*)aName forIdentity:(JabberIdentity*)anIdentity;
+- (void) setName:(NSString*)aName group:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity;
 /**
  * Moves an identity to a new group.  This will cause the identity to be assigned to a new person.
  */

@@ -94,6 +94,18 @@
 {
 	return group;
 }
+- (void) setName:(NSString*)aName
+{
+	[aName retain];
+	[name release];
+	name = aName;
+}
+- (void) setGroup:(NSString*)aGroup
+{
+	[aGroup retain];
+	[group release];
+	group = aGroup;	
+}
 
 - (JID*) jid
 {

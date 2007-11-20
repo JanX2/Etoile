@@ -91,6 +91,21 @@
 		}
 		else
 		{
+			JabberIdentity * oldIdentity = [[peopleByJID objectForKey:[jid jidString]] identityForJID:jid];
+			if(oldIdentity != nil)
+			{
+				if([[oldIdentity name] isEqualToString:[newIdentity name]]
+				   &&
+				   [[oldIdentity group] isEqualToString:[newIdentity group]])
+				{
+					continue;
+				}
+				[[oldIdentity retain] autorelease];
+				[[groupsByName objectForKey:[oldIdentity group]] removeIdentity:oldIdentity];
+				[oldIdentity setGroup:[newIdentity group]];
+				[oldIdentity setName:[newIdentity name]];
+				newIdentity = oldIdentity;
+			}
 			NSString * server = [jid domain];
 			if(![queriedServers containsObject:server])
 			{
@@ -127,6 +142,7 @@
 	{
 		[[(XMPPAccount*)account connection] setStatus:initialStatus withMessage:initialMessage];
 	}
+	[self update:nil];
 }
 
 - (void) handlePresence:(Presence*)aPresence
@@ -285,26 +301,20 @@
 	ETXMLNode * group = [[ETXMLNode alloc] initWithType:@"group"];
 	[group setCData:aGroup];
 	//<item>
-	NSDictionary * itemAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-		aJID, @"jid",
-		aName, @"name",
-		nil];
 	ETXMLNode * item = [[ETXMLNode alloc] initWithType:@"item"
-											attributes:itemAttributes];
+											attributes:D(aJID, @"jid",
+														 aName, @"name")];
 	[item addChild:group];
 	//<query>
 	ETXMLNode * query = [[ETXMLNode alloc] initWithType:@"query"
-											 attributes:[NSDictionary dictionaryWithObject:@"jabber:iq:roster"
-																					forKey:@"xmlns"]];
+											 attributes:D(@"jabber:iq:roster", @"xmlns")];
 	[query addChild:item];
 	//<iq>
-	NSDictionary * iqAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-		@"set", @"type",
-		[connection newMessageID], @"id",
-		nil];
-	ETXMLNode * iq = [[ETXMLNode alloc] initWithType:@"item"
-										  attributes:iqAttributes];
-	
+	ETXMLNode * iq = [[ETXMLNode alloc] initWithType:@"iq"
+										  attributes:D(@"set", @"type",
+													   [connection newMessageID], @"id")];
+					  
+	[iq addChild:query];
 	NSString * xml = [iq stringValue];
 	//Clean up:
 	[iq release];
@@ -315,7 +325,7 @@
 }
 
 
-- (void) setName:(NSString*)aName forIdentity:(JabberIdentity*)anIdentity
+- (void) setName:(NSString*)aName group:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity
 {
 	JabberPerson * person = [self personForJID:[anIdentity jid]];
 	//Don't use this for people who aren't in our roster. 
@@ -323,13 +333,11 @@
 	{
 		return;
 	}
-	NSString * xml = [self iqSettingGroup:[person group]
+	NSString * xml = [self iqSettingGroup:aGroup
 									 name:aName
 								   forJID:[[anIdentity jid] jidString]];
 	//Send the iq:
 	[connection XMPPSend:xml];
-	//Remove the identity from the old person:
-	[person removeIdentity:anIdentity];
 }
 
 - (void) setGroup:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity
@@ -345,8 +353,6 @@
 								   forJID:[[anIdentity jid] jidString]];
 	//Send the iq:
 	[connection XMPPSend:xml];
-	//Remove the identity from the old person:
-	[person removeIdentity:anIdentity];
 }
 
 - (JabberPerson*) personForJID:(JID*)_jid

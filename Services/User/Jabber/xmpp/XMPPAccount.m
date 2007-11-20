@@ -123,7 +123,7 @@ id getDefault(NSString * dictionary, id key)
 								 reason:@"Unable to find JID for connection"
 		                       userInfo:nil] raise];
 	}
-	myJID = [JID jidWithString:jidString];
+	myJID = [[JID jidWithString:jidString] retain];
 		
 	NSString * password = passwordForJID(myJID);
 	

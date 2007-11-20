@@ -116,11 +116,16 @@ MULTI_PROPERTY_FROM_XML(kABURLsProperty, kABHomePageLabel, URL)
 }
 - (void) addFN:(NSString*)aString
 {
-#ifdef GNUSTEP
-	NSArray * names = [aString componentsSeparatedByString:@" "];
-#else
-	NSArray * names = [aString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-#endif
+	NSArray * names;
+	//Leopard method.
+	if([aString respondsToSelector:@selector(componentsSeparatedByCharactersInSet:)])
+	{
+		names = [aString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	}
+	else
+	{
+		names = [aString componentsSeparatedByString:@" "];		
+	}
 	switch([names count])
 	{
 		case 3:

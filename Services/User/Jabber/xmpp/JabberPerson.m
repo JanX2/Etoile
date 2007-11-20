@@ -138,6 +138,10 @@
 
 - (JabberIdentity*) defaultIdentity
 {
+	if(identityCount == 0)
+	{
+		return nil;
+	}
 	return [identityList objectAtIndex:0];
 }
 
@@ -246,7 +250,7 @@
 				{
 					property = kABMSNInstantProperty;
 					label = kABMSNHomeLabel;
-					NSMutableString * msnAddress = [NSMutableString stringWithString:[jid node]];
+					NSMutableString * msnAddress = [[jid node] mutableCopy];
 					[msnAddress replaceOccurrencesOfString:@"%"
 												withString:@"@"
 												   options:0
@@ -260,7 +264,7 @@
 					address = [jid node];
 				}
 			}
-			if([vCard valueForProperty:kABJabberInstantProperty] == nil)
+			if(address != nil &&  [vCard valueForProperty:kABJabberInstantProperty] == nil)
 			{
 #ifdef GNUSTEP
 				ABMutableMultiValue * vCardJID = [[ABMutableMultiValue alloc] initWithType:kABMultiStringProperty];

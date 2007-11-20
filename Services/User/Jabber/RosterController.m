@@ -71,18 +71,18 @@ NSMutableArray * rosterControllers = nil;
 	return rosterController;
 }
 
-#ifdef GNUSTEP
 - (void)windowDidLoad
 {
 	[super windowDidLoad];
+	[view registerForDraggedTypes:A(@"JabberPerson",@"JabberIdentity")];
+#ifdef GNUSTEP
 	[view setHeaderView: nil];
 	[view setCornerView: nil];
 	avatarColumn= [[view tableColumns] objectAtIndex:0];
 	column = [[view tableColumns] objectAtIndex:1];
-	[[self window] setShowsResizeIndicator:YES];
 	NSLog(@"Loaded roster window");
-}
 #endif
+}
 
 - (void) redraw:(NSNotification*)_notification
 {
@@ -240,7 +240,7 @@ NSMutableArray * rosterControllers = nil;
 	{
 		NSLog(@"Subscription request received");
 		//TODO:  Ask permission first
-		[data authorise:[(Presence*)[_notification object] jid]];
+		[roster authorise:[(Presence*)[_notification object] jid]];
 	}
 }
 - (void) presenceChanged:(NSNotification *)notification
@@ -292,7 +292,7 @@ NSMutableArray * rosterControllers = nil;
 	
 	[[self window] setFrameFromString:@"Jabber Roster"];
 	[[self window] setFrameAutosaveName:@"Jabber Roster"];
-	data = _roster;
+	roster = _roster;
 	account = _account;
 	//Note: nil must be changed to account if permitting multiple accounts
 	NSNotificationCenter * localCenter = [NSNotificationCenter defaultCenter];
@@ -428,7 +428,7 @@ NSMutableArray * rosterControllers = nil;
 {
 	if(_item == nil)
 	{
-		return [data groupForIndex:_index ignoringPeopleLessOnlineThan:[[NSUserDefaults standardUserDefaults] presenceForKey:@"HiddenPresences"]];
+		return [roster groupForIndex:_index ignoringPeopleLessOnlineThan:[[NSUserDefaults standardUserDefaults] presenceForKey:@"HiddenPresences"]];
 	}
 	if([_item isKindOfClass:[RosterGroup class]])
 	{
@@ -480,7 +480,7 @@ NSMutableArray * rosterControllers = nil;
 
 - (BOOL) outlineView:(NSOutlineView *)_outlineView isItemExpandable:(id)_item
 {
-	if(data == nil)
+	if(roster == nil)
 	{
 		return NO;		
 	}
@@ -517,13 +517,13 @@ NSMutableArray * rosterControllers = nil;
 			FOREACH([contact identityList], identity, JabberIdentity*)
 			{
 				NSLog(@"Deleting %@", [[identity jid] jidString]);
-				[data unsubscribe:[identity jid]];
+				[roster unsubscribe:[identity jid]];
 			}
 		}
 		else if([contact isKindOfClass:[JabberIdentity class]])
 		{
 			NSLog(@"Deleting %@", [[contact jid] jidString]);
-			[data unsubscribe:[contact jid]];			
+			[roster unsubscribe:[contact jid]];			
 		}
 	}
 	[alert release];
@@ -563,7 +563,7 @@ NSMutableArray * rosterControllers = nil;
 	//Root node.  Children are all groups
 	if(_item == nil)
 	{
-		return [data numberOfGroupsContainingPeopleMoreOnlineThan:[[NSUserDefaults standardUserDefaults] presenceForKey:@"HiddenPresences"]];
+		return [roster numberOfGroupsContainingPeopleMoreOnlineThan:[[NSUserDefaults standardUserDefaults] presenceForKey:@"HiddenPresences"]];
 	}
 	if([_item isKindOfClass:[RosterGroup class]])
 	{
@@ -643,7 +643,7 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 	else if([item isKindOfClass:[JabberIdentity class]])
 	{
 		JID * destinationJID = [(JabberIdentity*)item jid];
-		[createChatWithPerson(self, [data personForJID:destinationJID], account) setJID:destinationJID];
+		[createChatWithPerson(self, [roster personForJID:destinationJID], account) setJID:destinationJID];
 	}
 }
 
@@ -708,12 +708,113 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 {
 	return [statusBox stringValue];
 }
+//Drag and drop operations
+
+//Drag
+- (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard
+{
+	id item = [items objectAtIndex:0];
+	if([item isKindOfClass:[JabberPerson class]])
+	{
+		[pboard declareTypes:[NSArray arrayWithObject:@"JabberPerson"] owner:self];
+		[pboard setPropertyList:D([item name], @"name", [item group], @"group")
+						forType:@"JabberPerson"];
+		return YES;	
+	}
+	if([item isKindOfClass:[JabberPerson class]])
+	{
+		[pboard declareTypes:[NSArray arrayWithObject:@"JabberIdentity"] owner:self];
+		[pboard setString:[[item jid] jidString] forType:@"JabberIdentity"];
+		return YES;	
+	}
+	return NO;
+}
+
+//Can drop?
+- (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id < NSDraggingInfo >)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex
+{
+	NSPasteboard * pboard = [info draggingPasteboard];
+	if([item isKindOfClass:[JabberPerson class]])
+	{
+		if([pboard availableTypeFromArray:A(@"JabberPerson", @"JabberIdentity")])
+		{
+			return NSDragOperationMove;
+		}
+	}
+	if([item isKindOfClass:[RosterGroup class]])
+	{
+		if([pboard availableTypeFromArray:A(@"JabberPerson")])
+		{
+			return NSDragOperationMove;
+		}		
+	}
+	return NSDragOperationNone;
+}
+//Drop
+- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id < NSDraggingInfo >)info item:(id)item childIndex:(NSInteger)anIndex
+{
+	NSPasteboard * pboard = [info draggingPasteboard];
+	[pboard types];
+	BOOL dropped = NO;
+	if([item isKindOfClass:[JabberPerson class]])
+	{
+		id object = nil;
+		NSString * newGroup = [item group];
+		NSString * newName = [item name];
+		if((object = [pboard propertyListForType:@"JabberPerson"]) != nil)
+		{
+			NSString * groupName = [object objectForKey:@"group"];
+			NSString * personName = [object objectForKey:@"name"];
+			//Make sure it's not dealloc'd when we remove the last identity from it
+			JabberPerson * person = [[[roster groupNamed:groupName] personNamed:personName] retain];
+			NSArray * identities = [person identityList];
+			FOREACH(identities, identity, JabberIdentity*)
+			{
+				[roster setName:newName group:newGroup forIdentity:identity];
+			}
+			dropped = YES;
+		}
+		else if((object = [pboard propertyListForType:@"JabberIdentity"]) != nil)
+		{
+			JID * jid = [JID jidWithString:object];
+			JabberIdentity * identity = [[roster personForJID:jid] identityForJID:jid];
+			//Make sure it's not dealloc'd when we remove the last identity from it
+			[roster setName:newName group:newGroup forIdentity:identity];
+			dropped = YES;
+		}
+	}
+	else if([item isKindOfClass:[RosterGroup class]])
+	{
+		id object = nil;
+
+		if((object = [pboard propertyListForType:@"JabberPerson"]) != nil)
+		{
+			NSString * groupName = [object objectForKey:@"group"];
+			NSString * personName = [object objectForKey:@"name"];
+			//Make sure it's not dealloc'd when we remove the last identity from it
+			JabberPerson * person = [[[roster groupNamed:groupName] personNamed:personName] retain];
+			NSArray * identities = [person identityList];
+			NSString * newGroup = [item groupName];
+			FOREACH(identities, identity, JabberIdentity*)
+			{
+				[roster setGroup:newGroup forIdentity:identity];
+			}
+			dropped = YES;
+		}
+	}
+	if(dropped)
+	{
+		[self update:nil];
+	}
+	return dropped;
+}
+
 
 - (void) dealloc
 {
 	[rosterControllers removeObject:self];
 	[[self window] close];
-	[data release];
+	[roster release];
 	[view release];
 	[super dealloc];
 }

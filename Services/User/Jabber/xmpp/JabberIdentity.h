@@ -61,6 +61,8 @@
  * Return the roster group of the identity.
  */
 - (NSString*) group;
+- (void) setName:(NSString*)aName;
+- (void) setGroup:(NSString*)aGroup;
 /**
  * Return the Jabber ID of the identity.
  */

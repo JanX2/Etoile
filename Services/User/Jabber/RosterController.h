@@ -12,7 +12,7 @@
 #import "Presence.h"
 @interface RosterController : NSWindowController <RosterDelegate, XMPPPresenceDisplay> {
 	unsigned char presence;
-	Roster * data;
+	Roster * roster;
 	XMPPAccount * account;
 	IBOutlet NSOutlineView * view;
 	IBOutlet NSTableColumn * avatarColumn;
