@@ -809,6 +809,18 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 	return dropped;
 }
 
+- (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+	if([item isKindOfClass:[JabberPerson class]])
+	{
+		NSString * group = [item group];
+		NSArray * identities = [item identityList];
+		FOREACH(identities, identity, JabberIdentity*)
+		{
+			[roster setName:object group:group forIdentity:identity];
+		}
+	}
+}
 
 - (void) dealloc
 {
