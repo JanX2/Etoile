@@ -2,6 +2,10 @@
 DictionaryReader Changelog
 ==========================
 
+Nov 21 2007  Quentin Mathe
+	* GNUmakefile: Forced to link EtoileFoundation to eliminate potential 
+	linking problems now that EtoileUI depends EtoileFoundation.
+
 Jul 6 2007  Yen-Ju Chen
 	* Update nib file and clean up code.
 
