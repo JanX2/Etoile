@@ -1,0 +1,45 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "changeSampleText:",
+	    "changeSize:",
+	    "install:",
+	    "installAll:",
+	    "selectFace:"
+	);
+	Super = NSObject;
+    };
+    PQFontDocument = {
+	Actions = (
+	    "install:",
+	    "installAll:",
+	    "selectFace:"
+	);
+	Outlets = (
+	    installButton,
+	    infoView,
+	    tabView,
+	    installAllButton,
+	    facePopUpButton,
+	    sampleController
+	);
+	Super = NSDocument;
+    };
+    PQSampleController = {
+	Actions = (
+	    "changeSize:",
+	    "changeColor:",
+	    "changeSampleText:"
+	);
+	Outlets = (
+	    sampleView,
+	    sizeSlider,
+	    backgroundColorWell,
+	    foregroundColorWell,
+	    samplePopUpButton,
+	    sizeField
+	);
+	Super = NSObject;
+    };
+}

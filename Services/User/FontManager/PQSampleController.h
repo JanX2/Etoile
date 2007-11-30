@@ -18,9 +18,10 @@
 
 @interface PQSampleController : NSObject
 {
-	PQFontSampleView *sampleView;
+	id sampleView;
 
 	NSComboBox *sampleField;
+	NSPopUpButton *samplePopUpButton;
 	NSComboBox *sizeField;
 	NSSlider *sizeSlider;
 
@@ -34,6 +35,7 @@
 	NSArray *sizes;
 
 	BOOL fontsNeedUpdate;
+	BOOL isCustom;
 }
 
 - (void) setFonts: (NSArray *)someFonts;

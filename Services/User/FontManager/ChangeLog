@@ -1,3 +1,13 @@
+2007-11-30  Isaiah Beerbower <public@ipaqah.com>
+	* Info.plist: Change version number from 1.0 to 0.1 (the first was a mistake).
+	* PQSampleController.*: Adapt to single font sampling, as well as multiple
+	  font sampling.
+	* PQFontDocument.*: Add font document controller.
+	* FontManagerInfo.plist: Updated my email address and added font document
+	  type.
+	* English.lproj/FontDocument.gorm: Add font document interface.
+	* GNUmakefile: Added FontDocument.gorm and PQFontDocument.m to build.
+
 2007-07-06  Quentin Mathe <qmathe@club-internet.fr>
 	* Info.plist: Modified CFBundleIdentifier to be valid and added 
 	FontManager.tif icon reference.
