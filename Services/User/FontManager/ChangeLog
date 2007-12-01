@@ -1,3 +1,24 @@
+2007-12-01  Isaiah Beerbower <public@ipaqah.com>
+	* PQController.m ([-awakeFromNib]): Changed localized string names from
+	  PQFamily and PQFamilies to family and families.
+	* PQSampleController.m: Fixed bug introduced in last commit. Implemented
+	  custom text option for font document samples.
+	* PQCharacterView.*: Added PQCharacterView class which will show a fonts glyph
+	  for a supplied character.
+	* PQFontDocument.*: Added support for Mac OS X. (Incomplete)
+	* FontManager.xcodeproj: Updated build on Mac OS X. (Still doesn't work)
+	* English.lproj/Localizable.strings: Changed localized string names from
+	  PQFamily and PQFamilies to family and families. Added a paragraph of Lorem
+		ipsum and a alphabet/numeral sample.
+	* Info.plist: Added font document type.
+	* English.lproj/FontDocument.nib: Added font document interface for Mac OS X.
+	* English.lproj/MainMenu.gorm: Changed name  of groups view to "Collections"
+	  (display only, not in code). Fixed odd coloration problem in collections
+		view and fonts view headers.
+	* English.lproj/FontDocument.gorm: Added a PQCharacterView under the
+	  "Characters" tab.
+	* GNUmakefile: Added PQCharacterView.* to build.
+
 2007-11-30  Isaiah Beerbower <public@ipaqah.com>
 	* Info.plist: Change version number from 1.0 to 0.1 (the first was a mistake).
 	* PQSampleController.*: Adapt to single font sampling, as well as multiple

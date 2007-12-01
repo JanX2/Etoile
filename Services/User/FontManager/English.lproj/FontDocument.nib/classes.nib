@@ -1,0 +1,34 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {install = id; installAll = id; selectFace = id; }; 
+            CLASS = PQFontDocument; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                facePopUpButton = NSPopUpButton; 
+                infoView = NSTableView; 
+                installAllButton = NSButton; 
+                installButton = NSButton; 
+                sampleController = id; 
+                tabView = NSTabView; 
+            }; 
+            SUPERCLASS = NSDocument; 
+        }, 
+        {
+            ACTIONS = {changeColor = id; changeSampleText = id; changeSize = id; }; 
+            CLASS = PQSampleController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                backgroundColorWell = NSColorWell; 
+                foregroundColorWell = NSColorWell; 
+                samplePopUpButton = NSPopUpButton; 
+                sampleView = id; 
+                sizeField = NSComboBox; 
+                sizeSlider = NSSlider; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

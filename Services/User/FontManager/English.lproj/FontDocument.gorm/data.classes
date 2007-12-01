@@ -10,6 +10,13 @@
 	);
 	Super = NSObject;
     };
+    PQCharacterView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSView;
+    };
     PQFontDocument = {
 	Actions = (
 	    "install:",

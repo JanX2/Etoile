@@ -108,13 +108,33 @@
 
 - (NSString *) windowNibName
 {
-	return @"FontDocument.gorm";
+	return @"FontDocument";
 }
 
 - (BOOL) readFromFile: (NSString *)fileName ofType: (NSString *)docType
 {
-	NSString *fontName =
-		[[GSFontEnumerator sharedEnumerator] makeFontAvailable: fileName];
+	NSString *fontName;
+	
+#ifdef GNUSTEP
+	fontName = [[GSFontEnumerator sharedEnumerator] makeFontAvailable: fileName];
+#else
+	FSRef iFile;
+	char *path = [fileName UTF8String];
+	
+	if (! FSPathMakeRef((UInt8 *)path, &iFile, NO))
+	{
+		return NO;
+	}
+	
+	if (ATSFontActivateFromFileSpecification(&iFile, kATSFontContextLocal,
+		kATSFontFormatUnspecified, NULL, kATSOptionFlagsDefault, &fontContainer) !=
+		kATSIterationCompleted)
+	{
+		return NO;
+	}
+	
+	fontName = @"Helvetica"; //TEMP
+#endif
 	
 	if (fontName == nil)
 	{

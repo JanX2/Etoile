@@ -11,7 +11,11 @@
  */
 
 #import <AppKit/AppKit.h>
+#ifdef GNUSTEP
 #import <GNUstepGUI/GSFontInfo.h>
+#else
+#import <CoreServices/CoreServices.h>
+#endif
 #import "PQSampleController.h"
 
 @interface PQFontDocument : NSDocument
@@ -27,6 +31,10 @@
 	
 	NSMutableDictionary *fontInfo;
 	NSMutableArray *fontInfoIndex;
+	
+#ifndef GNUSTEP
+	ATSFontContainerRef fontContainer;
+#endif
 }
 - (void) install: (id)sender;
 - (void) installAll: (id)sender;

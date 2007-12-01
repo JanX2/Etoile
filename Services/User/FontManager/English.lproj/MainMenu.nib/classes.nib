@@ -32,7 +32,7 @@
                 backgroundColorWell = NSColorWell; 
                 foregroundColorWell = NSColorWell; 
                 sampleField = NSComboBox; 
-                sampleView = PQFontSampleView; 
+                sampleView = id; 
                 sizeField = NSComboBox; 
                 sizeSlider = NSSlider; 
             }; 

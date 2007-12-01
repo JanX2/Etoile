@@ -87,13 +87,13 @@ const float sampleBoxMinWidth = 220.0;
 	{
 		[fontsInfoField setStringValue:
 			[NSString stringWithFormat:@"%i %@", fontsCount,
-			                           NSLocalizedString(@"PQFamily", nil)]];
+			                           NSLocalizedString(@"family", nil)]];
 	}
 	else
 	{
 		[fontsInfoField setStringValue:
 			[NSString stringWithFormat:@"%i %@", fontsCount,
-			                           NSLocalizedString(@"PQFamilies", nil)]];
+			                           NSLocalizedString(@"families", nil)]];
 	}
 }
 

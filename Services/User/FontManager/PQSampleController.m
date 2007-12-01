@@ -28,8 +28,7 @@
 
 	fonts = [[NSArray alloc] init];
 	
-	defaultSampleText =
-		[NSArray arrayWithObjects:NSLocalizedString(@"PQPangram", nil), nil];
+	defaultSampleText = [[NSArray alloc] init];
 			
 	sampleTextHistory = [[NSMutableArray alloc] init];
 
@@ -60,7 +59,7 @@
 	{
 		RELEASE(defaultSampleText);
 		defaultSampleText =
-			[NSArray arrayWithObjects:NSLocalizedString(@"PQPangram", nil), nil];
+			[NSArray arrayWithObjects: NSLocalizedString(@"PQPangram", nil), nil];
 		RETAIN(defaultSampleText);
 	}
 	else if ([sampleView isKindOfClass: [NSTextView class]])
@@ -68,9 +67,10 @@
 		RELEASE(defaultSampleText);
 		defaultSampleText =
 			[NSArray arrayWithObjects:NSLocalizedString(@"PQParagraph", nil),
-			                          NSLocalizedString(@"PQAlphabet", nil),
-																@"", nil];
+			                          NSLocalizedString(@"PQAlphabet", nil), nil];
 		RETAIN(defaultSampleText);
+		
+		[sampleTextHistory addObject: @""];
 	}
 	
 	
@@ -200,6 +200,20 @@
 }
 
 
+/* Text view delegate */
+
+- (BOOL) textView: (NSTextView *)aTextView
+	shouldChangeTextInRange: (NSRange)affectedCharRange
+	replacementString: (NSString *)replacementString
+{
+	isCustom = YES;
+	
+	[samplePopUpButton selectItemAtIndex: 2];
+	
+	return YES;
+}
+
+
 /* Keep controls updated */
 
 - (void) updateControls
@@ -255,14 +269,34 @@
 {
 	NSString *newSampleText;
 	
-	if ([sender isKindOfClass: [NSTextView class]])
+	if ([sender isKindOfClass: [NSComboBox class]])
 	{
 		newSampleText = [sampleField stringValue];
 	}
 	else if ([sender isKindOfClass: [NSPopUpButton class]])
 	{
-		newSampleText =
-			[defaultSampleText objectAtIndex: [sender indexOfSelectedItem]];
+		int count = [defaultSampleText count];
+		
+		if (isCustom == YES && [sampleView isKindOfClass: [NSTextView class]])
+		{
+			[sampleTextHistory replaceObjectAtIndex: 0
+									withObject: [NSString stringWithString: [sampleView string]]];
+		}
+		
+		if ([sender indexOfSelectedItem] < count)
+		{
+			newSampleText =
+				[defaultSampleText objectAtIndex: [sender indexOfSelectedItem]];
+				
+			isCustom = NO;
+		}
+		else
+		{
+			newSampleText =
+				[sampleTextHistory objectAtIndex: [sender indexOfSelectedItem] - count];
+				
+			isCustom = YES;
+		}
 	}
 	
 	if ([sampleView isKindOfClass: [PQFontSampleView class]])
