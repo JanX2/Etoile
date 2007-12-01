@@ -1,6 +1,7 @@
 {
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = PQCharacterView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
             ACTIONS = {install = id; installAll = id; selectFace = id; }; 
             CLASS = PQFontDocument; 

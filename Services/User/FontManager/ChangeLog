@@ -1,4 +1,11 @@
 2007-12-01  Isaiah Beerbower <public@ipaqah.com>
+	* PQCharacterView.m: Tweaked to compile on Mac OS X.
+	* FontManager.xcodeproj: Added PQCharacterView.* to build.
+	* PQFontDocument.m: Tweaked to compile on Mac OS X.
+	* English.lproj/FontDocument.nib: Added a PQCharacterView under the
+	  "Characters" tab.
+
+2007-12-01  Isaiah Beerbower <public@ipaqah.com>
 	* PQController.m ([-awakeFromNib]): Changed localized string names from
 	  PQFamily and PQFamilies to family and families.
 	* PQSampleController.m: Fixed bug introduced in last commit. Implemented

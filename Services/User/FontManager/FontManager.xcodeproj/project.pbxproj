@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		32204F310D00DADF00AAB30C /* FontDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 32204F2F0D00DADF00AAB30C /* FontDocument.nib */; };
 		32204F7C0D00E58400AAB30C /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32204F7B0D00E58400AAB30C /* CoreServices.framework */; };
+		3282821C0D02240400F0EAAD /* PQCharacterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282821B0D02240400F0EAAD /* PQCharacterView.m */; };
 		32BFCF9A0D00D2D60058E54D /* PQFontDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 32BFCF990D00D2D60058E54D /* PQFontDocument.m */; };
 		3B63AE6B0C3E696900BC13D2 /* FontManager.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3B63AE6A0C3E696900BC13D2 /* FontManager.icns */; };
 		7122D3B70C1398C300B29EAE /* PQFontSampleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7122D3B60C1398C300B29EAE /* PQFontSampleView.m */; };
@@ -30,6 +31,8 @@
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32204F300D00DADF00AAB30C /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/FontDocument.nib; sourceTree = "<group>"; };
 		32204F7B0D00E58400AAB30C /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
+		3282821A0D02240400F0EAAD /* PQCharacterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PQCharacterView.h; sourceTree = "<group>"; };
+		3282821B0D02240400F0EAAD /* PQCharacterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PQCharacterView.m; sourceTree = "<group>"; };
 		32BFCF980D00D2D60058E54D /* PQFontDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PQFontDocument.h; sourceTree = "<group>"; };
 		32BFCF990D00D2D60058E54D /* PQFontDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PQFontDocument.m; sourceTree = "<group>"; };
 		3B63AE6A0C3E696900BC13D2 /* FontManager.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = FontManager.icns; sourceTree = "<group>"; };
@@ -105,8 +108,8 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				719DE2AC0C05986400474A48 /* PQSampleController.h */,
-				719DE2AD0C05986400474A48 /* PQSampleController.m */,
+				3282821A0D02240400F0EAAD /* PQCharacterView.h */,
+				3282821B0D02240400F0EAAD /* PQCharacterView.m */,
 				719DE2AF0C05987700474A48 /* PQController.h */,
 				719DE2B00C05987700474A48 /* PQController.m */,
 				32BFCF980D00D2D60058E54D /* PQFontDocument.h */,
@@ -115,6 +118,8 @@
 				71E420EF0C062B90003CEA47 /* PQFontFamily.m */,
 				71DC554C0C0B424B00519DE2 /* PQFontSampleView.h */,
 				7122D3B60C1398C300B29EAE /* PQFontSampleView.m */,
+				719DE2AC0C05986400474A48 /* PQSampleController.h */,
+				719DE2AD0C05986400474A48 /* PQSampleController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -215,6 +220,7 @@
 				71E420F00C062B90003CEA47 /* PQFontFamily.m in Sources */,
 				7122D3B70C1398C300B29EAE /* PQFontSampleView.m in Sources */,
 				32BFCF9A0D00D2D60058E54D /* PQFontDocument.m in Sources */,
+				3282821C0D02240400F0EAAD /* PQCharacterView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

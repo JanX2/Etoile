@@ -18,8 +18,12 @@
 - (id) initWithFrame: (NSRect)frame
 {
 	[super initWithFrame: frame];
-	
+
+#ifdef GNUSTEP
 	fontName = @"Bitstream Vera Sans";
+#else
+	fontName = @"Helvetica";
+#endif
 	fontSize = 48.0;
 	
 	/* Set up text system */

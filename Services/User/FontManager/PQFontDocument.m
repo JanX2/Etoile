@@ -118,21 +118,26 @@
 #ifdef GNUSTEP
 	fontName = [[GSFontEnumerator sharedEnumerator] makeFontAvailable: fileName];
 #else
-	FSRef iFile;
-	char *path = [fileName UTF8String];
+	// In theory this code should make the font available, I'm not sure if it
+	// works though. Any way, after it's activated I'm not sure how to find out
+	// it's postscript name.
 	
-	if (! FSPathMakeRef((UInt8 *)path, &iFile, NO))
-	{
-		return NO;
-	}
+	//FSRef iFile;
+	//char *path = [fileName UTF8String];
+	//
+	//if (! FSPathMakeRef((UInt8 *)path, &iFile, NO))
+	//{
+	//	return NO;
+	//}
+	//
+	//if (ATSFontActivateFromFileSpecification(&iFile, kATSFontContextLocal,
+	//	kATSFontFormatUnspecified, NULL, kATSOptionFlagsDefault, &fontContainer) !=
+	//	kATSIterationCompleted)
+	//{
+	//	return NO;
+	//}
 	
-	if (ATSFontActivateFromFileSpecification(&iFile, kATSFontContextLocal,
-		kATSFontFormatUnspecified, NULL, kATSOptionFlagsDefault, &fontContainer) !=
-		kATSIterationCompleted)
-	{
-		return NO;
-	}
-	
+	// Just so it runs we'll use Helvetica instead.
 	fontName = @"Helvetica"; //TEMP
 #endif
 	
