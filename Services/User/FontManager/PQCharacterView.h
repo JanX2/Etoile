@@ -17,10 +17,14 @@
 {
 	NSString *fontName;
 	float fontSize;
+
+	NSColor *color;
+	NSColor *guideColor;
+	NSColor *backgroundColor;
 	
-	/* Text system components */
-	NSTextStorage *textStorage;
-	NSLayoutManager *layoutManager;
-	NSTextContainer *textContainer;
+	NSString *character;
 }
+- (void) setFontSize: (float)newSize;
+- (float) fontSize;
+- (void) changeSize: (id)sender;
 @end
