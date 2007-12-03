@@ -731,7 +731,7 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 }
 
 //Can drop?
-- (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id < NSDraggingInfo >)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex
+- (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id < NSDraggingInfo >)info proposedItem:(id)item proposedChildIndex:(int)anIndex
 {
 	NSPasteboard * pboard = [info draggingPasteboard];
 	if([item isKindOfClass:[JabberPerson class]])
@@ -751,7 +751,7 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 	return NSDragOperationNone;
 }
 //Drop
-- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id < NSDraggingInfo >)info item:(id)item childIndex:(NSInteger)anIndex
+- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id < NSDraggingInfo >)info item:(id)item childIndex:(int)anIndex
 {
 	NSPasteboard * pboard = [info draggingPasteboard];
 	[pboard types];
