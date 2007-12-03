@@ -235,9 +235,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	{
 		return NO;
 	}
-	NSLog(@"Old XML: %@", buffer);	
+	//NSLog(@"Old XML: %@", buffer);	
 	[buffer appendString:data];
-	NSLog(@"XML: %@", buffer);
+	//NSLog(@"XML: %@", buffer);
 	bufferLength = [buffer length];
 	while(currentIndex < bufferLength)
 	{
@@ -318,7 +318,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 								{
 									NS_DURING
 									{
-										NSLog(@"<%@> (%@)", tagName, tagAttributes);
+										//NSLog(@"<%@> (%@)", tagName, tagAttributes);
 										[delegate startElement:tagName attributes:tagAttributes];
 									}
 									NS_HANDLER

@@ -24,7 +24,9 @@ static NSDictionary * ERROR_STYLE;
 		processName = [processName substringFromIndex:lastSlash.location + 1];
 	}
 	//Set the base path to be ~/Library/Logs/AppName - This allows multiple apps to use the same library but store their logs in different places
-	logBasePath = [[NSString stringWithFormat:@"~/Library/logs/%@", processName] stringByExpandingTildeInPath];
+	logBasePath = [NSString stringWithFormat:@"%@/logs/%@", 
+					[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0],
+					processName];
 	if(![[NSFileManager defaultManager] fileExistsAtPath:logBasePath])
 	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:logBasePath

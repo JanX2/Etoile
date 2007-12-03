@@ -808,16 +808,36 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 	}
 	return dropped;
 }
-
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+	if([item isKindOfClass:[JabberPerson class]])
+	{
+		return YES;
+	}
+	return NO;
+}
 - (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
 	if([item isKindOfClass:[JabberPerson class]])
 	{
 		NSString * group = [item group];
-		NSArray * identities = [item identityList];
-		FOREACH(identities, identity, JabberIdentity*)
+		if([object length] > 2)
 		{
-			[roster setName:object group:group forIdentity:identity];
+			int p = ([[[item defaultIdentity] presence] show] / 10) - 1;
+			NSString * prefix = [NSString stringWithFormat:@"%C ", 
+			PRESENCE_ICONS[p]];
+			if([prefix isEqualToString:[object substringToIndex:2]])
+			{
+				object = [object substringFromIndex:2];
+			}
+		}
+		if(![object isEqualToString:[item name]])
+		{
+			NSArray * identities = [item identityList];
+			FOREACH(identities, identity, JabberIdentity*)
+			{
+				[roster setName:object group:group forIdentity:identity];
+			}
 		}
 	}
 }

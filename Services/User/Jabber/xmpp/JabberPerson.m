@@ -16,7 +16,28 @@
 #import "ABPerson+merging.h"
 #import "../Macros.h"
 
+static NSString * avatarCachePath = nil;
+
 @implementation JabberPerson
++ (void) initialize
+{
+	avatarCachePath = [[NSString stringWithFormat:@"%@/%@/avatars/", 
+						[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0],
+						[[NSProcessInfo processInfo] processName]] retain];
+	NSArray * components = [avatarCachePath pathComponents];
+	NSString * currentPath = [components objectAtIndex:0];
+	NSFileManager * fm = [NSFileManager defaultManager];
+	for(unsigned int i=0 ; i<[components count] ; i++)
+	{
+		currentPath = [currentPath stringByAppendingPathComponent:[components objectAtIndex:i]];
+		if(![fm fileExistsAtPath:currentPath])
+		{
+			[fm createDirectoryAtPath:currentPath
+						   attributes:nil];			
+		}
+	}
+	[super initialize];
+}
 + (id) jabberPersonWithIdentity:(JabberIdentity*)_identity forRoster:(id)_roster
 {
 	return [[[JabberPerson alloc] initWithIdentity:_identity forRoster:(id)_roster] autorelease];
@@ -169,7 +190,7 @@
 	
 	//vCard updates
 	NSString * newPhotoHash = [[aPresence children] objectForKey:@"vCardUpdate"];
-	if(newPhotoHash)
+	if(newPhotoHash != nil && ![newPhotoHash isEqualToString:@""])
 	{
 		if(currentHash == nil)
 		{
@@ -177,7 +198,18 @@
 		}
 		if(![photoHashes objectForKey:newPhotoHash])
 		{
-			[self requestvCard:from];
+			NSData * data = [NSData dataWithContentsOfFile:[avatarCachePath stringByAppendingString:newPhotoHash]];
+			if(data != nil)
+			{
+				[currentHash release];
+				currentHash = [newPhotoHash retain];
+				[avatar release];
+				avatar = [[NSImage alloc] initWithData:data]; 
+			}
+			else
+			{
+				[self requestvCard:from];				
+			}
 		}
 	}
 	
@@ -320,10 +352,13 @@
 			[newvCards setObject:[vCard uniqueId] forKey:[NSString stringWithFormat:@"%@!%@", group, name]];
 			[defaults setObject:newvCards forKey:@"vCards"];
 		}
-		NSData * imageData = [vCard imageData];
+		NSData * imageData = [identityvCard imageData];
 		if(imageData != nil)
 		{
 			NSString * imageHash = [imageData sha1];
+			[imageData writeToFile:[avatarCachePath stringByAppendingString:imageHash]
+						   options:0
+							 error:nil];
 			if(![imageHash isEqualToString:currentHash])
 			{
 				[photoHashes setObject:imageData forKey:imageHash];
@@ -332,7 +367,7 @@
 				[currentHash release];
 				currentHash = [imageHash retain];
 			}
-		}
+		}		
 	}
 }
 
