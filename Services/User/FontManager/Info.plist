@@ -11,6 +11,8 @@
 			<array>
 				<string>ttf</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>Document-Font</string>
 			<key>CFBundleTypeName</key>
 			<string>PQFontDocument</string>
 			<key>CFBundleTypeRole</key>

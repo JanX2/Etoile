@@ -15,5 +15,6 @@
 		NSUnixExtensions = ("ttf");
 		NSRole = "Viewer";
 		NSDocumentClass = PQFontDocument;
+		NSIcon = "Document-Font.tif";
 	} );
 }

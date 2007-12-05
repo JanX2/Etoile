@@ -1,3 +1,10 @@
+2007-12-05  Isaiah Beerbower <public@ipaqah.com>
+	* FontManagerInfo.plist: Added reference to font document icon
+	  Document-Font.tif.
+	* GNUmakefile: Added Document-Font.tif to build.
+	* Info.plist: Added reference to font document icon Document-Font.icns.
+	* FontManager.xcodeproj: Added Document-Font.icns to build.
+
 2007-12-02  Isaiah Beerbower <public@ipaqah.com>
 	* PQCharacterView.*: Made character drawing actually work.
 	* English.lproj/FontDocument.nib: Fixed resizing issues. Added scroller under
