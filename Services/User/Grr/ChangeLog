@@ -2,6 +2,10 @@
 Grr ChangeLog
 ==============
 
+Dec-07-2007  Quentin Mathe
+	* Fixed compilation by taking care of linking EtoileFoundation now that 
+	  EtoileUI depends on it (see r2634 for the first occurence of this issue).
+
 Jun-29-2007  Yen-Ju Chen
 	* Refresh artible table view when feed is refreshed.
 	  Fix bug #8533.

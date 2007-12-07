@@ -97,10 +97,10 @@ Grr_MAIN_MODEL_FILE = Grr.gorm
 
 ADDITIONAL_GUI_LIBS = -lRSSKit
 
-# If we're compiling on Etoile, we'll link to EtoileFoundation
+# If we're compiling on Etoile, we'll link to EtoileUI
 # for the UKNibOwner class, otherwise the local copy is used.
 ifeq ($(etoile), yes)
-	ADDITIONAL_GUI_LIBS += -lEtoileUI
+	ADDITIONAL_GUI_LIBS += -lEtoileUI -lEtoileFoundation
 	ADDITIONAL_OBJC_FLAGS += -DETOILE
 else
 	Grr_OBJC_FILES += UKNibOwner.m
