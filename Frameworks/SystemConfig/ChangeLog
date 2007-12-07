@@ -1,3 +1,11 @@
+2007-12-07  Quentin Mathe <qmathe@club-internet.fr>
+
+	Note: Patch submitted by Eric Wasylishen, related to bug #10463 initially 
+	reported on etoile-dev.
+	* Source/GNUmakefile: Fixed header search path to be /usr/include instead
+	of /usr/include/sys which contain architecture dependent headers.
+	* Source/SCSound.m: Modified to take in account the makefile modification.
+
 2007-07-06  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile:
