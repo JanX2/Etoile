@@ -1,3 +1,11 @@
+2007-12-14  Quentin Mathe <qmathe@club-internet.fr>
+
+	Based on a patch by Andreas Schick.
+	* NSResponder+ContextualMenu.h:
+	* NSResponder+ContextualMenu.m:
+	Added. Allows to display the horizontal menu on right click when no
+	contextual menu is available.
+
 2007-04-13  Yen-Ju Chen <yjchenx gmail>
 
 	* NSMenu+Hackery.m: Make sure the origin is correct.
