@@ -1,3 +1,8 @@
+20-12-2007 Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Modified to link EtoileFoundation now that EtoileUI relies
+	on it (issue reported by Maurizio Tomasi).
+
 07-04-2007 Quentin Mathe <qmathe@club-internet.fr>
 
 	* GNUmakefile: Declared ETOILE_CORE_MODULE to install into System

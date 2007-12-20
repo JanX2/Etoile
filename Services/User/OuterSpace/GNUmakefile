@@ -26,6 +26,7 @@ OuterSpace_OBJC_FILES = \
 
 OuterSpace_GUI_LIBS += \
 	-lIconKit \
+	-lEtoileFoundation \
 	-lEtoileUI \
 	-lXWindowServerKit \
 	-lInspectorKit \
