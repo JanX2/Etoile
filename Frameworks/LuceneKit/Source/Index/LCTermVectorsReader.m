@@ -253,9 +253,9 @@
     NSMutableArray *positions = nil;
     NSMutableArray *offsets = nil;
     if(storePositions)
-		positions = [[NSMutableArray alloc] init];
+      positions = AUTORELEASE([[NSMutableArray alloc] init]);
     if(storeOffsets)
-		offsets = [[NSMutableArray alloc] init];
+      offsets = AUTORELEASE([[NSMutableArray alloc] init]);
     
     long start = 0;
     long deltaLength = 0;
@@ -301,7 +301,7 @@
 			for (j = 0; j < freq; j++) {
 				long startOffset = prevOffset + [tvf readVInt];
 				long endOffset = startOffset + [tvf readVInt];
-				[offs addObject: [[LCTermVectorOffsetInfo alloc] initWithStartOffset: startOffset endOffset: endOffset]];
+				[offs addObject: AUTORELEASE([[LCTermVectorOffsetInfo alloc] initWithStartOffset: startOffset endOffset: endOffset])];
 				prevOffset = endOffset;
 			}
 		}

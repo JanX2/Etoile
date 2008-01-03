@@ -52,6 +52,8 @@ Dependency
     * zlib: compression/decompression
     
     * OgreKit: regular expression searching and replacing
+        or PCREParser (to use PCREParser instead of OgreKit 
+        do a make with REGEXP=PCREParser)
 
 
 Contribute 

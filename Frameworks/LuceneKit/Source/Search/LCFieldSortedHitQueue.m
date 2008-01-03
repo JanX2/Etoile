@@ -46,10 +46,10 @@
 		NSString *fieldname = [field field];
 		[comparators addObject: [cache cachedComparator: reader field: fieldname type: [field type] locale: [field locale] factory: [field factory]]];
 		if ([[comparators objectAtIndex: i] sortType] == LCSortField_STRING) {
-		  [fields addObject: [[LCSortField alloc] initWithField: fieldname locale: [field locale] reverse: [field reverse]]];
+		  [fields addObject: AUTORELEASE([[LCSortField alloc] initWithField: fieldname locale: [field locale] reverse: [field reverse]])];
 		} else {
-		  [fields addObject: [[LCSortField alloc] initWithField: fieldname 
-														 type: [[comparators objectAtIndex: i] sortType] reverse: [field reverse]]];
+		  [fields addObject: AUTORELEASE([[LCSortField alloc] initWithField: fieldname 
+                                                                      type: [[comparators objectAtIndex: i] sortType] reverse: [field reverse]])];
 		}
 	}
 	maxscore = FLT_MIN;
@@ -196,16 +196,16 @@ static LCComparatorCache *sharedInstance;
 	LCEntry *entry;
 	if (factory != nil)
 	{
-		entry = [[LCEntry alloc] initWithField: field custom: factory];
+          entry = AUTORELEASE([[LCEntry alloc] initWithField: field custom: factory]);
 	}
 	else
 	{
-		entry = [[LCEntry alloc] initWithField: field type: type locale: locale];
+          entry = AUTORELEASE([[LCEntry alloc] initWithField: field type: type locale: locale]);
 	}
 	
 	NSDictionary *readerCache = [comparators objectForKey: reader];
 	if (readerCache == nil) return nil;
-	return [readerCache objectForKey: AUTORELEASE(entry)];
+	return [readerCache objectForKey: entry];
 }
 
 /** Stores a comparator into the cache. */

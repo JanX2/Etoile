@@ -16,9 +16,9 @@
 
 + (LCQuery *) parse: (NSString *) query defaultField: (NSString *) field
 {
-  QueryHandler *handler = [[QueryHandler alloc] init];
+  QueryHandler *handler = AUTORELEASE([[QueryHandler alloc] init]);
   [handler setDefaultField: field];
-  CodeParser *parser = [[CodeParser alloc] initWithCodeHandler: handler withString: query];
+  CodeParser *parser = AUTORELEASE([[CodeParser alloc] initWithCodeHandler: handler withString: query]);
   [parser parse];
 //  NSLog(@"%@", [handler query]);
   return [handler query];

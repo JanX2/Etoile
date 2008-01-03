@@ -59,6 +59,7 @@ Directory.  A TermInfos can be written once, in order.  */
 						fieldInfos: fis
 						  interval: interval
 						   isIndex: NO];
+        // Other is own only for !isIndex
 	ASSIGN(other, AUTORELEASE([[LCTermInfosWriter alloc] initWithDirectory: directory
 													   segment: segment
 													fieldInfos: fis
@@ -70,7 +71,7 @@ Directory.  A TermInfos can be written once, in order.  */
 
 - (void) setOther: (LCTermInfosWriter *) o
 {
-	ASSIGN(other, o);
+	other = o; //Don't retain
 }
 
 - (id) initWithDirectory: (id <LCDirectory>) directory
@@ -104,7 +105,8 @@ Directory.  A TermInfos can be written once, in order.  */
 {
 	DESTROY(lastTerm);
 	DESTROY(lastTi);
-	DESTROY(other);
+	if (!isIndex)
+          DESTROY(other);
 	DESTROY(fieldInfos);
 	DESTROY(output);
 	[super dealloc];

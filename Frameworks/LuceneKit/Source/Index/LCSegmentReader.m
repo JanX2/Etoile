@@ -36,7 +36,7 @@
                   indexInput: (LCIndexInput *) inp number: (int) num
 {
 	self = [self init];
-	ASSIGN(reader, r);
+	reader = r; //Don't assign as reader retain us
 	ASSIGN(input, inp);
 	bytes = [[NSMutableData alloc] init];
 	number = num;
@@ -45,7 +45,7 @@
 
 - (void) dealloc
 {
-	DESTROY(reader);
+	//Don't destroy reader as we not retain it
 	DESTROY(input);
 	DESTROY(bytes);
 	[super dealloc];
@@ -540,7 +540,7 @@
 		return;
     }
 	
-    LCIndexInput *normStream = (LCIndexInput *) [[norm input] copy];
+    LCIndexInput *normStream = (LCIndexInput *) AUTORELEASE([[norm input] copy]);
 	// read from disk
     [normStream seekToFileOffset: 0];
     [normStream readBytes: bytes offset: offset length: [self maximalDocument]];
@@ -562,8 +562,8 @@
 				fileName = [NSString stringWithFormat: @"%@.f%d", segment, [fi number]];
 				d = cfsDir;
 			}
-			[norms setObject: [[LCNorm alloc] initWithSegmentReader: self
-														 indexInput: [d openInput: fileName] number: [fi number]]
+			[norms setObject: AUTORELEASE([[LCNorm alloc] initWithSegmentReader: self
+                                                                      indexInput: [d openInput: fileName] number: [fi number]])
 					  forKey: [fi name]];
 		}
     }

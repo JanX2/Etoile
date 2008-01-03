@@ -23,6 +23,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(query);
+  [super dealloc];
+}
+
 - (LCOccurType) occur { return occur; }
 - (void) setOccur: (LCOccurType) o
 {

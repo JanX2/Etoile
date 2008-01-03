@@ -123,9 +123,9 @@
     [ms appendFormat: @"%@:", [self field]];
   }
   [ms appendString: (inclusive ? @"[" : @"{")];
-  [ms appendString: (lowerTerm) ? [lowerTerm text] : @"null"];
+  [ms appendString: (lowerTerm) ? (NSString*)[lowerTerm text] : (NSString*)@"null"];
   [ms appendString: @" TO "];
-  [ms appendString: (upperTerm) ? [upperTerm text] : @"null"];
+  [ms appendString: (upperTerm) ? (NSString*)[upperTerm text] : (NSString*)@"null"];
   [ms appendString: (inclusive ? @"]" : @"}")];
   [ms appendString: LCStringFromBoost([self boost])];
   return AUTORELEASE(ms);

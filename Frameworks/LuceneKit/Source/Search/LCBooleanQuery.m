@@ -332,6 +332,7 @@ static int maxClauseCount = 1024;
 {
 	/* LuceneKit: this is actually BooleanScorer2 in lucene */
 	LCBooleanScorer *result = [[LCBooleanScorer alloc] initWithSimilarity: similarity minimumNumberShouldMatch: minNrShouldMatch];
+        AUTORELEASE(result);
 	NSArray *clauses = [query clauses];
 	int i;
 	for (i = 0; i < [weights count]; i++)
@@ -344,13 +345,13 @@ static int maxClauseCount = 1024;
 		else if ([c isRequired])
 			return nil;
 	}
-	return AUTORELEASE(result);
+	return result;
 }
 
 - (LCExplanation *) explain: (LCIndexReader *) reader
 				   document: (int) doc
 {
-	LCExplanation *sumExpl = [[LCExplanation alloc] init];
+        LCExplanation *sumExpl = AUTORELEASE([[LCExplanation alloc] init]);
 	[sumExpl setRepresentation: @"sum of:"];
 	int coord = 0;
 	int maxCoord = 0;

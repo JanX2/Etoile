@@ -59,6 +59,7 @@
 - (void) dealloc
 {
 	DESTROY(subScorers);
+        DESTROY(scorerQueue);
 	[super dealloc];
 }
 

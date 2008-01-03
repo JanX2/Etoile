@@ -39,6 +39,13 @@
 	return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(custom);
+  DESTROY(field);
+  [super dealloc];
+}
+
 - (NSString *) field { return field; }
 - (LCSortFieldType) type { return type; }
 - (id) custom { return custom; }
@@ -110,11 +117,10 @@ static int LCFieldCache_STRING_INDEX = -1;
 		 type: (LCSortFieldType) type
 	locale: (id) locale
 {
-	LCEntry *entry = [[LCEntry alloc] initWithField: field type: type locale: locale];
+  LCEntry *entry = AUTORELEASE([[LCEntry alloc] initWithField: field type: type locale: locale]);
 	//    synchronized (this) {
 	NSDictionary *readerCache = [cache objectForKey: reader];
 	if (readerCache == nil) return nil;
-	AUTORELEASE(entry);
 	return [readerCache objectForKey: entry];
 	//    }
 }
@@ -123,11 +129,10 @@ static int LCFieldCache_STRING_INDEX = -1;
 - (id) lookup: (LCIndexReader *) reader field: (NSString *) field
 	 comparer: (id) comparer
 {
-	LCEntry *entry = [[LCEntry alloc] initWithField: field custom: comparer];
+  LCEntry *entry = AUTORELEASE([[LCEntry alloc] initWithField: field custom: comparer]);
 	//    synchronized (this) {
 	NSDictionary *readerCache = [cache objectForKey: reader];
 	if (readerCache == nil) return nil;
-	AUTORELEASE(entry);
 	return [readerCache objectForKey: entry];
 	//    }
 }
@@ -137,7 +142,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 		type: (LCSortFieldType) type locale: (id) locale
 		custom: (id) value
 {
-	LCEntry *entry = [[LCEntry alloc] initWithField: field type: type locale: locale];
+  LCEntry *entry = AUTORELEASE([[LCEntry alloc] initWithField: field type: type locale: locale]);
 	//    synchronized (this) {
 	NSMutableDictionary *readerCache = [cache objectForKey: reader];
 	if (readerCache == nil)
@@ -147,7 +152,6 @@ static int LCFieldCache_STRING_INDEX = -1;
 	}
 	[readerCache setObject: value forKey: entry];
 	[cache setObject: readerCache forKey: reader];
-	AUTORELEASE(entry);
 	return readerCache;
 	//    }
 }
@@ -156,7 +160,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 - (id) store: (LCIndexReader *) reader field: (NSString *) field
 	comparer: (id) comparer custom: (id) value
 {
-	LCEntry *entry = [[LCEntry alloc] initWithField: field custom: comparer];
+  LCEntry *entry = AUTORELEASE([[LCEntry alloc] initWithField: field custom: comparer]);
 	//    synchronized (this) {
 	NSMutableDictionary *readerCache = [cache objectForKey: reader];
 	if (readerCache == nil)
@@ -166,7 +170,6 @@ static int LCFieldCache_STRING_INDEX = -1;
 	}
 	[readerCache setObject: value forKey: entry];
 	[cache setObject: readerCache forKey: reader];
-	AUTORELEASE(entry);
 	return readerCache;
 	//    }
 }
@@ -181,9 +184,9 @@ static int LCFieldCache_STRING_INDEX = -1;
 {
 	id ret = [self lookup: reader field: field comparer: parser];
 	if (ret == nil) {
-		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
+          NSMutableDictionary *retDic = AUTORELEASE([[NSMutableDictionary alloc] init]);
 		id <LCTermDocuments> termDocs = [reader termDocuments];
-		LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
+		LCTerm *t = AUTORELEASE([[LCTerm alloc] initWithField: field text: @""]);
 		LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
 		do {
 			LCTerm *term = [termEnum term];
@@ -213,9 +216,9 @@ static int LCFieldCache_STRING_INDEX = -1;
 {
 	id ret = [self lookup: reader field: field comparer: parser];
 	if (ret == nil) {
-		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
+          NSMutableDictionary *retDic = AUTORELEASE([[NSMutableDictionary alloc] init]);
 		id <LCTermDocuments> termDocs = [reader termDocuments];
-		LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
+		LCTerm *t = AUTORELEASE([[LCTerm alloc] initWithField: field text: @""]);
 		LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
 
 		do {
@@ -240,9 +243,9 @@ static int LCFieldCache_STRING_INDEX = -1;
 {
 	id ret = [self lookup: reader field: field type: LCSortField_STRING locale: nil];
 	if (ret == nil) {
-		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
+          NSMutableDictionary *retDic = AUTORELEASE([[NSMutableDictionary alloc] init]);
 		id <LCTermDocuments> termDocs = [reader termDocuments];
-		LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
+		LCTerm *t = AUTORELEASE([[LCTerm alloc] initWithField: field text: @""]);
 		LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
 
 		do {
@@ -268,8 +271,8 @@ static int LCFieldCache_STRING_INDEX = -1;
 {
 	id ret = [self lookup: reader field: field type: LCFieldCache_STRING_INDEX locale: nil];
 	if (ret == nil) {
-		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
-		NSMutableArray *mterms = [[NSMutableArray alloc] init];
+          NSMutableDictionary *retDic = AUTORELEASE([[NSMutableDictionary alloc] init]);
+          NSMutableArray *mterms = AUTORELEASE([[NSMutableArray alloc] init]);
 #if 0
 		final int[] retArray = new int[reader.maxDoc()];
 		String[] mterms = new String[reader.maxDoc()+1];
@@ -296,7 +299,7 @@ static int LCFieldCache_STRING_INDEX = -1;
 			// store term text
 			// we expect that there is at most one term per document
 			//    if (t >= mterms.length) throw new RuntimeException ("there are more terms than documents in field \"" + field + "\"");
-			[mterms addObject: AUTORELEASE([term text])];
+			[mterms addObject: AUTORELEASE([term text])];//FIXME Why autoreleasing it ?
 			
 			[termDocs seekTermEnumerator: termEnum];
 			while ([termDocs hasNextDocument]) {
@@ -347,7 +350,7 @@ protected static final Pattern pIntegers = Pattern.compile ("[0-9\\-]+");
 {
 	id ret = [self lookup: reader field: field type: LCSortField_AUTO locale: nil];
 	if (ret == nil) {
-		LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
+          LCTerm *t = AUTORELEASE([[LCTerm alloc] initWithField: field text: @""]);
 		LCTermEnumerator *enumerator = [reader termEnumeratorWithTerm: t];
 		LCTerm *term = [enumerator term];
 		if (term == nil) {
@@ -406,9 +409,9 @@ protected static final Pattern pIntegers = Pattern.compile ("[0-9\\-]+");
 {
 	id ret = [self lookup: reader field: field comparer: comparator];
 	if (ret == nil) {
-		NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
+          NSMutableDictionary *retDic = AUTORELEASE([[NSMutableDictionary alloc] init]);
 		id <LCTermDocuments> termDocs = [reader termDocuments];
-		LCTerm *t = [[LCTerm alloc] initWithField: field text: @""];
+		LCTerm *t = AUTORELEASE([[LCTerm alloc] initWithField: field text: @""]);
 		LCTermEnumerator *termEnum = [reader termEnumeratorWithTerm: t];
 
 		do {

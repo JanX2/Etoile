@@ -1,3 +1,124 @@
+2008-01-02 Manuel Guesdon <mguesdon AT orange-concept DOT com>
+
+    * Source/Analysis/LCPerFieldAnalyzerWrapper.m:
+        Fixed Memory Leak in -tokenStreamWithField:reader:
+    * Source/Index/LCCompoundFileReader.m:
+        Added assertion in -readByte: 
+        Fixed Memory Leak in -initWithDirectory:name:
+    * Source/Index/LCDocumentWriter.m:
+        Added assertion in -addDocument:document:
+        Fixed Memory Leak in -addField:text:position:offset:
+    * Source/Index/LCIndexWriter.m:
+        Added ASSIGN in -setSimilarity:
+        Destroyed similarity in -dealloc
+        Fixed Memory Leak in -readDeleteableFiles
+    * Source/Index/LCMultipleTermPositions.m
+        Added LCIntQueue -dealloc
+        Fixed Memory Leak in -initWithIndexReader:terms:
+        Added LCMultipleTermPositions -dealloc
+    * Source/Index/LCMultiReader.m:
+        Added LCMultiReader -dealloc
+        Fixed Memory Leak in -fieldNames:
+        Added LCMultiTermEnumerator -dealloc
+    * Source/Index/LCSegmentMerger.m
+        Fixed Memory Leak in -mergeTermInfo:size:
+    * Source/Index/LCSegmentReader.m
+        Removed reader retain of reader in LCNorm 
+	  -initWithSegmentReader:indexInput:number:
+        Removed reader release in LCNorm -dealloc
+        Fixed Memory Leak in -setNorms:bytes:
+        Fixed Memory Leak in -openNorms:
+    * Source/Index/LCSegmentTermDocs.m:
+        Changed ASSIGN to ASSOGNCOPY -initWithSegmentReader:
+    * Source/Index/LCTermInfosWriter.m
+        Removed retain in -setOther:
+        Added conditional release of other in -dealloc
+    * Source/Index/LCTermVectorsReader.m
+        Fixed Memory Leak in -readTermVector:pointer:
+    * Source/QueryParser/LCQueryParser.m
+        Fixed Memory Leak in -parse:defaultField:
+    * Source/QueryParser/QueryHandler.m:
+        Fixed Memory Leak in -dealloc
+    * Source/Search/LCBooleanClause.m:
+        Added LCBooleanClause -dealloc
+    * Source/Search/LCBooleanQuery.m:
+        Fixed Memory Leak in -scorer:
+        Fixed Memory Leak in -explain:document:
+    * Source/Search/LCBooleanScorer.m:
+        Added LCBooleanScorer -dealloc
+        Fixed Memory Leak in -makeCountingSumScorerSomeReq
+        Added LCBooleanConjunctionScorer -dealloc
+        Added LCBooleanDisjunctionSumScorer -dealloc
+        Added LCSingleMatchScorer -dealloc
+        Fixed Memory Leak in LCCoordinator -initWithScorer:
+        Added LCCoordinator -dealloc
+    * Source/Search/LCDisjunctionSumScorer.m:
+        Fixed Memory Leak in -dealloc
+    * Source/Search/LCFieldCacheImpl.m:
+        Added LCEntry -dealloc
+        Fixed Memory Leak in -lookup:field:type:locale:
+        Fixed Memory Leak in -lookup:field:comparer:
+        Fixed Memory Leak in -store:field:type:locale:custom:
+        Fixed Memory Leak in -store:field:comparer:custom:
+        Fixed Memory Leak in -ints:field:parser:
+        Fixed Memory Leak in -floats:field:parser:
+        Fixed Memory Leak in -strings:field:
+        Fixed Memory Leak in -stringIndex:field:
+        Fixed Memory Leak in -objects:field:
+        Fixed Memory Leak in -custom:field:sortComparator:
+    * Source/Search/LCFieldSortedHitQueue.m:
+        Fixed Memory Leak in -initWithReader:sortFields:size:
+        Fixed Memory Leak in -lookup:field:type:locale:factory:
+    * Source/Search/LCFilteredTermEnum.m:
+        Added LCFilteredTermEnumerator -dealloc
+    * Source/Search/LCFuzzyQuery.m:
+        Fixed Memory Leak in -rewrite:
+    * Source/Search/LCIndexSearcher.m:
+        Added LCIndexSearcher -dealloc
+    * Source/Search/LCMultiTermQuery.m:
+        Fixed Memory Leak in -rewrite:
+    * Source/Search/LCQueryFilter.m:
+        Added LCQueryFilterHitCollector -dealloc
+        Added LCQueryFilter -dealloc
+        Fixed Memory Leak in -bits:
+    * Source/Search/LCQueryTermVector.m
+        Fixed Memory Leak in -initWithString:analyzer:
+        Fixed Memory Leak in -processTerms:
+    * Source/Search/LCRangeQuery.m:
+        Fixed compiler warning in -descriptionWithField:
+    * Source/Search/LCSimilarityDelegator.m:
+        Added LCSimilarityDelegator -dealloc
+    * Source/Search/LCSortComparator.m:
+        Added LCCacheScoreDocComparator -dealloc
+    * Source/Search/LCTermQuery.m:
+        Fixed Memory Leak in -explain:document:
+    * Source/Store/LCFSIndexOutput.m:
+        Added FIXME in -initWithFile:
+    * Source/QueryParser/QueryHandler.m:
+        Fixed Memory Leak in -token:
+        Fixed Memory Leak in -flushQuery
+    * Source/Search/LCHits.m:
+        Fixed Memory Leak in -dealloc:
+    * Source/LCMetadataAttribute.m: added
+    * Headers/LCMetadataAttribute.h:
+        Declared constants as extern and moved definition in 
+	   LCMetadataAttribute.m
+    * Source/GNUmakefile:
+	Added LCMetadataAttribute.m
+    * Headers/Search/LCWildcardTermEnum.h
+        Replaced ogre by regexp
+    * Headers/Search/LCWildcardTermEnum.m
+        Replaced ogre by regexp
+        Use OgreKit or PCREParser depending on USE_PCREParser define
+    * GNUmakefile.options: added
+    * GNUmakefile:
+	Added GNUmakefile.options include
+	Changed library dependency
+    * GNUmakefile.preamble:
+	Added GNUmakefile.options include
+    * README:
+	Added PCREParser comment
+
 2007-02-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
     * Format README in reStructuedText

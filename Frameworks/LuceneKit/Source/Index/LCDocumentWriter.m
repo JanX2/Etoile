@@ -135,6 +135,7 @@
 {
 	CREATE_AUTORELEASE_POOL(x);
 	// write field names
+        NSAssert(!fieldInfos,@"Already fieldInfos");
 	fieldInfos = [[LCFieldInfos alloc] init];
 	[fieldInfos addDocument: doc];
 	[fieldInfos write: directory name: [segment stringByAppendingPathExtension: @"fnm"]];
@@ -146,6 +147,7 @@
 	DESTROY(fieldsWriter);
 	
     // invert doc into postingTable
+        NSAssert(!postingTable,@"Already postingTable");
 	postingTable = [[NSMutableDictionary alloc] init];
 	fieldLengths = calloc([fieldInfos size], sizeof(long long));
 	fieldPositions = calloc([fieldInfos size], sizeof(long long));
@@ -305,9 +307,9 @@
 		[ti setFreq: (freq + 1)];			  // update frequency
     } else {					  // word not seen before
 		LCTerm *term = [[LCTerm alloc] initWithField: field text: text];
-		[postingTable setObject: [[LCPosting alloc] initWithTerm: term
+		[postingTable setObject: AUTORELEASE([[LCPosting alloc] initWithTerm: term
 														position: position
-														  offset: offset]
+                                                                        offset: offset])
 						 forKey: term];
 		DESTROY(term);
     }

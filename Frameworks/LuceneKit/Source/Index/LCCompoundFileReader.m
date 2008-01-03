@@ -49,7 +49,7 @@
 {
 	self = [self init];
 	ASSIGN(reader, cr);
-	ASSIGNCOPY(base, b);
+	ASSIGNCOPY(base, b);//FIXME: Verify
 	fileOffset = f;
 	length = len;
 	filePointer = 0;
@@ -65,10 +65,13 @@
 
 - (char) readByte
 {
+	char *dataBytes = NULL;
 	NSMutableData *data = [[NSMutableData alloc] init];
 	[self readBytes: data offset: 0 length: 1];
 	AUTORELEASE(data);
-	return *(char *)[data bytes];
+	dataBytes=(char *)[data bytes];
+	NSAssert1(dataBytes,@"No dataBytes: %@",[reader name]);
+	return *dataBytes;
 }
 
 - (void) readBytes: (NSMutableData *) b
@@ -108,6 +111,7 @@
 	LCCSIndexInput *clone = [[LCCSIndexInput allocWithZone: zone] initWithCompoundFileReader: reader
 																				  indexInput: AUTORELEASE([base copy]) offset: fileOffset
 																					  length: length];
+        //FIXME: Why doing a [copy ] f we also copy in init
 	[clone seekToFileOffset: filePointer];
 	return clone;
 }
@@ -173,6 +177,7 @@
 		[entry setLength: [stream length] - [entry offset]];
 	}
 #endif
+	DESTROY(prevIden);
 	
 	success = YES;
 	

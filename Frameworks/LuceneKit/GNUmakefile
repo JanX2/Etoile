@@ -1,4 +1,5 @@
 include $(GNUSTEP_MAKEFILES)/common.make
+-include GNUmakefile.options
 
 ifeq ($(test), yes)
 BUNDLE_NAME = LuceneKit
@@ -11,15 +12,15 @@ endif
 LuceneKit_SUBPROJECTS = Source
 
 ifeq ($(FOUNDATION_LIB), apple)
-	LuceneKit_LIBRARIES_DEPEND_UPON = -lz -lOgreKit
-	LuceneKit_OBJC_LIBS = -lz -lOgreKit
+	LuceneKit_LIBRARIES_DEPEND_UPON = -lz $(REGEXP_ADDITIONAL_LIBRARIES)
+	LuceneKit_OBJC_LIBS = -lz $(REGEXP_ADDITIONAL_LIBRARIES)
 	ifeq ($(test), yes)
 		LuceneKit_OBJC_LIBS += -framework UnitKit
 	endif
 else
 	#LuceneKit_OBJC_LIBS = -lgnustep-base
-	LuceneKit_LIBRARIES_DEPEND_UPON = -lz -lOgreKit
-	LuceneKit_LDFLAGS = -lgnustep-base -lz -lOgreKit
+	LuceneKit_LIBRARIES_DEPEND_UPON = -lz $(REGEXP_ADDITIONAL_LIBRARIES)
+	LuceneKit_LDFLAGS = -lgnustep-base -lz $(REGEXP_ADDITIONAL_LIBRARIES)
 	ifeq ($(test), yes)
 		LuceneKit_LDFLAGS += -lUnitKit
 	endif

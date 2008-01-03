@@ -30,6 +30,7 @@
 		if (isDir == YES)
 		{
 			NSLog(@"Error: File exist, but is a directory");
+                        //FIXME: probable memory leak
 			return nil;
 		}
 	}
@@ -38,6 +39,7 @@
 	if (handle == nil) 
 	{
 		NSLog(@"File %@ doesn't exist", path);
+                //FIXME: probable memory leak
 		return nil;
 	}
 	isClosed = NO;

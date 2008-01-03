@@ -86,7 +86,7 @@ An IndexWriter creates and maintains an index.
 */
 - (void) setSimilarity: (LCSimilarity *) sim
 {
-	similarity = sim;
+	ASSIGN(similarity,sim);
 }
 
 /** Expert: Return the Similarity implementation used by this IndexWriter.
@@ -216,6 +216,7 @@ An IndexWriter creates and maintains an index.
     }
 #endif
 	DESTROY(analyzer);
+	DESTROY(similarity);
 	DESTROY(segmentInfos);
 	DESTROY(ramDirectory);
 	DESTROY(directory);
@@ -735,7 +736,7 @@ and pushes the merged index onto the top of the segmentInfos stack. */
 {
 	NSMutableArray *result = [[NSMutableArray alloc] init];
 	if (![directory fileExists: @"deletable"])
-		return result;
+		return AUTORELEASE(result);
 	
 	LCIndexInput *input = [directory openInput: @"deletable"];
 	int ii;

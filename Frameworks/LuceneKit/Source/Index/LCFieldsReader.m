@@ -154,7 +154,6 @@
 			}
 		}
     }
-	
     return AUTORELEASE(doc);
 }
 

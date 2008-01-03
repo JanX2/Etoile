@@ -55,6 +55,15 @@
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(normsCache);
+	DESTROY(subReaders);
+	DESTROY(starts);
+	DESTROY(ones);
+	[super dealloc];
+}
+
 - (void) initialize: (NSArray *) sr
 {
 	ASSIGN(subReaders, sr);
@@ -283,6 +292,7 @@
 		LCIndexReader *reader = [subReaders objectAtIndex: i];
 		[fieldSet addObjectsFromArray: [reader fieldNames: fieldOption]];
     }
+    AUTORELEASE(fieldSet);
     return [fieldSet allObjects];
 }
 
@@ -318,6 +328,13 @@
 		[self hasNextTerm];
     }
 	return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(queue);
+	DESTROY(term);
+	[super dealloc];
 }
 
 - (BOOL) hasNextTerm

@@ -62,6 +62,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+	DESTROY(_array);
+	[super dealloc];
+}
+
 - (void) add: (int) i
 {
 	if (_lastIndex == _arraySize)
@@ -118,7 +124,15 @@
 	
 	_termPositionsQueue = [[LCTermPositionsQueue alloc] initWithTermPositions: termPositions];
 	_posList = [[LCIntQueue alloc] init];
+        DESTROY(termPositions);
 	return self;
+}
+
+- (void) dealloc
+{
+	DESTROY(_termPositionsQueue);
+	DESTROY(_posList);
+	[super dealloc];
 }
 
 - (BOOL) hasNextDocument

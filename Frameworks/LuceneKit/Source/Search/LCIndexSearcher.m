@@ -91,6 +91,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(reader);
+  [super dealloc];
+}
+
 /** Return the {@link IndexReader} this searches. */
 - (LCIndexReader *) indexReader
 {

@@ -35,6 +35,19 @@
 	DESTROY(searcher);
 	DESTROY(filter);
 	DESTROY(sort);
+        //Clean retain/release prev/next
+        if (first)
+          {
+            LCHitDocument *hitDoc=first;
+            while(hitDoc)
+              {
+                LCHitDocument *nextHitDoc=[hitDoc next];
+                //No need to retain it because last one retain previouses
+                [hitDoc setNext:nil];
+                [nextHitDoc setPrev:nil];
+                hitDoc=nextHitDoc;
+              }
+          }
 	DESTROY(first);
 	DESTROY(last);
 	[super dealloc];

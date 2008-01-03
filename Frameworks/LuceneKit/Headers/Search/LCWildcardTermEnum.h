@@ -3,7 +3,6 @@
 
 #include "LCFilteredTermEnum.h"
 
-@class OGRegularExpression;
 @class LCTerm;
 @class LCIndexReader;
 
@@ -14,7 +13,7 @@
 	NSString *text;
 	BOOL endEnum;
 	
-	OGRegularExpression *ogre;
+	id regexp;
 }
 
 - (id) initWithReader: (LCIndexReader *) reader term: (LCTerm *) term;

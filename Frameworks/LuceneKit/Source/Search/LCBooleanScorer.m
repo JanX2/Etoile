@@ -93,6 +93,18 @@
 	countingSumScorer = nil;
 	return self;
 }
+
+- (void) dealloc
+{
+  DESTROY(requiredScorers);
+  DESTROY(optionalScorers);
+  DESTROY(prohibitedScorers);
+	
+  DESTROY(coordinator);
+  DESTROY(countingSumScorer);
+  [super dealloc];
+}
+
 - (void) addScorer: (LCScorer *) scorer
 		  required: (BOOL) required
 		prohibited: (BOOL) prohibited
@@ -211,7 +223,7 @@
 		// fewer optional clauses than minimum that should match
 	} else if ([optionalScorers count] == minNrShouldMatch) {
 		// all optional scorers also required.
-		NSMutableArray *allReq = [[NSMutableArray alloc] init];
+          NSMutableArray *allReq = AUTORELEASE([[NSMutableArray alloc] init]);
 		[allReq addObjectsFromArray: requiredScorers];
 		[allReq addObjectsFromArray: optionalScorers];
 		return [self addProhibitedScorers: [self countingConjunctionSumScorer: allReq]];
@@ -339,6 +351,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(coordinator);
+  [super dealloc];
+}
+
 - (float) score
 {
 	if ([self document] > lastScoredDoc) {
@@ -361,6 +379,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(coordinator);
+  [super dealloc];
+}
+
 - (float) score
 {
 	int t;
@@ -381,6 +405,13 @@
 	ASSIGN(coordinator, c);
 	lastScoredDoc = -1;
 	return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(coordinator);
+  DESTROY(scorer);
+  [super dealloc];
 }
 
 - (float) score
@@ -419,9 +450,16 @@
 - (id) initWithScorer: (LCBooleanScorer *) s
 {
 	self = [self init];
-	ASSIGN(scorer, s);
+	scorer = s; //Don't retain as s retain us
 	maxCoord = 0;
 	return self;
+}
+
+- (void) dealloc
+{
+  //Don't release scorer as we not retain it
+  DESTROY(coordFactors);
+  [super dealloc];
 }
 
 - (void) initiation

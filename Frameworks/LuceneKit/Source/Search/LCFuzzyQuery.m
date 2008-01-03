@@ -136,6 +136,7 @@
 		[query addQuery: tq occur: LCOccur_SHOULD]; // add to query
 		DESTROY(tq);
 	}
+        DESTROY(stQueue);
 	DESTROY(pool);
 	return AUTORELEASE(query);
 }

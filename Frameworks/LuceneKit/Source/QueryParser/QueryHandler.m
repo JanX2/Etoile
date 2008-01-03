@@ -37,8 +37,7 @@
 	if (currentQuery)
     {
 		[self query: currentQuery];
-		currentQuery = nil; 
-		//DESTROY(currentQuery);
+		DESTROY(currentQuery);
     }
 	[queryString setString: @""];
 }
@@ -74,6 +73,8 @@
 			[_query addQuery: [handler query] occur: occur];
 			[queryString setString: @""];
 			currentType = ReadyType;
+                        DESTROY(handler);
+                        DESTROY(parser);
         }
 		else
         {
@@ -165,8 +166,7 @@
             }
 			ASSIGN(currentQuery, q);
 			DESTROY(term);
-			//DESTROY(q);
-			//DESTROY(field);
+			DESTROY(q);
 			
 			[self flushQuery];
 			
@@ -213,6 +213,9 @@
 {
 	DESTROY(queryString);
 	DESTROY(_currentToken);
+        DESTROY(_query);
+        DESTROY(defaultField);
+        DESTROY(wildcardCharacterSet);
 	[super dealloc];
 }
 

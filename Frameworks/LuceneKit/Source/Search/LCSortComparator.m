@@ -14,6 +14,12 @@
 
 @implementation LCCacheScoreDocComparator
 
+- (void) dealloc
+{
+  DESTROY(cache);
+  [super dealloc];
+}
+
 - (void) setCache: (NSDictionary *) c
 {
 	ASSIGN(cache, c);

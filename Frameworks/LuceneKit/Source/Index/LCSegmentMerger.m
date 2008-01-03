@@ -409,9 +409,9 @@
 	
 	long skipPointer = [self writeSkip];
 
-	LCTermInfo *ti = [[LCTermInfo alloc] init];
 	
 	if (df > 0) {
+		LCTermInfo *ti = [[LCTermInfo alloc] init];
 		// add an entry to the dictionary with pointers to prox and freq files
 		[ti setDocumentFrequency: df];
 		[ti setFreqPointer: freqPointer];

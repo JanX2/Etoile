@@ -14,7 +14,8 @@ LuceneKit_Source_SUBPROJECTS = \
 	Java
 
 LuceneKit_Source_OBJC_FILES = \
-	LCIndexManager.m
+	LCIndexManager.m \
+	LCMetadataAttribute.m
 
 LuceneKit_Source_INCLUDE_DIRS += -I..
 

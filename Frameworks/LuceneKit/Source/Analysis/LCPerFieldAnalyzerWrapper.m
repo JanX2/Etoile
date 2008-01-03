@@ -53,6 +53,7 @@
 		ASSIGN(analyzer, defaultAnalyzer);
 	}
 	
+	AUTORELEASE(analyzer);
 	return [analyzer tokenStreamWithField: name
 								   reader: reader];
 }

@@ -51,6 +51,7 @@
 			LCTermQuery *tq = [[LCTermQuery alloc] initWithTerm: t]; // found a match
 			[tq setBoost: [self boost]*[enumerator difference]]; // set the boost
 			[query addQuery: tq occur: LCOccur_SHOULD]; // add to query];
+                        DESTROY(tq);
 		}
 	} while ([enumerator hasNextTerm]);
 	[enumerator close];

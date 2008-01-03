@@ -8,6 +8,13 @@ the enumeration is greater than all that precede it.  */
 
 @implementation LCFilteredTermEnumerator
 
+- (void) dealloc
+{
+  DESTROY(actualEnum);
+  DESTROY(currentTerm);
+  [super dealloc];
+}
+
 /** Equality compare on the term */
 //protected abstract boolean termCompare(Term term);
 - (BOOL) isEqualToTerm: (LCTerm *) term { return NO; }

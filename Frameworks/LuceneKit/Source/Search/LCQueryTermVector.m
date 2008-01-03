@@ -38,12 +38,12 @@
 	self = [self init];
 	if (analyzer != nil)
 	{
-		LCStringReader *sr = [[LCStringReader alloc] initWithString: queryString];
+          LCStringReader *sr = AUTORELEASE([[LCStringReader alloc] initWithString: queryString]);
 		LCTokenStream *stream = [analyzer tokenStreamWithField: @"" reader: sr];
 		if (stream != nil)
 		{
 			LCToken *next = nil;
-			NSMutableArray *ts = [[NSMutableArray alloc] init];
+			NSMutableArray *ts = AUTORELEASE([[NSMutableArray alloc] init]);
 			while ((next = [stream nextToken]))
 			{
 				[ts addObject: [next termText]];
@@ -81,6 +81,8 @@
 		}
 		ASSIGNCOPY(terms, tmpList);
 		ASSIGNCOPY(termFreqs, tmpFreqs);
+                DESTROY(tmpList);
+                DESTROY(tmpFreqs);
 	}
 }
 

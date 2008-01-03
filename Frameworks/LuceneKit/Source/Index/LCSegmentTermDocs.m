@@ -12,7 +12,7 @@
 	self = [super init];
 	doc = 0;
 	ASSIGN(parent, p);
-	ASSIGN(freqStream, [[parent freqStream] copy]);
+	ASSIGNCOPY(freqStream, [parent freqStream]);
 	ASSIGN(deletedDocs, [parent deletedDocs]);
 	skipInterval = [[parent termInfosReader] skipInterval];
 	return self;

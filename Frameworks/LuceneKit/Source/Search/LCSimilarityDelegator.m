@@ -10,6 +10,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(delegee);
+  [super dealloc];
+}
+
 - (float) lengthNorm: (NSString *) fieldName numberOfTerms: (int) numTerms
 {
 	return [delegee lengthNorm: fieldName numberOfTerms: numTerms];

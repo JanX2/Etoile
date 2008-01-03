@@ -20,6 +20,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(bits);
+  [super dealloc];
+}
+
 - (void) collect: (int) doc score: (float) score
 {
 	[bits setBit: doc];
@@ -35,6 +41,12 @@
 	return self;
 }
 
+- (void) dealloc
+{
+  DESTROY(query);
+  [super dealloc];
+}
+
 - (LCQuery *) query
 {
 	return query;
@@ -44,7 +56,7 @@
 {
 	if (cache == nil)
 	{
-		cache = [[NSMutableDictionary alloc] init];
+          cache = AUTORELEASE([[NSMutableDictionary alloc] init]);
 	}
 	
 	LCBitVector *cached = [cache objectForKey: reader];
