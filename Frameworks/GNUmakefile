@@ -143,7 +143,7 @@ ifeq ($(addresseskit), yes)
 endif
 
 ifeq ($(systemconfig), yes)
-   #SUBPROJECTS += SystemConfig
+   SUBPROJECTS += SystemConfig
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

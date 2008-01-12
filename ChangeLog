@@ -1,3 +1,8 @@
+2008-01-12  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Frameworks/GNUmakefile: Turned on SystemConfig which got wrongly removed 
+	from the build process on r2564.
+
 2007-08-01  Quentin Mathe <qmathe@club-internet.fr>
 
 	* setup.sh: Removed spurious -z flag in tar command. Andreas Hoschler
