@@ -40,6 +40,10 @@
 - (NSRect) menuBarWindowFrame;
 @end
 
+//TODO: Wrap these in a conditional so they are only used on GNUstep versions
+//after Christmas day 2007 (Yes, Fred really was hacking GNUstep then)
+#define _transient (_menu.transient)
+#define _horizontal (_menu.horizontal)
 
 @implementation NSMenu (HorizontalHackery)
 
