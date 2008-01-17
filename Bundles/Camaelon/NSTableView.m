@@ -16,25 +16,15 @@
 - (id) initWithFrame: (NSRect)frameRect
 {
 	self = [super initWithFrame: frameRect];
-	_drawsGrid        = YES;
-	_rowHeight        = 16.0;
-	_intercellSpacing = NSMakeSize (2.0, 3.0);
+	if (!self)
+	  return self;
+
+	[self _initDefaults];
+
 	ASSIGN (_gridColor, [NSColor gridColor]); 
 	ASSIGN (_backgroundColor, [NSColor controlBackgroundColor]);
 	ASSIGN (_tableColumns, [NSMutableArray array]);
-	ASSIGN (_selectedColumns, [NSMutableIndexSet indexSet]);
-	ASSIGN (_selectedRows, [NSMutableIndexSet indexSet]);
-	_allowsEmptySelection = YES;
-	_allowsMultipleSelection = NO;
-	_allowsColumnSelection = YES;
-	_allowsColumnResizing = YES;
-	_allowsColumnReordering = YES;
-	_autoresizesAllColumnsToFit = NO;
-	_editedColumn = -1;
-	_editedRow = -1;
-	_selectedColumn = -1;
-	_selectedRow = -1;
-	_highlightedTableColumn = nil;
+
 	_headerView = [NSTableHeaderView new];
 	float height = [THEME ListHeaderHeight]; 
 	[_headerView setFrameSize: NSMakeSize (frameRect.size.width, height)];
