@@ -4,24 +4,24 @@ include $(GNUSTEP_MAKEFILES)/common.make
 # Application
 #
 VERSION = 0.1
-APP_NAME = StatusExample
+TOOL_NAME = StatusAtom
 
 #
 # Resource files
 #
-StatusExample_LANGUAGES = English
+StatusAtom_LANGUAGES = English
 
-StatusExample_LOCALIZED_RESOURCE_FILES = \
+StatusAtom_LOCALIZED_RESOURCE_FILES = \
 	  MainMenu.gorm
 
-StatusExample_MAIN_MODEL_FILE = MainMenu.gorm
+StatusAtom_MAIN_MODEL_FILE = MainMenu.gorm
 
-StatusExample_OBJC_FILES = \
-	StatusExample.m\
+StatusAtom_OBJC_FILES = \
+	StatusAtom.m\
 	main.m
 
 ADDITIONAL_OBJCFLAGS = -std=c99 -g -Werror
 ADDITIONAL_LDFLAGS += -g
 
 
-include $(GNUSTEP_MAKEFILES)/application.make
+include $(GNUSTEP_MAKEFILES)/tool.make

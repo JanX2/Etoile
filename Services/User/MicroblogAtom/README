@@ -1,0 +1,22 @@
+Microblogger Atom Feed Generator
+================================
+
+Allows atom feeds to be generated directly from presence messages.  When invoked, the (optional) parameter is a command to be invoked whenever the mublog.entries file is updated.  I use this to scp the microblog to my sever like this:
+
+$ StatusAtom 'scp mublog.entries my_server:public_html'
+
+I then have a little mublog.shtml file that uses server-side includes to include this list of atom entries in a well-formed file.  Anyone wanting to use this should generate a file a bit like this:
+
+<!--#config timefmt="%G-%m-%dT%TZ"-->
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Microblog Title</title>
+    <updated><!--#flastmod file="mublog.entries" --></updated>
+    <author>
+        <name>Author Name</name>
+    </author>
+
+    <!--#include file="mublog.entries" -->
+</feed>
+~                                                                               
+

@@ -8,8 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface StatusExample : NSObject {
+@interface StatusAtom : NSObject {
 	NSString * lastStatus;
+	NSFileHandle * file;
 }
-
+- (void) setFile:(NSFileHandle*)aFile;
 @end
