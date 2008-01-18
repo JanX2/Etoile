@@ -19,6 +19,23 @@ NSString * uuid(void)
 		   random()];
 }
 extern char * publish;
+/**
+ * Helper function for escaping XML character data.
+ */
+static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
+{
+	if(_XMLString == nil)
+	{
+		return [NSMutableString stringWithString:@""];
+	}
+	NSMutableString * XMLString = [NSMutableString stringWithString:_XMLString];
+	[XMLString replaceOccurrencesOfString:@"&" withString:@"&amp;" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"<" withString:@"&lt;" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@">" withString:@"&gt;" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"'" withString:@"&apos;" options:0 range:NSMakeRange(0,[XMLString length])];
+	[XMLString replaceOccurrencesOfString:@"\"" withString:@"&quot;" options:0 range:NSMakeRange(0,[XMLString length])];
+	return XMLString;
+}
 @implementation StatusAtom
 - (void) setFile:(NSFileHandle*)aFile
 {
@@ -36,8 +53,8 @@ extern char * publish;
 		NSString * entry = 
 			[NSString stringWithFormat:
 				@"<entry>\n\t<title>%@</title>\n\t<summary>%@</summary>\n\t<id>%@</id>\n\t<updated>%@</updated>\n</entry>",
-				title,
-				message,
+				escapeXMLCData(title),
+				escapeXMLCData(message),
 				uuid(),
 				[[NSCalendarDate calendarDate] descriptionWithCalendarFormat:@"%Y-%m-%dT%H:%M:%SZ"]];
 		[file writeData:[entry dataUsingEncoding:NSUTF8StringEncoding]];
