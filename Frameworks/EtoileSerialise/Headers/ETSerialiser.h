@@ -36,6 +36,10 @@ typedef uint32_t CORef;
  * or any other option. 
  */
 - (int) newVersion;
+/**
+ * Returns the deserialiser class which is the mirror of this serialiser.
+ */
++ (Class) deserialiser;
 //Objects
 /**
  * Store the class version to be associated with the next set of instance

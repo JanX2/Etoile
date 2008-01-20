@@ -36,6 +36,10 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 {
 	return [[[ETSerialiserBackendBinaryFile alloc] initWithURL:anURL] autorelease];
 }
++ (Class) deserialiser
+{
+	return NSClassForName(@"ETDeserialiserBinaryFile");
+}
 /**
  * This back end currently only works with files.  It uses this method to open
  * and prepare them.
