@@ -49,27 +49,30 @@ static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
 - (void) statusChanged:(NSNotification*)aNotification
 {
 	NSString * message = [[aNotification userInfo] objectForKey:@"status"];
-	/* Avoid duplicates */
-	if(![lastStatus isEqualToString:message])
+	if(message != nil && ![message isEqualToString:@""])
 	{
-		NSString * title = [[message componentsSeparatedByCharactersInSet:[NSCharacterSet punctuationCharacterSet]] objectAtIndex:0];
-		NSString * entry = 
-			[NSString stringWithFormat:
-				@"\n\n\t<entry>\n\t\t<title>%@</title>\n\t\t<summary>%@</summary>\n\t\t<id>%@</id>\n\t\t<updated>%@</updated>\n\t</entry>",
-				escapeXMLCData(title),
-				escapeXMLCData(message),
-				uuid(),
-				[[NSCalendarDate calendarDate] descriptionWithCalendarFormat:@"%Y-%m-%dT%H:%M:%SZ"]];
-		const char * utf8 = [entry UTF8String];
-		fwrite(utf8, strlen(utf8), 1, file);
-		fflush(file);
-		if(publish != NULL)
+		/* Avoid duplicates */
+		if(![lastStatus isEqualToString:message])
 		{
-			system(publish);
+			NSString * title = [[message componentsSeparatedByCharactersInSet:[NSCharacterSet punctuationCharacterSet]] objectAtIndex:0];
+			NSString * entry = 
+				[NSString stringWithFormat:
+					@"\n\n\t<entry>\n\t\t<title>%@</title>\n\t\t<summary>%@</summary>\n\t\t<id>%@</id>\n\t\t<updated>%@</updated>\n\t</entry>",
+					escapeXMLCData(title),
+					escapeXMLCData(message),
+					uuid(),
+					[[NSCalendarDate calendarDate] descriptionWithCalendarFormat:@"%Y-%m-%dT%H:%M:%SZ"]];
+			const char * utf8 = [entry UTF8String];
+			fwrite(utf8, strlen(utf8), 1, file);
+			fflush(file);
+			if(publish != NULL)
+			{
+				system(publish);
+			}
+			/* Log the last status */
+			[lastStatus release];
+			lastStatus = [message retain];
 		}
-		/* Log the last status */
-		[lastStatus release];
-		lastStatus = [message retain];
 	}
 }
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification
