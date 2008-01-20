@@ -42,6 +42,7 @@ static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
 	id old = file;
 	file = [aFile retain];
 	[old release];
+	[file seekToEndOfFile];
 }
 - (void) statusChanged:(NSNotification*)aNotification
 {
@@ -52,7 +53,7 @@ static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
 		NSString * title = [[message componentsSeparatedByCharactersInSet:[NSCharacterSet punctuationCharacterSet]] objectAtIndex:0];
 		NSString * entry = 
 			[NSString stringWithFormat:
-				@"<entry>\n\t<title>%@</title>\n\t<summary>%@</summary>\n\t<id>%@</id>\n\t<updated>%@</updated>\n</entry>",
+				@"\n\n\t<entry>\n\t\t<title>%@</title>\n\t\t<summary>%@</summary>\n\t\t<id>%@</id>\n\t\t<updated>%@</updated>\n\t</entry>",
 				escapeXMLCData(title),
 				escapeXMLCData(message),
 				uuid(),
