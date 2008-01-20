@@ -12,7 +12,6 @@ int main(int argc, char *argv[])
 		publish = argv[1];
 	}
 	id blogger = [[StatusAtom alloc] init];
-	[blogger setFile:[NSFileHandle fileHandleForUpdatingAtPath:@"mublog.entries"]];
 	NSNotificationCenter * center = [NSDistributedNotificationCenter
 		defaultCenter];
 	[center addObserver:blogger

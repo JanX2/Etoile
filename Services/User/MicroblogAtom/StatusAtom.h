@@ -10,7 +10,6 @@
 
 @interface StatusAtom : NSObject {
 	NSString * lastStatus;
-	NSFileHandle * file;
+	FILE * file;
 }
-- (void) setFile:(NSFileHandle*)aFile;
 @end

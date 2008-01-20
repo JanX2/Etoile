@@ -37,12 +37,14 @@ static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
 	return XMLString;
 }
 @implementation StatusAtom
-- (void) setFile:(NSFileHandle*)aFile
+- (id) init
 {
-	id old = file;
-	file = [aFile retain];
-	[old release];
-	[file seekToEndOfFile];
+	if((self = [super init]) == nil)
+	{
+		return nil;
+	}
+	file = fopen("mublog.entries", "a");
+	return self;
 }
 - (void) statusChanged:(NSNotification*)aNotification
 {
@@ -58,7 +60,9 @@ static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
 				escapeXMLCData(message),
 				uuid(),
 				[[NSCalendarDate calendarDate] descriptionWithCalendarFormat:@"%Y-%m-%dT%H:%M:%SZ"]];
-		[file writeData:[entry dataUsingEncoding:NSUTF8StringEncoding]];
+		const char * utf8 = [entry UTF8String];
+		fwrite(utf8, strlen(utf8), 1, file);
+		fflush(file);
 		if(publish != NULL)
 		{
 			system(publish);
