@@ -20,8 +20,10 @@
 	int version;
 	/** The location at which serialised copies of the object should be stored. */
 	NSURL * baseURL;
-	/** The serialiser used to store the document and any changes. */
+	/** The serialiser used to store deltas. */
 	id serialiser;
+	/** Serialiser used to store full saves */
+	id fullSave;
 	/** The class of the serialiser's back end. */
 	Class backend;
 }
@@ -31,4 +33,8 @@
 - (id) initWithObject:(id)anObject
            serialiser:(Class)aSerialiser
 			forBundle:(NSURL*)anURL;
+/**
+ * Restore to a previous version.
+ */
+- (int) setVersion:(int)aVersion;
 @end

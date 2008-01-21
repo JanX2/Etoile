@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <objc/objc-api.h>
 #import "ETSerialiserBackendBinaryFile.h"
+#import "ETDeserialiser.h"
 
 #define FORMAT(format,...) fprintf(blobFile, format, __VA_ARGS__)
 #define WRITE(x,b) fwrite(x,b,1,blobFile)
@@ -38,7 +39,25 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 }
 + (Class) deserialiser
 {
-	return NSClassForName(@"ETDeserialiserBinaryFile");
+	return NSClassFromString(@"ETDeserialiserBackendBinaryFile");
+}
+- (id) deserialiser
+{
+	if(fileName != nil)
+	{
+		id deserialiser = [[[[self class] deserialiser] alloc] init];
+		if([deserialiser deserialiseFromURL:[NSURL fileURLWithPath:fileName]])
+		{
+			return [deserialiser autorelease];
+		}
+		else
+		{
+			[deserialiser release];
+			return nil;
+		}
+
+	}
+	return nil;
 }
 /**
  * This back end currently only works with files.  It uses this method to open
@@ -81,22 +100,26 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 }
 - (void) closeFile
 {
-	NSMapEnumerator enumerator = NSEnumerateMapTable(offsets);
-	int indexOffset = (int)OFFSET;
-    CORef ref;
-    int offset;
-    while(NSNextMapEnumeratorPair(&enumerator, (void*)&ref, (void*)&offset))
+	if(blobFile != NULL)
 	{
-		int refCount = (int)NSMapGet(refCounts, (void*)ref);
-		WRITE(&ref, sizeof(ref));
-		WRITE(&offset, sizeof(offset));
-		WRITE(&refCount, sizeof(refCount));
+		NSMapEnumerator enumerator = NSEnumerateMapTable(offsets);
+		int indexOffset = (int)OFFSET;
+		CORef ref;
+		int offset;
+		while(NSNextMapEnumeratorPair(&enumerator, (void*)&ref, (void*)&offset))
+		{
+			int refCount = (int)NSMapGet(refCounts, (void*)ref);
+			WRITE(&ref, sizeof(ref));
+			WRITE(&offset, sizeof(offset));
+			WRITE(&refCount, sizeof(refCount));
+		}
+		rewind(blobFile);
+		WRITE(&indexOffset, sizeof(int));
+		fclose(blobFile);
+		blobFile = NULL;
+		NSFreeMapTable(offsets);
+		NSFreeMapTable(refCounts);
 	}
-	rewind(blobFile);
-	WRITE(&indexOffset, sizeof(int));
-	fclose(blobFile);
-	NSFreeMapTable(offsets);
-	NSFreeMapTable(refCounts);
 }
 - (void) dealloc
 {
@@ -105,10 +128,18 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 }
 - (int) newVersion
 {
-	version++;
+	return [self setVersion:version+1];
+}
+- (int) setVersion:(int)aVersion
+{
+	version = aVersion;
 	[self closeFile];
 	[self setFile:[[NSString stringWithFormat:@"%@/%d.save", fileName, version] UTF8String]];
 	return version;
+}
+- (void) flush
+{
+	[self closeFile];
 }
 - (void) beginStruct:(char*)aStructName withName:(char*)aName
 {

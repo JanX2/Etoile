@@ -1,5 +1,6 @@
 #import "COProxy.h"
 #import "ETSerialiser.h"
+#import "ETDeserialiser.h"
 #import "ETSerialiserBackendBinaryFile.h"
 
 static const int FULL_SAVE_INTERVAL = 100;
@@ -40,21 +41,56 @@ static const int FULL_SAVE_INTERVAL = 100;
 	ASSIGN(baseURL,anURL);
 	if(aSerialiser == nil)
 	{
+		//TODO: Move this into a default
 		aSerialiser = [ETSerialiserBackendBinaryFile class];
 	}
 	backend = aSerialiser;
 	serialiser = [[ETSerialiser serialiserWithBackend:aSerialiser 
 								 			  forURL:baseURL] retain];
 	[serialiser serialiseObject:object withName:"BaseVersion"];
+	NSString * path = [NSString stringWithFormat:@"%@/FullSaves",
+					 [baseURL path]];
+	NSURL * fullsaveURL = [NSURL fileURLWithPath:path];
+	fullSave = [[ETSerialiser serialiserWithBackend:backend
+											forURL:fullsaveURL] retain];
+	[fullSave setVersion:0];
+	[fullSave serialiseObject:object withName:"FullSave"];
 	return self;
 }
 - (int) version
 {
 	return version;
 }
-- (BOOL) setVersion:(int)aVersion
+- (int) setVersion:(int)aVersion
 {
-	return NO;
+	//find the full-save version closest to the requested one
+	id unFull = [fullSave deserialiser];
+	int fullVersion = aVersion;
+	while(fullVersion >= 0 && [unFull setVersion:fullVersion] != aVersion)
+	{
+		fullVersion--;
+	}
+	fullVersion++;
+	if(fullVersion < 0)
+	{
+		NSLog(@"Failed to find full save");
+		return -1;
+	}
+	id new = [unFull restoreObjectGraph];
+	//Play back each of the subsequent invocations
+	id unDelta = [serialiser deserialiser];
+	for(int v=fullVersion + 1 ; v<=aVersion ; v++)
+	{
+		[unDelta setVersion:v];
+		id pool = [NSAutoreleasePool new];
+		NSInvocation * invocation = [unDelta restoreObjectGraph];
+		[invocation invokeWithTarget:new];
+		[invocation release];
+		[pool release];
+	}
+	[object release];
+	object = new;
+	return version;
 }
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
 {
@@ -74,12 +110,8 @@ static const int FULL_SAVE_INTERVAL = 100;
 	/* Periodically save a full copy */
 	if(version % FULL_SAVE_INTERVAL == 0)
 	{
-		NSString * path = [NSString stringWithFormat:@"%@/FullSaves",
-						 [baseURL path]];
-		NSURL * fullsaveURL = [NSURL fileURLWithPath:path];
-		ETSerialiser * s = [ETSerialiser serialiserWithBackend:backend
-														forURL:fullsaveURL];
-		[s serialiseObject:object withName:"FullSave"];
+		[fullSave setVersion:version];
+		[fullSave serialiseObject:object withName:"FullSave"];
 	}
 }
 @end

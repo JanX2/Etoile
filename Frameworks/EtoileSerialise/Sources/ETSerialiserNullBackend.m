@@ -9,11 +9,23 @@
 {
 	return [[[ETSerialiserNullBackend alloc] init] autorelease];
 }
++ (Class) deserialiser
+{
+	//No corresponding deserialiser
+	return Nil;
+}
+- (void) flush {}
+- (id) deserialiser
+{
+	//No corresponding deserialiser
+	return nil;
+}
 - (id) initWithURL:(NSURL*)anURL 
 {
 	return [self init];
 }
 - (int) newVersion {return 0;}
+- (int) setVersion:(int)aVersion {return aVersion;}
 //Objects
 - (void) setClassVersion:(int)aVersion {}
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass {}

@@ -8,6 +8,17 @@
 {
 	return [[[ETSerialiserBackendExample alloc] initWithURL:anURL] autorelease];
 }
++ (Class) deserialiser
+{
+	//No corresponding deserialiser
+	return Nil;
+}
+- (void) flush {}
+- (id) deserialiser
+{
+	//No corresponding deserialiser
+	return nil;
+}
 - (id) initWithURL:(NSURL*)anURL
 {
 	/* Write to stdout, or a file.  Other URL types not supported */
@@ -44,7 +55,12 @@
 }
 - (int) newVersion
 {
-	fprintf(outFile, "\nVersion %d:\n\n", ++version);
+	return [self setVersion:version+1];
+}
+- (int) setVersion:(int)aVersion
+{
+	version = aVersion;
+	fprintf(outFile, "\nVersion %d:\n\n", version);
 	return version;
 }
 - (void) beginStruct:(char*)aStructName withName:(char*)aName

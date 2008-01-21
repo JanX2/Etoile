@@ -127,7 +127,7 @@ void * TestStructDeserialiser(char* varName,
 	*/
 	//Check we don't break on non-OpenStep objects.
 	anObject = [Object new];
-	aString = @"Some text";
+	aString = [NSMutableString stringWithString:@"Some text"];
 	anotherReferenceToTheSameString = aString;
 	anArray[0] = 0;
 	anArray[1] = 1;
@@ -203,7 +203,7 @@ id testRoundTrip(NSString * tempfile, id object)
 	[serialiser serialiseObject:object withName:"test"];
 	[pool release];
 	id deback = [ETDeserialiserBackendBinaryFile new];
-	[deback deserialiseFromURL:[NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/0.save", tempfile]]];
+	[deback deserialiseFromURL:[NSURL fileURLWithPath:tempfile]];
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
 	return [deserialiser restoreObjectGraph];
 }
@@ -271,7 +271,7 @@ id testRoundTrip(NSString * tempfile, id object)
 {
 	testWithBackend([ETSerialiserBackendBinaryFile class], [NSURL fileURLWithPath:@"testfile"]);
 	id deback = [ETDeserialiserBackendBinaryFile new];
-	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"testfile/0.save"]];
+	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"testfile"]];
 	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
 	TestClass * bar = [deserialiser restoreObjectGraph];
 	[bar methodTest];
@@ -289,18 +289,12 @@ id testRoundTrip(NSString * tempfile, id object)
 												   forBundle:[NSURL fileURLWithPath:@"cotest.CoreObject"]];
 	[fake appendString:@" containing"];
 	[fake appendString:@" some character."];
-	id deback = [ETDeserialiserBackendBinaryFile new];
-	[deback deserialiseFromURL:[NSURL fileURLWithPath:@"cotest.CoreObject/1.save"]];
-	id deserialiser = [ETDeserialiser deserialiserWithBackend:deback];
-	NSInvocation * inv = [deserialiser restoreObjectGraph];
+	[(COProxy*)fake setVersion:1];
 #ifdef VISUAL_TEST
 	id serialiser = [ETSerialiser serialiserWithBackend:[ETSerialiserBackendExample class] forURL:nil];
 	[serialiser serialiseObject:inv withName:"FirstInvocation"];
 #endif
-	str = [NSMutableString stringWithString:@"A string"];
-	[inv setTarget:str];
-	[inv invoke];
-	UKStringsEqual(@"A string containing", str);
+	UKStringsEqual(fake, @"A string containing");
 }
 #endif
 @end

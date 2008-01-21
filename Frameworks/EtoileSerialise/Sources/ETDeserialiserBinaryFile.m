@@ -40,9 +40,7 @@ enum {
 - (BOOL) deserialiseFromURL:(NSURL*)aURL
 {
 	ASSIGN(url, aURL);
-	return [self deserialiseFromData:[NSData dataWithContentsOfURL:aURL 
-	                                                       options:NSMappedRead
-	                                                         error:(NSError**)nil]];
+	return [self setVersion:0] == 0;
 }
 /**
  * Load the header from the provided data, containing the offsets and reference
@@ -85,18 +83,27 @@ enum {
 	}
 	return (data != nil);
 }
-- (BOOL) setVersion:(int)aVersion
+- (int) setVersion:(int)aVersion
 {
 	if(url == nil)
 	{
 		//We only support versioning with files
 		return NO;
 	}
-	NSString * versionURL = [NSString stringWithFormat:@"%@.%d", [url absoluteString], aVersion];
-	NSLog(@"Attempting to load version %d from %d", aVersion, versionURL);
-	return [self deserialiseFromData:[NSData dataWithContentsOfURL:[NSURL URLWithString:versionURL]
-	                                                       options:NSMappedRead
-	                                                         error:(NSError**)nil]];
+	//Only file URLs are understood for now
+	NSString * versionURL = [NSString stringWithFormat:@"%@/%d.save", [url path], aVersion];
+	if([[NSFileManager defaultManager] fileExistsAtPath:versionURL])
+	{
+		if([self deserialiseFromData:[NSData dataWithContentsOfURL:[NSURL fileURLWithPath:versionURL]
+															   options:NSMappedRead
+																 error:(NSError**)nil]])
+		{
+			//NSLog(@"Loading %@", versionURL);
+			return aVersion;
+		}
+	}
+	//NSLog(@"Failed to open %@", versionURL);
+	return -1;
 }
 
 - (void) setDeserialiser:(id)aDeserialiser;

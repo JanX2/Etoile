@@ -21,9 +21,10 @@
  */
 - (BOOL) deserialiseFromData:(NSData*)aData;
 /**
- * Jump to the specified version.
+ * Jump to the specified version.  Returns -1 if the specified version does not
+ * exist, otherwise returns the requested version.
  */
-- (BOOL) setVersion:(int)aVersion;
+- (int) setVersion:(int)aVersion;
 /**
  * Load the specified object.  Objects are stored with a unique ID within the
  * object graph.
@@ -121,6 +122,10 @@ typedef void*(*custom_deserialiser)(char*,void*,void*);
  * Sets the back end which sends events to this deserialiser.
  */
 - (void) setBackend:(id<ETDeserialiserBackend>)aBackend;
+/**
+ * Set the version to deserialise next.
+ */
+- (int) setVersion:(int)aVersion;
 /**
  * Restore the principle object from the back end, and any objects referenced
  * by this object, recursively.

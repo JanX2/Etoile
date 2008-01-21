@@ -37,9 +37,23 @@ typedef uint32_t CORef;
  */
 - (int) newVersion;
 /**
- * Returns the deserialiser class which is the mirror of this serialiser.
+ * Creates a new version of the object graph with the specified version number.
+ */
+- (int) setVersion:(int)aVersion;
+/**
+ * Returns the deserialiser backend class which is the mirror of this
+ * serialiser.
  */
 + (Class) deserialiser;
+/**
+ * Returns a deserialiser backend instance initialised with the same data
+ * source (URL or data) as this serialiser.
+ */
+- (id) deserialiser;
+/**
+ * Ensures data has been written.
+ */
+- (void) flush;
 //Objects
 /**
  * Store the class version to be associated with the next set of instance
@@ -214,6 +228,10 @@ typedef parsed_type_size_t(*custom_serialiser)(char*,void*, id<ETSerialiserBacke
  * within a single version.
  */
 - (int) newVersion;
+/**
+ * Creates a new version of the object graph with the specified version number.
+ */
+- (int) setVersion:(int)aVersion;
 /**
  * Serialise the specified object.
  */

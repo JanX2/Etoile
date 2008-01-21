@@ -422,6 +422,10 @@ LOAD_METHOD(Selector, SEL)
 {
 	classVersion = aVersion;
 }
+- (int) setVersion:(int)aVersion
+{
+	return [backend setVersion:aVersion];
+}
 /**
  * Load the principle object from the back end.  Doing this may involve loading
  * some object pointers that point to objects that are not yet loaded.  If it

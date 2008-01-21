@@ -4,6 +4,7 @@
 #include <objc/objc-api.h>
 #include <objc/Object.h>
 #import "ETSerialiser.h"
+#import "ETDeserialiser.h"
 #import "ETSerialiserNullBackend.h"
 #import "StringMap.h"
 
@@ -104,9 +105,19 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 	[serialiser setBackend:[aBackend serialiserBackendWithURL:anURL]];
 	return serialiser;
 }
+- (id) deserialiser
+{
+	id back = [backend deserialiser];
+	id deserialiser = [ETDeserialiser deserialiserWithBackend:back];
+	return deserialiser;
+}
 - (int) newVersion
 {
 	return [backend newVersion];
+}
+- (int) setVersion:(int)aVersion
+{
+	return [backend setVersion:aVersion];
 }
 - (id) init
 {
@@ -486,6 +497,7 @@ parsed_type_size_t serialiseNSZone(char* aName, void* aZone, id <ETSerialiserBac
 	{
 		[self serialiseObject:leftoverObject named:"?"];
 	}
+	[backend flush];
 	return (unsigned long long)(uintptr_t)anObject;
 }
 @end
