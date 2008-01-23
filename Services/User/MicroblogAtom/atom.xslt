@@ -67,6 +67,13 @@
 					}
 
 				</style>
+				<xsl:if test="atom:feed/atom:link[@rel='self']">
+					<link rel="alternate" type="application/atom+xml" title="Atom feed">
+						<xsl:attribute name="href">
+							<xsl:value-of select="atom:feed/atom:link[@rel='self']/@href" />
+						</xsl:attribute>
+					</link>
+				</xsl:if>
 			</head>
 			<body>
 				<h1><xsl:value-of select="atom:feed/atom:title"/></h1>

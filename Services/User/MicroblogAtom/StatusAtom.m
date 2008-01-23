@@ -43,6 +43,7 @@ static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
 	{
 		return nil;
 	}
+	srandom([[NSDate date] timeIntervalSince1970]);
 	file = fopen("mublog.entries", "a");
 	return self;
 }
@@ -54,7 +55,7 @@ static inline NSMutableString* escapeXMLCData(NSString* _XMLString)
 		/* Avoid duplicates */
 		if(![lastStatus isEqualToString:message])
 		{
-			NSString * title = [[message componentsSeparatedByCharactersInSet:[NSCharacterSet punctuationCharacterSet]] objectAtIndex:0];
+			NSString * title = [[message componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"!:.?"]] objectAtIndex:0];
 			NSString * entry = 
 				[NSString stringWithFormat:
 					@"\n\n\t<entry>\n\t\t<title>%@</title>\n\t\t<summary>%@</summary>\n\t\t<id>%@</id>\n\t\t<updated>%@</updated>\n\t</entry>",
