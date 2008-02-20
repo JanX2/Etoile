@@ -5,12 +5,17 @@
  *
  * Author: Isaiah Beerbower
  * Created: 05/24/07
- * License: Modified BSD license (see file COPYING)
+ * License: 3-Clause license (see file COPYING)
  */
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+
+#import "PQFontManager.h"
 
 int main(int argc, char *argv[])
 {
-    return NSApplicationMain(argc, (const char **) argv);
+	[PQFontManager setFontManagerFactory: [PQFontManager class]];
+	
+	return NSApplicationMain(argc, (const char **) argv);
 }

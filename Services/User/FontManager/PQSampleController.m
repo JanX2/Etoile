@@ -11,8 +11,8 @@
  */
 
 
-#import "PQCompat.h"
 #import "PQSampleController.h"
+#import "PQCompat.h"
 
 
 @interface PQSampleController (FontManagerPrivate)
@@ -81,16 +81,21 @@
 		[sampleView setSampleText: NSLocalizedString(@"PQPangram", nil)];
 	
 		/* Couldn't set "Uses data source" in gorm */
+#ifdef GNUSTEP
 		[sampleField setUsesDataSource: YES];
 		[sampleField setDataSource: self];
+#endif
 	}
 	else if ([sampleView isKindOfClass: [NSTextView class]])
 	{
 		[sampleView setString: NSLocalizedString(@"PQParagraph", nil)];
 	}
 	
+	/* Couldn't set "Uses data source" in gorm */
+#ifdef GNUSTEP
 	[sizeField setUsesDataSource: YES];
 	[sizeField setDataSource: self];
+#endif
 
 	[self updateControls];
 }
@@ -154,7 +159,7 @@
 		return [[defaultSampleText
 			arrayByAddingObjectsFromArray: sampleTextHistory] objectAtIndex: index];
 	}
-	
+
 	/* Else: something is wrong */
 	return nil;
 }
@@ -223,6 +228,7 @@
 		[sampleField setStringValue: [sampleView sampleText]];
 		[sizeField setIntValue: [sampleView fontSize]];
 		[sizeSlider setIntValue: [sampleView fontSize]];
+		[sampleField reloadData];
 	}
 	else if ([sampleView isKindOfClass: [NSTextView class]])
 	{
@@ -308,6 +314,8 @@
 	{
 		[sampleView setString: newSampleText];
 	}
+	
+	[self updateControls];
 }
 
 @end

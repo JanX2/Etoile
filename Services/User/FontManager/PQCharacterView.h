@@ -24,7 +24,10 @@
 	
 	NSString *character;
 }
+
 - (void) setFontSize: (float)newSize;
 - (float) fontSize;
-- (void) changeSize: (id)sender;
+- (void) setFont: (NSString *)newFontName;
+- (NSString *) font;
+
 @end

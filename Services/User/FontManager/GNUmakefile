@@ -14,10 +14,12 @@ APP_NAME = FontManager
 
 FontManager_OBJC_FILES = \
   PQMain.m \
+  PQCharactersController.m \
   PQCharacterView.m \
   PQController.m \
   PQFontDocument.m \
   PQFontFamily.m \
+  PQFontManager.m \
   PQFontSampleView.m \
   PQSampleController.m
 

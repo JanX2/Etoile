@@ -8,15 +8,23 @@
             SUPERCLASS = NSView; 
         }, 
         {
+            ACTIONS = {changeCharSize = id; }; 
+            CLASS = PQCharactersController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {charView = PQCharacterView; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
             ACTIONS = {install = id; installAll = id; selectFace = id; }; 
             CLASS = PQFontDocument; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                charactersController = PQCharactersController; 
                 facePopUpButton = NSPopUpButton; 
                 infoView = NSTableView; 
                 installAllButton = NSButton; 
                 installButton = NSButton; 
-                sampleController = id; 
+                sampleController = PQSampleController; 
                 tabView = NSTabView; 
             }; 
             SUPERCLASS = NSDocument; 

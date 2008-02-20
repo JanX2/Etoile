@@ -3,9 +3,9 @@
     FirstResponder = {
 	Actions = (
 	    "changeSampleText:",
-	    "changeSize:",
 	    "install:",
 	    "installAll:",
+	    "changeCharSize:",
 	    "selectFace:"
 	);
 	Super = NSObject;
@@ -14,8 +14,19 @@
 	Actions = (
 	);
 	Outlets = (
+	    guideColor
 	);
 	Super = NSView;
+    };
+    PQCharactersController = {
+	Actions = (
+	    "changeCharSize:"
+	);
+	Outlets = (
+	    charView,
+	    charSizeSlider
+	);
+	Super = NSObject;
     };
     PQFontDocument = {
 	Actions = (
@@ -29,7 +40,8 @@
 	    tabView,
 	    installAllButton,
 	    facePopUpButton,
-	    sampleController
+	    sampleController,
+	    charactersController
 	);
 	Super = NSDocument;
     };

@@ -1,3 +1,21 @@
+2008-02-20  Isaiah Beerbower <public@ipaqah.com>
+	* PQController.m: Use PQFontManager.
+	* PQMain.m: Use PQFontManager.
+	* PQSampleController.m: Fix some small issues.
+	* PQCharactersController.*: Controls character samples.
+	* PQCharacterView.*: Shows a single character.
+	* PQFontManager.*: Subclass of NSFontManager to add more functionality.
+	* PQFontDocument.*: Removed some test code. Still more.
+	* GNUmakefile: Updated to include last files.
+	* FontManager.xcode: Xcode project for panther.
+	* English.lproj/InfoPlist.strings: Updated strings.
+	
+	  Fixed some issues in gorm/nib files:
+	* English.lproj/MainMenu.gorm
+	* English.lproj/FontDocument.gorm
+	* English.lproj/MainMenu.nib
+	* English.lproj/FontDocument.nib
+
 2007-12-05  Isaiah Beerbower <public@ipaqah.com>
 	* FontManagerInfo.plist: Added reference to font document icon
 	  Document-Font.tif.

@@ -16,6 +16,7 @@
 #else
 #import <CoreServices/CoreServices.h>
 #endif
+#import "PQCharactersController.h"
 #import "PQSampleController.h"
 
 @interface PQFontDocument : NSDocument
@@ -25,9 +26,10 @@
 	NSPopUpButton *facePopUpButton;
   NSTableView *infoView;
   NSTabView *tabView;
-	NSFont *font;
+	NSString *fontName;
 	
 	PQSampleController *sampleController;
+	PQCharactersController *charactersController;
 	
 	NSMutableDictionary *fontInfo;
 	NSMutableArray *fontInfoIndex;
@@ -36,7 +38,11 @@
 	ATSFontContainerRef fontContainer;
 #endif
 }
+
 - (void) install: (id)sender;
 - (void) installAll: (id)sender;
 - (void) selectFace: (id)sender;
+
+- (void) setFont: (NSString *)newFont;
+
 @end

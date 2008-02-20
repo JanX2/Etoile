@@ -11,6 +11,7 @@
  */
 
 #import "PQFontDocument.h"
+#import "PQFontManager.h"
 #import "PQCompat.h"
 
 @implementation PQFontDocument
@@ -21,6 +22,7 @@
 	
 	fontInfo = [[NSMutableDictionary alloc] init];
 	fontInfoIndex = [[NSMutableArray alloc] init];
+	fontName = [[NSString alloc] initWithString: @"Bitstream Vera Sans"];
 	
 	return self;
 }
@@ -43,18 +45,25 @@
 	[installAllButton setEnabled: NO];
 	[installAllButton setHidden: YES];
 	
-	if (font != nil)
-	{
-		[sampleController setFonts: [NSArray arrayWithObject: [font fontName]]];
-	}
+	[sampleController setFonts: [NSArray arrayWithObject: fontName]];
+	[charactersController setFont: fontName];
 }
 
 - (void) dealloc
 {
+	RELEASE(fontName);
 	RELEASE(fontInfo);
 	RELEASE(fontInfoIndex);
 	
 	[super dealloc];
+}
+
+- (void) setFont: (NSString *)newFont
+{
+	ASSIGN(fontName, newFont);
+	
+	[sampleController setFonts: [NSArray arrayWithObject: fontName]];
+	[charactersController setFont: fontName];
 }
 
 - (void) selectFace: (id)sender
@@ -111,12 +120,21 @@
 	return @"FontDocument";
 }
 
+- (NSString *)displayName
+{
+	return [[NSFont fontWithName: fontName size: 0] displayName];
+}
+
 - (BOOL) readFromFile: (NSString *)fileName ofType: (NSString *)docType
 {
-	NSString *fontName;
-	
+
 #ifdef GNUSTEP
-	fontName = [[GSFontEnumerator sharedEnumerator] makeFontAvailable: fileName];
+	/*ASSIGN(fontName,
+		[[[(PQFontManager *)[PQFontManager sharedFontManager] makeAvailableFontAtPath: fileName]
+		objectAtIndex: 0] objectAtIndex: 0]);*/
+	//ASSIGN(fontName, @"Luxi Sans Roman"); //TEMP
+	
+	fontName = @"Bitstream Vera Sans";
 #else
 	// In theory this code should make the font available, I'm not sure if it
 	// works though. Any way, after it's activated I'm not sure how to find out
@@ -138,7 +156,7 @@
 	//}
 	
 	// Just so it runs we'll use Helvetica instead.
-	fontName = @"Helvetica"; //TEMP
+	ASSIGN(fontName, @"Helvetica"); //TEMP
 #endif
 	
 	if (fontName == nil)
@@ -146,9 +164,7 @@
 		return NO;
 	}
 	
-	
-	font = [NSFont fontWithName: fontName size: 0];
-	RETAIN(font);
+	NSFont *font = [NSFont fontWithName: fontName size: 0];
 	
 	[fontInfoIndex addObject:@"Name"];
 	[fontInfo setObject:[font displayName] forKey:@"Name"];

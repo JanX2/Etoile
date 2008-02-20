@@ -9,13 +9,16 @@
  */
 
 
+#ifdef GNUSTEP
+#import <GNUstepGUI/GSTheme.h>
+#endif
 #import <stdlib.h>
 #import <math.h>
 #import "PQCharacterView.h"
 #import "PQCompat.h"
 
 
-float invf(float f);
+#define invf(f) ((f > 0.0) ? (f - (f * 2.0)) : fabs(f))
 
 
 @implementation PQCharacterView
@@ -71,16 +74,24 @@ float invf(float f);
 	return fontSize;
 }
 
-- (void) changeSize: (id)sender
+- (void) setFont: (NSString *)newFontName
 {
-	[self setFontSize: [sender intValue]];
+	ASSIGN(fontName, newFontName);
+	
+	[self setNeedsDisplay: YES];
 }
+
+- (NSString *) font
+{
+	return fontName;
+}
+
 
 /* Drawing */
 
 - (void) drawRect: (NSRect)rect
 {
-	NSFont *font = [NSFont fontWithName: fontName size: fontSize];
+	NSFont *font = [NSFont fontWithName: [self font] size: [self fontSize]];
 	NSBezierPath *path = [[NSBezierPath alloc] init];
 	
 	/* Text system components */
@@ -141,6 +152,7 @@ float invf(float f);
 		[path moveToPoint: NSMakePoint(0.0, baseline + xHeight)];
 		[path lineToPoint: NSMakePoint(rect.size.width, baseline + xHeight)];
 
+		// FIXME: Mac OS X version 10.3 seems to return a bogus italic angle.
 		if (italicAngle != 0.0)
 		{
 			float top = ([self frame].size.height / 2.0);
@@ -164,20 +176,19 @@ float invf(float f);
 
 		[textStorage drawAtPoint: NSMakePoint(xOffset, yOffset)];       
 	}
+	
+#ifdef GNUSTEP
+	[[GSTheme theme] drawGrayBezel: NSMakeRect(0.0, 0.0,
+	                                           [self frame].size.width,
+																						 [self frame].size.height)
+												withClip: rect];
+#else
+	[[NSColor lightGrayColor] set];
+	[NSBezierPath strokeRect:NSInsetRect(NSMakeRect(0.0, 0.0,
+																									[self frame].size.width,
+																									[self frame].size.height),
+																			 0.5, 0.5)];
+#endif
 }
 
 @end
-
-float invf(float f)
-{
-	if (f > 0.0)
-	{
-		return f - (f * 2);
-	}
-	else if (f < 0.0)
-	{
-		return abs(f);
-	}
-	
-	return 0.0;
-}

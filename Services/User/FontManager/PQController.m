@@ -7,11 +7,13 @@
  *
  * Author: Isaiah Beerbower
  * Created: 05/24/07
- * License: Modified BSD license (see file COPYING)
+ * License: 3-Clause BSD license (see file COPYING)
  */
 
 
 #import "PQController.h"
+#import "PQFontManager.h"
+#import "PQFontDocument.h"
 #import "PQCompat.h"
 
 
@@ -27,7 +29,8 @@ const float sampleBoxMinWidth = 220.0;
 	[super init];
 	
 	/* Create an array of font families */
-	NSFontManager *fontManager = [NSFontManager sharedFontManager];
+	PQFontManager *fontManager =
+		(PQFontManager *)[PQFontManager sharedFontManager];
 	NSArray *fontFamilyNames = [fontManager availableFontFamilies];
 	
 	fontFamilies = [[NSMutableArray alloc] init];
@@ -95,6 +98,9 @@ const float sampleBoxMinWidth = 220.0;
 			[NSString stringWithFormat:@"%i %@", fontsCount,
 			                           NSLocalizedString(@"families", nil)]];
 	}
+	
+	[fontList setTarget: self];
+	[fontList setDoubleAction: @selector(openSelected:)];
 }
 
 /* Split view data source */
@@ -236,14 +242,14 @@ const float sampleBoxMinWidth = 220.0;
 
 - (int) numberOfRowsInTableView: (NSTableView *)aTableView
 {
-	return 1; // Temp
+	return 1; // TEMP
 }
 
 - (id) tableView: (NSTableView *)aTableView
 	objectValueForTableColumn: (NSTableColumn *)aTableColumn
 	           row: (int)rowIndex
 {
-	return @"All"; // Temp
+	return @"All"; // TEMP
 }
 
 /* Fonts [outline] view data source */
@@ -260,7 +266,7 @@ const float sampleBoxMinWidth = 220.0;
 	{
 		NSString *familyName = [[NSFont fontWithName: item size: 0.0] familyName];
 		NSArray *familyMembersInfo =
-			[[NSFontManager sharedFontManager] availableMembersOfFontFamily: familyName];
+			[[PQFontManager sharedFontManager] availableMembersOfFontFamily: familyName];
 
 		NSEnumerator *membersEnum = [familyMembersInfo objectEnumerator];
 		NSArray *currentMember;
@@ -328,12 +334,66 @@ const float sampleBoxMinWidth = 220.0;
 
 - (void) tableViewSelectionDidChange: (NSNotification *)aNotification
 {
-	// Until we implement groups.
+	// TODO: Until we implement groups.
 }
 
 - (void) outlineViewSelectionDidChange: (NSNotification *)notification
 {
 	[self updateSample];
+}
+
+- (void) openSelected: (id)sender
+{
+	// TODO: This method's implementation is a quick hack based on -updateSample.
+	//       Rewite needed.
+	
+	NSIndexSet *selectedRows = [fontList selectedRowIndexes];
+	
+	NSEnumerator *itemEnum = [fontFamilies objectEnumerator];
+	PQFontFamily *currentItem;
+	
+	NSMutableArray *selectedItems = [[NSMutableArray alloc] init];
+	
+	while ((currentItem = [itemEnum nextObject]))
+	{
+    if ([selectedRows containsIndex:[fontList rowForItem:currentItem]])
+		{
+			[selectedItems addObjectsFromArray:[currentItem members]];
+		}
+		else
+		{
+			NSEnumerator *membersEnum = [[currentItem members] objectEnumerator];
+			NSString *currentMember;
+			
+			while ((currentMember = [membersEnum nextObject]))
+			{
+				if ([selectedRows containsIndex:[fontList rowForItem:currentMember]])
+				{
+					[selectedItems addObject:currentMember];
+				}
+			}
+		}
+	}
+
+	if ([sender clickedRow] > -1 && [selectedItems count] > 0)
+	{
+		/*
+		PQFontDocument *document = [[NSDocumentController sharedDocumentController]
+																openUntitledDocumentOfType: @"PQFontDocument"
+																display: YES];
+			
+		[document setFont: [selectedItems objectAtIndex: 0]]; */
+		
+		PQFontDocument *document = [[NSDocumentController sharedDocumentController]
+																makeUntitledDocumentOfType: @"PQFontDocument"];
+		
+		[document setFont: [selectedItems objectAtIndex: 0]];
+		
+		[[NSDocumentController sharedDocumentController] addDocument: document];
+		
+		[document makeWindowControllers];
+		[document showWindows];
+	}
 }
 
 - (void) updateSample
