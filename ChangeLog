@@ -1,3 +1,7 @@
+2008-02-22  Quentin Mathe <qmathe@club-internet.fr>
+
+	* etoile.make: Allowed to override PROJECT_NAME variable per module.
+
 2008-01-12  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Frameworks/GNUmakefile: Turned on SystemConfig which got wrongly removed 
