@@ -1,5 +1,10 @@
 2008-02-22  Quentin Mathe <qmathe@club-internet.fr>
 
+	* INSTALL.Ubuntu: Updated for Gutsy Gibbon and expanded the documentation. 
+	Fixed Feisty Fawn release number.
+
+2008-02-22  Quentin Mathe <qmathe@club-internet.fr>
+
 	* etoile.make: Allowed to override PROJECT_NAME variable per module.
 
 2008-01-12  Quentin Mathe <qmathe@club-internet.fr>
