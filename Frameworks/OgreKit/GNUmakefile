@@ -12,8 +12,14 @@ OgreKit_SUBPROJECTS = Source
 
 OgreKit_LIBRARIES_DEPEND_UPON = `onig-config --libs`
 
+ifeq ($(FOUNDATION_LIB), apple)
 ifeq ($(test), yes)
 	OgreKit_OBJC_LIBS += -framework UnitKit
+endif
+else
+ifeq ($(test), yes)
+	OgreKit_LDFLAGS += -lUnitKit
+endif
 endif
 
 ADDITIONAL_INCLUDE_DIRS += 

@@ -1,3 +1,14 @@
+2008-02-21 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Source/RegularExpression/GNUmakefile:
+	  Use relative path instead of absolute path for onig-config
+	  which returns the version number of oniguruma (4.x or 5.x).
+	  Earlier release of 4.x doesn't have onig-config.
+	  Therefore, if it fails to get the version of oniguruma,
+	  it assumes 4.x release by default.
+	* GNUmakefile:
+	  Link UnitKit as library on GNUstep.
+
 2007-04-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
 	* Turn into framework.

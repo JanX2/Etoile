@@ -30,7 +30,7 @@ RegularExpression_OBJC_FILES += \
 	TestOGRegularExpression.m
 endif
 
-ONIGURUMA_VERSION = $(shell /usr/local/bin/onig-config --version)
+ONIGURUMA_VERSION = $(shell onig-config --version)
 # We assume it is in format of X.X.X
 ONIGURUMA_MAJOR_VERSION = $(basename $(basename $(ONIGURUMA_VERSION)))
 
