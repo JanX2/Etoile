@@ -1,3 +1,9 @@
+2008-02-23  Quentin Mathe <qmathe@club-internet.fr>
+
+	* etoile.desktop: Made the xsession file truly compliant with Desktop 
+	file spec by removing a newline which prevents GDM to start an Etoile 
+	session on Ubuntu Gutsy Gibbon.
+
 2007-07-04  Quentin Mathe <qmathe@club-internet.fr>
 
 	* SystemTaskList.plist: Added make_services.

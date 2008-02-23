@@ -3,8 +3,7 @@ Encoding=UTF-8
 Name=Étoilé
 
 Comment=Use this session to log in Étoilé environment
-Comment[fr]=Utilisez cette session pour vous logguez dans
-l'environnement Étoilé
+Comment[fr]=Utilisez cette session pour vous logguez dans l'environnement Étoilé
 
 Exec=/usr/local/bin/etoile
 
