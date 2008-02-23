@@ -6,7 +6,7 @@
 	Copyright (C) 2007 Yen-Ju Chen
  
 	Author:  Yen-Ju Chen <yjchenx at gmail>
-    Date:  September 2007
+	Date:  September 2007
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
@@ -38,11 +38,12 @@
 #import "SCPower.h"
 
 @implementation SCPower (Linux)
+
 - (SCPowerStatus) status
 {
 	/* Check /proc/apm (For Linux with APM) */
 	NSFileManager *fm = [NSFileManager defaultManager];
-	SCPowerStatus statue = SCPowerUnknown;
+	SCPowerStatus status = SCPowerUnknown;
 
 	if ([fm fileExistsAtPath: @"/proc/apm"])
 	{
@@ -81,12 +82,12 @@
 			if ([[array objectAtIndex: 4] isEqualToString: @"0x03"])
 			{
 				/* We are charging */
-				return SCPowerACCharging;
+				status = SCPowerACCharging;
 			}
 			else
 			{
 				/* Full ? */
-				return SCPowerACFull;
+				status = SCPowerACFull;
 			}
 			return SCPowerUnknown;
 		}
@@ -102,33 +103,32 @@
 //NSLog(@"Power Level: %d\%", percent);
 				if (percent > 75)
 				{
-					return SCPowerBatteryFull;
+					status = SCPowerBatteryFull;
 				}
 				else if (percent > 50)
 				{
-					return SCPowerBatteryHigh;
+					status = SCPowerBatteryHigh;
 				}
 				else if (percent > 25)
 				{
-					return SCPowerBatteryMedium;
+					status = SCPowerBatteryMedium;
 				}
 				else if (percent > 0)
 				{
-					return SCPowerBatteryLow;
+					status = SCPowerBatteryLow;
 				}
 				else
 				{
 					/* If percent is 0, the computer dies.
-					   So it is probably due to the failure of 
-				       parsing power level.
-					*/
-					return SCPowerUnknown;
+					   So it is probably due to the failure 
+				           of parsing power level. */
+					status = SCPowerUnknown;
 				}
 			}
 		}
 	}
-	/* Unknown */
-	return SCPowerUnknown;
+
+	return status;
 }
 
 @end

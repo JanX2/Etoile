@@ -1,3 +1,9 @@
+2008-02-23  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Source/SCPower_Linux.m: Fixed a compiler warning by replacing 
+	multiple return points with a single one and using the unused variable 
+	status to store the returned value. Also tidied the formatting a bit. 
+
 2008-02-23  N.H. Koh <nyaphong at gmail dot com>
 
 	Initial support for keyboard in X11 environment.
