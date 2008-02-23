@@ -1,3 +1,15 @@
+2008-02-23  N.H. Koh <nyaphong at gmail dot com>
+
+	Initial support for keyboard in X11 environment.
+	* Headers/SCConfig+Private.h: Modified to import Foundation.h.
+	* Headers/SCConfig.h: Declared enum values for keyboard failures.
+	* Headers/X11Keyboard.h:
+	* Sources/X11Keyboard.m:
+	Added.
+	* GNUmakefile:
+	* Source/GNUmakefile
+	Updated.
+
 2007-12-07  Quentin Mathe <qmathe@club-internet.fr>
 
 	Note: Patch submitted by Eric Wasylishen, related to bug #10463 initially 

@@ -1,5 +1,5 @@
 
-#import <Foundation/NSString.h>
+#import <Foundation/Foundation.h>
 #import "SCConfig.h"
 
 @interface SCConfigElement (Private)

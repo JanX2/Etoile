@@ -21,7 +21,9 @@ libSystemConfig_OBJC_FILES = \
 	SCSound.m
 
 ifeq ($(ETOILE_X11), yes)
-libSystemConfig_OBJC_FILES += X11Mouse.m
+libSystemConfig_OBJC_FILES += \
+	X11Mouse.m \
+	X11Keyboard.m
 
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib

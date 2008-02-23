@@ -32,6 +32,7 @@
 
 #define SCREEN_ERROR ((int)0x4000)
 #define MOUSE_ERROR ((int)0x2000)
+#define KEYBOARD_ERROR ((int)0x6000)
 
 enum {
 	SCScreenResolutionChangeFailure =  SCREEN_ERROR | 1,
@@ -42,7 +43,10 @@ enum {
 	
 	SCMouseAccelerationChangeFailure =         MOUSE_ERROR | 1,
 	SCMouseThresholdChangeFailure =            MOUSE_ERROR | 2,
-	SCMouseDoubleClickIntervalChangeFailure =  MOUSE_ERROR | 3
+	SCMouseDoubleClickIntervalChangeFailure =  MOUSE_ERROR | 3,
+
+	SCKeyboardXkbOpenDisplayFailure = KEYBOARD_ERROR | 1,
+	SCKeyboardXkbSetControlsFailure = KEYBOARD_ERROR | 2
 };
 
 // --------------------------------------------------

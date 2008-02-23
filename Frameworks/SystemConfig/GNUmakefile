@@ -21,6 +21,7 @@ SystemConfig_HEADER_FILES = \
 
 ifeq ($(ETOILE_X11), yes)
 SystemConfig_LIBRARIES_DEPEND_UPON += -lX11
+SystemConfig_HEADER_FILES += X11Keyboard.h
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
