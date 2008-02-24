@@ -3,9 +3,6 @@
 #include "GraphicToolbox.h"
 #include "GSDrawFunctions.h"
 
-@interface NSMatrix (theme) // declare some methods used by gnustep...
-- (void) _drawCellAtRow: (int) row column: (int) column;
-@end
 
 @implementation NSMatrix (theme)
 
@@ -66,7 +63,7 @@
   for (i = row1; i <= row2 && i < _numRows; i++)
     for (j = col1; j <= col2 && j < _numCols; j++)
       {
-        [self _drawCellAtRow: i column: j];
+        [self drawCellAtRow: i column: j];
       }
 }
 @end
