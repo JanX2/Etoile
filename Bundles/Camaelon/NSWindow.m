@@ -372,7 +372,33 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
 }
 @end
 
+@interface NSWindow (NoBackgroundColor)
+- (NSColor*) backgroundColorWithImageNamed: (NSString*) name;
+@end
+
 @implementation NSWindow (NoBackgroundColor)
+
+- (NSColor*) backgroundColorWithImageNamed: (NSString*) name
+{
+	NSImage *img = [NSImage imageNamed: name];
+	NSColor *backgroundColor = nil;
+
+	if (img == nil)
+		img = [NSImage imageNamed: @"Colors/Colors-window-background.tiff"];
+
+	if (img != nil) {
+		/* Fall back on window background color in case no specific colors are 
+		   provided for main and key input states */
+		backgroundColor = [GraphicToolbox readColorFromImage: img];		
+	}
+	else {
+		NSLog(@"Found no image for window background color %@, falling back "
+			@"to yellow color as warning", name);
+		backgroundColor = [NSColor yellowColor];
+	}
+	
+	return backgroundColor;
+}
 
 -(NSColor*) backgroundColor {
   int inputState = ([self isKeyWindow] ? 0 : ([self isMainWindow] ? 2 : 1));
@@ -383,12 +409,12 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
   static NSColor** windowBackgrounds = NULL;
   if (windowBackgrounds == NULL) {
     windowBackgrounds = malloc(3*sizeof(NSColor*));
-    windowBackgrounds[0] = [GraphicToolbox readColorFromImage:
-					     [NSImage imageNamed: @"Colors/Colors-window-background-key.tiff"]];
-    windowBackgrounds[1] = [GraphicToolbox readColorFromImage:
-					     [NSImage imageNamed: @"Colors/Colors-window-background.tiff"]];
-    windowBackgrounds[2] = [GraphicToolbox readColorFromImage:
-					     [NSImage imageNamed: @"Colors/Colors-window-background-main.tiff"]];
+    windowBackgrounds[0] = [self backgroundColorWithImageNamed: 
+    	@"Colors/Colors-window-background-key.tiff"];
+    windowBackgrounds[1] = [self backgroundColorWithImageNamed: 
+    	@"Colors/Colors-window-background.tiff"];
+    windowBackgrounds[2] = [self backgroundColorWithImageNamed: 
+    	@"Colors/Colors-window-background-main.tiff"];
     int i;
     for (i=0; i<3; i++) {
       if (windowBackgrounds[i] == nil) {
