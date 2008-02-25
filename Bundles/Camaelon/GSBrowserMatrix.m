@@ -65,7 +65,7 @@
 			[[NSColor greenColor] set];
 		}
 		//NSRectFill (rect);
-        [self _drawCellAtRow: i column: j];
+        [self drawCellAtRow: i column: j];
       }
 }
 

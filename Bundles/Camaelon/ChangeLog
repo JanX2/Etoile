@@ -1,3 +1,8 @@
+2008-02-25  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GSBrowserMatrix.[hm] (-drawRect:): Fixed unknown selector crash when a 
+	matrix is used. -_drawCellAtRow: has been made a public method in GNUstep.
+
 2008-02-24  Quentin Mathe <qmathe@club-internet.fr>
 
 	Fixed the flickering of window background color with Nesedah theme. This bug 
