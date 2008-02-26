@@ -626,7 +626,7 @@ static CLCompositor* cl_progressIndicatorBackground;
 			addImage: [NSImage imageNamed: @"ProgressBar/ProgressBar-horizontal-fill.tiff"]
 			named: @"fill"];
 	}
-	[cl_progressIndicatorForeground drawInRect: rect];
+	[cl_progressIndicatorForeground drawInRect: rect flipped: YES];
 }
 
 - (void) drawTitleBox: (NSRect) rect on: (id) box

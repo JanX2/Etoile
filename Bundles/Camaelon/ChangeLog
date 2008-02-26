@@ -1,5 +1,14 @@
 2008-02-26  Quentin Mathe <qmathe@club-internet.fr>
 
+	Fixed the drawing of progress indicator, it returns YES to -isFlipped now 
+	in GNUstep.
+	* GSDrawFunctions.m:
+	* CamaelonDrawFunctions.m:
+	(-drawProgressIndicatorForegroundInRect:): Modified to use 
+	-drawInRect:flipped: instead of -drawInRect:.
+
+2008-02-26  Quentin Mathe <qmathe@club-internet.fr>
+
 	Fixed broken slider drawing. Implemented flipped drawing support in 
 	CLCompositor related classes. Based on an initial patch by Andreas Schik.
 	* CLCompositor.[hm] 
