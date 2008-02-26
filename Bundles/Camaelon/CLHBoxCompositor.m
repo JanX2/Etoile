@@ -9,7 +9,7 @@
 	exit (-2);
 }
 
-- (void) drawInRect: (NSRect) rect
+- (void) drawInRect: (NSRect) rect flipped: (BOOL) flipped
 {
 	// A HBox is composed of 3 images:
 
@@ -55,15 +55,27 @@
 	// Ok, drawing ...
 
 	float deltaY = (rect.size.height - [fill size].height)/2.0;
+	NSPoint compositeOrigin = rect.origin;
 
-	[left compositeToPoint: NSMakePoint (rect.origin.x,rect.origin.y+deltaY)
+	// We must flip the origin for drawing the left and right images
+
+	if (flipped)
+		compositeOrigin.y += [fill size].height;
+
+	[left compositeToPoint: NSMakePoint (compositeOrigin.x,compositeOrigin.y+deltaY)
 		operation: NSCompositeSourceOver];
-	[right compositeToPoint: NSMakePoint (rect.origin.x+rect.size.width-[right size].width,rect.origin.y+deltaY)
+	[right compositeToPoint: NSMakePoint (compositeOrigin.x+rect.size.width-[right size].width,compositeOrigin.y+deltaY)
 		operation: NSCompositeSourceOver];
+
+	// We fill the space between the left and right images without flipping the 
+	// origin by passing rect parameter as is.
+	// -fillHorizontalRect:withImage:flipped: knows how to flip the coordinates 
+	// based on flipped parameter unlike -compositeToPoint:operation which 
+	// accepts no such hint.
 
 	[GraphicToolbox fillHorizontalRect: NSMakeRect (rect.origin.x+[left size].width, rect.origin.y+deltaY,
 		rect.size.width-[left size].width-[right size].width,
-				[fill size].height) withImage: fill];
+				[fill size].height) withImage: fill flipped: flipped];
 }
 
 @end

@@ -7,37 +7,48 @@
 
 - (void) drawBarInside: (NSRect)rect flipped: (BOOL)flipped
 {
-  	NSImage* knobImage = nil;
+  	//NSImage* knobImage = nil;
 	if (_isVertical)
 	{
+// FIXME: I fail to understand why the knob size used in this way could play a 
+// role in the drawing of the track. Probably remove it. However knob size 
+// related code is probably needed to center the vertical track horizontally in 
+// the slider frame (supposing this frame is equal to rect here).
+#if 0
 			knobImage = [NSImage imageNamed: @"Slider/Slider-vertical-thumb.tiff"];
 			
 			float hKnob = [knobImage size].height;
          	rect.origin.y += hKnob / 2;
           	rect.size.height -= hKnob;
+#endif
 
 			CLCompositor* compositor = [CLVBoxCompositor new];
 			[compositor addImage: [NSImage imageNamed: @"Slider/Slider-vertical-track-caps.tiff"]
 				named: @"caps"];
 			[compositor addImage: [NSImage imageNamed: @"Slider/Slider-vertical-track-fill.tiff"]
 				named: @"fill"];
-			[compositor drawInRect: rect];
+			[compositor drawInRect: rect flipped: flipped];
 			[compositor release];
 	}
 	else
 	{
+// FIXME: I fail to understand why the knob size used in this way could play a 
+// role in the drawing of the track. Probably remove it. However knob size 
+// related code is probably needed to center the horizontal track vertically in 
+// the slider frame (supposing this frame is equal to rect here).
+#if 0
 			knobImage = [NSImage imageNamed: @"Slider/Slider-horizontal-thumb.tiff"];
 
 			float wKnob = [knobImage size].width;
          	rect.origin.x += wKnob / 2;
           	rect.size.width -= wKnob;
-
+#endif
 			CLCompositor* compositor = [CLHBoxCompositor new];
 			[compositor addImage: [NSImage imageNamed: @"Slider/Slider-horizontal-track-caps.tiff"]
 				named: @"caps"];
 			[compositor addImage: [NSImage imageNamed: @"Slider/Slider-horizontal-track-fill.tiff"]
 				named: @"fill"];
-			[compositor drawInRect: rect];
+			[compositor drawInRect: rect flipped: flipped];
 			[compositor release];
 	}
 }
@@ -87,16 +98,6 @@
   return NSMakeRect (origin.x, origin.y, size.width, size.height);
 }
 
-- (void) drawWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
-{
-  _cell.is_bordered = NO;
-  _cell.is_bezeled = YES;
-  //[THEME drawGrayBezelRound: cellFrame :NSZeroRect];
-  //[[NSColor greenColor] set];
-  //NSRectFill (cellFrame);
-  [THEME drawWindowBackground: cellFrame on: controlView];
-  [self drawInteriorWithFrame: cellFrame inView: controlView];
-}
 - (void) drawKnob: (NSRect)knobRect
 {
   NSImage* knobImage = nil;
@@ -105,12 +106,51 @@
   if (_isVertical)
   {
 	knobImage = [NSImage imageNamed: @"Slider/Slider-vertical-thumb.tiff"];
+	point.y += [knobImage size].height;
   }
   else
   {
 	knobImage = [NSImage imageNamed: @"Slider/Slider-horizontal-thumb.tiff"];
+	point.y += [knobImage size].height;
   }
 
   [knobImage compositeToPoint: point operation: NSCompositeSourceOver];
 }
+
+// NOTE: The following method isn't overriden but we may want to because it 
+// would avoid running GNUstep specific code like loading GNUstep slider images.
+// In a long term perspective, this method probably needs to be further 
+// modularized on GNUstep side.
+// - (void) drawInteriorWithFrame: (NSRect)cellFrame inView: (NSView*)controlView
+
+- (void) _drawBorderAndBackgroundWithFrame: (NSRect)cellFrame 
+                                    inView: (NSView*)controlView
+{
+	if ([controlView isOpaque])
+	{
+		[THEME drawWindowBackground: cellFrame on: controlView];
+	}
+	else /* Default case that renders transparent areas as expected */
+	{
+		[[NSColor clearColor] set];
+		NSRectFill (cellFrame);	
+	}
+}
+
+/* NSCell overidden methods to ignore border and bezel */
+
+- (NSSize) cellSize
+{
+	NSAssert1(_cell_image != nil, @"Slider cell %@ must never have a nil "
+		@"_cell_image", self);
+  
+ 	return [_cell_image size];
+}
+
+- (NSRect) drawingRectForBounds: (NSRect)theRect
+{
+ 	return theRect;
+}
+
 @end
+

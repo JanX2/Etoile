@@ -1,3 +1,28 @@
+2008-02-26  Quentin Mathe <qmathe@club-internet.fr>
+
+	Fixed broken slider drawing. Implemented flipped drawing support in 
+	CLCompositor related classes. Based on an initial patch by Andreas Schik.
+	* CLCompositor.[hm] 
+	(-drawInRect:flipped:): New method that supports drawing in a flipped view.
+	(-drawInRect:): Modified to call -drawInRect:flipped:.
+	* CLVBoxCompositor.m
+	* CLHBoxCompositor.m
+	(-drawInRect:flipped:): Renamed -drawInRect: to drawInRect:flipped: in order 
+	to override the corresponding method of CLCompositor. Improved to handle 
+	drawing in a flipped view.
+	* NSSlider (-isOpaque:): Modified to return NO so that transparent areas are 
+	really transparent :-)
+	* NSSliderCell.m
+	(-drawBarInside:): Modified to handle flipping and commented out some code.
+	(-drawWithFrame:inView:): Removed now that the method is properly 
+	modularized in NSCell.
+	(-drawKnob:): Modified to handle flipping.
+	(-_drawBorderAndBackgroundWithFrame:inView:): Added overriden NSCell method 
+	to replace -drawWithFrame:inView: and support proper drawing of transparent 
+	areas.
+	(-drawingRectForBounds:, -cellSize:): Added overriden NSCell methods.
+	* GraphicToolbox.m: Added debugging stuff.
+
 2008-02-25  Quentin Mathe <qmathe@club-internet.fr>
 
 	* GSBrowserMatrix.[hm] (-drawRect:): Fixed unknown selector crash when a 

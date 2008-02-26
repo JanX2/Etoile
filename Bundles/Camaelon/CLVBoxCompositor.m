@@ -9,7 +9,7 @@
 	exit (-2);
 }
 
-- (void) drawInRect: (NSRect) rect
+- (void) drawInRect: (NSRect) rect flipped: (BOOL) flipped
 {
 	// A VBox is composed of 3 images:
 
@@ -61,17 +61,36 @@
 	// Ok, drawing ...
 
 	float deltaX = (rect.size.width - [fill size].width)/2.0;
+	NSPoint compositeOrigin = rect.origin;
 
-	[bottom compositeToPoint: NSMakePoint (rect.origin.x+deltaX,rect.origin.y)
-		operation: NSCompositeSourceOver];
-	[top compositeToPoint: 
-		NSMakePoint (rect.origin.x + deltaX, rect.origin.y + rect.size.height - [top size].height)
+	// We must flip the origin for drawing the left and right images
+
+	if (flipped)
+		compositeOrigin.y += rect.size.height;
+	[bottom compositeToPoint: 
+		NSMakePoint (compositeOrigin.x + deltaX, compositeOrigin.y)
 		operation: NSCompositeSourceOver];
 
+	if (flipped)
+	{
+		compositeOrigin.y = rect.origin.y + [top size].height;
+	}
+	else
+	{
+		compositeOrigin.y = rect.origin.y + rect.size.height - [top size].height;
+	}
+	[top compositeToPoint: NSMakePoint (compositeOrigin.x + deltaX, 
+		compositeOrigin.y)
+ 		operation: NSCompositeSourceOver];
+ 
+	// We fill the space between the left and right images without flipping the 
+	// origin by passing rect parameter as is.
+	// More explanations in CLHBoxCompositor
+	
 	[GraphicToolbox fillVerticalRect: 
 		NSMakeRect (rect.origin.x+deltaX, rect.origin.y + [bottom size].height,
 			[fill size].width, rect.size.height - [bottom size].height - [top size].height)
-		withImage: fill];
+		withImage: fill flipped: flipped];
 }
 
 @end

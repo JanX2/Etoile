@@ -135,6 +135,12 @@ static NSMutableDictionary* cache;
 	NSBezierPath* path = [NSBezierPath bezierPathWithRect: rect];
 	[path addClip];
 
+#ifdef DEBUG_TOOLBOX
+	id focusView = [[NSGraphicsContext currentContext] focusView];
+	NSLog(@"clip %@ view %@ frame %@", NSStringFromRect(rect), focusView, 
+		NSStringFromRect([focusView frame]));
+#endif
+
 	float wImage = [image size].width;
 //	float hImage = [image size].height;
 	float wRect = rect.size.width;

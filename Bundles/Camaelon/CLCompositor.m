@@ -30,6 +30,10 @@
 }
 
 - (void) drawInRect: (NSRect) rect {
+	[self drawInRect: rect flipped: NO];
+}
+
+- (void) drawInRect: (NSRect) rect flipped: (BOOL) flipped {
 	// Subclass responsability
 }
 

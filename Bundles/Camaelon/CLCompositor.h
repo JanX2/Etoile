@@ -23,6 +23,7 @@ typedef enum {
 - (void) addImage: (NSImage*) image named: (NSString*) name;
 - (void) drawOn: (NSView*) view;
 - (void) drawInRect: (NSRect) rect;
+- (void) drawInRect: (NSRect) rect flipped: (BOOL) flipped;
 - (void) drawInRect: (NSRect) rect on: (NSView*) view;
 @end
 

@@ -5,7 +5,7 @@
 
 @implementation NSSlider (theme)
 
-- (BOOL) isOpaque { return YES; }
+- (BOOL) isOpaque { return NO; }
 
 /*
 - (void) trackKnob: (NSEvent*)theEvent knobRect: (NSRect)knobRect
