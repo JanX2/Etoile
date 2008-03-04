@@ -4,6 +4,17 @@ Opal is the CoreGraphics implementation in Étoilé subversion. Potential tasks 
 
 - Finish the text-related functions in Opal and build a CoreText implementation on top (probably using Pango for most of the layout).  
 
+StepChat
+--------
+
+- Add Jingle support to StepChat (using libjingle).
+
+- Add file transfer support to StepChat
+
+- Implement shared shelf using PubSub.
+
+- Tidy up the StepChat UI quirks.
+
 EtoileUI and CoreObject
 -----------------------
 
@@ -44,3 +55,5 @@ Various miscellaneous tasks include:
 - Write the missing parts of SystemConfig, test it on more platforms and implement missing components and write a dæmon which monitors the system and sends distributed notifications.
 
 - Produce an OMeta implementation for Étoilé.
+
+- Finish the compositing manager.
