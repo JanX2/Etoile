@@ -1,0 +1,46 @@
+Opal
+----
+Opal is the CoreGraphics implementation in Étoilé subversion. Potential tasks include:
+
+- Finish the text-related functions in Opal and build a CoreText implementation on top (probably using Pango for most of the layout).  
+
+EtoileUI and CoreObject
+-----------------------
+
+EtoileUI is a framework for supporting dynamic layouts.  CoreObject (including EtoileSerialise) is a framework for managing persistence and metadata on documents.  Potential tasks include:
+
+- Add an OpenGL back end to EtoileUI with basic CoreAnimation-like features and a mechanism for adding new ones via bundles.
+
+- Add Garnet-style constraint support to EtoileUI.
+
+- Create GORM palettes for EtoileUI.
+
+- Write a comprehensive set of unit tests for EtoileSerialise and fix any bugs encountered.
+
+- Write an XML back end for EtoileSerialise and integrate this with StepChat's XMPP framework, allowing automatic whiteboarding of CoreObject managed objects.
+
+- Rewrite AddressKit to use the CoreObject APIs for persistence.
+
+- Build a Margritte-like model description framework to work with CoreObject and EtoileUI
+
+Étoilé Objective-C Runtime
+--------------------------
+
+- Update the Io bridge to use the Étoilé runtime directly to implement the object model (no bridging) making Io a first-class development language for Étoilé.
+
+- Finish porting SEE or some other JavaScript runtime to use the Étoilé runtime for the object model.
+
+Miscellaneous 
+-------------
+
+Various miscellaneous tasks include:
+
+- Fix missing parts of Camaelon (the Étoilé / GNUstep theme engine).
+
+- Improve MultimediaKit with a proper scene-graph API, wrappers for FFMPEG, and NSView subclasses.
+
+- Finish TermX (add colour support and other missing features)
+
+- Write the missing parts of SystemConfig, test it on more platforms and implement missing components and write a dæmon which monitors the system and sends distributed notifications.
+
+- Produce an OMeta implementation for Étoilé.
