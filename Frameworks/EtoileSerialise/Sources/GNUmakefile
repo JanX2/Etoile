@@ -24,6 +24,8 @@ libEtoileSerialise_OBJC_FILES +=\
 					ETSerialiserTest.m 
 endif
 
+# Extra CPPFLAGS necessary to compile on Linux
+libEtoileSerialise_CPPFLAGS += -D_GNU_SOURCE=1 -D_XOPEN_SOURCE=600
 libEtoileSerialise_OBJCFLAGS += -g -std=c99 -Werror
 
 -include ../GNUmakefile.preamble
