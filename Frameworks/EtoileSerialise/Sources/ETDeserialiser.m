@@ -414,7 +414,7 @@ LOAD_METHOD(Selector, SEL)
 }
 + (ETDeserialiser*) deserialiserWithBackend:(id<ETDeserialiserBackend>)aBackend
 {
-	ETDeserialiser * deserialiser = [[[ETDeserialiser alloc] init] autorelease];
+	ETDeserialiser * deserialiser = [[[self alloc] init] autorelease];
 	[deserialiser setBackend:aBackend];
 	return deserialiser;
 }
