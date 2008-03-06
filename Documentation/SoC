@@ -13,7 +13,9 @@ StepChat
 
 - Add file transfer support to StepChat
 
-- Implement shared shelf using PubSub.
+- Implement shared shelf using PubSub (includes implementing PubSub - XEP-0060).
+
+- Implement serverless messaging (XEP-0174)
 
 - Tidy up the StepChat UI quirks.
 
