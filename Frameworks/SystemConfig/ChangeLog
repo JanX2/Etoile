@@ -1,3 +1,14 @@
+2008-03-23  Lennart Melzer <l.melzer at tu-bs dot de>
+
+	Applied a patch by Lennart Melzer that implements ACPI support by relying 
+	on libacpi. The formatting and the code organization of the patch have been 
+	reworked a bit. ACPI support is turned off by default.
+	* Source/SCPower_Linux.m 
+	(-checkACPIStatus, -ACPIStatus, -APMStatus, -statusFromPercentage): New 
+	private methods.
+	(-status): Modularized to support both ACPI and APM, mostly done by moving 
+	APM code into new method -APMStatus.
+
 2008-02-23  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Source/SCPower_Linux.m: Fixed a compiler warning by replacing 
