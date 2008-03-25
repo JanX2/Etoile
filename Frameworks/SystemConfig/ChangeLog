@@ -1,3 +1,15 @@
+2008-03-23  Quentin Mathe <qmathe@club-internet.fr>
+
+	Necessary changes to compile and link with ACPI support. ACPI is still 
+	turned off by default. Made this choice, mostly because libacpi package 
+	isn't yet available on Ubuntu (next Ubuntu release Hardy Heron will include 
+	it though).
+	* GNUmakefile: Modified to link libacpi if ACPI support is enabled.
+	* Source/GNUmakefile.preamble: Modified to pass the flag -DLIBACPI if 
+	ACPI support is turned on.
+	* INSTALL: Updated.
+	* README: Listed all authors.
+
 2008-03-23  Lennart Melzer <l.melzer at tu-bs dot de>
 
 	Applied a patch by Lennart Melzer that implements ACPI support by relying 

@@ -1,4 +1,4 @@
-# defines the proper macro based on the target OS
+# Defines the proper macro based on the target OS
 
 ifeq ($(findstring freebsd, $(GNUSTEP_TARGET_OS)), freebsd)
 	ADDITIONAL_OBJCFLAGS += -DFREEBSD
@@ -20,3 +20,8 @@ ifeq ($(findstring gnu, $(GNUSTEP_TARGET_OS)), gnu)
 	ADDITIONAL_OBJCFLAGS += -DLINUX
 endif
 
+# Defines some extra macros based on the enabled dependencies
+
+ifeq ($(LIBACPI), yes)
+	ADDITIONAL_CPPFLAGS += -DLIBACPI
+endif

@@ -24,7 +24,10 @@ Build and Install
 
    Steps to build:
 
-   * make install
+   * make install [LIBACPI=yes]
+
+If you want to enable power management support based on ACPI, you have to define  
+LIBACPI as shown above (minus the square brackets).
 
 
 Trouble
