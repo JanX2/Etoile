@@ -81,7 +81,7 @@ endif
 # We need to build CoreObject, EtoileFoundation and EtoileUI first because 
 # other frameworks depends on it.
 ifeq ($(coreobject), yes)
-    SUBPROJECTS += CoreObject
+    #SUBPROJECTS += CoreObject
 endif
 
 ifeq ($(etoilefoundation), yes)
