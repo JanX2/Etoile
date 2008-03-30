@@ -288,6 +288,10 @@ NSMutableArray * rosterControllers = nil;
 					  selector:@selector(subscriptionChanged:)
 						  name:@"TRXMPPUnubscription"
 						object:nil];
+	[defaultCenter addObserver:self
+	               selector:@selector(newConversation:)
+	                   name:@"NewConversationStartedNotification"
+	                 object:nil];
 	
 	
 	[[self window] setFrameFromString:@"Jabber Roster"];
@@ -840,6 +844,15 @@ inline static Conversation * createChatWithPerson(id self, JabberPerson* person,
 			}
 		}
 	}
+}
+- (void) newConversation:(NSNotification*)_notification
+{
+	Conversation * conversation = [[_notification userInfo] valueForKey:@"Conversation"];
+	id chatWindow = [[MessageWindowController alloc] initWithWindowNibName:@"MessageWindow"];
+		
+	[chatWindow conversation:conversation];
+	[conversation setDelegate:chatWindow];
+	[conversation retain];
 }
 
 - (void) dealloc

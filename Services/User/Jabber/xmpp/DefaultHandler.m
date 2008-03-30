@@ -44,13 +44,11 @@
 		//TODO: Stop this going wrong when person is not a person
 		conversation = [Conversation conversationWithPerson:person
 												 forAccount:account];
-		//TODO: Put this in the Conversation class
-		//TODO: Make this less of a hack
-		id chatWindow = [[NSClassFromString(@"MessageWindowController") alloc] initWithWindowNibName:@"MessageWindow"];
-		
-		[chatWindow conversation:conversation];
-		[conversation setDelegate:chatWindow];
-		[conversation retain];
+	//Notify the app that a new conversation has been created
+	NSNotificationCenter * local = [NSNotificationCenter defaultCenter];
+	[local postNotificationName:@"NewConversationStartedNotification"
+	                      object:account
+	                    userInfo:[NSDictionary dictionaryWithObject:conversation forKey:@"Conversation"]];
 	}
 	if(![[conversation remoteJID] isEqualToJID:jid])
 	{
