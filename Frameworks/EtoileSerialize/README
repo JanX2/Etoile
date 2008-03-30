@@ -1,0 +1,60 @@
+===============
+EtoileSerialize
+===============
+
+This collection of classes will eventually be used by CoreObject to perform serialization and deserialization of arbitrary objects.
+
+So far, serialization and deserialization work for all simple types, object, selectors and classes.  Arrays and structures are believed to work, however arrays containing structures and vice versa have not been tested.
+
+All interfaces in this module should be considered flexible.  Eventually they will be hidden behind CoreObject interfaces, permitting them to be changed as required.
+
+Build and Install
+-----------------
+
+Run make (or gmake on non-GNU systems) to build the example.  It is not recommended that this be installed anywhere at this time.
+
+Mac OS X Support
+----------------
+
+This code is closely tied to the GNU Objective-C runtime library.  If it works on OS X, then this is more through luck than judgement.  It is not anticipated that it will actively try to support the Apple runtime unless it is re-licensed as LGPL.
+
+Developer Notes
+===============
+
+Please test your classes with the example backend and see if they lose any information.
+
+If you need special treatment for a particular ivar, implement the following pair of methods:
+
+- (BOOL) serialize:(char*)aVariable using:(id<ETSerializerBackend>)aBackend;
+- (BOOL) deserialize:(char*)aVariable fromPointer:(void*)aBlob;
+
+These will be called for all variables.  The first argument is the name of the variable for both.
+
+For the first method, the second argument is the serializer back end.  Call methods in this to store the data.  For the second method, the second argument contains the data that has been deserialized.  This /must/ be copied by the object if it is used.
+
+The methods should return YES if they handle the serialization of the specified ivar, or NO if they want the default serialization to be applied.
+
+Once an object has been deserialized, the following method, if implemented, will be called:
+
+- (void) finishedDeserializing;
+
+This allows the reconnection of non-serializable resources (e.g. sockets).
+
+Limitations
+-----------
+
+Variables stored outside of objects (e.g. file-static variables) are not, and never will, be supported automatically.  
+
+Currently, and probably permanently, pointers to non-objects are a problem.  The C runtime does not expose a good mechanism for finding out how big the allocation is.  As such, they are currently delegated to the class to handle.  At some point, I will add some macros wrapping malloc, calloc and realloc, so people can use them transparently-ish.
+
+The current back-end is endian-dependent and so data can't be transported between machines of different byte orders.  This will be fixed.
+
+Typedef'd types present a problem.  The runtime system doesn't know the difference between an int that was declared as an int, and an int that was declared as an int32_t (for example).  The ETDeserializer should check for type-mismatches between the serialized form and the local copy of the class, and perform an explicit type coercion where this is needed.  This is not done yet.
+
+Aliasing of non-object types is not supported, however serialization of non-object aliased types is currently difficult, so it is better for object graphs that rely on this aliasing to manage this themselves.
+
+Alignment of fields in structs is not properly handled.  It works on x86, but probably won't work anywhere more sensible.  ETDeserializer needs to check the alignment requirements of each type.  Currently, it just guesses everything has the same alignment requirements as an int (quick hack).
+
+Opaque types are not handled well (i.e. at all).  The runtime does store the name of structs.  This is currently ignored, but could be used to register a struct name to serializer function mapping that could be done once for every struct, rather than every in every object where the struct was used.
+
+Please report any other issues.
