@@ -2,7 +2,7 @@
 
 # --build
 
-if [ -d ./build ]; then
+if [ ! -d ./build ]; then
 	mkdir build
 else
 	echo "Found existing build directory"
