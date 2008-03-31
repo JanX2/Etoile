@@ -32,7 +32,8 @@ endif
 
 ifeq ($(etoile-extensions), yes)
 
-    export coreobject ?= yes    
+    export coreobject ?= yes
+    export etoileserialize ?= yes
     export etoilefoundation ?= yes
     export etoileui ?= yes
     export distributedview ?= yes
@@ -86,6 +87,10 @@ endif
 
 ifeq ($(etoilefoundation), yes)
     SUBPROJECTS += EtoileFoundation
+endif
+
+ifeq ($(etoileserialize), yes)
+    SUBPROJECTS += EtoileSerialize
 endif
 
 ifeq ($(etoileui), yes)
