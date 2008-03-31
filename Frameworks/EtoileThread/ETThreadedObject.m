@@ -24,6 +24,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  * enforce strong ordering of memory operations, e.g. Itanium or Alpha).
  */
 #if __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 1)
+#warning Potentially unsafe memory operations being used
 static inline void __sync_fetch_and_add(unsigned long *ptr, unsigned int value)
 {
 	*ptr += value;
