@@ -1,4 +1,5 @@
 #import "ETSerializer.h"
+#import "ETSerializerBackend.h"
 #import "ETDeserializer.h"
 
 @interface	NSDataStatic : NSData

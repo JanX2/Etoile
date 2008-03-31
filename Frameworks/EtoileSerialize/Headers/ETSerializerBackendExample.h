@@ -1,7 +1,8 @@
 /**
  * <author name="David Chisnall"></author>
  */
-#import "ETSerializer.h"
+#import <Foundation/Foundation.h>
+#import <EtoileSerialize/ETSerializerBackend.h>
 
 /**
  * A simple example back end which writes objects in a human-readable format

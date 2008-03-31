@@ -9,6 +9,7 @@
 #import "ETSerializerBackendExample.h"
 #import "ETSerializerBackendXML.h"
 #import "ETSerializerBackendBinary.h"
+#import "ETObjectStore.h"
 #import "COProxy.h"
 
 #define TEST_COREOBJECT

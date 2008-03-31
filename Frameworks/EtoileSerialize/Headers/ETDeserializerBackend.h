@@ -2,6 +2,7 @@
  * <author name="David Chisnall"></author>
  */
 #import <Foundation/Foundation.h>
+#import <EtoileSerialize/ETUtility.h>
 
 /**
  * The ETDeserializerBackend protocol is a formal protocol that must be

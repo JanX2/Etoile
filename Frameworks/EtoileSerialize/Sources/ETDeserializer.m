@@ -1,4 +1,5 @@
 #import "ETDeserializer.h"
+#import "ETDeserializerBackend.h"
 //TODO: Move the things from here that I need into a shared header.
 #import "ETSerializer.h"
 #import "StringMap.h"

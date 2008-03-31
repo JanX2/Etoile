@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <objc/objc-api.h>
 #import "ETSerializerBackendExample.h"
+#import "ETObjectStore.h"
 
 #define FORMAT(format,...) do {\
 	char * buffer;\

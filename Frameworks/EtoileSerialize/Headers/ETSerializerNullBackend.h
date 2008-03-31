@@ -1,7 +1,8 @@
 /**
  * <author name="David Chisnall"></author>
  */
-#import "ETSerializer.h"
+#import <Foundation/Foundation.h>
+#import <EtoileSerialize/ETSerializerBackend.h>
 
 /**
  * Trivial backend which ignores all serialize messages.  Used by ETSerializer

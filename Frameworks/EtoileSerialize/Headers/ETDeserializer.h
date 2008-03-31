@@ -2,8 +2,9 @@
  * <author name="David Chisnall"></author>
  */
 #import <Foundation/Foundation.h>
-#import <EtoileSerialize/ETSerializer.h>
-#import <EtoileSerialize/ETDeserializerBackend.h>
+#import <EtoileSerialize/ETUtility.h>
+
+@protocol ETDeserializerBackend;
 
 
 //TODO: Move this into the implementation file and make it an opaque data type.

@@ -1,5 +1,6 @@
 #import "COProxy.h"
 #import "ETSerializer.h"
+#import "ETSerializerBackend.h"
 #import "ETDeserializer.h"
 
 static const int FULL_SAVE_INTERVAL = 100;

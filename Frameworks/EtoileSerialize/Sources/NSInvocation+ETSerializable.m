@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "ETSerializer.h"
+#import "ETSerializerBackend.h"
 
 #define SET_SUFFIX(suf) strcpy(suffix, suf); suffix[strlen(suf)] = '\0' 
 #define STORE_FIELD(type, name) SET_SUFFIX(#name); [aBackend store ## type:sig[i].name withName:saveName];

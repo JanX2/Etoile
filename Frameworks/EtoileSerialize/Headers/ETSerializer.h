@@ -2,8 +2,9 @@
  * <author name="David Chisnall"></author>
  */
 #import <Foundation/Foundation.h>
-#import <EtoileSerialize/ETSerializerBackend.h>
-#import <EtoileSerialize/ETObjectStore.h>
+#import <EtoileSerialize/ETUtility.h>
+
+@protocol ETSerializerBackend;
 
 #define MANUAL_DESERIALISE ((void*)1)
 #define AUTO_DESERIALISE ((void*)0)

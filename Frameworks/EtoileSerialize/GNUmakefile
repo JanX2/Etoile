@@ -12,6 +12,7 @@ ${FRAMEWORK_NAME}_HEADER_FILES_DIR = Headers
 ${FRAMEWORK_NAME}_HEADER_FILES = \
 				   EtoileSerialize.h\
 				   COProxy.h\
+				   ETUtility.h\
 				   ETDeserializerBackend.h\
 				   ETDeserializerBackendBinary.h\
 				   ETSerializerBackend.h\
@@ -22,6 +23,7 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 				   ETSerializer.h\
 				   ETSerializerBackendExample.h\
 				   ETObjectStore.h
+
 
 ${DOCUMENT_NAME}_AGSDOC_FILES = $(addprefix Headers/, ${EtoileSerialize_HEADER_FILES})
 ${DOCUMENT_NAME}_AGSDOC_FLAGS += -MakeFrames YES

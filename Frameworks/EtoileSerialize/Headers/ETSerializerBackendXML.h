@@ -1,7 +1,10 @@
 /**
  * <author name="David Chisnall"></author>
  */
-#import "ETSerializer.h"
+#import <Foundation/Foundation.h>
+#import <EtoileSerialize/ETSerializerBackend.h>
+
+@protocol ETSerialObjectStore;
 
 /**
  * Simple serializer which stores data in an XML format.

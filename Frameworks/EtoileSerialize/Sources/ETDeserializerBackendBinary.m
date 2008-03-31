@@ -1,5 +1,7 @@
 #include <stdio.h>
 #import "ETDeserializerBackendBinary.h"
+#import "ETDeserializer.h"
+#import "ETObjectStore.h"
 
 //NOTE: Remove this once GNUstep has this method in base.
 #define HAVE_MMAP

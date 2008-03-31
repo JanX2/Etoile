@@ -1,7 +1,11 @@
 /**
  * <author name="David Chisnall"></author>
  */
-#import "ETDeserializer.h"
+#import <Foundation/Foundation.h>
+#import <EtoileSerialize/ETDeserializerBackend.h>
+#import <EtoileSerialize/ETUtility.h>
+
+@class ETDeserializer;
 
 /**
  * A simple deserializer back end loading data from a binary file.  The

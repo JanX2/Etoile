@@ -6,6 +6,7 @@
 #import "ETSerializer.h"
 #import "ETDeserializer.h"
 #import "ETSerializerNullBackend.h"
+#import "ETObjectStore.h"
 #import "StringMap.h"
 
 //TODO: Put this in the Makefile

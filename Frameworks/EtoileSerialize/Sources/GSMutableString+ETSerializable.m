@@ -1,5 +1,6 @@
 #import "GSPrivate.h"
 #import "ETSerializer.h"
+#import "ETSerializerBackend.h"
 #import "ETDeserializer.h"
 
 #define CASE(x) if(strcmp(aVariable, #x) == 0)

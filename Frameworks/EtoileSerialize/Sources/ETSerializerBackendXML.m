@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <objc/objc-api.h>
 #import "ETSerializerBackendXML.h"
+#import "ETDeserializerBackend.h"
 #import "ETDeserializer.h"
+#import "ETObjectStore.h"
 
 
 #define FORMAT(format,...) do {\

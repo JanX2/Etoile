@@ -1,4 +1,5 @@
 #import "ETSerializer.h"
+#import "ETSerializerBackend.h"
 #import "ETDeserializer.h"
 #import <GNUstepBase/GSIMap.h>
 @interface GSSet : NSSet
