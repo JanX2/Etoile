@@ -12,7 +12,9 @@ ${FRAMEWORK_NAME}_HEADER_FILES_DIR = Headers
 ${FRAMEWORK_NAME}_HEADER_FILES = \
 				   EtoileSerialize.h\
 				   COProxy.h\
+				   ETDeserializerBackend.h\
 				   ETDeserializerBackendBinary.h\
+				   ETSerializerBackend.h\
 				   ETSerializerBackendBinary.h\
 				   ETSerializerBackendXML.h\
 				   ETSerializerNullBackend.h\
