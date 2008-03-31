@@ -42,6 +42,7 @@ OgreKit_HEADER_FILES += \
 # Control and view
 OgreKit_HEADER_FILES += \
 	OgreFindPanelController.h \
+	OgreFindPanel.h \
 	OgreFindResultWindowController.h \
 	OgreKit.h \
 	OgreOutlineColumn.h \
