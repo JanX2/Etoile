@@ -21,6 +21,7 @@ libEtoileSerialize_OBJC_FILES = \
 					ETSerialObjectBuffer.m\
 					ETSerialObjectBundle.m\
 					ETSerialObjectStdout.m\
+					ETSerialObjectSocket.m\
 					StringMap.m
 
 ifeq ($(test), yes)
@@ -30,7 +31,7 @@ endif
 
 # Extra CPPFLAGS necessary to compile on Linux
 libEtoileSerialize_CPPFLAGS += -D_GNU_SOURCE=1 -D_XOPEN_SOURCE=600 -D__BSD_VISIBLE -I../Headers
-libEtoileSerialize_OBJCFLAGS += -g -std=c99 -Werror
+libEtoileSerialize_OBJCFLAGS += -g -std=c99 #-Werror
 
 -include ../GNUmakefile.preamble
 

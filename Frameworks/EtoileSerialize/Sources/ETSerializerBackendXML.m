@@ -5,6 +5,7 @@
 #import "ETDeserializer.h"
 #import "ETObjectStore.h"
 
+@class ETUUID;
 
 #define FORMAT(format,...) do {\
 	char * buffer;\
@@ -187,7 +188,9 @@ STORE_METHOD(Double, double, "d", "f")
 }
 - (void) storeUUID:(char *)uuid withName:(char *)aName
 {
-	//FIXME: Implement after Quentin starts passing the UUID numerically
 	//FORMAT("<uuid name='%s'>
+	ETUUID * uuidObj = [[ETUUID alloc] initWithUUID:uuid];
+	FORMAT("<uuid name='%s'>%s</uuid>\n", aName, [[uuidObj stringValue] UTF8String]);
+	[uuidObj release];
 }
 @end

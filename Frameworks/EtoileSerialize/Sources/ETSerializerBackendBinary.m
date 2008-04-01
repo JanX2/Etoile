@@ -17,7 +17,7 @@
 #define STORE(type, value, c_type) STORECOMPLEX(type, &value, sizeof(c_type))
 #define OFFSET ([store size])
 // FIXME: Remove that once UUID class is part of EtoileFoundation
-#define ETUUIDSize (36 * sizeof(char))
+#define ETUUIDSize (16 * sizeof(char))
 
 
 /**

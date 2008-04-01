@@ -2,6 +2,8 @@
 #include <objc/objc-api.h>
 #import "ETSerializerBackendExample.h"
 #import "ETObjectStore.h"
+//#import <EtoileFoundation/ETUUID.h>
+@class ETUUID;
 
 #define FORMAT(format,...) do {\
 	char * buffer;\
@@ -199,7 +201,9 @@
 - (void) storeUUID: (char *)uuid withName: (char *)aName
 {
 	[self indent];
-	FORMAT("UUID %s=%s\n", aName, uuid);
+	ETUUID * uuidObj = [[ETUUID alloc] initWithUUID:uuid];
+	FORMAT("UUID %s=%s\n", aName, [[uuidObj stringValue] UTF8String]);
+	[uuidObj release];
 }
 
 - (void) dealloc

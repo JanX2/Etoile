@@ -23,11 +23,6 @@
  */
 - (NSData*) dataForVersion:(unsigned)aVersion inBranch:(NSString*)aBranch;
 /**
- * Replaces the bytes in the specified range with (the same number of) new
- * bytes.
- */
-- (void) replaceRange:(NSRange)aRange withBytes:(unsigned char*)bytes;
-/**
  * Returns the amount of data written so far in this version.
  */
 - (unsigned) size;
@@ -51,6 +46,15 @@
 - (void) createBranch:(NSString*)newBranch from:(NSString*)oldBranch;
 @end
 
+@protocol ETSeekableObjectStore <ETSerialObjectStore>
+/**
+ * Replaces the bytes in the specified range with (the same number of) new
+ * bytes.
+ */
+- (void) replaceRange:(NSRange)aRange withBytes:(unsigned char*)bytes;
+@end
+
+
 @interface ETSerialObjectBuffer : NSObject <ETSerialObjectStore> {
 	NSMutableData *buffer;
 	unsigned version;
@@ -66,6 +70,20 @@
  * Useful for debugging.
  */
 @interface ETSerialObjectStdout : ETSerialObjectBuffer {}
+@end
+/**
+ * Object 'store' which sends data over the network to the specified host.
+ */
+@interface ETSerialObjectSocket : ETSerialObjectBuffer {
+	/** The socket */
+	int s;
+}
+/**
+ * Initialize the store pointing to the specified host and network service.
+ * Defaults to using the CoreObject service (which must exist in
+ * /etc/services in order to work).
+ * */
+- (id) initWithRemoteHost:(NSString*)aHost forService:(NSString*)aService;
 @end
 
 @interface  ETSerialObjectBundle : NSObject <ETSerialObjectStore> {
