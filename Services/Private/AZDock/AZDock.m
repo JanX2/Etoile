@@ -400,6 +400,7 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
 
 - (void) xwindowAppDidTerminate: (NSNotification *) not
 {
+NSLog(@"XWindow app did terminate %@", not);
   [self removeXWindowWithID:
            [[[not userInfo] objectForKey: @"AZXWindowID"] intValue]];
   [self organizeApplications];
@@ -936,8 +937,10 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
 		[app setState: AZDockAppNotRunning];
 		[app setKeptInDock: YES];
 	}
+#ifdef AUTOORGANIZE
 	/* Sort apps */
 	[apps sortUsingSelector: @selector(compareCounter:)];
+#endif
 }
 
 - (void) applicationDidFinishLaunching: (NSNotification *) not
@@ -1062,18 +1065,28 @@ int autoHiddenSpace = 1; /* Must larger than 0 */
 		}
 	}
 
+#ifdef AUTOORGANIZE
 	/* Sort before save */
 	[apps sortUsingSelector: @selector(compareCounter:)];
+#endif
 
 	/* Remember the application on dock */
 	NSMutableArray *array = [[NSMutableArray alloc] init];
 	NSDictionary *dict;
 	int i, count = [apps count];
 	AZDockApp *app;
+
+#ifndef AUTOORGANIZE
 	for (i = 0; (i < count) && (i < maxApps); i++) 
 	{
 		app = [apps objectAtIndex: i];
-//		if ([app isKeptInDock]) 
+#else
+	for (i = 0; i < count; i++) 
+	{
+		app = [apps objectAtIndex: i];
+		NSLog(@"bip");
+		if ([app isKeptInDock]) 
+#endif
 		{
 			if ([app type] == AZDockXWindowApplication) 
 			{

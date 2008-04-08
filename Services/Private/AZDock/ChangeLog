@@ -1,3 +1,12 @@
+2008-04-08  Quentin Mathe <qmathe@club-internet.fr>
+
+	* AZDock.m:
+	* AZDockApp.m:
+	Turned off the experimental "autoorganize" behavior introduced with r2337 
+	in favor of the old one. The "autoorganize" behavior needs more work before 
+	being eventually enabled by default.
+	* README: Updated
+
 2007-04-30 Yen-Ju Chen <yjchenx at gmail>
 
 	* AZGNUstepApp (-showAction:):

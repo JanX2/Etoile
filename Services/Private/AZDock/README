@@ -20,6 +20,9 @@ but not GNUstep application.
 In short, left-click to switch application and workspace if necessary.
 COMMAND+left-click to create new application for xwindows.
 
+An alternate "autoorganize" behavior can be enabled by compiling with the flag 
+ -DAUTOORGANIZE
+
 User Defaults
 -------------
 Key: DockPosition
@@ -46,6 +49,12 @@ TODO
 * Support docking regular file ? Or leave it to shelf ?.
 * Figure out how to change icon according to app icon from GNUstep application.
   See AZGNUstepApp -acceptXWindow: for all options.
+* Autoorganize behavior should be controlled by a default and improved to be 
+  more usable (like handling xterms in a nicer way)
+* Should be possible to switch between standard and autoorganize behaviors at 
+  runtime (by selecting an option in the flower menu of the dock for example, 
+  even if in the end the behavior choice should probably be made available 
+  only through a default for power users)
 
 DESIGN
 ------

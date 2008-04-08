@@ -80,8 +80,11 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 	[window skipTaskbarAndPager]; // We need this because window level changed
 
 	xwindows = [[NSMutableArray alloc] init];
-
+#ifdef AUTOORGANIZE
 	keepInDock = YES;
+#else
+	keepInDock = NO;
+#endif
 	[self setState: AZDockAppNotRunning];
 	counter = 0;
 
@@ -131,7 +134,7 @@ NSString *const AZApplicationDidTerminateNotification = @"AZApplicationDidTermin
 - (void) setKeptInDock: (BOOL) b
 {
 	keepInDock = b;
-#if 0 // NOT_USED
+#ifndef AUTOORGANIZE
 	id <NSMenuItem> item = nil;
 	if (keepInDock == NO)
 	{
