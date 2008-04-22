@@ -249,7 +249,7 @@ static NSMapTable * deserializerFunctions;
 	//Invocation now has two references to method signature.
 	[sig release];
 }
-#define CUSTOM_DESERIALISER ((custom_deserializer)STATE.index)
+#define CUSTOM_DESERIALIZER ((custom_deserializer)STATE.index)
 #define IS_NEW_ARG(name) \
 	if(strncmp("arg.", name, 4) == 0)\
 	{\
@@ -263,7 +263,7 @@ static NSMapTable * deserializerFunctions;
 #define CHECK_CUSTOM() \
 	if(STATE.type == 'c')\
 	{\
-		nextArg = CUSTOM_DESERIALISER(aName, &aVal, nextArg);\
+		nextArg = CUSTOM_DESERIALIZER(aName, &aVal, nextArg);\
 	}
 #define LOAD_INTRINSIC(type, name) \
 {\
@@ -344,7 +344,7 @@ LOAD_METHOD(Selector, SEL)
 {
 	if(STATE.type == 'c')
 	{
-		STATE.startOffset = CUSTOM_DESERIALISER(aName, aCString, STATE.startOffset);
+		STATE.startOffset = CUSTOM_DESERIALIZER(aName, aCString, STATE.startOffset);
 	}
 	else 
 	{
@@ -359,7 +359,7 @@ LOAD_METHOD(Selector, SEL)
 {
 	if(STATE.type == 'c')
 	{
-		STATE.startOffset = CUSTOM_DESERIALISER(aName, aBlob, STATE.startOffset);
+		STATE.startOffset = CUSTOM_DESERIALIZER(aName, aBlob, STATE.startOffset);
 	}
 	else if(![object deserialize:aName fromPointer:aBlob version:classVersion])
 	{
@@ -516,7 +516,7 @@ LOAD_METHOD(Selector, SEL)
 #define CHECK_CUSTOM() \
 	if(STATE.type == 'c')\
 	{\
-		STATE.startOffset = CUSTOM_DESERIALISER(aName, &aVal, STATE.startOffset);\
+		STATE.startOffset = CUSTOM_DESERIALIZER(aName, &aVal, STATE.startOffset);\
 	}
 
 /**
@@ -596,12 +596,12 @@ LOAD_METHOD(Selector, SEL)
 	//NSLog(@"Fudged address for %s is 0x%x", aName, fudgedAddress);
 	switch((int)fudgedAddress)
 	{
-		case (int)MANUAL_DESERIALISE:
+		case (int)MANUAL_DESERIALIZE:
 			{
 				NSLog(@"ERROR:  Invalid return for deserializing struct");
 				break;
 			}
-		case (int)AUTO_DESERIALISE:
+		case (int)AUTO_DESERIALIZE:
 			break;
 		default:
 			//Set the address to the one the class wants (for malloc'd data structures, etc)
@@ -696,7 +696,7 @@ LOAD_METHOD(Selector, SEL)
 {
 	if(STATE.type == 'c')
 	{
-		STATE.startOffset = CUSTOM_DESERIALISER(aName, aCString, STATE.startOffset);
+		STATE.startOffset = CUSTOM_DESERIALIZER(aName, aCString, STATE.startOffset);
 	}
 	else if(![object deserialize:aName fromPointer:aCString version:classVersion])
 	{
@@ -711,7 +711,7 @@ LOAD_METHOD(Selector, SEL)
 {
 	if(STATE.type == 'c')
 	{
-		STATE.startOffset = CUSTOM_DESERIALISER(aName, aBlob, STATE.startOffset);
+		STATE.startOffset = CUSTOM_DESERIALIZER(aName, aBlob, STATE.startOffset);
 	}
 	else if(![object deserialize:aName fromPointer:aBlob version:classVersion])
 	{

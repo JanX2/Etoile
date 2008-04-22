@@ -6,8 +6,8 @@
 
 @protocol ETSerializerBackend;
 
-#define MANUAL_DESERIALISE ((void*)1)
-#define AUTO_DESERIALISE ((void*)0)
+#define MANUAL_DESERIALIZE ((void*)1)
+#define AUTO_DESERIALIZE ((void*)0)
 
 /**
  * Type used for returns from type parser functions and custom structure
@@ -109,8 +109,8 @@ typedef parsed_type_size_t(*custom_serializer)(char*,void*, id<ETSerializerBacke
  * Load the contents of the named instance variable from the contents of
  * aBlob.  The aVersion parameter indicates the version
  * of the class that serialized this instance variable as returned by +version.
- * This method should return MANUAL_DESERIALISE for cases if it completely
- * deserializes the variable or AUTO_DESERIALISE to cause the deserializer to
+ * This method should return MANUAL_DESERIALIZE for cases if it completely
+ * deserializes the variable or AUTO_DESERIALIZE to cause the deserializer to
  * automatically deserialize it.  If the deserializer should load the variable
  * to a different location, it should return a pointer to the location.  An
  * example use of this would be when loading a structure-pointer or dynamic

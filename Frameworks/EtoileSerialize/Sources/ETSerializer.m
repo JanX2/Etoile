@@ -46,7 +46,7 @@
  */
 - (void*) deserialize:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion
 {
-	return AUTO_DESERIALISE;
+	return AUTO_DESERIALIZE;
 }
 @end
 

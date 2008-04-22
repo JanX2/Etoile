@@ -136,7 +136,7 @@ static int discardRetValSize = 0;
 		//FIXME: This should be done in the custom deserializer, which knows
 		//how big the retval is.
 		_retval = discardRetVal;
-		return MANUAL_DESERIALISE;
+		return MANUAL_DESERIALIZE;
 	}
 	return [super deserialize:aVariable fromPointer:aBlob version:aVersion];
 }
