@@ -1,3 +1,11 @@
+2008-04-26  Yen-Ju Chen <yjchenx at gmail>
+
+	* README: Add GPL2 or later in order to be compatible 
+          with GPL3 of GNUstep.
+	* README.openbox3: original README from OpenBox3 to 
+	  prove the license can to be changed to GPL3.
+        * Changing license to GPL3 will be followed.
+
 2007-06-30  Yen-Ju Chen <yjchenx at gmail>
 
 	* Add user defaults document to fix bug #8579.
