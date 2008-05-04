@@ -11,10 +11,15 @@
 {
 	if(strcmp(aVariable, "_data") == 0 || strcmp(aVariable, "_clients") == 0)
 	{
-		return NO;
+		return YES;
 	}
 
 	return [super serialize:aVariable using:aSerializer];
+}
+
+- (void) finishedDeserializing
+{
+	[self initWithString: _urlString relativeToURL: _baseURL];
 }
 
 @end
