@@ -267,6 +267,19 @@ id testRoundTrip(NSString * tempfile, id object)
 	NSMutableArray * mutableCopy = testRoundTrip(@"mutablearraytestfile", mutable);
 	UKTrue([mutable isEqual:mutableCopy]);
 }
+
+- (void) testURL
+{
+	NSURL * url = [NSURL URLWithString: @"http://www.etoile-project.org"];
+	NSArray * newURL = testRoundTrip(@"urltestfile", url);
+
+	UKObjectsEqual(url, newURL);
+
+	NSURL * relURL = [NSURL URLWithString: @"whatever/.." relativeToURL: url];
+	NSURL * newRelURL = testRoundTrip(@"relativeurltestfile", relURL);
+	UKObjectsEqual(relURL, newRelURL);
+}
+
 /**
  * Serialize an instance of the test class with the binary back end, then try
  * re-loading it and see if any information was lost.

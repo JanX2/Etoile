@@ -18,6 +18,7 @@ libEtoileSerialize_OBJC_FILES = \
 					GSMutableString+ETSerializable.m \
 					NSDataStatic+ETSerializable.m \
 					NSInvocation+ETSerializable.m \
+					NSURL+ETSerializable.m \
 					ETSerialObjectBuffer.m\
 					ETSerialObjectBundle.m\
 					ETSerialObjectStdout.m\
