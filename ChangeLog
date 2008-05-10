@@ -1,3 +1,7 @@
+2008-05-10  Quentin Mathe <qmathe@club-internet.fr>
+
+	* INSTALL.Ubuntu: Updated for Hardy Heron.
+
 2008-03-31  Quentin Mathe <qmathe@club-internet.fr>
 
 	* Frameworks/GNUmakefile: Included EtoileSerialize in the build process 
