@@ -63,7 +63,4 @@ include $(GNUSTEP_MAKEFILES)/application.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 -include ../../../etoile.make
 
-# HACK
-extension = app
-
 -include GNUmakefile.postamble

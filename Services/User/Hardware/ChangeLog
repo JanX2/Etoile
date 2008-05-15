@@ -1,3 +1,11 @@
+2008-05-15  Quentin Mathe <qmathe@club-internet.fr>
+
+	* GNUmakefile: Removed variable 'extension' that prevents the linker to 
+	find gnustep-base on FreeBSD. This variable was previously introduced 
+	to handle the installation of plugins inside a .debug app package iirc. 
+	Now that debug symbols are included by default, that's not needed 
+	anymore.
+
 2007-04-27  Quentin Mathe <qmathe@club-internet.fr>
 
 	* main.m: Fixed incorrect PreferencesKit import now replaced by PaneKit.
