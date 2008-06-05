@@ -1075,7 +1075,8 @@
 							break;
 						}
 					case 2:			// only video
-						if (sscanf(stringPtr, "V: %f %*d/%d*% %d%% %*f%% %d %d %d%%",
+						// TODO: Test the next line is correct
+						if (sscanf(stringPtr, "V: %f %*d/%d*%% %d%% %*f%% %d %d %d%%",
 								&mySeconds, &videoCPUUsage, &voCPUUsage, &myDroppedFrames,
 								&myPostProcLevel, &myCacheUsage) >= 5) {
 							myCPUUsage = (int)(videoCPUUsage + voCPUUsage);

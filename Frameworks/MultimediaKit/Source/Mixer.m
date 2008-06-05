@@ -24,6 +24,7 @@
 #import <MultimediaKit/Mixer.h>
 #import <MultimediaKit/MixerChannel.h>
 #import <fcntl.h>
+#import <sys/ioctl.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSArray.h>
 

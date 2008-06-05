@@ -1,7 +1,14 @@
+2008-06-05  Quentin Mathe <qmathe@club-internet.fr>
+
+	Patch by cygal (from silc).
+	* Source/Mixer.m: Fixed a compilationg warning by including ioctl.h.
+	* Source/MPlayerInterface.m (-readOutputC:): Fixed a compilationg warning by 
+	inserting a missing format character (untested).
+
 2007-05-03  Yen-Ju Chen <yjchenx at gmail>
 
-        * Toplevel GNUmakefile make the frameworks
-          while Source/GNUmakefile make the subproject
+	* Toplevel GNUmakefile make the frameworks while Source/GNUmakefile make the 
+	subproject
 
 2007-05-01 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
@@ -13,7 +20,7 @@
 
 2007-02-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
 
-        * Format README in reStructuedText
+	* Format README in reStructuedText
 
 2007-01-21  Guenther Noack <guenther@unix-ag.uni-kl.de>
 	
