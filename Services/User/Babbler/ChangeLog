@@ -1,3 +1,8 @@
+2008-06-05  Quentin Mathe <qmathe@club-internet.fr>
+
+	Patch by cygal (from silc).
+	* Player.m (-resizeVideo:): Removed unused variables.
+
 2007-05-08  Yen-Ju Chen <yjchen at gmail>
 
 	* Remove images taken from mplayerPort in order to change license.

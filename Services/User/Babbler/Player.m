@@ -6,7 +6,6 @@
 
 - (void) resizeVideo: (NSSize) size
 {
-	int delta_x, delta_y;
 	NSSize c = [[window contentView] bounds].size;
 
 	NSLog(@"resizeVideo %@", NSStringFromSize(size));
