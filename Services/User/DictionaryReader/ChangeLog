@@ -2,6 +2,17 @@
 DictionaryReader Changelog
 ==========================
 
+June 05 2008  Quentin Mathe
+	Inspired of a patch by cygal (from silc).
+	* DictionaryHandle.m
+	* DictionaryConnection.m
+	* LocalDictionary.m
+	(-shortPropertyList): Modified the code not to assume this method will 
+	return a mutable dictionary. It also removes compilation warnings for the 
+	type mismatch between NSDictionary and NSMutableDictionary.
+	* TODO: Added a note about the initialization of DictionaryHandle class and 
+	subclasses.
+
 Nov 21 2007  Quentin Mathe
 	* GNUmakefile: Forced to link EtoileFoundation to eliminate potential 
 	linking problems now that EtoileUI depends EtoileFoundation.

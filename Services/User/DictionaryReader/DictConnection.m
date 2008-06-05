@@ -297,7 +297,7 @@
 
 - (NSDictionary *) shortPropertyList
 {
-	NSMutableDictionary* result = [super shortPropertyList];
+	NSMutableDictionary* result = [[super shortPropertyList] mutableCopy];
 
 	[result setObject: [host name] forKey: @"host"];
 	[result setObject: [NSNumber numberWithInt: port] forKey: @"port"];

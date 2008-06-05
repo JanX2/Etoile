@@ -379,7 +379,7 @@ NSLog(@"Finish open");
  */
 - (NSDictionary *) shortPropertyList
 {
-	NSMutableDictionary* result = [super shortPropertyList];
+	NSMutableDictionary* result = [[super shortPropertyList] mutableCopy];
     
 	[result setObject: indexFile forKey: @"index file"];
 	[result setObject: dictFile forKey: @"dict file"];

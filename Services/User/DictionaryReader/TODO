@@ -1,4 +1,8 @@
 
+* Rethink the initializers of DictionaryHandle class and subclasses in order to 
+be clearer, probably by having a single designated initializer in each class 
+that must be called by its subclasses.
+
 * preferences dialog:
 	* Let users add dict servers.
 	* Let users choose their preferred fonts and colors.
