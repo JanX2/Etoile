@@ -2,6 +2,7 @@
 #import "ETDeserializerBackendBinary.h"
 #import "ETDeserializer.h"
 #import "ETObjectStore.h"
+#import <GNUstepBase/GSVersionMacros.h>
 
 //NOTE: Remove this once GNUstep has this method in base.
 #define HAVE_MMAP
@@ -11,10 +12,14 @@
 	  				  error:(NSError **)errorPtr;
 @end
 @implementation NSData (MappedURL)
+// TODO: Replace with a new one-line macro declared in EtoileFoundation
+#define GS_GNUSTEP_V GS_API_LATEST
+#if GS_API_VERSION(0, 011700)
 enum {
 	NSMappedRead = 1,
 	NSUncachedRead = 2
 };
+#endif
 
 + (id)dataWithContentsOfURL:(NSURL *)aURL 
 					options:(unsigned int)mask 
