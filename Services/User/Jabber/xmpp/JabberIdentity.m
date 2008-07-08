@@ -50,6 +50,7 @@
 		depth++;
 		jid = [[JID alloc] initWithString:[attributes objectForKey:@"jid"]];
 		subscription = [[attributes objectForKey:@"subscription"] retain];
+		ask = [[attributes objectForKey:@"ask"] retain];
 		name = [[attributes objectForKey:@"name"] retain];
 	}
 	else if([aName isEqualToString:@"group"])
@@ -125,6 +126,10 @@
 {
 	return subscription;
 }
+- (NSString*) ask
+{
+	return ask;
+}
 - (id) person
 {
 	return person;
@@ -159,6 +164,7 @@
 	[person release];
 	[jid release];
 	[subscription release];
+	[ask release];
 	[group release];
 	[name release];
 	[presence release];

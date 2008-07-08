@@ -29,6 +29,7 @@
 	id person;
 	JID * jid;
 	NSString * subscription;
+	NSString * ask;
 	NSString * group;
 	NSString * name;
 	Presence * presence;
@@ -79,6 +80,10 @@
  * The type of subscription that the user has to this contact.
  */
 - (NSString*) subscription;
+/**
+ * Type of subscription being requested by this contact.
+ */
+- (NSString*) ask;
 /**
  * Compare two identities by their priority.  Used to determine which should
  * be the default recipient of messages.

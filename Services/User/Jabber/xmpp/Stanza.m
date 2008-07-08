@@ -18,7 +18,16 @@
 }
 - (void) addChild:(id)aChild forKey:(NSString*)aKey
 {
-	[children setValue:aChild forKey:aKey];
+	NSString * childSelectorName = [NSString stringWithFormat:@"add%@:", aKey];
+	SEL childSelector = NSSelectorFromString(childSelectorName);
+	if([self respondsToSelector:childSelector])
+	{
+		[self performSelector:childSelector withObject:aChild];
+	}
+	else
+	{
+		[children setValue:aChild forKey:aKey];
+	}	
 }
 - (NSDictionary*) children
 {
