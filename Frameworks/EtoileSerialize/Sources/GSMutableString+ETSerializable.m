@@ -22,7 +22,7 @@
 		else\
 		{\
 			[[aSerializer backend] storeData:_contents.c\
-						 ofSize:sizeof(char) * (_count + 1)\
+						 ofSize:sizeof(char) * (_count)\
 					   withName:"_contents"];\
 		}\
 		return YES;\
