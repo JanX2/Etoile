@@ -366,7 +366,9 @@ LOAD_METHOD(Selector, SEL)
 		char * address = OFFSET_OF_IVAR(object, aName, loadedIVar++, aSize);
 		if(address != NULL)
 		{
-			memcpy(address, aBlob, aSize);
+			char * ptr = *(char**)address;
+			ptr = malloc(aSize);
+			memcpy(ptr, aBlob, aSize);
 		}
 	}
 }
