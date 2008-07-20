@@ -477,6 +477,8 @@ LOAD_METHOD(Selector, SEL)
 	[invocations makeObjectsPerformSelector:@selector(setupInvocation)];
 	return GET_OBJ(mainObject);
 }
+@class GSMutableString;
+@class GSCBufferString;
 //Objects
 /**
  * Begin loading an object.  Allocate space for it, and then add subsequent
@@ -485,8 +487,11 @@ LOAD_METHOD(Selector, SEL)
  */
 - (void) beginObjectWithID:(CORef)aReference withClass:(Class)aClass 
 {
+	// FIXME: Make this an ivar and provide a mechanism for setting it.
+	NSZone *deserialiserZone = NSDefaultMallocZone();
 	loadedIVar = 0;
-	object = [aClass alloc];
+	object = NSAllocateObject(aClass, 0, deserialiserZone);
+	((NSObject*)object)->isa = aClass;
 	//NSLog(@"Loading %@ at address 0x%x for ref %d", [aClass className], object, aReference);
 	SET_REF(aReference, object);
 	if([object isKindOfClass:[NSInvocation class]])

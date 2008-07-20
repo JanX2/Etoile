@@ -13,12 +13,12 @@
 	{
 		return YES;
 	}
-
 	return [super serialize:aVariable using:aSerializer];
 }
 
 - (void) finishedDeserializing
 {
+	[_baseURL finishedDeserializing];
 	[self initWithString: _urlString relativeToURL: _baseURL];
 }
 
