@@ -33,12 +33,12 @@ bindings_CFLAGS = -g
 
 bindings_OBJCFLAGS = -Wno-import
 
-bindings_CXX_FILES = \
-poppler.cc \
-poppler_document.cc \
-poppler_page.cc \
-poppler_splash_renderer.cc \
-poppler_text.cc 
+bindings_C_FILES = \
+poppler.c \
+poppler_document.c \
+poppler_page.c \
+poppler_splash_renderer.c \
+poppler_text.c 
 
 bindings_OBJC_FILES = \
 poppler_objc.m
