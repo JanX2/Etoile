@@ -143,8 +143,8 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 	}
 
 	//TODO: Replace these with NSHashMaps if we aren't fast enough
-	unstoredObjects = [[NSMutableSet alloc] init];
-	storedObjects = [[NSMutableSet alloc] init];
+	unstoredObjects = NSCreateHashTable(NSNonOwnedPointerHashCallBacks, 100);
+	storedObjects = NSCreateHashTable(NSNonOwnedPointerHashCallBacks, 100);
 	branch = @"root";
 	objectVersion = -1;
 
@@ -172,8 +172,8 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 - (void) dealloc
 {
 	[backend release];
-	[unstoredObjects release];
-	[storedObjects release];
+	NSFreeHashTable(unstoredObjects);
+	NSFreeHashTable(storedObjects);
 	[super dealloc];
 }
 - (id<ETSerializerBackend>) backend
@@ -189,10 +189,10 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 {
 	if(anObject != nil)
 	{
-		if(![storedObjects containsObject:anObject] &&
-		   ![unstoredObjects containsObject:anObject])
+		if(!NSHashGet(storedObjects, anObject) &&
+		   !NSHashGet(unstoredObjects, anObject))
 		{
-			[unstoredObjects addObject:anObject];
+			NSHashInsert(unstoredObjects, anObject);
 		}
 		[backend incrementReferenceCountForObject:(unsigned long long)(uintptr_t)anObject];
 	}
@@ -526,8 +526,8 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 	while(currentClass != NULL);
 	[backend endObject];
 
-	[storedObjects addObject:anObject];
-	[unstoredObjects removeObject:anObject];
+	NSHashInsert(storedObjects, anObject);
+	NSHashRemove(unstoredObjects, anObject);
 }
 /**
  * Public version of the object serialization method.  Serializes referenced
@@ -538,9 +538,10 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 	[self newVersion];
 	[self enqueueObject:anObject];
 	[self serializeObject:anObject named:name];
-	id leftoverObject;
-	while((leftoverObject = [unstoredObjects anyObject]) != nil)
+	while(0 != NSCountHashTable(unstoredObjects))
 	{
+		NSHashEnumerator e = NSEnumerateHashTable(unstoredObjects);
+		id leftoverObject = NSNextHashEnumeratorItem(&e);
 		[self serializeObject:leftoverObject named:"?"];
 	}
 	[backend flush];

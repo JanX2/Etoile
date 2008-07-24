@@ -297,6 +297,13 @@ id testRoundTrip(NSString * tempfile, id object)
 	[bar methodTest];
 	[store release];
 }
+// Test for bug reported by Eric Wasylishen
+- (void) testEric
+{
+	id dict = [NSArray arrayWithObjects: [NSArray array], [NSArray array], nil];
+	id dict2 = testRoundTrip(@"erictest", dict);
+	UKObjectsEqual(dict, dict2);
+}
 #ifdef TEST_COREOBJECT
 /**
  * Test CoreObject replay by sending a message to a class and seeing if we can

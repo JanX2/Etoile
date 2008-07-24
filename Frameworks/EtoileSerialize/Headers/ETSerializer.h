@@ -42,8 +42,8 @@ typedef parsed_type_size_t(*custom_serializer)(char*,void*, id<ETSerializerBacke
 @interface ETSerializer : NSObject {
 	id<ETSerializerBackend> backend;
 	id store;
-	NSMutableSet * unstoredObjects;
-	NSMutableSet * storedObjects;
+	NSHashTable *unstoredObjects;
+	NSHashTable *storedObjects;
 	Class currentClass;
 	/** Version of the object currently being written */
 	int objectVersion;
