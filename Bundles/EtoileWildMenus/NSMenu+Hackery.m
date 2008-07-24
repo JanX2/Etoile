@@ -162,7 +162,12 @@
     }
   else
     {
-      NSLog(@"WARNING: Failed to retrieve MenuServer application proxy");
+		static BOOL log = YES;
+		if (log)
+		{
+			log = NO;
+      		NSLog(@"WARNING: Failed to retrieve MenuServer application proxy");
+		}
     }
 
   return menuBarWindowFrame;
