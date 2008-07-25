@@ -93,6 +93,10 @@ typedef parsed_type_size_t(*custom_serializer)(char*,void*, id<ETSerializerBacke
  * Retrieves the back end used by this serializer.
  */
 - (id<ETSerializerBackend>) backend;
+/**
+ * Returns a deserializer which is the inverse of this serializer.
+ */
+- (id) deserializer;
 @end
 /**
  * Informal protocol for serializable objects.  Implement this to manually
