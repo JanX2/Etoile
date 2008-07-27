@@ -1,3 +1,10 @@
+2008-07-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	* INSTALL:
+	* INSTALL.Ubuntu:
+	* README:
+	Updated for Smalltalk dependencies.
+
 2008-06-02  Quentin Mathe <qmathe@club-internet.fr>
 
 	* INSTALL: Fixed required GNUstep release versions and mentioned 
