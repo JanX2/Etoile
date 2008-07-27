@@ -1,9 +1,32 @@
-======
 Corner
 ======
 
-:Author: David Chisnall
-:License: BSD License
+Corner is a simple 'hot-corners' implementation.  It instantiates a
+CornerDelegate object and sends it messages of the form -enterTopLeft and
+-exitTopLeftAfter: for each corner, where the exit message takes the number of
+seconds the mouse spent in that corner as an argument.
 
-Corner (in Services/Private) will run a StepTalk script
-when the mouse moves into the corner of the screen.
+The delegate simply ignores these messages by default.  A category on this
+object, however, can be provided.  If you store a Smalltalk script in the
+"CornerScript" default as a string object then this will be loaded
+automatically and compiled.  If this contains a category on CornerDelegate then
+the Smalltalk implementation will be called instead.  A trivial example might
+log a message when the corner was entered was called:
+
+$ defaults write Corner CornerScript \
+"CornerDelegate extend [ enterTopLeft [ 'Script called' log. ] ]"
+
+Hacking
+-------
+
+The CornerDelegate object contains an instance variable which can be used to
+store data beyond the method.  The Corner application guarantees that every
+enter message will be followed by a corresponding exit message before any other
+enter messages, so you can store info in here relating to objects created by
+the corner activation, for example an NSTask encapsulating an xscreensaver task
+that you want to kill if the user put the mouse in the corner for less than a
+second.
+
+Note that a script can contain multiple categories.  If you are hacking
+together a nice GUI for this (please do!) then you might find it easier to put
+each script in a separate category.  

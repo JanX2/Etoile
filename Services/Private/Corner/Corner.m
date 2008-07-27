@@ -1,4 +1,59 @@
 #import <Corner.h>
+#import <SmalltalkKit/SmalltalkKit.h>
+
+
+/**
+ * Basic implementation of the corner delegate which does nothing.
+ *
+ * Smalltalk scripts can implement categories on this which actually do
+ * something useful.
+ */
+@interface CornerDelegate : NSObject {
+	id state;
+}
+- (void) enterTopLeft;
+- (void) exitTopLeftAfter:(int)seconds;
+- (void) enterTopRight;
+- (void) exitTopRightAfter:(int)seconds;
+- (void) enterBottomLeft;
+- (void) exitBottomLeftAfter:(int)seconds;
+- (void) enterBottomRight;
+- (void) exitBottomRightAfter:(int)seconds;
+@end
+@implementation CornerDelegate
+- (void) enterTopLeft
+{
+	NSLog(@"Entered top left corner");
+}
+- (void) exitTopLeftAfter:(int)seconds
+{
+	NSLog(@"Exited corner after %d seconds", seconds);
+}
+- (void) enterTopRight;
+{
+	NSLog(@"Entered top right corner");
+}
+- (void) exitTopRightAfter:(int)seconds;
+{
+	NSLog(@"Exited corner after %d seconds", seconds);
+}
+- (void) enterBottomLeft;
+{
+	NSLog(@"Entered bottom left corner");
+}
+- (void) exitBottomLeftAfter:(int)seconds;
+{
+	NSLog(@"Exited corner after %d seconds", seconds);
+}
+- (void) enterBottomRight;
+{
+	NSLog(@"Entered bottom right corner");
+}
+- (void) exitBottomRightAfter:(int)seconds;
+{
+	NSLog(@"Exited corner after %d seconds", seconds);
+}
+@end
 
 @implementation Corner
 /**
@@ -10,31 +65,11 @@
 - (void) loadScripts:(id)ignore
 {
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-	[scripts release];
-	scripts = [[defaults arrayForKey:@"CornerScripts"] retain];
-	if(scripts == nil)
+	NSString *scripts = [[defaults stringForKey:@"CornerScript"] retain];
+	if (scripts && ![scripts isEqualToString:@""])
 	{
-		/* Scripts in clockwise order from the
-		 * top left corner */
-		//TODO: Put these in a plist
-		scripts = [[NSArray arrayWithObjects:
-						/* No actions for top corners yet */
-						@"Transcript showLine:'Top Left!'.",
-						/* Activate switch */
-						@"nc := NSDistributedNotificationCenter defaultCenter.\
-						nc postNotificationName: 'AZLaunchSwitcher' object: nil.\
-						Transcript showLine:'post AZLaunchSwitcher'.",
-						/* Activate Screensaver (xscreensaver) */
-					    @"args := #('-activate').\
-						task := NSTask launchedTaskWithLaunchPath:'xscreensaver-command' arguments:args.\
-						task waitUntilExit.",
-						/* Show / hide desktop */
-						@"Environment includeFramework:'XWindowServerKit'.\
-						screen := NSScreen mainScreen.\
-						isShown := screen isShowingDesktop.\
-						screen setShowingDesktop:(isShown not).",
-						nil] retain];
-		[defaults setObject:scripts forKey:@"CornerScripts"];
+		[[[[Parser alloc] init] 
+			parseString:scripts] compileWith:defaultCodeGenerator()];
 	}
 }
 /** 
@@ -47,16 +82,7 @@
 	{
 		return nil;
 	}
-	/* Set up scripting */
-	scriptingEnvironment = [[STEnvironment sharedEnvironment] retain];
-	smalltalkEngine = [[STEngine engineForLanguage:@"Smalltalk"] retain];
-	[scriptingEnvironment setObject:[[NSProcessInfo processInfo] arguments] 
-	                        forName:@"ARGS"];
-	[scriptingEnvironment loadModule:@"SimpleTranscript"];
-/*	[scriptingEnvironment setObject:NSApp
-	                        forName:@"Application"];*/
-	[scriptingEnvironment setObject:scriptingEnvironment
-	                        forName:@"Environment"];
+	delegate = [CornerDelegate new];
 	/* Set up the scripts */
 	[self loadScripts:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self
@@ -109,55 +135,55 @@
 	};
 	return relative;
 }
-/**
- * Runs the script associated with a given corner of the screen.
- * Corners are numbered from 1 to 4, clockwise, starting at the
- * top left.
- */
-- (void) invokeActionForCorner:(int)aCorner
+- (void) outCorner
 {
-	NS_DURING
-		NSLog(@"In corner %d", aCorner);
-		NSString * script = [scripts objectAtIndex:aCorner-1];
-		if(script != nil && ![script isEqualToString:@""])
+	// If we are exiting a corner...
+	if(lastCorner != 0)
+	{
+		int seconds = time(NULL) - inCornerTime;
+		switch(lastCorner)
 		{
-			[smalltalkEngine interpretScript:[scripts objectAtIndex:aCorner-1]
-			                       inContext:scriptingEnvironment];
+			case 1:
+				[delegate exitTopLeftAfter:seconds];
+				break;
+			case 2:
+				[delegate exitTopRightAfter:seconds];
+				break;
+			case 3:
+				[delegate exitBottomRightAfter:seconds];
+				break;
+			case 4:
+				[delegate exitBottomLeftAfter:seconds];
+				break;
 		}
-	NS_HANDLER
-		/* Log script exceptions */
-		NSLog(@"%@",localException);
-	NS_ENDHANDLER
-}
-
-/**
- * Macro to test whether the mouse has entered a give corner
- * and fire off the correct action if it has.
- */
-#define IF_IN_CORNER_FOR_TIME(corner, time) \
-	if(lastCorner != (corner))\
-	{\
-		inCorner = NO;\
-		cornerWaitCount = 0;\
-	}\
-	else\
-	{\
-		cornerWaitCount++;\
-	}\
-	lastCorner = corner;\
-	if(!inCorner && cornerWaitCount >= time)\
-	{\
-		inCorner = YES;\
-		[self invokeActionForCorner:corner];\
+		lastCorner = 0;
 	}
-/**
- * The number of polls that the mouse should need to stay
- * in the corner for before the action is invoked.
- *
- * This should probably move into a default at some point
- * so users can configure it.
- */
-#define delay 2
+}
+- (void) inCorner:(int)corner
+{
+	// If we have jumped from one corner to another
+	if (corner != lastCorner)
+	{
+		[self outCorner];
+		lastCorner = corner;
+		inCornerTime = time(NULL);
+		switch(corner)
+		{
+			case 1:
+				[delegate enterTopLeft];
+				break;
+			case 2:
+				[delegate enterTopRight];
+				break;
+			case 3:
+				[delegate enterBottomRight];
+				break;
+			case 4:
+				[delegate enterBottomLeft];
+				break;
+		}
+	}
+}
 /**
  * Periodically poll the mouse and check if it is in a corner.
  */
@@ -167,24 +193,23 @@
 	NSRect mouse = [self globalMousePosition];
 	if(mouse.origin.x < cornerSize && mouse.origin.y < cornerSize)
 	{
-		IF_IN_CORNER_FOR_TIME(1,delay);
+		[self inCorner:1];
 	}
 	else if(mouse.origin.x < cornerSize && mouse.origin.y > mouse.size.height - cornerSize)
 	{
-		IF_IN_CORNER_FOR_TIME(4,delay);
+		[self inCorner:4];
 	}
 	else if(mouse.origin.x > mouse.size.width - cornerSize && mouse.origin.y < cornerSize)
 	{
-		IF_IN_CORNER_FOR_TIME(2,delay);
+		[self inCorner:2];
 	}
 	else if(mouse.origin.x > mouse.size.width -cornerSize && mouse.origin.y > mouse.size.height - cornerSize)
 	{
-		IF_IN_CORNER_FOR_TIME(3,delay);
+		[self inCorner:3];
 	}
 	else
 	{
-		lastCorner = 0;
-		inCorner = NO;
+		[self outCorner];
 	}
 }
 @end
