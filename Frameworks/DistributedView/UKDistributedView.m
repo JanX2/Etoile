@@ -37,6 +37,7 @@
 #import <AppKit/NSEvent.h>
 #import <limits.h>
 
+// NOTE: Only supported by GCC 4.2 and higher (see GNUmakefile).
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 
 /* -----------------------------------------------------------------------------
