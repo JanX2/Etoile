@@ -18,7 +18,7 @@ ifeq ($(user-base), yes)
     export chatclient ?= yes
     export dictionary ?= yes
     export fontmanager ?= yes
-    export grr ?= yes
+#    export grr ?= yes
     export terminal ?= yes
     export typewriter ?= yes
     export vindaloo ?= yes
@@ -54,7 +54,7 @@ ifeq ($(look-and-behavior), yes)
 endif
 
 ifeq ($(hardware), yes)
-	SUBPROJECTS += Hardware
+#	SUBPROJECTS += Hardware
 endif
 
 ifeq ($(addressmanager), yes)

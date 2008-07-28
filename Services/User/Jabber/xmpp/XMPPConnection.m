@@ -67,6 +67,7 @@ static NSDictionary * STANZA_KEYS;
 		@"streamFeatures", @"stream:features",
 		nil] retain];
 	
+	NSLog(@"Stanza delegate classes: %@", STANZA_CLASSES);
 }
 
 + (id) connectionWithAccount:(NSString*)_account
@@ -383,7 +384,7 @@ static NSDictionary * STANZA_KEYS;
 - (void)startElement:(NSString *)aName
 		  attributes:(NSDictionary *)_attributes
 {
-	//NSLog(@"Parsing element: %@", aName);
+	NSLog(@"Parsing element: %@", aName);
 	
 	if([aName isEqualToString:@"stream:stream"])
 	{

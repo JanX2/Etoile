@@ -146,10 +146,10 @@
   const unsigned char *cstr;
   NSMutableString *str;
 
-  cstr = [self UTF8String];
+  cstr = (unsigned char *)[self UTF8String];
   
-  str = [NSMutableString stringWithCapacity: strlen(cstr)];
-  for(i=0; i<strlen(cstr); i++)
+  str = [NSMutableString stringWithCapacity: strlen((char*)cstr)];
+  for(i=0; i<strlen((char*)cstr); i++)
     {
       if(cstr[i] == ' ')
 	[str appendString: @"=20"];
@@ -293,6 +293,7 @@ static NSArray *knownItems;
 {
   [_str release];
   [_out release];
+  [super dealloc];
 }
 
 - initForInput
@@ -398,10 +399,10 @@ static NSArray *knownItems;
   while((prop = [e nextObject]))
     {
       val = [record valueForProperty: prop];
-      name = [name stringByAppendingFormat: @"%@;", val ? val : @""];
+      name = [name stringByAppendingFormat: @"%@;", val ? (id)val :(id)@""];
     }
   val = [record valueForProperty: ADSuffixProperty];
-  name = [name stringByAppendingFormat: @"%@", val ? val : @""];
+  name = [name stringByAppendingFormat: @"%@", val ? (id)val : (id)@""];
   [self appendStringWithHeader: @"N" value: name];
   
   e = [[[record class] properties] objectEnumerator];

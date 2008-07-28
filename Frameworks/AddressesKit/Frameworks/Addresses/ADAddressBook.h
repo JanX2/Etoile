@@ -44,6 +44,11 @@
 - (NSArray*) people;
 - (NSArray*) groups;
 @end
+@interface ADAddressBook(ImageDataFile)
+- (BOOL) setImageDataForPerson: (ADPerson*) person
+		      withFile: (NSString*) filename;
+- (NSString*) imageDataFileForPerson: (ADPerson*) person;
+@end
 
 @interface ADAddressBook(GroupAccess)
 - (NSArray*) membersForGroup: (ADGroup*) group;

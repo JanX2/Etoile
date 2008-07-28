@@ -73,6 +73,11 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 
 - (id) initWithStore:(id<ETSerialObjectStore>)aStore
 {
+	if (![aStore conformsToProtocol:@protocol(ETSeekableObjectStore)])
+	{
+		[NSException raise:@"InvalidStore"
+					format:@"Binary backend requires a seekable store"];
+	}
 	if(nil == (self = [super init]))
 	{
 		return nil;
@@ -114,7 +119,7 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 		WRITE(&offset, sizeof(offset));
 		WRITE(&refCount, sizeof(refCount));
 	}
-	[store replaceRange:NSMakeRange(0,4) withBytes:(unsigned char*)&indexOffset];
+	[(id<ETSeekableObjectStore>)store replaceRange:NSMakeRange(0,4) withBytes:(unsigned char*)&indexOffset];
 	[store finalize];
 }
 - (void) beginStruct:(char*)aStructName withName:(char*)aName

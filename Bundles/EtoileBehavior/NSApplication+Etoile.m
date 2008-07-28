@@ -113,7 +113,7 @@ static NSObject <SCSession> *session = nil;
 
 	// FIXME: The previous code above doesn't work, theSession is bizarely nil.
 	// Therefore we rely on the following hack...
-	session = [NSConnection 
+	session = (id)[NSConnection 
 		rootProxyForConnectionWithRegisteredName: @"/etoileusersession"
 		host: nil];
 	RETAIN(session);

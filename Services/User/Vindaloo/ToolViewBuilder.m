@@ -18,6 +18,7 @@
 
 #include <ToolViewBuilder.h>
 #include <Foundation/NSException.h>
+#include <Foundation/NSEnumerator.h>
 
 const float kDefaulToolViewSpacing = 5.0;
 

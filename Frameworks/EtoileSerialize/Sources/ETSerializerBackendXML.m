@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <objc/objc-api.h>
+#import <EtoileFoundation/ETUUID.h>
 #import "ETSerializerBackendXML.h"
 #import "ETDeserializerBackend.h"
 #import "ETDeserializer.h"
@@ -189,7 +190,7 @@ STORE_METHOD(Double, double, "d", "f")
 - (void) storeUUID:(char *)uuid withName:(char *)aName
 {
 	//FORMAT("<uuid name='%s'>
-	ETUUID * uuidObj = [[ETUUID alloc] initWithUUID:uuid];
+	ETUUID * uuidObj = [[ETUUID alloc] initWithUUID:(unsigned char*)uuid];
 	FORMAT("<uuid name='%s'>%s</uuid>\n", aName, [[uuidObj stringValue] UTF8String]);
 	[uuidObj release];
 }

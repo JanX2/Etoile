@@ -29,7 +29,7 @@
 		_cancelArgument = nil;
 		_didEndSelector = aSelector;
 		_didEndTarget = [aTarget retain];
-		_didEndArgument = ((anObject != self)? [anObject retain] : self);
+		_didEndArgument = ((anObject != self)? (id)[anObject retain] :(id)self);
 		_shouldRelease = YES;
 		_title = [aTitle retain];
 		[NSBundle loadNibNamed:@"OgreTextFindProgressSheet" owner:self];
@@ -82,7 +82,7 @@
 {
 	_cancelSelector = aSelector;
 	_cancelTarget = [aTarget retain];
-	_cancelArgument = ((anObject != self)? [anObject retain] : self);
+	_cancelArgument = ((anObject != self)? (id)[anObject retain] : (id)self);
 }
 
 - (IBAction)cancel:(id)sender

@@ -73,7 +73,8 @@ ADDITIONAL_OBJCFLAGS += \
 	-ISQLite3 \
 	-INewsParser \
 	-IExtensions \
-	-fobjc-exceptions
+	
+#-fobjc-exceptions
 
 ADDITIONAL_LDFLAGS += \
 	-lETXML \

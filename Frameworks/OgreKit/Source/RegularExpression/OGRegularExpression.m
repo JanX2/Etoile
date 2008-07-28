@@ -1389,7 +1389,7 @@ static int namedGroupCallback(const unsigned char *name, const unsigned char *na
 	}
 	if (lastMatch == nil) {
 		// マッチ箇所がなかった場合は、そのまま返す。
-		replacedString = targetString;
+		replacedString = (id)targetString;
 	} else {
 		// 最後のマッチ以降をコピ
 		[replacedString appendOGString:[lastMatch postmatchOGString]];
@@ -1589,7 +1589,9 @@ static int namedGroupCallback(const unsigned char *name, const unsigned char *na
 			[self expressionString], 
 			[[self class] stringsForOptions:[self options]], 
 			[[self class] stringForSyntax:[self syntax]], 
-			((_groupIndexForNameDictionary != nil)? (_groupIndexForNameDictionary) : ([NSDictionary dictionary])), 
+			((_groupIndexForNameDictionary != nil)
+			 ? ((id)_groupIndexForNameDictionary) 
+			 : ((id)[NSDictionary dictionary])), 
 			nil]
 		forKeys: [NSArray arrayWithObjects: 
 			@"Escape Character", 

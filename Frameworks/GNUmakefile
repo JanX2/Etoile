@@ -40,7 +40,7 @@ ifeq ($(etoile-extensions), yes)
     export ogrekit ?= yes
     export lucenekit ?= yes
     export servicesbarkit ?= yes
-    export rsskit ?= yes
+    #export rsskit ?= yes
     export xwindowserverkit ?= yes
     export popplerkit ?= yes
     export systemconfig ?= yes

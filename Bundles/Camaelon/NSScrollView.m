@@ -3,6 +3,9 @@
 #include "GraphicToolbox.h"
 #include "GSDrawFunctions.h"
 
+@interface NSScrollView (gsprivate)
+- (void) _synchronizeHeaderAndCornerView;
+@end 
 @implementation NSScrollView (theme)
 
 - (void) drawRect: (NSRect)rect

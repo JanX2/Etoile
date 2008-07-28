@@ -45,7 +45,7 @@
 @end
 
 @implementation LCSortComparator
-- (id <LCScoreDocComparator>) newComparator: (LCIndexReader *) reader
+- (id) newComparator: (LCIndexReader *) reader
 									  field: (NSString *) fieldname
 {
 	NSDictionary *cachedValues = [[LCFieldCache defaultCache] custom: reader field: fieldname sortComparator: self]; 

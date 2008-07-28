@@ -157,7 +157,7 @@
 
 - (LCScorer *) dualConjunctionSumScorer1: (LCScorer *) req1 scorer2: (LCScorer *) req2
 {
-	int requiredNrMatchers = [requiredScorers count];
+	//int requiredNrMatchers = [requiredScorers count];
 	LCConjunctionScorer *cs = [[LCConjunctionScorer alloc] initWithSimilarity: similarity];
     // All scorers match, so defaultSimilarity super.score() always has 1 as
   	     // the coordination factor.

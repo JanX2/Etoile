@@ -43,6 +43,10 @@ static NSString *cancelReplyText = nil;
 static NSString *noReplyText = nil;
 static NSString *hasQuitReplyText = nil;
 
+@interface NSWorkspace (gsprivate)
+- (id) _connectApplication:(id) appName;
+@end
+
 @interface ApplicationManager (Private)
 - (void) setUpTerminateLaterTimerWith: (NSString *)appName;
 - (void) checkTerminatingLaterApplicationWithName: (NSString *)appName;

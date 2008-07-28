@@ -4,6 +4,10 @@
 #import "GSDrawFunctions.h"
 #import "NSColor.h"
 
+@interface NSWindow (private)
+-(NSColor*) toolbarColor;
+@end
+
 @implementation GSToolbarView (Themeability)
 
 - (BOOL) isOpaque

@@ -3,7 +3,8 @@
 #include "GNUstepGUI/GSTheme.h"
 #include "GSDrawFunctions.h"
 
-@interface NSTableView (theme) // declare some private methods used by gnustep..
+@interface NSTableView (gsprivate) // declare some private methods used by gnustep..
+- (void) _initDefaults;
 - (void) _willDisplayCell: (NSCell*) cell
 	   forTableColumn: (NSTableColumn *) tb
 		      row: (int) index;

@@ -3,8 +3,8 @@
 
 #include "LCMultiTermQuery.h"
 
-static float defaultMinSimilarity = 0.5f;
-static int defaultPrefixLength = 0;
+static const float defaultMinSimilarity = 0.5f;
+static const int defaultPrefixLength = 0;
 
 @interface LCFuzzyQuery: LCMultiTermQuery
 {

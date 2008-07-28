@@ -31,6 +31,7 @@
 #import "openbox.h"
 #import "prop.h"
 #import "config.h"
+#import "extensions.h"
 
 #import <XWindowServerKit/XScreen.h>
 

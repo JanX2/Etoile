@@ -299,7 +299,7 @@ static NSString * avatarCachePath = nil;
 			if(address != nil &&  [vCard valueForProperty:kABJabberInstantProperty] == nil)
 			{
 #ifdef GNUSTEP
-				ABMutableMultiValue * vCardJID = [[ABMutableMultiValue alloc] initWithType:kABMultiStringProperty];
+				ABMutableMultiValue * vCardJID = [[ABMutableMultiValue alloc] initWithType:(id)kABMultiStringProperty];
 #else
 				ABMutableMultiValue * vCardJID = [[ABMutableMultiValue alloc] init];
 #endif
@@ -358,7 +358,7 @@ static NSString * avatarCachePath = nil;
 			NSString * imageHash = [imageData sha1];
 			[imageData writeToFile:[avatarCachePath stringByAppendingString:imageHash]
 						   options:0
-							 error:nil];
+							 error:(id*)0];
 			if(![imageHash isEqualToString:currentHash])
 			{
 				[photoHashes setObject:imageData forKey:imageHash];

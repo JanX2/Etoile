@@ -272,7 +272,7 @@
 }
 
 // Probably not true anymore now we check the connection status...
-#warning FIXME: Crashes sometimes?
+// FIXME: Crashes sometimes?
 - (void) close
 {
 	if ((inputStream != nil) &&

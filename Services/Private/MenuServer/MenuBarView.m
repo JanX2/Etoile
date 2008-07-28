@@ -25,6 +25,7 @@
 
 #import <Foundation/NSBundle.h>
 #import <Foundation/NSDebug.h>
+#import <Foundation/NSEnumerator.h>
 #import <Foundation/NSSortDescriptor.h>
 
 #import <AppKit/NSEvent.h>

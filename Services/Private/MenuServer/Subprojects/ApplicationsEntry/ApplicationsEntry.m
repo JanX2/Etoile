@@ -27,6 +27,7 @@
 #import <Foundation/NSConnection.h>
 #import <Foundation/NSDebug.h>
 #import <Foundation/NSException.h>
+#import <Foundation/NSEnumerator.h>
 #import <Foundation/NSHost.h>
 #import <Foundation/NSInvocation.h>
 #import <Foundation/NSNotification.h>

@@ -93,7 +93,7 @@
 
 - (void) awakeFromNib
 {
-	NSButtonCell* cell = [[_tableView tableColumnWithIdentifier: @"active"] dataCell];
+	NSButtonCell* cell = (NSButtonCell*)[[_tableView tableColumnWithIdentifier: @"active"] dataCell];
 	[cell setEditable: YES];
 	[cell setEnabled: YES];
 	[cell setSelectable: YES];

@@ -73,7 +73,7 @@ static AZClientManager *sharedInstance;
 	windows = malloc(sizeof(Window)*count);
         win_it = windows;
 	for (i = 0; i < count; i++, win_it++)
-	  *win_it = [[clist objectAtIndex: i] window];
+	  *win_it = (Window)[[clist objectAtIndex: i] window];
     } else
         windows = NULL;
 
@@ -374,7 +374,7 @@ static AZClientManager *sharedInstance;
                                  nil]
                        ];
     NSDebugLLog(@"Client", 
-	            @"Managed window 0x%lx (%@)\n", window, NSStringFromClass([client class]));
+	            @"Managed window 0x%lx (%@)\n", window, NSStringFromClass((Class)[client class]));
 }
 
 - (void) unmanageAll

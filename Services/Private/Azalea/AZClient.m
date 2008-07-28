@@ -23,6 +23,7 @@
 #import <AppKit/AppKit.h>
 #import "AZClient.h"
 #import "AZClient+GNUstep.h"
+#import "AZDebug.h"
 #import "AZScreen.h"
 #import "AZClientManager.h"
 #import "AZEventHandler.h"

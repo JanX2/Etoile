@@ -15,6 +15,7 @@
 #import <OgreKit/OgreTextFindProgressSheet.h>
 #import <OgreKit/OgreTextFindThread.h>
 #import <OgreKit/OgreTextFindThread.h>
+#include <math.h>
 
 @implementation OgreTextFindResult
 

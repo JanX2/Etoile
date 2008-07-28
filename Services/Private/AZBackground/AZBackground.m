@@ -11,6 +11,9 @@ static NSString *AZServiceItem = @"AZServiceItem";
 
 static AZBackground *sharedInstance;
 
+@protocol WeirdServiceThingyToSlilenceWarning
+- (void) application:(id)app  serviceRequested:(id)service;
+@end
 @interface GSDisplayServer (AZPrivate)
  - (void) processEvent: (XEvent *) event;
 @end

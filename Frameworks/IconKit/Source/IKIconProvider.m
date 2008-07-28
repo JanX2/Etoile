@@ -149,7 +149,7 @@ static NSWorkspace *workspace = nil;
 - (NSImage *) iconForURL: (NSURL *)url
 {
   NSImage *icon = nil;
-  IKThumbnailProvider *thumbnailProvider = [IKThumbnailProvider sharedInstance];
+  //IKThumbnailProvider *thumbnailProvider = [IKThumbnailProvider sharedInstance];
   
   // FIXME: Check cache mechanism code carefully and turn icon caching on.
   //icon = [self _cachedIconForURL: url];

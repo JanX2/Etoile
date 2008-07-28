@@ -37,6 +37,8 @@
 #import <AppKit/NSEvent.h>
 #import <limits.h>
 
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+
 /* -----------------------------------------------------------------------------
 	Notifications:
    -------------------------------------------------------------------------- */

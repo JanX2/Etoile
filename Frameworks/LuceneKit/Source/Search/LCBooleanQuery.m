@@ -224,7 +224,7 @@ static int maxClauseCount = 1024;
 
 - (unsigned) hash
 {
-	return (unsigned)(FloatToIntBits([self boost]) ^ [clauses hash] + [self minimumNumberShouldMatch]);
+	return (unsigned)((FloatToIntBits([self boost]) ^ [clauses hash]) + [self minimumNumberShouldMatch]);
 }
 
 /**

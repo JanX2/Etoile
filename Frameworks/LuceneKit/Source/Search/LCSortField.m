@@ -119,7 +119,7 @@
 * @param comparator Returns a comparator for sorting hits.
 */
 - (id) initWithField: (NSString *) f 
-		  comparator: (id <LCSortComparatorSource>) comparator
+		  comparator: (id) comparator
 {
 	self = [self initWithField: f type: LCSortField_CUSTOM];
 	ASSIGN(factory, comparator);
@@ -132,7 +132,7 @@
 * @param reverse True if natural order should be reversed.
 */
 - (id) initWithField: (NSString *) f 
-		  comparator: (id <LCSortComparatorSource>) comparator
+		  comparator: (id) comparator
 			 reverse: (BOOL) r
 {
 	self = [self initWithField: f comparator: comparator];
@@ -182,7 +182,7 @@
 	return reverse;
 }
 
-- (id <LCSortComparatorSource>) factory 
+- (id) factory 
 {
 	return factory;
 }

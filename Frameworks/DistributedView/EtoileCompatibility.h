@@ -13,8 +13,11 @@
     later), BSD modified license or Apache License Version 2.
  ***/
 
+#ifndef __ETOILE_COMPATIBILITY_INCLUDED__
+#define __ETOILE_COMPATIBILITY_INCLUDED__
+#ifndef __ETOILE__
 #define __ETOILE__
-
+#endif // __ETOILE__
 
 /* GCC version test code by Kazunobu Kuriyama */
 #ifndef GCC_VERSION
@@ -35,3 +38,4 @@
 #define truncf(x)  __builtin_truncf(x)
 
 #endif // GNUSTEP
+#endif // __ETOILE_COMPATIBILITY_INCLUDED__

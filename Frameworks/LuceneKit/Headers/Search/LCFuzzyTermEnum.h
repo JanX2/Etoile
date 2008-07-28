@@ -5,7 +5,7 @@
 * If it is longer, we waste time and space. If it is shorter, we waste a
 * little bit of time growing the array as we encounter longer words.
 */
-static int TYPICAL_LONGEST_WORD_IN_INDEX = 19;
+static const int TYPICAL_LONGEST_WORD_IN_INDEX = 19;
 
 int min(int a, int b, int c);
 

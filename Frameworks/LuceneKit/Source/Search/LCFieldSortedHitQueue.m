@@ -236,9 +236,9 @@ static LCComparatorCache *sharedInstance;
 
 - (id <LCScoreDocComparator>) cachedComparator: (LCIndexReader *) reader
 			 field: (NSString *) fieldname
-			  type: (int) type
-			  locale: (id) locale
-			   factory: (id) factory
+			 type: (int) type
+			 locale: (id) locale
+			 factory: (id<LCSortComparatorSource>) factory
 {
 	if (type == LCSortField_DOC) 
 		return AUTORELEASE([[LCIndexOrderScoreDocComparator alloc] init]);

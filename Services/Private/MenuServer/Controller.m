@@ -56,7 +56,7 @@ my_round (float x)
 @interface NSObject (SCSystem)
 - (oneway void) logOut;
 - (oneway void) powerOff: (BOOL) reboot;
-- (oneway void) suspend;
+- (oneway void) suspendComputer;
 @end
 
 @interface Controller (EtoileMenuServerPrivate)
@@ -230,7 +230,7 @@ MenuBarWindow * ServerMenuBarWindow = nil;
   if (sessionApp != nil)
     {
       NS_DURING
-       [sessionApp suspend];
+       [sessionApp suspendComputer];
       NS_HANDLER
         NSString * msgText = _(@"Sleep failed.");
         NSString * infoText = [localException reason];

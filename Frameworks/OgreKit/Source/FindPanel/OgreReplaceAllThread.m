@@ -13,6 +13,7 @@
 
 #import <OgreKit/OgreReplaceAllThread.h>
 #import <OgreKit/OGString.h>
+#include <math.h>
 
 
 @implementation OgreReplaceAllThread

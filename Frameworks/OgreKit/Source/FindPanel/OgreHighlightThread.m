@@ -13,6 +13,7 @@
 
 #import <OgreKit/OgreHighlightThread.h>
 #import <OgreKit/OGString.h>
+#include <math.h>
 
 
 @implementation OgreHighlightThread

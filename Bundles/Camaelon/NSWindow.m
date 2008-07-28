@@ -1,5 +1,6 @@
 #include <Foundation/Foundation.h>
 #include <AppKit/AppKit.h>
+#import <GNUstepGUI/GSDisplayServer.h>
 #include "GSWindowDecorationView.h"
 #include "GSDrawFunctions.h"
 #include "GraphicToolbox.h"
@@ -60,104 +61,19 @@ static NSColor *titleColor[3];
     }
 }
 
-- (void) drawRect: (NSRect)rect
-{
-//	[[NSColor windowBackgroundColor] set];
-//	NSRectFill (rect);
-//		NSImage* caps= [NSImage imageNamed: @"Window/Window-titlebar-caps.tiff"];
-    contentRect.origin.y -= 1;
-    contentRect.size.height += 2;
-    [THEME drawWindowBackground: contentRect on: self];
-    contentRect.origin.y += 1;
-    contentRect.size.height -= 2;
-
-    // -----------------------
-    // draw window borders
-    // -----------------------
-    [[NSColor windowBorderColor] set];
-
-    if (NSMinX(rect) < 1.0) {
-    	PSmoveto(0.5, 0.0);
-	PSlineto(0.5, _frame.size.height - titleBarRect.size.height);
-	PSstroke();
-    }
-    
-    if (NSMaxX(rect) > _frame.size.width - 1.0) {
-    	PSmoveto(_frame.size.width - 0.5, 0.0);
-	PSlineto(_frame.size.width - 0.5, _frame.size.height - titleBarRect.size.height);
-	PSstroke();
-    }
-    		    
-    if (!hasResizeBar && NSMinY(rect) < 1.0) {
-    	PSmoveto(0.0, 0.5);
-	PSlineto(_frame.size.width, 0.5);
-	PSstroke();
-    }
-    // ------------------------
-			    
-  //  titleBarRect.origin.x -= 1;
-  if (hasTitleBar && NSIntersectsRect(rect, titleBarRect))
-    {/*
-  titleBarRect.size.height += 1;
-	NSRectFillUsingOperation (titleBarRect, NSCompositeClear);
-  titleBarRect.size.height -= 1; */
-//  titleBarRect.size.height = [caps size].height;
-	//	NSLog (@"(1) inputState: %d", inputState);
-      [self drawTitleBar];
-    }
-
-  if (hasResizeBar && NSIntersectsRect(rect, resizeBarRect))
-    {
-      NSRectFillUsingOperation (resizeBarRect, NSCompositeClear);
-      [self drawResizeBar];
-    }
-      /*
-  if (hasResizeBar || hasTitleBar)
-    {
-      PSsetlinewidth(1.0);
-      [[NSColor blackColor] set];
-      if (NSMinX(rect) < 1.0)
-        {
-          PSmoveto(0.5, 0.0);
-          PSlineto(0.5, _frame.size.height - titleBarRect.size.height);
-          PSstroke();
-        }
-      if (NSMaxX(rect) > _frame.size.width - 1.0)
-        {
-          PSmoveto(_frame.size.width - 0.5, 0.0);
-          PSlineto(_frame.size.width - 0.5, _frame.size.height - titleBarRect.size.height);
-          PSstroke();
-        }
-      if (NSMaxY(rect) > _frame.size.height - 1.0)
-        {
-          PSmoveto(0.0, _frame.size.height - 0.5 - titleBarRect.size.height);
-          PSlineto(_frame.size.width, _frame.size.height - 0.5 - titleBarRect.size.height);
-          PSstroke();
-        }
-      if (NSMinY(rect) < 1.0)
-        {
-          PSmoveto(0.0, 0.5);
-          PSlineto(_frame.size.width, 0.5);
-          PSstroke();
-        }
-    }
-	*/
-/*
-	[super drawRect: rect];
-*/
-}
-
 -(void) drawTitleBar
 {
+/*
 static const NSRectEdge edges[4] = {NSMinXEdge, NSMaxYEdge,
 				    NSMaxXEdge, NSMinYEdge};
   float grays[3][4] =
     {{NSLightGray, NSLightGray, NSDarkGray, NSDarkGray},
     {NSWhite, NSWhite, NSDarkGray, NSDarkGray},
     {NSLightGray, NSLightGray, NSBlack, NSBlack}};
+*/
   NSRect workRect;
 NSString *title = [window title];
-NSColorList* colorList = [NSColorList colorListNamed: @"System"];
+//NSColorList* colorList = [NSColorList colorListNamed: @"System"];
 
   /*
   Draw the black border towards the rest of the window. (The outer black
@@ -253,7 +169,7 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
   */
 
 	NSMutableParagraphStyle* p;
-	p = [NSMutableParagraphStyle defaultParagraphStyle];
+	p = (id)[NSMutableParagraphStyle defaultParagraphStyle];
 	[p setLineBreakMode: NSLineBreakByClipping];
 
 	titleTextAttributes[0] = [[NSMutableDictionary alloc]
@@ -352,6 +268,94 @@ NSColorList* colorList = [NSColorList colorListNamed: @"System"];
   PSstroke();
   */
 }
+
+- (void) drawRect: (NSRect)rect
+{
+//	[[NSColor windowBackgroundColor] set];
+//	NSRectFill (rect);
+//		NSImage* caps= [NSImage imageNamed: @"Window/Window-titlebar-caps.tiff"];
+    contentRect.origin.y -= 1;
+    contentRect.size.height += 2;
+    [THEME drawWindowBackground: contentRect on: self];
+    contentRect.origin.y += 1;
+    contentRect.size.height -= 2;
+
+    // -----------------------
+    // draw window borders
+    // -----------------------
+    [[NSColor windowBorderColor] set];
+
+    if (NSMinX(rect) < 1.0) {
+    	PSmoveto(0.5, 0.0);
+	PSlineto(0.5, _frame.size.height - titleBarRect.size.height);
+	PSstroke();
+    }
+    
+    if (NSMaxX(rect) > _frame.size.width - 1.0) {
+    	PSmoveto(_frame.size.width - 0.5, 0.0);
+	PSlineto(_frame.size.width - 0.5, _frame.size.height - titleBarRect.size.height);
+	PSstroke();
+    }
+    		    
+    if (!hasResizeBar && NSMinY(rect) < 1.0) {
+    	PSmoveto(0.0, 0.5);
+	PSlineto(_frame.size.width, 0.5);
+	PSstroke();
+    }
+    // ------------------------
+			    
+  //  titleBarRect.origin.x -= 1;
+  if (hasTitleBar && NSIntersectsRect(rect, titleBarRect))
+    {/*
+  titleBarRect.size.height += 1;
+	NSRectFillUsingOperation (titleBarRect, NSCompositeClear);
+  titleBarRect.size.height -= 1; */
+//  titleBarRect.size.height = [caps size].height;
+	//	NSLog (@"(1) inputState: %d", inputState);
+      [(id)self drawTitleBar];
+    }
+
+  if (hasResizeBar && NSIntersectsRect(rect, resizeBarRect))
+    {
+      NSRectFillUsingOperation (resizeBarRect, NSCompositeClear);
+      [self drawResizeBar];
+    }
+      /*
+  if (hasResizeBar || hasTitleBar)
+    {
+      PSsetlinewidth(1.0);
+      [[NSColor blackColor] set];
+      if (NSMinX(rect) < 1.0)
+        {
+          PSmoveto(0.5, 0.0);
+          PSlineto(0.5, _frame.size.height - titleBarRect.size.height);
+          PSstroke();
+        }
+      if (NSMaxX(rect) > _frame.size.width - 1.0)
+        {
+          PSmoveto(_frame.size.width - 0.5, 0.0);
+          PSlineto(_frame.size.width - 0.5, _frame.size.height - titleBarRect.size.height);
+          PSstroke();
+        }
+      if (NSMaxY(rect) > _frame.size.height - 1.0)
+        {
+          PSmoveto(0.0, _frame.size.height - 0.5 - titleBarRect.size.height);
+          PSlineto(_frame.size.width, _frame.size.height - 0.5 - titleBarRect.size.height);
+          PSstroke();
+        }
+      if (NSMinY(rect) < 1.0)
+        {
+          PSmoveto(0.0, 0.5);
+          PSlineto(_frame.size.width, 0.5);
+          PSstroke();
+        }
+    }
+	*/
+/*
+	[super drawRect: rect];
+*/
+}
+
 
 @end
 

@@ -78,7 +78,7 @@
   
 	anIndexFile = [mainBundle pathForResource: baseName ofType: @"index"];
 	aDictFile = [mainBundle pathForResource: baseName ofType: @"dict"];
-#warning TODO Add support for gz compressed files here
+// TODO Add support for gz compressed files here
   
 	NSAssert1(anIndexFile != nil,
 	    @"Index resource %@ not found",

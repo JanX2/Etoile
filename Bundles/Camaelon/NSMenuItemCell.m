@@ -252,7 +252,7 @@ static NSImage  *arrowImageCurrent = nil;
 
   }
 
-  //
+  /*
    * Determine the image and the title that will be
    * displayed. If the NSContentsCellMask is set the
    * image and title are swapped only if state is 1 or
@@ -260,7 +260,7 @@ static NSImage  *arrowImageCurrent = nil;
    * content is changed to the face of reversed state).
    * The results are saved in two ivars for use in other
    * drawing methods.
-   //
+   */
   if (mask & NSContentsCellMask)
     {
       _imageToDisplay = _altImage;

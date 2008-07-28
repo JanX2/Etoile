@@ -4,7 +4,7 @@
 #include "LCSimpleAnalyzer.h"
 #include "GNUstep.h"
 
-static LCIndexManager *sharedInstance;
+//static LCIndexManager *sharedInstance;
 
 @implementation LCIndexManager
 

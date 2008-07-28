@@ -20,7 +20,7 @@ ifeq ($(etoile-extensions), yes)
 
     export azalea ?= yes
     export background ?= yes
-    export corner ?= yes
+    #export corner ?= yes
     export dock ?= yes
     export idle ?= yes
     export switch ?= yes

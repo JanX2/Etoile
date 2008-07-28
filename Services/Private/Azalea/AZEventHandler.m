@@ -21,6 +21,7 @@
 */
 
 #import "AZEventHandler.h"
+#import "AZDebug.h"
 #import "AZMainLoop.h"
 #import "AZScreen.h"
 #import "AZGroup.h"

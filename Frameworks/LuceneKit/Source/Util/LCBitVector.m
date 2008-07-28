@@ -81,7 +81,7 @@ static char BYTE_COUNTS[] = {	  // table of bits/byte
     {
 		int i, c = 0;
 		unsigned char b;
-		NSRange r;
+		//NSRange r;
 		int end = ((size >> 3) + 1);
 		for (i = 0; i < end; i++)
         {

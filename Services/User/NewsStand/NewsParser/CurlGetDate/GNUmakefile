@@ -6,7 +6,7 @@ CurlGetDate_OBJC_FILES = \
 	CurlGetDate.m
 
 ADDITIONAL_OBJCFLAGS = `curl-config --cflags`
-ADDITIONAL_LDFLAGS = `curl-config --libs`
+ADDITIONAL_LDFLAGS = `curl-config --libs` -L/usr/lib
 
 include $(GNUSTEP_MAKEFILES)/subproject.make
 

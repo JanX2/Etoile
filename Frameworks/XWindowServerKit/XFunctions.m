@@ -75,8 +75,8 @@ NSImage *XWindowIcon(Window window)
 {
 	NSImage *icon = nil;
 	Display *dpy = XDISPLAY;
-	Visual *visual = DefaultVisual(dpy, DefaultScreen(dpy));
-	Colormap colormap = DefaultColormap(dpy, DefaultScreen(dpy));
+	//Visual *visual = DefaultVisual(dpy, DefaultScreen(dpy));
+	//Colormap colormap = DefaultColormap(dpy, DefaultScreen(dpy));
 
 	unsigned long num;
 	unsigned long *data = NULL;

@@ -8,9 +8,9 @@
 #define TERM_VECTORS_WRITER_FORMAT_VERSION 2L
 #define TERM_VECTORS_WRITER_FORMAT_SIZE 4L
 
-static NSString *TVX_EXTENSION = @"tvx";
-static NSString *TVD_EXTENSION = @"tvd";
-static NSString *TVF_EXTENSION = @"tvf";
+#define TVX_EXTENSION @"tvx"
+#define TVD_EXTENSION @"tvd"
+#define TVF_EXTENSION @"tvf"
 
 #include "LCFieldInfos.h"
 

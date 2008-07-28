@@ -185,3 +185,14 @@
 		       @"Class", nil];
 }
 @end
+@implementation ADAddressBook(ImageDataFile)
+- (BOOL) setImageDataForPerson: (ADPerson*) person
+		      withFile: (NSString*) filename
+{
+	return NO;
+}
+- (NSString*) imageDataFileForPerson: (ADPerson*) person
+{
+	return nil;
+}
+@end

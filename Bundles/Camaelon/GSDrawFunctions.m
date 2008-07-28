@@ -84,7 +84,7 @@
 }
 - (NSRect) drawGroove: (NSRect)border : (NSRect)clip
 { 
-  	[THEME drawBox: border on: self];
+  	[THEME drawBox: border on: (id)self];
 	return border;
 	/*
 	NSBezierPath* path = [NSBezierPath bezierPath];

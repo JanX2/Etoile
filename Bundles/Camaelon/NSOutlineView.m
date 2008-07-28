@@ -8,7 +8,7 @@ static NSImage *collapsed = nil;
 static NSImage *unexpandable = nil;
 static NSImage *expanded  = nil;
 
-@interface NSOutlineView (theme) // declare some private methods used by gnustep..
+@interface NSOutlineView (gstheme) // declare some private methods used by gnustep..
 - (void) _willDisplayCell: (NSCell*) cell
 	   forTableColumn: (NSTableColumn *) tb
 		      row: (int) index;

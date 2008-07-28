@@ -22,6 +22,7 @@
 #include <GlobalParams.h>
 #include <fontconfig/fontconfig.h>
 
+/*
 static void dump_fonts(FcConfig* fcConfig)
 {
    FcFontSet* fonts;
@@ -51,6 +52,7 @@ static void dump_fonts(FcConfig* fcConfig)
    printf("---- END OF FONT DUMP ----\n");
    fflush(stdout);
 }
+*/
 
 static FcConfig* create_fc_config(const unsigned char* fcConfigPath)
 {
