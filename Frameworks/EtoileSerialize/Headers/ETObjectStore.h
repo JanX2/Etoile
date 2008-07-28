@@ -86,7 +86,7 @@
 - (id) initWithRemoteHost:(NSString*)aHost forService:(NSString*)aService;
 @end
 
-@interface  ETSerialObjectBundle : NSObject <ETSerialObjectStore> {
+@interface  ETSerialObjectBundle : NSObject <ETSeekableObjectStore> {
 	FILE *file;
 	NSString *bundlePath;
 	unsigned version;
