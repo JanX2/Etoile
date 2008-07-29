@@ -1,0 +1,47 @@
+2008-04-02  Quentin Mathe <qmathe@club-internet.fr>	
+
+	* Headers/UKPluginsRegistry+Icons.h: Added.
+        * Source/UKPluginsRegistry+Icons.m: Updated.
+        * GNUmakefile:
+        * Source/GNUmakefile:
+        Updated to take in account the new header, cleaned a bit and modified 
+        to link EtoileFoundation correctly with LIBRARIES_DEPEND_UPON.
+
+2007-05-03 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+        * Toplevel GNUmakefile make the frameworks
+          while Source/GNUmakefile make the subproject
+
+2007-05-01 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Turn into framework.
+
+2007-02-28 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+	* Move UKNibOwner from EtoileFoundation (bug #8511).
+
+2007-02-19 Yen-Ju Chen <yjchenx at gmail _dot_ com>
+
+        * Format README in reStructuedText
+
+2006-11-25  Quentin Mathe <qmathe@club-internet.fr>	
+
+	* Source/NSImage+NiceScaling.m (-scaledSize:toFitSize:): Fixed ratio 
+	computation bug that translated in a slight image distorsion.
+
+2006-10-31  Quentin Mathe <qmathe@club-internet.fr>
+	
+	* Headers/Cocoa/Cocoa.h:
+	* Headers/NSBezierPathCappedBoxes.h:
+	* Headers/NSImage+NiceScaling.h:
+	* Source/NSBezierPathCappedBoxes.m:
+	* Source/NSImage+NiceScaling.m:
+    * Source/GNUmakefile:
+    * Source/GNUmakefile.postamble:
+	* README:
+	* INSTALL:
+	* GNUmakefile:
+	Imported this new framework resulting from the split of EtoileExtensionsKit
+	in three modules (EtoileUI, EtoileFoundation, DistributedView).
+	The framework has been created with svn cp on EtoileExtensionsKit to keep 
+	files history.
