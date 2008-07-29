@@ -44,6 +44,7 @@ ifeq ($(etoile-extensions), yes)
     export xwindowserverkit ?= yes
     export popplerkit ?= yes
     export systemconfig ?= yes
+	export mediakit ?= yes
     
 endif
 
@@ -149,6 +150,10 @@ endif
 
 ifeq ($(systemconfig), yes)
    SUBPROJECTS += SystemConfig
+endif
+
+ifeq ($(mediakit), yes)
+   SUBPROJECTS += MediaKit
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
