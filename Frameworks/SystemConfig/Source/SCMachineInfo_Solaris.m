@@ -1,12 +1,12 @@
 /*
- * ETMachineInfo_Solaris.m - Solaris specific backend for ETMachineInfo
+ * SCMachineInfo_Solaris.m - Solaris specific backend for SCMachineInfo
  *
  */
 
 #ifdef SOLARIS
 
 #import <Foundation/NSString.h>
-#import "ETMachineInfo.h"
+#import "SCMachineInfo.h"
 
 #import <stdio.h>
 #import <kstat.h>
@@ -18,7 +18,7 @@ static kstat_ctl_t *kernelDesc;
 
 extern int _sysconfig (int foo);
 
-@implementation ETMachineInfo (Solaris)
+@implementation SCMachineInfo (Solaris)
 
 + (void) initialize
 {

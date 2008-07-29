@@ -37,8 +37,9 @@
 #import <AppKit/NSTextField.h>
 #import <AppKit/NSPanel.h>
 
+#import <SystemConfig/SCMachineInfo.h>
+
 #import "ScrollingImageView.h"
-#import "ETMachineInfo.h"
 
 static NSString * const EtoileVersion = @"0.2";
 
@@ -55,17 +56,17 @@ static NSString * const EtoileVersion = @"0.2";
 {
   [etoileVersion setStringValue: EtoileVersion];
 
-  [hostName setStringValue: [ETMachineInfo hostName]];
-  [operatingSystem setStringValue: [ETMachineInfo operatingSystem]];
-  [kernelVersion setStringValue: [ETMachineInfo operatingSystemVersion]];
+  [hostName setStringValue: [SCMachineInfo hostName]];
+  [operatingSystem setStringValue: [SCMachineInfo operatingSystem]];
+  [kernelVersion setStringValue: [SCMachineInfo operatingSystemVersion]];
 }
 
 - (void) fillInfoPanelWithMachineInfo
 {
-  [cpu setStringValue: [ETMachineInfo tidyCPUName]];
-  [cpuFreq setStringValue: [ETMachineInfo humanReadableCPUSpeed]];
-  [memory setStringValue: [ETMachineInfo humanReadableRealMemory]];
-  [machine setStringValue: [ETMachineInfo machineType]];
+  [cpu setStringValue: [SCMachineInfo tidyCPUName]];
+  [cpuFreq setStringValue: [SCMachineInfo humanReadableCPUSpeed]];
+  [memory setStringValue: [SCMachineInfo humanReadableRealMemory]];
+  [machine setStringValue: [SCMachineInfo machineType]];
 }
 
 @end

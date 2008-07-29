@@ -1,5 +1,5 @@
 /*
- * ETMachineInfo_Darwin.m - Darwin specific backend for ETMachineInfo
+ * SCMachineInfo_Darwin.m - Darwin specific backend for SCMachineInfo
  *
  * Copyright 2006, David Chisnall
  * All rights reserved.
@@ -28,13 +28,13 @@
  */
 #ifdef DARWIN
 
-#import "ETMachineInfo.h"
+#import "SCMachineInfo.h"
 
 #define LONGLONGSYSCTLS
 
 #import "TRSysctlByName.h"
 
-@implementation ETMachineInfo (Darwin)
+@implementation SCMachineInfo (Darwin)
 
 + (unsigned long long) realMemory
 {

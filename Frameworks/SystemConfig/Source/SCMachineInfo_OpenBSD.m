@@ -1,5 +1,5 @@
 /*
- * ETMachineInfo_OpenBSD.m - OpenBSD specific backend for ETMachineInfo
+ * SCMachineInfo_OpenBSD.m - OpenBSD specific backend for SCMachineInfo
  *
  * Copyright 2006, David Chisnall
  * All rights reserved.
@@ -29,10 +29,10 @@
 
 #ifdef OPENBSD
 
-#import "ETMachineInfo.h"
+#import "SCMachineInfo.h"
 #import "TRSysctl.h"
 
-@implementation ETMachineInfo (OpenBSD)
+@implementation SCMachineInfo (OpenBSD)
 
 + (unsigned long long) realMemory
 {

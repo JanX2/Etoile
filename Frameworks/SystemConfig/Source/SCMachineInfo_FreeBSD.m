@@ -1,5 +1,5 @@
 /*
- * ETMachineInfo_FreeBSD.m - FreeBSD specific backend for ETMachineInfo
+ * SCMachineInfo_FreeBSD.m - FreeBSD specific backend for SCMachineInfo
  *
  * Copyright 2006, David Chisnall
  * All rights reserved.
@@ -31,10 +31,10 @@
 
 #ifdef FREEBSD
 
-#import "ETMachineInfo.h"
+#import "SCMachineInfo.h"
 #import "TRSysctlByName.h"
 
-@implementation ETMachineInfo (FreeBSD)
+@implementation SCMachineInfo (FreeBSD)
 
 + (unsigned int) batteryLife
 {

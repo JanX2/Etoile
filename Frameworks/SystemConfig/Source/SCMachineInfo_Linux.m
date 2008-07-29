@@ -1,7 +1,7 @@
 /*
-    ETMachineInfo_Linux.m
+    SCMachineInfo_Linux.m
 
-    Linux specific backend for ETMachineInfo.
+    Linux specific backend for SCMachineInfo.
 
     Copyright (C) 2005, 2006  Saso Kiselkov
 
@@ -22,7 +22,7 @@
 
 #ifdef LINUX
 
-#import "ETMachineInfo.h"
+#import "SCMachineInfo.h"
 #import <sys/types.h>
 #import <sys/stat.h>
 
@@ -40,11 +40,11 @@ my_round (float x)
   return (int) (x + 0.5);
 }
 
-@implementation ETMachineInfo (Linux)
+@implementation SCMachineInfo (Linux)
 
 + (void) initialize
 {
-    if (self == [ETMachineInfo class])
+    if (self == [SCMachineInfo class])
       {
         cpuNames = [NSDictionary dictionaryWithObjectsAndKeys:
           /* PowerPC cpus

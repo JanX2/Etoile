@@ -12,6 +12,12 @@ VERSION = 0.1
 libSystemConfig_OBJC_FILES = \
 	SCConfig.m \
 	SCKeyboard.m \
+	SCMachineInfo.m\
+	SCMachineInfo_FreeBSD.m\
+   	SCMachineInfo_OpenBSD.m\
+	SCMachineInfo_Darwin.m\
+  	SCMachineInfo_Linux.m\
+ 	SCMachineInfo_Solaris.m\
 	SCMonitor.m \
 	SCMouse.m \
 	SCPower.m \

@@ -18,13 +18,7 @@ endif
 BUNDLE_NAME = AboutEtoileEntry
 
 AboutEtoileEntry_OBJC_FILES = AboutEtoileEntry.m \
-ScrollingImageView.m \
-ETMachineInfo_Linux.m \
-ETMachineInfo_FreeBSD.m \
-ETMachineInfo_Darwin.m \
-ETMachineInfo_OpenBSD.m \
-ETMachineInfo.m \
-ETMachineInfo_Solaris.m \
+ScrollingImageView.m
 
 AboutEtoileEntry_OBJCC_FILES = 
 AboutEtoileEntry_C_FILES = 
@@ -35,7 +29,7 @@ AboutEtoileEntry_LANGUAGES = English \
 
 AboutEtoileEntry_LOCALIZED_RESOURCE_FILES = AboutEtoileEntry.gorm \
 
-AboutEtoileEntry_LDFLAGS = 
+AboutEtoileEntry_LDFLAGS = -lSystemConfig
 SUBPROJECTS = 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/bundle.make

@@ -1,5 +1,5 @@
 /*
- * ETMachineInfo.m - platform independent for ETMachineInfo
+ * SCMachineInfo.m - platform independent for SCMachineInfo
  *
  * Copyright 2006, David Chisnall
  * All rights reserved.
@@ -26,7 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#import "ETMachineInfo.h"
+#import "SCMachineInfo.h"
 
 #import <Foundation/NSArray.h>
 #import <Foundation/NSBundle.h>
@@ -102,7 +102,7 @@ humanReadableNumber (double value, unsigned int unitScale, NSString *unit,
     }
 }
 
-@implementation ETMachineInfo
+@implementation SCMachineInfo
 
 /**
  * Returns the remaining battery life in minutes
@@ -151,7 +151,7 @@ humanReadableNumber (double value, unsigned int unitScale, NSString *unit,
 
 /**
  * Returns whether the current platform is supported. This is used
- * by other routines inside ETMachineInfo to determine whether to
+ * by other routines inside SCMachineInfo to determine whether to
  * return strings like "(unknown)". The default class implementation
  * always returns NO.
  */

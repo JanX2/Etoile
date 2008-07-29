@@ -15,6 +15,7 @@ SystemConfig_HEADER_FILES_DIR = Headers
 SystemConfig_HEADER_FILES = \
 	SCConfig.h \
 	SCKeyboard.h \
+	SCMachineInfo.h\
 	SCMonitor.h \
 	SCMouse.h \
 	SCPower.h \

@@ -32,7 +32,7 @@
 
 @class NSString;
 
-@interface ETMachineInfo : NSObject
+@interface SCMachineInfo : NSObject
 
 /*
  * These methods must be overridden by platform-specific categories
