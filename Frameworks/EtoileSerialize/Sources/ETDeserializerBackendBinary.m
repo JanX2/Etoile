@@ -161,7 +161,7 @@ enum {
 	//both impose tighter ones.
 	unsigned int offset = (unsigned int)NSMapGet(index, (void*)aReference);
 	//TODO: check offset doesn't point inside the index
-	if(offset > [data length])
+	if(nil == data || offset > [data length])
 	{
 		return NO;
 	}

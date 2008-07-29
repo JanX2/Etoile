@@ -55,7 +55,7 @@
 @end
 
 
-@interface ETSerialObjectBuffer : NSObject <ETSerialObjectStore> {
+@interface ETSerialObjectBuffer : NSObject <ETSeekableObjectStore> {
 	NSMutableData *buffer;
 	unsigned version;
 	NSString *branch;
