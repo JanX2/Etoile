@@ -153,7 +153,7 @@ ifeq ($(systemconfig), yes)
 endif
 
 ifeq ($(mediakit), yes)
-   SUBPROJECTS += MediaKit
+   #SUBPROJECTS += MediaKit
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
