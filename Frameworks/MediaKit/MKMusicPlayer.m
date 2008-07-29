@@ -34,7 +34,7 @@
 - (void) stop;
 {
 	[files removeAllObjects];
-	RELEASE(file);
+	DESTROY(file);
 }
 - (void) setFile:(NSString*)aFile
 {
@@ -53,8 +53,7 @@
 }
 - (void) next
 {
-	RELEASE(file);
-	file = nil;
+	DESTROY(file);
 	if ([files count] != 0)
 	{
 		[files removeObjectAtIndex:0];
