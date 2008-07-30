@@ -5,6 +5,7 @@
 #include <avcodec.h>
 #include <avformat.h>
 
+@class NSURL;
 /**
  * Class encapsulating a media file.  Currently a fairly minimal implementation
  * which is only capable of accessing a single stream from a file.  Still to do
@@ -18,6 +19,10 @@
 	int stream;
 	int64_t timestamp;
 }
+/**
+ * Initialises the object with a (potentially remote) media file.
+ */
+- (id) initWithURL:(NSURL*) aURL;
 /**
  * Initialises the object with a media file.
  */

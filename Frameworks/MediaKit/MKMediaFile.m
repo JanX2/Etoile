@@ -20,7 +20,12 @@
 #ifdef DEBUG
 	dump_format(formatContext, 0, filename, NO);
 #endif
+	NSLog(@"Title: %s, author: %s, album: %s", formatContext->title, formatContext->author, formatContext->album);
 	return self;
+}
+- (id) initWithURL:(NSURL*) aURL
+{
+	return [self initWithFile:[aURL absoluteString]];
 }
 - (BOOL) setCodec
 {
