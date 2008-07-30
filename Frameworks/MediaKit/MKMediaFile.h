@@ -1,4 +1,7 @@
 #import <Foundation/NSObject.h>
+// NOTE: Ugly hack to get rid of deprecation warnings on Ubuntu
+// See https://bugs.launchpad.net/ubuntu/+source/ffmpeg/+bug/122266
+#define attribute_deprecated
 #include <avcodec.h>
 #include <avformat.h>
 
