@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "ETXMLNullHandler.h"
+#import <EtoileXML/ETXMLNullHandler.h>
 
 @interface DiscoInfo : ETXMLNullHandler {
 	NSMutableArray * identities;

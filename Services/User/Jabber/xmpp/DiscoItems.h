@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "ETXMLNullHandler.h"
+#import <EtoileXML/ETXMLNullHandler.h>
 
 
 @interface DiscoItems : ETXMLNullHandler {

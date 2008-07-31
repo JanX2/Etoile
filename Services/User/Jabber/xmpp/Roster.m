@@ -8,7 +8,7 @@
 
 #import "Roster.h"
 #import "XMPPAccount.h"
-#import "ETXMLNode.h"
+#import <EtoileXML/ETXMLNode.h>
 #import "JabberPerson.h"
 #import "JabberRootIdentity.h"
 #import "JabberResource.h"

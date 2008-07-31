@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ETXMLNode.h"
+#import <EtoileXML/ETXMLNode.h>
 #import "Message.h"
 #import "Iq.h"
 #import "Presence.h"

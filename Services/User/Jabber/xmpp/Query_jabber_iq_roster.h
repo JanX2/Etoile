@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "ETXMLNullHandler.h"
+#import <EtoileXML/ETXMLNullHandler.h>
 
 /**
  * Handler for a query result in the jabber:iq:roster namespace.  This is used by 

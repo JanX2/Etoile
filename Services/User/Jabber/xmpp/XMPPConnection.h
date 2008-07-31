@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ETXMLNullHandler.h"
-#import "ETXMLNode.h"
+#import <EtoileXML/ETXMLNullHandler.h>
+#import <EtoileXML/ETXMLNode.h>
 #import "Dispatcher.h"
 #import "Roster.h"
 #import "Presence.h"

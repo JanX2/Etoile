@@ -17,7 +17,7 @@
 #include <openssl/sha.h>
 
 #import "XMPPConnection.h"
-#import "ETXMLParser.h"
+#import <EtoileXML/ETXMLParser.h>
 #import "query_jabber_iq_auth.h"
 #import "StreamFeatures.h"
 #import "DefaultHandler.h"

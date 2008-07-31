@@ -8,7 +8,7 @@
 
 #import "PresenceStanzaFactory.h"
 #import "Presence.h"
-#import "ETXMLString.h"
+#import <EtoileXML/ETXMLString.h>
 
 static PresenceStanzaFactory * sharedInstance;
 

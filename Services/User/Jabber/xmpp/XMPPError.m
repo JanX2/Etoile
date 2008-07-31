@@ -7,7 +7,7 @@
 //
 
 #import "XMPPError.h"
-#import "ETXMLString.h"
+#import <EtoileXML/ETXMLString.h>
 #include "../Macros.h"
 
 @implementation XMPPError

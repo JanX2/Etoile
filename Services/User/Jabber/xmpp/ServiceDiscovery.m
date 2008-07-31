@@ -8,7 +8,7 @@
 
 #import "ServiceDiscovery.h"
 #import "XMPPAccount.h"
-#import "ETXMLNode.h"
+#import <EtoileXML/ETXMLNode.h>
 #import "DiscoInfo.h"
 #import "DiscoItems.h"
 #include "Macros.h"

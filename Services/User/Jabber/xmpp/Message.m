@@ -9,7 +9,7 @@
 #import "Message.h"
 #import <wctype.h>
 #import <AppKit/AppKit.h>
-#import "ETXMLString.h"
+#import <EtoileXML/ETXMLString.h>
 #import "MessageStanzaFactory.h"
 #import "XMPPError.h"
 #import "NSAttributedString+HTML-IM.h"

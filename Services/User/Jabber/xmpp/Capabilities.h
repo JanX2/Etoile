@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "JID.h"
-#import "ETXMLNode.h"
+#import <EtoileXML/ETXMLNode.h>
 
 /**
  * Service Discovery node.  Not yet implemented; please feel free to modify this

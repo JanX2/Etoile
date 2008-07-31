@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ETXMLNullHandler.h"
+#import <EtoileXML/ETXMLNullHandler.h>
 
 /**
  * The timestamp class encapsulates an XMPP timestamp of the kind found in the 

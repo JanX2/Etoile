@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "JID.h"
-#import "ETXMLNullHandler.h"
+#import <EtoileXML/ETXMLNullHandler.h>
 #import "Presence.h"
 #import "Dispatcher.h"
 

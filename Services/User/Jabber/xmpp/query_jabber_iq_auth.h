@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ETXMLNode.h"
+#import <EtoileXML/ETXMLNode.h>
 
 /**
  * The query_jabber_iq_auth class is used to construct an auth request to send to 

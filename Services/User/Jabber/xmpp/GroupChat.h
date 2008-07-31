@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Conversation.h"
-#import "ETXMLNode.h"
+#import <EtoileXML/ETXMLNode.h>
 
 /** 
  * Group chat class.  Not yet implemented.

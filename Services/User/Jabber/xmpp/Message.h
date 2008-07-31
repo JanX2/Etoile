@@ -10,7 +10,7 @@
 #import "Timestamp.h"
 #import "JID.h"
 #import "Stanza.h"
-#import "ETXMLNode.h"
+#import <EtoileXML/ETXMLNode.h>
 
 typedef enum {in, out} MessageDirection;
 typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_GROUPCHAT, MESSAGE_TYPE_SPECIAL} message_type_t;

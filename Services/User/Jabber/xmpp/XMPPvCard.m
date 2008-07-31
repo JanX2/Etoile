@@ -7,7 +7,7 @@
 //
 
 #import "XMPPvCard.h"
-#import "ETXMLString.h"
+#import <EtoileXML/ETXMLString.h>
 #include "Macros.h"
 #import "NSData+Base64.h"
 

@@ -7,8 +7,8 @@
 //
 
 #import "MessageStanzaFactory.h"
-#import "ETXMLString.h"
-#import "ETXMLXHTML-IMParser.h"
+#import <EtoileXML/ETXMLString.h>
+#import <EtoileXML/ETXMLXHTML-IMParser.h>
 #import "XMPPError.h"
 #import "Message.h"
 

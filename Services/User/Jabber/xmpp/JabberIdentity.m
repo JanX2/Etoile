@@ -8,7 +8,7 @@
 
 #import "JabberIdentity.h"
 #import "JabberRootIdentity.h"
-#import "ETXMLString.h"
+#import <EtoileXML/ETXMLString.h>
 #include "../Macros.h"
 
 @implementation JabberIdentity

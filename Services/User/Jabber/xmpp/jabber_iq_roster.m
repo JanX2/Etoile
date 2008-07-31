@@ -8,7 +8,7 @@
 
 #import "jabber_iq_roster.h"
 #import "JID.h"
-#import "ETXMLString.h"
+#import <EtoileXML/ETXMLString.h>
 #import "../Macros.h"
 
 @interface roster_item : ETXMLNullHandler {

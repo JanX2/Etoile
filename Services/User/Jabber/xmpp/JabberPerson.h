@@ -10,7 +10,7 @@
 #import <AppKit/AppKit.h>
 #import <AddressBook/AddressBook.h>
 #import "JID.h"
-#import "ETXMLNode.h"
+#import <EtoileXML/ETXMLNode.h>
 #import "Presence.h"
 #import "JabberIdentity.h"
 

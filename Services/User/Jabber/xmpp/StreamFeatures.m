@@ -7,7 +7,7 @@
 //
 
 #import "StreamFeatures.h"
-#import "ETXMLString.h"
+#import <EtoileXML/ETXMLString.h>
 #import "../Macros.h"
 
 @implementation StreamFeatures

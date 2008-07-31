@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <AddressBook/AddressBook.h>
-#import "ETXMLNullHandler.h"
+#import <EtoileXML/ETXMLNullHandler.h>
 
 @interface XMPPvCard : ETXMLNullHandler {
 	ABPerson * person;
