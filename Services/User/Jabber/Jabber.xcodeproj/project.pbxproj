@@ -1273,6 +1273,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = XMPP;
+				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation;
 				ZERO_LINK = YES;
 			};
 			name = Development;
@@ -1303,6 +1304,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = XMPP;
+				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation;
 				ZERO_LINK = NO;
 			};
 			name = Deployment;
@@ -1331,6 +1333,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = XMPP;
+				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation;
 				ZERO_LINK = YES;
 			};
 			name = Default;
@@ -1462,6 +1465,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = StepChat;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -1504,6 +1508,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = StepChat;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -1545,6 +1550,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = StepChat;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
