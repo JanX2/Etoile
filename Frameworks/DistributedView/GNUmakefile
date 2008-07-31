@@ -15,7 +15,7 @@ LIBRARIES_DEPEND_UPON = -lEtoileUI
 LIBRARIES_DEPEND_UPON += -lm
 # Passing the pragma flag with CPPFLAGS doesn't work, probably because it has to 
 # be passed before -Werror (declared in ADDITIONAL_OBJCFLAGS by etoile.make).
-DistributedView_OBJCFLAGS += -Wno-unknown-pragmas
+DistributedView_OBJCFLAGS += -std=gnu99 -Wno-unknown-pragmas
 
 #
 # Resource files
