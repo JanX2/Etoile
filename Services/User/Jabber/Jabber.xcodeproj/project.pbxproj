@@ -190,22 +190,22 @@
 		28F698B60C036A6B007BE36F /* PresenceLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F698B40C036A6B007BE36F /* PresenceLogController.h */; };
 		28F8E98B0632E612004623A5 /* XMPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F8E9890632E612004623A5 /* XMPPConnection.h */; };
 		28F99A210C05E2FC001D0306 /* NSTextView+ClickableLinks.h in Headers */ = {isa = PBXBuildFile; fileRef = 28F99A1F0C05E2FC001D0306 /* NSTextView+ClickableLinks.h */; };
-		28FF62350C8DFE450050744A /* ETXMLDeclaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62250C8DFE450050744A /* ETXMLDeclaration.h */; };
+		28FF62350C8DFE450050744A /* ETXMLDeclaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62250C8DFE450050744A /* ETXMLDeclaration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28FF62360C8DFE450050744A /* ETXMLDeclaration.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF62260C8DFE450050744A /* ETXMLDeclaration.m */; };
-		28FF62370C8DFE450050744A /* ETXMLNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62270C8DFE450050744A /* ETXMLNode.h */; };
+		28FF62370C8DFE450050744A /* ETXMLNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62270C8DFE450050744A /* ETXMLNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28FF62380C8DFE450050744A /* ETXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF62280C8DFE450050744A /* ETXMLNode.m */; };
-		28FF62390C8DFE450050744A /* ETXMLNullHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62290C8DFE450050744A /* ETXMLNullHandler.h */; };
+		28FF62390C8DFE450050744A /* ETXMLNullHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62290C8DFE450050744A /* ETXMLNullHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28FF623A0C8DFE450050744A /* ETXMLNullHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF622A0C8DFE450050744A /* ETXMLNullHandler.m */; };
-		28FF623B0C8DFE450050744A /* ETXMLParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF622B0C8DFE450050744A /* ETXMLParser.h */; };
+		28FF623B0C8DFE450050744A /* ETXMLParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF622B0C8DFE450050744A /* ETXMLParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28FF623C0C8DFE450050744A /* ETXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF622C0C8DFE450050744A /* ETXMLParser.m */; };
-		28FF623D0C8DFE450050744A /* ETXMLParserDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF622D0C8DFE450050744A /* ETXMLParserDelegate.h */; };
-		28FF623E0C8DFE450050744A /* ETXMLString.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF622E0C8DFE450050744A /* ETXMLString.h */; };
+		28FF623D0C8DFE450050744A /* ETXMLParserDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF622D0C8DFE450050744A /* ETXMLParserDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		28FF623E0C8DFE450050744A /* ETXMLString.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF622E0C8DFE450050744A /* ETXMLString.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28FF623F0C8DFE450050744A /* ETXMLString.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF622F0C8DFE450050744A /* ETXMLString.m */; };
-		28FF62400C8DFE450050744A /* ETXMLXHTML-IMParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62300C8DFE450050744A /* ETXMLXHTML-IMParser.h */; };
+		28FF62400C8DFE450050744A /* ETXMLXHTML-IMParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF62300C8DFE450050744A /* ETXMLXHTML-IMParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28FF62410C8DFE450050744A /* ETXMLXHTML-IMParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF62310C8DFE450050744A /* ETXMLXHTML-IMParser.m */; };
 		28FF62490C8DFE650050744A /* TRXHTMLTest.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 28FF62330C8DFE450050744A /* TRXHTMLTest.h */; };
 		28FF624A0C8DFE650050744A /* TRXHTMLTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF62340C8DFE450050744A /* TRXHTMLTest.m */; };
-		28FF625C0C8DFEBB0050744A /* NSAttributedString+HTML.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF625A0C8DFEBB0050744A /* NSAttributedString+HTML.h */; };
+		28FF625C0C8DFEBB0050744A /* NSAttributedString+HTML.h in Headers */ = {isa = PBXBuildFile; fileRef = 28FF625A0C8DFEBB0050744A /* NSAttributedString+HTML.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28FF625D0C8DFEBB0050744A /* NSAttributedString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FF625B0C8DFEBB0050744A /* NSAttributedString+HTML.m */; };
 		3BC84C270BE28B6F002833ED /* AccountBox.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3BC84C250BE28B6F002833ED /* AccountBox.nib */; };
 		3BC84C2C0BE37830002833ED /* AccountWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3BC84C2A0BE37830002833ED /* AccountWindowController.h */; };
@@ -295,9 +295,9 @@
 		280A5AAA0A31C11A0056829B /* jabber_iq_roster.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = jabber_iq_roster.m; path = xmpp/jabber_iq_roster.m; sourceTree = "<group>"; };
 		280A5D7F0A3491100056829B /* StreamFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StreamFeatures.h; path = xmpp/StreamFeatures.h; sourceTree = "<group>"; };
 		280A5D800A3491100056829B /* StreamFeatures.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StreamFeatures.m; path = xmpp/StreamFeatures.m; sourceTree = "<group>"; };
-		280ACF670B75012E0008F3F3 /* XMPP-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "XMPP-Info.plist"; sourceTree = "<group>"; };
+		280ACF670B75012E0008F3F3 /* XMPP-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XMPP-Info.plist"; sourceTree = "<group>"; };
 		280ACF710B75013B0008F3F3 /* XML.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = XML.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		280ACF720B75013B0008F3F3 /* XML-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "XML-Info.plist"; sourceTree = "<group>"; };
+		280ACF720B75013B0008F3F3 /* XML-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XML-Info.plist"; sourceTree = "<group>"; };
 		280AD0290B75025F0008F3F3 /* XMPP.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = XMPP.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2812F0FF0BF60FF10041AAE4 /* StepChat.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = StepChat.icns; sourceTree = "<group>"; };
 		28135C9708ACE3780032967E /* XMLLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLLog.h; sourceTree = "<group>"; };
@@ -328,9 +328,9 @@
 		2835875E063D4D7F008F21EA /* JabberApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JabberApp.m; sourceTree = "<group>"; };
 		283963E10CE8AEC0007958FA /* XMPPvCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMPPvCard.h; path = xmpp/XMPPvCard.h; sourceTree = "<group>"; };
 		283963E20CE8AEC0007958FA /* XMPPvCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPvCard.m; path = xmpp/XMPPvCard.m; sourceTree = "<group>"; };
-		283D7C180C838A2300986BBA /* HTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "HTMLTest-Info.plist"; sourceTree = "<group>"; };
+		283D7C180C838A2300986BBA /* HTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "HTMLTest-Info.plist"; sourceTree = "<group>"; };
 		283D7C210C838A8200986BBA /* XHTMLTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XHTMLTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		283D7C230C838A8200986BBA /* XHTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "XHTMLTest-Info.plist"; sourceTree = "<group>"; };
+		283D7C230C838A8200986BBA /* XHTMLTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "XHTMLTest-Info.plist"; sourceTree = "<group>"; };
 		283D7C350C838B3900986BBA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/HTMLTestWindow.nib; sourceTree = "<group>"; };
 		2842CF02089FCFD900F2D0AA /* JabberResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JabberResource.h; path = xmpp/JabberResource.h; sourceTree = "<group>"; };
 		2842CF03089FCFD900F2D0AA /* JabberResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JabberResource.m; path = xmpp/JabberResource.m; sourceTree = "<group>"; };
@@ -395,24 +395,24 @@
 		28F8E98A0632E612004623A5 /* XMPPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPConnection.m; path = xmpp/XMPPConnection.m; sourceTree = "<group>"; };
 		28F99A1F0C05E2FC001D0306 /* NSTextView+ClickableLinks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTextView+ClickableLinks.h"; sourceTree = "<group>"; };
 		28F99A200C05E2FC001D0306 /* NSTextView+ClickableLinks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTextView+ClickableLinks.m"; sourceTree = "<group>"; };
-		28FF62250C8DFE450050744A /* ETXMLDeclaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLDeclaration.h; path = ETXML/ETXMLDeclaration.h; sourceTree = "<group>"; };
-		28FF62260C8DFE450050744A /* ETXMLDeclaration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLDeclaration.m; path = ETXML/ETXMLDeclaration.m; sourceTree = "<group>"; };
-		28FF62270C8DFE450050744A /* ETXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLNode.h; path = ETXML/ETXMLNode.h; sourceTree = "<group>"; };
-		28FF62280C8DFE450050744A /* ETXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLNode.m; path = ETXML/ETXMLNode.m; sourceTree = "<group>"; };
-		28FF62290C8DFE450050744A /* ETXMLNullHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLNullHandler.h; path = ETXML/ETXMLNullHandler.h; sourceTree = "<group>"; };
-		28FF622A0C8DFE450050744A /* ETXMLNullHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLNullHandler.m; path = ETXML/ETXMLNullHandler.m; sourceTree = "<group>"; };
-		28FF622B0C8DFE450050744A /* ETXMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLParser.h; path = ETXML/ETXMLParser.h; sourceTree = "<group>"; };
-		28FF622C0C8DFE450050744A /* ETXMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLParser.m; path = ETXML/ETXMLParser.m; sourceTree = "<group>"; };
-		28FF622D0C8DFE450050744A /* ETXMLParserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLParserDelegate.h; path = ETXML/ETXMLParserDelegate.h; sourceTree = "<group>"; };
-		28FF622E0C8DFE450050744A /* ETXMLString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLString.h; path = ETXML/ETXMLString.h; sourceTree = "<group>"; };
-		28FF622F0C8DFE450050744A /* ETXMLString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLString.m; path = ETXML/ETXMLString.m; sourceTree = "<group>"; };
-		28FF62300C8DFE450050744A /* ETXMLXHTML-IMParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ETXMLXHTML-IMParser.h"; path = "ETXML/ETXMLXHTML-IMParser.h"; sourceTree = "<group>"; };
-		28FF62310C8DFE450050744A /* ETXMLXHTML-IMParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "ETXMLXHTML-IMParser.m"; path = "ETXML/ETXMLXHTML-IMParser.m"; sourceTree = "<group>"; };
+		28FF62250C8DFE450050744A /* ETXMLDeclaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLDeclaration.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLDeclaration.h; sourceTree = "<group>"; };
+		28FF62260C8DFE450050744A /* ETXMLDeclaration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLDeclaration.m; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLDeclaration.m; sourceTree = "<group>"; };
+		28FF62270C8DFE450050744A /* ETXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLNode.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLNode.h; sourceTree = "<group>"; };
+		28FF62280C8DFE450050744A /* ETXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLNode.m; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLNode.m; sourceTree = "<group>"; };
+		28FF62290C8DFE450050744A /* ETXMLNullHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLNullHandler.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLNullHandler.h; sourceTree = "<group>"; };
+		28FF622A0C8DFE450050744A /* ETXMLNullHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLNullHandler.m; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLNullHandler.m; sourceTree = "<group>"; };
+		28FF622B0C8DFE450050744A /* ETXMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLParser.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLParser.h; sourceTree = "<group>"; };
+		28FF622C0C8DFE450050744A /* ETXMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLParser.m; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLParser.m; sourceTree = "<group>"; };
+		28FF622D0C8DFE450050744A /* ETXMLParserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLParserDelegate.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLParserDelegate.h; sourceTree = "<group>"; };
+		28FF622E0C8DFE450050744A /* ETXMLString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ETXMLString.h; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLString.h; sourceTree = "<group>"; };
+		28FF622F0C8DFE450050744A /* ETXMLString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ETXMLString.m; path = ../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLString.m; sourceTree = "<group>"; };
+		28FF62300C8DFE450050744A /* ETXMLXHTML-IMParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ETXMLXHTML-IMParser.h"; path = "../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLXHTML-IMParser.h"; sourceTree = "<group>"; };
+		28FF62310C8DFE450050744A /* ETXMLXHTML-IMParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "ETXMLXHTML-IMParser.m"; path = "../../../Frameworks/EtoileFoundation/EtoileXML/ETXMLXHTML-IMParser.m"; sourceTree = "<group>"; };
 		28FF62320C8DFE450050744A /* ParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ParserTest.m; path = ETXML/ParserTest.m; sourceTree = "<group>"; };
 		28FF62330C8DFE450050744A /* TRXHTMLTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TRXHTMLTest.h; path = ETXML/TRXHTMLTest.h; sourceTree = "<group>"; };
 		28FF62340C8DFE450050744A /* TRXHTMLTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TRXHTMLTest.m; path = ETXML/TRXHTMLTest.m; sourceTree = "<group>"; };
-		28FF625A0C8DFEBB0050744A /* NSAttributedString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+HTML.h"; path = "ETXML/NSAttributedString+HTML.h"; sourceTree = "<group>"; };
-		28FF625B0C8DFEBB0050744A /* NSAttributedString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAttributedString+HTML.m"; path = "ETXML/NSAttributedString+HTML.m"; sourceTree = "<group>"; };
+		28FF625A0C8DFEBB0050744A /* NSAttributedString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+HTML.h"; path = "../../../Frameworks/EtoileFoundation/EtoileXML/NSAttributedString+HTML.h"; sourceTree = "<group>"; };
+		28FF625B0C8DFEBB0050744A /* NSAttributedString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAttributedString+HTML.m"; path = "../../../Frameworks/EtoileFoundation/EtoileXML/NSAttributedString+HTML.m"; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -862,9 +862,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		280ACF700B75013B0008F3F3 /* TRXML */ = {
+		280ACF700B75013B0008F3F3 /* EtoileXML */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 280ACF730B75013C0008F3F3 /* Build configuration list for PBXNativeTarget "TRXML" */;
+			buildConfigurationList = 280ACF730B75013C0008F3F3 /* Build configuration list for PBXNativeTarget "EtoileXML" */;
 			buildPhases = (
 				280ACF6C0B75013B0008F3F3 /* Headers */,
 				280ACF6D0B75013B0008F3F3 /* Resources */,
@@ -875,7 +875,7 @@
 			);
 			dependencies = (
 			);
-			name = TRXML;
+			name = EtoileXML;
 			productName = XML;
 			productReference = 280ACF710B75013B0008F3F3 /* XML.framework */;
 			productType = "com.apple.product-type.framework";
@@ -953,7 +953,7 @@
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* StepChat */,
-				280ACF700B75013B0008F3F3 /* TRXML */,
+				280ACF700B75013B0008F3F3 /* EtoileXML */,
 				280AD0280B75025F0008F3F3 /* XMPP */,
 				283D7C200C838A8200986BBA /* XHTMLTest */,
 			);
@@ -1099,17 +1099,17 @@
 		};
 		280AD1400B7506C20008F3F3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 280ACF700B75013B0008F3F3 /* TRXML */;
+			target = 280ACF700B75013B0008F3F3 /* EtoileXML */;
 			targetProxy = 280AD13F0B7506C20008F3F3 /* PBXContainerItemProxy */;
 		};
 		281EF1AD0C83972D00D07C7C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 280ACF700B75013B0008F3F3 /* TRXML */;
+			target = 280ACF700B75013B0008F3F3 /* EtoileXML */;
 			targetProxy = 281EF1AC0C83972D00D07C7C /* PBXContainerItemProxy */;
 		};
 		2839E2EA0B76504300145C44 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 280ACF700B75013B0008F3F3 /* TRXML */;
+			target = 280ACF700B75013B0008F3F3 /* EtoileXML */;
 			targetProxy = 2839E2E90B76504300145C44 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1195,6 +1195,7 @@
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = XML;
+				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation;
 				ZERO_LINK = YES;
 			};
 			name = Development;
@@ -1218,6 +1219,7 @@
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = XML;
+				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation;
 				ZERO_LINK = NO;
 			};
 			name = Deployment;
@@ -1238,6 +1240,7 @@
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = XML;
+				USER_HEADER_SEARCH_PATHS = ../../../Frameworks/EtoileFoundation;
 				ZERO_LINK = YES;
 			};
 			name = Default;
@@ -1451,7 +1454,6 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-lssl",
@@ -1586,7 +1588,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		280ACF730B75013C0008F3F3 /* Build configuration list for PBXNativeTarget "TRXML" */ = {
+		280ACF730B75013C0008F3F3 /* Build configuration list for PBXNativeTarget "EtoileXML" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				280ACF740B75013C0008F3F3 /* Development */,
