@@ -14,7 +14,7 @@
 #import "ServiceDiscovery.h"
 #import "NSData+Base64.h"
 #import "ABPerson+merging.h"
-#import "../Macros.h"
+#import "Macros.h"
 
 static NSString * avatarCachePath = nil;
 

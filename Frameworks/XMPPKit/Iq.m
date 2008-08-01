@@ -9,7 +9,7 @@
 #import "Iq.h"
 #import "IqStanzaFactory.h"
 #import "JabberIdentity.h"
-#import "../Macros.h"
+#import "Macros.h"
 
 static NSDictionary * TYPES;
 

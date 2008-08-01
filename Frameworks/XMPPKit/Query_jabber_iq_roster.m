@@ -8,7 +8,7 @@
 
 #import "Query_jabber_iq_roster.h"
 #import "JabberIdentity.h"
-#include "../Macros.h"
+#include "Macros.h"
 
 @implementation Query_jabber_iq_roster
 - (id) init

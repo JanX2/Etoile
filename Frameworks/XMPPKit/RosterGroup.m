@@ -9,7 +9,7 @@
 #import "RosterGroup.h"
 #import "Presence.h"
 #import "CompareHack.h"
-#include "../Macros.h" 
+#include "Macros.h" 
 
 @implementation RosterGroup
 + (id) groupWithRoster:(id)_roster

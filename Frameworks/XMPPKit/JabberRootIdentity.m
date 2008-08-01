@@ -9,7 +9,7 @@
 #import "JabberRootIdentity.h"
 #import "JabberResource.h"
 #import "CompareHack.h"
-#include "../Macros.h"
+#include "Macros.h"
 
 @implementation JabberRootIdentity
 - (void)findType

@@ -8,7 +8,7 @@
 
 #import "NSAttributedString+HTML-IM.h"
 #import <EtoileXML/ETXMLNode.h>
-#include "../Macros.h"
+#include "Macros.h"
 
 static NSMapTable * STYLE_HANDLERS = NULL;
 

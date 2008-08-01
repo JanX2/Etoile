@@ -8,7 +8,7 @@
 
 #import "StanzaFactory.h"
 #import <EtoileXML/ETXMLNullHandler.h>
-#import "../Macros.h"
+#import "Macros.h"
 
 @implementation StanzaFactory
 + (id) sharedStazaFactory

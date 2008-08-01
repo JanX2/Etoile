@@ -9,7 +9,7 @@
 
 #import "Dispatcher.h"
 #import "JID.h"
-#import "../Macros.h"
+#import "Macros.h"
 
 @implementation Dispatcher
 

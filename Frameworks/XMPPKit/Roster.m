@@ -14,7 +14,7 @@
 #import "JabberResource.h"
 #import "CompareHack.h"
 #import "ServiceDiscovery.h"
-#include "../Macros.h"
+#include "Macros.h"
 
 @implementation Roster
 - (Roster*) initWithAccount:(id)_account

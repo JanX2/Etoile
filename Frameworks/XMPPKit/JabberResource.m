@@ -7,7 +7,7 @@
 //
 
 #import "JabberResource.h"
-#include "../Macros.h"
+#include "Macros.h"
 
 @implementation JabberResource
 - (id) init
