@@ -58,9 +58,9 @@ StepChat_OBJC_FILES = \
 	XMLLog.m\
 	main.m
 
-ADDITIONAL_LDFLAGS += -lEtoileXML -lXMPP -lssl -lcrypto -lAddresses -g
+ADDITIONAL_LDFLAGS += -lEtoileXML -lXMPPKit -lssl -lcrypto -lAddresses -g
 ADDITIONAL_OBJCFLAGS += -werror -g
-ADDITIONAL_LIB_DIRS += -Lxmpp/$(GNUSTEP_OBJ_DIR)
+ADDITIONAL_LIB_DIRS += -Lxmpp/XMPPKit.framework/Versions/Current
 ADDITIONAL_OBJCFLAGS = -DGNUSTEP -DNO_ATTRIBUTED_TITLES -std=c99 -Wno-import -Ixmpp
 
 #

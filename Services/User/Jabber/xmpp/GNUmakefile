@@ -1,15 +1,15 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-LIBRARY_NAME = XMPP
-DOCUMENT_NAME = ${LIBRARY_NAME}
-XMPP_OBJCFLAGS += -g -std=c99 -DGNUSTEP 
-XMPP_LDFLAGS += -g
+FRAMEWORK_NAME = XMPPKit
+DOCUMENT_NAME = ${FRAMEWORK_NAME}
+${FRAMEWORK_NAME}_OBJCFLAGS += -g -std=c99 -DGNUSTEP 
+${FRAMEWORK_NAME}_LDFLAGS += -g
 
-ADDITIONAL_INCLUDE_DIRS += -I../ETXML/
+ADDITIONAL_INCLUDE_DIRS += -I..
 
-XMPP_AGSDOC_FLAGS += -MakeFrames YES
+${DOCUMENT_NAME}_AGSDOC_FLAGS += -MakeFrames YES
 
-XMPP_OBJC_FILES = \
+${FRAMEWORK_NAME}_OBJC_FILES = \
 					ChatLog.m\
 					CompareHack.m\
 					Conversation.m\
@@ -45,7 +45,7 @@ XMPP_OBJC_FILES = \
 					query_jabber_iq_auth.m\
 					ServiceDiscovery.m\
 
-XMPP_HEADER_FILES = \
+${FRAMEWORK_NAME}_HEADER_FILES = \
 					ChatLog.h\
 					CompareHack.h\
 					Conversation.h\
@@ -81,8 +81,8 @@ XMPP_HEADER_FILES = \
 					jabber_iq_roster.h\
 					query_jabber_iq_auth.h
 
-XMPP_AGSDOC_FILES = ${XMPP_HEADER_FILES}
+${DOCUMENT_NAME}_AGSDOC_FILES = ${${FRAMEWORK_NAME}_HEADER_FILES}
 
+include $(GNUSTEP_MAKEFILES)/framework.make
 -include ../../../../etoile.make
-include $(GNUSTEP_MAKEFILES)/library.make
 include $(GNUSTEP_MAKEFILES)/documentation.make
