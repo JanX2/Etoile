@@ -45,6 +45,7 @@ ifeq ($(etoile-extensions), yes)
     export popplerkit ?= yes
     export systemconfig ?= yes
 	export mediakit ?= yes
+	export xmppkit ?= yes
     
 endif
 
@@ -146,6 +147,10 @@ endif
 
 ifeq ($(addresseskit), yes)
    SUBPROJECTS += AddressesKit
+endif
+
+ifeq ($(xmppkit), yes)
+   SUBPROJECTS += XMPPKit
 endif
 
 ifeq ($(systemconfig), yes)

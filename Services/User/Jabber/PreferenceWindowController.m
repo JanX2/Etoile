@@ -6,8 +6,8 @@
 //  Copyright 2004 __MyCompanyName__. All rights reserved.
 //
 
+#import <XMPPKit/Presence.h>
 #import "PreferenceWindowController.h"
-#import "Presence.h"
 #import "RosterController.h"
 #import "MessageWindowController.h"
 #import "TRUserDefaults.h"

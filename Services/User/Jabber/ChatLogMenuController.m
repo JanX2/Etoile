@@ -6,10 +6,10 @@
 //  Copyright 2005 __MyCompanyName__. All rights reserved.
 //
 
+#import <XMPPKit/JabberPerson.h>
+#import <XMPPKit/ChatLog.h>
 #import "ChatLogMenuController.h"
 #import "MessageWindowController.h"
-#import "JabberPerson.h"
-#import "ChatLog.h"
 #import "RosterController.h"
 
 @implementation ChatLogMenuController

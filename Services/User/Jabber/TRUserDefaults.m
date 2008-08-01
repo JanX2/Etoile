@@ -6,8 +6,8 @@
 //  Copyright 2004 __MyCompanyName__. All rights reserved.
 //
 
+#import <XMPPKit/Presence.h>
 #import "TRUserDefaults.h"
-#import "Presence.h"
 
 @implementation NSUserDefaults(TRJabberAdditions)
 - (void) setColour:(NSColor *)_colour forPresence:(unsigned char)_presence

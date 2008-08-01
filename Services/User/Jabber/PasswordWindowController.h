@@ -8,8 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-
-#import "JID.h"
+#import <XMPPKit/JID.h>
 
 @interface PasswordWindowController : NSWindowController {
 	IBOutlet NSTextField * question;

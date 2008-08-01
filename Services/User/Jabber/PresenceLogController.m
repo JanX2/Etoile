@@ -6,8 +6,8 @@
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
+#import <XMPPKit/Presence.h>
 #import "PresenceLogController.h"
-#import "Presence.h"
 #import "TRUserDefaults.h"
 #import "NSTextView+ClickableLinks.h"
 

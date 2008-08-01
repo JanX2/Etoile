@@ -6,13 +6,13 @@
 //  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
 //
 
+#import <XMPPKit/RosterGroup.h>
+#import <XMPPKit/JabberPerson.h>
+#import <XMPPKit/JabberIdentity.h>
+#import <XMPPKit/Conversation.h>
 #import "RosterController.h"
-#import "RosterGroup.h"
-#import "JabberPerson.h"
-#import "JabberIdentity.h"
 #import "JabberApp.h"
 #import "CustomPresenceWindowController.h"
-#import "Conversation.h"
 #import "TRUserDefaults.h"
 #import "MessageWindowController.h"
 #import "Macros.h"

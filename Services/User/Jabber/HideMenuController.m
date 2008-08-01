@@ -6,11 +6,11 @@
 //  Copyright 2004 __MyCompanyName__. All rights reserved.
 //
 
+#import <XMPPKit/Presence.h>
+#import <XMPPKit/Roster.h>
 #import "HideMenuController.h"
 #import "TRUserDefaults.h"
-#import "Presence.h"
 #import "JabberApp.h"
-#import "Roster.h"
 #import "RosterController.h"
 
 //TODO: Get rid of all of these messy [NSApp delegate] things.  

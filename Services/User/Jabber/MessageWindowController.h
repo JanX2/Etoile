@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import "Conversation.h"
-#import "Message.h"
-#import "Presence.h"
-#import "ChatLog.h"
+#import <XMPPKit/Conversation.h>
+#import <XMPPKit/Message.h>
+#import <XMPPKit/Presence.h>
+#import <XMPPKit/ChatLog.h>
 
 @interface MessageWindowController  : NSWindowController <ConversationDelegate> {
 	IBOutlet NSTextView * messageBox;
