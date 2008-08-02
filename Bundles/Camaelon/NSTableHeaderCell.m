@@ -79,6 +79,8 @@ static NSColor* clearCol;
                 inView: (NSView *)controlView
 {
   [self drawInteriorWithFrame: cellFrame inView: controlView];
+  NSBezierPath *border = [NSBezierPath bezierPathWithRect:cellFrame];
+  [border stroke];
 }
 
 @end
