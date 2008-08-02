@@ -38,6 +38,9 @@
   if (_control_view != controlView)
     _control_view = controlView;
 
+
+  [self drawInteriorWithFrame: cellFrame inView: controlView];
+
   // draw the border if needed
   if (_cell.is_bordered || _cell.is_bezeled)
     {
@@ -59,8 +62,6 @@
 
 	[THEME drawTextField: cellFrame focus: focus flipped: [controlView isFlipped]];
     }
-
-  [self drawInteriorWithFrame: cellFrame inView: controlView];
 }
 
 @end
