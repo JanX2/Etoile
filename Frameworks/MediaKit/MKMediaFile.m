@@ -162,6 +162,7 @@
 	}
 	timestamp = pkt.pts;
 	avcodec_decode_audio2(context, buffer, &bufferSize, pkt.data, pkt.size);
+	av_free_packet(&pkt);
 	return bufferSize;
 }
 @end
