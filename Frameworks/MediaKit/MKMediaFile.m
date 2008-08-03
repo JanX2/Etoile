@@ -6,11 +6,13 @@
 {
 	av_register_all();
 }
-- (id) initWithFile:(NSString*) file
+- (id) initWithURL:(NSURL*) aURL
 {
 	SELFINIT;
-	const char *filename = [file UTF8String];
-	if ((av_open_input_file(&formatContext, filename, NULL, 0, NULL) != 0)
+	ASSIGN(URL, aURL);
+	NSString *filename = [URL isFileURL] ? [URL path] : [URL absoluteString];
+	const char *c_filename = [filename UTF8String];
+	if ((av_open_input_file(&formatContext, c_filename, NULL, 0, NULL) != 0)
 	    ||
 	    (av_find_stream_info(formatContext) < 0))
 	{
@@ -18,14 +20,18 @@
 		return nil;
 	}
 #ifdef DEBUG
-	dump_format(formatContext, 0, filename, NO);
+	dump_format(formatContext, 0, c_filename, NO);
 #endif
 	NSLog(@"Title: %s, author: %s, album: %s", formatContext->title, formatContext->author, formatContext->album);
 	return self;
 }
-- (id) initWithURL:(NSURL*) aURL
+- (id) initWithPath:(NSString*) path
 {
-	return [self initWithFile:[aURL absoluteString]];
+	return [self initWithURL:[NSURL fileURLWithPath:path]];
+}
+- (NSURL*) URL
+{
+	return URL;
 }
 - (BOOL) setCodec
 {

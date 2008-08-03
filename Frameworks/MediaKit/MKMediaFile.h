@@ -18,6 +18,7 @@
 	AVCodec *codec;
 	int stream;
 	int64_t timestamp;
+	NSURL *URL;
 }
 /**
  * Initialises the object with a (potentially remote) media file.
@@ -26,7 +27,11 @@
 /**
  * Initialises the object with a media file.
  */
-- (id) initWithFile:(NSString*) file;
+- (id) initWithPath:(NSString*) path;
+/**
+ * Return the URL of this media file
+ */
+- (NSURL*) URL;
 /**
  * Selects a video stream for playback.  Returns YES if a video stream is found.
  */

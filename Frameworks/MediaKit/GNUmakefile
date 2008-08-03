@@ -18,6 +18,9 @@ ADDITIONAL_OBJCFLAGS = -std=c99 -g -Werror `pkg-config libavcodec --cflags`
 ADDITIONAL_OBJCFLAGS += `pkg-config libavcodec --cflags`
 ADDITIONAL_OBJCFLAGS += `pkg-config libavformat --cflags`
 
+#If you install OSS 4 in Ubuntu, the header files are located here:
+ADDITIONAL_OBJCFLAGS += -I/usr/lib/oss/include
+
 ADDITIONAL_LDFLAGS += -lgnustep-gui -lEtoileFoundation 
 ADDITIONAL_LDFLAGS += `pkg-config libavcodec --libs`
 ADDITIONAL_LDFLAGS += `pkg-config libavformat --libs`

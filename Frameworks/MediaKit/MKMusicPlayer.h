@@ -56,13 +56,18 @@
  */
 - (BOOL) isPlaying;
 /**
- * Returns the currently-playing file name.
+ * Returns the currently-playing URL.
  */
-- (NSString*) currentFile;
+- (NSURL*) currentURL;
 /**
  * Add the specified file to the queue.
  */
-- (void) addFile:(NSString*)aFile;
+- (void) addURL:(NSURL*)aURL;
+/**
+ * Replace the queue with the specified array of NSURLs.
+ * Pass a NSArray, not a NSMutableArray.
+ */
+- (void) setQueue:(NSArray*)queue;
 /**
  * Returns the current volume, in the range 0 to 100.
  */

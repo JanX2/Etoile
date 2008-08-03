@@ -36,9 +36,11 @@
 	[files removeAllObjects];
 	DESTROY(file);
 }
-- (void) setFile:(NSString*)aFile
+- (void) setURL:(NSURL*)aURL
 {
-	file = [[MKMediaFile alloc] initWithFile:aFile];
+	if ([aURL isEqual: [file URL]])
+		return;
+	file = [[MKMediaFile alloc] initWithURL:aURL];
 	[file selectAnyAudioStream];
 	int channels = [file channels];
 	int rate = [file sampleRate];
@@ -64,7 +66,7 @@
 	}
 	else
 	{
-		[self setFile:[files objectAtIndex:0]];
+		[self setURL:[files objectAtIndex:0]];
 	}
 }
 - (int64_t) currentPosition
@@ -87,7 +89,7 @@
 {
 	return playing;
 }
-- (NSString*) currentFile
+- (NSURL*) currentURL
 {
 	if ([files count] == 0)
 	{
@@ -95,13 +97,21 @@
 	}
 	return [files objectAtIndex:0];
 }
-- (void) addFile:(NSString*)aFile
+- (void) addURL:(NSURL*)aURL
 {
-	[files addObject:aFile];
+	[files addObject:aURL];
 	if (file == nil)
 	{
-		[self setFile:aFile];
+		[self setURL:aURL];
 	}
+}
+- (void) setQueue:(NSArray*)queue
+{
+	ASSIGN(files, [queue mutableCopy]);
+	if ([files count] > 0)
+	{
+		[self setURL:[files objectAtIndex:0]];
+	}	
 }
 - (void) idle
 {
