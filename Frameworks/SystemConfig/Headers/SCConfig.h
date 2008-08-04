@@ -58,7 +58,7 @@ enum {
 	id delegate;
 }
 
-+ (SCConfigElement *) sharedInstance;
++ (id) sharedInstance;
 
 - (id) delegate;
 - (void) setDelegate: (id)aDelegate;

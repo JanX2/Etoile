@@ -35,7 +35,7 @@
 
 /** Returns a proxy of the desired class, any messages sent to it are handled
     by etoile_configServer daemon. */
-+ (SCConfigElement *) sharedInstance
++ (id) sharedInstance
 {
 	id instance = [[self alloc] init];
 	
