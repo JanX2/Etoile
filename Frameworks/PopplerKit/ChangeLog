@@ -1,3 +1,10 @@
+2008-08-04  Yen-Ju Chen <yjchenx at gmail _got_ com>
+
+	* Remove support for Poppler older than 0.6. The API seems stable since 0.6. 
+	  Version checking might not be needed in the future.
+	* Headers of XPDF is not supported in poppler library. 
+	  Objective-C binding may need to move into poppler library in the future.
+
 2007-06-10  Yen-Ju Chen <yjchenx at gmail _got_ com>
 
 	* Avoid linking in subproject (Bug #9306)

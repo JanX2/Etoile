@@ -125,14 +125,8 @@ int poppler_init(const unsigned char* fcConfigPath,
          fflush(stderr);
       }
 
-#ifdef POPPLER_0_6
       globalParams = new GlobalParams();
-#else
-      globalParams = new GlobalParams(NULL);
-#endif
-#ifdef POPPLER_0_4
-      globalParams->setupBaseFontsFc(NULL);
-#endif
+
       //dump_fonts(FcConfigGetCurrent());
       fprintf(stderr, "poppler library initialized\n"); fflush(stderr);
    }

@@ -47,22 +47,17 @@ else
 fi
 
 # check poppler version
-${PKG_CONFIG} --atleast-version=0.4 poppler
+${PKG_CONFIG} --atleast-version=0.5.9 poppler
 if [ $? -eq 0 ]; then
-  POPPLER_VERSION="POPPLER_0_4"
+  POPPLER_VERSION="POPPLER_0_6"
 else
   echo "PopplerKit does not support this version of poppler"
   exit 1
 fi
 
-${PKG_CONFIG} --atleast-version=0.5 poppler
+${PKG_CONFIG} --atleast-version=0.8 poppler
 if [ $? -eq 0 ]; then
-  POPPLER_VERSION="POPPLER_0_5"
-fi
-
-${PKG_CONFIG} --atleast-version=0.5.9 poppler
-if [ $? -eq 0 ]; then
-  POPPLER_VERSION="POPPLER_0_6"
+  POPPLER_VERSION="POPPLER_0_8"
 fi
 
 echo $POPPLER_VERSION

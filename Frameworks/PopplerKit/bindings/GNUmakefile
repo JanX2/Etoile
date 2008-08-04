@@ -47,16 +47,12 @@ ifeq ($(HAVE_CAIRO), YES)
    bindings_C_FILES += poppler_cairo_img_renderer.cc
 endif
 
-ifeq ($(POPPLER_0_4), YES)
-   bindings_CFLAGS += -DPOPPLER_0_4
-endif
-
-ifeq ($(POPPLER_0_5), YES)
-   bindings_CFLAGS += -DPOPPLER_0_5
-endif
-
 ifeq ($(POPPLER_0_6), YES)
    bindings_CFLAGS += -DPOPPLER_0_6
+endif
+
+ifeq ($(POPPLER_0_8), YES)
+   bindings_CFLAGS += -DPOPPLER_0_8
 endif
 
 include $(GNUSTEP_MAKEFILES)/subproject.make

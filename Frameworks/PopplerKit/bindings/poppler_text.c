@@ -51,16 +51,10 @@ int poppler_text_display_page(void* text_device, void* poppler_page, void* poppl
 
    SYNCHRONIZED(PAGE(poppler_page)->display(TEXT_DEV(text_device), 
 			   hDPI, vDPI, rotate, 
-#ifndef POPPLER_0_4
 			   gTrue, // useMediaBox
-#endif
 			   crop, 
-#ifdef POPPLER_0_6
-				gFalse, // printing
-#else
-				NULL, // links
-#endif
-				PDF_DOC(poppler_document)->getCatalog()));
+			   gFalse, // printing
+			   PDF_DOC(poppler_document)->getCatalog()));
    return 1;
 }
 
@@ -76,9 +70,7 @@ int poppler_text_find(void* text_device, unsigned int* text_utf32, unsigned text
       int result = TEXT_DEV(text_device)->findText(text_utf32, text_len,
                                                    start_at_top, stop_at_bottom,
                                                    start_at_last, stop_at_last,
-#ifndef POPPLER_0_4 // 0.5, 0.6
 						   gTrue, gFalse,
-#endif
                                                    x_min, y_min, x_max, y_max);
    END_SYNCHRONIZED;
    
