@@ -1,0 +1,17 @@
+===================
+EtoileTunes README
+===================
+
+This is a music player for Etoile. It is currently in the very early stages,
+and is also a test of CoreObject and EtoileUI (Container).
+
+Currently there is a xine-lib wrapper, as well as a wrapper for the TagLib C
+binding.
+
+Authors: Eric Wasylishen <ewasylishen@gmail.com>
+
+
+Build and Install
+-----------------
+
+Read INSTALL document.

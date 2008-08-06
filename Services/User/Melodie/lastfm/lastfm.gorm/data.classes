@@ -1,0 +1,20 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FirstResponder = {
+	Actions = (
+	    "get:"
+	);
+	Super = NSObject;
+    };
+    lastfmController = {
+	Actions = (
+	    "get:"
+	);
+	Outlets = (
+	    album,
+	    artist,
+	    image
+	);
+	Super = NSObject;
+    };
+}

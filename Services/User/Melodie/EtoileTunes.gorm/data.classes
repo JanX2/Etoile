@@ -1,0 +1,104 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    ETContainer = {
+	Actions = (
+	    "setSource:",
+	    "setDelegate:",
+	    "inspect:",
+	    "inspectSelection:",
+	    "copy:",
+	    "paste:",
+	    "cut:",
+	    "stack:",
+	    "setTarget:",
+	    "addObject:",
+	    "removeObject:"
+	);
+	Outlets = (
+	    _dataSource,
+	    _delegate,
+	    _target,
+	    _inspector
+	);
+	Super = ETView;
+    };
+    ETScrollView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = ETView;
+    };
+    ETView = {
+	Actions = (
+	    "setRenderer:",
+	    "collapse:",
+	    "expand:"
+	);
+	Outlets = (
+	    _renderer
+	);
+	Super = NSView;
+    };
+    EtoileTunesController = {
+	Actions = (
+	    "doubleClickInContainer:",
+	    "addFiles:",
+	    "addURL:",
+	    "newPlaylist:"
+	);
+	Outlets = (
+	    window,
+	    mainContainer,
+	    playlistContainer,
+	    search,
+	    musicPlayerController,
+	    URLTextField,
+	    addURLWindow
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "addFiles:",
+	    "addObject:",
+	    "addURL:",
+	    "collapse:",
+	    "doubleClickInContainer:",
+	    "expand:",
+	    "inspect:",
+	    "inspectSelection:",
+	    "newPlaylist:",
+	    "next:",
+	    "playPause:",
+	    "previous:",
+	    "removeObject:",
+	    "setDelegate:",
+	    "setPosition:",
+	    "setRenderer:",
+	    "setSource:",
+	    "setTarget:",
+	    "setVolume:",
+	    "stack:"
+	);
+	Super = NSObject;
+    };
+    MusicPlayerController = {
+	Actions = (
+	    "playPause:",
+	    "setPosition:",
+	    "setVolume:",
+	    "next:",
+	    "previous:"
+	);
+	Outlets = (
+	    positionSlider,
+	    volumeSlider,
+	    songLabel,
+	    playPauseButton,
+	    previousButton,
+	    nextButton
+	);
+	Super = NSObject;
+    };
+}

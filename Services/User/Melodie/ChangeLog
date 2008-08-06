@@ -1,0 +1,10 @@
+2008-05-25  Eric Wasylishen <ewasylishen@gmail.com>
+
+	* Fix coding style to conform with Etoile style guidelines
+	* Fix memory management errors
+	* Next and Previous buttons now work
+	* Added ETMusicBackend protocol which ETXineWrapper conforms to
+
+2008-05-18  Eric Wasylishen <ewasylishen@gmail.com>
+
+	* Initial import in to /branches/ericwa/EtoileTunes
