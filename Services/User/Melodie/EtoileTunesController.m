@@ -57,7 +57,7 @@ static NSArray *KnownExtensions;
 		LIBRARYPATH = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
 				NSUserDomainMask, YES) objectAtIndex:0];
 		LIBRARYPATH = 
-			[LIBRARYPATH stringByAppendingPathComponent: @"EtoileTunesLibrary"];
+			[LIBRARYPATH stringByAppendingPathComponent: @"MelodieLibrary"];
 		[LIBRARYPATH retain];
 	}
 }

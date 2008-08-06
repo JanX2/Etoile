@@ -7,7 +7,7 @@
         <key>CFBundleExecutable</key>
         <string>${EXECUTABLE_NAME}</string>
         <key>CFBundleIdentifier</key>
-        <string>com.yourcompany.EtoileTunes</string>
+        <string>com.yourcompany.Mélodie</string>
         <key>CFBundleInfoDictionaryVersion</key>
         <string>6.0</string>
         <key>CFBundlePackageType</key>
@@ -17,7 +17,7 @@
         <key>CFBundleVersion</key>
         <string>1.0</string>
         <key>NSMainNibFile</key>
-        <string>EtoileTunes</string>
+        <string>Melodie</string>
         <key>NSPrincipalClass</key>
         <string>ETApplication</string>
 </dict>

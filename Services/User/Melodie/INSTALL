@@ -22,14 +22,7 @@ External dependencies
 
    * TabLib C binding
 
-   * GStreamer
-
-Perform a full Etoile installation, including
-
-   * CoreObject from svn trunk/Etoile/Frameworks/CoreObject
-
-   * EtoileUI from branches/qmathe/Container
-
+   * libmp4v2
 
 Build and Install
 -----------------

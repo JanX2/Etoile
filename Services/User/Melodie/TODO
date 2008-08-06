@@ -1,6 +1,9 @@
 TODO
 ----
 
+- Fix next/previous controls, gapless song switching
+- Rewrite in Smalltalk
 - Finish getting playlists working
 - Implement searching
 - Last.fm integration, cover art fetching
+
