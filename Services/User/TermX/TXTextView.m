@@ -299,19 +299,22 @@ static BOOL blockRedraw = NO;
 - (id) initWithFrame:(NSRect) frame
 {
 	int i;
-
-	self = [super initWithFrame: frame];
-
 	attributes = [[NSMutableDictionary alloc] init];
 
-	textStorage = [self textStorage];
-	layoutManager = [self layoutManager];
-	textContainer = [self textContainer];
+	textStorage = [[NSTextStorage alloc] init];
+	layoutManager = [[NSLayoutManager alloc] init];
+	[textStorage addLayoutManager: layoutManager];
+	RELEASE(layoutManager);
+	textContainer = [[NSTextContainer alloc] initWithContainerSize: frame.size];
+	[layoutManager addTextContainer: textContainer];
+	RELEASE(textContainer);
+	self = [self initWithFrame: frame textContainer: textContainer];
+
 #ifdef GNUSTEP
 	[textContainer setWidthTracksTextView: YES];
 	[textContainer setHeightTracksTextView: YES];
 #endif
-    [textContainer setLineFragmentPadding: LINE_PAD];
+	[textContainer setLineFragmentPadding: LINE_PAD];
 
 	ASSIGN(cursor, AUTORELEASE([[TXCursor alloc] initTextCell: @" "]));
 	[cursor setBezeled: NO];
@@ -583,6 +586,7 @@ static BOOL blockRedraw = NO;
 	DESTROY(scrollRows);
 	DESTROY(attributes);
 	DESTROY(tty);
+	DESTROY(textStorage);
 	[super dealloc];
 }
 

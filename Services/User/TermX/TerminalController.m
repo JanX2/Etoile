@@ -92,6 +92,7 @@ static NSPoint window_origin;
 		[scrollView setAutoresizesSubviews: YES];
 		[scrollView setAutoresizingMask: NSViewWidthSizable |
 		                                 NSViewHeightSizable];
+
 		rect.size = [NSScrollView contentSizeForFrameSize: rect.size
 					  hasHorizontalScroller: [scrollView hasHorizontalScroller]
 					  hasVerticalScroller: [scrollView hasVerticalScroller] 
