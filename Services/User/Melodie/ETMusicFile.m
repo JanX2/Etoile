@@ -153,8 +153,8 @@ NSString *kETPlayingProperty = @"kETPlayingProperty";
 
 - (NSImage *) icon
 {
-	if ([[self valueForProperty: kETPlayingProperty] boolValue])
-		return [[IKIcon iconWithIdentifier: @"media-playback-start"] image];
+	if ([tag cover] != nil)
+		return [tag cover];
 	else
 		return [[IKIcon iconWithIdentifier: @"audio-x-generic"] image];
 }

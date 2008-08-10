@@ -68,6 +68,7 @@
 
 - (void) dealloc
 {
+	[uiUpdateTimer invalidate];
 	[player release];
 	[super dealloc];
 }
@@ -89,7 +90,10 @@
 	if (![player isPlaying])
 		[player play];
 	else
+	{	
 		[player pause];
+		[playPauseButton setImage: [[IKIcon iconWithIdentifier: @"media-playback-start"] image]];
+	}
 }
 
 - (IBAction) setPosition: (id)sender

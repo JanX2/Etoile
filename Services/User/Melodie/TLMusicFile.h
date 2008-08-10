@@ -32,9 +32,12 @@
 */
 
 #import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 
 @interface TLMusicFile : NSObject
 {
+	BOOL hasCover; // FIXME: hack to know whether we should try to load a cover upon deserialization
+	NSImage *cover;
 	NSString *path;
 	NSString *title;
 	NSString *artist;
@@ -53,6 +56,7 @@
 - (id) initWithPath: (NSString *)path;
 - (int) write;
 
+- (NSImage *) cover;
 - (NSString *) title;
 - (void) setTitle: (NSString *)title;
 - (NSString *) artist;

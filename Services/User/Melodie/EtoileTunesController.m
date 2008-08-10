@@ -167,7 +167,7 @@ static NSArray *KnownExtensions;
 
 - (void) awakeFromNib
 {
-	id layoutObject = [ETTableLayout layout];
+	id layoutObject = [ETOutlineLayout layout];
 	
 	[layoutObject setDisplayName: @"Title" forProperty: kETTitleProperty];
 	[layoutObject setDisplayName: @"Artist" forProperty: kETArtistProperty];

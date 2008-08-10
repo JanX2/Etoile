@@ -32,6 +32,8 @@
 */
 
 #import <EtoileFoundation/EtoileFoundation.h>
+#import <EtoileSerialize/EtoileSerialize.h>
+
 
 #include <tag_c.h>
 #include <mp4.h>
@@ -42,10 +44,6 @@
 #define MP4_GET_STRING(var, name) if(MP4GetMetadata ## name(hFile, &value))\
 {\
 	ASSIGN(var, [NSString stringWithUTF8String:value]);\
-}
-#define MP4_GET_INT(var, name) if(MP4GetMetadata ## name(hFile, &value2))\
-{\
-	var = (int)value2;\
 }
 - (BOOL) mp4ReadTagsForFile: (NSString*) aPath
 {
@@ -66,6 +64,18 @@
 		year = strtol(value, NULL, 10);
 	}
 	MP4GetMetadataTrack(hFile, &track, &totalTracks);
+	
+	u_int32_t imageLength;
+	u_int8_t *image;
+	if (MP4GetMetadataCoverArt(hFile, &image, &imageLength, 0))
+	{
+		// FIXME: probably can use dataWithBytesNoCopy
+		cover = [[NSImage alloc] initWithData:
+		            [NSData dataWithBytes: image length: imageLength]];
+		if (cover != nil)
+			hasCover = YES;
+	}
+	MP4Close(hFile);
 	return YES;
 }
 - (BOOL) taglibReadTagsForFile:(NSString*) aPath
@@ -125,6 +135,7 @@
 
 - (void) dealloc
 {
+	[cover release];
 	[path release];
 	[title release];
 	[artist release];
@@ -156,6 +167,29 @@
 	success = taglib_file_save(tlfile);
 	taglib_file_free(tlfile);
 	return success;
+}
+
+- (NSImage *)cover
+{
+	if (hasCover && cover == nil)
+	{
+		// Since we don't serialize the cover image, after deserialization
+		// if there used to be a cover, cover will be nil but hasCover YES.
+		//
+		// In that case reload the image from the file.
+		MP4FileHandle hFile = MP4Read([path UTF8String], 0);
+		if(MP4_INVALID_FILE_HANDLE == hFile)
+			return NO;
+		u_int32_t imageLength;
+		u_int8_t *image;
+		if (MP4GetMetadataCoverArt(hFile, &image, &imageLength, 0))
+		{
+			cover = [[NSImage alloc] initWithData:
+			            [NSData dataWithBytes: image length: imageLength]];
+		}
+		MP4Close(hFile);
+	}
+	return cover;
 }
 
 - (NSString*) title
@@ -250,4 +284,18 @@
 
 @end
 
+
+@implementation TLMusicFile (ETSerializable)
+
+- (BOOL) serialize:(char*)aVariable using:(ETSerializer*)aSerializer
+{
+	// Don't serialize instance variable cover, an NSImage
+	if(strcmp(aVariable, "cover") == 0)
+	{
+		return YES; 
+	}
+	return NO;
+}
+
+@end
 
