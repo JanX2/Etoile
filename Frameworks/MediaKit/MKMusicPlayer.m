@@ -41,7 +41,11 @@
 	if ([aURL isEqual: [file URL]])
 		return;
 	file = [[MKMediaFile alloc] initWithURL:aURL];
-	[file selectAnyAudioStream];
+	if (![file selectAnyAudioStream])
+	{
+		DESTROY(file);
+		return;
+	}
 	int channels = [file channels];
 	int rate = [file sampleRate];
 	if (channels != [speaker setChannels:channels]
