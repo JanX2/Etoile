@@ -176,6 +176,12 @@ void * TestStructDeserializer(char* varName,
 	UKIntsEqual(0, anArray[0]);
 	UKIntsEqual(1, anArray[1]);
 	UKIntsEqual(2, anArray[2]);
+	//NSData
+	UKIntsEqual(22, [aData length]);
+	if ([aData bytes] == nil)
+		UKFail();
+	else
+		UKTrue(strncmp("this is a bit of data", [aData bytes], 22) == 0);
 	//Int in a structure
 	UKIntsEqual(12, aStruct.intInStruct);
 	//Custom serializer for structure
