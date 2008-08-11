@@ -13,7 +13,7 @@
 #import "COProxy.h"
 
 #define TEST_COREOBJECT
-#define VISUAL_TEST
+//#define VISUAL_TEST
 
 /**
  * Example class that the tests try to serialize.  Has lots of instance
@@ -178,10 +178,8 @@ void * TestStructDeserializer(char* varName,
 	UKIntsEqual(2, anArray[2]);
 	//NSData
 	UKIntsEqual(22, [aData length]);
-	if ([aData bytes] == nil)
-		UKFail();
-	else
-		UKTrue(strncmp("this is a bit of data", [aData bytes], 22) == 0);
+	UKTrue([aData bytes] != nil && 
+			(strncmp("this is a bit of data", [aData bytes], 22) == 0));
 	//Int in a structure
 	UKIntsEqual(12, aStruct.intInStruct);
 	//Custom serializer for structure
