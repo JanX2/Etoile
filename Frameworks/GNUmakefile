@@ -46,6 +46,7 @@ ifeq ($(etoile-extensions), yes)
     export systemconfig ?= yes
 	export mediakit ?= yes
 	export xmppkit ?= yes
+	export scriptkit ?= yes
     
 endif
 
@@ -156,6 +157,11 @@ endif
 ifeq ($(systemconfig), yes)
    SUBPROJECTS += SystemConfig
 endif
+
+ifeq ($(scriptkit), yes)
+   SUBPROJECTS += ScriptKit
+endif
+
 
 ifeq ($(mediakit), yes)
    #SUBPROJECTS += MediaKit

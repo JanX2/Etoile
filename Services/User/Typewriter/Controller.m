@@ -1,11 +1,13 @@
 #import "Controller.h"
 #import "TWDocument.h"
+#import <ScriptKit/ScriptCenter.h>
 
 @implementation Controller
 
 - (void) applicationDidFinishLaunching: (NSNotification *) not
 {
   [NSApp setServicesProvider: self];
+  [[ScriptCenter sharedInstance] enableScripting];
 }
 
 /* Services */
