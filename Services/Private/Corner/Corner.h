@@ -12,6 +12,11 @@
 	BOOL inCorner;
 	Display *display;
 	id delegate;
+
+	BOOL inGesture;
+	NSRect lastPosition;
+	char lastDirection;
+	NSMutableString *gesture;
 }
 /**
  * Poll the mouse position.

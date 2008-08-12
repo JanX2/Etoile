@@ -1,5 +1,6 @@
 #import <Corner.h>
 #import <SmalltalkKit/SmalltalkKit.h>
+#include <math.h>
 
 
 /**
@@ -89,7 +90,7 @@
 											 selector:@selector(loadScripts:)
 												 name:NSUserDefaultsDidChangeNotification
 	                                           object:nil];
-	[NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)0.2
+	[NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)0.1
 	                                 target:self
 								   selector:@selector(periodic:)
 								   userInfo:nil
@@ -98,6 +99,7 @@
 	/* Get the X11 Window we use with our query */
 	display = XOpenDisplay(NULL);
 	w = DefaultRootWindow(display);
+	gesture = [NSMutableString new];
 	[[NSRunLoop currentRunLoop] run];
 	/* Should not be reached */
 	return self;
@@ -107,12 +109,14 @@
  * the size of the root window currently below the mouse 
  * (width, height).  This should be moved to a framework.
  */
-- (NSRect) globalMousePosition
+- (NSRect) globalMousePositionWithModifiers:(BOOL*)isModified
 {
 	Window root, child;
 	int x,y,x1,y1;
 	unsigned int mask, other;
+	const int modifiers = ShiftMask | ControlMask;
 	XQueryPointer(display, w, &root, &child, &x, &y, &x1, &y1, &mask);
+	*isModified = ((mask & modifiers) == modifiers);
 	/* If the cursor has moved to a different screen
 	 * Get the dimensions of it */
 	if(root != lastRoot)
@@ -120,20 +124,6 @@
 		XGetGeometry(display, root, &child, &x1,&y1,&rootWidth,&rootHeight,&mask, &other);
 	}
 	return NSMakeRect((float)x, (float)y,(float)rootWidth,(float)rootHeight);
-}
-/**
- * Returns an NSPoint representing the position of the mouse
- * scaled to between 0 and 1, indicating the position on the
- * screen.
- */
-- (NSPoint) globalRelativeMousePosition
-{
-	NSRect mouse = [self globalMousePosition];
-	NSPoint relative = {
-		mouse.origin.x/mouse.size.width,
-		mouse.origin.y/mouse.size.height
-	};
-	return relative;
 }
 - (void) outCorner
 {
@@ -184,13 +174,93 @@
 		}
 	}
 }
+- (char) trackGesture:(NSRect) mouse
+{
+	int dx = lastPosition.origin.x - mouse.origin.x;
+	int dy = lastPosition.origin.y - mouse.origin.y;
+	lastPosition = mouse;
+	int adx = abs(dx);
+	int ady = abs(dy);
+	// Ignore small movements
+	if (adx + ady > 20)
+	{
+		// Ignore small relative displacements in one dimension
+		if ((adx < ady) && ((adx == 0) || (ady / adx > 2)))
+		{
+			if (dx > 0)
+			{
+				return '1';
+			}
+			else
+			{
+				return '5';
+			}
+		}
+		else if ((ady < adx) && ((ady == 0) || (adx / ady > 2)))
+		{
+			if (dy > 0)
+			{
+				return '7';
+			}
+			else
+			{
+				return '3';
+			}
+		}
+		else if (dx >= 0)
+		{
+			if (dy >= 0)
+			{
+				return '8';
+			}
+			else
+			{
+				return '6';
+			}
+		}
+		else
+		{
+			if (dy >= 0)
+			{
+				return '2';
+			}
+			else
+			{
+				return '4';
+			}
+		}
+	}
+	return '0';
+}
 /**
  * Periodically poll the mouse and check if it is in a corner.
  */
 - (void) periodic:(id)sender
 {
 	const int cornerSize = 2;
-	NSRect mouse = [self globalMousePosition];
+	BOOL modifiers;
+	NSRect mouse = [self globalMousePositionWithModifiers:&modifiers];
+	if (modifiers && !inGesture)
+	{
+		NSLog(@"Starting gesture");
+		lastPosition = mouse;
+		lastDirection = '\0';
+	}
+	else if (inGesture && !modifiers)
+	{
+		NSLog(@"Ending Gesture %@", gesture);
+		[gesture setString:@""];
+	}
+	else if(inGesture)
+	{
+		char direction = [self trackGesture:mouse];
+		if (direction != lastDirection && direction != '0')
+		{
+			[gesture appendFormat:@"%c", direction];
+			lastDirection = direction;
+		}
+	}
+	inGesture = modifiers;
 	if(mouse.origin.x < cornerSize && mouse.origin.y < cornerSize)
 	{
 		[self inCorner:1];
