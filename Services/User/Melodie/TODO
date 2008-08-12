@@ -1,9 +1,24 @@
 TODO
 ----
 
+Urgent:
+
+- Get it into a usable state after changing EtoileTunesController to Smalltalk
+
+Soon:
+
 - Fix next/previous controls, gapless song switching
-- Rewrite in Smalltalk
 - Finish getting playlists working
 - Implement searching
-- Last.fm integration, cover art fetching
+- Last.fm cover art fetching
+
+Eventually:
+
+- Tag writing. Make sure a song can be playing while its tags are changed without problems.
+- Last.fm login, reporting songs played.
+- Other lastfm features
+- CD playback, ripping (Maybe a separate app?)
+- Musicbrainz lookup to fix tags of improperly tagged files, or get tags of CD's
+
+- (MediaKit) Replaygain support
 
