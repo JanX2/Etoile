@@ -17,6 +17,7 @@
 	NSRect lastPosition;
 	char lastDirection;
 	NSMutableString *gesture;
+	NSMutableDictionary *gestureActions;
 }
 /**
  * Poll the mouse position.

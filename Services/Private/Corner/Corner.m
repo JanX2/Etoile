@@ -1,5 +1,6 @@
 #import <Corner.h>
 #import <SmalltalkKit/SmalltalkKit.h>
+#import <ScriptKit/ScriptCenter.h>
 #include <math.h>
 
 
@@ -56,22 +57,61 @@
 }
 @end
 
+@interface HideApplication : NSObject {}
+@end
+@implementation HideApplication
+- (void) gesturePerformed
+{
+	NSLog(@"Trying to hide app");
+	NSApplication *app = [[ScriptCenter scriptDictionaryForActiveApplication]
+		objectForKey:@"Application"];
+	NSLog(@"Trying to hide %@", app);
+	[app hide:nil];
+}
+@end
+
+
 @implementation Corner
 /**
- * Load the scripts from defaults, setting some defaults if 
- * there are none.  The default scripts need making more sensible.
- * The current ones just unhide the application, which is only 
- * useful for testing.
+ * Load the scripts from defaults.
  */
 - (void) loadScripts:(id)ignore
 {
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-	NSString *scripts = [[defaults stringForKey:@"CornerScript"] retain];
+	NSString *scripts = [defaults stringForKey:@"CornerScript"];
 	if (scripts && ![scripts isEqualToString:@""])
 	{
+		NS_DURING
 		[[[[Parser alloc] init] 
 			parseString:scripts] compileWith:defaultCodeGenerator()];
+		NS_HANDLER
+			NSLog(@"Exception occured compiling:\n%@", scripts);
+		NS_ENDHANDLER
 	}
+	NSArray *gscripts = [defaults arrayForKey:@"GestureScripts"];
+	FOREACH(gscripts, script, NSString*)
+	{
+		NS_DURING
+		[[[[Parser alloc] init] 
+			parseString:script] compileWith:defaultCodeGenerator()];
+		NS_HANDLER
+			NSLog(@"Exception occured compiling:\n%@", script);
+		NS_ENDHANDLER
+	}
+	NSDictionary *actions = [defaults dictionaryForKey:@"GestureScripts"];
+	[gestureActions removeAllObjects];
+	NSString *key;
+	NSEnumerator *e;
+	for (e = [actions keyEnumerator], key = [e nextObject] ; key != nil ;
+		   	key = [e nextObject])
+	{
+		NSString *class = [actions objectForKey:key];
+		id object = [[NSClassFromString(class) alloc] init];
+		[gestureActions setObject:object forKey:key];
+		[object release];
+	}
+	// DEBUG ONLY:
+	[gestureActions setObject:[[HideApplication alloc] init] forKey:@"5135"];
 }
 /** 
  * Initialise the scripting engine and set up a timer to periodically
@@ -84,6 +124,7 @@
 		return nil;
 	}
 	delegate = [CornerDelegate new];
+	gestureActions = [NSMutableDictionary new];
 	/* Set up the scripts */
 	[self loadScripts:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self
@@ -187,7 +228,8 @@
 		// Ignore small relative displacements in one dimension
 		if ((adx < ady) && ((adx == 0) || (ady / adx > 2)))
 		{
-			if (dx > 0)
+			NSLog(@"dy: %d", dy);
+			if (dy > 0)
 			{
 				return '1';
 			}
@@ -198,7 +240,8 @@
 		}
 		else if ((ady < adx) && ((ady == 0) || (adx / ady > 2)))
 		{
-			if (dy > 0)
+			NSLog(@"dx: %d", dx);
+			if (dx > 0)
 			{
 				return '7';
 			}
@@ -249,6 +292,8 @@
 	else if (inGesture && !modifiers)
 	{
 		NSLog(@"Ending Gesture %@", gesture);
+		[[gestureActions objectForKey:gesture] gesturePerformed];
+		NSLog(@"actions: %@", gestureActions);
 		[gesture setString:@""];
 	}
 	else if(inGesture)

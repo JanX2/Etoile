@@ -25,7 +25,7 @@ Corner_OBJC_FILES = \
 ADDITIONAL_OBJCFLAGS = -std=c99 -g -Werror
 ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include
 ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lX11
-ADDITIONAL_LDFLAGS += -lSmalltalkKit -lSmalltalkSupport -lgnustep-gui -g
+ADDITIONAL_LDFLAGS += -lSmalltalkKit -lSmalltalkSupport -lScriptKit -lgnustep-gui -g
 
 include $(GNUSTEP_MAKEFILES)/tool.make
 -include ../../../etoile.make
