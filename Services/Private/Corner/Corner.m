@@ -291,7 +291,6 @@
 	{
 		NSLog(@"Ending Gesture %@", gesture);
 		[[gestureActions objectForKey:gesture] gesturePerformed];
-		NSLog(@"actions: %@", gestureActions);
 		[gesture setString:@""];
 	}
 	else if(inGesture)
