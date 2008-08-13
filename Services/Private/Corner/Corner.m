@@ -228,7 +228,6 @@
 		// Ignore small relative displacements in one dimension
 		if ((adx < ady) && ((adx == 0) || (ady / adx > 2)))
 		{
-			NSLog(@"dy: %d", dy);
 			if (dy > 0)
 			{
 				return '1';
@@ -240,7 +239,6 @@
 		}
 		else if ((ady < adx) && ((ady == 0) || (adx / ady > 2)))
 		{
-			NSLog(@"dx: %d", dx);
 			if (dx > 0)
 			{
 				return '7';
