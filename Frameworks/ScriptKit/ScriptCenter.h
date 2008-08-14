@@ -24,4 +24,8 @@
  * Returns the scripting dictionary for the named application.
  */
 + (NSDictionary*) scriptDictionaryForApplication:(NSString*) anApp;
+/**
+ * Returns the script dictionary for the currently active application.
+ */
++ (NSDictionary*) scriptDictionaryForActiveApplication;
 @end

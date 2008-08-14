@@ -53,4 +53,14 @@ static ScriptCenter *sharedInstance;
 	}
 	return dict;
 }
++ (NSDictionary*) scriptDictionaryForActiveApplication
+{
+	NSString *appName = [[[NSWorkspace sharedWorkspace] activeApplication]
+		objectForKey: @"NSApplicationName"];
+	if (nil == appName)
+	{
+		return nil;
+	}
+	return [self scriptDictionaryForApplication:appName];
+}
 @end
