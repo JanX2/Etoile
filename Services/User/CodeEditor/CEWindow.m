@@ -60,7 +60,7 @@
   NSEnumerator *e = [[tabView tabViewItems] objectEnumerator];
   NSTabViewItem *item;
   while ((item = [e nextObject])) {
-    if ([[item view] documentView] == textView) {
+    if ([(id)[item view] documentView] == textView) {
       [tabView removeTabViewItem: item];
       [textViews removeObject: textView];
       break;
@@ -69,7 +69,7 @@
   if ([textViews count] == 1) {
     /* Put up the scroll view */
     item = [tabView tabViewItemAtIndex: 0];
-    NSScrollView *view = [item view];
+    NSScrollView *view = (NSScrollView*)[item view];
     RETAIN(view);
     [tabView removeTabViewItem: item];
     [tabView removeFromSuperview];
@@ -86,7 +86,7 @@
   if ([textViews count] == 1) {
     return [textViews objectAtIndex: 0];
   } 
-  return [[[tabView selectedTabViewItem] view] documentView];
+  return [(id)[[tabView selectedTabViewItem] view] documentView];
 }
 
 - (CETextView *) createNewTextViewWithFileAtPath: (NSString *) path
@@ -114,7 +114,7 @@
 
   if (tabView == nil) {
     NSLog(@"Internal Error: no tab view");
-    return;
+    return nil;
   }
 
   scrollView = [self _newScrollView: [tabView contentRect]];
@@ -202,12 +202,12 @@
 - (void) tabView: (NSTabView *) tv
          didSelectTabViewItem: (NSTabViewItem *) tabViewItem
 {
-  NSString *p = [[[tabViewItem view] documentView] path];
-  [self makeFirstResponder: [[tabViewItem view] documentView]];
+  NSString *p = [[(id)[tabViewItem view] documentView] path];
+  [self makeFirstResponder: [(id)[tabViewItem view] documentView]];
   if (p) {
-    [self setTitleWithPath: [[[tabViewItem view] documentView] path]];
+    [self setTitleWithPath: [[(id)[tabViewItem view] documentView] path]];
   } else {
-    [self setTitle: [[[tabViewItem view] documentView] displayName]];
+    [self setTitle: [[(id)[tabViewItem view] documentView] displayName]];
   }
 }
 
@@ -226,7 +226,7 @@
   NSEnumerator *e = [[tabView tabViewItems] objectEnumerator];
   NSTabViewItem *item;
   while ((item = [e nextObject])) {
-    if ([[item view] documentView] == view) {
+    if ([(id)[item view] documentView] == view) {
       [item setLabel: [view displayName]];
       [tabView selectTabViewItem: item];
       return;

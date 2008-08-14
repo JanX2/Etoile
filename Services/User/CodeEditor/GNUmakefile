@@ -20,6 +20,7 @@ CodeEditor_OBJC_FILES = \
 
 CodeEditor_INCLUDE_DIRS += `onig-config --cflags`
 CodeEditor_GUI_LIBS += -lOgreKit -lPaneKit
+CodeEditor_OBJCFLAGS += -std=c99
 CodeEditor_RESOURCE_FILES = \
 	Syntax/*.plist
 
