@@ -1,12 +1,12 @@
 ===================
-EtoileTunes INSTALL
+Melodie INSTALL
 ===================
 
 Required software
 -----------------
 
 You need to have the GNUstep core libraries installed in order to
-compile and use EtoileTunes. The core packages are, at a minimum:
+compile and use Melodie. The core packages are, at a minimum:
 
    * gnustep-make
 
@@ -20,7 +20,7 @@ compile and use EtoileTunes. The core packages are, at a minimum:
 
 External dependencies
 
-   * TabLib C binding
+   * TagLib C binding
 
    * libmp4v2
 
