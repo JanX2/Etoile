@@ -25,13 +25,13 @@ NSObject subclass: EtoileTunesController
 
 	serialize [
 	| pool serializer |
-		'Serializing..' log.
+		"'Serializing..' log.
 		pool := NSAutoreleasePool new.
 		serializer := ETSerializer serializerWithBackend: (ETSerializerBackendBinary class)
-	                                                  forURL: (NSURL fileURLWithPath: (self LIBRARYPATH)).
-		"FIXME: (won't compile)"
+	                                                  forURL: (NSURL fileURLWithPath: (self LIBRARYPATH))."
+		"FIXME: use a serialization method that doesn't need a C string"
 		"serializer serializeObject:mainModel withName: 'library'."
-		pool release.
+		"pool release."
 	]
 
 	init [
@@ -52,6 +52,12 @@ NSObject subclass: EtoileTunesController
 		self serialize.
 	]
 
+	addToMainModel: obj [
+		'Adding song: ' log.
+		obj log.
+		mainModel addObject: obj.
+	]
+
 	addFiles: sender [
 	| openPanel fm |
 		openPanel := NSOpenPanel openPanel.
@@ -62,14 +68,10 @@ NSObject subclass: EtoileTunesController
 		fm := NSFileManager defaultManager.
 		openPanel filenames foreach: [ :file |
 			"TODO: restore the recursive directory add feature. fileExistsAtPath:isDirectory: takes a pointer for isDirectory."
-			file log.
-			(ETMusicFile alloc initWithPath: file) log.	
 
-			"TODO: investigate why this fails to get the songs added to the container, but the addObject outside the block works"
-			mainModel addObject: (ETMusicFile alloc initWithPath: file). 
+			self addToMainModel:  (ETMusicFile alloc initWithPath: file).
+			"mainModel addObject:  (ETMusicFile alloc initWithPath: file)."
 		].
-
-		mainModel addObject: (ETMusicFile alloc initWithPath: (openPanel filenames objectAtIndex: 0)).
 
 		mainContainer reloadAndUpdateLayout.
 	]
@@ -109,16 +111,14 @@ NSObject subclass: EtoileTunesController
 		mainContainer setHasVerticalScroller: 1.
 		mainContainer setTarget: self.
 		mainContainer reloadAndUpdateLayout.
-		"TODO:"
-		"mainContainer setDoubleAction: @selector(doubleClickInContainer:)."
+		mainContainer setDoubleAction: 'doubleClickInContainer:'.
 
 		playlistContainer setSource: (playlistContainer layoutItem).
 		playlistContainer layoutItem setRepresentedObject: playlistModel.
 		playlistContainer setLayout: (ETOutlineLayout layout).
 		playlistContainer setHasVerticalScroller: 0.
 		playlistContainer setTarget: self.
-		"TODO:"
-		"mainContainer setDoubleAction: @selector(doubleClickInContainer:)."
+		playlistContainer setDoubleAction: 'doubleClickInContainer:'.
 	]
 	
 	doubleClickInContainer: sender [
