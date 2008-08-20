@@ -5,7 +5,14 @@
 int main(int argc, char **argv)
 {
 	id pool = [NSAutoreleasePool new];
-	[SmalltalkCompiler compileString: [NSString stringWithContentsOfFile:@"Melodie.st"]];
+	NSString *file = [[NSBundle mainBundle] pathForResource:@"Melodie"
+	                                                 ofType:@"st"];
+	if (nil == file)
+	{
+		NSLog(@"Unable to find smalltalk file.");
+		return 1;
+	}
+	[SmalltalkCompiler compileString: [NSString stringWithContentsOfFile:file]];
 	[pool release];
 
 	return NSApplicationMain(argc, (const char **) argv);
