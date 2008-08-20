@@ -1,0 +1,43 @@
+ScriptServices
+==============
+
+:License: MIT
+:Author: Yen-Ju Chen
+
+ScriptServices is a gateway between GNUstep system services and Unix scripts.
+It turns Unix scripts into GNUstep system services.
+Scripts should be put under 
+~/GNUstep/Library/ApplicaitonSupport/ScriptServices/
+Whenever new scripts are installed, you need to update services by doing
+`openapp ScriptServices --update`
+A default script using `bc` comes with ScriptServices.
+More scripts are in Examples directory.
+
+These are the rules with order:
+
+1. A script is named in this style: 'Run_this_command.sh' (case-sensitive)
+   and it will show up as 'Run this command' in services menu.
+   By default, a script will only accept string in UTF8 encoding as parameters.
+   If script end with extra '_', ex. 'run_this_command_.sh',
+   it indicates it will return a string in UTF8 encoding to GNUstep 
+   through standard output.
+   Otherwise, result will not return to GNUstep.
+   If script start with '_', ex. '_run_this_command.sh',
+   it indicates it uses pipe to read data (usually large data) 
+   instead parameters. If data is string, it is still in UTF8 encoding.
+2. If a script come with a property list with the same name, 
+   'run_this_command.plist', that property list will be used to create service.
+   These properties will be used:
+   NSSendTypes (if none, assume string) - array
+   NSReturnTypes (if none, follow rule #1) - array
+   NSMenuItem (if none, follow rule #1) - dictionary
+   NSKeyEquivalent (if none, none) - dictionary
+   
+   NSPortName - ignored
+   NSMessage - ignored
+   Others - ignored for now
+
+Scripts should be put into Library/ApplicationSupport/ScriptServices/
+Use `openapp ScriptServices --update` whenever a new script is installed.
+Scripts should use `exit` or similar commands in script language
+to ensure they are terminated properly.

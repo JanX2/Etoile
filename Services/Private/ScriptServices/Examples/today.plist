@@ -1,0 +1,10 @@
+{
+  NSReturnTypes = (
+    NSStringPboardType
+  );
+  NSMenuItem = {
+    default = "Today";
+    English = "Today";
+    German = "Heute";
+  };
+}
