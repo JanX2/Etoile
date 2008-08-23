@@ -58,20 +58,25 @@ NSObject subclass: EtoileTunesController
 		mainModel addObject: obj.
 	]
 
-	addFiles: sender [
-	| openPanel fm |
-		openPanel := NSOpenPanel openPanel.
-		openPanel setAllowsMultipleSelection: 1.
-		openPanel setCanChooseDirectories: 0.
-		openPanel runModalForTypes: (self KnownExtensions).
-		
-		fm := NSFileManager defaultManager.
-		openPanel filenames foreach: [ :file |
-			"TODO: restore the recursive directory add feature. fileExistsAtPath:isDirectory: takes a pointer for isDirectory."
+	addPath: pathArg [
+	| path |
+		path := pathArg.
+		(self KnownExtensions containsObject: (path pathExtension))
+			ifTrue: [ self addToMainModel: (ETMusicFile alloc initWithPath: path). ]
+			ifFalse: [ 'unknown extension: ' log. path log. ].
+	]
 
-			self addToMainModel:  (ETMusicFile alloc initWithPath: file).
-			"mainModel addObject:  (ETMusicFile alloc initWithPath: file)."
-		].
+	addFiles: sender [
+	| openPanel filename fm |
+		openPanel := NSOpenPanel openPanel.
+		openPanel setAllowsMultipleSelection: 0.
+		openPanel setCanChooseDirectories: 1.
+		openPanel runModalForTypes: (self KnownExtensions).
+			
+		filename := openPanel filenames lastObject.
+		fm := NSFileManager defaultManager.
+		(fm enumeratorAtPath: filename) allObjects foreach: [ :subFile | self addPath: (filename stringByAppendingPathComponent: subFile). ].
+		"(fm enumeratorAtPath: filename) allObjects foreach: [ :subFile |  mainModel addObject: subFile. ]."
 
 		mainContainer reloadAndUpdateLayout.
 	]
@@ -128,5 +133,92 @@ NSObject subclass: EtoileTunesController
 		sender log.
 
 		musicPlayerController playObject: (sender doubleClickedItem) start: 1.
+	]
+]
+
+NSObject subclass: MusicPlayerController
+[
+	| positionSlider volumeSlider songLabel playPauseButton previousButton nextButton
+	  uiUpdateTimer player |
+	
+	init [
+		player := MKMusicPlayer alloc initWithDefaultDevice inNewThread.
+		player retain.
+
+		uiUpdateTimer := NSTimer scheduledTimerWithTimeInterval: 1
+		                                                 target: self
+		                                               selector: 'timerEvent:'
+		                                               userInfo: nil
+		                                                repeats: 1.
+		^ self.
+	]
+
+	dealloc [
+		uiUpdateTimer invalidate.
+		player release.
+		super dealloc.
+	]
+
+	awakeFromNib [
+		playPauseButton setImage: ((IKIcon iconWithIdentifier: 'media-playback-start') image).
+		nextButton setImage: ((IKIcon iconWithIdentifier: 'go-next') image).
+		previousButton setImage: ((IKIcon iconWithIdentifier: 'go-previous') image).	
+		volumeSlider setIntValue: (player volume).
+	]
+
+	play [
+		player play.
+	]
+
+	pause [
+		player pause.
+		playPauseButton setImage: ((IKIcon iconWithIdentifier: 'media-playback-start') image).
+	]
+
+	playPause: sender [
+		player isPlaying ifTrue: [ self pause. ]
+		                ifFalse: [ self play. ].
+	]
+
+	setPosition: sender [
+		player seekTo: (positionSlider intValue).
+	]
+
+	setVolume: sender [
+		player setVolume: (volumeSlider intValue).
+	]
+
+	next: sender [
+		player next.
+	]
+
+	previous: sender
+	[
+		'TODO: previous' log.
+	]
+
+	playObject: anObject start: shouldStart [
+		'Playing URL: ' log.
+		anObject representedObject URL log.
+		player stop.
+		player addURL: (anObject representedObject URL).
+		shouldStart ifTrue: [ self play. ].
+		player play.
+	]
+
+	setIconToPlay [
+		" Workaround until ivar access from within blocks works."
+		 playPauseButton setImage: ((IKIcon iconWithIdentifier: 'media-playback-pause') image).
+	]
+
+	setIconToPause [
+		 playPauseButton setImage: ((IKIcon iconWithIdentifier: 'media-playback-start') image).
+	]
+
+	timerEvent: sender [
+		player isPlaying ifTrue: ['playing' log. self setIconToPlay. ] 
+		                  ifFalse: ['paused' log. self setIconToPause. ].
+		positionSlider setMaxValue: (player duration).
+		positionSlider setIntValue: (player currentPosition).
 	]
 ]
