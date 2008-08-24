@@ -200,7 +200,7 @@ void testWithBackend(Class backend, NSURL * anURL)
 	NSAutoreleasePool * pool = [NSAutoreleasePool new];
 	id serializer = [ETSerializer serializerWithBackend:backend forURL:anURL];
 	id foo = [TestClass new];
-	[serializer serializeObject:foo withName:"foo"];
+	[serializer serializeObject:foo withName:@"foo"];
 	[pool release];
 }
 id testRoundTrip(NSString * tempfile, id object)
@@ -208,7 +208,7 @@ id testRoundTrip(NSString * tempfile, id object)
 	NSAutoreleasePool * pool = [NSAutoreleasePool new];
 	id serializer = [ETSerializer serializerWithBackend:[ETSerializerBackendBinary class]
 												 forURL:[NSURL fileURLWithPath:tempfile]];
-	[serializer serializeObject:object withName:"test"];
+	[serializer serializeObject:object withName:@"test"];
 	id deserializer = [serializer deserializer];
 	[pool release];
 	[deserializer setVersion:0];

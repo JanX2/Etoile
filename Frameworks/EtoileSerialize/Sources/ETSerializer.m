@@ -533,11 +533,11 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
  * Public version of the object serialization method.  Serializes referenced
  * objects as well.
  */
-- (unsigned long long) serializeObject:(id)anObject withName:(char*)name
+- (unsigned long long) serializeObject:(id)anObject withName:(NSString*)name
 {
 	[self newVersion];
 	[self enqueueObject:anObject];
-	[self serializeObject:anObject named:name];
+	[self serializeObject:anObject named:(char *)[name UTF8String]];
 	while(0 != NSCountHashTable(unstoredObjects))
 	{
 		NSHashEnumerator e = NSEnumerateHashTable(unstoredObjects);

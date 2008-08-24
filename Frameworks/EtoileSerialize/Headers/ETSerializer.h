@@ -78,7 +78,7 @@ typedef parsed_type_size_t(*custom_serializer)(char*,void*, id<ETSerializerBacke
 /**
  * Serialize the specified object.
  */
-- (unsigned long long) serializeObject:(id)anObject withName:(char*)aName;
+- (unsigned long long) serializeObject:(id)anObject withName:(NSString*)aName;
 /**
  * Add an object to the queue of unstored objects if we haven't loaded it yet,
  * or increment its reference count if we have.
