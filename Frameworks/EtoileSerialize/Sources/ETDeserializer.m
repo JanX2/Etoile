@@ -205,6 +205,7 @@ static NSMapTable * deserializerFunctions;
 {
 	free(args);
 	free(stackFrame);
+	DESTROY(object);
 	[super dealloc];
 }
 - (id) initWithDeserializer:(ETDeserializer*)aDeserializer 
@@ -222,7 +223,8 @@ static NSMapTable * deserializerFunctions;
 	//realloc ever needs to move the original allocation.
 	stackFrame = calloc(1024,1);
 	nextArg = stackFrame;
-	object = anInvocation;
+	// anInvocation may be released before the receiver so we retain it
+	ASSIGN(object, anInvocation);
 	//aDeserializer ought to have a longer life cycle than us.
 	realDeserializer = aDeserializer;
 	return self;
