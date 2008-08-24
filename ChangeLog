@@ -5,6 +5,15 @@
 	* README:
 	Updated for Smalltalk dependencies.
 
+2008-08-24  Quentin Mathe <qmathe@club-internet.fr>
+
+	* INSTALL:
+	* INSTALL.Ubuntu:
+	* README:
+	Updated for the upcoming CoreObject dependency on PostgreSQL. Tweaked 
+	INSTALL.Ubuntu to specify Cairo instead of libart for Gutsy and added 
+	the 'universe' tag to some packages.
+
 2008-06-02  Quentin Mathe <qmathe@club-internet.fr>
 
 	* INSTALL: Fixed required GNUstep release versions and mentioned 
