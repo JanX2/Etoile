@@ -1466,7 +1466,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
             {
                 currBox = [self flipRectsYAxis: currBox];
                 //currBox = [self convertRect: currBox fromView: nil];
-                [self addToolTipRect: currBox owner: self userData: (void*) x];
+                [self addToolTipRect: currBox owner: self userData: (void*)(intptr_t) x];
             }
         }
 	}
@@ -2137,7 +2137,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(NSString*)    view:(NSView *)view stringForToolTip:(NSToolTipTag)tag point:(NSPoint)point userData:(void *)userData
 {
-    int     x = (int) userData;
+    int     x = (int)(intptr_t) userData;
     
     if( [[self dataSource] respondsToSelector: @selector(distributedView:toolTipForItemAtIndex:)] )
         return [[self dataSource] distributedView: self toolTipForItemAtIndex: x];
