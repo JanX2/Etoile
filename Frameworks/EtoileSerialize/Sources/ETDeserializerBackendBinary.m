@@ -3,6 +3,7 @@
 #import "ETDeserializer.h"
 #import "ETObjectStore.h"
 #import <GNUstepBase/GSVersionMacros.h>
+#import "IntMap.h"
 
 #define GS_GNUSTEP_V GS_API_LATEST
 #if GS_API_VERSION(0, 011700)
@@ -88,8 +89,8 @@ enum {
 		int refCount = *(int*)&blob[i];
 		i += sizeof(int);
 		//NSLog(@"ref: %d, refCount: %d, offset: %d",ref, refCount, offset);
-		NSMapInsert(index, (void*)(int)ref, (void*)offset);
-		NSMapInsert(refCounts, (void*)(int)ref, (void*)refCount);
+		NSIntMapInsert(index, ref, offset);
+		NSIntMapInsert(refCounts, ref, refCount);
 		if(offset == sizeof(int))
 		{
 			principalObjectRef = ref;
@@ -140,7 +141,7 @@ enum {
  */
 - (char*) classNameOfPrincipalObject
 {
-	unsigned int offset = (unsigned int)NSMapGet(index, (void*)principalObjectRef);
+	unsigned int offset = (unsigned int)NSIntMapGet(index, principalObjectRef);
 	char * obj = ((char*)[data bytes]) + offset;
 	if(*obj == '<')
 	{
@@ -159,7 +160,7 @@ enum {
 	//Note: Using int rather than off_t here.  This is not
 	//actually a limitation, since NSData and common sense
 	//both impose tighter ones.
-	unsigned int offset = (unsigned int)NSMapGet(index, (void*)aReference);
+	unsigned int offset = (unsigned int)NSIntMapGet(index, aReference);
 	//TODO: check offset doesn't point inside the index
 	if(nil == data || offset > [data length])
 	{
@@ -299,7 +300,8 @@ enum {
 	}
 	[deserializer endObject];
 	[deserializer setReferenceCountForObject:aReference 
-										  to:(int) NSMapGet(refCounts, (void*)aReference)];
+										  to:
+		(int)NSIntMapGet(refCounts, aReference)];
 	return YES;
 }
 

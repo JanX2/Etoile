@@ -4,6 +4,7 @@
 #import "ETDeserializerBackend.h"
 #import "ETDeserializer.h"
 #import "ETObjectStore.h"
+#import "IntMap.h"
 
 
 #define FORMAT(format,...) do {\
@@ -110,11 +111,13 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 {
 	NSMapEnumerator enumerator = NSEnumerateMapTable(offsets);
 	uint32_t indexOffset = (uint32_t)OFFSET;
-	CORef ref;
-	int offset;
-	while(NSNextMapEnumeratorPair(&enumerator, (void*)&ref, (void*)&offset))
+	void *refp;
+	void *offsetp;
+	while(NSNextMapEnumeratorPair(&enumerator, &refp, &offsetp))
 	{
-		int refCount = (int)NSMapGet(refCounts, (void*)ref);
+		CORef ref = (CORef)(intptr_t)refp;
+		int offset = (int)(intptr_t) offsetp;
+		int refCount = (int)NSIntMapGet(refCounts, ref);
 		WRITE(&ref, sizeof(ref));
 		WRITE(&offset, sizeof(offset));
 		WRITE(&refCount, sizeof(refCount));
@@ -133,7 +136,7 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
 {
 	uint32_t offset = OFFSET;
-	NSMapInsert(offsets, (void*)aReference, (void*)(int)offset);
+	NSIntMapInsert(offsets, aReference, offset);
 	FORMAT("<%s%c",aClass->name,0);
 }
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName
@@ -142,8 +145,8 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 }
 - (void) incrementReferenceCountForObject:(CORef)anObjectID
 {
-	int refCount = (int)NSMapGet(refCounts, (void*)anObjectID);
-	NSMapInsert(refCounts, (void*)anObjectID, (void*) (++refCount));
+	int refCount = (int)NSIntMapGet(refCounts, anObjectID);
+	NSIntMapInsert(refCounts, anObjectID,  (++refCount));
 }
 
 - (void) endObject

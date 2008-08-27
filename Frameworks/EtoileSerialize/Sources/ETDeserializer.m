@@ -72,7 +72,7 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
  * Push a state indicating that we are deserializing a structure with a custom
  * deserializer onto the stack.
  */
-#define PUSH_CUSTOM(offset) PUSH_STATE(offset, 'c');STATE.index = (int)function
+#define PUSH_CUSTOM(offset) PUSH_STATE(offset, 'c');STATE.index = (unsigned long)function
 /**
  * Push a state indicating that we are deserializing an array onto the stack.
  */
@@ -97,7 +97,7 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 @implementation ETDeserializer (RegisterObjectPointer)
 - (void) registerPointer:(id*)aPointer forObject:(CORef)anObject
 {
-	NSMapInsert(objectPointers, aPointer, (void*)anObject);
+	NSMapInsert(objectPointers, aPointer, (void*)(intptr_t)anObject);
 }
 @end
 
@@ -138,7 +138,7 @@ inline static void * offsetOfIvar(id anObject, char * aName, int hint, int size,
 					void * offset = state->startOffset;
 					state->startOffset += size;
 					state->size += size;
-					while((int)state->startOffset % __alignof__(int) != 0)
+					while((intptr_t)state->startOffset % __alignof__(int) != 0)
 					{
 						state->startOffset++;
 						state->size++;
