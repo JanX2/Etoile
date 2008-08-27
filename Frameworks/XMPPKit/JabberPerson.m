@@ -299,7 +299,9 @@ static NSString * avatarCachePath = nil;
 			if(address != nil &&  [vCard valueForProperty:kABJabberInstantProperty] == nil)
 			{
 #ifdef GNUSTEP
-				ABMutableMultiValue * vCardJID = [[ABMutableMultiValue alloc] initWithType:(id)kABMultiStringProperty];
+				ABMutableMultiValue * vCardJID = 
+					[(ABMutableMultiValue*)[ABMutableMultiValue alloc]
+				   		initWithType:kABMultiStringProperty];
 #else
 				ABMutableMultiValue * vCardJID = [[ABMutableMultiValue alloc] init];
 #endif

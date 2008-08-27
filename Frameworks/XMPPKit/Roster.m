@@ -298,7 +298,7 @@
 					  forJID:(NSString*)aJID
 {
 	//<group>
-	ETXMLNode * group = [[ETXMLNode alloc] initWithType:@"group"];
+	ETXMLNode * group = [(ETXMLNode*)[ETXMLNode alloc] initWithType:@"group"];
 	[group setCData:aGroup];
 	//<item>
 	ETXMLNode * item = [[ETXMLNode alloc] initWithType:@"item"
