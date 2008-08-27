@@ -63,7 +63,7 @@ PopplerKit_RESOURCE_FILES = \
 	Fonts/*
 
 
-ADDITIONAL_OBJCFLAGS = -Wall -Wno-import -DGNUSTEP
+ADDITIONAL_OBJCFLAGS = -Wall -Wno-import -DGNUSTEP -Wno-write-strings
 ADDITIONAL_INCLUDE_DIRS = -I./MissingKit
 
 ifeq ($(HAVE_CAIRO), YES)

@@ -29,7 +29,7 @@ CC = ${CXX}
 
 SUBPROJECT_NAME=bindings
 
-bindings_CFLAGS = -g 
+bindings_CFLAGS = -g  -Wno-write-strings
 
 bindings_OBJCFLAGS = -Wno-import
 
