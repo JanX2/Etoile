@@ -58,7 +58,7 @@
 	{
 		unsigned count = *(unsigned*)aBlob;
 		*objects = calloc(count * 2 + 2, sizeof(id));
-		(*objects)[0] = (id)count;
+		(*objects)[0] = (id)(intptr_t)count;
 	}
 	int index;
 	if(sscanf(aVariable, "map.%d", &index) == 1)

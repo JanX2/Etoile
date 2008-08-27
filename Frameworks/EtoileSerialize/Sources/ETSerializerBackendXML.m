@@ -5,6 +5,7 @@
 #import "ETDeserializerBackend.h"
 #import "ETDeserializer.h"
 #import "ETObjectStore.h"
+#import "IntMap.h"
 
 @class ETUUID;
 
@@ -125,8 +126,8 @@
 }
 - (void) incrementReferenceCountForObject:(CORef)anObjectID
 {
-	int refCount = (int)NSMapGet(refCounts, (void*)anObjectID);
-	NSMapInsert(refCounts, (void*)anObjectID, (void*) (++refCount));
+	int refCount = (int)NSIntMapGet(refCounts, anObjectID);
+	NSIntMapInsert(refCounts, anObjectID,  (++refCount));
 }
 
 - (void) endObject

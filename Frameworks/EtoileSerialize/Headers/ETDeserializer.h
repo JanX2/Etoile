@@ -11,7 +11,7 @@
 typedef struct 
 {
 	void * startOffset;
-	int index;
+	unsigned long index;
 	char type;
 	int size;
 } ETDeserializerState;
