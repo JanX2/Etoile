@@ -20,7 +20,7 @@ NSObject subclass: EtoileTunesController
 	]
 
 	newMainModel [
-		mainModel := ETPlaylist alloc init.
+		mainModel := ETPlaylist new.
 	]
 
 	serialize [
@@ -38,14 +38,8 @@ NSObject subclass: EtoileTunesController
 		'init' log.
 		(NSFileManager defaultManager fileExistsAtPath: (self LIBRARYPATH)) ifTrue:[ self deserialize.].
 		mainModel = nil ifTrue: [ self newMainModel. ].
-		playlistModel := ETPlaylist alloc init.
+		playlistModel := ETPlaylist new.
 		^ self.
-	]
-
-	dealloc [
-		mainModel release.
-		playlistModel release.
-		super dealloc.
 	]
 
 	applicationWillTerminate: aNotification [
@@ -92,7 +86,7 @@ NSObject subclass: EtoileTunesController
 
 	newPlaylist: sender [
 	| newPlaylist |
-		newPlaylist := ETPlaylist alloc init.
+		newPlaylist := ETPlaylist new.
 		newPlaylist addObject:(ETMusicFile alloc initWithURL:(NSURL URLWithString: 'http://scfire-chi0l-1.stream.aol.com/stream/1018')).
 		playlistModel addObject: newPlaylist.
 		playlistContainer reloadAndUpdateLayout.
@@ -151,12 +145,6 @@ NSObject subclass: MusicPlayerController
 		                                               userInfo: nil
 		                                                repeats: 1.
 		^ self.
-	]
-
-	dealloc [
-		uiUpdateTimer invalidate.
-		player release.
-		super dealloc.
 	]
 
 	awakeFromNib [

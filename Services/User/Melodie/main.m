@@ -4,9 +4,6 @@
 
 int main(int argc, char **argv)
 {
-	id pool = [NSAutoreleasePool new];
-	[SmalltalkCompiler loadApplicationScriptNamed:@"Melodie"];
-	[pool release];
-
+	[SmalltalkCompiler loadAllScriptsForApplication];
 	return NSApplicationMain(argc, (const char **) argv);
 }
