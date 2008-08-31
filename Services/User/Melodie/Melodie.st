@@ -27,7 +27,7 @@ NSObject subclass: EtoileTunesController
 	| pool serializer |
 		"FIXME: serialize into ~/GNUstep like before the change to Smalltalk"
 		'Serializing..' log.
-		pool := NSAutoreleasePool new.
+		pool := NSAutoreleasePool alloc init.
 		serializer := ETSerializer serializerWithBackend: (ETSerializerBackendBinary class)
 	                                                  forURL: (NSURL fileURLWithPath: (self LIBRARYPATH)).
 		serializer serializeObject:mainModel withName: 'library'.
