@@ -9,6 +9,8 @@ ADDITIONAL_OBJCFLAGS += `pkg-config --cflags taglib`
 # mp4v2
 ADDITIONAL_LDFLAGS += -lmp4v2
 APP_NAME = Melodie
+
+$(APP_NAME)_APPLICATION_ICON = $(APP_NAME).tiff
 $(APP_NAME)_OBJC_FILES = $(wildcard *.m)
 $(APP_NAME)_PRINCIPAL_CLASS = ETApplication
 $(APP_NAME)_MAIN_MODEL_FILE = $(APP_NAME).gorm
