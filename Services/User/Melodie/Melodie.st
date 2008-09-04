@@ -186,12 +186,27 @@ NSObject subclass: MusicPlayerController
 	]
 
 	playObject: anObject start: shouldStart [
+		| allObjects currentIndex newQueue URLs |
 		'Playing URL: ' log.
 		anObject representedObject URL log.
+
+		allObjects := anObject baseItem itemsIncludingAllDescendants.
+		currentIndex := (allObjects indexOfObjectIdenticalTo: anObject).
+		newQueue := (allObjects subarrayWithLocation: currentIndex length: ((allObjects count) - currentIndex)).
+
+		
+		" Fill URLs with the URLs of the repobjects of the items in newQueue, if they have URLs.
+		  Without the ifTrue: [1.] ifFalse: [nil.]. hack, select: would include objects which should have failed. 
+		  Ubboxing problem? "
+		URLs := (newQueue select: [ :x | (x representedObject respondsToSelector: 'URL') ifTrue: [1.] ifFalse: [nil.]. ]) map: [ :x | x representedObject URL.].
+
 		player stop.
-		player addURL: (anObject representedObject URL).
+
+		" TODO: rebuild the queue when the playlist is modified. "
+		player setQueue: URLs.
+
 		shouldStart ifTrue: [ self play. ].
-		player play.
+		songLabel setStringValue: (anObject representedObject valueForProperty:'kETTitleProperty').
 	]
 
 	setIconToPlay [
@@ -208,5 +223,10 @@ NSObject subclass: MusicPlayerController
 		                  ifFalse: ['paused' log. self setIconToPause. ].
 		positionSlider setMaxValue: (player duration).
 		positionSlider setIntValue: (player currentPosition).
+
+		" songLabel setStringValue: (player currentURL absoluteString)."
+
+		" FIXME: calling player currentURL in this timer callback causes a segfault the second time it happens, but not until there's a song playing
+		  i.e. currentURL is non-nil "
 	]
 ]
