@@ -53,5 +53,5 @@
 - (void) storeSelector:(SEL)aSelector withName:(char*)aName {}
 - (void) storeCString:(char*)aCString withName:(char*)aName {}
 - (void) storeData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName {}
-- (void) storeUUID: (char *)uuid withName: (char *)aName {}
+- (void) storeUUID:(unsigned char *)aUUID withName:(char *)aName {}
 @end

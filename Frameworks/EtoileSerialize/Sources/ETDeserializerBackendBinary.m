@@ -3,6 +3,7 @@
 #import "ETDeserializer.h"
 #import "ETObjectStore.h"
 #import <GNUstepBase/GSVersionMacros.h>
+#import <EtoileFoundation/ETUUID.h>
 #import "IntMap.h"
 
 #define GS_GNUSTEP_V GS_API_LATEST
@@ -289,8 +290,8 @@ enum {
 			case '$':
 				name = ++obj;
 				SKIP_STRING();
-				[deserializer loadUUID: obj withName: name];
-				SKIP_STRING(); //obj += (COUUIDSize + 1);
+				[deserializer loadUUID: (unsigned char *)obj withName: name];
+				obj += ETUUIDSize;
 				break;
 			default:
 				return [self deserializeData: obj withTypeChar: (char)*obj];

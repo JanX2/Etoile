@@ -198,10 +198,10 @@
 	FORMAT(">>;\n");
 }
 
-- (void) storeUUID: (char *)uuid withName: (char *)aName
+- (void) storeUUID:(unsigned char *)aUUID withName:(char *)aName
 {
 	[self indent];
-	ETUUID * uuidObj = [[ETUUID alloc] initWithUUID:(unsigned char*)uuid];
+	ETUUID * uuidObj = [[ETUUID alloc] initWithUUID:aUUID];
 	FORMAT("UUID %s=%s\n", aName, [[uuidObj stringValue] UTF8String]);
 	[uuidObj release];
 }

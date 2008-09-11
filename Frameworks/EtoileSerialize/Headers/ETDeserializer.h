@@ -216,6 +216,15 @@ typedef void*(*custom_deserializer)(char*,void*,void*);
  * copying the data.
  */
 - (void) loadData:(void*)aBlob ofSize:(size_t)aSize withName:(char*)aName;
-/** Handle the deserialization of core objects. */
-- (void) loadUUID: (char *)anUUID withName: (char *)aName;
+/**
+  * Set the instance variable aName to the value returned by 
+  * -lookUpObjectForUUID: with aUUID. 
+  */
+- (void) loadUUID:(unsigned char *)aUUID withName:(char *)aName;
+/**
+  * Look up the object with aUUID. By default, returns a retained UUID instance.
+  * If you don't use CoreObject, you may patch this method with a category to 
+  * implement a custom strategy that resolve objects associated with UUIDs. 
+  */
+- (id) lookUpObjectForUUID:(unsigned char *)aUUID;
 @end

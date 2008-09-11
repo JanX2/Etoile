@@ -188,10 +188,10 @@ STORE_METHOD(Double, double, "d", "f")
 	[store writeBytes:aBlob count:aSize];
 	[store writeBytes:(unsigned char*)"]]></data>\n" count:11];
 }
-- (void) storeUUID:(char *)uuid withName:(char *)aName
+- (void) storeUUID:(unsigned char *)aUUID withName:(char *)aName
 {
 	//FORMAT("<uuid name='%s'>
-	ETUUID * uuidObj = [[ETUUID alloc] initWithUUID:(unsigned char*)uuid];
+	ETUUID * uuidObj = [[ETUUID alloc] initWithUUID:aUUID];
 	FORMAT("<uuid name='%s'>%s</uuid>\n", aName, [[uuidObj stringValue] UTF8String]);
 	[uuidObj release];
 }

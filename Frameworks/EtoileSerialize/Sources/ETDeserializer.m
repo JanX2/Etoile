@@ -1,3 +1,4 @@
+#import <EtoileFoundation/ETUUID.h>
 #import "ETDeserializer.h"
 #import "ETDeserializerBackend.h"
 //TODO: Move the things from here that I need into a shared header.
@@ -374,6 +375,14 @@ LOAD_METHOD(Selector, SEL)
 		}
 	}
 }
+
+- (void) loadUUID:(unsigned char *)aUUID withName:(char *)aName
+{
+	id foundObject = [realDeserializer lookUpObjectForUUID:aUUID];
+	IS_NEW_ARG(aName);
+	ADD_ARG(id, foundObject);
+}
+
 #undef LOAD_METHOD
 #undef LOAD_INTRINSIC
 #undef CHECK_CUSTOM
@@ -734,9 +743,24 @@ LOAD_METHOD(Selector, SEL)
 	}
 }
 
-- (void) loadUUID: (char *)anUUID withName: (char *)aName
+- (void) loadUUID:(unsigned char *)aUUID withName:(char *)aName
 {
-	NSLog(@"Load UUID %s to name %s", anUUID, aName);
+	id foundObject = [self lookUpObjectForUUID:aUUID];
+	//NSLog(@"Load object %@ with UUID %-0.8x at name %s", foundObject, aUUID, aName);
+
+	if(![object deserialize:aName fromPointer:aUUID version:classVersion])
+	{
+		char *address = OFFSET_OF_IVAR(object, aName, loadedIVar++, sizeof(id));
+		if(address != NULL)
+		{
+			*(id *)address = foundObject;
+		}
+	}
+}
+
+- (id) lookUpObjectForUUID:(unsigned char *)aUUID
+{
+	return [[ETUUID alloc] initWithUUID:aUUID];
 }
 
 - (void) dealloc

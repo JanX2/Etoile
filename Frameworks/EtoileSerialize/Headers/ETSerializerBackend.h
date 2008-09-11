@@ -161,6 +161,6 @@
 /**
  * Stores an UUID reference for the instance variable aName. 
  */
-- (void) storeUUID: (char *)uuid withName: (char *)aName;
+- (void) storeUUID:(unsigned char *)aUUID withName:(char *)aName;
 @end
 

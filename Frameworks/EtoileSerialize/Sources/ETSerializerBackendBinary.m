@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <objc/objc-api.h>
+#import <EtoileFoundation/ETUUID.h>
 #import "ETSerializerBackendBinary.h"
 #import "ETDeserializerBackend.h"
 #import "ETDeserializer.h"
@@ -17,8 +18,6 @@
 #define STORECOMPLEX(type, value, size) WRITE(type,1);FORMAT("%s%c",aName, '\0');WRITE(value, size)
 #define STORE(type, value, c_type) STORECOMPLEX(type, &value, sizeof(c_type))
 #define OFFSET ([store size])
-// FIXME: Remove that once UUID class is part of EtoileFoundation
-#define ETUUIDSize (16 * sizeof(char))
 
 
 /**
@@ -218,10 +217,10 @@ STORE_METHOD(UnsignedLongLong, unsigned long long, "Q")
 	WRITE(aBlob,aSize);
 }
 
-- (void) storeUUID: (char *)uuid withName: (char *)aName
+- (void) storeUUID: (unsigned char *)aUUID withName: (char *)aName
 {
 	// Use the symbol $ to denote a core object in the binary data
-	STORECOMPLEX("$", uuid, ETUUIDSize);
+	STORECOMPLEX("$", aUUID, ETUUIDSize);
 }
 
 @end
