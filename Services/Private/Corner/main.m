@@ -15,4 +15,5 @@ int main(void)
 	[[NSAutoreleasePool alloc] init];
 	/* Creates its own runloop */
 	[[Corner alloc] init];
+	return 0;
 }
