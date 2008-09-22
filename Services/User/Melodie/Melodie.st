@@ -1,6 +1,7 @@
 NSObject subclass: EtoileTunesController
 [
-	| window  mainContainer  playlistContainer search  musicPlayerController URLTextField addURLWindow mainModel  playlistModel |
+	| window  mainContainer  playlistContainer search  musicPlayerController URLTextField addURLWindow 
+	  mainModel  playlistModel smartGroup |
 
 	KnownExtensions	[
 		^ {'mp3'. 'ogg'. 'flac'. 'aac'. 'm4a'}.
@@ -118,6 +119,30 @@ NSObject subclass: EtoileTunesController
 		playlistContainer setHasVerticalScroller: 0.
 		playlistContainer setTarget: self.
 		playlistContainer setDoubleAction: 'doubleClickInContainer:'.
+
+		search setDelegate: self.
+		search log.
+	]
+
+	controlTextDidChange: notif [
+		('searched for: ' stringByAppendingString: (search stringValue)) log.
+		(smartGroup = nil) ifTrue: [ self smartGroupOn. ].
+		(search stringValue length = 0)
+		    ifTrue: [ 
+			mainContainer layoutItem setRepresentedObject: mainModel.
+		]  ifFalse: [
+			mainContainer layoutItem setRepresentedObject: smartGroup.
+			smartGroup setPredicate: (NSPredicate predicateWithFormat: '(%K CONTAINS[cd] %@) OR (%K CONTAINS[cd] %@)'
+			                                            argumentArray: {'kETTitleProperty' . search stringValue . 'kETAlbumProperty' . search stringValue }).
+		].
+		mainContainer reloadAndUpdateLayout.
+	]
+
+	smartGroupOn [
+		'Turning on smart group.' log.
+		smartGroup := COSmartGroup alloc init.
+		smartGroup setTarget: mainModel.
+		mainContainer layoutItem setRepresentedObject: smartGroup.
 	]
 	
 	doubleClickInContainer: sender [
@@ -197,8 +222,9 @@ NSObject subclass: MusicPlayerController
 		
 		" Fill URLs with the URLs of the repobjects of the items in newQueue, if they have URLs.
 		  Without the ifTrue: [1.] ifFalse: [nil.]. hack, select: would include objects which should have failed. 
-		  Ubboxing problem? "
-		URLs := (newQueue select: [ :x | (x representedObject respondsToSelector: 'URL') ifTrue: [1.] ifFalse: [nil.]. ]) map: [ :x | x representedObject URL.].
+		  Unboxing problem? "
+		"  URLs := (newQueue select: [ :x | (x representedObject respondsToSelector: 'URL') ifTrue: [1.] ifFalse: [nil.]. ]) map: [ :x | x representedObject URL.]. "
+		URLs := newQueue map: [ :x | x representedObject URL.].
 
 		player stop.
 
