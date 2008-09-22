@@ -45,7 +45,8 @@
 	    "doubleClickInContainer:",
 	    "addFiles:",
 	    "addURL:",
-	    "newPlaylist:"
+	    "newPlaylist:",
+	    "clearSearch:"
 	);
 	Outlets = (
 	    window,
@@ -68,6 +69,7 @@
 	    "expand:",
 	    "inspect:",
 	    "inspectSelection:",
+	    "clearSearch:",
 	    "newPlaylist:",
 	    "next:",
 	    "playPause:",

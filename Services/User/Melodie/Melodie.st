@@ -145,6 +145,11 @@ NSObject subclass: EtoileTunesController
 		mainContainer layoutItem setRepresentedObject: smartGroup.
 	]
 	
+	clearSearch: sender [
+		search setStringValue: (NSString string). "FIXME: '' for empty string ? "
+		self controlTextDidChange: nil.
+	]
+
 	doubleClickInContainer: sender [
 		 'Got double-click on ' log.
 		sender doubleClickedItem log.
