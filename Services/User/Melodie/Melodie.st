@@ -50,7 +50,7 @@ NSObject subclass: EtoileTunesController
 	addToMainModel: obj [
 		'Adding song: ' log.
 		obj log.
-		mainModel addObject: obj.
+		mainModel addMember: obj.
 	]
 
 	addPath: pathArg [
@@ -71,7 +71,7 @@ NSObject subclass: EtoileTunesController
 		filename := openPanel filenames lastObject.
 		fm := NSFileManager defaultManager.
 		(fm enumeratorAtPath: filename) allObjects foreach: [ :subFile | self addPath: (filename stringByAppendingPathComponent: subFile). ].
-		"(fm enumeratorAtPath: filename) allObjects foreach: [ :subFile |  mainModel addObject: subFile. ]."
+		"(fm enumeratorAtPath: filename) allObjects foreach: [ :subFile |  mainModel addMember: subFile. ]."
 
 		mainContainer reloadAndUpdateLayout.
 	]
@@ -81,15 +81,15 @@ NSObject subclass: EtoileTunesController
 	| string |
 		addURLWindow orderOut: self.
 		string := URLTextField stringValue stringByAddingPercentEscapesUsingEncoding: 4. 
-		mainModel addObject: (ETMusicFile alloc initWithURL:(NSURL URLWithString:string)).
+		mainModel addMember: (ETMusicFile alloc initWithURL:(NSURL URLWithString:string)).
 		mainContainer reloadAndUpdateLayout.
 	]
 
 	newPlaylist: sender [
 	| newPlaylist |
 		newPlaylist := ETPlaylist new.
-		newPlaylist addObject:(ETMusicFile alloc initWithURL:(NSURL URLWithString: 'http://scfire-chi0l-1.stream.aol.com/stream/1018')).
-		playlistModel addObject: newPlaylist.
+		newPlaylist addMember:(ETMusicFile alloc initWithURL:(NSURL URLWithString: 'http://scfire-chi0l-1.stream.aol.com/stream/1018')).
+		playlistModel addMember: newPlaylist.
 		playlistContainer reloadAndUpdateLayout.
 	]
 
