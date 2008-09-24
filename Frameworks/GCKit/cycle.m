@@ -4,27 +4,31 @@
 /**
  * Structure storing information about object children.
  */
-struct child_info
+struct GCChildInfo
 {
 	/** Number of children of this class. */
-	unsigned count;
+	unsigned int count;
 	/** Offsets of children. */
 	size_t *offsets;
 	/** Method pointer for enumerating extra children. */
-	IMP extra_children;
+	IMP extraChildren;
 };
 
 /**
- * Method for enumerating children of objects which respond to -objectEnumerator.
+ * Method implementation for calling aMethod with anObject as argument on the 
+ * children of the receiver. The receiver is the first argument self and must 
+ * respond to -objectEnumerator that is used to access the children.
+ * This method enumerates the children with -nextObject IMP and calls aMethod 
+ * passed in parameter on each enumerated object.
  */
-void enumerateChildren(id self, SEL sel, IMP method, id object)
+void GCMakeChildrenObjectsPerformSelectorWithObject(id self, SEL sel, IMP aMethod, id anObject)
 {
 	NSEnumerator *e = [self objectEnumerator];
 	IMP next = [e methodForSelector:@selector(nextObject)];
 	id child;
-   	while (nil !=( child = next(e, @selector(nextObject))))
+   	while (nil != (child = next(e, @selector(nextObject))))
 	{
-		method(child, sel, object);
+		aMethod(child, sel, anObject);
 	}
 }
 
@@ -33,26 +37,27 @@ void enumerateChildren(id self, SEL sel, IMP method, id object)
  */
 #define ADD_OFFSET(offset) \
 	do {\
-	if (found == space)\
-	{\
-		space *= 2;\
-		buffer = realloc(buffer, sizeof(size_t[space]));\
-	}\
-	buffer[found++] = offset;\
+		if (found == space)\
+		{\
+			space *= 2;\
+			buffer = realloc(buffer, sizeof(size_t[space]));\
+		}\
+		buffer[found++] = offset;\
 	} while(0)
 
 // Note: If we want to save space we could use char*s and short*s for objects
 // less than 2^8 and 2^16 big and add a header indicating this.
 /**
  * Create an instance variable map for the specified class.  Inspects the ivars
- * metadata and creates a child_info structure for the class.  This is cached
+ * metadata and creates a GCChildInfo structure for the class.  This is cached
  * in the gc_object_type field in the class structure.
  */
-struct child_info *make_ivar_map(Class aClass)
+struct GCChildInfo *GCMakeIVarMap(Class aClass)
 {
-	struct child_info *info = calloc(1, sizeof(struct child_info));
+	struct GCChildInfo *info = calloc(1, sizeof(struct GCChildInfo));
 	//long end = aClass->instance_size;
-	struct objc_ivar_list * ivar_list = aClass->ivars;
+	struct objc_ivar_list *ivar_list = aClass->ivars;
+
 	if (NULL == ivar_list)
 	{
 		info->count = 0;
@@ -63,7 +68,7 @@ struct child_info *make_ivar_map(Class aClass)
 		unsigned space = ivar_list->ivar_count;
 		unsigned found = 0;
 		// First guess - every instance variable is an object
-		size_t * buffer = malloc(sizeof(size_t[space]));
+		size_t *buffer = malloc(sizeof(size_t[space]));
 		for (unsigned i=0 ; i<ivar_list->ivar_count ; ++i)
 		{
 			struct objc_ivar *ivar = &ivar_list->ivar_list[i];
@@ -92,12 +97,12 @@ struct child_info *make_ivar_map(Class aClass)
 	}
 	if ([aClass instancesRespondToSelector:@selector(_forAllChildren:with:)])
 	{
-		info->extra_children = 
+		info->extraChildren = 
 			[aClass instanceMethodForSelector:@selector(_forAllChildren:with:)];
 	}
 	else if ([aClass instancesRespondToSelector:@selector(objectEnumerator)])
 	{
-		info->extra_children = (IMP)enumerateChildren;
+		info->extraChildren = (IMP)GCMakeChildrenObjectsPerformSelectorWithObject;
 	}
 	aClass->gc_object_type = info;
 	return info;
@@ -132,7 +137,7 @@ struct child_info *make_ivar_map(Class aClass)
 
 /**
  * Calls method(child, sel, argument) on every child of object.  Uses the
- * instance variable map created by make_ivar_map() and calls the IMP field in
+ * instance variable map created by GCMakeIVarMap() and calls the IMP field in
  * this structure for any instance variables that are automatically detectable.
  */
 void for_all_children(id object, IMP method, SEL sel, id argument)
@@ -142,9 +147,9 @@ void for_all_children(id object, IMP method, SEL sel, id argument)
 	{
 		if (NULL == cls->gc_object_type)
 		{
-			make_ivar_map(cls);
+			GCMakeIVarMap(cls);
 		}
-		struct child_info *info = cls->gc_object_type;
+		struct GCChildInfo *info = cls->gc_object_type;
 		for (unsigned i=0 ; i<info->count ; ++i)
 		{
 			id child = *(id*)(((char*)object) + info->offsets[i]);
@@ -154,9 +159,9 @@ void for_all_children(id object, IMP method, SEL sel, id argument)
 				//for_all_children(child, method, sel, argument);
 			}
 		}
-		if (NULL != info->extra_children)
+		if (NULL != info->extraChildren)
 		{
-			info->extra_children(object, sel, method, argument);
+			info->extraChildren(object, sel, method, argument);
 		}
 		cls = cls->super_class;
 	}
