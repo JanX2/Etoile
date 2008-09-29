@@ -81,22 +81,12 @@
 	NSString *scripts = [defaults stringForKey:@"CornerScript"];
 	if (scripts && ![scripts isEqualToString:@""])
 	{
-		NS_DURING
-		[[[[Parser alloc] init] 
-			parseString:scripts] compileWith:defaultCodeGenerator()];
-		NS_HANDLER
-			NSLog(@"Exception occured compiling:\n%@", scripts);
-		NS_ENDHANDLER
+		[SmalltalkCompiler compileString:scripts];
 	}
 	NSArray *gscripts = [defaults arrayForKey:@"GestureScripts"];
 	FOREACH(gscripts, script, NSString*)
 	{
-		NS_DURING
-		[[[[Parser alloc] init] 
-			parseString:script] compileWith:defaultCodeGenerator()];
-		NS_HANDLER
-			NSLog(@"Exception occured compiling:\n%@", script);
-		NS_ENDHANDLER
+		[SmalltalkCompiler compileString:script];
 	}
 	NSDictionary *actions = [defaults dictionaryForKey:@"GestureScripts"];
 	[gestureActions removeAllObjects];
