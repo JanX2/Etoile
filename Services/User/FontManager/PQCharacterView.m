@@ -27,26 +27,19 @@
 {
 	[super initWithFrame: frame];
 
-#ifdef GNUSTEP
-	fontName = @"Bitstream Vera Sans";
-#else
-	//fontName = @"Helvetica";
-	//fontName = @"TrebuchetMS-Italic";
-	fontName = @"TimesNewRomanPS-ItalicMT";
-#endif
+	fontName = [[NSFont userFontOfSize: 144.0] fontName];
 	fontSize = 144.0;
 	
 	color = [NSColor blackColor];
 	guideColor = [NSColor redColor];
 	backgroundColor = [NSColor whiteColor];
 	
-	character = @"R";
+	character = 0;
 	
 	RETAIN(fontName);
 	RETAIN(color);
 	RETAIN(guideColor);
 	RETAIN(backgroundColor);
-	RETAIN(character);
 
 	return self;
 }
@@ -57,7 +50,6 @@
 	RELEASE(color);
 	RELEASE(guideColor);
 	RELEASE(backgroundColor);
-	RELEASE(character);
 	
 	[super dealloc];
 }
@@ -86,6 +78,18 @@
 	return fontName;
 }
 
+- (void) setCharacter: (unichar)newCharacter
+{
+	character = newCharacter;
+	
+	[self setNeedsDisplay: YES];
+}
+
+- (unichar) character
+{
+	return character;
+}
+
 
 /* Drawing */
 
@@ -94,12 +98,17 @@
 	NSFont *font = [NSFont fontWithName: [self font] size: [self fontSize]];
 	NSBezierPath *path = [[NSBezierPath alloc] init];
 	
+#ifndef GNUSTEP
+	NSCharacterSet *fontCharacterSet = [font coveredCharacterSet];
+#endif
+	
 	/* Text system components */
 	NSTextStorage *textStorage;
 	NSLayoutManager *layoutManager;
 
 	/* Set up text system */
-	textStorage = [[NSTextStorage alloc] initWithString: character];
+	textStorage = [[NSTextStorage alloc] initWithString:
+		[NSString stringWithCharacters: &character length: 1]];
 	[textStorage addAttribute: NSFontAttributeName
 											value: font
 											range: NSMakeRange(0, [textStorage length])];
@@ -113,9 +122,16 @@
 	[backgroundColor set];
 	[NSBezierPath fillRect: rect];
 
-	if ([layoutManager numberOfGlyphs] > 0)
+	float advancement =
+		[font advancementForGlyph: [layoutManager glyphAtIndex: 0]].width;
+
+#ifndef GNUSTEP
+	if ([layoutManager numberOfGlyphs] > 0 && advancement > 0.0 &&
+	    [fontCharacterSet characterIsMember: character])
+#else
+	if ([layoutManager numberOfGlyphs] > 0 && advancement > 0.0)
+#endif
 	{
-		float advancement = [font advancementForGlyph: [layoutManager glyphAtIndex: 0]].width;
 		float ascent = [font ascender];
 		float descent = [font descender];
 		float xHeight = [font xHeight];
@@ -152,7 +168,7 @@
 		[path moveToPoint: NSMakePoint(0.0, baseline + xHeight)];
 		[path lineToPoint: NSMakePoint(rect.size.width, baseline + xHeight)];
 
-		// FIXME: Mac OS X version 10.3 seems to return a bogus italic angle.
+		// NOTE: Mac OS X version 10.3 seems to return a bogus italic angle.
 		if (italicAngle != 0.0)
 		{
 			float top = ([self frame].size.height / 2.0);

@@ -22,12 +22,14 @@
 	NSColor *guideColor;
 	NSColor *backgroundColor;
 	
-	NSString *character;
+	unichar character;
 }
 
 - (void) setFontSize: (float)newSize;
 - (float) fontSize;
 - (void) setFont: (NSString *)newFontName;
 - (NSString *) font;
+- (void) setCharacter: (unichar)newCharacter;
+- (unichar) character;
 
 @end

@@ -14,8 +14,9 @@ APP_NAME = FontManager
 
 FontManager_OBJC_FILES = \
   PQMain.m \
-  PQCharactersController.m \
   PQCharacterView.m \
+  PQCharactersController.m \
+  PQCharactersView.m \
   PQController.m \
   PQFontDocument.m \
   PQFontFamily.m \
@@ -34,7 +35,9 @@ FontManager_LOCALIZED_RESOURCE_FILES = \
 
 FontManager_RESOURCE_FILES = \
   Resources/FontManager.tif \
-  Resources/Document-Font.tif
+  Resources/Document-Font.tif \
+  Resources/UnicodeBlockNames.plist \
+  Resources/UnicodeBlocks.plist
 
 
 FontManager_MAIN_MODEL_FILE = MainMenu.gorm

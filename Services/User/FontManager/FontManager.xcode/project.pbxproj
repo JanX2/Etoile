@@ -94,6 +94,8 @@
 			children = (
 				40399AC20D524EDC00F4EA8B,
 				40399ABD0D524EDC00F4EA8B,
+				40502FB90DF0979D0099EEBA,
+				40502FBA0DF0979D0099EEBA,
 				40399ACA0D524EDC00F4EA8B,
 				40399ABF0D524EDC00F4EA8B,
 				40399AC90D524EDC00F4EA8B,
@@ -128,6 +130,8 @@
 		};
 		2A37F4B8FDCFA73011CA2CEA = {
 			children = (
+				40502FCB0DF099910099EEBA,
+				40502FCC0DF099910099EEBA,
 				40399ABB0D524EC100F4EA8B,
 				40399AAF0D524EAE00F4EA8B,
 				40399AB30D524EAE00F4EA8B,
@@ -569,6 +573,62 @@
 			settings = {
 			};
 		};
+		40502FB90DF0979D0099EEBA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = PQCharactersView.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		40502FBA0DF0979D0099EEBA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = PQCharactersView.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		40502FBB0DF0979D0099EEBA = {
+			fileRef = 40502FB90DF0979D0099EEBA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		40502FBC0DF0979D0099EEBA = {
+			fileRef = 40502FBA0DF0979D0099EEBA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		40502FCB0DF099910099EEBA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist;
+			path = UnicodeBlocks.plist;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		40502FCC0DF099910099EEBA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist;
+			path = UnicodeBlockNames.plist;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		40502FCD0DF099910099EEBA = {
+			fileRef = 40502FCB0DF099910099EEBA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		40502FCE0DF099910099EEBA = {
+			fileRef = 40502FCC0DF099910099EEBA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 //400
 //401
 //402
@@ -655,6 +715,9 @@
 				40399ADB0D524EDC00F4EA8B,
 				40399ADC0D524EDC00F4EA8B,
 				40399ADF0D524EEB00F4EA8B,
+				40502FBB0DF0979D0099EEBA,
+				40502FCD0DF099910099EEBA,
+				40502FCE0DF099910099EEBA,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -671,6 +734,7 @@
 				40399AD70D524EDC00F4EA8B,
 				40399AD80D524EDC00F4EA8B,
 				40399AE00D524EEB00F4EA8B,
+				40502FBC0DF0979D0099EEBA,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

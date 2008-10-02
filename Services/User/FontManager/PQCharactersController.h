@@ -11,14 +11,20 @@
 
 #import <AppKit/AppKit.h>
 #import "PQCharacterView.h"
+#import "PQCharactersView.h"
 
 
 @interface PQCharactersController : NSObject
 {
+  PQCharactersView *charsView;
   PQCharacterView *charView;
   NSSlider *charSizeSlider;
+	NSPopUpButton *unicodeBlockPopUpButton;
 	
 	NSString *fontName;
+	NSDictionary *unicodeBlocks;
+	
+	NSRange characterRange;
 }
 
 - (void) changeCharSize: (id)sender;

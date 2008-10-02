@@ -1,3 +1,16 @@
+2008-10-02  Isaiah Beerbower <public@ipaqah.com>
+	* PQCharactersView.*: View which shows a grid of characters.
+	* PQCharactersController.*: Changed to support PQCharactersView.
+	* PQCharacterView.*: Minor changes.
+	* GNUmakefile: Updated to include last files.
+	* README: Changed version.
+	* Resources/UnicodeBlockNames.plist
+	* Resources/UnicodeBlocks.plist
+
+	* English.lproj/InfoPlist.strings: Updated strings.
+	* English.lproj/FontDocument.gorm: Added Characters View
+	* English.lproj/FontDocument.nib: Same as above.
+
 2008-02-20  Isaiah Beerbower <public@ipaqah.com>
 	* PQController.m: Use PQFontManager.
 	* PQMain.m: Use PQFontManager.

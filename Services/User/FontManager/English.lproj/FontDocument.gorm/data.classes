@@ -2,11 +2,15 @@
     "## Comment" = "Do NOT change this file, Gorm maintains it";
     FirstResponder = {
 	Actions = (
+	    "changeCharSize:",
 	    "changeSampleText:",
+	    "changeSize:",
 	    "install:",
 	    "installAll:",
-	    "changeCharSize:",
-	    "selectFace:"
+	    "changeUnicodeBlock:",
+	    "selectFace:",
+	    "setDataSource:",
+	    "setDelegate:"
 	);
 	Super = NSObject;
     };
@@ -20,13 +24,28 @@
     };
     PQCharactersController = {
 	Actions = (
-	    "changeCharSize:"
+	    "changeCharSize:",
+	    "changeUnicodeBlock:"
 	);
 	Outlets = (
+	    charSizeSlider,
 	    charView,
-	    charSizeSlider
+	    charsView,
+	    unicodeBlockPopUpButton
 	);
 	Super = NSObject;
+    };
+    PQCharactersView = {
+	Actions = (
+	    "setDataSource:",
+	    "setDelegate:"
+	);
+	Outlets = (
+	    dataSource,
+	    delegate,
+	    width
+	);
+	Super = NSView;
     };
     PQFontDocument = {
 	Actions = (
@@ -35,15 +54,17 @@
 	    "selectFace:"
 	);
 	Outlets = (
-	    installButton,
-	    infoView,
-	    tabView,
-	    installAllButton,
-	    facePopUpButton,
-	    sampleController,
-	    charactersController
 	);
 	Super = NSDocument;
+    };
+    PQFontSampleView = {
+	Actions = (
+	    "setDataSource:"
+	);
+	Outlets = (
+	    dataSource
+	);
+	Super = NSView;
     };
     PQSampleController = {
 	Actions = (
@@ -53,11 +74,7 @@
 	);
 	Outlets = (
 	    sampleView,
-	    sizeSlider,
-	    backgroundColorWell,
-	    foregroundColorWell,
-	    samplePopUpButton,
-	    sizeField
+	    sizeSlider
 	);
 	Super = NSObject;
     };
