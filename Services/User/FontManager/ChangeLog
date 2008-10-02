@@ -6,8 +6,6 @@
 	* README: Changed version.
 	* Resources/UnicodeBlockNames.plist
 	* Resources/UnicodeBlocks.plist
-
-	* English.lproj/InfoPlist.strings: Updated strings.
 	* English.lproj/FontDocument.gorm: Added Characters View
 	* English.lproj/FontDocument.nib: Same as above.
 
