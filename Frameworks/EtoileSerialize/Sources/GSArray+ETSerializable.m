@@ -15,8 +15,8 @@
 		{\
 			char * saveName;\
 			asprintf(&saveName, "_contents_array.%d", i);\
-			[back storeObjectReference:COREF_FROM_ID(_contents_array[i]) withName:saveName];\
-			[aSerializer enqueueObject:_contents_array[i]];\
+			id element = _contents_array[i];\
+			[aSerializer storeObjectFromAddress: &element withName:saveName];\
 			free(saveName);\
 		}\
 		return YES;\

@@ -748,13 +748,19 @@ LOAD_METHOD(Selector, SEL)
 	id foundObject = [self lookUpObjectForUUID:aUUID];
 	//NSLog(@"Load object %@ with UUID %-0.8x at name %s", foundObject, aUUID, aName);
 
-	if(![object deserialize:aName fromPointer:aUUID version:classVersion])
+	id *address = [object deserialize:aName fromPointer:&aName version:classVersion];
+
+	switch((long)address)
 	{
-		char *address = OFFSET_OF_IVAR(object, aName, loadedIVar++, sizeof(id));
-		if(address != NULL)
-		{
-			*(id *)address = foundObject;
-		}
+		case YES:
+			break;
+		case NO:
+			address = OFFSET_OF_IVAR(object, aName, loadedIVar++, id);
+		default:
+			if(address != NULL)
+			{
+				*address = foundObject;
+			}
 	}
 }
 

@@ -31,8 +31,7 @@
 			char * saveName;
 			id key = node->key.obj;
 			asprintf(&saveName, "map.%d", i);
-			[back storeObjectReference:COREF_FROM_ID(key) withName:saveName];
-			[aSerializer enqueueObject:key];
+			[aSerializer storeObjectFromAddress:&key withName:saveName];
 			free(saveName);
 			i++;
 			node = GSIMapEnumeratorNextNode(&enumerator);

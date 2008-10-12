@@ -35,13 +35,11 @@
 			//TODO: Work out why this is needed:
 			id value = [self objectForKey:node->key.obj];//node->value.obj;
 			asprintf(&saveName, "map.%d", i);
-			[back storeObjectReference:COREF_FROM_ID(key) withName:saveName];
-			[aSerializer enqueueObject:key];
+			[aSerializer storeObjectFromAddress:&key withName:saveName];
 			free(saveName);
 			i++;
 			asprintf(&saveName, "map.%d", i);
-			[back storeObjectReference:COREF_FROM_ID(value) withName:saveName];
-			[aSerializer enqueueObject:value];
+			[aSerializer storeObjectFromAddress:&value withName:saveName];
 			free(saveName);
 			i++;
 			node = GSIMapEnumeratorNextNode(&enumerator);
