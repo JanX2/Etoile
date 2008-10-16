@@ -38,7 +38,7 @@ NSObject subclass: EtoileTunesController
 	init [
 		'init' log.
 		(NSFileManager defaultManager fileExistsAtPath: (self LIBRARYPATH)) ifTrue:[ self deserialize.].
-		mainModel = nil ifTrue: [ self newMainModel. ].
+		mainModel == nil ifTrue: [ self newMainModel. ].
 		playlistModel := ETPlaylist new.
 		^ self.
 	]
@@ -126,7 +126,7 @@ NSObject subclass: EtoileTunesController
 
 	controlTextDidChange: notif [
 		('searched for: ' stringByAppendingString: (search stringValue)) log.
-		(smartGroup = nil) ifTrue: [ self smartGroupOn. ].
+		smartGroup == nil ifTrue: [ self smartGroupOn. ].
 		(search stringValue length = 0)
 		    ifTrue: [ 
 			mainContainer layoutItem setRepresentedObject: mainModel.
