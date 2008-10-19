@@ -1,50 +1,60 @@
 NSObject subclass: EtoileTunesController
 [
 	| window  mainContainer  playlistContainer search  musicPlayerController URLTextField addURLWindow 
-	  mainModel  playlistModel smartGroup |
+	  mainModel  playlistModel smartGroup ctxt |
 
 	KnownExtensions	[
 		^ {'mp3'. 'ogg'. 'flac'. 'aac'. 'm4a'}.
 	]
 
-	LIBRARYPATH [
-		^ 'MelodieLibrary'.	
-	]
+	newContext [
+		'Creating new object context' log.
 
-	deserialize [
-	| deserializer |
-		'Deserializing..' log.
-		deserializer := (ETSerializer serializerWithBackend: (ETSerializerBackendBinary class)
-		                                             forURL: (NSURL fileURLWithPath: (self LIBRARYPATH))) deserializer.
-		deserializer setVersion: 0.
-		mainModel := deserializer restoreObjectGraph.
-	]
+		ctxt := COObjectContext alloc init.
+		
+		ETPlaylist setAutomaticallyMakeNewInstancesPersistent: 1.
+		ETMusicFile setAutomaticallyMakeNewInstancesPersistent: 1.
 
-	newMainModel [
+		COObjectContext setCurrentContext: ctxt.
+	
 		mainModel := ETPlaylist new.
+		playlistModel := ETPlaylist new.
+
+               'Registered objects: ' log.
+                ctxt registeredObjects log.    
+
+	        NSUserDefaults standardUserDefaults setObject: (ctxt UUID stringValue) forKey: 'MellodieObjectContextUUID'.
+		NSUserDefaults standardUserDefaults setObject: (mainModel UUID stringValue) forKey: 'MellodieMainModelUUID'. 
+		NSUserDefaults standardUserDefaults setObject: (playlistModel UUID stringValue) forKey: 'MellodiePlaylistModelUUID'. 
 	]
 
-	serialize [
-	| pool serializer |
-		"FIXME: serialize into ~/GNUstep like before the change to Smalltalk"
-		'Serializing..' log.
-		pool := NSAutoreleasePool alloc init.
-		serializer := ETSerializer serializerWithBackend: (ETSerializerBackendBinary class)
-	                                                  forURL: (NSURL fileURLWithPath: (self LIBRARYPATH)).
-		serializer serializeObject:mainModel withName: 'library'.
-		pool release.
+	loadContextWithUUID: uuid [
+		'Requesting object context with UUID:' log.
+		uuid log.
+
+		ctxt := COObjectContext alloc initWithUUID: (ETUUID UUIDWithString: uuid).
+		ETPlaylist setAutomaticallyMakeNewInstancesPersistent: 1.
+		ETMusicFile setAutomaticallyMakeNewInstancesPersistent: 1.
+
+		COObjectContext setCurrentContext: ctxt.
+
+		mainModel := ctxt objectForUUID: (ETUUID UUIDWithString: (NSUserDefaults standardUserDefaults stringForKey: 'MellodieMainModelUUID')).
+		playlistModel := ctxt objectForUUID: (ETUUID UUIDWithString: (NSUserDefaults standardUserDefaults stringForKey: 'MellodiePlaylistModelUUID')).
+		
+		'Deserialized main model:' log.
+		mainModel log.
+		'Deserialized playlist model:' log.
+		playlistModel log.
 	]
 
 	init [
-		'init' log.
-		(NSFileManager defaultManager fileExistsAtPath: (self LIBRARYPATH)) ifTrue:[ self deserialize.].
-		mainModel == nil ifTrue: [ self newMainModel. ].
-		playlistModel := ETPlaylist new.
-		^ self.
-	]
+		| uuid |
+		'EtoileTunesController init' log.
 
-	applicationWillTerminate: aNotification [
-		self serialize.
+		uuid := (NSUserDefaults standardUserDefaults stringForKey: 'MellodieObjectContextUUID').
+		(uuid == nil) ifTrue: [ self newContext. ]
+		             ifFalse: [ self loadContextWithUUID: uuid. ].	
+		^ self.
 	]
 
 	addToMainModel: obj [
@@ -55,7 +65,8 @@ NSObject subclass: EtoileTunesController
 
 	addPath: pathArg [
 	| path |
-		path := pathArg.
+		
+path := pathArg.
 		(self KnownExtensions containsObject: (path pathExtension))
 			ifTrue: [ self addToMainModel: (ETMusicFile alloc initWithPath: path). ]
 			ifFalse: [ 'unknown extension: ' log. path log. ].
@@ -76,6 +87,15 @@ NSObject subclass: EtoileTunesController
 		mainContainer reloadAndUpdateLayout.
 	]
 
+	undo: sender [
+		'undo' log.
+		ctxt undo.
+	]
+
+	redo: sender [	
+		'redo' log.
+		ctxt redo.
+	]
 
 	addURL: sender [
 	| string |

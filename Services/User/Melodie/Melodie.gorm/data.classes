@@ -46,7 +46,9 @@
 	    "addFiles:",
 	    "addURL:",
 	    "newPlaylist:",
-	    "clearSearch:"
+	    "clearSearch:",
+	    "redo:",
+	    "undo:"
 	);
 	Outlets = (
 	    window,
@@ -64,12 +66,13 @@
 	    "addFiles:",
 	    "addObject:",
 	    "addURL:",
+	    "clearSearch:",
 	    "collapse:",
 	    "doubleClickInContainer:",
 	    "expand:",
 	    "inspect:",
 	    "inspectSelection:",
-	    "clearSearch:",
+	    "newAction:",
 	    "newPlaylist:",
 	    "next:",
 	    "playPause:",
