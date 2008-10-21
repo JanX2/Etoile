@@ -11,7 +11,7 @@
  * something useful.
  */
 @interface CornerDelegate : NSObject {
-	id state;
+	NSMutableDictionary *state;
 }
 - (void) enterTopLeft;
 - (void) exitTopLeftAfter:(int)seconds;
@@ -23,6 +23,12 @@
 - (void) exitBottomRightAfter:(int)seconds;
 @end
 @implementation CornerDelegate
+- (id) init
+{
+	SELFINIT;
+	state = [[NSMutableDictionary alloc] init];
+	return self;
+}
 - (void) enterTopLeft
 {
 	NSLog(@"Entered top left corner");
