@@ -4,7 +4,7 @@
 #import <Foundation/Foundation.h>
 
 /**
- * The COProxy class is a simple proxy which is responsible for wrapping a
+ * The ESProxy class is a simple proxy which is responsible for wrapping a
  * model object being managed by CoreObject.  The object will be serialized as
  * will every message sent to it, allowing deterministic replay of the object's
  * entire lifecycle.
@@ -13,7 +13,7 @@
  * graph representing a document, or a major component in a composite document
  * (e.g. an image in a larger work).  
  */
-@interface COProxy : NSProxy {
+@interface ESProxy : NSProxy {
 	/** The real object. */
 	id object;
 	/** The current version of the object. */

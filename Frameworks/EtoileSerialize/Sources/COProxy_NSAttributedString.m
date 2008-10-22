@@ -1,6 +1,6 @@
 #import "ESProxy.h"
 
-@interface COProxy_NSAttributedString : COProxy {}
+@interface COProxy_NSAttributedString : ESProxy {}
 @end
 
 #define P0(type, s1) - (type) s1 { return [object s1]; }

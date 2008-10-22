@@ -6,7 +6,7 @@
 static const int FULL_SAVE_INTERVAL = 100;
 static id logBackend;
 
-@implementation COProxy 
+@implementation ESProxy 
 + (void) initialize
 {
 	//Use this for debugging

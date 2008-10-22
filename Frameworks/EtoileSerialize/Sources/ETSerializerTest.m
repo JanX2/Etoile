@@ -316,12 +316,12 @@ id testRoundTrip(NSString * tempfile, id object)
 - (void) testCoreObject
 {
 	NSMutableString * str = [NSMutableString stringWithString:@"A string"];
-	NSMutableString * fake = [[COProxy alloc] initWithObject:str
+	NSMutableString * fake = [[ESProxy alloc] initWithObject:str
 												  serializer:[ETSerializerBackendBinary class] 
 												   forBundle:[NSURL fileURLWithPath:@"cotest.CoreObject"]];
 	[fake appendString:@" containing"];
 	[fake appendString:@" some character."];
-	[(COProxy*)fake setVersion:2];
+	[(ESProxy*)fake setVersion:2];
 	UKStringsEqual(fake, @"A string containing");
 }
 #endif
