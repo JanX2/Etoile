@@ -3,7 +3,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME = libEtoileSerialize
 
 libEtoileSerialize_OBJC_FILES = \
-					COProxy.m \
+					ESProxy.m \
 					COProxy_NSAttributedString.m \
 					ETDeserializer.m \
 					ETDeserializerBackendBinary.m \

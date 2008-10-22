@@ -1,4 +1,4 @@
-#import "COProxy.h"
+#import "ESProxy.h"
 
 @interface COProxy_NSAttributedString : COProxy {}
 @end

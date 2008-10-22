@@ -1,4 +1,4 @@
-#import "COProxy.h"
+#import "ESProxy.h"
 #import "ETSerializer.h"
 #import "ETSerializerBackend.h"
 #import "ETDeserializer.h"

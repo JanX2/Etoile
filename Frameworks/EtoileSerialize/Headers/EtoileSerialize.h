@@ -1,4 +1,3 @@
-#import <EtoileSerialize/COProxy.h>
 #import <EtoileSerialize/ETUtility.h>
 #import <EtoileSerialize/ETObjectStore.h>
 #import <EtoileSerialize/ETDeserializer.h>

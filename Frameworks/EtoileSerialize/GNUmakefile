@@ -13,7 +13,7 @@ ${FRAMEWORK_NAME}_LIBRARIES_DEPEND_UPON += -lEtoileFoundation
 
 ${FRAMEWORK_NAME}_HEADER_FILES = \
 				   EtoileSerialize.h\
-				   COProxy.h\
+				   ESProxy.h\
 				   ETUtility.h\
 				   ETDeserializerBackend.h\
 				   ETDeserializerBackendBinary.h\
