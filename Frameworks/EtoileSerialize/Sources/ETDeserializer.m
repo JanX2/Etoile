@@ -583,7 +583,8 @@ LOAD_METHOD(Selector, SEL)
 					else
 					{
 						//NSLog(@"Storing 0x%x as address of %d", address, aReference);
-						NSMapInsert(objectPointers, address, (void*)aReference);
+						NSMapInsert(objectPointers, address,
+							   	PTR_VAL(aReference));
 					}
 				}
 				else
@@ -616,14 +617,14 @@ LOAD_METHOD(Selector, SEL)
 	//First see if the object wants to change the offset (e.g. loading a pointer)
 	char * fudgedAddress = [object deserialize:aName fromPointer:NULL version:classVersion];
 	//NSLog(@"Fudged address for %s is 0x%x", aName, fudgedAddress);
-	switch((int)fudgedAddress)
+	switch((intptr_t)fudgedAddress)
 	{
-		case (int)MANUAL_DESERIALIZE:
+		case (intptr_t)MANUAL_DESERIALIZE:
 			{
 				NSLog(@"ERROR:  Invalid return for deserializing struct");
 				break;
 			}
-		case (int)AUTO_DESERIALIZE:
+		case (intptr_t)AUTO_DESERIALIZE:
 			break;
 		default:
 			//Set the address to the one the class wants (for malloc'd data structures, etc)
