@@ -47,13 +47,17 @@ inline static void * addressForIVarName(id anObject, char * aName, int hint)
 @end
 
 /**
+ * Macro to cast integers or pointers to void* irrespective of word size.
+ */
+#define PTR_VAL(x) ((void*)(intptr_t)x)
+/**
  * Macro used to store an object reference to pointer mapping.
  */
-#define SET_REF(ref, obj) NSMapInsert(loadedObjects, (void*)ref, (void*) obj)
+#define SET_REF(ref, obj) NSMapInsert(loadedObjects, PTR_VAL(ref), PTR_VAL(obj))
 /**
  * Macro to retrieve a pointer from an object reference.
  */
-#define GET_OBJ(ref) (id)NSMapGet(loadedObjects, (void*)ref)
+#define GET_OBJ(ref) (id)NSMapGet(loadedObjects, PTR_VAL(ref))
 //TODO: Add bounds checking to this and some overflow capability
 //for stupidly nested objects.
 /**
