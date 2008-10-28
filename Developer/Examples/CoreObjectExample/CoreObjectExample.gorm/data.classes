@@ -1,0 +1,113 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    ETApplication = {
+	Actions = (
+	    "browseLayoutItemTree:",
+	    "toggleDevelopmentMenu:",
+	    "toggleLiveDevelopment:"
+	);
+	Outlets = (
+	);
+	Super = NSApplication;
+    };
+    ETContainer = {
+	Actions = (
+	    "setSource:",
+	    "setDelegate:",
+	    "inspect:",
+	    "inspectSelection:",
+	    "copy:",
+	    "paste:",
+	    "cut:",
+	    "stack:",
+	    "setTarget:",
+	    "addObject:",
+	    "removeObject:"
+	);
+	Outlets = (
+	    _dataSource,
+	    _delegate,
+	    _target,
+	    _inspector
+	);
+	Super = ETView;
+    };
+    ETPersistencyController = {
+	Actions = (
+	    "undo:",
+	    "redo:",
+	    "restoreTo:",
+	    "restoreSelectionTo:",
+	    "restoreObjectTo:",
+	    "endRestoreToDialog:"
+	);
+	Outlets = (
+	    _revertToPanel,
+	    _revertedVersionField
+	);
+	Super = NSObject;
+    };
+    ETScrollView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = ETView;
+    };
+    ETView = {
+	Actions = (
+	    "setRenderer:",
+	    "collapse:",
+	    "expand:"
+	);
+	Outlets = (
+	    _renderer
+	);
+	Super = NSView;
+    };
+    FirstResponder = {
+	Actions = (
+	    "add:",
+	    "addGroup:",
+	    "addObject:",
+	    "browseLayoutItemTree:",
+	    "changeLayout:",
+	    "closeRevertToDialog:",
+	    "collapse:",
+	    "endRestoreToDialog:",
+	    "expand:",
+	    "inspect:",
+	    "inspectSelection:",
+	    "remove:",
+	    "removeObject:",
+	    "restoreObjectTo:",
+	    "restoreSelectionTo:",
+	    "restoreTo:",
+	    "revertObjectTo:",
+	    "revertSelectionTo:",
+	    "revertTo:",
+	    "scale:",
+	    "setDelegate:",
+	    "setRenderer:",
+	    "setSource:",
+	    "setTarget:",
+	    "stack:",
+	    "switchUsesScrollView:",
+	    "toggleDevelopmentMenu:",
+	    "toggleLiveDevelopment:"
+	);
+	Super = NSObject;
+    };
+    ObjectManagerController = {
+	Actions = (
+	    "changeLayout:",
+	    "switchUsesScrollView:",
+	    "scale:"
+	);
+	Outlets = (
+	    pathContainer,
+	    viewContainer
+	);
+	Super = NSObject;
+    };
+}

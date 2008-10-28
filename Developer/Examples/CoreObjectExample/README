@@ -1,0 +1,35 @@
+This is an example of using CoreObject persistency that shows how to: 
+- create a very simple model with COObject class (the CoreObject built-in 
+  semi-structured object model)
+- organize objects into groups with COGroup class
+- leverage COObjectContext to version an entire object graph in addition to per 
+  object versioning and recreate this object graph accross application 
+  launches.
+- write a bit of UI glue code to handle the restoration of the history directly, 
+  rather than only relying on ETPersistencyController actions available from 
+  Edit menu.
+
+UI explanations
+---------------
+
+You can restore a single object or the entire model object graph to a past 
+version by typing it respectively in Selection Version field or Context Version 
+field. Restored Context Version field will indicate the version that really 
+got restored. For example, if you restore a context version that is itself a 
+restore point, this restore point is traversed to find the context version that  
+got restored at this time.
+Each object is versionned independently of the object graph that itself 
+versionned as part of the Object Context. If you restore a single object to a 
+past version, the restored instance is immediately merged into the existing 
+object graph and the context version is incremented to keep track of the merge 
+in the object context history.
+
+To know the context and object versions to expect, you can look at -startGroup 
+method in ObjectManagerController.m where each line corresponds to a change and 
+new version. You can count the number of messages sent to each object to know 
+its version. alloc+init combo creates the base version 0, the next message 
+received by the object creates the version 1. In this method, per line comments 
+also give you hints to the context version, that maps to the object graph state 
+right after this line code is executed.
+
+It is under MIT License (see COPYING).
