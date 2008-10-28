@@ -11,10 +11,10 @@ AZSwitch_OBJC_FILES = \
 	AZSwitch.m \
 	main.m
 
-# Xwindow
-ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include 
+AZSwitch_GUI_LIBS += -lX11 -lXWindowServerKit
 
-ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib -lX11 -lXWindowServerKit
+ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include 
+ADDITIONAL_LIB_DIRS += -L/usr/X11R6/lib
 
 include $(GNUSTEP_MAKEFILES)/application.make
 -include ../../../etoile.make
