@@ -13,4 +13,5 @@ LuceneKitExample_TOOL_LIBS = -lLuceneKit -lOgreKit -lgnustep-gui
 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/tool.make
+-include ../../../etoile.make
 -include GNUmakefile.postamble

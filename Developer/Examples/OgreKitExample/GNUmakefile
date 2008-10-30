@@ -15,3 +15,4 @@ FindPanelExample_MAIN_MODEL_FILE = FindPanelExample.gorm
 FindPanelExample_RESOURCE_FILES = FindPanelExample.gorm
 
 include $(GNUSTEP_MAKEFILES)/application.make
+-include ../../../etoile.make

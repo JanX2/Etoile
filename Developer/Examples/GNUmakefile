@@ -1,42 +1,46 @@
-#
-#    Makefile for Etoile Developer Examples
-#
-
 PACKAGE_NAME = DeveloperExamples
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
 #
-# Variables check
+# Variables to turn projects on and off in the build process
+# (listed by alphabetical order)
 #
 
-export etoile ?= yes
-export developer-base ?= yes
+-include ../../modules.make
 
-ifeq ($(developer-base), yes)
-
-	export examples ?= yes
-
-endif
-
-ifeq ($(developer-base), no)
-
-	export examples ?= no
-
-endif
+export bookmarkkitexample ?= no
+export coreobjectexample ?= yes
+export ioexample ?= no
+export lucenekitexample ?= yes
+export ogrekitexample ?= yes
 
 #
-# Subprojects choice
-# 
+# Projects (listed by dependency order, then alphabetical order)
+#
 
-ifeq ($(examples), yes)	
-	SUBPROJECTS = DistributedViewExample LuceneKitExample \
-PreferencesKitExample OgreKitExample BookmarkKitExample #IoExample 
-
-ifeq ($sqlliteclient, yes)
-    SUBPROJECTS += SQLLiteClientExample
+ifeq ($(bookmarkkitexample), yes)	
+	SUBPROJECTS += BookmarkKitExample
 endif
 
+ifeq ($(coreobjectexample), yes)	
+	SUBPROJECTS += CoreObjectExample
+endif
+
+ifeq ($(distributedviewexample), yes)	
+	SUBPROJECTS += DistributedViewExample
+endif
+
+ifeq ($(lucenekitexample), yes)
+	SUBPROJECTS += LuceneKitExample
+endif
+
+ifeq ($(ogrekitexample), yes)
+	SUBPROJECTS += OgreKitExample
+endif
+
+ifeq ($(ioexample), yes)
+	SUBPROJECTS += IoExample
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

@@ -11,7 +11,6 @@ VERSION = 0.1
 PACKAGE_NAME = UnitTests
 APP_NAME = UnitTests
 UnitTests_APPLICATION_ICON = UnitTests.png
-GNUSTEP_INSTALLATION_DIR = $(HOME)/GNUstep
 
 
 #
@@ -50,4 +49,5 @@ main.m
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/aggregate.make
 include $(GNUSTEP_MAKEFILES)/application.make
+-include ../../../etoile.make
 -include GNUmakefile.postamble
