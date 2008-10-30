@@ -46,7 +46,7 @@ Azalea_RESOURCE_FILES = \
 
 #ADDITIONAL_=-DDEBUG=1
 
-ADDITIONAL_LDFLAGS = -lXWindowServerKit
+Azalea_LDFLAGS = -lXWindowServerKit
 
 ADDITIONAL_INCLUDE_DIRS += `pkg-config --cflags freetype2` `pkg-config --cflags libxml-2.0` `pkg-config --cflags fontconfig` -I..
 

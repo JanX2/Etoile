@@ -3,72 +3,45 @@ PACKAGE_NAME = Bundles
 include $(GNUSTEP_MAKEFILES)/common.make
 
 #
-# Variables check
+# Variables to turn projects on and off in the build process
+# (listed by alphabetical order)
 #
 
-export etoile ?= yes
+-include ../modules.make
 
-ifeq ($(etoile), no)
-
-    export desktop-base ?= yes
-	#export etoile-extensions ?= no
-
-endif
-
-ifeq ($(etoile), yes)
-
-    export desktop-base ?= yes
-	#export etoile-extensions ?= yes
-
-endif
-
-export desktop-base ?= yes
-
-ifeq ($(desktop-base), yes)
-
-    export camaelon ?= yes
-    export etoilewildmenus ?= yes
-    export workspaceswitcher ?= yes
-    export etoilebehavior ?= yes
-
-endif
-
-#export etoile-extensions ?= yes
+export camaelon ?= yes
+export etoilebehavior ?= yes
+export etoilewildmenus ?= yes
+export powermenulet ?= no
+export servicemenulet ?= no
+export volumecontrolmenulet ?= no
 
 #
-# At this time, SQLiteClient is not built by default by being not part of
-# etoile-extensions because it introduces too many dependencies.
-#
-
-#ifeq ($(etoile-extensions), yes)
-#
-#    export sqliteclient ?= yes
-#
-#endif
-
-#
-# Subprojects choice
+# Projects (listed by dependency order, then alphabetical order)
 #
 
 ifeq ($(camaelon), yes)
     SUBPROJECTS += Camaelon
 endif
 
-ifeq ($(sqliteclient), yes)
-    SUBPROJECTS += SQLiteClient
+ifeq ($(etoilebehavior), yes)
+    SUBPROJECTS += EtoileBehavior
 endif
 
 ifeq ($(etoilewildmenus), yes)
     SUBPROJECTS += EtoileWildMenus
 endif
 
-ifeq ($(workspaceswitcher), yes)
-    # In prepare to be removed in favor of using AZDock for workspace switching.
-    #SUBPROJECTS += WorkspaceSwitcher
+ifeq ($(powermenulet), yes)
+    SUBPROJECTS += PowerMenulet
 endif
 
-ifeq ($(etoilebehavior), yes)
-    SUBPROJECTS += EtoileBehavior
+ifeq ($(servicemenulet), yes)
+    SUBPROJECTS += ServiceMenulet
+endif
+
+ifeq ($(volumecontrolmenulet), yes)
+    SUBPROJECTS += VolumeControlMenulet
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

@@ -1,3 +1,54 @@
+2008-10-30  Quentin Mathe <qmathe@club-internet.fr>
+
+	Rewritten the build infrastructure of Étoilé to be a lot simpler and more 
+	solid.
+	This was necessary to eliminate various linking issues, specially when the 
+	repository is built from scratch without a prior install. Frameworks 
+	linked indirectly (through an intermediate framework) weren't well handled.
+	Added the possibility to tweak the modules to build by adding a file named 
+	modules.make, see documentation in INSTALL. That will be useful to control 
+	what is built in the stable branch without touching the existing 
+	GNUmakefiles.
+	NOTE: Everything builds and installs fine on my machine, but this 
+	represents a major change to the way Etoile was previously compiled, so the 
+	repository may not build fine elsewhere.
+	* GNUmakefile:
+	* Bundles/GNUmakefile:
+	* Developer/Services/GNUmakefile:
+	* Developer/Examples/GNUmakefile:
+	* Frameworks/GNUmakefile:
+	* Languages/GNUmakefile:
+	* Services/GNUmakefile:
+	* Services/Private/GNUmakefile:
+	* Services/User/GNUmakefile:
+	Removed unecessary features of the old build infrastructure, cleansed and 
+	rewritten to support turning on and off modules from the build process from 
+	a root makefile 'modules.make'. The modules built by default have also 
+	changed.
+	* Developer/Services/UnitTests/GNUmakefile:
+	* Developer/Examples/LuceneKitExample/GNUmakefile:
+	* Developer/Examples/OgreKitExample/GNUmakefile:
+	* Developer/Examples/DistributedViewExample/GNUmakefile:
+	* Developer/Examples/CoreObjectExample/GNUmakefile:
+	* Services/User/Melodie/GNUmakefile:
+	* Services/Private/ScriptServices/GNUmakefile:
+	Included etoile.make.
+	* Services/Private/Azalea/GNUmakefile:
+	Replaced ADDITIONAL_LDFLAGS by Azalea_LDFLAGS, so the render subproject 
+	doesn't try to link XWindowServerKit and fails because it doesn't include 
+	etoile.make and hence doesn't know about Build dir where XWindowServerKit 
+	is available for linking. 
+	* etoile.make: Major cleaning and rewrite. Simplified the rules for 
+	exporting dependencies and removing them with clean rule. Modified to export 
+	all the library files in the Build directory rather than just the 
+	non-versionned library file (that ends with .so). It is necessary to ensure 
+	linking is well supported: the linker wants to pick the versionned ones for 
+	libraries/frameworks that are linked by a target through an intermediate 
+	library/framework. To support that, also added -rpath-link to a new exported 
+	ADDITIONAL_LDFLAGS variable. Made distclean depends on clean to eliminate 
+	the copy/paste of the entire rule code.
+	* INSTALL: Updated documentation.
+
 2008-07-27  Quentin Mathe <qmathe@club-internet.fr>
 
 	* INSTALL:

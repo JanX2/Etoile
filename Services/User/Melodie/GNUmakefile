@@ -19,3 +19,4 @@ $(APP_NAME)_GUI_LIBS = -lEtoileFoundation -lCoreObject -lIconKit -lMediaKit -lEt
 $(APP_NAME)_GUI_LIBS += -lSmalltalkKit -lSmalltalkSupport -lLanguageKit
 
 include $(GNUSTEP_MAKEFILES)/application.make
+-include ../../../etoile.make

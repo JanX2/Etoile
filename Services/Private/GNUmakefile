@@ -3,46 +3,34 @@ PACKAGE_NAME = PrivateServices
 include $(GNUSTEP_MAKEFILES)/common.make
 
 #
-# Variables check
+# Variables to turn projects on and off in the build process
+# (listed by alphabetical order)
 #
 
-export etoile ?= yes
-export etoile-extensions ?= yes
+-include ../../modules.make
 
-ifeq ($(etoile), yes)
-    
-    export workspace ?= yes
-    export system ?= yes
-
-endif
-
-ifeq ($(etoile-extensions), yes)
-
-    export azalea ?= yes
-    export background ?= yes
-    export corner ?= yes
-    export dock ?= yes
-    export idle ?= yes
-    export switch ?= yes
-
-    # Was servicesbar
-    export menuserver ?= yes
-
-endif
+export azalea ?= yes
+export azbackground ?= yes
+export azdock ?= yes
+export azswitch ?= yes
+export busy ?= no
+export corner ?= yes
+export composite ?= no
+export idle ?= yes
+export login ?= no
+export menuserver ?= yes
+export scriptservices ?= yes
+export system ?= yes
 
 #
-# Subprojects choice
+# Projects (listed by dependency order, then alphabetical order)
 #
-
-ifeq ($(workspace), yes)
-    #SUBPROJECTS = Workspace
-endif
 
 ifeq ($(azalea), yes)
     SUBPROJECTS += Azalea
 endif
 
-ifeq ($(background), yes)
+ifeq ($(azbackground), yes)
     SUBPROJECTS += AZBackground
 endif
 
@@ -53,24 +41,40 @@ endif
 # MenuServer and AZDock depend on WorkspaceCommKit part of System, so they have
 # be built afterwards.
 
-ifeq ($(dock), yes)
+ifeq ($(azdock), yes)
     SUBPROJECTS += AZDock
 endif
 
-ifeq ($(switch),yes)
+ifeq ($(azswitch), yes)
     SUBPROJECTS += AZSwitch
 endif
 
-ifeq ($(corner),yes)
-    SUBPROJECTS += Corner
+ifeq ($(busy), yes)
+    SUBPROJECTS += Busy
 endif
 
-ifeq ($(idle),yes)
+ifeq ($(composite), yes)
+    SUBPROJECTS += Composite
+endif
+
+ifeq ($(corner), yes)
+    #SUBPROJECTS += Corner
+endif
+
+ifeq ($(idle), yes)
     SUBPROJECTS += Idle
 endif
 
-ifeq ($(menuserver),yes)
+ifeq ($(login), yes)
+    SUBPROJECTS += Login
+endif
+
+ifeq ($(menuserver), yes)
     SUBPROJECTS += MenuServer
+endif
+
+ifeq ($(scriptservices), yes)
+    SUBPROJECTS += ScriptServices
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

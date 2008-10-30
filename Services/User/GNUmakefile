@@ -3,70 +3,50 @@ PACKAGE_NAME = UserServices
 include $(GNUSTEP_MAKEFILES)/common.make
 
 #
-# Variables check
+# Variables to turn projects on and off in the build process
+# (listed by alphabetical order)
 #
 
-export etoile ?= yes
-export user-base ?= yes
+-include ../../modules.make
 
-ifeq ($(user-base), yes)
-
-    export installer ?= yes
-    export look-and-behavior ?= yes
-    export hardware ?= yes
-    export addressmanager ?= yes
-    export chatclient ?= yes
-    export dictionary ?= yes
-    export fontmanager ?= yes
-#    export grr ?= yes
-    export terminal ?= yes
-    export typewriter ?= yes
-    export vindaloo ?= yes
-
-endif
-
-ifeq ($(user-base), no)
-
-    export installer ?= no
-    export look-and-behavior ?= no
-    export hardware ?= no
-    export addressmanager ?= no
-    export chatclient ?= no
-    export dictionary ?= no
-    export fontmanager ?= no
-    export grr ?= no
-    export terminal ?= no
-    export typewriter ?= no
-    export vindaloo ?= no
-
-endif
+export addressmanager ?= yes
+export calc ?= no
+export codeeditor ?= no
+export dictionaryreader ?= yes
+export fontmanager ?= yes
+export grr ?= no
+export hardware ?= yes
+export installer ?= no
+export jabber ?= yes
+export lookandbehavior ?= yes
+export melodie ?= yes
+export microblogger ?= no
+export newsstand ?= no
+export sketch ?= no
+export spot ?= no
+export termx ?= no
+export typewriter ?= yes
+export vindaloo ?= yes
+export workflow ?= no
 
 #
-# Subprojects choice
-# 
-
-ifeq ($(installer), yes)
-	SUBPROJECTS = #Installer
-endif
-
-ifeq ($(look-and-behavior), yes)
-	SUBPROJECTS += LookAndBehavior
-endif
-
-ifeq ($(hardware), yes)
-#	SUBPROJECTS += Hardware
-endif
+# Projects (listed by dependency order, then alphabetical order)
+#
 
 ifeq ($(addressmanager), yes)
 	SUBPROJECTS += AddressManager
 endif
 
-ifeq ($(chatclient), yes)
-	SUBPROJECTS += Jabber
+ifeq ($(calc), yes)
+	SUBPROJECTS += Calc
 endif
 
-ifeq ($(dictionary), yes)
+ifeq ($(dictionaryreader), yes)
 	SUBPROJECTS += DictionaryReader
+endif
+
+ifeq ($(codeeditor), yes)
+	SUBPROJECTS += CodeEditor
 endif
 
 ifeq ($(fontmanager), yes)
@@ -77,7 +57,43 @@ ifeq ($(grr), yes)
 	SUBPROJECTS += Grr
 endif
 
-ifeq ($(terminal), yes)
+ifeq ($(hardware), yes)
+	SUBPROJECTS += Hardware
+endif
+
+ifeq ($(installer), yes)
+	SUBPROJECTS += Installer
+endif
+
+ifeq ($(jabber), yes)
+	SUBPROJECTS += Jabber
+endif
+
+ifeq ($(lookandbehavior), yes)
+	SUBPROJECTS += LookAndBehavior
+endif
+
+ifeq ($(melodie), yes)
+	SUBPROJECTS += Melodie
+endif
+
+ifeq ($(microblogger), yes)
+	SUBPROJECTS += Microblogger
+endif
+
+ifeq ($(newsstand), yes)
+	SUBPROJECTS += NewsStand
+endif
+
+ifeq ($(sketch), yes)
+	SUBPROJECTS += Sketch
+endif
+
+ifeq ($(spot), yes)
+	SUBPROJECTS += Sketch
+endif
+
+ifeq ($(termx), yes)
 	SUBPROJECTS += TermX
 endif
 
@@ -87,6 +103,10 @@ endif
 
 ifeq ($(vindaloo), yes)
 	SUBPROJECTS += Vindaloo
+endif
+
+ifeq ($(workflow), yes)
+	SUBPROJECTS += Workflow
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make

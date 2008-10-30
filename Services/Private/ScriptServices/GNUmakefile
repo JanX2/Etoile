@@ -9,4 +9,4 @@ ScriptServices_RESOURCE_FILES = \
 	Scripts
 
 include $(GNUSTEP_MAKEFILES)/application.make
-
+-include ../../../etoile.make
