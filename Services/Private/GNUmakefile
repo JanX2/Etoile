@@ -58,7 +58,7 @@ ifeq ($(composite), yes)
 endif
 
 ifeq ($(corner), yes)
-    #SUBPROJECTS += Corner
+    SUBPROJECTS += Corner
 endif
 
 ifeq ($(idle), yes)
