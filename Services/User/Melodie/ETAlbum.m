@@ -20,6 +20,13 @@
 	DESTROY(pt);
 }
 
+- (id) init
+{
+	SUPERINIT
+	[self tryStartPersistencyIfInstanceOfClass: [ETAlbum class]];
+	return self;
+}
+
 - (void) dealloc
 {
 	DESTROY(cover);

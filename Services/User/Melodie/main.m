@@ -5,5 +5,6 @@
 int main(int argc, char **argv)
 {
 	[SmalltalkCompiler loadAllScriptsForApplication];
+	NSLog(@"Loaded smalltalk scripts.");
 	return NSApplicationMain(argc, (const char **) argv);
 }

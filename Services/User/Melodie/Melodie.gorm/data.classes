@@ -40,27 +40,6 @@
 	);
 	Super = NSView;
     };
-    EtoileTunesController = {
-	Actions = (
-	    "doubleClickInContainer:",
-	    "addFiles:",
-	    "addURL:",
-	    "newPlaylist:",
-	    "clearSearch:",
-	    "redo:",
-	    "undo:"
-	);
-	Outlets = (
-	    window,
-	    mainContainer,
-	    playlistContainer,
-	    search,
-	    musicPlayerController,
-	    URLTextField,
-	    addURLWindow
-	);
-	Super = NSObject;
-    };
     FirstResponder = {
 	Actions = (
 	    "addFiles:",
@@ -85,6 +64,27 @@
 	    "setTarget:",
 	    "setVolume:",
 	    "stack:"
+	);
+	Super = NSObject;
+    };
+    MelodieController = {
+	Actions = (
+	    "doubleClickInContainer:",
+	    "addFiles:",
+	    "addURL:",
+	    "newPlaylist:",
+	    "clearSearch:",
+	    "redo:",
+	    "undo:"
+	);
+	Outlets = (
+	    window,
+	    mainContainer,
+	    playlistContainer,
+	    search,
+	    musicPlayerController,
+	    URLTextField,
+	    addURLWindow
 	);
 	Super = NSObject;
     };

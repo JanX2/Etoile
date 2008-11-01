@@ -1,15 +1,10 @@
 TODO
 ----
 
-Urgent:
-
-- Get it into a usable state after changing EtoileTunesController to Smalltalk
-
-Soon:
-
-- Fix next/previous controls, gapless song switching
+- Fix next/previous controls
+- verify gapless song switching. Make sure libavcodec is respecting the lame gapless tag in mp3's
 - Finish getting playlists working
-- Implement searching
+- Fix searching
 - Last.fm cover art fetching
 
 Eventually:
@@ -19,6 +14,6 @@ Eventually:
 - Other lastfm features
 - CD playback, ripping (Maybe a separate app?)
 - Musicbrainz lookup to fix tags of improperly tagged files, or get tags of CD's
-
+- iPod / other portable player support
 - (MediaKit) Replaygain support
-
+- format transcoding

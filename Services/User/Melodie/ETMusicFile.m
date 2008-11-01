@@ -80,9 +80,17 @@ NSString *kETPlayingProperty = @"kETPlayingProperty";
 
 - (ETMusicFile *) initWithURL: (NSURL *)aURL
 {
-	SUPERINIT
+	SELFINIT
 	[self setURL: aURL];
+	[self tryStartPersistencyIfInstanceOfClass: [ETMusicFile class]];
 	return self;
+}
+
+- (ETMusicFile *) initWithPath: (NSString *)aPath
+{
+	[super initWithPath: aPath];
+        [self tryStartPersistencyIfInstanceOfClass: [ETMusicFile class]];
+        return self;
 }
 
 - (void) setURL: (NSURL *)aURL
