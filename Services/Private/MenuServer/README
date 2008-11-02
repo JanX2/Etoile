@@ -6,3 +6,17 @@ The server app which provides the menubar's
 background. Compile, no need to install, just "openapp" it. The clock
 menulet is included.
 
+EtoileMenuServer communicates with System the Etoile daemonizer to handle 
+requests such as sleep, reboot and shut down. System plays the role of a session 
+manager in Etoile environment. You can specifiy another session manager than 
+System by setting assigning another name to ETSessionManager default and 
+registering an object in some other process for this name by the mean of 
+Distributed Objects. Then EtoileMenuServer will retrieve a proxy for this object 
+and forward those requests to it. This remote object must implement a simple 
+protocol that consists of the following messages:
+
+- (oneway void) logOut;
+- (oneway void) powerOff: (BOOL)reboot;
+- (oneway void) suspend;
+
+System implements theses messages in SCSystem class.

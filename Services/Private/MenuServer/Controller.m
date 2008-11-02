@@ -39,8 +39,6 @@
 #import <AppKit/NSWindow.h>
 #import <AppKit/NSWorkspace.h>
 
-#import <WorkspaceCommKit/NSWorkspace+Communication.h>
-
 #import "MenuBarHeight.h"
 #import "MenuBarView.h"
 #import "MenuBarWindow.h"
@@ -62,7 +60,7 @@ my_round (float x)
 @interface Controller (EtoileMenuServerPrivate)
 - (void) applicationDidFinishLaunching: (NSNotification *) notif;
 - (void) windowDidMove: (NSNotification *) notif;
-- (id) _workspaceApp;
+- (id) _sessionManager;
 - (void) _reportSessionServerError: (NSString *)localizedOperation;
 @end
 
@@ -202,12 +200,12 @@ MenuBarWindow * ServerMenuBarWindow = nil;
   if (reply == NSAlertDefaultReturn)
     {
       NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-      id sessionApp = [self _workspaceApp];
+      id sessionManager = [self _sessionManager];
 
-      if (sessionApp != nil)
+      if (sessionManager != nil)
         {
           NS_DURING
-           [sessionApp logOut];
+           [sessionManager logOut];
           NS_HANDLER
             NSString * msgText = _(@"Log out cannot be carried out.");
             NSString * infoText = [localException reason];
@@ -225,12 +223,12 @@ MenuBarWindow * ServerMenuBarWindow = nil;
 - (void) sleep: sender
 {
   NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-  id sessionApp = [self _workspaceApp];
+  id sessionManager = [self _sessionManager];
 
-  if (sessionApp != nil)
+  if (sessionManager != nil)
     {
       NS_DURING
-       [sessionApp suspendComputer];
+       [sessionManager suspendComputer];
       NS_HANDLER
         NSString * msgText = _(@"Sleep failed.");
         NSString * infoText = [localException reason];
@@ -264,13 +262,13 @@ MenuBarWindow * ServerMenuBarWindow = nil;
   if (reply == NSAlertDefaultReturn)
     {
       NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-      id sessionApp = [self _workspaceApp];
+      id sessionManager = [self _sessionManager];
 
-      if (sessionApp != nil)
+      if (sessionManager != nil)
         {
 NSLog(@"hmm reboot");
           NS_DURING
-            [sessionApp powerOff: YES];
+            [sessionManager powerOff: YES];
           NS_HANDLER
             NSString * msgText = _(@"Reboot cannot be carried out.");
             NSString * infoText = [localException reason];
@@ -306,12 +304,12 @@ NSLog(@"hmm reboot");
   if (reply == NSAlertDefaultReturn)
     {
       NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-      id sessionApp = [self _workspaceApp];
+      id sessionManager = [self _sessionManager];
 
-      if (sessionApp != nil)
+      if (sessionManager != nil)
         {
           NS_DURING
-            [sessionApp powerOff: NO];
+            [sessionManager powerOff: NO];
           NS_HANDLER
             NSString * msgText = _(@"Shut down cannot be carried out.");
             NSString * infoText = [localException reason];
@@ -326,15 +324,21 @@ NSLog(@"hmm reboot");
     }
 }
 
-- (id) _workspaceApp
+- (id) _sessionManager
 {
-  return [[NSWorkspace sharedWorkspace] connectToWorkspaceApplicationLaunch: NO];
+	NSString *sessionManagerName = [[NSUserDefaults standardUserDefaults] objectForKey: @"ETSessionManager"];
+
+	if (sessionManagerName == nil)
+		sessionManagerName = @"/etoilesystem";
+
+	return [NSConnection rootProxyForConnectionWithRegisteredName: sessionManagerName
+	                                                         host: nil];
 }
 
 // TODO: May be better to pass an NSError instance rather than a simple string.
 - (void) _reportSessionServerError: (NSString *)localizedOperation
 {
-  NSString * msgText = _(@" failed. No session server is available.");
+  NSString * msgText = _(@" failed. No session manager is available.");
   NSString * infoText = _(@"Etoile is in a very unstable state. You should review your open documents with unsaved changes, then try to force log out or reboot your computer.");
 
   msgText = [localizedOperation stringByAppendingString: msgText];

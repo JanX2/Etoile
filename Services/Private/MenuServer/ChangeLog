@@ -1,3 +1,15 @@
+2008-11-01  Quentin Mathe <qmathe@club-internet.fr>
+
+	* Controller.m:
+	Renamed sessionApp variable to sessionManager in several methods.
+	(-_workspaceApp): Renamed _sessionManager and rewritten to eliminate the use 
+	of WorkspaceCommKit which is just overkilled here. Specially if we consider 
+	that the session manager should always be running and available: no need to 
+	launch it.
+	* README: Written documentation that describes the session manager protocol
+	and the interaction with System.
+    * GNUmakefile.preamble: Removed WorkspaceCommKit dependency.
+
 2007-09-21  Quentin Mathe <qmathe@club-internet.fr>
 
     Fixed ETOILE_CORE_MODULE by removing a trailing space. 'YES ' and not 'YES'

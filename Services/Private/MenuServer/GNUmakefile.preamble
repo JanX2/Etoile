@@ -28,5 +28,3 @@ ifneq ($(x11), no)
   ADDITIONAL_GUI_LIBS = -lXWindowServerKit
   ADDITIONAL_CPPFLAGS += -DXWindowServerKit -I/usr/X11R6/include
 endif
-
-ADDITIONAL_GUI_LIBS += -lWorkspaceCommKit
