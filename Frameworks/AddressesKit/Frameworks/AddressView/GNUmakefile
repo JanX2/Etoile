@@ -3,6 +3,8 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 FRAMEWORK_NAME=AddressView
 
+AddressView_VERSION=$(ETOILE_ADDRESSBOOK_VERSION)
+
 AddressView_OBJC_FILES=\
 			ADPersonView.m                 \
 			ADImageView.m                  \

@@ -1,4 +1,33 @@
-Current version is 0.4.6.
+Current version is 0.4.7 (Etoile). Latest official GAP version is 0.4.7.1, see 
+http://cvs.savannah.gnu.org/viewvc/gap/system-apps/Addresses/?root=gap
+
+Since 0.4.7 (Etoile 0.4):
+=========================
+
+  o Sync with GAP version 0.4.7 on 2007-07-26
+  o New constants ADURLsProperty, ADHomePageProperty and ADHomePageLabel 
+    introduced by Leopard
+  o Small memory management fix
+  o Fixed all compilation warnings
+
+Since 0.4.7:
+============
+
+  o Updated Makefiles to GNUstep Make 2.0
+  o Fixed text editing to work with current GNUstep gui
+  o Improved import of VCF files: tries to interpret HEX (by Guenther
+    Noack) and the escape \, from Apple cards
+
+Since 0.4.6.1 (Etoile 0.2):
+===========================
+
+  o First Etoile fork release
+  o Added ADJabberInstantProperty to ADPersonView
+
+Since 0.4.6:
+============
+
+  o Fixed output that caused broken database files
 
 Since 0.4.5:
 ============

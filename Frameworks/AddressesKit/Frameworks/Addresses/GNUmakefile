@@ -3,6 +3,8 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 FRAMEWORK_NAME=Addresses
 
+Addresses_VERSION=$(ETOILE_ADDRESSBOOK_VERSION)
+
 Addresses_OBJC_FILES= \
 	ADAddressBook.m         \
 	ADConverter.m           \

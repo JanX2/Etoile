@@ -1,3 +1,17 @@
+2008-06-11  Quentin Mathe <qmathe@club-internet.fr>
+
+	Bumped to 0.4.7 (Etoile) for Etoile 0.4. Introduced framework versioning 
+	starting with this next release.
+	Documented the framework history over the past two years in NEWS by digging 
+	into both Etoile and GAP repositories.
+	* NEWS: Updated to document all changes between the initial import and the 
+	latest version 0.4.7 (Etoile).
+	* GNUmakefile: Added an export for the new version 0.4.7.
+	* Frameworks/Addresses/GNUmakefile:
+	* Frameworks/AddressView/GNUmakefile:
+	Modified to version the installed frameworks.
+	* TODO.Etoile: Added.
+
 2007-05-04  Yen-Ju Chen <yjchenx at gmail>
 
 	* Export Addresses as AddressBook for building (not installation).

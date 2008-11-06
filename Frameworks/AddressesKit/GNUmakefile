@@ -2,10 +2,12 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 PACKAGE_NAME = Addresses
 CVS_MODULE_NAME = Addresses
-VERSION = 0.4.5
+VERSION = 0.4.7
 
-SUBPROJECTS =     \
-   Frameworks     
+# Used by Frameworks/Addresses/GNUMakefile and Frameworks/AddressView/GNUMakefile
+export ETOILE_ADDRESSBOOK_VERSION := $(VERSION)
+
+SUBPROJECTS = Frameworks
 
 -include GNUMakefile.preamble
 include $(GNUSTEP_MAKEFILES)/aggregate.make
