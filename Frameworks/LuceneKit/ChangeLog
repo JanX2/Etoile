@@ -1,3 +1,13 @@
+2008-11-06 Quentin Mathe <qmathe@club-internet.fr>
+
+    Bumped framework version from 0.1 to 0.1.1 for Etoile 0.4 release. 
+    * Info.plist: Updated version.
+    * GNUmakefile: Introduced framework versioning.
+    * README:
+    * INSTALL: 
+    Tweaked a bit formatting and content. Added Manuel Guesdon as an author for 
+    the large number of bug fixes he contributed. Bumped version.
+
 2008-01-02 Manuel Guesdon <mguesdon AT orange-concept DOT com>
 
     * Source/Analysis/LCPerFieldAnalyzerWrapper.m:

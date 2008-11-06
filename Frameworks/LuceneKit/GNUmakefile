@@ -7,6 +7,8 @@ else
 LIBRARY_NAME = LuceneKit
 endif
 
+LuceneKit_VERSION = 0.1.1
+
 -include GNUmakefile.headers
 
 LuceneKit_SUBPROJECTS = Source
