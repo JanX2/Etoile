@@ -1,6 +1,5 @@
-====================
-Font Manager Copying
-====================
+IconKit COPYING
+===============
 
 Copyright 2007 Uli Kusterer, Quentin Mathe & Nicolas Roard.
 
@@ -35,7 +34,7 @@ OF SUCH DAMAGE.
 >> I would like to ask if you are ok with relicensing your IconKit
 >> code under
 >> BSD license (actuallly under LGPL license). IconKit can be browsed in
->> ƒtoilŽ repository here:
+>> ï¿½toilï¿½ repository here:
 >> <http://svn.gna.org/viewcvs/etoile/trunk/Etoile/Frameworks/IconKit/>
 >> The main reason behind this move is that we decide to push BSD-like
 >> license over less permissive license like LGPL or GPL.

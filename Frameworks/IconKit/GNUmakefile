@@ -36,6 +36,8 @@ else
 FRAMEWORK_NAME = IconKit
 endif
 
+IconKit_VERSION = 0.2
+
 IconKit_SUBPROJECTS = Source
 
 IconKit_RESOURCE_FILES = IconKitInfo.plist GNUstep.icontheme ExtensionMapping.plist

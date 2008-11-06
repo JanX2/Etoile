@@ -1,3 +1,22 @@
+2008-11-06  Quentin Mathe <qmathe@club-internet.fr>
+
+	Bumped framework version from 0.1 to 0.2, rather than 0.1.1 to clearly mark 
+	the license change. This is for Etoile 0.4 release. 
+	* GNUmakefile: Introduced framework versioning.
+	* README:
+	* INSTALL:
+	Tweaked the content and the formatting a bit. Bumped version and documented 
+	license in README.
+	* NEWS: 
+	* TODO: 
+	Added.
+	* Info.plist: Bumped version.
+
+2007-09-07  Isaiah Beerbower <public@ipaqah.com>
+
+	Change license to 3-clause BSD (With permission from all those concerned).
+	Make the Xcode project work. Testing to follow...
+
 2007-09-07  Isaiah Beerbower <public@ipaqah.com>
 
 	Change license to 3-clause BSD (With permission from all those concerned).
@@ -28,7 +47,6 @@
 	* Source/IKIcon.m
 	* Source/NSString+MD5Hash.m
 	* Source/IKWorkspaceAdditions.m
-
 
 2007-06-30  Yen-Ju Chen <yjchen gmail>
 

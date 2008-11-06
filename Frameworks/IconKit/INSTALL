@@ -1,4 +1,3 @@
-===============
 IconKit INSTALL
 ===============
 
@@ -16,15 +15,19 @@ compile and use IconKit. The core packages are, at a minimum:
 
    * gnustep-back
 
-   See <http://www.gnustep.org/> for further information.
+See <http://www.gnustep.org/> for further information.
 
 
 Build and Install
 -----------------
 
+Square brackets "[ ]" are used to indicate optional parameters.
+
    Steps to build:
 
-   * make install
+   * make
+
+   * [sudo [-E]] make install
 
 
 Trouble

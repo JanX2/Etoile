@@ -1,0 +1,17 @@
+IconKit NEWS
+============
+
+Note: IconKit was initially released under LGPL for version 0.1.
+
+
+0.2 (Etoile 0.4)
+----------------
+
+- Changed license from LGPL to modified BSD (see COPYING and ChangeLog)
+- Fixed Xcode project (not well tested on Mac OS X though)
+
+
+0.1 (Etoile 0.2)
+----------------
+
+- First release.

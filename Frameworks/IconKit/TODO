@@ -1,0 +1,18 @@
+IconKit TODO
+============
+
+
+- Finish and test system-wide caching of composited and user-customized icons
+- Finish and improve icon compositing facilities
+- Write an IconKitExample that demonstrates the main features of IconKit
+- Support switching between icon themes without having to relaunch applications
+- Make it fast if it proves to be too slow
+
+
+Additional Ideas
+----------------
+
+- Write an application for lively play with the compositing features
+- Write an EtoileUI-based icon browser to browse icon themes and eventually 
+  control whether they are enabled or not (may be something in the spirit of 
+  IconFactory apps)
