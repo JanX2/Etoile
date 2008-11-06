@@ -1,0 +1,19 @@
+SystemConfig NEWS
+=================
+
+0.2 (Etoile 0.4)
+----------------
+
+- Support for system-related infos taken from AboutEtoileEntry
+- Several header include fixes to compile on more platforms
+- Preliminary X11 keyboard configuration such as delay, repeat... (Nyap Hong Koh)
+- libacpi battery monitor support but disabled by default, see INSTALL (Lennart 
+  Melzer)
+- APM-based battery monitor support for Linux, FreeBSD and OpenBSD (Yen-Ju Chen 
+  & David Chisnall)
+
+
+0.1 (Etoile 0.2)
+----------------
+
+- First release.

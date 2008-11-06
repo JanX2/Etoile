@@ -1,4 +1,3 @@
-====================
 SystemConfig INSTALL
 ====================
 
@@ -22,9 +21,13 @@ See <http://www.gnustep.org/> for further information.
 Build and Install
 -----------------
 
+Square brackets "[ ]" are used to indicate optional parameters.
+
    Steps to build:
 
-   * make install [LIBACPI=yes]
+   * make [LIBACPI=yes]
+
+   * [sudo [-E]] make install
 
 If you want to enable power management support based on ACPI, you have to define  
 LIBACPI as shown above (minus the square brackets).

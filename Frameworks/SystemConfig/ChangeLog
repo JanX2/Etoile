@@ -1,3 +1,15 @@
+2008-11-06  Quentin Mathe <qmathe@club-internet.fr>
+
+	Bumped framework version from 0.1 to 0.2 for Etoile 0.4 release. 
+	* GNUmakefile: Introduced framework versioning.
+	* README:
+	* INSTALL:
+	Tweaked the content and the formatting a bit. Bumped version and documented 
+	license in README.
+	* NEWS: 
+	* TODO: 
+	Added.
+
 2008-03-23  Quentin Mathe <qmathe@club-internet.fr>
 
 	Necessary changes to compile and link with ACPI support. ACPI is still 

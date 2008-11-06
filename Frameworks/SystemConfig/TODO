@@ -1,0 +1,17 @@
+SystemConfig TODO
+=================
+
+
+- Finish to support display settings, only partially implemented
+- Support for Network settings
+- Support for User account configuration
+- Support for some Date & Time settings eventually, although a large part can 
+  probably be handled in Services/User/Hardware through GNUstep defaults.
+- Improve power management related settings. For that, also take a look at 
+  System which deals with shut down, sleep etc. by the mean of HAL and D-Bus.
+- UI panels for all these settings are work-in-progress and far from finished, 
+  take a look at Look & Behavior and Hardware if you are interested in that 
+  (both apps are located in Services/User). 
+  Most of the work is relatively easy and consists of writing glue code that 
+  calls SystemConfig and gives feedback at UI level. Error reporting will 
+  surely have to be improved in SystemConfig to give proper feedback to the user.

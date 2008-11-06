@@ -8,6 +8,8 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 FRAMEWORK_NAME = SystemConfig
 
+SystemConfig_VERSION = 0.2
+
 SystemConfig_SUBPROJECTS = Source
 
 SystemConfig_HEADER_FILES_DIR = Headers

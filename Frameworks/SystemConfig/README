@@ -5,8 +5,8 @@ SystemConfig
 :Maintainer: Quentin Mathe <qmathe@club-internet.fr>
 :Author: Quentin Mathe, Yen-Ju Chen, Guenther Noack, David Chisnall, 
 Nyap Hong Koh, Lennart Mezler
-:License: LGPL license (see COPYING document)
-:Version: 0.1
+:License: LGPL 2.1 License (see COPYING document)
+:Version: 0.2
 
 SystemConfig is a framework which provides various a common way to set system 
 specific preferences by interfacing with the host system. Host system means the 
@@ -22,8 +22,19 @@ abstraction support' means. GNOME System tools backend is an example of such
 library that allows to set various settings (like network related ones) without
 having to pay attention on which operating system Etoile is used.
 
+This framework is only partially implemented, so if you are interested to 
+contribute, patches are really welcome :-) For example, there is no support 
+at all for network settings, and display settings are currently very limited. 
+
 To know more about SystemConfig: 
-<http://www.etoile-project.com/etoile/mediawiki/index.php?title=SystemConfig>
+<http://www.etoile-project.org/dev/0.4/SystemConfig>
+
+
+Licensing
+---------
+
+This framework is released under LGPL 2.1, but several files are under the 
+Modified BSD license.
 
 
 Build and Install
@@ -59,17 +70,10 @@ UnitKit (bundled with Etoile) is required.
 
     * make test=yes 
 
-    * ukrun SystemConfig.bundle
-
-
-Dependency
----------
-
-None.
+    * ukrun
 
 
 Contribute 
 ----------
 
 Read TODO document.
-
