@@ -25,7 +25,7 @@
 @implementation CornerDelegate
 - (id) init
 {
-	SELFINIT;
+	SUPERINIT;
 	state = [[NSMutableDictionary alloc] init];
 	return self;
 }
