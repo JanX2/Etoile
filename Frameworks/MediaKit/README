@@ -1,6 +1,26 @@
-MultimediaKit
-=============
+MediaKit
+========
 
-This is a work-in-progress replacement for MultimediaKit.  It currently only plays music files.
+:Maintainer: David Chisnall
+:Authors: David Chisnall
+:License: Modified BSD License
+:Version: 0.1
 
-It uses OSS for sound output and libavcodec / libavformat for file parsing.
+This is a work-in-progress replacement for MultimediaKit.  It currently only 
+plays music files. It uses OSS for sound output and libavcodec / libavformat for 
+file parsing.
+
+To know more about MediaKit: 
+<http://www.etoile-project.org/dev/0.4/MediaKit>
+
+
+Build and Install
+-----------------
+
+Read INSTALL document.
+
+
+Mac OS X support
+----------------
+
+MediaKit isn't supported on Mac OS X and there is no plan to do so. 
