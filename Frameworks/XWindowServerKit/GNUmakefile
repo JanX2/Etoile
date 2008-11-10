@@ -4,6 +4,8 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 FRAMEWORK_NAME = XWindowServerKit
 
+XWindowServerKit_VERSION = 0.1.1
+
 XWindowServerKit_OBJC_FILES = \
 	XFunctions.m \
 	XScreen.m \

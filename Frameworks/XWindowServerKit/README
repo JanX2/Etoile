@@ -1,10 +1,25 @@
-================
 XWindowServerKit
 ================
 
-:Author: Yen-Ju Chen
-:Copyright: BSD License
+:Maintainer: Yen-Ju Chen <yjchenx gmail >
+:Authors: Yen-Ju Chen
+:License: Modified BSD License
+:Version: 0.1.1
 
 XWindowServerKit provides access to x window system.
 It allows GNUstep to integrate better with x window system.
 
+To know more about XWindowServerKit: 
+<http://www.etoile-project.org/dev/0.4/XWindowServerKit>
+
+
+Build and Install
+-----------------
+
+Read INSTALL document.
+
+
+Mac OS X support
+----------------
+
+None.

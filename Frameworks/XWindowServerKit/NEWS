@@ -1,0 +1,15 @@
+XWindowServerKit NEWS
+=====================
+
+0.1.1 (Etoile 0.4)
+------------------
+
+- _NET_WM_WINDOW_TYPE_DOCK support
+- _NET_WORKAREA support
+- Macro to define X Display
+
+
+0.1 (Etoile 0.2)
+----------------
+
+- First release.
