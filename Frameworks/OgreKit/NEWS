@@ -1,0 +1,29 @@
+OgreKit (GNUstep) NEWS
+======================
+
+1.2.1 (Etoile 0.4)
+------------------
+
+- Fixed all warnings
+- Minor compilation tweaks and fixes
+
+
+1.2 (Etoile 0.2)
+----------------
+
+Note: 1.2 is mentionned as 1.1 in the ChangeLog. Looks 1.2 got wrongly declared 
+in the README file for Etoile 0.2.
+
+- Updated to OgreKit 2.1.2
+- Oniguruma 5 support
+- New features for the Find panel:
+	- Replace support
+	- Replace in selection only
+	- Case insensitive option
+	- Regex style option to switch between Ruby and Simple syntax
+
+
+1.0 (Etoile 0.1)
+----------------
+
+- First release forked from OgreKit 2.0.1

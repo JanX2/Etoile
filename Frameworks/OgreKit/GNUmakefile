@@ -6,6 +6,8 @@ else
 FRAMEWORK_NAME = OgreKit
 endif
 
+OgreKit_VERSION = 1.2.1
+
 -include GNUmakefile.headers
 
 OgreKit_SUBPROJECTS = Source
