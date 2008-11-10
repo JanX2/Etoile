@@ -21,7 +21,7 @@ See <http://www.zlib.net/> for further information.
 
 Finally you need from Etoile itself:
 
-   * OgreKit, which can be found in Etoile/Frameworks/EtoileFoundation
+   * OgreKit, which can be found in Etoile/Frameworks/OgreKit
      PCREParser is also supported as an alternative to OgreKit for regular 
      expressions, see Build and Install.
 
