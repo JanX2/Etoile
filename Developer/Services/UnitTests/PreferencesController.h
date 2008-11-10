@@ -24,6 +24,9 @@
 - (void) removeTestsBundle: (id)sender;
 - (void) endSetWindow: (id)sender;
 
+- (void) endNewSetSheet: (id)sheet returnCode: (int)tag contextInfo: (id)info;
+- (void) endRenameSetSheet: (id)sheet returnCode: (int)tag contextInfo: (id)info;
+
 @end
 
 /*
