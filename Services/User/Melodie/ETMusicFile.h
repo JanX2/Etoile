@@ -31,8 +31,10 @@
 	THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#import <Foundation/Foundation.h>
+#import <CoreObject/CoreObject.h>
 #import "TLMusicFile.h"
+
+@class NSString;
 
 extern NSString *kETURLProperty;
 extern NSString *kETTitleProperty;

@@ -31,8 +31,7 @@
 	THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
+@class NSImage, NSString, NSObject;
 
 @interface TLMusicFile : NSObject
 {

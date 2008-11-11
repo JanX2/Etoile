@@ -1,3 +1,11 @@
+" This class is meant as a UI controller which encapsulates access to MediaKit.
+  It is designed to be connected to a 'previous' button, 'next' button, 
+  'play/pause' button, a song position slider, a volume slider, and a song
+  information label. 
+
+  The playLayoutItem:shouldStart: method is used to start playback at a
+  particular node in a layout item tree. "
+
 NSObject subclass: MusicPlayerController
 [
 	| positionSlider volumeSlider songLabel playPauseButton previousButton nextButton
@@ -53,49 +61,38 @@ NSObject subclass: MusicPlayerController
 		'TODO: previous' log.
 	]
 
-	playObject: anObject start: shouldStart [
+	playLayoutItem: layoutItem start: shouldStart [
 		| allObjects currentIndex newQueue URLs |
 		'Playing URL: ' log.
-		anObject representedObject URL log.
+		layoutItem representedObject URL log.
 
-		allObjects := anObject baseItem itemsIncludingAllDescendants.
-		currentIndex := (allObjects indexOfObjectIdenticalTo: anObject).
-		newQueue := (allObjects subarrayWithLocation: currentIndex length: ((allObjects count) - currentIndex)).
-
-		
-		" Fill URLs with the URLs of the repobjects of the items in newQueue, if they have URLs.
-		  Without the ifTrue: [1.] ifFalse: [nil.]. hack, select: would include objects which should have failed. 
-		  Unboxing problem? "
-		"  URLs := (newQueue select: [ :x | (x representedObject respondsToSelector: 'URL') ifTrue: [1.] ifFalse: [nil.]. ]) map: [ :x | x representedObject URL.]. "
+		allObjects := layoutItem baseItem itemsIncludingAllDescendants.
+		currentIndex := (allObjects indexOfObjectIdenticalTo: layoutItem).
+		newQueue := (allObjects subarrayWithLocation: currentIndex
+		                                      length: ((allObjects count) - currentIndex)).
 		URLs := newQueue map: [ :x | x representedObject URL.].
 
 		player stop.
-
 		" TODO: rebuild the queue when the playlist is modified. "
 		player setQueue: URLs.
 
 		shouldStart ifTrue: [ self play. ].
-		songLabel setStringValue: (anObject representedObject valueForProperty:'kETTitleProperty').
+		songLabel setStringValue: (layoutItem representedObject valueForProperty:'kETTitleProperty').
 	]
 
-	setIconToPlay [
-		" Workaround until ivar access from within blocks works."
-		 playPauseButton setImage: ((IKIcon iconWithIdentifier: 'media-playback-pause') image).
-	]
-
-	setIconToPause [
-		 playPauseButton setImage: ((IKIcon iconWithIdentifier: 'media-playback-start') image).
-	]
+	" Private "
 
 	timerEvent: sender [
-		player isPlaying ifTrue: ['playing' log. self setIconToPlay. ] 
-		                  ifFalse: ['paused' log. self setIconToPause. ].
+		player isPlaying ifTrue: [ playPauseButton setImage:
+		                               ((IKIcon iconWithIdentifier: 'media-playback-pause') image). ]
+		                ifFalse: [ playPauseButton setImage:
+		                               ((IKIcon iconWithIdentifier: 'media-playback-start') image). ].
+
 		positionSlider setMaxValue: (player duration).
 		positionSlider setIntValue: (player currentPosition).
+		"songLabel setStringValue: (player currentURL absoluteString)."
 
-		" songLabel setStringValue: (player currentURL absoluteString)."
-
-		" FIXME: calling player currentURL in this timer callback causes a segfault the second time it happens, but not until there's a song playing
-		  i.e. currentURL is non-nil "
+		" FIXME: calling player currentURL in this timer callback causes a segfault the second time it
+		   happens, but not until there's a song playing  i.e. currentURL is non-nil "
 	]
 ]

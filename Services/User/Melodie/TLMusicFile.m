@@ -64,6 +64,10 @@
 		year = strtol(value, NULL, 10);
 	}
 	MP4GetMetadataTrack(hFile, &track, &totalTracks);
+
+	/* Album cover extraction from MP4's is disabled for now. We don't do much
+	   with them, and the MP4GetMetadataCoverArt function will cause a compile 
+	   error for people with old versions of the MP4 library.
 	
 	u_int32_t imageLength;
 	u_int8_t *image;
@@ -74,7 +78,8 @@
 		            [NSData dataWithBytes: image length: imageLength]];
 		if (cover != nil)
 			hasCover = YES;
-	}
+	} */
+
 	MP4Close(hFile);
 	return YES;
 }

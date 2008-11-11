@@ -2,20 +2,43 @@
 Melodie README
 ===================
 
-Melodie is a music player for Etoile. It is a work-in-progres, and shows off
-many of the core Etoile frameworks:
-MediaKit
-EtoileUI
-CoreObject
-EtoileSerialize
-Smalltalk
+Melodie is a music player for Etoile.
 
-The music library is stored in ~/GNUstep/Library/MelodieLibrary/
+It is only an early prototype, and not yet useful as a main music player.
+However, it is included in Etoile 0.4 because it is currently the best
+demonstration of most of the new Etoile components being used together:
+
+CoreObject
+EtoileUI
+Pragmatic Smalltalk
+and also MediaKit and EtoileThread
+
+
 
 Authors: Eric Wasylishen <ewasylishen@gmail.com>
 
+Known Problems
+--------------
+
+- Adding corrupt files will crash Melodie. (Not checking that the tag object returned
+by the TagLib C binding is valid. because this function was missing until recent versions)
+- Undo and redo are not yet stable.
+- UI freezes while starting playback of radio stream
+- "Previous" button doesn't work
+- Drag and drop not stable
 
 Build and Install
 -----------------
 
-Read INSTALL document.
+Melodie should be built as part of Etoile.
+
+It currently has two dependencies not used elsewhere in Etoile:
+- TagLib (C binding), called libtagc in Ubuntu. Used for reading tags of media files.
+- libmp4v2. Used for reading tags.
+
+You also need to run the CoreObject database setup script.
+
+If you would like Melodie to start a new library, close the program, and run in a shell:
+
+defaults delete Melodie
+- 

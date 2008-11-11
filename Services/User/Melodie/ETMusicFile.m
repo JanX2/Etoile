@@ -35,7 +35,6 @@
 #import <CoreObject/CoreObject.h>
 #import <IconKit/IconKit.h>
 
-#import "ETLastFM.h"
 #import "ETMusicFile.h"
 
 NSString *kETURLProperty = @"kETURLProperty";
@@ -135,7 +134,7 @@ NSString *kETPlayingProperty = @"kETPlayingProperty";
 	[self setValue: [NSNumber numberWithInt:[tag channels]]
 	   forProperty: kETChannelsProperty];
 
-	NSLog(@"Finished setting ETMusicFile properties from taglib");
+	NSDebugLog(@"Finished setting ETMusicFile properties from taglib");
 	return;
 }
 
@@ -153,18 +152,27 @@ NSString *kETPlayingProperty = @"kETPlayingProperty";
 {
 	NSString *display = [self name];
 	if (display == nil && [display isEqual: @""])
+	{
 		display = [[self path] lastPathComponent];
+	}
+
 	if (display == nil && [display isEqual: @""])
+	{
 		display = [self valueForProperty: kETURLProperty];
+	}
 	return display;
 }
 
 - (NSImage *) icon
 {
 	if ([tag cover] != nil)
+	{
 		return [tag cover];
+	}
 	else
+	{
 		return [[IKIcon iconWithIdentifier: @"audio-x-generic"] image];
+	}
 }
 
 @end
