@@ -1,0 +1,31 @@
+XMPPKit
+=======
+
+:Maintainer: David Chisnall
+:Author: David Chisnall
+:License: Modified BSD License
+:Version: 0.1
+
+XMPPKit is an Objective-C implementation of the Extensible Messaging and 
+Presence Protocol (XMPP) that can be used to write Jabber-enabled applications.
+For more informations about XMPP itself, see <http://xmpp.org/>.
+
+The framework uses EtoileXML for parsing the XML streams of the XMPP protocol.
+
+Etoile also includes a IM client named StepChat built on top of it.
+
+To know more about XMPPKit:
+<http://www.etoile-project.org/dev/0.4/XMPPKit>
+
+
+Build and Install
+-----------------
+
+Read INSTALL document.
+
+
+Mac OS X support
+----------------
+
+An Xcode project is available in Services/User/Jabber to build XMPPKit, 
+EtoileXML and StepChat on Mac OS X.
