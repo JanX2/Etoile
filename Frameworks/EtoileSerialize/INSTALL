@@ -1,0 +1,40 @@
+EtoileSerialize INSTALL
+=======================
+
+Required software
+-----------------
+
+You need to have the GNUstep core libraries installed in order to
+compile and use EtoileSerialize. The core packages are, at a minimum:
+
+   * gnustep-make
+
+   * gnustep-base
+
+See <http://www.gnustep.org/> for further information.
+
+Finally you need from Etoile itself:
+
+   * EtoileFoundation, which can be found in Etoile/Frameworks/EtoileFoundation
+
+This last dependency is automatically handled when LuceneKit is built by running
+'make' tool in Frameworks or any other parent directories.
+
+
+Build and Install
+-----------------
+
+Square brackets "[ ]" are used to indicate optional parameters.
+
+   Steps to build (use gmake on non-GNU systems):
+
+   * make
+
+   * [sudo [-E]] make install
+
+
+Trouble
+-------
+
+   Give us feedback! Tell us what you like; tell us what you think
+could be better. Send bug reports and patches to <bug-etoile@gna.org>.
