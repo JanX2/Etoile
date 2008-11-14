@@ -1,8 +1,10 @@
-==========
-PopplerKit
-==========
+PopplerKit (Etoile)
+===================
 
+:Maintainer: None
 :Author: Stefan Kleine Stegemann
+:License: GPL License
+:Version: 1.0.1
 
 PopplerKit is a GNUstep/Cocoa framework for accessing and rendering 
 PDF content. It is based on the `poppler library <http://poppler.freedesktop.org/>`_ 
@@ -16,23 +18,39 @@ Features:
 - Search in PDF documents.
 
 *Note that not all features are implemented by now.*
- 
-Development
------------
 
-For now, the development of PopplerKit is closely connected to development of the [Vindaloo PDF Reader](http://home.gna.org/gsimageapps/vindaloo). With more features beeing added to Vindaloo, PopplerKit will become more stable and completed. At some point, possibly when there are more users of PopplerKit, it will get it's own "roadmap".
+This is an Etoile fork of PopplerKit 1.0 from GNUstep Image Apps project  
+<http://home.gna.org/gsimageapps/>. GNUstep Image Apps has been on hold for 
+two years, the Etoile version of PopplerKit mostly consists of bug fixes not 
+present in the original version.
 
-The primary goal is to make PopplerKit stable and usable first. More features and improvements will be added then.
+To know more about PopplerKit: 
+<http://www.etoile-project.org/dev/0.4/PopplerKit>
 
-Getting PopplerKit
-------------------
 
-PopplerKit can be downloaded from the [download section](http://download.gna.org/gsimageapps/PopplerKit) at the project home on gna.org.
+Build and Install
+-----------------
 
-GNUstep
--------
-For GNUstep, you have to download the source distribution and build PopplerKit from source. You definitly need an installed version of the poppler library (cairo support is optional). PopplerKit has been tested with poppler 0.3.3. It is *strongly* recommend to read the Installation instructions for further informations.
+Read INSTALL document.
 
-Mac OS X
---------
-For Mac OS X I strongly recommend to get the prebuild Framework. Building from source is a little bit tricky since you need to build the required libraries first. There are scripts to do this inside the 3rdParty directory of the source distribution but the process is not well documented at the moment. The prebuild Framework has been statically linked against all required libraries (poppler, cairo, freetype, ...) so there are no other dependencies.
+
+Mac OS X support
+----------------
+
+The current Xcode project has not been tested for a while and is quite old.
+Building from source is a little bit tricky since you need to build the required 
+libraries first. There are scripts to do this inside the 3rdParty directory but 
+the process is not well documented at the moment.
+
+
+Developer notes
+===============
+
+For now, the development of PopplerKit is closely connected to development of 
+the [Vindaloo PDF Reader](http://home.gna.org/gsimageapps/vindaloo). With more 
+features beeing added to Vindaloo, PopplerKit will become more stable and 
+completed. At some point, possibly when there are more users of PopplerKit, it 
+will get it's own "roadmap".
+
+The primary goal is to make PopplerKit stable and usable first. More features 
+and improvements will be added then.

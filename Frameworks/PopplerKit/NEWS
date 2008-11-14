@@ -1,0 +1,17 @@
+PopplerKit (Etoile) NEWS
+========================
+
+1.0.1 (Etoile 0.4)
+------------------
+
+- Removed support for libpoppler version older than 0.6 now that the library 
+  has a stable API
+
+
+1.0 (Etoile 0.2)
+----------------
+
+- First release forked from Poppler 1.0 with the following additions:
+	- Fix for Cairo support, but Cairo renderer is currently disabled
+	- Support for libpoppler 0.5
+	- Fix for distorted colors with the Splash renderer

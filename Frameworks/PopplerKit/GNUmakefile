@@ -21,9 +21,8 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 -include config.make
 
-FRAMEWORK_NAME                         = PopplerKit
-PopplerKit_CURRENT_VERSION_NAME        = 1.0
-PopplerKit_DEPLOY_WITH_CURRENT_VERSION = yes
+FRAMEWORK_NAME = PopplerKit
+PopplerKit_VERSION = 1.0.1
 
 PopplerKit_SUBPROJECTS = \
 bindings \
