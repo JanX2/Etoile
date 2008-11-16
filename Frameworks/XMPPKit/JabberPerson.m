@@ -358,9 +358,15 @@ static NSString * avatarCachePath = nil;
 		if(imageData != nil)
 		{
 			NSString * imageHash = [imageData sha1];
+// FIXME: -writeToFile:options:error: has to be implemented in GNUstep base.
+#ifdef GNUSTEP
+			[imageData writeToFile:[avatarCachePath stringByAppendingString:imageHash]
+			            atomically:YES];
+#else
 			[imageData writeToFile:[avatarCachePath stringByAppendingString:imageHash]
 						   options:0
 							 error:(id*)0];
+#endif
 			if(![imageHash isEqualToString:currentHash])
 			{
 				[photoHashes setObject:imageData forKey:imageHash];
