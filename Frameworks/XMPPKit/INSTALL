@@ -5,7 +5,7 @@ Required software
 -----------------
 
 You need to have the GNUstep core libraries installed in order to
-compile and use IconKit. The core packages are, at a minimum:
+compile and use XMPPKit. The core packages are, at a minimum:
 
    * gnustep-make
 
