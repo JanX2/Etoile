@@ -27,29 +27,27 @@ NSObject subclass: MelodieController
 		ctxt registeredObjects log.    
 
 		defaults := NSUserDefaults standardUserDefaults.
-		defaults setObject: (ctxt UUID stringValue) forKey: 'MellodieObjectContextUUID'.
-		defaults setObject: (mainModel UUID stringValue) forKey: 'MellodieMainModelUUID'. 
-		defaults setObject: (playlistModel UUID stringValue) forKey: 'MellodiePlaylistModelUUID'. 
+		defaults setUUID: (ctxt UUID) forKey: 'MellodieObjectContextUUID'.
+		defaults setUUID: (mainModel UUID) forKey: 'MellodieMainModelUUID'. 
+		defaults setUUID: (playlistModel UUID) forKey: 'MellodiePlaylistModelUUID'. 
 	]
 
 	reloadModelVariablesFromContext [
 		| defaults |
 		
 		defaults := NSUserDefaults standardUserDefaults.
-		mainModel := ctxt objectForUUID: (ETUUID UUIDWithString:
-		                    (defaults stringForKey: 'MellodieMainModelUUID')).
-		playlistModel := ctxt objectForUUID: (ETUUID UUIDWithString:
-		                    (defaults stringForKey: 'MellodiePlaylistModelUUID')).
+		mainModel := ctxt objectForUUID: (defaults UUIDForKey: 'MellodieMainModelUUID').
+		playlistModel := ctxt objectForUUID: (defaults UUIDForKey: 'MellodiePlaylistModelUUID').
 	]
 
 	loadContextWithUUID: uuid [
 		'Requesting object context with UUID:' log.
 		uuid log.
 
-		ctxt := COObjectContext alloc initWithUUID: (ETUUID UUIDWithString: uuid).
+		ctxt := COObjectContext alloc initWithUUID: uuid.
 		COObjectContext setCurrentContext: ctxt.
 	
-		self reloadModelVariablesFromContext.		
+		self reloadModelVariablesFromContext.
 			
 		'Deserialized main model:' log.
 		mainModel log.
@@ -64,9 +62,11 @@ NSObject subclass: MelodieController
 		ETPlaylist setAutomaticallyMakeNewInstancesPersistent: 1.
 		ETMusicFile setAutomaticallyMakeNewInstancesPersistent: 1.
 
-		uuid := (NSUserDefaults standardUserDefaults stringForKey: 'MellodieObjectContextUUID').
+		uuid := (NSUserDefaults standardUserDefaults UUIDForKey: 'MellodieObjectContextUUID').
 		(uuid == nil) ifTrue: [ self newContext. ]
 		             ifFalse: [ self loadContextWithUUID: uuid. ].
+		
+		ctxt setDelegate: self.
 
 		^ self.
 	]
@@ -105,16 +105,10 @@ NSObject subclass: MelodieController
 
 	undo: sender [
 		ctxt undo.
-		self reloadModelVariablesFromContext.
-		mainContainer reloadAndUpdateLayout.
-		playlistContainer reloadAndUpdateLayout.
 	]
 
 	redo: sender [	
 		ctxt redo.
-		self reloadModelVariablesFromContext.
-		mainContainer reloadAndUpdateLayout.
-		playlistContainer reloadAndUpdateLayout.
 	]
 
 	addURL: sender [
@@ -170,6 +164,14 @@ NSObject subclass: MelodieController
 		ScriptCenter sharedInstance enableScriptingWithObjects:
 		    (NSDictionary dictionaryWithObjects: { musicPlayerController  }
 		                                forKeys: { 'MusicPlayerController' }).
+	]
+
+	" COObjectContext delegate method "
+	objectContextDidMergeObjects: notif [
+		'Merge occurred, reloading models from context and updating container layouts..' log.
+		self reloadModelVariablesFromContext.
+		mainContainer reloadAndUpdateLayout.
+		playlistContainer reloadAndUpdateLayout.
 	]
 
 	controlTextDidChange: notif [
