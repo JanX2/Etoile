@@ -89,4 +89,9 @@ ${DOCUMENT_NAME}_AGSDOC_FILES = ${${FRAMEWORK_NAME}_HEADER_FILES}
 
 include $(GNUSTEP_MAKEFILES)/framework.make
 -include ../../etoile.make
+ifeq ($(doc), yes)
+# NOTE: Made optional because broken with gnustep-base 1.15.3:
+#Generating reference documentation...
+#autogsdoc: Uncaught exception NSInvalidArgumentException, reason: GSMutableSet(instance) does not recognize #removeObjectForKey:
 include $(GNUSTEP_MAKEFILES)/documentation.make
+endif

@@ -50,7 +50,7 @@
 /**
  * Add a new identity to an existing person.
  */
-- (void) addIdentity:(JabberIdentity*)_identity;
+- (void) addIdentity:(JabberIdentity*)anIdentity;
 /**
  * Remove an identity from an existing person.
  */

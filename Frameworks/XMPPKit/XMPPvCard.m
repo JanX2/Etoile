@@ -117,15 +117,13 @@ MULTI_PROPERTY_FROM_XML(kABURLsProperty, kABHomePageLabel, URL)
 - (void) addFN:(NSString*)aString
 {
 	NSArray * names;
+#define GS_GNUSTEP_V GS_API_LATEST
+#if GS_API_VERSION(0, 011700)
 	//Leopard method.
-	if([aString respondsToSelector:@selector(componentsSeparatedByCharactersInSet:)])
-	{
-		names = [aString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-	}
-	else
-	{
-		names = [aString componentsSeparatedByString:@" "];		
-	}
+	names = [aString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+#else
+	names = [aString componentsSeparatedByString:@" "];
+#endif
 	switch([names count])
 	{
 		case 3:
