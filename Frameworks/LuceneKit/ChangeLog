@@ -1,3 +1,10 @@
+2008-11-16 Quentin Mathe <qmathe@club-internet.fr>
+
+    Clarified the licensing by putting LuceneKit under Apache 2 license with 
+    Yen-Ju approval.
+    * LICENSE: Modified to refer only to Apache 2 license.
+    * NOTICE: Added as Apache 2 license requires it.
+
 2008-11-06 Quentin Mathe <qmathe@club-internet.fr>
 
     Bumped framework version from 0.1 to 0.1.1 for Etoile 0.4 release. 
