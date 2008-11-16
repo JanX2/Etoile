@@ -176,24 +176,6 @@
 
 - (NSImage *)cover
 {
-	if (hasCover && cover == nil)
-	{
-		// Since we don't serialize the cover image, after deserialization
-		// if there used to be a cover, cover will be nil but hasCover YES.
-		//
-		// In that case reload the image from the file.
-		MP4FileHandle hFile = MP4Read([path UTF8String], 0);
-		if(MP4_INVALID_FILE_HANDLE == hFile)
-			return NO;
-		u_int32_t imageLength;
-		u_int8_t *image;
-		if (MP4GetMetadataCoverArt(hFile, &image, &imageLength, 0))
-		{
-			cover = [[NSImage alloc] initWithData:
-			            [NSData dataWithBytes: image length: imageLength]];
-		}
-		MP4Close(hFile);
-	}
 	return cover;
 }
 
