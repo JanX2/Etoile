@@ -1,0 +1,13 @@
+Just playing with Corner and ScriptKit.. hopefully will turn in to some sort of overlay shelf mockup.
+
+- run "./register.sh" to set up the Corner listener.
+- run xcompmgr
+- run Corner
+- do "make" and "./OverlayShelf.app/OverlayShelf"
+
+Usage:
+- move mouse to bottom-left corner of screen to open shelf
+- try dragging the images around
+- the other screen corners close the shelf
+
+ScriptKit is very cool!
