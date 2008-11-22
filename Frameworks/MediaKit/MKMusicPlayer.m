@@ -31,7 +31,7 @@
 {
 	playing = NO;
 }
-- (void) stop;
+- (void) stop
 {
 	[files removeAllObjects];
 	DESTROY(file);
