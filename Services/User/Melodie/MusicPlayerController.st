@@ -1,4 +1,4 @@
-<< types = '{ "volume" = "i8@0:4"; "setVolume:" = "v12@0:4i8" }' >>
+<< types = '{ "volume" = "i8@0:4"; "setVolume:" = "v12@0:4i8" ; "next" = "v8@0:4" }' >>
 " This class is meant as a UI controller which encapsulates access to MediaKit.
   It is designed to be connected to a 'previous' button, 'next' button, 
   'play/pause' button, a song position slider, a volume slider, and a song
