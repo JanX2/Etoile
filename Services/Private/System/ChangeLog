@@ -1,3 +1,33 @@
+2008-11-27  Quentin Mathe <qmathe@club-internet.fr>
+
+	Made the code a bit more solid and simpler. Now handles the launch queue 
+	without gdnc. Also added a time limit for a launch to finish. These two 
+	changes ensures the launch sequence won't be stalled when distributed 
+	notification are not working well, as reported on etoile-dev with recent 
+	GNUstep trunk.
+	To depend on distributed notifications to start processes just add more 
+	complexity and is undesirable as such.
+	System is still unable to track launched applications and thereby to close 
+	the session properly. The GNUstep issue that is behind it and also motivated 
+	the committed changes is described here: http://savannah.gnu.org/bugs/?24939
+	* SCTask.m:
+	(-launchTimeOut, -checkLaunchTimeOut): Added.
+	(-launchForDomain:): Modified to create a timer that checks whether launch 
+	notifications are received in time for AppKit-based applications.
+	(-postTaskLaunched): Modified to call SCSystem directly rather than 
+	indirectly through the distributed notification center.
+	(-taskLaunched:): Modified to only catch 
+	NSWorkspaceDidLaunchApplicationNotification here and calls -[SCSystem 
+	noteApplicationLaunched:] indirectly through -postTaskLaunched. Previously 
+	-[SCSystem noteApplicationLaunched] handled these notifications directly.
+	(-taskTerminated:): Always set launchFinished to NO when a task terminates.
+	* EtoileSystem.m:
+	Moved _launchQueueScheduled reset so it happens only when the launch queue 
+	becomes empty.
+	(-noteApplicationLaunched:): Rewritten to be simpler and and safer. Do not 
+	handle NSWorkspaceDidLaunchApplicationNotification directly now, but 
+	SCTask does it and notifies us with -postTaskLaunched.
+
 2008-02-23  Quentin Mathe <qmathe@club-internet.fr>
 
 	* etoile.desktop: Made the xsession file truly compliant with Desktop 

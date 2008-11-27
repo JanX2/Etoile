@@ -99,6 +99,7 @@
 - (BOOL) isStopped;
 
 - (NSTimeInterval) runInterval;
+- (NSTimeInterval) launchTimeOut;
 - (int) launchFailureCount;
 
 @end

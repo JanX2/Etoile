@@ -24,8 +24,13 @@
  */
 
 #import "SCTask.h"
+#import "EtoileSystem.h"
 #import <AppKit/AppKit.h> // For NSWorkspaceDidLaunchNotification
 #import <math.h>
+
+@interface SCSystem (Private)
+- (void) noteApplicationLaunched: (NSNotification *)notif;
+@end
 
 @interface SCTask (Private)
 - (void) postTaskLaunched;
@@ -151,6 +156,8 @@
 	if ([[[newTask path] pathExtension] isEqual: @"app"])
 		newTask->isNSApplication = YES;
 	
+	/* To detect whether an AppKit-based process has been really launched or 
+	   not, see -taskLaunched:. */
 	[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: newTask
 		selector: @selector(taskLaunched:) 
 			name: NSWorkspaceDidLaunchApplicationNotification
@@ -190,6 +197,7 @@
 - (void) dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver: self];
 
 	TEST_RELEASE(path);
 	TEST_RELEASE(launchIdentity);
@@ -221,25 +229,33 @@
        Domains having usually an associated permissions level. */
 
     [self launch];
-
     stopped = NO;
+	/* For tools, we notify SSCystem of the launch immediately. 
+	   For applications, we waits the application reports that it has finished 
+	   to launch before notifying SCSystem. 
+	   - If the application launch succeds, we catch NSWorkspaceDidLaunchNotification
+	     with -taskLaunched: and notify System directly.
+	   - If the application launch fails, we catch NSTaskDidTerminateNotification
+	     with -taskTerminated: and notify System directly.
+	   - If the application launch times out, we use a timer to check the time 
+	     out delay with -checkLaunchTimeOut, and notify System directly. This 
+	     doesn't the launch failed, but the control must return to the launch 
+	     queue otherwise the launch sequence can be blocked... */
+	launchFinished = (isNSApplication == NO); //([self isRunning] && isNSApplication == NO);
 
-	/* For tools, we need to simulate NSWorkspaceDidLaunchNotification */
-	if (isNSApplication == NO)
+	if (launchFinished)
 	{
 		[self postTaskLaunched];
 	}
-
-    /*  appBinary = [ws locateApplicationBinary: appPath];
-
-      if (appBinary == nil)
-        {
-          SetNonNullError (error, WorkspaceProcessManagerProcessLaunchingError,
-            _(@"Unable to locate application binary of application %@"),
-            appName);
-
-          return NO;
-        } */
+	else /* Wait the launch is fully finished by delaying -postTaskLaunched call */
+	{
+		NSInvocation *inv = [[NSInvocation alloc] initWithTarget: self 
+			selector: @selector(checkLaunchTimeOut)];
+		/* The run loop retains the timer, then releases it once it has fired */
+		[NSTimer scheduledTimerWithTimeInterval: [self launchTimeOut]
+		                             invocation: AUTORELEASE(inv)
+		                                repeats: NO];
+	}
 }
 
 /** Returns the path used to create the task, it is identical to launch 
@@ -310,32 +326,63 @@
 
 	NSDebugLLog(@"SCTask", @"Synthetize launch notification for task %@", self);
 
-	[[[NSWorkspace sharedWorkspace] notificationCenter] 
-		postNotification: notif];
+	// FIXME: We should use -sharedInstance, using -serverInstance prevents 
+	// SCTask API to be used by a third-party application.
+	[[SCSystem serverInstance] noteApplicationLaunched: notif];
 }
 
-/** Mostly useful for debugging purpose. */
+/** In case no launch notification is posted or the launch is very slow, we 
+    return the control to the launch queue to be safe.
+    If GDNC is in trouble, this method will ensure the launch sequence continues 
+    as expected and doesn't get stalled waiting for a 
+    NSWorkspaceDidLaunchApplicationNotification that will never be received. */
+- (void) checkLaunchTimeOut
+{
+	/* The time out timer always fires so we have to ignore it if the launch has 
+	   succeeded */
+	if (launchFinished)
+		return;
+
+	// TODO: Try to handle in a more user-friendly manner... may be by asking 
+	// the user for feedback.
+	NSLog(@"WARNING: Task %@ launch timed out. Any other tasks to be launched "
+		"that depend on it might not run properly.", [self name]);
+	
+	NSAssert1(stopped == NO, @"Task %@ is wrongly stopped while it is still "
+		@"launching", self);
+	launchFinished = YES;
+	[self postTaskLaunched];
+}
+
+/** We detect when an AppKit-based application has finished to launch with this 
+    method. Each task instance is set up to listen for 
+    NSWorkspaceDidLaunchApplicationNotification. */
 - (void) taskLaunched: (NSNotification *)notif
 {
 	NSString *appName = [[notif userInfo] objectForKey: @"NSApplicationName"];
 
-	if ([appName isEqual: [self name]])
-	{
-		NSDebugLLog(@"SCTask", @"Task %@ launched", [self name]);
-		launchFinished = YES;
-	}
+	if ([appName isEqual: [self name]] == NO)
+		return;
+	
+	NSDebugLLog(@"SCTask", @"Task %@ finished to launch", [self name]);
+	
+	launchFinished = YES;
+	[self postTaskLaunched];
 }
 
 - (void) taskTerminated: (NSNotification *)notif
 {
-	stopped = YES; 
-
 	/* For AppKit-based applications which exits before having finished to 
-	   launch, we synthetize a NSWorkspaceDidLaunchApplicationNotification
-	   in order to have them properly removed from the actual launch queue. */
-	if (isNSApplication && launchFinished == NO)
+	   launch, we abuse -postTaskLaunched in order to have them properly removed 
+	   from the actual launch queue. */
+	BOOL wasStillLaunching = (isNSApplication && launchFinished == NO);
+
+	stopped = YES; 
+	launchFinished = YES;
+
+	if (wasStillLaunching)
 	{
-		NSLog(@"Failed to launch %@", self);
+		NSLog(@"WARNING: Failed to launch %@", self);
 		[self postTaskLaunched];
 	}
 
@@ -372,6 +419,16 @@
 - (int) launchFailureCount
 {
 	return launchFailureCount;
+}
+
+/** Returns the maximal time limit for which the launch queue can be blocked 
+    when a launch is underway. This time limit is set to 5 seconds by default.
+    If a launch takes longer to finish than the returned time interval, a 
+    warning will be logged, and the control returned to the SCSystem launch 
+    queue that will spawn the next task in the queue. */
+- (NSTimeInterval) launchTimeOut
+{
+	return 5.0;	
 }
 
 /** Returns self but with retain count incremented by one. NSDictionary keys 

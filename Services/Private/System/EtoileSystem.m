@@ -268,36 +268,35 @@ BOOL SCHardwareSuspend();
 	[[NSApplication sharedApplication] run];
 }
 
-/* Notification invoked when an NSWorkspaceDidLaunchApplicationNotification
-   is received */
+/* Only called by SCTask. */
 - (void) noteApplicationLaunched: (NSNotification *)notif
 {
-	NSDictionary * appInfo = [notif userInfo];
-	NSString * appName = [appInfo objectForKey: @"NSApplicationName"];
-	SCTask *lastLaunchedProcess = [_launchGroup objectAtIndex: 0];
+	if (_launchQueueScheduled == NO)
+	{
+		NSLog(@"WARNING: Received launch notification %@ without a launch "
+			  @"queue scheduled", notif);
+		return;
+	}
 
-	/* Discard any notifications related to us, otherwise the launch queue will
-	   be messed up */
-	// FIXME: Write a safer test by not hardcoding 'etoile_system' name
-	if ([appName isEqual: @"etoile_system"])
+	/* Discard launch notifications System itself and third-party processes 
+	   that get indirectly launched or are already running, otherwise the launch 
+	   queue will be messed up. */
+	BOOL isLaunchQueueRelated = ([[notif object] isKindOfClass: [SCTask class]] == NO);
+	if (isLaunchQueueRelated)
 		return;
 
-	NSDebugLLog(@"SCSystem", @"App %@ launched through process %@", appName,
-		lastLaunchedProcess);
+	SCTask *launchedProcess = [notif object];
+	NSString *processName = [[notif userInfo] objectForKey: @"NSApplicationName"];
 
-	if (appName != nil)
+	NSDebugLLog(@"SCSystem", @"Remove %@ in launch queue", launchedProcess);
+	[_launchGroup removeObject: launchedProcess];
+	NSDebugLLog(@"SCSystem", @"Process group count is now %d", [_launchGroup count]);
+
+	BOOL processGroupLaunchFinished = [_launchGroup count] == 0;
+	if (processGroupLaunchFinished)
 	{
-		// NOTE: We could do [_launchGroup removeObject: [notif object]]
-		[_launchGroup removeObject: lastLaunchedProcess];
-		NSDebugLLog(@"SCSystem", @"Process launch group count is %d", 
-			[_launchGroup count]);
-
-		if ([_launchGroup count] == 0)
-		{
-			NSDebugLLog(@"SCSystem", @"Going to reenter \
-				startProcessSequentiallyByPriorityOrder...");
-			[self startProcessesSequentiallyByPriorityOrder: nil];
-		}
+		NSDebugLLog(@"SCSystem", @"Going to reenter startProcessSequentiallyByPriorityOrder...");
+		[self startProcessesSequentiallyByPriorityOrder: nil];
 	}
 }
 
@@ -334,8 +333,6 @@ BOOL SCHardwareSuspend();
 	processQueue = [self processQueueWithProcesses: _processes];
 	launchQueue = [self processGroupQueueWithProcessQueue: processQueue];
 	[self startProcessesSequentiallyByPriorityOrder: launchQueue];
-
-	_launchQueueScheduled = NO;
 }
 
 /*
@@ -381,8 +378,7 @@ BOOL SCHardwareSuspend();
 	return processGroupQueue;	
 }
 
-- (void) startProcessesSequentiallyByPriorityOrder: 
-	(NSMutableArray *)launchQueue
+- (void) startProcessesSequentiallyByPriorityOrder: (NSMutableArray *)launchQueue
 {
 	if (launchQueue != nil 
 		&& [launchQueue isEqual: _launchQueue] == NO)
@@ -407,6 +403,7 @@ BOOL SCHardwareSuspend();
 	else /* The launch queue is empty now */
 	{
 		NSLog(@"Launch queue is empty now");
+		_launchQueueScheduled = NO;
 		[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver: self];
 	}
 }
