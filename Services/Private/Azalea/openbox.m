@@ -102,7 +102,7 @@ static Cursor load_cursor(const char *name, unsigned int fontval);
 
 int main(int argc, char **argv)
 {
-    CREATE_AUTORELEASE_POOL(x);
+    CREATE_AUTORELEASE_POOL(pool);
 
     state = OB_STATE_STARTING;
 
@@ -322,7 +322,6 @@ int main(int argc, char **argv)
 		[mainLoop mainLoopRun]; /* run once in case reconfigure */
 		[app run];
 #else
-		CREATE_AUTORELEASE_POOL(x);
 		NSRunLoop *loop = [NSRunLoop currentRunLoop];
 
 		while ([mainLoop run] == YES)
@@ -331,7 +330,6 @@ int main(int argc, char **argv)
 	      /* We need this in order to get NSTimer working */
 		  [loop runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.01]];
 		}
-		DESTROY(x);
 #endif
 		[mainLoop didFinishRunning];
 		[mainLoop setRunning: NO];
@@ -401,7 +399,7 @@ int main(int argc, char **argv)
         execlp(argv[0], (char*)[[[NSString stringWithCString: argv[0]] lastPathComponent] cString], NULL); /* last resort */
     }
 
-    DESTROY(x);
+    DESTROY(pool);
      
     return exitcode;
 }

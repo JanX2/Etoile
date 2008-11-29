@@ -229,6 +229,11 @@ static AZMainLoop *sharedInstance;
 
 - (void) mainLoopRun
 {
+	// NOTE: May be we need to create additional autorelease pools per while 
+	// loops in this method. For example, to dealloc autoreleased objects each 
+	// time a X event has been processed.
+	CREATE_AUTORELEASE_POOL(pool);
+
 	XEvent e;
 	fd_set selset;
 	AZAction *act;
@@ -323,6 +328,8 @@ static AZMainLoop *sharedInstance;
 				[h fire];
 	    }
 	}
+
+	DESTROY(pool);
 }
 
 - (void) exit
