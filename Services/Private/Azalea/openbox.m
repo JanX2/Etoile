@@ -70,11 +70,7 @@
 #endif
 #include <errno.h>
 
-#include <X11/cursorfont.h>
-#if USE_XCURSOR
-#include <X11/Xcursor/Xcursor.h>
-#endif
-
+// FIXME: This is also used in AZApplication now.
 #define ALTERNATIVE_RUN_LOOP 0
 
 AZMainLoop *mainLoop = nil;
@@ -90,7 +86,7 @@ static BOOL  xsync = NO;
 static BOOL  reconfigure = NO;
 static BOOL  restart = NO;
 static NSString *restart_path = nil;
-static Cursor    cursors[OB_NUM_CURSORS];
+
 static KeyCode   keys[OB_NUM_KEYS];
 static int      exitcode = 0;
 static unsigned int remote_control = 0;
@@ -98,7 +94,7 @@ static BOOL being_replaced = NO;
 
 static void signal_handler(int signal, void *data);
 static void parse_args(int argc, char **argv);
-static Cursor load_cursor(const char *name, unsigned int fontval);
+
 
 int main(int argc, char **argv)
 {
@@ -132,10 +128,10 @@ int main(int argc, char **argv)
 	exit(EXIT_SUCCESS);
     }
 
+	AZApplication *AZApp = [AZApplication sharedApplication];
     /* Initiate NSApp */
 #if ALTERNATIVE_RUN_LOOP
     NSApplication *app = [NSApplication sharedApplication];
-    AZApplication *AZApp = [AZApplication sharedApplication];
     [app setDelegate: AZApp];
 #endif
 
@@ -185,23 +181,7 @@ int main(int argc, char **argv)
        display we're using, so they open in the right place. */
     putenv((char*)[[NSString stringWithFormat: @"DISPLAY=%s", DisplayString(ob_display)] cString]);
 
-    /* create available cursors */
-    cursors[OB_CURSOR_NONE] = None;
-    cursors[OB_CURSOR_POINTER] = load_cursor("left_ptr", XC_left_ptr);
-    cursors[OB_CURSOR_BUSY] = load_cursor("left_ptr_watch", XC_watch);
-    cursors[OB_CURSOR_MOVE] = load_cursor("fleur", XC_fleur);
-    cursors[OB_CURSOR_NORTH] = load_cursor("top_side", XC_top_side);
-    cursors[OB_CURSOR_NORTHEAST] = load_cursor("top_right_corner",
-                                               XC_top_right_corner);
-    cursors[OB_CURSOR_EAST] = load_cursor("right_side", XC_right_side);
-    cursors[OB_CURSOR_SOUTHEAST] = load_cursor("bottom_right_corner",
-                                               XC_bottom_right_corner);
-    cursors[OB_CURSOR_SOUTH] = load_cursor("bottom_side", XC_bottom_side);
-    cursors[OB_CURSOR_SOUTHWEST] = load_cursor("bottom_left_corner",
-                                               XC_bottom_left_corner);
-    cursors[OB_CURSOR_WEST] = load_cursor("left_side", XC_left_side);
-    cursors[OB_CURSOR_NORTHWEST] = load_cursor("top_left_corner",
-                                               XC_top_left_corner);
+	[AZApp createAvailableCursors];
 
     /* create available keycodes */
     keys[OB_KEY_RETURN] =
@@ -483,18 +463,6 @@ static void parse_args(int argc, char **argv)
     }
 }
 
-static Cursor load_cursor(const char *name, unsigned int fontval)
-{
-    Cursor c = None;
-
-#if USE_XCURSOR
-    c = XcursorLibraryLoadCursor(ob_display, name);
-#endif
-    if (c == None)
-        c = XCreateFontCursor(ob_display, fontval);
-    return c;
-}
-
 void ob_exit_with_error(const char *msg)
 {
     NSLog(@"Critical: %s", msg);
@@ -535,13 +503,6 @@ void ob_exit_replace()
     exitcode = 0;
     being_replaced = YES;
     [mainLoop exit];
-}
-
-Cursor ob_cursor(ObCursor cursor)
-{
-    if (cursor >= OB_NUM_CURSORS)
-      NSLog(@"Warning: cursor out of range");
-    return cursors[cursor];
 }
 
 KeyCode ob_keycode(ObKey key)

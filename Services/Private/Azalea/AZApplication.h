@@ -8,4 +8,7 @@
 }
 
 + (AZApplication *) sharedApplication;
+
+- (void) createAvailableCursors;
+
 @end

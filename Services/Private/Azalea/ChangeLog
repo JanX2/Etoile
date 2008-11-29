@@ -1,5 +1,22 @@
 2008-11-29  Quentin Mathé <qmathe@club-internet.fr>
 
+	First step to modularize the big blob of code from main() into AZApplication. 
+	Moved cursor loading and access into AZApplication.m.
+	* AZApplication.m:
+	* openbox.m:
+	Moved cursor loading and access into AZApplication.m.
+	(-main): Moved cursor creation code into a standalone method 
+	-[AZApplication createAvailableCursors] and modified to create an 
+	AZApplication singleton even when the ALTERNATIVE_RUN_LOOP isn't used.
+	Modified ob_cursor() to return the pointer cursor instead of accessing the 
+	cursor array beyond bounds if the cursor identified passed in parameter is 
+	invalid.
+	(-[AZApplication applicationWillFinishLaunching:]): Enclosed inside 
+	ALTERNATIVE_RUN_LOOP to allow us to instantiate AZApplication even when 
+	NSRunLoop isn't not used.
+
+2008-11-29  Quentin Mathé <qmathe@club-internet.fr>
+
 	* AZMainLoop.h:
 	* AZMainLoop.m: 
 	Cleaned indentation to match Etoile coding style.
