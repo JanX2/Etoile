@@ -10,5 +10,6 @@
 + (AZApplication *) sharedApplication;
 
 - (void) createAvailableCursors;
+- (void) createAvailableKeycodes;
 
 @end

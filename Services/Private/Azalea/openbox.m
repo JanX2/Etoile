@@ -87,7 +87,6 @@ static BOOL  reconfigure = NO;
 static BOOL  restart = NO;
 static NSString *restart_path = nil;
 
-static KeyCode   keys[OB_NUM_KEYS];
 static int      exitcode = 0;
 static unsigned int remote_control = 0;
 static BOOL being_replaced = NO;
@@ -182,20 +181,7 @@ int main(int argc, char **argv)
     putenv((char*)[[NSString stringWithFormat: @"DISPLAY=%s", DisplayString(ob_display)] cString]);
 
 	[AZApp createAvailableCursors];
-
-    /* create available keycodes */
-    keys[OB_KEY_RETURN] =
-        XKeysymToKeycode(ob_display, XStringToKeysym("Return"));
-    keys[OB_KEY_ESCAPE] =
-        XKeysymToKeycode(ob_display, XStringToKeysym("Escape"));
-    keys[OB_KEY_LEFT] =
-        XKeysymToKeycode(ob_display, XStringToKeysym("Left"));
-    keys[OB_KEY_RIGHT] =
-        XKeysymToKeycode(ob_display, XStringToKeysym("Right"));
-    keys[OB_KEY_UP] =
-        XKeysymToKeycode(ob_display, XStringToKeysym("Up"));
-    keys[OB_KEY_DOWN] =
-        XKeysymToKeycode(ob_display, XStringToKeysym("Down"));
+	[AZApp createAvailableKeycodes];
 
     prop_startup(); /* get atoms values for the display */
     extensions_query_all(); /* find which extensions are present */
@@ -503,13 +489,6 @@ void ob_exit_replace()
     exitcode = 0;
     being_replaced = YES;
     [mainLoop exit];
-}
-
-KeyCode ob_keycode(ObKey key)
-{
-    if (key >= OB_NUM_KEYS)
-      NSLog(@"Warning: key out of range");
-    return keys[key];
 }
 
 ObState ob_state()

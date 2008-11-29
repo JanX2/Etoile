@@ -7,6 +7,8 @@
 #include <X11/Xcursor/Xcursor.h>
 #endif
 
+static KeyCode   keys[OB_NUM_KEYS];
+
 static Cursor cursors[OB_NUM_CURSORS];
 static Cursor load_cursor(const char *name, unsigned int fontval);
 
@@ -72,9 +74,25 @@ static AZApplication *sharedInstance;
 		XC_top_left_corner);
 }
 
+- (void) createAvailableKeycodes
+{
+	keys[OB_KEY_RETURN] =
+		XKeysymToKeycode(ob_display, XStringToKeysym("Return"));
+	keys[OB_KEY_ESCAPE] =
+		XKeysymToKeycode(ob_display, XStringToKeysym("Escape"));
+	keys[OB_KEY_LEFT] =
+		XKeysymToKeycode(ob_display, XStringToKeysym("Left"));
+	keys[OB_KEY_RIGHT] =
+		XKeysymToKeycode(ob_display, XStringToKeysym("Right"));
+	keys[OB_KEY_UP] =
+		XKeysymToKeycode(ob_display, XStringToKeysym("Up"));
+	keys[OB_KEY_DOWN] =
+		XKeysymToKeycode(ob_display, XStringToKeysym("Down"));
+}
+
 @end
 
-/* OpenBox cursor API */
+/* OpenBox cursor, keycode API */
 
 static Cursor load_cursor(const char *name, unsigned int fontval)
 {
@@ -100,4 +118,16 @@ Cursor ob_cursor(ObCursor cursor)
 	}
 	
 	return cursors[cursor];
+}
+
+// FIXME: This function isn't used here but in AZKeyboardHandler and 
+// AZMoveResizeHandler, move it elsewhere or rework the API.
+KeyCode ob_keycode(ObKey key)
+{
+	// FIXME: We should return a default key or something like none key rather 
+	// than accessing the keys array beyond bounds after logging this warnings.
+	if (key >= OB_NUM_KEYS)
+		NSLog(@"Warning: key out of range");
+
+	return keys[key];
 }
