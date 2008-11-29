@@ -1,5 +1,11 @@
 2008-11-29  Quentin Mathé <qmathe@club-internet.fr>
 
+	* AZMainLoop.h:
+	* AZMainLoop.m: 
+	Cleaned indentation to match Etoile coding style.
+
+2008-11-29  Quentin Mathé <qmathe@club-internet.fr>
+
 	* AZMainLoop.m (-mainLoopRun): Enclosed each run loop iteration in an 
 	autorelease pool as expected. Looks like almost all autoreleased objects 
 	where only deallocated when Azalea terminates by DESTROY(x) in main() (see 

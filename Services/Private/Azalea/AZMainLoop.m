@@ -29,9 +29,10 @@
 #import "action.h"
 
 /* signals are global to all loops */
-struct {
-    unsigned int installed; /* a ref count */
-    struct sigaction oldact;
+struct 
+{
+	unsigned int installed; /* a ref count */
+	struct sigaction oldact;
 } all_signals[NUM_SIGNALS];
 
 /* a set of all possible signals */
@@ -40,16 +41,16 @@ sigset_t all_signals_set;
 /* signals which cause a core dump, these can't be used for callbacks */
 static int core_signals[] =
 {
-    SIGABRT,
-    SIGSEGV,
-    SIGFPE,
-    SIGILL,
-    SIGQUIT,
-    SIGTRAP,
-    SIGSYS,
-    SIGBUS,
-    SIGXCPU,
-    SIGXFSZ
+	SIGABRT,
+	SIGSEGV,
+	SIGFPE,
+	SIGILL,
+	SIGQUIT,
+	SIGTRAP,
+	SIGSYS,
+	SIGBUS,
+	SIGXCPU,
+	SIGXFSZ
 };
 #define NUM_CORE_SIGNALS (sizeof(core_signals) / sizeof(core_signals[0]))
 
@@ -57,60 +58,63 @@ static void sighandler(int sig);
 
 @interface AZMainLoopFdHandler: NSObject
 {
-    fd_set *_set; /* from AZMainLoop */
-    int fd;
-    void * data;
-    ObMainLoopFdHandler func;
+	fd_set *_set; /* from AZMainLoop */
+	int fd;
+	void * data;
+	ObMainLoopFdHandler func;
 }
-- (id) initWithFdSet: (fd_set *) fs;
+- (id) initWithFdSet: (fd_set *)fs;
 - (void) fire;
 
 - (void) fd_clear;
 - (void) fd_set;
-- (BOOL) fd_is_set: (fd_set *) set;
+- (BOOL) fd_is_set: (fd_set *)set;
 
 - (int) fd;
 - (void *) data;
 - (ObMainLoopFdHandler) func;
-- (void) set_fd: (int) fd;
-- (void) set_data: (void *) data;
-- (void) set_func: (ObMainLoopFdHandler) func;
+- (void) set_fd: (int)fd;
+- (void) set_data: (void *)data;
+- (void) set_func: (ObMainLoopFdHandler)func;
+
 @end
 
 @implementation AZMainLoopFdHandler
+		
 - (void) fd_clear
 {
-  FD_CLR(fd, _set);
+	FD_CLR(fd, _set);
 }
 
 - (void) fd_set
 {
-  FD_SET(fd, _set);
+	FD_SET(fd, _set);
 }
 
-- (BOOL) fd_is_set: (fd_set *) set
+- (BOOL) fd_is_set: (fd_set *)set
 {
-  return FD_ISSET(fd, set);
+	return FD_ISSET(fd, set);
 }
 
 - (void) fire
 {
-  func(fd, data);
+	func(fd, data);
 }
 
-- (id) initWithFdSet: (fd_set *) fs
+- (id) initWithFdSet: (fd_set *)fs
 {
-  self = [super init];
-  _set = fs;
-  return self;
+	self = [super init];
+	_set = fs;
+	return self;
 }
 
 - (int) fd { return fd; }
 - (void *) data { return data; }
 - (ObMainLoopFdHandler) func { return func; }
-- (void) set_fd: (int) f { fd = f; }
-- (void) set_data: (void *) d { data = d; }
-- (void) set_func: (ObMainLoopFdHandler) f { func = f; }
+- (void) set_fd: (int)f { fd = f; }
+- (void) set_data: (void *)d { data = d; }
+- (void) set_func: (ObMainLoopFdHandler)f { func = f; }
+
 @end
 
 extern Display *ob_display;
@@ -118,113 +122,118 @@ extern Display *ob_display;
 static AZMainLoop *sharedInstance;
 
 @interface AZMainLoop (AZPrivate)
-- (void) destroyActionForClient: (NSNotification *) not;
-- (void) handleSignal: (int) signal;
+- (void) destroyActionForClient: (NSNotification *)not;
+- (void) handleSignal: (int)signal;
 - (void) calcMaxFd;
 @end
 
 @implementation AZMainLoop
 
 /*** XEVENT WATCHERS ***/
-- (void) addXHandler: (id <AZXHandler>) handler
+- (void) addXHandler: (id <AZXHandler>)handler
 {
-  [xHandlers addObject: handler];
+	[xHandlers addObject: handler];
 }
 
-- (void) removeXHandler: (id <AZXHandler>) handler
+- (void) removeXHandler: (id <AZXHandler>)handler
 {
-  [xHandlers removeObject: handler];
+	[xHandlers removeObject: handler];
 }
 
-- (void) addFdHandler: (ObMainLoopFdHandler) handler
-                forFd: (int) fd
-                 data: (void *) data
+- (void) addFdHandler: (ObMainLoopFdHandler)handler
+                forFd: (int)fd
+                 data: (void *)data
 {
-    AZMainLoopFdHandler *h;
+	AZMainLoopFdHandler *h;
 
-    h = [[AZMainLoopFdHandler alloc] initWithFdSet: &_fd_set];
-    [h set_fd: fd];
-    [h set_func: handler];
-    [h set_data: data];
+	h = [[AZMainLoopFdHandler alloc] initWithFdSet: &_fd_set];
+	[h set_fd: fd];
+	[h set_func: handler];
+	[h set_data: data];
 
-    /* remove old one */
-    [self removeFdHandlerForFd: fd];
+	/* remove old one */
+	[self removeFdHandlerForFd: fd];
 
-    [fd_handlers setObject: h forKey: [NSNumber numberWithInt: fd]];
-    [h fd_set];
-    [self calcMaxFd];
+	[fd_handlers setObject: h forKey: [NSNumber numberWithInt: fd]];
+	[h fd_set];
+	[self calcMaxFd];
 }
 
-- (void) removeFdHandlerForFd: (int) fd
+- (void) removeFdHandlerForFd: (int)fd
 {
-  AZMainLoopFdHandler *temp = nil;
-  NSNumber *key = [NSNumber numberWithInt: fd];
-  temp = [fd_handlers objectForKey: key];
-  if (temp) {
-    /* Cannot wait until the object is autoreleased. */
-    [temp fd_clear];
-    [fd_handlers removeObjectForKey: key];
-  }
+	AZMainLoopFdHandler *temp = nil;
+	NSNumber *key = [NSNumber numberWithInt: fd];
+
+	temp = [fd_handlers objectForKey: key];
+	if (temp) 
+	{
+		/* Cannot wait until the object is autoreleased. */
+		[temp fd_clear];
+		[fd_handlers removeObjectForKey: key];
+	}
 }
 
-- (void) setSignalHandler: (ObMainLoopSignalHandler) handler
-                forSignal: (int) signal
+- (void) setSignalHandler: (ObMainLoopSignalHandler)handler
+                forSignal: (int)signal
 {
-    if (signal >= NUM_SIGNALS) return;
+	if (signal >= NUM_SIGNALS) 
+		return;
 
-    signal_handlers[signal] = handler;
+	signal_handlers[signal] = handler;
 
-    if (!all_signals[signal].installed) {
-        struct sigaction action;
-        sigset_t sigset;
+	if (!all_signals[signal].installed)
+	{
+		struct sigaction action;
+		sigset_t sigset;
 
-        sigemptyset(&sigset);
-        action.sa_handler = sighandler;
-        action.sa_mask = sigset;
-        action.sa_flags = SA_NOCLDSTOP;
+		sigemptyset(&sigset);
+		action.sa_handler = sighandler;
+		action.sa_mask = sigset;
+		action.sa_flags = SA_NOCLDSTOP;
 
-        sigaction(signal, &action, &all_signals[signal].oldact);
-    }
+		sigaction(signal, &action, &all_signals[signal].oldact);
+	}
 }
 
 /*! Queues an action, which will be run when there are no more X events
   to process */
-- (void) queueAction: (AZAction *) act
+- (void) queueAction: (AZAction *)act
 {
-  [actionQueue addObject: AUTORELEASE([act copy])];
+	[actionQueue addObject: AUTORELEASE([act copy])];
 }
 
 - (void) willStartRunning
 {
-  [[NSNotificationCenter defaultCenter] addObserver: self
-	  selector: @selector(destroyActionForClient:)
-	  name: AZClientDestroyNotification
-	  object: nil];
+	[[NSNotificationCenter defaultCenter] 
+		addObserver: self
+		   selector: @selector(destroyActionForClient:)
+		       name: AZClientDestroyNotification
+		     object: nil];
 }
 
 - (void) didFinishRunning
 {
-  [[NSNotificationCenter defaultCenter] removeObserver: self];
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
 - (BOOL) run
 {
-  return run;
+	return run;
 }
 
 - (BOOL) running;
 {
-  return running;
+	return running;
 }
 
 - (void) setRun: (BOOL) r
 {
-  run = r;
+	run = r;
 }
 
 - (void) setRunning: (BOOL) r
 {
-  running = r;
+	running = r;
 }
 
 - (void) mainLoopRun
@@ -279,8 +288,8 @@ static AZMainLoop *sharedInstance;
 
 		do {
 			act = [actionQueue objectAtIndex: 0];
-			if ([act data].any.client_action == OB_CLIENT_ACTION_ALWAYS &&
-			    ![act data].any.c)
+			if ([act data].any.client_action == OB_CLIENT_ACTION_ALWAYS
+			    && ![act data].any.c)
 			{
 				[actionQueue removeObjectAtIndex: 0];
 				act = nil;
@@ -404,51 +413,58 @@ static AZMainLoop *sharedInstance;
 @end
 
 @implementation AZMainLoop (AZPrivate)
-- (void) destroyActionForClient: (NSNotification *) not 
+		
+- (void) destroyActionForClient: (NSNotification *)not 
 {
-  AZClient *client = [not object];
-  int i, count = [actionQueue count];
-  for (i = 0; i < count; i++)
-  {
-    AZAction *act = [actionQueue objectAtIndex: i];
-    if ([act data].any.c == client)
-    {
-      [act data_pointer]->any.c = nil;
-    }
-  }
+	AZClient *client = [not object];
+	int i, count = [actionQueue count];
+
+	for (i = 0; i < count; i++)
+	{
+		AZAction *act = [actionQueue objectAtIndex: i];
+		if ([act data].any.c == client)
+		{
+			[act data_pointer]->any.c = nil;
+		}
+	}
 }
 
-- (void) handleSignal: (int) sig
+- (void) handleSignal: (int)sig
 {
-    unsigned int i;
+	unsigned int i;
 
-    for (i = 0; i < NUM_CORE_SIGNALS; ++i)
-        if (sig == core_signals[i]) {
-            /* XXX special case for signals that default to core dump.
-               but throw some helpful output here... */
+	for (i = 0; i < NUM_CORE_SIGNALS; ++i)
+	{
+		if (sig == core_signals[i]) 
+		{
+			/* XXX special case for signals that default to core dump.
+			   but throw some helpful output here... */
 
-            fprintf(stderr, "Core dump. (Openbox received signal %d)\n", sig);
+			fprintf(stderr, "Core dump. (Openbox received signal %d)\n", sig);
 
-            /* die with a core dump */
-            abort();
-        }
+			/* die with a core dump */
+			abort();
+		}
+	}
 
-    signal_fired = YES;
-    signals_fired[sig]++;
+	signal_fired = YES;
+	signals_fired[sig]++;
 }
 
 - (void) calcMaxFd
 {
-  fd_max = fd_x;
+	fd_max = fd_x;
 
-  NSArray *allKeys = [fd_handlers allKeys];
-  NSEnumerator *e = [allKeys objectEnumerator];
-  NSNumber *key = nil;
-  AZMainLoopFdHandler *h = nil;
-  while ((key = [e nextObject])) {
-    h = [fd_handlers objectForKey: key];
-    fd_max = MAX(fd_max, [h fd]);
-  }
+	NSArray *allKeys = [fd_handlers allKeys];
+	NSEnumerator *e = [allKeys objectEnumerator];
+	NSNumber *key = nil;
+	AZMainLoopFdHandler *h = nil;
+
+	while ((key = [e nextObject])) 
+	{
+		h = [fd_handlers objectForKey: key];
+		fd_max = MAX(fd_max, [h fd]);
+	}
 }
 
 @end
@@ -457,8 +473,9 @@ static AZMainLoop *sharedInstance;
 
 static void sighandler(int sig)
 {
-    if (sig >= NUM_SIGNALS) return;
+	if (sig >= NUM_SIGNALS) 
+		return;
 
-    [[AZMainLoop mainLoop] handleSignal: sig];
+	[[AZMainLoop mainLoop] handleSignal: sig];
 }
 

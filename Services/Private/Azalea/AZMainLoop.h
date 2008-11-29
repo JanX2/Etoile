@@ -27,7 +27,7 @@
 void time_val_add (struct timeval *time_, long microseconds);
 
 @protocol AZXHandler <NSObject>
-- (void) processXEvent: (XEvent *) e;
+- (void) processXEvent: (XEvent *)e;
 @end
 
 @class AZAction;
@@ -35,54 +35,53 @@ void time_val_add (struct timeval *time_, long microseconds);
 typedef void (*ObMainLoopFdHandler) (int fd, void * data);
 typedef void (*ObMainLoopSignalHandler) (int signal, void * data);
 
-/* this should be more than the number of possible signals on any
- *  *    architecture... */
+/* this should be more than the number of possible signals on any architecture... */
 #define NUM_SIGNALS 99
 
 @interface AZMainLoop: NSObject
 {
-  struct timeval now;
-  struct timeval ret_wait;
-
-  NSMutableArray *xHandlers;
-  NSMutableArray *actionQueue;
-
-  BOOL run; /* do keep running */
-  BOOL running; /* is still running */
-
-  /* Signal */
-  BOOL signal_fired;
-  unsigned int signals_fired[NUM_SIGNALS];
-  ObMainLoopSignalHandler signal_handlers[NUM_SIGNALS];
-
-  /* fd */
-  int fd_x; /* The X fd is a special case! */
-  int fd_max;
-  NSMutableDictionary *fd_handlers;
-  fd_set _fd_set;
+	struct timeval now;
+	struct timeval ret_wait;
+	
+	NSMutableArray *xHandlers;
+	NSMutableArray *actionQueue;
+	
+	BOOL run; /* do keep running */
+	BOOL running; /* is still running */
+	
+	/* Signal */
+	BOOL signal_fired;
+	unsigned int signals_fired[NUM_SIGNALS];
+	ObMainLoopSignalHandler signal_handlers[NUM_SIGNALS];
+	
+	/* fd */
+	int fd_x; /* The X fd is a special case! */
+	int fd_max;
+	NSMutableDictionary *fd_handlers;
+	fd_set _fd_set;
 }
 
-- (void) addXHandler: (id <AZXHandler>) handler;
-- (void) removeXHandler: (id <AZXHandler>) handler;
+- (void) addXHandler: (id <AZXHandler>)handler;
+- (void) removeXHandler: (id <AZXHandler>)handler;
 
 /* fd is only used by ICE/SM in event.m */
-- (void) addFdHandler: (ObMainLoopFdHandler) handler
-                forFd: (int) fd
-		 data: (void *) data;
-- (void) removeFdHandlerForFd: (int) fd;
+- (void) addFdHandler: (ObMainLoopFdHandler)handler
+                forFd: (int)fd
+                 data: (void *)data;
+- (void) removeFdHandlerForFd: (int)fd;
 
-- (void) setSignalHandler: (ObMainLoopSignalHandler) handler 
-                forSignal: (int) signal;
+- (void) setSignalHandler: (ObMainLoopSignalHandler)handler 
+                forSignal: (int)signal;
 
-- (void) queueAction: (AZAction *) act;
+- (void) queueAction: (AZAction *)act;
 
 - (void) willStartRunning;
 - (void) didFinishRunning;
 
 - (BOOL) run;
 - (BOOL) running;
-- (void) setRun: (BOOL) run;
-- (void) setRunning: (BOOL) running;
+- (void) setRun: (BOOL)run;
+- (void) setRunning: (BOOL)running;
 
 - (void) mainLoopRun;
 - (void) exit;
