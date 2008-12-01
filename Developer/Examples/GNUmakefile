@@ -11,6 +11,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 export bookmarkkitexample ?= no
 export coreobjectexample ?= yes
+export etoilethreadexample ?= yes
 export ioexample ?= no
 export lucenekitexample ?= yes
 export ogrekitexample ?= yes
@@ -25,6 +26,10 @@ endif
 
 ifeq ($(coreobjectexample), yes)	
 	SUBPROJECTS += CoreObjectExample
+endif
+
+ifeq ($(etoilethreadexample), yes)
+	SUBPROJECTS += EtoileThreadExample
 endif
 
 ifeq ($(distributedviewexample), yes)	
