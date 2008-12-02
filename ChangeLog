@@ -1,3 +1,12 @@
+2008-12-02  Quentin Mathe <qmathe@club-internet.fr>
+
+	* etoile.make: Fixed to use a custom exported LD_LIBRARY_PATH rather than 
+	-rpath-link (patch by Truls Becken). This fixes the compilation on platforms 
+	where libraries installed in standard locations are not available as static 
+	libraries but only as shared libraries. For example, this was reported for 
+	libpoppler on Arch Linux by Truls Becken (see 'Build Errors - MediaKit' 
+	thread in etoile-dev archive).
+
 2008-10-30  Quentin Mathe <qmathe@club-internet.fr>
 
 	Rewritten the build infrastructure of Étoilé to be a lot simpler and more 
