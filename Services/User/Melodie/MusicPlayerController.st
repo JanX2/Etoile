@@ -1,8 +1,8 @@
 << types = '{ "volume" = "i8@0:4"; "setVolume:" = "v12@0:4i8" ; "next" = "v8@0:4" }' >>
 " This class is meant as a UI controller which encapsulates access to MediaKit.
-  It is designed to be connected to a 'previous' button, 'next' button, 
+  It is designed to be connected to a 'previous' button, 'next' button,
   'play/pause' button, a song position slider, a volume slider, and a song
-  information label. 
+  information label.
 
   The playLayoutItem:shouldStart: method is used to start playback at a
   particular node in a layout item tree. "
@@ -10,90 +10,126 @@
 NSObject subclass: MusicPlayerController
 [
 	| positionSlider volumeSlider songLabel playPauseButton previousButton nextButton
-	  uiUpdateTimer player |
-	
+	  player history currentURL queueSize playImage pauseImage uiUpdateTimer |
+
 	init [
 		player := MKMusicPlayer alloc initWithDefaultDevice inNewThread.
-		player retain.
+		history := ETHistoryManager new.
+		queueSize := 0.
+
+		playImage := (IKIcon iconWithIdentifier: 'media-playback-start') image.
+		pauseImage := (IKIcon iconWithIdentifier: 'media-playback-pause') image.
+	]
+
+	awakeFromNib [
+		nextButton setImage: (IKIcon iconWithIdentifier: 'go-next') image.
+		previousButton setImage: (IKIcon iconWithIdentifier: 'go-previous') image.
+
+		nextButton cell setImageDimsWhenDisabled: true.
+		previousButton cell setImageDimsWhenDisabled: true.
 
 		uiUpdateTimer := NSTimer scheduledTimerWithTimeInterval: 1
 		                                                 target: self
 		                                               selector: 'timerEvent:'
 		                                               userInfo: nil
-		                                                repeats: 1.
-		^ self.
-	]
-
-	awakeFromNib [
-		playPauseButton setImage: ((IKIcon iconWithIdentifier: 'media-playback-start') image).
-		nextButton setImage: ((IKIcon iconWithIdentifier: 'go-next') image).
-		previousButton setImage: ((IKIcon iconWithIdentifier: 'go-previous') image).	
-		volumeSlider setIntValue: (player volume).
+		                                                repeats: true.
+		uiUpdateTimer fire.
 	]
 
 	play [
 		player play.
+		uiUpdateTimer fire.
 	]
 
 	pause [
 		player pause.
-		playPauseButton setImage: ((IKIcon iconWithIdentifier: 'media-playback-start') image).
+		uiUpdateTimer fire.
 	]
 
 	playPause: sender [
-		player isPlaying ifTrue: [ self pause. ]
-		                ifFalse: [ self play. ].
+		player isPlaying ifTrue: [ self pause ]
+		                ifFalse: [ self play ].
 	]
 
 	setPosition: sender [
-		player seekTo: (positionSlider intValue).
+		player seekTo: positionSlider intValue.
 	]
 
 	setVolume: sender [
-		player setVolume: (volumeSlider intValue).
+		player setVolume: volumeSlider intValue.
 	]
 
 	next: sender [
 		player next.
+		uiUpdateTimer fire.
 	]
 
-	previous: sender
-	[
-		'TODO: previous' log.
+	previous: sender [
+		self syncHistory.
+		history previous.
+		self playHistory: player isPlaying.
+		uiUpdateTimer fire.
 	]
 
 	playLayoutItem: layoutItem start: shouldStart [
-		| allObjects currentIndex newQueue URLs |
-		'Playing URL: ' log.
-		layoutItem representedObject URL log.
+		| allObjects currentIndex newQueue |
 
 		allObjects := layoutItem baseItem itemsIncludingAllDescendants.
-		currentIndex := (allObjects indexOfObjectIdenticalTo: layoutItem).
-		newQueue := (allObjects subarrayWithLocation: currentIndex
-		                                      length: ((allObjects count) - currentIndex)).
-		URLs := newQueue map: [ :x | x representedObject URL.].
+		currentIndex := allObjects indexOfObjectIdenticalTo: layoutItem.
+		newQueue := allObjects subarrayWithLocation: currentIndex
+		                                     length: allObjects count - currentIndex.
 
-		player stop.
 		" TODO: rebuild the queue when the playlist is modified. "
-		player setQueue: URLs.
-
-		shouldStart ifTrue: [ self play. ].
-		songLabel setStringValue: (layoutItem representedObject valueForProperty:'kETTitleProperty').
+		self syncHistory.
+		history setFuture: newQueue objectEnumerator.
+		history next.
+		self playHistory: shouldStart.
+		uiUpdateTimer fire.
 	]
 
 	" Private "
 
+	playHistory: shouldStart [
+		player stop.
+		queueSize := 0.
+		3 timesRepeat: [ self enqueueOne ].
+		shouldStart ifTrue: [ player play ].
+	]
+
+	enqueueOne [
+		| item |
+		item := history peek: queueSize.
+		item == nil ifFalse: [
+			player addURL: item representedObject URL.
+			queueSize := queueSize + 1 ].
+	]
+
 	timerEvent: sender [
-		player isPlaying ifTrue: [ playPauseButton setImage:
-		                               ((IKIcon iconWithIdentifier: 'media-playback-pause') image). ]
-		                ifFalse: [ playPauseButton setImage:
-		                               ((IKIcon iconWithIdentifier: 'media-playback-start') image). ].
+		player isPlaying ifTrue: [ playPauseButton setImage: pauseImage ]
+			        ifFalse: [ playPauseButton setImage: playImage ].
 
-		positionSlider setMaxValue: (player duration).
-		positionSlider setIntValue: (player currentPosition).
-		"songLabel setStringValue: (player currentURL absoluteString)."
+		self syncHistory.
+		nextButton setEnabled: history hasNext.
+		previousButton setEnabled: history hasPrevious.
 
-		" FIXME: calling player currentURL in this timer callback causes a segfault the second time it
-		   happens, but not until there's a song playing  i.e. currentURL is non-nil "
+		positionSlider setIntValue: player currentPosition.
+		volumeSlider setIntValue: player volume.
+	]
+
+	syncHistory [
+		| newURL newSize |
+		" Send a value message to the proxy returned by player currentURL,
+		  so that the identity comparison can detect when URL has changed. "
+		newURL := player currentURL value.
+		currentURL == newURL ifFalse: [
+			currentURL := newURL.
+			newSize := player queueSize.
+			queueSize - newSize timesRepeat: [ history next ].
+			queueSize := newSize.
+			songLabel setStringValue:
+				history currentObject representedObject displayName.
+			positionSlider setMaxValue: player duration.
+			3 - newSize timesRepeat: [ self enqueueOne ].
+		].
 	]
 ]
