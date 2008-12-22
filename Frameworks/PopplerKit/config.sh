@@ -22,7 +22,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 POPPLER_CFLAGS="${POPPLER_CFLAGS} `${PKG_CONFIG} --cflags fontconfig`"
-POPPLER_LIBS="${POPPLER_LDFLAGS} `${PKG_CONFIG} --libs fontconfig`"
+POPPLER_LIBS="${POPPLER_LIBS} `${PKG_CONFIG} --libs fontconfig`"
 
 # poppler splash device
 ${PKG_CONFIG} --exists poppler-splash
@@ -31,7 +31,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 POPPLER_CFLAGS="${POPPLER_CFLAGS} `${PKG_CONFIG} --cflags poppler-splash`"
-POPPLER_LIBS="${POPPLER_LDFLAGS} `${PKG_CONFIG} --libs poppler-splash`"
+POPPLER_LIBS="${POPPLER_LIBS} `${PKG_CONFIG} --libs poppler-splash`"
 
 # poppler cairo device
 ${PKG_CONFIG} --exists poppler-cairo
@@ -42,7 +42,7 @@ else
 #   Disable Cairo support for now to avoid most of problem
 #   HAVE_CAIRO="YES"
 #   POPPLER_CFLAGS="${POPPLER_CFLAGS} `${PKG_CONFIG} --cflags poppler-cairo`"
-#   POPPLER_LIBS="${POPPLER_LDFLAGS} `${PKG_CONFIG} --libs poppler-cairo`"
+#   POPPLER_LIBS="${POPPLER_LIBS} `${PKG_CONFIG} --libs poppler-cairo`"
    HAVE_CAIRO="NO"
 fi
 
@@ -85,7 +85,7 @@ echo "${POPPLER_VERSION}=YES" >> config.make
 echo "FT_CFLAGS=${FT_CFLAGS}" >> config.make
 echo "FT_LIBS=${FT_LIBS}" >> config.make
 echo "ADDITIONAL_CFLAGS+=\$(POPPLER_CFLAGS) \$(FT_CFLAGS)" >> config.make
-echo "ADDITIONAL_LDFLAGS+=\$(POPPLER_LIBS) \$(POPPLER_LIBS)" >> config.make
+echo "LIBRARIES_DEPEND_UPON+=\$(POPPLER_LIBS) \$(FT_LIBS)" >> config.make
 # we add -I/usr/X11R6/include for older FreeBSD version.
 echo "ADDITIONAL_INCLUDE_DIRS += -I/usr/X11R6/include" >> config.make
 echo "HAVE_CAIRO=${HAVE_CAIRO}" >>config.make

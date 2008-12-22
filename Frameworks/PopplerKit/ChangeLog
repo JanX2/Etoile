@@ -1,3 +1,13 @@
+2008-12-22  Quentin Mathe <qmathe@club-internet.fr>
+
+	Applied patch by Bernard Cafarelli which allows correct linking when using  
+	--as-needed flag on Gentoo. See http://bugs.gentoo.org/show_bug.cgi?id=250175
+	* config.sh: Fixed POPPLER_LIBS to correctly include all library to be 
+	linked. Previously each time the variable was updated, new libraries were 
+	wrongly overwriting the variable value, when they should have been appended.
+	Modified to declare libraries to be linked with LIBRARIES_DEPENDS_UPON as 
+	GNUstep Make expects it.
+
 2008-08-04  Yen-Ju Chen <yjchenx at gmail _got_ com>
 
 	* Remove support for Poppler older than 0.6. The API seems stable since 0.6. 
