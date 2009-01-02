@@ -1,0 +1,30 @@
+========
+ShareKit
+========
+
+ShareKit is a framework to provide services through zeroconf and http.
+It is designed to be used for peer-to-peer communication, mostly, 
+data sharing between devices.
+SHServer embeds shttpd[1] as a server. 
+SHClient use curl[2] to retrive data from server.
+Usually SHClient is running in the same application as SHServer.
+Then it is necessary to run SHServer in thread (See -startInThread:).
+
+Application registers several paths in SHServer and 
+use SHClient to retrive property list based on these paths.
+Application will be asked to provide property list based on registered path.
+
+Ideas
+-----
+With ShareKit, applicationss can provide services as web server.
+Clients can use zeroconf to find applications and request data using URI.
+By default, each URI will return a property list in XML format (text/xml).
+Clients can use standard HTTP/1.1 to retrive large data.
+There is no rules about which URIs are provides by applications.
+It depends on the design of applications.
+
+[1] http://shttpd.sourceforge.net/
+[2] http://curl.haxx.se/
+
+Yen-Ju
+
