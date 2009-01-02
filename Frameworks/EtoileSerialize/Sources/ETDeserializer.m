@@ -508,7 +508,7 @@ LOAD_METHOD(Selector, SEL)
 	NSZone *deserialiserZone = NSDefaultMallocZone();
 	loadedIVar = 0;
 	object = NSAllocateObject(aClass, 0, deserialiserZone);
-	((NSObject*)object)->isa = aClass;
+	object->class_pointer = aClass;
 	//NSLog(@"Loading %@ at address 0x%x for ref %d", [aClass className], object, aReference);
 	SET_REF(aReference, object);
 	if([object isKindOfClass:[NSInvocation class]])
