@@ -130,7 +130,7 @@ NSRect vS = [_vertScroller frame];
 - (void) tile
 {
   NSRect headerRect, contentRect;
-  NSSize border = _sizeForBorderType(_borderType);
+  NSSize border = [[GSTheme theme] sizeForBorderType: _borderType];
   NSRectEdge bottomEdge, topEdge;
   float headerViewHeight = 0;
 

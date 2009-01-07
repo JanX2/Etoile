@@ -44,9 +44,9 @@ Camaelon_OBJC_FILES += \
 Camaelon_OBJC_FILES += \
 		NSClipView.m \
 		NSMenuView.m \
+		NSScrollView.m \
 		NSSplitView.m \
 		NSOutlineView.m \
-		NSScrollView.m \
 		NSTabView.m \
 		NSTableView.m \
 		NSTableHeaderView.m \

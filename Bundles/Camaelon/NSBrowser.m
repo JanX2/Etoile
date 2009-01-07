@@ -112,7 +112,7 @@ static NSTextFieldCell *titleCell;
   _browserDelegate = nil;
   _passiveDelegate = YES;
   _doubleAction = NULL;
-  bs = _sizeForBorderType (NSBezelBorder);
+  bs = [[GSTheme theme] sizeForBorderType: NSBezelBorder];
   _minColumnWidth = scrollerWidth + (2 * bs.width);
   if (_minColumnWidth < 100.0)
     _minColumnWidth = 100.0;
@@ -184,7 +184,7 @@ static NSTextFieldCell *titleCell;
   if (_hasHorizontalScroller)
     {
       NSRect scrollerBorderRect = _scrollerRect;
-      NSSize bs = _sizeForBorderType (NSBezelBorder);
+      NSSize bs = [[GSTheme theme] sizeForBorderType: NSBezelBorder];
   
 
       scrollerBorderRect.origin.x = 0;
@@ -239,7 +239,7 @@ static NSTextFieldCell *titleCell;
 
 - (void) tile
 {
-  NSSize bs = _sizeForBorderType (NSBezelBorder);
+  NSSize bs = [[GSTheme theme] sizeForBorderType: NSBezelBorder];
   int i, num, columnCount, delta;
   float  frameWidth;
 
