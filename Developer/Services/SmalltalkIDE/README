@@ -1,0 +1,15 @@
+CodeMonkey
+==========
+
+:Maintainer: Nicolas Roard <nicolas@roard.com>
+:Authors: Nicolas Roard
+:License: MIT Licence.
+:Version: 0.1
+
+*CodeMonkey* is (will be) a Smalltalk IDE for Etoile.
+It is currently in a very early stage, and not particularly useful yet.
+
+Contribute 
+----------
+
+Read TODO document.
