@@ -44,6 +44,19 @@
 	signature = aSignature;
 }
 
++ (NSString*) extractSignatureFrom: (NSString*) string
+{
+	NSArray* lines = [string componentsSeparatedByString: @"\n"];
+	if ([lines count] > 0) 
+	{
+		NSString* line = [[lines objectAtIndex: 0]
+			stringByTrimmingCharactersInSet:
+				[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		return line;
+	}
+	return nil;
+}
+
 - (void) parseCode
 {
 	// Extract the signature from the code.

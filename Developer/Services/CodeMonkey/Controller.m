@@ -285,7 +285,21 @@
 		NSString* code = [[content textStorage] string];
 		if ([code length] > 0)
 		{
-			[[self currentMethod] setCode: code];
+			NSString* signature = [ModelMethod extractSignatureFrom: code];
+			if ([signature isEqualToString: [[self currentMethod] signature]])
+			{
+				[[self currentMethod] setCode: code];
+			}
+			else // we add a new method
+			{
+				// TODO: refactor addMethod
+				// FIXME: there is a crash if sig but no body
+				ModelMethod* aMethod = [ModelMethod new];
+				[aMethod setCode: code];
+				[aMethod setCategory: [self currentCategoryName]];
+				[[self currentClass] addMethod: aMethod];
+				[aMethod release];
+			}
 			[self update];
 		}
 	}

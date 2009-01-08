@@ -30,5 +30,6 @@
 - (void) setCategory: (NSString*) aCategory;
 - (NSString*) category;
 - (NSString*) representation;
++ (NSString*) extractSignatureFrom: (NSString*) string;
 
 @end

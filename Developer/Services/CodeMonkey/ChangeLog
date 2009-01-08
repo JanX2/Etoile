@@ -1,4 +1,11 @@
 2009-01-08 Nicolas Roard <nicolas@roard.com>
+
+	* Modified the Gorm file to have resizing with splitview
+	* Added documentation button
+	* Now automatically creates a new method if the signature is different
+          (rather than explicitely have to add a method)
+
+2009-01-08 Nicolas Roard <nicolas@roard.com>
 	
 	Added SmalltalkCompiler early support.
 	* Test a class via the "Run Class" menu item (the class need to implement a run method)
