@@ -1,5 +1,0 @@
-2009-01-08 Nicolas Roard <nicolas@roard.com>
-
-	Preliminar version of a Smalltalk IDE for Etoile.
-	* Implements a meta model (classes->categories->methods)
-	* Allow basic edition/creation
