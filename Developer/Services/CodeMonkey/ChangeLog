@@ -1,4 +1,10 @@
 2009-01-08 Nicolas Roard <nicolas@roard.com>
+	
+	Added SmalltalkCompiler early support.
+	* Test a class via the "Run Class" menu item (the class need to implement a run method)
+	* Use the save menu item to inject the code in the runtime
+
+2009-01-08 Nicolas Roard <nicolas@roard.com>
 
 	Preliminar version of a Smalltalk IDE for Etoile.
 	* Implements a meta model (classes->categories->methods)

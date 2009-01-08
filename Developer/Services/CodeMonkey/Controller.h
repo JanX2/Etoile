@@ -31,7 +31,9 @@
 - (void) removeCategory: (id)sender;
 - (void) removeClass: (id)sender;
 - (void) removeMethod: (id)sender;
+- (void) saveToFile: (id)sender;
 - (void) save: (id)sender;
+- (void) runClass: (id)sender;
 - (void) update;
 - (ModelClass*) currentClass;
 - (NSMutableArray*) currentCategory;

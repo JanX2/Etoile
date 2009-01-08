@@ -32,5 +32,6 @@
 - (NSMutableDictionary*) categories;
 - (NSMutableArray*) sortedCategories;
 - (NSString*) representation;
+- (NSString*) dynamicRepresentation;
 
 @end

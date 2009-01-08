@@ -163,7 +163,23 @@ static NSString* AYU = @"<< As yet Undefined >>";
 {
 	NSMutableString* content = [NSMutableString new];
 	[content appendString: 
-		[NSString stringWithFormat: @"%@ subclass: %@\n[", name, parent]];
+		[NSString stringWithFormat: @"%@ subclass: %@\n[", parent, name]];
+	for (int i=0; i<[methods count]; i++)
+	{
+		ModelMethod* method = [methods objectAtIndex: i];
+		[content appendString: @"\n"];
+		[content appendString: [method representation]];
+	}
+	[content appendString: @"\n]"];
+
+	return [content autorelease];
+}
+
+- (NSString*) dynamicRepresentation
+{
+	NSMutableString* content = [NSMutableString new];
+	[content appendString: 
+		[NSString stringWithFormat: @"%@ extend [", name]];
 	for (int i=0; i<[methods count]; i++)
 	{
 		ModelMethod* method = [methods objectAtIndex: i];

@@ -10,7 +10,8 @@
 	    "removeClass:",
 	    "removeMethod:",
 	    "save:",
-	    "newAction:"
+	    "runClass:",
+	    "saveToFile:"
 	);
 	Outlets = (
 	    categoriesList,
@@ -31,10 +32,11 @@
 	    "addClass:",
 	    "addMethod:",
 	    "load:",
-	    "newAction:",
+	    "saveToFile:",
 	    "removeCategory:",
 	    "removeClass:",
 	    "removeMethod:",
+	    "runClass:",
 	    "save:"
 	);
 	Super = NSObject;

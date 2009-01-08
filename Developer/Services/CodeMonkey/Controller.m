@@ -6,6 +6,7 @@
 */
 
 #include <AppKit/AppKit.h>
+#include <SmalltalkKit/SmalltalkKit.h>
 #include "Controller.h"
 #include "ModelClass.h"
 #include "ModelMethod.h"
@@ -262,7 +263,7 @@
 }
 
 
-- (void) save: (id)sender
+- (void) saveToFile: (id)sender
 {
 	NSMutableString* output = [NSMutableString new];
 	for (int i=0; i<[classes count]; i++)
@@ -273,7 +274,60 @@
 		[output appendString: @"\n\n"];
 	}
 	[output writeToFile: @"test-nico.st" atomically: YES];
+
 	[output release];
+}
+
+- (void) save: (id)sender
+{
+	if ([self currentClass]) 
+	{
+		NSString* code = [[content textStorage] string];
+		if ([code length] > 0)
+		{
+			[[self currentMethod] setCode: code];
+			[self update];
+		}
+	}
+	
+	for (int i=0; i<[classes count]; i++)
+	{
+		ModelClass* class = [classes objectAtIndex: i];
+		if ([[class methods] count] > 0) 
+		{
+			NSString* representation = [class representation];
+			if (NSClassFromString([class name]) == nil)
+			{
+				if (![SmalltalkCompiler compileString: representation])
+				{
+					NSLog(@"error while compiling");
+				}
+			}
+			else
+			{
+				NSString* dynamic = [class dynamicRepresentation];
+				if (![SmalltalkCompiler compileString: dynamic])
+				{
+					NSLog(@"error while compiling dynamically");
+				}
+			}
+		}
+	}
+}
+
+- (void) runClass: (id) sender
+{
+	if ([self currentClass]) 
+	{
+		NS_DURING
+		NSString* name = [[self currentClass] name];
+		id instance = [NSClassFromString(name) new];
+		[instance run];
+		[instance release];
+		NS_HANDLER
+		NSLog(@"Exception...");
+		NS_ENDHANDLER
+	}
 }
 
 - (void) setStatus: (NSString*) text
