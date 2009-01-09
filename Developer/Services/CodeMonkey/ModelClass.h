@@ -13,18 +13,22 @@
 {
 	NSString* name;
 	NSString* parent;
-	NSString* documentation;
+	NSMutableAttributedString* documentation;
 	NSMutableDictionary* categories;
 	NSMutableArray* methods;
+	NSMutableArray* properties;
 }
 
 - (id) initWithName: (NSString*) aName;
 - (void) setName: (NSString*) aName;
 - (NSString*) name;
-- (void) setDocumentation: (NSString*) aDocumentation;
-- (NSString*) documentation;
+- (void) setupDocumentation;
+- (void) setDocumentation: (NSMutableAttributedString*) aDocumentation;
+- (NSMutableAttributedString*) documentation;
 - (void) addMethod: (ModelMethod*) aMethod;
 - (void) removeMethod: (ModelMethod*) aMethod;
+- (void) addProperty: (NSString*) aProperty;
+- (NSMutableArray*) properties;
 - (NSMutableArray*) methods;
 - (void) reloadCategories;
 - (void) removeCategory: (NSString*) categoryName;
@@ -33,5 +37,7 @@
 - (NSMutableArray*) sortedCategories;
 - (NSString*) representation;
 - (NSString*) dynamicRepresentation;
+- (BOOL) hasMethodWithSignature: (NSString*) aSignature;
+- (ModelMethod*) methodWithSignature: (NSString*) aSignature;
 
 @end

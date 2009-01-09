@@ -10,8 +10,15 @@
 	    "removeClass:",
 	    "removeMethod:",
 	    "save:",
+<<<<<<< .mine
+	    "runClass:",
+	    "saveToFile:",
+	    "addProperty:",
+	    "removeProperty:"
+=======
 	    "runClass:",
 	    "saveToFile:"
+>>>>>>> .r4212
 	);
 	Outlets = (
 	    categoriesList,
@@ -22,7 +29,18 @@
 	    newCategoryNameField,
 	    newClassNameField,
 	    addCategoryNamePanel,
-	    statusTextField
+	    statusTextField,
+	    categoryContent,
+	    methodContent,
+	    classContent,
+	    infoAuthors,
+	    infoPanel,
+	    infoVersion,
+	    propertiesList,
+	    classDocTextView,
+	    codeDocTextView,
+	    codeTextView,
+	    categoryDocTextView
 	);
 	Super = NSObject;
     };
@@ -31,13 +49,24 @@
 	    "addCategory:",
 	    "addClass:",
 	    "addMethod:",
+	    "addProperty:",
 	    "load:",
+<<<<<<< .mine
+	    "removeProperty:",
+=======
 	    "saveToFile:",
+>>>>>>> .r4212
 	    "removeCategory:",
 	    "removeClass:",
 	    "removeMethod:",
+<<<<<<< .mine
+	    "runClass:",
+	    "save:",
+	    "saveToFile:"
+=======
 	    "runClass:",
 	    "save:"
+>>>>>>> .r4212
 	);
 	Super = NSObject;
     };

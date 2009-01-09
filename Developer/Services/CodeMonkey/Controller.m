@@ -18,6 +18,20 @@
 	[self setTitle: @"Classes" for: classesList];
 	[self setTitle: @"Categories" for: categoriesList];
 	[self setTitle: @"Methods" for: methodsList];
+
+	[infoPanel setBackgroundColor: [NSColor blackColor]];
+	[infoVersion setStringValue: @"v 0.1"];
+	[infoVersion setTextColor: [NSColor whiteColor]];
+	[infoAuthors setStringValue: @"(c) 2009 Nicolas Roard. Art from digitalart (flickr)"];
+	[infoAuthors setTextColor: [NSColor whiteColor]];
+
+	[propertiesList setDataSource: self];
+	[propertiesList setDelegate: self];
+	[propertiesList setAutoresizesAllColumnsToFit: YES];
+
+	[self setTitle: @"Properties" for: propertiesList];
+
+	[self showClassDetails];
 	[self update];
 }
 
@@ -37,6 +51,25 @@
 {
 	[classes release];
 	[super dealloc];
+}
+
+- (void) swapContentViewWith: (NSView*) aView
+{
+	[currentView retain]; // removeFromSuperview release it..
+	[currentView removeFromSuperview];
+	currentView = aView;
+	[currentView setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable];
+	[content addSubview: currentView];
+}
+
+- (void) showClassDetails
+{
+	[self swapContentViewWith: [classContent contentView]];
+}
+
+- (void) showMethodDetails
+{
+	[self swapContentViewWith: [methodContent contentView]];
 }
 
 - (ModelClass*) currentClass
@@ -98,14 +131,24 @@
 - (void) update
 {
 	[classesList reloadData];
+	[classesList sizeToFit];
 	[categoriesList reloadData];
+	[categoriesList sizeToFit];
 	[methodsList reloadData];
+	[methodsList sizeToFit];
+	[propertiesList reloadData];
+	[propertiesList sizeToFit];
         if ([self currentMethod])
 	{
 		NSString* code = [[self currentMethod] code];
 		NSAttributedString* string = [[NSMutableAttributedString alloc] initWithString: code];
-		[[content textStorage] setAttributedString: string];
+		[[codeTextView textStorage] setAttributedString: string];
 		[string release];
+	}
+	if ([self currentClass])
+	{
+		NSAttributedString* string = [[self currentClass] documentation];
+		[[classDocTextView textStorage] setAttributedString: string];
 	}
 	[self setStatus: @"Ready"];
 }
@@ -115,6 +158,23 @@
 - (void) tableViewSelectionDidChange: (NSNotification*) aNotification
 {
 	[self update];
+}
+
+- (BOOL) tableView: (NSTableView*) tv shouldSelectRow: (NSInteger) row
+{
+	if (tv == classesList)
+	{
+		[self showClassDetails];
+	}
+	if (tv == categoriesList)
+	{
+		[self showMethodDetails];
+	}
+	if (tv == methodsList)
+	{
+		[self showMethodDetails];
+	}
+	return YES;
 }
 
 // TableView source delegate
@@ -139,6 +199,13 @@
 			return [[self currentCategory] count];
 		}
 	}
+	if (tv == propertiesList)
+	{
+		if ([self currentClass] != nil)
+		{
+			return [[[self currentClass] properties] count];
+		}
+	}
 	return 0;
 }
 
@@ -161,6 +228,13 @@
 		if ([self currentCategory] != nil)
 		{
 			return [[[self currentCategory] objectAtIndex: row] signature];
+		}
+	}
+	if (tv == propertiesList)
+	{
+		if ([self currentClass] != nil)
+		{
+			return [[[self currentClass] properties] objectAtIndex: row];
 		}
 	}
 	return nil;
@@ -221,6 +295,16 @@
 	}
 }
 
+- (void) addProperty: (id) sender
+{
+	ModelClass* class = [self currentClass];
+	if (class)
+	{
+		[class addProperty: @"A"];	
+		[self showClassDetails];
+		[self update];
+	}
+}
 
 - (void) load: (id)sender
 {
@@ -282,13 +366,16 @@
 {
 	if ([self currentClass]) 
 	{
-		NSString* code = [[content textStorage] string];
+		NSString* code = [[codeTextView textStorage] string];
 		if ([code length] > 0)
 		{
 			NSString* signature = [ModelMethod extractSignatureFrom: code];
-			if ([signature isEqualToString: [[self currentMethod] signature]])
+			//if ([signature isEqualToString: [[self currentMethod] signature]])
+			if ([[self currentClass] hasMethodWithSignature: signature])
 			{
-				[[self currentMethod] setCode: code];
+				ModelMethod* method = [[self currentClass] methodWithSignature: signature];
+				[method setCode: code];
+				//[[self currentMethod] setCode: code];
 			}
 			else // we add a new method
 			{
@@ -320,6 +407,7 @@
 			else
 			{
 				NSString* dynamic = [class dynamicRepresentation];
+				NSLog (@"compile <%@>", dynamic);
 				if (![SmalltalkCompiler compileString: dynamic])
 				{
 					NSLog(@"error while compiling dynamically");

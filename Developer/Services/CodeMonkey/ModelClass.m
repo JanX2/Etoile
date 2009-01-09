@@ -18,7 +18,9 @@ static NSString* AYU = @"<< As yet Undefined >>";
 	self = [super init];
 	methods = [NSMutableArray new];
   	categories = [NSMutableDictionary new]; 
+	properties = [NSMutableArray new];
 	parent = [[NSString alloc] initWithString: @"NSObject"];
+	[self setupDocumentation];
   	return self;
 }
 
@@ -26,10 +28,17 @@ static NSString* AYU = @"<< As yet Undefined >>";
 {
 	[methods release];
   	[categories release];
+	[properties release];
 	[parent release];
 	[name release];
 	[documentation release];
   	[super dealloc];
+}
+
+- (void) setupDocumentation
+{
+	documentation = [[NSMutableAttributedString alloc] initWithString:
+		@"Write your class documentation here.\n\nWHAT DOES IT DO:\n\nWHY AND WITH WHICH COLLABORATORS OBJECTS:\n\nHOW DOES IT WORK:\n\n"];
 }
 
 - (id) initWithName: (NSString*) aName
@@ -51,14 +60,13 @@ static NSString* AYU = @"<< As yet Undefined >>";
 	return name;
 }
 
-- (void) setDocumentation: (NSString*) aDocumentation
+- (void) setDocumentation: (NSMutableAttributedString*) aDocumentation
 {
-	[aDocumentation retain];
 	[documentation release];
-	documentation = aDocumentation;
+	documentation = [aDocumentation copy];
 }
 
-- (NSString*) documentation
+- (NSMutableAttributedString*) documentation
 {
 	return documentation;
 }
@@ -73,6 +81,16 @@ static NSString* AYU = @"<< As yet Undefined >>";
 {
 	[methods removeObject: aMethod];
 	[self reloadCategories];
+}
+
+- (void) addProperty: (NSString*) aProperty
+{
+	[properties addObject: aProperty];
+}
+
+- (NSMutableArray*) properties
+{
+	return properties;
 }
 
 - (NSMutableArray*) methods
@@ -157,6 +175,32 @@ static NSString* AYU = @"<< As yet Undefined >>";
 - (NSMutableDictionary*) categories
 {
 	return categories;
+}
+
+- (BOOL) hasMethodWithSignature: (NSString*) aSignature
+{
+	for (int i=0; i<[methods count]; i++)
+	{
+		ModelMethod* method = [methods objectAtIndex: i];
+		if ([[method signature] isEqualToString: aSignature])
+		{
+			return YES;
+		}
+	}
+	return NO;
+}
+
+- (ModelMethod*) methodWithSignature: (NSString*) aSignature
+{
+	for (int i=0; i<[methods count]; i++)
+	{
+		ModelMethod* method = [methods objectAtIndex: i];
+		if ([[method signature] isEqualToString: aSignature])
+		{
+			return method;
+		}
+	}
+	return nil;
 }
 
 - (NSString*) representation

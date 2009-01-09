@@ -1,3 +1,12 @@
+2009-01-09 Nicolas Roard <nicolas@roard.com>
+	Large number of modifications:
+	* Refactored the Gorm UI to have different content depending on the context
+          (e.g. show a table for the class properties, or a textview for a method)
+        * Moved add/remove buttons from the browser's window to menu items
+        * Added an info panel
+        * Added preliminary support for class properties and instance/class distinction
+        * Added preliminary support for adding documentation
+
 2009-01-08 Nicolas Roard <nicolas@roard.com>
 
 	* Modified the Gorm file to have resizing with splitview
