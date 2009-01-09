@@ -51,27 +51,7 @@ The biggest "visual" difference are the gradients (mainly on NSTableView, NSOutl
 Installation
 ------------
 
-Just compile the Camaelon bundle : 
-
-	make
-
-You should have now a Camaelon.themeEngine bundle. 
-Copy this bundle where you want.
-
-After that, you also need to tell GNUstep where to find the 
-theme bundle, so write : 
-
-	defaults write NSGlobalDomain  GSAppKitUserBundles '( "YourLocationTo/Camaelon.themeEngine" )'
-
-Then, you need to indicate to Camaelon which pixmap theme you want to use:
-	defaults write Camaelon Theme Nesedah
-
--- here using the theme Nesedah, available on the etoile repository in Themes/
-
-Camaelon looks for themes in ~/GNUstep/Library/Themes/ -- so you will perhaps
-need to create this directory if it's not present, before copying your themes inside.
-
-Now, just try to run a GNUstep program ... :-)
+see the INSTALL file.
 
 Future goals
 ------------
