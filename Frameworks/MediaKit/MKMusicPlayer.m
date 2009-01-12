@@ -6,7 +6,7 @@
 - (id) init
 {
 	SUPERINIT;
-	files = [[NSMutableArray alloc] init];
+	ASSIGN(files, [[NSMutableArray alloc] init]);
 	return self;
 }
 - (id) initWithDevice:(id<MKSoundDevice>)device
@@ -119,8 +119,6 @@
 }
 - (void) idle
 {
-	// FIXME: Should probably malloc / realloc this and store it in an ivar
-	// rather than allocating it on the stack all the time.
 	int bufferSize = [file requiredBufferSize];
 	if (bufferSize > bufferSpace)
 	{
