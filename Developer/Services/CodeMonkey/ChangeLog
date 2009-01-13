@@ -1,3 +1,9 @@
+2009-01-13 Nicolas Roard <nicolas@roard.com>
+	Put back the creation panels and added properties
+	* Add property code (can add property to a class and use them)
+	* Added property adding panel
+	* Plugged back class/category adding panels
+
 2009-01-09 Nicolas Roard <nicolas@roard.com>
 	Large number of modifications:
 	* Refactored the Gorm UI to have different content depending on the context

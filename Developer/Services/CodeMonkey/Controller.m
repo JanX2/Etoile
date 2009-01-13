@@ -33,6 +33,10 @@
 
 	[self showClassDetails];
 	[self update];
+
+
+	NSString* test = @"NSObject subclass: Test [ run [ a := 'hello'. b := 'plop' ] ]";
+	[SmalltalkCompiler compileString: test];
 }
 
 - (void) setTitle: (NSString*) title for: (NSTableView*) tv
@@ -297,10 +301,13 @@
 
 - (void) addProperty: (id) sender
 {
+  	[addPropertyNamePanel close];
 	ModelClass* class = [self currentClass];
 	if (class)
 	{
-		[class addProperty: @"A"];	
+  		NSString* propertyName = [newPropertyNameField stringValue];
+		NSLog (@"propertyName added: %@", propertyName);
+		[class addProperty: propertyName];	
 		[self showClassDetails];
 		[self update];
 	}

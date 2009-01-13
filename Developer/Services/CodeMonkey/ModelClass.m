@@ -208,6 +208,15 @@ static NSString* AYU = @"<< As yet Undefined >>";
 	NSMutableString* content = [NSMutableString new];
 	[content appendString: 
 		[NSString stringWithFormat: @"%@ subclass: %@\n[", parent, name]];
+	if ([properties count] > 0) {
+		[content appendString: @"| "];
+		for (int i=0; i<[properties count]; i++)
+		{
+			NSString* property = [properties objectAtIndex: i];
+			[content appendString: [NSString stringWithFormat: @"%@ ", property]];
+		}
+		[content appendString: @"|"];
+	}
 	for (int i=0; i<[methods count]; i++)
 	{
 		ModelMethod* method = [methods objectAtIndex: i];

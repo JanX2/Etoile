@@ -19,8 +19,10 @@
   id content;
   id newClassNameField;
   id newCategoryNameField;
+  id newPropertyNameField;
   id addClassNamePanel;
   id addCategoryNamePanel;
+  id addPropertyNamePanel;
   id statusTextField;
   id classContent;
   id categoryContent;
