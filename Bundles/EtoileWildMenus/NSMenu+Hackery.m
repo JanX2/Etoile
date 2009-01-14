@@ -257,7 +257,7 @@
     {
       int i, n;
       NSMutableArray *itemsToMove = [NSMutableArray new];
-      NSMenuItem *appItem = [self itemWithTitle: appName];
+      NSMenuItem *appItem = (id)[self itemWithTitle: appName];
       int index = [self indexOfItem: appItem];
 
       NSUserDefaults *defs=[NSUserDefaults standardUserDefaults];
