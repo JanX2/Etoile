@@ -42,6 +42,11 @@
 - (NSView *) mainViewWaitSign;
 @end
 
+@interface NSWindow (UglyHack)
+- (NSView*) contentViewWithoutToolbar;
+@end
+
+
 /** <p>PKPanesController Description</p> */
 @implementation PKPanesController
 
@@ -296,11 +301,14 @@
     // toolbar is visible), by the way we have to rely on a special method
     // until GNUstep implementation matches Cocoa better.
         
-#ifndef GNUSTEP
-    return [(NSWindow *)owner contentView];
-#else
-    return [(NSWindow *)owner contentViewWithoutToolbar];
-#endif
+	  if ([owner respondsToSelector:@selector(contentViewWithoutToolbar)])
+	  {
+		return [(NSWindow *)owner contentViewWithoutToolbar];
+	  }
+	  else
+	  {
+		return [(NSWindow *)owner contentView];
+	  }
   }
   return view;
 }
