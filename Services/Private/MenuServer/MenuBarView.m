@@ -137,7 +137,7 @@
 
       while ((entry = [ee nextObject]) != nil)
         {
-          NSMenuItem *menuItem = [entry menuItem];
+          NSMenuItem *menuItem = (id)[entry menuItem];
 
           if (menuItem != nil)
             [systemMenu addItem: menuItem];
@@ -159,7 +159,7 @@
       e = [ungrouped objectEnumerator];
       while ((entry = [e nextObject]) != nil)
         {
-          NSMenuItem *menuItem = [entry menuItem];
+          NSMenuItem *menuItem = (id)[entry menuItem];
 
           if (menuItem != nil)
             [systemMenu addItem: menuItem];
