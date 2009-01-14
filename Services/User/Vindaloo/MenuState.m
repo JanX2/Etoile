@@ -61,7 +61,7 @@
 
 - (void) myUpdateResizePolicy
 {
-   NSMenuItem* viewMenu = [[NSApp mainMenu] itemWithTag: MainMenuTagView];
+   NSMenuItem* viewMenu = (id)[[NSApp mainMenu] itemWithTag: MainMenuTagView];
    if (!viewMenu)
    {
       NSLog(@"WARNING: view menu not found!");
@@ -70,13 +70,13 @@
    
    ResizePolicy policy = [contentView resizePolicy];
    
-   NSMenuItem* fitWidthItem = [[viewMenu submenu] itemWithTag: ViewMenuTagFitWidth];
+   NSMenuItem* fitWidthItem = (id)[[viewMenu submenu] itemWithTag: ViewMenuTagFitWidth];
    [fitWidthItem setState: (policy == ResizePolicyFitWidth ? NSOnState : NSOffState)];
    
-   NSMenuItem* fitHeightItem = [[viewMenu  submenu] itemWithTag: ViewMenuTagFitHeight];
+   NSMenuItem* fitHeightItem = (id)[[viewMenu  submenu] itemWithTag: ViewMenuTagFitHeight];
    [fitHeightItem setState: (policy == ResizePolicyFitHeight ? NSOnState: NSOffState)];
    
-   NSMenuItem* fitPageItem = [[viewMenu  submenu] itemWithTag: ViewMenuTagFitPage];
+   NSMenuItem* fitPageItem = (id)[[viewMenu  submenu] itemWithTag: ViewMenuTagFitPage];
    [fitPageItem setState: (policy == ResizePolicyFitPage ? NSOnState : NSOffState)];
 }
 
