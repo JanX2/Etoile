@@ -193,6 +193,6 @@ static NSObject <SCSession> *session = nil;
     return;
   }
   if (item)
-    [gm doService: item];
+    [gm doService: (id)item];
 }
 @end
