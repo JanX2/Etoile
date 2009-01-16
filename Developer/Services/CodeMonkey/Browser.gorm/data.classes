@@ -10,22 +10,10 @@
 	    "removeClass:",
 	    "removeMethod:",
 	    "save:",
-<<<<<<< .mine
 	    "runClass:",
 	    "saveToFile:",
 	    "addProperty:",
 	    "removeProperty:"
-=======
-<<<<<<< .mine
-	    "runClass:",
-	    "saveToFile:",
-	    "addProperty:",
-	    "removeProperty:"
-=======
-	    "runClass:",
-	    "saveToFile:"
->>>>>>> .r4212
->>>>>>> .r4224
 	);
 	Outlets = (
 	    categoriesList,
@@ -36,7 +24,6 @@
 	    newCategoryNameField,
 	    newClassNameField,
 	    addCategoryNamePanel,
-<<<<<<< .mine
 	    statusTextField,
 	    categoryContent,
 	    methodContent,
@@ -50,21 +37,8 @@
 	    codeTextView,
 	    categoryDocTextView,
 	    addPropertyNamePanel,
-	    newPropertyNameField
-=======
-	    statusTextField,
-	    categoryContent,
-	    methodContent,
-	    classContent,
-	    infoAuthors,
-	    infoPanel,
-	    infoVersion,
-	    propertiesList,
-	    classDocTextView,
-	    codeDocTextView,
-	    codeTextView,
-	    categoryDocTextView
->>>>>>> .r4224
+	    newPropertyNameField,
+	    signatureTextField
 	);
 	Super = NSObject;
     };
@@ -75,32 +49,14 @@
 	    "addMethod:",
 	    "addProperty:",
 	    "load:",
-<<<<<<< .mine
 	    "removeProperty:",
-=======
-<<<<<<< .mine
-	    "removeProperty:",
-=======
 	    "saveToFile:",
->>>>>>> .r4212
->>>>>>> .r4224
 	    "removeCategory:",
 	    "removeClass:",
 	    "removeMethod:",
-<<<<<<< .mine
 	    "runClass:",
 	    "save:",
 	    "saveToFile:"
-=======
-<<<<<<< .mine
-	    "runClass:",
-	    "save:",
-	    "saveToFile:"
-=======
-	    "runClass:",
-	    "save:"
->>>>>>> .r4224
->>>>>>> .r4212
 	);
 	Super = NSObject;
     };

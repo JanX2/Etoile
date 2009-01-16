@@ -39,9 +39,9 @@
 
 - (void) setSignature: (NSString*) aSignature
 {
-	[aSignature retain];
+	//[aSignature retain];
 	[signature release];
-	signature = aSignature;
+	signature = [aSignature copy];
 }
 
 + (NSString*) extractSignatureFrom: (NSString*) string
@@ -98,7 +98,7 @@
 {
 	[code release];
 	code = [aCode copy];
-	[self parseCode];
+//	[self parseCode];
 }
 
 - (NSString*) code
@@ -124,7 +124,7 @@
 	NSMutableString* representation = [NSMutableString new];
 	[representation appendString: 
 		[NSString stringWithFormat: @"%@ [\n", signature]];
-	[representation appendString: content];
+	[representation appendString: code];
 	[representation appendString: @"\n]\n"];
 	return representation;
 }

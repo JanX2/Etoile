@@ -7,9 +7,41 @@
 
 #include <AppKit/AppKit.h>
 #include <SmalltalkKit/SmalltalkKit.h>
+#include <LanguageKit/LanguageKit.h>
+#include <EtoileUI/EtoileUI.h>
 #include "Controller.h"
 #include "ModelClass.h"
 #include "ModelMethod.h"
+
+@interface LKCompilationUnit (Reflection)
+- (NSMutableArray*) classes;
+@end
+
+@implementation LKCompilationUnit (Reflection)
+- (NSMutableArray*) classes { return classes; }
+@end
+
+@interface LKSubclass (Reflection)
+- (NSString*) classname;
+- (NSMutableArray*) methods;
+- (NSArray*) ivars;
+@end
+
+@implementation LKSubclass (Reflection)
+- (NSString*) classname { return classname; }
+- (NSMutableArray*) methods { return methods; }
+- (NSArray*) ivars { return ivars; }
+@end
+
+@interface LKMethod (Reflection)
+- (LKMessageSend*) signature;
+- (NSMutableArray*) statements;
+@end
+
+@implementation LKMethod (Reflection)
+- (LKMessageSend*) signature { return signature; }
+- (NSMutableArray*) statements { return statements; }
+@end
 
 @implementation Controller
 
@@ -30,13 +62,83 @@
 	[propertiesList setAutoresizesAllColumnsToFit: YES];
 
 	[self setTitle: @"Properties" for: propertiesList];
+	[codeTextView setTextContainerInset: NSMakeSize(8,8)];
 
 	[self showClassDetails];
 	[self update];
 
 
-	NSString* test = @"NSObject subclass: Test [ run [ a := 'hello'. b := 'plop' ] ]";
-	[SmalltalkCompiler compileString: test];
+	NSString* test = @"NSObject subclass: ETMusicFile [ | a b | run [ a := 'hello'. b := 'plop' ] ]";
+
+	[self loadContent: test];
+	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Developer/Services/CodeMonkey/test.st"];
+	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/ETPlaylist.st"];
+	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/MusicPlayerController.st"];
+	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/MelodieController.st"];
+	//[SmalltalkCompiler compileString: test];
+	//id obj = [NSClassFromString(@"Test") new];
+	//NSLog (@"ivars: %@", [obj instanceVariableNames]);
+	//[obj inspect: self];
+}
+
+- (void) loadFile: (NSString*) path
+{
+	NSString* fileContent = [NSString stringWithContentsOfFile: path];
+	[self loadContent: fileContent];
+}
+
+- (void) loadContent: (NSString*) aContent
+{
+	id parser = [[SmalltalkCompiler parser] new];
+	LKAST* ast;
+	NS_DURING
+		ast = [parser parseString: aContent];
+		NSArray* myclasses = [(LKCompilationUnit*)ast classes];
+		for (int i=0; i<[myclasses count]; i++)
+		{
+			[self loadClass: [myclasses objectAtIndex: i]];
+		}
+	NS_HANDLER
+		NSLog (@"Exception %@", localException);
+	NS_ENDHANDLER
+	[ast compileWith: defaultJIT()];
+	[parser release];
+}
+
+- (void) loadClass: (LKSubclass*) class
+{
+	NSLog (@"Loading class %@", [class classname]);
+	ModelClass* aClass = [[ModelClass alloc] initWithName: [class classname]];
+	NSMutableArray* methods = [class methods];
+	for (int i=0; i<[methods count]; i++)
+	{
+		NSMutableString* code = [NSMutableString new];
+		LKMethod* method = [methods objectAtIndex: i];
+		NSString* signature = [[method signature] description];
+		NSMutableArray* statements = [method statements];
+		for (int j=0; j<[statements count]; j++)
+		{
+			[code appendString: [[statements objectAtIndex: j] description]];
+			if (![code hasSuffix: @"."])
+			{
+				[code appendString: @".\n"];
+			}
+		}
+		ModelMethod* aMethod = [ModelMethod new];
+		[aMethod setCode: code];
+		[aMethod setSignature: signature];
+		[aClass addMethod: aMethod];
+		[aMethod release];
+	}
+	NSArray* ivars = [class ivars];
+	for (int i=0; i<[ivars count]; i++)
+	{
+		NSString* ivar = [ivars objectAtIndex: i];
+		[aClass addProperty: ivar];
+	}
+	[classes addObject: aClass];
+	[aClass release];
+	[self update];
 }
 
 - (void) setTitle: (NSString*) title for: (NSTableView*) tv
@@ -140,6 +242,7 @@
 	[categoriesList sizeToFit];
 	[methodsList reloadData];
 	[methodsList sizeToFit];
+	NSLog (@"propertyList, reloadData");
 	[propertiesList reloadData];
 	[propertiesList sizeToFit];
         if ([self currentMethod])
@@ -148,6 +251,8 @@
 		NSAttributedString* string = [[NSMutableAttributedString alloc] initWithString: code];
 		[[codeTextView textStorage] setAttributedString: string];
 		[string release];
+		NSString* signature = [[self currentMethod] signature];
+		[signatureTextField setStringValue: signature];
 	}
 	if ([self currentClass])
 	{
@@ -238,7 +343,10 @@
 	{
 		if ([self currentClass] != nil)
 		{
-			return [[[self currentClass] properties] objectAtIndex: row];
+			if ([[[self currentClass] properties] count] > row)
+			{
+				return [[[self currentClass] properties] objectAtIndex: row];
+			}
 		}
 	}
 	return nil;
@@ -353,6 +461,9 @@
 	}
 }
 
+- (void) removeProperty: (id)sender
+{
+}
 
 - (void) saveToFile: (id)sender
 {
@@ -376,8 +487,11 @@
 		NSString* code = [[codeTextView textStorage] string];
 		if ([code length] > 0)
 		{
-			NSString* signature = [ModelMethod extractSignatureFrom: code];
+			//NSString* signature = [ModelMethod extractSignatureFrom: code];
 			//if ([signature isEqualToString: [[self currentMethod] signature]])
+			
+			NSString* signature = [signatureTextField stringValue];
+			NSLog (@"save (%@) <%@>", signature, code);
 			if ([[self currentClass] hasMethodWithSignature: signature])
 			{
 				ModelMethod* method = [[self currentClass] methodWithSignature: signature];
@@ -390,6 +504,7 @@
 				// FIXME: there is a crash if sig but no body
 				ModelMethod* aMethod = [ModelMethod new];
 				[aMethod setCode: code];
+				[aMethod setSignature: signature];
 				[aMethod setCategory: [self currentCategoryName]];
 				[[self currentClass] addMethod: aMethod];
 				[aMethod release];
@@ -398,12 +513,16 @@
 		}
 	}
 	
+	Class myClass = NSClassFromString(@"MyTest");
+	NSLog (@"in save, class MyTest: %@", myClass);
+	NSLog (@"in save, class MyTest: %@ (%@)", myClass, myClass->super_class);
 	for (int i=0; i<[classes count]; i++)
 	{
 		ModelClass* class = [classes objectAtIndex: i];
 		if ([[class methods] count] > 0) 
 		{
 			NSString* representation = [class representation];
+			NSLog (@"Class representation: <%@>", representation);
 			if (NSClassFromString([class name]) == nil)
 			{
 				if (![SmalltalkCompiler compileString: representation])
@@ -414,7 +533,7 @@
 			else
 			{
 				NSString* dynamic = [class dynamicRepresentation];
-				NSLog (@"compile <%@>", dynamic);
+				NSLog (@"dynamic compile <%@>", dynamic);
 				if (![SmalltalkCompiler compileString: dynamic])
 				{
 					NSLog(@"error while compiling dynamically");

@@ -32,12 +32,16 @@
   id infoAuthors;
 
   id codeTextView;
+  id signatureTextField;
   id categoryDocTextView;
   id classDocTextView;
   NSView* currentView;
 
   NSMutableArray* classes;
 }
+- (void) loadFile: (NSString*) path;
+- (void) loadContent: (NSString*) aContent;
+- (void) loadClass: (LKSubclass*) class;
 - (void) addCategory: (id)sender;
 - (void) addClass: (id)sender;
 - (void) addMethod: (id)sender;

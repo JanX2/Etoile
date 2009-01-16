@@ -231,15 +231,19 @@ static NSString* AYU = @"<< As yet Undefined >>";
 - (NSString*) dynamicRepresentation
 {
 	NSMutableString* content = [NSMutableString new];
-	[content appendString: 
-		[NSString stringWithFormat: @"%@ extend [", name]];
 	for (int i=0; i<[methods count]; i++)
 	{
+		[content appendString: 
+			[NSString stringWithFormat: @"\n%@ extend [", name]];
 		ModelMethod* method = [methods objectAtIndex: i];
-		[content appendString: @"\n"];
-		[content appendString: [method representation]];
+		NSString* rep = [method representation];
+		NSLog (@"method rep <%@>", rep);
+		if (rep != nil && [rep length]) {
+			[content appendString: @"\n"];
+			[content appendString: [method representation]];
+		}
+		[content appendString: @"\n]"];
 	}
-	[content appendString: @"\n]"];
 
 	return [content autorelease];
 }

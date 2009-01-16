@@ -1,3 +1,12 @@
+2009-01-16 Nicolas Roard <nicolas@roard.com>
+	Early work to directly use the AST from LanguageKit:
+	* Load .st file, extracts the full AST via LK and populate ModelClass with it
+	* Added accessors to LK classes (for the moments as categories)
+	* Modifs in the Gorm file to have a textfield for the method's signature
+	* Fixed a wrong commit in the Gorm file.
+	* Fixed a bug in the properties tableview handling
+	* Fixed compilation warning
+
 2009-01-13 Nicolas Roard <nicolas@roard.com>
 	Put back the creation panels and added properties
 	* Add property code (can add property to a class and use them)
