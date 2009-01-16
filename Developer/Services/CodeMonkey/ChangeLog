@@ -1,4 +1,8 @@
 2009-01-16 Nicolas Roard <nicolas@roard.com>
+	Fixed a segfault when applying categories on classes never
+	instanciated
+
+2009-01-16 Nicolas Roard <nicolas@roard.com>
 	Early work to directly use the AST from LanguageKit:
 	* Load .st file, extracts the full AST via LK and populate ModelClass with it
 	* Added accessors to LK classes (for the moments as categories)

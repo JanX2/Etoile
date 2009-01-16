@@ -98,10 +98,18 @@
 		{
 			[self loadClass: [myclasses objectAtIndex: i]];
 		}
+		[ast compileWith: defaultJIT()];
+		// We create instances so that categories can later be applied
+		for (int i=0; i<[myclasses count]; i++)
+		{
+			LKSubclass* aClass = [myclasses objectAtIndex: i];
+			Class theClass = NSClassFromString([aClass classname]);
+			id obj = [theClass new];
+			[obj release];
+		}
 	NS_HANDLER
 		NSLog (@"Exception %@", localException);
 	NS_ENDHANDLER
-	[ast compileWith: defaultJIT()];
 	[parser release];
 }
 
@@ -513,9 +521,9 @@
 		}
 	}
 	
-	Class myClass = NSClassFromString(@"MyTest");
-	NSLog (@"in save, class MyTest: %@", myClass);
-	NSLog (@"in save, class MyTest: %@ (%@)", myClass, myClass->super_class);
+	//Class myClass = NSClassFromString(@"MyTest");
+	//NSLog (@"in save, class MyTest: %@", myClass);
+	//NSLog (@"in save, class MyTest: %@ (%@)", myClass, myClass->super_class);
 	for (int i=0; i<[classes count]; i++)
 	{
 		ModelClass* class = [classes objectAtIndex: i];
