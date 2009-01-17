@@ -1,3 +1,9 @@
+2009-01-17 Nicolas Roard <nicolas@roard.com>
+	* Refactored the code to use the new visitor code that David committed today.
+	  We now use ASTModel (a visitor) to extract the info from the ast
+	* Added a ASTTransform class to do a simple AST transformation (will be
+	  used for the adding/removing ivars at runtime)
+
 2009-01-16 Nicolas Roard <nicolas@roard.com>
 	Fixed a segfault when applying categories on classes never
 	instanciated

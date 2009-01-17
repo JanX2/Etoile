@@ -41,7 +41,6 @@
 }
 - (void) loadFile: (NSString*) path;
 - (void) loadContent: (NSString*) aContent;
-- (void) loadClass: (LKSubclass*) class;
 - (void) addCategory: (id)sender;
 - (void) addClass: (id)sender;
 - (void) addMethod: (id)sender;

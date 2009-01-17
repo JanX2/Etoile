@@ -5,43 +5,15 @@
    modify it under the terms of the MIT license. See COPYING.
 */
 
-#include <AppKit/AppKit.h>
-#include <SmalltalkKit/SmalltalkKit.h>
-#include <LanguageKit/LanguageKit.h>
-#include <EtoileUI/EtoileUI.h>
-#include "Controller.h"
-#include "ModelClass.h"
-#include "ModelMethod.h"
-
-@interface LKCompilationUnit (Reflection)
-- (NSMutableArray*) classes;
-@end
-
-@implementation LKCompilationUnit (Reflection)
-- (NSMutableArray*) classes { return classes; }
-@end
-
-@interface LKSubclass (Reflection)
-- (NSString*) classname;
-- (NSMutableArray*) methods;
-- (NSArray*) ivars;
-@end
-
-@implementation LKSubclass (Reflection)
-- (NSString*) classname { return classname; }
-- (NSMutableArray*) methods { return methods; }
-- (NSArray*) ivars { return ivars; }
-@end
-
-@interface LKMethod (Reflection)
-- (LKMessageSend*) signature;
-- (NSMutableArray*) statements;
-@end
-
-@implementation LKMethod (Reflection)
-- (LKMessageSend*) signature { return signature; }
-- (NSMutableArray*) statements { return statements; }
-@end
+#import <AppKit/AppKit.h>
+#import <SmalltalkKit/SmalltalkKit.h>
+#import <LanguageKit/LanguageKit.h>
+#import <EtoileUI/EtoileUI.h>
+#import "Controller.h"
+#import "ModelClass.h"
+#import "ModelMethod.h"
+#import "ASTModel.h"
+#import "ASTTransform.h"
 
 @implementation Controller
 
@@ -68,10 +40,11 @@
 	[self update];
 
 
-	NSString* test = @"NSObject subclass: ETMusicFile [ | a b | run [ a := 'hello'. b := 'plop' ] ]";
+	NSString* test = @"NSObject subclass: CalcEngine [ | a b | run [ a := 'hello'. b := 'plop' ] ]";
 
-	[self loadContent: test];
-	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Developer/Services/CodeMonkey/test.st"];
+	//[self loadContent: test];
+	//[self loadFile: @"/home/nico/svn/etoile/yjchen/Calc/Calc.st"];
+	[self loadFile: @"/home/nico/svn/etoile/Etoile/Developer/Services/CodeMonkey/test.st"];
 	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/ETPlaylist.st"];
 	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/MusicPlayerController.st"];
 	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/MelodieController.st"];
@@ -93,60 +66,35 @@
 	LKAST* ast;
 	NS_DURING
 		ast = [parser parseString: aContent];
-		NSArray* myclasses = [(LKCompilationUnit*)ast classes];
-		for (int i=0; i<[myclasses count]; i++)
+		//[ast visitWithVisitor: [ASTTransform new]];
+		ASTModel* model = [ASTModel new];
+		NSLog (@"*** Model visitor ***");
+		[ast visitWithVisitor: model];
+		NSLog (@"model: <%@>", model);
+		NSMutableDictionary* readClasses = [model classes];
+		NSArray* keys = [readClasses allKeys];
+		for (int i=0; i<[keys count]; i++)
 		{
-			[self loadClass: [myclasses objectAtIndex: i]];
+			NSString* key = [keys objectAtIndex: i];
+			[classes addObject: [readClasses objectForKey: key]];
 		}
+		//[SmalltalkCompiler setDebugMode: YES];
 		[ast compileWith: defaultJIT()];
 		// We create instances so that categories can later be applied
-		for (int i=0; i<[myclasses count]; i++)
+		NSLog(@"all class compiled (%d)", [classes count]);
+		for (int i=0; i<[classes count]; i++)
 		{
-			LKSubclass* aClass = [myclasses objectAtIndex: i];
-			Class theClass = NSClassFromString([aClass classname]);
+			ModelClass* aClass = [classes objectAtIndex: i];
+			Class theClass = NSClassFromString([aClass name]);
+			NSLog (@"new class (%@)", theClass);
 			id obj = [theClass new];
 			[obj release];
 		}
+		[self update];
 	NS_HANDLER
 		NSLog (@"Exception %@", localException);
 	NS_ENDHANDLER
 	[parser release];
-}
-
-- (void) loadClass: (LKSubclass*) class
-{
-	NSLog (@"Loading class %@", [class classname]);
-	ModelClass* aClass = [[ModelClass alloc] initWithName: [class classname]];
-	NSMutableArray* methods = [class methods];
-	for (int i=0; i<[methods count]; i++)
-	{
-		NSMutableString* code = [NSMutableString new];
-		LKMethod* method = [methods objectAtIndex: i];
-		NSString* signature = [[method signature] description];
-		NSMutableArray* statements = [method statements];
-		for (int j=0; j<[statements count]; j++)
-		{
-			[code appendString: [[statements objectAtIndex: j] description]];
-			if (![code hasSuffix: @"."])
-			{
-				[code appendString: @".\n"];
-			}
-		}
-		ModelMethod* aMethod = [ModelMethod new];
-		[aMethod setCode: code];
-		[aMethod setSignature: signature];
-		[aClass addMethod: aMethod];
-		[aMethod release];
-	}
-	NSArray* ivars = [class ivars];
-	for (int i=0; i<[ivars count]; i++)
-	{
-		NSString* ivar = [ivars objectAtIndex: i];
-		[aClass addProperty: ivar];
-	}
-	[classes addObject: aClass];
-	[aClass release];
-	[self update];
 }
 
 - (void) setTitle: (NSString*) title for: (NSTableView*) tv
@@ -198,7 +146,7 @@
 
 - (NSMutableArray*) currentCategory
 {
-	id class = [self currentClass];
+	ModelClass* class = [self currentClass];
 	if (class)
 	{
 		int row = [categoriesList selectedRow];
