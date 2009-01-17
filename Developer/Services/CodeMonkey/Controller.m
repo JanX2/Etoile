@@ -92,7 +92,7 @@
 		}
 		[self update];
 	NS_HANDLER
-		NSLog (@"Exception %@", localException);
+		NSLog (@"Exception %@", [localException reason]);
 	NS_ENDHANDLER
 	[parser release];
 }
@@ -509,7 +509,7 @@
 		[instance run];
 		[instance release];
 		NS_HANDLER
-		NSLog(@"Exception...");
+		NSLog (@"run Exception %@", [localException reason]);
 		NS_ENDHANDLER
 	}
 }
