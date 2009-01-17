@@ -26,8 +26,7 @@
 		[msg addSelectorComponent: @"forKey:"];
 		LKStringLiteral* key = [LKStringLiteral literalFromString: [[exp target] symbol]];
 		[msg addArgument: key];
-		LKDeclRef* _self = [LKDeclRef reference: @"self"];
-		[msg setTarget: _self];
+		[msg setTarget: [LKDeclRef reference: @"self"]];
 		[msg setParent: parent];
 		[msg check];
 		return msg;
