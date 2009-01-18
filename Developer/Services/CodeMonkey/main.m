@@ -14,12 +14,17 @@
 }
 @end
 
+@protocol writer
+- (void) red: (NSString*) str;
+- (void) append: (NSString*) str;
+@end
+
 @interface LKMessageSend (writer)
-- (void) prettyprintToWriter: (id) writer;
+- (void) prettyprintToWriter: (id<writer>) writer;
 @end
 
 @implementation LKMessageSend (writer)
-- (void) prettyprintToWriter: (id) writer
+- (void) prettyprintToWriter: (id<writer>) writer
 {
 	[target prettyprintToWriter: writer];
 	[writer append: @" "];

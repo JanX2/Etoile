@@ -343,7 +343,7 @@
 {
 	if ([self currentClass]) 
 	{
-		NSString* code = [[content textStorage] string];
+		NSMutableAttributedString* code = [content textStorage];
 		if ([code length] > 0)
 		{
 			ModelMethod* aMethod = [ModelMethod new];
@@ -441,7 +441,7 @@
 {
 	if ([self currentClass]) 
 	{
-		NSString* code = [[codeTextView textStorage] string];
+		NSMutableAttributedString* code = [codeTextView textStorage];
 		if ([code length] > 0)
 		{
 			//NSString* signature = [ModelMethod extractSignatureFrom: code];

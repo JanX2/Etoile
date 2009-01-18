@@ -60,7 +60,7 @@
 - (void) parseCode
 {
 	// Extract the signature from the code.
-	NSArray* lines = [code componentsSeparatedByString: @"\n"];
+	NSArray* lines = [[code string] componentsSeparatedByString: @"\n"];
 	if ([lines count] > 0) {
 		NSString* line = [[lines objectAtIndex: 0]
 			stringByTrimmingCharactersInSet:
@@ -124,7 +124,7 @@
 	NSMutableString* representation = [NSMutableString new];
 	[representation appendString: 
 		[NSString stringWithFormat: @"%@ [\n", signature]];
-	[representation appendString: code];
+	[representation appendString: [code string]];
 	[representation appendString: @"\n]\n"];
 	return representation;
 }
