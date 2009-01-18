@@ -59,8 +59,8 @@ NSObject subclass: MelodieController
 	init [
 		| uuid |
 		'EtoileTunesController init' log.
-		ETPlaylist setAutomaticallyMakeNewInstancesPersistent: 1.
-		ETMusicFile setAutomaticallyMakeNewInstancesPersistent: 1.
+		ETPlaylist setAutomaticallyMakeNewInstancesPersistent: true.
+		ETMusicFile setAutomaticallyMakeNewInstancesPersistent: true.
 
 		uuid := (NSUserDefaults standardUserDefaults UUIDForKey: 'MellodieObjectContextUUID').
 		(uuid == nil) ifTrue: [ self newContext. ]
@@ -95,8 +95,8 @@ NSObject subclass: MelodieController
 		| openPanel |
 
 		openPanel := NSOpenPanel openPanel.
-		openPanel setAllowsMultipleSelection: 1.
-		openPanel setCanChooseDirectories: 1.
+		openPanel setAllowsMultipleSelection: true.
+		openPanel setCanChooseDirectories: true.
 		openPanel runModalForTypes: (self KnownExtensions).
 
 		openPanel filenames foreach: [ :path | self addPath: path ].
@@ -147,7 +147,7 @@ NSObject subclass: MelodieController
 		mainContainer setSource: (mainContainer layoutItem).
 		mainContainer layoutItem setRepresentedObject: mainModel.
 		mainContainer setLayout: layout.
-		mainContainer setHasVerticalScroller: 1.
+		mainContainer setHasVerticalScroller: true.
 		mainContainer setTarget: self.
 		mainContainer reloadAndUpdateLayout.
 		mainContainer setDoubleAction: 'doubleClickInContainer:'.
@@ -155,7 +155,7 @@ NSObject subclass: MelodieController
 		playlistContainer setSource: (playlistContainer layoutItem).
 		playlistContainer layoutItem setRepresentedObject: playlistModel.
 		playlistContainer setLayout: (ETOutlineLayout layout).
-		playlistContainer setHasVerticalScroller: 0.
+		playlistContainer setHasVerticalScroller: false.
 		playlistContainer setTarget: self.
 		playlistContainer setDoubleAction: 'doubleClickInContainer:'.
 
@@ -200,6 +200,6 @@ NSObject subclass: MelodieController
 	]
 
 	doubleClickInContainer: sender [
-		musicPlayerController playLayoutItem: (sender doubleClickedItem) start: 1.
+		musicPlayerController playLayoutItem: (sender doubleClickedItem) start: true.
 	]
 ]

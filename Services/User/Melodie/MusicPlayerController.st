@@ -76,8 +76,9 @@ NSObject subclass: MusicPlayerController
 
 		allObjects := layoutItem baseItem itemsIncludingAllDescendants.
 		currentIndex := allObjects indexOfObjectIdenticalTo: layoutItem.
-		newQueue := allObjects subarrayWithLocation: currentIndex
-		                                     length: allObjects count - currentIndex.
+		newQueue := allObjects subarrayWithRange:
+			 (NSValue rangeWithLocation: currentIndex
+			                     length: allObjects count - currentIndex).
 
 		" TODO: rebuild the queue when the playlist is modified. "
 		self syncHistory.
