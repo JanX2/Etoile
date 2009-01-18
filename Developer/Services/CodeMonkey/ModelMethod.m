@@ -94,14 +94,14 @@
 	return documentation;
 }
 
-- (void) setCode: (NSString*) aCode
+- (void) setCode: (NSAttributedString*) aCode
 {
 	[code release];
 	code = [aCode copy];
 //	[self parseCode];
 }
 
-- (NSString*) code
+- (NSAttributedString*) code
 {
 	return code;
 }

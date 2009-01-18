@@ -12,6 +12,10 @@
 #import "ModelClass.h"
 #import "ModelMethod.h"
 
+@interface LKMethod (pretty)
+- (NSMutableAttributedString*) prettyprint;
+@end
+
 @implementation ASTModel
 - (id) init
 {
@@ -33,19 +37,21 @@
 	if ([aNode class] == [LKInstanceMethod class]) 
 	{
 		LKMethod* method = (LKMethod*) aNode;
+		//NSLog(@"pretty: <%@>", [method prettyprint]);	
 		LKSubclass* class = (LKSubclass*) [method parent];
-		NSLog(@"Instance Method: {%@}", [method description]);
-		NSLog(@"Class: (%@)", [class classname]);
-	
+		//NSLog(@"Instance Method: {%@}", [method description]);
+		//NSLog(@"Class: (%@)", [class classname]);
+		//NSLog(@"pretty: <%@>", [class prettyprint]);	
 		ModelClass* aClass = [classes objectForKey: [class classname]];
-		if (aClass == nil) {
+		if (aClass == nil) 
+		{
 			aClass = [[ModelClass alloc] initWithName: [class classname]];
 			[classes setObject: aClass forKey: [class classname]];
 			[aClass autorelease];
 		}
 	
 		ModelMethod* aMethod = [ModelMethod new];
-		[aMethod setCode: [method methodBody]];
+		[aMethod setCode: [method prettyprint]];
 		//[aMethod parseCode];
 		[aMethod setSignature: [[method signature] description]];
 		[aClass addMethod: aMethod];
@@ -56,7 +62,8 @@
 	{
 		LKSubclass* class = (LKSubclass*) aNode;
 		ModelClass* aClass = [classes objectForKey: [class classname]];
-		if (aClass == nil) {
+		if (aClass == nil) 
+		{
 			aClass = [[ModelClass alloc] initWithName: [class classname]];
 			[classes setObject: aClass forKey: [class classname]];
 			[aClass autorelease];

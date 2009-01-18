@@ -1,3 +1,7 @@
+2009-01-18 Nicolas Roard <nicolas@roard.com>
+	* Implemented a partial syntax highlighting / formatting
+	  (based on guenther's PrettyPrint.st code)
+
 2009-01-17 Nicolas Roard <nicolas@roard.com>
 	* Refactored the code to use the new visitor code that David committed today.
 	  We now use ASTModel (a visitor) to extract the info from the ast

@@ -14,7 +14,7 @@
 	ModelClass* class;
 	NSString* signature;
 	NSString* documentation;
-	NSString* code;
+	NSAttributedString* code;
 	NSMutableString* content;
 	NSString* category;
 }
@@ -25,8 +25,8 @@
 - (NSString*) signature;
 - (void) setDocumentation: (NSString*) aDocumentation;
 - (NSString*) documentation;
-- (void) setCode: (NSString*) aCode;
-- (NSString*) code;
+- (void) setCode: (NSAttributedString*) aCode;
+- (NSAttributedString*) code;
 - (void) setCategory: (NSString*) aCategory;
 - (NSString*) category;
 - (NSString*) representation;

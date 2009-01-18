@@ -40,11 +40,11 @@
 	[self update];
 
 
-	NSString* test = @"NSObject subclass: CalcEngine [ | a b | run [ a := 'hello'. b := 'plop' ] ]";
+	NSString* test = @"NSObject subclass: CalcEngine [ | a b | run [ | c | a := 'hello'. b := 'plop'. \"test...\" c := a. ] ]";
 
-	//[self loadContent: test];
+	[self loadContent: test];
 	//[self loadFile: @"/home/nico/svn/etoile/yjchen/Calc/Calc.st"];
-	[self loadFile: @"/home/nico/svn/etoile/Etoile/Developer/Services/CodeMonkey/test.st"];
+	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Developer/Services/CodeMonkey/test.st"];
 	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/ETPlaylist.st"];
 	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/MusicPlayerController.st"];
 	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/MelodieController.st"];
@@ -203,10 +203,11 @@
 	[propertiesList sizeToFit];
         if ([self currentMethod])
 	{
-		NSString* code = [[self currentMethod] code];
-		NSAttributedString* string = [[NSMutableAttributedString alloc] initWithString: code];
-		[[codeTextView textStorage] setAttributedString: string];
-		[string release];
+		NSAttributedString* code = [[self currentMethod] code];
+		//NSAttributedString* string = [[NSMutableAttributedString alloc] initWithString: code];
+		//[[codeTextView textStorage] setAttributedString: string];
+		[[codeTextView textStorage] setAttributedString: code];
+		//[string release];
 		NSString* signature = [[self currentMethod] signature];
 		[signatureTextField setStringValue: signature];
 	}
