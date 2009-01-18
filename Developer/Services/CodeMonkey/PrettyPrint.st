@@ -1,4 +1,13 @@
 
+NSFont extend [
+	italic [
+		| fm |
+		fm := NSFontManager sharedFontManager.
+		ETTranscript show: 'trait: '; show: @NSItalicFontMask; cr.
+		^ fm convertFont: self toHaveTrait: @NSItalicFontMask.
+	]
+]
+
 LKAST extend [
     prettyprint [
 	| writer |
