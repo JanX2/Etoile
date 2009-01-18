@@ -1,4 +1,9 @@
 2009-01-18 Nicolas Roard <nicolas@roard.com>
+ 	Refactoring...
+	* split the LK* categories with the pretty printer in two smalltalk files
+	* some modifications in the pretty printer
+
+2009-01-18 Nicolas Roard <nicolas@roard.com>
 	* Moves the NSFont -italic category from main.m to PrettyPrint.st
 
 2009-01-18 Nicolas Roard <nicolas@roard.com>

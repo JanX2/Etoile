@@ -5,7 +5,8 @@
 int main (int argc, char** argv)
 {
 	NSAutoreleasePool* pool = [NSAutoreleasePool new];
-	[SmalltalkCompiler loadApplicationScriptNamed: @"PrettyPrint"];
+	[SmalltalkCompiler loadApplicationScriptNamed: @"PrettyPrintWriter"];
+	[SmalltalkCompiler loadApplicationScriptNamed: @"PrettyPrintCategories"];
 	[pool release];
 	return NSApplicationMain(argc, (const char**) argv);
 }

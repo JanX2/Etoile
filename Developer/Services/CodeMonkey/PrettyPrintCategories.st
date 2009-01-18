@@ -3,7 +3,6 @@ NSFont extend [
 	italic [
 		| fm |
 		fm := NSFontManager sharedFontManager.
-		ETTranscript show: 'trait: '; show: @NSItalicFontMask; cr.
 		^ fm convertFont: self toHaveTrait: @NSItalicFontMask.
 	]
 ]
@@ -11,7 +10,7 @@ NSFont extend [
 LKAST extend [
     prettyprint [
 	| writer |
-	writer := IndentedWriter new.
+	writer := PrettyPrintWriter new.
 	self prettyprintToWriter: writer.
 	^ writer value
     ]
@@ -98,11 +97,11 @@ LKMethod extend [
 	"writer indent: ["
 	    "Print local variables"
 	    (symbols locals count > 0) ifTrue: [
-	        writer append: '| '.
+	        writer localVariableToken: '| '.
 	        symbols locals do: [ :symbol |
-		    writer italic: symbol; append: ' '.
+		    writer localVariableToken: symbol; append: ' '.
 		].
-		writer append: '|'; cr.
+		writer localVariableToken: '|'; cr.
 	    ].
 	    "Print statements"
 	    statements do: [ :stmt |
@@ -150,7 +149,7 @@ LKAssignExpr extend [
 
 LKStringLiteral extend [
     prettyprintToWriter: writer [
-        writer green: self description.
+        writer stringToken: self description.
     ]
 ]
 
@@ -161,7 +160,7 @@ LKDeclRef extend [
 		writer bold: self description.
 	] ifFalse: [
 	 	((symbols scopeOfSymbol: symbol) = 4) ifTrue: [
-			writer italic: self description.
+			writer localVariableToken: self description.
 		] ifFalse: [
 			writer append: self description.
 		]
@@ -182,114 +181,3 @@ LKBlockExpr extend [
     ]
 ]
 
-NSObject subclass: IndentedWriter [
-    | buffer indent termred termgreen termblue atstart attrs s |
-    
-    init [
-	"XXX How can I make -init return nil without nonlocal returns
-	and without assigning to self?"
-        super init == nil ifFalse: [
-	    buffer := NSMutableAttributedString new.
-	    indent := 0.
-	    termred := NSColor redColor.
-	    termgreen := NSColor greenColor.
-	    termblue := NSColor blueColor.
-	    "We begin at the start of a line."
-	    atstart := true.
-	].
-	^ self.
-    ]
-    
-    append: str [
-        atstart ifTrue: [
-            indent timesRepeat: [
-	        buffer appendAttributedString: 
-			(NSMutableAttributedString alloc initWithString: ' ').
-	    ].
-	].
-	buffer appendAttributedString: 
-		(NSMutableAttributedString alloc initWithString: str).
-	atstart := false.
-    ]
-
-    cr [
-	buffer appendAttributedString: 
-		(NSMutableAttributedString alloc initWithString: '\n').
-	atstart := true.
-    ]
-    
-    red: str [
-	self write: str withColor: termred.
-    ]
-    
-    green: str [
-	self write: str withColor: termgreen.
-    ]
-    
-    blue: str [
-	self write: str withColor: termblue.
-    ]
-
-    bold: str [
-	attrs := NSMutableDictionary new.
-	attrs setObject: (NSFont boldSystemFontOfSize: 12) forKey: 'NSFontAttributeName'.
-	s := NSMutableAttributedString alloc initWithString: str attributes: attrs.
-	buffer appendAttributedString: s.
-	s release.
-    ]
-
-    italic: str [
-	| font |
-	font := (NSFont systemFontOfSize: 12) italic.
-	attrs := NSMutableDictionary new.
-	attrs setObject: font forKey: 'NSFontAttributeName'.
-	s := NSMutableAttributedString alloc initWithString: str attributes: attrs.
-	buffer appendAttributedString: s.
-	s release.
-    ]
-
-    write: str withColor: color [
-        atstart ifTrue: [
-            indent timesRepeat: [
-	        buffer appendAttributedString: 
-			(NSMutableAttributedString alloc initWithString: ' ').
-	    ].
-	].
-	attrs := NSMutableDictionary new.
-	attrs setObject: color forKey: 'NSForegroundColorAttributeName'.
-	s := NSMutableAttributedString alloc initWithString: str attributes: attrs.
-	buffer appendAttributedString: s.
-	s release.
-	atstart := false.
-    ]
-    
-    inColor: color write: block [
-        "self append: color."
-	block value.
-    ]
-    
-    indent: block [
-	indent := indent + 4.
-	block value.
-	indent := indent - 4.
-    ]
-    
-    value [
-	^ buffer
-    ]
-]
-
-NSObject subclass: SmalltalkTool [
-    filename [
-	^ 'test.st'
-    ]
-    
-    run [
-	| ast program parser |
-	1 to: 3 do: [:x| ETTranscript show: 'plop: '; show: x; cr. ].
-	program := NSString stringWithContentsOfFile: self filename.
-	parser := SmalltalkParser new.
-	ast := parser parseString: program.
-	ETTranscript show: ast prettyprint; cr.
-    ]
-]
