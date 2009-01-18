@@ -1,10 +1,11 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import <AppKit/AppKit.h>
-#import <SmalltalkKit/SmalltalkKit.h>
+#import <LanguageKit/LanguageKit.h>
 
 void load(NSString *file) {
 	NSLog(@"Loading %@", file);
-	[SmalltalkCompiler loadApplicationScriptNamed:file];
+	[[LKCompiler compilerForLanguage:@"Smalltalk"] 
+		loadApplicationScriptNamed:file];
 }
 
 int main(int argc, char **argv)
