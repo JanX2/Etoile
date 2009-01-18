@@ -106,55 +106,28 @@ LKMethod extend [
 ]
 
 LKMessageSend extend [
-    xxxprettyprintToWriter: writer [
+    prettyprintToWriter: writer [
 	| sel |
 	target prettyprintToWriter: writer.
 	writer append: ' '.
-	sel := selector componentsSeparatedByString: ':'.
-	ETTranscript show: 'selector: '; show: selector.
-	ETTranscript show: ' nb: '; show: sel count; cr.
-	0 to: sel count do: [:x|
-		ETTranscript show: x; cr.
-		(x < sel count) ifTrue: [
-			ETTranscript show: x; show: ' '; show: (sel objectAtIndex: x); cr.
-		]
-	].
-	ETTranscript show: 'done iterating.'.
-	sel count = 1 ifTrue: [
-		writer append: selector.
-	] ifFalse: [
-		ETTranscript show: 'sel: '; show: 0; cr.
-		writer append: (sel objectAtIndex: 0).
-	].
-	1 to: arguments count do: [ :i |
-		ETTranscript show: 'args: '; show: i; cr.
-		ETTranscript show: 'sel count: '; show: sel count; cr.
-		ETTranscript show: 'args count: '; show: arguments count; cr.
-		(i < sel count) ifTrue: [
-			writer append: ' '.
-			writer append: (sel objectAtIndex: i).
-		].
-		writer append: ':'.
-		writer append: (arguments objectAtIndex: i).
-	]
-    ]
-    xxprettyprintToWriter: writer [
-        | sel |
-	"Debugging"
-	writer append: '(msgsend '.
-	
 	sel = selector componentsSeparatedByString: ':'.
-	"XXX: This comparison doesn't work."
-	sel count = 1 ifTrue: [
-	    writer green: [ writer append: selector. ].
+	(sel count == 1) ifTrue: [
+		writer red: selector.
 	] ifFalse: [
-	    "XXX: Keyword messages not done yet, looping with
-	    integers is hard at the moment."
-	    writer red: [ writer append: self description. ].
+		writer red: (sel objectAtIndex: 0).
 	].
-	
-	"Debugging"
-	writer append: ')'.
+	(arguments count > 0) ifTrue: [
+		writer red: ' '.
+		(arguments objectAtIndex: 0) prettyprintToWriter: writer.
+	].
+	1 to: ((arguments count) - 1) do: [:i|
+		(i < (sel count)) ifTrue: [
+			writer append: ' '.
+			writer red: (sel objectAtIndex: i).
+		].
+		writer red: ' '.
+		(arguments objectAtIndex: i) prettyprintToWriter: writer.
+	]
     ]
 ]
 

@@ -1,4 +1,7 @@
 2009-01-18 Nicolas Roard <nicolas@roard.com>
+	* Moves the LKMessageSend -prettyprintToWriter to PrettyPrint.st
+
+2009-01-18 Nicolas Roard <nicolas@roard.com>
 	* Implemented a partial syntax highlighting / formatting
 	  (based on guenther's PrettyPrint.st code)
 
