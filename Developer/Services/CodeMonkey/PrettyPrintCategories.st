@@ -114,7 +114,7 @@ LKMethod extend [
 ]
 
 LKMessageSend extend [
-    prettyprintToWriter: writer [
+    xxprettyprintToWriter: writer [
 	| sel |
 	target prettyprintToWriter: writer.
 	writer append: ' '.
