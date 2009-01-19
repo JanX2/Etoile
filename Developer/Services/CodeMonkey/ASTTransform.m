@@ -6,7 +6,6 @@
 */
 
 #import <AppKit/AppKit.h>
-#import <SmalltalkKit/SmalltalkKit.h>
 #import <LanguageKit/LanguageKit.h>
 #import "ASTTransform.h"
 #import "ModelClass.h"

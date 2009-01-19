@@ -1,3 +1,9 @@
+2009-01-19 Nicolas Roard <nicolas@roard.com>
+	Make CodeMonkey work with the new LK organisation (without SmalltalkKit)
+	* wrote a loading function in main.m
+	* modified files to remove SmalltalkKit includes
+	* remove use of SmalltalkCompiler
+
 2009-01-18 Nicolas Roard <nicolas@roard.com>
  	Refactoring...
 	* split the LK* categories with the pretty printer in two smalltalk files

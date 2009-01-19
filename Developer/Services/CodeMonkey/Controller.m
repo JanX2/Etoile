@@ -6,7 +6,6 @@
 */
 
 #import <AppKit/AppKit.h>
-#import <SmalltalkKit/SmalltalkKit.h>
 #import <LanguageKit/LanguageKit.h>
 #import <EtoileUI/EtoileUI.h>
 #import "Controller.h"
@@ -48,7 +47,7 @@
 	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/ETPlaylist.st"];
 	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/MusicPlayerController.st"];
 	//[self loadFile: @"/home/nico/svn/etoile/Etoile/Services/User/Melodie/MelodieController.st"];
-	//[SmalltalkCompiler compileString: test];
+	//[LKCompiler compileString: test];
 	//id obj = [NSClassFromString(@"Test") new];
 	//NSLog (@"ivars: %@", [obj instanceVariableNames]);
 	//[obj inspect: self];
@@ -62,7 +61,7 @@
 
 - (void) loadContent: (NSString*) aContent
 {
-	id parser = [[SmalltalkCompiler parser] new];
+	id parser = [[[LKCompiler compilerForExtension: @"st"] parser] new];
 	LKAST* ast;
 	NS_DURING
 		ast = [parser parseString: aContent];
@@ -72,13 +71,15 @@
 		[ast visitWithVisitor: model];
 		NSLog (@"model: <%@>", model);
 		NSMutableDictionary* readClasses = [model classes];
+		NSLog (@"classes: <%@>", readClasses);
 		NSArray* keys = [readClasses allKeys];
 		for (int i=0; i<[keys count]; i++)
 		{
 			NSString* key = [keys objectAtIndex: i];
 			[classes addObject: [readClasses objectForKey: key]];
 		}
-		//[SmalltalkCompiler setDebugMode: YES];
+		//[LKCompiler setDebugMode: YES];
+		NSLog (@"reay to compile %@", classes);
 		[ast compileWith: defaultJIT()];
 		// We create instances so that categories can later be applied
 		NSLog(@"all class compiled (%d)", [classes count]);
@@ -482,7 +483,7 @@
 			NSLog (@"Class representation: <%@>", representation);
 			if (NSClassFromString([class name]) == nil)
 			{
-				if (![SmalltalkCompiler compileString: representation])
+				if (![[LKCompiler compilerForLanguage: @"Smalltalk"] compileString: representation])
 				{
 					NSLog(@"error while compiling");
 				}
@@ -491,7 +492,7 @@
 			{
 				NSString* dynamic = [class dynamicRepresentation];
 				NSLog (@"dynamic compile <%@>", dynamic);
-				if (![SmalltalkCompiler compileString: dynamic])
+				if (![[LKCompiler compilerForLanguage: @"Smalltalk"] compileString: dynamic])
 				{
 					NSLog(@"error while compiling dynamically");
 				}

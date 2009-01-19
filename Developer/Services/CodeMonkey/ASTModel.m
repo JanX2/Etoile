@@ -6,7 +6,6 @@
 */
 
 #import <AppKit/AppKit.h>
-#import <SmalltalkKit/SmalltalkKit.h>
 #import <LanguageKit/LanguageKit.h>
 #import "ASTModel.h"
 #import "ModelClass.h"
@@ -41,7 +40,7 @@
 		LKSubclass* class = (LKSubclass*) [method parent];
 		//NSLog(@"Instance Method: {%@}", [method description]);
 		//NSLog(@"Class: (%@)", [class classname]);
-		//NSLog(@"pretty: <%@>", [class prettyprint]);	
+		NSLog(@"pretty: <%@>", [method prettyprint]);	
 		ModelClass* aClass = [classes objectForKey: [class classname]];
 		if (aClass == nil) 
 		{
@@ -77,7 +76,7 @@
 	}
 	else
 	{
-		//NSLog (@"node <%@> (%@)", aNode, [aNode class]);
+		NSLog (@"node <%@> (%@)", aNode, [aNode class]);
 	}
 
 	return aNode;
