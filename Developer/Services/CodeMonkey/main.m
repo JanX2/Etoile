@@ -2,7 +2,7 @@
 #import <LanguageKit/LanguageKit.h>
 
 @protocol writer
-- (void) red: (NSString*) str;
+- (void) selectorToken: (NSString*) str;
 - (void) append: (NSString*) str;
 @end
 
@@ -18,16 +18,16 @@
 	NSArray* sel = [[selector description] componentsSeparatedByString: @":"];
 	if ([sel count] == 1)	
 	{
-		[writer red: [selector description]];
+		[writer selectorToken: [selector description]];
 	}
 	else
 	{
-		[writer red: [sel objectAtIndex: 0]];
+		[writer selectorToken: [sel objectAtIndex: 0]];
 	}
 	NSLog (@"<%@>(%d)", selector, [arguments count]);
 	if ([arguments count])
 	{
-		[writer red: @": "];
+		[writer selectorToken: @": "];
 		[[arguments objectAtIndex: 0] prettyprintToWriter: writer];
 		//[writer append: [[arguments objectAtIndex: 0] description]];
 	}
@@ -36,9 +36,9 @@
 		if (i < [sel count])
 		{
 			[writer append: @" "];
-			[writer red: [sel objectAtIndex: i]];
+			[writer selectorToken: [sel objectAtIndex: i]];
 		}
-		[writer red: @": "];
+		[writer selectorToken: @": "];
 		//[writer append: [[arguments objectAtIndex: i] description]];
 		[[arguments objectAtIndex: i] prettyprintToWriter: writer];
 	}	 

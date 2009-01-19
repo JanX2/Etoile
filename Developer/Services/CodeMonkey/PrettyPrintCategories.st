@@ -40,7 +40,7 @@ LKIfStatement extend [
 
 LKComment extend [
     prettyprintToWriter: writer [
-	writer blue: self description.
+	writer commentToken: self description.
     ]
 ]
 
@@ -52,6 +52,14 @@ LKCompilationUnit extend [
 	categories do: [ :category |
 	    category prettyprintToWriter: writer.
 	].
+    ]
+]
+
+LKCompare extend [
+    prettyprintToWriter: writer [
+	lhs prettyprintToWriter: writer.
+	writer append: ' = '.
+	rhs prettyprintToWriter: writer.
     ]
 ]
 

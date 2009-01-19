@@ -5,6 +5,11 @@ NSMutableAttributedString extend [
 	range := (NSValue rangeWithLocation: 0 length: self length).
 	self addAttribute: name value: attribute range: range.
     ]
+    setAttributes: attributes [
+	| range |
+	range := (NSValue rangeWithLocation: 0 length: self length).
+	self setAttributes: attributes range: range.
+    ]
 ]
 
 NSObject subclass: PrettyPrintWriter [
@@ -66,6 +71,27 @@ NSObject subclass: PrettyPrintWriter [
 	self write: str withColor: termblue.
     ]
 
+    commentToken: str [
+	| s font color |
+	s := self makeString: str.
+	font := (NSFont systemFontOfSize: textSize) italic.
+	color := (NSColor blueColor).
+	s addAttribute: 'NSForegroundColorAttributeName' value: color.
+	s addAttribute: 'NSFontAttributeName' value: font.
+	self appendString: s.
+    ]
+
+
+    selectorToken: str [
+	| s font color |
+	s := self makeString: str.
+	font := (NSFont systemFontOfSize: textSize).
+	color := (NSColor darkGrayColor).
+	s addAttribute: 'NSForegroundColorAttributeName' value: color.
+	s addAttribute: 'NSFontAttributeName' value: font.
+	self appendString: s.
+    ]
+
     stringToken: str [
 	| s font color |
 	s := self makeString: str.
@@ -88,7 +114,7 @@ NSObject subclass: PrettyPrintWriter [
 
     bold: str [
 	| s font |
-	font := (NSFont boldSystemFontOfSize: textSize) italic.
+	font := NSFont boldSystemFontOfSize: textSize.
 	s := self makeString: str.
 	s addAttribute: 'NSFontAttributeName' value: font.
 	self appendString: s.

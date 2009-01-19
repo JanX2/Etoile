@@ -1,4 +1,9 @@
 2009-01-19 Nicolas Roard <nicolas@roard.com>
+	Improve syntax highlighting
+	* add new 'token' methods in PrettyPrinterWriter
+	* add category on LKCompare in PrettyPrinterCategories
+
+2009-01-19 Nicolas Roard <nicolas@roard.com>
 	Revert changes from r4269 (LKMessageSend prettyprint method in objc)
 
 2009-01-19 Nicolas Roard <nicolas@roard.com>
