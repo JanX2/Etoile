@@ -75,7 +75,7 @@ NSObject subclass: PrettyPrintWriter [
 	| s font color |
 	s := self makeString: str.
 	font := (NSFont systemFontOfSize: textSize) italic.
-	color := (NSColor blueColor).
+	color := (NSColor colorWithCalibratedRed: '0.0' green: '0.0' blue: '0.4' alpha: '1.0').
 	s addAttribute: 'NSForegroundColorAttributeName' value: color.
 	s addAttribute: 'NSFontAttributeName' value: font.
 	self appendString: s.
@@ -86,7 +86,7 @@ NSObject subclass: PrettyPrintWriter [
 	| s font color |
 	s := self makeString: str.
 	font := (NSFont systemFontOfSize: textSize).
-	color := (NSColor darkGrayColor).
+	color := (NSColor colorWithCalibratedRed: '0.3' green: '0.1' blue: '0.1' alpha: '1.0').
 	s addAttribute: 'NSForegroundColorAttributeName' value: color.
 	s addAttribute: 'NSFontAttributeName' value: font.
 	self appendString: s.
