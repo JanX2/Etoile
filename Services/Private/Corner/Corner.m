@@ -1,6 +1,7 @@
-#import <Corner.h>
-#import <SmalltalkKit/SmalltalkKit.h>
+#import <EtoileFoundation/EtoileFoundation.h>
+#import <LanguageKit/LKCompiler.h>
 #import <ScriptKit/ScriptCenter.h>
+#import "Corner.h"
 #include <math.h>
 
 
@@ -83,16 +84,17 @@
  */
 - (void) loadScripts:(id)ignore
 {
+	id compiler = [[LKCompiler compilerForLanguage:@"Smalltalk"] compiler];
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
 	NSString *scripts = [defaults stringForKey:@"CornerScript"];
 	if (scripts && ![scripts isEqualToString:@""])
 	{
-		[SmalltalkCompiler compileString:scripts];
+		[compiler compileString:scripts];
 	}
 	NSArray *gscripts = [defaults arrayForKey:@"GestureScripts"];
 	FOREACH(gscripts, script, NSString*)
 	{
-		[SmalltalkCompiler compileString:script];
+		[compiler compileString:script];
 	}
 	NSDictionary *actions = [defaults dictionaryForKey:@"GestureScripts"];
 	[gestureActions removeAllObjects];

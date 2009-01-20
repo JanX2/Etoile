@@ -1,6 +1,6 @@
 #import <AppKit/AppKit.h>
 #import <EtoileFoundation/EtoileFoundation.h>
-#import <SmalltalkKit/SmalltalkKit.h>
+#import <LanguageKit/LKCompiler.h>
 
 @interface SmalltalkService : NSObject {}
 - (NSString*) serviceName;
@@ -192,6 +192,7 @@ NSLog(@"Waiting Result...");
 		}
 	}
 
+	id compiler = [[LKCompiler compilerForLanguage:@"Smalltalk"] compiler];
 	e = [allScripts objectEnumerator];
 	p = nil;
 	while ((p = [e nextObject]))
@@ -203,7 +204,7 @@ NSLog(@"Waiting Result...");
 				[NSString stringWithContentsOfFile: p];
 			NS_DURING
 				NSLog(@"Compiling %@", Program);
-				[SmalltalkCompiler compileString:Program];
+				[compiler compileString:Program];
 			NS_HANDLER
 				NSLog(@"Exception compiling %@: %@", p, localException);
 			NS_ENDHANDLER

@@ -7,7 +7,7 @@ APP_NAME = OverlayShelf
 $(APP_NAME)_OBJC_FILES = $(wildcard *.m)
 $(APP_NAME)_PRINCIPAL_CLASS = ETApplication
 $(APP_NAME)_RESOURCE_FILES = $(wildcard *.st) $(wildcard *.jpg) stamp.png
-$(APP_NAME)_GUI_LIBS = -lEtoileFoundation -lCoreObject -lEtoileUI -lSmalltalkKit -lSmalltalkSupport -lLanguageKit -lScriptKit
+$(APP_NAME)_GUI_LIBS = -lEtoileFoundation -lCoreObject -lEtoileUI -lSmalltalkSupport -lLanguageKit -lScriptKit
 
 # CoreObject
 ADDITIONAL_INCLUDE_DIRS += -I`pg_config --includedir`

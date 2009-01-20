@@ -44,7 +44,7 @@ LKComment extend [
     ]
 ]
 
-LKCompilationUnit extend [
+LKModule extend [
     prettyprintToWriter: writer [
 	classes do: [ :class |
 	    class prettyprintToWriter: writer.
