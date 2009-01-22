@@ -5,7 +5,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 BUNDLE_NAME = EtoileBehavior
 
 $(BUNDLE_NAME)_OBJC_FILES=$(wildcard *.m)
-$(BUNDLE_NAME)_PRINCIPAL_CLASS = NSObject
+$(BUNDLE_NAME)_PRINCIPAL_CLASS = ETScriptLoader
 
 $(BUNDLE_NAME)_RESOURCE_FILES=\
 $(filter-out Resources/CVS, $(wildcard Resources/*)) \
