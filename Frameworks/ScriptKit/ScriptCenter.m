@@ -3,6 +3,8 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 
 static ScriptCenter *sharedInstance;
+static NSConnection *theConnection;
+
 @implementation ScriptCenter 
 + (void) initialize
 {
@@ -21,8 +23,10 @@ static ScriptCenter *sharedInstance;
 		[dict setObject:NSApp forKey:@"Application"];
 	}
 
-	NSConnection *theConnection;
-	theConnection = [NSConnection defaultConnection];
+	if (nil == theConnection)
+	{
+		theConnection = [[NSConnection alloc] init];
+	}
 	[theConnection setRootObject:dict];
 	NSString *name = [NSString stringWithFormat:@"Etoile/%@/Scripts",
 			 [[NSProcessInfo processInfo] processName]];
