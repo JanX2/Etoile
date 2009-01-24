@@ -2,6 +2,8 @@
 	Use pretty print in the text editor while editing...
 	* build an AST from the text
 	* call the pretty-printer on the AST
+	* fix the pretty-print of the comments (don't add a dot)
+	* removed the automatic compilation for now
 
 2009-01-19 Nicolas Roard <nicolas@roard.com>
 	Improve syntax highlighting
