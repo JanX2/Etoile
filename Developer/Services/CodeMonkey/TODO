@@ -12,7 +12,8 @@ CodeMonkey TODO
  -  Provide workspace
  -  Debugging support
  -  Unit tests integration
- -  Write a better editor (colorization, etc.)
+(X) Add syntax highlighting and pretty-printer
+    Note: should be upated to use LKToken when ready.
  -  Implement automatic documentation generation
  -  Implement refactoring tools
  -  SVN integration
