@@ -36,6 +36,10 @@
   id categoryDocTextView;
   id classDocTextView;
   NSView* currentView;
+  BOOL doingPrettyPrint;
+  BOOL newStatement;
+  BOOL quotesOpened;
+  NSUInteger cursorPosition;
 
   NSMutableArray* classes;
 }

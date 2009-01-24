@@ -85,7 +85,7 @@ NSObject subclass: PrettyPrintWriter [
     selectorToken: str [
 	| s font color |
 	s := self makeString: str.
-	font := (NSFont systemFontOfSize: textSize).
+	font := (NSFont boldSystemFontOfSize: textSize).
 	color := (NSColor colorWithCalibratedRed: '0.3' green: '0.1' blue: '0.1' alpha: '1.0').
 	s addAttribute: 'NSForegroundColorAttributeName' value: color.
 	s addAttribute: 'NSFontAttributeName' value: font.

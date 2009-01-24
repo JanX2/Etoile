@@ -34,12 +34,16 @@
 
 	[self setTitle: @"Properties" for: propertiesList];
 	[codeTextView setTextContainerInset: NSMakeSize(8,8)];
+	[codeTextView setDelegate: self];
 
+	doingPrettyPrint = NO;
+	newStatement = NO;
+	quotesOpened = NO;
 	[self showClassDetails];
 	[self update];
 
 
-	NSString* test = @"NSObject subclass: CalcEngine [ | a b | run [ | c | a := 'hello'. b := 'plop'. \"test...\" c := a. ] ]";
+	NSString* test = @"NSObject subclass: CalcEngine [ | a b | run [ | c | a := 'hello'. b := 'plop'. c := a. ] ]";
 
 	[self loadContent: test];
 	//[self loadFile: @"/home/nico/svn/etoile/yjchen/Calc/Calc.st"];
@@ -79,6 +83,7 @@
 			[classes addObject: [readClasses objectForKey: key]];
 		}
 		//[LKCompiler setDebugMode: YES];
+		/*
 		NSLog (@"reay to compile %@", classes);
 		[ast compileWith: defaultJIT()];
 		// We create instances so that categories can later be applied
@@ -91,6 +96,7 @@
 			id obj = [theClass new];
 			[obj release];
 		}
+		*/
 		[self update];
 	NS_HANDLER
 		NSLog (@"Exception %@", [localException reason]);
@@ -447,13 +453,25 @@
 		{
 			//NSString* signature = [ModelMethod extractSignatureFrom: code];
 			//if ([signature isEqualToString: [[self currentMethod] signature]])
+
 			
 			NSString* signature = [signatureTextField stringValue];
 			NSLog (@"save (%@) <%@>", signature, code);
+
+			id compiler = [LKCompiler compilerForExtension: @"st"];
+			id parser = [[[compiler parser] new] autorelease];
+			NSLog (@"compiler %@", compiler);
+			NSString* toParse = [NSString stringWithFormat: @"%@ [ %@ ]", signature, [code string]];
+			NSLog(@"to parse: <%@>", toParse);
+			NS_DURING
+			LKAST* methodAST = [parser parseMethod: toParse];
+			NSLog (@"method AST: %@", methodAST);
+			NSLog (@"pretty print: %@", [[methodAST prettyprint] stringValue]);
+
 			if ([[self currentClass] hasMethodWithSignature: signature])
 			{
 				ModelMethod* method = [[self currentClass] methodWithSignature: signature];
-				[method setCode: code];
+				[method setCode: [methodAST prettyprint]];
 				//[[self currentMethod] setCode: code];
 			}
 			else // we add a new method
@@ -468,13 +486,17 @@
 				[aMethod release];
 			}
 			[self update];
+			NS_HANDLER
+			NSLog (@"parse error...");
+			NS_ENDHANDLER
 		}
 	}
 	
 	//Class myClass = NSClassFromString(@"MyTest");
 	//NSLog (@"in save, class MyTest: %@", myClass);
 	//NSLog (@"in save, class MyTest: %@ (%@)", myClass, myClass->super_class);
-	for (int i=0; i<[classes count]; i++)
+/*
+        for (int i=0; i<[classes count]; i++)
 	{
 		ModelClass* class = [classes objectAtIndex: i];
 		if ([[class methods] count] > 0) 
@@ -499,6 +521,7 @@
 			}
 		}
 	}
+*/
 }
 
 - (void) runClass: (id) sender
@@ -519,6 +542,102 @@
 - (void) setStatus: (NSString*) text
 {
 	[statusTextField setStringValue: text];
+}
+
+- (void) prettyPrint
+{
+	if ([self currentClass]) 
+	{
+		NSMutableAttributedString* code = [codeTextView textStorage];
+		if ([code length] > 0)
+		{
+			NSString* signature = [signatureTextField stringValue];
+			id compiler = [LKCompiler compilerForExtension: @"st"];
+			id parser = [[[compiler parser] new] autorelease];
+			NSString* toParse = [NSString stringWithFormat: @"%@ [ %@ ]", signature, [code string]];
+			NS_DURING
+				LKAST* methodAST = [parser parseMethod: toParse];
+
+				if ([[self currentClass] hasMethodWithSignature: signature])
+				{
+					ModelMethod* method = [[self currentClass] methodWithSignature: signature];
+					[method setCode: [methodAST prettyprint]];
+				}
+				else // we add a new method
+				{
+					// TODO: refactor addMethod
+					// FIXME: there is a crash if sig but no body
+					ModelMethod* aMethod = [ModelMethod new];
+					[aMethod setCode: code];
+					[aMethod setSignature: signature];
+					[aMethod setCategory: [self currentCategoryName]];
+					[[self currentClass] addMethod: aMethod];
+					[aMethod release];
+				}
+				[self update];
+				[self setStatus: @"Valid code"];
+			NS_HANDLER
+				[self setStatus: @"Invalid code"];
+			NS_ENDHANDLER
+		}
+	}
+}
+
+- (void) textDidChange: (NSNotification*) aNotification
+{
+	if (doingPrettyPrint) {
+		[self prettyPrint];
+		doingPrettyPrint = NO;
+		NSUInteger index = [[codeTextView textStorage] length] - cursorPosition;
+		NSRange range = NSMakeRange(index, 0);
+		[codeTextView setSelectedRange: range];
+		if (newStatement) {
+			NSMutableDictionary* attributes = [NSMutableDictionary new];
+			[attributes setObject: [NSFont systemFontOfSize: 16] forKey: @"NSFontAttributeName"];
+			[attributes setObject: [NSColor blackColor] forKey: @"NSForegroundColorAttributeName"];
+			NSMutableAttributedString* rc = [[NSMutableAttributedString alloc]
+				initWithString: @"\n" attributes: attributes];
+			[[codeTextView textStorage] insertAttributedString: rc atIndex: index];
+			[rc release];
+			[attributes release];
+			//	[[[NSMutableAttributedString alloc] initWithString: @"\n"] autorelease]
+			//	atIndex: index];
+			newStatement = NO;
+		}
+		if (quotesOpened) {
+			quotesOpened = NO;
+		}
+	}
+}
+
+- (BOOL) textView: (NSTextView*) aTextView shouldChangeTextInRange: (NSRange) affectedRange replacementString: (NSString*) replacementString
+{
+	// Rather inefficient pretty-printer -- for every text modification, we parse the
+	// entire content of the text view and we pretty-print the resulting AST (if valid).
+	// We only call the pretty-printer when we insert a dot or hit return.
+	//
+	// TODO: When we'll have the LKToken pointing to the original text, we could use those
+	// instead of using a string directly derivated from the AST.
+	//
+	BOOL quote = NO;
+	if ([replacementString isEqualToString: @"\n"]) {
+		newStatement = YES;
+	}
+	if ([replacementString isEqualToString: @"\""]) 
+	{
+		if (quotesOpened = NO)
+			quotesOpened = YES;
+		quote = YES;
+	}
+	if (newStatement || quote || [replacementString isEqualToString: @"."]) {
+  		doingPrettyPrint = YES;
+		NSUInteger length = [[codeTextView textStorage] length];
+		// we store the cursor position, counting from the end of the string...
+		// this way even if the reformatting insert new characters, we will 
+		// still be able to set the cursor at the right position.
+		cursorPosition = length - (affectedRange.location + affectedRange.length);
+	}
+	return YES;
 }
 
 @end

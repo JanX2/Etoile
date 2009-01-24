@@ -51,7 +51,7 @@ void loadScript(NSString* name) {
                 NSLog(@"Unable to find %@.%@ in bundle %@.", name, @"st", [NSBundle mainBundle]);
                 return;
         }
-        [[LKCompiler compilerForExtension: @"st"] compileString:[NSString stringWithContentsOfFile:path]];
+        [[[LKCompiler compilerForExtension: @"st"] compiler] compileString:[NSString stringWithContentsOfFile:path]];
 }
 int main (int argc, char** argv)
 {

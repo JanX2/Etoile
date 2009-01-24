@@ -114,7 +114,11 @@ LKMethod extend [
 	    "Print statements"
 	    statements do: [ :stmt |
 	        stmt prettyprintToWriter: writer.
-		writer append: '.'; cr.
+		(stmt isKindOfClass: (LKComment class)) ifTrue: [
+			writer cr.
+		] ifFalse: [
+			writer append: '.'; cr.
+		]
 	    ].
 	"]."
 	"writer append: ']'; cr."

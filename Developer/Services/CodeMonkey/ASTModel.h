@@ -15,6 +15,7 @@
 {
 	NSMutableDictionary* classes;
 	ModelMethod* currentMethod;
+	LKSubclass* currentClass;
 }
 - (NSMutableDictionary*) classes;
 - (LKAST*) visitASTNode: (LKAST*) aNode;

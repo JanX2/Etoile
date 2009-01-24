@@ -33,19 +33,22 @@
 }
 - (LKAST*) visitASTNode: (LKAST*) aNode
 {
+	NSLog (@"node <%@> (%@)", aNode, [aNode class]);
 	if ([aNode class] == [LKInstanceMethod class]) 
 	{
 		LKMethod* method = (LKMethod*) aNode;
 		//NSLog(@"pretty: <%@>", [method prettyprint]);	
-		LKSubclass* class = (LKSubclass*) [method parent];
-		//NSLog(@"Instance Method: {%@}", [method description]);
-		//NSLog(@"Class: (%@)", [class classname]);
+		//LKSubclass* class = (LKSubclass*) [method parent];
+
+		NSLog(@"Instance Method: {%@}", [method description]);
+		NSLog(@"Class: %@ (%@)", currentClass, [currentClass classname]);
 		NSLog(@"pretty: <%@>", [method prettyprint]);	
-		ModelClass* aClass = [classes objectForKey: [class classname]];
+
+		ModelClass* aClass = [classes objectForKey: [currentClass classname]];
 		if (aClass == nil) 
 		{
-			aClass = [[ModelClass alloc] initWithName: [class classname]];
-			[classes setObject: aClass forKey: [class classname]];
+			aClass = [[ModelClass alloc] initWithName: [currentClass classname]];
+			[classes setObject: aClass forKey: [currentClass classname]];
 			[aClass autorelease];
 		}
 	
@@ -60,6 +63,8 @@
 	else if ([aNode class] == [LKSubclass class])
 	{
 		LKSubclass* class = (LKSubclass*) aNode;
+		currentClass = class;
+
 		ModelClass* aClass = [classes objectForKey: [class classname]];
 		if (aClass == nil) 
 		{
@@ -76,7 +81,7 @@
 	}
 	else
 	{
-		NSLog (@"node <%@> (%@)", aNode, [aNode class]);
+		//NSLog (@"node <%@> (%@)", aNode, [aNode class]);
 	}
 
 	return aNode;
