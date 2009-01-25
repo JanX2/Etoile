@@ -14,6 +14,10 @@
 #import "ASTModel.h"
 #import "ASTTransform.h"
 
+@interface LKAST (pretty)
+- (NSMutableAttributedString*) prettyprint;
+@end
+
 @implementation Controller
 
 - (void) awakeFromNib
@@ -625,7 +629,7 @@
 	}
 	if ([replacementString isEqualToString: @"\""]) 
 	{
-		if (quotesOpened = NO)
+		if (quotesOpened == NO)
 			quotesOpened = YES;
 		quote = YES;
 	}
