@@ -9,8 +9,13 @@ NSObject subclass: MelodieController
 	| window  mainContainer  playlistContainer search  musicPlayerController URLTextField addURLWindow 
 	  mainModel  playlistModel smartGroup ctxt |
 
-	KnownExtensions	[
-		^ {'mp3'. 'ogg'. 'aac'. 'm4a'}.
+	knownExtensions	[
+		knownExtensions == nil ifTrue: [
+			knownExtensions := NSMutableArray array.
+			(ETUTI typeWithString: 'public.audio') allSubtypes
+				foreach: [ :type | knownExtensions addObjectsFromArray: (type fileExtensions) ].
+		].
+		^ knownExtensions.
 	]
 
 	newContext [
@@ -72,7 +77,7 @@ NSObject subclass: MelodieController
 	]
 
 	addFile: path [
-		(self KnownExtensions containsObject: (path pathExtension))
+		(self knownExtensions containsObject: (path pathExtension))
 		    ifTrue: [ mainModel addMember: (ETMusicFile alloc initWithPath: path). ]
 	]
 
@@ -97,7 +102,7 @@ NSObject subclass: MelodieController
 		openPanel := NSOpenPanel openPanel.
 		openPanel setAllowsMultipleSelection: true.
 		openPanel setCanChooseDirectories: true.
-		openPanel runModalForTypes: (self KnownExtensions).
+		openPanel runModalForTypes: (self knownExtensions).
 
 		openPanel filenames foreach: [ :path | self addPath: path ].
 		mainContainer reloadAndUpdateLayout.
@@ -133,6 +138,9 @@ NSObject subclass: MelodieController
 
 	awakeFromNib [
 		| layout |
+
+		'known extensions: ' log.
+		self knownExtensions foreach: [ :ext | ext log ].
 
 		layout := ETOutlineLayout layout.
 	
