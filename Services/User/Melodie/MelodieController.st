@@ -6,8 +6,11 @@
   
 NSObject subclass: MelodieController
 [
-	| window  mainContainer  playlistContainer search  musicPlayerController URLTextField addURLWindow 
-	  mainModel  playlistModel smartGroup ctxt |
+	| window search musicPlayerController knownExtensions
+	  URLTextField addURLWindow smartGroup ctxt
+	  mainContainer  playlistContainer
+	  mainLayoutItemGroup playlistLayoutItemGroup
+	  mainModel playlistModel |
 
 	knownExtensions	[
 		knownExtensions == nil ifTrue: [
@@ -105,7 +108,7 @@ NSObject subclass: MelodieController
 		openPanel runModalForTypes: (self knownExtensions).
 
 		openPanel filenames foreach: [ :path | self addPath: path ].
-		mainContainer reloadAndUpdateLayout.
+		mainLayoutItemGroup reloadAndUpdateLayout.
 	]
 
 	undo: sender [
@@ -122,7 +125,7 @@ NSObject subclass: MelodieController
 		addURLWindow orderOut: self.
 		string := URLTextField stringValue stringByAddingPercentEscapesUsingEncoding: @NSUTF8StringEncoding. 
 		mainModel addMember: (ETMusicFile alloc initWithURL:(NSURL URLWithString:string)).
-		mainContainer reloadAndUpdateLayout.
+		mainLayoutItemGroup reloadAndUpdateLayout.
 	]
 
 	newPlaylist: sender [
@@ -133,7 +136,7 @@ NSObject subclass: MelodieController
 		newPlaylist addMember:(ETMusicFile alloc initWithURL:
 		    (NSURL URLWithString: 'http://scfire-chi0l-1.stream.aol.com/stream/1018')).
 		playlistModel addMember: newPlaylist.
-		playlistContainer reloadAndUpdateLayout.
+		playlistLayoutItemGroup reloadAndUpdateLayout.
 	]
 
 	awakeFromNib [
@@ -144,28 +147,31 @@ NSObject subclass: MelodieController
 
 		layout := ETOutlineLayout layout.
 	
-		layout setDisplayName: 'Title' forProperty: 'kETTitleProperty'.
-		layout setDisplayName: 'Artist' forProperty: 'kETArtistProperty'.
-		layout setDisplayName: 'Album' forProperty: 'kETAlbumProperty'.
-		layout setDisplayName: 'URL' forProperty: 'kETURLProperty'.
+		layout setDisplayName: 'Title' forProperty: 'kETTitleProperty';
+			setDisplayName: 'Artist' forProperty: 'kETArtistProperty';
+			setDisplayName: 'Album' forProperty: 'kETAlbumProperty';
+			setDisplayName: 'URL' forProperty: 'kETURLProperty'.
 	
 		layout setDisplayedProperties:
 		    {'icon'. 'kETTitleProperty'. 'kETArtistProperty'. 'kETAlbumProperty'. 'kETURLProperty' }.
 
-		mainContainer setSource: (mainContainer layoutItem).
-		mainContainer layoutItem setRepresentedObject: mainModel.
-		mainContainer setLayout: layout.
-		mainContainer setHasVerticalScroller: true.
-		mainContainer setTarget: self.
-		mainContainer reloadAndUpdateLayout.
-		mainContainer setDoubleAction: 'doubleClickInContainer:'.
+		mainLayoutItemGroup := ETLayoutItem itemGroupWithRepresentedObject: mainModel.
+		mainLayoutItemGroup setSource: mainLayoutItemGroup;
+			setSupervisorView: mainContainer;
+			setLayout: layout;
+			reloadAndUpdateLayout.
+		mainContainer setHasVerticalScroller: true;
+			setTarget: self;
+			setDoubleAction: 'doubleClickInContainer:'.
 
-		playlistContainer setSource: (playlistContainer layoutItem).
-		playlistContainer layoutItem setRepresentedObject: playlistModel.
-		playlistContainer setLayout: (ETOutlineLayout layout).
-		playlistContainer setHasVerticalScroller: false.
-		playlistContainer setTarget: self.
-		playlistContainer setDoubleAction: 'doubleClickInContainer:'.
+		playlistLayoutItemGroup := ETLayoutItem itemGroupWithRepresentedObject: playlistModel.
+		playlistLayoutItemGroup setSource: playlistLayoutItemGroup;
+			setSupervisorView: playlistContainer;
+			setLayout: (ETOutlineLayout layout);
+			reloadAndUpdateLayout.
+		playlistContainer setHasVerticalScroller: false;
+			setTarget: self;
+			setDoubleAction: 'doubleClickInContainer:'.
 
 		search setDelegate: self.
 
@@ -178,28 +184,28 @@ NSObject subclass: MelodieController
 	objectContextDidMergeObjects: notif [
 		'Merge occurred, reloading models from context and updating container layouts..' log.
 		self reloadModelVariablesFromContext.
-		mainContainer reloadAndUpdateLayout.
-		playlistContainer reloadAndUpdateLayout.
+		mainLayoutItemGroup reloadAndUpdateLayout.
+		playlistLayoutItemGroup reloadAndUpdateLayout.
 	]
 
 	controlTextDidChange: notif [
 		smartGroup == nil ifTrue: [ self smartGroupOn. ].
 		(search stringValue length = 0)
 		    ifTrue: [ 
-			mainContainer layoutItem setRepresentedObject: mainModel.
+			mainLayoutItemGroup setRepresentedObject: mainModel.
 		]  ifFalse: [
-			mainContainer layoutItem setRepresentedObject: smartGroup.
+			mainLayoutItemGroup setRepresentedObject: smartGroup.
 			smartGroup setPredicate:
 			    (NSPredicate predicateWithFormat: '(%K CONTAINS[cd] %@) OR (%K CONTAINS[cd] %@)'
 			        argumentArray: {'kETTitleProperty' . search stringValue . 'kETAlbumProperty' . search stringValue }).
 		].
-		mainContainer reloadAndUpdateLayout.
+		mainLayoutItemGroup reloadAndUpdateLayout.
 	]
 
 	smartGroupOn [
 		smartGroup := COSmartGroup alloc init.
 		smartGroup setTarget: mainModel.
-		mainContainer layoutItem setRepresentedObject: smartGroup.
+		mainLayoutItemGroup setRepresentedObject: smartGroup.
 	]
 	
 	clearSearch: sender [
