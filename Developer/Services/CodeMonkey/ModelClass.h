@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 
 @class ModelMethod;
+@class LKSubclass;
 
 @interface ModelClass : NSObject
 {
@@ -17,9 +18,12 @@
 	NSMutableDictionary* categories;
 	NSMutableArray* methods;
 	NSMutableArray* properties;
+	LKSubclass* ast;
 }
 
 - (id) initWithName: (NSString*) aName;
+- (void) setAST: (LKSubclass*) aClassAST;
+- (LKSubclass*) ast;
 - (void) setName: (NSString*) aName;
 - (NSString*) name;
 - (void) setupDocumentation;

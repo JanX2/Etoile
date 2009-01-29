@@ -25,6 +25,18 @@
   	[super dealloc];
 }
 
+- (void) setAST: (LKMethod*) aMethodAST
+{
+	[aMethodAST retain];
+	[ast release];
+	ast = aMethodAST;
+}
+
+- (LKMethod*) ast
+{
+	return ast;
+}
+
 - (void) setClass: (ModelClass*) aClass
 {
 	[aClass retain];

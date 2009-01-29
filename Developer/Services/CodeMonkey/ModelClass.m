@@ -48,6 +48,18 @@ static NSString* AYU = @"<< As yet Undefined >>";
 	return self;
 }
 
+- (void) setAST: (LKSubclass*) aClassAST
+{
+	[aClassAST retain];
+	[ast release];
+	ast = aClassAST;
+}
+
+- (LKSubclass*) ast
+{
+	return ast;
+}
+
 - (void) setName: (NSString*) aName
 {
 	[aName retain];

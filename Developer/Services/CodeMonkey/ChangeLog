@@ -1,3 +1,6 @@
+2009-01-29 Nicolas Roard <nicolas@roard.com>
+	Store the AST in ModelClass and ModelMethod.
+
 2009-01-24 Nicolas Roard <nicolas@roard.com>
 	Use pretty print in the text editor while editing...
 	* build an AST from the text

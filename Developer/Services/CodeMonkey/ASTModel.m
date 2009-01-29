@@ -41,6 +41,7 @@
 		//LKSubclass* class = (LKSubclass*) [method parent];
 
 		NSLog(@"Instance Method: {%@}", [method description]);
+		NSLog(@"Instance parent: {%@}", [method parent]);
 		NSLog(@"Class: %@ (%@)", currentClass, [currentClass classname]);
 		NSLog(@"pretty: <%@>", [method prettyprint]);	
 
@@ -53,6 +54,7 @@
 		}
 	
 		ModelMethod* aMethod = [ModelMethod new];
+		[aMethod setAST: method];
 		[aMethod setCode: [method prettyprint]];
 		//[aMethod parseCode];
 		[aMethod setSignature: [[method signature] description]];
@@ -66,6 +68,7 @@
 		currentClass = class;
 
 		ModelClass* aClass = [classes objectForKey: [class classname]];
+		[aClass setAST: class];
 		if (aClass == nil) 
 		{
 			aClass = [[ModelClass alloc] initWithName: [class classname]];

@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 
 @class ModelClass;
+@class LKMethod;
 
 @interface ModelMethod : NSObject
 {
@@ -17,8 +18,11 @@
 	NSAttributedString* code;
 	NSMutableString* content;
 	NSString* category;
+	LKMethod* ast;
 }
 
+- (void) setAST: (LKMethod*) aMethodAST;
+- (LKMethod*) ast;
 - (void) setClass: (ModelClass*) aClass;
 - (ModelClass*) class;
 - (void) setSignature: (NSString*) aSignature;
