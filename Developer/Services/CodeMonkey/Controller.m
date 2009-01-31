@@ -446,7 +446,12 @@
 		[output appendString: representation];
 		[output appendString: @"\n\n"];
 	}
-	[output writeToFile: @"test-nico.st" atomically: YES];
+	NSSavePanel* panel = [NSSavePanel savePanel];
+	[panel setRequiredFileType: @"st"];
+	if ([panel runModal] == NSFileHandlingPanelOKButton) {
+		NSLog(@" save file <%@>", [panel filename]);
+		[output writeToFile: [panel filename] atomically: YES];	
+	}
 
 	[output release];
 }

@@ -1,4 +1,7 @@
 2009-01-31 Nicolas Roard <nicolas@roard.com>
+	Add NSSavePanel call to export a file containing all the classes.
+
+2009-01-31 Nicolas Roard <nicolas@roard.com>
 	Use the AST to write the exported file.
 	* Fix PrettyPrintCategories when pretty-printing the class directly
 	* Add an ASTReplace class to easily replace AST nodes...
