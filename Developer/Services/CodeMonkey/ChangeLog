@@ -1,4 +1,7 @@
 2009-01-31 Nicolas Roard <nicolas@roard.com>
+	Fix a representation issue with return values (double dots).
+
+2009-01-31 Nicolas Roard <nicolas@roard.com>
 	Allow loading of files using NSOpenPanel...
 
 2009-01-31 Nicolas Roard <nicolas@roard.com>

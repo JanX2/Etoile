@@ -18,7 +18,7 @@ NSObject subclass: PrettyPrintWriter [
     init [
 	"XXX How can I make -init return nil without nonlocal returns
 	and without assigning to self?"
-        super init == nil ifFalse: [
+        super init = nil ifFalse: [
 	    textSize := 16.
 	    buffer := NSMutableAttributedString new.
 	    indent := 0.

@@ -32,6 +32,13 @@ LKToken extend [
     ]
 ]
 
+LKReturn extend [
+    prettyprintToWriter: writer [
+	writer append: '^'.
+	writer append: ret description.
+    ]
+]
+
 LKIfStatement extend [
     prettyprintToWriter: writer [
 	condition prettyprintToWriter: writer.
