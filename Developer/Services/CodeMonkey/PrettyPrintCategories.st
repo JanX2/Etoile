@@ -162,6 +162,23 @@ LKMessageSend extend [
     ]
 ]
 
+LKMessageCascade extend [
+	prettyprintToWriter: writer [
+		receiver prettyprintToWriter: writer.
+		(messages objectAtIndex: 0) prettyprintToWriter: writer.
+		writer append: ';'.
+		writer indent: [
+			1 to: ((messages count) - 1) do: [ :i |
+				writer cr.
+				(messages objectAtIndex: i) prettyprintToWriter: writer.
+				i < ((messages count) - 1) ifTrue: [
+					writer append: ';'.
+				].
+			].
+		].
+	]
+]
+
 LKAssignExpr extend [
     prettyprintToWriter: writer [
 	target prettyprintToWriter: writer.
