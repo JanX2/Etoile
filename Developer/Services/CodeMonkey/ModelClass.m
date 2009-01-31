@@ -50,6 +50,7 @@ static NSString* AYU = @"<< As yet Undefined >>";
 
 - (void) setAST: (LKSubclass*) aClassAST
 {
+	NSLog (@"SET AST IN CLASS: %@", [[aClassAST prettyprint] string]);
 	[aClassAST retain];
 	[ast release];
 	ast = aClassAST;

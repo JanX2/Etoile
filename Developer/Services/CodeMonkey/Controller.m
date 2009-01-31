@@ -12,6 +12,7 @@
 #import "ModelClass.h"
 #import "ModelMethod.h"
 #import "ASTModel.h"
+#import "ASTReplace.h"
 #import "ASTTransform.h"
 
 @interface LKAST (pretty)
@@ -439,8 +440,10 @@
 	for (int i=0; i<[classes count]; i++)
 	{
 		ModelClass* class = [classes objectAtIndex: i];
-		NSString* representation = [class representation];
-		[output appendString: [class representation]];
+		//NSString* representation = [class representation];
+		NSString* representation = [[[class ast] prettyprint] string];
+		NSLog (@"rep1: %@", representation);
+		[output appendString: representation];
 		[output appendString: @"\n\n"];
 	}
 	[output writeToFile: @"test-nico.st" atomically: YES];
@@ -562,10 +565,12 @@
 			NS_DURING
 				LKAST* methodAST = [parser parseMethod: toParse];
 				[methodAST setParent: [[self currentClass] ast]];
+				//[methodAST check];
 
 				if ([[self currentClass] hasMethodWithSignature: signature])
 				{
 					ModelMethod* method = [[self currentClass] methodWithSignature: signature];
+					[ASTReplace replace: [method ast] with: methodAST on: [[self currentClass] ast]];
 					[method setAST: (LKMethod*)methodAST];
 					[method setCode: [methodAST prettyprint]];
 				}
@@ -584,6 +589,7 @@
 				[self update];
 				[self setStatus: @"Valid code"];
 			NS_HANDLER
+				NSLog (@"exc: %@", [localException description]);
 				[self setStatus: @"Invalid code"];
 			NS_ENDHANDLER
 		}

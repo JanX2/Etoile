@@ -1,3 +1,8 @@
+2009-01-31 Nicolas Roard <nicolas@roard.com>
+	Use the AST to write the exported file.
+	* Fix PrettyPrintCategories when pretty-printing the class directly
+	* Add an ASTReplace class to easily replace AST nodes...
+
 2009-01-29 Nicolas Roard <nicolas@roard.com>
 	Store the AST in ModelClass and ModelMethod.
 

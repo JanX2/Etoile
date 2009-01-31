@@ -43,7 +43,7 @@
 		NSLog(@"Instance Method: {%@}", [method description]);
 		NSLog(@"Instance parent: {%@}", [method parent]);
 		NSLog(@"Class: %@ (%@)", currentClass, [currentClass classname]);
-		NSLog(@"pretty: <%@>", [method prettyprint]);	
+		NSLog(@"pretty: <%@>", [[method prettyprint] string]);	
 
 		ModelClass* aClass = [classes objectForKey: [currentClass classname]];
 		if (aClass == nil) 
@@ -68,13 +68,14 @@
 		currentClass = class;
 
 		ModelClass* aClass = [classes objectForKey: [class classname]];
-		[aClass setAST: class];
 		if (aClass == nil) 
 		{
 			aClass = [[ModelClass alloc] initWithName: [class classname]];
 			[classes setObject: aClass forKey: [class classname]];
 			[aClass autorelease];
 		}
+		NSLog (@"A CLASS ! <%@>", [class classname]);
+		[aClass setAST: class];
 		NSArray* ivars = [class ivars];
 		for (int i=0; i<[ivars count]; i++)
 		{

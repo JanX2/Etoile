@@ -90,7 +90,7 @@ LKSubclass extend [
 	        ].
 	        
             methods do: [ :method |
-                method prettyprintToWriter: writer.
+                method prettyprintFromClassToWriter: writer.
             ].
         ].
     
@@ -99,29 +99,33 @@ LKSubclass extend [
 ]
 
 LKMethod extend [
+    prettyprintFromClassToWriter: writer [
+        signature prettyprintToWriter: writer.
+        writer append: ' ['; cr.
+	writer indent: [
+		self prettyprintToWriter: writer.
+	].
+	writer append: ']'; cr.
+    ]
+
     prettyprintToWriter: writer [
-        "signature prettyprintToWriter: writer."
-        "writer append: ' ['; cr."
-	"writer indent: ["
-	    "Print local variables"
-	    (symbols locals count > 0) ifTrue: [
-	        writer localVariableToken: '| '.
-	        symbols locals do: [ :symbol |
-		    writer localVariableToken: symbol; append: ' '.
-		].
-		writer localVariableToken: '|'; cr.
+	"Print local variables"
+	(symbols locals count > 0) ifTrue: [
+	    writer localVariableToken: '| '.
+	    symbols locals do: [ :symbol |
+		writer localVariableToken: symbol; append: ' '.
 	    ].
-	    "Print statements"
-	    statements do: [ :stmt |
-	        stmt prettyprintToWriter: writer.
-		(stmt isKindOfClass: (LKComment class)) ifTrue: [
-			writer cr.
-		] ifFalse: [
-			writer append: '.'; cr.
-		]
-	    ].
-	"]."
-	"writer append: ']'; cr."
+	    writer localVariableToken: '|'; cr.
+	].
+	"Print statements"
+	statements do: [ :stmt |
+	    stmt prettyprintToWriter: writer.
+	    (stmt isKindOfClass: (LKComment class)) ifTrue: [
+		writer cr.
+	    ] ifFalse: [
+		writer append: '.'; cr.
+	    ]
+	].
     ]
 ]
 
