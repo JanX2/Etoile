@@ -566,7 +566,7 @@
 				if ([[self currentClass] hasMethodWithSignature: signature])
 				{
 					ModelMethod* method = [[self currentClass] methodWithSignature: signature];
-					[method setAST: methodAST];
+					[method setAST: (LKMethod*)methodAST];
 					[method setCode: [methodAST prettyprint]];
 				}
 				else // we add a new method
@@ -574,7 +574,7 @@
 					// TODO: refactor addMethod
 					// FIXME: there is a crash if sig but no body
 					ModelMethod* aMethod = [ModelMethod new];
-					[aMethod setAST: methodAST];
+					[aMethod setAST: (LKMethod*)methodAST];
 					[aMethod setCode: code];
 					[aMethod setSignature: signature];
 					[aMethod setCategory: [self currentCategoryName]];
