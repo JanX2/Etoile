@@ -23,10 +23,12 @@ static NSConnection *theConnection;
 		[dict setObject:NSApp forKey:@"Application"];
 	}
 
-	if (nil == theConnection)
+	if (nil != theConnection)
 	{
-		theConnection = [[NSConnection alloc] init];
+		[theConnection setRootObject:dict];
+		return;
 	}
+	theConnection = [[NSConnection alloc] init];
 	[theConnection setRootObject:dict];
 	NSString *name = [NSString stringWithFormat:@"Etoile/%@/Scripts",
 			 [[NSProcessInfo processInfo] processName]];
