@@ -1,4 +1,5 @@
 #import <EtoileFoundation/EtoileFoundation.h>
+#import <ScriptKit/ScriptCenter.h>
 
 @interface LangaugeKit : NSObject {}
 + (BOOL) loadPluginsForApplication;
@@ -14,6 +15,7 @@
 @implementation ETScriptLoader
 + (void) initialize
 {
+	[[ScriptCenter sharedInstance] enableScripting];
 	Class LKCompiler = NSClassFromString(@"LKCompiler");
 	if (Nil == LKCompiler)
 	{

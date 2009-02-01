@@ -15,6 +15,8 @@ $(filter-out SyntaxDefinitions/CVS, $(wildcard SyntaxDefinitions/*.syntax))
 $(BUNDLE_NAME)_LANGUAGES=$(basename $(wildcard *.lproj))
 $(BUNDLE_NAME)_LOCALIZED_RESOURCE_FILES=$(sort $(notdir $(wildcard *.lproj/*)))
 
+$(BUNDLE_NAME)_LDFLAGS += -lScriptKit
+
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/bundle.make
 -include ../../etoile.make
