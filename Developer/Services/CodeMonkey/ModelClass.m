@@ -5,6 +5,7 @@
    modify it under the terms of the MIT license. See COPYING.
 */
 
+#import <LanguageKit/LanguageKit.h>
 #import "ModelClass.h"
 #import "ModelMethod.h"
 
@@ -50,7 +51,7 @@ static NSString* AYU = @"<< As yet Undefined >>";
 
 - (void) setAST: (LKSubclass*) aClassAST
 {
-	NSLog (@"SET AST IN CLASS: %@", [[aClassAST prettyprint] string]);
+	//NSLog (@"SET AST IN CLASS: %@", [[aClassAST prettyprint] string]);
 	[aClassAST retain];
 	[ast release];
 	ast = aClassAST;
@@ -59,6 +60,16 @@ static NSString* AYU = @"<< As yet Undefined >>";
 - (LKSubclass*) ast
 {
 	return ast;
+}
+
+- (void) generateAST
+{
+	id compiler = [LKCompiler compilerForExtension: @"st"];
+	id parser = [[[compiler parser] new] autorelease];
+	NSLog (@"representation: <%@>", [self representation]);
+	NSLog (@"representation ast: <%@>", [parser parseString: [self representation]]);
+	LKSubclass* classAST = (LKSubclass*) [parser parseString: [self representation]];
+	[self setAST: classAST];
 }
 
 - (void) setName: (NSString*) aName

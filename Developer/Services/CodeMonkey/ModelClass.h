@@ -24,6 +24,7 @@
 - (id) initWithName: (NSString*) aName;
 - (void) setAST: (LKSubclass*) aClassAST;
 - (LKSubclass*) ast;
+- (void) generateAST;
 - (void) setName: (NSString*) aName;
 - (NSString*) name;
 - (void) setupDocumentation;

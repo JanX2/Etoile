@@ -1,4 +1,12 @@
 2009-01-31 Nicolas Roard <nicolas@roard.com>
+	Fix some saving issues -- you can now edit and save files.
+	* Use a pretty-printed AST for the output file, but build
+	  the AST from the ModelClass -representation
+	* Fixed some compilation warnings
+	* Added a mainWindow outlet
+	* Switched to 12pt default size font
+
+2009-01-31 Nicolas Roard <nicolas@roard.com>
 	Fix a representation issue with return values (double dots).
 
 2009-01-31 Nicolas Roard <nicolas@roard.com>

@@ -38,7 +38,8 @@
 	    categoryDocTextView,
 	    addPropertyNamePanel,
 	    newPropertyNameField,
-	    signatureTextField
+	    signatureTextField,
+	    mainWindow
 	);
 	Super = NSObject;
     };

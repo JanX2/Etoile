@@ -23,6 +23,8 @@
 
 - (void) awakeFromNib
 {
+//	NSLog (@"mainWindow: %@", mainWindow);
+//	[mainWindow makeMainWindow];
 	[self setTitle: @"Classes" for: classesList];
 	[self setTitle: @"Categories" for: categoriesList];
 	[self setTitle: @"Methods" for: methodsList];
@@ -344,6 +346,7 @@
 	if ([className length] > 0) 
 	{
   		ModelClass* aClass = [[ModelClass alloc] initWithName: className];
+		[aClass generateAST];
 		[classes addObject: aClass];
 		[aClass release];
 		[self update];
@@ -449,10 +452,16 @@
 	for (int i=0; i<[classes count]; i++)
 	{
 		ModelClass* class = [classes objectAtIndex: i];
-		//NSString* representation = [class representation];
+		NSString* representation = [class representation];
+		id compiler = [LKCompiler compilerForExtension: @"st"];
+		id parser = [[[compiler parser] new] autorelease];
+		LKAST* ast = [parser parseString: representation];
+		[output appendString: [[ast prettyprint] string]];
+		/*
 		NSString* representation = [[[class ast] prettyprint] string];
 		NSLog (@"rep1: %@", representation);
 		[output appendString: representation];
+		*/
 		[output appendString: @"\n\n"];
 	}
 	NSSavePanel* panel = [NSSavePanel savePanel];
@@ -621,7 +630,7 @@
 		[codeTextView setSelectedRange: range];
 		if (newStatement) {
 			NSMutableDictionary* attributes = [NSMutableDictionary new];
-			[attributes setObject: [NSFont systemFontOfSize: 16] forKey: @"NSFontAttributeName"];
+			[attributes setObject: [NSFont systemFontOfSize: 12] forKey: @"NSFontAttributeName"];
 			[attributes setObject: [NSColor blackColor] forKey: @"NSForegroundColorAttributeName"];
 			NSMutableAttributedString* rc = [[NSMutableAttributedString alloc]
 				initWithString: @"\n" attributes: attributes];

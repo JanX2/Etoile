@@ -31,6 +31,8 @@
   id infoVersion;
   id infoAuthors;
 
+  id mainWindow;
+
   id codeTextView;
   id signatureTextField;
   id categoryDocTextView;
