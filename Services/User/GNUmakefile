@@ -23,7 +23,6 @@ export melodie ?= yes
 export microblogger ?= no
 export newsstand ?= no
 export sketch ?= no
-export spot ?= no
 export termx ?= no
 export typewriter ?= yes
 export vindaloo ?= yes
@@ -86,10 +85,6 @@ ifeq ($(newsstand), yes)
 endif
 
 ifeq ($(sketch), yes)
-	SUBPROJECTS += Sketch
-endif
-
-ifeq ($(spot), yes)
 	SUBPROJECTS += Sketch
 endif
 

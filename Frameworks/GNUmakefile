@@ -12,7 +12,6 @@ PACKAGE_NAME = Frameworks
 export addresseskit ?= yes
 export bookmarkkit ?= no
 export coreobject ?= yes
-export distributedview ?= yes
 export etoilefoundation ?= yes
 export etoileui ?= yes
 export etoileserialize ?= yes
@@ -75,11 +74,6 @@ endif
 # Will depend on CoreObject
 ifeq ($(addresseskit), yes)
    SUBPROJECTS += AddressesKit
-endif
-
-# Depends on EtoileUI.
-ifeq ($(distributedview), yes)
-    SUBPROJECTS += DistributedView
 endif
 
 ifeq ($(ogrekit), yes)
