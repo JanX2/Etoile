@@ -1,5 +1,0 @@
-
-ADDITIONAL_OBJCFLAGS += -W -Wall -Wno-import -Wno-unused -DLINUX -O6 -pipe
-ADDITIONAL_CFLAGS += -W -Wall
-
-
