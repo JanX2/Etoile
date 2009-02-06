@@ -10,13 +10,11 @@ include $(GNUSTEP_MAKEFILES)/common.make
 -include ../../modules.make
 
 export addressmanager ?= yes
-export calc ?= no
 export codeeditor ?= no
 export dictionaryreader ?= yes
 export fontmanager ?= yes
 export grr ?= no
 export hardware ?= yes
-export installer ?= no
 export jabber ?= yes
 export lookandbehavior ?= yes
 export melodie ?= yes
@@ -26,7 +24,6 @@ export sketch ?= no
 export termx ?= no
 export typewriter ?= yes
 export vindaloo ?= yes
-export workflow ?= no
 
 #
 # Projects (listed by dependency order, then alphabetical order)
@@ -34,10 +31,6 @@ export workflow ?= no
 
 ifeq ($(addressmanager), yes)
 	SUBPROJECTS += AddressManager
-endif
-
-ifeq ($(calc), yes)
-	SUBPROJECTS += Calc
 endif
 
 ifeq ($(dictionaryreader), yes)
@@ -58,10 +51,6 @@ endif
 
 ifeq ($(hardware), yes)
 	SUBPROJECTS += Hardware
-endif
-
-ifeq ($(installer), yes)
-	SUBPROJECTS += Installer
 endif
 
 ifeq ($(jabber), yes)
@@ -98,10 +87,6 @@ endif
 
 ifeq ($(vindaloo), yes)
 	SUBPROJECTS += Vindaloo
-endif
-
-ifeq ($(workflow), yes)
-	SUBPROJECTS += Workflow
 endif
 
 include $(GNUSTEP_MAKEFILES)/aggregate.make
