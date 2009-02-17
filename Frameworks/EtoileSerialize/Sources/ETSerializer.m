@@ -113,10 +113,10 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 	return serializer;
 }
 
-- (id) deserializer
+- (ETDeserializer *) deserializer
 {
 	id back = [backend deserializer];
-	id deserializer = [ETDeserializer deserializerWithBackend:back];
+	ETDeserializer *deserializer = [ETDeserializer deserializerWithBackend:back];
 	[deserializer setBranch:branch];
 	return deserializer;
 }

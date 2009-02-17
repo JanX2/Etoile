@@ -5,6 +5,7 @@
 #import <EtoileSerialize/ETUtility.h>
 
 @protocol ETSerializerBackend;
+@class ETDeserializer;
 
 #define MANUAL_DESERIALIZE ((void*)1)
 #define AUTO_DESERIALIZE ((void*)0)
@@ -96,7 +97,7 @@ typedef parsed_type_size_t(*custom_serializer)(char*,void*, id<ETSerializerBacke
 /**
  * Returns a deserializer which is the inverse of this serializer.
  */
-- (id) deserializer;
+- (ETDeserializer *) deserializer;
 @end
 /**
  * Informal protocol for serializable objects.  Implement this to manually

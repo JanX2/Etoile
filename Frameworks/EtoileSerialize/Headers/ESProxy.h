@@ -3,6 +3,8 @@
  */
 #import <Foundation/Foundation.h>
 
+@class ETSerializer;
+
 /**
  * The ESProxy class is a simple proxy which is responsible for wrapping a
  * model object being managed by CoreObject.  The object will be serialized as
@@ -21,9 +23,9 @@
 	/** The location at which serialized copies of the object should be stored. */
 	NSURL * baseURL;
 	/** The serializer used to store deltas. */
-	id serializer;
+	ETSerializer *serializer;
 	/** Serializer used to store full saves */
-	id fullSave;
+	ETSerializer *fullSave;
 	/** The class of the serializer's back end. */
 	Class backend;
 }

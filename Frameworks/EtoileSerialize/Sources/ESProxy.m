@@ -71,7 +71,7 @@ static id logBackend;
 - (int) setVersion:(int)aVersion
 {
 	//find the full-save version closest to the requested one
-	id unFull = [fullSave deserializer];
+	ETDeserializer *unFull = [fullSave deserializer];
 	int fullVersion = aVersion;
 	while(fullVersion >= 0 && [unFull setVersion:fullVersion] != fullVersion)
 	{
@@ -84,7 +84,7 @@ static id logBackend;
 	}
 	id new = [unFull restoreObjectGraph];
 	//Play back each of the subsequent invocations
-	id unDelta = [serializer deserializer];
+	ETDeserializer *unDelta = [serializer deserializer];
 	for(int v=fullVersion + 1 ; v<=aVersion ; v++)
 	{
 		[unDelta setVersion:v];
