@@ -41,7 +41,7 @@
 
 #import "ScrollingImageView.h"
 
-static NSString * const EtoileVersion = @"0.4";
+static NSString * const EtoileVersion = @"0.4.2";
 
 @interface AboutEtoileEntry (Private)
 
@@ -78,7 +78,7 @@ static NSString * const EtoileVersion = @"0.4";
   NSMenuItem * menuItem;
 
   menuItem = [[[NSMenuItem alloc]
-    initWithTitle: _(@"About Étoilé...")
+    initWithTitle: _(@"About Ã‰toilÃ©...")
            action: @selector(activate)
     keyEquivalent: nil]
     autorelease];
