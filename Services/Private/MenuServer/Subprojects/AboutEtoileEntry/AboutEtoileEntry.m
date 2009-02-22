@@ -41,7 +41,7 @@
 
 #import "ScrollingImageView.h"
 
-static NSString * const EtoileVersion = @"0.4.2";
+static NSString * const EtoileVersion = @"0.4.1";
 
 @interface AboutEtoileEntry (Private)
 
