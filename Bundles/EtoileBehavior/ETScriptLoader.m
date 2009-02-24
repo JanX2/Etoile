@@ -2,7 +2,7 @@
 #import <ScriptKit/ScriptCenter.h>
 
 @interface LangaugeKit : NSObject {}
-+ (BOOL) loadPluginsForApplication;
++ (BOOL) loadAllPlugInsForApplication;
 @end
 
 /**
@@ -41,7 +41,7 @@
 		}
 		LKCompiler = NSClassFromString(@"LKCompiler");
 	}
-	[LKCompiler loadPluginsForApplication];
+	[LKCompiler loadAllPlugInsForApplication];
 }
 
 @end
