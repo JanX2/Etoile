@@ -120,11 +120,16 @@ NSObject subclass: MelodieController
 	]
 
 	addURL: sender [
-		| string |
+		| string URL |
 
 		addURLWindow orderOut: self.
-		string := URLTextField stringValue stringByAddingPercentEscapesUsingEncoding: @NSUTF8StringEncoding. 
-		mainModel addMember: (ETMusicFile alloc initWithURL:(NSURL URLWithString:string)).
+		string := URLTextField stringValue stringByAddingPercentEscapesUsingEncoding: @NSUTF8StringEncoding.
+		URL := NSURL URLWithString: string.
+
+		mainModel addMember: 
+			((string hasSuffix: 'pls') ifTrue: [ ETPlaylist playlistForPLSFileAtURL: URL ]
+			                          ifFalse: [ ETMusicFile alloc initWithURL: URL ]).
+
 		mainLayoutItemGroup reloadAndUpdateLayout.
 	]
 
