@@ -1,6 +1,11 @@
 EtoileSerialize NEWS
 ====================
 
+0.4.1 (Etoile 0.4.1)
+--------------------
+
+- Small fixes to correct compile errors and warnings
+
 0.1 (Etoile 0.4)
 ----------------
 

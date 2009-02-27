@@ -4,7 +4,7 @@ EtoileSerialize
 :Maintainer: David Chisnall
 :Authors: David Chisnall
 :License: Modified BSD License
-:Version: 0.4
+:Version: 0.4.1
 
 This collection of classes is used by CoreObject to perform serialization and deserialization of arbitrary objects.
 
