@@ -13,8 +13,9 @@ NSObject subclass: MusicPlayerController
 	  player history currentURL queueSize playImage pauseImage uiUpdateTimer |
 
 	init [
-		player := MKMusicPlayer alloc initWithDefaultDevice inNewThread.
+		player := MKMusicPlayer new initWithDefaultDevice inNewThread.
 		history := ETHistoryManager new.
+		history setMaxHistorySize: 100.
 		queueSize := 0.
 
 		playImage := (IKIcon iconWithIdentifier: 'media-playback-start') image.
@@ -66,7 +67,7 @@ NSObject subclass: MusicPlayerController
 
 	previous: sender [
 		self syncHistory.
-		history previous.
+		history back.
 		self playHistory: player isPlaying.
 		uiUpdateTimer fire.
 	]
@@ -83,7 +84,7 @@ NSObject subclass: MusicPlayerController
 		" TODO: rebuild the queue when the playlist is modified. "
 		self syncHistory.
 		history setFuture: newQueue objectEnumerator.
-		history next.
+		history forward.
 		self playHistory: shouldStart.
 		uiUpdateTimer fire.
 	]
@@ -125,7 +126,7 @@ NSObject subclass: MusicPlayerController
 		currentURL == newURL ifFalse: [
 			currentURL := newURL.
 			newSize := player queueSize.
-			queueSize - newSize timesRepeat: [ history next ].
+			queueSize - newSize timesRepeat: [ history forward ].
 			queueSize := newSize.
 			songLabel setStringValue:
 				history currentObject representedObject displayName.
