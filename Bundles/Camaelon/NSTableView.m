@@ -243,10 +243,10 @@
   //    [self highlightSelectionInClipRect: aRect];
 
   /* Draw grid */
-  if (_drawsGrid)
-    {
-      [self drawGridInClipRect: aRect];
-    }
+  //if (_drawsGrid)
+  //  {
+  //    [self drawGridInClipRect: aRect];
+  //  }
   
   /* Draw visible cells */
   /* Using rowAtPoint: here calls them only twice per drawn rect */
@@ -276,10 +276,10 @@
  //       [_backgroundColor set];
  //       NSRectFill (localBackground);
         [self highlightSelectionInClipRect: localBackground];
-        if (_drawsGrid)
-          {
-            [self drawGridInClipRect: localBackground];
-          }
+     //   if (_drawsGrid)
+     //     {
+     //       [self drawGridInClipRect: localBackground];
+     //     }
         localBackground.origin.y += _rowHeight;
         (*imp)(self, sel, i, aRect);
       }
