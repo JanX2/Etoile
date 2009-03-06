@@ -1,3 +1,8 @@
+2009-03-06  Quentin Mathe <qmathe@club-internet.fr>
+
+	* setup.sh: Applied patch by Devon H. O'Dell, with some minor editing, to 
+	support fonts donwload on FreeBSD.
+
 2008-12-22  Quentin Mathe <qmathe@club-internet.fr>
 
 	* etoile.make: Rewritten 'prefix' function to simply use the wildcard 
