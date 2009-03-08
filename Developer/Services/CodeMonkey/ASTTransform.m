@@ -17,7 +17,7 @@
 	//NSLog (@"node <%@> (%@)", aNode, [aNode class]);
 	if ([aNode class] == [LKAssignExpr class]) 
 	{
-		LKMessageSend* msg = [LKMessageSend message: @"setValue:"];
+		LKMessageSend* msg = [LKMessageSend messageWithSelectorName: @"setValue:"];
 		LKAssignExpr* exp = (LKAssignExpr*) aNode;
 		LKAST* parent = [exp parent];
 		LKAST* expression = [exp expression];
@@ -25,7 +25,7 @@
 		[msg addSelectorComponent: @"forKey:"];
 		LKStringLiteral* key = [LKStringLiteral literalFromString: [[exp target] symbol]];
 		[msg addArgument: key];
-		[msg setTarget: [LKDeclRef reference: @"self"]];
+		[msg setTarget: [LKDeclRef referenceWithSymbol: @"self"]];
 		[msg setParent: parent];
 		[msg check];
 		return msg;

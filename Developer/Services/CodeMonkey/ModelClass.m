@@ -64,8 +64,8 @@ static NSString* AYU = @"<< As yet Undefined >>";
 
 - (void) generateAST
 {
-	id compiler = [LKCompiler compilerForExtension: @"st"];
-	id parser = [[[compiler parser] new] autorelease];
+	id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
+	id parser = [[[compiler parserClass] new] autorelease];
 	NSLog (@"representation: <%@>", [self representation]);
 	NSLog (@"representation ast: <%@>", [parser parseString: [self representation]]);
 	LKSubclass* classAST = (LKSubclass*) [parser parseString: [self representation]];

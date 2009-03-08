@@ -72,7 +72,7 @@
 
 - (void) loadContent: (NSString*) aContent
 {
-	id parser = [[[LKCompiler compilerForExtension: @"st"] parser] new];
+	id parser = [[[LKCompiler compilerForLanguage: @"Smalltalk"] parserClass] new];
 	LKAST* ast;
 	NS_DURING
 		ast = [parser parseString: aContent];
@@ -453,8 +453,8 @@
 	{
 		ModelClass* class = [classes objectAtIndex: i];
 		NSString* representation = [class representation];
-		id compiler = [LKCompiler compilerForExtension: @"st"];
-		id parser = [[[compiler parser] new] autorelease];
+		id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
+		id parser = [[[compiler parserClass] new] autorelease];
 		LKAST* ast = [parser parseString: representation];
 		[output appendString: [[ast prettyprint] string]];
 		/*
@@ -489,8 +489,8 @@
 			NSString* signature = [signatureTextField stringValue];
 			NSLog (@"save (%@) <%@>", signature, code);
 
-			id compiler = [LKCompiler compilerForExtension: @"st"];
-			id parser = [[[compiler parser] new] autorelease];
+			id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
+			id parser = [[[compiler parserClass] new] autorelease];
 			NSLog (@"compiler %@", compiler);
 			NSString* toParse = [NSString stringWithFormat: @"%@ [ %@ ]", signature, [code string]];
 			NSLog(@"to parse: <%@>", toParse);
@@ -583,8 +583,8 @@
 		if ([code length] > 0)
 		{
 			NSString* signature = [signatureTextField stringValue];
-			id compiler = [LKCompiler compilerForExtension: @"st"];
-			id parser = [[[compiler parser] new] autorelease];
+			id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
+			id parser = [[[compiler parserClass] new] autorelease];
 			NSString* toParse = [NSString stringWithFormat: @"%@ [ %@ ]", signature, [code string]];
 			NS_DURING
 				LKAST* methodAST = [parser parseMethod: toParse];
