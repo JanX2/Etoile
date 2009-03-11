@@ -102,8 +102,11 @@ NSObject subclass: MusicPlayerController
 		| item |
 		item := history peek: queueSize.
 		item == nil ifFalse: [
-			player addURL: item representedObject URL.
-			queueSize := queueSize + 1 ].
+			" TODO: deal with non-song objects in playlists (like other
+			  playlists) more intelligently. "
+			(item representedObject respondsToSelector: 'URL') ifTrue: [
+				player addURL: item representedObject URL.
+				queueSize := queueSize + 1 ] ].
 	]
 
 	timerEvent: sender [
