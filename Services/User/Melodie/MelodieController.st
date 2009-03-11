@@ -127,8 +127,9 @@ NSObject subclass: MelodieController
 		URL := NSURL URLWithString: string.
 
 		mainModel addMember: 
-			((string hasSuffix: 'pls') ifTrue: [ ETPlaylist playlistForPLSFileAtURL: URL ]
-			                          ifFalse: [ ETMusicFile alloc initWithURL: URL ]).
+			((URL relativePath pathExtension lowercaseString isEqualToString: 'pls')
+				ifTrue: [ ETPlaylist playlistForPLSFileAtURL: URL ]
+				ifFalse: [ ETMusicFile alloc initWithURL: URL ]).
 
 		mainLayoutItemGroup reloadAndUpdateLayout.
 	]
@@ -138,8 +139,8 @@ NSObject subclass: MelodieController
 
 		newPlaylist := ETPlaylist new.
 		"Put a sample radio stream in the playlist."
-		newPlaylist addMember:(ETMusicFile alloc initWithURL:
-		    (NSURL URLWithString: 'http://scfire-chi0l-1.stream.aol.com/stream/1018')).
+		newPlaylist addMember:
+			(ETPlaylist playlistForPLSFileAtURL: (NSURL URLWithString: 'http://somafm.com/groovesalad.pls')).
 		playlistModel addMember: newPlaylist.
 		playlistLayoutItemGroup reloadAndUpdateLayout.
 	]
