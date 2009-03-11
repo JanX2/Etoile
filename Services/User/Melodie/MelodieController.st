@@ -64,9 +64,9 @@ NSObject subclass: MelodieController
 
 		" If loading the model objects from the context failed / the context was
 		  invalid, make a new context. This happens if the user default exists
-			(maybe from a previous install of Melodie) but the CoreObjectLibrary
-			doesn't exist. This should probably be given more thought, but for now
-			should prevent confusion. "
+		  (maybe from a previous install of Melodie) but the CoreObjectLibrary
+		  doesn't exist. This should probably be given more thought, but for now
+		  should prevent confusion. "
 		mainModel == nil ifTrue: [ self newContext ].
 	]
 
