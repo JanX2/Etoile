@@ -17,3 +17,4 @@ ADDITIONAL_LDFLAGS += -lgnustep-gui
 
 include $(GNUSTEP_MAKEFILES)/framework.make
 -include ../../etoile.make
+-include ../../documentation.make
