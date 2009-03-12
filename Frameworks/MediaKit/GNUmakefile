@@ -27,3 +27,4 @@ ADDITIONAL_LDFLAGS += `pkg-config libavformat --libs`
 
 include $(GNUSTEP_MAKEFILES)/framework.make
 -include ../../etoile.make
+-include ../../documentation.make
