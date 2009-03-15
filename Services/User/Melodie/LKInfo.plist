@@ -1,0 +1,3 @@
+{
+	Sources = ("ETPlaylist.st", "MusicPlayerController.st", "MelodieController.st");
+}
