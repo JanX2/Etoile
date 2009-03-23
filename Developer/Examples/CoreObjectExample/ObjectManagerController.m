@@ -54,7 +54,7 @@
 	[navigatorItem addItem: restoredCtxtVersionFieldItem];
 	[navigatorItem updateLayout];
 
-	mainContainer = [mainContainerItem supervisorView];
+	mainContainer = (id)[mainContainerItem supervisorView];
 	selectionVersionField = (NSTextField *)[selectionVersionFieldItem view];
 	ctxtVersionField = (NSTextField *)[ctxtVersionFieldItem view];
 	restoredCtxtVersionField = (NSTextField *)[restoredCtxtVersionFieldItem view];
