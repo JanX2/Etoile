@@ -32,6 +32,7 @@
 #import "NSArrayAdditions.h"
 #import "ApplicationManager.h"
 #import "SCTask.h"
+#import <EtoileFoundation/NSInvocation+Etoile.h>
 
 // FIXME: When you take in account System can be use without any graphical UI 
 // loaded, linking AppKit by default is bad,thne  put this stuff in a bundle 
@@ -979,9 +980,9 @@ BOOL SCHardwareSuspend();
 		// strange segfaults related to gnustep lock objects or thread 
 		// dictionary.
 		//inv = NS_MESSAGE(self, checkConfigFileUpdate);
-		inv = [[NSInvocation alloc] initWithTarget: self selector: 
-			@selector(checkConfigFileUpdate)];
-		AUTORELEASE(inv);
+		inv = [NSInvocation invocationWithTarget: self 
+		                                selector: @selector(checkConfigFileUpdate)
+		                               arguments: nil];
 		ASSIGN(monitoringTimer, [NSTimer scheduledTimerWithTimeInterval: 2.0
 		                                                     invocation: inv
 		                                                        repeats: YES]);

@@ -32,6 +32,7 @@
 
 #import "ApplicationManager.h"
 #import "EtoileSystem.h"
+#import <EtoileFoundation/NSInvocation+Etoile.h>
 #import <sys/types.h>
 #import <signal.h>
 // FIXME: Not sure the following line is needed on some platforms or never?
@@ -145,9 +146,9 @@ instance");
 
 		//FIXME: Stack frame related crash in -invoke with...
 		//inv = NS_MESSAGE(self, checkLiveApplications);
-		inv = [[NSInvocation alloc] initWithTarget: self selector: 
-				@selector(checkLiveApplications)];
-		AUTORELEASE(inv);
+		inv = [NSInvocation invocationWithTarget: self 
+		                                selector: @selector(checkLiveApplications)
+		                               arguments: nil];
 		ASSIGN(autocheckTimer, [NSTimer scheduledTimerWithTimeInterval: 1.0
 		                                                    invocation: inv
 		                                                       repeats: YES]);
@@ -451,10 +452,10 @@ instance");
 	NSString *appName = [name copy];
 
 	//inv = NS_MESSAGE(self, checkTerminatingLaterApplicationWithName:, appName, nil);
-	inv = [[NSInvocation alloc] initWithTarget: self selector: 
-		@selector(checkTerminatingLaterApplicationWithName:)];
+	inv = [NSInvocation invocationWithTarget: self
+	                                selector: @selector(checkTerminatingLaterApplicationWithName:)
+	                               arguments: nil];
 	[inv setArgument: &appName atIndex: 2];
-	AUTORELEASE(inv);
 
 	/* Schedules a timer on the current run loop */
 	timer = [NSTimer scheduledTimerWithTimeInterval: 15.0 invocation: inv repeats: NO];

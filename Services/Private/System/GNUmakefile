@@ -22,7 +22,7 @@ VERSION = 0.1
 
 # FIXME: When you take in account System can be use without any graphical UI 
 # loaded, linking AppKit by default is bad.
-$(TOOL_NAME)_TOOL_LIBS = -lgnustep-gui `pkg-config --libs dbus-1`
+$(TOOL_NAME)_TOOL_LIBS = -lEtoileFoundation -lgnustep-gui `pkg-config --libs dbus-1`
 
 #
 # Class files

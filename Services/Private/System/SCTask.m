@@ -27,6 +27,7 @@
 #import "EtoileSystem.h"
 #import <AppKit/AppKit.h> // For NSWorkspaceDidLaunchNotification
 #import <math.h>
+#import <EtoileFoundation/NSInvocation+Etoile.h>
 
 @interface SCSystem (Private)
 - (void) noteApplicationLaunched: (NSNotification *)notif;
@@ -249,11 +250,12 @@
 	}
 	else /* Wait the launch is fully finished by delaying -postTaskLaunched call */
 	{
-		NSInvocation *inv = [[NSInvocation alloc] initWithTarget: self 
-			selector: @selector(checkLaunchTimeOut)];
+		NSInvocation *inv = [NSInvocation invocationWithTarget: self 
+		                                              selector: @selector(checkLaunchTimeOut)
+		                                             arguments: nil];
 		/* The run loop retains the timer, then releases it once it has fired */
 		[NSTimer scheduledTimerWithTimeInterval: [self launchTimeOut]
-		                             invocation: AUTORELEASE(inv)
+		                             invocation: inv
 		                                repeats: NO];
 	}
 }
