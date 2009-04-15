@@ -23,11 +23,12 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#import <EtoileFoundation/NSInvocation+Etoile.h>
+#import <AppKit/AppKit.h> // For NSWorkspaceDidLaunchNotification
 #import "SCTask.h"
 #import "EtoileSystem.h"
-#import <AppKit/AppKit.h> // For NSWorkspaceDidLaunchNotification
-#import <math.h>
-#import <EtoileFoundation/NSInvocation+Etoile.h>
+#include <math.h>
+
 
 @interface SCSystem (Private)
 - (void) noteApplicationLaunched: (NSNotification *)notif;

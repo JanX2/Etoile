@@ -1,3 +1,14 @@
+2009-04-15  Quentin Mathe <qmathe@club-internet.fr>
+
+	* ApplicationManager.m (-init, -setUpTerminateLater:):
+	* EtoileSystem.m (-findConfigFileAndStartUpdateMonitoring):
+	* SCTask.m (-launchForDomain:):
+	Improved formatting a bit by declaring invocation and timer variables 
+	where they are initialized rather than at the start of the method.
+	Kept a single FIXME about NS_MESSAGE being broken.
+	Also fixed C header include statements to use #include and not #import, 
+	and put framework import statements at top.
+
 2008-11-27  Quentin Mathe <qmathe@club-internet.fr>
 
 	Made the code a bit more solid and simpler. Now handles the launch queue 

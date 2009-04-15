@@ -30,11 +30,12 @@
 // loaded, linking AppKit by default is bad, then put this stuff in a bundle 
 // and load it only when necessary. Or may be put this stuff in another daemon.
 
+#import <EtoileFoundation/Macros.h>
+#import <EtoileFoundation/NSInvocation+Etoile.h>
 #import "ApplicationManager.h"
 #import "EtoileSystem.h"
-#import <EtoileFoundation/NSInvocation+Etoile.h>
-#import <sys/types.h>
-#import <signal.h>
+#include <sys/types.h>
+#include <signal.h>
 // FIXME: Not sure the following line is needed on some platforms or never?
 //#import "OSType.h"
 
@@ -49,7 +50,7 @@ static NSString *hasQuitReplyText = nil;
 @end
 
 @interface ApplicationManager (Private)
-- (void) setUpTerminateLaterTimerWith: (NSString *)appName;
+- (void) setUpTerminateLaterTimerWith: (NSString *)name;
 - (void) checkTerminatingLaterApplicationWithName: (NSString *)appName;
 - (void) checkTerminatingNowApplicationWithName: (NSString *)appName;
 @end
@@ -122,7 +123,6 @@ instance");
 	if ((self = [super init]) != nil)
 	{
 		NSNotificationCenter * nc;
-		NSInvocation * inv;
 
 		cancelReplyText = _(@"Service %@ cancels the log out.");
 		noReplyText = _(@"Service %@ does not reply."); // You can continue the log out by choosing Force To Quit.
@@ -144,11 +144,9 @@ instance");
 		           name: NSWorkspaceDidTerminateApplicationNotification
 		         object: nil];
 
-		//FIXME: Stack frame related crash in -invoke with...
-		//inv = NS_MESSAGE(self, checkLiveApplications);
-		inv = [NSInvocation invocationWithTarget: self 
-		                                selector: @selector(checkLiveApplications)
-		                               arguments: nil];
+		NSInvocation *inv = [NSInvocation invocationWithTarget: self 
+		                                              selector: @selector(checkLiveApplications)
+		                                             arguments: nil];
 		ASSIGN(autocheckTimer, [NSTimer scheduledTimerWithTimeInterval: 1.0
 		                                                    invocation: inv
 		                                                       repeats: YES]);
@@ -447,18 +445,16 @@ instance");
    later. */
 - (void) setUpTerminateLaterTimerWith: (NSString *)name
 {
-	NSTimer *timer = nil;
-	NSInvocation *inv = nil;
 	NSString *appName = [name copy];
-
-	//inv = NS_MESSAGE(self, checkTerminatingLaterApplicationWithName:, appName, nil);
-	inv = [NSInvocation invocationWithTarget: self
-	                                selector: @selector(checkTerminatingLaterApplicationWithName:)
-	                               arguments: nil];
-	[inv setArgument: &appName atIndex: 2];
+	SEL selector = @selector(checkTerminatingLaterApplicationWithName:);
+	NSInvocation *inv = [NSInvocation invocationWithTarget: self
+	                                              selector: selector
+	                                             arguments: A(appName)];
 
 	/* Schedules a timer on the current run loop */
-	timer = [NSTimer scheduledTimerWithTimeInterval: 15.0 invocation: inv repeats: NO];
+	NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval: 15.0 
+	                                              invocation: inv
+	                                                 repeats: NO];
 	[terminateLaterTimers addObject: timer];
 }
 
