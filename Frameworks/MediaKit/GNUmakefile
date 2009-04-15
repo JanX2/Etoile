@@ -14,11 +14,31 @@ MediaKit_HEADER_FILES = \
 				MKMusicPlayer.h\
 				MKSoundDevice.h
 
-ADDITIONAL_OBJCFLAGS = -std=c99 -g -Werror `pkg-config libavcodec --cflags`
+ADDITIONAL_OBJCFLAGS = -std=c99
 ADDITIONAL_OBJCFLAGS += `pkg-config libavcodec --cflags`
 ADDITIONAL_OBJCFLAGS += `pkg-config libavformat --cflags`
+# Workaround new FFMpeg header include style until we update MediaKit headers 
+# to use <libavcodec/avcodec.h> and <libavformat/avformat.h>. For now, we have 
+# to wait otherwise we would break many recent systems released around 2008 or 
+# before, and which include FFMpeg releases/snapshots older than March 2008.
+# FreeBSD has compatibility headers to support both old and new include style, 
+# most other systems don't. For example:
+# - on Ubuntu 9.04, avcodec.h is located in /usr/include/libavcodec, 
+# pkg-config returns '' because you are expected to use <libavcodec/avcodec.h>
+# - on Ubuntu 7.10, avcodec.h is located in /usr/include/ffmpeg and pkg-config 
+# returns '-I/usr/include/ffmpeg' because you are expected to use <avcodec.h>
+# 
+# See also: https://mail.gna.org/public/etoile-discuss/2008-11/msg00085.html 
+# and http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2008-April/046144.html
+#
+# The workaround below doesn't take in account custom install locations reported 
+# by pkg-config when the installed FFMepg release is equal or posterior to the 
+# one that introduced the new include style. 
+# e.g. /usr/include/video/libavcodec/avcodec.h for which pkg-config will return 
+# -I/usr/include/video
+ADDITIONAL_OBJCFLAGS += -I/usr/include/libavcodec -I/usr/include/libavformat
 
-#If you install OSS 4 in Ubuntu, the header files are located here:
+# If you install OSS 4 in Ubuntu, the header files are located here:
 ADDITIONAL_OBJCFLAGS += -I/usr/lib/oss/include
 
 ADDITIONAL_LDFLAGS += -lgnustep-gui -lEtoileFoundation -lSystemConfig
