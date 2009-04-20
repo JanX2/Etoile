@@ -1,0 +1,11 @@
+Project Manager
+===============
+
+This is a (work-in-progress) compositing window manager for the Étoilé environment. 
+
+XCB Framework
+-------------
+
+The files and classes with the XCB prefix will later be separated out into an XCB framework.  It is intended that this will replace the XWindowServerKit framework in Étoilé and be usable by GNUstep for backends on X11.  
+
+
