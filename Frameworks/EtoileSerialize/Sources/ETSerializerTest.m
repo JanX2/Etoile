@@ -209,7 +209,7 @@ id testRoundTrip(NSString * tempfile, id object)
 	id serializer = [ETSerializer serializerWithBackend:[ETSerializerBackendBinary class]
 												 forURL:[NSURL fileURLWithPath:tempfile]];
 	[serializer serializeObject:object withName:@"test"];
-	id deserializer = [serializer deserializer];
+	ETDeserializer *deserializer = [serializer deserializer];
 	[pool release];
 	[deserializer setVersion:0];
 	return [deserializer restoreObjectGraph];
@@ -294,7 +294,7 @@ id testRoundTrip(NSString * tempfile, id object)
 	id deback = [ETDeserializerBackendBinary new];
 	id store = [[ETSerialObjectBundle alloc] initWithPath:@"testfile"];
 	[deback deserializeFromStore:store];
-	id deserializer = [ETDeserializer deserializerWithBackend:deback];
+	ETDeserializer *deserializer = [ETDeserializer deserializerWithBackend:deback];
 	[deserializer setBranch:@"root"];
 	[deserializer setVersion:0];
 	TestClass * bar = [deserializer restoreObjectGraph];
