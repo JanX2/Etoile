@@ -24,18 +24,19 @@
 	// FIXME: Check for error
 	xcb_query_extension_reply_t *reply = 
 		xcb_query_extension_reply(connection, cookie, NULL);
-	free(reply);
 
 	NSLog(@"First event: %d", reply->first_event);
 	[XCBConn setSelector: @selector(XCBConnection:damageAdd:)
-	           forXEvent: reply->first_event + XCB_DAMAGE_ADD];
+	           forXEvent: reply->first_event + XCB_DAMAGE_NOTIFY];
+	free(reply);
 	xcb_damage_query_version(connection, 1, 1);
 
 	PMApp = self;
+	[PMCompositeWindow class];
 	return self;
 }
 - (void)XCBConnection: (XCBConnection*)connection 
-            damageAdd: (struct xcb_damage_add_request_t*)request
+            damageAdd: (struct xcb_damage_notify_event_t*)request
 {
 	NSLog(@"Adding damage in %d", (int)request->drawable);
 	XCBRect big = XCBMakeRect(0,0,0xffff, 0xffff);
@@ -47,11 +48,6 @@
 - (void)XCBConnection: (XCBConnection*)connection 
             mapWindow: (XCBWindow*)window
 {
-	[[decorations objectForKey: window] mapDecoratedWindow];
-}
-- (void)XCBConnection: (XCBConnection*)connection 
-      handleNewWindow: (XCBWindow*)window
-{
 	if (![decorationWindows containsObject: window])
 	{
 		id win = [PMDecoratedWindow windowDecoratingWindow: window];
@@ -62,6 +58,11 @@
 			[PMCompositeWindow compositeWindowWithXCBWindow: [win decorationWindow]];
 		[compositeWindows addObject: compositeWin];
 	}
+	[[decorations objectForKey: window] mapDecoratedWindow];
+}
+- (void)XCBConnection: (XCBConnection*)connection 
+      handleNewWindow: (XCBWindow*)window
+{
 }
 -      (void)XCBConnection: (XCBConnection*)connection 
 handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent

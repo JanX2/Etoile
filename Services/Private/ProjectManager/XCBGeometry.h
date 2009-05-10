@@ -18,6 +18,8 @@ typedef struct _XCBRect
 	XCBSize size;
 } XCBRect;
 
+static const XCBRect XCBInvalidRect = {{0xffff, 0xffff}, {0xffff, 0xffff}};
+
 static inline XCBRect XCBMakeRect(int16_t x,
                                   int16_t y,
                                   int16_t width,

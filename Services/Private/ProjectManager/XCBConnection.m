@@ -25,6 +25,7 @@
 }
 - (void) handleConfigureNotify: (xcb_configure_notify_event_t*)anEvent
 {
+	NSLog(@"Configuring window");
 	[delegate XCBConnection: self handleConfigureNotifyEvent: anEvent];
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
@@ -119,7 +120,6 @@ XCBConnection *XCBConn;
 			XCB_CW_OVERRIDE_REDIRECT, &events);
 		// FIXME: Move to delegate
 		xcb_composite_redirect_subwindows(connection, screen->root, XCB_COMPOSITE_REDIRECT_MANUAL);
-
 
 		xcb_screen_next(&iter);
 	}

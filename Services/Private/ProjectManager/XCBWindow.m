@@ -9,6 +9,7 @@ NSString *XCBWindowFrameDidChangeNotification = @"XCBWindowFrameDidChangeNotific
 {
 	SELFINIT;
 	window = aWindow;
+	[XCBConn registerWindow: self];
 	return self;
 }
 + (XCBWindow*) windowWithXCBWindow: (xcb_window_t)aWindow
@@ -31,9 +32,15 @@ NSString *XCBWindowFrameDidChangeNotification = @"XCBWindowFrameDidChangeNotific
 	xcb_connection_t *conn = [XCBConn connection];
 	xcb_window_t winid = xcb_generate_id(conn);
 	error = xcb_request_check(conn, 
-		xcb_create_window_checked(conn, 0, winid, window, aRect.origin.x, aRect.origin.y, aRect.size.width, aRect.size.height, 10, XCB_WINDOW_CLASS_INPUT_OUTPUT, 0,0,0)
-	);
-	if (error) { NSLog(@"Error %d", error->error_code);}
+		xcb_create_window_checked(conn, 0, winid, window, aRect.origin.x,
+			aRect.origin.y, aRect.size.width, aRect.size.height, 10,
+			XCB_WINDOW_CLASS_INPUT_OUTPUT, 0,0,0));
+	if (error)
+	{
+		NSLog(@"Error %d creating window.", error->error_code); 
+		free(error);
+		return nil;
+	}
 
 	xcb_map_window(conn, winid);
 	xcb_flush(conn);
@@ -46,18 +53,30 @@ NSString *XCBWindowFrameDidChangeNotification = @"XCBWindowFrameDidChangeNotific
 	[center postNotificationName: XCBWindowFrameDidChangeNotification
 	                      object: self];
 }
+- (void)handleCreateEvent: (xcb_create_notify_event_t*)anEvent
+{
+	NSLog(@"Handling create event...");
+	parent = [[XCBConn windowForXCBId: anEvent->parent] retain];
+	window = anEvent->window;
+	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
+}
 - (XCBWindow*) initWithCreateEvent: (xcb_create_notify_event_t*)anEvent
 {
 	SELFINIT;
 	NSLog(@"Creating window with parent: %d", (int)anEvent->parent);
-	parent = [[XCBConn windowForXCBId: anEvent->parent] retain];
-	window = anEvent->window;
-	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
+	[self handleCreateEvent: anEvent];
 	[XCBConn registerWindow: self];
 	return self;
 }
 + (XCBWindow*) windowWithCreateEvent: (xcb_create_notify_event_t*)anEvent
 {
+	// Don't create multiple objects for the same window.
+	id win = [XCBConn windowForXCBId: anEvent->window];
+	if (nil != win)
+	{
+		[win handleCreateEvent: anEvent];
+		return win;
+	}
 	return [[[self alloc] initWithCreateEvent: anEvent] autorelease];
 }
 - (XCBWindow*) parent
