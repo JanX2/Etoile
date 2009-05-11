@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 #include <xcb/xcb.h>
 
+#import "XCBNotifications.h"
+
 @class XCBWindow;
 
 @interface XCBConnection : NSObject {

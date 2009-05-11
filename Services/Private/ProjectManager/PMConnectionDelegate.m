@@ -29,7 +29,7 @@
 	int end = xcb_query_tree_children_length(reply);
 	xcb_window_t window = windows[0];
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-	for (int i=0; i<end ; window = windows[i++])
+	for (int i=0; i<end ; window = windows[++i])
 	{
 		NSLog(@"Querying geometry for %x", window);
 		XCBWindow *win = [XCBWindow windowWithXCBWindow: window];
@@ -58,6 +58,7 @@
 	[panelWindows release];
 	[decorationWindows release];
 	[compositeWindows release];
+	[compositers release];
 	[decorations release];
 	[super dealloc];
 }
@@ -69,6 +70,7 @@
 	decorationWindows = [NSMutableSet new];
 	compositeWindows = [NSMutableSet new];
 	decorations = [NSMutableDictionary new];
+	compositers = [NSMutableDictionary new];
 	[[XCBConnection sharedConnection] setDelegate: self];
 
 	xcb_connection_t *connection = [XCBConn connection];
@@ -93,8 +95,9 @@
 - (void)XCBConnection: (XCBConnection*)connection 
             damageAdd: (struct xcb_damage_notify_event_t*)request
 {
-	NSLog(@"Adding damage in %d", (int)request->drawable);
+	NSLog(@"Adding damage in %x", (int)request->drawable);
 	XCBRect big = XCBMakeRect(0,0,0xffff, 0xffff);
+	NSLog(@"Composite windows: %@", compositeWindows);
 	FOREACH(compositeWindows, win, PMCompositeWindow*)
 	{
 		[win drawXCBRect: big];
@@ -107,15 +110,30 @@
 	{
 		[window addToSaveSet];
 		id win = [PMDecoratedWindow windowDecoratingWindow: window];
-		[decorationWindows addObject: win];
 		[decorations setObject: win forKey: window];
-		[decorationWindows addObject: [win decorationWindow]];
-		NSLog(@"Creating composite window for decoration window %@", [win decorationWindow]);
+		id decorationWindow = [win decorationWindow];
+		[decorationWindows addObject: decorationWindow];
+		NSLog(@"Creating composite window for decoration window %@", decorationWindow);
 		PMCompositeWindow *compositeWin = 
-			[PMCompositeWindow compositeWindowWithXCBWindow: [win decorationWindow]];
+			[PMCompositeWindow compositeWindowWithXCBWindow: decorationWindow];
 		[compositeWindows addObject: compositeWin];
+		[compositers setObject: compositeWin forKey: decorationWindow];
+		NSNotificationCenter *center =
+			[NSNotificationCenter defaultCenter];
+		[center addObserver: self
+				   selector: @selector(windowDidUnMap:)
+					   name: XCBWindowDidUnMapNotification
+					 object: window];
 	}
 	[[decorations objectForKey: window] mapDecoratedWindow];
+}
+- (void)windowDidUnMap: (NSNotification*)aNotification
+{
+	XCBWindow *win = [aNotification object];
+	PMCompositeWindow *comp = [compositers objectForKey: win];
+	[compositeWindows removeObject: comp];
+	[compositers removeObjectForKey: win];
+	NSLog(@"Removed window: %@", compositeWindows);
 }
 - (void)XCBConnection: (XCBConnection*)connection 
       handleNewWindow: (XCBWindow*)window

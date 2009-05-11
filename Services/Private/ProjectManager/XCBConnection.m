@@ -27,8 +27,14 @@
 	NSLog(@"Configuring window");
 	[delegate XCBConnection: self handleConfigureNotifyEvent: anEvent];
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-	XCBWindow *win  = [self windowForXCBId: anEvent->window];
+	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	[win handleConfigureNotifyEvent: anEvent];
+}
+- (void) handleUnMapNotify: (xcb_unmap_notify_event_t*)anEvent
+{
+	NSLog(@"UnMapping window %d", anEvent->window);
+	XCBWindow *win  = [self windowForXCBId: anEvent->window];
+	[win handleUnMapNotifyEvent: anEvent];
 }
 - (void) handleMapNotify: (xcb_map_notify_event_t*)anEvent
 {
@@ -148,6 +154,7 @@ XCBConnection *XCBConn;
 			//HANDLE(BUTTON_RELEASE, ButtonRelease)
 			HANDLE(BUTTON_PRESS, ButtonPress)
 			HANDLE(MAP_REQUEST, MapRequest)
+			HANDLE(UNMAP_NOTIFY, UnMapNotify)
 			HANDLE(MAP_NOTIFY, MapNotify)
 			HANDLE(CREATE_NOTIFY, CreateNotify)
 			HANDLE(CONFIGURE_NOTIFY, ConfigureNotify)

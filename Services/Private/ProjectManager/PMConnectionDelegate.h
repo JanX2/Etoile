@@ -6,6 +6,7 @@
 	NSMutableSet *panelWindows;
 	NSMutableSet *decorationWindows;
 	NSMutableSet *compositeWindows;
+	NSMutableDictionary *compositers;
 	NSMutableDictionary *decorations;
 }
 - (void)XCBConnection: (XCBConnection*)connection

@@ -5,3 +5,5 @@
 #endif
 
 DEFINE_NOTIFICATION(WindowDidMap);
+DEFINE_NOTIFICATION(WindowDidUnMap);
+DEFINE_NOTIFICATION(WindowFrameDidChange);

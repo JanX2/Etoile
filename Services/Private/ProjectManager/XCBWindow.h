@@ -14,8 +14,9 @@
 - (XCBWindow*)parent;
 - (xcb_window_t) xcbWindowId;
 - (void)handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent;
+- (void) handleUnMapNotifyEvent: (xcb_unmap_notify_event_t*)anEvent;
 - (void)addToSaveSet;
 - (void)removeFromSaveSet;
+- (void)map;
+- (void)unmap;
 @end
-
-extern NSString *XCBWindowFrameDidChangeNotification;

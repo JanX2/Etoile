@@ -125,6 +125,5 @@ xcb_render_picture_t rootPicture;
 			0, 0,
 			frame.origin.x, frame.origin.y, 
 			frame.size.width, frame.size.height);
-	xcb_flush([XCBConn connection]);
 }
 @end

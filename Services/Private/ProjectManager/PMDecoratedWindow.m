@@ -16,6 +16,10 @@
 			   selector: @selector(windowFrameChanged:)
 				   name: XCBWindowFrameDidChangeNotification
 				 object: window];
+	[center addObserver: self
+			   selector: @selector(windowDidUnMap:)
+				   name: XCBWindowDidUnMapNotification
+				 object: window];
 
 	XCBWindow *root = [window parent];
 	NSLog(@"Root: %@", root);
@@ -45,6 +49,10 @@
 	frame.size.height += 6;
 	frame.size.width += 6;
 	return frame;
+}
+- (void)windowDidUnMap: (NSNotification*)aNotification
+{
+	[decorationWindow unmap];
 }
 - (void)windowFrameChanged: (NSNotification*)aNotification
 {

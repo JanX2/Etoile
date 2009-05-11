@@ -1,9 +1,6 @@
 #import "XCBWindow.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
-
-NSString *XCBWindowFrameDidChangeNotification = @"XCBWindowFrameDidChangeNotification";
-
 @implementation XCBWindow
 - (XCBWindow*) initWithXCBWindow: (xcb_window_t)aWindow
 {
@@ -51,11 +48,25 @@ NSString *XCBWindowFrameDidChangeNotification = @"XCBWindowFrameDidChangeNotific
 	xcb_flush(conn);
 	return [isa windowWithXCBWindow: winid];
 }
+- (void)map
+{
+	xcb_map_window([XCBConn connection], window);
+}
+- (void)unmap
+{
+	xcb_map_window([XCBConn connection], window);
+}
 - (void)handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent
 {
 	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	[center postNotificationName: XCBWindowFrameDidChangeNotification
+	                      object: self];
+}
+- (void) handleUnMapNotifyEvent: (xcb_unmap_notify_event_t*)anEvent
+{
+	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+	[center postNotificationName: XCBWindowDidUnMapNotification
 	                      object: self];
 }
 - (void)setGeometry: (xcb_get_geometry_reply_t*)reply
@@ -154,7 +165,8 @@ NSString *XCBWindowFrameDidChangeNotification = @"XCBWindowFrameDidChangeNotific
 }
 - (NSString*) description
 {
-	return [NSString stringWithFormat:@"%@ (%@)", [super description],
+	return [NSString stringWithFormat:@"%@ XID: %x (%@)", [super description],
+		   window,
 		   XCBStringFromRect(frame)];
 }
 @end
