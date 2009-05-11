@@ -5,8 +5,18 @@
 #import "PMCompositeWindow.h"
 #include  <xcb/xcb.h>
 #include <xcb/damage.h>
+#include <xcb/composite.h>
 
 @implementation PMConnectionDelegate
+- (void)redirectRoots
+{
+	xcb_connection_t *conn = [XCBConn connection];
+	FOREACH([XCBConn screens], screen, XCBScreen*)
+	{
+		xcb_window_t root = [[screen rootWindow] xcbWindowId];
+		xcb_composite_redirect_subwindows(conn, root, XCB_COMPOSITE_REDIRECT_MANUAL);
+	}
+}
 - (id)init
 {
 	SUPERINIT;
@@ -31,8 +41,9 @@
 	free(reply);
 	xcb_damage_query_version(connection, 1, 1);
 
+
 	PMApp = self;
-	[PMCompositeWindow class];
+	[self redirectRoots];
 	return self;
 }
 - (void)XCBConnection: (XCBConnection*)connection 
@@ -50,6 +61,7 @@
 {
 	if (![decorationWindows containsObject: window])
 	{
+		[window addToSaveSet];
 		id win = [PMDecoratedWindow windowDecoratingWindow: window];
 		[decorationWindows addObject: win];
 		[decorations setObject: win forKey: window];

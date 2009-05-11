@@ -122,6 +122,14 @@ NSString *XCBWindowFrameDidChangeNotification = @"XCBWindowFrameDidChangeNotific
 {
 	return window;
 }
+- (void)addToSaveSet
+{
+	xcb_change_save_set([XCBConn connection], XCB_SET_MODE_INSERT, window);
+}
+- (void)removeFromSaveSet
+{
+	xcb_change_save_set([XCBConn connection], XCB_SET_MODE_DELETE, window);
+}
 - (NSUInteger)hash
 {
 	return (NSUInteger)window;

@@ -5,7 +5,6 @@
 #import "PMConnectionDelegate.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 #include <xcb/xcbext.h>
-#include <xcb/composite.h>
 #include <xcb/damage.h>
 
 @interface XCBConnection (EventHandlers)
@@ -118,9 +117,6 @@ XCBConnection *XCBConn;
 			XCB_CW_OVERRIDE_REDIRECT, &events);
 		xcb_change_window_attributes(connection, screen->root, 
 			XCB_CW_OVERRIDE_REDIRECT, &events);
-		// FIXME: Move to delegate
-		xcb_composite_redirect_subwindows(connection, screen->root, XCB_COMPOSITE_REDIRECT_MANUAL);
-
 		xcb_screen_next(&iter);
 	}
 	xcb_flush(connection);

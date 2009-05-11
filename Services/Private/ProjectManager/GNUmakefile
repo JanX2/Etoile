@@ -6,14 +6,14 @@ include $(GNUSTEP_MAKEFILES)/common.make
 # Application
 #
 VERSION = 0.1
-TOOL_NAME = Composite
+TOOL_NAME = ProjectManager
 
 #
 # Resource files
 #
-Composite_LANGUAGES = English
+$(TOOL_NAME)_LANGUAGES = English
 
-Composite_OBJC_FILES = \
+$(TOOL_NAME)_OBJC_FILES = \
 				 PMDecoratedWindow.m\
 				 PMDecorationWindow.m\
 				 PMConnectionDelegate.m\
