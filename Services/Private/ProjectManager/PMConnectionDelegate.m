@@ -15,7 +15,51 @@
 	{
 		xcb_window_t root = [[screen rootWindow] xcbWindowId];
 		xcb_composite_redirect_subwindows(conn, root, XCB_COMPOSITE_REDIRECT_MANUAL);
+		xcb_query_tree_cookie_t cookie = xcb_query_tree(conn, root);
+		[XCBConn setHandler: self
+				   forReply: cookie.sequence
+				   selector: @selector(handleQueryTree:)];
 	}
+	xcb_flush(conn);
+}
+- (void)handleQueryTree: (xcb_query_tree_reply_t*)reply
+{
+	NSLog(@"Query tree reply received.");
+	xcb_window_t *windows = xcb_query_tree_children(reply);
+	int end = xcb_query_tree_children_length(reply);
+	xcb_window_t window = windows[0];
+	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+	for (int i=0; i<end ; window = windows[i++])
+	{
+		NSLog(@"Querying geometry for %x", window);
+		XCBWindow *win = [XCBWindow windowWithXCBWindow: window];
+		[center addObserver: self
+				   selector: @selector(geometryChanged:)
+					   name: XCBWindowFrameDidChangeNotification
+					 object: win];
+	}
+	xcb_flush([XCBConn connection]);
+}
+- (void) geometryChanged: (NSNotification*)aNotification
+{
+	id win = [aNotification object];
+	[self XCBConnection: XCBConn
+	          mapWindow: win];
+	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+	[center removeObserver: self
+	                  name: XCBWindowFrameDidChangeNotification
+	                object: win];
+}
+- (void)dealloc
+{
+	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+	[center removeObserver: self];
+	[documentWindows release];
+	[panelWindows release];
+	[decorationWindows release];
+	[compositeWindows release];
+	[decorations release];
+	[super dealloc];
 }
 - (id)init
 {
@@ -66,6 +110,7 @@
 		[decorationWindows addObject: win];
 		[decorations setObject: win forKey: window];
 		[decorationWindows addObject: [win decorationWindow]];
+		NSLog(@"Creating composite window for decoration window %@", [win decorationWindow]);
 		PMCompositeWindow *compositeWin = 
 			[PMCompositeWindow compositeWindowWithXCBWindow: [win decorationWindow]];
 		[compositeWindows addObject: compositeWin];

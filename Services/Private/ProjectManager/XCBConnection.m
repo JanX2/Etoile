@@ -153,8 +153,6 @@ XCBConnection *XCBConn;
 			HANDLE(CONFIGURE_NOTIFY, ConfigureNotify)
 
 			//HANDLE(EXPOSE, Expose)
-			case 1:
-				NSLog(@"Reply?");
 			default:
 				{
 					SEL extSel = 
@@ -172,6 +170,7 @@ XCBConnection *XCBConn;
 							event->response_type, event->sequence);
 					}
 				}
+			case 0: {}
 		}
 		eventsHandled = YES;
 	}
@@ -206,6 +205,7 @@ XCBConnection *XCBConn;
 }
 - (void) eventsReady: (NSNotification*)notification
 {
+	// Poll while there is data left in the buffer
 	while ([self handleEvents] || [self handleReplies]) {}
 	NSLog(@"Finished handling events");
 	xcb_flush(connection);

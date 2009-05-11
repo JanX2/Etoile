@@ -9,6 +9,11 @@ NSString *XCBWindowFrameDidChangeNotification = @"XCBWindowFrameDidChangeNotific
 {
 	SELFINIT;
 	window = aWindow;
+	xcb_get_geometry_cookie_t cookie =
+		xcb_get_geometry([XCBConn connection], window);
+	[XCBConn setHandler: self
+			   forReply: cookie.sequence
+			   selector: @selector(setGeometry:)];
 	[XCBConn registerWindow: self];
 	return self;
 }
@@ -49,6 +54,14 @@ NSString *XCBWindowFrameDidChangeNotification = @"XCBWindowFrameDidChangeNotific
 - (void)handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent
 {
 	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
+	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+	[center postNotificationName: XCBWindowFrameDidChangeNotification
+	                      object: self];
+}
+- (void)setGeometry: (xcb_get_geometry_reply_t*)reply
+{
+	frame = XCBMakeRect(reply->x, reply->y, reply->width, reply->height);
+	parent = [[XCBConn windowForXCBId: reply->root] retain];
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	[center postNotificationName: XCBWindowFrameDidChangeNotification
 	                      object: self];
