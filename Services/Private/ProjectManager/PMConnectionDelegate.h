@@ -5,7 +5,7 @@
 	NSMutableSet *documentWindows;
 	NSMutableSet *panelWindows;
 	NSMutableDictionary *decorationWindows;
-	NSMutableSet *compositeWindows;
+	NSMutableArray *compositeWindows;
 	NSMutableDictionary *compositers;
 	NSMutableDictionary *decoratedWindows;
 }

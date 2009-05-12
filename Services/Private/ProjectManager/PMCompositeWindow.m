@@ -39,6 +39,7 @@ xcb_render_picture_t rootPicture;
 			XCB_RENDER_CP_SUBWINDOW_MODE, &IncludeInferiors);
 
 	// Clip the picture to the window shape
+	// FIXME: Should be reset every time the shape changes.
 	XCBRect frame = [window frame];
 	xcb_xfixes_region_t region = xcb_generate_id(conn);
 	xcb_xfixes_create_region_from_window(conn, region, [window xcbWindowId], 0);

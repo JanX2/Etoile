@@ -68,7 +68,7 @@
 	documentWindows = [NSMutableSet new];
 	panelWindows = [NSMutableSet new];
 	decorationWindows = [NSMutableDictionary new];
-	compositeWindows = [NSMutableSet new];
+	compositeWindows = [NSMutableArray new];
 	decoratedWindows = [NSMutableDictionary new];
 	compositers = [NSMutableDictionary new];
 	[[XCBConnection sharedConnection] setDelegate: self];
