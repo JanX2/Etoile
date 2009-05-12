@@ -148,7 +148,7 @@ XCBConnection *XCBConn;
 - (BOOL)handleEvents
 {
 	BOOL eventsHandled = NO;
-	NSLog(@"Handling events");
+	//NSLog(@"Handling events");
 	xcb_generic_event_t *event;
 	while (NULL != (event = xcb_poll_for_event(connection)))
 	{
@@ -192,7 +192,7 @@ XCBConnection *XCBConn;
 - (BOOL)handleReplies
 {
 	BOOL repliesHandled = NO;
-	NSLog(@"Handling replies");
+	//NSLog(@"Handling replies");
 	for(NSUInteger i=0 ; i<[replyHandlers count] ; i++)
 	{
 		NSArray *handler = [replyHandlers objectAtIndex: i];
@@ -220,7 +220,7 @@ XCBConnection *XCBConn;
 {
 	// Poll while there is data left in the buffer
 	while ([self handleEvents] || [self handleReplies]) {}
-	NSLog(@"Finished handling events");
+	//NSLog(@"Finished handling events");
 	xcb_flush(connection);
 	[handle waitForDataInBackgroundAndNotify];
 }

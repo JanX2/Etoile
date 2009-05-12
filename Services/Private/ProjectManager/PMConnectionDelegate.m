@@ -123,8 +123,8 @@
 	// slow.  The point of the damage extension is to avoid this.  Set the clip
 	// region on the root Picture before painting and the server will eliminate
 	// redundant operations.
-	NSLog(@"Adding damage in %x", (int)request->drawable);
-	NSLog(@"Composite windows: %@", compositeWindows);
+	//NSLog(@"Adding damage in %x", (int)request->drawable);
+	//NSLog(@"Composite windows: %@", compositeWindows);
 	[PMCompositeWindow setClipRegionFromDamage: request];
 	[self redraw];
 	[PMCompositeWindow clearClipRegion];
@@ -167,13 +167,8 @@
 	if (nil != comp)
 	{
 		[compositeWindows removeObject: comp];
-		NSLog(@"Removed window %@ from %@", comp, compositeWindows);
 		[compositers removeObjectForKey: win];
 		[self setNeedsDisplayInXCBRect: [win frame]];
-	}
-	else
-	{
-		NSLog(@"Not removing composite window - window %@ not registered in %@", win, compositers);
 	}
 }
 - (void)windowDidUnMap: (NSNotification*)aNotification
@@ -182,13 +177,10 @@
 }
 - (void)windowDidDestroy: (NSNotification*)aNotification
 {
-	NSLog(@"Decoration Windows: \n%@", decorationWindows);
-	NSLog(@"Decorated Windows: \n%@", decoratedWindows);
 	XCBWindow *win = [aNotification object];
 	XCBWindow *decoratedWin = [decoratedWindows objectForKey: win];
 	[self removeCompositingForWindow: win];
 	[self removeCompositingForWindow: decoratedWin];
-	NSLog(@"Destroyed window %@", win);
 	[decorationWindows removeObjectForKey: decoratedWin];
 	[decoratedWindows removeObjectForKey: win];
 }

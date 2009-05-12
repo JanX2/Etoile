@@ -37,6 +37,15 @@ xcb_render_picture_t rootPicture;
 	uint32_t IncludeInferiors = 1;
 	xcb_render_create_picture(conn, picture, winID, format->id,
 			XCB_RENDER_CP_SUBWINDOW_MODE, &IncludeInferiors);
+
+	// Clip the picture to the window shape
+	XCBRect frame = [window frame];
+	xcb_xfixes_region_t region = xcb_generate_id(conn);
+	xcb_xfixes_create_region_from_window(conn, region, [window xcbWindowId], 0);
+	xcb_xfixes_translate_region(conn, region, frame.origin.x, frame.origin.y);
+	xcb_xfixes_set_picture_clip_region(conn, picture, region, 0, 0);
+	xcb_xfixes_destroy_region(conn, region);
+
 	root = rootPicture;
 	return self;
 }
@@ -102,7 +111,6 @@ xcb_render_picture_t rootPicture;
 	xcb_render_color_t white = {0xafff, 0, 0xafff, 0xffff};
 	xcb_screen_t *screenInfo = [screen screenInfo];
 	xcb_rectangle_t rect = {0, 0, screenInfo->width_in_pixels, screenInfo->height_in_pixels};
-	NSLog(@"Drawing rectangle in %x", rootPicture);
 	xcb_render_fill_rectangles(conn, XCB_RENDER_PICT_OP_OVER, rootPicture, white, 1, &rect);
 }
 + (void)clearClipRegion
@@ -148,7 +156,7 @@ xcb_render_picture_t rootPicture;
 {
 	XCBRect frame = [window frame];
 	xcb_connection_t *conn = [XCBConn connection];
-	NSLog(@"Drawing window %x into %x", picture, root);
+	//NSLog(@"Drawing window %x into %x", picture, root);
 	/*
 	xcb_render_transform_t transform = {
 	   	0x20000, 0, 0,
@@ -173,6 +181,8 @@ xcb_render_picture_t rootPicture;
 		free(buffer);
 	}
 	*/
+
+
 	xcb_render_composite(conn, XCB_RENDER_PICT_OP_ATOP,
 			picture, 0, rootPicture, 
 			0, 0,
