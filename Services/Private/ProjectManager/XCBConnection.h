@@ -21,6 +21,7 @@
 - (NSArray*) screens;
 - (XCBWindow*) windowForXCBId: (xcb_window_t)anId;
 - (void) registerWindow: (XCBWindow*)aWindow;
+- (void)unregisterWindow: (XCBWindow*)aWindow;
 - (void)setHandler: (id)anObject 
           forReply: (unsigned int)sequence
           selector: (SEL)aSelector;

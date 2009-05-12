@@ -26,7 +26,8 @@
 }
 - (id)copyWithZone: (NSZone*)aZone
 {
-	return [[[self class] allocWithZone: aZone] initWithXCBWindow: window];
+	// Window objects are unique.  Copying should not do anything.
+	return [self retain];
 }
 - (XCBWindow*) createChildInRect: (XCBRect)aRect
 {
@@ -46,7 +47,12 @@
 
 	xcb_map_window(conn, winid);
 	xcb_flush(conn);
+	NSLog(@"Creating child window %x", winid);
 	return [isa windowWithXCBWindow: winid];
+}
+- (void)destroy
+{
+	xcb_destroy_window([XCBConn connection], window);
 }
 - (void)map
 {
@@ -59,37 +65,39 @@
 - (void)handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent
 {
 	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
-	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-	[center postNotificationName: XCBWindowFrameDidChangeNotification
-	                      object: self];
+	XCBNOTIFY(WindowFrameDidChange);
+}
+- (void) handleDestroyNotifyEvent: (xcb_destroy_notify_event_t*)anEvent
+{
+	XCBNOTIFY(WindowDidDestroy);
+	[XCBConn unregisterWindow: self];
 }
 - (void) handleUnMapNotifyEvent: (xcb_unmap_notify_event_t*)anEvent
 {
-	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-	[center postNotificationName: XCBWindowDidUnMapNotification
-	                      object: self];
+	NSLog(@"Umapping %@", self);
+	//XCBNOTIFY(WindowDidUnMap);
 }
 - (void)setGeometry: (xcb_get_geometry_reply_t*)reply
 {
 	frame = XCBMakeRect(reply->x, reply->y, reply->width, reply->height);
 	parent = [[XCBConn windowForXCBId: reply->root] retain];
-	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-	[center postNotificationName: XCBWindowFrameDidChangeNotification
-	                      object: self];
+	XCBNOTIFY(WindowFrameDidChange);
 }
 - (void)handleCreateEvent: (xcb_create_notify_event_t*)anEvent
 {
 	NSLog(@"Handling create event...");
-	parent = [[XCBConn windowForXCBId: anEvent->parent] retain];
+	ASSIGN(parent, [XCBConn windowForXCBId: anEvent->parent]);
 	window = anEvent->window;
 	frame = XCBMakeRect(anEvent->x, anEvent->y, anEvent->width, anEvent->height);
+	XCBNOTIFY(WindowFrameDidChange);
 }
 - (XCBWindow*) initWithCreateEvent: (xcb_create_notify_event_t*)anEvent
 {
 	SELFINIT;
 	NSLog(@"Creating window with parent: %d", (int)anEvent->parent);
-	[self handleCreateEvent: anEvent];
+	window = anEvent->window;
 	[XCBConn registerWindow: self];
+	[self handleCreateEvent: anEvent];
 	return self;
 }
 + (XCBWindow*) windowWithCreateEvent: (xcb_create_notify_event_t*)anEvent

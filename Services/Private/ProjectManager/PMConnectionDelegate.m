@@ -59,7 +59,7 @@
 	[decorationWindows release];
 	[compositeWindows release];
 	[compositers release];
-	[decorations release];
+	[decoratedWindows release];
 	[super dealloc];
 }
 - (id)init
@@ -67,9 +67,9 @@
 	SUPERINIT;
 	documentWindows = [NSMutableSet new];
 	panelWindows = [NSMutableSet new];
-	decorationWindows = [NSMutableSet new];
+	decorationWindows = [NSMutableDictionary new];
 	compositeWindows = [NSMutableSet new];
-	decorations = [NSMutableDictionary new];
+	decoratedWindows = [NSMutableDictionary new];
 	compositers = [NSMutableDictionary new];
 	[[XCBConnection sharedConnection] setDelegate: self];
 
@@ -92,27 +92,56 @@
 	[self redirectRoots];
 	return self;
 }
-- (void)XCBConnection: (XCBConnection*)connection 
-            damageAdd: (struct xcb_damage_notify_event_t*)request
+- (void)redraw
 {
-	NSLog(@"Adding damage in %x", (int)request->drawable);
-	XCBRect big = XCBMakeRect(0,0,0xffff, 0xffff);
-	NSLog(@"Composite windows: %@", compositeWindows);
+	[PMCompositeWindow drawBackground];
+	XCBRect big = XCBMakeRect(0, 0, 0xffff, 0xffff);
 	FOREACH(compositeWindows, win, PMCompositeWindow*)
 	{
 		[win drawXCBRect: big];
 	}
 }
+- (void)setNeedsDisplayInXCBRect: (XCBRect)aRect
+{
+	/*
+	 * This should add the rectangle to the clip regions and post a damage
+	 * notification thingy.
+	xcb_connection_t *conn = [XCBConn connection];
+	xcb_xfixes_region_t region = xcb_generate_id(conn);
+	xcb_rectangle_t rect = XCBRectangleFromRect(aRect);
+	xcb_xfixes_create_region(conn, region, 1, &rect);
+
+	xcb_xfixes_destroy_region(conn, region);
+	*/
+	[PMCompositeWindow clearClipRegion];
+	[self redraw];
+}
+- (void)XCBConnection: (XCBConnection*)connection 
+            damageAdd: (struct xcb_damage_notify_event_t*)request
+{
+	// FIXME: This does a full redraw for any screen update, which is painfully
+	// slow.  The point of the damage extension is to avoid this.  Set the clip
+	// region on the root Picture before painting and the server will eliminate
+	// redundant operations.
+	NSLog(@"Adding damage in %x", (int)request->drawable);
+	NSLog(@"Composite windows: %@", compositeWindows);
+	[PMCompositeWindow setClipRegionFromDamage: request];
+	[self redraw];
+	[PMCompositeWindow clearClipRegion];
+}
 - (void)XCBConnection: (XCBConnection*)connection 
             mapWindow: (XCBWindow*)window
 {
-	if (![decorationWindows containsObject: window])
+	if (![decorationWindows objectForKey: window] 
+		 && ![decoratedWindows objectForKey: window])
 	{
+		NSLog(@"New window: %@", window);
 		[window addToSaveSet];
-		id win = [PMDecoratedWindow windowDecoratingWindow: window];
-		[decorations setObject: win forKey: window];
-		id decorationWindow = [win decorationWindow];
-		[decorationWindows addObject: decorationWindow];
+		PMDecoratedWindow *win = [PMDecoratedWindow windowDecoratingWindow: window];
+		XCBWindow *decorationWindow = [win decorationWindow];
+		NSLog(@"New decoration window: %@", decorationWindow);
+		[decorationWindows setObject: window forKey: decorationWindow];
+		[decoratedWindows setObject: decorationWindow forKey: window];
 		NSLog(@"Creating composite window for decoration window %@", decorationWindow);
 		PMCompositeWindow *compositeWin = 
 			[PMCompositeWindow compositeWindowWithXCBWindow: decorationWindow];
@@ -123,17 +152,45 @@
 		[center addObserver: self
 				   selector: @selector(windowDidUnMap:)
 					   name: XCBWindowDidUnMapNotification
+					 object: decorationWindow];
+		[center addObserver: self
+				   selector: @selector(windowDidDestroy:)
+					   name: XCBWindowDidDestroyNotification
 					 object: window];
+		NSLog(@"%@, %@, %@", window, decorationWindow, compositeWin);
+		[win mapDecoratedWindow];
 	}
-	[[decorations objectForKey: window] mapDecoratedWindow];
+}
+- (void)removeCompositingForWindow: (XCBWindow*)win
+{
+	PMCompositeWindow *comp = [compositers objectForKey: win];
+	if (nil != comp)
+	{
+		[compositeWindows removeObject: comp];
+		NSLog(@"Removed window %@ from %@", comp, compositeWindows);
+		[compositers removeObjectForKey: win];
+		[self setNeedsDisplayInXCBRect: [win frame]];
+	}
+	else
+	{
+		NSLog(@"Not removing composite window - window %@ not registered in %@", win, compositers);
+	}
 }
 - (void)windowDidUnMap: (NSNotification*)aNotification
 {
+	[self removeCompositingForWindow: [aNotification object]];
+}
+- (void)windowDidDestroy: (NSNotification*)aNotification
+{
+	NSLog(@"Decoration Windows: \n%@", decorationWindows);
+	NSLog(@"Decorated Windows: \n%@", decoratedWindows);
 	XCBWindow *win = [aNotification object];
-	PMCompositeWindow *comp = [compositers objectForKey: win];
-	[compositeWindows removeObject: comp];
-	[compositers removeObjectForKey: win];
-	NSLog(@"Removed window: %@", compositeWindows);
+	XCBWindow *decoratedWin = [decoratedWindows objectForKey: win];
+	[self removeCompositingForWindow: win];
+	[self removeCompositingForWindow: decoratedWin];
+	NSLog(@"Destroyed window %@", win);
+	[decorationWindows removeObjectForKey: decoratedWin];
+	[decoratedWindows removeObjectForKey: win];
 }
 - (void)XCBConnection: (XCBConnection*)connection 
       handleNewWindow: (XCBWindow*)window

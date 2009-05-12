@@ -4,10 +4,10 @@
 @interface PMConnectionDelegate : NSObject {
 	NSMutableSet *documentWindows;
 	NSMutableSet *panelWindows;
-	NSMutableSet *decorationWindows;
+	NSMutableDictionary *decorationWindows;
 	NSMutableSet *compositeWindows;
 	NSMutableDictionary *compositers;
-	NSMutableDictionary *decorations;
+	NSMutableDictionary *decoratedWindows;
 }
 - (void)XCBConnection: (XCBConnection*)connection
       handleNewWindow: (XCBWindow*)window;

@@ -8,6 +8,9 @@
 	xcb_render_picture_t root;
 	XCBRect scaledFrame;
 }
++ (void)drawBackground;
++ (void)setClipRegionFromDamage: (struct xcb_damage_notify_event_t*)request;
++ (void)clearClipRegion;
 + (PMCompositeWindow*)compositeWindowWithXCBWindow: (XCBWindow*)aWindow;
 - (void)setRootPicture: (xcb_render_picture_t)aPicture;
 - (xcb_render_picture_t)picture;

@@ -26,25 +26,30 @@
 {
 	NSLog(@"Configuring window");
 	[delegate XCBConnection: self handleConfigureNotifyEvent: anEvent];
-	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	[win handleConfigureNotifyEvent: anEvent];
 }
+- (void) handleDestroyNotify: (xcb_destroy_notify_event_t*)anEvent
+{
+	XCBWindow *win = [self windowForXCBId: anEvent->window];
+	[win handleDestroyNotifyEvent: anEvent];
+}
 - (void) handleUnMapNotify: (xcb_unmap_notify_event_t*)anEvent
 {
-	NSLog(@"UnMapping window %d", anEvent->window);
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
+	NSLog(@"UnMapping window %@ (%x)", win, anEvent->window);
 	[win handleUnMapNotifyEvent: anEvent];
 }
 - (void) handleMapNotify: (xcb_map_notify_event_t*)anEvent
 {
-	NSLog(@"Mapping window %d", anEvent->window);
+	NSLog(@"Mapping window %x", anEvent->window);
 	NSLog(@"Redirect? %d", anEvent->override_redirect);
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
 	[delegate XCBConnection: self mapWindow: win];
 }
 - (void) handleCreateNotify: (xcb_create_notify_event_t*)anEvent
 {
+	NSLog(@"Created window %x", anEvent->window);
 	XCBWindow *win  = [XCBWindow windowWithCreateEvent: anEvent];
 	//FIXME: Inefficient; track damaged regions in the client.
 	xcb_damage_damage_t damageid = xcb_generate_id(connection);
@@ -156,6 +161,7 @@ XCBConnection *XCBConn;
 			HANDLE(MAP_REQUEST, MapRequest)
 			HANDLE(UNMAP_NOTIFY, UnMapNotify)
 			HANDLE(MAP_NOTIFY, MapNotify)
+			HANDLE(DESTROY_NOTIFY, DestroyNotify)
 			HANDLE(CREATE_NOTIFY, CreateNotify)
 			HANDLE(CONFIGURE_NOTIFY, ConfigureNotify)
 
@@ -229,6 +235,11 @@ XCBConnection *XCBConn;
 		[NSValue valueWithBytes: &aSelector objCType: @encode(SEL)],
 		nil];
 	[replyHandlers addObject: value];
+}
+- (void)unregisterWindow: (XCBWindow*)aWindow
+{
+	NSLog(@"Unregistering window: %@", aWindow);
+	NSMapRemove(windows, (void*)(intptr_t)[aWindow xcbWindowId]);
 }
 - (void) registerWindow: (XCBWindow*)aWindow
 {

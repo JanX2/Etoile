@@ -20,11 +20,21 @@
 			   selector: @selector(windowDidUnMap:)
 				   name: XCBWindowDidUnMapNotification
 				 object: window];
+	[center addObserver: self
+			   selector: @selector(windowDidDestroy:)
+				   name: XCBWindowDidDestroyNotification
+				 object: window];
 
 	XCBWindow *root = [window parent];
 	NSLog(@"Root: %@", root);
 	decorationWindow = 
 		[root createChildInRect: [self idealDecorationWindowFrame]];
+
+	// Register to receive map/unmap/destroy events from children of the
+	// decoration window
+	uint32_t events = XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY;
+	xcb_change_window_attributes([XCBConn connection], 
+			[decorationWindow xcbWindowId], XCB_CW_EVENT_MASK, &events);
 	return self;
 }
 - (void)dealloc
@@ -52,7 +62,19 @@
 }
 - (void)windowDidUnMap: (NSNotification*)aNotification
 {
-	[decorationWindow unmap];
+	if (!ignoreUnmap)
+	{
+		NSLog(@"Decorated window unmapped, removing decoration");
+		[decorationWindow unmap];
+	}
+	ignoreUnmap = NO;
+}
+- (void)windowDidDestroy: (NSNotification*)aNotification
+{
+	NSLog(@"Decorated window destroyed.");
+	[decorationWindow destroy];
+	DESTROY(decorationWindow);
+	DESTROY(window);
 }
 - (void)windowFrameChanged: (NSNotification*)aNotification
 {
@@ -68,6 +90,7 @@
 	xcb_connection_t *conn = [[XCBConnection sharedConnection] connection];
 	xcb_window_t winID = [[self decorationWindow] xcbWindowId];
 	xcb_map_window(conn, winID);
+	ignoreUnmap = YES;
 	xcb_reparent_window(conn, [window xcbWindowId], winID, 3,3);
 	xcb_flush(conn);
 	NSLog(@"Decorating window %d", winID);

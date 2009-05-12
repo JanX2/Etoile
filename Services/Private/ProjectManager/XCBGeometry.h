@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <xcb/xproto.h>
 
 typedef struct _XCBPoint
 {
@@ -33,4 +34,16 @@ static inline NSString *XCBStringFromRect(XCBRect rect)
 {
 	return [NSString stringWithFormat:@"(%hd, %hd), (%hd, %hd)",
 		   rect.origin.x, rect.origin.y, rect.size.width, rect.size.height];
+}
+
+static inline xcb_rectangle_t XCBRectangleFromRect(XCBRect rect)
+{
+	xcb_rectangle_t r = 
+		{rect.origin.x, rect.origin.y, rect.size.width, rect.size.height};
+	return r;
+}
+static inline XCBRect XCBRectFromRectangle(xcb_rectangle_t rect)
+{
+	XCBRect r = {{rect.x, rect.y}, {rect.width, rect.height}};
+	return r;
 }
