@@ -11,29 +11,53 @@
 
 static NSString* ALL = @"-- All --";
 static NSString* AYU = @"<< As yet Undefined >>";
+static int INSTANCE_VIEW = 0;
+static int CLASS_VIEW = 1;
 
 @implementation ModelClass
 
 - (id) init
 {
 	self = [super init];
-	methods = [NSMutableArray new];
-  	categories = [NSMutableDictionary new]; 
+	instanceMethods = [NSMutableArray new];
+  	instanceCategories = [NSMutableDictionary new]; 
+	classMethods = [NSMutableArray new];
+  	classCategories = [NSMutableDictionary new]; 
 	properties = [NSMutableArray new];
 	parent = [[NSString alloc] initWithString: @"NSObject"];
 	[self setupDocumentation];
+	[self setViewType: INSTANCE_VIEW];
   	return self;
 }
 
 - (void) dealloc
 {
-	[methods release];
-  	[categories release];
+	[classMethods release];
+  	[classCategories release];
+	[instanceMethods release];
+  	[instanceCategories release];
 	[properties release];
 	[parent release];
 	[name release];
 	[documentation release];
   	[super dealloc];
+}
+
+- (void) setViewType: (int) type
+{
+	if (type == INSTANCE_VIEW) {
+		methods = instanceMethods;
+		categories = instanceCategories;
+	} else {
+		methods = classMethods;
+		categories = classCategories;
+	}
+	currentViewType = type;
+}
+
+- (int) currentViewType
+{
+	return currentViewType;
 }
 
 - (void) setupDocumentation
@@ -241,9 +265,15 @@ static NSString* AYU = @"<< As yet Undefined >>";
 		}
 		[content appendString: @"|"];
 	}
-	for (int i=0; i<[methods count]; i++)
+	for (int i=0; i<[classMethods count]; i++)
 	{
-		ModelMethod* method = [methods objectAtIndex: i];
+		ModelMethod* method = [classMethods objectAtIndex: i];
+		[content appendString: @"\n+"];
+		[content appendString: [method representation]];
+	}
+	for (int i=0; i<[instanceMethods count]; i++)
+	{
+		ModelMethod* method = [instanceMethods objectAtIndex: i];
 		[content appendString: @"\n"];
 		[content appendString: [method representation]];
 	}
@@ -255,11 +285,11 @@ static NSString* AYU = @"<< As yet Undefined >>";
 - (NSString*) dynamicRepresentation
 {
 	NSMutableString* content = [NSMutableString new];
-	for (int i=0; i<[methods count]; i++)
+	for (int i=0; i<[instanceMethods count]; i++)
 	{
 		[content appendString: 
 			[NSString stringWithFormat: @"\n%@ extend [", name]];
-		ModelMethod* method = [methods objectAtIndex: i];
+		ModelMethod* method = [instanceMethods objectAtIndex: i];
 		NSString* rep = [method representation];
 		NSLog (@"method rep <%@>", rep);
 		if (rep != nil && [rep length]) {

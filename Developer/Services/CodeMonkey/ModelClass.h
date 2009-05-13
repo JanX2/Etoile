@@ -17,11 +17,17 @@
 	NSMutableAttributedString* documentation;
 	NSMutableDictionary* categories;
 	NSMutableArray* methods;
+	NSMutableDictionary* classCategories;
+	NSMutableArray* classMethods;
+	NSMutableDictionary* instanceCategories;
+	NSMutableArray* instanceMethods;
 	NSMutableArray* properties;
 	LKSubclass* ast;
+	int currentViewType;
 }
 
 - (id) initWithName: (NSString*) aName;
+- (void) setViewType: (int) type;
 - (void) setAST: (LKSubclass*) aClassAST;
 - (LKSubclass*) ast;
 - (void) generateAST;

@@ -1,4 +1,7 @@
 2009-05-13 Nicolas Roard <nicolas@roard.com>
+	Add support for class methods and categories in ModelClass
+
+2009-05-13 Nicolas Roard <nicolas@roard.com>
 	Add an IDE class and refactor Controller to use it
 
 2009-05-12 Nicolas Roard <nicolas@roard.com>
