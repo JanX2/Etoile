@@ -14,6 +14,7 @@
 #import "ASTModel.h"
 #import "ASTReplace.h"
 #import "ASTTransform.h"
+#import "IDE.h"
 
 @interface LKAST (pretty)
 - (NSMutableAttributedString*) prettyprint;
@@ -67,48 +68,8 @@
 - (void) loadFile: (NSString*) path
 {
 	NSString* fileContent = [NSString stringWithContentsOfFile: path];
-	[self loadContent: fileContent];
-}
-
-- (void) loadContent: (NSString*) aContent
-{
-	id parser = [[[LKCompiler compilerForLanguage: @"Smalltalk"] parserClass] new];
-	LKAST* ast;
-	NS_DURING
-		ast = [parser parseString: aContent];
-		//[ast visitWithVisitor: [ASTTransform new]];
-		ASTModel* model = [ASTModel new];
-		NSLog (@"*** Model visitor ***");
-		[ast visitWithVisitor: model];
-		NSLog (@"model: <%@>", model);
-		NSMutableDictionary* readClasses = [model classes];
-		NSLog (@"classes: <%@>", readClasses);
-		NSArray* keys = [readClasses allKeys];
-		for (int i=0; i<[keys count]; i++)
-		{
-			NSString* key = [keys objectAtIndex: i];
-			[classes addObject: [readClasses objectForKey: key]];
-		}
-		//[LKCompiler setDebugMode: YES];
-		/*
-		NSLog (@"reay to compile %@", classes);
-		[ast compileWith: defaultJIT()];
-		// We create instances so that categories can later be applied
-		NSLog(@"all class compiled (%d)", [classes count]);
-		for (int i=0; i<[classes count]; i++)
-		{
-			ModelClass* aClass = [classes objectAtIndex: i];
-			Class theClass = NSClassFromString([aClass name]);
-			NSLog (@"new class (%@)", theClass);
-			id obj = [theClass new];
-			[obj release];
-		}
-		*/
-		[self update];
-	NS_HANDLER
-		NSLog (@"Exception %@", [localException reason]);
-	NS_ENDHANDLER
-	[parser release];
+	[[IDE default] loadContent: fileContent];
+	[self update];
 }
 
 - (void) setTitle: (NSString*) title for: (NSTableView*) tv
@@ -119,13 +80,11 @@
 - (id) init
 {
 	self = [super init];
-	classes = [NSMutableArray new];
 	return self;
 }
 
 - (void) dealloc
 {
-	[classes release];
 	[super dealloc];
 }
 
@@ -151,9 +110,9 @@
 - (ModelClass*) currentClass
 {
 	int row = [classesList selectedRow];	
-	if (row != -1 && [classes count] > row)
+	if (row != -1 && [[[IDE default] classes] count] > row)
 	{
-		return [classes objectAtIndex: row];
+		return [[[IDE default] classes] objectAtIndex: row];
 	}
 	return nil;
 }
@@ -268,7 +227,7 @@
 {
 	if (tv == classesList) 
 	{
-		return [classes count];
+		return [[[IDE default] classes] count];
 	}
 	if (tv == categoriesList)
 	{
@@ -298,7 +257,7 @@
 {
 	if (tv == classesList)
 	{
-		ModelClass* aClass = (ModelClass*) [classes objectAtIndex: row];
+		ModelClass* aClass = (ModelClass*) [[[IDE default] classes] objectAtIndex: row];
 		return [aClass name];
 	}	
 	if (tv == categoriesList)
@@ -337,7 +296,7 @@
 
 	if ([self currentClass] && [categoryName length] > 0)
 	{
-		[[self currentClass] setCategory: categoryName];
+		[[IDE default] addCategory: categoryName onClass: [self currentClass]];
 		[self update];
 	}
 }
@@ -350,10 +309,7 @@
   	
 	if ([className length] > 0) 
 	{
-  		ModelClass* aClass = [[ModelClass alloc] initWithName: className];
-		[aClass generateAST];
-		[classes addObject: aClass];
-		[aClass release];
+		[[IDE default] addClass: className];
 		[self update];
 	}
 }
@@ -366,11 +322,10 @@
 		NSMutableAttributedString* code = [content textStorage];
 		if ([code length] > 0)
 		{
-			ModelMethod* aMethod = [ModelMethod new];
-			[aMethod setCode: code];
-			[aMethod setCategory: [self currentCategoryName]];
-			[[self currentClass] addMethod: aMethod];
-			[aMethod release];
+			[[IDE default]
+				addMethod: code
+				withCategory: [self currentCategoryName]
+				onClass: [self currentClass]];
 			[self update];
 		}
 		else
@@ -392,7 +347,7 @@
 	{
   		NSString* propertyName = [newPropertyNameField stringValue];
 		NSLog (@"propertyName added: %@", propertyName);
-		[class addProperty: propertyName];	
+		[[IDE default] addProperty: propertyName onClass: class];
 		[self showClassDetails];
 		[self update];
 	}
@@ -428,7 +383,7 @@
 	int row = [classesList selectedRow];
 	if (row > -1) 
 	{
-		[classes removeObjectAtIndex: row];
+		[[[IDE default] classes] removeObjectAtIndex: row];
 		[self update];
 	}
 }
@@ -453,31 +408,14 @@
 
 - (void) saveToFile: (id)sender
 {
-	NSMutableString* output = [NSMutableString new];
-	for (int i=0; i<[classes count]; i++)
-	{
-		ModelClass* class = [classes objectAtIndex: i];
-		NSString* representation = [class representation];
-		id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
-		id parser = [[[compiler parserClass] new] autorelease];
-		LKAST* ast = [parser parseString: representation];
-		[output appendString: [[ast prettyprint] string]];
-		/*
-		NSString* representation = [[[class ast] prettyprint] string];
-		NSLog (@"rep1: %@", representation);
-		[output appendString: representation];
-		*/
-		[output appendString: @"\n\n"];
-	}
 	NSSavePanel* panel = [NSSavePanel savePanel];
 	[panel setRequiredFileType: @"st"];
 	if ([panel runModal] == NSFileHandlingPanelOKButton) 
 	{
 		NSLog(@" save file <%@>", [panel filename]);
+	        NSMutableString* output = [[IDE default] allClassesContent];
 		[output writeToFile: [panel filename] atomically: YES];	
 	}
-
-	[output release];
 }
 
 - (void) save: (id)sender

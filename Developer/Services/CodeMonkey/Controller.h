@@ -43,10 +43,9 @@
   BOOL quotesOpened;
   NSUInteger cursorPosition;
 
-  NSMutableArray* classes;
+  //NSMutableArray* classes;
 }
 - (void) loadFile: (NSString*) path;
-- (void) loadContent: (NSString*) aContent;
 - (void) addCategory: (id)sender;
 - (void) addClass: (id)sender;
 - (void) addMethod: (id)sender;

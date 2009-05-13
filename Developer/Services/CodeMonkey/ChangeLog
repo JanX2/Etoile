@@ -1,3 +1,6 @@
+2009-05-13 Nicolas Roard <nicolas@roard.com>
+	Add an IDE class and refactor Controller to use it
+
 2009-05-12 Nicolas Roard <nicolas@roard.com>
         Add some comments in the Controller
 	Small modif in the gorm file to better center
