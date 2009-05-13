@@ -215,6 +215,8 @@
 	NSLog (@"propertyList, reloadData");
 	[propertiesList reloadData];
 	[propertiesList sizeToFit];
+
+	// If we have a selected method, show it
         if ([self currentMethod])
 	{
 		NSAttributedString* code = [[self currentMethod] code];
@@ -225,11 +227,14 @@
 		NSString* signature = [[self currentMethod] signature];
 		[signatureTextField setStringValue: signature];
 	}
+
+        // If we have a selected class, set its class comment
 	if ([self currentClass])
 	{
 		NSAttributedString* string = [[self currentClass] documentation];
 		[[classDocTextView textStorage] setAttributedString: string];
 	}
+
 	[self setStatus: @"Ready"];
 }
 
@@ -507,8 +512,6 @@
 			}
 			else // we add a new method
 			{
-				// TODO: refactor addMethod
-				// FIXME: there is a crash if sig but no body
 				ModelMethod* aMethod = [ModelMethod new];
 				[aMethod setCode: code];
 				[aMethod setSignature: signature];
@@ -575,7 +578,11 @@
 	[statusTextField setStringValue: text];
 }
 
-- (void) prettyPrint
+/**
+ * This parse the currently-edited method and generate its AST.
+ * The new AST then replace the old one in the class.
+ */
+- (void) recreateMethodAST
 {
 	if ([self currentClass]) 
 	{
@@ -620,10 +627,17 @@
 	}
 }
 
+/**
+ * We use the textDidChange: hook to pretty-print the code:
+ * - we regenerate the code's AST
+ * - we use the AST to create a pretty-printed version of the code's attributed string
+ * - we finally replace the current attributed string with the new one
+ */
 - (void) textDidChange: (NSNotification*) aNotification
 {
+	// We are modifying the codeTextView's attributed string
 	if (doingPrettyPrint) {
-		[self prettyPrint];
+		[self recreateMethodAST];
 		doingPrettyPrint = NO;
 		NSUInteger index = [[codeTextView textStorage] length] - cursorPosition;
 		NSRange range = NSMakeRange(index, 0);

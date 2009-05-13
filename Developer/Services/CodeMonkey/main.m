@@ -51,7 +51,9 @@ void loadScript(NSString* name) {
                 NSLog(@"Unable to find %@.%@ in bundle %@.", name, @"st", [NSBundle mainBundle]);
                 return;
         }
-        [[[LKCompiler compilerForLanguage: @"Smalltalk"] compiler] compileString:[NSString stringWithContentsOfFile:path]];
+        LKCompiler* smalltalkCompiler = [[LKCompiler compilerForLanguage: @"Smalltalk"] compiler];
+        NSLog (@"Smalltalk compiler (%@) compiling %@", smalltalkCompiler, name);
+        [smalltalkCompiler compileString: [NSString stringWithContentsOfFile:path]];
 }
 int main (int argc, char** argv)
 {
