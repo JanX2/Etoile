@@ -1,4 +1,7 @@
 2009-05-13 Nicolas Roard <nicolas@roard.com>
+	Add IDE.[hm] forgotten before :)
+
+2009-05-13 Nicolas Roard <nicolas@roard.com>
 	Add support for class/instance methods in Controller
 	* Modified the Browser.gorm to deal with the class/instance switch
 	* Added a switch method in Controller
