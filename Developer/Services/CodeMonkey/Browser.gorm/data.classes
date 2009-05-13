@@ -13,7 +13,8 @@
 	    "runClass:",
 	    "saveToFile:",
 	    "addProperty:",
-	    "removeProperty:"
+	    "removeProperty:",
+	    "switchViewType:"
 	);
 	Outlets = (
 	    categoriesList,
@@ -50,13 +51,14 @@
 	    "addMethod:",
 	    "addProperty:",
 	    "load:",
-	    "removeProperty:",
-	    "saveToFile:",
+	    "switchViewType:",
 	    "removeCategory:",
 	    "removeClass:",
 	    "removeMethod:",
+	    "removeProperty:",
 	    "runClass:",
 	    "save:",
+	    "saveToFile:",
 	    "saveToFile:"
 	);
 	Super = NSObject;

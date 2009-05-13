@@ -88,6 +88,16 @@
 	[super dealloc];
 }
 
+- (void) switchViewType: (id) sender
+{
+	if ([self currentClass])
+	{
+		[[self currentClass] setViewType:
+			[[sender selectedCell] tag]];
+		[self update];
+	}
+}
+
 - (void) swapContentViewWith: (NSView*) aView
 {
 	[currentView retain]; // removeFromSuperview release it..

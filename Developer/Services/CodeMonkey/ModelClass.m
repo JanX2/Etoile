@@ -48,9 +48,11 @@ static int CLASS_VIEW = 1;
 	if (type == INSTANCE_VIEW) {
 		methods = instanceMethods;
 		categories = instanceCategories;
+		NSLog(@"INSTANCE VIEW");
 	} else {
 		methods = classMethods;
 		categories = classCategories;
+		NSLog(@"CLASS VIEW");
 	}
 	currentViewType = type;
 }
@@ -270,12 +272,14 @@ static int CLASS_VIEW = 1;
 		ModelMethod* method = [classMethods objectAtIndex: i];
 		[content appendString: @"\n+"];
 		[content appendString: [method representation]];
+		NSLog (@"CLASS METHOD: <%@>", [method representation]);
 	}
 	for (int i=0; i<[instanceMethods count]; i++)
 	{
 		ModelMethod* method = [instanceMethods objectAtIndex: i];
 		[content appendString: @"\n"];
 		[content appendString: [method representation]];
+		NSLog (@"INSTANCE METHOD: <%@>", [method representation]);
 	}
 	[content appendString: @"\n]"];
 

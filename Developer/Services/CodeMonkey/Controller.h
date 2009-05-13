@@ -51,6 +51,7 @@
 - (void) addMethod: (id)sender;
 - (void) addProperty: (id)sender;
 - (void) load: (id)sender;
+- (void) switchViewType: (id) sender;
 - (void) removeCategory: (id)sender;
 - (void) removeClass: (id)sender;
 - (void) removeMethod: (id)sender;

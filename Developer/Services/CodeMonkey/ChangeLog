@@ -1,4 +1,10 @@
 2009-05-13 Nicolas Roard <nicolas@roard.com>
+	Add support for class/instance methods in Controller
+	* Modified the Browser.gorm to deal with the class/instance switch
+	* Added a switch method in Controller
+	* Modified ModelClass to output class methods correctly
+
+2009-05-13 Nicolas Roard <nicolas@roard.com>
 	Add support for class methods and categories in ModelClass
 
 2009-05-13 Nicolas Roard <nicolas@roard.com>
