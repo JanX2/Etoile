@@ -69,6 +69,7 @@
 - (BOOL) serialize:(char*)aVariable using:(ETSerializer*)aSerializer
 {
 	STORE_FLAGS_AND_CONTENTS();
+	_zone = NSDefaultMallocZone();
 	return [super serialize:aVariable using:aSerializer];
 }
 //WARNING! Not endian-safe for unicode strings!
