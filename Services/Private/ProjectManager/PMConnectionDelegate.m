@@ -8,12 +8,46 @@
 #include <xcb/composite.h>
 
 @implementation PMConnectionDelegate
+- (void)newWindow: (XCBWindow*)window
+{
+	if (![decorationWindows objectForKey: window] 
+		 && ![decoratedWindows objectForKey: window])
+	{
+		xcb_set_input_focus([XCBConn connection], XCB_INPUT_FOCUS_PARENT, [window xcbWindowId], 0);
+		NSLog(@"New window: %@", window);
+		[window addToSaveSet];
+		PMDecoratedWindow *win = [PMDecoratedWindow windowDecoratingWindow: window];
+		XCBWindow *decorationWindow = [win decorationWindow];
+		NSLog(@"New decoration window: %@", decorationWindow);
+		[decorationWindows setObject: window forKey: decorationWindow];
+		[decoratedWindows setObject: decorationWindow forKey: window];
+		NSLog(@"Creating composite window for decoration window %@", decorationWindow);
+		PMCompositeWindow *compositeWin = 
+			[PMCompositeWindow compositeWindowWithXCBWindow: decorationWindow];
+		[compositeWindows addObject: compositeWin];
+		[compositers setObject: compositeWin forKey: decorationWindow];
+		NSNotificationCenter *center =
+			[NSNotificationCenter defaultCenter];
+		[center addObserver: self
+				   selector: @selector(windowDidUnMap:)
+					   name: XCBWindowDidUnMapNotification
+					 object: decorationWindow];
+		[center addObserver: self
+				   selector: @selector(windowDidDestroy:)
+					   name: XCBWindowDidDestroyNotification
+					 object: window];
+		NSLog(@"%@, %@, %@", window, decorationWindow, compositeWin);
+		[win mapDecoratedWindow];
+	}
+}
 - (void)redirectRoots
 {
 	xcb_connection_t *conn = [XCBConn connection];
 	FOREACH([XCBConn screens], screen, XCBScreen*)
 	{
 		xcb_window_t root = [[screen rootWindow] xcbWindowId];
+
+
 		xcb_composite_redirect_subwindows(conn, root, XCB_COMPOSITE_REDIRECT_MANUAL);
 		xcb_query_tree_cookie_t cookie = xcb_query_tree(conn, root);
 		[XCBConn setHandler: self
@@ -43,8 +77,7 @@
 - (void) geometryChanged: (NSNotification*)aNotification
 {
 	id win = [aNotification object];
-	[self XCBConnection: XCBConn
-	          mapWindow: win];
+	[self newWindow: win];
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	[center removeObserver: self
 	                  name: XCBWindowFrameDidChangeNotification
@@ -87,6 +120,21 @@
 	free(reply);
 	xcb_damage_query_version(connection, 1, 1);
 
+	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+	[center addObserver: self
+			   selector: @selector(windowDidMap:)
+				   name: XCBWindowDidMapNotification
+				 object: nil];
+	/*
+	[center addObserver: self
+			   selector: @selector(windowPlacedOnBottom:)
+				   name: XCBWindowWindowPlacedOnBottomNotification
+				 object: nil];
+	[center addObserver: self
+			   selector: @selector(windowPlacedOnTop:)
+				   name: XCBWindowWindowPlacedOnTopNotification
+				 object: nil];
+				 */
 
 	PMApp = self;
 	[self redirectRoots];
@@ -129,37 +177,10 @@
 	[self redraw];
 	[PMCompositeWindow clearClipRegion];
 }
-- (void)XCBConnection: (XCBConnection*)connection 
-            mapWindow: (XCBWindow*)window
+- (void)windowDidMap: (NSNotification*)aNotification
 {
-	if (![decorationWindows objectForKey: window] 
-		 && ![decoratedWindows objectForKey: window])
-	{
-		NSLog(@"New window: %@", window);
-		[window addToSaveSet];
-		PMDecoratedWindow *win = [PMDecoratedWindow windowDecoratingWindow: window];
-		XCBWindow *decorationWindow = [win decorationWindow];
-		NSLog(@"New decoration window: %@", decorationWindow);
-		[decorationWindows setObject: window forKey: decorationWindow];
-		[decoratedWindows setObject: decorationWindow forKey: window];
-		NSLog(@"Creating composite window for decoration window %@", decorationWindow);
-		PMCompositeWindow *compositeWin = 
-			[PMCompositeWindow compositeWindowWithXCBWindow: decorationWindow];
-		[compositeWindows addObject: compositeWin];
-		[compositers setObject: compositeWin forKey: decorationWindow];
-		NSNotificationCenter *center =
-			[NSNotificationCenter defaultCenter];
-		[center addObserver: self
-				   selector: @selector(windowDidUnMap:)
-					   name: XCBWindowDidUnMapNotification
-					 object: decorationWindow];
-		[center addObserver: self
-				   selector: @selector(windowDidDestroy:)
-					   name: XCBWindowDidDestroyNotification
-					 object: window];
-		NSLog(@"%@, %@, %@", window, decorationWindow, compositeWin);
-		[win mapDecoratedWindow];
-	}
+	XCBWindow *window = [aNotification object];
+	[self newWindow: window];
 }
 - (void)removeCompositingForWindow: (XCBWindow*)win
 {
@@ -184,19 +205,9 @@
 	[decorationWindows removeObjectForKey: decoratedWin];
 	[decoratedWindows removeObjectForKey: win];
 }
-- (void)XCBConnection: (XCBConnection*)connection 
-      handleNewWindow: (XCBWindow*)window
+- (void)windowPlacedOnBottom: (NSNotification*)aNotification
 {
-}
--      (void)XCBConnection: (XCBConnection*)connection 
-handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent
-{
-	XCBWindow *win = [connection windowForXCBId: anEvent->window];
-	NSLog(@"Configuring window...");
-	[win handleConfigureNotifyEvent: anEvent];
-	if ([documentWindows containsObject: win])
-	{
-		
-	}
+	XCBWindow *win = [aNotification object];
+//	PMCompositeWindow *comp = 
 }
 @end

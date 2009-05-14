@@ -18,6 +18,8 @@
 - (void)handleConfigureNotifyEvent: (xcb_configure_notify_event_t*)anEvent;
 - (void) handleUnMapNotifyEvent: (xcb_unmap_notify_event_t*)anEvent;
 - (void) handleDestroyNotifyEvent: (xcb_destroy_notify_event_t*)anEvent;
+- (void) handleCirculateNotifyEvent: (xcb_circulate_notify_event_t*)anEvent;
+- (void) handleMapNotifyEvent: (xcb_map_notify_event_t*)anEvent;
 - (void)addToSaveSet;
 - (void)removeFromSaveSet;
 - (void)destroy;

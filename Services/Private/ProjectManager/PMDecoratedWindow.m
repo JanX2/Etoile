@@ -1,6 +1,8 @@
 #import "PMDecoratedWindow.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
+static const int DecorationWindowBorderSize = 4;
+
 @interface PMDecoratedWindow (Private)
 - (XCBRect)idealDecorationWindowFrame;
 @end
@@ -54,10 +56,10 @@
 - (XCBRect)idealDecorationWindowFrame
 {
 	XCBRect frame = [window frame];
-	frame.origin.x -= 3;
-	frame.origin.y -= 3;
-	frame.size.height += 6;
-	frame.size.width += 6;
+	frame.origin.x -= DecorationWindowBorderSize;
+	frame.origin.y -= DecorationWindowBorderSize;
+	frame.size.height += 2 * DecorationWindowBorderSize;
+	frame.size.width += 2 * DecorationWindowBorderSize;
 	return frame;
 }
 - (void)windowDidUnMap: (NSNotification*)aNotification
@@ -91,7 +93,8 @@
 	xcb_window_t winID = [[self decorationWindow] xcbWindowId];
 	xcb_map_window(conn, winID);
 	ignoreUnmap = YES;
-	xcb_reparent_window(conn, [window xcbWindowId], winID, 3,3);
+	xcb_reparent_window(conn, [window xcbWindowId], winID,
+			DecorationWindowBorderSize, DecorationWindowBorderSize);
 	xcb_flush(conn);
 	NSLog(@"Decorating window %d", winID);
 }

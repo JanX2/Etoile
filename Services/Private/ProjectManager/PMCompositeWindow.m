@@ -16,10 +16,12 @@ xcb_render_picture_t rootPicture;
 	xcb_connection_t *conn = [XCBConn connection];
 	xcb_window_t winID = [window xcbWindowId];
 
+	pixmap = xcb_generate_id(conn);
+	xcb_composite_name_window_pixmap(conn, winID, pixmap);
 	const xcb_render_query_pict_formats_reply_t *formats = 
 		xcb_render_util_query_formats(conn);
 	xcb_render_pictvisual_t *visual =
-		xcb_render_util_find_visual_format(formats, winID);
+		xcb_render_util_find_visual_format(formats, pixmap);
 
 	xcb_render_pictforminfo_t *format = NULL;
 
@@ -35,7 +37,7 @@ xcb_render_picture_t rootPicture;
 	}
 	picture = xcb_generate_id(conn);
 	uint32_t IncludeInferiors = 1;
-	xcb_render_create_picture(conn, picture, winID, format->id,
+	xcb_render_create_picture(conn, picture, pixmap, format->id,
 			XCB_RENDER_CP_SUBWINDOW_MODE, &IncludeInferiors);
 
 	// Clip the picture to the window shape
@@ -160,10 +162,11 @@ xcb_render_picture_t rootPicture;
 	//NSLog(@"Drawing window %x into %x", picture, root);
 	/*
 	xcb_render_transform_t transform = {
-	   	0x20000, 0, 0,
-	   	0, 0x20000, 0,
-		0, 0, 0x10000};
+	   	0x10000, 0, 0,
+	   	0, 0x10000, 0,
+		0, 0, 0xaf00};
 	xcb_render_set_picture_transform([XCBConn connection], picture, transform);
+	xcb_render_set_picture_filter(conn, picture, strlen("best"), "best", 0, NULL);
 	xcb_render_fixed_t radius[] = {0x30000, 0x30000,
 		0x10000,0x10000,0x10000,
 		0x10000,0x40000,0x20000,

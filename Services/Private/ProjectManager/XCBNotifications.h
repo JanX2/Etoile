@@ -8,6 +8,8 @@ DEFINE_NOTIFICATION(WindowDidDestroy);
 DEFINE_NOTIFICATION(WindowDidMap);
 DEFINE_NOTIFICATION(WindowDidUnMap);
 DEFINE_NOTIFICATION(WindowFrameDidChange);
+DEFINE_NOTIFICATION(WindowPlacedOnTop);
+DEFINE_NOTIFICATION(WindowPlacedOnBottom);
 
 #define XCBNOTIFY(x) \
 {\

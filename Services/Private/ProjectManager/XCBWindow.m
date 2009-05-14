@@ -29,6 +29,17 @@
 	// Window objects are unique.  Copying should not do anything.
 	return [self retain];
 }
+- (void) handleCirculateNotifyEvent: (xcb_circulate_notify_event_t*)anEvent
+{
+	if (anEvent == XCB_PLACE_ON_TOP)
+	{
+		XCBNOTIFY(WindowPlacedOnTop);
+	}
+	else
+	{
+		XCBNOTIFY(WindowPlacedOnBottom);
+	}
+}
 - (XCBWindow*) createChildInRect: (XCBRect)aRect
 {
 	xcb_generic_error_t  *error;
@@ -36,7 +47,7 @@
 	xcb_window_t winid = xcb_generate_id(conn);
 	error = xcb_request_check(conn, 
 		xcb_create_window_checked(conn, 0, winid, window, aRect.origin.x,
-			aRect.origin.y, aRect.size.width, aRect.size.height, 10,
+			aRect.origin.y, aRect.size.width, aRect.size.height, 0,
 			XCB_WINDOW_CLASS_INPUT_OUTPUT, 0,0,0));
 	if (error)
 	{
@@ -76,6 +87,10 @@
 {
 	NSLog(@"Umapping %@", self);
 	//XCBNOTIFY(WindowDidUnMap);
+}
+- (void) handleMapNotifyEvent: (xcb_map_notify_event_t*)anEvent
+{
+	XCBNOTIFY(WindowDidMap);
 }
 - (void)setGeometry: (xcb_get_geometry_reply_t*)reply
 {

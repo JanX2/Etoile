@@ -25,7 +25,6 @@
 - (void) handleConfigureNotify: (xcb_configure_notify_event_t*)anEvent
 {
 	NSLog(@"Configuring window");
-	[delegate XCBConnection: self handleConfigureNotifyEvent: anEvent];
 	XCBWindow *win = [self windowForXCBId: anEvent->window];
 	[win handleConfigureNotifyEvent: anEvent];
 }
@@ -45,7 +44,12 @@
 	NSLog(@"Mapping window %x", anEvent->window);
 	NSLog(@"Redirect? %d", anEvent->override_redirect);
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
-	[delegate XCBConnection: self mapWindow: win];
+	[win handleMapNotifyEvent: anEvent];
+}
+- (void) handleCirculateNotify: (xcb_circulate_notify_event_t*)anEvent
+{
+	XCBWindow *win  = [self windowForXCBId: anEvent->window];
+	[win handleCirculateNotifyEvent: anEvent];
 }
 - (void) handleCreateNotify: (xcb_create_notify_event_t*)anEvent
 {
@@ -56,7 +60,6 @@
 	xcb_damage_create(connection, damageid, anEvent->window, XCB_DAMAGE_REPORT_LEVEL_RAW_RECTANGLES);
 	xcb_flush(connection);
 	NSLog(@"Registering for damage...");
-	[delegate XCBConnection: self handleNewWindow: win];
 }
 @end
 
@@ -118,6 +121,7 @@ XCBConnection *XCBConn;
 		[self registerWindow: [XCBWindow windowWithXCBWindow: screen->root]];
 
 		uint32_t events = 
+			XCB_EVENT_MASK_FOCUS_CHANGE |
 			XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_BUTTON_PRESS |
 		   	XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY;
 
@@ -164,6 +168,7 @@ XCBConnection *XCBConn;
 			HANDLE(DESTROY_NOTIFY, DestroyNotify)
 			HANDLE(CREATE_NOTIFY, CreateNotify)
 			HANDLE(CONFIGURE_NOTIFY, ConfigureNotify)
+			HANDLE(CIRCULATE_NOTIFY, CirculateNotify)
 
 			//HANDLE(EXPOSE, Expose)
 			default:
