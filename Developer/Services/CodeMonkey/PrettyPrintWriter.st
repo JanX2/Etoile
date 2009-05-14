@@ -46,7 +46,7 @@ NSObject subclass: PrettyPrintWriter [
     appendString: str [
         atstart ifTrue: [
             indent timesRepeat: [
-		buffer appendAttributedString: (self makeString: ' ').
+		buffer appendAttributedString: (self makeString: '\t').
 	    ].
 	].
 	buffer appendAttributedString: str.
@@ -136,9 +136,9 @@ NSObject subclass: PrettyPrintWriter [
     ]
     
     indent: block [
-	indent := indent + 4.
+	indent := indent + 1.
 	block value.
-	indent := indent - 4.
+	indent := indent - 1.
     ]
     
     value [
