@@ -34,7 +34,7 @@
 - (LKAST*) visitASTNode: (LKAST*) aNode
 {
 	NSLog (@"node <%@> (%@)", aNode, [aNode class]);
-	if ([aNode class] == [LKInstanceMethod class]) 
+	if ([aNode isKindOfClass: [LKMethod class]]) 
 	{
 		LKMethod* method = (LKMethod*) aNode;
 		//NSLog(@"pretty: <%@>", [method prettyprint]);	
@@ -58,7 +58,17 @@
 		[aMethod setCode: [method prettyprint]];
 		//[aMethod parseCode];
 		[aMethod setSignature: [[method signature] description]];
-		[aClass addMethod: aMethod];
+
+	        if ([aNode class] == [LKInstanceMethod class])
+		{ 
+			[aClass setViewType: 0];
+			[aClass addMethod: aMethod];
+		}
+	        else
+		{
+			[aClass setViewType: 1];
+			[aClass addMethod: aMethod];
+		}
 		[aMethod release];
 		currentMethod = aMethod;
 	} 

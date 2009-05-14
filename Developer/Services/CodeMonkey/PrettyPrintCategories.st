@@ -107,7 +107,7 @@ LKSubclass extend [
 
 LKMethod extend [
     prettyprintFromClassToWriter: writer [
-	(self isKindOfClass: (LKClassMethod class)) ifTrue: [
+	((self class) = (LKClassMethod class)) ifTrue: [
 		writer append: '+'
 	].
         signature prettyprintToWriter: writer.

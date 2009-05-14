@@ -1,3 +1,6 @@
+2009-05-14 Nicolas Roard <nicolas@roard.com>
+	Fix saving and loading of class methods
+
 2009-05-13 Nicolas Roard <nicolas@roard.com>
 	Add IDE.[hm] forgotten before :)
 
