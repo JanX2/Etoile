@@ -15,7 +15,6 @@
   id categoriesList;
   id classesList;
   id methodsList;
-  id propertiesList;
   id content;
   id newClassNameField;
   id newCategoryNameField;
@@ -48,10 +47,11 @@
 - (void) loadFile: (NSString*) path;
 - (void) addCategory: (id)sender;
 - (void) addClass: (id)sender;
-- (void) addMethod: (id)sender;
+- (void) addInstanceMethod: (id)sender;
+- (void) addClassMethod: (id)sender;
+- (void) addMethod: (BOOL)isInstanceMethod;
 - (void) addProperty: (id)sender;
 - (void) load: (id)sender;
-- (void) switchViewType: (id) sender;
 - (void) removeCategory: (id)sender;
 - (void) removeClass: (id)sender;
 - (void) removeMethod: (id)sender;

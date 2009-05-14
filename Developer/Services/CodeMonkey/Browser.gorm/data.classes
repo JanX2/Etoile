@@ -4,7 +4,6 @@
 	Actions = (
 	    "addCategory:",
 	    "addClass:",
-	    "addMethod:",
 	    "load:",
 	    "removeCategory:",
 	    "removeClass:",
@@ -14,7 +13,9 @@
 	    "saveToFile:",
 	    "addProperty:",
 	    "removeProperty:",
-	    "switchViewType:"
+	    "switchViewType:",
+	    "addInstanceMethod:",
+	    "addClassMethod:"
 	);
 	Outlets = (
 	    categoriesList,
@@ -48,10 +49,10 @@
 	Actions = (
 	    "addCategory:",
 	    "addClass:",
-	    "addMethod:",
+	    "addInstanceMethod:",
 	    "addProperty:",
 	    "load:",
-	    "switchViewType:",
+	    "addClassMethod:",
 	    "removeCategory:",
 	    "removeClass:",
 	    "removeMethod:",
@@ -59,7 +60,8 @@
 	    "runClass:",
 	    "save:",
 	    "saveToFile:",
-	    "saveToFile:"
+	    "saveToFile:",
+	    "switchViewType:"
 	);
 	Super = NSObject;
     };

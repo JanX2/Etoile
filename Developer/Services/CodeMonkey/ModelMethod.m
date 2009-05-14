@@ -13,6 +13,7 @@
 - (id) init
 {
 	self = [super init];
+	classMethod = NO;
   	return self;
 }
 
@@ -23,6 +24,16 @@
 	[code release];
 	[content release];
   	[super dealloc];
+}
+
+- (void) setClassMethod: (BOOL) isClassMethod
+{
+	classMethod = isClassMethod;
+}
+
+- (BOOL) isClassMethod
+{
+	return classMethod;
 }
 
 - (void) setAST: (LKMethod*) aMethodAST
@@ -91,6 +102,10 @@
 
 - (NSString*) signature
 {
+	if (classMethod)
+	{
+		return [NSString stringWithFormat: @"+ %@", signature];
+	}
 	return signature;
 }
 

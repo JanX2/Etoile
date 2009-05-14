@@ -61,12 +61,11 @@
 
 	        if ([aNode class] == [LKInstanceMethod class])
 		{ 
-			[aClass setViewType: 0];
 			[aClass addMethod: aMethod];
 		}
 	        else
 		{
-			[aClass setViewType: 1];
+			[aMethod setClassMethod: YES];
 			[aClass addMethod: aMethod];
 		}
 		[aMethod release];

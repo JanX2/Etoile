@@ -25,42 +25,23 @@ static int CLASS_VIEW = 1;
 - (id) init
 {
 	self = [super init];
-	instanceMethods = [NSMutableArray new];
-  	instanceCategories = [NSMutableDictionary new]; 
-	classMethods = [NSMutableArray new];
-  	classCategories = [NSMutableDictionary new]; 
+	methods = [NSMutableArray new];
+  	categories = [NSMutableDictionary new]; 
 	properties = [NSMutableArray new];
 	parent = [[NSString alloc] initWithString: @"NSObject"];
 	[self setupDocumentation];
-	[self setViewType: INSTANCE_VIEW];
   	return self;
 }
 
 - (void) dealloc
 {
-	[classMethods release];
-  	[classCategories release];
-	[instanceMethods release];
-  	[instanceCategories release];
+	[methods release];
+  	[categories release];
 	[properties release];
 	[parent release];
 	[name release];
 	[documentation release];
   	[super dealloc];
-}
-
-- (void) setViewType: (int) type
-{
-	if (type == INSTANCE_VIEW) {
-		methods = instanceMethods;
-		categories = instanceCategories;
-		NSLog(@"INSTANCE VIEW");
-	} else {
-		methods = classMethods;
-		categories = classCategories;
-		NSLog(@"CLASS VIEW");
-	}
-	currentViewType = type;
 }
 
 - (int) currentViewType
@@ -281,19 +262,15 @@ static int CLASS_VIEW = 1;
 		}
 		[content appendString: @"|"];
 	}
-	for (int i=0; i<[classMethods count]; i++)
+	for (int i=0; i<[methods count]; i++)
 	{
-		ModelMethod* method = [classMethods objectAtIndex: i];
-		[content appendString: @"\n+"];
-		[content appendString: [method representation]];
-		NSLog (@"CLASS METHOD: <%@>", [method representation]);
-	}
-	for (int i=0; i<[instanceMethods count]; i++)
-	{
-		ModelMethod* method = [instanceMethods objectAtIndex: i];
+		ModelMethod* method = [methods objectAtIndex: i];
 		[content appendString: @"\n"];
+		if ([method isClassMethod])
+		{
+			[content appendString: @"+"];
+		}
 		[content appendString: [method representation]];
-		NSLog (@"INSTANCE METHOD: <%@>", [method representation]);
 	}
 	[content appendString: @"\n]"];
 
@@ -303,11 +280,11 @@ static int CLASS_VIEW = 1;
 - (NSString*) dynamicRepresentation
 {
 	NSMutableString* content = [NSMutableString new];
-	for (int i=0; i<[instanceMethods count]; i++)
+	for (int i=0; i<[methods count]; i++)
 	{
 		[content appendString: 
 			[NSString stringWithFormat: @"\n%@ extend [", name]];
-		ModelMethod* method = [instanceMethods objectAtIndex: i];
+		ModelMethod* method = [methods objectAtIndex: i];
 		NSString* rep = [method representation];
 		NSLog (@"method rep <%@>", rep);
 		if (rep != nil && [rep length]) {

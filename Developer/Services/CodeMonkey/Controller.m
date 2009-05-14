@@ -36,11 +36,7 @@
 	[infoAuthors setStringValue: @"(c) 2009 Nicolas Roard. Art from digitalart (flickr)"];
 	[infoAuthors setTextColor: [NSColor whiteColor]];
 
-	[propertiesList setDataSource: self];
-	[propertiesList setDelegate: self];
-	[propertiesList setAutoresizesAllColumnsToFit: YES];
 
-	[self setTitle: @"Properties" for: propertiesList];
 	[codeTextView setTextContainerInset: NSMakeSize(8,8)];
 	[codeTextView setDelegate: self];
 
@@ -86,16 +82,6 @@
 - (void) dealloc
 {
 	[super dealloc];
-}
-
-- (void) switchViewType: (id) sender
-{
-	if ([self currentClass])
-	{
-		[[self currentClass] setViewType:
-			[[sender selectedCell] tag]];
-		[self update];
-	}
 }
 
 - (void) swapContentViewWith: (NSView*) aView
@@ -183,9 +169,6 @@
 	[categoriesList sizeToFit];
 	[methodsList reloadData];
 	[methodsList sizeToFit];
-	NSLog (@"propertyList, reloadData");
-	[propertiesList reloadData];
-	[propertiesList sizeToFit];
 
 	// If we have a selected method, show it
         if ([self currentMethod])
@@ -265,13 +248,6 @@
 			return [[self currentCategory] count];
 		}
 	}
-	if (tv == propertiesList)
-	{
-		if ([self currentClass] != nil)
-		{
-			return [[[self currentClass] properties] count];
-		}
-	}
 	return 0;
 }
 
@@ -300,16 +276,6 @@
 			else
 			{
 				return [[self currentCategory] objectAtIndex: row];
-			}
-		}
-	}
-	if (tv == propertiesList)
-	{
-		if ([self currentClass] != nil)
-		{
-			if ([[[self currentClass] properties] count] > row)
-			{
-				return [[[self currentClass] properties] objectAtIndex: row];
 			}
 		}
 	}
@@ -344,17 +310,38 @@
 }
 
 
-- (void) addMethod: (id)sender
+- (void) addInstanceMethod: (id)sender
 {
+	[self addMethod: YES];
+}
+
+- (void) addClassMethod: (id)sender
+{
+	[self addMethod: NO];
+}
+
+- (void) addMethod: (BOOL)isInstanceMethod
+{
+	NSLog(@"addmethod %d", isInstanceMethod);
 	if ([self currentClass]) 
 	{
 		NSMutableAttributedString* code = [content textStorage];
 		if ([code length] > 0)
 		{
-			[[IDE default]
-				addMethod: code
-				withCategory: [self currentCategoryName]
-				onClass: [self currentClass]];
+			if (isInstanceMethod)
+			{
+				[[IDE default]
+					addMethod: code
+					withCategory: [self currentCategoryName]
+					onClass: [self currentClass]];
+			}
+			else
+			{
+				[[IDE default]
+					addClassMethod: code
+					withCategory: [self currentCategoryName]
+					onClass: [self currentClass]];
+			}
 			[self update];
 		}
 		else

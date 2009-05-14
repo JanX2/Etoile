@@ -22,6 +22,9 @@
 - (void) addMethod: (NSMutableAttributedString*) code 
 	withCategory: (NSString*) categoryName
 	onClass: (ModelClass*) aClass;
+- (void) addClassMethod: (NSMutableAttributedString*) code 
+	withCategory: (NSString*) categoryName
+	onClass: (ModelClass*) aClass;
 - (void) addProperty: (NSString*) propertyName onClass: (ModelClass*) aClass;
 - (NSMutableString*) allClassesContent;
 @end

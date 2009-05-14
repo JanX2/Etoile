@@ -112,6 +112,18 @@
 	[aMethod release];
 }
 
+- (void) addClassMethod: (NSMutableAttributedString*) code 
+	withCategory: (NSString*) categoryName
+	onClass: (ModelClass*) aClass
+{
+	ModelMethod* aMethod = [ModelMethod new];
+	[aMethod setClassMethod: YES];
+	[aMethod setCode: code];
+	[aMethod setCategory: categoryName];
+	[aClass addMethod: aMethod];
+	[aMethod release];
+}
+
 - (void) addProperty: (NSString*) propertyName onClass: (ModelClass*) aClass
 {
 	[aClass addProperty: propertyName];

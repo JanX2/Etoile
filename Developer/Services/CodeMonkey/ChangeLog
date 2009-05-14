@@ -1,4 +1,7 @@
 2009-05-14 Nicolas Roard <nicolas@roard.com>
+	Remove the instance/class switch and put all methods in the same pane
+	
+2009-05-14 Nicolas Roard <nicolas@roard.com>
 	Add a "Properties" category in the browser
 
 2009-05-14 Nicolas Roard <nicolas@roard.com>

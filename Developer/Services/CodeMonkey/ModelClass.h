@@ -27,7 +27,6 @@
 }
 
 - (id) initWithName: (NSString*) aName;
-- (void) setViewType: (int) type;
 - (void) setAST: (LKSubclass*) aClassAST;
 - (LKSubclass*) ast;
 - (void) generateAST;

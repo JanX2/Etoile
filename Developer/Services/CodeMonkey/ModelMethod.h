@@ -19,8 +19,11 @@
 	NSMutableString* content;
 	NSString* category;
 	LKMethod* ast;
+	BOOL classMethod;
 }
 
+- (void) setClassMethod: (BOOL) isClassMethod;
+- (BOOL) isClassMethod;
 - (void) setAST: (LKMethod*) aMethodAST;
 - (LKMethod*) ast;
 - (void) setClass: (ModelClass*) aClass;
