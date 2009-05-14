@@ -9,12 +9,18 @@
 #import "ModelClass.h"
 #import "ModelMethod.h"
 
+static NSString* PROPERTIES = @"-- Properties --";
 static NSString* ALL = @"-- All --";
 static NSString* AYU = @"<< As yet Undefined >>";
 static int INSTANCE_VIEW = 0;
 static int CLASS_VIEW = 1;
 
 @implementation ModelClass
+
++ (NSString*) PROPERTIES
+{	
+	return PROPERTIES;
+}
 
 - (id) init
 {
@@ -136,6 +142,7 @@ static int CLASS_VIEW = 1;
 - (void) addProperty: (NSString*) aProperty
 {
 	[properties addObject: aProperty];
+	[self reloadCategories];
 }
 
 - (NSMutableArray*) properties
@@ -198,6 +205,12 @@ static int CLASS_VIEW = 1;
 		[category addObject: method];
 		[all addObject: method];
 	}
+	NSMutableArray* props = [self setCategory: PROPERTIES];
+	for (int i=0; i<[properties count]; i++)
+	{
+		NSString* property = [properties objectAtIndex: i];
+		[props addObject: property];
+	}
 }
 
 - (NSMutableArray*) sortedCategories
@@ -207,7 +220,7 @@ static int CLASS_VIEW = 1;
 	for (int i=0; i<[keys count]; i++)
 	{
 		NSString* key = [keys objectAtIndex: i];
-		if (key != ALL && key != AYU)
+		if (key != ALL && key != AYU && key != PROPERTIES)
 		{
 			[list addObject: key];
 		}
@@ -218,6 +231,7 @@ static int CLASS_VIEW = 1;
 		[list insertObject: AYU atIndex: 0];
 	}
 	[list insertObject: ALL atIndex: 0];
+	[list insertObject: PROPERTIES atIndex: 0];
 
 	return [list autorelease];
 }

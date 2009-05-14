@@ -165,7 +165,9 @@
 	if (category)
 	{
 		int row = [methodsList selectedRow];
-		if (row > -1)
+		// check that we are selecting something, and
+                // that we are not showing the properties
+		if ((row > -1) && ([categoriesList selectedRow] > 0))
 		{
 			return [category objectAtIndex: row];
 		}
@@ -204,6 +206,7 @@
 		[[classDocTextView textStorage] setAttributedString: string];
 	}
 
+
 	[self setStatus: @"Ready"];
 }
 
@@ -222,6 +225,15 @@
 	}
 	if (tv == categoriesList)
 	{
+	
+		if (row > 0) // methods, not properties
+		{
+			[self setTitle: @"Methods" for: methodsList];
+		}
+		else
+		{
+			[self setTitle: @"Properties" for: methodsList];
+		}
 		[self showMethodDetails];
 	}
 	if (tv == methodsList)
@@ -281,7 +293,14 @@
 	{
 		if ([self currentCategory] != nil)
 		{
-			return [[[self currentCategory] objectAtIndex: row] signature];
+		        if ([categoriesList selectedRow] > 0) // methods, not properties
+			{
+				return [[[self currentCategory] objectAtIndex: row] signature];
+			}
+			else
+			{
+				return [[self currentCategory] objectAtIndex: row];
+			}
 		}
 	}
 	if (tv == propertiesList)
