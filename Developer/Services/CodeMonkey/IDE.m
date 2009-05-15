@@ -7,6 +7,8 @@
 
 #import <AppKit/AppKit.h>
 #import <LanguageKit/LanguageKit.h>
+#import <EtoileFoundation/EtoileFoundation.h>
+#import <CoreObject/CoreObject.h>
 #import <EtoileUI/EtoileUI.h>
 #import "Controller.h"
 #import "IDE.h"
@@ -20,12 +22,22 @@
 - (NSMutableAttributedString*) prettyprint;
 @end
 
+@interface IDE (COProxy)
+- (void) setPersistencyMethodNames: (NSArray *)names;
+- (unsigned int) objectVersion;
+@end
+
 @implementation IDE
+
+static COProxy* MyCOProxy;
 
 - (id) init
 {
 	self = [super init];
 	classes = [NSMutableArray new];
+	self = [COProxy proxyWithObject: self];
+	MyCOProxy = (COProxy*)self;
+	[self setPersistencyMethodNames: A(@"replaceMethod:with:onClass:")];
 	return self;
 }
 
@@ -171,12 +183,19 @@
 }
 
 - (void) replaceMethod: (ModelMethod*) method 
-	with: (LKAST*) methodAST 
+	withSignature: (NSString*) signature
+	andCode: (NSString*) code
 	onClass: (ModelClass*) aClass
 {
+	id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
+	id parser = [[[compiler parserClass] new] autorelease];
+	NSString* toParse = [NSString stringWithFormat: @"%@ [ %@ ]", signature, code];
+	LKAST* methodAST = [parser parseMethod: toParse];
+	[methodAST setParent: [aClass ast]];
 	[ASTReplace replace: [method ast] with: methodAST on: [aClass ast]];
 	[method setAST: (LKMethod*)methodAST];
 	[method setCode: [methodAST prettyprint]];
+	NSLog(@"VERSION %d", [MyCOProxy objectVersion]);
 }
 
 @end

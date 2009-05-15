@@ -5,10 +5,44 @@
    modify it under the terms of the MIT license. See COPYING.
 */
 
+#import <EtoileSerialize/EtoileSerialize.h>
 #import "ModelMethod.h"
 #import "ModelClass.h"
 
 @implementation ModelMethod
+
+- (BOOL) serialize: (char *)aVariable using: (ETSerializer *)aSerializer
+{
+	if (strcmp(aVariable, "ast")==0)
+	{
+		return YES;
+	}
+        if (strcmp(aVariable, "code")==0)
+	{
+		NSString* tmp = [code string];
+		[aSerializer storeObjectFromAddress: &tmp withName: "code"];
+		return YES;
+	}
+	return NO;
+}
+
+- (void *) deserialize: (char *)aVariable
+           fromPointer: (void *)aBlob
+               version: (int)aVersion
+{
+        if (strcmp(aVariable, "code")==0)
+	{
+		NSString* tmp = (NSString*)*(NSString**)aBlob;
+		NSLog (@"deserialize code: %@", tmp);
+
+		NSMutableAttributedString* ncode = [[NSMutableAttributedString alloc] initWithString: tmp];
+		[self setCode: ncode];
+		return MANUAL_DESERIALIZE;
+	}
+	return AUTO_DESERIALIZE;
+}
+	
+
 
 - (id) init
 {

@@ -1,4 +1,7 @@
-2009-05-14 Nicolas Roard <nicolas@roard.com>
+2009-05-15 Nicolas Roard <nicolas@roard.com>
+	More refactoring and addition of CO versioning
+
+2009-05-15 Nicolas Roard <nicolas@roard.com>
 	Refactoring and cleaning to prepare the code for CO
 
 2009-05-14 Nicolas Roard <nicolas@roard.com>

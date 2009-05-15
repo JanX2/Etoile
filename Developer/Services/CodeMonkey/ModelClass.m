@@ -6,6 +6,7 @@
 */
 
 #import <LanguageKit/LanguageKit.h>
+#import <EtoileSerialize/EtoileSerialize.h>
 #import "ModelClass.h"
 #import "ModelMethod.h"
 
@@ -16,6 +17,15 @@ static int INSTANCE_VIEW = 0;
 static int CLASS_VIEW = 1;
 
 @implementation ModelClass
+
+- (BOOL) serialize: (char *)aVariable using: (ETSerializer *)aSerializer
+{
+	if (strcmp(aVariable, "ast")==0)
+	{
+		return YES;
+	}
+	return NO;
+}
 
 + (NSString*) PROPERTIES
 {	

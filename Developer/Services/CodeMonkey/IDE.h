@@ -29,5 +29,8 @@
 	onClass: (ModelClass*) aClass;
 - (void) addProperty: (NSString*) propertyName onClass: (ModelClass*) aClass;
 - (NSMutableString*) allClassesContent;
-- (void) replaceMethod: (ModelMethod*) method with: (LKAST*) methodAST onClass: (ModelClass*) aClass;
+- (void) replaceMethod: (ModelMethod*) method 
+	withSignature: (NSString*) signature
+	andCode: (NSString*) code
+	onClass: (ModelClass*) aClass;
 @end

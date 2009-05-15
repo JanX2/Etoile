@@ -550,15 +550,11 @@
 			NS_DURING
 				if ([[self currentClass] hasMethodWithSignature: signature])
 				{
-					id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
-					id parser = [[[compiler parserClass] new] autorelease];
-					NSString* toParse = [NSString stringWithFormat: @"%@ [ %@ ]", signature, [code string]];
-					LKAST* methodAST = [parser parseMethod: toParse];
-					[methodAST setParent: [[self currentClass] ast]];
-					//[methodAST check];
-
 					ModelMethod* method = [[self currentClass] methodWithSignature: signature];
-					[[IDE default] replaceMethod: method with: methodAST onClass: [self currentClass]];
+					[[IDE default] replaceMethod: method
+						withSignature: signature
+						andCode: [code string]
+						onClass: [self currentClass]];
 				}
 				else // we add a new method
 				{
