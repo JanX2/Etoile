@@ -1,4 +1,8 @@
 2009-05-15 Nicolas Roard <nicolas@roard.com>
+	Gorm updates and resize fix for the pluggable contentview.
+	Added an history slider and corresponding methods.
+
+2009-05-15 Nicolas Roard <nicolas@roard.com>
 	More refactoring and addition of CO versioning
 
 2009-05-15 Nicolas Roard <nicolas@roard.com>

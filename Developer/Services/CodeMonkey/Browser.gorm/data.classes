@@ -15,7 +15,8 @@
 	    "removeProperty:",
 	    "switchViewType:",
 	    "addInstanceMethod:",
-	    "addClassMethod:"
+	    "addClassMethod:",
+	    "changeHistory:"
 	);
 	Outlets = (
 	    categoriesList,
@@ -41,7 +42,8 @@
 	    addPropertyNamePanel,
 	    newPropertyNameField,
 	    signatureTextField,
-	    mainWindow
+	    mainWindow,
+	    historySlider
 	);
 	Super = NSObject;
     };
@@ -49,10 +51,11 @@
 	Actions = (
 	    "addCategory:",
 	    "addClass:",
+	    "addClassMethod:",
 	    "addInstanceMethod:",
 	    "addProperty:",
 	    "load:",
-	    "addClassMethod:",
+	    "changeHistory:",
 	    "removeCategory:",
 	    "removeClass:",
 	    "removeMethod:",

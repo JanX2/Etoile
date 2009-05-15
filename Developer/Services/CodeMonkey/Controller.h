@@ -42,8 +42,9 @@
   BOOL quotesOpened;
   NSUInteger cursorPosition;
 
-  //NSMutableArray* classes;
+  id historySlider;
 }
+- (void) changeHistory: (id)sender;
 - (void) loadFile: (NSString*) path;
 - (void) addCategory: (id)sender;
 - (void) addClass: (id)sender;

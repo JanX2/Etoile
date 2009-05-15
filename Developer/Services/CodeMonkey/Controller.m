@@ -86,11 +86,15 @@
 
 - (void) swapContentViewWith: (NSView*) aView
 {
+
 	[currentView retain]; // removeFromSuperview release it..
 	[currentView removeFromSuperview];
 	currentView = aView;
 	[currentView setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable];
+	[currentView setFrameOrigin: NSMakePoint(0, 0)];
+	[currentView setFrameSize: [content bounds].size];
 	[content addSubview: currentView];
+	[content setNeedsDisplay: YES];
 }
 
 - (void) showClassDetails
@@ -283,6 +287,11 @@
 }
 
 ///////
+
+- (void) changeHistory: (id)sender
+{
+	NSLog(@"change history");
+}
 
 - (void) addCategory: (id)sender
 {
