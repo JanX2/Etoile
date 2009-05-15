@@ -5,7 +5,6 @@
 
 #define CASE(x) if(strcmp(aVariable, #x) == 0)
 #define STORE_FLAGS_AND_CONTENTS()\
-NSLog(@"Serializing %s", aVariable);\
 	if(strcmp(aVariable, "_contents") == 0)\
 	{\
 		[[aSerializer backend] storeInt:*(int*)&_flags withName:"_flags"];\
@@ -26,7 +25,6 @@ NSLog(@"Serializing %s", aVariable);\
 	return YES;
 
 #define ALLOC_STRING() \
-	NSLog(@"Deserialising %s", aVariable);\
 	CASE(_contents)\
 	{\
 		if(_flags.wide)\
@@ -39,7 +37,6 @@ NSLog(@"Serializing %s", aVariable);\
 			_contents.c = calloc(_count+1, sizeof(char));\
 			memcpy(_contents.u, aBlob, _count * sizeof(char));\
 		}\
-NSLog(@"Contents: %x, %d", _contents.u, _count);\
 		_flags.free = 1;\
 		return (void*)YES;\
 	}
