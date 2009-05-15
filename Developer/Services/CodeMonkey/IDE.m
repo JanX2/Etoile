@@ -102,24 +102,44 @@
 }
 
 - (void) addMethod: (NSMutableAttributedString*) code 
+	withSignature: (NSString*) signature
 	withCategory: (NSString*) categoryName
 	onClass: (ModelClass*) aClass
 {
 	ModelMethod* aMethod = [ModelMethod new];
-	[aMethod setCode: code];
+	[aMethod setCode: code]; 
+        [aMethod setSignature: signature];
 	[aMethod setCategory: categoryName];
+
+	id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
+	id parser = [[[compiler parserClass] new] autorelease];
+	NSString* toParse = [NSString stringWithFormat: @"%@ [ %@ ]", signature, [code string]];
+	LKAST* methodAST = [parser parseMethod: toParse];
+	[methodAST setParent: [aClass ast]];
+        [aMethod setAST: (LKMethod*)methodAST];
+
 	[aClass addMethod: aMethod];
 	[aMethod release];
 }
 
 - (void) addClassMethod: (NSMutableAttributedString*) code 
+	withSignature: (NSString*) signature
 	withCategory: (NSString*) categoryName
 	onClass: (ModelClass*) aClass
 {
 	ModelMethod* aMethod = [ModelMethod new];
 	[aMethod setClassMethod: YES];
 	[aMethod setCode: code];
+        [aMethod setSignature: signature];
 	[aMethod setCategory: categoryName];
+
+	id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
+	id parser = [[[compiler parserClass] new] autorelease];
+	NSString* toParse = [NSString stringWithFormat: @"%@ [ %@ ]", signature, [code string]];
+	LKAST* methodAST = [parser parseMethod: toParse];
+	[methodAST setParent: [aClass ast]];
+        [aMethod setAST: (LKMethod*)methodAST];
+
 	[aClass addMethod: aMethod];
 	[aMethod release];
 }
@@ -148,6 +168,15 @@
 		[output appendString: @"\n\n"];
 	}
 	return [output autorelease];
+}
+
+- (void) replaceMethod: (ModelMethod*) method 
+	with: (LKAST*) methodAST 
+	onClass: (ModelClass*) aClass
+{
+	[ASTReplace replace: [method ast] with: methodAST on: [aClass ast]];
+	[method setAST: (LKMethod*)methodAST];
+	[method setCode: [methodAST prettyprint]];
 }
 
 @end

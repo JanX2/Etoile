@@ -17,13 +17,8 @@
 	NSMutableAttributedString* documentation;
 	NSMutableDictionary* categories;
 	NSMutableArray* methods;
-	NSMutableDictionary* classCategories;
-	NSMutableArray* classMethods;
-	NSMutableDictionary* instanceCategories;
-	NSMutableArray* instanceMethods;
 	NSMutableArray* properties;
 	LKSubclass* ast;
-	int currentViewType;
 }
 
 - (id) initWithName: (NSString*) aName;

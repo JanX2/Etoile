@@ -328,10 +328,12 @@
 		NSMutableAttributedString* code = [content textStorage];
 		if ([code length] > 0)
 		{
+			NSString* signature = [signatureTextField stringValue];
 			if (isInstanceMethod)
 			{
 				[[IDE default]
 					addMethod: code
+					withSignature: signature
 					withCategory: [self currentCategoryName]
 					onClass: [self currentClass]];
 			}
@@ -339,6 +341,7 @@
 			{
 				[[IDE default]
 					addClassMethod: code
+					withSignature: signature
 					withCategory: [self currentCategoryName]
 					onClass: [self currentClass]];
 			}
@@ -544,32 +547,28 @@
 		if ([code length] > 0)
 		{
 			NSString* signature = [signatureTextField stringValue];
-			id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
-			id parser = [[[compiler parserClass] new] autorelease];
-			NSString* toParse = [NSString stringWithFormat: @"%@ [ %@ ]", signature, [code string]];
 			NS_DURING
-				LKAST* methodAST = [parser parseMethod: toParse];
-				[methodAST setParent: [[self currentClass] ast]];
-				//[methodAST check];
-
 				if ([[self currentClass] hasMethodWithSignature: signature])
 				{
+					id compiler = [LKCompiler compilerForLanguage: @"Smalltalk"];
+					id parser = [[[compiler parserClass] new] autorelease];
+					NSString* toParse = [NSString stringWithFormat: @"%@ [ %@ ]", signature, [code string]];
+					LKAST* methodAST = [parser parseMethod: toParse];
+					[methodAST setParent: [[self currentClass] ast]];
+					//[methodAST check];
+
 					ModelMethod* method = [[self currentClass] methodWithSignature: signature];
-					[ASTReplace replace: [method ast] with: methodAST on: [[self currentClass] ast]];
-					[method setAST: (LKMethod*)methodAST];
-					[method setCode: [methodAST prettyprint]];
+					[[IDE default] replaceMethod: method with: methodAST onClass: [self currentClass]];
 				}
 				else // we add a new method
 				{
 					// TODO: refactor addMethod
 					// FIXME: there is a crash if sig but no body
-					ModelMethod* aMethod = [ModelMethod new];
-					[aMethod setAST: (LKMethod*)methodAST];
-					[aMethod setCode: code];
-					[aMethod setSignature: signature];
-					[aMethod setCategory: [self currentCategoryName]];
-					[[self currentClass] addMethod: aMethod];
-					[aMethod release];
+				        [[IDE default]
+					    addMethod: code
+					    withSignature: signature
+					    withCategory: [self currentCategoryName]
+					    onClass: [self currentClass]];
 				}
 				[self update];
 				[self setStatus: @"Valid code"];

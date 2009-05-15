@@ -44,11 +44,6 @@ static int CLASS_VIEW = 1;
   	[super dealloc];
 }
 
-- (int) currentViewType
-{
-	return currentViewType;
-}
-
 - (void) setupDocumentation
 {
 	documentation = [[NSMutableAttributedString alloc] initWithString:

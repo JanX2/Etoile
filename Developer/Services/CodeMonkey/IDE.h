@@ -20,11 +20,14 @@
 - (void) addClass: (NSString*) className;
 - (void) addCategory: (NSString*) categoryName onClass: (ModelClass*) aClass;
 - (void) addMethod: (NSMutableAttributedString*) code 
+	withSignature: (NSString*) signature
 	withCategory: (NSString*) categoryName
 	onClass: (ModelClass*) aClass;
 - (void) addClassMethod: (NSMutableAttributedString*) code 
+	withSignature: (NSString*) signature
 	withCategory: (NSString*) categoryName
 	onClass: (ModelClass*) aClass;
 - (void) addProperty: (NSString*) propertyName onClass: (ModelClass*) aClass;
 - (NSMutableString*) allClassesContent;
+- (void) replaceMethod: (ModelMethod*) method with: (LKAST*) methodAST onClass: (ModelClass*) aClass;
 @end
