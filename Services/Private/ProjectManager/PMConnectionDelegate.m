@@ -10,6 +10,8 @@
 @implementation PMConnectionDelegate
 - (void)newWindow: (XCBWindow*)window
 {
+	NSLog(@"New window: %@", window);
+	NSLog(@"\nDecoration: %@\nDecorated: %@", decorationWindows, decoratedWindows);
 	if (![decorationWindows objectForKey: window] 
 		 && ![decoratedWindows objectForKey: window])
 	{
@@ -123,7 +125,7 @@
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	[center addObserver: self
 			   selector: @selector(windowDidMap:)
-				   name: XCBWindowDidMapNotification
+				   name: XCBWindowDidMapNotification 
 				 object: nil];
 	/*
 	[center addObserver: self

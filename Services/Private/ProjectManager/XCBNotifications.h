@@ -18,3 +18,4 @@ DEFINE_NOTIFICATION(WindowPlacedOnBottom);
 	[_center postNotificationName: XCB ## x ## Notification\
 	                      object: self];\
 }
+#undef DEFINE_NOTIFICATION

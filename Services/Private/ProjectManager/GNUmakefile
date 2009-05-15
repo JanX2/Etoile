@@ -18,6 +18,8 @@ $(TOOL_NAME)_OBJC_FILES = \
 				 PMDecorationWindow.m\
 				 PMConnectionDelegate.m\
 				 PMCompositeWindow.m\
+				 PMCompositeDefaultDecorator.m\
+				 PMNotifications.m\
 				 XCBAtomCache.m\
 				 XCBConnection.m\
 				 XCBNotifications.m\

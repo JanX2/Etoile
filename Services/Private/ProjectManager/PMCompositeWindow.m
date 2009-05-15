@@ -1,4 +1,5 @@
 #import "PMCompositeWindow.h"
+#import "PMCompositeDefaultDecorator.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 #include <xcb/damage.h>
 #include <xcb/render.h>
@@ -11,10 +12,11 @@ xcb_render_picture_t rootPicture;
 - (PMCompositeWindow*)initWithXCBWindow: (XCBWindow*)aWindow
 {
 	SELFINIT;
-	NSLog(@"Creating composite window");
 	ASSIGN(window, aWindow);
 	xcb_connection_t *conn = [XCBConn connection];
 	xcb_window_t winID = [window xcbWindowId];
+	decorations = [[NSMutableArray arrayWithObject: 
+		[[[PMCompositeDefaultDecorator alloc] init] autorelease]] retain];
 
 	pixmap = xcb_generate_id(conn);
 	xcb_composite_name_window_pixmap(conn, winID, pixmap);
@@ -48,6 +50,11 @@ xcb_render_picture_t rootPicture;
 	xcb_xfixes_translate_region(conn, region, frame.origin.x, frame.origin.y);
 	xcb_xfixes_set_picture_clip_region(conn, picture, region, 0, 0);
 	xcb_xfixes_destroy_region(conn, region);
+
+	xcb_render_transform_t transform = {
+	   	0x10000, 0, 0,
+	   	0, 0x10000, 0,
+		0, 0, 0x10000};
 
 	root = rootPicture;
 	return self;
@@ -146,26 +153,33 @@ xcb_render_picture_t rootPicture;
 {
 	root = aPicture;
 }
+- (xcb_render_picture_t)rootPicture
+{
+	return root;
+}
 - (xcb_render_picture_t)picture
 {
 	return picture;
+}
+- (XCBWindow*)window
+{
+	return window;
 }
 - (NSString*)description
 {
 	return [NSString stringWithFormat: @"<%@: %@>", [super description],
 		   window];
 }
+- (void)setTransform: (xcb_render_transform_t)aTransform
+{
+	transform = aTransform;
+	xcb_render_set_picture_transform([XCBConn connection], picture, transform);
+	PMNOTIFY(CompositeWindowTransformDidChange);
+}
 - (void)drawXCBRect: (XCBRect)aRect
 {
-	XCBRect frame = [window frame];
-	xcb_connection_t *conn = [XCBConn connection];
 	//NSLog(@"Drawing window %x into %x", picture, root);
 	/*
-	xcb_render_transform_t transform = {
-	   	0x10000, 0, 0,
-	   	0, 0x10000, 0,
-		0, 0, 0xaf00};
-	xcb_render_set_picture_transform([XCBConn connection], picture, transform);
 	xcb_render_set_picture_filter(conn, picture, strlen("best"), "best", 0, NULL);
 	xcb_render_fixed_t radius[] = {0x30000, 0x30000,
 		0x10000,0x10000,0x10000,
@@ -185,13 +199,11 @@ xcb_render_picture_t rootPicture;
 		free(buffer);
 	}
 	*/
-
-
-	xcb_render_composite(conn, XCB_RENDER_PICT_OP_ATOP,
-			picture, 0, rootPicture, 
-			0, 0,
-			0, 0,
-			frame.origin.x, frame.origin.y, 
-			frame.size.width, frame.size.height);
+	FOREACH(decorations, decorator, id<PMCompositeWindowDecotating>)
+	{
+		[decorator decorateWindow: self
+		                   onRoot: rootPicture
+		                   inRect: aRect];
+	}
 }
 @end
