@@ -29,6 +29,7 @@
   id infoPanel;
   id infoVersion;
   id infoAuthors;
+  id historyTextField;
 
   id mainWindow;
 
@@ -45,6 +46,7 @@
   id historySlider;
 }
 - (void) changeHistory: (id)sender;
+- (void) setHistory: (id) sender;
 - (void) loadFile: (NSString*) path;
 - (void) addCategory: (id)sender;
 - (void) addClass: (id)sender;

@@ -8,6 +8,7 @@
 #import <AppKit/AppKit.h>
 #import <LanguageKit/LanguageKit.h>
 #import <EtoileUI/EtoileUI.h>
+#import <CoreObject/CoreObject.h>
 #import "Controller.h"
 #import "ModelClass.h"
 #import "ModelMethod.h"
@@ -36,6 +37,7 @@
 	[infoAuthors setStringValue: @"(c) 2009 Nicolas Roard. Art from digitalart (flickr)"];
 	[infoAuthors setTextColor: [NSColor whiteColor]];
 
+	[historySlider setAllowsTickMarkValuesOnly: YES];
 
 	[codeTextView setTextContainerInset: NSMakeSize(8,8)];
 	[codeTextView setDelegate: self];
@@ -287,10 +289,20 @@
 }
 
 ///////
-
 - (void) changeHistory: (id)sender
 {
-	NSLog(@"change history");
+	NSLog(@"Slider changed to %d", [historySlider intValue]);
+	COProxy *proxy = (COProxy *)[IDE default];
+	[proxy restoreObjectToVersion: [historySlider intValue]];
+	[self update];
+}
+
+- (void) setHistory: (id)sender
+{
+	NSLog(@"Set history to %d",  [historyTextField intValue]);
+	COProxy *proxy = (COProxy *)[IDE default];
+	[proxy restoreObjectToVersion: [historyTextField intValue]];
+	[self update];
 }
 
 - (void) addCategory: (id)sender
@@ -585,6 +597,7 @@
 	}
 }
 
+#define _max(x,y) ((x)>(y)?(x):(y))
 /**
  * We use the textDidChange: hook to pretty-print the code:
  * - we regenerate the code's AST
@@ -617,7 +630,22 @@
 			quotesOpened = NO;
 		}
 	}
+
+	
+	COProxy *proxy = (COProxy *)[IDE default];
+	int maxValue = _max([proxy objectVersion], [historySlider intValue]);
+	[historySlider setMaxValue: maxValue];
+	[historySlider setNumberOfTickMarks: maxValue + 1]; 
+	[historySlider setIntValue: [proxy objectVersion]];
+
+	[historyTextField setIntValue: [proxy objectVersion]];
 }
+
+- (void) redisplayAST
+{
+
+}
+
 
 - (BOOL) textView: (NSTextView*) aTextView shouldChangeTextInRange: (NSRange) affectedRange replacementString: (NSString*) replacementString
 {
