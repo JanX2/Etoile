@@ -37,7 +37,7 @@ static COProxy* MyCOProxy;
 	classes = [NSMutableArray new];
 	self = [COProxy proxyWithObject: self];
 	MyCOProxy = (COProxy*)self;
-	[self setPersistencyMethodNames: A(@"replaceMethod:with:onClass:")];
+	[self setPersistencyMethodNames: A(@"replaceMethod:withSignature:andCode:onClass:")];
 	return self;
 }
 
