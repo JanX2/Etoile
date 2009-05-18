@@ -12,9 +12,15 @@
 
 #define object_copy	gnu_object_copy
 #define object_dispose	gnu_object_dispose
+#define objc_super gnu_objc_super
+#define objc_msg_lookup gnu_objc_msg_lookup 
+#define objc_msg_lookup_super gnu_objc_msg_lookup_super 
 #include <objc/objc.h>
 #include <objc/objc-api.h>
 #include <objc/encoding.h>
+#undef objc_msg_lookup
+#undef objc_msg_lookup_super
+#undef objc_super
 #undef Method 
 #undef IMP
 #undef id
@@ -313,13 +319,13 @@ const char *class_getIvarLayout(Class cls)
 IMP class_getMethodImplementation(Class cls, SEL name)
 {
 	struct objc_object_gnu obj = { cls };
-	return (IMP)objc_msg_lookup(&obj, name);
+	return (IMP)objc_msg_lookup((id)&obj, name);
 }
 
 IMP class_getMethodImplementation_stret(Class cls, SEL name)
 {
 	struct objc_object_gnu obj = { cls };
-	return (IMP)objc_msg_lookup(&obj, name);
+	return (IMP)objc_msg_lookup((id)&obj, name);
 }
 
 const char * class_getName(Class cls)

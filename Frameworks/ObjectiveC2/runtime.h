@@ -51,6 +51,15 @@ typedef unsigned char BOOL;
 #	endif
 #endif
 
+struct objc_super {
+	id receiver;
+#if !defined(__cplusplus)  &&  !__OBJC2__
+	Class class;
+#else
+	Class super_class;
+#endif
+};
+
 
 typedef struct objc_method *Method;
 
@@ -200,4 +209,9 @@ void *object_getIndexedIvars(id obj);
 
 id object_dispose(id obj);
 
+IMP objc_msg_lookup(id, SEL);
+IMP objc_msg_lookup_super(struct objc_super*, SEL);
+
 #define objc_msgSend(theReceiver, theSelector, ...) objc_msg_lookup(theReceiver, theSelector)(theReceiver, theSelector, ## __VA_ARGS__)
+
+#define objc_msgSendSuper(super, op, ...) objc_msg_lookup_super(super, op)(super->receiver, op, ## __VA_ARGS__)
