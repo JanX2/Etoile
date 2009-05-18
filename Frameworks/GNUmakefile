@@ -9,6 +9,7 @@ PACKAGE_NAME = Frameworks
 
 -include ../modules.make
 
+export objc-2 ?= yes
 export addresseskit ?= yes
 export bookmarkkit ?= no
 export coreobject ?= yes
@@ -48,6 +49,10 @@ endif
 
 # We need to build EtoileFoundation, EtoileSerialize, CoreObject and EtoileUI 
 # first because  most other frameworks depends on it.
+
+ifeq ($(objc-2), yes)
+    SUBPROJECTS += ObjectiveC2
+endif
 
 ifeq ($(etoilefoundation), yes)
     SUBPROJECTS += EtoileFoundation
