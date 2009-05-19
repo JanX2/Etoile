@@ -1,4 +1,10 @@
 #include "runtime.h"
+
+/* Ensure Unix98 compatible pthreads for glibc */
+#if defined __GNU_LIBRARY__
+	#define __USE_UNIX98
+#endif
+
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>

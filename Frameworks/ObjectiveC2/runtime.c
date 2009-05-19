@@ -1,5 +1,11 @@
 #include "runtime.h"
 
+/* Make glibc export strdup() */
+
+#if defined __GNU_LIBRARY__
+	#define __USE_BSD
+#endif
+
 #undef __objc_INCLUDE_GNU
 #undef __thread_INCLUDE_GNU
 #undef __objc_api_INCLUDE_GNU
