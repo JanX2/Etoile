@@ -3,14 +3,10 @@
 #import "blocks_runtime.h"
 #include <assert.h>
 
-#define CLASS_SIZE 128
-
 struct objc_class _NSConcreteGlobalBlock;
 struct objc_class _NSConcreteStackBlock;
 
 @interface NSBlockPrivate : NSObject @end
-@interface NSConcreteStackBlockPrivate : NSBlockPrivate @end
-@interface NSConcreteGlobalBlockPrivate : NSBlockPrivate @end
 
 void __objc_update_dispatch_table_for_class(Class);
 extern struct sarray *__objc_uninstalled_dtable;
