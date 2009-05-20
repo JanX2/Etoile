@@ -87,6 +87,7 @@ struct psy_block_byref_obj {
  */
 void _Block_object_assign(void *destAddr, void *object, const int flags)
 {
+	//printf("Copying %x to %x with flags %x\n", object, destAddr, flags);
     // FIXME: Needs to be implemented
     if(flags & BLOCK_FIELD_IS_WEAK)
     {
@@ -106,9 +107,14 @@ void _Block_object_assign(void *destAddr, void *object, const int flags)
             {
                 *dst = malloc(src->size);
                 memcpy(*dst, src, src->size);
-                
+				if (src->forwarding == src)
+				{
+					(*dst)->forwarding = *dst;
+				}
                 if(src->size >= sizeof(struct psy_block_byref_obj))
+				{
                     src->byref_keep(*dst, src);
+				}
             }
             else *dst = src;
             
