@@ -52,19 +52,19 @@ static void createNSBlockSubclass(Class newClass, char *name)
 }
 - (id)copyWithZone: (NSZone*)aZone
 {
-	return __Block_copy(self);
+	return Block_copy(self);
 }
 - (id)copy
 {
-	return __Block_copy(self);
+	return Block_copy(self);
 }
 - (id)retain
 {
-	return __Block_copy(self);
+	return Block_copy(self);
 }
 - (void)release
 {
-	__Block_release(self);
+	Block_release(self);
 }
 - (void)dealloc 
 {
