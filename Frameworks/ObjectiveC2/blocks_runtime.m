@@ -195,7 +195,6 @@ struct StackBlockClass {
 // The block is considered on the stack if self->descriptor->reserved == 0.
 void *Block_copy(void *src)
 {
-	printf("Copying block\n");
     struct StackBlockClass *self = src;
     struct StackBlockClass *ret = self;
 
@@ -210,6 +209,7 @@ void *Block_copy(void *src)
             memcpy(ret, self, self->descriptor->size);
             if(self->flags & BLOCK_HAS_COPY_DISPOSE)
                 self->descriptor->copy_helper(ret, self);
+            memcpy(self, ret, self->descriptor->size);
         }
         ret->reserved++;
     }
