@@ -119,7 +119,7 @@ void _Block_object_assign(void *destAddr, void *object, const int flags)
             struct psy_block_literal *src = object;
             struct psy_block_literal **dst = destAddr;
             
-            *dst = __Block_copy(src);
+            *dst = Block_copy(src);
         }
         else if((flags & BLOCK_FIELD_IS_BLOCK) == BLOCK_FIELD_IS_OBJECT)
         {
@@ -160,7 +160,7 @@ void _Block_object_dispose(void *object, const int flags)
         else if((flags & ~BLOCK_BYREF_CALLER) == BLOCK_FIELD_IS_BLOCK)
         {
             struct psy_block_literal *src = object;
-            __Block_release(src);
+            Block_release(src);
         }
         else if((flags & ~BLOCK_BYREF_CALLER) == BLOCK_FIELD_IS_OBJECT)
         {
