@@ -35,6 +35,15 @@ typedef struct objc_object
 	Class isa;
 } *id;
 
+struct objc_super {
+	id receiver;
+#if !defined(__cplusplus)  &&  !__OBJC2__
+	Class class;
+#else
+	Class super_class;
+#endif
+};
+
 typedef id (*IMP)(id, SEL, ...);
 #else
 // Method in the GNU runtime is a struct, Method_t is the pointer
@@ -50,15 +59,6 @@ typedef  int BOOL
 typedef unsigned char BOOL;
 #	endif
 #endif
-
-struct objc_super {
-	id receiver;
-#if !defined(__cplusplus)  &&  !__OBJC2__
-	Class class;
-#else
-	Class super_class;
-#endif
-};
 
 
 typedef struct objc_method *Method;

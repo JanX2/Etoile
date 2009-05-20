@@ -12,11 +12,18 @@ FRAMEWORK_NAME = ObjectiveC2
 ObjectiveC2_LANGUAGES = English
 
 ObjectiveC2_OBJC_FILES = \
-				sync.m\
-				properties.m
+				NSBlocks.m\
+				blocks_runtime.m\
+				properties.m\
+				sync.m
+
 
 ObjectiveC2_C_FILES = \
 				runtime.c
+
+ObjectiveC2_HEADER_FILES = \
+					  blocks_runtime.h\
+					  runtime.h
 
 ADDITIONAL_CFLAGS = -std=c99 -fexceptions 
 ADDITIONAL_OBJCFLAGS = -fobjc-exceptions -fexceptions
