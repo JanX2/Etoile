@@ -8,6 +8,6 @@
 #define BLOCKS_EXPORT extern 
 #endif
 
-BLOCKS_EXPORT void *__Block_copy(void *);
-BLOCKS_EXPORT void __Block_release(void *);
+BLOCKS_EXPORT void *Block_copy(void *);
+BLOCKS_EXPORT void Block_release(void *);
 

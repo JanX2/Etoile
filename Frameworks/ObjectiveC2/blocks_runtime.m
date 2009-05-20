@@ -34,9 +34,6 @@
 - (void)release;
 @end
 
-void *__Block_copy(void *);
-void __Block_release(void *);
-
 // Descriptor attributes
 enum {
     BLOCK_HAS_COPY_DISPOSE =  (1 << 25),
@@ -190,8 +187,9 @@ struct StackBlockClass {
 
 // Copy a block to the heap if it's still on the stack or increments its retain count.
 // The block is considered on the stack if self->descriptor->reserved == 0.
-void *__Block_copy(void *src)
+void *Block_copy(void *src)
 {
+	printf("Copying block\n");
     struct StackBlockClass *self = src;
     struct StackBlockClass *ret = self;
 
@@ -213,7 +211,7 @@ void *__Block_copy(void *src)
 }
 
 // Release a block and frees the memory when the retain count hits zero.
-void __Block_release(void *src)
+void Block_release(void *src)
 {
     struct StackBlockClass *self = src;
     
