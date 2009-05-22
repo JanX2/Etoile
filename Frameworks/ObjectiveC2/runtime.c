@@ -653,18 +653,24 @@ static inline void safe_remove_from_subclass_list(Class cls)
 	}
 }
 
-static void objc_deallocClass(Class self, SEL _cmd)
+void objc_disposeClassPair(Class cls)
 {
-	Class meta = ((id)self)->isa;
-	freeMethodLists(self);
-	freeMethodLists(meta);
-	freeIvarLists(self);
+	Class meta = ((id)cls)->isa;
+	// Remove from the runtime system so nothing tries updating the dtable
+	// while we are freeing the class.
 	objc_mutex_lock(__objc_runtime_mutex);
 	safe_remove_from_subclass_list(meta);
-	safe_remove_from_subclass_list(self);
+	safe_remove_from_subclass_list(cls);
 	objc_mutex_unlock(__objc_runtime_mutex);
+
+	// Free the method and ivar lists.
+	freeMethodLists(cls);
+	freeMethodLists(meta);
+	freeIvarLists(cls);
+
+	// Free the class and metaclass
 	free(meta);
-	free(self);
+	free(cls);
 }
 
 Class objc_allocateClassPair(Class superclass, const char *name, size_t extraBytes)
@@ -691,10 +697,6 @@ Class objc_allocateClassPair(Class superclass, const char *name, size_t extraByt
 	newClass->name = strdup(name);
 	newClass->info = _CLS_CLASS;
 	newClass->dtable = __objc_uninstalled_dtable;
-
-	SEL dealloc = sel_get_any_typed_uid("dealloc");
-	class_addMethod(metaClass, dealloc, (IMP)objc_deallocClass, 
-		sel_get_type(dealloc));
 
 	return newClass;
 }

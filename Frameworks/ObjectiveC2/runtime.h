@@ -188,6 +188,8 @@ IMP method_setImplementation(Method method, IMP imp);
 
 Class objc_allocateClassPair(Class superclass, const char *name, size_t extraBytes);
 
+void objc_disposeClassPair(Class cls);
+
 id objc_getClass(const char *name);
 
 int objc_getClassList(Class *buffer, int bufferLen);
@@ -212,6 +214,16 @@ id object_dispose(id obj);
 IMP objc_msg_lookup(id, SEL);
 IMP objc_msg_lookup_super(struct objc_super*, SEL);
 
-#define objc_msgSend(theReceiver, theSelector, ...) objc_msg_lookup(theReceiver, theSelector)(theReceiver, theSelector, ## __VA_ARGS__)
+// Only enable support for object planes when 
+// -fobjc-sender-dependent-dispatch is specified
+#ifdef __OBJC_SENDER_AWARE_DISPATCH__
 
+// Global self so that self is a valid symbol everywhere.  Will be replaced by
+// a real self in an inner scope if there is one.
+static const id self = nil;
+#define objc_msgSend(theReceiver, theSelector, ...) objc_msg_lookup_sender(theReceiver, theSelector, self)(theReceiver, theSelector, ## __VA_ARGS__)
+
+#endif
+
+#define objc_msgSend(theReceiver, theSelector, ...) objc_msg_lookup(theReceiver, theSelector)(theReceiver, theSelector, ## __VA_ARGS__)
 #define objc_msgSendSuper(super, op, ...) objc_msg_lookup_super(super, op)(super->receiver, op, ## __VA_ARGS__)

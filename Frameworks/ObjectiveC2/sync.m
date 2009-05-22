@@ -76,7 +76,7 @@ static void deallocLockClass(id obj, SEL _cmd)
 	pthread_mutex_t *lock = object_getIndexedIvars(lockClass);
 	pthread_mutex_destroy(lock);
 	// Free the class
-	[lockClass dealloc];
+	objc_disposeClassPair(lockClass);
 	// Reset the class then call the real -dealloc
 	obj->isa = realClass;
 	[obj dealloc];
