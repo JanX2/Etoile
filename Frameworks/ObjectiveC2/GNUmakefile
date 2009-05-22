@@ -14,6 +14,7 @@ ObjectiveC2_LANGUAGES = English
 ObjectiveC2_OBJC_FILES = \
 				NSBlocks.m\
 				blocks_runtime.m\
+				planes.m\
 				properties.m\
 				sync.m
 
@@ -26,7 +27,7 @@ ObjectiveC2_HEADER_FILES = \
 					  runtime.h
 
 ADDITIONAL_CFLAGS = -std=c99 -fexceptions 
-ADDITIONAL_OBJCFLAGS = -fobjc-exceptions -fexceptions
+ADDITIONAL_OBJCFLAGS = -fobjc-exceptions -fexceptions -march=i686 
 
 ObjectiveC2_OBJCFLAGS += -std=c99
 

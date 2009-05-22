@@ -10,4 +10,3 @@
 
 BLOCKS_EXPORT void *Block_copy(void *);
 BLOCKS_EXPORT void Block_release(void *);
-
