@@ -30,13 +30,18 @@ ADDITIONAL_OBJCFLAGS += `pkg-config libavformat --cflags`
 # 
 # See also: https://mail.gna.org/public/etoile-discuss/2008-11/msg00085.html 
 # and http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2008-April/046144.html
-#
-# The workaround below doesn't take in account custom install locations reported 
-# by pkg-config when the installed FFMepg release is equal or posterior to the 
-# one that introduced the new include style. 
-# e.g. /usr/include/video/libavcodec/avcodec.h for which pkg-config will return 
-# -I/usr/include/video
-ADDITIONAL_OBJCFLAGS += -I/usr/include/libavcodec -I/usr/include/libavformat
+
+	 	#echo `pkg-config --cflags-only-I libavcodec` | sed 's/[ ]*$$/\/ libavcodec/g';\
+
+NEW_AVCODEC_INCLUDE_DIR = $(shell if [ `pkg-config --cflags-only-I libavcodec | sed 's/ //g'` ];  then\
+	 	echo `pkg-config --cflags-only-I libavcodec | sed 's/[ ]$$*/\/libavcodec/g'`;\
+	 else\
+	 	echo -I/usr/include/libavcodec;\
+	 fi)
+
+
+
+ADDITIONAL_OBJCFLAGS += $(NEW_AVCODEC_INCLUDE_DIR) $(NEW_AVFORMAT_INCLUDE_DIR)
 
 # If you install OSS 4 in Ubuntu, the header files are located here:
 ADDITIONAL_OBJCFLAGS += -I/usr/lib/oss/include
