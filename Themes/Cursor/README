@@ -1,0 +1,11 @@
+Etoile Cursor Theme
+===================
+
+Install the theme with:
+
+sudo make install
+
+To enable the theme, create the file .Xdefaults in your home directory if it
+does not already exist, and add the line:
+
+Xcursor.theme: Etoile
