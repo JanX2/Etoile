@@ -1,6 +1,12 @@
 #import "MKMediaFile.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
+// If we're building for an old version of libavcodec, use the old API
+#if LIBAVCODEC_VERSION_INT  < ((52<<16)+(25<<8)+0)
+#define avcodec_decode_audio3(context, buffer, bufferSize, pkt) \
+	avcodec_decode_audio2(context, buffer, bufferSize, (pkt)->data, (pkt)->size)
+#endif
+
 @implementation MKMediaFile
 + (void) initialize
 {
@@ -167,7 +173,7 @@
 		return -1;
 	}
 	timestamp = pkt.pts;
-	avcodec_decode_audio2(context, buffer, &bufferSize, pkt.data, pkt.size);
+	avcodec_decode_audio3(context, buffer, &bufferSize, &pkt);
 	av_free_packet(&pkt);
 	return bufferSize;
 }
