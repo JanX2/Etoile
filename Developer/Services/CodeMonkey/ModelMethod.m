@@ -17,7 +17,7 @@
 	{
 		return YES;
 	}
-        if (strcmp(aVariable, "code")==0)
+    if (strcmp(aVariable, "code")==0)
 	{
 		NSString* tmp = [code string];
 		[aSerializer storeObjectFromAddress: &tmp withName: "code"];
@@ -30,18 +30,20 @@
            fromPointer: (void *)aBlob
                version: (int)aVersion
 {
-        if (strcmp(aVariable, "code")==0)
+	if (strcmp(aVariable, "ast")==0)
 	{
-		NSString* tmp = (NSString*)*(NSString**)aBlob;
-		NSLog (@"deserialize code: %@", tmp);
-
-		NSMutableAttributedString* ncode = [[NSMutableAttributedString alloc] initWithString: tmp];
-		[self setCode: ncode];
+		ast = nil;
 		return MANUAL_DESERIALIZE;
 	}
 	return AUTO_DESERIALIZE;
 }
 	
+- (void) finishedDeserializing
+{
+	NSLog(@"Deserialized code string: %@", code);
+	NSMutableAttributedString* ncode = [[NSMutableAttributedString alloc] initWithString: (NSString *)code];
+	[self setCode: ncode];
+}
 
 
 - (id) init

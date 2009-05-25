@@ -20,12 +20,46 @@ static int CLASS_VIEW = 1;
 
 - (BOOL) serialize: (char *)aVariable using: (ETSerializer *)aSerializer
 {
+	if (strcmp(aVariable, "name")==0)
+	{
+		// Just for debugging
+		NSLog(@"Serialize class name: %@", name);
+	}
+	
 	if (strcmp(aVariable, "ast")==0)
 	{
 		return YES;
 	}
+	if (strcmp(aVariable, "documentation")==0)
+	{
+		NSString* tmp = [documentation string];
+		[aSerializer storeObjectFromAddress: &tmp withName: "documentation"];
+		return YES;
+	}
 	return NO;
 }
+- (void*) deserialize:(char*)aVariable fromPointer:(void*)aBlob version:(int)aVersion
+{
+	if (strcmp(aVariable, "ast")==0)
+	{
+		ast = nil;
+		return MANUAL_DESERIALIZE;
+	}
+	return AUTO_DESERIALIZE;
+}
+
+- (void) finishedDeserializing
+{
+	NSLog(@"Deserialized class parent: %@", parent);
+	NSLog(@"Deserialized class name: %@", name);
+
+	NSLog(@"Deserialized class documentation: %@", documentation);
+	documentation = [[NSMutableAttributedString alloc] initWithString: (NSString*)documentation];
+	
+	[self generateAST];
+}
+
+
 
 + (NSString*) PROPERTIES
 {	
