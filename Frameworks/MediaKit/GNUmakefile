@@ -34,11 +34,15 @@ ADDITIONAL_OBJCFLAGS += `pkg-config libavformat --cflags`
 	 	#echo `pkg-config --cflags-only-I libavcodec` | sed 's/[ ]*$$/\/ libavcodec/g';\
 
 NEW_AVCODEC_INCLUDE_DIR = $(shell if [ `pkg-config --cflags-only-I libavcodec | sed 's/ //g'` ];  then\
-	 	echo `pkg-config --cflags-only-I libavcodec | sed 's/[ ]$$*/\/libavcodec/g'`;\
+	 	echo `pkg-config --cflags-only-I libavcodec | sed 's/[ ]*$$/\/libavcodec/g'`;\
 	 else\
 	 	echo -I/usr/include/libavcodec;\
 	 fi)
-
+NEW_AVFORMAT_INCLUDE_DIR = $(shell if [ `pkg-config --cflags-only-I libavformat | sed 's/ //g'` ];  then\
+		echo `pkg-config --cflags-only-I libavformat | sed 's/[ ]*$$/\/libavformat/g'`;\
+	else\
+		echo -I/usr/include/libavformat;\
+	fi)
 
 
 ADDITIONAL_OBJCFLAGS += $(NEW_AVCODEC_INCLUDE_DIR) $(NEW_AVFORMAT_INCLUDE_DIR)
