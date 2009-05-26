@@ -28,7 +28,11 @@ ObjectiveC2_HEADER_FILES = \
 					  runtime.h
 
 ADDITIONAL_CFLAGS = -std=c99 -fexceptions 
-ADDITIONAL_OBJCFLAGS = -fobjc-exceptions -fexceptions -march=i686 
+ADDITIONAL_OBJCFLAGS = -fobjc-exceptions -fexceptions
+
+ifeq ($(GNUSTEP_TARGET_CPU), ix86)
+	ADDITIONAL_OBJCFLAGS += -march=i686
+endif
 
 ObjectiveC2_OBJCFLAGS += -std=c99
 
