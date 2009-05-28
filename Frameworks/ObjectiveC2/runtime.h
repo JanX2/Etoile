@@ -25,11 +25,11 @@
 
 typedef struct objc_ivar* Ivar;
 
+#ifndef __objc_INCLUDE_GNU
 typedef const struct objc_selector *SEL;
 
 typedef struct objc_class *Class;
 
-#ifndef __objc_INCLUDE_GNU
 typedef struct objc_object
 {
 	Class isa;
@@ -37,31 +37,32 @@ typedef struct objc_object
 
 struct objc_super {
 	id receiver;
-#if !defined(__cplusplus)  &&  !__OBJC2__
+#	if !defined(__cplusplus)  &&  !__OBJC2__
 	Class class;
-#else
+#	else
 	Class super_class;
-#endif
+#	endif
 };
 
 typedef id (*IMP)(id, SEL, ...);
+typedef struct objc_method *Method;
+
+#	ifdef STRICT_APPLE_COMPATIBILITY
+typedef signed char BOOL;
+#	else
+#		ifdef __vxwords
+typedef  int BOOL
+#		else
+typedef unsigned char BOOL;
+#		endif
+#	endif
+
 #else
 // Method in the GNU runtime is a struct, Method_t is the pointer
-#define Method Method_t
+#	define Method Method_t
 #endif // __objc_INCLUDE_GNU
 
-#ifdef STRICT_APPLE_COMPATIBILITY
-typedef signed char BOOL;
-#else
-#	ifdef __vxwords
-typedef  int BOOL
-#	else
-typedef unsigned char BOOL;
-#	endif
-#endif
 
-
-typedef struct objc_method *Method;
 
 typedef void *objc_property_t;
 #ifdef __OBJC__
