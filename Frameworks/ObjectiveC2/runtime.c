@@ -21,8 +21,10 @@
 #define objc_super gnu_objc_super
 #define objc_msg_lookup gnu_objc_msg_lookup 
 #define objc_msg_lookup_super gnu_objc_msg_lookup_super 
+#define BOOL GNU_BOOL
 #include <objc/objc.h>
 #include <objc/objc-api.h>
+#undef GNU_BOOL
 #include <objc/encoding.h>
 #undef objc_msg_lookup
 #undef objc_msg_lookup_super
