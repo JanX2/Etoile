@@ -4,6 +4,7 @@ VERSION = 0.1
 FRAMEWORK_NAME = MediaKit
 
 MediaKit_OBJC_FILES = \
+				  MKObjectPipe.m\
 				  MKMediaFile.m\
 				  MKMusicPlayer.m\
 				  MKSoundDevice.m\
