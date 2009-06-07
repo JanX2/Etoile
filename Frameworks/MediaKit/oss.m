@@ -31,14 +31,9 @@
 
 
 @implementation OSSDevice
-- (id) init
-{
-	SUPERINIT;
-	return self;
-}
 - (id) initForInput:(BOOL) aFlag
 {
-	SELFINIT;
+	SUPERINIT;
 	int mode = O_WRONLY;
 	if (aFlag)
 	{
