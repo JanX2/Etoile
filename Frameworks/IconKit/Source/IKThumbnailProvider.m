@@ -177,7 +177,7 @@ static NSFileManager *fileManager = nil;
   subpath = [subpath stringByAppendingPathComponent: pathComponentHash];
   subpath = [subpath stringByAppendingPathExtension: @"tif"];
   
-  [fileManager removeFileAtPath: subpath handler: nil];
+  result = [fileManager removeFileAtPath: subpath handler: nil];
   if (result == NO)
     {
       NSLog(@"Impossible to invalid large thumbnail cache for URL %@", 
@@ -188,7 +188,7 @@ static NSFileManager *fileManager = nil;
   subpath = [subpath stringByAppendingPathComponent: pathComponentHash];
   subpath = [subpath stringByAppendingPathExtension: @"tif"];
   
-  [fileManager removeFileAtPath: subpath handler: nil];
+  result = [fileManager removeFileAtPath: subpath handler: nil];
   if (result == NO)
     {
       NSLog(@"Impossible to invalid normal thumbnail cache for URL %@", 
