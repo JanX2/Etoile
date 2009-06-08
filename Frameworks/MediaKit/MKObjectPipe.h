@@ -1,5 +1,5 @@
 #import <Foundation/NSObject.h>
-
+#include <pthread.h>
 /**
  * The MKObjectPipe class encapsulates a connection between two filters. 
  *
