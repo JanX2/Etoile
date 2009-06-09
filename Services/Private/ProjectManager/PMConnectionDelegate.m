@@ -10,12 +10,10 @@
 @implementation PMConnectionDelegate
 - (void)newWindow: (XCBWindow*)window
 {
-	NSLog(@"New window: %@", window);
-	NSLog(@"\nDecoration: %@\nDecorated: %@", decorationWindows, decoratedWindows);
 	if (![decorationWindows objectForKey: window] 
 		 && ![decoratedWindows objectForKey: window])
 	{
-		xcb_set_input_focus([XCBConn connection], XCB_INPUT_FOCUS_PARENT, [window xcbWindowId], 0);
+		//xcb_set_input_focus([XCBConn connection], XCB_INPUT_FOCUS_PARENT, [window xcbWindowId], 0);
 		NSLog(@"New window: %@", window);
 		[window addToSaveSet];
 		PMDecoratedWindow *win = [PMDecoratedWindow windowDecoratingWindow: window];
@@ -129,7 +127,7 @@
 				 object: nil];
 	/*
 	[center addObserver: self
-			   selector: @selector(windowPlacedOnBottom:)
+    		   selector: @selector(windowPlacedOnBottom:)
 				   name: XCBWindowWindowPlacedOnBottomNotification
 				 object: nil];
 	[center addObserver: self

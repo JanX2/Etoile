@@ -13,6 +13,14 @@
 - (void) handleButtonPress: (xcb_map_notify_event_t*)anEvent;
 @end
 @implementation XCBConnection (EventHandlers)
+- (void) handleFocusIn: (xcb_map_notify_event_t*)anEvent
+{
+	NSLog(@"Focus in");
+}
+- (void) handleFocusOut: (xcb_map_notify_event_t*)anEvent
+{
+	NSLog(@"Focus out");
+}
 - (void) handleMapRequest: (xcb_map_notify_event_t*)anEvent
 {
 	NSLog(@"Mapping requested");
@@ -41,6 +49,10 @@
 }
 - (void) handleMapNotify: (xcb_map_notify_event_t*)anEvent
 {
+	uint32_t events = XCB_EVENT_MASK_FOCUS_CHANGE;
+
+	xcb_change_window_attributes(connection, anEvent->window,
+			XCB_CW_EVENT_MASK, &events);
 	NSLog(@"Mapping window %x", anEvent->window);
 	NSLog(@"Redirect? %d", anEvent->override_redirect);
 	XCBWindow *win  = [self windowForXCBId: anEvent->window];
@@ -161,6 +173,8 @@ XCBConnection *XCBConn;
 			//HANDLE(KEY_PRESS, KeyPress)
 			//HANDLE(KEY_RELEASE, KeyRelease)
 			//HANDLE(BUTTON_RELEASE, ButtonRelease)
+			HANDLE(FOCUS_OUT, FocusOut)
+			HANDLE(FOCUS_IN, FocusIn)
 			HANDLE(BUTTON_PRESS, ButtonPress)
 			HANDLE(MAP_REQUEST, MapRequest)
 			HANDLE(UNMAP_NOTIFY, UnMapNotify)
