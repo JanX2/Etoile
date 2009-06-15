@@ -7,7 +7,7 @@
 NSObject subclass: MelodieController
 [
 	| window search musicPlayerController knownExtensions
-	  URLTextField addURLWindow smartGroup ctxt
+	  URLTextField addURLWindow ctxt
 	  mainContainer  playlistContainer
 	  mainLayoutItemGroup playlistLayoutItemGroup
 	  mainModel playlistModel |
@@ -202,27 +202,22 @@ NSObject subclass: MelodieController
 	]
 
 	controlTextDidChange: notif [
-		smartGroup == nil ifTrue: [ self smartGroupOn. ].
-		(search stringValue length = 0)
-		    ifTrue: [ 
-			mainLayoutItemGroup setRepresentedObject: mainModel.
-		]  ifFalse: [
-			mainLayoutItemGroup setRepresentedObject: smartGroup.
-			smartGroup setPredicate:
-			    (NSPredicate predicateWithFormat: '(%K CONTAINS[cd] %@) OR (%K CONTAINS[cd] %@)'
-			        argumentArray: {'kETTitleProperty' . search stringValue . 'kETAlbumProperty' . search stringValue }).
+		(search stringValue length = 0) ifTrue: [
+			'clear' log.
+			mainLayoutItemGroup filterWithPredicate: nil recursively: false.
+		] ifFalse: [
+			search stringValue length log.
+			" FIXME: shouldn't need representedObject. should we? "
+			mainLayoutItemGroup filterWithPredicate:
+				(NSPredicate predicateWithFormat: '(representedObject.%K CONTAINS[cd] %@) OR (representedObject.%K CONTAINS[cd] %@)'
+			  	argumentArray: {'kETTitleProperty' . search stringValue . 'kETAlbumProperty' . search stringValue })
+				recursively: false.
 		].
 		mainLayoutItemGroup reloadAndUpdateLayout.
 	]
-
-	smartGroupOn [
-		smartGroup := COSmartGroup alloc init.
-		smartGroup setTarget: mainModel.
-		mainLayoutItemGroup setRepresentedObject: smartGroup.
-	]
 	
 	clearSearch: sender [
-		search setStringValue: (NSString string). "change to ''"
+		search setStringValue: ''.
 		self controlTextDidChange: nil.
 	]
 

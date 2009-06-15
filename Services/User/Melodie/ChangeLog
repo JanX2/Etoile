@@ -1,3 +1,10 @@
+2009-06-15  Eric Wasylishen <ewasylishen@gmail.com>
+
+  * Adjusted searching to use ETLayoutItemGroup 
+    -filterWithPredicate:recursively: instead of COSmartGroup
+    This currently isn't working quite right (double clicking
+    on a song in the filtered list causes an exception)
+
 2008-11-04  Eric Wasylishen <ewasylishen@gmail.com>
 
 	* Branched in to stable
