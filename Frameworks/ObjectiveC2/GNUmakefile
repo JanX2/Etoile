@@ -14,7 +14,6 @@ ObjectiveC2_LANGUAGES = English
 ObjectiveC2_OBJC_FILES = \
 				NSBlocks.m\
 				blocks_runtime.m\
-				ObjectPlanes.m\
 				properties.m\
 				sync.m
 
