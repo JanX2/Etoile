@@ -45,7 +45,6 @@
 	    "addFiles:",
 	    "addObject:",
 	    "addURL:",
-	    "clearSearch:",
 	    "collapse:",
 	    "doubleClickInContainer:",
 	    "expand:",
@@ -73,7 +72,6 @@
 	    "addFiles:",
 	    "addURL:",
 	    "newPlaylist:",
-	    "clearSearch:",
 	    "redo:",
 	    "undo:"
 	);

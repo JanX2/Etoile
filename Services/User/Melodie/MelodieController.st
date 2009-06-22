@@ -215,11 +215,6 @@ NSObject subclass: MelodieController
 		].
 		mainLayoutItemGroup reloadAndUpdateLayout.
 	]
-	
-	clearSearch: sender [
-		search setStringValue: ''.
-		self controlTextDidChange: nil.
-	]
 
 	doubleClickInContainer: sender [
 		musicPlayerController playLayoutItem: (sender doubleClickedItem) start: true.
