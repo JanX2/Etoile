@@ -762,6 +762,24 @@ Protocol *objc_getProtocol(const char *name)
 	return protocol;
 }
 
+BOOL protocol_conformsToProtocol(Protocol *p, Protocol *other)
+{
+	return NO;
+}
+
+struct objc_method_description *protocol_copyMethodDescriptionList(Protocol *p,
+	BOOL isRequiredMethod, BOOL isInstanceMethod, unsigned int *count)
+{
+	*count = 0;
+	return NULL;
+}
+
+Protocol **protocol_copyProtocolList(Protocol *p, unsigned int *count)
+{
+	*count = 0;
+	return NULL;
+}
+
 const char *protocol_getName(Protocol *p)
 {
 	if (NULL != p)

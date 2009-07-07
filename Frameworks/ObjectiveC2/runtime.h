@@ -221,7 +221,28 @@ const char *object_getClassName(id obj);
 IMP objc_msg_lookup(id, SEL);
 IMP objc_msg_lookup_super(struct objc_super*, SEL);
 
+OBJC_GNU_RUNTIME_UNSUPPORTED("Protocol introspection")
+BOOL protocol_conformsToProtocol(Protocol *p, Protocol *other);
+
+OBJC_GNU_RUNTIME_UNSUPPORTED("Protocol introspection")
+struct objc_method_description *protocol_copyMethodDescriptionList(Protocol *p,
+	BOOL isRequiredMethod, BOOL isInstanceMethod, unsigned int *count);
+
+OBJC_GNU_RUNTIME_UNSUPPORTED("Protocol introspection")
+objc_property_t *protocol_copyPropertyList(Protocol *p, unsigned int *count);
+
+OBJC_GNU_RUNTIME_UNSUPPORTED("Protocol introspection")
+Protocol **protocol_copyProtocolList(Protocol *p, unsigned int *count);
+
+OBJC_GNU_RUNTIME_UNSUPPORTED("Protocol introspection")
+struct objc_method_description protocol_getMethodDescription(Protocol *p,
+	SEL aSel, BOOL isRequiredMethod, BOOL isInstanceMethod);
+
 const char *protocol_getName(Protocol *p);
+
+OBJC_GNU_RUNTIME_UNSUPPORTED("Protocol introspection")
+objc_property_t protocol_getProperty(Protocol *p, const char *name,
+	BOOL isRequiredProperty, BOOL isInstanceProperty);
 
 BOOL protocol_isEqual(Protocol *p, Protocol *other);
 
