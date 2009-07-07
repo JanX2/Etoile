@@ -14,7 +14,7 @@ NSObject subclass: MusicPlayerController
 
 	init [
 		player := MKMusicPlayer new initWithDefaultDevice inNewThread.
-		history := ETHistoryManager new.
+		history := ETHistory new.
 		history setMaxHistorySize: 100.
 		queueSize := 0.
 
