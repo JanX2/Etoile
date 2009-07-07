@@ -203,6 +203,8 @@ id objc_lookUpClass(const char *name);
 
 Class objc_allocateClassPair(Class superclass, const char *name, size_t extraBytes);
 
+Protocol *objc_getProtocol(const char *name);
+
 void objc_registerClassPair(Class cls);
 
 void *object_getIndexedIvars(id obj);
@@ -212,8 +214,16 @@ void *object_getIndexedIvars(id obj);
 
 id object_dispose(id obj);
 
+Class object_getClass(id obj);
+
+const char *object_getClassName(id obj);
+
 IMP objc_msg_lookup(id, SEL);
 IMP objc_msg_lookup_super(struct objc_super*, SEL);
+
+const char *protocol_getName(Protocol *p);
+
+BOOL protocol_isEqual(Protocol *p, Protocol *other);
 
 // Only enable support for object planes when 
 // -fobjc-sender-dependent-dispatch is specified

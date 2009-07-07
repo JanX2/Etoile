@@ -712,6 +712,20 @@ void *object_getIndexedIvars(id obj)
 	return ((char*)obj) + obj->isa->instance_size;
 }
 
+Class object_getClass(id obj)
+{
+	if (nil != obj)
+	{
+		return obj->isa;
+	}
+	return Nil;
+}
+
+const char *object_getClassName(id obj)
+{
+	return class_getName(object_getClass(obj));
+}
+
 void objc_registerClassPair(Class cls)
 {
 	Class metaClass = cls->class_pointer;
@@ -746,4 +760,27 @@ Protocol *objc_getProtocol(const char *name)
 	Protocol *protocol = (Protocol*)(objectNew(objc_getClass("Protocol")));
 	protocol->protocol_name = (char*)name;
 	return protocol;
+}
+
+const char *protocol_getName(Protocol *p)
+{
+	if (NULL != p)
+	{
+		return p->protocol_name;
+	}
+	return NULL;
+}
+
+BOOL protocol_isEqual(Protocol *p, Protocol *other)
+{
+	if (NULL == p || NULL == other)
+	{
+		return NO;
+	}
+	if (p == other || 
+		0 == strcmp(p->protocol_name, other->protocol_name))
+	{
+		return YES;
+	}
+	return NO;
 }
