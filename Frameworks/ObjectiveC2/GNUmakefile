@@ -36,3 +36,4 @@ endif
 ObjectiveC2_OBJCFLAGS += -std=c99
 
 include $(GNUSTEP_MAKEFILES)/framework.make
+-include ../../etoile.make
