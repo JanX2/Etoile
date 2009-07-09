@@ -203,30 +203,43 @@ Ivar * class_copyIvarList(Class cls, unsigned int *outCount)
 	{
 		*outCount = ivarlist->ivar_count;
 	}
-	size_t size = sizeof(struct objc_ivar) * ivarlist->ivar_count;
+	size_t size = sizeof(struct objc_ivar *) * ivarlist->ivar_count;
 	if (size == 0) { return NULL; }
 	Ivar *list = malloc(size);
-	memcpy(list, &ivarlist->ivar_list, size);
+	for (unsigned int i=0; i<ivarlist->ivar_count; i++)
+	{
+		list[i] = &(ivarlist->ivar_list[i]);
+	}
 	return list;
 }
 
 Method * class_copyMethodList(Class cls, unsigned int *outCount)
 {
-	size_t size = 0;
+	unsigned int count = 0;
 	for (struct objc_method_list *methods = cls->methods;
 		methods != NULL ; methods = methods->method_next)
 	{
-		size += methods->method_count;
+		count += methods->method_count;
 	}
-	
-	Method *list = malloc(size * sizeof(struct objc_method));
+	if (outCount != NULL)
+	{
+		*outCount = count;
+	}
+	if (count == 0)
+	{
+		return NULL;
+	}
+
+	Method *list = malloc(count * sizeof(struct objc_method *));
 	Method *copyDest = list;
 
 	for (struct objc_method_list *methods = cls->methods;
 		methods != NULL ; methods = methods->method_next)
 	{
-		memcpy(copyDest, &methods->method_list, 
-				methods->method_count * sizeof(struct objc_method));
+		for (unsigned int i=0; i<methods->method_count; i++)
+		{
+			copyDest[i] = &(methods->method_list[i]);
+		}
 		copyDest += methods->method_count;
 	}
 
