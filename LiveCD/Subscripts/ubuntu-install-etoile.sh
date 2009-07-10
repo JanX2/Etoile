@@ -2,12 +2,77 @@
 
 # --build
 
-if [ ! -d ./build ]; then
-	mkdir build
+# Initialize option variables with default values
+
+BUILD_DIR=$PWD/build
+PREFIX_DIR=/
+ETOILE_VERSION=stable
+
+# Process script options
+
+while test $# != 0
+do
+  option=
+  case $1 in
+    --help | -h)
+      echo
+      echo "`basename $0` - Script to build and install the Etoile environment "
+      echo
+      echo "Note: this script will append a new line to ~/.bashrc"
+      echo
+      echo "Requirements: "
+      echo
+      echo "  wget, GNU make and sudo access"
+      echo
+      echo "Actions:"
+      echo
+      echo "  --help                   - Print help"
+      echo
+      echo "Options:"
+      echo "Type --option-name=value to set an option and quote the value when it contains "
+      echo "spaces."
+      echo
+      echo "  --build-dir             - Name of the directory inside which the build will "
+      echo "                            happen (default: \$PWD/build)"
+      echo "  --prefix                - Path where GNUstep and Etoile will be installed"
+      echo "                            (default:  /)"
+      echo "  --version               - Version of the Etoile environment to check out and "
+      echo "                            and build, either 'stable' or 'trunk'. The related "
+      echo "                            repository code will be checked out in "
+      echo "                            $build-dir/Etoile"
+      echo "                            (default: stable)"
+      echo
+      exit 0
+      ;;
+    --*=*)
+      option=`expr "x$1" : 'x\([^=]*\)='`
+      optionarg=`expr "x$1" : 'x[^=]*=\(.*\)'`
+      ;;
+    *)
+      ;;
+  esac
+
+  case $option in
+    --build-dir)
+      BUILD_DIR=$optionarg;;
+    --prefix)
+      PREFIX_DIR=$optionarg;; 
+    --version)
+      ETOILE_VERSION=$optionarg;; 
+    *)
+      ;;
+  esac
+  shift
+done
+
+# Create a build directory if none exists
+
+if [ ! -d $BUILD_DIR ]; then
+	mkdir $BUILD_DIR
 else
 	echo "Found existing build directory"
 fi
-cd build
+cd $BUILD_DIR
 
 # Install Etoile and GNUstep dependencies for Ubuntu 9.04 (copied from INSTALL.Ubuntu)
 # Universe repository needs to be enabled in /etc/apt/sources.list for libonig-dev to show up
@@ -38,12 +103,12 @@ tar -xzf $GSBACK.tar.gz
 # Build & Install GNUstep
 
 cd $GSMAKE
-./configure --prefix=/ && make && sudo -E make install
+./configure --prefix=$PREFIX_DIR && make && sudo -E make install
 cd ..
 
 # Source the GNUstep shell script, and add it to the user's bashrc
-. /System/Library/Makefiles/GNUstep.sh
-echo ". /System/Library/Makefiles/GNUstep.sh" >> ~/.bashrc
+. ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh
+echo ". ${PREFIX_DIR%/}/System/Library/Makefiles/GNUstep.sh" >> ~/.bashrc
 
 cd $GSBASE
 ./configure && make && sudo -E make install
@@ -79,15 +144,32 @@ patch -p0 < llvm.patch
 ./configure && make && sudo make install
 cd ..
 
-# Check out and build Etoile stable version
+# Check out and build the requested Etoile version
 
-svn co http://svn.gna.org/svn/etoile/stable/Etoile Etoile
+if [ $ETOILE_VERSION = stable ]; then
+	ETOILE_REP_PATH=stable
+elif [ $ETOILE_VERSION = trunk ]; then
+	ETOILE_REP_PATH=trunk/Etoile
+fi
+
+svn co http://svn.gna.org/svn/etoile/$ETOILE_REP_PATH Etoile
 
 cd Etoile
 make && sudo -E make install
+./setup.sh
 
 echo
-echo "Installation of Etoile is almost finished, you now need to run setup.sh "
-echo "script by yourself to have a usable environment."
+echo "--> Finished Etoile installation :-)"
 echo
+echo "You now need to log out and choose Etoile session in GDM, then log in "
+echo "to start Etoile."
+echo
+
+# TODO: Make possible to skip setup.sh and run it later manually
+#echo
+#echo "Installation of Etoile is almost finished, you now need to run setup.sh "
+#echo "script by yourself to have a usable environment."
+#echo
+#echo " -- The script path is $BUILD_DIR/Etoile/setup.sh -- "
+#echo
 
