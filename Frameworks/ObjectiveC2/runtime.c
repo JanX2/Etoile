@@ -199,13 +199,21 @@ BOOL class_conformsToProtocol(Class cls, Protocol *protocol)
 Ivar * class_copyIvarList(Class cls, unsigned int *outCount)
 {
 	struct objc_ivar_list *ivarlist = cls->ivars;
+	unsigned int count = 0;
+	if (ivarlist != NULL)
+	{
+		count = ivarlist->ivar_count;
+	}
 	if (outCount != NULL)
 	{
-		*outCount = ivarlist->ivar_count;
+		*outCount = count;
 	}
-	size_t size = sizeof(struct objc_ivar *) * ivarlist->ivar_count;
-	if (size == 0) { return NULL; }
-	Ivar *list = malloc(size);
+	if (count == 0)
+	{
+		return NULL;
+	}
+
+	Ivar *list = malloc(count * sizeof(struct objc_ivar *));
 	for (unsigned int i=0; i<ivarlist->ivar_count; i++)
 	{
 		list[i] = &(ivarlist->ivar_list[i]);
