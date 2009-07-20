@@ -8,7 +8,6 @@
 
 #import "Conversation.h"
 #import "Message.h"
-#include "Macros.h"
 
 static NSMutableDictionary * conversations = nil;
 static Class delegateClass = Nil;

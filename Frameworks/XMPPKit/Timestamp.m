@@ -7,7 +7,7 @@
 //
 
 #import "Timestamp.h"
-#import "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation Timestamp
 + (id) timestampWithTime:(NSCalendarDate*)_time reason:(NSString*)_reason

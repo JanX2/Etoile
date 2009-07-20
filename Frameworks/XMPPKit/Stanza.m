@@ -7,7 +7,7 @@
 //
 
 #import "Stanza.h"
-#import "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation Stanza
 - (id) init

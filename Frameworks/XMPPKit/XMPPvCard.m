@@ -8,7 +8,7 @@
 
 #import "XMPPvCard.h"
 #import <EtoileXML/ETXMLString.h>
-#include "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 #import "NSData+Base64.h"
 
 @interface XMPPvCardUpdate : ETXMLNullHandler {

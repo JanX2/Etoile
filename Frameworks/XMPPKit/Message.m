@@ -13,7 +13,7 @@
 #import "MessageStanzaFactory.h"
 #import "XMPPError.h"
 #import "NSAttributedString+HTML-IM.h"
-#import "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 
 NSDictionary * MESSAGE_TYPES;
 

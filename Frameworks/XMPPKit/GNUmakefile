@@ -5,7 +5,7 @@ DOCUMENT_NAME = ${FRAMEWORK_NAME}
 
 ${FRAMEWORK_NAME}_VERSION = 0.1
 
-LIBRARIES_DEPEND_UPON += -lEtoileXML -lAddresses -lssl -lcrypto \
+LIBRARIES_DEPEND_UPON += -lEtoileFoundation -lAddresses -lssl -lcrypto \
 	$(FND_LIBS) $(OBJC_LIBS) $(SYSTEM_LIBS)
 
 ${FRAMEWORK_NAME}_OBJCFLAGS += -g -std=c99
@@ -14,6 +14,7 @@ ${FRAMEWORK_NAME}_LDFLAGS += -g
 ${DOCUMENT_NAME}_AGSDOC_FLAGS += -MakeFrames YES
 
 ${FRAMEWORK_NAME}_OBJC_FILES = \
+					ABPerson+merging.m\
 					ChatLog.m\
 					CompareHack.m\
 					Conversation.m\

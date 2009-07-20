@@ -17,7 +17,7 @@
 #include <openssl/sha.h>
 
 #import "XMPPConnection.h"
-#import <EtoileXML/ETXMLParser.h>
+#import <EtoileFoundation/EtoileFoundation.h>
 #import "query_jabber_iq_auth.h"
 #import "StreamFeatures.h"
 #import "DefaultHandler.h"
@@ -49,8 +49,6 @@ static NSDictionary * STANZA_KEYS;
 @implementation XMPPConnection
 + (void) initialize
 {
-	//Initialise OpenSSL
-	SSL_library_init();
 	//Create default handler classes
 	STANZA_CLASSES = [[NSDictionary dictionaryWithObjectsAndKeys:
 		[Message class], @"message",
@@ -89,28 +87,24 @@ static NSDictionary * STANZA_KEYS;
 }
 
 
-- (id) init
+- (id) initWithAccount:(id)_account
 {
+	if(![_account isKindOfClass:[XMPPAccount class]])
+	{
+		[self release];
+		return nil;
+	}
+
+	SUPERINIT;
 	connectionState = offline;
 	unsentBuffer = [[NSMutableString alloc] init];
-	//TODO: Make this more sensible
-	res = @"StepChat";
+	ASSIGN(res, [[NSHost currentHost] name]);
 	keepalive = 0;
 	connectionMutex = [[NSLock alloc] init];
 	messageIDMutex = [[NSLock alloc] init];
 	//Get the log class, if it has been built
 	xmlLog = NSClassFromString(@"XMLLog");
-	return [super init];
-}
-
-- (id) initWithAccount:(id)_account
-{
 	account = _account;
-	if(![account isKindOfClass:[XMPPAccount class]])
-	{
-		[self release];
-		return nil;
-	}
 	roster = [(XMPPAccount*)account roster];
 	
 	DefaultHandler * defaultHandler = [[[DefaultHandler alloc] initWithAccount:account] autorelease];
@@ -118,9 +112,18 @@ static NSDictionary * STANZA_KEYS;
 											 messageHandler:defaultHandler
 											presenceHandler:roster]
 		retain];
-	return [self init];
+	return self;
 }
-
+- (void)resetKeepAlive
+{
+	[keepalive invalidate];
+	[keepalive release];
+	keepalive = [[NSTimer scheduledTimerWithTimeInterval: 50
+	                                              target: self
+												selector: @selector(sendKeepAlive:)
+	                                            userInfo: nil
+	                                             repeats: NO] retain];
+}
 - (void) reconnectToJabberServer
 {
 	NSLog(@"Connecting...");
@@ -128,49 +131,24 @@ static NSDictionary * STANZA_KEYS;
 	{
 		[self disconnect];
 	}
-	
-	struct hostent * host;
-	struct sockaddr_in serverAddress;
-	
-	NSLog(@"Looking up host %@,(%s)", serverHost, [serverHost UTF8String]);
-	host = gethostbyname([serverHost UTF8String]);
-	//host = gethostbyname("66.116.97.186");
-	if(host == NULL)
+	// FIXME: Needs to be jabber-client on OS X...
+	ASSIGN(socket, [ETSocket socketConnectedToRemoteHost: serverHost
+	                                          forService: @"xmpp-client"]);
+	if (nil == socket)
 	{
-		NSLog(@"gethostbyname gave error %d.  Connect failing\n", h_errno);
+		NSLog(@"Connect failing\n");
 		return;
 	}
-	serverAddress.sin_family = AF_INET;
-	serverAddress.sin_addr.s_addr = ((struct in_addr *)host->h_addr_list[0])->s_addr;
-	serverAddress.sin_port = htons(5223);
 	
-	sslContext = SSL_CTX_new(SSLv23_client_method());
-	ssl = SSL_new(sslContext);
-	//Initialise the socket
-	s = socket(PF_INET, SOCK_STREAM, 0);
-	fcntl(s,F_SETFL,O_NONBLOCK);
-	
-	int connectSuccess = connect(s, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
-	//Connect
-	if(connectSuccess != 0 && errno != EINPROGRESS)
-	{
-		NSLog(@"Connection error: %d", errno);
-		[[NSException exceptionWithName:@"Socket Error" reason:@"Error Connecting" userInfo:nil] raise];
-	}
 	connectionState = connecting;
 	//Initialise the parser
 	[parser release];
 	parser = [[ETXMLParser alloc] init];
 	[parser setContentHandler:self];
-	//Check for incoming Jabber messages 10 times per second
-	if(timer == nil)
-	{
-		[self setTimer:[NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)0.1 
-														target:self
-													  selector:@selector(parseXMPP:) 
-													  userInfo:nil
-													   repeats:YES]];		
-	}	
+	[self resetKeepAlive];
+
+	[socket setDelegate: self];
+	[self receivedData: nil fromSocket: nil];
 }
 
 //Connect to an XMPP server.
@@ -178,16 +156,16 @@ static NSDictionary * STANZA_KEYS;
 					   withJID:(JID*) aJID
 					  password:(NSString*) password
 {
-	user = [[aJID node] retain];
-	server = [[aJID domain] retain];
-	pass = [password retain];
+	ASSIGN(user, [aJID node]);
+	ASSIGN(server, [aJID domain]);
+	ASSIGN(pass, [password retain]);
 	if(jabberServer == nil)
 	{
-		serverHost = [server retain];
+		ASSIGN(serverHost, server);
 	}
 	else
 	{
-		serverHost = [jabberServer retain];
+		ASSIGN(serverHost, jabberServer);
 	}
 	NSLog(@"Connecting to %@ with username %@ and password %@", serverHost, user, pass);
 	[self reconnectToJabberServer];
@@ -199,11 +177,7 @@ static NSDictionary * STANZA_KEYS;
 	{
 		[self XMPPSend:@"</stream:stream>"];
 		//Clean up the connection
-		[timer invalidate];
-		timer = nil;
 		connectionState = disconnecting;
-		//Keep fetching data until we have retreived everything that was queue'd by the server, then disconnect.
-		while([self parseXMPP:self]);		
 	}
 }
 
@@ -212,146 +186,52 @@ static NSDictionary * STANZA_KEYS;
 	NSLog(@"Unexpected CDATA encountered in <stream:stream /> tag:\n\%@", _chars);
 }
 
-- (void) send:(const char*) buffer
+- (void)sendString: (NSString*)aString
 {
-	NSLog(@"Sending %s", buffer);
-	int sent;
-	int error;
-	int len = strlen(buffer);
-	while(len > 0)
-	{
-		//e = send(s, sendBuffer, len, 0);
-		sent = SSL_write(ssl,buffer,len);
-		if(sent <= 0)
-		{
-			error = SSL_get_error(ssl, sent);
-			while(error == SSL_ERROR_WANT_WRITE || error == SSL_ERROR_WANT_READ)
-			{
-				sent = SSL_write(ssl,buffer,len);
-				if(sent <= 0)
-				{
-					error = SSL_get_error(ssl, sent);					
-				}
-				else
-				{
-					error = SSL_ERROR_NONE;
-				}
-			}
-			if(error != SSL_ERROR_NONE)
-			{
-				NSLog(@"Sending error: %d",error);
-				if(connectionState != offline)
-				{
-					connectionState = offline;
-					[self reconnectToJabberServer];
-					return; //Silently discard data send during connection failure - trying to send it would probably keep breaking us
-				}			
-			}
-		}
-		len -= sent;
-		buffer += sent;
-	}	
+	NSLog(@"XML: %@", aString);
+	[self resetKeepAlive];
+	[socket sendData: [aString dataUsingEncoding: NSUTF8StringEncoding]];
+}
+- (void)sendKeepAlive: (id)sender
+{
+	[self sendString: @" "];
 }
 
-- (BOOL) parseXMPP:(id)sender
+- (void)receivedData: (NSData*)aData fromSocket: (ETSocket*)aSocket
 {
-	if([sender isKindOfClass:[NSTimer class]] && sender != timer)
-	{
-		[sender invalidate];
-	}
+	[self resetKeepAlive];
+	// FIXME: Not needed?
 	if(connectionState == offline)
 	{
-		return NO;
+		return;
 	}
 	
-	//LOCK(connectionMutex);
+	if(connectionState == connecting)
 	{
-		//TODO: Make this into an ivar.
-		static char buffer[2000];
-		ssize_t dataLength;
-
-		if(connectionState == connecting)
+		// FIXME: Should wait for server to advertise STARTTLS 
+		//if (![socket negotiateSSL])
 		{
-			fd_set writable;
-			fd_set except;
-			
-			struct timeval timeout;
-			
-			FD_ZERO(&writable);
-			FD_ZERO(&except);
-			
-			FD_SET(s, &writable);
-			FD_SET(s, &except);
-			
-			timeout.tv_sec = 0;
-			timeout.tv_usec = 10;
-			
-			select(s + 1,(fd_set*)NULL, &writable, &except, &timeout);
-			if(FD_ISSET(s, &writable))
-			{
-				SSL_set_fd(ssl,s);
-				if(SSL_connect(ssl) == 1)
-				{
-					NSLog(@"SSL_connect returned 1.  Is it meant to do that?");
-				}
-				timeout.tv_sec = 1;
-				select(s + 1,(fd_set*)NULL , &writable, (fd_set*)NULL, &timeout);
-				NSLog(@"Connected");
-				connectionState = connected;
-				[self send:
-					[[NSString stringWithFormat:@"<?xml version='1.0' encoding='UTF-8' ?><stream:stream to='%@' xmlns='jabber:client' version='1.0' xmlns:stream='http://etherx.jabber.org/streams'>",
-						server]
-						UTF8String]];
-				return YES;
-			}
-			else if(FD_ISSET(s, &except))
-			{
-				connectionState = offline;
-				[timer invalidate];
-				timer = nil;
-			}
-			return NO;
+			//NSLog(@"SSL negotiation failed");
+		//	return;
 		}
-		
-		dataLength = SSL_read(ssl,buffer,1500);
-		if(dataLength > 0)
-		{
-			keepalive = 0;
-			NSString * parseString;
-			buffer[dataLength] = 0;
-			parseString = [[NSString stringWithUTF8String:buffer] retain];
-			[xmlLog logIncomingXML:parseString];
-			[parser parseFromSource:parseString];
-		}
-		else if(dataLength <= 0 && connectionState == disconnecting)
-		{
-			connectionState = offline;
-/*			SSL_free(ssl);
-			SSL_CTX_free(sslContext);
-			close(s);*/
-			return NO;
-		}		
-		else if(dataLength < 0)
-		{
-			if(SSL_get_error(ssl,dataLength) != SSL_ERROR_WANT_READ)
-			{
-				if(connectionState != disconnecting)
-				{
-					connectionState = offline;
-					[self reconnectToJabberServer];
-				}
-			}
-		}
-		keepalive++;
-		if(keepalive > 500)
-		{
-			keepalive = 0;
-			[self XMPPSend:@" "];
-		}
-		return YES;
+		connectionState = connected;
+		[self sendString: [NSString stringWithFormat: 
+			@"<?xml version='1.0' encoding='UTF-8' ?><stream:stream to='%@'"
+			" xmlns='jabber:client' version='1.0' xmlns:stream="
+			"'http://etherx.jabber.org/streams'>",
+			server]];
+		//[socket receiveData: nil];
+		return;
 	}
-	//This line should never be reached - it exists to get rid of a compiler warning
-	return NO;
+		
+	NSString *xml = 
+		[[[NSString alloc] initWithData: aData
+		                       encoding: NSUTF8StringEncoding] autorelease];
+	// FIXME: send keep-alive
+	
+	keepalive = 0;
+	[xmlLog logIncomingXML: xml];
+	[parser parseFromSource: xml];
 }
 - (NSString*) server
 {
@@ -375,7 +255,7 @@ static NSDictionary * STANZA_KEYS;
 	[query setSessionID:sessionID];
 	[authIq addChild:(ETXMLNode*)query];
 	
-	[self send:[[authIq stringValue] UTF8String]];
+	[self sendString: [authIq stringValue]];
 	connectionState = loggingIn;
 }
 
@@ -400,7 +280,7 @@ static NSDictionary * STANZA_KEYS;
 		connectionState = unbound;
 		NSString * newStream = [NSString stringWithFormat:@"<stream:stream to='%@' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>",
                                 server];
-		[self send:[newStream UTF8String]];
+		[self sendString: newStream];
 	}
 	else
 	{
@@ -438,7 +318,7 @@ static NSDictionary * STANZA_KEYS;
 		[authData appendData:[pass dataUsingEncoding:NSUTF8StringEncoding]];
 		NSString * authstring = [authData base64String];
 		[authNode addCData:authstring];
-		[self send:[[authNode stringValue] UTF8String]];
+		[self sendString: [authNode stringValue]];
 		connectionState = loggingIn;
 	}
 	else
@@ -459,7 +339,7 @@ static NSDictionary * STANZA_KEYS;
 											   sessionIqID, @"id",
 											   nil]];
 	[iqNode addChild:sessionNode];
-	[self send:[[iqNode stringValue] UTF8String]];
+	[self sendString: [iqNode stringValue]];
 	[dispatcher addIqResultHandler:self forID:sessionIqID];
 }
 
@@ -480,7 +360,7 @@ static NSDictionary * STANZA_KEYS;
 											   bindID, @"id",
 											   nil]];
 	[iqNode addChild:bindNode];
-	[self send:[[iqNode stringValue] UTF8String]];
+	[self sendString: [iqNode stringValue]];
 	[dispatcher addIqResultHandler:self forID:bindID];	
 }
 
@@ -632,7 +512,6 @@ static NSDictionary * STANZA_KEYS;
 	[xmlLog logOutgoingXML:buffer];
 	//LOCK(connectionMutex);
 	{
-		char * sendBuffer = (char*)[buffer UTF8String];
 		//If we are not connected, buffer the input until we are.
 		if(connectionState != loggedIn)
 		{
@@ -646,23 +525,15 @@ static NSDictionary * STANZA_KEYS;
 		}
 		if(unsentBuffer != nil)
 		{
-			[self send:[unsentBuffer UTF8String]];
+			[self sendString: unsentBuffer];
 			[unsentBuffer release];
 			unsentBuffer = nil;
 		}
-		[self send:sendBuffer];
+		[self sendString: buffer];
 		keepalive = 0;
 	}
 }
 
-- (void) setTimer:(NSTimer*)newTimer
-{
-	if(timer != nil)
-	{
-		[timer release];
-	}
-	timer = [newTimer retain];
-}
 
 - (ConnectionState) connected
 {

@@ -7,7 +7,6 @@
 //
 
 #import "Capabilities.h"
-#include "Macros.h"
 
 @implementation DiscoIdentity
 + (DiscoIdentity*) identityWithCategory:(NSString*)aCategory

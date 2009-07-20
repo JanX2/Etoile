@@ -7,13 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <EtoileXML/ETXMLNullHandler.h>
-#import <EtoileXML/ETXMLNode.h>
+#import <EtoileFoundation/EtoileFoundation.h>
 #import "Dispatcher.h"
 #import "Roster.h"
 #import "Presence.h"
-
-#include <openssl/ssl.h>
 
 /**
  * Enumeration used to define the states in the XMPP Connection state machine.
@@ -29,11 +26,9 @@ typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSess
 @interface XMPPConnection : ETXMLNullHandler <IqHandler>
 {
 	//Socket
-	int s;
-	SSL_CTX * sslContext;
-	SSL * ssl;
+	ETSocket *socket;
 	BOOL SSLEnabled;
-	unsigned int keepalive;
+	NSTimer *keepalive;
 	NSLock * connectionMutex;
 
 	NSLock * messageIDMutex;
@@ -57,8 +52,6 @@ typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSess
 	NSString * serverID;
 	//XML node currently being parsed
 	id currentNode;
-	//Timer which fires parseXMPP messages
-	NSTimer * timer;
 	//Roster
 	Roster * roster;
 	Dispatcher * dispatcher;
@@ -90,11 +83,6 @@ typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSess
  */
 - (void) disconnect;
 /**
- * Read data from the socket and parse the incoming XML.  Returns NO in case of 
- * error.
- */
-- (BOOL) parseXMPP:(id)sender;
-/**
  * Send the passed XML to the server.
  */
 - (void) XMPPSend: (NSString*) buffer;
@@ -102,10 +90,6 @@ typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSess
  * Returns a new connection-unique ID to be used with iq set/get stanzas.
  */
 - (NSString*) newMessageID;
-/**
- * Use the given timer for periodic polling of the connection.
- */
-- (void) setTimer:(NSTimer*)newTimer;
 /**
  * Set the current status.  
  */

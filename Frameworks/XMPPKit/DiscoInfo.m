@@ -7,7 +7,7 @@
 //
 
 #import "DiscoInfo.h"
-#include "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 
 #define ATTRIBUTE(x) [attributes objectForKey:x], x
 

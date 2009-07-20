@@ -8,13 +8,13 @@
 
 #import "Query_jabber_iq_roster.h"
 #import "JabberIdentity.h"
-#include "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation Query_jabber_iq_roster
 - (id) init
 {
 	SUPERINIT;
-	identities = RETAINED(NSMutableArray);
+	identities = [NSMutableArray new];
 	value = identities;
 	return self;
 }

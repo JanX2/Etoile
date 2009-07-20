@@ -7,7 +7,7 @@
 //
 
 #import "JabberResource.h"
-#include "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation JabberResource
 - (id) init

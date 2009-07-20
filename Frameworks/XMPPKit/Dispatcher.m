@@ -9,7 +9,7 @@
 
 #import "Dispatcher.h"
 #import "JID.h"
-#import "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation Dispatcher
 

@@ -11,7 +11,6 @@
 #import <EtoileXML/ETXMLNode.h>
 #import "DiscoInfo.h"
 #import "DiscoItems.h"
-#include "Macros.h"
 
 static NSString * xmlnsDiscoInfo = @"http://jabber.org/protocol/disco#info";
 static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";

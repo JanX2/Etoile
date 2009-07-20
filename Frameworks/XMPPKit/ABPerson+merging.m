@@ -6,8 +6,13 @@
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
+#import <EtoileFoundation/EtoileFoundation.h>
+
+// FIXME: Ugly hack
+#ifdef GNUSTEP
+#define ABPerson ADPerson
+#endif
 #import "ABPerson+merging.h"
-#import "Macros.h"
 
 #define MATCH(x) [ABPerson searchElementForProperty:x\
 											  label:nil\

@@ -8,7 +8,7 @@
 
 #import "XMPPError.h"
 #import <EtoileXML/ETXMLString.h>
-#include "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation XMPPError
 - (id) init

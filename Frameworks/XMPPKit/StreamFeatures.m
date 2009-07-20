@@ -8,7 +8,7 @@
 
 #import "StreamFeatures.h"
 #import <EtoileXML/ETXMLString.h>
-#import "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 
 @implementation StreamFeatures
 - (id) init
