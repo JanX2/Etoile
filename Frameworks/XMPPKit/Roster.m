@@ -8,7 +8,6 @@
 
 #import "Roster.h"
 #import "XMPPAccount.h"
-#import <EtoileXML/ETXMLNode.h>
 #import "JabberPerson.h"
 #import "JabberRootIdentity.h"
 #import "JabberResource.h"
@@ -206,34 +205,29 @@
 	 <presence type="subscribe" to="theraven@theravensnest.org" />
 	 */
 	NSString * jidString = [_jid jidString];
-	ETXMLNode * setRoster = [ETXMLNode ETXMLNodeWithType:@"iq" attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-		@"set", @"type",
-		[connection newMessageID], @"id", nil]];
-	ETXMLNode * query = [ETXMLNode ETXMLNodeWithType:@"query" 
-										  attributes:[NSDictionary dictionaryWithObject:@"jabber:iq:roster" 
-																				 forKey:@"xmlns"]];
-	ETXMLNode * item = [ETXMLNode ETXMLNodeWithType:@"item" 
-											attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-												_name, @"name",
-												jidString, @"jid", 
-												nil]];
-	//Add the group if one is specified
+	ETXMLWriter *xmlWriter = [connection xmlWriter];
+	[xmlWriter startElement: @"iq"
+	             attributes: D(@"set", @"type",
+		                       [connection newMessageID], @"id")];
+	[xmlWriter startElement: @"query"
+	             attributes: D(@"jabber:iq:roster", @"xmlns")];
+	[xmlWriter startElement: @"item"
+	             attributes: D(_name, @"name", jidString, @"jid")];
 	if(_group != nil && ![_group isEqualToString:@""])
 	{
-		ETXMLNode * group = [ETXMLNode ETXMLNodeWithType:@"group"];
-		[group setCData:_group];
-		[item addChild:group];
+		[xmlWriter startElement: @"group"];
+		[xmlWriter characters: _group];
+		[xmlWriter endElement]; //</group>
 	}
-	[query addChild:item];
-	[setRoster addChild:query];
+
+	[xmlWriter endElement]; //</item>
+	[xmlWriter endElement]; //</query>
+	[xmlWriter endElement]; //</iq>
+	//Add the group if one is specified
 	
-	ETXMLNode * presenceNode = [ETXMLNode ETXMLNodeWithType:@"presence" 
-												 attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-													 @"subscribe", @"type", 
-													 jidString, @"to", 
-													 nil]];
-	[connection XMPPSend:[setRoster stringValue]];
-	[connection XMPPSend:[presenceNode stringValue]];
+	[xmlWriter startElement: @"presence" 
+	             attributes: D(@"subscribe", @"type", jidString, @"to")];
+	[xmlWriter endElement];
 }
 
 - (void) unsubscribe:(JID*)_jid
@@ -243,40 +237,34 @@
 	<item subscription="remove" jid="gimbo@theravensnest.org" />
 	</query>
 	</iq>*/
-	ETXMLNode * setRoster = [ETXMLNode ETXMLNodeWithType:@"iq" attributes:
-		[NSDictionary dictionaryWithObjectsAndKeys:
-			@"set", @"type", 
-			[connection newMessageID], @"id", 
-			nil]];
-	ETXMLNode * query = [ETXMLNode ETXMLNodeWithType:@"query" 
-										  attributes:[NSDictionary dictionaryWithObject:@"jabber:iq:roster" 
-																				 forKey:@"xmlns"]];
-	ETXMLNode * item = [ETXMLNode ETXMLNodeWithType:@"item" 
-											attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-												@"remove", @"subscription",
-												[_jid jidString], @"jid",
-												nil]];
-	[query addChild:item];
-	[setRoster addChild:query];
-	[connection XMPPSend:[setRoster stringValue]];
+	ETXMLWriter *xmlWriter = [connection xmlWriter];
+	[xmlWriter startElement: @"iq"
+	             attributes: D(@"set", @"type",
+	                           [connection newMessageID], @"id")];
+	[xmlWriter startElement: @"query" 
+	             attributes: D(@"jabber:iq:roster", @"xmlns")];
+	[xmlWriter startElement: @"item" 
+                 attributes: D(@"remove", @"subscription",
+	                           [_jid jidString], @"jid")];
+	[xmlWriter endElement]; //</item>
+	[xmlWriter endElement]; //</query>
+	[xmlWriter endElement]; //</iq>
 }
 - (void) authorise:(JID*)_jid
 {
-	[connection XMPPSend:[[ETXMLNode ETXMLNodeWithType:@"presence" 
-					  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-						  @"subscribed", @"type", 
-						  [_jid jidString], @"to",
-						  nil]] stringValue]];
+	ETXMLWriter *xmlWriter = [connection xmlWriter];
+	[xmlWriter startElement: @"presence" 
+	             attributes: D(@"subscribed", @"type", [_jid jidString], @"to")];
+	[xmlWriter endElement];
 }
 
 
 - (void) unauthorise:(JID*)_jid
 {
-	[connection XMPPSend:[[ETXMLNode ETXMLNodeWithType:@"presence" 
-										   attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-											   @"unsubscribed", @"type",
-											   [_jid jidString], @"to",
-											   nil]] stringValue]];	
+	ETXMLWriter *xmlWriter = [connection xmlWriter];
+	[xmlWriter startElement: @"presence" 
+	             attributes: D(@"unsubscribed", @"type", [_jid jidString], @"to")];
+	[xmlWriter endElement];
 }
 
 
@@ -293,35 +281,25 @@
  </query>
  </iq>
  */ 
-- (NSString*) iqSettingGroup:(NSString*)aGroup
-						name:(NSString*)aName
-					  forJID:(NSString*)aJID
+- (void)sendIqSettingGroup: (NSString*)aGroup
+                      name: (NSString*)aName
+                    forJID: (NSString*)aJID
 {
-	//<group>
-	ETXMLNode * group = [(ETXMLNode*)[ETXMLNode alloc] initWithType:@"group"];
-	[group setCData:aGroup];
-	//<item>
-	ETXMLNode * item = [[ETXMLNode alloc] initWithType:@"item"
-											attributes:D(aJID, @"jid",
-														 aName, @"name")];
-	[item addChild:group];
-	//<query>
-	ETXMLNode * query = [[ETXMLNode alloc] initWithType:@"query"
-											 attributes:D(@"jabber:iq:roster", @"xmlns")];
-	[query addChild:item];
-	//<iq>
-	ETXMLNode * iq = [[ETXMLNode alloc] initWithType:@"iq"
-										  attributes:D(@"set", @"type",
-													   [connection newMessageID], @"id")];
-					  
-	[iq addChild:query];
-	NSString * xml = [iq stringValue];
-	//Clean up:
-	[iq release];
-	[query release];
-	[item release];
-	[group release];
-	return xml;
+	ETXMLWriter *xmlWriter = [connection xmlWriter];
+	[xmlWriter startElement: @"iq"
+	             attributes: D(@"set", @"type",
+		                       [connection newMessageID], @"id")];
+	[xmlWriter startElement: @"query"
+	             attributes: D(@"jabber:iq:roster", @"xmlns")];
+	[xmlWriter startElement: @"item"
+	             attributes: D(aName, @"name", aJID, @"jid")];
+	[xmlWriter startElement: @"group"];
+	[xmlWriter characters: aGroup];
+	[xmlWriter endElement]; //</group>
+
+	[xmlWriter endElement]; //</item>
+	[xmlWriter endElement]; //</query>
+	[xmlWriter endElement]; //</iq>
 }
 
 
@@ -333,11 +311,9 @@
 	{
 		return;
 	}
-	NSString * xml = [self iqSettingGroup:aGroup
-									 name:aName
-								   forJID:[[anIdentity jid] jidString]];
-	//Send the iq:
-	[connection XMPPSend:xml];
+	[self sendIqSettingGroup: aGroup
+	                    name: aName
+	                  forJID: [[anIdentity jid] jidString]];
 }
 
 - (void) setGroup:(NSString*)aGroup forIdentity:(JabberIdentity*)anIdentity
@@ -348,11 +324,9 @@
 	{
 		return;
 	}
-	NSString * xml = [self iqSettingGroup:aGroup
-									 name:[person name]
-								   forJID:[[anIdentity jid] jidString]];
-	//Send the iq:
-	[connection XMPPSend:xml];
+	[self sendIqSettingGroup: aGroup
+	                    name: [person name]
+	                  forJID: [[anIdentity jid] jidString]];
 }
 
 - (JabberPerson*) personForJID:(JID*)_jid

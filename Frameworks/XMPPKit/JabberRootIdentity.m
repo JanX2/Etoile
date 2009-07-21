@@ -99,35 +99,6 @@
 	return [resources objectForKey:resource];
 }
 
-- (id) initWithRosterItem:(ETXMLNode*)_xml
-{
-	SELFINIT
-	jid = [[JID jidWithString:[_xml get:@"jid"]] retain];
-	
-	group = [[[[_xml getChildrenWithName:@"group"] anyObject] cdata] retain];
-	if(group == nil)
-	{
-		group = @"None";
-	}
-	name = [[_xml get:@"name"] retain];
-	if(name == nil)
-	{
-		name = [[_xml get:@"jid"] retain];
-	}
-	
-	if([jid type] == resourceJID)
-	{
-		JID * childJID = jid;
-		[self addResource:childJID];
-		jid = [jid rootJID];
-		[childJID release];
-	}
-
-	subscription = nil;
-	[self findType];
-	return self;
-}
-
 - (void) setPresence:(Presence*)_presence
 {
 	JID * presenceJID = [_presence jid];
