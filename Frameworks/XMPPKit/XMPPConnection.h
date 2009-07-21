@@ -13,11 +13,6 @@
 #import "Presence.h"
 
 /**
- * Enumeration used to define the states in the XMPP Connection state machine.
- */
-typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSession, loggedIn, disconnecting, offline} ConnectionState;
-
-/**
  * The XMPPConnection class represents a connection to an XMPP server.  It is the 
  * root parser owner.  All XML received from the server is parsed by this class (or
  * delegated to others by this class).  All sending of XML data goes via this 
@@ -40,8 +35,6 @@ typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSess
 	
 	NSThread * connectThread;
 	NSMutableString * unsentBuffer;
-	//Current state of connection
-	ConnectionState connectionState;
 	NSDictionary * streamFeatures;
 	//Current account details
 	NSString * serverHost;
@@ -91,13 +84,13 @@ typedef enum _connectionState {connecting, connected, loggingIn, unbound, noSess
  */
 - (NSString*) newMessageID;
 /**
+ * Returns YES if connected to the server.
+ */
+- (BOOL)isConnected;
+/**
  * Set the current status.  
  */
 - (void) setStatus:(unsigned char)_status withMessage:(NSString*)_message;
-/**
- * Returns the current connection state.
- */
-- (ConnectionState) connected;
 /**
  * Sets the UI component used to display the presence.  This should definitely be 
  * replaced with a notification based system.

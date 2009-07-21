@@ -8,7 +8,7 @@
 
 #import "XMLLog.h"
 #import "JabberApp.h"
-#include "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 
 static NSDictionary * inColour;
 static NSDictionary * outColour;

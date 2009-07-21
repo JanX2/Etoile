@@ -105,14 +105,14 @@
 		{
 			_message = [rosterWindow currentStatusMessage];
 		}
-		if([[account connection] connected] == loggedIn)
+		if ([[account connection] isConnected])
 		{
 			[[account connection] setStatus:_presence withMessage:_message];
 		}
 		else
 		{
 			[[account roster] setInitialStatus:_presence withMessage:_message];
-			if([[account connection] connected] == offline)
+			if (![[account connection] isConnected])
 			{	
 				[account reconnect];
 			}

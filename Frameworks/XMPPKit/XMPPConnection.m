@@ -32,18 +32,28 @@ static NSMutableDictionary * connections = nil;
 static NSDictionary * STANZA_CLASSES;
 static NSDictionary * STANZA_KEYS;
 
-// Only bother with locking if we are in thread-safe mode.
-#ifdef THREAD_SAFE
-#define LOCK(x) [x lock]
-#define UNLOCK(x) [x unlock]
-#else
-#define LOCK(x)
-#define UNLOCK(x)
-#endif
+#define SET_STATE(x) do { isa = [XMPP ## x ## Connection class]; NSLog(@"Entering state %s", #x); } while(0)
 
-@protocol XMLLogging
+@interface NSObject( XMLLogging)
 + (void) logIncomingXML:(NSString*)xml;
 + (void) logOutgoingXML:(NSString*)xml;
+@end
+
+/**
+ * Each state in the XMPPConnection state machine is represented by a custom
+ * subclass.
+ */
+@interface XMPPConnectingConnection : XMPPConnection @end
+@interface XMPPOfflineConnection : XMPPConnection @end
+@interface XMPPConnectedConnection : XMPPConnectingConnection @end
+@interface XMPPEncryptingConnection : XMPPConnectedConnection @end
+@interface XMPPLoggingInConnection : XMPPConnectedConnection @end
+@interface XMPPUnboundConnection : XMPPConnectedConnection @end
+@interface XMPPNoSessionConnection : XMPPConnectedConnection @end
+@interface XMPPLoggedInConnection : XMPPConnectedConnection @end
+
+@interface XMPPConnection (Private)
+- (void) legacyLogIn;
 @end
 
 @implementation XMPPConnection
@@ -96,8 +106,6 @@ static NSDictionary * STANZA_KEYS;
 	}
 
 	SUPERINIT;
-	connectionState = offline;
-	unsentBuffer = [[NSMutableString alloc] init];
 	ASSIGN(res, [[NSHost currentHost] name]);
 	keepalive = 0;
 	connectionMutex = [[NSLock alloc] init];
@@ -127,20 +135,22 @@ static NSDictionary * STANZA_KEYS;
 - (void) reconnectToJabberServer
 {
 	NSLog(@"Connecting...");
-	if(connectionState != offline)
-	{
-		[self disconnect];
-	}
-	// FIXME: Needs to be jabber-client on OS X...
 	ASSIGN(socket, [ETSocket socketConnectedToRemoteHost: serverHost
 	                                          forService: @"xmpp-client"]);
 	if (nil == socket)
 	{
-		NSLog(@"Connect failing\n");
-		return;
+		// Legacy service description for operating systems (e.g. OS X) that
+		// haven't updated /etc/services to the standardised version.
+		ASSIGN(socket, [ETSocket socketConnectedToRemoteHost: serverHost
+												  forService: @"jabber-client"]);
+		if (nil == socket)
+		{
+			NSLog(@"Connect failing\n");
+			return;
+		}
 	}
 	
-	connectionState = connecting;
+	SET_STATE(Connecting);
 	//Initialise the parser
 	[parser release];
 	parser = [[ETXMLParser alloc] init];
@@ -171,15 +181,7 @@ static NSDictionary * STANZA_KEYS;
 	[self reconnectToJabberServer];
 }
 
-- (void) disconnect
-{
-	if(connectionState == loggedIn)
-	{
-		[self XMPPSend:@"</stream:stream>"];
-		//Clean up the connection
-		connectionState = disconnecting;
-	}
-}
+- (void) disconnect {}
 
 - (void)characters:(NSString *)_chars
 {
@@ -188,7 +190,7 @@ static NSDictionary * STANZA_KEYS;
 
 - (void)sendString: (NSString*)aString
 {
-	NSLog(@"XML: %@", aString);
+	NSLog(@"SENT: %@", aString);
 	[self resetKeepAlive];
 	[socket sendData: [aString dataUsingEncoding: NSUTF8StringEncoding]];
 }
@@ -197,66 +199,11 @@ static NSDictionary * STANZA_KEYS;
 	[self sendString: @" "];
 }
 
-- (void)receivedData: (NSData*)aData fromSocket: (ETSocket*)aSocket
-{
-	[self resetKeepAlive];
-	// FIXME: Not needed?
-	if(connectionState == offline)
-	{
-		return;
-	}
-	
-	if(connectionState == connecting)
-	{
-		// FIXME: Should wait for server to advertise STARTTLS 
-		//if (![socket negotiateSSL])
-		{
-			//NSLog(@"SSL negotiation failed");
-		//	return;
-		}
-		connectionState = connected;
-		[self sendString: [NSString stringWithFormat: 
-			@"<?xml version='1.0' encoding='UTF-8' ?><stream:stream to='%@'"
-			" xmlns='jabber:client' version='1.0' xmlns:stream="
-			"'http://etherx.jabber.org/streams'>",
-			server]];
-		//[socket receiveData: nil];
-		return;
-	}
-		
-	NSString *xml = 
-		[[[NSString alloc] initWithData: aData
-		                       encoding: NSUTF8StringEncoding] autorelease];
-	// FIXME: send keep-alive
-	
-	keepalive = 0;
-	[xmlLog logIncomingXML: xml];
-	[parser parseFromSource: xml];
-}
+- (void)receivedData: (NSData*)aData fromSocket: (ETSocket*)aSocket {}
+
 - (NSString*) server
 {
 	return server;
-}
-//Digest non-SASL auth.
-- (void) legacyLogIn
-{
-	if(connectionState != connected)
-	{
-		return;
-	}
-	ETXMLNode * authIq = [ETXMLNode ETXMLNodeWithType:@"iq"];
-	query_jabber_iq_auth * query = [query_jabber_iq_auth queryWithUsername:user password:pass resource:res];
-	NSString * newMessageID = [self newMessageID];
-	
-	[dispatcher addIqResultHandler:self forID:newMessageID];
-	[authIq set:@"id" to:newMessageID];
-	[authIq set:@"type" to:@"set"];
-	[authIq set:@"to" to:server];
-	[query setSessionID:sessionID];
-	[authIq addChild:(ETXMLNode*)query];
-	
-	[self sendString: [authIq stringValue]];
-	connectionState = loggingIn;
 }
 
 - (void)startElement:(NSString *)aName
@@ -273,14 +220,6 @@ static NSDictionary * STANZA_KEYS;
 		{
 			[self legacyLogIn];
 		}
-	}
-	else if ([aName isEqualToString:@"success"])
-	{
-		//Once we're authenticated, re-initialise the stream...ha
-		connectionState = unbound;
-		NSString * newStream = [NSString stringWithFormat:@"<stream:stream to='%@' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>",
-                                server];
-		[self sendString: newStream];
 	}
 	else
 	{
@@ -319,7 +258,7 @@ static NSDictionary * STANZA_KEYS;
 		NSString * authstring = [authData base64String];
 		[authNode addCData:authstring];
 		[self sendString: [authNode stringValue]];
-		connectionState = loggingIn;
+		SET_STATE(LoggingIn);
 	}
 	else
 	{
@@ -379,50 +318,15 @@ static NSDictionary * STANZA_KEYS;
 {
 	[dispatcher dispatchPresence:aPresence];
 }
-- (void) addstreamFeatures:(NSDictionary*) aFeatureSet
-{
-	NSLog(@"Stream features has retain count %d", [streamFeatures retainCount]);
-	[streamFeatures release];
-	streamFeatures = [aFeatureSet retain];
-	//If we are connected, try logging in
-	if(connectionState == connected)
-	{
-		//Hack for broken servers
-		if([[aFeatureSet objectForKey:@"auth"] isEqualToString:@"http://jabber.org/features/iq-auth"])
-		{
-			[self legacyLogIn];
-		}
-		else
-		{
-			[self logInWithMechansisms:[aFeatureSet objectForKey:@"mechanisms"]];
-		}
-	}
-	else if (connectionState == unbound)
-	{
-		if ([aFeatureSet objectForKey:@"bind"] != nil)
-		{
-			[self bind];
-		}
-		else if ([aFeatureSet objectForKey:@"session"] != nil)
-		{
-			connectionState = noSession;
-			[self startSession];
-		}
-		else
-		{
-			connectionState = loggedIn;
-		}
-	}
-}
 //END child stanza handlers
 
 - (void)endElement:(NSString *)_Name
 {
 	if([_Name isEqualToString:@"stream:stream"])
 	{
+			/*
 		if(connectionState != loggedIn)
 		{
-			/*
 			Jesse says: we need some other kind of solution here since we don't have
 			a -connectionFailed method anymore... not sure what to do. I commented it
 			out since it was causing XCode's build to fail.
@@ -431,14 +335,9 @@ static NSDictionary * STANZA_KEYS;
 			{
 				[(JabberApp*)[NSApp delegate] connectionFailed:account];
 			}
-			*/
 		}
 		//If we have not manually disconnected, try to reconnect.
-		else if(connectionState != offline)
-		{
-			[self reconnectToJabberServer];
-		}
-		connectionState = offline;
+			*/
 		[presenceDisplay setPresence:PRESENCE_OFFLINE withMessage:@"Disconnected"];
 	}
 	
@@ -450,95 +349,25 @@ static NSDictionary * STANZA_KEYS;
 	presenceDisplay = [_display retain];
 }
 
-- (void) handleIq:(Iq*)anIq
-{
-	if(connectionState == unbound)
-	{
-		if ([streamFeatures objectForKey:@"session"] != nil)
-		{
-			connectionState = noSession;
-			[self startSession];
-		}
-		else
-		{
-			connectionState = loggedIn;			
-		}
-	}
-	else if (connectionState == loggingIn)
-	{
-		connectionState = loggedIn;
-		//TODO: Check that this actually is the response to the old-style auth request
-	}
-	else if (connectionState == noSession)
-	{
-		connectionState = loggedIn;
-	}
-	if((connectionState == loggedIn) && ([anIq type] == IQ_TYPE_RESULT))
-	{
-		NSString * newMessageID = [self newMessageID];
-		ETXMLNode * rosterQuery = [ETXMLNode ETXMLNodeWithType:@"iq"]; 
-		ETXMLNode * query = [ETXMLNode ETXMLNodeWithType:@"query" attributes:nil];
-		
-		[dispatcher addIqResultHandler:roster forID:newMessageID];
-		
-		[query set:@"xmlns" to:@"jabber:iq:roster"];
-		[rosterQuery set:@"id" to:newMessageID];
-		[rosterQuery set:@"type" to:@"get"];
-		//[rosterQuery set:@"to" to:server];
-		[rosterQuery addChild:query];
-		
-		connectionState = loggedIn;
-		
-		[self XMPPSend:[rosterQuery stringValue]];
-		//				[self XMPPSend:unsentBuffer];
-		[unsentBuffer setString:@""];
-	}
-	
-}
-
-
-
+- (void) handleIq:(Iq*)anIq {}
 
 - (NSString*) newMessageID
 {
-	LOCK(messageIDMutex);
 	unsigned int i = messageID++;
-	UNLOCK(messageID);
-	return [NSString stringWithFormat:@"TRXMPP_%d", i];
+	return [NSString stringWithFormat:@"ETXMPP_%d", i];
 }
 
 - (void) XMPPSend: (NSString*) buffer
 {
 	[xmlLog logOutgoingXML:buffer];
-	//LOCK(connectionMutex);
+	//If we are not connected, buffer the input until we are.
+	if(unsentBuffer == nil)
 	{
-		//If we are not connected, buffer the input until we are.
-		if(connectionState != loggedIn)
-		{
-			if(unsentBuffer == nil)
-			{
-				unsentBuffer = [[NSMutableString alloc] init];
-			}
-			//TODO:  Don't do this for </stream:stream>, it is very silly
-			[unsentBuffer appendString:buffer];
-			return;
-		}
-		if(unsentBuffer != nil)
-		{
-			[self sendString: unsentBuffer];
-			[unsentBuffer release];
-			unsentBuffer = nil;
-		}
-		[self sendString: buffer];
-		keepalive = 0;
+		unsentBuffer = [[NSMutableString alloc] init];
 	}
+	[unsentBuffer appendString:buffer];
 }
 
-
-- (ConnectionState) connected
-{
-	return connectionState;
-}
 
 - (void) setStatus:(unsigned char)_status withMessage:(NSString*)_message
 {
@@ -594,9 +423,225 @@ static NSDictionary * STANZA_KEYS;
 {
 	return dispatcher;
 }
+- (BOOL)isConnected
+{
+	return NO;
+}
 
 - (void) dealloc
 {
 	[super dealloc];
+}
+@end
+
+/**
+ * Offline behaviour is implemented in the superclass, so this subclass doesn't
+ * provide any methods.
+ */
+@implementation XMPPOfflineConnection @end
+@implementation XMPPConnectedConnection
+- (BOOL)isConnected
+{
+	return YES;
+}
+//Digest non-SASL auth.
+- (void) legacyLogIn
+{
+	ETXMLNode * authIq = [ETXMLNode ETXMLNodeWithType:@"iq"];
+	query_jabber_iq_auth * query = [query_jabber_iq_auth queryWithUsername:user password:pass resource:res];
+	NSString * newMessageID = [self newMessageID];
+	
+	[dispatcher addIqResultHandler:self forID:newMessageID];
+	[authIq set:@"id" to:newMessageID];
+	[authIq set:@"type" to:@"set"];
+	[authIq set:@"to" to:server];
+	[query setSessionID:sessionID];
+	[authIq addChild:(ETXMLNode*)query];
+	
+	[self sendString: [authIq stringValue]];
+	SET_STATE(LoggingIn);
+}
+- (void)receivedData: (NSData*)aData fromSocket: (ETSocket*)aSocket
+{
+	[self resetKeepAlive];
+	NSString *xml = 
+		[[[NSString alloc] initWithData: aData
+		                       encoding: NSUTF8StringEncoding] autorelease];
+	NSLog(@"Received: '%@'", xml);
+	[xmlLog logIncomingXML: xml];
+	[parser parseFromSource: xml];
+}
+- (void) addstreamFeatures:(NSDictionary*) aFeatureSet
+{
+	NSLog(@"Stream features has retain count %d", [streamFeatures retainCount]);
+	[streamFeatures release];
+	streamFeatures = [aFeatureSet retain];
+	//If we are connected, try logging in
+	if ([[aFeatureSet objectForKey: @"starttls"] 
+		isEqualToString: @"urn:ietf:params:xml:ns:xmpp-tls"])
+	{
+		[self sendString: @"<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/>"];
+		SET_STATE(Encrypting);
+	}
+	//Hack for broken servers
+	else if([[aFeatureSet objectForKey:@"auth"] isEqualToString:@"http://jabber.org/features/iq-auth"])
+	{
+		[self legacyLogIn];
+	}
+	else
+	{
+		[self logInWithMechansisms:[aFeatureSet objectForKey:@"mechanisms"]];
+	}
+}
+@end
+@implementation XMPPConnectingConnection
+- (void) reconnectToJabberServer
+{
+	[self disconnect];
+	SET_STATE(Offline);
+	[self reconnectToJabberServer];
+}
+- (void)endElement:(NSString *)_Name
+{
+	if([_Name isEqualToString:@"stream:stream"])
+	{
+		//If we have not manually disconnected, try to reconnect.
+		[self reconnectToJabberServer];
+	}
+}
+- (void) disconnect
+{
+	[self XMPPSend:@"</stream:stream>"];
+	[socket release];
+	socket = nil;
+	SET_STATE(Offline);
+}
+- (void)receivedData: (NSData*)aData fromSocket: (ETSocket*)aSocket
+{
+	[self resetKeepAlive];
+	[self sendString: [NSString stringWithFormat: 
+		@"<?xml version='1.0' encoding='UTF-8' ?><stream:stream to='%@'"
+		" xmlns='jabber:client' version='1.0' xmlns:stream="
+		"'http://etherx.jabber.org/streams'>",
+		server]];
+	SET_STATE(Connected);
+}
+@end
+@implementation XMPPLoggedInConnection
+- (void)startElement:(NSString *)aName
+		  attributes:(NSDictionary *)_attributes
+{
+	NSString * childKey = [STANZA_KEYS objectForKey:aName];
+	id <ETXMLParserDelegate> stanzaDelegate = [[[STANZA_CLASSES objectForKey:aName] alloc] initWithXMLParser:parser parent:self key:childKey];
+	[stanzaDelegate startElement:aName
+					  attributes:_attributes];
+}
+- (void) handleIq:(Iq*)anIq
+{
+	if(([anIq type] == IQ_TYPE_RESULT))
+	{
+		NSString * newMessageID = [self newMessageID];
+		ETXMLNode * rosterQuery = [ETXMLNode ETXMLNodeWithType:@"iq"]; 
+		ETXMLNode * query = [ETXMLNode ETXMLNodeWithType:@"query" attributes:nil];
+		
+		[dispatcher addIqResultHandler:roster forID:newMessageID];
+		
+		[query set:@"xmlns" to:@"jabber:iq:roster"];
+		[rosterQuery set:@"id" to:newMessageID];
+		[rosterQuery set:@"type" to:@"get"];
+		//[rosterQuery set:@"to" to:server];
+		[rosterQuery addChild:query];
+		
+		SET_STATE(LoggedIn);
+		
+		[self XMPPSend:[rosterQuery stringValue]];
+		[self XMPPSend:unsentBuffer];
+		[unsentBuffer setString:@""];
+	}
+}
+- (void) XMPPSend: (NSString*) buffer
+{
+	[xmlLog logOutgoingXML:buffer];
+	if(unsentBuffer != nil)
+	{
+		[self sendString: unsentBuffer];
+		[unsentBuffer release];
+		unsentBuffer = nil;
+	}
+	[self sendString: buffer];
+}
+@end
+@implementation XMPPUnboundConnection
+- (void) addstreamFeatures:(NSDictionary*) aFeatureSet
+{
+	ASSIGN(streamFeatures, aFeatureSet);
+	if ([aFeatureSet objectForKey:@"bind"] != nil)
+	{
+		[self bind];
+	}
+	else if ([aFeatureSet objectForKey:@"session"] != nil)
+	{
+		SET_STATE(NoSession);
+		[self startSession];
+	}
+	else
+	{
+		SET_STATE(LoggedIn);
+	}
+}
+- (void) handleIq:(Iq*)anIq
+{
+	if ([streamFeatures objectForKey:@"session"] != nil)
+	{
+		SET_STATE(NoSession);
+		[self startSession];
+	}
+	else
+	{
+		SET_STATE(LoggedIn);
+		[self handleIq: anIq];
+	}
+}
+@end
+@implementation XMPPEncryptingConnection
+- (void)startElement:(NSString *)aName
+		  attributes:(NSDictionary *)_attributes
+{
+	if ([aName isEqualToString: @"proceed"])
+	{
+		NSLog(@"SSL returned %d", [socket negotiateSSL]);
+		SET_STATE(Connecting);
+		// Reset the connection
+		[self receivedData: nil fromSocket: nil];
+	}
+}
+@end
+@implementation XMPPLoggingInConnection 
+- (void) handleIq:(Iq*)anIq
+{
+	SET_STATE(LoggedIn);
+	[self handleIq: anIq];
+}
+
+- (void)startElement:(NSString *)aName
+		  attributes:(NSDictionary *)_attributes
+{
+	if ([aName isEqualToString:@"success"])
+	{
+		//Once we're authenticated, re-initialise the stream...ha
+		SET_STATE(Unbound);
+		// FIXME: Move this to a method
+		NSString * newStream = [NSString stringWithFormat:@"<stream:stream to='%@' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>",
+                                server];
+		[self sendString: newStream];
+	}
+	// TODO: Handle failure.
+}
+@end
+@implementation XMPPNoSessionConnection
+- (void) handleIq:(Iq*)anIq
+{
+	SET_STATE(LoggedIn);
+	[self handleIq: anIq];
 }
 @end

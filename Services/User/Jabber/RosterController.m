@@ -6,6 +6,7 @@
 //  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
 //
 
+#import <EtoileFoundation/EtoileFoundation.h>
 #import <XMPPKit/RosterGroup.h>
 #import <XMPPKit/JabberPerson.h>
 #import <XMPPKit/JabberIdentity.h>
@@ -15,7 +16,6 @@
 #import "CustomPresenceWindowController.h"
 #import "TRUserDefaults.h"
 #import "MessageWindowController.h"
-#import "Macros.h"
 
 #define AUTO_RESIZE
 
