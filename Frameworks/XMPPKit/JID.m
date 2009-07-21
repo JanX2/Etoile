@@ -15,11 +15,6 @@
 	return [[[JID alloc] initWithString:_jid] autorelease];
 } 
 
-+ (id) jidWithJID:(JID*)_jid
-{
-	return [[[JID alloc] initWithJID:_jid] autorelease];
-}
-
 - (id)copyWithZone:(NSZone *)zone
 {
 	return self;
@@ -57,34 +52,6 @@
 			return nil;
 	}
 	return nil;
-}
-
-- (id) initWithJID:(JID*)_jid
-{
-	self = [self init];
-	if(self == nil)
-	{
-		return nil;
-	}
-	user = [[_jid node] retain];
-	server = [[_jid domain] retain];
-	resource = [[_jid resource] retain];
-	type = resourceJID;
-	if(resource == nil || [resource isEqualToString:@""])
-	{
-		type = userJID;
-	}
-	if(user == nil || [user isEqualToString:@""])
-	{
-		type = serverJID;
-	}
-	if(server == nil || [server isEqualToString:@""])
-	{
-		type = invalidJID;
-	}
-	stringRepresentation = [[self getJIDString] retain];
-	stringRepresentationWithNoResource = [[self getJIDStringWithNoResource] retain];
-	return self;
 }
 
 - (id) init

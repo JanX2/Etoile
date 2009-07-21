@@ -12,7 +12,6 @@
 #import "CompareHack.h"
 #import "XMPPConnection.h"
 #import "ServiceDiscovery.h"
-#import "NSData+Base64.h"
 #import "ABPerson+merging.h"
 
 static NSString * avatarCachePath = nil;

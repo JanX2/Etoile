@@ -38,14 +38,6 @@ typedef enum {invalidJID = 0, serverJID, serverResourceJID, userJID, resourceJID
  */
 + (id) jidWithString:(NSString*)_jid;
 /**
- * Creates a new JID by copying the passed JID.
- */
-+ (id) jidWithJID:(JID*)_jid;
-/**
- * Sets a newly +alloc'd JID to have the same value as an existing JID.
- */
-- (id) initWithJID:(JID*)_jid;
-/**
  * Initialises a new JID with a specified string
  */
 - (id) initWithString:(NSString*)_jid;

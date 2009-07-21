@@ -33,7 +33,6 @@ ${FRAMEWORK_NAME}_OBJC_FILES = \
 					Message.m\
 					MessageStanzaFactory.m\
 					NSAttributedString+HTML-IM.m\
-					NSData+Base64.m\
 					PresenceStanzaFactory.m\
 					Presence.m\
 					Query_jabber_iq_roster.m\
@@ -47,7 +46,6 @@ ${FRAMEWORK_NAME}_OBJC_FILES = \
 					XMPPConnection.m\
 					XMPPError.m\
 					XMPPvCard.m\
-					jabber_iq_roster.m\
 					ServiceDiscovery.m\
 
 ${FRAMEWORK_NAME}_HEADER_FILES = \
@@ -69,7 +67,6 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 					Message.h\
 					MessageStanzaFactory.h\
 					NSAttributedString+HTML-IM.h\
-					NSData+Base64.h\
 					PresenceStanzaFactory.h\
 					Presence.h\
 					Query_jabber_iq_roster.h\
@@ -83,8 +80,7 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 					XMPPAccount.h\
 					XMPPConnection.h\
 					XMPPError.h\
-					XMPPvCard.h\
-					jabber_iq_roster.h\
+					XMPPvCard.h
 
 ${DOCUMENT_NAME}_AGSDOC_FILES = ${${FRAMEWORK_NAME}_HEADER_FILES}
 

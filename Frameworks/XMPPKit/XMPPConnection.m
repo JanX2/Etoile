@@ -21,7 +21,6 @@
 #import "DefaultHandler.h"
 #import "Presence.h"
 #import "XMPPAccount.h"
-#import "NSData+Base64.h"
 
 
 static NSMutableDictionary * connections = nil;

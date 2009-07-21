@@ -62,7 +62,7 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 		                   attributes: D(xmlns, @"xmlns")];
 	}
 	[xmlWriter endElement]; //</iq>
-	[dispatcher addIqResultHandler:self forID:iqID];
+	[dispatcher addIqResultHandler: self forID: iqID];
 }
 - (NSDictionary*) infoForJID:(JID*)aJid node:(NSString*)aNode
 {
