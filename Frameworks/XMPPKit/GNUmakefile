@@ -48,7 +48,6 @@ ${FRAMEWORK_NAME}_OBJC_FILES = \
 					XMPPError.m\
 					XMPPvCard.m\
 					jabber_iq_roster.m\
-					query_jabber_iq_auth.m\
 					ServiceDiscovery.m\
 
 ${FRAMEWORK_NAME}_HEADER_FILES = \
@@ -86,7 +85,6 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 					XMPPError.h\
 					XMPPvCard.h\
 					jabber_iq_roster.h\
-					query_jabber_iq_auth.h
 
 ${DOCUMENT_NAME}_AGSDOC_FILES = ${${FRAMEWORK_NAME}_HEADER_FILES}
 

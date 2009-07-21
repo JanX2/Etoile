@@ -17,7 +17,6 @@
 
 #import "XMPPConnection.h"
 #import <EtoileFoundation/EtoileFoundation.h>
-#import "query_jabber_iq_auth.h"
 #import "StreamFeatures.h"
 #import "DefaultHandler.h"
 #import "Presence.h"
@@ -436,12 +435,28 @@ static NSDictionary * STANZA_KEYS;
 
 	[xmlWriter startElement: @"iq"
 				 attributes: D(newMessageID, @"id", @"set", @"type", server, @"to")];
-	// FIXME: Rewite to write to writer.
-	query_jabber_iq_auth * query = [query_jabber_iq_auth queryWithUsername:user password:pass resource:res];
+	NSString * sessionPassword = [sessionID stringByAppendingString:pass];
+
+	NSData *data = [sessionPassword dataUsingEncoding: NSUTF8StringEncoding];
+	NSString * digest = [data sha1];
+	[xmlWriter startElement: @"query"
+				 attributes: D(@"jabber:iq:auth", @"xmlns")];
+
+	[xmlWriter startElement: @"username"];
+	[xmlWriter characters: user];
+	[xmlWriter endElement]; // </username>
+
+	[xmlWriter startElement: @"digest"];
+	[xmlWriter characters: digest];
+	[xmlWriter endElement]; // </digest>
+
+	[xmlWriter startElement: @"resource"];
+	[xmlWriter characters: res];
+	[xmlWriter endElement]; // </resource>
+
+	[xmlWriter endElement]; // </query>
 	
-	[query setSessionID:sessionID];
-	[query writeToXMLWriter: xmlWriter];
-	[xmlWriter endElement];
+	[xmlWriter endElement]; // </iq>
 	
 	SET_STATE(LoggingIn);
 }
