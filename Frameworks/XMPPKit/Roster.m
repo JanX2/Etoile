@@ -215,9 +215,8 @@
 	             attributes: D(_name, @"name", jidString, @"jid")];
 	if(_group != nil && ![_group isEqualToString:@""])
 	{
-		[xmlWriter startElement: @"group"];
-		[xmlWriter characters: _group];
-		[xmlWriter endElement]; //</group>
+		[xmlWriter startAndEndElement: @"group"
+		                        cdata: _group];
 	}
 
 	[xmlWriter endElement]; //</item>
@@ -225,9 +224,8 @@
 	[xmlWriter endElement]; //</iq>
 	//Add the group if one is specified
 	
-	[xmlWriter startElement: @"presence" 
-	             attributes: D(@"subscribe", @"type", jidString, @"to")];
-	[xmlWriter endElement];
+	[xmlWriter startAndEndElement: @"presence" 
+	                   attributes: D(@"subscribe", @"type", jidString, @"to")];
 }
 
 - (void) unsubscribe:(JID*)_jid
@@ -243,28 +241,27 @@
 	                           [connection newMessageID], @"id")];
 	[xmlWriter startElement: @"query" 
 	             attributes: D(@"jabber:iq:roster", @"xmlns")];
-	[xmlWriter startElement: @"item" 
-                 attributes: D(@"remove", @"subscription",
-	                           [_jid jidString], @"jid")];
-	[xmlWriter endElement]; //</item>
+	[xmlWriter startAndEndElement: @"item" 
+	                   attributes: D(@"remove", @"subscription",
+	                                 [_jid jidString], @"jid")];
 	[xmlWriter endElement]; //</query>
 	[xmlWriter endElement]; //</iq>
 }
 - (void) authorise:(JID*)_jid
 {
 	ETXMLWriter *xmlWriter = [connection xmlWriter];
-	[xmlWriter startElement: @"presence" 
-	             attributes: D(@"subscribed", @"type", [_jid jidString], @"to")];
-	[xmlWriter endElement];
+	[xmlWriter startAndEndElement: @"presence" 
+	                   attributes: D(@"subscribed", @"type",
+	                                 [_jid jidString], @"to")];
 }
 
 
 - (void) unauthorise:(JID*)_jid
 {
 	ETXMLWriter *xmlWriter = [connection xmlWriter];
-	[xmlWriter startElement: @"presence" 
-	             attributes: D(@"unsubscribed", @"type", [_jid jidString], @"to")];
-	[xmlWriter endElement];
+	[xmlWriter startAndEndElement: @"presence" 
+	                   attributes: D(@"unsubscribed", @"type", 
+	                                 [_jid jidString], @"to")];
 }
 
 
@@ -288,14 +285,13 @@
 	ETXMLWriter *xmlWriter = [connection xmlWriter];
 	[xmlWriter startElement: @"iq"
 	             attributes: D(@"set", @"type",
-		                       [connection newMessageID], @"id")];
+	                           [connection newMessageID], @"id")];
 	[xmlWriter startElement: @"query"
 	             attributes: D(@"jabber:iq:roster", @"xmlns")];
 	[xmlWriter startElement: @"item"
 	             attributes: D(aName, @"name", aJID, @"jid")];
-	[xmlWriter startElement: @"group"];
-	[xmlWriter characters: aGroup];
-	[xmlWriter endElement]; //</group>
+	[xmlWriter startAndEndElement: @"group"
+	                        cdata: aGroup];
 
 	[xmlWriter endElement]; //</item>
 	[xmlWriter endElement]; //</query>

@@ -8,7 +8,6 @@
 
 #import "ServiceDiscovery.h"
 #import "XMPPAccount.h"
-#import <EtoileXML/ETXMLNode.h>
 #import "DiscoInfo.h"
 #import "DiscoItems.h"
 
@@ -45,27 +44,24 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 }
 - (void) sendQueryToJID:(const NSString*)jid node:(const NSString*)node inNamespace:(const NSString*)xmlns
 {
-	ETXMLNode * query;
+	ETXMLWriter *xmlWriter = [connection xmlWriter];
+	NSString * iqID = [connection newMessageID];
+	[xmlWriter startElement: @"iq"
+	             attributes: D(@"get", @"type",
+	                           jid, @"to",
+	                           iqID, @"id")];
 	if(node == nil)
 	{
-		query = [[ETXMLNode alloc] initWithType:@"query" 
-									 attributes:D(xmlns, @"xmlns",
-												  node, @"node")];
+		[xmlWriter startAndEndElement: @"query"
+		                   attributes: D(xmlns, @"xmlns",
+		                                 node, @"node")];
 	}
 	else
 	{
-		query = [[ETXMLNode alloc] initWithType:@"query" 
-									 attributes:D(xmlns, @"xmlns")];			
+		[xmlWriter startAndEndElement: @"query"
+		                   attributes: D(xmlns, @"xmlns")];
 	}
-	NSString * iqID = [connection newMessageID];
-	ETXMLNode * iq = [[ETXMLNode alloc] initWithType:@"iq"
-										  attributes:D(@"get", @"type",
-													   jid, @"to",
-													   iqID, @"id")];
-	[iq addChild:query];
-	[query release];
-	[connection XMPPSend:[iq stringValue]];
-	[iq release];
+	[xmlWriter endElement]; //</iq>
 	[dispatcher addIqResultHandler:self forID:iqID];
 }
 - (NSDictionary*) infoForJID:(JID*)aJid node:(NSString*)aNode
@@ -118,23 +114,6 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 	}
 	return result;
 }
-- (ETXMLNode*) queryNode
-{
-	ETXMLNode * query = [ETXMLNode ETXMLNodeWithType:@"query"
-										  attributes:D(xmlnsDiscoInfo, @"xmlns")];
-	//TODO: Make the type configurable
-	[query addChild:[ETXMLNode ETXMLNodeWithType:@"identity"
-									  attributes:D(@"client", @"category",
-												   @"pc", @"type")]];
-	FOREACH(myFeatures, feature, NSString*)
-	{
-		ETXMLNode * featureNode = [[ETXMLNode alloc] initWithType:@"feature"
-												   attributes:D(feature, @"var")];
-		[query addChild:featureNode];
-		[feature release];
-	}
-	return query;
-}
 - (void) handleIq:(Iq*)anIQ
 {
 	NSString * jid = [[anIQ jid] jidString];
@@ -144,13 +123,25 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 		{
 			if([[anIQ queryNamespace] isEqualToString:xmlnsDiscoInfo])
 			{
-				ETXMLNode * result = [[ETXMLNode alloc] initWithType:@"iq"
-														  attributes:D(@"result", @"type",
-																	   jid, @"to",
-																	   [anIQ sequenceID], @"id")];
-				[result addChild:[self queryNode]];
-				[connection XMPPSend:[result stringValue]];
-				[result release];
+				ETXMLWriter *xmlWriter = [connection xmlWriter];
+				[xmlWriter startElement: @"iq"
+				             attributes: D(@"result", @"type",
+				                           jid, @"to",
+				                           [anIQ sequenceID], @"id")];
+				[xmlWriter startElement: @"query"
+				             attributes: D(xmlnsDiscoInfo, @"xmlns")];
+				//TODO: Make the type configurable
+				[xmlWriter startElement: @"identity"
+				             attributes: D(@"client", @"category",
+				                           @"pc", @"type")];
+				FOREACH(myFeatures, feature, NSString*)
+				{
+					[xmlWriter startAndEndElement: @"feature"
+					                   attributes: D(feature, @"var")];
+				}
+				[xmlWriter endElement]; // </identity>
+				[xmlWriter endElement]; // </query>
+				[xmlWriter endElement]; // </iq>
 			}
 			break;
 		}
@@ -161,7 +152,7 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 			if(info != nil)
 			{
 				NSDictionary * nodeInfo = D([info identities], @"identities",
-											[info features], @"features");
+				                            [info features], @"features");
 				NSString * node = [info node];
 				if(node == nil)
 				{
@@ -179,9 +170,10 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 				{
 					[featuresForCapabilities setObject:nodeInfo forKey:caps];
 				}
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"DiscoFeaturesFound"
-																	object:self
-																  userInfo:D(jid, @"jid")];
+				[[NSNotificationCenter defaultCenter] 
+					postNotificationName: @"DiscoFeaturesFound"
+					              object: self
+					            userInfo: D(jid, @"jid")];
 			}
 			if(items != nil)
 			{
@@ -198,15 +190,13 @@ static NSString * xmlnsDiscoItems = @"http://jabber.org/protocol/disco#items";
 					[children setObject:nodes forKey:jid];
 				}
 				[nodes setObject:nodeItems forKey:node];
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"DiscoItemsFound"
-																	object:self
-																  userInfo:D(jid, @"jid")];		
-			}	
+				[[NSNotificationCenter defaultCenter] 
+					postNotificationName: @"DiscoItemsFound"
+					              object: self
+					            userInfo: D(jid, @"jid")];
+			}
 		}
-		default:
-		{
-			
-		}
+		default: {}
 	}
 }
 - (void) addFeature:(NSString*)aFeature

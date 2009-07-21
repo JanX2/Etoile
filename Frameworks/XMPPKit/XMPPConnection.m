@@ -233,17 +233,16 @@ static NSDictionary * STANZA_KEYS;
 	//TODO: DIGEST-MD5 auth
 	if([aFeatureSet containsObject:@"PLAIN"])
 	{
-		//Send auth mechanism
-		[xmlWriter startElement: @"auth"
-		             attributes: D(@"urn:ietf:params:xml:ns:xmpp-sasl", @"xmlns",
-		                           @"PLAIN", @"mechanism")];
 		NSMutableData * authData = [NSMutableData dataWithBytes:"\0" length:1];
 		[authData appendData:[user dataUsingEncoding:NSUTF8StringEncoding]];
 		[authData appendBytes:"\0" length:1];
 		[authData appendData:[pass dataUsingEncoding:NSUTF8StringEncoding]];
 		NSString * authstring = [authData base64String];
-		[xmlWriter characters: authstring];
-		[xmlWriter endElement];
+		//Send auth mechanism
+		[xmlWriter startAndEndElement: @"auth"
+		                   attributes: D(@"urn:ietf:params:xml:ns:xmpp-sasl",
+		                                 @"xmlns", @"PLAIN", @"mechanism")
+		                        cdata: authstring];
 		SET_STATE(LoggingIn);
 	}
 	else
@@ -257,10 +256,10 @@ static NSDictionary * STANZA_KEYS;
 	NSString * sessionIqID = [self newMessageID];
 	[xmlWriter startElement: @"iq"
 	             attributes: D(@"set", @"type", sessionIqID, @"id")];
-	[xmlWriter startElement: @"session"
-	             attributes: D(@"urn:ietf:params:xml:ns:xmpp-session", @"xmlns")];
-	[xmlWriter endElement];
-	[xmlWriter endElement];
+	[xmlWriter startAndEndElement: @"session"
+	                   attributes: D(@"urn:ietf:params:xml:ns:xmpp-session",
+	                                 @"xmlns")];
+	[xmlWriter endElement]; // </iq>
 	[dispatcher addIqResultHandler:self forID:sessionIqID];
 }
 
@@ -273,11 +272,10 @@ static NSDictionary * STANZA_KEYS;
 	             attributes: D(@"set", @"type", bindID, @"id")];
 	[xmlWriter startElement: @"bind"
 	             attributes: D(@"urn:ietf:params:xml:ns:xmpp-bind", @"xmlns")];
-	[xmlWriter startElement: @"resource"];
-	[xmlWriter endElement];
-	[xmlWriter endElement];
-	[xmlWriter endElement];
-	[dispatcher addIqResultHandler:self forID:bindID];	
+	[xmlWriter startAndEndElement: @"resource"];
+	[xmlWriter endElement]; // </bind>
+	[xmlWriter endElement]; // </iq>
+	[dispatcher addIqResultHandler: self forID: bindID];
 }
 
 //Child stanza handlers
@@ -346,37 +344,32 @@ static NSDictionary * STANZA_KEYS;
 }
 
 
-- (void) setStatus:(unsigned char)aStatusus withMessage:(NSString*)aMessage
+- (void) setStatus:(unsigned char)aStatus withMessage:(NSString*)aMessage
 {
 	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
-	if(aStatusus == PRESENCE_OFFLINE)
+	if(aStatus == PRESENCE_OFFLINE)
 	{
 		[attributes setObject: @"unavailable" forKey: @"type"];
 	}
 	[xmlWriter startElement: @"presence"
 	             attributes: attributes];
 
-	if(aStatusus != PRESENCE_ONLINE)
+	if(aStatus != PRESENCE_ONLINE)
 	{
-		[xmlWriter startElement: @"show"];
-		[xmlWriter characters: [Presence xmppStringForPresence:aStatusus]];
-		[xmlWriter endElement];
+		[xmlWriter startAndEndElement: @"show"
+		                        cdata: [Presence xmppStringForPresence: aStatus]];
 	}
 	NSDictionary * presenceDictionary;
 	if(aMessage != nil)
 	{
-		[xmlWriter startElement: @"status"];
-		[xmlWriter characters: aMessage];
-		[xmlWriter endElement];
-		presenceDictionary = 
-			[NSDictionary dictionaryWithObjectsAndKeys:
-				[NSNumber numberWithChar:aStatusus],@"show",
-				aMessage,@"status",
-				nil];
+		[xmlWriter startAndEndElement: @"status"
+		                        cdata: aMessage];
+		presenceDictionary = D([NSNumber numberWithChar:aStatus],@"show",
+		                       aMessage,@"status");
 	}
 	else
 	{
-		presenceDictionary = [NSDictionary dictionaryWithObject:[NSNumber numberWithChar:aStatusus] forKey:@"show"];
+		presenceDictionary = D([NSNumber numberWithChar:aStatus], @"show");
 	}
 	[xmlWriter endElement];
 	//Notify anyone who cares that our presence has changed
@@ -388,7 +381,6 @@ static NSDictionary * STANZA_KEYS;
 	[remote postNotificationName:@"LocalPresenceChangedNotification"
 						  object:[account name]
 						userInfo:presenceDictionary];
-	//[presenceDisplay setPresence:aStatusus withMessage:aMessage];
 }
 
 - (void) setParser:(id)aParser
@@ -442,20 +434,16 @@ static NSDictionary * STANZA_KEYS;
 	[xmlWriter startElement: @"query"
 				 attributes: D(@"jabber:iq:auth", @"xmlns")];
 
-	[xmlWriter startElement: @"username"];
-	[xmlWriter characters: user];
-	[xmlWriter endElement]; // </username>
+	[xmlWriter startAndEndElement: @"username"
+	                        cdata: user];
 
-	[xmlWriter startElement: @"digest"];
-	[xmlWriter characters: digest];
-	[xmlWriter endElement]; // </digest>
+	[xmlWriter startAndEndElement: @"digest"
+	                        cdata: digest];
 
-	[xmlWriter startElement: @"resource"];
-	[xmlWriter characters: res];
-	[xmlWriter endElement]; // </resource>
+	[xmlWriter startAndEndElement: @"resource"
+	                        cdata: res];
 
 	[xmlWriter endElement]; // </query>
-	
 	[xmlWriter endElement]; // </iq>
 	
 	SET_STATE(LoggingIn);
