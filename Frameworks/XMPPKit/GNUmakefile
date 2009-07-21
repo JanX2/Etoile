@@ -5,7 +5,7 @@ DOCUMENT_NAME = ${FRAMEWORK_NAME}
 
 ${FRAMEWORK_NAME}_VERSION = 0.1
 
-LIBRARIES_DEPEND_UPON += -lEtoileFoundation -lAddresses -lssl -lcrypto \
+LIBRARIES_DEPEND_UPON += -lEtoileFoundation -lAddresses \
 	$(FND_LIBS) $(OBJC_LIBS) $(SYSTEM_LIBS)
 
 ${FRAMEWORK_NAME}_OBJCFLAGS += -g -std=c99
