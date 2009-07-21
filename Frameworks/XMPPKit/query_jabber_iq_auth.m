@@ -11,6 +11,7 @@
 //NOTE: This class is not used in newer versions, which support SASL auth.  Anyone wishing to re-add non-SASL auth support should use this as a starting point.
 
 #import "query_jabber_iq_auth.h"
+#import <EtoileFoundation/EtoileFoundation.h>
 #include <openssl/sha.h>
 
 @implementation query_jabber_iq_auth
@@ -29,11 +30,10 @@
 
 - (id) init
 {
-	nodeType = @"query";
-	return [super init];
+	SUPERINIT;
+	return self;
 }
-
-- (NSString*) stringValueWithIndent:(int)indent
+- (void)writeToXMLWriter: (ETXMLWriter*)xmlWriter
 {
 	/* Plain auth (not used)
 	{
@@ -42,37 +42,48 @@
 		return XML;		
 	}
 	else */
-	{
-		NSString * sessionPassword = [sessionID stringByAppendingString:pass];
-		NSString * XML;
-		NSString * digest;
-		unsigned char hash[20];
+	NSString * sessionPassword = [sessionID stringByAppendingString:pass];
+	NSString * digest;
+	unsigned char hash[20];
 
-		SHA1((unsigned char*)[sessionPassword UTF8String], [sessionPassword length], hash);
-		digest = [NSString stringWithFormat:@"%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x",
-				hash[0],
-				hash[1],
-				hash[2],
-				hash[3],
-				hash[4],
-				hash[5],
-				hash[6],
-				hash[7],
-				hash[8],
-				hash[9],
-				hash[10],
-				hash[11],
-				hash[12],
-				hash[13],
-				hash[14],
-				hash[15],
-				hash[16],
-				hash[17],
-				hash[18],
-				hash[19]];		
-		XML = [NSString stringWithFormat:@"\t<query xmlns=\"jabber:iq:auth\">\n\t\t<username>%@</username>\n\t\t<digest>%@</digest>\n\t\t<resource>%@</resource>\n\t</query>\n",user,digest,res];
-		return XML;		
-	}
+	SHA1((unsigned char*)[sessionPassword UTF8String], [sessionPassword length], hash);
+	digest = [NSString stringWithFormat:@"%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x",
+			hash[0],
+			hash[1],
+			hash[2],
+			hash[3],
+			hash[4],
+			hash[5],
+			hash[6],
+			hash[7],
+			hash[8],
+			hash[9],
+			hash[10],
+			hash[11],
+			hash[12],
+			hash[13],
+			hash[14],
+			hash[15],
+			hash[16],
+			hash[17],
+			hash[18],
+			hash[19]];		
+	[xmlWriter startElement: @"query"
+				 attributes: D(@"jabber:iq:auth", @"xmlns")];
+
+	[xmlWriter startElement: @"username"];
+	[xmlWriter characters: user];
+	[xmlWriter endElement];
+
+	[xmlWriter startElement: @"digest"];
+	[xmlWriter characters: digest];
+	[xmlWriter endElement];
+
+	[xmlWriter startElement: @"resource"];
+	[xmlWriter characters: res];
+	[xmlWriter endElement];
+
+	[xmlWriter endElement];
 }
 
 - (void) setSessionID:(NSString*) streamID

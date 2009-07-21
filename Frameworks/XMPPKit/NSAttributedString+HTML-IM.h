@@ -8,8 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class ETXMLNode;
+@class ETXMLWriter;
 @interface NSAttributedString (XHTML_IM)
-- (ETXMLNode*) xhtmlimValue;
+- (void)writeToXMLWriter: (ETXMLWriter*)xmlWriter;
 - (NSString*) stringValueWithExpandedLinks;
 @end

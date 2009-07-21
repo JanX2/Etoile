@@ -32,6 +32,7 @@ ${FRAMEWORK_NAME}_OBJC_FILES = \
 					JabberRootIdentity.m\
 					Message.m\
 					MessageStanzaFactory.m\
+					NSAttributedString+HTML-IM.m\
 					NSData+Base64.m\
 					PresenceStanzaFactory.m\
 					Presence.m\
@@ -68,6 +69,7 @@ ${FRAMEWORK_NAME}_HEADER_FILES = \
 					JabberRootIdentity.h\
 					Message.h\
 					MessageStanzaFactory.h\
+					NSAttributedString+HTML-IM.h\
 					NSData+Base64.h\
 					PresenceStanzaFactory.h\
 					Presence.h\

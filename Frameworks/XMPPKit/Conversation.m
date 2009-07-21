@@ -112,7 +112,7 @@ static NSMutableArray * filters;
 {
 	Message * newMessage = [Message messageWithBody:_message for:remoteJID withSubject:nil type:MESSAGE_TYPE_CHAT];
 	[delegate displayMessage:newMessage incoming:NO];
-	[connection XMPPSend:[[newMessage xml] unindentedStringValue]];
+	[newMessage writeToXMLWriter: [connection xmlWriter]];
 }
 
 //If the corespondent's presence changes, we may wish to talk to a different one of their identities.  Check this, then update the UI.

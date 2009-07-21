@@ -22,7 +22,7 @@
 {
 	//Socket
 	ETSocket *socket;
-	BOOL SSLEnabled;
+	ETXMLSocketWriter *xmlWriter;
 	NSTimer *keepalive;
 	NSLock * connectionMutex;
 
@@ -104,4 +104,8 @@
  * Returns the server name.
  */
 - (NSString*) server;
+/**
+ * Returns the XML writer which can be used to send XML to the stream.
+ */
+- (ETXMLSocketWriter*)xmlWriter;
 @end

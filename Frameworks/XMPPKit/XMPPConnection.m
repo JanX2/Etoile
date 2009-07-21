@@ -14,7 +14,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <openssl/sha.h>
 
 #import "XMPPConnection.h"
 #import <EtoileFoundation/EtoileFoundation.h>
@@ -23,7 +22,6 @@
 #import "DefaultHandler.h"
 #import "Presence.h"
 #import "XMPPAccount.h"
-//#import "XMLLog.h"
 #import "NSData+Base64.h"
 
 
@@ -107,7 +105,6 @@ static NSDictionary * STANZA_KEYS;
 
 	SUPERINIT;
 	ASSIGN(res, [[NSHost currentHost] name]);
-	keepalive = 0;
 	connectionMutex = [[NSLock alloc] init];
 	messageIDMutex = [[NSLock alloc] init];
 	//Get the log class, if it has been built
@@ -158,6 +155,9 @@ static NSDictionary * STANZA_KEYS;
 	[self resetKeepAlive];
 
 	[socket setDelegate: self];
+	[xmlWriter release];
+	xmlWriter = [ETXMLSocketWriter new];
+	[xmlWriter setSocket: socket];
 	[self receivedData: nil fromSocket: nil];
 }
 
@@ -232,32 +232,19 @@ static NSDictionary * STANZA_KEYS;
 - (void)logInWithMechansisms:(NSSet*) aFeatureSet
 {
 	//TODO: DIGEST-MD5 auth
-	/*
-	 if([aFeatureSet containsObject:@"DIGEST-MD5"])
-	 {
-		 //Send auth mechanism
-		 [self XMPPSend:[[ETXMLNode ETXMLNodeWithType:@"auth"
-										   attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-																						   @"urn:ietf:params:xml:ns:xmpp-sasl", @"xmlns",
-											   @"DIGEST-MD5", @"mechanism",
-											   nil]] stringValue]];
-	 }
-	 */
 	if([aFeatureSet containsObject:@"PLAIN"])
 	{
 		//Send auth mechanism
-		ETXMLNode * authNode = [ETXMLNode ETXMLNodeWithType:@"auth"
-												 attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-																								 @"urn:ietf:params:xml:ns:xmpp-sasl", @"xmlns",
-													 @"PLAIN", @"mechanism",
-													 nil]];
+		[xmlWriter startElement: @"auth"
+		             attributes: D(@"urn:ietf:params:xml:ns:xmpp-sasl", @"xmlns",
+		                           @"PLAIN", @"mechanism")];
 		NSMutableData * authData = [NSMutableData dataWithBytes:"\0" length:1];
 		[authData appendData:[user dataUsingEncoding:NSUTF8StringEncoding]];
 		[authData appendBytes:"\0" length:1];
 		[authData appendData:[pass dataUsingEncoding:NSUTF8StringEncoding]];
 		NSString * authstring = [authData base64String];
-		[authNode addCData:authstring];
-		[self sendString: [authNode stringValue]];
+		[xmlWriter characters: authstring];
+		[xmlWriter endElement];
 		SET_STATE(LoggingIn);
 	}
 	else
@@ -269,16 +256,12 @@ static NSDictionary * STANZA_KEYS;
 - (void) startSession
 {
 	NSString * sessionIqID = [self newMessageID];
-	ETXMLNode * sessionNode = [ETXMLNode ETXMLNodeWithType:@"session"
-												attributes:[NSDictionary dictionaryWithObject:@"urn:ietf:params:xml:ns:xmpp-session"
-																					   forKey:@"xmlns"]];
-	ETXMLNode * iqNode = [ETXMLNode ETXMLNodeWithType:@"iq"
-										   attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-											   @"set", @"type",
-											   sessionIqID, @"id",
-											   nil]];
-	[iqNode addChild:sessionNode];
-	[self sendString: [iqNode stringValue]];
+	[xmlWriter startElement: @"iq"
+	             attributes: D(@"set", @"type", sessionIqID, @"id")];
+	[xmlWriter startElement: @"session"
+	             attributes: D(@"urn:ietf:params:xml:ns:xmpp-session", @"xmlns")];
+	[xmlWriter endElement];
+	[xmlWriter endElement];
 	[dispatcher addIqResultHandler:self forID:sessionIqID];
 }
 
@@ -287,19 +270,14 @@ static NSDictionary * STANZA_KEYS;
 	//Bind to a resource
 	//<iq type='set' id='bind_2'><bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'><resource>someresource</resource></bind></iq>
 	NSString * bindID = [self newMessageID];
-	ETXMLNode * resourceNode = [ETXMLNode ETXMLNodeWithType:@"resource"];
-	[resourceNode addCData:res];
-	ETXMLNode * bindNode = [ETXMLNode ETXMLNodeWithType:@"bind"
-											 attributes:[NSDictionary dictionaryWithObject:@"urn:ietf:params:xml:ns:xmpp-bind" 
-																					forKey:@"xmlns"]];
-	[bindNode addChild:resourceNode];
-	ETXMLNode * iqNode = [ETXMLNode ETXMLNodeWithType:@"iq"
-										   attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-											   @"set", @"type",
-											   bindID, @"id",
-											   nil]];
-	[iqNode addChild:bindNode];
-	[self sendString: [iqNode stringValue]];
+	[xmlWriter startElement: @"iq"
+	             attributes: D(@"set", @"type", bindID, @"id")];
+	[xmlWriter startElement: @"bind"
+	             attributes: D(@"urn:ietf:params:xml:ns:xmpp-bind", @"xmlns")];
+	[xmlWriter startElement: @"resource"];
+	[xmlWriter endElement];
+	[xmlWriter endElement];
+	[xmlWriter endElement];
 	[dispatcher addIqResultHandler:self forID:bindID];	
 }
 
@@ -369,36 +347,39 @@ static NSDictionary * STANZA_KEYS;
 }
 
 
-- (void) setStatus:(unsigned char)_status withMessage:(NSString*)_message
+- (void) setStatus:(unsigned char)aStatusus withMessage:(NSString*)aMessage
 {
-	ETXMLNode * presenceNode = [ETXMLNode ETXMLNodeWithType:@"presence"];
-	if(_status == PRESENCE_OFFLINE)
+	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+	if(aStatusus == PRESENCE_OFFLINE)
 	{
-		[presenceNode set:@"type" to:@"unavailable"];
+		[attributes setObject: @"unavailable" forKey: @"type"];
 	}
-	if(_status != PRESENCE_ONLINE)
+	[xmlWriter startElement: @"presence"
+	             attributes: attributes];
+
+	if(aStatusus != PRESENCE_ONLINE)
 	{
-		ETXMLNode * showNode = [ETXMLNode ETXMLNodeWithType:@"show"];
-		
-		[showNode setCData:[Presence xmppStringForPresence:_status]];
-		[presenceNode addChild:showNode];
+		[xmlWriter startElement: @"show"];
+		[xmlWriter characters: [Presence xmppStringForPresence:aStatusus]];
+		[xmlWriter endElement];
 	}
 	NSDictionary * presenceDictionary;
-	if(_message != nil)
+	if(aMessage != nil)
 	{
-		ETXMLNode * statusNode = [ETXMLNode ETXMLNodeWithType:@"status"];
-		[statusNode setCData:_message];
-		[presenceNode addChild:statusNode];
+		[xmlWriter startElement: @"status"];
+		[xmlWriter characters: aMessage];
+		[xmlWriter endElement];
 		presenceDictionary = 
 			[NSDictionary dictionaryWithObjectsAndKeys:
-				[NSNumber numberWithChar:_status],@"show",
-				_message,@"status",
+				[NSNumber numberWithChar:aStatusus],@"show",
+				aMessage,@"status",
 				nil];
 	}
 	else
 	{
-		presenceDictionary = [NSDictionary dictionaryWithObject:[NSNumber numberWithChar:_status] forKey:@"show"];
+		presenceDictionary = [NSDictionary dictionaryWithObject:[NSNumber numberWithChar:aStatusus] forKey:@"show"];
 	}
+	[xmlWriter endElement];
 	//Notify anyone who cares that our presence has changed
 	NSNotificationCenter * local = [NSNotificationCenter defaultCenter];
 	NSNotificationCenter * remote = [NSDistributedNotificationCenter defaultCenter];
@@ -408,8 +389,7 @@ static NSDictionary * STANZA_KEYS;
 	[remote postNotificationName:@"LocalPresenceChangedNotification"
 						  object:[account name]
 						userInfo:presenceDictionary];
-	//[presenceDisplay setPresence:_status withMessage:_message];
-	[self XMPPSend:[presenceNode stringValue]];
+	//[presenceDisplay setPresence:aStatusus withMessage:aMessage];
 }
 
 - (void) setParser:(id)aParser
@@ -426,6 +406,10 @@ static NSDictionary * STANZA_KEYS;
 - (BOOL)isConnected
 {
 	return NO;
+}
+- (ETXMLSocketWriter*)xmlWriter
+{
+	return xmlWriter;
 }
 
 - (void) dealloc
@@ -447,18 +431,18 @@ static NSDictionary * STANZA_KEYS;
 //Digest non-SASL auth.
 - (void) legacyLogIn
 {
-	ETXMLNode * authIq = [ETXMLNode ETXMLNodeWithType:@"iq"];
-	query_jabber_iq_auth * query = [query_jabber_iq_auth queryWithUsername:user password:pass resource:res];
 	NSString * newMessageID = [self newMessageID];
-	
 	[dispatcher addIqResultHandler:self forID:newMessageID];
-	[authIq set:@"id" to:newMessageID];
-	[authIq set:@"type" to:@"set"];
-	[authIq set:@"to" to:server];
-	[query setSessionID:sessionID];
-	[authIq addChild:(ETXMLNode*)query];
+
+	[xmlWriter startElement: @"iq"
+				 attributes: D(newMessageID, @"id", @"set", @"type", server, @"to")];
+	// FIXME: Rewite to write to writer.
+	query_jabber_iq_auth * query = [query_jabber_iq_auth queryWithUsername:user password:pass resource:res];
 	
-	[self sendString: [authIq stringValue]];
+	[query setSessionID:sessionID];
+	[query writeToXMLWriter: xmlWriter];
+	[xmlWriter endElement];
+	
 	SET_STATE(LoggingIn);
 }
 - (void)receivedData: (NSData*)aData fromSocket: (ETSocket*)aSocket
@@ -541,20 +525,17 @@ static NSDictionary * STANZA_KEYS;
 	if(([anIq type] == IQ_TYPE_RESULT))
 	{
 		NSString * newMessageID = [self newMessageID];
-		ETXMLNode * rosterQuery = [ETXMLNode ETXMLNodeWithType:@"iq"]; 
-		ETXMLNode * query = [ETXMLNode ETXMLNodeWithType:@"query" attributes:nil];
-		
 		[dispatcher addIqResultHandler:roster forID:newMessageID];
-		
-		[query set:@"xmlns" to:@"jabber:iq:roster"];
-		[rosterQuery set:@"id" to:newMessageID];
-		[rosterQuery set:@"type" to:@"get"];
-		//[rosterQuery set:@"to" to:server];
-		[rosterQuery addChild:query];
+		[xmlWriter startElement: @"iq"
+		             attributes: D(newMessageID, @"id", @"get", @"type")];
+		[xmlWriter startElement: @"query"
+					 attributes: D(@"jabber:iq:roster", @"xmlns")];
+
+		[xmlWriter endElement];
+		[xmlWriter endElement];
 		
 		SET_STATE(LoggedIn);
 		
-		[self XMPPSend:[rosterQuery stringValue]];
 		[self XMPPSend:unsentBuffer];
 		[unsentBuffer setString:@""];
 	}

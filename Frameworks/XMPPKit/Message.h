@@ -16,6 +16,7 @@ typedef enum {in, out} MessageDirection;
 typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_GROUPCHAT, MESSAGE_TYPE_SPECIAL} message_type_t;
 
 @class XMPPError;
+@class ETXMLWriter;
 
 /**
  * The Message class represents a message stanza, one of the three types of XML
@@ -93,9 +94,7 @@ typedef enum {MESSAGE_TYPE_CHAT, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_MESSAGE, MESSA
  */
 - (NSComparisonResult) compareByTimestamp:(Message*)_other;
 /**
- * Returns the XML representation of the node.  Should be deprecated in favour of
- * a method returning the XML string directly to hide the ETXML dependency from 
- * users.
+ * Writes the message in XML form to the specified XML writer.
  */
-- (ETXMLNode*) xml;
+- (void)writeToXMLWriter: (ETXMLWriter*)xmlWriter;
 @end

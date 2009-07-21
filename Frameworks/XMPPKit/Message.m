@@ -35,13 +35,14 @@ NSDictionary * MESSAGE_TYPES;
 
 - (id) initWithBody:(id)_body for:(JID*)_recipient withSubject:(NSString*)_subject type:(message_type_t)_type
 {
+	NSLog(@"Body (%@) %@", [_body class], _body);
 	if([_body isKindOfClass:[NSString class]])
 	{
 		body = [[_body stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];		
 	}
 	else if([_body isKindOfClass:[NSAttributedString class]])
 	{
-		body = [[[_body stringValueWithExpandedLinks] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
+		body = [[[_body stringValueWithExpandedLinks] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
 		html = [_body retain];
 	}
 	correspondent = [_recipient retain];
@@ -61,7 +62,7 @@ NSDictionary * MESSAGE_TYPES;
 	return self;
 }
 
-- (ETXMLNode*) xml
+- (void)writeToXMLWriter: (ETXMLWriter*)xmlWriter
 {
 	NSMutableDictionary * attributes = [[NSMutableDictionary alloc] init];
 	
@@ -87,26 +88,26 @@ NSDictionary * MESSAGE_TYPES;
 	{
 		[attributes setValue:[correspondent jidString] forKey:@"from"];
 	}
-	ETXMLNode * messageNode = [ETXMLNode ETXMLNodeWithType:@"message" attributes:attributes];
-	ETXMLNode * child;
+	[xmlWriter startElement: @"message" attributes: attributes];
+	[attributes release];
+
 	if(subject != nil)
 	{
-		child = [ETXMLNode ETXMLNodeWithType:@"subject"];
-		[child setCData:subject];
-		[messageNode addChild:child];
+		[xmlWriter startElement: @"subject"];
+		[xmlWriter characters: subject];
+		[xmlWriter endElement];
 	}
 	if(body != nil)
 	{
-		child = [ETXMLNode ETXMLNodeWithType:@"body"];
-		[child setCData:body];
-		[messageNode addChild:child];
+		[xmlWriter startElement: @"body"];
+		[xmlWriter characters: body];
+		[xmlWriter endElement];
 	}
 	if(html != nil)
 	{
-		[messageNode addChild:[html xhtmlimValue]];
+		[html writeToXMLWriter: xmlWriter];
 	}
-	[attributes release];
-	return messageNode;
+	[xmlWriter endElement];
 }
 
 

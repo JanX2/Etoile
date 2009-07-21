@@ -7,8 +7,11 @@
 //
 
 #import "NSAttributedString+HTML-IM.h"
-#import <EtoileXML/ETXMLNode.h>
-#include "Macros.h"
+#import <EtoileFoundation/EtoileFoundation.h>
+// Work around some GSBreakage
+#define NSFontFamiliyClassMask NSFontFamilyClassMask
+#import <AppKit/NSFontDescriptor.h>
+#undef NSFontFamiliyClassMask
 
 static NSMapTable * STYLE_HANDLERS = NULL;
 
@@ -53,6 +56,7 @@ NSString * cssGenericFontFamily(NSFontSymbolicTraits traits)
 NSString * fontAttributes(NSFont * aFont)
 {
 	NSFontSymbolicTraits traits = [[aFont fontDescriptor] symbolicTraits];
+	NSLog(@"Traits: %x", traits);
 	NSString * genericFamily = cssGenericFontFamily(traits);
 	NSMutableString * style;
 	if(genericFamily == nil)
@@ -110,37 +114,35 @@ NSString * styleFromAttributes(NSDictionary * attributes)
 	return style;
 }
 
-void addCdataWithLineBreaksToNode(ETXMLNode * node, NSString* cdata)
+void addCdataWithLineBreaksToNode(ETXMLWriter *xmlWriter, NSString *cdata)
 {
-	ETXMLNode * br = [ETXMLNode ETXMLNodeWithType:@"br"];
 	NSArray * segments = [cdata componentsSeparatedByString:@"\n"];
 	if([segments count] > 1)
 	{
 		int i;
 		for(i=0 ; i < [segments count] -1 ; i++)
 		{
-			[node addCData:[segments objectAtIndex:i]];
-			[node addChild:br];
+			[xmlWriter characters: [segments objectAtIndex:i]];
+			[xmlWriter startElement: @"br"];
+			[xmlWriter endElement];
 		}
-		[node addCData:[segments objectAtIndex:i]];		
+		[xmlWriter characters: [segments objectAtIndex:i]];		
 	}
 	else
 	{
-		[node addCData:cdata];
+		[xmlWriter characters: cdata];
 	}
 }
 
 @implementation NSAttributedString (XHTML_IM)
-- (ETXMLNode*) xhtmlimValue
+- (void)writeToXMLWriter: (ETXMLWriter*)xmlWriter
 {
-	NSDictionary * htmlns = [NSDictionary dictionaryWithObject:@"http://jabber.org/protocol/xhtml-im"
-														forKey:@"xmlns"];
-	NSDictionary * bodyns = [NSDictionary dictionaryWithObject:@"http://www.w3.org/1999/xhtml"
-														forKey:@"xmlns"];
+	NSLog(@"Writing XHTML...");
+	[xmlWriter startElement: @"html" 
+		         attributes: D(@"http://jabber.org/protocol/xhtml-im", @"xmlns")];
+	[xmlWriter startElement: @"bidy" 
+				 attributes: D(@"http://www.w3.org/1999/xhtml", @"xmlns")];
 	NSString * plainText = [self string];
-	ETXMLNode * html = [ETXMLNode ETXMLNodeWithType:@"html" attributes:htmlns];
-	ETXMLNode * body = [ETXMLNode ETXMLNodeWithType:@"body" attributes:bodyns];
-	[html addChild:body];
 	NSRange attributeRange;
 	int start = 0;
 	int end = [self length];
@@ -150,33 +152,35 @@ void addCdataWithLineBreaksToNode(ETXMLNode * node, NSString* cdata)
 		NSDictionary * attributes = [self attributesAtIndex:start effectiveRange:&attributeRange];
 		NSString * css = styleFromAttributes(attributes);
 		NSURL * linkTarget = [attributes objectForKey:NSLinkAttributeName];
-		ETXMLNode * span;
-		if(![css isEqualToString:@""] || linkTarget != nil)
+		NSMutableDictionary *tagAttributes = [NSMutableDictionary dictionary];
+		if (![css isEqualToString:@""] || linkTarget != nil)
 		{
-			if(linkTarget != nil)
+			if (![css isEqualToString:@""])
 			{
-				span = [ETXMLNode ETXMLNodeWithType:@"a"];
-				[span set:@"href" to:[NSString stringWithFormat:@"%@", linkTarget]];
+				[tagAttributes setObject: styleFromAttributes(attributes) forKey: @"style"];
+			}
+			if (linkTarget != nil)
+			{
+				[tagAttributes setObject: linkTarget forKey: @"href"];
+				[xmlWriter startElement: @"a"
+				             attributes: tagAttributes];
 			}
 			else
 			{
-				span = [ETXMLNode ETXMLNodeWithType:@"span"];
+				[xmlWriter startElement: @"span"
+				             attributes: tagAttributes];
 			}
-			if(![css isEqualToString:@""])
-			{
-				[span set:@"style" to:styleFromAttributes(attributes)];
-			}
-			addCdataWithLineBreaksToNode(span, [plainText substringWithRange:attributeRange]);
-			[body addChild:span];
+			addCdataWithLineBreaksToNode(xmlWriter, [plainText substringWithRange:attributeRange]);
+			[xmlWriter endElement];
 		}
 		else
 		{
-			addCdataWithLineBreaksToNode(body, [plainText substringWithRange:attributeRange]);
+			addCdataWithLineBreaksToNode(xmlWriter, [plainText substringWithRange:attributeRange]);
 		}
 		start = attributeRange.location + attributeRange.length;
 	}
-	//NSLog(@"XHTML-IM: %@", [html stringValue]);
-	return html;
+	[xmlWriter endElement];
+	[xmlWriter endElement];
 }
 
 - (NSString*) stringValueWithExpandedLinks
