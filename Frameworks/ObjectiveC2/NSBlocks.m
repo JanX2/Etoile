@@ -71,5 +71,21 @@ static void createNSBlockSubclass(Class newClass, char *name)
 	// Hack to get rid of compiler warning.
 	if (0) [super dealloc];
 }
+// FIXME: Should test for blocks support in the compiler, rather than just
+// testing for clang.
+#ifdef __clang__
+- (id) value: (id)anObject
+{
+	return (((id)(^)(id))self)(anObject);
+}
+- (id) value: (id)anObject value: (id)obj2
+{
+	return (((id)(^)(id,id))self)(anObject, obj2);
+}
+- (id) value: (id)anObject value: (id)obj2 value: (id)obj3
+{
+	return (((id)(^)(id,id,id))self)(anObject, obj2, obj3);
+}
+#endif
 @end
 
