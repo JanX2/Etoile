@@ -1,0 +1,21 @@
+EtoilePaint
+=============
+
+:Maintainer: Eric Wasylishen <ewasylishen@gmail.com>
+:Authors: Eric Wasylishen
+:License: Modified BSD License
+:Version: 0.1
+
+EtoilePaint is a set of extensions to EtoileUI to provide artist's tools.
+
+The goal is to provide both tools traditionally found in bitmap editors, and
+those found in vector editors, and build on EtoileUI's pluggable style system
+to give the artist great flexibility. For example:
+
+ - it should be possible to change the style of part of a sketch after it is
+   drawn
+
+ - it should be possible add filters (blur, sharpen, levels/curves adjustment,
+   etc.) to any part of the layout item tree at any time, or tweak the 
+   paramaters of one of these filters.
+

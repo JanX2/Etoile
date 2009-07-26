@@ -1,0 +1,11 @@
+TODO
+====
+
+ - Continue the brush implementation which is currently very primitive
+
+ - Figure out how to have filters in EtoileUI which cause part of the layout
+   item tree to be rendered to a bitmap so the filter (e.g. blur) can be
+   applied.
+
+ - Come up with a better name :)
+   Maybe an artist's name, an artistic technique, or a flower name
