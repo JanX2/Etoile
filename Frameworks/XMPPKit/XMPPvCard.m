@@ -79,7 +79,7 @@ PROPERTY_FROM_XML(kABNicknameProperty, NICKNAME)
 PROPERTY_FROM_XML(kABLastNameProperty, FAMILY)
 PROPERTY_FROM_XML(kABFirstNameProperty, GIVEN)
 #ifdef GNUSTEP
-#define MULTI_INIT ABMutableMultiValue * multi = [[ABMutableMultiValue alloc] initWithType:kABMultiStringProperty]
+#define MULTI_INIT ABMutableMultiValue * multi = [(ABMutableMultiValue*)[ABMutableMultiValue alloc] initWithType:kABMultiStringProperty]
 #else
 #define MULTI_INIT ABMutableMultiValue * multi = [[ABMutableMultiValue alloc] init]
 #endif
