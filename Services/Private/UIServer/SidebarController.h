@@ -7,6 +7,5 @@
 	ETLayoutItemGroup *_sidebarGroup;
 }
 
-- (void) show;
-
+- (ETLayoutItemGroup *)sidebarGroup;
 @end

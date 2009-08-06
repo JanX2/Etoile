@@ -15,24 +15,10 @@ UIServer *_sharedServer;
 
 - (void) applicationDidFinishLaunching: (NSNotification *)notif
 {
-	_shelf = [[ETOverlayShelf alloc] init];
-	_shelfConnection = [[NSConnection alloc] initWithReceivePort: [NSPort port]
-	                                               sendPort: [NSPort port]];
-	[_shelfConnection setRootObject: _shelf];
-	if ([_shelfConnection registerName:@"Etoile/SystemPickboard"] == NO)
-	{
-		[NSException raise:@"DOException"
-		            format:@"Can't register SystemPickboard with DO server"];
-	}	
-	
-	_sidebar = [[SidebarController alloc] init];
-	[_sidebar show];
-}
-
-- (id) init
-{
-	SUPERINIT;
 	ETUIItemFactory *factory = [ETUIItemFactory factory];
+
+	// Create the root group and vend it via DO
+
 	_rootGroup = [[factory itemGroup] retain];
 
 	_connection = [[NSConnection alloc] initWithReceivePort: [NSPort port]
@@ -44,12 +30,37 @@ UIServer *_sharedServer;
 		            format:@"Can't register RootGroup with DO server"];
 	}
 	
+	// Create the overlay shelf group and vend it via DO
 
+	_shelf = [[ETOverlayShelf alloc] init];
+	_shelfConnection = [[NSConnection alloc] initWithReceivePort: [NSPort port]
+	                                               sendPort: [NSPort port]];
+	[_shelfConnection setRootObject: _shelf];
+	if ([_shelfConnection registerName:@"Etoile/SystemPickboard"] == NO)
+	{
+		[NSException raise:@"DOException"
+		            format:@"Can't register SystemPickboard with DO server"];
+	}	
+
+	// Create the sidebar
+		
+	_sidebar = [[SidebarController alloc] init];
+
+	// Add some dummy projects
+
+	[_rootGroup addItem: [[ETUIItemFactory factory] button]];
+
+	// FIXME: shouldn't be needed
+	[[_sidebar sidebarGroup] reloadAndUpdateLayout];
+}
+
+- (id) init
+{
+	SUPERINIT;
 	return self;
 }
 - (void) dealloc
 {
-	NSLog(@"UIServer dealocated");
 	[_connection release];
 	[_rootGroup release];
 	[_shelf release];

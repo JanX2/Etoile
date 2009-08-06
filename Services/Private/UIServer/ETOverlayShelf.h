@@ -4,7 +4,7 @@
 @interface ETOverlayShelf : ETPickboard
 {
 }
-- (void) showShelf;
-- (void) hideShelf;
+- (void) showShelf:(id)sender;
+- (void) hideShelf:(id)sender;
 - (void) setShelfVisible: (BOOL)show;
 @end
