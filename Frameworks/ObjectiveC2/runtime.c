@@ -23,18 +23,20 @@
 #define objc_msg_lookup_super gnu_objc_msg_lookup_super 
 #define BOOL GNU_BOOL
 #define SEL GNU_SEL
-#define YES GNU_YES
-#define NO GNU_NO
-#define Nil GNU_Nil
-#define nil GNU_nil
+#define Protocol GNU_Protocol
+#define Class GNU_Class
+
+#undef YES
+#undef NO
+#undef Nil
+#undef nil
+
 #include <objc/objc.h>
 #include <objc/objc-api.h>
 #undef GNU_BOOL
 #include <objc/encoding.h>
-#undef GNU_YES
-#undef GNU_NO
-#undef GNU_Nil
-#undef GNU_nil
+#undef Class
+#undef Protocol
 #undef SEL 
 #undef objc_msg_lookup
 #undef objc_msg_lookup_super
@@ -43,6 +45,17 @@
 #undef IMP
 #undef id
 #undef objc_object
+
+// Reinstall definitions.
+#undef YES
+#undef NO
+#undef Nil
+#undef nil
+#define YES ((BOOL)1)
+#define NO ((BOOL)0)
+#define nil ((id)_OBJC_NULL_PTR)
+#define Nil ((Class)_OBJC_NULL_PTR)
+
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
