@@ -58,8 +58,8 @@ __thread id objc_msg_sender;
 @implementation ETObjectPlane
 + (void)load
 {
-	NSConstantStringClass = [NSConstantString class];
-	GSCInlineStringClass = [GSCInlineString class];
+	NSConstantStringClass = [(id)NSConstantString class];
+	GSCInlineStringClass = [(id)GSCInlineString class];
 }
 - (id)init
 {
