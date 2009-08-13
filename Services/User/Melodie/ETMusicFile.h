@@ -32,27 +32,11 @@
 */
 
 #import <CoreObject/CoreObject.h>
-#import "TLMusicFile.h"
 
 @class NSString;
 
-extern NSString *kETURLProperty;
-extern NSString *kETTitleProperty;
-extern NSString *kETArtistProperty;
-extern NSString *kETAlbumProperty;
-extern NSString *kETCommentProperty;
-extern NSString *kETGenreProperty;
-extern NSString *kETYearProperty;
-extern NSString *kETTrackProperty;
-extern NSString *kETLengthProperty;
-extern NSString *kETBitrateProperty;
-extern NSString *kETSamplerateProperty;
-extern NSString *kETChannelsProperty;
-extern NSString *kETPlayingProperty;
-
 @interface ETMusicFile : COFileObject
 {
-	TLMusicFile *tag;
 }
 
 + (void) initialize;

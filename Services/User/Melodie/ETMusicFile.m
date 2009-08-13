@@ -31,9 +31,10 @@
 	THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#import <Foundation/Foundation.h>
+#import <EtoileFoundation/EtoileFoundation.h>
 #import <CoreObject/CoreObject.h>
 #import <IconKit/IconKit.h>
+#import <MediaKit/MKMediaFile.h>
 
 #import "ETMusicFile.h"
 
@@ -88,54 +89,32 @@ NSString *kETPlayingProperty = @"kETPlayingProperty";
 - (ETMusicFile *) initWithPath: (NSString *)aPath
 {
 	[super initWithPath: aPath];
-        [self tryStartPersistencyIfInstanceOfClass: [ETMusicFile class]];
-        return self;
+	[self tryStartPersistencyIfInstanceOfClass: [ETMusicFile class]];
+    return self;
 }
 
 - (void) setURL: (NSURL *)aURL
 {
 	[self setValue: [aURL absoluteString]
 	   forProperty: kETURLProperty];
+	   
+	
+	MKMediaFile *mediaFile = [[MKMediaFile alloc] initWithURL: aURL];
+	FOREACH([self properties], property, NSString *)
+	{
+		id value = [[mediaFile metadata] valueForKey: property];
+		if (value)
+		{
+			[self setValue: value forProperty: property];
+		}
+	}
+	[mediaFile release];
 }
-
-#define EMPTY_STRING_IF_NIL(obj) ((obj) == nil ? (id)@"" : (id)(obj))
 
 - (void) setPath: (NSString *)path
 {
 	[super setPath: path];
-
-	[self setValue: [[NSURL fileURLWithPath: path] absoluteString]
-	   forProperty: kETURLProperty];
-
-	tag = [[TLMusicFile alloc] initWithPath: path];
-	if (tag == nil)
-		NSLog(@"Nil tag");
-
-	[self setValue: EMPTY_STRING_IF_NIL([tag title])
-	   forProperty: kETTitleProperty];
-	[self setValue: EMPTY_STRING_IF_NIL([tag artist])
-	   forProperty: kETArtistProperty];
-	[self setValue: EMPTY_STRING_IF_NIL([tag album])
-	   forProperty: kETAlbumProperty];
-	[self setValue: EMPTY_STRING_IF_NIL([tag comment])
-	   forProperty: kETCommentProperty];
-	[self setValue: EMPTY_STRING_IF_NIL([tag genre])
-	   forProperty: kETGenreProperty];
-	[self setValue: [NSNumber numberWithInt:[tag year]]
-	   forProperty: kETYearProperty];
-	[self setValue: [NSNumber numberWithInt:[tag track]]
-	   forProperty: kETTrackProperty];
-	[self setValue: [NSNumber numberWithInt:[tag length]]
-	   forProperty: kETLengthProperty];
-	[self setValue: [NSNumber numberWithInt:[tag bitrate]]
-	   forProperty: kETBitrateProperty];
-	[self setValue: [NSNumber numberWithInt:[tag samplerate]]
-	   forProperty: kETSamplerateProperty];
-	[self setValue: [NSNumber numberWithInt:[tag channels]]
-	   forProperty: kETChannelsProperty];
-
-	NSDebugLog(@"Finished setting ETMusicFile properties from taglib");
-	return;
+	[self setURL: [NSURL fileURLWithPath: path]];
 }
 
 - (NSURL *) URL
@@ -151,12 +130,11 @@ NSString *kETPlayingProperty = @"kETPlayingProperty";
 - (NSString *) displayName
 {
 	NSString *display = [self name];
-	if (display == nil && [display isEqual: @""])
+	if (display == nil || [display isEqual: @""])
 	{
 		display = [[self path] lastPathComponent];
 	}
-
-	if (display == nil && [display isEqual: @""])
+	if (display == nil || [display isEqual: @""])
 	{
 		display = [self valueForProperty: kETURLProperty];
 	}
@@ -165,14 +143,7 @@ NSString *kETPlayingProperty = @"kETPlayingProperty";
 
 - (NSImage *) icon
 {
-	if ([tag cover] != nil)
-	{
-		return [tag cover];
-	}
-	else
-	{
-		return [[IKIcon iconWithIdentifier: @"audio-x-generic"] image];
-	}
+	return [[IKIcon iconWithIdentifier: @"audio-x-generic"] image];
 }
 
 @end
