@@ -15,9 +15,17 @@ MediaKit_HEADER_FILES = \
 				MKMusicPlayer.h\
 				MKSoundDevice.h
 
-ADDITIONAL_OBJCFLAGS = -std=c99
+ADDITIONAL_OBJCFLAGS += -std=c99
 ADDITIONAL_OBJCFLAGS += `pkg-config libavcodec --cflags`
 ADDITIONAL_OBJCFLAGS += `pkg-config libavformat --cflags`
+# Taglib
+# In Ubuntu, libtag_c doesn't have pkg-config data
+ADDITIONAL_LDFLAGS += `pkg-config --libs taglib` -ltag_c
+ADDITIONAL_OBJCFLAGS += `pkg-config --cflags taglib`
+# mp4v2
+ADDITIONAL_LDFLAGS += -lmp4v2
+
+
 # Workaround new FFMpeg header include style until we update MediaKit headers 
 # to use <libavcodec/avcodec.h> and <libavformat/avformat.h>. For now, we have 
 # to wait otherwise we would break many recent systems released around 2008 or 

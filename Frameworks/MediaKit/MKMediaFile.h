@@ -5,7 +5,7 @@
 #include <avcodec.h>
 #include <avformat.h>
 
-@class NSURL;
+@class NSURL, NSMutableDictionary;
 /**
  * Class encapsulating a media file.  Currently a fairly minimal implementation
  * which is only capable of accessing a single stream from a file.  Still to do
@@ -19,6 +19,7 @@
 	int stream;
 	int64_t timestamp;
 	NSURL *URL;
+	NSMutableDictionary *metadata;
 }
 /**
  * Initialises the object with a (potentially remote) media file.
@@ -83,5 +84,9 @@
  * result in case of error (e.g. the end of the stream).
  */
 - (int) decodeAudioTo:(int16_t*)buffer size:(int)bufferSize;
+/**
+ * Returns a dictionary of metadata
+ */
+- (NSDictionary *)metadata;
 @end
 

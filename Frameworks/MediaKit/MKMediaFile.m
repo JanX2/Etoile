@@ -1,11 +1,39 @@
 #import "MKMediaFile.h"
 #import <EtoileFoundation/EtoileFoundation.h>
 
+// Ugly hack to prevent tag_c.h from redefining BOOL
+#define BOOL BOOL
+#include <tag_c.h>
+#include <mp4.h>
+
 // If we're building for an old version of libavcodec, use the old API
 #if LIBAVCODEC_VERSION_INT  < ((52<<16)+(25<<8)+0)
 #define avcodec_decode_audio3(context, buffer, bufferSize, pkt) \
 	avcodec_decode_audio2(context, buffer, bufferSize, (pkt)->data, (pkt)->size)
 #endif
+
+// Metadata keys
+static NSString *kETTitleProperty = @"kETTitleProperty";
+static NSString *kETArtistProperty = @"kETArtistProperty";
+static NSString *kETAlbumProperty = @"kETAlbumProperty";
+static NSString *kETCommentProperty = @"kETCommentProperty";
+static NSString *kETGenreProperty = @"kETGenreProperty";
+static NSString *kETYearProperty = @"kETYearProperty";
+static NSString *kETTrackProperty = @"kETTrackProperty";
+static NSString *kETLengthProperty = @"kETLengthProperty";
+static NSString *kETBitrateProperty = @"kETBitrateProperty";
+static NSString *kETSamplerateProperty = @"kETSamplerateProperty";
+static NSString *kETChannelsProperty = @"kETChannelsProperty";
+
+@interface MKMediaFile (Metadata)
+- (void) readMetadata;
+- (BOOL) readAVFormatMetadata;
+- (BOOL) readMP4Metadata;
+- (BOOL) readTaglibMetadata;
+- (BOOL) writeTaglibMetadata;
+@end
+
+
 
 @implementation MKMediaFile
 + (void) initialize
@@ -25,10 +53,10 @@
 		[self release];
 		return nil;
 	}
+	[self readMetadata];
 #ifdef DEBUG
 	dump_format(formatContext, 0, c_filename, NO);
 #endif
-	NSLog(@"Title: %s, author: %s, album: %s", formatContext->title, formatContext->author, formatContext->album);
 	return self;
 }
 - (id) initWithPath:(NSString*) path
@@ -177,4 +205,182 @@
 	av_free_packet(&pkt);
 	return bufferSize;
 }
+- (NSDictionary *)metadata
+{
+	return metadata;
+}
+@end
+
+
+#define GET_CSTRING_TAG(key, value)\
+do {\
+	const char *str = value;\
+	if (value != NULL && *value != '\0')\
+	{\
+		[metadata setValue: [NSString stringWithUTF8String: value]\
+		            forKey: key];\
+	}\
+} while (0);
+#define GET_INT_TAG(key, value)\
+	[metadata setValue: [NSNumber numberWithInt: value]\
+	            forKey: key];
+#define GET_INT64_TAG(key, value)\
+	[metadata setValue: [NSNumber numberWithLongLong: value]\
+	            forKey: key];
+
+@implementation MKMediaFile (Metadata)
+
+- (void) readMetadata
+{
+	BOOL success = NO;
+	if ([URL isFileURL])
+	{
+		success = [self readTaglibMetadata];
+		if (!success)
+		{
+			success = [self readMP4Metadata];
+		}
+	}
+	if (!success)
+	{
+		success = [self readAVFormatMetadata];
+	}
+}
+
+- (BOOL) readAVFormatMetadata
+{
+	GET_CSTRING_TAG(kETTitleProperty, formatContext->title)
+	GET_CSTRING_TAG(kETArtistProperty, formatContext->author)
+	GET_CSTRING_TAG(kETAlbumProperty, formatContext->album)
+	GET_CSTRING_TAG(kETCommentProperty, formatContext->comment)
+	GET_CSTRING_TAG(kETGenreProperty, formatContext->genre)
+	GET_INT_TAG(kETYearProperty, formatContext->year)
+	GET_INT_TAG(kETTrackProperty, formatContext->track)
+	GET_INT64_TAG(kETLengthProperty, ((formatContext->duration * 1000) / AV_TIME_BASE))
+	return YES;
+}
+
+#define MP4_GET_STRING(key, name) if(MP4GetMetadata ## name(hFile, &value))\
+{\
+	GET_CSTRING_TAG(key, value)\
+}
+- (BOOL) readMP4Metadata
+{
+	MP4FileHandle hFile = MP4Read([[URL path] UTF8String], 0);
+	if(MP4_INVALID_FILE_HANDLE == hFile)
+	{
+		return NO;
+	}
+	char *value = NULL;
+	MP4_GET_STRING(kETTitleProperty, Name)
+	MP4_GET_STRING(kETArtistProperty, Artist)
+	MP4_GET_STRING(kETAlbumProperty, Album)
+	MP4_GET_STRING(kETCommentProperty, Comment)
+	MP4_GET_STRING(kETGenreProperty, Genre)
+
+	if (MP4GetMetadataYear(hFile, &value))
+	{
+		[metadata setValue: [NSNumber numberWithLong: strtol(value, NULL, 10)]
+		            forKey: kETYearProperty];
+	}
+	u_int16_t track, totalTracks;
+	if (MP4GetMetadataTrack(hFile, &track, &totalTracks))
+	{
+		[metadata setValue: [NSNumber numberWithInt: track]
+		            forKey: kETTrackProperty];
+	}
+
+	/* Album cover extraction from MP4's is disabled for now. We don't do much
+	   with them, and the MP4GetMetadataCoverArt function will cause a compile 
+	   error for people with old versions of the MP4 library.
+	
+	u_int32_t imageLength;
+	u_int8_t *image;
+	if (MP4GetMetadataCoverArt(hFile, &image, &imageLength, 0))
+	{
+		NSImage *cover = [[NSImage alloc] initWithData:
+			[NSData dataWithBytes: image length: imageLength]];
+	} */
+
+	MP4Close(hFile);
+	return YES;
+}
+				
+- (BOOL) readTaglibMetadata
+{
+	TagLib_File *tlfile = taglib_file_new([[URL path] UTF8String]);
+	/* 
+	 * TODO: Currently, invalid files don't return a NULL tlfile.
+	 * They're supposed to. Trying to read e.g. the title then segfaults.
+	 * 
+	 * The taglib_file_is_valid was recently added to the TagLib C binding,
+	 * which should fix the problem.
+	 */
+	if (tlfile == NULL)// || !taglib_file_is_valid(tlfile))
+	{
+		return NO;
+	}
+
+	TagLib_Tag *tltag = taglib_file_tag(tlfile);
+	const TagLib_AudioProperties *tlprops = taglib_file_audioproperties(tlfile);
+	
+	GET_CSTRING_TAG(kETTitleProperty, taglib_tag_title(tltag))
+	GET_CSTRING_TAG(kETArtistProperty, taglib_tag_artist(tltag))
+	GET_CSTRING_TAG(kETAlbumProperty, taglib_tag_album(tltag))
+	GET_CSTRING_TAG(kETCommentProperty, taglib_tag_comment(tltag))
+	GET_CSTRING_TAG(kETGenreProperty, taglib_tag_genre(tltag))
+	GET_INT_TAG(kETYearProperty, taglib_tag_year(tltag))
+	GET_INT_TAG(kETTrackProperty, taglib_tag_track(tltag))
+	GET_INT64_TAG(kETLengthProperty, 1000*(int64_t)taglib_audioproperties_length(tlprops))
+	GET_INT_TAG(kETBitrateProperty, taglib_audioproperties_bitrate(tlprops))
+	GET_INT_TAG(kETSamplerateProperty, taglib_audioproperties_samplerate(tlprops))
+	GET_INT_TAG(kETChannelsProperty, taglib_audioproperties_channels(tlprops))
+
+	taglib_file_free(tlfile);
+	taglib_tag_free_strings();
+	return YES;
+}
+
+#define SET_STRING_TAGLIB_TAG(name, key)\
+if([metadata valueForKey: key] != nil && \
+   [metadata valueForKey: key] != @"")\
+{\
+	taglib_tag_set_ ## name(tltag, [[metadata valueForKey: key] UTF8String]);\
+}
+#define SET_INT_TAGLIB_TAG(name, key)\
+if([metadata valueForKey: key] != nil)\
+{\
+	taglib_tag_set_ ## name(tltag, [[metadata valueForKey: key] intValue]);\
+}
+/**
+ * Currently not public
+ */
+- (BOOL) writeTaglibMetadata
+{
+	BOOL success = NO;
+	if ([URL isFileURL])
+	{
+		TagLib_File *tlfile;
+		TagLib_Tag *tltag;
+
+		tlfile = taglib_file_new([[URL path] UTF8String]);
+		if (tlfile == NULL)
+			return NO;
+
+		tltag = taglib_file_tag(tlfile);
+		SET_STRING_TAGLIB_TAG(title, kETTitleProperty)
+		SET_STRING_TAGLIB_TAG(artist, kETArtistProperty)
+		SET_STRING_TAGLIB_TAG(album, kETAlbumProperty)
+		SET_STRING_TAGLIB_TAG(comment, kETCommentProperty)
+		SET_STRING_TAGLIB_TAG(genre, kETGenreProperty)
+		SET_INT_TAGLIB_TAG(year, kETYearProperty)
+		SET_INT_TAGLIB_TAG(track, kETTrackProperty)
+
+		// FIXME: lock the file somehow
+		success = taglib_file_save(tlfile);
+		taglib_file_free(tlfile);
+	}
+	return success;
+}
+
 @end
