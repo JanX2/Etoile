@@ -76,15 +76,15 @@ static void createNSBlockSubclass(Class newClass, char *name)
 #ifdef __clang__
 - (id) value: (id)anObject
 {
-	return (((id)(^)(id))self)(anObject);
+	return ((id(^)(id))self)(anObject);
 }
 - (id) value: (id)anObject value: (id)obj2
 {
-	return (((id)(^)(id,id))self)(anObject, obj2);
+	return ((id(^)(id,id))self)(anObject, obj2);
 }
 - (id) value: (id)anObject value: (id)obj2 value: (id)obj3
 {
-	return (((id)(^)(id,id,id))self)(anObject, obj2, obj3);
+	return ((id(^)(id,id,id))self)(anObject, obj2, obj3);
 }
 #endif
 @end
