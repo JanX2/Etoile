@@ -15,6 +15,7 @@ ObjectiveC2_OBJC_FILES = \
 				NSBlocks.m\
 				blocks_runtime.m\
 				properties.m\
+				mutation.m\
 				sync.m
 
 
