@@ -1,4 +1,5 @@
 #import "ETPenStyle.h"
+#import "NSBezierPath+Geometry.h"
 
 @implementation ETPenStyle
 
@@ -13,7 +14,7 @@
 	[xform translateXBy: origin.x yBy: origin.y];
 	[xform concat];
 	
-	[[inputValues valueForKey: @"path"] stroke];
+	[[[inputValues valueForKey: @"path"] bezierPathByInterpolatingPath: 1.0] stroke];
 
 	[NSGraphicsContext restoreGraphicsState];
 }
