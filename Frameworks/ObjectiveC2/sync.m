@@ -25,12 +25,12 @@ static inline Class findLockClass(id obj)
 	struct objc_object object = { obj->isa };
 	SEL dealloc = @selector(dealloc);
 	// Find the first class where this lookup is correct
-	if (objc_msg_lookup(&object, dealloc) != (IMP)deallocLockClass)
+	if (objc_msg_lookup((id)&object, dealloc) != (IMP)deallocLockClass)
 	{
 		do {
 			object.isa = class_getSuperclass(object.isa);
 		} while (Nil != object.isa && 
-				objc_msg_lookup(&object, dealloc) != (IMP)deallocLockClass);
+				objc_msg_lookup((id)&object, dealloc) != (IMP)deallocLockClass);
 	}
 	if (Nil == object.isa) { return Nil; }
 	// object->isa is now either the lock class, or a class which inherits from
@@ -40,7 +40,7 @@ static inline Class findLockClass(id obj)
 		lastClass = object.isa;
 		object.isa = class_getSuperclass(object.isa);
 	} while (Nil != object.isa &&
-		   objc_msg_lookup(&object, dealloc) == (IMP)deallocLockClass);
+		   objc_msg_lookup((id)&object, dealloc) == (IMP)deallocLockClass);
 	return lastClass;
 }
 

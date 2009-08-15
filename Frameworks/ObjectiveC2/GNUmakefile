@@ -30,6 +30,9 @@ ObjectiveC2_HEADER_FILES = \
 ADDITIONAL_CFLAGS = -std=c99 -fexceptions 
 ADDITIONAL_OBJCFLAGS = -fobjc-exceptions -fexceptions
 
+ifeq ($(CC), clang)
+	ADDITIONAL_OBJCFLAGS = -fblocks
+endif
 ifeq ($(GNUSTEP_TARGET_CPU), ix86)
 	ADDITIONAL_OBJCFLAGS += -march=i686
 endif
