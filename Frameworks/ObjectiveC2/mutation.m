@@ -2,6 +2,17 @@
 
 extern __attribute__((weak)) id NSGenericException;
 
+// Hack because GCC requires the constant string class to be defined.
+@interface NXConstantString
+{
+	void *isa;
+	char *data;
+	int length;
+}
+@end
+@interface NSConstantString : NXConstantString @end
+
+
 @interface NSException
 - (void)raise: (id)exception format: (id)fmt, ...;
 @end
