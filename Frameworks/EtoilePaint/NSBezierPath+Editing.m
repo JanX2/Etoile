@@ -23,8 +23,8 @@ static float sAngleConstraint = 0.261799387799;	// 15¡
 
 static inline int		arrayIndexForPartcode( const int pc );
 static inline int		elementIndexForPartcode( const int pc );
-inline int              partcodeForElement( const int element );
-inline int              partcodeForElementControlPoint( const int element, const int controlPointIndex );
+static inline int              partcodeForElement( const int element );
+static inline int              partcodeForElementControlPoint( const int element, const int controlPointIndex );
 
 
 @implementation NSBezierPath (DKEditing)
@@ -1397,7 +1397,7 @@ inline int              partcodeForElementControlPoint( const int element, const
 
 
 
-inline int			partcodeForElement( const int element )
+static inline int			partcodeForElement( const int element )
 {
 	// returns a unique partcode for an element that contains just a single point (i.e. all of them except curveto)
 	
@@ -1405,7 +1405,7 @@ inline int			partcodeForElement( const int element )
 }
 
 
-inline int			partcodeForElementControlPoint( const int element, const int controlPointIndex )
+static inline int			partcodeForElementControlPoint( const int element, const int controlPointIndex )
 {
 	// given the element and the index of the control point (0, 1 or 2 ), this returns a unique "partcode" that
 	// can be used to refer to that specific control point in the path.
@@ -1414,13 +1414,13 @@ inline int			partcodeForElementControlPoint( const int element, const int contro
 }
 
 
-inline int			arrayIndexForPartcode( const int pc )
+static inline int			arrayIndexForPartcode( const int pc )
 {
 	return ( pc & 3 );
 }
 
 
-inline int			elementIndexForPartcode( const int pc )
+static inline int			elementIndexForPartcode( const int pc )
 {
 	// returns the element index a partcode is referring to
 	
