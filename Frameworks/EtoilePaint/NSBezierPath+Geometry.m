@@ -26,7 +26,6 @@ static void				InterpolatePoints( const NSPoint* pointsIn, NSPoint* cp1, NSPoint
 static NSPoint			CornerPoint( const NSPoint* pointsIn, float offset, float miterLimit );
 static BOOL				CornerArc( const NSPoint* pointsIn, float offset, NSBezierPath* newPath );
 static BOOL				CornerBevel( const NSPoint* pointsIn, float offset, NSBezierPath* newPath );
-inline void subdivideBezierAtT(const NSPoint bez[4], NSPoint bez1[4], NSPoint bez2[4], float t);
 
 
 @interface NSBezierPath (Geometry_Private)
@@ -1889,7 +1888,7 @@ inline static void subdivideBezier(const NSPoint bez[4], NSPoint bez1[4], NSPoin
   bez1[3].y = bez2[0].y = (bez1[2].y + bez2[1].y) / 2.0;
 }
 
-inline void subdivideBezierAtT(const NSPoint bez[4], NSPoint bez1[4], NSPoint bez2[4], float t)
+void subdivideBezierAtT(const NSPoint bez[4], NSPoint bez1[4], NSPoint bez2[4], float t)
 {
   NSPoint q;
   float mt = 1 - t;

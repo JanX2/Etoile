@@ -181,5 +181,6 @@ extern CGPathRef	CGContextCopyPath( CGContextRef context );
  *
  */
 
+void subdivideBezierAtT(const NSPoint bez[4], NSPoint bez1[4], NSPoint bez2[4], float t);
 
 

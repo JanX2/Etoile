@@ -4,11 +4,9 @@
 
 @implementation ETFillStyle
 
-/** Initializes and returns a new custom shape based on the given bezier path. */
 - (id) init
 {
 	SUPERINIT
-
 	return self;
 }
 
@@ -35,15 +33,17 @@
 	// FIXME: May be we should better support dirtyRect. The next drawing 
 	// methods don't take in account it and simply redraw all their content.
 
-	[self drawInRect: [item drawingFrame]];
+	[self drawPath: [inputValues valueForKey: @"path"] inRect: [item drawingFrame]];
 
 	//[super render: inputValues layoutItem: item dirtyRect: dirtyRect];
 }
 
-- (void) drawInRect: (NSRect)rect
+- (void) drawPath: (NSBezierPath *)path inRect: (NSRect)rect
 {
 	[NSGraphicsContext saveGraphicsState];
 
+	[_color set];
+	[path fill];
 
 	[NSGraphicsContext restoreGraphicsState];
 }

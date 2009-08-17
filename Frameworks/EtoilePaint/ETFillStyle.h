@@ -13,6 +13,6 @@
 - (void) render: (NSMutableDictionary *)inputValues 
      layoutItem: (ETLayoutItem *)item 
 	  dirtyRect: (NSRect)dirtyRect;
-- (void) drawInRect: (NSRect)rect;
+- (void) drawPath: (NSBezierPath *)path inRect: (NSRect)rect;
 
 @end
