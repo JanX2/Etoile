@@ -2,7 +2,7 @@
 
 /* Make glibc export strdup() */
 
-#if defined __GNU_LIBRARY__
+#if defined __GLIBC__
 	#define __USE_BSD
 #endif
 

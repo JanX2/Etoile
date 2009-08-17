@@ -1,7 +1,7 @@
 #include "runtime.h"
 
 /* Ensure Unix98 compatible pthreads for glibc */
-#if defined __GNU_LIBRARY__
+#if defined __GLIBC__
 	#define __USE_UNIX98
 #endif
 
