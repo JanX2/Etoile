@@ -8,6 +8,7 @@ $(FRAMEWORK_NAME)_LIBRARIES_DEPEND_UPON += -lEtoileFoundation -lEtoileUI
 
 $(FRAMEWORK_NAME)_OBJC_FILES = $(wildcard *.m)
 $(FRAMEWORK_NAME)_HEADER_FILES = $(wildcard *.h)
+$(FRAMEWORK_NAME)_RESOURCE_FILES = testbrush.png
 
 include $(GNUSTEP_MAKEFILES)/framework.make
 -include ../../etoile.make

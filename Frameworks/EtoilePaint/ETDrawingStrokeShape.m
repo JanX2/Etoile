@@ -13,7 +13,7 @@
 	_pressures = [[NSMutableArray alloc] initWithCapacity:1000];
 	
 	// Change this to ETPenStyle to get a vector pen tool instead..
-	_brushStyle = [[ETPenStyle alloc] init];
+	_brushStyle = [[ETBrushStyle alloc] init];
 	_origin = NSMakePoint(0.0, 0.0);
 	return self;
 }

@@ -1,13 +1,11 @@
-#import "ETBrushStyle.h"
 #import <AppKit/AppKit.h>
+#import "ETBrushStyle.h"
+#import "NSBezierPath+Geometry.h"
 
 /**
  * Implements a basic bitmap brush.
  *
- * Currently only stamps the brush bitmap at the location of each input event, so
- * looks very ugly (need to interpolate between the input events).
- *
- * Everything is also hardcoded for now :)
+ * Everything is hardcoded for now :)
  *
  */
 @implementation ETBrushStyle
@@ -24,33 +22,37 @@
 	[xform concat];
 	
 	
-	NSBezierPath *path = [inputValues valueForKey: @"path"];
+	NSBezierPath *path = [[inputValues valueForKey: @"path"] bezierPathByInterpolatingPath: 1.0];
 	NSArray *pressures = [inputValues valueForKey: @"pressures"];
 	//NSGradient *gradient = [[NSGradient alloc] initWithStartingColor: [NSColor blueColor] endingColor: [NSColor clearColor]];
 	
-	[[NSColor colorWithDeviceRed: 0.3 green: 0.0 blue: 0.7 alpha: 0.3] setFill];
+	NSImage *brushImage = [[NSImage alloc] initWithContentsOfFile: 
+		[[NSBundle bundleForClass: [self class]] pathForResource: @"testbrush" ofType: @"png"]];
+	
+
+	//[[NSColor colorWithDeviceRed: 0.3 green: 0.0 blue: 0.7 alpha: 0.2] setFill];
 
 	if (path != nil && pressures != nil)
 	{
-		NSPoint points[3];
-		NSPoint last = NSZeroPoint;
-		for (unsigned int i=0; i<[path elementCount]; i++)
+		float spacing = 5.5;
+		float length = [path length];
+		for (float pos = 0; pos < length; pos += spacing)
 		{
-			if ([path elementAtIndex: i associatedPoints: points] == NSLineToBezierPathElement)
-			{
-				float pressure =  [[pressures objectAtIndex: i-1] floatValue];
-				float radius = 10.0 * pressure;
-				
-				NSRect rect = NSMakeRect(points[0].x - radius, points[0].y - radius, 2*radius, 2*radius);
-				NSBezierPath *path = [NSBezierPath bezierPath];
-				[path appendBezierPathWithOvalInRect: rect];
-				[path fill];
-
-				last = points[0];
-			}
+			float slope;
+			NSPoint point = [path pointOnPathAtLength: pos slope: &slope];
+		
+			float pressure =  0.75;
+			float radius = 10.0 * pressure;
+/*				
+			NSRect rect = NSMakeRect(point.x - radius, point.y - radius, 2*radius, 2*radius);
+			NSBezierPath *brushpath = [NSBezierPath bezierPath];
+			[brushpath appendBezierPathWithOvalInRect: rect];
+			[brushpath fill];
+*/
+			[brushImage compositeToPoint: point operation: NSCompositeSourceOver];		
 		}
 	}
-	
+
 	[NSGraphicsContext restoreGraphicsState];
 }
 
