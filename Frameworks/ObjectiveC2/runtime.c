@@ -3,7 +3,7 @@
 /* Make glibc export strdup() */
 
 #if defined __GLIBC__
-	#define __USE_BSD
+	#define __USE_BSD 1
 #endif
 
 #undef __objc_INCLUDE_GNU
