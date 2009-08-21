@@ -23,6 +23,7 @@
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
 #import "blocks_runtime.h"
+#import "runtime.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
