@@ -54,7 +54,7 @@ typedef unsigned int ETBezierPathPartcode;
 - (int)					subpathEndingElementForElement:(int) element;
 
 - (NSBezierPathElement)	elementTypeForPartcode:(ETBezierPathPartcode) pc;
-- (BOOL)				isOnPathPartcode:(ETBezierPathPartcode) pc;
+- (BOOL)				isControlPoint:(ETBezierPathPartcode) pc;
 
 - (void)				setControlPoint:(NSPoint) p forPartcode:(ETBezierPathPartcode) pc;
 - (NSPoint)				controlPointForPartcode:(ETBezierPathPartcode) pc;

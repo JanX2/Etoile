@@ -446,9 +446,10 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 }
 
 
-- (BOOL)				isOnPathPartcode:(ETBezierPathPartcode) pc
+- (BOOL)				isControlPoint:(ETBezierPathPartcode) pc
 {
-	// returns YES if the given partcode is NOT a bezier control point, but is a bezier or line segment end point.
+	// returns YES if the given partcode is a bezier control point
+    // NO if it is a bezier or line segment end point.
 	
 	if ( pc > 3 )
 	{
@@ -457,12 +458,12 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 		if ( element == NSCurveToBezierPathElement )
 		{
 			int indx = arrayIndexForPartcode( pc );
-			return ( indx == 2 );
+			return ( indx != 2 );
 		}
-		return YES;
+		return NO;
 	}
 	
-	return NO;
+	return YES;
 }
 
 

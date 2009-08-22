@@ -17,8 +17,24 @@
 #import <EtoileUI/ETActionHandler.h>
 #import <EtoileUI/ETStyle.h>
 
+#import "NSBezierPath+Editing.h"
+
 @class ETInstrument; 
 
+@interface ETBezierHandle : ETHandle
+{
+    ETBezierPathPartcode _partcode;
+	NSBezierPath *_path;
+}
+
+- (id) initWithActionHandler: (ETActionHandler *)anHandler
+           manipulatedObject: (id)aTarget
+                    partcode: (ETBezierPathPartcode)partcode;
+
+- (NSBezierPath *) manipulatedPath;
+- (ETBezierPathPartcode) partcode;
+
+@end
 
 @interface ETBezierHandleGroup : ETHandleGroup
 {
@@ -48,12 +64,10 @@
 @interface ETBezierPointStyle : ETBasicHandleStyle
 + (id) sharedInstance;
 - (void) drawHandleInRect: (NSRect)rect;
-- (void) drawSelectionIndicatorInRect: (NSRect)indicatorRect;
 @end
 
 @interface ETBezierControlPointStyle : ETBasicHandleStyle
 + (id) sharedInstance;
 - (void) drawHandleInRect: (NSRect)rect;
-- (void) drawSelectionIndicatorInRect: (NSRect)indicatorRect;
 @end
 
