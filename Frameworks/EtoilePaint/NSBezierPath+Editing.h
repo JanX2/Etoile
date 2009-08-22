@@ -57,7 +57,7 @@ typedef unsigned int ETBezierPathPartcode;
 - (BOOL)				isControlPoint:(ETBezierPathPartcode) pc;
 
 - (void)				setControlPoint:(NSPoint) p forPartcode:(ETBezierPathPartcode) pc;
-- (NSPoint)				controlPointForPartcode:(ETBezierPathPartcode) pc;
+- (NSPoint)				pointForPartcode:(ETBezierPathPartcode) pc;
 
 - (ETBezierPathPartcode)					partcodeHitByPoint:(NSPoint) p tolerance:(float) t;
 - (ETBezierPathPartcode)					partcodeHitByPoint:(NSPoint) p tolerance:(float) t startingFromElement:(int) startElement;

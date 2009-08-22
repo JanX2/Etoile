@@ -481,7 +481,7 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 }
 
 
-- (NSPoint)				controlPointForPartcode:(ETBezierPathPartcode) pc
+- (NSPoint)				pointForPartcode:(ETBezierPathPartcode) pc
 {
 	// given a partcode, this returns the current position of the associated control point
 	
@@ -624,7 +624,7 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 	int					ec =			[self elementCount];
 	int					element =		elementIndexForPartcode( pc );
 	BOOL				closedLoop =	[self subpathContainingElementIsClosed:element];
-	NSPoint				old =			[self controlPointForPartcode:pc];
+	NSPoint				old =			[self pointForPartcode:pc];
 	
 	float				dx, dy;
 	NSBezierPathElement previous = NSMoveToBezierPathElement;
@@ -661,12 +661,12 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 			if ( cp == 0 )
 			{
 				if ( previous == NSCurveToBezierPathElement )
-					centre = [self controlPointForPartcode: [self partcodeForControlPoint: 2 ofElement: prev]];
+					centre = [self pointForPartcode: [self partcodeForControlPoint: 2 ofElement: prev]];
 				else
-					centre = [self controlPointForPartcode: [self partcodeForElement: prev]];
+					centre = [self pointForPartcode: [self partcodeForElement: prev]];
 			}
 			else
-				centre = [self controlPointForPartcode:partcodeForElementControlPoint( element, 2 )];
+				centre = [self pointForPartcode:[self partcodeForControlPoint:2 ofElement: element]];
 				
 			float pa = atan2f( p.y - centre.y, p.x - centre.x );
 			float pd = hypotf( p.x - centre.x, p.y - centre.y );
@@ -688,15 +688,15 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 				{
 					if ( previous == NSCurveToBezierPathElement )
 					{
-						ETBezierPathPartcode prevPc = partcodeForElementControlPoint( prev, 1 );
+						ETBezierPathPartcode prevPc = [self partcodeForControlPoint: 1 ofElement: prev];
 						
-						centre = [self controlPointForPartcode:partcodeForElementControlPoint( prev, 2 )];
+						centre = [self pointForPartcode: [self partcodeForControlPoint: 2 ofElement: prev]];
 						
 						if ( corad )
 							opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
 						else
 						{
-							NSPoint curOpp = [self controlPointForPartcode:prevPc];
+							NSPoint curOpp = [self pointForPartcode:prevPc];
 							float rad = hypotf( curOpp.x - centre.x, curOpp.y - centre.y );
 						
 							opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
@@ -713,14 +713,14 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 						
 						if ( previous == NSCurveToBezierPathElement )
 						{
-							centre = [self controlPointForPartcode:partcodeForElement( prev )];
-							ETBezierPathPartcode prevPc = partcodeForElementControlPoint( le, 1 );
+							centre = [self pointForPartcode: [self partcodeForElement: prev]];
+							ETBezierPathPartcode prevPc = [self partcodeForControlPoint: 1 ofElement: le];
 							
 							if ( corad )
 								opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
 							else
 							{
-								NSPoint curOpp = [self controlPointForPartcode:prevPc];
+								NSPoint curOpp = [self pointForPartcode:prevPc];
 								float rad = hypotf( curOpp.x - centre.x, curOpp.y - centre.y );
 						
 								opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
@@ -737,19 +737,19 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 				{
 					if (( element < ( ec - 1 )) && ( following == NSCurveToBezierPathElement ))
 					{
-						centre = [self controlPointForPartcode:partcodeForElementControlPoint( element, 2 )];
+						centre = [self pointForPartcode: [self partcodeForControlPoint: 2 ofElement: element]];
 						
 						if ( corad )
 							opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
 						else
 						{
-							NSPoint curOpp = [self controlPointForPartcode:partcodeForElement( next )];
+							NSPoint curOpp = [self pointForPartcode: [self partcodeForElement: next]];
 							float rad = hypotf( curOpp.x - centre.x, curOpp.y - centre.y );
 						
 							opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
 						}
 						
-						[self setControlPoint:opp forPartcode:partcodeForElement( next )];
+						[self setControlPoint:opp forPartcode:[self partcodeForElement: next]];
 					}
 					else if ( closedLoop && ( element == [self subpathEndingElementForElement:element]))
 					{
@@ -760,19 +760,19 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 						following = [self elementAtIndex:e2];
 						if ( following == NSCurveToBezierPathElement )
 						{
-							centre = [self controlPointForPartcode:partcodeForElementControlPoint( element, 2 )];
+							centre = [self pointForPartcode: [self partcodeForControlPoint:2 ofElement: element]];
 							
 							if ( corad )
 								opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
 							else
 							{
-								NSPoint curOpp = [self controlPointForPartcode:partcodeForElement( e2 )];
+								NSPoint curOpp = [self pointForPartcode: [self partcodeForElement: e2 ]];
 								float rad = hypotf( curOpp.x - centre.x, curOpp.y - centre.y );
 						
 								opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
 							}
 							
-							[self setControlPoint:opp forPartcode:partcodeForElement( e2 )];
+							[self setControlPoint:opp forPartcode: [self partcodeForElement: e2 ]];
 						}
 					}
 				}
@@ -782,17 +782,17 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 			{
 				if (( element < ( ec - 1 )) && ( following == NSCurveToBezierPathElement ))
 				{
-					opp = [self controlPointForPartcode:partcodeForElement( next )];
+					opp = [self pointForPartcode: [self partcodeForElement: next]];
 					
 					opp.x += dx;
 					opp.y += dy;
 					
-					[self setControlPoint:opp forPartcode:partcodeForElement( next )];
+					[self setControlPoint:opp forPartcode: [self partcodeForElement: next]];
 				}
-				opp = [self controlPointForPartcode:partcodeForElementControlPoint( element, 1 )];
+				opp = [self pointForPartcode: [self partcodeForControlPoint:1 ofElement: element]];
 				opp.x += dx;
 				opp.y += dy;
-				[self setControlPoint:opp forPartcode:partcodeForElementControlPoint( element, 1 )];
+				[self setControlPoint:opp forPartcode: [self partcodeForControlPoint: 1 ofElement: element]];
 			}
 			break;
 			
@@ -812,9 +812,9 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 		if ( acon )
 		{
 			if ( previous == NSCurveToBezierPathElement )
-				centre = [self controlPointForPartcode:partcodeForElementControlPoint( prev, 2 )];
+				centre = [self pointForPartcode: [self partcodeForControlPoint: prev ofElement: 2 ]];
 			else
-				centre = [self controlPointForPartcode:partcodeForElement( prev )];
+				centre = [self pointForPartcode: [self partcodeForElement: prev]];
 		
 			float pa = atan2f( p.y - centre.y, p.x - centre.x );
 			float pd = hypotf( p.x - centre.x, p.y - centre.y );
@@ -833,8 +833,8 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 	
 		if ( following == NSCurveToBezierPathElement )
 		{
-			ETBezierPathPartcode fpc = partcodeForElement( next );
-			old = [self controlPointForPartcode:fpc];
+			ETBezierPathPartcode fpc = [self partcodeForElement: next];
+			old = [self pointForPartcode:fpc];
 	
 			old.x += dx;
 			old.y += dy;
@@ -851,9 +851,9 @@ static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 			following = [self elementAtIndex:ee];
 			
 			if ( following == NSCurveToBezierPathElement )
-				[self moveControlPointPartcode:partcodeForElementControlPoint( ee, 2 ) toPoint:p colinear:colin coradial:corad constrainAngle:acon];
+				[self moveControlPointPartcode:[self partcodeForControlPoint: 2 ofElement: ee] toPoint:p colinear:colin coradial:corad constrainAngle:acon];
 			else
-				[self moveControlPointPartcode:partcodeForElement( ee ) toPoint:p colinear:colin coradial:corad constrainAngle:acon];
+				[self moveControlPointPartcode:[self partcodeForElement: ee ] toPoint:p colinear:colin coradial:corad constrainAngle:acon];
 		}
 	}
 	
