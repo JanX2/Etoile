@@ -1,6 +1,7 @@
+/* */
 ///**********************************************************************************************************************************
 ///  NSBezierPath-Editing.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 08/10/2006.
 ///
@@ -16,15 +17,13 @@
 
 #include <math.h>
 
-static float sAngleConstraint = 0.261799387799;	// 15¡
+static float sAngleConstraint = 0.261799387799;	// 15ï¿½
 
 
 // simple partcode cracking utils:
 
-static inline int		arrayIndexForPartcode( const int pc );
-static inline int		elementIndexForPartcode( const int pc );
-static inline int              partcodeForElement( const int element );
-static inline int              partcodeForElementControlPoint( const int element, const int controlPointIndex );
+static inline int		arrayIndexForPartcode( ETBezierPathPartcode pc );
+static inline int		elementIndexForPartcode( ETBezierPathPartcode pc );
 
 
 @implementation NSBezierPath (DKEditing)
@@ -105,6 +104,23 @@ static inline int              partcodeForElementControlPoint( const int element
 		outCPB->x = inPoints[1].x - r2 * cosf( angle + pi );
 		outCPB->y = inPoints[1].y - r2 * sinf( angle + pi );
 	}
+}
+
+/**
+ * returns a unique partcode for an element that contains just a single point (i.e. all of them except curveto)
+ */
+- (ETBezierPathPartcode) partcodeForElement: (int)element
+{
+        return (( element + 1 ) << 2 );
+}
+
+/**
+ * given the element and the index of the control point (0, 1 or 2 ), this returns a unique "partcode" that
+ * can be used to refer to that specific control point in the path.
+ */
+- (ETBezierPathPartcode) partcodeForControlPoint: (int)controlPointIndex ofElement: (int)element
+{
+        return ((( element + 1 ) << 2 ) | ( controlPointIndex & 3 ));
 }
 
 
@@ -422,7 +438,7 @@ static inline int              partcodeForElementControlPoint( const int element
  
 */
 
-- (NSBezierPathElement)	elementTypeForPartcode:(int) pc
+- (NSBezierPathElement)	elementTypeForPartcode:(ETBezierPathPartcode) pc
 {
 	// returns the element type given a partcode
 	
@@ -430,7 +446,7 @@ static inline int              partcodeForElementControlPoint( const int element
 }
 
 
-- (BOOL)				isOnPathPartcode:(int) pc
+- (BOOL)				isOnPathPartcode:(ETBezierPathPartcode) pc
 {
 	// returns YES if the given partcode is NOT a bezier control point, but is a bezier or line segment end point.
 	
@@ -451,7 +467,7 @@ static inline int              partcodeForElementControlPoint( const int element
 
 
 
-- (void)				setControlPoint:(NSPoint) p forPartcode:(int) pc
+- (void)				setControlPoint:(NSPoint) p forPartcode:(ETBezierPathPartcode) pc
 {
 	NSPoint				ap[3];
 	int					elem = elementIndexForPartcode( pc );
@@ -464,7 +480,7 @@ static inline int              partcodeForElementControlPoint( const int element
 }
 
 
-- (NSPoint)				controlPointForPartcode:(int) pc
+- (NSPoint)				controlPointForPartcode:(ETBezierPathPartcode) pc
 {
 	// given a partcode, this returns the current position of the associated control point
 	
@@ -478,13 +494,13 @@ static inline int              partcodeForElementControlPoint( const int element
 }
 
 
-- (int)					partcodeHitByPoint:(NSPoint) p tolerance:(float) t
+- (ETBezierPathPartcode)					partcodeHitByPoint:(NSPoint) p tolerance:(float) t
 {
 	return [self partcodeHitByPoint:p tolerance:t startingFromElement:0];
 }
 
 
-- (int)					partcodeHitByPoint:(NSPoint) p tolerance:(float) t startingFromElement:(int) startElement
+- (ETBezierPathPartcode)					partcodeHitByPoint:(NSPoint) p tolerance:(float) t startingFromElement:(int) startElement
 {
 	// given a point <p>, this detects whether any of the control points in the path were hit. A hit has to
 	// be within <t> of the point's position. Returns the partcode of the point hit, or 0 if not hit.
@@ -504,7 +520,8 @@ static inline int              partcodeForElementControlPoint( const int element
 	NSBezierPathElement et, pet;
 	NSPoint				ap[3], lp[3];
 	
-	int pc, i, ec = [self elementCount];
+	ETBezierPathPartcode pc;
+    int i, ec = [self elementCount];
 	
 	for( i = startElement + 1; i < ec; ++i )
 	{
@@ -518,7 +535,7 @@ static inline int              partcodeForElementControlPoint( const int element
 			pc = [NSBezierPath point:p inNSPointArray:ap count:(i == ( ec-1 ))? 3 : 2 tolerance:t];
 			
 			if ( pc != NSNotFound )
-				return partcodeForElementControlPoint( i, pc );
+				return [self partcodeForControlPoint: pc ofElement: i];
 				
 			// next test on-path point of previous segment:
 			
@@ -532,7 +549,7 @@ static inline int              partcodeForElementControlPoint( const int element
 				pc = [NSBezierPath point:p inNSPointArray:lp count:1 tolerance:t];
 
 			if ( pc != NSNotFound )
-				return partcodeForElementControlPoint( i-1, pc );
+				return [self partcodeForControlPoint: pc ofElement: i-1];
 				
 			// also test last segment if necessary
 			
@@ -541,7 +558,7 @@ static inline int              partcodeForElementControlPoint( const int element
 				pc = [NSBezierPath point:p inNSPointArray:ap count:3 tolerance:t];
 			
 				if ( pc != NSNotFound )
-					return partcodeForElementControlPoint( i, pc );
+					return [self partcodeForControlPoint: pc ofElement: i];
 			}
 		}
 		else
@@ -558,7 +575,7 @@ static inline int              partcodeForElementControlPoint( const int element
 				pc = [NSBezierPath point:p inNSPointArray:lp count:1 tolerance:t];
 			
 			if ( pc != NSNotFound )
-				return partcodeForElementControlPoint( i-1, pc );
+				return [self partcodeForControlPoint: pc ofElement: i-1];
 
 			// also test last segment if necessary
 			
@@ -567,7 +584,7 @@ static inline int              partcodeForElementControlPoint( const int element
 				pc = [NSBezierPath point:p inNSPointArray:ap count:1 tolerance:t];
 			
 				if ( pc != NSNotFound )
-					return partcodeForElementControlPoint( i, pc );
+					return [self partcodeForControlPoint: pc ofElement: i];
 			}
 		}
 	}
@@ -576,19 +593,19 @@ static inline int              partcodeForElementControlPoint( const int element
 }
 
 
-- (int)					partcodeForLastPoint
+- (ETBezierPathPartcode)					partcodeForLastPoint
 {
 	int m = [self elementCount] - 1;
 	NSBezierPathElement element = [self elementAtIndex:m];
 	
 	if( element == NSCurveToBezierPathElement )
-		return partcodeForElementControlPoint( m, 2 );
+		return [self partcodeForControlPoint: 2 ofElement: m];
 	else
-		return partcodeForElementControlPoint( m, 0 );
+		return [self partcodeForControlPoint: 0 ofElement: m];
 }
 
 
-- (void)				moveControlPointPartcode:(int) pc toPoint:(NSPoint) p colinear:(BOOL) colin coradial:(BOOL) corad constrainAngle:(BOOL) acon
+- (void)				moveControlPointPartcode:(ETBezierPathPartcode) pc toPoint:(NSPoint) p colinear:(BOOL) colin coradial:(BOOL) corad constrainAngle:(BOOL) acon
 {
 	// high-level method for editing paths. This optionally maintains colinearity of control points across curve segment joins, and
 	// deals with maintaining closed loops and dealing with the dangling moveto that closePath inserts.
@@ -638,14 +655,14 @@ static inline int              partcodeForElementControlPoint( const int element
 		
 		if ( acon && cp != 2 )
 		{
-			// constrain point p to angular multiples of 15¡ (or whatever is set)
+			// constrain point p to angular multiples of 15ï¿½ (or whatever is set)
 			
 			if ( cp == 0 )
 			{
 				if ( previous == NSCurveToBezierPathElement )
-					centre = [self controlPointForPartcode:partcodeForElementControlPoint( prev, 2 )];
+					centre = [self controlPointForPartcode: [self partcodeForControlPoint: 2 ofElement: prev]];
 				else
-					centre = [self controlPointForPartcode:partcodeForElement( prev )];
+					centre = [self controlPointForPartcode: [self partcodeForElement: prev]];
 			}
 			else
 				centre = [self controlPointForPartcode:partcodeForElementControlPoint( element, 2 )];
@@ -670,7 +687,7 @@ static inline int              partcodeForElementControlPoint( const int element
 				{
 					if ( previous == NSCurveToBezierPathElement )
 					{
-						int prevPc = partcodeForElementControlPoint( prev, 1 );
+						ETBezierPathPartcode prevPc = partcodeForElementControlPoint( prev, 1 );
 						
 						centre = [self controlPointForPartcode:partcodeForElementControlPoint( prev, 2 )];
 						
@@ -696,7 +713,7 @@ static inline int              partcodeForElementControlPoint( const int element
 						if ( previous == NSCurveToBezierPathElement )
 						{
 							centre = [self controlPointForPartcode:partcodeForElement( prev )];
-							int prevPc = partcodeForElementControlPoint( le, 1 );
+							ETBezierPathPartcode prevPc = partcodeForElementControlPoint( le, 1 );
 							
 							if ( corad )
 								opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
@@ -815,7 +832,7 @@ static inline int              partcodeForElementControlPoint( const int element
 	
 		if ( following == NSCurveToBezierPathElement )
 		{
-			int fpc = partcodeForElement( next );
+			ETBezierPathPartcode fpc = partcodeForElement( next );
 			old = [self controlPointForPartcode:fpc];
 	
 			old.x += dx;
@@ -843,7 +860,7 @@ static inline int              partcodeForElementControlPoint( const int element
 }
 
 
-- (NSBezierPath*)		deleteControlPointForPartcode:(int) pc
+- (NSBezierPath*)		deleteControlPointForPartcode:(ETBezierPathPartcode) pc
 {
 	int aidx = arrayIndexForPartcode( pc );
 	int elem = elementIndexForPartcode( pc );
@@ -1397,30 +1414,13 @@ static inline int              partcodeForElementControlPoint( const int element
 
 
 
-static inline int			partcodeForElement( const int element )
-{
-	// returns a unique partcode for an element that contains just a single point (i.e. all of them except curveto)
-	
-	return (( element + 1 ) << 2 );
-}
-
-
-static inline int			partcodeForElementControlPoint( const int element, const int controlPointIndex )
-{
-	// given the element and the index of the control point (0, 1 or 2 ), this returns a unique "partcode" that
-	// can be used to refer to that specific control point in the path.
-	
-	return ((( element + 1 ) << 2 ) | ( controlPointIndex & 3 ));
-}
-
-
-static inline int			arrayIndexForPartcode( const int pc )
+static inline int			arrayIndexForPartcode( ETBezierPathPartcode pc )
 {
 	return ( pc & 3 );
 }
 
 
-static inline int			elementIndexForPartcode( const int pc )
+static inline int			elementIndexForPartcode( ETBezierPathPartcode pc )
 {
 	// returns the element index a partcode is referring to
 	

@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  NSBezierPath-Editing.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 08/10/2006.
 ///
@@ -10,7 +10,26 @@
 
 #import <Cocoa/Cocoa.h>
 
+typedef unsigned int ETBezierPathPartcode;
+#define ETNullPartcode 0
 
+
+/** 
+ * This category provides some basic methods for supporting interactive editing
+ * of a NSBezierPath object. This can be more tricky than it looks because
+ * control points are often not edited in isolation - they often crosslink to
+ * other control points (such as when two curveto segments are joined and a 
+ * colinear handle is needed).
+ *
+ * These methods allow you to refer to any individual control point in the
+ * object using a unique partcode. These methods will hit detect all control 
+ * points, giving the partcode, and then get and set that point.
+ *
+ * The moveControlPointPartcode:toPoint:colinear: is a high-level call that 
+ * will handle most editing tasks in a simple to use way. It optionally 
+ * maintains colinearity across curve joins, and knows how to maintain closed
+ * loops properly.
+ */
 @interface NSBezierPath (DKEditing)
 
 + (void)				setConstraintAngle:(float) radians;
@@ -18,6 +37,9 @@
 + (NSPoint)				colinearPointForPoint:(NSPoint) p centrePoint:(NSPoint) q radius:(float) r;
 + (int)					point:(NSPoint) p inNSPointArray:(NSPoint*) array count:(int) count tolerance:(float) t;
 + (void)				colineariseVertex:(NSPoint[3]) inPoints cpA:(NSPoint*) outCPA cpB:(NSPoint*) outCPB;
+
+- (ETBezierPathPartcode) partcodeForElement: (int)index;
+- (ETBezierPathPartcode) partcodeForControlPoint: (int)controlPoint ofElement: (int)index;
 
 - (NSBezierPath*)		bezierPathByRemovingTrailingElements:(int) numToRemove;
 - (NSBezierPath*)		bezierPathByStrippingRedundantElements;
@@ -31,22 +53,22 @@
 - (int)					subpathStartingElementForElement:(int) element;
 - (int)					subpathEndingElementForElement:(int) element;
 
-- (NSBezierPathElement)	elementTypeForPartcode:(int) pc;
-- (BOOL)				isOnPathPartcode:(int) pc;
+- (NSBezierPathElement)	elementTypeForPartcode:(ETBezierPathPartcode) pc;
+- (BOOL)				isOnPathPartcode:(ETBezierPathPartcode) pc;
 
-- (void)				setControlPoint:(NSPoint) p forPartcode:(int) pc;
-- (NSPoint)				controlPointForPartcode:(int) pc;
+- (void)				setControlPoint:(NSPoint) p forPartcode:(ETBezierPathPartcode) pc;
+- (NSPoint)				controlPointForPartcode:(ETBezierPathPartcode) pc;
 
-- (int)					partcodeHitByPoint:(NSPoint) p tolerance:(float) t;
-- (int)					partcodeHitByPoint:(NSPoint) p tolerance:(float) t startingFromElement:(int) startElement;
-- (int)					partcodeForLastPoint;
+- (ETBezierPathPartcode)					partcodeHitByPoint:(NSPoint) p tolerance:(float) t;
+- (ETBezierPathPartcode)					partcodeHitByPoint:(NSPoint) p tolerance:(float) t startingFromElement:(int) startElement;
+- (ETBezierPathPartcode)					partcodeForLastPoint;
 
-- (void)				moveControlPointPartcode:(int) pc toPoint:(NSPoint) p colinear:(BOOL) colin coradial:(BOOL) corad constrainAngle:(BOOL) acon;
+- (void)				moveControlPointPartcode:(ETBezierPathPartcode) pc toPoint:(NSPoint) p colinear:(BOOL) colin coradial:(BOOL) corad constrainAngle:(BOOL) acon;
 
 // adding and deleting points from a path:
 // note that all of these methods return a new path since NSBezierPath doesn't support deletion/insertion except by reconstructing a path.
 
-- (NSBezierPath*)		deleteControlPointForPartcode:(int) pc;
+- (NSBezierPath*)		deleteControlPointForPartcode:(ETBezierPathPartcode) pc;
 - (NSBezierPath*)		insertControlPointAtPoint:(NSPoint) p tolerance:(float) tol type:(int) controlPointType;
 
 - (NSPoint)				nearestPointToPoint:(NSPoint) p tolerance:(float) tol;
@@ -71,20 +93,4 @@
 @end
 
 
-
-
-
-/*
-
-This category provides some basic methods for supporting interactive editing of a NSBezierPath object. This can be more tricky
-than it looks because control points are often not edited in isolation - they often crosslink to other control points (such as
-when two curveto segments are joined and a colinear handle is needed).
-
-These methods allow you to refer to any individual control point in the object using a unique partcode. These methods will
-hit detect all control points, giving the partcode, and then get and set that point.
-
-The moveControlPointPartcode:toPoint:colinear: is a high-level call that will handle most editing tasks in a simple to use way. It
-optionally maintains colinearity across curve joins, and knows how to maintain closed loops properly.
-
-*/
 
