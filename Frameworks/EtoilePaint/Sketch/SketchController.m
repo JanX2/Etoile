@@ -7,7 +7,7 @@
  */
 
 #import "SketchController.h"
-
+#import <EtoilePaint/ETBezierEditingFreeLayout.h>
 
 @implementation SketchController
 
@@ -27,7 +27,7 @@
 	// base located in the bottom left.
 	//[mainItem setFlipped: NO];
 	[mainItem setSize: NSMakeSize(500, 400)];
-	[mainItem setLayout: [ETFreeLayout layout]];
+	[mainItem setLayout: [ETBezierFreeLayout layout]];
 
 	/* Make mainItem visible by inserting it inside the window layer */
 

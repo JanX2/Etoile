@@ -24,7 +24,6 @@
 @interface ETBezierHandle : ETHandle
 {
     ETBezierPathPartcode _partcode;
-	NSBezierPath *_path;
 }
 
 - (id) initWithActionHandler: (ETActionHandler *)anHandler
@@ -36,13 +35,22 @@
 
 @end
 
-@interface ETBezierHandleGroup : ETHandleGroup
+// Should be a subclass of ETHandleGroup
+@interface ETBezierHandleGroup : ETLayoutItemGroup
 {
-	NSBezierPath *_path;
 }
 
+- (id) initWithManipulatedObject: (id)aTarget;
 - (id) initWithActionHandler: (ETActionHandler *)anHandler 
            manipulatedObject: (id)aTarget;
+- (void) updateHandleLocations;
+
+- (id) manipulatedObject;
+- (NSBezierPath *) manipulatedPath;
+
+- (void) setManipulatedObject: (id)anObject;
+- (void) setNeedsDisplay: (BOOL)flag;
+- (BOOL) acceptsActionsForItemsOutsideOfFrame;
 
 @end
 

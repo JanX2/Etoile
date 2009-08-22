@@ -9,6 +9,7 @@
 #import <EtoileFoundation/Macros.h>
 #import <EtoileUI/ETGeometry.h>
 #import <EtoileUI/ETShape.h>
+#import <EtoileUI/ETCompatibility.h>
 #import "ETBezierHandle.h"
 
 @implementation ETBezierHandle
@@ -27,6 +28,8 @@
 	
 	[self setStyle: [ETBezierPointStyle sharedInstance]];
 	
+	NSLog(@"Bezier handle %@ created", self);
+	
 	return self;
 }
 
@@ -43,6 +46,11 @@
 @end
 
 @implementation ETBezierHandleGroup
+
+- (id) initWithManipulatedObject: (id)aTarget
+{
+	return [self initWithActionHandler: nil manipulatedObject: aTarget];
+}
 
 - (id) initWithActionHandler: (ETActionHandler *)anHandler 
            manipulatedObject: (id)aTarget
@@ -90,16 +98,121 @@
 	if (self == nil)
 		return nil;
 	
+	[self setFlipped: YES];
+	[self setStyle: nil]; /* Suppress the default ETLayoutItem style */
+	[self setActionHandler: anHandler];
+	[self setManipulatedObject: aTarget];
+	
+	// FIXME: assumption
+	[self updateHandleLocations];
+	
 	return self;
+}
+
+- (NSBezierPath *) manipulatedPath
+{
+	NSLog(@"manip obj %@, style %@", [self manipulatedObject] , [[self manipulatedObject] style]);
+	ETShape *shape = (ETShape *)[[self manipulatedObject] style];
+	NSBezierPath *path = [shape path];
+	NSAssert(path != nil, @"Path is nil");
+	return path;
 }
 
 - (void) updateHandleLocations
 {
 	FOREACH([self items], handle, ETBezierHandle *)
 	{
-		[handle setPosition: [_path pointForPartcode: [handle partcode]]];
+		NSLog(@"set handle %@ pc: %d to %@", handle, [handle partcode], NSStringFromPoint([[self manipulatedPath] pointForPartcode: [handle partcode]]));
+		[handle setPosition: [[self manipulatedPath] pointForPartcode: [handle partcode]]];
 	}
 }
+
+
+- (id) manipulatedObject
+{
+	return GET_PROPERTY(kETManipulatedObjectProperty);
+}
+
+- (void) setManipulatedObject: (id)anObject
+{
+	SET_PROPERTY(anObject, kETManipulatedObjectProperty);
+	/* Better to avoid -setFrame: which would update the represented object frame. */
+	// FIXME: Ugly duplication with -setFrame:... 
+	//[self setFrame: [anObject frame]];
+	[self setRepresentedObject: anObject];
+	[self updateHandleLocations];
+}
+
+- (NSPoint) anchorPoint
+{
+	return [GET_PROPERTY(kETManipulatedObjectProperty) anchorPoint];
+}
+
+- (void) setAnchorPoint: (NSPoint)anchor
+{
+	return [GET_PROPERTY(kETManipulatedObjectProperty) setAnchorPoint: anchor];
+}
+
+- (NSPoint) position
+{
+	return [(ETLayoutItem *)GET_PROPERTY(kETManipulatedObjectProperty) position];
+}
+
+- (void) setPosition: (NSPoint)aPosition
+{
+	[GET_PROPERTY(kETManipulatedObjectProperty) setPosition: aPosition];
+	[self updateHandleLocations];
+}
+
+/** Returns the content bounds associated with the receiver. */
+- (NSRect) contentBounds
+{
+	NSRect manipulatedFrame = [GET_PROPERTY(kETManipulatedObjectProperty) frame];
+	return ETMakeRect(NSZeroPoint, manipulatedFrame.size);
+}
+
+- (void) setContentBounds: (NSRect)rect
+{
+	NSRect manipulatedFrame = ETMakeRect([GET_PROPERTY(kETManipulatedObjectProperty) origin], rect.size);
+	[GET_PROPERTY(kETManipulatedObjectProperty) setFrame: manipulatedFrame];
+	[self updateHandleLocations];
+}
+
+- (NSRect) frame
+{
+	return [GET_PROPERTY(kETManipulatedObjectProperty) frame];
+}
+
+// NOTE: We need to figure out what we really needs. For example,
+// -setBoundingBox: could be called when a handle group is inserted, or the 
+// layout and/or the style could have a hook -boundingBoxForItem:. We 
+// probably want to cache the bounding box value in an ivar too.
+- (void) setFrame: (NSRect)frame
+{
+	[GET_PROPERTY(kETManipulatedObjectProperty) setFrame: frame];
+	[self updateHandleLocations];
+}
+
+- (void) setBoundingBox: (NSRect)extent
+{
+	[super setBoundingBox: extent];
+	[GET_PROPERTY(kETManipulatedObjectProperty) setBoundingBox: extent];
+}
+
+/** Marks both the receiver and its manipulated object as invalidated area 
+or not. */
+- (void) setNeedsDisplay: (BOOL)flag
+{
+	[super setNeedsDisplay: flag];
+	[[self manipulatedObject] setNeedsDisplay: flag];
+}
+
+/** Returns YES. */
+- (BOOL) acceptsActionsForItemsOutsideOfFrame
+{
+	return YES;
+}
+
 
 @end
 
