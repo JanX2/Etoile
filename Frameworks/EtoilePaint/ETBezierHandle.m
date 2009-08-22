@@ -26,9 +26,15 @@
 	}
 	_partcode = partcode;
 	
-	[self setStyle: [ETBezierPointStyle sharedInstance]];
-	
-	NSLog(@"Bezier handle %@ created", self);
+	if ([[self manipulatedPath] isControlPoint: [self partcode]])
+	{
+		[self setStyle: [ETBezierControlPointStyle sharedInstance]];
+	}
+	else
+	{
+		[self setStyle: [ETBezierPointStyle sharedInstance]];
+	}
+	NSLog(@"Bezier handle %@ created, manip path %@", self, [self manipulatedPath]);
 	
 	return self;
 }
