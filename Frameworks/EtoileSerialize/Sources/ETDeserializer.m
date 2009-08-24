@@ -465,7 +465,7 @@ LOAD_METHOD(Selector, SEL)
 	[backend deserializeObjectWithID:mainObject];
 	//Also restore referenced objects
 	NSMapEnumerator enumerator = NSEnumerateMapTable(objectPointers);
-	CORef ref;
+	uintptr_t ref;
 	id * pointer;
 	while(NSNextMapEnumeratorPair(&enumerator, (void*)&pointer, (void*)&ref))
 	{

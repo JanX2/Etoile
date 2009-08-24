@@ -64,6 +64,15 @@ static id logBackend;
 	[fullSave serializeObject:object withName:@"FullSave"];
 	return self;
 }
+
+- (void) dealloc
+{
+	DESTROY(serializer);
+	DESTROY(fullSave);
+	DESTROY(baseURL);
+	[super dealloc];
+}
+
 - (int) version
 {
 	return version;

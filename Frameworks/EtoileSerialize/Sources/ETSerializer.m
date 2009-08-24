@@ -8,6 +8,7 @@
 #import "ETSerializerNullBackend.h"
 #import "ETObjectStore.h"
 #import "StringMap.h"
+#import "ESCORefTable.h"
 
 //TODO: Put this in the Makefile
 //#define WARN_IF_GUESS
@@ -141,7 +142,6 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 	{
 		return nil;
 	}
-
 	//TODO: Replace these with NSHashMaps if we aren't fast enough
 	unstoredObjects = NSCreateHashTable(NSNonOwnedPointerHashCallBacks, 100);
 	storedObjects = NSCreateHashTable(NSNonOwnedPointerHashCallBacks, 100);
@@ -194,7 +194,7 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 		{
 			NSHashInsert(unstoredObjects, anObject);
 		}
-		[backend incrementReferenceCountForObject:(unsigned long long)(uintptr_t)anObject];
+		[backend incrementReferenceCountForObject:COREF_FROM_ID(anObject)];
 	}
 }
 
@@ -314,6 +314,11 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 - (parsed_type_size_t) parseType:(const char*) type atAddress:(void*) address withName:(char*) name
 {
 	parsed_type_size_t  retVal;
+
+	//Initialize members to get rid of gcc warnings.
+	retVal.size = 0;
+	retVal.offset = 0;
+
 	switch(type[0])
 	{
 		//Start of a structure
@@ -468,7 +473,7 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 	//NSLog(@"Starting object %s", aName);
 	int lastVersion = -1;
 	currentClass = anObject->class_pointer;
-	[backend beginObjectWithID:(unsigned long long)(uintptr_t)anObject 
+	[backend beginObjectWithID:COREF_FROM_ID(anObject)
 	                  withName:aName
 	                 withClass:currentClass];
 	//Loop over instance variables.
@@ -535,6 +540,7 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
  */
 - (unsigned long long) serializeObject:(id)anObject withName:(NSString*)name
 {
+	COREF_TABLE_USE
 	[self newVersion];
 	[self enqueueObject:anObject];
 	[self serializeObject:anObject named:(char *)[name UTF8String]];
@@ -543,8 +549,11 @@ parsed_type_size_t serializeNSZone(char* aName, void* aZone, id <ETSerializerBac
 		NSHashEnumerator e = NSEnumerateHashTable(unstoredObjects);
 		id leftoverObject = NSNextHashEnumeratorItem(&e);
 		[self serializeObject:leftoverObject named:"?"];
+		NSEndHashTableEnumeration(&e);
 	}
 	[backend flush];
-	return (unsigned long long)(uintptr_t)anObject;
+	CORef theId = COREF_FROM_ID(anObject);
+	COREF_TABLE_DONE
+	return theId;
 }
 @end

@@ -3,13 +3,22 @@
  */
 #import <Foundation/Foundation.h>
 
-/** 
- * Turn a pointer into a CORef.
+/**
+ * Macros to turn a pointer into a CORef.
  */
-//TODO: 64-bit version of this.
-#define COREF_FROM_ID(x) ((CORef)(unsigned long)x)
+#if defined (__LP64__)
+	#define COREF_FROM_ID(x) [[ESCORefTable sharedCORefTable] CORefFromPointer: x]
+	#define COREF_TABLE_USE [[ESCORefTable sharedCORefTable] use];
+	#define COREF_TABLE_DONE [[ESCORefTable sharedCORefTable] done];
+#else
+	#define COREF_FROM_ID(x) ((CORef)(unsigned long)x)
+	#define COREF_TABLE_USE 
+	#define COREF_TABLE_DONE
+#endif
+
 /**
  * CoreObject reference type, used to uniquely identify serialized objects
  * within a serialized object graph.
  */
 typedef uint32_t CORef;
+

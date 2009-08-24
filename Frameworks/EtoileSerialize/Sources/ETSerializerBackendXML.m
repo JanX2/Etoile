@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <inttypes.h>
 #include <objc/objc-api.h>
 #import <EtoileFoundation/ETUUID.h>
 #import "ETSerializerBackendXML.h"
@@ -95,12 +96,13 @@
 - (void) flush
 {
 	NSMapEnumerator enumerator = NSEnumerateMapTable(refCounts);
-	CORef ref;
-	int refCount;
+	uintptr_t ref;
+	uintptr_t refCount;
 	while(NSNextMapEnumeratorPair(&enumerator, (void*)&ref, (void*)&refCount))
 	{
-		FORMAT("<refcount object='%u'>%u</refcount>\n", ref, refCount);
+		FORMAT("<refcount object='%"PRIu32"'>%u</refcount>\n", (CORef)ref, (unsigned int)refCount);
 	}
+	NSEndMapTableEnumeration(&enumerator);
 	indentLevel--;
 	FORMAT("</objects>\n");
 	[store finalize];
@@ -117,12 +119,12 @@
 }
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
 {
-	FORMAT("<object class='%s' name='%s' ref='%u'>\n", aClass->name, aName, aReference);
+	FORMAT("<object class='%s' name='%s' ref='%"PRIu32"'>\n", aClass->name, aName, aReference);
 	indentLevel++;
 }
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName
 {
-	FORMAT("<objref name='%s'>%u</objref>\n",aName, aReference);
+	FORMAT("<objref name='%s'>%"PRIu32"</objref>\n",aName, aReference);
 }
 - (void) incrementReferenceCountForObject:(CORef)anObjectID
 {
@@ -133,7 +135,7 @@
 - (void) endObject
 {
 	indentLevel--;
-	FORMAT("</obj>\n");
+	FORMAT("</object>\n");
 }
 - (void) beginArrayNamed:(char*)aName withLength:(unsigned int)aLength;
 {

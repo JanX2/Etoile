@@ -9,12 +9,13 @@ ${FRAMEWORK_NAME}_SUBPROJECTS = Sources
 
 ${FRAMEWORK_NAME}_HEADER_FILES_DIR = Headers
 
-${FRAMEWORK_NAME}_LDFLAGS += -lEtoileFoundation
-${FRAMEWORK_NAME}_LIBRARIES_DEPEND_UPON += -lEtoileFoundation
+${FRAMEWORK_NAME}_LDFLAGS += -lEtoileFoundation -lObjectiveC2
+${FRAMEWORK_NAME}_LIBRARIES_DEPEND_UPON += -lEtoileFoundation -lObjectiveC2
 
 ${FRAMEWORK_NAME}_HEADER_FILES = \
 				   EtoileSerialize.h\
 				   ESProxy.h\
+				   ESCORefTable.h\
 				   ETUtility.h\
 				   ETDeserializerBackend.h\
 				   ETDeserializerBackendBinary.h\

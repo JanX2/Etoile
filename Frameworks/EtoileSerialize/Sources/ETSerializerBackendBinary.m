@@ -121,6 +121,7 @@ static inline char * safe_strcat(const char* str1, const char* str2)
 		WRITE(&offset, sizeof(offset));
 		WRITE(&refCount, sizeof(refCount));
 	}
+	NSEndMapTableEnumeration(&enumerator);
 	[(id<ETSeekableObjectStore>)store replaceRange:NSMakeRange(0,4) withBytes:(unsigned char*)&indexOffset];
 	[store finalize];
 }

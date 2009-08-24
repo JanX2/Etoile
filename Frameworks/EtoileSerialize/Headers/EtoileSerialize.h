@@ -1,4 +1,5 @@
 #import <EtoileSerialize/ETUtility.h>
+#import <EtoileSerialize/ESCORefTable.h>
 #import <EtoileSerialize/ETObjectStore.h>
 #import <EtoileSerialize/ETDeserializer.h>
 #import <EtoileSerialize/ETDeserializerBackend.h>

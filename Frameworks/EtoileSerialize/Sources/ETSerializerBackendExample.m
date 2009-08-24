@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <inttypes.h>
 #include <objc/objc-api.h>
 #import "ETSerializerBackendExample.h"
 #import "ETObjectStore.h"
@@ -75,7 +76,7 @@
 }
 - (void) beginObjectWithID:(CORef)aReference withName:(char*)aName withClass:(Class)aClass
 {
-	FORMAT("(Object with ID:%d)\n",aReference);
+	FORMAT("(Object with ID:%"PRIu32")\n",aReference);
 	[self indent];
 	FORMAT("%s * %s {\n",aClass->name,aName);
 	indent++;
@@ -83,7 +84,7 @@
 - (void) storeObjectReference:(CORef)aReference withName:(char*)aName
 {
 	[self indent];
-	FORMAT("id %s=%d\n",aName,aReference);
+	FORMAT("id %s=%"PRIu32"\n",aName,aReference);
 }
 - (void) incrementReferenceCountForObject:(CORef)anObjectID
 {
