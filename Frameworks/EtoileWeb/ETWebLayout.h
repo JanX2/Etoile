@@ -1,7 +1,7 @@
 /**	<title>ETWebLayout</title>
 
-	<abstract>A WebKit-based layout that renders the layout context into XHTML 
-	before handling it to the WebKit view.</abstract>
+	<abstract>An abstract superclass for layouts which wrap a WebKit view.
+	</abstract>
 
 	Copyright (C) 2009 Quentin Mathe
 
@@ -14,11 +14,18 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import <AppKit/AppKit.h>
 #import <EtoileUI/ETLayout.h>
-
+#import <WebKit/WebKit.h>
 
 @interface ETWebLayout : ETLayout
 {
-	NSString *title;
 }
+
+- (WebView *)webView;
+
+@end
+
+@interface WebView (Etoile)
+
+- (BOOL) isWidget;
 
 @end

@@ -8,7 +8,6 @@
 
 #import <WebKit/WebKit.h>
 #import "ETWebLayout.h"
-#import "ETXHTMLRenderContext.h"
 
 
 @implementation ETWebLayout
@@ -33,22 +32,14 @@
 	return [self layoutView];
 }
 
-- (void) renderWithLayoutItems: (NSArray *)items isNewContent: (BOOL)isNewContent
+@end
+
+
+@implementation WebView (Etoile)
+
+- (BOOL) isWidget
 {
-	[self setUpLayoutView];
-
-	NSString *xhtmlOutput = [ETXHTMLRenderContext render: [self layoutContext]];
-
-	[[[self webView] mainFrame] loadHTMLString: xhtmlOutput baseURL: @""];
+	return YES;
 }
-
-/*[ETEtoileUIRenderer rendererToXHTML]
-ETEtoileUIBuilder builderFromAppKit
-ETEtoileUIRenderer rendererFromAppKit
-rendererToXTHML
-ETEUIRenderer renderToXHTML:
-renderFromAppKit:
-renderFromAppKitWindow:
-exportToXHTML: */
 
 @end
