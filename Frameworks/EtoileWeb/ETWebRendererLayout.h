@@ -10,7 +10,7 @@
  License: Modified BSD (see COPYING)
  */
 
-#import "ETWebLayout.h"
+#import <EtoileWeb/ETWebLayout.h>
 
 @interface ETWebRendererLayout : ETWebLayout
 {
