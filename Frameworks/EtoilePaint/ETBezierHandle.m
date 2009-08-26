@@ -224,7 +224,16 @@ or not. */
 
 /* Action and Style Aspects */
 
+/**
+ * Unlike EUI's ETHandle implementation for resizing handles where the
+ * manipulated object of the handles is the handle group, in this
+ * case, the manipulated object of the handles is the actual layout
+ * item being manipulated.
+ *
+ * FIXME: I should probably switch to that model..
+ */
 @implementation ETBezierPointActionHandler
+
 - (void) handleTranslateItem: (ETHandle *)handle byDelta: (NSSize)delta
 {
 	NSBezierPath *path = [(ETBezierHandle *)handle manipulatedPath];
@@ -233,6 +242,20 @@ or not. */
 	
 	[path moveControlPointPartcode: partcode toPoint: point colinear:NO coradial: NO constrainAngle: NO];
 	[handle setPosition: point];
+
+	ETLayoutItem *item = [handle manipulatedObject];
+	[item setNeedsDisplay: YES]; /* Invalidate existing rect */
+
+	// Enlarge the frame of the manipulated item, if needed.
+	NSRect manipulatedFrame = [item frame];
+	// FIXME: assumes item is flipped
+	
+	// FIXME: this is very wrong..
+	manipulatedFrame = NSUnionRect(manipulatedFrame, ETMakeRect(ETSumPoint(point, manipulatedFrame.origin), NSMakeSize(1.0, 1.0)));
+	NSLog(@"point: %@, summed %@,  old frame: %@ manip %@", NSStringFromPoint(point), NSStringFromRect(ETMakeRect(ETSumPoint(point, manipulatedFrame.origin), NSZeroSize)), NSStringFromRect([item frame]), NSStringFromRect(manipulatedFrame));
+	[item setBoundingBox: NSMakeRect(0, 0, manipulatedFrame.size.width, manipulatedFrame.size.height)];
+
+	//[item setNeedsDisplay: YES];/* Invalidate new resized rect */
 }
 @end
 
