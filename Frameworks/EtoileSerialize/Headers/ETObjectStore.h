@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 
+@class ETSocket;
+
 @protocol ETSerialObjectStore <NSObject>
 /**
  * Returns the branch that is the parent of the specified branch.
@@ -76,7 +78,7 @@
  */
 @interface ETSerialObjectSocket : ETSerialObjectBuffer {
 	/** The socket */
-	int s;
+	ETSocket *socket;
 }
 /**
  * Initialize the store pointing to the specified host and network service.
