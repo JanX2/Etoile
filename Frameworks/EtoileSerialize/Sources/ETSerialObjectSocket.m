@@ -5,7 +5,7 @@
 @implementation ETSerialObjectSocket
 - (id) initWithRemoteHost:(NSString*)aHost forService:(NSString*)aService
 {
-	SELFINIT
+	SUPERINIT
 	if (aService == nil)                                                                   
 	{                                                                                      
 		aService = @"CoreObject";                                                      
